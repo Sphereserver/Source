@@ -1,0 +1,8 @@
+//
+//	Class:	CFileObjContainer
+//	Set:	attributes
+//	Prefix:	CFO_
+//
+
+ADD(GLOBALTIMEOUT,	"GLOBALTIMEOUT")
+ADD(OBJECTPOOL,		"OBJECTPOOL")

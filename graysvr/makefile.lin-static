@@ -1,0 +1,172 @@
+VER	= 0.55R4.0.3
+PLAT	= Static-i386
+
+# Generic makefile
+#ARCH	= -march=i686 -mmmx -msse2 -minline-all-stringops 
+ARCH 	= -march=i386
+OPT 	= -O2 -fno-omit-frame-pointer -ffast-math -fno-expensive-optimizations -fprefetch-loop-arrays $(ARCH)
+#WARN	= -Wall -W
+WARN	= -w
+
+#DEBUG	= -ggdb2
+DEBUG	= -s
+INCLUDE	= -I./common
+
+STATIC = -static
+
+# Linux
+LIBS	= -static-libgcc -L./libs -lc -lm -lstdc++ 
+# -lgcc
+PTHREADS = ./libs/libpthread.a
+
+# FreeBSD
+#LIBS	= -L/usr/lib -pthread
+#DEFBSD	= -D_BSD
+
+#DEFDEBUG = -D_DEBUG
+#DEFNEWTHINGS =
+
+DEFINES = -DGRAY_SVR -D_CONSOLE $(DEFBSD) $(DEFDEBUG) $(DEFNEWTHINGS)
+
+EXE	= spheresvr
+
+CC	= g++
+
+NO	= -fno-rtti -fno-exceptions
+#EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
+EX	= -fexceptions -fnon-call-exceptions
+STRICT  = # -mstrict-align
+SPECIAL = $(EX) $(STRICT) $(DEBUG)
+
+PROF	= -pg
+PIPE	= -pipe
+
+SRC	:= 	./graysvr/CAccount.cpp \
+		./graysvr/CBase.cpp \
+		./graysvr/CChar.cpp \
+		./graysvr/CCharact.cpp \
+		./graysvr/CCharBase.cpp \
+		./graysvr/CCharFight.cpp \
+		./graysvr/CCharNPC.cpp \
+		./graysvr/CCharNPCAct.cpp \
+		./graysvr/CCharNPCPet.cpp \
+		./graysvr/CCharNPCStatus.cpp \
+		./graysvr/CCharSkill.cpp \
+		./graysvr/CCharSpell.cpp \
+		./graysvr/CCharStatus.cpp \
+		./graysvr/CCharUse.cpp \
+		./graysvr/CChat.cpp \
+		./graysvr/CClient.cpp \
+		./graysvr/CClientDialog.cpp \
+		./graysvr/CClientEvent.cpp \
+		./graysvr/CClientGMPage.cpp \
+		./graysvr/CClientLog.cpp \
+		./graysvr/CClientMsg.cpp \
+		./graysvr/CClientTarg.cpp \
+		./graysvr/CClientUse.cpp \
+		./graysvr/CContain.cpp \
+		./graysvr/CGMPage.cpp \
+		./graysvr/CItem.cpp \
+		./graysvr/CItemBase.cpp \
+		./graysvr/CItemMulti.cpp \
+		./graysvr/CItemSp.cpp \
+		./graysvr/CItemStone.cpp \
+		./graysvr/CItemVend.cpp \
+		./graysvr/CLog.cpp \
+		./graysvr/CObjBase.cpp \
+		./graysvr/CPathFinder.cpp \
+		./graysvr/CResource.cpp \
+		./graysvr/CResourceCalc.cpp \
+		./graysvr/CResourceDef.cpp \
+		./graysvr/CSector.cpp \
+		./graysvr/CServer.cpp \
+		./graysvr/CServRef.cpp \
+		./graysvr/CQuest.cpp \
+		./graysvr/CWebPage.cpp \
+		./graysvr/CWorld.cpp \
+		./graysvr/CWorldImport.cpp \
+		./graysvr/CWorldMap.cpp \
+		./graysvr/graysvr.cpp \
+		./common/mtrand/mtrand.cpp \
+		./common/twofish/twofish2.cpp \
+		./common/CArray.cpp \
+		./common/CAtom.cpp \
+		./common/CAssoc.cpp \
+		./common/CDataBase.cpp \
+		./common/CEncrypt.cpp \
+		./common/CExpression.cpp \
+		./common/CFile.cpp \
+		./common/CFileList.cpp \
+		./common/CGrayData.cpp \
+		./common/CGrayInst.cpp \
+		./common/CGrayMap.cpp \
+		./common/CMD5.cpp \
+		./common/CQueue.cpp \
+		./common/CRect.cpp \
+		./common/CRegion.cpp \
+		./common/CResourceBase.cpp \
+		./common/CScript.cpp \
+		./common/CScriptObj.cpp \
+		./common/CSectorTemplate.cpp \
+		./common/CSocket.cpp \
+		./common/CTime.cpp \
+		./common/CString.cpp \
+		./common/CThread.cpp \
+		./common/graycom.cpp
+
+O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
+C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES) $(STATIC)
+
+
+.PHONY:	all clean tidy
+
+all:	$(EXE)
+
+clean:	tidy
+	rm -f *.o ./common/*.o ./common/mtrand/*.o ./common/twofish/*.o $(EXE) $(REXE)
+#	$(MAKE)
+
+.depend:
+	gcc -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
+	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
+
+tidy:
+	rm -f *~ *orig *bak *rej ./common/*~ ./common/*orig ./common*bak ./common/mtrand/*~ ./common/mtrand/*orig \ 
+	./common/mtrand/*bak ./common/twofish/*~ ./common/twofish/*orig ./common/twofish/*bak
+
+tags:	$(SRC)
+	ctags $(SRC)
+
+#cmn:	$(COMMONSRC:.cpp=.o)
+
+gray:	$(SRC:.cpp=.o)
+
+#commonlib:	$(COMMONSRC:.cpp=.o)
+#	ar r $@ $?
+
+flags:  
+	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
+
+$(EXE): flags gray
+	g++ $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) ./graysvr/*.o ./common/*.o ./common/mtrand/*.o ./common/twofish/*.o $(PTHREADS)
+
+version.h:	VERSION
+	echo "#define VERSION 'head -l VERSION'" > ./graysvr/version.h
+	echo "#define COMPILED_BY \"$(COMPILED_BY)\"" >> ./graysvr/version.h
+
+%.o:	%.cpp
+	@echo " Compiling $<"
+	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
+
+dist:
+	@cp ./graysvr/REVISIONS.TXT Revisions$(VER).txt
+	@cp ./graysvr/MANUAL.TXT Manual$(VER).txt
+	@cp ./scripts/sphere_msgs.scp sphere_msgs.scp
+	@cp ./scripts/sphere_types.scp sphere_types.scp
+	@cp ./scripts/sphere_serv_triggers.scp sphere_serv_triggers.scp
+	@tar cvfz SphereServer$(VER)-$(PLAT).tgz spheresvr Revisions$(VER).txt Manual$(VER).txt sphere_msgs.scp sphere_types.scp sphere_serv_triggers.scp Sphere.ini knownbugs.txt
+	@echo DONE -------
+	@ls -la SphereServer$(VER)-$(PLAT).tgz
+	@tar tvfz SphereServer$(VER)-$(PLAT).tgz
+	@echo -----------
+	@rm Revisions$(VER).txt Manual$(VER).txt sphere_msgs.scp sphere_types.scp sphere_serv_triggers.scp spheresvr

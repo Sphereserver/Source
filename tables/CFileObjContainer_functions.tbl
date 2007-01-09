@@ -1,0 +1,8 @@
+//
+//	Class:	CFileObjContainer
+//	Set:	functions
+//	Prefix:	CFOV_
+//
+
+ADD(CLOSEOBJECT,	"CLOSEOBJECT")
+ADD(RESETOBJECT,	"RESETOBJECT")
