@@ -1,0 +1,128 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, April 7, 2006
+
+VERSION=0.56b
+
+[DEFNAME backward_compability_defs]
+loot_ORGE_LORD loot_OGRE_LORD
+
+[FUNCTION addnpc]
+IF (<ISNUM <ARGS>>)
+	ADD <ARGS>|08c000000
+ELSE
+	ADD <ARGS>
+ENDIF
+
+[FUNCTION tweak]
+INFO
+
+[function brain] //by Darkandus
+if !(<ARGN>)
+	return <NPC>
+else
+	NPC=<ARGN>
+endif
+
+[FUNCTION m]
+MOVE <ARGS>
+
+[FUNCTION invulnerable]
+INVUL <ARGS>
+
+[FUNCTION invisible]
+INVIS <ARGS>
+
+[FUNCTION static] //by Thomas20198701
+IF !(<ARGN>)
+	IF (<ISEMPTY <DEF.<ARGS>>>)
+		SYSMESSAGE Not a valid command or format.
+		RETURN 0
+	endif
+endif
+IF !(<ISEMPTY <ARGS>>)
+	IF !(<SERV.ITEMDEF.<ARGS>>)
+		SYSMESSAGE Not a valid command or format.
+		RETURN 0
+	endif
+	TARGETFG static_ <ARGS>
+	SYSMESSAGE Where would you like to place the <SERV.ITEMDEF.<ARGS>.NAME>?
+	RETURN 1
+endif
+SYSMESSAGE Not a valid command or format.
+RETURN 0
+
+[FUNCTION static_]
+SERV.NEWITEM=<ARGS>
+NEW.ATTR |= 010
+NEW.TIMER = -1
+NEW.P = <SRC.TARGP>
+ACT=<NEW.UID>
+
+[FUNCTION sfx]
+SOUND <ARGS>
+
+[FUNCTION music]
+IF (<ISCHAR>)
+	IF (<ISPLAYER>)
+		MIDILIST <ARGS>
+	endif
+endif
+
+[FUNCTION cliver]
+RETURN <CLIENTVERSION>
+
+[FUNCTION clientver]
+RETURN <CLIENTVERSION>
+
+[FUNCTION FOLLOW]
+SRC.SYSMESSAGE  Follow: on - Use war mode to stop following
+SERV.NEWITEM i_eq_followSrc
+IF ( !<ARGN> )
+	NEW.LINK=<UID>
+ELSE
+	NEW.LINK=<ARGN>
+endif
+NEW.TIMER=2
+SRC.EQUIP <NEW.UID>
+
+[ITEMDEF i_eq_followSrc]
+ID=i_handr_1
+NAME="Follower"
+TYPE=T_eq_script
+LAYER=layer_special
+WEIGHT=0
+
+ON=@targon_Char
+	link=<argo>
+
+ON=@targon_Item
+	link=<argo>
+
+ON=@timer
+	if (!(<link.uid>) || !(<topobj.ischar>))
+		remove
+		return 0
+	endif
+	if (<topobj.flags> & statf_war)
+		topobj.sysmessage Follow:off
+		remove
+		return 0
+	endif
+	topobj.face <link.uid>
+	topobj.p <link.topobj.p>
+	topobj.update
+	timer 2
+	return 1
+
+[ITEMDEF i_gate_wood_2]
+DUPEITEM=i_fence_wood_3
+
+[EOF]

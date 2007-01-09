@@ -1,0 +1,269 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Jeweler Script
+// Notes:  This is used for general information pertaining to all Britannian Jewelers
+// Current Keyword List:job,occupation,what*do*do,profession,gem,sapphire,emerald,ruby,rubies,citrine,amethyst,tourmaline,
+// amber,diamond,necklace,bracelet,earring,ring,bead,gold,silver,skill,appraise,value,quality,estimate,jewel
+//
+[SPEECH jobJeweler]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a jeweler.
+				SAY I make jewelry.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a jeweler.
+				SAY I make jewelry.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm the jeweler.
+				SAY Can I interest thee in some lovely jewelry?
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm the jeweler.
+				SAY Can I interest thee in some lovely jewelry?
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a maker of fine jewelry.
+				SAY I sell only the finest jewelry.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a maker of fine jewelry.
+				SAY I sell only the finest jewelry.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*skill*
+ON=*quality*
+ON=*appraise*
+ON=*value*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY To what use wouldst thou put any skills I could teach thee? Ill use, I'd wager.
+				SAY Thou couldst learn some things from me, if thou couldst covince me to teach thee. Though that's improbable.
+				SAY I could teach thee the value of jewels and how to tell for thyself what they're worth.  I might be - um - persuaded to show thee a thing or two.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY To what use wouldst thou put any skills I could teach thee? Ill use, I'd wager.
+				SAY Thou couldst learn some things from me, if thou couldst covince me to teach thee. Though that's improbable.
+				SAY I could teach thee the value of jewels and how to tell for thyself what they're worth.  I might be - um - persuaded to show thee a thing or two.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee some appraisal skills. Thou wouldst need to pay me, of course.
+				SAY Some things I know could be of use to thee, if thou dost value jewels. I could help thee some, I think.
+				SAY If thou dost need help with something I might know, like how to tell the value of jewels, just ask me to teach thee and I will. For a small price.
+				SAY I can teach thee some things about the quality of jewels.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee some appraisal skills. Thou wouldst need to pay me, of course.
+				SAY Some things I know could be of use to thee, if thou dost value jewels. I could help thee some, I think.
+				SAY If thou dost need help with something I might know, like how to tell the value of jewels, just ask me to teach thee and I will. For a small price.
+				SAY I can teach thee some things about the quality of jewels.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Sure, I could teach thee a few things about jewels. For a small cost to thy beltpouch.
+				SAY Thou can always learn new things, my friend. I could show thee some things about the quality of jewels that might help thee. For some small amount of money, of course.
+				SAY I can teach thee some of the keys to appraisals. I would need thee to pay me for my time, however.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Sure, I could teach thee a few things about jewels. For a small cost to thy beltpouch.
+				SAY Thou can always learn new things, my friend. I could show thee some things about the quality of jewels that might help thee. For some small amount of money, of course.
+				SAY I can teach thee some of the keys to appraisals. I would need thee to pay me for my time, however.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*jewel*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell jewelry of all types.
+				SAY I will sell thee new jewelry or buy thy gems and jewels.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell jewelry of all types.
+				SAY I will sell thee new jewelry or buy thy gems and jewels.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My jewelry is most eye-catching.
+				SAY My jewelry is the perfect gift for a loved one.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My jewelry is most eye-catching.
+				SAY My jewelry is the perfect gift for a loved one.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My jewelry is highly praised by many noble customers.
+				SAY My jewelry will greatly enhance the appearance of any lady or gentleman.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My jewelry is highly praised by many noble customers.
+				SAY My jewelry will greatly enhance the appearance of any lady or gentleman.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*gem*
+ON=*emerald*
+ON=*sapphire*
+ON=*amethyst*
+ON=*tourmaline*
+ON=*diamond*
+ON=*rubies*
+ON=*citrine*
+ON=*amber*
+ON=*gold*
+ON=*silver*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I might be interested in purchasing loose gems or precious metals.
+				SAY I'm looking for gold, silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber or diamonds.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I might be interested in purchasing loose gems or precious metals.
+				SAY I'm looking for gold, silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber or diamonds.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou hast any gold, silver or loose gems, I might be interested in taking them off thy hands.
+				SAY I'll buy gold, silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber or diamonds.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou hast any gold, silver or loose gems, I might be interested in taking them off thy hands.
+				SAY I'll buy gold, silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber or diamonds.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I should be eager to see any gold, silver, or loose gems thou might have for sale.
+				SAY I have need of gold and silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber and diamonds.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I should be eager to see any gold, silver, or loose gems thou might have for sale.
+				SAY I have need of gold and silver, emeralds, sapphires, star sapphires, rubies, citrines, amethysts, tourmalines, amber and diamonds.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*necklace*
+ON=*bracelet*
+ON=*ring*
+ON=*bead*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY I sell necklaces, bracelets, earrings, rings or beads.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY I sell necklaces, bracelets, earrings, rings or beads.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+	SAY I sell necklaces, bracelets, earrings, rings or beads
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			SAY I'll buy or sell necklaces, bracelets, earrings, rings or beads.
+		ENDIF
+	ENDIF
+
+
+[COMMENT SPEECH jobJeweler]
+//JEWELER
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+SAY=I greet thee.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Good day to you!
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=I create the most admired jewelry in the land.
+ON=AMBER
+ON=EMERALD
+ON=AMETHYST
+ON=CITRINE
+ON=DIAMOND
+ON=RUBIES
+ON=RUBY
+ON=SAPPHIRE
+ON=TOURMALINE
+SAY=Some may say a jewel is mere decoration, but I think it's an expression of love, admiration and friendship.
+ON=APPRAISE
+ON=ESTIMATE
+SAY=I apologize, I cannot do any more appraisals today.  Perhaps you could return another time?
+ON=BEAD
+SAY=Beads make a lovely gift!  Perhaps I can interest you in a strand of the silver?
+ON=BRACELET
+ON=NECKLACE
+ON=RING
+SAY=Bracelets, rings or necklaces of gold or silver compliment almost any outfit.
+ON=GEM
+ON=JEWEL
+SAY=Gems are both beautiful and practical.  Some monsters seek only gold coins, but rarely do creatures desire gems.
+ON=GOLD
+ON=SILVER
+SAY=Jewelry made of gold or silver expresses your status to others.
+ON=QUALITY
+SAY=Unlike some other jewelers I could name, I make only the finest quality jewelry.
+//RANDOM=A fine gift for your lady or lord?
+
+[EOF]
+

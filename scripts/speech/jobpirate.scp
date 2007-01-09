@@ -1,0 +1,247 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Pirate Script
+// Notes:  This is used for general information pertaining to all Britannian Pirate's
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, Pirate, Scum, Matey, Sailor, ship,
+//	sail, captain*?
+[SPEECH jobPirate]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY Job?  I TAKE what I want!  Why should I need a job?
+					SAY Job? I don't need no stinking job!
+				ENDDO
+			ELSE
+				SAY I'll demonstrate!
+				I.ATTACK
+			ENDIF
+		ELSE
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY Job?  I TAKE what I want!  Why should I need a job?
+					SAY Job? I don't need no job!
+				ENDDO
+			ELSE
+				SAY I'll show thee!
+				I.ATTACK
+			ENDIF
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Job? A job is what regular sailors have.
+				SAY I live on the sea.  'Tis no job, but a life!
+				SAY I help my Captain.  That's what I do.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Job? A job is what reg'lar sailors got.
+				SAY I live on the sea. Ain't no job, but a life!
+				SAY I help my Captain. That's what I do.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY Job? Oh. Yes!  I am Arrhh... a sailor!  Yeah, that's it!
+				SAY I relieve the economically enhanced citizens of their...Arrhh...heavy loads.
+				SAY I fill mine own pockets, is what I do!
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Job? Oh. Yes!  I am errr... a sailor!  Yeah, that's it!
+				SAY I relieve the economically enhanced citizens of their...er...heavy loads.
+				SAY I fill mine own pockets, is what I do!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Job? Oh. Yes!  I am errr... a sailor!  Yeah, that's it!
+				SAY I take stuff.
+				SAY I fill my own pockets, is what I do!
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Pirate*
+ON=*Scum*
+ON=*Matey*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Pull thy sword!
+				SAY I have no patience with thee!
+				SAY Defend thyself, landlubber!
+			ENDDO
+			I.ATTACK
+		ELSE
+			DORAND 3
+				SAY Pull thy sword!
+				SAY I got no patience with thee!
+				SAY Defend thyself, landlubber!
+			ENDDO
+			I.ATTACK
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Now don't go callin' me, a simple honest sailor, a name like that!
+				SAY 'Tain't right to call me that!
+				SAY Watch thyself.  I have little patience.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Now don't go callin' me, a simple honest sailor, a name like that!
+				SAY 'Tain't right to call me that!
+				SAY Watch thyself. I got little patience.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Argh!  Thou'rt an ugly one!  I like that in a person!
+				SAY Argh!  Oh, pardon me! Somthin' lodged there in my throat!
+				SAY Ack!  I mean...Argh!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Argh! Thou'rt an ugly one! I like that in a person!
+				SAY Argh! Oh, pardon me! Somthin' lodged there in my throat!
+				SAY Ack! I mean...Argh!
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Sailor*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY Argh!  A pirate's life is a happy life!
+				SAY I'm more than a sailor, mate!
+				SAY Don't have to justify myself to anyone!  Not a soul!
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Argh!  A pirate's life is a happy life!
+				SAY I'm more than a sailor, mate!
+				SAY Don't have to justify myself to anyone!  Not a soul!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Argh!  A pirate's life is a happy life!
+				SAY I'm more than a sailor, mate!
+				SAY Don't gotta justify myself to anyone!  Not a soul!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah!  A pirate's life is a happy life!
+				SAY Take me from the sea, an' I'll have to kill ye!
+				SAY Never take a pirate from his ship!  I tell thee that now!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah! A pirate's life is a happy life!
+				SAY Take me from the sea, an' I'll have to kill ye!
+				SAY Never take a pirate from 'is ship!  I tell thee that now!
+			ENDDO
+		ENDIF
+	ELSE
+		DORAND 2
+			SAY Yup!  A pirate's - er a sailor's life is a happy life!
+			SAY I'll remain a sailor till I die!
+		ENDDO
+	ENDIF
+ON=*ship*
+ON=*sail*
+ON=*captain*?*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I've sailed with the best captains on the sea!  'Course, they're all dead, now.
+				SAY I've sailed with the best!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sailed with the best captains on the sea! 'Course, they're all dead, now.
+				SAY I sailed with the best!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I've sailed with the best captains on the sea!  'Course, they're all dead, now.  Or in prison.
+				SAY I'll get my own ship someday!  Even if I have to die to do it!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sailed with the best captains on the sea! 'Course, they're all dead, now.  Or in prison.
+				SAY I'll get my own ship someday! Even if I gotta die to do it!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Someday, I'll BE the best captain on the sea!
+				SAY I shall have my own ship, soon!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Someday, I'll BE the best captain on the sea!
+				SAY I'll have my own ship, soon!
+			ENDDO
+		ENDIF
+	ENDIF
+
+//PIRATE
+// DEFAULT=Ar matey, yer not talkin' sense!
+
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Ah! Greetings, thou pasty faced landlubber!
+
+ON=Job
+ON=What do you do
+	SAY=What do I do?  I plunder.  I pillage.  I rape.  I murder.  I sail the seven seas!  Can you not guess? Ar!
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Heave ho with yer!
+	BYE
+	return 1
+
+ON=CAPTAIN<ANY>?
+	SAY=I *might* be a pirate captain, who's wantin' ter know?
+
+ON=MATEY
+ON=PIRATE
+	SAY=Hey, I'm the only pirate I can see at the moment, MATEY.
+
+ON=SAIL
+ON=SAILOR
+ON=SHIP
+	SAY=If yers wantin' to talk about sailin', ask someone who cares -- like a sissy sailor.
+
+ON=SCUM
+	SAY=I'll swab the decks with ya! AR!
+
+//RANDOM=I'm a poorrrr orrrrrphannn boyyyyyyy......!
+
+[EOF]

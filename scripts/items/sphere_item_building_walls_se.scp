@@ -1,0 +1,1519 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+//SE Building Walls script, 
+//by Exer
+//changes, additions, and fixes by Rattlehead
+// FILE LAST UPDATED: Tuesday, October 25th, 2005
+VERSION=0.56b
+
+[ITEMDEF 021ff]
+defname=i_window_skull
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02200
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Windows
+DESCRIPTION=Skull Window
+
+[itemdef 02200]
+//skull window
+dupeitem=021ff
+
+[ITEMDEF 029f8]
+defname=i_wall_plaster_brown
+type=t_wall
+resources=100 i_log
+DUPELIST=029dc,029de,029df,029e0,029e1,029e2,029e3,029e4,029e5,029e6,029e7,029e8,029e9,029ea,029eb,029ec,029ed,029ee,029ef,029f0,029f1,029f2,029f3,029f4,029f5,029f6,029f7,029f9,029fa,029fb,029fc
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Plaster Wall (Brown)
+DESCRIPTION=@
+
+[itemdef 029dc]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029de]
+//plaster brown
+dupeitem=
+
+[itemdef 029df]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e0]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e1]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e2]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e3]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e4]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e5]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e6]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e7]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e8]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029e9]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029ea]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029eb]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029ec]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029ed]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029ef]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029ff]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f0]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f1]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f2]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f3]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f4]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f5]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f6]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f7]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029f9]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029fa]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029fb]
+//plaster brown
+dupeitem=029f8
+
+[itemdef 029fc]
+//plaster brown
+dupeitem=029f8
+
+
+[itemdef 026d0]
+defname=i_window_marble
+type=t_wall
+resources=100 i_ingot_iron
+DUPELIST=026d1,026d2,026d3,026d4,026d5,026d6,026d7,026d8,026d9
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Marble Windows
+DESCRIPTION=@
+
+[itemdef 026d1]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d2]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d3]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d4]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d5]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d6]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d7]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d8]
+//marble window
+dupeitem=026d0
+
+[itemdef 026d9]
+//marble window
+dupeitem=026d0
+
+
+[itemdef 02713]
+defname=i_latticed_wall_white
+type=t_wall
+resources=100 i_log
+dupelist=02714,02715,02716,02717,02718,02719,0271a,0271b,0271c,0271d,0271e,0271f,02754,02755,02756,02757,02758,02759,0275a,0275b,0275c,0275d,0275e,0275f,02760,02761,02762,02992,02993,02994,02995,02996,02997,02998,02999,0299a,0299b,0299c,0299d
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Latticed Wall (white)
+DESCRIPTION=@
+
+[itemdef 02714]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02715]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02716]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02717]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02718]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02719]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271a]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271b]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271c]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271d]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271e]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 0271f]
+//latticed wall (white)
+dupeitem=02713
+
+[itemdef 02754]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02755]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02756]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02757]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02758]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02759]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275a]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275b]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275c]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275d]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275e]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 0275f]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02760]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02761]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02762]
+//latticed wall (brown)
+dupeitem=02753
+
+[itemdef 02992]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02993]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02994]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02995]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02996]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02997]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02998]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 02999]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 0299a]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 0299b]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 0299c]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 0299d]
+//latticed wall (dark brown)
+dupeitem=02753
+
+[itemdef 0247f]
+DEFNAME=i_japanese_wall_1
+TYPE=t_wall
+RESOURCES=100 i_log
+CATEGORY=Buildings - Walls
+SUBSECTION=Japanese Walls 1
+DESCRIPTION=@
+DUPELIST=02480,02481,02482,02483,02484,02485,02486,02487,02488,02489,0248a
+
+
+[itemdef 02480]
+DUPEITEM=0247f
+
+
+[itemdef 02481]
+DUPEITEM=0247f
+
+
+[itemdef 02482]
+DUPEITEM=0247f
+
+
+[itemdef 02483]
+DUPEITEM=0247f
+
+
+[itemdef 02484]
+DUPEITEM=0247f
+
+
+[itemdef 02485]
+DUPEITEM=0247f
+
+
+[itemdef 02486]
+DUPEITEM=0247f
+
+
+[itemdef 02487]
+DUPEITEM=0247f
+
+
+[itemdef 02488]
+DUPEITEM=0247f
+
+
+[itemdef 02489]
+DUPEITEM=0247f
+
+
+[itemdef 0248a]
+DUPEITEM=0247f
+
+
+[itemdef 0248b]
+TYPE=t_wall
+RESOURCES=200 i_log, 10 i_ingot_iron
+DUPELIST=0248c
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wooden Wall (large)
+DESCRIPTION=@
+
+[itemdef 0248c]
+DUPEITEM=0248b
+
+[itemdef 0285f]
+defname=i_wall_wood_old
+type=t_wall
+resources=100 i_log
+dupelist=02860,02861,02862,02863,02864,02865,02866,02867,02868,02869,0286a,0286b,0286c,0286d
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wooden Wall Old
+DESCRIPTION=@
+
+[itemdef 02860]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02861]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02862]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02863]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02864]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02865]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02866]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02867]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02868]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 02869]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 0286a]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 0286b]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 0286c]
+//wooden wall old
+dupeitem=0285f
+
+[itemdef 0286d]
+//wooden wall old
+dupeitem=0285f
+
+
+[ITEMDEF 02888]
+defname=i_wall_latticed_plaster
+type=t_wall
+resources=100 i_log
+dupelist=02889,0288a,0288b,0288c,0288d,0288e,0288f,02890,02891,02892,02893,02894,02895,02896,02897,02898,02899,0289a,0289b,0289c,0289d,0289e,0289f,028a1,028a2,028a3
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Latticed Plaster wall
+DESCRIPTION=@
+
+[itemdef 02889]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288a]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288b]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288c]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288d]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288e]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0288f]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02890]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02891]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02892]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02893]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02894]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02895]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02896]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02897]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02898]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 02899]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289a]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289b]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289c]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289d]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289e]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289f]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 028a0]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 028a1]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 0289a2]
+//latticed wall plaster
+dupeitem=02888
+
+[itemdef 028a3]
+//latticed wall plaster
+dupeitem=02888
+
+
+[itemdef 02938]
+defname=i_wall_clay
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02939,0293a,0293b,0293c,0293d,0293e,0293f,02940,02941,02942,02943,02944,02945,02946,02947,02948,02949,0294a,0294b,0294c,0294d,0294e,0294f,02950,02951,02952,02953,02954,02955,02956,02957,02958,02959,0295a
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Clay Wall
+DESCRIPTION=@
+
+[ITEMDEF 02939]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293a]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293b]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293c]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293d]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293e]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0293f]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02940]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02941]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02942]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02943]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02944]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02945]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02946]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02947]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02948]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02949]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294a]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294b]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294c]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294d]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294e]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0294f]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02950]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02951]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02952]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02953]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02954]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02955]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02956]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02957]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02958]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 02959]
+//Clay wall
+dupeitem=02938
+
+[ITEMDEF 0295a]
+//Clay wall
+dupeitem=02938
+
+
+[itemdef 029a0]
+defname=i_wall_stained_glass
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=029a1,029a2,029a3,029a4,029a5,029a6,029a7,029a8,029a9,029aa,029ab,029ac,029ad,029ae,029af,029b0,029b1,029b2,029b3,029b4,029b5,029b6,029b7,029b8,029b9,029ba,029bb,029bc,029bd,029be,029bf
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Stained-Glass
+DESCRIPTION=@
+
+[itemdef 029a1]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a2]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a3]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a4]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a5]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a6]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a7]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a8]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029a9]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029aa]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029ab]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029ac]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029ad]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029ae]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029af]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b0]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b1]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b2]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b3]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b4]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b5]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b6]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b7]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b8]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029b9]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029ba]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029bb]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029bc]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029bd]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029be]
+//stained-wall
+dupeitem=029a0
+
+[itemdef 029bf]
+//stained-wall
+dupeitem=029a0
+
+[ITEMDEF 02a30]
+defname=i_wall_plaster_new
+type=t_normal
+resources=100 i_log
+dupelist=02a31,02a32,02a33,02a34,02a35,02a36,02a37,02a38,02a39,02a3a,02a3b,02499,0249a,0249b,0249c,0249d,0249e,0249,024a0,024a1,024a2,024a3,024a4,024a5,024a6,024a7,024a8,024a9,024aa,024ab,024ac
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Stained-Glass
+DESCRIPTION=@
+
+[itemdef 02a31]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a32]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a33]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a34]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a35]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a36]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a37]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a38]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a39]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a3a]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02a3b]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 02499]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 0249a]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 0249b]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 0249c]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 0249d]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 0249e]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a0]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a1]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a2]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a3]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a4]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a5]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a6]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a7]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a8]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024a9]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024aa]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024ab]
+//wall plaster new
+dupeitem=02a30
+
+[itemdef 024ac]
+//wall plaster new
+dupeitem=02a30
+
+[ITEMDEF 0248b]
+defname=i_wall_wooden_barricade
+type=t_wall
+resources=100 i_log
+dupelist=0248c,0248d,0248e,0248f,02490,02491,02492,02493,02494,02495,02496,02497,02498
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Wood Barricade
+DESCRIPTION=@
+
+[itemdef 0248c]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 0248d]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 0248e]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 0248f]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02490]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02491]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02492]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02493]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02494]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02495]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02496]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02497]
+//wall wood barricade
+dupeitem=0248b
+
+[itemdef 02498]
+//wall wood barricade
+dupeitem=0248b
+
+[ITEMDEF 024f4]
+defname=i_wall_log_window
+type=t_wall
+resources=100 i_log
+dupelist=024f5,024f6,024f7,024f8,024f9,024fa,024fb,024fc,024fd,024fe,024ff
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Log Window
+DESCRIPTION=@
+
+[itemdef 024f5]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024f6]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024f7]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024f8]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024f9]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024fa]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024fb]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024fc]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024fd]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024fe]
+//wall log window
+dupeitem=024f4
+
+[itemdef 024ff]
+//wall log window
+dupeitem=024f4
+
+[ITEMDEF 02500]
+defname=i_wall_wood_window
+type=t_wall
+resources=100 i_log
+dupelist=02501,02502,02503,02504,02505,02506,02507,02508,02509,0250a,0250b
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Wood Window
+DESCRIPTION=@
+
+[itemdef 02501]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02502]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02503]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02504]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02505]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02506]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02507]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02508]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 02509]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 0250a]
+//wall wood window (light)
+dupeitem=02500
+
+[itemdef 0250b]
+//wall wood window (light)
+dupeitem=02500
+
+[ITEMDEF 0250c]
+defname=i_wall_marble_window
+type=t_wall
+dupelist=0250d,0250e,0250f,02511,02512,02513,02514,02515,02516,02517
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Marble Window
+DESCRIPTION=@
+
+[itemdef 0250d]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 0250e]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 0250f]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02510]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02511]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02512]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02513]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02514]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02515]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02516]
+//wall marble window
+dupeitem=0250c
+
+[itemdef 02517]
+//wall marble window
+dupeitem=0250c
+
+[ITEMDEF 02518]
+defname=i_wall_marble_window_2
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02519,0251a,0251b,0251c,0251d,0251e,0251f,02520,02521,02522,02523
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Marble Window
+DESCRIPTION=@
+
+[itemdef 02519]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251a]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251b]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251c]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251d]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251e]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 0251f]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 02520]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 02521]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 02522]
+//wall marble window 2
+dupeitem=02518
+
+[itemdef 02523]
+//wall marble window 2
+dupeitem=02518
+
+[ITEMDEF 02524]
+defname=i_wall_marble_window_3
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02525,02527,02527,02528,02529,0252a,0252b,0252c,0252d,0252e,0253d,0253e
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Marble Window
+DESCRIPTION=@
+
+[itemdef 02525]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 02526]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 02527]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 02528]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 02529]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0252a]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0252b]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0252c]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0252d]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0253d]
+//wall marble window 3
+dupeitem=02524
+
+[itemdef 0253e]
+//wall marble window 3
+dupeitem=02524
+
+[ITEMDEF 0252f]
+defname=i_wall_plaster_window
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02530,02531,02532,02533,02534,02535,02536,02537,02538,02539,0253a,0253b
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Plaster Window
+DESCRIPTION=@
+
+[itemdef 02530]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02531]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02532]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02533]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02534]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02535]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02536]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02537]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02538]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 02539]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 0253a]
+//wall plaster window
+dupeitem=0252f
+
+[itemdef 0253b]
+//wall plaster window
+dupeitem=0252f
+
+[ITEMDEF 0253f]
+defname=i_wall_stone_circular
+type=t_wall
+resources=100 i_ingot_iron
+dupelist=02540,02541,02542,02543,02544,02545,02546,02547,02548,02549,0254a,0254b,0254c,0254d,0254e,0254f,02550,02551,02552,02553
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Wall Stone Circular
+DESCRIPTION=@
+
+[ITEMDEF 02540]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02541]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02542]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02543]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02544]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02545]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02546]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02547]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02548]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02549]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254a]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254b]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254c]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254d]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254e]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 0254f]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02550]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02551]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02552]
+//wall stone circular
+dupeitem=0253f
+
+[ITEMDEF 02553]
+//wall stone circular
+dupeitem=0253f
+
+[EoF]

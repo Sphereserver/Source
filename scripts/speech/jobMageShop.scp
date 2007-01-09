@@ -1,0 +1,179 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// MAGE SHOP
+
+[SPEECH jobMageShop]
+
+ON=BUY
+	BUY
+ON=SELL
+	SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=I greet thee.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=I'm sure we will meet again.
+	BYE
+	return 1
+ON=Job
+ON=what do you do
+SAY=I am a living library of the arcane arts.
+ON=ABBEY
+SAY=Oh, I haven't been to my abbey in ages.
+ON=ABILITIES
+ON=ABILITY
+SAY=One must have a born propensity for magic, a natural ability if you will.
+ON=ARCANE
+ON=ART
+SAY=The arcane art is one of keeping mystical secrets.
+ON=CAST
+ON=CASTING
+SAY=Just close your eyes, say the words, and visualize.  You may need your Spellbook for assistance.
+ON=COMPONENT
+SAY=Reagents and a heavy spellbook are all the components one needs.
+ON=CRAFT
+SAY=The craft of a mage takes many years to learn.
+ON=DES MANI
+SAY=The words to weaken an opponent.
+ON=EMPATH
+SAY=I know not what someone feels nor do I wish to.
+ON=ETHER
+SAY=I have heard rumors of ether, but have never seen it myself.
+ON=GUILD
+SAY=Join the Mage's Guild, and you'll receive discounts on reagents.
+ON=IN LOR
+SAY=Night Sight is very handy when reagent hunting.
+ON=IN MANI
+SAY=You shall hear these words quite often on a battlefield.
+ON=IN MANI YLEM
+SAY=No, I am not very hungry.
+ON=IN POR YLEM
+SAY=Beginning mages use this spell quite often.
+ON=INGREDIENTS
+SAY=Which reagent are you referring to?
+ON=REAGENT
+SAY=Reagents are the basis for all magic.
+ON=REL WIS
+SAY=The Feeblemind spell truly isn't that useful.
+ON=RELVINIAN
+SAY=I think you have been in the sun too long.
+ON=SCROLL
+SAY=Oh yes, always carry a few extra scrolls.  One never knows.
+ON=SKILL
+SAY=One needs to dedicate himself to the arcane arts to acquire great skill.
+ON=SPELL
+SAY=One can never practice any spell enough.
+ON=SPELL BOOKS
+ON=SPELLBOOKS
+ON=SPELLS
+SAY=Never leave town without your spellbook.
+ON=TALENT
+SAY=I feel that one must have a natural talent when it comes to casting spells.
+ON=UUS JUX
+SAY=Clumsy is one of the first spells that one learns.  Quite easy to cast.
+ON=WHERE<ANY>MONKS
+SAY=Why ask me of monks?  I am a Mage.
+ON=WIS UUS
+SAY=I believe that you mean Uus Wis.  Get it straight.
+ON=WORDS OF POWER
+SAY=One must learn all the secret words of power.
+//RANDOM=Magic is the greatest gift to our world.  Do not abuse it.
+
+[SPEECH jobMageMaster]
+//GUILDMASTER of Arcane Arts (Guildmaster Mage's responses are the same as
+DEFAULT=I do not understand thee.
+ON=Hi
+ON=Hail
+ON=Hello
+ON=Greet
+	SAY=Yes?
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=You may leave.
+	BYE
+	return 1
+ON=job
+ON=What do you do
+	SAY=I teach the arcane arts.
+
+ON=ABBEY
+	SAY=Oh, I haven't been to my abbey in ages.
+
+ON=ABILITIES
+ON=ABILITY
+SAY=One must have a born propensity for magic, a natural ability if you will.
+ON=ARCANE
+ON=ART
+SAY=The arcane art is one of keeping mystical secrets.
+ON=CAST
+ON=CASTING
+SAY=Just close your eyes, say the words, and visualize.  You may need your Spellbook for assistance.
+ON=COMPONENT
+SAY=Reagents and a heavy spellbook are all the components one needs.
+ON=CRAFT
+SAY=The craft of a mage takes many years to learn.
+ON=DES MANI
+SAY=The words to weaken an opponent.
+ON=EMPATH
+SAY=I know not what someone feels nor do I wish to.
+ON=ETHER
+SAY=I have heard rumors of ether, but have never seen it myself.
+ON=IN LOR
+SAY=Night Sight is very handy when reagent hunting.
+ON=IN MANI
+SAY=You shall hear these words quite often on a battlefield.
+ON=IN MANI YLEM
+SAY=No, I am not very hungry.
+ON=IN POR YLEM
+SAY=Beginning mages use this spell quite often.
+ON=INGREDIENTS
+SAY=Which reagent are you referring to?
+ON=REAGENT
+SAY=Reagents are the basis for all magic.
+ON=REL WIS
+SAY=The Feeblemind spell truly isn't that useful.
+ON=RELVINIAN
+SAY=I think you have been in the sun too long.
+ON=SCROLL
+SAY=Oh yes, always carry a few extra scrolls.  One never knows.
+ON=SKILL
+SAY=One needs to dedicate himself to the arcane arts to acquire great skill.
+ON=SPELL
+SAY=One can never practice any spell enough.
+ON=SPELL BOOKS
+ON=SPELLBOOKS
+ON=SPELLS
+SAY=Never leave town without your spellbook.
+ON=TALENT
+SAY=I feel that one must have a natural talent when it comes to casting spells.
+ON=UUS JUX
+SAY=Clumsy is one of the first spells that one learns.  Quite easy to cast.
+ON=WHERE<ANY>MONKS
+SAY=Why ask me of monks?  I am a Mage.
+ON=WIS UUS
+SAY=I believe that you mean Uus Wis.  Get it straight.
+ON=WORDS OF POWER
+SAY=One must learn all the secret words of power.
+ON=MASTER
+SAY=One usually bows before asking me questions.
+ON=GUILD
+SAY=Does thou think that just anyone can join?
+ON=JOIN
+SAY=You may be worthy.  And if you have enough gold.
+//RANDOM=The arcane arts are the greatest knowledge.
+
+[EOF]

@@ -1,0 +1,655 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+//
+VERSION=0.54
+
+[SPEECH jobGypsy]
+//GYPSY
+DEFAULT=I do not understand thee.
+ON=Hi
+ON=Greet
+ON=Hello
+ON=Hail
+SAY=Ah, hello traveler.  Do you wish to know your fate?
+ON=Job
+ON=What do you do
+SAY=I am a Gypsy.  I see all and hear all!  I may tell thee... for a price.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=If you were more free with your gold, I could tell you more.  No matter.  Goodbye.
+	BYE
+	return 1
+ON=APPRAISE
+SAY=Let me see.  Ah, yes... it's doubtful such a thing would have worth to a person of your means.
+ON=CAMP
+SAY=Some free advice... do not camp near a swamp.
+ON=DESTINY
+ON=FORTUNE
+ON=PALM
+ON=READ
+ON=FUTURE
+SAY=Perhaps if you cross my palms with gold, the mists clouding your future will clear...
+ON=FREEMAN
+SAY=Oh yes, every man and woman should be free.  Yet, some are slaves to their destiny.
+ON=GYPSIE
+ON=GYPSY
+SAY=We are a mystical people who know much of destiny.
+ON=HIDE
+SAY=Beware of the shadows, for they betray the light and only bring fear.
+ON=LOCK
+SAY=A lock is merely an invitation.
+ON=SKILL
+SAY=The skill of a Gypsy is known far and near, though stingy travelers may find their fortunes misleading.
+ON=STEAL
+SAY=Some travelers tire easily if they carry too much.  Gypsies merely help relieve their burden.
+ON=THIEF
+SAY=A gypsy is not a thief.  Where did you hear such lies?  I shall have to think of a curse...
+ON=THIEV
+SAY=My people have not stolen anything from you.  Begone!
+//RANDOM=Fortunes told!  Palms read! Find your Destiny!
+
+[SPEECH jobMaginCouncil]
+//MAGINCIA COUNCIL MEMBER
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Yes, yes, hello.  Now what was I saying?
+ON=Job
+ON=What do you do
+SAY=Oh, you again.  I'm a Council Member of this beautiful city.  Now where was I?
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Yes, goodbye already.  Hmm... where did I leave my notes?
+	BYE
+	return 1
+ON=PARLIAMENT
+SAY=Hmm?  The parliament is meeting...right now!  I must hurry!
+ON=FIND
+ON=BUSY
+SAY=Please excuse me, I'm very busy.
+ON=NOTES
+SAY=Ah, you mean my latest speech... I believe it may be in my chambers.  Oh where is that blasted servant?
+//RANDOM=*ahem* Citizens, isn't the maintaining the beauty of Magincia of utmost importance?
+
+
+[SPEECH jobPeasant]
+//PEASANT
+DEFAULT=Eh?
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Oh. Beg yer pardon.
+ON=Job
+ON=What do you do
+	SAY=I does what I can.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Eh.
+	BYE
+	return 1
+//RANDOM=I'm minding my own business.
+
+
+[SPEECH jobCook]
+//COOK
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hi
+ON=Hello
+ON=Hail
+ON=Greet
+SAY=Hello there. You look hungry, friend.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell and eat hearty!
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=I delight in the culinary arts!
+ON=BACON
+SAY=Bacon and eggs?  The breakfast of champions!
+ON=BEEF
+SAY=Oh, I loves beef.  Can eat it for days, I can.
+ON=BREAD
+SAY=That's right.  Put meat between some bread.  I call it a sandwich.
+ON=CAKE
+SAY=Ah, a nice piece of cake after a good meal.  Now that's livin'.
+ON=CHICKEN
+SAY=Oh, use a little mushrooms and cheese to perk that dish right up.
+ON=CONSUMPTION
+SAY=Is that a sickness?  I hope I don't catch it.
+ON=COOK
+SAY=I am the best Cook in all the lands!
+ON=CRAFT
+SAY=A crafty cook is the best cook.  Gotta know just how much salt to add.
+ON=FISH
+SAY=They say fish is brain food.  Never helped me.
+ON=FLOUR
+SAY=Roll some fish in Flour and a little milk.  If you fry it, you'll have a crunchy meal!
+ON=FOOD
+SAY=What type a food ya have a hankerin' for?
+ON=HAM
+SAY=It's very important that you trim most of the fat off the ham after it's done.
+ON=INGREDIENT
+SAY=Cayenne pepper is the most sought after ingredient of all of Britannia.
+ON=MEAL
+SAY=Lots of meat, a nice side dish and a bit of cake is all ya need for a good meal.
+ON=MEALS
+SAY=Cheese makes a decent meal when you're traveling far.  It keeps well.
+ON=MEAT
+SAY=I prefer beef to fish, but that's just me.
+ON=OVEN
+SAY=Oh yes, I've burned me arms on this oven plenty of times.
+ON=PASTRY
+SAY=A nice tart is what dreams are made of.
+ON=PORK
+SAY=Ah, the other white meat.  A bit salty for my tastes.
+ON=ROAST
+SAY=The key to a good roast is the seasonings.
+ON=SKILL
+SAY=The best skill is learn not to burn your food.
+ON=SWEETS
+SAY=The ladies love the sweets.  That's why I cook 'em.
+ON=VEGETABLES
+SAY=You can do so much with a nice potato or tomato.
+ON=WHAT<ANY>YOU<ANY>COOK
+SAY=If it's dead, I can cook it.  Maybe even half dead.
+//RANDOM=Sure, swords and magic are nice, but everyone has to eat.
+
+[SPEECH jobTailor]
+//TAILOR
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Greetings.
+ON=Job
+ON=What do you do
+SAY=I am a tailor, friend. I make sturdy, practical clothing for adventurers.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Goodbye.
+	BYE
+	return 1
+ON=APRON
+SAY=Big, burly blacksmiths wear these types of aprons.
+ON=CAPE
+ON=COAT
+SAY=Everyone should have a cape.  It completes the whole look.
+ON=CLOTH
+ON=CLOTHES
+ON=CLOTHING
+SAY=Clothes express who thou are.  And thou... has a few issues...
+ON=CLOTHIER
+SAY=Oh, that's just a way fancy tailor.
+ON=DRESS
+SAY=Funny that thou mentions that.  I just made a lovely dress of silk.
+ON=GARMENT
+SAY=What type of garment does thou speak of?
+ON=KILT
+SAY=I have kilts in plaid and... well... plaid.
+ON=PANT
+SAY=I can tailor any pants that thou has.
+ON=ROBE
+SAY=Robes are very popular these days.
+ON=SEW
+SAY=Of course I can sew.  What a silly question!
+ON=SHAWL
+SAY=Shawls are for grandmothers.  Thou needs a cape.
+ON=SHIRT
+SAY=I do have a few fine silk shirts.
+ON=SKILL
+ON=THREAD
+SAY=I can sew up any item you wish.  Perhaps a nice beret or sash then?
+ON=SKIRT
+SAY=A well made skirt can really catch the eye.  If that's the look thou desires...
+ON=TAILOR
+	SAY=Of course I'm a Tailor.  It was my calling in life.
+ON=VEST
+	SAY=I don't care for vests, they make me look pudgy.
+//RANDOM=Thread, buttons and bows.  Tailoring isn't job, but a calling.
+
+[SPEECH jobTailorMaster]
+//GUILDMASTER Clothier
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Greetings, lovely friend!
+ON=Job
+ON=What do you do
+	SAY=I am the best clothier in the land!
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Until we meet again...
+	BYE
+	return 1
+ON=CLOTH
+	SAY=I offer only the finest cloth, in simply divine colors!
+ON=COTTON
+	SAY=Thou may even use cotton to make a nice pair of pants. Very breathable, but it may shrink in the rain.
+ON=DYE
+	SAY=Thou wouldst look regal in purple.
+ON=LOOM
+	SAY=The loom takes so long.  Patience is definitely a virtue.
+ON=WEAVE
+	SAY=No, this is my natural hair.  Why dost thou ask?
+ON=WOOL
+	SAY=Sheep are such filthy animals, but wool makes wonderful tunics.
+ON=YARN
+	SAY=Oh, I make things with yarn all the time.
+ON=GUILD
+ON=JOIN
+	SAY=I recommend thou develop a sense of color first.
+ON=MASTER
+	SAY=I'm am a master of cloth, color, and all things frilly.
+
+//RANDOM=Honey, let's talk wardrobe.  Thou needst something mayhap... more slimming?
+//DEFAULT=I do not understand thee.
+
+[SPEECH jobFisher]
+//FISHERMAN/WOMAN
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Greetings.
+ON=Job
+ON=What do you do
+SAY=I enjoy fishing for a living.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Goodbye.
+	BYE
+	return 1
+ON=FISH <ANY>
+ON=CATCH
+ON=RIVER
+ON=SEA
+SAY=The best way to catch 'em is to put thine lure in the nearest water, friend.
+ON=FISHER
+ON=FISHERMAN
+ON=FISHERMEN
+ON=FISHERWOMAN
+SAY=Ahh.. fishing is a simple life. But I've got sounds of the sea, and plenty to eat!
+ON=FOOD
+SAY=Fish makes a filling meal.  Thou may get more out of a fish if it is cut with a bladed edge.
+ON=NETS
+SAY=Some use nets, but I prefer a rod.
+ON=SKILL
+SAY=Watch me a bit, perhaps thou wilt learn?
+//RANDOM=Tales of the sea? Ask a sailor!  Taste of the sea?  Well that's my speciality!
+
+[SPEECH jobMerchantMaster]
+//GUILDMASTER Merchant
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Greetings.
+ON=Job
+ON=What do you do
+SAY=I am a GuildMaster Merchant, meaning I instruct in the ways of the service trades.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Goodbye.
+	BYE
+	return 1
+ON=deaf
+ON=hearing
+SAY=I apologize. We occasionally feature loud bards for entertainment. I fear I am quite deaf!
+ON=EMPATH
+ON=ABBEY
+SAY='Tis a boring place -- no drinking, no wenches.  Only solitary rooms and books!
+ON=ARTIFACT
+SAY=Our regular bartender is so ancient, we do sometimes refer to him as "The Artifact."
+ON=BARMAID
+SAY=Keep your hands off my girlies, friend.
+ON=TAVERN
+ON=ALE
+ON=BEER
+SAY=Our beer's the best!  If you'd like watered down horse spit, try some other tavern.
+ON=FOOD
+ON=BREAKFAST
+ON=DINNER
+ON=LUNCH
+SAY=Nothing like good food to help digest ale!
+ON=HINT
+ON=INFO
+SAY=We serve fine food and drink.  For more help than that, may I suggest you call a GM?
+ON=MAGIC
+SAY=If I catch anyone creating food with magic, I'll be quite upset. It undercuts our market.
+ON=NEWS
+SAY=I hear the pie is excellent today!
+ON=ITCH
+ON=SCRATCH
+ON=RUMOR
+ON=RUMOUR
+SAY=I wasn't going to mention it, but do be careful in your choice of wenches.  Some may leave you itchy.
+ON=TO DO
+SAY=I have to remember to see a doctor about this itch...
+ON=WAITRESS
+SAY=Keep your hands to yourself.  The wenches are for the wenching, waitresses for the uh.. waiting.
+ON=WENCH
+SAY=Oh the finest wenches this side of Empath Abbey, friend!  You may have to haggle for a good price.
+ON=WHERE<ANY>MONKS
+SAY=This is not a holy place.  Try the abbey.
+ON=GUILD
+SAY=Our guild is rarely open to new members. Business is good.
+ON=MASTER
+SAY=I am indeed a master, meaning I know more of Merchant ways than you may ever hope to.
+ON=JOIN
+SAY=So you want to get in on the racket, eh?
+//RANDOM=Not everyone is cut out for the service trade.
+
+
+[SPEECH jobFighter]
+//FIGHTER
+DEFAULT=I do not understand thee.
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+SAY=I greet thee.
+ON=Bye
+ON=Goodbye
+ON=Hail
+	SAY=Farewell.
+	BYE
+	return 1
+ON=PLATE
+ON=ARMOR
+SAY=Plate Armor's the best, but requires great strength.  Leather is for weaklings.
+ON=AXE
+SAY=Although the Executioner's Axe is most feared, the Double Axe lasts longer and inflicts more damage.
+ON=HALBERD
+ON=BARDICHE
+SAY=The Bardiche lasts longer in battle than the Halberd, but does less damage.
+ON=CROSSBOW
+ON=BOW
+SAY=A regular bow can be a better albeit less powerful friend than the more unweildy Crossbow.
+ON=NORSE HELM
+ON=OPEN FACED HELM
+ON=HELM
+SAY=Of the plain helms available, a closed helm will provide the best protection in battle.
+ON=BUCKLER
+SAY=Don't be fooled. A buckler offers little more protection that the shorter-lived wooden shield.
+ON=CHAIN
+SAY=While chain is more easily damaged than ringmail, it offers better protection.
+ON=CLUB
+SAY=Clubs are often the weapon of choice for stupid creatures.
+ON=SCIMITAR
+ON=CUTLASS
+SAY=Only the scimitar equals the slashing speed of a cutlass.
+ON=FIGHT
+SAY=I always try to be prepared for battle, so I keep my armor clean and a weapon at the ready.
+ON=FORK
+SAY=A pitchfork may be faster, but for my money, only a war fork is sure to leave 'em screaming.
+ON=GAUNTLET
+SAY=Gauntlets are better protection for the wrists.
+ON=GORGET
+SAY=The gauntlet may seem small protection for the neck, it is thick and protective.
+ON=HEATER
+SAY=The heater shield offers stylish but average protection.
+ON=THOU<ANY>IDIOT
+ON=STUPID
+ON=MORON
+ON=IDIOT
+ON=YOU<ANY>IDIOT
+ON=THOU<ANY>
+ON=YOU<ANY>MORON
+SAY=Be careful, friend, or I shall have to prove my sword is sharper than your tongue.
+ON=KILL
+SAY=Oh I just love killing.
+ON=KATANA
+ON=KITANA
+SAY=This sword does little damage compared with the broad sword.
+ON=KRYSS
+SAY=The kryss does more damage and lasts longer than the quick slashing butcher knife.
+ON=MAUL
+ON=MACE
+SAY=In the mace family, a war mace or war hammer will hurt your opponent most.
+ON=MAIM
+SAY=Maiming is almost as good as killing. Almost.
+ON=PROVISIONS
+SAY=See a provisioner for supplies if you're going on a long battle journey.
+ON=RING
+SAY=Most rings are ordinary, but I have heard of special rings which increase one's strength in battle.
+ON=SHIELD
+SAY=The Chaos Shield yields more protection than the Order Shield.
+ON=SKILL
+SAY=Some weapons require great skill in a given area, like Swordsmanship, Fencing or Mace Fighting.
+ON=SPEAR
+SAY=Bah. Spears better for catching fish.
+ON=STAFF
+SAY=A black staff does more damage than a gnarled staff, but isn't as fast.
+ON=SWORD
+SAY=A long sword is my favorite weapon for damage and it requires less frequent repairs than the faster cutlass.
+ON=TROUBLE
+SAY=It seems you are expert at getting yourself into trouble.
+ON=WEAPON
+SAY=My favorite weapons are those which do the most damage!
+//RANDOM=Who wants to be a sissy fisherman?  It's the fighting life for me!
+
+[SPEECH jobWarrior]
+//MERCENARY
+//PALADIN
+//WARRIOR
+DEFAULT=I do not understand thee.
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+SAY=I greet thee.
+ON=Bye
+ON=Goodbye
+ON=Hail
+	SAY=Farewell to thee.
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=I help strong warriors like yourself fight battles.
+ON=PLATE
+ON=ARMOR
+SAY=Plate Armor's the best, but requires great strength.  Leather is for weaklings.
+ON=AXE
+SAY=Although the Executioner's Axe is most feared, the Double Axe lasts longer and inflicts more damage.
+ON=HALBERD
+ON=BARDICHE
+SAY=The Bardiche lasts longer in battle than the Halberd, but does less damage.
+ON=CROSSBOW
+ON=BOW
+SAY=A regular bow can be a better albeit less powerful friend than the more unweildy Crossbow.
+ON=NORSE HELM
+ON=OPEN FACED HELM
+ON=HELM
+SAY=Of the plain helms available, a closed helm will provide the best protection in battle.
+ON=BUCKLER
+SAY=Don't be fooled. A buckler offers little more protection that the shorter-lived wooden shield.
+ON=CHAIN
+SAY=While chain is more easily damaged than ringmail, it offers better protection.
+ON=CLUB
+SAY=Clubs are often the weapon of choice for stupid creatures.
+ON=SCIMITAR
+ON=CUTLASS
+SAY=Only the scimitar equals the slashing speed of a cutlass.
+ON=FIGHT
+SAY=I always try to be prepared for battle, so I keep my armor clean and a weapon at the ready.
+ON=FORK
+SAY=A pitchfork may be faster, but for my money, only a war fork is sure to leave 'em screaming.
+ON=GAUNTLET
+SAY=Gauntlets are better protection for the wrists.
+ON=GORGET
+SAY=The gauntlet may seem small protection for the neck, it is thick and protective.
+ON=HEATER
+SAY=The heater shield offers stylish but average protection.
+ON=THOU<ANY>IDIOT
+ON=STUPID
+ON=MORON
+ON=IDIOT
+ON=YOU<ANY>IDIOT
+ON=THOU<ANY>
+ON=YOU<ANY>MORON
+SAY=Be careful, friend, or I shall have to prove my sword is sharper than your tongue.
+ON=KILL
+SAY=Oh I just love killling.
+ON=KATANA
+ON=KITANA
+SAY=This sword does little damage compared with the broad sword.
+ON=KRYSS
+SAY=The kryss does more damage and lasts longer than the quick slashing butcher knife.
+ON=MAUL
+ON=MACE
+SAY=In the mace family, a war mace or war hammer will hurt your opponent most.
+ON=MAIM
+SAY=Maiming is almost as good as killing. Almost.
+ON=PROVISIONS
+SAY=See a provisioner for supplies if you're going on a long battle journey.
+ON=RING
+SAY=Most rings are ordinary, but I have heard of special rings which increase one's strength in battle.
+ON=SHIELD
+SAY=The Chaos Shield yields more protection than the Order Shield.
+ON=SKILL
+SAY=Some weapons require great skill in a given area, like Swordsmanship, Fencing or Mace Fighting.
+ON=SPEAR
+SAY=Bah. Spears better for catching fish.
+ON=STAFF
+SAY=A black staff does more damage than a gnarled staff, but isn't as fast.
+ON=SWORD
+SAY=A long sword is my favorite weapon for damage and it requires less frequent repairs than the faster cutlass.
+ON=TROUBLE
+SAY=It seems you are expert at getting yourself into trouble.
+ON=WEAPON
+SAY=My favorite weapons are those which do the most damage!
+//RANDOM=Hire me to help you in your battles!
+
+[SPEECH jobWarriorMaster]
+//Guildmaster Warrior
+DEFAULT=I do not understand thee.
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+SAY=I greet thee.
+ON=Bye
+ON=Goodbye
+ON=Hail
+	SAY=Farewell to thee.
+	BYE
+	return 1
+ON=GUILD
+SAY=This guild is for the strongest of warriors!
+ON=JOIN
+SAY=We would not accept one such as you.  Come back when you have more experience.
+ON=MASTER
+SAY=I have seen many a battle.
+ON=PLATE
+ON=ARMOR
+SAY=Plate Armor's the best, but requires great strength.  Leather is for weaklings.
+ON=AXE
+SAY=Although the Executioner's Axe is most feared, the Double Axe lasts longer and inflicts more damage.
+ON=HALBERD
+ON=BARDICHE
+SAY=The Bardiche lasts longer in battle than the Halberd, but does less damage.
+ON=CROSSBOW
+ON=BOW
+SAY=A regular bow can be a better albeit less powerful friend than the more unweildy Crossbow.
+ON=NORSE HELM
+ON=OPEN FACED HELM
+ON=HELM
+SAY=Of the plain helms available, a closed helm will provide the best protection in battle.
+ON=BUCKLER
+SAY=Don't be fooled. A buckler offers little more protection that the shorter-lived wooden shield.
+ON=CHAIN
+SAY=While chain is more easily damaged than ringmail, it offers better protection.
+ON=CLUB
+SAY=Clubs are often the weapon of choice for stupid creatures.
+ON=SCIMITAR
+ON=CUTLASS
+SAY=Only the scimitar equals the slashing speed of a cutlass.
+ON=FIGHT
+SAY=I always try to be prepared for battle, so I keep my armor clean and a weapon at the ready.
+ON=FORK
+SAY=A pitchfork may be faster, but for my money, only a war fork is sure to leave 'em screaming.
+ON=GAUNTLET
+SAY=Gauntlets are better protection for the wrists.
+ON=GORGET
+SAY=The gauntlet may seem small protection for the neck, it is thick and protective.
+ON=HEATER
+SAY=The heater shield offers stylish but average protection.
+ON=THOU<ANY>IDIOT
+ON=STUPID
+ON=MORON
+ON=IDIOT
+ON=YOU<ANY>IDIOT
+ON=THOU<ANY>
+ON=YOU<ANY>MORON
+SAY=Be careful, friend, or I shall have to prove my sword is sharper than your tongue.
+ON=KILL
+SAY=Oh I just love killling.
+ON=KATANA
+ON=KITANA
+SAY=This sword does little damage compared with the broad sword.
+ON=KRYSS
+SAY=The kryss does more damage and lasts longer than the quick slashing butcher knife.
+ON=MAUL
+ON=MACE
+SAY=In the mace family, a war mace or war hammer will hurt your opponent most.
+ON=MAIM
+SAY=Maiming is almost as good as killing. Almost.
+ON=PROVISIONS
+SAY=See a provisioner for supplies if you're going on a long battle journey.
+ON=RING
+SAY=Most rings are ordinary, but I have heard of special rings which increase one's strength in battle.
+ON=SHIELD
+SAY=The Chaos Shield yields more protection than the Order Shield.
+ON=SKILL
+SAY=Some weapons require great skill in a given area, like Swordsmanship, Fencing or Mace Fighting.
+ON=SPEAR
+SAY=Bah. Spears better for catching fish.
+ON=STAFF
+SAY=A black staff does more damage than a gnarled staff, but isn't as fast.
+ON=SWORD
+SAY=A long sword is my favorite weapon for damage and it requires less frequent repairs than the faster cutlass.
+ON=TROUBLE
+SAY=It seems you are expert at getting yourself into trouble.
+ON=WEAPON
+SAY=My favorite weapons are those which do the most damage!
+//RANDOM=Who wants to be a sissy fisherman?  It's the fighting life for me!
+
+[EOF]

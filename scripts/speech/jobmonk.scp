@@ -1,0 +1,173 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Monk Script
+// Notes:  This is used for general information pertaining to all Britannian Monks
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, monk, empath, abbey, wine
+//
+[SPEECH jobMonk]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I'm a monk.
+			SAY I am a brother at Empath Abbey.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 2
+			SAY I'm a brother at Empath Abbey.
+			SAY I seek enlightenment at Empath Abbey.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I have chosen a life of contemplation at the Abbey.
+				SAY I humbly seek inner perfection in the service of Empath Abbey.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I have chosen a life of quietude at the Abbey.
+				SAY I look for inner peace at Empath Abbey.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*monk*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My time is spent in meditation, not conversation, so please excuse me.
+				SAY Not everybody has the discipline needed for a Monk.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My time is devoted to meditation, not conversation, so please excuse me.
+				SAY Not everybody has the inner discipline required of a Monk.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY A monk's life consosts of hard work and quiet contemplation.
+				SAY If thou art considering the life of a monk, know that it is a stern life indeed.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY A monk's life is hard work and quiet contemplation.
+				SAY If thou art considering the life of a monk, know that it is a stern life indeed.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY There's much more to being a monk than singing and making wine.
+				SAY There's little excitement, but great contentment in the monastic life.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY There's more to being a monk than singing and making wine.
+				SAY There's little excitement, but great contentment in my life.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*empath*
+ON=*abbey*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY The abbey is a house of contemplation, not a spectacle for the curious.
+			SAY I'm sure the simple life of the Abbey would not interest thee.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 2
+			SAY In the Abbey, we put aside the material to perfect the spiritual.
+			SAY The Abbey welcomes all of good intent.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The Abbey is a place of respite and sanctuary from the chaos of worldly life.
+				SAY The Abbey may seem a dull place, but it has endless riches to offer the honest seeker
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The Abbey is a place of rest and sanctuary from the chaos of worldly life.
+				SAY The Abbey may seem a dull place, but it has much to offer the honest seeker.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*wine*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY We make our wine to satisfy the soul, not sate the crass appetites of drunkards.
+				SAY I should have known that our wine would be the only thing of interest to such as thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY We make our wine to satisfy the soul, not please the tastes of drunkards.
+				SAY I should have known that our wine would be the only thing of interest to thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 2
+			SAY Ah, thou hast heard of our renowned wine?
+			SAY If we cannot interest thee in enlightenment, we can certainly provide thee with fine wine.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Our wine is a physical manifestation of the spiritual contentment which the monastic life provides.
+				SAY Few are called to the rigors of monastic life, but a good flagon of wine is a pleasure to all.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Our wine represents the calmness which the our life provides.
+				SAY Few are called to monastic life, but a good flagon of wine is a pleasure to all.
+			ENDDO
+		ENDIF
+	ENDIF
+
+//MONK
+//DEFAULT=Silence is golden, gentle adventurer.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Oohm...
+ON=Job
+ON=What do you do
+	SAY=I am a monk.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Oohm... Oohmmm....
+	BYE
+	return 1
+
+ON=ABBEY
+ON=EMPATH
+	SAY=The abbey is a quiet place of learning, peace and nature.
+ON=KNOWLEDGE
+ON=WISDOM
+	SAY=Always be ready to learn, friend, but real knowledge are not always readily apparent.
+ON=MONK
+ON=SCHOLAR
+	SAY=I study in quiet solitude whenever I am able.
+ON=WINE
+	SAY=I do not listen to rumors.  Monks are not given to indulging in wine.
+//RANDOM=Aooohhm....  Ooooohm.   Aaaahhmmmm..  Ooooohhhmm..
+
+[EOF]

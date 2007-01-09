@@ -1,0 +1,336 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Thief Script
+// Notes:  This is used for general information pertaining to all Britannian Thieves
+// Current Keyword List: authorities,guards,soldiers,Lord*British's*fork,gold,silver,copper,stole,ruffian,
+// adventurer,riches,treasure,lock,steal,fork,build,trap,hide,skill,fork*Lord*British,
+//
+[SPEECH jobTHIEF]
+
+ON=*gold*
+ON=*silver*
+ON=*copper*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY As if I would share my acquisitions with the likes of thee.
+				SAY I doth make frequent visits to the bank, but methinks they frown upon my taking as more than is mine.
+				SAY I would be much happier if I had more coin.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY As if I would share my acquisitions with the likes of thee.
+				SAY I doth make frequent visits to the bank, but methinks they frown upon my taking as more than is mine.
+				SAY I would be much happier if I had more coin.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I would not object if thou gavest me the sum of thy Guards.
+				SAY Gold, silver and copper are always plentiful if thou knowest where to look. An oft overlooked receptacle of these is, surprisingly, the backpacks of companions.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I would not object if thou gavest me the sum of thy Guards.
+				SAY Gold, silver and copper are always plentiful if thou knowest where to look. An oft overlooked receptacle of these is, surprisingly, the backpacks of companions.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Gold, silver, copper. It all feels delectable when it slips through thy fingers back into thy treasury.
+				SAY What a pleasant chink Guards makes against %0 when first dropped in thy pocket. Especially someone else's Gold.
+				SAY Sooner or later all %0 finds its way across my palm.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Gold, silver, copper. It all feels delectable when it slips through thy fingers back into thy treasury.
+				SAY What a pleasant chink Guards makes against %0 when first dropped in thy pocket. Especially someone else's Gold.
+				SAY Sooner or later all Gold finds its way across my palm.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*skill*
+ON=*lock*
+ON=*trap*
+ON=*hide*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Get thee away from me. I have no reason to teach thee anything, though I know quite a bit
+				SAY I don't need to show thee anything!
+				SAY Oh yes, I know many things! Things that could help thee in thy journeys. Things I am loath to show thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Get thee away from me. I have no reason to teach thee anything, though I know quite a bit
+				SAY I don't need to show thee anything!
+				SAY Oh yes, I know many things! Things that could help thee in thy journeys. Things I am loath to show thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee about such things that would help thee in the cities. I would expect payment, thou knowest.
+				SAY Thou shouldst know something about the people that thou art likely to spend time with. Could be of use to thee. I could help thee some, I think.
+				SAY If thou dost need help with thy people skills, just ask me to teach thee and if I can, I will. For a small price.
+				SAY I can teach thee how to observe things around thee better. Thou could learn things about the people thou dost see every day.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee about such things that would help thee in the cities. I would expect payment, thou knowest.
+				SAY Thou shouldst know something about the people that thou art likely to spend time with. Could be of use to thee. I could help thee some, I think.
+				SAY If thou dost need help with thy people skills, just ask me to teach thee and if I can, I will. For a small price.
+				SAY I can teach thee how to observe things around thee better. Thou could learn things about the people thou dost see every day.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about surviving in towns. Just give me a few coins.
+				SAY Thou can always learn new things, my friend. I could show thee some things, for instance, about the observation of people that could help thee. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee when thou art locked out. I would need thee to pay me for my time, however.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about surviving in towns. Just give me a few coins.
+				SAY Thou can always learn new things, my friend. I could show thee some things, for instance, about the observation of people that could help thee. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee when thou art locked out. I would need thee to pay me for my time, however.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=fork*Lord*Britsh
+ON=Lord*Britsh*fork
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Twas only a bloody fork! Ahem. Must thou remind me of that most unfortunate evening?
+				SAY Ha! A most generous lord. Indeed.
+				SAY I think Lord British is far to enamoured with the idea of MINE.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Twas only a bloody fork! Ahem. Must thou remind me of that most unfortunate evening?
+				SAY Ha! A most generous lord. Indeed.
+				SAY I think Lord British is far to enamoured with the idea of MINE.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Supping with his Lordship one night, I pocketed his fork, quite by accident.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Supping with his Lordship one night, I pocketed his fork, quite by accident.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Supping with his Lordship one night, I pocketed his fork, quite by accident.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Supping with his Lordship one night, I pocketed his fork, quite by accident.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*authorities*
+ON=*guards*
+ON=*soldiers*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Mayhaps thou shouldst seek the help of thy Guild as I have heard that the Guards are seeking thee, <SRC.NAME>. That is to say, if thy Guild still claims thee.
+				SAY I couldst give thee advice on evading the Guards, but thou appearest quite experienced in avoidance of authorities.
+		    		SAY The Town Guards be no more than brutish louts. They retain not an inkling of sense about them. Thou shouldst have no difficulty evading them.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Mayhaps thou shouldst seek the help of thy Guild as I have heard that the Guards are seeking thee, <SRC.NAME>. That is to say, if thy Guild still claims thee.
+				SAY I couldst give thee advice on evading the Guards, but thou appearest quite experienced in avoidance of authorities.
+		    		SAY The Town Guards be no more than brutish louts. They retain not an inkling of sense about them. Thou shouldst have no difficulty evading them.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Call the Guards if thou must. My day hath been ruined already.
+		    		SAY Fools! The Guards hast plagued me for the past fortnight.
+		    		SAY What makes thee certain the Guards will come when thou callest? Pets of thine, are they?
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Call the Guards if thou must. My day hath been ruined already.
+	   			SAY Fools! The %0 hast plagued me for the past fortnight.
+	   			SAY What makes thee certain the Guards will come when thou callest? Pets of thine, are they?
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Call the Guards if thou must. My day hath been ruined already.
+	   			SAY Fools! The %0 hast plagued me for the past fortnight.
+	   			SAY What makes thee certain the Guards will come when thou callest? Pets of thine, are they?
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Call the Guards if thou must. My day hath been ruined already.
+	   			SAY Fools! The %0 hast plagued me for the past fortnight.
+	   			SAY What makes thee certain the Guards will come when thou callest? Pets of thine, are they?
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*theif*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, a complete unknown like thyself makes an excellent thief.
+	     			SAY Why wouldst thou be interested in thieves? I cannot recommend it as a good profession.
+	     			SAY I have not the time to answer the accusations of some traveller.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, a complete unknown like thyself makes an excellent thief.
+	     			SAY Why wouldst thou be interested in thieves? I cannot recommend it as a good profession.
+	     			SAY I have not the time to answer the accusations of some traveller.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Aye, a fair number of thieves are in <SRC.PLACE>. Thou shouldst be more cautious, <SRC.SEX Mi'lord/Mi'lady>. Thou canst never identify them 'til too late.
+	     			SAY I've been called worse. Beware friend, one cannot be too careful when it comes to one's gold.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Aye, a fair number of thieves are in <SRC.PLACE>. Thou shouldst be more cautious, <SRC.SEX Mi'lord/Mi'lady>. Thou canst never identify them 'til too late.
+	     			SAY I've been called worse. Beware friend, one cannot be too careful when it comes to one's gold.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Where?! I have not seen many ruffians about except for the adventuring types.
+				SAY <SRC.SEX Lord/Lady>, hast thou been robbed of thy worldly possessions?	A most terrible occurence. Hast thou notified the proper authorities?
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Where?! I have not seen many ruffians about except for the adventuring types.
+				SAY <SRC.SEX Lord/Lady>, hast thou been robbed of thy worldly possessions?	A most terrible occurence. Hast thou notified the proper authorities?
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobThief]
+//THIEF
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Greetings.
+ON=Job
+ON=What do you do
+SAY=What dost thou expect me to say?  I am simply a tourist.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Bye.
+	BYE
+	return 1
+ON=LORD BRITISH
+ON=AUTHORITIES
+ON=COPPER
+ON=SOLDIERS
+ON=GUARD
+SAY=Call the authorities?  Ha! Good luck.  If any answer your call, t'will be a first.
+ON=FORK<ANY>GOLD
+ON=SILVER
+ON=GOLD
+ON=<ANY>FORK
+SAY=Pardon, I believe *I* am the thief here.
+ON=JEWEL
+ON=JEWELS
+ON=JEWELRY
+SAY=An easier item to steal does not exist!
+ON=MONEY
+SAY=One must make a living somehow.
+ON=HIDE
+ON=SKILL
+SAY=Ah, hiding is the most useful of all thieving skills.  Besides stealing, of course.
+ON=TRAP
+ON=LOCK
+SAY=A lock is but an invitation to one such as myself.
+//RANDOM=I didn't do it!
+
+[SPEECH jobThiefMaster]
+//GUILDMASTER Thief
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Yes?
+ON=Job
+ON=What do you do
+SAY=I am a master thief, art thou a master victim?
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Begone.
+	BYE
+	return 1
+ON=LORD BRITISH
+ON=AUTHORITIES
+ON=COPPER
+ON=SOLDIERS
+ON=GUARD
+SAY=Call the authorities?  Ha! They would not dare trifle with me, unless they'd like their britches stolen in public and run up a sign pole.
+ON=FORK<ANY>GOLD
+ON=SILVER
+ON=GOLD
+ON=<ANY>FORK
+SAY=Pardon, I believe *I* am the thief here.
+ON=JEWEL
+ON=JEWELS
+ON=JEWELRY
+SAY=An easier item to steal does not exist!
+ON=MONEY
+SAY=One must make a living somehow.
+ON=HIDE
+ON=SKILL
+SAY=Ah, hiding is the most useful of all thieving skills.  Besides stealing, of course.
+ON=TRAP
+ON=LOCK
+SAY=A lock is but an invitation to one such as myself.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Ha!
+	BYE
+	return 1
+ON=GUILD
+SAY=One must be quite stealthy and learned to join.
+ON=JOIN
+SAY=We would not accept one such as you.  Come back later.
+ON=MASTER
+SAY=A master thief may steal any item, no matter how well guarded.
+//RANDOM=Thieves are misunderstood.  We are actually quite bright.
+
+[EOF]

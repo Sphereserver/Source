@@ -1,0 +1,207 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Sailor Script
+// Notes:  This is used for general information pertaining to all Britannian Sailor's
+// Current Keyword List:
+//	p*word*?, job, what*do*do, profession, occupation, Pirate, Sailor, ship, sail
+//
+[SPEECH jobSailor]
+ON=*p*word*?*
+	IF ( <COMPLEXITY.HIGH> )
+		SAY Don't be callin' me a pirate, fool!
+	ELIF ( <COMPLEXITY.MEDIUM>)
+		SAY Don't call me a pirate, simpleton!
+	ELSE
+		SAY Pirate, idiot!  Don't call me a pirate!
+	ENDIF
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I've been a sailor all my life!
+				SAY I'm a sailor, my friend!
+				SAY I sail the seas of Britannia!
+				SAY If I can't be a sailor, let me be nothin' else!
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Been a sailor all my life!
+				SAY I'm a sailor, my friend!
+				SAY I sail the seas of Britannia!
+				SAY If I ain't a sailor, I don' wanna be nothin' else!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'm a sailor, I am!  And don't be callin' me the 'P' word!
+				SAY I'm a sailor, my friend!
+				SAY I'm just an honest sailor, I am!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a sailor, my friend!
+				SAY I'm just an honest sailor, I am!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I'm a sailor!  And I wouldn't have it another way!
+				SAY I'm an honest sailor, <SRC.SEX milord/milady>!
+				SAY I sail the seas of Britannia, <SRC.SEX good milord/good milady>!
+				SAY I'm a sailor.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I'm a sailor! And I wouldn't have it no other way!
+				SAY I'm an honest sailor, <SRC.SEX milord/milady>!
+				SAY I sail the seas of Britannia, <SRC.SEX good milord/good milady>!
+				SAY I'm a sailor.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Pirate*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 3
+			SAY I'll not be called that!  'Tis a sailor I am!
+			SAY Don't be using language like that to an honest sailor!
+			SAY Don't be calling me that!  I'm no pirate!
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Now don't go callin' an honest sailor a name like that!
+				SAY Now, who says I'm one o' them no-good murderin' devils? I'm just a sailor. That's all.
+				SAY I'm no murderin' fool!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Now don't go callin' an honest sailor a name like that!
+				SAY Now, who says I'm one o' them no-good murderin' devils? I'm just a sailor. That's all.
+				SAY I ain't no murderin' fool!
+			ENDDO
+		ENDIF
+	ELSE
+		DORAND 3
+			SAY Please, <SRC.SEX milord/milady>, I am an honest sailor. I swear it!
+			SAY I'm just an honest sailor!
+			SAY I'm an honest sailor, <SRC.SEX milord/milady>! Not a pirate!
+		ENDDO
+	ENDIF
+ON=*Sailor*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 3
+			SAY Give me the sea any day!
+			SAY That would be me! A sailor, I mean.
+			SAY I love my life!
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Yes, I do love the smell of the sea and the movement of the deck under my feet.
+				SAY I'd rather be sailing than standing here talking to thee! No offense meant, <SRC.SEX milord/milady>.
+				SAY I've been a sailor for many years!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Yup, I do love the smell of the sea and the movement of the boat under my feet.
+				SAY I'd rather be sailin' than standin' here talking to thee! No offense meant, <SRC.SEX milord/milady>.
+				SAY I been a sailor for many years!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ah!  A sailor's life is a happy life!
+				SAY I am quite content being a sailor. Not many can say that!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ah! A sailor's life is a happy life!
+				SAY I'm pretty happy bein' a sailor. Not many can say that!
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*ship*
+ON=*sail*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Sailin's in the blood! Couldn't quit if I wanted to!
+				SAY If  I couldn't be a sailor, I'd have to be a dead man!
+				SAY I do so love the sea!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Sailin's in the blood! Couldn't quit if I wanted to!
+				SAY If I couldn't be a sailor, I'd have to be a dead <SEX man/woman>!
+				SAY I love the sea!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 3
+			SAY Where there be ships, there be happy sailors!
+			SAY The places I've gone... don't remember any names, but there were some beautiful places!
+			SAY Someday... I'll captain my own ship!
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Give me a ship and an open sea and a star to sail her by, <SRC.SEX milord/milady>, and I can die happy!
+				SAY I've braved many a storm, out on the sea!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Give me a ship and an open sea and a good cap'n, <SRC.SEX milord/milady>, and I can die happy!
+				SAY I braved many a storm, out on the sea!
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobSailor]
+//SAILOR
+Default=Wot?
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+SAY=Hail, matey!
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Good sailing to you!
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=I sail the seas, of course!
+ON=PIRATE
+SAY=Aye, a rough bunch! They plunder the seas and all who dare to sail it.
+ON=SAILOR
+ON=SAIL
+SAY=There's no nobler way to make a living, friend, than sailing our seas.
+ON=DRUNKEN
+SAY=Take 'im and shake 'im and try to wake 'im!
+ON=SHIP
+SAY=My own ship is glorious, though my captain would not sell her for any amount of gold.
+ON=WENCH
+SAY=Try a tavern or an inn, friend.  One wench is as good as the next.
+//RANDOM=Ah! The exploring the seas! Better than wenching, I say!
+
+[EOF]
+

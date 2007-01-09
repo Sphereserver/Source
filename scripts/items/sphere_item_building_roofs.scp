@@ -1,0 +1,1238 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0550]
+DEFNAME=i_ROOF_STONE
+TYPE=t_roof
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Roofs
+SUBSECTION=Stone Roof 1
+DESCRIPTION=@
+DUPELIST=0558,0559,055a,055b,056b,056c,056d,056e,056f,0570,0571,0572,0573,0574,0575,0576,0577,0578,05ef,062b,062c,062d,062e,0637,0638,0639,063a,0652,0653,065a,065b,065c,065d
+
+[ITEMDEF 0551]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0552]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0553]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0554]
+DEFNAME=i_ROOF_STONE_2
+TYPE=t_roof
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Roofs
+SUBSECTION=Stone Roof 2
+DESCRIPTION=@
+DUPELIST=0555,0556,0557,055c,055d,055e,055f,0560,0561,0562,0563,0564,0565,0566,0567,0568,0569,062f,0630,0631,0632,0656,0657
+
+[ITEMDEF 0555]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0556]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0557]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0558]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0559]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 055a]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 055b]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 055c]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 055d]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 055e]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 055f]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0560]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0561]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0562]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0563]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0564]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0565]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0566]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0567]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0568]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0569]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 056a]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 056b]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 056c]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 056d]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 056e]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 056f]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0570]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0571]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0572]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0573]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0574]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0575]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0576]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0577]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0578]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0579]
+DEFNAME=i_ROOF_STONE_3
+TYPE=t_roof
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Roofs
+SUBSECTION=Stone Roof 3
+DESCRIPTION=@
+DUPELIST=057a,057b,057c,057d,057e,063b,063c,063d,063e,0654,0655
+
+[ITEMDEF 057a]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 057b]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 057c]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 057d]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 057e]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 057f]
+DEFNAME=i_ROOF_SLATE
+TYPE=t_roof
+RESOURCES=25 i_stone_slate
+CATEGORY=Buildings - Roofs
+SUBSECTION=Slate Roof 1
+DESCRIPTION=@
+DUPELIST=0580,0581,0582,0583,0584,0585,0658,0659
+
+[ITEMDEF 0580]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0581]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0582]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0583]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0584]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0585]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0586]
+DEFNAME=i_ROOF_PALMFROND
+TYPE=t_roof
+CATEGORY=Buildings - Roofs
+SUBSECTION=Palm Frond Roof
+DESCRIPTION=@
+DUPELIST=0587,0588,0589,058a,058b,058c,058d,058e,058f,0590,0591,0592,0593,0594,05d1,05d2,05d3,05d4,05d6,05d7,05d8,05d9,05da,05db,05dc,05dd,05de,05df,05e0,05e1,05e2,05e3,05e4,05e5,05e6,05e7,05e8,05e9,05ea,05eb,05ec
+
+[ITEMDEF 0587]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0588]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0589]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058a]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058b]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058c]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058d]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058e]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 058f]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0590]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0591]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0592]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0593]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0594]
+//palm fronds
+DUPEITEM=0586
+
+[ITEMDEF 0595]
+DEFNAME=i_ROOF_SLATE_2
+TYPE=t_roof
+RESOURCES=25 i_stone_slate
+CATEGORY=Buildings - Roofs
+SUBSECTION=Slate Roof 2
+DESCRIPTION=@
+DUPELIST=0596,0597,0598,0599,059a,059b,059c,059d,059e,059f,05a0,05a1,05a2,05a3
+
+[ITEMDEF 0596]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 0597]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 0598]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 0599]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059a]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059b]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059c]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059d]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059e]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 059f]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 05a0]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 05a1]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 05a2]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 05a3]
+//slate roof
+DUPEITEM=0595
+
+[ITEMDEF 05a4]
+DEFNAME=i_ROOF_THATCH
+TYPE=t_roof
+RESOURCES=25 I_HAY
+CATEGORY=Buildings - Roofs
+SUBSECTION=Thatch Roof
+DESCRIPTION=@
+DUPELIST=05a5,05a6,05a7,05a8,05a9,05aa,05ab,05ac,05ad,05ae,05af,05b0,05b1,05b2
+
+[ITEMDEF 05a5]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05a6]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05a7]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05a8]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05a9]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05aa]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05ab]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05ac]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05ad]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05ae]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05af]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05b0]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05b1]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05b2]
+//thatch roof
+DUPEITEM=05a4
+
+[ITEMDEF 05b3]
+DEFNAME=i_ROOF_TILE
+TYPE=t_roof
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Roofs
+SUBSECTION=Tile Roof
+DESCRIPTION=@
+DUPELIST=05b4,05b5,05b6,05b7,05b8,05b9,05ba,05bb,05bc,05bd,05be,05bf,05c0,05c1,06fd,06fe,06ff,0700
+
+[ITEMDEF 05b4]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05b5]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05b6]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05b7]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05b8]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05b9]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05ba]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05bb]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05bc]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05bd]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05be]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05bf]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05c0]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05c1]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 05c2]
+DEFNAME=i_SHINGLE_WOODEN
+RESOURCES=25 I_BOARD
+CATEGORY=Buildings - Roofs
+SUBSECTION=Wooden Shingles
+DESCRIPTION=@
+DUPELIST=05c3,05c4,05c5,05c6,05c7,05c8,05c9,05ca,05cb,05cc,05cd,05ce,05cf,05d0
+
+[ITEMDEF 05c3]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c4]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c5]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c6]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c7]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c8]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05c9]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05ca]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05cb]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05cc]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05cd]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05ce]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05cf]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05d0]
+//wooden shingles
+DUPEITEM=05c2
+
+[ITEMDEF 05d1]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d2]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d3]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d4]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d6]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d7]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d8]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05d9]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05da]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05db]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05dc]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05dd]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05de]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05df]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e0]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e1]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e2]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e3]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e4]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e5]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e6]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e7]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e8]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05e9]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05ea]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05eb]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05ec]
+//palm frond roof
+DUPEITEM=0586
+
+[ITEMDEF 05ef]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 05f0]
+DEFNAME=i_ROOF_LOG
+TYPE=t_roof
+RESOURCES=25 I_LOG
+CATEGORY=Buildings - Roofs
+SUBSECTION=Log Roof
+DESCRIPTION=@
+DUPELIST=05f1,05f2,05f3,05f4,05f5,05f6,05f7,05f8,05f9,05fa,05fb,05fc,05fd,05fe
+
+[ITEMDEF 05f1]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f2]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f3]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f4]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f5]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f6]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f7]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f8]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05f9]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05fa]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05fb]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05fc]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05fd]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05fe]
+//log roof
+DUPEITEM=05f0
+
+[ITEMDEF 05ff]
+DEFNAME=i_ROOF_TENT
+TYPE=t_roof
+RESOURCES=25 I_CANVAS
+CATEGORY=Buildings - Roofs
+SUBSECTION=Tent Roof
+DESCRIPTION=@
+DUPELIST=0600,0601,0602,0603,0604,0605,0606,0607,0608,0609,060a,060b,060c,060d,060e,060f,0610,0611,0612,0613,0614,0615,0616,0617,0618,0619,061a,061b,061c,061d,061e,061f,0620,0621,0622,0623,0624,0625,0626,0627,0628,0629,062a,0633,0634,0635,0636,0648,0649,064a,064b,064c,064d,064e,064f,0650,0651,065e,065f,0660,0661,0662,0663,0664,0665,0666,0667,0668,0669,066a,066b,066c,066d,066e,066f,0670,0671,0672,0673,0674
+
+[ITEMDEF 0600]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0601]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0602]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0603]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0604]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0605]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0606]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0607]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0608]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0609]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060a]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060b]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060c]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060d]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060e]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 060f]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0610]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0611]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0612]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0613]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0614]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0615]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0616]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0617]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0618]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0619]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061a]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061b]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061c]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061d]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061e]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 061f]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0620]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0621]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0622]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0623]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0624]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0625]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0626]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0627]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0628]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0629]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 062a]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 062b]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 062c]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 062d]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 062e]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 062f]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0630]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0631]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0632]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0633]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0634]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0635]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0636]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0637]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0638]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0639]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 063a]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 063b]
+//marble roof
+DUPEITEM=0579
+
+[ITEMDEF 063c]
+//marble roof
+DUPEITEM=0579
+
+[ITEMDEF 063d]
+//marble roof
+DUPEITEM=0579
+
+[ITEMDEF 063e]
+//marble roof
+DUPEITEM=0579
+
+[ITEMDEF 0648]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0649]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064a]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064b]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064c]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064d]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064e]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 064f]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0650]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0651]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0652]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0653]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 0654]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 0655]
+//stone roof
+DUPEITEM=0579
+
+[ITEMDEF 0656]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0657]
+//stone roof
+DUPEITEM=0554
+
+[ITEMDEF 0658]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 0659]
+//slate roof
+DUPEITEM=057f
+
+[ITEMDEF 065a]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 065b]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 065c]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 065d]
+//stone roof
+DUPEITEM=0550
+
+[ITEMDEF 065e]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 065f]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0660]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0661]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0662]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0663]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0664]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0665]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0666]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0667]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0668]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0669]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066a]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066b]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066c]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066d]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066e]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 066f]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0670]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0671]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0672]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0673]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 0674]
+//tent roof
+DUPEITEM=05ff
+
+[ITEMDEF 06fd]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 06fe]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 06ff]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 0700]
+//tile roof
+DUPEITEM=05b3
+
+[ITEMDEF 01939]
+DEFNAME=i_ROOF_STONE_tile
+TYPE=t_roof
+RESOURCES=5 i_rock_plain
+WEIGHT=5
+CATEGORY=Buildings - Roofs
+SUBSECTION=Stone Roof Tile
+DESCRIPTION=@
+DUPELIST=0193a,0193b,0193c,0193d,0193e
+
+[ITEMDEF 0193a]
+//roof tile
+DUPEITEM=01939
+
+[ITEMDEF 0193b]
+//roof tile
+DUPEITEM=01939
+
+[ITEMDEF 0193c]
+//roof tile
+DUPEITEM=01939
+
+[ITEMDEF 0193d]
+//roof tile
+DUPEITEM=01939
+
+[ITEMDEF 0193e]
+//roof tile
+DUPEITEM=01939
+
+[eof]

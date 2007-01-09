@@ -1,0 +1,78 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//
+// DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
+//****************************************************************************
+// FILE LAST UPDATED: 27-Jul-2006
+VERSION=0.56b
+
+[Dialog d_Guild_ChangeAlign]
+5,25
+
+local.guild = <args>
+if ( <local.guild> == 0 )
+	return 1
+endif
+if ( <uid.<local.guild>.type> != T_STONE_GUILD )
+	return 1
+endif
+local.oldobj = <obj.uid>
+obj = <local.guild>
+if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+	obj = <local.oldobj>
+	return 1
+endif
+
+ctag.dialog_guildchangealign_guilduid = <local.guild>
+	
+page 0
+resizepic 0 0 5054 550 400
+resizepic 10 10 3000 530 380
+dhtmlgump 20 15 510 30 0 0 <def.center>Change Guild Type Menu<def.centere>
+dhtmlgump 50 50 450 30 0 0 Please select the type of guild you would like to change to
+button 300 360 4005 4007 1 0 0 // Cancel Button
+dhtmlgump 335 360 150 30 0 0 CANCEL
+button 20 100 4005 4007 1 0 1 // Standard
+dhtmlgump 85 100 300 30 0 0 Standard guild
+button 20 150 4005 4007 1 0 2 // Order
+tilepic 50 143 01BC5
+dhtmlgump 85 150 300 300 0 0 Order guild
+button 20 200 4005 4007 1 0 3 // Chaos
+tilepic 45 200 01BC3
+dhtmlgump 85 200 300 300 0 0 Chaos guild
+
+[Dialog d_Guild_ChangeAlign Button]
+ON=0 3
+	if (!<ctag0.dialog_guildchangealign_guilduid>)
+		serv.log DIALOG d_Guild_ChangeAlign called without ctag.dialog_guildchangealign_guilduid !!
+		return 1
+	endif
+
+	local.oldobj = <obj.uid>
+	obj = <ctag0.dialog_guildchangealign_guilduid>
+	ctag.dialog_guildchangealign_guilduid =
+	
+	if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+		obj = <local.oldobj>
+		return 1
+	endif
+	
+	if ( (<argn1> >= 1) && (<argn1> <= 3) )
+		if ( <serv.time> > <obj.tag0.changealign_time> )
+			local.type = <EVAL (<argn1> - 1)>
+			obj.align = <local.type>
+			obj.tag.changealign_time = <eval (<serv.time> + <def0.GUILDCONFIG_MINTIME_ALIGN>)>
+			obj.update
+			f_guildsys_sendsmsg <obj.uid>,Guild Message: Your guild type has changed: <obj.aligntype>
+		endif
+	endif
+	
+	dialog d_Guild_Master,0,<obj.uid>
+	obj = <local.oldobj>
+	return 1

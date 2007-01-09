@@ -1,0 +1,119 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//
+// DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
+//****************************************************************************
+// FILE LAST UPDATED: 27-Jul-2006
+VERSION=0.56b
+
+[Dialog d_Guild_Master_Warfare]
+5,25
+
+local.guild = <args>
+if ( <local.guild> == 0 )
+	return 1
+endif
+if ( <uid.<local.guild>.type> != T_STONE_GUILD )
+	return 1
+endif
+local.oldobj = <obj.uid>
+obj = <local.guild>
+if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+	obj = <local.oldobj>
+	return 1
+endif
+
+ctag.dialog_guildmasterwarfare_guilduid = <local.guild>
+	
+page 0
+resizepic 0 0 5054 550 440
+resizepic 10 10 3000 530 420
+dhtmlgump 20 10 510 35 0 0 <def.center>WAR FUNCTIONS<def.centere>
+button 20 40 4005 4007 1 0 1 // Search
+dhtmlgump 55 40 400 30 0 0 Declare war through guild name search.
+local.gcount = 0
+if ( <obj.member.count <def0.STONEPRIV_ENEMY>> )
+	button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 2
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Declare peace.
+	local.gcount += 1
+else
+	gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current wars
+	local.gcount += 1
+endif
+	
+if ( <obj.member.count <def0.STONEPRIV_THEYDECLARED>> )
+	button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 3
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Accept war invitations.
+	local.gcount += 1
+	button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 4
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Reject war invitations.
+	local.gcount += 1
+else
+	gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current invitations received for war.
+	local.gcount += 1
+endif
+
+if ( <obj.member.count <def0.STONEPRIV_WEDECLARED>> )
+	button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 5
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Rescind your war declarations.
+	local.gcount += 1
+else
+	gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+	dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400, 30, 1013055, 0, 0 )
+	local.gcount += 1
+endif
+
+button 20 400 4005 4007 1 0 0
+dhtmlgump 55 400 400 35 0 0 Return to the previous menu.
+obj = <local.oldobj>
+
+[Dialog d_Guild_Master_Warfare Button]
+ON=0 5
+	if (!<ctag0.dialog_guildmasterwarfare_guilduid>)
+		serv.log DIALOG d_Guild_Master_Warfare called without ctag.dialog_guildmasterwarfare_guilduid !!
+		return 1
+	endif
+
+	local.oldobj = <obj.uid>
+	obj = <ctag0.dialog_guildmasterwarfare_guilduid>
+	ctag.dialog_guildmasterwarfare_guilduid =
+	
+	if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+		obj = <local.oldobj>
+		return 1
+	endif
+	
+	if ( <argn1> == 0 )
+		if ( (<obj.masteruid> == <uid>) || (<isgm>) )
+			dialog d_Guild_Master,0,<obj.uid>
+		else
+			dialog d_Guild_Main,0,<obj.uid>
+		endif
+	elseif ( <argn1> == 1 )
+		ctag.guild_prompthandler_guilduid = <obj.uid>
+		trysrc <uid> src.promptconsole f_prompthandler_guilddclarewar,Declare war through search - Enter Guild Name:
+	elseif ( <argn1> == 2 )
+		dialog d_Guild_GuildList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE>
+	elseif ( <argn1> == 3 )
+		dialog d_Guild_GuildList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR>
+	elseif ( <argn1> == 4 )
+		dialog d_Guild_GuildList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_G_REJECTWAR>
+	elseif ( <argn1> == 5 )
+		dialog d_Guild_GuildList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_G_RESCIND>
+	endif
+
+	obj = <local.oldobj>
+	return 1
+
+[EOF]
+
+
+	

@@ -1,0 +1,55 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: March 29, 2006
+
+VERSION=0.56b
+
+[MoonGates]
+
+[Teleporters]
+1714,2997,0,0=6310,892,0,0=tp_PaintedCaves_Entrance
+6310,892,0,0=1714,2997,0,0=tp_PaintedCaves_Exit_1
+6310,893,0,0=1714,2997,0,0=tp_PaintedCaves_Exit_2
+6310,891,0,0=1714,2997,0,0=tp_PaintedCaves_Exit_3
+767,1647,0,0=6172,23,0,0=tp_Sanctuary_Entrance_1
+767,1646,0,0=6172,23,0,0=tp_Sanctuary_Entrance_2
+6172,23,0,0=767,1646,0,0=tp_Sanctuary_Exit_1
+6172,22,0,0=767,1646,0,0=tp_Sanctuary_Exit_2
+6159,130,-1,0=6164,73,0,0=tp_Sanctuary_Secret_1
+6164,73,0,0=6159,130,-1,0=tp_Sanctuary_Secret_2
+588,1637,0,0=6472,868,24,0=tp_Blighted_Grove_Entrance_1
+589,1637,0,0=6472,868,24,0=tp_Blighted_Grove_Entrance_2
+6472,868,24,0=585,1644,-6,0=tp_Blighted_Grove_Exit_1
+6471,187,15,0=3785,1097,14,0=tp_Prismoflight_exit_1
+6472,187,15,0=3785,1097,14,0=tp_Prismoflight_exit_2
+6469,97,-50,0=6472,75,-31,0=tp_Prismoflight_Secret1
+6471,75,-23=6469,97,-50,0=tp_Prismoflight_SecretExit1
+
+6211,106,0,0=6251,69,-10,0=tp_Sanctuary_Secret2_1
+6251,69,-10,0=6211,106,0,0=tp_Sanctuary_Secret2_2
+6223,25,0,0=6276,40,-10,0=tp_Sanctuary_Secret3_1
+6276,40,-10,0=6223,25,0,0=tp_Sanctuary_Secret3_2
+6173,176,-10,0=6233,14,-10,0=Sanctuary_South_1
+6174,176,-10,0=6234,14,-10,0=Sanctuary_South_2
+6175,176,-10,0=6235,14,-10,0=Sanctuary_South_3
+6176,176,-10,0=6236,14,-10,0=Sanctuary_South_4
+6177,176,-10,0=6237,14,-10,0=Sanctuary_South_5
+6178,176,-10,0=6238,14,-10,0=Sanctuary_South_6
+6179,176,-10,0=6239,14,-10,0=Sanctuary_South_7
+6233,14,-10,0=6173,176,-10,0=Sanctuary_North_1
+6234,14,-10,0=6174,176,-10,0=Sanctuary_North_2
+6235,14,-10,0=6175,176,-10,0=Sanctuary_North_3
+6236,14,-10,0=6176,176,-10,0=Sanctuary_North_4
+6237,14,-10,0=6177,176,-10,0=Sanctuary_North_5
+6238,14,-10,0=6178,176,-10,0=Sanctuary_North_6
+6239,14,-10,0=6179,176,-10,0=Sanctuary_North_7
+
+
+[EOF]

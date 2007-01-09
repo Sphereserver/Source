@@ -1,0 +1,518 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Note: virtually everything here needs responses with the macros added
+// later so that the NPC can give directions to the place dynamically. But
+// for now these responses have been left out. Those responses will go in
+// the High Sophistication layer???
+
+[SPEECH town_Britain]
+ON=*undead*
+ON=*skeleton*
+ON=*graves*
+ON=*graveyard*
+ON=*crypt*
+ON=*cemetery*
+ON=*mausoleum*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 3
+			SAY Ah, 'tis a terrible thing, but the graveyard far to the south has become infested with the living bones of the dead.
+			SAY Far to the south of here, across the Narrows, there is a crypt full of skeletons come to life--a frightening place.
+			SAY We have had to abandon our mausoleums, for the cemetery south of here has been touched by magic and is now filled with undead skeletons.
+		ENDDO
+	ELSE
+		DORAND 3
+			SAY I don' like undead.
+			SAY There's a cemetery way to the south.
+			SAY Lots of skeletons have come to life in the cemetery.
+		ENDDO
+	ENDIF
+ON=*where am i*
+ON=*m lost*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 3
+			SAY Why, thou'rt in the city of Britain, of course.
+			SAY Thou art in Britain.
+			SAY Thou art in Britain, <SRC.SEX <Mi'Lord/Mi'Lady>.
+		ENDDO
+	ELSE
+			SAY Eh? Thou'rt right here.
+	ENDIF
+ON=*thief*
+ON=*thiev*
+ON=*steal*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 3
+			SAY I once had my pocket picked.
+			SAY Indeed, there be thievery in Britain.
+			SAY Thou a thief? Don' steal nothin' from me!
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY I know naught of thieves!
+			SAY I dunno about thiefy types.
+		ENDDO
+	ENDIF
+ON=*dummy*
+ON=*Training dummy*
+ON=*dummies*
+ON=*training dummies*
+	IF ( <COMPLEXITY.HIGH> )
+		DORAND 3
+			SAY The Cavalry Guild in Northeast Britain has sword-training dummies, if that is what thou art looking for.
+			SAY The Cavalry Guild has training dummies. They can be found just north of The Wayfarer's Inn.
+			SAY Just south of Castle Britain is the old keep. The Warrior's Guild now calls it home. Thou can find dummies there.
+		ENDDO
+	ELIF ( <COMPLEXITY.MEDIUM> )
+		DORAND 3
+			SAY Thy swordsmanship can be practiced at the old keep or at the Cavalry Guild.
+			SAY Thou can work on thy swordplay at the old keep, south of Lord British's castle.
+			SAY I think that Blackthorn's castle has some training devices, but I'm not certain.
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY Ummm... I think the keep's got some dummies.
+			SAY Up North, near to one o' the inns there's some sword-fightin' dummies.
+		ENDDO
+	ENDIF
+ON=*smith*
+	DORAND 2
+		SAY Which sort of smith? Weaponsmith, blacksmith?
+		SAY There are many sorts of smith.
+	ENDDO
+ON=*blacksmith*
+	SAY There is a blacksmith beside the castle moat on the northern edge of town.
+ON=*weaponsmith*
+	DORAND 2
+		SAY Thou mightest wish to check at the armourer's, or the castle.
+		SAY Thou canst buy weapons at the blacksmith's shop.
+	ENDDO
+ON=*conservatory*
+ON=*bard*
+ON=*minstrel*
+ON=*musician*
+ON=*troubad*
+	SAY The center of the musical arts in Britain is the Bardic Conservatory on the north side of town.
+ON=*mage tower*
+ON=*mage guild*
+ON=*mage*
+	DORAND 2
+		SAY The Mage Tower is the building with all the arches, made of grey stone, on the north side of the town.
+		SAY Ah, the Mage Guild is housed within a tower of many arches, with pools of water beside it.
+	ENDDO
+ON=*mage's shop*
+ON=*magic*
+ON=*magic shop*
+ON=*Mage shop*
+	DORAND 5
+		SAY There are three or four merchants of the arcane in Britain.
+		SAY The magic shop The Sorcerer's Delight is also known as the Mage Tower. Thou can purchase magical items there.
+		SAY Ethral Goods Magic Shop has magical items for sale, and it boasts the only alchemist in Britain.
+		SAY The magic shop Incantations and Enchantments is situated by the park in eastern Britain.
+		SAY Sage Advice Magic Shop can sell thee some arcane items, if that is thy desire.
+	ENDDO
+ON=*Sorcerer's Delight*
+ON=*Mage tower*
+	SAY Thou can purchase arcane goods at the Sorcerer's Delight - which some call the Mage Tower. It can be found in northern Britain, next to the Conservatory of Music.
+ON=*Ethral*
+ON=*Ethral Goods*
+	SAY Thou can find the Ethral Goods Magic Shop just south of the Main Gate. Next to the Premier Provisioner's shop.
+ON=*Incantations and Enchantments*
+ON=*Incantations*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY Incantations and Enchantments is in the middle of eastern Britain, on the south side of the park.
+	ELSE
+		SAY The shop called Incantations and Enchantments is in the middle of eastern Britain, on the south side of the park.
+	ENDIF
+ON=*Sage Advice*
+	SAY Thou can find the Sage Advice Magic Shop on the east side of the river.
+ON=*stables*
+	DORAND 3
+		SAY Aside from Lord British's stables, the only ones I can think of lie on the western bank of the river.
+		SAY Aside from Lord British's stables, the only ones I can think of lie West of the Keep.
+		SAY Try the stables beside the Mage Tower.
+	ENDDO
+ON=*vet*
+	DORAND 3
+		SAY There is a doctor of animals whose shop lies beside The Bucking Horse Stables.
+		SAY The city's sole veterinarian lives by the river, by the Mage's Bridge.
+		SAY There is a doctor of animals whose shop lies beside the Mage Tower.
+	ENDDO
+ON=*theater*
+ON=*theatre*
+	SAY Lord British supports the arts. There is a public theatre across from the Bardic Conservatory.
+ON=*carpenter*
+ON=*woodworker*
+	DORAND 2
+		SAY A goodly carpenter lives not far from the market square before the castle gate.
+		SAY There is a woodworker near the city library.
+	ENDDO
+ON=*guild*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY There are many guilds in this city. 'Tis the benefit of living in Lord British's capital.
+	ELSE
+		SAY There's so many, I can't keep track of 'em.
+	ENDIF
+ON=*miners*
+ON=*mining guild*
+	SAY There is a Mining Guild beside the city library.
+ON=*baker*
+ON=*bread*
+	SAY There is a baker on the market square before the castle gate.
+ON=*tanner*
+ON=*leather*
+	DORAND 4
+		SAY A tanner's shop exists by Poor Gate, 'gainst the old city wall.
+		SAY There is a leatherworker's shop facing the market square.
+		SAY A tanner's shop exists by Poor Gate, in front of the castle gates.
+		SAY There is a leatherworker's shop facing the market square, just next to the bakery.
+	ENDDO
+ON=*healer*
+	DORAND 2
+		SAY There is a healer on the market square, near the Main Gate.
+		SAY If thou dost walk north through the main gates, thou will be facing the healer's shop.
+	ENDDO
+ON=*bowyer*
+ON=*fletcher*
+		SAY Try the bowyer just East of the theatre.
+
+ON=*river*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 2
+			SAY Britain is bounded by two rivers. The Narrows is on the west and Brittany River on the east.
+			SAY When most people say the river, they mean Brittany River, which runs through the middle of the city.
+		ENDDO
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*narrows*
+ON=*narrows neck*
+ON=*neck*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY Narrows Neck is the name for the river mouth on the southwestern side of Britain.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*Brittany River*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY That's the river that runs down the middle of the city.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*waterfront*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY The waterfront is what many call everything south of the old city wall. Properly speaking, it runneth along the river from River's Gate Bridge, down along the water to the Oaken Oar and the Narrows.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*moat*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY Long ago the Narrows were dug up to meet the moat, and now 'tis fed from the water of Brittany Bay.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*brittany bay*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY 'Tis the bay on our southern coast.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*ocean*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY The ocean is to the south of Britain.
+	ELSE
+		SAY 'Tis powerful wet, it is.
+	ENDIF
+ON=*orc*
+ON=*camp*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		SAY There is a plague of orcs on the western side of the farms--if thou seekest their encampments, that is the place to look.
+	ELSE
+		SAY Orcs live in camps. They's dangerous, too.
+	ENDIF
+ON=*bridge*
+	IF ( <COMPLEXITY.HIGH>  )
+		DORAND 6
+			SAY There are many bridges across the Brittany. There's the Great Northern Bridge at the north-most end, the Mage's Bridge, then the one we call Virtue's Pass. South of that there's Cypress Bridge, and the River's Gate Bridge. And, of course, the Gung-Farmer's Bridge connects Britain with the farmlands to the West.
+			SAY The bridge next to the Mage's tower is thus called the Mage's Bridge.
+			SAY The Great Northern Bridge is so called because it's the Northern-most bridge in Britain.
+			SAY Cypress Bridge is named for the trees which greet thee coming and going across it.
+			SAY Virtue's Pass connects to Virtue's Path, which will take thee into Lord British's Castle.
+			SAY There is the Gung-Farmer's Bridge, which leadeth across Narrows Neck.
+		ENDDO
+	ELIF ( <COMPLEXITY.MEDIUM> )
+		DORAND 6
+			SAY There are many bridges across the Brittany. There's the Great Northern Bridge at the north-most end, the Mage's Bridge, then the one we call Virtue's Pass. South of that there's Cypress Bridge, and the River's Gate Bridge. And, of course, the Gung-Farmer's Bridge connects Britain with the farmlands to the West.
+			SAY The bridge next to the Mage's tower is thus called the Mage's Bridge.
+			SAY The Great Northern Bridge is so called because it's the Northern-most bridge in Britain.
+			SAY Cypress Bridge is named for the trees which greet thee coming and going across it.
+			SAY Virtue's Pass connects to Virtue's Path, which will take thee into Lord British's Castle.
+			SAY There is the Gung-Farmer's Bridge, which leadeth across Narrows Neck.
+		ENDDO
+	ELSE
+		SAY Ah, there's lots of bridges!
+	ENDIF
+ON=*ankh*
+ON=*death*
+ON=*temple*
+ON=*resur*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 2
+			SAY Thou mayst find the temple, where thou canst be resurrected, directly by Mage Gate Bridge.
+			SAY The ankh in the temple is capable of restoring life to the dead. 'Tis in northern part of town, beside the river.
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY They say the ankh can bring folks back to life.
+			SAY The ankh be in the temple by the river.
+		ENDDO
+	ENDIF
+ON=*tavern*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 2
+			SAY If thou seekest a place to drink, well, there are many choices!
+			SAY There's the Salty Dog, The Unicorn's Horn, The Cat's Lair, and The Blue Boar taverns, here in Britain.
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY I like taverns. Heh!
+			SAY I don't like taverns. Bah! Always gettin' pawed there.
+		ENDDO
+	ENDIF
+ON=*inn*
+	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+		DORAND 4
+			SAY If there be one thing Britain is not lacking, it be inns!
+			SAY The Wayfarer's Inn is just to the East of the Mage's Bridge.
+			SAY An inn called Sweet Dreams lies next to the Main Gate, just East of the healer's shop.
+			SAY The North Side Inn is way up in North Britain, just past the Mage's Tower.
+		ENDDO
+	ELSE
+		SAY Inns are fancy places for the rich to sleep.
+	ENDIF
+
+ON=*butcher*
+	DORAND 4
+		SAY The butcher can be found between the docks, near the customs house.
+		SAY In Southern Britain on the waterfront there is a butcher. His shop is between the two docks.
+		SAY Britain's butcher has a shop on the waterfront, next to the customs house.
+		SAY The butcher can be found between the two docks, on the waterfront.
+	ENDDO
+ON=*armour*
+ON=*armor*
+	DORAND 3
+		SAY There is an armourer's shop beside the Mage Gate. Just South of the old city wall.
+		SAY Strength and Steel Armory is located in front of the Mage's Tower in Northern Britain.
+		SAY There's an Armorer way out to the East. Just North of the Lighthouse.
+	ENDDO
+ON=*Wayfarer's Inn*
+ON=*Wayfarers Inn*
+	DORAND 2
+		SAY 'Tis South of the Cavalry Guild by the Mage's Gate.
+		SAY The Wayfarer's Inn is beside the Mage's Gate, on the East side of the river.
+	ENDDO
+ON=*Sweet Dreams*
+	DORAND 2
+		SAY The Sweet Dreams Inn is quite upscale!
+		SAY Despite its name, the Sweet Dreams inn is quite good. It is near the Main Gate.
+	ENDDO
+ON=*Northside*
+	DORAND 2
+		SAY The Northside Inn is situated on the lake that surrounds Blackthorn's Castle.
+		SAY The Northside Inn is quite good. It is just North of the Music Conservatory.
+	ENDDO
+ON=*alchemist*
+	DORAND 4
+		SAY The alchemist can be found with the mages in the the magic shop in front of the Main Gate.
+		SAY Ethral Goods Magic Shop has an alchemist. Try there.
+		SAY The alchemist shares space in the Ethral Goods Magic Shop.
+		SAY The only alchemist I know of is in the magic shop near the Main Gate.
+	ENDDO
+ON=*weaponeer*
+ON=*weaponsmith*
+	DORAND 2
+		SAY The blacksmith North of the Miner's Guild can probably sell thee anything thou might need.
+		SAY The armorer beside the Tinker's Guild can probably sell thee anything thou mightest need. Or look to the blacksmith.
+	ENDDO
+ON=*mechanician*
+	DORAND 2
+		SAY The guildhall of the Mechanicians, or the Tinkers as some call them, is right beside Poor Gate.
+		SAY The guildhall of the Mechanicians is right beside Poor Gate. Some do call them Tinkerers, if thou were wondering.
+	ENDDO
+ON=*artisan*
+		SAY There be a guildhall for the artisans of the town outside the old walls, south of the Armorer's.
+ON=*provision*
+	DORAND 4
+		SAY One can purchase provisions at any of a number of shops.
+		SAY There is a provisioner's directly before the Main Gate.
+		SAY A quite well-appointed provisioner's exists East of the river, just North of the Lighthouse.
+		SAY A quite well-appointed provisioner's exists in the Eastern part of Britain.
+	ENDDO
+ON=*jewel*
+	DORAND 3
+		SAY There is a jeweler's just to the South of the Artist's guild.
+		SAY About as far East as thou can go, there is a jeweler's shop sitting next to the park.
+		SAY There is a jeweler's by the Artist's Guild.
+	ENDDO
+ON=*bank*
+	DORAND 3
+		SAY The First Bank of Britain lies next to the jeweler's, beside the moat.
+		SAY The First Bank of Britain lies across the street from the Jeweler's, beside the moat.
+		SAY The bank is outside the old walls, next to the moat.
+	ENDDO
+ON=*clothes*
+ON=*clothiers*
+	DORAND 5
+		SAY A goodly shop for clothing is next to the Blue Boar Tavern.
+		SAY Thou canst purchase clothes on the East side of the river, near the Cypress Bridge.
+		SAY A goodly shop for clothing is next to Cypress Bridge, on the East side of the river.
+		SAY A good shop for clothing is next to the Blue Boar Tavern.
+		SAY Thou can purchase clothes on the east side of the river.
+	ENDDO
+ON=*Salty Dog*
+	DORAND 2
+		SAY If thou seekest a place to drink, well, there are many choices!
+		SAY The Salty Dog is a tavern overlooking the park, right next to The Wayfarer's Inn.
+	ENDDO
+ON=*Unicorn Horn*
+	DORAND 2
+		SAY If thou seekest a place to drink, well, there are many choices!
+		SAY 'Tis an expensive place, but the Unicorn Horn, overlooking the ocean on the east side, serves a decent ale.
+	ENDDO
+ON=*Blue Boar*
+	DORAND 2
+		SAY If thou seekest a place to drink, well, there are many choices!
+		SAY The Blue Boar is just North of the library, on the river.
+	ENDDO
+ON=*Cat's Lair*
+	DORAND 2
+		SAY If thou seekest a place to drink, well, there are many choices!
+		SAY The Cat's Lair is a bit disreputable, as it lies near the docks, but its beer is good.
+	ENDDO
+ON=*shipwright*
+ON=*oaken oar*
+ON=*boats*
+ON=*ships*
+	DORAND 2
+		SAY The place to buy waterfaring vessels is the Oaken Oar.
+		SAY The Oaken Oar houses excellent shipwrights. It is on the waterfront by the mouth of the Narrow Neck.
+	ENDDO
+ON=*mapmaker*
+ON=*cartographer*
+ON=* map*
+	DORAND 2
+		SAY Cartographer's can usually be found sharing space with shipwrights.
+		SAY If there's not a mapmaker to be found at the Oaken Oar, then I can't help thee much.
+	ENDDO
+ON=*customs*
+ON=*customs house*
+	DORAND 2
+		SAY The Customs office checks imported goods. 'Tis on the waterfront.
+		SAY Smugglers from Buccaneer's Den have taken to going to Vesper since the Customs House opened on the waterfront.
+	ENDDO
+ON=*train*
+ON=*weapons trainer*
+	DORAND 2
+		SAY Thou canst be trained in weapons at the weapons trainer. But thou shouldst be warned that 'tis expensive. He caters to the nobility.
+		SAY The weapons trainer? Ah, that is on the north edge of town, on the eastern bank of the river. 'Tis called the Cavalry Guild.
+	ENDDO
+ON=*lighthouse*
+	DORAND 2
+		SAY 'Tis being repaired, but it stands on the promontory o'erlooking Brittany Bay.
+		SAY The lighthouse is a most imposing sight, but 'twas badly damaged in a storm, and it is inoperable right now.
+	ENDDO
+ON=*Lord British*
+	DORAND 2
+		SAY He liveth here, in Britain, in his castle.
+		SAY Lord British doth reside in his castle, but the gates are always open.
+	ENDDO
+ON=* LB*
+	SAY LB? Mayhap thou means Lord British ....
+ON=*castle*
+	DORAND 3
+		SAY Lord British's castle is quite huge. A moat encircles it. Thou canst not miss it.
+		SAY Lord British's castle forms the western side of the city. Only farms lie beyond it.
+		SAY Blackthorn's castle is on an island in the middle of a lake North of Britain.
+	ENDDO
+ON=*blackthorn's castle*
+ON=*blackthorn*
+	DORAND 2
+		SAY Blackthorn stays out of sight mostly, sequestered in his castle up North of Britain.
+		SAY Blackthorn's castle is on an island in the middle of a lake North of Britain.
+	ENDDO
+ON=*old keep*
+ON=*fighter*
+ON=*warrior*
+	DORAND 3
+		SAY The Warrior's Guild is housed in the Old Keep.
+		SAY The Old Keep, where the Warrior's Guild is headquartered, was once the castle hereabouts, but now we have Lord British's castle.
+		SAY 'Tis crumbling into the Narrows, but the home of the Warrior's Guild is the Old Keep.
+	ENDDO
+ON=*farms*
+ON=*farmers*
+	SAY The farms in this area are all in the countryside, to the west of Lord British's castle. Thou must cross the Narrows and follow the road there.
+ON=*gate*
+	SAY There are two gates in the old city walls. The Poor Gate, and the Main Gate are the names.
+ON=*poor gate*
+	DORAND 2
+		SAY That is the name of the old gate beside the castle moat, for once the poor came in through there to go to market. It is quite narrow.
+		SAY Poor Gate is on the south wall, beside the Tinker's Guild.
+	ENDDO
+ON=*Main gate*
+	DORAND 2
+		SAY The Main Gate is quite majestic! The space before it is paved with grey and red stones, and there be guard towers on either side.
+		SAY The Main Gate divides the central city from the waterfront.
+	ENDDO
+ON=*city wall*
+ON=*wall*
+	DORAND 3
+		SAY When Britain was but a young city, 'twas enclosed by a wall. But it has long since outgrown it.
+		SAY Thou canst see that the old city walls are of a different vintage stone than the castle proper. 'Twas built before the current castle buildings.
+		SAY The northern side of the old city wall hath disappeared completely. 'Tis said the Mage Tower was built from its fragments.
+	ENDDO
+ON=*Northern bridge*
+ON=*Great Northern*
+ON=*Great bridge*
+	DORAND 2
+		SAY The Great Northern Bridge is so called because it's the Northern-most bridge in Britain.
+		SAY The Great Northern Bridge is built fairly high above the water.
+	ENDDO
+ON=*Cypress Bridge*
+	DORAND 2
+		SAY Cypress Bridge is named for the trees which greet thee coming and going across it.
+		SAY The Cypress Bridge is surrounded on one side by a tailor's shop and on the other by a magic shop.
+	ENDDO
+ON=*Virtue's Pass*
+	DORAND 2
+		SAY Virtue's Pass connects to Virtue's Path, which will take thee into Lord British's Castle.
+		SAY There used to be a gate at Virtue's Pass, it was torn down some time ago.
+	ENDDO
+ON=*Mage's Bridge*
+	DORAND 3
+		SAY The bridge next to the Mage's tower is thus called the Mage's Bridge.
+		SAY Mage's Bridge was once a gate leading into the city, but the old wall has outlived its usefulness and most of it has been torn down.
+		SAY The Mage's Bridge is so named for the fact that the Mage's Tower almost overlooks it.
+	ENDDO
+ON=*River's Gate*
+	SAY The Southernmost bridge is called River's Gate.
+ON=*Gung-Farmer*
+ON=*Gung Farmer*
+	SAY The Gung-Farmer's Bridge connects all the farms with Britain proper.
+ON=*paws*
+	SAY Paws? Take a look at the feet of a dog.
+ON=*guardhouse*
+ON=*guard house*
+	DORAND 2
+		SAY There are two guardhouses. One near the Gung-Farmer's Bridge, and the other next to Virtue's Pass.
+		SAY One Guardhouse is right beside the Cat's Lair Tavern.
+	ENDDO
+
+[EOF]

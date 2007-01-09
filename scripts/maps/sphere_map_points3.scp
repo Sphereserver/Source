@@ -1,0 +1,40 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, December 30, 2006
+
+VERSION=0.56b
+
+[MoonGates]
+
+[Teleporters]
+496,49,6,3=2366,1268,-85,3=tp_doom_exit_1
+433,326,4,3=2366,1268,-85,3=tp_doom_exit_2
+2317,1268,-110,3=381,132,33,3=tp_doom_entrance_1
+2317,1269,-110,3=381,132,33,3=tp_doom_entrance_2
+2317,1267,-110,3=381,132,33,3=tp_doom_entrance_3
+1732,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_1
+1733,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_2
+1734,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_3
+328,1974,5,3=1732,973,-75,3=tp_labyrinth_exit_1
+328,1973,5,3=1732,973,-75,3=tp_labyrinth_exit_2
+328,1972,5,3=1732,973,-75,3=tp_labyrinth_exit_3
+328,1975,5,3=1732,973,-75,3=tp_labyrinth_exit_4
+121,1684,0,3=2068,1372,-75,3=tp_Bedlam_exit_1
+120,1684,0,3=2068,1372,-75,3=tp_Bedlam_exit_2
+84,1673,-2,3=156,1608,22,3=tp_BedlamCemitery_Entrance_1
+156,1608,22,3=84,1673,-2,3=tp_BedlamCemitery_Exit_1
+157,1608,22,3=84,1673,-2,3=tp_BedlamCemitery_Exit_2
+2068,1372,-75,3=120,1684,0,3=tp_Bedlam_Entry_1
+433,371,-1,3=479,371,-1,3=tp_doom_gauntlet_shop_1
+433,372,-1,3=479,372,-1,3=tp_doom_gauntlet_shop_2
+479,371,-1,3=433,371,-1,3=tp_doom_gauntlet_shop_exit_1
+479,372,-1,3=433,372,-1,3=tp_doom_gauntlet_shop_exit_2
+
+[EOF]

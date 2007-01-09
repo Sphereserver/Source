@@ -1,0 +1,249 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Gambler Script
+// Notes:  This is used for general information pertaining to all Britannian Gamblers
+// Current Keyword List:
+//	job, what*do*do, occupation, profession, skill, appraise, evaluate, peek,
+//	gamble, game, cheat
+//
+[SPEECH jobGAMBLER]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I'm a gamer by trade.  The cards and dice are my partners.
+				SAY I play the odds.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I don't know about a job, but what I do is play the odds.
+				SAY I gamble.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I don't know about no job, but what I do is gamble.
+				SAY I gamble.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a gamesman.
+				SAY A good gambler doesn't need a job.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a gamesman.
+				SAY A good gambler don't need a job.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It could be said that I instruct the unsophisticated in the laws of elementary probability.
+				SAY I am a sportsman and gentleman of leisure.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It could be said that I play the odds.
+				SAY I'm a sportsman and gentleman of leisure.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*skill*
+ON=*appraise*
+ON=*evaluate*
+ON=*peek*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I can teach thee some things. Could help thee when thou art in need, if thou art following me. Gotta pay me somethin', though.
+				SAY Thou shouldst know something about the people that thou art likely to spend time with when thou art in the city. Could be of use to thee.
+				SAY I could teach thee a few things that may be of use to thee. Not for free, of course.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I can teach things that'd help thee when thou'rt in need, if thou'rt followin' me. Gotta pay me somethin', though.
+				SAY Thou should know somethin' 'bout the people that thou spend time with. Could be o' use to thee.
+				SAY I could teach thee a few things that may be o' use. Not for free, of course.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY If thou dost want to learn, I might be persuaded to teach thee about surviving in the city.
+				SAY I could show thee a few things that the local guard wouldn't much take to, I'm sure.
+				SAY I can teach thee things about the people that thou dost see every day.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY If thou wants to learn, I might be persuaded to teach thee 'bout survivin' in the city.
+				SAY I could show thee things that the local guard wouldn't like, I'm sure.
+				SAY I can teach thee things 'bout the people that thou see every day.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy to teach thee some - shall we say - people skills.
+				SAY Thou art always able to learn new things, my friend. I could show thee some things, for instance, about people that could help thee when thou art penniless.
+				SAY I can teach thee things that could help thee in the towns. I would need thee to pay me for my time, of course.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy to teach thee some - we can say - people skills.
+				SAY Thou can learn from me. I could show thee some things that could help when thou'rt penniless.
+				SAY I can teach thee things that could help in the towns. I'd need thee to pay me for my time, of course.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*gamble*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Gambling is what I should be doing now, instead of telling my life story to a tinhorn.
+				SAY Sure I gamble. What's it to thee?
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Gamblin' is what I should be doing now, 'stead of talkin' to thee.
+				SAY Sure I gamble. What's it to thee?
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Gambling is only a vice if thou art inexperienced at it.
+				SAY Life is a gamble, and gambling is my life.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Gambling is only a vice if thou'rt no good at it.
+				SAY Life is a gamble, and gambling is my life.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Gamblin's only a vice if thou'rt no good at it.
+				SAY Life's a gamble, and gamblin's my life.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Stable <SEX boys/girls> gamble. <SEX Gentlemen/Gentlewomen> game.
+				SAY I must confess an endless fascination with games of chance.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Stable <SEX boys/girls> gamble. I game.
+				SAY I must confess an interest in games of chance.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*game*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I've no wish to game with such as thee.
+				SAY If thou knowest where I might find a game, speak up. Otherwise, begone.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I ain't got no wish to game with such as thee.
+				SAY If thou knows where I might find a game, speak up. Otherwise, begone.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY There's always a game going on somewhere, if one knows where to look.
+				SAY I only game with high rollers.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY There's always a game going on somewheres, if one knows where to look.
+				SAY I only game with high rollers.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Gaming is an art. It's skill and will, not luck.
+				SAY There's always a game around when thou dost want one.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Gaming's an art. It's skill and will, not luck.
+				SAY There's always a game around when thou wants one.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cheat*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			SAY I'm no cheat, liar!
+			ATTACK
+		ELSE
+			SAY I ain't no cheat!
+			ATTACK
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			SAY I'll not be called a cheat by such as thee.
+		ELSE
+			SAY I ain't gonna sit an' be called a cheat!
+		ENDIF
+		LEAVE
+	ELSE
+		SAY If any man would call me a cheat, that man would be a liar.
+	ENDIF
+
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY='Tis a fine day indeed!
+ON=Job
+ON=What do you do
+SAY=I partake of games of chance. I am a gambler of sorts, friend of Lady Luck.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell and always check the bottom card!
+	BYE
+	return 1
+ON=Lady
+SAY=Well, I prefer to be friends with her, but her company is not constant.
+ON=Praise
+SAY=I have an eye for appraising fine things.
+ON=Evaluate
+SAY=I am often practice item evaluation, but discreetly so.
+ON=Peek
+SAY=Dost thou accuse me of cheating!  Lout!
+ON=Cheat
+SAY=I do know of cheating, but I have never done so myself.
+ON=Gamble
+SAY=Gambling is a way of life.  You can make some serious coin fairly easily, friend.
+ON=Game
+SAY=You gotta know when to hold 'em and know when to fold 'em.
+ON=Skill
+ON=Luck
+SAY=Luck is important, but skills and intelligence make the difference.
+//RANDOM=...so I asked myself, do I feel lucky, punk?  Do I?
+
+[EOF]

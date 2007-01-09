@@ -1,0 +1,459 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 27-Jul-2006
+
+VERSION=0.56b
+
+// SphereServer 0.56* Administration console
+//
+// Written because the old one was hardcoded, didn't look very nice
+// and crashed clients on servers with alot of players on
+//
+// This is ment for clients with a 800x600 gameplay window size
+//
+// Written by Radiant - Last modified: 3-10-2005 (Cloud_BR)
+//- Start position of dialogs set to 0,21
+//- Default page of the tweaking menu set to "action"
+//- + shown before account name for higher privs and - before guest accounts (like the old admin panel)
+//- Removed PLevel informations in main page to get more space for char name
+//- Closing tweak dialog brings back to main page
+//- Added number of online clients in the main page title and changed "Administration Console" to "Admin Panel", which is shorter
+//- Added "remove note" button
+
+[DEFNAME admin_options]
+// If you do not want clients of lower or equal plevel see the IP addresses
+// of clients of equal or higher plevel, set this to 1
+// (does not apply to plevel 7)
+admin_hideips 0
+// If you do not want clients to see clients with a higher plevel that are
+// invisible (.invis) in the list, set this to 1
+admin_hidehighpriv 0
+
+[DEFNAME admin_strings]
+// Titles for privilege levels
+admin_plevel_0 		"Guest"
+admin_plevel_1		"Player"
+admin_plevel_2		"Counselor"
+admin_plevel_3		"Seer"
+admin_plevel_4		"Game Master"
+admin_plevel_5		"Developer"
+admin_plevel_6		"Administrator"
+admin_plevel_7		"Owner"
+// Titles for UO expansion
+admin_resdisp_0		"Pre-T2A"
+admin_resdisp_1		"The 2nd Age"
+admin_resdisp_2		"Lord Blackthorn's Revenge"
+admin_resdisp_3		"Age Of Shadows"
+admin_resdisp_4		"Samurai Empire"
+admin_resdisp_5		"Mondain's Legacy"
+// Titles for flags, copied from axis (slightly modified)
+admin_flag_1		"Invulnerability"
+admin_flag_2		"Dead"
+admin_flag_3		"Paralyzed"
+admin_flag_4		"Invisible"
+admin_flag_5		"Sleeping"
+admin_flag_6		"Warmode"
+admin_flag_7		"Reactive Armor"
+admin_flag_8		"Poisoned"
+admin_flag_9		"Nightsight"
+admin_flag_10		"Magic Reflect"
+admin_flag_11		"Polymorphed"
+admin_flag_12		"Incognito"
+admin_flag_13		"Spirit Speak"
+admin_flag_14		"Insubstantial"
+admin_flag_15		"Emote"
+admin_flag_16		"Comm Crystal"
+admin_flag_17		"Has Shield"
+admin_flag_18		"Can move with bow"
+admin_flag_19		"Stoned"
+admin_flag_20		"Recording Script"
+admin_flag_21		"Flying"
+admin_flag_22		"Respawn"
+admin_flag_23		"Hallucinating"
+admin_flag_24		"Hidden"
+admin_flag_25		"Indoors"
+admin_flag_26		"Criminal"
+admin_flag_27		"Conjured (summoned)"
+admin_flag_28		"Pet"
+admin_flag_29		"Spawned"
+admin_flag_30		"Save parity"
+admin_flag_31		"Ridden"
+admin_flag_32		"Mounted on horseback"
+// Don't edit below this line unless you know what you are doing
+
+[FUNCTION admin]
+ctag.admin_numplayers=0
+ctag.admin_page=1
+serv.allclients admin_getplayers
+ctag.admin_numpages=<eval (((<ctag0.admin_numplayers>-1) / 15) + 1)> // 15 players per page
+dialog d_sphereadmin
+
+[FUNCTION admin_getplayers]
+// List players in CTAGs on the caller
+if ((<account.plevel> > <src.account.plevel>) && (<flags> & statf_insubstantial) && (<def0.admin_hidehighpriv>))
+	return
+else
+	src.ctag0.admin_numplayers += 1
+	try src.ctag.admin_p<eval (<src.ctag0.admin_numplayers>)>=<uid>
+endif
+
+[FUNCTION admin_getplayers_test]
+// Function I used to test page system
+for x 1 50
+	try ctag.admin_p<eval <local.x>>=01
+end
+ctag.admin_numplayers=50
+
+[DIALOG d_sphereadmin]
+0,21
+src.dialogclose d_sphereadmin
+// Let's not break some (perhaps) scripts using OBJ
+local.oldobj=<obj>
+page 0 // Basic layout
+resizepic 0 0 2620 650 397 // Background
+gumppictiled 5 5 640 385 2604
+gumppictiled 5 5 640 25 2624 
+gumppictiled 5 370 640 22 2624
+gumppictiled 5 35 640 330 2624
+checkertrans 5 5 640 387
+dtext 10 7 0c1 SphereServer <src.version> Admin Panel (<serv.servname>) - Clients: <eval <ctag0.admin_numplayers>>
+button 615 5 4017 4018 1 0 0
+page 1 // Player data
+dtext 45 35 025 Account Name
+dtext 170 35 025 Character Name
+dtext 380 35 025 IP Address
+dtext 520 35 025 Location
+//dtext 540 35 025 PLevel
+admin_renderdialog
+obj=<local.oldobj>
+if (<ctag0.admin_page> > 1)
+	// Back button
+	button 5 370 4014 4015 1 0 1
+endif
+if (<ctag0.admin_page> < <ctag0.admin_numpages>)
+	// Forward button
+	button 615 370 4005 4006 1 0 2
+endif
+dtext 275 370 0c1 Page <eval <ctag0.admin_page>> / <eval <ctag0.admin_numpages>>
+
+[FUNCTION admin_renderdialog]
+local.y=55
+for x <eval ((<ctag0.admin_page> - 1) * 15) + 1> <eval (<ctag0.admin_page> * 15)>
+	if (<local.x> > <ctag0.admin_numplayers>)
+		return
+	endif
+	obj=<ctag0.admin_p<eval <local.x>>>
+	if (<obj.flags> & statf_insubstantial)
+		local.hue=0450
+	else
+		local.hue=0480
+	endif
+	button 10 <local.y> 4005 4006 1 0 <eval (1000 + <local.x>)>
+	dtext 45 <local.y> <local.hue> <QVAL <OBJ.ACCOUNT.PLEVEL>==0?(-):<QVAL <OBJ.ACCOUNT.PLEVEL>==1?:(+)>> <obj.account>
+	dtext 170 <local.y> <local.hue> <QVAL <OBJ.FINDID.i_rune_incognito.UID> ? <OBJ.FINDID.i_rune_incognito.NAME> : <obj.name>>
+	// Hide IP address to people of lower or equal privilege, if desired
+	if ((<obj.uid> != <uid>) && (<account.plevel> <= <obj.account.plevel>) && (<def0.admin_hideips>) && (<account.plevel> != 7))
+		dtext 380 <local.y> <local.hue> x.x.x.x
+	else
+		dtext 380 <local.y> <local.hue> <obj.account.lastip>
+	endif
+	dtext 520 <local.y> <local.hue> <obj.p.x>,<obj.p.y>,<obj.p.z>,<obj.p.m>
+	//  dtext 540 <local.y> <local.hue> <obj.account.plevel> (<def0.admin_plevel_<eval <obj.account.plevel>>>)
+	local.y += 20
+end
+
+[DIALOG d_sphereadmin BUTTON]
+on=1 // Back button
+ctag.admin_page -= 1
+if (<ctag0.admin_page> < 1)
+	// Bad! And shouldnt happen
+	sysmessage Error: admin_page value went too low, please report (<ctag0.admin_page> / <ctag0.admin_numpages>)
+	ctag.admin_page=1
+endif
+dialog d_sphereadmin
+on=2 // Forward button
+ctag.admin_page += 1
+if (<ctag0.admin_page> > <ctag0.admin_numpages>)
+	// Bad! Should also not happen
+	sysmessage Error: admin_page value went too high, please report (<ctag0.admin_page> / <ctag0.admin_numpages>)
+	ctag.admin_page=<ctag0.admin_numpages>
+endif
+dialog d_sphereadmin
+on=1001,65535 // Player buttons
+try uid.<ctag.admin_p<eval <argn> - 1000>>.dialog d_sphereplayertweak, 2
+
+[DIALOG d_sphereplayertweak]
+0,21
+src.dialogclose d_sphereplayertweak
+page 0 // Basic layout
+resizepic 0 0 2620 650 397 // Background
+gumppictiled 5 5 640 385 2604
+gumppictiled 5 5 640 25 2624 
+gumppictiled 5 35 140 355 2624
+gumppictiled 150 35 495 355 2624
+checkertrans 5 5 640 387
+dtext 10 7 0c1 SphereServer <src.version> Admin Panel (<serv.servname>) - Tweaking Client
+button 615 5 4017 4018 1 0 0
+button 585 5 4008 4009 1 0 1
+button 5 35 4005 4006 0 1 0
+dtext 40 37 0480 Client info
+button 5 55 4005 4006 0 2 0
+dtext 40 57 0480 Client actions
+button 5 77 4005 4006 1 0 2
+dtext 40 77 0480 Client notes
+button 5 117 4005 4006 0 4 0
+dtext 40 117 0480 Character info
+button 5 137 4005 4006 0 3 0
+dtext 40 137 0480 Status flags
+page 1
+dtext 160 35 0c1 Name:
+dtext 300 35 0480 <name>
+dtext 460 35 0c1 Uid:
+dtext 500 35 0480 <uid>
+dtext 160 55 0c1 Account Name:
+dtext 300 55 0480 <account.name>
+dtext 160 75 0c1 Title:
+dtext 300 75 0480 <title>
+dtext 160 95 0c1 PLevel:
+dtext 300 95 0480 <account.plevel> (<def0.admin_plevel_<eval <account.plevel>>>)
+dtext 160 135 0c1 Client Version:
+dtext 300 135 0480 <clientversion> / <reportedcliver>
+dtext 160 155 0c1 Resdisp:
+dtext 300 155 0480 <account.resdisp> (<def0.admin_resdisp_<eval <account.resdisp>>>)
+dtext 160 195 0c1 First login:
+dtext 300 195 0480 <account.firstconnectdate> from <qval ((<src.account.plevel> <= <account.plevel>) && (<def0.admin_hideips>) && (<src.account.plevel> != 7) ? "x.x.x.x" : <account.firstip>>
+dtext 160 215 0c1 Last login:
+dtext 300 215 0480 <account.lastconnectdate> from <qval ((<src.account.plevel> <= <account.plevel>) && (<def0.admin_hideips>) && (<src.account.plevel> != 7) ? "x.x.x.x" : <account.lastip>>
+dtext 160 255 0c1 Location:
+dtext 300 255 0480 <p.x>,<p.y>,<p.z>,<p.m>
+dtext 160 295 0c1 Kills:
+dtext 300 295 0480 <kills>
+dtext 360 295 0c1 Deaths:
+dtext 540 295 0480 <deaths>
+dtext 160 315 0c1 Food level:
+dtext 300 315 0480 <food>
+page 2
+button 160 40 4005 4006 1 0 21
+dtext 200 40 0480 Go to this player
+button 160 60 4005 4006 1 0 22
+dtext 200 60 0480 Turn invisible and go to this player
+button 160 80 4005 4006 1 0 23
+dtext 200 80 0480 Summon this player to you
+button 160 100 4005 4006 1 0 29
+dtext 200 100 0480 Summon this player to you in a cage
+button 160 120 4005 4006 1 0 24
+dtext 200 120 0480 Follow this player
+button 160 140 4005 4006 1 0 25
+dtext 200 140 0480 <qval (<account.jail>) ? Forgive:Jail> this player
+button 160 160 4005 4006 1 0 26
+dtext 200 160 0480 <qval (<flags> & statf_dead)?Resurrect:Kill> this player
+button 160 180 4005 4006 1 0 27
+dtext 200 180 0480 Disconnect this player from the server
+button 160 200 4005 4006 1 0 28
+dtext 200 200 025 Disconnect and ban this player from the server
+page 3
+local.flag=01
+local.ox=160
+local.oy=40
+for x 0 31
+	checkbox <eval <local.ox>> <eval <local.oy>> 210 211 <hval (<flags> & <local.flag>)> <eval 300 + <local.x>>
+	dtext <eval <local.ox> + 40> <eval <local.oy>> 0480 <def0.admin_flag_<eval <local.x> + 1>>
+	// Workaround for sphere bug - local.flag=<hval <local.flag> << 1> attempts to evaluate << !
+	local.flag="<local.flag> << 1"
+	local.flag=<hval <local.flag>>
+	local.oy += 20
+	if (<local.oy> > 360)
+		local.ox += 200
+		local.oy = 40
+	endif
+end
+button 360 360 4005 4006 1 0 31
+dtext 400 360 0c1 Set flags
+page 4
+dtext 160 35 0c1 Name:
+dtext 300 35 0480 <name>
+dtext 460 35 0c1 Uid:
+dtext 500 35 0480 <uid>
+dtext 160 55 0c1 Title:
+dtext 300 55 0480 <title>
+dtext 160 95 0c1 Strength:
+dtext 300 95 0480 <str>
+dtext 360 95 0c1 Hitpoints:
+dtext 540 95 0480 <hits>/<maxhits>
+dtext 160 115 0c1 Dexterity:
+dtext 300 115 0480 <dex>
+dtext 360 115 0c1 Stamina:
+dtext 540 115 0480 <stam>/<maxstam>
+dtext 160 135 0c1 Intelligence:
+dtext 300 135 0480 <int>
+dtext 360 135 0c1 Mana:
+dtext 540 135 0480 <mana>/<maxmana>
+dtext 160 155 0c1 Karma:
+dtext 300 155 0480 <karma>
+dtext 360 155 0c1 Fame:
+dtext 540 155 0480 <fame>
+
+[DIALOG d_sphereplayertweak BUTTON]
+on=0 1
+src.dialog d_sphereadmin
+on=2
+dialog d_sphereplayernotes
+on=21
+src.go <p>
+on=22
+src.invis 1
+src.go <p>
+on=23
+go <src.p>
+on=24
+if ( <src.uid> != <uid> )
+	src.follow <uid>
+endif
+on=25
+if (<account.jail>)
+	forgive
+	else
+		jail
+	endif
+	on=26
+	if (<flags> & statf_dead)
+		resurrect
+	else
+		hits=0
+		// Use kill here if you want the lightning effect
+	endif
+	on=27
+	disconnect
+	on=28
+	kick
+	on=29
+	summoncage
+	on=31
+	local.flag=01
+	for x 0 31
+		if (<argchk[<eval 300 + <local.x>>]>)
+			flags |= <local.flag>
+		else
+			flags &= ~<local.flag>
+		endif
+		// Workaround for sphere bug - local.flag=<hval <local.flag> << 1> attempts to evaluate << !
+		local.flag="<local.flag> << 1"
+		local.flag=<hval <local.flag>>
+	end
+	src.sysmessage Flags modified!
+
+[DIALOG d_sphereplayernotes]
+0,21
+src.dialogclose d_sphereplayernotes
+page 0 // Basic layout
+resizepic 0 0 2620 650 397 // Background
+gumppictiled 5 5 640 385 2604
+gumppictiled 5 5 640 25 2624 
+gumppictiled 5 35 140 355 2624
+gumppictiled 150 35 495 330 2624
+gumppictiled 150 370 495 20 2624
+checkertrans 5 5 640 387
+dtext 10 7 0c1 SphereServer <src.version> Admin Panel (<serv.servname>) - Account Notes
+button 615 5 4017 4018 1 0 0
+button 585 5 4008 4009 1 0 1
+button 5 35 4005 4006 1 0 2
+dtext 40 37 0480 Client info
+button 5 55 4005 4006 1 0 3
+dtext 40 57 0480 Client actions
+button 5 77 4005 4006 0 1 0
+dtext 40 77 0480 Client notes
+button 5 117 4005 4006 1 0 4
+dtext 40 117 0480 Character info
+button 5 137 4005 4006 1 0 5
+dtext 40 137 0480 Status flags
+dtext 200 35 0c1 Here you can review and/or add notes to this player's account.
+dtext 200 55 0c1 This account currently has <eval 0<account.tag0.numnotes>> notes. Showing 4 notes per page.
+button 160 75 4005 4006 1 0 10
+dtext 200 75 0480 Add note to this account (<account>)
+if (0<account.tag0.numnotes>)
+	local.page=1
+	local.oy=120
+	page 1
+	for x 1 <account.tag0.numnotes>
+		if (<local.oy> > 300)
+			local.oy = 120
+			local.page += 1
+			button 615 370 4005 4006 0 <eval <local.page>> 0 // Forward button
+			page <eval <local.page>>
+			button 150 370 4014 4015 0 <eval <local.page> - 1> 0 // Back button
+		endif
+		resizepic 155 <eval <local.oy>> 9350 480 50
+		dtext 160 <eval <local.oy>> 0 Added by <account.tag0.note_<eval <local.x>>_by> at <account.tag0.note_<eval <local.x>>_time>
+		dtext 160 <eval <local.oy> + 15> 0480 <account.tag0.note_<eval <local.x>>>
+		button 600 <eval <local.oy>> 4017 4018 1 0 <EVAL 10+<LOCAL.X>>
+		local.oy += 60
+	end
+endif
+
+[DIALOG d_sphereplayernotes BUTTON]
+on=0 1
+src.dialog d_sphereadmin
+on=2
+dialog d_sphereplayertweak 1
+on=3
+dialog d_sphereplayertweak 2
+on=4
+dialog d_sphereplayertweak 4
+on=5
+dialog d_sphereplayertweak 3
+on=10
+if ( <src.account.plevel> > <account.plevel> )
+	src.ctag.notefor=<uid>
+	src.promptconsole admin_addnote Enter note:
+else
+	src.sysmessage You can't add notes to a plevel higher than you
+	src.dialog d_sphereplayernotes
+endif
+on=11 500
+if ( <src.account.plevel> > <account.plevel> )
+	src.ctag.notefor=<uid>
+	src.admin_removenote <eval (<ARGN1>-10)>
+else
+	src.sysmessage You can't change notes to a plevel higher than you
+	src.dialog d_sphereplayernotes
+endif
+
+[FUNCTION admin_removenote]
+local.note=<argv[0]>
+local.oldobj=<obj>
+obj=<ctag.notefor>
+IF (<LOCAL.NOTE>==<OBJ.ACCOUNT.TAG.NUMNOTES>)//if it was the last note no need to sort
+	TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>
+	TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>_BY
+	TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>_TIME
+ELSE //sort note list
+	WHILE (<LOCAL.NOTE> < <ACCOUNT.TAG0.NUMNOTES>)
+		TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>=<OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>+1>>
+		TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>_BY=<OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>+1>_BY>
+		TRYSRV OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>>_TIME=<OBJ.ACCOUNT.TAG.NOTE_<EVAL <LOCAL.NOTE>+1>_TIME>
+		LOCAL.NOTE += 1
+	end
+endif
+TRYSRV OBJ.ACCOUNT.TAG0.NUMNOTES=<EVAL <OBJ.ACCOUNT.TAG0.NUMNOTES>-1>
+SYSMESSAGE Note removed from <obj.account>!
+OBJ.DIALOG d_sphereplayernotes
+OBJ=<LOCAL.OLDOBJ>
+
+[FUNCTION admin_addnote]
+local.oldobj=<obj>
+obj=<ctag.notefor>
+local.name=<name>
+TRYSRV obj.account.tag.numnotes=<eval <obj.account.tag0.numnotes> + 1>
+TRYSRV obj.account.tag.note_<eval <obj.account.tag0.numnotes>>=<args>
+TRYSRV obj.account.tag.note_<eval <obj.account.tag0.numnotes>>_by=<local.name>
+TRYSRV obj.account.tag.note_<eval <obj.account.tag0.numnotes>>_time=<serv.rtime>
+sysmessage Note added to account <obj.account.name>!
+obj.dialog d_sphereplayernotes
+obj=<local.oldobj>

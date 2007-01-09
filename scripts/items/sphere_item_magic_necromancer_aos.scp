@@ -1,0 +1,272 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+//Necromancer Items script, by Exer
+//from The Darkside Shards (www.tdsuo.com)
+// FILE LAST UPDATED: Wednesday, May 4th, 2005
+VERSION=0.56b
+//blood oat
+//exorcism
+
+[ITEMDEF 02253]
+defname=i_spellbook_necromancy
+type=t_spellbook_necro
+weight=1
+resources=80 i_parchment,1 i_hide, 1 i_cloth
+layer=1
+
+ON=@Create
+	ATTR=attr_magic|attr_newbie
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Necromancers
+	DESCRIPTION=Necromancy Spellbook
+
+[ITEMDEF 02260]
+defname=i_scroll_animate_dead
+type=t_scroll
+weight=1
+RESOURCES=i_scroll_blank, i_reag_volcanic_ash, i_reag_blood_vial
+SKILLMAKE=INSCRIPTION 50.0, NECROMANCY 40.0
+
+ON=@Create
+	ATTR=ATTR_MAGIC
+	//MOREX=s_animate_dead
+	//MOREY={50 80}
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Srolls - Necromancy
+	DESCRIPTION=Animate Dead
+
+[ITEMDEF i_scroll_exorcism]
+defname=i_scroll_exorcism
+id=i_scroll_animate_dead
+name=Exorcism
+type=t_scroll
+weight=1
+RESOURCES=i_scroll_blank, i_reag_volcanic_ash, i_reag_serpent_scale
+SKILLMAKE=INSCRIPTION 90.0, NECROMANCY 80.0
+
+ON=@Create
+	ATTR=ATTR_MAGIC
+	//MOREX=s_exorcism
+	//MOREY={50 80}
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Srolls - Necromancy
+	DESCRIPTION=Exorcism
+
+[ITEMDEF 02261]
+defname=i_scroll_blood_oat
+name=Blood Oat
+type=t_scroll
+weight=1
+RESOURCES=i_scroll_blank, i_reag_blood_vial
+SKILLMAKE=INSCRIPTION 30.0, NECROMANCY 20.0
+
+ON=@Create
+	ATTR=ATTR_MAGIC
+	//MOREX=s_blood_oat
+	//MOREY={50 80}
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Srolls - Necromancy
+	DESCRIPTION=Blood Oat
+
+[itemdef 02262]
+defname=i_scroll_corpse_skin
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_volcanic_ash, i_reag_batwing
+skillmake=INSCRIPTION 30.0, NECROMANCY 20.0
+on=@create
+attr=attr_magic
+//morex=s_corpse_skin
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Corpse Skin
+
+[itemdef 02263]
+defname=i_scroll_curse_weapon
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_pig_iron
+skillmake=INSCRIPTION 5.0, NECROMANCY 0.1
+on=@create
+attr=attr_magic
+//morex=s_curse_weapon
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Curse Weapon
+
+[itemdef 02264]
+defname=i_scroll_evil_omen
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_batwing, i_reag_serpent_scale
+skillmake=INSCRIPTION 30.0, NECROMANCY 20.0
+on=@create
+attr=attr_magic
+//morex=s_evil_omen
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Evil Omen
+
+[itemdef 02265]
+defname=i_scroll_horrific_beast
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_blood_vial, i_reag_batwing
+skillmake=INSCRIPTION 50.0, NECROMANCY 40.0
+on=@create
+attr=attr_magic
+//morex=s_horrific_beast
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Horrific Beast
+
+[itemdef 02266]
+defname=i_scroll_lich_transformation
+type=t_scroll
+weight=1
+resources=i_scroll_blank,i_reag_volcanic_ash, i_reag_serpent_scale, i_reag_blood_vial
+skillmake=INSCRIPTION 80.0, NECROMANCY 70.0
+on=@create
+attr=attr_magic
+//morex=s_lich_transformation
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Lich transformation
+
+[itemdef 02267]
+defname=i_scroll_mind_rot
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_batwing, i_reag_blood_vial, i_reag_pig_iron
+skillmake=INSCRIPTION 40.0, NECROMANCY 30.0
+on=@create
+attr=attr_magic
+//morex=s_mind_rot
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Mind Rot
+
+[itemdef 02268]
+defname=i_scroll_pain_strike
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_volcanic_ash, i_reag_pig_iron
+skillmake=INSCRIPTION 30.0, NECROMANCY 20.0
+on=@create
+attr=attr_magic
+//morex=s_pain_strike
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Pain Strike
+
+[itemdef 02269]
+defname=i_scroll_poison_strike
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_serpent_scale
+skillmake=INSCRIPTION 60.0, NECROMANCY 50.0
+on=@create
+attr=attr_magic
+//morex=s_poison_strike
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Poison Strike
+
+[itemdef 0226a]
+defname=i_scroll_strangulation
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_blood_vial, i_reag_serpent_scale
+skillmake=INSCRIPTION 75.0, NECROMANCY 65.0
+on=@create
+attr=attr_magic
+//morex=s_strangulation
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Strangulation
+
+[itemdef 0226b]
+defname=i_scroll_summon_familiar
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_batwing, i_reag_volcanic_ash, i_reag_blood_vial
+skillmake=INSCRIPTION 40.0, NECROMANCY 30.0
+on=@create
+attr=attr_magic
+//morex=s_summon_familiar
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Summon Familiar
+
+[itemdef 0226c]
+defname=i_scroll_vampiric_embrace
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_batwing, i_reag_pig_iron, i_reag_serpent_scale
+skillmake=INSCRIPTION 100.0, NECROMANCY 99.0
+on=@create
+attr=attr_magic
+//morex=s_vampiric_embrace
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Vampiric Embrace
+
+[itemdef 0226d]
+defname=i_scroll_vengeful_spirit
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_batwing, i_reag_volcanic_ash, i_reag_pig_iron
+skillmake=INSCRIPTION 90.0, NECROMANCY 80.0
+on=@create
+attr=attr_magic
+//morex=s_vengeful_spirit
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Vengeful Spirit
+
+[itemdef 0226e]
+defname=i_scroll_wither
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_volcanic_ash, i_reag_serpent_scale, i_reag_pig_iron
+skillmake=INSCRIPTION 70.0, NECROMANCY 60.0
+on=@create
+attr=attr_magic
+//morex=s_wither
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Wither
+
+[itemdef 0226f]
+defname=i_scroll_wraith_form
+type=t_scroll
+weight=1
+resources=i_scroll_blank, i_reag_blood_vial, i_reag_pig_iron
+skillmake=INSCRIPTION 30.0, NECROMANCY 20.0
+on=@create
+attr=attr_magic
+//morex=s_wraith_form
+//morey={}
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Srolls - Necromancy
+DESCRIPTION=Wraith Form

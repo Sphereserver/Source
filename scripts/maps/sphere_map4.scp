@@ -1,0 +1,39 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 08-Feb-2005
+VERSION=0.56b
+
+[AREADEF a_se]	// Samurai Empire (SE, map4,statics4,staidx4), map #4
+NAME=Tokuno Islands
+GROUP=ALLMAP
+P=737,1245,30,4
+RECT=0,0,1448,1448,4
+EVENTS=r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_zento]
+NAME=Zento
+GROUP=Tokuno Islands
+P=736,1256,30,4
+RECT=656,1192,816,1320,4
+
+[ROOMDEF a_zento_inn]
+NAME=Zento Inn
+GROUP=Tokuno Islands
+FLAGS=0880
+P=686,1211,30,4
+RECT=674,1203,699,1219,4
+
+[AREADEF a_fan_dancer_dojo]
+NAME=Fan Dancer's Dojo
+GROUP=Tokuno Islands
+P=977,223,23,4
+RECT=969,194,992,224,4
+
+[EOF]

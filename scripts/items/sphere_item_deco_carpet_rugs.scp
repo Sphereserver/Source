@@ -1,0 +1,772 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+
+[ITEMDEF 0aa9]
+//rug
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Rug 1
+DESCRIPTION=@
+DUPELIST=0aaa,0aab,0aac,0aad,0aae,0aaf,0ab0,0ab1,0ab2
+
+[ITEMDEF 0aaa]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0aab]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0aac]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0aad]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0aae]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0aaf]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0ab0]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0ab1]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0ab2]
+//rug
+DUPEITEM=0aa9
+
+[ITEMDEF 0ab3]
+//rug
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Rug 2
+DESCRIPTION=@
+DUPELIST=0ab4,0ab5,0ab6,0ab7,0ab8,0ab9,0aba,0abb,0abc
+
+[ITEMDEF 0ab4]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0ab5]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0ab6]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0ab7]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0ab8]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0ab9]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0aba]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0abb]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0abc]
+//rug
+DUPEITEM=0ab3
+
+[ITEMDEF 0abd]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 1
+DESCRIPTION=@
+DUPELIST=0abe,0abf,0ac0,0ac1,0ac2,0ac3,0ac4,0ac5,0af6,0af7,0af8,0af9,0afa,0afb
+
+[ITEMDEF 0abe]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0abf]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac0]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac1]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac2]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac3]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac4]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac5]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0ac6]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 2
+DESCRIPTION=@
+DUPELIST=0ac7,0ac8,0ac9,0aca,0acb,0acc,0acd,0ace,0acf,0ad0
+
+[ITEMDEF 0ac7]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0ac8]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0ac9]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0aca]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0acb]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0acc]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0acd]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0ace]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0acf]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0ad0]
+//carpet
+DUPEITEM=0ac6
+
+[ITEMDEF 0ad1]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 3
+DESCRIPTION=@
+DUPELIST=0ad2,0ad3,0ad4,0ad5,0ad6,0ad7,0ad8,0ad9
+
+[ITEMDEF 0ad2]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad3]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad4]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad5]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad6]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad7]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad8]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ad9]
+//carpet
+DUPEITEM=0ad1
+
+[ITEMDEF 0ada]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 4
+DESCRIPTION=@
+DUPELIST=0adb,0adc,0add,0ade,0adf,0ae0,0ae1,0ae2
+
+[ITEMDEF 0adb]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0adc]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0add]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0ade]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0adf]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0ae0]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0ae1]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0ae2]
+//carpet
+DUPEITEM=0ada
+
+[ITEMDEF 0ae3]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 5
+DESCRIPTION=@
+DUPELIST=0ae4,0ae5,0ae6,0ae7,0ae8,0ae9,0aea,0aeb
+
+[ITEMDEF 0ae4]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0ae5]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0ae6]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0ae7]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0ae8]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0ae9]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0aea]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0aeb]
+//carpet
+DUPEITEM=0ae3
+
+[ITEMDEF 0aec]
+//carpet
+RESOURCES=5 I_WOOL, 1 I_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 6
+DESCRIPTION=@
+DUPELIST=0aed,0aee,0aef,0af0,0af1,0af2,0af3,0af4,0af5
+
+[ITEMDEF 0aed]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0aee]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0aef]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af0]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af1]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af2]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af3]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af4]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af5]
+//carpet
+DUPEITEM=0aec
+
+[ITEMDEF 0af6]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0af7]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0af8]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0af9]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0afa]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 0afb]
+//carpet
+DUPEITEM=0abd
+
+[ITEMDEF 01098]
+DEFNAME=i_carpet_7
+RESOURCES=5 i_WOOL, 1 i_THREAD
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Carpet 7
+DESCRIPTION=Carpet
+DUPELIST=01099,0109a,0109b,0109c,0109d,0109e,0109f,010a0,010a1,010a2,010a3
+
+[ITEMDEF 01099]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109a]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109b]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109c]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109d]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109e]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 0109f]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 010a0]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 010a1]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 010a2]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 010a3]
+//carpet
+
+DUPEITEM=01098
+
+[ITEMDEF 01dd3]
+DEFNAME=i_rug_worn
+RESOURCES=2 i_CLOTH
+WEIGHT=2
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Rug 3
+DESCRIPTION=@
+DUPELIST=01dd4,01dd5,01dd6,01dd7,01dd8,01dd9,01dda,01ddb,01ddc,01ddd,01dde,01ddf,01de0,01de1,01de2,01de3,01de4,01de5,01de6,01de7,01de8,01de9,01dea,01deb,01dec,01ded,01dee
+
+[ITEMDEF 01dd4]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dd5]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dd6]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dd7]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dd8]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dd9]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dda]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01ddb]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01ddc]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01ddd]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dde]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01ddf]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de0]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de1]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de2]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de3]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de4]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de5]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de6]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de7]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de8]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01de9]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dea]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01deb]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dec]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01ded]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01dee]
+//rug
+DUPEITEM=01dd3
+
+[ITEMDEF 01def]
+//rug
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Rug 4
+DESCRIPTION=@
+DUPELIST=01df0,01df1,01df2,01df3,01df4,01df5,01df6,01df7,01df8,01df9,01dfa,01dfb,01dfc
+
+[ITEMDEF 01df0]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df1]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df2]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df3]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df4]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df5]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df6]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df7]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df8]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01df9]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01dfa]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01dfb]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01dfc]
+//rug
+DUPEITEM=01def
+
+[ITEMDEF 01e36]
+DEFNAME=i_RUG_BEARSKIN_1
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Bearskin Carpet
+DESCRIPTION=@
+DUPELIST=01e37,01e38,01e39,01e3a,01e3b,01e3c,01e3d,01e3e,01e40,01e41,01e42,01e43,01e44,01e45,01e46,01e47,01e48
+
+[ITEMDEF 01e37]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e38]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e39]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e3a]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e3b]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e3c]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e3d]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e3e]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e40]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e41]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e42]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e43]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e44]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e45]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e46]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e47]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e48]
+//bearskin rug
+DUPEITEM=01e36
+
+[ITEMDEF 01e49]
+DEFNAME=i_RUG_BEARSKIN_2
+WEIGHT=20
+//bearskin rug white
+CATEGORY=Decoration - Carpets & Rugs
+SUBSECTION=Polar Bear Rug
+DESCRIPTION=@
+DUPELIST=01e4a,01e4b,01e4c,01e4d,01e4e,01e4f,01e50,01e51,01e53,01e54,01e55,01e56,01e57,01e58,01e59,01e5a,01e5b
+
+[ITEMDEF 01e4a]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e4b]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e4c]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e4d]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e4e]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e4f]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e50]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e51]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e53]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e54]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e55]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e56]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e57]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e58]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e59]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e5a]
+//bearskin rug
+DUPEITEM=01e49
+
+[ITEMDEF 01e5b]
+//bearskin
+DUPEITEM=01e49
+
+
+[eof]

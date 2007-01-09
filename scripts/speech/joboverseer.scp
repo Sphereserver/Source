@@ -1,0 +1,128 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Overseer Script
+// Notes:  This is used for general information pertaining to all Britannian Overseer's
+// Current Keyword List:
+//	job, what*do*do, occupation, profession, overseer, rules, brawl, law, duel,
+//	fight, pit
+//
+
+[SPEECH jobOverseer]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	DORAND 2
+		SAY I'm the pit overseer.
+		SAY I keep the people coming to the pits and the guards out.
+	ENDDO
+
+ON=*overseer*
+ON=*rules*
+ON=*brawl*
+ON=*law*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I see that the pit is maintained, and that contestants eviscerate each other in a lawful and orderly fashion.
+				SAY There really are no rules.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I see that the pit is maintained, and that contestants destroy each other in an orderly fashion.
+				SAY There really ain't no rules.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I see that the pit is maintained, and that contestants eviscerate each other in a lawful and orderly fashion.
+				SAY There are no real rules, just keep the fight inside the pit.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I see that the pit's maintained, and that contestants mangle each other in a lawful and orderly fashion.
+				SAY There ain't no real rules, just keep the fight inside the pit.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I see that the pit is maintained, and that contestants eviscerate each other in a lawful and orderly fashion.
+				SAY Do what thou please, but if thou dost stray outside the pit, the guards will have thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I see that the pit's maintained, and that contestants bash each other in a lawful and orderly fashion.
+				SAY Do what thou please, but if thou strays outside the pit, the guards'll have thee.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*duel*
+ON=*fight*
+	IF ( <COMPLEXITY.HIGH> )
+		DORAND 2
+			SAY Why brawl on the street when thou can do it legally in the pit?
+			SAY If thou dost have a score to settle, the pit is the only place to settle it without running afoul of the law.
+		ENDDO
+	ELIF ( <COMPLEXITY.MEDIUM> )
+		DORAND 2
+			SAY Why brawl on the street?  Do it legally in the pit!
+			SAY If thou dost have a score to settle, the pit is the only place to settle it without breaking the law.
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY Why brawl on the street when thou can do it legally in the pit?
+			SAY If thou has a score to settle, the pit's the only place to settle it without gettin' the law against thee.
+		ENDDO
+	ENDIF
+ON=*pit*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Not only does the pit let contestants prove their worth, but it's instructive and entertaining for spectators as well.
+				SAY If thou dost want to know what thou art made of, the pit's the place to find out.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Not only does the pit prove who's the better fighter, it's instructive and fun for fans also.
+				SAY If thou wants to know what thou'rt made of, the pit's the place to find out.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Not only does the pit let contestants prove their worth, but it's instructive and entertaining for spectators as well.
+				SAY If thou dost want to know what thou art made of, the pit's the place to find out.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Not only does the pit prove who's the better fighter, it's instructive and fun for spectators also.
+				SAY If thou wants to know what thou'rt made of, the pit's the place to find out.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Not only does the pit let contestants prove their worth, but it's instructive and entertaining for spectators as well.
+				SAY If thou dost want to know what thou art made of, the pit's the place to find out.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Not only does the pit prove who's the better fighter, it's instructive and fun for spectators as well.
+				SAY If thou wants to know what thou'rt made of, the pit's the place to find out.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[EOF]

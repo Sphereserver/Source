@@ -1,0 +1,709 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0]
+DEFNAME=i_unused
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile
+
+[ITEMDEF 01]
+DEFNAME=i_NODRAW
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=No Draw Tile
+
+[ITEMDEF 040b]
+//unused
+CATEGORY=Ground Tiles
+SUBSECTION=Unlabelled tile
+DESCRIPTION=@
+DUPELIST=040c,040d,040e,040f,0410,0411,0412,0413,0414,0415,0416,0417,0418,0419,041a,041b,041c,041d,041e
+
+[ITEMDEF 040c]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 040d]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 040e]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 040f]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0410]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0411]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0412]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0413]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0414]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0415]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0416]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0417]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0418]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 0419]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 041a]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 041b]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 041c]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 041d]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 041e]
+//unused
+DUPEITEM=040b
+
+[ITEMDEF 09b2]
+DEFNAME=i_bankbox
+NAME=Bank Box
+LAYER=layer_bankbox
+TYPE=T_EQ_BANK_BOX
+TDATA2=04a
+
+[ITEMDEF 0ea9]
+//unused
+
+[ITEMDEF 0eb0]
+// Unused item is used for BBoard messages.
+TYPE=T_MESSAGE
+
+[ITEMDEF 010ef]
+//GARBAGE_2
+DUPEITEM=010ee
+
+[ITEMDEF 010f0]
+//garbage
+DUPEITEM=010ee
+
+[ITEMDEF 010f1]
+//garbage
+DUPEITEM=010ee
+
+[ITEMDEF 010f2]
+//pile of garbage
+DUPEITEM=010ee
+
+[ITEMDEF 010f3]
+//pile of garbage
+DUPEITEM=010ee
+
+[ITEMDEF 01646]
+// does nothing as far as i can see.
+DEFNAME=i_dark_source
+//RESOURCES=BASE ITEMS THAT ARE RESOURCES DO NOT ALWAYS HAVE RESOURCES
+WEIGHT=0
+LAYER=9
+
+ON=@Create
+ATTR=attr_magic|attr_newbie
+morez=024
+
+[ITEMDEF 01647]
+DEFNAME=i_light_source
+//RESOURCES=BASE ITEMS THAT ARE RESOURCES DO NOT ALWAYS HAVE RESOURCES
+TYPE=T_LIGHT_LIT
+TDATA4=i_light_source
+WEIGHT=0
+LAYER=15
+
+ON=@Create
+ATTR=attr_magic|attr_newbie
+
+[ITEMDEF 01b70]
+//target tile
+
+[ITEMDEF 01ea7]
+//Worldgem bit plain and small (see fancy bit at 1f13)
+DEFNAME=i_worldgem_bit
+VALUE=1
+TYPE=T_SPAWN_CHAR
+CATEGORY=Provisions - GM Items
+SUBSECTION=Special Items
+DESCRIPTION=Worldgem Bit
+
+[ITEMDEF 01f13]
+//fancy medium sized worldgem bit (see plain at 01ea7)
+DEFNAME=i_worldgem_lg
+TYPE=T_SPAWN_CHAR
+CATEGORY=Provisions - GM Items
+SUBSECTION=Special Items
+DESCRIPTION=Large Worldgem Bit
+
+[ITEMDEF 02005]
+// Invis marker
+DEFNAME=i_eq_marker
+
+[ITEMDEF 02007]
+// used as a memory object
+DEFNAME=i_memory
+TYPE=T_EQ_MEMORY_OBJ
+LAYER=layer_special
+
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=NonGen (Memory) Object
+
+[ITEMDEF 02042]
+// Lord British Armor
+//**Since players won't use these should they have type assigned?
+DEFNAME=i_person_lord_british
+TYPE=T_ARMOR
+
+CATEGORY=Provisions - GM Items
+SUBSECTION=Special Items
+DESCRIPTION=Lord British Armour
+
+ON=@Create
+HITPOINTS=150
+
+[ITEMDEF 02043]
+// Blackthorne Robe
+DEFNAME=i_person_black_thorne
+TYPE=T_ARMOR
+
+CATEGORY=Provisions - GM Items
+SUBSECTION=Special Items
+DESCRIPTION=Blackthorne Robe
+
+ON=@Create
+HITPOINTS=150
+
+[ITEMDEF 0204E]
+DEFNAME=i_deathshroud
+NAME=Death Shroud
+TYPE=T_CLOTHING
+
+CATEGORY=Provisions - GM Items
+SUBSECTION=Special Items
+DESCRIPTION=Death Shroud
+
+[ITEMDEF 0204F]
+// GM Robe
+DEFNAME=i_robe_gm
+TYPE=T_CLOTHING
+//ATT=50
+ARMOR=500
+DYE=1
+DESCRIPTION=GM Robes
+SUBSECTION=GM Robes
+CATEGORY=Provisions - GM Items
+
+ON=@Create
+HITPOINTS=150
+
+[ITEMDEF 02050]
+// Dupre
+DEFNAME=i_dupre
+TYPE=T_ARMOR
+//ATT=50
+ARMOR=30
+
+ON=@Create
+HITPOINTS=150
+
+[ITEMDEF 02053]
+// hand (gaunlet) point north
+DEFNAME=i_handr_1
+DUPELIST=02054,02055,02056,02057,02058,02059,0205a
+
+[ITEMDEF 02054]
+DUPEITEM=02053
+
+[ITEMDEF 02055]
+DUPEITEM=02053
+
+[ITEMDEF 02056]
+DUPEITEM=02053
+
+[ITEMDEF 02057]
+DUPEITEM=02053
+
+[ITEMDEF 02058]
+DUPEITEM=02053
+
+[ITEMDEF 02059]
+DEFNAME=i_handr_7
+DUPEITEM=02053
+
+[ITEMDEF 0205a]
+DUPEITEM=02053
+
+[ITEMDEF 0206a]
+DEFNAME=i_hand_1
+DUPELIST=0206b,0206c,0206d,0206e,0206f,02070,02071
+
+[ITEMDEF 0206b]
+DUPEITEM=0206a
+
+[ITEMDEF 0206c]
+DUPEITEM=0206a
+
+[ITEMDEF 0206d]
+DUPEITEM=0206a
+
+[ITEMDEF 0206e]
+DUPEITEM=0206a
+
+[ITEMDEF 0206f]
+DUPEITEM=0206a
+
+[ITEMDEF 02070]
+DEFNAME=i_hand_7
+DUPEITEM=0206a
+
+[ITEMDEF 02071]
+DUPEITEM=0206a
+
+[ITEMDEF 020da]
+DUPEITEM=02131
+
+[ITEMDEF 0213f]
+// stars
+NAME=stars
+DUPELIST=02140,02141,02142,02143,02144
+
+[ITEMDEF 02140]
+DUPEITEM=0213f
+
+[ITEMDEF 02141]
+DUPEITEM=0213f
+
+[ITEMDEF 02142]
+DUPEITEM=0213f
+
+[ITEMDEF 02143]
+DUPEITEM=0213f
+
+[ITEMDEF 02144]
+DUPEITEM=0213f
+
+[ITEMDEF 02198]
+//nodraw
+
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=No Draw Tile
+DUPELIST=021a4,021bc
+
+[ITEMDEF 021a4]
+//no draw
+DUPEITEM=02198
+
+[ITEMDEF 021bc]
+//nodraw
+DUPEITEM=02198
+
+[ITEMDEF 02ac0]
+//unused
+
+[ITEMDEF 02ad8]
+//unused
+
+[ITEMDEF 02adf]
+//unused
+
+[ITEMDEF 02ae3]
+//unused
+
+[ITEMDEF 02af8]
+//shopkeeper contain
+DEFNAME=i_vendorbox
+NAME=Vendor Box
+TYPE=T_EQ_VENDOR_BOX
+TDATA2=04a
+
+[ITEMDEF 02b97]
+//unused
+
+[ITEMDEF 02b98]
+//unused
+
+[ITEMDEF 02b99]
+//unused
+
+[ITEMDEF 03584]
+// These items should appear in a gump only !
+// White
+NAME=Checker
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03585]
+// White
+NAME=Bishop
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03586]
+// White
+NAME=Rook
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03587]
+NAME=Queen
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03588]
+// White
+NAME=Knight
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03589]
+// White
+NAME=Pawn
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358a]
+// White
+NAME=King
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358b]
+// Dark
+NAME=Checker
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358c]
+// Dark
+NAME=Bishop
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358d]
+//Dark
+NAME=Rook
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358e]
+//Dark
+NAME=Queen
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 0358f]
+//Dark
+NAME=Knight
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03590]
+//Dark
+NAME=Pawn
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03591]
+//Dark
+NAME=King
+TYPE=T_GAME_PIECE
+
+[ITEMDEF 03dc5]
+//unused
+
+[ITEMDEF 03dc8]
+//unused
+
+// no idea what the rest of this stuff is....
+
+[ITEMDEF 03ed6]
+//NOINDEX
+
+[ITEMDEF 03eea]
+//
+
+[ITEMDEF 03eeb]
+//
+
+[ITEMDEF 03eec]
+//
+
+[ITEMDEF 03eed]
+//
+
+[ITEMDEF 03eee]
+//
+
+[ITEMDEF 03eef]
+//
+
+[ITEMDEF 03ef0]
+//
+
+[ITEMDEF 03ef1]
+//
+
+[ITEMDEF 03ef2]
+//
+
+[ITEMDEF 03ef3]
+//
+
+[ITEMDEF 03ef4]
+//
+
+[ITEMDEF 03ef5]
+//
+
+[ITEMDEF 03ef6]
+//
+
+[ITEMDEF 03ef7]
+//
+
+[ITEMDEF 03ef8]
+//
+
+[ITEMDEF 03ef9]
+//
+
+[ITEMDEF 03efa]
+//
+
+[ITEMDEF 03efb]
+//
+
+[ITEMDEF 03efc]
+//
+
+[ITEMDEF 03efd]
+//
+
+[ITEMDEF 03efe]
+//
+
+[ITEMDEF 03eff]
+//
+
+[ITEMDEF 03f00]
+//
+
+[ITEMDEF 03f01]
+//
+
+[ITEMDEF 03f02]
+//
+
+[ITEMDEF 03f03]
+//
+
+[ITEMDEF 03f04]
+//
+
+[ITEMDEF 03f05]
+//
+
+[ITEMDEF 03f06]
+//
+
+[ITEMDEF 03f07]
+//
+
+[ITEMDEF 03f08]
+//
+
+[ITEMDEF 03f09]
+//
+
+[ITEMDEF 03f0a]
+//
+
+[ITEMDEF 03f0b]
+//
+
+[ITEMDEF 03f0c]
+//
+
+[ITEMDEF 03f0d]
+//
+
+[ITEMDEF 03f0e]
+//
+
+[ITEMDEF 03f0f]
+//
+
+[ITEMDEF 03f10]
+//
+
+[ITEMDEF 03f11]
+//
+
+[ITEMDEF 03f12]
+//
+
+[ITEMDEF 03f13]
+//
+
+[ITEMDEF 03f14]
+//
+
+[ITEMDEF 03f15]
+//
+
+[ITEMDEF 03f16]
+//
+
+[ITEMDEF 03f17]
+//
+
+[ITEMDEF 03f18]
+//
+
+[ITEMDEF 03f19]
+//
+
+[ITEMDEF 03f1a]
+//
+
+[ITEMDEF 03f1b]
+//
+
+[ITEMDEF 03f1c]
+//
+
+[ITEMDEF 03f1d]
+//
+
+[ITEMDEF 03f1e]
+//
+
+[ITEMDEF 03f1f]
+//
+
+[ITEMDEF 03f20]
+//
+
+[ITEMDEF 03f21]
+//
+
+[ITEMDEF 03f22]
+//
+
+[ITEMDEF 03f23]
+//
+
+[ITEMDEF 03f24]
+//
+
+[ITEMDEF 03f25]
+//
+
+[ITEMDEF 03f26]
+//
+
+[ITEMDEF 03f27]
+//
+
+[ITEMDEF 03f28]
+//
+
+[ITEMDEF 03f29]
+//
+
+[ITEMDEF 03f2a]
+//
+
+[ITEMDEF 03f2b]
+//
+
+[ITEMDEF 03f2c]
+//
+
+[ITEMDEF 03f2d]
+//
+
+[ITEMDEF 03f2e]
+//
+
+[ITEMDEF 03f2f]
+//
+
+[ITEMDEF 03f30]
+//
+
+[ITEMDEF 03f31]
+//
+
+[ITEMDEF 03f32]
+//
+
+[ITEMDEF 03f33]
+//
+
+[ITEMDEF 03f34]
+//
+
+[ITEMDEF 03f35]
+//
+
+[ITEMDEF 03f36]
+//
+
+[ITEMDEF 03f37]
+//
+
+[ITEMDEF 03f38]
+//
+
+[ITEMDEF 03f39]
+//
+
+[ITEMDEF 03f3a]
+//
+
+[ITEMDEF 03f3b]
+//
+
+[ITEMDEF 03f8f]
+//
+
+
+[EOF]

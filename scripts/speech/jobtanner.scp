@@ -1,0 +1,196 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// COPYRIGHT NOTICE: All files and content are copyright 1997-1999 Menasoft & Partners. All
+// donations and contributions become the property of Menasoft.
+
+// Purpose: Britannia Tanner Script
+// Notes:  This is used for general information pertaining to all Britannian Tanner's
+// Current Keyword List:
+//	job, what*do*do, occupation, profession, gloves, backpack, pouch, hide, fur
+
+[SPEECH jobTanner]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'm the tanner here.
+				SAY I sell leather goods.
+				SAY If thou dost need to purchase gloves, or a pouch or a backpack, I should have 'em here in stock.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm the tanner here.
+				SAY I sell leather stuff.
+				SAY If thou needs to buy gloves, or a pouch or a backpack, I should have 'em here in stock.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a tanner in this fine town.
+				SAY I can sell thee all kinds of useful leather goods.
+				SAY I can turn any animal hide into something useful.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm a tanner here in this town.
+				SAY I can sell thee all kinds of leather stuff.
+				SAY I can turn animal hide into somethin'.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am the maker and seller of leather goods.  A tanner, if it please thee.
+				SAY 'I can sell thee any leather item that thou might need. If it is in stock, of course.
+				SAY Gloves, backpacks, clothing..., If thou dost need it, I probably have it. If it is made of leather, anyway.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm the maker and seller of leather stuff.  A tanner, 'an it please thee.
+				SAY 'I can sell to thee any leather item that thou might need. If I got it, of course.
+				SAY Gloves, backpacks, clothing..., Thou needs it, I should have it. If it's made of leather, anyway.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*gloves*
+ON=*backpack*
+ON=*pouch*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Either buy something or leave. I've little time for thee.
+				SAY What, dost thou think! That I would give thee something for free?  Pah!
+				SAY I have made leather clothing, gloves, pouches... many things.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Either buy somethin' or leave. I got no time for thee.
+				SAY What, thou thinks I'd give thee somethin' for free?  Pah!
+				SAY I've made all sorts of leather things.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY I work hard to produce quality work.  My things should last.
+				SAY Gloves to protect thy hands and a pack to protect thy possessions.
+				SAY Thou can't expect to get very far with nothing to hold thy possessions.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I work hard to produce quality work.  My things should last awhile.
+				SAY Gloves to protect thy hands and a pack to protect thy possessions.
+				SAY Thou can't expect to get very far with nothing to hold thy possessions.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I work hard to make these things! They should last.
+				SAY Gloves'll protect thy hands and a pack'll protect thy possessions.
+				SAY Thou can't expect to get real far without much to hold thy things.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY My goods are well-made.  They should last for quite a while.
+				SAY I usually carry several packs and pouches in my inventory. Oh, and gloves, also.
+				SAY Gloves to protect thy hands and a pack to protect thy possessions.
+				SAY Thou can't expect to get very far with nothing to hold thy possessions.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY My stuff is made sturdy!  They should last for a long time, if thou cares for 'em.
+				SAY I usually got a few packs and pouches around. Gloves, too.
+				SAY Gloves'll protect thy hands and a pack'll protect thy possessions.
+				SAY Thou can't expect to get real far without much to hold thy things.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*hide*
+ON=*fur*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Yes, I've been known to buy some.
+				SAY I could be convinced to buy some cut hides or fur.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yeah, I've been known to buy some.
+				SAY I could buy some cut hides or fur.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I could possibly be convinced to buy some from thee.
+				SAY If thou dost have some fur or hide for sale, I might buy it from thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I might be convinced to buy some from thee.
+				SAY If thou got some fur or hide for sale, I might buy it from thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ah, thou wouldst save me some trouble if thou did sell me hides or fur!
+				SAY 'Twould possibly be worth my time to buy hides from thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ah, thou would save me some work if thou sold me hides or fur!
+				SAY Might be worth my time to buy hides from thee.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobTanner]
+//TANNER
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Yes? What can I do for you?
+ON=Job
+ON=What do you do
+SAY=I make sturdy, long lasting armor and packs from the finest hides.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Goodbye.
+	BYE
+	return 1
+ON=BACKPACK
+SAY=My backpacks are well made.  You'll never need another, trust me!
+ON=FUR
+SAY=Fur will keep you warmest in the northern snowy climes.
+ON=GLOVES
+SAY=Making gloves is an exacting science.  So many fingers to fit, each one different from the next!
+ON=HIDE
+SAY=Hide?  Hide!  Quick, under the furs! They'll never find us!  A little joke, friend.
+ON=POUCH
+SAY=Hey! I am in perfect shape!! Why you...
+//RANDOM=Have you seen that cute banker in Trinsic? Boy, I'd like to tan her hide!
+
+[EOF]
+

@@ -1,0 +1,1194 @@
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF 02006]
+//corpse (all corpses normally are here)
+DEFNAME=i_corpse
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Corpses
+DESCRIPTION=All Corpses (Ogre default)
+
+[ITEMDEF 020c8]
+DEFNAME=i_pet_ettin_2
+NAME=Ettin
+TYPE=T_FIGURINE
+TDATA3=c_ettin
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ettin
+
+[ITEMDEF 020c9]
+// Bad pic = don't use this !
+DEFNAME=i_pet_gorilla_junk
+NAME=Gorilla
+TYPE=T_FIGURINE
+TDATA3=c_gorilla
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Gorilla
+
+[ITEMDEF 020ca]
+DEFNAME=i_pet_lizman_2
+NAME=Lizardman
+TYPE=T_FIGURINE
+TDATA3=c_Lizardman
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Lizardman
+
+[ITEMDEF 020cb]
+DEFNAME=i_pet_ogre_2
+NAME=Ogre
+TYPE=T_FIGURINE
+TDATA3=c_ogre
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ogre
+
+[ITEMDEF 020cc]
+DEFNAME=i_pet_troll_2
+NAME=Troll
+TYPE=T_FIGURINE
+TDATA3=c_troll
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Troll
+
+[ITEMDEF 020cd]
+DEFNAME=i_pet_man_naked
+NAME=Man
+TYPE=T_FIGURINE
+TDATA3=c_man
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Man Naked
+
+[ITEMDEF 020ce]
+DEFNAME=i_pet_woman_naked
+NAME=Woman
+TYPE=T_FIGURINE
+TDATA3=c_woman
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Woman Naked
+
+[ITEMDEF 020cf]
+DEFNAME=i_pet_bear
+NAME=Bear
+TYPE=T_FIGURINE
+TDATA3=c_bear_brown
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bear
+
+[ITEMDEF 020d0]
+DEFNAME=i_pet_rat_2
+NAME=Giant Rat
+TYPE=T_FIGURINE
+TDATA3=c_rat_giant
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Rat
+
+[ITEMDEF 020d1]
+DEFNAME=i_pet_chicken
+NAME=Chicken
+TYPE=T_FIGURINE
+TDATA3=c_chicken
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Chicken
+
+[ITEMDEF 020d2]
+DEFNAME=i_pet_corpser
+NAME=Corpser
+TYPE=T_FIGURINE
+TDATA3=c_corpser
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Corpser
+
+[ITEMDEF 020d3]
+DEFNAME=i_pet_daemon
+NAME=Daemon
+TYPE=T_FIGURINE
+TDATA3=c_daemon
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Daemon
+
+[ITEMDEF 020d4]
+DEFNAME=i_pet_deer
+NAME=Deer
+TYPE=T_FIGURINE
+TDATA3=c_stag
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Deer
+
+[ITEMDEF 020d5]
+DEFNAME=i_pet_dog_2
+NAME=Dog
+TYPE=T_FIGURINE
+TDATA3=c_dog
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Dog
+
+[ITEMDEF 020d6]
+DEFNAME=i_pet_dragon
+NAME=Dragon
+TYPE=T_FIGURINE
+TDATA3=c_DRAGON_GREEN
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Dragon
+
+[ITEMDEF 020d7]
+DEFNAME=i_pet_elem_earth
+NAME=Earth Elemental
+TYPE=T_FIGURINE
+TDATA3=c_elem_earth
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Earth Elemental
+
+[ITEMDEF 020d8]
+DEFNAME=i_pet_ettin
+NAME=Ettin
+TYPE=T_FIGURINE
+TDATA3=c_ettin
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ettin
+
+[ITEMDEF 020d9]
+DEFNAME=i_pet_garg
+NAME=Gargoyle
+TYPE=T_FIGURINE
+TDATA3=c_gargoyle
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Gargoyle
+
+[ITEMDEF 020db]
+DEFNAME=i_pet_griz
+NAME=Grizzly Bear
+TYPE=T_FIGURINE
+TDATA3=c_bear_grizzly
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Grizzly Bear
+
+[ITEMDEF 020dc]
+DEFNAME=i_pet_harpy
+NAME=Harpy
+TYPE=T_FIGURINE
+TDATA3=c_harpy
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Harpy
+
+[ITEMDEF 020de]
+DEFNAME=i_pet_lizman
+NAME=Lizardman
+TYPE=T_FIGURINE
+TDATA3=c_Lizardman
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Lizard Man
+
+[ITEMDEF 020df]
+DEFNAME=i_pet_ogre
+NAME=Ogre
+TYPE=T_FIGURINE
+TDATA3=c_ogre
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ogre
+
+[ITEMDEF 020e0]
+DEFNAME=i_pet_orc
+NAME=Orc
+TYPE=T_FIGURINE
+TDATA3=c_orc
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Orc
+
+[ITEMDEF 020e1]
+DEFNAME=i_pet_bear_polar
+NAME=Polar Bear
+TYPE=T_FIGURINE
+TDATA3=c_bear_polar
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Polar Bear
+
+[ITEMDEF 020e2]
+DEFNAME=i_pet_rabbit_2
+TYPE=T_FIGURINE
+NAME=Rabbit
+TDATA3=c_rabbit
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Rabbit
+
+[ITEMDEF 020e3]
+DEFNAME=i_pet_ratman
+NAME=Rat Man
+TYPE=T_FIGURINE
+TDATA3=c_ratman
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Rat Man
+
+[ITEMDEF 020e4]
+DEFNAME=i_pet_scorp
+NAME=Scorpion
+TYPE=T_FIGURINE
+TDATA3=c_scorpion_giant
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Scorpion
+
+[ITEMDEF 020e5]
+DEFNAME=i_pet_snake_junk
+NAME=Serpent
+TYPE=T_FIGURINE
+TDATA3=c_snake
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Serpent
+
+[ITEMDEF 020e6]
+DEFNAME=i_pet_sheep
+NAME=Sheep
+TYPE=T_FIGURINE
+TDATA3=c_sheep_shorn
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Sheep
+
+[ITEMDEF 020e7]
+DEFNAME=i_pet_skeleton
+NAME=Skeleton
+TYPE=T_FIGURINE
+TDATA3=c_skeleton
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Skeleton
+
+[ITEMDEF 020e8]
+DEFNAME=i_pet_slime
+NAME=Slime
+TYPE=T_FIGURINE
+TDATA3=c_slime
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Slime
+
+[ITEMDEF 020e9]
+DEFNAME=i_pet_troll
+NAME=Troll
+TYPE=T_FIGURINE
+TDATA3=c_troll
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Troll
+
+[ITEMDEF 020ea]
+DEFNAME=i_pet_wolf
+NAME=Wolf
+TYPE=T_FIGURINE
+TDATA3=c_wolf
+VALUE={60 90}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Wolf
+
+[ITEMDEF 020eb]
+//Wooly Sheep Frame
+DEFNAME=i_pet_sheep_wooly
+NAME=Sheep
+TYPE=T_FIGURINE
+TDATA3=c_SHEEP_WOOLLY
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Wolly Sheep
+
+[ITEMDEF 020ec]
+DEFNAME=i_pet_zombie
+NAME=Zombie
+TYPE=T_FIGURINE
+TDATA3=c_zombie
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Zombie
+
+[ITEMDEF 020ed]
+DEFNAME=i_pet_elem_air
+NAME=Air Elemental
+TYPE=T_FIGURINE
+TDATA3=c_elem_air
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Air Elemental
+
+[ITEMDEF 020ee]
+DEFNAME=i_pet_bird
+NAME=Bird
+TYPE=T_FIGURINE
+TDATA3=c_bird
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bird
+
+[ITEMDEF 020ef]
+DEFNAME=i_pet_bull
+NAME=Bull
+TYPE=T_FIGURINE
+TDATA3=c_bull_brown_lt
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bull (brown)
+
+[ITEMDEF 020f0]
+DEFNAME=i_pet_bull_brown_dk
+NAME=Bull
+TYPE=T_FIGURINE
+TDATA3=c_bull_brown_dk
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bull (gray)
+
+[ITEMDEF 020f1]
+// More like a whale actually.
+DEFNAME=i_pet_dolphin
+NAME=Dolphin
+TYPE=T_FIGURINE
+TDATA3=c_dolphin
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Dolphin
+
+[ITEMDEF 020f2]
+DEFNAME=i_pet_eagle_2
+NAME=Eagle
+TYPE=T_FIGURINE
+TDATA3=c_eagle
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Eagle
+
+[ITEMDEF 020f3]
+DEFNAME=i_pet_elem_fire
+NAME=Fire Elemental
+TYPE=T_FIGURINE
+TDATA3=c_elem_fire
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Fire Elemental
+
+[ITEMDEF 020f4]
+DEFNAME=i_pet_gazer
+NAME=Gazer
+TYPE=T_FIGURINE
+TDATA3=c_gazer
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Gazer
+
+[ITEMDEF 020f5]
+DEFNAME=i_pet_gorilla
+NAME=Gorilla
+TYPE=T_FIGURINE
+TDATA3=c_gorilla
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Gorilla
+
+[ITEMDEF 020f6]
+DEFNAME=i_pet_llama
+NAME=Llama
+TYPE=T_FIGURINE
+TDATA3=c_llama
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Llama
+
+[ITEMDEF 020f7]
+// don't use this it looks like crap.
+DEFNAME=i_pet_panther_junk
+TYPE=T_FIGURINE
+TDATA3=c_panther
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Panther (looks terrible)
+
+[ITEMDEF 020f8]
+DEFNAME=i_pet_lich
+NAME=Liche
+TYPE=T_FIGURINE
+TDATA3=c_liche
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Liche
+
+[ITEMDEF 020f9]
+DEFNAME=i_pet_mongbat
+NAME=Mong Bat
+TYPE=T_FIGURINE
+TDATA3=c_mongbat
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Mongbat
+
+[ITEMDEF 020fa]
+DEFNAME=i_pet_reaper
+NAME=Reaper
+TYPE=T_FIGURINE
+TDATA3=c_reaper
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Reaper
+
+[ITEMDEF 020fb]
+DEFNAME=i_pet_shark
+NAME=Shark
+TYPE=T_FIGURINE
+TDATA3=c_sea_serpent
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Shark
+
+[ITEMDEF 020fc]
+DEFNAME=i_pet_snake
+NAME=Snake
+TYPE=T_FIGURINE
+TDATA3=c_snake
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Snake
+
+[ITEMDEF 020fd]
+DEFNAME=i_pet_spider_giant
+NAME=Giant Spider
+TYPE=T_FIGURINE
+TDATA3=c_spider_giant
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Giant Spider
+
+[ITEMDEF 020fe]
+DEFNAME=i_pet_snake_giant
+NAME=Snake
+TYPE=T_FIGURINE
+TDATA3=c_snake_giant
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Snake
+
+[ITEMDEF 020ff]
+DEFNAME=i_pet_walrus
+NAME=Walrus
+TYPE=T_FIGURINE
+TDATA3=c_WALRUS
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Walrus
+
+[ITEMDEF 02100]
+DEFNAME=i_pet_wisp
+NAME=Wisp
+TYPE=T_FIGURINE
+TDATA3=c_wisp
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Wisp
+
+[ITEMDEF 02101]
+DEFNAME=i_pet_pig
+NAME=Pig
+TYPE=T_FIGURINE
+TDATA3=c_pig
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Pig
+
+[ITEMDEF 02102]
+// bigger panther.
+DEFNAME=i_pet_panther_2
+NAME=Panther
+TYPE=T_FIGURINE
+TDATA3=c_panther
+VALUE=300
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Panther
+
+[ITEMDEF 02103]
+DEFNAME=i_pet_cow
+NAME=Cow
+TDATA3=c_cow_bw
+TYPE=T_FIGURINE
+VALUE=300
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Cow (black & white)
+
+[ITEMDEF 02106]
+DEFNAME=i_pet_man
+NAME=Man
+TYPE=T_FIGURINE
+TDATA3=c_H_VENDOR
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Man
+
+[ITEMDEF 02107]
+DEFNAME=i_pet_woman
+NAME=Woman
+TYPE=T_FIGURINE
+TDATA3=c_H_VENDOR_f
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Woman
+
+[ITEMDEF 02108]
+DEFNAME=i_pet_goat
+NAME=Goat
+TYPE=T_FIGURINE
+TDATA3=c_goat
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Goat
+
+[ITEMDEF 02109]
+DEFNAME=i_pet_ghoul
+NAME=Ghoul
+TYPE=T_FIGURINE
+TDATA3=c_ghoul
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ghoul
+
+[ITEMDEF 0210a]
+DEFNAME=i_pet_headless
+NAME=Headless
+TYPE=T_FIGURINE
+TDATA3=c_headless
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Headless
+
+[ITEMDEF 0210b]
+DEFNAME=i_pet_elem_water
+NAME=Water Elemental
+TYPE=T_FIGURINE
+TDATA3=c_elem_water
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Water Elemental
+
+[ITEMDEF 02118]
+DEFNAME=i_pet_bear_black
+NAME=Black Bear
+VALUE={100 150}
+TYPE=T_FIGURINE
+TDATA3=c_a_black_bear
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Black Bear
+
+[ITEMDEF 02119]
+//big cat
+DEFNAME=i_pet_panther
+NAME=Panther
+TYPE=T_FIGURINE
+TDATA3=c_panther
+VALUE={100 150}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Panther
+
+[ITEMDEF 0211a]
+DEFNAME=i_pet_raven
+NAME=Bird
+TYPE=T_FIGURINE
+TDATA3=c_BIRD_RAVEN
+VALUE={4 8}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bird
+
+[ITEMDEF 0211b]
+DEFNAME=i_pet_cat
+NAME=Cat
+TYPE=T_FIGURINE
+TDATA3=c_cat
+VALUE={25 40}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Cat
+
+[ITEMDEF 0211c]
+DEFNAME=i_pet_dog
+NAME=Dog
+VALUE={25 40}
+TYPE=T_FIGURINE
+TDATA3=c_dog
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Dog
+
+[ITEMDEF 0211d]
+DEFNAME=i_pet_eagle
+NAME=Eagle
+TYPE=T_FIGURINE
+TDATA3=c_eagle
+VALUE={40 80}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Eagle
+
+[ITEMDEF 0211e]
+//grizzly bear
+DEFNAME=i_pet_grizzly
+NAME=Grizzly Bear
+TYPE=T_FIGURINE
+TDATA3=c_bear_grizzly
+VALUE={150 200}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Grizzly Bear
+
+[ITEMDEF 0211f]
+//horse frame, gray
+DEFNAME=i_pet_horse_gray
+NAME=Gray Horse
+TYPE=T_FIGURINE
+TDATA3=c_horse_gray
+VALUE={280 400}
+SKILLMAKE=MAGERY 35.0
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Horse (gray)
+
+[ITEMDEF 02120]
+//horse frame
+DEFNAME=i_pet_horse_brown_lt
+NAME=Horse
+TYPE=T_FIGURINE
+TDATA3=c_horse_brown_lt
+VALUE={280 400}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Horse (light brown)
+DUPELIST=020dd
+
+[ITEMDEF 02121]
+//horse frame dark brown
+DEFNAME=i_pet_horse_brown_dk
+VALUE={280 400}
+TYPE=T_FIGURINE
+TDATA3=c_horse_brown_dk
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Horse (dark brown)
+
+[ITEMDEF 02122]
+//wolf
+DEFNAME=i_pet_wolf_gray
+TYPE=T_FIGURINE
+TDATA3=c_a_wolf_gray
+VALUE={75 125}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Wolf
+
+[ITEMDEF 02123]
+//rat
+DEFNAME=i_pet_rat
+Name=Rat
+TYPE=T_FIGURINE
+TDATA3=c_a_rat_sewer
+VALUE={2 3}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Rat
+
+[ITEMDEF 02124]
+//horse warm tan
+DEFNAME=i_pet_horse_tan
+Name=Horse
+TYPE=T_FIGURINE
+TDATA3=c_horse_tan
+VALUE={280 400}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Horse (tan)
+
+[ITEMDEF 02125]
+DEFNAME=i_pet_rabbit
+Name=Rabbit
+VALUE={10 16}
+TYPE=T_FIGURINE
+TDATA3=c_rabbit
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Rabbit
+
+[ITEMDEF 02126]
+DEFNAME=i_pet_horse_pack
+NAME=Pack Horse
+TYPE=T_FIGURINE
+TDATA3=c_horse_pack
+VALUE={580 800}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Pack Horse
+
+[ITEMDEF 02127]
+DEFNAME=i_pet_llama_pack
+Name=Pack Llama
+TYPE=T_FIGURINE
+TDATA3=c_llama_pack
+VALUE={300 380}
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Pack Llama
+
+[ITEMDEF 0212a]
+DEFNAME=i_pet_terathan_war
+NAME=Terethan
+TYPE=T_FIGURINE
+TDATA3=c_TERATHAN_WARRIOR
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Terethan
+
+[ITEMDEF 0212b]
+DEFNAME=i_pet_terathan_drone
+NAME=Terethan
+TYPE=T_FIGURINE
+TDATA3=c_terathan_drone
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Terethan
+
+[ITEMDEF 0212c]
+DEFNAME=i_pet_terathan_queen
+NAME=Terethan
+TYPE=T_FIGURINE
+TDATA3=c_terathan_matriarch
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Terethan
+
+[ITEMDEF 0212d]
+DEFNAME=i_pet_titan
+NAME=Titan
+TYPE=T_FIGURINE
+TDATA3=c_titan
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Titan
+
+[ITEMDEF 0212e]
+DEFNAME=i_pet_cyclops
+NAME=Cyclops
+TYPE=T_FIGURINE
+TDATA3=c_cyclops
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Cyclops
+
+[ITEMDEF 0212f]
+DEFNAME=i_pet_toad_giant
+NAME=Giant Toad
+TYPE=T_FIGURINE
+TDATA3=c_toad_giant
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Giant Toad
+
+[ITEMDEF 02130]
+DEFNAME=i_pet_bullfrog
+NAME=Bull Frog
+TYPE=T_FIGURINE
+TDATA3=c_bullfrog
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Bull Frog
+
+[ITEMDEF 02131]
+DEFNAME=i_pet_croc
+NAME=Crocodile
+TYPE=T_FIGURINE
+TDATA3=c_ALLIGATOR
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Crocodile
+
+DUPELIST=020da
+
+[ITEMDEF 02132]
+DEFNAME=i_pet_ophid_mage
+NAME=Ophidian
+TYPE=T_FIGURINE
+TDATA3=c_OPHIDIAN_mage
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ophidian
+
+[ITEMDEF 02133]
+DEFNAME=i_pet_ophid_war
+NAME=Ophidian
+TYPE=T_FIGURINE
+TDATA3=c_OPHIDIAN_warrior
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ophidian
+
+[ITEMDEF 02134]
+DEFNAME=i_pet_ophid_queen
+NAME=Ophidian
+TYPE=T_FIGURINE
+TDATA3=c_OPHIDIAN_queen
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ophidian
+
+[ITEMDEF 02135]
+DEFNAME=i_pet_ostard_desert
+Name=Ostard
+TYPE=T_FIGURINE
+TDATA3=c_OSTARD_Desert
+VALUE={280 400}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ostard
+
+[ITEMDEF 02136]
+DEFNAME=i_pet_ostard_zostrich
+Name=Ostard
+TYPE=T_FIGURINE
+TDATA3=c_OSTARD_Zostrich
+VALUE={280 400}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ostard
+
+[ITEMDEF 02137]
+DEFNAME=i_pet_ostard_forest
+Name=Ostard
+TYPE=T_FIGURINE
+TDATA3=c_OSTARD_Forest
+VALUE={280 400}
+
+CATEGORY=Miscellaneous
+SUBSECTION=Character Icons
+DESCRIPTION=Ostard
+
+[ITEMDEF 02013]
+//leatherworker
+
+[ITEMDEF 0200a]
+//armourer
+
+[ITEMDEF 02019]
+//tailor
+
+[ITEMDEF 0201e]
+//weapon trainer
+
+[ITEMDEF 0201f]
+//weaponsmith
+
+[ITEMDEF 02008]
+//peasant
+
+[ITEMDEF 02009]
+//noble
+
+[ITEMDEF 0200b]
+//baker
+
+[ITEMDEF 0200c]
+//bowyer
+
+[ITEMDEF 0200d]
+//butcher
+
+[ITEMDEF 0200e]
+//guard
+
+[ITEMDEF 0200f]
+//healer
+
+[ITEMDEF 02010]
+//innkeeper
+
+[ITEMDEF 02011]
+//jailer
+
+[ITEMDEF 02012]
+//jeweler
+
+[ITEMDEF 02014]
+//mage
+
+[ITEMDEF 02015]
+//pirate
+
+[ITEMDEF 02016]
+//provisioner
+
+[ITEMDEF 02017]
+//sailor
+
+[ITEMDEF 0201a]
+//spinner
+
+[ITEMDEF 0201b]
+//tavernkeeper
+
+[ITEMDEF 0201c]
+//thief
+
+[ITEMDEF 0201d]
+//tinker
+
+[ITEMDEF 02020]
+//woodworker
+
+[ITEMDEF 02021]
+//sculptor
+
+[ITEMDEF 02022]
+//artist
+
+[ITEMDEF 02023]
+//alchemist
+
+[ITEMDEF 02024]
+//glassblower
+
+[ITEMDEF 02025]
+//musician
+
+[ITEMDEF 02026]
+//fisherman
+
+[ITEMDEF 02027]
+//waiter
+
+[ITEMDEF 02028]
+//animal trainer
+
+[ITEMDEF 02029]
+//rancher
+
+[ITEMDEF 0202a]
+//cobbler
+
+[ITEMDEF 0202b]
+//beggar
+
+[ITEMDEF 0202c]
+//scribe
+
+[ITEMDEF 0202d]
+//miner
+
+[ITEMDEF 0202e]
+//mayor
+
+[ITEMDEF 0202f]
+//gambler
+
+[ITEMDEF 02030]
+//brigand
+
+[ITEMDEF 02031]
+//architect
+
+[ITEMDEF 02032]
+//cartographer
+
+[ITEMDEF 02033]
+//gypsy
+
+[ITEMDEF 02034]
+//herbalist
+
+[ITEMDEF 02035]
+//judge
+
+[ITEMDEF 02036]
+//cook
+
+[ITEMDEF 020dd]
+// light brown
+DEFNAME=i_pet_horse
+DUPEITEM=02120
+
+[ITEMDEF 03d64]
+//dead orc captain
+DEFNAME=i_corpse_orc_cap
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Orc Captain
+
+[ITEMDEF 03d65]
+//corpse of orc
+DEFNAME=i_corpse_orc
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Orc
+
+[ITEMDEF 03d66]
+//corpse of skeleton
+DEFNAME=i_corpse_skel
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Skeleton
+
+[ITEMDEF 03d67]
+//corpse
+DEFNAME=i_corpse_blank
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Human
+
+[ITEMDEF 03d68]
+//corpse
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Human
+
+[ITEMDEF 03d69]
+//deer corpse
+DEFNAME=i_corpse_deer
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Deer
+
+[ITEMDEF 03d6a]
+//wolf corpse
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Wolf
+
+[ITEMDEF 03d6b]
+//corpse of rabbit
+TYPE=T_CORPSE
+TDATA2=09
+CATEGORY=Miscellaneous
+SUBSECTION=Alpha Corpses
+DESCRIPTION=Rabbit
+
+[eof]

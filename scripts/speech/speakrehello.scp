@@ -1,0 +1,114 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// Purpose: Britannia re-hello Script
+// Notes:  for the repeat hellos people will do to make SPHERE's AI look as bad as it really is
+// Current Keyword List:
+//	hi, hello, greetings, good*see*thee
+//
+//
+[SPEECH spk_rehello]
+ON=hi
+ON=*hello*
+ON=*greetings*
+ON=*good*see*thee*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 4
+				SAY I greeted thee. Now, GET ON WITH IT!
+				SAY Oh, go soak thy head. I heard thee.
+				SAY HELLO! HELLO! I hear ye, foul vermin.
+				SAY Hello, a dozen times; Hello! Gads.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 3
+				SAY Was that thee, or a parrot, <SRC.NAME>?
+				SAY Get to thy point, <SRC.SEX man/lady>!
+				SAY Lose thy greetings and acquire some meaning.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Uh what? Hello. Hm. Could thou repeat that?
+				SAY Er... Did thee say, 'hello,' <SRC.NAME>?
+				SAY Uh. What?
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <SRC.FAME.ANONYMOUS> )
+			IF ( <COMPLEXITY.HIGH> )
+				DORAND 4
+					SAY And hello again. How may I help thee, <SRC.NAME>?
+					SAY Thou said that.
+					SAY Is it me, or art thou repetitive?
+					SAY And hello to thee, again.
+				ENDDO
+			ELIF ( <COMPLEXITY.MEDIUM>)
+				DORAND 4
+					SAY Hello again. My, what a friendly <SRC.SEX fellow/lady>.
+					SAY Hee-hee. Hello. Thou art a rascal.
+					SAY What is it thou wishest?
+					SAY Yes, goodtidings to thee as well.
+				ENDDO
+			ELSE
+				DORAND 3
+					SAY Canst thou say that again?
+					SAY I hear thee. Do I say 'hello' now?
+					SAY Thou art broing.
+				ENDDO
+			ENDIF
+		ELIF ( <SRC.FAME.INFAMOUS> || <SRC.FAME.OUTLAW> )
+			IF ( <COMPLEXITY.HIGH> )
+				DORAND 4
+					SAY How did thou become so notorious repeating thyself?
+					SAY Thou art fearsome and repetitive, <SRC.NAME>.
+					SAY <SRC.NAME>, repeating thyself gets thee nowhere.
+					SAY And to thee, hello and hello again.
+				ENDDO
+			ELIF ( <COMPLEXITY.MEDIUM>)
+				DORAND 4
+					SAY I greet thee a thousand times.
+					SAY Yes, <SRC.SEX Sire/Lady>, hello. I heard thee.
+					SAY Thou'rt a repetitive <SRC.SEX man/woman> to talk to.
+					SAY Uh, right. Art thou having me on?
+				ENDDO
+			ELSE
+				DORAND 4
+					SAY Say 'hello' again and I pour slop on thy armor.
+					SAY WHAT?!?!
+					SAY I'm not worthy, but hello anyways.
+					SAY Are ye talkin' to me? Ye must be, I see no others afoot.
+				ENDDO
+			ENDIF
+		ELSE
+			IF ( <COMPLEXITY.HIGH> )
+				DORAND 4
+					SAY How did thou become so notorious repeating thyself?
+					SAY Thou art fearsome and repetitive, <SRC.NAME>.
+					SAY <SRC.NAME>, repeating thyself gets thee nowhere.
+					SAY And to thee, hello and hello again.
+				ENDDO
+			ELIF (<COMPLEXITY.MEDIUM>)
+				DORAND 4
+					SAY I'd think a renown <SRC.SEX rogue/lady>'d too busy for repeatin' thyself.
+					SAY Yes, I heard thou.
+					SAY So famous, yet so addled. Hello, <SRC.NAME>.
+					SAY I am listening to thee, <SRC.NAME>. But hello anyway.
+				ENDDO
+			ELSE
+				DORAND 3
+					SAY Hello, <SRC.NAME>. Again, that is.
+					SAY What? I'm confused now. Hello, I guess.
+					SAY I'm not smart. <SRC.NAME> is smart. Hello <SRC.NAME>.
+				ENDDO
+			ENDIF
+		ENDIF
+	ENDIF
+
+[EOF]

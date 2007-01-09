@@ -1,0 +1,205 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Beekeepers Script
+// Notes:  This is used for general information pertaining to all Britannian Beekeepers
+// Current Keyword List: job,profession,occupation,what*to*do,apiarist,bees,honey,flower
+//
+//
+[SPEECH jobBEEKEEPER]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	// SAY=I am an apiarist.
+
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I'm a beekeeper.
+			SAY I gather honey ... and bee stings.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'm a beekeeper.
+				SAY I take honey from the hives.
+				SAY The bees and I are brothers. Their sweet honey is my livelihood.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm a beekeeper.
+				SAY I take honey from the hives.
+				SAY The bees and I are brothers. Their sweet honey is my livelihood.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a beekeeper.
+				SAY I am an apiarist. I keep bees and harvest their honey to sweeten the meals of my neighbors.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a beekeeper.
+				SAY I am an apiarist. I keep bees and harvest their honey to sweeten the meals of my neighbors.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=bee
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Tiny monsters art they. All their goodness is left behind in the hive.
+				SAY Twas a strange god that made such a creature that bites with its backside.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Tiny monsters art they. All their goodness is left behind in the hive.
+				SAY Twas a strange god that made such a creature that bites with its backside.		
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If they fear thee not, they'lt harm thee not.
+				SAY They can only think one thought at a time ... I just avoid their attention.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If they fear thee not, they'lt harm thee not.
+				SAY They can only think one thought at a time ... I just avoid their attention.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY 'Tis a wondrous life they lead. Their cities are lined with sugar, and their thoughts are filled with flowers.
+				SAY How they make such sweetness from flower dust is a grand mystery.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY 'Tis a wondrous life they lead. Their cities are lined with sugar, and their thoughts are filled with flowers.
+				SAY How they make such sweetness from flower dust is a grand mystery.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=honey
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It's my living.
+				SAY I sell it to the city-folk. Plain bread is too common for them.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It's my living.
+				SAY I sell it to the city-folk. Plain bread is too common for them.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY There's nothing better to sweeten a day.
+				SAY A touch of honey turns a plain meal into a feast.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY There's nothing better to sweeten a day.
+				SAY A touch of honey turns a plain meal into a feast.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY 'Tis the best thing in the world. The color of sunrise, and sweeter than new love.
+				SAY A grand thing is honey. Imagine how dull and dry the days would be without it.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY 'Tis the best thing in the world. The color of sunrise, and sweeter than new love.
+				SAY A grand thing is honey. Imagine how dull and dry the days would be without it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=flower 
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Yes, I'll buy some.
+				SAY I always need flowers.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yes, I'll buy some.
+				SAY I always need flowers.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It would make my day easier if I could buy some flowers from thee.
+				SAY If thou hast any flowers, I'd gladly buy them.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It would make my day easier if I could buy some flowers from thee.
+				SAY If thou hast any flowers, I'd gladly buy them.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou carry flowers, I'll buy them, and we can watch the bees rejoice.
+				SAY I'd be glad to buy any flowers thou might have. The meadows hereby are late to bloom.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou carry flowers, I'll buy them, and we can watch the bees rejoice.
+				SAY I'd be glad to buy any flowers thou might have. The meadows hereby are late to bloom.
+			ENDDO
+		ENDIF
+	ENDIF
+
+DEFAULT=Ah, if only thou couldst speak as clearly as bees.
+
+ON=HOLD UP
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Hello... mind the hives.
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell.
+	BYE
+	return 1
+
+ON=APIARIST
+	SAY=Thou knowest!  A beekeeper.
+
+ON=BEE
+ON=BEES
+	SAY=Ah, my productive little friends.. the bees!  Shh...  *buzzbuzzz*  They are trying to tell me something!
+
+ON=FLOWER
+	SAY=The bees art my friends, but the bees' first love is flowers.
+
+ON=HONEY
+	SAY=Honey makes a lovely snack! Shh...  *buzzbuzzz*  They are trying to tell me something!
+
+//RANDOM=Oh my fuzzy flying friends.. I love thee!
+
+[EOF]
+

@@ -1,0 +1,630 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, November 22, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF 04200]
+//HOUSE_DEED_TEMPLATE_0
+DEFNAME=i_deed_house_stone_plaster_small
+NAME=Deed to a Small Stone and Plaster House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_stone_plaster_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Stone and Plaster House
+
+ON=@Create
+	MORE=i_multi_house_stone_plaster_small
+
+[ITEMDEF 04202]
+//HOUSE_DEED_TEMPLATE_1
+DEFNAME=i_deed_House_stone_small
+ID=i_deed
+NAME=Deed to a Small Stone House
+RESOURCES=i_deed,i_multi_house_stone_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Stone House
+
+ON=@Create
+	MORE=i_multi_house_stone_small
+
+[ITEMDEF 04204]
+//HOUSE_DEED_TEMPLATE_2
+DEFNAME=i_deed_House_stone_brick_small
+NAME=Deed to a Small Brick House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_stone_brick_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Brick House
+
+ON=@Create
+	MORE=i_multi_house_stone_brick_small
+
+[ITEMDEF 04206]
+//HOUSE_DEED_TEMPLATE_3
+DEFNAME=i_deed_House_stone_wood_small
+NAME=Deed to a Small Wood House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_stone_wood_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Wood House
+
+ON=@Create
+	MORE=i_multi_house_stone_wood_small
+
+[ITEMDEF 04208]
+//HOUSE_DEED_TEMPLATE_4
+DEFNAME=i_deed_House_wood_plaster_small
+NAME=Deed to a Small Wood and Plaster House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_wood_plaster_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Wood and Plaster House
+
+ON=@Create
+	MORE=i_multi_house_wood_plaster_small
+
+[ITEMDEF 04210]
+//HOUSE_DEED_TEMPLATE_5
+DEFNAME=i_deed_House_wood_thatched_small
+NAME=Deed to a Small Wood House Thatched Roof
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_wood_thatched_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Wood House Thatched Roof
+
+ON=@Create
+	MORE=i_multi_house_wood_thatched_small
+
+[ITEMDEF 04212]
+//HOUSE_DEED_TEMPLATE_6
+DEFNAME=i_deed_tent_blue
+NAME=Deed to a Blue Tent
+ID=i_deed
+RESOURCES=i_deed,i_multi_tent_blue
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Blue Tent
+
+ON=@Create
+	MORE=i_multi_tent_blue
+
+[ITEMDEF 04214]
+//HOUSE_DEED_TEMPLATE_7
+DEFNAME=i_deed_tent_green
+NAME=Deed to a Green Tent
+ID=i_deed
+RESOURCES=i_deed,i_multi_tent_green
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Green Tent
+
+ON=@Create
+	MORE=i_multi_tent_green
+
+[ITEMDEF 04216]
+//HOUSE_DEED_TEMPLATE_8
+DEFNAME=i_deed_house_3room
+NAME=Deed to a Three Room House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_3room
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Three Room House
+
+ON=@Create
+	MORE=i_multi_house_3room
+
+[ITEMDEF 04218]
+//HOUSE_DEED_TEMPLATE_9
+DEFNAME=i_deed_house_wood_plaster_2story
+NAME=Deed to a Two Story Wood and Plaster House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_wood_plaster_2story
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Two Story Wood and Plaster House
+
+ON=@Create
+	MORE=i_multi_house_wood_plaster_2story
+
+[ITEMDEF 04220]
+//HOUSE_DEED_TEMPLATE_10
+DEFNAME=i_deed_house_stone_plaster_2story
+NAME=Deed to a Two Story Stone and Plaster House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_stone_plaster_2story
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Two Story Stone and Plaster House
+
+ON=@Create
+	MORE=i_multi_house_stone_plaster_2story
+
+[ITEMDEF 04222]
+//HOUSE_DEED_TEMPLATE_11
+DEFNAME=i_deed_tower
+NAME=Deed to a Tower
+ID=i_deed
+RESOURCES=i_deed,i_multi_tower
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Tower
+
+ON=@Create
+	MORE=i_multi_tower
+
+[ITEMDEF 04224]
+// HOUSE_DEED_TEMPLATE_12
+DEFNAME=i_deed_keep
+NAME=Deed to a Keep
+ID=i_deed
+RESOURCES=i_deed,i_multi_keep
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Keep
+
+ON=@Create
+	MORE=i_multi_keep
+
+[ITEMDEF 04226]
+//HOUSE_DEED_TEMPLATE_13
+DEFNAME=i_deed_Castle
+NAME=Deed to a Castle
+ID=i_deed
+RESOURCES=i_deed,i_multi_castle
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Castle
+
+ON=@Create
+	MORE=i_multi_castle
+
+[ITEMDEF 04228]
+//HOUSE_DEED_LARGE_SMITHY
+DEFNAME=i_deed_shop_blacksmithy_large
+NAME=Deed to a Large Blacksmithy Shop
+ID=i_deed
+RESOURCES=i_deed,i_multi_shop_blacksmithy_large
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Large Black Smithy
+
+ON=@Create
+	MORE=i_multi_shop_blacksmithy_large
+
+[ITEMDEF 04229]
+DEFNAME=i_deed_house_patio_marble
+NAME=Deed to a Large Marble Patio House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_patio_marble
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Large Marble Patio House
+
+ON=@Create
+	MORE=i_multi_house_patio_marble
+
+[ITEMDEF 0422a]
+DEFNAME=i_deed_tower_wizard
+NAME=Deed to a Wizards Tower
+ID=i_deed
+RESOURCES=i_deed,i_multi_tower_wizard
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Wizards Tower
+
+ON=@Create
+	MORE=i_multi_tower_wizard
+
+[ITEMDEF 0422b]
+DEFNAME=i_deed_cabin_log_2story
+NAME=Deed to a Two Story Log Cabin
+ID=i_deed
+RESOURCES=i_deed,i_multi_cabin_log_2story
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Two Story Log Cabin
+
+ON=@Create
+	MORE=i_multi_cabin_log_2story
+
+[ITEMDEF 0422c]
+DEFNAME=i_deed_house_patio_sand
+NAME=Deed to a Sandstone Patio House
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_patio_sand
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Sandstone Patio House
+
+ON=@Create
+	MORE=i_multi_house_patio_sand
+
+[ITEMDEF 0422d]
+DEFNAME=i_deed_villa_2story
+NAME=Deed to a Two Story Villa
+ID=i_deed
+RESOURCES=i_deed,i_multi_villa_2story
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Two Story Villa
+
+ON=@Create
+	MORE1=i_multi_villa_2story
+
+[ITEMDEF 0422e]
+DEFNAME=i_deed_shop_stone_small
+NAME=Deed to a Small Stone Shop
+ID=i_deed
+RESOURCES=i_deed,i_multi_shop_stone_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Stone Shop
+
+ON=@Create
+	MORE=i_multi_shop_stone_small
+
+[ITEMDEF 0422f]
+DEFNAME=i_deed_shop_marble_small
+NAME=Deed to a Small Marble Shop
+ID=i_deed
+RESOURCES=i_deed,i_multi_shop_marble_small
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Small Marble Shop
+
+ON=@Create
+	MORE=i_multi_shop_marble_small
+
+[ITEMDEF 04230]
+DEFNAME=i_deed_GUILDSTONE
+NAME=Deed to a Guildstone
+ID=i_deed
+RESOURCES=i_deed,i_guildstone
+CATEGORY=Provisions - Deeds
+SUBSECTION=Guild and Town Stones
+DESCRIPTION=Guild Stone
+
+ON=@Create
+	MORE=i_guildstone
+
+[ITEMDEF 0423A]
+DEFNAME=i_deed_house_wheat_cottage
+NAME=Deed to a Wheat Cottage
+ID=i_deed
+RESOURCES=i_deed,i_multi_house_wheat_cottage
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Wheat Cottage
+
+ON=@Create
+	MORE=i_multi_house_wheat_cottage
+
+[ITEMDEF 0423B]
+DEFNAME=i_deed_evil_compound
+NAME=Evil Compound
+ID=i_deed
+RESOURCES=i_deed,i_multi_evil_compound
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Evil Compound
+
+ON=@Create
+	MORE=i_multi_evil_compound
+
+[ITEMDEF 04240]
+//i_deed_ship_small_N
+DEFNAME=i_deed_ship_small_N
+NAME=Deed to a small ship
+ID=i_deed_ship
+RESOURCES=i_deed,i_multi_ship_small_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Small Ship
+
+ON=@Create
+	MORE=i_multi_ship_small_N
+
+[ITEMDEF 04241]
+DEFNAME=i_deed_ship_dragon_small_N
+ID=i_deed_ship
+NAME=Deed to a small dragon ship
+RESOURCES=i_deed,i_multi_ship_dragon_small_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Small Dragon Ship
+
+ON=@Create
+	MORE=i_multi_ship_dragon_small_N
+
+[ITEMDEF 04242]
+DEFNAME=i_deed_ship_medium_N
+ID=i_deed_ship
+NAME=Deed to a medium ship
+RESOURCES=i_deed,i_multi_ship_medium_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Medium Ship
+
+ON=@Create
+	MORE=i_multi_ship_medium_N
+
+[ITEMDEF 04243]
+DEFNAME=i_deed_ship_dragon_medium_N
+NAME=Deed to a medium dragon ship
+ID=i_deed_ship
+RESOURCES=i_deed,i_multi_ship_dragon_medium_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Medium Dragon Ship
+
+ON=@Create
+	MORE=i_multi_ship_dragon_medium_N
+
+[ITEMDEF 04244]
+DEFNAME=i_deed_ship_long_N
+ID=i_deed_ship
+NAME=Deed to a long ship
+RESOURCES=i_deed,i_multi_ship_long_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Long Ship
+
+ON=@Create
+	MORE=i_multi_ship_long_N
+
+[ITEMDEF 04245]
+DEFNAME=i_deed_ship_dragon_long_N
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,i_multi_ship_dragon_long_N
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Long Dragon Ship
+
+ON=@Create
+	MORE=i_multi_ship_dragon_long_N
+
+[ITEMDEF 05007]
+DEFNAME=i_deed_bboardw
+NAME=Deed to a Bulletin Board W
+ID=i_deed
+RESOURCES=i_deed,i_bulletin_board
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Bulletin Board W
+
+ON=@Create
+	MORE=i_bulletin_board
+
+[ITEMDEF 05008]
+DEFNAME=i_deed_bboardn
+NAME=Deed to a Bulletin Board N
+ID=i_deed
+RESOURCES=i_deed,i_bulletin_board_2
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Bulletin Board N
+
+ON=@Create
+	MORE=i_bulletin_board_2
+
+[ITEMDEF 05009]
+//no additional directional deed needed
+DEFNAME=i_deed_spinwheel
+NAME=Deed to a Spinning Wheel
+ID=i_deed
+RESOURCES=i_deed,i_spinning_wheel
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Spinning Wheel
+
+ON=@Create
+	MORE=i_spinning_wheel
+
+[ITEMDEF 0500a]
+DEFNAME=I_DEED_FORGE
+NAME=Deed to a Forge
+ID=i_deed
+RESOURCES=i_deed,i_forge
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Forge
+
+ON=@Create
+	MORE=i_forge
+
+[ITEMDEF 0500b]
+DEFNAME=I_DEED_ANVIL
+NAME=Deed to an Anvil
+ID=i_deed
+RESOURCES=i_deed,i_anvil
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Anvil
+
+ON=@Create
+	MORE=i_anvil
+
+[ITEMDEF 05010]
+DEFNAME=I_DEED_DUMMYW
+NAME=Deed to a Training Dummy (West)
+ID=i_deed
+RESOURCES=i_deed,i_training_dummy
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Training Dummy (W)
+
+ON=@Create
+	MORE=i_training_dummy
+
+[ITEMDEF 05011]
+DEFNAME=I_DEED_DUMMYN
+NAME=Deed to a Training Dummy (North)
+ID=i_deed
+RESOURCES=i_deed,i_training_dummy_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Training Dummy (N)
+
+ON=@Create
+	MORE=i_training_dummy_n
+
+[ITEMDEF 05012]
+DEFNAME=I_DEED_ARCHBUTTEW
+NAME=Deed to a Archery Butte (West)
+ID=i_deed
+RESOURCES=i_deed,i_archery_butte
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Archery Butte (W)
+
+ON=@Create
+	MORE=i_archery_butte
+
+[ITEMDEF 05013]
+DEFNAME=I_DEED_ARCHBUTTEN
+NAME=Deed to a Archery Butte (North)
+ID=i_deed
+RESOURCES=i_deed,i_archery_butte2
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Archery Butte (N)
+
+ON=@Create
+	MORE=i_archery_butte2
+
+[ITEMDEF 05014]
+DEFNAME=I_DEED_PICKPOCKN
+NAME=Deed to a Pickpocket Dip (North)
+ID=i_deed
+RESOURCES=i_deed,i_pickpocket_dip_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Pickpocket Dip (N)
+
+ON=@Create
+	MORE=i_pickpocket_dip_n
+
+[ITEMDEF 05015]
+DEFNAME=i_deed_pickpockw
+NAME=Deed to a Pickpocket Dip (West)
+ID=i_deed
+RESOURCES=i_deed,i_pickpocket_dip_w
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Pickpocket Dip (W)
+
+ON=@Create
+	MORE=i_pickpocket_dip_w
+
+[ITEMDEF i_deed_vendor]
+NAME=Deed to a Vendor
+ID=i_deed
+VALUE=15000
+CATEGORY=Provisions - Deeds
+SUBSECTION=Vendor Deeds
+DESCRIPTION=Player Vendor Deed
+
+ON=@DCLICK
+	SRC.MESSAGE Your vendor has been created.
+	SRC.NEWNPC { C_H_VENDOR 1 C_H_VENDOR_F 1 }
+	VAR.VEND=<SRC.ACT.UID> // keep the vendors uid for later use.
+	src.act.p=<src.p>
+	src.update
+	REMOVE // get rid of the deed
+	// give the vendor some starting gold.
+	src.newitem i_bankbox
+	src.act.more1=500
+	src.act.cont=<var.vend>
+	// tell him he works for you.
+	SRC.NEWITEM=i_memory
+	SRC.ACT.COLOR=memory_ipet
+	SRC.ACT.LINK=<SRC.UID>
+	SRC.ACT.LAYER=layer_special
+	SRC.ACT.CONT=<VAR.VEND>
+	RETURN 1
+
+[ITEMDEF i_deed_fount_br]
+NAME=Brown Fountain Deed
+ID=i_deed
+RESOURCES=i_deed,i_multi_fount_brown
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=Brown Fountain
+
+ON=@Create
+	MORE=i_multi_fount_brown
+
+[ITEMDEF i_deed_fount_wh]
+NAME=White Fountain Deed
+ID=i_deed
+RESOURCES=i_deed,i_multi_fount_white
+CATEGORY=Provisions - Deeds
+SUBSECTION=Item Deeds
+DESCRIPTION=White Fountain
+
+ON=@Create
+	MORE=i_multi_fount_white
+
+[ITEMDEF i_deed_Wandering_Healer_Camp]
+DEFNAME=i_deed_Wandering_Healer_Camp
+NAME=Deed to a Wandering Healer Camp
+ID=i_Deed
+RESOURCES=i_deed, i_Wandering_Healer_Camp
+
+ON=@Create
+	MORE=i_Wandering_Healer_Camp
+	CATEGORY=Provisions - Deeds
+	SUBSECTION=Wandering Tent Deeds
+	DESCRIPTION=Deed to Wandering Healer Camp
+
+[ITEMDEF i_deed_Wandering_Mage_Camp]
+DEFNAME=i_deed_Wandering_Mage_Camp
+NAME=Deed to a Wandering Mage Camp
+ID=i_Deed
+RESOURCES=i_deed, i_Wandering_Mage_Camp
+
+ON=@Create
+	MORE=i_Wandering_Mage_Camp
+	CATEGORY=Provisions - Deeds
+	SUBSECTION=Wandering Tent Deeds
+	DESCRIPTION=Deed to Wandering Mage Camp
+
+[ITEMDEF i_deed_Wandering_Bank_Camp]
+DEFNAME=i_deed_Wandering_Bank_Camp
+NAME=Deed to a Wandering Bank Camp
+ID=i_Deed
+RESOURCES=i_deed, i_Wandering_Bank_Camp
+
+ON=@Create
+	MORE=i_Wandering_Bank_Camp
+	CATEGORY=Provisions - Deeds
+	SUBSECTION=Wandering Tent Deeds
+	DESCRIPTION=Deed to Wandering Bank Camp
+
+[ITEMDEF i_deed_Scaffold_and_Trailer]
+DEFNAME=i_deed_Scaffold_and_Trailer
+NAME=Deed to a Scaffold and Trailer
+ID=i_Deed
+RESOURCES=i_deed, i_Scaffold_and_Trailer
+
+ON=@Create
+	MORE=i_Scaffold_and_Trailer
+	CATEGORY=Provisions - Deeds
+	SUBSECTION=Misc
+	DESCRIPTION=Deed to Scaffold and Trailer

@@ -1,0 +1,358 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+
+VERSION=0.56b
+
+
+//////// BEGIN OF KIRIN SCRIPT ///////////
+
+[ITEMDEF 9632]
+DEFNAME=i_pet_kirin
+NAME=Kirin
+
+[chardef 084] 
+defname=c_kirin 
+name=Kirin 
+SOUND=snd_kirin
+ICON=i_pet_kirin
+DAM=10,30 
+ARMOR=35 
+RESOURCES=15 i_ribs_raw,10 i_hide 
+CAN=MT_WALK|MT_RUN 
+FOODTYPE=40 t_meat_raw 
+DESIRES=e_horses,c_man,c_woman 
+AVERSIONS=e_carnivores3
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=4
+RESDISPDNID=c_horse_gray
+CATEGORY=Animals
+SUBSECTION=New Mounts
+DESCRIPTION=Kirin 
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	FAME={100 3000}
+	STR={150 200}
+	MAXHITS=300
+	INT={300 340} 
+	DEX={90 110} 
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={99.0 100.0}
+	TACTICS={98.0 100.0}
+	WRESTLING={95.0 100.0}
+	TAMING=105.0
+	MAGERY=125.0
+	/////////// END OF KIRIN SCRIPT //////////// 
+	////////// BEGIN Swamp Dragon script /////////// 
+
+[ITEMDEF 9753]
+DEFNAME=i_pet_swampdragon
+NAME=Swamp Dragon
+
+[chardef 031a] 
+defname=c_swamp_dragon 
+name=Swamp Dragon 
+DAM=6,24 
+ARMOR=20 
+SOUND=snd_monster_dragon1
+ICON=i_pet_swampdragon
+CAN=MT_WALK|MT_FLY|MT_FIRE_IMMUNE 
+RESOURCES=60 i_ribs_raw 
+FOODTYPE=80 t_meat_raw
+DESIRES=i_gold 
+AVERSIONS=r_civilization,r_water
+MOVERATE=40 
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Swamp Dragon 
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	STR={160 200}
+	DEX={83 92}
+	INT={51 90}
+	FAME={3000 9000}
+	PARRYING={65.0 80.0}
+	MAGICRESISTANCE={65.0 80.0}
+	TACTICS={65.0 90.0}
+	WRESTLING={65.0 80.0}
+	TAMING=100.0
+	////////// END Swamp dragon script ////////////// 
+	////////// BEGIN Armored Swamp Dragon script //////// 
+
+[chardef 031f]
+defname=c_armored_swamp_dragon
+name=Armored Swamp Dragon
+DAM=10,24
+ARMOR=50
+SOUND=snd_monster_dragon1
+ICON=i_pet_swampdragon
+CAN=MT_WALK|MT_FLY|MT_FIRE_IMMUNE
+RESOURCES=60 i_ribs_raw
+FOODTYPE=80 t_meat_raw
+DESIRES=i_gold
+AVERSIONS=r_civilization,r_water
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Armoured Swamp Dragon
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	STR={150 230}
+	DEX={73 82}
+	INT={51 90}
+	FAME={3000 9000}
+	PARRYING={65.0 80.0}
+	MAGICRESISTANCE={65.0 80.0}
+	TACTICS={65.0 90.0}
+	WRESTLING={65.0 80.0}
+	TAMING=90.0
+	/////// end of armored swamp dragon mount script // 
+	/////// Begin Giant beetle script ///////////////// 
+
+[ITEMDEF 9743]
+DEFNAME=i_pet_giantbeetle
+NAME=Giant Beetle
+
+[chardef 0317] 
+defname=c_giant_beetle 
+name=Giant Beetle 
+CAN=MT_WALK|MT_RUN 
+SOUND=snd_rune_beetle
+ICON=i_pet_giantbeetle
+DAM=5,10 
+ARMOR=30
+DESIRES=i_gold 
+AVERSIONS=r_civilization,r_water
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Giant Beetle
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	STR={100 230} 
+	DEX={153 172} 
+	INT={51 90} 
+	FAME={3000 9000} 
+	TAMING=80.0 
+	PARRYING={65.0 80.0} 
+	MAGICRESISTANCE={65.0 80.0} 
+	TACTICS={65.0 90.0} 
+	WRESTLING={65.0 80.0} 
+	TAMING=110.0 
+	////////// END Giant beetle script ////////// 
+	////////////// RIDGEBACK SCRIPT ////////////
+
+[ITEMDEF 9749]
+DEFNAME=i_pet_ridgeback
+NAME=Ridgeback
+
+[chardef 0bb] 
+defname=c_ridgeback 
+name=Ridgeback 
+SOUND=snd_animal_ostard_desert1 
+ICON=i_pet_ridgeback
+DAM=4,12
+ARMOR=9 
+ANIM=01fff 
+RESOURCES=15 i_ribs_raw 
+CAN=MT_WALK|MT_RUN 
+FOODTYPE=55 t_crops, 55 t_fruit, 55 t_grain, 64 t_grass 
+DESIRES=e_OSTARDS,c_man,c_woman 
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Ridgeback
+
+ON=@Create
+	NPC=brain_animal
+	karma=-2000
+	STR={94 170}
+	DEX={36 55}
+	INT={6 10}
+	PARRYING={35.0 45.0}
+	MAGICRESISTANCE={25.0 30.0}
+	TACTICS={29.0 44.0}
+	WRESTLING={29.0 44.0}
+	TAMING=80.0
+	/////// END RIDGEBACK MOUNT //////////// 
+	/////// BEGIN SAVAGE RIDGEBACK MOUNT SCRIPT ////// 
+
+[chardef 0bc] 
+defname=c_savage_ridgeback 
+name=Savage Ridgeback 
+SOUND=snd_animal_ostard_frenzied1 
+ICON=i_pet_ridgeback
+DAM=8,23 
+ARMOR=15 
+ANIM=01fff 
+RESOURCES=15 i_ribs_raw 
+CAN=MT_WALK|MT_RUN 
+FOODTYPE=55 t_crops, 55 t_fruit, 55 t_grain, 64 t_grass
+DESIRES=e_OSTARDS,c_man,c_woman 
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Ridgeback 
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	STR={94 170}
+	DEX={96 115}
+	INT={6 10}
+	PARRYING={75.0 85.0} 
+	MAGICRESISTANCE={75.0 80.0} 
+	TACTICS={79.0 94.0} 
+	WRESTLING={79.0 94.0} 
+	TAMING=80.0 
+	///////// END SAVAGE Ridgeback script ///// 
+	////// BEGIN SKELETAL MOUNT SCRIPT ////// 
+
+[ITEMDEF 9751]
+DEFNAME=i_pet_skeletalmount
+NAME=Skeletal Mount
+
+[chardef 0319]
+defname=c_skeletal_mount
+name=Skeletal Mount
+SOUND=snd_monster_skletn1
+ICON=i_pet_skeletalmount
+DAM=18,22
+ARMOR=30
+RESOURCES=25 i_ribs_raw,10 i_hide
+CAN=MT_WALK|MT_RUN
+FOODTYPE=40 t_meat_raw
+DESIRES=e_horses,c_man,c_woman
+AVERSIONS=e_carnivores3
+MOVERATE=60
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Skeletal Mount
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	FAME={100 2000} 
+	STR={200 230} 
+	INT={300 340} 
+	DEX={86 105} 
+	PARRYING={55.0 95.0} 
+	MAGICRESISTANCE={99.0 100.0} 
+	TACTICS={98.0 100.0} 
+	WRESTLING={90.0 93.0} 
+	TAMING=105.0
+	MAGERY=100.0
+	//////////////  END SKELETAL MOUNT ////// 
+	////////// BEGIN UNICORN //////////////// 
+
+[ITEMDEF 9678]
+DEFNAME=i_pet_unicorn
+NAME=Unicorn
+
+[chardef 07a] 
+defname=c_m_unicorn 
+name=Unicorn 
+SOUND=snd_animals_horse1 
+ICON=i_pet_unicorn
+DAM=10,15 
+ARMOR=20 
+RESOURCES=15 i_ribs_raw,10 i_hide 
+CAN=MT_WALK|MT_RUN 
+FOODTYPE=55 t_crops, 55 t_fruit, 55 t_grain, 64 t_grass 
+DESIRES=e_horses,c_man,c_woman 
+AVERSIONS=e_carnivores3 
+MOVERATE=40
+TEVENTS=e_horses
+RESLEVEL=2
+RESDISPDNID=c_horse_gray
+CATEGORY=Monsters 
+SUBSECTION=New Mounts
+DESCRIPTION=Unicorn 
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	FAME=3000 
+	karma=-2000 
+	STR={100 150} 
+	INT={200 240} 
+	DEX={100 150} 
+	PARRYING={40.0 50.0} 
+	MAGICRESISTANCE={25.0 30.0} 
+	TACTICS={30.0 50.0} 
+	WRESTLING={45.0 60.0}
+	MAGERY=90.0
+	TAMING=80.0
+	////////////// END UNICORN SCRIPT /////////
+	///Hyriu
+
+[ITEMDEF 10090]
+DEFNAME=i_pet_hiryu
+NAME=Hiryu
+
+[chardef 243] 
+defname=c_m_hiryu 
+name=Hiryu 
+SOUND=snd_hiryu
+ICON=i_pet_hiryu
+DAM=10,15 
+ARMOR=20 
+RESOURCES=15 i_ribs_raw,10 i_hide 
+CAN=MT_WALK|MT_RUN 
+FOODTYPE=55 i_ribs_raw  
+DESIRES=c_man,c_woman 
+AVERSIONS=e_carnivores3
+MOVERATE=40
+RESDISPDNID=c_horse_gray
+RESLEVEL=4
+RESDISPDNHUE=33
+TEVENTS=e_horses
+CATEGORY=Monsters 
+SUBSECTION=SE 
+DESCRIPTION=Hiryu
+
+ON=@Create 
+	NPC=brain_animal
+	karma=-2000
+	FAME=3000
+	STR={200 250} 
+	INT={200 240} 
+	DEX={100 150}
+	PARRYING={40.0 50.0} 
+	MAGICRESISTANCE={25.0 30.0} 
+	TACTICS={30.0 50.0} 
+	WRESTLING={45.0 60.0} 
+	TAMING=100.0

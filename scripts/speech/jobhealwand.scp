@@ -1,0 +1,560 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Wandering Healers Script
+// Notes:  This is used for general information pertaining to all Britannian Wandering Healers
+// Current Keyword List: job,work,profession,what*do*do,occupation,heal,healing,help,
+// hurt,injured,skill,first*aid,knowledge,anatomy,
+// cure,poison,resurrect,resurrection,raise*dead,buy,potions,potion,healing*scrolls,shrine,items,master
+//
+
+[SPEECH jobHealerWander]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 3
+			SAY I heal.
+			SAY Healin's what I do.
+			SAY Healing.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I heal those who are hurt.
+				SAY I am a healer.
+				SAY I heal the wounds of the injured.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I heal those who are hurt.
+				SAY I am a healer.
+				SAY I heal the wounds of the injured.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am one of the many wandering healers of Britannia.
+				SAY Why, I am a wandering healer,  <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Healing is what I do, <SRC.SEX Mi'lord/Mi'lady>, for I am a healer that travels Brittannia.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am one of the many wandering healers of Britannia.
+				SAY Why, I am a wandering healer,  <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Healing is what I do, <SRC.SEX Mi'lord/Mi'lady>, for I am a healer that travels Brittannia.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*heal*
+ON=*healing*
+ON=*help*
+ON=*hurt*
+ON=*injured*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Potions would help.
+				SAY Healing scrolls are good for wounds.
+				SAY Some spells heal.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Potions would help.
+				SAY Healing scrolls are good for wounds.
+				SAY Some spells heal.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master can sell thee items to heal thyself.
+				SAY Healing potions will help thee.
+				SAY Healing scrolls and healing potions help wounds to heal.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master can sell thee items to heal thyself.
+				SAY Healing potions will help thee.
+				SAY Healing scrolls and healing potions help wounds to heal.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, I could heal thee if I were not so weak at the moment.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, art thou injured?  I would heal thee, but my powers are not at their normal strength.
+				SAY My strength is not what it used to be. I wouldst heal thee if I but couldst.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, I could heal thee if I were not so weak at the moment.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, art thou injured?  I would heal thee, but my powers are not at their normal strength.
+				SAY My strength is not what it used to be. I wouldst heal thee if I but couldst.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*skill*
+ON=first*aid
+ON=*knowledge*
+ON=*anatomy*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I can help thee. I'd like for thee to leave me alone, but I'll teach thee, if thou needs it.
+				SAY I want thee to leave me be. But I could teach thee some of my skills, for a price.
+				SAY Please, just leave me alone.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I can help thee. I'd like for thee to leave me alone, but I'll teach thee, if thou needs it.
+				SAY I want thee to leave me be. But I could teach thee some of my skills, for a price.
+				SAY Please, just leave me alone.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee about first aid. I could teach thee, also, about the human anatomy. Thou wouldst need to pay me, of course.
+				SAY Thou shouldst know something about the healing arts. Could be of use to thee. I could help thee some, I think.
+				SAY If thou dost need help with first aid, just ask me to teach thee and if I can, I will. For a small price.
+				SAY I can teach thee how to know anatomy better. Could be of use to thee in the future.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee about first aid. I could teach thee, also, about the human anatomy. Thou wouldst need to pay me, of course.
+				SAY Thou shouldst know something about the healing arts. Could be of use to thee. I could help thee some, I think.
+				SAY If thou dost need help with first aid, just ask me to teach thee and if I can, I will. For a small price.
+				SAY I can teach thee how to know anatomy better. Could be of use to thee in the future.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about first aid. I could give thee lessons for a few coins.
+				SAY Thou can always learn new things, my friend. I could teach thee some things that could help thee perform first aid, for instance. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee when thou art injured. I would need thee to pay me for my time, however.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about first aid. I could give thee lessons for a few coins.
+				SAY Thou can always learn new things, my friend. I could teach thee some things that could help thee perform first aid, for instance. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee when thou art injured. I would need thee to pay me for my time, however.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*help*
+ON=*hurt*
+ON=*injured*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master can sell scrolls an' potions.
+				SAY My master should have some potions or scrolls around his shop.
+				SAY My master can sell bandages or a potion to heal thy wounds. Collecting herbs and reagents is about all I can do, though.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master can sell scrolls an' potions.
+				SAY My master should have some potions or scrolls around his shop.
+				SAY My master can sell bandages or a potion to heal thy wounds. Collecting herbs and reagents is about all I can do, though.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Art thou hurt? A well prepared traveller buys them before <SRC.SEX his/her> journey.
+				SAY My master's potions and scrolls would help thee if thou had but purchased them before leaving on your journey.
+				SAY My abilities are limited to gathering herbs and reagents.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Art thou hurt? A well prepared traveller buys them before <SRC.SEX his/her> journey.
+				SAY My master's potions and scrolls would help thee if thou had but purchased them before leaving on your journey.
+				SAY My abilities are limited to gathering herbs and reagents.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Art thou hurt? A well prepared traveller buys them before <SRC.SEX his/her> journey.
+				SAY My master's potions and scrolls would help thee if thou had but purchased them before leaving on your journey.
+				SAY My abilities are limited to gathering herbs and reagents.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Art thou hurt? A well prepared traveller buys them before <SRC.SEX his/her> journey.
+				SAY My master's potions and scrolls would help thee if thou had but purchased them before leaving on your journey.
+				SAY My abilities are limited to gathering herbs and reagents.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cure*
+ON=*poison*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Art thou poisoned?
+				SAY I can't help.
+				SAY Curin's not as easy as one might think.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Art thou poisoned?
+				SAY I can't help.
+				SAY Curin's not as easy as one might think.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Curing poison is a commonly-practiced skill.
+				SAY I beg thy pardon, <SRC.SEX Mi'lord/Mi'lady>, but thou wilt have to find another to cure thy poisonous ailment.
+				SAY Art thou poisoned? I do wish I could help thee, <SRC.SEX Mi'lord/Mi'lady>, but alas I cannot.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Curing poison is a commonly-practiced skill.
+				SAY I beg thy pardon, <SRC.SEX Mi'lord/Mi'lady>, but thou wilt have to find another to cure thy poisonous ailment.
+				SAY Art thou poisoned? I do wish I could help thee, <SRC.SEX Mi'lord/Mi'lady>, but alas I cannot.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am sorry, <SRC.SEX Mi'lord/Mi'lady>, for I cannot cure poison.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, forgive me, but my powers are not strong enough to cure thee.
+				SAY The poisons in this region are much stronger than what my powers can cure. I am afraid that I can not heal you.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am sorry, <SRC.SEX Mi'lord/Mi'lady>, for I cannot cure poison.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, forgive me, but my powers are not strong enough to cure thee.
+				SAY The poisons in this region are much stronger than what my powers can cure. I am afraid that I can not heal you.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*death*
+ON=*dead*
+ON=*resurect*
+ON=*resurrect*
+ON=*raise*dead*
+ON=*resurrection*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I can help thee only if thou'rt dead.
+				SAY Resurrection is not beyond me.
+				SAY I got the power to resurrect. Find me if thou'rt in need.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I can help thee only if thou'rt dead.
+				SAY Resurrection is not beyond me.
+				SAY I got the power to resurrect. Find me if thou'rt in need.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY If thou dost lose thy physical self, do what thou can to find a healer, and he or she shall help thee.
+				SAY If thy spirit is all that thou dost have left, find thyself a healer.  We can help thee.
+				SAY If thou cannot find a shrine, then I can help resurrect thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY If thou dost lose thy physical self, do what thou can to find a healer, and he or she shall help thee.
+				SAY If thy spirit is all that thou dost have left, find thyself a healer.  We can help thee.
+				SAY If thou cannot find a shrine, then I can help resurrect thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY If thou dost lose thy physical self, do what thou can to find a healer, and he or she shall help thee.
+				SAY If thy spirit is all that thou dost have left, find thyself a healer. We can help thee.
+				SAY If thou cannot find a shrine, then I can help resurrect thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY If thou dost lose thy physical self, do what thou can to find a healer, and he or she shall help thee.
+				SAY If thy spirit is all that thou dost have left, find thyself a healer. We can help thee.
+				SAY If thou cannot find a shrine, then I can help resurrect thee.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*buy*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My master sells healing items.
+				SAY My master sells potions and healing scrolls.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My master sells healing items.
+				SAY My master sells potions and healing scrolls.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My master sells healing items.
+				SAY My master can sell thee potions or healing scrolls.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My master sells healing items.
+				SAY My master can sell thee potions or healing scrolls.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Thou'rt very kind, <SRC.SEX Mi'lord/Mi'lady>. My master, back at the shop would be happy to sell potions and healing scrolls to thee.
+				SAY If thou wilt pardon the boast, <SRC.SEX Mi'lord/Mi'lady>, my master's potions and healing scrolls are very good. They can heal the most horrific wounds.
+				SAY My master doth sell healing potions and healing scrolls. They are made from the roots of various trees scattered throughout the land that he sends me out to collect.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Thou'rt very kind, <SRC.SEX Mi'lord/Mi'lady>. My master, back at the shop would be happy to sell potions and healing scrolls to thee.
+				SAY If thou wilt pardon the boast, <SRC.SEX Mi'lord/Mi'lady>, my master's potions and healing scrolls are very good. They can heal the most horrific wounds.
+				SAY My master doth sell healing potions and healing scrolls. They are made from the roots of various trees scattered throughout the land that he sends me out to collect.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*potion*
+ON=*potions*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master sells healing potions.
+				SAY Thou'rt interested in healing potions? My master sells them.
+				SAY My master got potions that canst heal thy wounds.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master sells healing potions.
+				SAY Thou'rt interested in healing potions? My master sells them.
+				SAY My master got potions that canst heal thy wounds.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I believe my master's potions to be the best around.
+				SAY The potions at my master's shop are the finest in this area, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Surely thou canst never have enough healing potions.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I believe my master's potions to be the best around.
+				SAY The potions at my master's shop are the finest in this area, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Surely thou canst never have enough healing potions.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing potions? That is, in fact, one of the items my master doth sell, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY My master doth make many kinds of potions, but for now I only gather herbs and reagents for him.
+				SAY There are all sorts of potions. Some heal and some cure poison.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing potions? That is, in fact, one of the items my master doth sell, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY My master doth make many kinds of potions, but for now I only gather herbs and reagents for him.
+				SAY There are all sorts of potions. Some heal and some cure poison.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=healing*scrolls
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master sell healing scrolls.
+				SAY Thou'rt interested in healing scrolls? My master has some at the shop.
+				SAY My master got healing scrolls.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master sell healing scrolls.
+				SAY Thou'rt interested in healing scrolls? My master has some at the shop.
+				SAY My master got healing scrolls.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing scrolls will soothe thy wounds.
+				SAY My master has healing scrolls made from the strongest cloth back at the shop.
+				SAY My master has lots of healing scrolls at his shop.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing scrolls will soothe thy wounds.
+				SAY My master has healing scrolls made from the strongest cloth back at the shop.
+				SAY My master has lots of healing scrolls at his shop.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing scrolls can be used to help heal wounds. My master can sell thee some.
+				SAY My master's healing scrolls are made from strong cloth fibers and silk.
+				SAY Why, my master's shop sells healing scrolls <SRC.SEX Mi'lord/Mi'lady>. They can aid in the healing of many types of wounds.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing scrolls can be used to help heal wounds. My master can sell thee some.
+				SAY My master's healing scrolls are made from strong cloth fibers and silk.
+				SAY Why, my master's shop sells healing scrolls <SRC.SEX Mi'lord/Mi'lady>. They can aid in the healing of many types of wounds.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*shrines*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Shrines are powerful.
+				SAY I've heard of such places.
+				SAY I know little about shrines.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Shrines are powerful.
+				SAY I've heard of such places.
+				SAY I know little about shrines.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The shrine mayest resurrects those who are dead.
+				SAY Shrines are very powerful and mystic places.
+				SAY Many spiritual acts are said to occur at the shrines.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The shrine mayest resurrects those who are dead.
+				SAY Shrines are very powerful and mystic places.
+				SAY Many spiritual acts are said to occur at the shrines.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The shrine is a mystical place where people can bring back the dead.
+				SAY Rumor has it that some shrines have magical stones that bring the dead back to life.
+				SAY Why, some say many shrines have magical stones that will return life to the nonliving.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The shrine is a mystical place where people can bring back the dead.
+				SAY Rumor has it that some shrines have magical stones that bring the dead back to life.
+				SAY Why, some say many shrines have magical stones that will return life to the nonliving.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*items*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Potions and healing scrolls are what my master sells.
+				SAY Items? Why, potions and bandages are what my master sells.
+				SAY Items? Oh, yeah, my master got healing scrolls and some healing potions.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Potions and healing scrolls are what my master sells.
+				SAY Items? Why, potions and bandages are what my master sells.
+				SAY Items? Oh, yeah, my master got healing scrolls and some healing potions.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, my master sells potions and healing scrolls.
+				SAY Potions and healing scrolls are what my master sells.
+				SAY My master sells healing scrolls and healing potions.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, my master sells potions and healing scrolls.
+				SAY Potions and healing scrolls are what my master sells.
+				SAY My master sells healing scrolls and healing potions.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master sells potions and healing scrolls, <SRC.SEX Mi'lord/Mi'lady>. In my most humble opinion, they are the best around.
+				SAY Why, the items my master has are potions and healing scrolls.
+				SAY Potions and healing scrolls are the items my master sells back at the shop, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master sells potions and healing scrolls, <SRC.SEX Mi'lord/Mi'lady>. In my most humble opinion, they are the best around.
+				SAY Why, the items my master has are potions and healing scrolls.
+				SAY Potions and healing scrolls are the items my master sells back at the shop, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*master*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My master is the healer in <SRC.TOWN>.
+				SAY In <SRC.TOWN>, my master runs the healer's shop.
+				SAY I am apprenticed to the healer in <SRC.TOWN>.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[EOF]

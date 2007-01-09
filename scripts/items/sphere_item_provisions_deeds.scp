@@ -1,0 +1,42 @@
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF 014ef]
+DEFNAME=i_deed
+TYPE=t_deed
+FLIP=1
+RESOURCES=1 I_PAPER, 1 i_WAX_SEAL
+WEIGHT=1
+CATEGORY=Provisions - Deeds
+SUBSECTION=House Deeds
+DESCRIPTION=Deed (Blank)
+DUPELIST=014f0
+//DEFNAME2=VENDOR_DEED
+
+[ITEMDEF 014f0]
+//deed
+DUPEITEM=014ef
+
+[ITEMDEF 014f1]
+DEFNAME=i_deed_ship
+TYPE=t_deed
+FLIP=1
+RESOURCES=1 I_PAPER
+WEIGHT=1
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Ship Plans (EMPTY)
+DUPELIST=014f2
+
+[ITEMDEF 014f2]
+//ship plans
+DUPEITEM=014f1

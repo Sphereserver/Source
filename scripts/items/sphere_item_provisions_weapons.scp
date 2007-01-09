@@ -1,0 +1,1288 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Tuesday, December 7, 2005
+//
+VERSION=0.56b
+
+[ITEMDEF 0df0]
+//Black Staff
+//Using fencing type below
+DEFNAME=i_staff_black
+TYPE=T_WEAPON_MACE_STAFF
+FLIP=1
+DAM=12,14
+SPEED=37
+SKILL=MaceFighting
+REQSTR=35
+TWOHANDS=Y
+WEIGHT=4
+DUPELIST=0df1
+CATEGORY=Provisions - Weapons
+SUBSECTION=Staves
+DESCRIPTION=Black Staff
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0df1]
+//black staff
+DUPEITEM=0df0
+
+[ITEMDEF 0df2]
+//wand
+DEFNAME=i_wand_1
+RESOURCES=2 i_ingot_silver, 2 i_ingot_gold, 1 I_GEM_DIAMOND
+TYPE=T_WAND
+DAM=2,6
+//SPEED=35
+REQSTR=1
+TWOHANDS=N
+VALUE={16 24}
+WEIGHT=5
+CATEGORY=Provisions - Weapons
+SUBSECTION=Wands
+DESCRIPTION=Wand
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0df3]
+//wand
+DEFNAME=i_wand_2
+RESOURCES=2 i_ingot_silver, 2 i_ingot_gold, 1 I_GEM_DIAMOND
+TYPE=T_WAND
+DAM=2,6
+//SPEED=35
+REQSTR=1
+TWOHANDS=N
+VALUE={16 24}
+WEIGHT=5
+CATEGORY=Provisions - Weapons
+SUBSECTION=Wands
+DESCRIPTION=Wand
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0df4]
+//wand
+DEFNAME=i_wand_3
+RESOURCES=1 I_LOG, 1 I_GEM_DIAMOND
+TYPE=T_WAND
+DAM=2,6
+//SPEED=35
+REQSTR=1
+TWOHANDS=N
+VALUE={16 24}
+WEIGHT=5
+CATEGORY=Provisions - Weapons
+SUBSECTION=Wands
+DESCRIPTION=Wand
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0df5]
+//wand
+DEFNAME=i_wand_4
+RESOURCES=1 I_LOG, 1 I_GEM_DIAMOND
+TYPE=T_WAND
+DAM=2,6
+REQSTR=1
+TWOHANDS=N
+VALUE={16 24}
+WEIGHT=5
+CATEGORY=Provisions - Weapons
+SUBSECTION=Wands
+DESCRIPTION=Wand
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0e73]
+//cannon ball
+DEFNAME=i_cannon_ball
+RESOURCES=5 i_ingot_iron
+WEIGHT=5
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball
+DUPELIST=0e74
+
+[ITEMDEF 0e74]
+//cannon balls
+DUPEITEM=0e73
+
+[ITEMDEF 0e81]
+//miniature shepherd's crook (picture for backpack only?)
+// This is different from i_shepherds_crook
+DEFNAME=i_crook_thin
+RESOURCES=7 i_log
+TYPE=T_WEAPON_MACE_CROOK
+SKILL=MaceFighting
+FLIP=1
+DAM=13,15
+SPEED=40
+REQSTR=20
+TWOHANDS=Y
+WEIGHT=2
+SKILLMAKE=CARPENTRY 78.9, t_carpentry
+DUPELIST=0e82
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Sheperds Crook
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0e82]
+//miniature shepherd's crook (picture for backpack only?)
+DUPEITEM=0e81
+
+[ITEMDEF 0e85]
+//PickAxe //OSI insists skill is Fencing with this axe
+DEFNAME=i_pickaxe
+TYPE=T_WEAPON_MACE_PICK
+SKILL=Fencing
+FLIP=1
+DAM=13,15
+SPEED=35
+REQSTR=50
+TWOHANDS=N
+WEIGHT=11
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=PickAxe
+SKILLMAKE=TINKERING 40.0, t_tinker_tools
+RESOURCES=4 i_ingot_iron
+DUPELIST=0e86
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0e86]
+//pickaxe
+DUPEITEM=0e85
+
+[ITEMDEF 0e87]
+//Pitchfork
+//Using fencing type below
+DEFNAME=i_pitchfork
+TYPE=T_WEAPON_FENCE
+FLIP=1
+RESOURCES=5 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 20.0
+DAM=12,14
+SPEED=37
+SKILL=Fencing
+REQSTR=15
+TWOHANDS=Y
+WEIGHT=10
+DUPELIST=0e88
+CATEGORY=Provisions - Weapons
+SUBSECTION=Polearms
+DESCRIPTION=Pitchfork
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0e88]
+//pitchfork
+DUPEITEM=0e87
+
+[ITEMDEF 0e89]
+//Quarter Staff
+DEFNAME=i_staff_quarter
+TYPE=T_WEAPON_MACE_STAFF
+FLIP=1
+RESOURCES=6 i_log
+SKILLMAKE=CARPENTRY 73.6, t_carpentry
+DAM=11,14
+SPEED=48
+SKILL=MaceFighting
+REQSTR=30
+TWOHANDS=N
+WEIGHT=4
+CATEGORY=Provisions - Weapons
+SUBSECTION=Staves
+DESCRIPTION=Quarter Staff
+DUPELIST=0e8a
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0e8a]
+//quarter staff
+DUPEITEM=0e89
+
+[ITEMDEF 0e8b]
+//cannon
+DEFNAME=i_cannon_full
+RESOURCES=100 i_ingot_iron, 20 I_BOARD, 1 I_AXEL
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (01/03)(S)
+DUPELIST=0e8c,0e8d,0e8e,0e8f,0e90,0e91,0e92,0e93,0e94,0e95,0e96
+
+[ITEMDEF 0e8c]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (02/03)(S)
+
+[ITEMDEF 0e8d]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (03/03)(S)
+
+[ITEMDEF 0e8e]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (01/03)(E)
+
+[ITEMDEF 0e8f]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (02/03)(E)
+
+[ITEMDEF 0e90]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (03/03)(E)
+
+[ITEMDEF 0e91]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (01/03)(N)
+
+[ITEMDEF 0e92]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (02/03)(N)
+
+[ITEMDEF 0e93]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (03/03)(N)
+
+[ITEMDEF 0e94]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (01/03)(W)
+
+[ITEMDEF 0e95]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (02/03)(W)
+
+[ITEMDEF 0e96]
+//cannon
+DUPEITEM=0e8b
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (03/03)(W)
+
+[ITEMDEF 0ec2]
+//Cleaver
+//Used for fighting?
+//Shouldn't this be also a non-fighting action type?
+DEFNAME=i_cleaver_meat
+TYPE=T_WEAPON_SWORD
+FLIP=1
+RESOURCES=3 i_ingot_iron
+DAM=11,13
+SPEED=46
+SKILL=Swordsmanship
+REQSTR=10
+TWOHANDS=N
+WEIGHT=1
+DUPELIST=0ec3
+SKILLMAKE=TINKERING 20.0
+CATEGORY=Provisions - Weapons
+SUBSECTION=Knives & Daggers
+DESCRIPTION=Cleaver
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0ec3]
+//cleaver
+DUPEITEM=0ec2
+
+[ITEMDEF 0ec4]
+//Used for Fencing?
+// Skinning Knife
+//Shouldn't this be also a non-fighting action type?
+DEFNAME=i_knife_skinning
+TYPE=T_WEAPON_FENCE
+FLIP=1
+RESOURCES=2 i_ingot_iron
+SKILLMAKE=TINKERING 25.0
+DAM=9,11
+SPEED=49
+SKILL=Swordsmanship
+REQSTR=5
+TWOHANDS=N
+WEIGHT=1
+DUPELIST=0ec5
+CATEGORY=Provisions - Weapons
+SUBSECTION=Knives & Daggers
+DESCRIPTION=Skinning Knife
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0ec5]
+//Skinning Knife
+DUPEITEM=0ec4
+
+[ITEMDEF 0f39]
+//Shovel (unique type of unequipable item)
+//LAYER=0
+DEFNAME=i_shovel
+TYPE=T_WEAPON_MACE_PICK
+FLIP=1
+WEIGHT=5
+SKILLMAKE=TINKERING 40.0, t_tinker_tools
+RESOURCES=4 i_ingot_iron
+DUPELIST=0f3a
+CATEGORY=Items by Professions
+SUBSECTION=Miner
+DESCRIPTION=Shovel
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f3a]
+//shovel
+DUPEITEM=0f39
+
+[ITEMDEF 0f3f]
+//Arrow
+DEFNAME=i_arrow
+NAME=arrow%s
+TYPE=T_WEAPON_ARROW
+FLIP=1
+RESOURCES=1 i_arrow_shaft, 1 i_feather
+REPLICATE=1
+SKILLMAKE=1.0 BOWCRAFT
+WEIGHT=0.1
+DUPELIST=0f40,0f41,0f42
+CATEGORY=Items by Professions
+SUBSECTION=Archers/Bowyers
+DESCRIPTION=Arrow
+
+[ITEMDEF 0f40]
+//arrows
+DUPEITEM=0f3f
+CATEGORY=Items by Professions
+SUBSECTION=Archers/Bowyers
+DESCRIPTION=Arrows (5)
+
+[ITEMDEF 0f41]
+//arrows
+DUPEITEM=0f3f
+CATEGORY=Items by Professions
+SUBSECTION=Archers/Bowyers
+DESCRIPTION=Arrows (Many)
+
+[ITEMDEF 0f42]
+//arrow
+DEFNAME=i_arrow_x
+DUPEITEM=0f3f
+CATEGORY=Items by Professions
+SUBSECTION=Archers/Bowyers
+DESCRIPTION=Arrow (Straight)
+
+[ITEMDEF 0f43]
+//Hatchet
+DEFNAME=i_hatchet
+RESOURCES=4 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=13,15
+SPEED=41
+SKILL=Swordsmanship
+REQSTR=20
+TWOHANDS=N
+WEIGHT=4
+SKILLMAKE=TINKERING 30.0, t_tinker_tools
+DUPELIST=0f44
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Hatchet
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f44]
+//hatchet
+DUPEITEM=0f43
+
+[ITEMDEF 0f45]
+//Executioner's Axe
+DEFNAME=i_axe_exec
+RESOURCES=14 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=15,17
+SPEED=33
+SKILL=Swordsmanship
+REQSTR=40
+TWOHANDS=Y
+WEIGHT=8
+SKILLMAKE=BLACKSMITHING 34.2
+DUPELIST=0f46
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Executioner's Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f46]
+//Executioner's Axe
+DUPEITEM=0f45
+
+[ITEMDEF 0f47]
+//Battle Axe
+DEFNAME=i_axe_battle
+RESOURCES=14 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=15,17
+SPEED=31
+SKILL=Swordsmanship
+REQSTR=35
+TWOHANDS=Y
+WEIGHT=4
+SKILLMAKE=BLACKSMITHING 30.5
+DUPELIST=0f48
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Battle Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f48]
+//battle axe
+DUPEITEM=0f47
+
+[ITEMDEF 0f49]
+//Axe
+DEFNAME=i_axe
+RESOURCES=14 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=14,16
+SPEED=37
+SKILL=Swordsmanship
+REQSTR=35
+TWOHANDS=Y
+WEIGHT=4
+SKILLMAKE=BLACKSMITHING 34.2
+DUPELIST=0f4a
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f4a]
+//axe
+DUPEITEM=0f49
+
+[ITEMDEF 0f4b]
+//Double Axe
+DEFNAME=i_axe_double
+RESOURCES=12 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=15,17
+SPEED=33
+SKILL=Swordsmanship
+REQSTR=45
+TWOHANDS=Y
+WEIGHT=8
+SKILLMAKE=BLACKSMITHING 29.3
+DUPELIST=0f4c
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Double Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f4c]
+//double axe
+DUPEITEM=0f4b
+
+[ITEMDEF 0f4d]
+//Bardiche
+//Using Sword type below
+DEFNAME=i_bardiche
+RESOURCES=18 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=17,18
+SPEED=28
+SKILL=Swordsmanship
+REQSTR=45
+TWOHANDS=Y
+WEIGHT=7
+SKILLMAKE=BLACKSMITHING 31.7
+DUPELIST=0f4e
+CATEGORY=Provisions - Weapons
+SUBSECTION=Polearms
+DESCRIPTION=Bardiche
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f4e]
+//bardiche
+DUPEITEM=0f4d
+
+[ITEMDEF 0f4f]
+//Crossbow
+//Using bow type below
+DEFNAME=i_crossbow
+TYPE=T_WEAPON_XBOW
+FLIP=1
+RESOURCES=7 i_log
+SKILLMAKE=60.0 BOWCRAFT
+DAM=18,20
+SPEED=24
+RANGE=2,8
+SKILL=Archery
+REQSTR=35
+TWOHANDS=Y
+WEIGHT=15
+DUPELIST=0f50
+TDATA3=i_xbolt
+TDATA4=i_xbolt_x
+CATEGORY=Provisions - Weapons
+SUBSECTION=Bows
+DESCRIPTION=Crossbow
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f50]
+//crossbow
+DUPEITEM=0f4f
+
+[ITEMDEF 0f51]
+//Dagger
+//Used for fencing?
+//**Shouldn't this be also a non-fighting action type?
+DEFNAME=i_dagger
+RESOURCES=3 i_ingot_iron
+TYPE=T_WEAPON_FENCE
+FLIP=1
+DAM=10,11
+SPEED=56
+SKILL=Fencing
+REQSTR=10
+TWOHANDS=N
+WEIGHT=1
+SKILLMAKE=BLACKSMITHING 0.0
+DUPELIST=0f52
+CATEGORY=Provisions - Weapons
+SUBSECTION=Knives & Daggers
+DESCRIPTION=Dagger
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f52]
+//dagger
+DUPEITEM=0f51
+
+[ITEMDEF 0f5c]
+//Mace
+//Used for fighting, not a tool?
+DEFNAME=i_mace
+RESOURCES=6 i_ingot_iron
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=12,14
+SPEED=40
+SKILL=MaceFighting
+REQSTR=45
+TWOHANDS=N
+WEIGHT=14
+SKILLMAKE=BLACKSMITHING 14.5
+DUPELIST=0f5d
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Mace
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f5d]
+//mace
+DUPEITEM=0f5c
+
+[ITEMDEF 0f5e]
+//Broadsword
+//Using swordsmanship type below
+DEFNAME=i_sword_broad
+RESOURCES=10 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=14,15
+SPEED=33
+SKILL=Swordsmanship
+REQSTR=30
+TWOHANDS=N
+WEIGHT=6
+SKILLMAKE=BLACKSMITHING 35.4
+DUPELIST=0f5f
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Broadsword
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f5f]
+//broadsword
+DUPEITEM=0f5e
+
+[ITEMDEF 0f60]
+//Longsword (not the same as 013b8, i_sword_long_b)
+//Using swordsmanship type below
+DEFNAME=i_sword_long
+RESOURCES=12 i_ingot_iron
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=15,16
+SPEED=30
+SKILL=Swordsmanship
+REQSTR=35
+TWOHANDS=N
+WEIGHT=7
+SKILLMAKE=BLACKSMITHING 28.0
+DUPELIST=0f61
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Longsword
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f61]
+//longsword
+DUPEITEM=0f60
+
+[ITEMDEF 0f62]
+//Spear
+//Using fencing type below
+DEFNAME=i_spear
+RESOURCES=12 i_ingot_iron
+TYPE=T_WEAPON_FENCE
+FLIP=1
+DAM=13,15
+SPEED=45
+SKILL=Fencing
+REQSTR=50
+TWOHANDS=N
+WEIGHT=7
+SKILLMAKE=BLACKSMITHING 49.0
+DUPELIST=0f63
+CATEGORY=Provisions - Weapons
+SUBSECTION=Polearms
+DESCRIPTION=Spear
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0f63]
+//spear
+DUPEITEM=0f62
+
+[ITEMDEF 013af]
+DEFNAME=i_axe_war
+RESOURCES=16 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 39.1
+WEIGHT=8
+TYPE=T_WEAPON_MACE_SHARP
+SKILL=MaceFighting
+FLIP=1
+DAM=14,15
+SPEED=33
+REQSTR=35
+TWOHANDS=N
+DUPELIST=013b0
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=War Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013B0]
+//War Axe
+DUPEITEM=013af
+
+[ITEMDEF 013b1]
+DEFNAME=i_bow
+TYPE=T_WEAPON_BOW
+FLIP=1
+SKILLMAKE=30.0 BOWCRAFT
+RESOURCES=7 i_log
+WEIGHT=5
+DAM=16,18
+SPEED=25
+RANGE=2,10
+SKILL=Archery
+REQSTR=30
+TWOHANDS=Y
+DUPELIST=013b2
+TDATA3=i_arrow
+TDATA4=i_arrow_x
+CATEGORY=Provisions - Weapons
+SUBSECTION=Bows
+DESCRIPTION=Bow
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013b2]
+//bow
+DUPEITEM=013b1
+
+[ITEMDEF 013b3]
+DEFNAME=i_club
+RESOURCES=4 i_log
+WEIGHT=8
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=3,12
+SPEED=60
+SKILL=MaceFighting
+REQSTR=10
+TWOHANDS=N
+DUPELIST=013b4
+SKILLMAKE=CARPENTRY 30.0, t_carpentry
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Club
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013b4]
+//Club
+DUPEITEM=013b3
+
+[ITEMDEF 013b5]
+DEFNAME=i_scimitar
+RESOURCES=10 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=13,15
+SPEED=37
+SKILL=Swordsmanship
+REQSTR=25
+TWOHANDS=N
+DUPELIST=013b6
+SKILLMAKE=BLACKSMITHING 31.7
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Scimitar
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013b6]
+//scimitar
+DUPEITEM=013b5
+
+[ITEMDEF 013b7]
+//long sword NOT THE SAME AS 0f60
+DEFNAME=i_sword_long_b
+RESOURCES=10 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=4,32
+SPEED=35
+SKILL=Swordsmanship
+REQSTR=40
+TWOHANDS=N
+SKILLMAKE=BLACKSMITHING 50.2
+DUPELIST=013b8
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Long Sword B
+
+ON=@CREATE
+	HITPOINTS={50 60}
+
+[ITEMDEF 013b8]
+//long sword
+DUPEITEM=013b7
+
+[ITEMDEF 013b9]
+DEFNAME=i_sword_viking
+RESOURCES=14 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=15,17
+SPEED=28
+SKILL=Swordsmanship
+REQSTR=40
+TWOHANDS=N
+DUPELIST=013ba
+SKILLMAKE=BLACKSMITHING 24.3
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Viking Sword
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013ba]
+//viking sword
+DUPEITEM=013b9
+
+[ITEMDEF 013e3]
+DEFNAME=i_hammer_smith
+WEIGHT=4
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+RESOURCES=4 i_ingot_iron
+SKILLMAKE=TINKERING 40.0
+DAM=13,15
+SPEED=33
+SKILL=MaceFighting
+REQSTR=40
+TWOHANDS=N
+DUPELIST=013e4
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Smith's Hammer
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013e4]
+//smith's hammer
+DUPEITEM=013e3
+
+[ITEMDEF 013f4]
+DEFNAME=i_shepherds_crook
+RESOURCES=2 i_log
+WEIGHT=5
+TYPE=T_WEAPON_MACE_CROOK
+FLIP=1
+DAM=3,12
+//SPEED=70
+REQSTR=10
+TWOHANDS=Y
+CATEGORY=Provisions - Weapons
+SUBSECTION=Staves
+DESCRIPTION=Sheperd's Crook
+DUPELIST=013f5
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013f5]
+//Shepherd's Crook
+DUPEITEM=013f4
+
+[ITEMDEF 013f6]
+DEFNAME=i_knife_butcher
+RESOURCES=1 i_BOARD, 1 i_ingot_iron
+WEIGHT=2
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=2,8
+//SPEED=80
+SKILL=Swordsmanship
+REQSTR=5
+TWOHANDS=N
+CATEGORY=Provisions - Weapons
+SUBSECTION=Knives & Daggers
+DESCRIPTION=Butchers Knife
+DUPELIST=013f7
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013f7]
+//butcher knife
+DUPEITEM=013f6
+
+[ITEMDEF 013f8]
+DEFNAME=i_staff_gnarled
+WEIGHT=5
+TYPE=T_WEAPON_MACE_STAFF
+FLIP=1
+DAM=15,17
+SPEED=33
+REQSTR=20
+TWOHANDS=Y
+DUPELIST=013f9
+SKILLMAKE=CARPENTRY 78.9, t_carpentry
+RESOURCES=7 i_log
+CATEGORY=Provisions - Weapons
+SUBSECTION=Staves
+DESCRIPTION=Gnarled Staff
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013f9]
+//gnarled staff
+DUPEITEM=013f8
+
+[ITEMDEF 013fa]
+//DEFNAME2=double_battle_axe
+DEFNAME=i_axe_battle_large
+RESOURCES=12 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 28.0
+WEIGHT=12
+TYPE=T_WEAPON_AXE
+FLIP=1
+DAM=16,17
+SPEED=29
+SKILL=Swordsmanship
+REQSTR=80
+TWOHANDS=Y
+DUPELIST=013fb
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Large Battle Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013fb]
+//Large Battle Axe
+DUPEITEM=013fa
+
+[ITEMDEF 013fc]
+DEFNAME=i_crossbow_heavy
+TYPE=T_WEAPON_XBOW
+FLIP=1
+SKILLMAKE=80.0 BOWCRAFT
+RESOURCES=10 i_log
+WEIGHT=8
+DAM=19,20
+SPEED=22
+RANGE=2,8
+SKILL=archery
+REQSTR=80
+TWOHANDS=Y
+TDATA3=i_xbolt
+TDATA4=i_xbolt_x
+DUPELIST=013fd
+CATEGORY=Provisions - Weapons
+SUBSECTION=Bows
+DESCRIPTION=Heavy Crossbow
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013fd]
+//heavy crossbow
+DUPEITEM=013fc
+
+[ITEMDEF 013fe]
+DEFNAME=i_katana
+RESOURCES=8 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=11,13
+SPEED=46
+SKILL=Swordsmanship
+REQSTR=25
+TWOHANDS=N
+DUPELIST=013ff
+SKILLMAKE=BLACKSMITHING 44.1
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Katana
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 013ff]
+//katana
+DUPEITEM=013fe
+
+[ITEMDEF 01400]
+DEFNAME=i_kryss
+RESOURCES=8 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_FENCE
+FLIP=1
+DAM=10,12
+SPEED=53
+SKILL=Fencing
+REQSTR=10
+TWOHANDS=N
+DUPELIST=01401
+SKILLMAKE=BLACKSMITHING 36.7
+CATEGORY=Provisions - Weapons
+SUBSECTION=Knives & Daggers
+DESCRIPTION=Kryss
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01401]
+//kryss
+DUPEITEM=01400
+
+[ITEMDEF 01402]
+DEFNAME=i_spear_short
+RESOURCES=6 i_ingot_iron
+WEIGHT=7
+TYPE=T_WEAPON_FENCE
+FLIP=1
+DAM=10,13
+SPEED=55
+SKILL=Fencing
+REQSTR=40
+TWOHANDS=N
+DUPELIST=01403
+SKILLMAKE=BLACKSMITHING 45.3
+CATEGORY=Provisions - Weapons
+SUBSECTION=Spears and Forks
+DESCRIPTION=Short Spear
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01403]
+//short spear
+DUPEITEM=01402
+
+[ITEMDEF 01404]
+DEFNAME=i_war_fork
+RESOURCES=12 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_FENCE
+FLIP=1
+DAM=12,13
+SPEED=43
+SKILL=Fencing
+REQSTR=45
+TWOHANDS=N
+DUPELIST=01405
+SKILLMAKE=BLACKSMITHING 42.9
+CATEGORY=Provisions - Weapons
+SUBSECTION=Spears and Forks
+DESCRIPTION=War Fork
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01405]
+//war fork
+DUPEITEM=01404
+
+[ITEMDEF 01406]
+DEFNAME=i_mace_war
+RESOURCES=14 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=16,17
+SPEED=26
+SKILL=MaceFighting
+REQSTR=80
+TWOHANDS=N
+DUPELIST=01407
+SKILLMAKE=BLACKSMITHING 28.0
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=War Mace
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01407]
+//war mace
+DUPEITEM=01406
+
+[ITEMDEF 01438]
+DEFNAME=i_hammer_war
+RESOURCES=16 i_ingot_iron
+WEIGHT=7
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=17,18
+SPEED=28
+SKILL=MaceFighting
+REQSTR=95
+TWOHANDS=Y
+DUPELIST=01439
+SKILLMAKE=BLACKSMITHING 34.2
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=War Hammer
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01439]
+//war hammer
+DUPEITEM=01438
+
+[ITEMDEF 0143a]
+DEFNAME=i_maul
+RESOURCES=10 i_ingot_iron
+WEIGHT=9
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=14,16
+SPEED=32
+SKILL=MaceFighting
+REQSTR=45
+TWOHANDS=N
+DUPELIST=0143b
+SKILLMAKE=BLACKSMITHING 19.4
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Maul
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0143b]
+//Maul
+DUPEITEM=0143a
+
+[ITEMDEF 0143c]
+DEFNAME=i_hammer_pick
+WEIGHT=7
+TYPE=T_WEAPON_MACE_SMITH
+FLIP=1
+DAM=15,17
+SPEED=28
+SKILL=MaceFighting
+REQSTR=45
+TWOHANDS=Y
+DUPELIST=0143d
+SKILLMAKE=BLACKSMITHING 34.2
+RESOURCES=16 i_ingot_iron
+CATEGORY=Provisions - Weapons
+SUBSECTION=Maces & Hammers
+DESCRIPTION=Hammer Pick
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0143d]
+//hammer pick
+DUPEITEM=0143c
+
+[ITEMDEF 0143e]
+DEFNAME=i_halberd
+RESOURCES=20 i_ingot_iron
+WEIGHT=10
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=18,19
+SPEED=25
+SKILL=Swordsmanship
+REQSTR=95
+TWOHANDS=Y
+DUPELIST=0143f
+SKILLMAKE=BLACKSMITHING 39.1
+CATEGORY=Provisions - Weapons
+SUBSECTION=Polearms
+DESCRIPTION=Halberd
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 0143f]
+//halberd
+DUPEITEM=0143e
+
+[ITEMDEF 01440]
+DEFNAME=i_cutlass
+RESOURCES=8 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_SWORD
+FLIP=1
+DAM=11,13
+SPEED=44
+SKILL=Swordsmanship
+REQSTR=25
+TWOHANDS=N
+DUPELIST=01441
+SKILLMAKE=BLACKSMITHING 24.3
+CATEGORY=Provisions - Weapons
+SUBSECTION=Swords
+DESCRIPTION=Cutlass
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01441]
+//cutlass
+DUPEITEM=01440
+
+[ITEMDEF 01442]
+DEFNAME=i_axe_two_hand
+RESOURCES=16 i_ingot_iron
+WEIGHT=8
+TYPE=T_WEAPON_AXE
+FLIP=1
+DAM=16,17
+SPEED=31
+SKILL=Swordsmanship
+REQSTR=40
+TWOHANDS=Y
+DUPELIST=01443
+SKILLMAKE=BLACKSMITHING 33.0
+CATEGORY=Provisions - Weapons
+SUBSECTION=Axes
+DESCRIPTION=Two Handed Axe
+
+ON=@Create
+	HITPOINTS={50 60}
+
+[ITEMDEF 01443]
+//two handed axe
+DUPEITEM=01442

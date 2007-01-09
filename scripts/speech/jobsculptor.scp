@@ -1,0 +1,173 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Sculptor Script
+// Notes:  This is used for general information pertaining to all Britannian Sculptors
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, sculpt, carv, statue
+//
+[SPEECH jobSculptor]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a stone carver.
+				SAY I'm a starving artist. I sculpt.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a stone carver.
+				SAY I'm a starvin' artist. I sculpt.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I'm a sculptor.
+				SAY I create statues and stone carvings.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a sculptor.
+				SAY I make statues and stone carvings.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm an artist, and my chosen medium is stone.
+				SAY I'm quite a well-known sculptor, if I may say so myself.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm an artist, and I work in stone.
+				SAY I'm a well-known sculptor, if I may say so myself.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*sculpt*
+on=*carv*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Give it any fancy name thou dost like, it is still taking a chisel to rock.
+				SAY I'll carve whatever the customer wants.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 2
+				SAY Give it any fancy name thou dost like, it's still taking a chisel to a rock.
+				SAY I'll carve whatever the customer wants.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Give it any fancy name thou likes, it's still takin' a chisel to a rock.
+				SAY I'll carve whatever the customer wants.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I can create anything from a carved brick to a monument.
+				SAY Paint and canvas are fine, but I prefer art I can take a hammer to.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 2
+				SAY I can carve anything from a brick to a monument.
+				SAY Paint and canvas are fine, but I prefer art I can take a hammer to.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I can make anything - from a carved brick to a monument.
+				SAY Paint and canvas are fine, but I like art I can take a hammer to.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My art begins as a thought, the most ephemeral of things, yet ends captured eternally in stone.
+				SAY I accept artistic commissions only from the best class of people.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My art begins as a thought, an' then I beat it into stone.
+				SAY I accept commissions only from the best class of people.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*statue*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Statue, tombstone, water spout, it's all the same to me.
+				SAY I can do statues. Big or little. Whatever thou wouldst like.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Statue, tombstone, water spout, it's all the same to me.
+				SAY I can do statues. Big or little. Whatever thou would like.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm presently considering the subject of my next statue.
+				SAY Statues are expensive and take a long time to finish.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm tryin' to think up the subject of my next statue.
+				SAY Statues are expensive and take a long time to finish.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My statuary is acclaimed from one side of the land to the other.
+				SAY I'll do another statue as soon as I find a worthy subject.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My carving is liked by lotsa people.
+				SAY I'll do another statue as soon as I find a worthy subject.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobSculptor]
+//SCULPTOR
+DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Hail! Wouldst thou care to be immortalized in stone?
+ON=Job
+ON=What do you do
+SAY=I create statues so lifelike, you'd swear you saw 'em breathe!
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell.
+	BYE
+	return 1
+ON=CARVE
+SAY=Carve?  Faugh!  You make my art sound like a turkey dinner...
+ON=SCULPT
+SAY=You want me to sculpt you?  Let's hope it erodes quickly...
+ON=STATUE
+SAY=Some of my best work is statues!  Of course, I have been known to moonlight as a waiter - for the inspiration of course.
+//RANDOM=Anyone want a sculpture?  Please?  Please?!?
+
+[EOF]

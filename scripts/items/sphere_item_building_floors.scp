@@ -1,0 +1,904 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0491]
+DEFNAME=i_floor_blue
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Floors
+SUBSECTION=Blue Floor
+DESCRIPTION=@
+DUPELIST=0492,0493,0494,049b,04ea,04eb,04ec,04ed,04ee,04ef,04f0,04f1,04f2
+
+[ITEMDEF 0492]
+//floor tile
+DUPEITEM=0491
+
+[ITEMDEF 0493]
+//floor tile
+DUPEITEM=0491
+
+[ITEMDEF 0494]
+//floor tile
+DUPEITEM=0491
+
+[ITEMDEF 0495]
+DEFNAME=i_floor_marble
+RESOURCES=25 i_stone_marble
+CATEGORY=Buildings - Floors
+SUBSECTION=Marble Floor 1
+DESCRIPTION=@
+DUPELIST=0496,0497,0498
+
+[ITEMDEF 0496]
+//marble floor
+DUPEITEM=0495
+
+[ITEMDEF 0497]
+//marble floor
+DUPEITEM=0495
+
+[ITEMDEF 0498]
+//marble floor
+DUPEITEM=0495
+
+[ITEMDEF 049b]
+//floor tile
+DUPEITEM=0491
+
+[ITEMDEF 049c]
+DEFNAME=i_FLOOR_SLATE_GREY
+RESOURCES=25 i_stone_slate
+CATEGORY=Buildings - Floors
+SUBSECTION=Gray Slate Floor
+DESCRIPTION=@
+
+[ITEMDEF 049d]
+DEFNAME=i_paver_sandstone
+RESOURCES=25 i_stone_sand
+CATEGORY=Buildings - Floors
+SUBSECTION=Sandstone Pavers
+DESCRIPTION=@
+DUPELIST=049e,049f,04a0
+
+[ITEMDEF 049e]
+//sandstone paver
+DUPEITEM=049d
+
+[ITEMDEF 049f]
+//sandstone paver
+DUPEITEM=049d
+
+[ITEMDEF 04a0]
+//sandstone paver
+DUPEITEM=049d
+
+[ITEMDEF 04a1]
+DEFNAME=i_WOOD_PLANK
+RESOURCES=25 I_BOARD
+CATEGORY=Buildings - Floors
+SUBSECTION=Wooden Planks (light)
+DESCRIPTION=@
+DUPELIST=04a2,04a3,04a4,04c6,04c7,04c8,04c9,04ca,04cb,04cc,04cd,04ce,04cf,04d0,04d1,04d2,04d3,04d4,04d5,04d6,04d7,04d8,04d9,04da,04db,04dc,04dd,04de,04df,04e0,04e1
+
+[ITEMDEF 04a2]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04a3]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04a4]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04a5]
+DEFNAME=i_floor_wood
+RESOURCES=25 I_BOARD
+CATEGORY=Buildings - Floors
+SUBSECTION=Wooden Boards
+DESCRIPTION=@
+DUPELIST=04a6,04a7,04a8,04a9,04aa,04ab,04ac,04ad,04ae,04af,04b0,04b1,04b2,04b3,04b4,04b5,04b6,04b7,04b8,04b9,04ba,04bb,04bc,04bd,04be,04bf,04c0
+
+[ITEMDEF 04a6]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04a7]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04a8]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04a9]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04aa]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04ab]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04ac]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04ad]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04ae]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04af]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b0]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b1]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b2]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b3]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b4]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b5]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b6]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b7]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b8]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04b9]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04ba]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04bb]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04bc]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04bd]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04be]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04bf]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04c0]
+//wooden boards
+DUPEITEM=04a5
+
+[ITEMDEF 04c1]
+DEFNAME=i_floor_wood_primitive
+RESOURCES=25 I_LOG
+CATEGORY=Buildings - Floors
+SUBSECTION=Primitive Wooden Logs (green)
+DESCRIPTION=@
+DUPELIST=04c2,04c3,04c4,04c5,0504,0505,0506,0507,0508,0509,050a
+
+[ITEMDEF 04c2]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 04c3]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 04c4]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 04c5]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 04c6]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04c7]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04c8]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04c9]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04ca]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04cb]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04cc]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04cd]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04ce]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04cf]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d0]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d1]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d2]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d3]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d4]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d5]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d6]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d7]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d8]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04d9]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04da]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04db]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04dc]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04dd]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04de]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04df]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04e0]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04e1]
+//wooden planks
+DUPEITEM=04a1
+
+[ITEMDEF 04e2]
+DEFNAME=i_floor_flagstone_red
+//DEFNAME2=i_RED_FLAGSTONE_FLOOR
+RESOURCES=25 I_flagstone_RED
+CATEGORY=Buildings - Floors
+SUBSECTION=Flagstones (Dark Red)
+DESCRIPTION=@
+DUPELIST=04e3,04e4,04e5,04e6,04e7,04e8,04e9,0537,0538,0539,053a
+
+[ITEMDEF 04e3]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e4]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e5]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e6]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e7]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e8]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04e9]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 04ea]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04eb]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04ec]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04ed]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04ee]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04ef]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04f0]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04f1]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04f2]
+//blue tiles
+DUPEITEM=0491
+
+[ITEMDEF 04f3]
+DEFNAME=i_FLOOR_STONE_RED
+RESOURCES=25 I_STONE_RED
+CATEGORY=Buildings - Floors
+SUBSECTION=Red Floor
+DESCRIPTION=@
+DUPELIST=04f4,04f5,04f6,04f7,04f8,04f9,04fa,04fb
+
+[ITEMDEF 04f4]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04f5]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04f6]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04f7]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04f8]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04f9]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04fa]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04fb]
+//red tiles
+DUPEITEM=04f3
+
+[ITEMDEF 04fc]
+DEFNAME=i_FLOOR_FLAGSTONE_GRAY
+//DEFNAME2=i_GRAY_FLAGSTONE_FLOOR
+RESOURCES=25 I_flagstone_GRAY
+CATEGORY=Buildings - Floors
+SUBSECTION=Flagstones (gray)
+DESCRIPTION=@
+DUPELIST=04fd,04fe,04ff
+
+[ITEMDEF 04fd]
+//flagstones
+DUPEITEM=04fc
+
+[ITEMDEF 04fe]
+//flagstones
+DUPEITEM=04fc
+
+[ITEMDEF 04ff]
+//flagstones
+DUPEITEM=04fc
+
+[ITEMDEF 0500]
+DEFNAME=i_FLOOR_SANDSTONE
+RESOURCES=25 i_stone_sand
+CATEGORY=Buildings - Floors
+SUBSECTION=Flagstones (sandstone)
+DESCRIPTION=@
+DUPELIST=0501,0502,0503
+
+[ITEMDEF 0501]
+//flagstones
+DUPEITEM=0500
+
+[ITEMDEF 0502]
+//flagstones
+DUPEITEM=0500
+
+[ITEMDEF 0503]
+//flagstones
+DUPEITEM=0500
+
+[ITEMDEF 0504]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 0505]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 0506]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 0507]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 0508]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 0509]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 050a]
+//wooden logs
+DUPEITEM=04c1
+
+[ITEMDEF 050b]
+DEFNAME=i_FLOOR_WOOD_LOG
+RESOURCES=25 I_LOG
+CATEGORY=Buildings - Floors
+SUBSECTION=Primitive Logs (gray)
+DESCRIPTION=@
+DUPELIST=050c
+
+[ITEMDEF 050c]
+//wooden logs
+DUPEITEM=050b
+
+[ITEMDEF 050d]
+DEFNAME=i_floor_marble_2
+RESOURCES=25 i_stone_marble
+CATEGORY=Buildings - Floors
+SUBSECTION=Marble Floor 2
+DESCRIPTION=@
+DUPELIST=050e
+
+[ITEMDEF 050e]
+//white marble
+DUPEITEM=050d
+
+[ITEMDEF 050f]
+DEFNAME=i_floor_marble_3
+RESOURCES=25 i_stone_marble
+CATEGORY=Buildings - Floors
+SUBSECTION=Marble Floor 3
+DESCRIPTION=@
+DUPELIST=0510
+
+[ITEMDEF 0510]
+//marble floor
+DUPEITEM=050f
+
+[ITEMDEF 0511]
+DEFNAME=i_floor_marble_4
+RESOURCES=25 i_stone_marble
+CATEGORY=Buildings - Floors
+SUBSECTION=Marble Floor 4
+DESCRIPTION=@
+DUPELIST=0512
+
+[ITEMDEF 0512]
+//marble floor
+DUPEITEM=0511
+
+[ITEMDEF 0513]
+DEFNAME=i_floor_marble_5
+RESOURCES=25 i_stone_marble
+CATEGORY=Buildings - Floors
+SUBSECTION=Marble Floor 5
+DESCRIPTION=@
+DUPELIST=0514
+
+[ITEMDEF 0514]
+//marble floor
+DUPEITEM=0513
+
+[ITEMDEF 0515]
+DEFNAME=i_FLOOR_COBBLESTONE
+RESOURCES=25 I_STONE_COBBLE
+CATEGORY=Buildings - Floors
+SUBSECTION=Cobblestones
+DESCRIPTION=@
+DUPELIST=0516,0517,0518
+
+[ITEMDEF 0516]
+//cobblestones
+DUPEITEM=0515
+
+[ITEMDEF 0517]
+//cobblestones
+DUPEITEM=0515
+
+[ITEMDEF 0518]
+//cobblestones
+DUPEITEM=0515
+
+[ITEMDEF 0519]
+DEFNAME=i_PAVER_STONE
+RESOURCES=25 i_rock_plain
+CATEGORY=Buildings - Floors
+SUBSECTION=Stone Pavers
+DESCRIPTION=@
+DUPELIST=051a,051b,051c,051d,051e,051f,0520,0521,0522,0523,0524
+
+[ITEMDEF 051a]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 051b]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 051c]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 051d]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 051e]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 051f]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0520]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0521]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0522]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0523]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0524]
+//stone pavers
+DUPEITEM=0519
+
+[ITEMDEF 0525]
+DEFNAME=i_FLOOR_SANDSTONE_2
+RESOURCES=25 i_stone_sand
+CATEGORY=Buildings - Floors
+SUBSECTION=Sandstone Floor (light)
+DESCRIPTION=@
+DUPELIST=0526,0527,0528,0529,052a,052b,052c
+
+[ITEMDEF 0526]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 0527]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 0528]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 0529]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 052a]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 052b]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 052c]
+//sandstone floor
+DUPEITEM=0525
+
+[ITEMDEF 052f]
+DEFNAME=i_FLOOR_SANDSTONE_3
+RESOURCES=25 i_stone_sand
+CATEGORY=Buildings - Floors
+SUBSECTION=Sandstone Floor (dark)
+DESCRIPTION=@
+DUPELIST=0530,0531,0532,0533,0534,0535,0536
+
+[ITEMDEF 0530]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0531]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0532]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0533]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0534]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0535]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0536]
+//sandstone floor
+DUPEITEM=052f
+
+[ITEMDEF 0537]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 0538]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 0539]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 053a]
+//bricks
+DUPEITEM=04e2
+
+[ITEMDEF 053b]
+//cave floor
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Center
+TYPE=T_ROCK
+DUPELIST=053c,053d,053e,053f
+
+[ITEMDEF 053c]
+//cave floor
+DUPEITEM=053b
+
+[ITEMDEF 053d]
+//cave floor
+DUPEITEM=053b
+
+[ITEMDEF 053e]
+//cave floor
+DUPEITEM=053b
+
+[ITEMDEF 053f]
+//cave floor
+DUPEITEM=053b
+
+[ITEMDEF 0540]
+//cave floor (edge)
+TYPE=T_ROCK
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Edge
+DUPELIST=0541,0542,0543,0544,0545,0546,0547,0548,0549,054a,054b,054c,054d,054e,054f,0551,0552,0553,056a
+
+[ITEMDEF 0541]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0542]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0543]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0544]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0545]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0546]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0547]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0548]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0549]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054a]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054b]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054c]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054d]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054e]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054f]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 08e0]
+//stalagmites
+TYPE=T_ROCK
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Stalagmites
+DUPELIST=08e1,08e2,08e3,08e4,08e5,08e6,08e7,08e8,08e9,08ea
+
+[ITEMDEF 08e1]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e2]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e3]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e4]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e5]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e6]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e7]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e8]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e9]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08ea]
+//stalagmites
+DUPEITEM=08e0
+
+[eof]

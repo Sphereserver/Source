@@ -1,0 +1,355 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 17-Jan-2006 / RanX
+
+VERSION=0.56b
+
+[ITEMDEF 02b01]
+DEFNAME=i_shield_dupre
+NAME=Dupre's Shield
+TYPE=t_shield
+RESOURCES=10 i_ingot_iron
+WEIGHT=12
+ARMOR=15
+REQSTR=20
+RESDISPDNID=i_shield_order
+RESLEVEL=5
+RESDISPDNHUE=0482
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Dupre's Shield
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={26 30}
+
+[ITEMDEF 02b02]
+DEFNAME=i_quiver_infinity
+NAME=Quiver of Infinity
+TYPE=t_container
+FLIP=1
+LAYER=17
+RESOURCES=28 i_hides_cut
+WEIGHT=5
+RESDISPDNID=i_sash
+RESLEVEL=5
+RESDISPDNHUE=0482
+TDATA2=03c
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Quiver of Infinity
+SKILLMAKE=TAILORING 75.0
+DUPELIST=02b03
+
+[ITEMDEF 02b03]
+//quiver of infinity
+DUPEITEM=02b02
+
+[ITEMDEF 02b04]
+DEFNAME=i_cloak_humilty
+NAME=Cloak of Humilty
+RESOURCES=15 i_cloth
+WEIGHT=5
+TYPE=T_CLOTHING
+DYE=1
+ARMOR=5
+RESDISPDNID=i_cape
+RESLEVEL=5
+RESDISPDNHUE=0482
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Cloak of Humilty
+DUPELIST=02b05
+SKILLMAKE=TAILORING 75.0, t_sewing_kit
+
+ON=@Create
+HITPOINTS={31 40}
+
+[ITEMDEF 02b05]
+//cloak of humilty
+DUPEITEM=02b04
+
+[ITEMDEF 02b06]
+DEFNAME=i_legs_honor
+NAME=Legs of Honor
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=20 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Legs of Honor
+DUPELIST=02b07
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b07]
+//legs of honor
+DUPEITEM=02b06
+
+[ITEMDEF 02b08]
+DEFNAME=i_breastplate_justice
+NAME=Breastplate of Justice
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=25 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Breastplate of Justice
+DUPELIST=02b09
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b09]
+//breastplate of justice
+DUPEITEM=02b08
+
+[ITEMDEF 02b0a]
+DEFNAME=i_arms_compassion
+NAME=Arms of Compassion
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=18 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Arms of Compassion
+DUPELIST=02b09
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b0b]
+//arms of compassion
+DUPEITEM=02b0a
+
+[ITEMDEF 02b0c]
+DEFNAME=i_gauntlets_valor
+NAME=Gauntlets of Valor
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=12 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Gauntlets of Valor
+DUPELIST=02b0d
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b0d]
+//gauntlets of valor
+DUPEITEM=02b0c
+
+[ITEMDEF 02b0e]
+DEFNAME=i_gorget_truth
+NAME=Gorget of Truth
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=10 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Gorget of Truth
+DUPELIST=02b0f
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b0f]
+//gorget of truth
+DUPEITEM=02b0e
+
+[ITEMDEF 02b10]
+DEFNAME=i_helm_spirituality
+NAME=Helm Spirituality
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Helm of Spirituality
+DUPELIST=02b11
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b11]
+//helm of spirituality
+DUPEITEM=02b10
+
+[ITEMDEF 02b12]
+DEFNAME=i_solaretes_sacrifice
+NAME=Solaretes of Sacrifice
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=10 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Solaretes of Sacrifice
+DUPELIST=02b13
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 02b13]
+//solaretes of sacrifice
+DUPEITEM=02b12
+
+// Misc
+
+[ITEMDEF 02af9]
+DEFNAME=i_dawns_music_box
+NAME=Dawn's Music Box
+TYPE=t_normal
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Dawn's Music Box
+DUPELIST=02afa,02afb,02afc,02afd,02afe,02aff,02b00
+
+[ITEMDEF 02afa]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02afb]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02afc]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02afd]
+//dawns music box
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Dawn's Music Box
+DUPEITEM=02af9
+
+[ITEMDEF 02afe]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02aff]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02b00]
+//dawns music box
+DUPEITEM=02af9
+
+[ITEMDEF 02ac0]
+DEFNAME=i_fountain_life
+NAME=Fountain of Life
+TYPE=t_water
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Fountain of Life
+DUPELIST=02ac1,02ac2,02ac3,02ac4,02ac5
+
+[ITEMDEF 02ac1]
+//fountain of life
+DUPEITEM=02ac0
+
+[ITEMDEF 02ac2]
+//fountain of life
+DUPEITEM=02ac0
+
+[ITEMDEF 02ac3]
+//fountain of life
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Fountain of Life
+DUPEITEM=02ac0
+
+[ITEMDEF 02ac4]
+//fountain of life
+DUPEITEM=02ac0
+
+[ITEMDEF 02ac5]
+//fountain of life
+DUPEITEM=02ac0
+
+[ITEMDEF 02adc]
+DEFNAME=i_soulstone_blue
+NAME=Blue Soulstone
+TYPE=0//t_soulstone
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Blue Soulstone
+DUPELIST=02add,02ade,02adf,02ae0,02aec,02aed,02aee,02aef,02af0
+
+[ITEMDEF 02add]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02ade]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02adf]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02ae0]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02aec]
+//blue soulstone
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=8th Age Items
+DESCRIPTION=Blue Soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02aed]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02aee]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02aef]
+//blue soulstone
+DUPEITEM=02adc
+
+[ITEMDEF 02af0]
+//blue soulstone
+DUPEITEM=02adc
+
+[EOF]

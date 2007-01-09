@@ -1,0 +1,369 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Bowyer Script
+// Notes:  This is used for general information pertaining to all Britannian Bowyers
+// Current Keyword List: job,bow,arrow,archer,cross,stick,feather,bolt,occupation,what*do*do,profession
+//
+//
+[SPEECH jobBowyer]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a bowyer.
+				SAY I make bows and arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a bowyer.
+				SAY I make bows and arrows.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a bowyer by trade.
+				SAY I make bows and arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a bowyer by trade.
+				SAY I make bows and arrows.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a bowyer by trade.
+				SAY I make fine bows and arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a bowyer by trade.
+				SAY I make fine bows and arrows.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*bow*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell longbows and crossbows.
+				SAY Dost thou want to buy a bow?
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell longbows and crossbows.
+				SAY Dost thou want to buy a bow?
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell both longbows and crossbows.
+				SAY Crossbows are tricky, but thou dost need a good eye and better wood to craft a longbow.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell both longbows and crossbows.
+				SAY Crossbows are tricky, but thou dost need a good eye and better wood to craft a longbow.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Many satisfied customers have bought my longbows and crossbows.
+				SAY Any fool can put a string on a stick, but a good bow is a work of art.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Many satisfied customers have bought my longbows and crossbows.
+				SAY Any fool can put a string on a stick, but a good bow is a work of art.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*arrow*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell arrows and crossbow bolts.
+				SAY I can supply thee with arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell arrows and crossbow bolts.
+				SAY I can supply thee with arrows.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell arrows and crossbow bolts.
+				SAY Mine arrows fly true.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell arrows and crossbow bolts.
+				SAY Mine arrows fly true.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The finest archers in the land use mine arrows.
+				SAY An arrow is just feathers on a shaft, but in flight it becomes a thing of beauty.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The finest archers in the land use mine arrows.
+				SAY An arrow is just feathers on a shaft, but in flight it becomes a thing of beauty.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*archery*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm not an archery coach. I just sell bows.
+				SAY If thou wish to be an archer, thou wilt need a bow.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm not an archery coach. I just sell bows.
+				SAY If thou wish to be an archer, thou wilt need a bow.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Archery is an art which requires fine equipment.
+				SAY My bows and arrows will certainly improve thine archery.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Archery is an art which requires fine equipment.
+				SAY My bows and arrows will certainly improve thine archery.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm sure an archer of thy skill wants only the finest weaponry.
+				SAY Archery is as much good equipment as it is good skill.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm sure an archer of thy skill wants only the finest weaponry.
+				SAY Archery is as much good equipment as it is good skill.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cross*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I make and sell crossbows.
+				SAY I have small and large crossbows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I make and sell crossbows.
+				SAY I have small and large crossbows.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My crossbows are well known.
+				SAY My small crossbows are accurate and easy to use, and my large crossbows are powerful.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My crossbows are well known.
+				SAY My small crossbows are accurate and easy to use, and my large crossbows
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The most noble knights in the land all know my crossbows.
+				SAY Small crossbows are best for hunting and self defense, large crossbows are devastating in wartime.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The most noble knights in the land all know my crossbows.
+				SAY Small crossbows are best for hunting and self defense, large crossbows are devastating in wartime.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*stick*
+ON=*shaft*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou wouldst rather make thine own, I can provide straight boards for bows or shafts for arrows.
+				SAY I can sell thee boards, shafts and feathers suitable for making bows and arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou wouldst rather make thine own, I can provide straight boards for bows or shafts for arrows.
+				SAY I can sell thee boards, shafts and feathers suitable for making bows and arrows.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou prefer, I can sell thee good wood to make thine own bows or arrows.
+				SAY I'll sell thee a bow, or a fine straight board to make thine own.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou prefer, I can sell thee good wood to make thine own bows or arrows.
+				SAY I'll sell thee a bow, or a fine straight board to make thine own.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou dost prefer to make thine own, I can sell thee excellent shafts and feathers.
+				SAY I can sell thee wood if thou wishest to make thine own bows and arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou dost prefer to make thine own, I can sell thee excellent shafts and feathers.
+				SAY I can sell thee wood if thou wishest to make thine own bows and arrows.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*feathers*
+ON=*fletching*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I can sell thee feathers for arrows.
+				SAY I sell feathers suitable to fletch an arrow.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I can sell thee feathers for arrows.
+				SAY I sell feathers suitable to fletch an arrow.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Arrows must be fletched with the proper quality of feather.
+				SAY I could sell thee feathers with which to make thine own arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Arrows must be fletched with the proper quality of feather.
+				SAY I could sell thee feathers with which to make thine own arrows. 
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY A quality arrow must be fletched with the finest feathers.
+				SAY I have a personally selected stock of feathers which will make fine arrows.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY A quality arrow must be fletched with the finest feathers.
+				SAY I have a personally selected stock of feathers which will make fine arrows.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*bolt*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I can sell thee bolts for thy crossbow.
+				SAY I sell both bolts and the crossbows with which to use them effectively.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I can sell thee bolts for thy crossbow.
+				SAY I sell both bolts and the crossbows with which to use them effectively.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY My crossbow bolts never shatter. Unless, of course, thou dost happen to step on them.
+				SAY A precision instrument like a crossbow needs the finest quality bolts.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY My crossbow bolts never shatter. Unless, of course, thou dost happen to step on them.
+				SAY A precision instrument like a crossbow needs the finest quality bolts.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Without good bolts, the finest crossbow is but an expensive club with a prod attached.
+				SAY My crossbow bolts are unconditionally guaranteed! Unless thou dost lose them.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Without good bolts, the finest crossbow is but an expensive club with a prod attached.
+				SAY My crossbow bolts are unconditionally guaranteed! Unless thou dost lose them.
+			ENDDO
+		ENDIF
+
+	ENDIF
+
+[COMMENT SPEECH jobBowyer]
+//BOWYER
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Hello
+ON=Greet
+SAY=Hail, friend! How art thou?
+ON=job
+SAY=I am a bowyer of exceptional skill. Just give me any variety of bow, and you'll see my arrows fly!
+ON=bye
+ON=farewell
+ON=goodbye
+	SAY=Farewell.
+	BYE
+	return 1
+ON=Archery
+SAY=If skilled in archery, you may pick off enemies or dangerous creatures from a safe distance.
+ON=arrow
+SAY=You may make arrows with feathers and sticks.  Of, if that's too advanced for you, just buy some from a merchant.
+ON=bolt
+SAY=Bolts are used in crossbows not long bows, any bowyer knows that.
+ON=crossbow
+SAY=A crossbow may be unwieldy, but will definitely ruin your target's day.
+ON=bow
+SAY=Bows travel well and are perfect for ranged combat.
+ON=feather
+SAY=Feathers are used in the making of arrows and may be acquired from some of our fine feathered friends.
+ON=fletching
+SAY=Fletching is a fine skill for a bowyer. The more advanced the skill the better the arrow made.
+ON=shaft
+ON=stick
+SAY=Remember to use straight shafts when making arrows.
+//RANDOM=I shot an arrow in the air, and where it went I do not care...
+
+[EOF]

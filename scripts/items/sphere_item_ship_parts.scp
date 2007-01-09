@@ -1,0 +1,836 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF 01e26]
+DEFNAME=i_oar_part_1
+RESOURCES=2 i_LOG
+WEIGHT=4
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@
+DUPELIST=01e28
+
+[ITEMDEF 01e27]
+DEFNAME=i_oar_part_2
+RESOURCES=1 i_LOG, i_BOARD
+WEIGHT=3
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@
+DUPELIST=01e29
+
+[ITEMDEF 01e28]
+//oar
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@
+DUPEITEM=01E26
+
+[ITEMDEF 01e29]
+//oar
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@
+DUPEITEM=01E27
+
+[ITEMDEF 01e2a]
+DEFNAME=i_OAR_DOUBLE
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@s
+DUPELIST=01e2b
+
+[ITEMDEF 01e2b]
+//oars
+CATEGORY=Ship Parts
+SUBSECTION=Oar
+DESCRIPTION=@s
+DUPEITEM=01E2A
+
+[ITEMDEF 02018]
+//shipwright
+
+[ITEMDEF 03e3f]
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Ship Side
+DESCRIPTION=Ship Side
+
+[ITEMDEF 03e40]
+//ship (plank)
+TYPE=T_SHIP_PLANK
+CATEGORY=Ship Parts
+SUBSECTION=Gang Plank
+DESCRIPTION=Gang Plank
+
+[ITEMDEF 03e41]
+//ship  (sail tip and side piece)
+TYPE=T_SHIP_SIDE_LOCKED
+CATEGORY=Ship Parts
+SUBSECTION=Ship Side
+DESCRIPTION=Ship Side
+
+[ITEMDEF 03e42]
+//ship (sail tip and plank)
+TYPE=T_SHIP_PLANK
+CATEGORY=Ship Parts
+SUBSECTION=Ship Side
+DESCRIPTION=Ship Side
+
+[ITEMDEF 03e43]
+//dragon prow
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Dragon Prow
+DESCRIPTION=@
+//DUPELIST=03e44,03e45,03e46,03e47,03e48,03e49,03e56
+DUPELIST=03e44,03e45,03e46,03e47,03e48,03e49,03e56
+
+[ITEMDEF 03e44]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e45]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e46]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e47]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e48]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e49]
+//dragon prow
+DUPEITEM=03e43
+
+[ITEMDEF 03e4a]
+//tiller man
+DEFNAME=i_ship_tillerman
+TYPE=T_SHIP_TILLER
+CATEGORY=Ship Parts
+SUBSECTION=Tillerman
+DESCRIPTION=@
+//DUPELIST=03e4b,03e4c,03e4d,03e4e,03e4f,03e50,03e51,03e52,03e53,03e54,03e55,03e5d,03e5e,03e5f,03e60,03e62,03e63,03e75,03e77,03ebd,03ebf,03ec1,03ec2,03ec3,03ec4,03ec5,03ec6
+
+[ITEMDEF 03e4b]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e4c]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e4d]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e4e]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e4f]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e50]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e51]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e52]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e53]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e54]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e55]
+//tiller man
+TYPE=T_SHIP_TILLER
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e56]
+//dragon prow
+//TYPE=T_SHIP_OTHER
+DUPEITEM=03e43
+
+[ITEMDEF 03e57]
+//mast
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Mast
+DESCRIPTION=@
+//DUPELIST=03e5a,03e6c,03e72,03ec8,03ecb,03ed0,03edd,03ee2
+
+[ITEMDEF 03e58]
+//spar
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Spar
+DESCRIPTION=@
+//DUPELIST=03e6e,03e70,03ecd,03ece,03ecf,03ed1,03ed2
+
+[ITEMDEF 03e59]
+//sail
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Sail
+DESCRIPTION=@
+//DUPELIST=03e5b,03e5c,03e6a,03e6b,03e6d,03e71,03e73,03e74,03ec9,03eca,03ecc,03edc,03ede,03edf,03ee0,03ee1,03ee3
+
+[ITEMDEF 03e5a]
+//mast
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e57
+
+[ITEMDEF 03e5b]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e5c]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e5d]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e5e]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e5f]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e60]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e61]
+//deck
+CATEGORY=Ship Parts
+SUBSECTION=Deck
+DESCRIPTION=@
+//DUPELIST=03e7a,03e83,03e88,03e8b,03e8f,03e98,03ea1,03eaa,03eac,03ead,03eb0,03ec0
+
+[ITEMDEF 03e62]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e63]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e64]
+//hold
+//should this be a container type instead?
+CATEGORY=Ship Parts
+SUBSECTION=Hold
+DESCRIPTION=@
+//DUPELIST=03e92,03eaf,03eb7
+
+[ITEMDEF 03e65]
+//hatch
+DEFNAME=i_ship_hatch_e
+TYPE=T_SHIP_HOLD
+TDATA2=04c
+CATEGORY=Ship Parts
+SUBSECTION=Hatch
+DESCRIPTION=@
+DUPELIST=03e93,03eae,03eb9
+
+[ITEMDEF 03e66]
+//ship
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Ship Side
+DESCRIPTION=Ship Side
+
+[ITEMDEF 03e67]
+//ship
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e66
+
+[ITEMDEF 03e68]
+//prow
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Prow
+DESCRIPTION=@
+//DUPELIST=03e69,03e95,03e96,03e97,03e9a,03eb4,03eba
+
+[ITEMDEF 03e69]
+//prow
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e68
+
+[ITEMDEF 03e6a]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e6b]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e6c]
+//mast
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e57
+
+[ITEMDEF 03e6d]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e6e]
+//spar
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e58
+
+[ITEMDEF 03e6f]
+//rudder
+TYPE=T_SHIP_OTHER
+CATEGORY=Ship Parts
+SUBSECTION=Rudder
+DESCRIPTION=@
+//DUPELIST=03e76,03e78,03ebb,03ebc,03ebe
+
+[ITEMDEF 03e70]
+//spar
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e58
+
+[ITEMDEF 03e71]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e72]
+//mast
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e57
+
+[ITEMDEF 03e73]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e74]
+//sail
+TYPE=T_SHIP_OTHER
+//DUPEITEM=03e59
+
+[ITEMDEF 03e75]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e76]
+//rudder
+//DUPEITEM=03e6f
+
+[ITEMDEF 03e77]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03e78]
+//rudder
+//DUPEITEM=03e6f
+
+[ITEMDEF 03e79]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e7a]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03e7b]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e7c]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e7d]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e7e]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e7f]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e80]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e81]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e83]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03e84]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03e85
+CATEGORY=Ship Parts
+SUBSECTION=Gang Plank
+DESCRIPTION=@
+//DUPELIST=03e86,03e89,03ed3,03ed4,03ed5
+
+[ITEMDEF 03e85]
+//ship
+TYPE=T_SHIP_SIDE
+TDATA1=03e84
+
+[ITEMDEF 03e87]
+//ship
+TYPE=T_SHIP_SIDE
+TDATA1=03e86
+
+[ITEMDEF 03e8a]
+//ship
+DEFNAME=i_ship_plank_n_c
+TYPE=T_SHIP_SIDE
+TDATA1=03e89
+
+[ITEMDEF 03e8b]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03e8c]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e8d]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e8e]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e8f]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03e90]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e91]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e92]
+//hold
+//DUPEITEM=03e64
+
+[ITEMDEF 03e93]
+//hatch
+DEFNAME=i_ship_hatch_w
+DUPEITEM=i_ship_hatch_e
+
+[ITEMDEF 03e94]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e95]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03e96]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03e97]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03e98]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03e9a]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03e9b]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e9c]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e9d]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03e9e]
+//ship
+
+[ITEMDEF 03ea7]
+//ship
+
+[ITEMDEF 03ea8]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03ea9]
+//ship
+TYPE=T_SHIP_SIDE
+TDATA1=03ed3
+CATEGORY=Ship Parts
+SUBSECTION=Ship Door
+DESCRIPTION=Ship Door
+
+[ITEMDEF 03eaa]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03eab]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03eac]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03ead]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03eae]
+//hatch
+DEFNAME=i_ship_hatch_n
+DUPEITEM=i_ship_hatch_e
+
+[ITEMDEF 03eaf]
+//hold
+//DUPEITEM=03e64
+
+[ITEMDEF 03eb0]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03eb1]
+//ship
+TYPE=T_SHIP_SIDE
+TDATA1=03ed5
+
+[ITEMDEF 03eb2]
+//ship
+TYPE=T_SHIP_SIDE
+TDATA1=03ed4
+
+[ITEMDEF 03eb3]
+//stern
+CATEGORY=Ship Parts
+SUBSECTION=Stern
+DESCRIPTION=@
+//DUPELIST=03eb8
+
+[ITEMDEF 03eb4]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03eb5]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03eb6]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03eb7]
+//hold
+//DUPEITEM=03e64
+
+[ITEMDEF 03eb8]
+//stern
+//DUPEITEM=03eb3
+
+[ITEMDEF 03eb9]
+//hatch
+DEFNAME=i_ship_hatch_s
+DUPEITEM=i_ship_hatch_e
+
+[ITEMDEF 03eba]
+//prow
+//DUPEITEM=03e68
+
+[ITEMDEF 03ebb]
+//rudder
+//DUPEITEM=03e6f
+
+[ITEMDEF 03ebc]
+//rudder
+//DUPEITEM=03e6f
+
+[ITEMDEF 03ebd]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ebe]
+//rudder
+//DUPEITEM=03e6f
+
+[ITEMDEF 03ebf]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec0]
+//deck
+//DUPEITEM=03e61
+
+[ITEMDEF 03ec1]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec2]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec3]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec4]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec5]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec6]
+//tiller
+//DUPEITEM=03e4a
+
+[ITEMDEF 03ec8]
+//mast
+//DUPEITEM=03e57
+
+[ITEMDEF 03ec9]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03eca]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ecb]
+//mast
+//DUPEITEM=03e57
+
+[ITEMDEF 03ecc]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ecd]
+//spar
+//DUPEITEM=03e58
+
+[ITEMDEF 03ece]
+//spar
+//DUPEITEM=03e58
+
+[ITEMDEF 03ecf]
+//spar
+//DUPEITEM=03e58
+
+[ITEMDEF 03ed0]
+//mast
+//DUPEITEM=03e57
+
+[ITEMDEF 03ed1]
+//spar
+//DUPEITEM=03e58
+
+[ITEMDEF 03ed2]
+//spar
+//DUPEITEM=03e58
+
+[ITEMDEF 03edc]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03edd]
+//mast
+//DUPEITEM=03e57
+
+[ITEMDEF 03ede]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03edf]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ee0]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ee1]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ee2]
+//mast
+//DUPEITEM=03e57
+
+[ITEMDEF 03ee3]
+//sail
+//DUPEITEM=03e59
+
+[ITEMDEF 03ee4]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03ee5]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03ee6]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03ee7]
+//ship
+//DUPEITEM=03e66
+
+[ITEMDEF 03ee9]
+//ship parts
+//DUPEITEM=03e66
+
+[ITEMDEF 03e86]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03e87
+
+[ITEMDEF 03e88]
+//deck
+
+[ITEMDEF 03e89]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03e8a
+
+[ITEMDEF 03e9f]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_horse_tan
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_horse_tan
+
+[ITEMDEF 03ea0]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_horse_gray
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_horse_gray
+
+[ITEMDEF 03ea1]
+//ship deck (really used as horse equipped)
+DEFNAME=i_mt_horse_brown_lt
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_horse_brown_lt
+
+[ITEMDEF 03ea2]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_horse_brown_dk
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_horse_brown_dk
+
+[ITEMDEF 03ea3]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_ostard_desert
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_ostard_desert
+
+[ITEMDEF 03ea4]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_ostard_zostrich
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_ostard_zostrich
+
+[ITEMDEF 03ea5]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_ostard_forest
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_OSTARD_Forest
+
+[ITEMDEF 03ea6]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_llama
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_LLAMA
+
+[ITEMDEF 03ed3]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03ea9
+
+[ITEMDEF 03ed4]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03eb2
+
+[ITEMDEF 03ed5]
+//gang plank
+TYPE=T_SHIP_PLANK
+TDATA1=03eb1

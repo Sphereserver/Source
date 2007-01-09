@@ -1,0 +1,344 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Fur Trader Script
+// Notes:  This is used for general information pertaining to all Britannian Fur Traders
+// Current Keyword List:
+//	job, what*do*do, work, profession, occupation, skin, fleece, wool,
+//	pelt, skill, critter, animal, camp, creature, food, hungry, bread,
+//	pie, cake, muffin, cheese, bird, ribs, mutton, chicken, carrots,
+//	corn, lettuce, peas, potatoes, stew, soup
+//
+[SPEECH jobFURTRADER]
+
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	//SAY=I am a fur trader.
+
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I sell furs and fleece.
+				SAY Thou dost want furs, I'll sell 'em to thee.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I sell furs and fleece.
+				SAY Thou want furs, I'll sell 'em to thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I sell furs and fleece.
+				SAY Want furs? I'll sell 'em to thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Skins, furs, fleece ... if it comes off the back of a creature, I'll sell it to thee.
+				SAY My trade is selling pelts of all sorts.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Skins, furs, fleece ... if'n it come off t' back of a critter, I'll sell it to thee.
+				SAY Me trade is selling pelts of all sorts.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Skins, furs, fleece ... if it comes off t' back of a critter, I'll sell it to thee.
+				SAY My trade is selling pelts of all sorts.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY 'Tis a free life for me, tho' I use fur trading as an excuse to stay free of the cities.
+				SAY I sell furs and meet interesting people, mostly. Pleased to know thee.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It's a free life for me, tho' I use fur trading as an excuse to stay free of t' cities.
+				SAY I sell furs and meet interestin' people, mostly. Pleased ta know thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It's a free life for me, an' it keeps me free of t' cities.
+				SAY I sell furs and meet interestin' people, mostly. Pleased ta know thee.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*skin*
+ON=*fleece*
+ON=*wool*
+ON=*pelt*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Thou dost want some? I've got some.
+				SAY I sell furs, and  it ain't bad for whence they came.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Thou want some? I've got some.
+				SAY I sell furs, and 'taint bad for whence they came.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Thou want some? I got some.
+				SAY I sell furs, and 'taint bad for where they're comin' from.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Weather's turning chill. Thou'll be wantin' warm furs.
+				SAY My furs'll warm thy back, thy bedroll and thy whole outlook on life.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Weather's turnin' chill. Thou'll be wantin' warm furs.
+				SAY Me furs'll warm yer back, yer bedroll and yer outlook on life.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Weather's turnin' chill. Thou'll be wantin' warm furs.
+				SAY My furs'll warm thy back, thy bedroll and thy outlook on life.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Warm in body, warm in heart, thou knowest. Buy an extra one and thou wilt have a pillow finer than a king's.
+				SAY I can tell by the look in thine eye that thou hast spent too long sleeping on twigs and rocks. I can sell thee warm days and soft nights.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Warm in body, warm in heart, thou knowest. Buy an extra one an' thou wilt have a pillow finer than a king's.
+				SAY I can tell by the look in thine eye that thou hast spent too long sleeping on twigs and rocks. I can sell thee warm days and soft nights.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Warm in body, warm in heart, thou knows. Buy an extra one an' thou'lt have a pillow finer than a king's.
+				SAY I can tell by the look in thine eye that thou spent too long sleepin' on twigs and rocks. I can sell thee warm days an' soft nights.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*skill*
+ON=*critter*
+ON=*animal*
+ON=*camp*
+ON=*creature*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY I can teach thee some things about animals. Could help thee when thou art out in the wild.
+				SAY Thou shouldst know something about the creatures that thou art likely to spend time with when thou art outdoors. Could be of use to thee.
+				SAY I could teach thee to know the creatures of the woods. And thou couldst learn a bit about camping from me. I know things that could help thee, I do.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I can teach thee some things about animals. Could help thee when thou art out in the wild.
+				SAY Thou shouldst know something about the creatures that thou art likely to spend time with when thou art outdoors. Could be of use to thee.
+				SAY I could teach thee to know the creatures of the woods. And thou couldst learn a bit about camping from me. I know things that could help thee, I do.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'll teach thee 'bout animals. Could help when thou'rt in the wild.
+				SAY Thou should know 'bout the wild creatures. Could be o' use to thee.
+				SAY I could teach thee 'bout the animals in the wild. And thou could stand to learn a bit 'bout campin', too. I know things that'd help thee, I do.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY If thou dost want to learn, I might be persuaded to teach thee about camping in the wild.
+				SAY If thou dost need help with thy camping skills, just ask me to teach thee and if I can, I will.
+				SAY I can teach thee about the animals in the forest and how to know more about them, if thou art willing.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY If thou dost want to learn, I might be persuaded to teach thee about camping in the wild.
+				SAY If thou dost need help with thy camping skills, just ask me to teach thee and if I can, I will.
+				SAY I can teach thee about the animals in the forest and how to know more about them, if thou art willing.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY If thou wants to learn, I might be persuaded to teach thee about campin' in the wild.
+				SAY If thou'rt needin' help with thy campin' skills, just ask me to teach thee and I will.
+				SAY I can teach thee some 'bout the animals in the forest, if thou'rt willing.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about surviving in the wilderness.
+				SAY Thou can always learn new things, my friend. I could show thee some things, for instance, about the wilderness that could help thee.
+				SAY I can teach thee things that could help thee in the wild. I would need thee to pay me for my time, however.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about living in the wilderness.
+				SAY Thou can always learn new things, my friend. I could show thee some things, for instance, about the wilderness that could help thee.
+				SAY I can teach thee things that could help thee in the wild. I would need thee to pay me for my time, however.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy to learn thee what I know about livin' in the wild.
+				SAY Thou can always learn stuff. I could show some things about the wild that could help.
+				SAY I can teach things that could help in the wild. I'd need some money for it, though.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*food*
+ON=*hungry*
+ON=*bread*
+ON=*pie*
+ON=*cake*
+ON=*muffin*
+ON=*cheese*
+ON=*bird*
+ON=*ribs*
+ON=*mutton*
+ON=*chicken*
+ON=*carrots*
+ON=*corn*
+ON=*lettuce*
+ON=*peas*
+ON=*potatoes*
+ON=*stew*
+ON=*soup*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Yes, I'll buy some.
+				SAY If thou art offerin', I'm buyin'.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yes, I'll buy some.
+				SAY If thou'rt offerin', I'm buyin'.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I've had naught but dried meat and berries for a week. I'll buy what thou art offering.
+				SAY Fresh food would be a godsend ... and I'm not picky.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I ain't had but dried meat and berries for a week. I'll buy what thou'rt offerin'.
+				SAY Fresh food would be a godsend... and I ain't picky.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Ah, now thou'rt a good friend, to bring the market to the meadows!
+				SAY I will admit, 'tis a hungryin' life, to walk the wilds between towns.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ah, now thou'rt a good friend, to bring the market to the meadows!
+				SAY I'll admit, it's a hungryin' life, to walk the wilds 'tween towns.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Greetings.
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Goodbye.
+	BYE
+	return 1
+
+ON=Animal
+	SAY=Most slain animals have hides and meat that may be sold.
+
+ON=Birds
+	SAY=Birds are useful for their feathers, which make fine arrows.
+
+ON=Bread
+	SAY=Bread man be bought from bakers or made from flour and water.
+
+ON=cake
+	SAY=I am overly fond of cake, myself.
+
+ON=camp
+	SAY=Remember when camping, always build a fire.  Keeps the critters away!
+
+ON=Carrots
+	SAY=Horses love carrots.
+
+ON=Cheese
+	SAY=Cheese is good for you, and filling.
+
+ON=Chicken
+	SAY=Did you call me chicken?  Why you... Oh! You mean poultry.  EH!  Sorry about that friend.
+
+ON=Corn
+	SAY=Corn makes great chicken food, but horses like it too.
+
+ON=Creature
+SAY=Creature! Where?  What creature?  Don't scare me like that.
+ON=Critter
+SAY=You can find a lot of critters in the woods.  Big ones and small ones, all ripe for the skinning.
+ON=fleece
+SAY=Fleece is used to make wool.
+ON=food
+SAY=Food may be purchased from some merchants, or at the Inn if you get hungry.
+ON=Hungry
+SAY=Visit an Inn and buy some food if you are hungry.
+ON=Lettuce
+SAY=Lettuce is grown by local farmers.
+ON=Muffin
+SAY=I know of some bakers who make wonderful muffins.
+ON=Mutton
+SAY=Mutton stew! Now there's a dish for you!
+ON=Peas
+SAY=I eat my peas with a knife an honey... how do you eat yours?
+ON=Pelt
+SAY=Rabbits make fine pelts.
+On=Pie
+SAY=I myself love pie!
+On=Potatoes
+SAY=Potatoes are good in soup and stews.
+ON=Ribs
+SAY=A raw rack of ribs makes great pet food.
+ON=Skill
+SAY=As a fur trader, I often use Tracking to find more animals.
+On=Skin
+SAY=Remember to skin animals for their hides and meat. Just use a bladed edge on the carcass.
+ON=soup
+SAY=I hear of two brothers named Campbell who travel from Inn to Inn selling the finest soups.
+ON=Stew
+SAY=A big bow of mutton or beef stew sets a person right on a cold day.
+ON=wool
+SAY=Wool may be shorn from sheep with a bladed shears.
+
+//RANDOM=Attention: Do not attempt to sell me any more rat pelts! I know the difference, friend.
+//DEFAULT=I do not understand thee.
+
+[EOF]
+

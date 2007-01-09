@@ -1,0 +1,249 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Priest Script
+// Notes:  This is used for general information pertaining to all Britannian Priest's
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, priest, god, Ocllo, huansuytin, Arpana
+//
+[SPEECH jobPriest]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I am a priest, heathen!
+				SAY I am a servant of the great gods of Ocllo!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a priest, heathen!
+				SAY I'm a servant of the great gods of Ocllo!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I am a humble servant of the Gods.
+				SAY Thou must be a stranger here, or thou wouldst know that I am a priest.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a humble servant of the Gods.
+				SAY Thou must be a stranger here, or thou would know that I'm a priest.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I serve the gods as best I can.
+				SAY I am a priest, a servant of the gods.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I serve the gods as best I can.
+				SAY I'm a priest, a servant of the gods.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*priest*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY A savage like thyself cannot understand the mysteries of the gods.
+				SAY I am a priest of the true gods, not of thy barbarous superstitions.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY A savage like thee can't understand the mysteries of the gods.
+				SAY I'm a priest of the true gods.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I serve the gods and teach their ways to the people.
+				SAY Priests instruct the people in the ways of the gods.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I serve the gods and teach their ways.
+				SAY Priests tell the people the ways of the gods.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It is a priest's job to see that the world is ordered according to the will of the gods.
+				SAY A priest's function is to show the people where the will of the gods lies.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It's a priest's job to see that eveything is as the gods want.
+				SAY A priest is supposed to show the people the will of the gods.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*god*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Mighty are the gods of Ocllo.
+				SAY The pitiful heathen fall like dust from the boots of the true gods.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Mighty are the gods of Ocllo.
+				SAY Other gods are nothing to the true gods.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The gods created all of Ocllo.
+				SAY The gods are mighty and compassionate.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The gods created all of Ocllo.
+				SAY The gods are mighty and compassionate.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY All of Huansuytin is the work of the gods. Without them, there is nothing.
+				SAY The Gods created the world, and the Arpana, their children, rule over it.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY All of Huansuytin was made by the gods. Without them, there is nothing.
+				SAY The Gods created the world, and the Arpana rule over it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Ocllo*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ocllo is Huansuytin.
+				SAY Ocllo is where all civilized and pious people live.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ocllo is Huansuytin.
+				SAY Ocllo is where all civilized people live.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ocllo is our name for civilization.
+				SAY Ocllo is the home of civilized folk. Beyond it is only the wastelands, like thy homeland.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ocllo is our name for civilization.
+				SAY Ocllo is the home of civilized people. Beyond it is only the wastelands, like thy homeland.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ocllo is our name for the civilized part of Huansuytin.
+				SAY Only the barbarian lands, where thou art from, lie beyond the borders of Ocllo.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ocllo is our name for the civilized part of Huansuytin.
+				SAY Only the barbarian lands, where thou'rt from, are beyond the borders of Ocllo.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*huansuytin*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Huansuytin is everything, fool.
+				SAY Huansuytin is the whole of the civilized world!
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Huansuytin is everything, fool.
+				SAY Huansuytin is the whole civilized world.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Ocllo and Huansuytin are one.
+				SAY Huansuytin is the world, and Ocllo is the nation upon it. There are also the Barbarian lands, where thou art from.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Ocllo and Huansuytin are the same.
+				SAY Huansuytin is the world, and Ocllo is the nation on it. There are also the Barbarian lands, where thou'rt from.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The gods created Huansuytin, and gave it to the Arpana, who founded Ocllo upon it.
+				SAY Huansuytin is the whole world, minus the wastelands that lie beyond Ocllo.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The gods made Huansuytin, and gave it to the Arpana, who put Ocllo upon it.
+				SAY Huansuytin is the whole world, minus the wastelands that are beyond Ocllo.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*Arpana*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		SAY The Arpana are the first caste, but we priests are the ones that really run things.
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		SAY The Arpana are the children of the gods.
+	ELSE
+		SAY In the beginning, the gods made Ocllo, and set the Arpana to rule there over lesser castes.
+	ENDIF
+
+[COMMENT SPEECH jobPriest]
+DEFAULT=My friend, you must listen!
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=In the name of my God, I greet thee!
+ON=Job
+ON=What do you do
+	SAY=I am dedicated to spreading the words of my God.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=May you find your salvation in the arms of my Lord.
+	BYE
+	return 1
+ON=ARPANA
+	SAY=Ah, they are the highest in our society, especially women.  Of course, my God allows this.
+ON=GOD
+	SAY=Truly, worshipping my God is the key to salvation! Thou will join me in a prayer?
+ON=HUANSUYTIN
+	SAY=Ah, thou speak of an Ocllo resident?
+ON=PRIEST
+	SAY=Priests are dedicated to God.
+//RANDOM=Willt thou not join me in prayer?
+
+[EOF]

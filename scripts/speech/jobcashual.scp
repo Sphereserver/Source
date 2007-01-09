@@ -1,0 +1,324 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// Purpose: Britannia Cashual Script
+// Notes:  This is used for general information pertaining to all Britannian Cashuals
+// Current Keyword List:job,profession,occupation,what*do*do,mage,magic,spell,book,reagents,scroll,potion,
+//
+//
+
+[SPEECH jobCashual]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a cashual.
+				SAY I'm a cashual. An outlander like thee wouldn't understand what that means.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a cashual.
+				SAY I'm a cashual. An outlander like thee wouldn't understand what that means.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a cashual, a student of arcane arts.
+				SAY I call myself a cashual. I think outlanders like thyself have a different name for it.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a cashual, a student of arcane arts.
+				SAY I call myself a cashual. I think outlanders like thyself have a different name for it.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I am a cashual. Among thy people I believe I wouldst be called a mage.
+				SAY I am a cashual, a worker of magic, as thou call it.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I am a cashual. Among thy people I believe I wouldst be called a mage.
+				SAY I am a cashual, a worker of magic, as thou call it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cashual*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The arts of the Cashual are beyond such as thee.
+				SAY I am not given to discussing the secrets of the Cashual with barbarians.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The arts of the Cashual are beyond such as thee.
+				SAY I am not given to discussing the secrets of the Cashual with barbarians.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY We Cashuals are regarded as wonder workers by the simple folk.
+				SAY A Cashual is one who has a deep understanding of the practical applications of natural philosophy.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY We Cashuals are regarded as wonder workers by the simple folk.
+				SAY A Cashual is one who has a deep understanding of the practical applications of natural philosophy.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The Cashual's art is not unlike the skills of those thou outlanders call mages.
+				SAY The Cashual is one who can exert his will over the elements of nature.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The Cashual's art is not unlike the skills of those thou outlanders call mages.
+				SAY The Cashual is one who can exert his will over the elements of nature.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*skill*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY What, dost thou find need to increase thy skills with the arcane arts? I'm not sure that thou art able.
+				SAY Thou dost need some skill to perform the art of the Cashual. I might be able to teach thee a thing or two, but I can't promise anything.
+				SAY Well, for a little compensation, I could show thee some things to practice to improve thy skills, but I doubt thou wouldst ever be a master of my art.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY What, dost thou find need to increase thy skills with the arcane arts? I'm not sure that thou art able.
+				SAY Thou dost need some skill to perform the art of the Cashual. I might be able to teach thee a thing or two, but I can't promise anything.
+				SAY Well, for a little compensation, I could show thee some things to practice to improve thy skills, but I doubt thou wouldst ever be a master of my art.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I've been known to teach a select few how to improve their skills, for a few coins.
+				SAY If thou dost need some training in the art of the Cashual, just say the word. I shall suffer myself to help thee.
+				SAY I can give thee some practice in our art, all thou dost need do is to ask.  And leave me a few coins.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I've been known to teach a select few how to improve their skills, for a few coins.
+				SAY If thou dost need some training in the art of the Cashual, just say the word. I shall suffer myself to help thee.
+				SAY I can give thee some practice in our art, all thou dost need do is to ask.  And leave me a few coins.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy to help train thee in some of my techniques. I'd ask for a few coins, though, to help pay for my time.
+				SAY Sure, I could be convinced to teach thee some of what I know.  'Twould be up to thyself, though, to practice it.
+				SAY I can teach thee only if thou art willing to learn. And pay me for the time I would invest. A few coins would suffice.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy to help train thee in some of my techniques. I'd ask for a few coins, though, to help pay for my time.
+				SAY Sure, I could be convinced to teach thee some of what I know.  'Twould be up to thyself, though, to practice it.
+				SAY I can teach thee only if thou art willing to learn. And pay me for the time I would invest. A few coins would suffice.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*mage*
+ON=*magic*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Do not compare thy barbarian superstitions to my art.
+				SAY I have heard that there are some outlanders who pretend to have mastered some of the Cashual's art.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Do not compare thy barbarian superstitions to my art.
+				SAY I have heard that there are some outlanders who pretend to have mastered some of the Cashual's art.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I think that magic is the outlander term for my art.
+				SAY If thou wish to regard me as a mage, thou may do so.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I think that magic is the outlander term for my art.
+				SAY If thou wish to regard me as a mage, thou may do so.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I believe that magic is thy people's term for my art.
+				SAY The art of the Cashual is thy magic, at least to the extent that an outlander can understand it.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I believe that magic is thy people's term for my art.
+				SAY The art of the Cashual is thy magic, at least to the extent that an outlander can understand it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*spell*
+ON=*book*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY I could sell thee a book for recording the formulae of my art, or spells as thou calls them. I doubt it would do thee much good, though.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY I could sell thee a book for recording the formulae of my art, or spells as thou calls them. I doubt it would do thee much good, though.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Spell book? A quaint term, but I could prepare one for thee.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Spell book? A quaint term, but I could prepare one for thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY I use tomes similer to thy spell books. I could prepare thee one.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY I use tomes similer to thy spell books. I could prepare thee one.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*potion*
+ON=*scroll*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY I can both brew potions and scribe scrolls of power.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY I can both brew potions and scribe scrolls of power.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Of course both the brewing of potions and the inscription of scrolls lies within my art.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Of course both the brewing of potions and the inscription of scrolls lies within my art.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Scrolls and potions are both manifestations of my art.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Scrolls and potions are both manifestations of my art.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*reagent*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY I am always willing to sell the elements which thou callest reagents.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY I am always willing to sell the elements which thou callest reagents.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY Reagents? If I understand thee aright, I both buy and sell them.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY Reagents? If I understand thee aright, I both buy and sell them.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 1
+				SAY The natural elements which thou callest reagents are the fundamental tools of my art.
+			ENDDO
+		ELSE
+			DORAND 1
+				SAY The natural elements which thou callest reagents are the fundamental tools of my art.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobCASHUAL]
+//OCLLO CASHUAL
+DEFAULT=We are not amused.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=We allow thee to greet us.
+ON=Job
+ON=What do you do
+SAY=Dost thou fail to realize thee is in the presence of our greatness?
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Thou may leave.
+	BYE
+	return 1
+ON=BOOK
+SAY=Book?  We are astonished thou can read!
+ON=CASHUAL
+SAY=Art thou so unlearned?  Cashuals are most powerful mages of Ocllo, and lady mages even more revered!
+ON=MAGE
+ON=MAGERY
+ON=MAGIC
+ON=POTION
+ON=REAGENT
+ON=SCROLL
+ON=SPELL
+SAY=Our magic is the highest form of living, and is responsible for all the benefits in this utopian society.
+ON=SKILL
+SAY=We hold the skills of magery in highest esteem.
+ON=WOMEN
+ON=LADY
+ON=WOMAN
+SAY=Dost thou not realize our founding mothers are credited with all thou see?
+//RANDOM=Ah, to be a woman, the highest status in the land!
+
+[EOF]
+

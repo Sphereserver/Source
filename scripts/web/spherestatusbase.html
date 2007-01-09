@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>SPHERE STATUS</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="5">
+
+<p align="center"><font size="5" face="Arial" color="#5B86F7"><strong>%SERVNAME% </strong></font></p>
+
+<p align="left"><strong><font size="5" face="Arial" color="#5B86F7">Status:<br>
+</font><font color="#5B86F7" size="1" face="Arial"><br>
+</strong>This information is updated in real time from the server every 5 minutes. Last
+update time %RTIME%<br>
+<br>
+</font><font size="4" color="#5B86F7" face="Arial">Administrator: </font><font size="4"
+face="Arial"><a href="mailto:%ADMINEMAIL%">%ADMINEMAIL%<br>
+</a></font><font size="4" color="#5B86F7" face="Arial">Server Version: %VERSION%<br>
+</font></p>
+<div align="left">
+
+<table border="0" cellpadding="2" width="100%">
+  <tr>
+    <td nowrap colspan="2" bgcolor="#5B86F7"><strong><font face="Arial" size="2"
+    color="#FFFFFF">Statistics</font></strong></td>
+  </tr>
+  <tr>
+    <td nowrap width="5%"><font face="Arial" size="2">NPCs</font></td>
+    <td width="95%"><font face="Arial" size="2">%CHARS%</font></td>
+  </tr>
+  <tr>
+    <td nowrap bgcolor="#E8E8E8" width="5%"><font face="Arial" size="2">Items</font></td>
+    <td bgcolor="#E8E8E8" width="95%"><font face="Arial" size="2">%ITEMS%</font></td>
+  </tr>
+  <tr>
+    <td nowrap width="5%"><font face="Arial" size="2">Guilds</font></td>
+    <td width="95%"><font face="Arial" size="2">%GUILDS%</font></td>
+  </tr>
+  <tr>
+    <td nowrap bgcolor="#E8E8E8" width="5%"><font face="Arial" size="2">Clients</font></td>
+    <td bgcolor="#E8E8E8" width="95%"><font face="Arial" size="2">%CLIENTS%</font></td>
+  </tr>
+  <tr>
+    <td nowrap width="5%"><font face="Arial" size="2">Memory Usage</font></td>
+    <td nowrap width="95%"><font face="Arial" size="2">%MEM%</font></td>
+  </tr>
+  <tr>
+    <td width="5%"></td>
+    <td width="95%"></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="2" width="100%">
+  <tr>
+    <td nowrap bgcolor="#5B86F7"><font face="Arial" size="2" color="#FFFFFF"><strong>Clients</strong></font></td>
+  </tr>
+  <script language="Sphere">CLIENTLIST <tr %LISTCOL%><td>%NAME%</td><td>%REGION.NAME%</td></tr></script>
+
+</table>
+</div>
+
+<p><font size="1" face="Arial">E-mail responses: <a href="mailto:%ADMINEMAIL%">%ADMINEMAIL%</a>
+</font></p>
+
+<hr color="#5B86F7">
+
+<p align="center">&nbsp; <strong><font size="5" face="Arial" color="#5B86F7">%SERVNAME%<br>
+</font></strong><font size="1" face="Arial">made possible by<br>
+</font><a href="http://www.sphereserver.net" target="_blank"><img border="0"
+src="web/sphere_anim.gif" width="247" height="83"></a></p>
+</body>
+</html>
+

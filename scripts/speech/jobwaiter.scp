@@ -1,0 +1,301 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Waiter Script
+// Notes:  This is used for general information pertaining to all Britannian Waiters
+// Current Keyword List:
+//	job, what*do*do, food, drink, wine, ale, cider, booz, liquor, alcohol,
+//	waiter, server, waitperson, server, Service
+//
+[SPEECH jobWaiter]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY I am a waiter.
+				SAY I am a food distribution specialist.
+				SAY I serve food to slobs like thee.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a waiter.
+				SAY I am a food response specialist.
+				SAY I serve food to slobs like thee.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a waiter.
+				SAY I serve food to slobs like thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 3
+			SAY I am a waitperson.
+			SAY I wait on people like thee.
+			SAY I serve food.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a server, <SRC.SEX good sir/good lady>.
+				SAY Food service, <SRC.SEX milord/milady>.
+				SAY I wait on people like thee, hand and foot.  To a reasonable degreeSAY
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm a server, <SRC.SEX good sir/good lady>.
+				SAY Food service, <SRC.SEX milord/milady>.
+				SAY I wait on people like thee, hand and foot.  To a reasonable degree.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*food*
+ON=*drink*
+ON=*wine*
+ON=*ale*
+ON=*cider*
+ON=*booz*
+ON=*liquor*
+ON=*alcohol*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY What, didst thou want something?
+				SAY Didst thou think to eat here?
+				SAY I'm sorry - what art thou blathering about?
+				SAY Thou weren't planning on eating here, by chance?
+				SAY Oh!  Thou dost want food!SAY
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY What, did thou want somethin'?
+				SAY Did thou think to eat here?
+				SAY Sorry - what are thou blatherin' about?
+				SAY Thou weren't plannin' on eatin' here, by chance?
+				SAY Oh!  Thou wants food!SAY
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Thou mayest have whatever is available.
+				SAY The food here is reasonably good, <SRC.SEX milord/milady>.
+				SAY We should have a fairly wide choice of food.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Thou may have whatever's available.
+				SAY The food here's pretty good, <SRC.SEX milord/milady>.
+				SAY We got a pretty good choice of food.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The food and drink here are excellent!
+				SAY The food and drink here are quite good!
+				SAY The food and drink here is extremely good, <SRC.SEX milord/milady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The food an' drink here's excellent!
+				SAY The food an' drink here's quite good!
+				SAY The food an' drink here's extremely good, <SRC.SEX milord/milady>.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*waiter*
+ON=*server*
+ON=*waitperson*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Uh huh.
+				SAY Yeah.
+				SAY That would be me.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Uh huh.
+				SAY Yeah.
+				SAY That'd be me.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY That would be me.
+				SAY Yes?
+				SAY I am here to serve thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY That'd be me.
+				SAY Yes?
+				SAY I'm here to serve.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Please, call us servers.
+				SAY I am here to serve thee as best I can, <SRC.SEX milord/milady>.
+				SAY If I can help thee, I certainly shall, <SRC.SEX milord/milady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Please, call us servers.
+				SAY I'm here to serve thee as good as I can, <SRC.SEX milord/milady>.
+				SAY If I can help thee, I will, <SRC.SEX milord/milady>.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*server*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Uh huh.
+				SAY Yeah.
+				SAY That would be me.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Uh huh.
+				SAY Yeah.
+				SAY That'd be me.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY That would be me.
+				SAY Yes?SAY
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY That'd be me.
+				SAY Yeah?SAY
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 3
+				SAY Yes, I am one of those.
+				SAY The life of a server is the life I lead.
+				SAY Yes, my life is in the service patrons such as thee.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Yes, I am one of those.
+				SAY The life of a server is the life I lead.
+				SAY Yes, my life is in the service of food items.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Yes, I'm one of those.
+				SAY The life of a server is the life I lead.
+				SAY Yes, my life is in the service of food stuff.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*Service*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Live to serve, that's me!
+				SAY I don't think I could make through the day without someone telling me 'I	want this' - or 'I want that'.
+				SAY Yessiree!  A life of service!  That's me!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Live to serve, that's me!
+				SAY I don't think I'd make it through the day 'thout someone telling me 'I	want this' or 'I want that'.
+				SAY Yessiree!  A life of service!  That's me!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Oh, I'm sorry, I wasn't listening.
+				SAY Thou dost need something?  What do I say?  Of course thou dost need something.  I am, after all, here to serve thee.
+				SAY Oh, thou were speaking to me?
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Oh, sorry, I weren't listenin'.
+				SAY Thou needs somethin'?  What am I sayin'?  Of course thou needs something.  I am, after all, here to serve thee.
+				SAY Oh, thou were speakin' to me?
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I was born to serve.
+				SAY I so enjoy serving people such as thyself.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I's born to serve.
+				SAY I so like servin' people like thee.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH]
+//WAITER/WAITRESS
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Hello, I am at your service.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell.  Tips are gladly accepted!
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=I serve up the best food and drink in the land.
+ON=ALE
+ON=CIDER
+SAY=We serve the finest you will ever taste!
+ON=DRINK
+SAY=Might I suggest our fine ale?
+ON=FOOD
+SAY=Our ale will go well with any type of food.
+ON=SERVER
+SAY=I am your server today, how may I help you?
+ON=SERVICE
+SAY=So you want service do you?  Well then, order up stranger.
+ON=WAITER
+SAY=Would you like to start the evening with some fine ale?
+ON=WAITPERSON
+SAY=OK, I will wait, but stop calling me person.
+ON=WINE
+SAY=Yes we do have wine.  Oh, and fine ale as well.
+//RANDOM=Join me in a song?  99 bottles of ale on the wall, 99 bottles of ale...
+
+[EOF]
+

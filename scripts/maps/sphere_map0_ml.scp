@@ -1,0 +1,62 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: March 26, 2006
+
+VERSION=0.56b
+
+[AREADEF a_ml_dungeon_1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Sanctuary
+GROUP=ML Dungeons
+FLAGS=0880|02
+P=6170,195,-10,0
+RECT=6141,0,6401,257,0
+
+[AREADEF a_ml_dungeon_2]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Prism of Light
+FLAGS=0880|02
+GROUP=ML Dungeons
+P=6475,188,-2,0
+RECT=6448,17,6656,256,0
+
+[AREADEF a_ml_dungeon_3]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Palace of Paroxysmus
+FLAGS=0880|02
+GROUP=ML Dungeons
+P=6306,403,60,0
+RECT=6198,316,6563,676,0
+
+[AREADEF a_ml_dungeon_4]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=The Heartwood
+GROUP=ML Dungeons
+FLAGS=region_flag_safe|region_flag_no_pvp
+P=7035,409,12,0
+RECT=6907,253,7166,512,0
+
+[AREADEF a_ml_dungeon_5]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Painted Caves
+FLAGS=0880|02
+GROUP=ML Dungeons
+P=6308,892,0,0
+RECT=6243,846,6315,919,0
+
+[AREADEF a_ml_dungeon_6]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Blighted Grove
+FLAGS=0880|02
+GROUP=ML Dungeons
+P=6500,890,2,0
+RECT=6446,814,6596,974,0
+
+[EOF]

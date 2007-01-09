@@ -1,0 +1,379 @@
+//SPHERE by : Menasoft ©1997-2004
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0121d]
+DEFNAME=i_wall_carving_stone
+TYPE=T_WALL
+RESOURCES=10 i_rock_plain
+WEIGHT=10
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Wall Carving
+DESCRIPTION=@
+DUPELIST=0121e,0121f,01220,01221,01222
+
+[ITEMDEF 0121e]
+//wall carving
+DUPEITEM=0121d
+
+[ITEMDEF 0121f]
+//wall carving
+DUPEITEM=0121d
+
+[ITEMDEF 01220]
+//wall carving
+DUPEITEM=0121d
+
+[ITEMDEF 01221]
+//wall carving
+DUPEITEM=0121d
+
+[ITEMDEF 01222]
+//wall carving
+DUPEITEM=0121d
+
+[ITEMDEF 01223]
+DEFNAME=i_PEDESTAL_MARBLE
+RESOURCES=12 i_MARBLE
+WEIGHT=12
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Pedestal
+
+[ITEMDEF 01224]
+DEFNAME=i_statue_stone_sm
+RESOURCES=2 i_rock_plain
+WEIGHT=5
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+DUPELIST=01225,01226,01227,01228
+
+[ITEMDEF 01225]
+//statue
+DUPEITEM=01224
+
+[ITEMDEF 01226]
+//statue
+DUPEITEM=01224
+
+[ITEMDEF 01227]
+//statue
+DUPEITEM=01224
+
+[ITEMDEF 01228]
+//statue
+DUPEITEM=01224
+
+[ITEMDEF 01231]
+DEFNAME=i_wall_carving_stone_2
+TYPE=T_WALL
+RESOURCES=10 i_rock_plain
+WEIGHT=10
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Wall Carving
+DESCRIPTION=Wall Carving 02
+DUPELIST=01232,01233,01234,01235,01236,01237,01238,01239,0123a,0123b,0123c,0123d,0123e,01240,01241,01242,01243,01244
+
+[ITEMDEF 01232]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01233]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01234]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01235]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01236]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01237]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01238]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01239]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 0123a]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 0123b]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 0123c]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 0123d]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 0123e]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01240]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01241]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01242]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01243]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01244]
+//wall carving
+DUPEITEM=01231
+
+[ITEMDEF 01265]
+DEFNAME=i_wall_carving_stone_3
+TYPE=T_WALL
+RESOURCES=10 i_rock_plain
+WEIGHT=10
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Wall Carving
+DESCRIPTION=@
+DUPELIST=01266,01267
+
+[ITEMDEF 01266]
+//wall carving
+DUPEITEM=01265
+
+[ITEMDEF 01267]
+//wall carving
+DUPEITEM=01265
+
+[ITEMDEF 0129f]
+DEFNAME=i_statue_stone_lg
+RESOURCES=300 i_rock_plain
+WEIGHT=500
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+DUPELIST=012a0,012a1,012a2,012a3,012a4
+
+[ITEMDEF 012a0]
+//statue
+DUPEITEM=0129f
+
+[ITEMDEF 012a1]
+//statue
+DUPEITEM=0129f
+
+[ITEMDEF 012a2]
+//statue
+DUPEITEM=0129f
+
+[ITEMDEF 012a3]
+//statue
+DUPEITEM=0129f
+
+[ITEMDEF 012a4]
+//statue
+DUPEITEM=0129f
+
+[ITEMDEF 012ae]
+DEFNAME=i_statue_stone_lg_2
+RESOURCES=300 i_rock_plain
+WEIGHT=500
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+DUPELIST=012af,012b0
+
+[ITEMDEF 012af]
+//LARGE_STONE_STATUE_2 PART 2
+DUPEITEM=012AE
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+
+[ITEMDEF 012b0]
+//LARGE_STONE_STATUE_2 PART 3
+DUPEITEM=012AE
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+
+[ITEMDEF 012ca]
+DEFNAME=i_BUST_STONE_SMALL
+RESOURCES=2 i_rock_plain
+WEIGHT=5
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue (Bust)
+DUPELIST=012cb
+
+[ITEMDEF 012cb]
+//bust
+DUPEITEM=012ca
+
+[ITEMDEF 012cc]
+DEFNAME=i_wall_carving_stone_4
+TYPE=T_WALL
+RESOURCES=10 i_rock_plain
+WEIGHT=10
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Wall Coverings
+DESCRIPTION=Wall Carving
+DUPELIST=012cd,012ce,012cf,012d0,012d3,012d4
+
+[ITEMDEF 012cd]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012ce]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012cf]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012d0]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012d3]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012d4]
+//wall carving
+DUPEITEM=012cc
+
+[ITEMDEF 012d5]
+DEFNAME=i_statue_stone_sm_2
+RESOURCES=2 i_rock_plain
+WEIGHT=5
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+
+[ITEMDEF 012d6]
+DEFNAME=i_statue_stone_lg_3
+RESOURCES=300 i_rock_plain
+WEIGHT=500
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+DUPELIST=012d7
+
+[ITEMDEF 012d7]
+//LARGE_STONE_STATUE_3 PART 2
+DUPEITEM=012D6
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+
+[ITEMDEF 012d8]
+DEFNAME=i_statue_stone_lg_4
+RESOURCES=300 i_rock_plain
+WEIGHT=500
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Statue
+DUPELIST=012d9
+
+[ITEMDEF 012d9]
+//statue
+DUPEITEM=012d8
+
+[ITEMDEF 0139a]
+DEFNAME=i_statue_stone_sm_3
+RESOURCES=2 i_rock_plain
+WEIGHT=5
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statue
+DESCRIPTION=@
+DUPELIST=0139b,0139c,0139d
+
+[ITEMDEF 0139b]
+//statue
+DUPEITEM=0139a
+
+[ITEMDEF 0139c]
+//statue
+DUPEITEM=0139a
+
+[ITEMDEF 0139d]
+//statue
+DUPEITEM=0139a
+
+[ITEMDEF 0139e]
+DEFNAME=i_statue_stone_lg_5
+RESOURCES=300 i_rock_plain
+WEIGHT=500
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statue
+DESCRIPTION=@
+DUPELIST=0139f,013a0,013a1,013a2,013a3
+
+[ITEMDEF 0139f]
+//statue
+DUPEITEM=0139e
+
+[ITEMDEF 013a0]
+//statue
+DUPEITEM=0139e
+
+[ITEMDEF 013a1]
+//statue
+DUPEITEM=0139e
+
+[ITEMDEF 013a2]
+//statue
+DUPEITEM=0139e
+
+[ITEMDEF 013a3]
+//statue
+DUPEITEM=0139e
+
+[ITEMDEF 01f18]
+//statue
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Statues
+DESCRIPTION=Multifaced Bust
+
+[ITEMDEF 01f2a]
+DEFNAME=i_pedestal
+RESOURCES=6 i_rock_plain
+WEIGHT=12
+CATEGORY=Decoration - Wall Carvings & Statues
+SUBSECTION=Pedestal
+DESCRIPTION=@
+
+
+
+[eof]

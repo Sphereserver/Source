@@ -1,0 +1,1132 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// Purpose: Britannia Mage Script
+// Notes:  This is used for general information pertaining to all Britannian Mages
+// Current Keyword List:job,occupation,profession,what*do*do,craft,art,talent,spell,spells,spellcasting,casting
+// cast,reagent,component,guild,words*of*power,spell*books,spellbooks,arcane,Moonglow,ether,ability,abilities,empath,abbey,where*monks,
+// Wis*Uus,Uus*Jux,In*Mani*Ylemm,Rel*Wis,In*Mani,In*lor,In*Por*Ylem,Des*Mani,relvinian,guild
+//
+
+[SPEECH jobMage] // Non Shopkeeper
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+ON=craft
+ON=talent
+ON=art
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am a wizard, my dear <SRC.SEX sir/lady>, a weaver of spells.
+				SAY I, my dear <SRC.SEX sir/lady>, am a master of the arcane.
+				SAY <SRC.MYNAME> mage extraordinaire, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*relvinian*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Relivinian was a mage driven mad by the Daemons he attempted to control. He became so afraid that others were attempting to steal his research that he fled Britain and drew upon his powers to create a magical maze pulled from all areas of the world to protect himself from watchful eyes.
+				SAY Relvinian is an elf-spawn from the old days of Britannia before the coming of Exodus.  He grew in power soon after the destruction of Exodus, but vanished mysteriously ages ago.
+				SAY It is said that Relvinian's goal was to summon Daemons to serve as slaves to the people of Britannia.  As thou might suspect, his foolish venture went gravely wrong.
+				SAY I've heard Relvinian's maze contains naught but mages now.
+				SAY Rumor has it that Relvinian's maze contains the power to heal those wounded in battle.
+				SAY It is said that somewhere in Relvinian's maze is the power to summon daemons, but I would not bet my life on it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*empath*
+ON=abbey
+ON=where*monks
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Find Empath Abbey in the northwestern part of Britannia.
+				SAY The Abbey is to be found in northwestern Britannia.
+				SAY Empath Abbey is found in the northwest area of Britannia.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Find Empath Abbey in the northwestern part of Britannia.
+				SAY The Abbey is to be found in northwestern Britannia.
+				SAY Empath Abbey is found in the northwest area of Britannia.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Hmm. Empath Abbey can be found just outside of Yew. To the northeast of that city, to be specific.
+				SAY The Abbey is northeast of Yew.
+				SAY The monks of Empath Abbey are found near Yew. Northeast of the city proper.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Hmm. Empath Abbey can be found just outside of Yew. To the northeast of that city, to be specific.
+				SAY The Abbey is northeast of Yew.
+				SAY The monks of Empath Abbey are found near Yew. Northeast of the city proper.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Hmm. Empath Abbey can be found just outside of Yew. To the northeast of that city, to be specific.
+				SAY The Abbey is northeast of Yew.
+				SAY The monks of Empath Abbey are found near Yew. Northeast of the city proper.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Hmm. Empath Abbey can be found just outside of Yew. To the northeast of that city, to be specific.
+				SAY The Abbey is northeast of Yew.
+				SAY The monks of Empath Abbey are found near Yew. Northeast of the city proper.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*skill*
+ON=*ability*
+ON=*abilities*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I may grudgingly help thee learn a few things. I would prefer that thou didst leave me alone, but I can teach thee a bit, if thou dost need it.
+				SAY I'd wish for thee to leave me be. But if thou dost need, I could teach thee some of what I know.
+				SAY Please, I ask thee to just leave me alone. I have little time for thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I may grudgingly help thee learn a few things. I would prefer that thou didst leave me alone, but I can teach thee a bit, if thou dost need it.
+				SAY I'd wish for thee to leave me be. But if thou dost need, I could teach thee some of what I know.
+				SAY Please, I ask thee to just leave me alone. I have little time for thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee some of the arcane arts. Thou wouldst certainly need to pay me, of course.
+				SAY Thou shouldst know something about the magical arts. 'Twould help thee greatly. I could be of some assistance, I think.
+				SAY If thou dost need help with thy magic, just ask me to teach thee and I will. For a small price.
+				SAY I can teach thee to better weave thy spells. Could be of use to thee in the future.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY If thou dost want to learn, I might be persuaded to teach thee some of the arcane arts. Thou wouldst certainly need to pay me, of course.
+				SAY Thou shouldst know something about the magical arts. 'Twould help thee greatly. I could be of some assistance, I think.
+				SAY If thou dost need help with thy magic, just ask me to teach thee and I will. For a small price.
+				SAY I can teach thee to better weave thy spells. Could be of use to thee in the future.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about the arcane arts. I could give thee lessons for a few coins.
+				SAY Thou can always learn new things, my friend. I could teach thee some things that could help thee cast thy spells. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee perform thy magic better. I would need thee to pay me for my time, however.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'd be happy for thee to learn what I know about the arcane arts. I could give thee lessons for a few coins.
+				SAY Thou can always learn new things, my friend. I could teach thee some things that could help thee cast thy spells. For some small amount of money, of course.
+				SAY I can teach thee things that could help thee perform thy magic better. I would need thee to pay me for my time, however.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*spell*
+ON=*spells*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Well, <SRC.SEX sir/dear lady>, I know many, many spells. I can tell thee about some basic spells if thou dost have questions.
+				SAY Spells are nothing more than the warping of supernatural forces by mortal beings... highly intelligent and learned beings, but mortal nonetheless. Dost thou have a question about a particular spell?
+				SAY Learning a spell takes a considerable amount of time, my <SRC.SEX friend/dear>, and even then only after one has spent many, many years learning to comprehend how little of the world thou dost truly understand.
+				SAY Mayhaps thou has a particular spell in mind? I can explain the use of some of the simpler spells.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*casting*
+ON=*cast*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Casting spells takes more than the understanding of the magics involved. Certain ingredients, called reagents, must be mixed together to muster the supernatural forces of the ether.
+				SAY To cast a spell, a mage must know the words of power required to harness the ether.
+				SAY Spellcasting is a delicate process, involving the use of reagents, spell books, and words of power.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*reagent*
+ON=*component*
+ON=*ingredients*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY There are many different types of reagents. In fact, to some degree, nearly any material can be used to bring forth power. However, some ingredients are better than others,and still others possess such a minute modicum of power that it would take enough of that material to fill an entire house before the desired effect coulst be achieved.
+				SAY Reagents are the ingredients necessary to summon the ether to do one's bidding. Most spells cannot be cast until the required reagents have been mixed together. Of course, those who are more in tune with the ether are more inclined to succeed without mixing the reagents ahead of time.
+				SAY Finding and choosing the best reagents for a particular spell can be difficult, which is a major reason for the importance of a spell book. In addition, choosing inferior reagents for a spell couldst increase the chance of the spell failing... or even working contrary to the wishes of the caster.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*guild*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, <SRC.SEX sir/dear lady>, we do often find that working together and exchanging information about the arcane arts is quite beneficial to all parties involved. There is quite a lot to learn -- more than canst be gleaned during a single lifetime.
+				SAY Our... kind... tend to congregate in secluded or secure places where we know our quest for knowledge will not be disturbed. Of course, some travel to Moonglow to study in the largest libraries dedicated to the mystical arts.
+				SAY Mages are like any other artisan. Well, SOMEWHAT like any other artisan. By that I mean, of course, that we find benefits in sharing knowledge and resource, just like members of any of the mundane  crafts.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=words*of*power
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Words of power are the syllables that are combined to express the name of a particular spell.
+				SAY The words of power are merely yet another way to facilitate the mage's attempt to harness the ether.
+				SAY By combining these words of power, a mage can manipulate and build upon previous knowledge to form new or stronger forms of magic.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*spellbooks*
+ON=spell*books
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory. However, I have yet to meet anyone who couldst demonstrate such a theory, short of reading the spell directly from a scroll.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Spell books are much like books of recipes... save that the results of preparing a spell are far, far different than what a cook might serve.
+				SAY Each spell requires certain combinations for success. Each page within a spell book is a description of those elements, as well as an explanation of the results.
+				SAY Some extremists have speculated that spell books are not required components of casting a spell. However, I have yet to meet anyone who couldst demonstrate such a theory. However, I have yet to meet anyone who couldst demonstrate such a theory, short of reading the spell directly from a scroll.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*arcane*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Well, in the world of mundane information, arcane merely means mysterious. However, in MY world, the mystical world, arcane refers to the lesser known  magical arts.
+				SAY Aye, it means mysterious or unknown. Thus, when applied to magic, it refers to mastery of spells and spellcasting.
+				SAY The art of the arcane is one of mystical power, dear <SRC.SEX sir/lady>, of magic.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*ether*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I cannot explain it in simple terms, my friend. Suffice it to say that ether is merely an invisible manifestation of supernatural will.
+				SAY Wouldst that I could summarize such a complex concept. I suppose in its most basic form, ether is the energy of existence. No, not quite right. 'Tis the energy DERIVED from all existence.  No, that does not ring wholly true either...
+				SAY Ether? 'Tis an inexplicable force. Why, even the most sagacious and learned of wizards canst not hope to comprehend fully what either IS.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Moonglow*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes, Lord British's haven for those wishing to master the arcane.
+				SAY Lord British set aside an entire island dedicated entirely towards the pursuit of knowledge and magic.
+				SAY Moonglow is a veritable plethora of knowledge, especially regarding magic and the mytical world.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=Wis*Uus
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY That spell can be of use when thou art in need of a bird's-eye-view.
+				SAY Ah! Use that spell to see landmarks from above.
+				SAY Those words can lift thine eyes above thy head, and see the land around thee.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=Uus*Jux
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah, yes! Thou canst trip up thy opponents and make tem easier to hit!
+				SAY Use that spell to cause thy enemies to miss when they strike at thee or another.
+				SAY Ah! A spell to make one clumsier! It can be useful!
+			ENDDO
+		ENDIF
+	ENDIF
+ON=In*Mani*Ylem
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis a spell to create food to fill one's plate.
+				SAY A useful spell to feed the hungry.
+				SAY The ability to create food from the ether is one that sets a mage apart from the common people.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=Rel*Wis
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Why, 'tis the spell that can create morons!
+				SAY Aye, thou can certainly drain the intelligence straight out of a person with those words.
+				SAY The stupid-spell! With some skill, thy opponents won't know enough anymore to curse thee.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=In*Mani
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Healer, heal thyself!
+				SAY A useful spell for reducing the damage inflicted upon thee by this hostile world.
+				SAY Why, 'tis the magic that restores one's health.
+				SAY 'Tis very useful on the battlefield to know how to heal.
+				SAY Yes, I know that one well. Any injured man or woman can tell thee how crucial that spell is!
+				SAY Thou dost refer to the spell of healing.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=In*Lor
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Why, 'tis the spell that illuminates an area.
+				SAY Ah, the spell that creates a shining light to brighten one's evening.
+				SAY A useful spell for combating the dark of night.
+				SAY Why, 'tis a fine spell for creating a source of light.
+				SAY Ah, the very words that call forth a source of brilliant light.
+				SAY Thou dost speak of the magics involved in fabricating an object of luminescence.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=In*Por*Ylem
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Strike at thine enemies from a distance!
+				SAY Yes, that spell can inflict some wounds while keeping thee out of the arc of the sword.
+				SAY A useful spell for combat!.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=Des*Mani
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Yes, thou can use that spell to temporarily weaken thy opponent.
+				SAY Take the strength right out of a person!
+				SAY Makes the warrior as weak as a baby.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=I greet thee.
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=I'm sure we will meet again.
+	BYE
+	return 1
+
+ON=Job
+ON=what do you do
+	SAY=I am a living library of the arcane arts.
+
+ON=ABBEY
+	SAY=Oh, I haven't been to my abbey in ages.
+
+ON=ABILITIES
+ON=ABILITY
+	SAY=One must have a born propensity for magic, a natural ability if you will.
+
+ON=ARCANE
+ON=ART
+	SAY=The arcane art is one of keeping mystical secrets.
+
+ON=CAST
+ON=CASTING
+	SAY=Just close your eyes, say the words, and visualize.  You may need your Spellbook for assistance.
+
+ON=COMPONENT
+	SAY=Reagents and a heavy spellbook are all the components one needs.
+
+ON=CRAFT
+	SAY=The craft of a mage takes many years to learn.
+
+ON=DES MANI
+	SAY=The words to weaken an opponent.
+
+ON=EMPATH
+	SAY=I know not what someone feels nor do I wish to.
+
+ON=ETHER
+	SAY=I have heard rumors of ether, but have never seen it myself.
+
+ON=GUILD
+	SAY=Join the Mage's Guild, and you'll receive discounts on reagents.
+
+ON=IN LOR
+	SAY=Night Sight is very handy when reagent hunting.
+
+ON=IN MANI
+	SAY=You shall hear these words quite often on a battlefield.
+
+ON=IN MANI YLEM
+	SAY=No, I am not very hungry.
+
+ON=IN POR YLEM
+	SAY=Beginning mages use this spell quite often.
+
+ON=INGREDIENTS
+	SAY=Which reagent are you referring to?
+
+ON=REAGENT
+	SAY=Reagents are the basis for all magic.
+
+ON=REL WIS
+	SAY=The Feeblemind spell truly isn't that useful.
+
+ON=RELVINIAN
+	SAY=I think you have been in the sun too long.
+
+ON=SCROLL
+	SAY=Oh yes, always carry a few extra scrolls.  One never knows.
+
+ON=SKILL
+	SAY=One needs to dedicate himself to the arcane arts to acquire great skill.
+
+ON=SPELL
+	SAY=One can never practice any spell enough.
+
+ON=SPELL BOOKS
+ON=SPELLBOOKS
+ON=SPELLS
+	SAY=Never leave town without your spellbook.
+
+ON=TALENT
+	SAY=I feel that one must have a natural talent when it comes to casting spells.
+
+ON=UUS JUX
+	SAY=Clumsy is one of the first spells that one learns.  Quite easy to cast.
+
+ON=WHERE<ANY>MONKS
+	SAY=Why ask me of monks?  I am a Mage.
+
+ON=WIS UUS
+	SAY=I believe that you mean Uus Wis.  Get it straight.
+
+ON=WORDS OF POWER
+	SAY=One must learn all the secret words of power.
+
+// DEFAULT=I do not understand thee.
+//RANDOM=Magic is the greatest gift to our world.  Do not abuse it.
+
+[EOF]

@@ -1,0 +1,2036 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 5-Oct-2005
+VERSION=0.56b
+
+[COMMENT DIALOG_HELP_SECTION]
+resizepic		x,y,backgroundgump,width,height							// can come first if multi page. put up some background gump
+checkertrans 		x,y,width,height								// add a trasparent layer (only for clients >= 3)
+gumppic			x,y,gump,hue									// put gumps in the dlg. (hue only for clients >= 3, otherwise ignored)
+gumppictiled		x,y,width,height,gump								// tile a gump
+tilepic			x,y,item									// put item tiles in the dlg.
+tilepichue		x,y,item,hue									// put colored item tiles in the dlg.
+text			x,y,color,stringindex								// put some text here.
+croppedtext		x,y,width,height,color,stringindex						// put some cropped text here
+htmlgump		x,y,width,height,stringindex,hasbackgroud,hasscrollbar				// add an html gump that show a text
+xmfhtmlgump		x,y,width,height,clilocid,hasbackgroud,hasscrollbar				// add an html gump that show a cliloc text
+button			x,y,down_gump,up_gump,ispressable,pagedest,id					// add a button
+buttontileart		x,y,down_gump,up_gump,ispressable,pagedest,id,tileid,tilehue,tilex,tiley	// add a button with a tilepic on top
+textentry		x,y,widthpix,widthchars,color,id,startstringindex				// add a input text box
+textentrylimited	x,y,widthpix,widthchars,color,id,startstringindex,limit				// add a input text box with a "limit" maxchar (only for clients >= 5)
+tooltip			clilocid									// popup a tooltip over a gump object (only for clients >= 4)
+radio			x,y,gump1,gump2,starting_state,id						// add a radio button
+checkbox		x,y,gumpcheck,gumpuncheck,starting_state,checkid				// add a checkbox
+page			id										// for multi tab dialogs.
+group		    											// Group a bunch of radio/checkbox
+nomove		 											// The gump cannot be moved around.
+noclose						 							// The gump cannot be closed with a right click.
+nodispose
+// NOTE: low button id's are reserved for page tabs.
+// button id 0 is reserved for the CANCEL command
+// TRYP arg3 INPDLG=arg1 arg2
+//	arg1=ITEM/CHAR property associated with this button
+//	arg2=formating for output/input (max length/max value)
+//	arg3= minimum privelege needed to change this, 255=never,admin=6,developer=5,gm=4,seer=3,couns=2
+
+[DIALOG d_CHARPROP1]// prop sheet.
+70, 70        // this is always the size.
+page 0
+resizepic 0 0 5100 600 440
+text 30 30 0 0
+button 10 405 247 248 1 0 900
+//button 10 400 5200 5201 1 0 900
+//button 90 400 5204 5205 1 0 901
+//button 170 400 5202 5203 1 0 902
+gumppic 325 15 2000
+tilepic 400 140 <DISPIDDEC>
+text 10 50 80 4
+page 1
+gumppic 4 2 5007
+button 92 2 5006 5007 1 2 802
+button 180 2 5006 5007 1 3 803
+text 45 1 0 1
+text 133 1 0 2
+text 221 1 0 3
+button 10 70 2443 2444 1 0 2
+text 15 70 0 5
+text 75 70 0 6
+button 10 95 2443 2444 1 0 3
+text 15 95 0 7
+text 75 95 0 8
+button 10 120 2443 2444 1 0 4
+text 15 120 0 9
+text 75 120 0 10
+button 10 145 2443 2444 1 0 5
+text 15 145 0 11
+text 75 145 0 12
+button 10 170 2443 2444 1 0 6
+text 15 170 0 13
+text 75 170 0 14
+button 10 195 2443 2444 1 0 7
+text 15 195 0 15
+text 75 195 0 16
+button 10 220 2443 2444 1 0 8
+text 15 220 0 17
+text 75 220 0 18
+button 10 245 2443 2444 1 0 9
+text 15 245 0 19
+text 75 245 0 20
+button 10 270 2443 2444 1 0 10
+text 15 270 0 21
+text 75 270 0 22
+button 10 295 2443 2444 1 0 11
+text 15 295 0 23
+text 75 295 0 24
+button 10 320 2443 2444 1 0 12
+text 15 320 0 25
+text 75 320 0 26
+button 10 345 2443 2444 1 0 13
+text 15 345 0 27
+text 75 345 0 28
+button 10 370 2443 2444 1 0 14
+text 15 370 0 29
+text 75 370 0 30
+text 320 370 100 31
+button 365 340 2443 2444 1 0 15
+text 370 340 50 31
+text 430 340 50 32
+button 365 370 2443 2444 1 0 16
+text 370 370 50 33
+text 430 370 50 34
+button 365 400 2443 2444 1 0 17
+text 370 400 50 35
+text 430 400 50 36
+text 430 290 2100 37
+text 150 370 2100 38
+button 240 370 4011 4013 1 0 18
+
+[DIALOG d_CHARPROP1 TEXT]
+Character Properties 1
+1
+2
+3
+Change Value
+Serial
+<SERIAL>
+Acct
+<ACCOUNT>
+Name
+<NAME>
+Title
+<TITLE>
+Color
+<COLOR>
+OSkin
+<OSKIN>
+ID
+<ID>
+Body
+<BODY>
+OBody
+<OBODY>
+Timer
+<TIMER>
+P
+<P>
+Home
+<HOME>
+Action
+<ACTION>
+NPC
+<NPC>
+Owner
+<MEMORYFINDTYPE.02.LINK.NAME>
+Speech
+<SPEECH>
+<DISPIDDEC>
+Action Menu
+
+[DIALOG d_CHARPROP1 BUTTON]
+
+ON=802
+	DIALOG d_CHARPROP2
+
+ON=803
+	DIALOG d_CHARPROP3
+
+ON=2
+	TRYP 255 INPDLG SERIAL 8
+
+ON=3
+	TRYP 6 INPDLG=ACCOUNT 30
+
+ON=4
+	TRYP 3 INPDLG=NAME 30
+
+ON=5
+	TRYP 4 INPDLG=TITLE 30
+
+ON=6
+	TRYP 3 INPDLG=COLOR 6
+
+ON=7
+	TRYP 3 INPDLG=OSKIN 6
+
+ON=8
+	TRYP 3 INPDLG=ID 30
+
+ON=9
+	TRYP 3 INPDLG=BODY 30
+
+ON=10
+	TRYP 3 INPDLG=OBODY 30
+
+ON=11
+	TRYP 4 INPDLG=TIMER 8
+
+ON=12
+	TRYP 3 INPDLG=P 16
+
+ON=13
+	TRYP 3 INPDLG=HOME 16
+
+ON=14
+	TRYP 4 INPDLG=ACTION 3
+
+ON=15
+	TRYP 4 INPDLG=NPC 4
+
+ON=16
+	SRC.SYSMESSAGE This belongs to <MEMORYFINDTYPE.02.NAME 8>
+
+ON=17
+	TRYP 4 INPDLG=SPEECH 20
+
+ON=18
+	IF (<ACTION>==-1)
+		SRC.MESSAGE @50 Doing nothing.
+	elif ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_Necromancy))
+		SRC.MESSAGE @50 Using the skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
+	elif <ACTION>==064
+		SRC.MESSAGE @50 Npc following someone.
+	elif <ACTION>==065
+		SRC.MESSAGE @50 Npc standing.
+	elif <ACTION>==066
+		SRC.MESSAGE @50 Npc going somewhere.
+	elif <ACTION>==067
+		SRC.MESSAGE @50 Npc wandering.
+	ELSE
+		SRC.MESSAGE @50 Action not in this menu.
+	endif
+
+[DIALOG d_CHARPROP2]
+70, 70
+page 0
+resizepic 0 0 5100 600 440
+text 30 30 0 0
+button 10 405 247 248 1 0 900
+//button 10 400 5200 5201 1 0 900
+//button 90 400 5204 5205 1 0 901
+//button 170 400 5202 5203 1 0 902
+gumppic 325 15 2000
+tilepic 400 140 <DISPIDDEC>
+text 10 50 80 4
+page 1
+button 4 2 5006 5007 1 1 801
+gumppic 92 2 5007
+button 180 2 5006 5007 1 3 803
+text 45 1 0 1
+text 133 1 0 2
+text 221 1 0 3
+button 10 70 2443 2444 1 0 1
+text 15 70 1100 5
+text 75 70 0 6
+button 150 70 2443 2444 1 0 18
+text 155 70 1100 38
+text 215 70 0 39
+button 10 95 2443 2444 1 0 2
+text 15 95 3 7
+text 75 95 0 8
+button 150 95 2443 2444 1 0 19
+text 155 95 3 40
+text 215 95 0 41
+button 10 120 2443 2444 1 0 3
+text 15 120 450 9
+text 75 120 0 10
+button 150 120 2443 2444 1 0 20
+text 155 120 450 42
+text 215 120 0 43
+button 10 145 2443 2444 1 0 4
+text 15 145 1100 11
+text 75 145 0 12
+button 150 145 2443 2444 1 0 21
+text 155 145 1100 44
+text 215 145 0 45
+button 10 170 2443 2444 1 0 5
+text 15 170 3 13
+text 75 170 0 14
+button 150 170 2443 2444 1 0 22
+text 155 170 3 46
+text 215 170 0 47
+button 10 195 2443 2444 1 0 6
+text 15 195 450 15
+text 75 195 0 16
+button 150 195 2443 2444 1 0 23
+text 155 195 450 48
+text 215 195 0 49
+button 10 220 2443 2444 1 0 7
+text 15 220 0 17
+text 75 220 0 18
+button 10 245 2443 2444 1 0 8
+text 15 245 0 19
+text 75 245 0 20
+button 10 270 2443 2444 1 0 9
+text 15 270 0 21
+text 75 270 0 22
+button 10 295 2443 2444 1 0 10
+text 15 295 0 23
+text 75 295 0 24
+button 10 320 2443 2444 1 0 11
+text 15 320 0 25
+text 75 320 0 26
+button 10 345 2443 2444 1 0 12
+text 15 345 0 27
+text 75 345 0 28
+button 10 370 2443 2444 1 0 13
+text 15 370 0 29
+text 75 370 0 30
+text 430 290 2100 31
+button 155 245 2443 2444 1 0 14
+text 160 245 0 32
+text 220 245 0 33
+button 155 270 2443 2444 1 0 15
+text 160 270 0 34
+text 220 270 0 35
+button 155 295 2443 2444 1 0 16
+text 160 295 58 36
+text 220 295 58 37
+button 155 315 2443 2444 1 0 25
+dtext 160 315 80 mWeight
+dtext 220 315 80 <MODMAXWEIGHT>
+button 155 355 4011 4013 1 0 17
+dtext 187 355 1110 Empty the backpack
+button 155 375 4011 4013 1 0 24
+dtext 187 375 1120 Delete the backpack
+
+[DIALOG d_CHARPROP2 TEXT]
+Character Properties 2
+1
+2
+3
+Change Value
+oSTR
+<OSTR>
+oINT
+<OINT>
+oDEX
+<ODEX>
+Hits
+<HITS>
+Mana
+<MANA>
+Stam
+<STAMINA>
+Karma
+<KARMA>
+Fame
+<FAME>
+Kills
+<KILLS>
+Food
+<FOOD>
+Flags
+<FLAGS>
+Plot1
+<TAG0.PLOT1>
+Plot2
+<TAG0.PLOT2>
+<DISPIDDEC>
+Exp
+<EXP>
+Level
+<LEVEL>
+mAR
+<MODAR>
+mSTR
+<MODSTR>
+mINT
+<MODINT>
+mDEX
+<MODDEX>
+mHits
+<MAXHITS>
+mMana
+<MAXMANA>
+mStam
+<MAXSTAM>
+
+[DIALOG d_CHARPROP2 BUTTON]
+
+ON=801
+	DIALOG=d_CHARPROP1
+
+ON=803
+	DIALOG=d_CHARPROP3
+
+ON=1
+	TRYP 4 INPDLG=OSTR 5
+
+ON=2
+	TRYP 4 INPDLG=OINT 5
+
+ON=3
+	TRYP 4 INPDLG=ODEX 5
+
+ON=4
+	TRYP 4 INPDLG=HITS 5
+
+ON=5
+	TRYP 4 INPDLG=MANA 5
+
+ON=6
+	TRYP 4 INPDLG=STAMINA 5
+
+ON=7
+	TRYP 4 INPDLG=KARMA 5
+
+ON=8
+	TRYP 4 INPDLG=FAME 5
+
+ON=9
+	TRYP 4 INPDLG=KILLS 5
+
+ON=10
+	TRYP 3 INPDLG=FOOD 4
+
+ON=11
+	TRYP 4 INPDLG=FLAGS 9
+
+ON=12
+	TRYP 6 INPDLG=TAG.PLOT1 4
+
+ON=13
+	TRYP 6 INPDLG=TAG.PLOT2 4
+
+ON=14
+	TRYP 4 INPDLG=EXP 6
+
+ON=15
+	TRYP 4 INPDLG=LEVEL 6
+
+ON=16
+	TRYP 4 INPDLG=MODAR 5
+
+ON=17
+	SRC.TARG.FINDLAYER(21).EMPTY
+
+ON=18
+	TRYP 6 INPDLG=MODSTR 5
+
+ON=19
+	TRYP 6 INPDLG=MODINT 5
+
+ON=20
+	TRYP 6 INPDLG=MODDEX 5
+
+ON=21
+	TRYP 4 INPDLG=MAXHITS 5
+
+ON=22
+	TRYP 4 INPDLG=MAXMANA 5
+
+ON=23
+	TRYP 4 INPDLG=MAXSTAM 5
+
+ON=24
+	SRC.TARG.FINDLAYER(21).REMOVE
+
+ON=25
+	TRYP 4 INPDLG=MODMAXWEIGHT 5
+
+[DIALOG d_CHARPROP3]
+70, 70
+page 0
+resizepic 0 0 5100 600 440
+text 30 30 0 0
+button 10 405 247 248 1 0 900
+//button 10 400 5200 5201 1 0 900
+//button 90 400 5204 5205 1 0 901
+//button 170 400 5202 5203 1 0 902
+//gumppic 325 15 2000
+//tilepic 400 140 <DISPIDDEC>
+text 10 50 80 4
+text 210 50 80 4
+text 410 50 80 4
+button 410 25 2443 2444 1 0 51
+text 285 25 1100 105
+text 415 25 0 106
+page 1
+button 4 2 5006 5007 1 1 801
+button 92 2 5006 5007 1 2 802
+gumppic 180 2 5007
+text 45 1 0 1
+text 133 1 0 2
+text 221 1 0 3
+button 10 70 2443 2444 1 0 1
+text 15 70 0 5
+text 75 70 0 6
+button 10 90 2443 2444 1 0 2
+text 15 90 0 7
+text 75 90 0 8
+button 10 110 2443 2444 1 0 3
+text 15 110 0 9
+text 75 110 0 10
+button 10 130 2443 2444 1 0 4
+text 15 130 0 11
+text 75 130 0 12
+button 10 150 2443 2444 1 0 5
+text 15 150 0 13
+text 75 150 0 14
+button 10 170 2443 2444 1 0 6
+text 15 170 0 15
+text 75 170 0 16
+button 10 190 2443 2444 1 0 7
+text 15 190 0 17
+text 75 190 0 18
+button 10 210 2443 2444 1 0 8
+text 15 210 0 19
+text 75 210 0 20
+button 10 230 2443 2444 1 0 9
+text 15 230 0 21
+text 75 230 0 22
+button 10 250 2443 2444 1 0 10
+text 15 250 0 23
+text 75 250 0 24
+button 10 270 2443 2444 1 0 11
+text 15 270 0 25
+text 75 270 0 26
+button 10 290 2443 2444 1 0 12
+text 15 290 0 27
+text 75 290 0 28
+button 10 310 2443 2444 1 0 13
+text 15 310 0 29
+text 75 310 0 30
+button 10 330 2443 2444 1 0 14
+text 15 330 0 31
+text 75 330 0 32
+button 10 350 2443 2444 1 0 15
+text 15 350 0 33
+text 75 350 0 34
+button 10 370 2443 2444 1 0 16
+text 15 370 0 35
+text 75 370 0 36
+button 210 70 2443 2444 1 0 17
+text 215 70 0 37
+text 275 70 0 38
+button 210 90 2443 2444 1 0 18
+text 215 90 0 39
+text 275 90 0 40
+button 210 110 2443 2444 1 0 19
+text 215 110 0 41
+text 275 110 0 42
+button 210 130 2443 2444 1 0 20
+text 215 130 0 43
+text 275 130 0 44
+button 210 150 2443 2444 1 0 21
+text 215 150 0 45
+text 275 150 0 46
+button 210 170 2443 2444 1 0 22
+text 215 170 0 47
+text 275 170 0 48
+button 210 190 2443 2444 1 0 23
+text 215 190 0 49
+text 275 190 0 50
+button 210 210 2443 2444 1 0 24
+text 215 210 0 51
+text 275 210 0 52
+button 210 230 2443 2444 1 0 25
+text 215 230 0 53
+text 275 230 0 54
+button 210 250 2443 2444 1 0 26
+text 215 250 0 55
+text 275 250 0 56
+button 210 270 2443 2444 1 0 27
+text 215 270 0 57
+text 275 270 0 58
+button 210 290 2443 2444 1 0 28
+text 215 290 0 59
+text 275 290 0 60
+button 210 310 2443 2444 1 0 29
+text 215 310 0 61
+text 275 310 0 62
+button 210 330 2443 2444 1 0 30
+text 215 330 0 63
+text 275 330 0 64
+button 210 350 2443 2444 1 0 31
+text 215 350 0 65
+text 275 350 0 66
+button 210 370 2443 2444 1 0 32
+text 215 370 0 67
+text 275 370 0 68
+button 210 390 2443 2444 1 0 33
+text 215 390 0 69
+text 275 390 0 70
+button 410 70 2443 2444 1 0 34
+text 415 70 0 71
+text 475 70 0 72
+button 410 90 2443 2444 1 0 35
+text 415 90 0 73
+text 475 90 0 74
+button 410 110 2443 2444 1 0 36
+text 415 110 0 75
+text 475 110 0 76
+button 410 130 2443 2444 1 0 37
+text 415 130 0 77
+text 475 130 0 78
+button 410 150 2443 2444 1 0 38
+text 415 150 0 79
+text 475 150 0 80
+button 410 170 2443 2444 1 0 39
+text 415 170 0 81
+text 475 170 0 82
+button 410 190 2443 2444 1 0 40
+text 415 190 0 83
+text 475 190 0 84
+button 410 210 2443 2444 1 0 41
+text 415 210 0 85
+text 475 210 0 86
+button 410 230 2443 2444 1 0 42
+text 415 230 0 87
+text 475 230 0 88
+button 410 250 2443 2444 1 0 43
+text 415 250 0 89
+text 475 250 0 90
+button 410 270 2443 2444 1 0 44
+text 415 270 0 91
+text 475 270 0 92
+button 410 290 2443 2444 1 0 45
+text 415 290 0 93
+text 475 290 0 94
+button 410 310 2443 2444 1 0 46
+text 415 310 0 95
+text 475 310 0 96
+button 410 330 2443 2444 1 0 47
+text 415 330 0 97
+text 475 330 0 98
+button 410 350 2443 2444 1 0 48
+text 415 350 0 99
+text 475 350 0 100
+button 410 370 2443 2444 1 0 49
+text 415 370 0 101
+text 475 370 0 102
+button 410 390 2443 2444 1 0 50
+text 415 390 0 103
+text 475 390 0 104
+
+[DIALOG d_CHARPROP3 TEXT]
+Skills
+1
+2
+3
+Change Value
+<ALCHEMY>
+Alchemy
+<ANATOMY>
+Anatomy
+<ANIMALLORE>
+AnimalLore
+<ARCHERY>
+Archery
+<ARMSLORE>
+ArmsLore
+<BEGGING>
+Begging
+<BLACKSMITHING>
+Blacksmithing
+<BOWCRAFT>
+Bowcraft
+<CAMPING>
+Camping
+<CARPENTRY>
+Carpentry
+<CARTOGRAPHY>
+Cartography
+<COOKING>
+Cooking
+<DETECTINGHIDDEN>
+DetectingHidden
+<ENTICEMENT>
+Enticement
+<EVALUATINGINTEL>
+EvaluatingIntel
+<FENCING>
+Fencing
+<FISHING>
+Fishing
+<FORENSICS>
+Forensics
+	<HEALING>
+	Healing
+	<HERDING>
+	Herding
+	<HIDING>
+	Hiding
+	<INSCRIPTION>
+	Inscription
+	<ITEMID>
+	ItemID
+	<LOCKPICKING>
+	LockPicking
+	<LUMBERJACKING>
+	Lumberjacking
+	<MACEFIGHTING>
+	Macefighting
+	<MAGERY>
+	Magery
+	<MAGICRESISTANCE>
+	MagicResistance
+	<MEDITATION>
+	Meditation
+	<MINING>
+	Mining
+	<MUSICIANSHIP>
+	Musicianship
+	<NECROMANCY>
+	Necromancy
+	<PARRYING>
+	Parrying
+	<PEACEMAKING>
+	Peacemaking
+	<POISONING>
+	Poisoning
+	<PROVOCATION>
+	Provocation
+	<REMOVETRAP>
+	RemoveTrap
+	<SNOOPING>
+	Snooping
+	<SPIRITSPEAK>
+	SpiritSpeak
+	<STEALING>
+	Stealing
+	<STEALTH>
+	Stealth
+	<SWORDSMANSHIP>
+	Swordsmanship
+	<TACTICS>
+	Tactics
+	<TAILORING>
+	Tailoring
+	<TAMING>
+	Taming
+	<TASTEID>
+	TasteID
+	<TINKERING>
+	Tinkering
+	<TRACKING>
+	Tracking
+	<VETERINARY>
+	Veterinary
+	<WRESTLING>
+	Wrestling
+	Set Allskills to
+	<SKILLTOTAL>
+
+[DIALOG d_CHARPROP3 BUTTON]
+
+ON=801
+	DIALOG=d_CHARPROP1
+
+ON=802
+	DIALOG=d_CHARPROP2
+
+ON=1
+	TRYP 4 INPDLG=ALCHEMY 5
+
+ON=2
+	TRYP 4 INPDLG=ANATOMY 5
+
+ON=3
+	TRYP 4 INPDLG=ANIMALLORE 5
+
+ON=4
+	TRYP 4 INPDLG=ARCHERY 5
+
+ON=5
+	TRYP 4 INPDLG=ARMSLORE 5
+
+ON=6
+	TRYP 4 INPDLG=BEGGING 5
+
+ON=7
+	TRYP 4 INPDLG=BLACKSMITHING 5
+
+ON=8
+	TRYP 4 INPDLG=BOWCRAFT 5
+
+ON=9
+	TRYP 4 INPDLG=CAMPING 5
+
+ON=10
+	TRYP 4 INPDLG=CARPENTRY 5
+
+ON=11
+	TRYP 4 INPDLG=CARTOGRAPHY 5
+
+ON=12
+	TRYP 4 INPDLG=COOKING 5
+
+ON=13
+	TRYP 4 INPDLG=DETECTINGHIDDEN 5
+
+ON=14
+	TRYP 4 INPDLG=ENTICEMENT 5
+
+ON=15
+	TRYP 4 INPDLG=EVALUATINGINTEL 5
+
+ON=16
+	TRYP 4 INPDLG=FENCING 5
+
+ON=17
+	TRYP 4 INPDLG=FISHING 5
+
+ON=18
+	TRYP 4 INPDLG=FORENSICS 5
+
+ON=19
+	TRYP 4 INPDLG=HEALING 5
+
+ON=20
+	TRYP 4 INPDLG=HERDING 5
+
+ON=21
+	TRYP 4 INPDLG=HIDING 5
+
+ON=22
+	TRYP 4 INPDLG=INSCRIPTION 5
+
+ON=23
+	TRYP 4 INPDLG=ITEMID 5
+
+ON=24
+	TRYP 4 INPDLG=LOCKPICKING 5
+
+ON=25
+	TRYP 4 INPDLG=LUMBERJACKING 5
+
+ON=26
+	TRYP 4 INPDLG=MACEFIGHTING 5
+
+ON=27
+	TRYP 4 INPDLG=MAGERY 5
+
+ON=28
+	TRYP 4 INPDLG=MAGICRESISTANCE 5
+
+ON=29
+	TRYP 4 INPDLG=MEDITATION 5
+
+ON=30
+	TRYP 4 INPDLG=MINING 5
+
+ON=31
+	TRYP 4 INPDLG=MUSICIANSHIP 5
+
+ON=32
+	TRYP 4 INPDLG=NECROMANCY 5
+
+ON=33
+	TRYP 4 INPDLG=PARRYING 5
+
+ON=34
+	TRYP 4 INPDLG=PEACEMAKING 5
+
+ON=35
+	TRYP 4 INPDLG=POISONING 5
+
+ON=36
+	TRYP 4 INPDLG=PROVOCATION 5
+
+ON=37
+	TRYP 4 INPDLG=REMOVETRAP 5
+
+ON=38
+	TRYP 4 INPDLG=SNOOPING 5
+
+ON=39
+	TRYP 4 INPDLG=SPIRITSPEAK 5
+
+ON=40
+	TRYP 4 INPDLG=STEALING 5
+
+ON=41
+	TRYP 4 INPDLG=STEALTH 5
+
+ON=42
+	TRYP 4 INPDLG=SWORDSMANSHIP 5
+
+ON=43
+	TRYP 4 INPDLG=TACTICS 5
+
+ON=44
+	TRYP 4 INPDLG=TAILORING 5
+
+ON=45
+	TRYP 4 INPDLG=TAMING 5
+
+ON=46
+	TRYP 4 INPDLG=TASTEID 5
+
+ON=47
+	TRYP 4 INPDLG=TINKERING 5
+
+ON=48
+	TRYP 4 INPDLG=TRACKING 5
+
+ON=49
+	TRYP 4 INPDLG=VETERINARY 5
+
+ON=50
+	TRYP 4 INPDLG=WRESTLING 5
+
+ON=51
+	TRYP 4 INPDLG=ALLSKILLS 5
+
+[DIALOG d_ITEMPROP1]
+70, 70
+page 0
+resizepic 0 0 5100 550 360
+text 30 30 0 0
+//button 20 320 5200 5201 1 0 900		// cancel
+//button 100 320 <eval g_btn_gray_apply> <eval g_btn_gray_apply_press> 1 0 901	// apply
+//button 180 320 5202 5203 1 0 902	// save
+button 20 320 5042 5043 1 0 902		// continue
+button 180 320 5052 5053 1 0 903	// delete
+button 210 320 5050 5051 1 0 904	// bounce
+gumppic 275 15 2001
+tilepic 350 140 <DISPIDDEC>
+text 10 50 0 3
+page 1
+button 4 2 5007 5006 0 1
+button 92 2 5006 5007 1 2 802
+text 45 1 0 1
+text 133 1 0 2
+button 10 70 2443 2444 1 0 2
+text 15 70 0 4
+text 75 70 0 5
+button 10 95 2443 2444 1 0 3
+text 15 95 0 6
+text 75 95 0 7
+button 10 120 2443 2444 1 0 4
+text 15 120 0 8
+text 75 120 0 9
+button 10 145 2443 2444 1 0 5
+text 15 145 0 10
+text 75 145 0 11
+button 10 170 2443 2444 1 0 6
+text 15 170 0 12
+text 75 170 0 13
+button 10 195 2443 2444 1 0 7
+text 15 195 0 14
+text 75 195 0 15
+button 10 220 2443 2444 1 0 8
+text 15 220 0 16
+text 75 220 0 17
+button 10 245 2443 2444 1 0 9
+text 15 245 0 18
+text 75 245 0 19
+button 10 270 2443 2444 1 0 10
+text 15 270 0 20
+text 75 270 0 21
+button 10 295 2443 2444 1 0 11
+text 15 295 0 22
+text 75 295 0 23
+
+[DIALOG d_ITEMPROP1 TEXT]
+Item Properties 1
+1
+2
+Change  Value
+Serial
+<SERIAL>
+BaseId
+<BASEID>
+Name
+<NAME>
+Color
+<COLOR>
+Timer
+<TIMER>
+Pos
+<P>
+Amount
+<AMOUNT>
+Type
+<TYPE>
+More1
+<MORE1>
+More2
+<MORE2>
+
+[DIALOG d_ITEMPROP1 BUTTON]
+
+ON=903
+	TRY REMOVE
+
+ON=904
+	TRY BOUNCE
+
+ON=802
+	DIALOG=d_ITEMPROP2
+
+ON=2
+	TRYP 255 INPDLG=SERIAL 8
+
+ON=3
+	TRYP 4 INPDLG=ID 32
+
+ON=4
+	TRYP 4 INPDLG=NAME 30
+
+ON=5
+	TRYP 4 INPDLG=COLOR 32
+
+ON=6
+	TRYP 4 INPDLG=TIMER 8
+
+ON=7
+	TRYP 4 INPDLG=P 16
+
+ON=8
+	TRYP 4 INPDLG=AMOUNT 5
+
+ON=9
+	TRYP 4 INPDLG=TYPE 32
+
+ON=10
+	TRYP 4 INPDLG=MORE1 32
+
+ON=11
+	TRYP 4 INPDLG=MORE2 32
+
+[DIALOG d_ITEMPROP2]
+70, 70
+page 0
+resizepic 0 0 5100 550 360
+text 30 30 0 0
+//button 20 320 5200 5201 1 0 900		// cancel
+//button 100 320 <eval g_btn_gray_apply> <eval g_btn_gray_apply_press> 1 0 901	// apply
+//button 180 320 5202 5203 1 0 902	// save
+button 20 320 5042 5043 1 0 902		// continue
+button 180 320 5052 5053 1 0 903	// delete
+button 210 320 5050 5051 1 0 904	// bounce
+gumppic 275 15 2001
+tilepic 350 140 <DISPIDDEC>
+text 10 50 0 3
+page 1
+button 4 2 5006 5007 1 1 801
+button 92 2 5007 5006 0 2
+text 45 1 0 1
+text 133 1 0 2
+button 10 70 2443 2444 1 0 12
+text 15 70 0 4
+text 75 70 0 5
+button 10 95 2443 2444 1 0 13
+text 15 95 0 6
+text 75 95 0 7
+button 10 120 2443 2444 1 0 14
+text 15 120 0 8
+text 75 120 0 9
+button 10 145 2443 2444 1 0 15
+text 15 145 0 10
+text 75 145 0 11
+button 10 170 2443 2444 1 0 16
+text 15 170 0 12
+text 75 170 0 13
+button 10 195 2443 2444 1 0 17
+text 15 195 0 14
+text 75 195 0 15
+button 10 220 2443 2444 1 0 18
+text 15 220 0 16
+text 75 220 0 17
+button 10 245 2443 2444 1 0 19
+text 15 245 0 18
+text 75 245 0 19
+button 10 270 2443 2444 1 0 20
+text 15 270 0 20
+text 75 270 0 21
+button 10 295 2443 2444 1 0 21
+text 15 295 0 22
+text 75 295 0 23
+
+[DIALOG d_ITEMPROP2 TEXT]
+Item Properties 2
+1
+2
+Change  Value
+Attr
+<ATTR>
+Weight
+<WEIGHT>
+Layer
+<LAYER>
+Instances
+<INSTANCES>
+Armor
+<ARMOR>
+Value
+<VALUE>
+Dye
+<DYE>
+MoreP
+<MOREP>
+Link
+<LINK>
+DispID
+<DISPID>
+
+[DIALOG d_ITEMPROP2 BUTTON]
+
+ON=903
+	TRY REMOVE
+
+ON=904
+	TRY BOUNCE
+
+ON=801
+	DIALOG=d_ITEMPROP1
+
+ON=12
+	TRYP 4 INPDLG=ATTR 4
+
+ON=13
+	TRYP 4 INPDLG=WEIGHT 4
+
+ON=14
+	TRYP 5 INPDLG=LAYER 2
+
+ON=15
+	TRYP 4 INPDLG=INSTANCES 4
+
+ON=16
+	TRYP 4 INPDLG=ARMOR 4
+
+ON=17
+	TRYP 4 INPDLG=VALUE 7
+
+ON=18
+	TRYP 4 INPDLG=DYE 4
+
+ON=19
+	TRYP 4 INPDLG=MOREP 16
+
+ON=20
+	TRYP 4 INPDLG=LINK 8
+
+[DIALOG d_HAIR_DYE]	// HAIR DYE
+032,032	// size
+page 0
+resizepic 100 10 2600 350 355
+resizepic 120 54 5100 110 270
+text 180 25 995 0
+text 160 330 995 13
+button 330 330 247 248 1 0 1
+group 0
+text 130 59 1601 1
+button 207 60 5224 5224 0 1 1
+text 130 81 1627 2
+button 207 82 5224 5224 0 2 2
+text 130 103 1501 3
+button 207 104 5224 5224 0 3 3
+text 130 125 1301 4
+button 207 126 5224 5224 0 4 4
+text 130 147 1401 5
+button 207 148 5224 5224 0 5 5
+text 130 169 1201 6
+button 207 170 5224 5224 0 6 6
+text 130 191 2401 7
+button 207 192 5224 5224 0 7 7
+text 130 213 2212 8
+button 207 214 5224 5224 0 8 8
+text 130 235 1101 9
+button 207 236 5224 5224 0 9 9
+text 130 257 1109 10
+button 207 258 5224 5224 0 10 10
+text 130 279 1117 11
+button 207 280 5224 5224 0 11 11
+text 130 301 1133 12
+button 207 302 5224 5224 0 12 12
+page 1
+text 278 52 1601 1
+radio 260 52 210 211 0 1601
+text 278 69 1602 1
+radio 260 69 210 211 0 1602
+text 278 86 1603 1
+radio 260 86 210 211 0 1603
+text 278 103 1604 1
+radio 260 103 210 211 0 1604
+text 278 120 1605 1
+radio 260 120 210 211 0 1605
+text 278 137 1606 1
+radio 260 137 210 211 0 1606
+text 278 154 1607 1
+radio 260 154 210 211 0 1607
+text 278 171 1608 1
+radio 260 171 210 211 0 1608
+text 278 188 1609 1
+radio 260 188 210 211 0 1609
+text 278 205 1610 1
+radio 260 205 210 211 0 1610
+text 278 222 1611 1
+radio 260 222 210 211 0 1611
+text 278 239 1612 1
+radio 260 239 210 211 0 1612
+text 278 256 1613 1
+radio 260 256 210 211 0 1613
+text 278 273 1614 1
+radio 260 273 210 211 0 1614
+text 278 290 1615 1
+radio 260 290 210 211 0 1615
+text 278 307 1616 1
+radio 260 307 210 211 0 1616
+text 358 52 1617 1
+radio 340 52 210 211 0 1617
+text 358 69 1618 1
+radio 340 69 210 211 0 1618
+text 358 86 1619 1
+radio 340 86 210 211 0 1619
+text 358 103 1620 1
+radio 340 103 210 211 0 1620
+text 358 120 1621 1
+radio 340 120 210 211 0 1621
+text 358 137 1622 1
+radio 340 137 210 211 0 1622
+text 358 154 1623 1
+radio 340 154 210 211 0 1623
+text 358 171 1624 1
+radio 340 171 210 211 0 1624
+text 358 188 1625 1
+radio 340 188 210 211 0 1625
+text 358 205 1626 1
+radio 340 205 210 211 0 1626
+page 2
+text 278 52 1627 2
+radio 260 52 210 211 0 1627
+text 278 69 1628 2
+radio 260 69 210 211 0 1628
+text 278 86 1629 2
+radio 260 86 210 211 0 1629
+text 278 103 1630 2
+radio 260 103 210 211 0 1630
+text 278 120 1631 2
+radio 260 120 210 211 0 1631
+text 278 137 1632 2
+radio 260 137 210 211 0 1632
+text 278 154 1633 2
+radio 260 154 210 211 0 1633
+text 278 171 1634 2
+radio 260 171 210 211 0 1634
+text 278 188 1635 2
+radio 260 188 210 211 0 1635
+text 278 205 1636 2
+radio 260 205 210 211 0 1636
+text 278 222 1637 2
+radio 260 222 210 211 0 1637
+text 278 239 1638 2
+radio 260 239 210 211 0 1638
+text 278 256 1639 2
+radio 260 256 210 211 0 1639
+text 278 273 1640 2
+radio 260 273 210 211 0 1640
+text 278 290 1641 2
+radio 260 290 210 211 0 1641
+text 278 307 1642 2
+radio 260 307 210 211 0 1642
+text 358 52 1643 2
+radio 340 52 210 211 0 1643
+text 358 69 1644 2
+radio 340 69 210 211 0 1644
+text 358 86 1645 2
+radio 340 86 210 211 0 1645
+text 358 103 1646 2
+radio 340 103 210 211 0 1646
+text 358 120 1647 2
+radio 340 120 210 211 0 1647
+text 358 137 1648 2
+radio 340 137 210 211 0 1648
+text 358 154 1649 2
+radio 340 154 210 211 0 1649
+text 358 171 1650 2
+radio 340 171 210 211 0 1650
+text 358 188 1651 2
+radio 340 188 210 211 0 1651
+text 358 205 1652 2
+radio 340 205 210 211 0 1652
+text 358 222 1653 2
+radio 340 222 210 211 0 1653
+page 3
+text 278 52 1501 3
+radio 260 52 210 211 0 1501
+text 278 69 1502 3
+radio 260 69 210 211 0 1502
+text 278 86 1503 3
+radio 260 86 210 211 0 1503
+text 278 103 1504 3
+radio 260 103 210 211 0 1504
+text 278 120 1505 3
+radio 260 120 210 211 0 1505
+text 278 137 1506 3
+radio 260 137 210 211 0 1506
+text 278 154 1507 3
+radio 260 154 210 211 0 1507
+text 278 171 1508 3
+radio 260 171 210 211 0 1508
+text 278 188 1509 3
+radio 260 188 210 211 0 1509
+text 278 205 1510 3
+radio 260 205 210 211 0 1510
+text 278 222 1511 3
+radio 260 222 210 211 0 1511
+text 278 239 1512 3
+radio 260 239 210 211 0 1512
+text 278 256 1513 3
+radio 260 256 210 211 0 1513
+text 278 273 1514 3
+radio 260 273 210 211 0 1514
+text 278 290 1515 3
+radio 260 290 210 211 0 1515
+text 278 307 1516 3
+radio 260 307 210 211 0 1516
+text 358 52 1517 3
+radio 340 52 210 211 0 1517
+text 358 69 1518 3
+radio 340 69 210 211 0 1518
+text 358 86 1519 3
+radio 340 86 210 211 0 1519
+text 358 103 1520 3
+radio 340 103 210 211 0 1520
+text 358 120 1521 3
+radio 340 120 210 211 0 1521
+text 358 137 1522 3
+radio 340 137 210 211 0 1522
+text 358 154 1523 3
+radio 340 154 210 211 0 1523
+text 358 171 1524 3
+radio 340 171 210 211 0 1524
+text 358 188 1525 3
+radio 340 188 210 211 0 1525
+text 358 205 1526 3
+radio 340 205 210 211 0 1526
+text 358 222 1527 3
+radio 340 222 210 211 0 1527
+text 358 239 1528 3
+radio 340 239 210 211 0 1528
+text 358 256 1529 3
+radio 340 256 210 211 0 1529
+text 358 273 1530 3
+radio 340 273 210 211 0 1530
+text 358 290 1531 3
+radio 340 290 210 211 0 1531
+text 358 307 1532 3
+radio 340 307 210 211 0 1532
+page 4
+text 278 52 1301 4
+radio 260 52 210 211 0 1301
+text 278 69 1302 4
+radio 260 69 210 211 0 1302
+text 278 86 1303 4
+radio 260 86 210 211 0 1303
+text 278 103 1304 4
+radio 260 103 210 211 0 1304
+text 278 120 1305 4
+radio 260 120 210 211 0 1305
+text 278 137 1306 4
+radio 260 137 210 211 0 1306
+text 278 154 1307 4
+radio 260 154 210 211 0 1307
+text 278 171 1308 4
+radio 260 171 210 211 0 1308
+text 278 188 1309 4
+radio 260 188 210 211 0 1309
+text 278 205 1310 4
+radio 260 205 210 211 0 1310
+text 278 222 1311 4
+radio 260 222 210 211 0 1311
+text 278 239 1312 4
+radio 260 239 210 211 0 1312
+text 278 256 1313 4
+radio 260 256 210 211 0 1313
+text 278 273 1314 4
+radio 260 273 210 211 0 1314
+text 278 290 1315 4
+radio 260 290 210 211 0 1315
+text 278 307 1316 4
+radio 260 307 210 211 0 1316
+text 358 52 1317 4
+radio 340 52 210 211 0 1317
+text 358 69 1318 4
+radio 340 69 210 211 0 1318
+text 358 86 1319 4
+radio 340 86 210 211 0 1319
+text 358 103 1320 4
+radio 340 103 210 211 0 1320
+text 358 120 1321 4
+radio 340 120 210 211 0 1321
+text 358 137 1322 4
+radio 340 137 210 211 0 1322
+text 358 154 1323 4
+radio 340 154 210 211 0 1323
+text 358 171 1324 4
+radio 340 171 210 211 0 1324
+text 358 188 1325 4
+radio 340 188 210 211 0 1325
+text 358 205 1326 4
+radio 340 205 210 211 0 1326
+text 358 222 1327 4
+radio 340 222 210 211 0 1327
+text 358 239 1328 4
+radio 340 239 210 211 0 1328
+text 358 256 1329 4
+radio 340 256 210 211 0 1329
+text 358 273 1330 4
+radio 340 273 210 211 0 1330
+text 358 290 1331 4
+radio 340 290 210 211 0 1331
+text 358 307 1332 4
+radio 340 307 210 211 0 1332
+page 5
+text 278 52 1401 5
+radio 260 52 210 211 0 1401
+text 278 69 1402 5
+radio 260 69 210 211 0 1402
+text 278 86 1403 5
+radio 260 86 210 211 0 1403
+text 278 103 1404 5
+radio 260 103 210 211 0 1404
+text 278 120 1405 5
+radio 260 120 210 211 0 1405
+text 278 137 1406 5
+radio 260 137 210 211 0 1406
+text 278 154 1407 5
+radio 260 154 210 211 0 1407
+text 278 171 1408 5
+radio 260 171 210 211 0 1408
+text 278 188 1409 5
+radio 260 188 210 211 0 1409
+text 278 205 1410 5
+radio 260 205 210 211 0 1410
+text 278 222 1411 5
+radio 260 222 210 211 0 1411
+text 278 239 1412 5
+radio 260 239 210 211 0 1412
+text 278 256 1413 5
+radio 260 256 210 211 0 1413
+text 278 273 1414 5
+radio 260 273 210 211 0 1414
+text 278 290 1415 5
+radio 260 290 210 211 0 1415
+text 278 307 1416 5
+radio 260 307 210 211 0 1416
+text 358 52 1417 5
+radio 340 52 210 211 0 1417
+text 358 69 1418 5
+radio 340 69 210 211 0 1418
+text 358 86 1419 5
+radio 340 86 210 211 0 1419
+text 358 103 1420 5
+radio 340 103 210 211 0 1420
+text 358 120 1421 5
+radio 340 120 210 211 0 1421
+text 358 137 1422 5
+radio 340 137 210 211 0 1422
+text 358 154 1423 5
+radio 340 154 210 211 0 1423
+text 358 171 1424 5
+radio 340 171 210 211 0 1424
+text 358 188 1425 5
+radio 340 188 210 211 0 1425
+text 358 205 1426 5
+radio 340 205 210 211 0 1426
+text 358 222 1427 5
+radio 340 222 210 211 0 1427
+text 358 239 1428 5
+radio 340 239 210 211 0 1428
+text 358 256 1429 5
+radio 340 256 210 211 0 1429
+text 358 273 1430 5
+radio 340 273 210 211 0 1430
+text 358 290 1431 5
+radio 340 290 210 211 0 1431
+text 358 307 1432 5
+radio 340 307 210 211 0 1432
+page 6
+text 278 52 1201 6
+radio 260 52 210 211 0 1201
+text 278 69 1202 6
+radio 260 69 210 211 0 1202
+text 278 86 1203 6
+radio 260 86 210 211 0 1203
+text 278 103 1204 6
+radio 260 103 210 211 0 1204
+text 278 120 1205 6
+radio 260 120 210 211 0 1205
+text 278 137 1206 6
+radio 260 137 210 211 0 1206
+text 278 154 1207 6
+radio 260 154 210 211 0 1207
+text 278 171 1208 6
+radio 260 171 210 211 0 1208
+text 278 188 1209 6
+radio 260 188 210 211 0 1209
+text 278 205 1210 6
+radio 260 205 210 211 0 1210
+text 278 222 1211 6
+radio 260 222 210 211 0 1211
+text 278 239 1212 6
+radio 260 239 210 211 0 1212
+text 278 256 1213 6
+radio 260 256 210 211 0 1213
+text 278 273 1214 6
+radio 260 273 210 211 0 1214
+text 278 290 1215 6
+radio 260 290 210 211 0 1215
+text 278 307 1216 6
+radio 260 307 210 211 0 1216
+text 358 52 1217 6
+radio 340 52 210 211 0 1217
+text 358 69 1218 6
+radio 340 69 210 211 0 1218
+text 358 86 1219 6
+radio 340 86 210 211 0 1219
+text 358 103 1220 6
+radio 340 103 210 211 0 1220
+text 358 120 1221 6
+radio 340 120 210 211 0 1221
+text 358 137 1222 6
+radio 340 137 210 211 0 1222
+text 358 154 1223 6
+radio 340 154 210 211 0 1223
+text 358 171 1224 6
+radio 340 171 210 211 0 1224
+page 7
+text 278 52 2401 7
+radio 260 52 210 211 0 2401
+text 278 69 2402 7
+radio 260 69 210 211 0 2402
+text 278 86 2403 7
+radio 260 86 210 211 0 2403
+text 278 103 2404 7
+radio 260 103 210 211 0 2404
+text 278 120 2405 7
+radio 260 120 210 211 0 2405
+text 278 137 2406 7
+radio 260 137 210 211 0 2406
+text 278 154 2407 7
+radio 260 154 210 211 0 2407
+text 278 171 2408 7
+radio 260 171 210 211 0 2408
+text 278 188 2409 7
+radio 260 188 210 211 0 2409
+text 278 205 2410 7
+radio 260 205 210 211 0 2410
+text 278 222 2411 7
+radio 260 222 210 211 0 2411
+text 278 239 2412 7
+radio 260 239 210 211 0 2412
+text 278 256 2413 7
+radio 260 256 210 211 0 2413
+text 278 273 2414 7
+radio 260 273 210 211 0 2414
+text 278 290 2415 7
+radio 260 290 210 211 0 2415
+text 278 307 2416 7
+radio 260 307 210 211 0 2416
+text 358 52 2417 7
+radio 340 52 210 211 0 2417
+text 358 69 2418 7
+radio 340 69 210 211 0 2418
+text 358 86 2419 7
+radio 340 86 210 211 0 2419
+text 358 103 2420 7
+radio 340 103 210 211 0 2420
+text 358 120 2421 7
+radio 340 120 210 211 0 2421
+text 358 137 2422 7
+radio 340 137 210 211 0 2422
+text 358 154 2423 7
+radio 340 154 210 211 0 2423
+text 358 171 2424 7
+radio 340 171 210 211 0 2424
+text 358 188 2425 7
+radio 340 188 210 211 0 2425
+text 358 205 2426 7
+radio 340 205 210 211 0 2426
+text 358 222 2427 7
+radio 340 222 210 211 0 2427
+text 358 239 2428 7
+radio 340 239 210 211 0 2428
+text 358 256 2429 7
+radio 340 256 210 211 0 2429
+page 8
+text 278 52 2212 8
+radio 260 52 210 211 0 2212
+text 278 69 2213 8
+radio 260 69 210 211 0 2213
+text 278 86 2214 8
+radio 260 86 210 211 0 2214
+text 278 103 2215 8
+radio 260 103 210 211 0 2215
+text 278 120 2216 8
+radio 260 120 210 211 0 2216
+text 278 137 2217 8
+radio 260 137 210 211 0 2217
+page 9
+text 278 52 1101 9
+radio 260 52 210 211 0 1101
+text 278 69 1102 9
+radio 260 69 210 211 0 1102
+text 278 86 1103 9
+radio 260 86 210 211 0 1103
+text 278 103 1104 9
+radio 260 103 210 211 0 1104
+text 278 120 1105 9
+radio 260 120 210 211 0 1105
+text 278 137 1106 9
+radio 260 137 210 211 0 1106
+text 278 154 1107 9
+radio 260 154 210 211 0 1107
+text 278 171 1108 9
+radio 260 171 210 211 0 1108
+page 10
+text 278 52 1109 10
+radio 260 52 210 211 0 1109
+text 278 69 1110 10
+radio 260 69 210 211 0 1110
+text 278 86 1111 10
+radio 260 86 210 211 0 1111
+text 278 103 1112 10
+radio 260 103 210 211 0 1112
+text 278 120 1113 10
+radio 260 120 210 211 0 1113
+text 278 137 1114 10
+radio 260 137 210 211 0 1114
+text 278 154 1115 10
+radio 260 154 210 211 0 1115
+text 278 171 1116 10
+radio 260 171 210 211 0 1116
+page 11
+text 278 52 1117 11
+radio 260 52 210 211 0 1117
+text 278 69 1118 11
+radio 260 69 210 211 0 1118
+text 278 86 1119 11
+radio 260 86 210 211 0 1119
+text 278 103 1120 11
+radio 260 103 210 211 0 1120
+text 278 120 1121 11
+radio 260 120 210 211 0 1121
+text 278 137 1122 11
+radio 260 137 210 211 0 1122
+text 278 154 1123 11
+radio 260 154 210 211 0 1123
+text 278 171 1124 11
+radio 260 171 210 211 0 1124
+text 278 188 1125 11
+radio 260 188 210 211 0 1125
+text 278 205 1126 11
+radio 260 205 210 211 0 1126
+text 278 222 1127 11
+radio 260 222 210 211 0 1127
+text 278 239 1128 11
+radio 260 239 210 211 0 1128
+text 278 256 1129 11
+radio 260 256 210 211 0 1129
+text 278 273 1130 11
+radio 260 273 210 211 0 1130
+text 278 290 1131 11
+radio 260 290 210 211 0 1131
+text 278 307 1132 11
+radio 260 307 210 211 0 1132
+page 12
+text 278 52 1133 12
+radio 260 52 210 211 0 1133
+text 278 69 1134 12
+radio 260 69 210 211 0 1134
+text 278 86 1135 12
+radio 260 86 210 211 0 1135
+text 278 103 1136 12
+radio 260 103 210 211 0 1136
+text 278 120 1137 12
+radio 260 120 210 211 0 1137
+text 278 137 1138 12
+radio 260 137 210 211 0 1138
+text 278 154 1139 12
+radio 260 154 210 211 0 1139
+text 278 171 1140 12
+radio 260 171 210 211 0 1140
+text 278 188 1141 12
+radio 260 188 210 211 0 1141
+text 278 205 1142 12
+radio 260 205 210 211 0 1142
+text 278 222 1143 12
+radio 260 222 210 211 0 1143
+text 278 239 1144 12
+radio 260 239 210 211 0 1144
+text 278 256 1145 12
+radio 260 256 210 211 0 1145
+text 278 273 1146 12
+radio 260 273 210 211 0 1146
+text 278 290 1147 12
+radio 260 290 210 211 0 1147
+text 278 307 1148 12
+radio 260 307 210 211 0 1148
+
+[DIALOG d_HAIR_DYE TEXT]
+Hair Color Selection Menu
+Brown
+Chestnut
+Auburn
+Blue
+Green
+Red
+Light
+Blonde
+Black
+Beige
+Golden
+Dk Brown
+Dye my hair this color!
+
+[DIALOG d_HAIR_DYE button]
+// This is done internally.
+
+ON=1 12
+	IF (<ARGCHK> <= 0)
+		RETURN 1
+	endif
+	IF (<ARGCHKID> == -1)
+		RETURN 1
+	endif
+	IF (!<ARGCHK[<ARGCHKID>]>)
+		RETURN 1
+	endif
+	IF ( !<CANSEE> )
+		RETURN 1
+	endif
+	IF ( <TYPE> != t_hair_dye )
+		RETURN 1
+	endif
+	IF ( <TOPOBJ.UID> != <SRC.UID> )
+		RETURN 1
+	endif
+	IF ( !<SRC.FINDLAYER(LAYER_HAIR).UID> && !<SRC.FINDLAYER(LAYER_BEARD).UID> )
+		SYSMESSAGE You have no hair to dye!
+		RETURN 1
+	endif
+	IF ( <ARGCHKID> >= 1101 && <ARGCHKID> <= 1148 )
+	elif ( <ARGCHKID> >= 1201 && <ARGCHKID> <= 1224 )
+	elif ( <ARGCHKID> >= 1301 && <ARGCHKID> <= 1332 )
+	elif ( <ARGCHKID> >= 1401 && <ARGCHKID> <= 1432 )
+	elif ( <ARGCHKID> >= 1501 && <ARGCHKID> <= 1532 )
+	elif ( <ARGCHKID> >= 1601 && <ARGCHKID> <= 1653 )
+	elif ( <ARGCHKID> >= 2212 && <ARGCHKID> <= 2217 )
+	elif ( <ARGCHKID> >= 2401 && <ARGCHKID> <= 2429 )
+	ELSE
+		RETURN 1
+	endif
+	IF ( <SRC.FINDLAYER(LAYER_HAIR).UID> )
+		SRC.FINDLAYER(LAYER_HAIR).COLOR = <ARGCHKID> + 1
+	endif
+	IF ( <SRC.FINDLAYER(LAYER_BEARD).UID> )
+		SRC.FINDLAYER(LAYER_BEARD).COLOR = <ARGCHKID> + 1
+	endif
+	REMOVE
+	RETURN
+
+[DIALOG d_HELPGM]	// 12
+// Put up a help system dialog that lists ingame commands etc.
+0, 0	// location on the screen.
+resizepic 0 0 3600 600 450
+page 0
+gumppic 285 178 1418
+gumppic 15 50 1800
+gumppic 37 63 50468
+gumppic 15 50 1889
+gumppic 15 50 1883
+gumppic 15 50 1811
+gumppic 15 50 1812
+gumppic 15 50 1891
+gumppic 37 63 50409
+gumppic 130 91 50628
+gumppic 29 76 50984
+text 220 17 995 0
+button 250 300 243 241 1 0 0
+page 1
+text 240 40 995 1
+text 240 55 995 2
+text 240 70 995 3
+text 240 95 995 4
+button 250 115 210 211 1 0 1
+text 300 115 995 5
+button 250 140 210 211 1 0 2
+text 300 140 995 6
+button 250 165 210 211 1 0 3
+text 300 165 995 7
+button 250 190 210 211 1 0 4
+text 300 190 995 8
+button 250 215 210 211 1 0 5
+text 300 215 995 9
+button 250 240 210 211 1 0 6
+text 300 240 995 10
+button 250 265 210 211 1 0 7
+text 300 265 995 11
+
+[DIALOG d_HELPGM TEXT]
+SPHERE Help System
+Hail! Welcome to the SPHERE command help
+system. Pick the catagory of the command from
+the list below.
+Select     Category
+Administrator
+Game Master
+Counselor
+Player
+Triggers and Events
+Properties and Methods
+SPHERE FAQ
+
+[DIALOG d_HELPGM BUTTON]
+
+ON=1
+
+ON=2
+
+ON=3
+
+ON=4
+
+ON=5
+
+ON=6
+
+ON=7
+
+[DIALOG d_Travel]
+// a travel dialog
+0, 0	// this is always the size.
+resizepic 0 0 3600 229 173
+page 0
+text 40 17 0 0   
+text 40 37 1152 1
+text 40 57 1152 2
+text 40 77 1152 3
+button 20 40 1209 1210 1 0 1      
+button 20 60 1209 1210 1 0 2
+button 20 80 1209 1210 1 0 3
+
+[DIALOG d_Travel TEXT]
+Welcome <SRC.NAME>
+Towns
+Dungeons
+Special Places
+
+[DIALOG d_Travel BUTTON]
+
+ON=0
+	SYSMESSAGE=You've decided not to travel.
+
+ON=1 //TOWNS
+	SRC.DIALOG d_TravelTown
+
+ON=2 //DUNGEONS
+	SRC.DIALOG d_TravelDung
+
+ON=3  //SPECIAL PLACES
+	SRC.DIALOG d_TravelSpec 
+
+[DIALOG d_TravelTown]                 //TOWNS //TOWNS  //TOWNS   //TOWNS  //TOWNS  //TOWNS //TOWNS
+0, 0	// this is always the size.
+resizepic 0 0 3600 215 200
+page 0
+text 40 17 0 0   
+text 40 37 1152 1
+text 40 57 1152 2
+text 40 77 1152 3
+text 40 97 1152 4
+text 40 117 1152 5   
+text 40 137 1152 6
+text 40 157 0 7
+button 20 40 1209 1210 1 0 1
+button 20 60 1209 1210 1 0 2
+button 20 80 1209 1210 1 0 3
+button 20 100 1209 1210 1 0 4
+button 20 120 1209 1210 1 0 5
+button 20 140 1209 1210 1 0 7
+button 20 160 1209 1210 1 0 6
+
+[DIALOG d_TravelTown TEXT]
+Which Town?
+Britain
+Serpent's Hold
+Cove
+Vesper
+Bucaneer's Den
+Papua
+Previous
+
+[DIALOG d_TravelTown BUTTON]
+
+ON=0
+	SYSMESSAGE=Menu Aborted
+
+ON=1 //BRITAIN
+	SRC.GO 1427,1697,0
+
+ON=2 //SERPENTS HOLD
+	SRC.GO 3009,3363,15
+
+ON=3 //COVE
+	SRC.GO 2264,1202,0
+
+ON=4 //VESPER
+	SRC.GO 2892,686,0
+
+ON=5 //BUCANEER'S DEN
+	SRC.GO 2733,2160,0
+
+ON=6//PREVIOUS
+	SRC.DIALOG d_Travel
+
+ON=7//PAPUA
+	SRC.GO=5726,3205,-3
+
+[DIALOG d_TravelDung]               //DUNGEONS//DUNGEONS//DUNGEONS//NGEONS//DUNGEONS//DUNGEONS
+0, 0	// this is always the size.
+resizepic 0 0 3600 215 165
+page 0
+text 40 17 0 0   
+text 40 37 1152 1
+text 40 57 1152 2
+text 40 77 1152 3
+text 40 97 1152 4
+text 40 117 0 5   
+button 20 40 1209 1210 1 0 1
+button 20 60 1209 1210 1 0 2
+button 20 80 1209 1210 1 0 3
+button 20 100 1209 1210 1 0 4
+button 20 120 1209 1210 1 0 5
+
+[DIALOG d_TravelDung TEXT]
+Which Dungeon?
+Destard
+Despise
+Deceit
+Wrong
+Previous
+
+[DIALOG d_TravelDung BUTTON]
+
+ON=0
+	SYSMESSAGE=Menu Aborted
+
+ON=1 //DESTARD
+	SRC.GO=1182,2639,0
+
+ON=2 //DESPISE
+	SRC.GO=1300,1075,0
+
+ON=3 //DECEIT
+	SRC.GO=4115,433,5
+
+ON=4 //WRONG
+	SRC.GO=2049,238,10
+
+ON=5 //PREVIOUS
+	SRC.DIALOG d_Travel
+
+[DIALOG d_TravelSpec]              //SPECIAL PLACES
+0, 0	// this is always the size.
+resizepic 0 0 3600 205 225
+page 0
+text 40 17 0 0   
+text 40 37 1152 1
+text 40 57 1152 2
+text 40 77 1152 3
+text 40 97 1152 4
+text 40 117 1152 5  
+text 40 137 1152 6  
+text 40 157 1152 7 
+text 40 177 0 8
+button 20 40 1209 1210 1 0 1
+button 20 60 1209 1210 1 0 2
+button 20 80 1209 1210 1 0 3
+button 20 100 1209 1210 1 0 4
+button 20 120 1209 1210 1 0 5
+button 20 140 1209 1210 1 0 6
+button 20 160 1209 1210 1 0 7
+button 20 180 1209 1210 1 0 8
+
+[DIALOG d_TravelSpec TEXT]
+Which Special Place?
+Fight Night
+Green Acres
+Britain Graveyard
+Britain Mines
+Battle Arena
+Special People
+Star Chamber
+Previous
+
+[DIALOG d_TravelSpec BUTTON]
+
+ON=0
+	SYSMESSAGE=Menu Aborted
+
+ON=1 //Fight Night
+	SRC.GO=1971,811,25
+
+ON=2 //Green Acres
+	SRC.GO 5434,1099,0
+
+ON=3 //Britain Graveyard
+	SRC.GO=1384,1497,10
+
+ON=4 //Britain Mines
+	SRC.GO=1264,1256,0
+
+ON=5 //BATTLE ARENA
+	SRC.GO=5193,1180,0
+
+ON=6 //SPECIAL PEOPLE
+	SRC.GO=5187,1532,0
+
+ON=7 //STAR CHAMBER
+	SRC.GO=5146,1774,0
+
+ON=8 //PREVIOUS
+	SRC.DIALOG d_Travel
+
+[DIALOG d_TravelSupply]             //SUPPLY HALL
+// Sample dialog to travel to the supply hall.
+0, 0	// this is always the size.
+resizepic 0 0 3600 225 100
+page 0
+text 40 17 0 0   
+text 40 37 1152 1
+button 20 40 1209 1210 1 0 1
+
+[DIALOG d_TravelSupply TEXT]
+Where to?
+Supply Room
+
+[DIALOG d_TravelSupply BUTTON]
+
+ON=0
+	SYSMESSAGE=Menu Aborted
+
+ON=1 //Supply Room
+	SRC.GO=5271,1234,5

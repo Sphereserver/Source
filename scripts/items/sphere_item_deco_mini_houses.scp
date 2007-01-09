@@ -1,0 +1,290 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Thursday, August 26, 2005
+//
+VERSION=0.56b
+
+[ITEMDEF 022c4]
+//mini house
+DEFNAME=i_mini_house
+CATEGORY=Miscellaneous
+SUBSECTION=Mini Houses
+DESCRIPTION=@
+DUPELIST=022c9,022ca,022cb,022cc,022cd,022ce,022cf,022d0,022d1,022d2,022d3,022d4,022d5,022d6,022d7,022d8,022d9,022da,022db,022dc,022dd,022de,022df,022e0,022e1,022e2,022e3,022e4,022e5,022e6,022e7,022e8,022e9,022ea,022eb,022ec,022ed,022ee,022ef,022f0,022f1,022f2,022f3,022f4,022f5,022f6,022f7,022f8,022f9,022fa,022fb,022fc,022fd,022fe,022ff,02300,02301,02302,02303,02304,02313,02314,02315,02316,02317,02318,02319,
+
+[ITEMDEF 022c9]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022ca]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022cb]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022cc]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022cd]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022ce]
+//mini castle (1 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022cf]
+//mini castle (2 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d0]
+//mini castle (3 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d1]
+//mini castle (4 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d2]
+//mini castle (5 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d3]
+//mini castle (6 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d4]
+//mini castle (7 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d5]
+//mini castle (8 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d6]
+//mini castle (9 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d7]
+//mini castle (10 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d8]
+//mini castle (11 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022d9]
+//mini castle (12 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022da]
+//mini castle (13 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022db]
+//mini castle (14 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022dc]
+//mini castle (15 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022dd]
+//mini castle (16 of 16)
+DUPEITEM=022c4
+
+[ITEMDEF 022de]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022df]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022e0]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022e1]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022e2]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022e3]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022e4]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022e5]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022e6]
+//mini castle (1 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022e7]
+//mini castle (2 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022e8]
+//mini castle (3 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022e9]
+//mini castle (4 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022ea]
+//mini castle (5 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022eb]
+//mini castle (6 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022ec]
+//mini castle (7 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022ed]
+//mini castle (8 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022ee]
+//mini castle (9 of 9)
+DUPEITEM=022c4
+
+[ITEMDEF 022ef]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f0]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f1]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f2]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f3]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022f4]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022f5]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022f6]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022f7]
+//mini tower (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f8]
+//mini tower (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022f9]
+//mini tower (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022fa]
+//mini tower (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022fb]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 022fc]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022fd]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022fe]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 022ff]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02300]
+//mini house
+DUPEITEM=022c4
+
+[ITEMDEF 02301]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02302]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02303]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02304]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02313]
+//mini house (1 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02314]
+//mini house (2 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02315]
+//mini house (3 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02316]
+//mini house (4 of 4)
+DUPEITEM=022c4
+
+[ITEMDEF 02317]
+//mini house (1 of 3)
+DUPEITEM=022c4
+
+[ITEMDEF 02318]
+//mini house (2 of 3)
+DUPEITEM=022c4
+
+[ITEMDEF 02319]
+//mini house (3 of 3)
+DUPEITEM=022c4
+
+[EOF]

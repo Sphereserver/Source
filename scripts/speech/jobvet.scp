@@ -1,0 +1,503 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Vet Script
+// Notes:  This is used for general information pertaining to all Britannian Vets
+// Current Keyword List:heal,cure,poison,ressurect,resurrection,healing,
+//toxin,venom,raise*dead,raise*the*dead,
+// help,buy,potions,potion,healing*scrolls,job,what*do*do,profession,occupation,help,pet,hurt,injured,
+// cat,dog,bird,bear,dragon,mule,llama,horse,gorilla,buy
+//
+[SPEECH jobVet]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I heal animals.
+				SAY I tend to wounded beasts,<SRC.SEX Mi'lord/Mi'lady>.
+				SAY I heal animals, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I heal animals.
+				SAY I tend to wounded beasts,<SRC.SEX Mi'lord/Mi'lady>.
+				SAY I heal animals, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I heal animals that are sick.
+				SAY I am a veterinarian.
+				SAY I heal the wounds of injured and sick animals.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I heal animals that are sick.
+				SAY I am a veterinarian.
+				SAY I heal the wounds of injured and sick animals.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I am one of the many animal healers of Britannia, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Why I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Tending to ill animals is what I do, <SRC.SEX Mi'lord/Mi'lady>, for I am a veterinarian.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I am one of the many animal healers of Britannia, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Why I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Tending to ill animals is what I do, <SRC.SEX Mi'lord/Mi'lady>, for I am a veterinarian.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=vet
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Yes, I'm a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY I liker animals, so I'm a veterinarian.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yes, I'm a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY I liker animals, so I'm a veterinarian.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Yes, I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Yes, my desire to help all creatures led me to be a veterinarian.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yes, I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Yes, my desire to help all creatures led me to be a veterinarian.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Yes, I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Yes, my desire to help all creatures led me to be a veterinarian.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Yes, I am a veterinarian, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY Yes, my desire to help all creatures led me to be a veterinarian.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=heal
+ON=healing
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, <SRC.SEX Mi'lord/Mi'lady>, I can help animals.
+				SAY Thou'rt needin my aid, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY What does thy need, <SRC.SEX Mi'lord/Mi'lady>?
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, <SRC.SEX Mi'lord/Mi'lady>, I can help animals.
+				SAY Thou'rt needin my aid, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY What does thy need, <SRC.SEX Mi'lord/Mi'lady>?
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, healing nature's creatures is what I do.
+				SAY I can speed up the healing process.
+				SAY There are many ways to help wounds to heal.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, healing nature's creatures is what I do.
+				SAY I can speed up the healing process.
+				SAY There are many ways to help wounds to heal.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, I would be willing to help thee with a sick or hurt beast.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, I can help, if thou dost have an injured animal
+				SAY I can heal thy injured pets or beasts of burden.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, I would be willing to help thee with a sick or hurt beast.
+				SAY <SRC.SEX Mi'lord/Mi'lady>, I can help, if thou dost have an injured animal
+				SAY I can heal thy injured pets or beasts of burden.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=help
+ON=pet
+ON=hurt
+ON=injured
+ON=cat
+ON=dog
+ON=bird
+ON=bear
+ON=dragon
+ON=mule
+ON=llama
+ON=horse
+ON=gorilla
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY What's wrong?
+				SAY Does thou got a hurt animal? I might could help thee.
+				SAY Maybe I can help thee, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY What's wrong?
+				SAY Does thou got a hurt animal? I might could help thee.
+				SAY Maybe I can help thee, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY What is wrong, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY Dost thou have an ailing beast?  I can, perheps, assist thee if that is the case.
+				SAY With what dost thou need help?
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY What is wrong, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY Dost thou have an ailing beast?  I can, perheps, assist thee if that is the case.
+				SAY With what dost thou need help?
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY <SRC.SEX Mi'lord/Mi'lady>, I can help thee with thy ill livestock and pets.
+				SAY Art thou in need of mine assistance? I am happy to help.
+				SAY Please, bring in thy animals, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY <SRC.SEX Mi'lord/Mi'lady>, I can help thee with thy ill livestock and pets.
+				SAY Art thou in need of mine assistance? I am happy to help.
+				SAY Please, bring in thy animals, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=cure
+ON=poison
+ON=toxin
+ON=venom
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Is thy animal is poisoned?
+				SAY Maybe I can heal thy animal.
+				SAY Is thy beast in need of help? I can maybe help.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Is thy animal is poisoned?
+				SAY Maybe I can heal thy animal.
+				SAY Is thy beast in need of help? I can maybe help.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY If thy beast has been poisoned, I can help thee.
+				SAY Perhaps I may be able to help thee with thy troubles, <SRC.SEX Mi'lord/Milady>.
+				SAY Is thine animal poisoned? Perhaps thou wilt permit me to aid it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY If thy beast has been poisoned, I can help thee.
+				SAY Perhaps I may be able to help thee with thy troubles, <SRC.SEX Mi'lord/Milady>.
+				SAY Is thine animal poisoned? Perhaps thou wilt permit me to aid it.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Aye, I can remove toxins that befoul thy creatures.
+		               	SAY I make no promises of success, <SRC.SEX Mi'lord/Mi'lady>, but I am willing to attempt to cure thy poisoned animals.
+				SAY Be it natural or magical, I have remedies for both types of poison.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Aye, I can remove toxins that befoul thy creatures.
+		               	SAY I make no promises of success, <SRC.SEX Mi'lord/Mi'lady>, but I am willing to attempt to cure thy poisoned animals.
+				SAY Be it natural or magical, I have remedies for both types of poison.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=resurrect
+ON=resurrection
+ON=raise*dead
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I can't raise dead beasts.
+				SAY Resurrection ain't possible for animals, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY That can be done only for dead people, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I can't raise dead beasts.
+				SAY Resurrection ain't possible for animals, <SRC.SEX Mi'lord/Mi'lady>.
+				SAY That can be done only for dead people, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Begging thy pardon, <SRC.SEX Mi'lord/Mi'lady>, but I cannot restor life to a pet that has passed on.
+				SAY If thou dost wish me to raise thy dead beast, I am afraid thou'rt art likely to be disappointed.
+				SAY For reasons too long to explain at the moment, resurrection is a powerful manipulation of magic that does not work on beasts. I am sorry, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Begging thy pardon, <SRC.SEX Mi'lord/Mi'lady>, but I cannot restor life to a pet that has passed on.
+				SAY If thou dost wish me to raise thy dead beast, I am afraid thou'rt art likely to be disappointed.
+				SAY For reasons too long to explain at the moment, resurrection is a powerful manipulation of magic that does not work on beasts. I am sorry, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Indeed, the power to restore life is not to be treated lightly. Unfortunately, the spirits of the creatures of nature -- those who do not have the power of speech -- travel from this realm more quickly than they do for thyself or me. Alas, I cannot raise dead animals.
+				SAY I am saddened to say that resurrection is not a power that can be performed on animals.
+				SAY 'Tis quite disappointing, I am afraid, but the spirit of animals who have passed on cannot be returned to their bodies.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Indeed, the power to restore life is not to be treated lightly. Unfortunately, the spirits of the creatures of nature -- those who do not have the power of speech -- travel from this realm more quickly than they do for thyself or me. Alas, I cannot raise dead animals.
+				SAY I am saddened to say that resurrection is not a power that can be performed on animals.
+				SAY 'Tis quite disappointing, I am afraid, but the spirit of animals who have passed on cannot be returned to their bodies.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=buy
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I got little to sell.
+				SAY Does thou need my aid, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY I only buy supplies, <SRC.SEX Mi'lord/Mi'lady>, and sell my services.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I got little to sell.
+				SAY Does thou need my aid, <SRC.SEX Mi'lord/Mi'lady>?
+				SAY I only buy supplies, <SRC.SEX Mi'lord/Mi'lady>, and sell my services.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I sell only my healing service, my <SRC.SEX good sir/dear woman>, as well as a few healing scrolls.
+				SAY Dost thou wish to purchase my services?
+				SAY I have little to sell, save my skill in tending to ill animals. Perhaps I also have a few scrolls of healing, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I sell only my healing service, my <SRC.SEX good sir/dear woman>, as well as a few healing scrolls.
+				SAY Dost thou wish to purchase my services?
+				SAY I have little to sell, save my skill in tending to ill animals. Perhaps I also have a few scrolls of healing, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX <Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
+				SAY I merely sell my services, <SRC.SEX Mi'lord/Mi'lady>, and a few srcolls of healing.
+				SAY Perhaps thou'rt asking about the services I offer.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX <Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
+				SAY I merely sell my services, <SRC.SEX Mi'lord/Mi'lady>, and a few srcolls of healing.
+				SAY Perhaps thou'rt asking about the services I offer.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=potions
+ON=potion
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I don't know much about healing potions.
+				SAY Thou'rt interested in healing potions?.
+				SAY I got no potions, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I don't know much about healing potions.
+				SAY Thou'rt interested in healing potions?.
+				SAY I got no potions, <SRC.SEX Mi'lord/Mi'lady>.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing potions? Aye, those may be used to aid animals as people. The same is true for potions of curing.
+				SAY I know of potions of healing and curing, <SRC.SEX Mi'lord/Mi'lady>, all quite capable of providing aid to a wounded animal.
+				SAY If thou'rt interested in potions of curing and healing, I cannot help thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing potions? Aye, those may be used to aid animals as people. The same is true for potions of curing.
+				SAY I know of potions of healing and curing, <SRC.SEX Mi'lord/Mi'lady>, all quite capable of providing aid to a wounded animal.
+				SAY If thou'rt interested in potions of curing and healing, I cannot help thee.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing potions?  Aye, those may be used to aid animals as people. The same is true for potions of curing.
+				SAY I know of potions of healing and curing, <SRC.SEX Mi'lord/Mi'lady>, all quite capable of providing aid to a wounded animal.
+				SAY If thou'rt interested in potions of curing and healing, I cannot help thee.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing potions?  Aye, those may be used to aid animals as people. The same is true for potions of curing.
+				SAY I know of potions of healing and curing, <SRC.SEX Mi'lord/Mi'lady>, all quite capable of providing aid to a wounded animal.
+				SAY If thou'rt interested in potions of curing and healing, I cannot help thee.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=healing*scrolls
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I sell healing scrolls.
+				SAY Thou'rt interested in healing scrolls?.
+				SAY I got healing scrolls.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I sell healing scrolls.
+				SAY Thou'rt interested in healing scrolls?.
+				SAY I got healing scrolls.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY These healing scrolls will soothe thy wounds.
+				SAY I have healing scrolls made from the strongest cloth.
+				SAY I have lots of healing scrolls.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY These healing scrolls will soothe thy wounds.
+				SAY I have healing scrolls made from the strongest cloth.
+				SAY I have lots of healing scrolls.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Healing scrolls can be used to help heal wounds. I can sell thee some.
+				SAY My healing scrolls are made from strong cloth fibers and silk. I still have some if thou dost want to buy them.
+				SAY Why, I sell healing scrolls <SRC.SEX Mi'lord/Mi'lady>. They can aid in the healing of many types of wounds.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Healing scrolls can be used to help heal wounds. I can sell thee some.
+				SAY My healing scrolls are made from strong cloth fibers and silk. I still have some if thou dost want to buy them.
+				SAY Why, I sell healing scrolls <SRC.SEX Mi'lord/Mi'lady>. They can aid in the healing of many types of wounds.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobVet]
+//VETERINARIAN
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Hello, do you have a pet in need of help?
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell.
+	BYE
+	return 1
+ON=job
+ON=what do you do
+SAY=If your animal is hurt, bring him to me and you'll soon be traveling happily together again.
+ON=BEAR
+SAY=Bears can be ferocious.  I have even heard large white bears live in far northern regions.
+ON=BIRD
+SAY=Birds provide meat for citizens, and feathers for archers.
+ON=BUY
+SAY=Some animals may be purchased from local stables or freelance animal trainers.
+ON=CAT
+SAY=It is the larger cats one should be wary of.  They will attack at the slightest provocation.
+ON=INJURED
+ON=HURT
+ON=POISON
+ON=CURE
+SAY=I treat animals for a living.  Remember that it is unwise to harm pets.
+ON=DOG
+SAY=Dogs are good traveling companions, but not very useful for protection against larger creatures.
+ON=DRAGON
+SAY=Few have reported being attacked by a dragon.  That may be because few survive such an attack.
+ON=STEED
+ON=HORSE
+SAY=Horses may be trained in the wild by experienced animal trainers or purchased.  Never forget to feed your horse, or you may find yourself without a ride one day.
+ON=LLAMA
+SAY=Llamas are beasts of burden.  Their hides and meat have value also.
+ON=MOUNT
+SAY=Once tamed, a horse will allow a rider to mount and unmount at will.
+ON=MULE
+SAY=It is an ornery beast of burden.
+ON=PET
+SAY=Most animals may be trained as pets if you are skillful enough.  If you treat them well, they will help you in your travels.
+ON=POTION
+ON=POTIONS
+SAY=Potions may be purchased from healers and alchemists.
+ON=RESURRECTION
+ON=RESURRECT
+ON=RAISE<ANY>DEAD
+SAY=I am afraid that is in the realm of magic, not medicine.
+ON=VENOM
+ON=TOXIN
+SAY=Toxins and venom cause poisoning.  Poisoning may be cured using potions.
+ON=VET
+SAY=I am a veterinarian by trade.  Man I help you?
+//RANDOM=People must learn to care for their pets.  Too many pets are ill treated or injured!
+
+[EOF]
+

@@ -1,0 +1,243 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Jailor Script
+// Notes:  This is used for general information pertaining to all Britannian Jailor's
+// Current Keyword List:
+//	job, work, what*do*do, profession, occupation, jail, prison, Prisoner,
+//	guard, keeper, turnkey
+//
+[SPEECH jobJailor]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I'm the jailkeeper!
+				SAY I'm the turnkey for this jail.
+				SAY I'm a jailor, an official of the crown!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I'm the jailkeeper!
+				SAY I'm the turnkey for this jail.
+				SAY I'm a jailor!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 3
+			SAY I'm the jailkeeper.
+			SAY I'm the turnkey for this jail.
+			SAY I'm a jailor, an officer of the crown!
+		ENDDO
+	ELSE
+		DORAND 3
+			SAY I'm the jailkeeper.
+			SAY I'm the turnkey for this jail.
+			SAY I'm a jailor, an officer of the crown of Britannia!
+		ENDDO
+	ENDIF
+ON=*jail*
+ON=*prison*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY No one's ever escaped from my jail.
+				SAY Keep bothering me with thy jabber, thou'lt learn more about my jail than thou wish to know.
+				SAY There's no one in this jail who doesn't deserve to be here.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY No one's ever escaped from my jail.
+				SAY Keep botherin' me an' thou'lt learn more about my jail than thou wish to know.
+				SAY No one's in this jail who don't deserve to be.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY No one ever escapes from my jail.
+				SAY Keep bothering me with thy jabber, thou'lt learn more about my jail than thou wish to know.
+				SAY There's no one in this jail who doesn't deserve to be here.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY No one's escaped from my jail.
+				SAY Keep botherin' me with thy jabber, thou'lt learn more about my jail than thou wish to know.
+				SAY Ain't no one in this jail who don't deserve to be here.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY No one has ever escaped from my jail.
+				SAY If thou dost continue to annoy me, then thou might just have some personal knowledge of the jails here.
+				SAY All of our visitors have earned a stay here.  None are undeserving, so to speak.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY No one's ever escaped from my jail.
+				SAY Keep blatherin' at me an' thou might just have some personal 'sperience of the jails here.
+				SAY All our visitors have earned their way here.  None are unworthy, so to speak.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*Prisoner*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The prisoners may not receive visitors. Be off.
+				SAY The prisoners are my concern and none of thine.
+				SAY These prisoners are my precious lambs and I love 'em like a mother.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The prisoners can't have visitors. Be off.
+				SAY The prisoners are my business and none of thine.
+				SAY These prisoners are my little lambs and I loves 'em like a mother.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The prisoners may not receive visitors. Off with thee!
+				SAY The prisoners are my concern and none of thine.
+				SAY These prisoners are my precious lambs and I love 'em like a mother.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The prisoners can't have visitors. Off with thee!
+				SAY The prisoners are my problem and none of thine.
+				SAY These prisoners are my lambs and I loves 'em like a mother.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The prisoners may not receive visitors. Be gone.
+				SAY The prisoners are my concern and none of thine.
+				SAY These prisoners are my precious lambs and I love them like a mother would a rotten child.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The prisoners can't have no visitors. Be gone.
+				SAY The prisoners are my business and none of thine.
+				SAY These prisoners are in my care and I loves 'em like a mother would her kid.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*guard*
+ON=*keeper*
+ON=*turnkey*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY I guard my prisoners like a mother hen keeps her chicks.
+					SAY I make sure this lot stays right here where they belong.
+				ENDDO
+			ELSE
+				SAY I have duties to perform, and no more time for thy foolish questions.
+				LEAVE
+			ENDIF
+		ELSE
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY I guards my prisoners like a hen keeps her chicks.
+					SAY I make sure this lot stays right here where they belong.
+				ENDDO
+			ELSE
+				SAY I got duties to perform, and no more time for questions.
+				LEAVE
+			ENDIF
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY I guards my prisoners like a mother hen keeps her chicks.
+					SAY I make sure this lot stays right here where they belong.
+				ENDDO
+			ELSE
+				SAY I have duties to perform, and no more time for thy foolish questions.
+				LEAVE
+			ENDIF
+		ELSE
+			IF ( RAND( 3 ) > 1 )
+				DORAND 2
+					SAY I guards my prisoners like a mother hen keeps her chicks.
+					SAY I make sure this lot stays right here where they belong.
+				ENDDO
+			ELSE
+				SAY I got duties to perform, and no more time for thy foolish questions.
+				LEAVE
+			ENDIF
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I guards my prisoners like a mother hen keeps her chicks.
+				SAY I have duties to perform, and no more time for thy foolish questions.
+				SAY I make sure this lot stays right here where they belong.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I guards my prisoners like a mother hen keeps her chicks.
+				SAY I got duties to perform, and no more time for questions.
+				SAY I make sure this lot stays right here where they belong.
+			ENDDO
+		ENDIF
+	ENDIF
+
+//JAILOR
+//DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Wot ya want?
+
+ON=Job
+ON=What do you do
+	SAY=I locks 'em up good and tight... no good rogues.
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Leave me be already.
+	BYE
+	return 1
+
+ON=GUARD
+	SAY=I'm da jailor, not some fancy guard.
+
+ON=JAIL
+	SAY=It's my jail and I does what I likes.
+
+ON=KEEPER
+	SAY=This ain't no zoo so I ain't no keeper, but some a dem guys are animals.
+
+ON=PRISON
+	SAY=Nobody but nobody has eve' broke outta here, believe you me.
+
+ON=PRISONER
+	SAY=He fell, he did.  I swears he fell.
+
+ON=TURNKEY
+	SAY=You ain't gonna git no key from me.
+
+//RANDOM=Wha's this then?  Back so soon?  Havin' yer way wit da chickens again?
+
+[EOF]
+

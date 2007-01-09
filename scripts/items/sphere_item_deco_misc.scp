@@ -1,0 +1,3790 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 02]
+DEFNAME=i_ankh
+RESOURCES=100 i_rock_plain
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Statues
+DESCRIPTION=Ankh (w) 1/2
+DUPELIST=03,04,05
+
+[ITEMDEF 03]
+DUPEITEM=02
+DESCRIPTION=Ankh (w) 2/2
+
+[ITEMDEF 04]
+DUPEITEM=02
+DESCRIPTION=Ankh (n) 1/2
+
+[ITEMDEF 05]
+DUPEITEM=02
+DESCRIPTION=Ankh (n) 2/2
+
+[ITEMDEF 041f]
+DEFNAME=i_GRUESOMESTANDARD
+RESOURCES=10 i_log, 10 I_BONE
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Gruesome Standard
+DUPELIST=0428
+
+[ITEMDEF 0420]
+//gruesome standard
+DEFNAME=i_GRUESOMESTANDARD_2
+RESOURCES=10 i_log, 10 I_BONE
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Gruesome Standard 2
+
+[ITEMDEF 0421]
+DEFNAME=i_PALISADE
+//DEFNAME-i_wall_palisade ??
+TYPE=T_WALL
+RESOURCES=50 I_LOG
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Palisade
+DUPELIST=0422,0423,0424,0425,0430,0431
+
+[ITEMDEF 0422]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0423]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0424]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0425]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0426]
+DEFNAME=i_BANNER_TATTERED
+RESOURCES=1 I_LOG, 5 I_CLOTH
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Tattered Banner
+DUPELIST=0427,0429,042a,042b,042c,042d,042e,042f
+
+[ITEMDEF 0427]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 0428]
+//gruesome standard
+DUPEITEM=041f
+
+[ITEMDEF 0429]
+//gruesome standard
+DUPEITEM=0426
+
+[ITEMDEF 042a]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 042b]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 042c]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 042d]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 042e]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 042f]
+//tattered banner
+DUPEITEM=0426
+
+[ITEMDEF 0430]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0431]
+//palisade
+DUPEITEM=0421
+
+[ITEMDEF 0432]
+DEFNAME=i_CURTAIN
+RESOURCES=10 I_CLOTH
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Curtain
+DUPELIST=0435
+
+[ITEMDEF 0433]
+DEFNAME=i_CURTAINROD
+RESOURCES=1 I_LOG
+CATEGORY=Miscellaneous
+SUBSECTION=Orc Camp Decor
+DESCRIPTION=Curtain Rod
+DUPELIST=0434
+
+[ITEMDEF 0434]
+//curtain rod
+DUPEITEM=0433
+
+[ITEMDEF 0435]
+//curtain
+DUPEITEM=0432
+
+[ITEMDEF 0fc5]
+//shells
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=@
+
+[ITEMDEF 0fc6]
+//shells
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=@
+
+[ITEMDEF 0fc7]
+//nautilus
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=Nautilus
+
+[ITEMDEF 0fc8]
+//shell
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=Shell
+
+[ITEMDEF 0fc9]
+//shells
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=@
+
+[ITEMDEF 0fca]
+//shells
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=@
+
+[ITEMDEF 0fcb]
+//shell
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=Shell
+
+[ITEMDEF 0fcc]
+//shell
+DUPEITEM=0FC4
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=Shell
+
+[ITEMDEF 0fcd]
+DEFNAME=i_string_of_shells
+RESOURCES=5 I_SHELL, 1 I_STRING
+WEIGHT=.5
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Shells
+DESCRIPTION=String of Shells
+DUPELIST=0fce,0fcf,0fd0,0fd1,0fd2,0fd3,0fd4
+
+[ITEMDEF 0fce]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0fcf]
+//string of shells
+
+DUPEITEM=0fcd
+
+[ITEMDEF 0fd0]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0fd1]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0fd2]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0fd3]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0fd4]
+//string of shells
+DUPEITEM=0fcd
+
+[ITEMDEF 0156e]
+DEFNAME=i_decorative_shield_2
+DUPELIST=0156f
+
+[ITEMDEF 0156f]
+//decorative shield
+DUPEITEM=0156e
+
+[ITEMDEF 01570]
+DEFNAME=i_decorative_shield_3
+DUPELIST=01571
+
+[ITEMDEF 01571]
+//decorative shield
+DUPEITEM=01570
+
+[ITEMDEF 01572]
+DEFNAME=i_decorative_shield_4
+DUPELIST=01573
+
+[ITEMDEF 01573]
+//decorative shield
+DUPEITEM=01572
+
+[ITEMDEF 01574]
+DEFNAME=i_decorative_shield_5
+DUPELIST=01575
+
+[ITEMDEF 01575]
+//decorative shield
+DUPEITEM=01574
+
+[ITEMDEF 01576]
+DEFNAME=i_decorative_shield_6
+DUPELIST=01577
+
+[ITEMDEF 01577]
+//decorative shield
+DUPEITEM=01576
+
+[ITEMDEF 01578]
+DEFNAME=i_decorative_shield_7
+DUPELIST=01579
+
+[ITEMDEF 01579]
+//decorative shield
+DUPEITEM=01578
+
+[ITEMDEF 0157a]
+DEFNAME=i_decorative_shield_8
+
+[ITEMDEF 0157b]
+//decorative shield
+DUPEITEM=0157c
+
+[ITEMDEF 0157c]
+DEFNAME=i_decorative_shield_9
+DUPELIST=0157b,0157d
+
+[ITEMDEF 0157d]
+//decorative shield
+DUPEITEM=0157c
+
+[ITEMDEF 0157e]
+DEFNAME=i_decorative_shield_10
+DUPELIST=0157f
+
+[ITEMDEF 0157f]
+//decorative shield
+DUPEITEM=0157e
+
+[ITEMDEF 01580]
+DEFNAME=i_decorative_shield_11
+DUPELIST=01581
+
+[ITEMDEF 01581]
+//decorative shield
+DUPEITEM=01580
+
+[ITEMDEF 01582]
+DEFNAME=i_decorative_shield_12_sword_under_ne
+RESOURCES=8 i_ingot_iron, 2 i_ingot_silver, 1 i_BOARD
+WEIGHT=17
+
+[ITEMDEF 01583]
+DEFNAME=i_decorative_shield_12_sword_over_ne
+RESOURCES=8 i_ingot_iron, 2 i_ingot_silver, 1 i_BOARD
+WEIGHT=17
+
+[ITEMDEF 01584]
+DEFNAME=i_decorative_shield_13_sword_under_ne
+RESOURCES=6 i_ingot_gold, 4 i_ingot_iron, 1 i_BOARD
+WEIGHT=16
+
+[ITEMDEF 0149f]
+DEFNAME=i_shrine_honesty_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (01/04) (W)
+DUPELIST=014a0,014a1,014a2
+
+[ITEMDEF 014a0]
+//SHRINE_HONESTY_1 PART 2
+DUPEITEM=0149F
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (02/04) (W)
+
+[ITEMDEF 014a1]
+//SHRINE_HONESTY_1 PART 3
+DUPEITEM=0149F
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (03/04) (W)
+
+[ITEMDEF 014a2]
+//SHRINE_HONESTY_1 PART 4
+DUPEITEM=0149F
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (04/04) (W)
+
+[ITEMDEF 014a3]
+DEFNAME=i_shrine_honesty_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (01/04) (N)
+DUPELIST=014a4,014a5,014a6
+
+[ITEMDEF 014a4]
+//SHRINE_HONESTY_2 PART 2
+DUPEITEM=014A3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (02/04) (N)
+
+[ITEMDEF 014a5]
+//SHRINE_HONESTY_2 PART 3
+DUPEITEM=014A3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (03/04) (N)
+
+[ITEMDEF 014a6]
+//SHRINE_HONESTY_2 PART 4
+DUPEITEM=014A3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honesty
+DESCRIPTION=Honesty (04/04) (N)
+
+[ITEMDEF 014a7]
+DEFNAME=i_shrine_compassion_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (01/04) (W)
+DUPELIST=014a8,014a9,014aa
+
+[ITEMDEF 014a8]
+//SHRINE_COMPASSION_1 PART 2
+DUPEITEM=014A7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (02/04) (W)
+
+[ITEMDEF 014a9]
+//SHRINE_COMPASSION_1 PART 3
+DUPEITEM=014A7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (03/04) (W)
+
+[ITEMDEF 014aa]
+//SHRINE_COMPASSION_1 PART 4
+DUPEITEM=014A7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (04/04) (W)
+
+[ITEMDEF 014ab]
+DEFNAME=i_shrine_compassion_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (01/04) (N)
+DUPELIST=014ac,014ad,014ae
+
+[ITEMDEF 014ac]
+//SHRINE_COMPASSION_2 PART 2
+DUPEITEM=014AB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (02/04) (N)
+
+[ITEMDEF 014ad]
+//SHRINE_COMPASSION_2 PART 3
+DUPEITEM=014AB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (03/04) (N)
+
+[ITEMDEF 014ae]
+//SHRINE_COMPASSION_2 PART 4
+DUPEITEM=014AB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Compassion
+DESCRIPTION=Compassion (04/04) (N)
+
+[ITEMDEF 014af]
+DEFNAME=i_shrine_justice_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (01/04) (W)
+DUPELIST=014b0,014b1,014b2
+
+[ITEMDEF 014b0]
+//SHRINE_JUSTICE_1 PART 2
+DUPEITEM=014AF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (02/04) (W)
+
+[ITEMDEF 014b1]
+//SHRINE_JUSTICE_1 PART 3
+DUPEITEM=014AF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (03/04) (W)
+
+[ITEMDEF 014b2]
+//SHRINE_JUSTICE_1 PART 4
+DUPEITEM=014AF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (04/04) (W)
+
+[ITEMDEF 014b3]
+DEFNAME=i_shrine_justice_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (01/04) (N)
+DUPELIST=014b4,014b5,014b6
+
+[ITEMDEF 014b4]
+//SHRINE_JUSTICE_2 PART 2
+DUPEITEM=014B3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (02/04) (N)
+
+[ITEMDEF 014b5]
+//SHRINE_JUSTICE_2 PART 3
+DUPEITEM=014B3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (03/04) (N)
+
+[ITEMDEF 014b6]
+//SHRINE_JUSTICE_2 PART 4
+DUPEITEM=014B3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Justice
+DESCRIPTION=Justice (04/04) (N)
+
+[ITEMDEF 014b7]
+DEFNAME=i_shrine_valor_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (01/04) (W)
+DUPELIST=014b8,014b9,014ba
+
+[ITEMDEF 014b8]
+//SHRINE_VALOR_1 PART 2
+DUPEITEM=014B7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (02/04) (W)
+
+[ITEMDEF 014b9]
+//SHRINE_VALOR_1 PART 3
+DUPEITEM=014B7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (03/04) (W)
+
+[ITEMDEF 014ba]
+//SHRINE_VALOR_1 PART 4
+DUPEITEM=014B7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (04/04) (W)
+
+[ITEMDEF 014bb]
+DEFNAME=i_shrine_valor_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (01/04) (N)
+DUPELIST=014bc,014bd,014be
+
+[ITEMDEF 014bc]
+//SHRINE_VALOR_2 PART 2
+DUPEITEM=014BB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (02/04) (N)
+
+[ITEMDEF 014bd]
+//SHRINE_VALOR_2 PART 3
+DUPEITEM=014BB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (03/04) (N)
+
+[ITEMDEF 014be]
+//SHRINE_VALOR_2 PART 4
+DUPEITEM=014BB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Valor
+DESCRIPTION=Valor (04/04) (N)
+
+[ITEMDEF 014bf]
+DEFNAME=i_shrine_spirituality_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (01/04) (W)
+DUPELIST=014c0,014c1,014c2
+
+[ITEMDEF 014c0]
+//SHRINE_SPIRITUALITY_1 PART 2
+DUPEITEM=014BF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (02/04) (W)
+
+[ITEMDEF 014c1]
+//SHRINE_SPIRITUALITY_1 PART 3
+DUPEITEM=014BF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (03/04) (W)
+
+[ITEMDEF 014c2]
+//SHRINE_SPIRITUALITY_1 PART 4
+DUPEITEM=014BF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (04/04) (W)
+
+[ITEMDEF 014c3]
+DEFNAME=i_shrine_spirituality_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (01/04) (N)
+DUPELIST=014c4,014c5,014c6
+
+[ITEMDEF 014c4]
+//SHRINE_SPIRITUALITY_2 PART 2
+DUPEITEM=014C3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (02/04) (N)
+
+[ITEMDEF 014c5]
+//SHRINE_SPIRITUALITY_2 PART 3
+DUPEITEM=014C3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (03/04) (N)
+
+[ITEMDEF 014c6]
+//SHRINE_SPIRITUALITY_2 PART 4
+DUPEITEM=014C3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Spirituality
+DESCRIPTION=Spirituality (04/04) (N)
+
+[ITEMDEF 014c7]
+DEFNAME=i_shrine_honor_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (01/04) (W)
+DUPELIST=014c8,014c9,014ca
+
+[ITEMDEF 014c8]
+//SHRINE_HONOR_1 PART 2
+DUPEITEM=014C7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (02/04) (W)
+
+[ITEMDEF 014c9]
+//SHRINE_HONOR_1 PART 3
+DUPEITEM=014C7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (03/04) (W)
+
+[ITEMDEF 014ca]
+//SHRINE_HONOR_1 PART 4
+DUPEITEM=014C7
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (04/04) (W)
+
+[ITEMDEF 014cb]
+DEFNAME=i_shrine_honor_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (01/04) (N)
+DUPELIST=014cc,014cd,014ce
+
+[ITEMDEF 014cc]
+//SHRINE_HONOR_2 PART 2
+DUPEITEM=014CB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (02/04) (N)
+
+[ITEMDEF 014cd]
+//SHRINE_HONOR_2 PART 3
+DUPEITEM=014CB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (03/04) (N)
+
+[ITEMDEF 014ce]
+//SHRINE_HONOR_2 PART 4
+DUPEITEM=014CB
+CATEGORY=Decoration - Shrines
+SUBSECTION=Honor
+DESCRIPTION=Honor (04/04) (N)
+
+[ITEMDEF 014cf]
+DEFNAME=i_shrine_humility_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (01/04) (W)
+DUPELIST=014d0,014d1,014d2
+
+[ITEMDEF 014d0]
+//SHRINE_HONOR_1 PART 2
+DUPEITEM=014CF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (02/04) (W)
+
+[ITEMDEF 014d1]
+//SHRINE_HONOR_1 PART 3
+DUPEITEM=014CF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (03/04) (W)
+
+[ITEMDEF 014d2]
+//SHRINE_HONOR_1 PART 4
+DUPEITEM=014CF
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (04/04) (W)
+
+[ITEMDEF 014d3]
+DEFNAME=i_shrine_humility_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (01/04) (N)
+DUPELIST=014d4,014d5,014d6
+
+[ITEMDEF 014d4]
+//SHRINE_HONOR_2 PART 2
+DUPEITEM=014D3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (02/04) (N)
+
+[ITEMDEF 014d5]
+//SHRINE_HONOR_2 PART 3
+DUPEITEM=014D3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (03/04) (N)
+
+[ITEMDEF 014d6]
+//SHRINE_HONOR_2 PART 4
+DUPEITEM=014D3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Humility
+DESCRIPTION=Humility (04/04) (N)
+
+[ITEMDEF 014e3]
+DEFNAME=i_shrine_chaos_1
+RESOURCES=20 i_MARBLE, 2 i_ingot_bloodrock, 2 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Chaos
+DESCRIPTION=Chaos (01/04) (W)
+DUPELIST=014e4,014e5,014e6
+
+[ITEMDEF 014e4]
+//SHRINE_CHAOS_1 PART 2
+DUPEITEM=014E3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Chaos
+DESCRIPTION=Chaos (02/04) (W)
+
+[ITEMDEF 014e5]
+//SHRINE_CHAOS_1 PART 3
+DUPEITEM=014E3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Chaos
+DESCRIPTION=Chaos (03/04) (W)
+
+[ITEMDEF 014e6]
+//SHRINE_CHAOS_1 PART 4
+DUPEITEM=014E3
+CATEGORY=Decoration - Shrines
+SUBSECTION=Chaos
+DESCRIPTION=Chaos (04/04) (W)
+
+[ITEMDEF 0150a]
+DEFNAME=i_shrine_sacrifice_1
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (01/04) (W)
+DUPELIST=0150b,0150c,0150d
+
+[ITEMDEF 0150b]
+//SHRINE_SACRIFICE_1 PART 2
+DUPEITEM=0150A
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (02/04) (W)
+
+[ITEMDEF 0150c]
+//SHRINE_SACRIFICE_1 PART 3
+DUPEITEM=0150A
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (03/04) (W)
+
+[ITEMDEF 0150d]
+//SHRINE_SACRIFICE_1 PART 4
+DUPEITEM=0150A
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (04/04) (W)
+
+[ITEMDEF 0150e]
+DEFNAME=i_shrine_sacrifice_2
+RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+WEIGHT=32
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (01/04) (N)
+DUPELIST=0150f,01510,01511
+
+[ITEMDEF 0150f]
+//SHRINE_SACRIFICE_2 PART 2
+DUPEITEM=0150E
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (02/04) (N)
+
+[ITEMDEF 01510]
+//SHRINE_SACRIFICE_2 PART 3
+DUPEITEM=0150E
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (03/04) (N)
+
+[ITEMDEF 01511]
+//SHRINE_SACRIFICE_2 PART 4
+DUPEITEM=0150E
+CATEGORY=Decoration - Shrines
+SUBSECTION=Sacrifice
+DESCRIPTION=Sacrifice (04/04) (N)
+
+[ITEMDEF 01153]
+DEFNAME=i_magical_sparkles
+TYPE=T_SPELL
+RESOURCES=2 T_REAGENT
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Magical Sparkles
+DESCRIPTION=@
+DUPELIST=01154,01155,01156,01157,01159,0115a,0115b,0115c,0115d,0115e
+
+[ITEMDEF 01154]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 01155]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 01156]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 01157]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 01158]
+//
+
+[ITEMDEF 01159]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 0115a]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 0115b]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 0115c]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 0115d]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 0115e]
+//magical sparkles
+DUPEITEM=01153
+
+[ITEMDEF 011c6]
+DEFNAME=i_POT_SMALL_FLOWER
+RESOURCES=1 i_CLAY
+WEIGHT=2
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Vases & Pots
+DESCRIPTION=Small Empty Pot
+
+[ITEMDEF 011c7]
+DEFNAME=i_POT_FLOWER_LARGE
+RESOURCES=3 i_CLAY
+WEIGHT=6
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Vases & Pots
+DESCRIPTION=Large Empty Pot
+
+[ITEMDEF 011c8]
+DEFNAME=i_TREE_SMALL_POTTED
+RESOURCES=1 i_POT_SMALL_FLOWER, 1 i_TREE_SAPLING_PLANTED, 1 i_DIRT
+WEIGHT=4
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Trees
+DESCRIPTION=Small Planted Tree
+
+[ITEMDEF 011c9]
+DEFNAME=i_TREE_LARGE_POTTED
+RESOURCES=1 i_POT_FLOWER_LARGE, 1 i_PLANT_SPIDER, 2 i_DIRT
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Trees
+DESCRIPTION=Large Planted Tree
+
+[ITEMDEF 011ca]
+DEFNAME=i_PLANT_POTTED_SMALL
+RESOURCES=1 i_POT_SMALL_FLOWER, 1 i_FLOWER_FOXGLOVE, 1 i_DIRT
+WEIGHT=4
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Plants
+DESCRIPTION=Plant 1
+
+[ITEMDEF 011cb]
+DEFNAME=i_FLOWER_POTTED_SMALL
+RESOURCES=1 i_POT_SMALL_FLOWER, 1 i_FLOWER_ORFLUER, 1 i_DIRT
+WEIGHT=3
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Plants
+DESCRIPTION=Plant 2
+
+[ITEMDEF 011cc]
+DEFNAME=i_TREE_SMALL_POTTED_2
+RESOURCES=1 i_POT_SMALL_FLOWER, 1 i_TREE_SAPLING_PLANTED, 1 i_DIRT
+WEIGHT=4
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Plants
+DESCRIPTION=Plant 3
+
+[ITEMDEF 012b1]
+DEFNAME=i_scaffold
+RESOURCES=30 i_LOG, 4 i_ROPE
+WEIGHT=30
+CATEGORY=Miscellaneous
+SUBSECTION=Scaffold
+DESCRIPTION=@
+DUPELIST=012b2
+
+[ITEMDEF 012b2]
+//scaffold
+DUPEITEM=012b1
+
+[ITEMDEF 012c8]
+DEFNAME=i_scaffold_2
+RESOURCES=30 i_LOG, 4 i_ROPE
+WEIGHT=30
+CATEGORY=Miscellaneous
+SUBSECTION=Scaffold
+DESCRIPTION=@
+
+[ITEMDEF 012c9]
+DEFNAME=i_scaffold_3
+RESOURCES=30 i_LOG, 4 i_ROPE
+WEIGHT=30
+CATEGORY=Miscellaneous
+SUBSECTION=Scaffold
+DESCRIPTION=@
+
+[ITEMDEF 01459]
+DEFNAME=i_telescope
+RESOURCES=100 i_rock_plain, 20 i_ingot_gold, 50 i_ingot_iron, 4 i_GLASS, 2 i_MARBLE
+WEIGHT=1400
+TYPE=T_TELESCOPE
+CATEGORY=Miscellaneous
+SUBSECTION=Telescope
+DESCRIPTION=@
+DUPELIST=0145a,0145b,0145c,0145d,0145e,0145f,01460,01461,01462,01463,01464,01465,01466,01467,01468,01469,0146a,0146b,0146c,0146d,0146e,0146f,01470,01471,01472,01473,01474,01475,01476,01477,01478,01479,0147a,0147b,0147c,0147d,0147e,0147f,01480,01481,01482,01483,01484,01485,01486,01487,01488,01489,0148a,0148b,0148c,0148d,0148e,0148f,01490,01491,01492,01493,01494,01495,01496,01497,01498,01499,0149a
+
+[ITEMDEF 0145a]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0145b]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0145c]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0145d]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0145e]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0145f]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01460]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01461]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01462]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01463]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01464]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01465]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01466]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01467]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01468]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01469]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146a]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146b]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146c]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146d]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146e]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0146f]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01470]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01471]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01472]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01473]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01474]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01475]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01476]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01477]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01478]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01479]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147a]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147b]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147c]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147d]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147e]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0147f]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01480]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01481]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01482]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01483]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01484]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01485]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01486]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01487]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01488]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01489]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148a]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148b]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148c]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148d]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148e]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0148f]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01490]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01491]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01492]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01493]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01494]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01495]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01496]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01497]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01498]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 01499]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 0149a]
+//telescope
+DUPEITEM=01459
+
+[ITEMDEF 014d7]
+DEFNAME=i_vat
+RESOURCES=34 i_BOARD, 8 i_ingot_iron, 1 i_BARREL_TAP, 1 i_NAILS
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=@
+DUPELIST=014d8,014d9,014da,014db,014dc,014dd,014de,014df
+
+[ITEMDEF 014d8]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014d9]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014da]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014db]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014dc]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014dd]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014de]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014df]
+//vat
+DUPEITEM=014d7
+
+[ITEMDEF 014e0]
+DEFNAME=i_bucket
+TYPE=T_CONTAINER
+TDATA2=03e
+RESOURCES=2 i_BOARD, 1 i_ingot_iron, 1 i_NAILS
+WEIGHT=2
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=Bucket
+
+[ITEMDEF 014e1]
+DEFNAME=i_vat_ladder
+RESOURCES=10 i_BOARD, 1 i_NAILS
+WEIGHT=10
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=Vat (Ladder)
+DUPELIST=014e2
+
+[ITEMDEF 014e2]
+//vat ladder
+DUPEITEM=014E1
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=Vat (Ladder)
+
+[ITEMDEF 014f3]
+DEFNAME=i_MODEL_SHIP
+FLIP=1
+WEIGHT=1
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Nautical
+DESCRIPTION=Ship Model (N)
+DUPELIST=014f4
+
+RESOURCES=10 i_board
+SKILLMAKE=CARPENTRY 95.0, t_carpentry
+
+[ITEMDEF 014f4]
+//ship model
+DUPEITEM=014f3
+
+[ITEMDEF 014f5]
+DEFNAME=i_spyglass
+TYPE=T_SPY_GLASS
+FLIP=1
+RESOURCES=2 i_ingot_iron, 1 i_GLASS
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Nautical
+DESCRIPTION=SpyGlass (N)
+DUPELIST=014f6
+
+[ITEMDEF 014f6]
+//spyglass
+DUPEITEM=014f5
+
+[ITEMDEF 014f7]
+DEFNAME=i_anchor
+FLIP=1
+RESOURCES=40 i_ingot_iron, 1 i_ROPE
+WEIGHT=40
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Nautical
+DESCRIPTION=Anchor (W)
+DUPELIST=014f9
+
+[ITEMDEF 014f8]
+DEFNAME=i_rope
+FLIP=1
+WEIGHT=2
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Nautical
+DESCRIPTION=Rope (W)
+DUPELIST=014fa
+
+[ITEMDEF 014f9]
+//anchor
+DUPEITEM=014F7
+
+[ITEMDEF 014fa]
+//rope
+DUPEITEM=014F8
+
+[ITEMDEF 01508]
+DEFNAME=i_decorative_armor
+FLIP=1
+RESOURCES=20 i_ingot_iron, 5 i_ingot_gold, 2 i_LOG, 1 i_BOARD, 70 i_FEATHER
+WEIGHT=34
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Decorative Armor
+DESCRIPTION=@
+DUPELIST=0151c
+
+ON=@DCLICK
+	if ( <dispid> == i_decorative_armor )
+		ID=i_decorative_armor_d
+	else
+		ID=i_decorative_armor_d2
+	endif
+	sfx snd_WEAPONS_GILOTIN1
+	update
+	return 1
+
+[ITEMDEF 01509]
+DEFNAME=i_decorative_armor_d
+RESOURCES=i_decorative_armor
+WEIGHT=30
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Decorative Armor
+DESCRIPTION=@
+DUPELIST=0151d
+
+ON=@DCLICK
+	if ( <dispid> == i_decorative_armor_d )
+		ID=i_decorative_armor
+	else
+		ID=i_decorative_armor_2
+	endif
+	update
+	return 1
+
+[ITEMDEF 01512]
+DEFNAME=i_decorative_armor2
+FLIP=1
+RESOURCES=10 i_ingot_bronze, 13 i_ingot_rose, 2 i_ingot_iron, 2 i_LOG, 1 i_BOARD
+WEIGHT=34
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Decorative Armor
+DESCRIPTION=@
+DUPELIST=0151a
+
+ON=@DCLICK
+	if ( <dispid> == i_decorative_armor2 )
+		ID=i_decorative_armor2_d
+	else
+		ID=i_decorative_armor2_d2
+	endif
+	sfx snd_WEAPONS_GILOTIN1
+	update
+	return 1
+
+[ITEMDEF 01513]
+DEFNAME=i_decorative_armor2_d
+RESOURCES=i_decorative_armor2
+WEIGHT=30
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Decorative Armor
+DESCRIPTION=@
+DUPELIST=0151b
+
+ON=@DCLICK
+	if ( <dispid> == i_decorative_armor2_d )
+		ID=i_decorative_armor2
+	else
+		ID=i_decorative_armor2_2
+	endif
+	update
+	return 1
+
+[ITEMDEF 01514]
+DEFNAME=i_serpent_crest
+RESOURCES=20 i_ingot_silver, 4 i_ingot_bloodrock
+WEIGHT=35
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Serpent Crest
+DESCRIPTION=@
+
+[ITEMDEF 0151a]
+DEFNAME=i_decorative_armor2_2
+DUPEITEM=01512
+
+[ITEMDEF 0151b]
+DEFNAME=i_decorative_armor2_d2
+DUPEITEM=01513
+
+[ITEMDEF 0151c]
+DEFNAME=i_decorative_armor_2
+DUPEITEM=01508
+
+[ITEMDEF 0151d]
+DEFNAME=i_decorative_armor_d2
+DUPEITEM=01509
+
+[ITEMDEF 0151e]
+DEFNAME=i_vat_2
+RESOURCES=34 i_BOARD, 8 i_ingot_iron, 1 i_BARREL_TAP, 1 i_NAILS, 100 i_fruit_grapes
+WEIGHT=50
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=Vat (Grapes)
+DUPELIST=0151f,01520,01521,01522,01523,01524,01525
+
+[ITEMDEF 0151f]
+//vat
+DUPEITEM=0151e
+
+[ITEMDEF 01520]
+DEFNAME=i_vat_ladder_2
+DUPEITEM=0151e
+
+[ITEMDEF 01521]
+//grapes tile for wine press vat
+DUPEITEM=0151e
+
+[ITEMDEF 01522]
+//grapes tile for wine press vat
+DUPEITEM=0151e
+
+[ITEMDEF 01523]
+//grapes
+//grapes tile for wine press vat
+DUPEITEM=0151e
+
+[ITEMDEF 01524]
+//vat side
+DUPEITEM=0151e
+
+[ITEMDEF 01525]
+//vat ladder
+DUPEITEM=0151e
+
+[ITEMDEF 01550]
+DEFNAME=i_vat_3
+RESOURCES=34 i_BOARD, 8 i_ingot_iron, 1 i_BARREL_TAP, 1 i_NAILS, 20 i_WATER
+WEIGHT=50
+CATEGORY=Miscellaneous
+SUBSECTION=Vat
+DESCRIPTION=Vat (Water)
+DUPELIST=01551,01552,01553,01554,01555,01556,01558,01559
+
+[ITEMDEF 01551]
+DEFNAME=i_vat_ladder_3
+DUPEITEM=01550
+
+[ITEMDEF 01552]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01553]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01554]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01555]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01556]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01558]
+//vat
+DUPEITEM=01550
+
+[ITEMDEF 01559]
+//water
+DUPEITEM=01550
+
+[ITEMDEF 0155c]
+DEFNAME=i_decorative_weapons_1
+RESOURCES=2 i_LOG, 1 i_BOARD, 1 i_CAT_GUT, 4 i_FEATHER, 1 i_NAILS
+WEIGHT=6
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Bow
+DESCRIPTION=@
+DUPELIST=0155d,0155e,0155f
+
+[ITEMDEF 0155d]
+//decorative weapons
+DUPEITEM=0155c
+
+[ITEMDEF 0155e]
+//decorative weapons
+DUPEITEM=0155c
+
+[ITEMDEF 0155f]
+//decorative weapons
+DUPEITEM=0155c
+
+[ITEMDEF 01560]
+DEFNAME=i_decorative_weapons_2
+RESOURCES=1 i_LOG, 1 i_BOARD, 2 i_ingot_iron, 1 i_NAILS
+WEIGHT=5
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe
+DESCRIPTION=@
+
+[ITEMDEF 01561]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe
+DESCRIPTION=@
+
+[ITEMDEF 01562]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe
+DESCRIPTION=@
+
+[ITEMDEF 01563]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe
+DESCRIPTION=@
+
+[ITEMDEF 01564]
+DEFNAME=i_decorative_weapons_3
+RESOURCES=2 i_LOG, 1 i_ingot_bronze, 4 i_ingot_iron, 1 i_NAILS
+WEIGHT=8
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Swords
+DESCRIPTION=@
+
+[ITEMDEF 01565]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Swords
+DESCRIPTION=@
+
+[ITEMDEF 01566]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Swords
+DESCRIPTION=@
+
+[ITEMDEF 01567]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Swords
+DESCRIPTION=@
+
+[ITEMDEF 01568]
+DEFNAME=i_decorative_weapons_4
+RESOURCES=2 i_LOG, 1 i_BOARD, 4 i_ingot_iron, 1 i_NAILS
+WEIGHT=8
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe & Spear
+DESCRIPTION=@
+
+[ITEMDEF 01569]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe & Spear
+DESCRIPTION=@
+
+[ITEMDEF 0156a]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe & Spear
+DESCRIPTION=@
+
+[ITEMDEF 0156b]
+//decorative weapons
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Axe & Spear
+DESCRIPTION=@
+
+[ITEMDEF 0156c]
+DEFNAME=i_decorative_shield
+RESOURCES=7 i_ingot_bronze, 6 i_ingot_iron
+WEIGHT=20
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Shields
+DESCRIPTION=Shield
+DUPELIST=0156d
+
+[ITEMDEF 0156d]
+//decorative shield
+DUPEITEM=0156c
+
+[ITEMDEF 01634]
+DEFNAME=i_decorative_shield_12_sword_over_nw
+RESOURCES=8 i_ingot_iron, 2 i_ingot_silver, 1 i_BOARD
+WEIGHT=17
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Shields
+DESCRIPTION=Shield
+
+[ITEMDEF 01635]
+DEFNAME=i_decorative_shield_12_sword_under_nw
+RESOURCES=8 i_ingot_iron, 2 i_ingot_silver, 1 i_BOARD
+WEIGHT=17
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Shields
+DESCRIPTION=Shield
+
+[ITEMDEF 01636]
+DEFNAME=i_decorative_shield_13_sword_over_nw
+RESOURCES=6 i_ingot_gold, 4 i_ingot_iron, 1 i_BOARD
+WEIGHT=16
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Shields
+DESCRIPTION=Shield
+
+[ITEMDEF 01637]
+DEFNAME=i_decorative_shield_13_sword_under_nw
+RESOURCES=6 i_ingot_gold, 4 i_ingot_iron, 1 i_BOARD
+WEIGHT=16
+CATEGORY=Decoration - Weapons & Shields
+SUBSECTION=Shields
+DESCRIPTION=Shield
+
+[ITEMDEF 01a07]
+//shackles, chains
+DUPEITEM=01262
+
+[ITEMDEF 01a08]
+//shackles, chains
+DUPEITEM=01262
+
+[ITEMDEF 01663]
+//catapult -arm
+DUPELIST=01664,01665,01666
+
+ON=@DCLICK
+	dispid=01664
+	update
+	timerd=0.2
+	return 1
+
+ON=@TIMER
+	if <dispiddec> < 01666 
+		dispid=<dispiddec>+1
+		timerd=0.2
+	else
+		dispid=01663
+		sfx 43
+	endif
+	update
+	return 1
+
+[ITEMDEF 01664]
+//catapult
+DUPEITEM=01663
+
+[ITEMDEF 01665]
+//catapult
+DUPEITEM=01663
+
+[ITEMDEF 01666]
+//catapult
+DUPEITEM=01663
+
+[ITEMDEF 0168d]
+//catapult -arm
+DUPELIST=0168e,0168f,01690
+
+ON=@DCLICK
+	dispid=0168e
+	update
+	timerd=1.5
+	return 1
+
+ON=@TIMER
+	dispid=0168d
+	update
+	sfx 43
+	return 1
+
+[ITEMDEF 0168e]
+//catapult swinging (self anim)
+DUPEITEM=0168d
+
+[ITEMDEF 0168f]
+//catapult
+DUPEITEM=0168d
+
+[ITEMDEF 01690]
+//catapult
+DUPEITEM=0168d
+
+[ITEMDEF 016b1]
+//catapult -arm
+DUPELIST=016b2,016b3
+
+ON=@DCLICK
+	dispid=016b2
+	update
+	timerd=0.2
+	return 1
+
+ON=@TIMER
+	if <dispiddec> < 016b3
+		dispid=<dispiddec>+1
+		timerd=0.2
+	else
+		dispid=016b1
+		sfx 43
+	endif
+	update
+	return 1
+
+[ITEMDEF 016b2]
+//catapult
+DUPEITEM=016b1
+
+[ITEMDEF 016b3]
+//catapult
+DUPEITEM=016b1
+
+[ITEMDEF 016d6]
+//catapult -arm
+DUPELIST=016d7,016d8
+
+ON=@DCLICK
+	dispid=016d7
+	update
+	timerd=0.2
+	return 1
+
+ON=@TIMER
+	if <dispiddec> < 016d8 
+		dispid=<dispiddec>+1
+		timerd=0.2
+	else
+		dispid=016d6
+		sfx 43
+	endif
+	update
+	return 1
+
+[ITEMDEF 016d7]
+//catapult
+DUPEITEM=016d6
+
+[ITEMDEF 016d8]
+//catapult
+DUPEITEM=016d6
+
+[ITEMDEF 01648]
+DEFNAME=i_catapult_1
+RESOURCES=28 i_BOARD, 5 i_LOG, 2 i_NAILS, 1 i_ingot_iron, 2 i_ROPE
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 01
+DUPELIST=01649,0164a,0164b,0164c,0164d,0164e,0164f,01650,01651,01652,01653,01654,01655,01656,01657,01658,01659,0165a,0165b,0165c,0165d,0165e,0165f,01660,01661,01662
+
+[ITEMDEF 01649]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164a]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164b]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164c]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164d]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164e]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164f]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01650]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01651]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01652]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01653]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01654]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01655]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01656]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01657]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01658]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01659]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165a]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165b]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165c]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165d]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165e]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165f]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01660]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01661]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01662]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01672]
+DEFNAME=i_catapult_2
+RESOURCES=28 i_BOARD, 5 i_LOG, 2 i_NAILS, 1 i_ingot_iron, 2 i_ROPE
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 02
+DUPELIST=01673,01674,01675,01676,01677,01678,01679,0167a,0167b,0167c,0167d,0167e,0167f,01680,01681,01682,01683,01684,01685,01686,01687,01688,01689,0168a,0168b,0168c
+
+[ITEMDEF 01673]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01674]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01675]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01676]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01677]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01678]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01679]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167a]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167b]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167c]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167d]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167e]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167f]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01680]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01681]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01682]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01683]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01684]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01685]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01686]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01687]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01688]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01689]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168a]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168b]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168c]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01694]
+DEFNAME=i_catapult_3
+RESOURCES=28 i_BOARD, 5 i_LOG, 2 i_NAILS, 1 i_ingot_iron, 2 i_ROPE
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 03
+DUPELIST=01695,01696,01697,01698,01699,0169a,0169b,0169c,0169d,0169e,0169f,016a0,016a1,016a2,016a3,016a4,016a5,016a6,016a7,016a8,016a9,016aa,016ab,016ac,016ad,016ae,016af,016b0,016b4
+
+[ITEMDEF 01695]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01696]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01697]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01698]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01699]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169a]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169b]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169c]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169d]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169e]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169f]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a0]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a1]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a2]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a3]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a4]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a5]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a6]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a7]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a8]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a9]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016aa]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ab]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ac]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ad]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ae]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016af]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b0]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b4]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b9]
+DEFNAME=i_catapult_4
+RESOURCES=28 i_BOARD, 5 i_LOG, 2 i_NAILS, 1 i_ingot_iron, 2 i_ROPE
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 04
+DUPELIST=016ba,016bb,016bc,016bd,016be,016bf,016c0,016c1,016c2,016c3,016c4,016c5,016c6,016c7,016c8,016c9,016ca,016cb,016cc,016cd,016ce,016cf,016d0,016d1,016d2,016d3,016d4,016d5,016d9
+
+[ITEMDEF 016ba]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bb]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bc]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bd]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016be]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bf]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c0]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c1]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c2]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c3]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c4]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c5]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c6]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c7]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c8]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c9]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016ca]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cb]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cc]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cd]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016ce]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cf]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d0]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d1]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d2]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d3]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d4]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d5]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d9]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016f8]
+DEFNAME=i_ballista_1
+RESOURCES=18 i_BOARD, 5 i_LOG, 2 i_NAILS, 1 i_ingot_iron, 8 i_ROPE
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Ballista
+DESCRIPTION=Ballista 2
+DUPELIST=016f9,016fa,016fb,016fc,016fd,016fe,016ff,01700,01701,01702,01703,01704,01705,01706,01707,01708
+
+[ITEMDEF 016f9]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fa]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fb]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fc]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fd]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fe]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016ff]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01700]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01701]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01702]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01703]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01704]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01705]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01706]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01707]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01708]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01720]
+//banana
+DUPEITEM=0171f
+
+[ITEMDEF 0172d]
+//Pear
+DUPEITEM=0994
+
+[ITEMDEF 01731]
+DEFNAME=i_fountain_1
+RESOURCES=100 i_rock_plain, 40 i_WATER, 1 i_SPRINGS
+WEIGHT=140
+CATEGORY=Miscellaneous
+SUBSECTION=Fountains
+DESCRIPTION=Fountain 01
+DUPELIST=01732,01733,01734,01735,01736,01737,01738,01739,0173a,0173b,0173c,0173d,0173e,0173f,01740,01741,01742,01743,01744,01745,01746,01747,01748,01749,0174a,0174b,0174c,0174d,0174e,0174f,01750,01751,01752,01753,01754,01755,01756,01757,01758,01759,0175a
+
+[ITEMDEF 01732]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01733]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01734]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01735]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01736]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01737]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01738]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01739]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173a]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173b]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173c]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173d]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173e]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0173f]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01740]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01741]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01742]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01743]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01744]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01745]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01746]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01747]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01748]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01749]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174a]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174b]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174c]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174d]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174e]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0174f]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01750]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01751]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01752]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01753]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01754]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01755]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01756]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01757]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01758]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 01759]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 0175a]
+//fountain
+DUPEITEM=01731
+
+[ITEMDEF 019c3]
+DEFNAME=i_fountain_2
+RESOURCES=100 i_stone_sand, 40 i_WATER, 1 i_SPRINGS
+WEIGHT=140
+CATEGORY=Miscellaneous
+SUBSECTION=Fountains
+DESCRIPTION=Fountain 02
+DUPELIST=019c4,019c5,019c6,019c7,019c8,019c9,019ca,019cb,019cc,019cd,019ce,019cf,019d0,019d1,019d2,019d3,019d4,019d5,019d6,019d7,019d8,019d9,019da,019db,019dc,019dd,019de,019df,019e0,019e1,019e2,019e3,019e4,019e5,019e6,019e7,019e8,019e9,019ea,019eb,019ec
+
+[ITEMDEF 019c4]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019c5]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019c6]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019c7]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019c8]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019c9]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019ca]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019cb]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019cc]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019cd]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019ce]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019cf]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d0]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d1]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d2]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d3]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d4]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d5]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d6]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d7]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d8]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019d9]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019da]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019db]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019dc]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019dd]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019de]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019df]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e0]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e1]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e2]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e3]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e4]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e5]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e6]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e7]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e8]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019e9]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019ea]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019eb]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 019ec]
+//fountain
+DUPEITEM=019c3
+
+[ITEMDEF 01b6b]
+//wall cracks
+DUPEITEM=01b3f
+
+[ITEMDEF 01b6c]
+DEFNAME=i_wall_cracks
+TYPE=T_WALL
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Wall Cracks
+DESCRIPTION=@
+DUPELIST=01b6d,01b6e,01b6f
+
+[ITEMDEF 01b6d]
+//wall cracks
+DUPEITEM=01b6c
+
+[ITEMDEF 01b6e]
+//wall cracks
+DUPEITEM=01b6c
+
+[ITEMDEF 01b6f]
+//wall cracks
+DUPEITEM=01b6c
+
+[ITEMDEF 01d97]
+DEFNAME=i_ankh_sacrifice
+TYPE=t_light_lit
+TDATA4=i_ankh_sacrifice
+RESOURCES=10 i_rock_plain, 3 i_BLOOD
+WEIGHT=30
+CATEGORY=Miscellaneous
+SUBSECTION=Ankhs
+DESCRIPTION=Ankh of Sacrifice
+DUPELIST=01d98,01e5c,01e5d
+
+[ITEMDEF 01d98]
+//ank of sacrifice
+DUPEITEM=01d97
+
+[ITEMDEF 01e0f]
+DEFNAME=i_PLANT_CACTUS_POTTED
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 1
+
+[ITEMDEF 01e10]
+DEFNAME=i_PLANT_CACTUS_POTTED_2
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 2
+
+[ITEMDEF 01e11]
+DEFNAME=i_PLANT_CACTUS_POTTED_3
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 3
+
+[ITEMDEF 01e12]
+DEFNAME=i_PLANT_CACTUS_POTTED_4
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 4
+
+[ITEMDEF 01e13]
+DEFNAME=i_PLANT_CACTUS_POTTED_5
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 5
+
+[ITEMDEF 01e14]
+DEFNAME=i_PLANT_CACTUS_POTTED_6
+RESOURCES=i_POT, i_PLANT_CACTUS
+WEIGHT=8
+CATEGORY=Decoration - Potted Plants & Vases
+SUBSECTION=Potted Cactuses
+DESCRIPTION=Cactus 6
+
+[ITEMDEF 01e5c]
+DEFNAME=i_ankh_sacrifice_2
+DUPEITEM=01d97
+
+[ITEMDEF 01e5d]
+DUPEITEM=01d97
+
+[ITEMDEF 01e5e]
+DEFNAME=i_bulletin_board
+TYPE=T_BBOARD
+TDATA2=0866
+DUPELIST=01e5f
+
+RESOURCES=20 i_BOARD, 4 i_CLOTH, i_NAILS, i_PAPER, i_FEATHER, i_INK_POT
+SKILLMAKE=CARPENTRY 90.0, t_carpentry
+
+CATEGORY=Miscellaneous
+SUBSECTION=Bulletin Board
+DESCRIPTION=@
+
+[ITEMDEF 01e5f]
+DEFNAME=i_bulletin_board_2
+DUPEITEM=01e5e
+
+[ITEMDEF 01e60]
+DEFNAME=i_trophy_bearhead
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Bear
+DUPELIST=01e67
+RESOURCES=15 i_log,10 i_hides_cut
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e61]
+DEFNAME=i_trophy_deerhead
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Deer
+DUPELIST=01e68
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e62]
+DEFNAME=i_trophy_fish
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Fish
+DUPELIST=01e69
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e63]
+DEFNAME=i_trophy_gorillahead
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Gorilla
+DUPELIST=01e6a
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e64]
+DEFNAME=i_trophy_orchead
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Orc
+DUPELIST=01e6b
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e65]
+DEFNAME=i_trophy_polarbearhead
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Polar Bear
+DUPELIST=01e6c
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e66]
+DEFNAME=i_trophy_trollhead
+RESOURCES=15 i_log,10 i_hides_cut
+WEIGHT=3
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Troll
+DUPELIST=01e6d
+SKILLMAKE=CARPENTRY 72.0, TAILORING 60.0, t_carpentry, t_sewing_kit
+
+[ITEMDEF 01e67]
+DUPEITEM=01e60
+
+[ITEMDEF 01e68]
+DUPEITEM=01e61
+
+[ITEMDEF 01e69]
+DUPEITEM=01e62
+
+[ITEMDEF 01e6a]
+DUPEITEM=01e63
+
+[ITEMDEF 01e6b]
+DUPEITEM=01e64
+
+[ITEMDEF 01e6c]
+DUPEITEM=01e65
+
+[ITEMDEF 01e6d]
+DUPEITEM=01e66
+
+[ITEMDEF 01ed3]
+DEFNAME=i_target
+RESOURCES=1 i_BOARD, i_CLOTH
+WEIGHT=2
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Target
+DESCRIPTION=@
+DUPELIST=01ed4,01ed5,01ed6,01ed7,01ed8
+
+[ITEMDEF 01ed4]
+//target
+DUPEITEM=01ed3
+
+[ITEMDEF 01ed5]
+//target
+DUPEITEM=01ed3
+
+[ITEMDEF 01ed6]
+//target
+DUPEITEM=01ed3
+
+[ITEMDEF 01ed7]
+//target
+DUPEITEM=01ed3
+
+[ITEMDEF 01ed8]
+//target
+DUPEITEM=01ed3
+
+[ITEMDEF 01f05]
+DUPEITEM=01085
+
+[ITEMDEF 03f3f]
+//ballista
+
+CATEGORY=Miscellaneous
+SUBSECTION=Ballista
+DESCRIPTION=@
+DUPELIST=03f40,03f41,03f42,03f43,03f44,03f45,03f46,03f47,03f48,03f49,03f4a,03f4b,03f4c,03f4d,03f4e,03f4f,03f50,03f51,03f52,03f53,03f54,03f55,03f56,03f57,03f58,03f59,03f5a,03f5b,03f5c,03f5d,03f5e,03f5f,03f60,03f61,03f62,03f63,03f64,03f65,03f66,03f67,03f68,03f69,03f6a,03f6b,03f6c,03f6d,03f6e,03f6f,03f70,03f71,03f72,03f73,03f74,03f75,03f76,03f77,03f78,03f79,03f7a,03f7b,03f7c,03f7d,03f7e,03f7f,03f80,03f81,03f82,03f83,03f84,03f85,03f86,03f87,03f88,03f89,03f8a,03f8b,03f8c,03f8d,03f8e,03f90,03f91,03f92,03f93,03f94,03f95,03f96,03f97,03f98,03f99,03f9a,03f9b,03f9c,03f9d,03f9e,03f9f,03fa0,03fa1,03fa2,03fa3,03fa4,03fa5,03fa6,03fa7,03fa8,03fa9,03faa,03fab,03fac,03fad,03fae,03faf,03fb0,03fb1,03fb2,03fb3,03fb4,03fb5,03fb6,03fb7,03fb8,03fb9,03fba,03fbb,03fbc,03fbd,03fbe,03fbf,03fc0,03fc1,03fc2,03fc3,03fc4,03fc5,03fc6,03fc7,03fc8,03fc9,03fca,03fcb,03fcc,03fcd,03fce,03fcf,03fd0,03fd1,03fd2,03fd3,03fd4,03fd5,03fd6,03fd7,03fd8,03fd9,03fda,03fdb,03fdc,03fdd,03fde,03fdf,03fe0,03fe2,03fe3,03fe4
+
+[ITEMDEF 03f40]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f41]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f42]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f43]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f44]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f45]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f46]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f47]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f48]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f49]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4f]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f50]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f51]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f52]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f53]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f54]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f55]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f56]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f57]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f58]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f59]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5f]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f60]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f61]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f62]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f63]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f64]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f65]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f66]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f67]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f68]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f69]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6f]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f70]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f71]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f72]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f73]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f74]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f75]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f76]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f77]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f78]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f79]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7f]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f80]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f81]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f82]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f83]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f84]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f85]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f86]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f87]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f88]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f89]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f90]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f91]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f92]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f93]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f94]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f95]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f96]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f97]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f98]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f99]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9a]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9b]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9c]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9d]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9e]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9f]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa0]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa1]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa2]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa3]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa4]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa5]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa6]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa7]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa8]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa9]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03faa]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fab]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fac]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fad]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fae]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03faf]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb0]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb1]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb2]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb3]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb4]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb5]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb6]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb7]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb8]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb9]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fba]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbb]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbc]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbd]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbe]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbf]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc0]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc1]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc2]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc3]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc4]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc5]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc6]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc7]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc8]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc9]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fca]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcb]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcc]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcd]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fce]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcf]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd0]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd1]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd2]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd3]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd4]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd5]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd6]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd7]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd8]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd9]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fda]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdb]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdc]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdd]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fde]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdf]
+//ballista
+
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe4]
+//ballista
+DUPEITEM=03f3f
+
+
+[eof]

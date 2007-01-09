@@ -1,0 +1,134 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Tuesday, January 24, 2006
+// By Blizzard
+//
+VERSION=0.56b
+
+[ITEMDEF 02fb8]
+DEFNAME=i_elven_glasses
+NAME=Elven Glasses
+TYPE=t_clothing
+ARMOR=1
+REQSTR=
+SKILLMAKE=
+RESOURCES=
+DUPELIST=03172
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Glasses
+
+[ITEMDEF 02fb9]
+DEFNAME=i_elven_robe
+NAME=Elven Robe
+TYPE=t_clothing
+ARMOR=7
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=30 i_cloth
+DUPELIST=03173
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Robe
+
+[ITEMDEF 02fba]
+DEFNAME=i_elven_robe_female
+NAME=Female Elven Robe
+TYPE=t_clothing
+ARMOR=7
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=30 i_cloth
+DUPELIST=03174
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Female Elven Robe
+
+[ITEMDEF 02fc3]
+DEFNAME=i_elven_pants
+NAME=Elven Pants
+TYPE=t_clothing
+ARMOR=3
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=12 i_cloth
+DUPELIST=03179
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Pants
+
+[ITEMDEF 02fc4]
+DEFNAME=i_elven_boots
+NAME=Elven Boots
+TYPE=t_clothing
+ARMOR=3
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=15 i_hides_cut
+DUPELIST=0317a
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Pants
+
+[ITEMDEF 03172]
+DUPEITEM=02fb8
+
+[ITEMDEF 03173]
+DUPEITEM=02fb9
+
+[ITEMDEF 03174]
+DUPEITEM=02fba
+
+[ITEMDEF 03175]
+DEFNAME=i_elven_shirt
+NAME=Elven Shirt
+TYPE=t_clothing
+ARMOR=2
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=10 i_cloth
+DUPELIST=03177
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Shirt
+
+[ITEMDEF 03176]
+DEFNAME=i_elven_shirt_dark
+NAME=Elven Shirt
+TYPE=t_clothing
+ARMOR=2
+REQSTR=10
+SKILLMAKE=TAILORING 80.0
+RESOURCES=10 i_cloth
+DUPELIST=03178
+
+CATEGORY=Provisions - Clothing
+SUBSECTION=Mondain's Legacy
+DESCRIPTION=Elven Shirt (Dark)
+
+[ITEMDEF 03177]
+DUPEITEM=03175
+
+[ITEMDEF 03178]
+DUPEITEM=03176
+
+[ITEMDEF 03179]
+DUPEITEM=02fc3
+
+[ITEMDEF 0317a]
+DUPEITEM=02fc4
+
+[EOF]

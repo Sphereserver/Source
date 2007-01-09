@@ -1,0 +1,239 @@
+// Scripted by Shadow Dragon aka LcZelion
+// ICQ: 129853431 E-mail: lczelion@mail.ru, ultima@sun-tel.net
+// Last modified: 12:29 13.01.2006
+// Buy System
+// Some information for scripters:
+// ---------------------------------------------------------------------------------------------
+// TopObj - vendor UID.
+// ArgTxt[100] - amount of items player wants to buy
+// SRC - player, who buy item(s)
+// [] - item or items pile UID
+// LOCAL.Need - amount of gp needed to pay
+// LOCAL.Amount - amount of items vendor has
+// ConsumeGold <arg> - consume <arg> amount of gold from player
+// m_buy_procent - buy taxes in %. Default 15%.
+// ---------------------------------------------------------------------------------------------
+VERSION=0.57.1
+
+[DEFNAME def_buysell_properties]
+m_buy_procent		15
+m_sell_procent		15
+
+[DIALOG d_buyitem_menu] // Do not change this or you'll get errors in console.
+220,250
+SRC.DialogClose d_buyitem_menu // Closing another buy dialog.
+page 0 
+gumppic 100 10 2070
+dorigin 0 0
+	dtext "+144 +30 0 Do you want"
+	dtext "+133 +48 0 to buy "
+	gumppic 185 48 2444
+	dtextentry "+195 +49 40 32 80 100 <Amount>"
+	dtext "+<EVAL (180-(<EVAL StrLen(<Name>)>*3))> +63 0 <Name>?"
+	button 127 85 2119 2120 1 0 0
+	button 197 85 2128 2129 1 0 1
+
+[DIALOG d_buyitem_menu BUTTON] // Do not change this or you'll get errors in console.
+
+ON=1
+	IF ((<TopObj.Distance>>3)||(<SRC.CanSeeLos <TopObj>>==0))
+		SRC.SYSMESSAGE @100,3 You are too far away from <TopObj.Name>.
+		RETURN 1
+	endif
+	IF (<EVAL StrLen(<ArgTxt[100]>)>>4) // Need this. Large numbers hack protection in IsNum.
+		SRC.SYSMESSAGE @100,3 You entered too big number.
+		DIALOG d_buyitem_menu
+		RETURN 1
+	endif
+	IF (<IsNum <ArgTxt[100]>>==0)
+		SRC.SYSMESSAGE @100,3 Invalid number.
+		DIALOG d_buyitem_menu
+		RETURN 1
+	endif
+	IF (<ArgTxt[100]>==0)
+		SRC.SYSMESSAGE @100,3 Invalid number.
+		DIALOG d_buyitem_menu
+		RETURN 1
+	endif
+	IF (<ArgTxt[100]>>=<Amount>)
+		LOCAL.Amount=<Amount>
+	ELSE
+		LOCAL.Amount=<ArgTxt[100]>
+	endif
+	LOCAL.Need=<EVAL (<Value>*<LOCAL.Amount>)>
+	LOCAL.Tmp=<EVAL (<LOCAL.Need>*(<DEF.m_buy_procent>+<TopObj.Region.TAG0.VendorMarkUp>+<TopObj.TAG0.VendorMarkUp>))>
+	LOCAL.Need +=(<LOCAL.Tmp>/100)
+	IF (<SRC.IsGM>)
+		LOCAL.Need=0
+	endif
+	IF (<LOCAL.Need>><EVAL (<SRC.BankBalance>+<SRC.RESCOUNT i_gold>)>)
+		SRC.SYSMESSAGE @100,3 You haven't anough gold to buy this item(s). Need: <EVAL <LOCAL.Need>> gp.
+		RETURN 1
+	endif
+	TopObj.Say @80,3 That will be <EVAL <LOCAL.Need>> gp.
+	SRC.ConsumeGold <LOCAL.Need>
+	IF (<CAN>&<DEF.CAN_I_PILE>)
+		IF (<LOCAL.Amount>==<Amount>)
+			Bounce
+		ELSE
+			SERV.NewDupe <Uid>
+			NEW.Amount=<LOCAL.Amount>
+			NEW.Bounce
+			Amount -=<LOCAL.Amount>
+			Update
+		endif
+		RETURN 0
+	endif
+	FOR <LOCAL.Amount>
+		SERV.NewDupe <Uid>
+		NEW.Amount=1
+		NEW.Bounce
+	end
+	IF (<LOCAL.Amount>==<Amount>)
+		Remove
+	ELSE
+		Amount -=<LOCAL.Amount>
+	endif
+
+[FUNCTION ConsumeGold]
+WHILE ((<Argn>>0)&&(<FINDLAYER(21).FINDID.i_gold>))
+	LOCAL.UID=<FINDLAYER(21).FINDID.i_gold>
+	LOCAL.Amount=<UID.<LOCAL.UID>.Amount>
+	IF (<Argn>>=<LOCAL.Amount>)
+		UID.<LOCAL.UID>.Remove
+	ELSE
+		UID.<LOCAL.UID>.Amount -=<Argn>
+	endif
+	Argn -=<LOCAL.Amount>
+end
+WHILE ((<Argn>>0)&&(<FINDLAYER(layer_bankbox).FINDID.i_gold>))
+	LOCAL.UID=<FINDLAYER(layer_bankbox).FINDID.i_gold>
+	LOCAL.Amount=<UID.<LOCAL.UID>.Amount>
+	IF (<Argn>>=<LOCAL.Amount>)
+		UID.<LOCAL.UID>.Remove
+	ELSE
+		UID.<LOCAL.UID>.Amount -=<Argn>
+	endif
+	Argn -=<LOCAL.Amount>
+end
+UPDATE
+// Sell System
+// Some information for scripters:
+// ---------------------------------------------------------------------------------------------
+// f_onsell:
+// ---------------------------------------------------------------------------------------------
+// SRC - player UID, who trying to sell
+// [] - vendor UID
+// NewGold <arg> - gives <arg> amount of gold to player
+// m_sell_procent - sell taxes in %. Default 15%.
+// ---------------------------------------------------------------------------------------------
+// f_onsell_quick:
+// ---------------------------------------------------------------------------------------------
+// SRC - player UID, who trying to sell
+// [] - vendor UID
+// Argo - item UID
+// ---------------------------------------------------------------------------------------------
+
+[FUNCTION f_onsell_quick]
+IF (<Argo.Attr>&attr_newbie)
+	SRC.SYSMESSAGE @100,3 You can't sell newbie items.
+	RETURN 1
+endif
+IF ((<Argo.Attr>&attr_move_never)||(<Argo.Attr>&attr_static))
+	SRC.SYSMESSAGE @100,3 You can't sell such items.
+	RETURN 1
+endif
+IF (<Argo.Type>==t_container_locked)
+	SRC.SYSMESSAGE @100,3 You can't sell locked containers.
+	RETURN 1
+endif
+IF (<Argo.Type>==t_container)
+	IF (<Argo.Count>!=0)
+		SRC.SYSMESSAGE @100,3 You can sell only empty containers.
+		RETURN 1
+	endif
+endif
+IF (<FindLayer.28.FindId.<Argo.BaseId>>==0)
+	SRC.SYSMESSAGE @100,3 <Name> don't want to buy <Argo.Name>.
+	RETURN 1
+endif
+LOCAL.Amount=<EVAL (<Argo.Value>*<Argo.Amount>)>
+LOCAL.Tmp=<EVAL (<LOCAL.Amount>*(<DEF.m_sell_procent>+<Region.TAG0.VendorMarkUp>+<TAG0.VendorMarkUp>))>
+LOCAL.Amount -=(<LOCAL.Tmp>/100)
+IF (<LOCAL.Amount><=0)
+	SRC.SYSMESSAGE @100,3 <Name> offers too low price for <Argo.Name>.
+	RETURN 1
+endif
+UID.<Argo.UID>.Remove
+SRC.NewGold <EVAL <LOCAL.Amount>>
+Say @80,3 Here yours <EVAL <LOCAL.Amount>> gp.
+
+[FUNCTION f_onsell]
+SRC.SYSMESSAGE @100,3 What do you want to sell to <Name>?
+SRC.TARGETF Select_Item_Sell <UID> <Argo.UID>
+
+[FUNCTION Select_Item_Sell]
+IF (<Argo.IsChar>==1)
+	RETURN 1
+endif
+IF (<Argo.TopObj>!=<UID>)
+	SYSMESSAGE @100,3 You can sell only yours items.
+	RETURN 1
+endif
+IF (<Argo.Attr>&attr_newbie)
+	SYSMESSAGE @100,3 You can't sell newbie items.
+	RETURN 1
+endif
+IF ((<Argo.Attr>&attr_move_never)||(<Argo.Attr>&attr_static))
+	SYSMESSAGE @100,3 You can't sell such items.
+	RETURN 1
+endif
+IF (<Argo.Type>==t_container_locked)
+	SYSMESSAGE @100,3 You can't sell locked containers.
+	RETURN 1
+endif
+IF (<Argo.Type>==t_container)
+	IF (<Argo.Count>!=0)
+		SYSMESSAGE @100,3 You can sell only empty containers.
+		RETURN 1
+	endif
+endif
+IF (<UID.<Argn>.FindLayer.28.FindId.<Argo.BaseId>>==0)
+	SYSMESSAGE @100,3 <UID.<Argn>.Name> don't want to buy <Argo.Name>.
+	RETURN 1
+endif
+CTAG.ItemUID=<Argo.UID>
+CTAG.VendUID=<Argn>
+PromptConsole Sell_Items @100,3 How much items of this type (<Argo.Name>) you want to sell? (Press Esc to escape)
+
+[FUNCTION Sell_Items]
+IF (<EVAL StrLen(<Args>)>>4)
+	SYSMESSAGE @100,3 You have entered too big number.
+	RETURN 1
+endif
+IF (<IsNum <Args>>==0)
+	IF (StrMatch(all,<Args>)==0)
+		SYSMESSAGE @100,3 Invalid amount.
+		RETURN 1
+	endif
+	Argn=<TradeRescount <UID.<CTAG0.ItemUID>.BaseId>>
+ELSE
+	Argn=<Args>
+endif
+IF (<Argn><=0)
+	SYSMESSAGE @100,3 Invalid amount.
+	RETURN 1
+endif
+IF (<Argn>><TradeRescount <UID.<CTAG0.ItemUID>.BaseId>>)
+	Argn=<TradeRescount <UID.<CTAG0.ItemUID>.BaseId>>
+endif
+LOCAL.Amount=<EVAL (<UID.<CTAG0.ItemUID>.Value>*<Argn>)>
+LOCAL.Tmp=<EVAL (<LOCAL.Amount>*(<DEF.m_sell_procent>+<UID.<CTAG0.VendUID>.Region.TAG0.VendorMarkUp>+<UID.<CTAG0.VendUID>.TAG0.VendorMarkUp>))>
+LOCAL.Amount -=(<LOCAL.Tmp>/100)
+IF (<LOCAL.Amount><=0)
+	SRC.SYSMESSAGE @100,3 <UID.<CTAG0.VendUID>.Name> offers too low price for <UID.<CTAG0.ItemUID>.Name>.
+	RETURN 1
+endif
+TradeConsume <Argn> <UID.<CTAG0.ItemUID>.BaseId>
+NewGold <EVAL <LOCAL.Amount>>
+UID.<CTAG0.VendUID>.Say @80,3 Here yours <EVAL <LOCAL.Amount>> gp.

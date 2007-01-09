@@ -1,0 +1,611 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 09fb]
+DEFNAME=i_sconce
+TYPE=t_light_out
+TDATA3=i_sconce_lit
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Unlit) (W)
+DUPELIST=09fc
+SKILLMAKE=TINKERING 30.0
+RESOURCES=1 i_ingot_iron, 1 I_CANDLE
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 09fc]
+DUPEITEM=09fb
+
+[ITEMDEF 09fd]
+DEFNAME=i_sconce_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_sconce
+TDATA4=i_sconce_lit
+RESOURCES=i_sconce
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Lit) (W)
+DUPELIST=09fe,09ff
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 09fe]
+//wall sconce against NW Wall
+DUPEITEM=09fd
+
+[ITEMDEF 09ff]
+//wall sconce against NW wall
+DUPEITEM=09fd
+
+[ITEMDEF 0a00]
+DEFNAME=i_sconce2
+RESOURCES=i_sconce2_empty, 1 I_CANDLE
+TYPE=T_LIGHT_OUT
+TDATA3=i_sconce2_lit
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Unlit) (N)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a01]
+DEFNAME=i_sconce2_empty
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=TINKERING 30.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Empty) (N)
+
+[ITEMDEF 0a02]
+DEFNAME=i_sconce2_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_sconce2
+TDATA4=i_sconce2_lit
+RESOURCES=i_sconce2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Lit) (N)
+DUPELIST=0a03,0a04
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a03]
+DUPEITEM=0a02
+
+[ITEMDEF 0a04]
+DUPEITEM=0a02
+
+[ITEMDEF 0a05]
+DEFNAME=i_torch_wall
+RESOURCES=i_torch_wall_empty, I_TORCH
+TYPE=T_LIGHT_OUT
+TDATA3=i_torch_wall_lit
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch (Unlit) (W)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a06]
+DEFNAME=i_torch_wall_empty
+SKILLMAKE=TINKERING 40.0
+RESOURCES=1 i_ingot_iron
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch Holder (Empty) (W)
+
+[ITEMDEF 0a07]
+DEFNAME=i_torch_wall_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_torch_wall
+TDATA4=i_torch_wall_lit
+RESOURCES=i_torch_wall
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch (Lit) (W)
+DUPELIST=0a08,0a09
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a08]
+//wall torch
+DUPEITEM=0a07
+
+[ITEMDEF 0a09]
+//wall torch
+DUPEITEM=0a07
+
+[ITEMDEF 0a0a]
+DEFNAME=i_torch_wall2
+TYPE=T_LIGHT_OUT
+TDATA3=i_torch_wall2_lit
+RESOURCES=i_torch_wall2_empty, I_TORCH
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch (Unlit) (N)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a0b]
+DEFNAME=i_torch_wall2_empty
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=TINKERING 40.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch Stand (Empty) (N)
+
+[ITEMDEF 0a0c]
+DEFNAME=i_torch_wall2_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_torch_wall2
+TDATA4=i_torch_wall2_lit
+RESOURCES=i_torch_wall2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch (Lit) (N)
+DUPELIST=0a0d,0a0e
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a0d]
+//wall torch
+DUPEITEM=0a0c
+
+[ITEMDEF 0a0e]
+//wall torch
+DUPEITEM=0a0c
+
+[ITEMDEF 0a0f]
+DEFNAME=i_candle_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_candle
+TDATA4=0
+RESOURCES=i_CANDLE
+WEIGHT=2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Lit)
+DUPELIST=0a10,0a11
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a10]
+DUPEITEM=0a0f
+
+[ITEMDEF 0a11]
+DUPEITEM=0a0f
+
+[ITEMDEF 0a12]
+DEFNAME=i_torch_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_torch
+TDATA4=0
+RESOURCES=i_TORCH
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Torch (Lit)
+DUPELIST=0a13,0a14
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a13]
+//torch
+DUPEITEM=0a12
+
+[ITEMDEF 0a14]
+//torch
+DUPEITEM=0a12
+
+[ITEMDEF 0a15]
+DEFNAME=i_lantern_lit
+RESOURCES=i_lantern
+TYPE=T_LIGHT_LIT
+TDATA3=i_lantern
+TDATA4=i_lantern
+WEIGHT=2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Lantern (Lit)
+DUPELIST=0a16,0a17,0a1a,0a1b,0a1c,0a22,0a23,0a24
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a16]
+//lantern
+DUPEITEM=0a15
+
+[ITEMDEF 0a17]
+//lantern
+DUPEITEM=0a15
+
+[ITEMDEF 0a18]
+DEFNAME=i_lantern
+TYPE=T_LIGHT_OUT
+TDATA3=i_lantern_lit
+WEIGHT=2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Lantern (Unlit)
+
+SKILLMAKE=CARPENTRY 40.0, t_carpentry
+RESOURCES=5 i_board
+DUPELIST=0a1d,0a25
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a1f]
+DEFNAME=i_lantern_post
+RESOURCES=5 I_BOARD
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Lantern Post (WE)
+DUPELIST=0a20
+
+[ITEMDEF 0a20]
+DUPEITEM=0a1f
+
+[ITEMDEF 0a22]
+DUPEITEM=0a15
+
+[ITEMDEF 0a23]
+//lantern
+DUPEITEM=0a15
+
+[ITEMDEF 0a24]
+//lantern
+DUPEITEM=0a15
+
+[ITEMDEF 0a25]
+//lantern (unlit)
+DUPEITEM=0a18
+
+[ITEMDEF 0a26]
+DEFNAME=i_candle2
+TYPE=T_LIGHT_OUT
+TDATA3=i_candle2_lit
+RESOURCES=1 i_ingot_copper, 1 I_CANDLE
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Long Candle (Unlit)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a27]
+DEFNAME=i_candleabra
+TYPE=T_LIGHT_OUT
+TDATA3=i_candleabra_lit
+RESOURCES=3 i_ingot_copper, 3 I_CANDLE
+SKILLMAKE=TINKERING 50.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candlabra (Unlit)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a28]
+DEFNAME=i_candle
+TYPE=T_LIGHT_OUT
+LAYER=layer_hand2	// problem in TILEDATA.MUL
+TDATA3=i_candle_lit
+RESOURCES=1 i_BEESWAX, 1 I_CLOTH
+VALUE={4 8}
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Unlit)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0a29]
+DEFNAME=i_candleabra2
+TYPE=T_LIGHT_OUT
+TDATA3=i_candleabra2_lit
+RESOURCES=5 i_ingot_iron, 1 I_BEEHIVE, 1 I_CLOTH
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candlabra (Unlit) (Stand)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0e31]
+DEFNAME=i_brazier_2
+RESOURCES=15 i_ingot_iron
+TYPE=T_FIRE
+WEIGHT=15
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=BRAZIER
+DUPELIST=0e32,0e33
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0e32]
+DUPEITEM=0e31
+
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=BRAZIER
+
+[ITEMDEF 0e33]
+DUPEITEM=0e31
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=BRAZIER
+
+[ITEMDEF 0f64]
+//torch
+//player torch
+DEFNAME=i_torch
+TYPE=T_LIGHT_OUT
+TDATA3=i_torch_lit
+RESOURCES=1 i_LOG
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Torch (Unlit)
+DUPELIST=0f6b
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0f6b]
+//torch
+DUPEITEM=0f64
+
+[ITEMDEF 0142c]
+DEFNAME=i_candle_short_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_candle_short
+TDATA4=0
+RESOURCES=i_candle_short
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Lit)
+DUPELIST=0142d,0142e
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 0142d]
+//Candle
+DUPEITEM=0142c
+
+[ITEMDEF 0142e]
+//Candle
+DUPEITEM=0142c
+
+[ITEMDEF 0142f]
+DEFNAME=i_candle_short
+WEIGHT=1
+TYPE=T_LIGHT_OUT
+TDATA3=i_candle_short_lit
+RESOURCES=1 i_DIPPING_STICK
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Unlit)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01430]
+DEFNAME=i_candle_lg_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_candle_lg
+TDATA4=0
+RESOURCES=i_CANDLE_LG
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Lit)
+DUPELIST=01431,01432
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01431]
+//candle
+DUPEITEM=01430
+
+[ITEMDEF 01432]
+//candle
+DUPEITEM=01430
+
+[ITEMDEF 01433]
+DEFNAME=i_candle_lg
+WEIGHT=1
+TYPE=T_LIGHT_OUT
+TDATA3=i_candle_lg_lit
+RESOURCES=1 i_DIPPING_STICK
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Unlit)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01434]
+DEFNAME=i_candle_thin_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_candle_thin
+TDATA4=0
+RESOURCES=i_CANDLE_THIN
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Lit)
+DUPELIST=01435,01436
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01435]
+//Candle
+DUPEITEM=01434
+
+[ITEMDEF 01436]
+//Candle
+DUPEITEM=01434
+
+[ITEMDEF 01437]
+DEFNAME=i_candle_thin
+TYPE=T_LIGHT_OUT
+TDATA3=i_candle_thin_lit
+RESOURCES=1 i_DIPPING_STICK
+WEIGHT=1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle (Burnt Out)
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01853]
+DEFNAME=i_skull_candle
+TYPE=t_light_out
+TDATA3=i_skull_candle_lit
+RESOURCES=1 i_bone_skull, 1 i_CANDLE
+WEIGHT=4
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Skull Candle (Unlit)
+DUPELIST=01857
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01854]
+DEFNAME=i_skull_candle_lit
+TYPE=T_LIGHT_LIT
+TDATA3=i_skull_candle
+TDATA4=i_bone_skull
+RESOURCES=i_skull_candle
+WEIGHT=4
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Skull Candle (Lit)
+DUPELIST=01855,01856,01858,01859,0185a
+
+ON=@Create
+MOREZ=1
+
+[ITEMDEF 01855]
+DUPEITEM=01854
+
+[ITEMDEF 01856]
+DUPEITEM=01854
+
+[ITEMDEF 01857]
+DUPEITEM=01853
+
+[ITEMDEF 01858]
+DUPEITEM=01854
+
+[ITEMDEF 01859]
+DUPEITEM=01854
+
+[ITEMDEF 0185a]
+DUPEITEM=01854
+
+[ITEMDEF 019aa]
+DEFNAME=i_BRAZIER_TALL
+TYPE=T_FIRE
+RESOURCES=8 i_ingot_iron
+WEIGHT=16
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=Brazier
+
+[ITEMDEF 019bb]
+DEFNAME=i_brazier_small
+TYPE=T_FIRE
+RESOURCES=3 i_ingot_iron
+WEIGHT=6
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=Brazier
+
+[ITEMDEF 019ac]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019ad]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019ae]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019af]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b0]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b1]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b2]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b3]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b4]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b5]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 019b6]
+//fire
+DUPEITEM=019ab
+
+[ITEMDEF 01f2b]
+DEFNAME=i_brazier
+TYPE=T_FIRE
+RESOURCES=10 I_EMBER, 12 i_ingot_iron
+WEIGHT=15
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=Brazier
+
+
+[eof]

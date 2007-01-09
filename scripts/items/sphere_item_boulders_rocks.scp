@@ -1,0 +1,210 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+
+
+[ITEMDEF 0134f]
+DEFNAME=i_boulder
+TYPE=T_AROCK
+WEIGHT=100
+CATEGORY=Boulders and Rocks
+SUBSECTION=Boulders
+DESCRIPTION=Boulder
+DUPELIST=01350,01351,01352,01353,01354,01355,01356,01357,01358,01359,0135a,0135b,0135c,0135d,0135e,0135f,01360,01361,01362
+
+[ITEMDEF 01350]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01351]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01352]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01353]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01354]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01355]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01356]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01357]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01358]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01359]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135a]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135b]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135c]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135d]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135e]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 0135f]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01360]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01361]
+//boulder
+DUPEITEM=0134f
+
+[ITEMDEF 01362]
+//boulder
+DEFNAME=i_boulder_x
+DUPEITEM=0134f
+
+[ITEMDEF 01363]
+DEFNAME=i_rock_plain
+VALUE=1
+WEIGHT=50
+TYPE=t_arock
+CATEGORY=Boulders and Rocks
+SUBSECTION=Rocks
+DESCRIPTION=Rock
+DUPELIST=01364,01365,01366,01367,01368,01369,0136a,0136b,0136c,0136d
+
+[ITEMDEF 01364]
+//rock
+DUPEITEM=01363
+
+[ITEMDEF 01365]
+//rock
+DUPEITEM=01363
+
+[ITEMDEF 01366]
+//rock
+DUPEITEM=01363
+
+[ITEMDEF 01367]
+//rocks
+DEFNAME=i_rock_2
+DUPEITEM=01363
+
+[ITEMDEF 01368]
+//rock
+DEFNAME=i_rock_3
+DUPEITEM=01363
+
+[ITEMDEF 01369]
+//rock
+DUPEITEM=01363
+
+[ITEMDEF 0136a]
+//rocks
+DUPEITEM=01363
+
+[ITEMDEF 0136b]
+//rock
+DUPEITEM=01363
+
+[ITEMDEF 0136c]
+//rock
+DEFNAME=i_rock_7
+DUPEITEM=01363
+
+[ITEMDEF 0136d]
+//rocks
+DEFNAME=i_rock_plain_x
+DUPEITEM=01363
+
+[ITEMDEF 01771]
+//rock
+TYPE=T_AROCK
+WEIGHT=350
+CATEGORY=Boulders and Rocks
+SUBSECTION=Rocks
+DESCRIPTION=@
+DUPELIST=01772,01773,01774,01775,01776,01777,01778,01779,0177a,0177b,0177c
+
+[ITEMDEF 01772]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01773]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01774]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01775]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01776]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01777]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01778]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 01779]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 0177a]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 0177b]
+//rock
+DUPEITEM=01771
+
+[ITEMDEF 0177c]
+//rock
+DUPEITEM=01771
+
+
+[eof]

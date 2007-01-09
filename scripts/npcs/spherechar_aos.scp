@@ -1,0 +1,513 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wednesday, August 31, 2005
+
+VERSION=0.56b
+
+[chardef 310]
+defname=c_Wailing_Banshee
+NAME=Wailing Banshee
+SOUND=snd_monster_zombie1
+ICON=i_pet_wailingbanshee
+DAM=12,17
+RESDISPDNID=c_spectre
+RESLEVEL=3
+RESDISPDNHUE=01
+ARMOR=20
+CAN=MT_WALK|MT_FLY
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Wailing Banshee
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={126 166}
+	INT={86 115}
+	DEX={71 105}
+	MAGICRESISTANCE={75.0 95.0}
+	TACTICS={45.0 75.0}
+	WRESTLING={50.0 70.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{50 100}
+	ITEM=i_reag_daemon_bone,{2 6}
+
+[chardef 317]
+defname=c_vampire_bat
+NAME=Vampire Bat
+SOUND=snd_monster_mngbat1
+ICON=i_pet_vampirebat
+DAM=12,17
+RESDISPDNID=c_slime
+RESLEVEL=3
+RESDISPDNHUE=01
+ARMOR=10
+CAN=MT_WALK|MT_FLY
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Vampire Bat
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={55 66}
+	INT={26 55}
+	DEX={91 115}
+	MAGICRESISTANCE={40.0 60.0}
+	TACTICS={40.0 60.0}
+	WRESTLING={50.0 65.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{90 120}
+
+ON=@Hit
+	HITS += <EVAL (<ARGN1>/3)*2>
+	IF (<HITS> > <MAXHITS>)
+		HITS=<MAXHITS>
+	endif
+
+[chardef 301]
+defname=c_treefellow
+NAME=Treefellow
+SOUND=snd_monster_orc1
+ICON=i_pet_treefellow
+DAM=35,45
+RESDISPDNID=c_reaper
+RESLEVEL=3
+RESDISPDNHUE=0ad
+ARMOR=25
+CAN=MT_WALK
+MOVERATE=40
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Treefellow
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={271 335}
+	INT={160 220}
+	DEX={71 95}
+	MAGICRESISTANCE={90.0 100.0}
+	TACTICS={80.0 90.0}
+	WRESTLING=100.0
+
+ON=@NpcRestock
+	ITEM=i_gold,{290 320}
+	ITEM=i_log,{10 20}
+
+[chardef 302]
+defname=c_skittering_hopper
+NAME=skittering hopper
+SOUND=snd_monster_lzrdmn1
+ICON=i_pet_skithopper
+DAM=7,20
+RESDISPDNID=c_headless
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=15
+CAN=MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=skittering hopper
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={71 135}
+	INT={60 90}
+	DEX={111 135}
+	MAGICRESISTANCE={60.0 80.0}
+	TACTICS={60.0 75.0}
+	WRESTLING={60.0 70.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{90 120}
+
+[chardef 314]
+defname=c_ravager
+NAME=Ravager
+SOUND=snd_monster_daemon1
+ICON=i_pet_ravager
+DAM=37,49
+RESDISPDNID=c_headless
+RESLEVEL=3
+RESDISPDNHUE=80
+ARMOR=40
+CAN=MT_USEHANDS|MT_WALK|MT_RUN|MT_EQUIP
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Ravager
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={251 275}
+	INT={60 90}
+	DEX={91 125} 
+	MAGICRESISTANCE={60.0 80.0}
+	TACTICS={70.0 90.0}
+	WRESTLING={70.0 90.0}
+	MACEFIGHTING={80.0 90.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{290 390}
+	ITEM=i_reag_daemon_bone,{2 9}
+	ITEM=i_club
+
+[chardef 309]
+defname=c_patchwork_skeleton
+NAME=Patchwork Skeleton
+SOUND=snd_monster_skletn1
+ICON=i_pet_patchwork_sklt
+DAM=20,41
+RESDISPDNID=c_skeleton
+RESLEVEL=3
+RESDISPDNHUE=33
+ARMOR=10
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Patchwork Skeleton
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={161 281}
+	MAXHITS={310 450}
+	INT={150 180}
+	DEX={91 125} 
+	MAGICRESISTANCE={60.0 80.0}
+	TACTICS={70.0 90.0}
+	WRESTLING={70.0 90.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{200 300}
+	ITEM=i_reag_daemon_bone,{5 7}
+
+[chardef 319]
+defname=c_mound_maggots
+NAME=Mound of Maggots
+SOUND=snd_monster_slime1
+ICON=i_pet_mound_maggots
+DAM=10,21
+RESDISPDNID=c_slime
+RESLEVEL=3
+RESDISPDNHUE=33
+ARMOR=10
+CAN=MT_USEHANDS|MT_WALK
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Mound of Maggots
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={61 81}
+	MAXHITS={110 150}
+	INT={50 80}
+	DEX={51 95} 
+	MAGICRESISTANCE={40.0 50.0}
+	TACTICS={50.0 60.0}
+	WRESTLING={40.0 60.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{100 200}
+	ITEM=i_reag_daemon_bone,{2 10}
+
+[chardef 305]
+defname=c_Gore_Fiend
+NAME=Gore Fiend
+SOUND=snd_monster_zombie1
+ICON=i_pet_gorefiend
+DAM=30,41
+RESDISPDNID=c_headless
+RESLEVEL=3
+RESDISPDNHUE=33
+ARMOR=25
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Gore Fiend
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={161 181}
+	MAXHITS={210 250}
+	INT={50 80}
+	DEX={51 95} 
+	MAGICRESISTANCE={40.0 70.0}
+	TACTICS={50.0 70.0}
+	WRESTLING={50.0 70.0}
+
+ON=@NpcRestock
+	ITEM=i_gold,{150 300}
+	ITEM=i_reag_daemon_bone,{2 10}
+
+[chardef 316]
+defname=c_wanderer_void
+NAME=Wanderer of the Void
+SOUND=snd_monster_wisp1
+ICON=i_pet_wanderervoid
+DAM=20,27
+RESDISPDNID=c_skeleton
+RESLEVEL=3
+RESDISPDNHUE=33
+ARMOR=35
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Wanderer of the Void
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={111 211}
+	MAXHITS={350 450}
+	INT={300 400}
+	DEX={101 125} 
+	MAGICRESISTANCE={60.0 65.0}
+	TACTICS=70.0
+	WRESTLING=70.0
+	MAGERY=700
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 6,1
+
+ON=@NpcRestock
+	ITEM=i_gold,{200 490}
+	ITEM=random_jewel,3
+	ITEM=i_reag_daemon_bone,{20 60}
+
+[chardef 304]
+defname=c_flesh_golem
+NAME=Flesh Golem
+SOUND=snd_monster_zombie1
+ICON=i_pet_fleshgolem
+DAM=11,50
+RESDISPDNID=c_skeleton
+RESLEVEL=3
+RESDISPDNHUE=33
+ARMOR=35
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Flesh Golem
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR=200
+	MAXHITS={850 1000}
+	INT=300
+	DEX={100 210} 
+	MAGICRESISTANCE={70.0 80.0}
+	TACTICS=80.0
+	WRESTLING=80.0
+	MAGERY=700
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 6,1
+
+ON=@NpcRestock
+	ITEM=i_gold,{200 290}
+	ITEM=random_jewel,3
+	ITEM=random_jewel,{1 2}
+	ITEM=i_reag_daemon_bone,{2 6}
+
+[chardef 303]
+defname=c_devourer_souls
+NAME=Devourer of Souls
+SOUND=snd_monster_zombie1
+ICON=i_pet_devourer_souls
+DAM=20,30
+RESDISPDNID=c_skeleton
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=30
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Devourer of Souls
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR=300
+	MAXHITS={350 400}
+	INT=100
+	DEX={100 210} 
+	MAGICRESISTANCE={50.0 60.0}
+	TACTICS=80.0
+	WRESTLING=100.0
+
+ON=@NpcRestock
+	ITEM=i_gold,{200 290}
+	ITEM=random_jewel,3
+	ITEM=random_jewel,{1 2}
+	ITEM=i_reag_daemon_bone,{2 6}
+
+[chardef 308]
+defname=c_bone_daemon
+NAME=Bone Daemon
+SOUND=snd_monster_skletn1
+ICON=i_pet_bonedaemon
+DAM=10,40
+RESDISPDNID=c_skeleton
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=20
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Bone Daemon
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR=310
+	MAXHITS={500 600}
+	INT=100
+	DEX={170 210} 
+	MAGICRESISTANCE={50.0 60.0}
+	TACTICS=80.0
+	WRESTLING=100.0
+
+ON=@NpcRestock
+	ITEM=i_gold,{300 390}
+	ITEM=random_jewel,3
+	ITEM=random_jewel,{1 2}
+	ITEM=i_reag_daemon_bone,{5 10}
+
+[chardef 312]
+defname=c_abyssmal_horror
+NAME=Abyssmal Horror
+SOUND=snd_monster_slime1
+ICON=i_pet_abysmallhorror
+DAM=25,27
+RESDISPDNID=c_sea_serpent
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=30
+CAN=MT_USEHANDS|MT_WALK|MT_RUN|MT_SWIM
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Abyssmal Horror
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={250 350}
+	MAXHITS={500 600}
+	INT=200
+	DEX={170 210} 
+	MAGICRESISTANCE={70.0 80.0}
+	TACTICS=80.0
+	WRESTLING=100.0
+
+ON=@NpcRestock
+	ITEM=i_gold,{295 345}
+	ITEM=random_jewel,3
+	ITEM=random_jewel,{1 2}
+
+[chardef 300]
+defname=c_crystal_elemental
+NAME=Crystal Elemental
+SOUND=snd_monster_harpy1
+ICON=i_pet_crystalelemental
+DAM=19,27
+RESDISPDNID=c_elem_air
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=20
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Crystal Elemental
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={100 150}
+	MAXHITS={300 400}
+	INT=230
+	DEX={70 110} 
+	MAGICRESISTANCE={70.0 80.0}
+	TACTICS=70.0
+	WRESTLING=70.0
+	MAGERY=100.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
+
+ON=@NpcRestock
+	ITEM=i_reag_nightshade,{3 7}
+	ITEM=i_gold,{195 245}
+	ITEM=random_jewel
+
+[chardef 307]
+defname=c_gibberling
+NAME=Gibberling
+SOUND=snd_monster_harpy1
+ICON=i_pet_gibberling
+DAM=25,34
+RESDISPDNID=c_headless
+RESLEVEL=3
+RESDISPDNHUE=55
+ARMOR=20
+CAN=MT_USEHANDS|MT_WALK|MT_RUN
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman,t_corpse
+CATEGORY=New Monsters
+SUBSECTION=AOS
+DESCRIPTION=Gibberling
+
+ON=@Create 
+	NPC=brain_monster
+	FAME={100 3000} 
+	KARMA={-5000 -6999} 
+	STR={140 164}
+	MAXHITS={300 400}
+	INT={50 80}
+	DEX={101 125} 
+	MAGICRESISTANCE={40.0 70.0}
+	TACTICS={70.0 90.0}
+	WRESTLING={60.0 80.0}
+
+ON=@NpcRestock
+	ITEM=i_reag_daemon_bone,{3 10}
+	ITEM=i_gold,{100 145}
+	ITEM=random_jewel

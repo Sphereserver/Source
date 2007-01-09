@@ -1,0 +1,146 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 27-Jul-2006
+VERSION=0.56b
+
+[Dialog d_Guild_Master_Warfare_DeclareWar]
+5,25
+
+local.guild = <StrArg <args>>
+local.tosearch = <StrArg <StrEat <args>>>
+
+if ( <local.guild> == 0 )
+	return 1
+endif
+if ( <uid.<local.guild>.type> != T_STONE_GUILD )
+	return 1
+endif
+local.oldobj = <obj.uid>
+obj = <local.guild>
+if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+	obj = <local.oldobj>
+	return 1
+endif
+
+ctag.dialog_guildmasterwarfaredclarewar_guilduid = <local.guild>
+local.guildlist = <f_guildsys_searchguildname <local.guild>,<local.tosearch>>
+CALL f_guildsys_listsplit <local.guildlist>
+
+if ( !<local.guildlist_count> )
+	obj = <local.oldobj>
+	return 1
+endif
+
+ctag.dialog_guildmasterwarfaredclarewar_guildlist = <local.guildlist>
+
+//Construct the dialog
+
+page 0
+resizepic 0 0 5054 550 440
+resizepic 10 10 3000 530 420
+dhtmlgump 20 10 400 35 0 0 Select the guild you wish to declare war on.
+button 20 400 4005 4007 1 0 1
+dhtmlgump 55 400 245 30 0 0 1011068 Send the challenge!
+button 300 400 4005 4007 1 0 0
+dhtmlgump 335 400 100 35 0 0 CANCEL
+
+for currentuid 0 <local.guildlist_count>
+	if (! (<local.currentuid> % 11) )
+		if ( <local.currentuid> )
+			button 300 370 4005 4007 0 <eval ((<local.currentuid> / 11) + 1)> 0
+			dhtmlgump 335 370 300 35 0 0 Next page
+		endif
+
+		page <eval ((<local.currentuid> / 11) + 1)>
+		if ( <local.currentuid> )
+			button 300 370 4014 4016 0 <eval (<local.currentuid> / 11)> 0
+			dhtmlgump 335 370 300 35 0 0 Previous page
+		endif
+	endif
+		
+	radio 20 <eval (35 + ((<local.currentuid> % 11) * 30))> 208 209 0 <eval (<local.currentuid> + 10)>
+				
+	local.currentguilduid = <local.guildlist_data<dLOCAL.currentuid>>
+		
+	if ( strlen(<uid.<local.currentguilduid>.Name>) <= 0 )
+		dhtmlgump 55 <eval (35 + ((<local.currentuid> % 11) * 30))> 300 35 0 0 (unnamed)
+	else
+		dhtmlgump 55 <eval (35 + ((<local.currentuid> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name>
+	endif
+endfor
+
+obj = <local.oldobj>
+
+[Dialog d_Guild_Master_Warfare_DeclareWar Button]
+ON=0 1
+	if (!<ctag0.dialog_guildmasterwarfaredclarewar_guilduid> || !<isempty <ctag.dialog_guildmasterwarfaredclarewar_guildlist>>)
+		serv.log DIALOG d_Guild_Master_Warfare_DeclareWar called without ctag.dialog_guildmasterwarfare_guilduid and dialog_guildmasterwarfaredclarewar_guildlist!!
+		return 1
+	endif
+
+	local.oldobj = <obj.uid>
+	obj = <ctag0.dialog_guildmasterwarfaredclarewar_guilduid>
+	local.war_guildlist = <ctag.dialog_guildmasterwarfaredclarewar_guildlist>
+	ctag.dialog_guildmasterwarfaredclarewar_guilduid =
+	ctag.dialog_guildmasterwarfaredclarewar_guildlist =
+	
+	if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+		obj = <local.oldobj>
+		return 1
+	endif
+	
+	if ( <argn1> == 0 )
+		dialog d_Guild_Master_Warfare,0,<obj.uid>
+	elseif ( <argn1> == 1 )
+		CALL f_guildsys_listsplit <local.war_guildlist>
+	
+		if ( !<local.guildlist_count> )
+			obj = <local.oldobj>
+			return 1
+		endif
+		
+		local.selectedguild = <ARGCHKID> - 10
+		if ( ( <local.selectedguild> < 0 ) || ( <local.selectedguild> > <local.guildlist_count> ))
+			obj = <local.oldobj>
+			return 1
+		endif
+		
+		local.currentguilduid = <local.guildlist_data<dLOCAL.selectedguild>>
+
+		if ( !<local.currentguilduid> )
+			obj = <local.oldobj>
+			return 1
+		endif
+		
+		if ( <uid.<local.currentguilduid>.type> != T_STONE_GUILD )
+			obj = <local.oldobj>
+			return 1
+		endif
+		
+		if ( <uid.<local.currentguilduid>.guildfromuid.<obj.uid>.wedeclared> )
+			f_guildsys_declarewar <local.currentguilduid>,<obj.uid>,1
+		else
+			// if (! f_GuildSys_ListContains(<?pGuild?>,WeDeclared,<?pTargGuild?>) )
+			//		ARG(pGuild).WeDeclared(Add,<?ARG(pTargGuild).UID?>)
+			//		ARG(pGuild).f_GuildSys_GuildMsgLocalized(1018019,"<?ARG(pTargGuild).Name?> [<?ARG(pTargGuild).Abbrev?>]")
+			// endif
+			// if (! f_GuildSys_ListContains(<?pTargGuild?>,TheyDeclared,<?pGuild?>) )
+			//		ARG(pTargGuild).TheyDeclared(Add,<?ARG(pGuild).UID?>)
+			//		ARG(pTargGuild).f_GuildSys_GuildMsgLocalized(1018020,"<?ARG(pGuild).Name?> [<?ARG(pGuild).Abbrev?>]")
+			// endif
+		endif
+
+		dialog d_Guild_Master_Warfare,0,<obj.uid>
+	endif
+	
+	obj = <local.oldobj>
+	return 1
+
+[EOF]

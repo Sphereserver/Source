@@ -1,0 +1,73 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, November 15, 2003
+//
+VERSION=0.56b
+
+[EVENTS e_Undead]
+
+ON=@EnvironChange
+	Return 0
+	// Enter "//" before Return 0, if you want to make script working
+	// i like the dark
+	if (<sector.isdark>) || (<flags>& (statf_nightsight|statf_indoors))
+		if (!<tag0.lightstr>)
+			return 0
+		endif
+		anim 011
+		bark 4
+		str=<tag.lightstr>	// restore me.
+		hits=<str>
+		tag.lightstr=
+		karma=<tag0.lightkarma>
+		tag.lightkarma=//just dispose of this.
+		fame=<tag0.lightfame>
+		tag.lightfame=
+		flags ^= statf_conjured	// no loot if killed.
+		return 0
+	endif
+	// i can't live in light areas. weaken me ? or destroy me ?
+	anim 014
+	bark 4
+	if (<tag0.lightstr>)
+		return 0
+	endif
+	if ( <flags>&statf_conjured	) 
+		remove
+		return 1
+	endif
+	flags |= statf_conjured	// no loot if killed.
+	tag.lightstr=<str>
+	str=1
+	hits=1	// very weak.
+	tag.lightkarma=<karma>	// killing it means nothing now.
+	karma=-2
+	tag.lightfame=<fame>
+	fame=10
+	return 0
+
+[EVENTS e_Carnivores]
+// weak carnivores.
+
+[EVENTS e_Carnivores2]
+// normal carnivores.
+
+[EVENTS e_Carnivores3]
+// strong carnivores.
+
+[EVENTS e_Terathan]
+
+[EVENTS e_Ophidian]
+
+[EVENTS e_Horses]
+
+[EVENTS e_Notoriety]
+
+[EVENTS e_Ostards]

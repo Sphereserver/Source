@@ -1,0 +1,2862 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000// Purpose: Britannia Skara Brae Script
+// Notes:  This is used for general information pertaining to all Britannians of Skara Brae
+// Current Keyword List:skara*brae,inn,rangers guild,provisioner,supplies,healer,town*hall,city*hall,
+// bowyer,butcher,meat,magic,food,vegetable,fruit,farmers,tavern,armor,weapons,blacksmith,clothier,beekeeper,honey,
+// animal*trainer,alchemist,ship*wrights,farmers,rangers,rangers*guild,theater,woodworker,britain,capital,trinsic,
+// okllo,ocllo,jhelom,nujelm,moonglow,cove,minoc,vesper,bucs* den,magincia,yew,wind,lord*british,ruler,king,
+// virtue,avatar,shrine
+//
+//
+[SPEECH town_skarabrae]
+
+ON=skara*brae
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 15
+				SAY Thou'rt in Skara Brae.
+	  			SAY This is Skara Brae.
+				SAY The magic here in Skara Brae is a peaceful one. Don't be 'fraid of it.
+				SAY New to Skara Brae? Enjoy thy stay!
+				SAY Thou might think of settlin' in Skara Brae. It's got good cropland.
+				SAY If we could just get rid of most o' the pirates, Skara Brae's business would grow lots.
+				SAY We need more protection from pirates, we do! Skara Brae is their meat!
+				SAY We got good ship builders in Skara Brae.
+				SAY Skara Brae's forests are a good place for rangers to train.
+				SAY No guards in Skara Brae enforce the law. Of course, there's always the rangers ....
+				SAY Most pirates are a plague upon Skara Brae!
+				SAY A new face in town? If thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We're a spiritual people here in Skara Brae ... clean of body and spirit.
+				SAY Skara Brae is home to bunches of poets.
+				SAY In Skara Brae, we like things that'll improve the mind and spirit.
+			ENDDO
+		ELSE
+			DORAND 15
+				SAY Thou'rt in Skara Brae.
+				SAY This is Skara Brae.
+				SAY The magic here in Skara Brae is a peaceful one. Don't be 'fraid of it.
+				SAY New to Skara Brae? Enjoy thy stay!
+				SAY Thou might think of settlin' in Skara Brae. It's got good cropland.
+				SAY If we could just get rid of most o' the pirates, Skara Brae's business would grow lots.
+				SAY We need more protection from pirates, we do! Skara Brae is their meat!
+				SAY We got good ship builders in Skara Brae.
+				SAY Skara Brae's forests are a good place for rangers to train.
+				SAY No guards in Skara Brae enforce the law. Of course, there's always the rangers ....
+				SAY Most pirates are a plague upon Skara Brae!
+				SAY A new face in town? If thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We're a spiritual people here in Skara Brae ... clean of body and spirit.
+				SAY Skara Brae is home to bunches of poets.
+				SAY In Skara Brae, we like things that'll improve the mind and spirit.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Our fair city of Skara Brae is the central hub for all the westward sea expeditions.
+				SAY I hope thou likest Skara Brae, friend. We find it pleasant to the eye and soothing to the soul.
+				SAY Be not alarmed by the magic studied in Skara Brae. 'Tis concerned with communication and understanding; we very rarely suffer from fireball mishaps or other such nonsense.
+				SAY New to Skara Brae? Enjoy thy stay, but ask not our mages for offensive spellcasting. Their specialty is empathy and the transmission of emotion.
+				SAY Thou might think of settling in Skara Brae. We have fine cropland, as anyone can see.
+				SAY Hast heard another that another of our ships was attacked and boarded? If only we could find a way to protect the westward faring ships, Skara Brae's business would grow three-fold.
+				SAY We need more protection from pirates, we do! Right now they look upon Skara Brae as wolves to a chicken!
+				SAY My cousin's son says they are buying naval weapons for Skara Brae. Dost thou think 'twill make a difference.
+				SAY We've fine ship builders in Skara Brae. Famous for it.
+				SAY Skara Brae's forests are a fine place for rangers to train. There are more rangers than rabbits, I doth guess.
+				SAY We have a simple council for government in Skara Brae. Our chairperson primarily keeps things in hand.
+				SAY I've always been pleased that Skara Brae needs no thugs to enforce the law. Of course, the rangers step in if there's an emergency .....
+				SAY Blast it, the pirates got another ship just as it was embarking. Hold was full of cargo, o'course. They are a plague upon Skara Brae!
+				SAY A new face in town? I'm sure if thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We are a spiritual people here in Skara Brae ... and we've found 'tis easier to concentrate when the body is as clean as the mind. No offense, o'course.
+				SAY Skara Brae is home to many a poet, thou knowest. Poetry is the truest form of art, for the eye cannot trick the mind.
+				SAY In Skara Brae, we encourage any activity that enriches the mind and spirit.
+				SAY Someday Skara Brae will discover a way to represent the spiritual ideals of intellect and emotion, and when we do ... er, I don't know what we'll do then. Have dinner, mayhaps.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Our fair city of Skara Brae is the central hub for all the westward sea expeditions.
+				SAY I hope thou likest Skara Brae, friend. We find it pleasant to the eye and soothing to the soul.
+				SAY Be not alarmed by the magic studied in Skara Brae. 'Tis concerned with communication and understanding; we very rarely suffer from fireball mishaps or other such nonsense.
+				SAY New to Skara Brae? Enjoy thy stay, but ask not our mages for offensive spellcasting. Their specialty is empathy and the transmission of emotion.
+				SAY Thou might think of settling in Skara Brae. We have fine cropland, as anyone can see.
+				SAY Hast heard another that another of our ships was attacked and boarded? If only we could find a way to protect the westward faring ships, Skara Brae's business would grow three-fold.
+				SAY We need more protection from pirates, we do! Right now they look upon Skara Brae as wolves to a chicken!
+				SAY My cousin's son says they are buying naval weapons for Skara Brae. Dost thou think 'twill make a difference.
+				SAY We've fine ship builders in Skara Brae. Famous for it.
+				SAY Skara Brae's forests are a fine place for rangers to train. There are more rangers than rabbits, I doth guess.
+				SAY We have a simple council for government in Skara Brae. Our chairperson primarily keeps things in hand.
+				SAY I've always been pleased that Skara Brae needs no thugs to enforce the law. Of course, the rangers step in if there's an emergency .....
+				SAY Blast it, the pirates got another ship just as it was embarking. Hold was full of cargo, o'course. They are a plague upon Skara Brae!
+				SAY A new face in town? I'm sure if thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We are a spiritual people here in Skara Brae ... and we've found 'tis easier to concentrate when the body is as clean as the mind. No offense, o'course.
+				SAY Skara Brae is home to many a poet, thou knowest. Poetry is the truest form of art, for the eye cannot trick the mind.
+				SAY In Skara Brae, we encourage any activity that enriches the mind and spirit.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Our fair city of Skara Brae is the central hub for all the westward sea expeditions.
+				SAY I hope thou likest Skara Brae, friend. We find it pleasant to the eye and soothing to the soul.
+				SAY Be not alarmed by the magic studied in Skara Brae. 'Tis concerned with communication and understanding; we very rarely suffer from fireball mishaps or other such nonsense.
+				SAY New to Skara Brae? Enjoy thy stay, but ask not our mages for offensive spellcasting. Their specialty is empathy and the transmission of emotion.
+				SAY Thou might think of settling in Skara Brae. We have fine cropland, as anyone can see.
+				SAY Hast heard another that another of our ships was attacked and boarded? If only we could find a way to protect the westward faring ships, Skara Brae's business would grow three-fold.
+				SAY We need more protection from pirates, we do! Right now they look upon Skara Brae as wolves to a chicken!
+				SAY My cousin's son says they are buying naval weapons for Skara Brae. Dost thou think 'twill make a difference.
+				SAY We've fine ship builders in Skara Brae. Famous for it.
+				SAY Skara Brae's forests are a fine place for rangers to train. There are more rangers than rabbits, I doth guess.
+				SAY We have a simple council for government in Skara Brae. Our chairperson primarily keeps things in hand.
+				SAY I've always been pleased that Skara Brae needs no thugs to enforce the law. Of course, the rangers step in if there's an emergency .....
+				SAY Blast it, the pirates got another ship just as it was embarking. Hold was full of cargo, o'course. They are a plague upon Skara Brae!
+				SAY A new face in town? I'm sure if thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We are a spiritual people here in Skara Brae ... and we've found 'tis easier to concentrate when the body is as clean as the mind. No offense, o'course.
+				SAY Skara Brae is home to many a poet, thou knowest. Poetry is the truest form of art, for the eye cannot trick the mind.
+				SAY In Skara Brae, we encourage any activity that enriches the mind and spirit.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Our fair city of Skara Brae is the central hub for all the westward sea expeditions.
+				SAY I hope thou likest Skara Brae, friend. We find it pleasant to the eye and soothing to the soul.
+				SAY Be not alarmed by the magic studied in Skara Brae. 'Tis concerned with communication and understanding; we very rarely suffer from fireball mishaps or other such nonsense.
+				SAY New to Skara Brae? Enjoy thy stay, but ask not our mages for offensive spellcasting. Their specialty is empathy and the transmission of emotion.
+				SAY Thou might think of settling in Skara Brae. We have fine cropland, as anyone can see.
+				SAY Hast heard another that another of our ships was attacked and boarded? If only we could find a way to protect the westward faring ships, Skara Brae's business would grow three-fold.
+				SAY We need more protection from pirates, we do! Right now they look upon Skara Brae as wolves to a chicken!
+				SAY My cousin's son says they are buying naval weapons for Skara Brae. Dost thou think 'twill make a difference.
+				SAY We've fine ship builders in Skara Brae. Famous for it.
+				SAY Skara Brae's forests are a fine place for rangers to train. There are more rangers than rabbits, I doth guess.
+				SAY We have a simple council for government in Skara Brae. Our chairperson primarily keeps things in hand.
+				SAY I've always been pleased that Skara Brae needs no thugs to enforce the law. Of course, the rangers step in if there's an emergency .....
+				SAY Blast it, the pirates got another ship just as it was embarking. Hold was full of cargo, o'course. They are a plague upon Skara Brae!
+				SAY A new face in town? I'm sure if thou'rt from Yew or Jhelom, thou'lt find Skara Brae to thy liking!
+				SAY We are a spiritual people here in Skara Brae ... and we've found 'tis easier to concentrate when the body is as clean as the mind. No offense, o'course.
+				SAY Skara Brae is home to many a poet, thou knowest. Poetry is the truest form of art, for the eye cannot trick the mind.
+				SAY In Skara Brae, we encourage any activity that enriches the mind and spirit.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=inn
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY We got an inn to the south of Skara Brae.
+				SAY Our inn is at the south end of this island.
+				SAY They got beds for rent at the inn.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY We got an inn to the south of Skara Brae.
+				SAY Our inn is at the south end of this island.
+				SAY They got beds for rent at the inn.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Lookin' for a place to lay thy head? Our inn is the southernmost building on the isle.
+				SAY Our inn is at the south end of the isle, near the docks, o'course.
+				SAY They have beds to let at the inn near the docks.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Lookin' for a place to lay thy head? Our inn is the southernmost building on the isle.
+				SAY Our inn is at the south end of the isle, near the docks, o'course.
+				SAY They have beds to let at the inn near the docks.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Lookin' for a place to lay thy head? Our inn is the southernmost building on the isle.
+				SAY Our inn is at the south end of the isle, near the docks, o'course.
+				SAY They have beds to let at the inn near the docks.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Lookin' for a place to lay thy head? Our inn is the southernmost building on the isle.
+				SAY Our inn is at the south end of the isle, near the docks, o'course.
+				SAY They have beds to let at the inn near the docks.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=rangers*guild
+ON=rangers
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There is one rangers' guild on the northwest side of town, and another across the water to the east.
+				SAY The rangers' guildhall is on the west side of the island.
+				SAY The rangers live in the forests, mostly, but their hall is west of town.
+			ENDDO
+		ELSE
+			DORAND  3
+				SAY There is one rangers' guild on the northwest side of town, and another across the water to the east.
+				SAY The rangers' guildhall is on the west side of the island.
+				SAY The rangers live in the forests, mostly, but their hall is west of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Thou hast a choice. There is one guild on the northwest side of town, and another just across the water to the east.
+				SAY The rangers' guildhall is on the west side of the isle. 'Tis north of the tavern and Town Hall, y'know.
+				SAY The rangers live in the forests, mostly, but their hall is to the west of town. Look for the tavern.
+				SAY The ranger's guild on the mainland isn't too far from the town's alchemist ... if thou art a strong swimmer!
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Thou hast a choice. There is one guild on the northwest side of town, and another just across the water to the east.
+				SAY The rangers' guildhall is on the west side of the isle. 'Tis north of the tavern and Town Hall, y'know.
+				SAY The rangers live in the forests, mostly, but their hall is to the west of town. Look for the tavern.
+				SAY The ranger's guild on the mainland isn't too far from the town's alchemist ... if thou art a strong swimmer!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Thou hast a choice. There is one guild on the northwest side of town, and another just across the water to the east.
+				SAY The rangers' guildhall is on the west side of the isle. 'Tis north of the tavern and Town Hall, y'know.
+				SAY The rangers live in the forests, mostly, but their hall is to the west of town. Look for the tavern.
+				SAY The ranger's guild on the mainland isn't too far from the town's alchemist ... if thou art a strong swimmer!
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Thou hast a choice. There is one guild on the northwest side of town, and another just across the water to the east.
+				SAY The rangers' guildhall is on the west side of the isle. 'Tis north of the tavern and Town Hall, y'know.
+				SAY The rangers live in the forests, mostly, but their hall is to the west of town. Look for the tavern.
+				SAY The ranger's guild on the mainland isn't too far from the town's alchemist ... if thou art a strong swimmer!
+			ENDDO
+		ENDIF
+	ENDIF
+ON=provision
+ON=supplies
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The provisioner is near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY The provisioner is next to the inn.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The provisioner is near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY The provisioner is next to the inn.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The provisioner is but a pebble toss from the inn. 'Tis near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY If thou slept the night at the inn, thou wert close by the provisioner. They are neighbors.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The provisioner is but a pebble toss from the inn. 'Tis near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY If thou slept the night at the inn, thou wert close by the provisioner. They are neighbors.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The provisioner is but a pebble toss from the inn. 'Tis near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY If thou slept the night at the inn, thou wert close by the provisioner. They are neighbors.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The provisioner is but a pebble toss from the inn. 'Tis near the southern shore.
+				SAY Not settling down, I take it. Thou'lt find the provisioner to the northwest of the inn.
+				SAY If thou slept the night at the inn, thou wert close by the provisioner. They are neighbors.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=heal
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our healer is close to the east dock.
+				SAY The healer is to the east of the island.
+				SAY The healer is south of the blacksmith.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our healer is close to the east dock.
+				SAY The healer is to the east of the island.
+				SAY The healer is south of the blacksmith.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our healer is close to the east dock.
+									SAY I hope thou'rt not hurt. Thou'lt find the healer to the east of the island, and somewhat south.
+				SAY The healer is south of the blacksmith, and east of the bowyer.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our healer is close to the east dock.
+									SAY I hope thou'rt not hurt. Thou'lt find the healer to the east of the island, and somewhat south.
+				SAY The healer is south of the blacksmith, and east of the bowyer.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our healer is close to the east dock.
+									SAY I hope thou'rt not hurt. Thou'lt find the healer to the east of the island, and somewhat south.
+				SAY The healer is south of the blacksmith, and east of the bowyer.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our healer is close to the east dock.
+									SAY I hope thou'rt not hurt. Thou'lt find the healer to the east of the island, and somewhat south.
+				SAY The healer is south of the blacksmith, and east of the bowyer.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=town*hall
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Town Hall is in the southwestern part of the island.
+				SAY Town Hall, eh? Walk west and south and see if thou gets there.
+				SAY Town Hall is west of most things in Skara Brae.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Town Hall is in the southwestern part of the island.
+				SAY Town Hall, eh? Walk west and south and see if thou gets there.
+				SAY Town Hall is west of most things in Skara Brae.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Taking a tour, art thee? Town Hall is in the southwestern corner of the island.
+				SAY Town Hall, eh? Well, and I hope thou bring no trouble to our fair isle. Walk west and south to get there.
+				SAY Town Hall is west of most things in Skara Brae, and south of the rest. I do not if the council is there at present, though.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Taking a tour, art thee? Town Hall is in the southwestern corner of the island.
+				SAY Town Hall, eh? Well, and I hope thou bring no trouble to our fair isle. Walk west and south to get there.
+				SAY Town Hall is west of most things in Skara Brae, and south of the rest. I do not if the council is there at present, though.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Taking a tour, art thee? Town Hall is in the southwestern corner of the island.
+				SAY Town Hall, eh? Well, and I hope thou bring no trouble to our fair isle. Walk west and south to get there.
+				SAY Town Hall is west of most things in Skara Brae, and south of the rest. I do not if the council is there at present, though.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Taking a tour, art thee? Town Hall is in the southwestern corner of the island.
+				SAY Town Hall, eh? Well, and I hope thou bring no trouble to our fair isle. Walk west and south to get there.
+				SAY Town Hall is west of most things in Skara Brae, and south of the rest. I do not if the council is there at present, though.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=bowyer
+ON=bow
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY For bows, find the center of town, just east of Town Hall.
+				SAY Thou'lt find the bow shop in the middle of the city.
+				SAY The bowyer is north of the inn.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ELSE
+			DORAND  4
+				SAY For bows, find the center of town, just east of Town Hall.
+				SAY Thou'lt find the bow shop in the middle of the city.
+				SAY The bowyer is north of the inn.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Bows are fine weapons for rangers, and our bowyer is one of the best. Find him at the center of town, just east of Town Hall.
+				SAY Our bowyer uses only the best yew available. Thou'lt find the shop in the midst of the city.
+				SAY The bowyer is north and a little west of the inn. In my opinion, the work is excellent.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Bows are fine weapons for rangers, and our bowyer is one of the best. Find him at the center of town, just east of Town Hall.
+				SAY Our bowyer uses only the best yew available. Thou'lt find the shop in the midst of the city.
+				SAY The bowyer is north and a little west of the inn. In my opinion, the work is excellent.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Bows are fine weapons for rangers, and our bowyer is one of the best. Find him at the center of town, just east of Town Hall.
+				SAY Our bowyer uses only the best yew available. Thou'lt find the shop in the midst of the city.
+				SAY The bowyer is north and a little west of the inn. In my opinion, the work is excellent.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Bows are fine weapons for rangers, and our bowyer is one of the best. Find him at the center of town, just east of Town Hall.
+				SAY Our bowyer uses only the best yew available. Thou'lt find the shop in the midst of the city.
+				SAY The bowyer is north and a little west of the inn. In my opinion, the work is excellent.
+				SAY If 'tis bows thou'rt wanting, look to the center of town.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=butcher
+ON=meat
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The butcher shop is in the middle of town.
+				SAY The butcher is near the center of town.
+				SAY The butcher thou'lt find just east of the tavern.
+			ENDDO
+		ELSE
+			DORAND  3
+				SAY The butcher shop is in the middle of town.
+				SAY The butcher is near the center of town.
+				SAY The butcher thou'lt find just east of the tavern.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The butcher shop is in the midst of town, betwixt the tavern and the magic shop.
+				SAY 'Tis a small town, thou'st seen. The butcher is near the center, just north of the bowyer.
+				SAY Thou hast perhaps seen the tavern near the western shore? The butcher thou'lt find just east of it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The butcher shop is in the midst of town, betwixt the tavern and the magic shop.
+				SAY 'Tis a small town, thou'st seen. The butcher is near the center, just north of the bowyer.
+				SAY Thou hast perhaps seen the tavern near the western shore? The butcher thou'lt find just east of it.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The butcher shop is in the midst of town, betwixt the tavern and the magic shop.
+				SAY 'Tis a small town, thou'st seen. The butcher is near the center, just north of the bowyer.
+				SAY Thou hast perhaps seen the tavern near the western shore? The butcher thou'lt find just east of it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The butcher shop is in the midst of town, betwixt the tavern and the magic shop.
+				SAY 'Tis a small town, thou'st seen. The butcher is near the center, just north of the bowyer.
+				SAY Thou hast perhaps seen the tavern near the western shore? The butcher thou'lt find just east of it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=mage
+ON=magic
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Magic is real near the exact center of town.
+				SAY If thou found the tavern, near there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town.
+			ENDDO
+		ELSE
+			DORAND  3
+				SAY Magic is real near the exact center of town.
+				SAY If thou found the tavern, near there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There is a shop of gentle magics, and that's a fact. 'Tis very near the exact center of town.
+				SAY If thou hast found the tavern, then look but two doors east and there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town. It is neighbor to the bowyer, butcher, blacksmith and farmer.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY There is a shop of gentle magics, and that's a fact. 'Tis very near the exact center of town.
+				SAY If thou hast found the tavern, then look but two doors east and there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town. It is neighbor to the bowyer, butcher, blacksmith and farmer.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY There is a shop of gentle magics, and that's a fact. 'Tis very near the exact center of town.
+				SAY If thou hast found the tavern, then look but two doors east and there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town. It is neighbor to the bowyer, butcher, blacksmith and farmer.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY There is a shop of gentle magics, and that's a fact. 'Tis very near the exact center of town.
+				SAY If thou hast found the tavern, then look but two doors east and there thou'lt find the mage.
+				SAY The mage has set up shop in the heart of town. It is neighbor to the bowyer, butcher, blacksmith and farmer.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=food
+ON=fruit
+ON=vegetable
+ON=farmer
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our farmers sell at a shop near the northern edge of town, I think.
+				SAY The farmers' shop is near the mage.
+				SAY The farmer's market is between the woodworker's shop and the beekeeper.
+			ENDDO
+		ELSE
+			DORAND  3
+				SAY Our farmers sell at a shop near the northern edge of town, I think.
+				SAY The farmers' shop is near the mage.
+				SAY The farmer's market is between the woodworker's shop and the beekeeper.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY This is fine country for growing food. Our farmers sell at a shop near the northern edge of town, toward the middle and just south of the theatre.
+				SAY Fresh food is a gift of nature ... and a true bounty can be found at the farmers' shop, just north of the mage.
+				SAY What is good for the body is good for the soul. There is a bounty to be had at the farmer's market, between the woodworker's shop and the beekeeper.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY This is fine country for growing food. Our farmers sell at a shop near the northern edge of town, toward the middle and just south of the theatre.
+				SAY Fresh food is a gift of nature ... and a true bounty can be found at the farmers' shop, just north of the mage.
+				SAY What is good for the body is good for the soul. There is a bounty to be had at the farmer's market, between the woodworker's shop and the beekeeper.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY This is fine country for growing food. Our farmers sell at a shop near the northern edge of town, toward the middle and just south of the theatre.
+				SAY Fresh food is a gift of nature ... and a true bounty can be found at the farmers' shop, just north of the mage.
+				SAY What is good for the body is good for the soul. There is a bounty to be had at the farmer's market, between the woodworker's shop and the beekeeper.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY This is fine country for growing food. Our farmers sell at a shop near the northern edge of town, toward the middle and just south of the theatre.
+				SAY Fresh food is a gift of nature ... and a true bounty can be found at the farmers' shop, just north of the mage.
+				SAY What is good for the body is good for the soul. There is a bounty to be had at the farmer's market, between the woodworker's shop and the beekeeper.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=tavern
+ON=ale
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The tavern sits on the western shore.
+				SAY The tavern is near the Ranger's guild hall.
+				SAY Tavern? We only got the one, and 'tis on the west side of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The tavern sits on the western shore.
+				SAY The tavern is near the Ranger's guild hall.
+				SAY Tavern? We only got the one, and 'tis on the west side of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The tavern sits on the western shore. It is just north of Town Hall
+									SAY The tavern is a good place to relax. If thou canst find the Ranger's guild hall on the west side of town, look a bit south for the tavern.
+				SAY Tavern? We only have the one, and 'tis on the west side of town. We'd have a second, mayhap, if the ranger's would drink like real soldiers.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The tavern sits on the western shore. It is just north of Town Hall
+									SAY The tavern is a good place to relax. If thou canst find the Ranger's guild hall on the west side of town, look a bit south for the tavern.
+				SAY Tavern? We only have the one, and 'tis on the west side of town. We'd have a second, mayhap, if the ranger's would drink like real soldiers.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The tavern sits on the western shore. It is just north of Town Hall
+				SAY The tavern is a good place to relax. If thou canst find the Ranger's guild hall on the west side of town, look a bit south for the tavern.
+				SAY Tavern? We only have the one, and 'tis on the west side of town. We'd have a second, mayhap, if the ranger's would drink like real soldiers.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The tavern sits on the western shore. It is just north of Town Hall
+				SAY The tavern is a good place to relax. If thou canst find the Ranger's guild hall on the west side of town, look a bit south for the tavern.
+				SAY Tavern? We only have the one, and 'tis on the west side of town. We'd have a second, mayhap, if the ranger's would drink like real soldiers.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=armor
+ON=armour
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The armourer is toward the center of town.
+				SAY Armour can be had from a shop just east of the tavern.
+				SAY The armourer is to the north of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The armourer is toward the center of town.
+				SAY Armour can be had from a shop just east of the tavern.
+				SAY The armourer is to the north of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The armourer is toward the center of town, but off a bit to the north-west.
+				SAY Armour can be had from a shop just east of the tavern and the rangers' guildhouse.
+				SAY If thou knowest where the beekeeper is, at the north edge of town, then thou'lt see the armourer but one door south of it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The armourer is toward the center of town, but off a bit to the north-west.
+				SAY Armour can be had from a shop just east of the tavern and the rangers' guildhouse.
+				SAY If thou knowest where the beekeeper is, at the north edge of town, then thou'lt see the armourer but one door south of it.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The armourer is toward the center of town, but off a bit to the north-west.
+				SAY Armour can be had from a shop just east of the tavern and the rangers' guildhouse.
+				SAY If thou knowest where the beekeeper is, at the north edge of town, then thou'lt see the armourer but one door south of it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The armourer is toward the center of town, but off a bit to the north-west.
+				SAY Armour can be had from a shop just east of the tavern and the rangers' guildhouse.
+				SAY If thou knowest where the beekeeper is, at the north edge of town, then thou'lt see the armourer but one door south of it.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=weapons
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is north and east of town.
+				SAY Weapons? Thou'lt find that shop north of the clothes store.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is north and east of town.
+				SAY Weapons? Thou'lt find that shop north of the clothes store.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is to the north and east of town, just south of the alchemist's place.
+				SAY Weapons? Thou'lt find that shop north of the clothes store and east of the woodworker's.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is to the north and east of town, just south of the alchemist's place.
+				SAY Weapons? Thou'lt find that shop north of the clothes store and east of the woodworker's.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is to the north and east of town, just south of the alchemist's place.
+				SAY Weapons? Thou'lt find that shop north of the clothes store and east of the woodworker's.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Weapons can be had from the shop in the north-east corner of town.
+				SAY The weapons shop is to the north and east of town, just south of the alchemist's place.
+				SAY Weapons? Thou'lt find that shop north of the clothes store and east of the woodworker's.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=blacksmith
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town.
+				SAY Just north of the healer is our blacksmith.
+				SAY The blacksmith's shop is 'twixt the clothes shop and the mage's place.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town.
+				SAY Just north of the healer is our blacksmith.
+				SAY The blacksmith's shop is 'twixt the clothes shop and the mage's place.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town, somewhat to the center.
+				SAY Just north of the healer is where our blacksmith keeps shop.
+				SAY If it is the blacksmith's shop thou'rt wanting, it is betwixt the clothes shop and the mage's place.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town, somewhat to the center.
+				SAY Just north of the healer is where our blacksmith keeps shop.
+				SAY If it is the blacksmith's shop thou'rt wanting, it is betwixt the clothes shop and the mage's place.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town, somewhat to the center.
+				SAY Just north of the healer is where our blacksmith keeps shop.
+				SAY If it is the blacksmith's shop thou'rt wanting, it is betwixt the clothes shop and the mage's place.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The blacksmith can be found toward the east of town, somewhat to the center.
+				SAY Just north of the healer is where our blacksmith keeps shop.
+				SAY If it is the blacksmith's shop thou'rt wanting, it is betwixt the clothes shop and the mage's place.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=clothier
+ON=cloth
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The clothier is north of the dock.
+				SAY New clothes can be had from a shop 'twixt the weaponeer and the blacksmith.
+				SAY I always buy clothes from the place on the east side of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The clothier is north of the dock.
+				SAY New clothes can be had from a shop 'twixt the weaponeer and the blacksmith.
+				SAY I always buy clothes from the place on the east side of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The clothier keeps his shop on the east shore, three doors north of the dock.
+				SAY New clothes can be had from a shop on the eastern side of town, betwixt the weaponeer and the blacksmith.
+				SAY Clean, new clothes free the mind from the mundane troubles, don't thou think? I always buy clothes from the place on the east side of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The clothier keeps his shop on the east shore, three doors north of the dock.
+				SAY New clothes can be had from a shop on the eastern side of town, betwixt the weaponeer and the blacksmith.
+				SAY Clean, new clothes free the mind from the mundane troubles, don't thou think? I always buy clothes from the place on the east side of town.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The clothier keeps his shop on the east shore, three doors north of the dock.
+				SAY New clothes can be had from a shop on the eastern side of town, betwixt the weaponeer and the blacksmith.
+				SAY Clean, new clothes free the mind from the mundane troubles, don't thou think? I always buy clothes from the place on the east side of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The clothier keeps his shop on the east shore, three doors north of the dock.
+				SAY New clothes can be had from a shop on the eastern side of town, betwixt the weaponeer and the blacksmith.
+				SAY Clean, new clothes free the mind from the mundane troubles, don't thou think? I always buy clothes from the place on the east side of town.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=beekeeper
+ON=honey
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The beekeeper is toward the north of town.
+				SAY Honey? I buy mine at the place just north of the armourer.
+				SAY The Beekeeper's shop is just east of the rangers' guildhouse.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The beekeeper is toward the north of town.
+				SAY Honey? I buy mine at the place just north of the armourer.
+				SAY The Beekeeper's shop is just east of the rangers' guildhouse.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The beekeeper has a shop toward the north of town, just south of the theatre.
+				SAY Honey? 'Tis easier to buy it than to risk angering the insect world. I buy mine at the place just north of the armourer.
+				SAY I don't have much of a sweet tooth myself, but folks around here get honey from the shop just east of the rangers' guildhouse.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The beekeeper has a shop toward the north of town, just south of the theatre.
+				SAY Honey? 'Tis easier to buy it than to risk angering the insect world. I buy mine at the place just north of the armourer.
+				SAY I don't have much of a sweet tooth myself, but folks around here get honey from the shop just east of the rangers' guildhouse.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The beekeeper has a shop toward the north of town, just south of the theatre.
+				SAY Honey? 'Tis easier to buy it than to risk angering the insect world. I buy mine at the place just north of the armourer.
+				SAY I don't have much of a sweet tooth myself, but folks around here get honey from the shop just east of the rangers' guildhouse.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The beekeeper has a shop toward the north of town, just south of the theatre.
+				SAY Honey? 'Tis easier to buy it than to risk angering the insect world. I buy mine at the place just north of the armourer.
+				SAY I don't have much of a sweet tooth myself, but folks around here get honey from the shop just east of the rangers' guildhouse.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=animal*trainer
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The animal trainer works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper.
+				SAY Most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The animal trainer works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper.
+				SAY Most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I've heard good things about the animal trainer who works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper. They are much the same thing, to my mind.
+				SAY I've always managed to teach my beasts myself, but most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I've heard good things about the animal trainer who works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper. They are much the same thing, to my mind.
+				SAY I've always managed to teach my beasts myself, but most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I've heard good things about the animal trainer who works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper. They are much the same thing, to my mind.
+				SAY I've always managed to teach my beasts myself, but most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY I've heard good things about the animal trainer who works north of town.
+				SAY The animal trainer sets up shop just north of the beekeeper. They are much the same thing, to my mind.
+				SAY I've always managed to teach my beasts myself, but most folk go to the trainer in the north west corner of town.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=alchem
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore.
+				SAY The alchemist keeps shop far to the north and east of town.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore.
+				SAY The alchemist keeps shop far to the north and east of town.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore. I've oftentimes seen smoke curling from beneath his door, I'll warn thee.
+				SAY The alchemist keeps shop far to the north and east of town. We've found 'tis safer that way.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore. I've oftentimes seen smoke curling from beneath his door, I'll warn thee.
+				SAY The alchemist keeps shop far to the north and east of town. We've found 'tis safer that way.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore. I've oftentimes seen smoke curling from beneath his door, I'll warn thee.
+				SAY The alchemist keeps shop far to the north and east of town. We've found 'tis safer that way.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY The alchemist's shop is the very most northeast place in town.
+				SAY Alchemy? Go to the northmost shop on the eastern shore. I've oftentimes seen smoke curling from beneath his door, I'll warn thee.
+				SAY The alchemist keeps shop far to the north and east of town. We've found 'tis safer that way.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=ship*wright
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY We got a real good shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island.
+				SAY Shipwright? Nearest the dock, o'course.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY We got a real good shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island.
+				SAY Shipwright? Nearest the dock, o'course.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY We've a fine shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island, and there's not many in the realm with skill to match, I'll warrant thee.
+				SAY Shipwright? Nearest the dock, o'course. 'Twould be peculiar to find his wares inland, it would.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY We've a fine shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island, and there's not many in the realm with skill to match, I'll warrant thee.
+				SAY Shipwright? Nearest the dock, o'course. 'Twould be peculiar to find his wares inland, it would.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY We've a fine shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island, and there's not many in the realm with skill to match, I'll warrant thee.
+				SAY Shipwright? Nearest the dock, o'course. 'Twould be peculiar to find his wares inland, it would.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY We've a fine shipwright, close on to the southernmost dock.
+				SAY The shipwright is southmost on the island, and there's not many in the realm with skill to match, I'll warrant thee.
+				SAY Shipwright? Nearest the dock, o'course. 'Twould be peculiar to find his wares inland, it would.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=mapmaker
+ON=cartographer
+ON=map
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Mapmakers are found with shipwrights.
+	      			SAY If there ain't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Mapmakers are found with shipwrights.
+	      			SAY If there ain't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Cartographer's are usually found sharing space with shipwrights.
+		       		SAY If there isn't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Cartographer's are usually found sharing space with shipwrights.
+		       		SAY If there isn't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Cartographer's are usually found sharing space with shipwrights.
+		       		SAY If there isn't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Cartographer's are usually found sharing space with shipwrights.
+		       		SAY If there isn't a mapmaker to be found at the shipwright's, then I can't help thee much.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=farm
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Farmers work over on the mainland.
+				SAY We got four farmers living on the mainland.
+				SAY The soil's better on the mainland for farming, I'd guess.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Farmers work over on the mainland.
+				SAY We got four farmers living on the mainland.
+				SAY The soil's better on the mainland for farming, I'd guess.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Farmers come into town, but their crops are all a bit over on the mainland.
+				SAY We've got four farmers living on the mainland.
+				SAY There used to be farms on the island, but the town grew up around 'em. The soil's better on the mainland, I'd guess.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Farmers come into town, but their crops are all a bit over on the mainland.
+				SAY We've got four farmers living on the mainland.
+				SAY There used to be farms on the island, but the town grew up around 'em. The soil's better on the mainland, I'd guess.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Farmers come into town, but their crops are all a bit over on the mainland.
+				SAY We've got four farmers living on the mainland.
+				SAY There used to be farms on the island, but the town grew up around 'em. The soil's better on the mainland, I'd guess.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Farmers come into town, but their crops are all a bit over on the mainland.
+				SAY We've got four farmers living on the mainland.
+				SAY There used to be farms on the island, but the town grew up around 'em. The soil's better on the mainland, I'd guess.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=theatre
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our theater is on the northern edge of town.
+				SAY The theater is to the north.
+				SAY Theater? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our theater is on the northern edge of town.
+				SAY The theater is to the north.
+				SAY Theater? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our theatre is on the northern edge of town, just a bit north and east of the beekeeper.
+				SAY If thou hast found the farmers' shop to the north, it is one door more north than that.
+				SAY Theatre? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our theatre is on the northern edge of town, just a bit north and east of the beekeeper.
+				SAY If thou hast found the farmers' shop to the north, it is one door more north than that.
+				SAY Theatre? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Our theatre is on the northern edge of town, just a bit north and east of the beekeeper.
+				SAY If thou hast found the farmers' shop to the north, it is one door more north than that.
+				SAY Theatre? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our theatre is on the northern edge of town, just a bit north and east of the beekeeper.
+				SAY If thou hast found the farmers' shop to the north, it is one door more north than that.
+				SAY Theatre? 'Tis toward the center of the upper half of the island.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=carver
+ON=woodcarver
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town.
+				SAY If thou can find the blacksmith, the woodcarver is nearby.
+				SAY The shop is near the center of town, but a bit north and east.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town.
+				SAY If thou can find the blacksmith, the woodcarver is nearby.
+				SAY The shop is near the center of town, but a bit north and east.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town, center between the weaponsmith and the farmers' shop.
+				SAY If thou canst find the blacksmith, the woodcarver is but one store north.
+				SAY With all the trees near Skara Brae, no wonder thou art lookin' for the woodworker. The shop is somewhat near the center of town, but a bit north and east.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town, center between the weaponsmith and the farmers' shop.
+				SAY If thou canst find the blacksmith, the woodcarver is but one store north.
+				SAY With all the trees near Skara Brae, no wonder thou art lookin' for the woodworker. The shop is somewhat near the center of town, but a bit north and east.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town, center between the weaponsmith and the farmers' shop.
+				SAY If thou canst find the blacksmith, the woodcarver is but one store north.
+				SAY With all the trees near Skara Brae, no wonder thou art lookin' for the woodworker. The shop is somewhat near the center of town, but a bit north and east.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Woodcrafter? That shop is toward the north of town, center between the weaponsmith and the farmers' shop.
+				SAY If thou canst find the blacksmith, the woodcarver is but one store north.
+				SAY With all the trees near Skara Brae, no wonder thou art lookin' for the woodworker. The shop is somewhat near the center of town, but a bit north and east.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*britain*
+ON=*capital*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 13
+				SAY Britain's a big town.
+				SAY Britain? They say that's where Lord British holds his court, but I never understood. I thought it was too big to hold.
+				SAY Britain? 'Tis the capital of the whole wide world, I hear.
+				SAY Britain ain't so much as some folks thinks it is.
+				SAY Magic is Britain. Must have mages or something ....
+				SAY I don't like cities like Britain.
+				SAY I dunno. Somewhere far away, maybe.
+				SAY I couldn't never get a job in Britain.
+				SAY T'is a pile of posh prigs, is Britain.
+				SAY Britain? Not around here.
+				SAY Britain? Quite big.
+				SAY Bet there ain't a soul there who likes rutabagas for breakfast in Britain.
+				SAY Britain ain't for me. I'd cut me mouth open.
+			ENDDO
+		ELSE
+			DORAND 13
+				SAY Britain's a big town.
+				SAY Britain? They say that's where Lord British holds his court, but I never understood. I thought it was too big to hold.
+				SAY Britain? 'Tis the capital of the whole wide world, I hear.
+				SAY Britain ain't so much as some folks thinks it is.
+				SAY Magic is Britain. Must have mages or something ....
+				SAY I don't like cities like Britain.
+				SAY I dunno. Somewhere far away, maybe.
+				SAY I couldn't never get a job in Britain.
+				SAY T'is a pile of posh prigs, is Britain.
+				SAY Britain? Not around here.
+				SAY Britain? Quite big.
+				SAY Bet there ain't a soul there who likes rutabagas for breakfast in Britain.
+				SAY Britain ain't for me. I'd cut me mouth open.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 13
+				SAY Britain thou'rt askin' about? I'm told 'tis the biggest city in the land. Don't see what all t'fuss is about. The size of hereabouts is plenty big for me.
+				SAY Britain? I went there once. 'Tis over by the eastern shore, at the mouth of a whoppin' great river. That's where Lord British holds 'is court, but I saw him not even once.
+				SAY Britain? 'Tis the capital of the whole wide world, o'course. Sits on the shore of Britanny Bay way off yonder.
+				SAY Britain isn't so much as some folks thinks it is. They got lots of everything, but 'tis all flash and bother. Shiny nonsense....
+				SAY A place of magic, is Britain. Some say they invent a new spell every day. Don't know how they could use that many ....
+				SAY They're fair folk in Britain, mainly. A bit overloud for my tastes.
+				SAY Someday I'll go to Britain again, maybe settle down. They've got everything there ... games and shoppes and magic and just everything.
+				SAY Britain was the first place where people are judged according to their own accomplishments, not their fathers'. 'Tis a tricky thing to make work, I'd imagine.
+				SAY 'Tis  the very center upon which all ill-natured rogues converge. They seek to destroy what they cannot understand.
+				SAY Britain? Seems a nice place, from what all I've heard.
+				SAY Britain? Been once. Quite big.
+				SAY Oh, posh. Britain's a place for swelled heads. All art and music and dilly dancin'. Bet there's not a soul there who likes rutabagas for breakfast.
+				SAY I hear the houses in Britain are too fine for bugs in the butter.
+			ENDDO
+		ELSE
+			DORAND 13
+				SAY Britain thou'rt askin' about? I'm told 'tis the biggest city in the land. Don't see what all t'fuss is about. The size of hereabouts is plenty big for me.
+				SAY Britain? I went there once. 'Tis over by the eastern shore, at the mouth of a whoppin' great river. That's where Lord British holds 'is court, but I saw him not even once.
+				SAY Britain? 'Tis the capital of the whole wide world, o'course. Sits on the shore of Britanny Bay way off yonder.
+				SAY Britain isn't so much as some folks thinks it is. They got lots of everything, but 'tis all flash and bother. Shiny nonsense....
+				SAY A place of magic, is Britain. Some say they invent a new spell every day. Don't know how they could use that many ....
+				SAY They're fair folk in Britain, mainly. A bit overloud for my tastes.
+				SAY Someday I'll go to Britain again, maybe settle down. They've got everything there ... games and shoppes and magic and just everything.
+				SAY Britain was the first place where people are judged according to their own accomplishments, not their fathers'. 'Tis a tricky thing to make work, I'd imagine.
+				SAY 'Tis  the very center upon which all ill-natured rogues converge. They seek to destroy what they cannot understand.
+				SAY Britain? Seems a nice place, from what all I've heard.
+				SAY Britain? Been once. Quite big.
+				SAY Oh, posh. Britain's a place for swelled heads. All art and music and dilly dancin'. Bet there's not a soul there who likes rutabagas for breakfast.
+				SAY I hear the houses in Britain are too fine for bugs in the butter.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 13
+				SAY Britain thou'rt askin' about? I'm told 'tis the biggest city in the land. Don't see what all t'fuss is about. The size of hereabouts is plenty big for me.
+				SAY Britain? I went there once. 'Tis over by the eastern shore, at the mouth of a whoppin' great river. That's where Lord British holds 'is court, but I saw him not even once.
+				SAY Britain? 'Tis the capital of the whole wide world, o'course. Sits on the shore of Britanny Bay way off yonder.
+				SAY Britain isn't so much as some folks thinks it is. They got lots of everything, but 'tis all flash and bother. Shiny nonsense....
+				SAY A place of magic, is Britain. Some say they invent a new spell every day. Don't know how they could use that many ....
+				SAY They're fair folk in Britain, mainly. A bit overloud for my tastes.
+				SAY Someday I'll go to Britain again, maybe settle down. They've got everything there ... games and shoppes and magic and just everything.
+				SAY Britain was the first place where people are judged according to their own accomplishments, not their fathers'. 'Tis a tricky thing to make work, I'd imagine.
+				SAY 'Tis  the very center upon which all ill-natured rogues converge. They seek to destroy what they cannot understand.
+				SAY Britain? Seems a nice place, from what all I've heard.
+				SAY Britain? Been once. Quite big.
+				SAY Oh, posh. Britain's a place for swelled heads. All art and music and dilly dancin'. Bet there's not a soul there who likes rutabagas for breakfast.
+				SAY I hear the houses in Britain are too fine for bugs in the butter.
+			ENDDO
+		ELSE
+			DORAND 13
+				SAY Britain thou'rt askin' about? I'm told 'tis the biggest city in the land. Don't see what all t'fuss is about. The size of hereabouts is plenty big for me.
+				SAY Britain? I went there once. 'Tis over by the eastern shore, at the mouth of a whoppin' great river. That's where Lord British holds 'is court, but I saw him not even once.
+				SAY Britain? 'Tis the capital of the whole wide world, o'course. Sits on the shore of Britanny Bay way off yonder.
+				SAY Britain isn't so much as some folks thinks it is. They got lots of everything, but 'tis all flash and bother. Shiny nonsense....
+				SAY A place of magic, is Britain. Some say they invent a new spell every day. Don't know how they could use that many ....
+				SAY They're fair folk in Britain, mainly. A bit overloud for my tastes.
+				SAY Someday I'll go to Britain again, maybe settle down. They've got everything there ... games and shoppes and magic and just everything.
+				SAY Britain was the first place where people are judged according to their own accomplishments, not their fathers'. 'Tis a tricky thing to make work, I'd imagine.
+				SAY 'Tis  the very center upon which all ill-natured rogues converge. They seek to destroy what they cannot understand.
+				SAY Britain? Seems a nice place, from what all I've heard.
+				SAY Britain? Been once. Quite big.
+				SAY Oh, posh. Britain's a place for swelled heads. All art and music and dilly dancin'. Bet there's not a soul there who likes rutabagas for breakfast.
+				SAY I hear the houses in Britain are too fine for bugs in the butter.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*Trinsic*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 11
+				SAY Trinsic? Naw, Trin's fine, he just looks that way.
+				SAY I don't know where Trinsic is.
+				SAY Never been to Trinsic.
+				SAY Trinsic ... they think every day in Trinsic.
+				SAY Trinsic? That's my dog's name.
+				SAY Don't know nobody from Trinsic.
+				SAY Never seen nothin' grown in Trinsic.
+				SAY Don't know nobody who's ever been to Trinsic.
+				SAY I hope thou ain't wantin' to go to Trinsic. I don't think thou can get there from here.
+				SAY What'd ye say? Thou wants a hair trimmin'?.
+				SAY Trinsic? That's somewhere else, I'm pretty sure.
+			ENDDO
+		ELSE
+			DORAND 11
+				SAY Trinsic? Naw, Trin's fine, he just looks that way.
+				SAY I don't know where Trinsic is.
+				SAY Never been to Trinsic.
+				SAY Trinsic ... they think every day in Trinsic.
+				SAY Trinsic? That's my dog's name.
+				SAY Don't know nobody from Trinsic.
+				SAY Never seen nothin' grown in Trinsic.
+				SAY Don't know nobody who's ever been to Trinsic.
+				SAY I hope thou ain't wantin' to go to Trinsic. I don't think thou can get there from here.
+				SAY What'd ye say? Thou wants a hair trimmin'?.
+				SAY Trinsic? That's somewhere else, I'm pretty sure.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 12
+				SAY Trinsic? 'Tis near the Cape of Heroes, I think.
+				SAY If thou'rt looking for Trinsic, 'tis south, but along the eastern coast.
+				SAY Thou must needs be a fisher or an inventor if thou'rt interested in Trinsic. Fish, fighters and fools, that's what they've got.
+				SAY Trinsic is a clever place. They've got fellows there who spend all day thinkin' about weapons of war and other such things to improve the quality of life.
+				SAY I saw a combat mage on his way to Trinsic once. Said he was going to teach battle magic to the paladins.
+				SAY I met a man from Jhelom who said that Trinsic buys war horses like a shepherd buys apples!
+				SAY 'Tis too smart for me there by half, and that's the truth. Trinsic is all engineers from Britain and Minoc and Moonglow. I'd be feared to speak for soundin' stupid.
+				SAY I don't know much about Trinsic. I think they make paladins or palaquins or something.
+				SAY Trinsic is a tough place. The whole thing is warriors, and the rest is city guards.
+				SAY There be giants, ogres and trolls near Trinsic ... and pirates in the waters.
+				SAY Trinsic? 'Tis the land's guardian, a city that teaches paladins the ways of honor and virtue.
+				SAY 'Tis a place of swift justice, is Trinsic. Thieves are as rare as whistling cats.
+			ENDDO
+		ELSE
+			DORAND 12
+				SAY Trinsic? 'Tis near the Cape of Heroes, I think.
+				SAY If thou'rt looking for Trinsic, 'tis south, but along the eastern coast.
+				SAY Thou must needs be a fisher or an inventor if thou'rt interested in Trinsic. Fish, fighters and fools, that's what they've got.
+				SAY Trinsic is a clever place. They've got fellows there who spend all day thinkin' about weapons of war and other such things to improve the quality of life.
+				SAY I saw a combat mage on his way to Trinsic once. Said he was going to teach battle magic to the paladins.
+				SAY I met a man from Jhelom who said that Trinsic buys war horses like a shepherd buys apples!
+				SAY 'Tis too smart for me there by half, and that's the truth. Trinsic is all engineers from Britain and Minoc and Moonglow. I'd be feared to speak for soundin' stupid.
+				SAY I don't know much about Trinsic. I think they make paladins or palaquins or something.
+				SAY Trinsic is a tough place. The whole thing is warriors, and the rest is city guards.
+				SAY There be giants, ogres and trolls near Trinsic ... and pirates in the waters.
+				SAY Trinsic? 'Tis the land's guardian, a city that teaches paladins the ways of honor and virtue.
+				SAY 'Tis a place of swift justice, is Trinsic. Thieves are as rare as whistling cats.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 12
+				SAY Trinsic? 'Tis near the Cape of Heroes, I think.
+				SAY If thou'rt looking for Trinsic, 'tis south, but along the eastern coast.
+				SAY Thou must needs be a fisher or an inventor if thou'rt interested in Trinsic. Fish, fighters and fools, that's what they've got.
+				SAY Trinsic is a clever place. They've got fellows there who spend all day thinkin' about weapons of war and other such things to improve the quality of life.
+				SAY I saw a combat mage on his way to Trinsic once. Said he was going to teach battle magic to the paladins.
+				SAY I met a man from Jhelom who said that Trinsic buys war horses like a shepherd buys apples!
+				SAY 'Tis too smart for me there by half, and that's the truth. Trinsic is all engineers from Britain and Minoc and Moonglow. I'd be feared to speak for soundin' stupid.
+				SAY I don't know much about Trinsic. I think they make paladins or palaquins or something.
+				SAY Trinsic is a tough place. The whole thing is warriors, and the rest is city guards.
+				SAY There be giants, ogres and trolls near Trinsic ... and pirates in the waters.
+				SAY Trinsic? 'Tis the land's guardian, a city that teaches paladins the ways of honor and virtue.
+				SAY 'Tis a place of swift justice, is Trinsic. Thieves are as rare as whistling cats.
+			ENDDO
+		ELSE
+			DORAND 12
+				SAY Trinsic? 'Tis near the Cape of Heroes, I think.
+				SAY If thou'rt looking for Trinsic, 'tis south, but along the eastern coast.
+				SAY Thou must needs be a fisher or an inventor if thou'rt interested in Trinsic. Fish, fighters and fools, that's what they've got.
+				SAY Trinsic is a clever place. They've got fellows there who spend all day thinkin' about weapons of war and other such things to improve the quality of life.
+				SAY I saw a combat mage on his way to Trinsic once. Said he was going to teach battle magic to the paladins.
+				SAY I met a man from Jhelom who said that Trinsic buys war horses like a shepherd buys apples!
+				SAY 'Tis too smart for me there by half, and that's the truth. Trinsic is all engineers from Britain and Minoc and Moonglow. I'd be feared to speak for soundin' stupid.
+				SAY I don't know much about Trinsic. I think they make paladins or palaquins or something.
+				SAY Trinsic is a tough place. The whole thing is warriors, and the rest is city guards.
+				SAY There be giants, ogres and trolls near Trinsic ... and pirates in the waters.
+				SAY Trinsic? 'Tis the land's guardian, a city that teaches paladins the ways of honor and virtue.
+				SAY 'Tis a place of swift justice, is Trinsic. Thieves are as rare as whistling cats.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*occlo*
+ON=*okllo*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Ocllo? Don't think I heard of it.
+				SAY Ocllo? I think I had that when I was a kid. Still gives me trouble on cold days.
+				SAY Ocllo ... hmmm. 'Tis a kind of onion, I believe.
+				SAY Ocllo ... I don't think I've heard it.
+				SAY Ocllo? Sounds like the beginning of a joke!
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Ocllo? Don't think I heard of it.
+		   		SAY Ocllo? I think I had that when I was a kid. Still gives me trouble on cold days.
+				SAY Ocllo ... hmmm. 'Tis a kind of onion, I believe.
+				SAY Ocllo ... I don't think I've heard it.
+				SAY Ocllo? Sounds like the beginning of a joke!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Ocllo? Doubt I heard of it.
+				SAY Ocllo? Island folks, I think.
+				SAY I've no ken of Ocllo.
+				SAY Ocllo ... hmmm. 'Tis an island, I believe.
+				SAY Ocllo ... rings a bell. Mayhaps something to do with salt ....
+				SAY Ocllo? Sounds very like the beginning of a joke!
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Ocllo? Doubt I heard of it.
+		   		SAY Ocllo? Island folks, I think.
+				SAY I've no ken of Ocllo.
+				SAY Ocllo ... hmmm. 'Tis an island, I believe.
+				SAY Ocllo ... rings a bell. Mayhaps something to do with salt ....
+				SAY Ocllo? Sounds very like the beginning of a joke!
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Ocllo? Doubt I heard of it.
+				SAY Ocllo? Island folks, I think.
+				SAY I've no ken of Ocllo.
+				SAY Ocllo ... hmmm. 'Tis an island, I believe.
+				SAY Ocllo ... rings a bell. Mayhaps something to do with salt ....
+				SAY Ocllo? Sounds very like the beginning of a joke!
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Ocllo? Doubt I heard of it.
+				SAY Ocllo? Island folks, I think.
+				SAY I've no ken of Ocllo.
+				SAY Ocllo ... hmmm. 'Tis an island, I believe.
+				SAY Ocllo ... rings a bell. Mayhaps something to do with salt ....
+				SAY Ocllo? Sounds very like the beginning of a joke!
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*jhelom*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 13
+				SAY Jhelom? We had that once, and lost three or four of the neighbors, I think.
+				SAY Jhelom? Thou ain't there, thou knows.
+				SAY Jhelom? Thou must be a fighter.
+				SAY I can't afford such a city.
+				SAY I can't breathe the air of fine cities.
+				SAY Jhelom is nothin' to me!
+				SAY I got nothin' that belongs to Jhelom.
+				SAY Ain't never been to Jhelom.
+				SAY I think they grow horses there.
+				SAY They got wore horses in Jhelom. Worse for wore.
+				SAY Jhelom? Pah!
+				SAY Thou won't catch me settin' foot in Jhelom.
+				SAY I heard that in Jhelom they'd kick thee in the teeth just as soon as look at thee.
+			ENDDO
+		ELSE
+			DORAND 13
+				SAY Jhelom? We had that once, and lost three or four of the neighbors, I think.
+				SAY Jhelom? Thou ain't there, thou knows.
+				SAY Jhelom? Thou must be a fighter.
+				SAY I can't afford such a city.
+				SAY I can't breathe the air of fine cities.
+				SAY Jhelom is nothin' to me!
+				SAY I got nothin' that belongs to Jhelom.
+				SAY Ain't never been to Jhelom.
+				SAY I think they grow horses there.
+				SAY They got wore horses in Jhelom. Worse for wore.
+				SAY Jhelom? Pah!
+				SAY Thou won't catch me settin' foot in Jhelom.
+				SAY I heard that in Jhelom they'd kick thee in the teeth just as soon as look at thee.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Jhelom? 'Tis to be found at the very most northern tip of the largest Valarian Isles.
+		   		SAY Me, now I've been to Jhelom in my youth, and what I remember most of all 'tis the hard, rocky beaches and the oddly sparse jungles.
+				SAY Jhelom 'tis the very place to go if thou'rt looking to hire mercenaries.
+				SAY An overabundance of mercenaries are found in Jhelom ... and the shops and other establishments that serve them that fight for a living.
+				SAY My sister lived in Jhelom for near on two years. She didn't like it ... too harsh for her tastes. All steel and iron, no silks and satins.
+				SAY There's only hard-edged rational folks in Jhelom. They've no use for mages, but a magic weapon or potion will fetch a fine price most days.
+				SAY They need a fair amount of goods in Jhelom. They once tried to set up a colony - called New Jhelom - to grow their goods for 'em. It didn't work out. Now it's called Nujel'm and 'tis a nasty wicked place.
+				SAY There's not a lot of natural good to be grown or mined at Jhelom. Rocky, thou knowest.
+				SAY Jhelom? They breed and train the best horses in the realm. Famous for it.
+				SAY 'T'ain't no horse better than a Valorian steed from Jhelom. Best war-mount a warrior could want.
+				SAY Jhelom? Pah! 'Tis a militocracy. Only ex-generals can rule, or some such nonsense.
+				SAY 'Tis very like Trinsic and Serpent's Hold. If thou likes one, thou wilt enjoy t'other.
+				SAY Jhelom sounds dangerous to me. Everybody's armed and 'tis said they'll challenge thee to a duel for no good reason.
+				SAY They're very daring in Jhelom. Good swordsmen and skilled riders.
+				SAY Thou'lt do fine in Jhelom. 'Tis only cowards they despise.
+				SAY Cannot say I care much for the ethics of Jhelom. Watch thy comrade's back, watch thine own. Paranoia, I call it.
+				SAY I saw a dance from Jhelom once. 'Twas done in Britannia. Looked like hackin' and slashin' and kickin' to me. Take away the music and thou wouldst call it a riot!
+				SAY Jhelom? Now there is a town without a lick of beauty. Sad, really.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Jhelom? 'Tis to be found at the very most northern tip of the largest Valarian Isles.
+		   		SAY Me, now I've been to Jhelom in my youth, and what I remember most of all 'tis the hard, rocky beaches and the oddly sparse jungles.
+				SAY Jhelom 'tis the very place to go if thou'rt looking to hire mercenaries.
+				SAY An overabundance of mercenaries are found in Jhelom ... and the shops and other establishments that serve them that fight for a living.
+				SAY My sister lived in Jhelom for near on two years. She didn't like it ... too harsh for her tastes. All steel and iron, no silks and satins.
+				SAY There's only hard-edged rational folks in Jhelom. They've no use for mages, but a magic weapon or potion will fetch a fine price most days.
+				SAY They need a fair amount of goods in Jhelom. They once tried to set up a colony - called New Jhelom - to grow their goods for 'em. It didn't work out. Now it's called Nujel'm and 'tis a nasty wicked place.
+				SAY There's not a lot of natural good to be grown or mined at Jhelom. Rocky, thou knowest.
+				SAY Jhelom? They breed and train the best horses in the realm. Famous for it.
+				SAY 'T'ain't no horse better than a Valorian steed from Jhelom. Best war-mount a warrior could want.
+				SAY Jhelom? Pah! 'Tis a militocracy. Only ex-generals can rule, or some such nonsense.
+				SAY 'Tis very like Trinsic and Serpent's Hold. If thou likes one, thou wilt enjoy t'other.
+				SAY Jhelom sounds dangerous to me. Everybody's armed and 'tis said they'll challenge thee to a duel for no good reason.
+				SAY They're very daring in Jhelom. Good swordsmen and skilled riders.
+				SAY Thou'lt do fine in Jhelom. 'Tis only cowards they despise.
+				SAY Cannot say I care much for the ethics of Jhelom. Watch thy comrade's back, watch thine own. Paranoia, I call it.
+				SAY I saw a dance from Jhelom once. 'Twas done in Britannia. Looked like hackin' and slashin' and kickin' to me. Take away the music and thou wouldst call it a riot!
+				SAY Jhelom? Now there is a town without a lick of beauty. Sad, really.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Jhelom? 'Tis to be found at the very most northern tip of the largest Valarian Isles.
+				SAY Me, now I've been to Jhelom in my youth, and what I remember most of all 'tis the hard, rocky beaches and the oddly sparse jungles.
+				SAY Jhelom 'tis the very place to go if thou'rt looking to hire mercenaries.
+				SAY An overabundance of mercenaries are found in Jhelom ... and the shops and other establishments that serve them that fight for a living.
+				SAY My sister lived in Jhelom for near on two years. She didn't like it ... too harsh for her tastes. All steel and iron, no silks and satins.
+				SAY There's only hard-edged rational folks in Jhelom. They've no use for mages, but a magic weapon or potion will fetch a fine price most days.
+				SAY They need a fair amount of goods in Jhelom. They once tried to set up a colony - called New Jhelom - to grow their goods for 'em. It didn't work out. Now it's called Nujel'm and 'tis a nasty wicked place.
+				SAY There's not a lot of natural good to be grown or mined at Jhelom. Rocky, thou knowest.
+				SAY Jhelom? They breed and train the best horses in the realm. Famous for it.
+				SAY 'T'ain't no horse better than a Valorian steed from Jhelom. Best war-mount a warrior could want.
+				SAY Jhelom? Pah! 'Tis a militocracy. Only ex-generals can rule, or some such nonsense.
+				SAY 'Tis very like Trinsic and Serpent's Hold. If thou likes one, thou wilt enjoy t'other.
+				SAY Jhelom sounds dangerous to me. Everybody's armed and 'tis said they'll challenge thee to a duel for no good reason.
+				SAY They're very daring in Jhelom. Good swordsmen and skilled riders.
+				SAY Thou'lt do fine in Jhelom. 'Tis only cowards they despise.
+				SAY Cannot say I care much for the ethics of Jhelom. Watch thy comrade's back, watch thine own. Paranoia, I call it.
+				SAY I saw a dance from Jhelom once. 'Twas done in Britannia. Looked like hackin' and slashin' and kickin' to me. Take away the music and thou wouldst call it a riot!
+				SAY Jhelom? Now there is a town without a lick of beauty. Sad, really.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Jhelom? 'Tis to be found at the very most northern tip of the largest Valarian Isles.
+				SAY Me, now I've been to Jhelom in my youth, and what I remember most of all 'tis the hard, rocky beaches and the oddly sparse jungles.
+				SAY Jhelom 'tis the very place to go if thou'rt looking to hire mercenaries.
+				SAY An overabundance of mercenaries are found in Jhelom ... and the shops and other establishments that serve them that fight for a living.
+				SAY My sister lived in Jhelom for near on two years. She didn't like it ... too harsh for her tastes. All steel and iron, no silks and satins.
+				SAY There's only hard-edged rational folks in Jhelom. They've no use for mages, but a magic weapon or potion will fetch a fine price most days.
+				SAY They need a fair amount of goods in Jhelom. They once tried to set up a colony - called New Jhelom - to grow their goods for 'em. It didn't work out. Now it's called Nujel'm and 'tis a nasty wicked place.
+				SAY There's not a lot of natural good to be grown or mined at Jhelom. Rocky, thou knowest.
+				SAY Jhelom? They breed and train the best horses in the realm. Famous for it.
+				SAY 'T'ain't no horse better than a Valorian steed from Jhelom. Best war-mount a warrior could want.
+				SAY Jhelom? Pah! 'Tis a militocracy. Only ex-generals can rule, or some such nonsense.
+				SAY 'Tis very like Trinsic and Serpent's Hold. If thou likes one, thou wilt enjoy t'other.
+				SAY Jhelom sounds dangerous to me. Everybody's armed and 'tis said they'll challenge thee to a duel for no good reason.
+				SAY They're very daring in Jhelom. Good swordsmen and skilled riders.
+				SAY Thou'lt do fine in Jhelom. 'Tis only cowards they despise.
+				SAY Cannot say I care much for the ethics of Jhelom. Watch thy comrade's back, watch thine own. Paranoia, I call it.
+				SAY I saw a dance from Jhelom once. 'Twas done in Britannia. Looked like hackin' and slashin' and kickin' to me. Take away the music and thou wouldst call it a riot!
+				SAY Jhelom? Now there is a town without a lick of beauty. Sad, really.					ENDDO
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*nujelm*
+ON=*nujel'm*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY I ain't familiar with Nujel'm.
+				SAY Nooj L. M. was a famous bard, my mother said.
+				SAY Never been to Nujel'm.
+				SAY Thou ain't in Nujel'm, nope.
+				SAY  got a cousin in Nujel'm. She got a good job as a waitress.
+				SAY Nujel'm ...? I remember somethin' someone said 'bout an island and that it was wicked.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY I ain't familiar with Nujel'm.
+				SAY Nooj L. M. was a famous bard, my mother said.
+				SAY Never been to Nujel'm.
+				SAY Thou ain't in Nujel'm, nope.
+				SAY  got a cousin in Nujel'm. She got a good job as a waitress.
+				SAY Nujel'm ...? I remember somethin' someone said 'bout an island and that it was wicked.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Tis far from most things, is Nujel'm. A good thing, too!
+				SAY I've never been to Nujel'm. I hear 'tis a desperately wicked place, where more skin is shown than covered!
+				SAY Nujel'm is an island city. Part of Britannia, but ... different.
+				SAY My cousin said that in Nujel'm inns, magic makes the beds every morning and polishes the shoes every night. Wonder what the servants do ....
+				SAY They grow naught but fancy fruit on that Nujel'm island. Everything else has to be brought by ship.
+				SAY Tell not a soul, but I want to go to Nujel'm someday. I'm savin' me coins up for a trip to their beaches. They say thou canst swim with not a stitch on at all!
+				SAY 'Tis a wicked place, is Nujel'm! They is ruled by despots who couldn't be prouder of the stranglehold they have on the city.
+				SAY The city guards of Nujel'm are bound to keep peace. They can execute a thief without askin' leave of anybody!
+				SAY A friend tells me it's a disgusting place. Nujel'm has no respect for decency. My friend's been there three times, and he'd know!
+				SAY Nujel'm's in no danger. So many ambassadors and lordlings spend their leisure hours there that all the lands would rise up to defend it.
+				SAY 'Tis a foul place, ruled by the get of pirates and pillagers.
+				SAY 'Twas a den of thieves once. Now Nujel'm has merchants, not cutthroats, who take all thy gold.
+				SAY I heard that on the island of Nujel'm, giving money to someone other than a Nujellan is punishable by death!
+				SAY The only thing free on Nujel'm is air, and any mage who conjures a way to charge gold for breathing will be hailed as a savior.
+				SAY Evil people walk the streets of Nujel'm. Slavers, assassins and such ilk are treated like regular citizens!
+				SAY I cannot stand the thought of Nujel'm! 'Tis a city without a soul!
+				SAY I heard Nujel'm is a beautiful place, full of color and magic.
+				SAY Nujel'm is gaudy and noisy. Behind the gilt is nothing but common avarice.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Tis far from most things, is Nujel'm. A good thing, too!
+				SAY I've never been to Nujel'm. I hear 'tis a desperately wicked place, where more skin is shown than covered!
+				SAY Nujel'm is an island city. Part of Britannia, but ... different.
+				SAY My cousin said that in Nujel'm inns, magic makes the beds every morning and polishes the shoes every night. Wonder what the servants do ....
+				SAY They grow naught but fancy fruit on that Nujel'm island. Everything else has to be brought by ship.
+				SAY Tell not a soul, but I want to go to Nujel'm someday. I'm savin' me coins up for a trip to their beaches. They say thou canst swim with not a stitch on at all!
+				SAY 'Tis a wicked place, is Nujel'm! They is ruled by despots who couldn't be prouder of the stranglehold they have on the city.
+				SAY The city guards of Nujel'm are bound to keep peace. They can execute a thief without askin' leave of anybody!
+				SAY A friend tells me it's a disgusting place. Nujel'm has no respect for decency. My friend's been there three times, and he'd know!
+				SAY Nujel'm's in no danger. So many ambassadors and lordlings spend their leisure hours there that all the lands would rise up to defend it.
+				SAY 'Tis a foul place, ruled by the get of pirates and pillagers.
+				SAY 'Twas a den of thieves once. Now Nujel'm has merchants, not cutthroats, who take all thy gold.
+				SAY I heard that on the island of Nujel'm, giving money to someone other than a Nujellan is punishable by death!
+				SAY The only thing free on Nujel'm is air, and any mage who conjures a way to charge gold for breathing will be hailed as a savior.
+				SAY Evil people walk the streets of Nujel'm. Slavers, assassins and such ilk are treated like regular citizens!
+				SAY I cannot stand the thought of Nujel'm! 'Tis a city without a soul!
+				SAY I heard Nujel'm is a beautiful place, full of color and magic.
+				SAY Nujel'm is gaudy and noisy. Behind the gilt is nothing but common avarice.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Tis far from most things, is Nujel'm. A good thing, too!
+				SAY I've never been to Nujel'm. I hear 'tis a desperately wicked place, where more skin is shown than covered!
+				SAY Nujel'm is an island city. Part of Britannia, but ... different.
+				SAY My cousin said that in Nujel'm inns, magic makes the beds every morning and polishes the shoes every night. Wonder what the servants do ....
+				SAY They grow naught but fancy fruit on that Nujel'm island. Everything else has to be brought by ship.
+				SAY Tell not a soul, but I want to go to Nujel'm someday. I'm savin' me coins up for a trip to their beaches. They say thou canst swim with not a stitch on at all!
+				SAY 'Tis a wicked place, is Nujel'm! They is ruled by despots who couldn't be prouder of the stranglehold they have on the city.
+				SAY The city guards of Nujel'm are bound to keep peace. They can execute a thief without askin' leave of anybody!
+				SAY A friend tells me it's a disgusting place. Nujel'm has no respect for decency. My friend's been there three times, and he'd know!
+				SAY Nujel'm's in no danger. So many ambassadors and lordlings spend their leisure hours there that all the lands would rise up to defend it.
+				SAY 'Tis a foul place, ruled by the get of pirates and pillagers.
+				SAY 'Twas a den of thieves once. Now Nujel'm has merchants, not cutthroats, who take all thy gold.
+				SAY I heard that on the island of Nujel'm, giving money to someone other than a Nujellan is punishable by death!
+				SAY The only thing free on Nujel'm is air, and any mage who conjures a way to charge gold for breathing will be hailed as a savior.
+				SAY Evil people walk the streets of Nujel'm. Slavers, assassins and such ilk are treated like regular citizens!
+				SAY I cannot stand the thought of Nujel'm! 'Tis a city without a soul!
+				SAY I heard Nujel'm is a beautiful place, full of color and magic.
+				SAY Nujel'm is gaudy and noisy. Behind the gilt is nothing but common avarice.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Tis far from most things, is Nujel'm. A good thing, too!
+			   	SAY I've never been to Nujel'm. I hear 'tis a desperately wicked place, where more skin is shown than covered!
+				SAY Nujel'm is an island city. Part of Britannia, but ... different.
+				SAY My cousin said that in Nujel'm inns, magic makes the beds every morning and polishes the shoes every night. Wonder what the servants do ....
+				SAY They grow naught but fancy fruit on that Nujel'm island. Everything else has to be brought by ship.
+				SAY Tell not a soul, but I want to go to Nujel'm someday. I'm savin' me coins up for a trip to their beaches. They say thou canst swim with not a stitch on at all!
+				SAY 'Tis a wicked place, is Nujel'm! They is ruled by despots who couldn't be prouder of the stranglehold they have on the city.
+				SAY The city guards of Nujel'm are bound to keep peace. They can execute a thief without askin' leave of anybody!
+				SAY A friend tells me it's a disgusting place. Nujel'm has no respect for decency. My friend's been there three times, and he'd know!
+				SAY Nujel'm's in no danger. So many ambassadors and lordlings spend their leisure hours there that all the lands would rise up to defend it.
+				SAY 'Tis a foul place, ruled by the get of pirates and pillagers.
+				SAY 'Twas a den of thieves once. Now Nujel'm has merchants, not cutthroats, who take all thy gold.
+				SAY I heard that on the island of Nujel'm, giving money to someone other than a Nujellan is punishable by death!
+				SAY The only thing free on Nujel'm is air, and any mage who conjures a way to charge gold for breathing will be hailed as a savior.
+				SAY Evil people walk the streets of Nujel'm. Slavers, assassins and such ilk are treated like regular citizens!
+				SAY I cannot stand the thought of Nujel'm! 'Tis a city without a soul!
+				SAY I heard Nujel'm is a beautiful place, full of color and magic.
+				SAY Nujel'm is gaudy and noisy. Behind the gilt is nothing but common avarice.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*moonglow*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 7
+				SAY Moonglow is my sister's cat's name.
+				SAY Moonglow's an island, I think.
+				SAY Moonglow's one of them places where they think a lot.
+				SAY Moonglow's where they grow new magic, I think.
+				SAY I met a mage from Moonglow, once.
+				SAY Moonglow? Pah!
+				SAY They got it sweet in Moonglow, thou knows. Not a real worker in the lot of 'em
+			ENDDO
+		ELSE
+			DORAND 7
+				SAY Moonglow is my sister's cat's name.
+				SAY Moonglow's an island, I think.
+				SAY Moonglow's one of them places where they think a lot.
+				SAY Moonglow's where they grow new magic, I think.
+				SAY I met a mage from Moonglow, once.
+				SAY Moonglow? Pah!
+				SAY They got it sweet in Moonglow, thou knows. Not a real worker in the lot of 'em
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Moonglow is on the southern tip of Verity isle.
+				SAY Verity Isle is Moonglow's whereabouts. The island is named so for the city puts much store in lofty intellectual pursuits.
+				SAY 'Tis a very logical place, is Moonglow. Practical buildings, straightforward streets. Not a bit of froo-froo.
+				SAY Moonglow people are too smart by half. They buy other cities' technology and then whack it to bits to see how it works.
+				SAY Moonglow is a place of new magic. I did hear that most new magic is developed there.
+				SAY The Lycaeum at Moonglow is famous. Nearly every wizard of any fame at all has studied there.
+				SAY 'Tis a shameful waste that the land around Moonglow is so rich, yet none really till the soil. Might dirty their hands! Pah!
+				SAY They've got it sweet in Moonglow, thou knowest. All is imported, but not a penny of tariff do they pay!
+				SAY I heard once that they do not have coin in Moonglow. I know not that I believe it, though.
+				SAY I met a man from Moonglow once. Like a teacher he was, he knew so much. Too much brains, I'd say ...
+				SAY I learned in school that Moonglow's export is knowledge. Hah! I bet not one of them knows half I know.
+				SAY Did'st thou knowest that Moonglow was beset by pirates and rogues long ago? Never no more, though. The mages keep the freebooters at bay.
+				SAY 'Tis not right, thou knowest. Moonglow is supposed to be for the benefit of the realm, but they get to sit on fancy cushions, whilst folks like thee and me do the real work.
+				SAY I met a lass from Moonglow last year. Her nose was so high, she'd drown in a rainshower.
+				SAY 'Tis a horrible place, I'm told. No holidays nor celebration feasts at all. 'Interruptions' they call 'em.
+				SAY Someone told me once that if the fine folk in Moonglow think thou'rt stupid, they'll not so much as let thee on shore!
+				SAY A scholar once told me that Moonglow people aren't as smart as they think they are.
+				SAY Moonglow? Pah! Too much thinkin', not enough livin' goin' on there.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Moonglow is on the southern tip of Verity isle.
+				SAY Verity Isle is Moonglow's whereabouts. The island is named so for the city puts much store in lofty intellectual pursuits.
+				SAY 'Tis a very logical place, is Moonglow. Practical buildings, straightforward streets. Not a bit of froo-froo.
+				SAY Moonglow people are too smart by half. They buy other cities' technology and then whack it to bits to see how it works.
+				SAY Moonglow is a place of new magic. I did hear that most new magic is developed there.
+				SAY The Lycaeum at Moonglow is famous. Nearly every wizard of any fame at all has studied there.
+				SAY 'Tis a shameful waste that the land around Moonglow is so rich, yet none really till the soil. Might dirty their hands! Pah!
+				SAY They've got it sweet in Moonglow, thou knowest. All is imported, but not a penny of tariff do they pay!
+				SAY I heard once that they do not have coin in Moonglow. I know not that I believe it, though.
+				SAY I met a man from Moonglow once. Like a teacher he was, he knew so much. Too much brains, I'd say ...
+				SAY I learned in school that Moonglow's export is knowledge. Hah! I bet not one of them knows half I know.
+				SAY Did'st thou knowest that Moonglow was beset by pirates and rogues long ago? Never no more, though. The mages keep the freebooters at bay.
+				SAY 'Tis not right, thou knowest. Moonglow is supposed to be for the benefit of the realm, but they get to sit on fancy cushions, whilst folks like thee and me do the real work.
+				SAY I met a lass from Moonglow last year. Her nose was so high, she'd drown in a rainshower.
+				SAY 'Tis a horrible place, I'm told. No holidays nor celebration feasts at all. 'Interruptions' they call 'em.
+				SAY Someone told me once that if the fine folk in Moonglow think thou'rt stupid, they'll not so much as let thee on shore!
+				SAY A scholar once told me that Moonglow people aren't as smart as they think they are.
+				SAY Moonglow? Pah! Too much thinkin', not enough livin' goin' on there.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Moonglow is on the southern tip of Verity isle.
+		   		SAY Verity Isle is Moonglow's whereabouts. The island is named so for the city puts much store in lofty intellectual pursuits.
+				SAY 'Tis a very logical place, is Moonglow. Practical buildings, straightforward streets. Not a bit of froo-froo.
+				SAY Moonglow people are too smart by half. They buy other cities' technology and then whack it to bits to see how it works.
+		   		SAY Moonglow is a place of new magic. I did hear that most new magic is developed there.
+				SAY The Lycaeum at Moonglow is famous. Nearly every wizard of any fame at all has studied there.
+				SAY 'Tis a shameful waste that the land around Moonglow is so rich, yet none really till the soil. Might dirty their hands! Pah!
+				SAY They've got it sweet in Moonglow, thou knowest. All is imported, but not a penny of tariff do they pay!
+				SAY I heard once that they do not have coin in Moonglow. I know not that I believe it, though.
+				SAY I met a man from Moonglow once. Like a teacher he was, he knew so much. Too much brains, I'd say ...
+				SAY I learned in school that Moonglow's export is knowledge. Hah! I bet not one of them knows half I know.
+				SAY Did'st thou knowest that Moonglow was beset by pirates and rogues long ago? Never no more, though. The mages keep the freebooters at bay.
+				SAY 'Tis not right, thou knowest. Moonglow is supposed to be for the benefit of the realm, but they get to sit on fancy cushions, whilst folks like thee and me do the real work.
+				SAY I met a lass from Moonglow last year. Her nose was so high, she'd drown in a rainshower.
+				SAY 'Tis a horrible place, I'm told. No holidays nor celebration feasts at all. 'Interruptions' they call 'em.
+				SAY Someone told me once that if the fine folk in Moonglow think thou'rt stupid, they'll not so much as let thee on shore!
+				SAY A scholar once told me that Moonglow people aren't as smart as they think they are.
+				SAY Moonglow? Pah! Too much thinkin', not enough livin' goin' on there.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Moonglow is on the southern tip of Verity isle.
+		   		SAY Verity Isle is Moonglow's whereabouts. The island is named so for the city puts much store in lofty intellectual pursuits.
+				SAY 'Tis a very logical place, is Moonglow. Practical buildings, straightforward streets. Not a bit of froo-froo.
+				SAY Moonglow people are too smart by half. They buy other cities' technology and then whack it to bits to see how it works.
+		   		SAY Moonglow is a place of new magic. I did hear that most new magic is developed there.
+				SAY The Lycaeum at Moonglow is famous. Nearly every wizard of any fame at all has studied there.
+				SAY 'Tis a shameful waste that the land around Moonglow is so rich, yet none really till the soil. Might dirty their hands! Pah!
+				SAY They've got it sweet in Moonglow, thou knowest. All is imported, but not a penny of tariff do they pay!
+				SAY I heard once that they do not have coin in Moonglow. I know not that I believe it, though.
+				SAY I met a man from Moonglow once. Like a teacher he was, he knew so much. Too much brains, I'd say ...
+				SAY I learned in school that Moonglow's export is knowledge. Hah! I bet not one of them knows half I know.
+				SAY Did'st thou knowest that Moonglow was beset by pirates and rogues long ago? Never no more, though. The mages keep the freebooters at bay.
+				SAY 'Tis not right, thou knowest. Moonglow is supposed to be for the benefit of the realm, but they get to sit on fancy cushions, whilst folks like thee and me do the real work.
+				SAY I met a lass from Moonglow last year. Her nose was so high, she'd drown in a rainshower.
+				SAY 'Tis a horrible place, I'm told. No holidays nor celebration feasts at all. 'Interruptions' they call 'em.
+				SAY Someone told me once that if the fine folk in Moonglow think thou'rt stupid, they'll not so much as let thee on shore!
+				SAY A scholar once told me that Moonglow people aren't as smart as they think they are.
+				SAY Moonglow? Pah! Too much thinkin', not enough livin' goin' on there.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*cove*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Cove? Yup, last year me roof done cove in!
+				SAY Cove? I ain't sure I ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I ain't sure where Cove is.
+				SAY Hmmm. Cove. Never been there.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Cove? Yup, last year me roof done cove in!
+				SAY Cove? I ain't sure I ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I ain't sure where Cove is.
+				SAY Hmmm. Cove. Never been there.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Cove? I'm not sure I've ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I'm not sure where Cove is.
+				SAY Hmmm. Cove. I've never been there.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Cove? I'm not sure I've ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I'm not sure where Cove is.
+				SAY Hmmm. Cove. I've never been there.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Cove? I'm not sure I've ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I'm not sure where Cove is.
+				SAY Hmmm. Cove. I've never been there.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Cove? I'm not sure I've ever been there.
+				SAY Cove? Sounds near the water, mayhap ....
+				SAY I think I may have heard of Cove. Perhaps near to Britain somehow.
+				SAY I'm not sure where Cove is.
+				SAY Hmmm. Cove. I've never been there.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=skara*brae
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 8
+				SAY Skara Brae is a kind of perfume, maybe.
+				SAY Skara Brae is on an island.
+				SAY My uncle is a fisherman in Skara Brae.
+				SAY Skara Brae? I think it's to the west.
+				SAY 'Tis a lovely place, I been told.
+				SAY They got mind magic in Skara Brae.
+				SAY Good cropland near Skara Brae.
+				SAY I met a ranger from Skara Brae once.
+			ENDDO
+		ELSE
+			DORAND 8
+				SAY Skara Brae is a kind of perfume, maybe.
+				SAY Skara Brae is on an island.
+				SAY My uncle is a fisherman in Skara Brae.
+				SAY Skara Brae? I think it's to the west.
+				SAY 'Tis a lovely place, I been told.
+				SAY They got mind magic in Skara Brae.
+				SAY Good cropland near Skara Brae.
+				SAY I met a ranger from Skara Brae once.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Skara Brae is on an island due west of Britain.
+				SAY Skara Brae 'tis a fine place for fisherfolk.
+				SAY Skara Brae? Thou canst not get more west than that!
+				SAY 'Tis a lovely place, I've been told. Hills and parks and cobblestone streets has Skara Brae.
+				SAY They say Skara Brae has all the conveniences of home. Unusual in an island, surely.
+				SAY They got mind magic in Skara Brae. Not firebolts so much as scramblin' up thy head.
+				SAY I hear the land on Skara Brae is good cropland. They even have rangers to keep the farms safe.
+				SAY It's bad positioning, that's what it is. Skara Brae is unprotected from any evil that comes from the sea. 'Tis dangerous to sail there.
+				SAY They be the best shipbuilders in Skara Brae. Except Minoc of course. Maybe Britain, too. Still, they build fine, fast ships!
+				SAY The rangers in Skara Brae are second to none!
+				SAY A ranger who trained in Skara Brae can survive nearly anything nature can devise. They are marvels with animals, too.
+				SAY Skara Brae would be a far happier place if they could rid themselves of pirates!
+				SAY Very clean folk in Skara Brae. I'm told they'd rather bathe than eat, if they had to choose.
+				SAY I met a lady from Skara Brae once. She said that inside every body is all the 'etheric culmination of the intellect,' with compassion and rationality. Something like that. I lose sleep thinkin' on it.
+				SAY Poets! Everyone in Skara Brae is a poet! That's no good at all!
+				SAY Thou couldst not swing a fish in Skara Brae without thou slappest two rangers.
+				SAY I met a man from Skara Brae who said that on his island, earrings on a lass was as rare as wigs on a chicken. I've yet to figure what he meant.
+				SAY A mercenary from Jhelom can always find work in Skara Brae.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Skara Brae is on an island due west of Britain.
+				SAY Skara Brae 'tis a fine place for fisherfolk.
+				SAY Skara Brae? Thou canst not get more west than that!
+				SAY 'Tis a lovely place, I've been told. Hills and parks and cobblestone streets has Skara Brae.
+				SAY They say Skara Brae has all the conveniences of home. Unusual in an island, surely.
+				SAY They got mind magic in Skara Brae. Not firebolts so much as scramblin' up thy head.
+				SAY I hear the land on Skara Brae is good cropland. They even have rangers to keep the farms safe.
+				SAY It's bad positioning, that's what it is. Skara Brae is unprotected from any evil that comes from the sea. 'Tis dangerous to sail there.
+				SAY They be the best shipbuilders in Skara Brae. Except Minoc of course. Maybe Britain, too. Still, they build fine, fast ships!
+				SAY The rangers in Skara Brae are second to none!
+				SAY A ranger who trained in Skara Brae can survive nearly anything nature can devise. They are marvels with animals, too.
+				SAY Skara Brae would be a far happier place if they could rid themselves of pirates!
+				SAY Very clean folk in Skara Brae. I'm told they'd rather bathe than eat, if they had to choose.
+				SAY I met a lady from Skara Brae once. She said that inside every body is all the 'etheric culmination of the intellect,' with compassion and rationality. Something like that. I lose sleep thinkin' on it.
+				SAY Poets! Everyone in Skara Brae is a poet! That's no good at all!
+				SAY Thou couldst not swing a fish in Skara Brae without thou slappest two rangers.
+				SAY I met a man from Skara Brae who said that on his island, earrings on a lass was as rare as wigs on a chicken. I've yet to figure what he meant.
+				SAY A mercenary from Jhelom can always find work in Skara Brae.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Skara Brae is on an island due west of Britain.
+				SAY Skara Brae 'tis a fine place for fisherfolk.
+				SAY Skara Brae? Thou canst not get more west than that!
+				SAY 'Tis a lovely place, I've been told. Hills and parks and cobblestone streets has Skara Brae.
+				SAY They say Skara Brae has all the conveniences of home. Unusual in an island, surely.
+				SAY They got mind magic in Skara Brae. Not firebolts so much as scramblin' up thy head.
+				SAY I hear the land on Skara Brae is good cropland. They even have rangers to keep the farms safe.
+				SAY It's bad positioning, that's what it is. Skara Brae is unprotected from any evil that comes from the sea. 'Tis dangerous to sail there.
+				SAY They be the best shipbuilders in Skara Brae. Except Minoc of course. Maybe Britain, too. Still, they build fine, fast ships!
+				SAY The rangers in Skara Brae are second to none!
+				SAY A ranger who trained in Skara Brae can survive nearly anything nature can devise. They are marvels with animals, too.
+				SAY Skara Brae would be a far happier place if they could rid themselves of pirates!
+				SAY Very clean folk in Skara Brae. I'm told they'd rather bathe than eat, if they had to choose.
+				SAY I met a lady from Skara Brae once. She said that inside every body is all the 'etheric culmination of the intellect,' with compassion and rationality. Something like that. I lose sleep thinkin' on it.
+				SAY Poets! Everyone in Skara Brae is a poet! That's no good at all!
+				SAY Thou couldst not swing a fish in Skara Brae without thou slappest two rangers.
+				SAY I met a man from Skara Brae who said that on his island, earrings on a lass was as rare as wigs on a chicken. I've yet to figure what he meant.
+				SAY A mercenary from Jhelom can always find work in Skara Brae.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Skara Brae is on an island due west of Britain.
+			   	SAY Skara Brae 'tis a fine place for fisherfolk.
+				SAY Skara Brae? Thou canst not get more west than that!
+				SAY 'Tis a lovely place, I've been told. Hills and parks and cobblestone streets has Skara Brae.
+				SAY They say Skara Brae has all the conveniences of home. Unusual in an island, surely.
+				SAY They got mind magic in Skara Brae. Not firebolts so much as scramblin' up thy head.
+				SAY I hear the land on Skara Brae is good cropland. They even have rangers to keep the farms safe.
+				SAY It's bad positioning, that's what it is. Skara Brae is unprotected from any evil that comes from the sea. 'Tis dangerous to sail there.
+				SAY They be the best shipbuilders in Skara Brae. Except Minoc of course. Maybe Britain, too. Still, they build fine, fast ships!
+				SAY The rangers in Skara Brae are second to none!
+				SAY A ranger who trained in Skara Brae can survive nearly anything nature can devise. They are marvels with animals, too.
+				SAY Skara Brae would be a far happier place if they could rid themselves of pirates!
+				SAY Very clean folk in Skara Brae. I'm told they'd rather bathe than eat, if they had to choose.
+				SAY I met a lady from Skara Brae once. She said that inside every body is all the 'etheric culmination of the intellect,' with compassion and rationality. Something like that. I lose sleep thinkin' on it.
+				SAY Poets! Everyone in Skara Brae is a poet! That's no good at all!
+				SAY Thou couldst not swing a fish in Skara Brae without thou slappest two rangers.
+				SAY I met a man from Skara Brae who said that on his island, earrings on a lass was as rare as wigs on a chicken. I've yet to figure what he meant.
+				SAY A mercenary from Jhelom can always find work in Skara Brae.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*minoc*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 7
+				SAY My knock?
+				SAY I don't know where Minoc is.
+				SAY Minoc might be in the mountains.
+				SAY My cousin said Minoc is fair cold.
+				SAY Minoc? I don't know much about Minoc.
+				SAY They say thou can make good money in Minoc.
+				SAY There's a fair number of people who left here for Minoc. I don't know just why.
+			ENDDO
+		ELSE
+			DORAND 7
+				SAY My knock?
+				SAY I don't know where Minoc is.
+				SAY Minoc might be in the mountains.
+				SAY My cousin said Minoc is fair cold.
+				SAY Minoc? I don't know much about Minoc.
+				SAY They say thou can make good money in Minoc.
+				SAY There's a fair number of people who left here for Minoc. I don't know just why.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Minoc is in the northmost part of the realm, a bit to the east.
+				SAY Minoc is nestled in the mountains like an egg in a nest.
+				SAY 'Tis a mining town, is Minoc. Used to be crazy metalworkers, now 'tis mostly crazy miners.
+				SAY They love their tools, does Minoc. The Gadgeteers Guild is there, thou knowest.
+				SAY Minoc is too cold for my tastes. I'd need to walk in furs from head to toe, lest I'd shiver meself to death.
+				SAY I hear Minoc is a booming, thriving town. More money than people, they say.
+				SAY I'd not go to Minoc myself. There are too many thieves attracted to the new money.
+				SAY They're very pleased with themselves, in Minoc. I tell thee, there'll be trouble when all the new mines run dry!
+				SAY From Minoc comes the raw stuffs for building - lumber and metals and such. Their inventors are busy from dawn to dusk. Pity the nearest market is in Vesper.
+				SAY Must be a curse on Minoc, that they have so much, yet are too far away to best market it. They can't even find trusty mercenaries to guard their caravans.
+				SAY They live in ragged furs in Minoc, and love to call names to them that wear silk and eat off plates.
+				SAY Brigands can take their caravans, but Minoc is too well defended for invasion.
+				SAY Very creative people are found in Minoc. They take pride in artistry there.
+				SAY 'Tis a grand place for an evening, is Minoc! Dancin' and drinkin' keep the cold from settlin' on thee.
+				SAY Were I an artist, I'd buy my goods in Minoc, but do my living in Vesper.
+				SAY Minoc is a mining village gone mad.
+				SAY Minoc has a different outlook than any other city in the realm. It's as fancy as a rabbit tooth, if thou knowest what I mean.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Minoc is in the northmost part of the realm, a bit to the east.
+				SAY Minoc is nestled in the mountains like an egg in a nest.
+				SAY 'Tis a mining town, is Minoc. Used to be crazy metalworkers, now 'tis mostly crazy miners.
+				SAY They love their tools, does Minoc. The Gadgeteers Guild is there, thou knowest.
+				SAY Minoc is too cold for my tastes. I'd need to walk in furs from head to toe, lest I'd shiver meself to death.
+				SAY I hear Minoc is a booming, thriving town. More money than people, they say.
+				SAY I'd not go to Minoc myself. There are too many thieves attracted to the new money.
+				SAY They're very pleased with themselves, in Minoc. I tell thee, there'll be trouble when all the new mines run dry!
+				SAY From Minoc comes the raw stuffs for building - lumber and metals and such. Their inventors are busy from dawn to dusk. Pity the nearest market is in Vesper.
+				SAY Must be a curse on Minoc, that they have so much, yet are too far away to best market it. They can't even find trusty mercenaries to guard their caravans.
+				SAY They live in ragged furs in Minoc, and love to call names to them that wear silk and eat off plates.
+				SAY Brigands can take their caravans, but Minoc is too well defended for invasion.
+				SAY Very creative people are found in Minoc. They take pride in artistry there.
+				SAY 'Tis a grand place for an evening, is Minoc! Dancin' and drinkin' keep the cold from settlin' on thee.
+				SAY Were I an artist, I'd buy my goods in Minoc, but do my living in Vesper.
+				SAY Minoc is a mining village gone mad.
+				SAY Minoc has a different outlook than any other city in the realm. It's as fancy as a rabbit tooth, if thou knowest what I mean.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Minoc is in the northmost part of the realm, a bit to the east.
+				SAY Minoc is nestled in the mountains like an egg in a nest.
+				SAY 'Tis a mining town, is Minoc. Used to be crazy metalworkers, now 'tis mostly crazy miners.
+				SAY They love their tools, does Minoc. The Gadgeteers Guild is there, thou knowest.
+				SAY Minoc is too cold for my tastes. I'd need to walk in furs from head to toe, lest I'd shiver meself to death.
+				SAY I hear Minoc is a booming, thriving town. More money than people, they say.
+				SAY I'd not go to Minoc myself. There are too many thieves attracted to the new money.
+				SAY They're very pleased with themselves, in Minoc. I tell thee, there'll be trouble when all the new mines run dry!
+				SAY From Minoc comes the raw stuffs for building - lumber and metals and such. Their inventors are busy from dawn to dusk. Pity the nearest market is in Vesper.
+				SAY Must be a curse on Minoc, that they have so much, yet are too far away to best market it. They can't even find trusty mercenaries to guard their caravans.
+				SAY They live in ragged furs in Minoc, and love to call names to them that wear silk and eat off plates.
+				SAY Brigands can take their caravans, but Minoc is too well defended for invasion.
+				SAY Very creative people are found in Minoc. They take pride in artistry there.
+				SAY 'Tis a grand place for an evening, is Minoc! Dancin' and drinkin' keep the cold from settlin' on thee.
+				SAY Were I an artist, I'd buy my goods in Minoc, but do my living in Vesper.
+				SAY Minoc is a mining village gone mad.
+				SAY Minoc has a different outlook than any other city in the realm. It's as fancy as a rabbit tooth, if thou knowest what I mean.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Minoc is in the northmost part of the realm, a bit to the east.
+				SAY Minoc is nestled in the mountains like an egg in a nest.
+				SAY 'Tis a mining town, is Minoc. Used to be crazy metalworkers, now 'tis mostly crazy miners.
+				SAY They love their tools, does Minoc. The Gadgeteers Guild is there, thou knowest.
+				SAY Minoc is too cold for my tastes. I'd need to walk in furs from head to toe, lest I'd shiver meself to death.
+				SAY I hear Minoc is a booming, thriving town. More money than people, they say.
+				SAY I'd not go to Minoc myself. There are too many thieves attracted to the new money.
+				SAY They're very pleased with themselves, in Minoc. I tell thee, there'll be trouble when all the new mines run dry!
+				SAY From Minoc comes the raw stuffs for building - lumber and metals and such. Their inventors are busy from dawn to dusk. Pity the nearest market is in Vesper.
+				SAY Must be a curse on Minoc, that they have so much, yet are too far away to best market it. They can't even find trusty mercenaries to guard their caravans.
+				SAY They live in ragged furs in Minoc, and love to call names to them that wear silk and eat off plates.
+				SAY Brigands can take their caravans, but Minoc is too well defended for invasion.
+				SAY Very creative people are found in Minoc. They take pride in artistry there.
+				SAY 'Tis a grand place for an evening, is Minoc! Dancin' and drinkin' keep the cold from settlin' on thee.
+				SAY Were I an artist, I'd buy my goods in Minoc, but do my living in Vesper.
+				SAY Minoc is a mining village gone mad.
+				SAY Minoc has a different outlook than any other city in the realm. It's as fancy as a rabbit tooth, if thou knowest what I mean.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*vesper*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 7
+				SAY Vesper? 'Tis someone who has vesprosy.
+				SAY Vesper? It may be a sea town ....
+				SAY I never been to Vesper.
+				SAY Vesper is a cold place, I'm told. I hate cold.
+				SAY I don't even know what they make in Vesper.
+				SAY My aunt's got a gadget that came from Vesper.
+				SAY I don't even know where Vesper is.
+			ENDDO
+		ELSE
+			DORAND 7
+				SAY Vesper? 'Tis someone who has vesprosy.
+				SAY Vesper? It may be a sea town ....
+				SAY I never been to Vesper.
+				SAY Vesper is a cold place, I'm told. I hate cold.
+				SAY I don't even know what they make in Vesper.
+				SAY My aunt's got a gadget that came from Vesper.
+				SAY I don't even know where Vesper is.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Vesper is on the eastern coast of Britannia, to the north. It is Britannia's major trading port for the north sea
+				SAY Vesper is a city of silly people. They have an overabundance, and no wit to use it well.
+				SAY What Vesper does not know is that Lord British is aware that it is not working for the best interest of his realm. One day that city will receive a surprise.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Vesper is on the eastern coast of Britannia, to the north. It is Britannia's major trading port for the north sea
+				SAY Vesper is a city of silly people. They have an overabundance, and no wit to use it well.
+				SAY What Vesper does not know is that Lord British is aware that it is not working for the best interest of his realm. One day that city will receive a surprise.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Vesper can be found on the eastern coast of Britannia, to the north.
+				SAY If thou art looking for the major trading port for the north sea, 'tis Vesper.
+				SAY Ah, Vesper is known as a beautiful city. I would like to go there someday.
+				SAY Now thou wilt be able to find anything thou needest in Vesper. That is its fame.
+				SAY Vesper is a bit cold for my tastes. Cold wind, cold stone, cold people.
+				SAY Thou knowest that Vesper is the export center for Minoc, yes? They carry gadgets the likes of which thou'lt use every day ... and other such things as thou'lt be pressed to find any use for at all.
+				SAY The shopping in Minoc, they say, is a pastime and not a chore. Many shops for many things.
+				SAY I don't know what I think about Vesper. From what I hear, they spend their time on naught but silly things.
+				SAY I'm told that the assassins in Vesper use magic in their trade.
+				SAY 'Tis a bad place to farm, is Vesper, but a fair place to fish.
+				SAY People tire of things quickly in Vesper, and cast them out. They care not if it is gold or dross.
+				SAY Vesper needs must be a nervous place. There are few cities that do not envy its power, and would take it if they could.
+				SAY I heard Vesper was rotten to the core. Crime and all manner of vice can be found within its walls.
+				SAY I hear rumors that even Lord British does not condone Vesper's wicked ways, and wishes Britain were well washed of its sordid vices.
+				SAY Vesper is a city with an audience. Always there is street theater, firework displays and other such extravagances. Their only goal is to bring the moneyed people back
+				SAY Thou canst never tell if someone from Vesper likes thee. They smile at everyone.
+				SAY They love only money in Vesper.
+				SAY Thou art always watched in Vesper.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Vesper can be found on the eastern coast of Britannia, to the north.
+		   		SAY If thou art looking for the major trading port for the north sea, 'tis Vesper.
+				SAY Ah, Vesper is known as a beautiful city. I would like to go there someday.
+				SAY Now thou wilt be able to find anything thou needest in Vesper. That is its fame.
+				SAY Vesper is a bit cold for my tastes. Cold wind, cold stone, cold people.
+				SAY Thou knowest that Vesper is the export center for Minoc, yes? They carry gadgets the likes of which thou'lt use every day ... and other such things as thou'lt be pressed to find any use for at all.
+				SAY The shopping in Minoc, they say, is a pastime and not a chore. Many shops for many things.
+				SAY I don't know what I think about Vesper. From what I hear, they spend their time on naught but silly things.
+				SAY I'm told that the assassins in Vesper use magic in their trade.
+				SAY 'Tis a bad place to farm, is Vesper, but a fair place to fish.
+				SAY People tire of things quickly in Vesper, and cast them out. They care not if it is gold or dross.
+				SAY Vesper needs must be a nervous place. There are few cities that do not envy its power, and would take it if they could.
+				SAY I heard Vesper was rotten to the core. Crime and all manner of vice can be found within its walls.
+				SAY I hear rumors that even Lord British does not condone Vesper's wicked ways, and wishes Britain were well washed of its sordid vices.
+				SAY Vesper is a city with an audience. Always there is street theater, firework displays and other such extravagances. Their only goal is to bring the moneyed people back
+				SAY Thou canst never tell if someone from Vesper likes thee. They smile at everyone.
+				SAY They love only money in Vesper.
+				SAY Thou art always watched in Vesper.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=bucs*den
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 9
+				SAY I don't know of no place called 'Buccaneer's Den.
+				SAY Buccaneer's Den? Sounds wicked.
+				SAY I know nothin' of Buccaneer's Den.
+				SAY I never been to Buccaneer's Den.
+				SAY What? What? I don't get thy question.
+				SAY How would thou know of such a place? I ain't never heard of Buccaneer's Den.
+				SAY Buccawho's Den?
+				SAY Buccaneer's Den? Sounds like a place for pirates.
+				SAY Buccaneer's Den ... unless it's named bad ... would be a pit of immorality and deceit.
+			ENDDO
+		ELSE
+			DORAND 9
+				SAY I don't know of no place called 'Buccaneer's Den.
+				SAY Buccaneer's Den? Sounds wicked.
+				SAY I know nothin' of Buccaneer's Den.
+				SAY I never been to Buccaneer's Den.
+				SAY What? What? I don't get thy question.
+				SAY How would thou know of such a place? I ain't never heard of Buccaneer's Den.
+				SAY Buccawho's Den?
+				SAY Buccaneer's Den? Sounds like a place for pirates.
+				SAY Buccaneer's Den ... unless it's named bad ... would be a pit of immorality and deceit.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 8
+				SAY Thou'rt in Buccaneer's Den.
+				SAY Thou'rt touched. This place is the Den.
+				SAY Not much to tell of Buccaneer's Den.
+				SAY Buccaneer's Den is where the truly free pitch their tents.
+				SAY The Den is a good place to hide from those such as would be lookin' for thee.
+				SAY How would'st thou not know of such a place? This place is Buccaneer's Den.
+				SAY Buccaneer's Den? 'Tis a place for pirates.
+				SAY Buccaneer's Den ... unless it is misnamed ... would be a pit of immorality and deceit. But we like it that way.
+			ENDDO
+		ELSE
+			DORAND 8
+				SAY Thou'rt in Buccaneer's Den.
+				SAY Thou'rt touched. This place is the Den.
+				SAY Not much to tell of Buccaneer's Den.
+				SAY Buccaneer's Den is where the truly free pitch their tents.
+				SAY The Den is a good place to hide from those such as would be lookin' for thee.
+				SAY How would'st thou not know of such a place? This place is Buccaneer's Den.
+				SAY Buccaneer's Den? 'Tis a place for pirates.
+				SAY Buccaneer's Den ... unless it is misnamed ... would be a pit of immorality and deceit. But we like it that way.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 8
+				SAY Thou'rt in Buccaneer's Den.
+				SAY Thou'rt touched. This place is the Den.
+				SAY Not much to tell of Buccaneer's Den.
+				SAY Buccaneer's Den is where the truly free pitch their tents.
+				SAY The Den is a good place to hide from those such as would be lookin' for thee.
+				SAY How would'st thou not know of such a place? This place is Buccaneer's Den.
+				SAY Buccaneer's Den? 'Tis a place for pirates.
+				SAY Buccaneer's Den ... unless it is misnamed ... would be a pit of immorality and deceit. But we like it that way.
+			ENDDO
+		ELSE
+			DORAND 8
+				SAY Thou'rt in Buccaneer's Den.
+				SAY Thou'rt touched. This place is the Den.
+				SAY Not much to tell of Buccaneer's Den.
+				SAY Buccaneer's Den is where the truly free pitch their tents.
+				SAY The Den is a good place to hide from those such as would be lookin' for thee.
+				SAY How would'st thou not know of such a place? This place is Buccaneer's Den.
+				SAY Buccaneer's Den? 'Tis a place for pirates.
+				SAY Buccaneer's Den ... unless it is misnamed ... would be a pit of immorality and deceit. But we like it that way.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*magincia*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Magincia is ... a city of Britain.
+				SAY I ain't never been to Magincia.
+				SAY My cousin said they wouldn't even let him in the gate of Magincia. He wasn't fine enough.
+				SAY The rich poffs live in Magincia.!
+				SAY I've heard of Magincia, but I can't remember what was said.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling snobs!
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Magincia is ... a city of Britain.
+				SAY I ain't never been to Magincia.
+				SAY My cousin said they wouldn't even let him in the gate of Magincia. He wasn't fine enough.
+				SAY The rich poffs live in Magincia.!
+				SAY I've heard of Magincia, but I can't remember what was said.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling snobs!
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND  17
+				SAY Magincia is an island city east of Britain.
+				SAY Magincia, they say, would be food for pirates were it not for Moonglow's magic.
+				SAY Ach! Magincia is all flash and glitter! Too much money, not enough sense. I heard that the most common shop in Magincia has more gems than Lord British' crown!
+				SAY They have everything in Magincia, save common sense.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling peasants! Dost not get me started!
+				SAY I heard that the floors in Magincia clean themselves. Now that's something I'd like to have!
+				SAY They use magic in Magincia to keep from doing work. Seems like cheating to me.
+				SAY There's not much farm land near Magincia, that much I can tell thee. They'd rather pay to have food brought to them.
+				SAY They'd not let the likes of us live in Magincia. 'Tis a city with only ladies, no ladies-in-waiting.
+				SAY I think they have a diamond mine in Magincia.
+				SAY They are lucky to have magical protection in Magincia. Not a city cares for them, and people hereabouts would like to teach them manners.
+				SAY Someone told me that the fine lords and ladies in Magincia hire peasants to talk to peasants. Keeps them a bit father away from the common riffraff, I suppose.
+				SAY It's said that in Magincia, they'd rather look good than feel good.
+				SAY The main difference between someone from Magincia and a peasant is that the Magincian is NOT a PEASANT! If thou see'est what I mean.
+				SAY They produce nothing in Magincia but snobs and money.
+				SAY Someday they'll run out of diamonds in Magincia, and with hunger will come wisdom and compassion.
+				SAY Magincia is a land of over-plenty and overmuch pride.
+			ENDDO
+		ELSE
+			DORAND  17
+				SAY Magincia is an island city east of Britain.
+				SAY Magincia, they say, would be food for pirates were it not for Moonglow's magic.
+				SAY Ach! Magincia is all flash and glitter! Too much money, not enough sense. I heard that the most common shop in Magincia has more gems than Lord British' crown!
+				SAY They have everything in Magincia, save common sense.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling peasants! Dost not get me started!
+				SAY I heard that the floors in Magincia clean themselves. Now that's something I'd like to have!
+				SAY They use magic in Magincia to keep from doing work. Seems like cheating to me.
+				SAY There's not much farm land near Magincia, that much I can tell thee. They'd rather pay to have food brought to them.
+				SAY They'd not let the likes of us live in Magincia. 'Tis a city with only ladies, no ladies-in-waiting.
+				SAY I think they have a diamond mine in Magincia.
+				SAY They are lucky to have magical protection in Magincia. Not a city cares for them, and people hereabouts would like to teach them manners.
+				SAY Someone told me that the fine lords and ladies in Magincia hire peasants to talk to peasants. Keeps them a bit father away from the common riffraff, I suppose.
+				SAY It's said that in Magincia, they'd rather look good than feel good.
+				SAY The main difference between someone from Magincia and a peasant is that the Magincian is NOT a PEASANT! If thou see'est what I mean.
+				SAY They produce nothing in Magincia but snobs and money.
+				SAY Someday they'll run out of diamonds in Magincia, and with hunger will come wisdom and compassion.
+				SAY Magincia is a land of over-plenty and overmuch pride.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Magincia is an island city east of Britain.
+				SAY Magincia, they say, would be food for pirates were it not for Moonglow's magic.
+				SAY Ach! Magincia is all flash and glitter! Too much money, not enough sense. I heard that the most common shop in Magincia has more gems than Lord British' crown!
+				SAY They have everything in Magincia, save common sense.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling peasants! Dost not get me started!
+				SAY I heard that the floors in Magincia clean themselves. Now that's something I'd like to have!
+				SAY They use magic in Magincia to keep from doing work. Seems like cheating to me.
+				SAY There's not much farm land near Magincia, that much I can tell thee. They'd rather pay to have food brought to them.
+				SAY They'd not let the likes of us live in Magincia. 'Tis a city with only ladies, no ladies-in-waiting.
+				SAY I think they have a diamond mine in Magincia.
+				SAY They are lucky to have magical protection in Magincia. Not a city cares for them, and people hereabouts would like to teach them manners.
+				SAY Someone told me that the fine lords and ladies in Magincia hire peasants to talk to peasants. Keeps them a bit father away from the common riffraff, I suppose.
+				SAY It's said that in Magincia, they'd rather look good than feel good.
+				SAY The main difference between someone from Magincia and a peasant is that the Magincian is NOT a PEASANT! If thou see'est what I mean.
+				SAY They produce nothing in Magincia but snobs and money.
+				SAY Someday they'll run out of diamonds in Magincia, and with hunger will come wisdom and compassion.
+				SAY Magincia is a land of over-plenty and overmuch pride.
+			ENDDO
+		ELSE
+			DORAND  17
+				SAY Magincia is an island city east of Britain.
+				SAY Magincia, they say, would be food for pirates were it not for Moonglow's magic.
+				SAY Ach! Magincia is all flash and glitter! Too much money, not enough sense. I heard that the most common shop in Magincia has more gems than Lord British' crown!
+				SAY They have everything in Magincia, save common sense.
+				SAY Magincia! Lazy ... overindulged ... spoilt rotten ...richling peasants! Dost not get me started!
+				SAY I heard that the floors in Magincia clean themselves. Now that's something I'd like to have!
+				SAY They use magic in Magincia to keep from doing work. Seems like cheating to me.
+				SAY There's not much farm land near Magincia, that much I can tell thee. They'd rather pay to have food brought to them.
+				SAY They'd not let the likes of us live in Magincia. 'Tis a city with only ladies, no ladies-in-waiting.
+				SAY I think they have a diamond mine in Magincia.
+				SAY They are lucky to have magical protection in Magincia. Not a city cares for them, and people hereabouts would like to teach them manners.
+				SAY Someone told me that the fine lords and ladies in Magincia hire peasants to talk to peasants. Keeps them a bit father away from the common riffraff, I suppose.
+				SAY It's said that in Magincia, they'd rather look good than feel good.
+				SAY The main difference between someone from Magincia and a peasant is that the Magincian is NOT a PEASANT! If thou see'est what I mean.
+				SAY They produce nothing in Magincia but snobs and money.
+				SAY Someday they'll run out of diamonds in Magincia, and with hunger will come wisdom and compassion.
+				SAY Magincia is a land of over-plenty and overmuch pride.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*yew*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 7
+				SAY Yu? You? I don't understand what thou means.
+				SAY Yew ... ahh, that's a city, I'm almost sure.
+				SAY I knew a lad from Yew. He said it weren't really a city.
+				SAY Yew, that's a kind of tree.
+				SAY They make bows from yew wood.
+				SAY My cousin says they get drunk on wine in Yew.
+				SAY U. That's a stupid name for a city. They could at least add a few letters and make a word.
+			ENDDO
+		ELSE
+			DORAND 7
+				SAY Yu? You? I don't understand what thou means.
+				SAY Yew ... ahh, that's a city, I'm almost sure.
+				SAY I knew a lad from Yew. He said it weren't really a city.
+				SAY Yew, that's a kind of tree.
+				SAY They make bows from yew wood.
+				SAY My cousin says they get drunk on wine in Yew.
+				SAY U. That's a stupid name for a city. They could at least add a few letters and make a word.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Yew is in the northwest region of Britannia.
+				SAY Yew ... ahh, that is near to Empath Abbey. That's the land from whence the best wine comes.
+				SAY Yew is not what I'd call a city. It is more a collection of friendly neighbors.
+				SAY They are a straightforward people, in Yew. Things are simpler there.
+				SAY They have magic in Yew, but it's more of a natural sort. Potions, elixirs, and other such aids.
+				SAY The druids in Yew can teach students how to focus their power through nature.
+				SAY The soil around Yew is marvelously fertile. Grass is good for sheep, and the grapes are excellent for wine.
+				SAY They are a peasant people in Yew, but in a good way, really.
+				SAY Thou hast to admire a people as self-reliant as they are in Yew.
+				SAY I knew a man who said that for bows and staves, none were better than those in Yew.
+				SAY It can be dangerous in the woods near Yew. There are bands of ettins, orcs and goblins that eat the livestock ... and occasionally the people, too!
+				SAY Yew is a popular place for Rangers, I'm told.
+				SAY I've been to Yew once. 'Twas a beautiful region ... peaceful and serene.
+				SAY Those in Yew despise those who misuse the elements of nature. 'Tis the only thing they truly hate.
+				SAY They like wine, the folk of Yew. When both moons are full, the town has a party with lots of wine, dancing, and even more wine. 'Tis a druid thing, I think.
+				SAY When someone in Yew builds a house, all the neighbors help. I am told it takes but a day.
+				SAY Shepherds are fond of Yew. Their carved staves are famous.
+				SAY I believe there is an enormous jail in Yew.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Yew is in the northwest region of Britannia.
+				SAY Yew ... ahh, that is near to Empath Abbey. That's the land from whence the best wine comes.
+				SAY Yew is not what I'd call a city. It is more a collection of friendly neighbors.
+				SAY They are a straightforward people, in Yew. Things are simpler there.
+				SAY They have magic in Yew, but it's more of a natural sort. Potions, elixirs, and other such aids.
+				SAY The druids in Yew can teach students how to focus their power through nature.
+				SAY The soil around Yew is marvelously fertile. Grass is good for sheep, and the grapes are excellent for wine.
+				SAY They are a peasant people in Yew, but in a good way, really.
+				SAY Thou hast to admire a people as self-reliant as they are in Yew.
+				SAY I knew a man who said that for bows and staves, none were better than those in Yew.
+				SAY It can be dangerous in the woods near Yew. There are bands of ettins, orcs and goblins that eat the livestock ... and occasionally the people, too!
+				SAY Yew is a popular place for Rangers, I'm told.
+				SAY I've been to Yew once. 'Twas a beautiful region ... peaceful and serene.
+				SAY Those in Yew despise those who misuse the elements of nature. 'Tis the only thing they truly hate.
+				SAY They like wine, the folk of Yew. When both moons are full, the town has a party with lots of wine, dancing, and even more wine. 'Tis a druid thing, I think.
+				SAY When someone in Yew builds a house, all the neighbors help. I am told it takes but a day.
+				SAY Shepherds are fond of Yew. Their carved staves are famous.
+				SAY I believe there is an enormous jail in Yew.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Yew is in the northwest region of Britannia.
+				SAY Yew ... ahh, that is near to Empath Abbey. That's the land from whence the best wine comes.
+				SAY Yew is not what I'd call a city. It is more a collection of friendly neighbors.
+				SAY They are a straightforward people, in Yew. Things are simpler there.
+				SAY They have magic in Yew, but it's more of a natural sort. Potions, elixirs, and other such aids.
+				SAY The druids in Yew can teach students how to focus their power through nature.
+				SAY The soil around Yew is marvelously fertile. Grass is good for sheep, and the grapes are excellent for wine.
+				SAY They are a peasant people in Yew, but in a good way, really.
+				SAY Thou hast to admire a people as self-reliant as they are in Yew.
+				SAY I knew a man who said that for bows and staves, none were better than those in Yew.
+				SAY It can be dangerous in the woods near Yew. There are bands of ettins, orcs and goblins that eat the livestock ... and occasionally the people, too!
+				SAY Yew is a popular place for Rangers, I'm told.
+				SAY I've been to Yew once. 'Twas a beautiful region ... peaceful and serene.
+				SAY Those in Yew despise those who misuse the elements of nature. 'Tis the only thing they truly hate.
+				SAY They like wine, the folk of Yew. When both moons are full, the town has a party with lots of wine, dancing, and even more wine. 'Tis a druid thing, I think.
+				SAY When someone in Yew builds a house, all the neighbors help. I am told it takes but a day.
+				SAY Shepherds are fond of Yew. Their carved staves are famous.
+				SAY I believe there is an enormous jail in Yew.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Yew is in the northwest region of Britannia.
+				SAY Yew ... ahh, that is near to Empath Abbey. That's the land from whence the best wine comes.
+				SAY Yew is not what I'd call a city. It is more a collection of friendly neighbors.
+				SAY They are a straightforward people, in Yew. Things are simpler there.
+				SAY They have magic in Yew, but it's more of a natural sort. Potions, elixirs, and other such aids.
+				SAY The druids in Yew can teach students how to focus their power through nature.
+				SAY The soil around Yew is marvelously fertile. Grass is good for sheep, and the grapes are excellent for wine.
+				SAY They are a peasant people in Yew, but in a good way, really.
+				SAY Thou hast to admire a people as self-reliant as they are in Yew.
+				SAY I knew a man who said that for bows and staves, none were better than those in Yew.
+				SAY It can be dangerous in the woods near Yew. There are bands of ettins, orcs and goblins that eat the livestock ... and occasionally the people, too!
+				SAY Yew is a popular place for Rangers, I'm told.
+				SAY I've been to Yew once. 'Twas a beautiful region ... peaceful and serene.
+				SAY Those in Yew despise those who misuse the elements of nature. 'Tis the only thing they truly hate.
+				SAY They like wine, the folk of Yew. When both moons are full, the town has a party with lots of wine, dancing, and even more wine. 'Tis a druid thing, I think.
+				SAY When someone in Yew builds a house, all the neighbors help. I am told it takes but a day.
+				SAY Shepherds are fond of Yew. Their carved staves are famous.
+				SAY I believe there is an enormous jail in Yew.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*wind*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I don't understand what thou'rt meanin'.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there's such a place called Wind, it ain't known around here.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I don't understand what thou'rt meanin'.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there's such a place called Wind, it ain't known around here.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I do not understand what thou dost mean.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there is such a place called Wind, it is not known around here.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I do not understand what thou dost mean.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there is such a place called Wind, it is not known around here.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I do not understand what thou dost mean.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there is such a place called Wind, it is not known around here.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Wind? 'Tis simply moving air.
+				SAY I have heard of no place called Wind.
+				SAY I do not understand what thou dost mean.
+				SAY I may have heard a legend of a city called Wind. It was in the mountains, if I recall.
+				SAY If there is such a place called Wind, it is not known around here.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=serpents*hold
+ON=serpent's*hold
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY Serpent's Hold is a funny name. Serpents can't hold anything.
+				SAY I don't know what they do in Serpent's Hold.
+				SAY Someone told me it wasn't a city, was Serpent's Hold.
+				SAY The place thou seekst is elsewhere.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. Ominous looking, 'e was.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY Serpent's Hold is a funny name. Serpents can't hold anything.
+				SAY I don't know what they do in Serpent's Hold.
+				SAY Someone told me it wasn't a city, was Serpent's Hold.
+				SAY The place thou seekst is elsewhere.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. Ominous looking, 'e was.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Serpent's Hold is on the largest island just east and south of the Cape of Heroes.
+				SAY Serpent's Hold is where all the fighters of this realm are trained. 'Tis common knowledge.
+				SAY 'Tis not so much a city as a stronghold, is Serpent's Hold.
+				SAY If thou'rt looking for military devices, Serpent's Hold is the place thou seekest.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. He said although the instructors speak highly of military magic, he thought 'twas a dishonorable method of war.
+				SAY 'Tis not a land used for farming, is Serpent's Hold. I do not think the soldiers take time to till the soil.
+				SAY Serpent's Hold is not a merry place for those not interested in the military life.
+				SAY No one but the vilest of beasts would dare attack Serpent's Hold.
+				SAY I think there is sometimes blood spilled between the warriors of Serpent's Hold, Trinsic and Jhelom.
+				SAY They are not so much paladins or mercenaries in Serpent's Hold. Soldier is more the like.
+				SAY The silver serpent is the icon of prowess and courage in battle. The soldiers of Serpent's Hold will tell thee that.
+				SAY The story runs that a silver serpent saved Lord British' life. Serpent's Hold is named for that snake.
+				SAY 'Tis not wise to joke with a soldier from Serpent's Hold ... not if he thinks thou art laughing at his expense.
+				SAY Discipline is important to those at Serpent's Hold. Discipline is based on duty, and duty is to Lord British, Britannia and to thy commanding officers.
+				SAY Soldiers, once trained at Serpent's Hold, usually enter the world to seek their fortune.
+				SAY Serpent's Hold has no known export, save the soldiers they train.
+				SAY I've never been to Serpent's Hold.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Serpent's Hold is on the largest island just east and south of the Cape of Heroes.
+				SAY Serpent's Hold is where all the fighters of this realm are trained. 'Tis common knowledge.
+				SAY 'Tis not so much a city as a stronghold, is Serpent's Hold.
+				SAY If thou'rt looking for military devices, Serpent's Hold is the place thou seekest.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. He said although the instructors speak highly of military magic, he thought 'twas a dishonorable method of war.
+				SAY 'Tis not a land used for farming, is Serpent's Hold. I do not think the soldiers take time to till the soil.
+				SAY Serpent's Hold is not a merry place for those not interested in the military life.
+				SAY No one but the vilest of beasts would dare attack Serpent's Hold.
+				SAY I think there is sometimes blood spilled between the warriors of Serpent's Hold, Trinsic and Jhelom.
+				SAY They are not so much paladins or mercenaries in Serpent's Hold. Soldier is more the like.
+				SAY The silver serpent is the icon of prowess and courage in battle. The soldiers of Serpent's Hold will tell thee that.
+				SAY The story runs that a silver serpent saved Lord British' life. Serpent's Hold is named for that snake.
+				SAY 'Tis not wise to joke with a soldier from Serpent's Hold ... not if he thinks thou art laughing at his expense.
+				SAY Discipline is important to those at Serpent's Hold. Discipline is based on duty, and duty is to Lord British, Britannia and to thy commanding officers.
+				SAY Soldiers, once trained at Serpent's Hold, usually enter the world to seek their fortune.
+				SAY Serpent's Hold has no known export, save the soldiers they train.
+				SAY I've never been to Serpent's Hold.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 18
+				SAY Serpent's Hold is on the largest island just east and south of the Cape of Heroes.
+				SAY Serpent's Hold is where all the fighters of this realm are trained. 'Tis common knowledge.
+				SAY 'Tis not so much a city as a stronghold, is Serpent's Hold.
+				SAY If thou'rt looking for military devices, Serpent's Hold is the place thou seekest.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. He said although the instructors speak highly of military magic, he thought 'twas a dishonorable method of war.
+				SAY 'Tis not a land used for farming, is Serpent's Hold. I do not think the soldiers take time to till the soil.
+				SAY Serpent's Hold is not a merry place for those not interested in the military life.
+				SAY No one but the vilest of beasts would dare attack Serpent's Hold.
+				SAY I think there is sometimes blood spilled between the warriors of Serpent's Hold, Trinsic and Jhelom.
+				SAY They are not so much paladins or mercenaries in Serpent's Hold. Soldier is more the like.
+				SAY The silver serpent is the icon of prowess and courage in battle. The soldiers of Serpent's Hold will tell thee that.
+				SAY The story runs that a silver serpent saved Lord British' life. Serpent's Hold is named for that snake.
+				SAY 'Tis not wise to joke with a soldier from Serpent's Hold ... not if he thinks thou art laughing at his expense.
+				SAY Discipline is important to those at Serpent's Hold. Discipline is based on duty, and duty is to Lord British, Britannia and to thy commanding officers.
+				SAY Soldiers, once trained at Serpent's Hold, usually enter the world to seek their fortune.
+				SAY Serpent's Hold has no known export, save the soldiers they train.
+				SAY I've never been to Serpent's Hold.
+			ENDDO
+		ELSE
+			DORAND 18
+				SAY Serpent's Hold is on the largest island just east and south of the Cape of Heroes.
+				SAY Serpent's Hold is where all the fighters of this realm are trained. 'Tis common knowledge.
+				SAY 'Tis not so much a city as a stronghold, is Serpent's Hold.
+				SAY If thou'rt looking for military devices, Serpent's Hold is the place thou seekest.
+				SAY In Serpent's Hold, weapons of war are as common as spittoons.
+				SAY I once met a warrior who trained at Serpent's Hold. He said although the instructors speak highly of military magic, he thought 'twas a dishonorable method of war.
+				SAY 'Tis not a land used for farming, is Serpent's Hold. I do not think the soldiers take time to till the soil.
+				SAY Serpent's Hold is not a merry place for those not interested in the military life.
+				SAY No one but the vilest of beasts would dare attack Serpent's Hold.
+				SAY I think there is sometimes blood spilled between the warriors of Serpent's Hold, Trinsic and Jhelom.
+				SAY They are not so much paladins or mercenaries in Serpent's Hold. Soldier is more the like.
+				SAY The silver serpent is the icon of prowess and courage in battle. The soldiers of Serpent's Hold will tell thee that.
+				SAY The story runs that a silver serpent saved Lord British' life. Serpent's Hold is named for that snake.
+				SAY 'Tis not wise to joke with a soldier from Serpent's Hold ... not if he thinks thou art laughing at his expense.
+				SAY Discipline is important to those at Serpent's Hold. Discipline is based on duty, and duty is to Lord British, Britannia and to thy commanding officers.
+				SAY Soldiers, once trained at Serpent's Hold, usually enter the world to seek their fortune.
+				SAY Serpent's Hold has no known export, save the soldiers they train.
+				SAY I've never been to Serpent's Hold.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=lord*british
+ON=*king*
+ON=*ruler*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 6
+				SAY I wonder why he isn't King British ....
+				SAY Lord British? Why, he's our ruler, of course!
+				SAY I always thought Lord British was the name of a bard group.
+				SAY Ain't never seen Lord British myself.
+				SAY My cousin said Lord British likes macaroni and cheese.
+				SAY Lord British could do with spending some time with the common folk, I think.
+			ENDDO
+		ELSE
+			DORAND 6
+				SAY I wonder why he isn't King British ....
+				SAY Lord British? Why, he's our ruler, of course!
+				SAY I always thought Lord British was the name of a bard group.
+				SAY Ain't never seen Lord British myself.
+				SAY My cousin said Lord British likes macaroni and cheese.
+				SAY Lord British could do with spending some time with the common folk, I think.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Lord British is the ruler of Britannia.
+				SAY Lord British? Why, he's our ruler, or course!
+				SAY I've never seen Lord British myself.
+				SAY I'm told Lord British has a castle with a moat. I'll wager there are gargoyles on his parapets, too.
+				SAY Lord British could do with spending some time with the common folk, I think.
+				SAY Lord British saved us all from the evil Lord Robert, or something like that. I forget exactly.
+				SAY Now that I think on it, Lord British is probably a fair touch older than he looks. Dost thou think he might be ... magically sustained? No, never mind. Forget I said anything.
+				SAY Lord British lives in Britain. Come to think of it, that kinda makes sense.
+				SAY Didst thou ever wonder why the king is called 'lord'? Passing odd, I call it.
+				SAY Lord British sits in judgment in many courts. He needs must know a lot.
+				SAY I'd follow Lord British anywhere.
+				SAY Me mum told me that Lord British was saved from a mongbat by a silver serpent. I've never even seen a mongbat.
+				SAY If I were Lord British, I'd build a house in Nujel'm. That's what I'd do.
+				SAY Lord British knows everything.
+				SAY Me dad was once resurrected from death by Lord British. He was eaten by an ettin. It was a good job for Lord British to even find enough pieces to work on.
+				SAY Lord British is the best ruler we've ever had. All the school books say so.
+				SAY If Lord British were a pile of gold, dost thou believe he would think he were a horse? It probably wouldn't matter one jot, so long as thou got around faster.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Lord British is the ruler of Britannia.
+				SAY Lord British? Why, he's our ruler, or course!
+				SAY I've never seen Lord British myself.
+				SAY I'm told Lord British has a castle with a moat. I'll wager there are gargoyles on his parapets, too.
+				SAY Lord British could do with spending some time with the common folk, I think.
+				SAY Lord British saved us all from the evil Lord Robert, or something like that. I forget exactly.
+				SAY Now that I think on it, Lord British is probably a fair touch older than he looks. Dost thou think he might be ... magically sustained? No, never mind. Forget I said anything.
+				SAY Lord British lives in Britain. Come to think of it, that kinda makes sense.
+				SAY Didst thou ever wonder why the king is called 'lord'? Passing odd, I call it.
+				SAY Lord British sits in judgment in many courts. He needs must know a lot.
+				SAY I'd follow Lord British anywhere.
+				SAY Me mum told me that Lord British was saved from a mongbat by a silver serpent. I've never even seen a mongbat.
+				SAY If I were Lord British, I'd build a house in Nujel'm. That's what I'd do.
+				SAY Lord British knows everything.
+				SAY Me dad was once resurrected from death by Lord British. He was eaten by an ettin. It was a good job for Lord British to even find enough pieces to work on.
+				SAY Lord British is the best ruler we've ever had. All the school books say so.
+				SAY If Lord British were a pile of gold, dost thou believe he would think he were a horse? It probably wouldn't matter one jot, so long as thou got around faster.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 17
+				SAY Lord British is the ruler of Britannia.
+				SAY Lord British? Why, he's our ruler, or course!
+				SAY I've never seen Lord British myself.
+				SAY I'm told Lord British has a castle with a moat. I'll wager there are gargoyles on his parapets, too.
+				SAY Lord British could do with spending some time with the common folk, I think.
+				SAY Lord British saved us all from the evil Lord Robert, or something like that. I forget exactly.
+				SAY Now that I think on it, Lord British is probably a fair touch older than he looks. Dost thou think he might be ... magically sustained? No, never mind. Forget I said anything.
+				SAY Lord British lives in Britain. Come to think of it, that kinda makes sense.
+				SAY Didst thou ever wonder why the king is called 'lord'? Passing odd, I call it.
+				SAY Lord British sits in judgment in many courts. He needs must know a lot.
+				SAY I'd follow Lord British anywhere.
+				SAY Me mum told me that Lord British was saved from a mongbat by a silver serpent. I've never even seen a mongbat.
+				SAY If I were Lord British, I'd build a house in Nujel'm. That's what I'd do.
+				SAY Lord British knows everything.
+				SAY Me dad was once resurrected from death by Lord British. He was eaten by an ettin. It was a good job for Lord British to even find enough pieces to work on.
+				SAY Lord British is the best ruler we've ever had. All the school books say so.
+				SAY If Lord British were a pile of gold, dost thou believe he would think he were a horse? It probably wouldn't matter one jot, so long as thou got around faster.
+			ENDDO
+		ELSE
+			DORAND 17
+				SAY Lord British is the ruler of Britannia.
+				SAY Lord British? Why, he's our ruler, or course!
+				SAY I've never seen Lord British myself.
+				SAY I'm told Lord British has a castle with a moat. I'll wager there are gargoyles on his parapets, too.
+				SAY Lord British could do with spending some time with the common folk, I think.
+				SAY Lord British saved us all from the evil Lord Robert, or something like that. I forget exactly.
+				SAY Now that I think on it, Lord British is probably a fair touch older than he looks. Dost thou think he might be ... magically sustained? No, never mind. Forget I said anything.
+				SAY Lord British lives in Britain. Come to think of it, that kinda makes sense.
+				SAY Didst thou ever wonder why the king is called 'lord'? Passing odd, I call it.
+				SAY Lord British sits in judgment in many courts. He needs must know a lot.
+				SAY I'd follow Lord British anywhere.
+				SAY Me mum told me that Lord British was saved from a mongbat by a silver serpent. I've never even seen a mongbat.
+				SAY If I were Lord British, I'd build a house in Nujel'm. That's what I'd do.
+				SAY Lord British knows everything.
+				SAY Me dad was once resurrected from death by Lord British. He was eaten by an ettin. It was a good job for Lord British to even find enough pieces to work on.
+				SAY Lord British is the best ruler we've ever had. All the school books say so.
+				SAY If Lord British were a pile of gold, dost thou believe he would think he were a horse? It probably wouldn't matter one jot, so long as thou got around faster.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*virtue*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY I know lotsa virtuous people.
+				SAY Virtue? I don't see the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I don't know nothin' about them concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY I know lotsa virtuous people.
+				SAY Virtue? I don't see the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I don't know nothin' about them concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY I know many virtuous people.
+				SAY Virtue? I do not understand the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I know nothing about such fancy concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY I know many virtuous people.
+				SAY Virtue? I do not understand the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I know nothing about such fancy concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY I know many virtuous people.
+				SAY Virtue? I do not understand the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I know nothing about such fancy concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY I know many virtuous people.
+				SAY Virtue? I do not understand the point of thy question.
+				SAY Virtue is what virtuous people have. 'Tis a good thing.
+				SAY Virtue? I know nothing about such fancy concepts.
+				SAY Most people strive to be virtuous.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*avatar*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like the name of a horse.
+				SAY I don't know nothin' 'bout no avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's killed whilst saying: 'Ave at thee'.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like the name of a horse.
+				SAY I don't know nothin' 'bout no avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's killed whilst saying: 'Ave at thee'.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like the name of a horse.
+				SAY I don't know nothin' 'bout no avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's killed whilst saying: 'Ave at thee'.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like the name of a horse.
+				SAY I don't know nothin' 'bout no avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's killed whilst saying: 'Ave at thee'.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like a horse's name.
+				SAY I know nothing of any avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's slain whilst saying: 'Ave at thee.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Avahoo?
+				SAY Avawhat?
+				SAY Avatar? Sounds like a horse's name.
+				SAY I know nothing of any avatar.
+				SAY 'Avatarrgh' is what a pirate says when he's slain whilst saying: 'Ave at thee.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*shrine*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place
+				SAY Healing shrines are found all about Britannia.
+				SAY I ain't sure where there's a shrine hereabouts.
+				SAY Shrines are marvelous.
+				SAY I don't know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place
+				SAY Healing shrines are found all about Britannia.
+				SAY I ain't sure where there's a shrine hereabouts.
+				SAY Shrines are marvelous.
+				SAY I don't know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place
+				SAY Healing shrines are found all about Britannia.
+				SAY I ain't sure where there's a shrine hereabouts.
+				SAY Shrines are marvelous.
+				SAY I don't know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place
+				SAY Healing shrines are found all about Britannia.
+				SAY I ain't sure where there's a shrine hereabouts.
+				SAY Shrines are marvelous.
+				SAY I don't know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place.
+				SAY Healing shrines are found all about Britannia.
+				SAY I am fortunate to say I've never needed one. I'm not sure where there is one hereabouts.
+				SAY Shrines are marvelous free magic. For the wounded, they can be the difference between life and death.
+				SAY I do not know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY A shrine is a magical place where healing takes place.
+				SAY Healing shrines are found all about Britannia.
+				SAY I am fortunate to say I've never needed one. I'm not sure where there is one hereabouts.
+				SAY Shrines are marvelous free magic. For the wounded, they can be the difference between life and death.
+				SAY I do not know where shrines come from. They are good things, though. All folk know that.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[EOF]

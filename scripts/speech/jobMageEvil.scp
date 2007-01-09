@@ -1,0 +1,99 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+[SPEECH jobMageEvil]
+DEFAULT=Speak sense or leave me.
+ON=Hi
+ON=Hello
+ON=Greet
+ON=Hail
+	SAY=What?  Did I hear a mouse squeaking?  Ah I see... 'tis a lowly dog whining.
+
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Go!
+	BYE
+	return 1
+
+ON=job
+ON=what do you do
+	SAY=I am the human embodiment of the arcane arts.
+
+ON=ABBEY
+SAY=Ask me not of the secret abbey.
+ON=ABILITIES
+ON=ABILITY
+SAY=I highly doubt that you have enough ability to become a mage.
+ON=MAGIC
+ON=ARCANE
+SAY=The arcane arts are secret.  Ask me not.
+ON=ART
+SAY=Do you ask of paintings or magic?
+ON=CAST
+ON=CASTING
+SAY=Begone, or I shall show ye some real casting.
+ON=COMPONENT
+SAY=Yes, there are many components to magic.  Now begone with you.
+ON=CRAFT
+SAY=Thou is not worthy of this craft.
+ON=DES MANI
+SAY=Thou is probably used to hearing such words.
+ON=EMPATH
+SAY=Thou is starting to annoy me.  Perhaps a nice Blade Spirit will help you find the door?
+ON=ETHER
+SAY=What knowledge do you have of ether?  Tell me now.
+ON=EVIL
+SAY=Evil is not wrong, just misunderstood.
+ON=GUILD
+SAY=One such as you surely hasn't a chance of joining the Guild of Arcane Arts
+ON=IN LOR
+SAY=It will take more than Night Sight to help one such as you.  Now leave me be.
+ON=IN MANI
+SAY=Healing is so relied on by the weak.
+ON=IN MANI YLEM
+SAY=I would eat nothing that thou conjured up.
+ON=IN POR YLEM
+SAY=Would you like to see a Magic Arrow... through your heart?
+ON=INGREDIENTS
+SAY=No.  Magic is not like a stew.  Stop this inane questioning.
+ON=NEWT
+SAY=Yes, a Newt.  Wouldst thou prefer to be cockroach? Now leave me.
+ON=REAGENT
+SAY=If you must ask me of reagents, then magery is not for you.
+ON=REL AN
+SAY=Speak not to me of Reactive Armor.
+ON=RELVINIAN
+SAY=Leave me be, knave.
+ON=SCROLL
+SAY=I have no spare scrolls for thee.
+ON=SKILL
+SAY=It takes great skill to be a Mage.  You have little.
+ON=SPELL
+SAY=Ask me not of spells.
+ON=SPELL BOOKS
+ON=SPELLBOOKS
+ON=SPELLS
+SAY=I would doubt that your spellbook is even half full.
+ON=TALENT
+SAY=Talent?  Perhaps you should become a Tailor.
+ON=UUS JUX
+SAY=I'm sure that thou doesn't even need the spell to be clumsy.
+ON=WHERE<ANY>MONKS
+SAY=Why ask me of monks?  I am a powerful Mage.
+ON=WIS UUS
+SAY=Obviously thou does not have the cunning to know that it is Uus Wis.
+ON=WORDS OF POWER
+SAY=Thou is really testing my nerves.
+//RANDOM=Speak to me not, or I'll turn thou into a newt.
+
+[EOF]
+

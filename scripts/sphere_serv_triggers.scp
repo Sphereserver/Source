@@ -1,0 +1,95 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 16-Nov-2006
+VERSION=0.56b
+
+//
+// This file contains function that are used as serv triggers.
+//
+
+[PLEVEL 7]
+f_onaccount_login
+f_onaccount_delete
+f_onchar_create
+f_onchar_delete
+f_onserver_start
+f_onserver_save
+f_onserver_save_ok
+f_onserver_save_fail
+f_onserver_save_finished
+f_onserver_exit
+f_onserver_blockip
+
+// This function is called after client entered the password.
+// ARGS --> username of the client loggin in
+// RETURN
+//	  0 --> normal action (login)
+//	  1 --> disconnect the client
+[FUNCTION f_onaccount_login]
+
+// This function is called before an account is being deleted.
+// ARGS --> username of the account being deleted.
+// RETURN
+//	  0 --> normal action (delete)
+//	  1 --> account not deleted
+[FUNCTION f_onaccount_delete]
+
+// This function is called after client have created a new char.
+// SRC --> char being created
+// ARGN1 --> flags
+// ARGN2 --> profession chosen
+// ARGN3 --> elf
+// ARGS  --> account name
+[FUNCTION f_onchar_create]
+
+// This function is called before client is going to delete a character.
+// SRC --> char being deleted
+// RETURN
+//	  0 --> normal action (delete char)
+//	  1 --> denyes deletion
+[FUNCTION f_onchar_delete]
+
+// This function is called on server startup
+[FUNCTION f_onserver_start]
+
+// This function is called before server is going to save.
+// ARGN1 --> save is forced (writable)
+// ARGN2 --> save stage (for backgroud save goes 1 to 6146 [sector count + 2])
+// RETURN
+//	  0 --> normal action (save)
+//	  1 --> denyes save
+[FUNCTION f_onserver_save]
+
+
+// This function is called after server has saved correctly (once per stage with background save).
+[FUNCTION f_onserver_save_ok]
+
+
+// This function is called after server hasn't saved correctly (once per stage with background save).
+[FUNCTION f_onserver_save_fail]
+
+
+// This function is called after server completely finished saving (also at end of background save).
+// ARGS --> Time it took to save (in seconds, 4 digit precision)
+[FUNCTION f_onserver_save_finished]
+
+
+// This function is called when a server is triggeted a shutdown, after all
+// saves and everything finished
+[FUNCTION f_onserver_exit]
+
+
+// This function is called when an IP is blocked from the server
+// ARGS  --> IP being blocked
+// ARGN1 --> Time to block the IP for in tenths of a second (writable)
+[FUNCTION f_onserver_blockip]
+
+
+[EOF]

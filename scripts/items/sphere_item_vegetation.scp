@@ -1,0 +1,3433 @@
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, November 24, 2003
+//
+VERSION=0.56b
+
+
+
+[ITEMDEF 0c3b]
+DEFNAME=i_dried_flowers
+RESOURCES=1 I_CROP_FLOWER
+CATEGORY=Vegetation
+SUBSECTION=Dried Vegetation
+DESCRIPTION=Dried Flowers
+DUPELIST=0c3c
+
+[ITEMDEF 0c3c]
+DUPEITEM=0c3b
+
+[ITEMDEF 0c3d]
+//dried flowers
+DEFNAME=i_dried_flowers_3
+RESOURCES=1 I_CROP_flower
+CATEGORY=Vegetation
+SUBSECTION=Dried Vegetation
+DESCRIPTION=Dried Flowers
+DUPELIST=0c3e
+
+[ITEMDEF 0c3e]
+//dried flowers
+DUPEITEM=0c3d
+
+[ITEMDEF 0c3f]
+//dried onions
+DEFNAME=i_dried_onions
+RESOURCES=1 I_CROP_ONION
+CATEGORY=Vegetation
+SUBSECTION=Dried Vegetation
+DESCRIPTION=Dried Onions
+DUPELIST=0c40
+
+[ITEMDEF 0c40]
+//dried onions
+DUPEITEM=0c3f
+
+[ITEMDEF 0c41]
+//dried herbs
+DEFNAME=i_dried_herbs
+RESOURCES=1 I_CROP_HERB
+CATEGORY=Vegetation
+SUBSECTION=Dried Vegetation
+DESCRIPTION=Dried Herbs
+DUPELIST=0c42
+
+[ITEMDEF 0c42]
+//dried herbs
+DUPEITEM=0c41
+
+[ITEMDEF 0c45]
+//flowers
+DEFNAME=i_crop_flower_3
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Flowers
+DUPELIST=0c46,0c47,0c48,0c49,0c4a,0c4b,0c4c,0c4d,0c4e
+
+[ITEMDEF 0c46]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c47]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c48]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c49]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c4a]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c4b]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c4c]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c4d]
+//flowers
+
+DUPEITEM=0c45
+
+[ITEMDEF 0c4e]
+//flowers
+DUPEITEM=0c45
+
+[ITEMDEF 0c4f]
+//cotton plant - mature
+DEFNAME=i_crop_cotton
+TYPE=T_CROPS
+TDATA1=i_crop_cotton1
+TDATA2=0
+TDATA3=i_COTTON
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cotton Plant
+DUPELIST=0c50
+
+[ITEMDEF 0c50]
+//cotton (adult)
+DUPEITEM=0c4f
+
+[ITEMDEF 0c51]
+//cotton plant (immature)
+DEFNAME=i_crop_cotton1
+TYPE=T_CROPS
+TDATA1=i_crop_cotton1
+TDATA2=i_crop_cotton2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cotton Plant Uprooted
+DUPELIST=0c52
+
+[ITEMDEF 0c52]
+DUPEITEM=0c51
+
+[ITEMDEF 0c53]
+//cotton plant (mid age)
+DEFNAME=i_crop_cotton2
+TYPE=T_CROPS
+TDATA1=i_crop_cotton1
+TDATA2=i_crop_cotton
+DUPELIST=0c54
+
+[ITEMDEF 0c54]
+//cotton plant (mid age)
+DUPEITEM=0c53
+
+[ITEMDEF 0c55]
+//wheat
+DEFNAME=i_crop_wheat3
+TYPE=T_CROPS
+TDATA1=i_crop_WHEAT1
+TDATA2=i_crop_WHEAT4
+DUPELIST=0c56
+
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Wheat
+
+[ITEMDEF 0c56]
+//wheat
+DUPEITEM=0c55
+
+[ITEMDEF 0c57]
+//wheat
+DEFNAME=i_crop_wheat4
+TYPE=T_CROPS
+TDATA1=i_crop_WHEAT1
+TDATA2=i_crop_WHEAT
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Wheat
+DUPELIST=0c59
+
+[ITEMDEF 0c58]
+//wheat
+DUPEITEM=0c5a
+
+[ITEMDEF 0c59]
+//wheat
+DUPEITEM=0c57
+
+[ITEMDEF 0c5a]
+//wheat
+DEFNAME=i_crop_wheat
+TYPE=T_CROPS
+TDATA1=i_crop_WHEAT1
+TDATA2=0
+TDATA3=i_wheat_sheaf
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Wheat
+DUPELIST=0c58,0c5b
+
+[ITEMDEF 0c5b]
+//wheat
+DUPEITEM=0c5a
+
+[ITEMDEF 0c5c]
+//Watermelon
+DEFNAME=i_fruit_watermelon
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Watermelon
+DUPELIST=0c5d
+
+[ITEMDEF 0c5d]
+//watermelon
+DUPEITEM=0c5c
+
+[ITEMDEF 0c5e]
+//vines (ground)
+DEFNAME=i_crop_vines1
+TYPE=T_CROPS
+TDATA1=i_crop_vines1
+TDATA2=i_crop_vines2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Vines
+
+ON=@Create
+// lots of vines grown fruit.
+FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+
+[ITEMDEF 0c5f]
+//vines
+DEFNAME=i_crop_vines
+TYPE=T_CROPS
+TDATA1=i_crop_vines1
+TDATA2=-1	// pops out a fruit.
+TDATA3=0 // can be many fruits
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Vines
+
+ON=@Create
+// lots of vines grown fruit.
+FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+
+[ITEMDEF 0c60]
+//vines
+DEFNAME=i_crop_vines2
+TYPE=T_CROPS
+TDATA1=i_crop_vines1
+TDATA2=i_crop_vines
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Vines
+
+ON=@Create
+// lots of vines grown fruit.
+FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+
+[ITEMDEF 0c61]
+//Turnip
+// DEFNAME2=TURNIP_1
+DEFNAME=i_crop_turnip1
+TYPE=T_CROPS
+TDATA1=i_crop_turnip1
+TDATA2=i_crop_turnip
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Turnip
+
+[ITEMDEF 0c62]
+//turnip
+DEFNAME=i_crop_turnip
+TYPE=T_CROPS
+TDATA1=i_crop_turnip1
+TDATA2=0
+TDATA3=i_fruit_turnip
+VALUE=2
+WEIGHT=0.1
+DUPELIST=0c63
+
+[ITEMDEF 0c63]
+//turnip
+DUPEITEM=0c62
+
+[ITEMDEF 0c64]
+//Gourd (yellow)
+//DEFNAME2=GOURD_1
+DEFNAME=i_fruit_gourd1
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Gourd (Yellow)
+DUPELIST=0c65
+
+[ITEMDEF 0c65]
+//gourd
+DUPEITEM=0c64
+
+[ITEMDEF 0c66]
+//green gourd
+//DEFNAME2=GOURD_2
+DEFNAME=i_fruit_gourd2
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+DUPELIST=0c67
+
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Gourd (Green)
+
+[ITEMDEF 0c67]
+//green gourd
+DUPEITEM=0c66
+
+[ITEMDEF 0c68]
+//sprouts - no idea what they sprout into ?
+DEFNAME=i_crop_sprouts1
+TYPE=T_CROPS
+TDATA1=i_crop_sprouts1
+TDATA2=i_crop_sprouts2
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Sprouts
+
+[ITEMDEF 0c69]
+//sprouts
+DEFNAME=i_crop_sprouts2
+TYPE=T_CROPS
+TDATA1=i_crop_sprouts1
+TDATA2=0 // not sure what this turns into.
+TDATA3=0 // not sure what this turns into.
+
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Sprouts
+
+ON=@Create
+FRUIT=0	// not sure what this turns into ?
+
+[ITEMDEF 0c6a]
+//Pumpkin
+DEFNAME=i_fruit_pumpkin
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Pumpkin
+DUPELIST=0c6b,0c6c
+
+[ITEMDEF 0c6b]
+//pumpkin
+DUPEITEM=0c6a
+
+[ITEMDEF 0c6c]
+//pumpkin - smaller
+DUPEITEM=0c6a
+
+[ITEMDEF 0c6d]
+//Onion
+// ONION_OBJ
+DEFNAME=i_fruit_onion
+RESOURCES=I_CROP_ONION
+TYPE=T_FRUIT
+TDATA1=i_crop_onion
+VALUE={2 4}
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Onion
+DUPELIST=0c6e
+
+[ITEMDEF 0c6e]
+//onion
+DUPEITEM=0c6d
+
+[ITEMDEF 0c6f]
+//onions
+DEFNAME=i_crop_onion
+TYPE=T_CROPS
+TDATA1=i_crop_onion
+TDATA2=0
+TDATA3=i_fruit_onion
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Onions
+
+[ITEMDEF 0c70]
+// DEFANAME2=HEAD_OF_LETTUCE
+//Head of Lettuce
+DEFNAME=i_fruit_lettuce
+TYPE=T_FRUIT
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Lettuce
+DUPELIST=0c71
+
+[ITEMDEF 0c71]
+//lettuce
+DUPEITEM=0c70
+
+[ITEMDEF 0c72]
+//Squash
+DEFNAME=i_fruit_squash
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Squash
+DUPELIST=0c73
+
+[ITEMDEF 0c73]
+//squash
+DUPEITEM=0c72
+
+[ITEMDEF 0c74]
+//Honeydew Melon
+// DEFNAME2=MELON
+DEFNAME=i_fruit_honeydewmelon
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Honeydew Melon
+DUPELIST=0c75
+
+[ITEMDEF 0c75]
+//honeydew melon
+DUPEITEM=0c74
+
+[ITEMDEF 0c76]
+//carrots
+DEFNAME=i_crop_carrot
+TYPE=T_CROPS
+TDATA1=i_crop_carrot
+TDATA2=0
+TDATA3=i_fruit_carrot
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Carrots
+
+[ITEMDEF 0c77]
+//Carrot
+DEFNAME=i_fruit_carrot
+RESOURCES=1 i_crop_carrot
+TYPE=T_FRUIT
+TDATA1=i_crop_carrot
+VALUE={2 4}
+WEIGHT=0.1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Carrot
+DUPELIST=0c78
+
+[ITEMDEF 0c78]
+//carrot
+DUPEITEM=0c77
+
+[ITEMDEF 0c79]
+//Cantaloupe
+DEFNAME=i_fruit_cantelope
+TYPE=T_FRUIT
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Cantaloupe
+DUPELIST=0c7a
+
+[ITEMDEF 0c7a]
+//cantaloupe
+DUPEITEM=0c79
+
+[ITEMDEF 0c7c]
+//Head of Cabbage
+DUPEITEM=0c7b
+
+[ITEMDEF 0c7b]
+//cabbage
+DEFNAME=i_fruit_cabbage
+TYPE=T_FRUIT
+WEIGHT=0.5
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DUPELIST=0c7c
+DESCRIPTION=Cabbage
+
+[ITEMDEF 0c7d]
+//corn stalk
+DEFNAME=i_crop_corn
+TYPE=T_CROPS
+TDATA1=i_crop_corn1
+TDATA2=0
+TDATA3=i_fruit_corn
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Corn Stalk
+
+ON=@Create
+FRUIT=i_FRUIT_CORN
+
+[ITEMDEF 0c7e]
+//corn stalk
+DEFNAME=i_crop_corn1
+TYPE=T_CROPS
+TDATA1=i_crop_corn1
+TDATA2=i_crop_corn
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Corn Stalk
+
+ON=@Create
+FRUIT=i_FRUIT_CORN
+
+[ITEMDEF 0c7f]
+//Ear of Corn
+// DEFNAME2=CORN
+DEFNAME=i_fruit_corn
+RESOURCES=I_CROP_CORN
+TYPE=T_FOOD
+VALUE={2 4}
+WEIGHT=0.2
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Ear of Corn
+DUPELIST=0c80,0c81,0c82
+
+[ITEMDEF 0c80]
+//ear of corn
+DUPEITEM=0c7f
+
+[ITEMDEF 0c81]
+//ear of corn
+DUPEITEM=0c7f
+
+[ITEMDEF 0c82]
+//ear of corn
+DUPEITEM=0c7f
+
+[ITEMDEF 0c83]
+//campion flowers
+DEFNAME=i_flower_campion
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Campion Flowers
+
+[ITEMDEF 0c84]
+//foxglove flowers
+DEFNAME=i_flower_foxglove
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Foxglove Flowers
+
+[ITEMDEF 0c85]
+//orfluer flowers
+DEFNAME=i_flower_orfluer
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Orfluer Flowers
+
+[ITEMDEF 0c86]
+//red poppies
+DEFNAME=i_flower_redpoppies
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Red Poppies
+
+[ITEMDEF 0c87]
+//campion flowers
+DEFNAME=i_flower_campion_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=campion Flowers
+
+[ITEMDEF 0c88]
+//snowdrops
+DEFNAME=i_flower_snowdrops
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Snowdrops
+
+[ITEMDEF 0c89]
+//campion flowers
+DEFNAME=i_flower_campion_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Campion Flowers
+
+[ITEMDEF 0c8a]
+//foxglove flowers
+DEFNAME=i_flower_foxglove_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Foxglove Flowers
+
+[ITEMDEF 0c8b]
+//white flowers
+DEFNAME=i_flower_white
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=White Flowers
+
+[ITEMDEF 0c8c]
+//white flowers
+DEFNAME=i_flower_white_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=White Flowers
+
+[ITEMDEF 0c8d]
+//white poppies
+DEFNAME=i_flower_whitepoppies_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=White Poppies
+
+[ITEMDEF 0c8e]
+//snowdrops
+DEFNAME=i_flower_snowdrops_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Snowdrops
+
+[ITEMDEF 0c8f]
+//hedge
+DEFNAME=i_plant_hedge_1
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hedge
+
+[ITEMDEF 0c90]
+//hedge
+DEFNAME=i_plant_hedge_2
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hedge
+
+[ITEMDEF 0c91]
+//untrimmed hedge
+DEFNAME=i_plant_hedge_3
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Untrimmed Hedge
+
+[ITEMDEF 0c92]
+//untrimmed hedge
+DEFNAME=i_plant_hedge_4
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Untrimmed Hedge
+
+[ITEMDEF 0c93]
+//blade plant
+DEFNAME=i_plant_blade
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Blade plant
+
+[ITEMDEF 0c94]
+//bulrushes
+DEFNAME=i_plant_bulrushes
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Bulrushes
+
+[ITEMDEF 0c95]
+//coconut palm
+DEFNAME=i_tree_coconutpalm
+VALUE=2
+// TYPE=t_tree
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Coconut Palm
+
+ON=@Create
+FRUIT=i_fruit_coconut
+
+[ITEMDEF 0c96]
+//date palm
+DEFNAME=i_tree_datepalm
+// TYPE=t_tree
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Date Palm
+
+ON=@Create
+FRUIT=i_fruit_dates
+
+[ITEMDEF 0c97]
+//elephant ear plant
+DEFNAME=i_plant_elephantear
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Elephant Ear Plant
+
+[ITEMDEF 0c98]
+//fan plant
+DEFNAME=i_plant_fan
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Fan Plant
+
+[ITEMDEF 0c99]
+//small palm
+DEFNAME=i_plant_smallpalm
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Small Palm
+
+[ITEMDEF 0c9a]
+//small palm
+DEFNAME=i_plant_smallpalm_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Small Palm
+
+[ITEMDEF 0c9b]
+//small palm
+DEFNAME=i_plant_smallpalm_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Small Palm
+
+[ITEMDEF 0c9c]
+//small palm
+DEFNAME=i_plant_smallpalm_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Small Palm
+
+[ITEMDEF 0c9d]
+//small palm
+DEFNAME=i_plant_smallpalm_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Small Palm
+
+[ITEMDEF 0c9e]
+//tree
+DEFNAME=i_tree_ohii
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree
+
+[ITEMDEF 0c9f]
+//fern
+DEFNAME=i_plant_fern
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION= Fern
+
+[ITEMDEF 0ca0]
+//fern
+DEFNAME=i_plant_fern_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Fern
+
+[ITEMDEF 0ca1]
+//large fern
+DEFNAME=i_plant_fern_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Large Fern
+
+[ITEMDEF 0ca2]
+//fern
+DEFNAME=i_plant_fern_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Fern
+
+[ITEMDEF 0ca3]
+//fern
+DEFNAME=i_plant_fern_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Fern
+
+[ITEMDEF 0ca4]
+//fern
+DEFNAME=i_plant_fern_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Fern
+
+[ITEMDEF 0ca5]
+//pampas grass
+DEFNAME=i_plant_pampasgrass
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Pampas Grass
+
+[ITEMDEF 0ca6]
+//ponytail palm (too small for wood)
+DEFNAME=i_plant_pampasgrass_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Ponytail Palm
+
+[ITEMDEF 0ca7]
+//rushes
+DEFNAME=i_plant_rushes
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Rushes
+
+[ITEMDEF 0ca8]
+//small banana tree (too small for wood)
+DEFNAME=i_foliage_banana_small
+VALUE=1
+TYPE=t_foliage
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Banana Tree (Small)
+
+[ITEMDEF 0ca9]
+//snake plant
+DEFNAME=i_plant_snake
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Snake Plant
+
+[ITEMDEF 0caa]
+//banana tree
+DEFNAME=i_tree_banana
+VALUE=2
+TYPE=t_foliage
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Banana Tree
+
+ON=@Create
+FRUIT=i_fruit_banana
+
+[ITEMDEF 0cab]
+//banana tree
+DEFNAME=i_tree_banana_2
+VALUE=2
+TYPE=t_foliage
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Banana Tree
+
+ON=@Create
+FRUIT=i_fruit_banana
+
+[ITEMDEF 0cac]
+//grasses
+DEFNAME=i_plant_grasses
+VALUE=1
+TYPE=T_GRASS
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Grasses
+DUPELIST=0cad,0cae,0caf,0cb0,0cb1,0cb2,0cb3,0cb4,0cb5,0cb6,0cb9,0cba,0cbb,0cbc,0cbd
+
+[ITEMDEF 0cad]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cae]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0caf]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb0]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb1]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb2]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb3]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb4]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb5]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb6]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cb7]
+//cattails
+DEFNAME=i_plant_cattails
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cattails
+TYPE=t_grass
+DUPELIST=0cb8
+
+[ITEMDEF 0cb8]
+//cattails
+DUPEITEM=0cb7
+
+[ITEMDEF 0cb9]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cba]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cbb]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cbc]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cbd]
+//grasses
+DUPEITEM=0cac
+
+[ITEMDEF 0cbe]
+//poppies
+DEFNAME=i_plant_poppies
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Poppies
+
+[ITEMDEF 0cbf]
+//poppies
+DEFNAME=i_plant_poppies_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Poppies
+
+[ITEMDEF 0cc0]
+//orfluer flowers
+DEFNAME=i_flower_orfluer_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Orfluer Flowers
+
+[ITEMDEF 0cc1]
+//orfluer flowers
+DEFNAME=i_flower_orfluer_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Orfluer Flowers
+
+[ITEMDEF 0cc3]
+//muck
+DEFNAME=i_flower_muck
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Muck
+TYPE=t_trap_active
+
+[ITEMDEF 0cc4]
+//pampas grass
+DEFNAME=i_plant_pampasgrass_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Pampas Grass
+
+[ITEMDEF 0cc5]
+//grasses
+DEFNAME=i_plant_grasses_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Grasses
+TYPE=t_grass
+
+[ITEMDEF 0cc6]
+//grasses
+DEFNAME=i_plant_grasses_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Grasses
+TYPE=t_grass
+
+[ITEMDEF 0cc7]
+//weed
+DEFNAME=i_plant_weed
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Weed
+
+[ITEMDEF 0cc8]
+//juniper bush
+DEFNAME=i_plant_juniper
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Juniper Bush
+
+[ITEMDEF 0cc9]
+//spider tree too small for wood yield
+DEFNAME=i_plant_spider
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Spider Tree
+
+[ITEMDEF 0cca]
+//tree small black branches, no foliage
+DEFNAME=i_tree_trunk
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree (Brown) (No Foliage)
+
+[ITEMDEF 0ccb]
+//tree gray (dead?) no foliage
+DEFNAME=i_tree_trunk_2
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree (Dark Brown) (No Foliage)
+
+[ITEMDEF 0ccc]
+//tree brown, no foliage
+DEFNAME=i_tree_trunk_3
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree (Light Brown) (No Foliage)
+
+[ITEMDEF 0ccd]
+//tree
+DEFNAME=i_tree_4
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree (Gray) (No Foliage)
+
+[ITEMDEF 0cce]
+//leaves
+DEFNAME=i_foliage_4
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0ccf]
+//leaves
+DEFNAME=i_foliage_4fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0cd0]
+//tree warm brown, no foliage
+DEFNAME=i_tree_3
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree - (Warm Brown)
+
+[ITEMDEF 0cd1]
+//leaves
+DEFNAME=i_foliage_3
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0cd2]
+//leaves
+DEFNAME=i_foliage_3_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0cd3]
+//tree
+DEFNAME=i_tree_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree
+TYPE=t_tree
+
+[ITEMDEF 0cd4]
+//leaves
+DEFNAME=i_foliage_5
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0cd5]
+//leaves
+DEFNAME=i_foliage_5_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves
+
+[ITEMDEF 0cd6]
+//cedar tree
+DEFNAME=i_tree_cedar
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cedar Tree
+
+[ITEMDEF 0cd7]
+//cedar needles
+DEFNAME=i_foliage_cedar
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cedar Needles
+
+[ITEMDEF 0cd8]
+//cedar tree
+DEFNAME=i_tree_cedar2
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cedar Tree
+
+[ITEMDEF 0cd9]
+//cedar needles
+DEFNAME=i_foliage_cedar2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cedar Needles
+TYPE=t_tree
+
+[ITEMDEF 0cda]
+//oak tree
+DEFNAME=i_tree_oak
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Tree
+
+[ITEMDEF 0cdb]
+//oak leaves
+DEFNAME=i_foliage_oak
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Leaves
+TYPE=t_tree
+
+[ITEMDEF 0cdc]
+//oak leaves
+DEFNAME=i_foliage_oak_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Leaves
+TYPE=t_tree
+
+[ITEMDEF 0cdd]
+//oak tree
+DEFNAME=i_tree_oak2
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Tree
+
+[ITEMDEF 0cde]
+//oak leaves
+DEFNAME=i_foliage_oak2
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Leaves
+TYPE=t_tree
+
+[ITEMDEF 0cdf]
+//oak leaves
+DEFNAME=i_foliage_oak2_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Leaves
+TYPE=t_tree
+
+[ITEMDEF 0ce0]
+//walnut tree
+DEFNAME=i_tree_walnut
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Tree
+
+[ITEMDEF 0ce1]
+//walnut leaves
+DEFNAME=i_foliage_walnut
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Leaves
+
+[ITEMDEF 0ce2]
+//walnut leaves
+DEFNAME=i_foliage_walnut_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Leaves
+
+[ITEMDEF 0ce3]
+//walnut tree
+DEFNAME=i_tree_walnut2
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Tree
+
+[ITEMDEF 0ce4]
+//walnut leaves
+DEFNAME=i_foliage_walnut2
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Leaves
+
+[ITEMDEF 0ce5]
+//walnut leaves
+DEFNAME=i_foliage_walnut2_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Walnut Leaves
+
+[ITEMDEF 0ce6]
+//willow tree
+DEFNAME=i_tree_trunk_willow
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Willow Tree
+
+[ITEMDEF 0ce7]
+//willow leaves
+DEFNAME=i_tree_leaves_willow
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Willow Leaves
+
+[ITEMDEF 0ce8]
+//willow leaves
+DEFNAME=i_tree_leaves_willow_2
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Willow Leaves
+
+[ITEMDEF 0ce9]
+//sapling too small for wood yield
+DEFNAME=i_tree_sapling
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Sapling
+
+[ITEMDEF 0cea]
+//sapling
+DEFNAME=i_tree_sapling_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Sapling
+
+[ITEMDEF 0ceb]
+//vines
+DEFNAME=i_crop_vines_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Vines
+
+[ITEMDEF 0cec]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0ced]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cee]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cef]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cf0]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cf1]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cf2]
+//vines
+DUPEITEM=0ceb
+
+[ITEMDEF 0cf3]
+//fallen log
+DEFNAME=i_log_fallen
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Fallen Log
+
+[ITEMDEF 0cf4]
+//fallen log
+DUPEITEM=0cf3
+
+[ITEMDEF 0cf5]
+//fallen log
+DUPEITEM=0cf3
+
+[ITEMDEF 0cf6]
+//fallen log
+DUPEITEM=0cf3
+
+[ITEMDEF 0cf7]
+//fallen log
+DUPEITEM=0cf3
+
+[ITEMDEF 0cf8]
+//cypress tree
+DEFNAME=i_tree_cyprus
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cyprus Tree
+
+[ITEMDEF 0cf9]
+//cypress leaves
+DEFNAME=i_foliage_cyprus
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cyprus Leaves
+
+[ITEMDEF 0cfa]
+//cypress leaves
+DEFNAME=i_foliage_cyprus_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0cfb]
+//cypress tree
+DEFNAME=i_tree_cyprus2
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Tree
+
+[ITEMDEF 0cfc]
+//cypress leaves
+DEFNAME=i_foliage_cyprus2
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0cfd]
+//cypress leaves
+DEFNAME=i_foliage_cyprus2_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0cfe]
+//cypress tree
+DEFNAME=i_tree_cyprus3
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Tree
+
+[ITEMDEF 0cff]
+//cypress leaves
+DEFNAME=i_foliage_cyprus3
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0d00]
+//cypress leaves
+DEFNAME=i_foliage_cyprus3_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0d01]
+//cypress tree
+DEFNAME=i_tree_cyprus4
+TYPE=t_tree
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Tree
+
+[ITEMDEF 0d02]
+//cypress leaves
+DEFNAME=i_foliage_cyprus4
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0d03]
+//cypress leaves
+DEFNAME=i_foliage_cyprus4_fall
+TYPE=t_foliage
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Cypress Leaves
+
+[ITEMDEF 0d04]
+//water plants
+DEFNAME=i_plant_water
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Water Plants
+
+[ITEMDEF 0d05]
+//reeds
+DEFNAME=i_plant_reed
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Reeds
+
+[ITEMDEF 0d06]
+//lilypad
+DEFNAME=i_plant_lilypad
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypad
+
+[ITEMDEF 0d07]
+//lilypad
+DEFNAME=i_plant_lilypad_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypad
+
+[ITEMDEF 0d08]
+//lilypad
+DEFNAME=i_plant_lilypad_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypad
+
+[ITEMDEF 0d09]
+//lilypad
+DEFNAME=i_plant_lilypad_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypad
+
+[ITEMDEF 0d0a]
+//lilypad
+DEFNAME=i_plant_lilypad_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypad
+
+[ITEMDEF 0d0b]
+//lilypads
+DEFNAME=i_plant_lilypad_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lilypads
+
+[ITEMDEF 0d0c]
+//mushrooms
+DEFNAME=i_crop_mushroom
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Mushrooms
+DESCRIPTION=@
+DUPELIST=0d0d,0d0e,0d0f,0d10,0d11,0d12,0d13,0d14,0d15,0d16,0d17,0d18,0d19
+
+[ITEMDEF 0d0d]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d0e]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d0f]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d10]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d11]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d12]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d13]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d14]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d15]
+//mushrooms
+DUPEITEM=0d0c
+
+[ITEMDEF 0d16]
+//mushroom
+DUPEITEM=0d0c
+
+[ITEMDEF 0d17]
+//mushroom
+DUPEITEM=0d0c
+
+[ITEMDEF 0d18]
+//mushroom
+DUPEITEM=0d0c
+
+[ITEMDEF 0d19]
+//mushroom
+DUPEITEM=0d0c
+
+[ITEMDEF 0d1a]
+//grapes
+DUPEITEM=09d1
+
+[ITEMDEF 0d1b]
+//grapevines
+DEFNAME=i_crop_grapevine
+TYPE=t_crops
+TDATA1=i_crop_grapevine
+TDATA2=0
+TDATA3=i_fruit_grapes
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Grapevines
+DUPELIST=0d1c,0d1d,0d1e,0d1f,0d20,0d21,0d22,0d23,0d24
+
+[ITEMDEF 0d1c]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d1d]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d1e]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d1f]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d20]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d21]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d22]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d23]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d24]
+//grapevines
+DUPEITEM=0d1b
+
+[ITEMDEF 0d25]
+//cactus
+DEFNAME=i_plant_cactus
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 1
+
+[ITEMDEF 0d26]
+//cactus
+DEFNAME=i_plant_cactus_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 2
+
+[ITEMDEF 0d27]
+//cactus
+DEFNAME=i_plant_cactus_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 3
+
+[ITEMDEF 0d28]
+//cactus
+DEFNAME=i_plant_cactus_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 4
+TYPE=t_trap_active
+
+[ITEMDEF 0d29]
+//flowers
+DEFNAME=i_crop_flower_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 4 (Flowers)
+
+[ITEMDEF 0d2a]
+//cactus
+DEFNAME=i_plant_cactus_5
+TYPE=t_trap_active
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 5
+
+[ITEMDEF 0d2b]
+//flowers
+DEFNAME=i_crop_flower_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 5 (Flowers)
+
+[ITEMDEF 0d2c]
+//cactus
+DEFNAME=i_plant_cactus_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 6
+
+[ITEMDEF 0d2d]
+//flowers
+DEFNAME=i_crop_flower_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 6 (Flowers)
+
+[ITEMDEF 0d2e]
+//cactus
+DEFNAME=i_plant_cactus_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 7
+
+[ITEMDEF 0d2f]
+//flowers
+DEFNAME=i_crop_flower_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Cactus 7 (Flowers)
+
+[ITEMDEF 0d30]
+//century plant
+DEFNAME=i_plant_century
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Century Plant
+
+[ITEMDEF 0d31]
+//century plant
+DEFNAME=i_plant_century_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Century Plant
+
+[ITEMDEF 0d32]
+//grasses
+DEFNAME=i_plant_grass
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Grasses
+TYPE=t_grass
+
+[ITEMDEF 0d33]
+//grasses
+DEFNAME=i_plant_grass_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Grasses
+TYPE=t_grass
+
+[ITEMDEF 0d34]
+//morning glories
+DEFNAME=i_flower_morningglory
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Morning Glories
+
+[ITEMDEF 0d35]
+//pipe cactus
+DEFNAME=i_plant_cactus_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Pipe Cactus
+
+[ITEMDEF 0d36]
+//flowers
+DEFNAME=i_crop_flower_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Flowers
+
+[ITEMDEF 0d37]
+//yucca
+DEFNAME=i_plant_yucca
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Yucca
+DUPELIST=0d38
+
+[ITEMDEF 0d38]
+//yucca
+DUPEITEM=0d37
+
+[ITEMDEF 0d39]
+//turnip
+DEFNAME=i_fruit_turnip
+VALUE=1
+TYPE=T_FRUIT
+TDATA1=i_crop_turnip1
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Turnip
+DUPELIST=0d3a
+
+[ITEMDEF 0d3a]
+//turnip
+DUPEITEM=0d39
+
+[ITEMDEF 0d3f]
+//brambles
+DEFNAME=i_plant_bramble
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Brambles
+DUPELIST=0d40
+
+[ITEMDEF 0d41]
+//tree
+DEFNAME=i_tree_trunk_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 01 (1/4)
+TYPE=t_tree
+
+[ITEMDEF 0d42]
+//tree
+DEFNAME=i_tree_trunk_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 01 (2/4)
+TYPE=t_tree
+
+[ITEMDEF 0d43]
+//tree
+DEFNAME=i_tree_trunk_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 01 (3/4)
+TYPE=t_tree
+
+[ITEMDEF 0d44]
+//tree
+DEFNAME=i_tree_trunk_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 01 (4/4)
+TYPE=t_tree
+
+[ITEMDEF 0d45]
+//leaves
+DEFNAME=i_tree_leaves_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (01/15)
+
+[ITEMDEF 0d46]
+//leaves
+DEFNAME=i_tree_leaves_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (02/15)
+
+[ITEMDEF 0d47]
+//leaves
+DEFNAME=i_tree_leaves_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (03/15)
+
+[ITEMDEF 0d48]
+//leaves
+DEFNAME=i_tree_leaves_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (04/15)
+
+[ITEMDEF 0d49]
+//leaves
+DEFNAME=i_tree_leaves_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (05/15)
+
+[ITEMDEF 0d4a]
+//leaves
+DEFNAME=i_tree_leaves_part_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (06/15)
+
+[ITEMDEF 0d4b]
+//leaves
+DEFNAME=i_tree_leaves_part_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (07/15)
+
+[ITEMDEF 0d4c]
+//leaves
+DEFNAME=i_tree_leaves_part_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (08/15)
+
+[ITEMDEF 0d4d]
+//leaves
+DEFNAME=i_tree_leaves_part_9
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (09/15)
+
+[ITEMDEF 0d4e]
+//leaves
+DEFNAME=i_tree_leaves_part_10
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (10/15)
+
+[ITEMDEF 0d4f]
+//leaves
+DEFNAME=i_tree_leaves_part_11
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (11/15)
+
+[ITEMDEF 0d50]
+//leaves
+DEFNAME=i_tree_leaves_part_12
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (12/15)
+
+[ITEMDEF 0d51]
+//leaves
+DEFNAME=i_tree_leaves_part_13
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (13/15)
+
+[ITEMDEF 0d52]
+//leaves
+DEFNAME=i_tree_leaves_part_14
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (14/15)
+
+[ITEMDEF 0d53]
+//leaves
+DEFNAME=i_tree_leaves_part_15
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 01 (15/15)
+
+[ITEMDEF 0d54]
+//vines
+DEFNAME=i_vines_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 01 (01/03)
+
+[ITEMDEF 0d55]
+//vines
+DEFNAME=i_vines_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 01 (02/03)
+
+[ITEMDEF 0d56]
+//vines
+DEFNAME=i_vines_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 01 (03/03)
+
+[ITEMDEF 0d57]
+//tree pieces
+DEFNAME=i_tree_trunk_2_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 01 (01/05)
+TYPE=t_tree
+
+[ITEMDEF 0d58]
+//tree pieces
+DEFNAME=i_tree_trunk_2_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 01 (02/05)
+TYPE=t_tree
+
+[ITEMDEF 0d59]
+//tree pieces
+DEFNAME=i_tree_trunk_2_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 01 (03/05)
+TYPE=t_tree
+
+[ITEMDEF 0d5a]
+//tree pieces
+DEFNAME=i_tree_trunk_2_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 01 (04/05)
+TYPE=t_tree
+
+[ITEMDEF 0d5b]
+//tree pieces
+DEFNAME=i_tree_trunk_2_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 01 (05/05)
+TYPE=t_tree
+
+[ITEMDEF 0d5c]
+//leaves
+DEFNAME=i_tree_leaves_2_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (01/14)
+
+[ITEMDEF 0d5d]
+//leaves
+DEFNAME=i_tree_leaves_2_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (02/14)
+
+[ITEMDEF 0d5e]
+//leaves
+DEFNAME=i_tree_leaves_2_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (03/14)
+
+[ITEMDEF 0d5f]
+//leaves
+DEFNAME=i_tree_leaves_2_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (04/14)
+
+[ITEMDEF 0d60]
+//leaves
+DEFNAME=i_tree_leaves_2_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (05/14)
+
+[ITEMDEF 0d61]
+//leaves
+DEFNAME=i_tree_leaves_2_part_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (06/14)
+
+[ITEMDEF 0d62]
+//leaves
+DEFNAME=i_tree_leaves_2_part_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (07/14)
+
+[ITEMDEF 0d63]
+//leaves
+DEFNAME=i_tree_leaves_2_part_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (08/14)
+
+[ITEMDEF 0d64]
+//leaves
+DEFNAME=i_tree_leaves_2_part_9
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (09/14)
+
+[ITEMDEF 0d65]
+//leaves
+DEFNAME=i_tree_leaves_2_part_10
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (10/14)
+
+[ITEMDEF 0d66]
+//leaves
+DEFNAME=i_tree_leaves_2_part_11
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (11/14)
+
+[ITEMDEF 0d67]
+//leaves
+DEFNAME=i_tree_leaves_2_part_12
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (12/14)
+
+[ITEMDEF 0d68]
+//leaves
+DEFNAME=i_tree_leaves_2_part_13
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (13/14)
+
+[ITEMDEF 0d69]
+//leaves
+DEFNAME=i_tree_leaves_2_part_14
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 02 (14/14)
+
+[ITEMDEF 0d6a]
+//vines
+DEFNAME=i_vines_2_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 02 (01/04)
+
+[ITEMDEF 0d6b]
+//vines
+DEFNAME=i_vines_2_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 02 (02/04)
+
+[ITEMDEF 0d6c]
+//vines
+DEFNAME=i_vines_2_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 02 (03/04)
+
+[ITEMDEF 0d6d]
+//vines
+DEFNAME=i_vines_2_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 02 (04/04)
+
+[ITEMDEF 0d6e]
+//tree pieces
+DEFNAME=i_tree_trunk_3_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 02 (01/05)
+TYPE=t_tree
+
+[ITEMDEF 0d6f]
+//tree pieces
+DEFNAME=i_tree_trunk_3_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 02 (02/05)
+TYPE=t_tree
+
+[ITEMDEF 0d70]
+//tree pieces
+DEFNAME=i_tree_trunk_3_part_3
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 02 (03/05)
+TYPE=t_tree
+
+[ITEMDEF 0d71]
+//tree pieces
+DEFNAME=i_tree_trunk_3_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 02 (04/05)
+TYPE=t_tree
+
+[ITEMDEF 0d72]
+//tree pieces
+DEFNAME=i_tree_trunk_3_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Pieces 02 (05/05)
+TYPE=t_tree
+
+[ITEMDEF 0d73]
+//leaves
+DEFNAME=i_tree_leaves_3_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (01/13)
+
+[ITEMDEF 0d74]
+//leaves
+DEFNAME=i_tree_leaves_3_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (02/13)
+
+[ITEMDEF 0d75]
+//leaves
+DEFNAME=i_tree_leaves_3_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (03/13)
+
+[ITEMDEF 0d76]
+//leaves
+DEFNAME=i_tree_leaves_3_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (04/13)
+
+[ITEMDEF 0d77]
+//leaves
+DEFNAME=i_tree_leaves_3_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (05/13)
+
+[ITEMDEF 0d78]
+//leaves
+DEFNAME=i_tree_leaves_3_part_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (06/13)
+
+[ITEMDEF 0d79]
+//leaves
+DEFNAME=i_tree_leaves_3_part_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (07/13)
+
+[ITEMDEF 0d7a]
+//leaves
+DEFNAME=i_tree_leaves_3_part_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (08/13)
+
+[ITEMDEF 0d7b]
+//leaves
+DEFNAME=i_tree_leaves_3_part_9
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (09/13)
+
+[ITEMDEF 0d7c]
+//leaves
+DEFNAME=i_tree_leaves_3_part_10
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (10/13)
+
+[ITEMDEF 0d7d]
+//leaves
+DEFNAME=i_tree_leaves_3_part_11
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (11/13)
+
+[ITEMDEF 0d7e]
+//leaves
+DEFNAME=i_tree_leaves_3_part_12
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (12/13)
+
+[ITEMDEF 0d7f]
+//leaves
+DEFNAME=i_tree_leaves_3_part_13
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 03 (13/13)
+
+[ITEMDEF 0d80]
+//vines
+DEFNAME=i_vines_3_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 03 (01/04)
+
+[ITEMDEF 0d81]
+//vines
+DEFNAME=i_vines_3_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 03 (02/04)
+
+[ITEMDEF 0d82]
+//vines
+DEFNAME=i_vines_3_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 03 (03/04)
+
+[ITEMDEF 0d83]
+//vines
+DEFNAME=i_vines_3_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 03 (04/04)
+
+[ITEMDEF 0d84]
+//tree
+DEFNAME=i_tree_trunk_4_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 02 (01/03)
+TYPE=t_tree
+
+[ITEMDEF 0d85]
+//tree
+DEFNAME=i_tree_trunk_4_part_2
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 02 (02/03)
+
+[ITEMDEF 0d86]
+//tree
+DEFNAME=i_tree_trunk_4_part_3
+VALUE=1
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree 02 (03/03)
+
+[ITEMDEF 0d87]
+//leaves
+DEFNAME=i_tree_leaves_4_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (01/10)
+
+[ITEMDEF 0d88]
+//leaves
+DEFNAME=i_tree_leaves_4_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (02/10)
+
+[ITEMDEF 0d89]
+//leaves
+DEFNAME=i_tree_leaves_4_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (03/10)
+
+[ITEMDEF 0d8a]
+//leaves
+DEFNAME=i_tree_leaves_4_part_4
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (04/10)
+
+[ITEMDEF 0d8b]
+//leaves
+DEFNAME=i_tree_leaves_4_part_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (05/10)
+
+[ITEMDEF 0d8c]
+//leaves
+DEFNAME=i_tree_leaves_4_part_6
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (06/10)
+
+[ITEMDEF 0d8d]
+//leaves
+DEFNAME=i_tree_leaves_4_part_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (07/10)
+
+[ITEMDEF 0d8e]
+//leaves
+DEFNAME=i_tree_leaves_4_part_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (08/10)
+
+[ITEMDEF 0d8f]
+//leaves
+DEFNAME=i_tree_leaves_4_part_9
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (09/10)
+
+[ITEMDEF 0d90]
+//leaves
+DEFNAME=i_tree_leaves_4_part_10
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Leaves 04 (10/10)
+
+[ITEMDEF 0d91]
+//vines
+DEFNAME=i_vines_4_part_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 04 (01/03)
+
+[ITEMDEF 0d92]
+//vines
+DEFNAME=i_vines_4_part_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 04 (02/03)
+
+[ITEMDEF 0d93]
+//vines
+DEFNAME=i_vines_4_part_3
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Vines 04 (03/03)
+
+[ITEMDEF 0d94]
+//apple tree
+DEFNAME=i_tree_trunk_apple_1_1
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree
+
+[ITEMDEF 0d95]
+//leaves
+DEFNAME=i_tree_leaves_apple_1_1
+VALUE=1
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+[ITEMDEF 0d96]
+//apple tree foliage
+DEFNAME=i_tree_leaves_apple_1_2
+VALUE=1
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+ON=@Create
+FRUIT=i_fruit_apple
+
+[ITEMDEF 0d97]
+//fall leaves
+DEFNAME=i_tree_leaves_apple_1_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_APPLE
+
+[ITEMDEF 0d98]
+//apple tree foliage
+DEFNAME=i_tree_trunk_apple_1_4
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+[ITEMDEF 0d99]
+//leaves
+DEFNAME=i_tree_leaves_apple_2_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_APPLE
+
+[ITEMDEF 0d9a]
+//apple tree foliage
+DEFNAME=i_tree_leaves_apple_2_2
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_APPLE
+
+[ITEMDEF 0d9b]
+//fall leaves
+DEFNAME=i_tree_leaves_apple_2_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Apple Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_APPLE
+
+[ITEMDEF 0d9c]
+//peach tree
+DEFNAME=i_tree_trunk_peach_1_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0d9d]
+//leaves
+DEFNAME=i_tree_leaves_peach_1_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0d9e]
+//peach tree foliage
+DEFNAME=i_tree_leaves_peach_1_2
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0d9f]
+//fall leaves
+DEFNAME=i_tree_leaves_peach_1_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da0]
+//peach tree foliage
+DEFNAME=i_tree_trunk_peach_2_1
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+[ITEMDEF 0da1]
+//leaves
+DEFNAME=i_tree_leaves_peach_2_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da2]
+//peach tree foliage
+DEFNAME=i_tree_leaves_peach_2_2
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da3]
+//fall leaves
+DEFNAME=i_tree_leaves_peach_2_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Peach Tree Leaves
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da4]
+//pear tree too small to yield wood
+DEFNAME=i_tree_trunk_pear_1_1
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree
+
+[ITEMDEF 0da5]
+//leaves
+DEFNAME=i_tree_leaves_pear_1_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da6]
+//pear tree foliage
+DEFNAME=i_tree_leaves_pear_1_2
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da7]
+//fall leaves
+DEFNAME=i_tree_leaves_pear_1_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0da8]
+//pear tree foliage
+DEFNAME=i_tree_trunk_pear_2_1
+VALUE=2
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+[ITEMDEF 0da9]
+//leaves
+DEFNAME=i_tree_leaves_pear_2_1
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0daa]
+//pear tree foliage
+DEFNAME=i_tree_leaves_pear_2_2
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0dab]
+//fall leaves
+DEFNAME=i_tree_leaves_pear_2_3
+VALUE=2
+TYPE=T_FOLIAGE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Pear Tree Foliage
+
+ON=@Create
+FRUIT=i_FRUIT_PEACH
+
+[ITEMDEF 0dac]
+//tree stump
+DEFNAME=i_tree_stump
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Stump
+
+[ITEMDEF 0dad]
+//tree stump
+DEFNAME=i_tree_stump_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tree Stump
+
+[ITEMDEF 0db8]
+//hedge
+DEFNAME=i_plant_hedge
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hedge
+
+[ITEMDEF 0db9]
+//hedge
+DEFNAME=i_plant_hedge_5
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hedge
+
+[ITEMDEF 0dba]
+//seaweed
+DEFNAME=i_plant_seaweed
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Seaweed
+
+[ITEMDEF 0dbb]
+//seaweed
+DEFNAME=i_plant_seaweed_2
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Seaweed
+
+[ITEMDEF 0dbc]
+//lilly pad
+DEFNAME=i_plant_lilypad_7
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lily Pad
+
+[ITEMDEF 0dbd]
+//lilly pad
+DEFNAME=i_plant_lilypad_8
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lily Pad
+
+[ITEMDEF 0dbe]
+//lilly pads
+DEFNAME=i_plant_lilypad_9
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Lily Pads
+
+[ITEMDEF 0dc1]
+//water lilly
+DEFNAME=i_plant_lilypad_10
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Water Lily
+
+[ITEMDEF 0dc2]
+//water lilly
+DEFNAME=i_plant_lilypad_11
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Water Lily
+
+[ITEMDEF 0dc3]
+//water lilly
+DEFNAME=i_plant_lilypad_12
+VALUE=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Water Lily
+
+[ITEMDEF 0d40]
+//brambles
+DUPEITEM=0d3f
+
+[ITEMDEF 0dae]
+//wheat
+DEFNAME=i_crop_wheat2
+TYPE=t_crops
+TDATA1=i_crop_wheat1
+TDATA2=i_crop_wheat3
+DUPELIST=0daf
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Wheat
+
+[ITEMDEF 0daf]
+//wheat
+DUPEITEM=0dae
+
+[ITEMDEF 0def]
+//raw cotton, pile of
+DUPEITEM=0df9
+
+[ITEMDEF 0e56]
+DEFNAME=i_TREE_STUMP_AXE
+RESOURCES=1 I_STUMP, 1 I_AXE
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Stump
+DUPELIST=0e58
+
+[ITEMDEF 0e58]
+//stump
+DUPEITEM=0e56
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Stump
+
+[ITEMDEF 0e59]
+//stump
+DUPEITEM=0e57
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Stump
+
+[ITEMDEF 012b6]
+DEFNAME=i_TREE_YEW_1
+WEIGHT=10
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (01/08)
+DUPELIST=012b7,012b8,012b9,012ba,012bb,012bc,012bd,012be,012bf,012c0,012c1,012c2,012c3,012c4,012c5,012c6,012c7
+
+[ITEMDEF 012b7]
+//YEW_TREE_1_2
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (02/08)
+
+[ITEMDEF 012b8]
+//YEW_TREE_1_3
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (03/08)
+
+[ITEMDEF 012b9]
+//YEW_TREE_1_4
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (04/08)
+
+[ITEMDEF 012ba]
+//YEW_TREE_1_5
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (05/08)
+
+[ITEMDEF 012bb]
+//YEW_TREE_1_6
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (06/08)
+
+[ITEMDEF 012bc]
+//YEW_TREE_1_7
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (07/08)
+
+[ITEMDEF 012bd]
+//YEW_TREE_1_8
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Yew Tree (08/08)
+
+[ITEMDEF 012be]
+//YEW_TREE_1_9
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (01/10)
+
+[ITEMDEF 012bf]
+//YEW_TREE_1_10
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (02/10)
+
+[ITEMDEF 012c0]
+//YEW_TREE_1_11
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (03/10)
+
+[ITEMDEF 012c1]
+//YEW_TREE_1_12
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (04/10)
+
+[ITEMDEF 012c2]
+//YEW_TREE_1_13
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (05/10)
+
+[ITEMDEF 012c3]
+//YEW_TREE_1_14
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (06/10)
+
+[ITEMDEF 012c4]
+//YEW_TREE_1_15
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (07/10)
+
+[ITEMDEF 012c5]
+//YEW_TREE_1_16
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (08/10)
+
+[ITEMDEF 012c6]
+//YEW_TREE_1_17
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (09/10)
+
+[ITEMDEF 012c7]
+//YEW_TREE_1_18
+DUPEITEM=012B6
+CATEGORY=Vegetation
+SUBSECTION=Yew Tree
+DESCRIPTION=Leaves (Yew Tree) (10/10)
+
+[ITEMDEF 01a99]
+DEFNAME=i_crop_flax1
+TYPE=T_CROPS
+TDATA1=i_crop_flax1
+TDATA2=i_crop_flax
+VALUE=1
+WEIGHT=1
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Flax
+DUPELIST=01a9a
+
+[ITEMDEF 01a9a]
+DUPEITEM=01a99
+
+[ITEMDEF 01a9b]
+DEFNAME=i_crop_flax
+TYPE=T_CROPS
+TDATA1=i_crop_flax1
+TDATA2=0
+TDATA3=i_flax_bundle
+WEIGHT=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Flax
+
+[ITEMDEF 01a9c]
+//Flax Bundle (retted flax)
+//DEFNAME=i_RETTED_FLAX
+DEFNAME=i_flax_bundle
+VALUE=2
+WEIGHT=2
+DUPELIST=01a9d
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Flax
+
+[ITEMDEF 01a9d]
+//retted flax
+DUPEITEM=01a9c
+
+[ITEMDEF 01a9e]
+DEFNAME=i_crop_hops
+TYPE=T_CROPS
+TDATA1=i_crop_hops1
+TDATA2=0
+TDATA3=i_fruit_hops
+WEIGHT=4
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hops
+DUPELIST=01aa0
+
+[ITEMDEF 01a9f]
+DEFNAME=i_crop_hops1
+TYPE=T_CROPS
+TDATA1=i_crop_hops1
+TDATA2=i_crop_hops
+WEIGHT=4
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hops
+DUPELIST=01aa1
+
+[ITEMDEF 01aa0]
+DUPEITEM=01a9e
+
+[ITEMDEF 01aa1]
+DUPEITEM=01a9f
+
+[ITEMDEF 01aa2]
+//DEFNAME2=i_HOPES_CONES
+DEFNAME=i_fruit_hops
+VALUE=1
+WEIGHT=2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Hops Cones
+
+[ITEMDEF 01b7e]
+DEFNAME=i_tuscany_pine
+WEIGHT=10
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Tuscany Pine
+
+[ITEMDEF 01b81]
+DEFNAME=i_wood_pile
+//wood small pile of sticks
+WEIGHT=8
+VALUE=5
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+DUPELIST=01b82,01b83,01b84,01b85,01b86,01b87,01b88,01b89,01b8a,01b8b,01b8c,01b8d,01b8e,01b8f,01b90,01b91,01b92,01b93,01b97,01b98,01b99,01b9a
+
+[ITEMDEF 01b82]
+//wood partial large pile of sticks
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b83]
+//wood partial large pile of sticks
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b84]
+//wood small pile of sticks
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b85]
+//wood
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b86]
+//wood
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b87]
+//wood
+DUPEITEM=01b81
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Wood Pile
+
+[ITEMDEF 01b88]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b89]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8a]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8b]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8c]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8d]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8e]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b8f]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b90]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b91]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b92]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b93]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b97]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b98]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b99]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b9a]
+//wood
+DUPEITEM=01b81
+
+[ITEMDEF 01b9c]
+//twigs
+DUPEITEM=01b9b
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Twigs
+
+[ITEMDEF 01b9d]
+//twigs
+DUPEITEM=01b9b
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Twigs
+
+[ITEMDEF 01b9e]
+//twigs
+DUPEITEM=01b9b
+CATEGORY=Vegetation
+SUBSECTION=Sticks and Wood
+DESCRIPTION=Twigs
+
+[ITEMDEF 01b1e]
+DUPELIST=01b1d
+
+[ITEMDEF 01b20]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b21]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b22]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b23]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b24]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b25]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01b26]
+//leaves
+DUPEITEM=01b1f
+
+[ITEMDEF 01ebe]
+DEFNAME=i_crop_wheat1
+TYPE=T_CROPS
+TDATA1=i_crop_wheat1
+TDATA2=i_crop_wheat2
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Wheat Sprouts
+DUPELIST=01ebf
+
+[ITEMDEF 01ebf]
+DUPEITEM=01ebe
+
+[ITEMDEF 01f0d]
+//morning glory
+
+CATEGORY=Vegetation
+SUBSECTION=Plants and Flowers
+DESCRIPTION=Morning Glory
+DUPELIST=01f0e,01f0f,01f10,01f11,01f12
+
+[ITEMDEF 01f0e]
+//morning glory
+DUPEITEM=01f0d
+
+[ITEMDEF 01f0f]
+//morning glory
+DUPEITEM=01f0d
+
+[ITEMDEF 01f10]
+//morning glory
+DUPEITEM=01f0d
+
+[ITEMDEF 01f11]
+//morning glory
+DUPEITEM=01f0d
+
+[ITEMDEF 01f12]
+//morning glory
+DUPEITEM=01f0d
+
+
+[eof]

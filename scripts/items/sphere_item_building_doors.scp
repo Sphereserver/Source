@@ -1,0 +1,766 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0675]
+DEFNAME=i_door_metal
+RESOURCES=40 i_ingot_iron
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Metal Door 1
+DESCRIPTION=@ (n / sw)
+DUPELIST=0677,0679,067b,067d,067f,0681,0683
+
+[ITEMDEF 0676]
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=0678,067a,067c,067e,0680,0682,0684
+
+[ITEMDEF 0677]
+DUPEITEM=0675
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 0678]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 0679]
+DUPEITEM=0675
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 067a]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 067b]
+DUPEITEM=0675
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 067c]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 067d]
+DUPEITEM=0675
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 067e]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 067f]
+DUPEITEM=0675
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 0680]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 0681]
+DUPEITEM=0675
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 0682]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 0683]
+DUPEITEM=0675
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 0684]
+DUPEITEM=0676
+DESCRIPTION=@
+
+[ITEMDEF 0685]
+DEFNAME=i_door_metal_bar
+RESOURCES=30 i_ingot_iron
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Barred Metal Door
+DESCRIPTION=@ (n / sw)
+DUPELIST=0687,0689,068b,068d,068f,0691,0693
+
+[ITEMDEF 0686]
+//barred metal door
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=0688,068a,068c,068e,0690,0692,0694
+
+[ITEMDEF 0687]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 0688]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 0689]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 068a]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 068b]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 068c]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 068d]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 068e]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 068f]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 0690]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 0691]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 0692]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 0693]
+//barred metal door
+DUPEITEM=0685
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 0694]
+//barred metal door
+DUPEITEM=0686
+DESCRIPTION=@
+
+[ITEMDEF 0695]
+DEFNAME=i_door_rattan
+RESOURCES=15 i_plant_grasses, 15 I_STRAW
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Rattan Door
+DESCRIPTION=@ (n / sw)
+DUPELIST=0697,0699,069b,069d,069f,06a1,06a3
+
+[ITEMDEF 0696]
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=0698,069a,069c,069e,06a0,06a2,06a4
+
+[ITEMDEF 0697]
+DUPEITEM=0695
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 0698]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 0699]
+DUPEITEM=0695
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 069a]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 069b]
+DUPEITEM=0695
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 069c]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 069d]
+DUPEITEM=0695
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 069e]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 069f]
+DUPEITEM=0695
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06a0]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 06a1]
+DUPEITEM=0695
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06a2]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 06a3]
+DUPEITEM=0695
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06a4]
+DUPEITEM=0696
+DESCRIPTION=@
+
+[ITEMDEF 06a5]
+DEFNAME=i_door_wood
+RESOURCES=25 I_BOARD
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door 1
+DESCRIPTION=@ (n / sw)
+DUPELIST=06a7,06a9,06ab,06ad,06af,06b1,06b3
+
+[ITEMDEF 06a6]
+//wooden door
+TYPE=T_DOOR_OPEN
+DUPELIST=06a8,06aa,06ac,06ae,06b0,06b2,06b4
+
+[ITEMDEF 06a7]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 06a8]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06a9]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 06aa]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06ab]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 06ac]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06ad]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 06ae]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06af]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06b0]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06b1]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06b2]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06b3]
+//wooden door
+DUPEITEM=06a5
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06b4]
+//wooden door
+DUPEITEM=06a6
+DESCRIPTION=@
+
+[ITEMDEF 06b5]
+DEFNAME=i_door_wood_4
+RESOURCES=25 I_BOARD
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door 2
+DESCRIPTION=@ (n / sw)
+DUPELIST=06b7,06b9,06bb,06bd,06bf,06c1,06c3
+
+[ITEMDEF 06b6]
+//wooden door
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=06b8,06ba,06bc,06be,06c0,06c2,06c4
+
+[ITEMDEF 06b7]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 06b8]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06b9]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 06ba]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06bb]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 06bc]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06bd]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 06be]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06bf]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06c0]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06c1]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06c2]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06c3]
+//wooden door
+DUPEITEM=06b5
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06c4]
+//wooden door
+DUPEITEM=06b6
+DESCRIPTION=@
+
+[ITEMDEF 06c5]
+DEFNAME=i_door_metal_2
+RESOURCES=45 i_ingot_iron
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Metal Door 2
+DESCRIPTION=@ (n / sw)
+DUPELIST=06c7,06c9,06cb,06cd,06cf,06d1,06d3
+
+[ITEMDEF 06c6]
+//metal door
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=06c8,06ca,06cc,06ce,06d0,06d2,06d4
+
+[ITEMDEF 06c7]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 06c8]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06c9]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 06ca]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06cb]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 06cc]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06cd]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 06ce]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06cf]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06d0]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06d1]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06d2]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06d3]
+//metal door
+DUPEITEM=06c5
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06d4]
+//metal door
+DUPEITEM=06c6
+DESCRIPTION=@
+
+[ITEMDEF 06d5]
+DEFNAME=i_door_wood_2
+RESOURCES=25 I_BOARD
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door 3
+DESCRIPTION=@ (n / sw)
+DUPELIST=06d7,06d9,06db,06dd,06df,06e1,06e3
+
+[ITEMDEF 06d6]
+//wooden door
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=06d8,06da,06dc,06de,06e0,06e2,06e4
+
+[ITEMDEF 06d7]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 06d8]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06d9]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 06da]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06db]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 06dc]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06dd]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 06de]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06df]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06e0]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06e1]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06e2]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06e3]
+//wooden door
+DUPEITEM=06d5
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06e4]
+//wooden door
+DUPEITEM=06d6
+DESCRIPTION=@
+
+[ITEMDEF 06e5]
+DEFNAME=i_door_wood_3
+RESOURCES=25 I_BOARD
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door 4
+DESCRIPTION=@ (n / sw)
+DUPELIST=06e7,06e9,06eb,06ed,06ef,06f1,06f3
+
+[ITEMDEF 06e6]
+//wooden door
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=06e8,06ea,06ec,06ee,06f0,06f2,06f4
+
+[ITEMDEF 06e7]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 06e8]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06e9]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 06ea]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06eb]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 06ec]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06ed]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 06ee]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06ef]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 06f0]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06f1]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 06f2]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06f3]
+//wooden door
+DUPEITEM=06e5
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 06f4]
+//wooden door
+DUPEITEM=06e6
+DESCRIPTION=@
+
+[ITEMDEF 06f5]
+DEFNAME=i_DOOR_PORTCULIS
+RESOURCES=50 i_ingot_iron
+TYPE=T_PORTCULIS
+CATEGORY=Buildings - Doors
+SUBSECTION=Portcullis
+DESCRIPTION=@
+DUPELIST=06f6
+
+[ITEMDEF 06f6]
+//portcullis
+DUPEITEM=06f5
+
+[ITEMDEF 01fed]
+DEFNAME=i_door_metal_bar_2
+RESOURCES=10 i_ingot_iron
+WEIGHT=10
+TYPE=T_DOOR
+CATEGORY=Buildings - Doors
+SUBSECTION=Barred Metal Door 2
+DESCRIPTION=@ (n / sw)
+DUPELIST=01fef,01ff1,01ff3,01ff5,01ff7,01ff9,01ffb
+
+[ITEMDEF 01fee]
+//barred metal door
+DEFNAME=i_door_metal_bar_2_o
+TYPE=T_DOOR_OPEN
+DESCRIPTION=@
+DUPELIST=01ff0,01ff2,01ff4,01ff6,01ff8,01ffa,01ffc
+
+[ITEMDEF 01fef]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 01ff0]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ff1]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (n / nw)
+
+[ITEMDEF 01ff2]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ff3]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (n / ne)
+
+[ITEMDEF 01ff4]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ff5]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (w / se)
+
+[ITEMDEF 01ff6]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ff7]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (w / ne)
+
+[ITEMDEF 01ff8]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ff9]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (w / sw)
+
+[ITEMDEF 01ffa]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+[ITEMDEF 01ffb]
+//barred metal door
+DUPEITEM=01fed
+DESCRIPTION=@ (w / nw)
+
+[ITEMDEF 01ffc]
+//barred metal door
+DUPEITEM=01fee
+DESCRIPTION=@
+
+
+
+[eof]

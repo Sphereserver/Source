@@ -1,0 +1,265 @@
+//****************************************************************************
+// SPHERE by : Menasoft 1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, November 15, 2003
+
+VERSION=0.56b
+
+[AREADEF a_world_map1] // UO Renaissance (T2A, map0,statics0,staidx0), map #0
+NAME=Special World
+FLAGS=02000
+GROUP=ALLMAP
+P=1323,1624,55,1
+RECT=0,0,7168,4096,1
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_arena1_espera]
+NAME=Arena 1 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=5225,1747,0,1
+RECT=5224,1740,5227,1755,1
+
+[AREADEF a_arena1]
+NAME=Arena 1
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=5211,1747,0,1
+RECT=5207,1727,5224,1736,1
+RECT=5207,1735,5216,1744,1
+RECT=5215,1743,5224,1753,1
+RECT=5216,1751,5206,1761,1
+RECT=5208,1752,5199,1743,1
+RECT=5207,1743,5215,1751,1
+
+[AREADEF a_arena2_espera]
+NAME=Arena 2 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=5680,529,0,1
+RECT=5685,534,5672,520,1
+
+[AREADEF a_arena2]
+NAME=Arena 2
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=5683,538,0,1
+RECT=5679,534,5702,542,1
+RECT=5710,534,5685,520,1
+
+[AREADEF a_arena3_espera]
+NAME=Arena 3 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=5224,186,5,1
+RECT=5221,182,5228,191,1
+
+[AREADEF a_arena3]
+NAME=Arena 3
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=5223,179,5,1
+RECT=5227,182,5206,158,1
+
+[AREADEF a_arena4_espera]
+NAME=Arena 4 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=5688,315,0,1
+RECT=5691,319,5685,310,1
+
+[AREADEF a_arena4]
+NAME=Arena 4
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=5687,323,0,1
+RECT=5691,319,5655,335,1
+RECT=5686,319,5655,310,1
+
+[AREADEF a_arena5_espera]
+NAME=Arena 5 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=5955,210,22,1
+RECT=5959,215,5951,207,1
+
+[AREADEF a_arena5]
+NAME=Arena 5
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=5955,219,22,1
+RECT=5967,215,5943,239,1
+
+[AREADEF a_arena6_espera]
+NAME=Arena 6 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=1876,2718,20,1
+RECT=1875,2713,1879,2725,1
+
+[AREADEF a_arena6]
+NAME=Arena 6
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=1888,2719,20,1
+RECT=1879,2713,1884,2725,1
+RECT=1902,2732,1884,2707,1
+
+[AREADEF a_arena7_espera]
+NAME=Arena 7 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=3779,1227,0,1
+RECT=3783,1231,3775,1223,1
+
+[AREADEF a_arena7]
+NAME=Arena 7
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=3772,1227,0,1
+RECT=3759,1215,3776,1240,1
+
+[AREADEF a_arena8_espera]
+NAME=Arena 8 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=3747,1249,0,1
+RECT=3743,1247,3751,1255,1
+
+[AREADEF a_arena8]
+NAME=Arena 8
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=3738,1253,0,1
+RECT=3743,1247,3727,1263,1
+RECT=3727,1263,3751,1271,1
+
+[AREADEF a_arena9_espera]
+NAME=Arena 9 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=632,1499,0,1
+RECT=631,1496,636,1501,1
+
+[AREADEF a_arena9]
+NAME=Arena 9
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=633,1485,0,1
+RECT=646,1496,622,1477,1
+
+[AREADEF a_arena10_espera]
+NAME=Arena 10 - Espera
+FLAGS=region_antimagic_all|region_antimagic_gate|region_flag_nobuilding|region_flag_safe|region_flag_no_pvp
+GROUP=PVP Arenas
+P=2851,907,0,1
+RECT=2847,903,2855,911,1
+
+[AREADEF a_arena10]
+NAME=Arena 10
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=PVP Arenas
+P=2841,907,0,1
+RECT=5225,1768,5195,1719,1
+RECT=5217,1739,5228,1723,1
+
+[AREADEF a_NewbieArea]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Newbie Area
+GROUP=Special World
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_teleport|region_flag_underground|region_flag_guarded
+P=4540,1378,20,1
+RECT=4479,1375,4525,1400,1
+RECT=4487,1353,4537,1375,1
+RECT=4525,1375,4537,1393,1
+
+[AREADEF a_NewbieJaula]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Newbie Area - Jaula
+GROUP=Special World
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_teleport|region_flag_underground
+P=4530,1387,23,1
+RECT=4524,1382,4536,1392,1
+RECT=4492,1389,4518,1399,1
+RECT=4505,1368,4520,1385,1
+RECT=4479,1375,4492,1399,1
+RECT=4487,1353,4500,1375,1
+RECT=4500,1353,4526,1363,1
+RECT=4526,1353,4536,1374,1
+
+[AREADEF a_arena_lana]
+NAME=Arena da Lana
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Pedras do Poder
+P=5131,2439,6,1
+RECT=5107,2430,5143,2463,1
+
+/////////////////Champs/////////////////
+
+[AREADEF a_champion_terathankeep]
+NAME=Terathan Keep Champion
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Champions
+P=5345,1546,0,1
+RECT=5336,1537,5353,1560,1
+RECT=5365,1560,5325,1571,1
+
+[AREADEF a_champion_despise]
+NAME=Despise Champion
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Champions
+P=5556,823,45,1
+RECT=5528,803,5571,845,1
+
+[AREADEF a_champion_hythloth]
+NAME=Hythloth Champion
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Champions
+P=6099,50,22,1
+RECT=6095,31,6111,57,1
+RECT=6078,39,6095,55,1
+
+[AREADEF a_champion_fire]
+NAME=Fire Champion
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Champions
+P=5731,1381,0,1
+RECT=5706,1365,5759,1404,1
+
+[AREADEF a_champion_wrong]
+NAME=Wrong Champion
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out|region_flag_underground
+GROUP=Champions
+P=5731,979,0,1
+RECT=5711,975,5751,991,1
+
+///////////////////////////////
+
+[AREADEF a_tutorial_zombie]
+NAME=Tutorial
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out
+GROUP=Tutoriais
+P=5710,867,0,1
+RECT=5717,862,5702,873,1
+
+///////////////////////////////
+
+[AREADEF a_batest_arena]
+NAME=Batest Arena
+GROUP=Eventos
+FLAGS=region_antimagic_gate|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_recall_out
+P=5272,3995,37,1
+RECT=5178,3945,5303,4060,1
+RECT=5303,3928,5314,4048,1
+RECT=5235,3930,5303,3945,1
+RECT=5226,3938,5235,3945,1
+RECT=5127,3945,5178,4083,1
+RECT=5178,4060,5270,4083,1
+
+[EOF]

@@ -1,0 +1,135 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// Purpose: Britannia Rancher Script
+// Notes:  This is used for general information pertaining to all Britannian ranchers
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, ranch, cattle, cow
+//
+[SPEECH jobRancher]
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I'm a rancher.
+			SAY I have a ranch.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 2
+			SAY I'm a cattle rancher.
+			SAY I own a ranch.
+		ENDDO
+	ELSE
+		DORAND 2
+			SAY I run a cattle spread.
+			SAY I own a pretty nice ranch.
+		ENDDO
+	ENDIF
+ON=*ranch*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I'm not hiring any extra hands right now.
+				SAY I ranch because it's private. I don't have to answer anybody's silly questions.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm not hiring any extra hands right now.
+				SAY I ranch because it's private. I don't have to answer silly questions.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I ain't hirin' no extra hands right now.
+				SAY I ranch 'cause it's private. I don't have to answer no silly questions.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY It is a fine piece of land. It has good grass that fattens my cows.
+				SAY Ranching can be a hard life, but it suits me fine.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY It is a fine piece of land. It has good grass that fattens my cows.
+				SAY Ranching is a hard life, but it suits me.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY It's a fine piece of land. It's got good grass that fattens my cows.
+				SAY Ranchin's hard, but it suits me fine.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I have a small ranch.
+				SAY My ranch is doing well this year, but I don't think I need any extra hands.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I have a small ranch.  But it's mine.
+				SAY My ranch is doing well this year, but I don't think I need any extra hands.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I ain't got a big ranch.  But I own it all.
+				SAY The spread's doin' good this year, but I don't think I need any extra hands.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cattle*
+ON=*cow*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			SAY I have a buyer for my cattle.
+		ELSE
+			SAY I got a buyer for my cattle.
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			SAY I don't have any extra cattle to spare.
+		ELSE
+			SAY I don't got no extra cattle to spare.
+		ENDIF
+	ELSE
+		SAY My cattle are all going to market in due time.
+	ENDIF
+
+
+//RANCHER
+//DEFAULT=I do not understand thee.
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Greetings.
+ON=Job
+ON=What do you do
+	SAY=I tend various sturdy creatures like horses and cattle.
+
+ON=CATTLE
+	SAY=Not nearly so fun as sheep, but it's a living.
+ON=COW
+	SAY=Bloody Avatars always tip my cows!  One of these days...
+ON=HORSE
+	SAY=Don't even need them the sows are so slow.  'Tis better than walking, though.
+ON=MOUNT
+	SAY=Stop that obscene talk!  There be no sheep here!
+ON=RANCH
+	SAY=Hardly even see the place since my cows 'been molested and killed as of late.
+ON=STEED
+	SAY=Ha!  More like an old hag.
+
+//RANDOM= Damn shepherd keeps making fun of me...
+[EOF]

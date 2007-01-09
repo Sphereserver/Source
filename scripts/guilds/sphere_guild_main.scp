@@ -1,0 +1,101 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 27-Jul-2006
+VERSION=0.56b
+
+[DEFNAME DEF_GUILDSYS_GTYPE]
+GUILDCONFIG_ALIGN_0		"Standard"
+GUILDCONFIG_ALIGN_1		"Order"
+GUILDCONFIG_ALIGN_2		"Chaos"
+
+[DEFNAME DEF_GUILDSYS_MEMBERPRIV]
+STONEPRIV_CANDIDATE		0
+STONEPRIV_MEMBER			1
+STONEPRIV_MASTER			2
+STONEPRIV_UNUSED			3
+STONEPRIV_ACCEPTED		4	// The candidate has been accepted. But they have not dclicked on the stone yet.
+
+[DEFNAME DEF_GUILDSYS_STONEPRIV]
+STONEPRIV_ENEMY					1
+STONEPRIV_WEDECLARED		2
+STONEPRIV_THEYDECLARED	3
+
+[DEFNAME DEF_GUILDSYS_CHARLISTTYPES]
+GUILDDLG_LISTTYPE_ROSTER					1
+GUILDDLG_LISTTYPE_CANDIDATES			2
+GUILDDLG_LISTTYPE_LOYALITY				3
+GUILDDLG_LISTTYPE_DISMISSMEMBER		4
+GUILDDLG_LISTTYPE_GRANTTITLE			5
+GUILDDLG_LISTTYPE_ADMINCANDIDATES	6
+
+[DEFNAME DEF_GUILDSYS_GUILDLISTTYPES]
+GUILDDLG_LISTTYPE_G_DECLAREPEACE	1
+GUILDDLG_LISTTYPE_G_ACCEPTWAR			2
+GUILDDLG_LISTTYPE_G_REJECTWAR			3
+GUILDDLG_LISTTYPE_G_RESCIND				4
+
+[DEFNAME DEF_GUILDSYS_CONFIG]
+GUILDCONFIG_ALLOWTELEPORT 		0
+GUILDCONFIG_ALLOWTRANSFER 		0
+GUILDCONFIG_MAXMEMBERS				0			 // 0 = unlimited
+GUILDCONFIG_MAXCANDIDATES			100		 // 0 = unlimited
+GUILDCONFIG_MINTIME_NAME			604800 // 7 Days
+GUILDCONFIG_MINTIME_ABBREV		604800
+GUILDCONFIG_MINTIME_ALIGN			604800
+GUILDCONFIG_NAME_MINLENGHT		8
+GUILDCONFIG_NAME_MAXLENGHT		40
+GUILDCONFIG_TITLE_MAXLENGHT		20
+GUILDCONFIG_ABBREV_MINLENGHT	2
+GUILDCONFIG_ABBREV_MAXLENGHT	4
+GUILDCONFIG_NSEARCH_MINLENGHT	4
+GUILDCONFIG_MAX_NSEARCH_RES		75		// 0 = unlimited
+	
+[TYPEDEF T_STONE_GUILD]
+ON=@Click
+	src.message "A guildstone"
+	if (<eval strlen(<abbrev>)>)
+		src.message <name> [<abbrev>]
+	else
+		src.message <name>
+	endif
+	
+	return 1
+
+ON=@Dclick	
+	if ( <src.distance> > 2 )
+		src.sysmessage @038A That is too far away.
+	elseif ( (<member.count> == 0) && (<masteruid> != <src.uid>) )
+		JoinAsMember
+		TRY uid.<uid>.masteruid = <src.uid>
+	elseif ( <memberfromuid.<src.uid>.uid> != <src.uid> ) // Not a member
+		src.message @03B2 You are not a member of this guild! To join, ask a current member to invite you into the guild.
+	elseif (<memberfromuid.<src.uid>.priv> == <def.STONEPRIV_ACCEPTED>)
+		JoinAsMember
+	elseif ( (<memberfromuid.<src.uid>.priv> == <def.STONEPRIV_MEMBER>) || (<masteruid> == <src.uid>) || <SRC.ISGM>)
+		src.dialog d_Guild_Main,0,<uid>
+	endif
+	
+	return 1
+
+[TYPEDEF T_GUILD_DOOR]
+//Guild Members Only Door
+//Set the door to the Triger Type #, then Link the DOOR to the GUILDSTONE
+//DO NOT LINK THE GUILDSTONE TO THE DOOR - YOUR GUILDSTONE WILL DISAPPEAR IN THE NEXT SAVE.
+ON=@DCLICK
+	IF (<SRC.MEMORYFINDTYPE.0400.LINK> == <LINK>)
+		MOREP=<P>
+		SRC.MESSAGE You've been allowed to pass through the door magically.
+		SRC.GO <MOREP>
+	ELSE
+		SRC.MESSAGE The door seems magically locked.
+	endif
+	RETURN 1
+	
+[EOF]

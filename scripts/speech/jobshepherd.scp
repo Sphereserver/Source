@@ -1,0 +1,128 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// Purpose: Britannia Shepherd Script
+// Notes:  This is used for general information pertaining to all Britannian Shepherds
+// Current Keyword List:
+//	Shepherd, job, what*do*do, occupation, profession, sheep
+//
+
+[SPEECH jobShepherd]
+ON=*Shepherd*
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I tend sheep.
+			SAY I care for the worthless sheep around here.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 2
+			SAY I watch over the sheep.
+			SAY I keep track of all the sheep.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I keep vigilant watch over the sheep.
+				SAY I tend to the sheep and keep them safe.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I keep watch over the sheep.
+				SAY I tend to the sheep and keep 'em safe.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*sheep*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Stupid stinking animals, they are!
+				SAY I cannot tell thee how much I despise sheep.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Stupid stinking animals, they are!
+				SAY I cannot tell thee how much I despise sheep.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Stupid stinkin' animals, they are!
+				SAY I can't tell thee how much I despise sheep.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY The sheep are stupid animals, 'tis true, but that just means they need all the more watching over.
+				SAY I think that without my care, the sheep would wander off and be killed in the wild.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY The sheep are stupid animals, 'tis true, but that just means they need all the more watching over.
+				SAY I think that without my care, the sheep would wander off and be killed in the wild.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY The sheep are stupid animals, 'tis true, but that just means they need watchin' even more.
+				SAY Without me, the sheep would wander off and be killed in the wild.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Sheep don't get the credit that they deserve.  They aren't stupid, they just have a different set of priorities than other creatures.
+				SAY Sheep need very little care, really.  I can sit under a tree and just daydream...er...watch them for hours.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Sheep don't get the credit that they deserve.  They aren't stupid, they just have a different set of priorities than other creatures.
+				SAY Sheep need very little care, really.  I can sit under a tree and just daydream...er...watch them for hours.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Sheep ain't stupid, they just think different from all other creatures.
+				SAY Sheep don't need much care, really.  I can sit under a tree and just daydream...er...watch them for hours.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobShepherd]
+//SHEPHERD
+DEFAULT=I do not understand thee.
+ON=BUY
+BUY
+ON=SELL
+SELL
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+SAY=Greetings.
+ON=Job
+ON=What do you do
+SAY=I tend the lovely, happy sheep.
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Good day to thee!
+	BYE
+	return 1
+ON=SHEEP
+SAY=The sheep appear nervous today.  Wonder why...
+ON=SHEPHERD
+SAY='Tis the noblest profession in Britannia, it is...
+//RANDOM=Ahhh, sheep!  My favorite animal...  *eyes glaze over*
+
+[EOF]

@@ -1,0 +1,200 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+
+// Purpose: Britannia Cobbler Script
+// Notes:  This is used for general information pertaining to all Britannian Cobblers
+// Current Keyword List:
+//	job, what*do*do, profession, occupation, cobbler, hide, leather, shoe, boot, sandal
+//
+[SPEECH jobCOBBLER]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+	// SAY=I am a cobbler by trade.
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I'm a cobbler.
+			SAY I'm a shoe maker.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		DORAND 3
+			SAY I'm a cobbler.
+			SAY I make shoes and boots.
+			SAY I'm a crafter of shoes and boots.
+		ENDDO
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I'm a maker of fine footwear.
+				SAY I make and sell fine shoes and boots.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I make good shoes.
+				SAY I make and sell shoes and boots.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*cobbler*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I make shoes, boots and sandals.
+				SAY I can sell thee something to wrap around thy feet.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I make shoes, boots and sandals.
+				SAY I can sell something to wear on thy feet.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I make and sell shoes, boots and sandals for men and ladies.
+				SAY Most folks around here have my work on their feet.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I make and sell shoes, boots and sandals for folks. Men and ladies, I mean.
+				SAY Most folks 'round this place have my work on their feet.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY I am a maker of fine shoes, hardly just a mere cobbler.
+				SAY I suppose thou couldst call me a cobbler, though that hardly does justice to my craft.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I'm a maker of good shoes.
+				SAY Thou could call me a cobbler, though I don't like the word.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*hide*
+ON=*leather*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		DORAND 2
+			SAY I could stand to buy some leather.
+			SAY I might be willing to buy some hides.
+		ENDDO
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I buy hides with which to make my shoes.
+				SAY My supply of leather is always lacking. I could buy some from thee.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 2
+				SAY I buy hides to make my shoes from.
+				SAY My supply of leather is running short.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I buy hides to make my shoes from.
+				SAY My supply of leather is sometimes running short.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY If thou art selling quality hides, I could make thee an offer.
+				SAY Hides of a quality appropriate to my shoes are surprisingly hard to find.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY If thou'rt selling leather, I could make thee an offer.
+				SAY Good quality hides for my shoes are hard to find.
+			ENDDO
+		ENDIF
+	ENDIF
+ON=*shoe*
+ON=*boot*
+ON=*sandal*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY Shoes, boots or sandals, I make them all.
+				SAY Shoes, boots, sandals, whatever, I got 'em. And for a low price, thou couldst have them also.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 2
+				SAY Shoes, boots or sandals, I make them all.
+				SAY Shoes, boots, sandals, whatever, I got 'em.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Shoes, boots or sandals, I make 'em all.
+				SAY Shoes, boots, sandals... I got 'em.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 2
+				SAY I have a fine stock of boots, shoes and sandals on hand.
+				SAY Heavy riding boots or comfortable sandals, I can make them all.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 2
+				SAY I have a fine stock of boots, shoes and sandals on hand.
+				SAY Heavy riding boots or dainty sandals, I can make 'em all.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY I got some boots, shoes and sandals on hand.
+				SAY Boots or sandals, I can make 'em all.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 2
+				SAY Sturdy boots, comfortable sandals or elegant shoes are all available.
+				SAY My shoes, boots and sandals are elegant enough for court, and sturdy enough for the road.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY Sturdy boots, comfortable sandals or nice shoes. I got 'em all.
+				SAY My shoes, boots and sandals are nice and sturdy.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=Hail
+ON=Hi
+ON=Greet
+ON=Hello
+	SAY=Hail and well met!
+ON=Bye
+ON=Goodbye
+ON=Farewell
+	SAY=Farewell and safe journeys.
+	BYE
+	return 1
+ON=BOOT
+	SAY=My boots will keep your feet protected and dry.
+ON=COBBLER
+	SAY=A cobbler such as myself makes the finest footwear.
+ON=HIDE
+	SAY=I buy my leather direct from the local tanner, and pass the savings on to you!
+ON=SANDAL
+	SAY=Sandals are quite nice in the warm months, but offer little protection for thy feet.
+ON=SHOE
+	SAY=Shoes offer better protection than sandals for thy feet, but a gallant adventurer such as thyself should wear a sturdy pair of boots.
+
+//RANDOM=Shoes here, fit for noble and adventurer alike!
+//DEFAULT=I do not understand thee.
+
+[EOF]

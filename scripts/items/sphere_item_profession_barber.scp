@@ -1,0 +1,575 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, November 23, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF 0dfc]
+DEFNAME=i_scissors_barber
+RESOURCES=2 i_ingot_iron, 1 I_SCREW
+WEIGHT=.4
+TYPE=T_SCISSORS
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Barber Scissors
+DUPELIST=0dfd
+
+[ITEMDEF 0dfd]
+//Barber SCISSORS
+DUPEITEM=0dfc
+
+[ITEMDEF 0dff]
+DEFNAME=i_wig
+RESOURCES=1 I_CLOTH, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG
+
+[ITEMDEF 0e00]
+DEFNAME=i_wig_1
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 1
+
+[ITEMDEF 0e01]
+DEFNAME=i_wig_2
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 2
+
+[ITEMDEF 0e02]
+DEFNAME=i_wig_3
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 3
+
+[ITEMDEF 0e03]
+DEFNAME=i_wig_4
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 4
+
+[ITEMDEF 0e04]
+DEFNAME=i_wig_5
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 5
+
+[ITEMDEF 0e05]
+DEFNAME=i_wig_stand
+RESOURCES=1 i_cloth, 5 I_BOARD
+WEIGHT=2
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG STAND
+
+[ITEMDEF 0e06]
+DEFNAME=i_wig_stand_2
+RESOURCES=1 i_cloth, 5 I_BOARD
+WEIGHT=2
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG STAND 2
+
+[ITEMDEF 0e07]
+DEFNAME=i_wig_stand_3
+RESOURCES=1 i_cloth, 5 I_BOARD
+WEIGHT=2
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG STAND 3
+
+[ITEMDEF 0e08]
+DEFNAME=i_wig_stand_4
+RESOURCES=1 i_cloth, 5 I_BOARD
+WEIGHT=2
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG STAND 4
+
+[ITEMDEF 0e09]
+DEFNAME=i_wig_6
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 6
+
+[ITEMDEF 0e0a]
+DEFNAME=i_wig_7
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 7
+
+[ITEMDEF 0e0b]
+DEFNAME=i_wig_8
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 8
+
+[ITEMDEF 0e0c]
+DEFNAME=i_wig_9
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 9
+
+[ITEMDEF 0e0d]
+DEFNAME=i_wig_10
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 10
+
+[ITEMDEF 0e0e]
+DEFNAME=i_wig_11
+RESOURCES=1 i_cloth, 5 I_THREAD, 20 i_hair_cut
+WEIGHT=1
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=WIG 11
+
+[ITEMDEF 0e27]
+// DEFNAME2=hair_dye
+DEFNAME=i_bottle_hair_dye
+TYPE=T_HAIR_DYE
+RESOURCES=1 I_BOTTLE, 1 i_dyes
+NAME=Bottle of Hair Dye
+WEIGHT=2
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=HAIR DYE
+DUPELIST=0eff
+
+[ITEMDEF 0203b]
+DEFNAME=i_hair_short
+NAME=short hair
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Short Hair
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_BUNS
+	new.color=<cont.findlayer(layer_hair).color>
+	new.more=1
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0203c]
+DEFNAME=i_hair_long
+NAME=long hair
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Long Hair
+
+ON=@Create
+	ATTR=attr_newbie
+
+ON=@TIMER
+	return 1
+
+[ITEMDEF 0203d]
+DEFNAME=i_hair_ponytail
+NAME=ponytail
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Pony Tail
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_LONG
+	new.color=<cont.findlayer(layer_hair).color>
+	new.more=1
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0203e]
+DEFNAME=i_beard_long
+NAME=long beard
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Long Beard
+
+ON=@Create
+	ATTR=attr_newbie
+
+ON=@TIMER
+	return 1
+
+[ITEMDEF 0203f]
+DEFNAME=i_beard_short
+NAME=short beard
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Short Beard
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_LONG
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02040]
+DEFNAME=i_beard_goatee
+NAME=goatee
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Goatee
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_short
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02041]
+DEFNAME=i_beard_mustache
+NAME=mustache
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Mustache
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_GOATEE
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02044]
+DEFNAME=i_hair_mohawk
+NAME=mohawk
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Mohawk
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_SHORT
+	new.color=<cont.findlayer(layer_hair).color>
+	new.more=1
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02045]
+DEFNAME=i_hair_pageboy
+NAME=pageboy
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Pageboy
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_BUNS
+	new.color=<cont.findlayer(layer_hair).color>
+	new.more=1
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02046]
+DEFNAME=i_hair_buns
+NAME=buns hair
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Buns Hair
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_AFRO
+	new.color=<cont.findlayer(layer_hair).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02047]
+DEFNAME=i_hair_afro
+NAME=afro
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Afro
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_LONG
+	new.color=<cont.findlayer(layer_hair).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02048]
+DEFNAME=i_hair_receding
+NAME=receeding hair
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Receeding Hair
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_SHORT
+	new.color=<cont.findlayer(layer_hair).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 02049]
+DEFNAME=i_hair_2_pigtails
+NAME=2 pig tails
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Two Pig Tails
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_long
+	new.color=<cont.findlayer(layer_hair).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0204a]
+DEFNAME=i_hair_krisna
+NAME=krisna hair
+TYPE=T_HAIR
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Krisna Hair
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_hair_RECEDING
+	new.color=<cont.findlayer(layer_hair).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0204b]
+DEFNAME=i_beard_short_med
+NAME=medium short beard
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Medium Short Beard
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_long
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0204c]
+DEFNAME=i_beard_long_med
+NAME=medium long beard
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Medium Short Beard
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_LONG_MED
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1
+
+[ITEMDEF 0204d]
+DEFNAME=i_beard_vandyke
+NAME=vandyke
+TYPE=T_BEARD
+VALUE={8 12}
+CATEGORY=Items by Professions
+SUBSECTION=Barber
+DESCRIPTION=Vandyke
+
+ON=@Create
+	ATTR=attr_newbie
+	TIMER=550000
+
+ON=@TIMER
+	if !<cont>	// on ground?
+		return 0
+	endif
+	if <cont.npc>	// players only
+		return 1
+	endif
+	serv.newitem=i_beard_short_med
+	new.color=<cont.findlayer(layer_beard).color>
+	cont.equip <new.uid>
+	return 1

@@ -1,0 +1,376 @@
+
+---- 0.57.1 --------------------------------------------------------------------
+---- Not released yet
+
+18-10-2005, Radiant
+- Wiped REVISIONS.TXT for 0.57.1. Old file is now named REVISIONS-56-SERIES.TXT
+
+18-10-2005, Vjaka
+- Removed: NTSERVICE, SECURE, FREEZERESTARTTIME, OF_Multithreaded.
+- Changed: LOGMASK constants.
+- Multithreading support has been heavily re-written. Now it should be much
+  better and stable. Thread priorities and sleep times has been updated also.
+- Exception handling redone, good valid debug stack information added.
+- Changed: a bunch of error and warning console messages to show better info.
+- Changed: resync now is instant task always.
+- Removed: argument support for sector commands (respawn,restock) - if you wish
+  the whole server to operate, prefix this with SERV.
+
+21-10-2005, Vjaka
+- Removed: EF_Minimize_Triggers, EF_New_Triggers. New way of allowing triggers
+  is going to be implemented after some time.
+- Added smart triggers minimize technology - triggers list is pre-created on
+  server load and resync and only routines connected to the triggers defined in
+  scripts will be used.
+- Added 't' console command to get a list of triggers with their use count just
+  for informative purposes. Does not work on telnet connection.
+- Removed accounts auto-update file "acct.scp" as well as 'a' console command.
+
+24-10-2005, Vjaka
+- Removed: ForceGarbageCollect, SaveBackground, EF_Size_Optimize, now built-in
+  to normal saves. Since now save trigger function are called only once, not
+  per each sector, f_onserver_save_finished removed as well.
+- Redone saves to be fully background. Since that separate statics save has
+  been removed and saved along with the other save. As a side effect, now if
+  the save will fail you will not get corrupted files anymore. Another side
+  effect of joining all saves together is the fact the accounts storage is in
+  the same folder where all other saves will reside. The speed of background
+  save operations is auto-detecting basing on clients online to be as
+  transparent as possible.
+- Profiler updated to support threads and give more exact values.
+
+04-11-2005, Vjaka
+- Fixed: internal triggers list clearing on resync leading to trggers disable.
+- Fixed: tooltip feature incorrectly treated value from ini file.
+- Fixed: threads marked as frozen due to fast console on tasks like resync.
+
+15-11-2005, Vjaka
+- Fixed defmessage string allocation, thus binary EXE size reduced by ~200kb.
+- Added a workaround of possible try to lock the same object from different
+  threads leading to one of them being hang. The fix will avoid thread hangs,
+  but can still cause some instability.
+- Added #214: ColorNoto* settings for characters color hue change.
+
+22-11-2005, Vjaka
+- Since log output is protected from spamming with the same line, a nice unix-
+  like feature added to display on the console (last command repeated x times).
+
+01-12-2005, Vjaka
+- Added #245: NPC names loosing their owners should get their wild names back.
+- Added sector command LOCALHOUR giving local sector time in HH:MM format.
+- Removed EF_Unicode, since it does not solve nothing really anyhow.
+- Added notification if you have incorrect OptionFlags or Experimental mask.
+
+06-12-2005, Vjaka
+- Added #193 and expanded the way @Kill trigger works. The trigger is now
+  called for all active fights for the character, not only for those who will
+  be considered as killers, and have these arguments (read-only):
+  ARGN1 - 1 if char is NOT considered as a killer
+  ARGN2 - total number of people who are considered being killers
+  ARGN3 - total number of people in war target list even if fight is not active
+- Added #30: REGION.TYPE returning type from the itemdef of the multi.
+- Fixed #54: Explosion potion had incorrect names if OF_AutoName was on.
+- Fixed invalid walk packet parse from Iris.
+
+07-12-2005, Vjaka
+- Changed MySQL version linked with to 4.1.15 since 3.23 library was too old.
+  You need to update your libmysql.dll for this change to work fully. Special
+  checks and messages added for better control and usability.
+- Added guild and player property PTS. No internal support for this, just a
+  field for storing some guild/player rating points or something else.
+
+08-12-2005, Vjaka
+- Removed ExperienceSystem setting, since ExperienceMode is enough to enable.
+- Fixed SHOW command working incorrectly.
+- Fixed DB.execute giving exceptions when MySQL is not connected.
+- OF_DiagonalWalkCheck, EF_Scripts_Ret_Strings now built-in executable.
+- Experimental and OptionFlags values updated to leave no gaps inside.
+
+24-12-2005, Vjaka
+- Added AOS properties for player characters: RES* (cold,energy,fire,poison)
+  with basic functionality, and LUCK with no built-in functionality.
+
+28-12-2005, Vjaka
+- Added support for 3d-client yawn and other animations.
+- Added support for 13 special combat moves: ArmorIgnore, BleedAttack,
+  ConcussionBlow, CrushingBlow, Disarm, Dismount, DoubleStrike, InfectStrike,
+  MortalStrike, MovingShot, ParalyzeBlow, ShadowStrike, WhirlwindAttack.
+
+31-12-2005, Shadow Dragon
+- Added character tags Regen* (Str,Dex,Int) to modify regen rate.
+
+02-01-2006, Vjaka
+- Added easy quest support engine. Now you can add new quests just by adding
+  a few simple configuration lines. Quests are accessable in scripts:
+    General Lists:
+  SERV.QUESTS    returns number of quests (full list list)
+  SERV.QUEST.x.* accesses properties and functions of quest #x (server list)
+  QUESTS    returns number of quests (client list/taken by client)
+  QUEST.x.* accesses properties and functions of quest #x (client list)
+  QUESTHIST     returns number of quests (client completed history)
+  QUESTHIST.x.* accesses quest #x (client completed history)
+    Quest Properties:
+  COMPLETE      cliloc message: quest completed
+  FAILED        is the quest failed (current quest)
+  NAME			cliloc message: quest name
+  OBJECTIVE     returns number of objectives (read)
+  OBJECTIVE.x.* accesses objective #x properties
+  PRIZE         returns number of prizes (read)
+  PRIZE.x.*     accesses prize #x properties
+  RESIGN        cliloc message: quest resigned
+  SOURCE        sets source UID of the quest requestors
+  SOURCE.*      accesses requestor's settings
+  STATUS        returns status of quest (-1=no, <1000=index#, >=1000=history#)
+  TEXT          cliloc message: quest description
+  TIMELEFT      how much time left to complete the quest (current quest)
+  TIMELIMIT     quest completion limit time (in seconds)
+  UNCOMPLETE    cliloc message: quest uncompleted
+    Quest commands
+  CANCEL        cancels current quest
+  FINISH        finishes the quest moving it to the history list
+  START         starts the quest
+	Objective / Prize Properties
+  AMOUNT    amount of objects
+  REF       id of the object
+  TYPE      type of the list [OBJ:0=get,1=kill,2=deliver][PRIZE:0=item]
+- Added character function TIMERF N,FuncName to cause a timed execution of a
+  function FuncName in N secs. Specifying N as -1 will clear all TIMERF list.
+  These functions are not saved, so do not store hours in the list, the purpose
+  of this is to decrease overhead due to timered memory items opeations.
+
+03-01-2006, Shadow Dragon
+- Added tags to items. TAG.* (Alchemy,...) to increase/decrease skill when item
+  equiped/unequiped. TAG.* (Str,Dex,Int) to increase/decrease stat when item
+  equiped/unequiped.
+- Added: Double click on self while in war mode opens paperdoll, not dismount.
+- Added: Check if item isn't identified then don't increase/decrease skills/
+  stats when equipping/unequipping it with magical TAGs. Due to this, item
+  identification skill unequips item on success.
+- Added character tags Regen*Val (Str,Dex,Int) to modify regen amount.
+- Fixed: number below zero format, causing incorrect numbers in several cases.
+
+04-01-2006, Vjaka
+- Changed item TAG.<skill> and TAG.<stat> changing equip/unequip modifications
+  to follow itemdef tags as well (will decrease tag usage).
+- Fixed .xshow command defaulting to self instead of the target.
+
+04-01-2006, Shadow Dragon
+- Fixed: Death caused exception in sphere.
+
+06-01-2006, Shadow Dragon
+- Moved: Buy/Sell to scripts, so there is no need in @Buy,@Sell.
+- Added: Vendor_BuySell.scp to scripts.
+- Added: Trade* (Consume <arg>, Restest <arg> <res>, Rescount <res>) such as 
+  Consume, Restest, Rescount, but without counting newbie items.
+- Fixed: Newbie items lost their newbie status when stack with other non-newbie items.
+- Fixed: Exception in tweak objects.
+
+06-01-2006, Vjaka
+- Added: SERV.console CMD to launch commands as you were in server console. Due
+  to this, SHUTDOWN command has been removed (=SERV.console x#) or script it.
+- Removed: PayFromPackOnly,VendorMaxSell since BUY/SELL is fully scripted this
+  is useless.
+
+06-01-2006, Furio
+- Moved: Vendor_BuySell.scp to script57/sphere_vendor_buysell.scp
+- Updated: spheretables.scp with line to load directory with 0.57 specific scripts
+  (until 0.56b stable is out)
+
+07-01-2006, Shadow Dragon
+- Added: TAG.Freezed for script purposes. This doesn't allow char to move if 
+  TAG.Freezed > SERV.Time.
+- Fixed: Some fixes in sphere_vendor_buysell.scp script.
+- Fixed: Exception when double click on items.
+- Fixed: Bug when double click on some npcs caused calling buy menu dialog.
+
+08-01-2006, Shadow Dragon
+- Fixed: Pets going logout.
+- Fixed: NewNpc creates npc in incorrect location.
+- Fixed: Vendors doesn't restock after server reboot.
+
+10-01-2006, Vjaka
+- Renamed: TAG.Freezed is now called TAG.NoMoveTill - it's more descriptive.
+
+10-01-2006, Shadow Dragon
+- Added: Items in multis do not send to the client if he is not in the multi (OSI-compatible lag fight)
+
+11-01-2006, Shadow Dragon
+- Fixed: Bouncing items to your backpack while item identification from others.
+
+12-01-2006, Vjaka
+- Removed SectorSleep setting, the sectors speed will be adjusted internaly.
+- Minimized ACCAPP settings removing only useful (see ini for details).
+- Added argument for MOVE/WALK/RUN command BACK to move backwards.
+- Added "NEWLOOT X" character function creating and equiping item X for NPCs
+  if can give loot, useful to be used in @Death or @DeathCorpse triggers.
+- Added "NEWGOLD N" function gives amount N of gold to the current char.
+- Added "UNEQUIPLAYERS L,N" to unequip all items in visible layers into layer L
+  (defaults to bankbox). If N is given, items linked to this uid will be not
+  unequiped.
+
+13-01-2006, Shadow Dragon (Script Pack)
+- Changed: Scripted function GiveGold to internal NewGold in sphere_vendor_buysell.scp.
+
+14-01-2006, Shadow Dragon
+- Fixed: Some troubles in Item Identification skill.
+
+15-01-2006, Vjaka
+- Added a convinient SHOW/XSHOW output for ATTR and FLAGS. It now shows both
+  hex and letter representation of the corresponding flags.
+
+17-01-2006, Vjaka
+- Fixed sectors not being awake if person was not moving inside, like macroing.
+
+19-01-2006, Vjaka
+- Removed UseGodPort ini setting, bind your extra ports via SETPORT command.
+- Removed BlowFish and Blow-TwoFish packet encodings, thus clients lower to
+  2.0.4 should be used in unencrypted way.
+
+19-01-2006, Shadow Dragon
+- Fixed: SHOW/XSHOW commands not working correctly.
+- Fixed: Res* (Cold,Fire,Energy,Poison) not setting.
+
+20-01-2006, Vjaka
+- Removed [BLOCKIP] section, use f_onserver_start if you wish persistant block.
+- Fixed several network issues, client freezing should be more rare.
+
+24-01-2006, Vjaka
+- Added possibility to configure some internal settings in sphere (like sysctl).
+  The settings lies in SERV object and provides these settings:
+  CONFIG.list - lists all settings with current values and description
+  CONFIG.setting=value - sets new value for this setting
+  <CONFIG.setting> - gets value of this setting
+  The settings not saved, however, you can override them in f_onserver_start.
+- Added -Ofilename command line, if specifyed the given file will be read as
+  config settings. File should be in setting=value format, rest lines ingored.
+- Moved some INI settings that are very rarely changed to the corresponding
+  places in CONFIG in order to make ini file cleaner. This includes:
+  TeleportEffect*,MaxLoopTimes,OverSkillMultiply,DeadSocketTime,LocalIPAdmin,
+  ClientMax*,ConnectingMax*,SuppressCapitals,CommandLog,MapCacheTime,
+  BackupLevels,CharTags,MountHeight.
+- Added <EXPLODE sep,string> operator which converts string with separators
+  other than ',' to commas making possible to operate with such string using
+  strarg/streat. Sample: LOCAL.S=<explode :/- ,my:test/string:2-3> should give
+  result of "my,test,string,2,3".
+
+30-01-2006, Vjaka
+- Added GMLOG command to log some information given in args to the separate
+  file if the current char has plevel > 1.
+- Renamed OF_NoHouseMuteSpeech to OF_HouseMuteSpeech and the action is reverted
+  since most people like this disabled and have usual problems to search how to
+  make it as it was before.
+
+22-02-2006, Torfo
+- prepared 0.57.1 for gcc compilation on linux
+
+25-02-2006, Vjaka
+- Fixed #470: Invalid argument for NEWNPC command will give dead man nearby.
+- Removed defrag option since it was broken anyhow for a while. Instead, server
+  uses some internal algourhms to decrease UID fragmenation.
+- Added chat messages to be caught by global systemwide hearall.
+- Fixed weird problem with some NPC verb testing.
+
+27-02-2006, Vjaka
+- Fixed dialogs closing immidiately after opening in some cases since function
+  dialogclose in the beggining of it arrived to client after the dialog.
+- Removed dialog button script execution when closing dialog using a script
+  command. It was illogical there, but was left for some time for backward
+  compatibility with oldest clients.
+- Fixed NPC ai causing light source to flash highly at nighttime.
+- Fixed items and characters requiring resend on reappear.
+
+28-02-2006, Vjaka
+- Sphere is now built with STLport, so require STLPORT.5.0.DLL or corresponding
+  SO library to run. As a good effect, it will improve both the stability and
+  perfomance of the system on cross-platform builds.
+
+01-03-2006, Vjaka
+- Fixed client freezing in some movement cases required resend to be issued.
+- Modifyed light level to obey seasons, causing a slight diff in daylight.
+- Added simple command line argument command support to sphere in the format
+  "sphereSvr @ command [arguments]". Sphere will execute it instantly and then
+  exit. Currently supported command is "region inputFile" to reformat map file
+  from constants in "FLAGS=0*" to string representation.
+  You can run "sphereSvr @" to get list of allowed commands and descriptions.
+- Fixed exceptions sending packets with idle priority.
+- Fixed reverted packet priorities causing not working overflow protection.
+
+02-03-2006, Vjaka
+- Added reformat to the list of available simple commands, currently useful to
+  fix tabulation in scripts, more actions will follow.
+- Added a 10-seconds delay in case a simple command was selected before exit.
+
+11-03-2006, Vjaka
+- Removed EF_Parse_Verbs since it is now built-in and executes when there is <
+  character on the keyword left part
+
+30-03-2006, MrSugarCube (Script Pack)
+- Added a sphere_msgs.scp to the script57 folder containing all of the message
+  definitions for Sphere57. The one in the main folder contains the 56b
+  message definitions and shouldn't be used with 57.
+
+24-05-2006, Vjaka (combined sync with local version)
+- Added ATTACKER keyword to access last attackers for the character. Usage:
+  <attacker>		returns amount of attackers
+  <attacker.x>		returns UID of the attacker (or 0 if it does not exist)
+  <attacker.x.dam>	returns total damage made by the attacker
+  The list is being cleared upon death after @DeathCorpse trigger.
+- Removed TRY and TRYP since they are no longer needed with autoparsing.
+- Added ISWEAPON and ISARMOR read-only properties for items.
+- Removed CONTROL as it is causing more problems that actualy solves. Hovewer
+  a replacement for this command will be back once again.
+  Note, that this and some other removed commands were made not because they
+  should not lie on server itself, but mainly because their implementation is
+  rather poor, that is better to reimplement it with some time, currently
+  using old version for such functionality if needed.
+- Removed RESDISP* since we assume we always have latest clients on the server.
+- Removed AutoResDisp since we always assume we are latest.
+- Removed AC,MODAC,STAMINA,HITPOINTS since it duplicates AR,MODAR,STAM,HITS.
+- Removed AVERSIONS, not working anyhow anyway.
+- Removed SLEEP, Statf_Sleeping and corresponding actions - it is buggy.
+- Removed ACCAPP setting.
+- Removed IMPORT,EXPORT,RESTORE,EXTRACT,UNEXTRACT commands, not really used.
+- Removed VERDATA support.
+- Removed sphereCrypt.ini since we are using clients >5.0.0 the keys are built.
+  The reason why the support (temporary) is removed is to decrease problems
+  due the fact that this version does not support old encryption, thus same
+  file could lead to problems if used for both - stable and testing
+  environments.
+- Removed UseCrypt/UseNoCrypt/ClientVersion,Md5Passwords settings.
+- Added GOLD command to count amount of gold for character, or set it (the
+  corresponding items will be created at a moment).
+- Removed NEWGOLD due to GOLD functionality.
+- Removed INSTANCES.
+- Added PROFESSION very similar to the SKILLCLASS currently.
+- Fixed problem with spawns lossing the spawned npcs.
+- Fixed several merged packets treating incorrectly, skipping some messages.
+- Fixed problem with CALL command sometimes.
+- Fixed world save problem with invalid in some cases.
+- Added BETWEEN2 as opposite of between, which selected min<-cur->max to select
+  towards minimum (max<-cur->min).
+- Fixed items and status send when logging in and jumping on high distances.
+- Modifyed pathfinder distance to allow radius of 4..24 steps to all directions
+  being scanned, depending on INT/6 value.
+- Fixed potential problem with pathfinding near the edges of the map.
+- Fixed NPC walking through blocking obstacles.
+- Removed FAME.* and KARMA.* constants. Use functions that will give real
+  control for the functionality to you.
+- Removed not-so-correct auto-detection of item type depending on tiledata
+  flags. You should have all types specifyed in scripts due to this.
+- Removed t_trap*,t_port_open,t_portculis types and traps support.
+- Removed curse and bless attributes at all.
+- Fixed dialogs taking tons of memory, and a memory leak inside.
+- Added dialog verb "dynamic 0/1". If your gump is fully static (means, have
+  no <keywords> and script constructions other than gump commands) it is
+  recommended to set dynamic 0 in order to skip gump re-read from scripts.
+  
+15-06-2006, Furio
+- Modified: Regen*/Regen*Val to OVERRIDE.REGEN_* and OVERRIDE.REGENVAL_* using
+  numeric id instead of names.
+
+19-06-2006, MrSugarCube (Script pack)
+- Updated: script57\sphere_msgs.scp (Moved 32 hardcoded messages to defmessages)
+
+02-01-2007, MrSugarCube
+- Removed the "network.client.ping" setting from internal settings as it is no
+  longer used.

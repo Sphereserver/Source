@@ -1,0 +1,1329 @@
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Tuesday, January 24, 2005
+// Updated By: Blizzard
+VERSION=0.56b
+
+[ITEMDEF 013bb]
+DEFNAME=i_chainmail_coif
+TYPE=T_ARMOR
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 14.5
+WEIGHT=7
+FLIP=1
+ARMOR=23
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Chainmail Coif
+DUPELIST=013c0
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013bc]
+DEFNAME=i_chainmail_leggings_decoration
+TYPE=t_armor
+RESOURCES=1 i_CHAINMAIL_LEGGINGS, 1 i_PEG
+WEIGHT=11
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Chainmail Leggings Hanging
+DUPELIST=013c1,013c3
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013bd]
+DEFNAME=i_chainmail_tunic_decoration
+TYPE=t_armor
+RESOURCES=1 i_CHAINMAIL_TUNIC, 1 i_PEG
+WEIGHT=15
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Chainmail Tunic Hanging
+DUPELIST=013c2
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013be]
+DEFNAME=i_chainmail_leggings
+TYPE=T_ARMOR
+RESOURCES=18 i_ingot_iron
+WEIGHT=10
+FLIP=1
+ARMOR=23
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Chainmail Leggings
+SKILLMAKE=BLACKSMITHING 36.7
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013bf]
+DEFNAME=i_chainmail_tunic
+TYPE=T_ARMOR
+RESOURCES=20 i_ingot_iron
+WEIGHT=15
+FLIP=1
+ARMOR=23
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Chainmail Tunic Hanging
+DUPELIST=013c4
+SKILLMAKE=BLACKSMITHING 39.1
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013c0]
+//Chainmail Coif
+DUPEITEM=013bb
+
+[ITEMDEF 013c1]
+//Chainmail Leggings
+DUPEITEM=013bc
+
+[ITEMDEF 013c2]
+//Chainmail Tunic
+DUPEITEM=013bd
+
+[ITEMDEF 013c3]
+//chainmail leggings
+DUPEITEM=013bc
+
+[ITEMDEF 013c4]
+//chainmail tunic
+DUPEITEM=013bf
+
+[ITEMDEF 013c5]
+DEFNAME=i_leather_sleeves
+TYPE=t_armor_leather
+RESOURCES=4 i_hides_cut
+SKILLMAKE=TAILORING 53.9, t_sewing_kit
+WEIGHT=6
+FLIP=1
+ARMOR=13
+REQSTR=10
+DUPELIST=013c8,013cd,013cf
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Sleeves
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013c6]
+DEFNAME=i_leather_gloves
+TYPE=t_armor_leather
+RESOURCES=3 i_hides_cut
+SKILLMAKE=TAILORING 51.8, t_sewing_kit
+WEIGHT=1
+FLIP=1
+ARMOR=13
+REQSTR=10
+DUPELIST=013ce
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Gloves
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013c7]
+DEFNAME=i_leather_gorget
+TYPE=t_armor_leather
+RESOURCES=4 i_hides_cut
+SKILLMAKE=TAILORING 53.9, t_sewing_kit
+WEIGHT=2
+FLIP=1
+ARMOR=13
+REQSTR=10
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Gorget
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013c8]
+//hanging leather sleeves
+DUPEITEM=013c5
+
+[ITEMDEF 013c9]
+DEFNAME=i_leather_leggings_decoration
+TYPE=t_armor_leather
+RESOURCES=1 i_LEATHER_LEGGINGS, 1 i_log
+SKILLMAKE=TAILORING 0.0, t_sewing_kit
+WEIGHT=7
+DUPELIST=013d0
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Leggings Hanging
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013ca]
+DEFNAME=i_leather_tunic_decoration
+TYPE=t_armor_leather
+RESOURCES=1 i_LEATHER_TUNIC, 1 i_log
+SKILLMAKE=TAILORING 0.0, t_sewing_kit
+WEIGHT=8
+DUPELIST=013d1
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Tunic Hanging
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013cb]
+DEFNAME=i_leather_leggings
+TYPE=t_armor_leather
+RESOURCES=10 i_hides_cut
+SKILLMAKE=TAILORING 66.3, t_sewing_kit
+WEIGHT=6
+FLIP=1
+ARMOR=13
+REQSTR=10
+DUPELIST=013d2
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Leggings
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013cc]
+DEFNAME=i_leather_tunic
+TYPE=t_armor_leather
+RESOURCES=12 i_hides_cut
+SKILLMAKE=TAILORING 70.5, t_sewing_kit
+WEIGHT=7
+FLIP=1
+ARMOR=13
+REQSTR=15
+DUPELIST=013d3
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Tunic
+
+ON=@Create
+HITPOINTS={25 30}
+
+[ITEMDEF 013cd]
+//leather sleeves
+DUPEITEM=013c5
+
+[ITEMDEF 013ce]
+//leather gloves
+DUPEITEM=013c6
+
+[ITEMDEF 013cf]
+//leather sleeves
+DUPEITEM=013c5
+
+[ITEMDEF 013d0]
+//leather leggings
+DUPEITEM=013c9
+
+[ITEMDEF 013d1]
+//leather tunic
+DUPEITEM=013ca
+
+[ITEMDEF 013d2]
+//leather leggings
+DUPEITEM=013cb
+
+[ITEMDEF 013d3]
+//leather tunic
+DUPEITEM=013cc
+
+[ITEMDEF 013d4]
+DEFNAME=i_studded_sleeves
+TYPE=T_ARMOR
+RESOURCES=10 i_hides_cut
+WEIGHT=8
+FLIP=1
+ARMOR=16
+REQSTR=25
+DUPELIST=013dc
+SKILLMAKE=TAILORING 87.1, t_sewing_kit
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Sleeves
+
+ON=@Create
+HITPOINTS={50 60}
+
+[ITEMDEF 013d5]
+DEFNAME=i_studded_gloves
+TYPE=t_armor
+SKILLMAKE=TAILORING 82.9, t_sewing_kit
+RESOURCES=8 i_hides_cut
+WEIGHT=2
+FLIP=1
+ARMOR=16
+REQSTR=25
+DUPELIST=013dd
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Gloves
+
+ON=@Create
+HITPOINTS={50 60}
+
+[ITEMDEF 013d6]
+DEFNAME=i_studded_gorget
+TYPE=T_ARMOR
+RESOURCES=6 i_hides_cut
+WEIGHT=3
+FLIP=1
+ARMOR=16
+REQSTR=25
+SKILLMAKE=TAILORING 78.8, t_sewing_kit
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Gorget
+
+ON=@Create
+HITPOINTS={50 60}
+
+[ITEMDEF 013d7]
+DEFNAME=i_studded_sleeves_decoration
+TYPE=t_armor
+RESOURCES=1 i_studded_SLEEVES, 1 i_PEG
+SKILLMAKE=TAILORING 0.0
+WEIGHT=9
+DUPELIST=013de
+ARMOR=16
+REQSTR=25
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Sleeves Hanging
+
+[ITEMDEF 013d8]
+DEFNAME=i_studded_leggings_decoration
+TYPE=t_armor
+RESOURCES=1 i_studded_LEGGINGS, 1 i_PEG
+SKILLMAKE=TAILORING 0.0
+WEIGHT=8
+DUPELIST=013df
+ARMOR=16
+REQSTR=30
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Leggings Hanging
+
+[ITEMDEF 013d9]
+DEFNAME=i_studded_tunic_decoration
+TYPE=t_armor
+RESOURCES=1 i_studded_TUNIC, 1 i_PEG
+SKILLMAKE=TAILORING 0.0
+WEIGHT=11
+DUPELIST=013e0
+ARMOR=16
+REQSTR=25
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Tunic Hanging
+
+[ITEMDEF 013da]
+DEFNAME=i_studded_leggings
+TYPE=T_ARMOR
+RESOURCES=12 i_hides_cut
+WEIGHT=7
+FLIP=1
+ARMOR=16
+REQSTR=30
+DUPELIST=013e1
+SKILLMAKE=TAILORING 91.2, t_sewing_kit
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Leggings
+
+ON=@Create
+HITPOINTS={50 60}
+
+[ITEMDEF 013db]
+DEFNAME=i_studded_tunic
+TYPE=T_ARMOR
+RESOURCES=14 i_hides_cut
+WEIGHT=9
+FLIP=1
+ARMOR=16
+REQSTR=35
+DUPELIST=013e2
+SKILLMAKE=TAILORING 94.0, t_sewing_kit
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Tunic
+
+ON=@Create
+HITPOINTS={36 44}
+
+[ITEMDEF 013dc]
+//studded sleeves
+DUPEITEM=013d4
+
+[ITEMDEF 013dd]
+//studded gloves
+DUPEITEM=013d5
+
+[ITEMDEF 013de]
+//studded sleeves
+DUPEITEM=013d7
+
+[ITEMDEF 013df]
+//studded leggings
+DUPEITEM=013d8
+
+[ITEMDEF 013e0]
+//studded tunic
+DUPEITEM=013d9
+
+[ITEMDEF 013e1]
+//studded leggings
+DUPEITEM=013da
+
+[ITEMDEF 013e2]
+//studded tunic
+DUPEITEM=013db
+
+[ITEMDEF 013e5]
+DEFNAME=i_ringmail_leggings_decoration
+TYPE=T_ARMOR
+RESOURCES=1 i_RINGMAIL_LEGGINGS, 1 i_PEG
+WEIGHT=13
+FLIP=1
+ARMOR=16
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Leggings Decoration
+DUPELIST=013e6
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013e6]
+//ringmail leggings
+DUPEITEM=013e5
+
+[ITEMDEF 013e7]
+DEFNAME=i_ringmail_tunic_decoration
+TYPE=t_armor
+RESOURCES=1 i_RINGMAIL_TUNIC, 1 i_PEG
+WEIGHT=16
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Chest Decoration
+DUPELIST=013e8
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013e8]
+//ringmail armor
+DUPEITEM=013e7
+
+[ITEMDEF 013e9]
+DEFNAME=i_ringmail_sleeves_decoration
+TYPE=t_armor
+RESOURCES=I_RINGMAIL_SLEEVES, 1 i_PEG
+WEIGHT=16
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Sleeves Decoration
+DUPELIST=013ea
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013ea]
+//ringmail sleeves
+DUPEITEM=013e9
+
+[ITEMDEF 013eb]
+DEFNAME=i_ringmail_gloves
+TYPE=T_ARMOR
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 12.0
+WEIGHT=2
+FLIP=1
+ARMOR=16
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Gloves
+DUPELIST=013f2
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013ec]
+DEFNAME=i_ringmail_tunic
+TYPE=T_ARMOR
+FLIP=1
+WEIGHT=15
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 21.9
+ARMOR=16
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Tunic
+DUPELIST=013ed
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013ed]
+//ringmail tunic
+DUPEITEM=013ec
+
+[ITEMDEF 013ee]
+DEFNAME=i_ringmail_sleeves
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=14 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 16.9
+WEIGHT=13
+ARMOR=16
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Sleeves
+DUPELIST=013ef
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013ef]
+//ringmail sleeves
+DUPEITEM=013ee
+
+[ITEMDEF 013f0]
+DEFNAME=i_ringmail_leggings
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=16 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 19.4
+WEIGHT=15
+ARMOR=16
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Ringmail Armor
+DESCRIPTION=Ringmail Leggings
+DUPELIST=013f1
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 013f1]
+//ringmail leggings
+DUPEITEM=013f0
+
+[ITEMDEF 013f2]
+//ringmail gloves
+DUPEITEM=013eb
+
+[ITEMDEF 01408]
+//DEFNAME2=closed_helm
+DEFNAME=i_helm_closed
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=7
+ARMOR=30
+REQSTR=40
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Closed Helm
+DUPELIST=01409
+SKILLMAKE=BLACKSMITHING 37.9
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01409]
+//close helmet
+DUPEITEM=01408
+
+[ITEMDEF 0140a]
+// DEFNAME2=OPEN_HELM
+DEFNAME=i_helm_open
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=7
+ARMOR=30
+REQSTR=40
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Helmet
+DUPELIST=0140b
+SKILLMAKE=BLACKSMITHING 37.9
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 0140b]
+//helmet
+DUPEITEM=0140a
+
+[ITEMDEF 0140c]
+DEFNAME=i_bascinet
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=7
+ARMOR=20
+REQSTR=10
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Bascinet
+DUPELIST=0140d
+SKILLMAKE=BLACKSMITHING 8.3
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 0140d]
+//bascinet
+DUPEITEM=0140c
+
+[ITEMDEF 0140e]
+DEFNAME=i_helm_nose
+TYPE=t_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=7
+ARMOR=30
+REQSTR=40
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Nose Helm
+DUPELIST=0140f
+SKILLMAKE=BLACKSMITHING 37.9
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 0140f]
+//nose helm
+DUPEITEM=0140e
+
+[ITEMDEF 01410]
+DEFNAME=i_platemail_arms
+TYPE=T_ARMOR
+FLIP=1
+SKILLMAKE=BLACKSMITHING 66.3
+RESOURCES=18 i_ingot_iron
+WEIGHT=18
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Arms
+DUPELIST=01417
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01411]
+DEFNAME=i_platemail_leggings
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=20 i_ingot_iron
+WEIGHT=20
+ARMOR=40
+REQSTR=40
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Legs
+DUPELIST=0141a
+SKILLMAKE=BLACKSMITHING 68.8
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01412]
+DEFNAME=i_platemail_helm
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=15 i_ingot_iron
+WEIGHT=10
+ARMOR=40
+REQSTR=60
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Helm
+DUPELIST=01419
+SKILLMAKE=BLACKSMITHING 62.6
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01413]
+DEFNAME=i_platemail_gorget
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=10 i_ingot_iron
+WEIGHT=6
+ARMOR=40
+REQSTR=30
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Gorget
+SKILLMAKE=BLACKSMITHING 56.4
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01414]
+DEFNAME=i_platemail_gloves
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=12 i_ingot_iron
+WEIGHT=5
+ARMOR=40
+REQSTR=30
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Gauntlets
+DUPELIST=01418
+SKILLMAKE=BLACKSMITHING 58.9
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01415]
+DEFNAME=i_platemail_chest
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=25 i_ingot_iron
+WEIGHT=23
+ARMOR=40
+REQSTR=60
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Breastplate
+DUPELIST=01416
+SKILLMAKE=BLACKSMITHING 75.0
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01416]
+//platemail
+DUPEITEM=01415
+
+[ITEMDEF 01417]
+//platemail arms
+DUPEITEM=01410
+
+[ITEMDEF 01418]
+//platemail gloves
+DUPEITEM=01414
+
+[ITEMDEF 01419]
+//plate helm
+DUPEITEM=01412
+
+[ITEMDEF 0141a]
+//platemail legs
+DUPEITEM=01411
+
+[ITEMDEF 0141b]
+DEFNAME=i_mask_orc
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=5 i_reag_bone
+VALUE=5
+WEIGHT=4
+ARMOR=15
+DUPELIST=0141c
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Masks
+DESCRIPTION=Orc Mask
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 0141c]
+//orc mask
+DUPEITEM=0141b
+
+[ITEMDEF 0144e]
+DEFNAME=i_bone_arms
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=4 i_reag_bone, 8 i_hides_cut
+SKILLMAKE=TAILORING 92.0, t_sewing_kit
+WEIGHT=2
+ARMOR=30
+REQSTR=40
+DUPELIST=01453
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Bone Armor
+DESCRIPTION=Bone Arms
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 0144f]
+DEFNAME=i_bone_chest
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=4 i_reag_bone, 8 i_hides_cut
+SKILLMAKE=TAILORING 92.0, t_sewing_kit
+WEIGHT=11
+ARMOR=30
+REQSTR=40
+DUPELIST=01454
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Bone Armor
+DESCRIPTION=Bone Chest
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 01450]
+DEFNAME=i_bone_gloves
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=2 i_reag_bone, 6 i_hides_cut
+SKILLMAKE=TAILORING 89.0, t_sewing_kit
+WEIGHT=3
+ARMOR=30
+REQSTR=40
+DUPELIST=01455
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Bone Armor
+DESCRIPTION=Bone Gloves
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 01451]
+DEFNAME=i_bone_helmet
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=2 i_reag_bone, 4 i_hides_cut
+SKILLMAKE=TAILORING 85.0, t_sewing_kit
+WEIGHT=4
+ARMOR=30
+REQSTR=40
+DUPELIST=01456
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Bone Armor
+DESCRIPTION=Bone Helmet
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 01452]
+DEFNAME=i_bone_leggings
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=6 i_reag_bone, 10 i_hides_cut
+SKILLMAKE=TAILORING 95.0, t_sewing_kit
+WEIGHT=6
+ARMOR=30
+DUPELIST=01457
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Bone Armor
+DESCRIPTION=Bone Legs
+
+ON=@Create
+HITPOINTS={21 23}
+
+[ITEMDEF 01453]
+//bone arms
+DUPEITEM=0144e
+
+[ITEMDEF 01454]
+//bone armor
+DUPEITEM=0144f
+
+[ITEMDEF 01455]
+//bone gloves
+DUPEITEM=01450
+
+[ITEMDEF 01456]
+//bone helmet
+DUPEITEM=01451
+
+[ITEMDEF 01457]
+//bone legs
+DUPEITEM=01452
+
+[ITEMDEF 01b72]
+DEFNAME=i_shield_round_bronze
+TYPE=t_shield
+FLIP=1
+RESOURCES=10 i_ingot_iron
+WEIGHT=12
+ARMOR=10
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Round Bronze Shield
+SKILLMAKE=BLACKSMITHING 0.0
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01b73]
+DEFNAME=i_shield_buckler
+TYPE=t_shield
+FLIP=1
+RESOURCES=6 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 0.0
+WEIGHT=6
+ARMOR=7
+REQSTR=15
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Buckler
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01b74]
+DEFNAME=i_shield_kite_metal
+TYPE=t_shield
+FLIP=1
+RESOURCES=16 i_ingot_iron
+WEIGHT=14
+DYE=1
+ARMOR=18
+REQSTR=20
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Kite Shield (Metal)
+DUPELIST=01b75
+SKILLMAKE=BLACKSMITHING 4.6
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01b75]
+//kite shield (metal)
+DUPEITEM=01b74
+
+[ITEMDEF 01b76]
+DEFNAME=i_shield_heater
+TYPE=t_shield
+FLIP=1
+RESOURCES=18 i_ingot_iron
+WEIGHT=14
+ARMOR=23
+REQSTR=30
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Heater Shield
+DUPELIST=01b77
+SKILLMAKE=BLACKSMITHING 24.3
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01b77]
+//heater shield
+DUPEITEM=01b76
+
+[ITEMDEF 01b78]
+DEFNAME=i_shield_kite_wood
+TYPE=t_shield
+FLIP=1
+RESOURCES=8 i_ingot_iron,4 i_log
+WEIGHT=9
+ARMOR=16
+REQSTR=30
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Kite Shield (Wooden)
+DUPELIST=01b79
+SKILLMAKE=BLACKSMITHING 12.6
+
+ON=@Create
+HITPOINTS={50 60}
+
+[ITEMDEF 01b79]
+//kite shield (wooden)
+DUPEITEM=01b78
+
+[ITEMDEF 01b7a]
+DEFNAME=i_shield_wood
+TYPE=t_shield
+FLIP=1
+WEIGHT=9
+ARMOR=8
+REQSTR=5
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Wooden Shield
+SKILLMAKE=CARPENTRY 52.6, t_carpentry
+RESOURCES=9 i_board
+
+ON=@Create
+HITPOINTS={21 26}
+
+[ITEMDEF 01b7b]
+DEFNAME=i_shield_round_metal
+TYPE=t_shield
+FLIP=1
+RESOURCES=14 i_ingot_iron
+WEIGHT=11
+ARMOR=9
+REQSTR=10
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Metal Shield
+SKILLMAKE=BLACKSMITHING 0.0
+
+ON=@Create
+COLOR=color_o_iron
+HITPOINTS={50 60}
+
+[ITEMDEF 01bc3]
+DEFNAME=i_shield_chaos
+TYPE=t_shield
+FLIP=1
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 85.0
+WEIGHT=1
+ARMOR=32
+REQSTR=0
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Chaos Shield
+
+ON=@Create
+COLOR=color_o_iron
+ATTR=attr_magic|attr_move_always
+HITPOINTS={100 115}
+
+ON=@EQUIP
+	if (<src.isgm>)
+		return 0
+	elseif (!<src.memoryfindtype.memory_guild>)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield
+		remove
+		return 1
+	elseif (<src.memoryfindtype.memory_guild.link.align>==1)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield, and are damaged for attempting to do so!
+		src.hits = <src.hits>/2
+		remove
+		return 1
+	elseif (<src.memoryfindtype.memory_guild.link.align>!=2)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield
+		remove
+		return 1
+	endif
+	return 0
+
+[ITEMDEF 01bc4]
+DEFNAME=i_shield_order
+TYPE=t_shield
+FLIP=1
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=BLACKSMITHING 85.0
+WEIGHT=1
+ARMOR=30
+REQSTR=0
+CATEGORY=Provisions - Armor
+SUBSECTION=Shields
+DESCRIPTION=Order Shield
+DUPELIST=01bc5
+
+ON=@Create
+COLOR=color_o_iron
+ATTR=attr_magic|attr_move_always
+HITPOINTS={100 115}
+
+ON=@EQUIP
+	if (<src.isgm>)
+		return 0
+	elseif (!<src.memoryfindtype.memory_guild>)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield
+		remove
+		return 1
+	elseif (<src.memoryfindtype.memory_guild.link.align>==2)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield, and are damaged for attempting to do so!
+		src.hits = <src.hits>/2
+		remove
+		return 1
+	elseif (<src.memoryfindtype.memory_guild.link.align>!=1)
+		src.sound=snd_SPELL_LIGHTNING
+		src.message=Your are unable to wear this shield
+		remove
+		return 1
+	endif
+	return 0
+
+[ITEMDEF 01bc5]
+//Order shield
+DUPEITEM=01bc4
+
+[ITEMDEF 01c00]
+DEFNAME=i_armor_female_shorts
+RESOURCES=8 i_hides_cut
+WEIGHT=2
+//DEFNAME=i_FEM_ARMOR_SHORTS
+TYPE=T_CLOTHING
+ARMOR=13
+REQSTR=15
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Leather Shorts
+DUPELIST=01c01
+SKILLMAKE=TAILORING 68.1
+
+ON=@Create
+HITPOINTS={31 37}
+
+[ITEMDEF 01c01]
+//leather shorts
+DUPEITEM=01c00
+
+[ITEMDEF 01c02]
+DEFNAME=i_armor_female_studded
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=22 i_ingot_iron
+WEIGHT=5
+//DEFNAME=i_FEM_ARMOR_A
+ARMOR=15
+REQSTR=35
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Studded Armor
+DUPELIST=01c03
+SKILLMAKE=BLACKSMITHING 52.6
+
+ON=@Create
+HITPOINTS={101 115}
+
+[ITEMDEF 01c03]
+//studded armor
+DUPEITEM=01c02
+
+[ITEMDEF 01c04]
+DEFNAME=i_armor_female_plate
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=20 i_ingot_iron
+WEIGHT=6
+//DEFNAME=i_FEM_ARMOR_B
+ARMOR=30
+REQSTR=45
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Female Plate Armor
+DUPELIST=01c05
+SKILLMAKE=BLACKSMITHING 45.3
+
+ON=@Create
+HITPOINTS={51 65}
+
+[ITEMDEF 01c05]
+//female bikini style plate armor
+DUPEITEM=01c04
+
+[ITEMDEF 01c06]
+DEFNAME=i_armor_female_leather
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=10 i_hides_cut
+WEIGHT=4
+//DEFNAME=i_FEM_ARMOR_C
+ARMOR=13
+REQSTR=15
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Leather Armor
+DUPELIST=01c07
+SKILLMAKE=TAILORING 86.3
+
+ON=@Create
+HITPOINTS={31 37}
+
+[ITEMDEF 01c07]
+//leather armor
+DUPEITEM=01c06
+
+[ITEMDEF 01c08]
+DEFNAME=i_armor_female_skirt
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=6 i_hides_cut
+WEIGHT=3
+//DEFNAME=i_FEM_ARMOR_SKIRT
+ARMOR=13
+REQSTR=10
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Leather Skirt
+DUPELIST=01c09
+SKILLMAKE=TAILORING 63.6, t_sewing_kit
+
+ON=@Create
+HITPOINTS={31 37}
+
+[ITEMDEF 01c09]
+//leather skirt
+DUPEITEM=01c08
+
+[ITEMDEF 01c0a]
+DEFNAME=i_armor_female_bustier
+TYPE=t_armor_leather
+FLIP=1
+RESOURCES=6 i_hides_cut
+WEIGHT=2
+//DEFNAME=i_FEM_ARMOR_TOP_A
+ARMOR=13
+REQSTR=15
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Leather Bustier
+DUPELIST=01c0b
+SKILLMAKE=TAILORING 63.6, t_sewing_kit
+
+ON=@Create
+HITPOINTS={31 37}
+
+[ITEMDEF 01c0b]
+//leather bustier
+DUPEITEM=01c0a
+
+[ITEMDEF 01c0c]
+DEFNAME=i_armor_female_bustier_studded
+TYPE=T_ARMOR
+FLIP=1
+RESOURCES=8 i_hides_cut
+WEIGHT=2
+//DEFNAME2=i_FEM_ARMOR_TOP_B
+ARMOR=16
+REQSTR=25
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Studded Bustier
+DUPELIST=01c0d
+SKILLMAKE=TAILORING 81.8, t_sewing_kit
+
+ON=@Create
+HITPOINTS={101 115}
+
+[ITEMDEF 01c0d]
+//studded bustier
+DUPEITEM=01c0c
+
+[ITEMDEF 01db9]
+//leather cap
+DEFNAME=i_leather_cap
+TYPE=t_armor_leather
+FLIP=1
+SKILLMAKE=TAILORING 6.2, t_sewing_kit
+RESOURCES=2 i_hides_cut
+ARMOR=13
+DUPELIST=01dba
+
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Cap
+
+ON=@CREATE
+HITPOINTS={25 30}
+
+[ITEMDEF 01dba]
+//leather cap
+DUPEITEM=01db9
+
+[ITEMDEF 01f0b]
+DEFNAME=i_helm_orc
+TYPE=t_armor_leather
+FLIP=1
+ARMOR=20
+REQSTR=1
+VALUE=1,10
+WEIGHT=5
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Orc Helm
+DUPELIST=01f0c
+
+ON=@Create
+HITPOINTS={31 70}
+
+[ITEMDEF 01f0c]
+//Orc Helm
+DUPEITEM=01f0b
+
+
+[eof]

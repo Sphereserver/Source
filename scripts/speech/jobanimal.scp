@@ -1,0 +1,432 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, April 28, 2000
+// COPYRIGHT NOTICE: All files and content are copyright 1997-1999 Menasoft & Partners. All
+// donations and contributions become the property of Menasoft.
+
+// Purpose: Britannia Animal Trainer Script
+// Notes:  This is used for general information pertaining to all Britannian
+//	Animal Trainer's
+// Current Keyword List:
+//	job, what*do*do, trainer, train, animal, saddle, whip, dog, cat, horse
+//	=============================================================================
+[SPEECH jobAnimal]
+
+ON=*job*
+ON=*work*
+ON=*what*do*do*
+ON=*profession*
+ON=*occupation*
+ON=*trainer*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I train animals.
+				SAY I break horses, and train cats and dogs.
+				SAY Hast thou a dog, horse or cat, that earns not its keep? I can train it to better serve thee, or sell thee a better one.
+				SAY Shouldst thou need a hard-working horse, dog or cat, I can provide thee with one.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I train animals, <SRC.SEX milord/milady>.
+				SAY I break horses, and train cats and dogs, <SRC.SEX milord/milady>.
+				SAY If thou got a useless dog, horse or cat, I'll train it to obey, or sell thee a better one.
+				SAY Need a hard-workin' horse, dog or cat? I'll sell thee one or train thine.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I train animals.
+				SAY I train and sell horses, cats and dogs.
+				SAY Hast thou a dog, horse or cat, that earns not its keep? I can teach this animal to better serve thee.
+				SAY If thou shouldst need a hardworking horse, dog or cat, I can provide thee with one.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I train animals, <SRC.SEX milord/milady>.
+				SAY I train and sell horses, cats and dogs, <SRC.SEX milord/milady>.
+				SAY Got a dog, horse or cat, that don't earn its keep? I can teach it to be better.
+				SAY Lookin' for a hardworking horse, dog or cat? I can sell thee one, <SRC.SEX milord/milady>.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I educate horses, cats and dogs.
+				SAY I turn beasts into useful companions.
+				SAY If thy dog, cat or horse is not quite the companion thou mightst wish, I can teach it better and more useful behavior.
+				SAY If thou shouldst need a smart, well-behaved animal companion, I can provide thee with one.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I tame horses, cats and dogs.
+				SAY I like to say that I turn beasts into friends.
+				SAY If thou hast a brutish dog, cat or horse, <SRC.SEX milord/milady>, I can teach it better and more useful behavior.
+				SAY I'm an animal trainer. I can find thee a smart, well-behaved animal if thou would like one.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*Retrieve*
+	IF <NPC>==BRAIN_ANIMAL_TRAINER
+		PETRETRIEVE
+	ENDIF
+
+ON=*Stable*
+	IF <NPC>==BRAIN_ANIMAL_TRAINER
+		PETSTABLE
+	ENDIF
+
+ON=*train*
+ON=*animal*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I teach beasts to respect the whip!
+				SAY I make sure animals know who's the boss.
+				SAY In my experience as a trainer, I have seen that the best way to spoil an animal is to spare the rod.
+				SAY Any trainer will tell thee that one cannot reason with a horse or dog. They understand pain and pleasure, but little else.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I teach beasts to respect the whip!
+				SAY I make sure animals know who's the boss.
+				SAY It's my experience that the best way to spoil an animal is to spare the rod.
+				SAY Any trainer will vouch - thou can't reason with a horse or dog. They understand pain and pleasure, but that's it.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I can break horses to saddle, train guard dogs, and even turn cats into better mousers.
+				SAY I have found that animals need a firm but fair hand.
+				SAY In my experience as a trainer, I have seen that animals respond best to a combination of strict discipline and affectionate praise.
+				SAY Methinks there is naught worse than an untrained beast. An animal should be respectful and useful to its master.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I break horses, train guard dogs, and even turn cats into better mousers.
+				SAY Animals are needin' a firm but fair hand.
+				SAY 'Tis my experience that animals seem to like strict rules and loving praise.
+				SAY I think there ain't nothin' worse than an untrained beast. Animals should be useful and obedient.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Animals learn like children, through affectionate discipline.
+				SAY Train a beast with fear and it'll flee if it can. Train it with love and it will follow thee into hell itself.
+				SAY The best way to train an animal is to befriend it. Once it is thy friend, it will desire to please thee in any way it can.
+				SAY Those that make heavy use of the rod in training animals, are inferior to the poor beasts they abuse.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Animals learn like children, through kindness.
+				SAY Train a beast with fear and it'll run off if it can. Train it with love and it'll follow thee to hell itself.
+				SAY The best way to train an animal is be a friend to it. Then it'll do anything thou ask.
+				SAY Those that beat the animals they train are lower than the poor brutes they injure.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*saddle*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY The horses of Britannia don't require saddles for riding. Some still use them, but it's more out of habit than need.
+				SAY Don't bother with a saddle! Britannian horses are as belligerent with as without them.
+				SAY Saddles will get thee nowhere with these animals.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Britannian horses don't need saddles. Some folks still use 'em, but you ain't gonna need 'em.
+				SAY Don't bother with saddles! Britannian horses are as mean with as without 'em.
+				SAY Saddles will get thee nowhere with these beasts.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY I train my horses so that they prefer to be ridden bareback. 'Tis less trouble in the long run.
+				SAY A well-trained horse should have no trouble being ridden saddle-less. In fact, they seem to prefer it.
+				SAY A saddle would be a waste of thy money in Britannia.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY My horses like to be ridden bareback. Less trouble for the rider, too.
+				SAY My horses ain't got no trouble being ridden without no saddle. In fact, they like it.
+				SAY Aw! A saddle is a waste of money in Britannia.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY We have bred horses here in Britannia of such intelligence that they're willing to work with thee, not against. The saddle has been rendered almost useless.
+				SAY There is no need to use a saddle on these fine steeds.
+				SAY Waste not thy money on a saddle. Thou dost not need it.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Our horses here in Britannia are smart. They're willing to work with thee, not against. The saddle's almost useless.
+				SAY There ain't no need for a saddle on these creatures.
+				SAY Don't waste money on a saddle. No need for it.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*whip*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Ah! Get thine own whip! No one makes or sells them here.  I had to braid mine myself.
+				SAY There doesn't seem to be enough of a market for whips to support a craftsman. I had to make mine own.
+				SAY Thou art a man after my own heart, if thou art looking for a whip. Sorry I can't help thee, though. No one seems to find it worth the time to sell 'em.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Ah! No one makes or sells them whips, anymore.  I had to braid my own.
+				SAY There don't seem to be enough interest for whips for a man to make a living makin' 'em. I made my own.
+				SAY A whip's a useful thing, I'm tellin' thee. Sorry I can't help, though. No one seems to want to sell 'em.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Oh, thou dost not need a whip for thine animals. 'Tis too harsh a punishment!
+				SAY A well-used whip will cause thy horse or dog to turn on thee. Mark my words. 'Tis lucky thou can no longer get one.
+				SAY Thou should not need a whip for a well-trained animal.
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY A whip ain't very useful for most animals. Makes 'em mean!
+				SAY Use a whip too much and that animal will turn on thee. Mark my words. It's lucky thou can no longer get one.
+				SAY Thou shouldn't need a whip for one of my animals.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 3
+				SAY Only a heartless animal would think to use a whip! Be glad that none can be bought in Britannia!
+				SAY There is no need to use a whip on these fine steeds! Don't think on it!
+				SAY 'Tis a good thing none sell those evil instruments any longer! Only a monster would think to use one!
+			ENDDO
+		ELSE
+			DORAND 3
+				SAY Now thou wouldn't think to use a whip, would thou? 'Tis a good thing that none can be bought in Britannia!
+				SAY There ain't no need to use a whip on these steeds! Don't think on it!
+				SAY 'Tis a good thing none sell those evil instruments any longer! Only a monster would think to use one!
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*dog*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> )
+			DORAND 4
+				SAY I show my dogs who's boss.
+				SAY My guard dogs will rip an intruder's throat right out.
+				SAY An unmannered dog is a curse on its master.
+				SAY All of my dogs know to fear their masters.
+			ENDDO
+		ELIF ( <COMPLEXITY.MEDIUM>)
+			DORAND 4
+				SAY I show my curs who's boss.
+				SAY My guard dogs will rip an intruder's throat right out.
+				SAY Marry, an unmannered dog is a curse on its master.
+				SAY All of my dogs know to fear their masters.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I show my curs who's the boss.
+				SAY My guard dogs will rip an intruder's throat right out.
+				SAY Marry, a brutish dog's a curse on its master.
+				SAY All my dogs know to fear their masters.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY I train strong working dogs, not little house pets.
+				SAY Thou must be firm with a dog, but cruelty will ruin them.
+				SAY I find that the more well-behaved the dog is, the happier it is.
+				SAY All of my dogs respect their masters.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY I train strong working dogs, not little house pets.
+				SAY Thou must be firm with a dog, but beatings'll ruin 'em.
+				SAY I find that the more trained a dog is, the happier it is.
+				SAY All my dogs respect their masters.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY A dog is like a good soldier. All he asks of thee is wise, fair leadership.
+				SAY There is no human friendship can equal the bond between man and dog.
+				SAY A dog is happiest when it knows exactly what its human expects of it.
+				SAY All of my dogs love their masters.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY A dog is like a good soldier. All he asks is wise, fair leadership.
+				SAY There ain't no human friendship can touch a dog's love for its master.
+				SAY A dog is happiest when it knows exactly what's expected of it.
+				SAY All my dogs love their masters.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*cat*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 5
+				SAY Even a cat can learn to fear a boot.
+				SAY I don't stand for any nonsense, even from a cat.
+				SAY I don't know why people waste their time with the arrogant creatures. If my cats don't prove good mousers, they end up fish food.
+				SAY The world's too small for a useless cat.
+				SAY Cats? I keep 'em only because people seem to want them. I'faith, I cannot see why.
+			ENDDO
+		ELSE
+			DORAND 5
+				SAY Even a cat can learn what a boot's for.
+				SAY I don't stand for no nonsense, not even from a cat.
+				SAY Can't understand what people see in cats. If mine don't prove good mousers, they end up fish food.
+				SAY The world's too small for a useless cat.
+				SAY Cats? I keep 'em only because people keep askin' me for 'em. Dunno what they want 'em for ...
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY One can't really train a cat. One can simply try to convince it that it wants to do things in a certain way.
+				SAY Cats haven't any masters, but they do have friends, or even partners.
+				SAY A cat cannot be trained. But its skills can be put to work catching mice.
+				SAY I think many people keep a cat for the same reason they might buy a painting - they are beautiful, graceful animals.
+			ENDDO
+		ELSE
+			DORAND 2
+				SAY 'Tis impossible to train a cats. I jus' try and convince 'em they wants to do things my way.
+				SAY Cats got no masters. Thou can sometimes make friends with 'em, though.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Many misguided folk distrust cats. They find them much too human for comfort.
+				SAY A well-behaved cat is a blessing to any house. The other kind is a curse.
+				SAY Cats need naught from humans. They are companion only to those who they truly care for.
+				SAY Windowsills and hearth rugs look painfully empty without a cat lying on them.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Many folks ain't trustin' cats; think they're much too human for comfort.
+				SAY Well-behaved cats are a blessing. Wildcats are a curse.
+				SAY Cats need nothin' from us. They stick around only 'cause they like the company.
+				SAY A house seems mighty empty without a cat.
+			ENDDO
+		ENDIF
+	ENDIF
+
+ON=*horse*
+	IF ( <SRC.KARMA.WICKED> || <SRC.KARMA.BELLIGERANT> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY The first thing one must understand is that the horse is a stupid creature.
+				SAY Until a horse has a bit in its mouth, the only way to get its attention is to strike it between the eyes with a fist.
+				SAY A horse is worth its oats only so long as it can work. Otherwise, it's worth little more than shoe leather.
+				SAY I have yet to meet a horse I couldn't break.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY The first thing thou needs to know is that a horse is a stupid brute.
+				SAY 'Til thou hast a bit in its mouth, the only way to talk to a horse is to pound it between the eyes with a fist.
+				SAY A horse is only worth its oats if it can work. Past that, it's worth little more 'n shoe leather.
+				SAY I haven't met a horse I couldn't break.
+			ENDDO
+		ENDIF
+	ELIF ( <SRC.KARMA.NEUTRAL> )
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY A well-trained horse can be a fine animal. There is truly no creature more useful to man.
+				SAY I cannot abide a belligerent or willful horse.
+				SAY A horse is only as good as its rider.
+				SAY All of my horses are well-schooled, hard-working animals.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Nothin' more useful than a saddle-broke horse.
+				SAY I can't stand a mean or stubborn horse.
+				SAY A horse is only as good as its rider.
+				SAY All my horses are well-taught, hard-working animals.
+			ENDDO
+		ENDIF
+	ELSE
+		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
+			DORAND 4
+				SAY Horses have been glorified in legend since man first learned to ride them. Surely there is no more noble a beast.
+				SAY When both horse and rider are experienced, the signals that pass between them are invisible to an observer.
+				SAY Methinks there exists no creature more beautiful and more willing to serve man than the horse.
+				SAY I have yet to meet a horse that could not be ridden. Training them requires only a modicum of patience and gentleness.
+			ENDDO
+		ELSE
+			DORAND 4
+				SAY Ahh, <SRC.SEX milord/milady>, I think there're few animals more noble than the horse.
+				SAY If thou'rt looking at a good horse and a good rider, 'tis impossible to see when the rider corrects the horse.
+				SAY I think there ain't no creature more willin' to serve man than the horse.
+				SAY I've never known a horse that couldn't be ridden. It just takes a bit of patience.
+			ENDDO
+		ENDIF
+	ENDIF
+
+[COMMENT SPEECH jobAnimal]
+//ANIMAL TRAINER
+DEFAULT=Thou art making no sense!
+ON=BUY
+	BUY
+ON=SELL
+	SELL
+ON=Hi
+ON=Hail
+ON=Hello
+ON=Greet
+	SAY=Hello, hast thou seen any of my animals?
+ON=job
+	SAY=I make friend with creatures of field and forest.
+ON=goodbye
+ON=farewell
+ON=bye
+	SAY=Farewell, and be kind to the animals.
+	BYE
+	return 1
+ON=animal
+SAY=A well trained, well treated animal makes a loyal protector during battle.
+ON=cat
+SAY=If your boat is infested, just send a trained cat down into the hold!
+ON=dog
+SAY=A dog makes an excellent travelling companion.
+ON=horse
+SAY=Horses may be ridden or sold to a stable.
+ON=mount
+SAY=To mount your horse, you may need to select him twice.
+ON=saddle
+SAY=Some riders prefer saddles, but bareback riding will help you and your steed form a closer bond.
+ON=steed
+SAY=Surely owning a fine steed is a sign of wealth.
+ON=train
+SAY=As a animal trainer's skill progresses, he may even be able to tame a few evil natured creatures.
+ON=trainer
+SAY=Animal trainers also help supply stables with horses. A fine skill to have indeed.
+ON=whip
+SAY=Never use a whip on  your pet, unless you'd like to be attacked.
+//RANDOM=Oh where! Oh where! Has my little dog gone? Oh where! Oh where! Can he be?
+
+[EOF]

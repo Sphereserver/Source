@@ -1,0 +1,346 @@
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Tuesday, December 6, 2005
+//
+VERSION=0.56b
+
+[ITEMDEF 02252]
+defname=i_spellbook_paladin
+type=t_spellbook_pala
+name=Paladin Spellbook
+weight=1
+resources=80 i_parchment,1 i_hide, 1 i_cloth
+layer=1
+
+ON=@Create
+	ATTR=attr_magic|attr_newbie
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Paladin
+	DESCRIPTION=Paladin Spellbook
+
+[ITEMDEF 0238c]
+defname=i_spellbook_bushido
+type=t_spellbook_bushido
+name=Book of Bushido
+weight=1
+resources=80 i_parchment,1 i_hide, 1 i_cloth
+layer=1
+
+ON=@Create
+	ATTR=attr_magic|attr_newbie
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Bushido
+	DESCRIPTION=Bushido Spellbook
+	
+[ITEMDEF 023a0]
+defname=i_spellbook_ninjitsu
+type=t_spellbook_ninjitsu
+name=Book of Ninjitsu
+weight=1
+resources=80 i_parchment,1 i_hide, 1 i_cloth
+layer=1
+
+ON=@Create
+	ATTR=attr_magic|attr_newbie
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Ninjitsu
+	DESCRIPTION=Ninjitsu Spellbook
+	
+[ITEMDEF 02d50]
+defname=i_spellbook_arcanist
+type=t_spellbook_arcanist
+name=Book of Arcanist
+weight=1
+resources=80 i_parchment,1 i_hide, 1 i_cloth
+layer=1
+
+ON=@Create
+	ATTR=attr_magic|attr_newbie
+	CATEGORY=Provisions - Alchemy & Magic
+	SUBSECTION=Arcanist
+	DESCRIPTION=Arcanist Spellbook
+	
+[ITEMDEF 02251]
+DEFNAME=i_daemon_skull
+NAME=Daemon Skull
+TYPE=t_normal
+VALUE=5000
+
+[ITEMDEF 02231]
+DEFNAME=i_giant_mush
+NAME=Giant Mushroom
+TYPE=t_normal
+
+[ITEMDEF 02232]
+DEFNAME=i_ant_hill
+NAME=Ant Hill
+TYPE=t_normal
+
+[ITEMDEF 02328]
+DEFNAME=i_snowman
+NAME=Snow Man
+TYPE=t_normal
+
+[ITEMDEF 0232a]
+DEFNAME=i_giftbox
+NAME=Gift Box
+TYPE=t_normal
+
+[ITEMDEF i_gem_arcane]
+ID=i_worldgem_lg
+TYPE=T_EQ_SCRIPT
+VALUE=5000
+CATEGORY=Provisions - Jewels and Jewelry
+SUBSECTION=Special Jewels
+DESCRIPTION=Arcane Gem
+
+ON=@DCLICK
+	TARGET Select the item you wish to enchant
+	RETURN 1
+
+ON=@TARGON_ITEM
+	IF (<SRC.TARG.ID>==01f03)||(<SRC.TARG.ID>==01515)||(<SRC.TARG.ID>==01711)||(<SRC.TARG.ID>==013c6)
+		IF (<SRC.TARG.TOPOBJ.UID>==<SRC.UID>)
+			IF (<SRC.TARG.QUALITY> > 176)
+				IF !(<SRC.TARG.ATTR>&(attr_magic|attr_newbie))
+					SRC.EMOTE enchant the <SRC.TARG.NAME>
+					SRC.SOUND snd_SPELL_PROTECTION
+					IF (<SRC.TARG.ID>==01f03)
+						SRC.NEWITEM i_robe_arcane
+						SRC.NEW.QUALITY={177 200}
+					elif (<SRC.TARG.ID>==01515)
+						SRC.NEWITEM i_cape_arcane
+						SRC.NEW.QUALITY={177 200}
+					elif (<SRC.TARG.ID>==01711)
+						SRC.NEWITEM i_boots_thigh_arcane
+						SRC.NEW.QUALITY={177 200}
+					elif (<SRC.TARG.ID>==013c6)
+						SRC.NEWITEM i_leather_gloves_arcane
+						SRC.NEW.QUALITY={177 200}
+					ELSE
+						SERV.LOG Logic error in i_gem_arcane
+					endif
+					SRC.NEW.NAME=<SRC.NEW.NAME> crafted by <SRC.NAME>
+					SRC.NEW.ATTR=021
+					SRC.NEW.BOUNCE
+					SRC.TARG.REMOVE
+					REMOVE
+				ELSE
+					SRC.SYSMESSAGE @021 That clothing is already enchanted
+				endif
+			ELSE
+				SRC.SYSMESSAGE @021 The clothing you wish to enchant must be exceptional
+			endif
+		ELSE
+			SRC.SYSMESSAGE @021 The clothing you wish to enchant must be in your backpac
+		endif
+	elif (<SRC.TARG.ID>==026ad)||(<SRC.TARG.ID>==026ae)||(<SRC.TARG.ID>==026af)||(<SRC.TARG.ID>==026b0)
+		SRC.EMOTE recharge <SRC.TARG.NAME>
+		SRC.TARG.MORE2=<SRC.TARG.MORE2> + <EVAL <SRC.TAILORING>/50>
+		IF (<SRC.TARG.MORE2>>24)
+			SRC.TARG.MORE2=24
+		endif
+		SRC.SYSMESSAGE @030 The <SRC.TARG.NAME> now has <EVAL <SRC.TARG.MORE2>> charges
+	ELSE
+		SRC.SYSMESSAGE @021 You can not enchant that item with this gem
+	endif
+	RETURN 1
+
+[EVENTS e_arcane_clothing]
+
+ON=@SPELLCAST
+	// This event does nothing since @SPELLCAST is not called if the caster
+	// has no regs ... sigh
+	IF (<CANCAST <ARGN>>==0)
+		SYSMESSAGE You can not cast this spell ... but the Arcane robe uses a charge to help you!
+		TRY CAST <ARGN>
+	endif
+	RETURN 1
+
+[FUNCTION f_arcane_equip]
+IF (<MORE2> > 0)
+	SRC.EVENTS +e_arcane_clothing
+	SRC.SOUND=0fd
+	SRC.EFFECT=3,i_fx_bless_effect,6,16,0
+endif
+
+[FUNCTION f_arcane_unequip]
+LOCAL.KeepEvent=0
+IF (<ARGN>=026ad)
+	IF (<SRC.FINDLAYER(22).ID>==026ae)&&(<SRC.FINDLAYER(22).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(3).ID>==026af)&&(<SRC.FINDLAYER(3).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(7).ID>==026b0)&&(<SRC.FINDLAYER(7).MORE2>>0)
+		LOCAL.KeepEvent=1
+	ELSE
+		LOCAL.KeepEvent=0
+	endif
+elif (<ARGN>=026ae)
+	IF (<SRC.FINDLAYER(20).ID>==026ad)&&(<SRC.FINDLAYER(20).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(3).ID>==026af)&&(<SRC.FINDLAYER(3).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(7).ID>==026b0)&&(<SRC.FINDLAYER(7).MORE2>>0)
+		LOCAL.KeepEvent=1
+	ELSE
+		LOCAL.KeepEvent=0
+	endif
+elif (<ARGN>=026af)
+	IF (<SRC.FINDLAYER(20).ID>==026ad)&&(<SRC.FINDLAYER(20).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(22).ID>==026ae)&&(<SRC.FINDLAYER(22).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(7).ID>==026b0)&&(<SRC.FINDLAYER(7).MORE2>>0)
+		LOCAL.KeepEvent=1
+	ELSE
+		LOCAL.KeepEvent=0
+	endif
+elif (<ARGN>=026b0)
+	IF (<SRC.FINDLAYER(20).ID>==026ad)&&(<SRC.FINDLAYER(20).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(22).ID>==026ae)&&(<SRC.FINDLAYER(22).MORE2>>0)
+		LOCAL.KeepEvent=1
+	elif (<SRC.FINDLAYER(3).ID>==026af)&&(<SRC.FINDLAYER(3).MORE2>>0)
+		LOCAL.KeepEvent=1
+	ELSE
+		LOCAL.KeepEvent=0
+	endif
+ELSE
+	SERV.LOG logic error in f_arcane_unequip
+endif
+IF (<LOCAL.KeepEvent>==0)
+	SRC.EVENTS -e_arcane_clothing
+	SRC.SOUND=0fd
+endif
+
+[ITEMDEF 026ad]
+DEFNAME=i_cape_arcane
+NAME=Arcane Cloak
+TYPE=t_clothing
+REQSTR=16
+WEIGHT=5
+DYE=1
+ARMOR=5
+RESOURCES=14 i_cloth, 1 i_thread, 1 i_gem_arcane
+SKILLMAKE=TAILORING 45.4, t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Magic
+DESCRIPTION=Arcane Cloak
+
+ON=@CREATE
+	HITPOINTS={50 100}
+	MORE2=24
+
+ON=@EQUIP
+	f_arcane_equip
+
+ON=@UNEQUIP
+	f_arcane_unequip 026ad
+
+ON=@CLIENTTOOLTIP
+	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
+
+[ITEMDEF 026ae]
+DEFNAME=i_robe_arcane
+NAME=Arcane Robe
+TYPE=t_clothing
+REQSTR=32
+WEIGHT=3
+DYE=1
+ARMOR=7
+RESOURCES=16 i_cloth, 1 i_thread, 1 i_gem_arcane
+SKILLMAKE=TAILORING 59.0, t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Magic
+DESCRIPTION=Arcane Robe
+
+ON=@CREATE
+	HITPOINTS={50 100}
+	MORE2=24
+
+ON=@EQUIP
+	f_arcane_equip
+
+ON=@UNEQUIP
+	f_arcane_unequip 026ae
+
+ON=@CLIENTTOOLTIP
+	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
+
+[ITEMDEF 026af]
+DEFNAME=i_boots_thigh_arcane
+NAME=Arcane Thigh Boots
+TYPE=T_CLOTHING
+REQSTR=8
+WEIGHT=5
+DYE=1
+ARMOR=6
+RESOURCES=10 i_hides_cut, 1 i_thread, 1 i_gem_arcane
+SKILLMAKE=TAILORING 25.0, t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Magic
+DESCRIPTION=Arcane Thigh Boots
+
+ON=@CREATE
+	HITPOINTS={50 100}
+	MORE2=24
+
+ON=@EQUIP
+	f_arcane_equip
+
+ON=@UNEQUIP
+	f_arcane_unequip 026af
+
+ON=@CLIENTTOOLTIP
+	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
+
+[ITEMDEF 026b0]
+DEFNAME=i_leather_gloves_arcane
+NAME=Arcane Leather Gloves
+TYPE=t_armor_leather
+REQSTR=8
+WEIGHT=1
+DYE=1
+ARMOR=13
+REQSTR=10
+RESOURCES=3 i_hides_cut, 1 i_gem_arcane
+SKILLMAKE=TAILORING 56.8, t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Magic
+DESCRIPTION=Arcane Leather Gloves
+
+ON=@CREATE
+	HITPOINTS={50 100}
+	MORE2=24
+
+ON=@EQUIP
+	f_arcane_equip
+
+ON=@UNEQUIP
+	f_arcane_unequip 026b0
+
+ON=@CLIENTTOOLTIP
+	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
+
+[ITEMDEF 0232f]
+DEFNAME=i_snowflake
+NAME=Snow Flake
+TYPE=t_normal
+
+[ITEMDEF 02313]
+DEFNAME=i_mini_tower1
+NAME=Mini House
+TYPE=t_normal
+
+[ITEMDEF 02206]
+DEFNAME=i_crystal_1
+NAME=Crystal
+TYPE=t_wall
+CAN=CAN_I_BLOCK

@@ -1,0 +1,202 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 0,56,2,0
+ PRODUCTVERSION 0,56,2,0
+ FILEFLAGSMASK 0x1fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "SphereServer 0.56b Prerelease"
+            VALUE "CompanyName", "Menasoft"
+            VALUE "FileDescription", "SphereServer by Menasoft"
+            VALUE "FileVersion", "SphereServer 0.56b Prerelease"
+            VALUE "InternalName", "SphereSvr"
+            VALUE "LegalCopyright", "Copyright 1998-2006 by Menasoft"
+            VALUE "OriginalFilename", "SphereSvr.exe"
+            VALUE "ProductName", "SphereServer"
+            VALUE "ProductVersion", "0.56b"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "spheresvr.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDM_STATUS DIALOG  0, 0, 301, 300
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sphere Status"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Statistics :",IDC_STATIC,7,2,46,8
+    LISTBOX         IDC_STAT_STATS,7,11,285,91,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Clients :",IDC_STATIC,7,104,40,8
+    LISTBOX         IDC_STAT_CLIENTS,7,115,286,180,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDR_ABOUT_BOX DIALOGEX 0, 0, 277, 71
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Sphere Server"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "Sphere Server Version",IDC_ABOUT_VERSION,40,9,175,30,
+                    SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,220,7,50,14,WS_GROUP
+    LTEXT           "Copyright (C) 1998-2006 Menasoft ",IDC_STATIC,40,41,119,
+                    8
+    LTEXT           "www.menasoft.com",IDC_ABOUT_MENASOFT_LINK,40,53,103,8,
+                    SS_NOTIFY,WS_EX_ACCEPTFILES
+    LTEXT           "www.sphereserver.net",IDC_ABOUT_SPHERE_LINK,151,52,119,
+                    8,SS_NOTIFY,WS_EX_ACCEPTFILES
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDM_POP_TRAY MENU 
+BEGIN
+    POPUP "pop"
+    BEGIN
+        MENUITEM "Resync Pause",                IDM_RESYNC_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "Restore",                     IDM_RESTORE
+        MENUITEM "Minimize",                    IDM_MINIMIZE
+        MENUITEM SEPARATOR
+        MENUITEM "Status...",                   IDM_STATUS
+        MENUITEM "About...",                    IDR_ABOUT_BOX
+        MENUITEM SEPARATOR
+        MENUITEM "Exit",                        IDM_EXIT
+    END
+END
+
+IDM_POP_LOG MENU 
+BEGIN
+    POPUP "pop"
+    BEGIN
+        MENUITEM "Copy",                        IDM_EDIT_COPY
+        MENUITEM SEPARATOR
+        MENUITEM "Resync Pause",                IDM_RESYNC_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "Status...",                   IDM_STATUS
+        MENUITEM "About...",                    IDR_ABOUT_BOX
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDR_ABOUT_BOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 270
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

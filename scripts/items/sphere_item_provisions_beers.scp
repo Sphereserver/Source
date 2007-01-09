@@ -1,0 +1,103 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, November 15, 2003
+//
+VERSION=0.56b
+
+[ITEMDEF i_ale_amber]
+NAME=Amber Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Amber Ale
+
+ON=@Create
+	COLOR=COLOR_RED2
+
+[ITEMDEF i_ale_honey]
+NAME=Honey Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Honey Ale
+
+ON=@Create
+	COLOR=COLOR_O_GOLD
+
+[ITEMDEF i_ale_brown]
+NAME=Brown Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Brown Ale
+
+ON=@Create
+	COLOR=COLORS_BROWN
+
+[ITEMDEF i_ale_spiced]
+NAME=Spiced Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Spiced Ale
+
+ON=@Create
+	COLOR=02c
+
+[ITEMDEF i_ale_smoked]
+NAME=Smoked Porter
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Smoked Porter
+
+ON=@Create
+	COLOR=COLOR_GRAY_DK
+
+[ITEMDEF i_ale_stout]
+NAME=Stout
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Stout Ale
+
+ON=@Create
+	COLOR=COLOR_O_BLACKROCK
+
+[ITEMDEF i_ale_oktoberfest]
+NAME=Oktoberfest Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={10 15}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Oktoberfest Ale
+
+ON=@Create
+	COLOR=COLORS_ORANGE
