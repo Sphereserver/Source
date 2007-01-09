@@ -1,0 +1,42 @@
+//
+//	Class:	CScriptCompiler
+//	Set:	different constants
+//	NOTE:	for binary compiled scripts compatibility all items should added to the end of
+//			all lists! Never updated
+//	NOTE:	each section is limited to 1023 elements inside, probably that will be enough :)
+//	NOTE:	elements can be unsorted, it will not cause any errors or bugs
+
+//	List of sections without names
+SECTION0(ADVANCE,		"ADVANCE")
+SECTION0(MOONGATES,		"MOONGATES")
+SECTION0(NOTOTITLES,	"NOTOTITLES")
+SECTION0(OBSCENE,		"OBSCENE")
+SECTION0(RUNES,			"RUNES")
+SECTIONN(STARTS,		"STARTS")
+SECTIONN(TELEPORTERS,	"TELEPORTERS")
+
+//	List of sections with no names, but arguments
+SECTIONA(PLEVEL,		"PLEVEL")
+
+//	List of standart sections
+SECTIONN(AREADEF,		"AREADEF")
+SECTIONN(CHARDEF,		"CHARDEF")
+SECTIONN(DEFNAME,		"DEFNAME")
+SECTIONN(DIALOG,		"DIALOG")
+SECTIONN(EVENTS,		"EVENTS")
+SECTIONN(FUNCTION,		"FUNCTION")
+SECTIONN(ITEMDEF,		"ITEMDEF")
+SECTIONN(NAMES,			"NAMES")
+SECTIONN(NEWBIE,		"NEWBIE")
+SECTIONN(REGIONRESOURCE,	"REGIONRESOURCE")
+SECTIONN(REGIONTYPE,	"REGIONTYPE")
+SECTIONN(SKILL,			"SKILL")
+SECTIONN(SKILLCLASS,	"SKILLCLASS")
+SECTIONN(SPAWN,			"SPAWN")
+SECTIONN(SPELL,			"SPELL")
+SECTIONN(TEMPLATE,		"TEMPLATE")
+SECTIONN(TYPEDEF,		"TYPEDEF")
+
+//	List of addictions ot the standart sections (arguments)
+SECTIONNA(BUTTON,		"BUTTON")
+SECTIONNA(TEXT,			"TEXT")

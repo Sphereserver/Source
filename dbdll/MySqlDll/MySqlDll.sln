@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MySqlDll", "MySqlDll.vcproj", "{300788D4-C04C-44A6-B802-BEF878A9253B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Personal Debug = Personal Debug
+		Personal Release = Personal Release
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Debug.ActiveCfg = Debug|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Debug.Build.0 = Debug|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Personal Debug.ActiveCfg = Personal Debug|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Personal Debug.Build.0 = Personal Debug|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Personal Release.ActiveCfg = Personal Release|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Personal Release.Build.0 = Personal Release|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Release.ActiveCfg = Release|Win32
+		{300788D4-C04C-44A6-B802-BEF878A9253B}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

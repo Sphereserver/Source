@@ -1,0 +1,65 @@
+[== Exploits/Bugfixes ==]
+- MOUNTHEIGHT=1 disallow walking in dunes: http://www.sphereserver.net/forums/index.php?showtopic=34534
+- Writing .tag.name.prefix="xxx " will set name to "xxx name" while .x.tag.name.prefix="xxx " will
+  strip the space naming as "xxxname"
+- Spell defnames: when using for example "IF (<ARGN>==s_summon_creature)" the "s_summon_creature"
+  returns the spell number plus 0c4000000, so the if would return false. This is valid also for
+  skills but is skill number plus 0ba000000.
+- Blue npcs won't call guards on anything but when they see a crime happening.
+- I cannot put item directly on the Trade window, I have to put it directly on the player I want to
+  trade with.
+- When you double click something to attack while being in war mode, all your pets are currently
+  rushing the target and attack it. You do not need to say "All Kill". This is exploitable to kill
+  people/npcs in towns without being criminal. You only get flagged criminal if you target saying All Kill.
+  What I am suggesting is to make it so, under a global hardcoded on=@gethit for either players, humans,
+  monsters, well anything that could be hit, if the attacker has an OWNER, and that the owner is a 
+  player, with a lot of if sentences checking for some memories, make it go criminal depending on the cases.
+
+[== CRs (Change Requests) ==]
+- Mapdiffs support (see bottom of the cGrayMap.cpp)
+- More NPC cleverness, more usage of combo - paralyse + combat spells
+- Get rid of amount in NAMES groups - autocount
+
+[== New Features ==]
+- TAG.ATEQUIP property of items to add/substract some skills, stats upon equip/unequip
+	CVarDefBase *pAtEquip = pItem->m_TagDefs.GetKey("ATEQUIP");
+	if ( pAtEquip )
+	{
+		CResourceQtyArray atequip;
+		atequip.Load(pAtEquip->GetValStr());
+		...
+	}
+- ON=@CharDCLICK
+- ON=@Karma, ON=@Fame
+- @sawcrime called right after someone commits a crime and right before the npc see's the crime
+- @NpcAction called when npc is selecting a skill to start
+- Some new settings like CHEATINGDEATH=X,Y in ini. Sending packet X from @Login if set, grab
+  the returning value and disconnect if it is not equal to Y. This will support providing
+  simple interface with plugins over clients. (not needed anymore, packetfilter now accept values
+  from 0 to 255 so this could be esily done using it)
+- Dayly snapshot - copyes saves + scripts to one archive named YYYYMMDD.zip
+- @Buy, @Sell triggers
+  ARGN1 - gold in transaction, ARGN2 - quantity of items.
+  Returns: 1 - cancel, 2 - normal, 0 - normal, but do not consume a penny
+  This will allow to create scripted support for special coins / currency system.
+- File server. NOT the http one - just special separated list of clients for transferring
+  files needed for installation. In other words, ability working as a patch server.
+- Allow taking items from your vendors/pets via paperdoll
+- Criminal status not wear off in logout
+- there should be a setting on how much % of resources you want to be lost when you fail to create an item.
+- Make npc call guards whenever they have a red creature in their "screen area".
+- There should be a setting like MOREY or something for containers, to set them bigger in size or
+  smaller. Like, what if I'd want a magical picnic basket to hold chests? (I know I can make it hold them with 
+  scripts, but as a player view I mean). By that way, I could also have a normal barrel be a trash barrel
+  that would accepts anykind of bigger containers.
+- EF_WALKCHECK takes tons of memory. Redo it by default with some cache file to store possibility to walk.
+  Cache storage should be written for this. Actualy it should be configurable to be hold in RAM or HDD,
+  and would be very useful for speeding up pathfinding, los checks and so on - holding block flags of
+  all cells. It should at least contain all statics + static items, but actualy if good engine to
+  autoupdate in separate thread will be done, it could contain also walkability using items and/or chars.
+- Add NPCAI setting to chardef to specify the npc specifics to use the ai.
+- Add a special file like spheretrig.map with the list of the triggers. People  uncomment lines there and
+  get some more triggers executed. This will allow very customisable way of EF_Minimize_Triggers, yet fast.
+- If IsServLoading() add:
+  1. hits,stam,mana,food auto setting to str/dex/int,maxfood on writeval (if not set before)
+  2. when saving if these stats equal to the max do not save them in saves.

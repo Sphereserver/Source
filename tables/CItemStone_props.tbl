@@ -1,0 +1,18 @@
+//
+//	Class:	CItemStone
+//	Set:	props
+//	Prefix:	STC_
+//
+
+ADD(ABBREV,"ABBREV")
+ADD(AbbreviationToggle,"AbbreviationToggle")
+ADD(ALIGN,"ALIGN")
+ADD(AlignType,"AlignType")
+ADD(CHARTER,"CHARTER")
+ADD(LoyalTo,"LoyalTo")
+ADD(Master,"Master")
+ADD(MasterGenderTitle,"MasterGenderTitle")
+ADD(MasterTitle,"MasterTitle")
+ADD(MasterUid,"MasterUid")
+ADD(MEMBER,"MEMBER")
+ADD(WEBPAGE,"WEBPAGE")
