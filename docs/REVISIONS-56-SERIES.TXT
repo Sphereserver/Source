@@ -2995,3 +2995,6 @@ this all in desperation)
    "SYSMESSAGE @,,2 502771"
    "SYSMESSAGE @2,,2 1042758,MrSugarCube"
    "SYSMESSAGE @,,2 1062695,MrSugarCube,4,5"
+   
+09-01-2007, Furio
+- Added: MD5HASH returning the md5 hash of the argument.

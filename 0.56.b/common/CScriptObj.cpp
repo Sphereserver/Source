@@ -1057,6 +1057,15 @@ badcmd:
 				}
 				return true;
 			}
+	
+		case SSC_MD5HASH:
+			{
+				char digest[33];
+				GETNONWHITESPACE(pszKey);
+
+				CMD5::fastDigest( digest, pszKey );
+				sVal.Format("%s", digest);
+			} return true;
 
 		default:
 			StringFunction( i, pszKey, sVal );
