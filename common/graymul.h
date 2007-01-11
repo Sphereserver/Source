@@ -1992,6 +1992,8 @@ public:
 #define UO_SIZE_Z			127
 #define UO_SIZE_MIN_Z		-127
 
+class CMapDiffCollection;
+
 extern class CMapList
 {
 public:
@@ -2001,6 +2003,7 @@ public:
 	bool m_maps[256];			// list of supported maps
 	int m_mapnum[256];			// real map number (0 for 0 and 1, 2 for 2, and so on) - file name
 	int m_mapid[256];			// map id used by the client
+	CMapDiffCollection * m_pMapDiffCollection;
 
 protected:
 	bool m_mapsinitalized[256];

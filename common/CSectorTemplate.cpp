@@ -173,6 +173,16 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	CPointMap pntBlock( UO_BLOCK_ALIGN(pt.m_x), UO_BLOCK_ALIGN(pt.m_y), 0, pt.m_map);
 	ASSERT( m_MapBlockCache.GetCount() <= (UO_BLOCK_SIZE * UO_BLOCK_SIZE));
 
+	PROFILE_TYPE prvProfileTask = g_Serv.m_Profile.GetCurrentTask();
+	g_Serv.m_Profile.Start( PROFILE_MAP );
+
+	if ( !pt.IsValidXY() )
+	{
+		g_Log.EventWarn("Attempting to access invalid memory block at %s.\n", pt.WriteUsed());
+		g_Serv.m_Profile.Start( prvProfileTask );
+		return NULL;
+	}
+
 	CGrayMapBlock * pMapBlock;
 
 	// Find it in cache.
@@ -181,6 +191,7 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	{
 		pMapBlock = STATIC_CAST <CGrayMapBlock *>(m_MapBlockCache[i]);
 		pMapBlock->m_CacheTime.HitCacheTime();
+		g_Serv.m_Profile.Start( prvProfileTask );
 		return pMapBlock;
 	}
 
@@ -193,16 +204,19 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	catch (CGrayError& e)
 	{
 		g_Log.EventError("Exception creating new memory block at %s. (%s)\n", pntBlock.WriteUsed(), e.m_pszDescription);
+		g_Serv.m_Profile.Start( prvProfileTask );
 		return NULL;
 	}
 	catch (...)
 	{
 		g_Log.EventError("Exception creating new memory block at %s.\n", pntBlock.WriteUsed());
+		g_Serv.m_Profile.Start( prvProfileTask );
 		return NULL;
 	}
 
 	// Add it to the cache.
 	m_MapBlockCache.AddSortKey( pMapBlock, pntBlock.GetPointSortIndex() );
+	g_Serv.m_Profile.Start( prvProfileTask );
 	return( pMapBlock );
 }
 

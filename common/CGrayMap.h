@@ -42,7 +42,7 @@ private:
 	CUOStaticItemRec * m_pStatics;	// dyn alloc array block.
 public:
 	void LoadStatics(DWORD dwBlockIndex, int map);
-	void LoadDiffs(DWORD dwBlockIndex, int map);
+	void LoadStatics(int iCount, CUOStaticItemRec * pStatics);
 public:
 	static const char *m_sClassName;
 	CGrayStaticsBlock()
@@ -113,6 +113,59 @@ public:
 	inline void SetTop( DWORD &dwItemBlockFlags, signed char &z, WORD &wID );
 	bool CheckTile_Terrain( DWORD dwItemBlockFlags, signed char z, WORD wID );
 	static LPCTSTR GetTileName( WORD wID );
+};
+
+struct CMapDiffBlock
+{
+	// A patched map block
+	CUOStaticItemRec * m_pStaticsBlock;		// Patched statics
+	int m_iStaticsCount;					// Patched statics count
+	CUOMapBlock * m_pTerrainBlock;			// Patched terrain
+	DWORD m_BlockId;						// Block represented
+	int m_map;								// Map this block is from
+
+	CMapDiffBlock(DWORD dwBlockId, int map)
+	{
+		m_BlockId = dwBlockId;
+		m_map = map;
+		m_iStaticsCount = -1;
+		m_pStaticsBlock = NULL;
+		m_pTerrainBlock = NULL;
+	};
+
+	~CMapDiffBlock()
+	{
+		if ( m_pStaticsBlock )	delete[] m_pStaticsBlock;
+		if ( m_pTerrainBlock )	delete m_pTerrainBlock;
+	};
+};
+
+class CMapDiffBlockArray : public CGObSortArray< CMapDiffBlock*, DWORD >
+{
+	int CompareKey( DWORD id, CMapDiffBlock* pBase, bool fNoSpaces ) const
+	{
+		ASSERT( pBase );
+		return ( id - pBase->m_BlockId );
+	}
+};
+
+class CMapDiffCollection
+{
+	// This class will be used to access mapdiff data
+private:
+	bool m_bLoaded;
+
+	CMapDiffBlockArray m_pMapDiffBlocks[256];
+	CMapDiffBlock * GetNewBlock( DWORD dwBlockId, int map );
+	void LoadMapDiffs();
+
+public:
+	CMapDiffCollection();
+	~CMapDiffCollection();
+
+	void Init();
+	CMapDiffBlock * GetAtBlock( int bx, int by, int map );
+	CMapDiffBlock * GetAtBlock( DWORD dwBlockId, int map );
 };
 
 class CGrayMapBlock :	// Cache this from the MUL files. 8x8 block of the world.

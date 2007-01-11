@@ -988,6 +988,9 @@ void CWorld::Init()
 		return;
 
 	g_MapList.Init();
+	if ( g_MapList.m_pMapDiffCollection )
+		g_MapList.m_pMapDiffCollection->Init();
+
 	//	initialize all sectors
 	int	sectors = 0;
 	int m = 0;
@@ -1846,6 +1849,12 @@ void CWorld::Close()
 		free(m_Sectors);
 		m_Sectors = NULL;
 		m_SectorsQty = 0;
+	}
+
+	if ( g_MapList.m_pMapDiffCollection )
+	{
+		delete g_MapList.m_pMapDiffCollection;
+		g_MapList.m_pMapDiffCollection = NULL;
 	}
 
 	CloseAllUIDs();
