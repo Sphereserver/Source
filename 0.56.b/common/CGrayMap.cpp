@@ -324,95 +324,20 @@ void CGrayStaticsBlock::LoadStatics( DWORD ulBlockIndex, int map )
 	}
 }
 
-void CGrayStaticsBlock::LoadDiffs( DWORD dwBlockIndex, int map )
+void CGrayStaticsBlock::LoadStatics( int iCount, CUOStaticItemRec * pStatics )
 {
-	ADDTOCALLSTACK("CGrayStaticsBlock::LoadDiffs");
-	// read in data from stadif files
-	// should be called after CGrayMapBlock::Load
-	if ( !IsSetEF( EF_Mapdiff_Support ) )
-		return;
-
-	CGFile * pFileStadif	= &(g_Install.m_Stadif[map]);
-	CGFile * pFileStadifl	= &(g_Install.m_Stadifl[map]);
-	CGFile * pFileStadifi	= &(g_Install.m_Stadifi[map]);
-
-	// Check that the relevant dif files are available
-	if ( !pFileStadif->IsFileOpen() || !pFileStadifl->IsFileOpen() || !pFileStadifi->IsFileOpen() )
-		return;
-
-	// Make sure that we're at the beginning of the files
-	pFileStadif->SeekToBegin();
-	pFileStadifl->SeekToBegin();
-	pFileStadifi->SeekToBegin();
-
-	int iLength = pFileStadifl->GetLength();
-	int iRead = 0;
-	unsigned int iOffset = -1;
-	
-	while ( iRead < iLength )
+	ADDTOCALLSTACK("CGrayStaticsBlock::LoadStatics2");
+	// Load statics information directly (normally from difs)
+	m_iStatics = iCount;
+	if ( m_iStatics )
 	{
-		unsigned int uiBlockID;
-		iRead += pFileStadifl->Read( &uiBlockID, sizeof(uiBlockID) );
-		if ( uiBlockID != dwBlockIndex ) // This isn't the block we're looking for
-			continue;
-		
-		// The statics at this block index have been patched. For some reason
-		// the dif files sometimes contain multiple entries for the same block
-		// and so we should search the entire file and only use the latest entry
-		iOffset = ((iRead - 4) / 4) * sizeof(CUOIndexRec);
+		m_pStatics = new CUOStaticItemRec[m_iStatics];
+		memcpy(m_pStatics, pStatics, sizeof(CUOStaticItemRec) * m_iStatics);
 	}
-
-	// if iOffset is -1, then no static patches were found.
-	if ( iOffset == -1 )
-		return;
-
-	// Remove previous statics data. If something fails up ahead then
-	// we'd be left without any statics in this block - but it's probably
-	// better than having incorrect statics
-	if ( m_pStatics )
+	else
 	{
-		m_iStatics = 0;
-		delete[] m_pStatics;
+		if ( m_pStatics )	delete[] m_pStatics;
 		m_pStatics = NULL;
-	}
-
-	if ( pFileStadifi->Seek(iOffset, SEEK_SET) != iOffset )
-	{
-		g_Log.EventError("Reading stadifi%d.mul FAILED.\n", map);
-		return;
-	}
-
-	CUOIndexRec index;
-	if ( pFileStadifi->Read( &index, sizeof(CUOIndexRec)) <= 0 )
-	{
-		g_Log.EventError("Reading stadifi%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockIndex, iOffset);
-		return;
-	}
-
-	if ( !index.HasData() )
-	{
-		// This block has been patched with no statics
-		return;
-	}
-
-	// Make sure that the statics block length is valid
-	if ((index.GetBlockLength() % sizeof(CUOStaticItemRec)) != 0)
-	{
-		g_Log.EventError("Reading stadifi%d.mul FAILED. [index=%d offset=%d length=%d]\n", map, dwBlockIndex, iOffset, index.GetBlockLength());
-		return;
-	}
-
-	m_iStatics = index.GetBlockLength()/sizeof(CUOStaticItemRec);
-	m_pStatics = new CUOStaticItemRec[m_iStatics];
-	if ( ! g_Install.ReadMulData(*pFileStadif, index, m_pStatics) )
-	{
-		// This shouldn't happen, if this fails then the block will
-		// be left with no statics
-		m_iStatics = 0;
-		delete[] m_pStatics;
-		m_pStatics = NULL;
-		g_Log.EventError("Reading stadif%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockIndex, iOffset);
-		return;
 	}
 }
 
@@ -453,81 +378,250 @@ void CGrayMapBlock::Load( int bx, int by )
 		throw CGrayError(LOGL_CRIT, 0, "CGrayMapBlock: Map is not supported since MUL files for it not available.");
 	}
 
-	CGFile * pFile;
-	CUOIndexRec index;
-	index.SetupIndex( ulBlockIndex * sizeof(CUOMapBlock), sizeof(CUOMapBlock));
-	pFile = &(g_Install.m_Maps[g_MapList.m_mapnum[m_map]]);
+	bool bPatchedTerrain = false, bPatchedStatics = false;
 
-	if ( pFile->Seek( index.GetFileOffset(), SEEK_SET ) != index.GetFileOffset() )
+	if ( IsSetEF( EF_Mapdiff_Support ) && g_MapList.m_pMapDiffCollection )
 	{
-		memset( &m_Terrain, 0, sizeof( m_Terrain ));
-		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Seek Ver");
-	}
-	if ( pFile->Read( &m_Terrain, sizeof(CUOMapBlock)) <= 0 )
-	{
-		memset( &m_Terrain, 0, sizeof( m_Terrain ));
-		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Read");
-	}
-
-	m_Statics.LoadStatics(ulBlockIndex, m_map);
-	LoadDiffs( ulBlockIndex, g_MapList.m_mapid[m_map] );
-	m_CacheTime.HitCacheTime();		// validate.
-}
-
-void CGrayMapBlock::LoadDiffs( DWORD dwBlockIndex, int map )
-{
-	ADDTOCALLSTACK("CGrayMapBlock::LoadDiffs");
-	// read in data from mapdif/stadif files
-	// should be called after CGrayMapBlock::Load
-
-	if ( !IsSetEF( EF_Mapdiff_Support ) )
-		return;
-
-	CGFile * pFileMapdif	= &(g_Install.m_Mapdif[map]);
-	CGFile * pFileMapdifl	= &(g_Install.m_Mapdifl[map]);
-
-	// Check that the relevant dif files are available
-	if ( pFileMapdif->IsFileOpen() && pFileMapdifl->IsFileOpen() )
-	{
-		// Make sure that we're at the beginning of the files
-		pFileMapdif->SeekToBegin();
-		pFileMapdifl->SeekToBegin();
-
-		int iLength = pFileMapdifl->GetLength();
-		int iRead = 0;
-		int iOffset = 0;
-	
-		while ( iRead < iLength )
+		// Check to see if the terrain or statics in this block is patched
+		CMapDiffBlock * pDiffBlock = g_MapList.m_pMapDiffCollection->GetAtBlock( ulBlockIndex, g_MapList.m_mapid[m_map] );
+		if ( pDiffBlock )
 		{
-			unsigned int uiBlockID;
-			iRead += pFileMapdifl->Read( &uiBlockID, sizeof(uiBlockID) );
-			
-			if ( uiBlockID != dwBlockIndex )
+			if ( pDiffBlock->m_pTerrainBlock )
 			{
-				// This isn't the block we're looking for
-				iOffset += sizeof(CUOMapBlock);
-				continue;
+				memcpy( &m_Terrain, pDiffBlock->m_pTerrainBlock, sizeof(CUOMapBlock) );
+				bPatchedTerrain = true;
 			}
 
-			// The terrain at this block index has been patched.
-			if ( pFileMapdif->Seek(iOffset, SEEK_SET) != iOffset )
+			if ( pDiffBlock->m_iStaticsCount >= 0 )
 			{
-				g_Log.EventError("Reading mapdif%d.mul FAILED.\n", map);
-				break;
+				m_Statics.LoadStatics( pDiffBlock->m_iStaticsCount, pDiffBlock->m_pStaticsBlock );
+				bPatchedStatics = true;
 			}
-			else if ( pFileMapdif->Read( &m_Terrain, sizeof(CUOMapBlock)) <= 0 )
-			{
-				// This shouldn't happen, but at least we should have the
-				// unpatched version of the terrain available.
-				g_Log.EventError("Reading mapdif%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockIndex, iOffset);
-				break;
-			}
-			break;
 		}
 	}
 
-	// Load Stadif Files
-	m_Statics.LoadDiffs( dwBlockIndex, map );
+	// Only load terrain if it wasn't patched
+	if ( ! bPatchedTerrain )
+	{
+		CGFile * pFile;
+		CUOIndexRec index;
+		index.SetupIndex( ulBlockIndex * sizeof(CUOMapBlock), sizeof(CUOMapBlock));
+		pFile = &(g_Install.m_Maps[g_MapList.m_mapnum[m_map]]);
+
+		if ( pFile->Seek( index.GetFileOffset(), SEEK_SET ) != index.GetFileOffset() )
+		{
+			memset( &m_Terrain, 0, sizeof( m_Terrain ));
+			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Seek Ver");
+		}
+		if ( pFile->Read( &m_Terrain, sizeof(CUOMapBlock)) <= 0 )
+		{
+			memset( &m_Terrain, 0, sizeof( m_Terrain ));
+			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Read");
+		}
+	}
+
+	// Only load statics if they weren't patched
+	if ( ! bPatchedStatics )
+	{
+		m_Statics.LoadStatics( ulBlockIndex, m_map );
+	}
+
+	m_CacheTime.HitCacheTime();		// validate.
+}
+
+//////////////////////////////////////////////////////////////////
+// -CMapDiffCollection
+
+CMapDiffCollection::CMapDiffCollection()
+{
+	m_bLoaded = false;
+}
+
+CMapDiffCollection::~CMapDiffCollection()
+{
+	// Remove all of the loaded dif data
+	for ( int m = 0; m < 256; m++ )
+	{
+		while ( m_pMapDiffBlocks[m].GetCount() )
+		{
+			delete m_pMapDiffBlocks[m].GetAt(0);
+			m_pMapDiffBlocks[m].RemoveAt(0);
+		}
+	}
+}
+
+void CMapDiffCollection::LoadMapDiffs()
+{
+	// Load mapdif* and stadif* Files
+	ADDTOCALLSTACK("CMapDiffCollection::LoadMapDiffs");
+	if ( m_bLoaded ) // already loaded
+		return;
+
+	DWORD dwLength = 0, dwBlockId = 0;
+	int iOffset = 0, iRead = 0;
+	CMapDiffBlock * pMapDiffBlock = NULL;
+
+	for ( int m = 0; m < 256; ++m )
+	{
+		if ( !g_MapList.IsMapSupported( m ) )
+			continue;
+
+		int map = g_MapList.m_mapid[m];
+
+		// Load Mapdif Files
+		{
+			CGFile * pFileMapdif	= &(g_Install.m_Mapdif[map]);
+			CGFile * pFileMapdifl	= &(g_Install.m_Mapdifl[map]);
+
+			// Check that the relevant dif files are available
+			if ( pFileMapdif->IsFileOpen() && pFileMapdifl->IsFileOpen() )
+			{
+				// Make sure that we're at the beginning of the files
+				pFileMapdif->SeekToBegin();
+				pFileMapdifl->SeekToBegin();
+
+				dwLength = pFileMapdifl->GetLength();
+				iRead = iOffset = 0;
+
+				for ( ; iRead < dwLength; iOffset += sizeof(CUOMapBlock) )
+				{
+					iRead += pFileMapdifl->Read( &dwBlockId, sizeof(dwBlockId) );
+					pMapDiffBlock = GetNewBlock( dwBlockId, map );
+
+					if ( pMapDiffBlock->m_pTerrainBlock )
+						delete pMapDiffBlock->m_pTerrainBlock;
+
+					CUOMapBlock * pTerrain = new CUOMapBlock();
+					if ( pFileMapdif->Seek( iOffset ) != iOffset )
+					{
+						g_Log.EventError("Reading mapdif%d.mul FAILED.\n", map);
+						delete pTerrain;
+						break;
+					}
+					else if ( pFileMapdif->Read( pTerrain, sizeof(CUOMapBlock) ) != sizeof(CUOMapBlock) )
+					{
+						g_Log.EventError("Reading mapdif%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockId, iOffset);
+						delete pTerrain;
+						break;
+					}
+
+					pMapDiffBlock->m_pTerrainBlock = pTerrain;
+				}
+			}
+		} // Mapdif
+
+		// Load Stadif Files
+		{
+			CGFile * pFileStadif	= &(g_Install.m_Stadif[map]);
+			CGFile * pFileStadifl	= &(g_Install.m_Stadifl[map]);
+			CGFile * pFileStadifi	= &(g_Install.m_Stadifi[map]);
+
+			// Check that the relevant dif files are available
+			if ( !pFileStadif->IsFileOpen() || !pFileStadifl->IsFileOpen() || !pFileStadifi->IsFileOpen() )
+				continue;
+
+			// Make sure that we're at the beginning of the files
+			pFileStadif->SeekToBegin();
+			pFileStadifl->SeekToBegin();
+			pFileStadifi->SeekToBegin();
+
+			dwLength = pFileStadifl->GetLength();
+			iRead = iOffset = 0;
+	
+			for ( ; iRead < dwLength; iOffset += sizeof(CUOIndexRec) )
+			{
+				iRead += pFileStadifl->Read( &dwBlockId, sizeof(dwBlockId) );
+				
+				pMapDiffBlock = GetNewBlock( dwBlockId, map );
+				if ( pMapDiffBlock->m_pStaticsBlock )
+					delete[] pMapDiffBlock->m_pStaticsBlock;
+
+				pMapDiffBlock->m_iStaticsCount = 0;
+				pMapDiffBlock->m_pStaticsBlock = NULL;
+
+				if ( pFileStadifi->Seek( iOffset ) != iOffset )
+				{
+					g_Log.EventError("Reading stadifi%d.mul FAILED.\n", map);
+					break;
+				}
+
+				CUOIndexRec index;
+				if ( pFileStadifi->Read( &index, sizeof(CUOIndexRec)) != sizeof(CUOIndexRec) )
+				{
+					g_Log.EventError("Reading stadifi%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockId, iOffset);
+					break;
+				}
+				else if ( !index.HasData() ) // This happens if the block has been intentionally patched to remove statics
+				{
+					continue;
+				}
+				else if ((index.GetBlockLength() % sizeof(CUOStaticItemRec)) != 0) // Make sure that the statics block length is valid
+				{
+					g_Log.EventError("Reading stadifi%d.mul FAILED. [index=%d offset=%d length=%d]\n", map, dwBlockId, iOffset, index.GetBlockLength());
+					break;
+				}
+
+				pMapDiffBlock->m_iStaticsCount = index.GetBlockLength()/sizeof(CUOStaticItemRec);
+				pMapDiffBlock->m_pStaticsBlock = new CUOStaticItemRec[pMapDiffBlock->m_iStaticsCount];
+				if ( !g_Install.ReadMulData(*pFileStadif, index, pMapDiffBlock->m_pStaticsBlock) )
+				{
+					// This shouldn't happen, if this fails then the block will
+					// be left with no statics
+					pMapDiffBlock->m_iStaticsCount = 0;
+					delete[] pMapDiffBlock->m_pStaticsBlock;
+					pMapDiffBlock->m_pStaticsBlock = NULL;
+					g_Log.EventError("Reading stadif%d.mul FAILED. [index=%d offset=%d]\n", map, dwBlockId, iOffset);
+					break;
+				}
+			}
+		} // Stadif
+	}
+
+	m_bLoaded = true;
+}
+
+void CMapDiffCollection::Init()
+{
+	// Initialise class (load diffs)
+	ADDTOCALLSTACK("CMapDiffCollection::Init");
+	LoadMapDiffs();
+}
+
+CMapDiffBlock * CMapDiffCollection::GetNewBlock(DWORD dwBlockId, int map)
+{
+	// Retrieve a MapDiff block for the specified block id, or
+	// allocate a new MapDiff block if one doesn't exist already.
+	ADDTOCALLSTACK("CMapDiffCollection::GetNewBlock");
+
+	CMapDiffBlock * pMapDiffBlock = GetAtBlock( dwBlockId, map );
+	if ( pMapDiffBlock )
+		return pMapDiffBlock;
+
+	pMapDiffBlock = new CMapDiffBlock(dwBlockId, map);
+	m_pMapDiffBlocks[map].AddSortKey( pMapDiffBlock, dwBlockId );
+	return pMapDiffBlock;
+}
+
+CMapDiffBlock * CMapDiffCollection::GetAtBlock(int bx, int by, int map)
+{
+	// See GetAtBlock(DWORD,int)
+	DWORD dwBlockId = (bx * (g_MapList.GetY( map ) / UO_BLOCK_SIZE)) + by;
+	return GetAtBlock( dwBlockId, map );
+}
+
+CMapDiffBlock * CMapDiffCollection::GetAtBlock(DWORD dwBlockId, int map)
+{
+	// Retrieve a MapDiff block for the specified block id
+	ADDTOCALLSTACK("CMapDiffCollection::GetAtBlock");
+	if ( !g_MapList.IsMapSupported( map ) )
+		return NULL;
+
+	// Locate the requested block
+	int index = m_pMapDiffBlocks[map].FindKey( dwBlockId );
+	if ( index < 0 )
+		return NULL;
+
+	return m_pMapDiffBlocks[map].GetAt( index );
 }
 
 /*

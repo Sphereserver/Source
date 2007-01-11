@@ -34,6 +34,8 @@ CMapList::CMapList()
 	Load(2, 0x900, 0x640, 64, 2, 2);	// #2 map2.mul
 	Load(3, 0xa00, 0x800, 64, 3, 3);	// #3 map3.mul
 	Load(4, 0x5a8, 0x5a8, 8, 4, 4);		// #4 map4.mul
+
+	m_pMapDiffCollection = NULL;
 }
 
 bool CMapList::Load(int map, int maxx, int maxy, int sectorsize, int realmapnum, int mapid)
@@ -123,6 +125,9 @@ void CMapList::Init()
 				m_maps[i] = false;
 		}
 	}
+
+	if ( IsSetEF( EF_Mapdiff_Support ) )
+		m_pMapDiffCollection = new CMapDiffCollection();
 }
 
 bool WritePidFile(int iMode = 0)
@@ -447,6 +452,7 @@ LPCTSTR CProfileData::GetName(PROFILE_TYPE id) const
 		"NETWORK_TX",
 		"CHARS",
 		"ITEMS",
+		"MAP",
 		"NPC_AI",
 		"SCRIPTS",
 		"DATA_TX",

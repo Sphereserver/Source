@@ -1013,6 +1013,12 @@ void CSector::CheckMapBlockCache( int iTime )
 const CGrayMapBlock * CSector::GetMapBlock( const CPointMap & pt )
 {
 	// Get a map block from the cache. load it if not.
+	if ( !pt.IsValidXY() )
+	{
+		g_Log.Warn("Attempting to access invalid memory block at %s.\n", pt.WriteUsed());
+		return NULL;
+	}
+
 	CPointMap pntBlock( UO_BLOCK_ALIGN(pt.m_x), UO_BLOCK_ALIGN(pt.m_y), 0, pt.m_map);
 
 	CGrayMapBlock * pMapBlock;

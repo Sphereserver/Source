@@ -1839,6 +1839,11 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	// Drag the mail bag to this clients char.
 
 	CChar * pChar = uid1.CharFind();
+	if ( pChar == NULL )
+	{
+		SysMessageDefault( DEFMSG_MAILBAG_DROP_1 );
+		return;
+	}
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
@@ -1846,11 +1851,6 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 			return;
 	}
 
-	if ( pChar == NULL )
-	{
-		SysMessageDefault( DEFMSG_MAILBAG_DROP_1 );
-		return;
-	}
 	if ( pChar == m_pChar ) // this is normal (for some reason) at startup.
 	{
 		return;
