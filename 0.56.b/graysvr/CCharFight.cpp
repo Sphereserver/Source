@@ -1985,14 +1985,14 @@ effect_bounce:
 		if ( pAttacker->charUID == pSrc->GetUID().GetPrivateUID() )
 		{
 			pAttacker->elapsed = 0;
-			pAttacker->amountDone += iDmg;
+			pAttacker->amountDone += maximum( 0, iDmg );
 			break;
 		}
 	}
 	if ( iAttacker < 0 )
 	{
 		LastAttackers attacker;
-		attacker.amountDone = iDmg;
+		attacker.amountDone = maximum( 0, iDmg );
 		attacker.charUID = pSrc->GetUID().GetPrivateUID();
 		attacker.elapsed = 0;
 		m_lastAttackers.push_back(attacker);

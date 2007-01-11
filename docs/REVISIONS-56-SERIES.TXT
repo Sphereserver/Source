@@ -3000,7 +3000,11 @@ this all in desperation)
 - Added: MD5HASH returning the md5 hash of the argument.
 
 11-01-2007, MrSugarCube
+- Fixed: ATTACKER.x not working correctly.
 - Fixed: Possible exception with handling mail message packet.
 - Modified: Rewritten EF_Mapdiff_Support handling to perform much faster. This is done at the cost of some
   additional memory usage but it can now cope with populated worlds.
 - Modified: Profiler now includes time spent loading map blocks.
+
+11-01-2007, MrSugarCube (Script pack)
+- Updated: sphere_spells.scp (Corrected FLAGS property of paralyze field spell)

@@ -1313,7 +1313,7 @@ do_default:
 			{
 				pszKey++;
 				int attackerIndex = -1;
-				if( strnicmp(pszKey, "MAX", 3) ) {
+				if( !strnicmp(pszKey, "MAX", 3) ) {
 					pszKey += 3;
 					LastAttackers *maxDamage = NULL;
 					for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); iAttacker++ ) {
