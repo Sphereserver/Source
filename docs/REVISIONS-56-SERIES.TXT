@@ -3008,3 +3008,6 @@ this all in desperation)
 
 11-01-2007, MrSugarCube (Script pack)
 - Updated: sphere_spells.scp (Corrected FLAGS property of paralyze field spell)
+
+12-01-2007, Shadow Dragon
+- Added: MulDiv script function. Usage "MulDiv number,multiplier,divider". Returns result.
