@@ -1066,6 +1066,21 @@ badcmd:
 				CMD5::fastDigest( digest, pszKey );
 				sVal.Format("%s", digest);
 			} return true;
+		case SSC_MULDIV:
+			{
+				int	iNum	= Exp_GetVal( pszKey );
+				SKIP_ARGSEP(pszKey);
+				int	iMul	= Exp_GetVal( pszKey );
+				SKIP_ARGSEP(pszKey);
+				int	iDiv	= Exp_GetVal( pszKey );
+				int iRes	= MulDiv(iNum,iMul,iDiv);
+
+				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
+					g_Log.EventDebug("SCRIPT: muldiv(%d,%d,%d) -> %d\n", iNum, iMul, iDiv, iRes);
+
+				sVal.FormatVal(iRes);
+			}
+			return true;
 
 		default:
 			StringFunction( i, pszKey, sVal );
