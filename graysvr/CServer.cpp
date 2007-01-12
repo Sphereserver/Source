@@ -1813,8 +1813,8 @@ void CServer::OnTick()
 	{
 		EXC_SET("time profile");
 		TIME_PROFILE_END;
-		int	hi = TIME_PROFILE_GET_HI;
-		if ( hi > 5 )
+		LONGLONG	hi = TIME_PROFILE_GET_HI;
+		if ( hi > 5L )
 		{
 			DEBUG_ERR(("CServer::OnTick() [socket operations] took %d.%d to run\n", hi, TIME_PROFILE_GET_LO));
 		}

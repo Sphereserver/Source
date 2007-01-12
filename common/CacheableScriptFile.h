@@ -24,15 +24,15 @@ private:
 	bool m_realFile;
 	struct TLine 
 	{
-		char *line;
+		int index;
 		TLine *next;
+		char *line;
 	};
 	TLine *lineHead;
 	TLine *m_currentLine;
 
 private:
 	bool useDefaultFile() const;
-	long getLineNumber(TLine *line) const;
 };
 
 #endif

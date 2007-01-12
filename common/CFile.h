@@ -170,13 +170,13 @@ public:
 	virtual bool Write( const void * pData, size_t dwLength ) const
 	{
 		DWORD dwWritten;
-		bool ret = ::WriteFile( m_hFile, pData, dwLength, &dwWritten, NULL );
-		if ( ! ret )
+		BOOL ret = ::WriteFile( m_hFile, pData, dwLength, &dwWritten, NULL );
+		if ( ret == FALSE )
 		{
 			NotifyIOError("write");
 			return false;
 		}
-		return ret;
+		return( ret == TRUE );
 	}
 
 	void NotifyIOError( LPCTSTR szMessage ) const

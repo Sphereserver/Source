@@ -3638,9 +3638,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	TCHAR	*pResult = Str_GetTemp();
 
 	// Weather bonus
-	float rWeatherSight = rWeather == 0.0 ? (0.25 * BASE_SIGHT) : 0.0;
+	double rWeatherSight = rWeather == 0.0 ? (0.25 * BASE_SIGHT) : 0.0;
 	// Light level bonus
-	float rLightSight = (1.0 - (rLight / 25.0)) * BASE_SIGHT * 0.25;
+	double rLightSight = (1.0 - (rLight / 25.0)) * BASE_SIGHT * 0.25;
 	int iVisibility = (int) (BASE_SIGHT + rWeatherSight + rLightSight);
 
 	// Check for the nearest land, only check every 4th square for speed

@@ -243,7 +243,7 @@ public:
 	bool IsLogged( DWORD wMask ) const
 	{
 		return( IsLoggedMask(wMask) ||
-			( GetLogLevel() >= ( wMask & 0x0f )));
+			( (DWORD)GetLogLevel() >= ( wMask & 0x0f )));
 	}
 
 	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );

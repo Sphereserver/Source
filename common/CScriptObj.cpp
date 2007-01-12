@@ -3,7 +3,7 @@
 // A scriptable object.
 //
 
-#ifdef WIN32
+#ifdef _WIN32
 	#include <process.h>
 #else
 	#include <errno.h>	// errno
@@ -982,7 +982,7 @@ badcmd:
 
 				bool bWait = (i == SSC_SYSCMD);
 
-#ifdef WIN32
+#ifdef _WIN32
 				_spawnl( bWait ? _P_WAIT : _P_NOWAIT,
 					Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1],
 					Arg_ppCmd[2], Arg_ppCmd[3], Arg_ppCmd[4],
@@ -1383,7 +1383,6 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 				pszResponse[i] = chEnd;
 			}
 
-resolved:
 			if ( sVal.IsEmpty() && fHTML )
 			{
 				sVal = "&nbsp";
@@ -2695,7 +2694,7 @@ bool CFileObj::r_Verb( CScript & s, CTextConsole * pSrc )
 				if ( sWrite->IsFileOpen() && !strcmp(s.GetArgStr(),sWrite->GetFileTitle()) )
 					return( false );
 
-				unlink(s.GetArgRaw());
+				_unlink(s.GetArgRaw());
 			} break;
 
 		case FOV_FLUSH:
