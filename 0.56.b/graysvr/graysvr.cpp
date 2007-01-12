@@ -137,7 +137,7 @@ bool WritePidFile(int iMode = 0)
 
 	if ( iMode == 1 )		// delete
 	{
-		return ( unlink(file) == 0 );
+		return ( _unlink(file) == 0 );
 	}
 	else if ( iMode == 2 )	// check for .pid file
 	{
@@ -154,7 +154,7 @@ bool WritePidFile(int iMode = 0)
 		pidFile = fopen(file, "w");
 		if ( pidFile )
 		{
-			pid_t spherepid = getpid();
+			pid_t spherepid = _getpid();
 			fprintf(pidFile,"%d\n", spherepid);
 			fclose(pidFile);
 			return true;

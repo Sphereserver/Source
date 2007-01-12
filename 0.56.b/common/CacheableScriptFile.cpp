@@ -28,7 +28,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 		return false;
 	}
 
-	m_hFile = (OSFILE_TYPE)fileno(m_pStream);
+	m_hFile = (OSFILE_TYPE)_fileno(m_pStream);
 
 	m_closed = false;
 
@@ -39,6 +39,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	TLine *currentLine = lineHead;
 
 	char *buf = Str_GetTemp();
+	int index = 0;
 	while( true ) 
 	{
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
@@ -50,6 +51,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 		int len = strlen(buf);
 		currentLine->line = new char[len+1];
 		strcpy(currentLine->line, buf);
+		currentLine->index = index;
 
 		TLine *newLine = new TLine;
 		newLine->line = NULL;
@@ -57,6 +59,8 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 
 		currentLine->next = newLine;
 		currentLine = newLine;
+
+		index++;
 	}
 
 	fclose(m_pStream);
@@ -165,15 +169,13 @@ LONG CacheableScriptFile::Seek(LONG offset, UINT origin)
 		linenum = 0;	//	do not support not SEEK_SET rotation
 	}
 
-	int index = 0;
 	for( TLine *l = lineHead; l != NULL; l = l->next ) 
 	{
-		if( index == linenum ) 
+		if( l->index == linenum ) 
 		{
 			m_currentLine = l;
-			return index;
+			return l->index;
 		}
-		index++;
 	}
 
 	return -1;
@@ -187,23 +189,7 @@ DWORD CacheableScriptFile::GetPosition() const
 	}
 	
 	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
-	return getLineNumber(m_currentLine);
-}
-
-long CacheableScriptFile::getLineNumber(TLine *line) const 
-{
-	ADDTOCALLSTACK("CacheableScriptFile::getLineNumber");
-	int index = 0;
-	for( TLine *l = lineHead; l != NULL; l = l->next ) 
-	{
-		if( l == line ) 
-		{
-			return index;
-		}
-		index++;
-	}
-
-	return -1;
+	return m_currentLine->index;
 }
 
 void CacheableScriptFile::dupeFrom(CacheableScriptFile *other) 
@@ -218,29 +204,6 @@ void CacheableScriptFile::dupeFrom(CacheableScriptFile *other)
 
 	m_realFile = false;
 	lineHead = other->lineHead;
-
-/*	lineHead = new TLine;
-	lineHead->line = NULL;
-	lineHead->next = NULL;
-	
-	TLine *currentLine = lineHead;
-	
-	for( TLine *l = other->lineHead; l != NULL; l = l->next ) {
-		if( l->line != NULL ) {
-			currentLine->line = new char[strlen(l->line)+1];
-			strcpy(currentLine->line, l->line);
-		}
-		else {
-			currentLine->line = NULL;
-		}
-		
-		TLine *newLine = new TLine;
-		newLine->line = NULL;
-		newLine->next = NULL;
-		
-		currentLine->next = newLine;
-		currentLine = newLine;
-	}*/
 }
 
 bool CacheableScriptFile::useDefaultFile() const 

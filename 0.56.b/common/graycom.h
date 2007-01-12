@@ -112,9 +112,9 @@
 
 #ifdef _WIN32
 	#define ATOI atoi
-	#define ITOA itoa
-	#define LTOA ltoa
-	#define STRREV strrev
+	#define ITOA _itoa
+	#define LTOA _ltoa
+	#define STRREV _strrev
 #else
 	int ATOI( const char * str );
 	char * ITOA(int value, char *string, int radix);

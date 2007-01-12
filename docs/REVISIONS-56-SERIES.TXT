@@ -3011,3 +3011,6 @@ this all in desperation)
 
 12-01-2007, Shadow Dragon
 - Added: MulDiv script function. Usage "MulDiv number,multiplier,divider". Returns result.
+
+12-01-2007, Vjaka
+- Greatly increased speed of loading large scripts (especially annoying on resync).

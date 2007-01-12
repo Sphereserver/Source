@@ -1177,7 +1177,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 		TIME_PROFILE_END;
 
 		TCHAR * time = Str_GetTemp();
-		sprintf(time, "%d.%04d", (int)(TIME_PROFILE_GET_HI)/1000, (int)(TIME_PROFILE_GET_LO));
+		sprintf(time, "%d.%04d", (int)(TIME_PROFILE_GET_HI/1000), (int)(TIME_PROFILE_GET_LO));
 
 		g_Log.Event(LOGM_SAVE, "World save completed, took %s seconds\n", time);
 
@@ -2235,8 +2235,8 @@ void CWorld::OnTick()
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;
-		int	hi = TIME_PROFILE_GET_HI;
-		if ( hi > 50 )
+		LONGLONG hi = TIME_PROFILE_GET_HI;
+		if ( hi > 50L )
 		{
 			DEBUG_ERR(("CWorld::OnTick() [ticking sectors] took %d.%d to run\n", hi, TIME_PROFILE_GET_LO));
 		}
