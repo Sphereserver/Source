@@ -126,7 +126,7 @@ void CMapList::Init()
 		}
 	}
 
-	if ( IsSetEF( EF_Mapdiff_Support ) )
+	if ( IsSetEF( EF_Mapdiff_Support ) && !m_pMapDiffCollection )
 		m_pMapDiffCollection = new CMapDiffCollection();
 }
 

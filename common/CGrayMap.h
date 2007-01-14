@@ -137,6 +137,8 @@ struct CMapDiffBlock
 	{
 		if ( m_pStaticsBlock )	delete[] m_pStaticsBlock;
 		if ( m_pTerrainBlock )	delete m_pTerrainBlock;
+		m_pStaticsBlock = NULL;
+		m_pTerrainBlock = NULL;
 	};
 };
 
