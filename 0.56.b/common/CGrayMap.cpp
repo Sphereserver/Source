@@ -444,7 +444,6 @@ CMapDiffCollection::~CMapDiffCollection()
 	{
 		while ( m_pMapDiffBlocks[m].GetCount() )
 		{
-			delete m_pMapDiffBlocks[m].GetAt(0);
 			m_pMapDiffBlocks[m].RemoveAt(0);
 		}
 	}
