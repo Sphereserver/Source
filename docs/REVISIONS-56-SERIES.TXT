@@ -3014,3 +3014,4 @@ this all in desperation)
 
 12-01-2007, Vjaka
 - Greatly increased speed of loading large scripts (especially annoying on resync).
+- Fixed parsing script files when latest useful script line not ended by carriage return.

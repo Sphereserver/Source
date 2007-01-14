@@ -40,13 +40,10 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 
 	char *buf = Str_GetTemp();
 	int index = 0;
-	while( true ) 
+	while( !feof(m_pStream) ) 
 	{
+		buf[0] = 0;
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
-		if( feof(m_pStream) )  
-		{
-			break;
-		}
 
 		int len = strlen(buf);
 		currentLine->line = new char[len+1];

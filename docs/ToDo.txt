@@ -6,7 +6,6 @@
 [== CRs (Change Requests) ==]
 - Add same stats things - pets current / total; add built-in support for this system
   http://uo.stratics.com/content/professions/taming/taming-pets.shtml
-- Mapdiffs support (see bottom of the cGrayMap.cpp)
 - Fix the way the next combat target is selected, since if you say KILL to your pet and after
   that dclick the other enemy in war mode, it will rush over this pet instead of the ordered.
 
