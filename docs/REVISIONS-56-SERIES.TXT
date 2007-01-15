@@ -3015,3 +3015,7 @@ this all in desperation)
 12-01-2007, Vjaka
 - Greatly increased speed of loading large scripts (especially annoying on resync).
 - Fixed parsing script files when latest useful script line not ended by carriage return.
+
+15-01-2007, MrSugarCube
+- Fixed #1027: SDIALOG claiming to be an undefined keyword when the specified dialog is already showing.
+
