@@ -688,20 +688,16 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			UpdateMode();
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
-				GetClient()->removeBuff(BI_POISON);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_POISON,1017383,1070722,2, WideMsg);
+				GetClient()->removeBuff( BI_POISON );
+				GetClient()->addBuff( BI_POISON,1017383,1070722,2 );
 			}
 			break;
 		case SPELL_Reactive_Armor:
 			StatFlag_Set( STATF_Reactive );
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
-				this->GetClient()->removeBuff(BI_REACTIVEARMOR);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				this->GetClient()->addBuff(BI_REACTIVEARMOR,1075812,1070722,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->removeBuff( BI_REACTIVEARMOR );
+				GetClient()->addBuff( BI_REACTIVEARMOR,1075812,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			break;
 		case SPELL_Night_Sight:
@@ -711,10 +707,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				m_pClient->addLight();
 				if (IsSetOF(OF_Buffs)) 
 				{
-					this->GetClient()->removeBuff(BI_NIGHTSIGHT);
-					for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-						*BytePtr = 1;
-					this->GetClient()->addBuff(BI_NIGHTSIGHT,1075643,1075644,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+					GetClient()->removeBuff(BI_NIGHTSIGHT);
+					GetClient()->addBuff(BI_NIGHTSIGHT,1075643,1075644,(WORD)(pSpell->GetTimerAdjusted()) );
 				}
 			}
 			break;
@@ -731,8 +725,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if (iBuffPercent > 0x3E7)
 					iBuffPercent = 0x3E7;
 				ITOA(iBuffPercent, NumBuff, 10);
-				for ( unsigned char* p = WideMsg; p != WideMsg + COUNTOF(WideMsg); p += 2 ) 
-					*p = 1;
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				this->GetClient()->addBuff(BI_CLUMSY,1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
@@ -757,8 +749,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( iBuffPercent == 0 )
 					iBuffPercent = 1;
 				ITOA(iBuffPercent, NumBuff, 10);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				this->GetClient()->addBuff(BI_FEEBLEMIND,1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
@@ -777,8 +767,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( iBuffPercent == 0 )
 					iBuffPercent = 1;
 				ITOA(iBuffPercent, NumBuff, 10);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				this->GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
@@ -792,8 +780,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() ) 
 				{
 					GetClient()->removeBuff(BI_CURSE);
-					for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-						*BytePtr = 1;
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx) 
 					{
 						iBuffPercent = (iStatEffect * 100) / (Stat_GetBase((STAT_TYPE)idx) == 0 ? 1 : Stat_GetBase((STAT_TYPE)idx));
@@ -823,8 +809,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( iBuffPercent == 0 )
 					iBuffPercent = 1;
 				ITOA(iBuffPercent, NumBuff, 10);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				GetClient()->addBuff(BI_AGILITY,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
@@ -842,8 +826,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( iBuffPercent == 0 )
 					iBuffPercent = 1;
 				ITOA(iBuffPercent, NumBuff, 10);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				GetClient()->addBuff(BI_CUNNING,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
@@ -862,8 +844,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					if ( iBuffPercent == 0 )
 						iBuffPercent = 1;
 					ITOA(iBuffPercent, NumBuff, 10);
-					for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-						*BytePtr = 1;
 					CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 					GetClient()->addBuff(BI_STRENGTH,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 				}
@@ -876,8 +856,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() ) 
 				{
 					GetClient()->removeBuff(BI_BLESS);
-					for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-						*BytePtr = 1;
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx) 
 					{
 						iBuffPercent = (iStatEffect * 100) / (Stat_GetBase((STAT_TYPE)idx) == 0 ? 1 : Stat_GetBase((STAT_TYPE)idx));
@@ -920,9 +898,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() ) 
 				{
 					GetClient()->removeBuff(BI_INCOGNITO);
-					for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-						*BytePtr = 1;
-					GetClient()->addBuff(BI_INCOGNITO,1075819,1075820,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+					GetClient()->addBuff(BI_INCOGNITO,1075819,1075820,(WORD)(pSpell->GetTimerAdjusted()) );
 				}
 			}
 			break;
@@ -931,18 +907,14 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_MAGICREFLECTION,1075817,1070722,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_MAGICREFLECTION,1075817,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			break;
 		case SPELL_Protection:
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_PROTECTION);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_PROTECTION, 1075814,1070722,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_PROTECTION, 1075814,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			m_defense = CalcArmorDefense();
 			break;
@@ -950,9 +922,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_ARCHPROTECTION);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_ARCHPROTECTION, 1075816,1070722,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_ARCHPROTECTION, 1075816,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
@@ -966,9 +936,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_INVISIBILITY);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_INVISIBILITY,1075825,1075826,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_INVISIBILITY,1075825,1075826,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			break;
 		case SPELL_Paralyze:
@@ -977,9 +945,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_PARALYZE);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_PARALYZE, 1075827,1075828,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_PARALYZE, 1075827,1075828,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			break;
 		case SPELL_Polymorph:
@@ -987,9 +953,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_POLYMORPH);
-				for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-					*BytePtr = 1;
-				GetClient()->addBuff(BI_POLYMORPH, 1075824,1070722,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_POLYMORPH, 1075824,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
 			break;
 		case SPELL_Summon:
@@ -1131,16 +1095,10 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		// We will have this effect again.
 		pItem->SetTimeout((5+Calc_GetRandVal(4))*TICK_PER_SEC);
 
-		BYTE WideMsg[18];
-		memset((void*)WideMsg,0, sizeof(WideMsg));
-
-		if (IsClient() && IsSetOF(OF_Buffs)) {
-			GetClient()->removeBuff(BI_POISON);
-			for ( unsigned char* BytePtr = WideMsg; BytePtr != WideMsg + COUNTOF(WideMsg); BytePtr += 2 ) 
-			{
-				*BytePtr = 1;
-			}
-			GetClient()->addBuff(BI_POISON,1017383,1070722,(WORD)(pItem->GetTimerAdjusted()), WideMsg);
+		if (IsClient() && IsSetOF(OF_Buffs)) 
+		{
+			GetClient()->removeBuff( BI_POISON );
+			GetClient()->addBuff( BI_POISON,1017383,1070722,(WORD)(pItem->GetTimerAdjusted()) );
 		}
 		break;
 

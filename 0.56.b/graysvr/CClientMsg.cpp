@@ -11,7 +11,7 @@
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
-void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, const BYTE * pText)
+void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
 	if (!IsResClient(RDS_AOS))
@@ -20,6 +20,24 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 		return;
 	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return;
+
+	bool bSelfAlloc = false;
+	if ( pText == 0 )
+	{
+		bSelfAlloc = true;
+		pText = new BYTE[18];
+		for ( size_t i = 0; i != 18; ++i )
+		{
+			pText[i] = 0;
+		}
+	}
+	for ( BYTE* BytePtr = pText; BytePtr != pText + 18; BytePtr += 2 ) 
+	{
+		if ( *BytePtr == 0 )
+		{
+			*BytePtr = 1;
+		}
+	}
 
 	CCommand Cmd;
 	Cmd.AddBuff.m_Cmd = 0xDF;
@@ -52,6 +70,12 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 	Cmd.AddBuff.m_MBUTab_3[0] = 9;
 	Cmd.AddBuff.m_MBUTab_3[1] = 0;
 	Cmd.AddBuff.m_unk_8 = 0x0;
+
+	if ( bSelfAlloc )
+	{
+		delete[] pText;
+	}
+
 	xSendPkt(&Cmd, Cmd.AddBuff.m_Length);
 }
 
@@ -4195,6 +4219,12 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	{
 		if ( IsPriv(PRIV_ALLSHOW) ) ClearPrivFlags(PRIV_ALLSHOW);
 		if ( !pChar->IsStatFlag(STATF_INVUL) ) pChar->StatFlag_Set(STATF_INVUL);
+	}
+
+	// Resend hiding buff if hidden
+	if ( m_pChar->IsStatFlag( STATF_Hidden ) )
+	{
+		GetClient()->addBuff( 1012 /*BI_HIDDEN*/ , 1075655, 1075656, 0 );
 	}
 
 	CScriptTriggerArgs	Args( fNoMessages, fQuickLogIn, NULL );

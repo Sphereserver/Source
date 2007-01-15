@@ -2618,10 +2618,8 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 		ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_HIDING_SUCCESS ), this );
 		if ( IsClient() )
 		{
-			unsigned char* WideMsg = new unsigned char[18];
-			memset( (void*)(WideMsg), 0, sizeof(*WideMsg)*18 );
-			GetClient()->addBuff( 1012 /*BI_HIDDEN*/ , 1075655, 1075656, 0, WideMsg );
-			delete[] WideMsg;
+			GetClient()->removeBuff( 1012 /*BI_HIDDEN*/ );
+			GetClient()->addBuff( 1012 /*BI_HIDDEN*/ , 1075655, 1075656, 0 );
 		}
 		StatFlag_Set( STATF_Hidden );
 		UpdateMode();

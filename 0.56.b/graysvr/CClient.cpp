@@ -850,10 +850,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					DEBUG_ERR(("Too few addbuff arguments\n"));
 					break;
 				}
-				BYTE MBUArg[3 * 3 * 2];
-				memset((void*) MBUArg, 0, sizeof(MBUArg));
-				for ( unsigned char* BytePtr = MBUArg; BytePtr != MBUArg + COUNTOF(MBUArg); BytePtr += 2 ) 
-						*BytePtr = 1;
+				BYTE MBUArg[18] = {0};
 				for (char idx = 0; idx != 4; ++idx) {
 					if (!IsStrNumeric(ppArgs[idx]) || IsStrEmpty(ppArgs[idx])) {
 						DEBUG_ERR(("Invalid addbuff argument number %i\n",idx+1));

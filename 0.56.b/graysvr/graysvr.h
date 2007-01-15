@@ -1138,7 +1138,7 @@ public:
 	void addItem_InContainer( const CItem * pItem );
 	void addItem( CItem * pItem );
 
-	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, const BYTE * pText);
+	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText = 0);
 	void removeBuff (const WORD IconId);
 
 	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump );
