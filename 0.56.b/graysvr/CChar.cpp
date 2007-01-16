@@ -12,6 +12,12 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@AAAUNUSED",
 	"@Attack",				// I am attacking someone (SRC)
 	"@CallGuards",
+
+	"@charAttack",		// Here starts @charXXX section
+	"@charClick",
+	"@charClientTooltip",
+	"@charDClick",
+
 	"@Click",				// I got clicked on by someone.
 	"@ClientTooltip", // Sending tooltips to someone
 	"@ContextMenuRequest",
@@ -3159,7 +3165,7 @@ int CChar::GetSkillTotal(int what, bool how)
 	return iTotal;
 }
 
-int CChar::GetAbilityFlags()
+int CChar::GetAbilityFlags() const
 {
 	CCharBase * pCharBase = Char_GetDef();
 	return pCharBase->m_Can;

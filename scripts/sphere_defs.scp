@@ -679,6 +679,8 @@ mt_usehands	00200
 mt_female	00800
 mt_nonhum	01000 // Body type for combat messages
 mt_run		02000
+mt_nodclicklos	04000	// when dclicking sth., ignore LOS checks
+mt_nodclickdist	08000	// when dclicking sth., ignore distance checks
 
 [defname alignments]
 // ranges of karma ?
@@ -1068,7 +1070,9 @@ CAN_I_DYE			00200	// Can item be dyed UFLAG3_CLOTH? (sort of)
 CAN_I_FLIP		00400	// will flip by default.
 CAN_I_LIGHT		00800	// UFLAG3_LIGHT
 CAN_I_REPAIR		01000	// Is it repairable (difficulty based on value)
-CAN_I_REPLICATE	02000	// Things like arrows are pretty much all the same.
+CAN_I_REPLICATE		02000	// Things like arrows are pretty much all the same.
+CAN_I_DCIGNORELOS	04000	// when dclicked, ignore LOS checks
+CAN_I_DCIGNOREDIST	08000	// when dclicked, ignore distance checks
 
 [DEFNAME tile_flags]			// by Shadowlord
 tilef_background	01			// No idea. None whatsoever. Maybe it's the blackness.

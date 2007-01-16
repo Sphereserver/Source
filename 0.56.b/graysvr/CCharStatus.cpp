@@ -1724,10 +1724,13 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	const CObjBaseTemplate	*pObjTop = pObj->GetTopLevelObj();
 	int iDist = GetTopDist3D(pObjTop);
 
+	const CItem * pItem;
+	const CChar * pChar;
+
 	bool fDeathImmune = IsPriv(PRIV_GM);
 	if ( pObj->IsItem() )	// some objects can be used anytime. (even by the dead.)
 	{
-		const CItem * pItem = dynamic_cast <const CItem*> (pObj);
+		pItem = dynamic_cast <const CItem*> (pObj);
 		if ( !pItem )
 			return false;
 
@@ -1759,7 +1762,7 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	{
 		if ( pObjTop->IsChar() )
 		{
-			const CChar * pChar = dynamic_cast <const CChar*> (pObjTop);
+			pChar = dynamic_cast <const CChar*> (pObjTop);
 			if ( !pChar )
 				return false;
 
@@ -1771,38 +1774,51 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 				return false;
 		}
 
+		CObjBase * pObjCont;
+		CObjBase * pObjTest = const_cast<CObjBase*>(pObj);
 		while (true)
 		{
-			const CItem * pItem = dynamic_cast <const CItem*>(pObj);
+			pItem = dynamic_cast <const CItem*>(pObjTest);
 			if ( !pItem )
 				break;
 
 			// What is this inside of ?
-			CObjBase * pObjCont = pItem->GetContainer();
+			pObjCont = pItem->GetContainer();
 			if ( !pObjCont )
 				break;
 
-			pObj = pObjCont;
-			if ( !CanSeeInContainer(dynamic_cast <const CItemContainer*>(pObj)) )
+			pObjTest = pObjCont;
+			if ( !CanSeeInContainer(dynamic_cast <const CItemContainer*>(pObjTest)) )
 				return false;
 		}
 	}
 
 	if ( IsPriv(PRIV_GM) )
 		return true;
-#ifdef _NAZGHUL_AT_WORK
-	CItem * tItem = (CItem *) thisItem;
-	CChar * tChar = (CChar *) this;
-	if ( ( iDist > 3 ) && !((int)(tItem->GetAbilityFlags() || tChar->GetAbilityFlags()) & CAN_C_DCIGNOREDIST) )
-		return false;
 
-    if ((int)(tItem->GetAbilityFlags() || tChar->GetAbilityFlags()) & CAN_C_DCIGNORELOS)
-		return true;
-#else
-	if ( iDist > 3)
-		return false;
-#endif
-	return CanSeeLOS(pObjTop->GetTopPoint(), NULL, pObjTop->GetVisualRange());
+	if ( ! CanSeeLOS(pObjTop->GetTopPoint(), NULL, pObjTop->GetVisualRange()) )
+	{
+		if ( GetAbilityFlags() & CAN_C_DCIGNORELOS )
+			return true;
+		else if ( pObj->IsChar() && pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS )
+			return true;
+		else if ( pObj->IsItem() && pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS )
+			return true;
+		else
+			return false;
+	}
+	if ( iDist > 3 )
+	{
+		if ( GetAbilityFlags() & CAN_C_DCIGNOREDIST )
+			return true;
+		else if ( pObj->IsChar() && pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST )
+			return true;
+		else if ( pObj->IsItem() && pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST )
+			return true;
+		else
+			return false;
+	}
+	return true;
 }
 
 IT_TYPE CChar::CanTouchStatic( CPointMap & pt, ITEMID_TYPE id, CItem * pItem )

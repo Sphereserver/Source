@@ -3,19 +3,8 @@ Some of them are subject of change in future versions, some will stay just in
 knowledge base ;) forever.
 So, please, do not report them as bugs.
 
-- (Unix) Threading makes spheresvr unstable.
 - Since sphere assigns higher numeric ids to non-hardcoded types, 
   assigning tiles (with the syntax in sphere_types.scp) will not work.
-- redo, so you can set a mount height
-	if (	IsStatFlag(STATF_OnHorse)
-		&&	( wBlockFlags & CAN_I_ROOF )
-		&&	g_Cfg.m_iMountHeight
-		&&	!pArea->IsFlag(REGION_FLAG_UNDERGROUND)
-		&&	! IsPriv(PRIV_GM) ) // but ok in dungeons
-	{
-		SysMessageDefault( DEFMSG_MOUNT_CEILING );
-		return( NULL );
-	}
 - safe zone not disallowing explosion potion damage
 - dropping an item under a wall with help of circle transpareny can be abused to
   steal items from a house
@@ -26,24 +15,3 @@ Linux & ridden dead horse:
 21:36:FATAL:Error Pri=1, Code=11, Desc='Segmentation fault', in Char::Ticking items
 21:36:FATAL:Segmentation fault
 21:36:FATAL:Error Pri=1, Code=11, Desc='Segmentation fault', in Char::Ticking items
-
-
-- to revisions after adding:
-- Modified: Function CanSeeLOS now accepts as the first argument position or an object, as the
-  second optional argument CanSeeLOS accepts flags for checking. NOTE that DELIMITER 
-  IS ";" AND NOT ","!
-  Flags are:
-   los_nb_local_terrain	00001 // Terrain inside a region I am standing in does not block LOS
-   los_nb_local_static	00002 // Static items inside a region I am standing in do not block LOS
-   los_nb_local_dynamic	00004 // Dynamic items inside a region I am standing in do not block LOS
-   los_nb_local_multi	00008 // Multi items inside a region I am standing in do not block LOS
-   los_nb_terrain	00010 // Terrain does not block LOS at all
-   los_nb_static	00020 // Static items do not block LOS at all
-   los_nb_dynamic	00040 // Dynamic items do not block LOS at all
-   los_nb_multi		00080 // Multi items do not block LOS at all
-   los_nb_windows	00100 // Windows do not block LOS (e.g. Archery + Magery)
-   los_no_other_region	00200 // Do not allow LOS path checking to go out of your region
-   los_nc_multi		00400 // Do not allow LOS path checking to go through (no cross) a multi
-                                 region (except the one you are standing in)
-   los_fishing		00800 // Do not allow LOS path checking to go through objects or terrain
-                                 which do not represent water

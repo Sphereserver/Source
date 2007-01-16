@@ -4,13 +4,12 @@
 - NPC still flashing lights when they have torches (not candles). They reequip them due to some reason.
 
 [== CRs (Change Requests) ==]
-- Add same stats things - pets current / total; add built-in support for this system
-  http://uo.stratics.com/content/professions/taming/taming-pets.shtml
+- add built-in support for this system http://uo.stratics.com/content/professions/taming/taming-pets.shtml + changing current and max pet
 - Fix the way the next combat target is selected, since if you say KILL to your pet and after
   that dclick the other enemy in war mode, it will rush over this pet instead of the ordered.
 
 [== New Features ==]
-- Dayly snapshot - copyes saves + scripts to one archive named YYYYMMDD.zip
+- Daily snapshot - copies saves + scripts to one archive named YYYYMMDD.zip
 - Allow taking items from your vendors/pets via paperdoll
 - Each gold operation on the container should modify the player char gold variable so no status rescount will be needed.
 

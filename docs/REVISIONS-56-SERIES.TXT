@@ -3019,3 +3019,10 @@ this all in desperation)
 15-01-2007, MrSugarCube
 - Fixed #1027: SDIALOG claiming to be an undefined keyword when the specified dialog is already showing.
 
+16-01-2007, Nazghul
+- Added: Character trigger @charAttack, @charClick, @charClienttooltip, @charDClick, which work like
+  @itemXXX triggers, but for NPCs.
+- Added: An item flag CAN_I_DCIGNORELOS and a character flag mt_nodclicklos. With these flags on, LOS checks
+  on a dclicked item won't be performed.
+- Added: An item flag CAN_I_DCIGNOREDIST and a character flag mt_nodclickdist. With these flags on, distance
+  checks on a dclicked item won't be performed.
