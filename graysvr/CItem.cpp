@@ -2866,7 +2866,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_SET("events");
 	int origEvents = m_OEvents.GetCount();
 	int curEvents = origEvents;
-	for ( i=0; i < curEvents; i++ )			//	2) EVENTS (could be modifyed ingame!)
+	for ( i=0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
 	{
 		CResourceLink	*pLink = m_OEvents[i];
 		if ( !pLink || !pLink->HasTrigger(iAction) )
@@ -2882,14 +2882,14 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		curEvents = m_OEvents.GetCount();
 		if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
 		{
-			i--;
+			--i;
 			origEvents = curEvents;
 		}
 	}
 
 	// 3) TEVENTS on the item
 	EXC_SET("tevents");
-	for ( i=0; i < pItemDef->m_TEvents.GetCount(); i++ )
+	for ( i=0; i < pItemDef->m_TEvents.GetCount(); ++i )
 	{
 		CResourceLink * pLink = pItemDef->m_TEvents[i];
 		ASSERT(pLink);
@@ -4785,7 +4785,7 @@ bool CItem::OnTick()
 	return( true );
 }
 
-int CItem::GetAbilityFlags()
+int CItem::GetAbilityFlags() const
 {
 	CItemBase * pItemBase = Item_GetDef();
 	return pItemBase->m_Can;

@@ -16,7 +16,6 @@
   player, with a lot of if sentences checking for some memories, make it go criminal depending on the cases.
 
 [== CRs (Change Requests) ==]
-- Mapdiffs support (see bottom of the cGrayMap.cpp)
 - More NPC cleverness, more usage of combo - paralyse + combat spells
 - Get rid of amount in NAMES groups - autocount
 
@@ -29,7 +28,6 @@
 		atequip.Load(pAtEquip->GetValStr());
 		...
 	}
-- ON=@CharDCLICK
 - ON=@Karma, ON=@Fame
 - @sawcrime called right after someone commits a crime and right before the npc see's the crime
 - @NpcAction called when npc is selecting a skill to start
@@ -37,11 +35,7 @@
   the returning value and disconnect if it is not equal to Y. This will support providing
   simple interface with plugins over clients. (not needed anymore, packetfilter now accept values
   from 0 to 255 so this could be esily done using it)
-- Dayly snapshot - copyes saves + scripts to one archive named YYYYMMDD.zip
-- @Buy, @Sell triggers
-  ARGN1 - gold in transaction, ARGN2 - quantity of items.
-  Returns: 1 - cancel, 2 - normal, 0 - normal, but do not consume a penny
-  This will allow to create scripted support for special coins / currency system.
+- Daily snapshot - copies saves + scripts to one archive named YYYYMMDD.zip
 - File server. NOT the http one - just special separated list of clients for transferring
   files needed for installation. In other words, ability working as a patch server.
 - Allow taking items from your vendors/pets via paperdoll

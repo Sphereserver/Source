@@ -1127,7 +1127,7 @@ public:
 
 	static CItem * ReadTemplate( CResourceLock & s, CObjBase * pCont );
 
-	int GetAbilityFlags();
+	int GetAbilityFlags() const;
 };
 
 class CItemVendable : public CItem
@@ -1975,6 +1975,12 @@ enum CTRIG_TYPE
 	CTRIG_AAAUNUSED		= 0,
 	CTRIG_Attack,			// I am attacking someone (SRC)
 	CTRIG_CallGuards,
+
+	CTRIG_charAttack,		// Here starts @charXXX section
+	CTRIG_charClick,
+	CTRIG_charClientTooltip,
+	CTRIG_charDClick,
+
 	CTRIG_Click,			// I got clicked on by someone.
 	CTRIG_ClientTooltip, // Sending tooltips for me to someone
 	CTRIG_ContextMenuRequest,
@@ -2050,7 +2056,7 @@ enum CTRIG_TYPE
 	CTRIG_Profile,			// someone hit the profile button for me.
 	CTRIG_ReceiveItem,		// I was just handed an item (Not yet checked if i want it)
 
-	CTRIG_Rename,			// Chenging my name or pets one
+	CTRIG_Rename,			// Changing my name or pets one
 
 	CTRIG_SeeCrime,			// I am seeing a crime
 
@@ -3173,7 +3179,7 @@ public:
 	static CChar * CreateBasic( CREID_TYPE baseID );
 	static CChar * CreateNPC( CREID_TYPE id );
 
-	int GetAbilityFlags();
+	int GetAbilityFlags() const;
 
 };
 

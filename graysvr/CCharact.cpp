@@ -1861,6 +1861,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 	LayerAdd(pItem, LAYER_HORSE);	// equip the horse item
 
 	Update();
+
 	return true;
 }
 
@@ -3254,23 +3255,36 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
-	EXC_TRY("Trigger");
 
-	if ( !m_pPlayer )			//	CHARDEF triggers (based on body type)
+	TRIGRET_TYPE iRet;
+	
+	EXC_TRY("Trigger");
+	// 1) Triggers installed on characters, sensitive to actions on all chars
+	CChar * pChar = pSrc->GetChar();
+	if ( pChar && this != pChar )
 	{
-		EXC_SET("chardef triggers");
-		if ( pCharDef->HasTrigger(iAction) )
+		EXC_SET("chardef");
+		// Is there an [EVENT] block call here?
+		if ( iAction > XTRIG_UNKNOWN && iAction < CTRIG_itemBuy ) //should speed things up
 		{
-			CResourceLock s;
-			if ( pCharDef->ResourceLock(s) )
+			char * sCharTrigName = Str_GetTemp(strlen(pszTrigName)+1);
+			sprintf(sCharTrigName, "@char%s", pszTrigName+1);
+			int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+			//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
+
+			if ( iCharAction > XTRIG_UNKNOWN && iAction < CTRIG_itemBuy )
 			{
-				TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-				if (( iRet != TRIGRET_RET_FALSE ) && ( iRet != TRIGRET_RET_DEFAULT ))
-					return iRet;
+				CGrayUID uidOldAct = pChar->m_Act_Targ;
+				pChar->m_Act_Targ = GetUID();
+				iRet = pChar->OnTrigger( (CTRIG_TYPE)iCharAction, pSrc, pArgs );
+				pChar->m_Act_Targ = uidOldAct;
+				if ( iRet == TRIGRET_RET_TRUE )
+					return iRet;	// Block further action.
 			}
 		}
 	}
 
+	//	2) EVENTS
 	//
 	// Go thru the event blocks for the NPC/PC to do events.
 	//
@@ -3278,7 +3292,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	int i;
 	int origEvents = m_OEvents.GetCount();
 	int curEvents = origEvents;
-	for ( i = 0; i < curEvents; i++ )			//	EVENTS (could be modifyed ingame!)
+	for ( i=0; i < curEvents; ++i )			//	EVENTS (could be modifyed ingame!)
 	{
 		CResourceLink	*pLink = m_OEvents[i];
 		if ( !pLink || !pLink->HasTrigger(iAction) )
@@ -3286,6 +3300,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) )
 			continue;
+
 		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 			return iRet;
@@ -3293,15 +3308,16 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		curEvents = m_OEvents.GetCount();
 		if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
 		{
-			i--;
+			--i;
 			origEvents = curEvents;
 		}
 	}
 
+	// 3) TEVENTS
 	if ( m_pNPC )								//	TEVENTS (constant events of NPCs)
 	{
 		EXC_SET("NPC triggers");
-		for ( i=0; i < pCharDef->m_TEvents.GetCount(); i++ )
+		for ( i=0; i < pCharDef->m_TEvents.GetCount(); ++i )
 		{
 			CResourceLink	*pLink = pCharDef->m_TEvents[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )
@@ -3320,6 +3336,22 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			{
 				TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+					return iRet;
+			}
+		}
+	}
+
+	// 4) CHARDEF triggers
+	if ( !m_pPlayer )			//	CHARDEF triggers (based on body type)
+	{
+		EXC_SET("chardef triggers");
+		if ( pCharDef->HasTrigger(iAction) )
+		{
+			CResourceLock s;
+			if ( pCharDef->ResourceLock(s) )
+			{
+				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+				if (( iRet != TRIGRET_RET_FALSE ) && ( iRet != TRIGRET_RET_DEFAULT ))
 					return iRet;
 			}
 		}
