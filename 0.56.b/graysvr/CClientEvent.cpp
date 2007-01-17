@@ -1983,13 +1983,10 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 			
 		case CLIMODE_PROMPT_SCRIPT_VERB:
 			{
-				if ( szText[0] != '\0' )	// cancel
-				{
-					// CChar * pChar = m_Targ_PrvUID.CharFind();
-					CScript script( m_Targ_Text, szText );
-					if ( m_pChar )
-						m_pChar->r_Verb( script, this );
-				}
+				// CChar * pChar = m_Targ_PrvUID.CharFind();
+				CScript script( m_Targ_Text, szText );
+				if ( m_pChar )
+					m_pChar->r_Verb( script, this );
 			}
 			return;
 

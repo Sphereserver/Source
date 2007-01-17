@@ -2708,6 +2708,33 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				}
 			} break;
 
+		case CHV_OPENPAPERDOLL:
+		{
+			CClient * pClient = NULL;
+			CChar * pChar = NULL;
+			if ( s.HasArgs() )
+			{
+				// Display paperdoll of someuid to this player
+				pClient = GetClient();
+				CGrayUID uid = s.GetArgVal();
+				pChar = uid.CharFind();
+			}
+			else
+			{
+				// Display paperdoll of this character to SRC
+				if ( pCharSrc )
+					pClient = pCharSrc->GetClient();
+
+				pChar = this;
+			}
+
+			if (( !pClient ) || ( !pChar ))
+				return false;
+
+			pClient->addCharPaperdoll( pChar );
+			break;
+		}
+
 		case CHV_PACK:
 			if ( pCharSrc == NULL || ! pCharSrc->IsClient())
 				return( false );

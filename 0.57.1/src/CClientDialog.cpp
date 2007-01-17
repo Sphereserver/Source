@@ -783,19 +783,35 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 		pObj = m_pChar;
 
 	// execute the menu script.
-	int i=0;	// 1 based selection.
-	while ( s.ReadKeyParse())
+	if ( iSelect == 0 )	// Cancel button
 	{
-		if ( ! s.IsKey( "ON" ))
-			continue;
+		while ( s.ReadKeyParse() )
+		{
+			if ( !s.IsKey( "ON" ) || ( *s.GetArgStr() != '@' ) )
+				continue;
 
-		i++;
-		if ( i < iSelect )
-			continue;
-		if ( i > iSelect )
-			break;
+			if ( strcmpi( s.GetArgStr(), "@cancel" ) )
+				continue;
 
-		return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+		}
+	}
+	else
+	{
+		int i=0;	// 1 based selection.
+		while ( s.ReadKeyParse())
+		{
+			if ( !s.IsKey( "ON" ) || ( *s.GetArgStr() == '@' ) )
+				continue;
+
+			i++;
+			if ( i < iSelect )
+				continue;
+			if ( i > iSelect )
+				break;
+
+			return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+		}
 	}
 
 	// No selection ?
@@ -804,6 +820,12 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 
 bool CMenuItem::ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole * pSrc )
 {
+	if ( *pszArgs == '@' )
+	{
+		// This allows for triggers in menus
+		return false;
+	}
+
 	TCHAR * pszArgStart = pszArgs;
 	while ( _ISCSYM( *pszArgs ))
 		pszArgs++;
@@ -845,6 +867,16 @@ bool CMenuItem::ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole 
 	{
 		g_Serv.ParseText( pszArgs, pSrc );
 	}
+
+	// Parsing @color
+	if ( *pszArgs == '@' )
+	{
+		pszArgs++;
+		m_color = Exp_GetVal( pszArgs );
+		SKIP_ARGSEP( pszArgs );
+	}
+	else
+		m_color = 0;
 
 	m_sText = pszArgs;
 

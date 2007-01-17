@@ -3026,3 +3026,18 @@ this all in desperation)
   on a dclicked item won't be performed.
 - Added: An item flag CAN_I_DCIGNOREDIST and a character flag mt_nodclickdist. With these flags on, distance
   checks on a dclicked item won't be performed.
+
+16-01-2007, MrSugarCube
+- Added #1029: @Cancel trigger to MENUs and SKILLMENUs.
+- Modified: Items displayed on MENUs and SKILLMENUs can now be coloured. This can be done by prefixing the
+  item description with "@color" (in the same way that sysmessages can be coloured). For example, 
+  "ON=i_sword_viking @2 This is a viking sword" will display a blue sword on the menu.
+- Modified: Cancelling a PROMPTCONSOLE prompt no longer prevents the callback function from being called.
+
+16-01-2007, SaCi (Script pack)
+- Updated: sphere_dialog.scp (Updated descriptions in [COMMENT DIALOG HELP_SECTION])
+
+17-01-2007, MrSugarCube
+- Added: OPENPAPERDOLL character function. Without arguments it will display the current character's
+  paperdoll to SRC. With the UID of a character given it will display the specified character's paperdoll to
+  the current client.

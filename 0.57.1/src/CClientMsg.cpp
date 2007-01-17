@@ -2493,7 +2493,7 @@ void CClient::addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, int count,
 		}
 
 		pCmd->MenuItems.m_item[0].m_id = item[i].m_id; // image next to menu.
-		pCmd->MenuItems.m_item[0].m_check = 0;	// check or not ?
+		pCmd->MenuItems.m_item[0].m_color = item[i].m_color;	// color of the image
 		pCmd->MenuItems.m_item[0].m_lentext = lenitem;
 		strcpy( pCmd->MenuItems.m_item[0].m_name, item[i].m_sText );
 

@@ -582,7 +582,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	// RETURN: false = fail/cancel the skill.
 	//   m_tmMenu.m_Item = the menu entries.
 
-	if ( iSelect == 0 || rid.GetResType() != RES_SKILLMENU )
+	if ( rid.GetResType() != RES_SKILLMENU )
 		return false;
 
 	int iDifficulty = 0;
@@ -597,6 +597,25 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	// Get title line
 	if ( ! s.ReadKey())
 		return false;
+
+	if ( iSelect == 0 )	// cancelled
+	{
+		while ( s.ReadKeyParse())
+		{
+			if ( !s.IsKey( "ON" ) || ( *s.GetArgStr() != '@' ) )
+				continue;
+
+			if ( strcmpi( s.GetArgStr(), "@cancel" ) )
+				continue;
+
+			TRIGRET_TYPE tRet = m_pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			if ( tRet == TRIGRET_RET_TRUE )
+				return false;
+
+			break;
+		}
+		return true;
+	}
 
 	CMenuItem item[ min( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];
 	if ( iSelect < 0 )
@@ -618,6 +637,12 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	{
 		if ( s.IsKeyHead( "ON", 2 ))
 		{
+			if ( *s.GetArgStr() == '@' )
+			{
+				fSkip = true;
+				continue;
+			}
+
 			// a new option to look at.
 			fSkip = false;
 			iOnCount ++;
