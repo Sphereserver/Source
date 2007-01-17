@@ -2092,7 +2092,7 @@ struct CCommand	// command buffer from server to client.
 			struct		// size = var
 			{
 				NWORD m_id;		// image next to menu.
-				NWORD m_check;	// check or not ?
+				NWORD m_color;	// color of the image
 				BYTE m_lentext;
 				char m_name[1];	// var len. (not null term)
 			} m_item[1];

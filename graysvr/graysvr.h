@@ -576,6 +576,7 @@ struct CMenuItem 	// describe a menu item.
 {
 public:
 	WORD m_id;			// ITEMID_TYPE in base set.
+	WORD m_color;
 	CGString m_sText;
 public:
 	bool ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole * pSrc );
