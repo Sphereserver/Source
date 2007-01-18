@@ -2,7 +2,7 @@
 #define OS_WINDOWS_H
 
 #ifndef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0500
+	#define _WIN32_WINNT 0x0501
 #endif
 
 #include <windows.h>
@@ -10,6 +10,18 @@
 #include <process.h>
 
 #pragma warning(disable:4786)
+
+#ifndef STDFUNC_FILENO
+	#define STDFUNC_FILENO _fileno
+#endif
+
+#ifndef STDFUNC_GETPID
+	#define STDFUNC_GETPID _getpid
+#endif
+
+#ifndef STDFUNC_UNLINK
+	#define STDFUNC_UNLINK _unlink
+#endif
 
 extern bool NTWindow_Init( HINSTANCE hInstance, LPSTR lpCmdLinel, int nCmdShow );
 extern void NTWindow_Exit();

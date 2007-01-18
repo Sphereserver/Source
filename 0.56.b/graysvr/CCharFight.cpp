@@ -1645,7 +1645,7 @@ int CChar::CalcArmorDefense() const
 	int iDefenseTotal = 0;
 	int iArmorCount = 0;
 	WORD ArmorRegionMax[ARMOR_QTY];
-#ifdef _LINUX
+#ifndef _WIN32
 	for (int i_tmpN=0; i_tmpN < ARMOR_QTY; i_tmpN++)
 	{
 		ArmorRegionMax[i_tmpN]=0;

@@ -1594,7 +1594,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 		}
 	}
 
-#ifndef _LINUX
+#ifdef _WIN32
 	if ( iType & 0x40 )	// FORINSTANCES
 	{
 		RESOURCE_ID rid;
@@ -1801,7 +1801,7 @@ enum SK_TYPE
 	SK_FORCONT,
 	SK_FORCONTID,		// loop through all items with this ID in the cont
 	SK_FORCONTTYPE,
-#ifndef _LINUX
+#ifdef _WIN32
 	SK_FORINSTANCE,
 #endif
 	SK_FORITEM,
@@ -1838,7 +1838,7 @@ LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY+1] =
 	"FORCONT",
 	"FORCONTID",
 	"FORCONTTYPE",
-#ifndef _LINUX
+#ifdef _WIN32
 	"FORINSTANCES",
 #endif
 	"FORITEMS",
@@ -1928,7 +1928,7 @@ jump_in:
 				case SK_FORCONT:
 				case SK_FORCONTID:
 				case SK_FORCONTTYPE:
-#ifndef _LINUX
+#ifdef _WIN32
 				case SK_FORINSTANCE:
 #endif
 				case SK_FORITEM:
@@ -1955,7 +1955,7 @@ jump_in:
 			case SK_FORPLAYERS:		EXC_SET("forplayers");	iRet = OnTriggerForLoop( s, 0x22, pSrc, pArgs, pResult );		break;
 			case SK_FOR:			EXC_SET("for");			iRet = OnTriggerForLoop( s, 4, pSrc, pArgs, pResult );			break;
 			case SK_WHILE:			EXC_SET("while");		iRet = OnTriggerForLoop( s, 8, pSrc, pArgs, pResult );			break;
-#ifndef _LINUX
+#ifdef _WIN32
 			case SK_FORINSTANCE:	EXC_SET("forinstance");	iRet = OnTriggerForLoop( s, 0x40, pSrc, pArgs, pResult );		break;
 #endif
 			case SK_FORCHARLAYER:
@@ -2094,7 +2094,7 @@ jump_in:
 			case SK_FORCONTTYPE:
 			case SK_FOROBJ:
 			case SK_FORPLAYERS:
-#ifndef _LINUX
+#ifdef _WIN32
 			case SK_FORINSTANCE:
 #endif
 			case SK_FOR:
@@ -2706,11 +2706,7 @@ bool CFileObj::r_Verb( CScript & s, CTextConsole * pSrc )
 				if ( sWrite->IsFileOpen() && !strcmp(s.GetArgStr(),sWrite->GetFileTitle()) )
 					return( false );
 
-#ifdef _LINUX
-				unlink(s.GetArgRaw());
-#else
-				_unlink(s.GetArgRaw());
-#endif
+				STDFUNC_UNLINK(s.GetArgRaw());
 			} break;
 
 		case FOV_FLUSH:

@@ -1468,7 +1468,7 @@ void CClient::addChar( const CChar * pChar )
 	bool fLayer[LAYER_HORSE+1];
 
 	EXC_SET("Array clearing");
-#ifdef _LINUX
+#ifndef _WIN32
 	for ( int i_tmpN=0; i_tmpN < (LAYER_HORSE + 1); ++i_tmpN )
 	{
 		fLayer[i_tmpN] = 0;
@@ -2978,7 +2978,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 		data.NewSpellbook.m_UID = pBook->GetUID();
 		data.NewSpellbook.m_ItemId = pBook->GetDispID();
 		data.NewSpellbook.m_Offset = offset; // 1 = normal, 101 = necro, 201 = paladin
-#ifndef _LINUX
+#ifdef _WIN32
 		data.NewSpellbook.m_Content0 = pBook->m_itSpellbook.m_spells1;
 		data.NewSpellbook.m_Content1 = pBook->m_itSpellbook.m_spells2;
 #else

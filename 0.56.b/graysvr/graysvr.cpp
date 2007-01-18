@@ -137,11 +137,7 @@ bool WritePidFile(int iMode = 0)
 
 	if ( iMode == 1 )		// delete
 	{
-#ifdef _LINUX
-		return ( unlink(file) == 0 );
-#else
-		return ( _unlink(file) == 0 );
-#endif
+		return ( STDFUNC_UNLINK(file) == 0 );
 	}
 	else if ( iMode == 2 )	// check for .pid file
 	{
@@ -158,11 +154,7 @@ bool WritePidFile(int iMode = 0)
 		pidFile = fopen(file, "w");
 		if ( pidFile )
 		{
-#ifdef _LINUX		
-			pid_t spherepid = getpid();
-#else
-			pid_t spherepid = _getpid();
-#endif
+			pid_t spherepid = STDFUNC_GETPID();
 
 			fprintf(pidFile,"%d\n", spherepid);
 			fclose(pidFile);

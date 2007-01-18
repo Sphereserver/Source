@@ -14,6 +14,18 @@
 	#define _MAX_PATH   260 	// max. length of full pathname
 #endif
 
+#ifndef STDFUNC_FILENO
+	#define STDFUNC_FILENO fileno
+#endif
+
+#ifndef STDFUNC_GETPID
+	#define STDFUNC_GETPID getpid
+#endif
+
+#ifndef STDFUNC_UNLINK
+	#define STDFUNC_UNLINK unlink
+#endif
+
 #ifndef ERROR_SUCCESS
 	#define ERROR_SUCCESS	0
 #endif

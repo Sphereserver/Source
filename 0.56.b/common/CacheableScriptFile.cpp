@@ -27,11 +27,8 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	{
 		return false;
 	}
-#ifdef _LINUX
-	m_hFile = (OSFILE_TYPE)fileno(m_pStream);
-#else
-	m_hFile = (OSFILE_TYPE)_fileno(m_pStream);
-#endif
+
+	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
 
 	lineHead = new TLine;

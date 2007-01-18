@@ -608,7 +608,7 @@ CCharNPC::CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain )
 	m_Home_Dist_Wander = SHRT_MAX;	// as far as i want.
 	m_Act_Motivation = 0;
 	m_SpeechHue = HUE_TEXT_DEF;
-#ifdef _LINUX
+#ifndef _WIN32
 	for (int i_tmpN=0;i_tmpN < MAX_NPC_PATH_STORAGE_SIZE;i_tmpN++)
 	{
 		m_nextX[i_tmpN] = 0;
