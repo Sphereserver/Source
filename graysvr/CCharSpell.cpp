@@ -4,55 +4,6 @@
 
 #include "graysvr.h"	// predef header.
 
-enum BUFF_ICONS {
-		BI_NODISMOUNT = 0x3E9,
-		BI_NOREARM = 0x3EA,
-		BI_NIGHTSIGHT = 0x3ED,
-		BI_DEATHSTRIKE,
-		BI_EVILOMEN,
-		BI_HEALINGTHROTTLE,
-		BI_STAMINATHROTTLE,
-		BI_DIVINEFURY,
-		BI_ENEMYOFONE,
-		BI_HIDDEN,
-		BI_ACTIVEMEDITATION,
-		BI_BLOODOATHCASTER,
-		BI_BLOODOATHCURSE,
-		BI_CORPSESKIN,	
-		BI_MINDROT,
-		BI_PAINSPIKE,	
-		BI_STRANGLE,
-		BI_GIFTOFRENEWAL,
-		BI_ATTUNEWEAPON,
-		BI_THUNDERSTORM,
-		BI_ESSENCEOFWIND,
-		BI_ETHEREALVOYAGE,
-		BI_GIFTOFLIFE,
-		BI_ARCANEEMPOWERMENT,
-		BI_MORTALSTRIKE,
-		BI_REACTIVEARMOR,
-		BI_PROTECTION,
-		BI_ARCHPROTECTION,
-		BI_MAGICREFLECTION,	
-		BI_INCOGNITO,			
-		BI_DISGUISED,
-		BI_ANIMALFORM,
-		BI_POLYMORPH,
-		BI_INVISIBILITY,		
-		BI_PARALYZE,			
-		BI_POISON,
-		BI_BLEED,
-		BI_CLUMSY,				
-		BI_FEEBLEMIND,			
-		BI_WEAKEN,				
-		BI_CURSE,			
-		BI_MASSCURSE,
-		BI_AGILITY,			
-		BI_CUNNING,			
-		BI_STRENGTH,			
-		BI_BLESS
-};
-
 
 void CChar::Spell_Dispel( int iLevel )
 {
@@ -457,8 +408,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	{
 	case SPELL_Clumsy:
 		Stat_AddMod(STAT_DEX, iStatEffect);
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_CLUMSY);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_CLUMSY);
 		}
 		break;
 	case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
@@ -467,55 +418,55 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		break;
 	case SPELL_Hallucination:
 		StatFlag_Clear( STATF_Hallucinating );
-		if ( IsClient())
+		if ( IsClient() )
 		{
 			m_pClient->addReSync();
 		}
 	case SPELL_Feeblemind:
 		Stat_AddMod( STAT_INT, iStatEffect );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_FEEBLEMIND);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_FEEBLEMIND);
 		}
 		break;
 	case SPELL_Weaken:
 		Stat_AddMod( STAT_STR, iStatEffect );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_WEAKEN);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_WEAKEN);
 		}
 		break;
 	case SPELL_Curse:
 		{
 			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
 				Stat_AddMod( (STAT_TYPE) i, iStatEffect );
-			if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_CURSE);
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_CURSE);
 			}
 		}
 		break;
 	case SPELL_Agility:
 		Stat_AddMod( STAT_DEX, -iStatEffect );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_AGILITY);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_AGILITY);
 		}
 		break;
 	case SPELL_Cunning:
 		Stat_AddMod( STAT_INT, -iStatEffect );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_CUNNING);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_CUNNING);
 		}
 		break;
 	case SPELL_Strength:
 		Stat_AddMod( STAT_STR, -iStatEffect );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_STRENGTH);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_STRENGTH);
 		}
 		break;
 	case SPELL_Bless:
 		{
 			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
 				Stat_AddMod( (STAT_TYPE) i, -iStatEffect );
-			if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_BLESS);
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_BLESS);
 			}
 		}
 		break;
@@ -532,8 +483,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 	case SPELL_Reactive_Armor:
 		StatFlag_Clear( STATF_Reactive );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_REACTIVEARMOR);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_REACTIVEARMOR);
 		}
 		return;
 	case SPELL_Night_Sight:
@@ -542,34 +493,34 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		{
 			m_pClient->addLight();
 				if (IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_NIGHTSIGHT);
+					GetClient()->removeBuff(BI_NIGHTSIGHT);
 				}
 		}
 
 		return;
 	case SPELL_Magic_Reflect:
 		StatFlag_Clear( STATF_Reflection );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_MAGICREFLECTION);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_MAGICREFLECTION);
 		}
 		return;
 	case SPELL_Poison:
 	case SPELL_Poison_Field:
 		StatFlag_Clear( STATF_Poisoned );
 		UpdateMode();
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-				this->GetClient()->removeBuff(BI_POISON);
+		if (IsClient()) {
+				GetClient()->removeBuff(BI_POISON);
 		}
 		break;
 	case SPELL_Arch_Prot:
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_ARCHPROTECTION);
+		if (IsClient()) {
+					GetClient()->removeBuff(BI_ARCHPROTECTION);
 		}
 		m_defense = CalcArmorDefense();
 		break;
 	case SPELL_Protection:
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_PROTECTION);
+		if (IsClient()) {
+					GetClient()->removeBuff(BI_PROTECTION);
 		}
 	case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 	case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
@@ -584,21 +535,21 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		}
 		pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
 		ResendTooltip();
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_INCOGNITO);
+		if (IsClient()) {
+					GetClient()->removeBuff(BI_INCOGNITO);
 		}
 		break;
 	case SPELL_Invis:
 		Reveal(STATF_Invisible);
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_INVISIBILITY);
+		if (IsClient()) {
+					GetClient()->removeBuff(BI_INVISIBILITY);
 		}
 		return;
 	case SPELL_Paralyze:
 	case SPELL_Paralyze_Field:
 		StatFlag_Clear( STATF_Freeze );
-		if (this->IsClient() && IsSetOF(OF_Buffs)) {
-					this->GetClient()->removeBuff(BI_PARALYZE);
+		if (IsClient()) {
+					GetClient()->removeBuff(BI_PARALYZE);
 		}
 		return;
 
@@ -619,8 +570,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			Stat_SetVal(STAT_DEX,  minimum( Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX) ));
 			Update();
 			StatFlag_Clear( STATF_Polymorph );
-			if (this->IsClient() && IsSetOF(OF_Buffs)) {
-						this->GetClient()->removeBuff(BI_POLYMORPH);
+			if (IsClient()) {
+						GetClient()->removeBuff(BI_POLYMORPH);
 			}
 		}
 		return;
@@ -717,16 +668,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_CLUMSY);
-				iBuffPercent = ((iStatEffect*100) /  (Stat_GetBase(STAT_DEX) == 0 ? 1 : Stat_GetBase(STAT_DEX)) );
-				if (iBuffPercent < 0)
-					iBuffPercent = -(iBuffPercent);
-				if ( iBuffPercent == 0 )
-					iBuffPercent = 1;
-				if (iBuffPercent > 0x3E7)
-					iBuffPercent = 0x3E7;
+				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
 				ITOA(iBuffPercent, NumBuff, 10);
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				this->GetClient()->addBuff(BI_CLUMSY,1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_CLUMSY,1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
 			break;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
@@ -740,17 +685,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			Stat_AddMod( STAT_INT, -iStatEffect );
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
-				this->GetClient()->removeBuff(BI_FEEBLEMIND);
-				iBuffPercent = ((iStatEffect*100) / (Stat_GetBase(STAT_INT) == 0 ? 1 : Stat_GetBase(STAT_INT)));
-				if (iBuffPercent < 0)
-					iBuffPercent = -(iBuffPercent);
-				if (iBuffPercent > 0x3E7)
-					iBuffPercent = 0x3E7;
-				if ( iBuffPercent == 0 )
-					iBuffPercent = 1;
+				GetClient()->removeBuff(BI_FEEBLEMIND);
+				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
 				ITOA(iBuffPercent, NumBuff, 10);
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				this->GetClient()->addBuff(BI_FEEBLEMIND,1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_FEEBLEMIND,1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
 			break;
 		case SPELL_Weaken:
@@ -758,17 +697,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			Stat_AddMod( STAT_STR, -iStatEffect );
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
-				this->GetClient()->removeBuff(BI_WEAKEN);
-				iBuffPercent = ((iStatEffect*100) / (Stat_GetBase(STAT_STR) == 0 ? 1 : Stat_GetBase(STAT_STR)));
-				if (iBuffPercent < 0)
-					iBuffPercent = -(iBuffPercent);
-				if (iBuffPercent > 0x3E7)
-					iBuffPercent = 0x3E7;
-				if ( iBuffPercent == 0 )
-					iBuffPercent = 1;
+				GetClient()->removeBuff(BI_WEAKEN);
+				iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
 				ITOA(iBuffPercent, NumBuff, 10);
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				this->GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
 			break;
 		case SPELL_Curse:
@@ -782,13 +715,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					GetClient()->removeBuff(BI_CURSE);
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx) 
 					{
-						iBuffPercent = (iStatEffect * 100) / (Stat_GetBase((STAT_TYPE)idx) == 0 ? 1 : Stat_GetBase((STAT_TYPE)idx));
-						if (iBuffPercent < 0)
-							iBuffPercent = -(iBuffPercent);
-						if (iBuffPercent > 0x3E7)
-							iBuffPercent = 0x3E7;
-						if ( iBuffPercent == 0 )
-							iBuffPercent = 1;
+						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff, 10);
 						CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
 					}
@@ -801,13 +728,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_AGILITY);
-				iBuffPercent = ((iStatEffect*100) / (Stat_GetBase(STAT_DEX) == 0 ? 1 : Stat_GetBase(STAT_DEX)));
-				if (iBuffPercent < 0)
-					iBuffPercent = -(iBuffPercent);
-				if (iBuffPercent > 0x3E7)
-					iBuffPercent = 0x3E7;
-				if ( iBuffPercent == 0 )
-					iBuffPercent = 1;
+				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
 				ITOA(iBuffPercent, NumBuff, 10);
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				GetClient()->addBuff(BI_AGILITY,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
@@ -818,13 +739,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() ) 
 			{
 				GetClient()->removeBuff(BI_CUNNING);
-				iBuffPercent = ((iStatEffect*100) / (Stat_GetBase(STAT_INT) == 0 ? 1 : Stat_GetBase(STAT_INT)));
-				if (iBuffPercent < 0)
-					iBuffPercent = -(iBuffPercent);
-				if (iBuffPercent > 0x3E7)
-					iBuffPercent = 0x3E7;
-				if ( iBuffPercent == 0 )
-					iBuffPercent = 1;
+				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
 				ITOA(iBuffPercent, NumBuff, 10);
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				GetClient()->addBuff(BI_CUNNING,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
@@ -836,13 +751,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() ) 
 				{
 					GetClient()->removeBuff(BI_STRENGTH);
-					iBuffPercent = ((iStatEffect*100) / (Stat_GetBase(STAT_STR) == 0 ? 1 : Stat_GetBase(STAT_STR)));
-					if (iBuffPercent < 0)
-						iBuffPercent = -(iBuffPercent);
-					if (iBuffPercent > 0x3E7)
-						iBuffPercent = 0x3E7;
-					if ( iBuffPercent == 0 )
-						iBuffPercent = 1;
+					iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
 					ITOA(iBuffPercent, NumBuff, 10);
 					CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 					GetClient()->addBuff(BI_STRENGTH,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
@@ -858,13 +767,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					GetClient()->removeBuff(BI_BLESS);
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx) 
 					{
-						iBuffPercent = (iStatEffect * 100) / (Stat_GetBase((STAT_TYPE)idx) == 0 ? 1 : Stat_GetBase((STAT_TYPE)idx));
-						if (iBuffPercent < 0)
-							iBuffPercent = -(iBuffPercent);
-						if (iBuffPercent > 0x3E7)
-							iBuffPercent = 0x3E7;
-						if ( iBuffPercent == 0 )
-							iBuffPercent = 1;
+						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff, 10);
 						CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
 					}

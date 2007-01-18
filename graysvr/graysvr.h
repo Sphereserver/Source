@@ -1138,9 +1138,10 @@ public:
 	void addItem_Equipped( const CItem * pItem );
 	void addItem_InContainer( const CItem * pItem );
 	void addItem( CItem * pItem );
-
+	
 	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText = 0);
 	void removeBuff (const WORD IconId);
+	void resendBuffs();
 
 	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump );
 	int  addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
@@ -1629,6 +1630,70 @@ inline CChar * CGrayUIDBase::CharFind() const
 	return( dynamic_cast <CChar *>( ObjFind()));
 }
 
+// ---------------------------------------------------------------------------------------------
+
+//////////////////////////////////////////////////////////////////////////
+// Buff Icons
+
+inline int GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
+{
+	short Percentage = ((Difference*100) / (Char->Stat_GetBase(Stat) == 0 ? 1 : Char->Stat_GetBase(Stat)));
+	if (Percentage < 0)
+		Percentage = -(Percentage);
+	if (Percentage > 0x3E7)
+		Percentage = 0x3E7;
+	if ( Percentage == 0 )
+		Percentage = 1;
+	return Percentage;
+}
+enum BUFF_ICONS {
+	BI_NODISMOUNT = 0x3E9,
+	BI_NOREARM = 0x3EA,
+	BI_NIGHTSIGHT = 0x3ED,
+	BI_DEATHSTRIKE,
+	BI_EVILOMEN,
+	BI_HEALINGTHROTTLE,
+	BI_STAMINATHROTTLE,
+	BI_DIVINEFURY,
+	BI_ENEMYOFONE,
+	BI_HIDDEN,
+	BI_ACTIVEMEDITATION,
+	BI_BLOODOATHCASTER,
+	BI_BLOODOATHCURSE,
+	BI_CORPSESKIN,	
+	BI_MINDROT,
+	BI_PAINSPIKE,	
+	BI_STRANGLE,
+	BI_GIFTOFRENEWAL,
+	BI_ATTUNEWEAPON,
+	BI_THUNDERSTORM,
+	BI_ESSENCEOFWIND,
+	BI_ETHEREALVOYAGE,
+	BI_GIFTOFLIFE,
+	BI_ARCANEEMPOWERMENT,
+	BI_MORTALSTRIKE,
+	BI_REACTIVEARMOR,
+	BI_PROTECTION,
+	BI_ARCHPROTECTION,
+	BI_MAGICREFLECTION,	
+	BI_INCOGNITO,			
+	BI_DISGUISED,
+	BI_ANIMALFORM,
+	BI_POLYMORPH,
+	BI_INVISIBILITY,		
+	BI_PARALYZE,			
+	BI_POISON,
+	BI_BLEED,
+	BI_CLUMSY,				
+	BI_FEEBLEMIND,			
+	BI_WEAKEN,				
+	BI_CURSE,			
+	BI_MASSCURSE,
+	BI_AGILITY,			
+	BI_CUNNING,			
+	BI_STRENGTH,			
+	BI_BLESS
+};
 // ---------------------------------------------------------------------------------------------
 
 struct TScriptProfiler

@@ -1672,7 +1672,7 @@ bool CChar::Reveal( DWORD dwFlags )
 
 	if ( IsClient() )
 	{
-		GetClient()->removeBuff( 1012 /*BI_HIDDEN*/ );
+		GetClient()->removeBuff( BI_HIDDEN );
 	}
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
