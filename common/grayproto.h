@@ -530,7 +530,7 @@ union CExtData
 		NDWORD m_UID;
 		NWORD m_ItemId;
 		NWORD m_Offset;
-#ifndef _LINUX
+#ifdef _WIN32
 		DWORD m_Content0;
 		DWORD m_Content1;
 #else

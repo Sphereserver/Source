@@ -215,10 +215,7 @@ bool CFileText::OpenBase( void FAR * pszExtra )
 		return( false );
 	}
 	// Get the low level handle for it.
-#ifdef _LINUX
-	m_hFile = (OSFILE_TYPE)fileno(m_pStream);
-#else
-	m_hFile = (OSFILE_TYPE)_fileno(m_pStream);
-#endif
+	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
+
 	return( true );
 }
