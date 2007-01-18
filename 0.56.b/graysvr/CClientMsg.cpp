@@ -3,7 +3,7 @@
 // Copyright Menace Software (www.menasoft.com).
 //
 // Game server messages. (No login stuff)
-// 
+//
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
@@ -11,9 +11,132 @@
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
+void CClient::resendBuffs()
+{
+	// These checks are in addBuff too, but it would be useless to call it so many times
+	if ( !IsSetOF(OF_Buffs) )
+		return;
+	if (!IsResClient(RDS_AOS))
+		return;
+	if ( !IsClientVersion(0x500030) )
+		return;
+	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+		return;
+
+	CContainer* Cont = dynamic_cast<CContainer*>(GetChar());
+	ASSERT(Cont);
+
+	CItem* pSpell = 0;
+	BYTE WideMsg[18] = {0};
+	char NumBuff[4] = {0};
+	short iBuffPercent = 0;
+	int iStatEffect = 0;
+
+	for ( int i = 0; i != Cont->GetCount(); ++i )
+	{
+		pSpell = Cont->GetAt(i);
+		if ( !pSpell )
+			continue;
+		if ( !(pSpell->IsType(IT_SPELL)) )
+			continue;
+		iStatEffect = g_Cfg.GetSpellEffect( (SPELL_TYPE)RES_GET_INDEX(pSpell->m_itSpell.m_spell), pSpell->m_itSpell.m_spelllevel );
+		switch( pSpell->m_itSpell.m_spell )
+		{
+		case SPELL_Night_Sight:
+			addBuff( BI_NIGHTSIGHT,1075643,1075644,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Clumsy:
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_CLUMSY, 1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Weaken:
+
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_WEAKEN, 1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()),WideMsg );
+			break;
+		case SPELL_Feeblemind:
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_FEEBLEMIND, 1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Curse:
+			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			{
+				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
+				ITOA(iBuffPercent, NumBuff, 10);
+				CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
+			}
+			addBuff( BI_CURSE, 1075835,1075840,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Strength:
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_STRENGTH, 0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Agility:
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_AGILITY, 0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Cunning:
+			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
+			ITOA(iBuffPercent, NumBuff, 10);
+			CharToMultiByteNonNull(WideMsg, NumBuff, 3);
+			addBuff( BI_CUNNING, 0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
+			break;
+		case SPELL_Bless:
+			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			{
+				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
+				ITOA(iBuffPercent, NumBuff, 10);
+				CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
+			}
+			addBuff( BI_BLESS, 1075847,1075848,(WORD)(pSpell->GetTimerAdjusted()), WideMsg );
+			break;
+		case SPELL_Reactive_Armor:
+			addBuff( BI_REACTIVEARMOR, 1075812,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Protection:
+			addBuff( BI_PROTECTION, 1075814,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Arch_Prot:
+			addBuff( BI_ARCHPROTECTION, 1075816,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Poison:
+			addBuff( BI_POISON, 1017383,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Incognito:
+			addBuff( BI_INCOGNITO, 1075819,1075820,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Paralyze:
+			addBuff( BI_PARALYZE, 1075827,1075828,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Magic_Reflect:
+			addBuff( BI_MAGICREFLECTION, 1075817,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		case SPELL_Invis:
+			addBuff( BI_INVISIBILITY,1075825,1075826,(WORD)(pSpell->GetTimerAdjusted()) );
+			break;
+		//case SPELL_Mass_Curse:
+		//	break;
+
+		}
+
+	}
+
+}
 void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
+	if ( !IsSetOF(OF_Buffs) )
+		return;
 	if (!IsResClient(RDS_AOS))
 		return;
 	if ( !IsClientVersion(0x500030) )
@@ -31,7 +154,7 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 			pText[i] = 0;
 		}
 	}
-	for ( BYTE* BytePtr = pText; BytePtr != pText + 18; BytePtr += 2 ) 
+	for ( BYTE* BytePtr = pText; BytePtr != pText + 18; BytePtr += 2 )
 	{
 		if ( *BytePtr == 0 )
 		{
@@ -79,9 +202,11 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 	xSendPkt(&Cmd, Cmd.AddBuff.m_Length);
 }
 
-void CClient::removeBuff (const WORD IconId) 
+void CClient::removeBuff (const WORD IconId)
 {
-	ADDTOCALLSTACK("CClient::removeBuff ");
+	ADDTOCALLSTACK("CClient::removeBuff");
+	if ( !IsSetOF(OF_Buffs) )
+		return;
 	if (!IsResClient(RDS_AOS))
 		return;
 	if ( !IsClientVersion(0x500030) )
@@ -133,7 +258,7 @@ void CClient::addTime( bool bCurrent )
 	ADDTOCALLSTACK("CClient::addTime");
 	// Send time. (real or game time ??? why ?)
 	CCommand cmd;
-	
+
 	if ( bCurrent )
 	{
 		long lCurrentTime = (CServTime::GetCurrentTime()).GetTimeRaw();
@@ -149,7 +274,7 @@ void CClient::addTime( bool bCurrent )
 		cmd.Time.m_min   = 0;
 		cmd.Time.m_sec   = 0;
 	}
-	
+
 	xSendPkt( &cmd, sizeof( cmd.Time ));
 }
 
@@ -902,7 +1027,7 @@ void CClient::addBarkLocalized( int iClilocId, const CObjBaseTemplate * pSrc, HU
 	}
 
 	cmd.SpeakLocalized.m_clilocId = iClilocId;
-	
+
 	TCHAR * pArg = pArgs;
 	int i = 0;
 	int len = sizeof(cmd.SpeakLocalized) - 1;
@@ -937,7 +1062,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		if ( *pszText == '@' ) // @@ = just a @ symbol
 			goto bark_default;
 
-		const char *s	= pszText;	
+		const char *s	= pszText;
 		pszText		= strchr( s, ' ' );
 
 		if ( !pszText )
@@ -984,7 +1109,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 					CArgs += "\t";
 				CArgs += ( !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i] );
 			}
-			
+
 			addBarkLocalized( iClilocId, pSrc, (HUE_TYPE) Args[0], mode, (FONT_TYPE) Args[1], (TCHAR *)CArgs.GetPtr());
 			break;
 		}
@@ -1658,9 +1783,9 @@ void CClient::addPlayerStart( CChar * pChar )
 	ExtData.Party_Enable.m_state = 1;
 	addExtData( EXTDATA_Party_Enable, &ExtData, sizeof(ExtData.Party_Enable));
 */
-			
+
 	CPointMap pt = m_pChar->GetTopPoint();
-		
+
 	CCommand cmd;
 	cmd.Start.m_Cmd = XCMD_Start;
 	cmd.Start.m_UID = m_pChar->GetUID();
@@ -1675,32 +1800,32 @@ void CClient::addPlayerStart( CChar * pChar )
 	cmd.Start.m_boundX = 0x0000;
 	cmd.Start.m_boundY = 0x0000;
 	// cmd.Start.m_mode = m_pChar->GetModeFlag();
-	
+
 	bool bMap = pt.m_map > 0;
- 	
+
 	cmd.Start.m_mode = bMap ? g_MapList.GetX(pt.m_map) : 0x1800;
 	cmd.Start.m_boundH = bMap ? g_MapList.GetY(pt.m_map) : 0x1000;
 	cmd.Start.m_zero_31 = 0x0000;
 	cmd.Start.m_zero_33 = 0x00000000;
 
 	xSendPkt( &cmd, sizeof( cmd.Start ));
-	
+
 	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previos modes
-	
+
 	addMap( NULL, true );
-	
+
 	addChangeServer();
-	
+
 	addMapDiff();
-	
+
 	addPlayerView( pt, true );
-	
+
 	addRedrawAll();
 	addTime( true );
 
 	m_pChar->MoveToChar( pt );	// Make sure we are in active list.
-	m_pChar->Update();	
-	
+	m_pChar->Update();
+
 	if ( pChar->m_pParty )
 	{
 		pChar->m_pParty->SendAddList(NULL);
@@ -2161,7 +2286,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 			cmd.Skill_New.m_single = 0x02;
 		else
 			cmd.Skill.m_single = 0x00;
-		
+
 		int amount = 0, i = 0;
 		for ( i = 0; i < MAX_SKILL; i++ )
 		{
@@ -2447,7 +2572,7 @@ void CClient::addMap( const CPointMap * pOldP, bool playerStart)
 {
 	ADDTOCALLSTACK("CClient::addMap");
 	CPointMap pt = m_pChar->GetTopPoint();
-	
+
 	if ( !playerStart && pOldP && pOldP->m_map == pt.m_map )
 		return;
 
@@ -2510,7 +2635,7 @@ void CClient::addChangeServer()
 	CPointMap pt = m_pChar->GetTopPoint();
 
 	CCommand cmd;
-		
+
 	cmd.ZoneChange.m_Cmd = XCMD_ZoneChange;
 	cmd.ZoneChange.m_x = pt.m_x;
 	cmd.ZoneChange.m_y = pt.m_y;
@@ -2521,7 +2646,7 @@ void CClient::addChangeServer()
 
 	cmd.ZoneChange.m_serv_boundW = g_MapList.GetX(pt.m_map);
 	cmd.ZoneChange.m_serv_boundH = g_MapList.GetY(pt.m_map);
-	
+
 	xSend( &cmd, sizeof(cmd.ZoneChange) );
 }
 
@@ -2656,13 +2781,13 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 			if ( iCap < 0 ) iCap = 0;
 			cmd.Status.m_statcap = iCap;
 		}
-		
+
 		if (cmd.Status.m_ValidStats >= 3)
 		{
 			cmd.Status.m_curFollower = pChar->m_pPlayer->m_curFollower;
 			cmd.Status.m_maxFollower = pChar->m_pPlayer->m_maxFollower;
 		}
-		
+
 		if (cmd.Status.m_ValidStats >= 4)
 		{
 			cmd.Status.m_ResFire = pChar->m_ResFire;
@@ -2680,7 +2805,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 			else
 			{
 				cmd.Status.m_minDamage = pChar->Char_GetDef()->m_attackBase;
-				cmd.Status.m_maxDamage = pChar->Fight_CalcDamage(NULL, SKILL_WRESTLING, true);			
+				cmd.Status.m_maxDamage = pChar->Fight_CalcDamage(NULL, SKILL_WRESTLING, true);
 			}
 
 			cmd.Status.m_Tithing = pChar->m_pPlayer->m_iTithingPoints;
@@ -2713,7 +2838,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 		cmd.Status.m_health = (pChar->Stat_GetVal(STAT_STR) * 100) / maximum(pChar->Stat_GetMax(STAT_STR),1);
 		cmd.Status.m_len = ((BYTE*)&(cmd.Status.m_sex)) - ((BYTE*)&(cmd.Status));
 	}
-	
+
 	xSendPkt(&cmd, cmd.Status.m_len);
 
 	if ( ( pChar != m_pChar ) && ( pChar->m_pParty != NULL ) && ( pChar->m_pParty->IsInParty( m_pChar ) ) )
@@ -2884,7 +3009,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	{
 		if ( ! pBook->IsSpellInBook( (SPELL_TYPE) i ) )
 			continue;
-		
+
 		/*const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( (SPELL_TYPE) i );
 		ASSERT(pSpellDef); */
 
@@ -3040,11 +3165,11 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 		{
 			if ( ! pItem->GetAmount() )
 				continue;
-	
+
 			CItemVendable * pVendItem = dynamic_cast <CItemVendable *> (pItem);
 			if ( pVendItem == NULL )
 				continue;
-	
+
 			long lPrice = pVendItem->GetVendorPrice(iConvertFactor);
 			if ( ! lPrice )
 			{
@@ -3059,17 +3184,17 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 				if ( !lPrice )
 					lPrice = 100000;
 			}
-	
+
 			pCur->VendOpenBuy.m_item[0].m_price = lPrice;
-	
+
 			int	lenname	= 0;
 			lenname	+= strcpylen( pCur->VendOpenBuy.m_item[0].m_text + lenname, pVendItem->GetName() );
-	
+
 			pCur->VendOpenBuy.m_item[0].m_len = lenname + 1;
 			lenname += sizeof( cmd.VendOpenBuy.m_item[0] );
 			len += lenname;
 			pCur = (CCommand *)( ((BYTE*) pCur ) + lenname );
-	
+
 			// Client will only accept (MAX_ITEMS_CONT-1) item descriptions, so no need
 			// to add more to this packet.
 			if ( ++count >= minimum(MAX_ITEMS_VENDOR,MAX_ITEMS_CONT) )
@@ -3158,10 +3283,10 @@ int CClient::addShopMenuSellFind( CItemContainer * pSearch, CItemContainer * pVe
 			else
 			{
 				CItemVendable * pVendItem = dynamic_cast <CItemVendable *> (pItem);
-				if ( pVendItem != NULL ) 
+				if ( pVendItem != NULL )
 				{
 					CItemVendable * pItemSell = CChar::NPC_FindVendableItem( pVendItem, pVend1, pVend2 );
-					if ( pItemSell != NULL ) 
+					if ( pItemSell != NULL )
 					{
 						pCur->VendOpenSell.m_item[0].m_UID = pVendItem->GetUID();
 						pCur->VendOpenSell.m_item[0].m_id = pVendItem->GetDispID();
@@ -3186,7 +3311,7 @@ int CClient::addShopMenuSellFind( CItemContainer * pSearch, CItemContainer * pVe
 				}
 			}
 		}
-	
+
 		pItem = pItem->GetNext();
 		if ( pItem == NULL )
 		{
@@ -3238,7 +3363,7 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	{
 		// This avoid client crashes
 		CItemContainer * pContainer3 = pVendor->GetBank( LAYER_VENDOR_EXTRA );
-		addItem( pContainer3 );	
+		addItem( pContainer3 );
 	}
 
 	if ( pVendor->IsStatFlag( STATF_Pet ))	// Player vendor.
@@ -3625,10 +3750,10 @@ bool CClient::addWalkCode( EXTDATA_TYPE iType, int iCodes )
 
 	if ( ! m_Crypt.IsInit() )	// This is not even a game client ! IsConnectTypePacket()
 		return false;
-	
+
 	if ( IsNoCryptLessVer(0x126000) )
 		return( false );
-	
+
 	if ( IsClientLessVer( 0x126000 ) )
 		return false;
 
@@ -3719,7 +3844,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 
 	if (!IsResClient(RDS_AOS))
 		return;
-	
+
 	bool bNameOnly = false;
 	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 	{
@@ -3814,10 +3939,10 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 				// The name
 				this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
 				t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-			
+
 				// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
-				// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", 
-				//	(BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2), 
+				// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>",
+				//	(BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2),
 				//	(BYTE)((((int)wHue) & 0x1F) << 3),lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
 				if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
@@ -3900,7 +4025,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 					case IT_WEAPON_BOW:
 					case IT_WAND:
 					case IT_WEAPON_AXE:
-					case IT_WEAPON_XBOW:					
+					case IT_WEAPON_XBOW:
 						if ( pItem->GetType() == IT_WAND )
 						{
 							this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
@@ -3920,7 +4045,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 						t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
 						t->FormatArgs( "%d\t%d", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
-		
+
 						if ( pItem->m_itWeapon.m_poison_skill )
 							this->m_TooltipData.Add( new CClientTooltip( 1017383 ) ); // Poisoned
 						break;
@@ -4041,7 +4166,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 	// Set later
 	pack.AOSTooltip.m_len = 0;
 	len += sizeof( pack.AOSTooltip.m_len );
-	
+
 	int x = 0;
 	for ( ; this->m_TooltipData.GetCount() > x; x++ )
 	{
@@ -4082,9 +4207,9 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 #undef DOHASH
 
 	// Enqueue the data
-	m_TooltipQueue.push_back( new CTooltipData(&(pack.m_Raw), len, 
+	m_TooltipQueue.push_back( new CTooltipData(&(pack.m_Raw), len,
 							(DWORD)pObj->GetUID(), g_World.GetCurrentTime().GetTimeRaw()) );
-	
+
 	// Old send
 	// xSend(&pack, len);
 }
@@ -4224,8 +4349,10 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	// Resend hiding buff if hidden
 	if ( m_pChar->IsStatFlag( STATF_Hidden ) )
 	{
-		GetClient()->addBuff( 1012 /*BI_HIDDEN*/ , 1075655, 1075656, 0 );
+		GetClient()->addBuff( BI_HIDDEN , 1075655, 1075656, 0 );
 	}
+	//Resend buff icons
+	resendBuffs();
 
 	CScriptTriggerArgs	Args( fNoMessages, fQuickLogIn, NULL );
 
@@ -4287,6 +4414,8 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	// Announce you to the world.
 	Announce(true);
 	m_pChar->Update(this);
+
+
 
 	// don't login on the water ! (unless i can swim)
 	if ( !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && !IsPriv(PRIV_GM) && m_pChar->IsSwimming() )
@@ -4492,7 +4621,7 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 			return LOGIN_SUCCESS;
 		return LOGIN_ERR_BLOCKED; //Setup_Start() returns false only when login blocked by Return 1 in @Login
 	} */
-	
+
 
 	{
 		CCommand cmd;
