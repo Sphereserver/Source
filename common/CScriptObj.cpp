@@ -1594,7 +1594,6 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 		}
 	}
 
-#ifdef _WIN32
 	if ( iType & 0x40 )	// FORINSTANCES
 	{
 		RESOURCE_ID rid;
@@ -1664,7 +1663,6 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			}
 		}
 	}
-#endif
 
 	if ( g_Cfg.m_iMaxLoopTimes )
 	{
@@ -1801,9 +1799,7 @@ enum SK_TYPE
 	SK_FORCONT,
 	SK_FORCONTID,		// loop through all items with this ID in the cont
 	SK_FORCONTTYPE,
-#ifdef _WIN32
 	SK_FORINSTANCE,
-#endif
 	SK_FORITEM,
 	SK_FOROBJ,
 	SK_FORPLAYERS,		// not necessary to be online
@@ -1838,9 +1834,7 @@ LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY+1] =
 	"FORCONT",
 	"FORCONTID",
 	"FORCONTTYPE",
-#ifdef _WIN32
 	"FORINSTANCES",
-#endif
 	"FORITEMS",
 	"FOROBJS",
 	"FORPLAYERS",
@@ -1928,9 +1922,7 @@ jump_in:
 				case SK_FORCONT:
 				case SK_FORCONTID:
 				case SK_FORCONTTYPE:
-#ifdef _WIN32
 				case SK_FORINSTANCE:
-#endif
 				case SK_FORITEM:
 				case SK_FOROBJ:
 				case SK_FORPLAYERS:
@@ -1955,9 +1947,7 @@ jump_in:
 			case SK_FORPLAYERS:		EXC_SET("forplayers");	iRet = OnTriggerForLoop( s, 0x22, pSrc, pArgs, pResult );		break;
 			case SK_FOR:			EXC_SET("for");			iRet = OnTriggerForLoop( s, 4, pSrc, pArgs, pResult );			break;
 			case SK_WHILE:			EXC_SET("while");		iRet = OnTriggerForLoop( s, 8, pSrc, pArgs, pResult );			break;
-#ifdef _WIN32
 			case SK_FORINSTANCE:	EXC_SET("forinstance");	iRet = OnTriggerForLoop( s, 0x40, pSrc, pArgs, pResult );		break;
-#endif
 			case SK_FORCHARLAYER:
 			case SK_FORCHARMEMORYTYPE:
 				{
@@ -2094,9 +2084,7 @@ jump_in:
 			case SK_FORCONTTYPE:
 			case SK_FOROBJ:
 			case SK_FORPLAYERS:
-#ifdef _WIN32
 			case SK_FORINSTANCE:
-#endif
 			case SK_FOR:
 			case SK_WHILE:
 				if ( iRet != TRIGRET_ENDIF )
