@@ -690,8 +690,11 @@ bool CResourceLock::OpenBase( void * pExtra )
 	// Open a seperate copy of an already opend file.
 	m_pStream = m_pLock->m_pStream;
 	m_hFile = m_pLock->m_hFile;
+#ifdef _NOSCRIPTCACHE
+	PhysicalScriptFile::dupeFrom(m_pLock);
+#else
 	dupeFrom(m_pLock);
-
+#endif
 	// Assume this is the new error context !
 	m_PrvScriptContext.OpenScript( this );
 	return( true );

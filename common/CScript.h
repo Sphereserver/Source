@@ -133,7 +133,11 @@ public:
 	}
 };
 
+#ifdef _NOSCRIPTCACHE
 #define PhysicalScriptFile CacheableScriptFile
+#else
+#define PhysicalScriptFile CFileText
+#endif
 
 class CScript : public PhysicalScriptFile, public CScriptKeyAlloc
 {
