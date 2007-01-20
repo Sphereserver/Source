@@ -17,6 +17,10 @@
 	#include "../common/crashdump/crashdump.h"
 #endif
 
+#ifdef USE_IO_COMPLETION_PORT
+HANDLE    hIocp;
+#endif
+
 ////////////////////////////////////////////////////////
 // -CTextConsole
 
@@ -1493,7 +1497,12 @@ CClient * CServer::SocketsReceive( CGSocket & socket ) // Check for messages fro
 		return NULL;
 	}
 
-	return( new CClient( hSocketClient ));
+	CClient *client = new CClient(hSocketClient);
+#ifdef USE_IO_COMPLETION_PORT
+	if( CreateIoCompletionPort((HANDLE)hSocketClient, hIocp, (ULONG_PTR)0, 0) == NULL ) {
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
+	}
+#endif
 }
 
 //	Berkeley sockets needs nfds to be updated that while in Windows that's ignored
@@ -1508,6 +1517,17 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	ADDTOCALLSTACK("CServer::SocketsReceive");
 	//	Do not accept packets while loading
 	if ( m_iModeCode > SERVMODE_ResyncPause ) return;
+
+#ifdef USE_IO_COMPLETION_PORT
+	DWORD numberBytes;
+	void *key;
+	OVERLAPPED completedOverlapped;
+	while( GetQueuedCompletionStatus(hIocp, &numberBytes, &key, &completedOverlapped, 0) ) {
+		//	TODO: here we have the KEY for client and DATA incoming
+	}
+	//	TODO: when client is dropped, it should be removed from queue
+#else
+
 
 	// What sockets do I want to look at ?
 	fd_set readfds;
@@ -1617,6 +1637,7 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	}
 
 	m_Profile.Start( PROFILE_OVERHEAD );
+#endif
 }
 
 #undef ADDTOSELECT
@@ -1641,12 +1662,25 @@ bool CServer::SocketsInit( CGSocket & socket )
 		return false;
 	}
 
+#ifdef USE_IO_COMPLETION_PORT
+	hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, (ULONG_PTR)0, 0);
+	if( hIocp == NULL ) {
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
+		return false;
+	}
+
+	if( CreateIoCompletionPort((HANDLE)socket.GetSocket(), hIocp, (ULONG_PTR)0, 0) == NULL ) {
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
+		return false;
+	}
+#else
 	linger lval;
 	lval.l_onoff = 0;
 	lval.l_linger = 10;
 	socket.SetSockOpt(SO_LINGER, (const char*) &lval, sizeof(lval));
 
 	socket.SetNonBlocking();
+#endif
 
 #ifndef _WIN32
 	int onNotOff = 1;
