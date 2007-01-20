@@ -153,25 +153,14 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 
 	signed char zTop = zBottom;
 	
-	if (IsSetEF( EF_NewPositionChecks ))
+	if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
 	{
-		if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
-		{
-			//DEBUG_WARN(("EF_NewPositionChecks+Stairs\n"));
-			zTop += ( zHeight / 2 );	// standing position is half way up climbable items (except platforms).
-		}
-		else
-			zTop += zHeight;
+		//DEBUG_WARN(("EF_NewPositionChecks+Stairs\n"));
+		zTop += ( zHeight / 2 );	// standing position is half way up climbable items (except platforms).
 	}
 	else
-	{
-		if ( (wItemBlockFlags & CAN_I_CLIMB) && !(wItemBlockFlags & CAN_I_PLATFORM) )
-		{
-			zTop += ( zHeight / 2 );	// standing position is half way up climbable items (except platforms).
-		}
-		else
-			zTop += zHeight;
-	}
+		zTop += zHeight;
+
 	if ( zTop < m_Bottom.m_z )	// below something i can already step on.
 		return true;
 
@@ -213,7 +202,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 			//DEBUG_ERR(("2wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
 
 			if ( wItemBlockFlags & CAN_I_CLIMB ) // return climb height
-				m_zClimbHeight = ( zHeight / 2 );
+				m_zClimbHeight = (( zHeight + 1 )/2); //if height is an odd number, then we need to add 1; if it isn't, this does nothing
 			else
 				m_zClimbHeight = 0;
 		}

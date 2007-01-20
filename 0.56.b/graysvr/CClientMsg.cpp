@@ -20,8 +20,6 @@ void CClient::resendBuffs()
 		return;
 	if ( !IsClientVersion(0x500030) )
 		return;
-	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-		return;
 
 	CContainer* Cont = dynamic_cast<CContainer*>(GetChar());
 	ASSERT(Cont);

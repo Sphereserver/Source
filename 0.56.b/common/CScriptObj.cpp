@@ -1601,7 +1601,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 
 		if (Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF( ppArgs ), " \t," ) >= 1)
 		{
-			rid = g_Cfg.ResourceGetID( RES_UNKNOWN, ppArgs[0] );
+			rid = g_Cfg.ResourceGetID( RES_UNKNOWN, (const char*&)ppArgs[0] );
 		}
 		else
 		{

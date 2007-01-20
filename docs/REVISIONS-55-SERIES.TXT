@@ -579,8 +579,6 @@ be better as a server setting.
 - Resource gathering was changed so that the SKILLMAKE of the resource item is checked. Resources
   which fail the canmake check are ignored and aren't part of the randomization process. If for some
   reason one wants to go back to the old style, just comment SKILLMAKE on the ore itemdefs.
-- @Step on items returning 1 will  now cancel movement to that area. Still, for coherence, all other items
-  in that location are still activated.
 - Added OF_Skill_DiffFirst = 0008. With this flag turned on, difficulty for a skill is calculated BEFORE
   calling @Start/@SkillStart. This has the advantage of allowing the difficulty for a skill to be changed
   via ACTDIFF within that trigger. Notice that for a skill to fail, ACTDIFF must be set above the current
@@ -918,8 +916,6 @@ Experimental=	// Flags for options that affect server behaviour and which might 
 - Resource gathering was changed so that the SKILLMAKE of the resource item is checked. Resources
   which fail the canmake check are ignored and aren't part of the randomization process. If for some
   reason one wants to go back to the old style, just comment SKILLMAKE on the ore itemdefs.
-- @Step on items returning 1 will  now cancel movement to that area. Still, for coherence, all other items
-  in that location are still activated.
 - Added OF_Skill_DiffFirst = 0008. With this flag turned on, difficulty for a skill is calculated BEFORE
   calling @Start/@SkillStart. This has the advantage of allowing the difficulty for a skill to be changed
   via ACTDIFF within that trigger. Notice that for a skill to fail, ACTDIFF must be set above the current
@@ -1242,7 +1238,7 @@ Experimental=	// Flags for options that affect server behaviour and which might 
   directions (NW -> N and W). This takes care of a few clientside exploits, as well as NPCs
   walking through corners. Enable this behaviour with EF_DiagonalWalkCheck (010)
 - For the effect of stepping on them, all items were considered to have a height of 3. If you
-  standed higher than 3 above an item, you wouldn't trigger a step on it. Changed it so that
+  are standing higher than 3 above an item, you wouldn't trigger a step on it. Changed it so that
   if the item's height is above 3, that value is used, and not the hardcoded "3". This allows
   one to get @Step events on stuff like tables.
 - If no SRC is defined at the time of a @SpellEffect trigger, then the character subject to the

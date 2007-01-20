@@ -3041,3 +3041,7 @@ this all in desperation)
 - Added: OPENPAPERDOLL character function. Without arguments it will display the current character's
   paperdoll to SRC. With the UID of a character given it will display the specified character's paperdoll to
   the current client.
+
+20-01-2007, Ellessar
+- Fixed: Problems with stairs which have odd height (1,3,5,...).
+- Fixed #1037: Buffs needed FEATURE_AOS_UPDATE_B to work.
