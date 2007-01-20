@@ -1503,6 +1503,7 @@ CClient * CServer::SocketsReceive( CGSocket & socket ) // Check for messages fro
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
 	}
 #endif
+	return client;
 }
 
 //	Berkeley sockets needs nfds to be updated that while in Windows that's ignored
