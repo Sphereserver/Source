@@ -134,9 +134,9 @@ public:
 };
 
 #ifdef _NOSCRIPTCACHE
-#define PhysicalScriptFile CacheableScriptFile
+ #define PhysicalScriptFile CFileText
 #else
-#define PhysicalScriptFile CFileText
+ #define PhysicalScriptFile CacheableScriptFile
 #endif
 
 class CScript : public PhysicalScriptFile, public CScriptKeyAlloc
