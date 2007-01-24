@@ -273,7 +273,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		if( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ) {
 			CItem *pTiller = Multi_GetSign();
 			ASSERT(pTiller);
-			pTiller->Speak("We cannot turn that way Cap'n", 0, TALKMODE_SAY, FONT_NORMAL);
+			pTiller->Speak("We cannot turn that way Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
 			return false;
 		}
 	}
@@ -394,7 +394,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir )
 		// Fall off edge of world ?
 		CItem * pTiller = Multi_GetSign();
 		ASSERT(pTiller);
-		pTiller->Speak( "Turbulent waters Cap'n", 0, TALKMODE_SAY, FONT_NORMAL );
+		pTiller->Speak( "Turbulent waters Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
 		return false;
 	}
 
@@ -404,7 +404,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir )
 cantmove:
 		CItem * pTiller = Multi_GetSign();
 		ASSERT(pTiller);
-		pTiller->Speak( "We've stopped Cap'n", 0, TALKMODE_SAY, FONT_NORMAL );
+		pTiller->Speak( "We've stopped Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
 		return false;
 	}
 
@@ -822,7 +822,7 @@ dodirmovechange:
 		TCHAR szText[ MAX_TALK_BUFFER ];
 		strcpy( szText, pszSpeak );
 		pChar->ParseText( szText, &g_Serv );
-		pTiller->Speak( szText, 0, TALKMODE_SAY, FONT_NORMAL );
+		pTiller->Speak( szText, HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
 	}
 	return false;
 	EXC_CATCH;
