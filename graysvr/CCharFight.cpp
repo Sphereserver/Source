@@ -599,7 +599,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 				int change = pKill->m_exp;
 
 				if ( g_Cfg.m_bLevelSystem &&
-					( g_Cfg.m_iExperienceMode & (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL) == (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL) ) &&
+					( (g_Cfg.m_iExperienceMode & (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL)) == (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL) ) &&
 					pKill->m_pPlayer )
 				{
 					//	to disallow players to get some level and then allow kill self without
