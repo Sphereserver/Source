@@ -423,8 +423,15 @@ void CNTService::CmdMainStart()
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
+extern void testThreads();
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	if( strstr(lpCmdLine, "testThreads") ) {
+		testThreads();
+		return 0;
+	}
+
 	TCHAR	*argv[32];
 	argv[0] = NULL;
 	int argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv)-1, " \t") + 1;

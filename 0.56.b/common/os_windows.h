@@ -1,6 +1,8 @@
 #ifndef OS_WINDOWS_H
 #define OS_WINDOWS_H
 
+#define _WIN32_DCOM
+
 #ifndef _WIN32_WINNT
 	#define _WIN32_WINNT 0x0501
 #endif
