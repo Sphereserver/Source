@@ -794,9 +794,7 @@ public:
 	CGString	m_sZeroPoint;
 	bool		m_bAllowBuySellAgent;
 
-#ifdef _NIGHTLYBUILD
 	bool		m_bAgree;
-#endif
 
 	// End INI file options.
 	

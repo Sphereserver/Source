@@ -21,9 +21,7 @@ CResource::CResource()
 	m_wDebugFlags = 0; //DEBUGF_NPC_EMOTE
 	m_fSecure = true;
 	m_iFreezeRestartTime = 10;
-#ifdef _NIGHTLYBUILD
 	m_bAgree = false;
-#endif
 
 	//Magic
 	m_fReagentsRequired = true;
@@ -286,9 +284,7 @@ enum RC_TYPE
 {
 	RC_ACCTFILES,			// m_sAcctBaseDir
 	RC_ADVANCEDLOS,			// m_iAdvancedLos
-#ifdef _NIGHTLYBUILD
 	RC_AGREE,
-#endif
 	RC_ALLOWBUYSELLAGENT,	// m_bAllowBuySellAgent
 	RC_ALLOWLIGHTOVERRIDE,	// m_bAllowLightOverride
 	RC_ARCHERYMAXDIST,		// m_iArcheryMaxDist
@@ -454,9 +450,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 {
 	{ "ACCTFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sAcctBaseDir)	}},
 	{ "ADVANCEDLOS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAdvancedLos)	}},
-#ifdef _NIGHTLYBUILD
 	{ "AGREE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bAgree) }},
-#endif
 	{ "ALLOWBUYSELLAGENT",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowBuySellAgent)	}},
 	{ "ALLOWLIGHTOVERRIDE",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowLightOverride)	}},
 	{ "ARCHERYMAXDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMaxDist) }},
@@ -668,11 +662,9 @@ bool CResource::r_LoadVal( CScript &s )
 
 	switch (i)
 	{
-#ifdef _NIGHTLYBUILD
 		case RC_AGREE:
 			m_bAgree = s.GetArgVal();
 			break;
-#endif
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
