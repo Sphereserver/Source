@@ -3045,3 +3045,6 @@ this all in desperation)
 20-01-2007, Ellessar
 - Fixed: Problems with stairs which have odd height (1,3,5,...).
 - Fixed #1037: Buffs needed FEATURE_AOS_UPDATE_B to work.
+
+24-01-2007, MrSugarCube
+- Fixed: Tillerman speech on the 3D client not shown in the correct colour.
