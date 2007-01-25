@@ -7,65 +7,107 @@
 #define PATH_FINDER_H
 
 #include "../graysvr/graysvr.h"
+#include <deque>
+#include <list>
+#include <algorithm>
+
+using std::deque;
+using std::list;
 
 #define PATH_SIZE (UO_MAP_VIEW_SIGHT*2)	// limit NPC view by one screen (both sides)
-#define	PATH_OBJS 1						// objects moving at once
+
+class CPathFinderPointRef;
+
+class CPathFinderPoint : public CPointMap
+{
+protected:
+	CPathFinderPoint* m_Parent;
+public:
+	bool m_Walkable;
+	int FValue;
+	int GValue;
+	int HValue;
+
+	CPathFinderPoint();
+	CPathFinderPoint(const CPointMap& pt);
+	CPathFinderPoint(const CPointMap& pt, CPointMap& parent);
+
+	const CPathFinderPoint* GetParent() const;
+	CPathFinderPoint* GetPoint();
+	void SetParent(CPathFinderPointRef& pt);
+
+	bool operator < (const CPathFinderPoint& pt) const;
+};
+
+class CPathFinderPointRef
+{
+public:
+	CPathFinderPoint* m_Point;
+	bool operator < (const CPathFinderPointRef& Pt) const
+	{
+		return m_Point->FValue < Pt.m_Point->FValue;
+	}
+	CPathFinderPointRef(CPathFinderPoint& Pt)
+	{
+		m_Point = &Pt;
+	}
+	CPathFinderPointRef() : m_Point(0)
+	{
+	}
+	CPathFinderPointRef& operator = ( const CPathFinderPointRef& Pt )
+	{
+		m_Point = Pt.m_Point;
+		return *this;
+	}
+	bool operator == ( const CPathFinderPointRef& Pt )
+	{
+		return Pt.m_Point == m_Point;
+	}
+
+};
 
 class CPathFinder
 {
-	public:
+public:
 	static const char *m_sClassName;
-		#define PATH_NOTFINISHED	0
-		#define PATH_NOTSTARTED		0
-		#define PATH_FOUND			1
-		#define PATH_NONEXISTENT	2
-		#define PATH_WALKABLE		0
-		#define PATH_UNWALKABLE		1
 
-		CPathFinder(CChar *pChar, CPointMap ptTarget);
-		~CPathFinder();
+	#define PATH_NONEXISTENT 0
+	#define PATH_FOUND 1
 
-		int FindPath(int pid = 1); // search the path
-		inline int NoPath( int pid );
-		void ReadStep(int step = 1, int pid = 1);	// extract step by number
 
-	protected:
-		char m_walkability[PATH_SIZE][PATH_SIZE];
-		int m_openList[PATH_SIZE*PATH_SIZE+2];		//1 dimensional array holding ID# of open list items
-		int m_whichList[PATH_SIZE+1][PATH_SIZE+1];  //2 dimensional array used to record 
-				//	x,y locations of open list
-		int m_openX[PATH_SIZE*PATH_SIZE+2];
-		int m_openY[PATH_SIZE*PATH_SIZE+2];
-				//	x,y locations of parent list
-		int m_parentX[PATH_SIZE+1][PATH_SIZE+1];
-		int m_parentY[PATH_SIZE+1][PATH_SIZE+1];
-				//	consts list
-		int m_Fcost[PATH_SIZE*PATH_SIZE+2];		//1d array to store F cost of a cell on the open list
-		int m_Gcost[PATH_SIZE+1][PATH_SIZE+1];	//2d array to store G cost for each cell.
-		int m_Hcost[PATH_SIZE*PATH_SIZE+2];		//1d array to store H cost of a cell on the open list
-		int m_pathLength[PATH_OBJS+1];     //stores length of the found path for critter
-		int m_pathLocation[PATH_OBJS+1];   //stores current position along the chosen path for critter		
-		int* m_pathBank[PATH_OBJS+1];
+	#define PATH_WALKABLE 1
+	#define PATH_UNWALKABLE 0
 
-		int m_onClosedList;
+	CPathFinder(CChar *pChar, CPointMap ptTarget);
+	~CPathFinder();
 
-		CChar		*m_pChar;
-		CPointMap	m_ptTarget;
+	int FindPath();
+	CPointMap ReadStep(size_t Step = 0);
+	size_t LastPathSize();
+	void ClearLastPath();
 
-	public:	// path global vars
-		int m_pathStatus[PATH_OBJS+1];
-		int m_xPath[PATH_OBJS+1];
-		int m_yPath[PATH_OBJS+1];
+protected:
 
-					//	since we are dealing with virtual screen,
-					//	we should know the real POS in the world of our window mapping
-		int m_realXoffset;
-		int m_realYoffset;
+	CPathFinderPoint m_Points[PATH_SIZE][PATH_SIZE];
+	deque<CPathFinderPointRef> m_Opened;
+	deque<CPathFinderPointRef> m_Closed;
 
-	protected:
-		void FillMap();	// prepares map with walkable statuses
-		int ReadPathX(int pathLocation, int pid = 1);
-		int ReadPathY(int pathLocation, int pid = 1);
+	deque<CPointMap> m_LastPath;
+
+	int m_RealX;
+	int m_RealY;
+
+	CChar *m_pChar;
+	CPointMap m_Target;
+
+protected:
+	void Clear();
+	unsigned long Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2);
+	void GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointRef>& ChildrenRefList );
+	void FillMap();	// prepares map with walkable statuses
+
 };
+
+
 
 #endif
