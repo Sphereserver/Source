@@ -1177,30 +1177,6 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 
 	ptSrc.m_z += GetHeightMount( true ); //true - substract one from the height because of eyes height
 	WARNLOS(("Total Z: %d\n",ptSrc.m_z))
-	/*
-	if ( IsHuman() )
-	{
-		WARNLOS(("LOS: Human\n"))
-
-		if ( IsStatFlag(STATF_OnHorse) )
-		{
-			WARNLOS(("LOS: Human Mounted\n"))
-
-			// Mounted player?
-			//ptSrc.m_z += (g_Cfg.m_iMountHeight) ? (g_Cfg.m_iMountHeight) : (PLAYER_HEIGHT + 4); //20 should be height of one floor, so 19 (15+4) is our maximum height
-			ptSrc.m_z += PLAYER_HEIGHT + 4; //20 should be height of one floor, so 19 (15+4) is our maximum height
-		}
-		else
-		{
-			ptSrc.m_z += (PLAYER_HEIGHT - 1); // Eye height
-		}
-	}
-	else // TODO: Well i have no clue for determining height of Npcs/Morphed players. Adding a def for npcs??
-	{
-		WARNLOS(("LOS: GetHeight\n"))
-		ptSrc.m_z += GetHeight();
-	}
-	WARNLOS(("Total Z: %d\n",ptSrc.m_z))*/
 
 	int dx, dy, dz;
 	double dist2d, dist3d;
@@ -1353,8 +1329,8 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					break;
 				}
 
-				#define MAPTILEMIN minimum(minimum(minimum(pBlock->GetTerrain(0,0)->m_z,pBlock->GetTerrain(0,1)->m_z),pBlock->GetTerrain(1,0)->m_z),pBlock->GetTerrain(1,1)->m_z)
-				#define MAPTILEMAX maximum(maximum(maximum(pBlock->GetTerrain(0,0)->m_z,pBlock->GetTerrain(0,1)->m_z),pBlock->GetTerrain(1,0)->m_z),pBlock->GetTerrain(1,1)->m_z);
+				//#define MAPTILEMIN minimum(minimum(minimum(pBlock->GetTerrain(0,0)->m_z,pBlock->GetTerrain(0,1)->m_z),pBlock->GetTerrain(1,0)->m_z),pBlock->GetTerrain(1,1)->m_z)
+				//#define MAPTILEMAX maximum(maximum(maximum(pBlock->GetTerrain(0,0)->m_z,pBlock->GetTerrain(0,1)->m_z),pBlock->GetTerrain(1,0)->m_z),pBlock->GetTerrain(1,1)->m_z);
 
 				//#define MAPTILEZ pBlock->GetTerrain( UO_BLOCK_OFFSET(ptNow.m_x), UO_BLOCK_OFFSET(ptNow.m_y))->m_z;
 
@@ -1362,8 +1338,25 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 				{
 					if ( terrainid < 430 || terrainid > 437 )
 					{
-						min_z = MAPTILEMIN;
-						max_z = MAPTILEMAX;
+						/*this stuff should do some checking for surrounding items:
+						aaa
+						aXa
+						aaa
+						min_z is determined as a minimum of all a/X terrain, where X is ptNow
+						*/
+						BYTE pos_x = (UO_BLOCK_OFFSET(ptNow.m_x) > 1 ? UO_BLOCK_OFFSET(ptNow.m_x-1) : 0);
+						BYTE pos_y = (UO_BLOCK_OFFSET(ptNow.m_y) > 1 ? UO_BLOCK_OFFSET(ptNow.m_y-1) : 0);
+						const BYTE defx = UO_BLOCK_OFFSET(ptNow.m_x);
+						const BYTE defy = UO_BLOCK_OFFSET(ptNow.m_y);
+						min_z = pBlock->GetTerrain( pos_x, pos_y )->m_z;
+						max_z = pBlock->GetTerrain( defx, defy )->m_z;
+						for ( BYTE posy = pos_y; (abs(defx-UO_BLOCK_OFFSET(pos_x)) <= 1 && pos_x <= 7); ++pos_x )
+						{
+							for ( pos_y = posy ; (abs(defy-UO_BLOCK_OFFSET(pos_y)) <= 1 && pos_y <= 7); ++pos_y )
+								min_z = minimum( min_z, pBlock->GetTerrain( pos_x, pos_y )->m_z );
+						}
+						//min_z = MAPTILEZ;
+						//max_z = MAPTILEZ;
 						WARNLOS(("Terrain %d - m:%d M:%d\n", terrainid, min_z, max_z))
 						if ( CUOMapMeter::IsTerrainNull( terrainid ) )
 							bNullTerrain = true; //what if there are some items on that hole?
@@ -1375,8 +1368,8 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						}
 					}
 				}
-			#undef MAPTILEMIN
-			#undef MAPTILEMAX
+			//#undef MAPTILEMIN
+			//#undef MAPTILEMAX
 			//#undef MAPTILEZ
 			}
 		}
@@ -1694,7 +1687,16 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate * pObj, WORD wFlags ) const
 	if ( ! CanSee( pObj ))
 		return( false );
 	pObj = pObj->GetTopLevelObj();
-	return( CanSeeLOS( pObj->GetTopPoint(), NULL, pObj->GetVisualRange(), wFlags));
+	if ( IsSetEF(EF_NewPositionChecks) && ( m_pPlayer || m_pNPC ) && ( g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) )
+	{
+		CPointMap pt = pObj->GetTopPoint();
+		const CChar * pChar = dynamic_cast<const CChar*>(pObj);
+		if ( pChar )
+			pt.m_z += pChar->GetHeightMount(true);
+		return CanSeeLOS_New(  pt, NULL, pObj->GetVisualRange(), wFlags );
+	}
+	else
+		return( CanSeeLOS( pObj->GetTopPoint(), NULL, pObj->GetVisualRange(), wFlags ));
 }
 
 bool CChar::CanTouch( const CPointMap & pt ) const
@@ -1796,7 +1798,7 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	if ( IsPriv(PRIV_GM) )
 		return true;
 
-	if ( ! CanSeeLOS(pObjTop->GetTopPoint(), NULL, pObjTop->GetVisualRange()) )
+	if ( ! CanSeeLOS(pObjTop) )
 	{
 		if ( GetAbilityFlags() & CAN_C_DCIGNORELOS )
 			return true;

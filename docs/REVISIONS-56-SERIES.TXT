@@ -3048,3 +3048,6 @@ this all in desperation)
 
 24-01-2007, MrSugarCube
 - Fixed: Tillerman speech on the 3D client not shown in the correct colour.
+
+25-01-2007, Ellessar
+- Fixed #1028: Problems with terrain height.
