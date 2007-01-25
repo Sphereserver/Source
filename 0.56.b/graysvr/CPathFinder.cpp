@@ -243,7 +243,7 @@ void CPathFinder::FillMap()
 			else
 				pArea = m_pChar->CanMoveWalkTo(pt, true, true, ptChar.GetDir(pt));
 			m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
-			m_Points[x][y] = CPointMap(x,y);
+			m_Points[x][y].Set(x,y);
 
 			//DEBUG_ERR(( "[%i:%i:%i]",m_Points[x][y].GetPoint()->m_x,m_Points[x][y].GetPoint()->m_y,m_Points[x][y].m_Walkable ));
 		}
