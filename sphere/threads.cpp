@@ -17,13 +17,22 @@ IThread *ThreadHolder::m_threads[MAX_THREADS];
 int ThreadHolder::m_threadCount = 0;
 bool ThreadHolder::m_inited = false;
 
-IThread *ThreadHolder::current() {
+IThread *ThreadHolder::current() 
+{
 	init();
+#ifdef _WIN32
 	unsigned id = ::GetCurrentThreadId();
+#else
+	unsigned id = (unsigned)pthread_self();
+#endif
+	
 
-	for( int i = 0; i < MAX_THREADS; i++ ) {
-		if( m_threads[i] != NULL ) {
-			if( m_threads[i]->getId() == id ) {
+	for( int i = 0; i < MAX_THREADS; i++ ) 
+	{
+		if( m_threads[i] != NULL ) 
+		{
+			if( m_threads[i]->getId() == id ) 
+			{
 				return m_threads[i];
 			}
 		}
@@ -32,14 +41,18 @@ IThread *ThreadHolder::current() {
 	return NULL;
 }
 
-void ThreadHolder::push(IThread *thread) {
+void ThreadHolder::push(IThread *thread) 
+{
 	init();
-	if( m_threadCount >= MAX_THREADS-1 ) {
+	if( m_threadCount >= MAX_THREADS-1 ) 
+	{
 		throw new CException(LOGL_FATAL, 0, "Too many opened threads");
 	}
 
-	for( int i = 0; i < MAX_THREADS; i++ ) {
-		if( m_threads[i] == NULL ) {
+	for( int i = 0; i < MAX_THREADS; i++ ) 
+	{
+		if( m_threads[i] == NULL ) 
+		{
 			m_threads[i] = thread;
 			m_threadCount++;
 			return;
@@ -49,15 +62,20 @@ void ThreadHolder::push(IThread *thread) {
 	throw new CException(LOGL_FATAL, 0, "Unable to find an empty slot for thread");
 }
 
-void ThreadHolder::pop(IThread *thread) {
+void ThreadHolder::pop(IThread *thread) 
+{
 	init();
-	if( m_threadCount <= 0 ) {
+	if( m_threadCount <= 0 ) 
+	{
 		throw new CException(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
 	}
 
-	for( int i = 0; i < MAX_THREADS; i++ ) {
-		if( m_threads[i] != NULL ) {
-			if( m_threads[i]->getId() == thread->getId() ) {
+	for( int i = 0; i < MAX_THREADS; i++ ) 
+	{
+		if( m_threads[i] != NULL ) 
+		{
+			if( m_threads[i]->getId() == thread->getId() ) 
+			{
 				m_threads[i] = NULL;
 				m_threadCount--;
 				return;
@@ -68,13 +86,17 @@ void ThreadHolder::pop(IThread *thread) {
 	throw new CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
 }
 
-int ThreadHolder::getActiveThreads() {
+int ThreadHolder::getActiveThreads() 
+{
 	return m_threadCount;
 }
 
-void ThreadHolder::init() {
-	if( !m_inited ) {
-		for( int i = 0; i < MAX_THREADS; i++ ) {
+void ThreadHolder::init() 
+{
+	if( !m_inited ) 
+	{
+		for( int i = 0; i < MAX_THREADS; i++ ) 
+		{
 			m_threads[i] = NULL;
 		}
 		m_inited = true;
@@ -86,12 +108,19 @@ void ThreadHolder::init() {
 */
 int AbstractThread::m_threadsAvailable = 0;
 
-AbstractThread::AbstractThread(const char *name, IThread::Priority priority) {
-	if( AbstractThread::m_threadsAvailable == 0 ) {
+AbstractThread::AbstractThread(const char *name, IThread::Priority priority) 
+{
+	if( AbstractThread::m_threadsAvailable == 0 ) 
+	{
 		// no threads were started before - initialise thread subsystem
-		if( CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK ) {
+#ifdef _WIN32
+		if( CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK ) 
+		{
 			throw new CException(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
 		}
+#else
+		// No pthread equivalent
+#endif
 		AbstractThread::m_threadsAvailable++;
 	}
 	m_id = 0;
@@ -101,50 +130,84 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority) {
 	m_priority = priority;
 }
 
-AbstractThread::~AbstractThread() {
+AbstractThread::~AbstractThread() 
+{
 	terminate();
 	AbstractThread::m_threadsAvailable--;
-	if( AbstractThread::m_threadsAvailable == 0 ) {
+	if( AbstractThread::m_threadsAvailable == 0 ) 
+	{
 		// all running threads have gone, the thread subsystem is no longer needed
+#ifdef _WIN32
 		CoUninitialize();
+#else
+		// No pthread equivalent
+#endif
 	}
 }
 
-unsigned AbstractThread::getId() {
+unsigned AbstractThread::getId() 
+{
 	return m_id;
 }
 
-const char *AbstractThread::getName() {
+const char *AbstractThread::getName() 
+{
 	return m_name;
 }
 
-void AbstractThread::start() {
-	m_handle = (HANDLE)_beginthreadex(NULL, 0, &runner, this, 0, &m_id);
+void AbstractThread::start() 
+{
+#ifdef _WIN32
+	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, &m_id);
+#else
+	// pthread_create doesn't return the new thread id, so we set it in runner?
+	if ( pthread_create( &m_handle, NULL, &runner, this ) )
+		throw new CException(LOGL_FATAL, 0, "Unable to spawn new thread");
+#endif
 	push(this);
 }
 
-void AbstractThread::terminate() {
-	if( isActive() ) {
-		if( m_id == ::GetCurrentThreadId() ) {
+void AbstractThread::terminate() 
+{
+	if( isActive() ) 
+	{
+#ifdef _WIN32
+		if( m_id == ::GetCurrentThreadId() ) 
+		{
 			_endthreadex(0);
 		}
-		else {
+		else 
+		{
 			TerminateThread(m_handle, 0);
 		}
+		CloseHandle(m_handle);
+#else
+		if( pthread(m_handle,pthread_self()) ) 
+		{
+			pthread_exit(0);
+		}
+		else 
+		{
+			// TerminateThread doesn't wait for a thread to end.. it seems is like pthread_kill
+			pthread_kill(m_handle, 1);
+		}
+#endif
+		// Common things
 		pop(this);
 		m_id = 0;
-		CloseHandle(m_handle);
 		m_handle = NULL;
 	}
 }
 
-void AbstractThread::run() {
+void AbstractThread::run() 
+{
 	// is the very first since there is a possibility of something being altered there
 	onStart();
 
 	// detect a sleep period for thread depending on priority
 	int tickPeriod;
-	switch( m_priority ) {
+	switch( m_priority ) 
+	{
 		case IThread::Priority::Idle:
 			tickPeriod = 1000;
 			break;
@@ -169,35 +232,44 @@ void AbstractThread::run() {
 
 	int exceptions = 0;
 	bool lastWasException = false;
-	while( true ) {
+	while( true ) 
+	{
 		bool gotException = false;
 
 		//	report me being alive if I am being checked for status
-		if( m_hangCheck != 0 ) {
+		if( m_hangCheck != 0 ) 
+		{
 			m_hangCheck = 0;
 		}
 
-		try {
+		try 
+		{
 			tick();
 		}
-		catch( CException e ) {
+		catch( CException e ) 
+		{
 			gotException = true;
 			//	TODO: notify of exceptions
 		}
-		catch( ... ) {
+		catch( ... ) 
+		{
 			gotException = true;
 			//	TODO: notify of exceptions
 		}
 
-		if( gotException ) {
-			if( lastWasException ) {
+		if( gotException ) 
+		{
+			if( lastWasException ) 
+			{
 				exceptions++;
 			}
-			else {
+			else 
+			{
 				lastWasException = true;
 				exceptions = 0;
 			}
-			if( exceptions >= EXCEPTIONS_ALLOWED ) {
+			if( exceptions >= EXCEPTIONS_ALLOWED ) 
+			{
 				// a bad thing really happened. ALL previous EXCEPTIONS_ALLOWED ticks resulted in exception
 				// almost for sure we have looped somewhere and have no way to get out from this situation
 				// probably a thread restart can fix the problems
@@ -208,7 +280,8 @@ void AbstractThread::run() {
 				lastWasException = false;
 			}
 		}
-		else {
+		else 
+		{
 			lastWasException = false;
 		}
 
@@ -216,40 +289,58 @@ void AbstractThread::run() {
 	}
 }
 
-unsigned AbstractThread::runner(void *callerThread) {
+SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread) 
+{
 	AbstractThread *caller = (AbstractThread*)callerThread;
+
+#ifndef _WIN32
+	// This should be our id on NIX.
+	caller->m_id = (unsigned)pthread_self();
+#endif
 
 	caller->run();
 
+#ifdef _WIN32
 	_endthreadex(0);
+#else
+	pthread_exit(0);
+#endif
 	return 0;
 }
 
-bool AbstractThread::isActive() {
+bool AbstractThread::isActive() 
+{
 	return m_handle != NULL;
 }
 
-void AbstractThread::waitForClose() {
+void AbstractThread::waitForClose() 
+{
 	int count = 150; // 15 seconds = 15000ms
-	while( isActive() && count-- ) {
+	while( isActive() && count-- ) 
+	{
 		Sleep(100);
 	}
 	terminate();
 }
 
-void AbstractThread::checkStuck() {
-	if( isActive() ) {
-		if( m_hangCheck == 0 ) {
+void AbstractThread::checkStuck() 
+{
+	if( isActive() ) 
+	{
+		if( m_hangCheck == 0 ) 
+		{
 			//	initiate hang check
 			m_hangCheck = 0xDEAD;
 		}
-		else if( m_hangCheck == 0xDEAD ) {
+		else if( m_hangCheck == 0xDEAD ) 
+		{
 			//	one time period was not answered, wait a bit more
 			m_hangCheck = 0xDEADDEADl;
 			//	TODO:
 			//g_Log.Event(LOGL_CRIT, "'%s' thread seems being hang (frozen) at '%s'?\n", m_name, m_action);
 		}
-		else if( m_hangCheck == 0xDEADDEADl ) {
+		else if( m_hangCheck == 0xDEADDEADl ) 
+		{
 			//	TODO:
 			//g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", m_name);
 			terminate();
@@ -258,6 +349,7 @@ void AbstractThread::checkStuck() {
 	}
 }
 
-void AbstractThread::onStart() {
+void AbstractThread::onStart() 
+{
 	//	empty. override if need in subclass
 }
