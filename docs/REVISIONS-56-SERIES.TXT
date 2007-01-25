@@ -3051,3 +3051,4 @@ this all in desperation)
 
 25-01-2007, Ellessar
 - Fixed #1028: Problems with terrain height.
+- Rewritten the whole NPC_AI_PATH, now it should be faster, more reliable and less buggy.

@@ -2997,12 +2997,25 @@ void CChar::NPC_Pathfinding()
 
 	//	save the found path
 	EXC_SET("saving found path");
+
+#ifdef _PATHFINDING_OLD
 	for ( i = 0; ( path.m_xPath[1] != pTarg.m_x ) || ( path.m_yPath[1] != pTarg.m_y ); ++i )
 	{
 		path.ReadStep(i + 1);
 		m_pNPC->m_nextX[i] = path.m_xPath[1];
 		m_pNPC->m_nextY[i] = path.m_yPath[1];
 	}
+#else
+	CPointMap Next;
+	// Don't read the first step, it's the same as the current position, so i = 1
+	for ( size_t i = 1; (i != path.LastPathSize()) && (i < 24 /* Don't overflow*/ ); ++i )
+	{
+		Next = path.ReadStep(i);
+		m_pNPC->m_nextX[i - 1] = Next.m_x;
+		m_pNPC->m_nextY[i - 1] = Next.m_y;
+	}
+	path.ClearLastPath(); // !! Use explicitly when using one CPathFinder object for more NPCs
+#endif
 
 	EXC_CATCH;
 

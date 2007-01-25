@@ -1,29 +1,103 @@
 #include "../graysvr/CPathFinder.h"
 
+unsigned long CPathFinder::Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2)
+{
+	return 10*(abs(Pt1.m_Point->m_x - Pt2.m_Point->m_x) + abs(Pt1.m_Point->m_y - Pt2.m_Point->m_y));
+}
+
+void CPathFinder::GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointRef>& ChildrenRefList )
+{
+	int RealX = 0, RealY = 0;
+	for ( int x = -1; x != 2; ++x)
+	{
+		for ( int y = -1; y != 2; ++y)
+		{
+			if ( x == 0 && y == 0 )
+				continue;
+			RealX = x + Point.m_Point->m_x;
+			RealY = y + Point.m_Point->m_y;
+			if ( RealX < 0 || RealY < 0 || RealX > 23 || RealY > 23 )
+				continue;
+			if ( m_Points[RealX][RealY].m_Walkable == false )
+				continue;
+			if ( x != 0 && y != 0 ) // Diagonal
+			{
+				//Don't go diagonally between two non walkable blocks
+				if ( x == -1 && y == -1 && RealX > 0 && RealY > 0)
+					if ( m_Points[RealX-1][RealY].m_Walkable == false && m_Points[RealX][RealY-1].m_Walkable == false )
+						continue;
+				if ( x == 1 && y == 1 && RealY < 23 && RealX < 23 )
+					if ( m_Points[RealX+1][RealY].m_Walkable == false && m_Points[RealX][RealY+1].m_Walkable == false )
+						continue;
+				if ( x == -1 && y == 1 && RealX > 0 && RealY < 23 )
+					if ( m_Points[RealX-1][RealY].m_Walkable == false && m_Points[RealX][RealY+1].m_Walkable == false )
+						continue;
+				if ( x == 1 && y == -1 && RealY > 0 && RealX < 23)
+					if ( m_Points[RealX+1][RealY].m_Walkable == false && m_Points[RealX][RealY-1].m_Walkable == false )
+						continue;
+			}
+
+
+			CPathFinderPointRef PtRef( m_Points[RealX][RealY] );
+			ChildrenRefList.push_back( PtRef  );
+		}
+	}
+}
+
+CPathFinderPoint::CPathFinderPoint() : FValue(0), GValue(0), HValue(0), m_Parent(0)
+{
+	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
+	m_x = 0;
+	m_y = 0;
+	m_z = 0;
+}
+
+CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : FValue(0), GValue(0), HValue(0), m_Parent(0)
+{
+	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
+	m_x = pt.m_x;
+	m_y = pt.m_y;
+	m_z = pt.m_z;
+}
+
+
+bool CPathFinderPoint::operator < (const CPathFinderPoint& pt) const
+{
+	//ADDTOCALLSTACK("CPathFinderPoint::operator <");
+	return (FValue < pt.FValue);
+}
+
+const CPathFinderPoint* CPathFinderPoint::GetParent() const
+{
+	ADDTOCALLSTACK("CPathFinderPoint::GetParent");
+	return m_Parent;
+}
+
+void CPathFinderPoint::SetParent(CPathFinderPointRef& pt)
+{
+	ADDTOCALLSTACK("CPathFinderPoint::SetParent");
+	m_Parent = pt.m_Point;
+}
+
 CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 {
-	EXC_TRY("CPathFinder constructor");
+	ADDTOCALLSTACK("CPathFinder::CPathFinder");
+	EXC_TRY("CPathFinder Constructor");
 
-	CPointMap	pt;
-	int			i;
+	CPointMap pt;
+	int i;
 
 	m_pChar = pChar;
-	m_ptTarget = ptTarget;
-	m_onClosedList = 10;
+	m_Target = ptTarget;
 
-				// since we are in the center of our screen, remember the left top corner and make
-				// it simulate being zero
 	pt = m_pChar->GetTopPoint();
-	m_realXoffset = pt.m_x - PATH_SIZE/2;
-	m_realYoffset = pt.m_y - PATH_SIZE/2;
-	m_ptTarget.m_x -= m_realXoffset;
-	m_ptTarget.m_y -= m_realYoffset;
-
-	EXC_SET("Memory Allocation");
-	for ( i = 0; i < PATH_OBJS+1; i++) m_pathBank[i] = (int*)malloc(sizeof(int));
-	//for ( i = 0; i < PATH_OBJS+1; i++) m_pathBank[i] = new int; //"malloc" is C, "new" is C++
+	m_RealX = pt.m_x - PATH_SIZE/2;
+	m_RealY = pt.m_y - PATH_SIZE/2;
+	m_Target.m_x -= m_RealX;
+	m_Target.m_y -= m_RealY;
 
 	EXC_SET("FillMap");
+
 	FillMap();
 
 	EXC_CATCH;
@@ -31,337 +105,121 @@ CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 
 CPathFinder::~CPathFinder()
 {
-	EXC_TRY("CPathFinder destructor");
-	int			i;
-	
-	EXC_SET("Memory Freeing");
-	for ( i = 0; i < PATH_OBJS+1; i++ ) free(m_pathBank[i]);
-	//for ( i = 0; i < PATH_OBJS+1; i++ ) delete(m_pathBank[i]); //"free" is C, "delete" is C++ :)
-
-	EXC_CATCH;
+	ADDTOCALLSTACK("CPathFinderPoint::~CPathFinderPoint");
 }
 
-int CPathFinder::FindPath(int pid)
+int CPathFinder::FindPath() //A* algorithm
 {
 	ADDTOCALLSTACK("CPathFinder::FindPath");
-	EXC_TRY("CPathFinder FindPath");
-	int onOpenList=0, parentXval=0, parentYval=0,
-		a=0, b=0, m=0, u=0, v=0, temp=0, corner=0, numberOfOpenListItems=0,
-		addedGCost=0, tempGcost = 0, path = 0, x=0, y=0,
-		tempx, pathX, pathY, cellPosition,
-		newOpenListItemID=0;
 
-	EXC_SET("Location converting");
-	//1. Convert location data (in pixels) to coordinates in the walkability array.
-	int startX = m_pChar->GetTopPoint().m_x - m_realXoffset;
-	int startY = m_pChar->GetTopPoint().m_y - m_realYoffset;
 
-	EXC_SET("Quick checks");
-	//2.Quick Path Checks: Under the some circumstances no path needs to be generated ...
+	int X = m_pChar->GetTopPoint().m_x - m_RealX;
+	int Y = m_pChar->GetTopPoint().m_y - m_RealY;
 
-	if (startX == m_ptTarget.m_x && startY == m_ptTarget.m_y && m_pathLocation[pid] > 0) return PATH_FOUND;
-	if (startX == m_ptTarget.m_x && startY == m_ptTarget.m_y && m_pathLocation[pid] == 0) return PATH_NONEXISTENT;
-	if (( abs(startX - m_ptTarget.m_x) > PATH_SIZE ) || ( abs(startY - m_ptTarget.m_y) > PATH_SIZE )) return PATH_NONEXISTENT;
-	if ( m_walkability[m_ptTarget.m_x][m_ptTarget.m_y] == PATH_UNWALKABLE ) return(CPathFinder::NoPath( pid ));
-
-	EXC_SET("Variable clearing");
-	//3.Reset some variables that need to be cleared
-	for (x = 0; x < PATH_SIZE; ++x)
-		for (y = 0; y < PATH_SIZE;++y)
-			m_whichList[x][y] = 0;
-
-	m_onClosedList = 2; //changing the values of onOpenList and onClosed list is faster than redimming whichList() array
-	onOpenList = 1;
-	m_pathLength[pid] = PATH_NOTSTARTED;
-	m_pathLocation [pid] = PATH_NOTSTARTED;
-	m_Gcost[startX][startY] = 0;
-
-	EXC_SET("Adding start loc to open list");
-	//4.Add the starting location to the open list of squares to be checked.
-	numberOfOpenListItems = 1;
-	m_openList[1] = 1;//assign it as the top (and currently only) item in the open list, which is maintained as a binary heap
-	m_openX[1] = startX ;
-	m_openY[1] = startY;
-
-	EXC_SET("Path-looping");
-	//5.Do the following until a path is found or deemed nonexistent.
-	do
+	if ( X < 0 || Y < 0 || X > 23 || Y > 23 || (m_pChar == 0) )
 	{
-		//6.If the open list is not empty, take the first cell off of the list.
-		//	This is the lowest F cost cell on the open list.
-		if (numberOfOpenListItems != 0)
+		//Too far away
+		Clear();
+		return PATH_NONEXISTENT;
+	}
+
+	CPathFinderPointRef Start(m_Points[X][Y]); //Start point
+	CPathFinderPointRef End(m_Points[m_Target.m_x][m_Target.m_y]); //End Point
+
+	ASSERT(Start.m_Point);
+	ASSERT(End.m_Point);
+
+	Start.m_Point->GValue = 0;
+	Start.m_Point->HValue = Heuristic(Start, End);
+	Start.m_Point->FValue = Start.m_Point->HValue;
+
+	m_Opened.push_back( Start );
+
+	list<CPathFinderPointRef> Children;
+	CPathFinderPointRef Child, Current;
+	deque<CPathFinderPointRef>::iterator InOpened, InClosed;
+
+	while ( !m_Opened.empty() )
+	{
+		std::sort(m_Opened.begin(), m_Opened.end());
+		Current = *m_Opened.begin();
+
+		m_Opened.pop_front();
+		m_Closed.push_back( Current );
+
+		if ( Current == End )
 		{
-			//7. Pop the first item off the open list.
-			parentXval = m_openX[m_openList[1]];
-			parentYval = m_openY[m_openList[1]]; //record cell coordinates of the item
-			m_whichList[parentXval][parentYval] = m_onClosedList;//add the item to the closed list
-
-			//	Open List = Binary Heap: Delete this item from the open list, which
-			//  is maintained as a binary heap. For more information on binary heaps, see:
-			//	http://www.policyalmanac.org/games/binaryHeaps.htm
-			numberOfOpenListItems = numberOfOpenListItems - 1;//reduce number of open list items by 1	
-		
-			//	Delete the top item in binary heap and reorder the heap, with the lowest F cost item rising to the top.
-			m_openList[1] = m_openList[numberOfOpenListItems+1];//move the last item in the heap up to slot #1
-			v = 1;
-
-			//	Repeat the following until the new item in slot #1 sinks to its proper spot in the heap.
-			do
+			CPathFinderPointRef PathRef = Current;
+			while ( PathRef.m_Point->GetParent() ) //Rebuild path + save
 			{
-				EXC_TRYSUB("item heap-sinking");
-				u = v;		
-				if (2*u+1 <= numberOfOpenListItems) //if both children exist
+				PathRef.m_Point = const_cast<CPathFinderPoint*>(PathRef.m_Point->GetParent());
+				m_LastPath.push_front( CPointMap(PathRef.m_Point->m_x+m_RealX,PathRef.m_Point->m_y+m_RealY) );
+			}
+			Clear();
+			return PATH_FOUND;
+		}
+		else
+		{
+			Children.clear();
+			GetChildren( Current, Children );
+
+			while ( !Children.empty() )
+			{
+				Child = Children.front();
+				Children.pop_front();
+
+				InClosed = std::find( m_Closed.begin(), m_Closed.end(), Child );
+				InOpened = std::find( m_Opened.begin(), m_Opened.end(), Child );
+
+				if ( InClosed != m_Closed.end() )
+					continue;
+
+				if ( InOpened == m_Opened.end() )
 				{
-	 				//Check if the F cost of the parent is greater than each child.
-					//Select the lowest of the two children.
-					if (m_Fcost[m_openList[u]] >= m_Fcost[m_openList[2*u]]) v = 2*u;
-					if (m_Fcost[m_openList[v]] >= m_Fcost[m_openList[2*u+1]]) v = 2*u+1;		
+					Child.m_Point->SetParent( Current );
+					Child.m_Point->GValue = Current.m_Point->GValue;
+
+					if ( Child.m_Point->m_x == Current.m_Point->m_x || Child.m_Point->m_y == Current.m_Point->m_y )
+						Child.m_Point->GValue += 10; //Not diagonal
+					else
+						Child.m_Point->GValue += 14; //Diagonal
+
+					Child.m_Point->HValue = Heuristic( Child, End );
+					Child.m_Point->FValue = Child.m_Point->GValue + Child.m_Point->HValue;
+					m_Opened.push_back( Child );
+					//sort ( m_Opened.begin(), m_Opened.end() );
 				}
 				else
 				{
-					if (2*u <= numberOfOpenListItems) //if only child #1 exists
+					if ( Child.m_Point->GValue < Current.m_Point->GValue )
 					{
-	 					//Check if the F cost of the parent is greater than child #1	
-						if (m_Fcost[m_openList[u]] >= m_Fcost[m_openList[2*u]]) v = 2*u;
+						Child.m_Point->SetParent( Current );
+						if ( Child.m_Point->m_x == Current.m_Point->m_x || Child.m_Point->m_y == Current.m_Point->m_y )
+							Child.m_Point->GValue += 10;
+						else
+							Child.m_Point->GValue += 14;
+						Child.m_Point->FValue = Child.m_Point->GValue + Child.m_Point->HValue;
+						//sort ( m_Opened.begin(), m_Opened.end() );
 					}
 				}
-
-				if (u != v) //if parent's F is > one of its children, swap them
-				{
-					temp = m_openList[u];
-					m_openList[u] = m_openList[v];
-					m_openList[v] = temp;			
-				}
-				else break; //otherwise, exit loop
-				EXC_CATCHSUB("CPathFinder");
 			}
-			while ( true );
-
-			//7.Check the adjacent squares. (Its "children" -- these path children are similar, conceptually,
-			//	to the binary heap children mentioned above, but don't confuse them. They are different. Add
-			//	these adjacent child squares to the open list for later consideration if appropriate.
-			for (b = parentYval-1; b <= parentYval+1; b++)
-			{
-				for (a = parentXval-1; a <= parentXval+1; a++)
-				{
-					//	If not off the map (do this first to avoid array out-of-bounds errors)
-					if (a != -1 && b != -1 && a != PATH_SIZE && b != PATH_SIZE)
-					{
-						//	If not already on the closed list (items on the closed list have
-						//	already been considered and can now be ignored).			
-						if (m_whichList[a][b] != m_onClosedList)
-						{
-							//	If not a wall/obstacle square.
-							if (m_walkability [a][b] != PATH_UNWALKABLE)
-							{
-								EXC_TRYSUB("corner");
-								//	Don't cut across corners
-								corner = PATH_WALKABLE;	
-								if (a == parentXval-1) 
-								{
-									if (b == parentYval-1)
-									{
-										if (m_walkability[parentXval-1][parentYval] == PATH_UNWALKABLE
-											|| m_walkability[parentXval][parentYval-1] == PATH_UNWALKABLE) \
-											corner = PATH_UNWALKABLE;
-									}
-									else if (b == parentYval+1)
-									{
-										if (m_walkability[parentXval][parentYval+1] == PATH_UNWALKABLE
-											|| m_walkability[parentXval-1][parentYval] == PATH_UNWALKABLE) 
-											corner = PATH_UNWALKABLE; 
-									}
-								}
-								else if (a == parentXval+1)
-								{
-									if (b == parentYval-1)
-									{
-										if (m_walkability[parentXval][parentYval-1] == PATH_UNWALKABLE 
-											|| m_walkability[parentXval+1][parentYval] == PATH_UNWALKABLE) 
-											corner = PATH_UNWALKABLE;
-									}
-									else if (b == parentYval+1)
-									{
-										if (m_walkability[parentXval+1][parentYval] == PATH_UNWALKABLE 
-											|| m_walkability[parentXval][parentYval+1] == PATH_UNWALKABLE)
-											corner = PATH_UNWALKABLE; 
-									}
-								}
-								EXC_CATCHSUB("CPathFinder");
-								if (corner == PATH_WALKABLE)
-								{
-									//	If not already on the open list, add it to the open list.			
-									if (m_whichList[a][b] != onOpenList) 
-									{	
-										EXC_TRYSUB("creating a new open list");
-										//Create a new open list item in the binary heap.
-										newOpenListItemID = newOpenListItemID + 1; //each new item has a unique ID #
-										m = numberOfOpenListItems+1;
-										m_openList[m] = newOpenListItemID;//place the new open list item (actually, its ID#) at the bottom of the heap
-										m_openX[newOpenListItemID] = a;
-										m_openY[newOpenListItemID] = b;//record the x and y coordinates of the new item
-
-										//Figure out its G cost
-										if (abs(a-parentXval) == 1 && abs(b-parentYval) == 1) addedGCost = 14;//cost of going to diagonal squares	
-										else addedGCost = 10;//cost of going to non-diagonal squares				
-										m_Gcost[a][b] = m_Gcost[parentXval][parentYval] + addedGCost;
-
-										//Figure out its H and F costs and parent
-										m_Hcost[m_openList[m]] = 10*(abs(a - m_ptTarget.m_x) + abs(b - m_ptTarget.m_y));
-										m_Fcost[m_openList[m]] = m_Gcost[a][b] + m_Hcost[m_openList[m]];
-										m_parentX[a][b] = parentXval;
-										m_parentY[a][b] = parentYval;	
-
-										//Move the new open list item to the proper place in the binary heap.
-										//Starting at the bottom, successively compare to parent items,
-										//swapping as needed until the item finds its place in the heap
-										//or bubbles all the way to the top (if it has the lowest F cost).
-										while (m != 1) //While item hasn't bubbled to the top (m=1)	
-										{
-											//Check if child's F cost is < parent's F cost. If so, swap them.	
-											if (m_Fcost[m_openList[m]] <= m_Fcost[m_openList[m/2]])
-											{
-												temp = m_openList[m/2];
-												m_openList[m/2] = m_openList[m];
-												m_openList[m] = temp;
-												m = m/2;
-											}
-											else break;
-										}
-										numberOfOpenListItems = numberOfOpenListItems+1;//add one to the number of items in the heap
-
-										//Change whichList to show that the new item is on the open list.
-										m_whichList[a][b] = onOpenList;
-										EXC_CATCHSUB("CPathFinder");
-									}
-									//8.If adjacent cell is already on the open list, check to see if this 
-									//	path to that cell from the starting location is a better one. 
-									//	If so, change the parent of the cell and its G and F costs.	
-									else //If whichList(a,b) = onOpenList
-									{
-										EXC_TRYSUB("getting G cost");
-										//Figure out the G cost of this possible new path
-										if (abs(a-parentXval) == 1 && abs(b-parentYval) == 1) addedGCost = 14;//cost of going to diagonal tiles
-										else addedGCost = 10;//cost of going to non-diagonal tiles
-										tempGcost = m_Gcost[parentXval][parentYval] + addedGCost;
-			
-										//If this path is shorter (G cost is lower) then change
-										//the parent cell, G cost and F cost. 		
-										if (tempGcost < m_Gcost[a][b]) //if G cost is less,
-										{
-											m_parentX[a][b] = parentXval; //change the square's parent
-											m_parentY[a][b] = parentYval;
-											m_Gcost[a][b] = tempGcost;//change the G cost			
-
-											//Because changing the G cost also changes the F cost, if
-											//the item is on the open list we need to change the item's
-											//recorded F cost and its position on the open list to make
-											//sure that we maintain a properly ordered open list.
-											for (int x = 1; x <= numberOfOpenListItems; x++) //look for the item in the heap
-											{
-												if (m_openX[m_openList[x]] == a && m_openY[m_openList[x]] == b) //item found
-												{
-													m_Fcost[m_openList[x]] = m_Gcost[a][b] + m_Hcost[m_openList[x]];//change the F cost
-									
-													//See if changing the F score bubbles the item up from it's current location in the heap
-													m = x;
-													while (m != 1) //While item hasn't bubbled to the top (m=1)	
-													{
-														//Check if child is < parent. If so, swap them.	
-														if (m_Fcost[m_openList[m]] < m_Fcost[m_openList[m/2]])
-														{
-															temp = m_openList[m/2];
-															m_openList[m/2] = m_openList[m];
-															m_openList[m] = temp;
-															m = m/2;
-														}
-														else break;
-													} 
-													break; //exit for x = loop
-												} //If openX(openList(x)) = a
-											} //For x = 1 To numberOfOpenListItems
-										}//If tempGcost < Gcost(a,b)
-										EXC_CATCHSUB("CPathFinder");
-									}//else If whichList(a,b) = onOpenList	
-								}//If not cutting a corner
-							}//If not a wall/obstacle square.
-						}//If not already on the closed list 
-					}//If not off the map
-				}//for (a = parentXval-1; a <= parentXval+1; a++)
-			}//for (b = parentYval-1; b <= parentYval+1; b++)
-		}//if (numberOfOpenListItems != 0)
-		//9.If open list is empty then there is no path.	
-		else
-		{
-			path = PATH_NONEXISTENT;
-			break;
 		}
-
-		//If target is added to open list then path has been found.
-		if (m_whichList[m_ptTarget.m_x][m_ptTarget.m_y] == onOpenList)
-		{
-			path = PATH_FOUND;
-			break;
-		}
-	} while ( true );//Do until path is found or deemed nonexistent
-
-	EXC_SET("Path-saving");
-	//10.Save the path if it exists.
-	if (path == PATH_FOUND)
-	{
-		//a.Working backwards from the target to the starting location by checking
-		//	each cell's parent, figure out the length of the path.
-		pathX = m_ptTarget.m_x; pathY = m_ptTarget.m_y;
-		do
-		{
-			//Look up the parent of the current cell.	
-			tempx = m_parentX[pathX][pathY];		
-			pathY = m_parentY[pathX][pathY];
-			pathX = tempx;
-
-			//Figure out the path length
-			m_pathLength[pid]++;
-		}
-		while (pathX != startX || pathY != startY);
-
-		//b.Resize the data bank to the right size in bytes
-		m_pathBank[pid] = (int*) realloc (m_pathBank[pid], m_pathLength[pid]*8);
-
-		//c. Now copy the path information over to the databank. Since we are
-		//	working backwards from the target to the start location, we copy
-		//	the information to the data bank in reverse order. The result is
-		//	a properly ordered set of path data, from the first step to the
-		//	last.
-		pathX = m_ptTarget.m_x; pathY = m_ptTarget.m_y;
-		cellPosition = m_pathLength[pid]*2;//start at the end	
-		do
-		{
-			cellPosition = cellPosition - 2;//work backwards 2 integers
-			m_pathBank[pid] [cellPosition] = pathX;
-			m_pathBank[pid] [cellPosition+1] = pathY;
-
-			//d.Look up the parent of the current cell.	
-			tempx = m_parentX[pathX][pathY];		
-			pathY = m_parentY[pathX][pathY];
-			pathX = tempx;
-			//e.If we have reached the starting square, exit the loop.	
-		}
-		while (pathX != startX || pathY != startY);	
 	}
-	return path;
-	EXC_CATCH;
 
+
+	Clear();
 	return PATH_NONEXISTENT;
 }
 
-//13.If there is no path to the selected target, set the pathfinder's xPath and yPath equal to its
-//	current location and return that the path is nonexistent.
-inline int CPathFinder::NoPath( int pid )
+void CPathFinder::Clear()
 {
-	ADDTOCALLSTACK("CPathFinder::NoPath");
-	m_xPath[pid] = m_pChar->GetTopPoint().m_x - m_realXoffset;
-	m_yPath[pid] = m_pChar->GetTopPoint().m_y - m_realYoffset;
-	return PATH_NONEXISTENT;
+	ADDTOCALLSTACK("CPathFinder::Clear");
+	m_Target = CPointMap(0,0);
+	m_pChar = 0;
+	m_Opened.clear();
+	m_Closed.clear();
+	m_RealX = 0;
+	m_RealY = 0;
 }
 
 void CPathFinder::FillMap()
@@ -374,52 +232,46 @@ void CPathFinder::FillMap()
 	EXC_TRY("FillMap");
 	pt = ptChar = m_pChar->GetTopPoint();
 
-	for ( x = 0 ; x < PATH_SIZE; x++ )
+	for ( x = 0 ; x != PATH_SIZE; ++x )
 	{
-		for ( y = 0; y < PATH_SIZE; y++ )
+		for ( y = 0; y != PATH_SIZE; ++y )
 		{
-			pt.m_x = x + m_realXoffset;
-			pt.m_y = y + m_realYoffset;
-				// sure, it is not a best way since the DIR can differ highly, but
-				// it is fast look. more checks will be done while going the steps on
+			pt.m_x = x + m_RealX;
+			pt.m_y = y + m_RealY;
 			if (IsSetEF( EF_NewPositionChecks ))
 				pArea = m_pChar->CanMoveWalkTo(pt, true, true, ptChar.GetDir(pt), true);
 			else
 				pArea = m_pChar->CanMoveWalkTo(pt, true, true, ptChar.GetDir(pt));
-			m_walkability[x][y] = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
+			m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
+			m_Points[x][y] = CPointMap(x,y);
+
+			//DEBUG_ERR(( "[%i:%i:%i]",m_Points[x][y].GetPoint()->m_x,m_Points[x][y].GetPoint()->m_y,m_Points[x][y].m_Walkable ));
 		}
 	}
+
+	//DEBUG_ERR(( "TARGET: [%i:%i]\n", m_Target.m_x, m_Target.m_y ));
+
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
 	EXC_DEBUG_END;
 }
 
-int CPathFinder::ReadPathX(int pathLocation, int pid)
-{
-	ADDTOCALLSTACK("CPathFinder::ReadPathX");
-	int x(0);
-	if ( m_pathLocation[pid] <= m_pathLength[pid] )
-	{
-		x = m_pathBank[pid][pathLocation*2-2] + m_realXoffset;
-	}
-	return x;
-}	
-
-int CPathFinder::ReadPathY(int pathLocation, int pid)
-{
-	ADDTOCALLSTACK("CPathFinder::ReadPathY");
-	int y(0);
-	if ( m_pathLocation[pid] <= m_pathLength[pid] )
-	{
-		y = m_pathBank[pid][pathLocation*2-1] + m_realYoffset;
-	}
-	return y;
-}	
-
-void CPathFinder::ReadStep(int step, int pid)
+CPointMap CPathFinder::ReadStep(size_t Step)
 {
 	ADDTOCALLSTACK("CPathFinder::ReadStep");
-	m_xPath[pid] = ReadPathX(step);
-	m_yPath[pid] = ReadPathY(step);
+	return m_LastPath[Step];
 }
+
+size_t CPathFinder::LastPathSize()
+{
+	ADDTOCALLSTACK("CPathFinder::LastPathSize");
+	return m_LastPath.size();
+}
+
+void CPathFinder::ClearLastPath()
+{
+	ADDTOCALLSTACK("CPathFinder::ClearLastPath");
+	m_LastPath.clear();
+}
+
