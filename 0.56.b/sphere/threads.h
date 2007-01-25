@@ -14,10 +14,23 @@
 // threads, using as much of static single non-heap data as possible
 #define MAX_THREADS	30
 
+// Types definition for different platforms
+#ifdef _WIN32
+	typedef HANDLE spherethread_t;
+	#define SPHERE_THREADENTRY_RETNTYPE unsigned;
+	#define SPHERE_THREADENTRY_CALLTYPE __stdcall
+#else
+	typedef pthread_t spherethread_t;
+	#define SPHERE_THREADENTRY_RETNTYPE void *;
+	#define SPHERE_THREADENTRY_CALLTYPE
+#endif
+
 // Interface for threads. Almost always should be used instead of any implementing classes
-class IThread {
+class IThread 
+{
 public:
-	enum Priority {
+	enum Priority 
+	{
 		Idle,		// tick 1000ms
 		Low,		// tick 200ms
 		Normal,		// tick 100ms
@@ -38,7 +51,8 @@ public:
 };
 
 // Singleton utility class for working with threads. Holds all running threads inside
-class ThreadHolder {
+class ThreadHolder 
+{
 public:
 	// returns current working thread or NULL if no IThread threads are running
 	static IThread *current();
@@ -59,12 +73,13 @@ private:
 };
 
 // Thread implementation. See IThread for list of available methods.
-class AbstractThread : public IThread, ThreadHolder {
+class AbstractThread : public IThread, ThreadHolder 
+{
 private:
 	unsigned	m_id;
 	const char *m_name;
 	static int	m_threadsAvailable;
-	HANDLE		m_handle;
+	spherethread_t	m_handle;
 	unsigned	m_hangCheck;
 	IThread::Priority m_priority;
 
@@ -89,7 +104,7 @@ protected:
 
 private:
 	void run();
-	static unsigned __stdcall runner(void *callerThread);
+	static SPHERE_THREADENTRY_RETNTYPE SPHERE_THREADENTRY_CALLTYPE runner(void *callerThread);
 };
 
 #endif
