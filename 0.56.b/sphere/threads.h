@@ -17,11 +17,11 @@
 // Types definition for different platforms
 #ifdef _WIN32
 	typedef HANDLE spherethread_t;
-	#define SPHERE_THREADENTRY_RETNTYPE unsigned;
+	#define SPHERE_THREADENTRY_RETNTYPE unsigned
 	#define SPHERE_THREADENTRY_CALLTYPE __stdcall
 #else
 	typedef pthread_t spherethread_t;
-	#define SPHERE_THREADENTRY_RETNTYPE void *;
+	#define SPHERE_THREADENTRY_RETNTYPE void *
 	#define SPHERE_THREADENTRY_CALLTYPE
 #endif
 
