@@ -80,7 +80,7 @@
 #include "CTime.h"
 #define THREAD_ENTRY_RET void *
 #define CRITICAL_SECTION pthread_mutex_t
-#define Sleep sleep
+#define Sleep(mSec)		if ( mSec ) usleep(mSec*1000)	// arg is microseconds = 1/1000000
 
 inline void _strupr( TCHAR * pszStr )
 {
