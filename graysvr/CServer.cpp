@@ -21,6 +21,10 @@
 HANDLE    hIocp;
 #endif
 
+#ifdef NEW_THREADS_FRAMEWORK
+extern void testThreads();
+#endif
+
 ////////////////////////////////////////////////////////
 // -CTextConsole
 
@@ -1370,6 +1374,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					"-P# Set the port number.\n"
 					"-Ofilename Output console to this file name\n"
 					"-Q Quit when finished.\n"
+					"-T Run tests and exit (avilable only in test builds).\n"
 					);
 				return( false );
 			case 'C':
@@ -1413,6 +1418,13 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 				continue;
 			case 'Q':
 				return false;
+
+			case 'T':
+				{
+#ifdef NEW_THREADS_FRAMEWORK
+					testThreads();
+#endif
+				} return false;
 
 			default:
 				g_Log.Event( LOGM_INIT|LOGL_CRIT, "Don't recognize command line data '%s'\n", (LPCTSTR)( argv[argn] ));

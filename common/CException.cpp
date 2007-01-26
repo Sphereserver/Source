@@ -32,7 +32,7 @@
 	}
 #endif
 
-BOOL CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext )
+bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext )
 {
 #ifdef _WIN32
 	// Compatible with CException and CFileException
@@ -85,10 +85,10 @@ CGrayAssert::~CGrayAssert()
 {
 }
 
-BOOL CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext)
+bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext)
 {
 	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %d", m_eSeverity, m_pExp, m_pFile, m_uLine);
-	return TRUE;
+	return true;
 }
 
 /*LPCTSTR const CGrayAssert::GetAssertFile()

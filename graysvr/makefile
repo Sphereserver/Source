@@ -14,8 +14,12 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/include/mysql -I../../common/boost/boost_1_33_1
 
 # Linux
+# ----- Generic
 LIBBOOST = -L../../common/boost/lib-regex-linux -lboost_regex-gcc-1_33_1
 #LIBBOOST = -L../../common/boost/lib-regex-linux -lboost_regex-d-gcc-1_33_1
+# ----- Debian 3.1
+#LIBBOOST = -L../../common/boost/lib-regex-debian31 -lboost_regex-gcc-1_33_1
+#LIBBOOST = -L../../common/boost/lib-regex-debian31 -lboost_regex-d-gcc-1_33_1
 LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient $(LIBBOOST)
 
 # FreeBSD
@@ -131,7 +135,9 @@ SRC	:= 	CAccount.cpp \
 		../common/CThread.cpp \
 		../common/CVarDefMap.cpp \
 		../common/CVarFloat.cpp \
-		../common/graycom.cpp
+		../common/graycom.cpp \
+		../sphere/threads.cpp \
+		../tests/threads.cpp
 
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
@@ -143,7 +149,7 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
 	@$(CCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
@@ -152,7 +158,7 @@ clean:	tidy
 tidy:
 	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
 													../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak ../common/zlib/*~ ../common/zlib/*orig \
-													../common/zlib/*bak
+													../common/zlib/*bak ../sphere/*~ ../sphere/*orig ../sphere/*bak ../tests/*~ ../tests/*orig ../tests/*bak
 
 tags:	$(SRC)
 	ctags $(SRC)
@@ -168,7 +174,8 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o \
+																								 ../sphere/*.o ../tests/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
