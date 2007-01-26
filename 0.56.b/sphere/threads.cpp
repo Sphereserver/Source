@@ -162,7 +162,9 @@ void AbstractThread::start()
 #else
 	// pthread_create doesn't return the new thread id, so we set it in runner?
 	if ( pthread_create( &m_handle, NULL, &runner, this ) )
-		throw new CException(LOGL_FATAL, 0, "Unable to spawn new thread");
+		throw new CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
+	else
+		m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
 #endif
 	push(this);
 }
@@ -172,7 +174,7 @@ void AbstractThread::terminate()
 	if( isActive() ) 
 	{
 #ifdef _WIN32
-		if( m_id == ::GetCurrentThreadId() ) 
+		if( getId() == ::GetCurrentThreadId() ) 
 		{
 			_endthreadex(0);
 		}
@@ -182,14 +184,13 @@ void AbstractThread::terminate()
 		}
 		CloseHandle(m_handle);
 #else
-		if( pthread(m_handle,pthread_self()) ) 
+		if( pthread_equal(m_handle,pthread_self()) ) 
 		{
 			pthread_exit(0);
 		}
 		else 
 		{
-			// TerminateThread doesn't wait for a thread to end.. it seems is like pthread_kill
-			pthread_kill(m_handle, 1);
+			pthread_cancel(m_handle); // IBM say it so
 		}
 #endif
 		// Common things
@@ -292,11 +293,6 @@ void AbstractThread::run()
 SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread) 
 {
 	AbstractThread *caller = (AbstractThread*)callerThread;
-
-#ifndef _WIN32
-	// This should be our id on NIX.
-	caller->m_id = (unsigned)pthread_self();
-#endif
 
 	caller->run();
 
