@@ -110,6 +110,7 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 			{
 				item[count].m_id = count-1;
 				item[count].m_sText.Format( "MORE" );
+				item[count].m_color = 0;
 				m_tmMenu.m_Item[count] = 0xFFFF0000 | entry;
 				break;
 			}
@@ -118,6 +119,7 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 		CClient * pClient = pPage->FindAccount()->FindClient();	// logged in ?
 
 		item[count].m_id = count-1;
+		item[count].m_color = 0;
 		item[count].m_sText.Format( "%s %s %s",
 			(LPCTSTR) pPage->GetName(),
 			(pClient==NULL) ? "OFF":"ON ",

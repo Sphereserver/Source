@@ -583,6 +583,10 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
 		item[count].m_id = idi;
+		if ( pItem->IsType( IT_EQ_MEMORY_OBJ ) )
+			item[count].m_color = 0;
+		else
+			item[count].m_color = pItem->GetHue();
 	}
 
 	addItemMenu( CLIMODE_MENU_EDIT, item, count, pObj );
@@ -965,14 +969,19 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		item[0].m_sText = "Tracking";
 
 		item[1].m_id = ITEMID_TRACK_HORSE;
+		item[1].m_color = 0;
 		item[1].m_sText = "Animals";
 		item[2].m_id = ITEMID_TRACK_OGRE;
+		item[2].m_color = 0;
 		item[2].m_sText = "Monsters";
 		item[3].m_id = ITEMID_TRACK_MAN;
+		item[3].m_color = 0;
 		item[3].m_sText = "Humans";
 		item[4].m_id = ITEMID_TRACK_MAN_NAKED;
+		item[4].m_color = 0;
 		item[4].m_sText = "Players";
 		item[5].m_id = ITEMID_TRACK_WISP;
+		item[5].m_color = 0;
 		item[5].m_sText = "Anything that moves";
 
 		m_tmMenu.m_Item[0] = 0;
@@ -1047,6 +1056,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 
 			count ++;
 			item[count].m_id = pCharDef->m_trackID;
+			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();
 			m_tmMenu.m_Item[count] = pChar->GetUID();
 			if ( count >= COUNTOF( item )-1 )
