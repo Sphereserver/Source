@@ -36,7 +36,7 @@ public:
 #ifdef _WIN32
 	static int GetSystemErrorMessage( DWORD dwError, LPTSTR lpszError, UINT nMaxError );
 #endif
-	BOOL GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext = NULL );
+	bool GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext = NULL );
 };
 
 class CGrayAssert : public CGrayError
@@ -54,7 +54,7 @@ public:
 	CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pExp, LPCTSTR pFile, unsigned uLine);
 	virtual ~CGrayAssert();
 
-	virtual BOOL GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext);
+	virtual bool GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext);
 };
 
 #ifdef _WIN32

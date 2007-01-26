@@ -209,22 +209,22 @@ void AbstractThread::run()
 	int tickPeriod;
 	switch( m_priority ) 
 	{
-		case IThread::Priority::Idle:
+		case IThread::Idle:
 			tickPeriod = 1000;
 			break;
-		case IThread::Priority::Low:
+		case IThread::Low:
 			tickPeriod = 200;
 			break;
-		case IThread::Priority::Normal:
+		case IThread::Normal:
 			tickPeriod = 100;
 			break;
-		case IThread::Priority::High:
+		case IThread::High:
 			tickPeriod = 50;
 			break;
-		case IThread::Priority::Highest:
+		case IThread::Highest:
 			tickPeriod = 25;
 			break;
-		case IThread::Priority::RealTime:
+		case IThread::RealTime:
 			tickPeriod = 0;
 			break;
 		default:

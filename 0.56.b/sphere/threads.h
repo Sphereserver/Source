@@ -81,10 +81,10 @@ private:
 	static int	m_threadsAvailable;
 	spherethread_t	m_handle;
 	unsigned	m_hangCheck;
-	IThread::Priority m_priority;
+	Priority m_priority;
 
 public:
-	AbstractThread(const char *name, IThread::Priority priority = IThread::Priority::Normal);
+	AbstractThread(const char *name, Priority priority = IThread::Normal);
 	~AbstractThread();
 
 	virtual unsigned getId();
