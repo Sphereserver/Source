@@ -123,41 +123,64 @@ int CSectorBase::GetMap() const
 	return m_map;
 }
 
-void CSectorBase::CheckMapBlockCache( int iTime )
+#ifdef _STD_MAPCACHE
+bool CSectorBase::CheckMapBlockTime( const MapBlockCache::value_type& Elem ) //static
+{
+	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");
+	return (Elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
+}
+#endif
+
+#ifdef _STD_MAPCACHE
+void CSectorBase::CheckMapBlockCache()
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
 	// Clean out the sectors map cache if it has not been used recently.
 	// iTime == 0 = delete all.
-#ifdef _STD_MAPCACHE
-	if ( iTime <= 0 )
+	if ( m_iMapBlockCacheTime <= 0 )
 	{
 		m_MapBlockCache.clear();
 		return;
 	}
 	if ( m_MapBlockCache.empty() )
 		return;
-	//DEBUG_ERR(("CacheHit\n"));
-	for ( MapBlockCache::iterator it = m_MapBlockCache.begin(); it != m_MapBlockCache.end() && !m_MapBlockCache.empty(); ++it )
+
+	EXC_TRY("CheckMapBlockCache_new");
+	remove_if( m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime );
+
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	CPointMap pt = GetBasePoint();
+	g_Log.EventDebug("check time %d, index %d/%d\n", m_iMapBlockCacheTime, it, m_MapBlockCache.size());
+	g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
+	EXC_DEBUG_END;
+	/*MapBlockCache::iterator it;
+	while( true )
 	{
-		//DEBUG_ERR(("it != m_MapBlockCache.end(%d)  !m_MapBlockCache.empty(%d)  (it != m_MapBlockCache.end() && !m_MapBlockCache.empty()) (%d)\n",it != m_MapBlockCache.end(),!m_MapBlockCache.empty(),(it != m_MapBlockCache.end() && !m_MapBlockCache.empty())));
 		EXC_TRY("CheckMapBlockCache_new");
-		if ( it->second->m_CacheTime.GetCacheAge() >= iTime )
+		it = find_if( m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime );
+		if ( it == m_MapBlockCache.end() )
+			break;
+		else
 		{
-			//DEBUG_ERR(("removing...\n"));
+			DEBUG_ERR(("removing...\n"));
 			EXC_SET("CacheTime up - Deleting");
 			m_MapBlockCache.erase(it);
-			--it;
 		}
 		EXC_CATCH;
-
 		EXC_DEBUG_START;
 		CPointMap pt = GetBasePoint();
 		g_Log.EventDebug("m_MapBlockCache.erase(%d)\n", it); 
-		g_Log.EventDebug("check time %d, index %d/%d\n", iTime, it, m_MapBlockCache.size());
+		g_Log.EventDebug("check time %d, index %d/%d\n", m_iMapBlockCacheTime, it, m_MapBlockCache.size());
 		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUG_END;
-	}
+	}*/
 #else
+void CSectorBase::CheckMapBlockCache( int iTime )
+{
+	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
+	// Clean out the sectors map cache if it has not been used recently.
 	int iCacheTime;
 	for ( int i = 0; i < m_MapBlockCache.GetCount(); i++ )
 	{

@@ -86,7 +86,13 @@ public:
 	CRectMap GetRect() const;
 	bool IsInDungeon() const;
 
+#ifdef _STD_MAPCACHE
+	bool static CheckMapBlockTime( const MapBlockCache::value_type& Elem );
+	void CheckMapBlockCache();
+	static int m_iMapBlockCacheTime;
+#else
 	void CheckMapBlockCache( int iTime );
+#endif
 	const CGrayMapBlock * GetMapBlock( const CPointMap & pt );
 
 	// CRegionBase
@@ -101,6 +107,5 @@ public:
 	CTeleport * GetTeleport2d( const CPointMap & pt ) const;
 	bool AddTeleport( CTeleport * pTeleport );
 };
-
 
 #endif // _INC_CSECTOR_H
