@@ -137,7 +137,11 @@ enum RESDISPLAY_VERSION
 #include "../common/CResourceBase.h"
 #include "../common/CRegion.h"
 #include "../common/CGrayMap.h"
+#ifdef VJAKA_REDO
+#include "../sphere/queue.h"
+#else
 #include "../common/CQueue.h"
+#endif
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
 
@@ -870,7 +874,11 @@ public:
 		} m_tmUseItem;
 	};
 
+#ifdef VJAKA_REDO
+	ByteQueue m_bin;		// CEvent in buffer. (from client)
+#else
 	CQueueBytes m_bin;		// CEvent in buffer. (from client)
+#endif
 
 private:
 	// Low level data transfer to client.
@@ -879,7 +887,11 @@ private:
 	int m_bin_msg_len;		// the current message packet to decode. (estimated length)
 
 	// ??? Since we really only deal with one input at a time we can make this static ?
+#ifdef VJAKA_REDO
+	ByteQueue m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
+#else
 	CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
+#endif
 
 	// encrypt/decrypt stuff.
 	CCrypt m_Crypt;			// Client source communications are always encrypted.

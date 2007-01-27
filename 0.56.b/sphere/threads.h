@@ -1,6 +1,8 @@
 #ifndef THREADS_H
 #define THREADS_H
 
+#include "../common/common.h"
+
 /**
  * Sphere threading system
  * Threads should be inherited from AbstractThread with overridden tick() method
