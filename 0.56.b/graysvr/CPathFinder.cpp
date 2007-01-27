@@ -85,7 +85,6 @@ CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 	EXC_TRY("CPathFinder Constructor");
 
 	CPointMap pt;
-	int i;
 
 	m_pChar = pChar;
 	m_Target = ptTarget;

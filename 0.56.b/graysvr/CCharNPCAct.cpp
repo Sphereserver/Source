@@ -2951,7 +2951,6 @@ void CChar::NPC_Pathfinding()
 	if ( !m_pNPC )
 		return;
 
-	int			i;
 	// If NPC_AI_ALWAYSINT is set, just make it as smart as possible.
 	int			iInt = ( g_Cfg.m_iNpcAi & NPC_AI_ALWAYSINT ) ? 300 : Stat_GetAdjusted(STAT_INT);
 	CPointMap	pTarg = m_Act_p;
