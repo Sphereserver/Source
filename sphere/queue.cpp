@@ -1,5 +1,6 @@
 #include "queue.h"
 
+#ifdef VJAKA_REDO
 ByteQueue::ByteQueue()
 {
 	m_data = NULL;
@@ -71,3 +72,4 @@ void ByteQueue::append(ByteQueue &data)
 {
 	append(data.raw(), data.bytes());
 }
+#endif

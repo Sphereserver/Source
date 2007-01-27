@@ -1,6 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#ifdef VJAKA_REDO
 #include "../common/common.h"
 
 class ByteQueue
@@ -24,5 +25,6 @@ private:
 	int		m_bytes;
 	int		m_size;
 };
+#endif
 
 #endif
