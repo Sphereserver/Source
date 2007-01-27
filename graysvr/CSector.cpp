@@ -8,7 +8,9 @@
 //////////////////////////////////////////////////////////////////
 // -CSector
 
-int CSectorBase::m_iMapBlockCacheTime = 0;
+#ifdef _STD_MAPCACHE
+	int CSectorBase::m_iMapBlockCacheTime = 0;
+#endif
 
 CSector::CSector()
 {

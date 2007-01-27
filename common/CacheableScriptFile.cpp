@@ -1,12 +1,12 @@
 #include "../graysvr/graysvr.h"
 #include "CacheableScriptFile.h"
 
-CacheableScriptFile::CacheableScriptFile() 
+CacheableScriptFile::CacheableScriptFile()
 {
 	m_closed = true;
-	lineHead = NULL;
-	m_currentLine = NULL;
 	m_realFile = false;
+	m_currentLine = -1;
+	m_fileContent = NULL;
 }
 
 CacheableScriptFile::~CacheableScriptFile() 
@@ -22,7 +22,9 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::OpenBase");
+	m_fileContent = new std::vector<std::string>();
 	m_pStream = fopen(GetFilePath(), GetModeStr());
+	
 	if( m_pStream == NULL ) 
 	{
 		return false;
@@ -30,40 +32,21 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 
 	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
-
-	lineHead = new TLine;
-	lineHead->line = NULL;
-	lineHead->next = NULL;
-
-	TLine *currentLine = lineHead;
-
 	char *buf = Str_GetTemp();
-	int index = 0;
+	
 	while( !feof(m_pStream) ) 
 	{
 		buf[0] = 0;
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
 
-		int len = strlen(buf);
-		currentLine->line = new char[len+1];
-		strcpy(currentLine->line, buf);
-		currentLine->index = index;
-
-		TLine *newLine = new TLine;
-		newLine->line = NULL;
-		newLine->next = NULL;
-
-		currentLine->next = newLine;
-		currentLine = newLine;
-
-		index++;
+		std::string strLine(buf, strlen(buf));
+		m_fileContent->push_back(strLine);
 	}
 
 	fclose(m_pStream);
 	m_pStream = NULL;
 	m_hFile = 0;
-	m_currentLine = lineHead;
-
+	m_currentLine = 0;
 	m_realFile = true;
 
 	return true;
@@ -82,32 +65,19 @@ void CacheableScriptFile::CloseBase()
 		//	clear all data
 		if( m_realFile ) 
 		{
-			if( lineHead != NULL ) 
-			{
-				TLine *prevLine = NULL;
-				for( TLine *line = lineHead; line != NULL; line = line->next ) 
-				{
-					if( prevLine != NULL ) 
-					{
-						delete prevLine;
-					}
-
-					prevLine = line;
-
-					if( line->line != NULL ) 
-					{
-						delete []line->line;
-					}
-				}
-			}
+			m_fileContent->clear();
+			if ( m_fileContent )
+				delete m_fileContent;
 		}
-		lineHead = NULL;
-		m_currentLine = NULL;
+
+		m_fileContent = NULL;
+		m_currentLine = -1;
 		m_closed = true;
 	}
 }
 
-bool CacheableScriptFile::IsFileOpen() const {
+bool CacheableScriptFile::IsFileOpen() const 
+{
 	if( useDefaultFile() ) 
 	{
 		return CFileText::IsFileOpen();
@@ -125,10 +95,10 @@ bool CacheableScriptFile::IsEOF() const
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
-	return (( m_currentLine == NULL ) || ( m_currentLine->next == NULL ));
+	return (( m_currentLine == -1 ) || ( m_currentLine == (m_fileContent->size() - 1) ));
 }
 
-TCHAR *CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax) 
+TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax) 
 {
 	if( useDefaultFile() ) 
 	{
@@ -138,10 +108,10 @@ TCHAR *CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax)
 	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
 	*pBuffer = NULL;
 
-	if(( m_currentLine != NULL ) && ( m_currentLine->line != NULL )) 
+	if(( m_currentLine != -1 ) && ( m_currentLine != (m_fileContent->size() - 1) )) 
 	{
-		strcpy(pBuffer, m_currentLine->line);
-		m_currentLine = m_currentLine->next;
+		strcpy(pBuffer, (m_fileContent->at(m_currentLine)).c_str() );
+		m_currentLine += 1;
 	}
 	else 
 	{
@@ -160,18 +130,16 @@ LONG CacheableScriptFile::Seek(LONG offset, UINT origin)
 
 	ADDTOCALLSTACK("CacheableScriptFile::Seek");
 	int linenum = offset;
+
 	if( origin != SEEK_SET ) 
 	{
 		linenum = 0;	//	do not support not SEEK_SET rotation
 	}
-
-	for( TLine *l = lineHead; l != NULL; l = l->next ) 
+	
+	if ( linenum < m_fileContent->size() )
 	{
-		if( l->index == linenum ) 
-		{
-			m_currentLine = l;
-			return l->index;
-		}
+		m_currentLine = linenum;
+		return linenum;
 	}
 
 	return -1;
@@ -183,9 +151,9 @@ DWORD CacheableScriptFile::GetPosition() const
 	{
 		return CFileText::GetPosition();
 	}
-	
+
 	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
-	return m_currentLine->index;
+	return m_currentLine;
 }
 
 void CacheableScriptFile::dupeFrom(CacheableScriptFile *other) 
@@ -195,11 +163,9 @@ void CacheableScriptFile::dupeFrom(CacheableScriptFile *other)
 		return;
 	}
 
-	ADDTOCALLSTACK("CacheableScriptFile::dupeFrom");
 	m_closed = other->m_closed;
-
 	m_realFile = false;
-	lineHead = other->lineHead;
+	m_fileContent = other->m_fileContent;
 }
 
 bool CacheableScriptFile::useDefaultFile() const 
