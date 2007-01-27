@@ -22,6 +22,12 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+	#define DEELEX_CALLTYPE __cdecl
+#else
+	#define DEELEX_CALLTYPE
+#endif
+
 //
 // Data Reference
 //
@@ -932,10 +938,10 @@ public:
 	CPosixElxT(const char * posix, int brightleft);
 
 protected:
-	static int __cdecl m_isblank(int c);
+	static int DEELEX_CALLTYPE m_isblank(int c);
 
 public:
-	int (__cdecl *m_posixfun)(int);
+	int (DEELEX_CALLTYPE *m_posixfun)(int);
 	int m_brightleft;
 	int m_byes;
 };
@@ -1475,7 +1481,7 @@ protected:
 	int m_nNextPos;
 	int m_nCharsetDepth;
 	int m_bQuoted;
-	int (__cdecl *m_quote_fun)(int);
+	int (DEELEX_CALLTYPE *m_quote_fun)(int);
 
 	ElxInterface * m_pStockElxs[STOCKELX_COUNT];
 };
