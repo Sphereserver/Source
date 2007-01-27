@@ -60,7 +60,12 @@ protected:
 	int m_map;			// sector map
 
 private:
+#ifndef _STD_MAPCACHE
 	CObPointSortArray	m_MapBlockCache;	//	CGrayMapBlock map cache. 
+#else
+	typedef std::map<long, CGrayMapBlock*>	MapBlockCache;
+	MapBlockCache							m_MapBlockCache;
+#endif
 public:
 	static const char *m_sClassName;
 	CObPointSortArray	m_Teleports;		//	CTeleport array
