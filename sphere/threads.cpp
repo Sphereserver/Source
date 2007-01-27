@@ -1,4 +1,6 @@
 // this thing is somehow required to be able to initialise OLE
+#ifdef VJAKA_REDO
+
 #define _WIN32_DCOM
 
 #include "../common/common.h"
@@ -349,3 +351,5 @@ void AbstractThread::onStart()
 {
 	//	empty. override if need in subclass
 }
+
+#endif

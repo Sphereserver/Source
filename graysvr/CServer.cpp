@@ -19,10 +19,7 @@
 
 #ifdef VJAKA_REDO
 	#include "../sphere/network.h"
-#endif
-
-#ifdef NEW_THREADS_FRAMEWORK
-extern void testThreads();
+	extern void testThreads();
 #endif
 
 ////////////////////////////////////////////////////////
@@ -1421,7 +1418,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 
 			case 'T':
 				{
-#ifdef NEW_THREADS_FRAMEWORK
+#ifdef VJAKA_REDO
 					testThreads();
 #endif
 				} return false;

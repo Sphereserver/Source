@@ -1,0 +1,132 @@
+This is a revision of my well-known regular-expression package, regexp(3).
+It gives C programs the ability to use egrep-style regular expressions, and
+does it in a much cleaner fashion than the analogous routines in SysV.
+It is not, alas, fully POSIX.2-compliant; that is hard.  (I'm working on
+a full reimplementation that will do that.)
+
+This version is the one which is examined and explained in one chapter of
+"Software Solutions in C" (Dale Schumacher, ed.; AP Professional 1994;
+ISBN 0-12-632360-7), plus a couple of insignificant updates, plus one
+significant bug fix (done 10 Nov 1995).
+
+Although this package was inspired by the Bell V8 regexp(3), this
+implementation is *NOT* AT&T/Bell code, and is not derived from licensed
+software.  Even though U of T is a V8 licensee.  This software is based on
+a V8 manual page sent to me by Dennis Ritchie (the manual page enclosed
+here is a complete rewrite and hence is not covered by AT&T copyright).
+I admit to some familiarity with regular-expression implementations of
+the past, but the only one that this code traces any ancestry to is the
+one published in Kernighan & Plauger's "Software Tools" (from which
+this one draws ideas but not code).
+
+Simplistically:  put this stuff into a source directory, inspect Makefile
+for compilation options that need changing to suit your local environment,
+and then do "make".  This compiles the regexp(3) functions, builds a
+library containing them, compiles a test program, and runs a large set of
+regression tests.  If there are no complaints, then put regexp.h into
+/usr/include, add regexp.o, regsub.o, and regerror.o into your C library
+(or put libre.a into /usr/lib), and install regexp.3 (perhaps with slight
+modifications) in your manual-pages directory. 
+
+The files are:
+
+COPYRIGHT	copyright notice
+README		this text
+Makefile	instructions to make everything
+regexp.3	manual page
+regexp.h	header file, for /usr/include
+regexp.c	source for regcomp() and regexec()
+regsub.c	source for regsub()
+regerror.c	source for default regerror()
+regmagic.h	internal header file
+try.c		source for test program
+timer.c		source for timing program
+tests		test list for try and timer
+
+This implementation uses nondeterministic automata rather than the
+deterministic ones found in some other implementations, which makes it
+simpler, smaller, and faster at compiling regular expressions, but slower
+at executing them.  Many users have found the speed perfectly adequate,
+although replacing the insides of egrep with this code would be a mistake.
+
+This stuff should be pretty portable, given an ANSI C compiler and
+appropriate option settings.  There are no "reserved" char values except for
+NUL, and no special significance is attached to the top bit of chars.
+The string(3) functions are used a fair bit, on the grounds that they are
+probably faster than coding the operations in line.  Some attempts at code
+tuning have been made, but this is invariably a bit machine-specific.
+
+This distribution lives at ftp://ftp.zoo.toronto.edu/pub/bookregexp.{tar|shar}
+at present.
+
+****************************************************************
+ADDENDUM by Benoit Goudreault-Emond (bge@videotron.ca)
+
+What you're holding in your greedy little hands right now is a
+*significantly* modified version of Mr. Spencer's package.  Roughly,
+the following was done:
+
+   1. Added support for wide characters (assumed to be unicode,
+      although there's nearly no code dependencies on that).
+
+   2. Added support for character classes.  This is *not* done in the
+      POSIX way, because I didn't want the lexer to get more complex
+      than it was (it's very simple right now).  It's sort of a
+      bastard hybrid of Perl classes (for the basic syntax,
+      backslash-letter) and POSIX classes (for the basic support based
+      on the ctype stuff).
+
+   3. Added support for word start and word end characters (\< and \>)
+      since people seem to like this.  Again, it's not the [:<:] and
+      [:>:] of POSIX, for simplicity.
+
+   4. Changed the API so it became safer (esp. regsub) and has better
+      error reporting (the error reporting is very close to the POSIX
+      regex facilities).
+
+   5. Modularized out the stuff people may want to parametrize in the
+      library--memory allocation and wide-character conversions.
+
+   6. Added front-end functions when one wants to use a single version
+      but use it with narrow characters.
+
+The API is close to POSIX, but not quite there; the main different is
+the presence of flags (there's no exec flags in the implementation, so
+I felt they were unnecessary).
+
+Granted, there are other faster regexp engines that have all those
+features (I actually took the trouble to port Mr. Spencer's latest
+version in the Tcl library), but it's much more complex, and about
+three times bigger in terms of code size.  This one is simple enough
+for me to understand quickly, which is a good thing given how many
+times I broke it as I was working on it. :{)
+
+The current regexp.3 manpage was also updated.  I'm such a nice guy.
+
+The nicest part of the library, as it is now, is that it gives you a
+reasonably powerful and portable regex engine in about 15 KB on
+Linux/i386.  Unfortunate that the syntax is not full POSIX, but
+supporting the constrained ranges (say, a{m,n}) and back references
+(those are a damn PITA to support! Just ask the original author of
+this regexp library, he's got interesting comments about this in his
+latest regexp engine's source code comment) would probably grow the
+regexp engine quite a bit.  The newest library, once compiled for
+Unicode support, eats 57 KB (to be quite honest, 7 KB of this is the
+Unicode character class tables).  Ouch.
+
+However, if code size is not a problem, then I really recommend you
+use a mature package, like GNU regexp, PCRE or the later versions of
+Mr. Spencer's library.  You'll be happier with it, and it's likely
+people have this installed on their machine already.  But if you're
+like me and you're stuck in an environment where you can never assume
+what people have on their system (i.e. Win32), and you just want a
+compact, simple regexp library, this library can be what you're
+looking for.
+
+Note that while I was playing with this, the library lost a bit of
+portability.  It now requires an ANSI C compiler to compile properly.
+I'm sorry, but it's hard to me to work with K&R C--although I
+understand it, I have to constantly fight myself not to write ANSI C
+function declarations.
+
+Hope this library will be useful to you.
