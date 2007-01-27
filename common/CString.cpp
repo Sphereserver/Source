@@ -3,7 +3,7 @@
 // Copyright Menace Software (www.menasoft.com).
 //
 
-#include "regex/stdregexp.hpp"
+#include "regex/deelx.h"
 #include "graycom.h"
 
 #define	STRING_DEFAULT_SIZE	42 // Please read the next comment before changing this
@@ -1037,20 +1037,21 @@ int Str_RegExMatch( LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError )
 {
 	try
 	{
-		regular_expression expressionformatch(pPattern);
-		if( !expressionformatch.exec(pText) )
-			return 0;
+		CRegexp expressionformatch(pPattern, NO_FLAG);
+		MatchResult result = expressionformatch.Match(pText);
+		if( result.IsMatched() )
+			return 1;
 
-		return 1;
-	}
-	catch (regular_expression_error& e)
-	{
-		strcpylen(lastError,e.message(),SCRIPT_MAX_LINE_LEN);
-		return -1;
+		return 0;
 	}
 	catch (std::bad_alloc e)
 	{
 		strcpylen(lastError,e.what(),SCRIPT_MAX_LINE_LEN);
+		return -1;
+	}
+	catch ( ... ) 
+	{
+		strcpylen(lastError,"Unknown",SCRIPT_MAX_LINE_LEN);
 		return -1;
 	}
 }

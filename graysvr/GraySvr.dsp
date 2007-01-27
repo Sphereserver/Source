@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib libmysql.lib boost_regex-vc71-mt-p-1_33_1.lib /nologo /version:0.10 /subsystem:windows /map /debug /machine:I386 /out:"Release/sphereSvr.exe" /libpath:"../../common/mysql/lib/release" /libpath:"../../common/boost/lib-regex"
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib libmysql.lib /nologo /version:0.10 /subsystem:windows /map /debug /machine:I386 /out:"Release/sphereSvr.exe" /libpath:"../../common/mysql/lib/release"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "GraySvr - Win32 Debug"
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib libmysql.lib boost_regex-vc71-mt-gdp-1_33_1.lib /nologo /version:0.12 /subsystem:windows /map /debug /machine:I386 /out:"Debug\sphereSvr.exe" /pdbtype:sept /libpath:"../../common/mysql/lib/debug" /libpath:"../../common/boost/lib-regex"
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib libmysql.lib /nologo /version:0.12 /subsystem:windows /map /debug /machine:I386 /out:"Debug\sphereSvr.exe" /pdbtype:sept /libpath:"../../common/mysql/lib/debug"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ENDIF 
@@ -492,55 +492,7 @@ SOURCE=..\common\mtrand\mtrand.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\common\regex\frontend.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\memory.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regerror.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regexp.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regexp.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regexp_custom.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regexp_int.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regmagic.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\regsub.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\report.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\stdregexp.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\stdregexp.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\regex\widechar.cpp
+SOURCE=..\common\regex\deelx.h
 # End Source File
 # End Group
 # Begin Source File
