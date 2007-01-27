@@ -829,7 +829,7 @@ bool CChar::Skill_MakeItem_Success()
 		// minimum quality is 1, maximum quality is 200.  100 is average.
 		// How much variance?  This is the difference in quality levels from
 		// what I can normally make.
-		int variance = 2 - (int) log10( Calc_GetRandVal( 250 ) + 1); // this should result in a value between 0 and 2.
+		int variance = 2 - (int) log10( (double)Calc_GetRandVal( 250 ) + 1); // this should result in a value between 0 and 2.
 		// Determine if lower or higher quality
 		if ( Calc_GetRandVal( 2 ))
 		{
