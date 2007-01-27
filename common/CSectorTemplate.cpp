@@ -144,18 +144,8 @@ void CSectorBase::CheckMapBlockCache()
 	}
 	if ( m_MapBlockCache.empty() )
 		return;
-
-	EXC_TRY("CheckMapBlockCache_new");
-	remove_if( m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime );
-
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	CPointMap pt = GetBasePoint();
-	g_Log.EventDebug("check time %d, index %d/%d\n", m_iMapBlockCacheTime, it, m_MapBlockCache.size());
-	g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
-	EXC_DEBUG_END;
-	/*MapBlockCache::iterator it;
+	//DEBUG_ERR(("CacheHit\n"));
+	MapBlockCache::iterator it;
 	while( true )
 	{
 		EXC_TRY("CheckMapBlockCache_new");
@@ -164,7 +154,7 @@ void CSectorBase::CheckMapBlockCache()
 			break;
 		else
 		{
-			DEBUG_ERR(("removing...\n"));
+			//DEBUG_ERR(("removing...\n"));
 			EXC_SET("CacheTime up - Deleting");
 			m_MapBlockCache.erase(it);
 		}
@@ -175,7 +165,7 @@ void CSectorBase::CheckMapBlockCache()
 		g_Log.EventDebug("check time %d, index %d/%d\n", m_iMapBlockCacheTime, it, m_MapBlockCache.size());
 		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUG_END;
-	}*/
+	}
 #else
 void CSectorBase::CheckMapBlockCache( int iTime )
 {
