@@ -8,6 +8,8 @@
 //////////////////////////////////////////////////////////////////
 // -CSector
 
+int CSectorBase::m_iMapBlockCacheTime = 0;
+
 CSector::CSector()
 {
 	m_ListenItems = 0;
@@ -1094,7 +1096,12 @@ void CSector::OnTick(int iPulseCount)
 	if ( fSleeping || ! ( iPulseCount & 0x7f ))	// 30 seconds or so.
 	{
 		// delete the static CGrayMapBlock items that have not been used recently.
+#ifdef _STD_MAPCACHE
+		m_iMapBlockCacheTime = ( fSleeping ? 0 : g_Cfg.m_iMapCacheTime );
+		CheckMapBlockCache();
+#else
 		CheckMapBlockCache( fSleeping ? 0 : g_Cfg.m_iMapCacheTime );
+#endif
 	}
 	EXC_CATCH;
 
