@@ -87,14 +87,6 @@ SRC	:= 	CAccount.cpp \
 		CWorldImport.cpp \
 		CWorldMap.cpp \
 		graysvr.cpp \
-		../common/regex/frontend.c \
-		../common/regex/memory.c \
-		../common/regex/regerror.c \
-		../common/regex/regexp.c \
-		../common/regex/regsub.c \
-		../common/regex/report.c \
-		../common/regex/widechar.c \
-		../common/regex/stdregexp.cpp \
 		../common/mtrand/mtrand.cpp \
 		../common/twofish/twofish2.cpp \
 		../common/zlib/adler32.c \

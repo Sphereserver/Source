@@ -164,7 +164,10 @@ void AbstractThread::start()
 #else
 	// pthread_create doesn't return the new thread id, so we set it in runner?
 	if ( pthread_create( &m_handle, NULL, &runner, this ) )
+	{
+		m_handle = (spherethread_t) NULL;
 		throw new CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
+	}
 	else
 		m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
 #endif
