@@ -2,6 +2,7 @@
 #define CACHEABLE_SCRIPT_FILE_H
 
 #include "CFile.h"
+#include <string>
 
 class CacheableScriptFile : public CFileText {
 protected:
@@ -22,14 +23,8 @@ public:
 private:
 	bool m_closed;
 	bool m_realFile;
-	struct TLine 
-	{
-		int index;
-		TLine *next;
-		char *line;
-	};
-	TLine *lineHead;
-	TLine *m_currentLine;
+	std::vector<std::string> * m_fileContent;
+	int m_currentLine;
 
 private:
 	bool useDefaultFile() const;
