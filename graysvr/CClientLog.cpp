@@ -666,21 +666,36 @@ void CClient::xProcessMsg(int fGood)
 	{
 		if ( !fGood )
 		{
+#ifdef VJAKA_REDO
+			DEBUG_ERR(("%s (%x):Bad Msg(%x) Eat %d bytes, prv=0%x, type=%d\n", m_pAccount ? m_pAccount->GetName() : "", 
+					m_Socket.GetSocket(), m_bin_ErrMsg, m_bin.bytes(), m_bin_PrvMsg, GetConnectType() ));
+#else
 			DEBUG_ERR(("%s (%x):Bad Msg(%x) Eat %d bytes, prv=0%x, type=%d\n", m_pAccount ? m_pAccount->GetName() : "", 
 					m_Socket.GetSocket(), m_bin_ErrMsg, m_bin.GetDataQty(), m_bin_PrvMsg, GetConnectType() ));
+#endif
 
 #ifdef _DEBUG
 			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
 #endif
 		}
+#ifdef VJAKA_REDO
+		m_bin.empty();
+#else
 		m_bin.Empty();	// eat the buffer.
+#endif
 		if ( GetConnectType() == CONNECT_LOGIN )	// tell them about it.
 		{
 			addLoginErr(LOGIN_ERR_OTHER);
 		}
 	}
 	else
+	{
+#ifdef VJAKA_REDO
+		m_bin.remove(m_bin_msg_len);
+#else
 		m_bin.RemoveDataAmount(m_bin_msg_len);
+#endif
+	}
 
 	m_bin_msg_len = 0;
 }
@@ -850,15 +865,25 @@ void CClient::xSendPktNow( const CCommand * pCmd, int length )
 			m_fClosed	= true;
 			return;
 		}
+#ifdef VJAKA_REDO
+		if ( m_bout.bytes() + length > MAX_BUFFER )
+		{
+			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.bytes(), length ));
+#else
 		if ( m_bout.GetDataQty() + length > MAX_BUFFER )
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
+#endif
 			m_fClosed	= true;
 			return;
 		}
 	}
 
+#ifdef VJAKA_REDO
+	m_bout.append((BYTE *)pData, length);
+#else
 	m_bout.AddNewData((const BYTE*) pData, length);
+#endif
 	xFlush();
 }
 
@@ -927,7 +952,11 @@ void CClient::xFlush()
 	// NOTE:
 	// Make sure we do not overflow the Sockets Tx buffers!
 
+#ifdef VJAKA_REDO
+	int iLen = m_bout.bytes();
+#else
 	int iLen = m_bout.GetDataQty();
+#endif
 	if ( !iLen || !m_Socket.IsOpen() || m_fClosed )
 		return;
 
@@ -936,12 +965,20 @@ void CClient::xFlush()
 	int iLenRet;
 	if ( GetConnectType() != CONNECT_GAME )	// acting as a login server to this client.
 	{
+#ifdef VJAKA_REDO
+		iLenRet = m_Socket.Send( m_bout.raw(), iLen );
+#else
 		iLenRet = m_Socket.Send( m_bout.RemoveDataLock(), iLen );
+#endif
 		if ( iLenRet != SOCKET_ERROR )
 		{
 			// Tx overflow may be handled gracefully.
 			g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenRet );
+#ifdef VJAKA_REDO
+			m_bout.remove(iLenRet);
+#else
 			m_bout.RemoveDataAmount(iLenRet);
+#endif
 		}
 		else	
 		{
@@ -975,7 +1012,11 @@ Do_Handle_Error:
 		// Only the game server does this.
 		// This acts as a compression alg. tho it may expand the data some times.
 
+#ifdef VJAKA_REDO
+		int iLenComp = xCompress( sm_xCompress_Buffer, m_bout.raw(), iLen );
+#else
 		int iLenComp = xCompress( sm_xCompress_Buffer, m_bout.RemoveDataLock(), iLen );
+#endif
 		ASSERT( iLenComp <= sizeof(sm_xCompress_Buffer));
 
 		// This now works. Thx to Necr0 post and library, i've understood how to do it.
@@ -989,7 +1030,11 @@ Do_Handle_Error:
 		if ( iLenRet != SOCKET_ERROR )
 		{
 			g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLen );
+#ifdef VJAKA_REDO
+			m_bout.remove(iLen);
+#else
 			m_bout.RemoveDataAmount(iLen);	// must use all of it since we have no idea what was really sent.
+#endif
 		}
 
 		if ( iLenRet != iLenComp )
@@ -1016,15 +1061,25 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 			m_fClosed	= true;
 			return;
 		}
+#ifdef VJAKA_REDO
+		if ( m_bout.bytes() + length > MAX_BUFFER )
+		{
+			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.bytes(), length ));
+#else
 		if ( m_bout.GetDataQty() + length > MAX_BUFFER )
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
+#endif
 			m_fClosed	= true;
 			return;
 		}
 	}
 
+#ifdef VJAKA_REDO
+	m_bout.append((BYTE*)pData, length);
+#else
 	m_bout.AddNewData( (const BYTE*) pData, length );
+#endif
 
 	if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
 	{
@@ -1043,13 +1098,21 @@ void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We
 {
 	ADDTOCALLSTACK("CClient::xSendReady");
 	// We could send the packet now if we wanted to but wait til we have more.
+#ifdef VJAKA_REDO
+	if ( m_bout.bytes() + length >= MAX_BUFFER )
+#else
 	if ( m_bout.GetDataQty() + length >= MAX_BUFFER )
+#endif
 	{
 		xFlush();
 	}
 //	DEBUG_ERR(("SEND: %x:adding %d bytes\n", m_Socket.GetSocket(), length));
 	xSend( pData, length );
+#ifdef VJAKA_REDO
+	if ( bNextFlush && ( m_bout.bytes() >= MAX_BUFFER / 2 ) )	// send only if we have a bunch.
+#else
 	if ( bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 ) )	// send only if we have a bunch.
+#endif
 	{
 		xFlush();
 	}
@@ -1156,8 +1219,13 @@ bool CClient::xRecvData() // Receive message from client
 	// Decrypt the client data.
 	// TCP = no missed packets ! If we miss a packet we are screwed !
 
+#ifdef VJAKA_REDO
+	m_Crypt.Decrypt(m_bin.appendStart(iCountNew), Event.m_Raw, iCountNew );
+	m_bin.appendFinish(iCountNew);
+#else
 	m_Crypt.Decrypt( m_bin.AddNewDataLock(iCountNew), Event.m_Raw, iCountNew );
 	m_bin.AddNewDataFinish(iCountNew);
+#endif
 
 	return( true );
 }

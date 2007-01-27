@@ -3880,7 +3880,11 @@ bool CClient::xCheckMsgSize( int len )
 		return false;
 	// Is there enough data from client to process this packet ?
 	m_bin_msg_len = len;
+#ifdef VJAKA_REDO
+	return( m_bin.bytes() >= len );
+#else
 	return( m_bin.GetDataQty() >= len );
+#endif
 }
 
 #define RETURN_FALSE() 		\
@@ -3899,7 +3903,11 @@ int CClient::xDispatchMsg()
 		return 0;
 
 	EXC_SET("remove data");
+#ifdef VJAKA_REDO
+	const CEvent *pEvent = (const CEvent *)m_bin.raw();
+#else
 	const CEvent * pEvent = (const CEvent *) m_bin.RemoveDataLock();
+#endif
 
 	//DEBUG_ERR(("Packet: 0x%x\n", pEvent->Default.m_Cmd));
 
@@ -3914,7 +3922,11 @@ int CClient::xDispatchMsg()
 
 		Args.m_s1 = m_PeerName.GetAddrStr();
 
+#ifdef VJAKA_REDO
+		int bytes = minimum(m_bin.bytes(), MAX_BUFFER);
+#else
 		int bytes = minimum(m_bin.GetDataQty(), MAX_BUFFER);
+#endif
 		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
 		char *zBuf = Str_GetTemp();
 
@@ -4008,7 +4020,13 @@ int CClient::xDispatchMsg()
 				if ( !xCheckMsgSize( wSpyLen ) )
 				{
 					if ( xCheckMsgSize0( wSpyLen ) )
+					{
+#ifdef VJAKA_REDO
+						m_bin_msg_len = m_bin.bytes();
+#else
 						m_bin_msg_len = m_bin.GetDataQty();
+#endif
+					}
 					else
 						RETURN_FALSE();
 				}

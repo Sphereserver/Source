@@ -17,8 +17,8 @@
 	#include "../common/crashdump/crashdump.h"
 #endif
 
-#ifdef USE_IO_COMPLETION_PORT
-HANDLE    hIocp;
+#ifdef VJAKA_REDO
+	#include "../sphere/network.h"
 #endif
 
 #ifdef NEW_THREADS_FRAMEWORK
@@ -1510,11 +1510,6 @@ CClient * CServer::SocketsReceive( CGSocket & socket ) // Check for messages fro
 	}
 
 	CClient *client = new CClient(hSocketClient);
-#ifdef USE_IO_COMPLETION_PORT
-	if( CreateIoCompletionPort((HANDLE)hSocketClient, hIocp, (ULONG_PTR)0, 0) == NULL ) {
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
-	}
-#endif
 	return client;
 }
 
@@ -1531,23 +1526,15 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	//	Do not accept packets while loading
 	if ( m_iModeCode > SERVMODE_ResyncPause ) return;
 
-#ifdef USE_IO_COMPLETION_PORT
-	DWORD numberBytes;
-	void *key;
-	OVERLAPPED completedOverlapped;
-	while( GetQueuedCompletionStatus(hIocp, &numberBytes, &key, &completedOverlapped, 0) ) {
-		//	TODO: here we have the KEY for client and DATA incoming
-	}
-	//	TODO: when client is dropped, it should be removed from queue
-#else
-
-
 	// What sockets do I want to look at ?
 	fd_set readfds;
 	int nfds = 0;
 
 	FD_ZERO(&readfds);
+#ifdef VJAKA_REDO
+#else
 	ADDTOSELECT(m_SocketMain.GetSocket());
+#endif
 
 	int	connecting	= 0;
 	
@@ -1598,10 +1585,13 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	}
 
 	// Process new connections.
+#ifdef VJAKA_REDO
+#else
 	if ( FD_ISSET( m_SocketMain.GetSocket(), &readfds))
 	{
 		SocketsReceive( m_SocketMain );
 	}
+#endif
 
 	// Any events from clients ?
 	for ( pClient = GetClientHead(); pClient!=NULL; pClient = pClientNext )
@@ -1650,7 +1640,6 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	}
 
 	m_Profile.Start( PROFILE_OVERHEAD );
-#endif
 }
 
 #undef ADDTOSELECT
@@ -1675,17 +1664,9 @@ bool CServer::SocketsInit( CGSocket & socket )
 		return false;
 	}
 
-#ifdef USE_IO_COMPLETION_PORT
-	hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, (ULONG_PTR)0, 0);
-	if( hIocp == NULL ) {
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
-		return false;
-	}
-
-	if( CreateIoCompletionPort((HANDLE)socket.GetSocket(), hIocp, (ULONG_PTR)0, 0) == NULL ) {
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to start high-speed network completion IO\n");
-		return false;
-	}
+#ifdef VJAKA_REDO
+	Network *network = new Network();
+	network->start();
 #else
 	linger lval;
 	lval.l_onoff = 0;
@@ -1826,7 +1807,11 @@ void CServer::OnTick()
 
 		for ( CClient * pClient = GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
 		{
+#ifdef VJAKA_REDO
+			if( !pClient->m_bin.bytes() )
+#else
 			if ( !pClient->m_bin.GetDataQty() )
+#endif
 				continue;
 
 			EXC_TRYSUB("ProcessMessage");
