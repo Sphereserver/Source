@@ -1,6 +1,8 @@
 #ifndef THREADS_H
 #define THREADS_H
 
+#ifdef VJAKA_REDO
+
 #include "../common/common.h"
 
 /**
@@ -108,5 +110,7 @@ private:
 	void run();
 	static SPHERE_THREADENTRY_RETNTYPE SPHERE_THREADENTRY_CALLTYPE runner(void *callerThread);
 };
+
+#endif
 
 #endif

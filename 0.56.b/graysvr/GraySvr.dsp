@@ -487,6 +487,62 @@ SOURCE=..\common\mtrand\mtrand.cpp
 SOURCE=..\common\mtrand\mtrand.h
 # End Source File
 # End Group
+# Begin Group "regexp"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\common\regex\frontend.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\memory.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regerror.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regexp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regexp.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regexp_custom.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regexp_int.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regmagic.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\regsub.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\report.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\stdregexp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\stdregexp.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\regex\widechar.cpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\common\CArray.cpp

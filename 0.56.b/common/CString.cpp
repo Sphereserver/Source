@@ -3,9 +3,7 @@
 // Copyright Menace Software (www.menasoft.com).
 //
 
-#ifndef _NOREGEX
- #include <boost/regex.hpp>
-#endif
+#include "regex/stdregexp.hpp"
 #include "graycom.h"
 
 #define	STRING_DEFAULT_SIZE	42 // Please read the next comment before changing this
@@ -1037,20 +1035,17 @@ void CharToMultiByteNonNull( BYTE * Dest, const char * Src, size_t MBytes) {
 
 int Str_RegExMatch( LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError )
 {
-#ifndef _NOREGEX
 	try
 	{
-		boost::regex regPattern(pPattern);
-		if ( boost::regex_match(pText, regPattern) )
-		{
-			return 1;
-		}
+		regular_expression expressionformatch(pPattern);
+		if( !expressionformatch.exec(pText) )
+			return 0;
 
-		return 0;
+		return 1;
 	}
-	catch (boost::regex_error& e)
+	catch (regular_expression_error& e)
 	{
-		sprintf(lastError, "%d", e.code());
+		strcpylen(lastError,e.message(),SCRIPT_MAX_LINE_LEN);
 		return -1;
 	}
 	catch (std::bad_alloc e)
@@ -1058,7 +1053,4 @@ int Str_RegExMatch( LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError )
 		strcpylen(lastError,e.what(),SCRIPT_MAX_LINE_LEN);
 		return -1;
 	}
-#else
-	return 0;
-#endif
 }

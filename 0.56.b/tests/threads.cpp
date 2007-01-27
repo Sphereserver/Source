@@ -1,3 +1,5 @@
+#ifdef VJAKA_REDO
+
 #include "../graysvr/graysvr.h"
 #include "../sphere/threads.h"
 
@@ -217,3 +219,5 @@ void testThreads() {
 
 	assert(TESTS_OK_NOTIFY && IGNORE_THIS_WINDOW);
 }
+
+#endif

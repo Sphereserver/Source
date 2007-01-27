@@ -11,16 +11,10 @@ WARN	= -w
 
 #DEBUG	= -ggdb2
 DEBUG	= -s
-INCLUDE	= -I../common -I/usr/include/mysql -I../../common/boost/boost_1_33_1
+INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-# ----- Generic
-LIBBOOST = -L../../common/boost/lib-regex-linux -lboost_regex-gcc-1_33_1
-#LIBBOOST = -L../../common/boost/lib-regex-linux -lboost_regex-d-gcc-1_33_1
-# ----- Debian 3.1
-#LIBBOOST = -L../../common/boost/lib-regex-debian31 -lboost_regex-gcc-1_33_1
-#LIBBOOST = -L../../common/boost/lib-regex-debian31 -lboost_regex-d-gcc-1_33_1
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient $(LIBBOOST)
+LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient
 
 # FreeBSD
 #LIBS	= -L/usr/lib -pthread
@@ -93,6 +87,14 @@ SRC	:= 	CAccount.cpp \
 		CWorldImport.cpp \
 		CWorldMap.cpp \
 		graysvr.cpp \
+		../common/regex/frontend.c \
+		../common/regex/memory.c \
+		../common/regex/regerror.c \
+		../common/regex/regexp.c \
+		../common/regex/regsub.c \
+		../common/regex/report.c \
+		../common/regex/widechar.c \
+		../common/regex/stdregexp.cpp \
 		../common/mtrand/mtrand.cpp \
 		../common/twofish/twofish2.cpp \
 		../common/zlib/adler32.c \
@@ -149,16 +151,17 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/regex/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
 	@$(CCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
 	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
 
 tidy:
-	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
-													../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak ../common/zlib/*~ ../common/zlib/*orig \
-													../common/zlib/*bak ../sphere/*~ ../sphere/*orig ../sphere/*bak ../tests/*~ ../tests/*orig ../tests/*bak
+	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak ../common/regex/*~ ../common/regex/*orig ../common/regex/*bak \
+													../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak ../common/twofish/*~ ../common/twofish/*orig \
+													../common/twofish/*bak ../common/zlib/*~ ../common/zlib/*orig ../common/zlib/*bak ../sphere/*~ ../sphere/*orig \
+													 ../sphere/*bak ../tests/*~ ../tests/*orig ../tests/*bak
 
 tags:	$(SRC)
 	ctags $(SRC)
@@ -174,8 +177,8 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o \
-																								 ../sphere/*.o ../tests/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/regex/*.o ../common/mtrand/*.o ../common/twofish/*.o \
+																								 ../common/zlib/*.o ../sphere/*.o ../tests/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
