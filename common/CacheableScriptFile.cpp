@@ -1,7 +1,7 @@
 #include "../graysvr/graysvr.h"
 #include "CacheableScriptFile.h"
 
-CacheableScriptFile::CacheableScriptFile() ù
+CacheableScriptFile::CacheableScriptFile()
 {
 	m_closed = true;
 	m_realFile = false;
@@ -30,7 +30,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 		return false;
 	}
 
-	m_hFile = (OSFILE_TYPE)fileno(m_pStream);
+	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
 	char *buf = Str_GetTemp();
 	
