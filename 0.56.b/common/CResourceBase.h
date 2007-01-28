@@ -191,7 +191,7 @@ public:
 
 	bool Load( LPCTSTR & pszCmds );
 	int WriteKey( TCHAR * pszArgs, bool fQtyOnly = false, bool fKeyOnly = false ) const;
-	int WriteNameSingle( TCHAR * pszArgs ) const;
+	int WriteNameSingle( TCHAR * pszArgs, int iQty = 0 ) const;
 };
 
 class CResourceQtyArray : public CGTypedArray<CResourceQty, CResourceQty&>

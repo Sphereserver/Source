@@ -3055,3 +3055,4 @@ this all in desperation)
 
 28-01-2007, Ellessar
 - Fixed: Pathfinding called on every NPC step.
+- Fixed #987: ResMake returning wrong values if the item doesn't exist in the world.
