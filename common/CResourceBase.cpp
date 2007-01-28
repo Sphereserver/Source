@@ -1167,20 +1167,19 @@ int CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) cons
 	return( i );
 }
 
-int CResourceQty::WriteNameSingle( TCHAR * pszArgs ) const
+int CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
-	int i;
+	CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE)m_rid.GetResIndex() );
+	//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));
+	if ( pItemBase )
+		return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
 	CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
 	if ( pResourceDef )
-	{
-		i = strcpylen( pszArgs, pResourceDef->GetName());
-	}
+		return( strcpylen( pszArgs, pResourceDef->GetName()) );
 	else
-	{
-		i = strcpylen( pszArgs, g_Cfg.ResourceGetName( m_rid ));
-	}
-	return( i );
+		return( strcpylen( pszArgs, g_Cfg.ResourceGetName( m_rid )) );
+	return 0;
 }
 
 bool CResourceQty::Load(LPCTSTR &pszCmds)
@@ -1386,23 +1385,25 @@ void CResourceQtyArray::WriteNames( TCHAR * pszArgs, int index ) const
 	if ( index > 0 && index < max )
 		max		= index;
 
+	int iQty;
 	for ( int i = (index > 0 ? index-1 : 0); i < max; i++ )
 	{
 		if ( i && !index )
 		{
 			pszArgs += sprintf( pszArgs, ", " );
 		}
-		if ( GetAt(i).GetResQty())
+		iQty = GetAt(i).GetResQty();
+		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
 			{
 				pszArgs += sprintf( pszArgs, "%d.%d ",
-						GetAt(i).GetResQty() / 10, GetAt(i).GetResQty() % 10 );
+						iQty / 10, iQty % 10 );
 			}
 			else
-				pszArgs += sprintf( pszArgs, "%d ", GetAt(i).GetResQty());
+				pszArgs += sprintf( pszArgs, "%d ", iQty);
 		}
-		pszArgs += GetAt(i).WriteNameSingle( pszArgs );
+		pszArgs += GetAt(i).WriteNameSingle( pszArgs, iQty );
 	}
 	*pszArgs = '\0';
 }
