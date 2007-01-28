@@ -254,40 +254,51 @@ void CClient::Event_Book_Page( CGrayUID uid, const CEvent * pEvent ) // Book win
 void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an item
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
+	EXC_TRY("CClient::Event_Item_Pickup");
 	// Player/client is picking up an item.
 
+	EXC_SET("Item");
 	CItem	*pItem = uid.ItemFind();
 	if ( !pItem || pItem->IsWeird() )
 	{
+		EXC_SET("Item - addObjectRemove(uid)");
 		addObjectRemove(uid);
+		EXC_SET("Item - addItemDragCancel(0)");
 		addItemDragCancel(0);
 		return;
 	}
 
+	EXC_SET("FastLoot");
 	//	fastloot (,emptycontainer) protection
 	if ( m_tNextPickup > m_tNextPickup.GetCurrentTime() )
 	{
+		EXC_SET("FastLoot - addItemDragCancel(0)");
 		addItemDragCancel(0);
 		return;
 	}
 	m_tNextPickup = m_tNextPickup.GetCurrentTime() + 3;
 
+	EXC_SET("origin");
 	// Where is the item coming from ? (just in case we have to toss it back)
 	CObjBase * pObjParent = dynamic_cast <CObjBase *>(pItem->GetParent());
 	m_Targ_PrvUID = ( pObjParent ) ? (DWORD) pObjParent->GetUID() : UID_CLEAR;
 	m_Targ_p = pItem->GetUnkPoint();
 
+	EXC_SET("ItemPickup");
 	amount = m_pChar->ItemPickup(pItem, amount);
 	if ( amount < 0 )
 	{
+		EXC_SET("ItemPickup - addItemDragCancel(0)");
 		addItemDragCancel(0);
 		return;
 	}
 	else if ( amount > 1 )
 		m_tNextPickup = m_tNextPickup + 2;	// +100 msec if amount should slow down the client
 
+	EXC_SET("TargMode");
 	SetTargMode(CLIMODE_DRAG);
 	m_Targ_UID = uid;
+	EXC_CATCH;
 }
 
 void inline CClient::Event_Item_Drop_Fail( CItem * pItem )

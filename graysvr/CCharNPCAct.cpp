@@ -2958,6 +2958,7 @@ void CChar::NPC_Pathfinding()
 
 	//	do we really need to find the path?
 	if ( iInt < 75 ) return;					// too dumb
+	if ( m_pNPC->m_nextPt == pTarg ) return;			// we have path to that position already saved in m_NextX/Y
 	if ( !pTarg.IsValidPoint() ) return;		// invalid point
 	if (( pTarg.m_x == local.m_x ) && ( pTarg.m_y == local.m_y )) return; // same spot
 	if ( pTarg.m_map != local.m_map ) return;	// cannot just move to another map
@@ -2989,6 +2990,7 @@ void CChar::NPC_Pathfinding()
 	//	proceed with the pathfinding
 	EXC_SET("filling the map");
 	CPathFinder	path(this, pTarg);
+	DEBUG_ERR(("filling the map\n"));
 
 	EXC_SET("searching the path");
 	if ( path.FindPath() == PATH_NONEXISTENT )
@@ -3005,6 +3007,7 @@ void CChar::NPC_Pathfinding()
 		m_pNPC->m_nextX[i - 1] = Next.m_x;
 		m_pNPC->m_nextY[i - 1] = Next.m_y;
 	}
+	m_pNPC->m_nextPt = pTarg;
 	path.ClearLastPath(); // !! Use explicitly when using one CPathFinder object for more NPCs
 
 	EXC_CATCH;
