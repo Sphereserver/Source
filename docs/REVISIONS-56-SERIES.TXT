@@ -3058,3 +3058,6 @@ this all in desperation)
 - Fixed #987: ResMake returning wrong values if the item doesn't exist in the world.
 - Fixed #1010: After casting a wall in a guard zone you were flagged as a criminal, also with the spellflag_harm
   flag off.
+
+28-01-2007, MrSugarCube
+- Fixed: GAINRADIUS on skill definitions defaulting to a random value instead of 0.
