@@ -2990,7 +2990,6 @@ void CChar::NPC_Pathfinding()
 	//	proceed with the pathfinding
 	EXC_SET("filling the map");
 	CPathFinder	path(this, pTarg);
-	DEBUG_ERR(("filling the map\n"));
 
 	EXC_SET("searching the path");
 	if ( path.FindPath() == PATH_NONEXISTENT )
