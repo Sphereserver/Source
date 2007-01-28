@@ -137,11 +137,6 @@ void CSectorBase::CheckMapBlockCache()
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
 	// Clean out the sectors map cache if it has not been used recently.
 	// iTime == 0 = delete all.
-	if ( m_iMapBlockCacheTime <= 0 )
-	{
-		m_MapBlockCache.clear();
-		return;
-	}
 	if ( m_MapBlockCache.empty() )
 		return;
 	//DEBUG_ERR(("CacheHit\n"));
@@ -154,10 +149,11 @@ void CSectorBase::CheckMapBlockCache()
 			break;
 		else
 		{
-			if ( it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime )
+			if ( m_iMapBlockCacheTime <= 0 || it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime )
 			{
 				//DEBUG_ERR(("removing...\n"));
 				EXC_SET("CacheTime up - Deleting");
+				delete it->second;
 				m_MapBlockCache.erase(it);
 			}
 		}
