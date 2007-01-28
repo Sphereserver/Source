@@ -1127,13 +1127,11 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 	// iSkillLevel = 0-1000
 	//
 
-	if ( m_pArea && m_pArea->IsGuarded())
-	{
-		Noto_Criminal();
-	}
-
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	ASSERT(pSpellDef);
+
+	if ( m_pArea && m_pArea->IsGuarded() && pSpellDef->IsSpellType(SPELLFLAG_HARM) )
+		Noto_Criminal();
 
 	// get the dir of the field.
 	int dx = abs( pntTarg.m_x - GetTopPoint().m_x );
