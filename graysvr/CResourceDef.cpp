@@ -359,6 +359,7 @@ CSkillDef::CSkillDef( SKILL_TYPE skill ) :
 {
 	if ( !CChar::IsSkillBase(skill) )
 	m_StatPercent	= 0;
+	m_GainRadius	= 0;
 	m_dwFlags		= 0;
 	m_dwGroup		= 0;
 	memset(m_StatBonus, 0, sizeof(m_StatBonus));
