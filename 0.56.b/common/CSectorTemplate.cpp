@@ -154,9 +154,12 @@ void CSectorBase::CheckMapBlockCache()
 			break;
 		else
 		{
-			//DEBUG_ERR(("removing...\n"));
-			EXC_SET("CacheTime up - Deleting");
-			m_MapBlockCache.erase(it);
+			if ( it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime )
+			{
+				DEBUG_ERR(("removing...\n"));
+				EXC_SET("CacheTime up - Deleting");
+				m_MapBlockCache.erase(it);
+			}
 		}
 		EXC_CATCH;
 		EXC_DEBUG_START;
@@ -171,13 +174,13 @@ void CSectorBase::CheckMapBlockCache( int iTime )
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
 	// Clean out the sectors map cache if it has not been used recently.
+	// iTime == 0 = delete all.
 	int iCacheTime;
-	for ( int i = 0; i < m_MapBlockCache.GetCount(); i++ )
+	for ( int i = 0; i < m_MapBlockCache.GetCount(); ++i )
 	{
 		CGrayMapBlock * pMapBlock = NULL;
 		EXC_TRY("CheckMapBlockCache");
 		EXC_SET("Casting");
-		//CGrayMapBlock	*pMapBlock = STATIC_CAST <CGrayMapBlock *>(m_MapBlockCache[i]);
 		pMapBlock = dynamic_cast<CGrayMapBlock *>(m_MapBlockCache.GetAt(i));
 		// ASSERT(pMapBlock);
 		// NOTE: Experimental thing... if we can't cast it to CGrayMapBlock
@@ -254,7 +257,6 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	int i = m_MapBlockCache.FindKey(pntBlock.GetPointSortIndex());
 	if ( i >= 0 )
 	{
-		//pMapBlock = STATIC_CAST <CGrayMapBlock *>(m_MapBlockCache[i]);
 		pMapBlock = dynamic_cast<CGrayMapBlock *>(m_MapBlockCache[i]);
 		if ( !pMapBlock )
 		{

@@ -1873,6 +1873,7 @@ public:
 
 	WORD	m_nextX[MAX_NPC_PATH_STORAGE_SIZE];	// array of X coords of the next step
 	WORD	m_nextY[MAX_NPC_PATH_STORAGE_SIZE];	// array of Y coords of the next step
+	CPointMap m_nextPt;							// where the array(^^) wants to go, if changed, recount the path
 	CServTime	m_timeRestock;		//	when last restock happened in sell/buy container
 
 public:
