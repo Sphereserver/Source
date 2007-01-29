@@ -261,6 +261,8 @@ void SetUnixSignals( bool bSet )
 #endif
 }
 
+#ifndef _LAG_INVESTIGATION
+
 STACK_INFO_REC g_stackInfo[0x1000];
 long g_stackPos = 0;
 
@@ -291,3 +293,5 @@ void StackDebugInformation::printStackTrace() {
 		startTime = g_stackInfo[i].startTime;
 	}
 }
+
+#endif

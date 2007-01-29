@@ -89,6 +89,7 @@ public:
 
 	#define EXC_SET(a) inLocalBlock = a; inLocalBlockCnt++
 
+#ifndef _LAG_INVESTIGATION
 	#define EXC_CATCH_EXCEPTION(a) \
 		bCATCHExcept = true; \
 		StackDebugInformation::printStackTrace(); \
@@ -97,6 +98,15 @@ public:
 														inLocalBlockCnt, inLocalBlock); \
 		else \
 			g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+#else
+		#define EXC_CATCH_EXCEPTION(a) \
+		bCATCHExcept = true; \
+		if ( inLocalBlock ) \
+			g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
+														inLocalBlockCnt, inLocalBlock); \
+		else \
+			g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+#endif
 
 	#define EXC_CATCH	}	\
 		catch ( CGrayError &e )	{ EXC_CATCH_EXCEPTION(&e); } \
@@ -114,10 +124,16 @@ public:
 		try \
 		{
 
+#ifndef _LAG_INVESTIGATION
 	#define EXC_CATCH_SUB(a,b) \
 		bCATCHExceptSub = true; \
 		StackDebugInformation::printStackTrace(); \
 		g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
+#else
+		#define EXC_CATCH_SUB(a,b) \
+		bCATCHExceptSub = true; \
+		g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
+#endif
 
 	#define EXC_CATCHSUB(a)	}	\
 		catch ( CGrayError &e )	\
@@ -156,6 +172,8 @@ public:
 
 #endif
 
+#ifndef _LAG_INVESTIGATION
+
 struct STACK_INFO_REC {
 	const char *functionName;
 	LONGLONG	startTime;
@@ -172,5 +190,9 @@ public:
 };
 
 #define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+
+#else
+#define ADDTOCALLSTACK(_function_)
+#endif
 
 #endif
