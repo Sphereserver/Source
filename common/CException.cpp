@@ -261,7 +261,7 @@ void SetUnixSignals( bool bSet )
 #endif
 }
 
-#ifndef _LAG_INVESTIGATION
+#ifdef _WIN32
 
 STACK_INFO_REC g_stackInfo[0x1000];
 long g_stackPos = 0;

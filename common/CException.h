@@ -89,7 +89,7 @@ public:
 
 	#define EXC_SET(a) inLocalBlock = a; inLocalBlockCnt++
 
-#ifndef _LAG_INVESTIGATION
+#ifdef _WIN32
 	#define EXC_CATCH_EXCEPTION(a) \
 		bCATCHExcept = true; \
 		StackDebugInformation::printStackTrace(); \
@@ -124,7 +124,7 @@ public:
 		try \
 		{
 
-#ifndef _LAG_INVESTIGATION
+#ifdef _WIN32
 	#define EXC_CATCH_SUB(a,b) \
 		bCATCHExceptSub = true; \
 		StackDebugInformation::printStackTrace(); \
@@ -172,7 +172,7 @@ public:
 
 #endif
 
-#ifndef _LAG_INVESTIGATION
+#ifdef _WIN32
 
 struct STACK_INFO_REC {
 	const char *functionName;
