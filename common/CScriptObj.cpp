@@ -75,7 +75,7 @@ bool CScriptTriggerArgs::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		pRef = m_pO1;
 		return( true );
 	}
-	if ( !strnicmp(pszKey, "REF", 3) )	// REF[1-65535].NAME
+	else if ( !strnicmp(pszKey, "REF", 3) )	// REF[1-65535].NAME
 	{
 		LPCTSTR pszTemp = pszKey;
 		pszTemp += 3;
@@ -183,8 +183,13 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 			}
 		}
 	}
+	else if ( !strnicmp(pszKey, "ARGO.", 5) )
+	{
+		index = AGC_O;
+	}
+	else
+		index = FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 
-	index = FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 	switch (index)
 	{
 		case AGC_N:
@@ -200,6 +205,16 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 		case AGC_S:
 			Init( s.GetArgStr() );
 			return true;
+		case AGC_O:
+			{
+				LPCTSTR pszTemp = s.GetKey() + strlen(sm_szLoadKeys[AGC_O]);
+				if ( *pszTemp == '.' )
+				{
+					++pszTemp;
+					CScript script( pszTemp, s.GetArgStr() );
+					return m_pO1->r_Verb( script, pSrc );
+				}
+			} return false;
 		case AGC_TRY:
 		case AGC_TRYSRV:
 			{

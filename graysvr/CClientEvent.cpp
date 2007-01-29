@@ -3932,6 +3932,7 @@ int CClient::xDispatchMsg()
 		char idx[5];
 
 		Args.m_s1 = m_PeerName.GetAddrStr();
+		Args.m_pO1 = this;
 
 #ifdef VJAKA_REDO
 		int bytes = minimum(m_bin.bytes(), MAX_BUFFER);
