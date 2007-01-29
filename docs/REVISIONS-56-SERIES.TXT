@@ -3060,7 +3060,7 @@ this all in desperation)
   flag off.
 
 28-01-2007, MrSugarCube
-- Fixed: GAINRADIUS on skill definitions defaulting to a random value instead of 0.
+- Fixed: GAINRADIUS on skill definitions defaulting to random values.
 
 29-01-2007, Ellessar
 - Optimalized: MapCaching (using STL functions), which should result in less bugs and better performance.
