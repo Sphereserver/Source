@@ -3061,3 +3061,7 @@ this all in desperation)
 
 28-01-2007, MrSugarCube
 - Fixed: GAINRADIUS on skill definitions defaulting to a random value instead of 0.
+
+29-01-2007, Ellessar
+- Optimalized: MapCaching (using STL functions), which should result in less bugs and better performance.
+- Fixed: Using .tele over water tiles was allowed.
