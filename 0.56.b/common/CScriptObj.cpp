@@ -2170,7 +2170,6 @@ jump_in:
 				break;
 
 			default:
-#ifndef _LAG_INVESTIGATION
 				if( strchr(s.GetKey(), '<') ) {
 					EXC_SET("parsing <> in a key");
 					char *buf = Str_GetTemp();
@@ -2182,7 +2181,6 @@ jump_in:
 					r_Verb(script, pSrc);
 					break;
 				}
-#endif
 				EXC_SET("parsing");
 				if ( !pArgs->r_Verb(s, pSrc) )
 				{
