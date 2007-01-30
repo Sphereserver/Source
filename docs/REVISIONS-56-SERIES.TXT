@@ -3063,5 +3063,10 @@ this all in desperation)
 - Fixed: GAINRADIUS on skill definitions defaulting to random values.
 
 29-01-2007, Ellessar
-- Optimalized: MapCaching (using STL functions), which should result in less bugs and better performance.
+- Optimized: MapCaching (using STL functions), which should result in less bugs and better performance.
 - Fixed: Using .tele over water tiles was allowed.
+
+29-01-2007, Furio
+- added: Is now possible to always use ARGO.verb directly.
+  In packetfilter functions ARGO is the CClient connected now (e.g. it allows SENDPACKET through
+  ARGO.SENDPACKET syntax at any time)
