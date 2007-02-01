@@ -717,22 +717,24 @@ bool CChar::NPC_SetVendorPrice( CItem * pItem, int iPrice )
 void CChar::NPC_PetDesert()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetDesert");
-	// How happy are we with being a pet ?
 	CChar * pCharOwn = NPC_PetGetOwner();
-	if ( pCharOwn && ! pCharOwn->CanSee(this))
+
+	// Are we a pet at all?
+	if ( pCharOwn )
 	{
-		pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
-	}
+		// How happy are we with being a pet ?
+		if ( ! pCharOwn->CanSee(this))
+		{
+			pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
+		}
 
 		if ( !IsSetEF(EF_Minimize_Triggers) )
 		{
 			if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE ) return;
 		}
 
-	NPC_PetClearOwners();
+		NPC_PetClearOwners();
 
-	if ( pCharOwn )
-	{
 		TCHAR	*pszMsg = Str_GetTemp();
 		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
 		Speak(pszMsg);

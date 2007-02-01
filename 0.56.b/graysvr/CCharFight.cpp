@@ -1529,7 +1529,7 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 		// NPC will Change targets.
 	}
 
-	if ( NPC_IsOwnedBy(pCharSrc) )
+	if ( NPC_IsOwnedBy(pCharSrc, false) )
 	{
 		NPC_PetDesert();
 	}
