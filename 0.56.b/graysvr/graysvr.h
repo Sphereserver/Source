@@ -1033,7 +1033,7 @@ private:
 	void Event_MenuChoice( const CEvent * pEvent ); // Choice from GMMenu or Itemmenu received
 	void Event_PromptResp( LPCTSTR pszText, int len );
 	void Event_Talk_Common(char *szText ); // PC speech
-	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode ); // PC speech
+	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
 	void Event_TalkUNICODE( const CEvent * pEvent );
 	void Event_SingleClick( CGrayUID uid );
 	void Event_SetName( CGrayUID uid, const char * pszCharName );

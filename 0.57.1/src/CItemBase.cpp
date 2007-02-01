@@ -599,13 +599,13 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 	//   iQualityLevel = 0-100
 
 	static int sm_iReentrantCount = 0;
-	sm_iReentrantCount++;
 	if ( sm_iReentrantCount > 32 )
 	{
-		g_Log.Warn("GetResourceValue reentrant item=%s\n", GetResourceName());
+		g_Log.Warn( "Too many RESOURCES at item '%s' to calculate a value with (circular resource list?).\n", GetResourceName() );
 		return 0;
 	}
 
+	sm_iReentrantCount++;
 	int lValue = 0;
 
 	// add value based on the base resources making this up.

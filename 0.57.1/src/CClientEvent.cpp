@@ -1365,7 +1365,7 @@ void CClient::Event_Talk_Common(char *szText) // PC speech
 
 
 
-void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode ) // PC speech
+void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip ) // PC speech
 {
 	if ( !GetAccount() || !GetChar() )
 		return;
@@ -1385,9 +1385,21 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode ) /
 
 	// Rip out the unprintables first.
 	TCHAR szText[MAX_TALK_BUFFER];
-	TCHAR szTextG[MAX_TALK_BUFFER];
-	strncpy( szTextG, pszText, MAX_TALK_BUFFER - 1 );
-	int len = Str_GetBare( szText, szTextG, sizeof(szText)-1 );
+	int len;
+
+	if ( bNoStrip )
+	{
+		// The characters in Unicode speech don't need to be filtered
+		strncpy( szText, pszText, MAX_TALK_BUFFER - 1 );
+		len = strlen( szText );
+	}
+	else
+	{
+		TCHAR szTextG[MAX_TALK_BUFFER];
+		strncpy( szTextG, pszText, MAX_TALK_BUFFER - 1 );
+		len = Str_GetBare( szText, szTextG, sizeof(szText)-1 );
+	}
+
 	if ( len <= 0 )
 		return;
 	pszText = szText;
@@ -1445,10 +1457,31 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 
 	unsigned char	mMode	= pEvent->TalkUNICODE.m_mode;
 	HUE_TYPE wHue = pEvent->TalkUNICODE.m_wHue;
-	bool bHasKeywords = ( mMode & 0xc0 ) != 0;
+	int iLen = pEvent->TalkUNICODE.m_len - sizeof(pEvent->TalkUNICODE);
 
+	bool bHasKeywords = ( mMode & 0xc0 ) != 0;
 	if ( bHasKeywords )
+	{
 		mMode &= ~0xc0;
+		BYTE * pKeywords = (BYTE*)(&pEvent->TalkUNICODE.m_utext);
+
+		int count = (UNPACKWORD(pKeywords) & 0xFFF0) >> 4;
+		if ( count < 0 || count > 50 )	// malformed check
+			return;
+
+		count += 1;
+		count *= 12;
+
+		int toskip = count / 8;
+		if ( count % 8 > 0 )
+			toskip++;
+
+		if ( toskip > (iLen * 2) )	// malformed check
+			return;
+
+		Event_Talk( (const char *)(pKeywords + toskip), wHue, (TALKMODE_TYPE)mMode, true );
+		return;
+	}
 
 	TALKMODE_TYPE	Mode	= (TALKMODE_TYPE) mMode;
 
@@ -1465,35 +1498,10 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 	// store the default language of choice. CLanguageID
 	pAccount->m_lang.Set( pEvent->TalkUNICODE.m_lang );
 
-	int iLen = pEvent->TalkUNICODE.m_len - sizeof(pEvent->TalkUNICODE);
 	int iLenChars = iLen/sizeof(WCHAR);
-
 	TCHAR szText[MAX_TALK_BUFFER];
    	NWORD wszText[MAX_TALK_BUFFER];
 	LPCTSTR pszText;
-	
-	if ( bHasKeywords )
-	{
-		BYTE * pKeywords = (BYTE*)(&pEvent->TalkUNICODE.m_utext);
-
-		int count = (UNPACKWORD(pKeywords) & 0xFFF0) >> 4;
-
-		if ( count < 0 || count > 50 )	// malformed check
-			return;
-
-		count += 1;
-		count *= 12;
-
-		int toskip = count / 8;
-		if ( count % 8 > 0 )
-			toskip++;
-
-		if ( toskip > (iLen * 2) )	// malformed check
-			return;
-
-		Event_Talk( (const char *)(pKeywords + toskip), wHue, Mode );
-		return;
-	}
 
 	const NWORD *puText = &pEvent->TalkUNICODE.m_utext[0];
 	if ( CvtNUNICODEToSystem(szText, sizeof(szText), pEvent->TalkUNICODE.m_utext, iLenChars) <= 0 )
