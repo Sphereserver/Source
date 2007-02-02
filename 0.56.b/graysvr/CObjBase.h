@@ -2822,7 +2822,7 @@ public:
 	}
 	short Skill_GetAdjusted( SKILL_TYPE skill ) const;
 	void Skill_SetBase( SKILL_TYPE skill, short wValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty );
+	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );

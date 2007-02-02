@@ -630,10 +630,12 @@ bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const
 	return( g_Cfg.Calc_SkillCheck( Skill_GetAdjusted(skill), difficulty ));
 }
 
-bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty )
+bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain )
 {
 	// ARGS:
-	//  difficulty = 0-100
+	//	skill		= skill to use
+	//  difficulty	= 0-100
+	//	bAllowGain	= can gain skill from this?
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
 	int result = Skill_CheckSuccess( skill, difficulty );
@@ -649,10 +651,15 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty )
 	
 	if ( ! result )
 	{
-		Skill_Experience( skill, -difficulty );
+		if ( bAllowGain )
+			Skill_Experience( skill, -difficulty );
+
 		return false;
 	}
-	Skill_Experience( skill, difficulty );
+	
+	if ( bAllowGain )
+		Skill_Experience( skill, difficulty );
+
 	return true;
 }
 

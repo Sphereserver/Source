@@ -693,10 +693,15 @@ int CChar::Use_PlayMusic( CItem * pInstrument, int iDifficultyToPlay )
 		}
 	}
 
-	bool fSuccess = Skill_UseQuick( SKILL_MUSICIANSHIP, iDifficultyToPlay );
+	bool fSuccess = Skill_UseQuick( SKILL_MUSICIANSHIP, iDifficultyToPlay, ( Skill_GetActive() != SKILL_MUSICIANSHIP ) );
 	Sound( pInstrument->Use_Music( fSuccess ));
 	if ( ! fSuccess )
 	{
+		// Skill gain for SKILL_MUSICIANSHIP failure will need to be triggered
+		// manually, since Skill_UseQuick isn't going to do it for us in this case
+		if ( Skill_GetActive() == SKILL_MUSICIANSHIP )
+			Skill_Experience( SKILL_MUSICIANSHIP, -iDifficultyToPlay );
+
 		SysMessageDefault( DEFMSG_MUSICANSHIP_POOR );
 		return -1;	// Impossible.
 	}
