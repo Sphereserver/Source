@@ -976,9 +976,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	CCommand cmd;
 	cmd.WalkAck.m_Cmd = XCMD_WalkAck;
 	cmd.WalkAck.m_count = (BYTE) m_wWalkCount;
-	// Not really sure what this does.
-	cmd.WalkAck.m_flag = ( m_pChar->IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden | STATF_Sleeping )) ?
-		0 : 0x41;
+	cmd.WalkAck.m_noto = m_pChar->Noto_GetFlag( m_pChar, false, true );
 	xSendPkt( &cmd, sizeof( cmd.WalkAck ));
 
 	if ( !fMove )
