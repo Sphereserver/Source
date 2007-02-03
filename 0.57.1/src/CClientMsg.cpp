@@ -924,7 +924,7 @@ void CClient::addCharMove( const CChar * pChar )
 	cmd.CharMove.m_z = pt.m_z;
 	cmd.CharMove.m_dir = pChar->GetDirFlag();
 	cmd.CharMove.m_mode = pChar->GetModeFlag( pChar->CanSeeTrue( m_pChar ));
-	cmd.CharMove.m_noto = pChar->Noto_GetFlag( m_pChar );
+	cmd.CharMove.m_noto = pChar->Noto_GetFlag( m_pChar, false, true );
 
 	xSend( &cmd, sizeof(cmd.CharMove));
 }
@@ -951,7 +951,7 @@ void CClient::addChar( const CChar * pChar )
 	cmd.Char.m_z = pt.m_z;
 	cmd.Char.m_dir = pChar->GetDirFlag();
 	cmd.Char.m_mode = pChar->GetModeFlag( pChar->CanSeeTrue( m_pChar ));
-	cmd.Char.m_noto = pChar->Noto_GetFlag( m_pChar );
+	cmd.Char.m_noto = pChar->Noto_GetFlag( m_pChar, false, true );
 
 	int len = ( sizeof( cmd.Char ) - sizeof( cmd.Char.equip ));
 	CCommand * pCmd = &cmd;

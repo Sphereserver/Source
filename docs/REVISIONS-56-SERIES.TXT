@@ -3082,3 +3082,6 @@ this all in desperation)
 
 02-02-2007, MrSugarCube
 - Fixed #496: Musicianship skill triggering skill gain twice on success.
+
+03-02-2007, MrSugarCube
+- Fixed #510: Notoriety status on tooltips not shown correctly when moving around.

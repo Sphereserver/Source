@@ -795,6 +795,7 @@ enum NOTO_TYPE
 	NOTO_CRIMINAL,	// 4= criminal
 	NOTO_GUILD_WAR,	// 5= Waring guilds,
 	NOTO_EVIL,		// 6= evil(red),
+	NOTO_INVUL,		// 7= invulnerable,
 };
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.

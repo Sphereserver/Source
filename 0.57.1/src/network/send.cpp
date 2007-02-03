@@ -146,10 +146,7 @@ PacketMovementAck::PacketMovementAck(CClient *target)
 		: PacketSend(0x22, 3, PRI_HIGHEST)
 {
 	write((BYTE)target->m_net->m_sequence);
-	if ( target->GetChar()->IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
-		write((BYTE)0x41);
-	else
-		write((BYTE)0);
+	write((BYTE)target->GetChar()->Noto_GetFlag(target->GetChar(), false, true));
 	push(target);
 }
 

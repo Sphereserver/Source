@@ -2666,7 +2666,7 @@ private:
 	void Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType );
 
 public:
-	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false ) const;
+	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
 	HUE_TYPE Noto_GetHue( const CChar * pChar, bool fIncog = false ) const;
 	bool Noto_IsNeutral() const;
 	bool Noto_IsMurderer() const;

@@ -152,7 +152,7 @@ bool CChar::Noto_IsNeutral() const
 	return( iKarma<0 );
 }
 
-NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) const
+NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
 {
 	// What is this char to the viewer ?
 	// This allows the noto attack check in the client.
@@ -161,6 +161,11 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) con
 	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
 	{
 		return NOTO_NEUTRAL;
+	}
+
+	if ( fAllowInvul && IsStatFlag( STATF_INVUL ) )
+	{
+		return NOTO_INVUL;
 	}
 
 	// Are we in the same party ?

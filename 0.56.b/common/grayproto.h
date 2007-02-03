@@ -870,6 +870,7 @@ enum NOTO_TYPE
 	NOTO_CRIMINAL,	// 4= criminal
 	NOTO_GUILD_WAR,	// 5= Waring guilds,
 	NOTO_EVIL,		// 6= evil(red),
+	NOTO_INVUL,		// 7= invulnerable
 };
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
@@ -1705,7 +1706,7 @@ struct CCommand	// command buffer from server to client.
 		{
 			BYTE m_Cmd;		// 0 = 0x22
 			BYTE m_count; 	// 1 = goes up as we walk. (handshake)
-			BYTE m_flag;	// 2 = 0 or 0x41 (Not sure?) noto ? CHARMODE_WAR? invis ?
+			BYTE m_noto;	// 2 = notoriety flag
 		} WalkAck;
 
 		struct // size = 26

@@ -177,7 +177,7 @@ bool CChar::Noto_IsNeutral() const
 	return( iKarma<0 );
 }
 
-NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) const
+NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
 	// What is this char to the viewer ?
@@ -187,6 +187,11 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) con
 	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
 	{
 		return NOTO_NEUTRAL;
+	}
+
+	if ( fAllowInvul && IsStatFlag( STATF_INVUL ) )
+	{
+		return NOTO_INVUL;
 	}
 
 	// Are we in the same party ?
@@ -245,7 +250,9 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) con
 	}
 
 	if ( IsStatFlag( STATF_Criminal ))	// criminal to everyone.
+	{
 		return( NOTO_CRIMINAL );
+	}
 
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
@@ -266,10 +273,12 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog ) con
 		// everyone is neutral here.
 		return( NOTO_NEUTRAL );
 	}
-	if ( Noto_IsNeutral())
+
+	if ( Noto_IsNeutral() )
 	{
 		return( NOTO_NEUTRAL );
 	}
+
 	return( NOTO_GOOD );
 }
 
