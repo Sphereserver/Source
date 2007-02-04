@@ -4771,17 +4771,33 @@ bool CItem::OnTick()
 	}
 
 	EXC_SET("default behaviour2");
-	if ( IsAttr(ATTR_DECAY) || ( iRet == TRIGRET_RET_FALSE ))
+	if ( IsAttr(ATTR_DECAY) )
 		return false;
 
+	EXC_SET("default behaviour3");
+	if ( iRet == TRIGRET_RET_FALSE )
+		return false;
+
+	EXC_SET("default behaviour4");
 	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=%x)?\n", GetName(),GetUID()));
 	
-	EXC_CATCH;
+	}
+	catch ( CGrayError &e )
+	{
+		EXC_CATCH_EXCEPTION(&e);
+		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), GetUID());
+	}
+	catch (...)
+	{
+		EXC_CATCH_EXCEPTION(NULL);
+		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), GetUID());
+	}
+	/*EXC_CATCH;
 	
 	EXC_DEBUG_START;
-	//g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
-	DEBUG_ERR(("'%s' item [0%lx]\n", GetName(), GetUID()));
-	EXC_DEBUG_END;
+	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
+	//g_Log.EventError("'%s' item [0%lx]\n", GetName(), GetUID());
+	EXC_DEBUG_END;*/
 
 	return( true );
 }

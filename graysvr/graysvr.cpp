@@ -640,16 +640,19 @@ static void Sphere_MainMonitorLoop()
 			g_Cfg.m_iFreezeRestartTime = 10;
 		}
 
+		EXC_SET("Sleep");
 #ifdef _WIN32
 		NTWindow_OnTick(g_Cfg.m_iFreezeRestartTime * 1000);
 #else
 		Sleep(g_Cfg.m_iFreezeRestartTime * 1000);
 #endif
 
+		EXC_SET("Checks");
 		// Don't look for freezing when doing certain things.
 		if ( g_Serv.IsLoading() || ! g_Cfg.m_fSecure )
 			continue;
 
+		EXC_SET("Check Stuck");
 #ifndef _DEBUG
 		g_MainTask.CheckStuckThread();
 #endif
