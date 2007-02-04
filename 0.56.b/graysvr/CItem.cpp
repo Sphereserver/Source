@@ -4779,7 +4779,8 @@ bool CItem::OnTick()
 	EXC_CATCH;
 	
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
+	//g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
+	DEBUG_ERR(("'%s' item [0%lx]\n", GetName(), GetUID()));
 	EXC_DEBUG_END;
 
 	return( true );

@@ -1170,10 +1170,13 @@ int CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) cons
 int CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
-	CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE)m_rid.GetResIndex() );
-	//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));
-	if ( pItemBase )
-		return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
+	if ( GetResType() != RES_SKILL )
+	{
+		CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE)m_rid.GetResIndex() );
+		//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));
+		if ( pItemBase )
+			return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
+	}
 	CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
 	if ( pResourceDef )
 		return( strcpylen( pszArgs, pResourceDef->GetName()) );
