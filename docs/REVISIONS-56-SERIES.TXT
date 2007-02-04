@@ -3067,8 +3067,8 @@ this all in desperation)
 - Fixed: Using .tele over water tiles was allowed.
 
 29-01-2007, Furio
-- added: Is now possible to always use ARGO.verb directly.
-  In packetfilter functions ARGO is the CClient connected now (e.g. it allows SENDPACKET through
+- Modified: Is now possible to always use ARGO.verb directly.
+- Added: In packetfilter functions ARGO is the CClient connected now (e.g. it allows SENDPACKET through
   ARGO.SENDPACKET syntax at any time)
 
 31-01-2007, MrSugarCube
