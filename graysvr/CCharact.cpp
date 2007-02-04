@@ -3592,10 +3592,12 @@ bool CChar::OnTick()
 	}
 	EXC_CATCH;
 
+#ifdef _DEBUG
 	EXC_DEBUG_START;
 	g_Log.EventDebug("'%s' npc '%d' player '%d' [0%lx]\n",
 		GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), GetUID());
 	EXC_DEBUG_END;
+#endif
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;

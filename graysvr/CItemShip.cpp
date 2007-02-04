@@ -401,7 +401,6 @@ bool CItemShip::Ship_Move( DIR_TYPE dir )
 	// We should check all relevant corners.
 	if ( ! Ship_CanMoveTo( ptFore ))
 	{
-cantmove:
 		CItem * pTiller = Multi_GetSign();
 		ASSERT(pTiller);
 		pTiller->Speak( "We've stopped Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
@@ -413,14 +412,24 @@ cantmove:
 	ptTmp.Move( dir );
 	ptTmp.m_z = GetTopZ();
 	if ( ! Ship_CanMoveTo( ptTmp ))
-		goto cantmove;
+	{
+		CItem * pTiller = Multi_GetSign();
+		ASSERT(pTiller);
+		pTiller->Speak( "We've stopped Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
+		return false;
+	}
 
 	// right side.
 	ptTmp = m_pRegion->GetRegionCorner(GetDirTurn(dir,+1));
 	ptTmp.Move( dir );
 	ptTmp.m_z = GetTopZ();
 	if ( ! Ship_CanMoveTo( ptTmp ))
-		goto cantmove;
+	{
+		CItem * pTiller = Multi_GetSign();
+		ASSERT(pTiller);
+		pTiller->Speak( "We've stopped Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
+		return false;
+	}
 
 	Ship_MoveDelta( ptDelta );
 

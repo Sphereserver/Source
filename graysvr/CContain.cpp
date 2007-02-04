@@ -1521,7 +1521,11 @@ CChar * CItemCorpse::IsCorpseSleeping() const
 	ADDTOCALLSTACK("CItemCorpse::IsCorpseSleeping");
 	// Is this corpse really a sleeping person ?
 	// CItemCorpse
-	ASSERT( IsType(IT_CORPSE));
+	if ( !IsType(IT_CORPSE) )
+	{
+		DEBUG_ERR(("Corpse (0%x) doesn't have type T_CORPSE!(it has %d)\n",GetUID(),this->GetType()));
+		return NULL;
+	}
 
 	CChar * pCharCorpse = m_uidLink.CharFind();
 	if ( pCharCorpse &&
