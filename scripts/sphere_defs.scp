@@ -1560,4 +1560,25 @@ height_0fd	18	//DEFNAME=c_Yomotsu_Priest
 height_0f5	18	//DEFNAME=c_Yomotsu_Warrior
 height_03	16	//DEFNAME=c_zombie
 
+[DEFNAME ref_types]
+tref_serv		000001
+tref_file		000002
+tref_newfile		000004
+tref_db			000008
+tref_resdef		000010
+tref_resbase		000020
+tref_functionargs	000040
+tref_fileobj		000080
+tref_fileobjcont	000100
+tref_account		000200
+tref_stonemember	000800
+tref_serverdef		001000
+tref_sector		002000
+tref_world		004000
+tref_gmpage		008000
+tref_client		010000
+tref_object		020000
+tref_char		040000
+tref_item		080000
+
 [EOF]

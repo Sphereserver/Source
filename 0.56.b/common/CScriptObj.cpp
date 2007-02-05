@@ -658,8 +658,69 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 {
 	ADDTOCALLSTACK("CScriptObj::r_WriteVal");
 	EXC_TRY("WriteVal");
+	CObjBase * pObj;
 	CScriptObj * pRef = NULL;
-	if ( r_GetRef( pszKey, pRef ))
+	bool fGetRef = r_GetRef( pszKey, pRef );
+
+	if ( !strnicmp(pszKey, "GetRefType", 10) )
+	{
+		CScriptObj * pTmpRef;
+		if ( pRef )
+			pTmpRef = pRef;
+		else
+			pTmpRef = pSrc->GetChar();
+
+		if ( pTmpRef == &g_Serv )
+			sVal.FormatHex( 0x01 );
+		else if ( pTmpRef == &(g_Serv.fhFile) )
+			sVal.FormatHex( 0x02 );
+#ifdef _NEW_FILE_COLLECTION
+		else if ( pTmpRef == &(g_Serv.fcFileContainer) )
+			sVal.FormatHex( 0x04 );
+#endif
+		else if (( pTmpRef == &(g_Serv.m_hdb) ) || dynamic_cast<CDataBase*>(pTmpRef) )
+			sVal.FormatHex( 0x00008 );
+		else if ( dynamic_cast<CResourceDef*>(pTmpRef) )
+			sVal.FormatHex( 0x00010 );
+		else if ( dynamic_cast<CResourceBase*>(pTmpRef) )
+			sVal.FormatHex( 0x00020 );
+		else if ( dynamic_cast<CScriptTriggerArgs*>(pTmpRef) )
+			sVal.FormatHex( 0x00040 );
+		else if ( dynamic_cast<CFileObj*>(pTmpRef) )
+			sVal.FormatHex( 0x00080 );
+		else if ( dynamic_cast<CFileObjContainer*>(pTmpRef) )
+			sVal.FormatHex( 0x00100 );
+		else if ( dynamic_cast<CAccount*>(pTmpRef) )
+			sVal.FormatHex( 0x00200 );
+		//else if ( dynamic_cast<CPartyDef*>(pTmpRef) )
+		//	sVal.FormatHex( 0x00400 );
+		else if ( dynamic_cast<CStoneMember*>(pTmpRef) )
+			sVal.FormatHex( 0x00800 );
+		else if ( dynamic_cast<CServerDef*>(pTmpRef) )
+			sVal.FormatHex( 0x01000 );
+		else if ( dynamic_cast<CSector*>(pTmpRef) )
+			sVal.FormatHex( 0x02000 );
+		else if ( dynamic_cast<CWorld*>(pTmpRef) )
+			sVal.FormatHex( 0x04000 );
+		else if ( dynamic_cast<CGMPage*>(pTmpRef) )
+			sVal.FormatHex( 0x08000 );
+		else if ( dynamic_cast<CClient*>(pTmpRef) )
+			sVal.FormatHex( 0x10000 );
+		else if ( pObj = dynamic_cast<CObjBase*>(pTmpRef) )
+		{
+			if ( dynamic_cast<CChar*>(pObj) )
+				sVal.FormatHex( 0x40000 );
+			else if ( dynamic_cast<CItem*>(pObj) )
+				sVal.FormatHex( 0x80000 );
+			else
+				sVal.FormatHex( 0x20000 );
+		}
+		else
+			sVal.FormatHex( 0x01 );
+		return true;
+	}
+
+	if ( fGetRef )
 	{
 		if ( pRef == NULL )	// good command but bad link.
 		{
@@ -668,7 +729,7 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		}
 		if ( pszKey[0] == '\0' )	// we where just testing the ref.
 		{
-			CObjBase *	pObj	= dynamic_cast <CObjBase *> (pRef);
+			pObj = dynamic_cast<CObjBase*>(pRef);
 			if ( pObj )
 				sVal.FormatHex( (DWORD) pObj->GetUID() );
 			else

@@ -3085,3 +3085,7 @@ this all in desperation)
 
 03-02-2007, MrSugarCube
 - Fixed #510: Notoriety status on tooltips not shown correctly when moving around.
+
+05-02-2007, Ellessar
+- Added: Keyword GetRefType, which returns flag of the referenced type. The list of flags is in sphere_defs.scp.
+- Updated: sphere_defs.scp - added ref_types defnames
