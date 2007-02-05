@@ -12,10 +12,10 @@ private:
 public:
 	static const char *m_sClassName;
 
-	CVarDefCont( LPCTSTR pszKey ) : m_Key( pszKey ) { m_Key.MakeLower(); }
-	~CVarDefCont() {}
+	CVarDefCont( LPCTSTR pszKey );
+	~CVarDefCont();
 
-	LPCTSTR GetKey() const { return( m_Key.GetPtr() ); }
+	LPCTSTR GetKey() const;
 
 	virtual LPCTSTR GetValStr() const = 0;
 	virtual int GetValNum() const = 0;
@@ -30,28 +30,18 @@ private:
 public:
 	static const char *m_sClassName;
 
-	CVarDefContNum( LPCTSTR pszKey, int iVal ) : CVarDefCont( pszKey ), m_iVal( iVal ) {}
-	CVarDefContNum( LPCTSTR pszKey ) : CVarDefCont( pszKey ) {}
-	~CVarDefContNum() {}
+	CVarDefContNum( LPCTSTR pszKey, int iVal );
+	CVarDefContNum( LPCTSTR pszKey );
+	~CVarDefContNum();
 
-	int GetValNum() const { return( m_iVal ); }
-	void SetValNum( int iVal ) { m_iVal = iVal; }
+	int GetValNum() const;
+	void SetValNum( int iVal );
 	LPCTSTR GetValStr() const;
 
-	bool r_LoadVal( CScript & s )
-	{
-		SetValNum( s.GetArgVal());
-		return( true );
-	}
-	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc = NULL )
-	{
-		UNREFERENCED_PARAMETER(pKey);
-		UNREFERENCED_PARAMETER(pSrc);
-		sVal.FormatVal( GetValNum() );
-		return( true );
-	}
+	bool r_LoadVal( CScript & s );
+	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
 
-	virtual CVarDefCont * CopySelf() const { return new CVarDefContNum( GetKey(), m_iVal ); }
+	virtual CVarDefCont * CopySelf() const;
 };
 
 class CVarDefContStr : public CVarDefCont
@@ -62,28 +52,18 @@ private:
 public:
 	static const char *m_sClassName;
 
-	CVarDefContStr( LPCTSTR pszKey, LPCTSTR pszVal ) : CVarDefCont( pszKey ), m_sVal( pszVal ) {}
-	CVarDefContStr( LPCTSTR pszKey ) : CVarDefCont( pszKey ) {}
-	~CVarDefContStr() {}
+	CVarDefContStr( LPCTSTR pszKey, LPCTSTR pszVal );
+	CVarDefContStr( LPCTSTR pszKey );
+	~CVarDefContStr();
 
-	LPCTSTR GetValStr() const { return( m_sVal ); }
-	void SetValStr( LPCTSTR pszVal ) { m_sVal.Copy( pszVal ); }
+	LPCTSTR GetValStr() const;
+	void SetValStr( LPCTSTR pszVal );
 	int GetValNum() const;
 
-	bool r_LoadVal( CScript & s )
-	{
-		SetValStr( s.GetArgStr());
-		return( true );
-	}
-	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc = NULL )
-	{
-		UNREFERENCED_PARAMETER(pKey);
-		UNREFERENCED_PARAMETER(pSrc);
-		sVal = GetValStr();
-		return( true );
-	}
+	bool r_LoadVal( CScript & s );
+	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
 
-	virtual CVarDefCont * CopySelf() const { return new CVarDefContStr( GetKey(), m_sVal ); }
+	virtual CVarDefCont * CopySelf() const;
 };
 
 
@@ -92,10 +72,7 @@ class CVarDefMap
 private:
 	struct ltstr
 	{
-		bool operator()(CVarDefCont * s1, CVarDefCont * s2) const
-		{
-			return( strcmpi(s1->GetKey(), s2->GetKey()) < 0 );
-		}
+		bool operator()(CVarDefCont * s1, CVarDefCont * s2) const;
 	};
 
 	typedef std::set<CVarDefCont *, ltstr> DefSet;
@@ -106,12 +83,12 @@ private:
 		public:
 			static const char *m_sClassName;
 
-			CVarDefContTest( LPCTSTR pszKey ) : CVarDefCont( pszKey ) {}
-			~CVarDefContTest() {}
+			CVarDefContTest( LPCTSTR pszKey );
+			~CVarDefContTest();
 
-			LPCTSTR GetValStr() const { return NULL; }
-			int GetValNum() const { return -1; }
-			virtual CVarDefCont * CopySelf() const { return new CVarDefContTest( GetKey() ); }
+			LPCTSTR GetValStr() const;
+			int GetValNum() const;
+			virtual CVarDefCont * CopySelf() const;
 	};
 
 private:
@@ -134,16 +111,8 @@ public:
 	void Empty();
 	int GetCount() const;
 
-	CVarDefMap & operator = ( const CVarDefMap & array )
-	{
-		Copy( &array );
-		return( *this );
-	}
-
-	~CVarDefMap()
-	{
-		Empty();
-	}
+	CVarDefMap & operator = ( const CVarDefMap & array );
+	~CVarDefMap();
 
 	LPCTSTR FindValNum( int iVal ) const;
 	LPCTSTR FindValStr( LPCTSTR pVal ) const;
