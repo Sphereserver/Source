@@ -1072,15 +1072,24 @@ void CSector::OnTick(int iPulseCount)
 		EXC_TRYSUB("TickItem");
 		pItemNext = pItem->GetNext();
 
+		EXC_SETSUB("TimerExpired");
 		if ( !pItem->IsTimerExpired() )
 			continue;
 
+		EXC_SETSUB("ItemTick");
 		if ( !pItem->OnTick() )
+		{
+			EXC_SETSUB("ItemDelete");
 			pItem->Delete();
+		}
 		else
 		{
+			EXC_SETSUB("TimerExpired2");
 			if ( pItem->IsTimerExpired() )	// forgot to clear the timer.? strange.
+			{
+				EXC_SETSUB("SetTimeout");
 				pItem->SetTimeout(-1);
+			}
 		}
 		EXC_CATCHSUB("Sector");
 
