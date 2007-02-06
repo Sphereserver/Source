@@ -2901,10 +2901,10 @@ bool CChar::CheckLocation( bool fStanding )
 
 		case IT_CORPSE:
 			{
-				if ( m_pNPC && ( g_Cfg.m_iNpcAi&NPC_AI_LOOTING ))
+				if ( m_pNPC && ( g_Cfg.m_iNpcAi&NPC_AI_LOOTING ) )
 				{
-					//	NPC are likely to loot corpses
-					if ( ( Calc_GetRandVal(150) < Stat_GetAdjusted(STAT_INT) ) || ( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) )
+					//	NPC are likely to loot corpses (but not if they are animals!)
+					if ( ( Calc_GetRandVal(150) < Stat_GetAdjusted(STAT_INT) ) || ( m_pNPC->m_Brain != NPCBRAIN_ANIMAL ) )
 					{
 						if ( m_pArea->IsFlag(REGION_FLAG_GUARDED|REGION_FLAG_SAFE) ) ;
 						else if ( IsStatFlag(STATF_Pet) && !IsStatFlag(STATF_Conjured) ) ;
