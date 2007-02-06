@@ -3089,3 +3089,7 @@ this all in desperation)
 05-02-2007, Ellessar
 - Added: Keyword GetRefType, which returns flag of the referenced type. The list of flags is in sphere_defs.scp.
 - Updated: sphere_defs.scp - added ref_types defnames
+
+06-02-2007, Nazghul
+- fixed #1047: NPC AI_CAN_LOOT missed a "not" so only animals looted :).
+  Domestic animals will no more poop dung if frozen, stone, insubstantial or in warmode
