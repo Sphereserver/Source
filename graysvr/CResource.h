@@ -833,7 +833,7 @@ public:
 	CResourceHashArray m_WebPages;	// These can be linked back to the script.
 
 private:
-	RESOURCE_ID ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVarDefNum ** ppVarNum, bool fNewStyleDef );
+	RESOURCE_ID ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVarDefContNum ** ppVarNum, bool fNewStyleDef );
 
 public:
 	CResource();

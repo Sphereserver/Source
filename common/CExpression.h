@@ -16,166 +16,7 @@
 	#define M_PI 3.14159265358979323846
 #endif
 
-class CVarDefBase	// A variable from GRAYDEFS.SCP or other.
-{
-	// Similar to CScriptKey
-private:
 #define EXPRESSION_MAX_KEY_LEN SCRIPT_MAX_SECTION_LEN
-	const CAtomRef m_aKey;	// the key for sorting/ etc.
-public:
-	static const char *m_sClassName;
-	LPCTSTR GetKey() const
-	{
-		return( m_aKey.GetStr() );
-	}
-	CVarDefBase( LPCTSTR pszKey ) :
-		m_aKey( pszKey )
-	{
-	}
-	virtual LPCTSTR GetValStr() const = 0;
-	virtual int GetValNum() const = 0;
-	virtual CVarDefBase * CopySelf() const = 0;
-};
-
-class CVarDefNum : public CVarDefBase
-{
-	// Simple number equiv.
-private:
-	int m_iVal;	// the assigned value.
-public:
-	static const char *m_sClassName;
-	int GetValNum() const
-	{
-		return( m_iVal );
-	}
-	void SetValNum( int iVal )
-	{
-		m_iVal = iVal;
-	}
-	LPCTSTR GetValStr() const;
-	bool r_LoadVal( CScript & s )
-	{
-		SetValNum( s.GetArgVal());
-		return( true );
-	}
-	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc = NULL )
-	{
-		UNREFERENCED_PARAMETER(pKey);
-		UNREFERENCED_PARAMETER(pSrc);
-		sVal.FormatVal( GetValNum());
-		return( true );
-	}
-	virtual CVarDefBase * CopySelf() const
-	{
-		return new CVarDefNum( GetKey(), m_iVal );
-	}
-	CVarDefNum( LPCTSTR pszKey, int iVal ) :
-		CVarDefBase( pszKey ),
-		m_iVal( iVal )
-	{
-	}
-	CVarDefNum( LPCTSTR pszKey ) :
-		CVarDefBase( pszKey )
-	{
-	}
-};
-
-class CVarDefStr : public CVarDefBase
-{
-private:
-	CGString m_sVal;	// the assigned value. (What if numeric?)
-public:
-	static const char *m_sClassName;
-	LPCTSTR GetValStr() const
-	{
-		return( m_sVal );
-	}
-	int GetValNum() const;
-	void SetValStr( LPCTSTR pszVal )
-	{
-		m_sVal.Copy( pszVal );
-	}
-	bool r_LoadVal( CScript & s )
-	{
-		SetValStr( s.GetArgStr());
-		return( true );
-	}
-	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc = NULL )
-	{
-		UNREFERENCED_PARAMETER(pKey);
-		UNREFERENCED_PARAMETER(pSrc);
-		sVal = GetValStr();
-		return( true );
-	}
-	virtual CVarDefBase * CopySelf() const
-	{
-		return new CVarDefStr( GetKey(), m_sVal );
-	}
-	CVarDefStr( LPCTSTR pszKey, LPCTSTR pszVal ) :
-		CVarDefBase( pszKey ),
-		m_sVal( pszVal )
-	{
-	}
-	CVarDefStr( LPCTSTR pszKey ) :
-		CVarDefBase( pszKey )
-	{
-	}
-};
-
-struct CVarDefArray : public CGObSortArray< CVarDefBase *, LPCTSTR>
-{
-	// Sorted array
-protected:
-	int CompareKey( LPCTSTR pKey, CVarDefBase * pVar, bool fNoSpaces ) const
-	{
-		ASSERT(pVar);
-		return strcmpi(pKey, pVar->GetKey());
-	}
-	int Add(CVarDefBase *pVar)
-	{
-		return AddSortKey(pVar, pVar->GetKey());
-	}
-
-public:
-	void Copy( const CVarDefArray * pArray );
-
-	CVarDefArray & operator = ( const CVarDefArray & array )
-	{
-		Copy( &array );
-		return( *this );
-	}
-
-	~CVarDefArray()
-	{
-		Clean(true);
-		SetCount(0);
-	}
-
-	int FindValNum( int iVal ) const;
-	int FindValStr( LPCTSTR pVal ) const;
-
-	// Manipulate the list of Vars
-	CVarDefBase * GetKey( LPCTSTR pszKey ) const;
-	int GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const;
-	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false ) const;
-
-	CVarDefBase * GetParseKey( LPCTSTR & pArgs ) const;
-	bool GetParseVal( LPCTSTR & pArgs, long * plVal ) const;
-
-	int SetNumNew( LPCTSTR pszKey, int iVal );
-
-	int SetNum( LPCTSTR pszKey, int iVal, bool fZero = false );
-	int SetStr( LPCTSTR pszKey, bool fQuoted, LPCTSTR pszVal, bool fZero = false );
-
-	bool r_LoadVal( CScript & s )
-	{
-		bool fQuoted = false;
-		return SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted )) ? true : false;
-	}
-	void r_WritePrefix( CScript & s, LPCTSTR pszPrefix );
-	void DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix = NULL );
-	void ClearKeys(LPCTSTR mask = NULL);
-};
 
 enum DEFMSG_TYPE
 {
@@ -237,7 +78,7 @@ extern class CExpression
 {
 public:
 	static const char *m_sClassName;
-	CVarDefArray	m_VarDefs;		// Defined variables in sorted order.
+	CVarDefMap		m_VarDefs;		// Defined variables in sorted order.
 	CVarDefMap		m_VarGlobals;	// Global variables
 	CGString		m_sTmp;
 
@@ -299,17 +140,17 @@ extern DWORD ahextoi( LPCTSTR pArgs ); // Convert hex string to integer
 #define Exp_GetVal( pa )	g_Exp.GetVal( pa )
 #define Exp_GetRange( pa )	g_Exp.GetRange( pa )
 
-inline int CVarDefStr::GetValNum() const
-{
-	LPCTSTR pszStr = m_sVal;
-	return( Exp_GetVal(pszStr));
-}
-
-inline LPCTSTR CVarDefNum::GetValStr() const
-{
-	TCHAR * pszTmp = Str_GetTemp();
-	sprintf(pszTmp, "0%x", m_iVal);
-	return pszTmp;
-}
+//inline int CVarDefStr::GetValNum() const
+//{
+//	LPCTSTR pszStr = m_sVal;
+//	return( Exp_GetVal(pszStr));
+//}
+//
+//inline LPCTSTR CVarDefNum::GetValStr() const
+//{
+//	TCHAR * pszTmp = Str_GetTemp();
+//	sprintf(pszTmp, "0%x", m_iVal);
+//	return pszTmp;
+//}
 
 #endif	// _INC_CEXPRSSION_H

@@ -375,7 +375,7 @@ class CResourceDef : public CScriptObj
 private:
 	RESOURCE_ID m_rid;		// the true resource id. (must be unique for the RES_TYPE)
 protected:
-	const CVarDefNum * m_pDefName;	// The name of the resource. (optional)
+	const CVarDefContNum * m_pDefName;	// The name of the resource. (optional)
 public:
 	static const char *m_sClassName;
 	CResourceDef( RESOURCE_ID rid, LPCTSTR pszDefName ) :
@@ -384,7 +384,7 @@ public:
 	{
 		SetResourceName( pszDefName );
 	}
-	CResourceDef( RESOURCE_ID rid, const CVarDefNum * pDefName = NULL ) :
+	CResourceDef( RESOURCE_ID rid, const CVarDefContNum * pDefName = NULL ) :
 		m_rid( rid ),
 		m_pDefName( pDefName )
 	{
@@ -420,7 +420,7 @@ public:
 
 	// Give it another DEFNAME= even if it already has one. it's ok to have multiple names.
 	bool SetResourceName( LPCTSTR pszName );
-	void SetResourceVar( const CVarDefNum* pVarNum )
+	void SetResourceVar( const CVarDefContNum* pVarNum )
 	{
 		if ( pVarNum != NULL && m_pDefName == NULL )
 		{
@@ -474,7 +474,7 @@ public:
 	bool HasTrigger( int i ) const;
 	bool ResourceLock( CResourceLock & s );
 	virtual ~CResourceLink();
-	CResourceLink( RESOURCE_ID rid, const CVarDefNum * pDef = NULL );
+	CResourceLink( RESOURCE_ID rid, const CVarDefContNum * pDef = NULL );
 };
 
 class CResourceNamed : public CResourceLink

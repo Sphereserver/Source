@@ -364,7 +364,7 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 
 	int iVarNum;
 
-	CVarDefBase * pVarKey = g_Exp.m_VarDefs.GetKey( pszName );
+	CVarDefCont * pVarKey = g_Exp.m_VarDefs.GetKey( pszName );
 	if ( pVarKey )
 	{
 		if ( pVarKey->GetValNum() == GetResourceID().GetPrivateUID() )
@@ -391,7 +391,7 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 	if ( iVarNum < 0 )
 		return( false );
 
-	SetResourceVar( dynamic_cast <const CVarDefNum*>( g_Exp.m_VarDefs.GetAt( iVarNum )));
+	SetResourceVar( dynamic_cast <const CVarDefContNum*>( g_Exp.m_VarDefs.GetAt( iVarNum )));
 	return( true );
 }
 
@@ -770,7 +770,7 @@ int CResourceLock::OpenLock( CResourceScript * pLock, CScriptLineContext context
 /////////////////////////////////////////////////
 //	-CResourceLink
 
-CResourceLink::CResourceLink( RESOURCE_ID rid, const CVarDefNum * pDef ) :
+CResourceLink::CResourceLink( RESOURCE_ID rid, const CVarDefContNum * pDef ) :
 	CResourceDef( rid, pDef )
 {
 	m_pScript = NULL;

@@ -4,7 +4,7 @@ static int GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
 {
 	// Copy the identifier (valid char set) out to this buffer.
 	int i=0;
-	for ( ;pszArgs[i]; ++i )
+	for ( ;pszArgs[i]; i++ )
 	{
 		if ( ! _ISCSYM(pszArgs[i]))
 			break;
@@ -393,18 +393,21 @@ int CVarDefMap::GetCount() const
 	return m_Container.size();
 }
 
-bool CVarDefMap::SetNumNew( LPCTSTR pszName, int iVal )
+int CVarDefMap::SetNumNew( LPCTSTR pszName, int iVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumNew");
 	CVarDefCont * pVarNum = new CVarDefContNum( pszName, iVal );
 	if ( !pVarNum )
-		return( false );
+		return( -1 );
 
 	DefPairResult res = m_Container.insert(pVarNum);
-	return( res.second );
+	if ( res.second )
+		return std::distance(m_Container.begin(), res.first);
+	else
+		return -1;
 }
 
-bool CVarDefMap::SetNumOverride( LPCTSTR pszKey, int iVal )
+int CVarDefMap::SetNumOverride( LPCTSTR pszKey, int iVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumOverride");
 	DeleteAtKey(pszKey);
@@ -417,7 +420,7 @@ int CVarDefMap::SetNum( LPCTSTR pszName, int iVal, bool fZero )
 	ASSERT(pszName);
 
 	if ( pszName[0] == '\0' )
-		return( false );
+		return( -1 );
 
 	if ( fZero && (iVal == 0) )
 	{
@@ -425,7 +428,14 @@ int CVarDefMap::SetNum( LPCTSTR pszName, int iVal, bool fZero )
 		return( -1 );
 	}
 
-	CVarDefCont * pVarBase = GetAtKey(pszName);
+	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);
+	DefSet::iterator iResult = m_Container.find((CVarDefCont*)pVarSearch);
+	delete pVarSearch;
+
+	CVarDefCont * pVarBase = NULL;
+	if ( iResult != m_Container.end() )
+		pVarBase = (*iResult);
+
 	if ( !pVarBase )
 	{
 		return SetNumNew( pszName, iVal );
@@ -445,21 +455,24 @@ int CVarDefMap::SetNum( LPCTSTR pszName, int iVal, bool fZero )
 		return SetNumOverride( pszName, iVal );
 	}
 
-	return( true );
+	return std::distance(m_Container.begin(), iResult);
 }
 
-bool CVarDefMap::SetStrNew( LPCTSTR pszName, LPCTSTR pszVal )
+int CVarDefMap::SetStrNew( LPCTSTR pszName, LPCTSTR pszVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetStrNew");
 	CVarDefCont * pVarStr = new CVarDefContStr( pszName, pszVal );
 	if ( !pVarStr )
-		return( false );
+		return( -1 );
 
 	DefPairResult res = m_Container.insert(pVarStr);
-	return( res.second );
+	if ( res.second )
+		return std::distance(m_Container.begin(), res.first);
+	else
+		return -1;
 }
 
-bool CVarDefMap::SetStrOverride( LPCTSTR pszKey, LPCTSTR pszVal )
+int CVarDefMap::SetStrOverride( LPCTSTR pszKey, LPCTSTR pszVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetStrOverride");
 	DeleteAtKey(pszKey);
@@ -485,7 +498,14 @@ int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZer
 		return SetNum( pszName, Exp_GetVal( pszVal ), fZero);
 	}
 
-	CVarDefCont * pVarBase = GetAtKey(pszName);
+	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);
+	DefSet::iterator iResult = m_Container.find((CVarDefCont*)pVarSearch);
+	delete pVarSearch;
+
+	CVarDefCont * pVarBase = NULL;
+	if ( iResult != m_Container.end() )
+		pVarBase = (*iResult);
+
 	if ( !pVarBase )
 	{
 		return SetStrNew( pszName, pszVal );
@@ -504,7 +524,7 @@ int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZer
 		}
 		return SetStrOverride( pszName, pszVal );
 	}
-	return( true );
+	return std::distance(m_Container.begin(), iResult);
 }
 
 CVarDefCont * CVarDefMap::GetKey( LPCTSTR pszKey ) const
@@ -620,7 +640,7 @@ bool CVarDefMap::r_LoadVal( CScript & s )
 {
 	ADDTOCALLSTACK("CVarDefMap::r_LoadVal");
 	bool fQuoted = false;
-	return SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted )) ? true : false;
+	return( ( SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted )) >= 0 ) ? true : false );
 }
 
 void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyExclude )
