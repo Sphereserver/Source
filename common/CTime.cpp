@@ -14,11 +14,7 @@ LONGLONG GetTickCount()
 {
 	struct timeval tv;
 	gettimeofday( &tv, NULL );
-	//return (LONGLONG) (((LONGLONG) tv.tv_sec * 1000) + ((LONGLONG) tv.tv_usec/1000));
-	double dtime = tv.tv_sec * 1000000.0;
-	dtime += tv.tv_usec;
-	dtime /= 1000.0;
-	return (LONGLONG) dtime;
+	return ((LONGLONG) ( tv.tv_sec * 1000 ));
 }
 #endif
 
