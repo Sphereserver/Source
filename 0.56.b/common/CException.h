@@ -173,6 +173,7 @@ public:
 
 	#define EXC_TRY(a) {
 	#define EXC_SET(a)
+	#define EXC_SETSUB(a)
 	#define EXC_CATCH }
 	#define EXC_TRYSUB(a) {
 	#define EXC_CATCHSUB(a) }
