@@ -3223,7 +3223,8 @@ void CChar::NPC_AI()
 	//	some very very basic actions which does not need any INT/DEX for self
 
 	//	domestic animals pooping the ground
-	if ( m_pNPC->m_Brain == NPCBRAIN_ANIMAL )
+  CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
+  if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag ( STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
 	{
 		if ( Calc_GetRandVal(130) ) ;
 		else if (( npcType == CREID_HORSE1 ) || ( npcType == CREID_Bull_Brown ) || ( npcType == CREID_Pig ) || ( npcType == CREID_Llama ))
