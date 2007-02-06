@@ -61,10 +61,5 @@ ADD(CVarDefContNum, "CVarDefContNum");
 ADD(CVarDefContStr, "CVarDefContStr");
 ADD(CVarDefMap, "CVarDefMap");
 ADD(CVarDefMap::CVarDefContTest, "CVarDefContTest");
-#ifdef _WIN32
-  ADD(CGObArray<CVarDefBase *>, "CGObArray(CVarDefBase)");
-#else
-  template <> ADD(CGObArray<CVarDefBase *>, "CGObArray(CVarDefBase)");
-#endif
 
 #undef ADD

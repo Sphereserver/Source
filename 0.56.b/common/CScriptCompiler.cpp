@@ -458,7 +458,7 @@ void *CScriptCompiler::CompileBufer(FILE *in, long &lCompiledSize)
 
 	try
 	{
-		CVarDefArray	defines;		//	list of all #define KEY VAL values
+		CVarDefMap	defines;		//	list of all #define KEY VAL values
 		bool	commented = false;		//	block is commented by / * * / comment?
 		bool	commentblock = false;	//	block is commented [COMMENT xxxx]
 		bool	ifdeffalse = false;		//	block is denied by #ifdef #endif block?
@@ -626,7 +626,7 @@ Preparse:
 
 			for ( int defname = 0; defname < defines.GetCount(); defname++ )
 			{
-				const CVarDefBase *pVar = defines.GetAt(defname);
+				const CVarDefCont *pVar = defines.GetAt(defname);
 				if ( !pVar )
 					continue;
 

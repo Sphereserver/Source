@@ -4781,6 +4781,7 @@ bool CItem::OnTick()
 	EXC_SET("default behaviour4");
 	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=%x)?\n", GetName(),GetUID()));
 	
+#ifndef _WIN32
 	}
 	catch ( CGrayError &e )
 	{
@@ -4792,12 +4793,14 @@ bool CItem::OnTick()
 		EXC_CATCH_EXCEPTION(NULL);
 		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), GetUID());
 	}
-	/*EXC_CATCH;
+#else
+	EXC_CATCH;
 	
 	EXC_DEBUG_START;
 	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
 	//g_Log.EventError("'%s' item [0%lx]\n", GetName(), GetUID());
-	EXC_DEBUG_END;*/
+	EXC_DEBUG_END;
+#endif
 
 	return( true );
 }

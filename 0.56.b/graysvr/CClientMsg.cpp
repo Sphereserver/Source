@@ -4383,7 +4383,7 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		}
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 		{
-			CVarDefStr	*pVarStr = dynamic_cast <CVarDefStr *>( m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
+			CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSP),
 				( pVarStr ) ? (LPCTSTR) pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSPT));
 			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )

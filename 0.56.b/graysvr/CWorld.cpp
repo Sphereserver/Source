@@ -1115,17 +1115,6 @@ bool CWorld::SaveStage() // Save world state in stages.
 		iQty = g_Exp.m_VarGlobals.GetCount();
 		g_Exp.m_VarGlobals.r_WritePrefix(m_FileData, NULL);
 
-		/*
-		for ( i = 0; i < iQty; i++ )
-		{
-			CVarDefBase	*pVar = g_Exp.m_VarGlobals.GetAt(i);
-			LPCTSTR pszVal = pVar->GetValStr();
-			CVarDefStr *pVarStr = dynamic_cast <CVarDefStr *>( pVar );
-			if ( pVarStr ) m_FileData.WriteKeyFormat(pVar->GetKey(), "\"%s\"", pszVal);
-			else m_FileData.WriteKey(pVar->GetKey(), pszVal);
-		}
-		*/
-
 		iQty = g_Cfg.m_RegionDefs.GetCount();
 		for ( i = 0; i < iQty; i++ )
 		{

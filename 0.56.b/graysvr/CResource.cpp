@@ -1654,7 +1654,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	// Index or read any resource blocks we know how to handle.
 	ASSERT(pScript);
 	CScriptFileContext FileContext( pScript );	// set this as the context.
-	CVarDefNum * pVarNum = NULL;
+	CVarDefContNum * pVarNum = NULL;
 	RESOURCE_ID rid;
 	LPCTSTR		pszSection	= pScript->GetSection();
 	
@@ -1697,10 +1697,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	if (( restype == RES_WORLDSCRIPT ) || ( restype == RES_WS ))
 	{
 		LPCTSTR	pszDef			= pScript->GetArgStr();
-		CVarDefBase * pVarBase	= g_Exp.m_VarDefs.GetKey( pszDef );
-		CVarDefBase * pVarNum	= NULL;
+		CVarDefCont * pVarBase	= g_Exp.m_VarDefs.GetKey( pszDef );
+		CVarDefCont * pVarNum	= NULL;
 		if ( pVarBase )
-			pVarNum				= dynamic_cast <CVarDefNum*>( pVarBase );
+			pVarNum				= dynamic_cast <CVarDefContNum*>( pVarBase );
 		if ( !pVarNum )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef );
@@ -2404,7 +2404,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 //*************************************************************
 
-RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVarDefNum ** ppVarNum, bool fNewStyleDef )
+RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVarDefContNum ** ppVarNum, bool fNewStyleDef )
 {
 	ADDTOCALLSTACK("CResource::ResourceGetNewID");
 	// We are reading in a script block.
@@ -2545,13 +2545,13 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		}
 
 
-		CVarDefBase * pVarBase = g_Exp.m_VarDefs.GetKey( pszName );
+		CVarDefCont * pVarBase = g_Exp.m_VarDefs.GetKey( pszName );
 		if ( pVarBase )
 		{
 			// An existing VarDef with the same name ?
 			// We are creating a new Block but using an old name ? weird.
 			// just check to see if this is a strange type conflict ?
-			CVarDefNum * pVarNum = dynamic_cast <CVarDefNum*>( pVarBase );
+			CVarDefContNum * pVarNum = dynamic_cast <CVarDefContNum*>( pVarBase );
 			if ( pVarNum == NULL )
 			{
 				DEBUG_ERR(( "Re-Using name '%s' to define block\n", (LPCTSTR) pszName ));
@@ -2715,7 +2715,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		int iVarNum = g_Exp.m_VarDefs.SetNum( pszName, rid.GetPrivateUID() );
 		if ( iVarNum >= 0 )
 		{
-			*ppVarNum = dynamic_cast <CVarDefNum*>( g_Exp.m_VarDefs.GetAt(iVarNum));
+			*ppVarNum = dynamic_cast <CVarDefContNum*>( g_Exp.m_VarDefs.GetAt(iVarNum));
 		}
 	}
 

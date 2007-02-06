@@ -868,7 +868,7 @@ badcmd:
 			fZero	= true;
 		case SSC_DEF:
 			{
-				CVarDefBase * pVar = g_Exp.m_VarDefs.GetKey(pszKey);
+				CVarDefCont * pVar = g_Exp.m_VarDefs.GetKey(pszKey);
 				if ( pVar )
 					sVal	= pVar->GetValStr();
 				else if ( fZero )

@@ -3035,7 +3035,7 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 		{
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
 			{
-				CVarDefStr * pVarStr = dynamic_cast <CVarDefStr *>( pNewArea->m_TagDefs.GetKey("ANNOUNCEMENT"));
+				CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("ANNOUNCEMENT"));
 				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_ENTER ), ( pVarStr ) ? (LPCTSTR) pVarStr->GetValStr() :
 					(LPCTSTR) pNewArea->GetName());
 			}
@@ -3050,13 +3050,13 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				{
 					if ( pNewArea->IsGuarded() )	// now under the protection
 					{
-						CVarDefStr	*pVarStr = dynamic_cast <CVarDefStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
+						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
 						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_1 ),
 							( pVarStr ) ? (LPCTSTR)pVarStr->GetValStr() : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
 					}
 					else							// have left the protection
 					{
-						CVarDefStr	*pVarStr = dynamic_cast <CVarDefStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
+						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
 						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_2 ),
 							( pVarStr ) ? (LPCTSTR)pVarStr->GetValStr() : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
 					}

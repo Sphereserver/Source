@@ -1396,8 +1396,12 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					{
 						if ( !( i%0x1ff ))
 							PrintPercent( i, g_Exp.m_VarDefs.GetCount());
-						File.Printf( "%s=%s\n",
-							g_Exp.m_VarDefs[i]->GetKey(), g_Exp.m_VarDefs[i]->GetValStr());
+
+						CVarDefCont * pCont = g_Exp.m_VarDefs.GetAt(i);
+						if ( pCont != NULL )
+						{
+							File.Printf( "%s=%s\n", pCont->GetKey(), pCont->GetValStr());
+						}
 					}
 				}
 				continue;
@@ -1904,7 +1908,8 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 		"live shard unless you know what you are doing!\r\n"
 		"Nightly builds are automatically made every night from source and\r\n"
 		"might contain errors, might be unstable or even destroy your\r\n"
-		"shard as they are mostly untested!\r\n";
+		"shard as they are mostly untested!\r\n"
+		" ---------------------------------\r\n\r\n";
 
 	g_Log.EventWarn(pszWarning);
 
