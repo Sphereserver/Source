@@ -446,15 +446,14 @@ do_not_nt_service:
 		char szPath[_MAX_PATH];
 
 		GetModuleFileName(NULL, szPath, sizeof(szPath));
-		
+
 		if ( !szPath[0] )
 			return -2;
 
 		ExtractPath(szPath);
 		_chdir(szPath);
 
-		if ( !g_Cfg.LoadIni(false) )
-			return -2;
+		g_Cfg.LoadIni(false);
 	}
 
 	if ( !g_Cfg.m_fUseNTService )	// since there is no way to detect how did we start, use config for that

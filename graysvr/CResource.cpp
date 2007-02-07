@@ -48,7 +48,7 @@ CResource::CResource()
 	m_iConnectingMax	= 24;
 	m_iConnectingMaxIP	= 8;
 	m_iClientsMaxIP		= 0;
-	
+
 	m_iGuestsMax = 0;
 	m_iArriveDepartMsg = 1;
 	m_iClientLingerTime = 60 * TICK_PER_SEC;
@@ -123,11 +123,11 @@ CResource::CResource()
 
 	m_iCommandLog		= 0;
 	m_pEventsPetLink 	= NULL;
-	
+
 	m_fUsecrypt 		= true; // Server want crypt client ?
 	m_fUsenocrypt		= false; // Server want un-crypt client ? (version guessed by cliver)
 	m_fPayFromPackOnly	= 0; // pay vendors from packs only
-	
+
 	m_iOverSkillMultiply 	= 0;
 	m_fSuppressCapitals = false;
 
@@ -211,7 +211,7 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	TCHAR * pszSep = const_cast<TCHAR*>(strchr( pszKey, '(' ));	// acts like const_cast
 	if ( pszSep == NULL )
 	{
-		pszSep = const_cast<TCHAR*>(strchr( pszKey, '.' ));	
+		pszSep = const_cast<TCHAR*>(strchr( pszKey, '.' ));
 		if ( pszSep == NULL )
 			return( false );
 	}
@@ -796,7 +796,7 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_COMMANDPREFIX:
 			m_cCommandPrefix = *s.GetArgStr();
 			break;
-		
+
 		case RC_EXPERIMENTAL:
 			g_Cfg.m_iExperimental = s.GetArgVal();
 			PrintEFOFFlags(true, false);
@@ -870,8 +870,8 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			return true;
 		}
 
-		// NOTE: When using SERV.xxxx CResource::r_GetRef is called, it transform MAP( in 
-		// MAP. dunno why (need to test to see what it breakes). So for a temp fix also MAP. 
+		// NOTE: When using SERV.xxxx CResource::r_GetRef is called, it transform MAP( in
+		// MAP. dunno why (need to test to see what it breakes). So for a temp fix also MAP.
 		// is caught.
 		if ( !strnicmp(pszKey, "MAP(", 4) || !strnicmp(pszKey, "MAP.", 4) )
 		{
@@ -916,7 +916,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			}
 
 			pszKey = pszArgsNext;
-			
+
 			if (( iArgs < 2 ) || !g_MapList.IsMapSupported(pt.m_map) || !pt.IsValidPoint() )
 			{
 				sVal.FormatVal(0);
@@ -926,7 +926,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			SKIP_SEPARATORS(pszKey);
 			return pt.r_WriteVal(pszKey, sVal);
 		}
-		
+
 		if ( ( !strnicmp( pszKey, "GUILDSTONES.",12) ) || ( !strnicmp( pszKey, "TOWNSTONES.",11) ) )
 		{
 			bool bGuild = !strnicmp( pszKey, "GUILDSTONES.",12);
@@ -941,27 +941,27 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					pStone = g_World.m_Stones[i];
 					if ( pStone == NULL )
 						continue;
-					
+
 					if (( pStone->GetType() == IT_STONE_GUILD ) && bGuild )
 						x++;
 					else if (( pStone->GetType() == IT_STONE_TOWN ) && !bGuild )
 						x++;
 				}
-				
+
 				sVal.FormatVal(x);
 				return( true );
 			}
-		
+
 			int iNumber = Exp_GetVal(pszCmd);
 			SKIP_SEPARATORS(pszCmd);
 			sVal.FormatVal(0);
-			
+
 			for ( int i=0; i<g_World.m_Stones.GetCount(); i++ )
 			{
 				pStone = g_World.m_Stones[i];
 				if ( pStone == NULL )
 					continue;
-				
+
 				if (( pStone->GetType() == IT_STONE_GUILD ) && bGuild )
 				{
 					if ( iNumber == x )
@@ -1382,7 +1382,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 	// Check just at entry points where commands are entered or targetted.
 	// NOTE:
 	//  Call this each time we change pObjTarg such as r_GetRef()
-	// RETURN: 
+	// RETURN:
 	//  true = i am ok to use this command.
 
 	if ( !pSrc || !pObjTarg )
@@ -1429,7 +1429,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 	// Is this command avail for your priv level (or lower) ?
 	PLEVEL_TYPE ilevel;
 	char *myCmd = Str_GetTemp();
-	
+
 	int pOs; //position of space :)
 	pOs = strcspn(pszCmd," ");
 	strncpy ( myCmd, pszCmd, pOs );
@@ -1441,7 +1441,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 		ilevel = GetPrivCommandLevel( myCmd );
 		if ( ilevel > pSrc->GetPrivLevel())
 			return( false );
-        myCmd=pOd+1; //skip dot	
+        myCmd=pOd+1; //skip dot
 	}
 
 
@@ -1544,7 +1544,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 
 	if ( bCharlist )
 	{
-		//	BYTE[4] Flags 
+		//	BYTE[4] Flags
 		//		0x01	= unknown
 		//		0x02	= send config/req logout (IGR?)
 		//		0x04	= single character (siege) (alternative seen, Limit Characters)
@@ -1584,7 +1584,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		//	0x02	Enables LBR update.  (of course LBR installation is required)
 		//			(plays MP3 instead of midis, 2D LBR client shows new LBR monsters, ... )
 		//	0x04	Unknown, never seen it set	(single char?)
-		//	0x08	Unknown, set on OSI servers that have AOS code - no matter of account status (doesn’t seem to “unlock/lock” anything on client side)
+		//	0x08	Unknown, set on OSI servers that have AOS code - no matter of account status (doesnï¿½t seem to ï¿½unlock/lockï¿½ anything on client side)
 		//	0x10	Enables AOS update (necro/paladin skills for all clients, malas map/AOS monsters if AOS installation present)
 		//	0x20	Sixth Character Slot
 		//	0x40	Samurai Empire?
@@ -1595,16 +1595,16 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		//	0x800
 		//	0x1000
 		//	0x2000
-		//	0x4000	
+		//	0x4000
 		//	0x8000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
-		// Thus	0		neither T2A NOR LBR, equal to not sending it at all, 
-		//		1		is T2A, chatbutton, 
-		//		2		is LBR without chatbutton, 
-		//		3		is LBR with chatbutton…
+		// Thus	0		neither T2A NOR LBR, equal to not sending it at all,
+		//		1		is T2A, chatbutton,
+		//		2		is LBR without chatbutton,
+		//		3		is LBR with chatbuttonï¿½
 		//		8013	LBR + chatbutton + AOS enabled
 		// Note1: this message is send immediately after login.
-		// Note2: on OSI  servers this controls features OSI enables/disables via “upgrade codes.”
-		// Note3: a 3 doesn’t seem to “hurt” older (NON LBR) clients.
+		// Note2: on OSI  servers this controls features OSI enables/disables via ï¿½upgrade codes.ï¿½
+		// Note3: a 3 doesnï¿½t seem to ï¿½hurtï¿½ older (NON LBR) clients.
 
 		bResOk = ( res >= RDS_T2A );
 		if ( bResOk )
@@ -1657,7 +1657,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	CVarDefContNum * pVarNum = NULL;
 	RESOURCE_ID rid;
 	LPCTSTR		pszSection	= pScript->GetSection();
-	
+
 	RES_TYPE restype;
 	if ( !strnicmp( pszSection, "DEFMESSAGE", 10 ) )
 	{
@@ -1690,7 +1690,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	{
 		restype			= RES_KARMA;
 	}
-	else 
+	else
 		restype	= (RES_TYPE) FindTableSorted( pszSection, sm_szResourceBlocks, COUNTOF( sm_szResourceBlocks ));
 
 
@@ -1721,7 +1721,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			g_Log.Event( LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef );
 			return false;
 		}
-		
+
 		pRes->r_Load( *pScript );
 		return true;
 	}
@@ -1920,7 +1920,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			pScript->SeekContext( LineContext );
 
 			if ( !pPrvDef )
-			{		
+			{
 				m_SpellDefs.SetAtGrow( rid.GetResIndex(), pSpell );
 			}
 		}
@@ -2057,7 +2057,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		}
 
 		break;
-	case RES_AREA:	
+	case RES_AREA:
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef && fNewStyleDef )
 		{
@@ -2087,7 +2087,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 		}
 		break;
-	case RES_ROOM:	
+	case RES_ROOM:
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef && fNewStyleDef )
 		{
@@ -2517,7 +2517,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			case RES_REGIONTYPE:	// Triggers etc. that can be assinged to a RES_AREA
 				rid = RESOURCE_ID( restype, index, iPage );
 				break;
-			case RES_SKILLMENU:	
+			case RES_SKILLMENU:
 			case RES_MENU:			// General scriptable menus.
 			case RES_EVENTS:		// An Event handler block with the trigger type in it. ON=@Death etc.
 			case RES_SPEECH:		// A speech block with ON=*blah* in it.
@@ -2811,7 +2811,7 @@ void CResource::OnTick( bool fNow )
 			EXC_DEBUG_START;
 			CWebPageDef * pWeb = STATIC_CAST <CWebPageDef *>(m_WebPages[i]);
 			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%d'/'%d'\n",
-				pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "", 
+				pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "",
 				(int)fNow, i, m_WebPages.GetCount());
 			EXC_DEBUG_END;
 		}
@@ -2885,9 +2885,10 @@ bool CResource::LoadIni( bool fTest )
 	// Load my INI file first.
 	if ( ! OpenResourceFind( m_scpIni, GRAY_FILE ".ini", !fTest )) // Open script file
 	{
-		if ( ! fTest )
+		if( !fTest )
 		{
-			g_Log.Event( LOGL_FATAL|LOGM_INIT, "Can't open " GRAY_FILE ".ini\n" );
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, GRAY_FILE ".ini has not been found, server probably would be not usable.");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.");
 		}
 		return( false );
 	}
@@ -2966,7 +2967,7 @@ void CResource::Unload( bool fResync )
 bool CResource::Load( bool fResync )
 {
 	ADDTOCALLSTACK("CResource::Load");
-	// ARGS: 
+	// ARGS:
 	//  fResync = just look for changes.
 
 	if ( ! fResync )
@@ -3081,7 +3082,7 @@ bool CResource::Load( bool fResync )
 		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No any START locations specifyed. Add them and try again.\n");
 		return false;
 	}
-	
+
 	// Make region DEFNAMEs
 	{
 		int			iMax	= g_Cfg.m_RegionDefs.GetCount();
