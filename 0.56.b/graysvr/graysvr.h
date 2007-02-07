@@ -126,7 +126,7 @@ enum RESDISPLAY_VERSION
 	RDS_AOS,
 	RDS_SE,
 	RDS_ML,
-	
+
 	RDS_QTY,
 };
 
@@ -199,6 +199,9 @@ private:
 	static CGTime sm_prevCatchTick;	// don't flood with these.
 public:
 	bool m_fLockOpen;
+#ifndef _WIN32
+	bool m_fColoredConsole;
+#endif
 
 public:
 	const CScript * SetScriptContext( const CScript * pScriptContext )
@@ -255,6 +258,9 @@ public:
 
 	CLog()
 	{
+#ifndef _WIN32
+		m_fColoredConsole = false;
+#endif
 		m_fLockOpen = false;
 		m_pScriptContext = NULL;
 		m_dwMsgMask = LOGL_EVENT |
@@ -743,12 +749,12 @@ private:
 	int	m_iWalkTimeAvg;
 	int m_iWalkStepCount;		// Count the actual steps . Turning does not count.
 	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
-	
+
 	// Stupid Walk limiting code. (Not working really)
 	DWORD	m_Walk_LIFO[16];	// Client > 1.26 must match these .
 	int	m_Walk_InvalidEchos;
 	int	m_Walk_CodeQty;
-	
+
 	// Reported ClientVersion
 	bool m_bClient3d;
 	int m_reportedCliver;
@@ -769,7 +775,7 @@ private:
 
 public:
 	CONNECT_TYPE	m_iConnectType;	// what sort of a connection is this ?
-	CGSocket		m_Socket;	
+	CGSocket		m_Socket;
 	bool			m_fClosed;	// flag it to get the socket closed
 	CSocketAddress	m_PeerName;
 	CAccount * m_pAccount;		// The account name. we logged in on
@@ -1150,7 +1156,7 @@ public:
 	void addItem_Equipped( const CItem * pItem );
 	void addItem_InContainer( const CItem * pItem );
 	void addItem( CItem * pItem );
-	
+
 	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText = 0);
 	void removeBuff (const WORD IconId);
 	void resendBuffs();
@@ -1311,7 +1317,7 @@ public:
 			return;
 		GetAccount()->ClearPrivFlags( wPrivFlags );
 	}
-	
+
 	// ------------------------------------------------
 	bool IsResDisp( BYTE flag ) const
 	{
@@ -1338,7 +1344,7 @@ public:
 		return( GetAccount()->SetGreaterResDisp( res ) );
 	}
 	// ------------------------------------------------
-	
+
 	PLEVEL_TYPE GetPrivLevel() const
 	{
 		// PLEVEL_Counsel
@@ -1378,14 +1384,14 @@ public:
 		// m_Crypt.IsInit()
 		return( m_iConnectType == CONNECT_CRYPT || m_iConnectType == CONNECT_LOGIN || m_iConnectType == CONNECT_GAME );
 	}
-	
+
 	CONNECT_TYPE	GetConnectType() const
 	{
 		return m_iConnectType;
 	}
 
 	void SetConnectType( CONNECT_TYPE iType );
-	
+
 	// Stuff I am doing. Started by a command
 	CLIMODE_TYPE GetTargMode() const
 	{
@@ -1672,9 +1678,9 @@ enum BUFF_ICONS {
 	BI_ACTIVEMEDITATION,
 	BI_BLOODOATHCASTER,
 	BI_BLOODOATHCURSE,
-	BI_CORPSESKIN,	
+	BI_CORPSESKIN,
 	BI_MINDROT,
-	BI_PAINSPIKE,	
+	BI_PAINSPIKE,
 	BI_STRANGLE,
 	BI_GIFTOFRENEWAL,
 	BI_ATTUNEWEAPON,
@@ -1687,23 +1693,23 @@ enum BUFF_ICONS {
 	BI_REACTIVEARMOR,
 	BI_PROTECTION,
 	BI_ARCHPROTECTION,
-	BI_MAGICREFLECTION,	
-	BI_INCOGNITO,			
+	BI_MAGICREFLECTION,
+	BI_INCOGNITO,
 	BI_DISGUISED,
 	BI_ANIMALFORM,
 	BI_POLYMORPH,
-	BI_INVISIBILITY,		
-	BI_PARALYZE,			
+	BI_INVISIBILITY,
+	BI_PARALYZE,
 	BI_POISON,
 	BI_BLEED,
-	BI_CLUMSY,				
-	BI_FEEBLEMIND,			
-	BI_WEAKEN,				
-	BI_CURSE,			
+	BI_CLUMSY,
+	BI_FEEBLEMIND,
+	BI_WEAKEN,
+	BI_CURSE,
 	BI_MASSCURSE,
-	BI_AGILITY,			
-	BI_CUNNING,			
-	BI_STRENGTH,			
+	BI_AGILITY,
+	BI_CUNNING,
+	BI_STRENGTH,
 	BI_BLESS
 };
 // ---------------------------------------------------------------------------------------------

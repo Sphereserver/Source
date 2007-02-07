@@ -1,4 +1,4 @@
- 
+
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -26,7 +26,7 @@
 - Added PROMPTCONSOLE, it makes the client prompt (like on page request) and send
   the response as an argument of a user definied function.
   (syntax PROMPTCONSOLE callback function, message to prompt)
-  
+
 10-10-04, Furio
 - Added RESDISP properties to account. Accepted values are 0 (PreT2a client),
   1 (T2A), 2 (LBR), 3 (AoS), 4 (Samurai Empire). This is used to identify what type
@@ -87,7 +87,7 @@
 - Disabled string 'q'/'Q' to be said by privileged accounts. It is due the
   fact that default macro for repeat is Ctrl+Q, and one less Ctrl press will
   lead to GM to reveal self existance around, which really is not good.
-  
+
 31-10-04, Furio
 - Some fixes related to account creation and bank/box hack.
 - Removed EF_AgeOfShadows. It'll be re-added with new features and complete
@@ -185,7 +185,7 @@
 - Now any items with ATTR_STATIC are saved to spherestatics.scp, not only those
   who has this flag being the only set.
 - Fixed carriage return in accounts unused message.
-  
+
 11-12-04, Furio
 - Fixed: bugs with FORCONT* loops.
 - Fixed: bug with coloured text in comm crystal.
@@ -557,7 +557,7 @@
   argument ;)
 - Added Axis tags support CATEGORY, SUBSECTION, DESCRIPTION to STRIP command. I
   do not use them, so did not add that when making the command :).
-  
+
 23-04-05, Furio
 - Some fixes and optimization for Linux code.
 
@@ -574,7 +574,7 @@
 - Fixed problems with allshow.
 - Fixed problems with rand(x,y).
 - Disabled (temp.) Vjaka's messaging flood control.
- 
+
 24-05-05, Furio
 - Fixed some bugs for Linux build.
 - Added CanSee check in spellcast.
@@ -752,7 +752,7 @@
   	OBJPROPS.<name>=<locale id>,[args]
   	note that <name> can be anything, but the entries are sent in alphabetical
   	order. So, for example, a bag, the props would look like this:
-  	
+
   	OBJPROPS.a="1048032"				// a bag
   	OBJPROPS.b="1050044,32,450" // ~1_COUNT~ items, ~2_WEIGHT~ stones
 - Fixed: exception occuring during load with unknown keys in sphere.ini
@@ -816,7 +816,7 @@
 - Moved: .admin from executable to scripts and completely rewritten it.
   Please copy sphere_admin.scp from the script pack. Same is going to happen
   to .tweak.
-  
+
 16-08-05, Rattlehead (Script pack)
 - Added: sphere_item_building_floors_se.scp (SE floor items)
 - Added: sphere_item_misc_se.scp (SE misc items)
@@ -841,7 +841,7 @@
   - + shown before account name for higher privs and - before guest accounts (like the old admin panel)
   - Removed PLevel informations in main page to get more space for char name
   - Closing tweak dialog brings back to main page
-  - Added number of online clients in the main page title and changed "Administration Console" 
+  - Added number of online clients in the main page title and changed "Administration Console"
     to "Admin Panel", which is shorter
   - Added "remove note" button
   - Fixed: extra page if you have 15 clients only
@@ -933,8 +933,8 @@
 - Added some Mondain's Legacy items (not complete yet)
 
 26-08-05, Radiant
-- Fixed: MASTERUID no longer changes loyalty, should fix the errors (was undesired behaviour too imo) 
-  Note that in order for this setting to work the person you set this to has to be a full member 
+- Fixed: MASTERUID no longer changes loyalty, should fix the errors (was undesired behaviour too imo)
+  Note that in order for this setting to work the person you set this to has to be a full member
   of the guild.
 - Fixed: REMOVE not working in @EquipTest
 - Added: Encryption keys for clients are now in SphereCrypt.ini. When new clients come out,
@@ -1011,7 +1011,7 @@
 06-09-2005, Furio
 - Added: SCREENSIZE to access the game window size if the client supports that.
   You can access that via SCREENSIZE.X and SCREENSIZE.Y.
-- Added: RESENDTOOLTIP. Calling that on the object you need to resend tooltip. 
+- Added: RESENDTOOLTIP. Calling that on the object you need to resend tooltip.
   Since clients use a cache for tooltip, if you want to force the cache too use
   RESENDTOOLTIP 1.
 - Fixed: REMOVEFROMVIEW/TARGET(FGW) not working.
@@ -1134,7 +1134,7 @@
 - Fixed: damage packet sent to incorrect clients.
 - Fixed: Advanced_LOS not blocking los in some cases.
 - Fixed: Spell teleport not using ef_walkcheck routines when enabled.
-  
+
 23-09-2005, Cloud_Br (Script pack)
 - Updated: addons/Champion_Spawn.zip (read inside readme for more infos).
 - Updated: addons/worldfiles.zip (read inside readme for more infos).
@@ -1142,15 +1142,15 @@
 25-09-2005, Furio
 - Updated: Moved all OF flags related to magic/magery in "ad hoc" field
   called MAGICFLAGS. More info on it in Sphere.ini.
-- Added: SEXTANTP. Retrieve the sextant point shown by a sextant in args 
+- Added: SEXTANTP. Retrieve the sextant point shown by a sextant in args
   and if no args are set it would return the sextantp for the reference.
 - Added: support for showing skillcaps in newer clients.
 - Added: support for new status gump in newer clients.
 
 25-09-2005, Radiant
 - Added @SkillUseQuick char trigger and @UseQuick skill trigger, these are
-  called when sphere does a quick run of a skill (just difficulty test + skill 
-  gain), in which case it wouldn't call @SkillStart (for example use of tactics, 
+  called when sphere does a quick run of a skill (just difficulty test + skill
+  gain), in which case it wouldn't call @SkillStart (for example use of tactics,
   parrying in combat, arms lore with blacksmithing repair, magic resistance, etc).
   ARGN1 = skill being used
   ARGN2 = difficulty requested
@@ -1158,13 +1158,13 @@
   returning 0 will force skill to fail, returning 1 will force skill to succeed
   (both skip gains)
 - Fixed: GMs not being able to resurrect in anti-magic areas
-- Added: Character flag 020000 (STATF_ArcherCanMove), same as OF_Archery_CanMove 
+- Added: Character flag 020000 (STATF_ArcherCanMove), same as OF_Archery_CanMove
   but for specific players. OF_Archery_CanMove overrides this flag for everyone.
 - Updated: sphere_defs.scp and sphere_admin.scp for STATF_ArcherCanMove.
-- Added: NPCAI flag NPC_AI_ALWAYSINT (0008), always be as smart as possible when 
+- Added: NPCAI flag NPC_AI_ALWAYSINT (0008), always be as smart as possible when
   pathfinding.
 - Fixed: SERV.NAME not working
-- Added: SKILLUSEQUICK on chars, syntax: <SKILLUSEQUICK (skill) (difficulty)>. 
+- Added: SKILLUSEQUICK on chars, syntax: <SKILLUSEQUICK (skill) (difficulty)>.
   Does a quick use of a skill based on (difficulty) and returns 1 if it succeeded.
 
 26-09-2005, Vjaka
@@ -1176,7 +1176,7 @@
 - Fixed: SERV.MAP if normal point was given in arguments (with Z coord).
 - Modifyed: the sphere window operation on tray dclick. Now it hides if shown
   and appears if hidden.
-  
+
 26-09-2005, Furio
 - Modified: <STRREV string> to StrReverse(string)
 - Added: StrTrim(string) trime whitespaces at start/end of the string.
@@ -1202,7 +1202,7 @@
 - Fixed: ModAr not affecting actual armor.
 - Added: ARGN2 (show the message of gain/loss) and ARGO (person killed) to the
   @ExpChange trigger.
-  
+
 29-09-2005, Furio
 - Updated: Moved LAYER_LIGHT from 9 to 15. Modified all hardcoded things.
 - Updated: script pack (sphere_defs.scp, sphere_item_unsorted.scp).
@@ -1228,7 +1228,7 @@
 02-10-2005, Radiant
 - Fixed #013: Webserver attempting to parse images and sending invalid
   Content-Type header to clients
-- Updated #037: Changed @Kill trigger to be fired on ALL the characters that had 
+- Updated #037: Changed @Kill trigger to be fired on ALL the characters that had
   to do with the killing and therefor would gain/lose karma/fame. return 1 stops default
   karma/fame changes.
 
@@ -1236,7 +1236,7 @@
 - Updated: sphere_types.scp
 
 04-10-2005, Furio
-- Fixed #040: An item crafted by a player (skillmenu - makeitem) is created 
+- Fixed #040: An item crafted by a player (skillmenu - makeitem) is created
   without decay flag set.
 - Updated: Client >= 5.0.0 now use the compressed dialog packet (bandwith saver).
 - Updated: Default tooltip for a char (guild title/name).
@@ -1330,7 +1330,7 @@
   plevel 6 command (spheretables.scp).
 - Removed: SERV.DELETEFILE / SERV.WRITEFILE / READFILE / FILELINES since they're all
   integrated in the FILE obj.
-  
+
 26-10-2005, Cloud_Br (Script pack)
 - Updated: sphere_item_building_walls_se.scp
 
@@ -1371,7 +1371,7 @@
 - Fixed #112: impossible to access the CHARDEF if the NPC is not in world.
 - Fixed #225: CanSee and CanSeeLOS always required for SRC and not accepting
   arguments in several cases (actualy CanSee did not accept this at all).
-  
+
 22-11-2005, Torfo
 - Fixed #221: Msg/Say parameters have no effect on hearall output.
 
@@ -1382,10 +1382,10 @@
   Barracoon now has the hability to summon ratmans.
   Added Rotting Corpse to Unholy terror spawn.
   Added Rotting Corpse to Undead slayer weapon list.
-  Corpses of the minions should now stay on the ground (with a timer of 15 seconds) to 
+  Corpses of the minions should now stay on the ground (with a timer of 15 seconds) to
     avoid lag.
-  Optimized spawning of monsters, they won't appear on the same spot anymore and walk a 
-    way after some time, they will appear scatered around the spawn in a maximum distance 
+  Optimized spawning of monsters, they won't appear on the same spot anymore and walk a
+    way after some time, they will appear scatered around the spawn in a maximum distance
     of the range of that spawn (this should avoid lag when changing levels).
 
 25-11-2005, Vjaka
@@ -1473,9 +1473,9 @@
 - Fixed #299: Transfering pets to NPCs
 
 29-12-2005, Furio (Script Pack)
-- Updated: sphere_item_provisions_weapons_ml.scp (fixed bug BLACKSMITH 
+- Updated: sphere_item_provisions_weapons_ml.scp (fixed bug BLACKSMITH
   instead of BLACKSMITHING).
-  
+
 31-12-2005, Furio
 - Fixed #324: TRYSRC is read as TRYSRV (only in message errors).
 - Fixed #326: missing resource in sphere_item_provisions_weapons_ml.scp
@@ -1497,7 +1497,7 @@
 - Fixed: Pets going logout.
 
 10-01-2006, Furio
-- Fixed #361: Creating characters with apostrophes ( ' ) in the name gives a random 
+- Fixed #361: Creating characters with apostrophes ( ' ) in the name gives a random
   name in game.
 - Fixed #348: Problems with FILE object.
 - Fixed #356: Monsters not playing proper sounds (spherechar.scp and spherechar_evil.scp)
@@ -1525,7 +1525,7 @@
 - Fixed #371: Error on Bulletin Board (last letter missing)
 
 15-01-2006, Radiant:
-- Updated: You may now call functions on the SERV object. This affects several things, 
+- Updated: You may now call functions on the SERV object. This affects several things,
   including the f_onserver functions, the console and packet filtering functions.
 
 17-01-2006, RanXerox (Script pack)
@@ -1550,7 +1550,7 @@
 - Fixed: typo in console message.
 - Sync (Vjaka): defmessage string allocation, thus binary EXE size reduced by ~200kb.
 - Sync (Vjaka): SERV.console CMD to launch commands as you were in server console.
-- Sync (ShadowDragon): Items in multis do not send to the client if he is not in 
+- Sync (ShadowDragon): Items in multis do not send to the client if he is not in
   the multi (OSI-compatible lag fight) as OF_OSIMultiSight.
 - Updated: now ARGS in f_onchar_create contains account name.
 - Updated: sphere_serv_triggers.scp.
@@ -1558,13 +1558,13 @@
 
 23-01-2006, Torfo
 - Fixed #264: Problem with 0xBF packet.
-  
+
 23-01-2006, Blizzard (Script Pack)
 - Added: sphere_item_provisions_armor_ml.scp, sphere_item_provisions_clothing_ml.scp,
   sphere_item_provisions_clothing.scp.
 - Updated: sphere_item_provisions_armor.scp, sphere_item_profession_tailor_tanner.scp,
   sphere_item_ml.scp.
-  
+
 27-01-2006, Torfo
 - Fixed #411: sm_bolts in sphere_item_resources.scp and sphere_item_profession.scp
 - Fixed #409: added missing ">" in sphere_item_aos_se.scp
@@ -1603,7 +1603,7 @@
 
 19-02-2006, Furio
 - Fixed #456: NEWDUPE and DUPE doesn't copy events.
-- Added: AOS properties for player characters: RES* (cold,energy,fire,poison) and 
+- Added: AOS properties for player characters: RES* (cold,energy,fire,poison) and
   LUCK with no built-in functionality.
 - Sync (Vjaka): Added #214: ColorNoto* settings for characters color hue change.
 - Sync (Vjaka): "NEWLOOT X" character function creating and equiping item X for NPCs
@@ -1615,7 +1615,7 @@
   of this is to decrease overhead due to timered memory items opeations.
 - Sync (Shadow Dragon): TAG.NoMoveTill for script purposes. This doesn't allow char
   to move if TAG.NoMoveTill > SERV.Time.
-  
+
 20-02-2006, Furio
 - Fixed #462: TAG.NAME.HUE on chardef isn't working.
 - Fixed: some possible overflow in some spots.
@@ -1624,7 +1624,7 @@
 20-02-2006, Cloud_Br (Script pack)
 - Changed description of EVENTSPET on sphere.ini
 - Add some new points to sphere_map_pointsX.scp
-- Add some places with names like on OSI (places that didn't have a respective name 
+- Add some places with names like on OSI (places that didn't have a respective name
   before on default sphere) to sphere_mapX.scp files.
 
 24-02-2006, Vjaka
@@ -1643,7 +1643,7 @@
 - Fixed #484: LUCK and RES* properties throws errors when reading.
 
 07-03-2006, Furio
-- Added: Tithing points for player characters as TITHING with no built-in 
+- Added: Tithing points for player characters as TITHING with no built-in
   functionality.
 - Fixed #492: Undefinied SCROLL_MOTD at player login.
 
@@ -1653,7 +1653,7 @@
 - Updated: sphere_item_aos_se.scp, sphere_item_magic_necromancer_aos.scp
 
 10-03-2006, Furio
-- Fixed #501: Dropping a stackable item on another one with 
+- Fixed #501: Dropping a stackable item on another one with
   special attr (Newbie, Static, Move Never).
 - Fixed #509: Cheater message with disconnect.
 - Fixed #511: Tooltip Problem with Spawns.
@@ -1670,15 +1670,15 @@
 
 21-03-2006, Furio
 - Fixed #292: Textentrylimited crashing clients (thx to Admin Ben)
-- Fixed #528: Invis items in pack and/or corpse we see it, but when 
+- Fixed #528: Invis items in pack and/or corpse we see it, but when
   we click it, it dissappears.
 - Fixed #506: ghost of the npc appears after dying when mounted.
 - Updated: sphere_dialog.scp
 
 22-03-2006, MrSugarCube (Script pack)
-- Updated: sphere_menu.scp, sphere_item_misc.scp, townmagincia.scp (incorrect 
+- Updated: sphere_menu.scp, sphere_item_misc.scp, townmagincia.scp (incorrect
   spelling of 'jewelry').
-- Updated: sphere_item_provisions_armor_ml.scp (Duplicate DEFNAMEs for 02b74 
+- Updated: sphere_item_provisions_armor_ml.scp (Duplicate DEFNAMEs for 02b74
   and 02b79).
 
 23-03-2006, Furio
@@ -1687,44 +1687,44 @@
 - Updated: sphere_defs.scp (new typedefs), sphere_item_aos_se.scp (spellbooks).
 
 23-03-2006, MrSugarCube
-- Fixed: Incorrect spellbook packet being sent to newer clients with certain AOS 
+- Fixed: Incorrect spellbook packet being sent to newer clients with certain AOS
   features disabled.
 - Fixed #181: Woolly sheep having wool resource on corpse after being shorn.
-- Fixed: Player adding non-vendable item to vendor stock is deleted - Vendor now 
+- Fixed: Player adding non-vendable item to vendor stock is deleted - Vendor now
   returns the item.
 - Fixed #475: Taking item from hidden state does not update other clients.
-- Modified: Warning message for non-vendable items will show the UID of the item 
+- Modified: Warning message for non-vendable items will show the UID of the item
   and vendor.
 
 23-03-2006, Handred
-- Updated: sphere_spawns.scp. Changed all RESOURCES= to ID=, modified also the 
+- Updated: sphere_spawns.scp. Changed all RESOURCES= to ID=, modified also the
   WEIGHT= for a better and easier looking to, ie: ID=c_zombie 5.
 
 24-03-2006, MrSugarCube
-- Fixed #519: Poison spell and field spell damage reveals caster after every 
+- Fixed #519: Poison spell and field spell damage reveals caster after every
   damage effect.
 - Fixed: Setting TARGP only working with invalid locations.
-- Modified: @DropOn_Ground and @itemDropon_Ground triggers now have ARGS set 
-  to the location the item will be dropped to, specific points accessible 
+- Modified: @DropOn_Ground and @itemDropon_Ground triggers now have ARGS set
+  to the location the item will be dropped to, specific points accessible
   using ARGV[x]. (readonly)
-- Fixed: ARGS not being parsed correctly into ARGV when empty parameters are 
-  given (for example <myfunc 1,,,4,5> was treated as "1",",","4","5" and not 
+- Fixed: ARGS not being parsed correctly into ARGV when empty parameters are
+  given (for example <myfunc 1,,,4,5> was treated as "1",",","4","5" and not
   "1","","","4","5").
-- Modified: Attacker will not be revealed when a character is hit by a spell 
+- Modified: Attacker will not be revealed when a character is hit by a spell
   with SPELLFLAG_FIELD set.
-- Added: Damage Flag DAM_NOREVEAL (04000). If this flag is applied the attacker 
-  will not be revealed. This is applied by default to poison damage and spell 
-  damage. (Note that for spells the attacker will be revealed regardless if 
+- Added: Damage Flag DAM_NOREVEAL (04000). If this flag is applied the attacker
+  will not be revealed. This is applied by default to poison damage and spell
+  damage. (Note that for spells the attacker will be revealed regardless if
   SPELLFLAG_HARM is set, unless SPELLFLAG_FIELD is also set, so only affects
   field spell damage).
 - Updated: sphere_defs.scp (Updated DAM_FLAGS section)
 
 26-03-2006, MrSugarCube
-- Modified: Vendor boxes will now only accept a maximum of 115 items dropped 
-  inside (as opposed to the 256 item limit of a normal container). A warning 
-  message will be displayed when the buy menu is shown if this limit has been 
+- Modified: Vendor boxes will now only accept a maximum of 115 items dropped
+  inside (as opposed to the 256 item limit of a normal container). A warning
+  message will be displayed when the buy menu is shown if this limit has been
   exceeded.
-- Fixed #540: Logged out characters can be targeted with spells (Actually 
+- Fixed #540: Logged out characters can be targeted with spells (Actually
   CANSEE was returning 1 without GM/ALLSHOW priv).
 
 27-03-2006, MrSugarCube
@@ -1732,35 +1732,35 @@
   (eg: Palace of Paroxysmus acid).
 - Fixed: Walking on stairs in certain areas (such as the ones at 925,641,-80,2
   or 7060,376)
-- Updated: sphere_map0.scp, sphere_map_points0.scp, sphere_map0_ml.scp, 
-  sphere_map_points0_ml.scp (Moved ML locations to seperate script which can be 
+- Updated: sphere_map0.scp, sphere_map_points0.scp, sphere_map0_ml.scp,
+  sphere_map_points0_ml.scp (Moved ML locations to seperate script which can be
   uncommented to enabled ML areas).
-- Updated: spheretables.scp (Added ML map files to RESOURCES block, to be 
+- Updated: spheretables.scp (Added ML map files to RESOURCES block, to be
   uncommented if you wish to use).
-- Updated: sphere.ini (Updated MAP0 description to remind users to uncomment ML 
+- Updated: sphere.ini (Updated MAP0 description to remind users to uncomment ML
   map scripts).
 
 28-03-2006, Ellessar (Script Pack)
-- Updated: sphere_item_provisions_weapons_se.scp (incorrect spelling for 
+- Updated: sphere_item_provisions_weapons_se.scp (incorrect spelling for
   i_tetsubo SKILLMAKE).
 
 29-03-2006, MrSugarCube
-- Fixed: NPCs unable to walk on the same tile as a dead/disconnected/insubstantial 
+- Fixed: NPCs unable to walk on the same tile as a dead/disconnected/insubstantial
   character.
 
 30-03-2006, MrSugarCube
-- Fixed #545: TARGET function with no message specified sent a blank sysmessage 
+- Fixed #545: TARGET function with no message specified sent a blank sysmessage
   to the client. (also affected PROMPTCONSOLE).
-- Updated: sphere_msgs.scp - Added missing message definitions to the list 
+- Updated: sphere_msgs.scp - Added missing message definitions to the list
   (27 were missing).
 
 30-03-2006, Ellessar (Script Pack)
-- Updated: sphere_item_provisions_weapons.scp (SKILL properties corrected for 
+- Updated: sphere_item_provisions_weapons.scp (SKILL properties corrected for
   MaceFighting weapons).
 
 31-03-2006, MrSugarCube (Script Pack)
 - Updated: sphere_item_building_floors_se.scp (incorrect axis categories)
-- Updated: sphere_item_provisons_deed.scp (incorrect spelling of "Provisions" 
+- Updated: sphere_item_provisons_deed.scp (incorrect spelling of "Provisions"
   for some axis categories)
 
 01-04-2006, MrSugarCube
@@ -1781,16 +1781,16 @@
 - Fixed #558: DB reference still accessible with MySQL support disabled.
 
 04-04-2006, Ellessar (Script pack)
-- Updated: spherechar_lbr.scp (Changed "ICON=i_pet_orc_brute" to "ICON=i_pet_orc" 
+- Updated: spherechar_lbr.scp (Changed "ICON=i_pet_orc_brute" to "ICON=i_pet_orc"
   for character c_orc_brute)
 
 07-04-2006, MrSugarCube
 - Fixed #565: Account name "account" not loaded correctly from accounts file.
 
 08-04-2006, Ellessar (Script pack)
-- Updated: sphere_item_icons_new.scp (Added missing icons: i_pet_terathanavenger, 
+- Updated: sphere_item_icons_new.scp (Added missing icons: i_pet_terathanavenger,
   i_pet_meereternal, i_pet_meercaptain, i_pet_meermage)
-- Updated: spherechar_lbr.scp (Added NPCs: c_mummy, c_terathan_avenger, 
+- Updated: spherechar_lbr.scp (Added NPCs: c_mummy, c_terathan_avenger,
   c_meer_eternal, c_meer_captain, c_meer_mage)
 - Updated: spherechar_se.scp (Fixed incorrect weapon for c_yomotsu_warrior)
 
@@ -1807,7 +1807,7 @@
 - Fixed #577: SERV.ITEMDEF not behaving correctly.
 
 10-04-2006, MrSugarCube (Script pack)
-- Updated: sphere_map0.scp (Removed REGION_FLAG_UNDERGROUND from 
+- Updated: sphere_map0.scp (Removed REGION_FLAG_UNDERGROUND from
   a_lord_britishs_castle_1, fixing lighting around west britain).
 
 10-04-2006, Vjaka
@@ -1870,17 +1870,17 @@
 02-05-2006, Gygrazok
 - Updated: sphereCrypt.ini (Added encryption keys for 5.0.2 client)
 
-02-05-2006, Furio 
+02-05-2006, Furio
 - Fixed #643: Functions with similar names sometimes get miscalled (thx to SL Patch).
 - Fixed #641: Deleting account when the player is online.
-- Fixed #625: Cloth bolts give always 25 i_cloth, while it should give the amount of 
+- Fixed #625: Cloth bolts give always 25 i_cloth, while it should give the amount of
   i_cloth specified in RESOURCES.
 - Updated: sphere_item_profession_tanner.scp (Cloth bolt value).
 
 03-05-2006, MrSugarCube
 - Fixed #642: Intrinsic functions not working correctly from SERV
   object.
-- Fixed #645: Possible to place invalid items on a gameboard, which 
+- Fixed #645: Possible to place invalid items on a gameboard, which
   in turn crashes clients.
 - Fixed: Game board was setup incorrectly for games of Checkers.
 - Modified: Game board setup for backgammon game added. (Note: Requires
@@ -1895,7 +1895,7 @@
 - Modified: If VENDORMARKUP is not present on the npc or in the region the one from
   the chardef will be readed.
 - Modified: Changing CLIENT properties will not show anymore annoying sysmessages.
-  
+
 19-05-2006, Shadow Dragon
 - Fixed #638 & #639: Items outside of multi not sending when in multi.
 - Fixed #655: House building on each other.
@@ -1911,7 +1911,7 @@
 - Fixed #691: serv.REGIONRESOURCE.x.REAP not working
 - Modified: FeatureAOS to permit using of basic Aos feature without having tooltips.
   Look into sphere.ini for more info.
-  
+
 31-05-2006, MrSugarCube
 - Modified: <CANCAST (spell)> now accepts an extra parameter to check the region
   flags. If the second parameter is not supplied then this check is enabled by
@@ -1938,7 +1938,7 @@
   MULTIREGION, REGIONFLAGS and COMPONENT (COMPONENT usage is same as COMP).
 
 05-06-2006, MrSugarCube
-- Fixed: Attempts to use house keys to lock items down in containers.  
+- Fixed: Attempts to use house keys to lock items down in containers.
 
 06-06-2006, Furio
 - Added: NAPIERPOW(arg), LOGARITHM(arg[,base]), TAN(arg).
@@ -1998,12 +1998,12 @@
 - Fixed: Inviting someone into a party tells the wrong character they've been added.
 
 15-06-2006, Furio
-- Added: Added TAG.OVERRIDE.STATSUM/SKILLSUM/STATCAP[$statid]/SKILLCAP[$skillid] for 
+- Added: Added TAG.OVERRIDE.STATSUM/SKILLSUM/STATCAP[$statid]/SKILLCAP[$skillid] for
   players and npc to override SKILLCLASS values.
 - Sync (ShadowDragon): TAG.OVERRIDE.REGEN[$statid]/REGENVAL[$statid] to modify regen
   rate and regen amount.
 - Sync (Vjaka): Added <EXPLODE sep,string> operator which converts string with separators
-  other than ',' to commas making possible to operate with such string using strarg/streat. 
+  other than ',' to commas making possible to operate with such string using strarg/streat.
   Sample: LOCAL.S=<explode :/- ,my:test/string:2-3> should give result of "my,test,string,2,3".
 
 17-06-2006, MrSugarCube
@@ -2012,26 +2012,26 @@
 
 17-06-2006, coruja747 (Script pack)
 - Updated: sphere_item_provisions_armor_se.scp (Fixed error in t_ninja_belt)
-  
+
 18-06-2006, V (TYVM SL)
-- Modified: TimerF is now global and works on any object. It will take optional 
-  arguments to the function call. Entire list is now saved and loaded upon startup. 
+- Modified: TimerF is now global and works on any object. It will take optional
+  arguments to the function call. Entire list is now saved and loaded upon startup.
   It no longer uses -1 to erase the TimerF list. Takes a maximum of 1024 characters.
   syntax: timerf n, function args
 
 19-06-2006, MrSugarCube
-- Fixed #653: TRAIN function causing exception when not all default skills 
+- Fixed #653: TRAIN function causing exception when not all default skills
   are defined.
-- Fixed #732: Items on buy/sell menus displaying names from muls with 
-  FEATURE_AOS_UPDATE_B disabled on AOS+ clients. Instead a basic tooltip packet 
+- Fixed #732: Items on buy/sell menus displaying names from muls with
+  FEATURE_AOS_UPDATE_B disabled on AOS+ clients. Instead a basic tooltip packet
   containing only the name of the item will be sent to the client in this case.
 
 19-06-2006, MrSugarCube (Script pack)
-- Updated: sphere_item_provisions_weapons_se.scp (Corrected incorrect DUPEITEM 
+- Updated: sphere_item_provisions_weapons_se.scp (Corrected incorrect DUPEITEM
   and TDATA properties for i_fukiya)
-- Updated: sphere_msgs.scp (Moved 32 hardcoded messages to defmessages and added 
+- Updated: sphere_msgs.scp (Moved 32 hardcoded messages to defmessages and added
   1 missing defmessage)
-  
+
 01-07-2006, Furio
 - Fixed #740: Strange price on vendors.
 - Fixed #752: Resizepic not showing with dorigin.
@@ -2039,24 +2039,24 @@
 
 02-07-2006, Nazghul (with thx to Ellessar)
 - Fixed #639: OSI Multi Sight removes items already in sight.
-- Added: TAG.ALWAYSSEND for items. An item with this TAG will always be send, 
-  no matter whether it is in a multi or not. The TAG works only with 
+- Added: TAG.ALWAYSSEND for items. An item with this TAG will always be send,
+  no matter whether it is in a multi or not. The TAG works only with
   OF_OSIMultiSight on.
 - Redone new items sending (should save some unneeded packets)
 
 04-07-2006, MrSugarCube
-- Modified: SERV.CLIENT.x reference no longer accepts x if it is out of range 
+- Modified: SERV.CLIENT.x reference no longer accepts x if it is out of range
   (use SERV.CLIENTS property to check range).
-- Modified: SERV.CLIENT.x reference no longer skips clients without characters 
-  (such as HTTP, or telnet connections), which caused strange behaviour. 
-  <SERV.CLIENT.x> will return 0 if the client has no attached character, 1 if 
+- Modified: SERV.CLIENT.x reference no longer skips clients without characters
+  (such as HTTP, or telnet connections), which caused strange behaviour.
+  <SERV.CLIENT.x> will return 0 if the client has no attached character, 1 if
   the client has a character attached.
 
 05-07-2006, Nazghul
-- Added: A skill trigger ON=@PreStart and a character trigger ON=@SkillPreStart 
+- Added: A skill trigger ON=@PreStart and a character trigger ON=@SkillPreStart
   are now called before ANY hardcoded stuff related to the skill which will start.
 - Added: A skill flag SFK_NOMINDIST. With this flag on, you can mine, chop
-  (distance doesn't have to be >= 1) or fish (distance doesn't have to be >= 2) 
+  (distance doesn't have to be >= 1) or fish (distance doesn't have to be >= 2)
   right under yourself.
 - Modified: Now an axe can be damaged during lumberjacking.
 - Fixed: Fishing bug, which allowed fishing through ship floor.
@@ -2064,42 +2064,42 @@
 
 05-07-2006, Nazghul (Script Pack)
 - Updated: sphere_defs.scp (added section skill_flags)
-- Updated: sphere_msgs.scp (messages fishing_close, lumberjacking_close, 
+- Updated: sphere_msgs.scp (messages fishing_close, lumberjacking_close,
   lumberjacking_tool, mining_close, fishing_4)
 
 09-07-2006, MrSugarCube
-- Fixed: dtext, dcroppedtext, dhtmlgump, dtextentry and dtextentrylimited in gumps 
+- Fixed: dtext, dcroppedtext, dhtmlgump, dtextentry and dtextentrylimited in gumps
   using a space for the text if no string was provided.
 - Fixed #754: GMs losing non-vendable items when dropping them into a vendor box.
 - Fixed #720: <dSOMEVAL> returning 0 for values starting with "0.".
 
 10-07-2006, MrSugarCube
-- Fixed #760: Exception caused by opening paperdoll when not all default skills 
+- Fixed #760: Exception caused by opening paperdoll when not all default skills
   are defined.
- 
-11-07-2006 Nazghul  
-- Fixed #594: Players (only if their client allows) and NPCs were able to go through  
-  non-static walls.  
-- Added: CAN-Flag mt_passwalls (08); NPC with this flag CAN pass through static  
+
+11-07-2006 Nazghul
+- Fixed #594: Players (only if their client allows) and NPCs were able to go through
+  non-static walls.
+- Added: CAN-Flag mt_passwalls (08); NPC with this flag CAN pass through static
   and dynamic walls.
- 
+
 12-07-2006, Furio
 - Fixed #690: serv.REGIONTYPE.*.resources is not working.
-- Added: <serv.regiontype.*.calcmemberindex [uid]> returning the index of the 
+- Added: <serv.regiontype.*.calcmemberindex [uid]> returning the index of the
   resource selected randomly or basing on the skill of the uid passed as argument.
 
 12-07-2006 Nazghul
-- Fixed: When logging in with an unencrypted client, you were not able to see 
-  tooltips for objects in line of sight (0 to 18 tiles away from you), 
+- Fixed: When logging in with an unencrypted client, you were not able to see
+  tooltips for objects in line of sight (0 to 18 tiles away from you),
   including yourself.
 
-12-07-2006, Nazghul (Script Pack)  
-- Updated: sphere_defs.scp (updated section can_flags)  
-- Fixed #761: missing positioning of newly created vendor in i_deed_vendor  
+12-07-2006, Nazghul (Script Pack)
+- Updated: sphere_defs.scp (updated section can_flags)
+- Fixed #761: missing positioning of newly created vendor in i_deed_vendor
   (sphere_item_provisions_deed.scp)
 
 13-07-2006, Nazghul
-- Added: CURFOLLOWER, MAXFOLLOWER with no built-in functionality. These variables 
+- Added: CURFOLLOWER, MAXFOLLOWER with no built-in functionality. These variables
   change values on a status gump.
 - Fixed #764: Cannot see items in large multis (OF_OsiMultiSight).
 - Sync (Vjaka): ISWEAPON and ISARMOR read-only properties for items.
@@ -2108,8 +2108,8 @@
 - Added: ISWEAPON and ISARMOR are now avaliable through serv.itemdef.x.* too.
 
 16-07-2006, Nazghul
-- Added: OF_Command_Sysmsgs into sphere.ini. With this flag on, you will see 
-  sysmessages with current status after typing .allmove, .allshow, .debug, 
+- Added: OF_Command_Sysmsgs into sphere.ini. With this flag on, you will see
+  sysmessages with current status after typing .allmove, .allshow, .debug,
   .detail, .gm, .hearall, .privshow, .invis, .invul
 
 20-07-2006, Nazghul (Script Pack)
@@ -2118,7 +2118,7 @@
 
 21-07-2006, Furio
 - Fixed #780: Unable to read REPLICATE property.
-- Changed: TAG.OVERRIDE.STATCAP[$statid]/SKILLCAP[$skillid]/REGEN[$statid]/REGENVAL[$statid] 
+- Changed: TAG.OVERRIDE.STATCAP[$statid]/SKILLCAP[$skillid]/REGEN[$statid]/REGENVAL[$statid]
   to TAG.OVERRIDE.STATCAP_$statid/SKILLCAP_$skillid/REGEN_$statid/REGENVAL_$statid.
 - Added: -E to command line. Starting Sphere with it will enable the ExceptionDumper
   that will generate a .map file on unexpected exceptions. Sending that file through
@@ -2187,14 +2187,14 @@
 
 01-08-2007, Nazghul
 - Added: INI flag EF_New_Walkcheck = 04000 to switch on and off new walkcheck routines
-  what should prohibit NPC from passing thru walls if not explicitely stated 
+  what should prohibit NPC from passing thru walls if not explicitely stated
   (CAN-Flag mt_passwalls (08))
 
 02-08-2006, Furio
 - Added: STRREGEX(pattern,string) that execute a pattern matching supporting the
   known standard. Return: 1 match found, 0 match not found, -1 illegal pattern syntax.
 
-04-08-2006, Nazghul 
+04-08-2006, Nazghul
 (most code revised, debugged and (re)designed by Ellessar when I was up to drop
 this all in desperation)
 - Added: Function AddContextEntry. what takes 2 to 4 arguments separated by a comma.
@@ -2206,7 +2206,7 @@ this all in desperation)
             WITHOUT the leading "300" or such! Just type "5194" or "11010"
    Flags - 01 - locked (will be grayed out)
          - 02 - consecutive entries with this flag set will be summarized under
-                a golden arrow 
+                a golden arrow
          - 020 - can be colored
    Color (applied only if Flags & 020) - hue
 
@@ -2304,7 +2304,7 @@ this all in desperation)
 30-08-2006, Nazghul
 - MODIFIED: RESCOLD, RESENERGY, RESFIRE, RESPOISON now can also be set on NPC
   Remember that RES*=100 will give you a 100 percent immunity against the damage inflicted
-  by TAG.*DAMAGE. 
+  by TAG.*DAMAGE.
 - Added: COMBAT_SPECIALDAMAGE to INI CombatFlags (08). If set, TAG.*DAMAGE (below) will be
   used.
 - Added: COMBAT_USE_RESISTANCE to INI CombatFlags (010). If set, RES* on characters will
@@ -2318,9 +2318,9 @@ this all in desperation)
   example increase the TAGs or the RES* properties on characters on equip of the item.
   This way you can use TAG.*DAMAGE on a weapon to increase the wearer's appropriate
   damage tag, or on a piece of armor to increase his RES*, or to whatever you want.
-  
+
 31-08-2006, Nazghul
-- Added: NPC trigger @PetDesert. Fires when a pet decides to go wild. 
+- Added: NPC trigger @PetDesert. Fires when a pet decides to go wild.
   Default object is the pet, SRC the master. RETURN 1 changes the pet's mind.
 
 31-08-2006, MrSugarCube
@@ -2349,7 +2349,7 @@ this all in desperation)
 - Added: TAG.OVERRIDE.MOVERATE for NPC to speed up or slow down single NPC
 
 05-09-2006, Nazghul
-- Added: Option flag OF_Buffs. When on, Sphere will automatically add and remove buff and 
+- Added: Option flag OF_Buffs. When on, Sphere will automatically add and remove buff and
   debuff icons to the affected players.
 - Updated: sphere.ini - added new optional flag OF_Buffs
 - Added: Functions ADDBUFF, REMOVEBUFF for adding and removing buff/debuff icons.
@@ -2389,7 +2389,7 @@ this all in desperation)
 - Changed: Key links will only be blanked if they are pointing to an invalid item UID now.
   Before everything what was neither container nor multi was considered "invalid", so keys
   with the UID of a door, or themselves could turn blank.
-- Added #848: Character trigger @SpellSelect. Doing pretty much the same as the spell trigger 
+- Added #848: Character trigger @SpellSelect. Doing pretty much the same as the spell trigger
   @select and has the same arguments/parameters
 - Fixed #778: Wrong spellbook recognition with more than one spellbook std., necro, ...)
   in pack.
@@ -2462,7 +2462,7 @@ this all in desperation)
 - Added: TDATA3 and TDATA4 of a container type item are now holding min and max coordinates of
   the "area were items may be placed", relatively to the open container gump.
   TDATA3 is (MinX * 0x10000) + MinY, TDATA4 is (MaxX * 0x10000) + MaxY
-  Be very careful with these settings - if they are set to illegal values (i.e., outside of the 
+  Be very careful with these settings - if they are set to illegal values (i.e., outside of the
   visible gump) Sphere will happily accept them, but your users will not be able to pick items
   placed there out of the container, because the client will only display then if they have the
   container gump as a background!
@@ -2470,10 +2470,10 @@ this all in desperation)
   "unknown gump id".
 
 28-09-2006, Nazghul
-- Added: MOREM value (0..127) on digestible food will override the amount of "food units" 
-  what will be added to the characters FOOD property when eating this. Obviously, items 
+- Added: MOREM value (0..127) on digestible food will override the amount of "food units"
+  what will be added to the characters FOOD property when eating this. Obviously, items
   with different MOREM will not stack. Because on=@SUCCESS on cooking will not give you
-  a reference to the newly created item but only to the raw one, MOREM will be transferred 
+  a reference to the newly created item but only to the raw one, MOREM will be transferred
   from the raw food (what you may alter in on=@success)
 
 29-09-2006, Nazghul
@@ -2500,12 +2500,12 @@ this all in desperation)
 05-10-2006, Nazghul
 - Added: INI flag OF_OSIDamageMod (0x04)
   Modifying weapon damage OSI style, according to this formulas (originally provided by ClouD_Br):
-  Tactics Damage Bonus% = Tactics ÷ 1.6 (Add 6.25% if Tactics >= 100)
-  Anatomy Damage Bonus% = (Anatomy ÷ 2) + 5
-  Lumberjack Damage Bonus% = Lumberjack ÷ 2 (Add 10% if Lumberjacking >= 100)
+  Tactics Damage Bonus% = Tactics ï¿½ 1.6 (Add 6.25% if Tactics >= 100)
+  Anatomy Damage Bonus% = (Anatomy ï¿½ 2) + 5
+  Lumberjack Damage Bonus% = Lumberjack ï¿½ 2 (Add 10% if Lumberjacking >= 100)
   Strength Damage Bonus% = Strength * 0.3 (Add 5% if Strength >= 100)
   Final Damage Bonus% = Tactics Bonus + Anatomy Bonus + Lumber Bonus + Strangth Bonus + Damage Increase Items*
-  Final Damage = Base Damage + (Base Damage * Final Damage Bonus%) 
+  Final Damage = Base Damage + (Base Damage * Final Damage Bonus%)
   * Damage Increase is capped at 100%.
 
 05-10-2006, Nazghul
@@ -2540,7 +2540,7 @@ this all in desperation)
 09-10-2006, Nazghul
 - fixed problems with spellbooks obviously triggered by new Gcc compiler for Linux with a weird
   workaround.
-                  
+
 10-10-2006, Nazghul
 - Fixed #900: Added INI flag COMBAT_DCLICKSELF_UNMOUNT to unmount horse when dclicking self
   while in warmode.
@@ -2550,18 +2550,18 @@ this all in desperation)
 - Updated (#905): sphere_item_provisions_potions.scp - Shrink potion did not behave as expected.
 
 13-10-2006, Nazghul
-- Added: Intrinsic functions SIN() and COS(). Attention: Without FLOAT math they will obviously 
+- Added: Intrinsic functions SIN() and COS(). Attention: Without FLOAT math they will obviously
   only return 0 and 1 :)
 
 16-10-2006, Nazghul
-- Added: Support for floats (local variables FLOAT.younameit, which have size of double, and 
-  can hold precise numbers). Usage of these variables is the same like LOCAL.younameit. As 
+- Added: Support for floats (local variables FLOAT.younameit, which have size of double, and
+  can hold precise numbers). Usage of these variables is the same like LOCAL.younameit. As
   EVAL only uses integer arithmetic, with FLOAT math you have to use <FLOATVAL ()>
   (New code was done mainly by Ellessar and Decrythe, I just "glued" it into Sphere :) )
-- Changed: Return values for @SPELLSELECT trigger. Touchup for @SELECT with spells. Different 
+- Changed: Return values for @SPELLSELECT trigger. Touchup for @SELECT with spells. Different
   server behaviour can be achieved with the following RETURN values in trigger scripts:
   @SELECT
-  	RETURN 0 - proceed without mana, spellbook, and reagent check as if these checks were 
+  	RETURN 0 - proceed without mana, spellbook, and reagent check as if these checks were
   						 successful
 		RETURN 1 - Abort processing (so aborting the spell)
 	  RETURN 2 - proceed as normal
@@ -2570,16 +2570,16 @@ this all in desperation)
   	RETURN 0 - proceed as normal
 		RETURN 1 - abort processing (so aborting the spell)
 	  RETURN 2 - proceed as normal
-	  RETURN 6 - proceed without mana, spellbook, and reagent check as if these checks were 
+	  RETURN 6 - proceed without mana, spellbook, and reagent check as if these checks were
 	  					 successful
-  @SPELLSELECT will be called after @SELECT - what means, if you leave @SELECT with RETURN 0 or 
+  @SPELLSELECT will be called after @SELECT - what means, if you leave @SELECT with RETURN 0 or
   RETURN 1, @SPELLSELECT will NOT be called!
 
 16-10-2006, Furio
 - Added: DAM.HI/LO and ARMOR.HI/LO
 
 17-10-2006, Nazghul
-- Added: Defmessage if skillgain is aborted due to GAINRADIUS not met; message will only be displayed 
+- Added: Defmessage if skillgain is aborted due to GAINRADIUS not met; message will only be displayed
   if TAG.NOSKILLMSG=1 on character
 - Fixed: Problems with long passwords and MD5 hash on.
 
@@ -2702,7 +2702,7 @@ this all in desperation)
 02-11-2006, MrSugarCube
 - Fixed: Double "You have the key for this" message when attempting to use a lockpick or cast
   magic unlock on something you already have a key for.
-  
+
 03-11-2006, Furio
 - Added: DB.ESCAPEDATA $field returning $field escaped using the charset of the connected db.
 
@@ -2774,7 +2774,7 @@ this all in desperation)
   operation, and are actually re-read only when you are doing a manual resync.
 - Added: BETWEEN2 as opposite of BETWEEN, which selected min<-cur->max to select towards
   minimum (max<-cur->min).
-  
+
 28-11-2006, Furio
 - Fixed #951: FILE.WRITECHR not working as it should.
 - Modified: Added error feedback for FOR* cycles.
@@ -2833,7 +2833,7 @@ this all in desperation)
   who have dealt most damage.
 - Removed: EF_Scripts_Ret_Strings has proven to be stable and correct during years, so it is
   now a default behavior of Sphere.
-  
+
 16-12-2006, Furio
 - Added: argument CLEAR to TIMERF. Now using x.TIMER CLEAR will delete all the timerf running on x.
 
@@ -2995,7 +2995,7 @@ this all in desperation)
    "SYSMESSAGE @,,2 502771"
    "SYSMESSAGE @2,,2 1042758,MrSugarCube"
    "SYSMESSAGE @,,2 1062695,MrSugarCube,4,5"
-   
+
 09-01-2007, Furio
 - Added: MD5HASH returning the md5 hash of the argument.
 
@@ -3030,7 +3030,7 @@ this all in desperation)
 16-01-2007, MrSugarCube
 - Added #1029: @Cancel trigger to MENUs and SKILLMENUs.
 - Modified: Items displayed on MENUs and SKILLMENUs can now be coloured. This can be done by prefixing the
-  item description with "@color" (in the same way that sysmessages can be coloured). For example, 
+  item description with "@color" (in the same way that sysmessages can be coloured). For example,
   "ON=i_sword_viking @2 This is a viking sword" will display a blue sword on the menu.
 - Modified: Cancelling a PROMPTCONSOLE prompt no longer prevents the callback function from being called.
 
@@ -3097,3 +3097,7 @@ this all in desperation)
 07-02-2007, Nazghul
 - fixed #1049: t_fire, t_campfire, t_spell are no longer dispellable if they have attr_move_never
 - more defmessages (update sphere_msgs.scp!)
+
+07-02-2007, Vjaka
+- Modified console output in linux build. By default it assumes that it is not colored,
+  launch with argument -c (./spheresvr -c) in order to get colored output. It screwed some consoles.

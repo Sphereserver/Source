@@ -304,15 +304,20 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	PrintTelnet(pszTemp);
 
 #ifndef _WIN32
-	SysMessage(pszTemp);
-#endif
-	while ( len-- )	// backspace it
+	if( g_Log.m_fColoredConsole )
 	{
-		PrintTelnet("\x08");
-#ifndef _WIN32
- 		SysMessage("\x08");
+		SysMessage(pszTemp);
 #endif
+		while ( len-- )	// backspace it
+		{
+			PrintTelnet("\x08");
+#ifndef _WIN32
+ 			SysMessage("\x08");
+#endif
+		}
+#ifndef _WIN32
 	}
+#endif
 
 #ifdef _WIN32
 	NTWindow_SetWindowTitle(pszTemp);
@@ -1358,6 +1363,8 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					"Command Line Switches:\n"
 #ifdef _WIN32
 					"-cClassName Setup custom window class name for sphere (default: " GRAY_TITLE "Svr)\n"
+else
+					"-c use colored console output (default: off)\n"
 #endif
 					"-D Dump global variable DEFNAMEs to defs.txt\n"
 #if defined(_WIN32) && !defined(_DEBUG)
@@ -1374,10 +1381,16 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					"-T Run tests and exit (avilable only in test builds).\n"
 					);
 				return( false );
+#ifdef _WIN32
 			case 'C':
 			case 'K':
 				//	these are parsed in other places - nt service, nt window part, etc
 				continue;
+#else
+			case 'C':
+				g_Log.m_fColoredConsole = true;
+				continue;
+#endif
 			case 'P':
 				m_ip.SetPort(ATOI(pArg+1));
 				continue;
