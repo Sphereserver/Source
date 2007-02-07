@@ -1713,6 +1713,7 @@ bool CChar::Spell_CastDone()
 		{
 			CItem * pItem = dynamic_cast <CItem*> (pObj);
 			if ( pItem == NULL ||
+				pItem->IsAttr( ATTR_MOVE_NEVER ) ||
 				( ! pItem->IsType(IT_CAMPFIRE) &&
 				! pItem->IsType(IT_SPELL) &&
 				! pItem->IsType(IT_FIRE)))

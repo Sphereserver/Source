@@ -3093,3 +3093,6 @@ this all in desperation)
 06-02-2007, Nazghul
 - fixed #1047: NPC AI_CAN_LOOT missed a "not" so only animals looted :).
   Domestic animals will no more poop dung if frozen, stone, insubstantial or in warmode
+
+07-02-2007, Nazghul
+- fixed #1049: t_fire, t_campfire, t_spell are no longer dispellable if they have attr_move_never
