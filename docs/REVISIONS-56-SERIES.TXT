@@ -3096,3 +3096,4 @@ this all in desperation)
 
 07-02-2007, Nazghul
 - fixed #1049: t_fire, t_campfire, t_spell are no longer dispellable if they have attr_move_never
+- more defmessages (update sphere_msgs.scp!)
