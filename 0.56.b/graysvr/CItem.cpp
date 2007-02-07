@@ -3747,9 +3747,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	{
 		DIR_TYPE dir = ptCoords.GetDir(pBoatSighted->GetTopPoint());
 		if (iBoatSighted == 1)
-			sSearch.Format("You can see a %s to the %s. ", (LPCTSTR) pBoatSighted->GetName(), CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), (LPCTSTR) pBoatSighted->GetName(), CPointBase::sm_szDirs[dir] );
 		else
-			sSearch.Format("You see many ships, one is to the %s. ", (LPCTSTR) CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), (LPCTSTR) CPointBase::sm_szDirs[dir] );
 		strcat( pResult, sSearch);
 	}
 
@@ -3760,16 +3760,16 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		if (iItemSighted == 1)
 		{
 			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format("You can see something floating in the water to the %s. ", (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
 			else
-				sSearch.Format("You can see %s to the %s.", (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
 		}
 		else
 		{
 			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format("You can see many things, one is to the %s. ", CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR_MANY), CPointBase::sm_szDirs[ dir ] );
 			else
-				sSearch.Format("You can see many things, one is %s to the %s. ", (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
 		}
 		strcat( pResult, sSearch);
 	}
@@ -3802,9 +3802,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		DIR_TYPE dir =  ptCoords.GetDir(pCharSighted->GetTopPoint());
 
 		if (iCharSighted == 1)
-			sSearch.Format("You see a creature to the %s", CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_SINGLE), CPointBase::sm_szDirs[dir] );
 		else
-			sSearch.Format("You can see many creatures, one is to the %s.", CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_MANY), CPointBase::sm_szDirs[dir] );
 		strcat( pResult, sSearch);
 	}
 	return pResult;
@@ -3878,14 +3878,14 @@ int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 
 	if ( ! IsTypeLocked())
 	{
-		pCharSrc->SysMessage( "You cannot unlock that!" );
+		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNLOCK_CANT_GENERAL ) );
 		return -1;
 	}
 
 	CChar * pCharTop = dynamic_cast <CChar*>( GetTopLevelObj());
 	if ( pCharTop && pCharTop != pCharSrc )
 	{
-		pCharSrc->SysMessage( "You cannot unlock that where it is!" );
+		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNLOCK_CANT_THERE ) );
 		return -1;
 	}
 
@@ -3893,7 +3893,7 @@ int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 	if ( pCharSrc->ContentFindKeyFor( this ))
 	{
 		if ( !fTest )
-			pCharSrc->SysMessage( "You have the key for this." );
+			pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_HAS_KEY ) );
 
 		return( 0 );
 	}
@@ -3902,14 +3902,14 @@ int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 	{
 		if ( g_Cfg.m_iMagicUnlockDoor == 0 )
 		{
-			pCharSrc->SysMessage( "This door can only be unlocked with a key." );
+			pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNLOCK_DOOR_NEEDS_KEY ) );
 			return -1;
 		}
 
 		// you can get flagged criminal for this action.
 		if ( ! fTest )
 		{
-			pCharSrc->CheckCrimeSeen( SKILL_SNOOPING, NULL, this, "picking the locked" );
+			pCharSrc->CheckCrimeSeen( SKILL_SNOOPING, NULL, this, g_Cfg.GetDefaultMsg( DEFMSG_LOCK_PICK_CRIME ) );
 		}
 
 		if ( Calc_GetRandVal( g_Cfg.m_iMagicUnlockDoor ))
@@ -3926,11 +3926,11 @@ int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 		{
 			if ( IsType(IT_DOOR_LOCKED))
 			{
-				pCharSrc->SysMessage( "You failed to unlock the door.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNLOCK_FAIL_DOOR ) );
 			}
 			else
 			{
-				pCharSrc->SysMessage( "You failed to unlock the container.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNLOCK_FAIL_CONT ) );
 			}
 			return( -1 );
 		}
@@ -4017,18 +4017,18 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 
 	if ( IsTypeLocked())
 	{
-		pCharSrc->SysMessage( "It is already locked" );
+		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_ALREADY_IS ) );
 		return false;
 	}
 	if ( ! IsTypeLockable())
 	{
 		// Maybe lock items to the ground ?
-		pCharSrc->SysMessage( "It is not really a lockable type object." );
+		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_UNLOCKEABLE ) );
 		return false;
 	}
    if ( IsAttr( ATTR_OWNED ) )
 	{
-		pCharSrc->SysMessage( "You may not lock this item" );
+		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_MAY_NOT ) );
 		return false;
 	}
 	switch ( m_type )
@@ -4039,11 +4039,11 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 			if ( pCharSrc->ContentFindKeyFor( this ))
 			{
 				m_type=IT_CONTAINER_LOCKED;
-				pCharSrc->SysMessage( "You lock the container.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_CONT_OK ) );
 			}
 			else
 			{
-				pCharSrc->SysMessage( "You don't have the key to this container." );
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_CONT_NO_KEY ) );
 				return false;
 			}
 			break;
@@ -4055,11 +4055,11 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 			if ( pCharSrc->ContentFindKeyFor( this ))
 			{
 				m_type=IT_DOOR_LOCKED;
-				pCharSrc->SysMessage( "You lock the door.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_DOOR_OK ) );
 			}
 			else
 			{
-				pCharSrc->SysMessage( "You don't have the key to this door.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_DOOR_NO_KEY ) );
 				return false;
 			}
 			break;
@@ -4067,20 +4067,20 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 			if ( pCharSrc->ContentFindKeyFor( this ))
 			{
 				m_type=IT_SHIP_HOLD_LOCK;
-				pCharSrc->SysMessage( "You lock the hold.");
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_HOLD_OK ) );
 			}
 			else
 			{
-				pCharSrc->SysMessage( "You don't have the key to the hold." );
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_HOLD_NO_KEY ) );
 				return false;
 			}
 			break;
 		case IT_SHIP_SIDE:
 			m_type=IT_SHIP_SIDE_LOCKED;
-			pCharSrc->SysMessage( "You lock the ship.");
+			pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_SHIP_OK ) );
 			break;
 		default:
-			pCharSrc->SysMessage( "You cannot lock that!" );
+			pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_CAN_NOT ) );
 			return false;
 		}
 
