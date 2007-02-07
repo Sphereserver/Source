@@ -44,7 +44,7 @@ int CTextConsole::OnConsoleKey( CGString & sText, TCHAR nChar, bool fEcho )
 	{
 commandtoolong:
 		SysMessage( "Command too long\n" );
-		
+
 		sText.Empty();
 		return( 0 );
 	}
@@ -204,7 +204,7 @@ void CServer::SetServerMode( SERVMODE_TYPE mode )
 bool CServer::IsValidBusy() const
 {
 	// We might appear to be stopped but it's really ok ?
-	// ? 
+	// ?
 	switch ( m_iModeCode )
 	{
 	case SERVMODE_Saving:
@@ -302,7 +302,7 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	int len = strlen(pszTemp);
 
 	PrintTelnet(pszTemp);
-	
+
 #ifndef _WIN32
 	SysMessage(pszTemp);
 #endif
@@ -491,11 +491,11 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			break;
 		case '#':	//	# - save world, ## - save both world and statics
 			{		// Start a syncronous save or finish a background save synchronously
-				if ( g_Serv.m_fResyncPause ) 
+				if ( g_Serv.m_fResyncPause )
 					goto do_resync;
 
 				g_World.Save(true);
-				if (( len > 1 ) && ( sText[1] == '#' )) 
+				if (( len > 1 ) && ( sText[1] == '#' ))
 					g_World.SaveStatics();	// ## means
 			} break;
 		case 'a':
@@ -597,7 +597,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			{
 				if (( len > 1 ) && ( sText[1] == '#' ))	//	X# - exit with save. Such exit is not protected by secure mode
 				{
-					if ( g_Serv.m_fResyncPause ) 
+					if ( g_Serv.m_fResyncPause )
 						goto do_resync;
 
 					g_World.Save(true);
@@ -605,7 +605,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 					g_Log.Event( LOGL_FATAL, "Immediate Shutdown initialized!\n");
 					SetExitFlag(1);
 				}
-				else if ( g_Cfg.m_fSecure ) 
+				else if ( g_Cfg.m_fSecure )
 				{
 					pSrc->SysMessage( "NOTE: Secure mode prevents keyboard exit!\n" );
 				}
@@ -844,7 +844,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 						);
 				}
 			}
-	
+
 			pSrc->SysMessage("Report complete!\n");
 		}
 	}
@@ -1068,7 +1068,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 	{
 		case SV_ACCOUNT: // "ACCOUNT"
 			return g_Accounts.Account_OnCmd(s.GetArgRaw(), pSrc);
-	
+
 		case SV_ALLCLIENTS:	// "ALLCLIENTS"
 			{
 				// Send a verb to all clients
@@ -1081,11 +1081,11 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				}
 			}
 			break;
-	
+
 		case SV_B: // "B"
 			g_World.Broadcast( s.GetArgStr());
 			break;
-	
+
 		case SV_BLOCKIP:
 			{
 				if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
@@ -1159,7 +1159,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				g_World.GarbageCollection();
 			}
 			break;
-		
+
 		case SV_HEARALL:	// "HEARALL" = Hear all said.
 			{
 				pszMsg = Str_GetTemp();
@@ -1167,12 +1167,12 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				sprintf(pszMsg, "Hear All %s.\n", g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) ? "Enabled" : "Disabled" );
 			}
 			break;
-	
+
 		case SV_INFORMATION:
 			pSrc->SysMessage( GetStatusString( 0x22 ));
 			pSrc->SysMessage( GetStatusString( 0x24 ));
 			break;
-	
+
 		case SV_IMPORT: // "IMPORT" name [flags] [area distance]
 			if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
 				return( false );
@@ -1200,7 +1200,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if ( g_Cfg.LoadResourcesAdd( s.GetArgStr()) == NULL )
 				return( false );
 			return( true );
-	
+
 		case SV_LOG:
 			{
 				LPCTSTR	pszArgs = s.GetArgStr();
@@ -1214,17 +1214,17 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				g_Log.Event(mask, "%s\n", pszArgs);
 			}
 			break;
-	
+
 		case SV_RESPAWN:
 			g_World.RespawnDeadNPCs();
 			break;
-	
+
 		case SV_RESTOCK:
 			// set restock time of all vendors in World.
 			// set the respawn time of all spawns in World.
 			g_World.Restock();
 			break;
-	
+
 		case SV_RESTORE:	// "RESTORE" backupfile.SCP Account CharName
 			if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
 				return( false );
@@ -1282,18 +1282,18 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 					g_Log.EventError( "Error during process shrink.\n" );
 					return false;
 				}
-				
+
 				pSrc->SysMessage( "Memory shrinked succesfully.\n" );
 #else
 				g_Log.EventError( "Command not aviable on *NIX os.\n" );
 				return false;
 #endif
 			} break;
-	
+
 		case SV_SHUTDOWN: // "SHUTDOWN"
 			Shutdown(( s.HasArgs()) ? s.GetArgVal() : 15 );
 			break;
-	
+
 		case SV_UNBLOCKIP:	// "UNBLOCKIP"
 			if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
 				return( false );
@@ -1325,7 +1325,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 	EXC_DEBUG_START;
 	EXC_ADD_SCRIPTSRC;
-	g_Log.EventDebug("source '%s' char '%s' uid '0%lx'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "", 
+	g_Log.EventDebug("source '%s' char '%s' uid '0%lx'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "",
 		(pSrc && pSrc->GetChar()) ? pSrc->GetChar()->GetName() : "",
 		(pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0 );
 	EXC_DEBUG_END;
@@ -1538,7 +1538,7 @@ void CServer::SocketsReceive() // Check for messages from the clients
 #endif
 
 	int	connecting	= 0;
-	
+
 	CClient * pClientNext;
 	CClient * pClient = GetClientHead();
 	for ( ; pClient!=NULL; pClient = pClientNext )
@@ -1655,7 +1655,7 @@ void CServer::SocketsFlush() // Sends ALL buffered data
 	}
 }
 
-bool CServer::SocketsInit( CGSocket & socket ) 
+bool CServer::SocketsInit( CGSocket & socket )
 {
 	ADDTOCALLSTACK("CServer::SocketsInit");
 	// Initialize socket
@@ -1681,7 +1681,7 @@ bool CServer::SocketsInit( CGSocket & socket )
 	int onNotOff = 1;
 	if(socket.SetSockOpt(SO_REUSEADDR, (char *)&onNotOff , sizeof(onNotOff )) == -1) {
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set SO_REUSEADDR!\n");
-	} 
+	}
 #endif
 	// Bind to just one specific port if they say so.
 	CSocketAddress SockAddr = m_ip;
@@ -1889,8 +1889,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 #endif
 
 	EXC_SET("loading ini");
-	if ( !g_Cfg.LoadIni(false) )
-		return false;
+	g_Cfg.LoadIni(false);
 
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
