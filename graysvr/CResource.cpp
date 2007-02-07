@@ -2887,8 +2887,8 @@ bool CResource::LoadIni( bool fTest )
 	{
 		if( !fTest )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, GRAY_FILE ".ini has not been found, server probably would be not usable.");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, GRAY_FILE ".ini has not been found, server probably would be not usable.\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.\n");
 		}
 		return( false );
 	}
