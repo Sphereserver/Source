@@ -65,7 +65,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		{
 			// it's a new day, open with new day name.
 			Close();	// LINUX should alrady be closed.
-			
+
 			OpenLog( NULL );
 			Printf( datetime.Format(NULL));
 		}
@@ -119,40 +119,45 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		{
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 127,127,0 ));
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[0;33m");
+			}
 #endif
 
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[0;33m" );
-#endif
 			g_Serv.PrintStr( szTime );
-
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[0m" );
-#endif
 
 #ifdef _WIN32
 			NTWindow_PostMsgColor(0);
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[0m");
+			}
 #endif
 		}
 
-		if ( pszLabel )	// some sort of error 
+		if ( pszLabel )	// some sort of error
 		{
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 255,0,0 ));
-#endif
-
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[0;31m" );
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[0;31m");
+			}
 #endif
 
 			g_Serv.PrintStr( pszLabel );
 
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[0m" );
-#endif
-
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 255,255,255 ));
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[0m");
+			}
 #endif
 		}
 
@@ -160,20 +165,22 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		{
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 0,127,255 ));
-#endif
-
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[1;36m" );
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[1;36m");
+			}
 #endif
 
 			g_Serv.PrintStr( szScriptContext );
 
-#if !defined( _WIN32 )
-			g_Serv.PrintStr( "\e[0m" );
-#endif
-
 #ifdef _WIN32
 			NTWindow_PostMsgColor(0);
+#else
+			if( m_fColoredConsole )
+			{
+				g_Serv.PrintStr("\e[0m");
+			}
 #endif
 		}
 		g_Serv.PrintStr( pszMsg );
