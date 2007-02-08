@@ -242,7 +242,9 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 		return( true );
 
 	if ( z < m_Bottom.m_z )	// below something i can already step on.
+	{
 		return true;
+	}
 
 	if ( z < m_Lowest.m_z )
 	{
@@ -258,9 +260,13 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 			if ( z == m_Bottom.m_z )
 			{
 				if ( m_Bottom.m_dwBlockFlags & CAN_I_CLIMB ) // climbable items have the highest priority
+				{
 					return ( true );
+				}
 				if ( ( m_Bottom.m_dwBlockFlags & CAN_I_PLATFORM ) && (!( wItemBlockFlags & CAN_I_PLATFORM )) )
+				{
 					return ( true );
+				}
 			}
 			else if ( z > m_z + PLAYER_HEIGHT/2 ) 
 			{
@@ -270,6 +276,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 					return true;
 				}
 			}
+			//DEBUG_ERR(("wItemBlockFlags 0x%x\n",wItemBlockFlags));
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
 			m_Bottom.m_wTile = wID;
 			m_Bottom.m_z = z;
@@ -277,7 +284,9 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 		}
 	}
 	else
+	{
 		SetTop( wItemBlockFlags, z, wID ); // I could potentially fit under this. ( it would be above me )
+	}
 	return true;
 }
 

@@ -133,19 +133,19 @@ public:
 		bCATCHExceptSub = true; \
 		StackDebugInformation::printStackTrace(); \
 		if ( inLocalSubBlock ) \
-			g_Log.CatchEvent(a, "SUB: %s::%s() #%d \"%s\"", m_sClassName, inLocalSubArgs, \
+			g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
 														inLocalSubBlockCnt, inLocalSubBlock); \
 		else \
-			g_Log.CatchEvent(a, "SUB: %s::%s() - %s", m_sClassName, inLocalSubArgs)
+			g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
 		//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
 #else
 		#define EXC_CATCH_SUB(a,b) \
 		bCATCHExceptSub = true; \
 		if ( inLocalSubBlock ) \
-			g_Log.CatchEvent(a, "SUB: %s::%s() #%d \"%s\"", m_sClassName, inLocalSubArgs, \
+			g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
 														inLocalSubBlockCnt, inLocalSubBlock); \
 		else \
-			g_Log.CatchEvent(a, "SUB: %s::%s() - %s", m_sClassName, inLocalSubArgs)
+			g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
 		//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
 #endif
 
