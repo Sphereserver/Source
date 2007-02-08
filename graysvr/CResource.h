@@ -478,6 +478,8 @@ enum	SKF_TYPE
 	SKF_IMMOBILE		= 0x0010,
 	SKF_SELECTABLE		= 0x0020,
 	SKF_NOMINDIST		= 0x0040,		// you can mine, fish, chop, hack on the same point you are standing on
+	SKF_NOANIM			= 0x0080,
+	SKF_NOSFX			= 0x0100,
 };
 
 struct CSkillDef : public CResourceLink // For skill def table
