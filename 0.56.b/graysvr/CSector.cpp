@@ -1118,7 +1118,6 @@ void CSector::OnTick(int iPulseCount)
 		}
 #endif
 	}
-DEBUG_ERR(("x %d\n",x));
 	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_SET("check map cache");
