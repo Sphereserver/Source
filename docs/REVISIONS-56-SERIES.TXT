@@ -1,4 +1,4 @@
-
+﻿
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -3101,3 +3101,10 @@ this all in desperation)
 07-02-2007, Vjaka
 - Modified console output in linux build. By default it assumes that it is not colored,
   launch with argument -c (./spheresvr -c) in order to get colored output. It screwed some consoles.
+
+08-02-2007, Nazghul
+- added skill flags SKF_NOANIM (don't show hardcoded anim for this skill) and SKF_NOSFX (don't play 
+  hardcoded sound for this skill). After setting this you can set anim/sfx yourself in @start
+  or alike.
+
+

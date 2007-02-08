@@ -24,7 +24,10 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 	// rust items, stealing, charge, hiding, grab, regenerate, play dead.
 	// Water = put out fire !
 
-	UpdateAnimate( ANIM_CAST_AREA );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	{
+		UpdateAnimate( ANIM_CAST_AREA );
+	}
 
 	switch ( id )
 	{
@@ -954,7 +957,10 @@ bool CChar::Skill_MakeItem_Success()
 			// Create the potion, set various properties,
 			// put in pack
 			Emote( g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_POUR ) );
-			Sound( 0x240 );	// pouring noise.
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+			{
+				Sound( 0x240 );	// pouring noise.
+			}
 		}
 		else if ( *pszMsg )
 		{
@@ -1238,7 +1244,10 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	pt.m_z += 8;	// on top of the forge.
 	pItemEffect->SetAttr( ATTR_MOVE_NEVER );
 	pItemEffect->MoveToDecay( pt, TICK_PER_SEC );
-	Sound( 0x2b );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x2b );
+	}
 
 	UpdateDir( m_Act_p );
 	if ( pItemOre->IsAttr(ATTR_MAGIC|ATTR_BLESSED|ATTR_BLESSED2|ATTR_MOVE_ALWAYS))	// not magic items
@@ -1509,7 +1518,10 @@ int CChar::Skill_Alchemy( SKTRIG_TYPE stage )
 		Emote(pszMsg);
 	}
 
-	Sound( 0x242 );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x242 );
+	}
 	++m_atCreate.m_Stroke_Count;
 	Skill_SetTimeout();
 	return -SKTRIG_STROKE;	// keep active.
@@ -1586,7 +1598,10 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_STROKE )
 	{
 		// Pick a "mining" type of sound
-		Sound( ( Calc_GetRandVal(2)) ? 0x125 : 0x126 );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( ( Calc_GetRandVal(2)) ? 0x125 : 0x126 );
+		}
 		UpdateDir( m_Act_p );
 		if ( IsSetEF(EF_DamageTools) )
 			pShovel->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
@@ -1595,7 +1610,10 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		{
 			// Keep trying and updating the animation
 			--m_atResource.m_Stroke_Count;
-			UpdateAnimate( ANIM_ATTACK_1H_DOWN );
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+			{
+				UpdateAnimate( ANIM_ATTACK_1H_DOWN );
+			}
 			Skill_SetTimeout();
 			return( -SKTRIG_STROKE );	// keep active.
 		}
@@ -1699,12 +1717,17 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		m_atResource.m_Stroke_Count = Calc_GetRandVal( 2 ) + 1;
-
-		Sound( 0x027 );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x027 );
+		}
 		CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
 		pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
 		pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );
-		UpdateAnimate( ANIM_ATTACK_2H_DOWN );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_ATTACK_2H_DOWN );
+		}
 
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
@@ -1719,12 +1742,18 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 			--m_atResource.m_Stroke_Count;
 
 			// Create little splash effect.
-			Sound( 0x027 );
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+			{
+				Sound( 0x027 );
+			}
 			CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
 			pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
 			pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );
 
-			UpdateAnimate( ANIM_ATTACK_2H_DOWN );
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+			{
+				UpdateAnimate( ANIM_ATTACK_2H_DOWN );
+			}
 			Skill_SetTimeout();
 			return( -SKTRIG_STROKE );	// keep active.
 		}
@@ -1844,7 +1873,10 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_STROKE )
 	{
 		// Pick a "lumberjacking" type of sound
-		Sound( (pAxe->IsType(IT_WEAPON_FENCE)) ? 0x148 : 0x13e); // 0x135, 0x148, 0x14a
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( (pAxe->IsType(IT_WEAPON_FENCE)) ? 0x148 : 0x13e); // 0x135, 0x148, 0x14a
+		}
 		UpdateDir( m_Act_p );
 
 		if (IsSetEF(EF_DamageTools) )
@@ -1854,7 +1886,10 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		{
 			// Keep trying and updating the animation
 			--m_atResource.m_Stroke_Count;
-			UpdateAnimate( ANIM_ATTACK_WEAPON );
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+			{
+				UpdateAnimate( ANIM_ATTACK_WEAPON );
+			}
 			Skill_SetTimeout();
 			return( -SKTRIG_STROKE );	// keep active.
 		}
@@ -1973,7 +2008,10 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		Sound( 0x249 );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x249 );
+		}
 
 		// difficulty related to m_atCartography.m_Dist ???
 
@@ -2315,7 +2353,10 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 		return( -SKTRIG_ABORT );
 	}
 
-	Sound( 0x247 );	// powdering.
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x247 );	// powdering.
+	}
 
 	switch ( pItem->GetType() )
 	{
@@ -2681,7 +2722,10 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 	{
 	case SKTRIG_START:
 		{
-			UpdateAnimate(ANIM_ATTACK_WEAPON);
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+			{
+				UpdateAnimate(ANIM_ATTACK_WEAPON);
+			}
 			int iIntVal = pChar->Stat_GetAdjusted(STAT_INT) / 2;
 			return iIntVal + Calc_GetRandVal(iIntVal);
 		}
@@ -2744,7 +2788,10 @@ int CChar::Skill_SpiritSpeak( SKTRIG_TYPE stage )
 		if ( IsStatFlag( STATF_SpiritSpeak ))
 			return( -SKTRIG_ABORT );
 		SysMessageDefault( DEFMSG_SPIRITSPEAK_SUCCESS );
-		Sound( 0x24a );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x24a );
+		}
 		Spell_Effect_Create( SPELL_NONE, LAYER_FLAG_SpiritSpeak, 1, 4*60*TICK_PER_SEC, this );
 		return( 0 );
 	}
@@ -2793,7 +2840,10 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 
 		if ( m_atTaming.m_Stroke_Count == 0 )
 		{
-			Sound( 0x0f9 );
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+			{
+				Sound( 0x0f9 );
+			}
 		}
 		m_atTaming.m_Stroke_Count++;
 
@@ -3210,7 +3260,10 @@ int CChar::Skill_Tailoring( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Tailoring");
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		Sound( SOUND_SNIP );	// snip noise
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( SOUND_SNIP );	// snip noise
+		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -3223,7 +3276,10 @@ int CChar::Skill_Inscription( SKTRIG_TYPE stage )
 	{
 		// Can we even attempt to make this scroll ?
 		// m_atCreate.m_ItemID = create this item
-		Sound( 0x249 );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x249 );
+		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -3237,8 +3293,14 @@ int CChar::Skill_Bowcraft( SKTRIG_TYPE stage )
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
 
-	Sound( 0x055 );
-	UpdateAnimate( ANIM_SALUTE );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x055 );
+	}
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	{
+		UpdateAnimate( ANIM_SALUTE );
+	}
 
 	if ( stage == SKTRIG_START )
 	{
@@ -3272,13 +3334,19 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_STROKE )
 	{
-		Sound( 0x02a );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x02a );
+		}
 		if ( m_atCreate.m_Stroke_Count <= 0 )
 			return 0;
 
 		// Keep trying and updating the animation
 		m_atCreate.m_Stroke_Count --;
-		UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
+		}
 		Skill_SetTimeout();
 		return( -SKTRIG_STROKE );	// keep active.
 	}
@@ -3293,7 +3361,10 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
 
-	Sound( 0x23d );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x23d );
+	}
 
 	if ( stage == SKTRIG_START )
 	{
@@ -3308,7 +3379,10 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 
 		// Keep trying and updating the animation
 		m_atCreate.m_Stroke_Count --;
-		UpdateAnimate( ANIM_ATTACK_WEAPON );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_ATTACK_WEAPON );
+		}
 		Skill_SetTimeout();
 		return( -SKTRIG_STROKE );	// keep active.
 	}
@@ -3438,7 +3512,10 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		UpdateStatVal( STAT_DEX, -10 );
-		UpdateAnimate( ANIM_MON_Stomp, false );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_MON_Stomp, false );
+		}
 		SetTimeout( 3*TICK_PER_SEC );
 		return 0;
 	}
@@ -3451,7 +3528,10 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
 	}
 
-	Sound( 0x227 );
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	{
+		Sound( 0x227 );
+	}
 	int iDamage = Stat_GetVal(STAT_DEX)/3 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 	g_World.Explode( this, m_Act_p, 3, iDamage, DAMAGE_FIRE | DAMAGE_GENERAL );
 	return( 0 );
@@ -3504,7 +3584,10 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		UpdateStatVal( STAT_DEX, -( 4 + Calc_GetRandVal(6)));
-		UpdateAnimate( ANIM_MON_Stomp );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_MON_Stomp );
+		}
 		return 0;
 	}
 
