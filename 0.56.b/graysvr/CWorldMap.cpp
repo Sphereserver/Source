@@ -783,6 +783,8 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 				continue;
 
 			z = pStatic->m_z;
+
+			//DEBUG_ERR(("z (%d)  block.m_zHeight (%d) block.m_Bottom.m_z (%d)\n",z,block.m_zHeight,block.m_Bottom.m_z));
 			if ( ! block.IsUsableZ( z, block.m_zHeight ))
 				continue;
 
@@ -827,7 +829,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 				wBlockThis = 0;
 				zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
 			}
-			//DEBUG_ERR(("STATIC DispID (0%x) wBlockThis (0%x)\n",pStatic->GetDispID(),wBlockThis));
+			//DEBUG_ERR(("STATIC DispID (0%x) z (%d) zHeight (%d) wBlockThis (0%x)\n",pStatic->GetDispID(),z,zHeight,wBlockThis));
 			block.CheckTile_Item( wBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
 		}
 	}
@@ -997,6 +999,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 		}
 	}
 
+	wBlockThis = 0;
 	// Terrain height is screwed. Since it is related to all the terrain around it.
 	const CUOMapMeter * pMeter = pMapBlock->GetTerrain( UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
 	if ( ! pMeter )
@@ -1004,15 +1007,19 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 
 	if ( block.IsUsableZ( pMeter->m_z,0 ) )
 	{
-		//DEBUG_ERR(("pMeter->m_wTerrainIndex 0%x\n",pMeter->m_wTerrainIndex));
+		//DEBUG_ERR(("pMeter->m_wTerrainIndex 0%x wBlockThis (0%x)\n",pMeter->m_wTerrainIndex,wBlockThis));
 		if ( pMeter->m_wTerrainIndex == TERRAIN_HOLE )
+		{
 			wBlockThis = 0;
+		}
 		else if ( CUOMapMeter::IsTerrainNull( pMeter->m_wTerrainIndex ) )	// inter dungeon type.
+		{
 			wBlockThis = CAN_I_BLOCK;
+		}
 		else
 		{
 			CGrayTerrainInfo land( pMeter->m_wTerrainIndex );
-			//DEBUG_ERR(("Terrain flags - land.m_flags 0%x\n",land.m_flags));
+			//DEBUG_ERR(("Terrain flags - land.m_flags 0%x wBlockThis (0%x)\n",land.m_flags,wBlockThis));
 			if ( land.m_flags & UFLAG1_WATER )
 				wBlockThis |= CAN_I_WATER;
 			if ( land.m_flags & UFLAG1_DAMAGE )

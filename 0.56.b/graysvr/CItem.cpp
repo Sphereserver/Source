@@ -4619,154 +4619,185 @@ bool CItem::OnTick()
 	if ( iRet == TRIGRET_RET_TRUE )
 		return true;
 
+	EXC_SET("GetType");
+	IT_TYPE type = m_type;
+
 	EXC_SET("default behaviour");
-	switch ( m_type )
+	switch ( type )
 	{
 		case IT_LIGHT_LIT:
-			// use up the charges that this has .
-			EXC_SET("default behaviour::IT_LIGHT_LIT");
-			if ( m_itLight.m_charges > 1 )
 			{
-				if ( m_itLight.m_charges == USHRT_MAX )
+				// use up the charges that this has .
+				EXC_SET("default behaviour::IT_LIGHT_LIT");
+				if ( m_itLight.m_charges > 1 )
 				{
-					return true;
-				}
-				m_itLight.m_charges --;
-				SetTimeout( 10*60*TICK_PER_SEC );
-			}
-			else
-			{
-				// Torches should just go away but lanterns etc should not.
-				Emote( "burn out" );
-				CItemBase * pItemDef = Item_GetDef();
-				ITEMID_TYPE id = (ITEMID_TYPE) pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex();
-				if ( ! id )	// burn out and be gone.
-				{
-					return( false );
-				}
-				if ( id == GetID())
-				{
-					// It really has infinite charges I guess.
-					m_itLight.m_charges = USHRT_MAX;
+					if ( m_itLight.m_charges == USHRT_MAX )
+					{
+						return true;
+					}
+					m_itLight.m_charges --;
+					SetTimeout( 10*60*TICK_PER_SEC );
 				}
 				else
 				{
-					// Transform to the next shape.
-					m_itLight.m_charges = 0;
-					SetID(id);
+					// Torches should just go away but lanterns etc should not.
+					Emote( "burn out" );
+					CItemBase * pItemDef = Item_GetDef();
+					ITEMID_TYPE id = (ITEMID_TYPE) pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex();
+					if ( ! id )	// burn out and be gone.
+					{
+						return( false );
+					}
+					if ( id == GetID())
+					{
+						// It really has infinite charges I guess.
+						m_itLight.m_charges = USHRT_MAX;
+					}
+					else
+					{
+						// Transform to the next shape.
+						m_itLight.m_charges = 0;
+						SetID(id);
+					}
+					Update();
 				}
-				Update();
 			}
 			return true;
 
 		case IT_SHIP_PLANK:
-			EXC_SET("default behaviour::IT_SHIP_PLANK");
-			Ship_Plank( false );
+			{
+				EXC_SET("default behaviour::IT_SHIP_PLANK");
+				Ship_Plank( false );
+			}
 			return true;
 
 		case IT_EXPLOSION:
-			EXC_SET("default behaviour::IT_EXPLOSION");
-			if ( OnExplosion())
-				break;
+			{
+				EXC_SET("default behaviour::IT_EXPLOSION");
+				if ( OnExplosion())
+					break;
+			}
 			return true;
 
 		case IT_TRAP_ACTIVE:
-			EXC_SET("default behaviour::IT_TRAP_ACTIVE");
-			SetTrapState( IT_TRAP_INACTIVE, m_itTrap.m_AnimID, m_itTrap.m_wAnimSec );
+			{
+				EXC_SET("default behaviour::IT_TRAP_ACTIVE");
+				SetTrapState( IT_TRAP_INACTIVE, m_itTrap.m_AnimID, m_itTrap.m_wAnimSec );
+			}
 			return( true );
 
 		case IT_TRAP_INACTIVE:
-			EXC_SET("default behaviour::IT_TRAP_INACTIVE");
-			// Set inactive til someone triggers it again.
-			if ( m_itTrap.m_fPeriodic )
 			{
-				SetTrapState( IT_TRAP_ACTIVE, m_itTrap.m_AnimID, m_itTrap.m_wResetSec );
-			}
-			else
-			{
-				SetTrapState( IT_TRAP, GetDispID(), -1 );
+				EXC_SET("default behaviour::IT_TRAP_INACTIVE");
+				// Set inactive til someone triggers it again.
+				if ( m_itTrap.m_fPeriodic )
+				{
+					SetTrapState( IT_TRAP_ACTIVE, m_itTrap.m_AnimID, m_itTrap.m_wResetSec );
+				}
+				else
+				{
+					SetTrapState( IT_TRAP, GetDispID(), -1 );
+				}
 			}
 			return true;
 
 		case IT_ANIM_ACTIVE:
-			// reset the anim
-			EXC_SET("default behaviour::IT_ANIM_ACTIVE");
-			SetDispID( m_itAnim.m_PrevID );
-			m_type = m_itAnim.m_PrevType;
-			SetTimeout( -1 );
-			Update();
+			{
+				// reset the anim
+				EXC_SET("default behaviour::IT_ANIM_ACTIVE");
+				SetDispID( m_itAnim.m_PrevID );
+				m_type = m_itAnim.m_PrevType;
+				SetTimeout( -1 );
+				Update();
+			}
 			return true;
 
 		case IT_DOOR:
 		case IT_DOOR_OPEN:
 		case IT_DOOR_LOCKED:	// Temporarily opened locked door.
-			// Doors should close.
-			EXC_SET("default behaviour::IT_DOOR");
-			Use_Door( false );
+			{
+				// Doors should close.
+				EXC_SET("default behaviour::IT_DOOR");
+				Use_Door( false );
+			}
 			return true;
 
 		case IT_WAND:
-			// Magic devices.
-			// Will regen over time ??
-			EXC_SET("default behaviour::IT_WAND");
+			{
+				// Magic devices.
+				// Will regen over time ??
+				EXC_SET("default behaviour::IT_WAND");
+			}
 			break;
 
 		case IT_POTION:
-			EXC_SET("default behaviour::IT_POTION");
-			// This is a explode potion ?
-			if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 			{
-				// count down the timer. ??
-				if ( m_itPotion.m_tick <= 1 )
+				EXC_SET("default behaviour::IT_POTION");
+				// This is a explode potion ?
+				if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 				{
-					// Set it off.
-					OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_GENERAL | DAMAGE_FIRE );
+					// count down the timer. ??
+					if ( m_itPotion.m_tick <= 1 )
+					{
+						// Set it off.
+						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_GENERAL | DAMAGE_FIRE );
+					}
+					else
+					{
+						m_itPotion.m_tick --;
+						TCHAR *pszMsg = Str_GetTemp();
+						CObjBase* pObj = STATIC_CAST <CObjBase*>(GetTopLevelObj());
+						ASSERT(pObj);
+						pObj->Speak(ITOA(m_itPotion.m_tick, pszMsg, 10));
+						SetTimeout( TICK_PER_SEC );
+					}
+					return true;
 				}
-				else
-				{
-					m_itPotion.m_tick --;
-					TCHAR *pszMsg = Str_GetTemp();
-					CObjBase* pObj = STATIC_CAST <CObjBase*>(GetTopLevelObj());
-					ASSERT(pObj);
-					pObj->Speak(ITOA(m_itPotion.m_tick, pszMsg, 10));
-					SetTimeout( TICK_PER_SEC );
-				}
-				return true;
 			}
 			break;
 
 		case IT_SPAWN_CHAR:	// Spawn a creature if we are under count.
 		case IT_SPAWN_ITEM:	// Spawn an item.
-			EXC_SET("default behaviour::IT_SPAWN");
-			Spawn_OnTick( true );
+			{
+				EXC_SET("default behaviour::IT_SPAWN");
+				Spawn_OnTick( true );
+			}
 			return true;
 
 		case IT_CROPS:
 		case IT_FOLIAGE:
-			EXC_SET("default behaviour::IT_CROPS");
-			if ( Plant_OnTick())
-				return true;
+			{
+				EXC_SET("default behaviour::IT_CROPS");
+				if ( Plant_OnTick())
+					return true;
+			}
 			break;
 
 		case IT_BEE_HIVE:
-			EXC_SET("default behaviour::IT_BEE_HIVE");
-			// Regenerate honey count
-			if ( m_itBeeHive.m_honeycount < 5 )
-				m_itBeeHive.m_honeycount++;
-			SetTimeout( 15*60*TICK_PER_SEC );
+			{
+				EXC_SET("default behaviour::IT_BEE_HIVE");
+				// Regenerate honey count
+				if ( m_itBeeHive.m_honeycount < 5 )
+					m_itBeeHive.m_honeycount++;
+				SetTimeout( 15*60*TICK_PER_SEC );
+			}
 			return true;
 
 		case IT_CAMPFIRE:
-			EXC_SET("default behaviour::IT_CAMPFIRE");
-			if ( GetID() == ITEMID_EMBERS )
-				break;
-			SetID( ITEMID_EMBERS );
-			SetDecayTime( 2*60*TICK_PER_SEC );
-			Update();
+			{
+				EXC_SET("default behaviour::IT_CAMPFIRE");
+				if ( GetID() == ITEMID_EMBERS )
+					break;
+				SetID( ITEMID_EMBERS );
+				SetDecayTime( 2*60*TICK_PER_SEC );
+				Update();
+			}
 			return true;
 
 		case IT_SIGN_GUMP:	// signs never decay
-			EXC_SET("default behaviour::IT_SIGN_GUMP");
+			{
+				EXC_SET("default behaviour::IT_SIGN_GUMP");
+			}
 			return true;
 	}
 

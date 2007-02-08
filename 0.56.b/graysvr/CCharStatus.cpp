@@ -2349,6 +2349,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 
+	//DEBUG_ERR(("wBlockFlags (0%x)\n",wBlockFlags));
 	if (( wCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
 	{
 		WARNWALK(("BOTTOMitemID (0%x) TOPitemID (0%x)\n",(block.m_Bottom.m_wTile - TERRAIN_QTY),(block.m_Top.m_wTile - TERRAIN_QTY)));
