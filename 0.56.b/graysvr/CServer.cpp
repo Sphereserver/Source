@@ -1363,7 +1363,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					"Command Line Switches:\n"
 #ifdef _WIN32
 					"-cClassName Setup custom window class name for sphere (default: " GRAY_TITLE "Svr)\n"
-else
+#else
 					"-c use colored console output (default: off)\n"
 #endif
 					"-D Dump global variable DEFNAMEs to defs.txt\n"
