@@ -3095,16 +3095,17 @@ this all in desperation)
   Domestic animals will no more poop dung if frozen, stone, insubstantial or in warmode
 
 07-02-2007, Nazghul
-- fixed #1049: t_fire, t_campfire, t_spell are no longer dispellable if they have attr_move_never
-- more defmessages (update sphere_msgs.scp!)
+- Fixed #1049: t_fire, t_campfire, t_spell are no longer dispellable if they have attr_move_never
+- Added: more defmessages (update sphere_msgs.scp!)
 
 07-02-2007, Vjaka
 - Modified console output in linux build. By default it assumes that it is not colored,
   launch with argument -c (./spheresvr -c) in order to get colored output. It screwed some consoles.
 
 08-02-2007, Nazghul
-- added skill flags SKF_NOANIM (don't show hardcoded anim for this skill) and SKF_NOSFX (don't play 
+- Added: Skill flags SKF_NOANIM (don't show hardcoded anim for this skill) and SKF_NOSFX (don't play 
   hardcoded sound for this skill). After setting this you can set anim/sfx yourself in @start
   or alike.
 
-
+08-02-2007, Ellessar
+- Fixed #1050: Problems with underground caves.

@@ -1067,7 +1067,7 @@ void CSector::OnTick(int iPulseCount)
 	CItem * pItemNext;
 	//CItem * pItem = STATIC_CAST <CItem*>( m_Items_Timer.GetHead());
 	CItem * pItem = dynamic_cast <CItem*>( m_Items_Timer.GetHead());
-	for ( ; pItem != NULL; pItem = pItemNext )
+	for ( int x = 0; pItem != NULL; pItem = pItemNext, ++x )
 	{
 		EXC_TRYSUB("TickItem");
 		pItemNext = pItem->GetNext();
@@ -1097,24 +1097,28 @@ void CSector::OnTick(int iPulseCount)
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
 		g_Log.EventError("item 0%lx '%s' [timer=%d, type=%d]\n", pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
-		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
+		g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		
 		EXC_DEBUGSUB_END;
 #else
 		}
 		catch ( CGrayError &e )
 		{
+			CPointMap pt = GetBasePoint();
 			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
-			EXC_CATCH_SUB(&e, a);
+			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
+			EXC_CATCH_SUB(&e, "Sector");
 		}
 		catch (...)
 		{
-			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
-			EXC_CATCH_SUB(NULL, a);
+			CPointMap pt = GetBasePoint();
+			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());\
+			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
+			EXC_CATCH_SUB(NULL, "Sector");
 		}
 #endif
 	}
-
+DEBUG_ERR(("x %d\n",x));
 	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_SET("check map cache");
@@ -1131,7 +1135,10 @@ void CSector::OnTick(int iPulseCount)
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
+	CPointMap pt = GetBasePoint();
+	g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 	EXC_DEBUG_END;
+
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;
