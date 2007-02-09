@@ -1179,6 +1179,13 @@ bool CClient::xRecvData() // Receive message from client
 			return( true );
 		}
 
+		if ( iCountNew < 5 )
+		{
+			// Not enough data to be an actual client?
+			SetConnectType( CONNECT_UNK );
+			return( OnRxPing( Event.m_Raw+4, iCountNew ) );
+		}
+
 		return( xProcessClientSetup( (CEvent*)(Event.m_Raw+4), iCountNew ));
 	}
 
