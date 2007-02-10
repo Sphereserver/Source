@@ -694,7 +694,9 @@ public:
 	CGString	m_sSpeechOther;
 	CGString	m_sCommandTrigger;
 
+#ifdef _DUMPSUPPORT
 	CGString	m_sDumpAccPackets;
+#endif
 
 	CGString	m_sEventsPet;
 	CResourceLink *	m_pEventsPetLink;
