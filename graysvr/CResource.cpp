@@ -331,6 +331,7 @@ enum RC_TYPE
 	RC_DISTANCETALK,
 	RC_DISTANCEWHISPER,
 	RC_DISTANCEYELL,
+	RC_DUMPPACKETSFORACC,
 	RC_DUNGEONLIGHT,
 	RC_EQUIPPEDCAST,		// m_fEquippedCast
 	RC_EVENTSPET,			// m_sEventsPet
@@ -497,6 +498,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DISTANCETALK",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceTalk )	}},
 	{ "DISTANCEWHISPER",		{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceWhisper )	}},
 	{ "DISTANCEYELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceYell )	}},
+	{ "DUMPPACKETSFORACC",		{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDumpAccPackets)	}},
 	{ "DUNGEONLIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLightDungeon)	}},
 	{ "EQUIPPEDCAST",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fEquippedCast)	}},
 	{ "EVENTSPET",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsPet)	}},
