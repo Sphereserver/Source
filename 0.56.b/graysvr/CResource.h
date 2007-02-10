@@ -694,6 +694,8 @@ public:
 	CGString	m_sSpeechOther;
 	CGString	m_sCommandTrigger;
 
+	CGString	m_sDumpAccPackets;
+
 	CGString	m_sEventsPet;
 	CResourceLink *	m_pEventsPetLink;
 

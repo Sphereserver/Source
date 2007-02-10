@@ -3915,6 +3915,9 @@ int CClient::xDispatchMsg()
 {
 	ADDTOCALLSTACK("CClient::xDispatchMsg");
 	EXC_TRY("DispatchMsg");
+	EXC_SET("DumpedClient Packets");
+	if ( ! strnicmp( GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( GetAccount()->GetName() ) ) )
+		xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
 	EXC_SET("check message size");
 	if ( !xCheckMsgSize(1) )	// just get the command
 		return 0;
