@@ -1032,7 +1032,11 @@ bool CMenuItem::ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole 
 	if ( *pszArgs == '@' )
 	{
 		pszArgs++;
-		m_color = Exp_GetVal( pszArgs );
+		HUE_TYPE wHue = Exp_GetVal( pszArgs );
+		if ( wHue != 0 )
+			wHue = (wHue == 1? 0x7FF: wHue-1);
+
+		m_color = wHue;
 		SKIP_ARGSEP( pszArgs );
 	}
 	else
