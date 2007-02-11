@@ -3113,5 +3113,8 @@ this all in desperation)
 09-02-2007, MrSugarCube
 - Fixed: ConnectUO Status requests sometimes reporting an encryption error.
 
-11-02-2007, Fisicka
+11-02-2007, Fisicka (Script pack)
 - Fixed #1051: Bug in sphere_map_points0.scp and sphere_map_points1.scp
+
+11-02-2007, MrSugarCube
+- Fixed #1037: ADDBUFF and REMOVEBUFF requiring FEATURE_AOS_UPDATE_B enabled to work.
