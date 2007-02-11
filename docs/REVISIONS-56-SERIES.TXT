@@ -3112,3 +3112,6 @@ this all in desperation)
 
 09-02-2007, MrSugarCube
 - Fixed: ConnectUO Status requests sometimes reporting an encryption error.
+
+11-02-2007, Fisicka
+- Fixed #1051: Bug in sphere_map_points0.scp and sphere_map_points1.scp

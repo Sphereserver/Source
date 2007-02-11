@@ -68,7 +68,7 @@ VERSION=0.56b
 5853,239,-25,1=5835,324,33,1=tp_ice_orc_5_map1
 5882,241,0,1=1998,81,7,1=tp_ice_northcave_1_map1
 5882,242,0,1=1998,81,7,1=tp_ice_northcave_2_map1
-5882,243,0,1=01998,81,7,1=tp_ice_northcave_3_map1
+5882,243,0,1=1998,81,7,1=tp_ice_northcave_3_map1
 6040,192,12,1=6059,88,24,1=tp_hythloth_3_4_x_map1
 6040,193,12,1=6059,89,24,1=tp_hythloth_3_4_x_map1
 6040,194,12,1=6059,90,24,1=tp_hythloth_3_4_x_map1
