@@ -139,8 +139,6 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 		return;
 	if ( !IsClientVersion(0x500030) )
 		return;
-	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-		return;
 
 	bool bSelfAlloc = false;
 	if ( pText == 0 )
@@ -208,8 +206,6 @@ void CClient::removeBuff (const WORD IconId)
 	if (!IsResClient(RDS_AOS))
 		return;
 	if ( !IsClientVersion(0x500030) )
-		return;
-	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return;
 	CCommand Cmd;
 	Cmd.RemoveBuff.m_Cmd = 0xDF;
