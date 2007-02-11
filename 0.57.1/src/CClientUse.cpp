@@ -536,10 +536,17 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
 		item[count].m_id = idi;
-		if ( pItem->IsType( IT_EQ_MEMORY_OBJ ) )
-			item[count].m_color = 0;
-		else
-			item[count].m_color = pItem->GetHue();
+		item[count].m_color = 0;
+
+		if ( !pItem->IsType( IT_EQ_MEMORY_OBJ ) )
+		{
+			HUE_TYPE wHue = pItem->GetHue();
+			if ( wHue != 0 )
+			{
+				wHue = (wHue == 1? 0x7FF : wHue-1 );
+				item[count].m_color = wHue;
+			}
+		}
 	}
 
 	addItemMenu( CLIMODE_MENU_EDIT, item, count, pObj );
