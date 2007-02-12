@@ -3119,3 +3119,6 @@ this all in desperation)
 11-02-2007, MrSugarCube
 - Fixed #1037: ADDBUFF and REMOVEBUFF requiring FEATURE_AOS_UPDATE_B enabled to work.
 - Fixed #1053: @color in [SKILL]MENUs displaying the wrong colour.
+
+12-02-2007, MrSugarCube
+- Fixed #1058: Exception on linux build caused by items decaying without decay flag.

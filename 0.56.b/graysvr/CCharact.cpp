@@ -1955,7 +1955,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 			
 			if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
 			{
-				DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), this->GetUID(), pHorse->GetUID() ));
+				DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
 				this->Horse_UnMount();
 
 				if ( pHorse != NULL )
@@ -3359,7 +3359,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, GetUID());
+	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, (DWORD)GetUID());
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;
 }
@@ -3595,13 +3595,13 @@ bool CChar::OnTick()
 #ifdef _DEBUG
 	EXC_DEBUG_START;
 	g_Log.EventDebug("'%s' npc '%d' player '%d' [0%lx]\n",
-		GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), GetUID());
+		GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), (DWORD)GetUID());
 	EXC_DEBUG_END;
 #endif
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;
-		DEBUG_ERR(("CChar::OnTick(%x) took %d.%d to run\n", GetUID(), TIME_PROFILE_GET_HI, TIME_PROFILE_GET_LO));
+		DEBUG_ERR(("CChar::OnTick(%x) took %d.%d to run\n", (DWORD)GetUID(), TIME_PROFILE_GET_HI, TIME_PROFILE_GET_LO));
 	}
 	return true;
 }

@@ -1528,7 +1528,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							max_z = IsSetEF(EF_NewPositionChecks) ? ( Height + min_z ) : CALCITEMHEIGHT(min_z);
 							WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
-							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
+							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
 							if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
 							{
 								if (ptNow.m_x != ptDst.m_x || ptNow.m_y != ptDst.m_y || min_z > ptDst.m_z || max_z < ptDst.m_z)

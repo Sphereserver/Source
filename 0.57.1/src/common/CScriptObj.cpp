@@ -1518,45 +1518,47 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			iType = 0;
 			g_Log.Error("FOR Loop trigger on non-world object '%s'\n", GetName());
 		}
-
-		CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
-		CPointMap pt = pObjTop->GetTopPoint();
-		if ( iType & 1 )		// FORITEM, FOROBJ
+		else
 		{
-			CWorldSearch AreaItems(pt, iDist);
-			while ( CItem *pItem = AreaItems.GetItem() )
+			CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
+			CPointMap pt = pObjTop->GetTopPoint();
+			if ( iType & 1 )		// FORITEM, FOROBJ
 			{
-				LoopsMade++;
-				if ( maxLoops && ( LoopsMade >= maxLoops )) goto toomanyloops;
-
-				TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				CWorldSearch AreaItems(pt, iDist);
+				while ( CItem *pItem = AreaItems.GetItem() )
 				{
-					return( iRet );
+					LoopsMade++;
+					if ( maxLoops && ( LoopsMade >= maxLoops )) goto toomanyloops;
+
+					TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
+					if ( iRet != TRIGRET_ENDIF )
+					{
+						return( iRet );
+					}
+					EndContext = s.GetContext();
+					s.SeekContext( StartContext );
 				}
-				EndContext = s.GetContext();
-				s.SeekContext( StartContext );
 			}
-		}
-		if ( iType & 2 )		// FORCHAR, FOROBJ
-		{
-			CWorldSearch AreaChars(pt, iDist);
-			while ( CChar *pChar = AreaChars.GetChar() )
+			if ( iType & 2 )		// FORCHAR, FOROBJ
 			{
-				LoopsMade++;
-				if ( maxLoops && ( LoopsMade >= maxLoops )) goto toomanyloops;
-
-				if ( ( iType & 0x10 ) && ( ! pChar->IsClient() ) )	// FORCLIENTS
-					continue;
-				if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
-					continue;
-				TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				CWorldSearch AreaChars(pt, iDist);
+				while ( CChar *pChar = AreaChars.GetChar() )
 				{
-					return( iRet );
+					LoopsMade++;
+					if ( maxLoops && ( LoopsMade >= maxLoops )) goto toomanyloops;
+
+					if ( ( iType & 0x10 ) && ( ! pChar->IsClient() ) )	// FORCLIENTS
+						continue;
+					if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
+						continue;
+					TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
+					if ( iRet != TRIGRET_ENDIF )
+					{
+						return( iRet );
+					}
+					EndContext = s.GetContext();
+					s.SeekContext( StartContext );
 				}
-				EndContext = s.GetContext();
-				s.SeekContext( StartContext );
 			}
 		}
 	}

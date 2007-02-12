@@ -1618,54 +1618,56 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			iType = 0;
 			DEBUG_ERR(( "FOR Loop trigger on non-world object '%s'\n", GetName()));
 		}
-
-		CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
-		CPointMap pt = pObjTop->GetTopPoint();
-		if ( iType & 1 )		// FORITEM, FOROBJ
+		else
 		{
-			CWorldSearch AreaItems( pt, iDist );
-			while(true)
+			CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
+			CPointMap pt = pObjTop->GetTopPoint();
+			if ( iType & 1 )		// FORITEM, FOROBJ
 			{
-				++LoopsMade;
-				if ( g_Cfg.m_iMaxLoopTimes && ( LoopsMade >= g_Cfg.m_iMaxLoopTimes ))
-					goto toomanyloops;
-
-				CItem * pItem = AreaItems.GetItem();
-				if ( pItem == NULL )
-					break;
-				TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				CWorldSearch AreaItems( pt, iDist );
+				while(true)
 				{
-					return( iRet );
+					++LoopsMade;
+					if ( g_Cfg.m_iMaxLoopTimes && ( LoopsMade >= g_Cfg.m_iMaxLoopTimes ))
+						goto toomanyloops;
+
+					CItem * pItem = AreaItems.GetItem();
+					if ( pItem == NULL )
+						break;
+					TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
+					if ( iRet != TRIGRET_ENDIF )
+					{
+						return( iRet );
+					}
+					EndContext = s.GetContext();
+					s.SeekContext( StartContext );
 				}
-				EndContext = s.GetContext();
-				s.SeekContext( StartContext );
 			}
-		}
-		if ( iType & 2 )		// FORCHAR, FOROBJ
-		{
-			CWorldSearch AreaChars( pt, iDist );
-			AreaChars.SetAllShow( iType& 0x20 ? true : false );
-			while(true)
+			if ( iType & 2 )		// FORCHAR, FOROBJ
 			{
-				++LoopsMade;
-				if ( g_Cfg.m_iMaxLoopTimes && ( LoopsMade >= g_Cfg.m_iMaxLoopTimes ))
-					goto toomanyloops;
-
-				CChar * pChar = AreaChars.GetChar();
-				if ( pChar == NULL )
-					break;
-				if ( ( iType & 0x10 ) && ( ! pChar->IsClient() ) )	// FORCLIENTS
-					continue;
-				if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
-					continue;
-				TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				CWorldSearch AreaChars( pt, iDist );
+				AreaChars.SetAllShow( iType& 0x20 ? true : false );
+				while(true)
 				{
-					return( iRet );
+					++LoopsMade;
+					if ( g_Cfg.m_iMaxLoopTimes && ( LoopsMade >= g_Cfg.m_iMaxLoopTimes ))
+						goto toomanyloops;
+
+					CChar * pChar = AreaChars.GetChar();
+					if ( pChar == NULL )
+						break;
+					if ( ( iType & 0x10 ) && ( ! pChar->IsClient() ) )	// FORCLIENTS
+						continue;
+					if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
+						continue;
+					TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
+					if ( iRet != TRIGRET_ENDIF )
+					{
+						return( iRet );
+					}
+					EndContext = s.GetContext();
+					s.SeekContext( StartContext );
 				}
-				EndContext = s.GetContext();
-				s.SeekContext( StartContext );
 			}
 		}
 	}
@@ -2040,7 +2042,7 @@ jump_in:
 						}
 						else
 						{
-							DEBUG_ERR(( "FORCHAR[layer/memorytype] called on char 0%x (%s) without arguments.\n", pCharThis->GetUID(), pCharThis->GetName() ));
+							DEBUG_ERR(( "FORCHAR[layer/memorytype] called on char 0%x (%s) without arguments.\n", (DWORD)pCharThis->GetUID(), pCharThis->GetName() ));
 						}
 					}
 					else
@@ -2124,17 +2126,17 @@ jump_in:
 								}
 								else
 								{
-									DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", pObjCont->GetUID() ));
+									DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
 								}
 							}
 							else
 							{
-								DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", pObjCont->GetUID() ));
+								DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
 							}
 						}
 						else
 						{
-							DEBUG_ERR(( "FORCONT[id/type] called on container 0%x without arguments.\n", pObjCont->GetUID() ));
+							DEBUG_ERR(( "FORCONT[id/type] called on container 0%x without arguments.\n", (DWORD)pObjCont->GetUID() ));
 						}
 					}
 					else

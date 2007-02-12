@@ -3600,7 +3600,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 	{
 		if ( skill != SKILL_NONE && !IsSkillBase(skill) && !IsSkillNPC(skill) )
 		{
-			g_Log.Error("UID:0%x Bad Skill %d for '%s'\n", GetUID(), skill, GetName());
+			g_Log.Error("UID:0%x Bad Skill %d for '%s'\n", (DWORD)GetUID(), skill, GetName());
 			return false;
 		}
 		m_Act_SkillCurrent = skill;

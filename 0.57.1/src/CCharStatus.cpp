@@ -1277,11 +1277,11 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 				continue;
 			if ( pItemDef->GetTFlags() & 0x3000 )
 			{
-				WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,pItemDef->GetHeight()));
+				WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,pItemDef->GetHeight()));
 				min_z = pItem->GetUnkPoint().m_z;
 				max_z = CALCITEMHEIGHT(min_z);
 
-				WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
+				WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
 				if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
 				{
 					if (ptNow.m_x != ptDst.m_x || ptNow.m_y != ptDst.m_y || min_z > ptDst.m_z || max_z < ptDst.m_z)

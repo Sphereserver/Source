@@ -203,7 +203,7 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	{
 		if ( count >= MAX_ITEMS_CONTENT )
 		{
-			g_Log.Event( LOGL_WARN, "Too many items in container '%s' uid=0%x items=%d\n", pContainer->GetName(), pContainer->GetUID(), pContainer->GetCount());
+			g_Log.Event( LOGL_WARN, "Too many items in container '%s' uid=0%x items=%d\n", pContainer->GetName(), (DWORD)pContainer->GetUID(), pContainer->GetCount());
 			break;
 		}
 

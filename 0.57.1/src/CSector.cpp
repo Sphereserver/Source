@@ -908,7 +908,7 @@ void CSector::OnTick(int iPulseCount)
 
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.Debug("char 0%lx '%s'\n", pChar->GetUID(), pChar->GetName());
+		g_Log.Debug("char 0%lx '%s'\n", (DWORD)pChar->GetUID(), pChar->GetName());
 		g_Log.Debug("sector #%d [%d,%d,%d,%d]\n", m_index, pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUGSUB_END;
 	}
@@ -939,7 +939,7 @@ void CSector::OnTick(int iPulseCount)
 
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.Debug("item 0%lx '%s' [timer=%d, type=%d]\n", pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
+		g_Log.Debug("item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
 		g_Log.Debug("sector #%d [%d,%d,%d,%d]\n", m_index, pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		
 		EXC_DEBUGSUB_END;
