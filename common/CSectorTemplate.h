@@ -60,12 +60,8 @@ protected:
 	int m_map;			// sector map
 
 private:
-#ifndef _STD_MAPCACHE
-	CObPointSortArray	m_MapBlockCache;	//	CGrayMapBlock map cache. 
-#else
 	typedef std::map<long, CGrayMapBlock*>	MapBlockCache;
 	MapBlockCache							m_MapBlockCache;
-#endif
 public:
 	static const char *m_sClassName;
 	CObPointSortArray	m_Teleports;		//	CTeleport array
@@ -86,13 +82,9 @@ public:
 	CRectMap GetRect() const;
 	bool IsInDungeon() const;
 
-#ifdef _STD_MAPCACHE
 	bool static CheckMapBlockTime( const MapBlockCache::value_type& Elem );
 	void CheckMapBlockCache();
 	static int m_iMapBlockCacheTime;
-#else
-	void CheckMapBlockCache( int iTime );
-#endif
 	const CGrayMapBlock * GetMapBlock( const CPointMap & pt );
 
 	// CRegionBase
