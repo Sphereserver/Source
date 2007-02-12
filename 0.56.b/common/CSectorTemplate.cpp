@@ -123,15 +123,12 @@ int CSectorBase::GetMap() const
 	return m_map;
 }
 
-#ifdef _STD_MAPCACHE
 bool CSectorBase::CheckMapBlockTime( const MapBlockCache::value_type& Elem ) //static
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");
 	return (Elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
 }
-#endif
 
-#ifdef _STD_MAPCACHE
 void CSectorBase::CheckMapBlockCache()
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
@@ -165,47 +162,6 @@ void CSectorBase::CheckMapBlockCache()
 		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUG_END;
 	}
-#else
-void CSectorBase::CheckMapBlockCache( int iTime )
-{
-	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
-	// Clean out the sectors map cache if it has not been used recently.
-	// iTime == 0 = delete all.
-	int iCacheTime;
-	for ( int i = 0; i < m_MapBlockCache.GetCount(); ++i )
-	{
-		CGrayMapBlock * pMapBlock = NULL;
-		EXC_TRY("CheckMapBlockCache");
-		EXC_SET("Casting");
-		pMapBlock = dynamic_cast<CGrayMapBlock *>(m_MapBlockCache.GetAt(i));
-		// ASSERT(pMapBlock);
-		// NOTE: Experimental thing... if we can't cast it to CGrayMapBlock
-		// let's remove it, it'll be reloaded if necessary.
-		if ( pMapBlock == NULL )
-		{
-			EXC_SET("Casting failed - Deleting");
-			m_MapBlockCache.DeleteAt(i);
-			--i;
-			continue;
-		}
-		EXC_SET("Getting block's cache time");
-		iCacheTime = pMapBlock->m_CacheTime.GetCacheAge();
-		if (( iTime <= 0 ) || ( iCacheTime >= iTime ))
-		{
-			EXC_SET("CacheTime up - Deleting");
-			m_MapBlockCache.DeleteAt(i);
-			--i;
-		}
-		EXC_CATCH;
-
-		EXC_DEBUG_START;
-		CPointMap pt = GetBasePoint();
-		g_Log.EventDebug("m_MapBlockCache.GetAt(%d) (0%x); pMapBlock - (0%x)\n", i,  m_MapBlockCache.GetAt(i), pMapBlock); 
-		g_Log.EventDebug("check time %d, index %d/%d\n", iTime, i, m_MapBlockCache.GetCount());
-		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
-		EXC_DEBUG_END;
-	}
-#endif
 }
 
 
@@ -215,11 +171,7 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	// Get a map block from the cache. load it if not.
 	ASSERT( pt.IsValidXY());
 	CPointMap pntBlock( UO_BLOCK_ALIGN(pt.m_x), UO_BLOCK_ALIGN(pt.m_y), 0, pt.m_map);
-#ifdef _STD_MAPCACHE
 	ASSERT( m_MapBlockCache.size() <= (UO_BLOCK_SIZE * UO_BLOCK_SIZE));
-#else
-	ASSERT( m_MapBlockCache.GetCount() <= (UO_BLOCK_SIZE * UO_BLOCK_SIZE));
-#endif
 
 	PROFILE_TYPE prvProfileTask = g_Serv.m_Profile.GetCurrentTask();
 	g_Serv.m_Profile.Start( PROFILE_MAP );
@@ -234,7 +186,6 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	CGrayMapBlock * pMapBlock;
 
 	// Find it in cache.
-#ifdef _STD_MAPCACHE
 	long lBlock = pntBlock.GetPointSortIndex();
 	if ( !lBlock )
 	{
@@ -248,22 +199,6 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 		g_Serv.m_Profile.Start( prvProfileTask );
 		return it->second;
 	}
-	
-#else
-	int i = m_MapBlockCache.FindKey(pntBlock.GetPointSortIndex());
-	if ( i >= 0 )
-	{
-		pMapBlock = dynamic_cast<CGrayMapBlock *>(m_MapBlockCache[i]);
-		if ( !pMapBlock )
-		{
-			g_Serv.m_Profile.Start( prvProfileTask );
-			return NULL;
-		}
-		pMapBlock->m_CacheTime.HitCacheTime();
-		g_Serv.m_Profile.Start( prvProfileTask );
-		return pMapBlock;
-	}
-#endif
 	// else load it.
 	try
 	{
@@ -284,15 +219,9 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 	}
 
 	// Add it to the cache.
-#ifdef _STD_MAPCACHE
 	m_MapBlockCache[lBlock] = pMapBlock;
 	g_Serv.m_Profile.Start( prvProfileTask );
 	return( pMapBlock );
-#else
-	m_MapBlockCache.AddSortKey( pMapBlock, pntBlock.GetPointSortIndex() );
-	g_Serv.m_Profile.Start( prvProfileTask );
-	return( pMapBlock );
-#endif
 }
 
 bool CSectorBase::IsInDungeon() const
