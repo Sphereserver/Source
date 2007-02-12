@@ -1148,7 +1148,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( iArgQty < 2 )
 					return( false );
 				CObjBase *	pThis	= this;
-				//DEBUG_ERR(("this->GetUID() 0%x \n",this->GetUID()));
+				//DEBUG_ERR(("this->GetUID() 0%x \n", (DWORD)this->GetUID()));
 				if ( piCmd[0] == -1 )
 				{
 					if ( pCharSrc )
@@ -1159,7 +1159,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 
 				}
-				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",this->GetUID(),pThis->GetUID(),pCharSrc->GetUID()));
+				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
 				pThis->Effect( (EFFECT_TYPE) piCmd[0], (ITEMID_TYPE) RES_GET_INDEX(piCmd[1]),
 					pCharSrc,
 					(iArgQty>=3)? piCmd[2] : 5,		// BYTE bSpeedSeconds = 5,

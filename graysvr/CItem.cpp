@@ -2953,7 +2953,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0, GetUID());
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0, (DWORD)GetUID());
 	EXC_DEBUG_END;
 	return iRet;
 }
@@ -4810,25 +4810,25 @@ bool CItem::OnTick()
 		return false;
 
 	EXC_SET("default behaviour4");
-	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=%x)?\n", GetName(),GetUID()));
+	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=%x)?\n", GetName(), (DWORD)GetUID()));
 	
 #ifndef _WIN32
 	}
 	catch ( CGrayError &e )
 	{
 		EXC_CATCH_EXCEPTION(&e);
-		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), GetUID());
+		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), (DWORD)GetUID());
 	}
 	catch (...)
 	{
 		EXC_CATCH_EXCEPTION(NULL);
-		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), GetUID());
+		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), (DWORD)GetUID());
 	}
 #else
 	EXC_CATCH;
 	
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), GetUID());
+	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), (DWORD)GetUID());
 	//g_Log.EventError("'%s' item [0%lx]\n", GetName(), GetUID());
 	EXC_DEBUG_END;
 #endif

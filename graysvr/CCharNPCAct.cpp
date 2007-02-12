@@ -2936,7 +2936,7 @@ void CChar::NPC_OnTickAction()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' [0%lx]\n", GetName(), GetUID());
+	g_Log.EventDebug("'%s' [0%lx]\n", GetName(), (DWORD)GetUID());
 	EXC_DEBUG_END;
 }
 
@@ -3012,7 +3012,7 @@ void CChar::NPC_Pathfinding()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), local.m_x, local.m_y, local.m_z, local.m_map, GetUID());
+	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), local.m_x, local.m_y, local.m_z, local.m_map, (DWORD)GetUID());
 	EXC_DEBUG_END;
 }
 
