@@ -3122,3 +3122,6 @@ this all in desperation)
 
 12-02-2007, MrSugarCube
 - Fixed #1058: Exception on linux build caused by items decaying without decay flag.
+
+13-02-2007, Nazghul
+- Fixed #1059: Now NPC will ge stuck with the lightsource they already have equipped
