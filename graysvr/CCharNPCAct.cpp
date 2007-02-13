@@ -3406,11 +3406,16 @@ void CChar::NPC_AI()
 			else if ( IsStatFlag(STATF_War) ) ;
 			else if ( pSector->IsDark() && !IsStatFlag(STATF_NightSight) )
 			{
-				CItem *pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF,IT_LIGHT_OUT));
-				if ( pLightSource )
+
+				CItem *pLightSourceCheck = LayerFind(LAYER_HAND2);
+				if ( !( pLightSourceCheck && ( pLightSourceCheck->IsType(IT_LIGHT_OUT) || pLightSourceCheck->IsType(IT_LIGHT_LIT) )))
 				{
-					if ( ItemEquip(pLightSource) && Use_Obj(pLightSource, false, true) )
-						bActed = true;
+					CItem *pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF,IT_LIGHT_OUT));
+					if ( pLightSource )
+					{
+						if ( ItemEquip(pLightSource) && Use_Obj(pLightSource, false, true) )
+							bActed = true;
+					}
 				}
 			}
 			else
