@@ -3127,8 +3127,11 @@ this all in desperation)
 - Fixed #1059: Now NPC will ge stuck with the lightsource they already have equipped
 
 15-02-2007, Nazghul
-- added first version of support for TNG's webscript reader. Use console command
+- Added: First version of support for TNG's webscript reader. Use console command
   "tngstrip" to create a file what contains the information TNG needs from all your scripts
   (thus completely useless for script thieves). The file will be placed at the location 
   defined with "StripPath=" in sphere.ini and is named "tngstrip.scp. Can be delivered
   either by a dedicated web server or the built-in of sphere itself.
+
+15-02-2007, Babidi
+- Modified: sphere_dialog.scp - line 217, the highest skill is now SKILL_SPELLWEAVING.

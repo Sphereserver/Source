@@ -214,7 +214,7 @@ ON=17
 ON=18
 	IF (<ACTION>==-1)
 		SRC.MESSAGE @50 Doing nothing.
-	elif ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_Necromancy))
+	elif ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_SPELLWEAVING))
 		SRC.MESSAGE @50 Using the skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
 	elif <ACTION>==064
 		SRC.MESSAGE @50 Npc following someone.
