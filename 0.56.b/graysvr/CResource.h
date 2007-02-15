@@ -701,6 +701,8 @@ public:
 	CGString	m_sEventsPet;
 	CResourceLink *	m_pEventsPetLink;
 
+	CGString	m_sStripPath;
+
 	int		m_iWalkBuffer;
 	int		m_iWalkRegen;
 

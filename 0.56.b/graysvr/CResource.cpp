@@ -426,6 +426,7 @@ enum RC_TYPE
 	RC_SPEEDSCALEFACTOR,
 	RC_STAMINALOSSATWEIGHT,	// m_iStaminaLossAtWeight
 	RC_STATSFLAGS,				//	m_iStatFlag
+	RC_STRIPPATH,				// for TNG
 	RC_SUPPRESSCAPITALS,
 	RC_TELEPORTEFFECTPLAYERS,	//	m_iSpell_Teleport_Effect_Players
 	RC_TELEPORTEFFECTSTAFF,		//	m_iSpell_Teleport_Effect_Staff
@@ -595,6 +596,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "SPEEDSCALEFACTOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpeedScaleFactor)	}},
 	{ "STAMINALOSSATWEIGHT",	{ ELEM_INT,		OFFSETOF(CResource,m_iStaminaLossAtWeight)	}},
 	{ "STATSFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iStatFlag) }},
+	{ "STRIPPATH",				{ ELEM_INT,		OFFSETOF(CResource,m_sStripPath) }},
 	{ "SUPPRESSCAPITALS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fSuppressCapitals) }},
 	{ "TELEPORTEFFECTPLAYERS",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Effect_Players) }},
 	{ "TELEPORTEFFECTSTAFF",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Effect_Staff) }},
@@ -696,6 +698,9 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 		case RC_CRIMINALTIMER:
 			m_iCriminalTimer = s.GetArgVal() * 60 * TICK_PER_SEC;
+			break;
+		case RC_STRIPPATH:	// Put TNG stripped files here.
+			m_sStripPath = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
 #ifdef _EXTERNAL_DLL
 		case RC_DBDLL:
