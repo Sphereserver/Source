@@ -647,14 +647,68 @@ longcommand:
 	{
 		LPCTSTR	pszText = sText;
 
-		if ( !strnicmp(pszText, "strip", 5) )
+		if ( !strnicmp(pszText, "tngstrip", 8) )
 		{
 			int				i = 0;
 			CResourceScript	*script;
 			FILE			*f, *f1;
 			char			*z = Str_GetTemp();
 			LPCTSTR			dirname;
+			if ( g_Cfg.m_sStripPath.IsEmpty() )
+			{
+				pSrc->SysMessage("StripPath not defined, function aborted.\n");
+				return 1;
+			}
 
+			dirname = g_Cfg.m_sStripPath;
+
+			strcpy(z, dirname);
+			strcat(z, "tngstrip.scp");
+			pSrc->SysMessagef("StripFile is %s.\n", z);
+			f1 = fopen(z, "w");
+			if ( !f1 )
+			{
+				pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
+				return 1;
+			}
+
+
+			while ( script = g_Cfg.GetResourceFile(i++) )
+			{
+				strcpy(z, script->GetFilePath());
+				f = fopen(z, "r");
+				if ( !f )
+				{
+					pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
+					continue;
+				}
+
+				while ( !feof(f) )
+				{
+					z[0] = 0;
+					fgets(z, SCRIPT_MAX_LINE_LEN, f);
+					_strlwr(z);
+					if (( z[0] == '[' ) || !strncmp(z, "defname", 7) || !strncmp(z, "resources", 9) ||
+						!strncmp(z, "name=", 5) || !strncmp(z, "type=", 5) || !strncmp(z, "id=", 3) ||
+						!strncmp(z, "weight=", 7) || !strncmp(z, "value=", 6) || !strncmp(z, "dam=", 4) ||
+						!strncmp(z, "armor=", 6) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
+						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id=", 3) ||
+						!strncmp(z, "can=", 4) || !strncmp(z, "tevents=", 8) || !strncmp(z, "subsection=", 11) ||
+						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "color", 5) )
+						fputs(z, f1);
+				}
+				fclose(f);
+			}
+			fclose(f1);
+			pSrc->SysMessagef("Scripts have just been stripped.\n");
+			return 1;
+		} else if ( !strnicmp(pszText, "strip", 5) )
+		{
+			int				i = 0;
+			CResourceScript	*script;
+			FILE			*f, *f1;
+			char			*z = Str_GetTemp();
+			LPCTSTR			dirname;
 			pszText += 5;
 			while ( *pszText == ' ' ) pszText++;
 			dirname = ( *pszText ? pszText : "" );
