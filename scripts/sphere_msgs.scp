@@ -1041,6 +1041,6 @@
 //ship_seen_special_dir		"You can see many things, one is %s to the %s. ")
 //ship_seen_creat_single		"You see a creature to the %s")
 //ship_seen_creat_many		"You can see many creatures, one is to the %s.")
-
+//lightsrc_burn_out		"burn out"
 
 [EOF]
