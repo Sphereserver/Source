@@ -1140,13 +1140,16 @@ blocked:
 // a - gradient < x < b + gradient
 #define BETWEENPOINT(coord, coordt, coords) ( ((coord) > (((double)minimum((coordt),(coords)))-0.5)) && ((coord) < (((double)maximum((coordt),(coords)))+0.5)) )
 #define APPROX(num) ((double)(((num)-floor(num))>0.5)?(ceil(num)):(floor(num)))
-#define CALCITEMHEIGHT(num) (num)+((pItemDef->GetTFlags()&0x400)?(pItemDef->GetHeight()/2):pItemDef->GetHeight())
+//#define CALCITEMHEIGHT(num) (num)+((pItemDef->GetTFlags()&0x400)?(pItemDef->GetHeight()/2):pItemDef->GetHeight())
 //#define DEBUGCANSEELOS 1
 //#ifdef _DEBUG
 #ifdef DEBUGCANSEELOS
-	#define WARNLOS(_x_)		g_pLog->EventWarn _x_;
-#else
 	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
+//	#define WARNLOS(_x_)		g_pLog->EventWarn _x_;
+//#else
+//	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
+#else
+	#define WARNLOS(_x_)
 #endif
 
 bool inline CChar::CanSeeLOS_New_Failed( CPointMap * pptBlock, CPointMap &ptNow ) const
@@ -1411,7 +1414,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						wTFlags = pItemDef->GetTFlags();
 						Height = pItemDef->GetHeight();
 
-						if (( IsSetEF(EF_NewPositionChecks) ) && ( pItemDef->GetID() != pStatic->GetDispID() )) //not a parent item
+						if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
 						{
 							WARNLOS(("Not a parent item (STATIC)\n"))
 							pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pStatic->GetDispID() );
@@ -1428,16 +1431,16 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							}
 						}
 						else
-							WARNLOS(("Parent item or EF_NewPositionChecks off (DYNAMIC)\n"))
+							WARNLOS(("Parent item (DYNAMIC)\n"))
 
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )) && ( IsSetEF(EF_NewPositionChecks) ) || (( wTFlags & 0x3000 ) && ( !IsSetEF(EF_NewPositionChecks) )))
+						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pStatic %0x %d,%d,%d - %d\n",pStatic->GetDispID(),pStatic->m_x,pStatic->m_y,pStatic->m_z,Height))
 							min_z = pStatic->m_z;
-							max_z = IsSetEF(EF_NewPositionChecks) ? ( Height + min_z ) : CALCITEMHEIGHT(min_z);
+							max_z = Height + min_z;
 							WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 							WARNLOS(("pStatic %0x Z check: %d,%d (Now: %d) (Dest: %d).\n",pStatic->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
@@ -1499,7 +1502,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						wTFlags = pItemDef->GetTFlags();
 						Height = pItemDef->GetHeight();
 
-						if (( IsSetEF(EF_NewPositionChecks) ) && ( pItemDef->GetID() != pItem->GetDispID() )) //not a parent item
+						if ( pItemDef->GetID() != pItem->GetDispID() ) //not a parent item
 						{
 							WARNLOS(("Not a parent item (DYNAMIC)\n"))
 							pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pItem->GetDispID() );
@@ -1516,16 +1519,16 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							}
 						}
 						else
-							WARNLOS(("Parent item or EF_NewPositionChecks off (DYNAMIC)\n"))
+							WARNLOS(("Parent item (DYNAMIC)\n"))
 
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )) && ( IsSetEF(EF_NewPositionChecks) ) || (( wTFlags & 0x3000 ) && ( !IsSetEF(EF_NewPositionChecks) )))
+						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height))
 							min_z = pItem->GetUnkPoint().m_z;
-							max_z = IsSetEF(EF_NewPositionChecks) ? ( Height + min_z ) : CALCITEMHEIGHT(min_z);
+							max_z = Height + min_z;
 							WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
@@ -1608,7 +1611,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								wTFlags = pItemDef->GetTFlags();
 								Height = pItemDef->GetHeight();
 
-								if (( IsSetEF(EF_NewPositionChecks) ) && ( pItemDef->GetID() != pMultiItem->GetDispID() )) //not a parent item
+								if ( pItemDef->GetID() != pMultiItem->GetDispID() ) //not a parent item
 								{
 									WARNLOS(("Not a parent item (MULTI)\n"))
 									pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pMultiItem->GetDispID() );
@@ -1625,16 +1628,16 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 									}
 								}
 								else
-									WARNLOS(("Parent item or EF_NewPositionChecks off (MULTI)\n"))
+									WARNLOS(("Parent item (MULTI)\n"))
 
 								Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 								//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-								if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )) && ( IsSetEF(EF_NewPositionChecks) ) || (( wTFlags & 0x3000 ) && ( !IsSetEF(EF_NewPositionChecks) )))
+								if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height))
 									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;
-									max_z = IsSetEF(EF_NewPositionChecks) ? ( Height + min_z ) : CALCITEMHEIGHT(min_z);
+									max_z = Height + min_z;
 									WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 									if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
@@ -1690,7 +1693,7 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate * pObj, WORD wFlags ) const
 	if ( ! CanSee( pObj ))
 		return( false );
 	pObj = pObj->GetTopLevelObj();
-	if ( IsSetEF(EF_NewPositionChecks) && ( m_pPlayer || m_pNPC ) && ( g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) )
+	if ( ( m_pPlayer || m_pNPC ) && ( g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) )
 	{
 		CPointMap pt = pObj->GetTopPoint();
 		const CChar * pChar = dynamic_cast<const CChar*>(pObj);
