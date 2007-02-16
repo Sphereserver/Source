@@ -4641,7 +4641,7 @@ bool CItem::OnTick()
 				else
 				{
 					// Torches should just go away but lanterns etc should not.
-					Emote( "burn out" );
+					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
 					CItemBase * pItemDef = Item_GetDef();
 					ITEMID_TYPE id = (ITEMID_TYPE) pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex();
 					if ( ! id )	// burn out and be gone.
