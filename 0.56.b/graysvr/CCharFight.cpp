@@ -2862,8 +2862,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Consume the bolts/arrows
 		CVarDefCont * pValue = pWeapon->GetKey("OVERRIDE.AMMOTYPE",true);
 		CVarDefCont * pAnim  = pWeapon->GetKey("OVERRIDE.AMMOANIM",true);
+		CVarDefCont * pColor = pWeapon->GetKey("OVERRIDE.AMMOANIMHUE",true);
 		ITEMID_TYPE AmmoID;
 		ITEMID_TYPE AmmoAnim;
+		int AmmoHue;
 		RESOURCE_ID_BASE rid;
 		LPCTSTR t_Str;
 		if ( pValue )
@@ -2911,7 +2913,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pAmmo )
 		{
 			pAmmo->UnStackSplit( 1, this );
-			pAmmo->Delete();	// Delet eby default.
+			pAmmo->Delete();	// Delete by default.
 		}
 
 		if ( pAnim )
@@ -2924,7 +2926,15 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			AmmoAnim = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex();
 		}
 
-		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 16, 0, false );
+		if ( pColor )
+		{
+			AmmoHue = pColor->GetValNum();
+		} else
+		{
+			AmmoHue = 0;
+		}
+
+		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 16, AmmoHue, false );
 	}
 	else
 	{

@@ -3135,3 +3135,9 @@ this all in desperation)
 
 15-02-2007, Babidi
 - Modified: sphere_dialog.scp - line 217, the highest skill is now SKILL_SPELLWEAVING.
+
+
+16-02-2007, Nazghul
+- added TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the 
+  color of the effect what will be used for displaying the shot.
+
