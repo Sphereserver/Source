@@ -1,7 +1,6 @@
 [== Exploits/Bugfixes ==]
 - Doubleclick on a char in war mode should make you criminal instantly. This will solve the
   issue with pets attacking, and make it more correct way for any combat system.
-- NPC still flashing lights when they have torches (not candles). They reequip them due to some reason.
 
 [== CRs (Change Requests) ==]
 - add built-in support for this system http://uo.stratics.com/content/professions/taming/taming-pets.shtml + changing current and max pet
