@@ -2863,9 +2863,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		CVarDefCont * pValue = pWeapon->GetKey("OVERRIDE.AMMOTYPE",true);
 		CVarDefCont * pAnim  = pWeapon->GetKey("OVERRIDE.AMMOANIM",true);
 		CVarDefCont * pColor = pWeapon->GetKey("OVERRIDE.AMMOANIMHUE",true);
+		CVarDefCont * pRender = pWeapon->GetKey("OVERRIDE.AMMOANIMRENDER",true);
 		ITEMID_TYPE AmmoID;
 		ITEMID_TYPE AmmoAnim;
-		int AmmoHue;
+		DWORD AmmoHue;
+		DWORD AmmoRender;
 		RESOURCE_ID_BASE rid;
 		LPCTSTR t_Str;
 		if ( pValue )
@@ -2934,7 +2936,15 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			AmmoHue = 0;
 		}
 
-		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 16, AmmoHue, false );
+		if ( pRender )
+		{
+			AmmoRender = pRender->GetValNum();
+		} else
+		{
+			AmmoRender = false;
+		}
+
+		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 5, 16, false, AmmoHue, AmmoRender );
 	}
 	else
 	{
