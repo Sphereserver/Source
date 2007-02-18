@@ -1831,6 +1831,10 @@ bool CChar::NPC_Act_Talk()
 	if ( iDist >= UO_MAP_VIEW_SIGHT )	// give up.
 		return false;
 
+	// can't see them
+	if ( !CanSee( pChar ) )
+		return( false );
+
 	if ( Skill_GetActive() == NPCACT_TALK_FOLLOW && iDist > 3 )
 	{
 		// try to move closer.
@@ -2875,11 +2879,14 @@ void CChar::NPC_AI()
 					CWorldSearch Area(GetTopPoint(), GetVisualRange(), this);
 					while ( CChar *pChar = Area.GetChar() )
 					{
-						if ( pChar->IsClient() )
-						{
-							canGoOffDuty = false;
-							break;
-						}
+						if ( !pChar->IsClient() )
+							continue;
+
+						if ( !CanSee( pChar ) )
+							continue;
+
+						canGoOffDuty = false;
+						break;
 					}
 					if ( canGoOffDuty )
 					{
@@ -2909,6 +2916,10 @@ void CChar::NPC_AI()
 				while ( CChar *pChar = Area.GetChar() )
 				{
 					if ( bActed ) break;
+
+					if ( !CanSee( pChar ) )
+						continue;
+
 					int iDist = GetDist(pChar);
 
 					//	gives some food for player to feed his animals

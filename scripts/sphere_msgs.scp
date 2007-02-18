@@ -740,7 +740,7 @@
 //npc_pet_weak		"I'm too weak to carry that. "
 //npc_stablemaster_fail		"It doesn't seem to want to go."
 //npc_stablemaster_feed		"feed the %s"
-//npc_stablemaster_food		"Here are some %s for your pets, %s. Fed them with care!"
+//npc_stablemaster_food		"Here are some %s for your pets, %s. Feed them with care!"
 //npc_stablemaster_full		"I'm sorry the stables are full"
 //npc_stablemaster_los		"I can't seem to see your pet"
 //npc_stablemaster_nopets		"Sorry I have no stabled animals for you"

@@ -3133,11 +3133,13 @@ this all in desperation)
   defined with "StripPath=" in sphere.ini and is named "tngstrip.scp. Can be delivered
   either by a dedicated web server or the built-in of sphere itself.
 
-15-02-2007, Babidi
+15-02-2007, Babidi (Script pack)
 - Modified: sphere_dialog.scp - line 217, the highest skill is now SKILL_SPELLWEAVING.
 
-
 16-02-2007, Nazghul
-- added TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the 
+- Added: TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the 
   color of the effect what will be used for displaying the shot.
+
+18-02-2007, MrSugarCube
+- Fixed #1069: Stable masters giving food to invisible characters.
 
