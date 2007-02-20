@@ -31,6 +31,8 @@ void cDatabaseLoader::ForceIstanceReload()
 
 cDatabaseLoader::cDatabaseLoader()
 {
+	dhDatabase = (dllhandle_t) NULL;
+
 	if ( !g_Cfg.m_sDbDll.IsEmpty() )
 	{
 #ifdef _WIN32

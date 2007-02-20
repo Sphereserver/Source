@@ -345,14 +345,18 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	// Modify the values for the specific client/item.
 	bool fHumanCorpse = ( wID == ITEMID_CORPSE && CCharBase::IsHumanID( pItem->GetCorpseType() ));
 
-	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
+	if ( wID != ITEMID_CORPSE )
 	{
-		// cmd.Put.m_id = pItem->GetDispID();	// ??? random displayable item ?
-		wHue = Calc_GetRandVal( HUE_DYE_HIGH );	// restrict colors
-	}
-	else if ( wID != ITEMID_CORPSE )
-	{
-		if ( wHue & HUE_UNDERWEAR )	// on monster this just colors the underwaer. thats it.
+		CItemBase * pItemDef = pItem->Item_GetDef();
+		if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
+		{
+			wID = (ITEMID_TYPE) pItemDef->GetResDispDnId();
+			if ( pItemDef->GetResDispDnHue() != HUE_DEFAULT )
+				wHue = pItemDef->GetResDispDnHue();
+		}
+
+		// On monster this just colors the underwaer. thats it.
+		if ( wHue & HUE_UNDERWEAR )
 			wHue = 0;
 		else if (( wHue & HUE_MASK_HI ) > HUE_QTY )
 			wHue &= HUE_MASK_LO | HUE_TRANSLUCENT;
@@ -361,11 +365,26 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	}
 	else
 	{
+		// Adjust amount and hue of corpse if necessary
+		CCharBase * pCharDef = CCharBase::FindCharBase( pItem->m_itCorpse.m_BaseID );
+		if (( pCharDef ) && ( GetResDisp() < pCharDef->GetResLevel() ))
+		{
+			wAmount = pCharDef->GetResDispDnId();
+			if ( pCharDef->GetResDispDnHue() != HUE_DEFAULT )
+				wHue = pCharDef->GetResDispDnHue();
+		}
+
 		// allow HUE_UNDERWEAR colors only on corpses
 		if (( wHue & HUE_MASK_HI ) > HUE_QTY )
 			wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 		else
 			wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+	}
+
+	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
+	{
+		// cmd.Put.m_id = pItem->GetDispID();	// ??? random displayable item ?
+		wHue = Calc_GetRandVal( HUE_DYE_HIGH );	// restrict colors
 	}
 
 	if ( m_pChar->CanMove( pItem, false ))	// wID != ITEMID_CORPSE &&
@@ -402,15 +421,6 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 		{
 			// If this item has direction facing use it
 			bDir = pItem->m_itCorpse.m_facing_dir;	// DIR_N
-
-			// Adjust amount and hue of corpse if necessary
-			CCharBase * pCharDef = CCharBase::FindCharBase( pItem->m_itCorpse.m_BaseID );
-			if (( pCharDef ) && ( GetResDisp() < pCharDef->GetResLevel() ))
-			{
-				wAmount = pCharDef->GetResDispDnId();
-				if ( pCharDef->GetResDispDnHue() != HUE_DEFAULT )
-					wHue = pCharDef->GetResDispDnHue();
-			}
 		}
 	}
 
@@ -523,13 +533,20 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	if ( pCont == NULL )
 		return;
 
+	CItemBase * pItemDef = pItem->Item_GetDef();
 	CPointBase pt = pItem->GetContainedPoint();
 
 	// Add a single item in a container.
 	CCommand cmd;
 	cmd.ContAdd.m_Cmd = XCMD_ContAdd;
 	cmd.ContAdd.m_UID = pItem->GetUID();
-	cmd.ContAdd.m_id = pItem->GetDispID();
+
+	ITEMID_TYPE id = pItem->GetDispID();
+	if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
+		id = (ITEMID_TYPE) pItemDef->GetResDispDnId();
+
+	cmd.ContAdd.m_id = id;
+
 	cmd.ContAdd.m_zero7 = 0;
 	cmd.ContAdd.m_amount = pItem->GetAmount();
 	cmd.ContAdd.m_x = pt.m_x;
@@ -544,6 +561,11 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	else
 	{
 		wHue = pItem->GetHue() & HUE_MASK_HI;
+
+		if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
+			if ( pItemDef->GetResDispDnHue() != HUE_DEFAULT )
+				wHue = pItemDef->GetResDispDnHue() & HUE_MASK_HI;
+
 		if ( wHue > HUE_QTY )
 			wHue &= HUE_MASK_LO;
 	}
@@ -584,10 +606,11 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	memset(fLayer, 0, sizeof(fLayer));
 
 	CCommand cmd;
+	CItemBase * pItemDef = NULL;
 
 	// send all the items in the container.
 	int count = 0;
-	for ( CItem* pItem = pContainer->GetContentHead(); pItem ; pItem=pItem->GetNext() )
+	for ( CItem * pItem = pContainer->GetContentHead(); pItem ; pItem = pItem->GetNext(), pItemDef = NULL )
 	{
 		if ( count >= MAX_ITEMS_CONTENT )
 		{
@@ -626,8 +649,13 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 			if ( !fShop && pItem->IsAttr(ATTR_INVIS) && !CanSee(pItem) ) // don't send invis items
 				continue;
 
+			pItemDef = pItem->Item_GetDef();
+
 			cmd.Content.m_item[count].m_UID		= pItem->GetUID();
 			cmd.Content.m_item[count].m_id		= pItem->GetDispID();
+			if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
+				cmd.Content.m_item[count].m_id = (ITEMID_TYPE) pItemDef->GetResDispDnId();
+
 			cmd.Content.m_item[count].m_zero6	= 0;
 			cmd.Content.m_item[count].m_amount	= pItem->GetAmount();
 			if ( fShop )
@@ -656,6 +684,11 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 			else
 			{
 				wHue = pItem->GetHue() & HUE_MASK_HI;
+
+				if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
+					if ( pItemDef->GetResDispDnHue() != HUE_DEFAULT )
+						wHue = pItemDef->GetResDispDnHue() & HUE_MASK_HI;
+
 				if ( wHue > HUE_QTY )
 					wHue &= HUE_MASK_LO;	// restrict colors
 			}
