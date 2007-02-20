@@ -3143,3 +3143,6 @@ this all in desperation)
 18-02-2007, MrSugarCube
 - Fixed #1069: Stable masters giving food to invisible characters.
 
+20-02-2007, Nazghul
+- Added SPELLFLAG_NO_CASTANIM (0x80000) to suppress the usual cast anim. This way a custom
+  (perhaps race-, class-, magery-, experience-related) anim can be played @START/@SPELLCAST

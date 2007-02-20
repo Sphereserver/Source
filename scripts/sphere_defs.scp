@@ -592,6 +592,7 @@ spellflag_disabled		008000		// spell is disabled
 spellflag_scripted		010000		// spell is scripted
 spellflag_playeronly	020000		// spell is not casted by npc ai
 spellflag_nounparalyze	040000		// do not unparalyze the victim
+spellflag_no_castanim	080000		// don't play (default) cast anim
 
 [defname mem_flags]
 memory_sawcrime	00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
