@@ -334,6 +334,7 @@ private:
 #define SPELLFLAG_SCRIPTED	0x10000
 #define	SPELLFLAG_PLAYERONLY	0x20000	// casted by players only
 #define	SPELLFLAG_NOUNPARALYZE	0x40000	// casted by players only
+#define SPELLFLAG_NO_CASTANIM	0x80000	// play no anim while casting (also override SPELLFLAG_DIR_ANIM)
 	CGString m_sName;	// spell name
 
 public:
