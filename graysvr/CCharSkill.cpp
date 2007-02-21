@@ -3689,6 +3689,8 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		return Skill_Fighting(stage);
 	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_MAGIC ) )
 		return Skill_Magery(stage);
+	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
+		return Skill_MakeItem(stage);
 	else switch ( Skill_GetActive() )
 	{
 		case SKILL_NONE:	// idling.
