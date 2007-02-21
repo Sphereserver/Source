@@ -474,13 +474,14 @@ enum SKTRIG_TYPE
 enum	SKF_TYPE
 {
 	SKF_SCRIPTED		= 0x0001,		// fully scripted, no hardcoded behaviour
-	SKF_FIGHT			= 0x0002,		// considered a fight skill, mantains fight active
-	SKF_MAGIC			= 0x0004,
-	SKF_IMMOBILE		= 0x0010,
-	SKF_SELECTABLE		= 0x0020,
+	SKF_FIGHT			= 0x0002,		// considered a fight skill, maintains fight active
+	SKF_MAGIC			= 0x0004,		// considered a magic skill
+	SKF_CRAFT			= 0x0008,		// considered a crafting skill, compatible with MAKEITEM function
+	SKF_IMMOBILE		= 0x0010,		// fails skill if character moves
+	SKF_SELECTABLE		= 0x0020,		// allows skill to be selected from the skill menu
 	SKF_NOMINDIST		= 0x0040,		// you can mine, fish, chop, hack on the same point you are standing on
-	SKF_NOANIM			= 0x0080,
-	SKF_NOSFX			= 0x0100,
+	SKF_NOANIM			= 0x0080,		// prevents hardcoded animation from playing
+	SKF_NOSFX			= 0x0100		// prevents hardcoded sound from playing
 };
 
 struct CSkillDef : public CResourceLink // For skill def table

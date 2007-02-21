@@ -95,7 +95,7 @@ bool CacheableScriptFile::IsEOF() const
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
-	return (( m_currentLine == -1 ) || ( m_currentLine == (m_fileContent->size() - 1) ));
+	return (( m_currentLine == -1 ) || ( m_currentLine == m_fileContent->size() ));
 }
 
 TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax) 
@@ -108,7 +108,7 @@ TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax)
 	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
 	*pBuffer = NULL;
 
-	if(( m_currentLine != -1 ) && ( m_currentLine != (m_fileContent->size() - 1) )) 
+	if(( m_currentLine != -1 ) && ( m_currentLine != m_fileContent->size() ))
 	{
 		strcpy(pBuffer, (m_fileContent->at(m_currentLine)).c_str() );
 		m_currentLine += 1;

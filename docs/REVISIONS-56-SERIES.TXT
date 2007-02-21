@@ -3149,3 +3149,9 @@ this all in desperation)
 
 21-02-2007, MrSugarCube
 - Fixed #1071: Undefined Symbol error caused when a function returns a string.
+- Fixed #1075: The last line in script files being ignored.
+- Added: Skill flag SKF_CRAFT. Skills with this flag set will function correctly with the
+  MAKEITEM command.
+
+21-02-2007, MrSugarCube (Script pack)
+- Updated: sphere_defs.scp (Added SKF_CRAFT definition)
