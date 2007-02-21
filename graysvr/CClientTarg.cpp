@@ -104,7 +104,8 @@ bool CClient::OnTarg_Obj_Function( CObjBase * pObj, const CPointMap & pt, ITEMID
 	CScriptTriggerArgs	Args( pSpace ? pSpace : "" );
 	Args.m_VarsLocal.SetNum( "ID", id, true );
 	Args.m_pO1	= pObj;
-	m_pChar->r_Call( (LPCTSTR) m_Targ_Text, this, &Args );
+	CGString sVal;
+	m_pChar->r_Call( (LPCTSTR) m_Targ_Text, this, &Args, &sVal );
 	return true;
 }
 

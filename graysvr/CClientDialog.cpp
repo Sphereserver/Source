@@ -138,8 +138,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 	int index = FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 	if ( index < 0 )
 	{
+		CGString sVal;
 		CScriptTriggerArgs Args(s.GetArgRaw());
-		if ( r_Call(s.GetKey(), pSrc, &Args) )
+		if ( r_Call(s.GetKey(), pSrc, &Args, &sVal) )
 			return true;
 		if (!m_pObj)
 			return CResourceLink::r_Verb(s, pSrc);
