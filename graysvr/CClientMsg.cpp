@@ -4360,18 +4360,18 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		fQuickLogIn = true;
 	}
 
-	addPlayerStart( pChar );
-	ASSERT(m_pChar);
-
-	// Gump memory cleanup, we don't want them from logged out players
-	m_pChar->Memory_ClearTypes(MEMORY_GUMPRECORD);
-
 	//	gms should login with invul and without allshow flag set
 	if ( GetPrivLevel() >= PLEVEL_Counsel )
 	{
 		if ( IsPriv(PRIV_ALLSHOW) ) ClearPrivFlags(PRIV_ALLSHOW);
 		if ( !pChar->IsStatFlag(STATF_INVUL) ) pChar->StatFlag_Set(STATF_INVUL);
 	}
+
+	addPlayerStart( pChar );
+	ASSERT(m_pChar);
+
+	// Gump memory cleanup, we don't want them from logged out players
+	m_pChar->Memory_ClearTypes(MEMORY_GUMPRECORD);
 
 	// Resend hiding buff if hidden
 	if ( m_pChar->IsStatFlag( STATF_Hidden ) )
