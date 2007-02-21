@@ -3146,3 +3146,6 @@ this all in desperation)
 20-02-2007, Nazghul
 - Added SPELLFLAG_NO_CASTANIM (0x80000) to suppress the usual cast anim. This way a custom
   (perhaps race-, class-, magery-, experience-related) anim can be played @START/@SPELLCAST
+
+21-02-2007, MrSugarCube
+- Fixed #1071: Undefined Symbol error caused when a function returns a string.

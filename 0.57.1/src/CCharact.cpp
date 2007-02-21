@@ -3079,7 +3079,8 @@ bool CChar::OnTick()
 			t->elapsed--;
 			if ( t->elapsed < 0 )
 			{
-				r_Call(t->funcname, this, NULL);
+				CGString sVal;
+				r_Call(t->funcname, this, NULL, &sVal);
 				vector<TimedFunction>::iterator it = m_timedFunctions.begin();
 				it += tf;
 				m_timedFunctions.erase(it);

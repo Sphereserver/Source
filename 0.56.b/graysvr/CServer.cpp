@@ -1084,8 +1084,9 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 	if ( index < 0 )
 	{
+		CGString sVal;
 		CScriptTriggerArgs Args( s.GetArgRaw() );
-		if ( r_Call( pszKey, pSrc, &Args ) )
+		if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
 			return true;
 
 		if ( !strnicmp(pszKey, "ACCOUNT.", 8) )

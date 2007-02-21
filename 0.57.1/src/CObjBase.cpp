@@ -975,8 +975,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		return true;
 	}
 
+	CGString sVal;
 	CScriptTriggerArgs Args( s.GetArgRaw() );
-	if ( r_Call( pszKey, pSrc, &Args ) )
+	if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
 		return true;
 
 	if ( !strnicmp( pszKey, "TARGET", 6 ) )

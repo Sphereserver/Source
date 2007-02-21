@@ -2085,6 +2085,7 @@ jump_in:
 						EXC_SET("call");
 						char *argRaw = s.GetArgRaw();
 						char *z = strchr(argRaw, ' ');
+						CGString sVal;
 
 						if( z )
 						{
@@ -2103,7 +2104,7 @@ jump_in:
 							CGString s1_raw = pArgs->m_s1;
 							pArgs->Init(z);
 
-							fRes = this->r_Call(argRaw, pSrc, pArgs);
+							fRes = this->r_Call(argRaw, pSrc, pArgs, &sVal);
 
 							pArgs->m_iN1 = iN1;
 							pArgs->m_iN2 = iN2;
@@ -2113,7 +2114,7 @@ jump_in:
 							pArgs->m_s1_raw = s1_raw;
 						}
 						else
-							fRes = this->r_Call(argRaw, pSrc, pArgs);
+							fRes = this->r_Call(argRaw, pSrc, pArgs, &sVal);
 					}
 					else
 					{
