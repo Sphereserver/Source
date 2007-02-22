@@ -242,6 +242,7 @@ enum ITRIG_TYPE
 	ITRIG_DROPON_SELF,		// An item has been dropped upon me
 	ITRIG_EQUIP,		// I have been equipped.
 	ITRIG_EQUIPTEST,
+	ITRIG_FIRE,			// If I'm a bow or xbow I want to spit out a projectile
 	ITRIG_PICKUP_GROUND,
 	ITRIG_PICKUP_PACK,	// picked up from inside some container.
 	ITRIG_PICKUP_SELF,	// picked up from this container
@@ -2016,6 +2017,7 @@ enum CTRIG_TYPE
 	CTRIG_itemDROPON_SELF,		// I have been dropped on this item
 	CTRIG_itemEQUIP,		// I have equipped an item
 	CTRIG_itemEQUIPTEST,
+	CTRIG_itemFIRE,			// my weapon spits out a projectile the next moment
 	CTRIG_itemPICKUP_GROUND,
 	CTRIG_itemPICKUP_PACK,	// picked up from inside some container.
 	CTRIG_itemPICKUP_SELF,	// picked up from this (ACT) container.
@@ -2077,6 +2079,7 @@ enum CTRIG_TYPE
 	CTRIG_SpellCast,		//+Char is casting a spell.
 	CTRIG_SpellEffect,		//+A spell just hit me.
 	CTRIG_SpellSelect,		// selected a spell
+	CTRIG_StatChange,
 	CTRIG_Step,				// I took a step.
 	CTRIG_StepStealth,		//+Made a step while being in stealth mode
 	CTRIG_ToolTip,			// someone did tool tips on me.

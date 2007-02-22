@@ -3164,3 +3164,6 @@ this all in desperation)
   the client that is performing the action (note that at the time these functions are
   called, there is no character attached to the client so character properties are not
   accessible).
+
+22-02-2007, Nazghul
+- Added: character trigger @statchange (argn1: the stat, argn2: new value) 

@@ -53,6 +53,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemDropOn_Self",		// An item has been dropped on
 	"@itemEQUIP",			// I have equipped an item
 	"@itemEQUIPTEST",
+	"@itemFIRE",
 	"@itemPICKUP_GROUND",
 	"@itemPICKUP_PACK",		// picked up from inside some container.
 	"@itemPICKUP_SELF",		// picked up from this container
@@ -114,6 +115,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SpellCast",		//+Char is casting a spell.
 	"@SpellEffect",		//+A spell just hit me.
 	"@SpellSelect",		// Selected a spell
+	"@StatChange",
 	"@Step",			// Very expensive!
 	"@StepStealth",		//+Made a step in stealth mode
 	"@ToolTip",			// someone did tool tips on me.

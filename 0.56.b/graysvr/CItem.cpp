@@ -23,6 +23,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@DropOn_Self",			// An item has been dropped here
 	"@EQUIP",		// I have been unequipped
     "@EQUIPTEST",
+	"@FIRE",
 	"@PICKUP_GROUND",	// I was picked up off the ground.
 	"@PICKUP_PACK",	// picked up from inside some container.
 	"@PICKUP_SELF", // picked up from here

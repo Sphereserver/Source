@@ -631,6 +631,16 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		if ( iRoll <= iChance )
 		{
+
+			if ( !IsSetEF(EF_Minimize_Triggers) )
+			{
+				CScriptTriggerArgs args;
+				args.m_iN1 = i;
+				args.m_iN2 = iStatVal+1;
+				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+					return;
+			}
+
 			Stat_SetBase( (STAT_TYPE)i, iStatVal+1 );
 			break;
 		}
@@ -676,6 +686,11 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			int iStatVal = Stat_GetBase((STAT_TYPE)imin);
 			if ( iStatVal > 10 )
 			{
+				CScriptTriggerArgs args;
+				args.m_iN1 = imin;
+				args.m_iN2 = iStatVal-1;
+				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+					return;
 				Stat_SetBase( (STAT_TYPE)imin, iStatVal-1 );
 			}
 		}
