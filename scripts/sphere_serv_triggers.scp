@@ -28,7 +28,8 @@ f_onserver_exit
 f_onserver_blockip
 
 // This function is called after client entered the password.
-// ARGS --> username of the client loggin in
+// ARGS --> username of the client logging in
+// ARGO --> the client logging in
 // RETURN
 //	  0 --> normal action (login)
 //	  1 --> disconnect the client
@@ -42,15 +43,17 @@ f_onserver_blockip
 [FUNCTION f_onaccount_delete]
 
 // This function is called after client have created a new char.
-// SRC --> char being created
+// SRC   --> char being created
 // ARGN1 --> flags
 // ARGN2 --> profession chosen
 // ARGN3 --> elf
 // ARGS  --> account name
+// ARGO  --> the client creating the character
 [FUNCTION f_onchar_create]
 
 // This function is called before client is going to delete a character.
-// SRC --> char being deleted
+// SRC  --> char being deleted
+// ARGO --> the client deleting the character
 // RETURN
 //	  0 --> normal action (delete char)
 //	  1 --> denyes deletion

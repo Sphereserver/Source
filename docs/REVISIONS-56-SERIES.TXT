@@ -3157,3 +3157,10 @@ this all in desperation)
 21-02-2007, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added SKF_CRAFT definition)
 - Updated: sphere_map_points0.scp and sphere_map_points1.scp (Removed duplicate teleporters)
+
+22-02-2007, MrSugarCube
+- Fixed #1078: Exception when walking in the top left corner of maps.
+- Added #1079: ARGO in f_onchar_create, f_onchar_delete and f_onaccount_login is now the
+  the client that is performing the action (note that at the time these functions are
+  called, there is no character attached to the client so character properties are not
+  accessible).

@@ -104,7 +104,13 @@
 			return( TRIGRET_RET_DEFAULT );
 		}
 		bool OnTriggerFind( CScript & s, LPCTSTR pszTrigName );
-		TRIGRET_TYPE OnTriggerRun( CScript &s, TRIGRUN_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pReturn = NULL );
+		TRIGRET_TYPE OnTriggerRun( CScript &s, TRIGRUN_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pReturn );
+
+#ifdef _SCARY_FIX
+		TRIGRET_TYPE OnTriggerRunVal( CScript &s, TRIGRUN_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
+#else
+		#define OnTriggerRunVal(a,b,c,d)	OnTriggerRun(a,b,c,d,NULL)
+#endif
 
 		virtual LPCTSTR GetName() const = 0;	// ( every object must have at least a type name )
 

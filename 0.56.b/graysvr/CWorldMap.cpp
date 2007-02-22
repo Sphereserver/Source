@@ -568,7 +568,11 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 
 	WORD wBlockThis = 0;
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	ASSERT(pMapBlock);
+	if ( !pMapBlock )
+	{
+		g_Log.EventWarn("GetMapBlock failed at %s.\n", pt.WriteUsed());
+		return;
+	}
 
 	{
 		int iQty = pMapBlock->m_Statics.GetStaticQty();

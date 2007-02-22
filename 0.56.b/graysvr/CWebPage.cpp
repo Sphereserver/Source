@@ -754,7 +754,7 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 	{
 		if ( !s.IsKeyHead("ON", 2) || ( s.GetArgVal() != dwButtonID ))
 			continue;
-		TRIGRET_TYPE iRet = OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pClient, &resp);
+		TRIGRET_TYPE iRet = OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, pClient, &resp);
 		return true;
 	}
 

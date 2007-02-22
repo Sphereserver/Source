@@ -459,7 +459,7 @@ TRIGRET_TYPE CObjBase::OnHearTrigger( CResourceLock & s, LPCTSTR pszCmd, CChar *
 		if ( ! fMatch )
 			continue;	// look for the next "ON" section.
 
-		TRIGRET_TYPE iRet = CObjBase::OnTriggerRun( s, TRIGRUN_SECTION_EXEC, pSrc, &Args );
+		TRIGRET_TYPE iRet = CObjBase::OnTriggerRunVal( s, TRIGRUN_SECTION_EXEC, pSrc, &Args );
 		if ( iRet != TRIGRET_RET_FALSE )
 			return( iRet );
 

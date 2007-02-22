@@ -676,7 +676,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			if ( strcmpi( s.GetArgStr(), "@cancel" ) )
 				continue;
 
-			TRIGRET_TYPE tRet = m_pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
 			if ( tRet == TRIGRET_RET_TRUE )
 				return false;
 
@@ -777,7 +777,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			m_pChar->m_Act_Targ = m_Targ_UID;
 
 			// Execute command from script
-			TRIGRET_TYPE tRet = m_pChar->OnTriggerRun( s, TRIGRUN_SINGLE_EXEC, m_pChar, NULL );
+			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, m_pChar, NULL );
 			if ( tRet == TRIGRET_RET_TRUE )
 			{
 				return( false );

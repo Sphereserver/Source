@@ -738,7 +738,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 		}
 		else
 		{
-			TRIGRET_TYPE tRet = OnTriggerRun( s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL );
+			TRIGRET_TYPE tRet = OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL );
 			if ( (tRet == TRIGRET_RET_FALSE) && fFullInterp )
 				;
 			else if ( tRet != TRIGRET_RET_DEFAULT )
