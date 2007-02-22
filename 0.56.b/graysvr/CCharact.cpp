@@ -1334,37 +1334,43 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	if ( !CanTouch(pItem) || !CanMove(pItem, true) )
 		return -1;
 
-	if( IsClient() ) {
-		CClient *client = GetClient();
+	const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
 
-		const CItem *pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
-		if ( pItemCont != NULL ) {
+	if( IsClient() ) 
+	{
+		CClient *client = GetClient();
+		const CItem * pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
+
+		if ( pItemCont != NULL ) 
+		{
 			// Don't allow taking items from the bank unless we opened it here
 			if ( pItemCont->IsType( IT_EQ_BANK_BOX ) && ( pItemCont->m_itEqBankBox.m_pntOpen != GetTopPoint() ) )
 				return -1;
 
 			// Check sub containers too
-			CChar * pCharTop = dynamic_cast <CChar*> (pItem->GetTopLevelObj());
+			CChar * pCharTop = dynamic_cast<CChar *>(const_cast<CObjBaseTemplate *>(pObjTop));
 			if (( pCharTop != NULL ) && ( pCharTop->GetBank()->IsItemInside( pItemCont ) ) && ( pCharTop->GetBank()->m_itEqBankBox.m_pntOpen != GetTopPoint() ))
 				return -1;
 
 			// protect from ,snoop - disallow picking from not opened containers
 			bool isInOpenedContainer = false;
-			for ( int i = 0; i < client->m_openedContainers.size(); i++ ) {
-				DWORD containerUid = client->m_openedContainers.at(i);
-				if( pItemCont->GetUID().GetPrivateUID() == containerUid ) {
-					isInOpenedContainer = true;
-					break;
-				}
+			std::map<DWORD,CPointMap>::iterator itContainerFound = client->m_openedContainers.find( pItemCont->GetUID().GetPrivateUID() );
+			if ( itContainerFound != client->m_openedContainers.end() )
+			{
+				// TODO: here some checks about the position, for the moment just the true like the old vjaka code
+				// pChar == me && bank/pack as parent -> all good
+				// pChar != me && pack -> good, stealing is gonna take it for us
+				// pCHar = null (container in the world) -> check position on opening
+				//											 -- if we moved away by 5 tile -> not good anymore char is using ,snoop on a previous opened container
+				//											 -- cont position different from opening position --> not good client autoclose on this, injection leaving the win opened?
+				isInOpenedContainer = true;
 			}
 			
-			if( !isInOpenedContainer ) {
+			if( !isInOpenedContainer )
 				return -1;
-			}
 		}
 	}
-
-	const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
+	
 	const CChar * pChar = dynamic_cast <const CChar*> (pObjTop);
 
 	if ( pChar != this &&

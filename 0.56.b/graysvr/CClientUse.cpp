@@ -27,20 +27,22 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 	if ( fTestTouch )
 	{
-		if( !fScript ) {
-			CItemContainer *container = (dynamic_cast <CItemContainer*>(pItem->GetParent()));
-			if( container != NULL ) {
+		if( !fScript ) 
+		{
+			CItemContainer * container = (dynamic_cast <CItemContainer*>(pItem->GetParent()));
+			if( container != NULL ) 
+			{
 				// protect from ,snoop - disallow picking from not opened containers
 				bool isInOpenedContainer = false;
-				for( int i = 0; i < m_openedContainers.size(); i++ ) {
-					DWORD containerUid = m_openedContainers.at(i);
-					if( container->GetUID().GetPrivateUID() == containerUid ) {
-						isInOpenedContainer = true;
-						break;
-					}
+				std::map<DWORD,CPointMap>::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
+				if ( itContainerFound != m_openedContainers.end() )
+				{
+					// TODO: here some checks about the position, for the moment just the true like the old vjaka code
+					isInOpenedContainer = true;
 				}
 				
-				if( !isInOpenedContainer ) {
+				if( !isInOpenedContainer ) 
+				{
 					SysMessageDefault(DEFMSG_REACH_UNABLE);
 					return false;
 				}

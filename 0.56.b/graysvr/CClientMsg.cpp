@@ -756,8 +756,7 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 	addOpenGump(pContainer, gump);
 	addContents(pContainer, false, false, false);
 
-	m_openedContainers.push_back(pContainer->GetUID().GetPrivateUID());
-
+	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = pContainer->GetTopPoint();
 	return true;
 }
 
