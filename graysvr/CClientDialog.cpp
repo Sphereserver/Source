@@ -466,7 +466,7 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	m_x		= iSizes[0];
 	m_y		= iSizes[1];
 
-	if ( OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pClient->GetChar(), &Args ) == TRIGRET_RET_TRUE )
+	if ( OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, pClient->GetChar(), &Args ) == TRIGRET_RET_TRUE )
 		return false;
 	return true;
 }
@@ -882,7 +882,7 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 			continue;
 
 		pArgs->m_iN1	= dwButtonID;		
-		return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, pArgs );
+		return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, pArgs );
 	}
 
 	return( TRIGRET_ENDIF );
@@ -953,7 +953,7 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 			if ( strcmpi( s.GetArgStr(), "@cancel" ) )
 				continue;
 
-			return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
 		}
 	}
 	else
@@ -970,7 +970,7 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 			if ( i > iSelect )
 				break;
 
-			return pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
 		}
 	}
 

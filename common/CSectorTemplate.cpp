@@ -188,11 +188,6 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 
 	// Find it in cache.
 	long lBlock = pntBlock.GetPointSortIndex();
-	if ( !lBlock )
-	{
-		g_Serv.m_Profile.Start( prvProfileTask );
-		return NULL;
-	}
 	MapBlockCache::iterator it = m_MapBlockCache.find(lBlock);
 	if ( it != m_MapBlockCache.end() )
 	{
@@ -200,6 +195,7 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 		g_Serv.m_Profile.Start( prvProfileTask );
 		return it->second;
 	}
+
 	// else load it.
 	try
 	{

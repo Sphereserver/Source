@@ -1834,7 +1834,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript( CScript & s, LPCTSTR pszTrigName, CTex
 		TIME_PROFILE_START;
 	}
 
-	TRIGRET_TYPE	iRet = OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs);
+	TRIGRET_TYPE	iRet = OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs);
 
 	if ( IsSetEF(EF_Script_Profiler) )
 	{
@@ -2309,6 +2309,28 @@ jump_in:
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;
 }
+
+#ifdef _SCARY_FIX
+
+TRIGRET_TYPE CScriptObj::OnTriggerRunVal( CScript &s, TRIGRUN_TYPE trigrun, CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
+{
+	// Get the TRIGRET_TYPE that is returned by the script
+	// This should be used instead of OnTriggerRun() when pReturn is not used
+	ADDTOCALLSTACK("CScriptObj::OnTriggerRunVal");
+
+	CGString sVal;
+	TRIGRET_TYPE tr = OnTriggerRun( s, trigrun, pSrc, pArgs, &sVal );
+//g_Log.EventDebug("Return: %d,  ReturnStr: %s\n", tr, sVal);
+	if ( !sVal.IsEmpty() )
+	{
+		tr = (TRIGRET_TYPE)Exp_GetSingle((LPCTSTR&)sVal);
+	}
+
+//g_Log.EventDebug("RETURNING: %d\n", tr);
+	return tr;
+}
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // -CFileObj

@@ -4515,6 +4515,7 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	createArgs.m_iN2 = (int) pEvent->Create.m_prof;
 	createArgs.m_iN3 = ((pEvent->Create.m_sex - 2) >= 0);
 	createArgs.m_s1 = GetAccount()->GetName();
+	createArgs.m_pO1 = this;
 
 	r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
 
@@ -4577,7 +4578,9 @@ DELETE_ERR_TYPE CClient::Setup_Delete( int iSlot ) // Deletion of character
 
 	//	Do the scripts allow to delete the char?
 	enum TRIGRET_TYPE	tr;
-	pChar->r_Call("f_onchar_delete", pChar, NULL, NULL, &tr);
+	CScriptTriggerArgs Args;
+	Args.m_pO1 = this;
+	pChar->r_Call("f_onchar_delete", pChar, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 	{
 		return DELETE_ERR_NOT_OLD_ENOUGH;
@@ -4769,6 +4772,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	CScriptTriggerArgs Args;
 	Args.Init(pAccount->GetName());
 	Args.m_iN1 = GetConnectType();
+	Args.m_pO1 = this;
 	enum TRIGRET_TYPE tr;
 	g_Serv.r_Call("f_onaccount_login", &g_Serv, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
