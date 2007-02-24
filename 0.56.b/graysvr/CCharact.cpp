@@ -1338,7 +1338,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	if( IsClient() ) 
 	{
-		CClient *client = GetClient();
+		CClient * client = GetClient();
 		const CItem * pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
 
 		if ( pItemCont != NULL ) 
@@ -1349,21 +1349,38 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 			// Check sub containers too
 			CChar * pCharTop = dynamic_cast<CChar *>(const_cast<CObjBaseTemplate *>(pObjTop));
-			if (( pCharTop != NULL ) && ( pCharTop->GetBank()->IsItemInside( pItemCont ) ) && ( pCharTop->GetBank()->m_itEqBankBox.m_pntOpen != GetTopPoint() ))
-				return -1;
+			bool bItemContIsInsideBankBox = false;
+			if ( pCharTop != NULL )
+			{
+				bItemContIsInsideBankBox = pCharTop->GetBank()->IsItemInside( pItemCont );
+				if ( bItemContIsInsideBankBox && ( pCharTop->GetBank()->m_itEqBankBox.m_pntOpen != GetTopPoint() ))
+					return -1;
+			}
 
 			// protect from ,snoop - disallow picking from not opened containers
 			bool isInOpenedContainer = false;
-			std::map<DWORD,CPointMap>::iterator itContainerFound = client->m_openedContainers.find( pItemCont->GetUID().GetPrivateUID() );
+			std::map< DWORD, std::pair<DWORD,CPointMap> >::iterator itContainerFound = client->m_openedContainers.find( pItemCont->GetUID().GetPrivateUID() );
 			if ( itContainerFound != client->m_openedContainers.end() )
 			{
-				// TODO: here some checks about the position, for the moment just the true like the old vjaka code
-				// pChar == me && bank/pack as parent -> all good
-				// pChar != me && pack -> good, stealing is gonna take it for us
-				// pCHar = null (container in the world) -> check position on opening
-				//											 -- if we moved away by 5 tile -> not good anymore char is using ,snoop on a previous opened container
-				//											 -- cont position different from opening position --> not good client autoclose on this, injection leaving the win opened?
-				isInOpenedContainer = true;
+				DWORD dwTopContainerUID = ((*itContainerFound).second).first;
+				CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
+
+				if ( dwTopContainerUID == pObjTop->GetUID().GetPrivateUID() )
+				{
+					if ( pCharTop != NULL )
+					{
+						isInOpenedContainer = true;
+						// probably a pickup check from pack if pCharTop != this?
+					}
+					else
+					{
+						CItemContainer * pTopMostContainer = dynamic_cast<CItemContainer *>(const_cast<CObjBaseTemplate *>(pObjTop));
+						bool bIgnoreDist = (( GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
+
+						if ( pTopMostContainer && ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( GetTopDist3D(pObjTop) < 5 )) )
+							isInOpenedContainer = true;
+					}
+				}
 			}
 			
 			if( !isInOpenedContainer )
