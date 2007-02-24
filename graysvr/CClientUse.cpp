@@ -34,11 +34,29 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			{
 				// protect from ,snoop - disallow picking from not opened containers
 				bool isInOpenedContainer = false;
-				std::map<DWORD,CPointMap>::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
+				std::map< DWORD, std::pair<DWORD,CPointMap> >::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
 				if ( itContainerFound != m_openedContainers.end() )
 				{
-					// TODO: here some checks about the position, for the moment just the true like the old vjaka code
-					isInOpenedContainer = true;
+					DWORD dwTopContainerUID = ((*itContainerFound).second).first;
+					CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
+					const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
+
+					if ( dwTopContainerUID == pObjTop->GetUID().GetPrivateUID() )
+					{
+						if ( pObjTop->IsChar() )
+						{
+							isInOpenedContainer = true;
+							// probably a pickup check from pack if pCharTop != this?
+						}
+						else
+						{
+							CItemContainer * pTopMostContainer = dynamic_cast<CItemContainer *>(const_cast<CObjBaseTemplate *>(pObjTop));
+							bool bIgnoreDist = (( m_pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
+
+							if ( pTopMostContainer && ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( m_pChar->GetTopDist3D(pObjTop) < 5 )) )
+								isInOpenedContainer = true;
+						}
+					}
 				}
 				
 				if( !isInOpenedContainer ) 
