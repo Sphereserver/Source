@@ -2143,9 +2143,12 @@ bool CChar::MakeCorpse_Fail()
 	}
 	if ( IsHuman())
 		return( false );	// conjured humans just disapear.
-	CItem * pItem = CItem::CreateScript(ITEMID_FX_SPELL_FAIL, this);
-	if ( pItem )
-		pItem->MoveToDecay(GetTopPoint(), 2*TICK_PER_SEC);
+	if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCONJUREDEFFECT) )
+	{
+		CItem * pItem = CItem::CreateScript(ITEMID_FX_SPELL_FAIL, this);
+		if ( pItem )
+			pItem->MoveToDecay(GetTopPoint(), 2*TICK_PER_SEC);
+	}
 	return true;
 }
 
@@ -2156,11 +2159,12 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	// IsStatFlag( STATF_DEAD ) might NOT be set. (sleeping)
 
 	bool fLoot = ! IsStatFlag( STATF_Conjured );
+	WORD wFlags = m_TagDefs.GetKeyNum("DEATHFLAGS", true);
 
 	int iDecayTime = -1;	// never default.
 	CItemCorpse * pCorpse = NULL;
 
-	if ( fLoot &&
+	if ( !(wFlags & DEATH_NOCORPSE) && fLoot &&
 		GetDispID() != CREID_WATER_ELEM &&
 		GetDispID() != CREID_AIR_ELEM &&
 		GetDispID() != CREID_FIRE_ELEM &&
@@ -2234,7 +2238,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	UpdateCanSee( &cmd, sizeof( cmd.CharDeath ), m_pClient );
 
 	// Move non-newbie contents of the pack to corpse. (before it is displayed)
-	if ( fLoot )
+	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) )
 	{
 		DropAll( pCorpse );
 	}
@@ -2412,7 +2416,8 @@ bool CChar::Death()
 	if ( m_pPlayer )
 	{
 		m_pPlayer->m_wDeaths++;
-		Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
+		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
+			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
 		//	experience could go down
 		if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN ))

@@ -3045,6 +3045,11 @@ public:
 	void EatAnim( LPCTSTR pszName, int iQty );
 	void CallGuards( CChar * pCriminal );
 
+	#define DEATH_NOFAMECHANGE 0x01
+	#define DEATH_NOCORPSE 0x02
+	#define DEATH_NOLOOTDROP 0x04
+	#define DEATH_NOCONJUREDEFFECT 0x08
+
 	virtual void Speak( LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
 	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font= FONT_NORMAL, CLanguageID lang = 0 );
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
