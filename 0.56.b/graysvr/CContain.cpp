@@ -1004,11 +1004,32 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 		return( false );
 	}
 
-	if ( GetCount() >= MAX_ITEMS_CONT-1 )
+	int tContMaxI;
+	int tContMaxW;
+	CVarDefCont * pTagTmp = GetKey("OVERRIDE.MAXITEMS", false);
+	if ( pTagTmp )
+	{
+		tContMaxI = pTagTmp->GetValNum();
+	} else {
+		tContMaxI = MAX_ITEMS_CONT;
+	}
+	if ( GetCount() >= tContMaxI - 1 )
 	{
 		pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL );
 		return( false );
 	}
+
+	pTagTmp = GetKey("OVERRIDE.MAXWEIGHT", false);
+	if ( pTagTmp )	// weightcheck does ALSO apply on backpack if tag is set!
+	{
+		tContMaxW = pTagTmp->GetValNum();
+		if (( GetWeight() + pItem->GetWeight()) > tContMaxW )
+		{
+			pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL_WEIGHT );
+			return( false );
+		}
+	}
+
 
 	if ( ! IsItemEquipped() &&	// does not apply to my pack.
 		pItem->IsContainer() &&

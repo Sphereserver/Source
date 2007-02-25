@@ -3172,3 +3172,7 @@ this all in desperation)
 - Added: TAG.DEATHFLAGS which changes some death related behavior. The list of flags is in
   sphere_defs.scp and their names are pretty self-explaining.
 - Updated: sphere_defs.scp (Added death_flags defname)
+
+25-02-2007, Nazghul
+- Added: TAG.OVERRIDE.MAXWEIGHT and TAG.OVERRIDE.MAXITEMS now are applying to all containers
+  if set. If not, maximum weight is still unlimited, while max. item count is still default.

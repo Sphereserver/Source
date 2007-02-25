@@ -1015,32 +1015,33 @@
 //cantmove_cursed		"appears to be cursed."
 //crops_not_ripe		"None of the crops are ripe enough."
 //crops_no_fruit		"The plant yields nothing useful."
-//unlock_fail_door		"You failed to unlock the door.")
-//unlock_fail_cont		"You failed to unlock the container.")
-//lock_pick_crime			"picking the locked")
-//unlock_cant_general,		"You cannot unlock that!")
-//unlock_cant_there		"You cannot unlock that where it is!")
-//lock_has_key			"You have the key for this.")
-//unlock_door_needs_key		"This door can only be unlocked with a key.")
-//lock_already_is			"It is already locked.")
-//lock_unlockeable		"It is not really a lockable type object.")
-//lock_may_not			"You may not lock this item")
-//lock_cont_ok			"You lock the container.")
-//lock_cont_no_key		"You don't have the key to this container.")
-//lock_door_ok			"You lock the door.")
-//lock_door_no_key		"You don't have the key to this door.")
-//lock_hold_ok			"You lock the hold.")
-//lock_hold_no_key		"You don't have the key to this hold.")
-//lock_ship_ok			"You lock the ship.")
-//lock_can_not			"You cannot lock that!")
-//ship_seen_ship_single		"You can see a %s to the %s. ")
-//ship_seen_ship_many		"You see many ships, one is to the %s. ")
-//ship_seen_sth_dir		"You can see something floating in the water to the %s. ")
-//ship_seen_item_dir		"You can see %s to the %s.")
-//ship_seen_item_dir_many		"You can see many things, one is to the %s. ")
-//ship_seen_special_dir		"You can see many things, one is %s to the %s. ")
-//ship_seen_creat_single		"You see a creature to the %s")
-//ship_seen_creat_many		"You can see many creatures, one is to the %s.")
+//unlock_fail_door		"You failed to unlock the door."
+//unlock_fail_cont		"You failed to unlock the container."
+//lock_pick_crime			"picking the locked"
+//unlock_cant_general,		"You cannot unlock that!"
+//unlock_cant_there		"You cannot unlock that where it is!"
+//lock_has_key			"You have the key for this."
+//unlock_door_needs_key		"This door can only be unlocked with a key."
+//lock_already_is			"It is already locked."
+//lock_unlockeable		"It is not really a lockable type object."
+//lock_may_not			"You may not lock this item"
+//lock_cont_ok			"You lock the container."
+//lock_cont_no_key		"You don't have the key to this container."
+//lock_door_ok			"You lock the door."
+//lock_door_no_key		"You don't have the key to this door."
+//lock_hold_ok			"You lock the hold."
+//lock_hold_no_key		"You don't have the key to this hold."
+//lock_ship_ok			"You lock the ship."
+//lock_can_not			"You cannot lock that!"
+//ship_seen_ship_single		"You can see a %s to the %s. "
+//ship_seen_ship_many		"You see many ships, one is to the %s. "
+//ship_seen_sth_dir		"You can see something floating in the water to the %s. "
+//ship_seen_item_dir		"You can see %s to the %s."
+//ship_seen_item_dir_many		"You can see many things, one is to the %s. "
+//ship_seen_special_dir		"You can see many things, one is %s to the %s. "
+//ship_seen_creat_single		"You see a creature to the %s"
+//ship_seen_creat_many		"You can see many creatures, one is to the %s."
 //lightsrc_burn_out		"burn out"
+//cont_full_weight		"This container can't hold more weight."
 
 [EOF]
