@@ -3166,4 +3166,9 @@ this all in desperation)
   accessible).
 
 22-02-2007, Nazghul
-- Added: character trigger @statchange (argn1: the stat, argn2: new value) 
+- Added: Character trigger @statchange (argn1: the stat, argn2: new value).
+
+25-02-2007, Ellessar
+- Added: TAG.DEATHFLAGS which changes some death related behavior. The list of flags is in
+  sphere_defs.scp and their names are pretty self-explaining.
+- Updated: sphere_defs.scp (Added death_flags defname)
