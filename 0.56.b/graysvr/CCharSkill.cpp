@@ -631,7 +631,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		if ( iRoll <= iChance )
 		{
-
 			if ( !IsSetEF(EF_Minimize_Triggers) )
 			{
 				CScriptTriggerArgs args;
