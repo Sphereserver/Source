@@ -2498,7 +2498,11 @@ bool CFileObj::r_LoadVal( CScript & s )
 				if ( bLine )
 				{
 					ppArgs->Copy( s.GetArgStr() );
+#ifdef _WIN32
+					ppArgs->Add( "\r\n" );
+#else
 					ppArgs->Add( "\n" );
+#endif
 				}
 				else if ( bChr )
 				{

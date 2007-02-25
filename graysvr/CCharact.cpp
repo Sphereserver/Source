@@ -2238,7 +2238,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	UpdateCanSee( &cmd, sizeof( cmd.CharDeath ), m_pClient );
 
 	// Move non-newbie contents of the pack to corpse. (before it is displayed)
-	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) )
+	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) && !(wFlags & DEATH_NOCORPSE) )
 	{
 		DropAll( pCorpse );
 	}
