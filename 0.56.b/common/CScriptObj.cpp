@@ -2319,14 +2319,18 @@ TRIGRET_TYPE CScriptObj::OnTriggerRunVal( CScript &s, TRIGRUN_TYPE trigrun, CTex
 	ADDTOCALLSTACK("CScriptObj::OnTriggerRunVal");
 
 	CGString sVal;
-	TRIGRET_TYPE tr = OnTriggerRun( s, trigrun, pSrc, pArgs, &sVal );
-//g_Log.EventDebug("Return: %d,  ReturnStr: %s\n", tr, sVal);
-	if ( !sVal.IsEmpty() )
+	OnTriggerRun( s, trigrun, pSrc, pArgs, &sVal );
+	LPCTSTR pszVal = sVal.GetPtr();
+
+//g_Log.EventDebug("Returned: %s\n", pszVal);
+
+	TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT; 
+	if ( pszVal && *pszVal )
 	{
-		tr = (TRIGRET_TYPE)Exp_GetSingle((LPCTSTR&)sVal);
+		tr = (TRIGRET_TYPE)Exp_GetVal( pszVal );
 	}
 
-//g_Log.EventDebug("RETURNING: %d\n", tr);
+//g_Log.EventDebug("RETURNING: %d\n", (int)tr);
 	return tr;
 }
 
