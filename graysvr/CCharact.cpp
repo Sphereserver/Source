@@ -2827,8 +2827,9 @@ bool CChar::CheckLocation( bool fStanding )
 		}
 
 		// This could get REALLY EXPENSIVE !
-		if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-			return( false );
+		if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
+				return( false );
 	}
 
 	bool	fStepCancel	= false;
