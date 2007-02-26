@@ -610,18 +610,22 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 
 	// send all the items in the container.
 	int count = 0;
-	int tContMaxI;
-	CVarDefCont * pTagTmp = pContainer->GetKey("OVERRIDE.MAXITEMS", false);
-	if ( pTagTmp )
-	{
-		tContMaxI = pTagTmp->GetValNum();
-	} else {
-		tContMaxI = MAX_ITEMS_CONT;
-	}
+
+//	int tContMaxI;
+//	CVarDefCont * pTagTmp = pContainer->GetKey("OVERRIDE.MAXITEMS", false);
+//	if ( pTagTmp )
+//	{
+//		tContMaxI = pTagTmp->GetValNum();
+//	} else {
+//		tContMaxI = MAX_ITEMS_CONT;
+//	}
 
 	for ( CItem * pItem = pContainer->GetContentHead(); pItem ; pItem = pItem->GetNext(), pItemDef = NULL )
 	{
-		if ( count >= tContMaxI )
+//		if ( count >= tContMaxI )
+		if (count >= MAX_ITEMS_CONTENT)
+		{
+		}
 		{
 			g_Log.EventWarn("Too many items in container '%s' uid=0%x items=%d\n", pContainer->GetName(), (DWORD)pContainer->GetUID(), pContainer->GetCount());
 			break;
