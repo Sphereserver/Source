@@ -1137,7 +1137,7 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 	// RETURN: true = halt prodcessing (don't allow in this region
 
 	int iQty = m_Events.GetCount();
-	for ( int i = 0; i < iQty; i++ )
+	for ( int i = 0; i < iQty; ++i )
 	{
 		CResourceLink	*pLink = m_Events[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )

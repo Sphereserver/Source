@@ -3177,3 +3177,7 @@ this all in desperation)
 25-02-2007, Nazghul
 - Added: TAG.OVERRIDE.MAXWEIGHT and TAG.OVERRIDE.MAXITEMS now are applying to all containers
   if set. If not, maximum weight is still unlimited, while max. item count is still default.
+
+26-02-2007, Ellessar
+- Modified: Region trigger @Step will now work only with EF_New_Triggers on and
+  EF_Minimize_Triggers off.
