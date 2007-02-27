@@ -3181,3 +3181,8 @@ this all in desperation)
 26-02-2007, Ellessar
 - Modified: Region trigger @Step will now work only with EF_New_Triggers on and
   EF_Minimize_Triggers off.
+
+27-02-2007, Ellessar
+- Added: sphere.ini settings EventsPlayer, EventsRegion. These events are applied on all
+  players/regions in the world.
+- Updated: sphere.ini
