@@ -123,6 +123,8 @@ CResource::CResource()
 
 	m_iCommandLog		= 0;
 	m_pEventsPetLink 	= NULL;
+	m_pEventsPlayerLink	= NULL;
+	m_pEventsRegionLink	= NULL;
 
 	m_fUsecrypt 		= true; // Server want crypt client ?
 	m_fUsenocrypt		= false; // Server want un-crypt client ? (version guessed by cliver)
@@ -337,6 +339,8 @@ enum RC_TYPE
 	RC_DUNGEONLIGHT,
 	RC_EQUIPPEDCAST,		// m_fEquippedCast
 	RC_EVENTSPET,			// m_sEventsPet
+	RC_EVENTSPLAYER,		// m_sEventsPlayer
+	RC_EVENTSREGION,		// m_sEventsRegion
 	RC_EXPERIENCEKOEFPVM,	// m_iExperienceKoefPVM
 	RC_EXPERIENCEKOEFPVP,	// m_iExperienceKoefPVP
 	RC_EXPERIENCEMODE,		// m_iExperienceMode
@@ -507,6 +511,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DUNGEONLIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLightDungeon)	}},
 	{ "EQUIPPEDCAST",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fEquippedCast)	}},
 	{ "EVENTSPET",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsPet)	}},
+	{ "EVENTSPLAYER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsPlayer)	}},
+	{ "EVENTSREGION",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsRegion)	}},
 	{ "EXPERIENCEKOEFPVM",		{ ELEM_INT,		OFFSETOF(CResource,m_iExperienceKoefPVM)}},
 	{ "EXPERIENCEKOEFPVP",		{ ELEM_INT,		OFFSETOF(CResource,m_iExperienceKoefPVP)}},
 	{ "EXPERIENCEMODE",			{ ELEM_INT,		OFFSETOF(CResource,m_iExperienceMode)	}},
@@ -3112,6 +3118,28 @@ bool CResource::Load( bool fResync )
 		if ( m_pEventsPetLink == NULL )
 			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSPET)\n", (LPCTSTR) m_sEventsPet );
 	}
+	else if ( fResync )
+		m_pEventsRegionLink = NULL;
+
+	if ( ! m_sEventsPlayer.IsEmpty() )
+	{
+		m_pEventsPlayerLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_EVENTS, m_sEventsPlayer ) );
+
+		if ( m_pEventsPlayerLink == NULL )
+			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSPLAYER)\n", (LPCTSTR) m_sEventsPlayer );
+	}
+	else if ( fResync )
+		m_pEventsRegionLink = NULL;
+
+	if ( ! m_sEventsRegion.IsEmpty() )
+	{
+		m_pEventsRegionLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_REGIONTYPE, m_sEventsRegion ) );
+
+		if ( m_pEventsRegionLink == NULL )
+			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSREGION)\n", (LPCTSTR) m_sEventsRegion );
+	}
+	else if ( fResync )
+		m_pEventsRegionLink = NULL;
 
 	LoadSortSpells();
 	g_Serv.SysMessage("\n");

@@ -3342,10 +3342,10 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		}
 	}
 
-	// 3) TEVENTS
-	if ( m_pNPC )								//	TEVENTS (constant events of NPCs)
+	if ( m_pNPC )
 	{
-		EXC_SET("NPC triggers");
+		// 3) TEVENTS
+		EXC_SET("NPC triggers");								//	TEVENTS (constant events of NPCs)
 		for ( i=0; i < pCharDef->m_TEvents.GetCount(); ++i )
 		{
 			CResourceLink	*pLink = pCharDef->m_TEvents[i];
@@ -3358,7 +3358,9 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
 		}
-		if ( g_Cfg.m_pEventsPetLink && g_Cfg.m_pEventsPetLink->HasTrigger(iAction) )
+		// 4) EVENTSPET triggers
+		EXC_SET("NPC triggers - EVENTSPET");
+		if ( g_Cfg.m_pEventsPetLink && g_Cfg.m_pEventsPetLink->HasTrigger(iAction) )	//	EVENTSPET (constant events of NPCs set from sphere.ini)
 		{
 			CResourceLock s;
 			if ( g_Cfg.m_pEventsPetLink->ResourceLock(s) )
@@ -3370,7 +3372,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		}
 	}
 
-	// 4) CHARDEF triggers
+	// 5) CHARDEF triggers
 	if ( !m_pPlayer )			//	CHARDEF triggers (based on body type)
 	{
 		EXC_SET("chardef triggers");
@@ -3381,6 +3383,22 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			{
 				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 				if (( iRet != TRIGRET_RET_FALSE ) && ( iRet != TRIGRET_RET_DEFAULT ))
+					return iRet;
+			}
+		}
+	}
+	// 6) EVENTSPLAYER triggers
+	if ( m_pPlayer )
+	{
+		//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)
+		EXC_SET("chardef triggers - EVENTSPLAYER");
+		if ( g_Cfg.m_pEventsPlayerLink && g_Cfg.m_pEventsPlayerLink->HasTrigger(iAction) )
+		{
+			CResourceLock s;
+			if ( g_Cfg.m_pEventsPlayerLink->ResourceLock(s) )
+			{
+				TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 					return iRet;
 			}
 		}

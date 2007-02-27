@@ -703,6 +703,12 @@ public:
 	CGString	m_sEventsPet;
 	CResourceLink *	m_pEventsPetLink;
 
+	CGString	m_sEventsPlayer;
+	CResourceLink *	m_pEventsPlayerLink;
+
+	CGString	m_sEventsRegion;
+	CResourceLink *	m_pEventsRegionLink;
+
 	CGString	m_sStripPath;
 
 	int		m_iWalkBuffer;
