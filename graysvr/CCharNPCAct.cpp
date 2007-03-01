@@ -448,7 +448,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc,CItemMemory *pMemory, CItem * pGold)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
 	SKILL_TYPE skill = (SKILL_TYPE)( pMemory->m_itEqMemory.m_Skill );
-	if ( !IsSkillBase(skill) )
+	if ( !IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 	{
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_FORGOT));
 		return false;
