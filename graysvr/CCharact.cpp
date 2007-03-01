@@ -2817,7 +2817,7 @@ bool CChar::CheckLocation( bool fStanding )
 			break;
 		case SKILL_ARCHERY:
 			m_atFight.m_fMoved	= 1;
-			if ( !IsSetOF( OF_Archery_CanMove ) && ! IsStatFlag( STATF_ArcherCanMove ) )
+			if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
 			{
 				// If we moved and are wielding are in combat and are using a
 				// crossbow/bow kind of weapon, then reset the weaponswingtimer.

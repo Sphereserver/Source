@@ -2852,8 +2852,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		char	zOptionFlags[512];
 		zOptionFlags[0] = 0;
 
-		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmsgs");
-		if ( IsSetOF(OF_Archery_CanMove) ) catresname(zOptionFlags, "ArcheryCanMove");
+		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
 		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
 		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");
 		if ( IsSetOF(OF_FileCommands) ) catresname(zOptionFlags, "FileCommands");
