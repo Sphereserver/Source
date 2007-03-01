@@ -863,6 +863,9 @@ void CChar::InitPlayer( const CEvent * pBin, CClient * pClient )
 	int i = 0;
 	for ( ; i < MAX_SKILL; i++ )
 	{
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+			continue;
+
 		Skill_SetBase( (SKILL_TYPE)i, Calc_GetRandVal( g_Cfg.m_iMaxBaseSkill ));
 	}
 
@@ -882,11 +885,11 @@ void CChar::InitPlayer( const CEvent * pBin, CClient * pClient )
 	if ( skill1 + skill2 + skill3 > 101 )
 		skill3 = 1;
 
-	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill1))
+	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex((SKILL_TYPE) pBin->Create.m_skill1))
 		Skill_SetBase((SKILL_TYPE) pBin->Create.m_skill1, skill1*10);
-	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill2))
+	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex((SKILL_TYPE) pBin->Create.m_skill2))
 		Skill_SetBase((SKILL_TYPE) pBin->Create.m_skill2, skill2*10);
-	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill3))
+	if ( IsSkillBase((SKILL_TYPE) pBin->Create.m_skill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex((SKILL_TYPE) pBin->Create.m_skill3))
 		Skill_SetBase((SKILL_TYPE) pBin->Create.m_skill3, skill3*10);
 
 	// Set title

@@ -433,7 +433,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	// ARGS:
 	//  difficulty = skill target from 0-100
 	//
-	if ( ! IsSkillBase(skill))
+	if ( !IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 		return;
 	if ( m_pArea && m_pArea->IsFlag( REGION_FLAG_SAFE ))	// skills don't advance in safe areas.
 		return;

@@ -185,7 +185,9 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 				while ( client = it.next() )
 				{
 					CChar *pChar = client->GetChar();
-					if ( !pChar || pChar->IsStatFlag(STATF_Insubstantial) )
+					if ( !pChar )
+						continue;
+					if (( pChar->IsStatFlag(STATF_Insubstantial) ) && (!pChar->IsStatFlag(STATF_DEAD)))
 						continue;
 	
 					sm_iListIndex++;

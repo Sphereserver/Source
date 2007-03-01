@@ -950,7 +950,7 @@ SKILL_TYPE CResource::FindSkillKey( LPCTSTR pszKey ) const
 	if ( isdigit( pszKey[0] ))
 	{
 		SKILL_TYPE skill = (SKILL_TYPE) Exp_GetVal(pszKey);
-		if ( ! CChar::IsSkillBase(skill) &&
+		if ( (!CChar::IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill)) &&
 			! CChar::IsSkillNPC(skill))
 		{
 			return SKILL_NONE;

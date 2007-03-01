@@ -2363,6 +2363,9 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	}
 	else
 	{	// Just one skill update.
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
+			return;
+
 		if ( !IsSetEF(EF_Minimize_Triggers) )
 		{
 			CScriptTriggerArgs Args( skill );

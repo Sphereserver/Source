@@ -1686,6 +1686,9 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	}
 	else
 	{	// Just one skill update.
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
+			return;
+
 		CScriptTriggerArgs Args( skill );
 		if ( m_pChar->OnTrigger( CTRIG_UserSkills, pChar, &Args ) == TRIGRET_RET_TRUE )
 			return;

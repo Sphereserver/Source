@@ -3195,9 +3195,11 @@ this all in desperation)
 - Updated: sphere.ini
 
 01-03-2007, MrSugarCube
+- Fixed #1092: Dead characters not showing on the status page.
 - Fixed #1090: MOUNTHEIGHT checks preventing characters teleporting to valid locations if they are
 - Fixed #1084: Vendor's constantly restocking goods instantly after selling them.
   stuck under a low ceiling.
+- Fixed: Players able to create characters with skill in undefined skills.
 
 01-03-2007, MrSugarCube (Script pack)
 - Updated: sphere_skills.scp (Missing skill cap for Animal Lore in SKILLCLASS 0)
