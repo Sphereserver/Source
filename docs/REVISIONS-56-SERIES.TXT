@@ -3186,3 +3186,8 @@ this all in desperation)
 - Added: sphere.ini settings EventsPlayer, EventsRegion. These events are applied on all
   players/regions in the world.
 - Updated: sphere.ini
+
+01-03-2007, Furio
+- Added: LASTEVENT keyword on clients, returning the time of last packet receive (like serv.time).
+- Modified: OF_OSIDamageMod and OF_Archery_CanMove are now CombatFlags (look in sphere.ini)
+- Updated: sphere.ini

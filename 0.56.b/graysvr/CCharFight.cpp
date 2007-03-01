@@ -1803,7 +1803,8 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			uType |= DAMAGE_POISON;
 		}
 //		DEBUG_WARN(("WrestleEffect from %s COLD=%d, ENERGY=%d, FIRE=%d, POISON=%d\n",pSrc->GetName(),i_coldDamage,i_energyDamage,i_fireDamage,i_poisonDamage));
-	} else if IsSetCombatFlags(COMBAT_USE_RESISTANCE)
+	} 
+	else if IsSetCombatFlags(COMBAT_USE_RESISTANCE)
 	{
 		short int i_tDamCount = 1;
 		short int i_tDamPois = 0;
@@ -1855,7 +1856,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
 	int damMod = 0;
 	int damModLJ = 0;
-	if ( (pActWeapon) && IsSetOF(OF_OSIDamageMod) )
+	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) )
 	{
 		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
 		{

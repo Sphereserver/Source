@@ -23,7 +23,7 @@ enum OF_TYPE
 {
 	OF_Unused0001			= 0x0000001,
 	OF_Unused0002			= 0x0000002,
-	OF_OSIDamageMod			= 0x0000004,
+	OF_Unused0004			= 0x0000004,
 	OF_Command_Sysmsgs		= 0x0000008,
 	OF_Archery_CanMove		= 0x0000010,
 	OF_OSIMultiSight		= 0x0000020,
@@ -68,6 +68,19 @@ enum MAGICFLAGS_TYPE
 	MAGICF_CANHARMSELF		= 0x0000008,	// i can do damage on self
 	MAGICF_STACKSTATS		= 0x0000010,	// allow multiple stat spells at once
 	MAGICF_FREEZEONCAST		= 0x0000020,	// freeze on cast // TODO: implement it
+};
+
+enum COMBATFLAGS_TYPE
+{
+	COMBAT_NODIRCHANGE			= 0x0000001,	// not rotate player when fighting
+	COMBAT_FACECOMBAT			= 0x0000002,	// allow faced combat only
+	COMBAT_PREHIT				= 0x0000004,	// allow prehit for close combat. first hit is instant (delay 0.1sec)
+	COMBAT_USE_RESISTANCE		= 0x0000008,	// use character props RES* against oldfashioned damage types
+	COMBAT_SPECIALDAMAGE		= 0x0000010,	// use character tags TAG.*DAMAGE to apply additional damage
+	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0000020,	// unmount horse when dclicking self while in warmode
+	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships
+	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
+	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// firing bow while moving
 };
 
 enum BODYPART_TYPE
@@ -656,13 +669,6 @@ public:
 	int  m_iSkillPracticeMax;	// max skill level a player can practice on dummies/targets upto
 
 	// Flags for controlling pvp/pvm behaviour of players
-#define COMBAT_NODIRCHANGE			0x0001	// not rotate player when fighting
-#define COMBAT_FACECOMBAT			0x0002	// allow faced combat only
-#define COMBAT_PREHIT				0x0004	// allow prehit for close combat. first hit is instant (delay 0.1sec)
-#define COMBAT_USE_RESISTANCE		0x0008	// use character props RES* against oldfashioned damage types
-#define COMBAT_SPECIALDAMAGE		0x0010	// use character tags TAG.*DAMAGE to apply additional damage
-#define COMBAT_DCLICKSELF_UNMOUNTS	0x0020	// unmount horse when dclicking self while in warmode
-#define COMBAT_ALLOWHITFROMSHIP		0x0040	// allow attacking opponents from ships
 	int  m_iCombatFlags;		// combat flags
 	int  m_iMagicFlags;			// magic flags
 

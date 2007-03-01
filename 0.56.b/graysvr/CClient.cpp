@@ -602,6 +602,9 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case CC_HEARALL:
 			sVal.FormatVal( IsPriv( PRIV_HEARALL ));
 			break;
+		case CC_LASTEVENT:
+			sVal.FormatVal( m_timeLastEvent.GetTimeRaw() );
+			break;
 		case CC_PRIVSHOW:
 			// Show my priv title.
 			sVal.FormatVal( ! IsPriv( PRIV_PRIV_NOSHOW ));
