@@ -1524,6 +1524,7 @@ bool CItemContainer::OnTick()
 			// Restock this box.
 			// Magic restocking container.
 			Restock();
+			SetTimeout( -1 );
 			return true;
 	}
 	return CItemVendable::OnTick();

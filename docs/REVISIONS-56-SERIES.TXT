@@ -3171,8 +3171,10 @@ this all in desperation)
 25-02-2007, Ellessar
 - Added: TAG.DEATHFLAGS which changes some death related behavior. The list of flags is in
   sphere_defs.scp and their names are pretty self-explaining.
-- Updated: sphere_defs.scp (Added death_flags defname)
 - Fixed #1081: SERV.WRITELINE not adding a new line on Windows.
+
+25-02-2007, Ellessar (Script pack)
+- Updated: sphere_defs.scp (Added death_flags defname)
 
 25-02-2007, Nazghul
 - Added: TAG.OVERRIDE.MAXWEIGHT and TAG.OVERRIDE.MAXITEMS now are applying to all containers
@@ -3191,3 +3193,11 @@ this all in desperation)
 - Added: LASTEVENT keyword on clients, returning the time of last packet receive (like serv.time).
 - Modified: OF_OSIDamageMod and OF_Archery_CanMove are now CombatFlags (look in sphere.ini)
 - Updated: sphere.ini
+
+01-03-2007, MrSugarCube
+- Fixed #1090: MOUNTHEIGHT checks preventing characters teleporting to valid locations if they are
+- Fixed #1084: Vendor's constantly restocking goods instantly after selling them.
+  stuck under a low ceiling.
+
+01-03-2007, MrSugarCube (Script pack)
+- Updated: sphere_skills.scp (Missing skill cap for Animal Lore in SKILLCLASS 0)

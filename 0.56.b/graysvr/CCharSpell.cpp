@@ -43,7 +43,7 @@ bool CChar::Spell_Teleport( CPointBase ptNew,
 
 	if ( g_Cfg.m_iMountHeight )
 	{
-		if ( ! IsVerticalSpace( GetTopPoint(), false ) )
+		if ( ! IsVerticalSpace( ptNew, false ) )
 		{
 			SysMessageDefault( DEFMSG_MOUNT_CEILING );
 			return false;

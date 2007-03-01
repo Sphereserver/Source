@@ -2080,7 +2080,7 @@ private:
 	DWORD m_StatFlag;		// Flags above
 
 #define SKILL_VARIANCE 100		// Difficulty modifier for determining success. 10.0 %
-	short m_Skill[SKILL_QTY];	// List of skills ( skill * 10 ) (might go temporariliy negative!)
+	unsigned short m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
 
 	// This is a character that can either be NPC or PC.
 	// Player vs NPC Stuff
@@ -2703,7 +2703,7 @@ public:
 		return( m_Act_SkillCurrent );
 	}
 	LPCTSTR Skill_GetName( bool fUse = false ) const;
-	short Skill_GetBase( SKILL_TYPE skill ) const
+	unsigned short Skill_GetBase( SKILL_TYPE skill ) const
 	{
 		return m_Skill[skill];
 	}
@@ -2715,8 +2715,8 @@ public:
 			return( SKILLLOCK_UP );
 		return( m_pPlayer->Skill_GetLock(skill));
 	}
-	short Skill_GetAdjusted( SKILL_TYPE skill ) const;
-	void Skill_SetBase( SKILL_TYPE skill, short wValue );
+	unsigned short Skill_GetAdjusted( SKILL_TYPE skill ) const;
+	void Skill_SetBase( SKILL_TYPE skill, int iValue );
 	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const;

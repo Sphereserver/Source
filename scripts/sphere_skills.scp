@@ -1119,6 +1119,7 @@ INT=100
 DEX=100
 Alchemy=100.0
 Anatomy=100.0
+AnimalLore=100.0
 ItemId=100.0
 ArmsLore=100.0
 Parrying=100.0

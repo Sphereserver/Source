@@ -353,7 +353,7 @@ SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest
 	return( (SKILL_TYPE) LOWORD( dwSkillTmp ));
 }
 
-short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
+unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetAdjusted");
 	// Get the skill adjusted for str,dex,int = 0-1000
@@ -399,12 +399,12 @@ short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 	return( Skill_GetBase( (SKILL_TYPE) skill ) + iAdjSkill );
 }
 
-void CChar::Skill_SetBase( SKILL_TYPE skill, short wValue )
+void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 {
 	ADDTOCALLSTACK("CChar::Skill_SetBase");
 	ASSERT( IsSkillBase(skill));
-	if ( wValue < 0 ) wValue = 0;
-	m_Skill[skill] = wValue;
+	if ( iValue < 0 ) iValue = 0;
+	m_Skill[skill] = iValue;
 	if ( IsClient())
 	{
 		// Update the skills list

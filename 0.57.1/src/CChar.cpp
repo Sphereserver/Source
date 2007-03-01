@@ -1173,7 +1173,7 @@ do_default:
 		if ( IsSkillBase((SKILL_TYPE)i))
 		{
 			// Check some skill name.
-			short iVal = Skill_GetBase( (SKILL_TYPE) i );
+			unsigned short iVal = Skill_GetBase( (SKILL_TYPE) i );
 			sVal.Format("%d.%d", iVal/10, iVal%10);
 			return true;
 		}
