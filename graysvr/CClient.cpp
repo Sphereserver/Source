@@ -105,6 +105,82 @@ CClient::~CClient()
 		m_Socket.Close();
 }
 
+bool CClient::IsSkillVisible(SKILL_TYPE skill)
+{
+	ADDTOCALLSTACK("CClient::IsSkillVisible");
+	// Determine whether or not this client can see a skill in their
+	// skill menu.
+
+	// ML Clients can always see ML skills regardless of enabled features
+	if ( skill >= SKILL_SPELLWEAVING && IsClientVersion( 0x500000 ) )
+		return true;
+
+	int iClientReq = 0x000000;	// The minimum client version required to see this skill
+	bool bEnabled = true;		// Whether or not this skill is enabled in FEATURE_ options
+
+	if ( skill < MAX_SKILL_T2A )
+	{
+		iClientReq = 0x000000;
+	}
+	else if ( skill < MAX_SKILL_LBR )
+	{
+		iClientReq = 0x300000;
+	}
+	else if ( skill < MAX_SKILL_AOS )
+	{
+		iClientReq = 0x300080;
+		bEnabled = ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B );
+	}
+	else if ( skill < MAX_SKILL_SE )
+	{
+		iClientReq = 0x400010;
+		bEnabled = ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM );
+	}
+	else
+	{
+		iClientReq = 0x500000;
+		bEnabled = ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE );
+	}
+
+	// Check that the client has a valid client version
+	if ( !IsClientVersion( iClientReq ) )
+		return false;
+
+	// Check that the skill is enabled
+	if ( !bEnabled )
+		return false;
+
+	int iMaxSkill = MAX_SKILL;	// The highest skill id viewable by the client (+1)
+
+	switch ( GetResDisp() )
+	{
+		case RDS_ML:
+			iMaxSkill = MAX_SKILL_ML;
+			break;
+
+		case RDS_SE:
+			iMaxSkill = MAX_SKILL_SE;
+			break;
+
+		case RDS_AOS:
+			iMaxSkill = MAX_SKILL_AOS;
+			break;
+
+		case RDS_LBR:
+			iMaxSkill = MAX_SKILL_LBR;
+			break;
+
+		case RDS_T2A:
+			iMaxSkill = MAX_SKILL_T2A;
+			break;
+	}
+
+	if ( skill >= iMaxSkill )
+		return false;
+
+	return true;
+}
+
 void CClient::CleanTooltipQueue()
 {
 	ADDTOCALLSTACK("CClient::CleanTooltipQueue");

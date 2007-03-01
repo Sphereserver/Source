@@ -977,6 +977,9 @@ void CChar::InitPlayer( const CEvent * pBin, CClient * pClient )
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
 			continue;
 
+		if (( !g_Cfg.m_fInitHiddenSkills ) && !pClient->IsSkillVisible( (SKILL_TYPE)i ))
+			continue;
+
 		Skill_SetBase( (SKILL_TYPE)i, Calc_GetRandVal( g_Cfg.m_iMaxBaseSkill ));
 	}
 

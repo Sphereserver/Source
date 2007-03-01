@@ -97,6 +97,7 @@ CResource::CResource()
 	m_fGenericSounds	= true;
 	m_fAutoNewbieKeys 	= true;
 	m_iMaxBaseSkill		= 250;
+	m_fInitHiddenSkills		= false;
 	m_iStamRunningPenalty 	= 50;
 	m_iStaminaLossAtWeight 	= 100;
 	m_iMountHeight		= PLAYER_HEIGHT + 5;
@@ -365,6 +366,7 @@ enum RC_TYPE
 	RC_HITPOINTPERCENTONREZ, // m_iHitpointPercentOnRez
 	RC_HITSHUNGERLOSS,		// m_iHitsHungerLoss
 	RC_HITSUPDATERATE,
+	RC_INITHIDDENSKILLS,	// m_fInitHiddenSkills
 	RC_LEVELMODE,			// m_iLevelMode
 	RC_LEVELNEXTAT,			// m_iLevelNextAt
 	RC_LEVELSYSTEM,			// m_bLevelSystem
@@ -537,6 +539,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "HITPOINTPERCENTONREZ",	{ ELEM_INT,		OFFSETOF(CResource,m_iHitpointPercentOnRez)	} },
 	{ "HITSHUNGERLOSS",			{ ELEM_INT,		OFFSETOF(CResource,m_iHitsHungerLoss) }},
 	{ "HITSUPDATERATE" },
+	{ "INITHIDDENSKILLS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fInitHiddenSkills)	}},
 	{ "LEVELMODE",				{ ELEM_INT,		OFFSETOF(CResource,m_iLevelMode)	}},
 	{ "LEVELNEXTAT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLevelNextAt)	}},
 	{ "LEVELSYSTEM",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bLevelSystem)	}},
