@@ -17,6 +17,11 @@ class CServerDef;
 typedef CServerDef * CServerRef;
 
 #define MAX_SKILL	(g_Cfg.m_iMaxSkill)
+#define MAX_SKILL_ML	55	// The number of skills viewable by ML clients
+#define MAX_SKILL_SE	54	// The number of skills viewable by SE clients
+#define MAX_SKILL_AOS	52	// The number of skills viewable by AOS clients
+#define MAX_SKILL_LBR	49	// The number of skills viewable by LBR clients
+#define MAX_SKILL_T2A	49	// The number of skills viewable by T2A clients
 
 // option flags
 enum OF_TYPE
@@ -25,7 +30,7 @@ enum OF_TYPE
 	OF_Unused0002			= 0x0000002,
 	OF_Unused0004			= 0x0000004,
 	OF_Command_Sysmsgs		= 0x0000008,
-	OF_Archery_CanMove		= 0x0000010,
+	OF_Unused0010			= 0x0000010,
 	OF_OSIMultiSight		= 0x0000020,
 	OF_Items_AutoName		= 0x0000040,
 	OF_FileCommands			= 0x0000080,
@@ -658,6 +663,7 @@ public:
 	int  m_iHitpointPercentOnRez;// How many hitpoints do they get when they are rez'd?
 	int  m_iHitsHungerLoss;		// How many % of HP will loose char on starving
 	int  m_iMaxBaseSkill;		// Maximum value for base skills at char creation
+	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int	 m_iTrainSkillMax;
 	int	 m_iMountHeight;		// The height at which a mounted person clears ceilings.
