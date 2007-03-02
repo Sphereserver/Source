@@ -3103,7 +3103,7 @@ this all in desperation)
   launch with argument -c (./spheresvr -c) in order to get colored output. It screwed some consoles.
 
 08-02-2007, Nazghul
-- Added: Skill flags SKF_NOANIM (don't show hardcoded anim for this skill) and SKF_NOSFX (don't play 
+- Added: Skill flags SKF_NOANIM (don't show hardcoded anim for this skill) and SKF_NOSFX (don't play
   hardcoded sound for this skill). After setting this you can set anim/sfx yourself in @start
   or alike.
 
@@ -3129,7 +3129,7 @@ this all in desperation)
 15-02-2007, Nazghul
 - Added: First version of support for TNG's webscript reader. Use console command
   "tngstrip" to create a file what contains the information TNG needs from all your scripts
-  (thus completely useless for script thieves). The file will be placed at the location 
+  (thus completely useless for script thieves). The file will be placed at the location
   defined with "StripPath=" in sphere.ini and is named "tngstrip.scp. Can be delivered
   either by a dedicated web server or the built-in of sphere itself.
 
@@ -3137,7 +3137,7 @@ this all in desperation)
 - Modified: sphere_dialog.scp - line 217, the highest skill is now SKILL_SPELLWEAVING.
 
 16-02-2007, Nazghul
-- Added: TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the 
+- Added: TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the
   color of the effect what will be used for displaying the shot.
 
 18-02-2007, MrSugarCube
@@ -3214,3 +3214,6 @@ this all in desperation)
 - Modified: Trigger @CallGuards now have a reference "REF1", which refers to the target of the guard.
 - Modified: NPCs now won't 'talk and follow' you, if your distance from their spawn bit is greater than
   their homedist.
+
+02-03-2007, Vjaka
+- Fixed: red NPCs spawning in cities from spawns at the edges of the town.
