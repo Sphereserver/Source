@@ -157,7 +157,7 @@ bool CChar::NPC_Vendor_Restock(bool bManual)
 	if ( !IsStatFlag(STATF_Pet) && NPC_IsVendor() )
 	{
 		//	invalid restock time means that we do our restock on demand
-		if ( !bManual && !m_pNPC->m_timeRestock.IsTimeValid() )
+		if ( bManual || m_pNPC->m_timeRestock.IsTimeValid() )
 		{
 			m_pNPC->m_timeRestock.SetCurrentTime();
 
@@ -172,7 +172,7 @@ bool CChar::NPC_Vendor_Restock(bool bManual)
 		{
 			m_pNPC->m_timeRestock.Init();
 
-			for ( int i = 0; i < COUNTOF(sm_VendorLayers); i++ )
+			for ( int i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 			{
 				CItemContainer *pCont = GetBank(sm_VendorLayers[i]);
 				if ( !pCont )
@@ -1945,7 +1945,7 @@ bool CChar::NPC_Act_Talk()
 
 	// too far away.
 	int iDist = GetTopDist3D( pChar );
-	if ( iDist >= UO_MAP_VIEW_SIGHT )	// give up.
+	if (( iDist >= UO_MAP_VIEW_SIGHT ) || ( m_ptHome.GetDist3D( pChar->GetTopPoint() ) > m_pNPC->m_Home_Dist_Wander ))	// give up.
 		return( false );
 
 	// can't see them
