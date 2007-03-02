@@ -16,7 +16,7 @@ CClient::CClient( SOCKET client ) :
 	SetConnectType( CONNECT_UNK );	// don't know what sort of connect this is yet.
 	UpdateLogIPConnecting( true );
 	UpdateLogIPConnected( true );
-	
+
 	m_Crypt.SetClientVer( g_Serv.m_ClientVersion );
 	m_pAccount = NULL;
 
@@ -67,6 +67,7 @@ CClient::CClient( SOCKET client ) :
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
 	m_LastTooltipSend = 0;
 	m_context_popup = -1;
+	m_packetExceptions = 0;
 }
 
 
@@ -620,7 +621,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	ADDTOCALLSTACK("CClient::r_WriteVal");
 	EXC_TRY("WriteVal");
 	int index;
-	
+
 	if ( !strnicmp("CTAG.", pszKey, 5) )		//	CTAG.xxx - client tag
 	{
 		if ( pszKey[4] != '.' )
@@ -640,7 +641,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		sVal = vardef ? vardef->GetValStr() : "0";
 		return true;
 	}
-	
+
 	if ( !strnicmp( "TARGP", pszKey, 5 ) && ( pszKey[5] == '\0' || pszKey[5] == '.' ) )
 		index = CC_TARGP;
 	else if ( !strnicmp( "SCREENSIZE", pszKey, 10 ) && ( pszKey[10] == '\0' || pszKey[10] == '.' ) )
@@ -764,7 +765,7 @@ bool CClient::r_LoadVal( CScript & s )
 		m_TagDefs.SetStr( pszKey, fQuoted, s.GetArgStr( &fQuoted ), fZero );
 		return( true );
 	}
-		
+
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
 		case CC_ALLMOVE:
@@ -924,7 +925,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				TCHAR * ppArgs[7];
 				int ArgCount;
 				int iArgs[4];
-				
+
 				if( (ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF( ppArgs ))) < 5) {
 					DEBUG_ERR(("Too few addbuff arguments\n"));
 					break;
@@ -1020,10 +1021,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				DWORD textid = Exp_GetVal(ppLocArgs[1]);
 				if ( textid > 32767 )
 				{
-					if ( ( textid >= 3000000 ) && ( textid <= 3032767) ) 
+					if ( ( textid >= 3000000 ) && ( textid <= 3032767) )
 					{
 						textid -= 3000000;
-					} else 
+					} else
 					{
 						DEBUG_ERR(("Illegal CliLoc number. Only values between 3,000,000 and 3,032,767 (or 0 and 32,767) are permitted.\n"));
 						return true;
@@ -1403,7 +1404,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				{
 					// if ( !s.IsKeyHead( "CTAG.", 5 ) && !s.IsKeyHead( "CTAG0.", 6 ) ) // We don't want output related to ctag
 					//	SysMessagef( "%s = %s", (LPCTSTR) s.GetKey(), (LPCTSTR) sVal );	// feedback on what we just did.
-					
+
 					return( true );
 				}
 			}

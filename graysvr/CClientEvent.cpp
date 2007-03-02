@@ -153,7 +153,7 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 				wHue = HUE_BLUE_LOW;
 			if ( wHue > HUE_DYE_HIGH )
 				wHue = HUE_DYE_HIGH;
-		} else 
+		} else
 			return;
 	}
 	else if ( pObj->IsChar() )
@@ -433,16 +433,16 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 			// pChar->GetBank()->IsItemInside( pContItem )
 			bool isCheating = false;
 			bool isBank = pContItem->IsType( IT_EQ_BANK_BOX );
-			
+
 			if ( isBank )
-				isCheating = isBank && 
+				isCheating = isBank &&
 						pContItem->m_itEqBankBox.m_pntOpen != m_pChar->GetTopPoint();
 			else
-				isCheating = m_pChar->GetBank()->IsItemInside( pContItem ) && 
+				isCheating = m_pChar->GetBank()->IsItemInside( pContItem ) &&
 						m_pChar->GetBank()->m_itEqBankBox.m_pntOpen != m_pChar->GetTopPoint();
-						
+
 //			g_Log.Event( LOGL_WARN, "%x:IsBank '%d', IsItemInside '%d'\n", m_Socket.GetSocket(), isBank, isBank ? -1 : m_pChar->GetBank()->IsItemInside( pContItem ) );
-			
+
 //			if ( pContItem->IsType( IT_EQ_BANK_BOX ) && pContItem->m_itEqBankBox.m_pntOpen != m_pChar->GetTopPoint() )
 
 			if ( isCheating )
@@ -455,14 +455,14 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 				Event_Item_Drop_Fail( pItem );
 				return;
 			}
-			
+
 			// only IT_GAME_PIECE can be dropped on IT_GAME_BOARD or clients will crash
 			if (pContItem->IsType( IT_GAME_BOARD ) && !pItem->IsType( IT_GAME_PIECE ))
 			{
 				Event_Item_Drop_Fail( pItem );
 				return;
 			}
-			
+
 			// non-vendable items should never be dropped inside IT_EQ_VENDOR_BOX
 			if ( pContItem->IsType( IT_EQ_VENDOR_BOX ) &&  !pItem->Item_GetDef()->GetMakeValue(0) )
 			{
@@ -746,7 +746,7 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 
 	if ( IsNoCryptLessVer(0x126000) )
 		return( true );
-	
+
 	if ( IsClientLessVer(0x126000) )
 		return( true );
 
@@ -1064,7 +1064,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 
 		//	Call the filtering function
 		if ( m_pChar->r_Call(g_Cfg.m_sCommandTrigger, this, &Args, NULL, &tr) )
-			if ( tr == TRIGRET_RET_TRUE ) 
+			if ( tr == TRIGRET_RET_TRUE )
 				return Args.m_iN2;
 
 		m_bAllowCommand = Args.m_iN1;
@@ -1147,7 +1147,7 @@ inline void CClient::Event_VendorBuy_Cheater( int iCode )
 		"Total cost is too great",
 	};
 
-	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal buy packet (%s)\n", this->m_Socket.GetSocket(), 
+	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal buy packet (%s)\n", this->m_Socket.GetSocket(),
 		this->GetAccount()->GetName(),
 		sm_BuyPacketCheats[iCode]);
 	SysMessage("You cannot buy that.");
@@ -1447,7 +1447,7 @@ inline void CClient::Event_VendorSell_Cheater( int iCode )
 		"Bad item UID",
 	};
 
-	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal sell packet (%s)\n", this->m_Socket.GetSocket(), 
+	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal sell packet (%s)\n", this->m_Socket.GetSocket(),
 		this->GetAccount()->GetName(),
 		sm_SellPacketCheats[iCode]);
 	SysMessage("You cannot sell that.");
@@ -1493,7 +1493,7 @@ void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
 	}
 
 	CVarDefCont *vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : m_TagDefs.GetKey("BUYSELLTIME");
-	
+
 	if ( vardef )
 	{
 		CServTime	allowsell;
@@ -1624,7 +1624,7 @@ void CClient::Event_BBoardRequest( CGrayUID uid, const CEvent * pEvent )
 
 	if ( !pBoard->IsType(IT_BBOARD) )
 		return;
-	
+
 	CGrayUID uidMsg( (DWORD)( pEvent->BBoard.m_UIDMsg ) );
 
 	switch ( pEvent->BBoard.m_flag )
@@ -1671,29 +1671,29 @@ void CClient::Event_BBoardRequest( CGrayUID uid, const CEvent * pEvent )
 					DEBUG_ERR(( "%x:BBoard can't create message item\n", m_Socket.GetSocket()));
 					return;
 				}
-	
+
 				pMsgNew->SetAttr( ATTR_MOVE_NEVER );
 				pMsgNew->SetName((LPCTSTR)&pEvent->BBoard.m_data[1]);
 				pMsgNew->m_itBook.m_Time = CServTime::GetCurrentTime();
 				pMsgNew->m_sAuthor = m_pChar->GetName();
 				pMsgNew->m_uidLink = m_pChar->GetUID();	// Link it to you forever.
-	
+
 				int len = 1 + lenstr;
 				int lines = pEvent->BBoard.m_data[len++];
 				if ( lines > 32 ) lines = 32;	// limit this.
-	
+
 				while ( lines-- )
 				{
 					lenstr = pEvent->BBoard.m_data[len++];
-					if ( !Str_Check((LPCTSTR) &pEvent->BBoard.m_data[len]) ) 
+					if ( !Str_Check((LPCTSTR) &pEvent->BBoard.m_data[len]) )
 						pMsgNew->AddPageText( (LPCTSTR) &pEvent->BBoard.m_data[len] );
 					len += lenstr;
 				}
-	
+
 				pBoard->ContentAdd( pMsgNew );
 			}
 			break;
-	
+
 		case BBOARDF_DELETE:
 			// remove the msg. (if it is yours?)
 			{
@@ -1708,11 +1708,11 @@ void CClient::Event_BBoardRequest( CGrayUID uid, const CEvent * pEvent )
 					SysMessageDefault( DEFMSG_ITEMUSE_BBOARD_DEL );
 					return;
 				}
-	
+
 				pMsgItem->Delete();
 			}
 			break;
-	
+
 		default:
 			DEBUG_ERR(( "%x:BBoard unknown flag %d\n", m_Socket.GetSocket(), (int) pEvent->BBoard.m_flag ));
 			return;
@@ -1805,7 +1805,7 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEven
 
 		TCHAR szLine[SCRIPT_MAX_LINE_LEN-16];
 		int iWLen = CvtNUNICODEToSystem( szLine, COUNTOF(szLine), pEvent->CharProfile.m_utext, iTextLen );
-		if ( szLine && !strchr(szLine, 0x0A) ) 
+		if ( szLine && !strchr(szLine, 0x0A) )
 			pChar->m_pPlayer->m_sProfile = szLine;
 	}
 	else
@@ -1921,7 +1921,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 			// m_Targ_Text
 			Cmd_GM_Page( szText );
 			return;
-	
+
 		case CLIMODE_PROMPT_VENDOR_PRICE:
 			// Setting the vendor price for an item.
 			{
@@ -1934,47 +1934,47 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 				}
 			}
 			return;
-	
+
 		case CLIMODE_PROMPT_NAME_RUNE:
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME);
 			//pszPrefix = "Rune to:";
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_TO);
 			break;
-	
+
 		case CLIMODE_PROMPT_NAME_KEY:
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_KEY_NAME);
 			//pszPrefix = "Key to:";
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_KEY_TO);
 			break;
-	
+
 		case CLIMODE_PROMPT_NAME_SHIP:
 			pszReName = "Ship";
 			pszPrefix = "SS ";
 			break;
-	
+
 		case CLIMODE_PROMPT_NAME_SIGN:
 			pszReName = "Sign";
 			pszPrefix = "";
 			break;
-	
+
 		case CLIMODE_PROMPT_STONE_NAME:
 			//pszReName = "Stone";
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_STONE_NAME);
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_STONE_FOR);
 			//pszPrefix = "Stone for the ";
 			break;
-	
+
 		case CLIMODE_PROMPT_STONE_SET_ABBREV:
 			pszReName = "Abbreviation";
 			pszPrefix = "";
 			break;
-	
+
 		case CLIMODE_PROMPT_STONE_GRANT_TITLE:
 		case CLIMODE_PROMPT_STONE_SET_TITLE:
 			pszReName = "Title";
 			pszPrefix = "";
 			break;
-	
+
 		case CLIMODE_PROMPT_TARG_VERB:
 			// Send a msg to the pre-tergetted player. "ETARGVERB"
 			// m_Targ_UID = the target.
@@ -1989,7 +1989,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 				}
 			}
 			return;
-			
+
 		case CLIMODE_PROMPT_SCRIPT_VERB:
 			{
 				// CChar * pChar = m_Targ_PrvUID.CharFind();
@@ -2359,7 +2359,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
    	NWORD wszText[MAX_TALK_BUFFER];
 	LPCTSTR pszText;
 	const NWORD * puText;
-	
+
 	if ( IsSetEF( EF_UNICODE ) )
 	{
 		wcsncpy( (wchar_t *)wszText, (wchar_t *)&pEvent->TalkUNICODE.m_utext[0], MAX_TALK_BUFFER - 2 );
@@ -2387,7 +2387,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
 		{
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%x:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", m_Socket.GetSocket(), 
+			g_Log.Event(LOGM_PLAYER_SPEAK, "%x:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", m_Socket.GetSocket(),
 				m_pChar->GetName(), pAccount->m_lang.GetStr(), pszText, Mode, fCancelSpeech ? " (muted)" : "" );
 		}
 
@@ -2410,7 +2410,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 				if (( chars > 5 ) && ((( capitals * 100 )/chars) > 75 ))
 				{							// 80% of chars are in capital letters. lowercase it
 					for ( i = 1; i < chars; i++ )				// instead of the 1st char
-						if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' )) 
+						if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
 							szText[i] += 0x20;
 
 					CvtSystemToNUNICODE(wszText, iLenChars, szText, chars);
@@ -2473,7 +2473,7 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 	CScriptTriggerArgs args;
 	args.m_pO1 = pChar;
 	args.m_s1 = pszCharName;
-	if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE ) 
+	if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 		return;
 	pChar->SetName(pszCharName);
 }
@@ -2930,16 +2930,16 @@ void CClient::Event_ClientVersion( const char * pData, int Len )
 	ADDTOCALLSTACK("CClient::Event_ClientVersion");
 	// XCMD_ClientVersion
 	DEBUG_MSG(( "%x:XCMD_ClientVersion %s\n", m_Socket.GetSocket(), pData));
-	
+
 	if ( Str_Check(pData) )
 		return;
 
 	if ( m_reportedCliver )
 		return;
-	
+
 	TCHAR * sTemp = Str_GetTemp();
 	memcpy(sTemp, pData, minimum(Len,20));
-	
+
 	if (strstr(sTemp, "UO:3D"))
 		this->m_bClient3d = true;
 
@@ -3030,23 +3030,23 @@ void CClient::Event_Target( const CEvent * pEvent )
 		case CLIMODE_TARG_OBJ_SET:			fSuccess = OnTarg_Obj_Set( pObj ); break;
 		case CLIMODE_TARG_OBJ_INFO:			fSuccess = OnTarg_Obj_Info( pObj, pt, id );  break;
 		case CLIMODE_TARG_OBJ_FUNC:			fSuccess = OnTarg_Obj_Function( pObj, pt, id );  break;
-	
+
 		case CLIMODE_TARG_UNEXTRACT:		fSuccess = OnTarg_UnExtract( pObj, pt ); break;
 		case CLIMODE_TARG_ADDITEM:			fSuccess = OnTarg_Item_Add( pObj, pt ); break;
 		case CLIMODE_TARG_LINK:				fSuccess = OnTarg_Item_Link( pObj ); break;
 		case CLIMODE_TARG_TILE:				fSuccess = OnTarg_Tile( pObj, pt );  break;
-	
+
 		// Player stuff.
 		case CLIMODE_TARG_SKILL:			fSuccess = OnTarg_Skill( pObj ); break;
 		case CLIMODE_TARG_SKILL_MAGERY:     fSuccess = OnTarg_Skill_Magery( pObj, pt ); break;
 		case CLIMODE_TARG_SKILL_HERD_DEST:  fSuccess = OnTarg_Skill_Herd_Dest( pObj, pt ); break;
 		case CLIMODE_TARG_SKILL_POISON:		fSuccess = OnTarg_Skill_Poison( pObj ); break;
 		case CLIMODE_TARG_SKILL_PROVOKE:	fSuccess = OnTarg_Skill_Provoke( pObj ); break;
-	
+
 		case CLIMODE_TARG_REPAIR:			fSuccess = m_pChar->Use_Repair( uid.ItemFind()); break;
 		case CLIMODE_TARG_PET_CMD:			fSuccess = OnTarg_Pet_Command( pObj, pt ); break;
 		case CLIMODE_TARG_PET_STABLE:		fSuccess = OnTarg_Pet_Stable( uid.CharFind()); break;
-	
+
 		case CLIMODE_TARG_USE_ITEM:			fSuccess = OnTarg_Use_Item( pObj, pt, id );  break;
 		case CLIMODE_TARG_STONE_RECRUIT:	fSuccess = OnTarg_Stone_Recruit( uid.CharFind() );  break;
 		case CLIMODE_TARG_STONE_RECRUITFULL:fSuccess = OnTarg_Stone_Recruit(uid.CharFind(), true); break;
@@ -3383,25 +3383,25 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 
 		case EXTAOS_HcRestore:
 			break;
-			
+
 		case EXTAOS_HcCommit:
 			break;
-			
+
 		case EXTAOS_HcDestroyItem:
 			break;
-			
+
 		case EXTAOS_HcPlaceItem:
 			break;
-			
+
 		case EXTAOS_HcExit:
 			break;
-			
+
 		case EXTAOS_HcPlaceStair:
 			break;
-			
+
 		case EXTAOS_HcSynch:
 			break;
-		
+
 		case EXTAOS_HcFloorDesign:
 			break;
 
@@ -3410,13 +3410,13 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 
 		case EXTAOS_HcClear:
 			break;
-		
+
 		case EXTAOS_HcSwitch:
 			break;
-			
+
 		case EXTAOS_HcRevert:
 			break;
-			
+
 		case EXTAOS_SpecialMove:
 		{
 			CScriptTriggerArgs args;
@@ -3426,7 +3426,7 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 
 		case EXTAOS_EquipLastWeapon:
 			break;
-			
+
 		case EXTAOS_GuildButton:
 		{
 			m_pChar->OnTrigger(CTRIG_UserGuildButton, m_pChar, NULL);
@@ -3436,7 +3436,7 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 		{
 			m_pChar->OnTrigger(CTRIG_UserQuestButton, m_pChar, NULL);
 		} break;
-	
+
 		default:
 			SysMessagef( "Unknown AOS extended msg %d.", type );
 			break;
@@ -3452,7 +3452,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 		case EXTDATA_ScreenSize:
 			// Sent at start up for the party system ?
 			{
-				DEBUG_MSG(("0x%x - 0x%x (%d-%d)\n", pData->ScreenSize.m_x, pData->ScreenSize.m_y, 
+				DEBUG_MSG(("0x%x - 0x%x (%d-%d)\n", pData->ScreenSize.m_x, pData->ScreenSize.m_y,
 					pData->ScreenSize.m_x, pData->ScreenSize.m_y));
 
 				if ( m_ScreenSize.x != 0 )
@@ -3528,13 +3528,13 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 						return;
 					CPartyDef::AcceptEvent( m_pChar, (DWORD) pData->Party_Msg_Rsp.m_UID );
 					break;
-		
+
 				case PARTYMSG_Decline:
 					// decline party invite.
 					// " You notify %s that you do not wish to join the party"
 					CPartyDef::DeclineEvent( m_pChar, (DWORD) pData->Party_Msg_Rsp.m_UID );
 					break;
-		
+
 				default:
 					SysMessagef( "Unknown party system msg %d", pData->Party_Msg_Rsp.m_code );
 					break;
@@ -3582,15 +3582,15 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 					this->m_pChar->m_pPlayer->Stat_SetLock(stat,(SKILLLOCK_TYPE)pData->Stats_Change.m_status);
 
 			} break;
-	
+
 		case EXTDATA_Wrestle_DisArm:	// From Client: Wrestling disarm
 		case EXTDATA_Wrestle_Stun:		// From Client: Wrestling stun
 			SysMessageDefault( DEFMSG_WRESTLING_NOGO );
 			break;
-	
+
 		case EXTDATA_Yawn:
 			{
-				static int validAnimations[] = 
+				static int validAnimations[] =
 				{
 					6, 21, 32, 33,
 					100, 101, 102,
@@ -3614,10 +3614,10 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 					m_pChar->UpdateAnimate((ANIM_TYPE)anim);
 			}
 			break;
-	
+
 		case EXTDATA_Unk15:
 			break;
-	
+
 		case EXTDATA_OldAOSTooltipInfo:
 			{
 				if ( len != 4 )
@@ -3630,12 +3630,12 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 			if ( IsAosFlagEnabled( FEATURE_AOS_POPUP ) && IsResClient( RDS_AOS ) )
 				Event_AOSPopupMenuRequest( (DWORD) pData->Popup_Request.m_UID );
 			break;
-	
+
 		case EXTDATA_Popup_Select:
 			if ( IsAosFlagEnabled( FEATURE_AOS_POPUP ) && IsResClient( RDS_AOS ) )
 				Event_AOSPopupMenuSelect( (DWORD) pData->Popup_Select.m_UID, (WORD) pData->Popup_Select.m_EntryTag );
 			break;
-	
+
 		case EXTDATA_NewSpellSelect:
 			{
 				WORD iSpell = pData->NewSpellSelect.m_SpellId;
@@ -3653,7 +3653,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 					Cmd_Skill_Magery( (SPELL_TYPE) iSpell, m_pChar );
 			}
 			break;
-			
+
 		case EXTDATA_AntiCheat:
 			{
 				/*
@@ -3664,7 +3664,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 
 				if ( (pData->AntiCheat.m_unk >= 0x25) && (pData->AntiCheat.m_unk <= 0x83) )
 				{
-					if ( m_BfAntiCheat.lastvalue != pData->AntiCheat.m_unk ) 
+					if ( m_BfAntiCheat.lastvalue != pData->AntiCheat.m_unk )
 					{
 						m_BfAntiCheat.count = 0;
 					}
@@ -3674,7 +3674,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 						{
 							g_Log.Event( LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is using 3rd party tools to alter client functionality\n",
 								m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName());
-							
+
 							m_BfAntiCheat.count = 0;
 						}
 						else
@@ -3754,7 +3754,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 				Event_Target( &Event );
 			}
 			break;
-	
+
 		default:
 			SysMessagef( "Unknown extended msg %d.", type );
 			break;
@@ -3803,7 +3803,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				addSpellbookOpen( pBook );
 			}
 			break;
-	
+
 		case EXTCMD_ANIMATE: // Cmd_Animate
 			if ( !strcmpi( ppArgs[0],"bow"))
 				m_pChar->UpdateAnimate( ANIM_BOW );
@@ -3814,11 +3814,11 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				DEBUG_ERR(( "%x:Event Animate '%s'\n", m_Socket.GetSocket(), ppArgs[0] ));
 			}
 			break;
-	
+
 		case EXTCMD_SKILL:			// Skill
 			Event_Skill_Use( (SKILL_TYPE) ATOI( ppArgs[0] ));
 			break;
-	
+
 		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode.
 			// "target x y z"
 			{
@@ -3834,7 +3834,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				}
 			}
 			break;
-	
+
 		case EXTCMD_CAST_MACRO:	// macro spell.
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
 			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
@@ -3848,7 +3848,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 			else
 				Cmd_Skill_Magery( (SPELL_TYPE) ATOI( ppArgs[0] ), m_pChar );
 			break;
-	
+
 		case EXTCMD_DOOR_AUTO: // open door macro = Attempt to open a door around us.
 			if ( m_pChar && !m_pChar->IsStatFlag( STATF_DEAD ) )
 			{
@@ -3870,10 +3870,10 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				}
 			}
 			break;
-	
+
 		case EXTCMD_UNKGODCMD: // 107, seen this but no idea what it does.
 			break;
-	
+
 		default:
 			DEBUG_ERR(( "%x:Event_ExtCmd unk %d, '%s'\n", m_Socket.GetSocket(), type, pszName ));
 	}
@@ -3978,7 +3978,7 @@ int CClient::xDispatchMsg()
 
 		//	Call the filtering function
 		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr) )
-			if ( tr == TRIGRET_RET_TRUE ) 
+			if ( tr == TRIGRET_RET_TRUE )
 				return -1;	// do not cry about errors
 	}
 
@@ -4452,7 +4452,7 @@ int CClient::xDispatchMsg()
 				if ( wLen < 0 || (wLen%4) != 0 )
 					RETURN_FALSE();
 				Event_AOSItemInfo( (int)(wLen/4), (NDWORD *) &pEvent->AosItemInfoRequest.m_uid );
-			} break;			
+			} break;
 
 		case XCMD_AllNames3D:
 			{
@@ -4476,7 +4476,14 @@ int CClient::xDispatchMsg()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
+	m_packetExceptions++;
 	g_Log.EventDebug("account '%s'\n", GetAccount() ? GetAccount()->GetName() : "");
+	if( m_packetExceptions > 10 )
+	{
+		g_Log.EventWarn("Disconnecting client from account '%s' since it is causing exceptions problems\n",
+			GetAccount() ? GetAccount()->GetName() : "");
+		addKick(&g_Serv, false);
+	}
 	EXC_DEBUG_END;
 	return 0;
 }
