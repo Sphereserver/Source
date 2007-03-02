@@ -207,17 +207,22 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 
 	CREID_TYPE id = (CREID_TYPE) rid.GetResIndex();
 
+	bool isBadPlaceToSpawn = false;
 	CChar * pChar = CChar::CreateNPC(id);
-	if ( pChar == NULL )
+	if( pChar == NULL )
+	{
 		return;
+	}
 	ASSERT(pChar->m_pNPC);
 
 	m_itSpawnChar.m_current ++;
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
 	// Move to spot "near" the spawn item.
-	if ( IsSetEF( EF_NewPositionChecks ) )
+	if( IsSetEF( EF_NewPositionChecks ) )
+	{
 		pChar->MoveTo(GetTopPoint());
+	}
 	else
 	{
 		if ( !pChar->MoveNearObj(this, iDistMax ? (Calc_GetRandVal(iDistMax) + 1) : iDistMax) )
@@ -225,14 +230,32 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 			CCharBase *pCharBase = pChar->Char_GetDef();
 
 			if ( !pCharBase->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY) )
+			{
 				pChar->MoveTo(GetTopPoint());
+			}
 			else
 			{
-				pChar->Delete();
-				m_itSpawnChar.m_current --;
-				return;
+				isBadPlaceToSpawn = true;
 			}
 		}
+	}
+
+	if( pChar->GetRegion() == NULL )
+	{
+		isBadPlaceToSpawn = true;
+	}
+	else if( pChar->GetRegion()->IsGuarded() && ( pChar->Stat_GetAdjusted(STAT_KARMA) < 0 ))
+	{
+		isBadPlaceToSpawn = true;
+	}
+
+	// Deny definitely known a bad place to spawn (like red NPCs in guarded areas)
+	// Usually caused by wide range near the edge of the towns
+	if( isBadPlaceToSpawn )
+	{
+		pChar->Delete();
+		m_itSpawnChar.m_current--;
+		return;
 	}
 
 	if ( iDistMax )
@@ -728,13 +751,13 @@ bool CItemMemory::Guild_IsAbbrevOn() const
 	ADDTOCALLSTACK("CItemMemory::Guild_IsAbbrevOn");
 	return( m_itEqMemory.m_Action );
 }
-	
+
 void CItemMemory::Guild_SetAbbrev( bool fAbbrevShow )
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_SetAbbrev");
 	m_itEqMemory.m_Action = fAbbrevShow;
 }
-	
+
 WORD CItemMemory::Guild_GetVotes() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetVotes");
@@ -753,7 +776,7 @@ int CItemMemory::Guild_SetLoyalTo( CGrayUID uid )
 	// Some other place checks to see if this is a valid member.
 	return GetTagDefs()->SetNum("LoyalTo", (DWORD) uid , false);
 }
-	
+
 CGrayUID CItemMemory::Guild_GetLoyalTo() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetLoyalTo");
@@ -761,13 +784,13 @@ CGrayUID CItemMemory::Guild_GetLoyalTo() const
 	CGrayUID iUid((DWORD)pObj->GetTagDefs()->GetKeyNum("LoyalTo", true));
 	return iUid;
 }
-	
+
 int CItemMemory::Guild_SetTitle( LPCTSTR pszTitle )
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_SetTitle");
 	return GetTagDefs()->SetStr("Title", false, pszTitle);
 }
-	
+
 LPCTSTR CItemMemory::Guild_GetTitle() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetTitle");
@@ -853,7 +876,7 @@ void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	// IT_COMM_CRYSTAL
 	// STATF_COMM_CRYSTAL = if i am on a person.
 	TALKMODE_TYPE		mode	= TALKMODE_SAY;
-		
+
 	for ( int i=0; i<m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = m_Speech[i];
@@ -870,7 +893,7 @@ void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	// That's prevent @ -1 crash speech :P
 	if ( *pszCmd == '@' )
 		return;
-		
+
 	if ( m_uidLink.IsValidUID())
 	{
 		// I am linked to something ?
