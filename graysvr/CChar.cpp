@@ -86,7 +86,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCLookAtItem",		// (NPC only) look at a character
 	"@NPCLostTeleport",		//+(NPC only) ready to teleport back to spawn
 	"@NPCRefuseItem",		// (NPC only) i've been given an item i don't want.
-	"@NPCRestock",			// (NPC only) 
+	"@NPCRestock",			// (NPC only)
 	"@NPCSeeNewPlayer",		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
 	"@NPCSeeWantItem",		// (NPC only) i see something good.
 
@@ -110,7 +110,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SkillStroke",
 	"@SkillSuccess",
 	"@SkillUseQuick",
-	
+
 	"@SpellBook",
 	"@SpellCast",		//+Char is casting a spell.
 	"@SpellEffect",		//+A spell just hit me.
@@ -191,7 +191,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	m_exp = 0;
 	m_level = 0;
-	m_ResFire = m_ResCold = m_ResPoison = m_ResEnergy = 0; 
+	m_ResFire = m_ResCold = m_ResPoison = m_ResEnergy = 0;
 	m_atUnk.m_Arg1 = 0;
 	m_atUnk.m_Arg2 = 0;
 	m_atUnk.m_Arg3 = 0;
@@ -693,12 +693,12 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 						{
 							if ( Calc_GetRandVal( s.GetArgVal() ) == 0 )
 								pItem->ClrAttr(ATTR_NEWBIE);
-						}				
+						}
 						else
 						{
 							if ( Calc_GetRandVal( s.GetArgVal() ) == 0 )
 								pItem->SetAttr(ATTR_NEWBIE);
-						}				
+						}
 						continue;
 					}
 				case ITC_ITEM:
@@ -707,10 +707,10 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 					{
 						// Possible loot/equipped item.
 						fIgnoreAttributes = true;
-				
+
 						if ( IsStatFlag( STATF_Conjured ) && iCmd != ITC_ITEMNEWBIE ) // This check is not needed.
 							break; // conjured creates have no loot.
-				
+
 						pItem = CItem::CreateHeader( s.GetArgRaw(), this, iCmd == ITC_ITEMNEWBIE );
 						if ( pItem == NULL )
 							continue;
@@ -1303,7 +1303,7 @@ do_default:
 				return( true );
 			}
 		}
-		
+
 		if ( !strnicmp( pszKey, "MOD", 3 ) )
 		{
 			i = g_Cfg.FindStatKey( pszKey+3 );
@@ -1313,7 +1313,7 @@ do_default:
 				return( true );
 			}
 		}
-		
+
 		i = g_Cfg.FindSkillKey( pszKey );
 		if ( IsSkillBase((SKILL_TYPE)i))
 		{
@@ -1454,7 +1454,7 @@ do_default:
 				sVal = iFame ? "1" : "0";
 			}
 			return( true );*/
-	
+
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers.
 			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
 			SKIP_SEPARATORS(pszKey);
@@ -1555,7 +1555,7 @@ do_default:
 				// Lookup the spell ID to ensure it's valid
 				SPELL_TYPE spell = (SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, ppArgs[0] );
 				bool fCheckAntiMagic = true; // AntiMagic check is enabled by default
-				
+
 				// Set AntiMagic check if second argument has been provided
 				if ( iQty == 2 )
 					fCheckAntiMagic = ( Exp_GetVal( ppArgs[1] ) >= 1 );
@@ -1616,6 +1616,12 @@ do_default:
 				sVal.FormatHex( pArea ? pArea->GetResourceID() : 0 );
 			}
 			return true;
+
+		case CHC_GOLD:
+			{
+				sVal.FormatVal(ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
+			} break;
+
 		case CHC_MOUNT:
 			{
 				CChar *pChar = Horse_GetMountChar();
@@ -1685,7 +1691,7 @@ do_default:
 		case CHC_ISSTUCK:
 			{
 				CPointBase	pt = GetTopPoint();
-	
+
 				if ( LayerFind(LAYER_FLAG_Stuck) && IsStatFlag( STATF_Freeze ) )					// it is stuck if is in web/etc
 					sVal.FormatVal(1);
 				else if ( CanMoveWalkTo(pt, true, true, DIR_N) || CanMoveWalkTo(pt, true, true, DIR_E) || CanMoveWalkTo(pt, true, true, DIR_S) || CanMoveWalkTo(pt, true, true, DIR_W) )
@@ -1732,7 +1738,7 @@ do_default:
 					pszKey++;
 					CGrayUID		uid	= Exp_GetVal( pszKey );
 					pMemory	= Memory_FindObj( uid );
-				}			
+				}
 				else
 					pMemory	= Memory_FindObj( pCharSrc );
 				if ( pMemory != NULL )
@@ -1764,7 +1770,7 @@ do_default:
 					iVal	= Exp_GetVal( pszKey );
 					fComp	= false;
 				}
-	
+
 				sVal.FormatVal( GetSkillTotal(iVal,fComp) );
 			}
 			return( true );
@@ -1866,7 +1872,7 @@ do_default:
 		case CHC_MAXSTAM:
 			sVal.FormatVal( Stat_GetMax(STAT_DEX) );
 			break;
-	
+
 		case CHC_HOME:
 			sVal = m_ptHome.WriteUsed();
 			break;
@@ -1882,7 +1888,7 @@ do_default:
 				SKIP_ARGSEP( pszKey );
 				bool fAllowIncog = ( Exp_GetVal( pszKey ) >= 1 );
 				CChar * pChar;
-				
+
 				if ( ! uid.IsValidUID() )
 					pChar = pCharSrc;
 				else
@@ -1896,11 +1902,11 @@ do_default:
 			break;
 		case CHC_NPC:
 			goto do_default;
-	
+
 		case CHC_OBODY:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_prev_id ));
 			break;
-	
+
 		case CHC_OSKIN:
 			sVal.FormatHex( m_prev_Hue );
 			break;
@@ -1987,7 +1993,7 @@ do_default:
 				// else
 				Stat_SetBase( (STAT_TYPE) i, s.GetArgVal() - Stat_GetMod( (STAT_TYPE) i ) );
 						// - Stat_GetAdjusted((STAT_TYPE)i)
-						
+
 				return true;
 			}
 
@@ -2083,6 +2089,29 @@ do_default:
 		case CHC_FOOD:
 			Stat_SetVal(STAT_FOOD, s.GetArgVal());
 			break;
+
+		case CHC_GOLD:
+			{
+				DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+				DWORD newGold = s.GetArgVal();
+
+				if( newGold < currentGold )
+				{
+					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
+				}
+				else if( newGold > currentGold )
+				{
+					DWORD amount = newGold - currentGold;
+					while( amount > 0 )
+					{
+						CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
+						gold->SetAmount( amount > 65000 ? 65000 : amount);
+						amount -= gold->GetAmount();
+						GetPackSafe()->ContentAdd(gold);
+					}
+				}
+			} break;
+
 		case CHC_HITPOINTS:
 		case CHC_HITS:
 			Stat_SetVal(STAT_STR,  s.GetArgVal() );
@@ -2120,10 +2149,10 @@ do_default:
 				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 				if ( iArgQty < 2 )
 					return( false );
-	
+
 				CGrayUID	uid		= piCmd[0];
 				DWORD		dwFlags	= piCmd[1];
-	
+
 				CItemMemory * pMemory = Memory_FindObj( uid );
 				if ( pMemory != NULL )
 					pMemory->SetMemoryTypes( dwFlags );
@@ -2210,7 +2239,7 @@ do_default:
 				BYTE bIn = s.GetArgVal();
 				if ( bIn <= UO_MAP_VIEW_RADAR )
 					return( false );
-	
+
 				SetSight(bIn);
 			}
 			break;
@@ -2567,7 +2596,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					int iTimer = s.GetArgVal();
 					if ( iTimer > 0 )
 						pItem->SetTimeout(iTimer);
-						
+
 					pItem->Item_GetDef()->m_ttNormal.m_tData4 = 0;
 				}
 				pItem->SetAttr(ATTR_MOVE_NEVER);
@@ -2993,7 +3022,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 bool	CChar::OnTriggerSpeech( LPCTSTR pszName, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue)
 {
 	ADDTOCALLSTACK("CChar::OnTriggerSpeech");
-	
+
 	CScriptObj *	pDef	= g_Cfg.ResourceGetDefByName( RES_SPEECH, pszName );
 	if ( !pDef )
 	{
@@ -3017,7 +3046,7 @@ bool	CChar::OnTriggerSpeech( LPCTSTR pszName, LPCTSTR pszText, CChar * pSrc, TAL
 
 	if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
 		return true;
-	
+
 	return false;
 }
 
@@ -3179,7 +3208,7 @@ int CChar::GetSkillTotal(int what, bool how)
 	ADDTOCALLSTACK("CChar::GetSkillTotal");
 	int iTotal = 0;
 	int	iBase;
-	
+
 	for ( int i=0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		iBase	= Skill_GetBase((SKILL_TYPE) i);
