@@ -1487,6 +1487,7 @@ void CChar::CallGuards( CChar * pCriminal )
 		CScriptTriggerArgs args( pGuard );
 		args.m_iN1 = rid.GetResIndex();
 		args.m_iN2 = 0;
+		args.m_VarObjs.Insert( 1, pCriminal, true );
 
 		if ( OnTrigger(CTRIG_CallGuards, pCriminal, &args) == TRIGRET_RET_TRUE )
 			return;

@@ -3206,3 +3206,6 @@ this all in desperation)
 
 01-03-2007, MrSugarCube (Script pack)
 - Updated: sphere_skills.scp (Missing skill cap for Animal Lore in SKILLCLASS 0)
+
+02-03-2007, Ellessar
+- Modified: Trigger @CallGuards now have a reference "REF1", which refers to the target of the guard.
