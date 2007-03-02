@@ -3218,3 +3218,6 @@ this all in desperation)
 02-03-2007, Vjaka
 - Fixed: red NPCs spawning in cities from spawns at the edges of the town.
 - Modified: now clients which spawns too many exceptions are disconnected.
+- Added: GOLD property for character. It counts all gold coins on character and return them. Or,
+  if used with argument, sets a new amount of gold, adding gold coins to reach the new sum. The
+  most common usage would be similar to GOLD += 5000 and so on.
