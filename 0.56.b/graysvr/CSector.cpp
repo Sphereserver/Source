@@ -890,11 +890,20 @@ void CSector::Restock()
 	// set the respawn time of all spawns in Sector.
 
 	CChar * pCharNext;
-	CChar * pChar = STATIC_CAST <CChar*>( m_Chars_Active.GetHead());
-	for ( ; pChar ; pChar = pCharNext )
+	CChar * pChar = dynamic_cast <CChar*>( m_Chars_Active.GetHead());
+	for ( ; pChar; pChar = pCharNext )
 	{
 		pCharNext = pChar->GetNext();
 		pChar->NPC_Vendor_Restock(true);
+	}
+
+	CItem * pItemNext;
+	CItem * pItem = dynamic_cast <CItem*>( m_Items_Timer.GetHead());
+	for ( ; pItem; pItem = pItemNext )
+	{
+		pItemNext = pItem->GetNext();
+		if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
+			pItem->Spawn_OnTick( true );
 	}
 }
 

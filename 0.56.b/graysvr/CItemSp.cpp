@@ -216,17 +216,22 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
 	// Move to spot "near" the spawn item.
-	if ( !pChar->MoveNearObj(this, iDistMax ? (Calc_GetRandVal(iDistMax) + 1) : iDistMax) )
+	if ( IsSetEF( EF_NewPositionChecks ) )
+		pChar->MoveTo(GetTopPoint());
+	else
 	{
-		CCharBase *pCharBase = pChar->Char_GetDef();
-
-		if ( !pCharBase->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY) )
-			pChar->MoveTo(GetTopPoint());
-		else
+		if ( !pChar->MoveNearObj(this, iDistMax ? (Calc_GetRandVal(iDistMax) + 1) : iDistMax) )
 		{
-			pChar->Delete();
-			m_itSpawnChar.m_current --;
-			return;
+			CCharBase *pCharBase = pChar->Char_GetDef();
+
+			if ( !pCharBase->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY) )
+				pChar->MoveTo(GetTopPoint());
+			else
+			{
+				pChar->Delete();
+				m_itSpawnChar.m_current --;
+				return;
+			}
 		}
 	}
 
@@ -243,23 +248,18 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 void CItem::Spawn_OnTick( bool fExec )
 {
 	ADDTOCALLSTACK("CItem::Spawn_OnTick");
+
 	int iMinutes;
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
-	{
 		iMinutes = Calc_GetRandVal(30) + 1;
-	}
 	else
-	{
 		iMinutes = minimum( m_itSpawnChar.m_TimeHiMin, m_itSpawnChar.m_TimeLoMin ) + Calc_GetRandVal( abs( m_itSpawnChar.m_TimeHiMin - m_itSpawnChar.m_TimeLoMin ));
-	}
 
 	if ( iMinutes <= 0 )
 		iMinutes = 1;
 
 	if ( !fExec || IsTimerExpired() )
-	{
 		SetTimeout( iMinutes * 60 * TICK_PER_SEC );	// set time to check again.
-	}
 
 	if ( ! fExec )
 		return;

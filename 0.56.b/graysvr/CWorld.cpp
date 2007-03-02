@@ -1768,11 +1768,11 @@ void CWorld::RespawnDeadNPCs()
 	ADDTOCALLSTACK("CWorld::RespawnDeadNPCs");
 	// Respawn dead story NPC's
 	g_Serv.SetServerMode(SERVMODE_RestockAll);
-	for ( int m = 0; m < 256; m++ )
+	for ( int m = 0; m < 256; ++m )
 	{
 		if ( !g_MapList.m_maps[m] ) continue;
 
-		for ( int s = 0; s < g_MapList.GetSectorQty(m); s++ )
+		for ( int s = 0; s < g_MapList.GetSectorQty(m); ++s )
 		{
 			CSector	*pSector = GetSector(m, s);
 
@@ -1789,8 +1789,8 @@ void CWorld::Restock()
 	// Recalc all the base items as well.
 	g_Serv.SetServerMode(SERVMODE_RestockAll);
 
-	for ( int i=0; i<COUNTOF(g_Cfg.m_ResHash.m_Array); i++ )
-		for ( int j=0; j<g_Cfg.m_ResHash.m_Array[i].GetCount(); j++ )
+	for ( int i=0; i<COUNTOF(g_Cfg.m_ResHash.m_Array); ++i )
+		for ( int j=0; j<g_Cfg.m_ResHash.m_Array[i].GetCount(); ++j )
 		{
 			CResourceDef* pResDef = g_Cfg.m_ResHash.m_Array[i][j];
 			if ( !pResDef || ( pResDef->GetResType() != RES_ITEMDEF ))
@@ -1801,11 +1801,11 @@ void CWorld::Restock()
 				pBase->Restock();
 		}
 
-	for ( int m = 0; m < 256; m++ )
+	for ( int m = 0; m < 256; ++m )
 	{
 		if ( !g_MapList.m_maps[m] ) continue;
 
-		for ( int s = 0; s < g_MapList.GetSectorQty(m); s++ )
+		for ( int s = 0; s < g_MapList.GetSectorQty(m); ++s )
 		{
 			CSector	*pSector = GetSector(m, s);
 
