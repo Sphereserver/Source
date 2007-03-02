@@ -3217,3 +3217,4 @@ this all in desperation)
 
 02-03-2007, Vjaka
 - Fixed: red NPCs spawning in cities from spawns at the edges of the town.
+- Modified: now clients which spawns too many exceptions are disconnected.

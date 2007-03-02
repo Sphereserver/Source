@@ -773,6 +773,8 @@ private:
 		BYTE count;
 	} m_BfAntiCheat;
 
+	int m_packetExceptions;
+
 public:
 	CONNECT_TYPE	m_iConnectType;	// what sort of a connection is this ?
 	CGSocket		m_Socket;
