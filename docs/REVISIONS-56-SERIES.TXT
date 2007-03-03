@@ -3221,3 +3221,4 @@ this all in desperation)
 - Added: GOLD property for character. It counts all gold coins on character and return them. Or,
   if used with argument, sets a new amount of gold, adding gold coins to reach the new sum. The
   most common usage would be similar to GOLD += 5000 and so on.
+- Fixed: NPCs not being able to stumble upon hidden player character.
