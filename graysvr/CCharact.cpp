@@ -276,9 +276,9 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
-	
+
 			// These effects are not magical. (make them spells !)
-	
+
 		case LAYER_FLAG_Criminal:
 			StatFlag_Set( STATF_Criminal );
 			return;
@@ -366,7 +366,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
-	
+
 		case LAYER_FLAG_Criminal:
 			StatFlag_Clear( STATF_Criminal );
 			break;
@@ -1336,12 +1336,12 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
 
-	if( IsClient() ) 
+	if( IsClient() )
 	{
 		CClient * client = GetClient();
 		const CItem * pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
 
-		if ( pItemCont != NULL ) 
+		if ( pItemCont != NULL )
 		{
 			// Don't allow taking items from the bank unless we opened it here
 			if ( pItemCont->IsType( IT_EQ_BANK_BOX ) && ( pItemCont->m_itEqBankBox.m_pntOpen != GetTopPoint() ) )
@@ -1382,12 +1382,12 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 					}
 				}
 			}
-			
+
 			if( !isInOpenedContainer )
 				return -1;
 		}
 	}
-	
+
 	const CChar * pChar = dynamic_cast <const CChar*> (pObjTop);
 
 	if ( pChar != this &&
@@ -1489,13 +1489,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	UpdateDrag(pItem);
 
 	// Remove the item from other clients view if the item is
-	// being taken from the ground by a hidden character to 
+	// being taken from the ground by a hidden character to
 	// prevent lingering item.
 	if ( ( trigger == ITRIG_PICKUP_GROUND ) && (IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden )) )
 	{
         pItem->RemoveFromView( m_pClient );
 	}
-	
+
 	// Pick it up.
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
 	LayerAdd( pItem, LAYER_DRAGGING );
@@ -1975,7 +1975,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 			CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
 			if ( pHorse == NULL )
 				return( false );
-			
+
 			if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
 			{
 				DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
@@ -2441,7 +2441,7 @@ bool CChar::Death()
 
 	//	clear list of attackers
 	m_lastAttackers.clear();
-	
+
 	if ( m_pPlayer )
 	{
 		SetHue( HUE_DEFAULT );	// Get all pale.
@@ -2488,7 +2488,7 @@ bool CChar::OnFreezeCheck(bool bTagCheck)
 	// Can we break free ?
 	// RETURN: true = held in place.
 
-	// Do not allow move if TAG.NoMoveTill > SERV.Time, 
+	// Do not allow move if TAG.NoMoveTill > SERV.Time,
 	// needed for script purposes.
 	if ( bTagCheck == true )
 	{
@@ -2674,9 +2674,16 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 				continue;
 			}
 
-			// NPCs can't bump through other characters.
-			if ( ! m_pPlayer )
-				return( NULL );
+			if( m_pNPC )
+			{
+				// NPCs can't bump through other characters, but can walk over someone hidden
+				// in other cases people with 2uo can easily gain skill disallowing npc to move
+				if( pChar->IsStatFlag(STATF_Hidden) ) ;
+				else
+				{
+					return NULL;
+				}
+			}
 
 			// How much stamina to push past ?
 			int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);
@@ -3026,7 +3033,7 @@ bool CChar::CheckLocation( bool fStanding )
 					return false;
 			}
 		}
-		
+
 		Spell_Teleport(pTel->m_ptDst, true, false, ITEMID_NOTHING);
 		return true;
 	}
@@ -3286,7 +3293,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	TRIGRET_TYPE iRet;
-	
+
 	EXC_TRY("Trigger");
 	// 1) Triggers installed on characters, sensitive to actions on all chars
 	CChar * pChar = pSrc->GetChar();
@@ -3543,7 +3550,7 @@ bool CChar::OnTick()
 			//	metabolism bonus
 			if ( i == STAT_STR )
 			{
-				int iRateModifier = 1 + (Stat_GetVal(STAT_DEX)/8); 
+				int iRateModifier = 1 + (Stat_GetVal(STAT_DEX)/8);
 				iRate += iRate / ((iRateModifier == 0) ? 1 : iRateModifier);
 			}
 
