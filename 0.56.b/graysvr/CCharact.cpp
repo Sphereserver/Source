@@ -2308,9 +2308,9 @@ bool CChar::Death()
 	ADDTOCALLSTACK("CChar::Death");
 	// RETURN: false = delete
 
-
 	if ( IsStatFlag(STATF_DEAD|STATF_INVUL) )
 		return true;
+
 	if ( m_pNPC )
 	{
 		//	leave no corpse if for some reason creature dies while mounted
@@ -2322,31 +2322,23 @@ bool CChar::Death()
 		return true;
 
 	// I am dead and we need to give credit for the kill to my attacker(s).
-	TCHAR	*pszKillStr = Str_GetTemp();
+	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetName());
 	int iKillers = 0;
 
 	// Look through my memories of who i was fighting. (make sure they knew they where fighting me)
-	CChar	*pKiller = NULL;
-	CItem	*pItemNext;
-	CItem	*pItem;
+	CChar	* pKiller = NULL;
+	CItem	* pItemNext;
+	CItem	* pItem;
+	CItemMemory * pMemoryKiller = NULL;
 	int		killedBy = 0;
-	for ( pItem = GetContentHead(); pItem; pItem = pItemNext )
+	std::map<DWORD,bool> mapKillers;
+
+	for ( pItem = GetContentHead(); pItem; pItem = pItemNext, pMemoryKiller = NULL )
 	{
 		pItemNext = pItem->GetNext();
 
-		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED) )
-		{
-			if ( (STATIC_CAST <CItemMemory *>(pItem))->m_uidLink.CharFind() )
-				killedBy++;
-		}
-	}
-
-	for ( pItem = GetContentHead(); pItem; pItem = pItemNext )
-	{
-		pItemNext = pItem->GetNext();
-
-      	if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
+		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
 			CItemContainer* pCont = dynamic_cast <CItemContainer*> (pItem);
 			if ( pCont )
@@ -2363,36 +2355,53 @@ bool CChar::Death()
 			this->m_prev_id = this->GetID();
 		}
 
-		// i was harmed by this killer. noto his as a killer
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED) )
 		{
-			CItemMemory * pMemory = STATIC_CAST <CItemMemory *>(pItem);
-			pKiller = pMemory->m_uidLink.CharFind();
-			if ( pKiller )
+			pMemoryKiller = STATIC_CAST<CItemMemory *>(pItem);
+			if ( pMemoryKiller )
 			{
-				CScriptTriggerArgs args(this);
-				if ( pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) != TRIGRET_RET_TRUE )
+				pKiller = pMemoryKiller->m_uidLink.CharFind();
+				if ( pKiller )
 				{
+					DWORD dwKillerUID = pKiller->GetUID();
+
 					if ( !pKiller->m_pPlayer && pKiller->NPC_PetGetOwner() )
 					{
-						pKiller->Noto_Kill(this, false, killedBy-1);
-						(pKiller->NPC_PetGetOwner())->Noto_Kill(this, true, killedBy-1);
+						mapKillers[dwKillerUID] = false;
+						mapKillers[(DWORD)(pKiller->NPC_PetGetOwner()->GetUID())] = true;
 					}
 					else
-						pKiller->Noto_Kill(this, false, killedBy-1);
-
-					iKillStrLen += sprintf(pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer)?'P':'N', pKiller->GetName());
-					iKillers ++;
+					{
+						if ( !mapKillers[dwKillerUID] ) // if we've already done a pet kill, don't override
+							mapKillers[dwKillerUID] = false;
+					}
 				}
 			}
-			Memory_ClearTypes(pMemory, 0xFFFF);
+			Memory_ClearTypes(pMemoryKiller, 0xFFFF);
+		}
+	}
+
+	pKiller = NULL;
+	killedBy = mapKillers.size();
+	CScriptTriggerArgs args(this);
+	args.m_iN1 = killedBy;
+
+	for ( std::map<DWORD,bool>::iterator itCurrentKiller = mapKillers.begin(); itCurrentKiller != mapKillers.end(); ++itCurrentKiller)
+	{
+		pKiller = CGrayUID((*itCurrentKiller).first).CharFind();
+		if ( pKiller && ( pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) != TRIGRET_RET_TRUE ) )
+		{
+			pKiller->Noto_Kill(this, (*itCurrentKiller).second, killedBy-1);
+
+			iKillStrLen += sprintf(pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer)?'P':'N', pKiller->GetName());
+			++iKillers;
 		}
 	}
 
 	//	No aggressor/killer detected. Try detect person last hit me  from the act target
 	if ( !pKiller )
 	{
-		CObjBase	*ob = g_World.FindUID(m_Act_Targ);
+		CObjBase * ob = g_World.FindUID(m_Act_Targ);
 		if ( ob )
 			pKiller = STATIC_CAST <CChar *>(ob);
 	}
@@ -2400,12 +2409,11 @@ bool CChar::Death()
 	// record the kill event for posterity.
 
 	iKillStrLen += sprintf( pszKillStr+iKillStrLen, ( iKillers ) ? ".\n" : "accident.\n" );
-	if ( m_pPlayer ) g_Log.Event(LOGL_EVENT|LOGM_KILLS, pszKillStr);
+	if ( m_pPlayer ) 
+		g_Log.Event(LOGL_EVENT|LOGM_KILLS, pszKillStr);
 
 	if ( m_pParty )
-	{
 		m_pParty->SysMessageAll( pszKillStr );
-	}
 
 	NPC_PetClearOwners();	// Forgot who owns me. dismount my master if ridden.
 	Reveal();
