@@ -1063,7 +1063,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 		enum TRIGRET_TYPE tr;
 
 		//	Call the filtering function
-		if ( m_pChar->r_Call(g_Cfg.m_sCommandTrigger, this, &Args, NULL, &tr) )
+		if ( m_pChar->r_Call(g_Cfg.m_sCommandTrigger, m_pChar, &Args, NULL, &tr) )
 			if ( tr == TRIGRET_RET_TRUE )
 				return Args.m_iN2;
 
