@@ -3222,3 +3222,7 @@ this all in desperation)
   if used with argument, sets a new amount of gold, adding gold coins to reach the new sum. The
   most common usage would be similar to GOLD += 5000 and so on.
 - Fixed: NPCs not being able to stumble upon hidden player character.
+
+05-03-2007, Furio
+- Fixed #1098: Explosion potion activate with decay timer also if not activated.
+

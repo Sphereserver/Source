@@ -4735,7 +4735,7 @@ bool CItem::OnTick()
 			{
 				EXC_SET("default behaviour::IT_POTION");
 				// This is a explode potion ?
-				if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
+				if (( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion ) && m_itPotion.m_ignited )
 				{
 					// count down the timer. ??
 					if ( m_itPotion.m_tick <= 1 )

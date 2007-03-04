@@ -260,6 +260,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 				addTarget( CLIMODE_TARG_USE_ITEM, "Where do you want to throw the potion?", true, true );
 				// Put the potion in our hand as well. (and set it's timer)
 				pItem->m_itPotion.m_tick = 4;	// countdown to explode purple.
+				pItem->m_itPotion.m_ignited = 1; // ignite it
 				pItem->SetTimeout( TICK_PER_SEC );
 				pItem->m_uidLink = m_pChar->GetUID();
 				return true;
