@@ -428,6 +428,8 @@ public:
 			SPELL_TYPE m_Type;		// more1 = potion effect type
 			DWORD m_skillquality;	// more2 = 0-1000 Strength of the resulting spell.
 			WORD m_tick;			// morex = countdown to explode purple.
+			WORD m_junk4;
+			BYTE m_ignited;
 		} m_itPotion;
 
 		// IT_MAP
