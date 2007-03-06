@@ -3226,3 +3226,6 @@ this all in desperation)
 05-03-2007, Furio
 - Fixed #1098: Explosion potion activate with decay timer also if not activated.
 
+06-03-2007, Ellessar
+- Added: ATTACKER.LAST, which works like ATTACKER.MAX, but returns the char which hit the victim
+  for the last time.
