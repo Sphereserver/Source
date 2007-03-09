@@ -2372,7 +2372,7 @@ bool CChar::Death()
 					}
 					else
 					{
-						if ( !mapKillers[dwKillerUID] ) // if we've already done a pet kill, don't override
+						if ( mapKillers.find(dwKillerUID) == mapKillers.end() ) // if we're already in don't override here
 							mapKillers[dwKillerUID] = false;
 					}
 				}
