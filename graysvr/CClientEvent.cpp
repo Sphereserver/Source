@@ -3910,6 +3910,64 @@ bool CClient::xCheckMsgSize( int len )
 	return 0;		\
 }
 
+bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
+{
+	ADDTOCALLSTACK("CClient::xPacketFilter");
+	EXC_TRY("packet filter");
+	if ( g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
+	{
+		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
+		enum TRIGRET_TYPE tr;
+		char idx[5];
+
+		Args.m_s1 = m_PeerName.GetAddrStr();
+		Args.m_pO1 = this;
+
+		int bytes;
+		if ( iLen )
+			bytes = iLen;
+		else
+		{
+#ifdef VJAKA_REDO
+			bytes = minimum(m_bin.bytes(), MAX_BUFFER);
+#else
+			bytes = minimum(m_bin.GetDataQty(), MAX_BUFFER);
+#endif
+		}
+		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
+		char *zBuf = Str_GetTemp();
+
+		Args.m_VarsLocal.SetNum("NUM", bytes);
+		memcpy(zBuf, &(pEvent->m_Raw[0]), bytestr);
+		zBuf[bytestr] = 0;
+		Args.m_VarsLocal.SetStr("STR", false, zBuf);
+		if ( m_pAccount )
+		{
+			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
+			if ( m_pChar )
+				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
+		}
+
+		//	Fill locals [0..X] to the first X bytes of the packet
+		for ( int i = 0; i < bytes; ++i )
+		{
+			sprintf(idx, "%d", i);
+			Args.m_VarsLocal.SetNum(idx, (int)pEvent->m_Raw[i]);
+		}
+
+		//	Call the filtering function
+		bool fCall;
+		if ( iLen )
+			fCall = this->r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
+		else
+			fCall = g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
+
+		if ( tr == TRIGRET_RET_TRUE )
+			return true;	// do not cry about errors
+	}
+	EXC_CATCH;
+	return false;
+};
 
 int CClient::xDispatchMsg()
 {
@@ -3941,46 +3999,8 @@ int CClient::xDispatchMsg()
 	//	Packet filtering - check if any function triggeting is installed
 	//		allow skipping the packet which we do not wish to get
 	EXC_SET("packet filter");
-	if ( g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
-	{
-		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
-		enum TRIGRET_TYPE tr;
-		char idx[5];
-
-		Args.m_s1 = m_PeerName.GetAddrStr();
-		Args.m_pO1 = this;
-
-#ifdef VJAKA_REDO
-		int bytes = minimum(m_bin.bytes(), MAX_BUFFER);
-#else
-		int bytes = minimum(m_bin.GetDataQty(), MAX_BUFFER);
-#endif
-		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
-		char *zBuf = Str_GetTemp();
-
-		Args.m_VarsLocal.SetNum("NUM", bytes);
-		memcpy(zBuf, &(pEvent->m_Raw[0]), bytestr);
-		zBuf[bytestr] = 0;
-		Args.m_VarsLocal.SetStr("STR", false, zBuf);
-		if ( m_pAccount )
-		{
-			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
-			if ( m_pChar )
-				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
-		}
-
-		//	Fill locals [0..X] to the first X bytes of the packet
-		for ( int i = 0; i < bytes; i++ )
-		{
-			sprintf(idx, "%d", i);
-			Args.m_VarsLocal.SetNum(idx, (int)pEvent->m_Raw[i]);
-		}
-
-		//	Call the filtering function
-		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr) )
-			if ( tr == TRIGRET_RET_TRUE )
-				return -1;	// do not cry about errors
-	}
+	if ( xPacketFilter(pEvent) )
+		return -1;
 
 	EXC_SET("packet parsing");
 	if ( pEvent->Default.m_Cmd >= XCMD_QTY ) // bad packet type ?

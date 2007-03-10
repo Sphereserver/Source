@@ -381,6 +381,17 @@ bool CClient::OnRxConsole( const BYTE * pData, int iLen )
 	if ( !iLen || ( GetConnectType() != CONNECT_TELNET ))
 		return false;
 
+	if ( IsSetEF( EF_AllowTelnetPacketFilter ) )
+	{
+		const CEvent pEvent;
+		//DEBUG_ERR(("%d %d %d\n",*pData,*(pData+1),*(pData+2)));
+		memcpy( (void*)&pEvent.m_Raw, pData, iLen );
+		//DEBUG_ERR(("%d %d %d\n",pEvent.Default.m_Cmd,pEvent.m_Raw[1],pEvent.m_Raw[2]));
+		bool fFiltered = xPacketFilter( &pEvent, iLen );
+		if ( fFiltered )
+			return fFiltered;
+	}
+
 	while ( iLen -- )
 	{
 		int iRet = OnConsoleKey( m_Targ_Text, *pData++, GetAccount() != NULL );
