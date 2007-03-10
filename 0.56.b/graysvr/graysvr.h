@@ -1116,6 +1116,7 @@ public:
 	void xSendPktNow( const CCommand * pCmd, int length );
 	bool xProcessClientSetup( CEvent * pEvent, int iLen );
 	void xProcessMsg(int fGood = 0);		// Process a packet
+	bool xPacketFilter(const CEvent * pEvent, int iLen = 0);
 	int xDispatchMsg();
 	bool xRecvData();			// High Level Receive message from client
 	bool xCanEncLogin(bool bCheckCliver = false);	// Login crypt check

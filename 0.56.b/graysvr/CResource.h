@@ -56,7 +56,7 @@ enum EF_TYPE
 	EF_Item_Strict_Comparison	= 0x0000040,
 	EF_NewPositionChecks		= 0x0000080,
 	EF_WalkCheck				= 0x0000100,
-	EF_Unused0200				= 0x0000200,
+	EF_AllowTelnetPacketFilter	= 0x0000200,
 	EF_Script_Profiler			= 0x0000400,
 	EF_Size_Optimise			= 0x0000800,
 	EF_Minimize_Triggers		= 0x0001000,
