@@ -1988,18 +1988,19 @@ effect_bounce:
 		return( 0 );
 
 	//	record to last attackers
-	LastAttackers * pAttacker = NULL;
 	int iAttacker;
-	for ( iAttacker = m_lastAttackers.size()-1; iAttacker >= 0; --iAttacker )
+	for ( iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker )
 	{
-		pAttacker = &m_lastAttackers.at(iAttacker);
-		if ( pAttacker->charUID == pSrc->GetUID().GetPrivateUID() )
+		LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
+		if ( refAttacker.charUID == pSrc->GetUID().GetPrivateUID() )
 		{
-			pAttacker->elapsed = 0;
-			pAttacker->amountDone += maximum( 0, iDmg );
+			refAttacker.elapsed = 0;
+			refAttacker.amountDone += maximum( 0, iDmg );
 			break;
 		}
 	}
+
+	// Attacker not found
 	if ( iAttacker < 0 )
 	{
 		LastAttackers attacker;

@@ -3500,18 +3500,22 @@ bool CChar::OnTick()
 		}
 
 		EXC_SET("last attackers");
-		LastAttackers * pAttacker = NULL;
-		for( int iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker ) {
-			pAttacker = &m_lastAttackers.at(iAttacker);
-			++pAttacker->elapsed;
-			if( pAttacker->elapsed > 300 ) // 5 minutes to remember
+		if ( m_lastAttackers.size() )
+		{
+			for ( int iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker ) 
 			{
-				vector<LastAttackers>::iterator it = m_lastAttackers.begin();
-				it += iAttacker;
-				m_lastAttackers.erase(it);
-				break;
+				LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
+				++(refAttacker.elapsed);
+				if( refAttacker.elapsed > 300 ) // 5 minutes to remember
+				{
+					vector<LastAttackers>::iterator it = m_lastAttackers.begin();
+					it += iAttacker;
+					m_lastAttackers.erase(it);
+					break;
+				}
 			}
 		}
+
 
 		// Players have a silly "always run" flag that gets stuck on.
 		if ( IsClient() )
