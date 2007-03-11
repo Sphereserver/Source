@@ -3165,7 +3165,7 @@ public:
 	{
 		return (m_pNPC && m_pNPC->IsVendor());
 	}
-	bool NPC_Vendor_Restock(bool bManual = false);
+	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
 	int NPC_GetVendorMarkup( const CChar * pChar ) const;
 
 	void NPC_OnPetCommand( bool fSuccess, CChar * pMaster );
