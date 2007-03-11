@@ -144,7 +144,7 @@ const LAYER_TYPE CChar::sm_VendorLayers[] = // static
 	LAYER_VENDOR_STOCK, LAYER_VENDOR_EXTRA, LAYER_VENDOR_BUYS,
 };
 
-bool CChar::NPC_Vendor_Restock(bool bManual)
+bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 {
 	ADDTOCALLSTACK("CChar::NPC_Vendor_Restock");
 	// Restock this NPC char.
@@ -153,33 +153,58 @@ bool CChar::NPC_Vendor_Restock(bool bManual)
 	if ( m_pNPC == NULL )
 		return false;
 
-	// Not a player vendor.
-	if ( !IsStatFlag(STATF_Pet) && NPC_IsVendor() )
-	{
-		//	invalid restock time means that we do our restock on demand
-		if ( bManual || m_pNPC->m_timeRestock.IsTimeValid() )
-		{
-			m_pNPC->m_timeRestock.SetCurrentTime();
+	// Make sure that we're a vendor and not a pet
+	if ( IsStatFlag(STATF_Pet) || !NPC_IsVendor() )
+		return false;
 
+	bool bRestockNow = bForce;
+
+	if ( !bForce && m_pNPC->m_timeRestock.IsTimeValid() )
+	{
+		// Restock occurs every 10 minutes of inactivity (unless
+		// region tag specifies different time)
+		CRegionWorld *region = GetRegion();
+		int restockIn = 10 * 60 * TICK_PER_SEC;
+		if( region != NULL )
+		{
+			CVarDefCont *vardef = region->m_TagDefs.GetKey("RestockVendors");
+			if( vardef != NULL )
+				restockIn = vardef->GetValNum();
+		}
+
+		bRestockNow = ( CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > restockIn );
+	}
+
+	// At restock the containers are actually emptied
+	if ( bRestockNow )
+	{
+		m_pNPC->m_timeRestock.Init();
+
+		for ( int i = 0; i < COUNTOF(sm_VendorLayers); ++i )
+		{
+			CItemContainer *pCont = GetBank(sm_VendorLayers[i]);
+			if ( !pCont )
+				return false;
+
+			pCont->Empty();
+		}
+	}
+
+	if ( bFillStock )
+	{
+		// An invalid restock time means that the containers are
+		// waiting to be filled
+		if ( !m_pNPC->m_timeRestock.IsTimeValid() )
+		{
 			CCharBase *pCharDef = Char_GetDef();
 			ReadScriptTrig(pCharDef, CTRIG_NPCRestock, true);
 
 			//	we need restock vendor money as well
 			GetBank()->Restock();
 		}
-		//	valid means that the restocking was caused by the "serv.restock" like command
-		else
-		{
-			m_pNPC->m_timeRestock.Init();
 
-			for ( int i = 0; i < COUNTOF(sm_VendorLayers); ++i )
-			{
-				CItemContainer *pCont = GetBank(sm_VendorLayers[i]);
-				if ( !pCont )
-					return false;
-				pCont->Empty();
-			}
-		}
+		// remember that the stock was filled (or considered up-to-date)
+		m_pNPC->m_timeRestock.SetCurrentTime();
 	}
 	return true;
 }
@@ -2921,21 +2946,9 @@ void CChar::NPC_OnTickAction()
 		SetTimeout( TICK_PER_SEC + timeout * TICK_PER_SEC / 10 );
 	}
 
-	//	vendors auto-close their stock after 10 minutes of player inactivity
-	if( NPC_IsVendor() && m_pNPC->m_timeRestock.IsTimeValid() ) {
-		CRegionWorld *region = GetRegion();
-		int restockIn = 10 * 60 * TICK_PER_SEC;
-		if( region != NULL ) {
-			CVarDefCont *vardef = region->m_TagDefs.GetKey("RestockVendors");
-			if( vardef != NULL ) {
-				restockIn = vardef->GetValNum();
-			}
-		}
-		EXC_SET("restocking");
-		if( CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > restockIn ) {
-			NPC_Vendor_Restock(true);
-		}
-	}
+	//	vendors restock periodically
+	if ( NPC_IsVendor() )
+		NPC_Vendor_Restock();
 
 	EXC_CATCH;
 

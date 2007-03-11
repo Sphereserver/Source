@@ -692,8 +692,8 @@ union CExtAosData
 
 	struct
 	{
-		NDWORD m_Unk_0;
-		BYTE m_Ability;
+		BYTE m_Unk_0;	// 0x00
+		NDWORD m_Ability;
 		BYTE m_Unk; 	// 0x0A
 		
 	} SpecialMove;

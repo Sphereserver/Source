@@ -3209,7 +3209,6 @@ this all in desperation)
 
 02-03-2007, Ellessar
 - Fixed #1093: serv.restock not working. Now it updated all vendor boxes and world gem bits.
-- Fixed: Vendors spawning with no stuff to sell.
 - Fixed: NPCs sometimes not spawning with EF_NewPositionChecks on.
 - Modified: Trigger @CallGuards now have a reference "REF1", which refers to the target of the guard.
 - Modified: NPCs now won't 'talk and follow' you, if your distance from their spawn bit is greater than

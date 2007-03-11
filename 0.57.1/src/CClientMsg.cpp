@@ -2202,11 +2202,7 @@ void CClient::addShopMenuBuy(CChar *pVendor)
 	//	non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 	{
-		if ( !pVendor->m_pNPC->m_timeRestock.IsTimeValid() )
-			pVendor->NPC_Vendor_Restock();
-
-		//	and remember that I was asked during the last minutes
-		pVendor->m_pNPC->m_timeRestock.SetCurrentTime();
+		pVendor->NPC_Vendor_Restock(false, true);
 	}
 
 	CScriptTriggerArgs args;
@@ -2223,11 +2219,7 @@ void CClient::addShopMenuSell(CChar *pVendor)
 	//	non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 	{
-		if ( !pVendor->m_pNPC->m_timeRestock.IsTimeValid() )
-			pVendor->NPC_Vendor_Restock();
-
-		//	and remember that I was asked during the last minutes
-		pVendor->m_pNPC->m_timeRestock.SetCurrentTime();
+		pVendor->NPC_Vendor_Restock(false, true);
 	}
 
 	pVendor->r_Call("f_onsell", m_pChar, NULL);

@@ -157,9 +157,6 @@ CChar * CChar::CreateNPC( CREID_TYPE baseID )	// static
 	ASSERT(pChar);
 	pChar->NPC_LoadScript(true);
 
-	if ( pChar->NPC_IsVendor() )
-		pChar->NPC_Vendor_Restock(true);
-
 	return pChar;
 }
 

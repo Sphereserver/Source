@@ -2884,6 +2884,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
 		if ( IsSetEF(EF_NewPositionChecks) ) catresname(zExperimentalFlags, "NewPositionChecks");
 		if ( IsSetEF(EF_WalkCheck) ) catresname(zExperimentalFlags, "WalkCheck");
+		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
 		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
 		if ( IsSetEF(EF_Size_Optimise) ) catresname(zExperimentalFlags, "SizeOptimize");
 		if ( IsSetEF(EF_Minimize_Triggers) ) catresname(zExperimentalFlags, "MinimizeTriggers");
