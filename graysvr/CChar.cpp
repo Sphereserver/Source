@@ -1336,18 +1336,16 @@ do_default:
 				if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
 				{
 					pszKey++;
-					int attackerIndex;
+					int attackerIndex = -1;
 					if( !strnicmp(pszKey, "MAX", 3) )
 					{
 						pszKey += 3;
-						int iMaxDmg = 0;
-						int iCurDmg = 0;
-						attackerIndex = 0;
-						iMaxDmg = m_lastAttackers.at(0).amountDone;
-						for ( int iAttacker = 1; iAttacker < m_lastAttackers.size(); ++iAttacker )
+						int iMaxDmg = 0, iCurDmg = 0;
+
+						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
 							iCurDmg = m_lastAttackers.at(iAttacker).amountDone;
-							if ( iCurDmg < iMaxDmg )
+							if ( iCurDmg > iMaxDmg )
 							{
 								iMaxDmg = iCurDmg;
 								attackerIndex = iAttacker;
@@ -1357,14 +1355,12 @@ do_default:
 					else if( !strnicmp(pszKey, "LAST", 4) )
 					{
 						pszKey += 4;
-						int iLastTime = 0;
-						int iCurTime = 0;
-						attackerIndex = 0;
-						iLastTime = m_lastAttackers.at(0).elapsed;
-						for ( int iAttacker = 1; iAttacker < m_lastAttackers.size(); ++iAttacker )
+						int iLastTime = 0, iCurTime = 0;
+
+						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
 							iCurTime = m_lastAttackers.at(iAttacker).elapsed;
-							if ( iCurTime < iLastTime )
+							if ( iCurTime <= iLastTime )
 							{
 								iLastTime = iCurTime;
 								attackerIndex = iAttacker;
@@ -1372,31 +1368,39 @@ do_default:
 						}
 					}
 					else
+					{
 						attackerIndex = Exp_GetVal(pszKey);
+					}
 
 					SKIP_SEPARATORS(pszKey);
-					LastAttackers *pAttacker = NULL;
-					if(( attackerIndex >= 0 ) && ( attackerIndex < m_lastAttackers.size() ))
+					if( ( attackerIndex >= 0 ) && ( attackerIndex < m_lastAttackers.size() ) )
 					{
-						pAttacker = &m_lastAttackers.at(attackerIndex);
+						LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
 
 						if( !strnicmp(pszKey, "DAM", 3) )
-							sVal.FormatVal(pAttacker->amountDone);
-
+						{
+							sVal.FormatVal(refAttacker.amountDone);
+						}
 						else if( !strnicmp(pszKey, "ELAPSED", 7) )
-							sVal.FormatVal(pAttacker->elapsed);
-
+						{
+							sVal.FormatVal(refAttacker.elapsed);
+						}
 						else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
 						{
-							CGrayUID uid = pAttacker->charUID;
-							sVal.FormatHex( uid.CharFind() ? pAttacker->charUID : 0 );
+							CGrayUID uid = refAttacker.charUID;
+							sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
 						}
 					}
 					else
+					{
 						return false;
+					}
 				}
 				else
+				{
 					return false;
+				}
+
 				return true;
 			}
 
