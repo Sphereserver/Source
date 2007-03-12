@@ -3124,7 +3124,7 @@ this all in desperation)
 - Fixed #1058: Exception on linux build caused by items decaying without decay flag.
 
 13-02-2007, Nazghul
-- Fixed #1059: Now NPC will ge stuck with the lightsource they already have equipped
+- Fixed #1059: Now NPC will be stuck with the lightsource they already have equipped.
 
 15-02-2007, Nazghul
 - Added: First version of support for TNG's webscript reader. Use console command
@@ -3234,3 +3234,7 @@ this all in desperation)
   a PACKETx function. You can answer to the request with sendpacket as well. Be especially careful,
   when you're writing scripts for these functions, cause some functions may return unpredictable values.
 - Updated: sphere.ini
+
+12-03-2007, MrSugarCube
+- Fixed #1062: "RETURN x" not always halting script execution or even returning the correct value.
+- Fixed: Exceptions that are sometimes caused when attempting to use/take an item that cannot be reached.

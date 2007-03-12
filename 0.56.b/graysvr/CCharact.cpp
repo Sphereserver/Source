@@ -1375,10 +1375,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 					else
 					{
 						CItemContainer * pTopMostContainer = dynamic_cast<CItemContainer *>(const_cast<CObjBaseTemplate *>(pObjTop));
-						bool bIgnoreDist = (( GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
+						if ( pTopMostContainer != NULL )
+						{
+							bool bIgnoreDist = (( GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
 
-						if ( pTopMostContainer && ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( GetTopDist3D(pObjTop) < 5 )) )
-							isInOpenedContainer = true;
+							if ( ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( GetTopDist3D(pObjTop) < 5 )) )
+								isInOpenedContainer = true;
+						}
 					}
 				}
 			}

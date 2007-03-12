@@ -1732,8 +1732,8 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	const CObjBaseTemplate	*pObjTop = pObj->GetTopLevelObj();
 	int iDist = GetTopDist3D(pObjTop);
 
-	const CItem * pItem;
-	const CChar * pChar;
+	const CItem * pItem = NULL;
+	const CChar * pChar = NULL;
 
 	bool fDeathImmune = IsPriv(PRIV_GM);
 	if ( pObj->IsItem() )	// some objects can be used anytime. (even by the dead.)
@@ -1808,9 +1808,9 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	{
 		if ( GetAbilityFlags() & CAN_C_DCIGNORELOS )
 			return true;
-		else if ( pObj->IsChar() && pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS )
+		else if ( pObj->IsChar() && ( pChar != NULL ) && ( pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS ) )
 			return true;
-		else if ( pObj->IsItem() && pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS )
+		else if ( pObj->IsItem() && ( pItem != NULL ) && ( pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS ) )
 			return true;
 		else
 			return false;
@@ -1819,9 +1819,9 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 	{
 		if ( GetAbilityFlags() & CAN_C_DCIGNOREDIST )
 			return true;
-		else if ( pObj->IsChar() && pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST )
+		else if ( pObj->IsChar() && ( pChar != NULL ) && ( pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST ) )
 			return true;
-		else if ( pObj->IsItem() && pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST )
+		else if ( pObj->IsItem() && ( pItem != NULL ) && ( pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST ) )
 			return true;
 		else
 			return false;

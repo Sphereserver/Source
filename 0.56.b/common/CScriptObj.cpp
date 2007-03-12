@@ -2310,8 +2310,6 @@ jump_in:
 	return TRIGRET_RET_DEFAULT;
 }
 
-#ifdef _SCARY_FIX
-
 TRIGRET_TYPE CScriptObj::OnTriggerRunVal( CScript &s, TRIGRUN_TYPE trigrun, CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
 {
 	// Get the TRIGRET_TYPE that is returned by the script
@@ -2319,22 +2317,18 @@ TRIGRET_TYPE CScriptObj::OnTriggerRunVal( CScript &s, TRIGRUN_TYPE trigrun, CTex
 	ADDTOCALLSTACK("CScriptObj::OnTriggerRunVal");
 
 	CGString sVal;
+	TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
+
 	OnTriggerRun( s, trigrun, pSrc, pArgs, &sVal );
+
 	LPCTSTR pszVal = sVal.GetPtr();
-
-//g_Log.EventDebug("Returned: %s\n", pszVal);
-
-	TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT; 
 	if ( pszVal && *pszVal )
 	{
 		tr = (TRIGRET_TYPE)Exp_GetVal( pszVal );
 	}
 
-//g_Log.EventDebug("RETURNING: %d\n", (int)tr);
 	return tr;
 }
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // -CFileObj
