@@ -51,10 +51,13 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						else
 						{
 							CItemContainer * pTopMostContainer = dynamic_cast<CItemContainer *>(const_cast<CObjBaseTemplate *>(pObjTop));
-							bool bIgnoreDist = (( m_pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
+							if ( pTopMostContainer != NULL )
+							{
+								bool bIgnoreDist = (( m_pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
 
-							if ( pTopMostContainer && ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( m_pChar->GetTopDist3D(pObjTop) < 5 )) )
-								isInOpenedContainer = true;
+								if ( ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( m_pChar->GetTopDist3D(pObjTop) < 5 )) )
+									isInOpenedContainer = true;
+							}
 						}
 					}
 				}
