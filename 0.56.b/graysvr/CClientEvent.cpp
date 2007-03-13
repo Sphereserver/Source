@@ -3940,12 +3940,14 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 		Args.m_VarsLocal.SetNum("NUM", bytes);
 		memcpy(zBuf, &(pEvent->m_Raw[0]), bytestr);
 		zBuf[bytestr] = 0;
-		Args.m_VarsLocal.SetStr("STR", false, zBuf);
+		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
 		if ( m_pAccount )
 		{
 			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
 			if ( m_pChar )
+			{
 				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
+			}
 		}
 
 		//	Fill locals [0..X] to the first X bytes of the packet
@@ -3957,10 +3959,7 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 
 		//	Call the filtering function
 		bool fCall;
-		if ( iLen )
-			fCall = this->r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
-		else
-			fCall = g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
+		fCall = g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
 
 		if ( tr == TRIGRET_RET_TRUE )
 			return true;	// do not cry about errors
