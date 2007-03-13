@@ -3913,15 +3913,16 @@ bool CClient::xCheckMsgSize( int len )
 bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
+	
 	EXC_TRY("packet filter");
 	if ( g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
 	{
 		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
-		enum TRIGRET_TYPE tr;
+		enum TRIGRET_TYPE trigReturn;
 		char idx[5];
 
 		Args.m_s1 = m_PeerName.GetAddrStr();
-		Args.m_pO1 = this;
+		Args.m_pO1 = this; // Yay for ARGO.SENDPACKET
 
 		int bytes;
 		if ( iLen )
@@ -3958,15 +3959,14 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 		}
 
 		//	Call the filtering function
-		bool fCall;
-		fCall = g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &tr);
-
-		if ( tr == TRIGRET_RET_TRUE )
-			return true;	// do not cry about errors
+		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &trigReturn) )
+			if ( trigReturn == TRIGRET_RET_TRUE )
+				return true;	// do not cry about errors
 	}
+
 	EXC_CATCH;
 	return false;
-};
+}
 
 int CClient::xDispatchMsg()
 {
