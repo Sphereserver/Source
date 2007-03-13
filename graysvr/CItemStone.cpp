@@ -711,31 +711,6 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 		case STC_ALIGN: // "ALIGN"
 			SetAlignType( (STONEALIGN_TYPE) s.GetArgVal());
 			return true;
-		case STC_MasterUid:
-			{
-				CGrayUID pNewMasterUid = (DWORD) s.GetArgVal();
-				CChar * pChar = pNewMasterUid.CharFind();
-				if ( !pChar )
-					return( false );
-					
-				CStoneMember * pNewMaster = GetMember( pChar );
-				if ( !pNewMaster )
-					return( false );
-					
-				CStoneMember * pMaster = GetMasterMember();
-				if ( pMaster )
-				{
-					if ( pMaster->GetLinkUID() == pNewMasterUid )
-						return( true );
-				
-					pMaster->SetPriv(STONEPRIV_MEMBER);
-					//pMaster->SetLoyalTo(pChar);
-				}
-				
-				//pNewMaster->SetLoyalTo(pChar);
-				pNewMaster->SetPriv(STONEPRIV_MASTER);
-			}
-			return( true );
 		case STC_MEMBER: // "MEMBER"
 			{
 			TCHAR *Arg_ppCmd[8];		// Maximum parameters in one line
@@ -1232,6 +1207,32 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case ISV_MASTERMENU:
 			SetupMenu( pClient, true );
 			break;
+#endif
+		case ISV_MasterUid:
+			{
+				if ( s.HasArgs() )
+				{
+					CGrayUID pNewMasterUid = (DWORD) s.GetArgVal();
+					CChar * pChar = pNewMasterUid.CharFind();
+					if ( pChar )
+					{	
+						CStoneMember * pNewMaster = GetMember( pChar );
+						if ( pNewMaster )
+						{
+							CStoneMember * pMaster = GetMasterMember();
+							if ( pMaster && ( pMaster->GetLinkUID() != pNewMasterUid ) )
+							{
+								pMaster->SetPriv(STONEPRIV_MEMBER);
+								//pMaster->SetLoyalTo(pChar);
+							}
+
+							//pNewMaster->SetLoyalTo(pChar);
+							pNewMaster->SetPriv(STONEPRIV_MASTER);		
+						}			
+					}
+				}
+			} break;
+#ifndef _NEWGUILDSYSTEM
 		case ISV_RECRUIT:
 			if ( pClient->IsPriv(PRIV_GM ) || 
 				( pMember != NULL && pMember->IsPrivMember()))
