@@ -2257,9 +2257,12 @@ do_default:
 		case CHC_VISUALRANGE:
 			{
 				BYTE bIn = s.GetArgVal();
-				if ( bIn <= UO_MAP_VIEW_RADAR )
-					return( false );
-
+				if (( bIn > UO_MAP_VIEW_SIZE ) || ( bIn < 0 ))
+				{
+					DEBUG_ERR(("Illegal VisualRange Value %d, max. is %d, set to default\n", bIn, UO_MAP_VIEW_SIZE));
+					bIn = UO_MAP_VIEW_SIZE;
+//					return( false );
+				}
 				SetSight(bIn);
 			}
 			break;

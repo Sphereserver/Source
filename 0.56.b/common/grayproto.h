@@ -2488,6 +2488,12 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Intensity;
 		} Semivisible;
 		
+		struct	// size = 2	// Sent for altering visual range
+		{
+			BYTE m_Cmd;		// 0 =0xC8
+			BYTE m_Value;	// 0x01 to UO_MAP_VIEW_SIZE
+		} VisualRange;
+
 		struct	// size = 2 // Logout Confirm Answer
 		{
 			BYTE m_Cmd;		// 0=0xD1
