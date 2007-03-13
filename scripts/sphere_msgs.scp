@@ -455,7 +455,7 @@
 //msg_acc_priv		"You are not privileged to do that"
 //msg_acc_unk		"Unknown account name '%s'. Try using a 'guest' account."
 //msg_acc_wcli		"Bad login format. Check Client Version '%s' ?"
-//msg_alreadyonline		"Already on line"
+//msg_alreadyonline		"Already online"
 //msg_arrdep_1		"%s has %s %s."
 //msg_arrdep_2		"arrived in"
 //msg_arrdep_3		"departed from"
