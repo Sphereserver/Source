@@ -711,6 +711,45 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 		case STC_ALIGN: // "ALIGN"
 			SetAlignType( (STONEALIGN_TYPE) s.GetArgVal());
 			return true;
+		case STC_MasterUid:
+			{
+				if ( s.HasArgs() )
+				{
+					CGrayUID pNewMasterUid = (DWORD) s.GetArgVal();
+					CChar * pChar = pNewMasterUid.CharFind();
+					if ( !pChar )
+					{
+						DEBUG_ERR(( "MASTERUID called on non char 0%x uid.\n", (DWORD)pNewMasterUid ));
+						return( false );
+					}
+
+					CStoneMember * pNewMaster = GetMember( pChar );
+					if ( !pNewMaster )
+					{
+						DEBUG_ERR(( "MASTERUID called on char 0%x (%s) that is not a valid member of stone with 0x%x uid.\n", (DWORD)pNewMasterUid, pChar->GetName(), (DWORD)GetUID() ));
+						return( false );
+					}
+
+					CStoneMember * pMaster = GetMasterMember();
+					if ( pMaster )
+					{
+						if ( pMaster->GetLinkUID() == pNewMasterUid )
+							return( true );
+
+						pMaster->SetPriv(STONEPRIV_MEMBER);
+						//pMaster->SetLoyalTo(pChar);
+					}
+
+					//pNewMaster->SetLoyalTo(pChar);
+					pNewMaster->SetPriv(STONEPRIV_MASTER);
+				}
+				else
+				{
+					DEBUG_ERR(( "MASTERUID called without arguments.\n" ));
+					return( false );
+				}
+			}
+			return( true );
 		case STC_MEMBER: // "MEMBER"
 			{
 			TCHAR *Arg_ppCmd[8];		// Maximum parameters in one line
@@ -1207,32 +1246,6 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case ISV_MASTERMENU:
 			SetupMenu( pClient, true );
 			break;
-#endif
-		case ISV_MasterUid:
-			{
-				if ( s.HasArgs() )
-				{
-					CGrayUID pNewMasterUid = (DWORD) s.GetArgVal();
-					CChar * pChar = pNewMasterUid.CharFind();
-					if ( pChar )
-					{	
-						CStoneMember * pNewMaster = GetMember( pChar );
-						if ( pNewMaster )
-						{
-							CStoneMember * pMaster = GetMasterMember();
-							if ( pMaster && ( pMaster->GetLinkUID() != pNewMasterUid ) )
-							{
-								pMaster->SetPriv(STONEPRIV_MEMBER);
-								//pMaster->SetLoyalTo(pChar);
-							}
-
-							//pNewMaster->SetLoyalTo(pChar);
-							pNewMaster->SetPriv(STONEPRIV_MASTER);		
-						}			
-					}
-				}
-			} break;
-#ifndef _NEWGUILDSYSTEM
 		case ISV_RECRUIT:
 			if ( pClient->IsPriv(PRIV_GM ) || 
 				( pMember != NULL && pMember->IsPrivMember()))
