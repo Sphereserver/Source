@@ -4489,9 +4489,9 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	ASSERT( GetAccount());
 	if ( m_pChar != NULL )
 	{
-		// Loggin in as a new player while already on line !
+		// Loggin in as a new player while already online !
 		addSysMessage( g_Cfg.GetDefaultMsg( DEFMSG_ALREADYONLINE ) );
-		DEBUG_ERR(( "%x:Setup_CreateDialog acct='%s' already on line!\n", m_Socket.GetSocket(), GetAccount()->GetName()));
+		DEBUG_ERR(( "%x:Setup_CreateDialog acct='%s' already online!\n", m_Socket.GetSocket(), GetAccount()->GetName()));
 		return;
 	}
 
