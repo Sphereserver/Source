@@ -2412,6 +2412,7 @@ public:
 	void SetSight(BYTE newSight)
 	{
 		m_iVisualRange = newSight;
+		GetClient()->addVisualRange(m_iVisualRange);
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
@@ -2678,6 +2679,7 @@ public:
 
 	void UpdateMode(  CClient * pExcludeClient = NULL, bool fFull= false );
 	void UpdateSpeedMode();
+	void UpdateVisualRange();
 	void UpdateMove( CPointMap pold, CClient * pClientExclude = NULL, bool fFull = false );
 	void UpdateDir( DIR_TYPE dir );
 	void UpdateDir( const CPointMap & pt );

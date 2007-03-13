@@ -1042,15 +1042,14 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 			}
 			continue;
 		}
-
-		// No idea what the if is for? -- Radiant
-		//if ( pClient->IsPriv(PRIV_DEBUG) )
-		//{
+// VisRangeCheck
+		if ( pClient->GetChar()->GetSight() >= GetDist( pClient->GetChar()) )
+		{
 			if ( fFull )
 				pClient->addChar(this);
 			else
 				pClient->addCharMove(this);
-		//}
+		}
 	}
 }
 
@@ -1067,6 +1066,21 @@ void CChar::UpdateSpeedMode()
 		GetClient()->addSpeedMode( m_pPlayer->m_speedMode );
 }
 
+void CChar::UpdateVisualRange()
+{
+	ADDTOCALLSTACK("CChar::UpdateVisualRange");
+	if ( g_Serv.IsLoading() )
+		return;
+
+	if ( !m_pPlayer )
+		return;
+
+	if ( IsClient() )
+
+		DEBUG_ERR(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
+
+		GetClient()->addVisualRange( m_iVisualRange );
+}
 
 void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 {
@@ -1094,8 +1108,10 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		CChar * pChar = pClient->GetChar();
 		if ( pChar == NULL )
 			continue;
+// NAZTEST	
 
-		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= UO_MAP_VIEW_SIZE );
+//		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= UO_MAP_VIEW_SIZE );
+		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= pChar->GetSight() );
 		EXC_SET("if cansee");
 		if ( ! pClient->CanSee( this ))
 		{	// can't see me now.
@@ -1106,7 +1122,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 			}
 		}
 		else if ( fCouldSee )
-		{	// They see me move.
+		{	// They see me move because they can see me now and could see me already
 			EXC_SET("AddcharMove");
 			pClient->addCharMove( this );
 		}

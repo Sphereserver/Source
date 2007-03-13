@@ -2486,6 +2486,14 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
 	CRegionBase * pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI);
 
+	CChar * tMe = GetChar();
+	BYTE tViewDist;
+	if ( tMe )
+		tViewDist = tMe->GetSight();
+	else
+		// dunno if this _can_ happen, but to be on the safe side ... Nazghul
+		tViewDist = UO_MAP_VIEW_SIZE;
+
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
 	AreaItems.SetAllShow(fAllShow);
@@ -2504,7 +2512,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->GetType() == IT_MULTI ) || ( pItem->GetType() == IT_SHIP ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && (( pItem->m_uidLink.ItemFind()->GetType() == IT_MULTI ) || ( pItem->m_uidLink.ItemFind()->GetType() == IT_SHIP )))
 				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( pItem->GetType() != IT_MULTI ) && ( pItem->GetType() != IT_SHIP ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
-				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( pItem->GetType() != IT_MULTI ) && ( pItem->GetType() != IT_SHIP ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) && ( pItem->GetType() != IT_MULTI ) && ( pItem->GetType() != IT_SHIP ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 				{
 					if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 					{
@@ -2518,7 +2526,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		}
 		else
 		{
-			if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))))
+			if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))))
 			{
 				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 				{
@@ -2543,7 +2551,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		if (( m_pChar == pChar ) || !CanSee(pChar) )
 			continue;
 
-		if ( ptold.GetDist( pChar->GetTopPoint()) > UO_MAP_VIEW_SIZE )
+		if ( ptold.GetDist( pChar->GetTopPoint()) > tViewDist )
 		{
 			if ( dSeeChars < g_Cfg.m_iMaxCharComplexity*5 )
 			{
@@ -4284,6 +4292,18 @@ void CClient::addSpeedMode( int speedMode )
 	CExtData cmdData;
 	cmdData.SpeedMode.m_speed = speedMode;
 	addExtData( EXTDATA_SpeedMode, &cmdData, sizeof( cmdData.SpeedMode ) );
+}
+
+void CClient::addVisualRange( BYTE visualRange )
+{
+	ADDTOCALLSTACK("CClient::addVisualRange");
+
+	DEBUG_ERR(("addVisualRange called with argument %d\n", visualRange));
+
+	CCommand cmd;
+	cmd.VisualRange.m_Cmd = XCMD_ViewRange;
+	cmd.VisualRange.m_Value = visualRange;
+	xSend(&cmd, sizeof(cmd.VisualRange));
 }
 
 void CClient::addIdleWarning( bool bSameChar )

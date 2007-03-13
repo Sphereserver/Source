@@ -1293,6 +1293,7 @@ public:
 
 	void addShowDamage( int damage, DWORD uid_damage );
 	void addSpeedMode( int speedMode = 0 );
+	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE ); 
 	void addIdleWarning( bool bSameChar = false );
 
 	void SendPacket( TCHAR * pszPacket );
