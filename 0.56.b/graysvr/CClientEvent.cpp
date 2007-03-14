@@ -3923,6 +3923,7 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 
 		Args.m_s1 = m_PeerName.GetAddrStr();
 		Args.m_pO1 = this; // Yay for ARGO.SENDPACKET
+		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
 		int bytes;
 		if ( iLen )
