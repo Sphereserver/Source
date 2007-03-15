@@ -598,11 +598,14 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	CMenuItem item[MAX_MENU_ITEMS];	// Most as we want to display at one time.
 	item[0].m_sText.Format( "Contents of %s", (LPCTSTR) pObj->GetName());
 
-	int count=0;
-	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext())
+	int count = 0;
+	CItem * pItemNext;
+	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
-		if ( count >= COUNTOF( item ))
+		if ( count >= MAX_MENU_ITEMS )
 			break;
+
+		pItemNext = pItem->GetNext();
 		m_tmMenu.m_Item[++count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
