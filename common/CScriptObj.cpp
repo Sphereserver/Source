@@ -1158,6 +1158,24 @@ badcmd:
 			}
 			return true;
 
+		case SSC_StrRegexNew:
+			{
+				int	iLenString = Exp_GetVal( pszKey );
+				TCHAR * sToMatch = Str_GetTemp();
+				SKIP_ARGSEP(pszKey);
+				strcpylen(sToMatch,pszKey,iLenString);
+				pszKey += iLenString;
+				SKIP_ARGSEP(pszKey);
+				TCHAR * tLastError = Str_GetTemp();
+				int iDataResult = Str_RegExMatch( pszKey, sToMatch, tLastError );
+				sVal.FormatVal(iDataResult);
+				
+				if ( iDataResult == -1 )
+				{
+					DEBUG_ERR(( "STRREGEX bad function usage. Error: %s\n", tLastError ));
+				}
+			} return true;
+
 		default:
 			StringFunction( i, pszKey, sVal );
 			return true;
