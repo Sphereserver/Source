@@ -306,6 +306,17 @@ void CChar::SetDisconnected()
 	GetTopSector()->m_Chars_Disconnect.InsertHead( this );
 }
 
+void CChar::Delete()
+{
+	// Character has been deleted
+	if ( IsClient() )
+	{
+		GetClient()->m_net->markClose();
+	}
+
+	CObjBase::Delete();
+}
+
 int CChar::IsWeird() const
 {
 	// RETURN: invalid code.
@@ -2419,7 +2430,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
 					return false;
 				}
-				if ( GetClient() )
+				if ( IsClient() )
 					GetClient()->addObjectRemove(this);
 			}
 			Delete();

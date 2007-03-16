@@ -3240,3 +3240,6 @@ this all in desperation)
 
 13-03-2007, Ellessar
 - Fixed #1106: PACKETx sometimes caused errors in console.
+
+16-03-2007, MrSugarCube
+- Fixed #1113: Exception caused when an online player character is deleted.
