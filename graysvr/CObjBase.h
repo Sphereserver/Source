@@ -2364,6 +2364,7 @@ public:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
+	void Delete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
 		return(( m_StatFlag & dwStatFlag) ? true : false );
