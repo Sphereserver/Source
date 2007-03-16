@@ -355,7 +355,13 @@ int CPointBase::GetDist( const CPointBase & pt ) const // Distance between point
 	ADDTOCALLSTACK("CPointBase::GetDist");
 	// Get the basic 2d distance.
 	if ( !pt.IsValidPoint() )
-		throw CGrayAssert(LOGL_CRIT, "InvalidPoint", __FILE__, __LINE__);
+	{
+#ifndef _NIGHTLYBUILD
+		DEBUG_ERR(("GetDist::InvalidPoint -> '%s'\n", pt.WriteUsed()));
+#endif
+		return( SHRT_MAX );
+	}
+
 	if ( ! IsSameMap( pt.m_map ))	// as far apart as possible
 		return( SHRT_MAX );
 	return( GetDistBase( pt ));
