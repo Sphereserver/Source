@@ -3243,3 +3243,4 @@ this all in desperation)
 
 16-03-2007, MrSugarCube
 - Fixed #1113: Exception caused when an online player character is deleted.
+- Fixed: ATTACKER.LAST only working when the last attack was within the last second.

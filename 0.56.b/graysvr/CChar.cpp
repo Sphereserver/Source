@@ -1352,7 +1352,7 @@ do_default:
 					if( !strnicmp(pszKey, "MAX", 3) )
 					{
 						pszKey += 3;
-						int iMaxDmg = 0, iCurDmg = 0;
+						int iMaxDmg = -1, iCurDmg = 0;
 
 						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
@@ -1367,7 +1367,7 @@ do_default:
 					else if( !strnicmp(pszKey, "LAST", 4) )
 					{
 						pszKey += 4;
-						int iLastTime = 0, iCurTime = 0;
+						int iLastTime = INT_MAX, iCurTime = 0;
 
 						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
