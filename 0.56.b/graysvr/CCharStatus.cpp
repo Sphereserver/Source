@@ -2319,6 +2319,9 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 
 	WORD wCan = GetMoveBlockFlags();
 	WARNWALK(("GetMoveBlockFlags() (0x%x)\n",wCan));
+	if ( !( wCan & (CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY |CAN_C_RUN ) ) )
+		return NULL;  // cannot move at all, so WTF?
+
 
 	WORD wBlockFlags = wCan;
 
