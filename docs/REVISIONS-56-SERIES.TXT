@@ -3197,11 +3197,11 @@ this all in desperation)
 01-03-2007, MrSugarCube
 - Fixed #1092: Dead characters not showing on the status page.
 - Fixed #1090: MOUNTHEIGHT checks preventing characters teleporting to valid locations if they are
+  stuck under a low ceiling.
 - Fixed #1085: MAXBASESKILL in sphere.ini applying to skills that players are unable to see in
   their skill menu. An INITHIDDENSKILLS setting has been added to sphere.ini so that this behaviour
   can be toggled.
 - Fixed #1084: Vendor's constantly restocking goods instantly after selling them.
-  stuck under a low ceiling.
 - Fixed: Players able to create characters with skill in undefined skills.
 
 01-03-2007, MrSugarCube (Script pack)
