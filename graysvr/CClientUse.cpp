@@ -34,14 +34,15 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			{
 				// protect from ,snoop - disallow picking from not opened containers
 				bool isInOpenedContainer = false;
-				std::map< DWORD, std::pair<DWORD,CPointMap> >::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
+				CClient::OpenedContainerMap_t::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
 				if ( itContainerFound != m_openedContainers.end() )
 				{
-					DWORD dwTopContainerUID = ((*itContainerFound).second).first;
+					DWORD dwTopContainerUID = (((*itContainerFound).second).first).first;
+					DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
 					CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
 					const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
 
-					if ( dwTopContainerUID == pObjTop->GetUID().GetPrivateUID() )
+					if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == container->GetContainer()->GetUID().GetPrivateUID() ) )
 					{
 						if ( pObjTop->IsChar() )
 						{
@@ -50,14 +51,8 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						}
 						else
 						{
-							CItemContainer * pTopMostContainer = dynamic_cast<CItemContainer *>(const_cast<CObjBaseTemplate *>(pObjTop));
-							if ( pTopMostContainer != NULL )
-							{
-								bool bIgnoreDist = (( m_pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST ) || ( pTopMostContainer->GetAbilityFlags() & CAN_I_DCIGNOREDIST ));
-
-								if ( ( ptOpenedContainerPosition == pTopMostContainer->GetTopPoint() ) && (bIgnoreDist || ( m_pChar->GetTopDist3D(pObjTop) < 5 )) )
-									isInOpenedContainer = true;
-							}
+							if ( ptOpenedContainerPosition == pObjTop->GetTopPoint() )
+								isInOpenedContainer = true;
 						}
 					}
 				}
