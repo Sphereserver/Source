@@ -1584,10 +1584,8 @@ do_default:
 
 				if ( *pszKey )
 				{
-					char * pKey = Str_GetTemp();
-					strcpylen( pKey, pszKey, strlen(pszKey) );
 					CResourceQtyArray Resources;
-					if ( Resources.Load(pKey) && SkillResourceTest( &Resources, (ITEMID_TYPE) 0 ) )
+					if ( Resources.Load(pszKey) && SkillResourceTest( &Resources, (ITEMID_TYPE) 0 ) )
 					{
 						sVal.FormatVal(1);
 						return true;
