@@ -57,7 +57,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						}
 						else
 						{
-							if ( ptOpenedContainerPosition == pObjTop->GetTopPoint() )
+							if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
 								isInOpenedContainer = true;
 						}
 					}
