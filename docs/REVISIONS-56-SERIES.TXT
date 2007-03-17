@@ -3252,3 +3252,6 @@ this all in desperation)
 - Added: Function SKILLTEST, which tests values of skills sent as arguments on the default character.
   Usage: <skilltest carpentry 68.9>
 - Fixed: SKILLMAKE replacing types with item names.
+
+17-03-2007, Furio
+- Fixed #1117: Unable to access subcontainers on the ground.
