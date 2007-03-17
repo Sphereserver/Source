@@ -766,8 +766,11 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 
 	addOpenGump(pContainer, gump);
 	addContents(pContainer, false, false, false);
+	CObjBaseTemplate * pTopMostContainer = pContainer->GetTopLevelObj();
 
-	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = std::make_pair((pContainer->GetTopLevelObj())->GetUID().GetPrivateUID(),pContainer->GetTopPoint());
+	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = std::make_pair(
+																	std::make_pair( pContainer->GetContainer()->GetUID().GetPrivateUID(), pTopMostContainer->GetUID().GetPrivateUID() ),
+																	pTopMostContainer->GetTopPoint());
 	return true;
 }
 

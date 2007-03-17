@@ -1420,7 +1420,8 @@ public:
 	char		m_zLogin[64];
 	CServTime	m_tNextPickup;
 	CVarDefMap	m_TagDefs;
-	std::map< DWORD, std::pair<DWORD,CPointMap> >	m_openedContainers;	// list of UIDs of all opened containers by the client
+	typedef std::map<DWORD, std::pair<std::pair<DWORD,DWORD>, CPointMap> > OpenedContainerMap_t;
+	OpenedContainerMap_t m_openedContainers;	// list of UIDs of all opened containers by the client
 
 	CGObArray<CClientTooltip *> m_TooltipData; // Storage for tooltip data while in trigger
 };

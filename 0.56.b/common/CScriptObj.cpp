@@ -1162,9 +1162,12 @@ badcmd:
 			{
 				int	iLenString = Exp_GetVal( pszKey );
 				TCHAR * sToMatch = Str_GetTemp();
-				SKIP_ARGSEP(pszKey);
-				strcpylen(sToMatch,pszKey,iLenString);
-				pszKey += iLenString;
+				if ( iLenString )
+				{
+					SKIP_ARGSEP(pszKey);
+					strcpylen(sToMatch,pszKey,iLenString+1);
+					pszKey += iLenString;
+				}
 				SKIP_ARGSEP(pszKey);
 				TCHAR * tLastError = Str_GetTemp();
 				int iDataResult = Str_RegExMatch( pszKey, sToMatch, tLastError );
