@@ -1382,7 +1382,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 				DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
 				CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
 
-				if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == pItemCont->GetContainer()->GetUID().GetPrivateUID() ) )
+				DWORD dwTopContainerUID_ToCheck = 0;
+				if ( pItemCont->GetContainer() )
+					dwTopContainerUID_ToCheck = pItemCont->GetContainer()->GetUID().GetPrivateUID();
+				else
+					dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
+
+				if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == dwTopContainerUID_ToCheck ) )
 				{
 					if ( pCharTop != NULL )
 					{
