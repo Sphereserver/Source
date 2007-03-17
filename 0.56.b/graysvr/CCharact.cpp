@@ -1397,7 +1397,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 					}
 					else
 					{
-						if ( ptOpenedContainerPosition == pObjTop->GetTopPoint() )
+						if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
 								isInOpenedContainer = true;
 					}
 				}
