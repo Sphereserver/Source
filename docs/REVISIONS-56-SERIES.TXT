@@ -3208,7 +3208,7 @@ this all in desperation)
 - Updated: sphere_skills.scp (Missing skill cap for Animal Lore in SKILLCLASS 0)
 
 02-03-2007, Ellessar
-- Fixed #1093: serv.restock not working. Now it updated all vendor boxes and world gem bits.
+- Fixed #1093: serv.restock not working. Now it updates all vendor boxes and world gem bits.
 - Fixed: NPCs sometimes not spawning with EF_NewPositionChecks on.
 - Modified: Trigger @CallGuards now have a reference "REF1", which refers to the target of the guard.
 - Modified: NPCs now won't 'talk and follow' you, if your distance from their spawn bit is greater than
@@ -3247,3 +3247,8 @@ this all in desperation)
 
 17-03-2007, Beyonder (Script pack)
 - Updated: sphere_item_treasure_maps.scp (Updated to use 0.56b features)
+
+17-03-2007, Ellessar
+- Added: Function SKILLTEST, which tests values of skills sent as arguments on the default character.
+  Usage: <skilltest carpentry 68.9>
+- Fixed: SKILLMAKE replacing types with item names.

@@ -1170,7 +1170,7 @@ int CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) cons
 int CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
-	if ( GetResType() != RES_SKILL )
+	if ( GetResType() == RES_ITEMDEF )
 	{
 		CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE)m_rid.GetResIndex() );
 		//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));

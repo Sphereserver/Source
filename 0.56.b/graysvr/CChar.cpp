@@ -1244,24 +1244,6 @@ LPCTSTR const CChar::sm_szLoadKeys[CHC_QTY+1] =
 bool CChar::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CChar::r_WriteVal");
-	/*static LPCTSTR const sm_szFameGroups[] =	// display only type stuff.
-	{
-		"ANONYMOUS",
-		"FAMOUS",
-		"INFAMOUS",	// get rid of this in the future.
-		"KNOWN",
-		"OUTLAW",
-		NULL,
-	};*/
-	/*static const CValStr sm_KarmaTitles[] =
-	{
-		"WICKED", INT_MIN,				// -10000 t	o -6001
-		"BELLIGERENT", -6000,			// -6000 to -2001
-		"NEUTRAL", -2000,				// -2000 to  2000
-		"KINDLY", 2001,				// 2001 to  6000
-		"GOODHEARTED", 6001,		// 6001 to 10000
-		NULL, INT_MAX,
-	};*/
 
 	if ( IsClient() && GetClient()->r_WriteVal(pszKey, sVal, pSrc) )
 		return true;
@@ -1456,39 +1438,8 @@ do_default:
 				delete[] FameAt0;
 				return( true );
 			}
-			/*pszKey += strlen(sm_szLoadKeys[iKeyNum]);
-			{
-				int iFame = Stat_GetAdjusted(STAT_FAME);
-				int iKarma = Stat_GetAdjusted(STAT_KARMA);
-				switch ( FindTableSorted( pszKey, sm_szFameGroups, COUNTOF( sm_szFameGroups )-1 ))
-				{
-				case 0: // "ANONYMOUS"
-					iFame = ( iFame < 2000 );
-					DEBUG_ERR(("iFame %d\n",iFame));
-					break;
-				case 1: // "FAMOUS"
-					iFame = ( iFame > 6000 );
-					DEBUG_ERR(("iFame %d\n",iFame));
-					break;
-				case 2: // "INFAMOUS"
-					iFame = ( iFame > 6000 && iKarma <= -6000 );
-					DEBUG_ERR(("iFame %d\n",iFame));
-					break;
-				case 3: // "KNOWN"
-					iFame = ( iFame > 2000 );
-					DEBUG_ERR(("iFame %d\n",iFame));
-					break;
-				case 4: // "OUTLAW"
-					iFame = ( iFame > 2000 && iKarma <= -2000 );
-					DEBUG_ERR(("iFame %d\n",iFame));
-					break;
-				}
-				sVal = iFame ? "1" : "0";
-			}
-			return( true );*/
-
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers.
-			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+			pszKey += 10;
 			SKIP_SEPARATORS(pszKey);
 			{
 				TCHAR * ppArgs[2];
@@ -1501,7 +1452,7 @@ do_default:
 			return( true );
 		case CHC_SKILLBEST:
 			// Get the top skill.
-			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+			pszKey += 9;
 			{
 				int iRank = 0;
 				if ( *pszKey == '.' )
@@ -1513,7 +1464,7 @@ do_default:
 			}
 			return true;
 		case CHC_SEX:	// <SEX milord/milady>	sep chars are :,/
-			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+			pszKey += 3;
 			SKIP_SEPARATORS(pszKey);
 			{
 				TCHAR * ppArgs[2];
@@ -1557,11 +1508,6 @@ do_default:
 				delete[] KarmaAt0;
 				return( true );
 			}
-			/*if ( pszKey[5] != '.' )
-				goto do_default;
-			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
-			sVal = ( ! strcmpi( pszKey, sm_KarmaTitles->FindName( Stat_GetAdjusted(STAT_KARMA)))) ? "1" : "0";
-			return( true );*/
 		case CHC_AR:
 		case CHC_AC:
 			sVal.FormatVal( m_defense + pCharDef->m_defense );
@@ -1574,7 +1520,7 @@ do_default:
 			return true;
 		case CHC_CANCAST:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 7;
 				GETNONWHITESPACE(pszKey);
 
 				TCHAR * ppArgs[2];
@@ -1598,21 +1544,21 @@ do_default:
 		case CHC_CANMAKE:
 			{
 				// use m_Act_Targ ?
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 7;
 				ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, pszKey );
 				sVal.FormatVal( Skill_MakeItem( id,	UID_CLEAR, SKTRIG_SELECT ) );
 			}
 			return true;
 		case CHC_CANMAKESKILL:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 12;
 				ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, pszKey );
 				sVal.FormatVal( Skill_MakeItem( id,	UID_CLEAR, SKTRIG_SELECT, true ) );
 			}
 			return true;
 		case CHC_SKILLUSEQUICK:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 13;
 				GETNONWHITESPACE( pszKey );
 
 				if ( *pszKey )
@@ -1631,9 +1577,28 @@ do_default:
 				}
 			}
 			return false;
+		case CHC_SKILLTEST:
+			{
+				pszKey += 9;
+				GETNONWHITESPACE( pszKey );
+
+				if ( *pszKey )
+				{
+					char * pKey = Str_GetTemp();
+					strcpylen( pKey, pszKey, strlen(pszKey) );
+					CResourceQtyArray Resources;
+					if ( Resources.Load(pKey) && SkillResourceTest( &Resources, (ITEMID_TYPE) 0 ) )
+					{
+						sVal.FormatVal(1);
+						return true;
+					}
+				}
+			}
+			sVal.FormatVal(0);
+			return true;
 		case CHC_CANMOVE:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 7;
 				GETNONWHITESPACE(pszKey);
 
 				CPointBase	ptDst	= GetTopPoint();
@@ -1657,13 +1622,15 @@ do_default:
 		case CHC_MOUNT:
 			{
 				CChar *pChar = Horse_GetMountChar();
-				if ( pChar == NULL ) sVal.FormatVal(0);
-				else sVal.FormatVal(pChar->GetUID());
+				if ( pChar == NULL )
+					sVal.FormatVal(0);
+				else
+					sVal.FormatVal(pChar->GetUID());
 				return true;
 			}
 		case CHC_MOVE:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 4;
 				GETNONWHITESPACE(pszKey);
 
 				CPointBase	ptDst	= GetTopPoint();
@@ -1724,7 +1691,7 @@ do_default:
 			{
 				CPointBase	pt = GetTopPoint();
 
-				if ( LayerFind(LAYER_FLAG_Stuck) && IsStatFlag( STATF_Freeze ) )					// it is stuck if is in web/etc
+				if ( LayerFind(LAYER_FLAG_Stuck) && IsStatFlag( STATF_Freeze ) )	// it is stuck if is in web/etc
 					sVal.FormatVal(1);
 				else if ( CanMoveWalkTo(pt, true, true, DIR_N) || CanMoveWalkTo(pt, true, true, DIR_E) || CanMoveWalkTo(pt, true, true, DIR_S) || CanMoveWalkTo(pt, true, true, DIR_W) )
 					sVal.FormatVal(0);
@@ -1735,7 +1702,7 @@ do_default:
 		case CHC_ISTEVENT:
 			if ( pszKey[8] != '.' )
 				return( false );
-			pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+			pszKey += 8;
 			sVal = ( pCharDef->m_TEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
 			return true;
 		case CHC_ISVENDOR:
@@ -1764,7 +1731,7 @@ do_default:
 			{
 				DWORD dwFlags	= 0;
 				CItemMemory *	pMemory;
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 6;
 				if ( *pszKey == '.' )
 				{
 					pszKey++;
@@ -1785,7 +1752,7 @@ do_default:
 			break;
 		case CHC_SKILLTOTAL:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 10;
 				SKIP_SEPARATORS(pszKey);
 				GETNONWHITESPACE(pszKey);
 
@@ -1823,7 +1790,7 @@ do_default:
 			{
 				if ( m_pPlayer != NULL )
 				{
-					pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+					pszKey += 7;
 					SKIP_SEPARATORS(pszKey);
 
 					CScriptObj * pRef = m_pPlayer->GetAccount();
@@ -1913,7 +1880,7 @@ do_default:
 			break;
 		case CHC_NOTOGETFLAG:
 			{
-				pszKey += strlen(sm_szLoadKeys[iKeyNum]);
+				pszKey += 11;
 				GETNONWHITESPACE(pszKey);
 
 				CGrayUID uid = Exp_GetVal( pszKey );
