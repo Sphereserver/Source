@@ -3255,3 +3255,6 @@ this all in desperation)
 
 17-03-2007, Furio
 - Fixed #1117: Unable to access subcontainers on the ground.
+
+17-03-2007, MrSugarCube
+- Fixed #1118: Ship functions being reported as invalid commands.

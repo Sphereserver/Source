@@ -796,7 +796,7 @@ dodirmovechange:
 		pChar->ParseText( szText, &g_Serv );
 		pTiller->Speak( szText, 0, TALKMODE_SAY, FONT_NORMAL );
 	}
-	return false;
+	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
