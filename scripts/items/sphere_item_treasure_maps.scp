@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2005
+//SPHERE by : Menasoft 1997-2005
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 16, 2005
+// FILE LAST UPDATED: Friday, March 17, 2007
 //
 VERSION=0.56b
 
@@ -16,78 +16,73 @@ TMOS       0FFFFFED4 //Treasure Map Offset
 TMS        08c //Treasure Map Size   200x200 pixels - pins are in pixels
 TMTILES    { i_plant_fern 1 i_plant_rushes 1 i_plant_fern 1 i_plant_fern_5 1 i_plant_bulrushes 1 i_plant_grasses 1 i_plant_fern_3 1 i_plant_fern_4 1 }
 
+[DEFNAME TREASURE_MAPS_SPEECH]
+msg_no_pickaxe      Where is your Pickaxe?
+msg_no_cartography  You are not a good enough cartographer for this!
+msg_dig_treasure    WOW a treasure !! OOPS!!
+msg_cant_open_yet   You can not open the chest yet!
+
 [TYPEDEF T_L1MAP]
 //LEVEL1MAP Deciphering
-
 ON=@DCLICK
-	IF ! <SRC.RESTEST 1 i_pickaxe>
-		SRC.MESSAGE=Where is your Pickaxe?
+	IF (!<SRC.RESTEST 1 i_pickaxe>)
+		SRC.MESSAGE <def.msg_no_pickaxe>
 		RETURN 1
 	endif
 	IF (<SRC.CARTOGRAPHY><50.0)
-		SRC.MESSAGE=You are not a good enough cartographer for this!
+		SRC.MESSAGE <def.msg_no_cartography>
 		RETURN 1
 	endif
-	// MOREP = the treasure location = MOREX,MOREY
 	IF (<MORE><0FFFF)
 		NAME=Deciphered Treasure Map
 		TYPE=T_MAP
 		MORE1=((<MOREX> -180)*010000)+(<MOREY> -180)
 		MORE2=((<MOREX> +180)*010000)+(<MOREY> +180)
 		PIN=105,105   // dead center.
-		SRC.HOME=<SRC.P>
-		SRC.P=<MOREP>
-		SRC.NEWITEM=<DEF.TMTILES> //Place trigger random tile on UO Map
-		SRC.NEW.TYPE=T_L1MAP_CHEST
-		SRC.NEW.TIMER=-1
-		SRC.NEW.ATTR=attr_static|attr_move_never
-		SRC.NEW.LINK=<UID>
-		SRC.NEW.P=<SRC.P>
-		SRC.P=<SRC.HOME>   // put us back where we really are.
+		NEWITEM <DEF.TMTILES> //Place trigger random tile on UO Map
+		NEW.TYPE=T_L1MAP_CHEST
+		NEW.TIMER=-1
+		NEW.ATTR=attr_static|attr_move_never
+		NEW.LINK=<UID>
+		NEW.P=<MOREP>
 		RETURN 0
-	endif
+	ENDIF
 
 [TYPEDEF T_L2MAP]
 //LEVEL2MAP Deciphering
-
 ON=@DCLICK
-	IF ! <SRC.RESTEST 1 i_pickaxe>
-		SRC.MESSAGE=Where is your Pickaxe?
+	IF (!<SRC.RESTEST 1 i_pickaxe>)
+		SRC.MESSAGE <def.msg_no_pickaxe>
 		RETURN 1
 	endif
 	IF (<SRC.CARTOGRAPHY><60.0)
-		SRC.MESSAGE=You are not a good enough cartographer for this!
+		SRC.MESSAGE <def.msg_no_cartography>
 		RETURN 1
 	endif
-	// MOREP = the treasure location = MOREX,MOREY
 	IF (<MORE><0FFFF)
 		NAME=Deciphered Treasure Map
 		TYPE=T_MAP
 		MORE1=((<MOREX> -180)*010000)+(<MOREY> -180)
 		MORE2=((<MOREX> +180)*010000)+(<MOREY> +180)
 		PIN=105,105   // dead center.
-		SRC.HOME=<SRC.P>
-		SRC.P=<MOREP>
-		SRC.NEWITEM=<DEF.TMTILES> //Place trigger random tile on UO Map
-		SRC.NEW.TYPE=T_L2MAP_CHEST
-		SRC.NEW.TIMER=-1
-		SRC.NEW.ATTR=attr_static|attr_move_never
-		SRC.NEW.LINK=<UID>
-		SRC.NEW.P=<SRC.P>
-		SRC.P=<SRC.HOME>   // put us back where we really are.
+		NEWITEM <DEF.TMTILES> //Place trigger random tile on UO Map
+		NEW.TYPE=T_L2MAP_CHEST
+		NEW.TIMER=-1
+		NEW.ATTR=attr_static|attr_move_never
+		NEW.LINK=<UID>
+		NEW.P=<MOREP>
 		RETURN 0
-	endif
+	ENDIF
 
 [TYPEDEF T_L3MAP]
 //LEVEL3MAP Deciphering
-
 ON=@DCLICK
-	IF ! <SRC.RESTEST 1 i_pickaxe>
-		SRC.MESSAGE=Where is your Pickaxe?
+	IF (!<SRC.RESTEST 1 i_pickaxe>)
+		SRC.MESSAGE <def.msg_no_pickaxe>
 		RETURN 1
 	endif
 	IF (<SRC.CARTOGRAPHY><70.0)
-		SRC.MESSAGE=You are not a good enough cartographer for this!
+		SRC.MESSAGE <def.msg_no_cartography>
 		RETURN 1
 	endif
 	IF (<MORE><0FFFF)
@@ -96,28 +91,24 @@ ON=@DCLICK
 		MORE1=((<MOREX> -180)*010000)+(<MOREY> -180)
 		MORE2=((<MOREX> +180)*010000)+(<MOREY> +180)
 		PIN=105,105   // dead center.
-		SRC.HOME=<SRC.P>
-		SRC.P=<MOREP>
-		SRC.NEWITEM=<DEF.TMTILES> //Place trigger random tile on UO Map
-		SRC.NEW.TYPE=T_L3MAP_CHEST
-		SRC.NEW.TIMER=-1
-		SRC.NEW.ATTR=attr_static|attr_move_never
-		SRC.NEW.LINK=<UID>
-		SRC.NEW.P=<SRC.P>
-		SRC.P=<SRC.HOME>   // put us back where we really are.
+		NEWITEM <DEF.TMTILES> //Place trigger random tile on UO Map
+		NEW.TYPE=T_L3MAP_CHEST
+		NEW.TIMER=-1
+		NEW.ATTR=attr_static|attr_move_never
+		NEW.LINK=<UID>
+		NEW.P=<MOREP>
 		RETURN 0
-	endif
+	ENDIF
 
 [TYPEDEF T_L4MAP]
 //LEVEL4MAP Deciphering
-
 ON=@DCLICK
-	IF ! <SRC.RESTEST 1 i_pickaxe>
-		SRC.MESSAGE=Where is your Pickaxe?
+	IF (!<SRC.RESTEST 1 i_pickaxe>)
+		SRC.MESSAGE <def.msg_no_pickaxe>
 		RETURN 1
 	endif
 	IF (<SRC.CARTOGRAPHY><80.0)
-		SRC.MESSAGE=You are not a good enough cartographer for this!
+		SRC.MESSAGE <def.msg_no_cartography>
 		RETURN 1
 	endif
 	IF (<MORE><0FFFF)
@@ -126,28 +117,24 @@ ON=@DCLICK
 		MORE1=((<MOREX> -180)*010000)+(<MOREY> -180)
 		MORE2=((<MOREX> +180)*010000)+(<MOREY> +180)
 		PIN=105,105   // dead center.
-		SRC.HOME=<SRC.P>
-		SRC.P=<MOREP>
-		SRC.NEWITEM=<DEF.TMTILES> //Place trigger random tile on UO Map
-		SRC.NEW.TYPE=T_L4MAP_CHEST
-		SRC.NEW.TIMER=-1
-		SRC.NEW.ATTR=attr_static|attr_move_never
-		SRC.NEW.LINK=<UID>
-		SRC.NEW.P=<SRC.P>
-		SRC.P=<SRC.HOME>   // put us back where we really are.
+		NEWITEM <DEF.TMTILES> //Place trigger random tile on UO Map
+		NEW.TYPE=T_L4MAP_CHEST
+		NEW.TIMER=-1
+		NEW.ATTR=attr_static|attr_move_never
+		NEW.LINK=<UID>
+		NEW.P=<MOREP>
 		RETURN 0
-	endif
+	ENDIF
 
 [TYPEDEF T_L5MAP]
 //LEVEL5MAP Deciphering
-
 ON=@DCLICK
-	IF ! <SRC.RESTEST 1 i_pickaxe>
-		SRC.MESSAGE=Where is your Pickaxe?
+	IF (!<SRC.RESTEST 1 i_pickaxe>)
+		SRC.MESSAGE <def.msg_no_pickaxe>
 		RETURN 1
 	endif
 	IF (<SRC.CARTOGRAPHY><90.0)
-		SRC.MESSAGE=You are not a good enough cartographer for this!
+		SRC.MESSAGE <def.msg_no_cartography>
 		RETURN 1
 	endif
 	IF (<MORE><0FFFF)
@@ -156,41 +143,37 @@ ON=@DCLICK
 		MORE1=((<MOREX> -180)*010000)+(<MOREY> -180)
 		MORE2=((<MOREX> +180)*010000)+(<MOREY> +180)
 		PIN=105,105   // dead center.
-		SRC.HOME=<SRC.P>
-		SRC.P=<MOREP>
-		SRC.NEWITEM=<DEF.TMTILES> //Place trigger random tile on UO Map
-		SRC.NEW.TYPE=T_L5MAP_CHEST
-		SRC.NEW.TIMER=-1
-		SRC.NEW.ATTR=attr_static|attr_move_never
-		SRC.NEW.LINK=<UID>
-		SRC.NEW.P=<SRC.P>
-		SRC.P=<SRC.HOME>   // put us back where we really are.
+		NEWITEM <DEF.TMTILES> //Place trigger random tile on UO Map
+		NEW.TYPE=T_L5MAP_CHEST
+		NEW.TIMER=-1
+		NEW.ATTR=attr_static|attr_move_never
+		NEW.LINK=<UID>
+		NEW.P=<MOREP>
 		RETURN 0
-	endif
+	ENDIF
 
 [TYPEDEF T_L1MAP_CHEST]
 //LEVEL1MAP Treasure map Chest Spawn
-
 ON=@DCLICK
-	IF <DISTANCE>>3
+	IF (<DISTANCE>>3)
 		RETURN 1
 	endif
-	IF ( <LINK.TOPOBJ.UID> != <SRC.UID> )
+	IF (<LINK.TOPOBJ.UID> != <SRC.UID>)
 		RETURN 1
 	endif
 	IF ((<SRC.FINDLAYER(layer_hand1).BASEID>==i_PICKAXE) && (<SRC.MINING>>50.0))
-		SRC.ANIM=0B
-		SOUND=0126
-		SRC.NEWITEM=TM_LOOT_1 //Treasure map random poor loot
-		SRC.NEW.P=<P>
-		SRC.MESSAGE=WOW a treasure !! OOPS!!
+		SRC.ANIM 0B
+		SOUND 0126
+		NEWITEM TM_LOOT_1 //Treasure map random poor loot
+		NEW.P=<P>
+		SRC.MESSAGE=<def.msg_dig_treasure>
 		LINK.REMOVE         //remove linked deciphered map
-		SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_VEasy //Treasure map very easy monster spawn
+		NEW.P=<P>
 		REMOVE            //remove trigger plant
 		RETURN 1
 	endif
@@ -198,112 +181,108 @@ ON=@DCLICK
 
 [TYPEDEF T_L2MAP_CHEST]
 //LEVEL2MAP Treasure map Chest Spawn
-
 ON=@DCLICK
-	IF <DISTANCE>>3
+	IF (<DISTANCE>>3)
 		RETURN 1
 	endif
-	IF ( <LINK.TOPOBJ.UID> != <SRC.UID> )
+	IF (<LINK.TOPOBJ.UID> != <SRC.UID>)
 		RETURN 1
 	endif
-	IF (<SRC.FINDLAYER(layer_hand1).BASEID>==i_pickaxe) && (<SRC.MINING>>60.0)
-		SRC.ANIM=0B
-		SOUND=0126
-		SRC.NEWITEM=TM_LOOT_2 //Treasure map random poor loot
-		SRC.NEW.P=<P>
-		SRC.MESSAGE=WOW a treasure !! OOPS!!
+	IF ((<SRC.FINDLAYER(layer_hand1).BASEID>==i_PICKAXE) && (<SRC.MINING>>60.0))
+		SRC.ANIM 0B
+		SOUND 0126
+		NEWITEM TM_LOOT_2 //Treasure map random poor loot
+		NEW.P=<P>
+		SRC.MESSAGE=<def.msg_dig_treasure>
 		LINK.REMOVE         //remove linked deciphered map
-		SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		REMOVE
+		NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Easy //Treasure map very easy monster spawn
+		NEW.P=<P>
+		REMOVE            //remove trigger plant
 		RETURN 1
 	endif
 	RETURN 1
 
 [TYPEDEF T_L3MAP_CHEST]
 //LEVEL3MAP Treasure map Chest Spawn
-
 ON=@DCLICK
-	IF <DISTANCE>>3
+	IF (<DISTANCE>>3)
 		RETURN 1
 	endif
-	IF ( <LINK.TOPOBJ.UID> != <SRC.UID> )
+	IF (<LINK.TOPOBJ.UID> != <SRC.UID>)
 		RETURN 1
 	endif
-	IF (<SRC.FINDLAYER(layer_hand1).BASEID>==i_pickaxe) && (<SRC.MINING>>70.0)
-		SRC.ANIM=0B
-		SOUND=0126
-		SRC.NEWITEM=TM_LOOT_3 //Treasure map random poor loot
-		SRC.NEW.P=<P>
-		SRC.MESSAGE=WOW a treasure !! OOPS!!
+	IF ((<SRC.FINDLAYER(layer_hand1).BASEID>==i_PICKAXE) && (<SRC.MINING>>70.0))
+		SRC.ANIM 0B
+		SOUND 0126
+		NEWITEM TM_LOOT_3 //Treasure map random poor loot
+		NEW.P=<P>
+		SRC.MESSAGE=<def.msg_dig_treasure>
 		LINK.REMOVE         //remove linked deciphered map
-		SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		REMOVE
+		NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Avg //Treasure map very easy monster spawn
+		NEW.P=<P>
+		REMOVE            //remove trigger plant
 		RETURN 1
 	endif
 	RETURN 1
 
 [TYPEDEF T_L4MAP_CHEST]
 //LEVEL4MAP Treasure map Chest Spawn
-
 ON=@DCLICK
-	IF <DISTANCE>>3
+	IF (<DISTANCE>>3)
 		RETURN 1
 	endif
-	IF ( <LINK.TOPOBJ.UID> != <SRC.UID> )
+	IF (<LINK.TOPOBJ.UID> != <SRC.UID>)
 		RETURN 1
 	endif
-	IF (<SRC.FINDLAYER(layer_hand1).BASEID>==i_pickaxe) && (<SRC.MINING>>80.0)
-		SRC.ANIM=0B
-		SOUND=0126
-		SRC.NEWITEM=TM_LOOT_4 //Treasure map random poor loot
-		SRC.NEW.P=<P>
-		SRC.MESSAGE=WOW a treasure !! OOPS!!
+	IF ((<SRC.FINDLAYER(layer_hand1).BASEID>==i_PICKAXE) && (<SRC.MINING>>80.0))
+		SRC.ANIM 0B
+		SOUND 0126
+		NEWITEM TM_LOOT_4 //Treasure map random poor loot
+		NEW.P=<P>
+		SRC.MESSAGE=<def.msg_dig_treasure>
 		LINK.REMOVE         //remove linked deciphered map
-		SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		REMOVE
+		NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_Hard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		REMOVE            //remove trigger plant
 		RETURN 1
 	endif
 	RETURN 1
 
 [TYPEDEF T_L5MAP_CHEST]
 //LEVEL5MAP Treasure map Chest Spawn
-
 ON=@DCLICK
-	IF <DISTANCE>>3
+	IF (<DISTANCE>>3)
 		RETURN 1
 	endif
-	IF ( <LINK.TOPOBJ.UID> != <SRC.UID> )
+	IF (<LINK.TOPOBJ.UID> != <SRC.UID>)
 		RETURN 1
 	endif
-	IF (<SRC.FINDLAYER(layer_hand1).BASEID>==i_pickaxe) && (<SRC.MINING>>90.0)
-		SRC.ANIM=0B
-		SOUND=0126
-		SRC.NEWITEM=TM_LOOT_5 //Treasure map random poor loot
-		SRC.NEW.P=<P>
-		SRC.MESSAGE=WOW a treasure !! OOPS!!
+	IF ((<SRC.FINDLAYER(layer_hand1).BASEID>==i_PICKAXE) && (<SRC.MINING>>90.0))
+		SRC.ANIM 0B
+		SOUND 0126
+		NEWITEM TM_LOOT_5 //Treasure map random poor loot
+		NEW.P=<P>
+		SRC.MESSAGE=<def.msg_dig_treasure>
 		LINK.REMOVE         //remove linked deciphered map
-		SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
-		SRC.NEW.P=<P>
-		REMOVE
+		NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		NEWITEM=i_Treas_Spawn_VHard //Treasure map very easy monster spawn
+		NEW.P=<P>
+		REMOVE            //remove trigger plant
 		RETURN 1
 	endif
 	RETURN 1
@@ -322,7 +301,7 @@ ON=@CREATE
 ON=@DCLICK
 	if (<MORE1>==02)
 		if (<TIMER>>700)
-			SRC.MESSAGE=You can not open the chest yet!
+			SRC.MESSAGE <def.msg_cant_open_yet>
 			RETURN 1
 		else
 			TYPE=T_CONTAINER
@@ -336,44 +315,44 @@ ON=@DCLICK
 		TIMER=900
 		SOUND=01FE
 		IF <MORE2>==01
-			SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
-			SRC.NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VEasy //Treasure map random very easy monster spawn
+			NEW.P=<P>
 			RETURN 1
 		elif <MORE2>==02
-			SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
-			SRC.NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Easy //Treasure map random easy monster spawn
+			NEW.P=<P>
 			RETURN 1
 		elif <MORE2>==03
-			SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
-			SRC.NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Avg //Treasure map random average monster spawn
+			NEW.P=<P>
 			RETURN 1
 		elif <MORE2>==04
-			SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
-			SRC.NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_Hard //Treasure map random hard monster spawn
+			NEW.P=<P>
 			RETURN 1
 		elif <MORE2>==05
-			SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
-			SRC.NEW.P=<P>
-			SRC.NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
-			SRC.NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
+			NEW.P=<P>
+			NEWITEM=i_Treas_Spawn_VHard //Treasure map random very hard monster spawn
+			NEW.P=<P>
 			RETURN 1
 		endif
 		RETURN 0
@@ -382,7 +361,7 @@ ON=@DCLICK
 	// Level 1 Treasure Maps //
 	///////////////////////////
 
-[ITEMDEF i_ttm_l1_0]
+[ITEMDEF i_ttm_l1]
 ID=i_map
 NAME=Tattered Treasure Map
 CATEGORY=Maps - Treasure
@@ -391,417 +370,45 @@ DESCRIPTION=Map
 
 ON=@Create
 	TYPE=T_L1MAP
-	MOREP=2354,3447,0
-	MORE1=0932 //X Treasure position in HEX   // not used !
-	MORE2=0d77 //Y Treasure position in HEX
-
-[ITEMDEF i_ttm_l1_1]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MOREP=1133,3403,0
-	MORE1=046D
-	MORE2=0D4B
-
-[ITEMDEF i_ttm_l1_2]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MOREP=1142,3509,0
-	MORE1=0476
-	MORE2=0DB5
-
-[ITEMDEF i_ttm_l1_3]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MOREP=1726,3507,3
-	MORE1=06BE
-	MORE2=0DB3
-
-[ITEMDEF i_ttm_l1_4]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D6A
-	MORE1=047A
-	MOREP=1146,3434,0
-
-[ITEMDEF i_ttm_l1_5]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D92
-	MORE1=07EA
-	MOREP=2026,3474,0
-
-[ITEMDEF i_ttm_l1_6]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D6D
-	MORE1=075D
-	MOREP=1885,3437,10
-
-[ITEMDEF i_ttm_l1_7]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D6D
-	MORE1=0808
-	MOREP=2056,3437,0
-
-[ITEMDEF i_ttm_l1_8]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0DEA
-	MORE1=080B
-	MOREP=2059,3562,0
-
-[ITEMDEF i_ttm_l1_9]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0B33
-	MORE1=0E25
-	MOREP=3621,2867,33
-
-[ITEMDEF i_ttm_l1_10]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D23
-	MORE1=0879
-	MOREP=2169,3363,10
-
-[ITEMDEF i_ttm_l1_11]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0DB9
-	MORE1=0956
-	MOREP=2390,3513,3
-
-[ITEMDEF i_ttm_l1_12]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0B4E
-	MORE1=0E56
-	MOREP=3670,2894,17
-
-[ITEMDEF i_ttm_l1_13]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F91
-	MORE1=0850
-	MOREP=2128,3985,3
-
-[ITEMDEF i_ttm_l1_14]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F38
-	MORE1=0872
-	MOREP=2162,3896,0
-
-[ITEMDEF i_ttm_l1_15]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F68
-	MORE1=01173
-	MOREP=4467,3944,0
-
-[ITEMDEF i_ttm_l1_16]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0E28
-	MORE1=012E0
-	MOREP=4832,3624,0
-
-[ITEMDEF i_ttm_l1_17]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F25
-	MORE1=01218
-	MOREP=4632,3877,0
-
-[ITEMDEF i_ttm_l1_18]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D31
-	MORE1=0123A
-	MOREP=4666,3377,0
-
-[ITEMDEF i_ttm_l1_19]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D8C
-	MORE1=0126D
-	MOREP=4717,3468,0
-
-[ITEMDEF i_ttm_l1_20]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0C1A
-	MORE1=011AF
-	MOREP=4527,3098,0
-
-[ITEMDEF i_ttm_l1_21]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0CC7
-	MORE1=0120F
-	MOREP=4623,3271,0
-
-[ITEMDEF i_ttm_l1_22]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0C5B
-	MORE1=0112E
-	MOREP=4398,3163,0
-
-[ITEMDEF i_ttm_l1_23]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0C32
-	MORE1=01153
-	MOREP=4435,3122,0
-
-[ITEMDEF i_ttm_l1_24]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0CE9
-	MORE1=011E1
-	MOREP=4577,3305,0
-
-[ITEMDEF i_ttm_l1_25]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0C91
-	MORE1=011A7
-	MOREP=4519,3217,0
-
-[ITEMDEF i_ttm_l1_26]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D74
-	MORE1=011D3
-	MOREP=4563,3444,0
-
-[ITEMDEF i_ttm_l1_27]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0D20
-	MORE1=011D8
-	MOREP=4568,3360,0
-
-[ITEMDEF i_ttm_l1_28]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F36
-	MORE1=09BA
-	MOREP=2490,3894,3
-
-[ITEMDEF i_ttm_l1_29]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F5A
-	MORE1=09CF
-	MOREP=2511,3930,3
-
-[ITEMDEF i_ttm_l1_30]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F9C
-	MORE1=09E1
-	MOREP=2529,3996,3
-
-[ITEMDEF i_ttm_l1_31]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 1
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L1MAP
-	MORE2=0F6F
-	MORE1=09B1
-	MOREP=2481,3951,3
+	DORAND 32
+		MOREP=2354,3447,0
+		MOREP=1133,3403,0
+		MOREP=1142,3509,0
+		MOREP=1726,3507,3
+		MOREP=1146,3434,0
+		MOREP=2026,3474,0
+		MOREP=1885,3437,10
+		MOREP=2056,3437,0
+		MOREP=2059,3562,0
+		MOREP=3621,2867,33
+		MOREP=2169,3363,10
+		MOREP=2390,3513,3
+		MOREP=3670,2894,17
+		MOREP=2128,3985,3
+		MOREP=2162,3896,0
+		MOREP=4467,3944,0
+		MOREP=4832,3624,0
+		MOREP=4632,3877,0
+		MOREP=4666,3377,0
+		MOREP=4717,3468,0
+		MOREP=4527,3098,0
+		MOREP=4623,3271,0
+		MOREP=4398,3163,0
+		MOREP=4435,3122,0
+		MOREP=4577,3305,0
+		MOREP=4519,3217,0
+		MOREP=4563,3444,0
+		MOREP=4568,3360,0
+		MOREP=2490,3894,3
+		MOREP=2511,3930,3
+		MOREP=2529,3996,3
+		MOREP=2481,3951,3
+	ENDDO
 	///////////////////////////
 	// Level 2 Treasure Maps //
 	///////////////////////////
 
-[ITEMDEF i_ttm_l2_0]
+[ITEMDEF i_ttm_l2]
 ID=i_map
 NAME=Tattered Treasure Map
 CATEGORY=Maps - Treasure
@@ -810,416 +417,44 @@ DESCRIPTION=Map
 
 ON=@Create
 	TYPE=T_L2MAP
-	MORE2=0C34
-	MORE1=0431
-	MOREP=1073,3124,0
-
-[ITEMDEF i_ttm_l2_1]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D9A
-	MORE1=042F
-	MOREP=1071,3482,0
-
-[ITEMDEF i_ttm_l2_2]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0DD8
-	MORE1=0485
-	MOREP=1157,3544,0
-
-[ITEMDEF i_ttm_l2_3]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0DE1
-	MORE1=0687
-	MOREP=1671,3553,0
-
-[ITEMDEF i_ttm_l2_4]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D61
-	MORE1=046A
-	MOREP=1130,3425,0
-
-[ITEMDEF i_ttm_l2_5]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D68
-	MORE1=07E3
-	MOREP=2019,3432,0
-
-[ITEMDEF i_ttm_l2_6]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D74
-	MORE1=074B
-	MOREP=1867,3444,10
-
-[ITEMDEF i_ttm_l2_7]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D91
-	MORE1=0800
-	MOREP=2048,3473,0
-
-[ITEMDEF i_ttm_l2_8]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0DFD
-	MORE1=0827
-	MOREP=2087,3581,0
-
-[ITEMDEF i_ttm_l2_9]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D04
-	MORE1=081E
-	MOREP=2078,3332,0
-
-[ITEMDEF i_ttm_l2_10]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D28
-	MORE1=0899
-	MOREP=2201,3368,0
-
-[ITEMDEF i_ttm_l2_11]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	MORE2=0DB9
-	MORE1=0935
-	MOREP=2357,3513,3
-
-[ITEMDEF i_ttm_l2_12]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0B46
-	MORE1=0E66
-	MOREP=3686,2886,15
-
-[ITEMDEF i_ttm_l2_13]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F7B
-	MORE1=0854
-	MOREP=2132,3963,3
-
-[ITEMDEF i_ttm_l2_14]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0E0B
-	MORE1=09DD
-	MOREP=2525,3595,0
-
-[ITEMDEF i_ttm_l2_15]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F49
-	MORE1=0116C
-	MOREP=4460,3913,0
-
-[ITEMDEF i_ttm_l2_16]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0E81
-	MORE1=012DB
-	MOREP=4827,3713,0
-
-[ITEMDEF i_ttm_l2_17]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F26
-	MORE1=01201
-	MOREP=4609,3878,0
-
-[ITEMDEF i_ttm_l2_18]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D40
-	MORE1=01251
-	MOREP=4689,3392,0
-
-[ITEMDEF i_ttm_l2_19]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D9C
-	MORE1=01283
-	MOREP=4739,3484,0
-
-[ITEMDEF i_ttm_l2_20]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0C11
-	MORE1=011C3
-	MOREP=4547,3089,0
-
-[ITEMDEF i_ttm_l2_21]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0CE3
-	MORE1=0120E
-	MOREP=4622,3299,1
-
-[ITEMDEF i_ttm_l2_22]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0C43
-	MORE1=0112A
-	MOREP=4394,3139,0
-
-[ITEMDEF i_ttm_l2_23]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0C3A
-	MORE1=01159
-	MOREP=4441,3130,0
-
-[ITEMDEF i_ttm_l2_24]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0CDD
-	MORE1=011D5
-	MOREP=4565,3293,0
-
-[ITEMDEF i_ttm_l2_25]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0C89
-	MORE1=011A3
-	MOREP=4515,3209,0
-
-[ITEMDEF i_ttm_l2_26]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D5B
-	MORE1=011D5
-	MOREP=4565,3419,0
-
-[ITEMDEF i_ttm_l2_27]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0D1C
-	MORE1=011DD
-	MOREP=4573,3356,0
-
-[ITEMDEF i_ttm_l2_28]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F3F
-	MORE1=09B1
-	MOREP=2481,3903,6
-
-[ITEMDEF i_ttm_l2_29]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F76
-	MORE1=09D1
-	MOREP=2513,3958,6
-
-[ITEMDEF i_ttm_l2_30]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0FA3
-	MORE1=09CF
-	MOREP=2511,4003,3
-
-[ITEMDEF i_ttm_l2_31]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 2
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L2MAP
-	MORE2=0F88
-	MORE1=099F
-	MOREP=2463,3976,3
+	DORAND 31
+		MOREP=1073,3124,0
+		MOREP=1071,3482,0
+		MOREP=1157,3544,0
+		MOREP=1671,3553,0
+		MOREP=1130,3425,0
+		MOREP=2019,3432,0
+		MOREP=1867,3444,10
+		MOREP=2048,3473,0
+		MOREP=2087,3581,0
+		MOREP=2078,3332,0
+		MOREP=2201,3368,0
+		MOREP=3686,2886,15
+		MOREP=2132,3963,3
+		MOREP=2525,3595,0
+		MOREP=4460,3913,0
+		MOREP=4827,3713,0
+		MOREP=4609,3878,0
+		MOREP=4689,3392,0
+		MOREP=4739,3484,0
+		MOREP=4547,3089,0
+		MOREP=4622,3299,1
+		MOREP=4394,3139,0
+		MOREP=4441,3130,0
+		MOREP=4565,3293,0
+		MOREP=4515,3209,0
+		MOREP=4565,3419,0
+		MOREP=4573,3356,0
+		MOREP=2481,3903,6
+		MOREP=2513,3958,6
+		MOREP=2511,4003,3
+		MOREP=2463,3976,3
+	ENDDO
 	///////////////////////////
 	// Level 3 Treasure Maps //
 	///////////////////////////
 
-[ITEMDEF i_ttm_l3_0]
+[ITEMDEF i_ttm_l3]
 ID=i_map
 NAME=Tattered Treasure Map
 CATEGORY=Maps - Treasure
@@ -1228,417 +463,45 @@ DESCRIPTION=Map
 
 ON=@Create
 	TYPE=T_L3MAP
-	MORE2=0F49
-	MORE1=09B2
-	MOREP=2482,3913,3
-
-[ITEMDEF i_ttm_l3_1]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D98
-	MORE1=0444
-	MOREP=1092,3480,0
-
-[ITEMDEF i_ttm_l3_2]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0DA4
-	MORE1=0703
-	MOREP=1795,3492,0
-
-[ITEMDEF i_ttm_l3_3]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D75
-	MORE1=0640
-	MOREP=1600,3445,0
-
-[ITEMDEF i_ttm_l3_4]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0E3A
-	MORE1=086B
-	MOREP=2155,3642,0
-
-[ITEMDEF i_ttm_l3_5]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D31
-	MORE1=07BD
-	MOREP=1981,3377,0
-
-[ITEMDEF i_ttm_l3_6]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D86
-	MORE1=072D
-	MOREP=1837,3462,10
-
-[ITEMDEF i_ttm_l3_7]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0DA5
-	MORE1=07F7
-	MOREP=2039,3493,0
-
-[ITEMDEF i_ttm_l3_8]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0E0B
-	MORE1=0840
-	MOREP=2112,3595,10
-
-[ITEMDEF i_ttm_l3_9]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D0A
-	MORE1=0832
-	MOREP=2098,3338,0
-
-[ITEMDEF i_ttm_l3_10]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D48
-	MORE1=0880
-	MOREP=2176,3400,0
-
-[ITEMDEF i_ttm_l3_11]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0DAF
-	MORE1=0919
-	MOREP=2329,3503,0
-
-[ITEMDEF i_ttm_l3_12]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0B3A
-	MORE1=0E6A
-	MOREP=3690,2874,12
-
-[ITEMDEF i_ttm_l3_13]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F67
-	MORE1=084F
-	MOREP=2127,3943,3
-
-[ITEMDEF i_ttm_l3_14]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F4D
-	MORE1=011BF
-	MOREP=4543,3917,0
-
-[ITEMDEF i_ttm_l3_15]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F39
-	MORE1=01179
-	MOREP=4473,3897,0
-
-[ITEMDEF i_ttm_l3_16]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0EBB
-	MORE1=012B1
-	MOREP=4785,3771,0
-
-[ITEMDEF i_ttm_l3_17]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F26
-	MORE1=011F5
-	MOREP=4597,3878,0
-
-[ITEMDEF i_ttm_l3_18]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D44
-	MORE1=0125C
-	MOREP=4700,3396,0
-
-[ITEMDEF i_ttm_l3_19]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0DAD
-	MORE1=01291
-	MOREP=4753,3501,0
-
-[ITEMDEF i_ttm_l3_20]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0C2C
-	MORE1=011E1
-	MOREP=4577,3116,0,easy
-
-[ITEMDEF i_ttm_l3_21]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0CF1
-	MORE1=01206
-	MOREP=4614,3313,0
-
-[ITEMDEF i_ttm_l3_22]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0C3A
-	MORE1=01136
-	MOREP=4406,3130,0
-
-[ITEMDEF i_ttm_l3_23]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0C21
-	MORE1=01168
-	MOREP=4456,3105,0,easy
-
-[ITEMDEF i_ttm_l3_24]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0CB6
-	MORE1=011B7
-	MOREP=4535,3254,0
-
-[ITEMDEF i_ttm_l3_25]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0C61
-	MORE1=01175
-	MOREP=4469,3169,0
-
-[ITEMDEF i_ttm_l3_26]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D4A
-	MORE1=011DE
-	MOREP=4574,3402,0
-
-[ITEMDEF i_ttm_l3_27]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0D11
-	MORE1=011DE
-	MOREP=4574,3345,0
-
-[ITEMDEF i_ttm_l3_28]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F44
-	MORE1=09C6
-	MOREP=2502,3908,3
-
-[ITEMDEF i_ttm_l3_29]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F7F
-	MORE1=09CC
-	MOREP=2508,3967,3
-
-[ITEMDEF i_ttm_l3_30]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0FAD
-	MORE1=09C2
-	MOREP=2498,4013,3
-
-[ITEMDEF i_ttm_l3_31]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 3
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L3MAP
-	MORE2=0F70
-	MORE1=0998
-	MOREP=2456,3952,3
+	DORAND 32
+		MOREP=2482,3913,3
+		MOREP=1092,3480,0
+		MOREP=1795,3492,0
+		MOREP=1600,3445,0
+		MOREP=2155,3642,0
+		MOREP=1981,3377,0
+		MOREP=1837,3462,10
+		MOREP=2039,3493,0
+		MOREP=2112,3595,10
+		MOREP=2098,3338,0
+		MOREP=2176,3400,0
+		MOREP=2329,3503,0
+		MOREP=3690,2874,12
+		MOREP=2127,3943,3
+		MOREP=4543,3917,0
+		MOREP=4473,3897,0
+		MOREP=4785,3771,0
+		MOREP=4597,3878,0
+		MOREP=4700,3396,0
+		MOREP=4753,3501,0
+		MOREP=4577,3116,0,easy
+		MOREP=4614,3313,0
+		MOREP=4406,3130,0
+		MOREP=4456,3105,0,easy
+		MOREP=4535,3254,0
+		MOREP=4469,3169,0
+		MOREP=4574,3402,0
+		MOREP=4574,3345,0
+		MOREP=2502,3908,3
+		MOREP=2508,3967,3
+		MOREP=2498,4013,3
+		MOREP=2456,3952,3
+	ENDDO
 	///////////////////////////
 	// Level 4 Treasure Maps //
 	///////////////////////////
 
-[ITEMDEF i_ttm_l4_0]
+[ITEMDEF i_ttm_l4]
 ID=i_map
 NAME=Tattered Treasure Map
 CATEGORY=Maps - Treasure
@@ -1647,417 +510,45 @@ DESCRIPTION=Map
 
 ON=@Create
 	TYPE=T_L4MAP
-	MORE2=0249
-	MORE1=0C34
-	MOREP=3124,585,5
-
-[ITEMDEF i_ttm_l4_1]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0DA8
-	MORE1=0454
-	MOREP=1108,3496,0
-
-[ITEMDEF i_ttm_l4_2]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0DAC
-	MORE1=06EB
-	MOREP=1771,3500,0
-
-[ITEMDEF i_ttm_l4_3]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D8C
-	MORE1=0476
-	MOREP=1142,3468,0
-
-[ITEMDEF i_ttm_l4_4]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0DFD
-	MORE1=080B
-	MOREP=2059,3581,0
-
-[ITEMDEF i_ttm_l4_5]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D46
-	MORE1=077B
-	MOREP=1915,3398,0
-
-[ITEMDEF i_ttm_l4_6]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D67
-	MORE1=0468
-	MOREP=1128,3431,0
-
-[ITEMDEF i_ttm_l4_7]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0DB1
-	MORE1=07FB
-	MOREP=2043,3505,0
-
-[ITEMDEF i_ttm_l4_8]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0E28
-	MORE1=085C
-	MOREP=2140,3624,0
-
-[ITEMDEF i_ttm_l4_9]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D0C
-	MORE1=0846
-	MOREP=2118,3340,0
-
-[ITEMDEF i_ttm_l4_10]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D59
-	MORE1=0853
-	MOREP=2131,3417,0
-
-[ITEMDEF i_ttm_l4_11]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D91
-	MORE1=0916
-	MOREP=2326,3473,0
-
-[ITEMDEF i_ttm_l4_12]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F94
-	MORE1=086E
-	MOREP=2158,3988,3
-
-[ITEMDEF i_ttm_l4_13]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F62
-	MORE1=085B
-	MOREP=2139,3938,3
-
-[ITEMDEF i_ttm_l4_14]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F53
-	MORE1=011A9
-	MOREP=4521,3923,0
-
-[ITEMDEF i_ttm_l4_15]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0DC4
-	MORE1=012A3
-	MOREP=4771,3524,0
-
-[ITEMDEF i_ttm_l4_16]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0EF1
-	MORE1=012A0
-	MOREP=4768,3825,0
-
-[ITEMDEF i_ttm_l4_17]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D02
-	MORE1=01223
-	MOREP=4643,3330,0
-
-[ITEMDEF i_ttm_l4_18]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D46
-	MORE1=01270
-	MOREP=4720,3398,0
-
-[ITEMDEF i_ttm_l4_19]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C34
-	MORE1=01188
-	MOREP=4488,3124,0
-
-[ITEMDEF i_ttm_l4_20]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C48
-	MORE1=011E1
-	MOREP=4577,3144,0,easy
-
-[ITEMDEF i_ttm_l4_21]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C66
-	MORE1=01143
-	MOREP=4419,3174,0
-
-[ITEMDEF i_ttm_l4_22]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C2D
-	MORE1=0112E
-	MOREP=4398,3117,0
-
-[ITEMDEF i_ttm_l4_23]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C21
-	MORE1=01178
-	MOREP=4472,3105,0,easy
-
-[ITEMDEF i_ttm_l4_24]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0CAF
-	MORE1=0119C
-	MOREP=4508,3247,0
-
-[ITEMDEF i_ttm_l4_25]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0C7D
-	MORE1=01177
-	MOREP=4471,3197,0
-
-[ITEMDEF i_ttm_l4_26]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D3F
-	MORE1=011DD
-	MOREP=4573,3391,0
-
-[ITEMDEF i_ttm_l4_27]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0D05
-	MORE1=011E2
-	MOREP=4578,3333,0
-
-[ITEMDEF i_ttm_l4_28]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F34
-	MORE1=09D2
-	MOREP=2514,3892,0
-
-[ITEMDEF i_ttm_l4_29]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F88
-	MORE1=09CE
-	MOREP=2510,3976,3
-
-[ITEMDEF i_ttm_l4_30]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0FBF
-	MORE1=09D3
-	MOREP=2515,4031,0
-
-[ITEMDEF i_ttm_l4_31]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 4
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L4MAP
-	MORE2=0F61
-	MORE1=0989
-	MOREP=2441,3937,3
+	DORAND 32
+		MOREP=3124,585,5
+		MOREP=1108,3496,0
+		MOREP=1771,3500,0
+		MOREP=1142,3468,0
+		MOREP=2059,3581,0
+		MOREP=1915,3398,0
+		MOREP=1128,3431,0
+		MOREP=2043,3505,0
+		MOREP=2140,3624,0
+		MOREP=2118,3340,0
+		MOREP=2131,3417,0
+		MOREP=2326,3473,0
+		MOREP=2158,3988,3
+		MOREP=2139,3938,3
+		MOREP=4521,3923,0
+		MOREP=4771,3524,0
+		MOREP=4768,3825,0
+		MOREP=4643,3330,0
+		MOREP=4720,3398,0
+		MOREP=4488,3124,0
+		MOREP=4577,3144,0,easy
+		MOREP=4419,3174,0
+		MOREP=4398,3117,0
+		MOREP=4472,3105,0,easy
+		MOREP=4508,3247,0
+		MOREP=4471,3197,0
+		MOREP=4573,3391,0
+		MOREP=4578,3333,0
+		MOREP=2514,3892,0
+		MOREP=2510,3976,3
+		MOREP=2515,4031,0
+		MOREP=2441,3937,3
+	ENDDO
 	///////////////////////////
 	// Level 5 Treasure Maps //
 	///////////////////////////
 
-[ITEMDEF i_ttm_l5_0]
+[ITEMDEF i_ttm_l5]
 ID=i_map
 NAME=Tattered Treasure Map
 CATEGORY=Maps - Treasure
@@ -2066,412 +557,40 @@ DESCRIPTION=Map
 
 ON=@Create
 	TYPE=T_L5MAP
-	MORE2=021A
-	MORE1=0550
-	MOREP=1360,538,1
-
-[ITEMDEF i_ttm_l5_1]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0DB2
-	MORE1=0464
-	MOREP=1124,3506,0
-
-[ITEMDEF i_ttm_l5_2]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0DA1
-	MORE1=06D2
-	MOREP=1746,3489,7
-
-[ITEMDEF i_ttm_l5_3]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D92
-	MORE1=0489
-	MOREP=1161,3474,0
-
-[ITEMDEF i_ttm_l5_4]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0DC3
-	MORE1=07FA
-	MOREP=2042,3523,0
-
-[ITEMDEF i_ttm_l5_5]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D6A
-	MORE1=076B
-	MOREP=1899,3434,1
-
-[ITEMDEF i_ttm_l5_6]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D5F
-	MORE1=0818
-	MOREP=2072,3423,0
-
-[ITEMDEF i_ttm_l5_7]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0DCB
-	MORE1=0808
-	MOREP=2056,3531,0
-
-[ITEMDEF i_ttm_l5_8]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0B11
-	MORE1=0E79
-	MOREP=3705,2833,24
-
-[ITEMDEF i_ttm_l5_9]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D17
-	MORE1=0871
-	MOREP=2161,3351,10
-
-[ITEMDEF i_ttm_l5_10]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D98
-	MORE1=0933
-	MOREP=2355,3480,3
-
-[ITEMDEF i_ttm_l5_11]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0AF8
-	MORE1=0E8B
-	MOREP=3723,2808,20
-
-[ITEMDEF i_ttm_l5_12]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0F9C
-	MORE1=0860
-	MOREP=2144,3996,0
-
-[ITEMDEF i_ttm_l5_13]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0F62
-	MORE1=086C
-	MOREP=2156,3938,3
-
-[ITEMDEF i_ttm_l5_14]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0F79
-	MORE1=011A2
-	MOREP=4514,3961,0
-
-[ITEMDEF i_ttm_l5_15]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0DD3
-	MORE1=012B4
-	MOREP=4788,3539,0
-
-[ITEMDEF i_ttm_l5_16]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0F03
-	MORE1=01228
-	MOREP=4648,3843,0
-
-[ITEMDEF i_ttm_l5_17]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D1D
-	MORE1=01231
-	MOREP=4657,3357,0
-
-[ITEMDEF i_ttm_l5_18]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D6C
-	MORE1=01274
-	MOREP=4724,3436,0
-
-[ITEMDEF i_ttm_l5_19]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0C1C
-	MORE1=0119C
-	MOREP=4508,3100,0
-
-[ITEMDEF i_ttm_l5_20]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0CC3
-	MORE1=01200
-	MOREP=4608,3267,0
-
-[ITEMDEF i_ttm_l5_21]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0C70
-	MORE1=0112D
-	MOREP=4397,3184,0
-
-[ITEMDEF i_ttm_l5_22]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0C2E
-	MORE1=01143
-	MOREP=4419,3118,0
-
-[ITEMDEF i_ttm_l5_23]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0CFA
-	MORE1=011E5
-	MOREP=4581,3322,0
-
-[ITEMDEF i_ttm_l5_24]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0CA0
-	MORE1=011A7
-	MOREP=4519,3232,0
-
-[ITEMDEF i_ttm_l5_25]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D71
-	MORE1=011C8
-	MOREP=4552,3441,0
-
-[ITEMDEF i_ttm_l5_26]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0D34
-	MORE1=011DA
-	MOREP=4570,3380,0
-
-[ITEMDEF i_ttm_l5_27]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE2=0F31
-	MORE1=09AF
-	MOREP=2479,3889,3
-
-[ITEMDEF i_ttm_l5_28]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE1=09D4
-	MORE2=0F43
-	MOREP=2516,3907,0
-
-[ITEMDEF i_ttm_l5_29]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE1=09CE
-	MORE2=0F8E
-	MOREP=2510,3982,3
-
-[ITEMDEF i_ttm_l5_30]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE1=09BA
-	MORE2=0F75
-	MOREP=2490,3957,0
-
-[ITEMDEF i_ttm_l5_31]
-ID=i_map
-NAME=Tattered Treasure Map
-CATEGORY=Maps - Treasure
-SUBSECTION=Level 5
-DESCRIPTION=Map
-
-ON=@Create
-	TYPE=T_L5MAP
-	MORE1=0969
-	MORE2=0F44
-	MOREP=2409,3908,0
+	DORAND 32
+		MOREP=1360,538,1
+		MOREP=1124,3506,0
+		MOREP=1746,3489,7
+		MOREP=1161,3474,0
+		MOREP=2042,3523,0
+		MOREP=1899,3434,1
+		MOREP=2072,3423,0
+		MOREP=2056,3531,0
+		MOREP=3705,2833,24
+		MOREP=2161,3351,10
+		MOREP=2355,3480,3
+		MOREP=3723,2808,20
+		MOREP=2144,3996,0
+		MOREP=2156,3938,3
+		MOREP=4514,3961,0
+		MOREP=4788,3539,0
+		MOREP=4648,3843,0
+		MOREP=4657,3357,0
+		MOREP=4724,3436,0
+		MOREP=4508,3100,0
+		MOREP=4608,3267,0
+		MOREP=4397,3184,0
+		MOREP=4419,3118,0
+		MOREP=4581,3322,0
+		MOREP=4519,3232,0
+		MOREP=4552,3441,0
+		MOREP=4570,3380,0
+		MOREP=2479,3889,3
+		MOREP=2516,3907,0
+		MOREP=2510,3982,3
+		MOREP=2490,3957,0
+		MOREP=2409,3908,0
+	ENDDO
 	///////////////////////////////////
 	//Base treasure maps for restest //
 	///////////////////////////////////
@@ -2650,51 +769,48 @@ ITEM=RANDOM_FILTHY_RICH_MAGIC_LOOT
 ITEM=i_gold,{3500 4000}
 
 [TEMPLATE ttm_LVL1_1]
-ITEM={ i_ttm_l1_0 1 i_ttm_l1_1 1 i_ttm_l1_2 1 i_ttm_l1_3 1 i_ttm_l1_4 1 i_ttm_l1_5 1 i_ttm_l1_6 1 i_ttm_l1_7 1 i_ttm_l1_8 1 i_ttm_l1_9 1 i_ttm_l1_10 1 i_ttm_l1_11 1 i_ttm_l1_12 1 i_ttm_l1_13 1 i_ttm_l1_14 1 i_ttm_l1_15 1 }
+ITEM=i_ttm_l1
 
 [TEMPLATE ttm_LVL1_2]
-ITEM={ i_ttm_l1_16 1 i_ttm_l1_17 1 i_ttm_l1_18 1 i_ttm_l1_19 1 i_ttm_l1_20 1 i_ttm_l1_21 1 i_ttm_l1_22 1 i_ttm_l1_23 1 i_ttm_l1_24 1 i_ttm_l1_25 1 i_ttm_l1_26 1 i_ttm_l1_27 1 i_ttm_l1_28 1 i_ttm_l1_29 1 i_ttm_l1_30 1 i_ttm_l1_31 1 }
+ITEM=i_ttm_l1
 
 [TEMPLATE ttm_LVL2_1]
-ITEM={ i_ttm_l2_0 1 i_ttm_l2_1 1 i_ttm_l2_2 1 i_ttm_l2_3 1 i_ttm_l2_4 1 i_ttm_l2_5 1 i_ttm_l2_6 1 i_ttm_l2_7 1 i_ttm_l2_8 1 i_ttm_l2_9 1 i_ttm_l2_10 1 i_ttm_l2_11 1 i_ttm_l2_12 1 i_ttm_l2_13 1 i_ttm_l2_14 1 i_ttm_l2_15 1 }
+ITEM=i_ttm_l2
 
 [TEMPLATE ttm_LVL2_2]
-ITEM={ i_ttm_l2_16 1 i_ttm_l2_17 1 i_ttm_l2_18 1 i_ttm_l2_19 1 i_ttm_l2_20 1 i_ttm_l2_21 1 i_ttm_l2_22 1 i_ttm_l2_23 1 i_ttm_l2_24 1 i_ttm_l2_25 1 i_ttm_l2_26 1 i_ttm_l2_27 1 i_ttm_l2_28 1 i_ttm_l2_29 1 i_ttm_l2_30 1 i_ttm_l2_31 1 }
+ITEM=i_ttm_l2
 
 [TEMPLATE ttm_LVL3_1]
-ITEM={ i_ttm_l3_0 1 i_ttm_l3_1 1 i_ttm_l3_2 1 i_ttm_l3_3 1 i_ttm_l3_4 1 i_ttm_l3_5 1 i_ttm_l3_6 1 i_ttm_l3_7 1 i_ttm_l3_8 1 i_ttm_l3_9 1 i_ttm_l3_10 1 i_ttm_l3_11 1 i_ttm_l3_12 1 i_ttm_l3_13 1 i_ttm_l3_14 1 i_ttm_l3_15 1 }
+ITEM=i_ttm_l3
 
 [TEMPLATE ttm_LVL3_2]
-ITEM={ i_ttm_l3_16 1 i_ttm_l3_17 1 i_ttm_l3_18 1 i_ttm_l3_19 1 i_ttm_l3_20 1 i_ttm_l3_21 1 i_ttm_l3_22 1 i_ttm_l3_23 1 i_ttm_l3_24 1 i_ttm_l3_25 1 i_ttm_l3_26 1 i_ttm_l3_27 1 i_ttm_l3_28 1 i_ttm_l3_29 1 i_ttm_l3_30 1 i_ttm_l3_31 1 }
+ITEM=i_ttm_l3
 
 [TEMPLATE ttm_LVL4_1]
-ITEM={ i_ttm_l4_0 1 i_ttm_l4_1 1 i_ttm_l4_2 1 i_ttm_l4_3 1 i_ttm_l4_4 1 i_ttm_l4_5 1 i_ttm_l4_6 1 i_ttm_l4_7 1 i_ttm_l4_8 1 i_ttm_l4_9 1 i_ttm_l4_10 1 i_ttm_l4_11 1 i_ttm_l4_12 1 i_ttm_l4_13 1 i_ttm_l4_14 1 i_ttm_l4_15 1 }
+ITEM=i_ttm_l4
 
 [TEMPLATE ttm_LVL4_2]
-ITEM={ i_ttm_l4_16 1 i_ttm_l4_17 1 i_ttm_l4_18 1 i_ttm_l4_19 1 i_ttm_l4_20 1 i_ttm_l4_21 1 i_ttm_l4_22 1 i_ttm_l4_23 1 i_ttm_l4_24 1 i_ttm_l4_25 1 i_ttm_l4_26 1 i_ttm_l4_27 1 i_ttm_l4_28 1 i_ttm_l4_29 1 i_ttm_l4_30 1 i_ttm_l4_31 1 }
+ITEM=i_ttm_l4
 
 [TEMPLATE ttm_LVL5_1]
-ITEM={ i_ttm_l5_0 1 i_ttm_l5_1 1 i_ttm_l5_2 1 i_ttm_l5_3 1 i_ttm_l5_4 1 i_ttm_l5_5 1 i_ttm_l5_6 1 i_ttm_l5_7 1 i_ttm_l5_8 1 i_ttm_l5_9 1 i_ttm_l5_10 1 i_ttm_l5_11 1 i_ttm_l5_12 1 i_ttm_l5_13 1 i_ttm_l5_14 1 i_ttm_l5_15 1 }
+ITEM=i_ttm_l5
 
 [TEMPLATE ttm_LVL5_2]
-ITEM={ i_ttm_l5_16 1 i_ttm_l5_17 1 i_ttm_l5_18 1 i_ttm_l5_19 1 i_ttm_l5_20 1 i_ttm_l5_21 1 i_ttm_l5_22 1 i_ttm_l5_23 1 i_ttm_l5_24 1 i_ttm_l5_25 1 i_ttm_l5_26 1 i_ttm_l5_27 1 i_ttm_l5_28 1 i_ttm_l5_29 1 i_ttm_l5_30 1 i_ttm_l5_31 1 }
+ITEM=i_ttm_l5
 
 [TEMPLATE ttm_LVL1]
-ITEM={ ttm_LVL1_1 1 ttm_LVL1_2 1 }
-//TYPE=T_L1MAP
+ITEM=i_ttm_l1
 
 [TEMPLATE ttm_LVL2]
-ITEM={ ttm_LVL2_1 1 ttm_LVL2_2 1 }
-//TYPE=T_L2MAP
+ITEM=i_ttm_l2
 
 [TEMPLATE ttm_LVL3]
-ITEM={ ttm_LVL3_1 1 ttm_LVL3_2 1 }
-//TYPE=T_L3MAP
+ITEM=i_ttm_l3
 
 [TEMPLATE ttm_LVL4]
-ITEM={ ttm_LVL4_1 1 ttm_LVL4_2 1 }
-//TYPE=T_L4MAP
+ITEM=i_ttm_l4
 
 [TEMPLATE ttm_LVL5]
-ITEM={ ttm_LVL5_1 1 ttm_LVL5_2 1 }
-//TYPE=T_L5MAP
+ITEM=i_ttm_l5
+
+[EOF]

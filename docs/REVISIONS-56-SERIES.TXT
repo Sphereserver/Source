@@ -3244,3 +3244,6 @@ this all in desperation)
 16-03-2007, MrSugarCube
 - Fixed #1113: Exception caused when an online player character is deleted.
 - Fixed: ATTACKER.LAST only working when the last attack was within the last second.
+
+17-03-2007, Beyonder (Script pack)
+- Updated: sphere_item_treasure_maps.scp (Updated to use 0.56b features)
