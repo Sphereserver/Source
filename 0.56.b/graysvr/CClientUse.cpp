@@ -41,8 +41,14 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 					DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
 					CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
 					const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
+					
+					DWORD dwTopContainerUID_ToCheck = 0;
+					if ( container->GetContainer() )
+						dwTopContainerUID_ToCheck = container->GetContainer()->GetUID().GetPrivateUID();
+					else
+						dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
 
-					if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == container->GetContainer()->GetUID().GetPrivateUID() ) )
+					if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == dwTopContainerUID_ToCheck ) )
 					{
 						if ( pObjTop->IsChar() )
 						{
