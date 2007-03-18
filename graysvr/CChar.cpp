@@ -1580,7 +1580,6 @@ do_default:
 		case CHC_SKILLTEST:
 			{
 				pszKey += 9;
-				GETNONWHITESPACE( pszKey );
 
 				if ( *pszKey )
 				{
@@ -2331,7 +2330,7 @@ void CChar::r_Write( CScript & s )
 		s.WriteKeyVal( "RESCOLD", m_ResCold);
 	if ( m_ResPoison )
 		s.WriteKeyVal( "RESPOISON", m_ResPoison);
-	if ( m_ResPoison )
+	if ( m_ResEnergy )
 		s.WriteKeyVal( "RESENERGY", m_ResEnergy);
 
 	s.WriteKeyVal( "HITS", Stat_GetVal(STAT_STR) );
