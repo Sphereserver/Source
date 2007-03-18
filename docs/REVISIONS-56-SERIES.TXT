@@ -3261,3 +3261,4 @@ this all in desperation)
 
 18-03-2007, Ellessar
 - Fixed: RESENERGY is saved only if RESPOISON doesn't equal 0.
+- Fixed: Possibility of double definition of events (sphere.ini + events +e...)
