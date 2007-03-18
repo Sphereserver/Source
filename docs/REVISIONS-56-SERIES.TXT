@@ -3258,3 +3258,6 @@ this all in desperation)
 
 17-03-2007, MrSugarCube
 - Fixed #1118: Ship functions being reported as invalid commands.
+
+18-03-2007, Ellessar
+- Fixed: RESENERGY is saved only if RESPOISON doesn't equal 0.
