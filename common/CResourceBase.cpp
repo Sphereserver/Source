@@ -1072,6 +1072,21 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 			{
 				continue;
 			}
+			if ( g_Cfg.m_pEventsPetLink == pResourceLink )
+			{
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsPet));
+				continue;
+			}
+			else if ( g_Cfg.m_pEventsPlayerLink == pResourceLink )
+			{
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsPlayer));
+				continue;
+			}
+			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink == pResourceLink )
+			{
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsRegion));
+				continue;
+			}
 
 			Add( pResourceLink );
 		}
