@@ -446,7 +446,8 @@ bool CScript::ReadKeyParse() // Read line from script
 	EXC_SET("parse");
 	Str_Parse( m_pszKey, &m_pszArg );
 
-	if ( !m_pszArg[0] || m_pszArg[1] != '=' || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
+	//if ( !m_pszArg[0] || m_pszArg[1] != '=' || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
+	if ( !m_pszArg[0] || ( m_pszArg[1] != '=' && m_pszArg[1] != '+' && m_pszArg[1] != '-' ) || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
 		return true;
 
 	EXC_SET("parse");
@@ -454,7 +455,7 @@ bool CScript::ReadKeyParse() // Read line from script
 	pszArgs+=2;
 	GETNONWHITESPACE( pszArgs );
 	TCHAR	*buf = Str_GetTemp();
-	if (  m_pszArg[0] == '.' )
+	if ( m_pszArg[0] == '.' )
 	{
 		if ( *pszArgs == '"' )
 		{
@@ -467,7 +468,12 @@ bool CScript::ReadKeyParse() // Read line from script
 		}
 		sprintf( buf, "<%s>%s", m_pszKey, pszArgs );
 	}
-	else sprintf( buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
+	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '+' )
+		sprintf( buf, "<eval (<%s> +1)>", m_pszKey );
+	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '-' )
+		sprintf( buf, "<eval (<%s> -1)>", m_pszKey );
+	else
+		sprintf( buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
 	strcpy( m_pszArg, buf );
 
 	return true;
