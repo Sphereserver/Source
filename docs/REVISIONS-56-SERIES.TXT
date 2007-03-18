@@ -3260,5 +3260,6 @@ this all in desperation)
 - Fixed #1118: Ship functions being reported as invalid commands.
 
 18-03-2007, Ellessar
+- Added: ++/-- operators, which are in C languages.
 - Fixed: RESENERGY is saved only if RESPOISON doesn't equal 0.
 - Fixed: Possibility of double definition of events (sphere.ini + events +e...)
