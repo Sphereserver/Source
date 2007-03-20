@@ -1,8 +1,6 @@
 #ifndef THREADS_H
 #define THREADS_H
 
-#ifdef VJAKA_REDO
-
 #include "../common/common.h"
 
 /**
@@ -30,10 +28,10 @@
 #endif
 
 // Interface for threads. Almost always should be used instead of any implementing classes
-class IThread 
+class IThread
 {
 public:
-	enum Priority 
+	enum Priority
 	{
 		Idle,		// tick 1000ms
 		Low,		// tick 200ms
@@ -55,7 +53,7 @@ public:
 };
 
 // Singleton utility class for working with threads. Holds all running threads inside
-class ThreadHolder 
+class ThreadHolder
 {
 public:
 	// returns current working thread or NULL if no IThread threads are running
@@ -77,7 +75,7 @@ private:
 };
 
 // Thread implementation. See IThread for list of available methods.
-class AbstractThread : public IThread, ThreadHolder 
+class AbstractThread : public IThread, ThreadHolder
 {
 private:
 	unsigned	m_id;
@@ -110,7 +108,5 @@ private:
 	void run();
 	static SPHERE_THREADENTRY_RETNTYPE SPHERE_THREADENTRY_CALLTYPE runner(void *callerThread);
 };
-
-#endif
 
 #endif

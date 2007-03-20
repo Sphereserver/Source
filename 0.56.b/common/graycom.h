@@ -44,7 +44,7 @@
 
 	#define HANDLE			DWORD
 	#define _cdecl
-	#define __cdecl			
+	#define __cdecl
 	#define LONG			DWORD
 	#define LONGLONG		DWORD	// This should be 64 bit ???
 	#define WCHAR			unsigned short
@@ -95,7 +95,7 @@
 
 	#ifndef ASSERT
 		#ifndef _WIN32
-			// In linux, if we get an access violation, an exception isn't thrown.  Instead, we get 
+			// In linux, if we get an access violation, an exception isn't thrown.  Instead, we get
 			// a SIG_SEGV, and the process cores. The following code takes care of this for us.
 			extern void Assert_CheckFail( const char * pExp, const char *pFile, unsigned uLine );
 			#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
@@ -149,7 +149,6 @@
 #include "CException.h"
 
 #include "CSocket.h"
-#include "CThread.h"
 #include "CEncrypt.h"
 
 #include "CArray.h"

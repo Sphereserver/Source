@@ -97,7 +97,7 @@ public:
 
 	CEdit			m_wndInput;		// the text input portion at the bottom.
 	int				m_iHeightInput;
-   	
+
    	HFONT			m_hLogFont;
 
 	bool m_fLogScrollLock;	// lock with the rolling text ?
@@ -252,7 +252,7 @@ bool CNTWindow::CStatusWnd::OnInitDialog()
 	FillClients();
 	m_wndListStats.m_hWnd = GetDlgItem(IDC_STAT_STATS);
 	FillStats();
-	return( false );	
+	return( false );
 }
 
 bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
@@ -329,7 +329,7 @@ void CNTWindow::List_Add( COLORREF color, LPCTSTR pszText )
 	memset( &cf, 0, sizeof(cf));
 	cf.cbSize = sizeof(cf);
 	cf.dwMask = CFM_COLOR;
-	cf.crTextColor = color; 
+	cf.crTextColor = color;
 	BOOL fRet = m_wndLog.SetSelectionCharFormat( cf );
 
 	m_wndLog.ReplaceSel( pszText );
@@ -381,16 +381,16 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 	CWindow::OnCreate(hWnd);
 
 	m_wndLog.m_hWnd = ::CreateWindow( RICHEDIT_CLASS, NULL,
-		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | // ES_OEMCONVERT | 
+		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | // ES_OEMCONVERT |
 		WS_CHILD|WS_VISIBLE|WS_VSCROLL,
-		0, 0, 10, 10, 
+		0, 0, 10, 10,
 		m_hWnd,
 		(HMENU)(UINT) IDC_M_LOG, theApp.m_hInstance, NULL );
 	ASSERT( m_wndLog.m_hWnd );
 
 
 	SetLogFont( "Courier" );
-    
+
 	// TEXTMODE
 	m_wndLog.SetBackgroundColor( false, RGB(0,0,0));
 	CHARFORMAT cf;
@@ -405,7 +405,7 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 
 	m_wndInput.m_hWnd = ::CreateWindow("EDIT", NULL,
 		ES_LEFT | ES_AUTOHSCROLL | WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP,
-		0, 0, 10, 10, 
+		0, 0, 10, 10,
 		m_hWnd,
 		(HMENU)(UINT) IDC_M_INPUT, theApp.m_hInstance, NULL );
 	ASSERT( m_wndInput.m_hWnd );
@@ -461,7 +461,7 @@ LRESULT CNTWindow::OnUserTrayNotify( WPARAM wID, LPARAM lEvent )
 			if ( hMenu == NULL )
 				break;
 			HMENU hMenuPop = GetSubMenu(hMenu,0);
-			if ( hMenuPop ) 
+			if ( hMenuPop )
 			{
 				POINT point;
 				if ( GetCursorPos( &point ))
@@ -522,8 +522,6 @@ void CNTWindow::OnSize( UINT nType, int cx, int cy )
 bool CNTWindow::OnClose()
 {
 	// WM_CLOSE
-	ASSERT( CThread::GetCurrentThreadId() == g_Serv.m_dwParentThread );
-
 	if ( g_Serv.m_iExitFlag == 0 )
 	{
 		int iRet = theApp.m_wndMain.MessageBox("Are you sure you want to close the server?",
@@ -548,14 +546,14 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 	case IDM_STATUS:
 		if ( theApp.m_wndStatus.m_hWnd == NULL )
 		{
-			theApp.m_wndStatus.m_hWnd = ::CreateDialogParam( 
+			theApp.m_wndStatus.m_hWnd = ::CreateDialogParam(
 				theApp.m_hInstance,
-				MAKEINTRESOURCE(IDM_STATUS), 
-				HWND_DESKTOP, 
-				CDialogBase::DialogProc, 
+				MAKEINTRESOURCE(IDM_STATUS),
+				HWND_DESKTOP,
+				CDialogBase::DialogProc,
 				(DWORD) static_cast <CDialogBase*>(&theApp.m_wndStatus) );
 		}
-		theApp.m_wndStatus.ShowWindow(SW_NORMAL);	
+		theApp.m_wndStatus.ShowWindow(SW_NORMAL);
 		theApp.m_wndStatus.SetForegroundWindow();
 		break;
 	case IDR_ABOUT_BOX:
@@ -565,18 +563,18 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 				theApp.m_hInstance,  // handle to application instance
 				MAKEINTRESOURCE(IDR_ABOUT_BOX),   // identifies dialog box template
 				m_hWnd,      // handle to owner window
-				CDialogBase::DialogProc, 
+				CDialogBase::DialogProc,
 				(DWORD) static_cast <CDialogBase*>(&wndAbout) );  // pointer to dialog box procedure
 		}
 		break;
 
 	case IDM_MINIMIZE:
 		// SC_MINIMIZE
-	    ShowWindow(SW_HIDE);	
+	    ShowWindow(SW_HIDE);
 		break;
 	case IDM_RESTORE:
 		// SC_RESTORE
-	    ShowWindow(SW_NORMAL);	
+	    ShowWindow(SW_NORMAL);
 		SetForegroundWindow();
 		break;
 	case IDM_EXIT:
@@ -627,12 +625,12 @@ bool CNTWindow::OnSysCommand( UINT uCmdType, int xPos, int yPos )
 	case SC_MINIMIZE:
 		if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 		{
-		    ShowWindow(SW_HIDE);	
+		    ShowWindow(SW_HIDE);
 			return( true );
 		}
 		break;
 	}
-	return( false );	
+	return( false );
 }
 
 void	CNTWindow::SetLogFont( const char * pszFont )
@@ -647,10 +645,10 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 		LOGFONT		logfont;
    		memset( &logfont, 0, sizeof(logfont) );
    		strcpy( logfont.lfFaceName, pszFont );
-   		m_hLogFont = CreateFontIndirect( &logfont );		
+   		m_hLogFont = CreateFontIndirect( &logfont );
 	}
    	m_wndLog.SetFont( m_hLogFont, true );
-}	
+}
 
 
 LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
@@ -683,7 +681,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 					if ( !hMenu )
 						return 0;
 					HMENU hMenuPop = GetSubMenu(hMenu,0);
-					if ( hMenuPop ) 
+					if ( hMenuPop )
 					{
 						POINT point;
 						if ( GetCursorPos( &point ))
@@ -797,7 +795,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 			theApp.m_wndMain.OnDestroy();
 			return 0;
 		case WM_SETFOCUS:
-			theApp.m_wndMain.OnSetFocus( (HWND) wParam ); 
+			theApp.m_wndMain.OnSetFocus( (HWND) wParam );
 			return 0;
 		case WM_NOTIFY:
 			theApp.m_wndMain.OnNotify( (int) wParam, (NMHDR *) lParam );
@@ -862,10 +860,6 @@ bool NTWindow_Init(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow)
 void NTWindow_Exit()
 {
 	// Unattach the window.
-	ASSERT( CThread::GetCurrentThreadId() == g_Serv.m_dwParentThread );
-
-	// theApp.m_wndMain.DetachThread();
-
 	if ( g_Serv.m_iExitFlag < 0 )
 	{
 		TCHAR *pszMsg = Str_GetTemp();
@@ -959,22 +953,22 @@ bool NTWindow_PostMsg( LPCTSTR pszMsg )
 
 	COLORREF color = theApp.m_wndMain.m_dwColorNew;
 
-	if ( g_Serv.m_dwParentThread != CThread::GetCurrentThreadId())
-	{
-		// A thread safe way to do text.
-		CGString * psMsg = new CGString( pszMsg );
-		ASSERT(psMsg);
-		if ( ! theApp.m_wndMain.PostMessage( WM_USER_POST_MSG, (WPARAM) color, (LPARAM)psMsg ))
-		{
-			delete psMsg;
-			return( false );
-		}
-	}
-	else
-	{
+//	if ( g_Serv.m_dwParentThread != CThread::GetCurrentThreadId())
+//	{
+//		// A thread safe way to do text.
+//		CGString * psMsg = new CGString( pszMsg );
+//		ASSERT(psMsg);
+//		if ( ! theApp.m_wndMain.PostMessage( WM_USER_POST_MSG, (WPARAM) color, (LPARAM)psMsg ))
+//		{
+//			delete psMsg;
+//			return( false );
+//		}
+//	}
+//	else
+//	{
 		// just add it now.
 		theApp.m_wndMain.List_Add( color, pszMsg );
-	}
+//	}
 
 	return( true );
 }
@@ -1004,8 +998,8 @@ bool NTWindow_OnTick( int iWaitmSec )
 				g_Serv.SetExitFlag( 5 );
 				return( false );
 			}
-			if ( msg.hwnd == theApp.m_wndMain.m_hWnd && 
-				msg.message == WM_TIMER && 
+			if ( msg.hwnd == theApp.m_wndMain.m_hWnd &&
+				msg.message == WM_TIMER &&
 				msg.wParam == IDT_ONTICK )
 			{
 				theApp.m_wndMain.KillTimer( IDT_ONTICK );
@@ -1025,7 +1019,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 		}
 
 		//	Got char in edit box
-		if ( theApp.m_wndMain.m_wndInput.m_hWnd && 
+		if ( theApp.m_wndMain.m_wndInput.m_hWnd &&
 			msg.hwnd == theApp.m_wndMain.m_wndInput.m_hWnd )
 		{
 			if ( msg.message == WM_CHAR )	//	char to edit box
@@ -1124,12 +1118,12 @@ bool NTWindow_OnTick( int iWaitmSec )
 				}
 			}
 		}
-		if ( theApp.m_dlgOptions.m_hWnd && 
+		if ( theApp.m_dlgOptions.m_hWnd &&
 			IsDialogMessage( theApp.m_dlgOptions.m_hWnd, &msg ))
 		{
 			return( true );
 		}
-	
+
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 

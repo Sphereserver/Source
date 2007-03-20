@@ -2,7 +2,7 @@ VER	= 0.55R4.0.3
 PLAT	= Static-i386
 
 # Generic makefile
-#ARCH	= -march=i686 -mmmx -msse2 -minline-all-stringops 
+#ARCH	= -march=i686 -mmmx -msse2 -minline-all-stringops
 ARCH 	= -march=i386
 OPT 	= -O2 -fno-omit-frame-pointer -ffast-math -fno-expensive-optimizations -fprefetch-loop-arrays $(ARCH)
 #WARN	= -Wall -W
@@ -15,7 +15,7 @@ INCLUDE	= -I./common
 STATIC = -static
 
 # Linux
-LIBS	= -static-libgcc -L./libs -lc -lm -lstdc++ 
+LIBS	= -static-libgcc -L./libs -lc -lm -lstdc++
 # -lgcc
 PTHREADS = ./libs/libpthread.a
 
@@ -111,7 +111,6 @@ SRC	:= 	./graysvr/CAccount.cpp \
 		./common/CSocket.cpp \
 		./common/CTime.cpp \
 		./common/CString.cpp \
-		./common/CThread.cpp \
 		./common/graycom.cpp
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
@@ -131,7 +130,7 @@ clean:	tidy
 	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
 
 tidy:
-	rm -f *~ *orig *bak *rej ./common/*~ ./common/*orig ./common*bak ./common/mtrand/*~ ./common/mtrand/*orig \ 
+	rm -f *~ *orig *bak *rej ./common/*~ ./common/*orig ./common*bak ./common/mtrand/*~ ./common/mtrand/*orig \
 	./common/mtrand/*bak ./common/twofish/*~ ./common/twofish/*orig ./common/twofish/*bak
 
 tags:	$(SRC)
@@ -144,7 +143,7 @@ gray:	$(SRC:.cpp=.o)
 #commonlib:	$(COMMONSRC:.cpp=.o)
 #	ar r $@ $?
 
-flags:  
+flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray

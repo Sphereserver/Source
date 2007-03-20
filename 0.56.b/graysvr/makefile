@@ -126,7 +126,6 @@ SRC	:= 	CAccount.cpp \
 		../common/CSocket.cpp \
 		../common/CTime.cpp \
 		../common/CString.cpp \
-		../common/CThread.cpp \
 		../common/CVarDefMap.cpp \
 		../common/CVarFloat.cpp \
 		../common/graycom.cpp \
