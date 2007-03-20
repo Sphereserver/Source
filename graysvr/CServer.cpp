@@ -1929,8 +1929,6 @@ void CServer::OnTick()
 bool CServer::Load()
 {
 	EXC_TRY("Load");
-	// Keep track of the thread that is the parent.
-	m_dwParentThread = CThread::GetCurrentThreadId();
 
 #ifdef _WIN32
 	EXC_SET("init winsock");

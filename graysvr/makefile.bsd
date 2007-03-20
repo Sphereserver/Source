@@ -104,10 +104,9 @@ SRC	:= 	./graysvr/CAccount.cpp \
 		./common/CSocket.cpp \
 		./common/CTime.cpp \
 		./common/CString.cpp \
-		./common/CThread.cpp \
 		./common/graycom.cpp
 
-O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL) $(STATIC) 
+O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL) $(STATIC)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 
 
@@ -124,7 +123,7 @@ clean:	tidy
 	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
 
 tidy:
-	rm -f *~ *orig *bak *rej ./common/*~ ./common/*orig ./common*bak ./common/mtrand/*~ ./common/mtrand/*orig \ 
+	rm -f *~ *orig *bak *rej ./common/*~ ./common/*orig ./common*bak ./common/mtrand/*~ ./common/mtrand/*orig \
 	./common/mtrand/*bak ./common/twofish/*~ ./common/twofish/*orig ./common/twofish/*bak
 
 tags:	$(SRC)
@@ -137,7 +136,7 @@ gray:	$(SRC:.cpp=.o)
 #commonlib:	$(COMMONSRC:.cpp=.o)
 #	ar r $@ $?
 
-flags:  
+flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray

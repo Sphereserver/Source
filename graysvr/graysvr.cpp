@@ -225,9 +225,6 @@ CGStringList	g_AutoComplete;	// auto-complete list
 TScriptProfiler g_profiler;		// script profiler
 CMapList	g_MapList;			// global maps information
 
-//	Tasks
-CMainTask	g_MainTask;		// Main server loop
-
 DIR_TYPE GetDirStr( LPCTSTR pszDir )
 {
 	char iDir2, iDir = toupper(pszDir[0]);
@@ -263,9 +260,9 @@ LPCTSTR GetTimeMinDesc( int minutes )
 	LPCTSTR pMinDif;
 	if ( minute <= 14 )
 		pMinDif = "";
-	else if ( ( minute >= 15 ) && ( minute <= 30 ) ) 
+	else if ( ( minute >= 15 ) && ( minute <= 30 ) )
 		pMinDif = "a quarter past";
-	else if ( ( minute >= 30 ) && ( minute <= 45 ) ) 
+	else if ( ( minute >= 30 ) && ( minute <= 45 ) )
 		pMinDif = "half past";
 	else
 	{
@@ -341,32 +338,24 @@ int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 }
 
 //*******************************************************************
-// -CMainTask
+//	Main server loop
 
-CMainTask::CMainTask()
+Main::Main()
+	: AbstractThread("Main")
 {
-	m_sName = "Main";
 }
 
-THREAD_ENTRY_RET _cdecl CMainTask::EntryProc( void * lpThreadParameter ) // static
+void Main::onStart()
 {
-	ADDTOCALLSTACK("CMainTask::EntryProc");
-	// The main message loop.
-	g_MainTask.OnCreate();
 	SetExceptionTranslator();
-
-	while ( !Sphere_OnTick() )
-	{
-		Sleep(0);
-	}
-	g_MainTask.OnClose();
 }
 
-void CMainTask::CreateThread()
+void Main::tick()
 {
-	// AttachInputThread to us if needed ?
-	CThread::CreateThread( EntryProc );	
+	Sphere_OnTick();
 }
+
+Main g_Main;
 
 //*******************************************************************
 // CProfileData
@@ -559,7 +548,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 		}
 	}
 	g_Serv.SetServerMode(SERVMODE_Run);	// ready to go.
-	
+
 	// Display EF/OF Flags
 	g_Cfg.PrintEFOFFlags();
 
@@ -570,7 +559,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 #ifdef _WIN32
 	g_Log.Event(LOGM_INIT, "Press '?' for console commands\n");
 #endif
-	
+
 	// Trigger server start
 	g_Serv.r_Call("f_onserver_start", &g_Serv, NULL);
 	return 0;
@@ -590,7 +579,7 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
-	g_MainTask.WaitForClose();
+	g_Main.waitForClose();
 
 	g_Serv.SocketsClose();
 	g_World.Close();
@@ -654,7 +643,7 @@ static void Sphere_MainMonitorLoop()
 
 		EXC_SET("Check Stuck");
 #ifndef _DEBUG
-		g_MainTask.CheckStuckThread();
+		g_Main.checkStuck();
 #endif
 		EXC_CATCH;
 
@@ -996,18 +985,20 @@ int _cdecl main( int argc, char * argv[] )
 	if ( ! g_Serv.m_iExitFlag )
 	{
 		WritePidFile();
-		if (
-#ifdef _WIN32
-			GRAY_GetOSInfo()->dwPlatformId == VER_PLATFORM_WIN32_NT &&
-#endif
-			g_Cfg.m_iFreezeRestartTime )
+
+		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
+
+		if( shouldRunInThread )
 		{
-			g_MainTask.CreateThread();
+			g_Main.start();
 			Sphere_MainMonitorLoop();
 		}
 		else
 		{
-			g_MainTask.EntryProc( 0 );
+			while( !g_Serv.m_iExitFlag )
+			{
+				g_Main.tick();
+			}
 		}
 	}
 

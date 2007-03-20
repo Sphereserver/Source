@@ -137,6 +137,7 @@ enum RESDISPLAY_VERSION
 #include "../common/CResourceBase.h"
 #include "../common/CRegion.h"
 #include "../common/CGrayMap.h"
+#include "../sphere/threads.h"
 #ifdef VJAKA_REDO
 #include "../sphere/queue.h"
 #else
@@ -1293,7 +1294,7 @@ public:
 
 	void addShowDamage( int damage, DWORD uid_damage );
 	void addSpeedMode( int speedMode = 0 );
-	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE ); 
+	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
 	void addIdleWarning( bool bSameChar = false );
 
 	void SendPacket( TCHAR * pszPacket );
@@ -1524,7 +1525,6 @@ public:
 	int  m_iExitFlag;	// identifies who caused the exit. <0 = error
 	bool m_fResyncPause;		// Server is temporarily halted so files can be updated.
 	CTextConsole * m_fResyncRequested;		// A resync pause has been requested by this source.
-	DWORD m_dwParentThread;	// The thread we got Init in.
 
 	CGSocket m_SocketMain;	// This is the incoming monitor socket.(might be multiple ports?)
 	CGSocket m_SocketGod;	// This is for god clients.
@@ -1608,16 +1608,19 @@ public:
 	PLEVEL_TYPE GetPrivLevel() const;
 } g_Serv;	// current state stuff not saved.
 
-extern class CMainTask : public CThread
+class Main : public AbstractThread
 {
-	// The main world thread. (handles ticks and npcs)
 public:
-	static const char *m_sClassName;
-	static THREAD_ENTRY_RET _cdecl EntryProc( void * lpThreadParameter );
-public:
-	void CreateThread();
-	CMainTask();
-} g_MainTask;
+	Main();
+
+	// we increase the access level from protected to public in order to allow manual execution when
+	// configuration disables using threads
+	// TODO: in the future, such simulated functionality should lie in AbstractThread inself instead of hacks
+	virtual void tick();
+
+protected:
+	virtual void onStart();
+};
 
 //////////////////////////////////////////////////////////////
 
