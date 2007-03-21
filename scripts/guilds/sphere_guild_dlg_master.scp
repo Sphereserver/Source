@@ -9,157 +9,138 @@
 //
 // DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
 [Dialog d_Guild_Master]
 5,25
-
-local.guild = <args>
-if ( <local.guild> == 0 )
-	return 1
-endif
-if ( <uid.<local.guild>.type> != T_STONE_GUILD )
-	return 1
-endif
-local.oldobj = <obj.uid>
-obj = <local.guild>
-if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
-	obj = <local.oldobj>
-	return 1
+If (<type>!=t_stone_guild)
+  return 1
+elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
 endif
 
-ctag.dialog_guildmaster_guilduid = <local.guild>
-	
+  
 page 0
 resizepic 0 0 5054 570 400
 resizepic 10 10 3000 550 380
-dhtmlgump 20 15 510 35 0 0 <def.center>GUILDMASTER FUNCTIONS<def.centere>
-if (<obj.tag0.changename_time> < <serv.time>) // Set Guild Name
-	button 20 40 4005 4007 1 0 1 
-	dhtmlgump 55 40 470 30 0 0 Set the guild name.
+dhtmlgump 20 15 510 25 0 0 <def0.center>GUILDMASTER FUNCTIONS<def0.centere>
+If (<tag0.changename_time> <= <serv.time>)	// Set Guild Name
+  button 20 40 4005 4007 1 0 1 
+  dhtmlgump 55 40 240 30 0 0 Set the guild name.
 else
-	gumppic 20 40 4020
-	dhtmlgump 55 40 470 30 0 0 Set the guild name. CURRENTLY NOT AVAILABLE.
+  gumppic 20 40 4020
+  dhtmlgump 55 40 370 30 0 0 Set the guild name. <f_guildsys_determine_timeleft <tag0.changename_time>>
 endif
-if (<obj.tag0.changeabbrev_time> < <serv.time>) // Set Guild Abbrev
-	button 20 70 4005 4007 1 0 2 
-	dhtmlgump 55 70 470 30 0 0 Set the guild's abbreviation.
+If (<tag0.changeabbrev_time> <= <serv.time>)	// Set Guild Abbrev
+  button 20 70 4005 4007 1 0 2 
+  dhtmlgump 55 70 240 30 0 0 Set the guild's abbreviation.
 else
-	gumppic 20 70 4020
-	dhtmlgump 55 70 470 30 0 0 Set the guild's abbreviation. CURRENTLY NOT AVAILABLE.
+  gumppic 20 70 4020
+  dhtmlgump 55 70 370 30 0 0 Set the guild's abbreviation. <f_guildsys_determine_timeleft <tag0.changeabbrev_time>>
 endif
-if (<obj.tag0.changealign_time> < <serv.time>)
-	button 20 100 4005 4007 1 0 3
-	DOSWITCH <obj.align> // Guild Type
-		dhtmlgump 55 100 470 30 0 0 Change guild type: Currently Standard
-		dhtmlgump 55 100 470 30 0 0 Change guild type: Currently Order
-		dhtmlgump 55 100 470 30 0 0 Change guild type: Currently Chaos
-	ENDDO
+If (<tag0.changealign_time> <= <serv.time>)
+  button 20 100 4005 4007 1 0 3
+  DOSWITCH <align>	// Guild Type
+    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Standard
+    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Order
+    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Chaos
+  ENDDO
 else
-	gumppic 20 100 4020
-	dhtmlgump 55 100 470 30 0 0 Change the type of guild. CURRENTLY NOT AVAILABLE.
+  gumppic 20 100 4020
+  DOSWITCH <align>	// Guild Type
+    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Standard: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Order: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Chaos: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+  ENDDO
 endif
-button 20 130 4005 4007 1 0 4 // Set Charter
-dhtmlgump 55 130 470 30 0 0 Set the guild's charter.
-button 20 160 4005 4007 1 0 5 // Dismiss a member
-dhtmlgump 55 160 470 30 0 0 Dismiss a member.
-button 20 190 4005 4007 1 0 6 // War Menu
-dhtmlgump 55 190 470 30 0 0 Go to the WAR menu.
-if ( <obj.member.count <def.STONEPRIV_CANDIDATE>> > 0 ) // Candidates
-	button 20 220 4005 4007 1 0 7
-	dhtmlgump 55 220 470 30 0 0 Administer the list of candidates
+dhtmlgump 55 130 200 30 0 0 Set the guild's charter.
+  button 20 130 4005 4007 1 0 4	// Set Charter
+dhtmlgump 55 160 200 30 0 0 Dismiss a member.
+  button 20 160 4005 4007 1 0 5	// Dismiss a member
+dhtmlgump 55 190 200 30 0 0 Go to the WAR menu.
+  button 20 190 4005 4007 1 0 6	// War Menu
+If (<member.count <def0.STONEPRIV_CANDIDATE>> > 0) // Candidates
+  button 20 220 4005 4007 1 0 7
+  dhtmlgump 55 220 240 30 0 0 Administer the list of candidates
 else
-	gumppic 20 220 4020
-	dhtmlgump 55 220 470 30 0 0 There are currently no candidates for membership.
+  gumppic 20 220 4020
+  dhtmlgump 55 220 320 30 0 0 There are currently no candidates for membership.
 endif
-button 20 250 4005 4007 1 0 8 // Master Title
-dhtmlgump 55 250 470 30 0 0 Set the guildmaster's title.
-button 20 280 4005 4007 1 0 9 // Grant Titles
-dhtmlgump 55 280 470 30 0 0 Grant a title to another member.
-if (<def0.GUILDCONFIG_ALLOWTELEPORT>) // Teleport the stone
-	button 20 310 4005 4007 1 0 10
-	dhtmlgump 55 310 470 30 0 0 Move this guildstone.
+dhtmlgump 55 250 240 30 0 0 Set the guildmaster's title.
+  button 20 250 4005 4007 1 0 8 // Master Title
+dhtmlgump 55 280 240 30 0 0 Grant a title to another member.
+  button 20 280 4005 4007 1 0 9 // Grant Titles
+If (<def0.GUILDCONFIG_ALLOWTELEPORT>) // Teleport the stone
+  button 20 310 4005 4007 1 0 10
+  dhtmlgump 55 310 200 30 0 0 Move this guildstone.
 else
-	gumppic 20 310 4020
-	dhtmlgump 55 310 470 30 0 0 Move this guildstone. NOT AVAILABLE.
+  gumppic 20 310 4020
+  dhtmlgump 55 310 240 30 0 0 Move this guildstone. NOT AVAILABLE.
 endif
-if (<def0.GUILDCONFIG_ALLOWTRANSFER>) // Transfer the stone
-	button 300 310 4005 4007 1 0 12
-	dhtmlgump 335 310 470 30 0 0 Transfer ownership.
+If (<def0.GUILDCONFIG_ALLOWTRANSFER>) // Transfer the stone
+  button 300 310 4005 4007 1 0 12
+  dhtmlgump 335 310 200 30 0 0 Transfer ownership.
 else
-	gumppic 300 310 4020
-	dhtmlgump 335 310 470 30 0 0 Transfer ownership. NOT AVAILABLE.
+  gumppic 300 310 4020
+  dhtmlgump 335 310 240 30 0 0 Transfer ownership. NOT AVAILABLE.
 endif
-button 20 360 4005 4007 1 0 11 // Return
-dhtmlgump 55 360 245 30 0 0 Return to the main menu.
-button 300 360 4005 4007 1 0 0 // Exit
+dhtmlgump 55 360 175 30 0 0 Return to the main menu.
+  button 20 360 4005 4007 1 0 11 // Return
 dhtmlgump 335 360 100 30 0 0 EXIT
-	
+  button 300 360 4005 4007 1 0 0 // Exit
+  
 
 [Dialog d_Guild_Master Button]
-ON=0 11
-	if (!<ctag0.dialog_guildmaster_guilduid>)
-		serv.log DIALOG d_Guild_Master called without ctag.dialog_guildmaster_guilduid !!
-		return 1
-	endif
-	
-	if ( <argn1> == 0 ) // Exit Gump
-		ctag.dialog_guildmaster_guilduid =
-		return 1
-	endif
+ON=0 12
+  If (<argn1>==0) // Exit Gump
+    dialog d_Guild_Main,0
+    return 1
+  elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+    dialog d_Guild_Main,0
+    return 1
+  endif
 
-	local.oldobj = <obj.uid>
-	obj = <ctag0.dialog_guildmaster_guilduid>
-	ctag.dialog_guildmain_guilduid =
-	
-	if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
-		obj = <local.oldobj>
-		return 1
-	endif
-
-	if ( <argn1> == 1 ) // Guild Name		
-		if (<obj.tag0.changename_time> < <serv.time>)
-			ctag.guild_prompthandler_guilduid = <obj.uid>
-			trysrc <uid> src.promptconsole f_prompthandler_guildname,Enter new guild name (min: <dDEF0.GUILDCONFIG_NAME_MINLENGHT> max: <dDEF0.GUILDCONFIG_NAME_MAXLENGHT>):
-		endif
-	elseif ( <argn1> == 2 ) // Guild Abbrev
-		if (<obj.tag0.changeabbrev_time> < <serv.time>)
-			ctag.guild_prompthandler_guilduid = <obj.uid>
-			trysrc <uid> src.promptconsole f_prompthandler_guildabbrev,Enter new guild abbreviation (min: <dDEF0.GUILDCONFIG_ABBREV_MINLENGHT> max: <dDEF0.GUILDCONFIG_ABBREV_MAXLENGHT>):		
-		endif
-	elseif ( <argn1> == 3 ) // Guild  Type
-		if (<obj.tag0.changealign_time> < <serv.time>)
-			dialog d_Guild_ChangeAlign,0,<obj.uid>
-		endif
-	elseif ( <argn1> == 4 ) // Charter
-		dialog d_Guild_SetCharter,0,<obj.uid>
-	elseif ( <argn1> == 5 ) // Dismiss member
-		dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
-	elseif ( <argn1> == 6 ) // War Menu
-		dialog d_Guild_Master_Warfare,<obj.uid>
-	elseif ( <argn1> == 7 ) // Candidate Menu
-		dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
-	elseif ( <argn1> == 8 ) // Set Guildmaster title
-		ctag.guild_prompthandler_guilduid = <obj.uid>
-		ctag.guild_prompthandler_thisuid = <uid>
-		trysrc <uid> src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGHT> characters max):
-	elseif ( <argn1> == 9 ) // Grant title
-		dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
-	elseif ( <argn1> == 10 ) // Move stone
-		if (<def0.GUILDCONFIG_ALLOWTELEPORT>)
-			SERV.LOG TODO: GuildSys Teleport Stone
-		endif
-	elseif ( <argn1> == 11 )
-		dialog d_Guild_Main,0,<obj.uid>
-	elseif ( <argn1> == 12 )
-		if (<def0.GUILDCONFIG_ALLOWTRANSFER>)
-			transferguild <obj.uid>
-		endif
-	endif
-
-	obj = <local.oldobj>
-	return 1
-	
+  If (<argn1>==1)	// Guild Name    
+    If (<tag0.changename_time> <= <serv.time>)
+      src.ctag.guild_prompthandler_guilduid=<uid>
+      try src.promptconsole f_prompthandler_guildname,Enter new guild name (min: <dDEF0.GUILDCONFIG_NAME_MINLENGTH> max: <dDEF0.GUILDCONFIG_NAME_MAXLENGTH>):
+    endif
+  elif (<argn1>==2)	// Guild Abbrev
+    If (<tag0.changeabbrev_time> <= <serv.time>)
+      src.ctag.guild_prompthandler_guilduid=<uid>
+      try src.promptconsole f_prompthandler_guildabbrev,Enter new guild abbreviation (min: <dDEF0.GUILDCONFIG_ABBREV_MINLENGTH> max: <dDEF0.GUILDCONFIG_ABBREV_MAXLENGTH>):    
+    endif
+  elif (<argn1>==3)	// Guild  Type
+    If (<tag0.changealign_time> <= <serv.time>)
+      dialog d_Guild_ChangeAlign,0
+    endif
+  elif (<argn1>==4)	// Charter
+    dialog d_Guild_SetCharter,0,
+  elif (<argn1>==5)	// Dismiss member
+    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
+  elif (<argn1>==6)	// War Menu
+    dialog d_Guild_Master_Warfare,0
+  elif (<argn1>==7)	// Candidate Menu
+    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
+  elif (<argn1>==8)	// Set Guildmaster title
+    src.ctag.guild_prompthandler_guilduid=<uid>
+    src.ctag.guild_prompthandler_thisuid=<src.uid>
+    try src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGTH> characters max):
+  elif (<argn1>==9)	// Grant title
+    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
+  elif (<argn1>==10)	// Move stone
+    If (<def0.GUILDCONFIG_ALLOWTELEPORT>)
+      SERV.LOG TODO: GuildSys Teleport Stone
+    endif
+  elif (<argn1>==11)
+    dialog d_Guild_Main,0
+  elif (<argn1>==12)
+    If (<def0.GUILDCONFIG_ALLOWTRANSFER>)
+      transferguild <uid>
+    endif
+  endif
+  return 1
+  
 [EOF]
-	
+  

@@ -9,252 +9,242 @@
 //
 // DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
 [Dialog d_Guild_CharList]
 5,25
+local.listtype=<args>
+If (<local.listtype> <= 0)||(<local.listtype> > 6)
+  return 1
+elif (<type>!=t_stone_guild)
+  return 1
+elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
+endif
 
-local.guild = <StrArg <args>>
-local.listtype = <StrArg <StrEat <args>>>
-
-if ( ( <local.listtype> <= 0 ) || ( <local.listtype> > 6 ) )
-	return 1
-endif
-if ( <local.guild> == 0 )
-	return 1
-endif
-if ( <uid.<local.guild>.type> != T_STONE_GUILD )
-	return 1
-endif
-local.oldobj = <obj.uid>
-obj = <local.guild>
-if (( <obj.memberfromuid.<uid>.uid> != <uid> ) && !<isgm> )
-	obj = <local.oldobj>
-	return 1
-endif
-ctag.dialog_guildcharlist_guilduid = <local.guild>
-	
+  
 page 0
 resizepic 0 0 5054 550 440
 resizepic 10 10 3000 530 420
 
-local.privtolist = -1
-local.showcheckbox = 1
-if ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_LOYALITY> )
-	local.privtolist = <def.STONEPRIV_MEMBER>
-	dhtmlgump 20 10 400 35 0 0 Declare your fealty
- 	button 300 400 4005 4007 1 0 0
-	dhtmlgump 335 400 100 35 0 0 Return to the main menu.
-	button 20 400 4005 4007 1 0 1
-	dhtmlgump 55 400 250 35 0 0 I have selected my new lord.
-elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_ROSTER> )
-	local.privtolist = <def.STONEPRIV_MEMBER>
-	local.showcheckbox = 0
-	dhtmlgump 20 10 500 35 0 0 <obj.name>	
-	button 20 400 4005 4007 1 0 0
-	dhtmlgump 55 400 300 35 0 0 Return to the main menu.
-elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_CANDIDATES> )
-	local.privtolist = <def.STONEPRIV_CANDIDATE>
-	local.showcheckbox = 0
-	dhtmlgump 20 10 500 35 0 0 <def.CENTER> Candidates <def.CENTERE>
-	button 20 400 4005 4007 1 0 0
-	dhtmlgump 55 40 300 35 0 0 Return to the main menu.
-elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_DISMISSMEMBER> )
-	local.privtolist = <def.STONEPRIV_MEMBER>
-	dhtmlgump 20 10 400 35 0 0 Whom do you wish to dismiss?
-	button 20 400 4005 4007 1 0 1
-	dhtmlgump 55 400 245 30 0 0 Kick them out!	
-	button 300 400 4005 4007 1 0 0
-	dhtmlgump 335 400 100 35 0 0 Return to the main menu.
-elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_GRANTTITLE> )
-	local.privtolist = <def.STONEPRIV_MEMBER>
-	dhtmlgump 20 10 400 35 0 0 Grant a title to another member.
-	button 20 400 4005 4007 1 0 1
-	dhtmlgump 55 400 245 30 0 0 I dub thee...
-	button 300 400 4005 4007 1 0 0
-	dhtmlgump 335 400 100 35 0 0 Return to the main menu.
-elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES> )	
-	local.privtolist = <def.STONEPRIV_CANDIDATE>
-	dhtmlgump 20 10 400 35 0 0 Accept or Refuse candidates for membership
-	button 20 400 4005 4007 1 0 1
-	dhtmlgump 55 400 245 30 0 0 Accept
-	button 300 400 4005 4007 1 0 2
-	dhtmlgump 335 400 100 35 0 0 Refuse
+local.privtolist=-1
+local.showcheckbox=1
+If (<local.listtype>==<def0.GUILDDLG_LISTTYPE_LOYALITY>)
+  local.privtolist=<def.STONEPRIV_MEMBER>
+  dhtmlgump 20 10 400 25 0 0 Declare your fealty
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 250 35 0 0 I have selected my new lord.
+  button 300 400 4005 4007 1 0 0
+  dhtmlgump 335 400 225 35 0 0 Return to the main menu.
+elseIf (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ROSTER>)
+  local.privtolist=<def.STONEPRIV_MEMBER>
+  local.showcheckbox=0
+  dhtmlgump 20 10 500 35 0 0 <name>  
+  button 20 400 4005 4007 1 0 0
+  dhtmlgump 55 400 300 35 0 0 Return to the main menu.
+elseIf (<local.listtype>==<def0.GUILDDLG_LISTTYPE_CANDIDATES>)
+  local.privtolist=<def.STONEPRIV_CANDIDATE>
+  local.showcheckbox=0
+  dhtmlgump 20 10 500 35 0 0 <def.CENTER> Candidates <def.CENTERE>
+  button 20 400 4005 4007 1 0 0
+  dhtmlgump 55 400 300 35 0 0 Return to the main menu.
+elseIf (<local.listtype>==<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>)
+  local.privtolist=<def.STONEPRIV_MEMBER>
+  dhtmlgump 20 10 400 35 0 0 Whom do you wish to dismiss?
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Kick them out!  
+  button 300 400 4005 4007 1 0 0
+  dhtmlgump 335 400 225 35 0 0 Return to the main menu.
+elseIf (<local.listtype>==<def0.GUILDDLG_LISTTYPE_GRANTTITLE>)
+  local.privtolist=<def.STONEPRIV_MEMBER>
+  dhtmlgump 20 10 400 35 0 0 Grant a title to another member.
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 I dub thee...
+  button 300 400 4005 4007 1 0 0
+  dhtmlgump 335 400 225 35 0 0 Return to the main menu.
+elseIf (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>)  
+  local.privtolist=<def.STONEPRIV_CANDIDATE>
+  dhtmlgump 20 10 400 35 0 0 Accept or Refuse candidates for membership
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Accept
+  button 300 400 4005 4007 1 0 2
+  dhtmlgump 335 400 100 35 0 0 Refuse
 endif
 
-if ( <local.privtolist> == -1 )
-	obj = <local.oldobj>
-	return 1
+If (<local.privtolist>==-1)
+  return 1
 endif
  
-local.current = 0
-local.currentgump = 0
-local.totalcount = <obj.member.count>
-local.totalprivcount = <obj.member.count <local.privtolist>>
-if (( <local.listtype> == <def0.GUILDDLG_LISTTYPE_LOYALITY> ) || ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_ROSTER> ))
-	local.totalprivcount += 1
-	local.extrawhilecondition = 1
+local.current=0
+local.currentgump=0
+local.totalcount=<member.count>
+local.totalprivcount=<member.count <local.privtolist>>
+If (<local.listtype>==<def0.GUILDDLG_LISTTYPE_LOYALITY>)||(<local.listtype>==<def0.GUILDDLG_LISTTYPE_ROSTER>)
+  local.totalprivcount += 1
+  local.extrawhilecondition=1
 endif
 
-ctag.dialog_guildcharlist_type = <local.listtype>
-trysrc <uid> src.ctag.dialog_guildcharlist_<eval <local.listtype>>_count = <local.totalprivcount>
-trysrc <uid> src.ctag.dialog_guildcharlist_<eval <local.listtype>>_radio = <local.showcheckbox>
-		
-while ( <local.currentgump> < <local.totalprivcount> )
-	// ---- Condition for executing -----
-	local.ifisok = <obj.member.<local.current>.uid>
-	if (<local.extrawhilecondition>)
-		local.ifisok = <local.ifisok> && ((<obj.member.<local.current>.priv> == <local.privtolist>) || <obj.member.<local.current>.ismaster>)
-	else
-		local.ifisok = <local.ifisok> && (<obj.member.<local.current>.priv> == <local.privtolist>)
-	endif
-	// ----------------------------------
-	
-	if ( <local.ifisok> )
-		// ----- Page ------
-		if ( (<local.currentgump> % 11) == 0 )
-			if ( <local.currentgump> != 0 )
-				button 300 370 4005 4007 0 <EVAL ((<local.currentgump>/11)+1)> 0
-				dhtmlgump 335 370 300 35 0 0 Next page
-			endif
-				
-			page <EVAL ((<local.currentgump>/11)+1)>
-				
-			if ( <local.currentgump> != 0 )
-				button 20 370 4014 4016 0 <EVAL (<local.currentgump>/11)> 0
-				dhtmlgump 335 370 300 35 0 0 1011067 Previous page
-			endif
-		endif
-		// ----------------
+src.ctag.dialog_guildcharlist_type=<local.listtype>
+try src.ctag.dialog_guildcharlist_<dlocal.listtype>_count=<local.totalprivcount>
+try src.ctag.dialog_guildcharlist_<dlocal.listtype>_radio=<local.showcheckbox>
+    
+while (<local.currentgump> < <local.totalprivcount>)
+  // ---- Condition for executing -----
+  local.ifisok=<member.<local.current>.uid>
+  If (<local.extrawhilecondition>)
+    local.ifisok=<local.ifisok> && ((<member.<local.current>.priv>==<local.privtolist>) || (<member.<local.current>.ismaster>))
+  else
+    local.ifisok=<local.ifisok> && (<member.<local.current>.priv>==<local.privtolist>)
+  endif
+  // ----------------------------------
+  
+  If (<local.ifisok>)
+    // ----- Page ------
+    If ((<local.currentgump> % 11)==0)
+      If (<local.currentgump> != 0)
+        button 300 370 4005 4007 0 <EVAL ((<local.currentgump>/11)+1)> 0
+        dhtmlgump 335 370 300 35 0 0 Next page
+      endif
+        
+      page <EVAL ((<local.currentgump>/11)+1)>
+        
+      If (<local.currentgump> != 0)
+        button 20 370 4014 4016 0 <EVAL (<local.currentgump>/11)> 0
+        dhtmlgump 335 370 300 35 0 0 1011067 Previous page
+      endif
+    endif
+    // ----------------
 
-		if ( <local.showcheckbox> )
-			radio 20 <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 208 209 0 <EVAL (<local.current> + 10)>
-		endif
-				
-		local.currentmemberuid = <obj.member.<local.current>.uid>
-			
-		if ( <eval strlen(<uid.<local.currentmemberuid>.name>)> )
-			dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentmemberuid>.name>
-		else
-			dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 Empty
-		endif
-			
-		local.currentgump += 1
-	endif
-	
-	// ----- Total Member -----
-	local.current += 1
-	if ( <local.current> >= <local.totalcount> )
-		local.currentgump = <local.totalprivcount>
-	endif
-	// ------------------------
-	
+    If (<local.showcheckbox>)
+      radio 20 <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 208 209 0 <EVAL (<local.current> + 10)>
+    endif
+        
+    local.currentmemberuid=<member.<local.current>.uid>
+      
+    If (<eval strlen(<uid.<local.currentmemberuid>.name>)>)
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentmemberuid>.name><QVAL (!<ISEMPTY <uid.<local.currentmemberuid>.title>>)&&(<DEF0.GUILDCONFIG_CHARLIST_SHOWTITLE>) ? , <uid.<local.currentmemberuid>.title>:>
+    else
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 Empty
+    endif
+      
+    local.currentgump += 1
+  endif
+  
+  // ----- Total Member -----
+  local.current += 1
+  If (<local.current> >= <local.totalcount>)
+    local.currentgump=<local.totalprivcount>
+  endif
+  // ------------------------
+  
 endwhile
 
-obj = <local.oldobj>
+
 
 [Dialog d_Guild_CharList Button]
 ON=0 2
-	if ( !<ctag0.dialog_guildcharlist_guilduid> || !<ctag0.dialog_guildcharlist_type> )
-		serv.log DIALOG d_Guild_CharList called without ctag.dialog_guildcharlist_guilduid or ctag.dialog_guildcharlist_type !!
-		return 1
-	endif
-	
-	// ---- Var set ----
-	local.guild = <ctag0.dialog_guildcharlist_guilduid>
-	local.listtype = <ctag0.dialog_guildcharlist_type>
-	local.listtypecount = <ctag0.dialog_guildcharlist_<dLOCAL.listtype>_count>
-	local.listtyperadio = <ctag0.dialog_guildcharlist_<dLOCAL.listtype>_radio>
-	ctag.dialog_guildcharlist_guilduid =
-	ctag.dialog_guildcharlist_type =
-	trysrc <uid> src.ctag.dialog_guildcharlist_<dLOCAL.listtype>_count =
-	trysrc <uid> src.ctag.dialog_guildcharlist_<dLOCAL.listtype>_radio =
-	
-	local.oldobj = <obj.uid>
-	obj = <local.guild>
+  If (!<src.ctag0.dialog_guildcharlist_type>)
+    serv.log DIALOG d_Guild_CharList called without or src.ctag.dialog_guildcharlist_type !!
+    return 1
+  endif
+  
+  // ---- Var set ----
+  local.listtype=<src.ctag0.dialog_guildcharlist_type>
+  local.listtypecount=<src.ctag0.dialog_guildcharlist_<dLOCAL.listtype>_count>
+  local.listtyperadio=<src.ctag0.dialog_guildcharlist_<dLOCAL.listtype>_radio>
+  src.ctag.dialog_guildcharlist_type=
+  try src.ctag.dialog_guildcharlist_<dLOCAL.listtype>_count=
+  try src.ctag.dialog_guildcharlist_<dLOCAL.listtype>_radio=
+  
+  local.memberuid=0
+  If (<local.listtyperadio> && <local.listtypecount>)
+    local.selectedmember=<ARGCHKID> - 10
+    If ((<local.selectedmember> < 0) || (<local.selectedmember> > <member.count>))
+      dialog d_Guild_Main,0
+      return 1
+    endif
 
-	local.memberuid = 0
-	if ( <local.listtyperadio> && <local.listtypecount> )
-		local.selectedmember = <ARGCHKID> - 10
-		if ( ( <local.selectedmember> < 0 ) || ( <local.selectedmember> > <obj.member.count> ))
-			obj = <local.oldobj>
-			return 1
-		endif
+    local.memberuid=<member.<local.selectedmember>.uid>
+    If (!<local.memberuid>)
+      dialog d_Guild_Main,0
+      return 1
+    endif
+  endif
+  
+  If (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ROSTER>)||(<local.listtype>==<def0.GUILDDLG_LISTTYPE_CANDIDATES>)
+    dialog d_Guild_Main,0
+    return 1
+  endif
+  
+    // ---------------------------------------------
+  If (<local.listtype>==<def0.GUILDDLG_LISTTYPE_LOYALITY>)
+    If (<argn1>==1)
+      local.oldmaster=<masteruid>
+      try memberfromuid.<src.uid>.loyalto=<local.memberuid>
+      electmaster
+      If (<local.oldmaster>!=<masteruid>)&&(<masteruid>)
+        f_guildsys_sendsmsg <uid>,Guildmaster changed to: <master>
+      endif
+    endif
+    dialog d_Guild_Main,0
+    // ---------------------------------------------
+  elif (<local.listtype>==<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>)
+    If (<argn1>==1)
+      resign <local.memberuid>
+      try uid.<local.memberuid>.update
+      dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
+    else
+      If (<src.isgm>)||(<masteruid>==<src.uid>)
+        dialog d_Guild_Master,0
+      else
+        dialog d_Guild_Main,0
+      endif
+    endif
+    // ---------------------------------------------
+  elif (<local.listtype>==<def0.GUILDDLG_LISTTYPE_GRANTTITLE>)
+    If (<argn1>==1)
+      src.ctag.guild_prompthandler_guilduid=<uid>
+      src.ctag.guild_prompthandler_thisuid=<local.memberuid>
+      src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGTH> characters max):
+    elif (<src.isgm>)||(<masteruid>==<src.uid>)
+      dialog d_Guild_Master,0
+    else
+      dialog d_Guild_Main,0
+    endif
+    // ---------------------------------------------
+  elif (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>)
+    // ---- Accept Candidates ----
+    If (<memberfromuid.<local.memberuid>.ISCANDIDATE>)
+      If (<argn1>==1) //Accepted
+        If (<def0.GUILDCONFIG_MAXMEMBERS>)
+          If (<member.count <def.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS>)
+            JoinAsMember <local.memberuid>
+          else
+            src.sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
+          endif
+        else
+          JoinAsMember <local.memberuid>
+        endif
+      elif (<argn1>==2) // Rejected
+        resign <local.memberuid>
+      endif
+      
+      try uid.<local.memberuid>.update
+      update
+    endif
+      
+    If (<src.isgm>)||(<masteruid>==<src.uid>)
+      If (<local.listtypecount>) 
+        dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
+      else
+        dialog d_Guild_Master,0
+      endif
+    else
+      dialog d_Guild_Main,0
+    endif
+  endif
 
-		local.memberuid = <obj.member.<local.selectedmember>.uid>
-		if ( !<local.memberuid> )
-			obj = <local.oldobj>
-			return 1
-		endif
-	endif
-	
-	if (( <local.listtype> == <def0.GUILDDLG_LISTTYPE_ROSTER> ) || ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_CANDIDATES> ))
-		dialog d_Guild_Main,0,<obj.uid>
-		obj = <local.oldobj>
-		return 1
-	endif
-	
-	if ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_LOYALITY> )
-		if ( <argn1> == 1 )
-			local.oldmaster = <obj.masteruid>
-			try obj.memberfromuid.<uid>.loyalto = <local.memberuid>
-			obj.electmaster
-			if (( <local.oldmaster> != <obj.masteruid> ) && <obj.masteruid> )
-				f_guildsys_sendsmsg <obj.uid>,Guild Message: Guildmaster changed to: <obj.master>
-			endif
-		endif
-		dialog d_Guild_Main,0,<obj.uid>
-		// ---------------------------------------------
-	elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_DISMISSMEMBER> )
-		if ( <argn1> == 1 )
-			obj.resign <local.memberuid>
-			uid.<local.memberuid>.update
-		endif
-		if ( <isgm> || (<obj.masteruid> == <uid>) )
-			dialog d_Guild_Master,0,<obj.uid>
-		else
-			dialog d_Guild_Main,0,<obj.uid>
-		endif
-		// ---------------------------------------------
-	elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_GRANTTITLE> )
-		ctag.guild_prompthandler_guilduid = <obj.uid>
-		ctag.guild_prompthandler_thisuid = <local.memberuid>
-		trysrc <uid> src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGHT> characters max):
-		// ---------------------------------------------
-	elseif ( <local.listtype> == <def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES> )
-		// ---- Accept Candidates ----
-		if ( <obj.memberfromuid.<local.memberuid>.ISCANDIDATE> )
-			if ( <argn1> == 1 ) //Accepted
-				if ( <def0.GUILDCONFIG_MAXMEMBERS> )
-					if ( <obj.member.count <def.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS> )
-						obj.JoinAsMember <local.memberuid>
-					else
-						sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
-					endif
-				else
-					obj.JoinAsMember <local.memberuid>
-				endif
-			elseif ( <argn2> == 2 ) // Rejected
-				obj.resign <local.memberuid>
-			endif
-			
-			uid.<local.memberuid>.update
-			obj.update
-		endif
-			
-		if ( <isgm> || (<obj.masteruid> == <uid>) )
-			if ( <local.listtypecount> ) 
-				dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
-			else
-				dialog d_Guild_Master,0,<obj.uid>
-			endif
-		else
-			dialog d_Guild_Main,0,<obj.uid>
-		endif
-	endif 
-
-	obj = <local.oldobj>
-	return 1
+  return 1
 
 [EOF]

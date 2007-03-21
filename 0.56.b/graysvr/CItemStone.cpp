@@ -282,7 +282,7 @@ bool CStoneMember::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		switch ( iIndex )
 		{
 			case STMM_GUILD_ISENEMY:
-				sVal.FormatVal((GetPriv() == STONEPRIV_ENEMY) ? 1 : 0);
+				sVal.FormatVal(GetWeDeclared() && GetTheyDeclared());
 				break;
 			case STMM_GUILD_THEYWAR:
 				sVal.FormatVal(GetTheyDeclared());
@@ -906,11 +906,11 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 					if ( pMember->GetLinkUID().IsChar() )
 						continue;
 
-					if ( ( iToCheck == 1 ) && (pMember->GetPriv() == STONEPRIV_ENEMY))
+					if ( ( iToCheck & 01 ) && pMember->GetWeDeclared() )
 						i++;
-					else if ( ( iToCheck == 2 ) && pMember->GetWeDeclared() )
+					else if ( ( iToCheck & 02 ) && pMember->GetTheyDeclared() )
 						i++;
-					else if ( ( iToCheck == 3 ) && pMember->GetTheyDeclared() )
+					else if ( ( iToCheck & 04 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
 						i++;
 				}
 			}

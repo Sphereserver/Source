@@ -9,99 +9,71 @@
 //
 // DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
 [Dialog d_Guild_ViewCharter]
 5,25
-
-local.guild = <args>
-if ( <local.guild> == 0 )
-	return 1
+If (<type>!=t_stone_guild)
+  return 1
+elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
 endif
-if ( <uid.<local.guild>.type> != T_STONE_GUILD )
-	return 1
+  local.charpriv=<QVAL <src.isgm> ? <def0.STONEPRIV_MASTER>:<memberfromuid.<src.uid>.priv>>
+If (<local.charpriv>!=<def0.STONEPRIV_MEMBER>)&&(<local.charpriv>!=<def0.STONEPRIV_MASTER>)
+  return 1
 endif
-local.oldobj = <obj.uid>
-obj = <local.guild>
-if (( <obj.memberfromuid.<uid>.uid> != <uid> ) && !<isgm> )
-	obj = <local.oldobj>
-	return 1
-endif
-local.charpriv = <QVAL <isgm> ? <def.STONEPRIV_MASTER> : <obj.memberfromuid.<uid>.priv> >
-if ( !((<local.charpriv> == <def.STONEPRIV_MEMBER>) || (<local.charpriv> == <def.STONEPRIV_MASTER>)) )
-	obj = <local.oldobj>
-	return 1
-endif
-ctag.dialog_guildviewcharter_guilduid = <local.guild>
-	
+  
 page 0
 resizepic 0 0 5054 550 400
 resizepic 10 10 3000 530 380
-button 20 360 4005 4007 1 0 0 // Return
 dhtmlgump 55 360 300 35 0 0 Return to the main menu.
-local.chartertext = <obj.charter0><def.br>
-local.line = 1
-WHILE ( <eval StrLen(<obj.charter<eval <local.line>>>)> > 0 )
-	local.chartertext .= <obj.charter<eval <local.line>>><def.br>
-	local.line += 1
-ENDWHILE
-if ( <eval StrLen(<local.chartertext>)> <= 0 )
-	dhtmlgump 20 20 500 35 0 0 No charter has been defined.
+  button 20 360 4005 4007 1 0 0 // Return
+
+local.chartertext=<charter0><def0.br>
+local.line=1
+While ( <eval StrLen(<charter<dlocal.line>>)> > 0 )
+  local.chartertext .= <charter<eval <local.line>>><def0.br>
+  local.line += 1
+endwhile
+
+If (<eval StrLen(<local.chartertext>)> <= 0)
+  dhtmlgump 20 20 500 35 0 0 No charter has been defined.
 else
-	dhtmlgump 20 20 500 150 0 1 <local.chartertext>
+  dhtmlgump 20 20 500 150 0 1 <local.chartertext>
 endif
-button 20 200 4005 4007 1 0 1 // Website
+
 dhtmlgump 55 200 300 20 0 0 Visit the guild website : 
-local.website = <obj.webpage>
-if ( <eval Strlen(<local.website>)> <= 3 ) // A website can be that small
-	local.website = <serv.url>
-endif
-dhtmlgump 50 220 300 20 0 0 <local.website>
+  button 20 200 4005 4007 1 0 1 // Website
+  local.website=<webpage>
+  If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small
+    local.website=<serv.url>
+  endif
+  dhtmlgump 50 220 300 20 0 0 <local.website>
+
 
 [Dialog d_Guild_ViewCharter Button]
-ON=0 1
-	if (!<ctag0.dialog_guildviewcharter_guilduid>)
-		serv.log DIALOG d_Guild_ViewCharter called without ctag.dialog_dialog_guildviewcharter_guilduid !!
-		return 1
-	endif
+ON=0 1    
+  If (<argn1>==0)	// Exit Gump
+    dialog d_Guild_Main,0
+  elif (<argn1>==1)	// Website
+    local.website=<webpage>
+    If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small
+     local.website=<serv.url>
+    endif
+    weblink <local.website>
+  endif
+  return 1
 
-	local.oldobj = <obj.uid>
-	obj = <ctag0.dialog_guildviewcharter_guilduid>
-	ctag.dialog_guildviewcharter_guilduid =
-		
-	if ( <argn1> == 0 ) // Exit Gump
-		dialog d_Guild_Main,0,<obj.uid>
-	elseif ( <argn1> == 1 ) // Website
-		local.website = <obj.webpage>
-		if ( <eval Strlen(<local.website>)> <= 3 ) // A website can be that small
-			local.website = <serv.url>
-		endif
-		
-		weblink <local.website>
-	endif
-	
-	obj = <local.oldobj>
-	return 1
 
+//------------------------------------------------------------------------
 [Dialog d_Guild_SetCharter]
 110, 70
-
-local.guild = <args>
-if ( <local.guild> == 0 )
-	return 1
+If (<type>!=t_stone_guild)
+  return 1
+elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
 endif
-if ( <uid.<local.guild>.type> != T_STONE_GUILD )
-	return 1
-endif
-local.oldobj = <obj.uid>
-obj = <local.guild>
-if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
-	obj = <local.oldobj>
-	return 1
-endif
-
-ctag.dialog_guildsetcharter_guilduid = <local.guild>
 
 page 0
 resizepic 0 0 2520 350 400
@@ -110,7 +82,7 @@ tilepic 275 50 3805
 gumppic 76 126 95
 gumppic 85 135 96
 gumppic 264 126 97
-dtext 65 35 2301 <obj.name>
+dtext 65 35 2301 <name>
 dtext 110 70 0 Set Guild Charter
 dtext 120 85 0 and Web Link
 dtext 140 115 0 Charter
@@ -122,49 +94,37 @@ dtext 40 370 0 Save this information
 button 195 370 2130 2129 1 0 1
 button 255 370 2121 2120 1 0 0
 gumppic 40 152 1143
-dtextentry 50 155 250 32 0 1000 <obj.charter0>
+dtextentry 50 155 250 32 0 1000 <charter0>
 gumppic 40 174 1143
-dtextentry 50 177 250 32 0 1001 <obj.charter1>
+dtextentry 50 177 250 32 0 1001 <charter1>
 gumppic 40 196 1143
-dtextentry 50 199 250 32 0 1002 <obj.charter2>
+dtextentry 50 199 250 32 0 1002 <charter2>
 gumppic 40 218 1143
-dtextentry 50 221 250 32 0 1003 <obj.charter3>
+dtextentry 50 221 250 32 0 1003 <charter3>
 gumppic 40 240 1143
-dtextentry 50 243 250 32 0 1004 <obj.charter4>
+dtextentry 50 243 250 32 0 1004 <charter4>
 gumppic 40 262 1143
-dtextentry 50 265 250 32 0 1005 <obj.charter5>
+dtextentry 50 265 250 32 0 1005 <charter5>
 gumppic 40 328 1143
-dtextentry 50 331 250 32 0 1006 <obj.webpage>
+dtextentry 50 331 250 32 0 1006 <webpage>
+
 
 [Dialog d_Guild_SetCharter Button]
 ON=0 1
-	if (!<ctag0.dialog_guildsetcharter_guilduid>)
-		serv.log DIALOG d_Guild_SetCharter called without ctag.dialog_guildsetcharter_guilduid !!
-		return 1
-	endif
-
-	local.oldobj = <obj.uid>
-	obj = <ctag0.dialog_guildsetcharter_guilduid>
-	ctag.dialog_guildsetcharter_guilduid =
-		
-	if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
-		obj = <local.oldobj>
-		return 1
-	endif
-	
-	if ( <argn1> == 1 ) // Set the values
-		obj.charter0 = <argtxt[1000]>
-		obj.charter1 = <argtxt[1001]>
-		obj.charter2 = <argtxt[1002]>
-		obj.charter3 = <argtxt[1003]>
-		obj.charter4 = <argtxt[1004]>
-		obj.charter5 = <argtxt[1005]>
-		obj.webpage = <argtxt[1006]>
-		local.website = <obj.webpage>
-	endif
-	
-	dialog d_Guild_Master,0,<obj.uid>
-	obj = <local.oldobj>
-	return 1
+  If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+    return 1
+  endif
+  
+  If ( <argn1> == 1 ) // Set the values
+    charter0=<argtxt[1000]>
+    charter1=<argtxt[1001]>
+    charter2=<argtxt[1002]>
+    charter3=<argtxt[1003]>
+    charter4=<argtxt[1004]>
+    charter5=<argtxt[1005]>
+    webpage=<argtxt[1006]>
+  endif
+  dialog d_Guild_Master,0
+  return 1
 
 [EOF]

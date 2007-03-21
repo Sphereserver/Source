@@ -7,127 +7,104 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 	
-[DIALOG d_Guild_Main]
+[dialog d_Guild_Main]
 5,25
+If (<type>!=t_stone_guild)
+  return 1
+elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
+endif
+  local.charpriv=<QVAL <src.isgm> ? <def0.STONEPRIV_MASTER>:<memberfromuid.<src.uid>.priv>>
+If (<local.charpriv>!=<def0.STONEPRIV_MEMBER>)&&(<local.charpriv>!=<def0.STONEPRIV_MASTER>)
+  return 1
+endif
 
-local.guild = <args>
-if ( <local.guild> == 0 )
-	return 1
-endif
-if ( <uid.<local.guild>.type> != T_STONE_GUILD )
-	return 1
-endif
-local.oldobj = <obj.uid>
-obj = <local.guild>
-if (( <obj.memberfromuid.<uid>.uid> != <uid> ) && !<isgm> )
-	obj = <local.oldobj>
-	return 1
-endif
-local.charpriv = <QVAL <isgm> ? <def.STONEPRIV_MASTER> : <obj.memberfromuid.<uid>.priv> >
-if ( !((<local.charpriv> == <def.STONEPRIV_MEMBER>) || (<local.charpriv> == <def.STONEPRIV_MASTER>)) )
-	obj = <local.oldobj>
-	return 1
-endif
-ctag.dialog_guildmain_guilduid = <local.guild>
-
-// The gump
-
+//----The Gump----
 page 0
 resizepic 0 0 5054 550 400
 resizepic 10 10 3000 530 380
-dhtmlgump 20 15 200 35 0 0 <obj.name>
-if ( <obj.masteruid> )
-	if ( <eval strlen(<obj.mastertitle>)> )
-		local.mastername = <obj.mastergendertitle>: <obj.mastertitle> <obj.master>
-	else
-		local.mastername = <obj.mastergendertitle>: <obj.master>
-	endif
-		
-	dhtmlgump 220 15 250 20 0 0 <local.mastername>
-endif
-button 20 50 4005 4007 1 0 1 
+dhtmlgump 20 15 220 35 0 0 Guild: <name>
+  If (<masteruid>)
+    local.mastername=<mastergendertitle>: <qval (<eval strlen(<mastertitle>)>) ? <mastertitle> :><master>
+    dhtmlgump 275 15 250 20 0 0 <local.mastername>
+  endif
+
 dhtmlgump 55 50 100 20 0 0 Loyal to: 
-local.loyalto = <obj.memberfromuid.<uid>.loyalto>
-if ( (!<local.loyalto>) || (<local.loyalto> == <uid>) )
-		dhtmlgump 55 70 470 20 0 0 yourself
+local.loyalto=<memberfromuid.<src.uid>.loyalto>
+dhtmlgump 55 70 470 20 0 0 <qval (!<local.loyalto>)||(<local.loyalto>==<src.uid>) ? yourself:<uid.<local.loyalto>.name>>
+  button 20 50 4005 4007 1 0 1 
+
+dhtmlgump 275 50 470 20 0 0 Display guild abbreviation: <abbrev>
+dhtmlgump 275 70 90 20 0 0 Currently: <AbbreviationToggle>
+  button 240 50 4005 4007 1 0 2
+
+dhtmlgump 55 100 240 30 0 0 View the current roster.
+  button 20 100 4005 4007 1 0 3
+
+dhtmlgump 55 130 240 30 0 0 Recruit someone into the guild.
+  button 20 130 4005 4007 1 0 4
+
+If (<member.count <def0.STONEPRIV_CANDIDATE>>)
+  button 20 160 4005 4007 1 0 5
+  dhtmlgump 55 160 380 30 0 0 View list of candidates who have been sponsored to the guild.
 else
-		dhtmlgump 55 70 470 20 0 0 <uid.<local.loyalto>.name>
+  button 20 160 4020 4020 0 0 0 
+  dhtmlgump 55 160 320 30 0 0 There are currently no candidates for membership.
 endif
-button 215 50 4005 4007 1 0 2
-dhtmlgump 250 50 170 20 0 0 Display guild abbreviation 
-dhtmlgump 250 70 50 20 0 0 <obj.AbbreviationToggle>
-button 20 100 4005 4007 1 0 3
-dhtmlgump 55 100 470 30 0 0 View the current roster.
-button 20 130 4005 4007 1 0 4
-dhtmlgump 55 130 470 30 0 0 Recruit someone into the guild.
-if ( <obj.member.count <def0.STONEPRIV_CANDIDATE>> )
-	button 20 160 4005 4007 1 0 5
-	dhtmlgump 55 160 470 30 0 0 View list of candidates who have been sponsored to the guild.
+
+dhtmlgump 55 220 240 30 0 0 View the guild's charter.
+  button 20 220 4005 4007 1 0 6
+dhtmlgump 55 250 240 30 0 0 Resign from the guild.
+  button 20 250 4005 4007 1 0 7
+dhtmlgump 55 280 240 30 0 0 View the guild's wartime status.
+  button 20 280 4005 4007 1 0 8
+
+If (<src.isgm>)||(<masteruid>==<src.uid>)
+  button 20 310 4005 4007 1 0 9
+  dhtmlgump 55 310 240 30 0 0 Access guildmaster functions.
 else
-	button 20 160 4020 4020 0 0 0 
-	dhtmlgump 55 160 470 30 0 0 There are currently no candidates for membership.
+  button 20 310 4020 4020 0 0 0
+  dhtmlgump 55 310 240 30 0 0 Reserved for guildmaster.
 endif
-button 20 220 4005 4007 1 0 6
-dhtmlgump 55 220 470 30 0 0 View the guild's charter.
-button 20 250 4005 4007 1 0 7
-dhtmlgump 55 250 470 30 0 0 Resign from the guild.
-button 20 280 4005 4007 1 0 8
-dhtmlgump 55 280 470 30 0 0 View list of guilds you are at war with.
-if ( <isgm> || (<obj.masteruid> == <uid>) )
-	button 20 310 4005 4007 1 0 9
-	dhtmlgump 55 310 470 30 0 0 Access guildmaster functions.
-else
-	button 20 310 4020 4020 0 0 0
-	dhtmlgump 55 310 470 30 0 0 Reserved for guildmaster.
-endif
-button 20 360 4005 4007 1 0 0
+
 dhtmlgump 55 360 470 30 0 0 EXIT
-obj = <local.oldobj>
+  button 20 360 4005 4007 1 0 0
 
-[Dialog d_Guild_Main Button]
+
+
+
+[dialog d_Guild_Main Button]
 ON=0 9
-	if (!<ctag0.dialog_guildmain_guilduid>)
-		serv.log DIALOG d_Guild_Main called without ctag.dialog_guildmain_guilduid !!
-		return 1
-	endif
-	
-	if ( <argn1> == 0 ) // Exit Gump
-		ctag.dialog_guildmain_guilduid =
-		return 1
-	endif
+If (<argn1>==0) // Exit Gump
+  return 1
+endif
 
-	local.oldobj = <obj.uid>
-	obj = <ctag0.dialog_guildmain_guilduid>
-	ctag.dialog_guildmain_guilduid =
-	
-	if ( <argn1> == 1 ) // Declare LoyalTo Dialog
-		dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_LOYALITY>
-	elseif ( <argn1> == 2 ) // Abbreviation Switch
-		obj.toggleabbreviation <uid>
-		dialog d_Guild_Main,0,<obj.uid>
-	elseif ( <argn1> == 3 ) // Roster List
-		dialog d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_ROSTER>
-	elseif ( <argn1> == 4 ) // Recruit New Member
-		targetf f_guildsys_recruitguy <obj.uid>
-		sysmessage Select a character to recruit
-	elseif ( <argn1> == 5 ) // Candidates list
-		dialog  d_Guild_CharList,0,<obj.uid>,<def0.GUILDDLG_LISTTYPE_CANDIDATES>
-	elseif ( <argn1> == 6 ) // Guild charter
-		dialog d_Guild_ViewCharter,0,<obj.uid>
-	elseif ( <argn1> == 7 ) // Resign
-		obj.resign
-	elseif ( <argn1> == 8 ) // Enemies
-		dialog d_Guild_WarfareStatus,0,<obj.uid>
-	elseif ( <argn1> == 9 ) // Guildmaster Menu
-		if ( <isgm> || (<obj.masteruid> == <uid>) )
-			dialog d_Guild_Master,0,<obj.uid>
-		endif
-	endif
-	
-	obj = <local.oldobj>
-	return 1
+If (<argn1>==1 )	// Declare LoyalTo Dialog
+  sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_LOYALITY>
+elif (<argn1>==2)	// Abbreviation Switch
+  toggleabbreviation <src.uid>
+  sdialog d_Guild_Main,0,<uid>
+elif (<argn1>==3)	// Roster List
+  sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ROSTER>
+elif (<argn1>==4)	// Recruit New Member
+  src.targetf f_guildsys_recruitguy <uid>
+  src.sysmessage Select a character to recruit
+elif (<argn1>==5)	// Candidates list
+  sdialog  d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_CANDIDATES>
+elif (<argn1>==6)	// Guild charter
+  sdialog d_Guild_ViewCharter,0,<uid>
+elif (<argn1>==7)	// Resign
+  resign
+elif (<argn1>==8)	// Enemies
+  sdialog d_Guild_WarfareStatus,0,<uid>
+elif (<argn1>==9)	// Guildmaster Menu
+  If (<src.isgm>)||(<masteruid>==<src.uid>)
+    sdialog d_Guild_Master,0
+  endif
+endif
+return 1
 	
 [EOF]
