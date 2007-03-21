@@ -353,6 +353,10 @@ void Main::onStart()
 void Main::tick()
 {
 	Sphere_OnTick();
+	if( g_Serv.m_iExitFlag )
+	{
+		terminate();
+	}
 }
 
 Main g_Main;
