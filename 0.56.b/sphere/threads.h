@@ -2,6 +2,7 @@
 #define THREADS_H
 
 #include "../common/common.h"
+#include "../sphere/strings.h"
 
 /**
  * Sphere threading system
@@ -15,6 +16,11 @@
 // NOTE: Lies here since trying to avoid any problems with lists, etc with
 // threads, using as much of static single non-heap data as possible
 #define MAX_THREADS	30
+
+// temporary string storage. Stores THREAD_STRING_STORAGE of strings with length THREAD_STRING_LENGTH
+// per each SphereThread
+#define THREAD_STRING_STORAGE	512
+#define THREAD_STRING_LENGTH	1024
 
 // Types definition for different platforms
 #ifdef _WIN32
@@ -107,6 +113,25 @@ protected:
 private:
 	void run();
 	static SPHERE_THREADENTRY_RETNTYPE SPHERE_THREADENTRY_CALLTYPE runner(void *callerThread);
+};
+
+// Sphere thread. Have some sphere-specific
+class AbstractSphereThread : public AbstractThread
+{
+private:
+	long	m_tmpStringIndex;
+	char	m_tmpStringUsed[THREAD_STRING_STORAGE];
+	char	m_tmpStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
+
+public:
+	AbstractSphereThread(const char *name, Priority priority = IThread::Normal);
+	~AbstractSphereThread();
+
+	// allocates a char* with size of THREAD_MAX_LINE_LENGTH characters from the thread local storage
+	char *allocateBuffer();
+	// allocates a manageable String from the thread local storage
+	String allocateString();
+	void allocateString(TemporaryString &string);
 };
 
 #endif

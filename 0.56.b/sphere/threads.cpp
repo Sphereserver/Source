@@ -118,8 +118,6 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 		{
 			throw new CException(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
 		}
-#else
-		// No pthread equivalent
 #endif
 		AbstractThread::m_threadsAvailable++;
 	}
@@ -351,4 +349,59 @@ void AbstractThread::checkStuck()
 void AbstractThread::onStart()
 {
 	//	empty. override if need in subclass
+}
+
+/*
+ * AbstractSphereThread
+*/
+AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority = IThread::Normal)
+	: AbstractThread(name, priority)
+{
+	m_tmpStringIndex = 0;
+	memset(m_tmpStringUsed, 0, sizeof(m_tmpStringUsed));
+	memset(m_tmpStrings, 0, sizeof(m_tmpStrings));
+}
+
+AbstractSphereThread::~AbstractSphereThread()
+{
+}
+
+char *AbstractSphereThread::allocateBuffer()
+{
+	long initialPosition = m_tmpStringIndex;
+	while( true )
+	{
+		m_tmpStringIndex++;
+		if( m_tmpStringIndex >= THREAD_STRING_STORAGE-1 )
+		{
+			m_tmpStringIndex = 0;
+		}
+
+		if( m_tmpStringUsed[m_tmpStringIndex] == 0 )
+		{
+			*(m_tmpStrings[m_tmpStringIndex]) = '\0';
+			return m_tmpStrings[m_tmpStringIndex];
+		}
+
+		// a protection against deadlock. All string buffers are marked as being used somewhere, so we
+		// have two possibilities (the case shows that we have a bug and temporary strings used not such):
+		// a) return NULL and wait for exceptions in the program
+		// b) allocate a string from a heap
+		if( initialPosition == m_tmpStringIndex )
+		{
+			return NULL;
+		}
+	}
+}
+
+String AbstractSphereThread::allocateString()
+{
+	TemporaryString s(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
+
+	return s;
+}
+
+void AbstractSphereThread::allocateString(TemporaryString &string)
+{
+	string.init(allocateBuffer(), m_tmpStringIndex);
 }
