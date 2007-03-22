@@ -354,7 +354,7 @@ void AbstractThread::onStart()
 /*
  * AbstractSphereThread
 */
-AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority = IThread::Normal)
+AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	: AbstractThread(name, priority)
 {
 	m_tmpStringIndex = 0;
@@ -403,5 +403,5 @@ String AbstractSphereThread::allocateString()
 
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
-	string.init(allocateBuffer(), m_tmpStringIndex);
+	string.init(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
 }
