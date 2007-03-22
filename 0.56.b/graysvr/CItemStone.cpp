@@ -906,11 +906,11 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 					if ( pMember->GetLinkUID().IsChar() )
 						continue;
 
-					if ( ( iToCheck & 01 ) && pMember->GetWeDeclared() )
+					if ( ( iToCheck == 1 ) && ( pMember->GetWeDeclared() && !pMember->GetTheyDeclared() ) )
 						i++;
-					else if ( ( iToCheck & 02 ) && pMember->GetTheyDeclared() )
+					else if ( ( iToCheck == 2 ) && ( !pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
 						i++;
-					else if ( ( iToCheck & 04 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+					else if ( ( iToCheck == 3 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
 						i++;
 				}
 			}
@@ -1623,14 +1623,14 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 				if ( pEnemyStone == NULL )
 					break;
 				CStoneMember * pEnemyMember = pEnemyStone->GetMember(this);
-#ifndef _NEWGUILDSYSTEM
+// #ifndef _NEWGUILDSYSTEM
 				if ( pEnemyMember == NULL )
 					break;
 				if ( pMember->GetWeDeclared() && ! pEnemyMember->GetTheyDeclared())
 					break;
 				if ( pMember->GetTheyDeclared() && ! pEnemyMember->GetWeDeclared())
 					break;
-#else
+/*#else
 				if ( pEnemyMember == NULL )
 				{
 					if ( !pMember->GetWeDeclared() ) // this memory can only exist if we declared
@@ -1663,7 +1663,7 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 					if ( !pMember->GetTheyDeclared() && !pEnemyMember->GetWeDeclared() ) // If unilateral they should have the memory
 						break;
 				}
-#endif
+#endif */
 			}
 			return( true );
 	}

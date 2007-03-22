@@ -166,15 +166,16 @@ ON=0 1
     endif
   elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
     If ( <f_guildsys_candeclarewarwith <uid>,<local.guilduid>> )
-      f_guildsys_declarewar <local.guilduid>,<uid>,1
+      f_guildsys_declarewar <uid>,<local.guilduid>,1
     endif
   elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
-    If ( <uid.<local.guilduid>.guildfromuid.<uid>.wedeclared> )
-      f_guildsys_declarepeace <local.guilduid>,<uid>
+    ref1 = <local.guilduid>
+    If ( <ref1.guildfromuid.<uid>.wewar> )
+      f_guildsys_declarepeace <local.guilduid>,<uid>,0
     endif
   elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
-    If ( <guildfromuid.<local.guilduid>.wedeclared> )
-      f_guildsys_declarepeace <uid>,<local.guilduid>
+    If ( <guildfromuid.<local.guilduid>.wewar> )
+      f_guildsys_declarepeace <uid>,<local.guilduid>,0
     endif
   endif
   

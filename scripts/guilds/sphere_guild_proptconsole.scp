@@ -167,8 +167,11 @@ elif ( strregex([^A-Za-z0-9\s]+,<local.guildtext>) == 1 )
 else
   // Go for dialog
   trysrc <uid> obj.dialog d_Guild_Master_Warfare_DeclareWar,0,<local.guildtext>
+  obj=<local.oldobj>
+  return 1
 endif
 
+trysrc <uid> obj.dialog d_Guild_Master_Warfare,0
 obj=<local.oldobj>
 return 1
 

@@ -268,7 +268,7 @@ endif
 
 try uid.<local.firstuid>.declarepeace <local.seconduid>
 
-If (<argv[2]>)
+If (<argv[2]> != 0)
   f_guildsys_sendsmsg <local.firstuid>,You are now at peace with this guild: <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
   f_guildsys_sendsmsg <local.seconduid>,You are now at peace with this guild: <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 endif

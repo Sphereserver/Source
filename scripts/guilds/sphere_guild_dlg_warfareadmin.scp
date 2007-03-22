@@ -27,7 +27,7 @@ dhtmlgump 20 10 510 35 0 0 <def0.center>WAR FUNCTIONS<def0.centere>
 dhtmlgump 55 40 400 30 0 0 Declare war through guild name search.
   button 20 40 4005 4007 1 0 1 // Search
 local.gcount=0
-If (<member.count <def0.STONEPRIV_ENEMY>>)
+If (<guild.count <def0.STONEPRIV_ENEMY>>)
   button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 2
   dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Declare peace.
   local.gcount += 1
@@ -37,7 +37,7 @@ else
   local.gcount += 1
 endif
   
-If (<member.count <def0.STONEPRIV_THEYDECLARED>>)
+If (<guild.count <def0.STONEPRIV_THEYDECLARED>>)
   button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 3
   dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Accept war invitations.
   local.gcount += 1
@@ -50,13 +50,13 @@ else
   local.gcount += 1
 endif
 
-If (<member.count <def0.STONEPRIV_WEDECLARED>>)
+If (<guild.count <def0.STONEPRIV_WEDECLARED>>)
   button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 5
   dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Rescind your war declarations.
   local.gcount += 1
 else
   gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
-  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400, 30, 1013055, 0, 0)
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current war declarations
   local.gcount += 1
 endif
 
