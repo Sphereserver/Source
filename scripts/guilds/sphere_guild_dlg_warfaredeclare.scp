@@ -62,6 +62,7 @@ For num 0 <eval <local.guildlist_count>-1>
   else
     dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name>
   endif
+
 endfor
 
 
@@ -108,12 +109,12 @@ ON=0 1
 	serv.log GUILD WAR: (<uid.<local.selectedguild>.name>)
 	serv.log CURRENT: <name>
 
-    if ( <guildfromuid.<local.selectedguild>.isenemy> )
-        sysmessage @038A You're already at war with <uid.<local.selectedguild>.name>.
+    If ( <guildfromuid.<local.selectedguild>.isenemy> )
+        src.sysmessage @038A You're already at war with <uid.<local.selectedguild>.name>.
     elseif ( <guildfromuid.<local.selectedguild>.theywar> && !<guildfromuid.<local.selectedguild>.wewar> )
         f_guildsys_declarewar <uid>,<local.selectedguild>,1
     elseif ( <guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
-        sysmessage @038A Invitation already sent for <uid.<local.selectedguild>.name>.
+        src.sysmessage @038A A declaration of war is already made to <uid.<local.selectedguild>.name>.
     elseif ( !<guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
         f_guildsys_declarewar <uid>,<local.selectedguild>,2
     endif

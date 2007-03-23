@@ -3263,3 +3263,6 @@ this all in desperation)
 - Added: ++/-- operators, which are in C languages.
 - Fixed: RESENERGY is saved only if RESPOISON doesn't equal 0.
 - Fixed: Possibility of double definition of events (sphere.ini + events +e...)
+
+24-03-2007, Furio
+- Updated: sphereCrypt.ini with 5.0.9.0 keys.

@@ -35,17 +35,17 @@ If ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE> )
   dhtmlgump 20 10 400 35 0 0 Select the guild you wish to declare peace with.
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Send the olive branch.
-elIf ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
   local.privtolist=<def0.STONEPRIV_THEYDECLARED>
   dhtmlgump 20 10 400 35 0 0 Select the guild to accept the invitations: 
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Accept war invitations.
-elIf ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
   local.privtolist=<def0.STONEPRIV_THEYDECLARED>
   dhtmlgump 20 10 400 35 0 0 Select the guild to reject their invitations: 
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Reject war invitations.
-elIf ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
   local.privtolist=<def0.STONEPRIV_WEDECLARED>
   dhtmlgump 20 10 400 35 0 0 Select the guild to rescind our invitations: 
   button 20 400 4005 4007 1 0 1
@@ -54,7 +54,7 @@ endif
   
 button 300 400 4005 4007 1 0 0
 dhtmlgump 335 400 100 35 0 0 CANCEL
-  
+
 If ( <local.privtolist>==-1 )
   return 1
 endif
@@ -67,15 +67,16 @@ local.totalprivcount=<guild.count <local.privtolist>>
 src.ctag.dialog_guildguildlist_type=<local.listtype>
 try src.ctag.dialog_guildguildlist_<dlocal.listtype>_count=<local.totalprivcount>
 try src.ctag.dialog_guildguildlist_<dlocal.listtype>_radio=<local.showcheckbox>
-  
+
+
 while ( <local.currentgump> < <local.totalprivcount> )
   // ---- Condition for executing -----
   local.ifisok=<guild.<local.current>.uid>
   If ( <local.privtolist>==<def0.STONEPRIV_ENEMY> )
     local.ifisok=<local.ifisok> && <guild.<local.current>.isenemy>
-  elIf ( <local.privtolist>==<def0.STONEPRIV_THEYDECLARED> )
+  elif ( <local.privtolist>==<def0.STONEPRIV_THEYDECLARED> )
     local.ifisok=<local.ifisok> && <guild.<local.current>.theywar> && !<guild.<local.current>.wewar>
-  elIf ( <local.privtolist>==<def0.STONEPRIV_WEDECLARED> )
+  elif ( <local.privtolist>==<def0.STONEPRIV_WEDECLARED> )
     local.ifisok=<local.ifisok> && <guild.<local.current>.wewar> && !<guild.<local.current>.theywar>
   endif
   // ----------------------------------
@@ -96,7 +97,7 @@ while ( <local.currentgump> < <local.totalprivcount> )
       endif
     endif
     // ----------------
-    
+
     If ( <local.showcheckbox> )
       radio 20 <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 208 209 0 <EVAL (<local.current> + 10)>
     endif
@@ -108,7 +109,7 @@ while ( <local.currentgump> < <local.totalprivcount> )
     else
       dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 (Unnamed)
     endif
-  
+
   endif
 
   // ----- Total Member -----
@@ -119,6 +120,7 @@ while ( <local.currentgump> < <local.totalprivcount> )
   // ------------------------
 
 endwhile
+
 
   
 [Dialog d_Guild_GuildList Button]
