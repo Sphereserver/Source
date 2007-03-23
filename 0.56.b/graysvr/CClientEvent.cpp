@@ -1170,7 +1170,7 @@ void CClient::Event_VendorBuy(CGrayUID uidVendor, const CEvent *pEvent)
 
 	if ( !m_pChar->CanTouch(pVendor) )
 	{
-		SysMessage("You can't reach the vendor");
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
 		return;
 	}
 

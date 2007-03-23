@@ -777,6 +777,7 @@
 //npc_vendor_nothing_buy		"You have nothing I'm interested in"
 //npc_vendor_nothing_sell		"Sorry I have nothing of interest to you."
 //npc_vendor_offduty		"Sorry, I'm currently off-duty. Come back when my shop is open."
+//npc_vendor_cantreach		"You can't reach the Vendor"
 //npc_vendor_s1		"That is %d gold coin%s worth of goods."
 //npc_vendor_setprice_1		"Setting price of %s to %d"
 //npc_vendor_setprice_2		"What do you want the price to be?"
