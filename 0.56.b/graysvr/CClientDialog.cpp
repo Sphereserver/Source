@@ -220,6 +220,18 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			m_iControls++;
 			return true;
 		}
+		case GUMPCTL_GUMPPICTILED:
+		{
+			GET_RELATIVE( x, m_iOriginX );
+			GET_RELATIVE( y, m_iOriginY );
+			GET_ABSOLUTE( sX );
+			GET_ABSOLUTE( sY );
+			GET_ABSOLUTE( id );
+
+			m_sControls[m_iControls].Format( "gumppictiled %d %d %d %d %d", x, y, sX, sY, id );
+			m_iControls++;
+			return true;
+		}
 		case GUMPCTL_RESIZEPIC:
 		{
 			GET_RELATIVE( x, m_iOriginX );

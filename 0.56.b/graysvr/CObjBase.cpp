@@ -747,6 +747,35 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					sVal.FormatVal( 0 );
 				return( true );
 			}
+		case OC_ISDIALOGOPEN:
+			{
+				pszKey += 12;
+				SKIP_SEPARATORS( pszKey );
+				GETNONWHITESPACE( pszKey );
+				CChar * pCharToCheck = dynamic_cast<CChar*>(this);
+				CClient * pClientToCheck = (pCharToCheck && pCharToCheck->IsClient()) ? (pCharToCheck->GetClient()) : NULL ;
+
+				if ( pClientToCheck )
+				{
+					int context = GETINTRESOURCE( (DWORD) g_Cfg.ResourceGetIDType( RES_DIALOG, pszKey ) );
+					CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientToCheck->m_mapOpenedGumps.find( context );
+
+					if ( itGumpFound != pClientToCheck->m_mapOpenedGumps.end() )
+					{
+						sVal.FormatVal( (*itGumpFound).second );
+					}
+					else
+					{
+						sVal.FormatVal( 0 );
+					}
+				}
+				else
+				{
+					sVal.FormatVal( 0 );
+				}
+
+				return( true );
+			}
 		case OC_ISARMOR:
 			{
 			pszKey += 7;
