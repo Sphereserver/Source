@@ -3273,3 +3273,6 @@ this all in desperation)
 
 24-03-2007, ShiryuX (Script pack)
 - Updated: sphere_dialog.scp (Reference at top)
+
+24-03-2007, RanXerox (Script pack)
+- Updated: sphere_map_points0_ml.scp (Updated teleports)
