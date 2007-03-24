@@ -10,9 +10,9 @@ enum MEMORY_TYPE
 {
 	// IT_EQ_MEMORY_OBJ
 	// Types of memory a CChar has about a game object. (m_wHue)
-	MEMORY_NONE		= 0,
+	MEMORY_NONE			= 0,
 	MEMORY_SAWCRIME		= 0x0001,	// I saw them commit a crime or i was attacked criminally. I can call the guards on them. the crime may not have been against me.
-	MEMORY_IPET		= 0x0002,	// I am a pet. (this link is my master) (never time out)
+	MEMORY_IPET			= 0x0002,	// I am a pet. (this link is my master) (never time out)
 	MEMORY_FIGHT		= 0x0004,	// Active fight going on now. may not have done any damage. and they may not know they are fighting me.
 	MEMORY_IAGGRESSOR	= 0x0008,	// I was the agressor here. (good or evil)
 	MEMORY_HARMEDBY		= 0x0010,	// I was harmed by them. (but they may have been retaliating)
@@ -22,11 +22,11 @@ enum MEMORY_TYPE
 	MEMORY_GUARD		= 0x0100,	// Guard this item (never time out)
 	MEMORY_ISPAWNED		= 0x0200,	// I am spawned from this item. (never time out)
 	MEMORY_GUILD		= 0x0400,	// This is my guild stone. (never time out) only have 1
-	MEMORY_TOWN		= 0x0800,	// This is my town stone. (never time out) only have 1
+	MEMORY_TOWN			= 0x0800,	// This is my town stone. (never time out) only have 1
 	MEMORY_UNUSED		= 0x1000,	// UNUSED!!!! I am following this Object (never time out)
 	MEMORY_WAR_TARG		= 0x2000,	// This is one of my current war targets.
 	MEMORY_FRIEND		= 0x4000,	// They can command me but not release me. (not primary blame)
-	MEMORY_GUMPRECORD	= 0x8000,	// Gump record memory (More1 = Context, More2 = Uid)
+	MEMORY_UNUSED2		= 0x8000,	// UNUSED!!!! Gump record memory (More1 = Context, More2 = Uid)
 };
 
 enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.

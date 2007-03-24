@@ -595,22 +595,22 @@ spellflag_nounparalyze	040000		// do not unparalyze the victim
 spellflag_no_castanim	080000		// don't play (default) cast anim
 
 [defname mem_flags]
-memory_sawcrime	00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
-memory_ipet		00002	// i am a pet. (this link is my master) (never time out)
+memory_sawcrime	    00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
+memory_ipet		    00002	// i am a pet. (this link is my master) (never time out)
 memory_fight		00004	// active fight going on now. may not have done any damage.
 memory_iaggressor	00008	// i was the agressor here. (good or evil)
-memory_harmedby	00010	// i was attacked by them. (but they may have been retaliating)
+memory_harmedby	    00010	// i was attacked by them. (but they may have been retaliating)
 memory_irritatedby	00020	// i saw them snoop from me or someone.
 memory_speak		00040	// we spoke about something at some point. (or was tamed) (npc_mem_act_type)
 memory_aggreived	00080	// i was attacked and was the inocent party here !
-memory_guard		00100	// guard this item (never time out)
-memory_ispawned	00200	// i am spawned from this item. (never time out)
+memory_guard	    00100	// guard this item (never time out)
+memory_ispawned	    00200	// i am spawned from this item. (never time out)
 memory_guild		00400	// this is my guild stone. (never time out)
-memory_town		00800	// this is my town stone. (never time out)
+memory_town		    00800	// this is my town stone. (never time out)
 memory_follow		01000	// UNUSED!!!! i am following this object (never time out)
-memory_war_targ	02000	// this is one of my current war targets.
+memory_war_targ     02000	// this is one of my current war targets.
 memory_friend		04000
-memory_gumprecord	08000	// i've a gump opened TAG.DIALOG_NAME contain the name of the gump
+memory_gumprecord	08000	// UNUSED!!!! i've a gump opened TAG.DIALOG_NAME contain the name of the gump
 
 [defname stat_flags]
 // apply to chars

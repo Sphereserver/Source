@@ -776,18 +776,6 @@ int CItem::FixWeirdness()
 					iResultCode = 0x2222;
 					return( iResultCode );	// get rid of it.
 				}
-				else
-				{
-					// Gump memory shouldn't be on logged off players
-					if ( pItemTemp->GetMemoryTypes() & MEMORY_GUMPRECORD ) 
-					{
-						if ( pChar && pChar->IsDisconnected() )
-						{
-							iResultCode = 0x2222;
-							return( iResultCode );	// get rid of it.
-						}
-					}
-				}
 			}
 			break;
 	

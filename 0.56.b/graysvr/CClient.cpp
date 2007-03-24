@@ -257,7 +257,7 @@ void CClient::CharDisconnect()
 	if ( iLingerTime <= 0 ) fCanInstaLogOut = true;
 
 	// Gump memory cleanup, we don't want them on logged out players
-	m_pChar->Memory_ClearTypes(MEMORY_GUMPRECORD);
+	m_mapOpenedGumps.clear();
 
 	// Layer dragging, moving it to backpack
 	CItem * pItemDragging = m_pChar->LayerFind(LAYER_DRAGGING);

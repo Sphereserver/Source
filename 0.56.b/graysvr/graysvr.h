@@ -793,6 +793,10 @@ public:
 	CGMPage * m_pGMPage;		// Current GM page we are connected to.
 	CGrayUID m_Prop_UID;		// The object of /props (used for skills list as well!)
 
+	// Gump stuff
+	typedef std::map<int,int> OpenedGumpsMap_t;
+	OpenedGumpsMap_t m_mapOpenedGumps;
+
 	// Current operation context args for modal async operations..
 private:
 	CLIMODE_TYPE m_Targ_Mode;	// Type of async operation under way.
