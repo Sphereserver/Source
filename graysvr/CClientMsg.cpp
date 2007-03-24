@@ -4410,7 +4410,7 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	ASSERT(m_pChar);
 
 	// Gump memory cleanup, we don't want them from logged out players
-	m_pChar->Memory_ClearTypes(MEMORY_GUMPRECORD);
+	m_mapOpenedGumps.clear();
 
 	// Resend hiding buff if hidden
 	if ( m_pChar->IsStatFlag( STATF_Hidden ) )

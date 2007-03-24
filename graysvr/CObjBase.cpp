@@ -1516,7 +1516,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( index == OV_SDIALOG )
 				{
 					int context = GETINTRESOURCE( (DWORD) g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] ) );
-					if ( pCharSrc && pCharSrc->Memory_FindGump(context,0,true) )
+					CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find( context );
+
+					if ( pCharSrc && (( itGumpFound != pClientSrc->m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 )) )
 						break;
 				}
 				pClientSrc->Dialog_Setup( CLIMODE_DIALOG, g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] ),

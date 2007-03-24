@@ -2727,26 +2727,15 @@ void CClient::Event_GumpDialogRet( const CEvent * pEvent )
 #endif
 
 	// Sanity check
-	CItemMemory * pCheckMemory = m_pChar->Memory_FindGump(context, (DWORD)uid);
-	if ( pCheckMemory )
+	OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find( ((int)(context)) );
+	if (( itGumpFound != m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 ))
 	{
-		if ( context == CLIMODE_DIALOG_GUILD )
-		{
-			CVarDefCont * sTempVal = pCheckMemory->GetTagDefs()->GetKey( "targ_uid" );
-			if ( sTempVal )
-			{
-				m_Targ_UID = (DWORD)sTempVal->GetValNum();
-			}
-			else
-			{
-				m_Targ_UID = 0;
-			}
-		}
-
-		pCheckMemory->Delete();
+		(*itGumpFound).second--;
 	}
 	else
+	{
 		return;
+	}
 
 	// package up the gump response info.
 	CDialogResponseArgs resp;

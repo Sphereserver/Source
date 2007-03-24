@@ -786,36 +786,7 @@ olddialogprocedure:
 	
 	if ( m_pChar )
 	{
-		bool bResDialogOk = false;
-
-		CItemMemory * pMemory = m_pChar->Memory_AddObj(this->GetChar(), MEMORY_GUMPRECORD);
-		pMemory->m_itNormal.m_more1 = context_mode;
-		pMemory->m_itNormal.m_more2 = pObj->GetUID();
-		pMemory->SetName("Gump Memory");
-
-		if (context_mode == CLIMODE_DIALOG_GUILD)
-		{
-			pMemory->GetTagDefs()->SetStr( "dialog_name", false, "guild");
-			pMemory->GetTagDefs()->SetNum( "targ_uid", (DWORD) m_Targ_UID , false);
-			bResDialogOk = true;
-		}
-		else
-		{
-			CResourceDef *	pRes = g_Cfg.ResourceGetDef(RESOURCE_ID( RES_DIALOG, context_mode ));
-
-			if ( pRes )
-			{
-				CDialogDef * pDlg = dynamic_cast <CDialogDef*>(pRes);
-				if ( pDlg )
-				{
-					pMemory->GetTagDefs()->SetStr( "dialog_name", false, (LPCTSTR) pDlg->GetName());
-					bResDialogOk = true;
-				}
-			}
-		}
-
-		if ( !bResDialogOk )
-			pMemory->GetTagDefs()->SetStr( "dialog_name", false, "undefinied");
+		m_mapOpenedGumps[context_mode]++;
 	}
 	
 }
@@ -892,8 +863,10 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 bool CClient::Dialog_Close( CObjBase * pObj, RESOURCE_ID_BASE rid, int buttonID )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Close");
+	int gumpContext = GETINTRESOURCE( rid );
+
 	CExtData ExtData;
-	ExtData.GumpChange.dialogID		= GETINTRESOURCE( rid );
+	ExtData.GumpChange.dialogID		= (DWORD)gumpContext;
 	ExtData.GumpChange.buttonID		= buttonID;
 	addExtData( EXTDATA_GumpChange, &ExtData, sizeof(ExtData.GumpChange) );
 
@@ -902,14 +875,14 @@ bool CClient::Dialog_Close( CObjBase * pObj, RESOURCE_ID_BASE rid, int buttonID 
 		CChar * pSrc = dynamic_cast<CChar*>( pObj );
 		if ( pSrc )
 		{
-			CItemMemory * pMem = pSrc->Memory_FindGump(GETINTRESOURCE( rid ), (DWORD) pObj->GetUID());
-			if ( pMem )
+			OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find( gumpContext );
+			if (( itGumpFound != m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 ))
 			{
 				CEvent eGump;
 				eGump.GumpDialogRet.m_Cmd = XCMD_GumpDialogRet;
 				eGump.GumpDialogRet.m_len = (WORD) 27;
-				eGump.GumpDialogRet.m_UID = (DWORD) pMem->m_itNormal.m_more2;
-				eGump.GumpDialogRet.m_context = (DWORD) pMem->m_itNormal.m_more1;
+				eGump.GumpDialogRet.m_UID = (DWORD) pObj->GetUID();
+				eGump.GumpDialogRet.m_context = (DWORD) gumpContext;
 				eGump.GumpDialogRet.m_buttonID = (DWORD) buttonID;
 				eGump.GumpDialogRet.m_checkIds[0] = (DWORD) 0;
 				eGump.GumpDialogRet.m_checkQty = (DWORD) 0;

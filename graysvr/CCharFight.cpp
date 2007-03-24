@@ -697,8 +697,6 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 
 	if ( wMemTypes & MEMORY_FIGHT )	// update more often to check for retreat.
 		iCheckTime = 30*TICK_PER_SEC;
-	else if ( wMemTypes & MEMORY_GUMPRECORD )	// update more often to check for retreat.
-		iCheckTime = -1; // 60*TICK_PER_SEC;
 	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD | MEMORY_ISPAWNED | MEMORY_GUILD | MEMORY_TOWN ))
 		iCheckTime = -1;	// never go away.
 	else if ( m_pNPC )	// MEMORY_SPEAK
@@ -848,42 +846,6 @@ CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 	return( NULL );
 }
 
-CItemMemory * CChar::Memory_FindGump( DWORD gump, DWORD uid, bool bSdialog ) const
-{
-	ADDTOCALLSTACK("CChar::Memory_FindGump");
-	// Do we have a certain type of memory.
-	// Just find the first one.
-	if ( !gump )
-		return( NULL );
-
-	if ( !bSdialog && !uid )
-		return( NULL );
-
-	if ( Memory_FindTypes(MEMORY_GUMPRECORD) == NULL )
-		return( NULL );
-
-	CItem * pCheckItem = GetContentHead();
-	CItemMemory * pCheckMemory = NULL;
-
-	for ( ; pCheckItem != NULL; pCheckItem=pCheckItem->GetNext(), pCheckMemory = NULL )
-	{
-		if ( ! pCheckItem->IsMemoryTypes(MEMORY_GUMPRECORD))
-			continue;
-
-		pCheckMemory = dynamic_cast <CItemMemory *>( pCheckItem );
-
-		if ( pCheckMemory )
-		{
-			if ( pCheckMemory->m_itNormal.m_more1 == gump && ( bSdialog || pCheckMemory->m_itNormal.m_more2 == uid ) )
-			{
-				return pCheckMemory;
-			}
-		}
-	}
-
-	return( NULL );
-}
-
 TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, WORD wMemType )
 {
 	ADDTOCALLSTACK("CChar::OnCharTrigForMemTypeLoop");
@@ -954,9 +916,6 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 		// Is the fight still valid ?
 		return Memory_Fight_OnTick( pMemory );
 	}
-
-	if ( pMemory->IsMemoryTypes( MEMORY_GUMPRECORD ) )
-		return( ! IsDisconnected() );
 
 	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD | MEMORY_ISPAWNED | MEMORY_GUILD | MEMORY_TOWN ))
 		return( true );	// never go away.
