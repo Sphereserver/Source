@@ -1397,8 +1397,15 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 					}
 					else
 					{
-						if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
-								isInOpenedContainer = true;
+						CItem * pItemTop = dynamic_cast<CItem *>(const_cast<CObjBaseTemplate *>(pObjTop));
+						if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
+						{
+							isInOpenedContainer = true;
+						}
+						else if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
+						{
+							isInOpenedContainer = true;
+						}
 					}
 				}
 			}

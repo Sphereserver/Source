@@ -57,8 +57,15 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						}
 						else
 						{
-							if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
+							CItem * pItemTop = dynamic_cast<CItem *>(const_cast<CObjBaseTemplate *>(pObjTop));
+							if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
+							{
 								isInOpenedContainer = true;
+							}
+							else if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
+							{
+								isInOpenedContainer = true;
+							}
 						}
 					}
 				}

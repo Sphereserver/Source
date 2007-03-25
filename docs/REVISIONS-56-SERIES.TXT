@@ -3269,6 +3269,7 @@ this all in desperation)
 - Removed: MEMORY_GUMPRECORD to track open dialogs. It now uses an internal system.
 - Updated: sphere_defs.scp
 - Added: ISDIALOGOPEN $dialogId. It returns the number of the opened $dialogId on the client.
+- Fixed #1127: Items of the hatch can't be moved.
 - Fixed #1129: GumpPicTiled don't work with dynamic origin.
 
 24-03-2007, ShiryuX (Script pack)
