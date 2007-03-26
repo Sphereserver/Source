@@ -443,13 +443,6 @@ int CChar::FixWeirdness()
 
 	// Make sure my flags are good.
 
-	if ( IsStatFlag( STATF_Insubstantial ))
-	{
-		if ( ! IsStatFlag( STATF_DEAD ) && ! IsPriv(PRIV_GM) && GetPrivLevel() < PLEVEL_Counsel )
-		{
-			StatFlag_Clear( STATF_Insubstantial );
-		}
-	}
 	if ( IsStatFlag( STATF_HasShield ))
 	{
 		CItem * pShield = LayerFind( LAYER_HAND2 );
