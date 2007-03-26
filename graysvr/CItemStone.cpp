@@ -946,6 +946,8 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 
 				return pMember->r_WriteVal(pszCmd, sVal, pSrc);
 			}
+
+			i++;
 		}
 
 		return true;
