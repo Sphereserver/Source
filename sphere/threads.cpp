@@ -362,10 +362,6 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	memset(m_tmpStrings, 0, sizeof(m_tmpStrings));
 }
 
-AbstractSphereThread::~AbstractSphereThread()
-{
-}
-
 char *AbstractSphereThread::allocateBuffer()
 {
 	long initialPosition = m_tmpStringIndex;
@@ -384,12 +380,14 @@ char *AbstractSphereThread::allocateBuffer()
 		}
 
 		// a protection against deadlock. All string buffers are marked as being used somewhere, so we
-		// have two possibilities (the case shows that we have a bug and temporary strings used not such):
+		// have few possibilities (the case shows that we have a bug and temporary strings used not such):
 		// a) return NULL and wait for exceptions in the program
 		// b) allocate a string from a heap
 		if( initialPosition == m_tmpStringIndex )
 		{
-			return NULL;
+			// but the best is to throw an exception to give better formed information for end users
+			// rather than access violations
+			throw new CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}
 }

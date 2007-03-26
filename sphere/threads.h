@@ -125,7 +125,6 @@ private:
 
 public:
 	AbstractSphereThread(const char *name, Priority priority = IThread::Normal);
-	~AbstractSphereThread();
 
 	// allocates a char* with size of THREAD_MAX_LINE_LENGTH characters from the thread local storage
 	char *allocateBuffer();
