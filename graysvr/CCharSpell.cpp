@@ -103,8 +103,14 @@ static LPCTSTR const sm_szPunishMsg[] =
 
 	if ( iEffect == ITEMID_TEMPLATE )
 	{
-		iEffect = g_Cfg.m_iSpell_Teleport_Effect_Players;
-		iSound = g_Cfg.m_iSpell_Teleport_Sound_Players;
+		if ( IsClient() )
+		{
+			iEffect = g_Cfg.m_iSpell_Teleport_Effect_Players;
+			iSound = g_Cfg.m_iSpell_Teleport_Sound_Players;
+		} else {
+			iEffect = g_Cfg.m_iSpell_Teleport_Effect_NPC;
+			iSound = g_Cfg.m_iSpell_Teleport_Sound_NPC;
+		}
 	}
 
 	if ( GetTopPoint().IsValidPoint())	// Guards might have justbeen created.

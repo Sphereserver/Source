@@ -37,6 +37,8 @@ CResource::CResource()
 	m_iSpell_Teleport_Sound_Staff = 0x1f3;
 	m_iSpell_Teleport_Effect_Players = ITEMID_FX_TELE_VANISH;
 	m_iSpell_Teleport_Sound_Players = 0x01fe;
+	m_iSpell_Teleport_Effect_NPC = ITEMID_FX_TELE_VANISH;
+	m_iSpell_Teleport_Sound_NPC = 0x01fe;
 
 	// Decay
 	m_iDecay_Item = 30*60*TICK_PER_SEC;
@@ -434,8 +436,12 @@ enum RC_TYPE
 	RC_STATSFLAGS,				//	m_iStatFlag
 	RC_STRIPPATH,				// for TNG
 	RC_SUPPRESSCAPITALS,
+	RC_TELEPORTEFFECTNPC,		//	m_iSpell_Teleport_Effect_NPC
 	RC_TELEPORTEFFECTPLAYERS,	//	m_iSpell_Teleport_Effect_Players
 	RC_TELEPORTEFFECTSTAFF,		//	m_iSpell_Teleport_Effect_Staff
+	RC_TELEPORTSOUNDNPC,		//	m_iSpell_Teleport_Sound_NPC
+	RC_TELEPORTSOUNDPLAYERS,	//	m_iSpell_Teleport_Sound_Players
+	RC_TELEPORTSOUNDSTAFF,		//	m_iSpell_Teleport_Sound_Staff
 	RC_TIMERCALL,				//	m_iTimerCall
 	RC_TIMEUP,
 	RC_USEAUTHID,				// m_fUseAuthID
@@ -607,8 +613,12 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "STATSFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iStatFlag) }},
 	{ "STRIPPATH",				{ ELEM_INT,		OFFSETOF(CResource,m_sStripPath) }},
 	{ "SUPPRESSCAPITALS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fSuppressCapitals) }},
+	{ "TELEPORTEFFECTNPC",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Effect_NPC) }},
 	{ "TELEPORTEFFECTPLAYERS",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Effect_Players) }},
 	{ "TELEPORTEFFECTSTAFF",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Effect_Staff) }},
+	{ "TELEPORTSOUNDNPC",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_NPC) }},
+	{ "TELEPORTSOUNDPLAYERS",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Players) }},
+	{ "TELEPORTSOUNDSTAFF",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Staff) }},
 	{ "TIMERCALL",				{ ELEM_INT,		OFFSETOF(CResource,m_iTimerCall) }},
 	{ "TIMEUP" },
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID)	}},	// we use authid like osi
