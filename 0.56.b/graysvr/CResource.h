@@ -635,6 +635,8 @@ public:
 	bool m_fEquippedCast;		// Allow casting while equipped.
 	bool m_fReagentLossFail;	// ??? Lose reags when failed.
 	int m_iMagicUnlockDoor;  // 1 in N chance of magic unlock working on doors -- 0 means never
+	ITEMID_TYPE m_iSpell_Teleport_Effect_NPC;
+	SOUND_TYPE m_iSpell_Teleport_Sound_NPC;
 	ITEMID_TYPE m_iSpell_Teleport_Effect_Players;
 	SOUND_TYPE m_iSpell_Teleport_Sound_Players;
 	ITEMID_TYPE m_iSpell_Teleport_Effect_Staff;
