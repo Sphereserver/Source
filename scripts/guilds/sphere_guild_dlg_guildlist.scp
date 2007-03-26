@@ -68,7 +68,6 @@ src.ctag.dialog_guildguildlist_type=<local.listtype>
 try src.ctag.dialog_guildguildlist_<dlocal.listtype>_count=<local.totalprivcount>
 try src.ctag.dialog_guildguildlist_<dlocal.listtype>_radio=<local.showcheckbox>
 
-
 while ( <local.currentgump> < <local.totalprivcount> )
   // ---- Condition for executing -----
   local.ifisok=<guild.<local.current>.uid>
@@ -110,6 +109,7 @@ while ( <local.currentgump> < <local.totalprivcount> )
       dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 (Unnamed)
     endif
 
+    local.currentgump += 1
   endif
 
   // ----- Total Member -----
