@@ -3279,7 +3279,7 @@ this all in desperation)
 - Updated: sphere_map_points0_ml.scp (Updated teleports)
 
 26-03-2007, Nazghul
-- added: Teleport effect and sound config keywords for SPhere.ini. 
+- added: Teleport effect and sound config keywords for SPhere.ini.
   Setting it to 0 disables the effect. Defaults are
   TeleportEffectNPC=0372a
   TeleportEffectPlayers=0372a
@@ -3287,3 +3287,6 @@ this all in desperation)
   TeleportSoundNPC=01fe
   TeleportSoundPlayers=01fe
   TeleportSoundStaff=01f3
+
+ 27-03-2007, Vjaka
+ - Fixed bug allowed to cast spells without reagents.
