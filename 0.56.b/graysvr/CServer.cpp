@@ -672,7 +672,6 @@ longcommand:
 				return 1;
 			}
 
-
 			while ( script = g_Cfg.GetResourceFile(i++) )
 			{
 				strcpy(z, script->GetFilePath());
@@ -688,21 +687,25 @@ longcommand:
 					z[0] = 0;
 					fgets(z, SCRIPT_MAX_LINE_LEN, f);
 					_strlwr(z);
-					if (( z[0] == '[' ) || !strncmp(z, "defname", 7) || !strncmp(z, "resources", 9) ||
+					if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
 						!strncmp(z, "name=", 5) || !strncmp(z, "type=", 5) || !strncmp(z, "id=", 3) ||
 						!strncmp(z, "weight=", 7) || !strncmp(z, "value=", 6) || !strncmp(z, "dam=", 4) ||
 						!strncmp(z, "armor=", 6) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
 						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id=", 3) ||
 						!strncmp(z, "can=", 4) || !strncmp(z, "tevents=", 8) || !strncmp(z, "subsection=", 11) ||
-						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "color", 5) )
+						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "color", 5) ||
+						!strncmp(z, "resources", 9) )
+					{
 						fputs(z, f1);
+					}
 				}
 				fclose(f);
 			}
 			fclose(f1);
 			pSrc->SysMessagef("Scripts have just been stripped.\n");
 			return 1;
-		} else if ( !strnicmp(pszText, "strip", 5) )
+		} 
+		else if ( !strnicmp(pszText, "strip", 5) )
 		{
 			int				i = 0;
 			CResourceScript	*script;
@@ -745,8 +748,11 @@ longcommand:
 						!strncmp(z, "armor=", 6) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
 						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id=", 3) ||
 						!strncmp(z, "can=", 4) || !strncmp(z, "tevents=", 8) || !strncmp(z, "subsection=", 11) ||
-						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) )
+						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "p=", 2) ||
+						!strncmp(z, "rect=", 5) || !strncmp(z, "group=", 6) )
+					{
 						fputs(z, f1);
+					}
 				}
 				fclose(f);
 				fclose(f1);
