@@ -1518,7 +1518,7 @@ CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 
 	if ( i >= g_MapList.GetSectorQty(map) )
 	{
-		g_Log.Error("Unsupported sector #%d for map #%d specifyed.\n", i, map);
+		g_Log.Error("Unsupported sector #%d for map #%d specified.\n", i, map);
 		return NULL;
 	}
 

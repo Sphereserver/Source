@@ -3279,7 +3279,7 @@ this all in desperation)
 - Updated: sphere_map_points0_ml.scp (Updated teleports)
 
 26-03-2007, Nazghul
-- added: Teleport effect and sound config keywords for SPhere.ini.
+- Added: Teleport effect and sound config keywords for Sphere.ini.
   Setting it to 0 disables the effect. Defaults are
   TeleportEffectNPC=0372a
   TeleportEffectPlayers=0372a
@@ -3288,5 +3288,9 @@ this all in desperation)
   TeleportSoundPlayers=01fe
   TeleportSoundStaff=01f3
 
- 27-03-2007, Vjaka
- - Fixed bug allowed to cast spells without reagents.
+27-03-2007, Vjaka
+- Fixed bug allowed to cast spells without reagents.
+
+29-03-2007, MrSugarCube
+- Fixed #1122: Exception when fighting with -100 dexterity.
+- Fixed #1137: Containers closing when targeting them with .x/set.

@@ -269,7 +269,7 @@ bool CCharBase::r_Load( CScript & s )
 		m_wDispIndex = CREID_MAN;
 	}
 	if ( m_Can == CAN_C_INDOORS )
-		g_Log.Event(LOGL_WARN, "Char script '%s' has no CAN flags specifyed!\n", GetResourceName());
+		g_Log.Event(LOGL_WARN, "Char script '%s' has no CAN flags specified!\n", GetResourceName());
 
 	return true;
 }

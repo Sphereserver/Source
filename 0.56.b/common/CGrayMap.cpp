@@ -364,7 +364,7 @@ void CGrayMapBlock::Load( int bx, int by )
 
 	if (( m_map < 0 ) || ( m_map >= 255 ))
 	{
-		g_Log.EventError("Unsupported map #%d specifyed. Auto-fixing that to 0.\n", m_map);
+		g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
 		m_map = 0;
 	}
 

@@ -77,7 +77,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 			BYTE speed = pItemDef->GetSpeed();
 			if ( speed )
 			{
-				int iWaitTime = (TICK_PER_SEC * g_Cfg.m_iSpeedScaleFactor) / ( ( pChar->Stat_GetAdjusted(STAT_DEX) + 100 ) * speed );
+				int iWaitTime = (TICK_PER_SEC * g_Cfg.m_iSpeedScaleFactor) / (max( (pChar->Stat_GetAdjusted(STAT_DEX) + 100), 1 ) * speed);
 				return (iWaitTime > 5 ? iWaitTime : 5);
 			}
 		}
