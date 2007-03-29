@@ -3109,7 +3109,7 @@ bool CResource::Load( bool fResync )
 
 	if ( !m_StartDefs.GetCount() )
 	{
-		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No any START locations specifyed. Add them and try again.\n");
+		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again.\n");
 		return false;
 	}
 

@@ -14,7 +14,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Obj_Set");
 	// CLIMODE_TARG_OBJ_SET
-	// Targettted a command at an CObjBase object
+	// Targeted a command at an CObjBase object
 	// ARGS:
 	//  m_Targ_Text = new command and value.
 
@@ -43,46 +43,22 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 		return( false );
 	}
 
-	// Special stuff to check for.
-	static LPCTSTR const sm_szSpecialTable[] =
-	{
-		"COLOR",
-		"REMOVE",
-		"SHRINK",
-	};
-
-	bool fDelete = false;
 	CScript sCmd( m_Targ_Text );
 
-	switch ( FindTableHeadSorted( sCmd.GetKey(), sm_szSpecialTable, COUNTOF(sm_szSpecialTable)))
+	if ( sCmd.IsKey("COLOR") )
 	{
-	case 0:	// "COLOR"
-		if ( ! sCmd.HasArgs() )
+		// ".xCOLOR" command without arguments displays dye option
+		if ( !sCmd.HasArgs() )
 		{
 			addDyeOption( pObj );
 			return true;
 		}
-		break;
-	case 1: // "REMOVE" = the object is immediatly invalid so return immediatly.
-	case 2: // "SHRINK"
-		fDelete = true;
-		break;
 	}
 
 	bool fRet = pObj->r_Verb( sCmd, this );
 	if ( ! fRet )
 	{
 		SysMessageDefault( DEFMSG_ERR_INVSET );
-	}
-
-	else if ( ! fDelete )
-	{
-		// BANK command will be harmed by RemoveFromView
-		if ( pObj->IsItemEquipped())
-		{
-			pObj->RemoveFromView();	// strangly we need to remove this before color will take.
-			pObj->Update();
-		}
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
