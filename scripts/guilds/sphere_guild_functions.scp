@@ -244,7 +244,8 @@ If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type
   return 0
 endif
 
-try uid.<local.firstuid>.declarewar <local.seconduid>
+ref1 = <local.firstuid>
+ref1.declarewar <local.seconduid>
 
 If (<argv[2]> == 1)
   f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war: <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
@@ -266,7 +267,8 @@ If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type
   return 0
 endif
 
-try uid.<local.firstuid>.declarepeace <local.seconduid>
+ref1 = <local.firstuid>
+ref1.declarepeace <local.seconduid>
 
 If (<argv[2]> != 0)
   f_guildsys_sendsmsg <local.firstuid>,You are now at peace with this guild: <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
