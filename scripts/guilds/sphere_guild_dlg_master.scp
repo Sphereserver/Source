@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_Master]
+[dialog d_Guild_Master]
 5,25
 If (<type>!=t_stone_guild)
   return 1
@@ -58,7 +58,7 @@ dhtmlgump 55 130 200 30 0 0 Set the guild's charter.
   button 20 130 4005 4007 1 0 4	// Set Charter
 dhtmlgump 55 160 200 30 0 0 Dismiss a member.
   button 20 160 4005 4007 1 0 5	// Dismiss a member
-dhtmlgump 55 190 200 30 0 0 Go to the WAR menu.
+dhtmlgump 55 190 200 30 0 0 Go to the War Menu.
   button 20 190 4005 4007 1 0 6	// War Menu
 If (<member.count <def0.STONEPRIV_CANDIDATE>> > 0) // Candidates
   button 20 220 4005 4007 1 0 7
@@ -91,13 +91,13 @@ dhtmlgump 335 360 100 30 0 0 EXIT
   button 300 360 4005 4007 1 0 0 // Exit
   
 
-[Dialog d_Guild_Master Button]
+[dialog d_Guild_Master Button]
 ON=0 12
   If (<argn1>==0) // Exit Gump
-    dialog d_Guild_Main,0
+    //sdialog d_Guild_Main,0
     return 1
   elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
-    dialog d_Guild_Main,0
+    sdialog d_Guild_Main,0
     return 1
   endif
 
@@ -113,28 +113,28 @@ ON=0 12
     endif
   elif (<argn1>==3)	// Guild  Type
     If (<tag0.changealign_time> <= <serv.time>)
-      dialog d_Guild_ChangeAlign,0
+      sdialog d_Guild_ChangeAlign,0
     endif
   elif (<argn1>==4)	// Charter
-    dialog d_Guild_SetCharter,0,
+    sdialog d_Guild_SetCharter,0,
   elif (<argn1>==5)	// Dismiss member
-    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
+    sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
   elif (<argn1>==6)	// War Menu
-    dialog d_Guild_Master_Warfare,0
+    sdialog d_Guild_Master_Warfare,0
   elif (<argn1>==7)	// Candidate Menu
-    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
+    sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
   elif (<argn1>==8)	// Set Guildmaster title
     src.ctag.guild_prompthandler_guilduid=<uid>
     src.ctag.guild_prompthandler_thisuid=<src.uid>
     try src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGTH> characters max):
   elif (<argn1>==9)	// Grant title
-    dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
+    sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
   elif (<argn1>==10)	// Move stone
     If (<def0.GUILDCONFIG_ALLOWTELEPORT>)
       SERV.LOG TODO: GuildSys Teleport Stone
     endif
   elif (<argn1>==11)
-    dialog d_Guild_Main,0
+    sdialog d_Guild_Main,0
   elif (<argn1>==12)
     If (<def0.GUILDCONFIG_ALLOWTRANSFER>)
       transferguild <uid>

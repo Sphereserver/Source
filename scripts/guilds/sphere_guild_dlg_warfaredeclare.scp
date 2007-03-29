@@ -10,7 +10,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_Master_Warfare_DeclareWar]
+[dialog d_Guild_Master_Warfare_DeclareWar]
 5,25
 local.tosearch=<args>
 If (<type>!=t_stone_guild)
@@ -57,7 +57,7 @@ For num 0 <eval <local.guildlist_count>-1>
 
   local.currentguilduid=<local.guildlist_data<dLOCAL.num>>
 
-  If (strlen(<uid.<local.currentguilduid>.Name>) <= 0)
+  If (<local.currentguilduid> <= 0)
     dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 (unnamed)
   else
     dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name>
@@ -67,11 +67,10 @@ endfor
 
 
 
-[Dialog d_Guild_Master_Warfare_DeclareWar Button]
+[dialog d_Guild_Master_Warfare_DeclareWar Button]
 ON=0 1
   If (!<src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>)
-    serv.log DIALOG d_Guild_Master_Warfare_DeclareWar called without src.ctag.dialog_guildmasterwarfaredclarewar_guildlist!!
-    serv.log VALUE: <src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>
+    serv.log Declare war search function improperly returned info!!  Ctag not set!
     return 1
   endif
 
@@ -83,7 +82,7 @@ ON=0 1
   endif
   
   If (<argn1>==0)
-    dialog d_Guild_Master_Warfare,0
+    sdialog d_Guild_Master_Warfare,0
   elif (<argn1>==1)
     CALL f_guildsys_listsplit <local.war_guildlist>
   
@@ -105,9 +104,7 @@ ON=0 1
     If (<uid.<local.selectedguild>.type>!=T_STONE_GUILD)
       return 1
     endif
-    
-	serv.log GUILD WAR: (<uid.<local.selectedguild>.name>)
-	serv.log CURRENT: <name>
+
 
     If ( <guildfromuid.<local.selectedguild>.isenemy> )
         src.sysmessage @038A You're already at war with <uid.<local.selectedguild>.name>.
@@ -119,7 +116,7 @@ ON=0 1
         f_guildsys_declarewar <uid>,<local.selectedguild>,2
     endif
 
-    dialog d_Guild_Master_Warfare,0
+    sdialog d_Guild_Master_Warfare,0
   endif
   return 1
 

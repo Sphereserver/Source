@@ -196,15 +196,28 @@ return 1
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_searchguildname]
-local.currentuid=<argv[0]>	//current guild uid
-local.textsearch=<argv[1]>	//text to search in other guild names
+local.currentuid=<argv[0]>	// Current guild uid
+local.textsearch=<argv[1]>	// Text to search in other guild names
+local.allguilds=0           // Allguilds check
 
 local.search_num=0
 local.search_uid=<serv.guildstones.<local.search_num>.uid>
 
+if (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
+    if ( !STRCMPI("<local.textsearch>","allguilds") )
+        local.allguilds=1
+    endif
+endif
+
 while (<local.search_uid>)
   If (<local.currentuid>!=<local.search_uid>)
-    If (strregex(<local.textsearch>*,<uid.<local.search_uid>.name>))
+    If ( <local.allguilds> )
+      If (!<local.returndata>)
+        local.returndata=<local.search_uid>
+      else
+        local.returndata .= ,<local.search_uid>
+      endif
+    elif (strregex(<local.textsearch>*,<uid.<local.search_uid>.name>))
       If (!<local.returndata>)
         local.returndata=<local.search_uid>
       else
@@ -248,11 +261,11 @@ ref1 = <local.firstuid>
 ref1.declarewar <local.seconduid>
 
 If (<argv[2]> == 1)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war: <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war: <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
+  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 elseif (<argv[2]> == 2)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild sent a war invitation at <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,Your guild received a war invitation from <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_guildsys_sendsmsg <local.firstuid>,Your guild has sent a war invitation to <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
+  f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 endif
 
 return 1
@@ -271,8 +284,8 @@ ref1 = <local.firstuid>
 ref1.declarepeace <local.seconduid>
 
 If (<argv[2]> != 0)
-  f_guildsys_sendsmsg <local.firstuid>,You are now at peace with this guild: <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,You are now at peace with this guild: <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_guildsys_sendsmsg <local.firstuid>,You are now at peace with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
+  f_guildsys_sendsmsg <local.seconduid>,You are now at peace with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 endif
 
 return 1

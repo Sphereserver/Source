@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_Master_Warfare]
+[dialog d_Guild_Master_Warfare]
 5,25
 If (<type>!=t_stone_guild)
   return 1
@@ -64,7 +64,7 @@ button 20 400 4005 4007 1 0 0
 dhtmlgump 55 400 400 35 0 0 Return to the previous menu.
 
 
-[Dialog d_Guild_Master_Warfare Button]
+[dialog d_Guild_Master_Warfare Button]
 ON=0 5  
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>))
     return 1
@@ -72,21 +72,26 @@ ON=0 5
   
   If (<argn1>==0)
     If (<masteruid>==<src.uid>)||(<src.isgm>)
-      dialog d_Guild_Master,0
+      sdialog d_Guild_Master,0
     else
-      dialog d_Guild_Main,0
+      sdialog d_Guild_Main,0
     endif
   elif (<argn1>==1)
     src.ctag.guild_prompthandler_guilduid=<uid>
-    try src.promptconsole f_prompthandler_guilddclarewar,Declare war through search - Enter Guild Name:
+    local.guildsearch_promptmessage = Declare war through search
+    if ( <def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH> )
+        local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Type 'AllGuilds' to get a full guild list)
+    endif
+    local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Min <dDEF0.GUILDCONFIG_NSEARCH_MINLENGTH> chars) - Enter Guild Name:
+    try src.promptconsole f_prompthandler_guilddclarewar,<local.guildsearch_promptmessage>
   elif (<argn1>==2)
-    dialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE>
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE>
   elif (<argn1>==3)
-    dialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR>
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR>
   elif (<argn1>==4)
-    dialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_REJECTWAR>
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_REJECTWAR>
   elif (<argn1>==5)
-    dialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_RESCIND>
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_RESCIND>
   endif
 
   return 1

@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_GuildList]
+[dialog d_Guild_GuildList]
 5,25
 local.listtype=<args>
 If (<local.listtype> <= 0)||(<local.listtype> > 4)
@@ -32,22 +32,22 @@ local.privtolist=-1
 local.showcheckbox=1
 If ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE> )
   local.privtolist=<def0.STONEPRIV_ENEMY>
-  dhtmlgump 20 10 400 35 0 0 Select the guild you wish to declare peace with.
+  dhtmlgump 20 10 400 25 0 0 Select the guild you wish to declare peace with.
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Send the olive branch.
 elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
   local.privtolist=<def0.STONEPRIV_THEYDECLARED>
-  dhtmlgump 20 10 400 35 0 0 Select the guild to accept the invitations: 
+  dhtmlgump 20 10 400 25 0 0 Select the guild to accept the invitations: 
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Accept war invitations.
 elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
   local.privtolist=<def0.STONEPRIV_THEYDECLARED>
-  dhtmlgump 20 10 400 35 0 0 Select the guild to reject their invitations: 
+  dhtmlgump 20 10 400 25 0 0 Select the guild to reject their invitations: 
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Reject war invitations.
 elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
   local.privtolist=<def0.STONEPRIV_WEDECLARED>
-  dhtmlgump 20 10 400 35 0 0 Select the guild to rescind our invitations: 
+  dhtmlgump 20 10 400 25 0 0 Select the guild to rescind our invitations: 
   button 20 400 4005 4007 1 0 1
   dhtmlgump 55 400 245 30 0 0 Rescind your war declarations.
 endif
@@ -123,10 +123,10 @@ endwhile
 
 
   
-[Dialog d_Guild_GuildList Button]
+[dialog d_Guild_GuildList Button]
 ON=0 1
   If (!<src.ctag0.dialog_guildguildlist_type>)
-    serv.log DIALOG d_Guild_GuildList called without src.ctag.dialog_guildguildlist_type !!
+    serv.log sdialog d_Guild_GuildList called without src.ctag.dialog_guildguildlist_type !!
     return 1
   endif
 
@@ -143,7 +143,7 @@ ON=0 1
   endif
   
   If (<argn1>==0) // Exit
-    dialog d_Guild_Master_Warfare,0
+    sdialog d_Guild_Master_Warfare,0
     return 1  
   endif
 
@@ -183,9 +183,9 @@ ON=0 1
   
   local.listtypecount -= 1
   If ( <local.listtypecount> )
-    dialog d_Guild_GuildList,0,<local.listtype>
+    sdialog d_Guild_GuildList,0,<local.listtype>
   else
-    dialog d_Guild_Master_Warfare,0
+    sdialog d_Guild_Master_Warfare,0
   endif
   return 1
 

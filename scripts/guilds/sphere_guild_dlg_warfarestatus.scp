@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_WarfareStatus]
+[dialog d_Guild_WarfareStatus]
 5,25
 If (<type>!=t_stone_guild)
   return 1
@@ -98,9 +98,9 @@ endif
 
 
   
-[Dialog d_Guild_WarfareStatus Button]
+[dialog d_Guild_WarfareStatus Button]
 ON=0
-  dialog d_Guild_Main,0
+  sdialog d_Guild_Main,0
   return 1
   
 [EOF]

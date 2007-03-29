@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_CharList]
+[dialog d_Guild_CharList]
 5,25
 local.listtype=<args>
 If (<local.listtype> <= 0)||(<local.listtype> > 6)
@@ -142,10 +142,10 @@ endwhile
 
 
 
-[Dialog d_Guild_CharList Button]
+[dialog d_Guild_CharList Button]
 ON=0 2
   If (!<src.ctag0.dialog_guildcharlist_type>)
-    serv.log DIALOG d_Guild_CharList called without or src.ctag.dialog_guildcharlist_type !!
+    serv.log sdialog d_Guild_CharList called without or src.ctag.dialog_guildcharlist_type !!
     return 1
   endif
   
@@ -161,19 +161,19 @@ ON=0 2
   If (<local.listtyperadio> && <local.listtypecount>)
     local.selectedmember=<ARGCHKID> - 10
     If ((<local.selectedmember> < 0) || (<local.selectedmember> > <member.count>))
-      dialog d_Guild_Main,0
+      sdialog d_Guild_Main,0
       return 1
     endif
 
     local.memberuid=<member.<local.selectedmember>.uid>
     If (!<local.memberuid>)
-      dialog d_Guild_Main,0
+      sdialog d_Guild_Main,0
       return 1
     endif
   endif
   
   If (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ROSTER>)||(<local.listtype>==<def0.GUILDDLG_LISTTYPE_CANDIDATES>)
-    dialog d_Guild_Main,0
+    sdialog d_Guild_Main,0
     return 1
   endif
   
@@ -184,21 +184,21 @@ ON=0 2
       try memberfromuid.<src.uid>.loyalto=<local.memberuid>
       electmaster
       If (<local.oldmaster>!=<masteruid>)&&(<masteruid>)
-        f_guildsys_sendsmsg <uid>,Guildmaster changed to: <master>
+        f_guildsys_sendsmsg <uid>,Your Guildmaster has changed hands to <master>
       endif
     endif
-    dialog d_Guild_Main,0
+    sdialog d_Guild_Main,0
     // ---------------------------------------------
   elif (<local.listtype>==<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>)
     If (<argn1>==1)
       resign <local.memberuid>
       try uid.<local.memberuid>.update
-      dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
+      sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_DISMISSMEMBER>
     else
       If (<src.isgm>)||(<masteruid>==<src.uid>)
-        dialog d_Guild_Master,0
+        sdialog d_Guild_Master,0
       else
-        dialog d_Guild_Main,0
+        sdialog d_Guild_Main,0
       endif
     endif
     // ---------------------------------------------
@@ -208,9 +208,9 @@ ON=0 2
       src.ctag.guild_prompthandler_thisuid=<local.memberuid>
       src.promptconsole f_prompthandler_guildtitle,New title (<dDEF0.GUILDCONFIG_TITLE_MAXLENGTH> characters max):
     elif (<src.isgm>)||(<masteruid>==<src.uid>)
-      dialog d_Guild_Master,0
+      sdialog d_Guild_Master,0
     else
-      dialog d_Guild_Main,0
+      sdialog d_Guild_Main,0
     endif
     // ---------------------------------------------
   elif (<local.listtype>==<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>)
@@ -236,12 +236,12 @@ ON=0 2
       
     If (<src.isgm>)||(<masteruid>==<src.uid>)
       If (<local.listtypecount>) 
-        dialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
+        sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_ADMINCANDIDATES>
       else
-        dialog d_Guild_Master,0
+        sdialog d_Guild_Master,0
       endif
     else
-      dialog d_Guild_Main,0
+      sdialog d_Guild_Main,0
     endif
   endif
 

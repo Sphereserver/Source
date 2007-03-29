@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_ViewCharter]
+[dialog d_Guild_ViewCharter]
 5,25
 If (<type>!=t_stone_guild)
   return 1
@@ -52,10 +52,10 @@ dhtmlgump 55 200 300 20 0 0 Visit the guild website :
   dhtmlgump 50 220 300 20 0 0 <local.website>
 
 
-[Dialog d_Guild_ViewCharter Button]
+[dialog d_Guild_ViewCharter Button]
 ON=0 1    
   If (<argn1>==0)	// Exit Gump
-    dialog d_Guild_Main,0
+    sdialog d_Guild_Main,0
   elif (<argn1>==1)	// Website
     local.website=<webpage>
     If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small
@@ -67,7 +67,7 @@ ON=0 1
 
 
 //------------------------------------------------------------------------
-[Dialog d_Guild_SetCharter]
+[dialog d_Guild_SetCharter]
 110, 70
 If (<type>!=t_stone_guild)
   return 1
@@ -109,7 +109,7 @@ gumppic 40 328 1143
 dtextentry 50 331 250 32 0 1006 <webpage>
 
 
-[Dialog d_Guild_SetCharter Button]
+[dialog d_Guild_SetCharter Button]
 ON=0 1
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
     return 1
@@ -124,7 +124,7 @@ ON=0 1
     charter5=<argtxt[1005]>
     webpage=<argtxt[1006]>
   endif
-  dialog d_Guild_Master,0
+  sdialog d_Guild_Master,0
   return 1
 
 [EOF]

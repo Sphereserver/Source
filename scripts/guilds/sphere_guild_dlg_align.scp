@@ -12,7 +12,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[Dialog d_Guild_ChangeAlign]
+[dialog d_Guild_ChangeAlign]
 5,25
 If (<type>!=t_stone_guild)
   return 1
@@ -38,7 +38,7 @@ dhtmlgump 85 200 200 100 0 0 Chaos guild
   tilepic 45 200 01BC3
 
 
-[Dialog d_Guild_ChangeAlign Button]
+[dialog d_Guild_ChangeAlign Button]
 on=0 3
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
     return 1
@@ -49,7 +49,7 @@ on=0 3
       align=<local.type>
       tag.changealign_time=<eval (<serv.time> + <def0.GUILDCONFIG_MINTIME_ALIGN>)>
       update
-      f_guildsys_sendsmsg <uid>,Your guild type has changed: <aligntype>
+      f_guildsys_sendsmsg <uid>,Your guild type has changed its alignmeny to <aligntype>
     endif
   endif
   sdialog d_Guild_Master,0
