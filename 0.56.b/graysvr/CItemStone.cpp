@@ -357,6 +357,9 @@ CStoneMember::~CStoneMember()
 		return;
 
 	RemoveSelf();
+#ifndef _NEWGUILDSYSTEM
+	pStone->ElectMaster();	
+#endif
 
 	if ( m_iPriv == STONEPRIV_ENEMY )
 	{
@@ -369,8 +372,10 @@ CStoneMember::~CStoneMember()
 	}
 	else if ( pStone->GetMemoryType())
 	{
+#ifdef _NEWGUILDSYSTEM
 		// If we remove a char with good loyalty we may have changed the vote count.
 		pStone->ElectMaster();	
+#endif
 
 		CChar * pChar = GetLinkUID().CharFind();
 		if ( pChar )
