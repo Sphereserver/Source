@@ -2250,6 +2250,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 
 	if ( len <= 0 )
 		return;
+
 	pszText = szText;
 	GETNONWHITESPACE(pszText);
 
@@ -2291,7 +2292,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 			}
 		}
 
-		if ( !fCancelSpeech )
+		if ( !fCancelSpeech && ( len <= 128 ) ) // From this point max 128 chars
 		{
 			m_pChar->SpeakUTF8(z, wHue, (TALKMODE_TYPE)mode, m_pChar->m_fonttype, GetAccount()->m_lang);
 			Event_Talk_Common((char *)z);
@@ -2418,15 +2419,13 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 			}
 		}
 
-		if ( !fCancelSpeech )
+		if ( !fCancelSpeech && ( iLen <= 128 ) ) // From this point max 128 chars
 		{
 			m_pChar->SpeakUTF8Ex(puText, wHue, Mode, m_pChar->m_fonttype, pAccount->m_lang);
 			Event_Talk_Common((char *)pszText);
 		}
 	}
 }
-
-
 
 
 bool CClient::Event_DeathOption( DEATH_MODE_TYPE mode, const CEvent * pEvent )
@@ -2450,7 +2449,6 @@ bool CClient::Event_DeathOption( DEATH_MODE_TYPE mode, const CEvent * pEvent )
 	Event_CombatMode(pEvent->DeathMenu.m_manifest);
 	return true;
 }
-
 
 
 void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
@@ -2477,7 +2475,6 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 		return;
 	pChar->SetName(pszCharName);
 }
-
 
 
 void CClient::Event_MenuChoice( const CEvent * pEvent ) // Choice from GMMenu or Itemmenu received
