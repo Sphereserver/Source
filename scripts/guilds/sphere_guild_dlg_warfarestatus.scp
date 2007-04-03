@@ -40,14 +40,14 @@ dhtmlgump 410 373 100 25 0 0 Next page
 dhtmlgump 20 45 400 20 0 0 We are at war with: 
 // At War List
 If (<guild.count <def0.STONEPRIV_ENEMY>>==0)  
-  dhtmlgump 20 65 400 20 0 0 No current wars
+  dhtmlgump 20 65 400 20 0 0 - No current wars
 else
   local.gicurrent=0
   local.gpcurrent=0
   WHILE (<local.gicurrent> < <local.guildcount>)
     local.gcuidcurrent = <guild.<local.gicurrent>.uid>
     If (<guildfromuid.<local.gcuidcurrent>.isenemy>)
-      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 <uid.<local.gcuidcurrent>.name>
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
       local.gpcurrent += 1
     endif
     local.gicurrent += 1
@@ -62,14 +62,14 @@ dhtmlgump 410 373 100 25 0 0 Next page
 dhtmlgump 20 45 400 20 0 0 Guilds that we have declared war on: 
 // We Declare List
 If (<guild.count <def0.STONEPRIV_WEDECLARED>>==0)  
-  dhtmlgump 20 65 400 20 0 0 No current invitations received for war.
+  dhtmlgump 20 65 400 20 0 0 - No current invitations received for war.
 else
   local.gicurrent=0
   local.gpcurrent=0
   WHILE (<local.gicurrent> < <local.guildcount>)
     local.gcuidcurrent = <guild.<local.gicurrent>.uid>
     If (<guildfromuid.<local.gcuidcurrent>.wewar> && !<guildfromuid.<local.gcuidcurrent>.theywar>)
-      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 <uid.<local.gcuidcurrent>.name>
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
       local.gpcurrent += 1
     endif
     local.gicurrent += 1
@@ -89,7 +89,7 @@ else
   WHILE (<local.gicurrent> < <local.guildcount>)
     local.gcuidcurrent = <guild.<local.gicurrent>.uid>
     If (<guildfromuid.<local.gcuidcurrent>.theywar> && !<guildfromuid.<local.gcuidcurrent>.wewar>)
-      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 <uid.<local.gcuidcurrent>.name>
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
       local.gpcurrent += 1
     endif
     local.gicurrent += 1

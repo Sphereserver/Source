@@ -45,6 +45,7 @@ GUILDDLG_LISTTYPE_G_RESCIND		    4
 
 [DEFNAME DEF_GUILDSYS_CONFIG]
 GUILDCONFIG_CHARLIST_SHOWTITLE 		1
+GUILDCONFIG_GUILDLIST_SHOWABBREV 	1
 GUILDCONFIG_ALLOWTELEPORT 		    0
 GUILDCONFIG_ALLOWTRANSFER 		    1
 GUILDCONFIG_MAXMEMBERS			    100		// 0 = unlimited
@@ -57,7 +58,7 @@ GUILDCONFIG_NAME_MAXLENGTH		    40
 GUILDCONFIG_TITLE_MAXLENGTH		    20
 GUILDCONFIG_ABBREV_MINLENGTH		2
 GUILDCONFIG_ABBREV_MAXLENGTH		4
-GUILDCONFIG_ALLOW_ALLGUILD_SEARCH	0		// Search 'allguilds' for full guild list
+GUILDCONFIG_ALLOW_ALLGUILD_SEARCH	1		// Search 'allguilds' for full guild list
 GUILDCONFIG_NSEARCH_MINLENGTH		4       // Don't set to 0, to allow allguild search simply set the above to 1
 GUILDCONFIG_MAX_NSEARCH_RES		    75		// 0 = unlimited
 
@@ -65,11 +66,7 @@ GUILDCONFIG_MAX_NSEARCH_RES		    75		// 0 = unlimited
 [TYPEDEF T_STONE_GUILD]
 ON=@Click
   message "a guildstone"
- If (<eval strlen(<abbrev>)>)
-   message <name> [<abbrev>]
- else
-   message <name>
- endif
+  message <name> <qval (<eval strlen(<abbrev>)>) ? [<abbrev>]:>
 return 1
 
 ON=@Dclick

@@ -104,7 +104,7 @@ while ( <local.currentgump> < <local.totalprivcount> )
     local.currentguilduid=<guild.<local.current>.uid>  
     
     If (<eval strlen(<uid.<local.currentguilduid>.name>)>)
-      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentguilduid>.name>
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentguilduid>.name> <qval (strlen(<uid.<local.currentguilduid>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.currentguilduid>.abbrev>]:>
     else
       dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 (Unnamed)
     endif

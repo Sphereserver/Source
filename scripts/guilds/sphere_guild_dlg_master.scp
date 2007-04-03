@@ -39,19 +39,26 @@ else
   gumppic 20 70 4020
   dhtmlgump 55 70 370 30 0 0 Set the guild's abbreviation. <f_guildsys_determine_timeleft <tag0.changeabbrev_time>>
 endif
-If (<tag0.changealign_time> <= <serv.time>)
+If (<f_guildsys_iswarring>)
+  gumppic 20 100 4020
+  DOSWITCH <align>	// Guild Type
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Standard [Cannot change while at war]
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Order [Cannot change while at war]
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Chaos [Cannot change while at war]
+  ENDDO
+elif (<tag0.changealign_time> <= <serv.time>)
   button 20 100 4005 4007 1 0 3
   DOSWITCH <align>	// Guild Type
-    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Standard
-    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Order
-    dhtmlgump 55 100 240 30 0 0 Change guild type: Currently Chaos
+    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Standard
+    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Order
+    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Chaos
   ENDDO
 else
   gumppic 20 100 4020
   DOSWITCH <align>	// Guild Type
-    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Standard: <f_guildsys_determine_timeleft <tag0.changealign_time>>
-    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Order: <f_guildsys_determine_timeleft <tag0.changealign_time>>
-    dhtmlgump 55 100 450 30 0 0 Change guild type: Currently Chaos: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Standard: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Order: <f_guildsys_determine_timeleft <tag0.changealign_time>>
+    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Chaos: <f_guildsys_determine_timeleft <tag0.changealign_time>>
   ENDDO
 endif
 dhtmlgump 55 130 200 30 0 0 Set the guild's charter.
@@ -112,7 +119,7 @@ ON=0 12
       try src.promptconsole f_prompthandler_guildabbrev,Enter new guild abbreviation (min: <dDEF0.GUILDCONFIG_ABBREV_MINLENGTH> max: <dDEF0.GUILDCONFIG_ABBREV_MAXLENGTH>):    
     endif
   elif (<argn1>==3)	// Guild  Type
-    If (<tag0.changealign_time> <= <serv.time>)
+    If ((!<f_guildsys_iswarring>) || (<tag0.changealign_time> <= <serv.time>))
       sdialog d_Guild_ChangeAlign,0
     endif
   elif (<argn1>==4)	// Charter

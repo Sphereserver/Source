@@ -61,7 +61,7 @@ ON=0 1
     If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small
      local.website=<serv.url>
     endif
-    weblink <local.website>
+    src.weblink <local.website>
   endif
   return 1
 

@@ -198,20 +198,20 @@ return 1
 [FUNCTION f_guildsys_searchguildname]
 local.currentuid=<argv[0]>	// Current guild uid
 local.textsearch=<argv[1]>	// Text to search in other guild names
-local.allguilds=0           // Allguilds check
+local.allguilds=0           	// Allguilds check
 
 local.search_num=0
 local.search_uid=<serv.guildstones.<local.search_num>.uid>
 
-if (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
-    if ( !STRCMPI("<local.textsearch>","allguilds") )
+If (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
+    If (!STRCMPI("<local.textsearch>","allguilds"))
         local.allguilds=1
     endif
 endif
 
 while (<local.search_uid>)
   If (<local.currentuid>!=<local.search_uid>)
-    If ( <local.allguilds> )
+    If (<local.allguilds>)
       If (!<local.returndata>)
         local.returndata=<local.search_uid>
       else
@@ -261,11 +261,11 @@ ref1 = <local.firstuid>
 ref1.declarewar <local.seconduid>
 
 If (<argv[2]> == 1)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war with <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war with <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
 elseif (<argv[2]> == 2)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild has sent a war invitation to <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_guildsys_sendsmsg <local.firstuid>,Your guild has sent a war invitation to <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
 endif
 
 return 1
@@ -305,6 +305,7 @@ else
 endif
 return <local.timeleft>
 
+
 // ------------------------------------------------------
 [FUNCTION f_guildsys_sendsmsg]
 local.guilduid=<argv[0]>
@@ -328,6 +329,18 @@ for member 0 <local.membercount>
     endif
   endif
 endfor
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_iswarring]
+for cguild 0 <guild.count>
+  If ((<guild.<local.cguild>.isenemy>) && (<uid.<guild.<local.cguild>.uid>.guildfromuid.<uid>.isenemy>))
+    local.wars += 1
+  endif
+endfor
+
+return <dlocal.wars>
+
 
 // ------------------------------------------------------
 // -------   Hardcoded functions called by Sphere  -------

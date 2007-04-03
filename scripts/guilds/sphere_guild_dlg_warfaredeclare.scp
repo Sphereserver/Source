@@ -60,7 +60,7 @@ For num 0 <eval <local.guildlist_count>-1>
   If (<local.currentguilduid> <= 0)
     dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 (unnamed)
   else
-    dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name>
+    dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name> <qval (strlen(<uid.<local.currentguilduid>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.currentguilduid>.abbrev>]:>
   endif
 
 endfor
@@ -109,11 +109,15 @@ ON=0 1
     If ( <guildfromuid.<local.selectedguild>.isenemy> )
         src.sysmessage @038A You're already at war with <uid.<local.selectedguild>.name>.
     elseif ( <guildfromuid.<local.selectedguild>.theywar> && !<guildfromuid.<local.selectedguild>.wewar> )
+      If ( <f_guildsys_candeclarewarwith <uid>,<local.selectedguild>> )
         f_guildsys_declarewar <uid>,<local.selectedguild>,1
+      endif
     elseif ( <guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
         src.sysmessage @038A A declaration of war is already made to <uid.<local.selectedguild>.name>.
     elseif ( !<guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
+      If ( <f_guildsys_candeclarewarwith <uid>,<local.selectedguild>> )
         f_guildsys_declarewar <uid>,<local.selectedguild>,2
+      endif
     endif
 
     sdialog d_Guild_Master_Warfare,0
