@@ -3238,6 +3238,9 @@ this all in desperation)
 - Fixed #1062: "RETURN x" not always halting script execution or even returning the correct value.
 - Fixed: Exceptions that are sometimes caused when attempting to use/take an item that cannot be reached.
 
+13-03-2007, Nazghul
+- added keyword visualrange, parameter 1..18 to limit the visualrange of a client. After changing the visual range you should update the character in question once. 
+
 13-03-2007, Ellessar
 - Fixed #1106: PACKETx sometimes caused errors in console.
 
