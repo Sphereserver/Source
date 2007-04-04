@@ -93,8 +93,7 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 	{
 		// This could happen if the account is set manually through
 		// scripts
-		delete m_pNPC;
-		m_pNPC = NULL;
+		ClearNPC();
 	}
 
 	m_pPlayer = new CCharPlayer(this, pAccount);
