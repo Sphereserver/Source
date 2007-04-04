@@ -80,7 +80,7 @@ dhtmlgump 55 280 240 30 0 0 Grant a title to another member.
   button 20 280 4005 4007 1 0 9 // Grant Titles
 If (<def0.GUILDCONFIG_ALLOWTELEPORT>) // Teleport the stone
   button 20 310 4005 4007 1 0 10
-  dhtmlgump 55 310 200 30 0 0 Move this guildstone.
+  dhtmlgump 55 310 200 30 0 0 Move this guildstone. <qval <tag0.guildsys_moveruid> ? IN PROGRESS. : >
 else
   gumppic 20 310 4020
   dhtmlgump 55 310 240 30 0 0 Move this guildstone. NOT AVAILABLE.
@@ -104,7 +104,7 @@ ON=0 12
     //sdialog d_Guild_Main,0
     return 1
   elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
-    sdialog d_Guild_Main,0
+    src.sdialog d_Guild_Main,0
     return 1
   endif
 
@@ -138,7 +138,19 @@ ON=0 12
     sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
   elif (<argn1>==10)	// Move stone
     If (<def0.GUILDCONFIG_ALLOWTELEPORT>)
-      SERV.LOG TODO: GuildSys Teleport Stone
+      if ( <tag0.guildsys_moveruid> )
+        ref1 = <tag0.guildsys_moveruid>
+        ref1.link = 0
+        ref1.remove
+      endif
+      
+      serv.newitem i_guild_mover
+      new.link = <uid>
+      new.attr = attr_newbie
+      tag.guildsys_moveruid = <new.uid>
+      new.cont <src.findlayer(layer_pack).uid>
+      src.sysmessage @038A Use the teleporting object placed in your backpack to move this guildstone.
+      sdialog d_Guild_Master,0
     endif
   elif (<argn1>==11)
     sdialog d_Guild_Main,0

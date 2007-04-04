@@ -14,10 +14,10 @@ VERSION=0.56b
 // ------------------------------------------------------
 // ------------------------------------------------------
 [FUNCTION TRANSFERGUILD]
-src.targetf f_transferguild <args>
+src.targetf f_guildsys_transferguild <args>
 src.sysmessage Who do you wish to transfer the guild to?
 
-[FUNCTION f_transferguild]
+[FUNCTION f_guildsys_transferguild]
 // args = guildstone uid
 // argo = future owner
 ref1 = <args>

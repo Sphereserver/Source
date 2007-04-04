@@ -50,7 +50,7 @@ GUILDCONFIG_ALLOWTELEPORT 		    0
 GUILDCONFIG_ALLOWTRANSFER 		    1
 GUILDCONFIG_MAXMEMBERS			    100		// 0 = unlimited
 GUILDCONFIG_MAXCANDIDATES		    100		// 0 = unlimited
-GUILDCONFIG_MINTIME_NAME		    6048000	// 7 Days (in tenths of a sec)
+GUILDCONFIG_MINTIME_NAME		    6048000 // 7 Days (in tenths of a sec)
 GUILDCONFIG_MINTIME_ABBREV		    6048000
 GUILDCONFIG_MINTIME_ALIGN		    6048000
 GUILDCONFIG_NAME_MINLENGTH		    8
@@ -87,7 +87,6 @@ ON=@Dclick
   endif
 return 1
 
-
 [TYPEDEF T_GUILD_DOOR]
 //Guild Members Only Door
 //Set the door to the Triger Type #, then Link the DOOR to the GUILDSTONE
@@ -101,5 +100,73 @@ ON=@DCLICK
     SRC.MESSAGE The door seems magically locked.
   endif
 return 1
-	
+
+[ITEMDEF i_guild_mover]
+ID=i_virtstone_1
+WEIGHT=1
+VALUE=0
+NAME=a guildstone teleporter
+CAN=0
+
+ON=@Click
+message "a guildstone teleporter"
+if (<link.isitem>)
+    if (<link.type> == T_STONE_GUILD )
+        message <link.name> <qval (<eval strlen(<link.abbrev>)>) ? [<link.abbrev>]:>
+    endif
+endif
+
+return 1
+
+ON=@ClientTooltip
+src.addcliloc 1041054
+if (<link.isitem>)
+    if (<link.type> == T_STONE_GUILD )
+        src.addcliloc 1070722, <link.name> <qval (<eval strlen(<link.abbrev>)>) ? [<link.abbrev>]:>
+    endif
+endif
+
+return 1
+
+ON=@Dclick
+if (!<link.isitem>)
+    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+    remove
+    return 1
+endif
+
+if (<link.type> != T_STONE_GUILD )
+    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+    remove
+    return 1
+endif
+
+if (<cont.uid> != <src.findlayer(layer_pack).uid> )
+    src.sysmessage That must be in your pack for you to use it.
+    return 1
+endif
+
+if ( !<src.isgm> && ( <link.masteruid> != <src.uid> ))
+    src.sysmessage You must be the master of the guild to use it.
+    return 1
+endif
+
+if ( <link.tag0.guildsys_moveruid> != <uid> )
+    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+    return 1
+endif
+
+link.p = <src.p>
+link.update
+remove
+return 1
+
+ON=@Destroy
+if (<link.isitem>)
+    if (<link.type> == T_STONE_GUILD )
+        link.tag.guildsys_moveruid =
+    endif
+endif
+
+
 [EOF]
