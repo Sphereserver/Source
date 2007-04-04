@@ -838,6 +838,23 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	bool fZero = false;
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case PDC_ISSAMEPARTYOF:
+		{
+			pszKey += 13;
+			GETNONWHITESPACE(pszKey);
+
+			if ( pszKey && *pszKey )
+			{
+				CGrayUID charToCheck( (DWORD) Exp_GetVal(pszKey) );
+				CChar * pCharToCheck = charToCheck.CharFind();
+
+				sVal.FormatVal( pCharToCheck && (pCharToCheck->m_pParty == this) );
+			}
+			else
+				return( false );
+
+		} break;
+
 		case PDC_MEMBERS:
 		{
 			sVal.FormatVal(m_Chars.GetCharCount());
