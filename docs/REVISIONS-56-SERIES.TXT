@@ -3292,7 +3292,7 @@ this all in desperation)
   TeleportSoundStaff=01f3
 
 27-03-2007, Vjaka
-- Fixed bug allowed to cast spells without reagents.
+- Fixed: allowed to cast spells without reagents.
 
 29-03-2007, MrSugarCube
 - Fixed #1122: Exception when fighting with -100 dexterity.
@@ -3300,3 +3300,7 @@ this all in desperation)
 
 04-03-2007, MrSugarCube
 - Fixed #1126: Creatures with neutral karma not spawning in guard zones.
+
+04-03-2007, Furio
+- Added: PARTY.ISSAMEPARTYOF $uid, checking if the current party is the
+		 same of the char with $uid.
