@@ -244,7 +244,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	{
 		isBadPlaceToSpawn = true;
 	}
-	else if( pChar->GetRegion()->IsGuarded() && ( pChar->Stat_GetAdjusted(STAT_KARMA) < 0 ))
+	else if( pChar->GetRegion()->IsGuarded() && pChar->Noto_IsEvil() )
 	{
 		isBadPlaceToSpawn = true;
 	}

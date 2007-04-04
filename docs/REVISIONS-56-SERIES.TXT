@@ -3297,3 +3297,6 @@ this all in desperation)
 29-03-2007, MrSugarCube
 - Fixed #1122: Exception when fighting with -100 dexterity.
 - Fixed #1137: Containers closing when targeting them with .x/set.
+
+04-03-2007, MrSugarCube
+- Fixed #1126: Creatures with neutral karma not spawning in guard zones.
