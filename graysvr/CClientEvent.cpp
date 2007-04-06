@@ -487,7 +487,7 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 				{
 					if ( pItemOn->AddSpellbookScroll( pItem ))
 					{
-						SysMessage( "Can't add this to the spellbook" );
+						SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_CANT_ADD_SPELLBOOK ) );
 						Event_Item_Drop_Fail( pItem );
 						return;
 					}

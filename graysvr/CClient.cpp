@@ -1078,7 +1078,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					}
 				}
 				if ( ! fFound )
-					SysMessage("There are no found bad spawn points left.");
+					SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_NO_BAD_SPAWNS ));
 			}
 			break;
 		case CV_BANKSELF: // open my own bank
@@ -1130,7 +1130,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 			if ( ! s.HasArgs())
 			{
-				SysMessage( "Usage: EXTRACT filename.ext code" );
+				SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_EXTRACT_USAGE ) );
 			}
 			else
 			{
@@ -1141,7 +1141,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				m_tmTile.m_ptFirst.InitPoint(); // Clear this first
 				m_tmTile.m_Code = CV_EXTRACT;	// set extract code.
 				m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id.
-				addTarget( CLIMODE_TARG_TILE, "Select area to Extract", true );
+				addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_EXTRACT_AREA ), true );
 			}
 			break;
 
@@ -1150,7 +1150,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			// Opposite of the "EXTRACT" command
 			if ( ! s.HasArgs())
 			{
-				SysMessage( "Usage: UNEXTRACT filename.ext code" );
+				SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_UNEXTRACT_USAGE ) );
 			}
 			else
 			{
@@ -1162,7 +1162,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				m_tmTile.m_Code = CV_UNEXTRACT;	// set extract code.
 				m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id.
 
-				addTarget( CLIMODE_TARG_UNEXTRACT, "Where to place the extracted multi?", true );
+				addTarget( CLIMODE_TARG_UNEXTRACT, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_MULTI_POS ), true );
 			}
 			break;
 
@@ -1196,7 +1196,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_INFO:
 			// We could also get ground tile info.
-			addTarget( CLIMODE_TARG_OBJ_INFO, "What would you like info on?", true, false );
+			addTarget( CLIMODE_TARG_OBJ_INFO, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_ITEM_INFO ), true, false );
 			break;
 		case CV_INFORMATION:
 			SysMessage( g_Serv.GetStatusString( 0x22 ));
@@ -1225,7 +1225,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			return( false );
 		case CV_LINK:	// link doors
 			m_Targ_UID.InitUID();
-			addTarget( CLIMODE_TARG_LINK, "Select the item to link." );
+			addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_LINK_ITEM ) );
 			break;
 
 		case CV_MENU:
@@ -1251,7 +1251,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				m_Targ_Text = s.GetArgRaw();
 				m_tmTile.m_ptFirst.InitPoint(); // Clear this first
 				m_tmTile.m_Code = CV_NUDGE;
-				addTarget( CLIMODE_TARG_TILE, "Select area to Nudge", true );
+				addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_NUDGE_AREA ), true );
 			}
 			break;
 
@@ -1259,19 +1259,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			m_Targ_Text = s.GetArgRaw();
 			m_tmTile.m_ptFirst.InitPoint(); // Clear this first
 			m_tmTile.m_Code = CV_NUKE;	// set nuke code.
-			addTarget( CLIMODE_TARG_TILE, "Select area to Nuke", true );
+			addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_NUKE_AREA ), true );
 			break;
 		case CV_NUKECHAR:
 			m_Targ_Text = s.GetArgRaw();
 			m_tmTile.m_ptFirst.InitPoint(); // Clear this first
 			m_tmTile.m_Code = CV_NUKECHAR;	// set nuke code.
-			addTarget( CLIMODE_TARG_TILE, "Select area to Nuke Chars", true );
+			addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_NUKE_CHAR_AREA ), true );
 			break;
 		case CV_PAGE:
 			Cmd_GM_PageCmd( s.GetArgStr());
 			break;
 		case CV_REPAIR:
-			addTarget( CLIMODE_TARG_REPAIR, "What item do you want to repair?" );
+			addTarget( CLIMODE_TARG_REPAIR, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_ITEM_REPAIR ) );
 			break;
 		case CV_FLUSH:
 			xFlush();

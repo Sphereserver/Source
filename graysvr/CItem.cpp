@@ -1460,27 +1460,27 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		switch ( m_Attr & ( ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2))
 		{
 			case (ATTR_CURSED|ATTR_CURSED2):
-				pszTitle = "Unholy ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_UNHOLY );
 				fTitleSet = true;
 				break;
 			case ATTR_CURSED2:
-				pszTitle = "Damned ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_DAMNED );
 				fTitleSet = true;
 				break;
 			case ATTR_CURSED:
-				pszTitle = "Cursed ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CURSED );
 				fTitleSet = true;
 				break;
 			case (ATTR_BLESSED|ATTR_BLESSED2):
-				pszTitle = "Holy ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_HOLY );
 				fTitleSet = true;
 				break;
 			case ATTR_BLESSED2:
-				pszTitle = "Sacred ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_SACRED );
 				fTitleSet = true;
 				break;
 			case ATTR_BLESSED:
-				pszTitle = "Blessed ";
+				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLESSED );
 				fTitleSet = true;
 				break;
 		}
@@ -1525,7 +1525,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 						}
 						len = strcpylen( pTemp, pszTitle );
 					}
-					len += strcpylen( pTemp+len, "Magic " );
+					len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MAGIC ) );
 				}
 			}
 		}
@@ -1535,38 +1535,38 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	switch ( m_type )
 	{
 		case IT_STONE_GUILD:
-			len += strcpylen( pTemp+len, "Guildstone for " );
+			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_GUILDSTONE_FOR ) );
 			break;
 		case IT_STONE_TOWN:
-			len += strcpylen( pTemp+len, "Town of " );
+			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_TOWN_OF ) );
 			break;
 		case IT_EQ_MEMORY_OBJ:
-			len += strcpylen( pTemp+len, "Memory of " );
+			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MEMORY_OF ) );
 			break;
 		case IT_SPAWN_CHAR:
 			if ( ! IsIndividualName())
-				len += strcpylen( pTemp+len, "Spawn " );
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_SPAWN ) );
 			break;
 		case IT_KEY:
 			if ( ! m_itKey.m_lockUID.IsValidUID())
 			{
-				len += strcpylen( pTemp+len, "Blank " );
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			}
 			break;
 		case IT_RUNE:
 			if ( ! m_itRune.m_pntMark.IsCharValid())
 			{
-				len += strcpylen( pTemp+len, "Blank " );
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			}
 			else if ( ! m_itRune.m_Strength )
 			{
-				len += strcpylen( pTemp+len, "Faded " );
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
 			}
 			break;
 		case IT_TELEPAD:
 			if ( ! m_itTelepad.m_pntMark.IsValidPoint())
 			{
-				len += strcpylen( pTemp+len, "Blank " );
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			}
 			break;
 	}
@@ -1586,7 +1586,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				len += sprintf( pTemp+len, " of %s", pSpellDef->GetName());
 				if (m_itWeapon.m_spellcharges)
 				{
-					len += sprintf( pTemp+len, " (%d charges)", m_itWeapon.m_spellcharges );
+					len += sprintf( pTemp+len, " (%d %s)", m_itWeapon.m_spellcharges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
 				}
 			}
 		}
@@ -1656,7 +1656,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				CItem * pLightItem = const_cast<CItem *>(this);
 				if ( pLightItem && pLightItem->Light_GetOverride(pItemDef) )
 				{
-					len += sprintf( pTemp+len, " (%d charges)", m_itLight.m_charges );
+					len += sprintf( pTemp+len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
 				}
 			}
 			break;
@@ -1669,11 +1669,11 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		CChar * pChar = m_uidLink.CharFind();
 		if ( pChar )
 		{
-			len += sprintf( pTemp+len, " (stolen from %s)", pChar->GetName());
+			len += sprintf( pTemp+len, " (%s %s)", g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_STOLEN_FROM ), pChar->GetName());
 		}
 		else
 		{
-			len += sprintf( pTemp+len, " (stolen)" );
+			len += sprintf( pTemp+len, " (%s)", g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_STOLEN ) );
 		}
 	}
 
