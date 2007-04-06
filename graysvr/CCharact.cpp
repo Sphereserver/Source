@@ -1108,7 +1108,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		CChar * pChar = pClient->GetChar();
 		if ( pChar == NULL )
 			continue;
-// NAZTEST	
+// NAZTEST
 
 //		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= UO_MAP_VIEW_SIZE );
 		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= pChar->GetSight() );
@@ -2436,7 +2436,7 @@ bool CChar::Death()
 	// record the kill event for posterity.
 
 	iKillStrLen += sprintf( pszKillStr+iKillStrLen, ( iKillers ) ? ".\n" : "accident.\n" );
-	if ( m_pPlayer ) 
+	if ( m_pPlayer )
 		g_Log.Event(LOGL_EVENT|LOGM_KILLS, pszKillStr);
 
 	if ( m_pParty )
@@ -3338,7 +3338,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		// Is there an [EVENT] block call here?
 		if ( iAction > XTRIG_UNKNOWN && iAction < CTRIG_itemBuy ) //should speed things up
 		{
-			char * sCharTrigName = Str_GetTemp(strlen(pszTrigName)+1);
+			char * sCharTrigName = Str_GetTemp();
 			sprintf(sCharTrigName, "@char%s", pszTrigName+1);
 			int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 			//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
@@ -3529,7 +3529,7 @@ bool CChar::OnTick()
 		EXC_SET("last attackers");
 		if ( m_lastAttackers.size() )
 		{
-			for ( int iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker ) 
+			for ( int iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker )
 			{
 				LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
 				++(refAttacker.elapsed);

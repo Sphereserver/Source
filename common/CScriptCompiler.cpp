@@ -451,7 +451,7 @@ void *CScriptCompiler::CompileBufer(FILE *in, long &lCompiledSize)
 	ADDTOCALLSTACK("CScriptCompiler::CompileBufer");
 	lCompiledSize = 0;
 
-	char	*z = Str_GetTemp(COMPILER_MAXLINESINSIDE), *z1 = Str_GetTemp();
+	char	*z = Str_GetTemp(), *z1 = Str_GetTemp();
 	char	*line, *p1;
 	TBinarySection	*section = (TBinarySection	*)rawDataCompiled;
 	int		linenum;
@@ -509,7 +509,7 @@ Preparse:
 						}
 					}
 				}
-				
+
 				p1++;
 			}
 			*p1 = 0;

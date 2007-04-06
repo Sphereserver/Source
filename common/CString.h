@@ -113,7 +113,6 @@ extern int strcpylen( TCHAR * pDst, LPCTSTR pSrc );
 extern int strcpylen( TCHAR * pDst, LPCTSTR pSrc, int imaxlen );
 
 extern LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWords );
-extern TCHAR * Str_GetTemp(int amount = 1);
 extern int Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, int iMaxSize, LPCTSTR pszStrip = NULL );
 extern bool Str_Check( const TCHAR * pszIn );
 extern bool Str_CheckName(const TCHAR *pszIn);
@@ -132,4 +131,7 @@ extern int FindTableHead( LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, in
 extern int FindTableHeadSorted( LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));
 
 extern void CharToMultiByteNonNull( BYTE* , const char* , size_t);
+
+#define Str_GetTemp ((AbstractSphereThread *)ThreadHolder::current())->allocateBuffer
+
 #endif // _INC_CSTRING_H

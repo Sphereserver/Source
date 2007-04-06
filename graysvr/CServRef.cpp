@@ -23,7 +23,7 @@
 		SIZE_T PagefileUsage;
 		SIZE_T PeakPagefileUsage;
 	} PROCESS_MEMORY_COUNTERS, *PPROCESS_MEMORY_COUNTERS;
-	
+
 	//	PSAPI external definitions
 	typedef	BOOL (WINAPI *pGetProcessMemoryInfo)(HANDLE, PPROCESS_MEMORY_COUNTERS, DWORD);
 	HMODULE	m_hmPsapiDll = NULL;
@@ -44,7 +44,6 @@ CServerDef::CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP ) :
 	memset( m_dwStat, 0, sizeof( m_dwStat ));	// THIS MUST BE FIRST !
 
 	SetName( pszName );
-	m_timeLastPoll.Init();
 	m_timeLastValid.Init();
 	m_timeCreate = CServTime::GetCurrentTime();
 
@@ -93,7 +92,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 #else
 			struct rusage usage;
 			int res = getrusage(RUSAGE_SELF, &usage);
-			
+
 			if ( usage.ru_idrss )
 				d = usage.ru_idrss;
 			else
@@ -108,7 +107,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 					{
 						if ( !inf.ReadString(buf, SCRIPT_MAX_LINE_LEN) )
 							break;
-							
+
 						if ( head = strstr(buf, "VmSize:") )
 						{
 							head += 7;
@@ -175,18 +174,6 @@ int CServerDef::GetTimeSinceLastValid() const
 	return( - g_World.GetTimeDiff( m_timeLastValid ));
 }
 
-void CServerDef::SetPollTime()
-{
-	ADDTOCALLSTACK("CServerDef::SetPollTime");
-	m_timeLastPoll = CServTime::GetCurrentTime();
-}
-
-int CServerDef::GetTimeSinceLastPoll() const
-{
-	ADDTOCALLSTACK("CServerDef::GetTimeSinceLastPoll");
-	return( - g_World.GetTimeDiff( m_timeLastPoll ));
-}
-
 void CServerDef::addToServersList( CCommand & cmd, int index, int j ) const
 {
 	ADDTOCALLSTACK("CServerDef::addToServersList");
@@ -217,7 +204,6 @@ enum SC_TYPE
 	SC_CREATE,
 	SC_ITEMS,
 	SC_LANG,
-	SC_LASTPOLLTIME,
 	SC_LASTVALIDDATE,
 	SC_LASTVALIDTIME,
 	SC_MEM,
@@ -225,7 +211,6 @@ enum SC_TYPE
 	SC_SERVIP,
 	SC_SERVNAME,
 	SC_SERVPORT,
-	SC_STATUS,
 	SC_TIMEZONE,
 	SC_URL,			// m_sURL
 	SC_URLLINK,
@@ -246,7 +231,6 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"CREATE",
 	"ITEMS",
 	"LANG",
-	"LASTPOLLTIME",
 	"LASTVALIDDATE",
 	"LASTVALIDTIME",
 	"MEM",
@@ -254,7 +238,6 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"SERVIP",
 	"SERVNAME",
 	"SERVPORT",
-	"STATUS",
 	"TIMEZONE",
 	"URL",			// m_sURL
 	"URLLINK",
@@ -323,9 +306,6 @@ bool CServerDef::r_LoadVal( CScript & s )
 				m_sLang = szLang;
 			}
 			break;
-		case SC_LASTPOLLTIME:
-			m_timeLastPoll = CServTime::GetCurrentTime() + ( s.GetArgVal() * TICK_PER_SEC );
-			break;
 		case SC_LASTVALIDDATE:
 			m_dateLastValid.Read( s.GetArgStr());
 			break;
@@ -370,8 +350,6 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_CHARS:
 			SetStat( SERV_STAT_CHARS, s.GetArgVal());
 			break;
-		case SC_STATUS:
-			return( ParseStatus( s.GetArgStr(), true ));
 		case SC_TIMEZONE:
 			m_TimeZone = s.GetArgVal();
 			break;
@@ -435,13 +413,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		sVal = m_sLang;
 		break;
 
-	case SC_LASTPOLLTIME:
-		sVal.FormatVal( m_timeLastPoll.IsTimeValid() ? ( g_World.GetTimeDiff(m_timeLastPoll) / TICK_PER_SEC ) : -1 );
-		break;
 	case SC_LASTVALIDDATE:
-		//if ( m_dateLastValid.IsValid())
-			//sVal = m_dateLastValid.Write();
-
 		if ( m_timeLastValid.IsTimeValid() )
 			sVal.FormatVal( GetTimeSinceLastValid() / ( TICK_PER_SEC * 60 ));
 		else
@@ -476,9 +448,6 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 	case SC_CHARS:
 		sVal.FormatVal( StatGet( SERV_STAT_CHARS ));
 		break;
-	case SC_STATUS:
-		sVal = m_sStatus;
-		break;
 	case SC_TIMEZONE:
 		sVal.FormatVal( m_TimeZone );
 		break;
@@ -512,170 +481,9 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 	return false;
 }
 
-bool CServerDef::ParseStatus( LPCTSTR pszStatus, bool fStore )
-{
-	ADDTOCALLSTACK("CServerDef::ParseStatus");
-	// Take the status string we get from the server and interpret it.
-	// fStore = set the Status msg.
-
-	ASSERT( this != &g_Serv );
-	m_dateLastValid = CGTime::GetCurrentTime();
-	SetValidTime();	// this server seems to be alive.
-
-	TCHAR *bBareData = Str_GetTemp();
-	int len = Str_GetBare( bBareData, pszStatus, SCRIPT_MAX_LINE_LEN-1 );
-	if ( ! len )
-	{
-		return false;
-	}
-
-	CScriptFileContext ScriptContext( &g_Cfg.m_scpIni );
-
-	// Parse the data we get. Older versions did not have , delimiters
-	TCHAR * pData = bBareData;
-	while ( pData )
-	{
-		TCHAR * pEquals = strchr( pData, '=' );
-		if ( pEquals == NULL )
-			break;
-
-		*pEquals = '\0';
-		pEquals++;
-
-		TCHAR * pszKey = strrchr( pData, ' ' );	// find start of key.
-		if ( pszKey == NULL )
-			pszKey = pData;
-		else
-			pszKey++;
-
-		pData = strchr( pEquals, ',' );
-		if ( pData )
-		{
-			TCHAR * pEnd = pData;
-			pData ++;
-			while ( ISWHITESPACE( pEnd[-1] ))
-				pEnd--;
-			*pEnd = '\0';
-		}
-
-		r_SetVal( pszKey, pEquals );
-	}
-
-	if ( fStore )
-	{
-		m_sStatus = "OK";
-	}
-
-	return( true );
-}
-
 int CServerDef::GetAgeHours() const
 {
 	ADDTOCALLSTACK("CServerDef::GetAgeHours");
 	// This is just the amount of time it has been listed.
 	return(( - g_World.GetTimeDiff( m_timeCreate )) / ( TICK_PER_SEC * 60 * 60 ));
-}
-
-bool CServerDef::IsValidStatus() const
-{
-	ADDTOCALLSTACK("CServerDef::IsValidStatus");
-	// Should this server be listed at all ?
-	// Drop it from the list ?
-
-	if ( this == &g_Serv )	// we are always a valid server.
-		return( true );
-	if ( ! m_timeCreate.IsTimeValid())
-		return( true ); // Never delete this. it was defined in the *.INI file
-	if ( ! m_timeLastValid.IsTimeValid() && ! m_timeLastPoll.IsTimeValid())
-		return( true );	// it was defined in the *.INI file. but has not updated yet
-
-	// Give the old reliable servers a break.
-	DWORD dwAgeHours = GetAgeHours();
-
-	// How long has it been down ?
-	DWORD dwInvalidHours = GetTimeSinceLastValid() / ( TICK_PER_SEC * 60 * 60 );
-
-	return( dwInvalidHours <= (7*24) + ( dwAgeHours/24 ) * 6 );
-}
-
-void CServerDef::SetStatusFail(LPCTSTR pszTrying)
-{
-	ADDTOCALLSTACK("CServerDef::SetStatusFail");
-	m_sStatus.Format("Failed: %s: down for %d minutes",
-		pszTrying, GetTimeSinceLastValid()/(TICK_PER_SEC*60));
-}
-
-bool CServerDef::PollStatus()
-{
-	ADDTOCALLSTACK("CServerDef::PollStatus");
-	// Poll for the status of this server.
-	// Try to ping the server to find out what it's status is.
-	// NOTE: 
-	//   This is a synchronous function that could take a while. do in new thread.
-	// RETURN: 
-	//  false = failed to respond
-
-	ASSERT( this != &g_Serv );
-
-	SetPollTime();		// record that i tried to connect.
-
-	CGSocket sock;
-	if ( ! sock.Create())
-	{
-		SetStatusFail( "Socket" );
-		return( false );
-	}
-	if ( sock.Connect( m_ip ))
-	{
-		SetStatusFail( "Connect" );
-		return( false );
-	}
-	char bData = 0x21;	// GetStatusString arg data.
-
-	// got a connection
-	// Ask for the data.
-	if ( sock.Send( &bData, 1 ) != 1 )
-	{
-		SetStatusFail( "Send" );
-		return( false );
-	}
-
-	// Wait for some sort of response.
-	fd_set readfds;
-	FD_ZERO(&readfds);
-	FD_SET(sock.GetSocket(), &readfds);
-
-	timeval Timeout;	// time to wait for data.
-	Timeout.tv_sec=10;	// wait for 10 seconds for a response.
-	Timeout.tv_usec=0;
-	int ret = select( sock.GetSocket()+1, &readfds, NULL, NULL, &Timeout );
-	if ( ret <= 0 )
-	{
-		SetStatusFail( "No Response" );
-		return( false );
-	}
-
-	// Any events from clients ?
-	if ( ! FD_ISSET( sock.GetSocket(), &readfds ))
-	{
-		SetStatusFail( "Timeout" );
-		return( false );
-	}
-
-	// No idea how much data i really have here.
-	char *bRetData = Str_GetTemp();
-	int len = sock.Receive( bRetData, SCRIPT_MAX_LINE_LEN - 1 );
-	if ( len <= 0 )
-	{
-		SetStatusFail( "Receive" );
-		return( false );
-	}
-
-	if ( ! ParseStatus( bRetData, bData == 0x21 ))
-	{
-		SetStatusFail( "Bad Status Data" );
-		return( false );
-	}
-
-	return( true );
 }
