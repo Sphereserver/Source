@@ -62,7 +62,7 @@ public:
 class ThreadHolder
 {
 public:
-	// returns current working thread or NULL if no IThread threads are running
+	// returns current working thread or DummySphereThread * if no IThread threads are running
 	static IThread *current();
 	// records a thread to the list. Sould NOT be called, internal usage
 	static void push(IThread *thread);
@@ -132,5 +132,20 @@ public:
 	String allocateString();
 	void allocateString(TemporaryString &string);
 };
+
+// Dummy thread for context when no thread really exists
+class DummySphereThread : public AbstractSphereThread
+{
+private:
+	static DummySphereThread *instance;
+
+public:
+	static DummySphereThread *getInstance();
+
+protected:
+	DummySphereThread();
+	virtual void tick();
+};
+
 
 #endif

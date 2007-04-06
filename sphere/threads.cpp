@@ -38,7 +38,7 @@ IThread *ThreadHolder::current()
 		}
 	}
 
-	return NULL;
+	return DummySphereThread::getInstance();
 }
 
 void ThreadHolder::push(IThread *thread)
@@ -402,4 +402,27 @@ String AbstractSphereThread::allocateString()
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	string.init(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
+}
+
+/*
+ * DummySphereThread
+*/
+DummySphereThread *DummySphereThread::instance = NULL;
+
+DummySphereThread::DummySphereThread()
+	: AbstractSphereThread("dummy", IThread::Normal)
+{
+}
+
+DummySphereThread *DummySphereThread::getInstance()
+{
+	if( instance == NULL )
+	{
+		instance = new DummySphereThread();
+	}
+	return instance;
+}
+
+void DummySphereThread::tick()
+{
 }
