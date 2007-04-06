@@ -268,7 +268,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 					return true;
 				m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify FIX.
 
-				addTarget( CLIMODE_TARG_USE_ITEM, "Where do you want to throw the potion?", true, true );
+				addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_POTION_TARGET ), true, true );
 				// Put the potion in our hand as well. (and set it's timer)
 				pItem->m_itPotion.m_tick = 4;	// countdown to explode purple.
 				pItem->m_itPotion.m_ignited = 1; // ignite it
@@ -280,7 +280,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			return true;
 
 		case IT_ANIM_ACTIVE:
-			SysMessage( "The item is in use" );
+			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_ITEM_IN_USE ) );
 			return false;
 
 		case IT_CLOCK:
@@ -923,11 +923,11 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		}
 	}
 
-	LPCTSTR pPrompt = "Select target...";
+	LPCTSTR pPrompt = g_Cfg.GetDefaultMsg( DEFMSG_SELECT_MAGIC_TARGET );
 	switch ( iSpell )
 	{
 	case SPELL_Recall:
-		// pPrompt = "Select rune to recall from.";
+		// pPrompt = g_Cfg.GetDefaultMsg( "Select rune to recall from." );
 		break;
 	case SPELL_Blade_Spirit:
 		// pPrompt = sm_Txt_Summon;
@@ -1008,23 +1008,23 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		m_pChar->Skill_Cleanup();	// clean up current skill.
 
 		CMenuItem item[6];
-		item[0].m_sText = "Tracking";
+		item[0].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_TRACKING );
 
 		item[1].m_id = ITEMID_TRACK_HORSE;
 		item[1].m_color = 0;
-		item[1].m_sText = "Animals";
+		item[1].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_ANIMALS );
 		item[2].m_id = ITEMID_TRACK_OGRE;
 		item[2].m_color = 0;
-		item[2].m_sText = "Monsters";
+		item[2].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_MONSTERS );
 		item[3].m_id = ITEMID_TRACK_MAN;
 		item[3].m_color = 0;
-		item[3].m_sText = "Humans";
+		item[3].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_HUMANS );
 		item[4].m_id = ITEMID_TRACK_MAN_NAKED;
 		item[4].m_color = 0;
-		item[4].m_sText = "Players";
+		item[4].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_PLAYERS );
 		item[5].m_id = ITEMID_TRACK_WISP;
 		item[5].m_color = 0;
-		item[5].m_sText = "Anything that moves";
+		item[5].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_ANYTHING );
 
 		m_tmMenu.m_Item[0] = 0;
 		addItemMenu( CLIMODE_MENU_SKILL_TRACK_SETUP, item, 5 );
@@ -1062,7 +1062,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		CMenuItem item[ minimum( MAX_MENU_ITEMS, COUNTOF( m_tmMenu.m_Item )) ];
 		int count = 0;
 
-		item[0].m_sText = "Tracking";
+		item[0].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_TRACKING );
 		m_tmMenu.m_Item[0] = track_sel;
 
 		CWorldSearch AreaChars( m_pChar->GetTopPoint(), m_pChar->Skill_GetBase(SKILL_TRACKING)/20 + 10 );

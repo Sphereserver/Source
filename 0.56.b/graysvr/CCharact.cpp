@@ -2108,7 +2108,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		return false;
 	}
 
-	SysMessage( "You have been poisoned!" );
+	SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_JUST_BEEN_POISONED ) );
 
 	// Release if paralyzed ?
 	StatFlag_Clear( STATF_Freeze );	// remove paralyze.
@@ -3020,7 +3020,7 @@ bool CChar::CheckLocation( bool fStanding )
 								if ( bLoot )
 								{
 									char *zMsg = Str_GetTemp();
-									sprintf(zMsg, "looting %s from %s", pItem->GetName(), pCorpse->GetName());
+									sprintf(zMsg, g_Cfg.GetDefaultMsg( DEFMSG_LOOT_ITEM_FROM ), pItem->GetName(), pCorpse->GetName());
 									Emote(zMsg);
 									ItemBounce(pItem);
 								}

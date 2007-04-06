@@ -3304,3 +3304,6 @@ this all in desperation)
 04-03-2007, Furio
 - Added: PARTY.ISSAMEPARTYOF $uid, checking if the current party is the
 		 same of the char with $uid.
+04-06-2007, Nazghul
+- Added: more lemmings - aeh - defmessages
+- Updated sphere_msgs.scp
