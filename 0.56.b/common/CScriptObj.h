@@ -8,6 +8,7 @@
 #pragma once
 
 	#include "CScript.h"
+	#include "../sphere/threads.h"
 
 	class CChar;
 	class CScriptTriggerArgs;
@@ -142,7 +143,7 @@
 		int							m_iN3;		// "ARGN3" = a modifying numeric arg to the current trigger.
 
 		CScriptObj *				m_pO1;		// "ARGO" or "ARGO1" = object 1
-												// these can go out of date ! get deleted etc.							
+												// these can go out of date ! get deleted etc.
 
 		CGString					m_s1;		// ""ARGS" or "ARGS1" = string 1
 		CGString					m_s1_raw;	// RAW, used to build argv in runtime

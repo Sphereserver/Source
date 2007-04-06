@@ -36,7 +36,6 @@ class CServerDef : public CScriptObj
 
 private:
 	CGString m_sName;	// What the name should be. Fill in from ping.
-	CServTime  m_timeLastPoll;		// Last poll time in CServTime::GetCurrentTime() (if polling)
 	CServTime  m_timeLastValid;	// Last valid poll time in CServTime::GetCurrentTime()
 	CGTime	m_dateLastValid;
 
@@ -60,9 +59,6 @@ public:
 	CGString m_sURL;			// URL for the server.
 	CGString m_sLang;
 	ACCAPP_TYPE m_eAccApp;	// types of new account applications.
-
-private:
-	void SetStatusFail( LPCTSTR pszTrying );
 
 public:
 	CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP );
@@ -93,10 +89,6 @@ public:
 	LPCTSTR GetName() const { return( m_sName ); }
 	void SetName( LPCTSTR pszName );
 
-	bool IsValidStatus() const;
-	bool ParseStatus( LPCTSTR pszStatus, bool fStore );
-	bool PollStatus();	// Do this on a seperate thread.
-
 	virtual int GetAgeHours() const;
 
 	bool IsSame( const CServerDef * pServNew ) const
@@ -106,15 +98,13 @@ public:
 
 	void SetValidTime();
 	int GetTimeSinceLastValid() const;
-	void SetPollTime();
-	int GetTimeSinceLastPoll() const;
 
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString &sVal, CTextConsole * pSrc = NULL );
 
 	bool IsConnected() const
 	{
-		return( m_timeLastValid.IsTimeValid() && ( m_timeLastPoll <= m_timeLastValid ));
+		return( m_timeLastValid.IsTimeValid() );
 	}
 
 	void SetCryptVersion(void)

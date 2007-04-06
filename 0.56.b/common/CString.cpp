@@ -49,7 +49,7 @@ int gReallocs = 0;
 // 		*pszStr = toupper( *pszStr );
 // 	}
 // }
-// 
+//
 // void _strlwr( TCHAR * pszStr )
 // {
 // 	// No portable UNIX/LINUX equiv to this.
@@ -250,23 +250,23 @@ int CGString::CompareNoCase( LPCTSTR pStr ) const
 	return (strcmpi(m_pchData, pStr));
 }
 
-int CGString::indexOf(TCHAR c) 
+int CGString::indexOf(TCHAR c)
 {
 	return indexOf(c,0);
 }
 
-int CGString::indexOf(TCHAR c,int offset) 
+int CGString::indexOf(TCHAR c,int offset)
 {
-	if (offset < 0) 
+	if (offset < 0)
 		return -1;
 
 	int len = strlen(m_pchData);
-	if (offset >= len) 
+	if (offset >= len)
 		return -1;
 
-	for (int i = offset; i<len; i++) 
+	for (int i = offset; i<len; i++)
 	{
-		if(m_pchData[i] == c) 
+		if(m_pchData[i] == c)
 		{
 			return i;
 		}
@@ -274,19 +274,19 @@ int CGString::indexOf(TCHAR c,int offset)
 	return -1;
 }
 
-int CGString::indexOf(CGString str, int offset) 
+int CGString::indexOf(CGString str, int offset)
 {
-	if (offset < 0) 
+	if (offset < 0)
 		return -1;
 
     int len = strlen(m_pchData);
-	if (offset >= len) 
+	if (offset >= len)
 		return -1;
-		
+
 	int slen = str.GetLength();
-	if (slen > len) 
+	if (slen > len)
 		return -1;
-		
+
 	TCHAR * str_value = new TCHAR[slen + 1];
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
@@ -297,7 +297,7 @@ int CGString::indexOf(CGString str, int offset)
 		if ( c == firstChar )
 		{
 			int rem = len - i;
-			if ( rem >= slen ) 
+			if ( rem >= slen )
 			{
 				int j = i;
 				int k = 0;
@@ -319,33 +319,33 @@ int CGString::indexOf(CGString str, int offset)
 			}
 		}
 	}
-	
+
 	delete[] str_value;
 	return -1;
 }
 
-int CGString::indexOf(CGString str) 
+int CGString::indexOf(CGString str)
 {
 	return indexOf(str,0);
 }
 
-int CGString::lastIndexOf(TCHAR c) 
+int CGString::lastIndexOf(TCHAR c)
 {
 	return lastIndexOf(c,0);
 }
 
-int CGString::lastIndexOf(TCHAR c, int from) 
+int CGString::lastIndexOf(TCHAR c, int from)
 {
 	if (from < 0)
 		return -1;
 
 	int len = strlen(m_pchData);
-	if (from > len) 
-		return -1;	
+	if (from > len)
+		return -1;
 
-	for (int i = (len-1); i >= from; i--) 
+	for (int i = (len-1); i >= from; i--)
 	{
-		if (m_pchData[i] == c) 
+		if (m_pchData[i] == c)
 		{
 			return i;
 		}
@@ -353,18 +353,18 @@ int CGString::lastIndexOf(TCHAR c, int from)
 	return -1;
 }
 
-int CGString::lastIndexOf(CGString str, int from) 
+int CGString::lastIndexOf(CGString str, int from)
 {
-	if (from < 0) 
+	if (from < 0)
 		return -1;
 
 	int len = strlen(m_pchData);
-	if (from >= len) 
+	if (from >= len)
 		return -1;
 	int slen = str.GetLength();
 	if (slen > len)
 		return -1;
-	
+
 	TCHAR * str_value = new TCHAR[slen + 1];
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
@@ -381,14 +381,14 @@ int CGString::lastIndexOf(CGString str, int from)
 				bool found = true;
 				while ( k < slen )
 				{
-					if (m_pchData[j] != str_value[k]) 
+					if (m_pchData[j] != str_value[k])
 					{
 						found = false;
 						break;
 					}
 					j++; k++;
 				}
-				if (found) 
+				if (found)
 				{
 					delete [] str_value;
 					return i;
@@ -401,7 +401,7 @@ int CGString::lastIndexOf(CGString str, int from)
 	return -1;
 }
 
-int CGString::lastIndexOf(CGString str) 
+int CGString::lastIndexOf(CGString str)
 {
 	return lastIndexOf(str,0);
 }
@@ -419,32 +419,6 @@ void CGString::Init()
 
 //***************************************************************************
 // String global functions.
-
-#define	SCRIPT_TEMP_LINES 2048	// 8mb [2048 * 4kb]
-
-static int		Str_iTemp = 0;
-static TCHAR	Str_szTemp[SCRIPT_TEMP_LINES][SCRIPT_MAX_LINE_LEN];
-
-TCHAR *Str_GetTemp(int amount)
-{
-	char	*ret = NULL;
-
-	//	and since that's array, virtually allocate more space overlapping in bufer
-	for ( ; amount; amount-- )
-	{
-		Str_iTemp += amount;
-
-		if ( Str_iTemp >= SCRIPT_TEMP_LINES )
-			Str_iTemp = Str_iTemp - SCRIPT_TEMP_LINES;
-
-		if ( !ret )
-		{
-			ret = Str_szTemp[Str_iTemp];
-			*ret = 0;
-		}
-	}
-	return ret;
-}
 
 LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWord )
 {
@@ -718,15 +692,15 @@ int Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, int iMaxOutSize, LPCTSTR pszStr
 
 int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset )
 {
-	if (offset < 0) 
+	if (offset < 0)
 		return -1;
 
     int len = strlen(pStr1);
-	if (offset >= len) 
+	if (offset >= len)
 		return -1;
-		
+
 	int slen =  strlen(pStr2);
-	if (slen > len) 
+	if (slen > len)
 		return -1;
 
 	TCHAR firstChar = pStr2[0];
@@ -737,7 +711,7 @@ int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset )
 		if ( c == firstChar )
 		{
 			int rem = len - i;
-			if ( rem >= slen ) 
+			if ( rem >= slen )
 			{
 				int j = i;
 				int k = 0;
@@ -775,11 +749,11 @@ bool Str_CheckName(const TCHAR *pszIn )
 		return false;
 
 	const char *p = pszIn;
-	while ( *p && 
+	while ( *p &&
 		(
-		(( *p >= 'A' ) && ( *p <= 'Z' )) || 
-		(( *p >= 'a' ) && ( *p <= 'z' )) || 
-		(( *p >= '0' ) && ( *p <= '9' )) || 
+		(( *p >= 'A' ) && ( *p <= 'Z' )) ||
+		(( *p >= 'a' ) && ( *p <= 'z' )) ||
+		(( *p >= '0' ) && ( *p <= '9' )) ||
 		(( *p == ' ') || ( *p == '\'') )
 		))
 		p++;
@@ -1049,7 +1023,7 @@ int Str_RegExMatch( LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError )
 		strcpylen(lastError,e.what(),SCRIPT_MAX_LINE_LEN);
 		return -1;
 	}
-	catch ( ... ) 
+	catch ( ... )
 	{
 		strcpylen(lastError,"Unknown",SCRIPT_MAX_LINE_LEN);
 		return -1;

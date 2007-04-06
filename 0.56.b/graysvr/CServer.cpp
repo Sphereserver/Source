@@ -238,8 +238,6 @@ void CServer::Shutdown( int iMinutes ) // If shutdown is initialized
 		return;
 	}
 
-	SetPollTime();
-
 	if ( iMinutes < 0 )
 	{
 		iMinutes = g_World.GetTimeDiff( m_timeShutdown ) / ( 60 * TICK_PER_SEC );
@@ -704,7 +702,7 @@ longcommand:
 			fclose(f1);
 			pSrc->SysMessagef("Scripts have just been stripped.\n");
 			return 1;
-		} 
+		}
 		else if ( !strnicmp(pszText, "strip", 5) )
 		{
 			int				i = 0;
@@ -1909,8 +1907,6 @@ void CServer::OnTick()
 		EXC_SET("shutdown");
 		if ( g_World.GetTimeDiff(m_timeShutdown) <= 0 )
 			SetExitFlag(2);
-		else if ( GetTimeSinceLastPoll() >= ( 60 * TICK_PER_SEC ))
-			Shutdown(-1);
 	}
 
 	EXC_SET("generic");
