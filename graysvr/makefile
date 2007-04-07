@@ -2,7 +2,7 @@ VER	= 0.56b
 PLAT	= Linux
 
 # Generic makefile
-MARCH = -march=i486
+MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 #OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 OPT	= -O2 $(OPTDEFAULT)
