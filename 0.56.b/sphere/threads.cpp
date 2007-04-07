@@ -3,6 +3,7 @@
 
 #include "../common/common.h"
 #include "../common/CException.h"
+#include "../graysvr/graysvr.h"
 #include "threads.h"
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
@@ -287,6 +288,10 @@ void AbstractThread::run()
 			lastWasException = false;
 		}
 
+		if( shouldExit() )
+		{
+			terminate();
+		}
 		Sleep(tickPeriod);
 	}
 }
@@ -351,6 +356,11 @@ void AbstractThread::onStart()
 	//	empty. override if need in subclass
 }
 
+bool AbstractThread::shouldExit()
+{
+	return false;
+}
+
 /*
  * AbstractSphereThread
 */
@@ -402,6 +412,15 @@ String AbstractSphereThread::allocateString()
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	string.init(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
+}
+
+bool AbstractSphereThread::shouldExit()
+{
+	if( g_Serv.m_iModeCode == SERVMODE_Exiting )
+	{
+		return true;
+	}
+	return false;
 }
 
 /*

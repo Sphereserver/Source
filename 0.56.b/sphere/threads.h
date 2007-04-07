@@ -56,6 +56,9 @@ public:
 	virtual void start() = 0;
 	virtual void terminate() = 0;
 	virtual void waitForClose() = 0;
+
+protected:
+	virtual bool shouldExit() = 0;
 };
 
 // Singleton utility class for working with threads. Holds all running threads inside
@@ -109,6 +112,7 @@ protected:
 	virtual void tick() = 0;
 	// NOTE: this should not be too long-lasted function, so no world loading, etc here!!!
 	virtual void onStart();
+	virtual bool shouldExit();
 
 private:
 	void run();
@@ -131,6 +135,9 @@ public:
 	// allocates a manageable String from the thread local storage
 	String allocateString();
 	void allocateString(TemporaryString &string);
+
+protected:
+	virtual bool shouldExit();
 };
 
 // Dummy thread for context when no thread really exists
