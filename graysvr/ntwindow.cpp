@@ -979,9 +979,12 @@ bool NTWindow_OnTick( int iWaitmSec )
 
 	const char *m_sClassName = "NTWindow";
 	if ( iWaitmSec )
+	{
 		if ( !theApp.m_wndMain.m_hWnd || !theApp.m_wndMain.SetTimer(IDT_ONTICK, iWaitmSec) )
+		{
 			iWaitmSec = 0;
-
+		}
+	}
 
 	// Give the windows message loops a tick.
 	while ( true )
@@ -998,9 +1001,8 @@ bool NTWindow_OnTick( int iWaitmSec )
 				g_Serv.SetExitFlag( 5 );
 				return( false );
 			}
-			if ( msg.hwnd == theApp.m_wndMain.m_hWnd &&
-				msg.message == WM_TIMER &&
-				msg.wParam == IDT_ONTICK )
+
+			if ( (msg.hwnd == theApp.m_wndMain.m_hWnd) && (msg.message == WM_TIMER) && (msg.wParam == IDT_ONTICK) )
 			{
 				theApp.m_wndMain.KillTimer( IDT_ONTICK );
 				iWaitmSec = 0;	// empty the queue and bail out.
@@ -1010,7 +1012,10 @@ bool NTWindow_OnTick( int iWaitmSec )
 		else
 		{
 			if (! PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ))
+			{
 				return true;
+			}
+
 			if ( msg.message == WM_QUIT )
 			{
 				g_Serv.SetExitFlag( 5 );
@@ -1019,14 +1024,17 @@ bool NTWindow_OnTick( int iWaitmSec )
 		}
 
 		//	Got char in edit box
-		if ( theApp.m_wndMain.m_wndInput.m_hWnd &&
-			msg.hwnd == theApp.m_wndMain.m_wndInput.m_hWnd )
+		if ( theApp.m_wndMain.m_wndInput.m_hWnd && (msg.hwnd == theApp.m_wndMain.m_wndInput.m_hWnd) )
 		{
 			if ( msg.message == WM_CHAR )	//	char to edit box
 			{
 				if ( msg.wParam == '\r' )	//	ENTER
+				{
 					if ( theApp.m_wndMain.OnCommand( 0, IDOK, msg.hwnd ))
+					{
 						return(true);
+					}
+				}
 			}
 			else if ( msg.message == WM_KEYUP )	//	key released
 			{
@@ -1063,11 +1071,17 @@ bool NTWindow_OnTick( int iWaitmSec )
 							strncpy(pszCurSel, pszTemp+selStart, selEnd-selStart);
 							pszCurSel[selEnd-selStart] = 0;
 						}
-						else *pszCurSel = 0;
+						else
+						{
+							*pszCurSel = 0;
+						}
 
 						// detect part of the text we are entered so far
 						p = &pszTemp[strlen(pszTemp) - 1];
-						while (( p >= pszTemp ) && ( *p != '.' ) && ( *p != ' ' ) && ( *p != '/' ) && ( *p != '=' )) p--;
+						while (( p >= pszTemp ) && ( *p != '.' ) && ( *p != ' ' ) && ( *p != '/' ) && ( *p != '=' ))
+						{
+							p--;
+						}
 						p++;
 
 						// remove the selected part of the message
@@ -1083,10 +1097,19 @@ bool NTWindow_OnTick( int iWaitmSec )
 						{
 							if ( !strnicmp(curmatch->GetPtr(), p, inputLen) )	// matched
 							{
-								if ( firstmatch == NULL ) firstmatch = lastmatch = curmatch;
-								else lastmatch = curmatch;
+								if ( firstmatch == NULL )
+								{
+									firstmatch = lastmatch = curmatch;
+								}
+								else
+								{
+									lastmatch = curmatch;
+								}
 							}
-							else if ( lastmatch ) break;					// if no longer matches - save time by instant quit
+							else if ( lastmatch )
+							{
+								break;	// if no longer matches - save time by instant quit
+							}
 						}
 
 						if ( firstmatch != NULL )	// there IS a match
@@ -1097,29 +1120,43 @@ bool NTWindow_OnTick( int iWaitmSec )
 								bOnly = true;
 								curmatch = firstmatch;
 							}
-							else if ( !*pszCurSel ) curmatch = firstmatch;	// or there is still no selection
+							else if ( !*pszCurSel )							// or there is still no selection
+							{
+								curmatch = firstmatch;	
+							}
 							else											// need to find for the next record
 							{
 								int curselLen = strlen(pszCurSel);
 								for ( curmatch = firstmatch; curmatch != lastmatch->GetNext(); curmatch = curmatch->GetNext() )
 								{
 									// found the first next one
-									if ( strnicmp(curmatch->GetPtr()+inputLen, pszCurSel, curselLen) > 0 ) break;
+									if ( strnicmp(curmatch->GetPtr()+inputLen, pszCurSel, curselLen) > 0 )
+									{
+										break;
+									}
 								}
-								if ( curmatch == lastmatch->GetNext() )	curmatch = firstmatch; // scrolled over
+								if ( curmatch == lastmatch->GetNext() )
+								{
+									curmatch = firstmatch; // scrolled over
+								}
 							}
 
 							LPCTSTR	tmp = curmatch->GetPtr() + inputLen;
 							inp->ReplaceSel(tmp);
-							if ( !bOnly ) inp->SetSel(selStart, selStart + strlen(tmp));
+							if ( !bOnly )
+							{
+								inp->SetSel(selStart, selStart + strlen(tmp));
+							}
 						}
 					}
-					else inp->SendMessage(WM_CHAR, ' ');	// in this case just replace selection by a space
+					else
+					{
+						inp->SendMessage(WM_CHAR, ' ');	// in this case just replace selection by a space
+					}
 				}
 			}
 		}
-		if ( theApp.m_dlgOptions.m_hWnd &&
-			IsDialogMessage( theApp.m_dlgOptions.m_hWnd, &msg ))
+		if ( theApp.m_dlgOptions.m_hWnd && IsDialogMessage( theApp.m_dlgOptions.m_hWnd, &msg ))
 		{
 			return( true );
 		}
