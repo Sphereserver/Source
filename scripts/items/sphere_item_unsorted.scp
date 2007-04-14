@@ -210,6 +210,24 @@ DESCRIPTION=Lord British Armour
 ON=@Create
 HITPOINTS=150
 
+ON=@equip
+IF (0<SRC.FINDLAYER(11)>)
+SRC.TAG.HaarID=<SRC.FINDLAYER(11).ID>
+SRC.TAG.HaarFarbe=<SRC.FINDLAYER(11).color>
+SRC.FINDLAYER(11).REMOVE
+ELSE
+SRC.TAG.HaarID=0
+ENDIF
+
+ON=@unequip
+IF !(<SRC.TAG.HaarID> == 0)
+Serv.NEWITEM=<src.tag.haarid>
+New.EQUIP
+SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
+SRC.TAG.HaarFarbe=
+src.tag.haarid=
+ENDIF
+
 [ITEMDEF 02043]
 // Blackthorne Robe
 DEFNAME=i_person_black_thorne
@@ -222,6 +240,24 @@ DESCRIPTION=Blackthorne Robe
 ON=@Create
 HITPOINTS=150
 
+ON=@equip
+IF (0<SRC.FINDLAYER(11)>)
+SRC.TAG.HaarID=<SRC.FINDLAYER(11).ID>
+SRC.TAG.HaarFarbe=<SRC.FINDLAYER(11).color>
+SRC.FINDLAYER(11).REMOVE
+ELSE
+SRC.TAG.HaarID=0
+ENDIF
+
+ON=@unequip
+IF !(<SRC.TAG.HaarID> == 0)
+Serv.NEWITEM=<src.tag.haarid>
+New.EQUIP
+SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
+SRC.TAG.HaarFarbe=
+src.tag.haarid=
+ENDIF
+
 [ITEMDEF 0204E]
 DEFNAME=i_deathshroud
 NAME=Death Shroud
@@ -230,6 +266,24 @@ TYPE=T_CLOTHING
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
 DESCRIPTION=Death Shroud
+
+ON=@equip
+IF (0<SRC.FINDLAYER(11)>)
+SRC.TAG.HaarID=<SRC.FINDLAYER(11).ID>
+SRC.TAG.HaarFarbe=<SRC.FINDLAYER(11).color>
+SRC.FINDLAYER(11).REMOVE
+ELSE
+SRC.TAG.HaarID=0
+ENDIF
+
+ON=@unequip
+IF !(<SRC.TAG.HaarID> == 0)
+Serv.NEWITEM=<src.tag.haarid>
+New.EQUIP
+SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
+SRC.TAG.HaarFarbe=
+src.tag.haarid=
+ENDIF
 
 [ITEMDEF 0204F]
 // GM Robe
@@ -244,6 +298,24 @@ CATEGORY=Provisions - GM Items
 
 ON=@Create
 HITPOINTS=150
+
+ON=@equip
+IF (0<SRC.FINDLAYER(11)>)
+SRC.TAG.HaarID=<SRC.FINDLAYER(11).ID>
+SRC.TAG.HaarFarbe=<SRC.FINDLAYER(11).color>
+SRC.FINDLAYER(11).REMOVE
+ELSE
+SRC.TAG.HaarID=0
+ENDIF
+
+ON=@unequip
+IF !(<SRC.TAG.HaarID> == 0)
+Serv.NEWITEM=<src.tag.haarid>
+New.EQUIP
+SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
+SRC.TAG.HaarFarbe=
+src.tag.haarid=
+ENDIF
 
 [ITEMDEF 02050]
 // Dupre

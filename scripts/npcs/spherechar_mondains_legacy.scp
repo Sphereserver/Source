@@ -11,7 +11,7 @@
 
 VERSION=0.56b
 
-[chardef 256] 
+[chardef 256]
 defname=c_chief_paroxysmus
 name=Chief Paroxysmus
 SOUND=snd_monster_daemon1
@@ -21,7 +21,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=4,20
 ARMOR=30
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_FIRE_IMMUNE|MT_USEHANDS|MT_EQUIP
@@ -29,32 +29,32 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Chief Paroxysmus
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={80 100}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={50 100} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={80 100}
+MAXHITS=150
+INT={100 200}
+DEX={50 100}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	ITEMNEWBIE=i_spellbook
-	ADDSPELL=s_fireball
-	ADDSPELL=s_fire_field
-	ADDSPELL=s_flamestrike
-	ADDSPELL=s_poison_field
-	ADDSPELL=s_paralyze
-	//Dread Horn
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+ITEMNEWBIE=i_spellbook
+ADDSPELL=s_fireball
+ADDSPELL=s_fire_field
+ADDSPELL=s_flamestrike
+ADDSPELL=s_poison_field
+ADDSPELL=s_paralyze
+//Dread Horn
 
-[chardef 257] 
+[chardef 257]
 defname=c_dread_horn
 name=Dread Horn
 //SOUND=snd_monster_daemon1
@@ -64,7 +64,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=5,20
 ARMOR=30
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN
@@ -72,26 +72,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Dread Horn
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={80 105}
-	MAXHITS=155
-	INT={100 250} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={80 105}
+MAXHITS=155
+INT={100 250}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Lady M
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Lady M
 
-[chardef 258] 
+[chardef 258]
 defname=c_lady_m
 name=Lady Melisande
 //SOUND=snd_monster_daemon1
@@ -101,7 +101,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=5,20
 ARMOR=10
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -109,28 +109,28 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Lady Melisande
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={100 150} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 100.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={100 150}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 100.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	ITEMNEWBIE=i_spellbook
-	ADDSPELL=s_harm
-	//Monstrous Interred Grizzle
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+ITEMNEWBIE=i_spellbook
+ADDSPELL=s_harm
+//Monstrous Interred Grizzle
 
-[chardef 259] 
+[chardef 259]
 defname=c_monstrous_interred_grizzle
 name=Monstrous Interred Grizzle
 //SOUND=snd_monster_daemon1
@@ -148,61 +148,61 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Monstrous Interred Grizzle
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={80 120}
-	MAXHITS=180
-	INT={100 230} 
-	DEX={100 120} 
-	PARRYING={60.0 80.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={80 120}
+MAXHITS=180
+INT={100 230}
+DEX={100 120}
+PARRYING={60.0 80.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//It needs the correct Number
-	//Travesty
-	//[chardef 260] 
-	//defname=c_Travesty
-	//name=Travesty
-	//SOUND=snd_monster_daemon1
-	//ICON=i_worldgem_bit
-	//RESLEVEL=5
-	//RESDISPDNHUE=33
-	//RESDISPDNID=c_man
-	//DAM=4,30
-	//ARMOR=15
-	//RESOURCES=15 i_ribs_raw 
-	//DESIRES=i_gold,e_notoriety
-	//AVERSIONS=t_TRAP,t_eerie_stuff
-	//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-	//CATEGORY=New Monsters
-	//SUBSECTION=ML
-	//DESCRIPTION=Travesty
-	//ON=@Create 
-	//NPC=brain_monster
-	//FAME={100 3000} 
-	//KARMA={-5000 -6999} 
-	//STR={70 90}
-	//MAXHITS=150
-	//INT={100 200} 
-	//DEX={100 200} 
-	//PARRYING={60.0 95.0}
-	//MAGICRESISTANCE={50.0 70.0}
-	//MAGERY={60.0 75.0}
-	//TACTICS={60.0 90.0}
-	//WRESTLING={60.0 90.0}
-	//ON=@NpcRestock
-	//ITEM=random_jewel,{1 4}
-	//ITEM=i_gold,{80 130}
-	//Shimmering Effusion
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//It needs the correct Number
+//Travesty
+//[chardef 260]
+//defname=c_Travesty
+//name=Travesty
+//SOUND=snd_monster_daemon1
+//ICON=i_worldgem_bit
+//RESLEVEL=5
+//RESDISPDNHUE=33
+//RESDISPDNID=c_man
+//DAM=4,30
+//ARMOR=15
+//RESOURCES=15 i_ribs_raw
+//DESIRES=i_gold,e_notoriety
+//AVERSIONS=t_TRAP,t_eerie_stuff
+//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
+//CATEGORY=New Monsters
+//SUBSECTION=ML
+//DESCRIPTION=Travesty
+//ON=@Create
+//NPC=brain_monster
+//FAME={100 3000}
+//KARMA={-5000 -6999}
+//STR={70 90}
+//MAXHITS=150
+//INT={100 200}
+//DEX={100 200}
+//PARRYING={60.0 95.0}
+//MAGICRESISTANCE={50.0 70.0}
+//MAGERY={60.0 75.0}
+//TACTICS={60.0 90.0}
+//WRESTLING={60.0 90.0}
+//ON=@NpcRestock
+//ITEM=random_jewel,{1 4}
+//ITEM=i_gold,{80 130}
+//Shimmering Effusion
 
-[chardef 261] 
+[chardef 261]
 defname=c_Shimmering_Effusion
 name=Shimmering Effusion
 //SOUND=snd_monster_daemon1
@@ -212,7 +212,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=4,10
 ARMOR=15
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -220,26 +220,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Shimmering Effusion
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Tormented Minotaur
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Tormented Minotaur
 
-[chardef 262] 
+[chardef 262]
 defname=c_Tormented_Minotaur
 name=Tormented Minotaur
 //SOUND=snd_monster_daemon1
@@ -249,7 +249,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=15,30
 ARMOR=26
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -257,26 +257,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Tormented Minotaur
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 1201} 
-	KARMA={-5000 -6999} 
-	STR={100 130}
-	MAXHITS=160
-	INT={100 150} 
-	DEX={100 130} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={70.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 1201}
+KARMA={-5000 -6999}
+STR={100 130}
+MAXHITS=160
+INT={100 150}
+DEX={100 130}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={70.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Minotaur
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Minotaur
 
-[chardef 263] 
+[chardef 263]
 defname=c_Minotaur
 name=Minotaur
 //SOUND=snd_monster_daemon1
@@ -286,7 +286,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=10,26
 ARMOR=20
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -294,26 +294,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Minotaur
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 1201} 
-	KARMA={-5000 -6999} 
-	STR={70 150}
-	MAXHITS=190
-	INT={100 150} 
-	DEX={100 120} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 1201}
+KARMA={-5000 -6999}
+STR={70 150}
+MAXHITS=190
+INT={100 150}
+DEX={100 120}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Changeling
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Changeling
 
-[chardef 264] 
+[chardef 264]
 defname=c_Changeling
 name=Changeling
 //SOUND=snd_monster_daemon1
@@ -323,7 +323,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=4,10
 ARMOR=15
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_USEHANDS|MT_EQUIP|MT_FLY
@@ -331,26 +331,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Changeling
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Hydra
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Hydra
 
-[chardef 265] 
+[chardef 265]
 defname=c_Hydra
 name=Hydra
 //SOUND=snd_monster_daemon1
@@ -360,7 +360,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=20,35
 ARMOR=30
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK
@@ -368,26 +368,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Hydra
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={120 190}
-	MAXHITS=200
-	INT={150 300} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={100.0 120.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={120 190}
+MAXHITS=200
+INT={150 300}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={100.0 120.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Dryad
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Dryad
 
-[chardef 266] 
+[chardef 266]
 defname=c_Dryad
 name=Dryad
 //SOUND=snd_monster_daemon1
@@ -397,7 +397,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=5,20
 ARMOR=20
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -405,26 +405,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Dryad
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={90,110}
-	MAXHITS=150
-	INT={100 150} 
-	DEX={100 120} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={90,110}
+MAXHITS=150
+INT={100 150}
+DEX={100 120}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Troglodyte
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Troglodyte
 
-[chardef 267] 
+[chardef 267]
 defname=c_Troglodyte
 name=Troglodyte
 //SOUND=snd_monster_daemon1
@@ -442,123 +442,123 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Troglodyte
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={80,120}
-	MAXHITS=150
-	INT={50 80} 
-	DEX={80 110} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={80,120}
+MAXHITS=150
+INT={50 80}
+DEX={80 110}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//I think this one is incorrect to
-	//Thorn bat
-	//[chardef 269] 
-	//defname=c_Thorn_bat
-	//name=Thorn bat
-	//SOUND=snd_monster_daemon1
-	//ICON=i_worldgem_bit
-	//RESLEVEL=5
-	//RESDISPDNHUE=33
-	//RESDISPDNID=c_man
-	//DAM=4,10
-	//ARMOR=15
-	//RESOURCES=15 i_ribs_raw 
-	//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-	//CATEGORY=New Monsters
-	//SUBSECTION=ML
-	//DESCRIPTION=Thorn bat
-	//ON=@Create 
-	//NPC=brain_monster
-	//FAME={100 3000} 
-	//KARMA={-5000 -6999} 
-	//STR={70 90}
-	//MAXHITS=150
-	//INT={100 200} 
-	//DEX={100 200} 
-	//PARRYING={60.0 95.0}
-	//MAGICRESISTANCE={50.0 70.0}
-	//MAGERY={60.0 75.0}
-	//TACTICS={60.0 90.0}
-	//WRESTLING={60.0 90.0}
-	//ON=@NpcRestock
-	//ITEM=random_jewel,{1 4}
-	//ITEM=i_gold,{80 130}
-	//This one is also inccorect chardef
-	//Bulbous Putrification
-	//[chardef 270] 
-	//defname=c_Bulbous_Putrification
-	//name=Bulbous Putrification
-	//SOUND=snd_monster_daemon1
-	//ICON=i_worldgem_bit
-	//RESLEVEL=5
-	//RESDISPDNHUE=33
-	//DAM=4,10
-	//ARMOR=15
-	//RESOURCES=15 i_ribs_raw 
-	//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-	//CATEGORY=New Monsters
-	//SUBSECTION=ML
-	//DESCRIPTION=Bulbous Putrification
-	//ON=@Create 
-	//NPC=brain_monster
-	//FAME={100 3000} 
-	//KARMA={-5000 -6999} 
-	//STR={70 90}
-	//MAXHITS=150
-	//INT={100 200} 
-	//DEX={100 200} 
-	//PARRYING={60.0 95.0}
-	//MAGICRESISTANCE={50.0 70.0}
-	//MAGERY={60.0 75.0}
-	//TACTICS={60.0 90.0}
-	//WRESTLING={60.0 90.0}
-	//ON=@NpcRestock
-	//ITEM=random_jewel,{1 4}
-	//ITEM=i_gold,{80 130}
-	//Fault needs correct CharDef Number
-	//Interred Grizzle
-	//[chardef 272] 
-	//defname=c_Interred_Grizzle
-	//name=Interred Grizzle
-	//SOUND=snd_monster_daemon1
-	//ICON=i_worldgem_bit
-	//RESLEVEL=5
-	//RESDISPDNHUE=33
-	//DAM=4,10
-	//ARMOR=15
-	//RESOURCES=15 i_ribs_raw 
-	//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-	//CATEGORY=New Monsters
-	//SUBSECTION=ML
-	//DESCRIPTION=Interred Grizzle
-	//ON=@Create 
-	//NPC=brain_monster
-	//FAME={100 3000} 
-	//KARMA={-5000 -6999} 
-	//STR={70 90}
-	//MAXHITS=150
-	//INT={100 200} 
-	//DEX={100 200} 
-	//PARRYING={60.0 95.0}
-	//MAGICRESISTANCE={50.0 70.0}
-	//MAGERY={60.0 75.0}
-	//TACTICS={60.0 90.0}
-	//WRESTLING={60.0 90.0}
-	//ON=@NpcRestock
-	//ITEM=random_jewel,{1 4}
-	//ITEM=i_gold,{80 130}
-	//Satyr
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//I think this one is incorrect to
+//Thorn bat
+//[chardef 269]
+//defname=c_Thorn_bat
+//name=Thorn bat
+//SOUND=snd_monster_daemon1
+//ICON=i_worldgem_bit
+//RESLEVEL=5
+//RESDISPDNHUE=33
+//RESDISPDNID=c_man
+//DAM=4,10
+//ARMOR=15
+//RESOURCES=15 i_ribs_raw
+//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
+//CATEGORY=New Monsters
+//SUBSECTION=ML
+//DESCRIPTION=Thorn bat
+//ON=@Create
+//NPC=brain_monster
+//FAME={100 3000}
+//KARMA={-5000 -6999}
+//STR={70 90}
+//MAXHITS=150
+//INT={100 200}
+//DEX={100 200}
+//PARRYING={60.0 95.0}
+//MAGICRESISTANCE={50.0 70.0}
+//MAGERY={60.0 75.0}
+//TACTICS={60.0 90.0}
+//WRESTLING={60.0 90.0}
+//ON=@NpcRestock
+//ITEM=random_jewel,{1 4}
+//ITEM=i_gold,{80 130}
+//This one is also inccorect chardef
+//Bulbous Putrification
+//[chardef 270]
+//defname=c_Bulbous_Putrification
+//name=Bulbous Putrification
+//SOUND=snd_monster_daemon1
+//ICON=i_worldgem_bit
+//RESLEVEL=5
+//RESDISPDNHUE=33
+//DAM=4,10
+//ARMOR=15
+//RESOURCES=15 i_ribs_raw
+//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
+//CATEGORY=New Monsters
+//SUBSECTION=ML
+//DESCRIPTION=Bulbous Putrification
+//ON=@Create
+//NPC=brain_monster
+//FAME={100 3000}
+//KARMA={-5000 -6999}
+//STR={70 90}
+//MAXHITS=150
+//INT={100 200}
+//DEX={100 200}
+//PARRYING={60.0 95.0}
+//MAGICRESISTANCE={50.0 70.0}
+//MAGERY={60.0 75.0}
+//TACTICS={60.0 90.0}
+//WRESTLING={60.0 90.0}
+//ON=@NpcRestock
+//ITEM=random_jewel,{1 4}
+//ITEM=i_gold,{80 130}
+//Fault needs correct CharDef Number
+//Interred Grizzle
+//[chardef 272]
+//defname=c_Interred_Grizzle
+//name=Interred Grizzle
+//SOUND=snd_monster_daemon1
+//ICON=i_worldgem_bit
+//RESLEVEL=5
+//RESDISPDNHUE=33
+//DAM=4,10
+//ARMOR=15
+//RESOURCES=15 i_ribs_raw
+//CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
+//CATEGORY=New Monsters
+//SUBSECTION=ML
+//DESCRIPTION=Interred Grizzle
+//ON=@Create
+//NPC=brain_monster
+//FAME={100 3000}
+//KARMA={-5000 -6999}
+//STR={70 90}
+//MAXHITS=150
+//INT={100 200}
+//DEX={100 200}
+//PARRYING={60.0 95.0}
+//MAGICRESISTANCE={50.0 70.0}
+//MAGERY={60.0 75.0}
+//TACTICS={60.0 90.0}
+//WRESTLING={60.0 90.0}
+//ON=@NpcRestock
+//ITEM=random_jewel,{1 4}
+//ITEM=i_gold,{80 130}
+//Satyr
 
-[chardef 271] 
+[chardef 271]
 defname=c_Satyr
 name=Satyr
 //SOUND=snd_monster_daemon1
@@ -568,7 +568,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=4,20
 ARMOR=15
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
@@ -576,26 +576,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Satyr
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 160} 
-	KARMA=0 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 160}
+KARMA=0
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	//Fetid Essence
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+//Fetid Essence
 
-[chardef 273] 
+[chardef 273]
 defname=c_Fetid_Essence
 name=Fetid Essence
 //SOUND=snd_monster_daemon1
@@ -605,7 +605,7 @@ RESDISPDNHUE=33
 RESDISPDNID=c_man
 DAM=4,10
 ARMOR=15
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK
@@ -613,26 +613,26 @@ CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Fetid Essence
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-3000 -5000} 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={100 200} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	MAGERY={60.0 75.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-3000 -5000}
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={100 200}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+MAGERY={60.0 75.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	////////////////////////
-	////RACES///////////////
-	//Elfs
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+////////////////////////
+////RACES///////////////
+//Elfs
 
 [CHARDEF 605]
 DEFNAME=c_elf_male
@@ -655,15 +655,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-	NPC=brain_human
-	COLOR=colors_skin
-	FENCING={15.0 38.0}
-	PARRYING={15.0 38.0}
-	SWORDSMANSHIP={15.0 38.0}
-	WRESTLING={15.0 38.0}
-	MACEFIGHTING={15.0 38.0}
-	MAGICRESISTANCE={15.0 38.0}
-	TACTICS={15.0 38.0}
+NPC=brain_human
+COLOR=colors_skin
+FENCING={15.0 38.0}
+PARRYING={15.0 38.0}
+SWORDSMANSHIP={15.0 38.0}
+WRESTLING={15.0 38.0}
+MACEFIGHTING={15.0 38.0}
+MAGICRESISTANCE={15.0 38.0}
+TACTICS={15.0 38.0}
 
 [CHARDEF 606]
 DEFNAME=c_elf_female
@@ -686,15 +686,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-	NPC=brain_human
-	COLOR=colors_skin
-	FENCING={15.0 38.0}
-	PARRYING={15.0 38.0}
-	SWORDSMANSHIP={15.0 38.0}
-	WRESTLING={15.0 38.0}
-	MACEFIGHTING={15.0 38.0}
-	MAGICRESISTANCE={15.0 38.0}
-	TACTICS={15.0 38.0}
+NPC=brain_human
+COLOR=colors_skin
+FENCING={15.0 38.0}
+PARRYING={15.0 38.0}
+SWORDSMANSHIP={15.0 38.0}
+WRESTLING={15.0 38.0}
+MACEFIGHTING={15.0 38.0}
+MAGICRESISTANCE={15.0 38.0}
+TACTICS={15.0 38.0}
 
 [CHARDEF 607]
 DEFNAME=c_elf_ghost_man
@@ -717,15 +717,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-	NPC=brain_human
-	COLOR=colors_skin
-	FENCING={15.0 38.0}
-	PARRYING={15.0 38.0}
-	SWORDSMANSHIP={15.0 38.0}
-	WRESTLING={15.0 38.0}
-	MACEFIGHTING={15.0 38.0}
-	MAGICRESISTANCE={15.0 38.0}
-	TACTICS={15.0 38.0}
+NPC=brain_human
+COLOR=colors_skin
+FENCING={15.0 38.0}
+PARRYING={15.0 38.0}
+SWORDSMANSHIP={15.0 38.0}
+WRESTLING={15.0 38.0}
+MACEFIGHTING={15.0 38.0}
+MAGICRESISTANCE={15.0 38.0}
+TACTICS={15.0 38.0}
 
 [CHARDEF 608]
 DEFNAME=c_elf_ghost_woman
@@ -748,31 +748,31 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-	NPC=brain_human
-	COLOR=colors_skin
-	FENCING={15.0 38.0}
-	PARRYING={15.0 38.0}
-	SWORDSMANSHIP={15.0 38.0}
-	WRESTLING={15.0 38.0}
-	MACEFIGHTING={15.0 38.0}
-	MAGICRESISTANCE={15.0 38.0}
-	TACTICS={15.0 38.0}
-	// Second Part //
-	//By Rattlehead
+NPC=brain_human
+COLOR=colors_skin
+FENCING={15.0 38.0}
+PARRYING={15.0 38.0}
+SWORDSMANSHIP={15.0 38.0}
+WRESTLING={15.0 38.0}
+MACEFIGHTING={15.0 38.0}
+MAGICRESISTANCE={15.0 38.0}
+TACTICS={15.0 38.0}
+// Second Part //
+//By Rattlehead
 
-[chardef 277]  
+[chardef 277]
 name=Cu Sidhe
 defname=c_cu_sidhe
-ICON=i_pet_wolf 
-DAM=10,15 
-ARMOR=20 
-RESOURCES=15 i_ribs_raw,10 i_hide 
-CAN=MT_WALK|MT_RUN 
+ICON=i_pet_wolf
+DAM=10,15
+ARMOR=20
+RESOURCES=15 i_ribs_raw,10 i_hide
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_horse_gray
-FOODTYPE=55 i_ribs_raw  
-DESIRES=c_elf_male,c_elf_female 
+FOODTYPE=55 i_ribs_raw
+DESIRES=c_elf_male,c_elf_female
 AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
@@ -787,19 +787,19 @@ wrestling=93.0
 tactics=95.0
 anatomy=67.0
 
-[chardef 278]  
+[chardef 278]
 name=Squirrel
 defname=c_squirrel
-ICON=i_pet_rabbit 
-DAM=2,5 
-ARMOR=10 
-RESOURCES=3 i_ribs_raw,2 i_hide 
-CAN=MT_WALK|MT_RUN 
+ICON=i_pet_rabbit
+DAM=2,5
+ARMOR=10
+RESOURCES=3 i_ribs_raw,2 i_hide
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_rabbit
-FOODTYPE=55 i_fruit_gourd1  
-DESIRES=c_man,c_woman 
+FOODTYPE=55 i_fruit_gourd1
+DESIRES=c_man,c_woman
 AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
@@ -809,20 +809,20 @@ str=20
 dex=10
 int=10
 
-[chardef 279]  
-name=Ferret 
+[chardef 279]
+name=Ferret
 defname=c_ferret
 ICON=i_pet_rabbit
-DAM=2,3 
-ARMOR=10 
-RESOURCES=3 i_ribs_raw,3 i_hide 
+DAM=2,3
+ARMOR=10
+RESOURCES=3 i_ribs_raw,3 i_hide
 CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_rabbit
-FOODTYPE=55 i_fruit_gourd1  
-DESIRES=c_man,c_woman 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_fruit_gourd1
+DESIRES=c_man,c_woman
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Ferret
@@ -831,19 +831,19 @@ str=12
 dex=68
 int=52
 
-[chardef 280]  
+[chardef 280]
 name=Minotaur Captain
 defname=c_minotaur_captain
-ICON=i_pet_dragon 
-DAM=25,38 
-ARMOR=60 
-RESOURCES=15 i_ribs_raw,10 i_hide 
-CAN=MT_WALK|MT_RUN 
+ICON=i_pet_dragon
+DAM=25,38
+ARMOR=60
+RESOURCES=15 i_ribs_raw,10 i_hide
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_orc
-FOODTYPE=55 i_ribs_raw  
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_ribs_raw
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Minotaur Captain
@@ -857,22 +857,22 @@ tactics=98.4
 anatomy=89.2
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
 
-[chardef 281]  
+[chardef 281]
 name=Minotaur Scout
 defname=c_minotaur_scout
-ICON=i_pet_dragon 
-DAM=20,32 
-ARMOR=50 
-RESOURCES=15 i_ribs_raw,10 i_hide 
-CAN=MT_WALK|MT_RUN 
+ICON=i_pet_dragon
+DAM=20,32
+ARMOR=50
+RESOURCES=15 i_ribs_raw,10 i_hide
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_orc
-FOODTYPE=55 i_ribs_raw 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_ribs_raw
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Minotaur Scout
@@ -886,23 +886,23 @@ tactics=73.2
 anatomy=62.4
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
 
-[chardef 282]  
-name=Parrot 
+[chardef 282]
+name=Parrot
 defname=c_parrot
-ICON=i_pet_bird 
-DAM=2,8 
-ARMOR=10 
-RESOURCES=1 i_bird_raw,5 i_feather 
+ICON=i_pet_bird
+DAM=2,8
+ARMOR=10
+RESOURCES=1 i_bird_raw,5 i_feather
 CAN=MT_WALK|MT_RUN|MT_FLY
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_bird
-FOODTYPE=55 i_bread_loaf  
-DESIRES=c_man,c_woman 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_bread_loaf
+DESIRES=c_man,c_woman
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Parrot
@@ -911,20 +911,20 @@ str=20
 dex=70
 int=35
 
-[chardef 283]  
+[chardef 283]
 name=Crow
 defname=c_black_crow
-ICON=i_pet_bird 
-DAM=5,9 
-ARMOR=10 
+ICON=i_pet_bird
+DAM=5,9
+ARMOR=10
 RESOURCES=1 i_bird_raw,5 i_feather
 CAN=MT_WALK|MT_RUN|MT_FLY
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_bird
-FOODTYPE=55 i_bread_loaf  
-DESIRES=c_man,c_woman 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_bread_loaf
+DESIRES=c_man,c_woman
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Crow
@@ -933,19 +933,19 @@ str=22
 dex=75
 int=40
 
-[chardef 284]  
+[chardef 284]
 name=Armor Steed
 defname=c_m_armor_steed
-ICON=i_pet_horse 
-DAM=10,15 
-ARMOR=20 
-RESOURCES=15 i_ribs_raw,10 i_hide 
-CAN=MT_WALK|MT_RUN 
+ICON=i_pet_horse
+DAM=10,15
+ARMOR=20
+RESOURCES=15 i_ribs_raw,10 i_hide
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_horse_gray
-FOODTYPE=55 i_ribs_raw  
-DESIRES=c_man,c_woman 
+FOODTYPE=55 i_ribs_raw
+DESIRES=c_man,c_woman
 AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
@@ -959,20 +959,20 @@ wrestling=89.0
 tactics=78.0
 anatomy=75.6
 
-[chardef 285]  
-name=Reaper Redux 
+[chardef 285]
+name=Reaper Redux
 defname=c_reaper_redux
-ICON=020fa 
-DAM=10,15 
-ARMOR=40 
-RESOURCES=3 i_log,10 i_kindling 
-CAN=MT_WALK|MT_RUN 
+ICON=020fa
+DAM=10,15
+ARMOR=40
+RESOURCES=3 i_log,10 i_kindling
+CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_reaper
-FOODTYPE=55 i_kindling  
-DESIRES=c_reaper 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_kindling
+DESIRES=c_reaper
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Reaper Redux
@@ -982,23 +982,23 @@ dex=254
 int=342
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
 
-[chardef 276]  
-name=Reptalon 
+[chardef 276]
+name=Reptalon
 defname=c_m_reptalon
-ICON=i_pet_dragon 
-DAM=10,15 
-ARMOR=30 
-RESOURCES=15 i_ribs_raw,10 i_hide 
+ICON=i_pet_dragon
+DAM=10,15
+ARMOR=30
+RESOURCES=15 i_ribs_raw,10 i_hide
 CAN=MT_WALK|MT_RUN
 RESLEVEL=5
 RESDISPDNHUE=33
 RESDISPDNID=c_horse_gray
-FOODTYPE=55 i_ribs_raw  
-DESIRES=c_man,c_woman 
-AVERSIONS=e_carnivores3 
+FOODTYPE=55 i_ribs_raw
+DESIRES=c_man,c_woman
+AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Reptalon (Chimera)
@@ -1011,3 +1011,5 @@ wrestling=90.2
 tactics=92.2
 anatomy=89.2
 MagicResistance=89.0
+
+[EOF]

@@ -3307,3 +3307,6 @@ this all in desperation)
 04-06-2007, Nazghul
 - Added: more lemmings - aeh - defmessages
 - Updated sphere_msgs.scp
+
+04-14-2007, Sir Dwayne
+- Fixed: Various flaws in npc scripts and sphere_item_unsorted.

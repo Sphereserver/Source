@@ -11,7 +11,7 @@
 // by Rattlehead, few changes & fixes by ClouD_BR & Ellessar
 VERSION=0.56b
 
-[chardef 244] 
+[chardef 244]
 defname=c_rune_beetle
 name=Rune Beetle
 SOUND=snd_rune_beetle
@@ -23,39 +23,39 @@ DAM=1,30
 ARMOR=45
 RESOURCES=15 i_ribs_raw
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-FOODTYPE=40 t_meat_raw 
-DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman 
+FOODTYPE=40 t_meat_raw
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 MOVERATE=40
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Super Besouro
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={200 300}
-	MAXHITS={300 1000}
-	INT={230 400} 
-	DEX={50 80} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE=1000
-	TACTICS=100.0
-	WRESTLING={95.0 100.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={200 300}
+MAXHITS={300 1000}
+INT={230 400}
+DEX={50 80}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE=1000
+TACTICS=100.0
+WRESTLING={95.0 100.0}
 
 ON=@NpcRestock
-	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-	ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
-	ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
-	ITEM={ rich_gold_pile 1 }
-	ITEM=random_jewel,{1 4},R2
-	ITEM=i_gold,{2200 2900}
-	////////////////////////////
+ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
+ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
+ITEM={ rich_gold_pile 1 }
+ITEM=random_jewel,{1 4},R2
+ITEM=i_gold,{2200 2900}
+////////////////////////////
 
-[chardef 245] 
+[chardef 245]
 defname=c_Yomotsu_Warrior
 name=Yomotsu Warrior
 SOUND=snd_yomotsu
@@ -65,9 +65,9 @@ RESLEVEL=3
 RESDISPDNHUE=33
 DAM=4,10
 ARMOR=15
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-FOODTYPE=40 t_meat_raw 
+FOODTYPE=40 t_meat_raw
 DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 MOVERATE=60
@@ -75,27 +75,27 @@ CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Yomotsu Warrior
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={70 90}
-	MAXHITS=150
-	INT={100 200} 
-	DEX={70 110} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	TACTICS={60.0 90.0}
-	WRESTLING={60.0 90.0}
-	SWORDSMANSHIP={60.0 90.0}
-	ITEMNEWBIE=i_staff_bladed_double
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={70 90}
+MAXHITS=150
+INT={100 200}
+DEX={70 110}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+TACTICS={60.0 90.0}
+WRESTLING={60.0 90.0}
+SWORDSMANSHIP={60.0 90.0}
+ITEMNEWBIE=i_staff_bladed_double
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	////////////////////////////
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+////////////////////////////
 
-[chardef 253] 
+[chardef 253]
 defname=c_Yomotsu_Priest
 name=Yomotsu Priest
 SOUND=snd_yomotsu
@@ -105,9 +105,9 @@ ARMOR=18
 RESDISPDNID=c_man
 RESLEVEL=3
 RESDISPDNHUE=33
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 CAN=MT_WALK|MT_RUN|MT_USEHANDS
-FOODTYPE=40 t_meat_raw 
+FOODTYPE=40 t_meat_raw
 DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 MOVERATE=60
@@ -115,29 +115,29 @@ CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Yomotsu Mage
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={50 70}
-	MAXHITS=200
-	INT={200 300} 
-	DEX={30 80} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={80.0 100.0}
-	TACTICS={40.0 60.0}
-	WRESTLING={40.0 60.0}
-	SWORDSMANSHIP={30.0 60.0}
-	MAGERY=100.0
-	ITEMNEWBIE=i_spellbook
-	ADDCIRCLE=8,1
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={50 70}
+MAXHITS=200
+INT={200 300}
+DEX={30 80}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={80.0 100.0}
+TACTICS={40.0 60.0}
+WRESTLING={40.0 60.0}
+SWORDSMANSHIP={30.0 60.0}
+MAGERY=100.0
+ITEMNEWBIE=i_spellbook
+ADDCIRCLE=8,1
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{110 180}
-	////////////////////////////
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{110 180}
+////////////////////////////
 
-[chardef 255] 
+[chardef 255]
 defname=c_Yomotsu_Elder
 name=Yomotsu Elder
 SOUND=snd_yomotsu
@@ -147,9 +147,9 @@ ARMOR=22
 RESDISPDNID=c_man
 RESLEVEL=3
 RESDISPDNHUE=33
-RESOURCES=15 i_ribs_raw 
+RESOURCES=15 i_ribs_raw
 CAN=MT_WALK|MT_RUN|MT_USEHANDS
-FOODTYPE=40 t_meat_raw 
+FOODTYPE=40 t_meat_raw
 DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 MOVERATE=60
@@ -157,30 +157,30 @@ CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Elder Yomotsu
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={100 200}
-	MAXHITS={400 500}
-	INT={400 500} 
-	DEX={50 90} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE=100.0
-	TACTICS={40.0 60.0}
-	WRESTLING={40.0 60.0}
-	SWORDSMANSHIP={30.0 60.0}
-	MAGERY=125.0
-	ITEMNEWBIE=i_spellbook
-	ADDCIRCLE=8,1
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={100 200}
+MAXHITS={400 500}
+INT={400 500}
+DEX={50 90}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE=100.0
+TACTICS={40.0 60.0}
+WRESTLING={40.0 60.0}
+SWORDSMANSHIP={30.0 60.0}
+MAGERY=125.0
+ITEMNEWBIE=i_spellbook
+ADDCIRCLE=8,1
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{210 280}
-	ITEM=random_platemail_invulnerability
-	///////////////////////
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{210 280}
+ITEM=random_platemail_invulnerability
+///////////////////////
 
-[chardef 240] 
+[chardef 240]
 defname=c_kappa
 name=Kappa
 SOUND=snd_kappa
@@ -189,33 +189,33 @@ DAM=5,15
 RESDISPDNID=c_man
 RESLEVEL=3
 RESDISPDNHUE=33
-ARMOR=15 
+ARMOR=15
 CAN=MT_WALK|MT_USEHANDS|MT_SWIM
-FOODTYPE=40 t_meat_raw 
-DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman 
+FOODTYPE=40 t_meat_raw
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Tartarugao
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={50 100} 
-	INT={30 60} 
-	DEX={30 60} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	TACTICS=60.0
-	WRESTLING={55.0 70.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={50 100}
+INT={30 60}
+DEX={30 60}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+TACTICS=60.0
+WRESTLING={55.0 70.0}
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{80 130}
-	////////////////////////////
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{80 130}
+////////////////////////////
 
-[chardef 242] 
+[chardef 242]
 defname=c_deathwatch_beetle
 name=deathwatch beetle
 SOUND=snd_monster_lavalizard1
@@ -224,38 +224,38 @@ DAM=4,30
 RESDISPDNID=c_man
 RESLEVEL=3
 RESDISPDNHUE=33
-ARMOR=20 
-RESOURCES=15 i_ribs_raw,10 i_hide 
+ARMOR=20
+RESOURCES=15 i_ribs_raw,10 i_hide
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-FOODTYPE=40 t_meat_raw 
-DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman 
+FOODTYPE=40 t_meat_raw
+DESIRES=i_gold,e_notoriety,e_horses,c_man,c_woman
 AVERSIONS=e_carnivores3
 MOVERATE=55
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Worm
 
-ON=@Create 
-	NPC=brain_monster
-	FAME={100 3000} 
-	KARMA={-5000 -6999} 
-	STR={100 200} 
-	MAXHITS=500
-	INT={230 300} 
-	DEX={90 110} 
-	PARRYING={60.0 95.0}
-	MAGICRESISTANCE={50.0 70.0}
-	TACTICS=100.0
-	WRESTLING={95.0 100.0}
+ON=@Create
+NPC=brain_monster
+FAME={100 3000}
+KARMA={-5000 -6999}
+STR={100 200}
+MAXHITS=500
+INT={230 300}
+DEX={90 110}
+PARRYING={60.0 95.0}
+MAGICRESISTANCE={50.0 70.0}
+TACTICS=100.0
+WRESTLING={95.0 100.0}
 
 ON=@Hit
-	IF !(<SRC.FLAGS>&statf_poisoned)
-		SRC.SPELLEFFECT S_POISON,1000,<UID>
-	endif
+IF !(<SRC.FLAGS>&statf_poisoned)
+    SRC.SPELLEFFECT S_POISON,1000,<UID>
+endif
 
 ON=@NpcRestock
-	ITEM=random_jewel,{1 4}
-	ITEM=i_gold,{380 630}
+ITEM=random_jewel,{1 4}
+ITEM=i_gold,{380 630}
 
 [CHARDEF 246]
 NAME=Bake Kitsune
@@ -273,18 +273,18 @@ RESLEVEL=3
 RESDISPDNHUE=33
 
 ON=@Create
-	NPC=brain_monster
-	Str={170 220}
-	Dex={125 145}
-	Int={375 425}
-	MagicResistance={80.0 100.0}
-	Tactics={70.0 90.0}
-	Wrestling={50.0 55.0}
-	Magery={80.0 90.0}
-	Meditation={85.0 95.0}
-	EvaluatingIntel={80.0 90.0}
-	Fame=150
-	Karma=-2150
+NPC=brain_monster
+Str={170 220}
+Dex={125 145}
+Int={375 425}
+MagicResistance={80.0 100.0}
+Tactics={70.0 90.0}
+Wrestling={50.0 55.0}
+Magery={80.0 90.0}
+Meditation={85.0 95.0}
+EvaluatingIntel={80.0 90.0}
+Fame=150
+Karma=-2150
 
 [CHARDEF 254]
 Name=Crane
@@ -305,10 +305,10 @@ NPC=BRAIN_ANIMAL
 Str={25 35}
 Dex={15 25}
 Int={10 15}
-MagicResistance={4.0 5.0} 
-Tactics={10.0 11.0} 
-Wrestling={10.0 11.0} 
-Anatomy={5.0 6.0} 
+MagicResistance={4.0 5.0}
+Tactics={10.0 11.0}
+Wrestling={10.0 11.0}
+Anatomy={5.0 6.0}
 Taming=40.0
 Fame=15
 Karma=0
@@ -318,7 +318,7 @@ Name=Fan Dancer
 DEFNAME=c_fan_dancer
 ARMOR=15
 CAN=MT_WALK|MT_RUN
-ICON=i_pet_fandancer		
+ICON=i_pet_fandancer
 DAM=7,12
 SOUND=snd_human_foomph01
 CATEGORY=New Monsters
@@ -395,30 +395,30 @@ Karma=-5000
 
 [CHARDEF 250]
 Name=Tsuki Wolf
-DEFNAME=c_tsuki_wolf		
+DEFNAME=c_tsuki_wolf
 ARMOR=35
 CAN=MT_WALK|MT_RUN
 SOUND=snd_tsuki_wolf
 ICON=i_pet_tsukiwolf
 RESDISPDNID=c_dog
 RESLEVEL=3
-RESDISPDNHUE=33	
+RESDISPDNHUE=33
 DAM=13,30
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Tsuki Wolf
 on=@create
-NPC=BRAIN_MONSTER			
+NPC=BRAIN_MONSTER
 Str={200 250}
 MAXHITS=500
 Dex={150 200}
-Int={65 75}		
+Int={65 75}
 MagicResistance={65.0 70.0}
 Tactics={95.0 110.0}
 Wrestling={98.0 108.0}
 Anatomy={65.0 75.0}
 Fame=2000
-Karma=-5000			
+Karma=-5000
 
 [CHARDEF 251]
 Name=Revenant Lion
@@ -428,25 +428,25 @@ RESDISPDNID=c_dog
 RESLEVEL=3
 RESDISPDNHUE=33
 ARMOR=18
-CAN=MT_WALK|MT_RUN								
+CAN=MT_WALK|MT_RUN
 DAM=11,20
 ICON=i_pet_ravlion
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Ravenant Lion
 on=@create
-NPC=BRAIN_MONSTER	
+NPC=BRAIN_MONSTER
 Str={175 220}
 MAXHITS={300 400}
 Dex={155 175}
-Int={75 105}		
+Int={75 105}
 MagicResistance={70.0 80.0}
 Tactics={60.0 80.0}
 Wrestling={80.0 90.0}
 Poisoning={120.0 130.0}
 Magery={80.0 90.0}
 Meditation={85.0 95.0}
-EvaluatingIntel={80.0 90.0}							
+EvaluatingIntel={80.0 90.0}
 Fame=2500
 Karma=-2500
 
@@ -457,25 +457,25 @@ RESDISPDNID=c_elem_air
 ICON=i_pet_raiju
 SOUND=snd_elementl_airelem5
 RESLEVEL=3
-RESDISPDNHUE=33	
+RESDISPDNHUE=33
 ARMOR=15
-CAN=MT_WALK|MT_RUN										
+CAN=MT_WALK|MT_RUN
 DAM=6,18
 CATEGORY=New Monsters
 SUBSECTION=SE
 DESCRIPTION=Rai-Ju
 on=@create
-NPC=BRAIN_MONSTER											
+NPC=BRAIN_MONSTER
 Str={105 155}
 MAXHITS={225 335}
 Dex={85 135}
-Int={175 180}									
+Int={175 180}
 Anatomy={25.1 35.0}
 MagicResistance={110.2 120.0}
 Tactics={55.1 65.0}
-Wrestling={85.1 95.0}									
+Wrestling={85.1 95.0}
 Fame=4500
-Karma=-4500										
+Karma=-4500
 
 [CHARDEF 252]
 Name=Lady of the Snow
@@ -496,12 +496,12 @@ NPC=BRAIN_MONSTER
 Str={115 205}
 MAXHITS={300 400}
 Dex={105 125}
-Int={470 490}												
+Int={470 490}
 MagicResistance={90.0 105.0}
 Tactics={85.0 100.0}
 Wrestling={85.0 100.0}
 Magery={95.0 110.0}
-Meditation={85.0 90.0}											
+Meditation={85.0 90.0}
 Fame=1500
 Karma=-3500
 
@@ -517,19 +517,19 @@ ICON=i_pet_kazekemono
 DAM=9,23
 CATEGORY=New Monsters
 SUBSECTION=SE
-DESCRIPTION=Kaze Kemono	
-SOUND=snd_elementl_airelem5												
+DESCRIPTION=Kaze Kemono
+SOUND=snd_elementl_airelem5
 on=@create
 NPC=BRAIN_MONSTER
 Str={105 175}
 MAXHITS={275 375}
 Dex={100 155}
-Int={100 110}														
+Int={100 110}
 Anatomy={25.0 35.0}
 Magery={95.0 105.0}
 MagicResistance={110.0 120.0}
 Tactics={55.0 65.0}
-Wrestling={85.0 95.0}											
+Wrestling={85.0 95.0}
 Fame=4500
 Karma=-4500
 
@@ -585,3 +585,5 @@ Meditation={27.5 42.5}
 EvaluatingIntel={100.0 125.0}
 Fame=2000
 Karma=-5000
+
+[EOF]
