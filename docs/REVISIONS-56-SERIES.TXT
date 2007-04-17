@@ -3239,7 +3239,7 @@ this all in desperation)
 - Fixed: Exceptions that are sometimes caused when attempting to use/take an item that cannot be reached.
 
 13-03-2007, Nazghul
-- added keyword visualrange, parameter 1..18 to limit the visualrange of a client. After changing the visual range you should update the character in question once. 
+- added keyword visualrange, parameter 1..18 to limit the visualrange of a client. After changing the visual range you should update the character in question once.
 
 13-03-2007, Ellessar
 - Fixed #1106: PACKETx sometimes caused errors in console.
@@ -3303,10 +3303,11 @@ this all in desperation)
 
 04-03-2007, Furio
 - Added: PARTY.ISSAMEPARTYOF $uid, checking if the current party is the
-		 same of the char with $uid.
-04-06-2007, Nazghul
+  same of the char with $uid.
+
+06-04-2007, Nazghul
 - Added: more lemmings - aeh - defmessages
 - Updated sphere_msgs.scp
 
-04-14-2007, Sir Dwayne
+14-04-2007, Sir Dwayne
 - Fixed: Various flaws in npc scripts and sphere_item_unsorted.
