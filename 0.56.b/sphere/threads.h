@@ -8,7 +8,7 @@
  * Sphere threading system
  * Threads should be inherited from AbstractThread with overridden tick() method
  * Also useful to override onStart() in order to initialise class data variables for ticking
- *   which is triggeted whanever the thread is starting/restarting
+ *   which is triggered whenever the thread is starting/restarting
 **/
 
 // the maximal number of supported threads. not should be adjusted even as we think that we
@@ -16,11 +16,6 @@
 // NOTE: Lies here since trying to avoid any problems with lists, etc with
 // threads, using as much of static single non-heap data as possible
 #define MAX_THREADS	30
-
-// temporary string storage. Stores THREAD_STRING_STORAGE of strings with length THREAD_STRING_LENGTH
-// per each SphereThread
-#define THREAD_STRING_STORAGE	512
-#define THREAD_STRING_LENGTH	1024
 
 // Types definition for different platforms
 #ifdef _WIN32
@@ -122,11 +117,6 @@ private:
 // Sphere thread. Have some sphere-specific
 class AbstractSphereThread : public AbstractThread
 {
-private:
-	long	m_tmpStringIndex;
-	char	m_tmpStringUsed[THREAD_STRING_STORAGE];
-	char	m_tmpStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
-
 public:
 	AbstractSphereThread(const char *name, Priority priority = IThread::Normal);
 

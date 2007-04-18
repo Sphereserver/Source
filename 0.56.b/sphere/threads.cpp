@@ -9,6 +9,14 @@
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
+// temporary string storage
+#define THREAD_STRING_STORAGE	4096
+#define THREAD_STRING_LENGTH	4096
+
+volatile long g_tmpStringIndex = 0;
+char g_tmpStringUsed[THREAD_STRING_STORAGE];
+char g_tmpStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
+
 /**
  * ThreadHolder
  * NOTE: due to it is difficult to create a good sync on this level, instead of storying a list of threads
@@ -100,6 +108,10 @@ void ThreadHolder::init()
 		{
 			m_threads[i] = NULL;
 		}
+
+		memset(g_tmpStrings, 0, sizeof(g_tmpStrings));
+		memset(g_tmpStringUsed, 0, sizeof(g_tmpStringUsed));
+
 		m_inited = true;
 	}
 }
@@ -367,33 +379,31 @@ bool AbstractThread::shouldExit()
 AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	: AbstractThread(name, priority)
 {
-	m_tmpStringIndex = 0;
-	memset(m_tmpStringUsed, 0, sizeof(m_tmpStringUsed));
-	memset(m_tmpStrings, 0, sizeof(m_tmpStrings));
 }
 
 char *AbstractSphereThread::allocateBuffer()
 {
-	long initialPosition = m_tmpStringIndex;
+	long initialPosition = g_tmpStringIndex;
 	while( true )
 	{
-		m_tmpStringIndex++;
-		if( m_tmpStringIndex >= THREAD_STRING_STORAGE-1 )
+		long index = g_tmpStringIndex++;
+		if( g_tmpStringIndex >= THREAD_STRING_STORAGE )
 		{
-			m_tmpStringIndex = 0;
+			index = g_tmpStringIndex %= THREAD_STRING_STORAGE;
 		}
 
-		if( m_tmpStringUsed[m_tmpStringIndex] == 0 )
+		if( g_tmpStringUsed[index] == 0 )
 		{
-			*(m_tmpStrings[m_tmpStringIndex]) = '\0';
-			return m_tmpStrings[m_tmpStringIndex];
+			char *buffer = g_tmpStrings[index];
+			*buffer = '\0';
+			return buffer;
 		}
 
 		// a protection against deadlock. All string buffers are marked as being used somewhere, so we
 		// have few possibilities (the case shows that we have a bug and temporary strings used not such):
 		// a) return NULL and wait for exceptions in the program
 		// b) allocate a string from a heap
-		if( initialPosition == m_tmpStringIndex )
+		if( initialPosition == index )
 		{
 			// but the best is to throw an exception to give better formed information for end users
 			// rather than access violations
@@ -404,14 +414,14 @@ char *AbstractSphereThread::allocateBuffer()
 
 String AbstractSphereThread::allocateString()
 {
-	TemporaryString s(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
+	TemporaryString s(allocateBuffer(), &g_tmpStringUsed[g_tmpStringIndex]);
 
 	return s;
 }
 
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
-	string.init(allocateBuffer(), &m_tmpStringUsed[m_tmpStringIndex]);
+	string.init(allocateBuffer(), &g_tmpStringUsed[g_tmpStringIndex]);
 }
 
 bool AbstractSphereThread::shouldExit()
