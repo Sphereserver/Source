@@ -221,7 +221,7 @@ void TemporaryString::init(char *buffer, char *state)
 	if( m_state != NULL )
 	{
 		*m_state = 'U';
-		m_realLength = THREAD_STRING_LENGTH;
+		m_realLength = 1024;
 	}
 	else
 	{
