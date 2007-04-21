@@ -3239,7 +3239,8 @@ this all in desperation)
 - Fixed: Exceptions that are sometimes caused when attempting to use/take an item that cannot be reached.
 
 13-03-2007, Nazghul
-- added keyword visualrange, parameter 1..18 to limit the visualrange of a client. After changing the visual range you should update the character in question once.
+- Added: keyword VISUALRANGE, parameter 1..18 to limit the visualrange of a client. After changing the
+  visual range you should update the character in question once.
 
 13-03-2007, Ellessar
 - Fixed #1106: PACKETx sometimes caused errors in console.
@@ -3309,5 +3310,8 @@ this all in desperation)
 - Added: more lemmings - aeh - defmessages
 - Updated sphere_msgs.scp
 
-14-04-2007, Sir Dwayne
+14-04-2007, Sir Dwayne (Script pack)
 - Fixed: Various flaws in npc scripts and sphere_item_unsorted.
+
+21-04-2007, coruja747 (Script pack)
+- Updated: sphere_map2.scp (Corrected a_shrine_virtues area definition)

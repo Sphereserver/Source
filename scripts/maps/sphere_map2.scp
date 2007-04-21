@@ -570,7 +570,7 @@ GROUP=Third Dawn
 [AREADEF a_shrine_virtues]
 NAME=Shrine of the Virtues
 P=1104,404,0,2
-RECT=1072,376,1136,432,2
+RECT=1088,384,1127,425,2
 FLAGS=region_flag_safe|region_flag_no_pvp|region_flag_nobuilding
 
 [AREADEF a_pass_karnaugh]

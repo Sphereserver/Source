@@ -29,38 +29,38 @@ SUBSECTION=LBR
 DESCRIPTION=Succubus
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={488 620}
-MAXHITS={312 353}
-INT={498 657}
-DEX={121 170}
-MAGICRESISTANCE={100.0 150.0}
-TACTICS={80.0 90.0}
-WRESTLING={80.0 90.0}
-MAGERY={99.0 100.0}
-EVALUATINGINTEL={90.0 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={488 620}
+	MAXHITS={312 353}
+	INT={498 657}
+	DEX={121 170}
+	MAGICRESISTANCE={100.0 150.0}
+	TACTICS={80.0 90.0}
+	WRESTLING={80.0 90.0}
+	MAGERY={99.0 100.0}
+	EVALUATINGINTEL={90.0 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{1000 1200}
+	ITEM=i_gold,{1000 1200}
 
 ON=@GetHit
-LOCAL.TMP=<OBJ>
-OBJ=<UID>
-FORCHARS 3
-    IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
-        LOCAL.DAM=<R10,40>
-        DAMAGE <LOCAL.DAM> <DEF.DAM_PHYSICAL> <OBJ>
-        OBJ.HITS += <LOCAL.DAM>
-        IF (<OBJ.HITS> > <OBJ.MAXHITS>)
-            OBJ.HITS=<OBJ.MAXHITS>
-        endif
-    endif
-end
-OBJ=<LOCAL.TMP>
+	LOCAL.TMP=<OBJ>
+	OBJ=<UID>
+	FORCHARS 3
+		IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
+			LOCAL.DAM=<R10,40>
+			DAMAGE <LOCAL.DAM> <DEF.DAM_PHYSICAL> <OBJ>
+			OBJ.HITS += <LOCAL.DAM>
+			IF (<OBJ.HITS> > <OBJ.MAXHITS>)
+				OBJ.HITS=<OBJ.MAXHITS>
+			endif
+		endif
+	end
+	OBJ=<LOCAL.TMP>
 
 [CHARDEF 098]
 DEFNAME=c_terathan_avenger
@@ -79,24 +79,24 @@ SUBSECTION=LBR
 DESCRIPTION=Terathan Avenger
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={467 645}
-MAXHITS={296 372}
-INT={126 150}
-DEX={77 95}
-MAGICRESISTANCE={65.1 80.0}
-POISONING={60.1 80.0}
-TACTICS={90.1 100.0}
-WRESTLING={90.1 100.0}
-MAGERY={70.3 100.0}
-EVALUATINGINTEL={70.3 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={467 645}
+	MAXHITS={296 372}
+	INT={126 150}
+	DEX={77 95}
+	MAGICRESISTANCE={65.1 80.0}
+	POISONING={60.1 80.0}
+	TACTICS={90.1 100.0}
+	WRESTLING={90.1 100.0}
+	MAGERY={70.3 100.0}
+	EVALUATINGINTEL={70.3 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{550 650}
+	ITEM=i_gold,{550 650}
 
 [CHARDEF 09a]
 DEFNAME=c_mummy
@@ -116,21 +116,21 @@ SUBSECTION=LBR
 DESCRIPTION=Mummy
 
 ON=@Create
-NPC=brain_monster
-FAME=4000
-KARMA=-4000
-STR={346 370}
-MAXHITS={208 222}
-INT={26 40}
-DEX={71 90}
-MAGICRESISTANCE={15.1 40.0}
-TACTICS={35.1 50.0}
-WRESTLING={35.1 50.0}
+	NPC=brain_monster
+	FAME=4000
+	KARMA=-4000
+	STR={346 370}
+	MAXHITS={208 222}
+	INT={26 40}
+	DEX={71 90}
+	MAGICRESISTANCE={15.1 40.0}
+	TACTICS={35.1 50.0}
+	WRESTLING={35.1 50.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{275 325}
-ITEM=i_reag_garlic,10
-ITEM=i_bandage,10
+	ITEM=i_gold,{275 325}
+	ITEM=i_reag_garlic,10
+	ITEM=i_bandage,10
 
 [chardef 797]
 defname=c_reptile_lord
@@ -149,32 +149,32 @@ SUBSECTION=LBR
 DESCRIPTION=Reptile Lord
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={300 400}
-MAXHITS={1000 1200}
-INT=500
-DEX={50 70}
-MAGICRESISTANCE={110.0 125.0}
-TACTICS=80.0
-WRESTLING=80.0
-MAGERY=120.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={300 400}
+	MAXHITS={1000 1200}
+	INT=500
+	DEX={50 70}
+	MAGICRESISTANCE={110.0 125.0}
+	TACTICS=80.0
+	WRESTLING=80.0
+	MAGERY=120.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
-ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=i_reag_nightshade,{8 15}
-ITEM=i_gold,{695 745}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
+	ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=i_reag_nightshade,{8 15}
+	ITEM=i_gold,{695 745}
 
 [chardef 789]
 defname=c_quagmire
@@ -194,29 +194,29 @@ SUBSECTION=LBR
 DESCRIPTION=Quagmire
 
 ON=@Create
-NPC=brain_monster
-FAME=1500
-KARMA=-1500
-STR={101 130}
-MAXHITS={91 105}
-INT={31 55}
-DEX={66 85}
-MAGICRESISTANCE={65.0 75.0}
-TACTICS={50.0 60.0}
-WRESTLING={60.0 80.0}
+	NPC=brain_monster
+	FAME=1500
+	KARMA=-1500
+	STR={101 130}
+	MAXHITS={91 105}
+	INT={31 55}
+	DEX={66 85}
+	MAGICRESISTANCE={65.0 75.0}
+	TACTICS={50.0 60.0}
+	WRESTLING={60.0 80.0}
 
 ON=@NpcRestock
-ITEM=random_jewel, {1 2}
-ITEM=i_gold,{125 175}
-ITEM=i_orb,1,R6
-MORE1=08
-NAME=Poison Orb
-COLOR=0ad
+	ITEM=random_jewel, {1 2}
+	ITEM=i_gold,{125 175}
+	ITEM=i_orb,1,R6
+	MORE1=08
+	NAME=Poison Orb
+	COLOR=0ad
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,500,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,500,<UID>
+	endif
 
 [chardef 775]
 defname=c_plague_beast
@@ -235,44 +235,44 @@ SUBSECTION=LBR
 DESCRIPTION=Plague Beast
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={302 500}
-MAXHITS={318 404}
-INT={16 20}
-DEX=80
-MAGICRESISTANCE=35.0
-TACTICS=1000
-WRESTLING=1000
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={302 500}
+	MAXHITS={318 404}
+	INT={16 20}
+	DEX=80
+	MAGICRESISTANCE=35.0
+	TACTICS=1000
+	WRESTLING=1000
 
 ON=@NpcRestock
-ITEM=random_jewel, {1 2}
-ITEM=random_jewel, {1 2},R3
-ITEM=i_gold,{450 600}
-ITEM=i_orb,1,R6
-MORE1=08
-NAME=Poison Orb
-COLOR=0ad
+	ITEM=random_jewel, {1 2}
+	ITEM=random_jewel, {1 2},R3
+	ITEM=i_gold,{450 600}
+	ITEM=i_orb,1,R6
+	MORE1=08
+	NAME=Poison Orb
+	COLOR=0ad
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,500,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,500,<UID>
+	endif
 
 ON=@Death
-RANDMAGICITEM
-RANDMAGICITEM
+	RANDMAGICITEM
+	RANDMAGICITEM
 
 ON=@ItemStep
-IF (<ACT.TYPE>==t_corpse)
-    IF !(<ACT.TAG0.PLAGUEEATEN>)
-        MAXHITS += 200
-        HITS += 200
-        ACT.TAG.PLAGUEEATEN=1
-        SAY @03c1,3,1 * <NAME> eats a corpse *
-    endif
-endif
+	IF (<ACT.TYPE>==t_corpse)
+		IF !(<ACT.TAG0.PLAGUEEATEN>)
+			MAXHITS += 200
+			HITS += 200
+			ACT.TAG.PLAGUEEATEN=1
+			SAY @03c1,3,1 * <NAME> eats a corpse *
+		endif
+	endif
 
 [chardef 796]
 defname=c_Horde_Daemon_Large
@@ -295,23 +295,23 @@ SUBSECTION=LBR
 DESCRIPTION=horde minion large
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 240}
-MAXHITS={300 400}
-INT={200 250}
-DEX={40 70}
-TACTICS={90.0 100.0}
-WRESTLING={100.0 110.0}
-MAGICRESISTANCE=50.0
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 240}
+	MAXHITS={300 400}
+	INT={200 250}
+	DEX={40 70}
+	TACTICS={90.0 100.0}
+	WRESTLING={100.0 110.0}
+	MAGICRESISTANCE=50.0
 
 ON=@NpcRestock
-ITEM=i_gold,{333 400}
-ITEM=i_orb,1,R4
-ITEM=random_weapon
-ITEM=i_boulder
-ITEM=i_minion_leather
+	ITEM=i_gold,{333 400}
+	ITEM=i_orb,1,R4
+	ITEM=random_weapon
+	ITEM=i_boulder
+	ITEM=i_minion_leather
 
 [chardef 795]
 defname=c_Horde_Daemon_Medium
@@ -334,18 +334,18 @@ SUBSECTION=LBR
 DESCRIPTION=horde minion medium
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={100 140}
-INT={40 100}
-DEX={40 60}
-TACTICS={70.0 85.0}
-WRESTLING={65.0 80.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={100 140}
+	INT={40 100}
+	DEX={40 60}
+	TACTICS={70.0 85.0}
+	WRESTLING={65.0 80.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{133 260}
-ITEM=i_minion_leather
+	ITEM=i_gold,{133 260}
+	ITEM=i_minion_leather
 
 [chardef 130]
 defname=c_fire_gargoyle
@@ -366,27 +366,27 @@ DESCRIPTION=Fire Gargoyle
 MOVERATE=60
 
 ON=@Create
-NPC=brain_monster
-FAME=3500
-KARMA=-3500
-STR={351 400}
-MAXHITS={211 244}
-INT={226 250}
-DEX={126 145}
-MAGICRESISTANCE={90.0 105.0}
-ANATOMY={75.0 85.0}
-MAGERY={90.0 105.0}
-EVALUATINGINTEL={90.0 105.0}
-MEDITATION={90.0 105.0}
-TACTICS={80.0 100.0}
-WRESTLING={40.0 80.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 6,1
-ADDSPELL=S_FLAMESTRIKE
+	NPC=brain_monster
+	FAME=3500
+	KARMA=-3500
+	STR={351 400}
+	MAXHITS={211 244}
+	INT={226 250}
+	DEX={126 145}
+	MAGICRESISTANCE={90.0 105.0}
+	ANATOMY={75.0 85.0}
+	MAGERY={90.0 105.0}
+	EVALUATINGINTEL={90.0 105.0}
+	MEDITATION={90.0 105.0}
+	TACTICS={80.0 100.0}
+	WRESTLING={40.0 80.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 6,1
+	ADDSPELL=S_FLAMESTRIKE
 
 ON=@NpcRestock
-ITEM=i_gold,{200 300}
-ITEM=i_scroll_flamestrike
+	ITEM=i_gold,{200 300}
+	ITEM=i_scroll_flamestrike
 
 [chardef 779]
 defname=c_bogling
@@ -405,25 +405,25 @@ SUBSECTION=LBR
 DESCRIPTION=Bogling
 
 ON=@Create
-NPC=brain_monster
-FAME=450
-KARMA={-450}
-STR={96 120}
-MAXHITS={58 72}
-INT={21 45}
-DEX={91 115}
-MAGICRESISTANCE={75.0 100.0}
-TACTICS={55.1 80.0}
-WRESTLING={55.0 75.0}
+	NPC=brain_monster
+	FAME=450
+	KARMA={-450}
+	STR={96 120}
+	MAXHITS={58 72}
+	INT={21 45}
+	DEX={91 115}
+	MAGICRESISTANCE={75.0 100.0}
+	TACTICS={55.1 80.0}
+	WRESTLING={55.0 75.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 2}
-ITEM=i_gold,{85 145}
+	ITEM=random_jewel,{1 2}
+	ITEM=i_gold,{85 145}
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,300,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,300,<UID>
+	endif
 
 [chardef 784]
 defname=c_arcane_daemon
@@ -443,26 +443,26 @@ SUBSECTION=LBR
 DESCRIPTION=Arcane Daemon
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={131 150}
-MAXHITS={101 115}
-INT={301 350}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={131 150}
+	MAXHITS={101 115}
+	INT={301 350}
 DEX={126 145}
-MAGICRESISTANCE={85.0 95.0}
-TACTICS={70.0 80.0}
-WRESTLING={60.0 80.0}
-MAGERY={80.0 90.0}
-EVALUATINGINTEL={70.0 80.0}
-MEDITATION={70.0 80.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	MAGICRESISTANCE={85.0 95.0}
+	TACTICS={70.0 80.0}
+	WRESTLING={60.0 80.0}
+	MAGERY={80.0 90.0}
+	EVALUATINGINTEL={70.0 80.0}
+	MEDITATION={70.0 80.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=random_jewel, {1 2}
-ITEM=random_jewel, {1 2}
-ITEM=i_gold,{295 345}
+	ITEM=random_jewel, {1 2}
+	ITEM=random_jewel, {1 2}
+	ITEM=i_gold,{295 345}
 
 [chardef 787]
 defname=c_ant_lion
@@ -482,25 +482,25 @@ SUBSECTION=LBR
 DESCRIPTION=Ant Lion
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={296 320}
-MAXHITS={150 161}
-INT={36 60}
-DEX={81 105}
-MAGICRESISTANCE=70.0
-TACTICS=90.0
-WRESTLING=90.0
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={296 320}
+	MAXHITS={150 161}
+	INT={36 60}
+	DEX={81 105}
+	MAGICRESISTANCE=70.0
+	TACTICS=90.0
+	WRESTLING=90.0
 
 ON=@NpcRestock
-ITEM=random_jewel, {1 4}, R2
-ITEM=i_gold,{295 345}
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=i_gold,{295 345}
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,500,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,500,<UID>
+	endif
 
 [chardef 798]
 defname=c_ancient_wyrm
@@ -520,33 +520,33 @@ SUBSECTION=LBR
 DESCRIPTION=Ancient Wyrm
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 300}
-MAXHITS={750 900}
-INT=550
-DEX={40 90}
-MAGICRESISTANCE={100.0 150.0}
-TACTICS={97.0 100.0}
-WRESTLING={97.0 100.0}
-MAGERY={80.0 100.0}
-EVALUATINGINTEL=100.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 300}
+	MAXHITS={750 900}
+	INT=550
+	DEX={40 90}
+	MAGICRESISTANCE={100.0 150.0}
+	TACTICS={97.0 100.0}
+	WRESTLING={97.0 100.0}
+	MAGERY={80.0 100.0}
+	EVALUATINGINTEL=100.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
-ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
-ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=random_jewel, {1 4}, R2
-ITEM=i_reag_nightshade,{8 15}
-ITEM=i_gold,{1295 1745}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_monster_backpack 1 filthy_rich_monster_backpack 3}
+	ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
+	ITEM={rich_gold_pile 1 filthy_rich_gold_pile 3}
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=random_jewel, {1 4}, R2
+	ITEM=i_reag_nightshade,{8 15}
+	ITEM=i_gold,{1295 1745}
 
 [chardef 778]
 defname=c_swarm
@@ -566,21 +566,21 @@ SUBSECTION=LBR
 DESCRIPTION=Gazer Larva
 
 ON=@Create
-NPC=brain_monster
-FAME=900
-KARMA=-900
-STR={76 100}
-MAXHITS={36 47}
-INT={56 80}
-DEX={51 75}
-MAGICRESISTANCE=70.0
-TACTICS=70.0
-WRESTLING=70.0
-MAGERY=100.0
+	NPC=brain_monster
+	FAME=900
+	KARMA=-900
+	STR={76 100}
+	MAXHITS={36 47}
+	INT={56 80}
+	DEX={51 75}
+	MAGICRESISTANCE=70.0
+	TACTICS=70.0
+	WRESTLING=70.0
+	MAGERY=100.0
 
 ON=@NpcRestock
-ITEM=i_reag_nightshade,{2 6}
-ITEM=i_gold,{25 55}
+	ITEM=i_reag_nightshade,{2 6}
+	ITEM=i_gold,{25 55}
 
 [chardef c_leviathan]
 ID=c_kraken
@@ -602,28 +602,28 @@ SUBSECTION=LBR
 DESCRIPTION=Leviathan
 
 ON=@Create
-COLOR=0481
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR=1000
-MAXHITS=1500
-INT={500 520}
-DEX={500 520}
-MAGICRESISTANCE={97.5 107.5}
-TACTICS={97.5 107.5}
-WRESTLING={97.5 107.5}
-MAGERY={97.5 107.5}
-EVALUATINGINTEL={97.5 107.5}
-MEDITATION={97.5 107.5}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	COLOR=0481
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR=1000
+	MAXHITS=1500
+	INT={500 520}
+	DEX={500 520}
+	MAGICRESISTANCE={97.5 107.5}
+	TACTICS={97.5 107.5}
+	WRESTLING={97.5 107.5}
+	MAGERY={97.5 107.5}
+	EVALUATINGINTEL={97.5 107.5}
+	MEDITATION={97.5 107.5}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{2600 3000}
-//ITEM={minorartis}
-//ITEM={minorartis}
-//ITEM={minorartis}
+	ITEM=i_gold,{2600 3000}
+	//ITEM={minorartis}
+	//ITEM={minorartis}
+	//ITEM={minorartis}
 
 [chardef 77]
 defname=c_kraken
@@ -643,19 +643,19 @@ SUBSECTION=LBR
 DESCRIPTION=Kraken
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={756 780}
-MAXHITS={454 468}
-INT={26 40}
-DEX={226 245}
-MAGICRESISTANCE={15.0 20.0}
-TACTICS={45.0 60.0}
-WRESTLING={45.0 60.0}
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={756 780}
+	MAXHITS={454 468}
+	INT={26 40}
+	DEX={226 245}
+	MAGICRESISTANCE={15.0 20.0}
+	TACTICS={45.0 60.0}
+	WRESTLING={45.0 60.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{275 325}
+	ITEM=i_gold,{275 325}
 
 [chardef 792]
 defname=c_chaos_daemon
@@ -677,16 +677,16 @@ SUBSECTION=LBR
 DESCRIPTION=Chaos Daemon
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={106 130}
-MAXHITS={91 110}
-INT={56 80}
-DEX={170 200}
-MAGICRESISTANCE={85.0 95.0}
-TACTICS={70.0 80.0}
-WRESTLING={95.0 100.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={106 130}
+	MAXHITS={91 110}
+	INT={56 80}
+	DEX={170 200}
+	MAGICRESISTANCE={85.0 95.0}
+	TACTICS={70.0 80.0}
+	WRESTLING={95.0 100.0}
 
 [chardef 104]
 defname=c_skeletal_dragon
@@ -709,24 +709,24 @@ SUBSECTION=LBR
 DESCRIPTION=Skeletal Dragon
 
 ON=@Create
-NPC=brain_dragon
-FAME=10000
-KARMA=-10000
-STR={898 1030}
-MAXHITS={558 599}
-INT={488 620}
-DEX={68 200}
-MAGICRESISTANCE={100.3 130.0}
-TACTICS={97.6 100.0}
-WRESTLING={97.6 100.0}
-MAGERY={80.0 100.0}
-EVALUATINGINTEL={80.0 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_dragon
+	FAME=10000
+	KARMA=-10000
+	STR={898 1030}
+	MAXHITS={558 599}
+	INT={488 620}
+	DEX={68 200}
+	MAGICRESISTANCE={100.3 130.0}
+	TACTICS={97.6 100.0}
+	WRESTLING={97.6 100.0}
+	MAGERY={80.0 100.0}
+	EVALUATINGINTEL={80.0 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{1600 1800}
-ITEM=random_jewel,5
+	ITEM=i_gold,{1600 1800}
+	ITEM=random_jewel,5
 
 [chardef 128]
 defname=c_pixie
@@ -748,27 +748,27 @@ SUBSECTION=LBR
 DESCRIPTION=Pixie
 
 ON=@Create
-NPC=brain_monster
-FAME=7000
-KARMA=-7000
-STR={21 30}
-MAXHITS=18
-INT={201 250}
-DEX={301 400}
-MAGICRESISTANCE={100.0 150.0}
-TACTICS={10.0 20.0}
-WRESTLING={10.0 12.0}
-MAGERY={90.0 100.0}
-EVALUATINGINTEL={90.0 100.0}
-MEDITATION={90.0 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=7000
+	KARMA=-7000
+	STR={21 30}
+	MAXHITS=18
+	INT={201 250}
+	DEX={301 400}
+	MAGICRESISTANCE={100.0 150.0}
+	TACTICS={10.0 20.0}
+	WRESTLING={10.0 12.0}
+	MAGERY={90.0 100.0}
+	EVALUATINGINTEL={90.0 100.0}
+	MEDITATION={90.0 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{150 220}
-ITEM=i_reag_nightshade,{2 5}
-ITEM=i_reag_garlic,{2 5}
-ITEM=random_scroll
+	ITEM=i_gold,{150 220}
+	ITEM=i_reag_nightshade,{2 5}
+	ITEM=i_reag_garlic,{2 5}
+	ITEM=random_scroll
 
 [chardef 756]
 defname=c_exodus_overseer
@@ -789,19 +789,19 @@ SUBSECTION=LBR
 DESCRIPTION=Exodus Overseer
 
 ON=@Create
-NPC=brain_monster
-FAME=6000
-KARMA=-6000
-STR={551 650}
-MAXHITS={331 390}
-INT={61 90}
-DEX={76 95}
-MAGICRESISTANCE={80.0 98.0}
-TACTICS={80.0 98.0}
-WRESTLING={80.0 98.0}
+	NPC=brain_monster
+	FAME=6000
+	KARMA=-6000
+	STR={551 650}
+	MAXHITS={331 390}
+	INT={61 90}
+	DEX={76 95}
+	MAGICRESISTANCE={80.0 98.0}
+	TACTICS={80.0 98.0}
+	WRESTLING={80.0 98.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{360 410}
+	ITEM=i_gold,{360 410}
 
 [chardef 763]
 defname=c_exodus_minionlord
@@ -822,19 +822,19 @@ SUBSECTION=LBR
 DESCRIPTION=Exodus Minion Lord
 
 ON=@Create
-NPC=brain_monster
-FAME=9000
-KARMA=-9000
-STR={851 950}
-MAXHITS={611 670}
-INT={61 90}
-DEX={71 80}
-MAGICRESISTANCE={95.0 105.0}
-TACTICS={95.0 105.0}
-WRESTLING={95.0 105.0}
+	NPC=brain_monster
+	FAME=9000
+	KARMA=-9000
+	STR={851 950}
+	MAXHITS={611 670}
+	INT={61 90}
+	DEX={71 80}
+	MAGICRESISTANCE={95.0 105.0}
+	TACTICS={95.0 105.0}
+	WRESTLING={95.0 105.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{490 550}
+	ITEM=i_gold,{490 550}
 
 [chardef 757]
 defname=c_exodus_minion
@@ -855,19 +855,19 @@ SUBSECTION=LBR
 DESCRIPTION=Exodus Minion
 
 ON=@Create
-NPC=brain_monster
-FAME=8000
-KARMA=-8000
-STR={851 950}
-MAXHITS={511 570}
-INT={61 90}
-DEX={71 80}
-MAGICRESISTANCE={90.0 100.0}
-TACTICS={90.0 100.0}
-WRESTLING={90.0 100.0}
+	NPC=brain_monster
+	FAME=8000
+	KARMA=-8000
+	STR={851 950}
+	MAXHITS={511 570}
+	INT={61 90}
+	DEX={71 80}
+	MAGICRESISTANCE={90.0 100.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={90.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{400 500}
+	ITEM=i_gold,{400 500}
 
 [chardef 999]
 defname=c_multicolored_horde_minion
@@ -888,22 +888,22 @@ SUBSECTION=LBR
 DESCRIPTION=Multi Colored Horde Daemon
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 300}
-MAXHITS=700
-INT={200 290}
-DEX={40 60}
-MAGICRESISTANCE={40.0 60.0}
-TACTICS=700
-WRESTLING=900
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 300}
+	MAXHITS=700
+	INT={200 290}
+	DEX={40 60}
+	MAGICRESISTANCE={40.0 60.0}
+	TACTICS=700
+	WRESTLING=900
 
 ON=@NpcRestock
-ITEM=i_gold,{270 420}
-ITEM=i_boulder
-ITEM=i_boulder
-ITEM=i_boulder
+	ITEM=i_gold,{270 420}
+	ITEM=i_boulder
+	ITEM=i_boulder
+	ITEM=i_boulder
 
 [chardef 11]
 defname=c_dread_spider
@@ -924,28 +924,28 @@ SUBSECTION=LBR
 DESCRIPTION=Dread Spider
 
 ON=@Create
-NPC=brain_monster
-FAME=5000
-KARMA=-5000
-STR={196 220}
-MAXHITS={118 132}
-INT={286 310}
-DEX={126 145}
-MAGICRESISTANCE={45.0 60.0}
-TACTICS={55.0 70.0}
-WRESTLING={60.0 75.0}
-POISONING=80.0
-MAGERY={65.0 80.0}
-EVALUATINGINTEL={65.0 80.0}
+	NPC=brain_monster
+	FAME=5000
+	KARMA=-5000
+	STR={196 220}
+	MAXHITS={118 132}
+	INT={286 310}
+	DEX={126 145}
+	MAGICRESISTANCE={45.0 60.0}
+	TACTICS={55.0 70.0}
+	WRESTLING={60.0 75.0}
+	POISONING=80.0
+	MAGERY={65.0 80.0}
+	EVALUATINGINTEL={65.0 80.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{400 550}
-ITEM=i_reag_spider_silk,{8 12}
+	ITEM=i_gold,{400 550}
+	ITEM=i_reag_spider_silk,{8 12}
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,800,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,800,<UID>
+	endif
 
 [chardef 783]
 defname=c_fire_ant_queen
@@ -966,28 +966,28 @@ SUBSECTION=LBR
 DESCRIPTION=Red Solen Queen
 
 ON=@Create
-NPC=brain_monster
-FAME=4500
-KARMA=-4500
-STR={296 320}
-MAXHITS={151 162}
-INT={76 100}
-DEX={121 145}
-MAGICRESISTANCE=70.0
-TACTICS=90.0
-WRESTLING=90.0
+	NPC=brain_monster
+	FAME=4500
+	KARMA=-4500
+	STR={296 320}
+	MAXHITS={151 162}
+	INT={76 100}
+	DEX={121 145}
+	MAGICRESISTANCE=70.0
+	TACTICS=90.0
+	WRESTLING=90.0
 
 ON=@NpcRestock
-ITEM=i_gold,{300 400}
+	ITEM=i_gold,{300 400}
 
 ON=@GetHit
-IF !(<R10>)
-    SERV.NEWNPC C_FIRE_ANT_WORKER
-    NEW.P=<P>
-    NEW.HOME=<NEW.P>
-    NEW.HOMEDIST=7
-    NEW.REMOVETIMER 120
-endif
+	IF !(<R10>)
+		SERV.NEWNPC C_FIRE_ANT_WORKER
+		NEW.P=<P>
+		NEW.HOME=<NEW.P>
+		NEW.HOMEDIST=7
+		NEW.REMOVETIMER 120
+	endif
 
 [chardef 781]
 defname=c_fire_ant_worker
@@ -1007,19 +1007,19 @@ SUBSECTION=LBR
 DESCRIPTION=Red Solen Worker
 
 ON=@Create
-NPC=brain_monster
-FAME=1500
-KARMA=-1500
-STR={96 120}
-MAXHITS={58 72}
-INT={36 60}
-DEX={81 105}
-MAGICRESISTANCE=600
-TACTICS=650
-WRESTLING=600
+	NPC=brain_monster
+	FAME=1500
+	KARMA=-1500
+	STR={96 120}
+	MAXHITS={58 72}
+	INT={36 60}
+	DEX={81 105}
+	MAGICRESISTANCE=600
+	TACTICS=650
+	WRESTLING=600
 
 ON=@NpcRestock
-ITEM=i_gold,{125 175}
+	ITEM=i_gold,{125 175}
 
 [chardef 782]
 defname=c_fire_ant_warrior
@@ -1039,19 +1039,19 @@ SUBSECTION=LBR
 DESCRIPTION=Red Solen Warrior
 
 ON=@Create
-NPC=brain_monster
-FAME=3000
-KARMA=-3000
-STR={196 220}
-MAXHITS={96 107}
-INT={36 60}
-DEX={101 125}
-MAGICRESISTANCE=600
-TACTICS=800
-WRESTLING=800
+	NPC=brain_monster
+	FAME=3000
+	KARMA=-3000
+	STR={196 220}
+	MAXHITS={96 107}
+	INT={36 60}
+	DEX={101 125}
+	MAGICRESISTANCE=600
+	TACTICS=800
+	WRESTLING=800
 
 ON=@NpcRestock
-ITEM=i_gold,{250 350}
+	ITEM=i_gold,{250 350}
 
 [chardef 755]
 defname=c_destroyer_gargoyle
@@ -1072,27 +1072,27 @@ DESCRIPTION=Destroyer Gargoyle
 MOVERATE=30
 
 ON=@Create
-NPC=brain_monster
-FAME=8000
-KARMA=-8000
-STR={760 850}
-MAXHITS=485
-INT={152 200}
-DEX={102 150}
-MAGICRESISTANCE={120.0 160.0}
-MAGERY={91.0 100.0}
-EVALUATINGINTEL={91.0 100.0}
-MEDITATION={91.0 100.0}
-TACTICS={90.0 100.0}
-WRESTLING={90.0 100.0}
-ANATOMY={50.0 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=8000
+	KARMA=-8000
+	STR={760 850}
+	MAXHITS=485
+	INT={152 200}
+	DEX={102 150}
+	MAGICRESISTANCE={120.0 160.0}
+	MAGERY={91.0 100.0}
+	EVALUATINGINTEL={91.0 100.0}
+	MEDITATION={91.0 100.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={90.0 100.0}
+	ANATOMY={50.0 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{750 950}
-ITEM=random_scroll
-ITEM=random_scroll
+	ITEM=i_gold,{750 950}
+	ITEM=random_scroll
+	ITEM=random_scroll
 
 [chardef 780]
 defname=c_bog_thing
@@ -1112,24 +1112,24 @@ SUBSECTION=LBR
 DESCRIPTION=Bog Thing
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={801 900}
-MAXHITS={481 540}
-INT={36 50}
-DEX={46 65}
-MAGICRESISTANCE={90.0 95.0}
-TACTICS={70.1 85.0}
-WRESTLING={65.0 80.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={801 900}
+	MAXHITS={481 540}
+	INT={36 50}
+	DEX={46 65}
+	MAGICRESISTANCE={90.0 95.0}
+	TACTICS={70.1 85.0}
+	WRESTLING={65.0 80.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{200 300}
+	ITEM=i_gold,{200 300}
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,1000,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,1000,<UID>
+	endif
 
 [chardef 173]
 defname=c_Giant_Black_Widow
@@ -1150,37 +1150,37 @@ SUBSECTION=LBR
 DESCRIPTION=Giant Black Widow
 
 ON=@Create
-NPC=brain_monster
-FAME=3500
-KARMA=-3500
-STR={76 100}
-MAXHITS={46 60}
-INT={36 60}
-DEX={96 115}
-MAGICRESISTANCE={45.0 60.0}
-TACTICS={65.0 85.0}
-WRESTLING={70.0 85.0}
-ANATOMY={30.0 75.0}
-POISONING={60.0 80.0}
+	NPC=brain_monster
+	FAME=3500
+	KARMA=-3500
+	STR={76 100}
+	MAXHITS={46 60}
+	INT={36 60}
+	DEX={96 115}
+	MAGICRESISTANCE={45.0 60.0}
+	TACTICS={65.0 85.0}
+	WRESTLING={70.0 85.0}
+	ANATOMY={30.0 75.0}
+	POISONING={60.0 80.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{125 175}
-ITEM=i_reag_spider_silk,5
-ITEM=i_potion_poison
+	ITEM=i_gold,{125 175}
+	ITEM=i_reag_spider_silk,5
+	ITEM=i_potion_poison
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,<POISONING>,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,<POISONING>,<UID>
+	endif
 
 ON=@GetHit
-IF !(<R9>)
-    SERV.NEWNPC C_DREAD_SPIDER
-    NEW.P=<P>
-    NEW.HOME=<NEW.P>
-    NEW.HOMEDIST=7
-    NEW.REMOVETIMER 120
-endif
+	IF !(<R9>)
+		SERV.NEWNPC C_DREAD_SPIDER
+		NEW.P=<P>
+		NEW.HOME=<NEW.P>
+		NEW.HOMEDIST=7
+		NEW.REMOVETIMER 120
+	endif
 
 [chardef 176]
 defname=c_forest_queen
@@ -1200,23 +1200,23 @@ SUBSECTION=LBR
 DESCRIPTION=Forest Queen
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 400}
-MAXHITS=1100
-INT={550 690}
-DEX={100 120}
-MAGICRESISTANCE=1250
-TACTICS=1000
-WRESTLING=1000
-MAGERY=1250
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 400}
+	MAXHITS=1100
+	INT={550 690}
+	DEX={100 120}
+	MAGICRESISTANCE=1250
+	TACTICS=1000
+	WRESTLING=1000
+	MAGERY=1250
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{770 920}
-ITEM=random_weapon
+	ITEM=i_gold,{770 920}
+	ITEM=random_weapon
 
 [chardef 175]
 defname=c_Ethereal_Warrior
@@ -1237,47 +1237,47 @@ SUBSECTION=LBR
 DESCRIPTION=Ethereal Warrior
 
 ON=@Create
-NPC=brain_monster
-FAME=7000
-KARMA=-7000
-STR={586 785}
-MAXHITS={352 471}
-INT={351 450}
-DEX={177 255}
-MAGICRESISTANCE={90.0 100.0}
-ANATOMY={50.0 75.0}
-TACTICS={90.0 100.0}
-WRESTLING=100.0
-MAGERY={99.0 100.0}
-EVALUATINGINTEL={90.0 100.0}
-MEDITATION={90.0 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=7000
+	KARMA=-7000
+	STR={586 785}
+	MAXHITS={352 471}
+	INT={351 450}
+	DEX={177 255}
+	MAGICRESISTANCE={90.0 100.0}
+	ANATOMY={50.0 75.0}
+	TACTICS={90.0 100.0}
+	WRESTLING=100.0
+	MAGERY={99.0 100.0}
+	EVALUATINGINTEL={90.0 100.0}
+	MEDITATION={90.0 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{900 1000}
+	ITEM=i_gold,{900 1000}
 
 ON=@Hit
-HITS += <EVAL <ARGN1>/6>
-IF (<HITS> > <MAXHITS>)
-    HITS=<MAXHITS>
-endif
-STAM += <EVAL <ARGN1>/12>
-IF (<STAM> > <MAXSTAM>)
-    STAM=<MAXSTAM>
-endif
-SRC.STAM -= <EVAL <ARGN1>/12>
-IF (<SRC.STAM> < 0)
-    SRC.STAM=0
-endif
-MANA += <EVAL <ARGN1>/9>
-IF (<MANA> > <MAXMANA>)
-    MANA=<MAXMANA>
-endif
-SRC.MANA -= <EVAL <ARGN1>/9>
-IF (<SRC.MANA> < 0)
-    SRC.MANA=0
-endif
+	HITS += <EVAL <ARGN1>/6>
+	IF (<HITS> > <MAXHITS>)
+		HITS=<MAXHITS>
+	endif
+	STAM += <EVAL <ARGN1>/12>
+	IF (<STAM> > <MAXSTAM>)
+		STAM=<MAXSTAM>
+	endif
+	SRC.STAM -= <EVAL <ARGN1>/12>
+	IF (<SRC.STAM> < 0)
+		SRC.STAM=0
+	endif
+	MANA += <EVAL <ARGN1>/9>
+	IF (<MANA> > <MAXMANA>)
+		MANA=<MAXMANA>
+	endif
+	SRC.MANA -= <EVAL <ARGN1>/9>
+	IF (<SRC.MANA> < 0)
+		SRC.MANA=0
+	endif
 
 [chardef 785]
 defname=c_Moloch
@@ -1299,20 +1299,20 @@ SUBSECTION=LBR
 DESCRIPTION=Moloch
 
 ON=@Create
-NPC=brain_monster
-FAME=6800
-KARMA=-6800
-STR={331 360}
-MAXHITS={171 200}
-INT={41 64}
-DEX={66 85}
-MAGICRESISTANCE={65.0 75.0}
-TACTICS={75.0 90.0}
-WRESTLING={70.0 90.0}
+	NPC=brain_monster
+	FAME=6800
+	KARMA=-6800
+	STR={331 360}
+	MAXHITS={171 200}
+	INT={41 64}
+	DEX={66 85}
+	MAGICRESISTANCE={65.0 75.0}
+	TACTICS={75.0 90.0}
+	WRESTLING={70.0 90.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{300 350}
-ITEM=random_weapon
+	ITEM=i_gold,{300 350}
+	ITEM=random_weapon
 
 [chardef 752]
 defname=c_iron_golem
@@ -1333,22 +1333,22 @@ SUBSECTION=LBR
 DESCRIPTION=Iron Golem
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={251 350}
-MAXHITS={151 210}
-INT={101 150}
-DEX={76 100}
-MAGICRESISTANCE={150.0 190.0}
-TACTICS={60.0 100.0}
-WRESTLING={60.0 100.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={251 350}
+	MAXHITS={151 210}
+	INT={101 150}
+	DEX={76 100}
+	MAGICRESISTANCE={150.0 190.0}
+	TACTICS={60.0 100.0}
+	WRESTLING={60.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{270 320}
-ITEM=random_weapon
-ITEM=i_ore_iron,{10 20}
-ITEM=i_dawns_music_box,1,R10
+	ITEM=i_gold,{270 320}
+	ITEM=random_weapon
+	ITEM=i_ore_iron,{10 20}
+	ITEM=i_dawns_music_box,1,R10
 
 [chardef 189]
 defname=c_orc_brute
@@ -1369,22 +1369,22 @@ SUBSECTION=LBR
 DESCRIPTION=Orc Brute
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={767 945}
-MAXHITS={476 552}
-INT={46 70}
-DEX={66 75}
-MAGICRESISTANCE={125.0 140.0}
-TACTICS={90.0 100.0}
-WRESTLING={90.0 100.0}
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={767 945}
+	MAXHITS={476 552}
+	INT={46 70}
+	DEX={66 75}
+	MAGICRESISTANCE={125.0 140.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={90.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{750 950}
-ITEM=i_ore_shadow,{10 25}
-ITEM=i_ingot_iron,{10 20}
-ITEM=random_weapon
+	ITEM=i_gold,{750 950}
+	ITEM=i_ore_shadow,{10 25}
+	ITEM=i_ingot_iron,{10 20}
+	ITEM=random_weapon
 
 [chardef 103]
 defname=c_serpentine_dragon
@@ -1407,25 +1407,25 @@ SUBSECTION=LBR
 DESCRIPTION=Serpentine Dragon
 
 ON=@Create
-NPC=brain_dragon
-FAME=8000
-KARMA=-8000
-STR={111 140}
-MAXHITS=480
-INT={1001 1040}
-DEX={201 220}
-MAGICRESISTANCE=100.0
-TACTICS={50.0 60.0}
-WRESTLING={30.0 100.0}
-MAGERY={110.0 120.0}
-EVALUATINGINTEL={100.0 110.0}
-MEDITATION=100.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_dragon
+	FAME=8000
+	KARMA=-8000
+	STR={111 140}
+	MAXHITS=480
+	INT={1001 1040}
+	DEX={201 220}
+	MAGICRESISTANCE=100.0
+	TACTICS={50.0 60.0}
+	WRESTLING={30.0 100.0}
+	MAGERY={110.0 120.0}
+	EVALUATINGINTEL={100.0 110.0}
+	MEDITATION=100.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{900 1100}
-ITEM=random_jewel,2
+	ITEM=i_gold,{900 1100}
+	ITEM=random_jewel,2
 
 [chardef 102]
 defname=c_exodus
@@ -1447,21 +1447,21 @@ SUBSECTION=LBR
 DESCRIPTION=Exodus
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={550 690}
-MAXHITS=1500
-INT={250 390}
-DEX={110 130}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={80.0 100.0}
-TACTICS=1000
-WRESTLING=1000
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={550 690}
+	MAXHITS=1500
+	INT={250 390}
+	DEX={110 130}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={80.0 100.0}
+	TACTICS=1000
+	WRESTLING=1000
 
 ON=@NpcRestock
-ITEM=i_gold,{770 1120}
-ITEM=random_weapon
+	ITEM=i_gold,{770 1120}
+	ITEM=random_weapon
 
 [chardef 101]
 defname=c_centaur
@@ -1484,19 +1484,19 @@ DESCRIPTION=Centaur
 MOVERATE=40
 
 ON=@Create
-NPC=brain_monster
-FAME=6500
-KARMA=0
-STR={202 300}
-MAXHITS={130 172}
-INT={91 100}
-DEX={104 260}
-MAGICRESISTANCE={50.0 80.0}
-TACTICS={90.0 100.0}
-WRESTLING={95.0 100.0}
+	NPC=brain_monster
+	FAME=6500
+	KARMA=0
+	STR={202 300}
+	MAXHITS={130 172}
+	INT={91 100}
+	DEX={104 260}
+	MAGICRESISTANCE={50.0 80.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={95.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{200 400}
+	ITEM=i_gold,{200 400}
 
 [chardef 174]
 defname=c_abyss_lord
@@ -1519,24 +1519,24 @@ DESCRIPTION=Abyss Lord
 MOVERATE=40
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 300}
-MAXHITS=800
-INT={130 200}
-DEX={40 60}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-TACTICS=70.0
-WRESTLING={65.0 80.0}
-MAGERY=1000
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 300}
+	MAXHITS=800
+	INT={130 200}
+	DEX={40 60}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	TACTICS=70.0
+	WRESTLING={65.0 80.0}
+	MAGERY=1000
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{700 1100}
-ITEM=random_weapon
+	ITEM=i_gold,{700 1100}
+	ITEM=random_weapon
 
 [chardef 0300]
 defname=c_Blackthorn_Juggernaught
@@ -1559,22 +1559,22 @@ DESCRIPTION=Blackthorn Juggernaught
 MOVERATE=120
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={301 400}
-MAXHITS={181 240}
-INT={50 100}
-DEX={51 70}
-ANATOMY={90.0 105.0}
-MAGICRESISTANCE={140.0 150.0}
-TACTICS={90.0 100.0}
-WRESTLING={90.0 100.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={301 400}
+	MAXHITS={181 240}
+	INT={50 100}
+	DEX={51 70}
+	ANATOMY={90.0 105.0}
+	MAGICRESISTANCE={140.0 150.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={90.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{275 380}
-ITEM=random_weapon
-ITEM=random_jewel,2
+	ITEM=i_gold,{275 380}
+	ITEM=random_weapon
+	ITEM=random_jewel,2
 
 [chardef 0314]
 defname=c_Sphynx
@@ -1597,24 +1597,24 @@ SUBSECTION=LBR
 DESCRIPTION=Sphynx
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=0
-STR={1001 1200}
-INT={301 400}
-DEX={176 195}
-MAGICRESISTANCE={100.0 150.0}
-TACTICS={90.0 100.0}
-WRESTLING={90.0 100.0}
-ANATOMY={25.0 50.0}
-MAGERY={95.0 100.0}
-EVALUATINGINTEL={90.0 100.0}
-MEDITATION={95.0 1200.0}
-//yeah, 1,200 meditation
+	NPC=brain_monster
+	FAME=10000
+	KARMA=0
+	STR={1001 1200}
+	INT={301 400}
+	DEX={176 195}
+	MAGICRESISTANCE={100.0 150.0}
+	TACTICS={90.0 100.0}
+	WRESTLING={90.0 100.0}
+	ANATOMY={25.0 50.0}
+	MAGERY={95.0 100.0}
+	EVALUATINGINTEL={90.0 100.0}
+	MEDITATION={95.0 1200.0}
+	//yeah, 1,200 meditation
 
 ON=@NpcRestock
-ITEM=i_gold,{1000 1200}
-ITEM=random_jewel,5
+	ITEM=i_gold,{1000 1200}
+	ITEM=random_jewel,5
 
 [CHARDEF 0302]
 defname=c_meer_mage
@@ -1636,23 +1636,23 @@ SUBSECTION=LBR
 DESCRIPTION=Meer Mage
 
 ON=@Create
-NPC=brain_monster
-FAME=2000
-KARMA=-5000
-STR={171 200}
-INT={276 305}
-DEX={126 145}
-MAXHITS={103 120}
-MAGICRESISTANCE={80.1 100.0}
-TACTICS={70.1 90.0}
-WRESTLING={60.1 80.0}
-MAGERY={75.1 85.0}
-EVALUATINGINTEL=100.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=2000
+	KARMA=-5000
+	STR={171 200}
+	INT={276 305}
+	DEX={126 145}
+	MAXHITS={103 120}
+	MAGICRESISTANCE={80.1 100.0}
+	TACTICS={70.1 90.0}
+	WRESTLING={60.1 80.0}
+	MAGERY={75.1 85.0}
+	EVALUATINGINTEL=100.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{500 600}
+	ITEM=i_gold,{500 600}
 
 [chardef 0303]
 defname=c_Meer_Warrior
@@ -1674,19 +1674,19 @@ SUBSECTION=LBR
 DESCRIPTION=Meer Warrior
 
 ON=@Create
-NPC=brain_monster
-FAME=2000
-KARMA=-2000
-STR={86 100}
-MAXHITS={52 60}
-INT={86 100}
-DEX={186 200}
-MAGICRESISTANCE={91.0 100.0}
-TACTICS={91.0 100.0}
-WRESTLING={91.0 100.0}
+	NPC=brain_monster
+	FAME=2000
+	KARMA=-2000
+	STR={86 100}
+	MAXHITS={52 60}
+	INT={86 100}
+	DEX={186 200}
+	MAGICRESISTANCE={91.0 100.0}
+	TACTICS={91.0 100.0}
+	WRESTLING={91.0 100.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{50 100}
+	ITEM=i_gold,{50 100}
 
 [CHARDEF 0304]
 defname=c_meer_eternal
@@ -1708,23 +1708,23 @@ SUBSECTION=LBR
 DESCRIPTION=Meer Eternal
 
 ON=@Create
-NPC=brain_monster
-FAME=10000
-KARMA=-10000
-STR={416 505}
-MAXHITS={250 303}
-INT={566 655}
-DEX={146 165}
-MAGICRESISTANCE={150.5 200.0}
-TACTICS={50.1 70.0}
-WRESTLING={60.1 80.0}
-MAGERY={90.1 100.0}
-EVALUATINGINTEL={90.1 100.0}
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE 8,1
+	NPC=brain_monster
+	FAME=10000
+	KARMA=-10000
+	STR={416 505}
+	MAXHITS={250 303}
+	INT={566 655}
+	DEX={146 165}
+	MAGICRESISTANCE={150.5 200.0}
+	TACTICS={50.1 70.0}
+	WRESTLING={60.1 80.0}
+	MAGERY={90.1 100.0}
+	EVALUATINGINTEL={90.1 100.0}
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE 8,1
 
 ON=@NpcRestock
-ITEM=i_gold,{1000 1200}
+	ITEM=i_gold,{1000 1200}
 
 [CHARDEF 0305]
 defname=c_meer_captain
@@ -1746,19 +1746,19 @@ SUBSECTION=LBR
 DESCRIPTION=Meer Captain
 
 ON=@Create
-NPC=brain_monster
-FAME=2000
-KARMA=-5000
-STR={96 110}
-MAXHITS={58 66}
-INT={96 110}
-DEX={186 200}
-MAGICRESISTANCE={91.0 100.0}
-TACTICS={91.0 100.0}
-WRESTLING={80.9 89.9}
+	NPC=brain_monster
+	FAME=2000
+	KARMA=-5000
+	STR={96 110}
+	MAXHITS={58 66}
+	INT={96 110}
+	DEX={186 200}
+	MAGICRESISTANCE={91.0 100.0}
+	TACTICS={91.0 100.0}
+	WRESTLING={80.9 89.9}
 
 ON=@NpcRestock
-ITEM=i_gold,{50 100}
+	ITEM=i_gold,{50 100}
 
 [chardef 0308]
 defname=c_horde_minion
@@ -1781,18 +1781,18 @@ SUBSECTION=LBR
 DESCRIPTION=horde minion
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={16 40}
-MAXHITS={10 24}
-INT={11 25}
-DEX={31 60}
-TACTICS={0.0 15.0}
-WRESTLING={25.0 40.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={16 40}
+	MAXHITS={10 24}
+	INT={11 25}
+	DEX={31 60}
+	TACTICS={0.0 15.0}
+	WRESTLING={25.0 40.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{13 23}
+	ITEM=i_gold,{13 23}
 
 [chardef 0309]
 defname=c_Doppelganger
@@ -1815,20 +1815,20 @@ SUBSECTION=LBR
 DESCRIPTION=Doppelganger
 
 ON=@Create
-NPC=brain_monster
-FAME=1000
-KARMA=-1000
-STR={81 110}
-MAXHITS={100 120}
-INT={81 105}
-DEX={56 75}
-TACTICS={70.0 80.0}
-MAGICRESISTANCE={75.0 85.0}
-WRESTLING={80.0 90.0}
+	NPC=brain_monster
+	FAME=1000
+	KARMA=-1000
+	STR={81 110}
+	MAXHITS={100 120}
+	INT={81 105}
+	DEX={56 75}
+	TACTICS={70.0 80.0}
+	MAGICRESISTANCE={75.0 85.0}
+	WRESTLING={80.0 90.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{80 130}
-////Wyvern
+	ITEM=i_gold,{80 130}
+	////Wyvern
 
 [chardef 62]
 defname=c_wyvern_mutant
@@ -1851,21 +1851,21 @@ SUBSECTION=LBR
 DESCRIPTION=Wyvern
 
 ON=@Create
-NPC=brain_dragon
-FAME=4000
-KARMA=-4000
-STR={202 240}
-MAXHITS={125 141}
-INT={51 90}
-DEX={153 172}
-MAGICRESISTANCE={65.0 80.0}
-TACTICS={65.0 90.0}
-WRESTLING={65.0 80.0}
-POISONING={60.0 80.0}
+	NPC=brain_dragon
+	FAME=4000
+	KARMA=-4000
+	STR={202 240}
+	MAXHITS={125 141}
+	INT={51 90}
+	DEX={153 172}
+	MAGICRESISTANCE={65.0 80.0}
+	TACTICS={65.0 90.0}
+	WRESTLING={65.0 80.0}
+	POISONING={60.0 80.0}
 
 ON=@NpcRestock
-ITEM=i_gold,{175 225}
-ITEM=i_potion_poisonless
-ITEM=RANDOM_SCROLL
+	ITEM=i_gold,{175 225}
+	ITEM=i_potion_poisonless
+	ITEM=RANDOM_SCROLL
 
 [EOF]

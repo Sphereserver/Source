@@ -32,27 +32,28 @@ SUBSECTION=SE
 DESCRIPTION=Super Besouro
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={200 300}
-MAXHITS={300 1000}
-INT={230 400}
-DEX={50 80}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE=1000
-TACTICS=100.0
-WRESTLING={95.0 100.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={200 300}
+	MAXHITS={300 1000}
+	INT={230 400}
+	DEX={50 80}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE=1000
+	TACTICS=100.0
+	WRESTLING={95.0 100.0}
 
 ON=@NpcRestock
-ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
-ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
-ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
-ITEM={ rich_gold_pile 1 }
-ITEM=random_jewel,{1 4},R2
-ITEM=i_gold,{2200 2900}
+	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+	ITEM={ rich_monster_backpack 1 filthy_rich_monster_backpack 3 }
+	ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
+	ITEM={ rich_gold_pile 1 filthy_rich_gold_pile 3 }
+	ITEM={ rich_gold_pile 1 }
+	ITEM=random_jewel,{1 4},R2
+	ITEM=i_gold,{2200 2900}
+
 ////////////////////////////
 
 [chardef 245]
@@ -76,23 +77,24 @@ SUBSECTION=SE
 DESCRIPTION=Yomotsu Warrior
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={70 110}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
-SWORDSMANSHIP={60.0 90.0}
-ITEMNEWBIE=i_staff_bladed_double
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={70 110}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
+	SWORDSMANSHIP={60.0 90.0}
+	ITEMNEWBIE=i_staff_bladed_double
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+
 ////////////////////////////
 
 [chardef 253]
@@ -116,25 +118,26 @@ SUBSECTION=SE
 DESCRIPTION=Yomotsu Mage
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={50 70}
-MAXHITS=200
-INT={200 300}
-DEX={30 80}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={80.0 100.0}
-TACTICS={40.0 60.0}
-WRESTLING={40.0 60.0}
-SWORDSMANSHIP={30.0 60.0}
-MAGERY=100.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE=8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={50 70}
+	MAXHITS=200
+	INT={200 300}
+	DEX={30 80}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={80.0 100.0}
+	TACTICS={40.0 60.0}
+	WRESTLING={40.0 60.0}
+	SWORDSMANSHIP={30.0 60.0}
+	MAGERY=100.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE=8,1
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{110 180}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{110 180}
+
 ////////////////////////////
 
 [chardef 255]
@@ -158,26 +161,27 @@ SUBSECTION=SE
 DESCRIPTION=Elder Yomotsu
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={100 200}
-MAXHITS={400 500}
-INT={400 500}
-DEX={50 90}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE=100.0
-TACTICS={40.0 60.0}
-WRESTLING={40.0 60.0}
-SWORDSMANSHIP={30.0 60.0}
-MAGERY=125.0
-ITEMNEWBIE=i_spellbook
-ADDCIRCLE=8,1
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={100 200}
+	MAXHITS={400 500}
+	INT={400 500}
+	DEX={50 90}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE=100.0
+	TACTICS={40.0 60.0}
+	WRESTLING={40.0 60.0}
+	SWORDSMANSHIP={30.0 60.0}
+	MAGERY=125.0
+	ITEMNEWBIE=i_spellbook
+	ADDCIRCLE=8,1
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{210 280}
-ITEM=random_platemail_invulnerability
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{210 280}
+	ITEM=random_platemail_invulnerability
+
 ///////////////////////
 
 [chardef 240]
@@ -199,20 +203,21 @@ SUBSECTION=SE
 DESCRIPTION=Tartarugao
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={50 100}
-INT={30 60}
-DEX={30 60}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-TACTICS=60.0
-WRESTLING={55.0 70.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={50 100}
+	INT={30 60}
+	DEX={30 60}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	TACTICS=60.0
+	WRESTLING={55.0 70.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+
 ////////////////////////////
 
 [chardef 242]
@@ -236,26 +241,26 @@ SUBSECTION=SE
 DESCRIPTION=Worm
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={100 200}
-MAXHITS=500
-INT={230 300}
-DEX={90 110}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-TACTICS=100.0
-WRESTLING={95.0 100.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={100 200}
+	MAXHITS=500
+	INT={230 300}
+	DEX={90 110}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	TACTICS=100.0
+	WRESTLING={95.0 100.0}
 
 ON=@Hit
-IF !(<SRC.FLAGS>&statf_poisoned)
-    SRC.SPELLEFFECT S_POISON,1000,<UID>
-endif
+	IF !(<SRC.FLAGS>&statf_poisoned)
+		SRC.SPELLEFFECT S_POISON,1000,<UID>
+	endif
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{380 630}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{380 630}
 
 [CHARDEF 246]
 NAME=Bake Kitsune
@@ -273,18 +278,18 @@ RESLEVEL=3
 RESDISPDNHUE=33
 
 ON=@Create
-NPC=brain_monster
-Str={170 220}
-Dex={125 145}
-Int={375 425}
-MagicResistance={80.0 100.0}
-Tactics={70.0 90.0}
-Wrestling={50.0 55.0}
-Magery={80.0 90.0}
-Meditation={85.0 95.0}
-EvaluatingIntel={80.0 90.0}
-Fame=150
-Karma=-2150
+	NPC=brain_monster
+	Str={170 220}
+	Dex={125 145}
+	Int={375 425}
+	MagicResistance={80.0 100.0}
+	Tactics={70.0 90.0}
+	Wrestling={50.0 55.0}
+	Magery={80.0 90.0}
+	Meditation={85.0 95.0}
+	EvaluatingIntel={80.0 90.0}
+	Fame=150
+	Karma=-2150
 
 [CHARDEF 254]
 Name=Crane

@@ -30,30 +30,30 @@ SUBSECTION=ML
 DESCRIPTION=Chief Paroxysmus
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={80 100}
-MAXHITS=150
-INT={100 200}
-DEX={50 100}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={80 100}
+	MAXHITS=150
+	INT={100 200}
+	DEX={50 100}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-ITEMNEWBIE=i_spellbook
-ADDSPELL=s_fireball
-ADDSPELL=s_fire_field
-ADDSPELL=s_flamestrike
-ADDSPELL=s_poison_field
-ADDSPELL=s_paralyze
-//Dread Horn
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+	ITEMNEWBIE=i_spellbook
+	ADDSPELL=s_fireball
+	ADDSPELL=s_fire_field
+	ADDSPELL=s_flamestrike
+	ADDSPELL=s_poison_field
+	ADDSPELL=s_paralyze
 
+//Dread Horn
 [chardef 257]
 defname=c_dread_horn
 name=Dread Horn
@@ -73,24 +73,24 @@ SUBSECTION=ML
 DESCRIPTION=Dread Horn
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={80 105}
-MAXHITS=155
-INT={100 250}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={80 105}
+	MAXHITS=155
+	INT={100 250}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Lady M
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Lady M
 [chardef 258]
 defname=c_lady_m
 name=Lady Melisande
@@ -110,26 +110,26 @@ SUBSECTION=ML
 DESCRIPTION=Lady Melisande
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={100 150}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 100.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={100 150}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 100.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-ITEMNEWBIE=i_spellbook
-ADDSPELL=s_harm
-//Monstrous Interred Grizzle
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+	ITEMNEWBIE=i_spellbook
+	ADDSPELL=s_harm
 
+//Monstrous Interred Grizzle
 [chardef 259]
 defname=c_monstrous_interred_grizzle
 name=Monstrous Interred Grizzle
@@ -149,22 +149,23 @@ SUBSECTION=ML
 DESCRIPTION=Monstrous Interred Grizzle
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={80 120}
-MAXHITS=180
-INT={100 230}
-DEX={100 120}
-PARRYING={60.0 80.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={80 120}
+	MAXHITS=180
+	INT={100 230}
+	DEX={100 120}
+	PARRYING={60.0 80.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+
 //It needs the correct Number
 //Travesty
 //[chardef 260]
@@ -200,8 +201,8 @@ ITEM=i_gold,{80 130}
 //ON=@NpcRestock
 //ITEM=random_jewel,{1 4}
 //ITEM=i_gold,{80 130}
-//Shimmering Effusion
 
+//Shimmering Effusion
 [chardef 261]
 defname=c_Shimmering_Effusion
 name=Shimmering Effusion
@@ -221,24 +222,24 @@ SUBSECTION=ML
 DESCRIPTION=Shimmering Effusion
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Tormented Minotaur
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Tormented Minotaur
 [chardef 262]
 defname=c_Tormented_Minotaur
 name=Tormented Minotaur
@@ -258,24 +259,24 @@ SUBSECTION=ML
 DESCRIPTION=Tormented Minotaur
 
 ON=@Create
-NPC=brain_monster
-FAME={100 1201}
-KARMA={-5000 -6999}
-STR={100 130}
-MAXHITS=160
-INT={100 150}
-DEX={100 130}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={70.0 90.0}
+	NPC=brain_monster
+	FAME={100 1201}
+	KARMA={-5000 -6999}
+	STR={100 130}
+	MAXHITS=160
+	INT={100 150}
+	DEX={100 130}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={70.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Minotaur
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Minotaur
 [chardef 263]
 defname=c_Minotaur
 name=Minotaur
@@ -295,24 +296,24 @@ SUBSECTION=ML
 DESCRIPTION=Minotaur
 
 ON=@Create
-NPC=brain_monster
-FAME={100 1201}
-KARMA={-5000 -6999}
-STR={70 150}
-MAXHITS=190
-INT={100 150}
-DEX={100 120}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 1201}
+	KARMA={-5000 -6999}
+	STR={70 150}
+	MAXHITS=190
+	INT={100 150}
+	DEX={100 120}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Changeling
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Changeling
 [chardef 264]
 defname=c_Changeling
 name=Changeling
@@ -332,24 +333,24 @@ SUBSECTION=ML
 DESCRIPTION=Changeling
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Hydra
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Hydra
 [chardef 265]
 defname=c_Hydra
 name=Hydra
@@ -369,24 +370,24 @@ SUBSECTION=ML
 DESCRIPTION=Hydra
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={120 190}
-MAXHITS=200
-INT={150 300}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={100.0 120.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={120 190}
+	MAXHITS=200
+	INT={150 300}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={100.0 120.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Dryad
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Dryad
 [chardef 266]
 defname=c_Dryad
 name=Dryad
@@ -406,24 +407,24 @@ SUBSECTION=ML
 DESCRIPTION=Dryad
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={90,110}
-MAXHITS=150
-INT={100 150}
-DEX={100 120}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={90,110}
+	MAXHITS=150
+	INT={100 150}
+	DEX={100 120}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Troglodyte
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Troglodyte
 [chardef 267]
 defname=c_Troglodyte
 name=Troglodyte
@@ -443,23 +444,24 @@ SUBSECTION=ML
 DESCRIPTION=Troglodyte
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-5000 -6999}
-STR={80,120}
-MAXHITS=150
-INT={50 80}
-DEX={80 110}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-5000 -6999}
+	STR={80,120}
+	MAXHITS=150
+	INT={50 80}
+	DEX={80 110}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//I think this one is incorrect to
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+
+//I think this one is incorrect too
 //Thorn bat
 //[chardef 269]
 //defname=c_Thorn_bat
@@ -492,7 +494,8 @@ ITEM=i_gold,{80 130}
 //ON=@NpcRestock
 //ITEM=random_jewel,{1 4}
 //ITEM=i_gold,{80 130}
-//This one is also inccorect chardef
+
+//This one is also incorrect chardef
 //Bulbous Putrification
 //[chardef 270]
 //defname=c_Bulbous_Putrification
@@ -524,6 +527,7 @@ ITEM=i_gold,{80 130}
 //ON=@NpcRestock
 //ITEM=random_jewel,{1 4}
 //ITEM=i_gold,{80 130}
+
 //Fault needs correct CharDef Number
 //Interred Grizzle
 //[chardef 272]
@@ -556,8 +560,8 @@ ITEM=i_gold,{80 130}
 //ON=@NpcRestock
 //ITEM=random_jewel,{1 4}
 //ITEM=i_gold,{80 130}
-//Satyr
 
+//Satyr
 [chardef 271]
 defname=c_Satyr
 name=Satyr
@@ -577,24 +581,24 @@ SUBSECTION=ML
 DESCRIPTION=Satyr
 
 ON=@Create
-NPC=brain_monster
-FAME={100 160}
+	NPC=brain_monster
+	FAME={100 160}
 KARMA=0
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
-//Fetid Essence
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
+//Fetid Essence
 [chardef 273]
 defname=c_Fetid_Essence
 name=Fetid Essence
@@ -614,26 +618,27 @@ SUBSECTION=ML
 DESCRIPTION=Fetid Essence
 
 ON=@Create
-NPC=brain_monster
-FAME={100 3000}
-KARMA={-3000 -5000}
-STR={70 90}
-MAXHITS=150
-INT={100 200}
-DEX={100 200}
-PARRYING={60.0 95.0}
-MAGICRESISTANCE={50.0 70.0}
-MAGERY={60.0 75.0}
-TACTICS={60.0 90.0}
-WRESTLING={60.0 90.0}
+	NPC=brain_monster
+	FAME={100 3000}
+	KARMA={-3000 -5000}
+	STR={70 90}
+	MAXHITS=150
+	INT={100 200}
+	DEX={100 200}
+	PARRYING={60.0 95.0}
+	MAGICRESISTANCE={50.0 70.0}
+	MAGERY={60.0 75.0}
+	TACTICS={60.0 90.0}
+	WRESTLING={60.0 90.0}
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
+
 ////////////////////////
 ////RACES///////////////
-//Elfs
 
+//Elfs
 [CHARDEF 605]
 DEFNAME=c_elf_male
 Name=Elf Male
@@ -655,15 +660,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-NPC=brain_human
-COLOR=colors_skin
-FENCING={15.0 38.0}
-PARRYING={15.0 38.0}
-SWORDSMANSHIP={15.0 38.0}
-WRESTLING={15.0 38.0}
-MACEFIGHTING={15.0 38.0}
-MAGICRESISTANCE={15.0 38.0}
-TACTICS={15.0 38.0}
+	NPC=brain_human
+	COLOR=colors_skin
+	FENCING={15.0 38.0}
+	PARRYING={15.0 38.0}
+	SWORDSMANSHIP={15.0 38.0}
+	WRESTLING={15.0 38.0}
+	MACEFIGHTING={15.0 38.0}
+	MAGICRESISTANCE={15.0 38.0}
+	TACTICS={15.0 38.0}
 
 [CHARDEF 606]
 DEFNAME=c_elf_female
@@ -686,15 +691,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-NPC=brain_human
-COLOR=colors_skin
-FENCING={15.0 38.0}
-PARRYING={15.0 38.0}
-SWORDSMANSHIP={15.0 38.0}
-WRESTLING={15.0 38.0}
-MACEFIGHTING={15.0 38.0}
-MAGICRESISTANCE={15.0 38.0}
-TACTICS={15.0 38.0}
+	NPC=brain_human
+	COLOR=colors_skin
+	FENCING={15.0 38.0}
+	PARRYING={15.0 38.0}
+	SWORDSMANSHIP={15.0 38.0}
+	WRESTLING={15.0 38.0}
+	MACEFIGHTING={15.0 38.0}
+	MAGICRESISTANCE={15.0 38.0}
+	TACTICS={15.0 38.0}
 
 [CHARDEF 607]
 DEFNAME=c_elf_ghost_man
@@ -717,15 +722,15 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-NPC=brain_human
-COLOR=colors_skin
-FENCING={15.0 38.0}
-PARRYING={15.0 38.0}
-SWORDSMANSHIP={15.0 38.0}
-WRESTLING={15.0 38.0}
-MACEFIGHTING={15.0 38.0}
-MAGICRESISTANCE={15.0 38.0}
-TACTICS={15.0 38.0}
+	NPC=brain_human
+	COLOR=colors_skin
+	FENCING={15.0 38.0}
+	PARRYING={15.0 38.0}
+	SWORDSMANSHIP={15.0 38.0}
+	WRESTLING={15.0 38.0}
+	MACEFIGHTING={15.0 38.0}
+	MAGICRESISTANCE={15.0 38.0}
+	TACTICS={15.0 38.0}
 
 [CHARDEF 608]
 DEFNAME=c_elf_ghost_woman
@@ -748,15 +753,16 @@ SUBSECTION=Miscellaneous
 CATEGORY=Civilized
 
 ON=@Create
-NPC=brain_human
-COLOR=colors_skin
-FENCING={15.0 38.0}
-PARRYING={15.0 38.0}
-SWORDSMANSHIP={15.0 38.0}
-WRESTLING={15.0 38.0}
-MACEFIGHTING={15.0 38.0}
-MAGICRESISTANCE={15.0 38.0}
-TACTICS={15.0 38.0}
+	NPC=brain_human
+	COLOR=colors_skin
+	FENCING={15.0 38.0}
+	PARRYING={15.0 38.0}
+	SWORDSMANSHIP={15.0 38.0}
+	WRESTLING={15.0 38.0}
+	MACEFIGHTING={15.0 38.0}
+	MAGICRESISTANCE={15.0 38.0}
+	TACTICS={15.0 38.0}
+
 // Second Part //
 //By Rattlehead
 
@@ -777,15 +783,16 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Cu Sidhe
-on=@create
-str=1208
-dex=167
-int=268
-maxhits=1040
-MagicResistance=89.0
-wrestling=93.0
-tactics=95.0
-anatomy=67.0
+
+ON=@Create
+	str=1208
+	dex=167
+	int=268
+	maxhits=1040
+	MagicResistance=89.0
+	wrestling=93.0
+	tactics=95.0
+	anatomy=67.0
 
 [chardef 278]
 name=Squirrel
@@ -804,10 +811,11 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Squirrel
-on=@create
-str=20
-dex=10
-int=10
+
+ON=@Create
+	str=20
+	dex=10
+	int=10
 
 [chardef 279]
 name=Ferret
@@ -826,10 +834,11 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Ferret
-on=@create
-str=12
-dex=68
-int=52
+
+ON=@Create
+	str=12
+	dex=68
+	int=52
 
 [chardef 280]
 name=Minotaur Captain
@@ -847,18 +856,19 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Minotaur Captain
-on=@create
-str=1256
-dex=782
-int=564
-maxhits=1142
-wrestling=97.0
-tactics=98.4
-anatomy=89.2
+
+ON=@Create
+	str=1256
+	dex=782
+	int=564
+	maxhits=1142
+	wrestling=97.0
+	tactics=98.4
+	anatomy=89.2
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
 [chardef 281]
 name=Minotaur Scout
@@ -876,18 +886,19 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Minotaur Scout
-on=@create
-str=1042
-dex=450
-int=356
-maxhits=944
-wrestling=87.5
-tactics=73.2
-anatomy=62.4
+
+ON=@Create
+	str=1042
+	dex=450
+	int=356
+	maxhits=944
+	wrestling=87.5
+	tactics=73.2
+	anatomy=62.4
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
 [chardef 282]
 name=Parrot
@@ -906,10 +917,11 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Parrot
-on=@create
-str=20
-dex=70
-int=35
+
+ON=@Create
+	str=20
+	dex=70
+	int=35
 
 [chardef 283]
 name=Crow
@@ -928,10 +940,11 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Crow
-on=@create
-str=22
-dex=75
-int=40
+
+ON=@Create
+	str=22
+	dex=75
+	int=40
 
 [chardef 284]
 name=Armor Steed
@@ -949,15 +962,16 @@ DESIRES=c_man,c_woman
 AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
-DESCRIPTION=Armored Steed (Modain's Steed)
-on=@create
-str=1042
-dex=672
-int=564
-maxhits=946
-wrestling=89.0
-tactics=78.0
-anatomy=75.6
+DESCRIPTION=Armored Steed (Mondain's Steed)
+
+ON=@Create
+	str=1042
+	dex=672
+	int=564
+	maxhits=946
+	wrestling=89.0
+	tactics=78.0
+	anatomy=75.6
 
 [chardef 285]
 name=Reaper Redux
@@ -976,14 +990,15 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Reaper Redux
-on=@create
-str=836
-dex=254
-int=342
+
+ON=@Create
+	str=836
+	dex=254
+	int=342
 
 ON=@NpcRestock
-ITEM=random_jewel,{1 4}
-ITEM=i_gold,{80 130}
+	ITEM=random_jewel,{1 4}
+	ITEM=i_gold,{80 130}
 
 [chardef 276]
 name=Reptalon
@@ -1002,14 +1017,15 @@ AVERSIONS=e_carnivores3
 CATEGORY=New Monsters
 SUBSECTION=ML
 DESCRIPTION=Reptalon (Chimera)
-on=@create
-str=1213
-dex=658
-int=434
-maxhits=1034
-wrestling=90.2
-tactics=92.2
-anatomy=89.2
-MagicResistance=89.0
+
+ON=@Create
+	str=1213
+	dex=658
+	int=434
+	maxhits=1034
+	wrestling=90.2
+	tactics=92.2
+	anatomy=89.2
+	MagicResistance=89.0
 
 [EOF]
