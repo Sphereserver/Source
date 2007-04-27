@@ -651,6 +651,7 @@ longcommand:
 			CResourceScript	*script;
 			FILE			*f, *f1;
 			char			*z = Str_GetTemp();
+			char			*y = Str_GetTemp();
 			LPCTSTR			dirname;
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
@@ -683,18 +684,21 @@ longcommand:
 				while ( !feof(f) )
 				{
 					z[0] = 0;
-					fgets(z, SCRIPT_MAX_LINE_LEN, f);
+					fgets(y, SCRIPT_MAX_LINE_LEN, f);
+					strcpy(z,y);
+					GETNONWHITESPACE(z);
 					_strlwr(z);
+
 					if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
-						!strncmp(z, "name=", 5) || !strncmp(z, "type=", 5) || !strncmp(z, "id=", 3) ||
-						!strncmp(z, "weight=", 7) || !strncmp(z, "value=", 6) || !strncmp(z, "dam=", 4) ||
-						!strncmp(z, "armor=", 6) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
-						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id=", 3) ||
-						!strncmp(z, "can=", 4) || !strncmp(z, "tevents=", 8) || !strncmp(z, "subsection=", 11) ||
-						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "color", 5) ||
+						!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
+						!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
+						!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
+						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) ||
+						!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
+						!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "color", 5) ||
 						!strncmp(z, "resources", 9) )
 					{
-						fputs(z, f1);
+						fputs(y, f1);
 					}
 				}
 				fclose(f);
