@@ -247,12 +247,13 @@ void CClient::CharDisconnect()
 	//	we are not a client anymore
 	if ( IsChatActive() )
 		g_Serv.m_Chats.QuitChat(this);
-	m_pChar->ClientDetach();	// we are not a client any more.
 
-	CScriptTriggerArgs	args(iLingerTime, fCanInstaLogOut);
-	m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &args);
-	iLingerTime = args.m_iN1;
-	fCanInstaLogOut = args.m_iN2;
+	CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
+	m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
+	iLingerTime = Args.m_iN1;
+	fCanInstaLogOut = Args.m_iN2;
+
+	m_pChar->ClientDetach();	// we are not a client any more.
 
 	if ( iLingerTime <= 0 ) fCanInstaLogOut = true;
 

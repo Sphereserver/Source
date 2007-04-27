@@ -613,20 +613,35 @@ void CItemContainer::Trade_Status( bool fCheck )
 	if ( ! pPartner->m_itEqTradeWindow.m_fCheck || ! m_itEqTradeWindow.m_fCheck )
 		return;
 
-	CItem * pItemNext;
-	CItem* pItem = GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItemNext)
-	{
-		pItemNext = pItem->GetNext();
+	CItem * pItem;
+	int i, iCont1, iCont2;
+
+	CScriptTriggerArgs Args1(pChar1);
+	pItem = pPartner->GetContentHead();
+	for ( i = 1; pItem != NULL; pItem = pItem->GetNext(), ++i )
+		Args1.m_VarObjs.Insert( i, pItem, true );
+	Args1.m_iN1 = iCont1 = --i;
+	//DEBUG_ERR(("Args1.m_iN1(%d) = iCont1(%d) = i(%d)\n",Args1.m_iN1, iCont1, i));
+
+	CScriptTriggerArgs Args2(pChar2);
+	pItem = GetContentHead();
+	for ( i = 1; pItem != NULL; pItem = pItem->GetNext(), ++i )
+		Args2.m_VarObjs.Insert( i, pItem, true );
+	Args2.m_iN1 = iCont2 = --i;
+	//DEBUG_ERR(("Args2.m_iN1(%d) = iCont2(%d) = i(%d)\n",Args2.m_iN1, iCont2, i));
+
+	Args1.m_iN2 = iCont2;
+	Args2.m_iN2 = iCont1;
+	if (( pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE ) || ( pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE ))
+		Delete(); //Return 1 in one of the triggers
+
+	pItem = GetContentHead();
+	for ( ; pItem != NULL; pItem = pItem->GetNext())
 		pChar2->ItemBounce( pItem );
-	}
 
 	pItem = pPartner->GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItemNext)
-	{
-		pItemNext = pItem->GetNext();
+	for ( ; pItem != NULL; pItem = pItem->GetNext())
 		pChar1->ItemBounce( pItem );
-	}
 
 	// done with trade.
 	Delete();
