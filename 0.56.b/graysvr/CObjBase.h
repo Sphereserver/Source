@@ -1984,6 +1984,7 @@ enum CTRIG_TYPE
 	CTRIG_charClick,
 	CTRIG_charClientTooltip,
 	CTRIG_charDClick,
+	CTRIG_charTradeAccepted,
 
 	CTRIG_Click,			// I got clicked on by someone.
 	CTRIG_ClientTooltip, // Sending tooltips for me to someone
@@ -2085,6 +2086,7 @@ enum CTRIG_TYPE
 	CTRIG_Step,				// I took a step.
 	CTRIG_StepStealth,		//+Made a step while being in stealth mode
 	CTRIG_ToolTip,			// someone did tool tips on me.
+	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
 
 	// Packet related triggers
 	CTRIG_UserChatButton,

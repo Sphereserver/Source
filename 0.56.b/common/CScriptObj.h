@@ -150,9 +150,9 @@
 
 		CGPtrTypeArray	<LPCTSTR>	m_v;
 
-		CVarDefMap 					m_VarsLocal;
-		CVarFloat					m_VarsFloat;
-		CLocalObjMap				m_VarObjs;
+		CVarDefMap 					m_VarsLocal;// "LOCAL.x" = local variable x
+		CVarFloat					m_VarsFloat;// "FLOAT.x" = float local variable x
+		CLocalObjMap				m_VarObjs;	// "REFx" = local object x
 
 	public:
 		void Init( LPCTSTR pszStr );

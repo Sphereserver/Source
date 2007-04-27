@@ -2611,18 +2611,22 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	EXC_TRY("CanMoveWalkTo");
 
 	EXC_SET("Check Valid Move");
+#ifdef _ELLESSAR_MAP
+	pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
+#else
 	if ( IsSetEF( EF_WalkCheck ) )
 	{
 		if (IsSetEF( EF_NewPositionChecks ))
 		{
 			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
+
 		}
 		else
 			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight);
 	}
 	else
 		pArea = CheckValidMove(ptDst, &wBlockFlags, dir);
-
+#endif
 	if ( !pArea )
 	{
 		WARNWALK(("CheckValidMove%s failed\n", ((IsSetEF( EF_WalkCheck )) ? ("_New") : ("")) ));
@@ -3336,22 +3340,19 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		EXC_SET("chardef");
 		// Is there an [EVENT] block call here?
-		if ( iAction > XTRIG_UNKNOWN && iAction < CTRIG_itemBuy ) //should speed things up
-		{
-			char * sCharTrigName = Str_GetTemp();
-			sprintf(sCharTrigName, "@char%s", pszTrigName+1);
-			int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-			//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
+		char * sCharTrigName = Str_GetTemp();
+		sprintf(sCharTrigName, "@char%s", pszTrigName+1);
+		int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+		//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
 
-			if ( iCharAction > XTRIG_UNKNOWN && iAction < CTRIG_itemBuy )
-			{
-				CGrayUID uidOldAct = pChar->m_Act_Targ;
-				pChar->m_Act_Targ = GetUID();
-				iRet = pChar->OnTrigger( (CTRIG_TYPE)iCharAction, pSrc, pArgs );
-				pChar->m_Act_Targ = uidOldAct;
-				if ( iRet == TRIGRET_RET_TRUE )
-					return iRet;	// Block further action.
-			}
+		if ( iCharAction > XTRIG_UNKNOWN && iCharAction < CTRIG_Click )
+		{
+			CGrayUID uidOldAct = pChar->m_Act_Targ;
+			pChar->m_Act_Targ = GetUID();
+			iRet = pChar->OnTrigger( (CTRIG_TYPE)iCharAction, pSrc, pArgs );
+			pChar->m_Act_Targ = uidOldAct;
+			if ( iRet == TRIGRET_RET_TRUE )
+				return iRet;	// Block further action.
 		}
 	}
 

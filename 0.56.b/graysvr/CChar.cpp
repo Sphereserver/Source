@@ -17,6 +17,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@charClick",
 	"@charClientTooltip",
 	"@charDClick",
+	"@charTradeAccepted",
 
 	"@Click",				// I got clicked on by someone.
 	"@ClientTooltip", // Sending tooltips to someone
@@ -119,6 +120,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Step",			// Very expensive!
 	"@StepStealth",		//+Made a step in stealth mode
 	"@ToolTip",			// someone did tool tips on me.
+	"@TradeAccepted",	// Everything went well, and we are about to exchange trade items
 
 	"@UserChatButton",
 	"@UserExtCmd",

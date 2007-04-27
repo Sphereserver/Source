@@ -420,7 +420,7 @@
 - Added MaxLoopTimes value to config (default 10000) to limit a number of
   iterations the while/for cycle could have to remove possible deadlocks making
   server to stop responding (better use this instead of main loop restart).
-- Added MOVERATE to CHARDEFs. It is the percent modifyer of the speed of the
+- Added MOVERATE to CHARDEFs. It is the percent modifier of the speed of the
   NPC - the higher it is, the slower will the NPC be. Default is 100.
 - Now double clicking on the log window in windows build will bring up an
   editor with corresponded file (if any specifyed in the same line) opened.
@@ -1169,12 +1169,12 @@
 
 26-09-2005, Vjaka
 - Fixed: exception when adding empty sell/buy template on restock.
-- Modifyed: CommandTrigger now has 2 arguments (in/out): ARGN1 is whatever the
+- Modified: CommandTrigger now has 2 arguments (in/out): ARGN1 is whatever the
   command is accepted (limited by PLEVEL section, etc), and ARGN2 is whatever
   the command should be said if not accepted. Also the prefix of the command is
   cut up as well.
 - Fixed: SERV.MAP if normal point was given in arguments (with Z coord).
-- Modifyed: the sphere window operation on tray dclick. Now it hides if shown
+- Modified: the sphere window operation on tray dclick. Now it hides if shown
   and appears if hidden.
 
 26-09-2005, Furio
@@ -1217,7 +1217,7 @@
   user function f_onserver_timer.
 - Added: BETWEEN min,max,currentvalue,maximalvalue to get the curve value in
   this combination.
-- Modifyed: <Rx,y> now supports formulas inside, so -, or eval could be used.
+- Modified: <Rx,y> now supports formulas inside, so -, or eval could be used.
 
 01-10-2005, Cloud_Br (Script pack)
 - Updated: addons/Doom_Dungeon.zip (read inside readme for more infos).
@@ -3293,7 +3293,7 @@ this all in desperation)
   TeleportSoundStaff=01f3
 
 27-03-2007, Vjaka
-- Fixed: allowed to cast spells without reagents.
+- Fixed: Allowed to cast spells without reagents.
 
 29-03-2007, MrSugarCube
 - Fixed #1122: Exception when fighting with -100 dexterity.
@@ -3307,11 +3307,18 @@ this all in desperation)
   same of the char with $uid.
 
 06-04-2007, Nazghul
-- Added: more lemmings - aeh - defmessages
-- Updated sphere_msgs.scp
+- Added: More defmessages
+- Updated: sphere_msgs.scp
 
 14-04-2007, Sir Dwayne (Script pack)
 - Fixed: Various flaws in npc scripts and sphere_item_unsorted.
 
 21-04-2007, coruja747 (Script pack)
 - Updated: sphere_map2.scp (Corrected a_shrine_virtues area definition)
+
+27-04-2007, Ellessar
+- Added: Character trigger @TradeAccepted (+@charTradeAccepted), which is called after both
+  trade sides tick Accept Trade button. Default, ARGO - the first trader, SRC - the second one,
+  ARGN1 - the number of items the first trader gets, ARGN2 - the number of items the second trader
+  gets, REF1...REF<argn1> - references to items the first trader gets. Return 1 prevents the trade.
+- Fixed: CTAGs deleted before calling @LogOut
