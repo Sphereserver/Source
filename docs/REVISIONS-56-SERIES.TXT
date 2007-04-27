@@ -2725,7 +2725,7 @@ this all in desperation)
 - Updated: sphere_serv_triggers.scp (Added f_onserver_blockip definition)
 
 10-11-2006, Nazghul
-- Added: REFx as a local reference object, where x is a number between 0 and 65535. It can be
+- Added: REFx as a local reference object, where x is a number between 1 and 65535. It can be
   used like an OBJ, but will be removed after leaving a function (like a LOCAL).
 
 15-11-2006, Nazghul
