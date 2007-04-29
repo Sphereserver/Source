@@ -693,7 +693,7 @@ longcommand:
 						!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
 						!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
 						!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
-						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) ||
+						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "p=", 2) ||
 						!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
 						!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "color", 5) ||
 						!strncmp(z, "resources", 9) )
