@@ -652,6 +652,7 @@ longcommand:
 			FILE			*f, *f1;
 			char			*z = Str_GetTemp();
 			char			*y = Str_GetTemp();
+			char			*x;
 			LPCTSTR			dirname;
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
@@ -684,9 +685,14 @@ longcommand:
 				while ( !feof(f) )
 				{
 					z[0] = 0;
+					y[0] = 0;
 					fgets(y, SCRIPT_MAX_LINE_LEN, f);
-					strcpy(z,y);
-					GETNONWHITESPACE(z);
+
+					x = y;
+					while ( (x[0] == 0x20) || (x[0] == 0xA0) || (x[0] == 0x09) )
+						x++;
+					strcpy(z,x);
+
 					_strlwr(z);
 
 					if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
