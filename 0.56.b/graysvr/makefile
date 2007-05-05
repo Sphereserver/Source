@@ -87,6 +87,7 @@ SRC	:= 	CAccount.cpp \
 		CWorldImport.cpp \
 		CWorldMap.cpp \
 		graysvr.cpp \
+		PingServer.cpp \
 		../common/mtrand/mtrand.cpp \
 		../common/twofish/twofish2.cpp \
 		../common/zlib/adler32.c \
