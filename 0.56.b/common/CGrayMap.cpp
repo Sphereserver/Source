@@ -378,7 +378,7 @@ void CGrayMapBlock::Load( int bx, int by )
 
 	bool bPatchedTerrain = false, bPatchedStatics = false;
 
-	if ( IsSetEF( EF_Mapdiff_Support ) && g_MapList.m_pMapDiffCollection )
+	if ( g_Cfg.m_fUseMapDiffs && g_MapList.m_pMapDiffCollection )
 	{
 		// Check to see if the terrain or statics in this block is patched
 		CMapDiffBlock * pDiffBlock = g_MapList.m_pMapDiffCollection->GetAtBlock( ulBlockIndex, g_MapList.m_mapid[m_map] );

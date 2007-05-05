@@ -205,7 +205,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 						sprintf(z, "statics%d.mul", index);
 						OpenFile(m_Statics[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 					}
-					if ( IsSetEF( EF_Mapdiff_Support ) )
+					if ( g_Cfg.m_fUseMapDiffs )
 					{
 						if ( !m_Mapdif[m].IsFileOpen() )
 						{

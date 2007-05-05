@@ -3322,3 +3322,19 @@ this all in desperation)
   ARGN1 - the number of items the first trader gets, ARGN2 - the number of items the second trader
   gets, REF1...REF<argn1> - references to items the first trader gets. Return 1 prevents the trade.
 - Fixed: CTAGs deleted before calling @LogOut
+
+30-04-2007, MrSugarCube
+- Modified #1162: A comma ',' can be used under the NOTOTITLES section to optionally specify
+  seperate titles for female characters.
+- Modified: EF_MapDiff_Support has been removed, and map diffs are now enabled via the USEMAPDIFFS
+  setting in sphere.ini.
+
+02-05-2007, MrSugarCube
+- Fixed: Exception when using ACCOUNT.CHAR.x.KEY when the index 'x' does not exist.
+
+03-05-2007, MrSugarCube
+- Fixed: Server IPs on the server list being sent incorrectly to older clients.
+
+05-05-2007, MrSugarCube
+- Added: Experimental flag EF_UsePingServer. This will enable a server for receiving pings from
+  clients viewing the server list. Uses UDP port 12000.

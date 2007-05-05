@@ -17,6 +17,7 @@ CResource::CResource()
 	m_fUseAuthID	= false;
 	m_iMapCacheTime = 2 * 60 * TICK_PER_SEC;
 	m_iSectorSleepMask = (1<<10)-1;
+	m_fUseMapDiffs = false;
 
 	m_wDebugFlags = 0; //DEBUGF_NPC_EMOTE
 	m_fSecure = true;
@@ -447,6 +448,7 @@ enum RC_TYPE
 	RC_USEAUTHID,				// m_fUseAuthID
 	RC_USECRYPT,				// m_Usecrypt
 	RC_USEHTTP,					// m_fUseHTTP
+	RC_USEMAPDIFFS,				// m_fUseMapDiffs
 	RC_USENOCRYPT,				// m_Usenocrypt
 	RC_VENDORMAXSELL,			// m_iVendorMaxSell
 	RC_VERSION,
@@ -624,6 +626,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID)	}},	// we use authid like osi
 	{ "USECRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsecrypt)	}},	// we don't want crypt clients
 	{ "USEHTTP",				{ ELEM_INT,		OFFSETOF(CResource,m_fUseHTTP)	}},
+	{ "USEMAPDIFFS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseMapDiffs)	}},
 	{ "USENOCRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsenocrypt)	}},	// we don't want no-crypt clients
 	{ "VENDORMAXSELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iVendorMaxSell) }},
 	{ "VERSION" },
@@ -1205,6 +1208,26 @@ int CResource::GetSpellEffect( SPELL_TYPE spell, int iSkillVal ) const
 	if ( pSpellDef == NULL )
 		return( 0 );
 	return( pSpellDef->m_Effect.GetLinear( iSkillVal ));
+}
+
+LPCTSTR CResource::GetNotoTitle( int iLevel, bool bFemale ) const
+{
+	ADDTOCALLSTACK("CResource::GetNotoTitle");
+	// Retrieve the title used for the given noto level and gender
+
+	if ( !m_NotoTitles.IsValidIndex(iLevel) )
+	{
+		return "";
+	}
+	else
+	{
+		char * pTitles[2];
+		int iQty = Str_ParseCmds( m_NotoTitles[ iLevel ], pTitles, COUNTOF(pTitles), ",");
+		if ( iQty < 2 )
+			return m_NotoTitles[iLevel];
+
+		return pTitles[bFemale? 1:0];
+	}
 }
 
 bool CResource::IsValidEmailAddressFormat( LPCTSTR pszEmail ) // static
@@ -2899,7 +2922,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_Size_Optimise) ) catresname(zExperimentalFlags, "SizeOptimize");
 		if ( IsSetEF(EF_Minimize_Triggers) ) catresname(zExperimentalFlags, "MinimizeTriggers");
 		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
-		if ( IsSetEF(EF_Mapdiff_Support) ) catresname(zExperimentalFlags, "MapdiffSupport");
+		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 
 		if ( zExperimentalFlags[0] )
 		{

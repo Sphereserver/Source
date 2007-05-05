@@ -1224,7 +1224,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	
 	ASSERT( pSrc );
 
-	CScriptObj * pRef;
+	CScriptObj * pRef = NULL;
 	if ( r_GetRef( pszKey, pRef ))
 	{
 		if ( pszKey[0] )

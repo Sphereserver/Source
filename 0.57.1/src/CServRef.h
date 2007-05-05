@@ -61,7 +61,7 @@ public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString &sVal, CTextConsole * pSrc = NULL );
 
-	void addToServersList( CCommand & cmd, int iThis, int jArray ) const;
+	void addToServersList( CCommand & cmd, int iThis, int jArray, bool bReverse ) const;
 };
 
 #endif // _INC_CSERVERDEF_H

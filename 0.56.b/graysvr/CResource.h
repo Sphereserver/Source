@@ -61,7 +61,7 @@ enum EF_TYPE
 	EF_Size_Optimise			= 0x0000800,
 	EF_Minimize_Triggers		= 0x0001000,
 	EF_DamageTools				= 0x0002000,
-	EF_Mapdiff_Support			= 0x0004000,
+	EF_UsePingServer			= 0x0008000,
     EF_Specific					= 0x1000000,	// Specific behaviour, not completly tested
 };
 
@@ -584,6 +584,7 @@ public:
 	bool m_fUseAuthID;
 	int  m_iMapCacheTime;		// Time in sec to keep unused map data.
 	int	 m_iSectorSleepMask;	// The mask for how long sectors will sleep.
+	bool m_fUseMapDiffs;			// Whether or not to use map diff files.
 
 	CGString m_sWorldBaseDir;	// "e:\graysvr\worldsave\" = world files go here.
 	CGString m_sAcctBaseDir;	// Where do the account files go/come from ?
@@ -965,17 +966,7 @@ public:
 			return "?";
 		return( m_Runes[ ch ] );
 	}
-	LPCTSTR GetNotoTitle( int iLevel ) const
-	{
-		if ( ! m_NotoTitles.IsValidIndex(iLevel))
-		{
-			return "";
-		}
-		else
-		{
-			return m_NotoTitles[ iLevel ];
-		}
-	}
+	LPCTSTR GetNotoTitle( int iLevel, bool bFemale ) const;
 
 	const CGrayMulti * GetMultiItemDefs( ITEMID_TYPE itemid );
 

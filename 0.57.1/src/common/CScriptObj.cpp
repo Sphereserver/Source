@@ -1070,7 +1070,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)		// Execute command from
 	EXC_TRY("Verb");
 	int	index;
 	LPCTSTR pszKey = s.GetKey();
-	CScriptObj * pRef;
+	CScriptObj * pRef = NULL;
 
 	if ( r_GetRef( pszKey, pRef ))
 	{

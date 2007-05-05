@@ -2289,7 +2289,7 @@ struct CCommand	// command buffer from server to client.
 				char m_servname[32];	// 2
 				BYTE m_percentfull;						// 34 = 25 or 2e
 				signed char m_timezone;					// 35 = 0x05=east coast or 0x08=west coast
-				NDWORD m_ip;							// 36-39 = ip to ping
+				BYTE m_ip[4];							// 36-39 = ip to ping
 			} m_serv[ MAX_SERVERS ];
 		} ServerList;
 

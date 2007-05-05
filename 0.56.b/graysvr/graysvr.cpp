@@ -4,6 +4,7 @@
 //
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
+#include "PingServer.h"	// ping server
 
 #if !defined(pid_t)
 #define pid_t int
@@ -126,7 +127,7 @@ void CMapList::Init()
 		}
 	}
 
-	if ( IsSetEF( EF_Mapdiff_Support ) && !m_pMapDiffCollection )
+	if ( g_Cfg.m_fUseMapDiffs && !m_pMapDiffCollection )
 		m_pMapDiffCollection = new CMapDiffCollection();
 }
 
@@ -360,6 +361,7 @@ void Main::tick()
 }
 
 Main g_Main;
+extern PingServer g_PingServer;
 
 //*******************************************************************
 // CProfileData
@@ -584,6 +586,7 @@ void Sphere_ExitServer()
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
 	g_Main.waitForClose();
+	g_PingServer.waitForClose();
 
 	g_Serv.SocketsClose();
 	g_World.Close();
@@ -989,6 +992,10 @@ int _cdecl main( int argc, char * argv[] )
 	if ( ! g_Serv.m_iExitFlag )
 	{
 		WritePidFile();
+
+		// Start the ping server, this can only be ran in a separate thread
+		if ( IsSetEF( EF_UsePingServer ) )
+			g_PingServer.start();
 
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
 
