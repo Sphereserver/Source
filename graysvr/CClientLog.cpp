@@ -327,8 +327,11 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 
 	int indexoffset = 2; // Client older than 1.26.00 --> 1;
 
+	// clients before 4.0.0 require serverlist ips to be in reverse
+	bool bReverse = (m_Crypt.GetClientVer() < 0x400000);
+
 	// always list myself first here.
-	g_Serv.addToServersList( cmd, indexoffset-1, 0 );
+	g_Serv.addToServersList( cmd, indexoffset-1, 0, bReverse );
 
 	//	too many servers in list can crash the client
 #define	MAX_SERVERS_LIST	32
@@ -339,7 +342,7 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 		CServerRef pServ = g_Cfg.Server_GetDef(i);
 		if ( pServ == NULL )
 			break;
-		pServ->addToServersList( cmd, i+indexoffset, j );
+		pServ->addToServersList( cmd, i+indexoffset, j, bReverse );
 		j++;
 	}
 

@@ -2675,7 +2675,7 @@ void CClient::addMapDiff()
 	{
 		unsigned int tileCount = 0;
 		unsigned int staticCount = 0;
-		if ( IsSetEF( EF_Mapdiff_Support ) && g_MapList.m_maps[map] )
+		if ( g_Cfg.m_fUseMapDiffs && g_MapList.m_maps[map] )
 		{
 			if ( g_Install.m_Mapdifl[map].IsFileOpen() )
 				tileCount = g_Install.m_Mapdifl[map].GetLength() / 4;

@@ -371,7 +371,7 @@ LPCTSTR CChar::Noto_GetTitle() const
 	ADDTOCALLSTACK("CChar::Noto_GetTitle");
 	// Paperdoll title for character
 
-	LPCTSTR pTitle = Noto_IsMurderer() ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_MURDERER ) : ( IsStatFlag(STATF_Criminal) ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_CRIMINAL ) :  g_Cfg.GetNotoTitle(Noto_GetLevel()) );
+	LPCTSTR pTitle = Noto_IsMurderer() ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_MURDERER ) : ( IsStatFlag(STATF_Criminal) ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_CRIMINAL ) :  g_Cfg.GetNotoTitle(Noto_GetLevel(), Char_GetDef()->IsFemale()) );
 	LPCTSTR pFameTitle = GetKeyStr("NAME.PREFIX");
 	if ( !*pFameTitle )
 		pFameTitle = Noto_GetFameTitle();
