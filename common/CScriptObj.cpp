@@ -968,12 +968,17 @@ badcmd:
 			return true;
 		case SSC_StrSub:
 			{
-				int	iPos	= Exp_GetVal( pszKey );
-				int	iCnt	= Exp_GetVal( pszKey );
-				SKIP_ARGSEP( pszKey );
-				GETNONWHITESPACE( pszKey );
+				TCHAR * ppArgs[3];
+				int iQty = Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF(ppArgs));
+				if ( iQty < 3 )
+					return false;
 
-				int	iLen	= strlen( pszKey );
+				int	iPos	= Exp_GetVal( ppArgs[0] );
+				int	iCnt	= Exp_GetVal( ppArgs[1] );
+				if ( iCnt < 0 )
+					return false;
+
+				int	iLen	= strlen( ppArgs[2] );
 				if ( iPos < 0 ) iPos += iLen;
 				if ( iPos > iLen || iPos < 0 ) iPos = 0;
 
@@ -981,11 +986,11 @@ badcmd:
 					iCnt = iLen - iPos;
 
 				TCHAR	*buf = Str_GetTemp();
-				strncpy( buf, pszKey + iPos, iCnt );
+				strncpy( buf, ppArgs[2] + iPos, iCnt );
 				buf[iCnt] = '\0';
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					g_Log.EventDebug("SCRIPT: strsub(%d,%d,'%s') -> '%s'\n", iPos, iCnt, pszKey, buf);
+					g_Log.EventDebug("SCRIPT: strsub(%d,%d,'%s') -> '%s'\n", iPos, iCnt, ppArgs[2], buf);
 
 				sVal = buf;
 			}
