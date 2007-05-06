@@ -3338,3 +3338,6 @@ this all in desperation)
 05-05-2007, MrSugarCube
 - Added: Experimental flag EF_UsePingServer. This will enable a server for receiving pings from
   clients viewing the server list. Uses UDP port 12000.
+
+06-05-2007, Ellessar
+- Added: Missing character trigger @SpellFail (called before @Fail in a SPELL section)

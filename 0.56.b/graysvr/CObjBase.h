@@ -2081,6 +2081,7 @@ enum CTRIG_TYPE
 	CTRIG_SpellBook,
 	CTRIG_SpellCast,		//+Char is casting a spell.
 	CTRIG_SpellEffect,		//+A spell just hit me.
+	CTRIG_SpellFail,		// The spell failed
 	CTRIG_SpellSelect,		// selected a spell
 	CTRIG_StatChange,
 	CTRIG_Step,				// I took a step.
