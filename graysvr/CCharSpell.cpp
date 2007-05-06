@@ -2141,6 +2141,8 @@ void CChar::Spell_CastFail()
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
 		CScriptTriggerArgs	Args( m_atMagery.m_Spell, 0, m_Act_TargPrv.ObjFind() );
+		if ( OnTrigger( CTRIG_SpellFail, this, &Args ) == TRIGRET_RET_TRUE )
+			return;
 		if ( Spell_OnTrigger( m_atMagery.m_Spell, SPTRIG_FAIL, this, &Args ) == TRIGRET_RET_TRUE )
 			return;
 	}
