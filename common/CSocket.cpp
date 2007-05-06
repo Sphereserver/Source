@@ -263,8 +263,13 @@ SOCKET CGSocket::GetSocket() const
 
 bool CGSocket::Create()
 {
+	return( Create( AF_INET, SOCK_STREAM, IPPROTO_TCP ) );
+}
+
+bool CGSocket::Create( int iAf, int iType, int iProtocol )
+{
 	ASSERT( ! IsOpen());
-	m_hSocket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+	m_hSocket = socket( iAf, iType, iProtocol );
 	return( IsOpen());
 }
 
@@ -440,4 +445,15 @@ void CGSocket::CloseSocket( SOCKET hClose )
 #else
 	close( hClose ); // SD_BOTH
 #endif
+}
+
+short CGSocket::GetProtocolIdByName( LPCTSTR pszName )
+{
+	protoent * ppe;
+
+	ppe = getprotobyname(pszName);
+	if ( !ppe )
+		return 0;
+
+	return ppe->p_proto;
 }
