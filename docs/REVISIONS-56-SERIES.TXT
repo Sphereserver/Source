@@ -3341,3 +3341,6 @@ this all in desperation)
 
 06-05-2007, Ellessar
 - Added: Missing character trigger @SpellFail (called before @Fail in a SPELL section)
+
+06-05-2007, MrSugarCube
+- Fixed #1169: Exception caused by the count parameter being negative in the STRSUB function.
