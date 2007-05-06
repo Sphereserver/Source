@@ -5,7 +5,7 @@ PingServer g_PingServer;
 // run the thread in RealTime as we need pings to be responded to ASAP
 PingServer::PingServer() : AbstractThread("PingServer", IThread::RealTime)
 {
-	m_socket = 0;
+	m_socket.Close();
 	m_active = false;
 }
 
@@ -18,37 +18,20 @@ void PingServer::onStart()
 	if ( m_active )
 		return;
 
-	if ( m_socket > 0 )
+	if ( m_socket.IsOpen() )
 	{
 		// socket already created? lets close it
-#ifdef _WIN32
-		closesocket(m_socket);
-#else
-		close(m_socket);
-#endif
+		m_socket.Close();
 	}
 
-	sockaddr_in sin;
-	servent * pse;
-	protoent * ppe;
-
-	// prepare to create an open socket for "0.0.0.0" on the ping
-	// server port
-	sin.sin_addr.s_addr = inet_addr("0.0.0.0");
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(PINGSERVER_PORT);
-
-	ppe = getprotobyname("udp");
-	if ( !ppe )
-		return;
-	
-	// create the socket
-	m_socket = socket(PF_INET, SOCK_DGRAM, ppe->p_proto);
-	if ( m_socket < 0 )
+	if ( ! m_socket.Create(PF_INET, SOCK_DGRAM, CGSocket::GetProtocolIdByName("udp")) )
 		return;
 
-	// bind the port
-	if ( bind(m_socket, (sockaddr *)&sin, sizeof(sin)) < 0 )
+	CSocketAddress saToBind;
+	saToBind.SetHostStr("0.0.0.0");
+	saToBind.SetPort(PINGSERVER_PORT);
+
+	if ( m_socket.Bind(saToBind) < 0 )
 		return;
 
 	// mark the server as active
@@ -70,12 +53,12 @@ void PingServer::tick()
 	int addr_len = sizeof(addr);
 	
 	// receive data from someone
-	int length = recvfrom(m_socket, buffer, sizeof(buffer), 0, (sockaddr *)&addr, &addr_len);
+	int length = recvfrom(m_socket.GetSocket(), buffer, sizeof(buffer), 0, (sockaddr *)&addr, &addr_len);
 	if ( length <= 0 )
 		return;
 
 	// return the data to them
-	int sent = sendto(m_socket, buffer, length, 0, (sockaddr *)&addr, addr_len);
+	int sent = sendto(m_socket.GetSocket(), buffer, length, 0, (sockaddr *)&addr, addr_len);
 	if ( sent <= 0 )
 		return;
 }

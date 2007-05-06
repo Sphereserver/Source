@@ -105,6 +105,7 @@ public:
 	SOCKET GetSocket() const;
 
 	bool Create();
+	bool Create( int iAf, int iType, int iProtocol );
 	int Bind( struct sockaddr_in * pSockAddrIn );
 	int Bind( const CSocketAddress & SockAddr );
 	int Listen( int iMaxBacklogConnections = SOMAXCONN );
@@ -136,6 +137,7 @@ public:
 	void Close();
 
 	static void CloseSocket( SOCKET hClose );
+	static short GetProtocolIdByName( LPCTSTR pszName );
 };
 
 #endif // _INC_CSOCKET_H
