@@ -2898,6 +2898,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetOF(OF_Buffs) ) catresname(zOptionFlags, "Buffs");
 		if ( IsSetOF(OF_NoPrefix) ) catresname(zOptionFlags, "NoPrefix");
 		if ( IsSetOF(OF_DyeType) ) catresname(zOptionFlags, "DyeType");
+		if ( IsSetOF(OF_DrinkIsFood) ) catresname(zOptionFlags, "DrinkIsFood");
 
 		if ( zOptionFlags[0] )
 		{
