@@ -114,7 +114,7 @@ RealType CVarFloat::MakeFloatMath( LPCTSTR & Expr )
 RealType CVarFloat::GetValMath( RealType dVal, LPCTSTR & pExpr )
 {
 	ADDTOCALLSTACK("CVarFloat::GetValMath");
-	//DEBUG_ERR(("GetValMath\n"));
+	//DEBUG_ERR(("GetValMath  dVal %f  pExpr %s\n",dVal,pExpr));
 	GETNONWHITESPACE(pExpr);
 
 	// Look for math type operator.
@@ -172,6 +172,7 @@ RealType CVarFloat::GetValMath( RealType dVal, LPCTSTR & pExpr )
 					DEBUG_ERR(( "Float_MakeFloatMath: Power of zero with negative exponent is undefined\n" ));
 					break;
 				}
+				//DEBUG_ERR(("dVal %f  dTempVal %f  Result %f\n",dVal,dTempVal,pow(dVal, dTempVal)));
 				dVal = pow(dVal, dTempVal);
 			}
 			break;
@@ -245,7 +246,7 @@ RealType CVarFloat::GetValMath( RealType dVal, LPCTSTR & pExpr )
 RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 {
 	ADDTOCALLSTACK("CVarFloat::GetSingle");
-	//DEBUG_ERR(("GetSingle\n"));
+	//DEBUG_ERR(("GetSingle  pArgs %s\n",pArgs));
 	GETNONWHITESPACE( pArgs );
 	char * pArgsCopy = new char[strlen(pArgs)+1];
 	strcpy(pArgsCopy,pArgs);
@@ -255,7 +256,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
 			continue;
 
-		if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )))
+		if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )) || ( ch == '@' ))
 			break;
 		//DEBUG_ERR(("ch '0%x'\n",ch));
 		IsNum = false;
