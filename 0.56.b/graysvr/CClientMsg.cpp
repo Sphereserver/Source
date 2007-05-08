@@ -1726,50 +1726,50 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 		if ( pChar->m_pArea && pChar->m_pArea->IsGuarded() && pChar->m_pNPC )
 		{
 			if ( pChar->IsStatFlag( STATF_Pet ))
-				strcat( pszTemp, " [tame]" );
+				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
 			else
-				strcat( pszTemp, " [npc]" );
+				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC) );
 		}
 		if ( pChar->IsStatFlag( STATF_INVUL ) && ! pChar->IsStatFlag( STATF_Incognito ) && ! pChar->IsPriv( PRIV_PRIV_NOSHOW ))
-			strcat( pszTemp, " [invul]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL) );
 		if ( pChar->IsStatFlag( STATF_Stone ))
-			strcat( pszTemp, " [stone]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE) );
 		else if ( pChar->IsStatFlag( STATF_Freeze ))
-			strcat( pszTemp, " [frozen]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN) );
 		if ( pChar->IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden ))
-			strcat( pszTemp, " [hidden]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN) );
 		if ( pChar->IsStatFlag( STATF_Sleeping ))
-			strcat( pszTemp, " [sleeping]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING) );
 		if ( pChar->IsStatFlag( STATF_Hallucinating ))
-			strcat( pszTemp, " [hallu]" );
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU) );
 
 		if ( fAllShow )
 		{
 			if ( pChar->IsStatFlag(STATF_Spawned) )
-				strcat(pszTemp, " [spawn]");
+				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
 			if ( IsPriv( PRIV_DEBUG ))
 				sprintf(pszTemp+strlen(pszTemp), " [0%lx]", (DWORD) pChar->GetUID());
 		}
 	}
 	if ( ! fAllShow && pChar->Skill_GetActive() == NPCACT_Napping )
 	{
-		strcat( pszTemp, " [afk]" );
+		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_AFK) );
 	}
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
 	{
-		strcat( pszTemp, " [guest]" );
+		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST) );
 	}
 	if ( pChar->IsPriv( PRIV_JAILED ))
 	{
-		strcat( pszTemp, " [jailed]" );
+		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED) );
 	}
 	if ( pChar->IsDisconnected())
 	{
-		strcat( pszTemp, " [logout]" );
+		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT) );
 	}
 	if (( fAllShow || pChar == m_pChar ) && pChar->IsStatFlag( STATF_Criminal ))
 	{
-		strcat( pszTemp, " [criminal]" );
+		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL) );
 	}
 	if ( fAllShow || ( IsPriv(PRIV_GM) && ( g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE )))
 	{
@@ -1969,7 +1969,7 @@ bool CClient::addBookOpen( CItem * pBook )
 		fWritable = pMsgItem->IsBookWritable() ? true : false;	// Not sealed
 		nPages = fWritable ? ( MAX_BOOK_PAGES ) : ( pMsgItem->GetPageCount());	// Max pages.
 		sTitle = pMsgItem->GetName();
-		sAuthor = (pMsgItem->m_sAuthor.IsEmpty()) ? "unknown" : (LPCTSTR)( pMsgItem->m_sAuthor );
+		sAuthor = (pMsgItem->m_sAuthor.IsEmpty()) ? g_Cfg.GetDefaultMsg(DEFMSG_BOOK_AUTHOR_UNKNOWN) : (LPCTSTR)( pMsgItem->m_sAuthor );
 
 		if ( fWritable )	// For some reason we must send them now.
 		{
@@ -2242,7 +2242,7 @@ bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGroun
 			CItemStone * pStone = m_pChar->Guild_Find(MEMORY_GUILD);
 			if (pStone)
 			{
-				addSysMessage( "You are already a member of a guild. Resign first!");
+				addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GUILD_ALREADY_MEMBER));
 				return false;
 			}
 		}
@@ -4032,14 +4032,14 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 				if ( pItem->IsAttr( ATTR_CURSED ) )
 					this->m_TooltipData.Add( new CClientTooltip( 1049643 ) ); // Cursed
 				if ( pItem->IsAttr( ATTR_NEWBIE ) )
-					this->m_TooltipData.Add( new CClientTooltip( 1070722, "Newbie" ) ); // ~1_NOTHING~
+					this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
 				if ( pItem->IsAttr( ATTR_MAGIC ) )
 					this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
 
 				if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) ) // Negative amount?
 				{
 					this->m_TooltipData.Add( t = new CClientTooltip( 1060663 ) ); // ~1_val~: ~2_val~
-					t->FormatArgs( "Amount\t%d", pItem->GetAmount() );
+					t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_AMOUNT), pItem->GetAmount() );
 				}
 
 				// Some type specific default stuff
@@ -4063,7 +4063,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 					case IT_CLOTHING:
 					case IT_SHIELD:
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-						t->FormatArgs( "Armor\t%d", pItem->Armor_GetDefense() );
+						t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_ARMOR), pItem->Armor_GetDefense() );
 						this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
 						t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
@@ -4114,7 +4114,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 						if ( this->IsPriv( PRIV_GM ) )
 						{
 							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Destination\t%s", pItem->m_itTelepad.m_pntMark.WriteUsed() );
+							t->FormatArgs( "%s\t%s", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_DESTINATION), pItem->m_itTelepad.m_pntMark.WriteUsed() );
 						}
 						break;
 
@@ -4312,7 +4312,7 @@ void CClient::addVisualRange( BYTE visualRange )
 {
 	ADDTOCALLSTACK("CClient::addVisualRange");
 
-	DEBUG_ERR(("addVisualRange called with argument %d\n", visualRange));
+	//DEBUG_ERR(("addVisualRange called with argument %d\n", visualRange));
 
 	CCommand cmd;
 	cmd.VisualRange.m_Cmd = XCMD_ViewRange;
