@@ -1902,6 +1902,7 @@ private:
 	BYTE m_SkillLock[SKILL_QTY];	// SKILLLOCK_TYPE List of skill lock states for this player character
 	BYTE m_StatLock[STAT_BASE_QTY]; // SKILLLOCK_TYPE Applied to stats
 	CResourceRef m_SkillClass;	// RES_SKILLCLASS CSkillClassDef What skill class group have we selected.
+
 public:
 	static const char *m_sClassName;
 	CAccount * m_pAccount;	// The account index. (for idle players mostly)
@@ -1921,6 +1922,8 @@ public:
 	DWORD			m_pflag;			// PFLAG
 
 	static LPCTSTR const sm_szLoadKeys[];
+
+	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
 
 public:
 	SKILL_TYPE Skill_GetLockType( LPCTSTR pszKey ) const;
@@ -3181,7 +3184,7 @@ public:
 	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc );
 	bool NPC_OnItemGive( CChar * pCharSrc, CItem * pItem );
 	bool NPC_SetVendorPrice( CItem * pItem, int iPrice );
-	bool OnTriggerSpeech(LPCTSTR pszName, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);
+	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);
 
 	// Outside events that occur to us.
 	int  OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType );

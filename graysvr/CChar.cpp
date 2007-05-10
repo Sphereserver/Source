@@ -3014,33 +3014,75 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 	return false;
 }
 
-bool	CChar::OnTriggerSpeech( LPCTSTR pszName, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue)
+bool CChar::OnTriggerSpeech( bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue)
 {
 	ADDTOCALLSTACK("CChar::OnTriggerSpeech");
 
+	LPCTSTR pszName;
+	
+	if ( bIsPet && !g_Cfg.m_sSpeechPet.IsEmpty() )
+	{
+		pszName = (LPCTSTR) g_Cfg.m_sSpeechPet;
+	}
+	else if ( !bIsPet && !g_Cfg.m_sSpeechSelf.IsEmpty() )
+	{
+		pszName = (LPCTSTR) g_Cfg.m_sSpeechSelf;
+	}
+	else
+	{
+		goto lbl_cchar_ontriggerspeech;
+	}
+
 	CScriptObj *	pDef	= g_Cfg.ResourceGetDefByName( RES_SPEECH, pszName );
-	if ( !pDef )
+	if ( pDef )
+	{
+		CResourceLink * pLink	= dynamic_cast <CResourceLink *>( pDef );
+		if ( pLink )
+		{
+			CResourceLock	s;
+			if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
+			{
+				if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
+					return true;
+			}
+			else
+			{
+				DEBUG_ERR(("TriggerSpeech: couldn't not run script for speech %s\n", pszName));
+			}
+		}
+		else
+		{
+			DEBUG_ERR(("TriggerSpeech: couldn't find speech %s\n", pszName));
+		}
+	}
+	else
 	{
 		DEBUG_ERR(("TriggerSpeech: couldn't find speech resource %s\n", pszName));
-		return false;
 	}
 
-	CResourceLink * pLink	= dynamic_cast <CResourceLink *>( pDef );
-	if ( !pLink )
+lbl_cchar_ontriggerspeech:
+	if ( bIsPet )
+		return false;
+
+	if ( !m_pPlayer )
+		return false;
+
+	if ( m_pPlayer->m_Speech.GetCount() )
 	{
-		DEBUG_ERR(("TriggerSpeech: couldn't find speech %s\n", pszName));
-		return false;
+		for ( int i = 0; i < m_pPlayer->m_Speech.GetCount(); i++ )
+		{
+			CResourceLink * pLink = m_pPlayer->m_Speech[i];
+			if ( !pLink )
+				continue;
+
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+
+			if ( OnHearTrigger( s, pszText, pSrc, mode, wHue ) == TRIGRET_RET_TRUE )
+				return true;
+		}
 	}
-
-	CResourceLock	s;
-	if ( !pLink->ResourceLock(s) )
-		return false;
-
-	if ( ! pLink->HasTrigger(XTRIG_UNKNOWN))
-		return false;
-
-	if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
-		return true;
 
 	return false;
 }
