@@ -28,28 +28,37 @@ dhtmlgump 50 50 450 30 0 0 Please select the type of guild you would like to cha
 
 dhtmlgump 335 360 150 100 0 0 CANCEL
   button 300 360 4005 4007 1 0 0 // Cancel Button
-dhtmlgump 85 100 200 100 0 0 Standard guild
-  button 20 100 4005 4007 1 0 1 // Standard
-dhtmlgump 85 150 200 100 0 0 Order guild
-  button 20 150 4005 4007 1 0 2 // Order
-  tilepic 50 143 01BC5
-dhtmlgump 85 200 200 100 0 0 Chaos guild
-  button 20 200 4005 4007 1 0 3 // Chaos
-  tilepic 45 200 01BC3
 
+dorigin 85 50
+local.align=0
+While (!<isempty <def.guildconfig_align_<dlocal.align>>>)
+  If (<align> == <local.align>)
+    dhtmlgump 85 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild [CURRENT]
+    gumppic 20 +0 4020
+  else
+    dhtmlgump 85 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild
+    button 20 +0 4005 4007 1 0 <eval <local.align>+1> // Change alignment
+  endif
+  If (<def0.guildconfig_alignshield_<dlocal.align>>)
+    tilepic 50 -7 <def.guildconfig_alignshield_<dlocal.align>>
+  endif
+  local.align += 1
+endwhile
 
 [dialog d_Guild_ChangeAlign Button]
 on=0 3
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
     return 1
   endif
-  If (<argn1> >= 1)&&(<argn1> <= 3)
-    If (<serv.time> > <tag0.changealign_time>)
-      local.type=<EVAL (<argn1>-1)>
-      align=<local.type>
-      tag.changealign_time=<eval (<serv.time> + <def0.GUILDCONFIG_MINTIME_ALIGN>)>
-      update
-      f_guildsys_sendsmsg <uid>,Your guild type has changed its alignmeny to <aligntype>
+  If (<argn1> > 0)
+    local.type=<EVAL (<argn1>-1)>
+    If (!<isempty <def.guildconfig_align_<dlocal.type>>>)
+      If (<serv.time> > <tag0.changealign_time>)
+        align=<local.type>
+        tag.changealign_time=<eval (<serv.time> + <def0.GUILDCONFIG_MINTIME_ALIGN>)>
+        update
+        f_guildsys_sendsmsg <uid>,Your guild type has changed its alignment to <aligntype>
+      endif
     endif
   endif
   sdialog d_Guild_Master,0

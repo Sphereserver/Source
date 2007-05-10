@@ -30,14 +30,23 @@ resizepic 10 10 3000 530 380
 dhtmlgump 55 360 300 35 0 0 Return to the main menu.
   button 20 360 4005 4007 1 0 0 // Return
 
-local.chartertext=<charter0><def0.br>
-local.line=1
-While ( <eval StrLen(<charter<dlocal.line>>)> > 0 )
-  local.chartertext .= <charter<eval <local.line>>><def0.br>
-  local.line += 1
-endwhile
+If (<isempty <charter0>>)
+  local.noempty=0
+  local.chartertext=<def0.br>
+else
+  local.noempty=1
+  local.chartertext=<charter0><def0.br>
+endif
+For _line 1 5
+  If (<isempty <charter<dlocal._line>>>)
+    local.chartertext .= <def0.br>
+  else
+    local.chartertext .= <charter<dlocal._line>><def0.br>
+    local.noempty += 1
+  endif
+endfor
 
-If (<eval StrLen(<local.chartertext>)> <= 0)
+If (!<local.noempty>)
   dhtmlgump 20 20 500 35 0 0 No charter has been defined.
 else
   dhtmlgump 20 20 500 150 0 1 <local.chartertext>

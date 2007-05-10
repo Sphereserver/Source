@@ -2259,8 +2259,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 		bool	fCancelSpeech	= false;
 		char	z[MAX_TALK_BUFFER];
 
-		if (    !g_Cfg.m_sSpeechSelf.IsEmpty()
-			&& m_pChar->OnTriggerSpeech(g_Cfg.m_sSpeechSelf, (TCHAR *)pszText, m_pChar, mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech(false, (TCHAR *)pszText, m_pChar, mode, wHue) )
 			fCancelSpeech	= true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
@@ -2269,8 +2268,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 				m_Socket.GetSocket(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
 		}
 
-		// TODO: Guild and Alliance mode will not pass this (for the moment)
-		// TODO: Add some hardcoded things for guild.
+		// Guild and Alliance mode will not pass this.
 		if ( mode == 13 || mode == 14 )
 			return;
 
@@ -2383,7 +2381,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 	{
 		bool	fCancelSpeech	= false;
 
-		if ( !g_Cfg.m_sSpeechSelf.IsEmpty() && m_pChar->OnTriggerSpeech( g_Cfg.m_sSpeechSelf, (TCHAR *) pszText, m_pChar, Mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech( false, (TCHAR *) pszText, m_pChar, Mode, wHue) )
 			fCancelSpeech	= true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
@@ -2392,8 +2390,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 				m_pChar->GetName(), pAccount->m_lang.GetStr(), pszText, Mode, fCancelSpeech ? " (muted)" : "" );
 		}
 
-		// TODO: Guild and Alliance mode will not pass this (for the moment)
-		// TODO: Add some hardcoded things for guild.
+		// Guild and Alliance mode will not pass this.
 		if ( Mode == 13 || Mode == 14 )
 			return;
 
@@ -2426,7 +2423,6 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 		}
 	}
 }
-
 
 bool CClient::Event_DeathOption( DEATH_MODE_TYPE mode, const CEvent * pEvent )
 {

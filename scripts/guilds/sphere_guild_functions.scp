@@ -200,6 +200,7 @@ local.currentuid=<argv[0]>	// Current guild uid
 local.textsearch=<argv[1]>	// Text to search in other guild names
 local.allguilds=0           	// Allguilds check
 
+local.search_found=0
 local.search_num=0
 local.search_uid=<serv.guildstones.<local.search_num>.uid>
 
@@ -217,12 +218,14 @@ while (<local.search_uid>)
       else
         local.returndata .= ,<local.search_uid>
       endif
+      local.search_found += 1
     elif (strregex(<local.textsearch>*,<uid.<local.search_uid>.name>))
       If (!<local.returndata>)
         local.returndata=<local.search_uid>
       else
         local.returndata .= ,<local.search_uid>
       endif
+      local.search_found += 1
     endif
   endif
   
@@ -235,6 +238,9 @@ while (<local.search_uid>)
   endif
 endwhile
 
+If (!<local.search_found>)
+  return ""
+endif
 return <local.returndata>
 
 

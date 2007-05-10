@@ -109,8 +109,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	}
 
 	TALKMODE_TYPE	mode	= TALKMODE_SAY;
-	if (  !g_Cfg.m_sSpeechPet.IsEmpty()
-		&& OnTriggerSpeech( g_Cfg.m_sSpeechPet, pszCmd, pSrc, mode) )
+	if ( OnTriggerSpeech( true, pszCmd, pSrc, mode) )
 		return true;
 
 	PC_TYPE iCmd = (PC_TYPE) FindTableSorted( pszCmd, sm_Pet_table, COUNTOF(sm_Pet_table));

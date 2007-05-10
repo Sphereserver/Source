@@ -19,15 +19,17 @@ elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
   return 1
 endif
 
-//LOCAL.GUILDLIST IS NOT BEING SET TO ANYTHING -> FUNCTION RETURNS 0
-local.guildlist=<f_guildsys_searchguildname <uid>,<local.tosearch>>
-CALL f_guildsys_listsplit <local.guildlist>
-
-If (!<local.guildlist_count>)
-  return 1
+src.ctag.dialog_guildmasterwarfaredclarewar_guildlist=<f_guildsys_searchguildname <uid>,<local.tosearch>>
+If (!<isempty <src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>>)
+  CALL f_guildsys_listsplit <src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>
+else
+  local.guildlist_count=0
 endif
 
-src.ctag.dialog_guildmasterwarfaredclarewar_guildlist=<local.guildlist>
+If (!<local.guildlist_count>)
+  src.sysmessage No results found for "<local.tosearch>".
+  return 1
+endif
 
 //Construct the dialog
 page 0

@@ -62,7 +62,7 @@ dhtmlgump 410 373 100 25 0 0 Next page
 dhtmlgump 20 45 400 20 0 0 Guilds that we have declared war on: 
 // We Declare List
 If (<guild.count <def0.STONEPRIV_WEDECLARED>>==0)  
-  dhtmlgump 20 65 400 20 0 0 - No current invitations received for war.
+  dhtmlgump 20 65 400 20 0 0 - No current invitations sent for war.
 else
   local.gicurrent=0
   local.gpcurrent=0
@@ -82,7 +82,7 @@ dhtmlgump 65 373 150 25 0 0 Previous page
 dhtmlgump 20 45 400 20 0 0 Guilds that have declared war on us: 
 // They Declared List
 If (<guild.count <def0.STONEPRIV_THEYDECLARED>>==0)  
-    dhtmlgump 20 65 400 20 0 0 No current invitations received for war.
+    dhtmlgump 20 65 400 20 0 0 - No current invitations received for war.
 else
   local.gicurrent=0
   local.gpcurrent=0

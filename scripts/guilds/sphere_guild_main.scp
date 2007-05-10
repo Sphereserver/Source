@@ -15,7 +15,9 @@ VERSION=0.56b
 [DEFNAME DEF_GUILDSYS_GTYPE]
 GUILDCONFIG_ALIGN_0		"Standard"
 GUILDCONFIG_ALIGN_1		"Order"
+GUILDCONFIG_ALIGNSHIELD_1	01BC5
 GUILDCONFIG_ALIGN_2		"Chaos"
+GUILDCONFIG_ALIGNSHIELD_2	01BC3
 
 [DEFNAME DEF_GUILDSYS_MEMBERPRIV]
 STONEPRIV_CANDIDATE			0
@@ -46,7 +48,7 @@ GUILDDLG_LISTTYPE_G_RESCIND		    4
 [DEFNAME DEF_GUILDSYS_CONFIG]
 GUILDCONFIG_CHARLIST_SHOWTITLE 		1
 GUILDCONFIG_GUILDLIST_SHOWABBREV 	1
-GUILDCONFIG_ALLOWTELEPORT 		    0
+GUILDCONFIG_ALLOWTELEPORT 		    1
 GUILDCONFIG_ALLOWTRANSFER 		    1
 GUILDCONFIG_MAXMEMBERS			    100		// 0 = unlimited
 GUILDCONFIG_MAXCANDIDATES		    100		// 0 = unlimited
@@ -70,7 +72,7 @@ ON=@Click
 return 1
 
 ON=@Dclick
-  If (<src.distance> > 2)
+  If (<distance> > 2)
     src.sysmessage @038A That is too far away.
   elif (<member.count>==0)&&(!<masteruid>)	//(<masteruid>!=<src.uid>)
     JoinAsMember <src.uid>	//auto makes the master
@@ -156,6 +158,7 @@ if ( <link.tag0.guildsys_moveruid> != <uid> )
     return 1
 endif
 
+link.removefromview
 link.p = <src.p>
 link.update
 remove

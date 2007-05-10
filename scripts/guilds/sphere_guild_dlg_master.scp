@@ -41,30 +41,23 @@ else
 endif
 If (<f_guildsys_iswarring>)
   gumppic 20 100 4020
-  DOSWITCH <align>	// Guild Type
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Standard [Cannot change while at war]
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Order [Cannot change while at war]
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Chaos [Cannot change while at war]
-  ENDDO
+  dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>> [Cannot change while at war] // Guild Type
 elif (<tag0.changealign_time> <= <serv.time>)
   button 20 100 4005 4007 1 0 3
-  DOSWITCH <align>	// Guild Type
-    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Standard
-    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Order
-    dhtmlgump 55 100 240 30 0 0 Change alignment: Currently Chaos
-  ENDDO
+  dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>> // Guild Type
 else
   gumppic 20 100 4020
-  DOSWITCH <align>	// Guild Type
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Standard: <f_guildsys_determine_timeleft <tag0.changealign_time>>
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Order: <f_guildsys_determine_timeleft <tag0.changealign_time>>
-    dhtmlgump 55 100 450 30 0 0 Change alignment: Currently Chaos: <f_guildsys_determine_timeleft <tag0.changealign_time>>
-  ENDDO
+  dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>>: <f_guildsys_determine_timeleft <tag0.changealign_time>> // Guild Type
 endif
 dhtmlgump 55 130 200 30 0 0 Set the guild's charter.
   button 20 130 4005 4007 1 0 4	// Set Charter
-dhtmlgump 55 160 200 30 0 0 Dismiss a member.
-  button 20 160 4005 4007 1 0 5	// Dismiss a member
+If (<member.count> > 1)	// Dismiss a member
+  dhtmlgump 55 160 200 30 0 0 Dismiss a member.
+  button 20 160 4005 4007 1 0 5
+else
+  dhtmlgump 55 160 200 30 0 0 Dismiss a member. NO MEMBERS
+  gumppic 20 160 4020
+endif
 dhtmlgump 55 190 200 30 0 0 Go to the War Menu.
   button 20 190 4005 4007 1 0 6	// War Menu
 If (<member.count <def0.STONEPRIV_CANDIDATE>> > 0) // Candidates
@@ -76,11 +69,16 @@ else
 endif
 dhtmlgump 55 250 240 30 0 0 Set the guildmaster's title.
   button 20 250 4005 4007 1 0 8 // Master Title
-dhtmlgump 55 280 240 30 0 0 Grant a title to another member.
-  button 20 280 4005 4007 1 0 9 // Grant Titles
+If (<member.count> > 1) // Grant Titles
+  dhtmlgump 55 280 300 30 0 0 Grant a title to another member.
+  button 20 280 4005 4007 1 0 9
+else
+  dhtmlgump 55 280 300 30 0 0 Grant a title to another member. NO MEMBERS
+  gumppic 20 280 4020
+endif
 If (<def0.GUILDCONFIG_ALLOWTELEPORT>) // Teleport the stone
   button 20 310 4005 4007 1 0 10
-  dhtmlgump 55 310 200 30 0 0 Move this guildstone. <qval <tag0.guildsys_moveruid> ? IN PROGRESS. : >
+  dhtmlgump 55 310 240 30 0 0 Move this guildstone. <qval <tag0.guildsys_moveruid> ? IN PROGRESS. : >
 else
   gumppic 20 310 4020
   dhtmlgump 55 310 240 30 0 0 Move this guildstone. NOT AVAILABLE.

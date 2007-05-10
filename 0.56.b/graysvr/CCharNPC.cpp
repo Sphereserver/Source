@@ -160,6 +160,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 
 CCharPlayer::~CCharPlayer()
 {
+	m_Speech.RemoveAll();
 }
 
 bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
@@ -293,8 +294,17 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		case CPC_DEATHS:
 			sVal.FormatVal( m_wDeaths );
 			return( true );
+		case CPC_DSPEECH:
+			m_Speech.WriteResourceRefList( sVal );
+			return( true );
 		case CPC_KILLS:
 			sVal.FormatVal( m_wMurders );
+			return( true );
+		case CPC_ISDSPEECH:
+			if ( pszKey[9] != '.' )
+				return( false );
+			pszKey += 10;
+			sVal = ( m_Speech.FindResourceName(RES_SPEECH, pszKey) >= 0 ) ? "1" : "0";
 			return( true );
 		case CPC_LASTUSED:
 			sVal.FormatVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
@@ -414,6 +424,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_DEATHS:
 			m_wDeaths = s.GetArgVal();
 			return true;
+		case CPC_DSPEECH:
+			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
 		case CPC_KILLS:
 			m_wMurders = s.GetArgVal();
 			return true;
@@ -511,6 +523,14 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
 	if ( m_iTithingPoints )
 		s.WriteKeyVal("TITHING", m_iTithingPoints);
+
+	EXC_SET("saving dynamic speech");
+	if ( m_Speech.GetCount() )
+	{
+		CGString sVal;
+		m_Speech.WriteResourceRefList( sVal );
+		s.WriteKey("DSPEECH", sVal);
+	}
 
 	EXC_SET("saving profile");
 	if ( ! m_sProfile.IsEmpty())

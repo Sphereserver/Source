@@ -13,7 +13,7 @@ VERSION=0.56b
 
 // ------------------------------------------------------
 [FUNCTION f_prompthandler_guildname]
-if ( !<ctag0.guild_prompthandler_guilduid> )
+if ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
   return 1
 endif
 
@@ -56,7 +56,7 @@ return 1
 
 // ------------------------------------------------------
 [FUNCTION f_prompthandler_guildabbrev]
-if ( !<ctag0.guild_prompthandler_guilduid> )
+if ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
   return 1
 endif
 
@@ -99,7 +99,7 @@ return 1
 
 // ------------------------------------------------------
 [FUNCTION f_prompthandler_guildtitle]
-if ( !<ctag0.guild_prompthandler_guilduid> || !<ctag0.guild_prompthandler_thisuid> )
+if ( !<ctag0.guild_prompthandler_guilduid> || !<ctag0.guild_prompthandler_thisuid> || <isempty <args>> )
   return 1
 endif
 
@@ -139,7 +139,7 @@ return 1
 
 // ------------------------------------------------------
 [FUNCTION f_prompthandler_guilddclarewar]
-If ( !<ctag0.guild_prompthandler_guilduid> )
+If ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
   return 1
 endif
 
