@@ -3033,32 +3033,35 @@ bool CChar::OnTriggerSpeech( bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMOD
 		goto lbl_cchar_ontriggerspeech;
 	}
 
-	CScriptObj *	pDef	= g_Cfg.ResourceGetDefByName( RES_SPEECH, pszName );
-	if ( pDef )
 	{
-		CResourceLink * pLink	= dynamic_cast <CResourceLink *>( pDef );
-		if ( pLink )
+		CScriptObj *	pDef	= g_Cfg.ResourceGetDefByName( RES_SPEECH, pszName );
+		if ( pDef )
 		{
-			CResourceLock	s;
-			if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
+			CResourceLink * pLink	= dynamic_cast <CResourceLink *>( pDef );
+			if ( pLink )
 			{
-				if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
-					return true;
+				CResourceLock	s;
+				if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
+				{
+					if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
+						return true;
+				}
+				else
+				{
+					DEBUG_ERR(("TriggerSpeech: couldn't not run script for speech %s\n", pszName));
+				}
 			}
 			else
 			{
-				DEBUG_ERR(("TriggerSpeech: couldn't not run script for speech %s\n", pszName));
+				DEBUG_ERR(("TriggerSpeech: couldn't find speech %s\n", pszName));
 			}
 		}
 		else
 		{
-			DEBUG_ERR(("TriggerSpeech: couldn't find speech %s\n", pszName));
+			DEBUG_ERR(("TriggerSpeech: couldn't find speech resource %s\n", pszName));
 		}
 	}
-	else
-	{
-		DEBUG_ERR(("TriggerSpeech: couldn't find speech resource %s\n", pszName));
-	}
+
 
 lbl_cchar_ontriggerspeech:
 	if ( bIsPet )
@@ -3071,15 +3074,15 @@ lbl_cchar_ontriggerspeech:
 	{
 		for ( int i = 0; i < m_pPlayer->m_Speech.GetCount(); i++ )
 		{
-			CResourceLink * pLink = m_pPlayer->m_Speech[i];
-			if ( !pLink )
+			CResourceLink * pLinkDSpeech = m_pPlayer->m_Speech[i];
+			if ( !pLinkDSpeech )
 				continue;
 
-			CResourceLock s;
-			if ( !pLink->ResourceLock(s) )
+			CResourceLock sDSpeech;
+			if ( !pLinkDSpeech->ResourceLock(sDSpeech) )
 				continue;
 
-			if ( OnHearTrigger( s, pszText, pSrc, mode, wHue ) == TRIGRET_RET_TRUE )
+			if ( OnHearTrigger( sDSpeech, pszText, pSrc, mode, wHue ) == TRIGRET_RET_TRUE )
 				return true;
 		}
 	}
