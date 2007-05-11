@@ -3043,8 +3043,11 @@ bool CChar::OnTriggerSpeech( bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMOD
 				CResourceLock	s;
 				if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
 				{
-					if ( OnHearTrigger(s, pszText, pSrc, mode, wHue) == TRIGRET_RET_TRUE )
+					TRIGRET_TYPE iRet = OnHearTrigger(s, pszText, pSrc, mode, wHue);
+					if ( iRet == TRIGRET_RET_TRUE )
 						return true;
+					else if ( iRet == TRIGRET_RET_HALFBAKED )
+						return false;
 				}
 				else
 				{
@@ -3082,8 +3085,11 @@ lbl_cchar_ontriggerspeech:
 			if ( !pLinkDSpeech->ResourceLock(sDSpeech) )
 				continue;
 
-			if ( OnHearTrigger( sDSpeech, pszText, pSrc, mode, wHue ) == TRIGRET_RET_TRUE )
+			TRIGRET_TYPE iRet = OnHearTrigger( sDSpeech, pszText, pSrc, mode, wHue );
+			if ( iRet == TRIGRET_RET_TRUE )
 				return true;
+			else if ( iRet == TRIGRET_RET_HALFBAKED )
+				break;
 		}
 	}
 
