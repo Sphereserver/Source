@@ -73,27 +73,45 @@ If (<ref1.memberfromuid.<argo.uid>.uid> != <argo.uid>)
   If ((<ref1.masteruid> == <uid>) || (<isgm>))
     If (<def0.GUILDCONFIG_MAXMEMBERS>)
       If (<ref1.member.count <def0.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS>)
-        ref1.JoinAsMember <argo.uid>
+        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
       else
         sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
       endif
     else
-      ref1.JoinAsMember <argo.uid>
+      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
     endif
   else
     If (<def0.GUILDCONFIG_MAXCANDIDATES>)
       If (<ref1.member.count <def0.STONEPRIV_CANDIDATE>> < <def0.GUILDCONFIG_MAXCANDIDATES>)
-        ref1.ApplyToJoin <argo.uid>
+        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
       else
         sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXCANDIDATES> candidates awaiting a decision. You cannot submit a candidate at this time.
       endif
     else
-      ref1.ApplyToJoin <argo.uid>
+      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
     endif
 else
   sysmessage @038A They are already a candidate.
 endif
 
+// ------------------------------------------------------
+[FUNCTION f_guildsys_addchartoguild]
+// no checks here, everything should be checked before calling this functions
+ref1 = <argv[0]> // The guild
+ref2 = <argv[1]> // The char
+local.addasmember = <argv[2]>
+
+if (<local.addasmember>)
+  ref1.JoinAsMember <ref2.uid>
+else
+  ref1.ApplyToJoin <ref2.uid>
+endif
+
+if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
+  if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+    ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
+  endif
+endif
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_isnameused]

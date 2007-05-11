@@ -219,15 +219,15 @@ ON=0 2
       If (<argn1>==1) //Accepted
         If (<def0.GUILDCONFIG_MAXMEMBERS>)
           If (<member.count <def.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS>)
-            JoinAsMember <local.memberuid>
+            f_guildsys_addchartoguild <uid>,<local.memberuid>,1
           else
             src.sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
           endif
         else
-          JoinAsMember <local.memberuid>
+          f_guildsys_addchartoguild <uid>,<local.memberuid>,1
         endif
       elif (<argn1>==2) // Rejected
-        resign <local.memberuid>
+        f_guildsys_removecharfromguild <uid>,<local.memberuid>
       endif
       
       try uid.<local.memberuid>.update

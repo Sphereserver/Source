@@ -1,0 +1,8 @@
+[SPEECH spk_guildspeech]
+ON=I resign from my guild
+SERV.LOG Lol!
+
+ON=*
+SERV.LOG Lul!
+
+[EOF]

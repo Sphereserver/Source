@@ -74,8 +74,6 @@ dhtmlgump 55 360 470 30 0 0 EXIT
   button 20 360 4005 4007 1 0 0
 
 
-
-
 [dialog d_Guild_Main Button]
 ON=0 9
 If (<argn1>==0) // Exit Gump
