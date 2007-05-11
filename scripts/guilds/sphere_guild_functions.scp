@@ -114,6 +114,19 @@ if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
 endif
 
 // ------------------------------------------------------
+[FUNCTION f_guildsys_removecharfromguild]
+// no checks here, everything should be checked before calling this functions
+ref1 = <argv[0]> // The guild
+ref2 = <argv[1]> // The char
+
+if (<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+  ref2.dspeech -<def.GUILDCFGSPEECH_NAME>
+endif
+
+ref1.resign <ref2.uid>
+f_guildsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the guild.
+
+// ------------------------------------------------------
 [FUNCTION f_guildsys_isnameused]
 local.guild=<argv[0]>
 local.name=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>

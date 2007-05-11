@@ -1,8 +1,15 @@
 [SPEECH spk_guildspeech]
 ON=I resign from my guild
-SERV.LOG Lol!
+IF ((<ARGN1> == <DEF.TALKMODE_SAY>) && <GUILD>)
+    f_guildsys_removecharfromguild <guild.uid>,<uid>
+    RETURN 6
+ENDIF
+RETURN 1
 
 ON=*
-SERV.LOG Lul!
+IF ((<ARGN1> == <DEF.TALKMODE_GUILD>) && <DEF0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
+    // TODO: check if member/candidate call function to broadcast smsg globally
+    RETURN 1
+ENDIF
 
 [EOF]
