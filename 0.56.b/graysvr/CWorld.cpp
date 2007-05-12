@@ -1524,7 +1524,8 @@ bool CWorld::LoadWorld() // Load world from script
 		{
 			for ( int s = 0; s < m_SectorsQty; s++ )
 			{
-				m_Sectors[s]->Init( m_Sectors[s]->GetIndex(), m_Sectors[s]->GetMap() );
+				// Remove everything from the sectors
+				m_Sectors[s]->Close();
 			}
 		}
 

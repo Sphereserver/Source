@@ -77,7 +77,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			sVal = GetName();
 			break;
 		case OBC_RANGE:
-			if ( RangeH() == 0 ) sVal.Format( "%d", RangeH() );
+			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
 			else sVal.Format( "%d,%d", RangeH(), RangeL() );
 			break;
 		case OBC_RANGEH:

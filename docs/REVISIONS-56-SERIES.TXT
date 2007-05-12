@@ -3347,3 +3347,8 @@ this all in desperation)
 
 08-05-2007, Ellessar
 - Fixed: POW (@) does not work when using inside 'floatval'.
+
+10-05-2007, MrSugarCube
+- Fixed #1176: RANGE property on items returning 0 when the minimum range is 0, when in this case it
+  should return the maximum range.
+- Fixed #1178: Automatic loading of backup saves not unloading all of the data from the previous save.
