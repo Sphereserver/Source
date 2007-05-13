@@ -345,10 +345,10 @@ return <local.timeleft>
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_sendsmsg]
-local.guilduid=<argv[0]>
+ref1=<argv[0]>
 local.message=<StrEat <args>>
 
-If (<uid.<local.guilduid>.type>!=t_stone_guild)
+If (<ref1.type>!=t_stone_guild)
   return 0
 endif
 
@@ -356,16 +356,22 @@ If (!strlen(<local.message>))
   return 0
 endif
 
-local.membercount=<uid.<local.guilduid>.member.count>
+ref1.allmembers -1,sysmessage @68,0,3 Guild Message: <local.message>
 
-for member 0 <local.membercount>
-  local.memberuid=<uid.<local.guilduid>.member.<local.member>.uid>
-  If (<local.memberuid>)
-    If (<uid.<local.memberuid>.isonline>)
-      try uid.<local.memberuid>.sysmessage @68,0,3 Guild Message: <local.message>
-    endif
-  endif
-endfor
+// ------------------------------------------------------
+[FUNCTION f_guildsys_speech_sendsmsg]
+ref1=<argv[0]>
+local.message=<StrEat <args>>
+
+If (<ref1.type>!=t_stone_guild)
+  return 0
+endif
+
+If (!strlen(<local.message>))
+  return 0
+endif
+
+ref1.allmembers -1,sysmessage @68,0,3 Guild Message[<name>]: <local.message>
 
 
 // ------------------------------------------------------

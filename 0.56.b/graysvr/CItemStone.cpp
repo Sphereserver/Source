@@ -1124,6 +1124,105 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			addStoneDialog(pClient,STONEDISP_ACCEPTCANDIDATE);
 			break;
 #endif
+
+#ifdef _NEWGUILDSYSTEM
+		case ISV_ALLGUILDS:
+			{
+				if ( s.HasArgs() )
+				{
+					char * pszArgs = s.GetArgRaw();
+					int iFlags = Exp_GetVal(pszArgs);
+					SKIP_ARGSEP(pszArgs);
+
+					if ( iFlags < 0 )
+					{
+						g_Log.EventError("ItemStone::AllGuilds invalid parameter '%i'.\n", iFlags);
+						return false;
+					}
+					else
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
+							CScript scriptVerb( pszArgs );
+
+							for (; pMember != NULL; pMember = pMember->GetNext())
+							{
+								if ( pMember->GetLinkUID().IsChar() )
+									continue;
+
+								if ( !iFlags )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+								else if ( ( iFlags == 1 ) && ( pMember->GetWeDeclared() && !pMember->GetTheyDeclared() ) )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+								else if ( ( iFlags == 2 ) && ( !pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+								else if ( ( iFlags == 3 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+							}
+						}
+						else
+						{
+							g_Log.EventError("ItemStone::AllGuilds empty args.\n");
+							return false;
+						}
+					}
+				}
+			} break;
+
+		case ISV_ALLMEMBERS:
+			{
+				if ( s.HasArgs() )
+				{
+					char * pszArgs = s.GetArgRaw();
+					int iFlags = Exp_GetVal(pszArgs);
+					SKIP_ARGSEP(pszArgs);
+
+					if (( iFlags < -1 ) || ( iFlags > STONEPRIV_ACCEPTED ))
+					{
+						g_Log.EventError("ItemStone::AllMembers invalid parameter '%i'.\n", iFlags);
+						return false;
+					}
+					else
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
+							CScript scriptVerb( pszArgs );
+
+							for (; pMember != NULL; pMember = pMember->GetNext())
+							{
+								if ( !pMember->GetLinkUID().IsChar() )
+									continue;
+
+								if ( iFlags == -1 )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+								else if ( pMember->GetPriv() == (STONEPRIV_TYPE)iFlags )
+								{
+									pMember->r_Verb(scriptVerb, pSrc);
+								}
+							}
+						}
+						else
+						{
+							g_Log.EventError("ItemStone::AllMembers empty args.\n");
+							return false;
+						}
+					}
+				}
+			} break;
+#endif
+
 		case ISV_APPLYTOJOIN:
 			if ( s.HasArgs())
 			{
