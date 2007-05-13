@@ -1510,7 +1510,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					if ( el < 0 )
 					{
 						g_Log.EventError("TimerF function invalid parameter '%i'.\n", el);
-						return 0;
+						return false;
 					}
 					else
 					{
@@ -1518,7 +1518,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						if ( !*p || ( strlen(p) >= 1024 ))
 						{
 							g_Log.EventError("TimerF function name empty or args too long - total length must be less than 1024 characters\n");
-							return 0;
+							return false;
 						}
 						else
 						{
