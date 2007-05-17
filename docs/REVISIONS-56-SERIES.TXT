@@ -3353,5 +3353,12 @@ this all in desperation)
   should return the maximum range.
 - Fixed #1178: Automatic loading of backup saves not unloading all of the data from the previous save.
 
-17-05-2007, Sir Dwayne
-- Scripts: Fixed ordering of some fences, stairs and walls
+17-05-2007, Sir Dwayne (Script pack)
+- Updated: sphere_item_building_fence.scp, sphere_item_building_stairs.scp,
+  sphere_item_building_walls.scp (Reordering of some fences, stairs and walls)
+
+17-05-2007, MrSugarCube
+- Fixed: SPELLFLAG_NOUNPARALYZE doing the opposite of its description.
+- Fixed #1181: Casting field spells on players not giving criminal status even when
+  SPELLFLAG_HARM is set.
+- Fixed #1182: Crash when opening the .edit menu on a player with too many equipped items.

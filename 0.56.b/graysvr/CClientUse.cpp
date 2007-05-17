@@ -610,11 +610,11 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	CItem * pItemNext;
 	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
-		if ( count >= MAX_MENU_ITEMS )
+		if ( ++count >= MAX_MENU_ITEMS )
 			break;
 
 		pItemNext = pItem->GetNext();
-		m_tmMenu.m_Item[++count] = pItem->GetUID();
+		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
 		item[count].m_id = idi;

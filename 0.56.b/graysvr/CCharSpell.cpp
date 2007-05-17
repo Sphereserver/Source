@@ -1166,10 +1166,11 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 			if ( pChar->GetPrivLevel() > GetPrivLevel() )	// skip higher priv characters
 				continue;
 
-			if ( pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) )
+			if (( pSpellDef->IsSpellType(SPELLFLAG_HARM) ) && ( !pChar->OnAttackedBy( this, 1, false ) ))	// they should know they where attacked.
+				continue;
+
+			if ( !pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) )
 			{
-				if ( ! pChar->OnAttackedBy( this, 1, false ))	// they should know they where attacked.
-					return;
 				if (pChar->LayerFind( LAYER_FLAG_Stuck ))
 					pChar->LayerFind( LAYER_FLAG_Stuck )->Delete();
 				pChar->StatFlag_Clear( STATF_Freeze );

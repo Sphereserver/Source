@@ -530,9 +530,9 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	int count=0;
 	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext())
 	{
-		if ( count >= COUNTOF( item ))
+		if ( ++count >= COUNTOF( item ))
 			break;
-		m_tmMenu.m_Item[++count] = pItem->GetUID();
+		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
 		item[count].m_id = idi;
