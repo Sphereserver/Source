@@ -3352,3 +3352,6 @@ this all in desperation)
 - Fixed #1176: RANGE property on items returning 0 when the minimum range is 0, when in this case it
   should return the maximum range.
 - Fixed #1178: Automatic loading of backup saves not unloading all of the data from the previous save.
+
+17-05-2007, Sir Dwayne
+- Scripts: Fixed ordering of some fences, stairs and walls

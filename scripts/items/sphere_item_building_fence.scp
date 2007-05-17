@@ -132,9 +132,7 @@ DESCRIPTION=@ (w / nw)
 DUPEITEM=0824
 DESCRIPTION=@
 
-[ITEMDEF 0834]
-//stone stairs
-DUPEITEM=071e
+
 
 [ITEMDEF 0835]
 //wooden fence
@@ -441,10 +439,6 @@ DESCRIPTION=@ (w / nw)
 //wooden gate
 DUPEITEM=0866
 DESCRIPTION=@
-
-[ITEMDEF 0876]
-//stone stairs
-DUPEITEM=071e
 
 [ITEMDEF 0877]
 //wooden fence

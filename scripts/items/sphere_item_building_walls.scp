@@ -104,31 +104,35 @@ RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Walls
 SUBSECTION=Stone Wall 1
 DESCRIPTION=@
+DUPELIST=01b,01c,01d,01e,01f,020,021,022,023,024,025,026,027,028,029,02a,02b,02c,02d,02e,02f,030,031,032
 
 [ITEMDEF 01b]
 //stone wall
+DUPEITEM=01a
 
 [ITEMDEF 01c]
 //stone wall
-DUPEITEM=01b
+DUPEITEM=01a
 
 [ITEMDEF 01d]
 //stone wall
+DUPEITEM=01a
 
 [ITEMDEF 01e]
 //stone wall
+DUPEITEM=01a
 
 [ITEMDEF 01f]
 //stone wall
-DUPEITEM=01e
+DUPEITEM=01a
 
 [ITEMDEF 020]
 //stone wall
-DUPEITEM=01e
+DUPEITEM=01a
 
 [ITEMDEF 021]
 //stone wall
-DUPEITEM=01e
+DUPEITEM=01a
 
 [ITEMDEF 022]
 DEFNAME=i_wall_stone_2
@@ -145,61 +149,63 @@ DUPEITEM=022
 
 [ITEMDEF 024]
 //stone wall
+DUPEITEM=01a
 
 [ITEMDEF 025]
 //stone wall
+DUPEITEM=01a
 
 [ITEMDEF 026]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 027]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 028]
 //stone arch
-
+DUPEITEM=01a
 
 [ITEMDEF 029]
 //stone arch
-
+DUPEITEM=01a
 
 [ITEMDEF 02a]
 //stone arch
-
+DUPEITEM=01a
 
 [ITEMDEF 02b]
 //stone arch
-
+DUPEITEM=01a
 
 [ITEMDEF 02c]
 //stone arch
-
+DUPEITEM=01a
 
 [ITEMDEF 02d]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 02e]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 02f]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 030]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 031]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 032]
 //stone wall
-
+DUPEITEM=01a
 
 [ITEMDEF 033]
 DEFNAME=i_wall_brick
