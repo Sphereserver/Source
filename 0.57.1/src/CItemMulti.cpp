@@ -132,11 +132,11 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, 
 		break;
 	case IT_DOOR:
 		pItem->SetType(IT_DOOR_LOCKED);
-fNeedKey = true;
+		fNeedKey = true;
 		break;
 	case IT_CONTAINER:
 		pItem->SetType(IT_CONTAINER_LOCKED);
-fNeedKey = true;
+		fNeedKey = true;
 		break;
 	case IT_SHIP_SIDE:
 		pItem->SetType(IT_SHIP_SIDE_LOCKED);
@@ -146,8 +146,10 @@ fNeedKey = true;
 		break;
 	}
 
+	if ( pItem->GetHue() == HUE_DEFAULT )
+		pItem->SetHue( GetHue());
+
 	pItem->SetAttr( ATTR_MOVE_NEVER | (m_Attr&(ATTR_MAGIC|ATTR_INVIS)));
-	pItem->SetHue( GetHue());
 	pItem->m_uidLink = GetUID();	// lock it down with the structure.
 
 	if ( pItem->IsTypeLockable() || pItem->IsTypeLocked())

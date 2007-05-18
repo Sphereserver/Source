@@ -1432,9 +1432,10 @@ bool CItemBaseMulti::AddComponent( ITEMID_TYPE id, signed short dx, signed short
 {
 	ADDTOCALLSTACK("CItemBaseMulti::AddComponent");
 	m_rect.UnionPoint( dx, dy );
-	if ( id > 0 )	// we can add a phantom item just to increase the size.
+	if ( id > 0 )
 	{
-		if ( id >= ITEMID_MULTI )
+		CItemBase * pItemBase = FindItemBase(id);
+		if ( pItemBase == NULL )	// make sure the item is valid
 		{
 			DEBUG_ERR(( "Bad COMPONENT 0%x\n", id ));
 			return false;

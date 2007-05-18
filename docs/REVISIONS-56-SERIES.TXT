@@ -3362,3 +3362,7 @@ this all in desperation)
 - Fixed #1181: Casting field spells on players not giving criminal status even when
   SPELLFLAG_HARM is set.
 - Fixed #1182: Crash when opening the .edit menu on a player with too many equipped items.
+
+18-05-2007, MrSugarCube
+- Modified #1155: The COMPONENT property of multi definitions can now be given the ID of
+  any scripted item.
