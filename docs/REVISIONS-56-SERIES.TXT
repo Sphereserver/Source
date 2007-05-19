@@ -3363,6 +3363,14 @@ this all in desperation)
   SPELLFLAG_HARM is set.
 - Fixed #1182: Crash when opening the .edit menu on a player with too many equipped items.
 
+17-05-2007, Furio
+- Added: DSPEECH prop to players. Its purpose is to intercept player speech like SpeechSelf, but it
+  allows multiple speech block (DSPEECH +spk_lol add spk_lol, DSPEECH -spk_lol removes it). Return 1
+  on the speech block interrupt execution and prevent the player from speaking, Return 4 blocks the
+  execution while allowing the player to speech.
+- Added: ISDSPEECH prop to players. Its purpose is to chech if a speech block is in DSPEECH in a
+  similar way of ISEVENT.
+
 18-05-2007, MrSugarCube
 - Modified #1155: The COMPONENT property of multi definitions can now be given the ID of
   any scripted item.
