@@ -614,20 +614,31 @@ void CItemContainer::Trade_Status( bool fCheck )
 		return;
 
 	CItem * pItem;
+	CItem * pItemNext;
 	int i, iCont1, iCont2;
 
 	CScriptTriggerArgs Args1(pChar1);
 	pItem = pPartner->GetContentHead();
-	for ( i = 1; pItem != NULL; pItem = pItem->GetNext(), ++i )
+	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
+	{
+		pItemNext = pItem->GetNext();
 		Args1.m_VarObjs.Insert( i, pItem, true );
+	}
+
 	Args1.m_iN1 = iCont1 = --i;
+	pItemNext = NULL;
 	//DEBUG_ERR(("Args1.m_iN1(%d) = iCont1(%d) = i(%d)\n",Args1.m_iN1, iCont1, i));
 
 	CScriptTriggerArgs Args2(pChar2);
 	pItem = GetContentHead();
-	for ( i = 1; pItem != NULL; pItem = pItem->GetNext(), ++i )
+	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
+	{
+		pItemNext = pItem->GetNext();
 		Args2.m_VarObjs.Insert( i, pItem, true );
+	}
+
 	Args2.m_iN1 = iCont2 = --i;
+	pItemNext = NULL;
 	//DEBUG_ERR(("Args2.m_iN1(%d) = iCont2(%d) = i(%d)\n",Args2.m_iN1, iCont2, i));
 
 	Args1.m_iN2 = iCont2;
@@ -636,12 +647,19 @@ void CItemContainer::Trade_Status( bool fCheck )
 		Delete(); //Return 1 in one of the triggers
 
 	pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItem->GetNext())
+	for ( ; pItem != NULL; pItem = pItemNext)
+	{
+		pItemNext = pItem->GetNext();
 		pChar2->ItemBounce( pItem );
+	}
 
-	pItem = pPartner->GetContentHead();
-	for ( ; pItem != NULL; pItem = pItem->GetNext())
+	pItemNext = NULL;
+	pItem = pPartner->GetContentHead();	
+	for ( ; pItem != NULL; pItem = pItemNext)
+	{
+		pItemNext = pItem->GetNext();
 		pChar1->ItemBounce( pItem );
+	}
 
 	// done with trade.
 	Delete();

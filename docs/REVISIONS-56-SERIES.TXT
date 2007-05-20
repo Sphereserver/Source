@@ -3374,3 +3374,9 @@ this all in desperation)
 18-05-2007, MrSugarCube
 - Modified #1155: The COMPONENT property of multi definitions can now be given the ID of
   any scripted item.
+  
+20-05-2007, Furio
+- Fixed: Trade windows not bouncing correctly some of the items.
+
+20-05-2007, MrSugarCube
+- Fixed: Sphere running slowly, due to new threading not ticking as much as old threading.
