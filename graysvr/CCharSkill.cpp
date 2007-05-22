@@ -249,6 +249,12 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 			}
 			break;
 		case STAT_INT:
+			{
+				CCharBase * pCharDef = Char_GetDef();
+		
+				if ( pCharDef && !pCharDef->m_Int )
+					pCharDef->m_Int = iVal;
+			}
 			break;
 		case STAT_KARMA:		// -10000 to 10000
 			iVal = maximum(-10000, minimum(10000, iVal));
