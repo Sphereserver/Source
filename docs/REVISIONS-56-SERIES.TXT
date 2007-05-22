@@ -3383,3 +3383,6 @@ this all in desperation)
 
 22-05-2007, ShadowDragon
 - Added: Support for Int and Color options to CHARDEF.
+
+22-05-2007, Camelotten (Script pack)
+- Fixed: jobvet.scp - an excessive '<' in "<SRC.SEX <Mi'Lord/Mi'Lady>".

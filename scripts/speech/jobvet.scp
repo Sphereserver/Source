@@ -332,13 +332,13 @@ ON=buy
 	ELSE
 		IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
 			DORAND 3
-				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX <Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
+				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
 				SAY I merely sell my services, <SRC.SEX Mi'lord/Mi'lady>, and a few srcolls of healing.
 				SAY Perhaps thou'rt asking about the services I offer.
 			ENDDO
 		ELSE
 			DORAND 3
-				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX <Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
+				SAY Unless thou'rt in my profession, I have little that thou would be likely to need, <SRC.SEX Mi'Lord/Mi'Lady>. Perhaps an animal handler would likely have provisions and equipment for thee to purchase.
 				SAY I merely sell my services, <SRC.SEX Mi'lord/Mi'lady>, and a few srcolls of healing.
 				SAY Perhaps thou'rt asking about the services I offer.
 			ENDDO
