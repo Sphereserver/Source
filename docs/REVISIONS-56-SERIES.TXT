@@ -3380,3 +3380,6 @@ this all in desperation)
 
 20-05-2007, MrSugarCube
 - Fixed: Sphere running slowly, due to new threading not ticking as much as old threading.
+
+22-05-2007, ShadowDragon
+- Added: Support for Int and Color options to CHARDEF.

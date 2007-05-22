@@ -19,6 +19,7 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	m_wBloodHue = 0;
 	m_Str = 0;
 	m_Dex = 0;
+	m_Int = 0;
 
 	m_iMoveRate = g_Cfg.m_iMoveRate;
 
@@ -151,6 +152,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case CBC_ARMOR:
 			sVal.FormatVal( m_defense );
 			break;
+		case CBC_COLOR:
+			sVal.FormatHex( m_wColor );
+			break;
 		case CBC_DESIRES:
 			{
 				TCHAR *pszTmp = Str_GetTemp();
@@ -176,6 +180,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case CBC_ICON:
 			sVal.FormatHex( m_trackID );
+			break;
+		case CBC_INT:
+			sVal.FormatVal( m_Int );
 			break;
 		case CBC_JOB:
 			sVal = GetTradeName();
@@ -234,6 +241,9 @@ bool CCharBase::r_LoadVal( CScript & s )
 		case CBC_ARMOR:
 			m_defense = s.GetArgVal();
 			break;
+		case CBC_COLOR:
+			m_wColor = s.GetArgVal();
+			break;
 		case CBC_DESIRES:
 			m_Desires.Load( s.GetArgStr() );
 			break;
@@ -262,6 +272,9 @@ bool CCharBase::r_LoadVal( CScript & s )
 			{
 				return SetDispID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()));
 			}
+		case CBC_INT:
+			m_Int = s.GetArgVal();
+			break;
 		case CBC_MAXFOOD:
 			m_MaxFood = s.GetArgVal();
 			break;
