@@ -306,11 +306,11 @@ bool CDataBase::query(const char *query)
 			char	key[12];
 			resultarray_t * rfields = GetResultArrayBuffer();
 			int		rownum = 0;
-			char	*zStore = Str_GetTemp();
+			TemporaryString zStore;
 
 			while ( pCurrent->DbFetchRow(rfields) > 0 )
 			{
-				for ( int i = 0; i < num_fields; i++ )
+				for ( int i = 0; i < num_fields; ++i, zStore.setAt(0,'\0') )
 				{
 					char *z = rfields[i].data;
 
@@ -352,11 +352,11 @@ bool CDataBase::query(const char *query)
 bool __cdecl CDataBase::queryf(char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::queryf");
-	char	*buf = Str_GetTemp();
+	TemporaryString buf;
 	va_list	marker;
 
 	va_start(marker, fmt);
-	vsprintf(buf, fmt, marker);
+	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
 	return this->query(buf);
@@ -399,11 +399,11 @@ void CDataBase::exec(const char *query)
 void __cdecl CDataBase::execf(char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::execf");
-	char	*buf = Str_GetTemp();
+	TemporaryString buf;
 	va_list	marker;
 
 	va_start(marker, fmt);
-	vsprintf(buf, fmt, marker);
+	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
 	this->exec(buf);

@@ -332,18 +332,18 @@ void CClient::Announce( bool fArrive ) const
 
 		switch ( GetPrivLevel() )
 		{
-		case PLEVEL_Owner:
-		case PLEVEL_Admin:
-			zTitle = "Admin";
-			break;
-		case PLEVEL_Seer:
-			zTitle = "Seer";
-			break;
-		case PLEVEL_Counsel:
-			zTitle = "Counselor";
-			break;
-		default:
-			zTitle = "GM";
+			case PLEVEL_Owner:
+			case PLEVEL_Admin:
+				zTitle = "Admin";
+				break;
+			case PLEVEL_Seer:
+				zTitle = "Seer";
+				break;
+			case PLEVEL_Counsel:
+				zTitle = "Counselor";
+				break;
+			default:
+				zTitle = "GM";
 		}
 
 		sprintf(zMsg, "@231 STAFF: %s %s logged %s.", zTitle, m_pChar->GetName(), ( fArrive ? "in" : "out" ));

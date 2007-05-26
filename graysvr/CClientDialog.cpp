@@ -618,16 +618,12 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 
 		{
 			z_uLong mCompressLen = z_compressBound( lengthControls );
-			BYTE * mCompress =  new BYTE[mCompressLen];
+			BYTE * mCompress = new BYTE[mCompressLen];
 
-			TCHAR * pszMsg = Str_GetTemp();
-			TCHAR * pszFull;
-			if ( lengthControls > 4096 )
-				pszFull = new TCHAR[lengthControls];
-			else
-				pszFull = Str_GetTemp();
+			TemporaryString pszMsg;
+			TCHAR * pszFull = new TCHAR[lengthControls];
 
-			for ( i=0; i<iControls; i++)
+			for ( i=0; i<iControls; ++i, pszMsg.setAt(0, '\0'))
 			{
 				sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);	
 				if ( i == 0 )
@@ -637,7 +633,7 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 			}
 	
 			int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pszFull, lengthControls, Z_DEFAULT_COMPRESSION);
-			if ( lengthControls > 4096 ) { delete [] pszFull; }
+			delete [] pszFull;
 
 			if ( error != Z_OK )
 			{
@@ -646,10 +642,9 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 				g_Log.EventError( "Compress failed with error %d when generating gump. Using old packet.\n", error );
 				goto olddialogprocedure;
 			}
-			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
-			
-			cmd.CompressedGumpDialog.m_compressed_lenCmds = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
 
+			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
+			cmd.CompressedGumpDialog.m_compressed_lenCmds = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
 			delete [] mCompress;
 
 			len += (int)mCompressLen;
@@ -759,8 +754,8 @@ olddialogprocedure:
 		cmd.GumpDialog.m_lenCmds = lengthControls;
 		xSend( &cmd, 21, true );
 
-		TCHAR	*pszMsg = Str_GetTemp();
-		for ( i=0; i<iControls; i++)
+		TemporaryString pszMsg;
+		for ( i=0; i<iControls; ++i, pszMsg.setAt(0,'\0'))
 		{
 			sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);
 			xSend(pszMsg, strlen(pszMsg), true );

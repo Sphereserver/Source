@@ -321,97 +321,97 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 
 	switch ( FindTableSorted( pszCommand, sm_szCmd_Chat, COUNTOF(sm_szCmd_Chat)))
 	{
-	case 0: // "ALLKICK"
-	{
-		if (!pChannel)
+		case 0: // "ALLKICK"
 		{
-			pBy->SendChatMsg(CHATMSG_MustBeInAConference);
-			return;
-		}
-		if (!pChannel->IsModerator(pBy->GetChatName()))
-		{
-			pBy->SendChatMsg(CHATMSG_MustHaveOps);
-			return;
-		}
-		pChannel->KickAll(pBy);
-		DecorateName(sFrom, NULL, true);
-		pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "All members have been kicked!", "");
-		return;
-	}
-	case 1: // "BC"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-		{
-need_gm_privs:
+			if (!pChannel)
+			{
+				pBy->SendChatMsg(CHATMSG_MustBeInAConference);
+				return;
+			}
+			if (!pChannel->IsModerator(pBy->GetChatName()))
+			{
+				pBy->SendChatMsg(CHATMSG_MustHaveOps);
+				return;
+			}
+			pChannel->KickAll(pBy);
 			DecorateName(sFrom, NULL, true);
-			pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "You need to have GM privs to use this command.");
+			pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "All members have been kicked!", "");
 			return;
 		}
-		Broadcast(pBy, pszText);
-		return;
-	}
-	case 2: // "BCALL"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-			goto need_gm_privs;
-		Broadcast(pBy, pszText, "", true);
-		return;
-	}
-	case 3: // "CHATSOK"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-			goto need_gm_privs;
-		if (!m_fChatsOK)
+		case 1: // "BC"
 		{
-			m_fChatsOK = true;
-			Broadcast(NULL, "Conference creation is enabled.");
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			{
+	need_gm_privs:
+				DecorateName(sFrom, NULL, true);
+				pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "You need to have GM privs to use this command.");
+				return;
+			}
+			Broadcast(pBy, pszText);
+			return;
 		}
-		return;
-	}
-	case 4: // "CLEARIGNORE"
-	{
-		pBy->ClearIgnoreList();
-		return;
-	}
-	case 5: // "KILLCHATS"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-			goto need_gm_privs;
-		KillChannels();
-		return;
-	}
-	case 6: // "NOCHATS"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-			goto need_gm_privs;
-		if (m_fChatsOK)
+		case 2: // "BCALL"
 		{
-			Broadcast(NULL, "Conference creation is now disabled.");
-			m_fChatsOK = false;
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+				goto need_gm_privs;
+			Broadcast(pBy, pszText, "", true);
+			return;
 		}
-		return;
-	}
-	case 7: // "SYSMSG"
-	{
-		if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
-			goto need_gm_privs;
-		Broadcast(NULL, pszText, "", true);
-		return;
-	}
-	case 8:	// "WHEREIS"
-	{
-		WhereIs(pBy, pszText);
-		return;
-	}
-	default:
-	{
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, "Unknown command: '%s'", pszCommand);
-		CGString sFrom;
-		DecorateName(sFrom, NULL, true);
-		pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, pszMsg);
-		return;
-	}
+		case 3: // "CHATSOK"
+		{
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+				goto need_gm_privs;
+			if (!m_fChatsOK)
+			{
+				m_fChatsOK = true;
+				Broadcast(NULL, "Conference creation is enabled.");
+			}
+			return;
+		}
+		case 4: // "CLEARIGNORE"
+		{
+			pBy->ClearIgnoreList();
+			return;
+		}
+		case 5: // "KILLCHATS"
+		{
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+				goto need_gm_privs;
+			KillChannels();
+			return;
+		}
+		case 6: // "NOCHATS"
+		{
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+				goto need_gm_privs;
+			if (m_fChatsOK)
+			{
+				Broadcast(NULL, "Conference creation is now disabled.");
+				m_fChatsOK = false;
+			}
+			return;
+		}
+		case 7: // "SYSMSG"
+		{
+			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+				goto need_gm_privs;
+			Broadcast(NULL, pszText, "", true);
+			return;
+		}
+		case 8:	// "WHEREIS"
+		{
+			WhereIs(pBy, pszText);
+			return;
+		}
+		default:
+		{
+			TCHAR *pszMsg = Str_GetTemp();
+			sprintf(pszMsg, "Unknown command: '%s'", pszCommand);
+			CGString sFrom;
+			DecorateName(sFrom, NULL, true);
+			pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, pszMsg);
+			return;
+		}
 	}
 }
 

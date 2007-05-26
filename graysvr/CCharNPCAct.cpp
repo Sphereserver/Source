@@ -531,7 +531,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	}
 
 	// Did they mention a skill name i recognize ?
-	TCHAR *pszMsg = Str_GetTemp();
+	TemporaryString pszMsg;
 
 	int i=SKILL_NONE+1;
 	for ( ; i<MAX_SKILL; i++ )

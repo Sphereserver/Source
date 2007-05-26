@@ -276,7 +276,7 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetLimit");
 	CVarDefCont * pTagStorage = NULL;
-	TCHAR * sStatName = Str_GetTemp();
+	TemporaryString sStatName;
 
 	if ( m_pPlayer )
 	{
@@ -422,7 +422,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMax");
 	CVarDefCont * pTagStorage = NULL;
-	TCHAR * sSkillName = Str_GetTemp();
+	TemporaryString sSkillName;
 
 	// What is my max potential in this skill ?
 	if ( m_pPlayer )

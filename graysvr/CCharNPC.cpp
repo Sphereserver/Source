@@ -795,7 +795,7 @@ void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
 
 	if ( m_Need.GetResourceID().IsValidUID())
 	{
-		TCHAR *pszTmp = Str_GetTemp();
+		TemporaryString pszTmp;
 		m_Need.WriteKey( pszTmp );
 		s.WriteKey( "NEED", pszTmp );
 	}
