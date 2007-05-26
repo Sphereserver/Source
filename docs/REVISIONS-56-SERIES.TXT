@@ -3389,3 +3389,6 @@ this all in desperation)
 
 26-05-2007, MrSugarCube
 - Fixed #1194: Polymorph becoming a permanent effect during worldsaves.
+
+27-05-2007, Nazghul
+- Added: MODAR on weapons should modify the DAM effect of a weapon
