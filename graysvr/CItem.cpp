@@ -3561,7 +3561,7 @@ int CItem::Weapon_GetAttack(bool bNoRandom) const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	int iVal = pItemDef->m_attackBase;
+	int iVal = pItemDef->m_attackBase + m_ModAr;
 	if ( bNoRandom ) 
 		iVal += pItemDef->m_attackRange;
 	else
