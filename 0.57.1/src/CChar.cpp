@@ -470,11 +470,6 @@ int CChar::FixWeirdness()
 	{
 		SetName( pCharDef->GetTypeName());
 	}
-	if ( ! CCharBase::IsValidDispID( GetID()) && CCharBase::IsHumanID( m_prev_id ))
-	{
-		// This is strange. (has human body)
-		m_prev_id = GetID();
-	}
 
 	if ( m_pPlayer )	// Player char.
 	{

@@ -3386,3 +3386,6 @@ this all in desperation)
 
 22-05-2007, Camelotten (Script pack)
 - Fixed: jobvet.scp - an excessive '<' in "<SRC.SEX <Mi'Lord/Mi'Lady>".
+
+26-05-2007, MrSugarCube
+- Fixed #1194: Polymorph becoming a permanent effect during worldsaves.

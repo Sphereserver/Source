@@ -515,18 +515,13 @@ int CChar::FixWeirdness()
 	{
 		SetName( pCharDef->GetTypeName());
 	}
-	if ( ! CCharBase::IsValidDispID( GetID()) && CCharBase::IsHumanID( m_prev_id ))
-	{
-		// This is strange. (has human body)
-		m_prev_id = GetID();
-	}
 
 	if ( m_pPlayer )	// Player char.
 	{
 		Memory_ClearTypes(MEMORY_ISPAWNED|MEMORY_IPET);
 		StatFlag_Clear( STATF_Ridden );
 
-		if ( m_pPlayer->GetSkillClass() == NULL )	// this hsould never happen.
+		if ( m_pPlayer->GetSkillClass() == NULL )	// this should never happen.
 		{
 			m_pPlayer->SetSkillClass( this, RESOURCE_ID( RES_SKILLCLASS ));
 			ASSERT(m_pPlayer->GetSkillClass());
