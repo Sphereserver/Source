@@ -9,10 +9,6 @@
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
-// temporary string storage
-#define THREAD_STRING_STORAGE	4096
-#define THREAD_STRING_LENGTH	4096
-
 volatile long g_tmpStringIndex = 0;
 char g_tmpStringUsed[THREAD_STRING_STORAGE];
 char g_tmpStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
@@ -386,7 +382,7 @@ char *AbstractSphereThread::allocateBuffer()
 	long initialPosition = g_tmpStringIndex;
 	while( true )
 	{
-		long index = g_tmpStringIndex++;
+		long index = ++g_tmpStringIndex;
 		if( g_tmpStringIndex >= THREAD_STRING_STORAGE )
 		{
 			index = g_tmpStringIndex %= THREAD_STRING_STORAGE;
@@ -407,6 +403,7 @@ char *AbstractSphereThread::allocateBuffer()
 		{
 			// but the best is to throw an exception to give better formed information for end users
 			// rather than access violations
+			DEBUG_WARN(( "Thread temporary string buffer is full.\n" ));
 			throw new CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}

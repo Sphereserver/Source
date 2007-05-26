@@ -65,8 +65,8 @@
 		virtual void SysMessage( LPCTSTR pszMessage ) const = 0;	// Feed back message.
 		int VSysMessage( LPCTSTR pszFormat, va_list args ) const
 		{
-			TCHAR *pszTemp = Str_GetTemp();
-			size_t ilen = vsprintf( pszTemp, pszFormat, args );
+			TemporaryString pszTemp;
+			size_t ilen = _vsnprintf( pszTemp, pszTemp.realLenght(), pszFormat, args );
 			SysMessage( pszTemp );
 			return( ilen );
 		}

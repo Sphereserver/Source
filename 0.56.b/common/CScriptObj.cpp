@@ -1523,7 +1523,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 	{
 		TCHAR *		pszCond;
 		CGString	pszOrig;
-		TCHAR		*pszTemp = Str_GetTemp();
+		TemporaryString pszTemp;
 		int			iWhile	= 0;
 
 		pszOrig.Copy( s.GetArgStr() );
@@ -2259,9 +2259,10 @@ jump_in:
 				break;
 
 			default:
-				if( strchr(s.GetKey(), '<') ) {
+				if( strchr(s.GetKey(), '<') ) 
+				{
 					EXC_SET("parsing <> in a key");
-					char *buf = Str_GetTemp();
+					TemporaryString buf;
 					strcpy(buf, s.GetKey());
 					ParseText(buf, pSrc, 0, pArgs);
 					strcat(buf, " ");

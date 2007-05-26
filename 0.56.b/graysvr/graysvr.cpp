@@ -171,7 +171,7 @@ int CEventLog::VEvent( DWORD wMask, LPCTSTR pszFormat, va_list args )
 	if ( !pszFormat || !*pszFormat )
 		return false;
 
-	TCHAR	*pszTemp = Str_GetTemp();
+	TemporaryString pszTemp;
 	size_t len = _vsnprintf(pszTemp, (SCRIPT_MAX_LINE_LEN - 1), pszFormat, args);
 	if ( ! len ) strncpy(pszTemp, pszFormat, (SCRIPT_MAX_LINE_LEN - 1));
 

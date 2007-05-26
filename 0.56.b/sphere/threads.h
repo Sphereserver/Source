@@ -1,6 +1,10 @@
 #ifndef THREADS_H
 #define THREADS_H
 
+// temporary string storage
+#define THREAD_STRING_STORAGE	4096
+#define THREAD_STRING_LENGTH	4096
+
 #include "../common/common.h"
 #include "../sphere/strings.h"
 
