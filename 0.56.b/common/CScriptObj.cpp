@@ -2083,7 +2083,7 @@ jump_in:
 					{
 						TCHAR * ppArgs[2];
 						TCHAR * tempPoint;
-						TCHAR 	*porigValue = Str_GetTemp();
+						TemporaryString porigValue;
 						
 						int iArgQty = Str_ParseCmds( (TCHAR*) s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), " \t," );
 						
@@ -2139,7 +2139,7 @@ jump_in:
 							SKIP_SEPARATORS(pszKey);
 						
 							TCHAR * ppArgs[2];
-							TCHAR * ppParsed = Str_GetTemp();
+							TemporaryString ppParsed;
 
 							if ( Str_ParseCmds( (TCHAR*) pszKey, ppArgs, COUNTOF(ppArgs), " \t," ) >= 1 )
 							{

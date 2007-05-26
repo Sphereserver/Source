@@ -587,9 +587,9 @@ void CItemMessage::r_Write( CScript & s )
 
 	s.WriteKey( "AUTHOR", m_sAuthor );
 
-	TCHAR *pszTemp = Str_GetTemp();
+	TemporaryString pszTemp;
 	// Store the message body lines. MAX_BOOK_PAGES
-	for ( int i=0; i<GetPageCount(); i++ )
+	for ( int i=0; i<GetPageCount(); ++i, pszTemp.setAt(0,'\0') )
 	{
 		sprintf(pszTemp, "BODY.%d", i);
 		LPCTSTR pszText = GetPageText(i);

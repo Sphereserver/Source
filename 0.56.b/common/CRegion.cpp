@@ -667,7 +667,7 @@ bool CRegionBase::r_LoadVal( CScript & s )
 void CRegionBase::r_WriteBody( CScript & s, LPCTSTR pszPrefix )
 {
 	ADDTOCALLSTACK("CRegionBase::r_WriteBody");
-	char	*z = Str_GetTemp();
+	TemporaryString z;
 	if ( GetRegionFlags())
 	{
 		sprintf(z, "%sFLAGS", pszPrefix);
@@ -1047,7 +1047,7 @@ void CRegionWorld::r_WriteModified( CScript &s )
 void CRegionWorld::r_WriteBody2( CScript &s, LPCTSTR pszPrefix )
 {
 	ADDTOCALLSTACK("CRegionWorld::r_WriteBody2");
-	char	*z = Str_GetTemp();
+	TemporaryString z;
 
 	if ( m_Events.GetCount())
 	{

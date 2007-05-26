@@ -515,8 +515,9 @@ void CItemStone::r_Write( CScript & s )
 	{
 		s.WriteKey( "ABBREV", m_sAbbrev );
 	}
-	TCHAR *pszTemp = Str_GetTemp();
-	for ( int i = 0; i<COUNTOF(m_sCharter); i++ )
+
+	TemporaryString pszTemp;
+	for ( int i = 0; i<COUNTOF(m_sCharter); i++, pszTemp.setAt(0, '\0') )
 	{
 		if ( ! m_sCharter[i].IsEmpty())
 		{
@@ -567,7 +568,7 @@ LPCTSTR CItemStone::GetAlignName() const
 #else
 	int iAlign = GetAlignType();
 
-	TCHAR * sDefname = Str_GetTemp();
+	TemporaryString sDefname;
 	sprintf(sDefname, "GUILDCONFIG_ALIGN_%d", iAlign);
 	
 	LPCTSTR sRes = g_Exp.m_VarDefs.GetKeyStr(sDefname);

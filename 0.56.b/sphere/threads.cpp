@@ -9,9 +9,15 @@
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
+// Normal Buffer
 volatile long g_tmpStringIndex = 0;
-char g_tmpStringUsed[THREAD_STRING_STORAGE];
-char g_tmpStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
+char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
+
+// TemporaryString Buffer
+volatile long g_tmpTemporaryStringIndex = 0;
+char g_tmpTemporaryStringUsed[THREAD_STRING_STORAGE];
+char g_tmpTemporaryStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
+
 
 /**
  * ThreadHolder
@@ -106,7 +112,8 @@ void ThreadHolder::init()
 		}
 
 		memset(g_tmpStrings, 0, sizeof(g_tmpStrings));
-		memset(g_tmpStringUsed, 0, sizeof(g_tmpStringUsed));
+		memset(g_tmpTemporaryStringUsed, 0, sizeof(g_tmpTemporaryStringUsed));
+		memset(g_tmpTemporaryStrings, 0, sizeof(g_tmpTemporaryStrings));
 
 		m_inited = true;
 	}
@@ -377,20 +384,37 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 {
 }
 
+// IMHO we need a lock on allocateBuffer and allocateStringBuffer
+
 char *AbstractSphereThread::allocateBuffer()
 {
-	long initialPosition = g_tmpStringIndex;
+	char * buffer = NULL; g_tmpStringIndex++;
+
+	if( g_tmpStringIndex >= THREAD_TSTRING_STORAGE )
+	{
+		g_tmpStringIndex %= THREAD_TSTRING_STORAGE;
+	}
+
+	buffer = g_tmpStrings[g_tmpStringIndex];
+	*buffer = '\0';
+
+	return buffer;
+}
+
+char *AbstractSphereThread::allocateStringBuffer()
+{
+	long initialPosition = g_tmpTemporaryStringIndex;
 	while( true )
 	{
-		long index = ++g_tmpStringIndex;
-		if( g_tmpStringIndex >= THREAD_STRING_STORAGE )
+		long index = ++g_tmpTemporaryStringIndex;
+		if( g_tmpTemporaryStringIndex >= THREAD_STRING_STORAGE )
 		{
-			index = g_tmpStringIndex %= THREAD_STRING_STORAGE;
+			index = g_tmpTemporaryStringIndex %= THREAD_STRING_STORAGE;
 		}
 
-		if( g_tmpStringUsed[index] == 0 )
+		if( g_tmpTemporaryStringUsed[index] == 0 )
 		{
-			char *buffer = g_tmpStrings[index];
+			char *buffer = g_tmpTemporaryStrings[index];
 			*buffer = '\0';
 			return buffer;
 		}
@@ -411,14 +435,14 @@ char *AbstractSphereThread::allocateBuffer()
 
 String AbstractSphereThread::allocateString()
 {
-	TemporaryString s(allocateBuffer(), &g_tmpStringUsed[g_tmpStringIndex]);
+	TemporaryString s(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
 
 	return s;
 }
 
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
-	string.init(allocateBuffer(), &g_tmpStringUsed[g_tmpStringIndex]);
+	string.init(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
 }
 
 bool AbstractSphereThread::shouldExit()

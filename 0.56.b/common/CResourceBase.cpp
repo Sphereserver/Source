@@ -401,7 +401,7 @@ LPCTSTR CResourceDef::GetResourceName() const
 	if ( m_pDefName )
 		return m_pDefName->GetKey();
 
-	TCHAR	*pszTmp = Str_GetTemp();
+	TemporaryString pszTmp;
 	sprintf(pszTmp, "0%x", GetResourceID().GetResIndex());
 	return pszTmp;
 }
@@ -1103,7 +1103,8 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 void CResourceRefArray::WriteResourceRefList( CGString & sVal ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::WriteResourceRefList");
-	TCHAR *pszVal = Str_GetTemp();
+	TemporaryString tsVal;
+	TCHAR * pszVal = (char*)tsVal;
 	int len = 0;
 	for ( int j=0;j<GetCount(); j++ )
 	{

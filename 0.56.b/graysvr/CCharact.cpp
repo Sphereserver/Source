@@ -3340,7 +3340,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		EXC_SET("chardef");
 		// Is there an [EVENT] block call here?
-		char * sCharTrigName = Str_GetTemp();
+		TemporaryString sCharTrigName;
 		sprintf(sCharTrigName, "@char%s", pszTrigName+1);
 		int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 		//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
