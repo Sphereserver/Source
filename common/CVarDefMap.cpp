@@ -70,7 +70,7 @@ void CVarDefContNum::SetValNum( int iVal )
 
 inline LPCTSTR CVarDefContNum::GetValStr() const
 {
-	TCHAR * pszTmp = Str_GetTemp();
+	TemporaryString pszTmp;
 	sprintf(pszTmp, "0%x", m_iVal);
 	return pszTmp;
 }
@@ -649,9 +649,10 @@ void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyEx
 	LPCTSTR		pszVal;
 	bool bHasPrefix = (pszPrefix && *pszPrefix);
 	bool bHasExclude = (pszKeyExclude && *pszKeyExclude);
+	TemporaryString z;
 
 	// Write with any prefix.
-	for ( DefSet::const_iterator i = m_Container.begin(); i != m_Container.end(); ++i )
+	for ( DefSet::const_iterator i = m_Container.begin(); i != m_Container.end(); ++i, z.setAt(0, '0') )
 	{
 		const CVarDefCont * pVar = (*i);
 		if ( !pVar )
@@ -662,8 +663,6 @@ void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyEx
 
 		if ( bHasExclude && !strcmpi(pszKeyExclude, pVar->GetKey()))
 			continue;
-
-		char	*z = Str_GetTemp();
 
 		if ( bHasPrefix )
 			sprintf(z, "%s.%s", pszPrefix, pVar->GetKey());

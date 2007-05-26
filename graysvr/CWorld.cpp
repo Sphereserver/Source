@@ -1001,7 +1001,7 @@ void CWorld::Init()
 	}
 
 	m_Sectors = (CSector**)malloc(sectors * sizeof(CSector*));
-	char *z = Str_GetTemp(), *z1 = Str_GetTemp();
+	TemporaryString z, z1;
 
 	for ( m = 0; m < 256; m++ )
 	{
@@ -2059,10 +2059,10 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 void __cdecl CWorld::Broadcast(LPCTSTR pMsg, ...) // System broadcast in bold text
 {
 	ADDTOCALLSTACK("CWorld::Broadcast");
-	TCHAR	*sTemp = Str_GetTemp();
+	TemporaryString sTemp;
 	va_list vargs;
 	va_start(vargs, pMsg);
-	vsprintf(sTemp, pMsg, vargs);
+	_vsnprintf(sTemp, sTemp.realLenght(), pMsg, vargs);
 	va_end(vargs);
 	Speak( NULL, sTemp, HUE_TEXT_DEF, TALKMODE_BROADCAST, FONT_BOLD );
 	g_Serv.SocketsFlush();

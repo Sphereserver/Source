@@ -36,6 +36,11 @@ int AbstractString::length()
 	return m_length;
 }
 
+int AbstractString::realLenght()
+{
+	return m_realLength;
+}
+
 bool AbstractString::isEmpty()
 {
 	return m_length != 0;
@@ -137,6 +142,16 @@ int AbstractString::lastIndexOf(char c)
 	return ( pos == NULL ) ? -1 : pos - m_buf;
 }
 
+AbstractString::operator LPCTSTR() const
+{
+	return m_buf;
+}
+
+AbstractString::operator char*()
+{
+	return m_buf;
+}
+
 /*
  * String
 */
@@ -186,7 +201,7 @@ void String::ensureLength(int newLength)
 */
 
 int TemporaryString::m_tempPosition = 0;
-char TemporaryString::m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][512];
+char TemporaryString::m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
 
 TemporaryString::TemporaryString()
 {
@@ -213,6 +228,11 @@ TemporaryString::TemporaryString(char *buffer, char *state)
 	init(buffer, state);
 }
 
+TemporaryString::~TemporaryString()
+{
+	destroy();
+}
+
 void TemporaryString::init(char *buffer, char *state)
 {
 	m_useHeap = false;
@@ -221,11 +241,11 @@ void TemporaryString::init(char *buffer, char *state)
 	if( m_state != NULL )
 	{
 		*m_state = 'U';
-		m_realLength = 1024;
+		m_realLength = THREAD_STRING_LENGTH;
 	}
 	else
 	{
-		m_realLength = 512;
+		m_realLength = THREAD_STRING_LENGTH;
 	}
 	m_length = 0;
 }

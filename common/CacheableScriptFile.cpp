@@ -32,7 +32,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 
 	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
-	char *buf = Str_GetTemp();
+	TemporaryString buf;
 	
 	while( !feof(m_pStream) ) 
 	{

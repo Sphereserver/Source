@@ -11,6 +11,7 @@ public:
 
 	// information
 	int length();
+	int realLenght();
 	bool isEmpty();
 	const char *toBuffer();
 
@@ -35,6 +36,10 @@ public:
 	int indexOf(const char *s);
 	int lastIndexOf(char c);
 
+	// operator
+	operator LPCTSTR() const;       // as a C string
+	operator char*();				// as a C string
+
 protected:
 	// not implemented, should take care that newLength should fit in the buffer
 	virtual void ensureLength(int newLength);
@@ -54,8 +59,8 @@ public:
 	String();
 
 protected:
-	virtual void ensureLength(int newLength);
-	virtual void destroy();
+	void ensureLength(int newLength);
+	void destroy();
 };
 
 #define MAX_TEMP_LINES_NO_CONTEXT	512
@@ -70,13 +75,14 @@ class TemporaryString : public String
 public:
 	TemporaryString();
 	TemporaryString(char *buffer, char *state);
+	~TemporaryString();
 
 	// should not really be used, made for use of AbstractSphereThread *only*
 	void init(char *buffer, char *state);
 
 protected:
-	virtual void ensureLength(int newLength);
-	virtual void destroy();
+	void ensureLength(int newLength);
+	void destroy();
 
 private:
 	bool	m_useHeap;					// a mark whatever we are in heap (String) or stack (ThreadLocal) mode
@@ -85,7 +91,7 @@ private:
 	// static buffer to allow similar operations for non-threaded environment
 	// NOTE: this buffer have no protection against overrun, so beware
 	static	int m_tempPosition;
-	static	char m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][512];
+	static	char m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
 };
 
 #endif

@@ -398,8 +398,8 @@ bool CScript::FindSection( LPCTSTR pszName, UINT uModeFlags )
 		return( false );
 	}
 
-	TCHAR	*pszSec = Str_GetTemp();
-	sprintf(pszSec, "[%s]", pszName);
+	TemporaryString pszSec;
+	sprintf((char*)pszSec, "[%s]", pszName);
 	if ( FindTextHeader(pszSec))
 	{
 		// Success
@@ -454,7 +454,8 @@ bool CScript::ReadKeyParse() // Read line from script
 	LPCTSTR	pszArgs	= m_pszArg;
 	pszArgs+=2;
 	GETNONWHITESPACE( pszArgs );
-	TCHAR	*buf = Str_GetTemp();
+	TemporaryString buf;
+
 	if ( m_pszArg[0] == '.' )
 	{
 		if ( *pszArgs == '"' )
@@ -466,14 +467,14 @@ bool CScript::ReadKeyParse() // Read line from script
 				*pQuote	= '\0';
 			}
 		}
-		sprintf( buf, "<%s>%s", m_pszKey, pszArgs );
+		sprintf( (char*)buf, "<%s>%s", m_pszKey, pszArgs );
 	}
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '+' )
-		sprintf( buf, "<eval (<%s> +1)>", m_pszKey );
+		sprintf( (char*)buf, "<eval (<%s> +1)>", m_pszKey );
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '-' )
-		sprintf( buf, "<eval (<%s> -1)>", m_pszKey );
+		sprintf( (char*)buf, "<eval (<%s> -1)>", m_pszKey );
 	else
-		sprintf( buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
+		sprintf( (char*)buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
 	strcpy( m_pszArg, buf );
 
 	return true;
@@ -574,15 +575,25 @@ bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 	return( true );
 }
 
+//void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
+//{
+//	ADDTOCALLSTACK("CScript::WriteKeyFormat");
+//	TCHAR	*pszTemp = Str_GetTemp();
+//	va_list vargs;
+//	va_start( vargs, pszVal );
+//	vsprintf(pszTemp, pszVal, vargs);
+//	WriteKey(pszKey, pszTemp);
+//	va_end( vargs );
+//}
+
 void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
 {
 	ADDTOCALLSTACK("CScript::WriteKeyFormat");
-	TCHAR	*pszTemp = Str_GetTemp();
+	TemporaryString pszTemp;
 	va_list vargs;
 	va_start( vargs, pszVal );
-	vsprintf(pszTemp, pszVal, vargs);
+	_vsnprintf((char*)pszTemp, pszTemp.realLenght(), pszVal, vargs);
 	WriteKey(pszKey, pszTemp);
 	va_end( vargs );
 }
-
 
