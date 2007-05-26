@@ -36,7 +36,7 @@ int AbstractString::length()
 	return m_length;
 }
 
-int AbstractString::realLenght()
+int AbstractString::realLength()
 {
 	return m_realLength;
 }

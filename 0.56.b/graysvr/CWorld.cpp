@@ -1001,7 +1001,8 @@ void CWorld::Init()
 	}
 
 	m_Sectors = (CSector**)malloc(sectors * sizeof(CSector*));
-	TemporaryString z, z1;
+	TemporaryString z;
+	TemporaryString z1;
 
 	for ( m = 0; m < 256; m++ )
 	{
@@ -1019,7 +1020,7 @@ void CWorld::Init()
 	}
 	ASSERT(m_SectorsQty);
 
-	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", z);
+	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", (LPCTSTR)z);
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -2062,7 +2063,7 @@ void __cdecl CWorld::Broadcast(LPCTSTR pMsg, ...) // System broadcast in bold te
 	TemporaryString sTemp;
 	va_list vargs;
 	va_start(vargs, pMsg);
-	_vsnprintf(sTemp, sTemp.realLenght(), pMsg, vargs);
+	_vsnprintf(sTemp, sTemp.realLength(), pMsg, vargs);
 	va_end(vargs);
 	Speak( NULL, sTemp, HUE_TEXT_DEF, TALKMODE_BROADCAST, FONT_BOLD );
 	g_Serv.SocketsFlush();

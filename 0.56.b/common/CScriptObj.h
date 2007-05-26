@@ -66,7 +66,7 @@
 		int VSysMessage( LPCTSTR pszFormat, va_list args ) const
 		{
 			TemporaryString pszTemp;
-			size_t ilen = _vsnprintf( pszTemp, pszTemp.realLenght(), pszFormat, args );
+			size_t ilen = _vsnprintf( pszTemp, pszTemp.realLength(), pszFormat, args );
 			SysMessage( pszTemp );
 			return( ilen );
 		}

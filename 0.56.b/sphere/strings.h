@@ -11,7 +11,7 @@ public:
 
 	// information
 	int length();
-	int realLenght();
+	int realLength();
 	bool isEmpty();
 	const char *toBuffer();
 

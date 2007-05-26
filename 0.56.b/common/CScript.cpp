@@ -592,7 +592,7 @@ void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
 	TemporaryString pszTemp;
 	va_list vargs;
 	va_start( vargs, pszVal );
-	_vsnprintf((char*)pszTemp, pszTemp.realLenght(), pszVal, vargs);
+	_vsnprintf((char*)pszTemp, pszTemp.realLength(), pszVal, vargs);
 	WriteKey(pszKey, pszTemp);
 	va_end( vargs );
 }
