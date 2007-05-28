@@ -14,7 +14,7 @@ CDataBase::CDataBase()
 CDataBase::~CDataBase()
 {
 #ifndef _EXTERNAL_DLL
-	if ( _bConnected )
+	if ( isConnected() )
 		Close();
 #else
 	if ( isConnected() )
@@ -149,6 +149,7 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 		mysql_close(_myData);
 		return false;
 	}
+
 	return (_bConnected = true);
 #else
 	cDatabaseLoader * pCurrent = cDatabaseLoader::GetCurrentIstance();
@@ -225,7 +226,7 @@ bool CDataBase::query(const char *query)
 	m_QueryResult.SetNumNew("NUMROWS", 0);
 
 #ifndef _EXTERNAL_DLL
-	if ( !_bConnected )
+	if ( !isConnected() )
 		return false;
 
 	int			result;
@@ -366,6 +367,9 @@ void CDataBase::exec(const char *query)
 {
 	ADDTOCALLSTACK("CDataBase::exec");
 #ifndef _EXTERNAL_DLL
+	if ( !isConnected() )
+		return;
+
 	if ( mysql_query(_myData, query) )
 	{
 		const char *myErr = mysql_error(_myData);
@@ -432,7 +436,7 @@ bool CDataBase::OnTick()
 		return true;
 	tickcnt = 0;
 
-	if ( _bConnected )	//	currently connected - just check that the link is alive
+	if ( isConnected() )	//	currently connected - just check that the link is alive
 	{
 		if ( mysql_ping(_myData) )
 		{
