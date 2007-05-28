@@ -5,7 +5,10 @@
 #include "../common/CException.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-// #include "mutex.h"
+#ifdef _USESTRINGMUTEX
+    #include "mutex.h"
+#endif
+
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
