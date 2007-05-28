@@ -5,15 +5,18 @@
 #include "../common/CException.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
+// #include "mutex.h"
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
 // Normal Buffer
+// SimpleMutex g_tmpStringMutex;
 volatile long g_tmpStringIndex = 0;
 char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
 
 // TemporaryString Buffer
+// SimpleMutex g_tmpTemporaryStringMutex;
 volatile long g_tmpTemporaryStringIndex = 0;
 char g_tmpTemporaryStringUsed[THREAD_STRING_STORAGE];
 char g_tmpTemporaryStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
@@ -388,7 +391,10 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 
 char *AbstractSphereThread::allocateBuffer()
 {
-	char * buffer = NULL; g_tmpStringIndex++;
+//	SimpleThreadLock stlBuffer(g_tmpStringMutex);
+
+	char * buffer = NULL; 
+	g_tmpStringIndex++;
 
 	if( g_tmpStringIndex >= THREAD_TSTRING_STORAGE )
 	{
@@ -403,6 +409,8 @@ char *AbstractSphereThread::allocateBuffer()
 
 char *AbstractSphereThread::allocateStringBuffer()
 {
+//	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
+
 	long initialPosition = g_tmpTemporaryStringIndex;
 	while( true )
 	{
