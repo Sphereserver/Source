@@ -38,7 +38,7 @@ void SimpleMutex::unlock()
 #ifdef _WIN32
 	LeaveCriticalSection(&m_criticalSection);
 #else
-	pthread_mutex_unlock (&m_criticalSection);
+	pthread_mutex_unlock(&m_criticalSection);
 #endif
 }
 
