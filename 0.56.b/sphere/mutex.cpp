@@ -5,7 +5,7 @@
 SimpleMutex::SimpleMutex()
 {
 #ifdef _WIN32
-	InitializeCriticalSection(&m_criticalSection);
+	InitializeCriticalSectionAndSpinCount(&m_criticalSection, 0x80000100);
 #else
 	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
 	pthread_mutex_init(&m_criticalSection, &m_criticalSectionAttr)
