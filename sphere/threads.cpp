@@ -11,12 +11,16 @@
 #define EXCEPTIONS_ALLOWED	10
 
 // Normal Buffer
-// SimpleMutex g_tmpStringMutex;
+#ifdef _USESTRINGMUTEX
+    SimpleMutex g_tmpStringMutex;
+#endif
 volatile long g_tmpStringIndex = 0;
 char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
 
 // TemporaryString Buffer
-// SimpleMutex g_tmpTemporaryStringMutex;
+#ifdef _USESTRINGMUTEX
+    SimpleMutex g_tmpTemporaryStringMutex;
+#endif
 volatile long g_tmpTemporaryStringIndex = 0;
 char g_tmpTemporaryStringUsed[THREAD_STRING_STORAGE];
 char g_tmpTemporaryStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
@@ -391,7 +395,9 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 
 char *AbstractSphereThread::allocateBuffer()
 {
-//	SimpleThreadLock stlBuffer(g_tmpStringMutex);
+#ifdef _USESTRINGMUTEX
+	SimpleThreadLock stlBuffer(g_tmpStringMutex);
+#endif
 
 	char * buffer = NULL; 
 	g_tmpStringIndex++;
@@ -409,8 +415,6 @@ char *AbstractSphereThread::allocateBuffer()
 
 char *AbstractSphereThread::allocateStringBuffer()
 {
-//	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
-
 	long initialPosition = g_tmpTemporaryStringIndex;
 	while( true )
 	{
@@ -443,13 +447,20 @@ char *AbstractSphereThread::allocateStringBuffer()
 
 String AbstractSphereThread::allocateString()
 {
+#ifdef _USESTRINGMUTEX
+	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
+#endif
+    
 	TemporaryString s(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
-
 	return s;
 }
 
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
+#ifdef _USESTRINGMUTEX
+	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
+#endif
+    
 	string.init(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
 }
 
