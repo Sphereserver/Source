@@ -3396,3 +3396,6 @@ this all in desperation)
 28-05-2007, Furio
 - Fixed #1201: DB.EXECUTE executing commands also when not connected.
 
+29-05-2007, MrSugarCube
+- Fixed: Multis not being visible from a distance.
+
