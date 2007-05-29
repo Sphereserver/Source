@@ -63,6 +63,8 @@ GUILDCONFIG_ABBREV_MAXLENGTH		4
 GUILDCONFIG_ALLOW_ALLGUILD_SEARCH	1		// Search 'allguilds' for full guild list
 GUILDCONFIG_NSEARCH_MINLENGTH		4       // Don't set to 0, to allow allguild search simply set the above to 1
 GUILDCONFIG_MAX_NSEARCH_RES		    75		// 0 = unlimited
+GUILDCONFIG_CHAREVENT_NAME          e_GuildGenericEvent
+GUILDCONFIC_USEGUILDBUTTON          1
 
 [DEFNAME DEF_GUILDSYS_CONFIG_SPEECH]
 GUILDCFGSPEECH_GLOBAL_ENABLE         0
