@@ -947,10 +947,16 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 	if ( !pObj || /*pObj->*/IsDisconnected() )
 		return false;
 
+
+	//  if an object is normally visible at radar distance, then it is not
+	//  affected by GetSight()
+	int iVisualRange = pObj->GetVisualRange();
+	if (iVisualRange < UO_MAP_VIEW_RADAR)
+		iVisualRange = GetSight();
+
 	//	first check the distance since if this will fail, we do not need to scan all
 	//	subcontainers to find this result ;)
-
-	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDist(GetTopPoint()) > GetSight() )
+	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDist(GetTopPoint()) > iVisualRange )
 		return false;
 
 	if ( pObj->IsItem() )
