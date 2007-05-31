@@ -162,7 +162,7 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 
 	int portnum = 0;
 	char *port = NULL;
-	if ( port = strchr(host, ':') )
+	if ( port = (char*)strchr(host, ':') )
 	{
 		char *pszTemp = Str_GetTemp();
 		strcpy(pszTemp, host);

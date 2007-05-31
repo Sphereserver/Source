@@ -5,25 +5,18 @@
 #include "../common/CException.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-#ifdef _USESTRINGMUTEX
-    #include "mutex.h"
-#endif
-
+#include "mutex.h"
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
 // Normal Buffer
-#ifdef _USESTRINGMUTEX
-    SimpleMutex g_tmpStringMutex;
-#endif
+SimpleMutex g_tmpStringMutex;
 volatile long g_tmpStringIndex = 0;
 char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
 
 // TemporaryString Buffer
-#ifdef _USESTRINGMUTEX
-    SimpleMutex g_tmpTemporaryStringMutex;
-#endif
+SimpleMutex g_tmpTemporaryStringMutex;
 volatile long g_tmpTemporaryStringIndex = 0;
 char g_tmpTemporaryStringUsed[THREAD_STRING_STORAGE];
 char g_tmpTemporaryStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
@@ -184,7 +177,6 @@ void AbstractThread::start()
 #ifdef _WIN32
 	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, &m_id);
 #else
-	// pthread_create doesn't return the new thread id, so we set it in runner?
 	if ( pthread_create( &m_handle, NULL, &runner, this ) )
 	{
 		m_handle = (spherethread_t) NULL;
@@ -398,9 +390,7 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 
 char *AbstractSphereThread::allocateBuffer()
 {
-#ifdef _USESTRINGMUTEX
 	SimpleThreadLock stlBuffer(g_tmpStringMutex);
-#endif
 
 	char * buffer = NULL; 
 	g_tmpStringIndex++;
@@ -450,9 +440,7 @@ char *AbstractSphereThread::allocateStringBuffer()
 
 String AbstractSphereThread::allocateString()
 {
-#ifdef _USESTRINGMUTEX
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
-#endif
     
 	TemporaryString s(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
 	return s;
@@ -460,9 +448,7 @@ String AbstractSphereThread::allocateString()
 
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
-#ifdef _USESTRINGMUTEX
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
-#endif
     
 	string.init(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
 }
