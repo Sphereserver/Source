@@ -3397,5 +3397,7 @@ this all in desperation)
 - Fixed #1201: DB.EXECUTE executing commands also when not connected.
 
 29-05-2007, MrSugarCube
-- Fixed: Multis not being visible from a distance.
+- Fixed #1203: Multis not being visible from a distance.
 
+31-05-2007, Nazghul
+- Fixed #1206: using character function ".gold" with negative numbers crashed the server.

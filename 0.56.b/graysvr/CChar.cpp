@@ -2082,7 +2082,11 @@ do_default:
 				DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
 				DWORD newGold = s.GetArgVal();
 
-				if( newGold < currentGold )
+				if( newGold < 0 )
+				{
+					newGold = 0;
+				}
+				else if( newGold < currentGold )
 				{
 					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
 				}
