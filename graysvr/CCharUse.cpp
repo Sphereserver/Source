@@ -744,7 +744,7 @@ int CChar::Use_PlayMusic( CItem * pInstrument, int iDifficultyToPlay )
 	// ARGS:
 	//	iDifficultyToPlay = 0-100
 	// RETURN:
-	//  0 = success
+	//  >=0 = success
 	//  -1 = too hard for u.
 	//  -2 = can't play. no instrument.
 	//
@@ -771,7 +771,7 @@ int CChar::Use_PlayMusic( CItem * pInstrument, int iDifficultyToPlay )
 		SysMessageDefault( DEFMSG_MUSICANSHIP_POOR );
 		return( -1 );	// Impossible.
 	}
-	return( 0 );	// success
+	return( iDifficultyToPlay );	// success
 }
 
 bool CChar::Use_Repair( CItem * pItemArmor )
