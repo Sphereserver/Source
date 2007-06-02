@@ -30,24 +30,24 @@ If (<tag0.changename_time> <= <serv.time>)	// Set Guild Name
   dhtmlgump 55 40 240 30 0 0 Set the guild name.
 else
   gumppic 20 40 4020
-  dhtmlgump 55 40 370 30 0 0 Set the guild name. <f_guildsys_determine_timeleft <tag0.changename_time>>
+  dhtmlgump 55 40 370 30 0 0 Set the guild name. N/A FOR <f_guildsys_determine_timeleft <tag0.changename_time>>
 endif
 If (<tag0.changeabbrev_time> <= <serv.time>)	// Set Guild Abbrev
   button 20 70 4005 4007 1 0 2 
   dhtmlgump 55 70 240 30 0 0 Set the guild's abbreviation.
 else
   gumppic 20 70 4020
-  dhtmlgump 55 70 370 30 0 0 Set the guild's abbreviation. <f_guildsys_determine_timeleft <tag0.changeabbrev_time>>
+  dhtmlgump 55 70 370 30 0 0 Set the guild's abbreviation. N/A FOR <f_guildsys_determine_timeleft <tag0.changeabbrev_time>>
 endif
 If (<f_guildsys_iswarring>)
   gumppic 20 100 4020
-  dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>> [Cannot change while at war] // Guild Type
+  dhtmlgump 55 100 450 30 0 0 Change alignment. N/A DURING WARs // Guild Type
 elif (<tag0.changealign_time> <= <serv.time>)
   button 20 100 4005 4007 1 0 3
   dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>> // Guild Type
 else
   gumppic 20 100 4020
-  dhtmlgump 55 100 450 30 0 0 Change alignment: Currently <def0.guildconfig_align_<align>>: <f_guildsys_determine_timeleft <tag0.changealign_time>> // Guild Type
+  dhtmlgump 55 100 450 30 0 0 Change alignment. N/A FOR <f_guildsys_determine_timeleft <tag0.changealign_time>> // Guild Type
 endif
 dhtmlgump 55 130 200 30 0 0 Set the guild's charter.
   button 20 130 4005 4007 1 0 4	// Set Charter

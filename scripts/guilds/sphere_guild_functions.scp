@@ -346,10 +346,9 @@ elif (<eval <local.sec>/3600>)
 elif (<eval <local.sec>/60>)
   local.timeleft=<eval <local.sec>/60> min(s)
 else
-  local.timeleft=UNAVAILABLE FOR <dlocal.sec> second(s).
+  local.timeleft=<eval <local.sec>> second(s).
 endif
 return <local.timeleft>
-
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_sendsmsg]
