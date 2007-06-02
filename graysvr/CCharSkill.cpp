@@ -396,9 +396,9 @@ unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef( skill );
 	ASSERT(pSkillDef);
 	int iPureBonus =
-		( pSkillDef->m_StatBonus[STAT_STR] * Stat_GetAdjusted( STAT_STR ) ) +
-		( pSkillDef->m_StatBonus[STAT_INT] * Stat_GetAdjusted( STAT_INT ) ) +
-		( pSkillDef->m_StatBonus[STAT_DEX] * Stat_GetAdjusted( STAT_DEX ) );
+		( pSkillDef->m_StatBonus[STAT_STR] * maximum(0,Stat_GetAdjusted( STAT_STR )) ) +
+		( pSkillDef->m_StatBonus[STAT_INT] * maximum(0,Stat_GetAdjusted( STAT_INT )) ) +
+		( pSkillDef->m_StatBonus[STAT_DEX] * maximum(0,Stat_GetAdjusted( STAT_DEX )) );
 
 	int iAdjSkill = IMULDIV( pSkillDef->m_StatPercent, iPureBonus, 10000 );
 
