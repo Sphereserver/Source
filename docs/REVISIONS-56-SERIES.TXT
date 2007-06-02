@@ -3409,3 +3409,6 @@ this all in desperation)
 02-06-2007, Almost all the dev team
 - Fixed #1188: Incorrect save output.
 - Fixed #1191: Sphere closing when using crafting skills (related to #1188).
+
+02-06-2007, MrSugarCube
+- Fixed: Unable to gain musicianship past 30%.
