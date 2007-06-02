@@ -1735,7 +1735,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	short int i_fireDamage = 0;
 	short int i_poisonDamage = 0;
 
-	if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) &&  (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
+	if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
 	{
 		// special damage can be applied with physical and magical weapons
 		CVarDefCont * pValue = pSrc->GetKey("COLDDAMAGE",true);
@@ -1764,7 +1764,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		}
 //		DEBUG_WARN(("WrestleEffect from %s COLD=%d, ENERGY=%d, FIRE=%d, POISON=%d\n",pSrc->GetName(),i_coldDamage,i_energyDamage,i_fireDamage,i_poisonDamage));
 	} 
-	else if IsSetCombatFlags(COMBAT_USE_RESISTANCE)
+	else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 	{
 		short int i_tDamCount = 1;
 		short int i_tDamPois = 0;
@@ -1788,7 +1788,9 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) > iDmg )
 		{
 			iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
-		} else {
+		} 
+		else 
+		{
 			iDmg = 0;
 		}
 
@@ -1816,7 +1818,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
 	int damMod = 0;
 	int damModLJ = 0;
-	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) )
+	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
 	{
 		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
 		{

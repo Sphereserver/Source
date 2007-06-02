@@ -2777,8 +2777,7 @@ bool CChar::NPC_OnTickFood( int nFoodLevel )
 			{
 				int loss = ( nFoodLevel ? Calc_GetRandVal2(1, g_Cfg.m_iHitsHungerLoss-1) : g_Cfg.m_iHitsHungerLoss);
 
-				//	we do not decrease hits manualy due to nice AOS damage show
-				OnTakeDamage((maximum(Stat_GetMax(STAT_STR), 10) * loss)/100, NULL, DAMAGE_GOD);
+				UpdateStatVal( STAT_STR, -((maximum(Stat_GetMax(STAT_STR), 10) * loss)/100) );
 			}
 
 			char *pszMsg = Str_GetTemp();
