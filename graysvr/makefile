@@ -130,6 +130,7 @@ SRC	:= 	CAccount.cpp \
 		../common/CVarDefMap.cpp \
 		../common/CVarFloat.cpp \
 		../common/graycom.cpp \
+		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
 		../tests/threads.cpp
