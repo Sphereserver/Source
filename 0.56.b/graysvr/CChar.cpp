@@ -2080,25 +2080,24 @@ do_default:
 		case CHC_GOLD:
 			{
 				DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-				DWORD newGold = s.GetArgVal();
+				long newGold = s.GetArgVal();
 
-				if( newGold < 0 )
+				if ( newGold >= 0 )
 				{
-					newGold = 0;
-				}
-				else if( newGold < currentGold )
-				{
-					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
-				}
-				else if( newGold > currentGold )
-				{
-					DWORD amount = newGold - currentGold;
-					while( amount > 0 )
+					if( ((DWORD)newGold) < currentGold )
 					{
-						CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
-						gold->SetAmount( amount > 65000 ? 65000 : amount);
-						amount -= gold->GetAmount();
-						GetPackSafe()->ContentAdd(gold);
+						ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
+					}
+					else if( ((DWORD)newGold) > currentGold )
+					{
+						DWORD amount = ((DWORD)newGold) - currentGold;
+						while( amount > 0 )
+						{
+							CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
+							gold->SetAmount( amount > 65000 ? 65000 : amount);
+							amount -= gold->GetAmount();
+							GetPackSafe()->ContentAdd(gold);
+						}
 					}
 				}
 			} break;
