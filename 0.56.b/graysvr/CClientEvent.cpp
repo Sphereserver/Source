@@ -248,6 +248,7 @@ void CClient::Event_Book_Page( CGrayUID uid, const CEvent * pEvent ) // Book win
 
     if ( Str_Check(pszTemp) )
 		return;
+
 	pText->SetPageText(iPage, pszTemp);
 }
 
