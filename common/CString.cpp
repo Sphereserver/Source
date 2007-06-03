@@ -737,16 +737,20 @@ int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset )
 }
 bool Str_Check( const TCHAR * pszIn )
 {
-	if ( !pszIn ) return false;
+	if ( !pszIn ) 
+		return true;
+
 	const char *p = pszIn;
-	while ( *p && ( *p != 0x0A ) && ( *p != 0x0D )) p++;
+	while ( *p && ( *p != 0x0A ) && ( *p != 0x0D )) 
+		p++;
+
 	return ( *p );
 }
 
 bool Str_CheckName(const TCHAR *pszIn )
 {
 	if ( !pszIn )
-		return false;
+		return true;
 
 	const char *p = pszIn;
 	while ( *p &&
@@ -757,7 +761,8 @@ bool Str_CheckName(const TCHAR *pszIn )
 		(( *p == ' ') || ( *p == '\'') )
 		))
 		p++;
-	return *p;
+
+	return ( *p );
 }
 
 TCHAR * Str_MakeFiltered( TCHAR * pStr )
