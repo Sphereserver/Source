@@ -63,6 +63,7 @@ void CClient::resendBuffs()
 			addBuff( BI_FEEBLEMIND, 1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
 			break;
 		case SPELL_Curse:
+		{
 			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
@@ -71,6 +72,7 @@ void CClient::resendBuffs()
 			}
 			addBuff( BI_CURSE, 1075835,1075840,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
 			break;
+		}
 		case SPELL_Strength:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
 			ITOA(iBuffPercent, NumBuff, 10);
@@ -90,6 +92,7 @@ void CClient::resendBuffs()
 			addBuff( BI_CUNNING, 0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()),WideMsg  );
 			break;
 		case SPELL_Bless:
+		{
 			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
@@ -98,6 +101,7 @@ void CClient::resendBuffs()
 			}
 			addBuff( BI_BLESS, 1075847,1075848,(WORD)(pSpell->GetTimerAdjusted()), WideMsg );
 			break;
+		}
 		case SPELL_Reactive_Armor:
 			addBuff( BI_REACTIVEARMOR, 1075812,1070722,(WORD)(pSpell->GetTimerAdjusted()) );
 			break;
@@ -2661,7 +2665,8 @@ void CClient::addMapDiff()
 	CExtData ExtData;
 
 	int iMapCount = 1;
-	for ( int map = 255; map >= 0; map-- )
+	int map;
+	for ( map = 255; map >= 0; map-- )
 	{
 		if ( g_MapList.m_maps[map] )
 		{
@@ -2671,7 +2676,7 @@ void CClient::addMapDiff()
 	}
 
 	ExtData.Map_Diff.m_maps_number = iMapCount;
-	for ( int map = 0; map < iMapCount; map++ )
+	for ( map = 0; map < iMapCount; map++ )
 	{
 		unsigned int tileCount = 0;
 		unsigned int staticCount = 0;
