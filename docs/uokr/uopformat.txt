@@ -6,9 +6,13 @@
 All values are stored in Little Endian sequence, as usual in x86 architecture.
 Compression method is DEFLATE using zlib.
 
+sizeof(DWORD) = 4
+sizeof(QWORD) = 8
+
 [1] - General Format Header (sizeof: 40bytes )
-Byte 0x0 - 0x17 -> Containing general file headers (Version etc.)
+Byte(23) 0x0 - 0x17 -> Containing general file headers (Version etc.)
 DWORD? 0x18 -> Amount of contained files/indexes
+byte(12) -> Unknown gibberish
 
 [2] - Index Block Header (sizeof: 24bytes)
 There can be multiple index blocks, they are splitted into chunks.
@@ -23,7 +27,7 @@ When a index block doesn't contain 100 index definitions, it will be padded with
 	DWORD 0x44 -> Size of decompressed file
 	BYTE(12) 0x48 -> UNKNOWN ( Hashkey? Or separate values?)
 	WORD  0x54 -> Separator? (always 0x0001)
-	DWORD 0x56 -> UNKNOWN
+	QWORD 0x56 -> UNKNOWN
 	DWORD 0x5e -> end of definition, Form Feed ( 0x0000000c)
 	...this repreats, until all FileIndexes are processed
 
