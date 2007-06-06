@@ -25,7 +25,8 @@ When a index block doesn't contain 100 index definitions, it will be padded with
 	[3] - FileIndex Definitions (sizeof: 34bytes )
 	DWORD 0x40 -> Lenght of compressed data
 	DWORD 0x44 -> Size of decompressed file
-	BYTE(12) 0x48 -> UNKNOWN ( Hashkey? Or separate values?)
+	QWORD 0x48 -> UNKNOWN-1 (maybe CRC)
+	DWORD 0x50 -> UNKNOWN-2
 	WORD  0x54 -> Separator? (always 0x0001)
 	QWORD 0x56 -> offsetdatablock + (12 + current compressed size)*id current block {1...max} (last one is 0)
 	DWORD 0x5e -> end of definition, Form Feed ( 0x0000000c)
