@@ -89,6 +89,13 @@ admin_flag_32		"Mounted on horseback"
 // Don't edit below this line unless you know what you are doing
 
 [FUNCTION admin]
+if ( <getreftype> == <def.tref_serv> )
+    serv.console C
+    return
+elseif ( !<isplayer> )
+    return
+endif
+
 ctag.admin_numplayers=0
 ctag.admin_page=1
 serv.allclients admin_getplayers

@@ -3412,3 +3412,6 @@ this all in desperation)
 
 02-06-2007, MrSugarCube
 - Fixed: Unable to gain musicianship past 30%.
+
+06-06-2007, Furio (Script Pack)
+- Fixed #1213: "admin" in console (sphere_admin.scp)
