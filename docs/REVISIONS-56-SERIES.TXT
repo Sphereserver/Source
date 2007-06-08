@@ -3415,3 +3415,7 @@ this all in desperation)
 
 06-06-2007, Furio (Script Pack)
 - Fixed #1213: "admin" in console (sphere_admin.scp)
+
+08-06-2007, MrSugarCube
+- Fixed #1211: FORCONTID and FORCONTTYPE not working.
+- Fixed #1212: Reactive Armor causing a server crash when damaging self.

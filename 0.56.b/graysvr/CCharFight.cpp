@@ -1860,6 +1860,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		{
 			// reflect some damage back.
 			if ( !pSrc ) ;
+			else if ( pSrc == this ) ;
 			else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD )) ; // guards should not react by reactive armor
 			else if ( GetTopDist3D(pSrc) <= 2 )
 			{

@@ -36,7 +36,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	
 	while( !feof(m_pStream) ) 
 	{
-		buf[0] = 0;
+		buf.setAt(0, '\0');
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
 
 		std::string strLine(buf, strlen(buf));
