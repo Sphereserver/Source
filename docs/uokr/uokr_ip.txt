@@ -1,0 +1,14 @@
+Ip is hardcoded 
+
+004EBCB5  |. 8901           MOV DWORD PTR DS:[ECX],EAX  // I'm on stack
+004EBCB7  \. C2 1000        RETN 10
+004EBCBA  /$ 6A 39          PUSH 39			// .57 		(4)  Start pushing 
+004EBCBC  |. 68 99000000    PUSH 99			// .153. 	(2)
+004EBCC1  |. 68 9F000000    PUSH 9F			// 159. 	(1)
+004EBCC6  |. 56             PUSH ESI
+004EBCC7  |. B1 C4          MOV CL,0C4			// .196.	(3)
+004EBCC9  |. E8 C7FFFFFF    CALL UOKR.004EBC95
+004EBCCE  |. 66:C746 04 5F1>MOV WORD PTR DS:[ESI+4],1E5F // 775 (port)
+004EBCD4  \. C3             RETN
+
+in file is @ eb0b7
