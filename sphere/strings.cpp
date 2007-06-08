@@ -152,6 +152,11 @@ AbstractString::operator char*()
 	return m_buf;
 }
 
+AbstractString::operator const char*&()
+{
+	return (const char *&)m_buf;
+}
+
 /*
  * String
 */
