@@ -152,7 +152,7 @@ AbstractString::operator char*()
 	return m_buf;
 }
 
-AbstractString::operator const char*&()
+AbstractString::operator const char*&() const
 {
 	return (const char *&)m_buf;
 }

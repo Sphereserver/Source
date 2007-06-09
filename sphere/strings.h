@@ -39,7 +39,7 @@ public:
 	// operator
 	operator LPCTSTR() const;       // as a C string
 	operator char*();				// as a C string
-	operator const char*&();		// as a C string
+	operator const char*&() const;	// as a C string
 
 protected:
 	// not implemented, should take care that newLength should fit in the buffer
