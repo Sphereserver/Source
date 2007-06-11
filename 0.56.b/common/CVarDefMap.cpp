@@ -646,6 +646,7 @@ bool CVarDefMap::r_LoadVal( CScript & s )
 void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyExclude )
 {
 	ADDTOCALLSTACK("CVarDefMap::r_WritePrefix");
+	TemporaryString z;
 	LPCTSTR		pszVal;
 	bool bHasPrefix = (pszPrefix && *pszPrefix);
 	bool bHasExclude = (pszKeyExclude && *pszKeyExclude);
@@ -662,8 +663,6 @@ void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyEx
 
 		if ( bHasExclude && !strcmpi(pszKeyExclude, pVar->GetKey()))
 			continue;
-
-		TemporaryString z;
 
 		if ( bHasPrefix )
 			sprintf(z, "%s.%s", pszPrefix, pVar->GetKey());

@@ -623,7 +623,7 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 			TemporaryString pszMsg;
 			TCHAR * pszFull = new TCHAR[lengthControls];
 
-			for ( i=0; i<iControls; ++i, pszMsg.setAt(0, '\0'))
+			for ( i=0; i<iControls; ++i)
 			{
 				sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);	
 				if ( i == 0 )
@@ -755,7 +755,7 @@ olddialogprocedure:
 		xSend( &cmd, 21, true );
 
 		TemporaryString pszMsg;
-		for ( i=0; i<iControls; ++i, pszMsg.setAt(0,'\0'))
+		for ( i=0; i<iControls; ++i)
 		{
 			sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);
 			xSend(pszMsg, strlen(pszMsg), true );
