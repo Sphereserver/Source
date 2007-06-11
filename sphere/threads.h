@@ -119,6 +119,8 @@ private:
 	static SPHERE_THREADENTRY_RETNTYPE SPHERE_THREADENTRY_CALLTYPE runner(void *callerThread);
 };
 
+struct TemporaryStringStorage;
+
 // Sphere thread. Have some sphere-specific
 class AbstractSphereThread : public AbstractThread
 {
@@ -127,7 +129,7 @@ public:
 
 	// allocates a char* with size of THREAD_MAX_LINE_LENGTH characters from the thread local storage
 	char *allocateBuffer();
-	char *allocateStringBuffer();
+	TemporaryStringStorage *allocateStringBuffer();
 
 	// allocates a manageable String from the thread local storage
 	String allocateString();

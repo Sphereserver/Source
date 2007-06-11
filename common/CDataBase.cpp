@@ -311,7 +311,7 @@ bool CDataBase::query(const char *query)
 
 			while ( pCurrent->DbFetchRow(rfields) > 0 )
 			{
-				for ( int i = 0; i < num_fields; ++i, zStore.setAt(0,'\0') )
+				for ( int i = 0; i < num_fields; ++i )
 				{
 					char *z = rfields[i].data;
 

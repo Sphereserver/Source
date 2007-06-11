@@ -18,9 +18,12 @@ char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
 // TemporaryString Buffer
 SimpleMutex g_tmpTemporaryStringMutex;
 volatile long g_tmpTemporaryStringIndex = 0;
-char g_tmpTemporaryStringUsed[THREAD_STRING_STORAGE];
-char g_tmpTemporaryStrings[THREAD_STRING_STORAGE][THREAD_STRING_LENGTH];
 
+struct TemporaryStringStorage
+{
+	char m_buffer[THREAD_STRING_LENGTH];
+	char m_state;
+} g_tmpTemporaryStringStorage[THREAD_STRING_STORAGE];
 
 /**
  * ThreadHolder
@@ -115,8 +118,7 @@ void ThreadHolder::init()
 		}
 
 		memset(g_tmpStrings, 0, sizeof(g_tmpStrings));
-		memset(g_tmpTemporaryStringUsed, 0, sizeof(g_tmpTemporaryStringUsed));
-		memset(g_tmpTemporaryStrings, 0, sizeof(g_tmpTemporaryStrings));
+		memset(g_tmpTemporaryStringStorage, 0, sizeof(g_tmpTemporaryStringStorage));
 
 		m_inited = true;
 	}
@@ -406,22 +408,23 @@ char *AbstractSphereThread::allocateBuffer()
 	return buffer;
 }
 
-char *AbstractSphereThread::allocateStringBuffer()
+TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 {
 	long initialPosition = g_tmpTemporaryStringIndex;
+	long index;
 	while( true )
 	{
-		long index = ++g_tmpTemporaryStringIndex;
+		index = ++g_tmpTemporaryStringIndex;
 		if( g_tmpTemporaryStringIndex >= THREAD_STRING_STORAGE )
 		{
 			index = g_tmpTemporaryStringIndex %= THREAD_STRING_STORAGE;
 		}
 
-		if( g_tmpTemporaryStringUsed[index] == 0 )
+		if( g_tmpTemporaryStringStorage[index].m_state == 0 )
 		{
-			char *buffer = g_tmpTemporaryStrings[index];
-			*buffer = '\0';
-			return buffer;
+			TemporaryStringStorage * store = &g_tmpTemporaryStringStorage[index];
+			*store->m_buffer = '\0';
+			return store;
 		}
 
 		// a protection against deadlock. All string buffers are marked as being used somewhere, so we
@@ -442,7 +445,8 @@ String AbstractSphereThread::allocateString()
 {
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
     
-	TemporaryString s(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
+	TemporaryStringStorage * store = allocateStringBuffer();
+	TemporaryString s(store->m_buffer, &store->m_state);
 	return s;
 }
 
@@ -450,7 +454,8 @@ void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
     
-	string.init(allocateStringBuffer(), &g_tmpTemporaryStringUsed[g_tmpTemporaryStringIndex]);
+	TemporaryStringStorage * store = allocateStringBuffer();
+	string.init(store->m_buffer, &store->m_state);
 }
 
 bool AbstractSphereThread::shouldExit()

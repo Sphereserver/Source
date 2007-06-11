@@ -589,7 +589,7 @@ void CItemMessage::r_Write( CScript & s )
 
 	TemporaryString pszTemp;
 	// Store the message body lines. MAX_BOOK_PAGES
-	for ( int i=0; i<GetPageCount(); ++i, pszTemp.setAt(0,'\0') )
+	for ( int i=0; i<GetPageCount(); ++i )
 	{
 		sprintf(pszTemp, "BODY.%d", i);
 		LPCTSTR pszText = GetPageText(i);

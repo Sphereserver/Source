@@ -517,7 +517,7 @@ void CItemStone::r_Write( CScript & s )
 	}
 
 	TemporaryString pszTemp;
-	for ( int i = 0; i<COUNTOF(m_sCharter); i++, pszTemp.setAt(0, '\0') )
+	for ( int i = 0; i<COUNTOF(m_sCharter); i++ )
 	{
 		if ( ! m_sCharter[i].IsEmpty())
 		{
