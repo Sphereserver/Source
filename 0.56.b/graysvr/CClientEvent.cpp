@@ -3353,6 +3353,26 @@ void CClient::Event_AllNames3D( CGrayUID uid )
 	xSendPkt(&cmd, cmd.AllNames3D.m_len);
 }
 
+#ifdef __UOKRSCARYADDONS
+
+void CClient::Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang )
+{
+	ADDTOCALLSTACK("CClient::Event_BugReport");
+	if ( !m_pChar )
+		return;
+
+	TCHAR szText[MAX_TALK_BUFFER * 2];
+	CvtNUNICODEToSystem( szText, sizeof(szText), pszText, len );
+
+	CScriptTriggerArgs Args(type);
+	Args.m_s1 = szText;
+	Args.m_VarsLocal.SetStr("LANG", false, lang.GetStr());
+
+	m_pChar->OnTrigger(CTRIG_UserBugReport, m_pChar, &Args);
+}
+
+#endif
+
 //----------------------------------------------------------------------
 
 void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
@@ -3964,6 +3984,11 @@ int CClient::xDispatchMsg()
 		if ( ! strnicmp( GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( GetAccount()->GetName() ) ) )
 			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
 	}
+#else
+#if _DEBUG
+	DEBUG_ERR(("xDispatchMsg\n"));
+	xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
+#endif
 #endif
 
 	EXC_SET("check message size");
@@ -3986,6 +4011,8 @@ int CClient::xDispatchMsg()
 		return -1;
 
 	EXC_SET("packet parsing");
+#ifdef __UOKRSCARYADDONS
+#else
 	if ( pEvent->Default.m_Cmd >= XCMD_QTY ) // bad packet type ?
 	{
 		DEBUG_ERR(( "Unimplemented command %d\n", pEvent->Default.m_Cmd ) );
@@ -3994,6 +4021,7 @@ int CClient::xDispatchMsg()
 #endif
 		RETURN_FALSE();
 	}
+#endif
 
 #ifdef _PACKET_LEN_CHECK
 	// check the packet size first.
@@ -4073,6 +4101,7 @@ int CClient::xDispatchMsg()
 			default:
 			{
 				EXC_SET("not logged - anything");
+
 				DEBUG_WARN(( "%x:Packet (0x%x) received, but it should not be here.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
 				if ( ! xCheckMsgSize( sizeof( pEvent->Default ) ) )
 					RETURN_FALSE();
@@ -4466,6 +4495,18 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				Event_AllNames3D( (DWORD) pEvent->AllNames3D.m_UID );
 			} break;
+
+#ifdef __UOKRSCARYADDONS
+		case XCMD_BugReport:
+			{
+				EXC_SET("bugreport");
+				if ( ! xCheckMsgSize(3))
+					RETURN_FALSE();
+				if ( ! xCheckMsgSize( pEvent->BugReport.m_len ))
+					RETURN_FALSE();
+				Event_BugReport( pEvent->BugReport.m_utext, pEvent->BugReport.m_len, (BUGREPORT_TYPE)(WORD)pEvent->BugReport.m_type, CLanguageID( pEvent->BugReport.m_Language ) );
+			} break;
+#endif
 
 		default:
 			EXC_SET("unknown");

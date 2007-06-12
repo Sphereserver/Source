@@ -11,6 +11,38 @@ byte[4]                 login request   (0xffffffff)
 -> Always contains 0xffffffff
 
 
+
+========================
+0xE0  (client -> server)
+BUG REPORT
+========================
+
+byte[1]			packet cmd	(0xe0)
+byte[2]			packet len	(0x07d9)
+byte[4]			language	(0x454e5500)
+byte[2]			bug type	(0x000F)
+byte[packet len - 9]	report body	(unicode text)
+
+-> Sent from the client when player fills in a bug report on the ESC menu.
+-> Language is 3 character (null terminated) ascii string as found in chat packets.
+-> Types:
+	0x01	-	World Environment
+	0x02	-	Wearables
+	0x03	-	Combat
+	0x04	-	UI
+	0x05	-	Crash
+	0x06	-	Stuck
+	0x07	-	Animations
+	0x08	-	Performance
+	0x09	-	NPCs
+	0x0A	-	Creatures
+	0x0B	-	Pets
+	0x0C	-	Housing
+	0x0D	-	Lost Item
+	0x0E	-	Exploit
+	0x0F	-	Other
+
+
 ========================
 0xE3  (server -> client)
 UNKNOWN

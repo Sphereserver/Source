@@ -589,21 +589,36 @@ bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, int iLen )
 		//m_Crypt.Init( m_tmSetup.m_dwIP, CONNECT_LOGIN ); // Init decryption table
 		//SetConnectType( CONNECT_LOGIN );
 	}
-	else if ( iLen == 65 )	// Auto-registering server sending us info.
-	{
-		// m_Crypt.Init( m_tmSetup.m_dwIP, CONNECT_GAME ); // Init decryption table
-		// SetConnectType( CONNECT_GAME );
-		GameCryptStart( dwIP, pEvent, iLen );
-	}
 	else
 	{
-#ifdef DEBUG_CRYPT_MSGS
-		DEBUG_MSG(("Odd login message length %d? [CCrypt::Init()]\n", iLen));
+#ifdef __UOKRSCARYADDONS
+
+		int iReportedLen = 0;
+
+		if (pEvent[0] == 0xE4)
+		{
+			iReportedLen = MAKEWORD(pEvent[2], pEvent[1]);
+		}
+
+		if ( iLen == iReportedLen || (iLen == (iReportedLen + 65)) )
+#else
+		if ( iLen == 65 )	// Auto-registering server sending us info.
 #endif
-		// LoginCryptStart( dwIP, pEvent, iLen );
-		bReturn = false;
-		// m_Crypt.Init( m_tmSetup.m_dwIP, CONNECT_LOGIN ); // Init decryption table
-		// SetConnectType( CONNECT_LOGIN );
+		{
+			// m_Crypt.Init( m_tmSetup.m_dwIP, CONNECT_GAME ); // Init decryption table
+			// SetConnectType( CONNECT_GAME );
+			GameCryptStart( dwIP, pEvent, iLen );
+		}
+		else
+		{
+#ifdef DEBUG_CRYPT_MSGS
+			DEBUG_MSG(("Odd login message length %d? [CCrypt::Init()]\n", iLen));
+#endif
+			// LoginCryptStart( dwIP, pEvent, iLen );
+			bReturn = false;
+			// m_Crypt.Init( m_tmSetup.m_dwIP, CONNECT_LOGIN ); // Init decryption table
+			// SetConnectType( CONNECT_LOGIN );
+		}
 	}
 	
 	return bReturn;
@@ -772,49 +787,60 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	m_seed = dwIP;
 	SetConnectType( CONNECT_GAME );
 
-	bool bOut = false;
-
-	for ( int i = ENC_NONE; i < ENC_QTY; i++ )
+#ifdef __UOKRSCARYADDONS
+	if ( iLen == 65 )
 	{
-		SetEncryptionType( (ENCRYPTION_TYPE)i );
+#endif
+		bool bOut = false;
 
-		if ( GetEncryptionType() == ENC_TFISH || GetEncryptionType() == ENC_BTFISH )
-			InitTwoFish();
-		
-		if ( GetEncryptionType() == ENC_BFISH || GetEncryptionType() == ENC_BTFISH )
-			InitBlowFish();
-	
-		Decrypt( m_Raw, pEvent, iLen );
-		
-#ifdef DEBUG_CRYPT_MSGS
-#ifndef _WIN32
-		fprintf(stderr, "GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
-#else
-		DEBUG_ERR(("GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
-#endif
-#endif
-		
-		if ( m_Raw[0] == 0x91 && m_Raw[34] == 0x00 && m_Raw[64] == 0x00 )
+		for ( int i = ENC_NONE; i < ENC_QTY; i++ )
 		{
-			// Ok the new detected encryption is ok
-			bOut = true;
-			break;
+			SetEncryptionType( (ENCRYPTION_TYPE)i );
+
+			if ( GetEncryptionType() == ENC_TFISH || GetEncryptionType() == ENC_BTFISH )
+				InitTwoFish();
+			
+			if ( GetEncryptionType() == ENC_BFISH || GetEncryptionType() == ENC_BTFISH )
+				InitBlowFish();
+		
+			Decrypt( m_Raw, pEvent, iLen );
+			
+	#ifdef DEBUG_CRYPT_MSGS
+	#ifndef _WIN32
+			fprintf(stderr, "GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
+	#else
+			DEBUG_ERR(("GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
+	#endif
+	#endif
+			
+			if ( m_Raw[0] == 0x91 && m_Raw[34] == 0x00 && m_Raw[64] == 0x00 )
+			{
+				// Ok the new detected encryption is ok
+				bOut = true;
+				break;
+			}
 		}
-	}
-	
-	// Well no ecryption guessed, set it to none and let Sphere do the dirty job :P
-	if ( !bOut )
-	{
-		SetEncryptionType( ENC_NONE );
+		
+		// Well no ecryption guessed, set it to none and let Sphere do the dirty job :P
+		if ( !bOut )
+		{
+			SetEncryptionType( ENC_NONE );
+		}
+		else
+		{
+			if ( GetEncryptionType() == ENC_TFISH || GetEncryptionType() == ENC_BTFISH )
+				InitTwoFish();
+			
+			if ( GetEncryptionType() == ENC_BFISH || GetEncryptionType() == ENC_BTFISH )
+				InitBlowFish();
+		}
+#ifdef __UOKRSCARYADDONS
 	}
 	else
 	{
-		if ( GetEncryptionType() == ENC_TFISH || GetEncryptionType() == ENC_BTFISH )
-			InitTwoFish();
-		
-		if ( GetEncryptionType() == ENC_BFISH || GetEncryptionType() == ENC_BTFISH )
-			InitBlowFish();
+		SetEncryptionType( ENC_NONE );
 	}
+#endif
 		
 	m_fInit = true;
 }

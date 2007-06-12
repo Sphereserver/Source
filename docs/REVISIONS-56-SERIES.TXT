@@ -3419,3 +3419,7 @@ this all in desperation)
 08-06-2007, MrSugarCube
 - Fixed #1211: FORCONTID and FORCONTTYPE not working.
 - Fixed #1212: Reactive Armor causing a server crash when damaging self.
+
+11-06-2007, MrSugarCube
+- Fixed: Vendor menus on clients later than 4.0.0 not showing correctly for renamed items when
+  ACCOUNT.RESDISP is not correctly set to AOS+.

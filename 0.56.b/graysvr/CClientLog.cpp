@@ -721,6 +721,11 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	ASSERT( GetConnectType() == CONNECT_CRYPT );
 	ASSERT( !m_Crypt.IsInit());
 	ASSERT( iLen );
+
+#if _DEBUG
+	DEBUG_ERR(("CClient::xProcessClientSetup\n"));
+	xDumpPacket(iLen, (const BYTE *)pEvent);
+#endif
 	
 	// Try all client versions on the msg.
 	CEvent bincopy;		// in buffer. (from client)
@@ -819,6 +824,19 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 			}
 		}
 	}
+#ifdef __UOKRSCARYADDONS
+	else if (pEvent->Default.m_Cmd == 0xE4)
+	{
+		// Lets just ignore it and try and move on? :E
+		lErr = LOGIN_SUCCESS;
+	}
+#endif
+#if _DEBUG
+	else
+	{
+		DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
+	}
+#endif
 	
 	if ( lErr == LOGIN_ERR_OTHER )	// it never matched any crypt format.
 	{
@@ -1139,6 +1157,11 @@ bool CClient::xRecvData() // Receive message from client
 	if ( iCountNew <= 0 )	// I should always get data here.
 		return( false ); // this means that the client is gone.
 
+#if _DEBUG
+	DEBUG_ERR(("CClient::xRecvData RAW\n"));
+	xDumpPacket(iCountNew, Event.m_Raw);
+#endif
+
 	g_Serv.m_Profile.Count( PROFILE_DATA_RX, iCountNew );
 
 	if ( GetConnectType() == CONNECT_UNK ) // first thing
@@ -1186,6 +1209,53 @@ bool CClient::xRecvData() // Receive message from client
 		SetConnectType( CONNECT_CRYPT );
 		if ( iCountNew <= 0 )
 		{
+#ifdef __UOKRSCARYADDONS
+			if (m_tmSetup.m_dwIP == 0xFFFFFFFF)
+			{
+				// UOKR Client opens connection with 255.255.255.255
+				DEBUG_ERR(("UOKR Client Detected.\n"));
+				BYTE pData[77] = {	0xe3,
+									0x00, 0x4d,
+									0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,
+									0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0xfc, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
+									0x00, 0x00, 0x00, 0x10, 0x78, 0x13, 0xb7, 0x7b, 0xce, 0xa8, 0xd7, 0xbc, 0x52, 0xde, 0x38, 0x30, 0xea, 0xe9, 0x1e, 0xa3,
+									0x00, 0x00, 0x00, 0x20,
+									0x00, 0x00, 0x00, 0x10, 0x5a, 0xce, 0x3e, 0xe3, 0x97, 0x92, 0xe4, 0x8a, 0xf1, 0x9a, 0xd3, 0x04, 0x41, 0x03, 0xcb, 0x53 };
+
+				/*
+				// Randomise 0x10 content (client won't accept)
+				for (int i = 0; i < 0x10; i++)
+				{
+					pData[37+i] = Calc_GetRandVal(0xFF);
+					pData[61+i] = Calc_GetRandVal(0xFF);
+				}
+
+				xDumpPacket(77, pData);
+				*/
+
+				/*
+				// Causes client to respond with 0s in 0xE4
+				BYTE pData2[77] = {0xe3,
+									0x00, 0x4d,
+									0x00, 0x00, 0x00, 0x03, 0x02, 0x00, 0x03,
+									0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0xfc, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
+									0x00, 0x00, 0x00, 0x10, 0x00, 0x13, 0xb7, 0x7b, 0xce, 0xa8, 0xd7, 0xbc, 0x52, 0xde, 0x38, 0x30, 0xea, 0xe9, 0x1e, 0xa3,
+									0x00, 0x00, 0x00, 0x20,
+									0x00, 0x00, 0x00, 0x10, 0x00, 0xce, 0x3e, 0xe3, 0x97, 0x92, 0xe4, 0x8a, 0xf1, 0x9a, 0xd3, 0x04, 0x41, 0x03, 0xcb, 0x53 };
+				*/
+				/*
+				// Attempt to zero as much as possible
+				BYTE pData3[77] = {0xe3,
+									0x00, 0x4d,
+									0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,
+									0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0x00, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
+									0x00, 0x00, 0x00, 0x10, 0x00, 0x13, 0xb7, 0x00, 0xce, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+									0x00, 0x00, 0x00, 0x20,
+									0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+				*/
+				this->xSend(pData, 77);
+			}
+#endif
 			return( true );
 		}
 
@@ -1251,34 +1321,36 @@ bool CClient::xRecvData() // Receive message from client
 void CClient::xDumpPacket( int iDataLen, const BYTE * pData )
 {
 	ADDTOCALLSTACK("CClient::xDumpPacket");
-	char contStr[17];
-	TCHAR * contByte = Str_GetTemp();
-	int ic = 1;
 
-	g_Log.EventDebug("Packet Dump for 0%X:\n", pData[0]);
+	char lineBytes[64] = { '\0' };
+	char lineChars[64] = { '\0' };
+	int i = 0;
 
-	for ( int i = 0; i < iDataLen; i++ )
+	g_Log.EventDebug("Packet Dump for 0x%0.2X (len=%d):\n", pData[0], iDataLen);
+
+	for (i = 0; i < iDataLen; i++)
 	{
-		if ( i && ( i % 16 ) == 0 )
+		sprintf(lineBytes, "%s%0.2X ", lineBytes, pData[i]);
+		sprintf(lineChars, "%s%c", lineChars, (pData[i]? (pData[i]<0xF? '?':pData[i]):'.'));
+
+		if (((i + 1) % 0x10) == 0)
 		{
-			contStr[ic-1] = pData[i];
-			sprintf( contByte, "%s %0.3X", contByte, pData[i] );
-			g_Log.EventDebug("%s ... %s\n", contByte, contStr);
-			
-			contByte = Str_GetTemp();
-			ic = 1;
+			g_Log.EventDebug("%s--- %s\n", lineBytes, lineChars);
+			lineBytes[0] = '\0';
+			lineChars[0] = '\0';
 		}
-		else
-		{
-			contStr[ic-1] = pData[i]; ++ic;
-			sprintf( contByte, "%s %0.3X", contByte, pData[i] );
-		}
+
 	}
 
-	if ( (ic - 1) != 0 )
+	if (lineBytes[0] != '\0')
 	{
-		contStr[ic-1] = '\0';
-		g_Log.EventDebug("%s ... %s\n", contByte, contStr);
+		for ( ; (i % 0x10) != 0; i++)
+		{
+			sprintf(lineBytes, "%s   ", lineBytes);
+			sprintf(lineChars, "%s ", lineChars);
+		}
+
+		g_Log.EventDebug("%s--- %s\n", lineBytes, lineChars);
 	}
 
 	g_Log.EventDebug("-------------\n");

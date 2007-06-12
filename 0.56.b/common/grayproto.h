@@ -274,8 +274,14 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_AOSTooltipInfo	= 0xdc,
 	XCMD_CompressedGumpDialog	= 0xdd,
 	XCMD_BuffPacket		= 0xdf,
+#ifdef __UOKRSCARYADDONS
+	//	0xE0
+	XCMD_BugReport		= 0xe0,
 	
+	XCMD_QTY		= 0xe1,
+#else
 	XCMD_QTY		= 0xe0,
+#endif
 };
 
 enum PARTYMSG_TYPE
@@ -924,6 +930,29 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	LOGIN_SUCCESS	= 255,
 };
 
+#ifdef __UOKRSCARYADDONS
+
+enum BUGREPORT_TYPE	// bug report codes
+{
+	BUGREPORT_ENVIRONMENT	= 0x01,
+	BUGREPORT_WEARABLES		= 0x02,
+	BUGREPORT_COMBAT		= 0x03,
+	BUGREPORT_UI			= 0x04,
+	BUGREPORT_CRASH			= 0x05,
+	BUGREPORT_STUCK			= 0x06,
+	BUGREPORT_ANIMATIONS	= 0x07,
+	BUGREPORT_PERFORMANCE	= 0x08,
+	BUGREPORT_NPCS			= 0x09,
+	BUGREPORT_CREATURES		= 0x0A,
+	BUGREPORT_PETS			= 0x0B,
+	BUGREPORT_HOUSING		= 0x0C,
+	BUGREPORT_LOST_ITEM		= 0x0D,
+	BUGREPORT_EXPLOIT		= 0x0E,
+	BUGREPORT_OTHER			= 0x0F
+};
+
+#endif
+
 
 struct CEventCharDef
 {
@@ -1513,6 +1542,17 @@ struct CEvent	// event buffer from client to server..
 			NWORD m_type;	// 3 - 4 EXTDATA_TYPE
 			CExtAosData m_u;
 		} ExtAosData;
+
+#ifdef __UOKRSCARYADDONS
+		struct
+		{
+			BYTE m_Cmd;			// 0=0xe0
+			NWORD m_len;		// 1 - 2 (len = )
+			char m_Language[4];	// 3 - 6 (lang, ENU)
+			NWORD m_type;		// 7 - 8 (bug type)
+			NCHAR m_utext[1];	// 9 - ? (NCHAR[?] text)
+		} BugReport;
+#endif
 	};
 } PACK_NEEDED;
 
