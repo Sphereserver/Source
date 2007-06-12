@@ -1,36 +1,56 @@
 [uokr_infos.txt]
-UO:KR uses DES-EDE3 (Triple-DES EDE encryption/decryption) for Network Encryption.
+UO:KR uses AES in CFB mode (IV of 64byte and a Key of 32 byte) for Network Encryption.
 
 
 This file contains some instructions for using Crypto++ 5.5.1, which may or may not be accurate. :P
 
-1. First we need an array of bytes that needs to be decrypted and an array to hold the result:
-
-	byte oldPacket[65] = {	0x99, 0xaf, 0x93, 0x6c, 0x0e, 0x4e, 0xca, 0x14, 0x10, 0xd5,
-				0x2f, 0xaa, 0x7b, 0x10, 0x17, 0x22, 0x1a, 0xd6, 0xf5, 0x6d,
-				0xc5, 0x90, 0x2d, 0x55, 0x1a, 0x39, 0xa1, 0x25, 0x6e, 0xbb,
-				0xe5, 0x4b, 0x98, 0x4e, 0xb8, 0x47, 0x27, 0xae, 0x9c, 0x6a,
-				0xa4, 0xe8, 0xf4, 0x8a, 0xb8, 0xbd, 0x6a, 0x1f, 0xe5, 0x62,
-				0x6e, 0x8f, 0x7b, 0x73, 0x4d, 0x17, 0xff, 0x22,	0xe3, 0x5e,
-				0x4d, 0xba, 0xb5, 0x37, 0x9a };
-	byte newPacket[65];
+1. We need to get an IV of 64byte and a Key of 32 byte from e3 and e4 packets (maybe the server generate the IV)
+2. Create a AES object in CFB mode
+3. xor the plaintext with the blockcypher to get the crypt packed.
 
 
-2. Next, we need 3 keys. Crypto++ will only accept a 24-byte key (3 8-byte keys).
 
-	byte key[24] = { 0x78, 0x13, 0xb7, 0x7b, 0xce, 0xa8, 0xd7, 0xbc, 0x52, 0xde, 0x38, 0x30, 0xea, 0xe9, 0x1e, 0xa3, 0x5a, 0xce, 0x3e, 0xe3, 0x97, 0x92, 0xe4, 0x8a};
+// uokr client, processxorblock asm:				// In this column the riced (no crypt) version
 
-
-3. Before we can decrypt, we need a decryption object and set the key. UOKR is using DES_EDE3 so we create our decryption object like this:
-
-	DES_EDE3::Decryption desDecrypt;
-	desDecrypt.SetKey(key, sizeof(key));
-
-
-4. To actually decrypt the data, we simply need to do this (this step may not be correct):
-
-	desDecrypt.ProcessBlock(oldPacket, newPacket);
-
-
-5. After this, newPacket should contain the decrypted data.
+006E6DA0  |. 85C9           TEST ECX,ECX
+006E6DA2  |. 885D DE        MOV BYTE PTR SS:[EBP-22],BL
+006E6DA5  |. 8A9E 0089A400  MOV BL,BYTE PTR DS:[ESI+A48900]
+006E6DAB  |. 885D DF        MOV BYTE PTR SS:[EBP-21],BL
+006E6DAE  |. 74 32          JE SHORT UOKR.006E6DE2		// NOP
+006E6DB0  |. 8B30           MOV ESI,DWORD PTR DS:[EAX] 		// NOP
+006E6DB2  |. 3331           XOR ESI,DWORD PTR DS:[ECX]		// NOP
+006E6DB4  |. 8B55 10        MOV EDX,DWORD PTR SS:[EBP+10]	// MOV EDX,DWORD PTR SS:[EBP+10]
+006E6DB7  |. 3375 D4        XOR ESI,DWORD PTR SS:[EBP-2C]	// NOP
+006E6DBA  |. 8932           MOV DWORD PTR DS:[EDX],ESI		// MOV DWORD PTR DS:[EDX],0h
+006E6DBC  |. 8B70 04        MOV ESI,DWORD PTR DS:[EAX+4]	// NOP
+006E6DBF  |. 3371 04        XOR ESI,DWORD PTR DS:[ECX+4]	// NOP
+006E6DC2  |. 3375 D8        XOR ESI,DWORD PTR SS:[EBP-28]	// NOP
+006E6DC5  |. 8972 04        MOV DWORD PTR DS:[EDX+4],ESI	// MOV DWORD PTR DS:[EDX+4],0h
+006E6DC8  |. 8B70 08        MOV ESI,DWORD PTR DS:[EAX+8]	// NOP
+006E6DCB  |. 3371 08        XOR ESI,DWORD PTR DS:[ECX+8]	// NOP
+006E6DCE  |. 3375 DC        XOR ESI,DWORD PTR SS:[EBP-24]	// NOP
+006E6DD1  |. 8972 08        MOV DWORD PTR DS:[EDX+8],ESI	// MOV DWORD PTR DS:[EDX+8],0h
+006E6DD4  |. 8B40 0C        MOV EAX,DWORD PTR DS:[EAX+C]	// NOP
+006E6DD7  |. 3341 0C        XOR EAX,DWORD PTR DS:[ECX+C]	// NOP
+006E6DDA  |. 3345 E0        XOR EAX,DWORD PTR SS:[EBP-20]	// NOP
+006E6DDD  |. 8942 0C        MOV DWORD PTR DS:[EDX+C],EAX	// MOV DWORD PTR DS:[EDX+C],0h
+006E6DE0  |. EB 25          JMP SHORT UOKR.006E6E07		// NOP
+006E6DE2  |> 8B10           MOV EDX,DWORD PTR DS:[EAX]		// NOP
+006E6DE4  |. 3355 D4        XOR EDX,DWORD PTR SS:[EBP-2C]	// NOP
+006E6DE7  |. 8B4D 10        MOV ECX,DWORD PTR SS:[EBP+10]	// NOP
+006E6DEA  |. 8911           MOV DWORD PTR DS:[ECX],EDX		// NOP
+006E6DEC  |. 8B50 04        MOV EDX,DWORD PTR DS:[EAX+4]	// NOP
+006E6DEF  |. 3355 D8        XOR EDX,DWORD PTR SS:[EBP-28]	// NOP
+006E6DF2  |. 8951 04        MOV DWORD PTR DS:[ECX+4],EDX	// NOP
+006E6DF5  |. 8B50 08        MOV EDX,DWORD PTR DS:[EAX+8]	// NOP
+006E6DF8  |. 3355 DC        XOR EDX,DWORD PTR SS:[EBP-24]	// NOP
+006E6DFB  |. 8951 08        MOV DWORD PTR DS:[ECX+8],EDX	// NOP
+006E6DFE  |. 8B40 0C        MOV EAX,DWORD PTR DS:[EAX+C]	// NOP
+006E6E01  |. 3345 E0        XOR EAX,DWORD PTR SS:[EBP-20]	// NOP
+006E6E04  |. 8941 0C        MOV DWORD PTR DS:[ECX+C],EAX	// NOP
+006E6E07  |> 5F             POP EDI
+006E6E08  |. 5E             POP ESI
+006E6E09  |. 5B             POP EBX
+006E6E0A  |. C9             LEAVE
+006E6E0B  \. C2 0C00        RETN 0C
 

@@ -55,3 +55,8 @@ byte[length unkA]       unkA            (0x562d03ae30388285c4bbab38d42c12bc)
 -> In 0xE3, if unkA[1]=0x00, then unkA in this packet will always be filled with 0s,
    but this does not appear to remove encryption.
 
+========================
+0x8D  (client -> server)
+CHAR CREATION
+========================
+-> Structure to dump

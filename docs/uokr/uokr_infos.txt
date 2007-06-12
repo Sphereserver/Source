@@ -63,12 +63,13 @@ UO:KR useses the Public Domain Library: Crypto++ : http://www.cryptopp.com/
 
 Network-Encryption:
 -------------------
-UO:KR uses DES-EDE3 (Triple-DES EDE encryption/decryption) for Network Encryption.
+UO:KR uses AES in CFB mode (IV of 64byte and a Key of 32 byte) for Network Encryption.
 
 
 Hashing:
 --------
 Currently I don't know what it's used for, maybe Filerevisions!?
+
 
 DSA-1363/EMSA1(SHA-1)
 ---------------------
