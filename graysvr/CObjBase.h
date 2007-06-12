@@ -2093,6 +2093,9 @@ enum CTRIG_TYPE
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
 
 	// Packet related triggers
+#ifdef __UOKRSCARYADDONS
+	CTRIG_UserBugReport,
+#endif
 	CTRIG_UserChatButton,
 	CTRIG_UserExtCmd,
 	CTRIG_UserExWalkLimit,
@@ -2105,7 +2108,7 @@ enum CTRIG_TYPE
 	CTRIG_UserVirtue,
 	CTRIG_UserWarmode,
 
-	CTRIG_QTY,				// 100
+	CTRIG_QTY,				// 112
 };
 
 class CPartyDef;

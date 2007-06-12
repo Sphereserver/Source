@@ -3901,11 +3901,8 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 	if ( !IsClientVersion(0x400000) )
 		return;
 
-	if (!IsResClient(RDS_AOS))
-		return;
-
 	bool bNameOnly = false;
-	if (!IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+	if (!IsResClient(RDS_AOS) || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 	{
 		if ( !bShop )
 			return;

@@ -1066,6 +1066,9 @@ private:
 	bool Event_WalkingCheck(DWORD dwEcho);
 	void Event_AOSItemInfo( int count , const NDWORD * uidList );
 	void Event_AllNames3D( CGrayUID uid );
+#ifdef __UOKRSCARYADDONS
+	void Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
+#endif
 
 public:
 	inline void Event_VendorSell_Cheater( int iCode = 0 );

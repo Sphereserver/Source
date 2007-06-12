@@ -123,6 +123,9 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@ToolTip",			// someone did tool tips on me.
 	"@TradeAccepted",	// Everything went well, and we are about to exchange trade items
 
+#ifdef __UOKRSCARYADDONS
+	"@UserBugReport",
+#endif
 	"@UserChatButton",
 	"@UserExtCmd",
 	"@UserExWalkLimit",
