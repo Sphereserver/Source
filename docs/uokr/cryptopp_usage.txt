@@ -1,10 +1,12 @@
 [uokr_infos.txt]
-UO:KR uses AES in CFB mode (IV of 64byte and a Key of 32 byte) for Network Encryption.
+UO:KR uses AES in CFB mode (IV of 16byte and a Key of 32 byte) for Network Encryption.
 
 
 This file contains some instructions for using Crypto++ 5.5.1, which may or may not be accurate. :P
 
-1. We need to get an IV of 64byte and a Key of 32 byte from e3 and e4 packets (maybe the server generate the IV)
+1. We need to get an IV of 16byte and a Key of 32 byte from e3 and e4 packets
+1a. IV in first e3 is the last 0x10 bytes
+1b. key is ???
 2. Create a AES object in CFB mode
 3. xor the plaintext with the blockcypher to get the crypt packed.
 

@@ -63,7 +63,7 @@ UO:KR useses the Public Domain Library: Crypto++ : http://www.cryptopp.com/
 
 Network-Encryption:
 -------------------
-UO:KR uses AES in CFB mode (IV of 64byte and a Key of 32 byte) for Network Encryption.
+UO:KR uses AES in CFB mode (IV of 16byte and a Key of 32 byte) for Network Encryption.
 
 
 Hashing:
