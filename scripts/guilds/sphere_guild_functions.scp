@@ -107,8 +107,8 @@ else
   ref1.ApplyToJoin <ref2.uid>
 endif
 
-if (!<ref2.isevent <def.GUILDCONFIG_CHAREVENT_NAME>>)
-  ref2.event +<def.GUILDCONFIG_CHAREVENT_NAME>
+if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
+  ref2.events +<def.GUILDCONFIG_CHAREVENT_NAME>
 endif
   
 if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
@@ -123,8 +123,8 @@ endif
 ref1 = <argv[0]> // The guild
 ref2 = <argv[1]> // The char
 
-if (!<ref2.isevent <def.GUILDCONFIG_CHAREVENT_NAME>>)
-  ref2.event -<def.GUILDCONFIG_CHAREVENT_NAME>
+if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
+  ref2.events -<def.GUILDCONFIG_CHAREVENT_NAME>
 endif
 
 if (<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
