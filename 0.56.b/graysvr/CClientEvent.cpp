@@ -4116,33 +4116,7 @@ int CClient::xDispatchMsg()
 				EXC_SET("not logged - char list req");
 				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
 					RETURN_FALSE();
-				if ( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) != LOGIN_SUCCESS )
-					RETURN_FALSE();
-#ifdef __UOKRSCARYADDONS
-				if ( m_bClientKR )
-				{
-					CAccountRef pAcc = GetAccount();
-					if (pAcc)
-					{
-						DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
-						DWORD tmSid = 0x7f000001;
-						if ( g_Cfg.m_fUseAuthID )
-						{
-							tmSid = pAcc->m_TagDefs.GetKeyNum("customerid");
-							pAcc->m_TagDefs.DeleteKey("customerid");
-						}
-
-						DEBUG_MSG(( "%x:xDispatchMsg for %s, with AuthId %d and CliVersion 0x%x\n", m_Socket.GetSocket(), pAcc->GetName(), tmSid, tmVer ));
-
-						if ( tmSid != NULL && tmSid != pEvent->CharListReq.m_Account )
-							RETURN_FALSE();
-
-						if ( tmVer != NULL && !m_Crypt.GetClientVer() )
-							m_Crypt.SetClientVerEnum(tmVer, false);
-					}
-				}
-#endif
-				return 1;
+				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ));
 			}
 			case XCMD_Spy:
 			case XCMD_Spy2:
@@ -4171,15 +4145,6 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				return 1;
 			}
-#ifdef __UOKRSCARYADDONS
-			case XCMD_EncryptionReply:
-			{
-				EXC_SET("not logged - encryption reply");
-				if ( !xCheckMsgSize( pEvent->EncryptionReply.m_len ) )
-					RETURN_FALSE();
-				return 1;
-			}
-#endif
 			default:
 			{
 				EXC_SET("not logged - anything");

@@ -753,8 +753,6 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 		return( false );
 	}
 
-
-	int iCountExtra = 0;
 	LOGIN_ERR_TYPE lErr = LOGIN_ERR_OTHER;
 	
 	m_Crypt.Decrypt( pEvent->m_Raw, bincopy.m_Raw, iLen );
@@ -767,8 +765,6 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 		{
 			if ( iLen < sizeof( pEvent->ServersReq ))
 				return(false);
-			else if ( iLen > sizeof( pEvent->ServersReq ) )
-				iCountExtra = (iLen - sizeof(pEvent->ServersReq));
 
 			lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
 			if ( lErr == LOGIN_SUCCESS )
@@ -793,8 +789,6 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 		{
 			if ( iLen < sizeof( pEvent->CharListReq ))
 				return(false);
-			else if ( iLen > sizeof( pEvent->CharListReq ) )
-				iCountExtra = (iLen - sizeof(pEvent->CharListReq));
 
 			lErr = Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true );
 			if ( lErr == LOGIN_SUCCESS )
@@ -837,35 +831,11 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 			break;
 		}
 
-#ifdef __UOKRSCARYADDONS
-		case XCMD_EncryptionReply:
-		{
-			if ( iLen < pEvent->EncryptionReply.m_len )
-				return false;
-			else if ( iLen > pEvent->EncryptionReply.m_len )
-				iCountExtra = (iLen - pEvent->EncryptionReply.m_len);
-
-			lErr = LOGIN_SUCCESS;
-			break;
-		}
-#endif
-
 #if _DEBUG
 		default:
 		{
 			DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
 		}
-#endif
-	}
-
-	if ( iCountExtra > 0 )
-	{
-		// Extra data has been received (2 packets at once?). The extra
-		// bytes should be re-queued to process later.
-#ifdef VJAKA_REDO
-		m_bin.append((pEvent->m_Raw + (iLen - iCountExtra)), iCountExtra);
-#else
-		m_bin.AddNewData((pEvent->m_Raw + (iLen - iCountExtra)), iCountExtra);
 #endif
 	}
 	
@@ -1314,6 +1284,22 @@ bool CClient::xRecvData() // Receive message from client
 				SetConnectType( CONNECT_UNK );
 				return( OnRxPing( Event.m_Raw, iCountNew ) );
 			}
+#ifdef __UOKRSCARYADDONS
+			else if ( Event.Default.m_Cmd == XCMD_EncryptionReply )
+			{
+				int iEncKrLen = Event.EncryptionReply.m_len;
+
+				if ( iCountNew < iEncKrLen )
+					return false; // Crapness !!
+				if ( iCountNew == iEncKrLen )
+					return true; // Just toss it
+				else
+				{
+					iCountNew -= iEncKrLen;
+					return( xProcessClientSetup( (CEvent*)(Event.m_Raw+iEncKrLen), iCountNew ));
+				}
+			}
+#endif
 
 			// try to figure out which client version we are talking to.
 			// (CEvent::ServersReq) or (CEvent::CharListReq)
