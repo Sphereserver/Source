@@ -754,89 +754,120 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	}
 
 
+	int iCountExtra = 0;
 	LOGIN_ERR_TYPE lErr = LOGIN_ERR_OTHER;
 	
 	m_Crypt.Decrypt( pEvent->m_Raw, bincopy.m_Raw, iLen );
 	
 	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE+3];
-	
-	if ( pEvent->Default.m_Cmd == XCMD_ServersReq )
-	{
-		if ( iLen < sizeof( pEvent->ServersReq ))
-			return(false);
 
-		lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
-		if ( lErr == LOGIN_SUCCESS )
-		{
-			int iLenAccount = Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
-			CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
-			if (pAcc)
-			{
-				pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
-			}
-			else
-			{
-				// If i can't set the tag is better to stop login now
-				lErr = LOGIN_ERR_OTHER;
-			}
-		}
-	}
-	else if ( pEvent->Default.m_Cmd == XCMD_CharListReq )
+	switch ( pEvent->Default.m_Cmd )
 	{
-		if ( iLen < sizeof( pEvent->CharListReq ))
-			return(false);
-
-		lErr = Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true );
-		if ( lErr == LOGIN_SUCCESS )
+		case XCMD_ServersReq:
 		{
-			// pass detected client version to the game server to make valid cliver used
-			int iLenAccount = Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
-			CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
-			if (pAcc)
+			if ( iLen < sizeof( pEvent->ServersReq ))
+				return(false);
+			else if ( iLen > sizeof( pEvent->ServersReq ) )
+				iCountExtra = (iLen - sizeof(pEvent->ServersReq));
+
+			lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
+			if ( lErr == LOGIN_SUCCESS )
 			{
-				DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
-				DWORD tmSid = 0x7f000001;
-				if ( g_Cfg.m_fUseAuthID )
+				int iLenAccount = Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
+				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
+				if (pAcc)
 				{
-					tmSid = pAcc->m_TagDefs.GetKeyNum("customerid");
-					pAcc->m_TagDefs.DeleteKey("customerid");
+					pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
 				}
-
-				DEBUG_MSG(( "%x:xProcessClientSetup for %s, with AuthId %d and CliVersion 0x%x\n", m_Socket.GetSocket(), 
-					pAcc->GetName(), tmSid, tmVer ));
-
-				if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
+				else
 				{
-					if ( tmVer != NULL )
-						m_Crypt.SetClientVerEnum(tmVer, false);
+					// If i can't set the tag is better to stop login now
+					lErr = LOGIN_ERR_OTHER;
+				}
+			}
 
-					if ( !xCanEncLogin(true) )
+			break;
+		}
+
+		case XCMD_CharListReq:
+		{
+			if ( iLen < sizeof( pEvent->CharListReq ))
+				return(false);
+			else if ( iLen > sizeof( pEvent->CharListReq ) )
+				iCountExtra = (iLen - sizeof(pEvent->CharListReq));
+
+			lErr = Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true );
+			if ( lErr == LOGIN_SUCCESS )
+			{
+				// pass detected client version to the game server to make valid cliver used
+				int iLenAccount = Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
+				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
+				if (pAcc)
+				{
+					DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
+					DWORD tmSid = 0x7f000001;
+					if ( g_Cfg.m_fUseAuthID )
+					{
+						tmSid = pAcc->m_TagDefs.GetKeyNum("customerid");
+						pAcc->m_TagDefs.DeleteKey("customerid");
+					}
+
+					DEBUG_MSG(( "%x:xProcessClientSetup for %s, with AuthId %d and CliVersion 0x%x\n", m_Socket.GetSocket(), 
+						pAcc->GetName(), tmSid, tmVer ));
+
+					if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
+					{
+						if ( tmVer != NULL )
+							m_Crypt.SetClientVerEnum(tmVer, false);
+
+						if ( !xCanEncLogin(true) )
+							lErr = LOGIN_ERR_OTHER;
+					}
+					else
+					{
 						lErr = LOGIN_ERR_OTHER;
+					}
 				}
 				else
 				{
 					lErr = LOGIN_ERR_OTHER;
 				}
 			}
-			else
-			{
-				lErr = LOGIN_ERR_OTHER;
-			}
+
+			break;
 		}
-	}
+
 #ifdef __UOKRSCARYADDONS
-	else if (pEvent->Default.m_Cmd == 0xE4)
-	{
-		// Lets just ignore it and try and move on? :E
-		lErr = LOGIN_SUCCESS;
-	}
+		case XCMD_EncryptionReply:
+		{
+			if ( iLen < pEvent->EncryptionReply.m_len )
+				return false;
+			else if ( iLen > pEvent->EncryptionReply.m_len )
+				iCountExtra = (iLen - pEvent->EncryptionReply.m_len);
+
+			lErr = LOGIN_SUCCESS;
+			break;
+		}
 #endif
+
 #if _DEBUG
-	else
-	{
-		DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
-	}
+		default:
+		{
+			DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
+		}
 #endif
+	}
+
+	if ( iCountExtra > 0 )
+	{
+		// Extra data has been received (2 packets at once?). The extra
+		// bytes should be re-queued to process later.
+#ifdef VJAKA_REDO
+		m_bin.append((pEvent->m_Raw + (iLen - iCountExtra)), iCountExtra);
+#else
+		m_bin.AddNewData((pEvent->m_Raw + (iLen - iCountExtra)), iCountExtra);
+#endif
+	}
 	
 	if ( lErr == LOGIN_ERR_OTHER )	// it never matched any crypt format.
 	{
@@ -1214,6 +1245,7 @@ bool CClient::xRecvData() // Receive message from client
 			{
 				// UOKR Client opens connection with 255.255.255.255
 				DEBUG_ERR(("UOKR Client Detected.\n"));
+				m_bClientKR = true;
 				BYTE pData[77] = {	0xe3,
 									0x00, 0x4d,
 									0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,

@@ -758,6 +758,9 @@ private:
 
 	// Reported ClientVersion
 	bool m_bClient3d;
+#ifdef __UOKRSCARYADDONS
+	bool m_bClientKR;
+#endif
 	int m_reportedCliver;
 
 	// Screensize
@@ -1068,6 +1071,8 @@ private:
 	void Event_AllNames3D( CGrayUID uid );
 #ifdef __UOKRSCARYADDONS
 	void Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
+	void Event_MacroEquipItems( const NDWORD * pItems, int count );
+	void Event_MacroUnEquipItems( const NWORD * pLayers, int count );
 #endif
 
 public:

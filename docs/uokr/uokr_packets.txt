@@ -17,35 +17,49 @@ byte[4]                 login request   (0xffffffff)
 BUG REPORT
 ========================
 
-byte[1]			packet cmd	(0xe0)
-byte[2]			packet len	(0x07d9)
-byte[4]			language	(0x454e5500)
-byte[2]			bug type	(0x000F)
-byte[packet len - 9]	report body	(unicode text)
+byte[1]                 packet cmd      (0xe0)
+byte[2]                 packet len      (0x07d9)
+byte[4]                 language        (0x454e5500)
+byte[2]                 bug type        (0x000F)
+byte[packet len - 9]    report body     (unicode text)
 
 -> Sent from the client when player fills in a bug report on the ESC menu.
 -> Language is 3 character (null terminated) ascii string as found in chat packets.
 -> Types:
-	0x01	-	World Environment
-	0x02	-	Wearables
-	0x03	-	Combat
-	0x04	-	UI
-	0x05	-	Crash
-	0x06	-	Stuck
-	0x07	-	Animations
-	0x08	-	Performance
-	0x09	-	NPCs
-	0x0A	-	Creatures
-	0x0B	-	Pets
-	0x0C	-	Housing
-	0x0D	-	Lost Item
-	0x0E	-	Exploit
-	0x0F	-	Other
+        0x01    -       World Environment
+        0x02    -       Wearables
+        0x03    -       Combat
+        0x04    -       UI
+        0x05    -       Crash
+        0x06    -       Stuck
+        0x07    -       Animations
+        0x08    -       Performance
+        0x09    -       NPCs
+        0x0A    -       Creatures
+        0x0B    -       Pets
+        0x0C    -       Housing
+        0x0D    -       Lost Item
+        0x0E    -       Exploit
+        0x0F    -       Other
+
+
+========================
+0xE1  (client -> server)
+UNKNOWN
+========================
+
+byte[1]                 packet cmd      (0xe1)
+byte[unk]
+
+-> Sometimes sent by the client on the character selection screen, but have not
+   reproduced it with packet logging enabled.
+-> Seemed to be related to the max char count somehow (lack of reply grays out the
+   create button).
 
 
 ========================
 0xE3  (server -> client)
-UNKNOWN
+ENCRYPTION SET
 ========================
 
 byte[1]                 packet cmd      (0xe3)
@@ -57,8 +71,8 @@ byte[length unkB]       unkB            (0x021100fc2fe38193cbaf98dd8313d29eeae41
 byte[4]                 length unkC     (0x00000010)
 byte[length unkC]       unkC            (0x7813b77bcea8d7bc52de3830eae91ea3)
 byte[4]                 unkD            (0x00000020)
-byte[4]                 length unkE     (0x00000010)
-byte[length unkE]       unkE            (0x5ace3ee39792e48af19ad3044103cb53)
+byte[4]                 length iv       (0x00000010)
+byte[length unkE]       iv              (0x5ace3ee39792e48af19ad3044103cb53)
 
 -> This is sent by the server after the login request, and may contain some kind of
    data related to the encryption (ie. encryption keys).
@@ -72,7 +86,7 @@ byte[length unkE]       unkE            (0x5ace3ee39792e48af19ad3044103cb53)
 
 ========================
 0xE4  (client -> server)
-UNKNOWN
+ENCRYPTION REPLY
 ========================
 
 byte[1]                 packet cmd      (0xe4)
@@ -87,8 +101,81 @@ byte[length unkA]       unkA            (0x562d03ae30388285c4bbab38d42c12bc)
 -> In 0xE3, if unkA[1]=0x00, then unkA in this packet will always be filled with 0s,
    but this does not appear to remove encryption.
 
+
+========================
+0xEC  (client -> server)
+Equip Item Macro
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[1]                 item count
+byte[length-4]          item serials
+
+-> Sent when an equip item macro is played.
+-> Item serials is simply a list of item UIDs that the client wants to equip.
+
+
+========================
+0xED  (client -> server)
+Unequip Item Macro
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[1]                 layer count
+byte[length-4]          layers
+
+-> Sent when an unequip item macro is played.
+-> layers is a list of layers that the client wants to unequip.
+
+
 ========================
 0x8D  (client -> server)
 CHAR CREATION
 ========================
--> Structure to dump
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[4]                 pattern 1
+byte[4]                 pattern 2
+byte[30]                character name
+byte[30]                "Unknown"
+byte[1]                 profession
+byte[1]                 unkA
+byte[1]                 gender
+byte[1]                 race
+byte[1]                 strength
+byte[1]                 dexterity
+byte[1]                 intelligence
+byte[2]                 skin hue
+byte[8]                 unkB
+byte[1]                 skill 1 id
+byte[1]                 skill 1 value
+byte[1]                 skill 2 id
+byte[1]                 skill 2 value
+byte[1]                 skill 4 id
+byte[1]                 skill 4 value
+byte[1]                 skill 3 id
+byte[1]                 skill 3 value
+byte[26]                unkC
+byte[2]                 hair hue
+byte[2]                 hair id
+byte[11]                unkD
+byte[2]                 skin hue
+byte[1]                 unkE
+byte[1]                 portrait
+byte[1]                 unkF
+byte[2]                 beard hue
+byte[2]                 beard id
+
+-> "Unknown" actually contains the string "Unknown".
+-> Profession is the ID of the selected profession, or 0 for custom.
+-> Gender values are 0=male, 1=female.
+-> Race values are 0=human, 1=elf.
+-> UOKR clients can choose 4 starting skills. Skills 4 and 3 are sent in reverse
+   for some reason.
+-> The skill ids and values should only be used when profession is custom (0). If
+   a profession is selected then the skills will contain 'junk'.
+-> Skin hue is repeated twice for some reason.
+-> Portrait may be a byte[2].
