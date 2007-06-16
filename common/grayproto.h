@@ -208,6 +208,9 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_CorpEquip		= 0x89,
 	XCMD_GumpTextDisp	= 0x8b,
 	XCMD_Relay			= 0x8c,
+#ifdef __UOKRSCARYADDONS
+	XCMD_CreateNew		= 0x8d,
+#endif
 	//	0x90
 	XCMD_MapDisplay		= 0x90,
 	XCMD_CharListReq	= 0x91,
@@ -277,8 +280,12 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 #ifdef __UOKRSCARYADDONS
 	//	0xE0
 	XCMD_BugReport		= 0xe0,
+	XCMD_UnknownCharSelect	= 0xe1,
+	XCMD_EncryptionReply	= 0xe4,
+	XCMD_MacroEquipItem		= 0xec,
+	XCMD_MacroUnEquipItem	= 0xed,
 	
-	XCMD_QTY		= 0xe1,
+	XCMD_QTY		= 0xee,
 #else
 	XCMD_QTY		= 0xe0,
 #endif
@@ -948,7 +955,19 @@ enum BUGREPORT_TYPE	// bug report codes
 	BUGREPORT_HOUSING		= 0x0C,
 	BUGREPORT_LOST_ITEM		= 0x0D,
 	BUGREPORT_EXPLOIT		= 0x0E,
-	BUGREPORT_OTHER			= 0x0F
+	BUGREPORT_OTHER			= 0x0F,
+};
+
+enum PROFESSION_TYPE	// profession ids
+{
+	PROFESSION_ADVANCED		= 0x00,
+	PROFESSION_WARRIOR		= 0x01,
+	PROFESSION_MAGE			= 0x02,
+	PROFESSION_BLACKSMITH	= 0x03,
+	PROFESSION_NECROMANCER	= 0x04,
+	PROFESSION_PALADIN		= 0x05,
+	PROFESSION_SAMURAI		= 0x06,
+	PROFESSION_NINJA		= 0x07,
 };
 
 #endif
@@ -1544,7 +1563,48 @@ struct CEvent	// event buffer from client to server..
 		} ExtAosData;
 
 #ifdef __UOKRSCARYADDONS
-		struct
+
+		struct // XCMD_CreateNew, size = ? // create a new char (uokr)
+		{
+			BYTE m_Cmd;						// 0 = 0x8D
+			NWORD m_len;					// 1 - 2 = length
+			NDWORD m_pattern1;				// 3 - 6 = 0xedededed
+			NDWORD m_pattern2;				// 7 - 10 = 0xffffffff
+			char m_charname[MAX_NAME_SIZE];	// 11 - 40 = ascii name
+			char m_unknown[30];				// 41 - 70 = "Unknown"
+			BYTE m_profession;				// 71 = profession (0=custom)
+			BYTE m_unk1;	// 72;
+			BYTE m_sex;						// 73 = sex (0=male, 1=female)
+			BYTE m_race;					// 74 = race (0=human, 1=elf)
+			BYTE m_str;						// 75 = str
+			BYTE m_dex;						// 76 = dex
+			BYTE m_int;						// 77 = int
+			NWORD m_wSkinHue;				// 78 - 79 = skin hue
+			BYTE m_unk2[8];	// 80 - 87
+
+			// skill values only used if m_prof=0
+			BYTE m_skill1;					// 88 = skill #1
+			BYTE m_val1;					// 89 = skill #1 val
+			BYTE m_skill2;					// 90 = skill #2
+			BYTE m_val2;					// 91 = skill #2 val
+			BYTE m_skill4;					// 92 = skill #4
+			BYTE m_val4;					// 93 = skill #4 val
+			BYTE m_skill3;					// 94 = skill #3
+			BYTE m_val3;					// 94 = skill #3 val
+
+			BYTE m_unk3[26];	// 95 - 121
+			NWORD m_hairHue;				// 122 - 123 = hair hue
+			NWORD m_hairId;					// 124 - 125 = hair id
+			BYTE m_unk4[11];	// 126 - 136
+			NWORD m_wSkinHue2;				// 137 - 138 = skin hue (included twice?)
+			BYTE m_unk5;	// 139
+			BYTE m_portrait;				// 140 = portrait id (could be NWORD)
+			BYTE m_unk6;	// 141
+			NWORD m_beardHue;				// 142 - 143 = beard hue
+			NWORD m_beardId;				// 144 - 145 = beard id
+		} CreateNew;
+
+		struct // XCMD_BugReport
 		{
 			BYTE m_Cmd;			// 0=0xe0
 			NWORD m_len;		// 1 - 2 (len = )
@@ -1552,6 +1612,30 @@ struct CEvent	// event buffer from client to server..
 			NWORD m_type;		// 7 - 8 (bug type)
 			NCHAR m_utext[1];	// 9 - ? (NCHAR[?] text)
 		} BugReport;
+
+		struct // XCMD_EncryptionReply
+		{
+			BYTE m_Cmd;			// 0 = 0xE4
+			NWORD m_len;		// 1 - 2 = length
+			NDWORD m_lenUnk1;				// 3 - 6 = length of m_unk1
+			BYTE m_unk1[1];					// 7 - ? = ?
+		} EncryptionReply;
+
+		struct // XCMD_MacroEquipItem
+		{
+			BYTE m_Cmd;			// 0=0xec
+			NWORD m_len;		// 1 - 2 (len)
+			BYTE m_count;		// 3	 (number of layers)
+			NDWORD m_items[1];	// 4 - ? (items to equip)
+		} MacroEquipItems;
+
+		struct // XCMD_MacroUnEquipItem
+		{
+			BYTE m_Cmd;			// 0=0xed
+			NWORD m_len;		// 1 - 2 (len)
+			BYTE m_count;		// 3	 (number of layers)
+			NWORD m_layers[1];	// 4 - ? (layers to unequip)
+		} MacroUnEquipItems;
 #endif
 	};
 } PACK_NEEDED;

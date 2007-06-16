@@ -2632,6 +2632,7 @@ void CClient::addReSync(bool bForceMap)
 	addLight();		// Current light level where I am.
 	addWeather();	// if any ...
 	addSpeedMode( m_pChar->m_pPlayer->m_speedMode );
+	addCharStatWindow( m_pChar->GetUID() );
 }
 
 void CClient::addMap( const CPointMap * pOldP, bool playerStart)
@@ -4546,16 +4547,36 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 
 	CChar * pChar = CChar::CreateBasic( CREID_MAN );
 	ASSERT(pChar);
+#ifdef __UOKRSCARYADDONS
+	CEvent * CreateEvent = const_cast<CEvent*>( pEvent );
+
+	pChar->InitPlayer( this, CreateEvent, CreateEvent->Default.m_Cmd == XCMD_CreateNew );
+#else
 	pChar->InitPlayer( pEvent, this );
+#endif
 
 	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_CreateDialog acct='%s', char='%s'\n",
 		m_Socket.GetSocket(), (LPCTSTR)GetAccount()->GetName(), (LPCTSTR)pChar->GetName());
 
 	enum TRIGRET_TYPE	tr;
 	CScriptTriggerArgs createArgs;
-	createArgs.m_iN1 = (DWORD) pEvent->Create.m_flags;
-	createArgs.m_iN2 = (int) pEvent->Create.m_prof;
-	createArgs.m_iN3 = ((pEvent->Create.m_sex - 2) >= 0);
+#ifdef __UOKRSCARYADDONS
+	if ( CreateEvent->Default.m_Cmd == XCMD_CreateNew )
+	{
+		createArgs.m_iN1 = 0xFFFFFFFF;
+		createArgs.m_iN2 = CreateEvent->CreateNew.m_profession;
+		createArgs.m_iN3 = CreateEvent->CreateNew.m_race;
+		createArgs.m_VarsLocal.SetNum("PORTRAIT", CreateEvent->CreateNew.m_portrait);
+		createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", CreateEvent->CreateNew.m_skill4);
+		createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", CreateEvent->CreateNew.m_val4 * 10);
+	}
+	else
+#endif
+	{
+		createArgs.m_iN1 = (DWORD) CreateEvent->Create.m_flags;
+		createArgs.m_iN2 = (int) CreateEvent->Create.m_prof;
+		createArgs.m_iN3 = ((CreateEvent->Create.m_sex - 2) >= 0);
+	}
 	createArgs.m_s1 = GetAccount()->GetName();
 	createArgs.m_pO1 = this;
 

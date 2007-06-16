@@ -63,6 +63,9 @@ CClient::CClient( SOCKET client ) :
 	m_tNextPickup.Init();
 	m_reportedCliver = 0;
 	m_bClient3d = false; // Client by default are 2d
+#ifdef __UOKRSCARYADDONS
+	m_bClientKR = false;
+#endif
 	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
 	m_LastTooltipSend = 0;
@@ -649,6 +652,13 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		index = CC_SCREENSIZE;
 	else if ( !strnicmp( "REPORTEDCLIVER", pszKey, 14 ) && ( pszKey[14] == '\0' || pszKey[14] == '.' ) )
 		index = CC_REPORTEDCLIVER;
+#ifdef __UOKRSCARYADDONS
+	else if ( !strcmpi( "CLIENTISKR", pszKey ) )
+	{
+		sVal.FormatVal( m_bClientKR );
+		return true;
+	}
+#endif
 	else
 		index	= FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 	switch (index)

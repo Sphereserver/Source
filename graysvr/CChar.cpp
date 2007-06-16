@@ -880,6 +880,368 @@ void CChar::SetID( CREID_TYPE id )
 	}
 }
 
+#ifdef __UOKRSCARYADDONS
+
+void CChar::InitPlayer( CClient * pClient, CEvent * pEvent, bool bCreateNew )
+{
+	ADDTOCALLSTACK("CChar::InitPlayer");
+	// Create a brand new Player char.
+	ASSERT(pClient);
+	ASSERT(pEvent);
+
+	if ( bCreateNew == false )
+	{
+		// Init the player using the Create struct
+		bool bSex = false; // Male
+		bool bElf = false; // Human
+
+		if ( pClient->GetAccount() && pClient->GetAccount()->GetResDisp() >= RDS_ML )
+		{
+			if ((pEvent->Create.m_sex - 2) >= 0)
+			{
+				bElf = true;
+				bSex = ((pEvent->Create.m_sex - 2) == 1 );
+			}
+			else
+			{
+				bSex = ( pEvent->Create.m_sex == 1 );
+			}
+		}
+		else
+			bSex = ( pEvent->Create.m_sex == 1 );
+
+		InitPlayer(pClient, pEvent->Create.m_charname,
+							bSex,
+							bElf,
+							pEvent->Create.m_str, pEvent->Create.m_dex, pEvent->Create.m_int,
+							(PROFESSION_TYPE)pEvent->Create.m_prof,
+							(SKILL_TYPE)pEvent->Create.m_skill1, pEvent->Create.m_val1,
+							(SKILL_TYPE)pEvent->Create.m_skill2, pEvent->Create.m_val2,
+							(SKILL_TYPE)pEvent->Create.m_skill3, pEvent->Create.m_val3,
+							(HUE_TYPE)pEvent->Create.m_wSkinHue,
+							(ITEMID_TYPE)(WORD)pEvent->Create.m_hairid, (HUE_TYPE)pEvent->Create.m_hairHue,
+							(ITEMID_TYPE)(WORD)pEvent->Create.m_beardid, (HUE_TYPE)pEvent->Create.m_beardHue,
+							(HUE_TYPE)pEvent->Create.m_shirtHue, (HUE_TYPE)pEvent->Create.m_pantsHue,
+							pEvent->Create.m_startloc );
+	}
+	else
+	{
+		// Init the player using the CreateNew struct
+
+		// The new creation packet does not contain skills and values if
+		// a profession is selected, so here we must translate the selected
+		// profession -> skills
+		switch (pEvent->CreateNew.m_profession)
+		{
+			case PROFESSION_WARRIOR:
+				pEvent->CreateNew.m_skill1 = SKILL_SWORDSMANSHIP;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_TACTICS;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_HEALING;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_ANATOMY;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_MAGE:
+				pEvent->CreateNew.m_skill1 = SKILL_MAGERY;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_EVALINT;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_MEDITATION;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_WRESTLING;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_BLACKSMITH:
+				pEvent->CreateNew.m_skill1 = SKILL_BLACKSMITHING;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_MINING;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_TINKERING;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_TAILORING;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_NECROMANCER:
+				pEvent->CreateNew.m_skill1 = SKILL_NECROMANCY;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_SPIRITSPEAK;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_FENCING;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_MEDITATION;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_PALADIN:
+				pEvent->CreateNew.m_skill1 = SKILL_CHIVALRY;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_SWORDSMANSHIP;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_TACTICS;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_FOCUS;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_SAMURAI:
+				pEvent->CreateNew.m_skill1 = SKILL_BUSHIDO;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_SWORDSMANSHIP;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_FOCUS;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_PARRYING;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_NINJA:
+				pEvent->CreateNew.m_skill1 = SKILL_NINJITSU;
+				pEvent->CreateNew.m_val1 = 30;
+				pEvent->CreateNew.m_skill2 = SKILL_FENCING;
+				pEvent->CreateNew.m_val2 = 30;
+				pEvent->CreateNew.m_skill3 = SKILL_HIDING;
+				pEvent->CreateNew.m_val3 = 30;
+				pEvent->CreateNew.m_skill4 = SKILL_PARRYING;
+				pEvent->CreateNew.m_val4 = 30;
+				break;
+			case PROFESSION_ADVANCED:
+				break;
+			default:
+				DEBUG_WARN(("Unknown profession '%d' selected.\n", pEvent->CreateNew.m_profession));
+				break;
+		}
+
+		InitPlayer(pClient, pEvent->CreateNew.m_charname,
+							pEvent->CreateNew.m_sex > 0,
+							pEvent->CreateNew.m_race > 0,
+							pEvent->CreateNew.m_str, pEvent->CreateNew.m_dex, pEvent->CreateNew.m_int,
+							(PROFESSION_TYPE)pEvent->CreateNew.m_profession,
+							(SKILL_TYPE)pEvent->CreateNew.m_skill1, pEvent->CreateNew.m_val1,
+							(SKILL_TYPE)pEvent->CreateNew.m_skill2, pEvent->CreateNew.m_val2,
+							(SKILL_TYPE)pEvent->CreateNew.m_skill3, pEvent->CreateNew.m_val3,
+							(HUE_TYPE)pEvent->CreateNew.m_wSkinHue,
+							(ITEMID_TYPE)(WORD)pEvent->CreateNew.m_hairId, (HUE_TYPE)pEvent->CreateNew.m_hairHue,
+							(ITEMID_TYPE)(WORD)pEvent->CreateNew.m_beardId, (HUE_TYPE)pEvent->CreateNew.m_beardHue,
+							HUE_DEFAULT, HUE_DEFAULT,
+							0 );
+	}
+}
+
+void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, bool bElf, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
+{
+	ADDTOCALLSTACK("CChar::InitPlayer");
+	// Create a brand new Player char.
+	ASSERT(pClient);
+
+	if ( bElf )
+		SetID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, ( bFemale ) ? "c_elf_female" : "c_elf_male" ));
+	else
+		SetID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, ( bFemale ) ? "c_woman" : "c_man" ));
+
+	bool	bNameIsAccepted = true;	// Is the name acceptable?
+	char	*zCharName = Str_GetTemp();
+
+	strcpylen(zCharName, pszCharname, MAX_NAME_SIZE);
+
+	if ( g_Cfg.IsObscene(zCharName) || Str_CheckName(zCharName) ||
+		!strnicmp(zCharName,"lord ", 5) || !strnicmp(zCharName,"lady ", 5) ||
+		!strnicmp(zCharName,"seer ", 5) || !strnicmp(zCharName,"gm ", 3) ||
+		!strnicmp(zCharName,"admin ", 6) || !strnicmp(zCharName,"counselor ", 10))
+		bNameIsAccepted = false;
+
+	if ( !strlen(zCharName) )
+		bNameIsAccepted = false;
+
+	if ( bNameIsAccepted )
+	{
+		CScriptTriggerArgs args;
+		args.m_s1 = zCharName;
+		args.m_pO1 = this;
+		if ( this->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+			bNameIsAccepted = false;
+	}
+
+	if ( bNameIsAccepted )
+		SetName(zCharName);
+	else
+		SetNamePool( ( bFemale ) ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE" );
+
+	if ( !bElf )
+	{
+		if ( (wSkinHue < HUE_SKIN_LOW) || (wSkinHue > HUE_SKIN_HIGH) )
+			wSkinHue = HUE_SKIN_LOW;
+	}
+	else
+	{
+		if (( wSkinHue >= 0x353 ) && ( wSkinHue <= 0x3e9 )) ;
+		else if (( wSkinHue >= 0x24d ) && ( wSkinHue <= 0x24f )) ;
+		else if (( wSkinHue == 0x4de ) || ( wSkinHue == 0x76c ) || ( wSkinHue == 0x835 ) || ( wSkinHue == 0x430 )) ;
+		else if (( wSkinHue == 0xbf ) || ( wSkinHue == 0x4a7 ) || ( wSkinHue == 0x903 ) || ( wSkinHue == 0x76d ) || ( wSkinHue == 0x579 )) ;
+		else if (( wSkinHue == 0x53f ) || ( wSkinHue == 0x76b ) || ( wSkinHue == 0x51d )) ;
+		else
+			wSkinHue = (HUE_TYPE) 0x353;
+	}
+
+	SetHue( (wSkinHue|HUE_UNDERWEAR) );
+	m_fonttype = FONT_NORMAL;
+
+	if ( ! g_Cfg.m_StartDefs.IsValidIndex( iStartLoc ))
+		iStartLoc = 0;
+	m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+
+	if ( ! m_ptHome.IsValidPoint())
+	{
+		if ( g_Cfg.m_StartDefs.GetCount())
+		{
+			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
+		}
+		DEBUG_ERR(( "Invalid start location for character!\n" ));
+	}
+
+	SetUnkPoint( m_ptHome );	// Don't actaully put me in the world yet.
+
+	// randomize the skills first.
+	int i = 0;
+	for ( ; i < MAX_SKILL; i++ )
+	{
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+			continue;
+
+		if (( !g_Cfg.m_fInitHiddenSkills ) && !pClient->IsSkillVisible( (SKILL_TYPE)i ))
+			continue;
+
+		Skill_SetBase( (SKILL_TYPE)i, Calc_GetRandVal( g_Cfg.m_iMaxBaseSkill ));
+	}
+
+	wStr = minimum(wStr, 80);
+	wDex = minimum(wDex, 80);
+	wInt = minimum(wInt, 80);
+	if ( (wStr + wDex + wInt) > 80 )
+		wStr = wDex = wInt  = 26;
+
+	Stat_SetBase(STAT_STR, wStr);
+	Stat_SetBase(STAT_DEX, wDex);
+	Stat_SetBase(STAT_INT, wInt);
+
+	iSkillVal1 = minimum(iSkillVal1, 50);
+	iSkillVal2 = minimum(iSkillVal2, 50);
+	iSkillVal3 = minimum(iSkillVal3, 50);
+	if ( iSkillVal1 + iSkillVal2 + iSkillVal3 > 101 )
+		iSkillVal3 = 1;
+
+	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1))
+		Skill_SetBase(skSkill1, iSkillVal1*10);
+	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2))
+		Skill_SetBase(skSkill2, iSkillVal2*10);
+	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3))
+		Skill_SetBase(skSkill3, iSkillVal3*10);
+
+	// Set title
+	m_sTitle.Empty();
+
+	if ( bElf )
+	{
+		if ( !((( idHair >= ITEMID_HAIR_ML_ELF ) && ( idHair <= ITEMID_HAIR_ML_MULLET )) || (( idHair >= ITEMID_HAIR_ML_FLOWER ) && ( idHair <= ITEMID_HAIR_ML_SPYKE ))) )
+			idHair = (ITEMID_TYPE) 0; // elf can use only a restricted subset of hairs
+	}
+	else
+	{
+		if ( !((( idHair >= ITEMID_HAIR_SHORT ) && ( idHair <= ITEMID_HAIR_PONYTAIL )) || (( idHair >= ITEMID_HAIR_MOHAWK ) && ( idHair<= ITEMID_HAIR_TOPKNOT ))) )
+			idHair = (ITEMID_TYPE) 0; // human can use only a restricted subset of hairs
+	}
+
+	if ( idHair )
+	{
+		CItem * pHair = CItem::CreateScript(idHair, this);
+		ASSERT(pHair);
+		if ( !pHair->IsType(IT_HAIR) )
+			pHair->Delete();
+		else
+		{
+			if ( !bElf )
+			{
+				if ( wHairHue < HUE_HAIR_LOW || wHairHue > HUE_HAIR_HIGH )
+					wHairHue = HUE_HAIR_LOW;
+			}
+			else
+			{
+				if (( wHairHue >= 0x34 ) && ( wHairHue == 0x39 )) ;
+				else if (( wHairHue == 0x101 ) || ( wHairHue == 0x6b8 ) || ( wHairHue == 0x207 ) || ( wHairHue == 0x211 ) || ( wHairHue == 0x26c ) || ( wHairHue == 0x2c3 ) ) ;
+				else if (( wHairHue == 0x2c9 ) || ( wHairHue == 0x1e4 ) || ( wHairHue == 0x239 ) || ( wHairHue == 0x369 ) || ( wHairHue == 0x59d ) || ( wHairHue == 0x853 ) ) ;
+				else if ((( wHairHue >= 0x8e ) && ( wHairHue == 0x92 )) || ( wHairHue == 0x159 )) ;
+				else if ((( wHairHue >= 0x15a ) && ( wHairHue == 0x15e )) || ( wHairHue == 0x1bd )) ;
+				else if (( wHairHue == 0x725 ) || ( wHairHue == 0x58 ) || ( wHairHue == 0x128 ) || ( wHairHue == 0x12f ) || ( wHairHue == 0x1f3 ) || ( wHairHue == 0x251 )) ;
+				else if (( ( wHairHue >= 0x31d ) && ( wHairHue == 0x322 )) || (( wHairHue >= 0x323 ) && ( wHairHue == 0x326 )) || (( wHairHue >= 0x386 ) && ( wHairHue == 0x38a ))) ;
+				else
+					wHairHue = (HUE_TYPE) 0x34;
+			}
+			pHair->SetHue( wHairHue );
+			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			LayerAdd( pHair );	// add content
+		}
+	}
+
+	if ( bElf )
+		idBeard = (ITEMID_TYPE) 0; // elf don't have beards
+
+	if ( idBeard )
+	{
+		CItem * pBeard = CItem::CreateScript( idBeard, this );
+		ASSERT(pBeard);
+		if ( !pBeard->IsType(IT_BEARD) )
+			pBeard->Delete();
+		else
+		{
+			if ( wBeardHue < HUE_HAIR_LOW || wBeardHue > HUE_HAIR_HIGH )
+			{
+				wBeardHue = HUE_HAIR_LOW;
+			}
+			pBeard->SetHue( wBeardHue );
+			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			LayerAdd( pBeard );	// add content
+		}
+	}
+
+	// Create the bank box.
+	CItemContainer * pBankBox = GetBank( LAYER_BANKBOX );
+	// Create the pack.
+	CItemContainer * pPack = GetPackSafe();
+
+	// Get special equip for the starting skills.
+	for ( i=0; i<4; i++ )
+	{
+		int iSkill;
+		switch ( i )
+		{
+			case 0: iSkill = ( bFemale ) ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT;
+			case 1: iSkill = skSkill1; break;
+			case 2: iSkill = skSkill2; break;
+			case 3: iSkill = skSkill3; break;
+		}
+
+		CResourceLock s;
+		if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
+			continue;
+		ReadScript(s);
+	}
+
+	CItem	*pLayer = LayerFind(LAYER_SHIRT);
+	if ( pLayer )
+	{
+		if ( wShirtHue<HUE_BLUE_LOW || wShirtHue>HUE_DYE_HIGH )
+			wShirtHue = HUE_DYE_HIGH;
+		pLayer->SetHue( wShirtHue );
+	}
+	pLayer = LayerFind( LAYER_PANTS );
+	if ( pLayer )
+	{
+		if ( wPantsHue<HUE_BLUE_LOW || wPantsHue>HUE_DYE_HIGH )
+			wPantsHue = HUE_DYE_HIGH;
+		pLayer->SetHue( wPantsHue );
+	}
+	CreateNewCharCheck();
+}
+
+#else
 
 void CChar::InitPlayer( const CEvent * pBin, CClient * pClient )
 {
@@ -1130,6 +1492,8 @@ void CChar::InitPlayer( const CEvent * pBin, CClient * pClient )
 	}
 	CreateNewCharCheck();
 }
+
+#endif
 
 enum CHR_TYPE
 {

@@ -3371,6 +3371,54 @@ void CClient::Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE ty
 	m_pChar->OnTrigger(CTRIG_UserBugReport, m_pChar, &Args);
 }
 
+void CClient::Event_MacroEquipItems( const NDWORD * pItems, int count )
+{
+	ADDTOCALLSTACK("CClient::Event_MacroEquipItems");
+	if ( !m_pChar )
+		return;
+
+	CItem * pItem;
+
+	for (int i = 0; i < count; i++ )
+	{
+		pItem = CGrayUID(pItems[i]).ItemFind();
+		if ( !pItem )
+			continue;
+		
+		if ( pItem->GetTopLevelObj() != m_pChar || pItem->IsItemEquipped() )
+			continue;
+
+		if ( m_pChar->ItemPickup(pItem, pItem->GetAmount()) < 1 )
+			continue;
+
+		m_pChar->ItemEquip(pItem);
+	}
+}
+
+void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
+{
+	ADDTOCALLSTACK("CClient::Event_MacroUnEquipItems");
+	if ( !m_pChar )
+		return;
+
+	LAYER_TYPE layer;
+	CItem * pItem;
+
+	for (int i = 0; i < count; i++ )
+	{
+		layer = (LAYER_TYPE)(WORD)pLayers[i];
+
+		pItem = m_pChar->LayerFind(layer);
+		if ( !pItem )
+			continue;
+
+		if ( m_pChar->ItemPickup(pItem, pItem->GetAmount()) < 1 )
+			continue;
+
+		m_pChar->ItemBounce(pItem);
+	}
+}
+
 #endif
 
 //----------------------------------------------------------------------
@@ -4011,8 +4059,6 @@ int CClient::xDispatchMsg()
 		return -1;
 
 	EXC_SET("packet parsing");
-#ifdef __UOKRSCARYADDONS
-#else
 	if ( pEvent->Default.m_Cmd >= XCMD_QTY ) // bad packet type ?
 	{
 		DEBUG_ERR(( "Unimplemented command %d\n", pEvent->Default.m_Cmd ) );
@@ -4021,7 +4067,6 @@ int CClient::xDispatchMsg()
 #endif
 		RETURN_FALSE();
 	}
-#endif
 
 #ifdef _PACKET_LEN_CHECK
 	// check the packet size first.
@@ -4067,10 +4112,38 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				return( Login_Relay( pEvent->ServerSelect.m_select ));
 			case XCMD_CharListReq: // Second Login to select char
+			{
 				EXC_SET("not logged - char list req");
 				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
 					RETURN_FALSE();
-				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) == LOGIN_SUCCESS );
+				if ( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) != LOGIN_SUCCESS )
+					RETURN_FALSE();
+#ifdef __UOKRSCARYADDONS
+				if ( m_bClientKR )
+				{
+					CAccountRef pAcc = GetAccount();
+					if (pAcc)
+					{
+						DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
+						DWORD tmSid = 0x7f000001;
+						if ( g_Cfg.m_fUseAuthID )
+						{
+							tmSid = pAcc->m_TagDefs.GetKeyNum("customerid");
+							pAcc->m_TagDefs.DeleteKey("customerid");
+						}
+
+						DEBUG_MSG(( "%x:xDispatchMsg for %s, with AuthId %d and CliVersion 0x%x\n", m_Socket.GetSocket(), pAcc->GetName(), tmSid, tmVer ));
+
+						if ( tmSid != NULL && tmSid != pEvent->CharListReq.m_Account )
+							RETURN_FALSE();
+
+						if ( tmVer != NULL && !m_Crypt.GetClientVer() )
+							m_Crypt.SetClientVerEnum(tmVer, false);
+					}
+				}
+#endif
+				return 1;
+			}
 			case XCMD_Spy:
 			case XCMD_Spy2:
 			{
@@ -4098,6 +4171,15 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				return 1;
 			}
+#ifdef __UOKRSCARYADDONS
+			case XCMD_EncryptionReply:
+			{
+				EXC_SET("not logged - encryption reply");
+				if ( !xCheckMsgSize( pEvent->EncryptionReply.m_len ) )
+					RETURN_FALSE();
+				return 1;
+			}
+#endif
 			default:
 			{
 				EXC_SET("not logged - anything");
@@ -4125,6 +4207,16 @@ int CClient::xDispatchMsg()
 				RETURN_FALSE();
 			Setup_CreateDialog( pEvent );
 			return 1;
+#ifdef __UOKRSCARYADDONS
+		case XCMD_CreateNew: // Character Create (UOKR)
+			EXC_SET("create char new");
+			if ( !xCheckMsgSize( 3 ))
+				RETURN_FALSE();
+			if ( !xCheckMsgSize( pEvent->CreateNew.m_len ))
+				RETURN_FALSE();
+			Setup_CreateDialog(pEvent);
+			return 1;
+#endif
 		case XCMD_CharDelete: // Character Delete
 			EXC_SET("delete char");
 			if ( ! xCheckMsgSize( sizeof( pEvent->CharDelete )))
@@ -4505,6 +4597,29 @@ int CClient::xDispatchMsg()
 				if ( ! xCheckMsgSize( pEvent->BugReport.m_len ))
 					RETURN_FALSE();
 				Event_BugReport( pEvent->BugReport.m_utext, pEvent->BugReport.m_len, (BUGREPORT_TYPE)(WORD)pEvent->BugReport.m_type, CLanguageID( pEvent->BugReport.m_Language ) );
+			} break;
+		case XCMD_MacroEquipItem:
+			{
+				EXC_SET("macro - equip items");
+				if ( !xCheckMsgSize(3) )
+					RETURN_FALSE();
+				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
+					RETURN_FALSE();
+				Event_MacroEquipItems(pEvent->MacroEquipItems.m_items, pEvent->MacroEquipItems.m_count);
+			} break;
+		case XCMD_MacroUnEquipItem:
+			{
+				EXC_SET("macro - unequip items");
+				if ( !xCheckMsgSize(3) )
+					RETURN_FALSE();
+				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
+					RETURN_FALSE();
+				Event_MacroUnEquipItems(pEvent->MacroUnEquipItems.m_layers, pEvent->MacroUnEquipItems.m_count);
+			} break;
+		case XCMD_UnknownCharSelect:
+			{
+				DEBUG_WARN(("%x:Unknown KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
+				xDumpPacket( m_bin.GetDataQty(), pEvent->m_Raw );
 			} break;
 #endif
 
