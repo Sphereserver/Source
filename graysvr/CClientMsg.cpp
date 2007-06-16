@@ -4548,9 +4548,9 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	CChar * pChar = CChar::CreateBasic( CREID_MAN );
 	ASSERT(pChar);
 #ifdef __UOKRSCARYADDONS
-	CEvent * CreateEvent = const_cast<CEvent*>( pEvent );
+	CEvent * pCreateEvent = const_cast<CEvent*>( pEvent );
 
-	pChar->InitPlayer( this, CreateEvent, CreateEvent->Default.m_Cmd == XCMD_CreateNew );
+	pChar->InitPlayer( this, pCreateEvent, pCreateEvent->Default.m_Cmd == XCMD_CreateNew );
 #else
 	pChar->InitPlayer( pEvent, this );
 #endif
@@ -4561,22 +4561,26 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	enum TRIGRET_TYPE	tr;
 	CScriptTriggerArgs createArgs;
 #ifdef __UOKRSCARYADDONS
-	if ( CreateEvent->Default.m_Cmd == XCMD_CreateNew )
+	if ( pCreateEvent->Default.m_Cmd == XCMD_CreateNew )
 	{
 		createArgs.m_iN1 = 0xFFFFFFFF;
-		createArgs.m_iN2 = CreateEvent->CreateNew.m_profession;
-		createArgs.m_iN3 = CreateEvent->CreateNew.m_race;
-		createArgs.m_VarsLocal.SetNum("PORTRAIT", CreateEvent->CreateNew.m_portrait);
-		createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", CreateEvent->CreateNew.m_skill4);
-		createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", CreateEvent->CreateNew.m_val4 * 10);
+		createArgs.m_iN2 = pCreateEvent->CreateNew.m_profession;
+		createArgs.m_iN3 = pCreateEvent->CreateNew.m_race;
+		createArgs.m_VarsLocal.SetNum("PORTRAIT", pCreateEvent->CreateNew.m_portrait);
+		createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", pCreateEvent->CreateNew.m_skill4);
+		createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", pCreateEvent->CreateNew.m_val4 * 10);
 	}
 	else
-#endif
 	{
-		createArgs.m_iN1 = (DWORD) CreateEvent->Create.m_flags;
-		createArgs.m_iN2 = (int) CreateEvent->Create.m_prof;
-		createArgs.m_iN3 = ((CreateEvent->Create.m_sex - 2) >= 0);
+		createArgs.m_iN1 = (DWORD) pCreateEvent->Create.m_flags;
+		createArgs.m_iN2 = (int) pCreateEvent->Create.m_prof;
+		createArgs.m_iN3 = ((pCreateEvent->Create.m_sex - 2) >= 0);
 	}
+#else
+	createArgs.m_iN1 = (DWORD) pEvent->Create.m_flags;
+	createArgs.m_iN2 = (int) pEvent->Create.m_prof;
+	createArgs.m_iN3 = ((pEvent->Create.m_sex - 2) >= 0);
+#endif
 	createArgs.m_s1 = GetAccount()->GetName();
 	createArgs.m_pO1 = this;
 
