@@ -6,14 +6,21 @@ This file contains some instructions for using Crypto++ 5.5.1, which may or may 
 
 1. We need to get an IV of 16byte and a Key of 32 byte from e3 and e4 packets
 1a. IV in first e3 is the last 0x10 bytes
-1b. key is ???
+1b. key is sha256(math-transform(constbytes,packets)))
+1c. math-transorm is ???
 2. Create a AES object in CFB mode
 3. xor the plaintext with the blockcypher to get the crypt packed.
 
 
 
-// uokr client, processxorblock asm:				// In this column the riced (no crypt) version
+// for spying in memory (2-45-3-3)
+004EE4A3  Reg. EAX = Packet Start Address
+004EE500  Reg. ESI = Packet Len
 
+
+
+
+// uokr client, processxorblock asm:				// In this column the riced (no crypt) version
 006E6DA0  |. 85C9           TEST ECX,ECX
 006E6DA2  |. 885D DE        MOV BYTE PTR SS:[EBP-22],BL
 006E6DA5  |. 8A9E 0089A400  MOV BL,BYTE PTR DS:[ESI+A48900]
