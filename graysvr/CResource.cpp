@@ -1605,8 +1605,9 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		//		0x10	= unknown, (alternative seen, single character)
 		//		0x20	= enable common AOS features (tooltip thing/fight system book, but not AOS monsters/map/skills)
 		//		0x40	= Sixth Character Slot?
-		//		8x80	= Samurai Empire?
+		//		0x80	= Samurai Empire?
 		//		0x100	= Elf races?
+		//		0x200	= Flag KR Unknown 1		//		0x400	= Flag KR Unknown 2
 
 		// T2A - LBR don't have char list flags
 		bResOk = ( res >= RDS_AOS );
@@ -1629,6 +1630,14 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		{
 			retValue |= ( this->m_iFeatureML ) ? 0x0100 : 0x00;
 		}
+
+#ifdef __UOKRSCARYADDONS
+		bResOk = ( res >= RDS_KR );
+		if ( bResOk )
+		{
+			retValue |= 0x200 | 0x400;
+		}
+#endif
 	}
 	else
 	{

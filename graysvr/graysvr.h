@@ -126,7 +126,9 @@ enum RESDISPLAY_VERSION
 	RDS_AOS,
 	RDS_SE,
 	RDS_ML,
-
+#ifdef __UOKRSCARYADDONS
+	RDS_KR,
+#endif
 	RDS_QTY,
 };
 
