@@ -1,0 +1,216 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3A511349-1AF4-466B-BD0E-D8AC021D0FD8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>SpyUOLib</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SpyUO</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="Ultima">
+      <Name>Ultima</Name>
+      <HintPath>Ultima.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddressAndRegisters.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClientInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClientsConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NativeMethods.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketSpy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ASCIIMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\BaseGump.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\BookHeader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\BookPageDetails.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ContainerContent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ContainerContentUpdate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ContainerDisplay.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\CorpseEquip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\DoubleClick.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\GraphicalEffect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\Gump.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\HuedEffect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\LocalizedList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\LocalizedMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\LocalizedMessageAffix.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\MobileAnimation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\MobileHits.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\MobileIncoming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\MobileMana.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\MobileStamina.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ObjectProperies.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PackedGump.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\Packet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PacketInfoAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PacketProp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PacketPropAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PacketReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\ParticleEffect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PlayMusic.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\PlaySound.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\Point3D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\RemoveItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\UnicodeMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Packets\WorldItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ZLib.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
