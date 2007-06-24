@@ -4,7 +4,7 @@
   <description asmv2:iconFile="tools.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="UoKRLoader" version="1.0.4.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="UoKRLoader" version="1.0.5.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="UoKRLoader.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -28,14 +28,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="UoKRLoader.exe" size="253952">
-      <assemblyIdentity name="UoKRLoader" version="1.0.4.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="UoKRLoader.exe" size="258048">
+      <assemblyIdentity name="UoKRLoader" version="1.0.5.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>qlyfNI3gOtjmODp5yv8qbRHkNPQ=</dsig:DigestValue>
+        <dsig:DigestValue>+pug8N5xiHdO1Qu2GE0LRKe+g+8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

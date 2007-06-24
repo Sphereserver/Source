@@ -33,7 +33,7 @@
             this.btnOpen = new System.Windows.Forms.Button();
             this.lblClient = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lblVersion = new System.Windows.Forms.Label();
+            this.btnPatch = new System.Windows.Forms.Button();
             this.cmbEncryption = new System.Windows.Forms.ComboBox();
             this.lblEnc = new System.Windows.Forms.Label();
             this.btnLaunch = new System.Windows.Forms.Button();
@@ -43,7 +43,7 @@
             this.lblIP = new System.Windows.Forms.Label();
             this.txtIptopatch = new System.Windows.Forms.TextBox();
             this.ofdUOKRClient = new System.Windows.Forms.OpenFileDialog();
-            this.btnPatch = new System.Windows.Forms.Button();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPort)).BeginInit();
             this.SuspendLayout();
@@ -81,8 +81,8 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnPatch);
-            this.panel1.Controls.Add(this.lblVersion);
             this.panel1.Controls.Add(this.cmbEncryption);
             this.panel1.Controls.Add(this.lblEnc);
             this.panel1.Controls.Add(this.btnLaunch);
@@ -96,14 +96,15 @@
             this.panel1.Size = new System.Drawing.Size(445, 115);
             this.panel1.TabIndex = 3;
             // 
-            // lblVersion
+            // btnPatch
             // 
-            this.lblVersion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblVersion.Location = new System.Drawing.Point(336, 85);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(96, 20);
-            this.lblVersion.TabIndex = 8;
-            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.btnPatch.Location = new System.Drawing.Point(336, 44);
+            this.btnPatch.Name = "btnPatch";
+            this.btnPatch.Size = new System.Drawing.Size(96, 28);
+            this.btnPatch.TabIndex = 9;
+            this.btnPatch.Text = "Pa&tch  ...";
+            this.btnPatch.UseVisualStyleBackColor = true;
+            this.btnPatch.Click += new System.EventHandler(this.btnPatch_Click);
             // 
             // cmbEncryption
             // 
@@ -190,15 +191,16 @@
             this.ofdUOKRClient.FileName = "openFileDialog1";
             this.ofdUOKRClient.Filter = "UO:KR Client|uokr.exe";
             // 
-            // btnPatch
+            // btnAbout
             // 
-            this.btnPatch.Location = new System.Drawing.Point(336, 44);
-            this.btnPatch.Name = "btnPatch";
-            this.btnPatch.Size = new System.Drawing.Size(96, 28);
-            this.btnPatch.TabIndex = 9;
-            this.btnPatch.Text = "Pa&tch  ...";
-            this.btnPatch.UseVisualStyleBackColor = true;
-            this.btnPatch.Click += new System.EventHandler(this.btnPatch_Click);
+            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbout.Location = new System.Drawing.Point(407, 78);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(25, 25);
+            this.btnAbout.TabIndex = 10;
+            this.btnAbout.Text = "?";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // Form1
             // 
@@ -237,8 +239,8 @@
         private System.Windows.Forms.OpenFileDialog ofdUOKRClient;
         private System.Windows.Forms.ComboBox cmbEncryption;
         private System.Windows.Forms.Label lblEnc;
-        private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Button btnPatch;
+        private System.Windows.Forms.Button btnAbout;
     }
 }
 

@@ -36,8 +36,6 @@ namespace UoKRLoader
         {
             InitializeComponent();
 
-            this.lblVersion.Text = "ver " + Application.ProductVersion;
-
             this.cmbEncryption.SuspendLayout();
             this.cmbEncryption.Items.Clear();
             for (int i = 0; i < (int)ENCRYPTION_PATCH_TYPE.End; i++)
@@ -74,6 +72,20 @@ namespace UoKRLoader
                     this.cmbEncryption.SelectedIndex = (int)iSelected;
                     this.cmbEncryption.ResumeLayout();
                 }
+            }
+        }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            Form2 frmAbout = new Form2();
+            DialogResult drResult = frmAbout.ShowDialog(this);
+            if (drResult == DialogResult.OK)
+            {
+                frmAbout.Close();
+            }
+            else
+            {
+                Close();
             }
         }
 
