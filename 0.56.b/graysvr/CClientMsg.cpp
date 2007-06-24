@@ -480,6 +480,15 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 
 	xSendPkt( &cmd, iLen );
 
+#ifdef __UOKRSCARYADDONS
+	if (m_bClientKR)
+	{
+		CCommand cmdKr;
+		cmdKr.Default.m_Cmd = 0x29;
+		xSendPkt( &cmdKr, 1 );
+	}
+#endif
+
 	if ( pItem->IsType(IT_SOUND))
 	{
 		addSound( (SOUND_TYPE) pItem->m_itSound.m_Sound, pItem, pItem->m_itSound.m_Repeat );
@@ -576,6 +585,15 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	cmd.ContAdd.m_wHue = wHue;
 
 	xSendPkt( &cmd, sizeof( cmd.ContAdd ));
+
+#ifdef __UOKRSCARYADDONS
+	if (m_bClientKR)
+	{
+		CCommand cmdKr;
+		cmdKr.Default.m_Cmd = 0x29;
+		xSendPkt( &cmdKr, 1 );
+	}
+#endif
 
 	addAOSTooltip( pItem );
 }
