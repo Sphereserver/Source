@@ -179,3 +179,20 @@ byte[2]                 beard id
    a profession is selected then the skills will contain 'junk'.
 -> Skin hue is repeated twice for some reason.
 -> Portrait may be a byte[2].
+
+
+========================
+0x29  (server -> client)
+Confirm drop on ground/on container
+========================
+
+byte[1]                 packet cmd      (0x29)
+
+-> To send after 0x25 and 0x1A
+
+========================
+0xA9  (server -> client)
+Char List
+========================
+
+-> The flags have been updated. We have now also 0x200 and 0x400 (unknown effects)
