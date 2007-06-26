@@ -3426,3 +3426,9 @@ this all in desperation)
 
 14-06-2007, Fire-Dragon-DoL
 - Fixed #1220: typos in sphere_guild_functions.scp
+
+26-06-2007, Nazghul
+- Added: Character trigger @SkillChange. Fires whenever the skill raises due to a gain. ARGN1 is
+  the skill number (e.g. 43 for wrestling), ARGN1 is the skill value AFTER the change happens.
+  RETURN 1 (or 2, or 666) means that the skill will NOT change.
+
