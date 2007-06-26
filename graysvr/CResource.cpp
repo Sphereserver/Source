@@ -1607,7 +1607,8 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		//		0x40	= Sixth Character Slot?
 		//		0x80	= Samurai Empire?
 		//		0x100	= Elf races?
-		//		0x200	= Flag KR Unknown 1		//		0x400	= Flag KR Unknown 2
+		//		0x200	= Flag KR Unknown 1
+		//		0x400	= Flag KR Unknown 2
 
 		// T2A - LBR don't have char list flags
 		bResOk = ( res >= RDS_AOS );

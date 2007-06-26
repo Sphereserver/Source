@@ -583,7 +583,17 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 #endif
 
 		if ( iRoll <= iChance )
+#ifdef _NAZTEST
 		{
+			if ( !IsSetEF(EF_Minimize_Triggers) )
+			{
+				CScriptTriggerArgs args;
+				args.m_iN1 = (int) skill;
+				args.m_iN2 = iSkillLevel + 1;
+				if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
+					return;
+			}
+#endif
 			Skill_SetBase( skill, iSkillLevel + 1 );
 		}
 	}
