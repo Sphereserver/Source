@@ -5,7 +5,7 @@ This file will contain new/changed packet details that have been found in UOKR.
 LOGIN REQUEST
 ========================
 
-byte[4]                 login request   (0xffffffff)
+byte[4]                 login request
 
 -> This is sent immediately after the client connects to the game server.
 -> Always contains 0xffffffff
@@ -17,10 +17,10 @@ byte[4]                 login request   (0xffffffff)
 BUG REPORT
 ========================
 
-byte[1]                 packet cmd      (0xe0)
-byte[2]                 packet len      (0x07d9)
-byte[4]                 language        (0x454e5500)
-byte[2]                 bug type        (0x000F)
+byte[1]                 packet cmd
+byte[2]                 packet len
+byte[4]                 language
+byte[2]                 bug type
 byte[packet len - 9]    report body     (unicode text)
 
 -> Sent from the client when player fills in a bug report on the ESC menu.
@@ -63,16 +63,16 @@ ENCRYPTION SET
 ========================
 
 byte[1]                 packet cmd      (0xe3)
-byte[2]                 packet length   (0x4d)
+byte[2]                 packet length
 byte[4]                 length unkA     (0x00000003)
 byte[length unkA]       unkA            (0x020103)
 byte[4]                 length unkB     (0x00000013)
-byte[length unkB]       unkB            (0x021100fc2fe38193cbaf98dd8313d29eeae413)
+byte[length unkB]       unkB
 byte[4]                 length unkC     (0x00000010)
-byte[length unkC]       unkC            (0x7813b77bcea8d7bc52de3830eae91ea3)
+byte[length unkC]       unkC
 byte[4]                 unkD            (0x00000020)
 byte[4]                 length iv       (0x00000010)
-byte[length unkE]       iv              (0x5ace3ee39792e48af19ad3044103cb53)
+byte[length unkE]       iv
 
 -> This is sent by the server after the login request, and may contain some kind of
    data related to the encryption (ie. encryption keys).
@@ -92,7 +92,7 @@ ENCRYPTION REPLY
 byte[1]                 packet cmd      (0xe4)
 byte[2]                 packet length   (0x17)
 byte[4]                 length unkA     (0x00000010)
-byte[length unkA]       unkA            (0x562d03ae30388285c4bbab38d42c12bc)
+byte[length unkA]       unkA
 
 -> This is a reply to the 0xE3 packet and possibly contains the 3rd key to use with
    encryption.
@@ -196,3 +196,14 @@ Char List
 ========================
 
 -> The flags have been updated. We have now also 0x200 and 0x400 (unknown effects)
+
+========================
+0xDD  (server -> client)
+Compressed Gump
+========================
+
+-> The packet has now an indirect effect, GumpID is read and used to find an xml
+   in Interface.uop that contains the kr-compatible layout, then the dynamic parts
+   are extracted to complete the layout. Additional LUA scripts are used to define
+   a client-side behaviour.
+   If the GumpID is not found a bug report windows is shown.

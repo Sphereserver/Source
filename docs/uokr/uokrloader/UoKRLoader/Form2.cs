@@ -14,14 +14,15 @@ namespace UoKRLoader
         {
             InitializeComponent();
 
-            this.lblLoaderVersion.Text = "Version: " + Application.ProductVersion;
+            this.lblLoaderVersion.Text = "Version " + Application.ProductVersion;
+            this.lblCopyright.Text = "Copyright © 2007 " + Application.CompanyName;
         }
 
         private void linkSite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
-                System.Diagnostics.Process.Start("http://scriptsharing.dv-team.de/comment.php?dlid=859");
+                System.Diagnostics.Process.Start("http://scriptsharing.dv-team.de/dle/comment.php?dlid=859");
             }
             catch
             {

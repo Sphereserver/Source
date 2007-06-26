@@ -1,9 +1,6 @@
 [uokr_infos.txt]
 UO:KR uses AES in CFB mode (IV of 16byte and a Key of 32 byte) for Network Encryption.
 
-
-This file contains some instructions for using Crypto++ 5.5.1, which may or may not be accurate. :P
-
 1. We need to get an IV of 16byte and a Key of 32 byte from e3 and e4 packets
 1a. IV in first e3 is the last 0x10 bytes
 1b. key is sha256(math-transform(constbytes,packets)))
@@ -11,14 +8,7 @@ This file contains some instructions for using Crypto++ 5.5.1, which may or may 
 2. Create a AES object in CFB mode
 3. xor the plaintext with the blockcypher to get the crypt packed.
 
-
-
-// for spying in memory (2-45-3-3)
-004EE4A3  Reg. EAX = Packet Start Address
-004EE500  Reg. ESI = Packet Len
-
-
-
+To break it:
 
 // uokr client, processxorblock asm:				// In this column the riced (no crypt) version
 006E6DA0  |. 85C9           TEST ECX,ECX
@@ -62,4 +52,3 @@ This file contains some instructions for using Crypto++ 5.5.1, which may or may 
 006E6E09  |. 5B             POP EBX
 006E6E0A  |. C9             LEAVE
 006E6E0B  \. C2 0C00        RETN 0C
-

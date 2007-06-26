@@ -1,0 +1,189 @@
+ADLER32 :: 003BFE9E :: 007C0A9E
+	The reference is above.
+ADLER32 :: 003D5DEC :: 007D69EC
+	The reference is above.
+ADLER32 :: 0043CFC8 :: 0083DBC8
+	The reference is above.
+CRC32 :: 00645D78 :: 00A47178
+	Referenced at 006F7501
+	Referenced at 006F7556
+	Referenced at 006F75A0
+	Referenced at 006F75E0
+	Referenced at 006F761D
+	Referenced at 006F7654
+	Referenced at 006F768B
+	Referenced at 006F76BC
+	Referenced at 006F76FB
+	Referenced at 006F7732
+	Referenced at 006F777F
+	Referenced at 006F77B1
+CryptGenRandom [Import] :: 005C1C14 :: 009C3014
+	Referenced at 0086989B
+	Referenced at 00963872
+CryptGenRandom [Name] :: 007A4158 :: 00BA5558
+	Referenced at 008698A4
+CRYPTMT/FUBUKI :: 002F0A45 :: 006F1645
+	The reference is above.
+DES [key schedule] [char] :: 006311C4 :: 00A325C4
+	Referenced at 0087E408
+DES [sbox] :: 0062E730 :: 00A2FB30
+	Referenced at 0087E538
+	Referenced at 0087E5B2
+ECC: B-163 (NIST), hash output :: 0079FB94 :: 00BA0F94
+	Referenced at 00841BC2
+ECC: B-233 (NIST), hash output :: 0079F3A2 :: 00BA07A2
+	The reference is above.
+ECC: B-283 (NIST), hash output :: 0079F8D8 :: 00BA0CD8
+	Referenced at 00841C4D
+ECC: B-409 (NIST), hash output :: 0079EFCA :: 00BA03CA
+	The reference is above.
+ECC: B-571 (NIST), hash output :: 0079EA80 :: 00B9FE80
+	Referenced at 00841EDD
+ECC: K-163 (NIST), base point x-coord :: 0079FFD2 :: 00BA13D2
+	The reference is above.
+ECC: K-233 (NIST), base point x-coord :: 0079F4A2 :: 00BA08A2
+	The reference is above.
+ECC: K-283 (NIST), base point x-coord :: 0079FAB2 :: 00BA0EB2
+	The reference is above.
+ECC: K-409 (NIST), base point x-coord :: 0079F264 :: 00BA0664
+	The reference is above.
+ECC: K-571 (NIST), base point x-coord :: 0079EE0A :: 00BA020A
+	The reference is above.
+ECC: P-192 (NIST), "b" coef :: 007A1364 :: 00BA2764
+	Referenced at 00841F84
+ECC: P-224 (NIST), "b" coef :: 007A0664 :: 00BA1A64
+	Referenced at 00842273
+ECC: P-256 (NIST), "b" coef :: 007A11E8 :: 00BA25E8
+	Referenced at 00841FC2
+ECC: P-384 (NIST), "b" coef :: 007A0458 :: 00BA1858
+	Referenced at 008422B2
+ECC: P-521 (NIST), "b" coef :: 007A016A :: 00BA156A
+	The reference is above.
+ECC: secp112r1 (SEC2), prime modulus :: 007A109C :: 00BA249C
+	Referenced at 0084200B
+ECC: secp112r2 (SEC2), "a" coef :: 007A1000 :: 00BA2400
+	Referenced at 00842047
+ECC: secp128r1 (SEC2), "b" coef :: 007A0BC0 :: 00BA1FC0
+	Referenced at 0084213A
+ECC: secp128r2 (SEC2), "a" coef :: 007A0AC8 :: 00BA1EC8
+	Referenced at 00842180
+ECC: secp160k1 (SEC2), base point x-coord :: 007A0E7A :: 00BA227A
+	The reference is above.
+ECC: secp160r1 (SEC2), "b" coef :: 007A0F50 :: 00BA2350
+	Referenced at 0084207D
+ECC: secp160r2 (SEC2), "b" coef :: 007A0A1C :: 00BA1E1C
+	Referenced at 008421B6
+ECC: secp192k1 (SEC2), base point x-coord :: 007A095A :: 00BA1D5A
+	The reference is above.
+ECC: secp224k1 (SEC2), base point x-coord :: 007A080A :: 00BA1C0A
+	The reference is above.
+ECC: secp256k1 (SEC2), base point x-coord :: 007A0D2A :: 00BA212A
+	The reference is above.
+ECC: sect113r1 (SEC2), "a" coef :: 0079FCE6 :: 00BA10E6
+	The reference is above.
+ECC: sect113r2 (SEC2), "a" coef :: 0079FC46 :: 00BA1046
+	The reference is above.
+ECC: sect131r1 (SEC2), "a" coef :: 0079F81C :: 00BA0C1C
+	Referenced at 00841C97
+ECC: sect131r2 (SEC2), "a" coef :: 0079F764 :: 00BA0B64
+	Referenced at 00841CDB
+ECC: sect163r1 (SEC2), "a" coef :: 0079FEC4 :: 00BA12C4
+	Referenced at 00841AC4
+ECC: sect193r1 (SEC2), "a" coef :: 0079F65E :: 00BA0A5E
+	The reference is above.
+ECC: sect193r2 (SEC2), "a" coef :: 0079F558 :: 00BA0958
+	Referenced at 00841D60
+ECC: sect239k1 (SEC2), base point x-coord :: 0079FE0A :: 00BA120A
+	The reference is above.
+Golden ratio (TEA/N, RC 5/6, ...) :: 003B9472 :: 007BA072
+	The reference is above.
+Golden ratio (TEA/N, RC 5/6, ...) :: 004F1EC5 :: 008F2AC5
+	The reference is above.
+List of small primes [long] :: 006315B8 :: 00A329B8
+	Referenced at 0083E087
+	Referenced at 0083E0A1
+	Referenced at 0083E0EF
+	Referenced at 0083E156
+	Referenced at 0083E212
+MD5 :: 004F215B :: 008F2D5B
+	The reference is above.
+RIJNDAEL [S] [char] :: 0062EF60 :: 00A30360
+	Referenced at 00872F76
+	Referenced at 00872F85
+	Referenced at 00872F9C
+	Referenced at 00872FAB
+	Referenced at 0087303C
+	Referenced at 0087304B
+	Referenced at 0087305C
+	Referenced at 00873066
+	Referenced at 008730A7
+	Referenced at 008730B6
+	Referenced at 008730C2
+	Referenced at 008730CC
+	Referenced at 008731BB
+	Referenced at 008731D2
+	Referenced at 008731DC
+	Referenced at 008731F4
+	Referenced at 0087320E
+	Referenced at 00873225
+	Referenced at 0087322F
+	Referenced at 00873248
+	Referenced at 00873263
+	Referenced at 0087327A
+	Referenced at 00873284
+	Referenced at 0087329D
+	Referenced at 008732B8
+	Referenced at 008732CF
+	Referenced at 008732E0
+	Referenced at 008732F2
+	Referenced at 00873706
+	Referenced at 00873718
+	Referenced at 0087372A
+	Referenced at 00873736
+	Referenced at 00873745
+	Referenced at 00873757
+	Referenced at 00873768
+	Referenced at 00873774
+	Referenced at 00873783
+	Referenced at 00873794
+	Referenced at 0087379D
+	Referenced at 008737B1
+	Referenced at 008737C3
+	Referenced at 008737CF
+	Referenced at 008737E0
+	Referenced at 008737F1
+RIJNDAEL [S-inv] [char] :: 00630060 :: 00A31460
+	Referenced at 00873C2D
+	Referenced at 00873C3E
+	Referenced at 00873C50
+	Referenced at 00873C5C
+	Referenced at 00873C6A
+	Referenced at 00873C7C
+	Referenced at 00873C8D
+	Referenced at 00873C9A
+	Referenced at 00873CA9
+	Referenced at 00873CBA
+	Referenced at 00873CCC
+	Referenced at 00873CDB
+	Referenced at 00873CE4
+	Referenced at 00873CF0
+	Referenced at 00873D03
+	Referenced at 00873D0F
+SHA1 [Compress] :: 00469A45 :: 0086A645
+	The reference is above.
+SHA-224 [Init] :: 0046A8A6 :: 0086B4A6
+	The reference is above.
+SHA-256 [mixing] :: 00631238 :: 00A32638
+	Referenced at 0086AABF
+SHA-384 [Init] :: 0046C549 :: 0086D149
+	The reference is above.
+SHA-512 [init] :: 0046A8DE :: 0086B4DE
+	The reference is above.
+ZLIB deflate [long] :: 006319C0 :: 00A32DC0
+	Referenced at 0083C732
+ZLIB deflate [long] :: 007A5650 :: 00BA6A50
+	The reference is above.
+ZLIB deflate [long] :: 007A70A0 :: 00BA84A0
+	The reference is above.
+ZLIB deflate [word] :: 00645C50 :: 00A47050
+	Referenced at 006F7D2D

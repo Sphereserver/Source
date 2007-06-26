@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // insieme di attributi. Per modificare le informazioni associate a un assembly
 // occorre quindi modificare i valori di questi attributi.
 [assembly: AssemblyTitle("UoKRLoader")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A loader for UO:KR client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("F.V. Soft")]
+[assembly: AssemblyCompany("Two Unknown Guys")]
 [assembly: AssemblyProduct("UoKRLoader")]
-[assembly: AssemblyCopyright("Copyright © F.V. Soft 2007")]
+[assembly: AssemblyCopyright("Copyright © 2007 Two Unknown Guys")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Numero build
 //      Revisione
 //
-[assembly: AssemblyVersion("1.0.5.0")]
-[assembly: AssemblyFileVersion("1.0.5.0")]
+[assembly: AssemblyVersion("1.0.5.1")]
+[assembly: AssemblyFileVersion("1.0.5.1")]

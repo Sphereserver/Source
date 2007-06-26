@@ -30,7 +30,7 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblLoaderVersion = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblCopyright = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkSite = new System.Windows.Forms.LinkLabel();
             this.btnOK = new System.Windows.Forms.Button();
@@ -56,14 +56,14 @@
             this.lblLoaderVersion.TabIndex = 2;
             this.lblLoaderVersion.Text = "Version";
             // 
-            // label2
+            // lblCopyright
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(65, 43);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(190, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Copyright © 2007 Two Unknown Guys";
+            this.lblCopyright.AutoSize = true;
+            this.lblCopyright.Location = new System.Drawing.Point(65, 43);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(190, 13);
+            this.lblCopyright.TabIndex = 3;
+            this.lblCopyright.Text = "Copyright © 2007 Two Unknown Guys";
             // 
             // label3
             // 
@@ -105,7 +105,7 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.linkSite);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblCopyright);
             this.Controls.Add(this.lblLoaderVersion);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -124,7 +124,7 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lblLoaderVersion;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkSite;
         private System.Windows.Forms.Button btnOK;
