@@ -34,6 +34,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.linkSite = new System.Windows.Forms.LinkLabel();
             this.btnOK = new System.Windows.Forms.Button();
+            this.btnUpdates = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -89,12 +90,25 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(116, 119);
+            this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOK.Location = new System.Drawing.Point(68, 119);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(68, 21);
+            this.btnOK.Size = new System.Drawing.Size(68, 23);
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // btnUpdates
+            // 
+            this.btnUpdates.Enabled = false;
+            this.btnUpdates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdates.Location = new System.Drawing.Point(167, 119);
+            this.btnUpdates.Name = "btnUpdates";
+            this.btnUpdates.Size = new System.Drawing.Size(110, 23);
+            this.btnUpdates.TabIndex = 7;
+            this.btnUpdates.Text = "Check for updates";
+            this.btnUpdates.UseVisualStyleBackColor = true;
+            this.btnUpdates.Click += new System.EventHandler(this.btnUpdates_Click);
             // 
             // Form2
             // 
@@ -102,6 +116,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(297, 152);
             this.ControlBox = false;
+            this.Controls.Add(this.btnUpdates);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.linkSite);
             this.Controls.Add(this.label3);
@@ -128,5 +143,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkSite;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnUpdates;
     }
 }

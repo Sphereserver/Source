@@ -6,8 +6,10 @@ using System.IO;
 
 namespace UoKRLoader
 {
-    class Utility
+    class StaticData
     {
+        public const string KRLOADER_SITE = "http://scriptsharing.dv-team.de/dle/comment.php?dlid=861";
+
         public const string LAUNCH_CFG = "login.cfg";
         public const string UOKR_REGKEY = @"Origin Worlds Online\Ultima Online Kingdom Reborn\1.0";
         public const string UOKR_CLIENT = @"uokr.exe";
@@ -31,7 +33,10 @@ namespace UoKRLoader
                                                    0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
                                                    0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
                                                    0x90, 0x90, 0x90, 0x90, 0x90 };
+    }
 
+    class Utility
+    {
         public static string GetExePath(string subName)
         {
             try

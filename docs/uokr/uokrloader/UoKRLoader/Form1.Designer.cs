@@ -33,6 +33,7 @@
             this.btnOpen = new System.Windows.Forms.Button();
             this.lblClient = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.btnPatch = new System.Windows.Forms.Button();
             this.cmbEncryption = new System.Windows.Forms.ComboBox();
             this.lblEnc = new System.Windows.Forms.Label();
@@ -43,7 +44,6 @@
             this.lblIP = new System.Windows.Forms.Label();
             this.txtIptopatch = new System.Windows.Forms.TextBox();
             this.ofdUOKRClient = new System.Windows.Forms.OpenFileDialog();
-            this.btnAbout = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPort)).BeginInit();
             this.SuspendLayout();
@@ -96,6 +96,17 @@
             this.panel1.Size = new System.Drawing.Size(445, 115);
             this.panel1.TabIndex = 3;
             // 
+            // btnAbout
+            // 
+            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbout.Location = new System.Drawing.Point(407, 78);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(25, 25);
+            this.btnAbout.TabIndex = 10;
+            this.btnAbout.Text = "?";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
             // btnPatch
             // 
             this.btnPatch.Location = new System.Drawing.Point(336, 44);
@@ -108,6 +119,7 @@
             // 
             // cmbEncryption
             // 
+            this.cmbEncryption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEncryption.FormattingEnabled = true;
             this.cmbEncryption.Location = new System.Drawing.Point(81, 74);
             this.cmbEncryption.Name = "cmbEncryption";
@@ -190,17 +202,6 @@
             // 
             this.ofdUOKRClient.FileName = "openFileDialog1";
             this.ofdUOKRClient.Filter = "UO:KR Client|uokr.exe";
-            // 
-            // btnAbout
-            // 
-            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAbout.Location = new System.Drawing.Point(407, 78);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(25, 25);
-            this.btnAbout.TabIndex = 10;
-            this.btnAbout.Text = "?";
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // Form1
             // 

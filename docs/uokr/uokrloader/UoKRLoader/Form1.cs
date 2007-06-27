@@ -43,17 +43,17 @@ namespace UoKRLoader
             this.cmbEncryption.SelectedIndex = (int)ENCRYPTION_PATCH_TYPE.None;
             this.cmbEncryption.ResumeLayout();
 
-            string tmpKrPath = Utility.GetExePath(Utility.UOKR_REGKEY);
+            string tmpKrPath = Utility.GetExePath(StaticData.UOKR_REGKEY);
             if (tmpKrPath != null)
             {
                 this.txtUokrPath.Text = tmpKrPath;
             }
 
-            if (File.Exists(Utility.LAUNCH_CFG))
+            if (File.Exists(StaticData.LAUNCH_CFG))
             {
                 string sConfig = null;
 
-                using (StreamReader srRead = File.OpenText(Utility.LAUNCH_CFG))
+                using (StreamReader srRead = File.OpenText(StaticData.LAUNCH_CFG))
                 {
                     sConfig = srRead.ReadToEnd();
                 }
@@ -106,7 +106,7 @@ namespace UoKRLoader
 
         private void btnPatch_Click(object sender, EventArgs e)
         {
-            DialogResult drMessage = MessageBox.Show("This will create a patched client called " + Utility.UOKR_PATCHCLIENT + " in the selected dir.\nDo you want to continue?", "Patch Information", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult drMessage = MessageBox.Show("This will create a patched client called " + StaticData.UOKR_PATCHCLIENT + " in the selected dir.\nDo you want to continue?", "Patch Information", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if ( drMessage == DialogResult.Yes )
                 PathOrLaunch(true, ParseConfig());
         }
@@ -115,7 +115,7 @@ namespace UoKRLoader
         {
             if (nudPort.Value <= 0 || nudPort.Value > 65535)
             {
-                MessageBox.Show("Invalid port: " + nudPort.Value.ToString() + " !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Invalid port: " + nudPort.Value.ToString() + " !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
 
@@ -127,7 +127,7 @@ namespace UoKRLoader
             }
             catch (Exception)
             {
-                MessageBox.Show("Invalid ip: " + txtIptopatch.Text + " !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Invalid ip: " + txtIptopatch.Text + " !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
 
@@ -137,7 +137,7 @@ namespace UoKRLoader
             {
                 if (this.txtIptopatch.Text.Length > 0)
                 {
-                    using (StreamWriter srRead = File.CreateText(Utility.LAUNCH_CFG))
+                    using (StreamWriter srRead = File.CreateText(StaticData.LAUNCH_CFG))
                     {
                         srRead.Write(this.txtIptopatch.Text.Trim() + "," + this.nudPort.Value.ToString() + "," + this.cmbEncryption.SelectedIndex.ToString());
                     }
@@ -157,8 +157,8 @@ namespace UoKRLoader
             if (caTouse == null)
                 return;
 
-            byte[] newData = new byte[Utility.UOKR_IPDATA.Length];
-            Utility.UOKR_IPDATA.CopyTo(newData, 0);
+            byte[] newData = new byte[StaticData.UOKR_IPDATA.Length];
+            StaticData.UOKR_IPDATA.CopyTo(newData, 0);
             newData[1] = caTouse.ipHost.GetAddressBytes()[3];
             newData[3] = caTouse.ipHost.GetAddressBytes()[1];
             newData[8] = caTouse.ipHost.GetAddressBytes()[0];
@@ -181,12 +181,12 @@ namespace UoKRLoader
             if (!bPatch)
             {
                 prcTostart = new Process();
-                prcTostart.StartInfo.FileName = this.txtUokrPath.Text + @"\" + Utility.UOKR_CLIENT;
+                prcTostart.StartInfo.FileName = this.txtUokrPath.Text + @"\" + StaticData.UOKR_CLIENT;
                 prcTostart.StartInfo.WorkingDirectory = this.txtUokrPath.Text;
 
                 if (!prcTostart.Start())
                 {
-                    MessageBox.Show("Cannot start the client !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot start the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -194,21 +194,21 @@ namespace UoKRLoader
             {
                 try
                 {
-                    File.Copy(this.txtUokrPath.Text + @"\" + Utility.UOKR_CLIENT, this.txtUokrPath.Text + @"\" + Utility.UOKR_PATCHCLIENT, true);
+                    File.Copy(this.txtUokrPath.Text + @"\" + StaticData.UOKR_CLIENT, this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT, true);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Cannot create file " + this.txtUokrPath.Text + @"\" + Utility.UOKR_PATCHCLIENT + " !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot create file " + this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT + " !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 try
                 {
-                    fsToPatch = File.Open(this.txtUokrPath.Text + @"\" + Utility.UOKR_PATCHCLIENT,FileMode.Open,FileAccess.ReadWrite);
+                    fsToPatch = File.Open(this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT, FileMode.Open, FileAccess.ReadWrite);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Cannot open file " + this.txtUokrPath.Text + @"\" + Utility.UOKR_PATCHCLIENT + " !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot open file " + this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT + " !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -223,41 +223,41 @@ namespace UoKRLoader
                 strGeneric = new ProcessStream((IntPtr)prcTostart.Id);
             }
 
-            iResultIP = Utility.Search(strGeneric, Utility.UOKR_IPDATA, bPatch);
+            iResultIP = Utility.Search(strGeneric, StaticData.UOKR_IPDATA, bPatch);
             if (iResultIP == 0)
             {
                 strGeneric.Close();
                 if (!bPatch)
                     prcTostart.Close();
 
-                MessageBox.Show("Cannot patch IP on the client !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Cannot patch IP on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             if ((encType == ENCRYPTION_PATCH_TYPE.Login) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
-                iResultEncLogin = Utility.Search(strGeneric, Utility.UOKR_LOGDATA, bPatch);
+                iResultEncLogin = Utility.Search(strGeneric, StaticData.UOKR_LOGDATA, bPatch);
                 if (iResultEncLogin == 0)
                 {
                     strGeneric.Close();
                     if (!bPatch)
                         prcTostart.Close();
 
-                    MessageBox.Show("Cannot patch Login Encryption on the client !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot patch Login Encryption on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
             if ((encType == ENCRYPTION_PATCH_TYPE.Game) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
-                iResultEncGame = Utility.Search(strGeneric, Utility.UOKR_ENCDATA, bPatch);
+                iResultEncGame = Utility.Search(strGeneric, StaticData.UOKR_ENCDATA, bPatch);
                 if (iResultEncGame == 0)
                 {
                     strGeneric.Close();
                     if (!bPatch)
                         prcTostart.Close();
 
-                    MessageBox.Show("Cannot patch Game Encryption on the client !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot patch Game Encryption on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -273,13 +273,13 @@ namespace UoKRLoader
             if ((encType == ENCRYPTION_PATCH_TYPE.Login) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
                 strGeneric.Seek(iResultEncLogin, SeekOrigin.Begin);
-                strGeneric.Write(Utility.UOKR_LOGPATCHDATA, 0, Utility.UOKR_LOGPATCHDATA.Length);
+                strGeneric.Write(StaticData.UOKR_LOGPATCHDATA, 0, StaticData.UOKR_LOGPATCHDATA.Length);
             }
             if ((encType == ENCRYPTION_PATCH_TYPE.Game) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
 
                 strGeneric.Seek(iResultEncGame, SeekOrigin.Begin);
-                strGeneric.Write(Utility.UOKR_ENCPATCHDATA, 0, Utility.UOKR_ENCPATCHDATA.Length);
+                strGeneric.Write(StaticData.UOKR_ENCPATCHDATA, 0, StaticData.UOKR_ENCPATCHDATA.Length);
             }
 
             strGeneric.Close();
@@ -292,7 +292,7 @@ namespace UoKRLoader
             else
             {
                 this.ckbRemind.Checked = false;
-                MessageBox.Show("Client " + this.txtUokrPath.Text + @"\" + Utility.UOKR_PATCHCLIENT + " succesfully patched.", "Patch Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Client " + this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT + " succesfully patched.", "Patch Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }
