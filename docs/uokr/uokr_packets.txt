@@ -198,6 +198,18 @@ Char List
 -> The flags have been updated. We have now also 0x200 and 0x400 (unknown effects)
 
 ========================
+0xDE  (server -> client)
+Unknown purpose
+========================
+
+byte[1]                 packet cmd      (0xDE)
+byte[2]                 packet length
+byte[4]                 char serial
+byte[1]			unk1		(0x00)
+
+--> Seen on OSI (unknown purpose)
+
+========================
 0xDD  (server -> client)
 Compressed Gump
 ========================
