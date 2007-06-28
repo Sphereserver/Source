@@ -583,8 +583,8 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 #endif
 
 		if ( iRoll <= iChance )
-#ifdef _NAZTEST
 		{
+#ifdef _NAZTEST
 			if ( !IsSetEF(EF_Minimize_Triggers) )
 			{
 				CScriptTriggerArgs args;
