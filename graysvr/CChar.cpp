@@ -102,9 +102,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	// SKTRIG_QTY
 	"@SkillAbort",
-#ifdef _NAZTEST
 	"@SkillChange",
-#endif
 	"@SkillFail",
 	"@SkillGain",
 	"@SkillMakeItem",
