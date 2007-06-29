@@ -478,6 +478,21 @@ union CExtData
 		NDWORD m_UID;
 	} Popup_Request; // from client
 
+#ifdef __UOKRSCARYADDONS
+	struct  // EXTDATA_Popup_Display = 0x14
+	{
+		NWORD m_unk1; // 2
+		NDWORD m_UID;
+		BYTE m_NumPopups;
+		struct
+		{
+			NDWORD m_TextID;
+			NWORD m_EntryTag;
+			NWORD m_Flags;
+			char memreserve[112];
+		} m_List;
+	} Popup_Display;
+#else
 	struct  // EXTDATA_Popup_Display = 0x14
 	{
 		NWORD m_unk1; // 1
@@ -492,6 +507,7 @@ union CExtData
 			char memreserve[112];
 		} m_List;
 	} Popup_Display;
+#endif
 
 	struct  // EXTDATA_Popup_Select = 0x15
 	{

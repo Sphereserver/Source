@@ -1030,6 +1030,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					return true;
 				}
 				DWORD textid = Exp_GetVal(ppLocArgs[1]);
+
+#ifdef __UOKRSCARYADDONS
+				AOSPopupMenuAdd( entrytag, int(textid), Exp_GetVal(ppLocArgs[2]) );
+#else
 				if ( textid > 32767 )
 				{
 					if ( ( textid >= 3000000 ) && ( textid <= 3032767) )
@@ -1043,6 +1047,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				AOSPopupMenuAdd( entrytag, int(textid), Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]) );
+#endif
 			}
 			break;
 		case CV_ARROWQUEST:

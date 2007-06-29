@@ -1301,7 +1301,11 @@ private:
 	short int m_PopupLen;
 
 public:
+#ifdef __UOKRSCARYADDONS
+	void AOSPopupMenuAdd( WORD entrytag, DWORD textid, WORD flags );
+#else
 	void AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags, WORD color );
+#endif
 	void Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag );
 	void Event_AOSPopupMenuRequest( DWORD uid );
 

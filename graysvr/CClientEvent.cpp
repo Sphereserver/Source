@@ -3037,33 +3037,56 @@ void CClient::Event_Target( const CEvent * pEvent )
 	}
 }
 
-void CClient::AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags = 0, WORD color = 0 )
-{
-	ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
-	if ( m_context_popup <= -1 )
+#ifdef __UOKRSCARYADDONS
+	void CClient::AOSPopupMenuAdd( WORD entrytag, DWORD textid, WORD flags = 0 )
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
-		return;
-	}
-	if ( m_context_popup < MAX_POPUPS )
-	{
-		short int length = 0;
-		m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
-		m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
-		m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
-		length += 6;
-		if ( flags & 0x20 )
+		ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
+		if ( m_context_popup <= -1 )
 		{
-			m_pPopupCur->Popup_Display.m_List.m_Color = color;
-			length += 2;
+			DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
+			return;
 		}
-		++m_context_popup;
-		m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + length );
-		m_PopupLen += length;
+		if ( m_context_popup < MAX_POPUPS )
+		{
+			m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
+			m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
+			m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
+			++m_context_popup;
+			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + 8 );
+			m_PopupLen += 8;
+		}
+		else
+			DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
 	}
-	else
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
-}
+#else
+	void CClient::AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags = 0, WORD color = 0 )
+	{
+		ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
+		if ( m_context_popup <= -1 )
+		{
+			DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
+			return;
+		}
+		if ( m_context_popup < MAX_POPUPS )
+		{
+			short int length = 0;
+			m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
+			m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
+			m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
+			length += 6;
+			if ( flags & 0x20 )
+			{
+				m_pPopupCur->Popup_Display.m_List.m_Color = color;
+				length += 2;
+			}
+			++m_context_popup;
+			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + length );
+			m_PopupLen += length;
+		}
+		else
+			DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
+	}
+#endif
 
 void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a client request
 {
@@ -3085,7 +3108,12 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 
 	bool fPreparePacket = false;
 
+#ifdef __UOKRSCARYADDONS
+	cmd.Popup_Display.m_unk1 = 2;
+#else
 	cmd.Popup_Display.m_unk1 = 1;
+#endif
+
 	cmd.Popup_Display.m_UID = uid;
 
 	if ( uObj.IsItem() )
@@ -3119,10 +3147,18 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	{
 
 		if ( pChar->IsHuman() )
+#ifdef __UOKRSCARYADDONS
+			AOSPopupMenuAdd(POPUP_PAPERDOLL, 3000000 + 6123);
+#else
 			AOSPopupMenuAdd(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 
 		if ( pChar == m_pChar )
+#ifdef __UOKRSCARYADDONS
+			AOSPopupMenuAdd(POPUP_BACKPACK, 3000000 + 6145);
+#else
 			AOSPopupMenuAdd(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 
 		if ( pChar->m_pNPC )
 		{
@@ -3130,24 +3166,49 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			{
 				case NPCBRAIN_BANKER:
 					{
+#ifdef __UOKRSCARYADDONS
+						AOSPopupMenuAdd(POPUP_BANKBOX, 3000000 + 6105);
+						AOSPopupMenuAdd(POPUP_BANKBALANCE, 3000000 + 6124);
+#else
 						AOSPopupMenuAdd(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
 						AOSPopupMenuAdd(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 						break;
 					}
 
 				case NPCBRAIN_STABLE:
+#ifdef __UOKRSCARYADDONS
+					AOSPopupMenuAdd(POPUP_STABLESTABLE, 3000000 + 6126);
+					AOSPopupMenuAdd(POPUP_STABLERETRIEVE, 3000000 + 6127);
+#else
 					AOSPopupMenuAdd(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
 					AOSPopupMenuAdd(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 
 				case NPCBRAIN_VENDOR:
 				case NPCBRAIN_HEALER:
+#ifdef __UOKRSCARYADDONS
+					AOSPopupMenuAdd(POPUP_VENDORBUY, 3000000 + 6103);
+					AOSPopupMenuAdd(POPUP_VENDORSELL, 3000000 + 6104);
+#else
 					AOSPopupMenuAdd(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
 					AOSPopupMenuAdd(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 					break;
 			}
 
 			if ( pChar->NPC_IsOwnedBy( m_pChar, false ) )
 			{
+#ifdef __UOKRSCARYADDONS
+				AOSPopupMenuAdd(POPUP_PETGUARD, 3000000 + 6107);
+				AOSPopupMenuAdd(POPUP_PETFOLLOW, 3000000 + 6108);
+				AOSPopupMenuAdd(POPUP_PETDROP, 3000000 + 6109);
+				AOSPopupMenuAdd(POPUP_PETKILL, 3000000 + 6111);
+				AOSPopupMenuAdd(POPUP_PETSTOP, 3000000 + 6112);
+				AOSPopupMenuAdd(POPUP_PETSTAY, 3000000 + 6114);
+				AOSPopupMenuAdd(POPUP_PETFRIEND, 3000000 + 6110);
+				AOSPopupMenuAdd(POPUP_PETTRANSFER, 3000000 + 6113);
+#else
 				AOSPopupMenuAdd(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
@@ -3156,6 +3217,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				AOSPopupMenuAdd(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+#endif
 			}
 		}
 		if (( Args.m_iN1 != 1 ) && ( !IsSetEF(EF_Minimize_Triggers)))
