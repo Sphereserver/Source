@@ -2071,9 +2071,7 @@ enum CTRIG_TYPE
 
 	// SKTRIG_QTY
 	CTRIG_SkillAbort,		// SKTRIG_ABORT
-#ifdef _NAZTEST
 	CTRIG_SkillChange,
-#endif
 	CTRIG_SkillFail,		// SKTRIG_FAIL
 	CTRIG_SkillGain,		// SKTRIG_GAIN
 	CTRIG_SkillMakeItem,
