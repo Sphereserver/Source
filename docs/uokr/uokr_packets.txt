@@ -219,3 +219,20 @@ Compressed Gump
    are extracted to complete the layout. Additional LUA scripts are used to define
    a client-side behaviour.
    If the GumpID is not found a bug report windows is shown.
+
+========================
+0xBF sub 0x14  (server -> client)
+KR Context Menu Display
+========================
+
+byte[2]                 unk1  	        (always 0x0002)
+byte[4]                 char serial
+byte[1]                 entry count
+     - foreach entry
+       byte[4]          cliloc id (LocalizedStrings.uop)
+       byte[2]		entry id
+       byte[2]		flags
+
+
+--> Seen on OSI (unknown purpose)
+
