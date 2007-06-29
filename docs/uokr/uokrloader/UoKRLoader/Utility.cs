@@ -107,5 +107,25 @@ namespace UoKRLoader
 
             return 0;
         }
+
+        public static int VersionToInteger(string version)
+        {
+            string[] splittedVersion = version.Split('.');
+            int iVersion = -1;
+
+            try
+            {
+                iVersion = Int32.Parse(splittedVersion[3]) +
+                           Int32.Parse(splittedVersion[2]) * 100 +
+                           Int32.Parse(splittedVersion[1]) * 10000 +
+                           Int32.Parse(splittedVersion[0]) * 1000000;
+            }
+            catch
+            {
+
+            }
+
+            return iVersion;
+        }
     }
 }

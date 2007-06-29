@@ -100,7 +100,6 @@
             // 
             // btnUpdates
             // 
-            this.btnUpdates.Enabled = false;
             this.btnUpdates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdates.Location = new System.Drawing.Point(167, 119);
             this.btnUpdates.Name = "btnUpdates";

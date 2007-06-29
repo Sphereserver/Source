@@ -72,10 +72,9 @@ namespace UoKRLoader
         }
 
         void m_CheckUpdates_DownloadDataCompleted(object sender, DownloadDataCompletedEventArgs e)
-        {   
-            this.Cursor = Cursors.Default;
-            this.btnUpdates.Text = BTNUPDATE_UNCLICK;
-            this.btnUpdates.Enabled = true;
+        {
+            const string VERSION_ID_START = "&gt;&gt; Current Version:";
+            const string VERSION_ID_END = " &lt;&lt;";
 
             if (!e.Cancelled)
             {
@@ -85,8 +84,65 @@ namespace UoKRLoader
                 }
                 else
                 {
-                    //  Encoding.ASCII.GetString(e.Result, 0, e.Result.Length).Split(new string[] { "\n" }, StringSplitOptions.None)
+                    // Encoding.ASCII.GetString(e.Result, 0, e.Result.Length).Split(new string[] { "\n" }, StringSplitOptions.None)
+                    try
+                    {
+                        string[] sResult = Encoding.ASCII.GetString(e.Result, 0, e.Result.Length).Split(new string[] { "\n" }, StringSplitOptions.None);
+                        string sWithData = null;
+
+                        for (int i = 0; i < sResult.Length; i++)
+                        {
+                            if (sResult[i].IndexOf(VERSION_ID_START) != -1)
+                            {
+                                sWithData = sResult[i];
+                                break;
+                            }
+                        }
+
+                        if (sWithData != null)
+                        {
+                            int iFound = sWithData.IndexOf(VERSION_ID_START);
+
+                            if (iFound > 0)
+                            {
+                                iFound += VERSION_ID_START.Length;
+                                sWithData = sWithData.Substring(iFound, sWithData.IndexOf(VERSION_ID_END) - iFound);
+                                CheckUpdate(sWithData.Trim());
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
                 }
+            }
+
+            // -------------------------------------
+            this.Cursor = Cursors.Default;
+            this.btnUpdates.Text = BTNUPDATE_UNCLICK;
+            this.btnUpdates.Enabled = true;
+        }
+
+        private void CheckUpdate(string sUploadedVersion)
+        {
+            int currentVersion = Utility.VersionToInteger(Application.ProductVersion);
+            int uploadedVersion = ((sUploadedVersion != null) && (sUploadedVersion.Length > 0)) ? Utility.VersionToInteger(sUploadedVersion) : 0;
+
+            if (uploadedVersion > currentVersion)
+            {
+                DialogResult drWantUpdate = MessageBox.Show("A new version (" + sUploadedVersion + ") is available.\n" +
+                                                            "Do you want to open the browser to download the new one?",
+                                                            "Update Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+                if (drWantUpdate == DialogResult.Yes)
+                {
+                    StartBrowser();
+                }
+            }
+            else
+            {
+                MessageBox.Show("You already have the latest version.", "Update Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }
