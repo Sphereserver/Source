@@ -7,8 +7,10 @@
 
 #include "../common/graycom.h"
 #ifndef _EXTERNAL_DLL
-	#include <mysql.h>
-	#include <errmsg.h>	// mysql standart include
+//	#include <mysql.h>
+	#include "../common/mysql/include/mysql.h"
+//	#include <errmsg.h>	// mysql standart include
+	#include "../common/mysql/include/errmsg.h"
 #else
 	#include "../common/CDatabaseLoader.h"
 #endif
