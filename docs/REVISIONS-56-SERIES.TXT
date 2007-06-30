@@ -3432,3 +3432,8 @@ this all in desperation)
   the skill number (e.g. 43 for wrestling), ARGN1 is the skill value AFTER the change happens.
   RETURN 1 (or 2, or 666) means that the skill will NOT change.
 
+
+29-06-2007, Torfo
+- Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing algorithem, if
+  md5 isn't enabled it's the same as ADD.
+  Usage: "ACCOUNT ADDMD5 name hash"

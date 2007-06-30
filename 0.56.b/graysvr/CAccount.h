@@ -85,7 +85,7 @@ public:
 	{
 		return( m_sCurPassword );
 	}
-	bool SetPassword( LPCTSTR pszPassword );
+	bool SetPassword( LPCTSTR pszPassword, bool dontUseMD5Config = false );
 
 	void ClearPassword()
 	{
@@ -215,7 +215,7 @@ protected:
 	CObNameSortArray	m_Accounts;
 private:
 
-	bool Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg );
+	bool Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5=false );
 	bool Cmd_ListUnused( CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, DWORD dwMask = 0);
 
 public:

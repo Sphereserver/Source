@@ -235,7 +235,7 @@ CAccountRef CAccounts::Account_Get( int index )
 	return( CAccountRef( STATIC_CAST <CAccount *>( m_Accounts[index])));
 }
 
-bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg )
+bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5 )
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
 	if ( (pszName == NULL) || !strlen(pszName) )
@@ -263,13 +263,14 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	ASSERT(pAccount);
 	pAccount->m_dateFirstConnect = pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
 
-	pAccount->SetPassword(pszArg);
+	pAccount->SetPassword(pszArg, !md5);
 	return true;
 }
 
 enum VACS_TYPE
 {
 	VACS_ADD,
+	VACS_ADDMD5,
 	VACS_BLOCKED,
 	VACS_HELP,
 	VACS_JAILED,
@@ -281,6 +282,7 @@ enum VACS_TYPE
 LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs.
 {
 	"ADD",
+	"ADDMD5",
 	"BLOCKED",
 	"HELP",
 	"JAILED",
@@ -392,6 +394,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 		"/ACCOUNT UPDATE\n",
 		"/ACCOUNT UNUSED days [command]\n",
 		"/ACCOUNT ADD name password",
+		"/ACCOUNT ADDMD5 name hash",
 		"/ACCOUNT name BLOCK 0/1\n",
 		"/ACCOUNT name JAIL 0/1\n",
 		"/ACCOUNT name DELETE = delete all chars and the account\n",
@@ -403,6 +406,9 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 	{
 		case VACS_ADD:
 			return Cmd_AddNew(pSrc, ppCmd[1], ppCmd[2]);
+
+		case VACS_ADDMD5:
+			return Cmd_AddNew(pSrc, ppCmd[1], ppCmd[2], true);
 
 		case VACS_BLOCKED:
 			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
@@ -782,9 +788,17 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	return( false );	// failure.
 }
 
-bool CAccount::SetPassword( LPCTSTR pszPassword )
+bool CAccount::SetPassword( LPCTSTR pszPassword, bool dontUseMD5Config)
 {
 	ADDTOCALLSTACK("CAccount::SetPassword");
+
+	//dontUseMD5Config allows to disable the hashing of the password (false means "use sphere.ini")
+	bool useMD5;
+	if (dontUseMD5Config)  
+		useMD5 = false;
+	else	
+		useMD5 = g_Cfg.m_fMd5Passwords;
+	
 	if ( Str_Check( pszPassword ) )
 		return false;
 
@@ -792,7 +806,7 @@ bool CAccount::SetPassword( LPCTSTR pszPassword )
 	char * pszPassw = new char[iSize];
 	strcpylen(pszPassw,pszPassword,iSize);
 
-	if( g_Cfg.m_fMd5Passwords )
+	if( useMD5 )
 	{
 		char digest[33];
 
