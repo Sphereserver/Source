@@ -1,6 +1,6 @@
 ﻿UOP Fileformat ( aka Mythic Package )
 ---------------------------------------
-	--Draft 0.2 - OMISSIS --
+credits: - OMISSIS -
 
 (Every Offset value is its first evidence as example)
 All values are stored in Little Endian sequence, as usual in x86 architecture.
@@ -14,29 +14,27 @@ Byte(23) 0x0 - 0x17 -> Containing general file headers (Version etc.)
 DWORD? 0x18 -> Amount of contained files/indexes
 byte(12) -> Unknown gibberish
 
-[2] - Index Block Header (sizeof: 24bytes)
+[2] - Index Block Header (sizeof: 12bytes)
 There can be multiple index blocks, they are splitted into chunks.
 DWORD 0x28 -> Amount of contained files in this index, max 100/0x64
 QWORD 0x2c -> Offset to the next index block header OR Zero
-QWORD 0x34 -> Offset to start of Data Block( -> WORD[2] 0x0008 0x0003 )
-DWORD 0x3c -> End of header, Form Feed (0x0000000c)
 When a index block doesn't contain 100 index definitions, it will be padded with nulls
 
-	[3] - FileIndex Definitions (sizeof: 34bytes )
-	DWORD 0x40 -> Lenght of compressed data
-	DWORD 0x44 -> Size of decompressed file
-	QWORD 0x48 -> UNKNOWN-1 (maybe CRC)
-	DWORD 0x50 -> UNKNOWN-2
-	WORD  0x54 -> Separator? (always 0x0001)
-	QWORD 0x56 -> offsetdatablock + (12 + current compressed size)*id current block {1...max} (last one is 0)
-	DWORD 0x5e -> end of definition, Form Feed ( 0x0000000c)
-	...this repreats, until all FileIndexes are processed
+   [3] - FileIndex Definitions (sizeof: 34bytes )
+   QWORD 0x34 -> Offset to start of Data Block of this file
+   DWORD 0x3c -> Length of Data Block header (usually 0x0C)
+   DWORD 0x40 -> Lenght of compressed data
+   DWORD 0x44 -> Size of decompressed file
+   QWORD 0x48 -> UNKNOWN-1 (maybe filename?)
+   DWORD 0x50 -> UNKNOWN-2 (maybe CRC?)
+   WORD  0x54 -> Separator? (always 0x0001)
+   ...this repreats, until all FileIndexes are processed
 
-	[4] - Data Block/File (sizeof: 8+Lenght bytes)
-	DWORD 0xd7c -> separator, start of Data ( WORD[2] 0x0008 0x0003 )
-	QWORD 0xd80 -> UNKNOWN, possibly a CRC
-	BYTE(Lenght) 0xd88 -> compressed data
-	...this is repeated until all Files from FileIndexes are processed
+   [4] - Data Block/File (sizeof: 12+Lenght bytes)
+   DWORD 0xd7c -> separator, start of Data ( WORD[2] 0x0008 0x0003 )
+   QWORD 0xd80 -> UNKNOWN, possibly a CRC
+   BYTE(Lenght) 0xd88 -> compressed data
+   ...this is repeated until all Files from FileIndexes are processed
 
 repreat until next Index Block=0.
 
@@ -46,14 +44,12 @@ Pseudocode:
 [1] - General Format Header (sizeof: 40bytes )
 
 while ( repreatindex ) do
-	[2] - Index Block Header (sizeof: 24bytes)
+   [2] - Index Block Header (sizeof: 12bytes)
 
-	while ( indexfilenumber~=indexfilecounter ) do
-		[3] - FileIndex Definitions (sizeof: 34bytes )
-	end
-	while ( indexfilenumber~=indexfilecounter ) do
-		[4] - Data Block/File (sizeof: 8+Lenght bytes)
-	end
-end
-
-Feel free to add your own chapters.
+   while ( indexfilenumber~=indexfilecounter ) do
+      [3] - FileIndex Definitions (sizeof: 34bytes )
+   end
+   while ( indexfilenumber~=indexfilecounter ) do
+      [4] - Data Block/File (sizeof: 12+Lenght bytes)
+   end
+end 
