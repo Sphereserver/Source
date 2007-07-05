@@ -96,8 +96,10 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Profile",			// someone hit the profile button for me.
 	"@ReceiveItem",		// I was just handed an item (Not yet checked if i want it)
 
-	"@Rename",
+	"@RegionEnter",
+	"@RegionLeave",
 
+	"@Rename",
 	"@SeeCrime",		// I saw a crime
 
 	// SKTRIG_QTY

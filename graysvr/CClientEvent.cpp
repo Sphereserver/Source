@@ -947,7 +947,13 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
-		m_pChar->MoveToChar( pt );
+
+		if (!m_pChar->MoveToChar( pt ))
+		{
+			addPlayerWalkCancel();
+			return;
+		}
+//		m_pChar->MoveToChar( pt );
 
 		// Check if we have gone indoors.
 		bool fRoof = m_pChar->IsStatFlag( STATF_InDoors );
