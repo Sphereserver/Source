@@ -3437,3 +3437,10 @@ this all in desperation)
 - Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing algorithem, if
   md5 isn't enabled it's the same as ADD.
   Usage: "ACCOUNT ADDMD5 name hash"
+
+06-07-2007, Nazghul
+- Fixed: RETURN 1 in region triggers @exit, @enter did not tell the client that the movement
+  was stopped what led to some weird rubberband effects (thx. to MrSugarCube for help)
+- Added: Character triggers @RegionEnter, @RegionLeave. ARGO is the region in question, RETURN 1
+  works like in region triggers @exit, @enter.
+

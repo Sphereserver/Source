@@ -2065,6 +2065,9 @@ enum CTRIG_TYPE
 	CTRIG_Profile,			// someone hit the profile button for me.
 	CTRIG_ReceiveItem,		// I was just handed an item (Not yet checked if i want it)
 
+	CTRIG_RegionEnter,
+	CTRIG_RegionLeave,
+
 	CTRIG_Rename,			// Changing my name or pets one
 
 	CTRIG_SeeCrime,			// I am seeing a crime
