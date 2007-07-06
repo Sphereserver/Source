@@ -1,0 +1,24 @@
+BYTE Unk1
+WORD Unk2 (if Unk2 == 0x105 seems column delimiter) 
+BYTE Z (-127 , 127)
+WORD Type of Terrain (8==Snow 5==Sea 1==Grass ...)
+if(Unk2==0)
+  WORD Unk3 (Big Endian - Legacy Graphic)
+
+Unk2 of first cell is always block number
+
+
+
+Map is matrix of 112x64 blocks
+
+Each file is a block of 64x64 tiles
+
+Map sizes are width=112x64=7168 height=64x64=4096
+
+XBlock = Int(XPos/64)
+YBlock = Int(YPos/64)
+Block Number = (XBlock * 64) + YBlock
+
+Blocks are loaded from top to bottom than left to right.
+Cells are loaded from blocks top to bottom then left to right.
+
