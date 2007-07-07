@@ -24,7 +24,7 @@ When a index block doesn't contain 100 index definitions, it will be padded with
    QWORD 0x34 -> Offset to start of Data Block of this file
    DWORD 0x3c -> Length of Data Block header (usually 0x0C)
    DWORD 0x40 -> Lenght of compressed data
-   DWORD 0x44 -> Size of decompressed file
+   DWORD 0x44 -> Size of decompressed file (if it's == to compressed then the file is not compressed)
    QWORD 0x48 -> UNKNOWN-1 (maybe filename?)
    DWORD 0x50 -> UNKNOWN-2 (maybe CRC?)
    WORD  0x54 -> Separator? (always 0x0001)

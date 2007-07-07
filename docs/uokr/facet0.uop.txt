@@ -1,3 +1,8 @@
+The first file is uncompressed:
+WORD HeightWORD UnkWORD WidthWORD Unk2
+
+
+Then:
 BYTE Unk1
 WORD Unk2 (if Unk2 == 0x105 seems column delimiter) 
 BYTE Z (-127 , 127)
