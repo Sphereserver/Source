@@ -31,25 +31,30 @@ namespace UoKRUnpacker
 
         private void button1_Click(object sender, EventArgs e)
         {
-            LoadUOP();
-            ParseDump(false);
+            if (LoadUOP())
+            {
+                ParseDump(false);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            LoadUOP();
-            ParseDump(true);
+            if (LoadUOP())
+            {
+                ParseDump(true);
+            }
         }
 
         private void btnParsePatch_Click(object sender, EventArgs e)
         {
-            LoadUOP();
-
-            PatchForm frmPatch = new PatchForm(this);
-            frmPatch.ShowDialog(this);
+            if (LoadUOP())
+            {
+                PatchForm frmPatch = new PatchForm(this);
+                frmPatch.ShowDialog(this);
+            }
         }
 
-        private void LoadUOP()
+        private bool LoadUOP()
         {
             ResetTextArea();
 
@@ -57,7 +62,7 @@ namespace UoKRUnpacker
             if (drFile != DialogResult.OK)
             {
                 MessageBox.Show("File not selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             AppendTextArea("Parsing file " + oFileDlgUopopen.FileName + " ...\n");
@@ -67,10 +72,12 @@ namespace UoKRUnpacker
             if (!upIstance.Load())
             {
                 AppendTextArea("ERROR while parsing file " + oFileDlgUopopen.FileName + " !!!\n");
-                return;
+                GC.Collect();
+                return false;
             }
 
             AppendTextArea("Done parsing.\n\n");
+            return true;
         }
 
         private void ParseDump(bool bDump)
