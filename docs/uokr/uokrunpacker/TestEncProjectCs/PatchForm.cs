@@ -18,6 +18,17 @@ namespace UoKRUnpacker
         {
             InitializeComponent();
 
+            int iStartName = UopManager.getIstance().UopPath.LastIndexOf('\\') + 1;
+
+            if (iStartName != -1)
+            {
+                this.Text += UopManager.getIstance().UopPath.Substring(iStartName, UopManager.getIstance().UopPath.Length - iStartName);
+            }
+            else
+            {
+                this.Text += UopManager.getIstance().UopPath;
+            }
+
             numericUpDown1.Minimum = 0;
             numericUpDown1.Maximum = UopManager.getIstance().UopFile.m_Content.Count - 1;
             numericUpDown2.Minimum = 0;
