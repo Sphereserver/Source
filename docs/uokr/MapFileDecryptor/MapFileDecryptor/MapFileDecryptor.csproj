@@ -36,7 +36,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Ultima, Version=2.0.2522.28634, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Ultima.dll</HintPath>
+      <HintPath>.\Ultima.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -42,8 +42,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(249, 20);
             this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "D:\\TIZIANO\\C++\\NET2005\\UOKR\\UOPUnpacker\\TestEncProjectCs\\bin\\Release\\Unpacked\\fac" +
-                "et0_12_43.dat";
             // 
             // button1
             // 
