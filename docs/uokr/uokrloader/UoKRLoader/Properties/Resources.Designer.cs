@@ -59,12 +59,5 @@ namespace UoKRLoader.Properties {
                 resourceCulture = value;
             }
         }
-        
-        internal static System.Drawing.Bitmap tools {
-            get {
-                object obj = ResourceManager.GetObject("tools", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

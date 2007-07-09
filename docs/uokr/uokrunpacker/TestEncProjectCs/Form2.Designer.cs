@@ -1,4 +1,4 @@
-﻿namespace UoKRLoader
+﻿namespace UoKRUnpacker
 {
     partial class Form2
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
-            this.lblLoaderVersion = new System.Windows.Forms.Label();
+            this.lblUnpackerVersion = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkSite = new System.Windows.Forms.LinkLabel();
@@ -39,14 +39,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // lblLoaderVersion
+            // lblUnpackerVersion
             // 
-            this.lblLoaderVersion.AutoSize = true;
-            this.lblLoaderVersion.Location = new System.Drawing.Point(65, 27);
-            this.lblLoaderVersion.Name = "lblLoaderVersion";
-            this.lblLoaderVersion.Size = new System.Drawing.Size(42, 13);
-            this.lblLoaderVersion.TabIndex = 2;
-            this.lblLoaderVersion.Text = "Version";
+            this.lblUnpackerVersion.AutoSize = true;
+            this.lblUnpackerVersion.Location = new System.Drawing.Point(65, 27);
+            this.lblUnpackerVersion.Name = "lblUnpackerVersion";
+            this.lblUnpackerVersion.Size = new System.Drawing.Size(42, 13);
+            this.lblUnpackerVersion.TabIndex = 2;
+            this.lblUnpackerVersion.Text = "Version";
             // 
             // lblCopyright
             // 
@@ -62,9 +62,10 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(65, 72);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(212, 26);
+            this.label3.Size = new System.Drawing.Size(215, 39);
             this.label3.TabIndex = 4;
-            this.label3.Text = "You\'re free to use, decompile and whatever\r\nyou can think of this program.";
+            this.label3.Text = "You\'re free to use, decompile and whatever\r\nyou can think of this program.\r\nBased" +
+                " on available docs by various authors.";
             // 
             // linkSite
             // 
@@ -72,17 +73,17 @@
             this.linkSite.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.linkSite.Location = new System.Drawing.Point(65, 12);
             this.linkSite.Name = "linkSite";
-            this.linkSite.Size = new System.Drawing.Size(106, 13);
+            this.linkSite.Size = new System.Drawing.Size(104, 13);
             this.linkSite.TabIndex = 5;
             this.linkSite.TabStop = true;
-            this.linkSite.Text = "UO:KR Client Loader";
+            this.linkSite.Text = "UO:KR Uop Dumper";
             this.linkSite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkSite_LinkClicked);
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOK.Location = new System.Drawing.Point(68, 119);
+            this.btnOK.Location = new System.Drawing.Point(68, 124);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(68, 23);
             this.btnOK.TabIndex = 6;
@@ -92,7 +93,7 @@
             // btnUpdates
             // 
             this.btnUpdates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUpdates.Location = new System.Drawing.Point(167, 119);
+            this.btnUpdates.Location = new System.Drawing.Point(161, 124);
             this.btnUpdates.Name = "btnUpdates";
             this.btnUpdates.Size = new System.Drawing.Size(110, 23);
             this.btnUpdates.TabIndex = 7;
@@ -106,6 +107,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(32, 32);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
             // 
@@ -113,7 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(297, 152);
+            this.ClientSize = new System.Drawing.Size(297, 159);
             this.ControlBox = false;
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnUpdates);
@@ -121,7 +123,7 @@
             this.Controls.Add(this.linkSite);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblCopyright);
-            this.Controls.Add(this.lblLoaderVersion);
+            this.Controls.Add(this.lblUnpackerVersion);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form2";
             this.ShowIcon = false;
@@ -136,7 +138,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblLoaderVersion;
+        private System.Windows.Forms.Label lblUnpackerVersion;
         private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkSite;

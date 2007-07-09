@@ -158,13 +158,13 @@ namespace UoKRUnpacker
 
             upIstance.FixOffsets(iIndex, subIndex);
 
-            if (upIstance.Write(fileName + ".new"))
+            if (upIstance.Write("NEW-" + fileName))
             {
-                m_Form1State.AppendTextArea("Writing " + fileName + ".new done succesfully.\n");
+                m_Form1State.AppendTextArea("Writing NEW-" + fileName + " done succesfully.\n");
             }
             else
             {
-                m_Form1State.AppendTextArea("Error in writing " + fileName + ".new\n");
+                m_Form1State.AppendTextArea("Error in writing NEW-" + fileName + "\n");
             }
 
             GC.Collect();

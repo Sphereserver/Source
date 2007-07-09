@@ -237,5 +237,19 @@ namespace UoKRUnpacker
         }
 
         #endregion
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            Form2 frmAbout = new Form2();
+            DialogResult drResult = frmAbout.ShowDialog(this);
+            if (drResult == DialogResult.OK)
+            {
+                frmAbout.Close();
+            }
+            else
+            {
+                Close();
+            }
+        }
     }
 }

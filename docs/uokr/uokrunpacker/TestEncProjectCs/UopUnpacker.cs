@@ -222,7 +222,7 @@ namespace UoKRUnpacker
                     }
 
                     newOffset = m_UopFile.m_Content[outerIndexForCalc].m_ListIndex[innerIndexForCalc].m_OffsetOfDataBlock;
-                    newOffset += UOPFileData.SIZE + m_UopFile.m_Content[outerIndexForCalc].m_ListIndex[innerIndexForCalc].m_LenghtCompressed;
+                    newOffset += ((innerIndex == 0) && (outerIndex == 0)) ? 0 : (UOPFileData.SIZE + m_UopFile.m_Content[outerIndexForCalc].m_ListIndex[innerIndexForCalc].m_LenghtCompressed);
                     if (outerIndex != outerIndexForCalc)
                     {
                         newOffset += UOPIndexBlockHeader.SIZE + (UOPFileIndexDef.SIZE * 100); 
