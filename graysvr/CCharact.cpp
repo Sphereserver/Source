@@ -3104,15 +3104,16 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				if ( pNewArea && fAllowReject )
 					return false;
 			}
-                        if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
-                        {
-				CScriptTriggerArgs Args(m_pArea);
-				if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
+				if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
 				{
-					if ( pNewArea && fAllowReject )
-			                	return false;
+					CScriptTriggerArgs Args(m_pArea);
+					if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
+					{
+						if ( pNewArea && fAllowReject )
+							return false;
+					}
 				}
-			}
+		}
 		if ( IsClient() && pNewArea )
 		{
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
@@ -3176,9 +3177,10 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				if ( OnTrigger(CTRIG_RegionEnter, this, & Args) == TRIGRET_RET_TRUE )
 				{
 					if ( m_pArea && fAllowReject )
-			                	return false;
+						return false;
 				}
-			}	
+			}
+		}
 	}
 
 	m_pArea = pNewArea;
