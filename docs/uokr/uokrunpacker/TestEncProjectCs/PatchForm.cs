@@ -84,91 +84,56 @@ namespace UoKRUnpacker
 
         private void Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed)
         {
-            UopManager upIstance = UopManager.getIstance();
+            string filename = null;
 
-            int iStartName = upIstance.UopPath.LastIndexOf('\\') + 1;
-            string fileName = null;
-
-            if (iStartName != -1)
-            {
-                fileName = upIstance.UopPath.Substring(iStartName, upIstance.UopPath.Length - iStartName);
-            }
-            else
-            {
-                fileName = upIstance.UopPath;
-            }
-
-            byte[] fileContent = null;
-            using (FileStream fsToParse = new FileStream(sWhat, FileMode.Open))
-            {
-                using (BinaryReader brToParse = new BinaryReader(fsToParse))
-                {
-                    long fSize = fsToParse.Seek(0, SeekOrigin.End);
-                    fileContent = new byte[fSize];
-                    fsToParse.Seek(0, SeekOrigin.Begin);
-                    fileContent = brToParse.ReadBytes((int)fSize);
-                }
-            }
-
-            if (upIstance.UopFile.m_Content.Count <= iIndex)
-            {
-                MessageBox.Show("Error in 'Index Block Header'", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                GC.Collect();
-                return;
-            }
-
-            if (upIstance.UopFile.m_Content[iIndex].m_ListIndex.Count <= subIndex)
-            {
-                MessageBox.Show("Error in 'FileIndex Definition'", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                GC.Collect();
-                return;
-            }
-
-            byte[] compressedStream = null;
-            int iDestLength = -1;
-
-            if (bUncompressed)
-            {
-                compressedStream = fileContent;
-                iDestLength = fileContent.Length;
-            }
-            else
-            {
-                compressedStream = new byte[(int)Compressor.CompressBound((ulong)(fileContent.Length))];
-                iDestLength = compressedStream.Length;
-                if (ZLibError.Okay != Compressor.Compress(compressedStream, ref iDestLength, fileContent, fileContent.Length))
-                {
-                    MessageBox.Show("Error in compression", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    GC.Collect();
-                    return;
-                }
-            }
-
-            if ((compressedStream == null) || (iDestLength == -1) || (bUncompressed && (compressedStream.Length != iDestLength)))
-            {
-                MessageBox.Show("Error in data to copy", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                GC.Collect();
-                return;
-            }
-
-            upIstance.UopFile.m_Content[iIndex].m_ListIndex[subIndex].m_LenghtCompressed = (uint)iDestLength;
-            upIstance.UopFile.m_Content[iIndex].m_ListIndex[subIndex].m_LenghtUncompressed = (uint)fileContent.Length;
-            upIstance.UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData = new byte[iDestLength];
-            Array.Copy(compressedStream, upIstance.UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData, iDestLength);
-
-            upIstance.FixOffsets(iIndex, subIndex);
-
-            if (upIstance.Write("NEW-" + fileName))
-            {
-                m_Form1State.AppendTextArea("Writing NEW-" + fileName + " done succesfully.\n");
-            }
-            else
-            {
-                m_Form1State.AppendTextArea("Error in writing NEW-" + fileName + "\n");
-            }
-
+            UopManager.UopPatchError upResult = UopManager.getIstance().Replace(sWhat, iIndex, subIndex, bUncompressed, ref filename);
             GC.Collect();
-            this.Close();
+
+            switch (upResult)
+            {
+                case UopManager.UopPatchError.Okay:
+                {
+                    m_Form1State.AppendTextArea("Patching to " + filename + " done succesfully.\n");
+                } break;
+
+                case UopManager.UopPatchError.WriteError:
+                {
+                    m_Form1State.AppendTextArea("ERROR while patching to " + filename + "\n");
+                } break;
+
+                case UopManager.UopPatchError.FileError:
+                {
+                    MessageBox.Show("File " + sWhat + "don't exist", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } break;
+
+                case UopManager.UopPatchError.IndexBlockError:
+                {
+                    MessageBox.Show("Error in 'Index Block Header' selection", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } break;
+
+                case UopManager.UopPatchError.FileIndexError:
+                {
+                    MessageBox.Show("Error in 'FileIndex Definition' selection", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } break;
+
+                case UopManager.UopPatchError.CompressionError:
+                {
+                    MessageBox.Show("Error while compressing the patch file", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } break;
+
+                case UopManager.UopPatchError.BufferError:
+                {
+                    MessageBox.Show("Error while copying the patch data", "Patcher Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } break;
+
+                default:
+                    break;
+            }
+
+            if ((upResult == UopManager.UopPatchError.Okay) || (upResult == UopManager.UopPatchError.WriteError))
+            {
+                this.Close();
+            }
         }
     }
 }
