@@ -3444,5 +3444,5 @@ this all in desperation)
   works like in region triggers @exit, @enter.
 
 15-07-2007, Ellessar
-- Modified: Now you can get AREADEF regions from inside a multi with a help of an additional "region"
+- Modified: Now you can get AREADEF regions from inside a multi with the help of an additional "region"
   keyword (e.g. region.region.name).
