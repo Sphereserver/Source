@@ -876,6 +876,7 @@ enum RWC_TYPE
 	RWC_EVENTS,
 	RWC_RESOURCES,
 	RWC_ISEVENT,
+	RWC_REGION,
 	RWC_TAG,
 	RWC_TAG0,
 	RWC_TAGAT,
@@ -889,6 +890,7 @@ LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
 	"EVENTS",
 	"RESOURCES",
 	"ISEVENT",
+	"REGION",
 	"TAG",
 	"TAG0",
 	"TAGAT",
@@ -925,6 +927,28 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			pszKey += 8;
 			sVal = ( m_Events.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
 			return( true );
+		case RWC_REGION:
+			{
+				// Check that the syntax is correct.
+				if ( pszKey[6] && pszKey[6] != '.' )
+					return false;
+
+				CRegionWorld * pRegionTemp = dynamic_cast <CRegionWorld*>(m_pt.GetRegion( REGION_TYPE_AREA ));
+
+				if ( !pszKey[6] )
+				{
+					// We're just checking if the reference is valid.
+					sVal.FormatVal( pRegionTemp? 1:0 );
+					return true;
+				}
+
+				// ELSE - We're trying to retrieve a property from the region.
+				pszKey += 7;
+				if ( pRegionTemp )
+					return pRegionTemp->r_WriteVal( pszKey, sVal, pSrc );
+
+				return false;
+			}
 		case RWC_TAGAT:
 			{
 				pszKey += 5;	// eat the 'TAGAT'
