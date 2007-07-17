@@ -378,8 +378,8 @@ enum EXTAOS_TYPE
 	EXTAOS_HcClear = 0x10, // House Customization :: Clear
 	//
 	EXTAOS_HcSwitch = 0x12, // House Customization :: Switch Floors
-	EXTAOS_HcFloorDesign = 0x13, // House Customization :: Floor Design
-	EXTAOS_HcFloorDelete = 0x14, // House Customization :: Floor Delete
+	EXTAOS_HcPlaceRoof = 0x13, // House Customization :: Place Roof Tile
+	EXTAOS_HcDestroyRoof = 0x14, // House Customization :: Destroy Roof Tile
 	//
 	//
 	//
@@ -718,6 +718,32 @@ union CExtAosData
 		BYTE m_Unk; 	 // 0x0A
 		
 	} HouseSwitchFloor;
+
+	struct
+	{
+		BYTE m_Unk_00_1; // 0x00
+		NDWORD m_Roof;
+		BYTE m_Unk_00_2; // 0x00
+		NDWORD m_PosX;
+		BYTE m_Unk_00_3; // 0x00
+		NDWORD m_PosY;
+		BYTE m_Unk_00_4; // 0x00
+		NDWORD m_PosZ;
+		BYTE m_Unk;		 // 0x0A
+	} HousePlaceRoof;
+
+	struct
+	{
+		BYTE m_Unk_00_1; // 0x00
+		NDWORD m_Roof;
+		BYTE m_Unk_00_2; // 0x00
+		NDWORD m_PosX;
+		BYTE m_Unk_00_3; // 0x00
+		NDWORD m_PosY;
+		BYTE m_Unk_00_4; // 0x00
+		NDWORD m_PosZ;
+		BYTE m_Unk;		 // 0x0A
+	} HouseDestroyRoof;
 
 	struct
 	{
@@ -2669,19 +2695,35 @@ struct CCommand	// command buffer from server to client.
 		{
 			BYTE m_Cmd; // 0xd8
 			NWORD m_len;
-			NWORD m_compression; // 0x0000 not compressed
+			BYTE m_compression; // 0x00 not compressed
+			BYTE m_unk1;	// 0x00
 			NDWORD m_UID;
-			NWORD m_Unk_1; // 0x0000
-			NWORD m_Unk_2; // 0x0000
-			NWORD n_itemcount;
-			NWORD n_datasize; // itemcount * 5
+			NDWORD m_revision;
+			NWORD m_itemcount;
+			NWORD m_datasize; // itemcount * 5
+			BYTE m_planeCount;
 			struct
 			{
-				NWORD m_dispid;
-				BYTE m_x;
-				BYTE m_y;
-				BYTE m_z;
-			} m_list[1];
+				BYTE m_index;	// index | 0x20
+				BYTE m_size;
+				BYTE m_length;
+				BYTE m_flags;
+				NWORD m_data[1];
+			} m_planeList[1];
+			struct
+			{
+				BYTE m_index;	// index + 9
+				BYTE m_size;
+				BYTE m_length;
+				BYTE m_flags;
+				struct
+				{
+					NWORD m_id;
+					BYTE m_x;
+					BYTE m_y;
+					BYTE m_z;
+				} m_data[1];
+			} m_stairsList[1];
 		} AOSCustomHouse;
 
 

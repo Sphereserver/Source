@@ -315,7 +315,7 @@ bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
 		pItem->SetAttr( ATTR_MOVE_NEVER );
 	}
 
-	if ( pItem->IsType(IT_MULTI))
+	if ( pItem->IsTypeMulti() )
 	{
 		CItem * pItemNew = OnTarg_Use_Multi( pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
 		pItem->Delete();

@@ -239,6 +239,7 @@ class CGrayMulti : public CGrayCachedMulItem
 	// Load all the relivant info for the
 private:
 	MULTI_TYPE m_id;
+protected:
 	CUOMultiItemRec * m_pItems;
 	int m_iItemQty;
 private:

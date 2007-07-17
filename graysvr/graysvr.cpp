@@ -53,7 +53,7 @@ bool CMapList::Load(int map, char *args)
 {
 	if (( map < 0 ) || ( map > 255 ))
 	{
-		g_Log.EventError("Invalid map #%d could be initialized.\n", map);
+		g_Log.EventError("Invalid map #%d couldn't be initialized.\n", map);
 		return false;
 	}
 	else if ( !m_mapsinitalized[map] )	// disable double intialization

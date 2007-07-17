@@ -4,7 +4,6 @@
 //	Prefix:	OC_
 //
 
-ADD(GETHEIGHT,		"GetHeight")
 ADD(CANSEE,			"CanSee")
 ADD(CANSEELOS,		"CanSeeLOS")
 ADD(CANSEELOSFLAG, "CanSeeLOSFlag")

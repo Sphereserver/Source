@@ -378,6 +378,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_BUSHIDO,	// 187 = SE Bushido spellbook (should have MOREZ=400 by default)
 	IT_SPELLBOOK_NINJITSU,	// 188 = SE Ninjitsu spellbook (should have MOREZ=500 by default)
 	IT_SPELLBOOK_ARCANIST,	// 189 = ML Spellweaver spellbook (should have MOREZ=600 by default)
+	IT_MULTI_CUSTOM,	// 190 = Customisable multi
 
 	IT_QTY,
 	IT_TRIGGER = 1000,	// custom triggers starts from here
@@ -569,6 +570,7 @@ public:
 	static bool IsTypeArmor( IT_TYPE type );
 	static bool IsTypeWeapon( IT_TYPE type );
 	static bool IsTypeSpellbook( IT_TYPE type );
+	static bool IsTypeMulti( IT_TYPE type );
 	static IT_TYPE GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec &tile );
 
 	static CItemBase * FindItemBase( ITEMID_TYPE id );

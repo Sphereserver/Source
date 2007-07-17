@@ -506,6 +506,15 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	}
 
 	addAOSTooltip( pItem );
+
+#ifdef _CUSTOMHOUSES
+	if ( pItem->IsType( IT_MULTI_CUSTOM ) )
+	{
+		CItemMultiCustom * pItemMulti = dynamic_cast <CItemMultiCustom*> (pItem);
+		if ( pItemMulti )
+			pItemMulti->SendVersionTo(this);
+	}
+#endif
 }
 
 void CClient::addItem_Equipped( const CItem * pItem )
@@ -2469,7 +2478,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 			continue;
 		if (fOsiSight)
 		{
-			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->GetType() == IT_MULTI ) || ( pItem->GetType() == IT_SHIP ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && (( pItem->m_uidLink.ItemFind()->GetType() == IT_MULTI ) || ( pItem->m_uidLink.ItemFind()->GetType() == IT_SHIP )))
+			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
 				|| ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
 				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
@@ -2545,10 +2554,10 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 
 		if (fOsiSight)
 		{
-			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->GetType() == IT_MULTI ) || ( pItem->GetType() == IT_SHIP ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && (( pItem->m_uidLink.ItemFind()->GetType() == IT_MULTI ) || ( pItem->m_uidLink.ItemFind()->GetType() == IT_SHIP )))
-				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( pItem->GetType() != IT_MULTI ) && ( pItem->GetType() != IT_SHIP ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->IsTypeMulti() ))
+				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
-				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) && ( pItem->GetType() != IT_MULTI ) && ( pItem->GetType() != IT_SHIP ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 				{
 					if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 					{
@@ -2562,7 +2571,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		}
 		else
 		{
-			if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && (( pItem->GetType() == IT_SHIP ) || ( pItem->GetType() == IT_MULTI ))))
+			if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )))
 			{
 				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 				{

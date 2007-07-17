@@ -1696,6 +1696,17 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( !IsStatFlag(dwFlags) )
 		return false;
 
+#ifdef _CUSTOMHOUSES
+	if ( IsClient() && GetClient()->m_pHouseDesign )
+	{
+		// no reveal whilst in house design (unless they somehow got out)
+		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+			return false;
+
+		GetClient()->m_pHouseDesign->EndCustomize(true);
+	}
+#endif
+
 	if (( dwFlags & STATF_Sleeping ) && IsStatFlag( STATF_Sleeping ))
 	{
 		// Try to wake me up.
@@ -2603,6 +2614,23 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		return( NULL );
 	}
 
+#ifdef _CUSTOMHOUSES
+	if ( IsClient() && GetClient()->m_pHouseDesign )
+	{
+		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+		{
+			if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
+			{
+				ptDst.m_z = GetTopZ();
+				return ptDst.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA );
+			}
+			return NULL;
+		}
+
+		GetClient()->m_pHouseDesign->EndCustomize(true);
+	}
+#endif
+
 	// ok to go here ? physical blocking objects ?
 	WORD wBlockFlags = 0;
 	signed char ClimbHeight;
@@ -2806,6 +2834,16 @@ void CChar::CheckRevealOnMove()
 {
 	ADDTOCALLSTACK("CChar::CheckRevealOnMove");
 	// Are we going to reveal ourselves by moving ?
+#ifdef _CUSTOMHOUSES
+	if ( IsClient() && GetClient()->m_pHouseDesign )
+	{
+		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+			return;
+
+		GetClient()->m_pHouseDesign->EndCustomize(true);
+	}
+#endif
+
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Sleeping) )
 	{
 		// Wake up if sleeping and this is possible.
@@ -2830,6 +2868,17 @@ bool CChar::CheckLocation( bool fStanding )
 	// We are at this location
 	// what will happen ?
 	// RETURN: true = we teleported.
+
+#ifdef _CUSTOMHOUSES
+	if ( IsClient() && GetClient()->m_pHouseDesign )
+	{
+		// stepping on items doesn't trigger anything whilst in design mode
+		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+			return false;
+
+		GetClient()->m_pHouseDesign->EndCustomize(true);
+	}
+#endif
 
 	if ( ! fStanding )
 	{
@@ -3104,16 +3153,18 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				if ( pNewArea && fAllowReject )
 					return false;
 			}
-				if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+
+			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			{
+				CScriptTriggerArgs Args(m_pArea);
+				if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
 				{
-					CScriptTriggerArgs Args(m_pArea);
-					if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
-					{
-						if ( pNewArea && fAllowReject )
-							return false;
-					}
+					if ( pNewArea && fAllowReject )
+						return false;
 				}
+			}
 		}
+
 		if ( IsClient() && pNewArea )
 		{
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
