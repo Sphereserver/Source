@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,8 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 16-Dec-2006
-
+// FILE LAST UPDATED: Tuesday, July 17, 2007
 VERSION=0.56b
 
 [DEFNAME HARDCODED]
@@ -177,11 +176,11 @@ random_missile         { i_bow 1 i_crossbow 1 i_crossbow_heavy 1 }
 random_weapon          { random_axe 7 random_pole_arm 5 random_mace 5 random_sword 8 random_staff 2 random_dagger 2 random_missile 3 }
 
 [defname items_other]
-random_light			{ i_candle 1 i_torch 1 i_lantern 1 }
-random_fishing_junk		{ i_fishing_weight 1 i_fishing_pole 1 i_fish_cut_raw 1 i_fish_raw_head 1 i_fish_small 1 i_fish_big_1 1 i_fish_big_2 1 i_fish_big_3 1 i_fish_big_4 1 }
+random_light           { i_candle 1 i_torch 1 i_lantern 1 }
+random_fishing_junk    { i_fishing_weight 1 i_fishing_pole 1 i_fish_cut_raw 1 i_fish_raw_head 1 i_fish_small 1 i_fish_big_1 1 i_fish_big_2 1 i_fish_big_3 1 i_fish_big_4 1 }
 
 [defname potions]
-random_potion			{ i_bottle_empty 1 i_potion_refresh 1 i_potion_agility 1 i_potion_nightsight 1 i_potion_heal 1 i_potion_strength 1 i_potion_poison 1 i_potion_cure 1 i_potion_explosion 1 }
+random_potion          { i_bottle_empty 1 i_potion_refresh 1 i_potion_agility 1 i_potion_nightsight 1 i_potion_heal 1 i_potion_strength 1 i_potion_poison 1 i_potion_cure 1 i_potion_explosion 1 }
 
 [defname reagents]
 random_reagent         { i_reag_black_pearl 1 i_reag_blood_moss 1 i_reag_garlic 1 i_reag_ginseng 1 i_reag_mandrake_root 1 i_reag_nightshade 1 i_reag_sulfur_ash 1 i_reag_spider_silk 1 }
@@ -232,7 +231,7 @@ random_all_items  { random_weapons 3 random_armor 3 random_scroll 3 random_targe
 [defname items_random_armor]
 random_all_armor           { random_body_armor 1 random_extra_armor 1 random_helms 1 random_coifs 1 }
 random_armor               { random_body_armor 1 random_extra_armor 1 }
-random_extra_armor         { random_shields 1 }
+random_extra_armor         random_shields
 random_head_armor          { random_helms 1 random_coifs 1 }
 random_body_armor          { random_chest_armor 1 random_leg_armor 1 random_arm_armor 1 random_neck_armor 1 random_head_armor 1 random_hand_armor 1 }
 random_chest_armor         { random_chest_armor_male 2 random_chest_armor_female 1 }
@@ -265,18 +264,18 @@ random_swords              { i_sword_broad 4 i_sword_long 4 i_scimitar 4 i_sword
 random_pole_arms           { i_bardiche 2 i_spear 8 i_spear_short 4 i_axe_two_hand 2 i_war_fork 1 i_halberd 3 }
 random_daggers             { i_dagger 12 i_kryss 4 }
 random_ranged_weapons      { i_crossbow 2 i_crossbow_heavy 1 i_bow 2 }
-random_missiles            { i_arrow 1 }
+random_missiles            i_arrow
 
 //*****************************************************************
 // items - wearables
 [defname items_random_wearables]
-random_cloaks              { i_cape 1 }
+random_cloaks              i_cape
 random_boots               { i_boots_thigh 1 i_boots_calf 1 }
 random_hats                { i_hat_wide_brim 1 i_cap 1 i_hat_straw_tall 1 i_hat_straw 1 i_hat_wizards 1 i_bonnet 1 i_hat_feather 1 i_hat_tricorne 1 i_hat_jester 1 }
-random_belts               { i_sash 1 }
+random_belts               i_sash
 random_bracelets           { i_bracelet_gold 1 i_bracelet_silver 1 }
 random_rings               { i_ring_gold 1 i_ring_silver 1  }
-random_earrings		  { i_earrings_gold 1 i_earrings_silver 1 }
+random_earrings	           { i_earrings_gold 1 i_earrings_silver 1 }
 
 random_wearables           { random_clothing 1 random_jewelry 1 }
 random_clothing            { random_male_tops 1 random_female_tops 1 random_male_pants 1 random_female_pants 1 random_cloaks 1 random_boots 1 random_hats 1 random_belts 1 }
@@ -286,7 +285,7 @@ random_jewelry             { random_necklace 1 random_bracelets 1 random_earring
 // items - magic related items
 [defname items_random_magic]
 random_reagents            { i_reag_black_pearl 1 i_reag_blood_moss 1 i_reag_garlic 1 i_reag_ginseng 1 i_reag_mandrake_root 1 i_reag_nightshade 1 i_reag_sulfur_ash 1 i_reag_spider_silk 1 }
-random_spellbooks          { i_spellbook 1 }
+random_spellbooks          i_spellbook
 random_unknown_scrolls     { i_scroll_x_red 1 i_scroll_x_blue 1 i_scroll_x_green 1 i_scroll_x_teal 1 i_scroll_x_brown 1 i_scroll_x_purp 1 }
 random_potions             { i_bottle_black 1 i_bottle_orange 1 i_bottle_blue 1 i_bottle_white 1 i_bottle_green 1 i_bottle_red 1 i_bottle_yellow 1 i_bottle_purple 1 }
 random_wands               { i_wand_1 1 i_wand_2 1 i_wand_3 1 i_wand_4 1 }
@@ -962,12 +961,13 @@ t_shield			180 // equippable armor.
 t_jewelry			181
 t_dirt			182 // a patch of dirt where i can plant something
 t_script			183
-T_SPELLBOOK_NECRO	184 // AOS Necromancy spellbook (should have MOREZ=100 by default)
-T_SPELLBOOK_PALA	185 // AOS Paladin spellbook (should have MOREZ=200 by default)
-T_SPELLBOOK_EXTRA	186 // some spellbook for script purposes (MOREZ=basic offset)
-T_SPELLBOOK_BUSHIDO 187 // SE Bushido spellbook (should have MOREZ=400 by default)
-T_SPELLBOOK_NINJITSU 188 // SE Ninjitsu spellbook (should have MOREZ=500 by default)
-T_SPELLBOOK_ARCANIST 189 // ML Spellweaver spellbook (should have MOREZ=600 by default)
+t_spellbook_necro	184 // AOS Necromancy spellbook (should have MOREZ=100 by default)
+t_spellbook_pala	185 // AOS Paladin spellbook (should have MOREZ=200 by default)
+t_spellbook_extra	186 // some spellbook for script purposes (MOREZ=basic offset)
+t_spellbook_bushido	187 // SE Bushido spellbook (should have MOREZ=400 by default)
+t_spellbook_ninjitsu	188 // SE Ninjitsu spellbook (should have MOREZ=500 by default)
+t_spellbook_arcanist	189 // ML Spellweaver spellbook (should have MOREZ=600 by default)
+t_multi_custom		190 // Customisable multi
 
 [defname layers]
 layer_hand1		1

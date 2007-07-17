@@ -23,8 +23,10 @@ public:
 private:
 	bool m_closed;
 	bool m_realFile;
-	std::vector<std::string> * m_fileContent;
 	int m_currentLine;
+
+protected:
+	std::vector<std::string> * m_fileContent;
 
 private:
 	bool useDefaultFile() const;

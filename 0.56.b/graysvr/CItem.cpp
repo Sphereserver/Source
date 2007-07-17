@@ -156,6 +156,13 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 		case IT_MULTI:
 			pItem = new CItemMulti( id, pItemDef );
 			break;
+		case IT_MULTI_CUSTOM:
+#ifdef _CUSTOMHOUSES
+			pItem = new CItemMultiCustom( id, pItemDef );
+#else
+			pItem = new CItemMulti( id, pItemDef );
+#endif
+			break;
 		case IT_SHIP:
 			pItem = new CItemShip( id, pItemDef );
 			break;
@@ -1094,6 +1101,7 @@ int CItem::GetDecayTime() const
 			Calc_GetRandVal(20) * g_Cfg.m_iGameMinuteLength);
 	case IT_MULTI:
 	case IT_SHIP:
+	case IT_MULTI_CUSTOM:
 		// very long decay updated as people use it.
 		return( 14*24*60*60*TICK_PER_SEC );	// days to rot a structure.
 	case IT_TRASH_CAN:
@@ -3709,7 +3717,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		if ( pItem->m_uidLink.IsValidUID() )
 		{
 			CItem * pItemLink = pItem->m_uidLink.ItemFind();
-			if (( pItemLink ) &&  ( pItemLink->IsType( IT_SHIP ) || pItemLink->IsType( IT_MULTI ) ))
+			if (( pItemLink ) && ( pItemLink->IsTypeMulti() ))
 					continue;
 		}
 

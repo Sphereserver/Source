@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2006
+// SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Tuesday, July 17, 2007
 //
 VERSION=0.56b
 
@@ -341,10 +341,10 @@ DUPEITEM=01810
 [ITEMDEF 0181d]
 //alchemical symbol
 DEFNAME=i_rune_alchem_1
-//DEFNAME2=RUNE_SUMMON_UNDEAD
-//DEFNAME2=I_SYMBOL_ALCHEMIST_1
+TYPE=t_telepad
 RESOURCES=1 i_stone_sand
 WEIGHT=2
+
 CATEGORY=Items by Professions
 SUBSECTION=Alchemist
 DESCRIPTION=Alchemical Symbol
@@ -857,43 +857,56 @@ DUPEITEM=018eb
 [ITEMDEF 0181e]
 DEFNAME=i_rune_alchem_2
 //DEFNAME2=I_SYMBOL_ALCHEMIST_2
+TYPE=t_telepad
 
 [ITEMDEF 0181f]
 DEFNAME=i_rune_alchem_3
 //DEFNAME2=I_SYMBOL_ALCHEMIST_3
+TYPE=t_telepad
 
 [ITEMDEF 01820]
 DEFNAME=i_rune_alchem_4
 //DEFNAME2=I_SYMBOL_ALCHEMIST_4
+TYPE=t_telepad
 
 [ITEMDEF 01821]
 DEFNAME=i_rune_alchem_5
 //DEFNAME2=I_SYMBOL_ALCHEMIST_5
+TYPE=t_telepad
 
 [ITEMDEF 01822]
 DEFNAME=i_rune_alchem_6
 //DEFNAME2=I_SYMBOL_ALCHEMIST_6
+TYPE=t_telepad
 
 [ITEMDEF 01823]
 DEFNAME=i_rune_alchem_7
 //DEFNAME2=I_SYMBOL_ALCHEMIST_7
+TYPE=t_telepad
 
 [ITEMDEF 01824]
 DEFNAME=i_rune_alchem_8
 //DEFNAME2=I_SYMBOL_ALCHEMIST_8
+TYPE=t_telepad
 
 [ITEMDEF 01825]
 DEFNAME=i_rune_alchem_9
 //DEFNAME2=I_SYMBOL_ALCHEMIST_9
+TYPE=t_telepad
 
 [ITEMDEF 01826]
 DEFNAME=i_rune_alchem_10
 //DEFNAME2=I_SYMBOL_ALCHEMIST_10
+TYPE=t_telepad
 
 [ITEMDEF 01827]
 //alchemical symbol
 DEFNAME=i_rune_alchem_11
+TYPE=t_telepad
 
 [ITEMDEF 01828]
 //alchemical symbol
 DEFNAME=i_rune_alchem_12
+TYPE=t_telepad
+
+[EOF]

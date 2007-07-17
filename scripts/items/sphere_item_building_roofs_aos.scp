@@ -1,0 +1,403 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2007
+//www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wednesday, July 11, 2007
+//
+
+[ITEMDEF 02c24]
+DEFNAME=i_roof_tile_aos
+TYPE=t_roof
+DUPELIST=02c25,02c26,02c27,02c28,02c29,02c2a,02c2b,02c2c,02c2d,02c2e,02c2f,02c30,02c31,02c32
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Tile Roof
+DESCRIPTION=@
+
+[ITEMDEF 02c25]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c26]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c27]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c28]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c29]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2a]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2b]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2c]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2d]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2e]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c2f]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c30]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c31]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c32]
+// tile roof
+DUPEITEM=02c24
+
+[ITEMDEF 02c33]
+DEFNAME=i_roof_wooden_shingle
+TYPE=t_roof
+DUPELIST=02c34,02c35,02c36,02c37,02c38,02c39,02c3a,02c3b,02c3c,02c3d,02c3e,02c3f,02c40,02c41
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Wooden Shingles
+DESCRIPTION=@
+
+[ITEMDEF 02c34]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c35]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c36]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c37]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c38]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c39]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3a]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3b]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3c]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3d]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3e]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c3f]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c40]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c41]
+// wooden shingle
+DUPEITEM=02c33
+
+[ITEMDEF 02c42]
+DEFNAME=i_roof_log_aos
+TYPE=t_roof
+DUPELIST=02c43,02c44,02c45,02c46,02c47,02c48,02c49,02c4a,02c4b,02c4c,02c4d,02c4e,02c4f,02c50
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Log Roof
+DESCRIPTION=@
+
+[ITEMDEF 02c43]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c44]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c45]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c46]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c47]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c48]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c49]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4a]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4b]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4c]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4d]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4e]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c4f]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c50]
+// log roof
+DUPEITEM=02c42
+
+[ITEMDEF 02c51]
+DEFNAME=i_roof_thatch_aos
+TYPE=t_roof
+DUPELIST=02c52,02c53,02c54,02c55,02c56,02c57,02c58,02c59,02c5a,02c5b,02c5c,02c5d,02c5e,02c5f
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Thatch Roof
+DESCRIPTION=@
+
+[ITEMDEF 02c52]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c53]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c54]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c55]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c56]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c57]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c58]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c59]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5a]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5b]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5c]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5d]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5e]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c5f]
+// thatch roof
+DUPEITEM=02c51
+
+[ITEMDEF 02c60]
+DEFNAME=i_roof_palm_fronds
+TYPE=t_roof
+DUPELIST=02c61,02c62,02c63,02c64,02c65,02c66,02c67,02c68,02c69,02c6a,02c6b,02c6c,02c6d,02c6e
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Palm Fronds Roof
+DESCRIPTION=@
+
+[ITEMDEF 02c61]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c62]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c63]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c64]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c65]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c66]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c67]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c68]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c69]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6a]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6b]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6c]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6d]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6e]
+// palm fronds roof
+DUPEITEM=02c60
+
+[ITEMDEF 02c6f]
+DEFNAME=i_roof_slate_aos
+TYPE=t_roof
+DUPELIST=02c70,02c71,02c72,02c73,02c74,02c75,02c76,02c77,02c78,02c79,02c7a,02c7b,02c7c,02c7d
+
+CATEGORY=Buildings - AOS Roofs
+SUBSECTION=Slate Roof
+DESCRIPTION=@
+
+[ITEMDEF 02c70]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c71]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c72]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c73]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c74]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c75]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c76]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c77]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c78]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c79]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c7a]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c7b]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c7c]
+// slate roof
+DUPEITEM=02c6f
+
+[ITEMDEF 02c7d]
+// slate roof
+DUPEITEM=02c6f
+
+[EOF]

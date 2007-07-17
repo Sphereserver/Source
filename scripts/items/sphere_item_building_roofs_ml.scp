@@ -1,0 +1,175 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2007
+//www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wednesday, July 11, 2007
+//
+
+[ITEMDEF 02b81]
+DEFNAME=i_roof_diamond_shingle
+TYPE=t_roof
+DUPELIST=02b82,02b83,02b84,02b85,02b86,02b87,02b88,02b89,02b8a,02b8b,02b8c,02b8d,02b8e,02b8f,02b90,02b91,02b92,02b93
+
+CATEGORY=Buildings - ML Roofs
+SUBSECTION=Diamond Shingle Roof
+DESCRIPTION=@
+
+[ITEMDEF 02b82]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b83]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b84]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b85]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b86]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b87]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b88]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b89]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8a]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8b]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8c]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8d]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8e]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b8f]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b90]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b91]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b92]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b93]
+// diamond shingle roof
+DUPEITEM=02b81
+
+[ITEMDEF 02b94]
+DEFNAME=i_roof_leafed
+TYPE=t_roof
+DUPELIST=02b95,02b96,02b97,02b98,02b99,02b9a,02b9b,02b9c,02b9d,02b9e,02b9f,02ba0,02ba1,02ba2,02ba3,02ba4,02ba5,02ba6
+
+CATEGORY=Buildings - ML Roofs
+SUBSECTION=Leafed Roof
+DESCRIPTION=@
+
+[ITEMDEF 02b95]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b96]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b97]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b98]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b99]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9a]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9b]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9c]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9d]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9e]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02b9f]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba0]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba1]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba2]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba3]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba4]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba5]
+// leafed roof
+DUPEITEM=02b94
+
+[ITEMDEF 02ba6]
+// leafed roof
+DUPEITEM=02b94
+
+[EOF]

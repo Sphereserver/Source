@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2006
+// SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Tuesday, July 17, 2007
 //
 VERSION=0.56b
 
@@ -368,7 +368,7 @@ RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Walls
 SUBSECTION=Stone Wall 2
 DESCRIPTION=@
-DUPELIST=058,059,05a,05b,05c,05f,060,061,062,063,064,065,066,067,068,069,06a,06b,06c,06d,06e,06f,070,071,072,073,074,075,076,077,078,079,07d9
+DUPELIST=058,059,05a,05b,05c,06d,06e,06f,070,071,072,073,074,075,076,077,078,079,07d9
 
 [ITEMDEF 058]
 //stone wall
@@ -404,60 +404,70 @@ DUPELIST=05e
 DUPEITEM=05d
 
 [ITEMDEF 05f]
-//stone wall
-DUPEITEM=057
+DEFNAME=i_wall_stone_med_4
+TYPE=T_WALL
+RESOURCES=50 i_rock_plain
+CATEGORY=Buildings - Walls
+SUBSECTION=Stone Wall 2
+DESCRIPTION=@
+DUPELIST=060,061,062
 
 [ITEMDEF 060]
 //stone wall
-DUPEITEM=057
+DUPEITEM=05f
 
 [ITEMDEF 061]
 //stone wall
-DUPEITEM=057
+DUPEITEM=05f
 
 [ITEMDEF 062]
 //stone wall
-DUPEITEM=057
+DUPEITEM=05f
 
 [ITEMDEF 063]
-//stone wall
-DUPEITEM=057
+DEFNAME=i_wall_stone_sm_4
+TYPE=T_WALL
+RESOURCES=50 i_rock_plain
+CATEGORY=Buildings - Walls
+SUBSECTION=Stone Wall 2
+DESCRIPTION=@
+DUPELIST=064,065,066,067,068,069,06a,06b,06c
 
 [ITEMDEF 064]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 065]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 066]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 067]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 068]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 069]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 06a]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 06b]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 06c]
 //stone wall
-DUPEITEM=057
+DUPEITEM=063
 
 [ITEMDEF 06d]
 //stone arch

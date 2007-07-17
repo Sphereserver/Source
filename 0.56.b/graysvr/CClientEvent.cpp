@@ -2320,6 +2320,8 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 	unsigned char	mMode	= pEvent->TalkUNICODE.m_mode;
 	HUE_TYPE wHue = pEvent->TalkUNICODE.m_wHue;
 	int iLen = pEvent->TalkUNICODE.m_len - sizeof(pEvent->TalkUNICODE);
+	if ( iLen <= 0 )
+		return;
 
 	bool bHasKeywords = ( mMode & 0xc0 ) != 0;
 	if ( bHasKeywords )
@@ -2365,6 +2367,9 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
    	NWORD wszText[MAX_TALK_BUFFER];
 	LPCTSTR pszText;
 	const NWORD * puText;
+
+	if ( iLenChars <= 0 )
+		return;
 
 	if ( IsSetEF( EF_UNICODE ) )
 	{
@@ -2958,8 +2963,11 @@ void CClient::Event_Target( const CEvent * pEvent )
 	ASSERT(m_pChar);
 	if ( pEvent->Target.m_context != GetTargMode())
 	{
-		// DEBUG_ERR(( "%x: Unrequested target info ?\n", m_Socket.GetSocket()));
-		SysMessage( "Unexpected target info" );
+		if ( pEvent->Target.m_context != 0 || pEvent->Target.m_x != 0xFFFF || pEvent->Target.m_UID != 0 )
+		{
+			// DEBUG_ERR(( "%x: Unrequested target info ?\n", m_Socket.GetSocket()));
+			SysMessage( "Unexpected target info" );
+		}
 		return;
 	}
 	if ( pEvent->Target.m_x == 0xFFFF && pEvent->Target.m_UID == 0 )
@@ -2975,6 +2983,11 @@ void CClient::Event_Target( const CEvent * pEvent )
 
 	CLIMODE_TYPE prevmode = GetTargMode();
 	ClearTargMode();
+
+#ifdef __UOKRSCARYADDONS
+	if ( pEvent->Target.m_fCheckCrime&0xA0 )
+		uid = m_Targ_Last;
+#endif
 
 	CObjBase * pObj = uid.ObjFind();
 	if ( IsPriv( PRIV_GM ))
@@ -3007,6 +3020,11 @@ void CClient::Event_Target( const CEvent * pEvent )
 
 	if ( pObj )
 	{
+#ifdef __UOKRSCARYADDONS
+		// Remember the last existing target
+		m_Targ_Last = uid;
+#endif
+
 		// Point inside a container is not really meaningful here.
 		pt = pObj->GetTopLevelObj()->GetTopPoint();
 	}
@@ -3489,6 +3507,81 @@ void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
 
 #endif
 
+#ifdef _CUSTOMHOUSES
+void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
+{
+	ADDTOCALLSTACK("CClient::Event_HouseDesigner");
+	if ( m_pChar == NULL || m_uid != m_pChar->GetUID() )
+		return;
+
+	CItemMultiCustom * pItemMulti = m_pHouseDesign;
+	if ( pItemMulti == NULL )
+	{
+		m_pHouseDesign = NULL;
+		return;
+	}
+
+	switch ( type )
+	{
+		case EXTAOS_HcBackup:
+			pItemMulti->BackupStructure(this);
+			break;
+
+		case EXTAOS_HcRestore:
+			pItemMulti->RestoreStructure(this);
+			break;
+
+		case EXTAOS_HcCommit:
+			pItemMulti->CommitChanges(this);
+			break;
+
+		case EXTAOS_HcDestroyItem:
+			pItemMulti->RemoveItem(this, (ITEMID_TYPE)(WORD)pData->HouseDestroyItem.m_Dispid, pData->HouseDestroyItem.m_PosX, pData->HouseDestroyItem.m_PosY, pData->HouseDestroyItem.m_PosZ);
+			break;
+
+		case EXTAOS_HcPlaceItem:
+			pItemMulti->AddItem(this, (ITEMID_TYPE)(WORD)pData->HousePlaceItem.m_Dispid, pData->HousePlaceItem.m_PosX, pData->HousePlaceItem.m_PosY);
+			break;
+
+		case EXTAOS_HcExit:
+			pItemMulti->EndCustomize();
+			break;
+
+		case EXTAOS_HcPlaceStair:
+			pItemMulti->AddStairs(this, (ITEMID_TYPE)((WORD)pData->HousePlaceStair.m_Dispid + ITEMID_MULTI), pData->HousePlaceStair.m_PosX, pData->HousePlaceStair.m_PosY);
+			break;
+
+		case EXTAOS_HcSynch:
+			pItemMulti->SendStructureTo(this);
+			break;
+
+		case EXTAOS_HcClear:
+			pItemMulti->ResetStructure(this);
+			break;
+
+		case EXTAOS_HcSwitch:
+			pItemMulti->SwitchToLevel(this, pData->HouseSwitchFloor.m_Floor);
+			break;
+			
+		case EXTAOS_HcPlaceRoof:
+			pItemMulti->AddRoof(this, (ITEMID_TYPE)(WORD)pData->HousePlaceRoof.m_Roof, pData->HousePlaceRoof.m_PosX, pData->HousePlaceRoof.m_PosY, pData->HousePlaceRoof.m_PosZ);
+			break;
+
+		case EXTAOS_HcDestroyRoof:
+			pItemMulti->RemoveRoof(this, (ITEMID_TYPE)(WORD)pData->HouseDestroyRoof.m_Roof, pData->HouseDestroyRoof.m_PosX, pData->HouseDestroyRoof.m_PosY, pData->HouseDestroyRoof.m_PosZ);
+			break;
+
+		case EXTAOS_HcRevert:
+			pItemMulti->RevertChanges(this);
+			break;
+
+		default:
+			SysMessagef("Unhandled AOS house designer msg 0x%2X.", type);
+			break;
+	}
+}
+#endif
+
 //----------------------------------------------------------------------
 
 void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
@@ -3498,42 +3591,21 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 	switch ( type )
 	{
 		case EXTAOS_HcBackup:
-			break;
-
 		case EXTAOS_HcRestore:
-			break;
-
 		case EXTAOS_HcCommit:
-			break;
-
 		case EXTAOS_HcDestroyItem:
-			break;
-
 		case EXTAOS_HcPlaceItem:
-			break;
-
 		case EXTAOS_HcExit:
-			break;
-
 		case EXTAOS_HcPlaceStair:
-			break;
-
 		case EXTAOS_HcSynch:
-			break;
-
-		case EXTAOS_HcFloorDesign:
-			break;
-
-		case EXTAOS_HcFloorDelete:
-			break;
-
+		case EXTAOS_HcPlaceRoof:
+		case EXTAOS_HcDestroyRoof:
 		case EXTAOS_HcClear:
-			break;
-
 		case EXTAOS_HcSwitch:
-			break;
-
 		case EXTAOS_HcRevert:
+#ifdef _CUSTOMHOUSES
+			Event_HouseDesigner( type, pData, m_uid, len );
+#endif
 			break;
 
 		case EXTAOS_SpecialMove:
@@ -3557,7 +3629,7 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 		} break;
 
 		default:
-			SysMessagef( "Unknown AOS extended msg %d.", type );
+			SysMessagef( "Unknown AOS extended msg 0x%2X.", type );
 			break;
 	}
 }
@@ -3754,6 +3826,24 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 			if ( IsAosFlagEnabled( FEATURE_AOS_POPUP ) && IsResClient( RDS_AOS ) )
 				Event_AOSPopupMenuSelect( (DWORD) pData->Popup_Select.m_UID, (WORD) pData->Popup_Select.m_EntryTag );
 			break;
+
+		case EXTDATA_HouseDesignDet:
+		{
+#ifdef _CUSTOMHOUSES
+			CGrayUID uid( (DWORD) pData->HouseDesignDetail.m_HouseUID );
+
+			CItem * pItem = uid.ItemFind();
+			if ( pItem == NULL )
+				break;
+
+			CItemMultiCustom * pMulti = dynamic_cast<CItemMultiCustom *>( pItem );
+			if ( pMulti == NULL )
+				break;
+
+			pMulti->SendStructureTo(this);
+#endif
+			break;
+		}
 
 		case EXTDATA_NewSpellSelect:
 			{

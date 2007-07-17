@@ -995,6 +995,10 @@ public:
 	{
 		return( CItemBase::IsTypeWeapon(m_type));
 	}
+	bool IsTypeMulti() const
+	{
+		return( CItemBase::IsTypeMulti(m_type));
+	}
 	bool IsTypeArmorWeapon() const
 	{
 		// Armor or weapon.
@@ -1409,6 +1413,99 @@ public:
 	virtual bool  r_LoadVal( CScript & s  );
 	virtual void DupeCopy( const CItem * pItem );
 };
+
+#ifdef _CUSTOMHOUSES
+class CItemMultiCustom : public CItemMulti
+{
+	// IT_MULTI_CUSTOM
+	// A customizable multi
+public:
+	struct Component
+	{
+		CUOMultiItemRec m_item;
+		short m_isStair;
+		bool m_isFloor;
+	};
+
+private:
+	typedef vector<Component*> ComponentsContainer;
+	struct DesignDetails
+	{
+		int m_iRevision;
+		ComponentsContainer m_vectorComponents;
+		CCommand * m_pData;
+	};
+	
+	class CGrayMultiCustom : public CGrayMulti
+	{
+	public:
+		void LoadFrom(DesignDetails * pDesign);
+	};
+
+private:
+	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szVerbKeys[];
+
+	DesignDetails m_designMain;
+	DesignDetails m_designWorking;
+	DesignDetails m_designBackup;
+	DesignDetails m_designRevert;
+
+	CClient * m_pArchitect;
+	CRectMap m_rectDesignArea;
+	CGrayMultiCustom * m_pGrayMulti;
+
+	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
+	virtual void r_Write( CScript & s );
+	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
+	virtual bool r_LoadVal( CScript & s  );
+	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
+
+	const CPointMap GetComponentPoint(Component * pComponent) const;
+	const CPointMap GetComponentPoint(int dx, int dy, int dz) const;
+	void CopyDesign(DesignDetails * designFrom, DesignDetails * designTo);
+
+private:
+	typedef std::map<ITEMID_TYPE,bool> ValidItemsContainer;
+	static ValidItemsContainer sm_mapValidItems;
+	static bool LoadValidItems();
+
+public:
+	static const char *m_sClassName;
+	CItemMultiCustom( ITEMID_TYPE id, CItemBase * pItemDef );
+	~CItemMultiCustom();
+
+	void BeginCustomize( CClient * pClientSrc );
+	void EndCustomize(bool bForce = false);
+	void SwitchToLevel( CClient * pClientSrc, int iLevel );
+	void CommitChanges( CClient * pClientSrc = NULL );
+	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z = -128, int iStairID = 0);
+	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z = -128, int iStairID = -1 );
+	void AddRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
+	void RemoveItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
+	bool RemoveStairs( Component * pStairComponent );
+	void RemoveRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
+	void SendVersionTo( CClient * pClientSrc );
+	void SendStructureTo( CClient * pClientSrc );
+	void BackupStructure( CClient * pClientSrc = NULL );
+	void RestoreStructure( CClient * pClientSrc = NULL );
+	void RevertChanges( CClient * pClientSrc = NULL );
+	void ResetStructure( CClient * pClientSrc = NULL );
+
+	const CGrayMultiCustom * GetMultiItemDefs();
+	const CGRect GetDesignArea();
+	int GetFixtureCount(DesignDetails * pDesign = NULL);
+	int GetComponentsAt(short dx, short dy, char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
+	int GetRevision(CClient * pClientSrc = NULL) const;
+	int GetLevelCount();
+	int GetStairCount();
+
+	static unsigned char GetPlane( char z );
+	static unsigned char GetPlane( Component * pComponent );
+	static char GetPlaneZ( unsigned char plane );
+	static bool IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti );
+};
+#endif
 
 class CItemShip : public CItemMulti
 {
@@ -2006,6 +2103,10 @@ enum CTRIG_TYPE
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
+#ifdef _CUSTOMHOUSES
+	CTRIG_HouseDesignCommit,	// I committed a new house design
+	CTRIG_HouseDesignExit,	// I exited house design mode
+#endif
 	CTRIG_Hunger,			//+Ready to update the food level
 
 	CTRIG_itemBuy,

@@ -46,6 +46,9 @@ ADD(CGMPage, "CGMPage");
 ADD(CItemBase, "CItemBase");
 ADD(CItem, "CItem");
 ADD(CItemMulti, "CItemMulti");
+#ifdef _CUSTOMHOUSES
+ADD(CItemMultiCustom, "CItemMultiCustom");
+#endif
 ADD(CItemMap, "CItemMap");
 ADD(CItemMessage, "CItemMessage");
 ADD(CItemVendable, "CItemVendable");

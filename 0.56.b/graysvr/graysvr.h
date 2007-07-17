@@ -165,6 +165,9 @@ class CItemBase;
 class CItemContainer;
 class CItemMessage;
 class CItemMap;
+#ifdef _CUSTOMHOUSES
+class CItemMultiCustom;
+#endif
 class CDataBase;
 
 ///////////////////////////////////////////////
@@ -806,6 +809,9 @@ public:
 private:
 	CLIMODE_TYPE m_Targ_Mode;	// Type of async operation under way.
 public:
+#if __UOKRSCARYADDONS
+	CGrayUID m_Targ_Last;	// The last object targeted by the client
+#endif
 	CGrayUID m_Targ_UID;			// The object of interest to apply to the target.
 	CGrayUID m_Targ_PrvUID;		// The object of interest before this.
 	CGString m_Targ_Text;		// Text transfered up from client.
@@ -1062,6 +1068,9 @@ private:
 	void Event_ToolTip( CGrayUID uid );
 	void Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len );
 	void Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
+#ifdef _CUSTOMHOUSES
+	void Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
+#endif
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
 	void Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEvent );
 	void Event_MapEdit( CGrayUID uid, const CEvent * pEvent );
@@ -1443,6 +1452,10 @@ public:
 	OpenedContainerMap_t m_openedContainers;	// list of UIDs of all opened containers by the client
 
 	CGObArray<CClientTooltip *> m_TooltipData; // Storage for tooltip data while in trigger
+
+#ifdef _CUSTOMHOUSES
+	CItemMultiCustom * m_pHouseDesign; // The building this client is designing
+#endif
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -244,7 +244,15 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			pItem = pRegion->GetResourceID().ItemFind();
 			if ( !pItem )
 				continue;
-			pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID() );
+#ifdef _CUSTOMHOUSES
+			CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
+			if ( pItemMulti == NULL )
+#endif
+				pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID() );
+#ifdef _CUSTOMHOUSES
+			else
+				pMulti = pItemMulti->GetMultiItemDefs();
+#endif
 			if ( !pMulti )
 				continue;
 			int iQty = pMulti->GetItemCount();
@@ -610,7 +618,17 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				CItem * pItem = pRegion->GetResourceID().ItemFind();
 				if ( pItem != NULL )
 				{
-					const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
+					const CGrayMulti * pMulti;
+#ifdef _CUSTOMHOUSES
+					CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
+					if ( pItemMulti == NULL )
+#endif
+						pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
+#ifdef _CUSTOMHOUSES
+					else
+						pMulti = pItemMulti->GetMultiItemDefs();
+#endif
+
 					if ( pMulti )
 					{
 						int x2 = pt.m_x - pItem->GetTopPoint().m_x;
@@ -867,7 +885,16 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 
 				if ( pItem != NULL )
 				{
-					pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
+#ifdef _CUSTOMHOUSES
+					CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
+					if ( pItemMulti == NULL )
+#endif
+						pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
+#ifdef _CUSTOMHOUSES
+					else
+						pMulti = pItemMulti->GetMultiItemDefs();
+#endif
+
 					if ( pMulti )
 					{
 						x2 = pt.m_x - pItem->GetTopPoint().m_x;

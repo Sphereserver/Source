@@ -315,6 +315,19 @@ bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 	return( false );
 }
 
+bool CItemBase::IsTypeMulti( IT_TYPE type )	// static
+{
+	ADDTOCALLSTACK("CItemBase::IsTypeMulti");
+	switch( type )
+	{
+		case IT_MULTI:
+		case IT_MULTI_CUSTOM:
+		case IT_SHIP:
+			return( true );
+	}
+	return( false );
+}
+
 bool CItemBase::IsTypeEquippable() const
 {
 	ADDTOCALLSTACK("CItemBase::IsTypeEquippable");
@@ -1396,7 +1409,8 @@ CItemBase * CItemBaseMulti::MakeMultiRegion( CItemBase * pBase, CScript & s ) //
 	// We must transform this object into a CItemBaseMulti
 
 	ASSERT( pBase );
-	if ( ! pBase->IsType(IT_MULTI) && ! pBase->IsType(IT_SHIP) )
+
+	if ( ! pBase->IsTypeMulti(pBase->GetType()) )
 	{
 		DEBUG_ERR(( "MULTIREGION defined for NON-MULTI type 0%x\n", pBase->GetID()));
 		return pBase;

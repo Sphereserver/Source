@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: Tuesday, July 17, 2007
 VERSION=0.56b
 
 //
@@ -338,7 +338,7 @@ CATEGORY=Item Templates
 SUBSECTION=Random Axes
 DESCRIPTION=Vanquishing
 CONTAINER=i_bag
-ITEM={ i_AXE_vanq 1 i_axe_exec_vanq 1 i_axe_battle_vanq 1 i_axe_double_vanq 1 i_axe_two_hand_vanq 1 i_axe_war_VANQUISIHNG 1 }
+ITEM={ i_AXE_vanq 1 i_axe_exec_vanq 1 i_axe_battle_vanq 1 i_axe_double_vanq 1 i_axe_two_hand_vanq 1 i_axe_war_vanq 1 }
 
 [TEMPLATE RANDOM_WEAPON_RUIN]
 CATEGORY=Item Templates
