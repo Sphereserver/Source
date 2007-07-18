@@ -3457,52 +3457,54 @@ this all in desperation)
 
 17-07-2007, MrSugarCube [CustomHouse build!]
 - Fixed: Multis from newer expansions not loading correctly.
-- Added: Support for AOS Custom Housing through a new item type 't_multi_custom'. See the
-  sphere_item_multis_foundations.scp script for examples of it's use.
-  Note that Sphere will require access to doors.txt, misc.txt, floors.txt, teleprts.txt, roof.txt, and
-  walls.txt from the UO folder as these provide lists of valid items. Also, all these items should exist
-  in scripts for them to be added to a building - note that the default script pack is currently missing
-  several sets of floors and walls.
-  New functions and properties have been added that can be used with items of the type t_multi_custom.
-  These are:
-  -- References --
-   "DESIGNER"           The player currently designing the building.
-  -- Properties --
-   "COMPONENTS" (r)     The number of components in the building design.
-   "FIXTURES"   (r)     The number of fixtures in the building design (doors and teleporters/t_door and
-                        t_telepad).
-   "DESIGNER"   (r)     The uid of the player designing the building (or 0).
-   "EDITAREA"   (r)     The editable range of coordinates when in design
-                        mode (TopLeftX,TopLeftY,BottomRightX,BottomRightY).
-   "REVISION"   (r)     The revision number of the building design.
-  -- Functions --
-   "ADDITEM id,x,y,z"   Adds an item to the building design (see COMMIT).
-   "ADDMULTI id,x,y,z"  Adds a multi to the building design (see COMMIT).
-   "CLEAR"              Wipes the building of all components (see COMMIT).
-   "COMMIT"             Commits changes made to the building design.
-   "CUSTOMIZE [uid]"    Enters the given player (or SRC) into design mode.
-   "ENDCUSTOMIZE"       Forces the player to exit design mode.
-   "RESET"              Resets the building to it's default state (see COMMIT).
-   "RESYNC [uid]"       Resends the building structure to the given player (or SRC)
-  Players also have some new house design-related properties and triggers. These are:
-  -- References --
-   "HOUSEDESIGN"        The building this player is currently designing.
-  -- Properties --
-   "HOUSEDESIGN"(r)     The uid of the building this player is designing (or 0).
-  -- Triggers --
-   @HouseDesignCommit   Called on a character when they commit a new design.
-                        ARGN1:  Number of components in the old design.
-                        ARGN2:  Number of components in the new design.
-                        ARGN3:  The revision number of the new design.
-                        ARGO:   The building being designed.
-                        LOCAL.FIXTURES.OLD:     Number of fixtures in the old design.
-                        LOCAL.FIXTURES.NEW:     Number of fixtures in the new design.
-                        RETURN 1: Block the commit.
-   @HouseDesignExit     Called on a character when they exit design mode.
-                        ARGN1:  Is set to 1 if the character being forced out of house
-                                design mode (ie. they're logging out).
-                        ARGO:   The building being designed.
-                        RETURN 1: Keeps the client in design mode (if ARGN1 was 0).
+- Added: Support for AOS Custom Housing through a new item type 't_multi_custom'.
+ > See the sphere_item_multis_foundations.scp and add-on/House_Placement scripts for examples of it's
+   use.
+ > Custom houses (t_multi_custom) will be saved to a new save file named spheremultis.scp.
+ > Note that Sphere will require access to doors.txt, misc.txt, floors.txt, teleprts.txt, roof.txt, and
+   walls.txt from the UO folder as these provide lists of valid items. Also, all these items should exist
+   in scripts for them to be added to a building - note that the default script pack is currently missing
+   several sets of floors and walls.
+ > New functions and properties have been added that can be used with items of the type t_multi_custom.
+   These are:
+   -- References --
+    "DESIGNER"           The player currently designing the building.
+   -- Properties --
+    "COMPONENTS" (r)     The number of components in the building design.
+    "FIXTURES"   (r)     The number of fixtures in the building design (doors and teleporters/t_door and
+                         t_telepad).
+    "DESIGNER"   (r)     The uid of the player designing the building (or 0).
+    "EDITAREA"   (r)     The editable range of coordinates when in design
+                         mode (TopLeftX,TopLeftY,BottomRightX,BottomRightY).
+    "REVISION"   (r)     The revision number of the building design.
+   -- Functions --
+    "ADDITEM id,x,y,z"   Adds an item to the building design (see COMMIT).
+    "ADDMULTI id,x,y,z"  Adds a multi to the building design (see COMMIT).
+    "CLEAR"              Wipes the building of all components (see COMMIT).
+    "COMMIT"             Commits changes made to the building design.
+    "CUSTOMIZE [uid]"    Enters the given player (or SRC) into design mode.
+    "ENDCUSTOMIZE"       Forces the player to exit design mode.
+    "RESET"              Resets the building to it's default state (see COMMIT).
+    "RESYNC [uid]"       Resends the building structure to the given player (or SRC)
+  > Players also have some new house design-related properties and triggers. These are:
+   -- References --
+     "HOUSEDESIGN"        The building this player is currently designing.
+   -- Properties --
+    "HOUSEDESIGN"(r)     The uid of the building this player is designing (or 0).
+   -- Triggers --
+    @HouseDesignCommit   Called on a character when they commit a new design.
+                         ARGN1:  Number of components in the old design.
+                         ARGN2:  Number of components in the new design.
+                         ARGN3:  The revision number of the new design.
+                         ARGO:   The building being designed.
+                         LOCAL.FIXTURES.OLD:     Number of fixtures in the old design.
+                         LOCAL.FIXTURES.NEW:     Number of fixtures in the new design.
+                         RETURN 1: Block the commit.
+    @HouseDesignExit     Called on a character when they exit design mode.
+                         ARGN1:  Is set to 1 if the character being forced out of house
+                                 design mode (ie. they're logging out).
+                         ARGO:   The building being designed.
+                         RETURN 1: Keeps the client in design mode (if ARGN1 was 0).
 
 17-07-2007, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Updated type defnames)
@@ -3522,3 +3524,4 @@ this all in desperation)
 - Updated #1236: sphere_item_magic_weapon.scp, sphere_template.scp, sphere_backward_compatibility.scp (Changed
   misspelt defname i_axe_war_VANQUISIHNG to i_axe_war_VANQ)
 - Updated #1237: sphere_defs.scp (Fixed broken random templates)
+
