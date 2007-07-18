@@ -223,6 +223,9 @@ public:
 	CScript m_FileData;			// Save or Load file.
 	CScript m_FileWorld;		// Save or Load file.
 	CScript m_FilePlayers;		// Save of the players chars.
+#ifdef _CUSTOMHOUSES
+	CScript m_FileMultis;		// Save of the custom multis.
+#endif
 	bool	m_fSaveParity;		// has the sector been saved relative to the char entering it ?
 	MTRand	m_Rand;
 
