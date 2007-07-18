@@ -801,6 +801,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 
 		int iStairsIndex = 0;
 		int iStairsCount = 0;
+		int iStairsSize = 0;
 		memset(pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, 0, STAIRDATA_BUFFER);
 		for ( ComponentsContainer::iterator i = vectorStairs.begin(); i != vectorStairs.end(); i++ )
 		{
@@ -847,7 +848,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 					goto end_stairslist;
 				}
 
-				int iStairsSize = (iStairsCount * 5);
+				iStairsSize = (iStairsCount * 5);
 				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_index = 9 | iStairsIndex;
 				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_size = (iStairsCount * 5);
 				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_length = mCompressLen;
