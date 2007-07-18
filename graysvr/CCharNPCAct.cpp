@@ -1189,9 +1189,21 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 			CScriptTriggerArgs	Args( iDist, iWantThisItem, pItem );
 			switch( OnTrigger( CTRIG_NPCLookAtItem, this, &Args ) )
 			{
+#ifdef _NAZTEST
+			case  TRIGRET_RET_TRUE:	
+				g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned TRUE\n", GetName() );
+				return false;
+			case  TRIGRET_RET_FALSE:	
+				g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned FALSE\n", GetName() );
+				return true;
+#else
 			case  TRIGRET_RET_TRUE:		return true;
 			case  TRIGRET_RET_FALSE:	return false;
+#endif
 			}
+#ifdef _NAZTEST
+			g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned DEFAULT\n", GetName() );
+#endif
 			iWantThisItem = Args.m_iN2;
 		}
 	}
@@ -1213,6 +1225,41 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
+
+	// check for crops we can rip.
+	if (  pItem->IsType( IT_CROPS ) ||  pItem->IsType( IT_FOLIAGE ) )
+	{
+		CItemBase * checkItemBase = pItem->Item_GetDef();
+		if ( checkItemBase->m_ttNormal.m_tData3 )
+		{
+			if (Food_GetLevelPercent() < 100)
+			{
+ 				if (GetDist( pItem ) <= 2) 
+				{
+					if (CanTouch( pItem ) )
+					{
+						if (!Calc_GetRandVal(2))
+						{
+							Use_Item( pItem );
+							return true;
+						}
+					}
+				}
+				else
+				{
+					// Walk towards it
+					CPointMap pt = pItem->GetTopPoint();
+					if ( CanMoveWalkTo( pt ))
+					{
+						m_Act_p = pt;
+						NPC_WalkToPoint();
+						return true;
+					}
+				}
+			}
+		}
+	}
+
 
 	// check for doors we can open.
 	if ( Stat_GetAdjusted(STAT_INT) > 20 &&
@@ -2329,13 +2376,14 @@ bool CChar::NPC_Act_Food()
 	int		iClosestFood = 100;
 	int		iMyZ = GetTopPoint().m_z;
 	bool	bSearchGrass = false;
+	CItem	* pCropItem = NULL;
 
 	CItemContainer	*pPack = GetPack();
 	if ( pPack )
 	{
 		for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
 		{
-									// i have some food personaly, so no need to search for something
+			// I have some food personaly, so no need to search for something
 			if ( pFood->IsType(IT_FOOD) )
 			{
 				if ( iEatAmount = Food_CanEat(pFood) )
@@ -2363,9 +2411,29 @@ bool CChar::NPC_Act_Food()
 		CItem * pItem = AreaItems.GetItem();
 		if ( !pItem )
 			break;
-		if ( !CanSee(pItem) || pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
+		if ( !CanSee(pItem) )
 			continue;
-		if ( pItem->GetTopPoint().m_z != iMyZ )
+
+		if ( pItem->IsType(IT_CROPS) || pItem->IsType(IT_FOLIAGE) )
+		{
+			// is it ripe?
+			CItemBase * checkItemBase = pItem->Item_GetDef();
+			if ( checkItemBase->m_ttNormal.m_tData3 )
+			{
+				// remember this, just in case we do not find any suitable food
+				pCropItem = pItem;
+				continue;
+			}
+		}
+
+		if ( ( pItem->GetTopPoint().m_z > (iMyZ + 10) ) || ( pItem->GetTopPoint().m_z < (iMyZ - 1) ) )
+		{
+#ifdef _NAZTEST
+			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s but its Z (%d) is too different from his (%d)\n", GetName(), pItem->GetName(), pItem->GetTopPoint().m_z, iMyZ );
+#endif
+			continue;
+		}
+		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
 			continue;
 
 		if ( iEatAmount = Food_CanEat(pItem) )
@@ -2425,14 +2493,27 @@ bool CChar::NPC_Act_Food()
 			}
 		}
 	}
-					// no food around, but maybe i am ok with grass?
+					// no food around, but maybe i am ok with grass? Or shall I try to pick crops?
 	else
 	{
+
 		NPCBRAIN_TYPE	brain = GetNPCBrain(true);
 		if ( brain == NPCBRAIN_ANIMAL )						// animals eat grass always
 			bSearchGrass = true;
 		//else if (( brain == NPCBRAIN_HUMAN ) && !iFood )	// human eat grass if starving nearly to death
 		//	bSearchGrass = true;
+
+		// found any crops or foliage at least (nearby, of course)?
+		if ( pCropItem )
+		{
+			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s\n", GetName(), pCropItem->GetName() );
+			if (GetDist( pCropItem) < 5)
+			{
+				g_Log.EventError("CChar::NPC_LookAtItem: '%s' is near %s\n", GetName(), pCropItem->GetName() );
+				Use_Item( pCropItem );
+				bSearchGrass = false;	// no need to eat grass if at next tick we can eat better stuff
+			}
+		}
 	}
 	if ( bSearchGrass )
 	{
@@ -2658,13 +2739,23 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	}
 
 	//	do i wish to take this item?
+
+	CItemContainer * pPack = NULL;
 	if ( !NPC_WantThisItem(pItem) )
 	{
 		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
+		{
+			g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() );
+			pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
 			return false;
-
-		pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
-		return false;
+		} else {
+			g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() );
+			g_Log.EventError("CChar::NPC_OnItemGive: Trying to drop %s in  '%s's pack\n", pItem->GetName(), GetName() );
+			if ( pPack == NULL )
+				pPack = GetPackSafe();
+			pPack->ContentAdd( pItem );
+			return true;
+		}
 	}
 
 	//	gold goes to the bankbox or as a financial support to the NPC
@@ -2683,7 +2774,9 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		{
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_THANKS));
 		}
-		ItemEquip(pItem);
+		if ( pPack == NULL )
+			pPack = GetPackSafe();
+		pPack->ContentAdd( pItem );
 		return true;
 	}
 
@@ -2702,6 +2795,7 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	}
 
 	// The NPC might want it ?
+	g_Log.EventError("CChar::NPC_OnItemGive: '%s' wants %s\n", GetName(), pItem->GetName() );
 	switch ( m_pNPC->m_Brain )
 	{
 	case NPCBRAIN_DRAGON:
@@ -2711,6 +2805,18 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		if ( Food_CanEat(pItem))
 		{
 			// ??? May know it is poisoned ?
+			if ( pItem->m_itFood.m_poison_skill )
+			{
+				if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (m_Skill[SKILL_TASTEID] / 10) )
+				{
+					if ( NPC_CanSpeak() )
+					{
+						Speak(g_Cfg.GetDefaultMsg(DEFMSG_MURDERER));
+					}
+					// PC attacks NPC
+					return false;
+				}
+			}
 			// ??? May not be hungry
 			if ( Use_Eat( pItem, pItem->GetAmount() ))
 				return( true );
@@ -2734,8 +2840,10 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TAL ) );
 		else
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_SELL ) );
+
 		ItemEquip( pItem );
 		pItem->Update();
+
 		if (m_Act_Targ == pCharSrc->GetUID())
 		{
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_IFONLY ) );
@@ -2747,9 +2855,18 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	}
 
 	if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
-		return true;
+	{
+		g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCAcceptItem on '%s' returns '1', means: REFUSE\n", GetName() );
+		pCharSrc->ItemBounce( pItem );
+		pItem->Update();
+		return false;
+	}
 
-	ItemBounce( pItem );
+	if ( pPack == NULL )
+		pPack = GetPackSafe();
+	pPack->ContentAdd( pItem );
+	pItem->Update();
+	g_Log.EventError("'%s': accepted %s (default action)\n", GetName(), pItem->GetName());
 	return( true );
 }
 
