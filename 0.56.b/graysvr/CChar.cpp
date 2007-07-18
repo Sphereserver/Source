@@ -2174,6 +2174,9 @@ do_default:
 				goto do_default;
 			sVal.FormatHex( m_Act_Targ.GetObjUID());	// uid
 			break;
+		case CHC_ACTP:
+			sVal = m_Act_p.WriteUsed();
+			break;
 		case CHC_ACTDIFF:
 			sVal.FormatVal( m_Act_Difficulty * 10 );
 			break;
@@ -2396,6 +2399,12 @@ do_default:
 			return SetPlayerAccount( s.GetArgStr());
 		case CHC_ACT:
 			m_Act_Targ = s.GetArgVal();
+			break;
+		case CHC_ACTP:
+			if ( ! s.HasArgs())
+				m_Act_p = GetTopPoint();
+			else
+				m_Act_p.Read( s.GetArgStr());
 			break;
 		case CHC_ACTDIFF:
 			m_Act_Difficulty = (s.GetArgVal() / 10);

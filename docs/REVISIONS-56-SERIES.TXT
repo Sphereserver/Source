@@ -3432,6 +3432,7 @@ this all in desperation)
   the skill number (e.g. 43 for wrestling), ARGN1 is the skill value AFTER the change happens.
   RETURN 1 (or 2, or 666) means that the skill will NOT change.
 
+
 29-06-2007, Torfo
 - Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing algorithem, if
   md5 isn't enabled it's the same as ADD.
@@ -3442,6 +3443,13 @@ this all in desperation)
   was stopped what led to some weird rubberband effects (thx. to MrSugarCube for help)
 - Added: Character triggers @RegionEnter, @RegionLeave. ARGO is the region in question, RETURN 1
   works like in region triggers @exit, @enter.
+
+12-07-2007, Nazghul
+- Fixed: #1222 MAGICF_IGNOREAR rendered armor useless even on non magic damage
+- some cleanups regarding NPC accepting/rejecting items
+- Added: Hungry NPC try to pick ripe crops if available
+- Added: ACTP character property (like ACTDIFF, ACTARG etc.) to work with for example ACTION 102
+- Added: Poisoned Food (MOREz = poison strength [0..100]) will poison whoever eats it; NPC might refuse eating poisoned food depending on their TasteID skill
 
 15-07-2007, Ellessar
 - Modified: Now you can get AREADEF regions from inside a multi with the help of an additional "region"

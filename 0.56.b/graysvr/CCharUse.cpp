@@ -961,7 +961,9 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	case IT_MEAT_RAW:
 		if ( pFood->m_itFood.m_poison_skill )
 		{
-			// SetPoison( pItemFood->m_itFood.m_poison_skill, pItemFood->m_itFood.m_poison_skill/50, this ))
+#ifdef _NAZTEST
+			SetPoison( pFood->m_itFood.m_poison_skill, pFood->m_itFood.m_poison_skill/50, this );
+#endif
 		}
 		break;
 	}
