@@ -68,6 +68,7 @@ SRC	:= 	CAccount.cpp \
 		CItem.cpp \
 		CItemBase.cpp \
 		CItemMulti.cpp \
+		CItemMultiCustom.cpp \
 		CItemShip.cpp \
 		CItemSp.cpp \
 		CItemStone.cpp \
@@ -125,6 +126,7 @@ SRC	:= 	CAccount.cpp \
 		../common/CScriptObj.cpp \
 		../common/CSectorTemplate.cpp \
 		../common/CSocket.cpp \
+		../common/CsvFile.cpp \
 		../common/CTime.cpp \
 		../common/CString.cpp \
 		../common/CVarDefMap.cpp \
