@@ -3525,3 +3525,6 @@ this all in desperation)
   misspelt defname i_axe_war_VANQUISIHNG to i_axe_war_VANQ)
 - Updated #1237: sphere_defs.scp (Fixed broken random templates)
 
+18-07-2007, Nazghul
+- Changed Ping Attack detection so that it only issues a warning if the "attack" comes
+  from LocalAddress and/or 127.0.0.1
