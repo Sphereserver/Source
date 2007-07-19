@@ -13,6 +13,7 @@ namespace SpyUO.Packets
 			private ushort m_Amount;
 			private short m_X;
 			private short m_Y;
+            private byte m_Grid;
 			private uint m_ContSerial;
 			private ushort m_Hue;
 
@@ -21,6 +22,7 @@ namespace SpyUO.Packets
 			public ushort Amount { get { return m_Amount; } }
 			public short X { get { return m_X; } }
 			public short Y { get { return m_Y; } }
+            public byte GridPosition { get { return m_Grid; } }
 			public uint ContSerial { get { return m_ContSerial; } }
 			public ushort Hue { get { return m_Hue; } }
 
@@ -40,21 +42,22 @@ namespace SpyUO.Packets
 			}
 
 			public ContainedItem( uint serial, ushort itemId, ushort amount,
-				short x, short y, uint contSerial, ushort hue )
+				short x, short y, byte grid, uint contSerial, ushort hue )
 			{
 				m_Serial = serial;
 				m_ItemId = itemId;
 				m_Amount = amount;
 				m_X = x;
 				m_Y = y;
+                m_Grid = grid;
 				m_ContSerial = contSerial;
 				m_Hue = hue;
 			}
 
 			public override string ToString()
 			{
-				return string.Format( "Serial: \"0x{0:X}\", ItemId: \"0x{1:X}\", ItemIdName: \"{2}\", Amount: \"{3}\", X: \"{4}\", Y: \"{5}\", ContSerial: \"0x{6:X}\", Hue: \"0x{7:X}\"",
-					m_Serial, m_ItemId, ItemIdName, m_Amount, m_X, m_Y, m_ContSerial, m_Hue );
+				return string.Format( "Serial: \"0x{0:X}\", ItemId: \"0x{1:X}\", ItemIdName: \"{2}\", Amount: \"{3}\", X: \"{4}\", Y: \"{5}\", GridPos: \"{6}\", ContSerial: \"0x{7:X}\", Hue: \"0x{8:X}\"",
+					m_Serial, m_ItemId, ItemIdName, m_Amount, m_X, m_Y, m_Grid, m_ContSerial, m_Hue );
 			}
 		}
 
@@ -101,10 +104,11 @@ namespace SpyUO.Packets
 				ushort amount = reader.ReadUInt16();
 				short x = reader.ReadInt16();
 				short y = reader.ReadInt16();
+                byte grid = reader.ReadByte();
 				uint contSerial = reader.ReadUInt32();
 				ushort hue = reader.ReadUInt16();
 
-				m_ContainedItems[i] = new ContainedItem( serial, itemId, amount, x, y, contSerial, hue );
+                m_ContainedItems[i] = new ContainedItem(serial, itemId, amount, x, y, grid, contSerial, hue);
 			}
 		}
 	}

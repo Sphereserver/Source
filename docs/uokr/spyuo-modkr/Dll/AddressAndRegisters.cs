@@ -10,13 +10,18 @@ namespace SpyUO
 		public Register AddressRegister;
         public uint LengthAddress;
         public Register LengthRegister;
+        public Register CheckRegister;
 
-		public AddressAndRegisters( uint address, Register addressRegister, uint lenaddress, Register lengthRegister )
+        public AddressAndRegisters(uint address, Register addressRegister, uint lenaddress, Register lengthRegister) : this(address,addressRegister,lenaddress,lengthRegister,Register.Eax)
+        {}
+
+		public AddressAndRegisters( uint address, Register addressRegister, uint lenaddress, Register lengthRegister, Register checkRegister )
 		{
 			Address = address;
 			AddressRegister = addressRegister;
             LengthAddress = lenaddress;
 			LengthRegister = lengthRegister;
+            CheckRegister = checkRegister;
 		}
 	}
 }

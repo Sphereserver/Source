@@ -74,11 +74,14 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x86</PlatformTarget>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="Ultima">
       <Name>Ultima</Name>
       <HintPath>Ultima.dll</HintPath>
@@ -112,12 +115,8 @@
     <Compile Include="Packets\BookPageDetails.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Packets\ContainerContent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Packets\ContainerContentUpdate.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Packets\ContainerContent.cs" />
+    <Compile Include="Packets\ContainerContentUpdate.cs" />
     <Compile Include="Packets\ContainerDisplay.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -127,6 +126,9 @@
     <Compile Include="Packets\DoubleClick.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Packets\EncryptionReply.cs" />
+    <Compile Include="Packets\EncryptionSet.cs" />
+    <Compile Include="Packets\EncryptionStart.cs" />
     <Compile Include="Packets\GraphicalEffect.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -145,6 +147,8 @@
     <Compile Include="Packets\LocalizedMessageAffix.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Packets\MacroEquipItem.cs" />
+    <Compile Include="Packets\MacroUnequipItem.cs" />
     <Compile Include="Packets\MobileAnimation.cs">
       <SubType>Code</SubType>
     </Compile>

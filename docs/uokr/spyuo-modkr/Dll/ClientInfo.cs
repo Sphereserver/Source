@@ -24,8 +24,8 @@ namespace SpyUO
 				string[] splt = s.Substring( nameEnd + 2 ).Split( ' ' );
 
                 
-				uint[] sendRecv = new uint[8];
-				for ( int i = 0, n = 0; n < 8; i++ )
+				uint[] sendRecv = new uint[9];
+				for ( int i = 0, n = 0; n < 9; i++ )
 				{
 					if ( splt[i] != "" )
 					{
@@ -36,12 +36,13 @@ namespace SpyUO
 
 				Register sAddrReg = GetRegister( sendRecv[1] );
 				Register sLengthReg = GetRegister( sendRecv[3] );
+                Register sCheckReg = GetRegister( sendRecv[4] );
 
-				Register rAddrReg = GetRegister( sendRecv[5] );
-				Register rLengthReg = GetRegister( sendRecv[7] );
+				Register rAddrReg = GetRegister( sendRecv[6] );
+				Register rLengthReg = GetRegister( sendRecv[8] );
 
-				send = new AddressAndRegisters( sendRecv[0], sAddrReg, sendRecv[2], sLengthReg );
-                recv = new AddressAndRegisters(sendRecv[4], rAddrReg, sendRecv[6], rLengthReg);
+				send = new AddressAndRegisters( sendRecv[0], sAddrReg, sendRecv[2], sLengthReg, sCheckReg );
+                recv = new AddressAndRegisters( sendRecv[5], rAddrReg, sendRecv[7], rLengthReg );
 			}
 			catch
 			{

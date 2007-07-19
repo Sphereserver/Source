@@ -61,6 +61,11 @@ namespace SpyUO.Packets
 				return m_Data[m_Index++];
 		}
 
+        public byte[] ReadBytes(uint count)
+        {
+            return ReadBytes((int)count);
+        }
+
 		public byte[] ReadBytes( int count )
 		{
 			byte[] bytes = new byte[count];

@@ -10,6 +10,7 @@ namespace SpyUO.Packets
 		private ushort m_Amount;
 		private short m_X;
 		private short m_Y;
+        private byte m_Grid;
 		private uint m_ContSerial;
 		private ushort m_Hue;
 
@@ -28,10 +29,13 @@ namespace SpyUO.Packets
 		[PacketProp( 4 )]
 		public short Y { get { return m_Y; } }
 
-		[PacketProp( 5, "0x{0:X}" )]
-		public uint ContSerial { get { return m_ContSerial; } }
+        [PacketProp( 5 )]
+        public short GridPos { get { return m_Grid; } }
 
 		[PacketProp( 6, "0x{0:X}" )]
+		public uint ContSerial { get { return m_ContSerial; } }
+
+		[PacketProp( 7, "0x{0:X}" )]
 		public ushort Hue { get { return m_Hue; } }
 
 		public ContainerContentUpdate( PacketReader reader, bool send ) : base( reader, send )
@@ -44,6 +48,7 @@ namespace SpyUO.Packets
 			m_Amount = reader.ReadUInt16();
 			m_X = reader.ReadInt16();
 			m_Y = reader.ReadInt16();
+            m_Grid = reader.ReadByte();
 			m_ContSerial = reader.ReadUInt32();
 			m_Hue = reader.ReadUInt16();
 		}

@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Collections;
+using System.Text;
 
 namespace SpyUO.Packets
 {
@@ -58,6 +59,17 @@ namespace SpyUO.Packets
 			else
 				return new Packet( reader, send );
 		}
+
+        public static string ByteArrayToString(byte[] theArray)
+        {
+            StringBuilder sbBuffer = new StringBuilder("0x");
+            foreach (byte bSingle in theArray)
+            {
+                sbBuffer.AppendFormat("{0:X} ", bSingle);
+            }
+
+            return sbBuffer.ToString().Trim();
+        }
 
 		private byte[] m_Data;
 		private bool m_Send;

@@ -162,8 +162,8 @@ namespace SpyUO
 
 		private void InitBreakpoints()
 		{
-		//	m_OrSCode = AddBreakpoint( m_Send.Address );
-       //     m_OrSCode2 = AddBreakpoint( m_Send.LengthAddress );
+			m_OrSCode = AddBreakpoint( m_Send.Address );
+            m_OrSCode2 = AddBreakpoint( m_Send.LengthAddress );
 			m_OrRCode = AddBreakpoint( m_Recv.Address );
             m_OrRCode2 = AddBreakpoint( m_Recv.LengthAddress );
 		}
@@ -181,8 +181,8 @@ namespace SpyUO
 
 		private void RemoveBreakpoints()
 		{
-		//	WriteProcessMemory(m_Send.Address, new byte[] { m_OrSCode } );
-       //     WriteProcessMemory(m_Send.LengthAddress, new byte[] { m_OrSCode2 });
+			WriteProcessMemory(m_Send.Address, new byte[] { m_OrSCode } );
+            WriteProcessMemory(m_Send.LengthAddress, new byte[] { m_OrSCode2 });
             WriteProcessMemory(m_Recv.Address, new byte[] { m_OrRCode });
             WriteProcessMemory(m_Recv.LengthAddress, new byte[] { m_OrRCode2 });
         }
@@ -207,7 +207,7 @@ namespace SpyUO
 							}
 							else if ( address == m_Send.LengthAddress )
 							{
-								SpyRecvPacket( m_DEventBuffer.dwThreadId, true );
+								SpySendPacket( m_DEventBuffer.dwThreadId, true );
 								continue;
 							}
                             else if (address == m_Recv.Address)
@@ -245,7 +245,7 @@ namespace SpyUO
             SpyPacket(threadId, false, length);
 		}
 
-        private uint lastAddress;
+        private uint lastAddress_s,lastAddress_r;
 
         private void SpyPacket(uint threadId, bool send, bool length)
 		{
@@ -256,14 +256,34 @@ namespace SpyUO
 			AddressAndRegisters ar = send ? m_Send : m_Recv;
 
             byte[] data=null;
-            if (!length)
-                lastAddress = GetContextRegister(m_ContextBuffer, ar.AddressRegister);
-            else
-            {
-                uint dataLength = GetContextRegister(m_ContextBuffer, ar.LengthRegister) & 0xFFFF;
-                data = ReadProcessMemory(lastAddress, dataLength);
-            }
 
+            bool handle=true;
+
+            if (send && GetContextRegister(m_ContextBuffer, ar.CheckRegister) != 2)
+                handle = false;
+
+            uint lastAddress;
+
+            if (handle)
+            {
+                if (!length)
+                {
+                    lastAddress = GetContextRegister(m_ContextBuffer, ar.AddressRegister);
+                    if (send)
+                        lastAddress_s = lastAddress;
+                    else
+                        lastAddress_r = lastAddress;
+                }
+                else
+                {
+                    uint dataLength = GetContextRegister(m_ContextBuffer, ar.LengthRegister) & 0xFFFF;
+                    if (send)
+                        lastAddress = new BinaryReader(new MemoryStream(ReadProcessMemory(lastAddress_s + 4, 4))).ReadUInt32();
+                    else
+                        lastAddress = lastAddress_r;
+                    data = ReadProcessMemory(lastAddress, dataLength);
+                }
+            }
 			#region Breakpoint Recovery
 
 			WriteProcessMemory( length ? ar.LengthAddress : ar.Address, new byte[] { send ? (length ? m_OrSCode2 : m_OrSCode) : (length ?  m_OrRCode2 : m_OrRCode )} );
@@ -288,7 +308,7 @@ namespace SpyUO
 
 			ContinueDebugEvent( threadId );
 
-            if(length)
+            if(length && handle)
 			    m_PacketHandler( data, send );
 		}
 

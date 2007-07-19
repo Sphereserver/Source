@@ -11,7 +11,7 @@ namespace SpyUO
 {
 	public class Display : Form, ICounterDisplay
 	{
-		public const string Title = "SpyUO 1.10";
+		public const string Title = "SpyUO 1.10 Mod KR";
 
 		public static void Main()
 		{
