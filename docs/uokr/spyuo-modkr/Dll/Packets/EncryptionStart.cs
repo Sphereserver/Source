@@ -9,7 +9,7 @@ namespace SpyUO.Packets
     {
         private byte[] m_Ffs;
 
-        [PacketProp(0)]
+        [PacketProp(0, "0x{0:X}")]
         public uint CryptHeader { get { return (uint)((m_Ffs[2] * 0x1000000) + (m_Ffs[1] * 0x10000) + (m_Ffs[0] * 0x100) + base.Cmd); } }
 
         public EncryptionStart(PacketReader reader, bool send) : base(reader, send)

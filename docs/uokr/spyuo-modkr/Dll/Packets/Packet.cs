@@ -62,10 +62,10 @@ namespace SpyUO.Packets
 
         public static string ByteArrayToString(byte[] theArray)
         {
-            StringBuilder sbBuffer = new StringBuilder("0x");
+            StringBuilder sbBuffer = new StringBuilder();
             foreach (byte bSingle in theArray)
             {
-                sbBuffer.AppendFormat("{0:X} ", bSingle);
+                sbBuffer.AppendFormat("0x{0:X} ", bSingle);
             }
 
             return sbBuffer.ToString().Trim();

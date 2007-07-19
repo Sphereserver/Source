@@ -58,10 +58,10 @@ namespace SpyUO
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -146,7 +146,17 @@ namespace SpyUO
             this.groupBox2.Size = new System.Drawing.Size(268, 88);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "SpyUO - ModKR Version";
+            this.groupBox2.Text = "SpyUO - Mod KR Version";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(94, 51);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 16);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "- none -";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
@@ -176,16 +186,6 @@ namespace SpyUO
             this.label5.TabIndex = 2;
             this.label5.Text = "E-Mail:";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(94, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 16);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "- none -";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button1
             // 
