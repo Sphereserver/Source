@@ -261,21 +261,8 @@ namespace UoKRUnpacker
             return resultSize;
         }
 
-        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed, ref string sFileName)
+        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed)
         {
-            int iStartName = m_UopPath.LastIndexOf('\\') + 1;
-
-            if (iStartName != -1)
-            {
-                sFileName = m_UopPath.Substring(iStartName, m_UopPath.Length - iStartName);
-            }
-            else
-            {
-                sFileName = m_UopPath;
-            }
-
-            sFileName = Application.StartupPath + @"\" + "NEW-" + sFileName;
-
             if (!File.Exists(sWhat))
             {
                 return UopPatchError.FileError;
@@ -335,8 +322,32 @@ namespace UoKRUnpacker
             m_UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData = new byte[iDestLength];
             Array.Copy(compressedStream, m_UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData, iDestLength);
 
-            FixOffsets(iIndex, subIndex);
+            GC.Collect();
+            return UopPatchError.Okay;
+        }
 
+        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed, ref string sFileName)
+        {
+            int iStartName = m_UopPath.LastIndexOf('\\') + 1;
+
+            if (iStartName != -1)
+            {
+                sFileName = m_UopPath.Substring(iStartName, m_UopPath.Length - iStartName);
+            }
+            else
+            {
+                sFileName = m_UopPath;
+            }
+
+            sFileName = Application.StartupPath + @"\" + "NEW-" + sFileName;
+
+            UopPatchError repError = Replace(sWhat, iIndex, subIndex, bUncompressed);
+            if (repError != UopPatchError.Okay)
+            {
+                return repError;
+            }
+
+            FixOffsets(iIndex, subIndex);
             bool bResult = Write(sFileName);
 
             GC.Collect();
