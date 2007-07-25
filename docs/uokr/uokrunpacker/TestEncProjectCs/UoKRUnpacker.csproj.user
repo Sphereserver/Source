@@ -14,6 +14,7 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>"c:\Giochi\Ultima Online Kingdom Reborn\LocalizedStrings.uop" LocalizedStrings_0_0.dat 0 0</StartArguments>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
 </Project>

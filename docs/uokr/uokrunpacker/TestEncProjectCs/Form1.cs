@@ -18,45 +18,16 @@ namespace UoKRUnpacker
             InitializeComponent();
         }
 
-        private string HashToArray(byte[] theHash)
+        private void SetDisableIcon(bool bEnabled)
         {
-            StringBuilder sbBuffer = new StringBuilder("0x");
-            foreach (byte bSingle in theHash)
-            {
-                sbBuffer.AppendFormat("{0:X}", bSingle);
-            }
-
-            return sbBuffer.ToString();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (LoadUOP())
-            {
-                ParseDump(false);
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (LoadUOP())
-            {
-                ParseDump(true);
-            }
-        }
-
-        private void btnParsePatch_Click(object sender, EventArgs e)
-        {
-            if (LoadUOP())
-            {
-                PatchForm frmPatch = new PatchForm(this);
-                frmPatch.ShowDialog(this);
-            }
+            this.toolBtnRefresh.Enabled = !bEnabled;
+            this.toolBtnSave.Enabled = !bEnabled;
         }
 
         private bool LoadUOP()
         {
             ResetTextArea();
+            SetDisableIcon(true);
 
             DialogResult drFile = oFileDlgUopopen.ShowDialog(this);
             if (drFile != DialogResult.OK)
@@ -80,116 +51,50 @@ namespace UoKRUnpacker
             return true;
         }
 
-        private void ParseDump(bool bDump)
+        private void Parse()
         {
             UOPFile uopToParse = UopManager.getIstance().UopFile;
+            this.tvFileData.SuspendLayout();
 
+            TreeNodeCollection tncCurrent = this.tvFileData.Nodes;
+            TreeNode tnRoot = new TreeNode(GetFileName(UopManager.getIstance().UopPath));
+            tncCurrent.Add(tnRoot);
+
+            int iNode = 0;
+            foreach (UOPIndexBlockHeader uibhCurrent in uopToParse.m_Content)
             {
-                AppendTextArea("Header: ");
-                foreach (byte bCurrent in uopToParse.m_Header.m_variousData)
-                    AppendTextArea(bCurrent.ToString() + " ");
-                AppendTextArea("\n");
-                AppendTextArea("UnkData: ");
-                foreach (byte bCurrent in uopToParse.m_Header.m_Unknown)
-                    AppendTextArea(bCurrent.ToString() + " ");
-                AppendTextArea("\n");
-
-
-                AppendTextArea("Total Index Blocks: " + uopToParse.m_Header.m_totalIndex.ToString() + "\n");
-                int iCurrentindexDef = 0;
-                foreach (UOPIndexBlockHeader aCurrent in uopToParse.m_Content)
-                {
-                    AppendTextArea("-- Index[" + iCurrentindexDef.ToString() + "] track files: " + aCurrent.m_Files.ToString() + "\n");
-                    AppendTextArea("-- Index[" + iCurrentindexDef.ToString() + "] total compressed data: " + UopManager.getIstance().SumOfDataInIndex(iCurrentindexDef).ToString() + " bytes\n");
-                    int iCurrentIdef = 0;
-
-                    if (!bDump)
-                    {
-                        StringBuilder sbTemp = new StringBuilder();
-
-                        foreach (UOPFileIndexDef bCurrent in aCurrent.m_ListIndex)
-                        {
-                            System.Threading.Thread.Sleep(1);
-
-                            UOPFileData dCurrent = aCurrent.m_ListData[iCurrentIdef];
-
-                            sbTemp.AppendLine("---- Index[" + iCurrentIdef.ToString() + "] def file comp/uncomp: " + bCurrent.m_LenghtCompressed.ToString() + "/" + bCurrent.m_LenghtUncompressed.ToString());
-                            sbTemp.AppendLine("---- Index[" + iCurrentIdef.ToString() + "] Unk1: " + String.Format("0x{0:X}", bCurrent.m_Unknown1) + " Unk2: " + String.Format("0x{0:X}", bCurrent.m_Unknown2));
-                            sbTemp.AppendLine("---- Index[" + iCurrentIdef.ToString() + "] OffsetOfThisBlock: " + String.Format("0x{0:X}", bCurrent.m_OffsetOfDataBlock) + " UnkData2: " + String.Format("0x{0:X}", dCurrent.m_Unknown));
-
-                            iCurrentIdef++;
-                        }
-
-                        AppendTextArea(sbTemp.ToString());
-                    }
-
-                    iCurrentindexDef++;
-                }
-
-                if (!bDump)
-                    return;
-
-                AppendTextArea("\n\nStart dumping.\n");
-
-                int iStartName = oFileDlgUopopen.FileName.LastIndexOf('\\') + 1;
-                int iEndName = oFileDlgUopopen.FileName.LastIndexOf('.');
-
-                string fileName = oFileDlgUopopen.FileName.Substring(iStartName, iEndName - iStartName);
-                string newPath = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf('\\'));
-                newPath += @"\Unpacked";
-
-                if (!Directory.Exists(newPath))
-                    Directory.CreateDirectory(newPath);
-
-                StringBuilder sbUnpackstring = new StringBuilder();
-
-                for (int i = 0; i < uopToParse.m_Content.Count; i++)
-                {
-                    UOPIndexBlockHeader aCurrent = uopToParse.m_Content[i];
-                    for (int j = 0; j < aCurrent.m_ListIndex.Count; j++)
-                    {
-                        System.Threading.Thread.Sleep(1);
-
-                        string sFileName = fileName + "_" + i.ToString() + "_" + j.ToString();
-
-                        UOPFileIndexDef uopFIDcurrent = aCurrent.m_ListIndex[j];
-                        UOPFileData uopFDcurrent = aCurrent.m_ListData[j];
-
-                        int iUncompressLength = ((int)(uopFIDcurrent.m_LenghtUncompressed));
-                        byte[] bUnCompressData = new byte[iUncompressLength];
-                        ZLibError zResult = Compressor.Decompress(bUnCompressData, ref iUncompressLength, uopFDcurrent.m_CompressedData, ((int)(uopFIDcurrent.m_LenghtCompressed)));
-                        if (zResult == ZLibError.Okay)
-                        {
-                            using (FileStream fsWrite = File.Create(newPath + @"\" + sFileName + ".dat"))
-                            {
-                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
-                                {
-                                    bwWrite.Write(bUnCompressData);
-                                }
-                            }
-
-                            sbUnpackstring.AppendLine("Dumping " + sFileName + ".dat ... OK!\n");
-                        }
-                        else
-                        {
-                            using (FileStream fsWrite = File.Create(newPath + @"\" + sFileName + ".raw"))
-                            {
-                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
-                                {
-                                    bwWrite.Write(uopFDcurrent.m_CompressedData);
-                                }
-                            }
-
-                            sbUnpackstring.AppendLine("Dumping " + sFileName + ".raw ... ERROR! (" + zResult.ToString() + ")\n");
-                        }
-                    }
-                }
-
-                AppendTextArea(sbUnpackstring.ToString());
+                TreeNode tnCurrent = new TreeNode(String.Format("Header Block {0}", iNode++));
+                tnCurrent.Tag = uibhCurrent;
+                tnRoot.Nodes.Add(tnCurrent);
             }
 
-            GC.Collect();
-            AppendTextArea("Done dumping.\n");
+            this.tvFileData.ResumeLayout(true);
+            SetDisableIcon(false);
+        }
+
+        private string HashToArray(byte[] theHash)
+        {
+            StringBuilder sbBuffer = new StringBuilder("0x");
+            foreach (byte bSingle in theHash)
+            {
+                sbBuffer.AppendFormat("{0:X}", bSingle);
+            }
+
+            return sbBuffer.ToString();
+        }
+
+        private string GetFileName(string sInput)
+        {
+            int iStartName = sInput.LastIndexOf('\\') + 1;
+
+            if (iStartName != -1)
+            {
+                return sInput.Substring(iStartName, sInput.Length - iStartName);
+            }
+            else
+            {
+                return sInput;
+            }
         }
 
         #region IForm1State Membri di
@@ -238,7 +143,25 @@ namespace UoKRUnpacker
 
         #endregion
 
-        private void btnAbout_Click(object sender, EventArgs e)
+        private void toolBtnOpen_Click(object sender, EventArgs e)
+        {
+            if (LoadUOP())
+            {
+                Parse();
+            }
+        }
+
+        private void toolBtnSave_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolBtnRefresh_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolBtnInfo_Click(object sender, EventArgs e)
         {
             Form2 frmAbout = new Form2();
             DialogResult drResult = frmAbout.ShowDialog(this);
