@@ -50,7 +50,10 @@ namespace UoKRUnpacker
                     if ((i + 1) < args.Length)
                     {
                         inputFile = args[i + 1];
-                        bInputFile = true;
+                        inputFile = inputFile.Trim();
+
+                        if ( inputFile.Length > 0 )
+                            bInputFile = true;
                     }
                     else
                     {
@@ -62,7 +65,10 @@ namespace UoKRUnpacker
                     if ((i + 1) < args.Length)
                     {
                         outputFile = args[i + 1];
-                        bOutputFile = true;
+                        outputFile = outputFile.Trim();
+
+                        if ( outputFile.Length > 0 )
+                            bOutputFile = true;
                     }
                     else
                     {
@@ -124,18 +130,7 @@ namespace UoKRUnpacker
                     {
                         if (!bOutputFile)
                         {
-                            int iStartName = UopManager.getIstance().UopPath.LastIndexOf('\\') + 1;
-
-                            if (iStartName != -1)
-                            {
-                                outputFile = UopManager.getIstance().UopPath.Substring(iStartName, UopManager.getIstance().UopPath.Length - iStartName);
-                            }
-                            else
-                            {
-                                outputFile = UopManager.getIstance().UopPath;
-                            }
-
-                            outputFile = Application.StartupPath + @"\" + "NEW-" + outputFile;
+                            outputFile = Utility.GetPathForSave(UopManager.getIstance().UopPath);
                         }
 
                         UopManager.getIstance().FixOffsets(iMinIndex, iMinSubindex);

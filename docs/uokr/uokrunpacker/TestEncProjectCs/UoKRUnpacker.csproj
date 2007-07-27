@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="UopData.cs" />
     <Compile Include="UopUnpacker.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.txt">
