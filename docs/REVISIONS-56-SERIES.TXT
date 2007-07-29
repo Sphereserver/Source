@@ -3528,3 +3528,7 @@ this all in desperation)
 18-07-2007, Nazghul
 - Changed Ping Attack detection so that it only issues a warning if the "attack" comes
   from LocalAddress and/or 127.0.0.1
+
+29-07-2007, Nazghul
+- just a fix in writing: Item tag.override_SKILL can also be written as tag.override.skill (as the other OVERRIDE tags)
+

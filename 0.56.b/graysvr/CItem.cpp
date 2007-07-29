@@ -3593,6 +3593,8 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	ASSERT(pItemDef);
 
 	int iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1;
+	if ( iSkillOverride == -1)
+		iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1;
 	if ( iSkillOverride >= 0 && iSkillOverride < MAX_SKILL )
 		return (SKILL_TYPE)iSkillOverride;
 
