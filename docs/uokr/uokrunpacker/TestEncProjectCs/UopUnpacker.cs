@@ -61,7 +61,6 @@ namespace UoKRUnpacker
             UnloadUop();
 
             bool bReturn = true;
-            m_UopFile = new UOPFile();
 
             try
             {
@@ -69,64 +68,17 @@ namespace UoKRUnpacker
                 {
                     using (BinaryReader brToParse = new BinaryReader(fsToParse))
                     {
-                        m_UopFile.m_Header.m_variousData = brToParse.ReadBytes(24);
-                        m_UopFile.m_Header.m_totalIndex = brToParse.ReadUInt32();
-                        m_UopFile.m_Header.m_Unknown = brToParse.ReadBytes(12);
-
-                        bool repeatRead = true;
-                        while (repeatRead)
-                        {
-                            UOPIndexBlockHeader uopIBHCurrent = new UOPIndexBlockHeader();
-                            uopIBHCurrent.m_Files = brToParse.ReadUInt32();
-                            uopIBHCurrent.m_OffsetNextIndex = brToParse.ReadUInt64();
-
-                            for (uint iData = 0; iData < uopIBHCurrent.m_Files; iData++)
-                            {
-                                UOPFileIndexDef uopFIDcurrent = new UOPFileIndexDef();
-                                uopFIDcurrent.m_OffsetOfDataBlock = brToParse.ReadUInt64();
-                                uopFIDcurrent.m_SizeofDataHeaders = brToParse.ReadUInt32();
-                                uopFIDcurrent.m_LenghtCompressed = brToParse.ReadUInt32();
-                                uopFIDcurrent.m_LenghtUncompressed = brToParse.ReadUInt32();
-                                uopFIDcurrent.m_Unknown1 = brToParse.ReadUInt64();
-                                uopFIDcurrent.m_Unknown2 = brToParse.ReadUInt32();
-                                uopFIDcurrent.m_Separator = brToParse.ReadUInt16();
-
-                                uopIBHCurrent.m_ListIndex.Add(uopFIDcurrent);
-                            }
-
-                            for (uint iData = 0; iData < uopIBHCurrent.m_Files; iData++)
-                            {
-                                brToParse.BaseStream.Seek((long)(uopIBHCurrent.m_ListIndex[(int)(iData)].m_OffsetOfDataBlock), SeekOrigin.Begin);
-
-                                UOPFileData uopFDcurrent = new UOPFileData();
-                                uopFDcurrent.m_Separator = brToParse.ReadUInt32();
-                                uopFDcurrent.m_Unknown = brToParse.ReadUInt64();
-                                uopFDcurrent.m_CompressedData = new byte[uopIBHCurrent.m_ListIndex[(int)(iData)].m_LenghtCompressed];
-                                uopFDcurrent.m_CompressedData = brToParse.ReadBytes(uopFDcurrent.m_CompressedData.Length);
-
-                                uopIBHCurrent.m_ListData.Add(uopFDcurrent);
-                            }
-
-                            // Add to us.
-                            m_UopFile.m_Content.Add(uopIBHCurrent);
-
-                            if (uopIBHCurrent.m_OffsetNextIndex == 0)
-                            {
-                                repeatRead = false;
-                            }
-                            else
-                            {
-                                brToParse.BaseStream.Seek((long)(uopIBHCurrent.m_OffsetNextIndex), SeekOrigin.Begin);
-                            }
-                        }
+                        m_UopFile = UOPFile.FromBinary(brToParse);
                     }
                 }
             }
             catch
             {
+                m_UopFile = null;
                 bReturn = false;
             }
 
+            GC.Collect();
             return bReturn;
         }
 
@@ -155,12 +107,65 @@ namespace UoKRUnpacker
                 bReturn = false;
             }
 
+            GC.Collect();
+            return bReturn;
+        }
+
+        public bool UnPack(string sPath)
+        {
+            bool bReturn = true;
+            string fileName = m_UopPath.Substring((m_UopPath.LastIndexOf('\\') + 1), m_UopPath.LastIndexOf('.') - (m_UopPath.LastIndexOf('\\') + 1));
+
+            try
+            {
+                for (int i = 0; i < m_UopFile.m_Content.Count; i++)
+                {
+                    UOPIndexBlockHeader aCurrent = m_UopFile.m_Content[i];
+                    for (int j = 0; j < aCurrent.m_ListIndex.Count; j++)
+                    {
+                        string sFileName = fileName + "_" + i.ToString() + "_" + j.ToString();
+
+                        UOPFileIndexDef uopFIDcurrent = aCurrent.m_ListIndex[j];
+                        UOPFileData uopFDcurrent = aCurrent.m_ListData[j];
+
+                        int iUncompressLength = ((int)(uopFIDcurrent.m_LenghtUncompressed));
+                        byte[] bUnCompressData = new byte[iUncompressLength];
+                        ZLibError zResult = Compressor.Decompress(bUnCompressData, ref iUncompressLength, uopFDcurrent.m_CompressedData, ((int)(uopFIDcurrent.m_LenghtCompressed)));
+                        if (zResult == ZLibError.Okay)
+                        {
+                            using (FileStream fsWrite = File.Create(sPath + @"\" + sFileName + ".dat"))
+                            {
+                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
+                                {
+                                    bwWrite.Write(bUnCompressData);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (FileStream fsWrite = File.Create(sPath + @"\" + sFileName + ".raw"))
+                            {
+                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
+                                {
+                                    bwWrite.Write(uopFDcurrent.m_CompressedData);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                bReturn = false;
+            }
+
+            GC.Collect();
             return bReturn;
         }
 
         public void FixOffsets(int iIndex, int subIndex)
         {
-            int iCurrentFiles = FilesInUop();
+            int iCurrentFiles = m_UopFile.FilesDynamicCount;
             if (iCurrentFiles != (int)(m_UopFile.m_Header.m_totalIndex))
             {
                 m_UopFile.m_Header.m_totalIndex = (uint)(iCurrentFiles);
@@ -216,18 +221,6 @@ namespace UoKRUnpacker
                     m_UopFile.m_Content[outerIndex].m_OffsetNextIndex += m_UopFile.m_Content[outerIndex].TotalSizeOfCompressedData;
                 }
             }
-        }
-
-        private int FilesInUop()
-        {
-            int iFiles = 0;
-
-            foreach (UOPIndexBlockHeader uopCurrent in m_UopFile.m_Content)
-            {
-                iFiles += uopCurrent.m_ListIndex.Count;
-            }
-
-            return iFiles;
         }
 
         public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed)

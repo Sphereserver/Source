@@ -40,6 +40,17 @@ namespace UOPDefine
             bStream.Write(m_totalIndex);
             bStream.Write(m_Unknown);
         }
+
+        public static UOPGeneralHeader FromBinary(System.IO.BinaryReader bStream)
+        {
+            UOPGeneralHeader toReturn = new UOPGeneralHeader();
+
+            toReturn.m_variousData = bStream.ReadBytes(24);
+            toReturn.m_totalIndex = bStream.ReadUInt32();
+            toReturn.m_Unknown = bStream.ReadBytes(12);
+
+            return toReturn;
+        }
     }
 
     class UOPIndexBlockHeader : IDisposable
@@ -64,6 +75,11 @@ namespace UOPDefine
         {
             m_ListIndex.Clear();
             m_ListData.Clear();
+        }
+
+        public int FilesDynamicCount
+        {
+            get { return m_ListIndex.Count; }
         }
 
         public ulong TotalSizeOfCompressedData
@@ -91,8 +107,8 @@ namespace UOPDefine
 
             for (int i = 0; i < m_ListIndex.Count; i++)
             {
-                result.AppendLine(String.Format("- {0}", m_ListIndex[i].ToString()));
-                result.AppendLine(String.Format("- {0}", m_ListData[i].ToString()));
+                result.AppendLine(String.Format("{0}", m_ListIndex[i].ToString()));
+                result.AppendLine(String.Format("{0}", m_ListData[i].ToString()));
             }
 
             return result.ToString();
@@ -121,6 +137,27 @@ namespace UOPDefine
                 uopFDcurrent.ToBinary(bStream);
             }
         }
+
+        public static UOPIndexBlockHeader FromBinary(System.IO.BinaryReader bStream)
+        {
+            UOPIndexBlockHeader toReturn = new UOPIndexBlockHeader();
+
+            toReturn.m_Files = bStream.ReadUInt32();
+            toReturn.m_OffsetNextIndex = bStream.ReadUInt64();
+
+            for (uint iData = 0; iData < toReturn.m_Files; iData++)
+            {
+                toReturn.m_ListIndex.Add(UOPFileIndexDef.FromBinary(bStream));
+            }
+
+            for (uint iData = 0; iData < toReturn.m_Files; iData++)
+            {
+                bStream.BaseStream.Seek((long)(toReturn.m_ListIndex[(int)(iData)].m_OffsetOfDataBlock), System.IO.SeekOrigin.Begin);
+                toReturn.m_ListData.Add(UOPFileData.FromBinary(bStream, toReturn.m_ListIndex[(int)(iData)].m_LenghtCompressed));
+            }
+
+            return toReturn;
+        }
     }
 
     class UOPFileIndexDef
@@ -147,13 +184,13 @@ namespace UOPDefine
         {
             StringBuilder result = new StringBuilder();
 
-            result.AppendLine(String.Format("{0} (size: {1})", NAME, SIZE));
-            result.AppendLine(String.Format("- Offset of DataBlock: 0x{0:X}", m_OffsetOfDataBlock));
-            result.AppendLine(String.Format("- Size of Data Header: {0}", m_SizeofDataHeaders));
-            result.AppendLine(String.Format("- Length Compressed/Uncompressed: {0}/{1} bytes", m_LenghtCompressed, m_LenghtUncompressed));
-            result.AppendLine(String.Format("- Unknown Data 1: 0x{0:X}", m_Unknown1));
-            result.AppendLine(String.Format("- Unknown Data 2: 0x{0:X}", m_Unknown2));
-            result.Append(String.Format("- Separator: 0x{0:X}", m_Separator));
+            result.AppendLine(String.Format("\t{0} (size: {1})", NAME, SIZE));
+            result.AppendLine(String.Format("\t\t- Offset of DataBlock: 0x{0:X}", m_OffsetOfDataBlock));
+            result.AppendLine(String.Format("\t\t- Size of Data Header: {0}", m_SizeofDataHeaders));
+            result.AppendLine(String.Format("\t\t- Length Compressed/Uncompressed: {0}/{1} bytes", m_LenghtCompressed, m_LenghtUncompressed));
+            result.AppendLine(String.Format("\t\t- Unknown Data 1: 0x{0:X}", m_Unknown1));
+            result.AppendLine(String.Format("\t\t- Unknown Data 2: 0x{0:X}", m_Unknown2));
+            result.Append(String.Format("\t\t- Separator: 0x{0:X}", m_Separator));
 
             return result.ToString();
         }
@@ -167,6 +204,21 @@ namespace UOPDefine
             bStream.Write(m_Unknown1);
             bStream.Write(m_Unknown2);
             bStream.Write(m_Separator);
+        }
+
+        public static UOPFileIndexDef FromBinary(System.IO.BinaryReader bStream)
+        {
+            UOPFileIndexDef toReturn = new UOPFileIndexDef();
+
+            toReturn.m_OffsetOfDataBlock = bStream.ReadUInt64();
+            toReturn.m_SizeofDataHeaders = bStream.ReadUInt32();
+            toReturn.m_LenghtCompressed = bStream.ReadUInt32();
+            toReturn.m_LenghtUncompressed = bStream.ReadUInt32();
+            toReturn.m_Unknown1 = bStream.ReadUInt64();
+            toReturn.m_Unknown2 = bStream.ReadUInt32();
+            toReturn.m_Separator = bStream.ReadUInt16();
+
+            return toReturn;
         }
     }
 
@@ -189,9 +241,9 @@ namespace UOPDefine
         {
             StringBuilder result = new StringBuilder();
 
-            result.AppendLine(String.Format("{0} (size: {1}/{2})", NAME, SIZE, SIZE + m_CompressedData.Length));
-            result.AppendLine(String.Format("- Separator: 0x{0:X}", m_Separator));
-            result.Append(String.Format("- Unknown Data: 0x{0:X}", m_Unknown));
+            result.AppendLine(String.Format("\t{0} (size: {1}/{2})", NAME, SIZE, SIZE + m_CompressedData.Length));
+            result.AppendLine(String.Format("\t\t- Separator: 0x{0:X}", m_Separator));
+            result.Append(String.Format("\t\t- Unknown Data: 0x{0:X}", m_Unknown));
 
             return result.ToString();
         }
@@ -201,6 +253,18 @@ namespace UOPDefine
             bStream.Write(m_Separator);
             bStream.Write(m_Unknown);
             bStream.Write(m_CompressedData);
+        }
+
+        public static UOPFileData FromBinary(System.IO.BinaryReader bStream, uint length)
+        {
+            UOPFileData toReturn = new UOPFileData();
+
+            toReturn.m_Separator = bStream.ReadUInt32();
+            toReturn.m_Unknown = bStream.ReadUInt64();
+            toReturn.m_CompressedData = new byte[length];
+            toReturn.m_CompressedData = bStream.ReadBytes(toReturn.m_CompressedData.Length);
+
+            return toReturn;
         }
     }
 
@@ -227,6 +291,21 @@ namespace UOPDefine
             m_Content.Clear();
         }
 
+        public int FilesDynamicCount
+        {
+            get 
+            {
+                int toReturn = 0;
+
+                foreach (UOPIndexBlockHeader current in m_Content)
+                {
+                    toReturn += current.FilesDynamicCount;
+                }
+
+                return toReturn; 
+            }
+        }
+
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
@@ -248,6 +327,31 @@ namespace UOPDefine
             {
                 uoibhNow.ToBinary(bStream);
             }
+        }
+
+        public static UOPFile FromBinary(System.IO.BinaryReader bStream)
+        {
+            UOPFile toReturn = new UOPFile();
+
+            toReturn.m_Header = UOPGeneralHeader.FromBinary(bStream);
+
+            bool repeatRead = true;
+            while (repeatRead)
+            {
+                UOPIndexBlockHeader uopIBHCurrent = UOPIndexBlockHeader.FromBinary(bStream);
+                toReturn.m_Content.Add(uopIBHCurrent);
+
+                if (uopIBHCurrent.m_OffsetNextIndex == 0)
+                {
+                    repeatRead = false;
+                }
+                else
+                {
+                    bStream.BaseStream.Seek((long)(uopIBHCurrent.m_OffsetNextIndex), System.IO.SeekOrigin.Begin);
+                }
+            }
+
+            return toReturn;
         }
     }
 }

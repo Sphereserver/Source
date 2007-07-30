@@ -11,46 +11,72 @@ using UOPDefine;
 
 namespace UoKRUnpacker
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, StupidInterface
     {
         public Form1()
         {
             InitializeComponent();
+            DoingSomeJob.TheForm = this;
             this.FormClosing += new FormClosingEventHandler(Form1_FormClosing);
         }
 
         private void SetDisableIcon(bool bEnabled)
         {
             this.toolBtnRefresh.Enabled = !bEnabled;
-            
             this.toolBtnSave.Enabled = !bEnabled;
+            this.toolBtnSaveAs.Enabled = !bEnabled;
+            this.toolBtnDump.Enabled = !bEnabled;
+            this.toolBtnUnpack.Enabled = !bEnabled;
         }
 
-        private bool LoadUOP()
+        private void LoadUOP()
         {
-            ResetTextArea();
-            SetDisableIcon(true);
-
             DialogResult drFile = oFileDlgUopopen.ShowDialog(this);
             if (drFile != DialogResult.OK)
             {
-                MessageBox.Show("File not selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                MessageBox.Show("File not selected!", "UO:KR Uop Dumper - Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            AppendTextArea("Parsing file " + oFileDlgUopopen.FileName + " ...\n");
+            LoadUOP(oFileDlgUopopen.FileName);
+        }
 
-            UopManager upIstance = UopManager.getIstance(true);
-            upIstance.UopPath = oFileDlgUopopen.FileName;
-            if (!upIstance.Load())
+        private void LoadUOP(string theNewFile)
+        {
+            ThreadArgs.MyThreadDelegate mtdParse = delegate(object args)
             {
-                AppendTextArea("ERROR while parsing file " + oFileDlgUopopen.FileName + " !!!\n");
-                GC.Collect();
-                return false;
-            }
+                ThreadArgs theArgs = (ThreadArgs)args;
+                StupidInterface theForm = (StupidInterface)theArgs.Args[0];
+                string theFile = (string)theArgs.Args[1];
 
-            AppendTextArea("Done parsing.\n\n");
-            return true;
+                UopManager upIstance = UopManager.getIstance(true);
+                upIstance.UopPath = theFile;
+
+                bool bResult = upIstance.Load();
+
+                if (bResult)
+                    theForm.SetTextArea("Done parsing.\n\n");
+                else
+                    theForm.SetTextArea("ERROR while parsing file " + theFile + " !!!\n");
+
+                if (bResult)
+                {
+                    theForm.SetNodes();
+                    theForm.DisableOtherIcon(false);
+                }
+
+                theForm.SetLoadIcon(true);
+                DoingSomeJob.Working = false;
+            };
+
+            DoingSomeJob.Working = true;
+            this.SetTextArea("Parsing file " + theNewFile + " ...\n");
+
+            this.SetDisableIcon(true);
+            this.SetLoadIcon(false);
+            
+            System.Threading.Thread tRun = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(mtdParse));
+            tRun.Start(new ThreadArgs(new object[] { this, theNewFile }));
         }
 
         private void Parse()
@@ -88,63 +114,30 @@ namespace UoKRUnpacker
             SetDisableIcon(false);
         }
 
-        #region IForm1State Membri di
-
-        delegate void SetTextCallback(string text);
-        delegate void ResetTextCallback();
-
-        public void AppendTextArea(string sText)
-        {
-            if (this.InvokeRequired)
-            {
-                SetTextCallback stDelegeate = new SetTextCallback(AppendTextArea);
-                this.BeginInvoke(stDelegeate, new object[] { sText });
-            }
-            else
-            {
-                textBox1.AppendText(sText);
-            }
-        }
-
-        public void SetTextArea(string sText)
-        {
-            if (this.InvokeRequired)
-            {
-                SetTextCallback stDelegeate = new SetTextCallback(SetTextArea);
-                this.BeginInvoke(stDelegeate, new object[] { sText });
-            }
-            else
-            {
-                textBox1.Text = sText;
-            }
-        }
-
-        public void ResetTextArea()
-        {
-            if (this.InvokeRequired)
-            {
-                ResetTextCallback stDelegeate = new ResetTextCallback(ResetTextArea);
-                this.BeginInvoke(stDelegeate);
-            }
-            else
-            {
-                textBox1.Clear();
-            }
-        }
-
-        #endregion
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Se abbiamo robba aperta chiedere conferma
+            if (DoingSomeJob.Working)
+            {
+                DialogResult drData = MessageBox.Show("Are you sure to close? Still working in background!", "UO:KR Uop Dumper",
+                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (drData == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
+        #region Toolbar Buttons
         private void toolBtnOpen_Click(object sender, EventArgs e)
         {
-            if (LoadUOP())
+            if (DoingSomeJob.Working)
             {
-                Parse();
-                SetDisableIcon(false);
+                MessageBox.Show("Please wait... Still working in background!", "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                LoadUOP();
             }
         }
 
@@ -153,9 +146,62 @@ namespace UoKRUnpacker
 
         }
 
-        private void toolBtnDump_Click(object sender, EventArgs e)
+        private void toolBtnSaveAs_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void toolBtnDump_Click(object sender, EventArgs e)
+        {
+            DoingSomeJob.Working = true;
+            string sDumpFile = Application.StartupPath + @"\" + Utility.GetFileName(UopManager.getIstance().UopPath) + ".txt";
+
+            try
+            {
+                using (StreamWriter swFile = new StreamWriter(sDumpFile, false))
+                {
+                    swFile.Write(UopManager.getIstance().UopFile.ToString());
+                }
+
+                DoingSomeJob.Working = false;
+
+                MessageBox.Show("Completed information dump for " + Utility.GetFileName(UopManager.getIstance().UopPath) + " to:\n" +
+                                sDumpFile, "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                DoingSomeJob.Working = false;
+
+                MessageBox.Show("Error while writing information dump for " + Utility.GetFileName(UopManager.getIstance().UopPath) + "", 
+                                "UO:KR Uop Dumper - Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            
+        }
+
+        private void toolBtnUnpack_Click(object sender, EventArgs e)
+        {
+            DoingSomeJob.Working = true;
+
+            string sPath = Application.StartupPath + @"\Unpacked";
+
+            if (!Directory.Exists(sPath))
+                Directory.CreateDirectory(sPath);
+
+            bool bResult = UopManager.getIstance().UnPack(sPath);
+
+            DoingSomeJob.Working = false;
+
+            if (bResult)
+            {
+                MessageBox.Show("Completed unpacking for " + Utility.GetFileName(UopManager.getIstance().UopPath) + " into:\n" +
+                                 sPath, "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Error while unpacking " + Utility.GetFileName(UopManager.getIstance().UopPath) + "",
+                                "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void toolBtnClose_Click(object sender, EventArgs e)
@@ -165,7 +211,9 @@ namespace UoKRUnpacker
 
         private void toolBtnRefresh_Click(object sender, EventArgs e)
         {
+            DoingSomeJob.Working = true;
             RefreshData();
+            DoingSomeJob.Working = false;
         }
 
         private void toolBtnInfo_Click(object sender, EventArgs e)
@@ -181,6 +229,12 @@ namespace UoKRUnpacker
                 Close();
             }
         }
+
+        private void toolBtnHelp_Click(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
 
         private void tvFileData_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -327,6 +381,101 @@ namespace UoKRUnpacker
                         RefreshData();
                     }
                 } break;
+            }
+        }
+
+        #endregion
+
+        #region StupidInterface Membri di
+
+        delegate void SetTextCallback(string text);
+        public void SetTextArea(string sText)
+        {
+            if (this.InvokeRequired)
+            {
+                SetTextCallback stDelegeate = new SetTextCallback(SetTextArea);
+                this.BeginInvoke(stDelegeate, new object[] { sText });
+            }
+            else
+            {
+                this.tslblStatus.Text = sText;
+            }
+        }
+
+        delegate void SetLoadIconCallback(bool bStatus);
+        public void SetLoadIcon(bool bStatus)
+        {
+            if (this.InvokeRequired)
+            {
+                SetLoadIconCallback stDelegeate = new SetLoadIconCallback(SetLoadIcon);
+                this.BeginInvoke(stDelegeate, new object[] { bStatus });
+            }
+            else
+            {
+                this.toolBtnOpen.Enabled = bStatus;
+            }
+        }
+
+        public void DisableOtherIcon(bool bEnable)
+        {
+            if (this.InvokeRequired)
+            {
+                SetLoadIconCallback stDelegeate = new SetLoadIconCallback(DisableOtherIcon);
+                this.BeginInvoke(stDelegeate, new object[] { bEnable });
+            }
+            else
+            {
+                this.SetDisableIcon(bEnable);
+            }
+        }
+
+        public void SetWaitStatus(bool bEnable)
+        {
+            if (this.InvokeRequired)
+            {
+                SetLoadIconCallback stDelegeate = new SetLoadIconCallback(SetWaitStatus);
+                this.BeginInvoke(stDelegeate, new object[] { bEnable });
+            }
+            else
+            {
+                if (bEnable)
+                {
+                    this.SetCursor(Cursors.WaitCursor);
+                    this.tslblWorking.Visible = true;
+                }
+                else
+                {
+                    this.SetCursor(Cursors.Default);
+                    this.tslblWorking.Visible = false;
+                }
+            }
+        }
+
+        delegate void SetNodesDelegate();
+        public void SetNodes()
+        {
+            if (this.InvokeRequired)
+            {
+                SetNodesDelegate stDelegeate = new SetNodesDelegate(SetNodes);
+                this.BeginInvoke(stDelegeate, null);
+            }
+            else
+            {
+                this.Parse();
+            }
+        }
+
+        delegate void SetCursorDelegate(Cursor cCursore);
+        public void SetCursor(Cursor cCursore)
+        {
+            if (this.InvokeRequired)
+            {
+                SetCursorDelegate stDelegeate = new SetCursorDelegate(SetCursor);
+                this.BeginInvoke(stDelegeate, new object[] { cCursore });
+            }
+            else
+            {
+                this.Cursor = cCursore;
             }
         }
 

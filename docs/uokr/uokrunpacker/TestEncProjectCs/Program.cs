@@ -104,7 +104,7 @@ namespace UoKRUnpacker
 
             if (bHelp)
             {
-                MessageBox.Show(MESSAGEBOX_HELP, "Patch Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(MESSAGEBOX_HELP, "UO:KR Uop Dumper - Patch Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (bPatch && bInputFile)
             {
