@@ -153,11 +153,12 @@ LPCTSTR CItemBase::GetArticleAndSpace() const
 void CItemBase::CopyBasic( const CItemBase * pBase )
 {
 	ADDTOCALLSTACK("CItemBase::CopyBasic");
-   m_speed = pBase->m_speed;
-	m_weight = pBase->m_weight;
-	m_flip_id = pBase->m_flip_id;
-	m_type = pBase->m_type;
-	m_layer = pBase->m_layer;
+	m_speed		= pBase->m_speed;
+	m_weight	= pBase->m_weight;
+	m_flip_id	= pBase->m_flip_id;
+	m_type		= pBase->m_type;
+	m_layer		= pBase->m_layer;
+	m_range		= pBase->m_range;
 
 	// Just applies to weapons/armor.
 	m_ttNormal.m_tData1 = pBase->m_ttNormal.m_tData1;

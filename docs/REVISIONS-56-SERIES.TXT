@@ -3543,3 +3543,4 @@ this all in desperation)
   gathering related behavior.)
 - Modified #1238: Sphere now tells you that you do not use SERV.MAP correctly
   and does not throw an exception.
+- Fixed #1197: RANGE property was not inherited through ID property.
