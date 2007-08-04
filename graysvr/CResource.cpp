@@ -663,7 +663,23 @@ bool CResource::r_LoadVal( CScript &s )
 		}
 		else if ( s.IsKeyHead("MAP", 3) )		//	MAPx=settings
 		{
-			return g_MapList.Load(ATOI(s.GetKey() + 3), s.GetArgRaw());
+			BYTE ok = 1;
+			std::string str = s.GetKey()+3;
+			for( int iLen = 0; str.size() > iLen; ++iLen )
+			{
+				if( !isdigit(str[iLen]) )
+				{
+					ok = 0;
+					break;
+				}
+			}
+			if ( ok && str.size() > 0 )
+				return g_MapList.Load(ATOI(str.c_str()), s.GetArgRaw());
+			else
+			{
+				DEBUG_ERR(("Bad usage of MAPx. Check your sphere.ini or scripts (SERV.MAP is a read only property)\n"));
+				return false;
+			}
 		}
 		else if ( s.IsKeyHead("PACKET", 6) )	//	PACKETx=<function name to execute upon packet>
 		{
