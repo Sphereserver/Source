@@ -3434,8 +3434,8 @@ this all in desperation)
 
 
 29-06-2007, Torfo
-- Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing algorithem, if
-  md5 isn't enabled it's the same as ADD.
+- Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing
+  algorithm, if MD5 isn't enabled it's the same as ADD.
   Usage: "ACCOUNT ADDMD5 name hash"
 
 06-07-2007, Nazghul
@@ -3449,30 +3449,31 @@ this all in desperation)
 - some cleanups regarding NPC accepting/rejecting items
 - Added: Hungry NPC try to pick ripe crops if available
 - Added: ACTP character property (like ACTDIFF, ACTARG etc.) to work with for example ACTION 102
-- Added: Poisoned Food (MOREz = poison strength [0..100]) will poison whoever eats it; NPC might refuse eating poisoned food depending on their TasteID skill
+- Added: Poisoned Food (MOREz = poison strength [0..100]) will poison whoever eats it;
+  NPC might refuse eating poisoned food depending on their TasteID skill
 
 15-07-2007, Ellessar
-- Modified: Now you can get AREADEF regions from inside a multi with the help of an additional "region"
-  keyword (e.g. region.region.name).
+- Modified: Now you can get AREADEF regions from inside a multi with the help of an additional
+  "region" keyword (e.g. region.region.name).
 
 17-07-2007, MrSugarCube [CustomHouse build!]
 - Fixed: Multis from newer expansions not loading correctly.
 - Added: Support for AOS Custom Housing through a new item type 't_multi_custom'.
- > See the sphere_item_multis_foundations.scp and add-on/House_Placement scripts for examples of it's
-   use.
+ > See the sphere_item_multis_foundations.scp and add-on/House_Placement scripts for examples
+   of it's use.
  > Custom houses (t_multi_custom) will be saved to a new save file named spheremultis.scp.
- > Note that Sphere will require access to doors.txt, misc.txt, floors.txt, teleprts.txt, roof.txt, and
-   walls.txt from the UO folder as these provide lists of valid items. Also, all these items should exist
-   in scripts for them to be added to a building - note that the default script pack is currently missing
-   several sets of floors and walls.
+ > Note that Sphere will require access to doors.txt, misc.txt, floors.txt, teleprts.txt,
+   roof.txt, and  walls.txt from the UO folder as these provide lists of valid items. Also,
+   all these items should exist in scripts for them to be added to a building - note that
+   the default script pack is currently missing several sets of floors and walls.
  > New functions and properties have been added that can be used with items of the type t_multi_custom.
    These are:
    -- References --
     "DESIGNER"           The player currently designing the building.
    -- Properties --
     "COMPONENTS" (r)     The number of components in the building design.
-    "FIXTURES"   (r)     The number of fixtures in the building design (doors and teleporters/t_door and
-                         t_telepad).
+    "FIXTURES"   (r)     The number of fixtures in the building design (doors and
+                         teleporters/t_door and t_telepad).
     "DESIGNER"   (r)     The uid of the player designing the building (or 0).
     "EDITAREA"   (r)     The editable range of coordinates when in design
                          mode (TopLeftX,TopLeftY,BottomRightX,BottomRightY).
@@ -3508,27 +3509,35 @@ this all in desperation)
 
 17-07-2007, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Updated type defnames)
-- Updated: sphere_item_building_walls.scp (Split i_wall_stone_4's DUPELIST into different
-  defnames for different wall heights)
+- Updated: sphere_item_building_walls.scp (Split i_wall_stone_4's DUPELIST into
+  different defnames for different wall heights)
 - Updated: sphere_item_ground_tiles.scp (Added a few missing water tiles and split the
   waterfall DUPELIST into different defnames for different waterfall heights)
-- Updated: sphere_item_profession_alchemist_mage.scp (Set the types of i_rune_alchem_* items to t_telepad)
+- Updated: sphere_item_profession_alchemist_mage.scp (Set the types of i_rune_alchem_*
+  items to t_telepad)
 - Added: sphere_item_multis_foundations.scp (Added foundtain multi definitions)
 - Added: sphere_item_multis_stairs.scp (Added stair multi definitions)
 - Added: sphere_item_building_roofs_aos.scp (Added AOS roof definitions)
 - Added: sphere_item_building_roofs_ml.scp (Added ML roof definitions)
 - Added: sphere_item_building_stairs_ml.scp (Added ML stair definitions)
-- Added: add-on/House_Placement.zip (Added a sample script that allows custom houses to be design by players)
+- Added: add-on/House_Placement.zip (Added a sample script that allows custom houses
+  to be design by players)
 
 17-07-2007, Admin BladeCraft (Script pack)
-- Updated #1236: sphere_item_magic_weapon.scp, sphere_template.scp, sphere_backward_compatibility.scp (Changed
-  misspelt defname i_axe_war_VANQUISIHNG to i_axe_war_VANQ)
+- Updated #1236: sphere_item_magic_weapon.scp, sphere_template.scp,
+  sphere_backward_compatibility.scp (Changed misspelled defname i_axe_war_VANQUISIHNG
+  to i_axe_war_VANQ)
 - Updated #1237: sphere_defs.scp (Fixed broken random templates)
 
 18-07-2007, Nazghul
-- Changed Ping Attack detection so that it only issues a warning if the "attack" comes
-  from LocalAddress and/or 127.0.0.1
+- Changed Ping Attack detection so that it only issues a warning if the "attack"
+  comes from LocalAddress and/or 127.0.0.1
 
 29-07-2007, Nazghul
-- just a fix in writing: Item tag.override_SKILL can also be written as tag.override.skill (as the other OVERRIDE tags)
+- Just a fix in writing: Item tag.override_SKILL can also be written as
+  tag.override.skill (as the other OVERRIDE tags)
 
+04-08-2007, Ellessar
+- Fixed #1239: Lumberjacking caused Sphere to crash, when failed.
+- Fixed: ISNEARTYPETOP did not work as intented (also changes some hardcoded
+  gathering related behavior.)

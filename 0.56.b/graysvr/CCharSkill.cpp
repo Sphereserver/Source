@@ -1811,12 +1811,15 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	// RETURN:
 	//   difficulty = 0-100
 
+	if ( stage == SKTRIG_FAIL )
+		return 0;
+
 	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p,
 		(IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
 
 	CItem * pAxe = m_Act_TargPrv.ItemFind();
 
-	if ( stage == SKTRIG_FAIL )
+	/*if ( stage == SKTRIG_FAIL )
 	{
 		if ( (pAxe->IsType(IT_WEAPON_FENCE)) && ( pResBit->GetAmount() != 0 ) )
 		{
@@ -1825,7 +1828,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 			pResBit->ConsumeAmount(1);
 		}
 		return 0;
-	}
+	}*/
 
 	if ( m_Act_p.m_x == 0xFFFF )
 	{
