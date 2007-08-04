@@ -3541,3 +3541,5 @@ this all in desperation)
 - Fixed #1239: Lumberjacking caused Sphere to crash, when failed.
 - Fixed: ISNEARTYPETOP did not work as intented (also changes some hardcoded
   gathering related behavior.)
+- Modified #1238: Sphere now tells you that you do not use SERV.MAP correctly
+  and does not throw an exception.
