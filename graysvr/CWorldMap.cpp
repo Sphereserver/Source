@@ -176,7 +176,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	//for ( iQty = 0; iQty < 4; ++iQty )
 	//	ptElem[iQty].m_z = -127;
 	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = -127;
-	ptElem[4] = CPointMap(-1,-1);
+	ptElem[4] = CPointMap(-1,-1,-127);
 
 	bool fElem[4] = { false, false, false, false };
 
@@ -263,7 +263,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				if ( !pMultiItem )
 					break;
 
-				//DEBUG_MSG(("abs( pMultiItem->m_dx ) %x, abs( pMultiItem->m_dy ) %x, abs( pMultiItem->m_dz ) %x,\n             iDistance %x IF STATEMENT %x %x\n", abs( pMultiItem->m_dx ), abs( pMultiItem->m_dy ), abs( pMultiItem->m_dz ), iDistance, ( abs( pMultiItem->m_dx ) <= iDistance ), ( abs( pMultiItem->m_dy ) <= iDistance ) ));
+				//DEBUG_ERR(("abs( pMultiItem->m_dx ) %x, abs( pMultiItem->m_dy ) %x, abs( pMultiItem->m_dz ) %x,\n             iDistance %x IF STATEMENT %x %x\n", abs( pMultiItem->m_dx ), abs( pMultiItem->m_dy ), abs( pMultiItem->m_dz ), iDistance, ( abs( pMultiItem->m_dx ) <= iDistance ), ( abs( pMultiItem->m_dy ) <= iDistance ) ));
 
 				if ( !pMultiItem->m_visible )
 					continue;
@@ -296,7 +296,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	
 				if (( ptTest.m_z < ptElem[1].m_z ) || (( ptTest.m_z == ptElem[1].m_z ) && ( fElem[1] )))
 					continue;
-		        //DEBUG_WARN(("pMultiItem->GetDispID()%x\n",pMultiItem->GetDispID()));
+		        //DEBUG_ERR(("pMultiItem->GetDispID()%x\n",pMultiItem->GetDispID()));
 				ptElem[1] = ptTest;
 				fElem[1] = false;
 				
@@ -307,11 +307,12 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				if ( pItemDef->IsType( iType ) )
 				{
 					fElem[1] = true;
-					if ( ptElem[iRetElem].m_z > ptElem[1].m_z )
+					//if ( ptElem[iRetElem].m_z > ptElem[1].m_z )
+					if ( ptElem[1].m_z > ptElem[iRetElem].m_z )
 						iRetElem = 1;
 				}
 
-				//DEBUG_MSG(( "DISPID: %x X %d Y %d Z %d\n", pMultiItem->GetDispID(), (pMultiItem->m_dx), (pMultiItem->m_dy), (pMultiItem->m_dz) ));
+				//DEBUG_ERR(( "DISPID: %x X %d Y %d Z %d\n", pMultiItem->GetDispID(), (pMultiItem->m_dx), (pMultiItem->m_dy), (pMultiItem->m_dz) ));
 			}
 		}
 	}
@@ -334,6 +335,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			ptTest = CPointMap( pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z, pt.m_map );
 
 			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
+			//DEBUG_ERR(("pStatic->GetDispID() %d; name %s; pStatic->m_z %d\n",pStatic->GetDispID(),pItemDef->GetName(),pStatic->m_z));
 			Height = pItemDef->GetHeight();
 			if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
 			{
@@ -354,27 +356,31 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			if ( pt.GetDist( ptTest ) > iDistance )
 				continue;
 
-			if ( ptElem[2].m_z > pStatic->m_z )
+			//if ( ptElem[2].m_z > pStatic->m_z )
+			if ( ptElem[2].m_z > ptTest.m_z )
 				continue;
 
 			if ( ((( pStatic->m_z - pt.m_z ) > 0) && ( pStatic->m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - pStatic->m_z ) < 0) && (( pt.m_z - pStatic->m_z ) < - RESOURCE_Z_CHECK )))
 				continue;
 
-			if (( pStatic->m_z < ptElem[2].m_z ) || (( pStatic->m_z == ptElem[2].m_z ) && ( fElem[2] )))
+			if (( ptTest.m_z < ptElem[2].m_z ) || (( ptTest.m_z == ptElem[2].m_z ) && ( fElem[2] )))
 				continue;
-	        
+
 			ptElem[2] = ptTest;
 			fElem[2] = false;
 
 			if ( pItemDef == NULL )
 				continue;
 
-			//DEBUG_ERR(("static pItemDef->IsType( iType %d) %d\n",iType,pItemDef->IsType( iType )));
+			//DEBUG_ERR(("static pItemDef->IsType( iType %d) %d;pItemDef->GetType() %d;pItemDef->GetID() %d;pItemDef->GetDispID() %d\n",iType,pItemDef->IsType( iType ),pItemDef->GetType(),pItemDef->GetID(),pItemDef->GetDispID()));
 			if ( pItemDef->IsType( iType ) )
 			{
+				//DEBUG_ERR(("found %d; ptTest: %d,%d,%d\n",__LINE__,ptTest.m_x,ptTest.m_y,ptTest.m_z));
 				fElem[2] = true;
-				if ( ptElem[iRetElem].m_z > ptElem[2].m_z )
-						iRetElem = 2;
+				//DEBUG_ERR(("ptElem[iRetElem].m_z %d, ptElem[2].m_z %d\n",ptElem[iRetElem].m_z,ptElem[2].m_z));
+				//if ( ptElem[iRetElem].m_z > ptElem[2].m_z )
+				if ( ptElem[2].m_z > ptElem[iRetElem].m_z )
+					iRetElem = 2;
 			}
 		}
 	}
@@ -398,22 +404,28 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				continue;
 			if ( ptElem[3].m_z > pMeter->m_z )
 				continue;
-			//DEBUG_WARN(("( pMeter->m_z %x - pt.m_z %x ) %x > RESOURCE_Z_CHECK %x   %x",pMeter->m_z,pt.m_z,( pMeter->m_z - pt.m_z ),RESOURCE_Z_CHECK,( ( pMeter->m_z - pt.m_z ) > RESOURCE_Z_CHECK )));
+
+			//DEBUG_ERR(("(( pMeter->m_z (%d) - pt.m_z (%d) ) > 0) && ( pMeter->m_z (%d) - pt.m_z (%d) ) > RESOURCE_Z_CHECK (%d) >> %d\n",pMeter->m_z,pt.m_z,pMeter->m_z,pt.m_z,RESOURCE_Z_CHECK,(( pMeter->m_z - pt.m_z ) > 0) && ( pMeter->m_z - pt.m_z ) > RESOURCE_Z_CHECK));
+			//DEBUG_ERR(("(( pt.m_z (%d) - pMeter->m_z (%d) ) < 0) && (( pt.m_z (%d) - pMeter->m_z (%d) ) < - RESOURCE_Z_CHECK (%d) )) >> %d\n",pt.m_z,pMeter->m_z,pt.m_z,pMeter->m_z,- RESOURCE_Z_CHECK,((( pt.m_z - pMeter->m_z ) < 0) && (( pt.m_z - pMeter->m_z ) < - RESOURCE_Z_CHECK ))));
 			if ( ((( pMeter->m_z - pt.m_z ) > 0) && ( pMeter->m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - pMeter->m_z ) < 0) && (( pt.m_z - pMeter->m_z ) < - RESOURCE_Z_CHECK )))
 				continue;
+
+			//DEBUG_ERR(("pMeter->m_z (%d) < ptElem[3].m_z (%d) >> %d\n",pMeter->m_z,ptElem[3].m_z,pMeter->m_z < ptElem[3].m_z));
 			if (( pMeter->m_z < ptElem[3].m_z ) || (( pMeter->m_z == ptElem[3].m_z ) && ( fElem[3] )))
 				continue;
 
 			ptElem[3] = ptTest;
 			fElem[3] = false;
 
-			//DEBUG_WARN(("iType %x, TerrainType %x",iType,g_World.GetTerrainItemType( pMeter->m_wTerrainIndex )));
+			//DEBUG_ERR(("iType %x, TerrainType %x\n",iType,g_World.GetTerrainItemType( pMeter->m_wTerrainIndex )));
 			if ( iType == g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
 			{
 				fElem[3] = true;
-				if ( ptElem[iRetElem].m_z > ptElem[3].m_z )
+				//if ( ptElem[iRetElem].m_z > ptElem[3].m_z )
+				//DEBUG_ERR(("ptElem[3].m_z %d; ptElem[iRetElem].m_z %d\n",ptElem[3].m_z, ptElem[iRetElem].m_z));
+				if ( ptElem[3].m_z > ptElem[iRetElem].m_z )
 						iRetElem = 3;
-				//DEBUG_WARN(("fElem3 %d %d",ptElem[3].m_z, fElem[3]));
+				//DEBUG_ERR(("fElem3 %d %d\n",ptElem[3].m_z, fElem[3]));
 				continue;
 			}
 
@@ -436,9 +448,19 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	else
 		iRetElem = 4;*/
 
+	     if ( 0 != iRetElem && ptElem[0].m_z > ptElem[iRetElem].m_z )
+			 iRetElem = 4;
+	else if ( 1 != iRetElem && ptElem[1].m_z > ptElem[iRetElem].m_z )
+		     iRetElem = 4;
+	else if ( 2 != iRetElem && ptElem[2].m_z > ptElem[iRetElem].m_z )
+		     iRetElem = 4;
+	else if ( 3 != iRetElem && ptElem[3].m_z > ptElem[iRetElem].m_z )
+		     iRetElem = 4;
+
 	//DEBUG_ERR(("iRetElem %d; %d %d %d %d; %d %d %d ISVALID: %d\n",iRetElem,ptElem[1].m_z,ptElem[2].m_z,ptElem[3].m_z,ptElem[4].m_z,pt.m_x,pt.m_y,pt.m_z,ptElem[iRetElem].IsValidPoint()));
 	//DEBUG_ERR(("X: %d  Y: %d  Z: %d\n",ptElem[iRetElem].m_x,ptElem[iRetElem].m_y,ptElem[iRetElem].m_z));
 	return ( ptElem[iRetElem] );
+#undef RESOURCE_Z_CHECK
 }
 
 bool CWorld::IsItemTypeNear( const CPointMap & pt, IT_TYPE iType, int iDistance )
