@@ -47,6 +47,18 @@
             this.toolBtnHelp = new System.Windows.Forms.ToolStripButton();
             this.toolBtnClose = new System.Windows.Forms.ToolStripButton();
             this.gbSelectedData = new System.Windows.Forms.GroupBox();
+            this.btnDetailsUnpack = new System.Windows.Forms.Button();
+            this.btnDetailsDelete = new System.Windows.Forms.Button();
+            this.btnDetailsApply = new System.Windows.Forms.Button();
+            this.btnDetailsModify = new System.Windows.Forms.Button();
+            this.pnUopfile = new System.Windows.Forms.Panel();
+            this.btn_pnlUopFile_RecountFiles = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblFiles = new System.Windows.Forms.Label();
+            this.lblManyData = new System.Windows.Forms.Label();
+            this.txt_pnlUopFile_Header2 = new System.Windows.Forms.TextBox();
+            this.num_pnlUopFile_Files = new System.Windows.Forms.NumericUpDown();
+            this.txt_pnlUopFile_Header1 = new System.Windows.Forms.TextBox();
             this.lbIndexList = new System.Windows.Forms.ListBox();
             this.ctxMenuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,10 +67,13 @@
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ssStatusBar = new System.Windows.Forms.StatusStrip();
             this.tslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.oFileDlgUopsave = new System.Windows.Forms.SaveFileDialog();
-            this.tslblWorking = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslblWorking = new System.Windows.Forms.ToolStripStatusLabel();
+            this.oFileDlgUopsave = new System.Windows.Forms.SaveFileDialog();
             this.tsMainBar.SuspendLayout();
+            this.gbSelectedData.SuspendLayout();
+            this.pnUopfile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_pnlUopFile_Files)).BeginInit();
             this.ctxMenuNode.SuspendLayout();
             this.ssStatusBar.SuspendLayout();
             this.SuspendLayout();
@@ -97,7 +112,7 @@
             this.tsMainBar.Location = new System.Drawing.Point(0, 0);
             this.tsMainBar.Name = "tsMainBar";
             this.tsMainBar.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.tsMainBar.Size = new System.Drawing.Size(660, 31);
+            this.tsMainBar.Size = new System.Drawing.Size(672, 31);
             this.tsMainBar.TabIndex = 6;
             // 
             // tllblEmpty1
@@ -227,12 +242,150 @@
             // 
             // gbSelectedData
             // 
+            this.gbSelectedData.Controls.Add(this.btnDetailsUnpack);
+            this.gbSelectedData.Controls.Add(this.btnDetailsDelete);
+            this.gbSelectedData.Controls.Add(this.btnDetailsApply);
+            this.gbSelectedData.Controls.Add(this.btnDetailsModify);
+            this.gbSelectedData.Controls.Add(this.pnUopfile);
             this.gbSelectedData.Location = new System.Drawing.Point(347, 32);
             this.gbSelectedData.Name = "gbSelectedData";
-            this.gbSelectedData.Size = new System.Drawing.Size(301, 370);
+            this.gbSelectedData.Size = new System.Drawing.Size(313, 370);
             this.gbSelectedData.TabIndex = 8;
             this.gbSelectedData.TabStop = false;
             this.gbSelectedData.Text = "Details";
+            // 
+            // btnDetailsUnpack
+            // 
+            this.btnDetailsUnpack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetailsUnpack.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsUnpack.Image")));
+            this.btnDetailsUnpack.Location = new System.Drawing.Point(6, 337);
+            this.btnDetailsUnpack.Name = "btnDetailsUnpack";
+            this.btnDetailsUnpack.Size = new System.Drawing.Size(79, 26);
+            this.btnDetailsUnpack.TabIndex = 4;
+            this.btnDetailsUnpack.Text = "Unpack";
+            this.btnDetailsUnpack.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDetailsUnpack.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDetailsUnpack.UseVisualStyleBackColor = true;
+            this.btnDetailsUnpack.Click += new System.EventHandler(this.btnDetailsUnpack_Click);
+            // 
+            // btnDetailsDelete
+            // 
+            this.btnDetailsDelete.Enabled = false;
+            this.btnDetailsDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetailsDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsDelete.Image")));
+            this.btnDetailsDelete.Location = new System.Drawing.Point(243, 337);
+            this.btnDetailsDelete.Name = "btnDetailsDelete";
+            this.btnDetailsDelete.Size = new System.Drawing.Size(64, 26);
+            this.btnDetailsDelete.TabIndex = 3;
+            this.btnDetailsDelete.Text = "Delete";
+            this.btnDetailsDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDetailsDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDetailsDelete.UseVisualStyleBackColor = true;
+            this.btnDetailsDelete.Click += new System.EventHandler(this.btnDetailsDelete_Click);
+            // 
+            // btnDetailsApply
+            // 
+            this.btnDetailsApply.Enabled = false;
+            this.btnDetailsApply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetailsApply.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsApply.Image")));
+            this.btnDetailsApply.Location = new System.Drawing.Point(169, 337);
+            this.btnDetailsApply.Name = "btnDetailsApply";
+            this.btnDetailsApply.Size = new System.Drawing.Size(68, 26);
+            this.btnDetailsApply.TabIndex = 2;
+            this.btnDetailsApply.Text = "Apply";
+            this.btnDetailsApply.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDetailsApply.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDetailsApply.UseVisualStyleBackColor = true;
+            this.btnDetailsApply.Click += new System.EventHandler(this.btnDetailsApply_Click);
+            // 
+            // btnDetailsModify
+            // 
+            this.btnDetailsModify.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetailsModify.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsModify.Image")));
+            this.btnDetailsModify.Location = new System.Drawing.Point(91, 337);
+            this.btnDetailsModify.Name = "btnDetailsModify";
+            this.btnDetailsModify.Size = new System.Drawing.Size(72, 26);
+            this.btnDetailsModify.TabIndex = 1;
+            this.btnDetailsModify.Text = " Modify";
+            this.btnDetailsModify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDetailsModify.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDetailsModify.UseVisualStyleBackColor = true;
+            this.btnDetailsModify.Click += new System.EventHandler(this.btnDetailsModify_Click);
+            // 
+            // pnUopfile
+            // 
+            this.pnUopfile.Controls.Add(this.btn_pnlUopFile_RecountFiles);
+            this.pnUopfile.Controls.Add(this.label3);
+            this.pnUopfile.Controls.Add(this.lblFiles);
+            this.pnUopfile.Controls.Add(this.lblManyData);
+            this.pnUopfile.Controls.Add(this.txt_pnlUopFile_Header2);
+            this.pnUopfile.Controls.Add(this.num_pnlUopFile_Files);
+            this.pnUopfile.Controls.Add(this.txt_pnlUopFile_Header1);
+            this.pnUopfile.Enabled = false;
+            this.pnUopfile.Location = new System.Drawing.Point(6, 19);
+            this.pnUopfile.Name = "pnUopfile";
+            this.pnUopfile.Size = new System.Drawing.Size(301, 312);
+            this.pnUopfile.TabIndex = 0;
+            this.pnUopfile.Visible = false;
+            // 
+            // btn_pnlUopFile_RecountFiles
+            // 
+            this.btn_pnlUopFile_RecountFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_pnlUopFile_RecountFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_pnlUopFile_RecountFiles.Location = new System.Drawing.Point(106, 119);
+            this.btn_pnlUopFile_RecountFiles.Name = "btn_pnlUopFile_RecountFiles";
+            this.btn_pnlUopFile_RecountFiles.Size = new System.Drawing.Size(86, 29);
+            this.btn_pnlUopFile_RecountFiles.TabIndex = 6;
+            this.btn_pnlUopFile_RecountFiles.Text = "Recount";
+            this.btn_pnlUopFile_RecountFiles.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 196);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(54, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Header 2:";
+            // 
+            // lblFiles
+            // 
+            this.lblFiles.AutoSize = true;
+            this.lblFiles.Location = new System.Drawing.Point(3, 112);
+            this.lblFiles.Name = "lblFiles";
+            this.lblFiles.Size = new System.Drawing.Size(82, 13);
+            this.lblFiles.TabIndex = 4;
+            this.lblFiles.Text = "Files Contained:";
+            // 
+            // lblManyData
+            // 
+            this.lblManyData.AutoSize = true;
+            this.lblManyData.Location = new System.Drawing.Point(3, 33);
+            this.lblManyData.Name = "lblManyData";
+            this.lblManyData.Size = new System.Drawing.Size(54, 13);
+            this.lblManyData.TabIndex = 3;
+            this.lblManyData.Text = "Header 1:";
+            // 
+            // txt_pnlUopFile_Header2
+            // 
+            this.txt_pnlUopFile_Header2.Location = new System.Drawing.Point(3, 212);
+            this.txt_pnlUopFile_Header2.Name = "txt_pnlUopFile_Header2";
+            this.txt_pnlUopFile_Header2.Size = new System.Drawing.Size(295, 20);
+            this.txt_pnlUopFile_Header2.TabIndex = 2;
+            // 
+            // num_pnlUopFile_Files
+            // 
+            this.num_pnlUopFile_Files.Location = new System.Drawing.Point(3, 128);
+            this.num_pnlUopFile_Files.Name = "num_pnlUopFile_Files";
+            this.num_pnlUopFile_Files.Size = new System.Drawing.Size(92, 20);
+            this.num_pnlUopFile_Files.TabIndex = 1;
+            // 
+            // txt_pnlUopFile_Header1
+            // 
+            this.txt_pnlUopFile_Header1.Location = new System.Drawing.Point(3, 49);
+            this.txt_pnlUopFile_Header1.Name = "txt_pnlUopFile_Header1";
+            this.txt_pnlUopFile_Header1.Size = new System.Drawing.Size(295, 20);
+            this.txt_pnlUopFile_Header1.TabIndex = 0;
             // 
             // lbIndexList
             // 
@@ -296,7 +449,7 @@
             this.tslblWorking});
             this.ssStatusBar.Location = new System.Drawing.Point(0, 408);
             this.ssStatusBar.Name = "ssStatusBar";
-            this.ssStatusBar.Size = new System.Drawing.Size(660, 25);
+            this.ssStatusBar.Size = new System.Drawing.Size(672, 25);
             this.ssStatusBar.SizingGrip = false;
             this.ssStatusBar.TabIndex = 9;
             this.ssStatusBar.Text = "Status Bar";
@@ -313,9 +466,11 @@
             this.tslblStatus.Size = new System.Drawing.Size(400, 20);
             this.tslblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // oFileDlgUopsave
+            // tslblEmpty
             // 
-            this.oFileDlgUopsave.Filter = "UOKR Uop (*.uop)|*.uop";
+            this.tslblEmpty.AutoSize = false;
+            this.tslblEmpty.Name = "tslblEmpty";
+            this.tslblEmpty.Size = new System.Drawing.Size(243, 20);
             // 
             // tslblWorking
             // 
@@ -325,17 +480,15 @@
             this.tslblWorking.Size = new System.Drawing.Size(16, 20);
             this.tslblWorking.Visible = false;
             // 
-            // tslblEmpty
+            // oFileDlgUopsave
             // 
-            this.tslblEmpty.AutoSize = false;
-            this.tslblEmpty.Name = "tslblEmpty";
-            this.tslblEmpty.Size = new System.Drawing.Size(229, 20);
+            this.oFileDlgUopsave.Filter = "UOKR Uop (*.uop)|*.uop";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 433);
+            this.ClientSize = new System.Drawing.Size(672, 433);
             this.Controls.Add(this.gbSelectedData);
             this.Controls.Add(this.tsMainBar);
             this.Controls.Add(this.lbIndexList);
@@ -348,6 +501,10 @@
             this.Text = "UO:KR Uop Dumper";
             this.tsMainBar.ResumeLayout(false);
             this.tsMainBar.PerformLayout();
+            this.gbSelectedData.ResumeLayout(false);
+            this.pnUopfile.ResumeLayout(false);
+            this.pnUopfile.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_pnlUopFile_Files)).EndInit();
             this.ctxMenuNode.ResumeLayout(false);
             this.ssStatusBar.ResumeLayout(false);
             this.ssStatusBar.PerformLayout();
@@ -386,6 +543,18 @@
         private System.Windows.Forms.SaveFileDialog oFileDlgUopsave;
         private System.Windows.Forms.ToolStripStatusLabel tslblWorking;
         private System.Windows.Forms.ToolStripStatusLabel tslblEmpty;
+        private System.Windows.Forms.Panel pnUopfile;
+        private System.Windows.Forms.Button btnDetailsDelete;
+        private System.Windows.Forms.Button btnDetailsApply;
+        private System.Windows.Forms.Button btnDetailsModify;
+        private System.Windows.Forms.TextBox txt_pnlUopFile_Header2;
+        private System.Windows.Forms.NumericUpDown num_pnlUopFile_Files;
+        private System.Windows.Forms.TextBox txt_pnlUopFile_Header1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblFiles;
+        private System.Windows.Forms.Label lblManyData;
+        private System.Windows.Forms.Button btn_pnlUopFile_RecountFiles;
+        private System.Windows.Forms.Button btnDetailsUnpack;
     }
 }
 

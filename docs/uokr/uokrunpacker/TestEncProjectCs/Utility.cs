@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace UoKRUnpacker
@@ -84,7 +85,8 @@ namespace UoKRUnpacker
         public enum HashStringStyle : int
         {
             BigHex = 0,
-            SingleHex
+            SingleHex,
+            HexWithSeparator
         }
 
         public static string ByteArrayToString(byte[] thearray, HashStringStyle style)
@@ -102,9 +104,61 @@ namespace UoKRUnpacker
                     sbBuffer.AppendFormat("{0:X}", bSingle);
                 else if (style == HashStringStyle.SingleHex)
                     sbBuffer.AppendFormat("0x{0:X} ", bSingle);
+                else if (style == HashStringStyle.HexWithSeparator)
+                    sbBuffer.AppendFormat("{0:X} ", bSingle);
             }
 
-            return sbBuffer.ToString().Trim();
+            string toReturn = sbBuffer.ToString().Trim();
+
+            if (style == HashStringStyle.HexWithSeparator)
+            {
+                toReturn = toReturn.Replace(' ', '-');
+            }
+
+            return toReturn;
+        }
+
+        public static byte[] StringToByteArray(string thearray, HashStringStyle style, int expectedLength)
+        {
+            byte[] toReturn = null;
+
+            if (expectedLength > 0)
+                toReturn = new byte[expectedLength];
+
+            if (style == HashStringStyle.BigHex)
+            {
+                // sbBuffer.AppendFormat("{0:X}", bSingle);
+            }
+            else if (style == HashStringStyle.SingleHex)
+            {
+                // sbBuffer.AppendFormat("0x{0:X} ", bSingle);
+            }
+            else if (style == HashStringStyle.HexWithSeparator)
+            {
+                string[] separated = thearray.Split(new char[] { '-' });
+                if (expectedLength > 0)
+                {
+                    if (expectedLength == separated.Length)
+                    {
+                        for(int i = 0; i < separated.Length; i++)
+                        {
+                            if (!Byte.TryParse(separated[i], NumberStyles.AllowHexSpecifier, null, out toReturn[i]))
+                                return null; // error
+                        }
+                    }
+                }
+                else
+                {
+                    toReturn = new byte[separated.Length];
+                    for (int i = 0; i < separated.Length; i++)
+                    {
+                        if (!Byte.TryParse(separated[i], NumberStyles.AllowHexSpecifier, null, out toReturn[i]))
+                            return null; // error
+                    }
+                }
+            }
+
+            return toReturn;
         }
     }
 }
