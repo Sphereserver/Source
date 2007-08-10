@@ -454,7 +454,10 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		}
 		else if ( isdigit(ch) )
 		{
-			iVer += ( ch - '0' ) + 1;
+			if ( !isdigit(pszVersion[i+1]))
+				iVer += ( ch - '0' ) + 1;
+			else
+				iVer += ((( ch - '0' ) * 10) + (pszVersion[i+1] - '0') + 1) & 0x0F;
 		}
 		break;
 	}
@@ -465,21 +468,20 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 TCHAR* CCrypt::WriteClientVerString( int iClientVersion, TCHAR * pStr )
 {
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");
-	int iLen = sprintf( pStr, "%x.%x.%x", iClientVersion/0x100000, (iClientVersion/0x1000)%0x100, (iClientVersion/0x10)%0x100 );
-
-	if ( iClientVersion & 0x0f )
+	if ( iClientVersion & 0x0f && iClientVersion >= 0x500066 )
 	{
-		if ( iClientVersion >= 0x500066 )
+		sprintf( pStr, "%x.%x.%x.%d", iClientVersion/0x100000, (iClientVersion/0x1000)%0x100, (iClientVersion/0x10)%0x100, (iClientVersion & 0x0f) - 1 );
+	}
+	else
+	{
+		int iLen = sprintf( pStr, "%x.%x.%x", iClientVersion/0x100000, (iClientVersion/0x1000)%0x100, (iClientVersion/0x10)%0x100 );
+
+		if ( iClientVersion & 0x0f )
 		{
 			pStr[iLen++] = '.';
-			pStr[iLen++] = ( iClientVersion & 0x0f ) + '0' - 1;
-		}
-		else
-		{
 			pStr[iLen++] = ( iClientVersion & 0x0f ) + 'a' - 1;
+			pStr[iLen] = '\0';
 		}
-
-		pStr[iLen] = '\0';
 	}
 	return( pStr );
 }

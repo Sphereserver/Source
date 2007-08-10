@@ -992,7 +992,7 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 			return;
 	}
 
-	if ( GetNPCBrain() != NPCBRAIN_GUARD )
+	if ( m_pNPC->m_Brain != NPCBRAIN_GUARD )
 	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_CRIM ) );
 	}
@@ -1385,6 +1385,13 @@ void CChar::CallGuards( CChar * pCriminal )
 
 	bool		bSearchedGuard = false;
 	CChar		*pGuard = NULL;
+
+	// I'm a guard, why summon someone else to do my work? :)
+	if ( !m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
+	{
+		bSearchedGuard = true;
+		pGuard = this;
+	}
 
 	// Is there anything for guards to see ?
 	if ( !pCriminal )

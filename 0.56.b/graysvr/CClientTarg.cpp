@@ -1622,11 +1622,11 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 		CPointMap ptn = pt;
 
 		int x = rect.m_left;
-		for ( ; x <=rect.m_right; ++x )
+		for ( ; x <rect.m_right; ++x )
 		{
 			ptn.m_x = x;
 			int y = rect.m_top;
-			for ( ; y<=rect.m_bottom; ++y )
+			for ( ; y<rect.m_bottom; ++y )
 			{
 				ptn.m_y = y;
 

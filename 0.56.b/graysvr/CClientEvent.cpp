@@ -320,7 +320,29 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 
 	CGrayUID uidItem( pEvent->ItemDropReq.m_UID );
 	CItem * pItem = uidItem.ItemFind();
-	CGrayUID uidOn( pEvent->ItemDropReq.m_UIDCont );	// dropped on this item.
+	CGrayUID uidOn;	// dropped on this item.
+#ifdef __UOKRSCARYADDONS
+	unsigned char gridIndex;
+
+	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+#else
+
+	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+#endif
+	{
+		uidOn = (DWORD)pEvent->ItemDropReqNew.m_UIDCont;
+#ifdef __UOKRSCARYADDONS
+		gridIndex = pEvent->ItemDropReqNew.m_grid;
+#endif
+	}
+	else
+	{
+		uidOn = (DWORD)pEvent->ItemDropReq.m_UIDCont;
+#ifdef __UOKRSCARYADDONS
+		gridIndex = 0;
+#endif
+	}
+
 	CObjBase * pObjOn = uidOn.ObjFind();
 	CPointMap  pt( pEvent->ItemDropReq.m_x, pEvent->ItemDropReq.m_y, pEvent->ItemDropReq.m_z, m_pChar->GetTopMap() );
 
@@ -538,7 +560,11 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 		m_pChar->UpdateDrag( pItem, pObjOn );
 		CItemContainer * pContOn = dynamic_cast <CItemContainer *>(pObjOn);
 		ASSERT(pContOn);
+#ifdef __UOKRSCARYADDONS
+		pContOn->ContentAdd( pItem, pt, gridIndex );
+#else
 		pContOn->ContentAdd( pItem, pt );
+#endif
 		addSound( pItem->GetDropSound( pObjOn ));
 	}
 	else
@@ -4421,8 +4447,20 @@ int CClient::xDispatchMsg()
 			break;
 		case XCMD_ItemDropReq: // Drop Item
 			EXC_SET("drop item");
-			if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReq )))
-				RETURN_FALSE();
+#ifdef __UOKRSCARYADDONS
+			if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+#else
+			if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+#endif
+			{
+				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReqNew ) ) )
+					RETURN_FALSE();
+			}
+			else
+			{
+				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReq )))
+					RETURN_FALSE();
+			}
 			Event_Item_Drop(pEvent);
 			break;
 		case XCMD_Click: // Singleclick

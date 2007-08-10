@@ -236,3 +236,62 @@ byte[1]                 entry count
 
 --> Seen on OSI (unknown purpose)
 
+
+========================
+0x08  (client -> server)
+ITEM DROP REQUEST
+========================
+
+byte[1]                 packet cmd
+byte[4]                 item serial
+byte[2]                 position X
+byte[2]                 position Y
+byte[1]                 position Z
+byte[1]                 grid number
+byte[4]                 container serial
+
+--> Same as old 0x08, except for the inserted 'grid number' byte, which represents
+    the grid that the item is being dropped into.
+
+
+========================
+0x25  (server -> client)
+CONTAINER ADD ITEM
+========================
+
+byte[1]                 packet cmd
+byte[4]                 item serial
+byte[2]                 item art id
+byte[1]                 unknown
+byte[2]                 item amount
+byte[2]                 position X
+byte[2]                 position Y
+byte[1]                 grid number
+byte[4]                 container serial
+byte[2]                 item hue
+
+--> Same as old 0x25, except for the inserted 'grid number' byte, which represents
+    the grid where the item is located.
+
+
+========================
+0x3C  (server -> client)
+CONTAINER CONTENTS
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[2]                 item count
+     - foreach item
+       byte[4]          item serial
+       byte[2]          item art id
+       byte[1]          unknown
+       byte[2]          item amount
+       byte[2]          position X
+       byte[2]          position Y
+       byte[1]          grid number
+       byte[4]          container serial
+       byte[2]          item hue
+
+--> Same as old 0x3c, except for the inserted 'grid number' byte, which represents
+    the grid where the item is located.
