@@ -1193,7 +1193,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 			CScriptTriggerArgs	Args( iDist, iWantThisItem, pItem );
 			switch( OnTrigger( CTRIG_NPCLookAtItem, this, &Args ) )
 			{
-#ifdef _NAZTEST
+#ifdef _NAZDEBUG
 			case  TRIGRET_RET_TRUE:	
 				g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned TRUE\n", GetName() );
 				return false;
@@ -1205,7 +1205,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 			case  TRIGRET_RET_FALSE:	return false;
 #endif
 			}
-#ifdef _NAZTEST
+#ifdef _NAZDEBUG
 			g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned DEFAULT\n", GetName() );
 #endif
 			iWantThisItem = Args.m_iN2;
@@ -2432,7 +2432,7 @@ bool CChar::NPC_Act_Food()
 
 		if ( ( pItem->GetTopPoint().m_z > (iMyZ + 10) ) || ( pItem->GetTopPoint().m_z < (iMyZ - 1) ) )
 		{
-#ifdef _NAZTEST
+#ifdef _NAZDEBUG
 			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s but its Z (%d) is too different from his (%d)\n", GetName(), pItem->GetName(), pItem->GetTopPoint().m_z, iMyZ );
 #endif
 			continue;
@@ -2602,6 +2602,7 @@ void CChar::NPC_Act_Idle()
 					return;
 				}
 				break;
+#ifndef _NAZTEST
 			case CREID_GIANT_SPIDER:
 				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB) )
 				{
@@ -2609,6 +2610,28 @@ void CChar::NPC_Act_Idle()
 					return;
 				}
 				break;
+#else
+			default:
+				// TAG.OVERRIDE.SPIDERWEB
+				CVarDefCont * pValue = GetKey("OVERRIDE.SPIDERWEB",true);
+				if ( pValue )
+				{
+					DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB set\n", GetName()));
+					if ( GetDispID() != CREID_GIANT_SPIDER )
+					{
+						DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB set and is NOT a Giant Spider\n", GetName()));
+						Action_StartSpecial(CREID_GIANT_SPIDER);
+						return;
+					}
+				} else {
+					if ( GetDispID() == CREID_GIANT_SPIDER )
+					{
+						DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB NOT set and IS a Giant Spider\n", GetName()));
+						Action_StartSpecial(CREID_GIANT_SPIDER);
+						return;
+					}
+				}
+#endif
 		}
 	}
 

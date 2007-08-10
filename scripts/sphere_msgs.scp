@@ -1124,5 +1124,7 @@
 //tooltip_tag_amount		"Amount"
 //tooltip_tag_armor		"Armor"
 //tooltip_tag_destination	"Destination"
+//tiller_turb_water		"Turbulent Waters Cap'n"
+//tiller_stopped		"We've stopped Cap'n"
 
 [EOF]

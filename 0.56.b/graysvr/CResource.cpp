@@ -139,6 +139,8 @@ CResource::CResource()
 
 	m_iAdvancedLos		= 0;
 
+	m_iWrapX		= 0x1400;
+
 	// New ones
 	m_iFeatureT2A		= (FEATURE_T2A_UPDATE|FEATURE_T2A_CHAT);
 	m_iFeatureLBR		= 0;
@@ -460,6 +462,7 @@ enum RC_TYPE
 	RC_WOPPLAYER,
 	RC_WOPSTAFF,
 	RC_WORLDSAVE,
+	RC_WRAPX,
 	RC_ZEROPOINT,				// m_sZeroPoint
 	RC_QTY,
 };
@@ -638,6 +641,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "WOPPLAYER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fWordsOfPowerPlayer)	}},
 	{ "WOPSTAFF",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fWordsOfPowerStaff)	}},
 	{ "WORLDSAVE",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sWorldBaseDir)	}},
+	{ "WRAPX",				{ ELEM_INT,	OFFSETOF(CResource,m_iWrapX)	}},
 	{ "ZEROPOINT",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sZeroPoint) }},
 	{ NULL },
 };

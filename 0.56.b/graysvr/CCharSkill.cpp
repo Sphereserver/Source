@@ -2015,7 +2015,7 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	CPointMap pnt = GetTopPoint();
 	if ( pnt.m_map <= 1 )
 	{
-		if ( pnt.m_x >= UO_SIZE_X_REAL )	// maps don't work out here !
+		if ( pnt.m_x >= g_Cfg.m_iWrapX )	// maps don't work out here !
 		{
 			SysMessageDefault( DEFMSG_CARTOGRAPHY_WMAP );
 			return( -SKTRIG_QTY );

@@ -1108,3 +1108,6 @@ MSG(TOOLTIP_TAG_NEWBIE,		"tooltip_tag_newbie",		"Newbie")
 MSG(TOOLTIP_TAG_AMOUNT,		"tooltip_tag_amount",		"Amount")
 MSG(TOOLTIP_TAG_ARMOR,		"tooltip_tag_armor",		"Armor")
 MSG(TOOLTIP_TAG_DESTINATION,	"tooltip_tag_destination",	"Destination")
+MSG(TILLER_TURB_WATER,		"tiller_turb_water",		"Turbulent waters Cap'n")
+MSG(TILLER_STOPPED,		"tiller_stopped",		"We've stopped Cap'n")
+
