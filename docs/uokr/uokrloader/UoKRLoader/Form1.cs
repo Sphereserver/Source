@@ -157,20 +157,10 @@ namespace UoKRLoader
             if (caTouse == null)
                 return;
 
-            byte[] newData = new byte[StaticData.UOKR_IPDATA.Length];
-            StaticData.UOKR_IPDATA.CopyTo(newData, 0);
-            newData[1] = caTouse.ipHost.GetAddressBytes()[3];
-            newData[3] = caTouse.ipHost.GetAddressBytes()[1];
-            newData[8] = caTouse.ipHost.GetAddressBytes()[0];
-            newData[14] = caTouse.ipHost.GetAddressBytes()[2];
-            newData[24] = (byte)(caTouse.uPort & 0xFF);
-            newData[25] = (byte)((caTouse.uPort & 0xFF00) >> 8);
-            newData[30] = (byte)(caTouse.uPort & 0xFF);
-            newData[31] = (byte)((caTouse.uPort & 0xFF00) >> 8);
-
             int iResultEncLogin = 0;
             int iResultEncGame = 0;
             int iResultIP = 0;
+            int iResultIPId = 0;
             ENCRYPTION_PATCH_TYPE encType = caTouse.encType;
 
             // !bPatch
@@ -223,7 +213,13 @@ namespace UoKRLoader
                 strGeneric = new ProcessStream((IntPtr)prcTostart.Id);
             }
 
-            iResultIP = Utility.Search(strGeneric, StaticData.UOKR_IPDATA, bPatch);
+            for (iResultIPId = 0; iResultIPId < StaticData.UOKR_IPDATA_VERSION; iResultIPId++)
+            {
+                iResultIP = Utility.Search(strGeneric, StaticData.GetIPData(iResultIPId), bPatch);
+                if (iResultIP != 0)
+                    break;
+            }
+
             if (iResultIP == 0)
             {
                 strGeneric.Close();
@@ -267,8 +263,9 @@ namespace UoKRLoader
                 strGeneric.Seek(0, SeekOrigin.Begin);
             }
 
+            byte[] newDataIp = StaticData.GetPatchedIPData(iResultIPId, caTouse.ipHost, caTouse.uPort);
             strGeneric.Seek(iResultIP, SeekOrigin.Begin);
-            strGeneric.Write(newData, 0, newData.Length);
+            strGeneric.Write(newDataIp, 0, newDataIp.Length);
 
             if ((encType == ENCRYPTION_PATCH_TYPE.Login) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {

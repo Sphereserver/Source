@@ -14,9 +14,101 @@ namespace UoKRLoader
         public const string UOKR_REGKEY = @"Origin Worlds Online\Ultima Online Kingdom Reborn\1.0";
         public const string UOKR_CLIENT = @"uokr.exe";
         public const string UOKR_PATCHCLIENT = @"uokr.patched.exe";
-        public static byte[] UOKR_IPDATA = { 0x6A, 0x39, 0x68, 0x99, 0x00, 0x00, 0x00, 0x68, 0x9F, 0x00, 0x00, 0x00, 0x56, 
+
+        #region IP Address const
+        private static byte[] UOKR_IPDATA_0 = { 0x6A, 0x39, 0x68, 0x99, 0x00, 0x00, 0x00, 0x68, 0x9F, 0x00, 0x00, 0x00, 0x56, 
                                              0xB1, 0xC4, 0xE8, 0xC7, 0xFF, 0xFF, 0xFF, 0x66, 0xC7, 0x46, 0x04, 0x5F, 0x1E, 
                                              0xC3, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E };
+        // private static byte[] UOKR_IPDATA_1 = { 0xC7, 0x00, 0x39, 0xC4, 0x99, 0x9F, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E, 0xC3, 
+        //                                     0xCC, 0xCC, 0xCC, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E };
+        private static byte[] UOKR_IPDATA_1 = { 0x8B, 0xC6, 0xC7, 0x44, 0x24, 0x0C, 0x39, 0xC4, 0x99, 0x9F, 0x66, 0xC7, 0x44, 0x24,
+                                                0x10, 0x5F, 0x1E};
+
+        public static int UOKR_IPDATA_VERSION
+        {
+            get { return 2; }
+        }
+
+        public static byte[] GetIPData(int iVersion)
+        {
+            byte[] ipThing = null;
+
+            switch (iVersion)
+            {
+                case 1:
+                    {
+                        ipThing = new byte[StaticData.UOKR_IPDATA_1.Length];
+                        StaticData.UOKR_IPDATA_1.CopyTo(ipThing, 0);
+
+                    } break;
+
+                case 0:
+                    {
+                        ipThing = new byte[StaticData.UOKR_IPDATA_0.Length];
+                        StaticData.UOKR_IPDATA_0.CopyTo(ipThing, 0);
+                    } break;
+
+                default:
+                    {
+
+                    } break;
+            }
+
+            return ipThing;
+        }
+
+        public static byte[] GetPatchedIPData(int iVersion, System.Net.IPAddress theIP, uint thePort)
+        {
+            byte[] patchedThing = null;
+
+            switch (iVersion)
+            {
+                case 1:
+                    {
+                        patchedThing = new byte[StaticData.UOKR_IPDATA_1.Length];
+                        StaticData.UOKR_IPDATA_1.CopyTo(patchedThing, 0);
+                        //patchedThing[2] = theIP.GetAddressBytes()[3];
+                        //patchedThing[3] = theIP.GetAddressBytes()[2];
+                        //patchedThing[4] = theIP.GetAddressBytes()[1];
+                        //patchedThing[5] = theIP.GetAddressBytes()[0];
+                        //patchedThing[10] = (byte)(thePort & 0xFF);
+                        //patchedThing[11] = (byte)((thePort & 0xFF00) >> 8);
+                        //patchedThing[20] = (byte)(thePort & 0xFF);
+                        //patchedThing[21] = (byte)((thePort & 0xFF00) >> 8);
+                        patchedThing[6] = theIP.GetAddressBytes()[3];
+                        patchedThing[7] = theIP.GetAddressBytes()[2];
+                        patchedThing[8] = theIP.GetAddressBytes()[1];
+                        patchedThing[9] = theIP.GetAddressBytes()[0];
+                        patchedThing[15] = (byte)(thePort & 0xFF);
+                        patchedThing[16] = (byte)((thePort & 0xFF00) >> 8);
+                    } break;
+
+                case 0:
+                    {
+                        patchedThing = new byte[StaticData.UOKR_IPDATA_0.Length];
+                        StaticData.UOKR_IPDATA_0.CopyTo(patchedThing, 0);
+                        patchedThing[1] = theIP.GetAddressBytes()[3];
+                        patchedThing[3] = theIP.GetAddressBytes()[1];
+                        patchedThing[8] = theIP.GetAddressBytes()[0];
+                        patchedThing[14] = theIP.GetAddressBytes()[2];
+                        patchedThing[24] = (byte)(thePort & 0xFF);
+                        patchedThing[25] = (byte)((thePort & 0xFF00) >> 8);
+                        patchedThing[30] = (byte)(thePort & 0xFF);
+                        patchedThing[31] = (byte)((thePort & 0xFF00) >> 8);
+                    } break;
+
+                default:
+                    {
+
+                    } break;
+            }
+
+            return patchedThing;
+        }
+
+        #endregion
+
+        #region Encryption const
         public static byte[] UOKR_LOGDATA = { 0x8A, 0x4F, 0x04, 0x30, 0x08, 0x8B, 0x4F, 0x04, 0x8B, 0x47, 0x08, 0xFF, 0x45, 
                                               0xF0, 0x8B, 0xD0 };
         public static byte[] UOKR_LOGPATCHDATA = { 0x8A, 0x4F, 0x04, 0x90, 0x90, 0x8B, 0x4F, 0x04, 0x8B, 0x47, 0x08, 0xFF, 
@@ -33,6 +125,7 @@ namespace UoKRLoader
                                                    0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
                                                    0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
                                                    0x90, 0x90, 0x90, 0x90, 0x90 };
+        #endregion
     }
 
     class Utility
