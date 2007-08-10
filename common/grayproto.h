@@ -1132,6 +1132,17 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_UIDCont;	// 10 = dropped on this object. 0xFFFFFFFF = no object
 		} ItemDropReq;
 
+		struct	// size = 15 = drop item on ground or in container.
+		{
+			BYTE m_Cmd;			// 0 = 0x08
+			NDWORD m_UID;		// 1-4 = object being dropped.
+			NWORD m_x;		// 5,6 = 255 = invalid
+			NWORD m_y;		// 7,8
+			BYTE m_z;			// 9
+			BYTE m_grid;		// 10	(Client 6.0.1.7+)
+			NDWORD m_UIDCont;	// 11 = dropped on this object. 0xFFFFFFFF = no object
+		} ItemDropReqNew;
+
 		struct	// size > 3
 		{
 			BYTE m_Cmd;		// 0 = 0x12
@@ -1912,6 +1923,20 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_wHue;		// HUE_TYPE
 		} ContAdd;
 
+		struct // size = 21	// Add Single Item To Container.
+		{
+			BYTE m_Cmd;		// 0 = 0x25
+			NDWORD m_UID;	// 1-4
+			NWORD m_id;
+			BYTE m_zero7;
+			NWORD m_amount;
+			NWORD m_x;
+			NWORD m_y;
+			BYTE m_grid;
+			NDWORD m_UIDCont;	// the container.
+			NWORD m_wHue;		// HUE_TYPE
+		} ContAddNew;
+
 		struct // size = 5	// Kick the player off.
 		{
 			BYTE m_Cmd;		// 0 = 0x26
@@ -2005,6 +2030,27 @@ struct CCommand	// command buffer from server to client.
 				NWORD m_wHue;	// 17-18 = HUE_TYPE
 			} m_item[ MAX_ITEMS_CONTENT ];
 		} Content;
+
+		struct // size = 5 + ( x * 20 ) // set up the content of some container.
+		{
+#define MAX_ITEMS_CONTENTNEW (MAX_BUFFER - 5) / 20
+			BYTE m_Cmd;		// 0 = 0x3C
+			NWORD m_len;
+			NWORD m_count;
+
+			struct // size = 19
+			{
+				NDWORD m_UID;	// 0-3
+				NWORD m_id;	// 4-5
+				BYTE m_zero6;
+				NWORD m_amount;	// 7-8
+				NWORD m_x;	// 9-10
+				NWORD m_y;	// 11-12
+				BYTE m_grid;	// 13
+				NDWORD m_UIDCont;	// 14-17 = What container is it in.
+				NWORD m_wHue;	// 18-19 = HUE_TYPE
+			} m_item[ MAX_ITEMS_CONTENTNEW ];
+		} ContentNew;
 
 		struct // size = 6	// personal light level.
 		{

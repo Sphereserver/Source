@@ -1101,11 +1101,11 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		if ( iConsumePercent < 0 )
 			iConsumePercent = Calc_GetRandVal( 50 );
 
-		ResourceConsumePart( &(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent );
+		ResourceConsumePart( &(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent, pItemDef->GetResourceID().GetResIndex() );
 		return( false );
 	}
 
-	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS );
+	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
 	if ( ! iReplicationQty )
 	{
 		return( false );

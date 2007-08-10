@@ -2996,6 +2996,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				UpdateDir(pTarget);
 				break;
 			}
+		case CHV_FIXWEIGHT:
+			FixWeight();
+			break;
 		case CHV_FORGIVE:
 			Jail( pSrc, false, 0 );
 			break;

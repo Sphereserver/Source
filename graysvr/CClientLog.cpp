@@ -1117,7 +1117,11 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 	}
 	else if ( GetConnectType() == CONNECT_GAME )
 	{
+#ifdef __UOKRSCARYADDONS
+		if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !m_bClientKR )
+#else
 		if ( IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 ) )
+#endif
 			if ( !bQueue )
 				xFlush();
 	}

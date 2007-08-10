@@ -97,27 +97,40 @@ CResourceScript * CResourceBase::AddResourceFile( LPCTSTR pszName )
 	ADDTOCALLSTACK("CResourceBase::AddResourceFile");
 	// Is this really just a dir name ?
 
-	LPCTSTR pszTitle = CScript::GetFilesTitle( pszName );
-	if ( pszTitle[0] == '\0' )
+	TCHAR szName[_MAX_PATH];
+	strcpy(szName, pszName);
+
+	TCHAR szTitle[_MAX_PATH];
+	strcpy(szTitle, CScript::GetFilesTitle( szName ));
+
+	if ( szTitle[0] == '\0' )
 	{
 		AddResourceDir( pszName );
 		return NULL;
 	}
 
-	if ( ! strnicmp( pszTitle, GRAY_FILE "tables", strlen(GRAY_FILE "tables")))
+	LPCTSTR pszExt = CScript::GetFilesExt( szTitle );
+	if ( pszExt == NULL )
+	{
+		// No file extension provided, so append .scp to the filename
+		strcat( szName, GRAY_SCRIPT );
+		strcat( szTitle, GRAY_SCRIPT );
+	}
+
+	if ( ! strnicmp( szTitle, GRAY_FILE "tables", strlen(GRAY_FILE "tables")))
 	{
 		// Don't dupe this.
 		return NULL;
 	}
 
 	// Try to prevent dupes
-	CResourceScript * pNewRes = FindResourceFile(pszTitle);
+	CResourceScript * pNewRes = FindResourceFile(szTitle);
 	if ( pNewRes )
 		return( pNewRes );
 
 	// Find correct path
 	CScript s;
-	if ( ! OpenResourceFind( s, pszName ))
+	if ( ! OpenResourceFind( s, szName ))
 	{
 		return( NULL );
 	}

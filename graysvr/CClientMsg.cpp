@@ -573,7 +573,6 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	cmd.ContAdd.m_amount = pItem->GetAmount();
 	cmd.ContAdd.m_x = pt.m_x;
 	cmd.ContAdd.m_y = pt.m_y;
-	cmd.ContAdd.m_UIDCont = pCont->GetUID();
 
 	HUE_TYPE wHue;
 	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
@@ -593,7 +592,27 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	}
 	cmd.ContAdd.m_wHue = wHue;
 
-	xSendPkt( &cmd, sizeof( cmd.ContAdd ));
+#ifdef __UOKRSCARYADDONS
+	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+#else
+	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+#endif
+	{
+#ifdef __UOKRSCARYADDONS
+		cmd.ContAddNew.m_grid = pItem->GetContainedGridIndex();
+#else
+		cmd.ContAddNew.m_grid = 0;
+#endif
+		cmd.ContAddNew.m_UIDCont = pCont->GetUID();
+		cmd.ContAddNew.m_wHue = wHue;
+		xSendPkt( &cmd, sizeof( cmd.ContAddNew ));
+	}
+	else
+	{
+		cmd.ContAdd.m_UIDCont = pCont->GetUID();
+		cmd.ContAdd.m_wHue = wHue;
+		xSendPkt( &cmd, sizeof( cmd.ContAdd ));
+	}
 
 #ifdef __UOKRSCARYADDONS
 	if (m_bClientKR)
@@ -637,7 +656,14 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	memset(fLayer, 0, sizeof(fLayer));
 
 	CCommand cmd;
+	CCommand cmdNew;	// for 6.0.1.7+ clients
 	CItemBase * pItemDef = NULL;
+
+#ifdef __UOKRSCARYADDONS
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+#else
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+#endif
 
 	// send all the items in the container.
 	int count = 0;
@@ -735,6 +761,23 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 					wHue &= HUE_MASK_LO;	// restrict colors
 			}
 			cmd.Content.m_item[count].m_wHue = wHue;
+
+			if ( bNewPacket )
+			{
+				cmdNew.ContentNew.m_item[count].m_UID = cmd.Content.m_item[count].m_UID;
+				cmdNew.ContentNew.m_item[count].m_id = cmd.Content.m_item[count].m_id;
+				cmdNew.ContentNew.m_item[count].m_zero6 = cmd.Content.m_item[count].m_zero6;
+				cmdNew.ContentNew.m_item[count].m_amount = cmd.Content.m_item[count].m_amount;
+				cmdNew.ContentNew.m_item[count].m_x = cmd.Content.m_item[count].m_x;
+				cmdNew.ContentNew.m_item[count].m_y = cmd.Content.m_item[count].m_y;
+				cmdNew.ContentNew.m_item[count].m_UIDCont = cmd.Content.m_item[count].m_UIDCont;
+				cmdNew.ContentNew.m_item[count].m_wHue = cmd.Content.m_item[count].m_wHue;
+#ifdef __UOKRSCARYADDONS
+				cmdNew.ContentNew.m_item[count].m_grid = pItem->GetContainedGridIndex();
+#else
+				cmdNew.ContentNew.m_item[count].m_grid = 0;
+#endif
+			}
 		}
 		count ++;
 
@@ -755,10 +798,22 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	}
 	else
 	{
-		len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
-		cmd.Content.m_Cmd = XCMD_Content;
-		cmd.Content.m_len = len;
-		cmd.Content.m_count = count;
+		if ( !bNewPacket )
+		{
+			len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
+			cmd.Content.m_Cmd = XCMD_Content;
+			cmd.Content.m_len = len;
+			cmd.Content.m_count = count;
+		}
+		else
+		{
+			len = sizeof( cmdNew.ContentNew ) - sizeof(cmdNew.ContentNew.m_item) + ( count * sizeof(cmdNew.ContentNew.m_item[0]));
+			cmdNew.ContentNew.m_Cmd = XCMD_Content;
+			cmdNew.ContentNew.m_len = len;
+			cmdNew.ContentNew.m_count = count;
+			xSendPkt(&cmdNew, len);
+			return count;
+		}
 	}
 
 	xSendPkt(&cmd, len);
@@ -2311,6 +2366,19 @@ bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGroun
 	return true;
 }
 
+#ifdef __UOKRSCARYADDONS
+void CClient::addTargetCancel()
+{
+	ADDTOCALLSTACK("CClient::addTargetCancel");
+	CCommand cmd;
+	memset( &(cmd.Target), 0, sizeof( cmd.Target ));
+	cmd.Target.m_Cmd = XCMD_Target;
+	cmd.Target.m_fCheckCrime = 0x03;
+
+	xSendPkt( &cmd, sizeof( cmd.Target ));
+}
+#endif
+
 void CClient::addDyeOption( const CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::addDyeOption");
@@ -3093,8 +3161,19 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	if (!count)
 		return;
 
+#ifdef __UOKRSCARYADDONS
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+#else
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+#endif
+
 	CCommand cmd;
-	int len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
+	int len;
+	if ( bNewPacket )
+		len = sizeof( cmd.ContentNew ) - sizeof(cmd.ContentNew.m_item) + ( count * sizeof(cmd.ContentNew.m_item[0]));
+	else
+		len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
+
 	cmd.Content.m_Cmd = XCMD_Content;
 	cmd.Content.m_len = len;
 	cmd.Content.m_count = count;
@@ -3108,14 +3187,29 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 		/*const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( (SPELL_TYPE) i );
 		ASSERT(pSpellDef); */
 
-		cmd.Content.m_item[j].m_UID = UID_F_ITEM + UID_O_INDEX_FREE + i; // just some unused uid.
-		cmd.Content.m_item[j].m_id = 0x1F2E; //pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
-		cmd.Content.m_item[j].m_zero6 = 0;
-		cmd.Content.m_item[j].m_amount = i;
-		cmd.Content.m_item[j].m_x = 0x0; // 0x48
-		cmd.Content.m_item[j].m_y = 0x0; // 0x7D;
-		cmd.Content.m_item[j].m_UIDCont = pBook->GetUID();
-		cmd.Content.m_item[j].m_wHue = HUE_DEFAULT;
+		if ( bNewPacket )
+		{
+			cmd.ContentNew.m_item[j].m_UID = UID_F_ITEM + UID_O_INDEX_FREE + i; // just some unused uid.
+			cmd.ContentNew.m_item[j].m_id = 0x1F2E; //pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
+			cmd.ContentNew.m_item[j].m_zero6 = 0;
+			cmd.ContentNew.m_item[j].m_amount = i;
+			cmd.ContentNew.m_item[j].m_x = 0x0; // 0x48
+			cmd.ContentNew.m_item[j].m_y = 0x0; // 0x7D;
+			cmd.ContentNew.m_item[j].m_grid = j;
+			cmd.ContentNew.m_item[j].m_UIDCont = pBook->GetUID();
+			cmd.ContentNew.m_item[j].m_wHue = HUE_DEFAULT;
+		}
+		else
+		{
+			cmd.Content.m_item[j].m_UID = UID_F_ITEM + UID_O_INDEX_FREE + i; // just some unused uid.
+			cmd.Content.m_item[j].m_id = 0x1F2E; //pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
+			cmd.Content.m_item[j].m_zero6 = 0;
+			cmd.Content.m_item[j].m_amount = i;
+			cmd.Content.m_item[j].m_x = 0x0; // 0x48
+			cmd.Content.m_item[j].m_y = 0x0; // 0x7D;
+			cmd.Content.m_item[j].m_UIDCont = pBook->GetUID();
+			cmd.Content.m_item[j].m_wHue = HUE_DEFAULT;
+		}
 		j++;
 	}
 
@@ -3143,8 +3237,19 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 	if ( !count )
 		return;
 
+#ifdef __UOKRSCARYADDONS
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+#else
+	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+#endif
+
 	CCommand cmd;
-	int len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
+		int len;
+	if ( bNewPacket )
+		len = sizeof( cmd.ContentNew ) - sizeof(cmd.ContentNew.m_item) + ( count * sizeof(cmd.ContentNew.m_item[0]));
+	else
+		len = sizeof( cmd.Content ) - sizeof(cmd.Content.m_item) + ( count * sizeof(cmd.Content.m_item[0]));
+
 	cmd.Content.m_Cmd = XCMD_Content;
 	cmd.Content.m_len = len;
 	cmd.Content.m_count = count;
@@ -3159,14 +3264,30 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 		if ( !pSpellDef )
 			continue;
 
-		cmd.Content.m_item[j].m_UID	= pItem->GetUID();
-		cmd.Content.m_item[j].m_id	= pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
-		cmd.Content.m_item[j].m_zero6	= 0;
-		cmd.Content.m_item[j].m_amount	= pItem->m_itSpell.m_spell;
-		cmd.Content.m_item[j].m_x = 0x0; // 0x48;
-		cmd.Content.m_item[j].m_y = 0x0; // 0x7D;
-		cmd.Content.m_item[j].m_UIDCont = pBook->GetUID();
-		cmd.Content.m_item[j].m_wHue = HUE_DEFAULT;
+		if ( bNewPacket )
+		{
+			cmd.ContentNew.m_item[j].m_UID	= pItem->GetUID();
+			cmd.ContentNew.m_item[j].m_id	= pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
+			cmd.ContentNew.m_item[j].m_zero6	= 0;
+			cmd.ContentNew.m_item[j].m_amount	= pItem->m_itSpell.m_spell;
+			cmd.ContentNew.m_item[j].m_x = 0x0; // 0x48;
+			cmd.ContentNew.m_item[j].m_y = 0x0; // 0x7D;
+			cmd.ContentNew.m_item[j].m_grid = j;
+			cmd.ContentNew.m_item[j].m_UIDCont = pBook->GetUID();
+			cmd.ContentNew.m_item[j].m_wHue = HUE_DEFAULT;
+		}
+		else
+		{
+			cmd.Content.m_item[j].m_UID	= pItem->GetUID();
+			cmd.Content.m_item[j].m_id	= pSpellDef->m_idScroll;	// scroll id. (0x1F2E)
+			cmd.Content.m_item[j].m_zero6	= 0;
+			cmd.Content.m_item[j].m_amount	= pItem->m_itSpell.m_spell;
+			cmd.Content.m_item[j].m_x = 0x0; // 0x48;
+			cmd.Content.m_item[j].m_y = 0x0; // 0x7D;
+			cmd.Content.m_item[j].m_UIDCont = pBook->GetUID();
+			cmd.Content.m_item[j].m_wHue = HUE_DEFAULT;
+		}
+
 		j++;
 	}
 

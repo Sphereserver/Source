@@ -1048,9 +1048,13 @@ bool CChar::NPC_LookAtCharHuman( CChar * pChar )
 		m_pArea->IsGuarded() &&
 		! Calc_GetRandVal( 3 ))
 	{
+		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
+			return( NPC_LookAtCharGuard( pChar ));
+
 		Speak( pChar->IsStatFlag( STATF_Criminal) ?
 			 g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_SEECRIM ) :
-			 g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_SEEMONS ) );
+			g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_SEEMONS ) );
+
 		// Find a guard.
 		CallGuards( pChar );
 		if ( IsStatFlag( STATF_War ))

@@ -1237,6 +1237,9 @@ public:
 	void addTargetVerb( LPCTSTR pCmd, LPCTSTR pArg );
 	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround );
 	void addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime );
+#ifdef __UOKRSCARYADDONS
+	void addTargetCancel();
+#endif
 	void addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage );
 
 	void addScrollScript( CResourceLock &s, SCROLL_TYPE type, DWORD dwcontext = 0, LPCTSTR pszHeader = NULL );
@@ -1438,6 +1441,23 @@ public:
 	}
 
 	bool IsConnecting();
+
+	int GetClientVersion()
+	{
+		return m_Crypt.GetClientVer();
+	}
+
+	int GetClientVersionReported()
+	{
+		return m_reportedCliver;
+	}
+
+#ifdef __UOKRSCARYADDONS
+	bool IsClientKR()
+	{
+		return m_bClientKR;
+	}
+#endif
 
 private:
 	CGString	m_BarkBuffer;

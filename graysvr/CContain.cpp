@@ -334,7 +334,7 @@ void CContainer::ContentsTransfer( CItemContainer * pCont, bool fNoNewbie )
 	}
 }
 
-int CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iDamagePercent, bool fTest )
+int CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsumePart");
 	// Consume just some of the resources.
@@ -365,7 +365,7 @@ int CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int i
 			continue;
 
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
-		int iRet = ContentConsume( rid, iQtyTotal, fTest );
+		int iRet = ContentConsume( rid, iQtyTotal, fTest, dwArg );
 		if ( iRet )
 		{
 			iMissing = i;
@@ -805,7 +805,11 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		0 ));
 }
 
+#ifdef __UOKRSCARYADDONS
+void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char gridIndex )
+#else
 void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
+#endif
 {
 	ADDTOCALLSTACK("CItemContainer::ContentAdd");
 	// Add to CItemContainer
@@ -858,8 +862,53 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
 		if ( ! fInsert )
 			pt = GetRandContainerLoc();
 	}
+
+#ifdef __UOKRSCARYADDONS
+	bool bValidGrid = true;
+	{	
+		// check that the grid index isn't already in use
+		CItem * pItemNext;
+		for ( CItem * pTry = GetContentHead(); pTry != NULL; pTry = pItemNext )
+		{
+			pItemNext = pTry->GetNext();
+			if ( pTry->GetContainedGridIndex() == gridIndex )
+			{
+				bValidGrid = false;
+				break;
+			}
+		}
+	}
+
+	if ( !bValidGrid )
+	{
+		// the grid index we've been given is already in use, so find the
+		// first unused grid index
+		for ( gridIndex = 0; (gridIndex < 255 || !bValidGrid); gridIndex++ )
+		{
+			bValidGrid = true;
+
+			CItem * pItemNext;
+			for ( CItem * pTry = GetContentHead(); pTry != NULL; pTry = pItemNext )
+			{
+				pItemNext = pTry->GetNext();
+				if ( pTry->GetContainedGridIndex() == gridIndex )
+				{
+					bValidGrid = false;
+					break;
+				}
+			}
+
+			if ( bValidGrid )
+				break;
+		}
+	}
+#endif
+
 	CContainer::ContentAddPrivate( pItem );
 	pItem->SetContainedPoint( pt );
+#ifdef __UOKRSCARYADDONS
+	pItem->SetContainedGridIndex( gridIndex );
+#endif
 
 	switch ( GetType())
 	{

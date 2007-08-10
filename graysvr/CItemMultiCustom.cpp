@@ -1156,18 +1156,19 @@ void CItemMultiCustom::CopyDesign(DesignDetails * designFrom, DesignDetails * de
 
 enum
 {
-	SHV_ADDITEM,
-	SHV_ADDMULTI,
-	SHV_CLEAR,
-	SHV_COMMIT,
-	SHV_CUSTOMIZE,
-	SHV_ENDCUSTOMIZE,
-	SHV_RESET,
-	SHV_RESYNC,
-	SHV_QTY,
+	IMCV_ADDITEM,
+	IMCV_ADDMULTI,
+	IMCV_CLEAR,
+	IMCV_COMMIT,
+	IMCV_CUSTOMIZE,
+	IMCV_ENDCUSTOMIZE,
+	IMCV_REMOVEITEM,
+	IMCV_RESET,
+	IMCV_RESYNC,
+	IMCV_QTY,
 };
 
-LPCTSTR const CItemMultiCustom::sm_szVerbKeys[SHV_QTY+1] =
+LPCTSTR const CItemMultiCustom::sm_szVerbKeys[IMCV_QTY+1] =
 {
 	"ADDITEM",
 	"ADDMULTI",
@@ -1175,6 +1176,7 @@ LPCTSTR const CItemMultiCustom::sm_szVerbKeys[SHV_QTY+1] =
 	"COMMIT",
 	"CUSTOMIZE",
 	"ENDCUSTOMIZE",
+	"REMOVEITEM",
 	"RESET",
 	"RESYNC",
 	NULL,
@@ -1210,7 +1212,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 	switch ( iCmd )
 	{
-		case SHV_ADDITEM:
+		case IMCV_ADDITEM:
 		{
 			TCHAR * ppArgs[4];
 			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
@@ -1222,10 +1224,9 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 					Exp_GetVal(ppArgs[1]),
 					Exp_GetVal(ppArgs[2]),
 					Exp_GetVal(ppArgs[3]));
-			break;
-		}
+		} break;
 
-		case SHV_ADDMULTI:
+		case IMCV_ADDMULTI:
 		{
 			TCHAR * ppArgs[4];
 			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
@@ -1244,23 +1245,20 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 					Exp_GetVal(ppArgs[2]),
 					Exp_GetVal(ppArgs[3]),
 					(sm_mapValidItems.find(id) == sm_mapValidItems.end()? 0 : -1));
-			break;
-		}
+		} break;
 
-		case SHV_CLEAR:
+		case IMCV_CLEAR:
 		{
 			m_designWorking.m_vectorComponents.clear();
 			m_designWorking.m_iRevision = 1;
-			break;
-		}
+		} break;
 
-		case SHV_COMMIT:
+		case IMCV_COMMIT:
 		{
 			CommitChanges();
-			break;
-		}
+		} break;
 
-		case SHV_CUSTOMIZE:
+		case IMCV_CUSTOMIZE:
 		{
 			if ( s.HasArgs() )
 				pChar = CGrayUID(s.GetArgVal()).CharFind();
@@ -1269,22 +1267,33 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 				return false;
 
 			BeginCustomize(pChar->GetClient());
-			break;
-		}
+		} break;
 
-		case SHV_ENDCUSTOMIZE:
+		case IMCV_ENDCUSTOMIZE:
 		{
 			EndCustomize(true);
-			break;
-		}
+		} break;
 
-		case SHV_RESET:
+		case IMCV_REMOVEITEM:
+		{
+			TCHAR * ppArgs[4];
+			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			if ( iQty != 4 )
+				return false;
+
+			RemoveItem(NULL,
+					(ITEMID_TYPE)Exp_GetVal(ppArgs[0]),
+					Exp_GetVal(ppArgs[1]),
+					Exp_GetVal(ppArgs[2]),
+					Exp_GetVal(ppArgs[3]));
+		} break;
+
+		case IMCV_RESET:
 		{
 			ResetStructure();
-			break;
-		}
+		} break;
 
-		case SHV_RESYNC:
+		case IMCV_RESYNC:
 		{
 			if ( s.HasArgs() )
 				pChar = CGrayUID(s.GetArgVal()).CharFind();
@@ -1293,8 +1302,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 				return false;
 
 			SendStructureTo(pChar->GetClient());
-			break;
-		}
+		} break;
 
 		default:
 		{
@@ -1329,6 +1337,7 @@ void CItemMultiCustom::r_Write( CScript & s )
 enum IMCC_TYPE
 {
 	IMCC_COMPONENTS,
+	IMCC_DESIGN,
 	IMCC_DESIGNER,
 	IMCC_EDITAREA,
 	IMCC_FIXTURES,
@@ -1339,6 +1348,7 @@ enum IMCC_TYPE
 LPCTSTR const CItemMultiCustom::sm_szLoadKeys[IMCC_QTY+1] = // static
 {
 	"COMPONENTS",
+	"DESIGN",
 	"DESIGNER",
 	"EDITAREA",
 	"FIXTURES",
@@ -1351,23 +1361,60 @@ bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 	ADDTOCALLSTACK("CItemMultiCustom::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ) )
+	int index = FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
+	if ( index == -1 )
+	{
+		if ( !strnicmp(pszKey, "DESIGN.", 5) )
+			index = IMCC_DESIGN;
+	}
+
+	switch ( index )
 	{
 		case IMCC_COMPONENTS:
 			pszKey += 10;
 			sVal.FormatVal(m_designMain.m_vectorComponents.size());
 			break;
 
+		case IMCC_DESIGN:
+		{
+			pszKey += 4;
+			const CItemBaseMulti *pMultiDef = Multi_GetDef();
+
+			if ( !*pszKey )
+				sVal.FormatVal(m_designMain.m_vectorComponents.size());
+			else if ( *pszKey == '.' )
+			{
+				SKIP_SEPARATORS(pszKey);
+				int iQty = Exp_GetVal(pszKey);
+				if (( iQty < 0 ) || ( iQty >= m_designMain.m_vectorComponents.size() ))
+					return false;
+
+				SKIP_SEPARATORS(pszKey);
+				CUOMultiItemRec item = m_designMain.m_vectorComponents.at(iQty)->m_item;
+
+				if ( !strcmpi(pszKey, "ID") ) sVal.FormatVal(item.GetDispID());
+				else if ( !strcmpi(pszKey, "DX") ) sVal.FormatVal(item.m_dx);
+				else if ( !strcmpi(pszKey, "DY") ) sVal.FormatVal(item.m_dy);
+				else if ( !strcmpi(pszKey, "DZ") ) sVal.FormatVal(item.m_dz);
+				else if ( !strcmpi(pszKey, "D") ) sVal.Format("%i,%i,%i", item.m_dx, item.m_dy, item.m_dz);
+				else if ( !strcmpi(pszKey, "FIXTURE") ) sVal.FormatVal(item.m_visible? 0:1);
+				else if ( !*pszKey ) sVal.Format("%i,%i,%i,%i", item.GetDispID(), item.m_dx, item.m_dy, item.m_dz);
+				else return false;
+			}
+			else
+				return false;
+
+		} break;
+
 		case IMCC_DESIGNER:
 		{
 			pszKey += 8;
-
 			CChar * pDesigner = m_pArchitect? m_pArchitect->GetChar() : NULL;
 			if ( pDesigner != NULL )
 				sVal.FormatHex(pDesigner->GetUID());
 			else
 				sVal.FormatHex(0);
-			
+
 		} break;
 
 		case IMCC_EDITAREA:

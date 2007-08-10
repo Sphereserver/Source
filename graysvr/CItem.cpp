@@ -50,6 +50,9 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
 	m_amount = 1;
+#ifdef __UOKRSCARYADDONS
+	m_containedGridIndex = 0;
+#endif
 
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;
@@ -1994,7 +1997,13 @@ void CItem::r_Write( CScript & s )
 		}
 		s.WriteKeyHex("CONT", pCont->GetUID());
 		if ( pCont->IsItem() )
+		{
 			s.WriteKey("P", GetContainedPoint().WriteUsed());
+#ifdef __UOKRSCARYADDONS
+			if ( GetContainedGridIndex() )
+				s.WriteKeyVal("CONTGRID", GetContainedGridIndex());
+#endif
+		}
 	}
 	else
 		s.WriteKey("P", GetTopPoint().WriteUsed());
@@ -2109,6 +2118,9 @@ enum IC_TYPE
 	IC_AMOUNT,
 	IC_ATTR,
 	IC_CONT,
+#ifdef __UOKRSCARYADDONS
+	IC_CONTGRID,
+#endif
 	IC_CONTP,
 	IC_DISPID,
 	IC_DISPIDDEC,
@@ -2148,6 +2160,9 @@ LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
 	"AMOUNT",
 	"ATTR",
 	"CONT",
+#ifdef __UOKRSCARYADDONS
+	"CONTGRID",
+#endif
 	"CONTP",
 	"DISPID",
 	"DISPIDDEC",
@@ -2217,6 +2232,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				sVal.FormatHex( pCont ? ((DWORD) pCont->GetUID() ) : 0 );
 			}
 			break;
+#ifdef __UOKRSCARYADDONS
+		case IC_CONTGRID:
+			if ( !IsItemInContainer() )
+				return false;
+			sVal.FormatVal(GetContainedGridIndex());
+			break;
+#endif
 		case IC_CONTP:
 			{
 				CObjBase * pContainer = GetContainer();
@@ -2401,6 +2423,13 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				}
 				return normcont;
 			}
+#ifdef __UOKRSCARYADDONS
+		case IC_CONTGRID:
+			if ( !IsItemInContainer() )
+				return false;
+			SetContainedGridIndex(s.GetArgVal());
+			return true;
+#endif
 		case IC_CONTP:
 			{
 				CPointMap pt;	// invalid point
@@ -3257,7 +3286,26 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 		cmd.ContAdd.m_y = 0x7D;
 		cmd.ContAdd.m_UIDCont = GetUID();
 		cmd.ContAdd.m_wHue = HUE_DEFAULT;
-		UpdateCanSee( &cmd, sizeof( cmd.ContAdd ));
+
+		CCommand cmdNew = cmd;
+		cmd.ContAddNew.m_grid = 0;
+		cmd.ContAddNew.m_UIDCont = cmd.ContAdd.m_UIDCont;
+		cmd.ContAddNew.m_wHue = cmd.ContAdd.m_wHue;
+
+		for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+		{
+			if ( ! pClient->CanSee( this ))
+				continue;
+
+#ifdef __UOKRSCARYADDONS
+			if ( pClient->GetClientVersion() >= 0x0600020 || pClient->GetClientVersionReported() >= 0x0600018 || pClient->IsClientKR() )
+#else
+			if ( pClient->GetClientVersion() >= 0x0600020 || pClient->GetClientVersionReported() >= 0x0600018 )
+#endif
+				pClient->xSendPkt( &cmdNew, sizeof(cmd.ContAddNew) );
+			else
+				pClient->xSendPkt( &cmd, sizeof(cmd.ContAdd) );
+		}
 	}
 
 	return 0;
@@ -4513,7 +4561,8 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 	ADDTOCALLSTACK("CItem::IsResourceMatch");
 	// Check for all the matching special cases.
 	// ARGS:
-	//  dwArg = specific key or map .
+	//  dwArg = specific key or map (for typedefs)
+	//          exclude item id (for itemdefs and typedefs)
 
 	if ( GetAmount() == 0 )
 		return( false );	// does not count for any matches.
@@ -4550,10 +4599,16 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 					return( false );
 				break;
 			}
+
+			if ( dwArg == GetID())
+				return( false );
 		}
 		return( true );
 
 	case RES_ITEMDEF:
+
+		if ( dwArg == GetID())
+			return( false );
 
 		if ( GetID() == index )
 			return true;

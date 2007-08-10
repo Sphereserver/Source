@@ -287,6 +287,10 @@ private:
 	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 
+#ifdef __UOKRSCARYADDONS
+	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
+#endif
+
 public:
 	// Attribute flags.
 #define ATTR_IDENTIFIED		0x0001	// This is the identified name. ???
@@ -888,6 +892,18 @@ public:
 		return pObj->GetTopLevelObj();
 	}
 
+#ifdef __UOKRSCARYADDONS
+	unsigned char GetContainedGridIndex() const
+	{
+		return m_containedGridIndex;
+	}
+
+	void SetContainedGridIndex(unsigned char index)
+	{
+		m_containedGridIndex = index;
+	}
+#endif
+
 	LPCTSTR GetKeyStr( LPCTSTR pszKey ) const
 	{
 		return m_TagDefs.GetKeyStr( pszKey );
@@ -1226,7 +1242,7 @@ public:
 	int ContentConsume( RESOURCE_ID_BASE rid, int iQty = 1, bool fTest = false, DWORD dwArg = 0 );
 
 	int ResourceConsume( const CResourceQtyArray * pResources, int iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
-	int ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iFailPercent, bool fTest = false );
+	int ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
 
 	virtual void OnWeightChange( int iChange );
 	virtual void ContentAdd( CItem * pItem ) = 0;
@@ -1295,7 +1311,11 @@ public:
 	void OnWeightChange( int iChange );
 
 	void ContentAdd( CItem * pItem );
+#ifdef __UOKRSCARYADDONS
+	void ContentAdd( CItem * pItem, CPointMap pt, unsigned char gridIndex = 0 );
+#else
 	void ContentAdd( CItem * pItem, CPointMap pt );
+#endif
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
