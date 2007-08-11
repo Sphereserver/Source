@@ -158,9 +158,13 @@ namespace UoKRLoader
                 return;
 
             int iResultEncLogin = 0;
+            int iResultEncLoginId = 0;
+            // ----------------------
             int iResultEncGame = 0;
-            int iResultIP = 0;
+            // ----------------------
+            List<int> iResultIP = new List<int>();
             int iResultIPId = 0;
+            // ----------------------
             ENCRYPTION_PATCH_TYPE encType = caTouse.encType;
 
             // !bPatch
@@ -215,16 +219,27 @@ namespace UoKRLoader
 
             for (iResultIPId = 0; iResultIPId < StaticData.UOKR_IPDATA_VERSION; iResultIPId++)
             {
-                iResultIP = Utility.Search(strGeneric, StaticData.GetIPData(iResultIPId), bPatch);
-                if (iResultIP != 0)
+                List<byte[]> listBytes = StaticData.GetIPData(iResultIPId);
+                foreach (byte[] bIpData in listBytes)
+                {
+                    iResultIP.Add(Utility.Search(strGeneric, bIpData, bPatch));
+                }
+
+                if (ListValidValues(iResultIP))
+                {
                     break;
+                }
+                else
+                {
+                    iResultIP.Clear();
+                }
             }
 
-            if (iResultIP == 0)
+            if (!ListValidValues(iResultIP))
             {
                 strGeneric.Close();
                 if (!bPatch)
-                    prcTostart.Close();
+                    prcTostart.Kill();
 
                 MessageBox.Show("Cannot patch IP on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -232,12 +247,18 @@ namespace UoKRLoader
 
             if ((encType == ENCRYPTION_PATCH_TYPE.Login) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
-                iResultEncLogin = Utility.Search(strGeneric, StaticData.UOKR_LOGDATA, bPatch);
+                for (iResultEncLoginId = 0; iResultEncLoginId < StaticData.UOKR_LOGDATA_VERSION; iResultEncLoginId++)
+                {
+                    iResultEncLogin = Utility.Search(strGeneric, StaticData.GetLoginData(iResultEncLoginId), bPatch);
+                    if (iResultEncLogin != 0)
+                        break;
+                }
+
                 if (iResultEncLogin == 0)
                 {
                     strGeneric.Close();
                     if (!bPatch)
-                        prcTostart.Close();
+                        prcTostart.Kill();
 
                     MessageBox.Show("Cannot patch Login Encryption on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -251,7 +272,7 @@ namespace UoKRLoader
                 {
                     strGeneric.Close();
                     if (!bPatch)
-                        prcTostart.Close();
+                        prcTostart.Kill();
 
                     MessageBox.Show("Cannot patch Game Encryption on the client !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -263,15 +284,20 @@ namespace UoKRLoader
                 strGeneric.Seek(0, SeekOrigin.Begin);
             }
 
-            byte[] newDataIp = StaticData.GetPatchedIPData(iResultIPId, caTouse.ipHost, caTouse.uPort);
-            strGeneric.Seek(iResultIP, SeekOrigin.Begin);
-            strGeneric.Write(newDataIp, 0, newDataIp.Length);
+            List<byte[]> newDataIp = StaticData.GetPatchedIPData(iResultIPId, caTouse.ipHost, caTouse.uPort);
+            for(int i = 0; i < newDataIp.Count; i++)
+            {
+                strGeneric.Seek(iResultIP[i], SeekOrigin.Begin);
+                strGeneric.Write(newDataIp[i], 0, newDataIp[i].Length);
+            }
 
             if ((encType == ENCRYPTION_PATCH_TYPE.Login) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
+                byte[] encLoginToPatch = StaticData.GetPatchedLoginData(iResultEncLoginId);
                 strGeneric.Seek(iResultEncLogin, SeekOrigin.Begin);
-                strGeneric.Write(StaticData.UOKR_LOGPATCHDATA, 0, StaticData.UOKR_LOGPATCHDATA.Length);
+                strGeneric.Write(encLoginToPatch, 0, encLoginToPatch.Length);
             }
+
             if ((encType == ENCRYPTION_PATCH_TYPE.Game) || (encType == ENCRYPTION_PATCH_TYPE.Both))
             {
 
@@ -291,6 +317,29 @@ namespace UoKRLoader
                 this.ckbRemind.Checked = false;
                 MessageBox.Show("Client " + this.txtUokrPath.Text + @"\" + StaticData.UOKR_PATCHCLIENT + " succesfully patched.", "Patch Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private bool ListValidValues(List<int> theList)
+        {
+            bool bReturn = true;
+
+            if (theList.Count == 0)
+            {
+                bReturn = false;
+            }
+            else
+            {
+                foreach (int iData in theList)
+                {
+                    if (iData <= 0)
+                    {
+                        bReturn = false;
+                        break;
+                    }
+                }
+            }
+
+            return bReturn;
         }
     }
 }
