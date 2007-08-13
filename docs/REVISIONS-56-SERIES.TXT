@@ -3588,3 +3588,7 @@ this all in desperation)
 - Added: add-on/House_Placement.zip (Added a sample script that allows custom houses
   to be design by players)
 
+14-08-2007, nazghul
+- Modified: sphere_defs.scp, added DEATHFLAG_HASCORPSE (010) to deathflags. If set on
+  a character like water elemental it will leave a corpse. Caveat: If DEATHFLAG_NOCORPSE
+  and DEATHFLAG_HASCORPSE are set, the NOCORPSE takes precedence!
