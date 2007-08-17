@@ -1411,7 +1411,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					}
 					else
 					{
-						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF )))
+						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 						{
 							WARNLOS(("pStatic blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 							bPath = false;
@@ -1443,7 +1443,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
+						if ((( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK )  || ( pItemDef->m_Can & CAN_I_BLOCKLOS )) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pStatic %0x %d,%d,%d - %d\n",pStatic->GetDispID(),pStatic->m_x,pStatic->m_y,pStatic->m_z,Height))
 							min_z = pStatic->m_z;
@@ -1498,7 +1498,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					}
 					else
 					{
-						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF )))
+						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 						{
 							WARNLOS(("pItem blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 							bPath = false;
@@ -1531,7 +1531,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-						if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
+						if ((( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) || pItemDef->m_Can & CAN_I_BLOCKLOS) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height))
 							min_z = pItem->GetUnkPoint().m_z;
@@ -1616,7 +1616,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							}
 							else
 							{
-								if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF )))
+								if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 								{
 									WARNLOS(("pMultiItem blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 									bPath = false;
@@ -1649,7 +1649,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 								//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-								if (( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
+								if (( ( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) || pItemDef->m_Can & CAN_I_BLOCKLOS)  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height))
 									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;

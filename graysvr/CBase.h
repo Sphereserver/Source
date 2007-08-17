@@ -65,6 +65,7 @@ public:
 #define CAN_I_REPLICATE		0x2000	// Things like arrows are pretty much all the same.
 #define CAN_I_DCIGNORELOS	0x4000	// when dclicked, ignore LOS checks
 #define CAN_I_DCIGNOREDIST	0x8000	// when dclicked, ignore distance checks
+#define CAN_I_BLOCKLOS		0x10000	// blocks LOS without blocking walkchecks
 
 	// CCharBase specific defs.
 #define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)
