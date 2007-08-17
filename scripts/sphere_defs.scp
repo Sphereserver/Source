@@ -1074,6 +1074,7 @@ CAN_I_REPAIR		01000	// Is it repairable (difficulty based on value)
 CAN_I_REPLICATE		02000	// Things like arrows are pretty much all the same.
 CAN_I_DCIGNORELOS	04000	// when dclicked, ignore LOS checks
 CAN_I_DCIGNOREDIST	08000	// when dclicked, ignore distance checks
+CAN_I_BLOCKLOS		010000	// blocks LOS, but not walking thru
 
 [DEFNAME tile_flags]			// by Shadowlord
 tilef_background	01			// No idea. None whatsoever. Maybe it's the blackness.

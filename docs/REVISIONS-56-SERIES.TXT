@@ -3592,3 +3592,7 @@ this all in desperation)
 - Modified: sphere_defs.scp, added DEATHFLAG_HASCORPSE (010) to deathflags. If set on
   a character like water elemental it will leave a corpse. Caveat: If DEATHFLAG_NOCORPSE
   and DEATHFLAG_HASCORPSE are set, the NOCORPSE takes precedence!
+
+17-08-2007, nazghul:
+- Added: Item CAN flag CAN_I_BLOCKLOS (see sphere_defs.scp). Works only if
+  INI option AdvancedLOS is != 0.
