@@ -3596,3 +3596,9 @@ this all in desperation)
 17-08-2007, nazghul:
 - Added: Item CAN flag CAN_I_BLOCKLOS (see sphere_defs.scp). Works only if
   INI option AdvancedLOS is != 0.
+
+18-08-2007, Nazghul
+- Added: Spellflags TARG_NO_PLAYER and TARG_NO_NPC
+- Updated: sphere_msgs.scp and sphere_defs.scp 
+
+

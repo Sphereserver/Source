@@ -592,7 +592,8 @@ spellflag_scripted		010000		// spell is scripted
 spellflag_playeronly	020000		// spell is not casted by npc ai
 spellflag_nounparalyze	040000		// do not unparalyze the victim
 spellflag_no_castanim	080000		// don't play (default) cast anim
-
+spellflag_targ_no_player	0100000	// // if a char may be targetted, it may not be a player
+spellflag_targ_no_npc	0200000	// // if a char may be targetted, it may not be an NPC
 [defname mem_flags]
 memory_sawcrime	    00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
 memory_ipet		    00002	// i am a pet. (this link is my master) (never time out)

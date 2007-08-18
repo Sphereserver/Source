@@ -353,6 +353,8 @@ private:
 #define	SPELLFLAG_PLAYERONLY	0x20000	// casted by players only
 #define	SPELLFLAG_NOUNPARALYZE	0x40000	// casted by players only
 #define SPELLFLAG_NO_CASTANIM	0x80000	// play no anim while casting (also override SPELLFLAG_DIR_ANIM)
+#define SPELLFLAG_TARG_NO_PLAYER	0x100000 // if a char may be targetted, it may not be a player
+#define SPELLFLAG_TARG_NO_NPC	0x200000 // if a char may be targetted, it may not be an NPC
 	CGString m_sName;	// spell name
 
 public:
@@ -742,6 +744,7 @@ public:
 #define	ADVANCEDLOS_PLAYER			0x01
 #define	ADVANCEDLOS_NPC				0x02
 	int		m_iAdvancedLos;		// AdvancedLOS
+	int		m_iWrapX;
 
 	// New ones
 	int		m_iFeatureT2A;
