@@ -1649,7 +1649,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
 								//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
-								if (( ( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) || pItemDef->m_Can & CAN_I_BLOCKLOS)  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
+								if (( ( wTFlags & UFLAG1_WALL|UFLAG1_BLOCK ) || (pItemDef->m_Can & CAN_I_BLOCKLOS)  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height))
 									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;

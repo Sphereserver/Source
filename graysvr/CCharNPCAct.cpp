@@ -2593,6 +2593,8 @@ void CChar::NPC_Act_Idle()
 	// Specific creature random actions.
 	if ( Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX) && !Calc_GetRandVal(3) )
 	{
+
+#ifdef _NAZTEST
 		switch ( GetDispID())
 		{
 			case CREID_FIRE_ELEM:
@@ -2602,15 +2604,7 @@ void CChar::NPC_Act_Idle()
 					return;
 				}
 				break;
-#ifndef _NAZTEST
-			case CREID_GIANT_SPIDER:
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB) )
-				{
-					Action_StartSpecial(CREID_GIANT_SPIDER);
-					return;
-				}
-				break;
-#else
+
 			default:
 				// TAG.OVERRIDE.SPIDERWEB
 				CVarDefCont * pValue = GetKey("OVERRIDE.SPIDERWEB",true);
@@ -2631,8 +2625,28 @@ void CChar::NPC_Act_Idle()
 						return;
 					}
 				}
-#endif
 		}
+#else
+
+		switch ( GetDispID())
+		{
+			case CREID_FIRE_ELEM:
+				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE) )
+				{
+					Action_StartSpecial(CREID_FIRE_ELEM);
+					return;
+				}
+				break;
+			case CREID_GIANT_SPIDER:
+				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB) )
+				{
+					Action_StartSpecial(CREID_GIANT_SPIDER);
+					return;
+				}
+				break;
+		}
+#endif
+
 	}
 
 	// Periodically head home.

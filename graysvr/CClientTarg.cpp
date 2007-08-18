@@ -1451,11 +1451,27 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 			SysMessageDefault( DEFMSG_MAGERY_1 );
 			return true;
 		}
-		if ( pObj->IsChar() && !pSpell->IsSpellType( SPELLFLAG_TARG_CHAR ) )
+
+		if ( pObj->IsChar() )
 		{
-			SysMessageDefault( DEFMSG_MAGERY_2 );
-			return true;
+			if (!pSpell->IsSpellType( SPELLFLAG_TARG_CHAR ) )
+			{
+				SysMessageDefault( DEFMSG_MAGERY_2 );
+				return true;
+			}
+			CChar * pChar = dynamic_cast<CChar*>(pObj);
+			if ( pSpell->IsSpellType( SPELLFLAG_TARG_NO_PLAYER ) && pChar->m_pPlayer )
+			{
+				SysMessageDefault( DEFMSG_MAGERY_7 );
+				return true;
+			}
+			if ( pSpell->IsSpellType( SPELLFLAG_TARG_NO_NPC ) && !pChar->m_pPlayer )
+			{
+				SysMessageDefault( DEFMSG_MAGERY_8 );
+				return true;
+			}
 		}
+
 		if (	pObj == (CObjBase*) m_pChar
 			&&	pSpell->IsSpellType( SPELLFLAG_TARG_NOSELF )
 			&&	!IsPriv(PRIV_GM) )
