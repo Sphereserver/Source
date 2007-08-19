@@ -2802,7 +2802,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 							}
 							else if ( iTriggerArgType == 3 ) // ARGO
 							{
-								CGrayUID guTriggerArg((DWORD)ATOI(ppCmdTrigger[2]));
+								CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
 								CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
 								if ( pTriggerArgObj )
 								{
