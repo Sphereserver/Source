@@ -3601,4 +3601,10 @@ this all in desperation)
 - Added: Spellflags TARG_NO_PLAYER and TARG_NO_NPC
 - Updated: sphere_msgs.scp and sphere_defs.scp 
 
+19-08-2007, MrSugarCube
+- Fixed #1242: TAT_AS_ARGO Triggers not working with hexadecimal uids.
+- Fixed #1243: MODAR on weapons not showing the correct minimum damage on the
+  status window and tooltips.
+- Fixed #1244: TAGAT.x.KEY and TAGAT.x.VAL returning the opposite properties.
+
 

@@ -2962,7 +2962,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 			CItem * pWeapon = dynamic_cast<CItem *>(pChar->m_uidWeapon.ObjFind());
 			if ( pWeapon )
 			{
-				cmd.Status.m_minDamage = pWeapon->Item_GetDef()->m_attackBase;
+				cmd.Status.m_minDamage = pWeapon->Item_GetDef()->m_attackBase + pWeapon->m_ModAr;
 				cmd.Status.m_maxDamage = pChar->Fight_CalcDamage(pWeapon, pWeapon->Weapon_GetSkill(), true);
 			}
 			else
@@ -4245,7 +4245,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 						}
 
 						this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
-						t->FormatArgs( "%d\t%d", pItem->Item_GetDef()->m_attackBase, ( pItem->Weapon_GetAttack(true) ) );
+						t->FormatArgs( "%d\t%d", pItem->Item_GetDef()->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
 						this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
 						t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~

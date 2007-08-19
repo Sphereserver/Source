@@ -969,12 +969,12 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 						sVal.Format( "%s=%s", (LPCTSTR) pTagAt->GetKey(), (LPCTSTR) pTagAt->GetValStr() );
 						return( true );
 					}
-					if ( strnicmp( pszKey, "KEY", 3 ))	// key?
+					else if ( !strnicmp( pszKey, "KEY", 3 ))	// key?
 					{
 						sVal = (LPCTSTR) pTagAt->GetKey();
 						return( true );
 					}
-					if ( strnicmp( pszKey, "VAL", 3 ))	// val?
+					else if ( !strnicmp( pszKey, "VAL", 3 ))	// val?
 					{
 						sVal = pTagAt->GetValStr();
 						return( true );
