@@ -3470,7 +3470,16 @@ this all in desperation)
   comes from LocalAddress and/or 127.0.0.1
 
 19-07-2007, MrSugarCube
-- Added: Support for packet changes in client 6.0.1.7.
+- Added: Support for packet changes in client 6.0.1.7. With clients running
+  on slower connections there may still be issues as Sphere cannot identify
+  the 4th digit of the client version until after the client has logged in.
+  If you want to override all 6.0.1.* clients to use the 6.0.1.7 packet
+  changes (and thus correct the issue with slower connections, but at the
+  same time remove support for 6.0.1.0-6 clients), find the following line
+  in sphereCrypt.ini:
+    0600010 02F2BA7ED 0A2817E7F ENC_TFISH // 6.00.10
+  and change it to:
+    0600018 02F2BA7ED 0A2817E7F ENC_TFISH // 6.00.18
 - Added: FIXWEIGHT function for characters, which acts the same as FIXWEIGHT
   does on containers (recalculates the total weight of the items in their
   possession).

@@ -1,0 +1,62 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wednesday, July 11, 2007
+//
+VERSION=0.56b
+
+[ITEMDEF 035d2]
+DEFNAME=i_stairs_crystal
+DUPELIST=035d3,035d4,035d5,035d6
+
+CATEGORY=Buildings - ML Stairs
+SUBSECTION=Crystal Stairs
+DESCRIPTION=@
+
+[ITEMDEF 035d3]
+// crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d4]
+// crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d5]
+// crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d6]
+// crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 03609]
+DEFNAME=i_stairs_shadow
+DUPELIST=0360a,0360b,0360c,0360d
+
+CATEGORY=Buildings - ML Stairs
+SUBSECTION=Shadow Stairs
+DESCRIPTION=@
+
+[ITEMDEF 0360a]
+// shadow stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360b]
+// shadow stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360c]
+// shadow stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360d]
+// shadow stairs
+DUPEITEM=03609
+
+[EOF]
