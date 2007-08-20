@@ -593,9 +593,9 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	cmd.ContAdd.m_wHue = wHue;
 
 #ifdef __UOKRSCARYADDONS
-	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
 #else
-	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
 #endif
 	{
 #ifdef __UOKRSCARYADDONS
@@ -660,9 +660,9 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	CItemBase * pItemDef = NULL;
 
 #ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
 #else
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
 #endif
 
 	// send all the items in the container.
@@ -3162,9 +3162,9 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 		return;
 
 #ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
 #else
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
 #endif
 
 	CCommand cmd;
@@ -3238,9 +3238,9 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 		return;
 
 #ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
 #else
-	bool bNewPacket = ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 );
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
 #endif
 
 	CCommand cmd;

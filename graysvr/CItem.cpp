@@ -3298,9 +3298,9 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 				continue;
 
 #ifdef __UOKRSCARYADDONS
-			if ( pClient->GetClientVersion() >= 0x0600020 || pClient->GetClientVersionReported() >= 0x0600018 || pClient->IsClientKR() )
+			if ( pClient->GetClientVersion() >= 0x0600018 || pClient->GetClientVersionReported() >= 0x0600018 || pClient->IsClientKR() )
 #else
-			if ( pClient->GetClientVersion() >= 0x0600020 || pClient->GetClientVersionReported() >= 0x0600018 )
+			if ( pClient->GetClientVersion() >= 0x0600018 || pClient->GetClientVersionReported() >= 0x0600018 )
 #endif
 				pClient->xSendPkt( &cmdNew, sizeof(cmd.ContAddNew) );
 			else

@@ -324,10 +324,10 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 #ifdef __UOKRSCARYADDONS
 	unsigned char gridIndex;
 
-	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
 #else
 
-	if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
 #endif
 	{
 		uidOn = (DWORD)pEvent->ItemDropReqNew.m_UIDCont;
@@ -4448,9 +4448,9 @@ int CClient::xDispatchMsg()
 		case XCMD_ItemDropReq: // Drop Item
 			EXC_SET("drop item");
 #ifdef __UOKRSCARYADDONS
-			if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 || m_bClientKR )
+			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
 #else
-			if ( IsClientVersion(0x0600020) || m_reportedCliver >= 0x0600018 )
+			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
 #endif
 			{
 				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReqNew ) ) )
