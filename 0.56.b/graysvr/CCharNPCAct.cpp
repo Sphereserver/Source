@@ -1657,17 +1657,35 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 	if ( Skill_GetActive() != SKILL_ARCHERY )
 		return( false );
 
+	int iMinDist = 0;
+	int iMaxDist = 0;
+
+	// determine how far we can shoot with this bow
+	CItem *pWeapon = m_uidWeapon.ItemFind();
+	CItemBase *pWeaponDef = pWeapon? pWeapon->Item_GetDef() : NULL;
+	if ( pWeaponDef )
+	{
+		iMinDist = pWeaponDef->RangeH();
+		iMaxDist = pWeaponDef->RangeL();
+	}
+
+	// if range is not set on the weapon, default to ini settings
+	if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
+		iMaxDist = g_Cfg.m_iArcheryMaxDist;
+	if ( !iMinDist )
+		iMinDist = g_Cfg.m_iArcheryMinDist;
+
 	int iDist = GetTopDist3D( pChar );
-	if ( iDist > g_Cfg.m_iArcheryMaxDist )	// way too far away . close in.
+	if ( iDist > iMaxDist )	// way too far away . close in.
 		return( false );
 
-	if ( iDist > g_Cfg.m_iArcheryMinDist )
+	if ( iDist > iMinDist )
 		return( true );		// always use archery if distant enough
 
 	if ( !Calc_GetRandVal( 2 ) )	// move away
 	{
 		// Move away
-		NPC_Act_Follow( false, 5, true );
+		NPC_Act_Follow( false, iMaxDist, true );
 		return( true );
 	}
 

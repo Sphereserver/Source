@@ -3619,5 +3619,6 @@ this all in desperation)
 21-08-2007, MrSugarCube
 - Fixed #1246: Exception caused by using EQUIPWEAPON function on a character
   with no backpack.
-
+- Fixed #1247: NPCs not moving closer to their targets when they're using a
+  bow with a shorter range than the ini's archery range settings.
 
