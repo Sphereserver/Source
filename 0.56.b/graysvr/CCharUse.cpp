@@ -1980,9 +1980,10 @@ bool CChar::ItemEquipWeapon( bool fForce )
 	if ( ! fForce && m_uidWeapon.IsValidUID())	// we are ok.
 		return( true );
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-	if ( ! pCharDef->Can( CAN_C_USEHANDS ))
+	CCharBase		*pCharDef = Char_GetDef();
+	CItemContainer	*pPack = GetPack();
+
+	if ( !pCharDef || !pPack || !pCharDef->Can(CAN_C_USEHANDS) )
 		return( false );
 
 	// Go through all my weapons and come up with a score for it's usefulness.
@@ -1990,8 +1991,6 @@ bool CChar::ItemEquipWeapon( bool fForce )
 	CItem * pBestWeapon = NULL;
 	int iWeaponScoreMax = NPC_GetWeaponUseScore( NULL );	// just wrestling.
 
-	CItemContainer * pPack = GetPack();
-	ASSERT(pPack);
 	CItem* pItem = pPack->GetContentHead();
 	for ( ; pItem!=NULL; pItem = pItem->GetNext())
 	{

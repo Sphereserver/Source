@@ -3616,4 +3616,8 @@ this all in desperation)
   status window and tooltips.
 - Fixed #1244: TAGAT.x.KEY and TAGAT.x.VAL returning the opposite properties.
 
+21-08-2007, MrSugarCube
+- Fixed #1246: Exception caused by using EQUIPWEAPON function on a character
+  with no backpack.
+
 
