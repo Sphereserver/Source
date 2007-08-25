@@ -114,44 +114,28 @@ namespace UoKRUnpacker
         public bool UnPack(string sPath)
         {
             bool bReturn = true;
-            string fileName = m_UopPath.Substring((m_UopPath.LastIndexOf('\\') + 1), m_UopPath.LastIndexOf('.') - (m_UopPath.LastIndexOf('\\') + 1));
+            string fileName = Path.GetFileNameWithoutExtension(m_UopPath);
+            int i = 0, j = 0;
 
             try
             {
-                for (int i = 0; i < m_UopFile.m_Content.Count; i++)
+                foreach (UOPIndexBlockHeader dumpTemp1 in UopFile.m_Content)
                 {
-                    UOPIndexBlockHeader aCurrent = m_UopFile.m_Content[i];
-                    for (int j = 0; j < aCurrent.m_ListIndex.Count; j++)
+                    foreach (UOPPairData dumpTemp2 in dumpTemp1.m_ListData)
                     {
-                        string sFileName = fileName + "_" + i.ToString() + "_" + j.ToString();
-
-                        UOPFileIndexDef uopFIDcurrent = aCurrent.m_ListIndex[j];
-                        UOPFileData uopFDcurrent = aCurrent.m_ListData[j];
-
-                        int iUncompressLength = ((int)(uopFIDcurrent.m_LenghtUncompressed));
-                        byte[] bUnCompressData = new byte[iUncompressLength];
-                        ZLibError zResult = Compressor.Decompress(bUnCompressData, ref iUncompressLength, uopFDcurrent.m_CompressedData, ((int)(uopFIDcurrent.m_LenghtCompressed)));
-                        if (zResult == ZLibError.Okay)
+                        using (FileStream fsWrite = File.Create(sPath + @"\" + String.Format(StaticData.UNPACK_NAMEPATTERN, fileName, i, j, dumpTemp2.First.IsCompressed ? StaticData.UNPACK_EXT_COMP : StaticData.UNPACK_EXT_UCOMP)))
                         {
-                            using (FileStream fsWrite = File.Create(sPath + @"\" + sFileName + ".dat"))
+                            using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
                             {
-                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
-                                {
-                                    bwWrite.Write(bUnCompressData);
-                                }
+                                bwWrite.Write(dumpTemp2.Second.Extract(dumpTemp2.First.IsCompressed, dumpTemp2.First.m_LenghtUncompressed));
                             }
                         }
-                        else
-                        {
-                            using (FileStream fsWrite = File.Create(sPath + @"\" + sFileName + ".raw"))
-                            {
-                                using (BinaryWriter bwWrite = new BinaryWriter(fsWrite))
-                                {
-                                    bwWrite.Write(uopFDcurrent.m_CompressedData);
-                                }
-                            }
-                        }
+
+                        j++;
                     }
+
+                    i++;
+                    j = 0;
                 }
             }
             catch
@@ -165,15 +149,23 @@ namespace UoKRUnpacker
 
         public void FixOffsets(int iIndex, int subIndex)
         {
+            // Fix every IndexHeader
+            foreach (UOPIndexBlockHeader uopibhCurrent in m_UopFile.m_Content)
+            {
+                uopibhCurrent.m_Files = (uint)(uopibhCurrent.FilesDynamicCount);
+            }
+
+            // Fix total file count
             int iCurrentFiles = m_UopFile.FilesDynamicCount;
             if (iCurrentFiles != (int)(m_UopFile.m_Header.m_totalIndex))
             {
                 m_UopFile.m_Header.m_totalIndex = (uint)(iCurrentFiles);
             }
 
+            // Fix offsets starting from (iIndex,subIndex)
             for (int outerIndex = iIndex; outerIndex < m_UopFile.m_Content.Count; outerIndex++)
             {
-                for (int innerIndex = subIndex; innerIndex < m_UopFile.m_Content[outerIndex].m_ListIndex.Count; innerIndex++)
+                for (int innerIndex = subIndex; innerIndex < m_UopFile.m_Content[outerIndex].m_ListData.Count; innerIndex++)
                 {
                     int outerIndexForCalc, innerIndexForCalc;
                     ulong newOffset;
@@ -187,7 +179,7 @@ namespace UoKRUnpacker
                         else
                         {
                             outerIndexForCalc = outerIndex - 1;
-                            innerIndexForCalc = m_UopFile.m_Content[outerIndexForCalc].m_ListIndex.Count - 1;
+                            innerIndexForCalc = m_UopFile.m_Content[outerIndexForCalc].m_ListData.Count - 1;
                         }
                     }
                     else
@@ -196,14 +188,14 @@ namespace UoKRUnpacker
                         innerIndexForCalc = innerIndex - 1;
                     }
 
-                    newOffset = m_UopFile.m_Content[outerIndexForCalc].m_ListIndex[innerIndexForCalc].m_OffsetOfDataBlock;
-                    newOffset += ((innerIndex == 0) && (outerIndex == 0)) ? 0 : (UOPFileData.SIZE + m_UopFile.m_Content[outerIndexForCalc].m_ListIndex[innerIndexForCalc].m_LenghtCompressed);
+                    newOffset = m_UopFile.m_Content[outerIndexForCalc].m_ListData[innerIndexForCalc].First.m_OffsetOfDataBlock;
+                    newOffset += ((innerIndex == 0) && (outerIndex == 0)) ? 0 : (UOPFileData.SIZE + m_UopFile.m_Content[outerIndexForCalc].m_ListData[innerIndexForCalc].First.m_LenghtCompressed);
                     if (outerIndex != outerIndexForCalc)
                     {
                         newOffset += UOPIndexBlockHeader.SIZE + (UOPFileIndexDef.SIZE * 100); 
                     }
 
-                    m_UopFile.m_Content[outerIndex].m_ListIndex[innerIndex].m_OffsetOfDataBlock = newOffset;
+                    m_UopFile.m_Content[outerIndex].m_ListData[innerIndex].First.m_OffsetOfDataBlock = newOffset;
                 }
 
                 // After the first ride, we start from the begin
@@ -248,7 +240,7 @@ namespace UoKRUnpacker
                 return UopPatchError.IndexBlockError;
             }
 
-            if (m_UopFile.m_Content[iIndex].m_ListIndex.Count <= subIndex)
+            if (m_UopFile.m_Content[iIndex].m_ListData.Count <= subIndex)
             {
                 GC.Collect();
                 return UopPatchError.FileIndexError;
@@ -279,30 +271,13 @@ namespace UoKRUnpacker
                 return UopPatchError.BufferError;
             }
 
-            m_UopFile.m_Content[iIndex].m_ListIndex[subIndex].m_LenghtCompressed = (uint)iDestLength;
-            m_UopFile.m_Content[iIndex].m_ListIndex[subIndex].m_LenghtUncompressed = (uint)fileContent.Length;
-            m_UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData = new byte[iDestLength];
-            Array.Copy(compressedStream, m_UopFile.m_Content[iIndex].m_ListData[subIndex].m_CompressedData, iDestLength);
+            m_UopFile.m_Content[iIndex].m_ListData[subIndex].First.m_LenghtCompressed = (uint)iDestLength;
+            m_UopFile.m_Content[iIndex].m_ListData[subIndex].First.m_LenghtUncompressed = (uint)fileContent.Length;
+            m_UopFile.m_Content[iIndex].m_ListData[subIndex].Second.m_CompressedData = new byte[iDestLength];
+            Array.Copy(compressedStream, m_UopFile.m_Content[iIndex].m_ListData[subIndex].Second.m_CompressedData, iDestLength);
 
             GC.Collect();
             return UopPatchError.Okay;
-        }
-
-        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed, ref string sFileName)
-        {
-            sFileName = Utility.GetPathForSave(m_UopPath);
-
-            UopPatchError repError = Replace(sWhat, iIndex, subIndex, bUncompressed);
-            if (repError != UopPatchError.Okay)
-            {
-                return repError;
-            }
-
-            FixOffsets(iIndex, subIndex);
-            bool bResult = Write(sFileName);
-
-            GC.Collect();
-            return bResult ? UopPatchError.Okay : UopPatchError.WriteError;
         }
 
         public enum UopPatchError : int

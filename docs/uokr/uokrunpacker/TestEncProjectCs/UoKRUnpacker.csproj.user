@@ -16,5 +16,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartArguments>
     </StartArguments>
+    <StartWorkingDirectory>C:\Documents and Settings\Furio\Documenti\sphere\source\trunk\docs\uokr\uokrunpacker\TestEncProjectCs\bin\Debug\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

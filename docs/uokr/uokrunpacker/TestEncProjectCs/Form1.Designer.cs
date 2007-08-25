@@ -41,18 +41,25 @@
             this.tllblEmpty2 = new System.Windows.Forms.ToolStripLabel();
             this.toolBtnInfo = new System.Windows.Forms.ToolStripButton();
             this.toolBtnSaveAs = new System.Windows.Forms.ToolStripButton();
+            this.toolBtnDontFix = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolBtnDump = new System.Windows.Forms.ToolStripButton();
             this.toolBtnUnpack = new System.Windows.Forms.ToolStripButton();
             this.toolBtnHelp = new System.Windows.Forms.ToolStripButton();
             this.toolBtnClose = new System.Windows.Forms.ToolStripButton();
             this.gbSelectedData = new System.Windows.Forms.GroupBox();
+            this.pnUopDatafile = new System.Windows.Forms.Panel();
+            this.btn_pnUopDatafile_RecountFiles = new System.Windows.Forms.LinkLabel();
+            this.nud_pnUopDatafile_Files = new System.Windows.Forms.NumericUpDown();
+            this.lbl_pnUopDatafile_Files = new System.Windows.Forms.Label();
+            this.txt_pnUopDatafile_Offset = new System.Windows.Forms.TextBox();
+            this.lbl_pnUopDatafile_Offset = new System.Windows.Forms.Label();
             this.btnDetailsUnpack = new System.Windows.Forms.Button();
             this.btnDetailsDelete = new System.Windows.Forms.Button();
             this.btnDetailsApply = new System.Windows.Forms.Button();
             this.btnDetailsModify = new System.Windows.Forms.Button();
             this.pnUopfile = new System.Windows.Forms.Panel();
-            this.btn_pnlUopFile_RecountFiles = new System.Windows.Forms.Button();
+            this.btn_pnlUopFile_RecountFiles = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.lblFiles = new System.Windows.Forms.Label();
             this.lblManyData = new System.Windows.Forms.Label();
@@ -61,17 +68,18 @@
             this.txt_pnlUopFile_Header1 = new System.Windows.Forms.TextBox();
             this.lbIndexList = new System.Windows.Forms.ListBox();
             this.ctxMenuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ssStatusBar = new System.Windows.Forms.StatusStrip();
             this.tslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tslblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslblWorking = new System.Windows.Forms.ToolStripStatusLabel();
             this.oFileDlgUopsave = new System.Windows.Forms.SaveFileDialog();
+            this.pnUopHeaderAndData = new System.Windows.Forms.Panel();
             this.tsMainBar.SuspendLayout();
             this.gbSelectedData.SuspendLayout();
+            this.pnUopDatafile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_pnUopDatafile_Files)).BeginInit();
             this.pnUopfile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_pnlUopFile_Files)).BeginInit();
             this.ctxMenuNode.SuspendLayout();
@@ -104,6 +112,7 @@
             this.tllblEmpty2,
             this.toolBtnInfo,
             this.toolBtnSaveAs,
+            this.toolBtnDontFix,
             this.toolStripSeparator2,
             this.toolBtnDump,
             this.toolBtnUnpack,
@@ -188,6 +197,17 @@
             this.toolBtnSaveAs.Text = "Save As ...";
             this.toolBtnSaveAs.Click += new System.EventHandler(this.toolBtnSaveAs_Click);
             // 
+            // toolBtnDontFix
+            // 
+            this.toolBtnDontFix.BackColor = System.Drawing.SystemColors.Control;
+            this.toolBtnDontFix.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBtnDontFix.Enabled = false;
+            this.toolBtnDontFix.Image = ((System.Drawing.Image)(resources.GetObject("toolBtnDontFix.Image")));
+            this.toolBtnDontFix.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBtnDontFix.Name = "toolBtnDontFix";
+            this.toolBtnDontFix.Size = new System.Drawing.Size(23, 28);
+            this.toolBtnDontFix.Text = "Don\'t Fix Offsets";
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -242,6 +262,8 @@
             // 
             // gbSelectedData
             // 
+            this.gbSelectedData.Controls.Add(this.pnUopHeaderAndData);
+            this.gbSelectedData.Controls.Add(this.pnUopDatafile);
             this.gbSelectedData.Controls.Add(this.btnDetailsUnpack);
             this.gbSelectedData.Controls.Add(this.btnDetailsDelete);
             this.gbSelectedData.Controls.Add(this.btnDetailsApply);
@@ -253,6 +275,62 @@
             this.gbSelectedData.TabIndex = 8;
             this.gbSelectedData.TabStop = false;
             this.gbSelectedData.Text = "Details";
+            // 
+            // pnUopDatafile
+            // 
+            this.pnUopDatafile.Controls.Add(this.btn_pnUopDatafile_RecountFiles);
+            this.pnUopDatafile.Controls.Add(this.nud_pnUopDatafile_Files);
+            this.pnUopDatafile.Controls.Add(this.lbl_pnUopDatafile_Files);
+            this.pnUopDatafile.Controls.Add(this.txt_pnUopDatafile_Offset);
+            this.pnUopDatafile.Controls.Add(this.lbl_pnUopDatafile_Offset);
+            this.pnUopDatafile.Enabled = false;
+            this.pnUopDatafile.Location = new System.Drawing.Point(6, 18);
+            this.pnUopDatafile.Name = "pnUopDatafile";
+            this.pnUopDatafile.Size = new System.Drawing.Size(300, 313);
+            this.pnUopDatafile.TabIndex = 5;
+            this.pnUopDatafile.Visible = false;
+            // 
+            // btn_pnUopDatafile_RecountFiles
+            // 
+            this.btn_pnUopDatafile_RecountFiles.AutoSize = true;
+            this.btn_pnUopDatafile_RecountFiles.Location = new System.Drawing.Point(74, 165);
+            this.btn_pnUopDatafile_RecountFiles.Name = "btn_pnUopDatafile_RecountFiles";
+            this.btn_pnUopDatafile_RecountFiles.Size = new System.Drawing.Size(72, 13);
+            this.btn_pnUopDatafile_RecountFiles.TabIndex = 4;
+            this.btn_pnUopDatafile_RecountFiles.TabStop = true;
+            this.btn_pnUopDatafile_RecountFiles.Text = "Recount Files";
+            // 
+            // nud_pnUopDatafile_Files
+            // 
+            this.nud_pnUopDatafile_Files.Location = new System.Drawing.Point(12, 163);
+            this.nud_pnUopDatafile_Files.Name = "nud_pnUopDatafile_Files";
+            this.nud_pnUopDatafile_Files.Size = new System.Drawing.Size(56, 20);
+            this.nud_pnUopDatafile_Files.TabIndex = 3;
+            // 
+            // lbl_pnUopDatafile_Files
+            // 
+            this.lbl_pnUopDatafile_Files.AutoSize = true;
+            this.lbl_pnUopDatafile_Files.Location = new System.Drawing.Point(9, 147);
+            this.lbl_pnUopDatafile_Files.Name = "lbl_pnUopDatafile_Files";
+            this.lbl_pnUopDatafile_Files.Size = new System.Drawing.Size(57, 13);
+            this.lbl_pnUopDatafile_Files.TabIndex = 2;
+            this.lbl_pnUopDatafile_Files.Text = "File Count:";
+            // 
+            // txt_pnUopDatafile_Offset
+            // 
+            this.txt_pnUopDatafile_Offset.Location = new System.Drawing.Point(12, 69);
+            this.txt_pnUopDatafile_Offset.Name = "txt_pnUopDatafile_Offset";
+            this.txt_pnUopDatafile_Offset.Size = new System.Drawing.Size(148, 20);
+            this.txt_pnUopDatafile_Offset.TabIndex = 1;
+            // 
+            // lbl_pnUopDatafile_Offset
+            // 
+            this.lbl_pnUopDatafile_Offset.AutoSize = true;
+            this.lbl_pnUopDatafile_Offset.Location = new System.Drawing.Point(9, 53);
+            this.lbl_pnUopDatafile_Offset.Name = "lbl_pnUopDatafile_Offset";
+            this.lbl_pnUopDatafile_Offset.Size = new System.Drawing.Size(63, 13);
+            this.lbl_pnUopDatafile_Offset.TabIndex = 0;
+            this.lbl_pnUopDatafile_Offset.Text = "Next Offset:";
             // 
             // btnDetailsUnpack
             // 
@@ -330,14 +408,13 @@
             // 
             // btn_pnlUopFile_RecountFiles
             // 
-            this.btn_pnlUopFile_RecountFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_pnlUopFile_RecountFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_pnlUopFile_RecountFiles.Location = new System.Drawing.Point(106, 119);
+            this.btn_pnlUopFile_RecountFiles.AutoSize = true;
+            this.btn_pnlUopFile_RecountFiles.Location = new System.Drawing.Point(103, 130);
             this.btn_pnlUopFile_RecountFiles.Name = "btn_pnlUopFile_RecountFiles";
-            this.btn_pnlUopFile_RecountFiles.Size = new System.Drawing.Size(86, 29);
-            this.btn_pnlUopFile_RecountFiles.TabIndex = 6;
-            this.btn_pnlUopFile_RecountFiles.Text = "Recount";
-            this.btn_pnlUopFile_RecountFiles.UseVisualStyleBackColor = true;
+            this.btn_pnlUopFile_RecountFiles.Size = new System.Drawing.Size(72, 13);
+            this.btn_pnlUopFile_RecountFiles.TabIndex = 7;
+            this.btn_pnlUopFile_RecountFiles.TabStop = true;
+            this.btn_pnlUopFile_RecountFiles.Text = "Recount Files";
             // 
             // label3
             // 
@@ -399,36 +476,19 @@
             // ctxMenuNode
             // 
             this.ctxMenuNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteToolStripMenuItem,
-            this.dumpToolStripMenuItem,
             this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem});
+            this.moveDownToolStripMenuItem,
+            this.deleteToolStripMenuItem});
             this.ctxMenuNode.Name = "ctxMenuNode";
             this.ctxMenuNode.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.ctxMenuNode.ShowItemToolTips = false;
-            this.ctxMenuNode.Size = new System.Drawing.Size(132, 92);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // dumpToolStripMenuItem
-            // 
-            this.dumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("dumpToolStripMenuItem.Image")));
-            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
-            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.dumpToolStripMenuItem.Text = "Dump To ...";
-            this.dumpToolStripMenuItem.Click += new System.EventHandler(this.dumpToolStripMenuItem_Click);
+            this.ctxMenuNode.Size = new System.Drawing.Size(131, 70);
             // 
             // moveUpToolStripMenuItem
             // 
             this.moveUpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("moveUpToolStripMenuItem.Image")));
             this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.moveUpToolStripMenuItem.Text = "Move Up";
             this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
             // 
@@ -436,16 +496,23 @@
             // 
             this.moveDownToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("moveDownToolStripMenuItem.Image")));
             this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.moveDownToolStripMenuItem.Text = "Move Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // ssStatusBar
             // 
             this.ssStatusBar.BackColor = System.Drawing.SystemColors.Control;
             this.ssStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tslblStatus,
-            this.tslblEmpty,
             this.tslblWorking});
             this.ssStatusBar.Location = new System.Drawing.Point(0, 408);
             this.ssStatusBar.Name = "ssStatusBar";
@@ -460,17 +527,10 @@
             this.tslblStatus.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
                         | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
                         | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.tslblStatus.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.tslblStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.tslblStatus.Name = "tslblStatus";
-            this.tslblStatus.Size = new System.Drawing.Size(400, 20);
+            this.tslblStatus.Size = new System.Drawing.Size(640, 20);
             this.tslblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tslblEmpty
-            // 
-            this.tslblEmpty.AutoSize = false;
-            this.tslblEmpty.Name = "tslblEmpty";
-            this.tslblEmpty.Size = new System.Drawing.Size(243, 20);
             // 
             // tslblWorking
             // 
@@ -483,6 +543,13 @@
             // oFileDlgUopsave
             // 
             this.oFileDlgUopsave.Filter = "UOKR Uop (*.uop)|*.uop";
+            // 
+            // pnUopHeaderAndData
+            // 
+            this.pnUopHeaderAndData.Location = new System.Drawing.Point(6, 18);
+            this.pnUopHeaderAndData.Name = "pnUopHeaderAndData";
+            this.pnUopHeaderAndData.Size = new System.Drawing.Size(301, 313);
+            this.pnUopHeaderAndData.TabIndex = 6;
             // 
             // Form1
             // 
@@ -502,6 +569,9 @@
             this.tsMainBar.ResumeLayout(false);
             this.tsMainBar.PerformLayout();
             this.gbSelectedData.ResumeLayout(false);
+            this.pnUopDatafile.ResumeLayout(false);
+            this.pnUopDatafile.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_pnUopDatafile_Files)).EndInit();
             this.pnUopfile.ResumeLayout(false);
             this.pnUopfile.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_pnlUopFile_Files)).EndInit();
@@ -529,7 +599,6 @@
         private System.Windows.Forms.ToolStripButton toolBtnClose;
         private System.Windows.Forms.ContextMenuStrip ctxMenuNode;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolBtnDump;
@@ -542,7 +611,6 @@
         private System.Windows.Forms.ToolStripStatusLabel tslblStatus;
         private System.Windows.Forms.SaveFileDialog oFileDlgUopsave;
         private System.Windows.Forms.ToolStripStatusLabel tslblWorking;
-        private System.Windows.Forms.ToolStripStatusLabel tslblEmpty;
         private System.Windows.Forms.Panel pnUopfile;
         private System.Windows.Forms.Button btnDetailsDelete;
         private System.Windows.Forms.Button btnDetailsApply;
@@ -553,8 +621,16 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblFiles;
         private System.Windows.Forms.Label lblManyData;
-        private System.Windows.Forms.Button btn_pnlUopFile_RecountFiles;
         private System.Windows.Forms.Button btnDetailsUnpack;
+        private System.Windows.Forms.LinkLabel btn_pnlUopFile_RecountFiles;
+        private System.Windows.Forms.Panel pnUopDatafile;
+        private System.Windows.Forms.NumericUpDown nud_pnUopDatafile_Files;
+        private System.Windows.Forms.Label lbl_pnUopDatafile_Files;
+        private System.Windows.Forms.TextBox txt_pnUopDatafile_Offset;
+        private System.Windows.Forms.Label lbl_pnUopDatafile_Offset;
+        private System.Windows.Forms.LinkLabel btn_pnUopDatafile_RecountFiles;
+        private System.Windows.Forms.ToolStripButton toolBtnDontFix;
+        private System.Windows.Forms.Panel pnUopHeaderAndData;
     }
 }
 

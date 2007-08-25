@@ -61,6 +61,15 @@ namespace UoKRUnpacker
         }
     }
 
+    class StaticData
+    {
+        public const string UNPACK_DIR = @"\Unpacked";
+        public const string DUMPINFO_DIR = @"\Dumpinfo";
+        public const string UNPACK_NAMEPATTERN = "{0}-{1:00}_{2:00}.{3}";
+        public const string UNPACK_EXT_COMP = "dat";
+        public const string UNPACK_EXT_UCOMP = "raw";
+    }
+
     class Utility
     {
         public static string GetPathForSave(string sInput)
@@ -70,16 +79,7 @@ namespace UoKRUnpacker
 
         public static string GetFileName(string sInput)
         {
-            int iStartName = sInput.LastIndexOf('\\') + 1;
-
-            if (iStartName != -1)
-            {
-                return sInput.Substring(iStartName, sInput.Length - iStartName);
-            }
-            else
-            {
-                return sInput;
-            }
+            return System.IO.Path.GetFileName(sInput);
         }
 
         public enum HashStringStyle : int

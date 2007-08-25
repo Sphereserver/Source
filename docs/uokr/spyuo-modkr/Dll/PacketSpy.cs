@@ -157,6 +157,8 @@ namespace SpyUO
 			if ( !NativeMethods.DebugActiveProcess( id ) )
 				throw new Win32Exception();
 
+            lastAddress_s = lastAddress_r = 0;
+
 			InitBreakpoints();
 		}
 
@@ -259,7 +261,10 @@ namespace SpyUO
 
             bool handle=true;
 
-            if (send && GetContextRegister(m_ContextBuffer, ar.CheckRegister) != 2)
+            if (send && !length && GetContextRegister(m_ContextBuffer, ar.CheckRegister) != 3)
+                handle = false;
+
+            if (send && length && lastAddress_s == 0)
                 handle = false;
 
             uint lastAddress;
@@ -278,9 +283,15 @@ namespace SpyUO
                 {
                     uint dataLength = GetContextRegister(m_ContextBuffer, ar.LengthRegister) & 0xFFFF;
                     if (send)
+                    {
                         lastAddress = new BinaryReader(new MemoryStream(ReadProcessMemory(lastAddress_s + 4, 4))).ReadUInt32();
+                        lastAddress_s = 0;
+                    }
                     else
+                    {
                         lastAddress = lastAddress_r;
+                        lastAddress_r = 0;
+                    }
                     data = ReadProcessMemory(lastAddress, dataLength);
                 }
             }
