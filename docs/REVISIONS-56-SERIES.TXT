@@ -3622,3 +3622,6 @@ this all in desperation)
 - Fixed #1247: NPCs not moving closer to their targets when they're using a
   bow with a shorter range than the ini's archery range settings.
 
+25-08-2007, Beyonder
+- Fixed #815, i_blood_2 not decaying: Changed the definition in sphere_item_resources so that 
+  i_blood_2 now has a weight.

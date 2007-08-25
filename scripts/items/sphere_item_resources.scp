@@ -1075,6 +1075,7 @@ DESCRIPTION=Brain
 DEFNAME=i_blood_2
 VALUE=1
 TYPE=T_BLOOD
+weight=.1
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Blood
 DESCRIPTION=@
