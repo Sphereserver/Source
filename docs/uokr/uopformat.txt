@@ -25,14 +25,21 @@ When a index block doesn't contain 100 index definitions, it will be padded with
    DWORD 0x3c -> Length of Data Block header (usually 0x0C)
    DWORD 0x40 -> Lenght of compressed data
    DWORD 0x44 -> Size of decompressed file (if it's == to compressed then the file is not compressed)
-   QWORD 0x48 -> UNKNOWN-1 (maybe filename?)
-   DWORD 0x50 -> UNKNOWN-2 (maybe CRC?)
-   WORD  0x54 -> Separator? (always 0x0001)
+   DWORD 0x48 -> some hash (filename? extension?)
+   DWORD 0x52 -> some hash (filename? extension?)
+   DWORD 0x56 -> some hash (folder? because in warhammers-mft.myp this is 0x00 and in all other myp's this is != 0x00) 
+   WORD  0x5a -> Compressed flag (0x0001 = compressed; 0x0000 = uncompressed)
    ...this repreats, until all FileIndexes are processed
 
    [4] - Data Block/File (sizeof: 12+Lenght bytes)
-   DWORD 0xd7c -> separator, start of Data ( WORD[2] 0x0008 0x0003 )
+   WORD 0xd7c -> some flag (0x0003 in uokr-myp's, 0x0004 in warhammer-myp's)
+   WORD       -> offset to file data from this position (in warhammer-myp's 
+                  this is 133 and sometimes 132. so the data block header
+                  has no fixed size) 
    QWORD 0xd80 -> UNKNOWN, possibly a CRC
+                 (don't think so because this value isn't unique for every data
+                 block header. if this is a crc it has to be unique unless there are
+                 to equal files inside a myp ... or not?) 
    BYTE(Lenght) 0xd88 -> compressed data
    ...this is repeated until all Files from FileIndexes are processed
 

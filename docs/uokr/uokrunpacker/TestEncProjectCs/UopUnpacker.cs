@@ -162,6 +162,15 @@ namespace UoKRUnpacker
                 m_UopFile.m_Header.m_totalIndex = (uint)(iCurrentFiles);
             }
 
+            // Fix compression flag
+            foreach (UOPIndexBlockHeader uopibhCurrent in m_UopFile.m_Content)
+            {
+                foreach (UOPPairData uopPairCurrent in uopibhCurrent.m_ListData)
+                {
+                    uopPairCurrent.First.IsCompressed = uopPairCurrent.First.IsReallyCompressed;
+                }
+            }
+
             // Fix offsets starting from (iIndex,subIndex)
             for (int outerIndex = iIndex; outerIndex < m_UopFile.m_Content.Count; outerIndex++)
             {
@@ -215,9 +224,14 @@ namespace UoKRUnpacker
             }
         }
 
-        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed)
+        public UopPatchError Replace(string sWhat, UOPPairData upData, bool bUncompressed)
         {
-            if (!File.Exists(sWhat))
+            if (upData == null)
+            {
+                return UopPatchError.IndexBlockError;
+            }
+
+            if (( sWhat == null ) || (!File.Exists(sWhat)))
             {
                 return UopPatchError.FileError;
             }
@@ -232,18 +246,6 @@ namespace UoKRUnpacker
                     fsToParse.Seek(0, SeekOrigin.Begin);
                     fileContent = brToParse.ReadBytes((int)fSize);
                 }
-            }
-
-            if (m_UopFile.m_Content.Count <= iIndex)
-            {
-                GC.Collect();
-                return UopPatchError.IndexBlockError;
-            }
-
-            if (m_UopFile.m_Content[iIndex].m_ListData.Count <= subIndex)
-            {
-                GC.Collect();
-                return UopPatchError.FileIndexError;
             }
 
             byte[] compressedStream = null;
@@ -271,17 +273,30 @@ namespace UoKRUnpacker
                 return UopPatchError.BufferError;
             }
 
-            m_UopFile.m_Content[iIndex].m_ListData[subIndex].First.m_LenghtCompressed = (uint)iDestLength;
-            m_UopFile.m_Content[iIndex].m_ListData[subIndex].First.m_LenghtUncompressed = (uint)fileContent.Length;
-            m_UopFile.m_Content[iIndex].m_ListData[subIndex].Second.m_CompressedData = new byte[iDestLength];
-            Array.Copy(compressedStream, m_UopFile.m_Content[iIndex].m_ListData[subIndex].Second.m_CompressedData, iDestLength);
+            bool bResultReplace = upData.ReplaceData(compressedStream, (uint)(fileContent.Length));
 
             GC.Collect();
-            return UopPatchError.Okay;
+            return bResultReplace ? UopPatchError.Okay : UopPatchError.ReplaceError;
+        }
+
+        public UopPatchError Replace(string sWhat, int iIndex, int subIndex, bool bUncompressed)
+        {
+            if (m_UopFile.m_Content.Count <= iIndex)
+            {
+                return UopPatchError.IndexBlockError;
+            }
+
+            if (m_UopFile.m_Content[iIndex].m_ListData.Count <= subIndex)
+            {
+                return UopPatchError.FileIndexError;
+            }
+
+            return Replace(sWhat, m_UopFile.m_Content[iIndex].m_ListData[subIndex], bUncompressed);
         }
 
         public enum UopPatchError : int
         {
+            ReplaceError = -7,
             WriteError = -6,
             BufferError = -5,
             CompressionError = -4,

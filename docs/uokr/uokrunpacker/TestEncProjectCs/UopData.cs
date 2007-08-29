@@ -342,6 +342,34 @@ namespace UOPDefine
             get { return m_SecondData; }
         }
 
+        public bool ReplaceData(byte[] bData, uint uncompressedLength)
+        {
+            if ( bData == null )
+                return false;
+
+            bool bReturn = false;
+            uint compressedLength = (uint)(bData.Length);
+            bool isCompressed = (compressedLength != uncompressedLength);
+
+            try
+            {
+                this.Second.m_CompressedData = new byte[compressedLength];
+                Array.Copy(bData, this.Second.m_CompressedData, compressedLength);
+
+                this.First.m_LenghtCompressed = compressedLength;
+                this.First.m_LenghtUncompressed = uncompressedLength;
+                this.First.IsCompressed = isCompressed;
+
+                bReturn = true;
+            }
+            catch
+            {
+
+            }
+
+            return bReturn;
+        }
+
         public override bool Equals(object obj)
         {
             if (!obj.GetType().Equals(this.GetType()))
@@ -355,25 +383,32 @@ namespace UOPDefine
 
     class UOPFileIndexDef
     {
-        public const int SIZE = 8 + 4 + 4 + 4 + 8 + 4 + 2;
+        public const int SIZE = 8 + 4 + 4 + 4 + 4 + 4 + 4 + 2;
         private static readonly string NAME = "UOPFileIndexDef";
 
         public ulong m_OffsetOfDataBlock;
         public uint m_SizeofDataHeaders;
         public uint m_LenghtCompressed;
         public uint m_LenghtUncompressed;
-        public ulong m_Unknown1;
+        public uint m_Unknown1;
         public uint m_Unknown2;
-        public ushort m_Separator;
+        public uint m_Unknown3;
+        public ushort m_CompressedFlag;
 
         public UOPFileIndexDef()
         {
             m_OffsetOfDataBlock = m_Unknown1 = 0;
-            m_LenghtCompressed = m_LenghtUncompressed = m_SizeofDataHeaders = m_Unknown2 = 0;
-            m_Separator = 0;
+            m_LenghtCompressed = m_LenghtUncompressed = m_SizeofDataHeaders = m_Unknown1 = m_Unknown2 = m_Unknown3 = 0;
+            m_CompressedFlag = 0;
         }
 
         public bool IsCompressed
+        {
+            get { return (m_CompressedFlag != 0); }
+            set { m_CompressedFlag = (ushort)((value) ? 1 : 0); }
+        }
+
+        public bool IsReallyCompressed
         {
             get { return (m_LenghtCompressed != m_LenghtUncompressed);  }
         }
@@ -388,7 +423,8 @@ namespace UOPDefine
             result.AppendLine(String.Format("\t\t- Length Compressed/Uncompressed: {0}/{1} bytes", m_LenghtCompressed, m_LenghtUncompressed));
             result.AppendLine(String.Format("\t\t- Unknown Data 1: 0x{0:X}", m_Unknown1));
             result.AppendLine(String.Format("\t\t- Unknown Data 2: 0x{0:X}", m_Unknown2));
-            result.Append(String.Format("\t\t- Separator: 0x{0:X}", m_Separator));
+            result.AppendLine(String.Format("\t\t- Unknown Data 3: 0x{0:X}", m_Unknown3));
+            result.Append(String.Format("\t\t- Compressed Flag: 0x{0:X}", m_CompressedFlag));
 
             return result.ToString();
         }
@@ -402,7 +438,8 @@ namespace UOPDefine
 
             return ((m_OffsetOfDataBlock == objCurrent.m_OffsetOfDataBlock) && (m_SizeofDataHeaders == objCurrent.m_SizeofDataHeaders) &&
                     (m_LenghtCompressed == objCurrent.m_LenghtCompressed) && (m_LenghtUncompressed == objCurrent.m_LenghtUncompressed) &&
-                    (m_Unknown1 == objCurrent.m_Unknown1) && (m_Unknown2 == objCurrent.m_Unknown2) && (m_Separator == objCurrent.m_Separator));
+                    (m_Unknown1 == objCurrent.m_Unknown1) && (m_Unknown2 == objCurrent.m_Unknown2) && (m_Unknown3 == objCurrent.m_Unknown3) &&
+                    (m_CompressedFlag == objCurrent.m_CompressedFlag));
         }
 
         public void ToBinary(System.IO.BinaryWriter bStream)
@@ -413,7 +450,8 @@ namespace UOPDefine
             bStream.Write(m_LenghtUncompressed);
             bStream.Write(m_Unknown1);
             bStream.Write(m_Unknown2);
-            bStream.Write(m_Separator);
+            bStream.Write(m_Unknown3);
+            bStream.Write(m_CompressedFlag);
         }
 
         public static UOPFileIndexDef FromBinary(System.IO.BinaryReader bStream)
@@ -424,9 +462,10 @@ namespace UOPDefine
             toReturn.m_SizeofDataHeaders = bStream.ReadUInt32();
             toReturn.m_LenghtCompressed = bStream.ReadUInt32();
             toReturn.m_LenghtUncompressed = bStream.ReadUInt32();
-            toReturn.m_Unknown1 = bStream.ReadUInt64();
+            toReturn.m_Unknown1 = bStream.ReadUInt32();
             toReturn.m_Unknown2 = bStream.ReadUInt32();
-            toReturn.m_Separator = bStream.ReadUInt16();
+            toReturn.m_Unknown3 = bStream.ReadUInt32();
+            toReturn.m_CompressedFlag = bStream.ReadUInt16();
 
             return toReturn;
         }
@@ -434,16 +473,17 @@ namespace UOPDefine
 
     class UOPFileData
     {
-        public const int SIZE = 8 + 4;
+        public const int SIZE = 2 + 2 + 8;
         private static readonly string NAME = "UOPFileData";
 
-        public uint m_Separator; // ( WORD[2] 0x0008 0x0003 )
+        public ushort m_DataFlag; // ( 0x0003 )
+        public ushort m_LocalOffsetToData; // Because they could enlarge the next field
         public ulong m_Unknown; // UNKNOWN, possibly a CRC
         public byte[] m_CompressedData;
 
         public UOPFileData()
         {
-            m_Separator = 0;
+            m_DataFlag = m_LocalOffsetToData = 0;
             m_Unknown = 0; // qword
         }
 
@@ -452,7 +492,8 @@ namespace UOPDefine
             StringBuilder result = new StringBuilder();
 
             result.AppendLine(String.Format("\t{0} (size: {1}/{2})", NAME, SIZE, SIZE + m_CompressedData.Length));
-            result.AppendLine(String.Format("\t\t- Separator: 0x{0:X}", m_Separator));
+            result.AppendLine(String.Format("\t\t- Data Flag: 0x{0:X}", m_DataFlag));
+            result.AppendLine(String.Format("\t\t- Local Offset To Data: 0x{0:X}", m_LocalOffsetToData));
             result.Append(String.Format("\t\t- Unknown Data: 0x{0:X}", m_Unknown));
 
             return result.ToString();
@@ -465,12 +506,14 @@ namespace UOPDefine
 
             UOPFileData objCurrent = (UOPFileData)obj;
 
-            return ((m_Separator == objCurrent.m_Separator) && (m_Unknown == objCurrent.m_Unknown) && Array.Equals(m_CompressedData, objCurrent.m_CompressedData));
+            return ((m_DataFlag == objCurrent.m_DataFlag) && (m_LocalOffsetToData == objCurrent.m_LocalOffsetToData) && (m_Unknown == objCurrent.m_Unknown) 
+                     && Array.Equals(m_CompressedData, objCurrent.m_CompressedData));
         }
 
         public void ToBinary(System.IO.BinaryWriter bStream)
         {
-            bStream.Write(m_Separator);
+            bStream.Write(m_DataFlag);
+            bStream.Write(m_LocalOffsetToData);
             bStream.Write(m_Unknown);
             bStream.Write(m_CompressedData);
         }
@@ -495,7 +538,8 @@ namespace UOPDefine
         {
             UOPFileData toReturn = new UOPFileData();
 
-            toReturn.m_Separator = bStream.ReadUInt32();
+            toReturn.m_DataFlag = bStream.ReadUInt16();
+            toReturn.m_LocalOffsetToData = bStream.ReadUInt16();
             toReturn.m_Unknown = bStream.ReadUInt64();
             toReturn.m_CompressedData = new byte[length];
             toReturn.m_CompressedData = bStream.ReadBytes(toReturn.m_CompressedData.Length);

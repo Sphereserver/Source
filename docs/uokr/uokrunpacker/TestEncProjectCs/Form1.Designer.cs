@@ -48,6 +48,21 @@
             this.toolBtnHelp = new System.Windows.Forms.ToolStripButton();
             this.toolBtnClose = new System.Windows.Forms.ToolStripButton();
             this.gbSelectedData = new System.Windows.Forms.GroupBox();
+            this.pnUopHeaderAndData = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btn_pnUopHeaderAndData_PatchDataUnc = new System.Windows.Forms.LinkLabel();
+            this.btn_pnUopHeaderAndData_PatchData = new System.Windows.Forms.LinkLabel();
+            this.txt_pnUopHeaderAndData_Data = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_DataUnk1 = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_Unk2 = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_Unk1 = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_SizeHeader = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_Offset = new System.Windows.Forms.TextBox();
             this.pnUopDatafile = new System.Windows.Forms.Panel();
             this.btn_pnUopDatafile_RecountFiles = new System.Windows.Forms.LinkLabel();
             this.nud_pnUopDatafile_Files = new System.Windows.Forms.NumericUpDown();
@@ -75,9 +90,18 @@
             this.tslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslblWorking = new System.Windows.Forms.ToolStripStatusLabel();
             this.oFileDlgUopsave = new System.Windows.Forms.SaveFileDialog();
-            this.pnUopHeaderAndData = new System.Windows.Forms.Panel();
+            this.oPatchDlgUopopen = new System.Windows.Forms.OpenFileDialog();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txt_pnUopHeaderAndData_Unk3 = new System.Windows.Forms.TextBox();
+            this.chk_pnUopHeaderAndData_Compressed = new System.Windows.Forms.CheckBox();
+            this.txt_pnUopHeaderAndData_DataLocalOffset = new System.Windows.Forms.TextBox();
+            this.txt_pnUopHeaderAndData_DataFlags = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnDetailsUndo = new System.Windows.Forms.Button();
             this.tsMainBar.SuspendLayout();
             this.gbSelectedData.SuspendLayout();
+            this.pnUopHeaderAndData.SuspendLayout();
             this.pnUopDatafile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_pnUopDatafile_Files)).BeginInit();
             this.pnUopfile.SuspendLayout();
@@ -94,7 +118,7 @@
             // 
             this.tvFileData.Location = new System.Drawing.Point(12, 34);
             this.tvFileData.Name = "tvFileData";
-            this.tvFileData.Size = new System.Drawing.Size(163, 368);
+            this.tvFileData.Size = new System.Drawing.Size(163, 407);
             this.tvFileData.TabIndex = 5;
             this.tvFileData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvFileData_AfterSelect);
             // 
@@ -262,6 +286,7 @@
             // 
             // gbSelectedData
             // 
+            this.gbSelectedData.Controls.Add(this.btnDetailsUndo);
             this.gbSelectedData.Controls.Add(this.pnUopHeaderAndData);
             this.gbSelectedData.Controls.Add(this.pnUopDatafile);
             this.gbSelectedData.Controls.Add(this.btnDetailsUnpack);
@@ -271,10 +296,158 @@
             this.gbSelectedData.Controls.Add(this.pnUopfile);
             this.gbSelectedData.Location = new System.Drawing.Point(347, 32);
             this.gbSelectedData.Name = "gbSelectedData";
-            this.gbSelectedData.Size = new System.Drawing.Size(313, 370);
+            this.gbSelectedData.Size = new System.Drawing.Size(313, 409);
             this.gbSelectedData.TabIndex = 8;
             this.gbSelectedData.TabStop = false;
             this.gbSelectedData.Text = "Details";
+            // 
+            // pnUopHeaderAndData
+            // 
+            this.pnUopHeaderAndData.Controls.Add(this.label10);
+            this.pnUopHeaderAndData.Controls.Add(this.label9);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_DataFlags);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_DataLocalOffset);
+            this.pnUopHeaderAndData.Controls.Add(this.chk_pnUopHeaderAndData_Compressed);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_Unk3);
+            this.pnUopHeaderAndData.Controls.Add(this.label6);
+            this.pnUopHeaderAndData.Controls.Add(this.label8);
+            this.pnUopHeaderAndData.Controls.Add(this.label7);
+            this.pnUopHeaderAndData.Controls.Add(this.label5);
+            this.pnUopHeaderAndData.Controls.Add(this.label4);
+            this.pnUopHeaderAndData.Controls.Add(this.label2);
+            this.pnUopHeaderAndData.Controls.Add(this.label1);
+            this.pnUopHeaderAndData.Controls.Add(this.btn_pnUopHeaderAndData_PatchDataUnc);
+            this.pnUopHeaderAndData.Controls.Add(this.btn_pnUopHeaderAndData_PatchData);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_Data);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_DataUnk1);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_Unk2);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_Unk1);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_SizeHeader);
+            this.pnUopHeaderAndData.Controls.Add(this.txt_pnUopHeaderAndData_Offset);
+            this.pnUopHeaderAndData.Location = new System.Drawing.Point(6, 18);
+            this.pnUopHeaderAndData.Name = "pnUopHeaderAndData";
+            this.pnUopHeaderAndData.Size = new System.Drawing.Size(301, 313);
+            this.pnUopHeaderAndData.TabIndex = 6;
+            this.pnUopHeaderAndData.Visible = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(149, 265);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(130, 13);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "Unknown 1 (data related):";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 165);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(33, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Data:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(149, 57);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Unknown 2:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 57);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Unknown 1:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(149, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Size of header:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(74, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Offset of data:";
+            // 
+            // btn_pnUopHeaderAndData_PatchDataUnc
+            // 
+            this.btn_pnUopHeaderAndData_PatchDataUnc.AutoSize = true;
+            this.btn_pnUopHeaderAndData_PatchDataUnc.Location = new System.Drawing.Point(135, 204);
+            this.btn_pnUopHeaderAndData_PatchDataUnc.Name = "btn_pnUopHeaderAndData_PatchDataUnc";
+            this.btn_pnUopHeaderAndData_PatchDataUnc.Size = new System.Drawing.Size(160, 13);
+            this.btn_pnUopHeaderAndData_PatchDataUnc.TabIndex = 8;
+            this.btn_pnUopHeaderAndData_PatchDataUnc.TabStop = true;
+            this.btn_pnUopHeaderAndData_PatchDataUnc.Text = "Patch new data (uncompressed)";
+            // 
+            // btn_pnUopHeaderAndData_PatchData
+            // 
+            this.btn_pnUopHeaderAndData_PatchData.AutoSize = true;
+            this.btn_pnUopHeaderAndData_PatchData.Location = new System.Drawing.Point(135, 181);
+            this.btn_pnUopHeaderAndData_PatchData.Name = "btn_pnUopHeaderAndData_PatchData";
+            this.btn_pnUopHeaderAndData_PatchData.Size = new System.Drawing.Size(82, 13);
+            this.btn_pnUopHeaderAndData_PatchData.TabIndex = 7;
+            this.btn_pnUopHeaderAndData_PatchData.TabStop = true;
+            this.btn_pnUopHeaderAndData_PatchData.Text = "Patch new data";
+            // 
+            // txt_pnUopHeaderAndData_Data
+            // 
+            this.txt_pnUopHeaderAndData_Data.Enabled = false;
+            this.txt_pnUopHeaderAndData_Data.Location = new System.Drawing.Point(12, 181);
+            this.txt_pnUopHeaderAndData_Data.Multiline = true;
+            this.txt_pnUopHeaderAndData_Data.Name = "txt_pnUopHeaderAndData_Data";
+            this.txt_pnUopHeaderAndData_Data.Size = new System.Drawing.Size(119, 36);
+            this.txt_pnUopHeaderAndData_Data.TabIndex = 6;
+            // 
+            // txt_pnUopHeaderAndData_DataUnk1
+            // 
+            this.txt_pnUopHeaderAndData_DataUnk1.Location = new System.Drawing.Point(152, 281);
+            this.txt_pnUopHeaderAndData_DataUnk1.Name = "txt_pnUopHeaderAndData_DataUnk1";
+            this.txt_pnUopHeaderAndData_DataUnk1.Size = new System.Drawing.Size(119, 20);
+            this.txt_pnUopHeaderAndData_DataUnk1.TabIndex = 5;
+            // 
+            // txt_pnUopHeaderAndData_Unk2
+            // 
+            this.txt_pnUopHeaderAndData_Unk2.Location = new System.Drawing.Point(152, 73);
+            this.txt_pnUopHeaderAndData_Unk2.Name = "txt_pnUopHeaderAndData_Unk2";
+            this.txt_pnUopHeaderAndData_Unk2.Size = new System.Drawing.Size(134, 20);
+            this.txt_pnUopHeaderAndData_Unk2.TabIndex = 3;
+            // 
+            // txt_pnUopHeaderAndData_Unk1
+            // 
+            this.txt_pnUopHeaderAndData_Unk1.Location = new System.Drawing.Point(12, 73);
+            this.txt_pnUopHeaderAndData_Unk1.Name = "txt_pnUopHeaderAndData_Unk1";
+            this.txt_pnUopHeaderAndData_Unk1.Size = new System.Drawing.Size(119, 20);
+            this.txt_pnUopHeaderAndData_Unk1.TabIndex = 2;
+            // 
+            // txt_pnUopHeaderAndData_SizeHeader
+            // 
+            this.txt_pnUopHeaderAndData_SizeHeader.Enabled = false;
+            this.txt_pnUopHeaderAndData_SizeHeader.Location = new System.Drawing.Point(152, 27);
+            this.txt_pnUopHeaderAndData_SizeHeader.Name = "txt_pnUopHeaderAndData_SizeHeader";
+            this.txt_pnUopHeaderAndData_SizeHeader.Size = new System.Drawing.Size(134, 20);
+            this.txt_pnUopHeaderAndData_SizeHeader.TabIndex = 1;
+            // 
+            // txt_pnUopHeaderAndData_Offset
+            // 
+            this.txt_pnUopHeaderAndData_Offset.Location = new System.Drawing.Point(12, 27);
+            this.txt_pnUopHeaderAndData_Offset.Name = "txt_pnUopHeaderAndData_Offset";
+            this.txt_pnUopHeaderAndData_Offset.Size = new System.Drawing.Size(117, 20);
+            this.txt_pnUopHeaderAndData_Offset.TabIndex = 0;
             // 
             // pnUopDatafile
             // 
@@ -336,9 +509,9 @@
             // 
             this.btnDetailsUnpack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetailsUnpack.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsUnpack.Image")));
-            this.btnDetailsUnpack.Location = new System.Drawing.Point(6, 337);
+            this.btnDetailsUnpack.Location = new System.Drawing.Point(6, 345);
             this.btnDetailsUnpack.Name = "btnDetailsUnpack";
-            this.btnDetailsUnpack.Size = new System.Drawing.Size(79, 26);
+            this.btnDetailsUnpack.Size = new System.Drawing.Size(100, 26);
             this.btnDetailsUnpack.TabIndex = 4;
             this.btnDetailsUnpack.Text = "Unpack";
             this.btnDetailsUnpack.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -351,9 +524,9 @@
             this.btnDetailsDelete.Enabled = false;
             this.btnDetailsDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetailsDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsDelete.Image")));
-            this.btnDetailsDelete.Location = new System.Drawing.Point(243, 337);
+            this.btnDetailsDelete.Location = new System.Drawing.Point(213, 377);
             this.btnDetailsDelete.Name = "btnDetailsDelete";
-            this.btnDetailsDelete.Size = new System.Drawing.Size(64, 26);
+            this.btnDetailsDelete.Size = new System.Drawing.Size(94, 26);
             this.btnDetailsDelete.TabIndex = 3;
             this.btnDetailsDelete.Text = "Delete";
             this.btnDetailsDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -366,9 +539,9 @@
             this.btnDetailsApply.Enabled = false;
             this.btnDetailsApply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetailsApply.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsApply.Image")));
-            this.btnDetailsApply.Location = new System.Drawing.Point(169, 337);
+            this.btnDetailsApply.Location = new System.Drawing.Point(213, 345);
             this.btnDetailsApply.Name = "btnDetailsApply";
-            this.btnDetailsApply.Size = new System.Drawing.Size(68, 26);
+            this.btnDetailsApply.Size = new System.Drawing.Size(94, 26);
             this.btnDetailsApply.TabIndex = 2;
             this.btnDetailsApply.Text = "Apply";
             this.btnDetailsApply.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -380,9 +553,9 @@
             // 
             this.btnDetailsModify.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetailsModify.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsModify.Image")));
-            this.btnDetailsModify.Location = new System.Drawing.Point(91, 337);
+            this.btnDetailsModify.Location = new System.Drawing.Point(112, 345);
             this.btnDetailsModify.Name = "btnDetailsModify";
-            this.btnDetailsModify.Size = new System.Drawing.Size(72, 26);
+            this.btnDetailsModify.Size = new System.Drawing.Size(95, 26);
             this.btnDetailsModify.TabIndex = 1;
             this.btnDetailsModify.Text = " Modify";
             this.btnDetailsModify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -469,7 +642,7 @@
             this.lbIndexList.FormattingEnabled = true;
             this.lbIndexList.Location = new System.Drawing.Point(181, 34);
             this.lbIndexList.Name = "lbIndexList";
-            this.lbIndexList.Size = new System.Drawing.Size(160, 368);
+            this.lbIndexList.Size = new System.Drawing.Size(160, 407);
             this.lbIndexList.TabIndex = 7;
             this.lbIndexList.SelectedIndexChanged += new System.EventHandler(this.lbIndexList_SelectedIndexChanged);
             // 
@@ -514,7 +687,7 @@
             this.ssStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tslblStatus,
             this.tslblWorking});
-            this.ssStatusBar.Location = new System.Drawing.Point(0, 408);
+            this.ssStatusBar.Location = new System.Drawing.Point(0, 449);
             this.ssStatusBar.Name = "ssStatusBar";
             this.ssStatusBar.Size = new System.Drawing.Size(672, 25);
             this.ssStatusBar.SizingGrip = false;
@@ -544,18 +717,93 @@
             // 
             this.oFileDlgUopsave.Filter = "UOKR Uop (*.uop)|*.uop";
             // 
-            // pnUopHeaderAndData
+            // oPatchDlgUopopen
             // 
-            this.pnUopHeaderAndData.Location = new System.Drawing.Point(6, 18);
-            this.pnUopHeaderAndData.Name = "pnUopHeaderAndData";
-            this.pnUopHeaderAndData.Size = new System.Drawing.Size(301, 313);
-            this.pnUopHeaderAndData.TabIndex = 6;
+            this.oPatchDlgUopopen.Filter = "All files (*.*)|*.*";
+            this.oPatchDlgUopopen.ReadOnlyChecked = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 108);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Unknown 3:";
+            // 
+            // txt_pnUopHeaderAndData_Unk3
+            // 
+            this.txt_pnUopHeaderAndData_Unk3.Location = new System.Drawing.Point(12, 124);
+            this.txt_pnUopHeaderAndData_Unk3.Name = "txt_pnUopHeaderAndData_Unk3";
+            this.txt_pnUopHeaderAndData_Unk3.Size = new System.Drawing.Size(127, 20);
+            this.txt_pnUopHeaderAndData_Unk3.TabIndex = 17;
+            // 
+            // chk_pnUopHeaderAndData_Compressed
+            // 
+            this.chk_pnUopHeaderAndData_Compressed.AutoSize = true;
+            this.chk_pnUopHeaderAndData_Compressed.Enabled = false;
+            this.chk_pnUopHeaderAndData_Compressed.Location = new System.Drawing.Point(152, 124);
+            this.chk_pnUopHeaderAndData_Compressed.Name = "chk_pnUopHeaderAndData_Compressed";
+            this.chk_pnUopHeaderAndData_Compressed.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chk_pnUopHeaderAndData_Compressed.Size = new System.Drawing.Size(90, 17);
+            this.chk_pnUopHeaderAndData_Compressed.TabIndex = 18;
+            this.chk_pnUopHeaderAndData_Compressed.Text = " :Compressed";
+            this.chk_pnUopHeaderAndData_Compressed.UseVisualStyleBackColor = true;
+            // 
+            // txt_pnUopHeaderAndData_DataLocalOffset
+            // 
+            this.txt_pnUopHeaderAndData_DataLocalOffset.Enabled = false;
+            this.txt_pnUopHeaderAndData_DataLocalOffset.Location = new System.Drawing.Point(12, 281);
+            this.txt_pnUopHeaderAndData_DataLocalOffset.Name = "txt_pnUopHeaderAndData_DataLocalOffset";
+            this.txt_pnUopHeaderAndData_DataLocalOffset.Size = new System.Drawing.Size(123, 20);
+            this.txt_pnUopHeaderAndData_DataLocalOffset.TabIndex = 19;
+            // 
+            // txt_pnUopHeaderAndData_DataFlags
+            // 
+            this.txt_pnUopHeaderAndData_DataFlags.Enabled = false;
+            this.txt_pnUopHeaderAndData_DataFlags.Location = new System.Drawing.Point(12, 239);
+            this.txt_pnUopHeaderAndData_DataFlags.Name = "txt_pnUopHeaderAndData_DataFlags";
+            this.txt_pnUopHeaderAndData_DataFlags.Size = new System.Drawing.Size(121, 20);
+            this.txt_pnUopHeaderAndData_DataFlags.TabIndex = 20;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 265);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(100, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Offset to data array:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 223);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(61, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Data Flags:";
+            // 
+            // btnDetailsUndo
+            // 
+            this.btnDetailsUndo.Enabled = false;
+            this.btnDetailsUndo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetailsUndo.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsUndo.Image")));
+            this.btnDetailsUndo.Location = new System.Drawing.Point(113, 377);
+            this.btnDetailsUndo.Name = "btnDetailsUndo";
+            this.btnDetailsUndo.Size = new System.Drawing.Size(93, 25);
+            this.btnDetailsUndo.TabIndex = 7;
+            this.btnDetailsUndo.Text = "Undo";
+            this.btnDetailsUndo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDetailsUndo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDetailsUndo.UseVisualStyleBackColor = true;
+            this.btnDetailsUndo.Click += new System.EventHandler(this.btnDetailsUndo_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(672, 433);
+            this.ClientSize = new System.Drawing.Size(672, 474);
             this.Controls.Add(this.gbSelectedData);
             this.Controls.Add(this.tsMainBar);
             this.Controls.Add(this.lbIndexList);
@@ -569,6 +817,8 @@
             this.tsMainBar.ResumeLayout(false);
             this.tsMainBar.PerformLayout();
             this.gbSelectedData.ResumeLayout(false);
+            this.pnUopHeaderAndData.ResumeLayout(false);
+            this.pnUopHeaderAndData.PerformLayout();
             this.pnUopDatafile.ResumeLayout(false);
             this.pnUopDatafile.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_pnUopDatafile_Files)).EndInit();
@@ -631,6 +881,29 @@
         private System.Windows.Forms.LinkLabel btn_pnUopDatafile_RecountFiles;
         private System.Windows.Forms.ToolStripButton toolBtnDontFix;
         private System.Windows.Forms.Panel pnUopHeaderAndData;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_SizeHeader;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_Offset;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_Unk2;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_Unk1;
+        private System.Windows.Forms.LinkLabel btn_pnUopHeaderAndData_PatchDataUnc;
+        private System.Windows.Forms.LinkLabel btn_pnUopHeaderAndData_PatchData;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_Data;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_DataUnk1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.OpenFileDialog oPatchDlgUopopen;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_Unk3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox chk_pnUopHeaderAndData_Compressed;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_DataFlags;
+        private System.Windows.Forms.TextBox txt_pnUopHeaderAndData_DataLocalOffset;
+        private System.Windows.Forms.Button btnDetailsUndo;
     }
 }
 

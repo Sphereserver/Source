@@ -48,7 +48,21 @@ namespace UoKRUnpacker
                 this.nud_pnUopDatafile_Files.Value = upCurrent.FilesDynamicCount;
                 this.btn_pnUopDatafile_RecountFiles.LinkVisited = false;
             };
+            this.btn_pnUopHeaderAndData_PatchData.LinkClicked += delegate(object sender, LinkLabelLinkClickedEventArgs e)
+            {
+                UOPPairData upDataPair = (UOPPairData)this.gbSelectedData.Tag;
+                this.txt_pnUopHeaderAndData_Data.Tag = AddData(upDataPair, false);
+                this.btn_pnUopHeaderAndData_PatchData.LinkVisited = false;
+            };
+            this.btn_pnUopHeaderAndData_PatchDataUnc.LinkClicked += delegate(object sender, LinkLabelLinkClickedEventArgs e)
+            {
+                UOPPairData upDataPair = (UOPPairData)this.gbSelectedData.Tag;
+                this.txt_pnUopHeaderAndData_Data.Tag = AddData(upDataPair, true);
+                this.btn_pnUopHeaderAndData_PatchData.LinkVisited = false;
+            };
 
+            this.btn_pnUopHeaderAndData_PatchData.Tag = null;
+            this.btn_pnUopHeaderAndData_PatchDataUnc.Tag = null;
             this.num_pnlUopFile_Files.Minimum = 0;
             this.num_pnlUopFile_Files.Maximum = Int32.MaxValue;
         }
@@ -68,6 +82,21 @@ namespace UoKRUnpacker
             this.btnDetailsModify.Enabled = bEnable;
             this.btnDetailsApply.Enabled = !bEnable;
             this.btnDetailsDelete.Enabled = !bEnable;
+            this.btnDetailsUndo.Enabled = !bEnable;
+        }
+
+        private System.Collections.Hashtable AddData(UOPPairData pData, bool unCompressed)
+        {
+            if (this.oPatchDlgUopopen.ShowDialog(this) == DialogResult.OK)
+            {
+                System.Collections.Hashtable htTosend = new System.Collections.Hashtable();
+                htTosend.Add("file", this.oPatchDlgUopopen.FileName);
+                htTosend.Add("uncompressed", unCompressed);
+
+                return htTosend;
+            }
+
+            return null;
         }
 
         private void LoadUOP()
@@ -353,11 +382,15 @@ namespace UoKRUnpacker
             }
             else if (this.pnUopDatafile.Visible)
             {
-
+                CommonDump(ShowPanels.DataNode, this.gbSelectedData.Tag);
+            }
+            else if (this.pnUopHeaderAndData.Visible)
+            {
+                CommonDump(ShowPanels.SingleHeader, this.gbSelectedData.Tag);
             }
             else
             {
-
+                SetPanel(ShowPanels.Nothing, null);
             }
         }
 
@@ -372,9 +405,40 @@ namespace UoKRUnpacker
             // for each panel
             this.pnUopfile.Enabled = this.pnUopfile.Visible;
             this.pnUopDatafile.Enabled = this.pnUopDatafile.Visible;
+            this.pnUopHeaderAndData.Enabled = this.pnUopHeaderAndData.Visible;
             // ---------------------
-            if (this.pnUopfile.Enabled || this.pnUopDatafile.Enabled)
+            if (this.pnUopfile.Enabled || this.pnUopDatafile.Enabled || this.pnUopHeaderAndData.Enabled)
                 SetModifyButtons(false);
+        }
+
+        private void btnDetailsUndo_Click(object sender, EventArgs e)
+        {
+            if (DoingSomeJob.Working)
+            {
+                MessageBox.Show("Please wait... Still working in background!", "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DoingSomeJob.Working = true;
+
+            if (this.pnUopfile.Enabled)
+            {
+                SetPanel(ShowPanels.RootNode, this.gbSelectedData.Tag);
+            }
+            else if (this.pnUopDatafile.Enabled)
+            {
+                SetPanel(ShowPanels.DataNode, this.gbSelectedData.Tag);
+            }
+            else if (this.pnUopHeaderAndData.Enabled)
+            {
+                SetPanel(ShowPanels.SingleHeader, this.gbSelectedData.Tag);
+            }
+            else
+            {
+                SetPanel(ShowPanels.Nothing, null);
+            }
+
+            DoingSomeJob.Working = false;
         }
 
         private void btnDetailsApply_Click(object sender, EventArgs e)
@@ -382,8 +446,12 @@ namespace UoKRUnpacker
             if (DoingSomeJob.Working)
             {
                 MessageBox.Show("Please wait... Still working in background!", "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else if (this.pnUopfile.Enabled)
+
+            DoingSomeJob.Working = true;
+
+            if (this.pnUopfile.Enabled)
             {
                 try
                 {
@@ -430,10 +498,51 @@ namespace UoKRUnpacker
 
                 SetPanel(ShowPanels.DataNode, this.gbSelectedData.Tag);
             }
+            else if (this.pnUopHeaderAndData.Enabled)
+            {
+                try
+                {
+                    UOPPairData uppeCurrent = (UOPPairData)this.gbSelectedData.Tag;
+
+                    // Header block
+                    ulong ulOffset = UInt64.Parse(this.txt_pnUopHeaderAndData_Offset.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
+                    uint uiUnk1 = UInt32.Parse(this.txt_pnUopHeaderAndData_Unk1.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
+                    uint uiUnk2 = UInt32.Parse(this.txt_pnUopHeaderAndData_Unk2.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
+                    uint uiUnk3 = UInt32.Parse(this.txt_pnUopHeaderAndData_Unk3.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
+                    string sNewFile = null; bool bUncompressed = false;
+                    if (this.txt_pnUopHeaderAndData_Data.Tag != null)
+                    {
+                        sNewFile = (string)(((System.Collections.Hashtable)this.txt_pnUopHeaderAndData_Data.Tag)["file"]);
+                        bUncompressed = (bool)(((System.Collections.Hashtable)this.txt_pnUopHeaderAndData_Data.Tag)["uncompressed"]);
+                    }
+                    ulong ulUnkData = UInt64.Parse(this.txt_pnUopHeaderAndData_DataUnk1.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
+
+                    if (sNewFile != null)
+                    {
+                        if (UopManager.getIstance().Replace(sNewFile, uppeCurrent, bUncompressed) != UopManager.UopPatchError.Okay)
+                        {
+                            throw new Exception();
+                        }
+                    }
+
+                    uppeCurrent.First.m_OffsetOfDataBlock = ulOffset;
+                    uppeCurrent.First.m_Unknown1 = uiUnk1;
+                    uppeCurrent.First.m_Unknown2 = uiUnk2;
+                    uppeCurrent.First.m_Unknown3 = uiUnk2;
+                }
+                catch
+                {
+                    MessageBox.Show("Error while parsing the data!", "UO:KR Uop Dumper - Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                SetPanel(ShowPanels.SingleHeader, this.gbSelectedData.Tag);
+            }
             else
             {
                 SetPanel(ShowPanels.Nothing, null);
             }
+
+            DoingSomeJob.Working = false;
         }
 
         private void btnDetailsDelete_Click(object sender, EventArgs e)
@@ -640,7 +749,7 @@ namespace UoKRUnpacker
 
         private void lbIndexList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((this.tvFileData.SelectedNode != null) && (this.tvFileData.SelectedNode.Parent != null))
+            if ((this.tvFileData.SelectedNode == null) || (this.tvFileData.SelectedNode.Parent == null))
                 return;
 
             ListBox lbSender = (ListBox)sender;
@@ -671,6 +780,7 @@ namespace UoKRUnpacker
             // -----------------
             this.pnUopfile.Visible = this.pnUopfile.Enabled = false;
             this.pnUopDatafile.Visible = this.pnUopDatafile.Enabled = false;
+            this.pnUopHeaderAndData.Visible = this.pnUopHeaderAndData.Enabled = false;
             // -----------------
             this.gbSelectedData.Tag = dataObject;
 
@@ -697,7 +807,22 @@ namespace UoKRUnpacker
 
                 case ShowPanels.SingleHeader:
                 {
+                    UOPPairData upCurrent = (UOPPairData)this.gbSelectedData.Tag;
+                    // Header block
+                    this.txt_pnUopHeaderAndData_Offset.Text = String.Format("{0:X}", upCurrent.First.m_OffsetOfDataBlock);
+                    this.txt_pnUopHeaderAndData_SizeHeader.Text = upCurrent.First.m_SizeofDataHeaders.ToString();
+                    this.txt_pnUopHeaderAndData_Unk1.Text = String.Format("{0:X}", upCurrent.First.m_Unknown1);
+                    this.txt_pnUopHeaderAndData_Unk2.Text = String.Format("{0:X}", upCurrent.First.m_Unknown2);
+                    this.txt_pnUopHeaderAndData_Unk3.Text = String.Format("{0:X}", upCurrent.First.m_Unknown3);
+                    this.chk_pnUopHeaderAndData_Compressed.Checked = upCurrent.First.IsCompressed;
+                    // Data block
+                    byte[] bData = new byte[10]; Array.Copy(upCurrent.Second.m_CompressedData, bData, Math.Min(10, upCurrent.Second.m_CompressedData.Length));
+                    this.txt_pnUopHeaderAndData_Data.Text = Utility.ByteArrayToString(bData, Utility.HashStringStyle.HexWithSeparator) + " ...";
+                    this.txt_pnUopHeaderAndData_DataFlags.Text = String.Format("{0:X}", upCurrent.Second.m_DataFlag);
+                    this.txt_pnUopHeaderAndData_DataLocalOffset.Text = String.Format("{0:X}", upCurrent.Second.m_LocalOffsetToData);
+                    this.txt_pnUopHeaderAndData_DataUnk1.Text = String.Format("{0:X}", upCurrent.Second.m_Unknown);
 
+                    this.pnUopHeaderAndData.Visible = true;
                 } break;
 
                 case ShowPanels.Nothing:
