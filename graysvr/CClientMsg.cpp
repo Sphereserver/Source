@@ -4205,7 +4205,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 						{
 							CContainer * pContainer = dynamic_cast <CContainer *> ( pItem );
 							this->m_TooltipData.Add( t = new CClientTooltip( 1050044 ) );
-							t->FormatArgs( "%d\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+							t->FormatArgs( "%d\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
 						}
 						break;
 
