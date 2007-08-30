@@ -273,7 +273,7 @@ namespace UoKRUnpacker
                 return UopPatchError.BufferError;
             }
 
-            bool bResultReplace = upData.ReplaceData(compressedStream, (uint)(fileContent.Length));
+            bool bResultReplace = upData.ReplaceData(compressedStream, (uint)(iDestLength), (uint)(fileContent.Length));
 
             GC.Collect();
             return bResultReplace ? UopPatchError.Okay : UopPatchError.ReplaceError;

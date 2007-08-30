@@ -342,13 +342,12 @@ namespace UOPDefine
             get { return m_SecondData; }
         }
 
-        public bool ReplaceData(byte[] bData, uint uncompressedLength)
+        public bool ReplaceData(byte[] bData, uint compressedLength, uint uncompressedLength)
         {
             if ( bData == null )
                 return false;
 
             bool bReturn = false;
-            uint compressedLength = (uint)(bData.Length);
             bool isCompressed = (compressedLength != uncompressedLength);
 
             try
