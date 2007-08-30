@@ -3625,3 +3625,6 @@ this all in desperation)
 25-08-2007, Beyonder
 - Fixed #815, i_blood_2 not decaying: Changed the definition in sphere_item_resources so that 
   i_blood_2 now has a weight.
+
+30-08-2007, MrSugarCube
+- Fixed #1248: Incorrect container weight shown on tooltips.
