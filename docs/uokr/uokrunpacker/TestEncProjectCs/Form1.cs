@@ -87,6 +87,8 @@ namespace UoKRUnpacker
 
         private System.Collections.Hashtable AddData(UOPPairData pData, bool unCompressed)
         {
+            this.txt_pnUopHeaderAndData_Data.Tag = null;
+
             if (this.oPatchDlgUopopen.ShowDialog(this) == DialogResult.OK)
             {
                 System.Collections.Hashtable htTosend = new System.Collections.Hashtable();
@@ -566,17 +568,20 @@ namespace UoKRUnpacker
                 SetTextArea("Deleting selected header block ...");
                 SetPanel(ShowPanels.DataNode, this.gbSelectedData.Tag);
 
-                UOPIndexBlockHeader uppeCurrent = (UOPIndexBlockHeader)this.gbSelectedData.Tag;
-                for (int i = 0; i < UopManager.getIstance().UopFile.m_Content.Count; i++)
-                {
-                    if (uppeCurrent.Equals(UopManager.getIstance().UopFile.m_Content[i]))
-                    {
-                        UopManager.getIstance().UopFile.m_Content.RemoveAt(i);
-                    }
-                }
+                UopManager.getIstance().Delete((UOPIndexBlockHeader)(this.gbSelectedData.Tag));
 
                 RefreshData();
                 SetTextArea("Deleted selected header block.");
+            }
+            else if (this.pnUopHeaderAndData.Enabled)
+            {
+                SetTextArea("Deleting selected index ...");
+                SetPanel(ShowPanels.SingleHeader, this.gbSelectedData.Tag);
+
+                UopManager.getIstance().Delete((UOPPairData)(this.gbSelectedData.Tag));
+
+                RefreshData();
+                SetTextArea("Deleted selected index.");
             }
             else
             {
@@ -821,6 +826,8 @@ namespace UoKRUnpacker
                     this.txt_pnUopHeaderAndData_DataFlags.Text = String.Format("{0:X}", upCurrent.Second.m_DataFlag);
                     this.txt_pnUopHeaderAndData_DataLocalOffset.Text = String.Format("{0:X}", upCurrent.Second.m_LocalOffsetToData);
                     this.txt_pnUopHeaderAndData_DataUnk1.Text = String.Format("{0:X}", upCurrent.Second.m_Unknown);
+                    this.lbl_pnUopHeaderAndData_SizeC.Text = String.Format("Compressed: {0}", Utility.StringFileSize(upCurrent.First.m_LenghtCompressed));
+                    this.lbl_pnUopHeaderAndData_SizeU.Text = String.Format("Uncompressed: {0}", Utility.StringFileSize(upCurrent.First.m_LenghtUncompressed));
 
                     this.pnUopHeaderAndData.Visible = true;
                 } break;

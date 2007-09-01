@@ -147,6 +147,31 @@ namespace UoKRUnpacker
             return bReturn;
         }
 
+        public void Delete(UOPIndexBlockHeader toDelete)
+        {
+            for (int i = 0; i < UopFile.m_Content.Count; i++)
+            {
+                if (toDelete.Equals(UopFile.m_Content[i]))
+                {
+                    UopFile.m_Content.RemoveAt(i);
+                }
+            }
+        }
+
+        public void Delete(UOPPairData toDelete)
+        {
+            foreach (UOPIndexBlockHeader ibhCurrent in UopFile.m_Content)
+            {
+                for (int i = 0; i < ibhCurrent.m_ListData.Count; i++)
+                {
+                    if (toDelete.Equals(ibhCurrent.m_ListData[i]))
+                    {
+                        ibhCurrent.m_ListData.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
         public void FixOffsets(int iIndex, int subIndex)
         {
             // Fix every IndexHeader

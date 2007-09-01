@@ -160,5 +160,15 @@ namespace UoKRUnpacker
 
             return toReturn;
         }
+
+        public static string StringFileSize(uint uSize)
+        {
+            if (uSize > 1000000)
+                return (uSize / 1000000).ToString() + " Mb";
+            else if (uSize > 1000)
+                return (uSize / 1000).ToString() + " Kb";
+            else
+                return uSize.ToString() + " bytes";
+        }
     }
 }

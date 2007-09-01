@@ -244,7 +244,7 @@ namespace UoKRUnpacker
                                     sOutputpath = Utility.GetPathForSave(UopManager.getIstance().UopPath);
                                 }
 
-                                if (bDontfix)
+                                if (!bDontfix)
                                 {
                                     UopManager.getIstance().FixOffsets(0, 0);
                                 }
