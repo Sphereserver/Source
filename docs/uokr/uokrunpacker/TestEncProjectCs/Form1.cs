@@ -318,16 +318,20 @@ namespace UoKRUnpacker
 
                             case ShowPanels.SingleHeader:
                             {
-                                UOPPairData toDump = (UOPPairData)theObject;
+                                UOPPairData toDump = (UOPPairData)theObject; bool bBreakLoop = false;
                                 foreach (UOPIndexBlockHeader dumpTemp1 in upIstance.UopFile.m_Content)
                                 {
                                     foreach (UOPPairData dumpTemp2 in dumpTemp1.m_ListData)
                                     {
-                                        if (dumpTemp2.Equals(toDump))
+                                        bBreakLoop = dumpTemp2.Equals(toDump);
+                                        if (bBreakLoop)
                                             break;
 
                                         j++;
                                     }
+
+                                    if (bBreakLoop)
+                                        break;
 
                                     i++;
                                     j = 0;
@@ -710,7 +714,7 @@ namespace UoKRUnpacker
 
         private void toolBtnHelp_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show(StaticData.HELP_STRING, "UO:KR Uop Dumper", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion
 

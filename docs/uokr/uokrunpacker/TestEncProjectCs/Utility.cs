@@ -68,6 +68,12 @@ namespace UoKRUnpacker
         public const string UNPACK_NAMEPATTERN = "{0}-{1:00}_{2:00}.{3}";
         public const string UNPACK_EXT_COMP = "dat";
         public const string UNPACK_EXT_UCOMP = "raw";
+        public const string HELP_STRING = "This program can view, parse, dump and patch an uop file through a stupid interface." + "\n" +
+                                          "This program is not optimized and/or written using a decent method." + "\n" +
+                                          "This program is absolutely not for newbies." + "\n" +
+                                          "\n" + "\n" +
+                                          "It contains also a console mode to patch (multiple) file without the interface (--help for more info)," + "\n" +
+                                          "it can be useful for batch process.";
     }
 
     class Utility

@@ -50,6 +50,8 @@
             this.gbSelectedData = new System.Windows.Forms.GroupBox();
             this.btnDetailsUndo = new System.Windows.Forms.Button();
             this.pnUopHeaderAndData = new System.Windows.Forms.Panel();
+            this.lbl_pnUopHeaderAndData_SizeU = new System.Windows.Forms.Label();
+            this.lbl_pnUopHeaderAndData_SizeC = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.txt_pnUopHeaderAndData_DataFlags = new System.Windows.Forms.TextBox();
@@ -99,8 +101,6 @@
             this.tslblWorking = new System.Windows.Forms.ToolStripStatusLabel();
             this.oFileDlgUopsave = new System.Windows.Forms.SaveFileDialog();
             this.oPatchDlgUopopen = new System.Windows.Forms.OpenFileDialog();
-            this.lbl_pnUopHeaderAndData_SizeC = new System.Windows.Forms.Label();
-            this.lbl_pnUopHeaderAndData_SizeU = new System.Windows.Forms.Label();
             this.tsMainBar.SuspendLayout();
             this.gbSelectedData.SuspendLayout();
             this.pnUopHeaderAndData.SuspendLayout();
@@ -266,7 +266,6 @@
             // 
             this.toolBtnHelp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolBtnHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolBtnHelp.Enabled = false;
             this.toolBtnHelp.Image = ((System.Drawing.Image)(resources.GetObject("toolBtnHelp.Image")));
             this.toolBtnHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolBtnHelp.Name = "toolBtnHelp";
@@ -308,9 +307,9 @@
             this.btnDetailsUndo.Enabled = false;
             this.btnDetailsUndo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetailsUndo.Image = ((System.Drawing.Image)(resources.GetObject("btnDetailsUndo.Image")));
-            this.btnDetailsUndo.Location = new System.Drawing.Point(113, 377);
+            this.btnDetailsUndo.Location = new System.Drawing.Point(112, 377);
             this.btnDetailsUndo.Name = "btnDetailsUndo";
-            this.btnDetailsUndo.Size = new System.Drawing.Size(93, 25);
+            this.btnDetailsUndo.Size = new System.Drawing.Size(95, 25);
             this.btnDetailsUndo.TabIndex = 7;
             this.btnDetailsUndo.Text = "Undo";
             this.btnDetailsUndo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -348,6 +347,24 @@
             this.pnUopHeaderAndData.Size = new System.Drawing.Size(301, 321);
             this.pnUopHeaderAndData.TabIndex = 6;
             this.pnUopHeaderAndData.Visible = false;
+            // 
+            // lbl_pnUopHeaderAndData_SizeU
+            // 
+            this.lbl_pnUopHeaderAndData_SizeU.AutoSize = true;
+            this.lbl_pnUopHeaderAndData_SizeU.Location = new System.Drawing.Point(149, 247);
+            this.lbl_pnUopHeaderAndData_SizeU.Name = "lbl_pnUopHeaderAndData_SizeU";
+            this.lbl_pnUopHeaderAndData_SizeU.Size = new System.Drawing.Size(81, 13);
+            this.lbl_pnUopHeaderAndData_SizeU.TabIndex = 24;
+            this.lbl_pnUopHeaderAndData_SizeU.Text = "Uncompressed:";
+            // 
+            // lbl_pnUopHeaderAndData_SizeC
+            // 
+            this.lbl_pnUopHeaderAndData_SizeC.AutoSize = true;
+            this.lbl_pnUopHeaderAndData_SizeC.Location = new System.Drawing.Point(149, 229);
+            this.lbl_pnUopHeaderAndData_SizeC.Name = "lbl_pnUopHeaderAndData_SizeC";
+            this.lbl_pnUopHeaderAndData_SizeC.Size = new System.Drawing.Size(68, 13);
+            this.lbl_pnUopHeaderAndData_SizeC.TabIndex = 23;
+            this.lbl_pnUopHeaderAndData_SizeC.Text = "Compressed:";
             // 
             // label10
             // 
@@ -802,24 +819,6 @@
             // 
             this.oPatchDlgUopopen.Filter = "All files (*.*)|*.*";
             this.oPatchDlgUopopen.ReadOnlyChecked = true;
-            // 
-            // lbl_pnUopHeaderAndData_SizeC
-            // 
-            this.lbl_pnUopHeaderAndData_SizeC.AutoSize = true;
-            this.lbl_pnUopHeaderAndData_SizeC.Location = new System.Drawing.Point(149, 234);
-            this.lbl_pnUopHeaderAndData_SizeC.Name = "lbl_pnUopHeaderAndData_SizeC";
-            this.lbl_pnUopHeaderAndData_SizeC.Size = new System.Drawing.Size(68, 13);
-            this.lbl_pnUopHeaderAndData_SizeC.TabIndex = 23;
-            this.lbl_pnUopHeaderAndData_SizeC.Text = "Compressed:";
-            // 
-            // lbl_pnUopHeaderAndData_SizeU
-            // 
-            this.lbl_pnUopHeaderAndData_SizeU.AutoSize = true;
-            this.lbl_pnUopHeaderAndData_SizeU.Location = new System.Drawing.Point(149, 252);
-            this.lbl_pnUopHeaderAndData_SizeU.Name = "lbl_pnUopHeaderAndData_SizeU";
-            this.lbl_pnUopHeaderAndData_SizeU.Size = new System.Drawing.Size(81, 13);
-            this.lbl_pnUopHeaderAndData_SizeU.TabIndex = 24;
-            this.lbl_pnUopHeaderAndData_SizeU.Text = "Uncompressed:";
             // 
             // Form1
             // 
