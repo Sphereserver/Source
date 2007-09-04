@@ -1578,15 +1578,11 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						if ( !pItem )
 							continue;
 
-#ifdef _CUSTOMHOUSES
 						CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
 						if ( pItemMulti == NULL )	// multi.mul multi
-#endif
 							pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID() );
-#ifdef _CUSTOMHOUSES
 						else						// customised multi
 							pMulti = pItemMulti->GetMultiItemDefs();
-#endif
 						
 						if ( !pMulti )
 							continue;

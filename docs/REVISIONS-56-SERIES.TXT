@@ -3510,7 +3510,7 @@ this all in desperation)
 - Fixed #1138: Scripts could be loaded multiple times if the file extension
   was not provided.
 
-10-08-2007, MrSugarCube [CustomHouse Build Only]
+10-08-2007, MrSugarCube
 - Added: Support for AOS Custom Housing through a new item type 't_multi_custom'.
  > See the sphere_item_multis_foundations.scp and add-on/House_Placement
    scripts for examples of it's use.
@@ -3597,12 +3597,12 @@ this all in desperation)
 - Added: add-on/House_Placement.zip (Added a sample script that allows custom houses
   to be design by players)
 
-14-08-2007, nazghul
+14-08-2007, Nazghul
 - Modified: sphere_defs.scp, added DEATHFLAG_HASCORPSE (010) to deathflags. If set on
   a character like water elemental it will leave a corpse. Caveat: If DEATHFLAG_NOCORPSE
   and DEATHFLAG_HASCORPSE are set, the NOCORPSE takes precedence!
 
-17-08-2007, nazghul:
+17-08-2007, Nazghul
 - Added: Item CAN flag CAN_I_BLOCKLOS (see sphere_defs.scp). Works only if
   INI option AdvancedLOS is != 0.
 
@@ -3622,9 +3622,12 @@ this all in desperation)
 - Fixed #1247: NPCs not moving closer to their targets when they're using a
   bow with a shorter range than the ini's archery range settings.
 
-25-08-2007, Beyonder
-- Fixed #815, i_blood_2 not decaying: Changed the definition in sphere_item_resources so that 
-  i_blood_2 now has a weight.
+25-08-2007, Beyonder (Script pack)
+- Fixed #815: sphere_item_resources.scp (i_blood_2 not decaying: Changed the
+  definition so that i_blood_2 now has a weight)
 
 30-08-2007, MrSugarCube
 - Fixed #1248: Incorrect container weight shown on tooltips.
+
+04-09-2007, coruja747 (Script pack)
+- Updated #1251: sphere_map_points2.scp (Missing teleports in Wisp Dungeon)

@@ -1434,7 +1434,6 @@ public:
 	virtual void DupeCopy( const CItem * pItem );
 };
 
-#ifdef _CUSTOMHOUSES
 class CItemMultiCustom : public CItemMulti
 {
 	// IT_MULTI_CUSTOM
@@ -1525,7 +1524,6 @@ public:
 	static char GetPlaneZ( unsigned char plane );
 	static bool IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti );
 };
-#endif
 
 class CItemShip : public CItemMulti
 {
@@ -2123,10 +2121,8 @@ enum CTRIG_TYPE
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
-#ifdef _CUSTOMHOUSES
 	CTRIG_HouseDesignCommit,	// I committed a new house design
 	CTRIG_HouseDesignExit,	// I exited house design mode
-#endif
 	CTRIG_Hunger,			//+Ready to update the food level
 
 	CTRIG_itemBuy,

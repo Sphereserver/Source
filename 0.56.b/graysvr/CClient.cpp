@@ -71,10 +71,7 @@ CClient::CClient( SOCKET client ) :
 	m_LastTooltipSend = 0;
 	m_context_popup = -1;
 	m_packetExceptions = 0;
-
-#ifdef _CUSTOMHOUSES
 	m_pHouseDesign = NULL;
-#endif
 }
 
 
@@ -255,10 +252,8 @@ void CClient::CharDisconnect()
 	if ( IsChatActive() )
 		g_Serv.m_Chats.QuitChat(this);
 
-#ifdef _CUSTOMHOUSES
 	if ( m_pHouseDesign )
 		m_pHouseDesign->EndCustomize(true);
-#endif
 
 	CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
 	m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
@@ -430,7 +425,6 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 	// Can player see item b
 	if ( m_pChar == NULL )
 		return( false );
-#ifdef _CUSTOMHOUSES
 	if ( m_pHouseDesign && pObj->IsItem() )
 	{
 		const CItem * pItemConst = STATIC_CAST<const CItem *>( pObj );
@@ -441,7 +435,6 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 				return( false );
 		}
 	}
-#endif
 	return( m_pChar->CanSee( pObj ));
 }
 
@@ -570,9 +563,7 @@ enum CLIR_TYPE
 {
 	CLIR_ACCOUNT,
 	CLIR_GMPAGEP,
-#ifdef _CUSTOMHOUSES
 	CLIR_HOUSEDESIGN,
-#endif
 	CLIR_PARTY,
 	CLIR_TARG,
 	CLIR_TARGPROP,
@@ -584,9 +575,7 @@ LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY+1] =
 {
 	"ACCOUNT",
 	"GMPAGEP",
-#ifdef _CUSTOMHOUSES
 	"HOUSEDESIGN",
-#endif
 	"PARTY",
 	"TARG",
 	"TARGPROP",
@@ -612,11 +601,9 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case CLIR_GMPAGEP:
 				pRef = m_pGMPage;
 				return( true );
-#ifdef _CUSTOMHOUSES
 			case CLIR_HOUSEDESIGN:
 				pRef = m_pHouseDesign;
 				return( true );
-#endif
 			case CLIR_PARTY:
 				if ( !this->m_pChar->m_pParty )
 					return false;

@@ -165,9 +165,7 @@ class CItemBase;
 class CItemContainer;
 class CItemMessage;
 class CItemMap;
-#ifdef _CUSTOMHOUSES
 class CItemMultiCustom;
-#endif
 class CDataBase;
 
 ///////////////////////////////////////////////
@@ -1068,9 +1066,7 @@ private:
 	void Event_ToolTip( CGrayUID uid );
 	void Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len );
 	void Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
-#ifdef _CUSTOMHOUSES
 	void Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
-#endif
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
 	void Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEvent );
 	void Event_MapEdit( CGrayUID uid, const CEvent * pEvent );
@@ -1473,9 +1469,7 @@ public:
 
 	CGObArray<CClientTooltip *> m_TooltipData; // Storage for tooltip data while in trigger
 
-#ifdef _CUSTOMHOUSES
 	CItemMultiCustom * m_pHouseDesign; // The building this client is designing
-#endif
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

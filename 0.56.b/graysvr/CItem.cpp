@@ -160,11 +160,7 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 			pItem = new CItemMulti( id, pItemDef );
 			break;
 		case IT_MULTI_CUSTOM:
-#ifdef _CUSTOMHOUSES
 			pItem = new CItemMultiCustom( id, pItemDef );
-#else
-			pItem = new CItemMulti( id, pItemDef );
-#endif
 			break;
 		case IT_SHIP:
 			pItem = new CItemShip( id, pItemDef );

@@ -34,9 +34,7 @@ public:
 	CGFile	m_Stadifi[256];		// stadifiX.mul
 	CGFile	m_Stadifl[256];		// stadiflX.mul
 
-#ifdef _CUSTOMHOUSES
 	CSVFile m_CsvFiles[8];		// doors.txt, stairs.txt (x2), roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
-#endif
 
 public:
 	CGString GetFullExePath( LPCTSTR pszName = NULL ) const

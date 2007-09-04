@@ -2,8 +2,6 @@
 // CItemMultiCustom.cpp
 //
 
-#ifdef _CUSTOMHOUSES
-
 #include "graysvr.h"	// predef header.
 #pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
@@ -45,6 +43,12 @@ CItemMultiCustom::~CItemMultiCustom()
 		delete m_pGrayMulti;
 		m_pGrayMulti = NULL;
 	}
+
+	ComponentsContainer::iterator it;
+	for (it = m_designMain.m_vectorComponents.begin(); it != m_designMain.m_vectorComponents.end(); it = m_designMain.m_vectorComponents.erase(it))				delete *it;
+	for (it = m_designWorking.m_vectorComponents.begin(); it != m_designWorking.m_vectorComponents.end(); it = m_designWorking.m_vectorComponents.erase(it))	delete *it;
+	for (it = m_designBackup.m_vectorComponents.begin(); it != m_designBackup.m_vectorComponents.end(); it = m_designBackup.m_vectorComponents.erase(it))		delete *it;
+	for (it = m_designRevert.m_vectorComponents.begin(); it != m_designRevert.m_vectorComponents.end(); it = m_designRevert.m_vectorComponents.erase(it))		delete *it;
 
 	m_designMain.m_vectorComponents.clear();
 	if ( m_designMain.m_pData != NULL )
@@ -1651,5 +1655,3 @@ void CItemMultiCustom::CGrayMultiCustom::LoadFrom( CItemMultiCustom::DesignDetai
 	for ( int i = 0; i < m_iItemQty; i++ )
 		memcpy(&m_pItems[i], &pDesign->m_vectorComponents.at(i)->m_item, sizeof(CUOMultiItemRec));
 }
-
-#endif
