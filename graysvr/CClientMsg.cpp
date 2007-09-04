@@ -5085,6 +5085,15 @@ badformat:
 	{
 		if ( ! pAccount->CheckPassword(pszPassword))
 		{
+#ifdef _ACCOUNT_TRIES
+			if ( ! pAccount->CheckPasswordTries(m_PeerName))
+			{
+				g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' exceeded password tries in time lapse\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
+				// sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
+				return LOGIN_ERR_OTHER;
+			}
+#endif
+
 			g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' bad password\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
 			return LOGIN_ERR_BAD_PASS;

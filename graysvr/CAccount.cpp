@@ -567,6 +567,7 @@ CAccount::~CAccount()
 
 	DEBUG_WARN(( "Account delete '%s'\n", GetName() ));
 	DeleteChars();
+	ClearPasswordTries(true);
 }
 
 
@@ -740,6 +741,101 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, "%s\n", z);
 	
 	return true;
+}
+
+bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
+{
+	if ( csaPeerName.IsLocalAddr() || (csaPeerName.GetAddrIP() == 0x7F000001) )
+	{
+		return true;
+	}
+
+	int iAccountMaxTries = 3;
+	bool bReturn = true;
+	DWORD dwCurrentIP = csaPeerName.GetAddrIP();
+	CServTime timeCurrent = CServTime::GetCurrentTime();
+
+	BlockLocalTime_t::iterator itData = m_BlockIP.find(dwCurrentIP);
+	if ( itData != m_BlockIP.end() )
+	{
+		BlockLocalTimePair_t itResult = (*itData).second;
+		TimeTriesStruct_t & ttsData = itResult.first;
+		ttsData.m_Last = timeCurrent.GetTimeRaw();
+
+		if ( ttsData.m_Delay > timeCurrent.GetTimeRaw() )
+		{
+			bReturn = false;
+		}
+		else
+		{
+			if ((( ttsData.m_Last - ttsData.m_First ) > 15*TICK_PER_SEC ) && (itResult.second < iAccountMaxTries))
+			{
+				ttsData.m_First = timeCurrent.GetTimeRaw();
+				ttsData.m_Delay = 0;
+				itResult.second = 0;
+			}
+			else
+			{
+				itResult.second++;
+
+				if ( itResult.second > iAccountMaxTries )
+				{
+					ttsData.m_First = ttsData.m_Delay;
+					ttsData.m_Delay = 0;
+					itResult.second = 0;
+				}
+				else if ( itResult.second == iAccountMaxTries )
+				{
+					ttsData.m_Delay = ttsData.m_Last + (2*60*TICK_PER_SEC);
+					bReturn = false;
+				}
+			}
+		}
+
+		m_BlockIP[dwCurrentIP] = itResult;
+	}
+	else
+	{
+		TimeTriesStruct_t ttsData;
+		ttsData.m_First = timeCurrent.GetTimeRaw();
+		ttsData.m_Last = timeCurrent.GetTimeRaw();
+		ttsData.m_Delay = 0;
+
+		m_BlockIP[dwCurrentIP] = make_pair(ttsData, 0);
+	}
+
+	if ( m_BlockIP.size() > 100 )
+	{
+		ClearPasswordTries();
+	}
+
+	return bReturn;
+}
+
+void CAccount::ClearPasswordTries(bool bAll)
+{
+	if ( bAll )
+	{
+		m_BlockIP.clear();
+	}
+	else
+	{
+		long timeCurrent = CServTime::CServTime().GetTimeRaw();
+
+		for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
+		{
+			BlockLocalTimePair_t itResult = (*itData).second;
+			if (( timeCurrent - itResult.first.m_Last ) > 3*60*TICK_PER_SEC )
+			{
+				m_BlockIP.erase(itData);
+			}
+
+			if ( itData != m_BlockIP.begin() )
+			{
+				--itData;
+			}
+		}
+	}
 }
 
 bool CAccount::CheckPassword( LPCTSTR pszPassword )

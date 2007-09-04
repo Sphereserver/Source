@@ -40,6 +40,11 @@ private:
 	WORD m_PrivFlags;			// optional privileges for char (bit-mapped)
 
 	BYTE m_ResDisp;
+	
+	typedef struct { long m_First; long m_Last; long m_Delay; } TimeTriesStruct_t;
+	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
+	typedef std::map<DWORD,BlockLocalTimePair_t> BlockLocalTime_t;
+	BlockLocalTime_t m_BlockIP;
 
 public:
 	static const char *m_sClassName;
@@ -76,6 +81,9 @@ public:
 
 	bool IsMyAccountChar( const CChar * pChar ) const;
 	bool Kick( CTextConsole * pSrc, bool fBlock );
+
+	bool CheckPasswordTries(CSocketAddress csaPeerName);
+	void ClearPasswordTries(bool bAll = false);
 
 	LPCTSTR GetName() const
 	{
