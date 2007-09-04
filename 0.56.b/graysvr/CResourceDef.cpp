@@ -96,7 +96,7 @@ bool CLogIP::CheckPingBlock( bool fPreAccept )
 		// block for now.
 		if ( GetPings() == 16 && ! IsBlocked())
 		{
-			if ( ! (m_ip.IsLocalAddr() || (m_ip.GetAddrIP() == 2130706433)) )	// 127.0.0.1
+			if ( ! (m_ip.IsLocalAddr() || (m_ip.GetAddrIP() == 0x7F000001)) )	// 127.0.0.1
 			{
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Possible ping attack from %s\n", (LPCTSTR) m_ip.GetAddrStr());
 				if ( m_pAccount == NULL || m_pAccount->GetPrivLevel() < PLEVEL_GM )
