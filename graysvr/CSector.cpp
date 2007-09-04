@@ -284,26 +284,18 @@ void CSector::r_Write()
 	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-#ifdef _CUSTOMHOUSES
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
-#else
-		if ( !pItem->IsAttr(ATTR_STATIC) )
-#endif
 			pItem->r_WriteSafe(g_World.m_FileWorld);
 	}
 	pItem = STATIC_CAST <CItem*> (m_Items_Timer.GetHead());
 	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-#ifdef _CUSTOMHOUSES
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
-#else
-		if ( !pItem->IsAttr(ATTR_STATIC) )
-#endif
 			pItem->r_WriteSafe(g_World.m_FileWorld);
 	}
 }

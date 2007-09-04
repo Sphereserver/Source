@@ -3533,7 +3533,6 @@ void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
 
 #endif
 
-#ifdef _CUSTOMHOUSES
 void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
 {
 	ADDTOCALLSTACK("CClient::Event_HouseDesigner");
@@ -3606,7 +3605,6 @@ void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, 
 			break;
 	}
 }
-#endif
 
 //----------------------------------------------------------------------
 
@@ -3629,9 +3627,7 @@ void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWO
 		case EXTAOS_HcClear:
 		case EXTAOS_HcSwitch:
 		case EXTAOS_HcRevert:
-#ifdef _CUSTOMHOUSES
 			Event_HouseDesigner( type, pData, m_uid, len );
-#endif
 			break;
 
 		case EXTAOS_SpecialMove:
@@ -3855,7 +3851,6 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 
 		case EXTDATA_HouseDesignDet:
 		{
-#ifdef _CUSTOMHOUSES
 			CGrayUID uid( (DWORD) pData->HouseDesignDetail.m_HouseUID );
 
 			CItem * pItem = uid.ItemFind();
@@ -3867,7 +3862,6 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 				break;
 
 			pMulti->SendStructureTo(this);
-#endif
 			break;
 		}
 

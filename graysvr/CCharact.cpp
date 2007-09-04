@@ -1696,7 +1696,6 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( !IsStatFlag(dwFlags) )
 		return false;
 
-#ifdef _CUSTOMHOUSES
 	if ( IsClient() && GetClient()->m_pHouseDesign )
 	{
 		// no reveal whilst in house design (unless they somehow got out)
@@ -1705,7 +1704,6 @@ bool CChar::Reveal( DWORD dwFlags )
 
 		GetClient()->m_pHouseDesign->EndCustomize(true);
 	}
-#endif
 
 	if (( dwFlags & STATF_Sleeping ) && IsStatFlag( STATF_Sleeping ))
 	{
@@ -2614,7 +2612,6 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		return( NULL );
 	}
 
-#ifdef _CUSTOMHOUSES
 	if ( IsClient() && GetClient()->m_pHouseDesign )
 	{
 		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
@@ -2629,7 +2626,6 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 
 		GetClient()->m_pHouseDesign->EndCustomize(true);
 	}
-#endif
 
 	// ok to go here ? physical blocking objects ?
 	WORD wBlockFlags = 0;
@@ -2834,7 +2830,6 @@ void CChar::CheckRevealOnMove()
 {
 	ADDTOCALLSTACK("CChar::CheckRevealOnMove");
 	// Are we going to reveal ourselves by moving ?
-#ifdef _CUSTOMHOUSES
 	if ( IsClient() && GetClient()->m_pHouseDesign )
 	{
 		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
@@ -2842,7 +2837,6 @@ void CChar::CheckRevealOnMove()
 
 		GetClient()->m_pHouseDesign->EndCustomize(true);
 	}
-#endif
 
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Sleeping) )
 	{
@@ -2869,7 +2863,6 @@ bool CChar::CheckLocation( bool fStanding )
 	// what will happen ?
 	// RETURN: true = we teleported.
 
-#ifdef _CUSTOMHOUSES
 	if ( IsClient() && GetClient()->m_pHouseDesign )
 	{
 		// stepping on items doesn't trigger anything whilst in design mode
@@ -2878,7 +2871,6 @@ bool CChar::CheckLocation( bool fStanding )
 
 		GetClient()->m_pHouseDesign->EndCustomize(true);
 	}
-#endif
 
 	if ( ! fStanding )
 	{

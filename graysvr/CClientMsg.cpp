@@ -507,14 +507,12 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 
 	addAOSTooltip( pItem );
 
-#ifdef _CUSTOMHOUSES
 	if ( pItem->IsType( IT_MULTI_CUSTOM ) )
 	{
 		CItemMultiCustom * pItemMulti = dynamic_cast <CItemMultiCustom*> (pItem);
 		if ( pItemMulti )
 			pItemMulti->SendVersionTo(this);
 	}
-#endif
 }
 
 void CClient::addItem_Equipped( const CItem * pItem )

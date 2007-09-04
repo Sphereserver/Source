@@ -699,9 +699,7 @@ void CWorldThread::SaveThreadClose()
 	m_FileData.Close();
 	m_FileWorld.Close();
 	m_FilePlayers.Close();
-#ifdef _CUSTOMHOUSES
 	m_FileMultis.Close();
-#endif
 }
 
 int CWorldThread::FixObjTry( CObjBase * pObj, int iUID )
@@ -1157,18 +1155,14 @@ bool CWorld::SaveStage() // Save world state in stages.
 		m_FileData.WriteSection("EOF");
 		m_FileWorld.WriteSection("EOF");
 		m_FilePlayers.WriteSection("EOF");
-#ifdef _CUSTOMHOUSES
 		m_FileMultis.WriteSection("EOF");
-#endif
 
 		m_iSaveCountID++;	// Save only counts if we get to the end winout trapping.
 		m_timeSave = GetCurrentTime() + g_Cfg.m_iSavePeriod;	// next save time.
 
 		g_Log.Event(LOGM_SAVE, "World data saved   (%s).\n", (LPCTSTR) m_FileWorld.GetFilePath());
 		g_Log.Event(LOGM_SAVE, "Player data saved  (%s).\n", (LPCTSTR) m_FilePlayers.GetFilePath());
-#ifdef _CUSTOMHOUSES
 		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s).\n", (LPCTSTR) m_FileMultis.GetFilePath());
-#endif
 		g_Log.Event(LOGM_SAVE, "Context data saved (%s).\n", (LPCTSTR) m_FileData.GetFilePath());
 
 		LONGLONG	llTicksEnd;
@@ -1317,12 +1311,10 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 		return false;
 	}
 
-#ifdef _CUSTOMHOUSES
 	if ( ! OpenScriptBackup( m_FileMultis, g_Cfg.m_sWorldBaseDir, "multis", m_iSaveCountID ))
 	{
 		return false;
 	}
-#endif
 
 	m_fSaveParity = ! m_fSaveParity; // Flip the parity of the save.
 	m_iSaveStage = -1;
@@ -1332,9 +1324,7 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 	r_Write(m_FileData);
 	r_Write(m_FileWorld);
 	r_Write(m_FilePlayers);
-#ifdef _CUSTOMHOUSES
 	r_Write(m_FileMultis);
-#endif
 
 	if ( fForceImmediate || ! g_Cfg.m_iSaveBackgroundTime )	// Save now !
 	{
@@ -1372,9 +1362,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		m_FileData.Close();	// close if not already closed.
 		m_FileWorld.Close();	// close if not already closed.
 		m_FilePlayers.Close();	// close if not already closed.
-#ifdef _CUSTOMHOUSES
 		m_FileMultis.Close();	// close if not already closed.
-#endif
 	}
 	catch (...)	// catch all
 	{
@@ -1383,9 +1371,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		m_FileData.Close();	// close if not already closed.
 		m_FileWorld.Close();	// close if not already closed.
 		m_FilePlayers.Close();	// close if not already closed.
-#ifdef _CUSTOMHOUSES
 		m_FileMultis.Close();	// close if not already closed.
-#endif
 	}
 
 	CScriptTriggerArgs Args(fForceImmediate, m_iSaveStage);
@@ -1424,10 +1410,8 @@ void CWorld::SaveStatics()
 				for ( ; pItem != NULL; pItem = pNext )
 				{
 					pNext = pItem->GetNext();
-#ifdef _CUSTOMHOUSES
 					if ( pItem->IsType(IT_MULTI_CUSTOM) )
 						continue;
-#endif
 					if ( !pItem->IsAttr(ATTR_STATIC) )
 						continue;
 
@@ -1438,10 +1422,8 @@ void CWorld::SaveStatics()
 				for ( ; pItem != NULL; pItem = pNext )
 				{
 					pNext = pItem->GetNext();
-#ifdef _CUSTOMHOUSES
 					if ( pItem->IsType(IT_MULTI_CUSTOM) )
 						continue;
-#endif
 					if ( !pItem->IsAttr(ATTR_STATIC) )
 						continue;
 					
@@ -1535,10 +1517,8 @@ bool CWorld::LoadWorld() // Load world from script
 	CGString sWorldName;
 	sWorldName.Format("%s" GRAY_FILE "world",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
 
-#ifdef _CUSTOMHOUSES
 	CGString sMultisName;
 	sMultisName.Format("%s" GRAY_FILE "multis", (LPCTSTR)g_Cfg.m_sWorldBaseDir);
-#endif
 
 	CGString sCharsName;
 	sCharsName.Format("%s" GRAY_FILE "chars",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
@@ -1551,9 +1531,7 @@ bool CWorld::LoadWorld() // Load world from script
 	{
 		LoadFile(sDataName, false);
 		LoadFile(sStaticsName, false);
-#ifdef _CUSTOMHOUSES
 		LoadFile(sMultisName, false);
-#endif
 		if ( LoadFile(sWorldName) )
 		{
 			if ( LoadFile(sCharsName) )
@@ -1597,14 +1575,12 @@ bool CWorld::LoadWorld() // Load world from script
 		}
 		sCharsName = sArchive;
 
-#ifdef _CUSTOMHOUSES
 		GetBackupName( sArchive, g_Cfg.m_sWorldBaseDir, 'm', m_iSaveCountID );
 		if ( ! sArchive.CompareNoCase( sMultisName ))
 		{
 			break;
 		}
 		sMultisName = sArchive;
-#endif
 
 		GetBackupName( sArchive, g_Cfg.m_sWorldBaseDir, 'd', m_iSaveCountID );
 		if ( ! sArchive.CompareNoCase( sDataName ))	// ! same file ? break endless loop.

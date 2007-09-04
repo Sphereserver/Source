@@ -36,10 +36,8 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Hit",					// I just hit someone. (TARG)
 	"@HitMiss",				// I just missed.
 	"@HitTry",				// I am trying to hit someone. starting swing.
-#ifdef _CUSTOMHOUSES
 	"@HouseDesignCommit",	// I committed a new house design.
 	"@HouseDesignExit",		// I exited house design mode.
-#endif
 	"@Hunger",					//+Ready to update the food level
 
 	// ITRIG_QTY
