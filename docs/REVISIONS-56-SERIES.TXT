@@ -3631,3 +3631,7 @@ this all in desperation)
 
 04-09-2007, coruja747 (Script pack)
 - Updated #1251: sphere_map_points2.scp (Missing teleports in Wisp Dungeon)
+
+05-09-2007, Furio
+- Fixed #1254: Console error when guild member delete char.
+- Fixed: Login relay problems from localhost.

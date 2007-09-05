@@ -4211,10 +4211,10 @@ int CClient::xDispatchMsg()
 			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
 	}
 #else
-#if _DEBUG
-	DEBUG_ERR(("xDispatchMsg\n"));
-	xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
-#endif
+	#if _PACKETDUMP
+		DEBUG_ERR(("xDispatchMsg\n"));
+		xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
+	#endif
 #endif
 
 	EXC_SET("check message size");
@@ -4240,7 +4240,7 @@ int CClient::xDispatchMsg()
 	if ( pEvent->Default.m_Cmd >= XCMD_QTY ) // bad packet type ?
 	{
 		DEBUG_ERR(( "Unimplemented command %d\n", pEvent->Default.m_Cmd ) );
-#ifdef _DEBUG
+#ifdef _PACKETDUMP
 		xDumpPacket( minimum(m_bin.GetDataQty(), MAX_BUFFER), m_bin.RemoveDataLock() );
 #endif
 		RETURN_FALSE();
