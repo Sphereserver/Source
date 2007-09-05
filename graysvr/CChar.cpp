@@ -268,6 +268,9 @@ CChar::~CChar() // Delete character
 		m_pClient->m_fClosed	= true;
 	}
 
+	Guild_Resign(MEMORY_GUILD);
+	Guild_Resign(MEMORY_TOWN);
+
 	if ( m_pParty )
 	{
 		m_pParty->RemoveMember( GetUID(), (DWORD) GetUID() );

@@ -261,6 +261,12 @@ bool CClient::Login_Relay( int iRelay ) // Relay player to a selected IP
 	// Client wants to be relayed to another server. XCMD_ServerSelect
 	// iRelay = 0 = this local server.
 
+	// Sometimes we get an extra 0x80 ???
+	if ( iRelay >= 0x80 )
+	{
+		iRelay -= 0x80;
+	}
+
 	// >= 1.26.00 clients list Gives us a 1 based index for some reason.
 	iRelay --;
 
@@ -684,7 +690,7 @@ void CClient::xProcessMsg(int fGood)
 					m_Socket.GetSocket(), m_bin_ErrMsg, m_bin.GetDataQty(), m_bin_PrvMsg, GetConnectType() ));
 #endif
 
-#ifdef _DEBUG
+#ifdef _PACKETDUMP
 			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
 #endif
 		}
@@ -722,7 +728,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	ASSERT( !m_Crypt.IsInit());
 	ASSERT( iLen );
 
-#if _DEBUG
+#if _PACKETDUMP
 	DEBUG_ERR(("CClient::xProcessClientSetup\n"));
 	xDumpPacket(iLen, (const BYTE *)pEvent);
 #endif
@@ -1162,7 +1168,7 @@ bool CClient::xRecvData() // Receive message from client
 	if ( iCountNew <= 0 )	// I should always get data here.
 		return( false ); // this means that the client is gone.
 
-#if _DEBUG
+#if _PACKETDUMP
 	DEBUG_ERR(("CClient::xRecvData RAW\n"));
 	xDumpPacket(iCountNew, Event.m_Raw);
 #endif
