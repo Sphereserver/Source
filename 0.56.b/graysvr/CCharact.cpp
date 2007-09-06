@@ -3298,25 +3298,28 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 	WORD wCan = GetMoveBlockFlags();	// CAN_C_SWIM
 	for ( int i=0; i<iDist; ++i )
 	{
-		// Don't allow boarding of other ships (they may be locked)
-		CRegionBase * pRegionBase = pt.GetRegion( REGION_TYPE_MULTI );
-		if ( pRegionBase && pRegionBase->IsFlag( REGION_FLAG_SHIP ) )
+		if ( pt.IsValidPoint() )
 		{
-			pt.Move( dir );
-			continue;
-		}
+			// Don't allow boarding of other ships (they may be locked)
+			CRegionBase * pRegionBase = pt.GetRegion( REGION_TYPE_MULTI );
+			if ( pRegionBase && pRegionBase->IsFlag( REGION_FLAG_SHIP ) )
+			{
+				pt.Move( dir );
+				continue;
+			}
 
-		WORD wBlockFlags = wCan;
-		// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
-		pt.m_z = startZ;
-		// Set new Z so we don't end up floating or underground
-		pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
+			WORD wBlockFlags = wCan;
+			// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
+			pt.m_z = startZ;
+			// Set new Z so we don't end up floating or underground
+			pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
 
-		if ( ! ( wBlockFlags &~ wCan ))
-		{
-			// we can go here. (maybe)
-			if ( Spell_Teleport( pt, true, !bFromShip, ITEMID_NOTHING) )
-				return true;
+			if ( ! ( wBlockFlags &~ wCan ))
+			{
+				// we can go here. (maybe)
+				if ( Spell_Teleport( pt, true, !bFromShip, ITEMID_NOTHING) )
+					return true;
+			}
 		}
 		pt.Move( dir );
 	}

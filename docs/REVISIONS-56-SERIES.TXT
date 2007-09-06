@@ -3635,3 +3635,8 @@ this all in desperation)
 05-09-2007, Furio
 - Fixed #1254: Console error when guild member delete char.
 - Fixed: Login relay problems from localhost.
+
+06-09-2007, MrSugarCube
+- Fixed: "GetMapBlock failed at x" errors when logging in or placing a multi
+  over the edge of the map.
+

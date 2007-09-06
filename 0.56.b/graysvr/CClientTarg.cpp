@@ -1646,6 +1646,12 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 			{
 				ptn.m_y = y;
 
+				if ( !ptn.IsValidPoint() )
+				{
+					SysMessageDefault( DEFMSG_ITEMUSE_MULTI_FAIL );
+					return( NULL );
+				}
+
 				CRegionBase * pRegion = ptn.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA | REGION_TYPE_ROOM );
 				if ( pRegion == NULL || ( pRegion->IsFlag(REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_GUARDED|REGION_FLAG_SAFE) && ! fShip ))
 				{
