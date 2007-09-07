@@ -253,7 +253,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	bool IsNum = true;
 	for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
 	{
-		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
+		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ) || ( ch == '-' ))
 			continue;
 
 		if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )) || ( ch == '@' ))
