@@ -4595,7 +4595,7 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 				g_Serv.m_Clients.GetCount()-1 );
 			addSysMessage(z);
 
-			sprintf(z, g_Cfg.GetDefaultMsg( DEFMSG_LOGIN_PLAYER ), GetAccount()->m_TagDefs.GetKeyStr("LastLogged"));
+			sprintf(z, g_Cfg.GetDefaultMsg( DEFMSG_LOGIN_LASTLOGGED ), GetAccount()->m_TagDefs.GetKeyStr("LastLogged"));
 			addSysMessage(z);
 		}
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
