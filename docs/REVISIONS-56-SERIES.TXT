@@ -3640,3 +3640,6 @@ this all in desperation)
 - Fixed: "GetMapBlock failed at x" errors when logging in or placing a multi
   over the edge of the map.
 
+07-09-2007, Ellessar
+- Fixed #1252: FloatVal not behaving correctly with negative numbers.
+- Updated: sphere_msgs.scp (added login_lastlogged key)
