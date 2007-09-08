@@ -971,11 +971,30 @@ enum DELETE_ERR_TYPE
 
 enum LOGIN_ERR_TYPE	// error codes sent to client.
 {
-	LOGIN_ERR_NONE = 0,		// no account
-	LOGIN_ERR_USED = 1,		// already in use.
-	LOGIN_ERR_BLOCKED = 2,	// we don't like you
-	LOGIN_ERR_BAD_PASS = 3,
-	LOGIN_ERR_OTHER,		// like timeout.
+	LOGIN_ERR_NONE = 0,			// no account
+	LOGIN_ERR_USED = 1,			// already in use.
+	LOGIN_ERR_BLOCKED = 2,		// client blocked
+	LOGIN_ERR_BAD_PASS = 3,		// incorrect password
+	LOGIN_ERR_OTHER = 4,		// like timeout.
+#ifdef _FRIENDLYLOGINERRORS
+	// the error codes below are not sent to or understood by the client,
+	// and should be translated into one of the codes above
+	LOGIN_ERR_BAD_CLIVER,		// cliver not permitted
+	LOGIN_ERR_BAD_CHAR,			// bad character selected
+	LOGIN_ERR_BAD_AUTHID,		// bad auth id
+	LOGIN_ERR_BAD_ACCTNAME,		// bad account name (length, characters)
+	LOGIN_ERR_BAD_PASSWORD,		// bad password (length, characters)
+	LOGIN_ERR_ENC_BADLENGTH,	// bad message length
+	LOGIN_ERR_ENC_UNKNOWN,		// unknown encryption
+	LOGIN_ERR_ENC_CRYPT,		// crypted client not allowed
+	LOGIN_ERR_ENC_NOCRYPT,		// non-crypted client not allowed
+	LOGIN_ERR_CHARIDLE,			// character is already ingame
+	LOGIN_ERR_TOOMANYCHARS,		// account has too many characters
+	LOGIN_ERR_BLOCKED_IP,		// ip is blocked
+	LOGIN_ERR_BLOCKED_MAXCLIENTS,	// max clients reached
+	LOGIN_ERR_BLOCKED_MAXGUESTS,	// max guests reached
+	LOGIN_ERR_MAXPASSTRIES,		// max password tries reached
+#endif
 	LOGIN_SUCCESS	= 255,
 };
 

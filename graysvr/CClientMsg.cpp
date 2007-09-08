@@ -4528,7 +4528,11 @@ void CClient::SendPacket( TCHAR * pszKey )
 // ---------------------------------------------------------------------
 // Login type stuff.
 
+#ifdef _FRIENDLYLOGINERRORS
+LOGIN_ERR_TYPE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to player
+#else
 bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to player
+#endif
 {
 	ADDTOCALLSTACK("CClient::Setup_Start");
 	// Play this char.
@@ -4575,8 +4579,12 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	{
 		m_pChar->ClientDetach();
 		pChar->SetDisconnected();
+#ifdef _FRIENDLYLOGINERRORS
+		return LOGIN_ERR_BLOCKED;
+#else
 		addLoginErr( LOGIN_ERR_BLOCKED );
 		return false;
+#endif
 	}
 
 	pChar->SetKeyNum("LastHit", 0);
@@ -4663,7 +4671,12 @@ bool CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	}
 
 	DEBUG_MSG(( "%x:Setup_Start done\n", m_Socket.GetSocket()));
+	
+#ifdef _FRIENDLYLOGINERRORS
+	return LOGIN_SUCCESS;
+#else
 	return true;
+#endif
 }
 
 void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character creation stuff
@@ -4678,6 +4691,19 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 		return;
 	}
 
+	// make sure they don't have an idling character
+	CChar * pCharLast = GetAccount()->m_uidLastChar.CharFind();
+	if ( pCharLast && GetAccount()->IsMyAccountChar( pCharLast ) && GetAccount()->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
+	{
+		addIdleWarning(true);
+#ifdef _FRIENDLYLOGINERRORS
+		addLoginErr( LOGIN_ERR_CHARIDLE );
+#else
+		addLoginErr( LOGIN_ERR_NONE );
+#endif
+		return;
+	}
+
 	// Make sure they don't already have too many chars !
 	int iMaxChars = ( IsPriv( PRIV_GM )) ? MAX_CHARS_PER_ACCT : ( g_Cfg.m_iMaxCharsPerAccount );
 	int iQtyChars = GetAccount()->m_Chars.GetCharCount();
@@ -4686,7 +4712,11 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MAXCHARS ), iQtyChars );
 		if ( GetPrivLevel() < PLEVEL_Seer )
 		{
+#ifdef _FRIENDLYLOGINERRORS
+			addLoginErr( LOGIN_ERR_TOOMANYCHARS );
+#else
 			addLoginErr( LOGIN_ERR_OTHER );
+#endif
 			return;
 		}
 	}
@@ -4735,7 +4765,11 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	Setup_Start( pChar );
 }
 
+#ifdef _FRIENDLYLOGINERRORS
+LOGIN_ERR_TYPE CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
+#else
 bool CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
+#endif
 {
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Mode == CLIMODE_SETUP_CHARLIST
@@ -4743,20 +4777,36 @@ bool CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
 	DEBUG_MSG(( "%x:Setup_Play slot %d\n", m_Socket.GetSocket(), iSlot ));
 
 	if ( ! GetAccount())
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_NONE );
+#else
 		return( false );
+#endif
 	if ( iSlot >= COUNTOF(m_tmSetupCharList))
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_BAD_CHAR );
+#else
 		return false;
+#endif
 
 	CChar * pChar = m_tmSetupCharList[ iSlot ].CharFind();
 	if ( ! GetAccount()->IsMyAccountChar( pChar ))
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_BAD_CHAR );
+#else
 		return false;
+#endif
 
 	CChar * pCharLast = GetAccount()->m_uidLastChar.CharFind();
 	if ( pCharLast && GetAccount()->IsMyAccountChar( pCharLast ) && GetAccount()->GetPrivLevel() <= PLEVEL_GM &&
 		! pCharLast->IsDisconnected() && (pChar->GetUID() != pCharLast->GetUID()))
 	{
 		addIdleWarning(true);
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_CHARIDLE );
+#else
 		return( false );
+#endif
 	}
 
 	return Setup_Start( pChar );
@@ -4844,7 +4894,10 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 			{
 				SysMessage( sMsg );
 			}
+#ifdef _FRIENDLYLOGINERRORS
+#else
 			addLoginErr(lErr);
+#endif
 		}
 		return( lErr );
 	}
@@ -4961,7 +5014,11 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		if ( ! m_PeerName.IsLocalAddr() && SockName.GetAddrIP() != m_PeerName.GetAddrIP() )
 		{
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_LD );
+#ifdef _FRIENDLYLOGINERRORS
+			return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
+#else
 			return( LOGIN_ERR_BLOCKED );
+#endif
 		}
 	}
 	if ( g_Cfg.m_iClientsMax <= 1 )
@@ -4970,7 +5027,11 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
 		{
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_AO );
+#ifdef _FRIENDLYLOGINERRORS
+			return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
+#else
 			return( LOGIN_ERR_BLOCKED );
+#endif
 		}
 	}
 	if ( pAccount->GetPrivLevel() < PLEVEL_GM &&
@@ -4978,7 +5039,11 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	{
 		// Give them a polite goodbye.
 		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_FULL );
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
+#else
 		return( LOGIN_ERR_BLOCKED );
+#endif
 	}
 	//	Do the scripts allow to login this account?
 	pAccount->m_Last_IP = m_PeerName;
@@ -5018,22 +5083,44 @@ LOGIN_ERR_TYPE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString
 		iLen1 != iLen3 ||
 		iLen1 > MAX_NAME_SIZE )	// a corrupt message.
 	{
-badformat:
 		TCHAR szVersion[ 256 ];
 		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_WCLI ), (LPCTSTR) m_Crypt.WriteClientVer( szVersion ));
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_BAD_ACCTNAME );
+#else
 		return( LOGIN_ERR_OTHER );
+#endif
 	}
 
 	iLen3 = Str_GetBare( szTmp, pszPassword, MAX_NAME_SIZE );
 	if ( iLen2 != iLen3 )	// a corrupt message.
-		goto badformat;
+	{
+		TCHAR szVersion[ 256 ];
+		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_WCLI ), (LPCTSTR) m_Crypt.WriteClientVer( szVersion ));
+#ifdef _FRIENDLYLOGINERRORS
+		return( LOGIN_ERR_BAD_PASSWORD );
+#else
+		return( LOGIN_ERR_OTHER );
+#endif
+	}
 
 
 	TCHAR szName[ MAX_ACCOUNT_NAME_SIZE ];
+#ifdef _FRIENDLYLOGINERRORS
+	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) )
+	{
+		return( LOGIN_ERR_BAD_ACCTNAME );
+	}
+	else if ( Str_Check(pszPassword) )
+	{
+		return( LOGIN_ERR_BAD_PASSWORD );
+	}
+#else
 	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) || Str_Check(pszPassword) )
 	{
 		return( LOGIN_ERR_OTHER );
 	}
+#endif
 
 	bool fGuestAccount = ! strnicmp( pszAccName, "GUEST", 5 );
 	if ( fGuestAccount )
@@ -5046,7 +5133,11 @@ badformat:
 			if ( i>=g_Cfg.m_iGuestsMax )
 			{
 				sMsg = g_Cfg.GetDefaultMsg( DEFMSG_ACC_GUSED );
+#ifdef _FRIENDLYLOGINERRORS
+				return( LOGIN_ERR_BLOCKED_MAXGUESTS );
+#else
 				return( LOGIN_ERR_BLOCKED );
+#endif
 			}
 
 			sprintf(pszTemp, "GUEST%d", i);
@@ -5065,7 +5156,11 @@ badformat:
 		if ( pszPassword[0] == '\0' )
 		{
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_ACC_NEEDPASS );
+#ifdef _FRIENDLYLOGINERRORS
+			return( LOGIN_ERR_BAD_PASSWORD );
+#else
 			return( LOGIN_ERR_BAD_PASS );
+#endif
 		}
 	}
 
@@ -5088,7 +5183,11 @@ badformat:
 			{
 				g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' exceeded password tries in time lapse\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 				// sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
+#ifdef _FRIENDLYLOGINERRORS
+				return LOGIN_ERR_MAXPASSTRIES;
+#else
 				return LOGIN_ERR_OTHER;
+#endif
 			}
 #endif
 
