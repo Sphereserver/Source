@@ -1129,5 +1129,6 @@
 //tooltip_tag_destination	"Destination"
 //tiller_turb_water		"Turbulent Waters Cap'n"
 //tiller_stopped		"We've stopped Cap'n"
-
+//looting_crime			"looting"
+//provoking_crime		"provoking"
 [EOF]
