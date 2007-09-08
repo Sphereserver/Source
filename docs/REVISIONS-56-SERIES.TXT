@@ -3643,3 +3643,7 @@ this all in desperation)
 07-09-2007, Ellessar
 - Fixed #1252: FloatVal not behaving correctly with negative numbers.
 - Updated: sphere_msgs.scp (added login_lastlogged key)
+
+08-09-2007, MrSugarCube
+- Fixed: Character creation allowed whilst another character is still idling
+  in the world.
