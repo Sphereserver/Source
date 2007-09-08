@@ -2321,7 +2321,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			if ( pCharProv->Noto_GetFlag(this) == NOTO_GOOD )
 			{
 				// lose some karma for this.
-				CheckCrimeSeen(SKILL_NONE, NULL, pCharProv, "provoking");
+				CheckCrimeSeen(SKILL_NONE, NULL, pCharProv, g_Cfg.GetDefaultMsg( DEFMSG_PROVOKING_CRIME ));
 				return -SKTRIG_ABORT;
 			}
 

@@ -496,7 +496,7 @@ bool CChar::CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fT
 	if ( !fTest )
 	{
 		// Anyone see me do this ?
-		CheckCrimeSeen(SKILL_NONE, pCharGhost, pCorpse, fLooting ? "looting" : NULL);
+		CheckCrimeSeen(SKILL_NONE, pCharGhost, pCorpse, fLooting ? g_Cfg.GetDefaultMsg( DEFMSG_LOOTING_CRIME ) : NULL);
 		Noto_Criminal();
 	}
 
