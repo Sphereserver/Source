@@ -250,10 +250,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	GETNONWHITESPACE( pArgs );
 	char * pArgsCopy = new char[strlen(pArgs)+1];
 	strcpy(pArgsCopy,pArgs);
-	bool IsNum = true;
+	/*bool IsNum = true; // Old Ellessar's code without support for negative numbers
 	for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
 	{
-		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ) || ( ch == '-' ))
+		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
 			continue;
 
 		if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )) || ( ch == '@' ))
@@ -261,7 +261,22 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 		//DEBUG_ERR(("ch '0%x'\n",ch));
 		IsNum = false;
 		break;
-	}
+	}*/
+	bool IsNum = false;
+    for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
+    {
+        if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
+        {
+            IsNum = IsNum ? IsNum : isdigit( ch );
+            continue;
+        }
+
+        if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )) || ( ch == '@' ))
+            break;
+        //DEBUG_ERR(("ch '0%x'\n",ch));
+        // IsNum = false;
+        break;
+    }
 	if ( IsNum )
 	{
 		char * pEnd;
