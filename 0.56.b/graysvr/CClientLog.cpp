@@ -158,9 +158,7 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 		"This IP is blocked",
 		"The maximum number of clients has been reached. See the CLIENTMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of guests has been reached. See the GUESTSMAX setting in " GRAY_FILE ".ini",
-#ifdef _ACCOUNT_TRIES
 		"The maximum number of password tries has been reached",
-#endif
 #else
 		"No account",
 		"Account already in use",

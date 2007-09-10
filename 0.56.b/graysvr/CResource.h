@@ -806,6 +806,8 @@ public:
 	int		m_iColorNotoGuildWar;
 	int		m_iColorNotoNeutral;
 
+	int		m_iMaxAccountLoginTries;
+
 #ifndef _EXTERNAL_DLL
 	//	mySQL features
 	bool		m_bMySql;
