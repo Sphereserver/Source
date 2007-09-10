@@ -195,6 +195,8 @@ CResource::CResource()
 	m_iColorNotoGuildSame = 0x0044;		// green
 	m_iColorNotoGuildWar = 0x002b;		// orange (enemy guild)
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
+
+	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 }
 
 CResource::~CResource()
@@ -385,6 +387,7 @@ enum RC_TYPE
 	RC_MAGICFLAGS,
 	RC_MAGICUNLOCKDOOR,		// m_iMagicUnlockDoor
 	RC_MAPCACHETIME,
+	RC_MAXACCOUNTLOGINTRIES, // m_iMaxAccountLoginTries
 	RC_MAXBASESKILL,			// m_iMaxBaseSkill
 	RC_MAXCHARSPERACCOUNT,	// m_iMaxCharsPerAccount
 	RC_MAXCOMPLEXITY,			// m_iMaxCharComplexity
@@ -564,6 +567,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags)	}},
 	{ "MAGICUNLOCKDOOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iMagicUnlockDoor)	}},
 	{ "MAPCACHETIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iMapCacheTime)	}},
+	{ "MAXACCOUNTLOGINTRIES",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxAccountLoginTries)	}},
 	{ "MAXBASESKILL",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxBaseSkill)	}},
 	{ "MAXCHARSPERACCOUNT",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharsPerAccount)	}},
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity)	}},
@@ -796,6 +800,12 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_MAPCACHETIME:
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
+		case RC_MAXACCOUNTLOGINTRIES:
+			{
+				m_iMaxAccountLoginTries = s.GetArgVal();
+				if ( m_iMaxAccountLoginTries < 0 )
+					m_iMaxAccountLoginTries = 0;
+			} break;
 		case RC_MAXCHARSPERACCOUNT:
 			m_iMaxCharsPerAccount = s.GetArgVal();
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )

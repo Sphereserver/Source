@@ -5174,23 +5174,21 @@ LOGIN_ERR_TYPE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString
 		return LOGIN_ERR_NONE;
 	}
 
+	if ( g_Cfg.m_iMaxAccountLoginTries && !pAccount->CheckPasswordTries(m_PeerName))
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' exceeded password tries in time lapse\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
+#ifdef _FRIENDLYLOGINERRORS
+		return LOGIN_ERR_MAXPASSTRIES;
+#else
+		return LOGIN_ERR_OTHER;
+#endif
+	}
+
 	if ( ! fGuestAccount && ! pAccount->IsPriv(PRIV_BLOCKED) )
 	{
 		if ( ! pAccount->CheckPassword(pszPassword))
 		{
-#ifdef _ACCOUNT_TRIES
-			if ( ! pAccount->CheckPasswordTries(m_PeerName))
-			{
-				g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' exceeded password tries in time lapse\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
-				// sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
-#ifdef _FRIENDLYLOGINERRORS
-				return LOGIN_ERR_MAXPASSTRIES;
-#else
-				return LOGIN_ERR_OTHER;
-#endif
-			}
-#endif
-
 			g_Log.Event(LOGM_CLIENTS_LOG, "%x: '%s' bad password\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
 			return LOGIN_ERR_BAD_PASS;

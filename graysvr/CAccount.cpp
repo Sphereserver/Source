@@ -750,7 +750,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 		return true;
 	}
 
-	int iAccountMaxTries = 3;
+	int iAccountMaxTries = g_Cfg.m_iMaxAccountLoginTries;
 	bool bReturn = true;
 	DWORD dwCurrentIP = csaPeerName.GetAddrIP();
 	CServTime timeCurrent = CServTime::GetCurrentTime();
