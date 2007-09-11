@@ -138,7 +138,6 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 	// console message to display for each login error code
 	static LPCTSTR const sm_Login_ErrMsg[] =
 	{
-#ifdef _FRIENDLYLOGINERRORS
 		"Account does not exist",
 		"The account entered is already being used",
 		"This account or IP is blocked",
@@ -159,18 +158,10 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 		"The maximum number of clients has been reached. See the CLIENTMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of guests has been reached. See the GUESTSMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of password tries has been reached",
-#else
-		"No account",
-		"Account already in use",
-		"Account blocked",
-		"Bad password",
-		"Timeout / Wrong encryption"
-#endif
 	};
 	
 	DEBUG_ERR(( "%x:Bad Login %d (%s)\n", m_Socket.GetSocket(), code, sm_Login_ErrMsg[((int)code)] ));
 
-#ifdef _FRIENDLYLOGINERRORS
 	// translate the code into a code the client will understand
 	switch (code)
 	{
@@ -206,7 +197,6 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 			code = LOGIN_ERR_OTHER;
 			break;
 	}
-#endif
 
 	CCommand cmd;
 	cmd.LogBad.m_Cmd = XCMD_LogBad;
@@ -363,32 +353,16 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE+3];
 	int iLenAccount = Str_GetBare( szAccount, pszAccount, sizeof(szAccount)-1 );
 	if ( iLenAccount > MAX_ACCOUNT_NAME_SIZE )
-#ifdef _FRIENDLYLOGINERRORS
 		return( LOGIN_ERR_BAD_ACCTNAME );
-#else
-		return( LOGIN_ERR_OTHER );
-#endif
 	if ( iLenAccount != strlen(pszAccount))
-#ifdef _FRIENDLYLOGINERRORS
 		return( LOGIN_ERR_BAD_ACCTNAME );
-#else
-		return( LOGIN_ERR_OTHER );
-#endif
 
 	TCHAR szPassword[MAX_NAME_SIZE+3];
 	int iLenPassword = Str_GetBare( szPassword, pszPassword, sizeof( szPassword )-1 );
 	if ( iLenPassword > MAX_NAME_SIZE )
-#ifdef _FRIENDLYLOGINERRORS
 		return( LOGIN_ERR_BAD_PASSWORD );
-#else
-		return( LOGIN_ERR_OTHER );
-#endif
 	if ( iLenPassword != strlen(pszPassword))
-#ifdef _FRIENDLYLOGINERRORS
 		return( LOGIN_ERR_BAD_PASSWORD );
-#else
-		return( LOGIN_ERR_OTHER );
-#endif
 
 	// don't bother logging in yet.
 	// Give the server list to everyone.
@@ -401,13 +375,6 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 	
 	if ( lErr != LOGIN_SUCCESS )
 	{
-#ifdef _FRIENDLYLOGINERRORS
-#else
-		if (  lErr != LOGIN_ERR_OTHER )
-		{
-			addLoginErr(lErr);
-		}
-#endif
 		return( lErr );
 	}
 
@@ -824,17 +791,12 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	if ( !m_Crypt.Init( m_tmSetup.m_dwIP, bincopy.m_Raw, iLen ) )
 	{
 		DEBUG_MSG(( "%x:Odd login message length %d?\n", m_Socket.GetSocket(), iLen ));
-#ifdef _FRIENDLYLOGINERRORS
 		addLoginErr( LOGIN_ERR_ENC_BADLENGTH );
-#else
-		addLoginErr( LOGIN_ERR_OTHER );
-#endif
 		return( false );
 	}
 	
 	SetConnectType( m_Crypt.GetConnectType() );
 
-#ifdef _FRIENDLYLOGINERRORS
 	if ( !xCanEncLogin() )
 	{
 		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE? LOGIN_ERR_ENC_NOCRYPT:LOGIN_ERR_ENC_CRYPT) );
@@ -845,29 +807,14 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 		addLoginErr( LOGIN_ERR_BAD_CLIVER );
 		return( false );
 	}
-#else
-	if ( !xCanEncLogin() || (m_Crypt.GetConnectType() == CONNECT_LOGIN && !xCanEncLogin(true)) )
-	{
-		addLoginErr( LOGIN_ERR_OTHER );
-		return( false );
-	}
-#endif
 
 	if ( IsBlockedIP())	// we are a blocked ip so i guess it does not matter.
 	{
-#ifdef _FRIENDLYLOGINERRORS
 		addLoginErr( LOGIN_ERR_BLOCKED_IP );
-#else
-		addLoginErr( LOGIN_ERR_BLOCKED );
-#endif
 		return( false );
 	}
 
-#ifdef _FRIENDLYLOGINERRORS
 	LOGIN_ERR_TYPE lErr = LOGIN_ERR_ENC_UNKNOWN;
-#else
-	LOGIN_ERR_TYPE lErr = LOGIN_ERR_OTHER;
-#endif
 	
 	m_Crypt.Decrypt( pEvent->m_Raw, bincopy.m_Raw, iLen );
 	
@@ -892,11 +839,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 				else
 				{
 					// If i can't set the tag is better to stop login now
-#ifdef _FRIENDLYLOGINERRORS
 					lErr = LOGIN_ERR_NONE;
-#else
-					lErr = LOGIN_ERR_OTHER;
-#endif
 				}
 			}
 
@@ -933,28 +876,16 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 							m_Crypt.SetClientVerEnum(tmVer, false);
 
 						if ( !xCanEncLogin(true) )
-#ifdef _FRIENDLYLOGINERRORS
 							lErr = LOGIN_ERR_BAD_CLIVER;
-#else
-							lErr = LOGIN_ERR_OTHER;
-#endif
 					}
 					else
 					{
-#ifdef _FRIENDLYLOGINERRORS
 						lErr = LOGIN_ERR_BAD_AUTHID;
-#else
-						lErr = LOGIN_ERR_OTHER;
-#endif
 					}
 				}
 				else
 				{
-#ifdef _FRIENDLYLOGINERRORS
 					lErr = LOGIN_ERR_NONE;
-#else
-					lErr = LOGIN_ERR_OTHER;
-#endif
 				}
 			}
 
@@ -969,11 +900,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 #endif
 	}
 	
-#ifdef _FRIENDLYLOGINERRORS
 	if ( lErr != LOGIN_SUCCESS )	// it never matched any crypt format.
-#else
-	if ( lErr == LOGIN_ERR_OTHER )	// it never matched any crypt format.
-#endif
 	{
 		addLoginErr( lErr );
 	}

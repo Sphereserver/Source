@@ -2969,11 +2969,7 @@ void CClient::Event_ClientVersion( const char * pData, int Len )
 		m_reportedCliver = CCrypt::GetVerFromString(sTemp);
 		DEBUG_MSG(( "Getting cliver 0x%x/0x%x\n",m_reportedCliver, (m_reportedCliver&0xFFFFF0) ));
 		if (g_Serv.m_ClientVersion.GetClientVer() && ((m_reportedCliver&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
-#ifdef _FRIENDLYLOGINERRORS
 			this->addLoginErr(LOGIN_ERR_BAD_CLIVER);
-#else
-			this->addLoginErr(LOGIN_ERR_OTHER);
-#endif
 		if (( m_Crypt.GetClientVer() < 400000 ) && ( m_reportedCliver >= 400000 ) && ( IsResClient(RDS_AOS) ) && ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )) //workaround for a "bug", which sends all items in LOS before processing this packet
 		{
 			DEBUG_MSG(("m_Crypt.GetClientVer()(%x) != m_reportedCliver(%x) == %x\n", m_Crypt.GetClientVer(), m_reportedCliver, (m_Crypt.GetClientVer() != m_reportedCliver)));
@@ -4284,20 +4280,14 @@ int CClient::xDispatchMsg()
 		switch ( pEvent->Default.m_Cmd )
 		{
 			case XCMD_ServersReq: // First Login
-#ifdef _FRIENDLYLOGINERRORS
 			{
-#endif
 				EXC_SET("not logged - server list");
 				if ( ! xCheckMsgSize( sizeof( pEvent->ServersReq )))
 					RETURN_FALSE();
-#ifdef _FRIENDLYLOGINERRORS
 				LOGIN_ERR_TYPE lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
 				addLoginErr(lErr);
 				return( lErr == LOGIN_SUCCESS );
 			}
-#else
-				return( Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass ) == LOGIN_SUCCESS );
-#endif
 			case XCMD_ServerSelect:// Server Select - relay me to the server.
 				EXC_SET("not logged - login relay");
 				if ( ! xCheckMsgSize( sizeof( pEvent->ServerSelect )))
@@ -4384,14 +4374,7 @@ int CClient::xDispatchMsg()
 			EXC_SET("select char");
 			if ( ! xCheckMsgSize( sizeof( pEvent->CharPlay )))
 				RETURN_FALSE();
-#ifdef _FRIENDLYLOGINERRORS
 			addLoginErr(Setup_Play( pEvent->CharPlay.m_slot ));
-#else
-			if ( ! Setup_Play( pEvent->CharPlay.m_slot ))
-			{
-				addLoginErr( LOGIN_ERR_NONE );
-			}
-#endif
 			return 1;
 		case XCMD_TipReq: // Get Tip
 			EXC_SET("get tip");

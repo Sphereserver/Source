@@ -976,7 +976,7 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	LOGIN_ERR_BLOCKED = 2,		// client blocked
 	LOGIN_ERR_BAD_PASS = 3,		// incorrect password
 	LOGIN_ERR_OTHER = 4,		// like timeout.
-#ifdef _FRIENDLYLOGINERRORS
+
 	// the error codes below are not sent to or understood by the client,
 	// and should be translated into one of the codes above
 	LOGIN_ERR_BAD_CLIVER,		// cliver not permitted
@@ -994,7 +994,8 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	LOGIN_ERR_BLOCKED_MAXCLIENTS,	// max clients reached
 	LOGIN_ERR_BLOCKED_MAXGUESTS,	// max guests reached
 	LOGIN_ERR_MAXPASSTRIES,		// max password tries reached
-#endif
+
+	// this 'error' code indicates there was no error
 	LOGIN_SUCCESS	= 255,
 };
 

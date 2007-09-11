@@ -993,18 +993,10 @@ private:
 	void Announce( bool fArrive ) const;
 
 	LOGIN_ERR_TYPE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest );	// Gameserver login and character listing
-#ifdef _FRIENDLYLOGINERRORS
 	LOGIN_ERR_TYPE Setup_Start( CChar * pChar );	// Send character startup stuff to player
-#else
-	bool Setup_Start( CChar * pChar );	// Send character startup stuff to player
-#endif
 	void Setup_CreateDialog( const CEvent * pEvent );	// All the character creation stuff
 	DELETE_ERR_TYPE Setup_Delete( int iSlot );			// Deletion of character
-#ifdef _FRIENDLYLOGINERRORS
 	LOGIN_ERR_TYPE Setup_Play( int iSlot );		// After hitting "Play Character" button
-#else
-	bool Setup_Play( int iSlot );		// After hitting "Play Character" button
-#endif
 
 	// GM stuff.
 	bool OnTarg_Obj_Set( CObjBase * pObj );
