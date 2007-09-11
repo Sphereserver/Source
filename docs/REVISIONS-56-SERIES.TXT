@@ -3647,3 +3647,9 @@ this all in desperation)
 08-09-2007, MrSugarCube
 - Fixed: Character creation allowed whilst another character is still idling
   in the world.
+
+11-09-2007, MrSugarCube
+- Fixed #1256: Ship plank exit allowing players to pass over blocked paths,
+  such as walls or fences.
+- Modified: Added more "Bad Login x" codes along with expanded descriptions
+  to assist in identifying login issues.

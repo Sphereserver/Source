@@ -3314,6 +3314,13 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 			// Set new Z so we don't end up floating or underground
 			pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
 
+			// don't allow characters to pass through walls or other blocked
+			// paths when they're disembarking from a ship
+			if ( bFromShip && (wBlockFlags & CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) )
+			{
+				break;
+			}
+
 			if ( ! ( wBlockFlags &~ wCan ))
 			{
 				// we can go here. (maybe)
