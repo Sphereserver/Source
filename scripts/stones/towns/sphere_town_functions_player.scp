@@ -1,0 +1,59 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+[PLEVEL 1]
+gc          // replacement for guild chat in older client
+groster     // replacement for guild button in older client
+
+[FUNCTION gc]
+IF ( !<DEF0.GUILDCFGSPEECH_GLOBAL_ENABLE> )
+    RETURN 1
+ENDIF
+
+IF ( !<GUILD> )
+    RETURN 1
+ENDIF
+
+LOCAL.PRIVSPEECH = <GUILD.MEMBERFROMUID.<UID>.PRIV>
+IF (<LOCAL.PRIVSPEECH> == <DEF.STONEPRIV_ACCEPTED>)
+    LOCAL.PRIVSPEECH = <DEF.STONEPRIV_CANDIDATE>
+ENDIF
+
+IF ((<LOCAL.PRIVSPEECH> == <DEF.STONEPRIV_CANDIDATE>) && !<DEF0.GUILDCFGSPEECH_ENABLE_CANDIDATES>)
+    RETURN 1
+ENDIF
+
+IF ((<LOCAL.PRIVSPEECH> == <DEF.STONEPRIV_MEMBER>) && !<DEF0.GUILDCFGSPEECH_ENABLE_MEMBERS>)
+    RETURN 1
+ENDIF
+
+IF (<CTAG0.GUILDSYS_LASTGUILDMSG_TIME> < <SERV.TIME>)
+    CTAG.GUILDSYS_LASTGUILDMSG_TIME = <SERV.TIME> + <DEF0.GUILDCFGSPEECH_SPAM_INTERVAL>
+    f_guildsys_speech_sendsmsg <guild.uid>,<args>
+ENDIF
+
+
+[FUNCTION groster]
+IF ( !<DEF0.GUILDCONFIC_USEGUILDBUTTON> )
+    RETURN 1
+ENDIF
+
+IF ( !<GUILD> )
+    RETURN 1
+ENDIF
+
+if ((<guild.memberfromuid.<uid>.priv>==<def0.STONEPRIV_MEMBER>)||(<guild.masteruid>==<uid>))
+    // Something like that...
+    trysrc <uid> guild.sdialog d_Guild_Main,0
+endif
+
+[EOF]

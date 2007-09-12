@@ -1,0 +1,106 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//
+// DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+[dialog d_Guild_WarfareStatus]
+5,25
+If (<type>!=t_stone_guild)
+  return 1
+elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
+endif
+  local.charpriv=<QVAL <src.isgm> ? <def0.STONEPRIV_MASTER>:<memberfromuid.<src.uid>.priv>>
+If (<local.charpriv>!=<def0.STONEPRIV_MEMBER>)&&(<local.charpriv>!=<def0.STONEPRIV_MASTER>)
+  return 1
+endif
+
+local.guildcount=<guild.count>
+
+// The gump
+page 0
+resizepic 0 0 5054 550 440
+resizepic 10 10 3000 530 420
+dhtmlgump 20 10 500 35 0 0 <def0.center>WARFARE STATUS<def0.centere>
+dhtmlgump 55 400 300 35 0 0 Return to the main menu.
+button 20 400 4005 4007 1 0 0 // Quit
+  
+page 1
+button 375 375 5224 5224 0 2 0 // Next Page
+dhtmlgump 410 373 100 25 0 0 Next page
+dhtmlgump 20 45 400 20 0 0 We are at war with: 
+// At War List
+If (<guild.count <def0.STONEPRIV_ENEMY>>==0)  
+  dhtmlgump 20 65 400 20 0 0 - No current wars
+else
+  local.gicurrent=0
+  local.gpcurrent=0
+  WHILE (<local.gicurrent> < <local.guildcount>)
+    local.gcuidcurrent = <guild.<local.gicurrent>.uid>
+    If (<guildfromuid.<local.gcuidcurrent>.isenemy>)
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
+      local.gpcurrent += 1
+    endif
+    local.gicurrent += 1
+  ENDWHILE
+endif
+  
+page 2
+button 30 375 5223 5223 0 1 0 // Previous Page
+dhtmlgump 65 373 150 25 0 0 Previous page
+button 375 375 5224 5224 0 3 0 // Next Page
+dhtmlgump 410 373 100 25 0 0 Next page
+dhtmlgump 20 45 400 20 0 0 Guilds that we have declared war on: 
+// We Declare List
+If (<guild.count <def0.STONEPRIV_WEDECLARED>>==0)  
+  dhtmlgump 20 65 400 20 0 0 - No current invitations sent for war.
+else
+  local.gicurrent=0
+  local.gpcurrent=0
+  WHILE (<local.gicurrent> < <local.guildcount>)
+    local.gcuidcurrent = <guild.<local.gicurrent>.uid>
+    If (<guildfromuid.<local.gcuidcurrent>.wewar> && !<guildfromuid.<local.gcuidcurrent>.theywar>)
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
+      local.gpcurrent += 1
+    endif
+    local.gicurrent += 1
+  ENDWHILE
+endif
+  
+page 3
+button 30 375 5223 5223 0 2 0 // Previous Page
+dhtmlgump 65 373 150 25 0 0 Previous page
+dhtmlgump 20 45 400 20 0 0 Guilds that have declared war on us: 
+// They Declared List
+If (<guild.count <def0.STONEPRIV_THEYDECLARED>>==0)  
+    dhtmlgump 20 65 400 20 0 0 - No current invitations received for war.
+else
+  local.gicurrent=0
+  local.gpcurrent=0
+  WHILE (<local.gicurrent> < <local.guildcount>)
+    local.gcuidcurrent = <guild.<local.gicurrent>.uid>
+    If (<guildfromuid.<local.gcuidcurrent>.theywar> && !<guildfromuid.<local.gcuidcurrent>.wewar>)
+      dhtmlgump 20 <EVAL (65 + (<local.gpcurrent> * 20))> 300 20 0 0 - <uid.<local.gcuidcurrent>.name> <qval (strlen(<uid.<local.gcuidcurrent>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.gcuidcurrent>.abbrev>]:>
+      local.gpcurrent += 1
+    endif
+    local.gicurrent += 1
+  ENDWHILE
+endif
+
+
+  
+[dialog d_Guild_WarfareStatus Button]
+ON=0
+  sdialog d_Guild_Main,0
+  return 1
+  
+[EOF]

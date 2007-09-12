@@ -1,0 +1,102 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//
+// DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+[dialog d_Guild_Master_Warfare]
+5,25
+If (<type>!=t_stone_guild)
+  return 1
+elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
+endif
+
+page 0
+resizepic 0 0 5054 550 440
+resizepic 10 10 3000 530 420
+dhtmlgump 20 10 510 35 0 0 <def0.center>WAR FUNCTIONS<def0.centere>
+dhtmlgump 55 40 400 30 0 0 Declare war through guild name search.
+  button 20 40 4005 4007 1 0 1 // Search
+local.gcount=0
+If (<guild.count <def0.STONEPRIV_ENEMY>>)
+  button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 2
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Declare peace.
+  local.gcount += 1
+else
+  gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current wars
+  local.gcount += 1
+endif
+  
+If (<guild.count <def0.STONEPRIV_THEYDECLARED>>)
+  button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 3
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Accept war invitations.
+  local.gcount += 1
+  button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 4
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Reject war invitations.
+  local.gcount += 1
+else
+  gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current invitations received for war.
+  local.gcount += 1
+endif
+
+If (<guild.count <def0.STONEPRIV_WEDECLARED>>)
+  button 20 <eval (160 + (<local.gcount> * 30))> 4005 4007 1 0 5
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 Rescind your war declarations.
+  local.gcount += 1
+else
+  gumppic 20 <eval (160 + (<local.gcount> * 30))> 4020
+  dhtmlgump 55 <eval (160 + (<local.gcount> * 30))> 400 30 0 0 No current war declarations
+  local.gcount += 1
+endif
+
+button 20 400 4005 4007 1 0 0
+dhtmlgump 55 400 400 35 0 0 Return to the previous menu.
+
+
+[dialog d_Guild_Master_Warfare Button]
+ON=0 5  
+  If (<masteruid>!=<src.uid>)&&(!<src.isgm>))
+    return 1
+  endif
+  
+  If (<argn1>==0)
+    If (<masteruid>==<src.uid>)||(<src.isgm>)
+      sdialog d_Guild_Master,0
+    else
+      sdialog d_Guild_Main,0
+    endif
+  elif (<argn1>==1)
+    src.ctag.guild_prompthandler_guilduid=<uid>
+    local.guildsearch_promptmessage = Declare war through search
+    if ( <def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH> )
+        local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Type 'AllGuilds' to get a full guild list)
+    endif
+    local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Min <dDEF0.GUILDCONFIG_NSEARCH_MINLENGTH> chars) - Enter Guild Name:
+    try src.promptconsole f_prompthandler_guilddclarewar,<local.guildsearch_promptmessage>
+  elif (<argn1>==2)
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE>
+  elif (<argn1>==3)
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR>
+  elif (<argn1>==4)
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_REJECTWAR>
+  elif (<argn1>==5)
+    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_RESCIND>
+  endif
+
+  return 1
+
+[EOF]
+
+
+  

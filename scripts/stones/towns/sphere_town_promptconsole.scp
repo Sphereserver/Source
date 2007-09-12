@@ -1,0 +1,178 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+
+// ------------------------------------------------------
+[FUNCTION f_prompthandler_guildname]
+if ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
+  return 1
+endif
+
+local.guildname=<args>
+local.guildLENGTH=<eval StrLen(<local.guildname>)>
+local.guild=<ctag0.guild_prompthandler_guilduid>
+ctag.guild_prompthandler_guilduid=
+
+if ( <local.guild>==0)
+  return 1
+endif
+if ( <uid.<local.guild>.type> != T_STONE_GUILD )
+  return 1
+endif
+
+local.oldobj=<obj.uid>
+obj=<local.guild>
+If (<obj.masteruid>!=<uid>)&&(!<isgm>)
+  obj=<local.oldobj>
+  return 1
+endif
+
+If ((<local.guildLENGTH> < <def0.GUILDCONFIG_NAME_MINLENGTH>) || (<local.guildLENGTH> > <def0.GUILDCONFIG_NAME_MAXLENGTH>))
+elif ( <obj.tag0.changename_time> >= <serv.time> )
+elif ( strregex([^A-Za-z0-9\s]+,<local.guildname>) == 1)
+elif ( <f_guildsys_isnameused <local.guild>,<local.guildname>> )
+else
+  // Change the name
+  f_guildsys_sendsmsg <obj.uid>,The guild's name has changed to <local.guildname>
+  obj.name=<local.guildname>
+  obj.tag.changename_time=<serv.time> + <def0.GUILDCONFIG_MINTIME_NAME>
+  obj.update
+  update
+endif
+
+trysrc <uid> obj.sdialog d_Guild_Master,0,
+obj=<local.oldobj>
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_prompthandler_guildabbrev]
+if ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
+  return 1
+endif
+
+local.guildabbrev=<args>
+local.guildLENGTH=<eval StrLen(<local.guildabbrev>)>
+local.guild=<ctag0.guild_prompthandler_guilduid>
+ctag.guild_prompthandler_guilduid =
+
+if ( <local.guild> == 0 )
+  return 1
+endif
+if ( <uid.<local.guild>.type> != T_STONE_GUILD )
+  return 1
+endif
+
+local.oldobj=<obj.uid>
+obj=<local.guild>
+if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+  obj=<local.oldobj>
+  return 1
+endif
+
+if ((<local.guildLENGTH> < <def0.GUILDCONFIG_ABBREV_MINLENGTH>) || (<local.guildLENGTH> > <def0.GUILDCONFIG_ABBREV_MAXLENGTH>))
+elif ( <obj.tag0.changeabbrev_time> >= <serv.time> )
+elif ( strregex([^A-Za-z0-9]+,<local.guildabbrev>) == 1 )
+elif ( <f_guildsys_isabbrevused <local.guild>,<local.guildabbrev>> )
+else
+  // Change the abbrev
+  f_guildsys_sendsmsg <obj.uid>,The guild abbreviation has changed to <local.guildabbrev>
+  obj.abbrev=<local.guildabbrev>
+  obj.tag.changeabbrev_time=<serv.time> + <def0.GUILDCONFIG_MINTIME_ABBREV>
+  obj.update
+  update
+endif
+
+trysrc <uid> obj.sdialog d_Guild_Master,0
+obj=<local.oldobj>
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_prompthandler_guildtitle]
+if ( !<ctag0.guild_prompthandler_guilduid> || !<ctag0.guild_prompthandler_thisuid> || <isempty <args>> )
+  return 1
+endif
+
+local.title=<args>
+local.titlelength=<eval StrLen(<local.title>)>
+local.guild=<ctag0.guild_prompthandler_guilduid>
+local.thisuid=<ctag0.guild_prompthandler_thisuid>
+ctag.guild_prompthandler_guilduid=
+ctag.guild_prompthandler_thisuid=
+
+If (<local.guild>==0)
+  return 1
+elif (<uid.<local.guild>.type> != T_STONE_GUILD)
+  return 1
+endif
+
+local.oldobj=<obj.uid>
+obj=<local.guild>
+if (<obj.masteruid>!=<uid>)&&(!<isgm>)
+  obj=<local.oldobj>
+  return 1
+endif
+
+If ( <local.titlelength> > <def0.GUILDCONFIG_TITLE_MAXLENGTH> )
+elif ( <obj.memberfromuid.<local.thisuid>.uid> != <local.thisuid> )
+elif ( strregex([^A-Za-z0-9\s]+,<local.title>) == 1 )
+else
+  // Change the title
+  sysmessage Title for <uid.<local.thisuid>.name> changed to: <local.title>
+  try obj.memberfromuid.<local.thisuid>.title=<local.title>
+endif
+
+trysrc <uid> obj.sdialog d_Guild_Master,0
+obj=<local.oldobj>
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_prompthandler_guilddclarewar]
+If ( !<ctag0.guild_prompthandler_guilduid> || <isempty <args>> )
+  return 1
+endif
+
+local.guildtext=<args>
+local.guildLENGTH=<eval StrLen(<local.guildtext>)>
+local.guild=<ctag0.guild_prompthandler_guilduid>
+ctag.guild_prompthandler_guilduid=
+
+If (<local.guild>== 0)
+  return 1
+elif (<uid.<local.guild>.type>!=T_STONE_GUILD )
+  return 1
+endif
+
+local.oldobj=<obj.uid>
+obj=<local.guild>
+if ( (<obj.masteruid> != <uid>) && (!<isgm>) )
+  obj=<local.oldobj>
+  return 1
+endif
+
+If ((<local.guildLENGTH> < <def0.GUILDCONFIG_NSEARCH_MINLENGTH>) || (<local.guildLENGTH> > <def0.GUILDCONFIG_NAME_MAXLENGTH>))
+elif ( strregex([^A-Za-z0-9\s]+,<local.guildtext>) == 1 )
+else
+  // Go for dialog
+  trysrc <uid> obj.sdialog d_Guild_Master_Warfare_DeclareWar,0,<local.guildtext>
+  obj=<local.oldobj>
+  return 1
+endif
+
+  trysrc <uid> obj.sdialog d_Guild_Master_Warfare,0
+  obj=<local.oldobj>
+return 1
+
+
+[EOF]

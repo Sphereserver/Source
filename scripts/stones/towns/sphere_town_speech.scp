@@ -1,0 +1,17 @@
+[SPEECH spk_guildspeech]
+ON=I resign from my guild
+IF ((<ARGN1> == <DEF.TALKMODE_SAY>) && <GUILD>)
+    f_guildsys_removecharfromguild <guild.uid>,<uid>
+    RETURN 6
+ENDIF
+RETURN 1
+
+ON=*
+IF (<ARGN1> != <DEF.TALKMODE_GUILD>)
+    RETURN 0 // Not my problem
+ENDIF
+
+gc <args>
+RETURN 1
+
+[EOF]

@@ -1,0 +1,192 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2006
+// www.sphereserver.com
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//
+// DO NOT MAKE CHANGES TO DEFAULT SCRIPTS! MAKE YOUR ALTERATIONS IN CUSTOM FILES!
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+[dialog d_Guild_GuildList]
+5,25
+local.listtype=<args>
+If (<local.listtype> <= 0)||(<local.listtype> > 4)
+  return 1
+elif (<type>!=t_stone_guild)
+  return 1
+elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+  return 1
+endif
+
+
+page 0
+resizepic 0 0 5054 550 440
+resizepic 10 10 3000 530 420
+
+local.privtolist=-1
+local.showcheckbox=1
+If ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE> )
+  local.privtolist=<def0.STONEPRIV_ENEMY>
+  dhtmlgump 20 10 400 25 0 0 Select the guild you wish to declare peace with.
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Send the olive branch.
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
+  local.privtolist=<def0.STONEPRIV_THEYDECLARED>
+  dhtmlgump 20 10 400 25 0 0 Select the guild to accept the invitations: 
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Accept war invitations.
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
+  local.privtolist=<def0.STONEPRIV_THEYDECLARED>
+  dhtmlgump 20 10 400 25 0 0 Select the guild to reject their invitations: 
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Reject war invitations.
+elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
+  local.privtolist=<def0.STONEPRIV_WEDECLARED>
+  dhtmlgump 20 10 400 25 0 0 Select the guild to rescind our invitations: 
+  button 20 400 4005 4007 1 0 1
+  dhtmlgump 55 400 245 30 0 0 Rescind your war declarations.
+endif
+  
+button 300 400 4005 4007 1 0 0
+dhtmlgump 335 400 100 35 0 0 CANCEL
+
+If ( <local.privtolist>==-1 )
+  return 1
+endif
+
+local.current=0
+local.currentgump=0
+local.totalcount=<guild.count>
+local.totalprivcount=<guild.count <local.privtolist>>
+
+src.ctag.dialog_guildguildlist_type=<local.listtype>
+try src.ctag.dialog_guildguildlist_<dlocal.listtype>_count=<local.totalprivcount>
+try src.ctag.dialog_guildguildlist_<dlocal.listtype>_radio=<local.showcheckbox>
+
+while ( <local.currentgump> < <local.totalprivcount> )
+  // ---- Condition for executing -----
+  local.ifisok=<guild.<local.current>.uid>
+  If ( <local.privtolist>==<def0.STONEPRIV_ENEMY> )
+    local.ifisok=<local.ifisok> && <guild.<local.current>.isenemy>
+  elif ( <local.privtolist>==<def0.STONEPRIV_THEYDECLARED> )
+    local.ifisok=<local.ifisok> && <guild.<local.current>.theywar> && !<guild.<local.current>.wewar>
+  elif ( <local.privtolist>==<def0.STONEPRIV_WEDECLARED> )
+    local.ifisok=<local.ifisok> && <guild.<local.current>.wewar> && !<guild.<local.current>.theywar>
+  endif
+  // ----------------------------------
+  
+  If ( <local.ifisok> )
+    // ----- Page ------
+    If ( (<local.currentgump> % 11)==0 )
+      If ( <local.currentgump> != 0 )
+        button 300 370 4005 4007 0 <EVAL ((<local.currentgump>/11)+1)> 0
+        dhtmlgump 335 370 300 35 0 0 Next page
+      endif
+        
+      page <EVAL ((<local.currentgump>/11)+1)>
+        
+      If ( <local.currentgump> != 0 )
+        button 20 370 4014 4016 0 <EVAL (<local.currentgump>/11)> 0
+        dhtmlgump 335 370 300 35 0 0 1011067 Previous page
+      endif
+    endif
+    // ----------------
+
+    If ( <local.showcheckbox> )
+      radio 20 <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 208 209 0 <EVAL (<local.current> + 10)>
+    endif
+    
+    local.currentguilduid=<guild.<local.current>.uid>  
+    
+    If (<eval strlen(<uid.<local.currentguilduid>.name>)>)
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentguilduid>.name> <qval (strlen(<uid.<local.currentguilduid>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.currentguilduid>.abbrev>]:>
+    else
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 (Unnamed)
+    endif
+
+    local.currentgump += 1
+  endif
+
+  // ----- Total Member -----
+  local.current += 1
+  If ( <local.current> >= <local.totalcount> )
+    local.currentgump=<local.totalprivcount>
+  endif
+  // ------------------------
+
+endwhile
+
+
+  
+[dialog d_Guild_GuildList Button]
+ON=0 1
+  If (!<src.ctag0.dialog_guildguildlist_type>)
+    serv.log sdialog d_Guild_GuildList called without src.ctag.dialog_guildguildlist_type !!
+    return 1
+  endif
+
+  // ---- Var set ----
+  local.listtype=<src.ctag0.dialog_guildguildlist_type>
+  local.listtypecount=<src.ctag0.dialog_guildguildlist_<dLOCAL.listtype>_count>
+  local.listtyperadio=<src.ctag0.dialog_guildguildlist_<dLOCAL.listtype>_radio>
+  src.ctag.dialog_guildguildlist_type=
+  try src.ctag.dialog_guildguildlist_<dLOCAL.listtype>_count=
+  try src.ctag.dialog_guildguildlist_<dLOCAL.listtype>_radio=
+  
+  If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
+    return 1
+  endif
+  
+  If (<argn1>==0) // Exit
+    sdialog d_Guild_Master_Warfare,0
+    return 1  
+  endif
+
+  local.guilduid=0
+  If ( <local.listtyperadio> && <local.listtypecount> )
+    local.selectedguild=<ARGCHKID> - 10
+    If (<local.selectedguild> < 0)||(<local.selectedguild> > <guild.count>)
+      return 1
+    endif
+
+    local.guilduid=<guild.<local.selectedguild>.uid>
+    If ( !<local.guilduid> )
+      return 1
+    elif ( <uid.<local.guilduid>.type>!=T_STONE_GUILD )
+      return 1
+    endIf  
+  endif
+  
+  If ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE> )
+    If ( <f_guildsys_isatwarwith <uid>,<local.guilduid>> )
+      f_guildsys_declarepeace <uid>,<local.guilduid>,1
+    endif
+  elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR> )
+    If ( <f_guildsys_candeclarewarwith <uid>,<local.guilduid>> )
+      f_guildsys_declarewar <uid>,<local.guilduid>,1
+    endif
+  elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_REJECTWAR> )
+    ref1 = <local.guilduid>
+    If ( <ref1.guildfromuid.<uid>.wewar> )
+      f_guildsys_declarepeace <local.guilduid>,<uid>,0
+    endif
+  elif ( <local.listtype>==<def0.GUILDDLG_LISTTYPE_G_RESCIND> )
+    If ( <guildfromuid.<local.guilduid>.wewar> )
+      f_guildsys_declarepeace <uid>,<local.guilduid>,0
+    endif
+  endif
+  
+  local.listtypecount -= 1
+  If ( <local.listtypecount> )
+    sdialog d_Guild_GuildList,0,<local.listtype>
+  else
+    sdialog d_Guild_Master_Warfare,0
+  endif
+  return 1
+
+[EOF]

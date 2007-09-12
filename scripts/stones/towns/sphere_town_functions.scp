@@ -1,0 +1,421 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2006
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 14-March-2007
+VERSION=0.56b
+
+// ------------------------------------------------------
+// ------------------------------------------------------
+// ------------------------------------------------------
+[FUNCTION TRANSFERGUILD]
+src.targetf f_guildsys_transferguild <args>
+src.sysmessage Who do you wish to transfer the guild to?
+
+[FUNCTION f_guildsys_transferguild]
+// args = guildstone uid
+// argo = future owner
+ref1 = <args>
+
+If (<argo.isitem>)
+  sysmessage You cannot transfer a guild to that.
+elif (<argo.npc>)
+  sysmessage You cannot transfer a guild to an npc.
+elif (<argo> == <ref1.masteruid>)
+  sysmessage You are already the master of <uid.<args>.name>.
+elif (<argo.memoryfindtype.memory_guild.link.uid> != <args>)
+  sysmessage That player is not a member of the guild.
+elif (!<argo.npc>)
+  ref1.masteruid = <argo.uid>
+  serv.log <name> (<uid>) transferred <sex his/her> guild (<ref1.name>) to <argo.name> (<argo.uid>)
+  sysmessage @038A You have transfered the guild to <argo.name>.
+  argo.sysmessage @038A You are now the master of <ref1.name>.
+else
+  sysmessage You cannot transfer a guild to that.
+endif
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_recruitguy]
+ref1 = <args>
+
+If (<ref1.type> != t_stone_guild)
+  return 1
+elif ((<ref1.masteruid> != <uid>) && (<ref1.memberfromuid.<uid>.priv> != <def0.STONEPRIV_MEMBER>) && (!<isgm>))
+  sysmessage @038a Only guild members can recruit new players.
+  return 1
+elif (<argo.isItem>)
+  sysmessage @038a You may only recruit players into the guild.
+  return 1
+elif (!<argo.isPlayer>)
+  sysmessage @038a You may only recruit players into the guild.
+  return 1
+elif (<argo.flags>&<def0.statf_dead>)
+  sysmessage @038A Only the living may be recruited.
+  return 1
+endif
+If (<argo.memoryfindtype.<def0.memory_guild>.uid>)
+  If (<argo.memoryfindtype.<def0.memory_guild>.link> == <ref1.uid>)
+    sysmessage @038A They are already a guildmember!
+  else
+    sysmessage @038A You can only recruit candidates who are not already in a guild.
+  endif
+  return 1
+endif
+
+If (<ref1.memberfromuid.<argo.uid>.uid> != <argo.uid>)
+  If ((<ref1.masteruid> == <uid>) || (<isgm>))
+    If (<def0.GUILDCONFIG_MAXMEMBERS>)
+      If (<ref1.member.count <def0.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS>)
+        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
+      else
+        sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
+      endif
+    else
+      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
+    endif
+  else
+    If (<def0.GUILDCONFIG_MAXCANDIDATES>)
+      If (<ref1.member.count <def0.STONEPRIV_CANDIDATE>> < <def0.GUILDCONFIG_MAXCANDIDATES>)
+        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
+      else
+        sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXCANDIDATES> candidates awaiting a decision. You cannot submit a candidate at this time.
+      endif
+    else
+      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
+    endif
+else
+  sysmessage @038A They are already a candidate.
+endif
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_addchartoguild]
+// no checks here, everything should be checked before calling this functions
+ref1 = <argv[0]> // The guild
+ref2 = <argv[1]> // The char
+local.addasmember = <argv[2]>
+
+if (<local.addasmember>)
+  ref1.JoinAsMember <ref2.uid>
+else
+  ref1.ApplyToJoin <ref2.uid>
+endif
+
+if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
+  ref2.events +<def.GUILDCONFIG_CHAREVENT_NAME>
+endif
+  
+if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
+  if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+    ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
+  endif
+endif
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_removecharfromguild]
+// no checks here, everything should be checked before calling this functions
+ref1 = <argv[0]> // The guild
+ref2 = <argv[1]> // The char
+
+if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
+  ref2.events -<def.GUILDCONFIG_CHAREVENT_NAME>
+endif
+
+if (<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+  ref2.dspeech -<def.GUILDCFGSPEECH_NAME>
+endif
+
+ref1.resign <ref2.uid>
+f_guildsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the guild.
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_isnameused]
+local.guild=<argv[0]>
+local.name=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
+
+local.index=0
+local.return=0
+local.totalguild=<serv.guildstones.count>
+
+while (<local.index> < <local.totalguild>)
+  local.currentguild=<serv.guildstones.<local.index>.uid>
+  If (<local.currentguild>)
+    If (!strcmpi(<uid.<local.currentguild>.name>,<local.name>))
+      local.return=1
+      local.index=<local.totalguild> + 1
+    endif
+  endif
+  
+  local.index += 1
+endwhile
+
+return <local.return>
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_isabbrevused]
+local.guild=<argv[0]>
+local.abbrev=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
+
+local.index=0
+local.return=0
+local.totalguild=<serv.guildstones.count>
+
+while (<local.index> < <local.totalguild>)
+  local.currentguild=<serv.guildstones.<local.index>.uid>
+  If (<local.currentguild>)
+    If (!strcmpi(<uid.<local.currentguild>.abbrev>,<local.abbrev>))
+      local.return=1
+      local.index=<local.totalguild> + 1
+    endif
+  endif
+  
+  local.index += 1
+endwhile
+
+return <local.return>
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_isatwarwith]
+local.myguild=<argv[0]>
+local.otherguild=<argv[1]>
+
+If ((<uid.<local.myguild>.type>!=t_stone_guild) || (<uid.<local.otherguild>.type>!=t_stone_guild))
+  return 0
+endif
+
+If (<uid.<local.myguild>.guildfromuid.<local.otherguild>.isenemy> && <uid.<local.otherguild>.guildfromuid.<local.myguild>.isenemy>)
+  return 1
+endif
+
+return 0
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_candeclarewarwith]
+local.myguild=<argv[0]>
+local.otherguild=<argv[1]>
+
+If ((<uid.<local.myguild>.type>!=t_stone_guild) || (<uid.<local.otherguild>.type>!=t_stone_guild))
+  return 0
+endif
+
+local.myguild_count=<uid.<local.myguild>.member.count <def0.STONEPRIV_MEMBER>>
+If (<uid.<local.myguild>.masteruid>)
+  local.myguild_count += 1
+endif
+
+If (<local.myguild_count>==0)
+  return 0
+endif
+
+local.otherguild_count=<uid.<local.otherguild>.member.count <def0.STONEPRIV_MEMBER>>
+If (<uid.<local.otherguild>.masteruid>)
+  local.otherguild_count += 1
+endif
+
+If (<local.otherguild_count>==0)
+  return 0
+endif
+
+// Order cannot declare war.
+If ((<uid.<local.myguild>.align>==1) && (<uid.<local.myguild>.align>==<uid.<local.otherguild>.align>))
+  return 0
+endif
+
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_searchguildname]
+local.currentuid=<argv[0]>	// Current guild uid
+local.textsearch=<argv[1]>	// Text to search in other guild names
+local.allguilds=0           	// Allguilds check
+
+local.search_found=0
+local.search_num=0
+local.search_uid=<serv.guildstones.<local.search_num>.uid>
+
+If (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
+    If (!STRCMPI("<local.textsearch>","allguilds"))
+        local.allguilds=1
+    endif
+endif
+
+while (<local.search_uid>)
+  If (<local.currentuid>!=<local.search_uid>)
+    If (<local.allguilds>)
+      If (!<local.returndata>)
+        local.returndata=<local.search_uid>
+      else
+        local.returndata .= ,<local.search_uid>
+      endif
+      local.search_found += 1
+    elif (strregex(<local.textsearch>*,<uid.<local.search_uid>.name>))
+      If (!<local.returndata>)
+        local.returndata=<local.search_uid>
+      else
+        local.returndata .= ,<local.search_uid>
+      endif
+      local.search_found += 1
+    endif
+  endif
+  
+  local.search_num += 1
+  local.search_uid=<serv.guildstones.<local.search_num>.uid>
+  If (<def0.GUILDCONFIG_MAX_NSEARCH_RES>)
+    If (<local.search_num> >= <def0.GUILDCONFIG_MAX_NSEARCH_RES>)
+      local.search_uid=0 // Break the loop
+    endif
+  endif
+endwhile
+
+If (!<local.search_found>)
+  return ""
+endif
+return <local.returndata>
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_listsplit]
+local.guildlist_count=<argv>
+If (<local.guildlist_count>)
+  For x 0 <eval <local.guildlist_count>-1>
+    try local.guildlist_data<dLOCAL.X>=<argv[<dLOCAL.X>]>
+  endfor
+endif
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_declarewar]
+local.firstuid=<argv[0]>
+local.seconduid=<argv[1]>
+
+If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type>!=t_stone_guild))
+  return 0
+endif
+
+ref1 = <local.firstuid>
+ref1.declarewar <local.seconduid>
+
+If (<argv[2]> == 1)
+  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war with <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war with <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
+elseif (<argv[2]> == 2)
+  f_guildsys_sendsmsg <local.firstuid>,Your guild has sent a war invitation to <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
+endif
+
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_declarepeace]
+local.firstuid=<argv[0]>
+local.seconduid=<argv[1]>
+
+If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type>!=t_stone_guild))
+  return 0
+endif
+
+ref1 = <local.firstuid>
+ref1.declarepeace <local.seconduid>
+
+If (<argv[2]> != 0)
+  f_guildsys_sendsmsg <local.firstuid>,You are now at peace with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
+  f_guildsys_sendsmsg <local.seconduid>,You are now at peace with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+endif
+
+return 1
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_determine_timeleft]
+local.sec=<eval (<argn>-<serv.time>)/10>
+If (<eval <local.sec>/86400>)
+  local.timeleft=<eval <local.sec>/86400> day(s)
+elif (<eval <local.sec>/3600>)
+  local.timeleft=<eval <local.sec>/3600> hour(s)
+elif (<eval <local.sec>/60>)
+  local.timeleft=<eval <local.sec>/60> min(s)
+else
+  local.timeleft=<eval <local.sec>> second(s).
+endif
+return <local.timeleft>
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_sendsmsg]
+ref1=<argv[0]>
+local.message=<StrEat <args>>
+
+If (<ref1.type>!=t_stone_guild)
+  return 0
+endif
+
+If (!strlen(<local.message>))
+  return 0
+endif
+
+ref1.allmembers -1,sysmessage @68,0,3 Guild Message: <local.message>
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_speech_sendsmsg]
+ref1=<argv[0]>
+local.message=<StrEat <args>>
+
+If (<ref1.type>!=t_stone_guild)
+  return 0
+endif
+
+If (!strlen(<local.message>))
+  return 0
+endif
+
+ref1.allmembers -1,sysmessage @68,0,3 Guild Message[<name>]: <local.message>
+
+
+// ------------------------------------------------------
+[FUNCTION f_guildsys_iswarring]
+for cguild 0 <guild.count>
+  If ((<guild.<local.cguild>.isenemy>) && (<uid.<guild.<local.cguild>.uid>.guildfromuid.<uid>.isenemy>))
+    local.wars += 1
+  endif
+endfor
+
+return <dlocal.wars>
+
+
+// ------------------------------------------------------
+// -------   Hardcoded functions called by Sphere  -------
+// ------------------------------------------------------
+
+// Called to check If a guild is at war (If commented sphere will use its internal check)
+// I -> Guild
+// ARGO -> Guild to check against
+// return -> 0: not an enemy
+//           1: an enemy
+//           2: use sphere internal check
+
+[COMMENT FUNCTION f_guildsys_internal_isatwarwith]
+If ((<type>!=t_stone_guild) || (<argo.type>!=t_stone_guild))
+  return 0
+endif
+
+If (<align> && <argo.align>)
+  return (<align>!=<argo.align>)
+endif
+
+If (<guildfromuid.<argo.uid>.isenemy> && <argo.guildfromuid.<uid>.isenemy>)
+  return 1
+endif
+
+return 0
+
+[EOF]
