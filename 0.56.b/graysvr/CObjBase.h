@@ -2626,6 +2626,22 @@ public:
 		return GetName( true );
 	}
 
+	LPCTSTR GetNameWithoutIncognito() const
+	{
+		if ( IsStatFlag( STATF_Incognito ) )
+		{
+			CItem * pSpell = NULL;
+			pSpell = LayerFind(LAYER_SPELL_Incognito);
+			if ( pSpell == NULL )
+				pSpell = LayerFind(LAYER_FLAG_Potion);
+
+			if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Incognito))
+				return pSpell->GetName();
+		}
+
+		return GetName();
+	}
+
 	LPCTSTR GetName( bool fAllowAlt ) const
 	{
 		if ( fAllowAlt )

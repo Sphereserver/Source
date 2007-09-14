@@ -2789,10 +2789,10 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		{
 			switch ( pMemory->m_itEqMemory.m_Action )
 			{
-			case NPC_MEM_ACT_SPEAK_TRAIN:
-				return NPC_OnTrainPay(pCharSrc, pMemory, pItem);
-			case NPC_MEM_ACT_SPEAK_HIRE:
-				return NPC_OnHirePay(pCharSrc, pMemory, pItem);
+				case NPC_MEM_ACT_SPEAK_TRAIN:
+					return NPC_OnTrainPay(pCharSrc, pMemory, pItem);
+				case NPC_MEM_ACT_SPEAK_HIRE:
+					return NPC_OnHirePay(pCharSrc, pMemory, pItem);
 			}
 		}
 	}
@@ -2804,12 +2804,14 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	{
 		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 		{
-			g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() );
+			DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() ));
 			pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
 			return false;
-		} else {
-			g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() );
-			g_Log.EventError("CChar::NPC_OnItemGive: Trying to drop %s in  '%s's pack\n", pItem->GetName(), GetName() );
+		} 
+		else 
+		{
+			DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() ));
+			DEBUG_ERR(("CChar::NPC_OnItemGive: Trying to drop %s in  '%s's pack\n", pItem->GetName(), GetName() ));
 			if ( pPack == NULL )
 				pPack = GetPackSafe();
 			pPack->ContentAdd( pItem );
@@ -2854,68 +2856,68 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	}
 
 	// The NPC might want it ?
-	g_Log.EventError("CChar::NPC_OnItemGive: '%s' wants %s\n", GetName(), pItem->GetName() );
+	DEBUG_ERR(("CChar::NPC_OnItemGive: '%s' wants %s\n", GetName(), pItem->GetName() ));
 	switch ( m_pNPC->m_Brain )
 	{
-	case NPCBRAIN_DRAGON:
-	case NPCBRAIN_ANIMAL:
-	case NPCBRAIN_MONSTER:
-		// Might want food ?
-		if ( Food_CanEat(pItem))
-		{
-			// ??? May know it is poisoned ?
-			if ( pItem->m_itFood.m_poison_skill )
+		case NPCBRAIN_DRAGON:
+		case NPCBRAIN_ANIMAL:
+		case NPCBRAIN_MONSTER:
+			// Might want food ?
+			if ( Food_CanEat(pItem))
 			{
-				if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (m_Skill[SKILL_TASTEID] / 10) )
+				// ??? May know it is poisoned ?
+				if ( pItem->m_itFood.m_poison_skill )
 				{
-					if ( NPC_CanSpeak() )
+					if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (m_Skill[SKILL_TASTEID] / 10) )
 					{
-						Speak(g_Cfg.GetDefaultMsg(DEFMSG_MURDERER));
+						if ( NPC_CanSpeak() )
+						{
+							Speak(g_Cfg.GetDefaultMsg(DEFMSG_MURDERER));
+						}
+						// PC attacks NPC
+						return false;
 					}
-					// PC attacks NPC
-					return false;
 				}
+				// ??? May not be hungry
+				if ( Use_Eat( pItem, pItem->GetAmount() ))
+					return( true );
 			}
-			// ??? May not be hungry
-			if ( Use_Eat( pItem, pItem->GetAmount() ))
+			break;
+
+		case NPCBRAIN_BEGGAR:
+		case NPCBRAIN_THIEF:
+			if ( Food_CanEat(pItem) &&
+				Use_Eat( pItem ))
+			{
+				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TY ) );
 				return( true );
-		}
-		break;
+			}
+			if ( ! CanCarry( pItem ))
+			{
+				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WEAK ) );
+				return( false );
+			}
+			if ( pItem->IsType(IT_GOLD) || Food_CanEat(pItem))
+				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TAL ) );
+			else
+				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_SELL ) );
 
-	case NPCBRAIN_BEGGAR:
-	case NPCBRAIN_THIEF:
-		if ( Food_CanEat(pItem) &&
-			Use_Eat( pItem ))
-		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TY ) );
+			ItemEquip( pItem );
+			pItem->Update();
+
+			if (m_Act_Targ == pCharSrc->GetUID())
+			{
+				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_IFONLY ) );
+				m_Act_TargPrv = m_Act_Targ;
+				m_Act_Targ.InitUID();
+				Skill_Start( SKILL_NONE );
+			}
 			return( true );
-		}
-		if ( ! CanCarry( pItem ))
-		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WEAK ) );
-			return( false );
-		}
-		if ( pItem->IsType(IT_GOLD) || Food_CanEat(pItem))
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TAL ) );
-		else
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_SELL ) );
-
-		ItemEquip( pItem );
-		pItem->Update();
-
-		if (m_Act_Targ == pCharSrc->GetUID())
-		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_IFONLY ) );
-			m_Act_TargPrv = m_Act_Targ;
-			m_Act_Targ.InitUID();
-			Skill_Start( SKILL_NONE );
-		}
-		return( true );
 	}
 
 	if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
 	{
-		g_Log.EventError("CChar::NPC_OnItemGive: CTRIG_NPCAcceptItem on '%s' returns '1', means: REFUSE\n", GetName() );
+		DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCAcceptItem on '%s' returns '1', means: REFUSE\n", GetName() ));
 		pCharSrc->ItemBounce( pItem );
 		pItem->Update();
 		return false;
@@ -2925,7 +2927,8 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		pPack = GetPackSafe();
 	pPack->ContentAdd( pItem );
 	pItem->Update();
-	g_Log.EventError("'%s': accepted %s (default action)\n", GetName(), pItem->GetName());
+
+	DEBUG_ERR(("'%s': accepted %s (default action)\n", GetName(), pItem->GetName()));
 	return( true );
 }
 

@@ -2359,7 +2359,7 @@ bool CChar::Death()
 
 	// I am dead and we need to give credit for the kill to my attacker(s).
 	TCHAR * pszKillStr = Str_GetTemp();
-	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetName());
+	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetNameWithoutIncognito() );
 	int iKillers = 0;
 
 	// Look through my memories of who i was fighting. (make sure they knew they where fighting me)
@@ -2429,7 +2429,8 @@ bool CChar::Death()
 		{
 			pKiller->Noto_Kill(this, (*itCurrentKiller).second, killedBy-1);
 
-			iKillStrLen += sprintf(pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer)?'P':'N', pKiller->GetName());
+			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
+				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
 			++iKillers;
 		}
 	}

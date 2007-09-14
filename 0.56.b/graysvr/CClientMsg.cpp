@@ -4538,7 +4538,8 @@ LOGIN_ERR_TYPE CClient::Setup_Start( CChar * pChar ) // Send character startup s
 
 	CharDisconnect();	// I'm already logged in as someone else ?
 
-	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_Start acct='%s', char='%s'\n", m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName(), (LPCTSTR) pChar->GetName());
+	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_Start acct='%s', char='%s', IP='%s'\n", 
+		m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName(), (LPCTSTR) pChar->GetName(), (LPCTSTR) m_PeerName.GetAddrStr() );
 
 	bool fQuickLogIn = false;
 	bool fNoMessages = false;

@@ -948,7 +948,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_ADDBUFF:
 			{
-				if ( !s.HasArgs() ) {
+				if ( !s.HasArgs() ) 
+				{
 					DEBUG_ERR(("No AddBuff arguments\n"));
 					break;
 				}
@@ -1153,6 +1154,20 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				pSrc = (CTextConsole *)&g_Serv;
 			m_TagDefs.DumpKeys(pSrc, "CTAG.");
 			break;
+
+		case CV_CLEARCTAGS:
+			{
+				if ( s.HasArgs() )
+				{
+					LPCTSTR pszArgs = s.GetArgStr();
+					SKIP_SEPARATORS(pszArgs);
+					m_TagDefs.ClearKeys(pszArgs);
+				}
+				else
+				{
+					m_TagDefs.ClearKeys();
+				}
+			} break;
 
 		case CV_EVERBTARG:
 			m_Targ_Text = s.GetArgStr();
