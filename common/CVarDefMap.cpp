@@ -38,6 +38,12 @@ LPCTSTR CVarDefCont::GetKey() const
 	return( m_Key.GetPtr() ); 
 }
 
+void CVarDefCont::SetKey( LPCTSTR pszKey )
+{ 
+	m_Key = pszKey;
+	m_Key.MakeLower(); 
+}
+
 /***************************************************************************
 *
 *
@@ -611,24 +617,30 @@ void CVarDefMap::ClearKeys(LPCTSTR mask)
 	ADDTOCALLSTACK("CVarDefMap::ClearKeys");
 	if ( mask && *mask )
 	{
+		if ( !m_Container.size() )
+			return;
+
 		CGString sMask(mask);
 		sMask.MakeLower();
 
-		for ( DefSet::iterator i = m_Container.begin(); i != m_Container.end(); ++i )
-		{
-			CVarDefCont * pVar = (*i);
-			if ( pVar )
-			{
-				if ( !strstr(pVar->GetKey(), sMask.GetPtr()) ) 
-					continue;
+		DefSet::iterator i = m_Container.begin();
+		CVarDefCont * pVarBase = NULL;
 
+		while ( i != m_Container.end() )
+		{
+			pVarBase = NULL;
+			pVarBase = (*i);
+
+			if ( pVarBase && ( strstr(pVarBase->GetKey(), sMask.GetPtr()) ) )
+			{
 				DeleteAtIterator(i);
-				if ( i != m_Container.begin() )
-				{
-					--i;
-				}
+				i = m_Container.begin();
 			}
-		}	
+			else
+			{
+				++i;
+			}
+		}
 	}
 	else
 	{

@@ -16,6 +16,7 @@ public:
 	~CVarDefCont();
 
 	LPCTSTR GetKey() const;
+	void SetKey( LPCTSTR pszKey );
 
 	virtual LPCTSTR GetValStr() const = 0;
 	virtual int GetValNum() const = 0;
