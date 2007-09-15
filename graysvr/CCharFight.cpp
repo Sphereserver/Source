@@ -1741,6 +1741,14 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	short int i_energyDamage = 0;
 	short int i_fireDamage = 0;
 	short int i_poisonDamage = 0;
+	int i_damTemp = 0;
+	DAMAGE_TYPE u_damFlag = 0;
+
+	short int i_tDamCount = 1;
+	short int i_tDamPois = 0;
+	short int i_tDamElec = 0;
+	short int i_tDamCold = 0;
+	short int i_tDamFire = 0;
 
 	if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
 	{
@@ -1769,16 +1777,9 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			i_poisonDamage = pValue->GetValNum();
 			uType |= DAMAGE_POISON;
 		}
-//		DEBUG_WARN(("WrestleEffect from %s COLD=%d, ENERGY=%d, FIRE=%d, POISON=%d\n",pSrc->GetName(),i_coldDamage,i_energyDamage,i_fireDamage,i_poisonDamage));
 	} 
 	else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 	{
-		short int i_tDamCount = 1;
-		short int i_tDamPois = 0;
-		short int i_tDamElec = 0;
-		short int i_tDamCold = 0;
-		short int i_tDamFire = 0;
-
 		if ( uType & DAMAGE_HIT_BLUNT ) { i_tDamCount += 1; }
 		if ( uType & DAMAGE_HIT_PIERCE ) { i_tDamCount += 1; }
 		if ( uType & DAMAGE_HIT_SLASH ) { i_tDamCount += 1; }
@@ -1786,13 +1787,17 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( uType & DAMAGE_ELECTRIC ) { i_tDamCount += 1; i_tDamElec +=1; }
 		if ( uType & DAMAGE_COLD ) { i_tDamCount += 1; i_tDamCold +=1; }
 		if ( uType & DAMAGE_FIRE ) { i_tDamCount += 1; i_tDamFire +=1; }
+		if ( uType & !(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+		{
+			i_tDamCount += 1;
+		}
 		
 		i_tDamPois *= iDmg / i_tDamCount; 
 		i_tDamElec *= iDmg / i_tDamCount; 
 		i_tDamCold *= iDmg / i_tDamCount; 
 		i_tDamFire *= iDmg / i_tDamCount;
 
-		if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) > iDmg )
+		if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
 		{
 			iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
 		} 
@@ -1818,7 +1823,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		 (i_fireDamage <= 0) &&
 		 (i_poisonDamage <= 0) )	
 	{
-		DEBUG_WARN(("resulting Damage == %d, aborting!\n",iDmg));
+		DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
 		return( 0 );
 	}
 
@@ -1839,12 +1844,74 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	}
 
 	iDmg += iDmg * damMod / 100;
+	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
+	u_damFlag = uType;
 
-	CScriptTriggerArgs Args( iDmg, uType, NULL );
+	CScriptTriggerArgs Args( i_damTemp, u_damFlag, NULL );
 	if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 		return( 0 );
-	iDmg	= Args.m_iN1;
-	uType	= Args.m_iN2;
+	i_damTemp	= Args.m_iN1;
+	uType		= Args.m_iN2;
+	if ( (i_damTemp != iDmg) || (u_damFlag != uType) )
+	{
+		iDmg = i_damTemp;
+		uType = u_damFlag;
+		if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
+		{
+			i_tDamCount = 1;
+	 		i_tDamPois = 0;
+ 			i_tDamElec = 0;
+			i_tDamCold = 0;
+			i_tDamFire = 0;
+
+			if ( uType & DAMAGE_HIT_BLUNT ) { i_tDamCount += 1; }
+			if ( uType & DAMAGE_HIT_PIERCE ) { i_tDamCount += 1; }
+			if ( uType & DAMAGE_HIT_SLASH ) { i_tDamCount += 1; }
+			if ( uType & DAMAGE_POISON ) { i_tDamCount += 1; i_tDamPois +=1; }
+			if ( uType & DAMAGE_ELECTRIC ) { i_tDamCount += 1; i_tDamElec +=1; }
+			if ( uType & DAMAGE_COLD ) { i_tDamCount += 1; i_tDamCold +=1; }
+			if ( uType & DAMAGE_FIRE ) { i_tDamCount += 1; i_tDamFire +=1; }
+			if ( uType & !(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+			{
+				i_tDamCount += 1;
+			}
+		
+			i_tDamPois *= iDmg / i_tDamCount; 
+			i_tDamElec *= iDmg / i_tDamCount; 
+			i_tDamCold *= iDmg / i_tDamCount; 
+			i_tDamFire *= iDmg / i_tDamCount;
+
+			if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
+			{
+				iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
+			} 
+			else 
+			{
+				iDmg = 0;
+			}
+	
+			i_poisonDamage = i_tDamPois;
+			i_energyDamage = i_tDamElec;
+			i_coldDamage = i_tDamCold;
+			i_fireDamage = i_tDamFire;
+		}
+
+		i_poisonDamage -= (i_poisonDamage * m_ResPoison) / 100;
+		i_energyDamage -= (i_energyDamage * m_ResEnergy) / 100;
+		i_coldDamage -= (i_coldDamage * m_ResCold) / 100;
+		i_fireDamage -= (i_fireDamage * m_ResFire) / 100;
+
+		if ( (iDmg <= 0) && 
+			 (i_coldDamage <= 0) &&
+			 (i_energyDamage <= 0) &&
+			 (i_fireDamage <= 0) &&
+			 (i_poisonDamage <= 0) )	
+		{
+			DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+			return( 0 );
+		}
+	
+	}
 
 	if (( uType & ( DAMAGE_ELECTRIC | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
 	{
