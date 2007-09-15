@@ -1009,7 +1009,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	CCommand cmd;
 	cmd.WalkAck.m_Cmd = XCMD_WalkAck;
 	cmd.WalkAck.m_count = (BYTE) m_wWalkCount;
-	cmd.WalkAck.m_noto = m_pChar->Noto_GetFlag( m_pChar, false, true );
+	cmd.WalkAck.m_noto = m_pChar->Noto_GetFlag( m_pChar, false, IsClientVersion(MINCLIVER_NOTOINVUL) );
 	xSendPkt( &cmd, sizeof( cmd.WalkAck ));
 
 	if ( !fMove )

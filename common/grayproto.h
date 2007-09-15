@@ -928,6 +928,9 @@ enum NOTO_TYPE
 	NOTO_INVUL,		// 7= invulnerable
 };
 
+#define MINCLIVER_NOTOINVUL 0x400000	// minimum client required to view noto_invul health bar
+
+
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {
 	TALKMODE_SYSTEM = 0,	// normal system message

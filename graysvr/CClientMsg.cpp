@@ -1553,7 +1553,7 @@ void CClient::addCharMove( const CChar * pChar )
 	EXC_SET("GetModeFlag");
 	cmd.CharMove.m_mode = pChar->GetModeFlag( pChar->CanSeeTrue( m_pChar ));
 	EXC_SET("Noto_GetFlag");
-	cmd.CharMove.m_noto = pChar->Noto_GetFlag( m_pChar, false, true );
+	cmd.CharMove.m_noto = pChar->Noto_GetFlag( m_pChar, false, IsClientVersion(MINCLIVER_NOTOINVUL) );
 
 	EXC_SET("xsendpkt");
 	xSendPkt( &cmd, sizeof(cmd.CharMove));
@@ -1594,7 +1594,7 @@ void CClient::addChar( const CChar * pChar )
 	EXC_SET("GetModeFlag");
 	cmd.Char.m_mode = pChar->GetModeFlag( pChar->CanSeeTrue( m_pChar ));
 	EXC_SET("Noto_GetFlag");
-	cmd.Char.m_noto = pChar->Noto_GetFlag( m_pChar, false, true );
+	cmd.Char.m_noto = pChar->Noto_GetFlag( m_pChar, false, IsClientVersion(MINCLIVER_NOTOINVUL) );
 
 	int len = ( sizeof( cmd.Char ) - sizeof( cmd.Char.equip ));
 	CCommand * pCmd = &cmd;
