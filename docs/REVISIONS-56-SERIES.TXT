@@ -3653,3 +3653,9 @@ this all in desperation)
   such as walls or fences.
 - Modified: Added more "Bad Login x" codes along with expanded descriptions
   to assist in identifying login issues.
+
+16-09-2007, coruja747 (script pack)
+- Fixed #1258: ctags will be cleared when leavind admin menu
+
+16-09-2007, nazghul
+- Fixed #1257: Custom damage type didn´t work with COMBAT_USE_RESISTANCE

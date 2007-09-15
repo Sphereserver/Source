@@ -177,6 +177,13 @@ for x <eval ((<ctag0.admin_page> - 1) * 15) + 1> <eval (<ctag0.admin_page> * 15)
 end
 
 [DIALOG d_sphereadmin BUTTON]
+on=0
+FOR <eval <ctag0.admin_numplayers>+50>
+ ctag.admin_p<dlocal._for>=
+ENDFOR
+ctag.admin_numplayers=
+ctag.admin_page=
+ctag.admin_numpages=
 on=1 // Back button
 ctag.admin_page -= 1
 if (<ctag0.admin_page> < 1)
