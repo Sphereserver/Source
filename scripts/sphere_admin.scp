@@ -111,13 +111,6 @@ else
 	try src.ctag.admin_p<eval (<src.ctag0.admin_numplayers>)>=<uid>
 endif
 
-[FUNCTION admin_getplayers_test]
-// Function I used to test page system
-for x 1 50
-	try ctag.admin_p<eval <local.x>>=01
-end
-ctag.admin_numplayers=50
-
 [DIALOG d_sphereadmin]
 0,21
 src.dialogclose d_sphereadmin
@@ -178,12 +171,10 @@ end
 
 [DIALOG d_sphereadmin BUTTON]
 on=0
-FOR <eval <ctag0.admin_numplayers>+50>
- ctag.admin_p<dlocal._for>=
-ENDFOR
+clearctags admin_p
 ctag.admin_numplayers=
-ctag.admin_page=
 ctag.admin_numpages=
+
 on=1 // Back button
 ctag.admin_page -= 1
 if (<ctag0.admin_page> < 1)
