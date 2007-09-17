@@ -394,7 +394,9 @@ CItemStone * CStoneMember::GetParentStone()
 LPCTSTR CStoneMember::GetPrivName() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetPrivName");
-	switch ( GetPriv())
+
+#ifndef _NEWGUILDSYSTEM
+	switch ( GetPriv() )
 	{
 		case STONEPRIV_CANDIDATE: return "a candidate of";
 		case STONEPRIV_MEMBER: return "a member of";
@@ -403,6 +405,20 @@ LPCTSTR CStoneMember::GetPrivName() const
 		case STONEPRIV_ENEMY: return "the enemy of";
 	}
 	return( "unknown" );
+#else
+	STONEPRIV_TYPE iPriv = GetPriv();
+
+	TemporaryString sDefname;
+	sprintf(sDefname, "STONECONFIG_PRIVNAME_PRIVID-%d", (int)iPriv);
+	
+	CVarDefCont * pResult = g_Exp.m_VarDefs.GetKey(sDefname);
+	if (pResult)
+		return pResult->GetValStr();
+	else
+		pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_PRIVNAME_PRIVUNK");
+
+	return ( pResult == NULL ) ? "" : pResult->GetValStr();
+#endif
 }
 
 bool CStoneMember::SetLoyalTo( const CChar * pCharLoyal )
@@ -496,6 +512,8 @@ bool CItemStone::IsSameAlignType( const CItemStone * pStone) const
 LPCTSTR CItemStone::GetTypeName() const
 {
 	ADDTOCALLSTACK("CItemStone::GetTypeName");
+
+#ifndef _NEWGUILDSYSTEM
 	switch ( GetType() )
 	{
 		case IT_STONE_GUILD:
@@ -504,6 +522,24 @@ LPCTSTR CItemStone::GetTypeName() const
 			return "Town";
 	}
 	return "Unk";
+#else
+	CVarDefCont * pResult = NULL;
+	
+	switch ( GetType() )
+	{
+		case IT_STONE_GUILD:
+			pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_GUILD");
+			break;
+		case IT_STONE_TOWN:
+			pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_TOWN");
+			break;
+	}
+
+	if ( pResult == NULL )
+		pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_UNK");
+
+	return ( pResult == NULL ) ? "" : pResult->GetValStr();
+#endif
 }
 
 void CItemStone::r_Write( CScript & s )
@@ -1012,12 +1048,30 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		case STC_AbbreviationToggle:
 			{
 				CStoneMember * pMember = GetMember(pCharSrc);
+#ifndef _NEWGUILDSYSTEM
 				if ( pMember == NULL )
 				{
 					sVal = "nonmember";
-					return( true );
 				}
-				sVal = pMember->IsAbbrevOn() ? "On" : "Off";
+				else
+				{
+					sVal = pMember->IsAbbrevOn() ? "On" : "Off";
+				}
+#else
+				CVarDefCont * pResult = NULL;
+
+				if ( pMember == NULL )
+				{
+					pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
+				}
+				else
+				{
+					pResult = pMember->IsAbbrevOn() ? g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVON") :
+								g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVOFF");
+				}
+
+				sVal = pResult ? pResult->GetValStr() : "";
+#endif
 			}
 			return true;
 		case STC_AlignType:
@@ -1027,26 +1081,59 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		case STC_LoyalTo:
 			{
 				CStoneMember * pMember = GetMember(pCharSrc);
+#ifndef _NEWGUILDSYSTEM
+				CVarDefCont * pResult = NULL;
+
 				if ( pMember == NULL )
 				{
 					sVal = "nonmember";
-					
-					return( true );
+				}
+				else
+				{
+					CChar * pLoyalTo = pMember->GetLoyalToUID().CharFind();
+					if ((pLoyalTo == NULL) || (pLoyalTo == pCharSrc ))
+					{
+						sVal = "yourself";
+					}
+					else
+					{
+						sVal = pLoyalTo->GetName();
+					}
+				}
+#else
+				CVarDefCont * pResult = NULL;
+
+				if ( pMember == NULL )
+				{
+					pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
+				}
+				else
+				{
+					CChar * pLoyalTo = pMember->GetLoyalToUID().CharFind();
+					if ((pLoyalTo == NULL) || (pLoyalTo == pCharSrc ))
+					{
+						pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_YOURSELF");
+					}
+					else
+					{
+						sVal = pLoyalTo->GetName();
+						return true;
+					}
 				}
 
-				CChar * pLoyalTo = pMember->GetLoyalToUID().CharFind();
-				if (pLoyalTo == NULL || pLoyalTo == pCharSrc )
-					sVal = "yourself";
-				else
-					sVal = pLoyalTo->GetName();
-
+				sVal = pResult ? pResult->GetValStr() : "";
+#endif
 			}
 			return( true );
 	
 		case STC_Master:
 			{
 				CChar * pMaster = GetMaster();
+#ifndef _NEWGUILDSYSTEM
+				sVal = (pMaster) ? pMaster->GetName() : g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_PENDVOTE");
+#else
 				sVal = (pMaster) ? pMaster->GetName() : "vote pending";
+#endif
 			}
 			return( true );
 	
@@ -1056,9 +1143,17 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 				if ( pMaster == NULL )
 					sVal = ""; // If no master (vote pending)
 				else if ( pMaster->Char_GetDef()->IsFemale())
+#ifndef _NEWGUILDSYSTEM
 					sVal = "Mistress";
+#else
+					sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERFEMALE");
+#endif
 				else
+#ifndef _NEWGUILDSYSTEM
 					sVal = "Master";
+#else
+					sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERMALE");
+#endif
 			}
 			return( true );
 	
