@@ -25,7 +25,9 @@ scripts/sphere_dialog.scp
 scripts/items/sphere_item_resources.scp
 scripts/items/
 scripts/sphere_region.scp
-// ----------------------------------
+// -----------------------------------
+//          	Maps
+// -----------------------------------
 scripts/maps/sphere_map0.scp
 // scripts/maps/sphere_map0_ml.scp
 scripts/maps/sphere_map1.scp
@@ -38,9 +40,6 @@ scripts/maps/sphere_map_points1.scp
 // scripts/maps/sphere_map_points2.scp
 // scripts/maps/sphere_map_points3.scp
 // scripts/maps/sphere_map_points4.scp
-// -----------------------------------
-// Uncomment the line below to load 0.57 scripts
-// scripts/script57/
 // -----------------------------------
 scripts/sphere_menu.scp
 scripts/sphere_name.scp
@@ -56,7 +55,14 @@ scripts/sphere_template_vend.scp
 scripts/sphere_triggers.scp
 scripts/sphere_serv_triggers.scp
 scripts/speech/
-scripts/custom/
+// -----------------------------------
+//          Stone system
+// -----------------------------------
+// scripts/stones/
+// scripts/stones/guilds/
+// scripts/stones/towns/
+// -----------------------------------
+// scripts/custom/
 
 [OBSCENE]
 

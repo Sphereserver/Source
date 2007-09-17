@@ -391,31 +391,4 @@ endfor
 
 return <dlocal.wars>
 
-
-// ------------------------------------------------------
-// -------   Hardcoded functions called by Sphere  -------
-// ------------------------------------------------------
-
-// Called to check If a guild is at war (If commented sphere will use its internal check)
-// I -> Guild
-// ARGO -> Guild to check against
-// return -> 0: not an enemy
-//           1: an enemy
-//           2: use sphere internal check
-
-[COMMENT FUNCTION f_guildsys_internal_isatwarwith]
-If ((<type>!=t_stone_guild) || (<argo.type>!=t_stone_guild))
-  return 0
-endif
-
-If (<align> && <argo.align>)
-  return (<align>!=<argo.align>)
-endif
-
-If (<guildfromuid.<argo.uid>.isenemy> && <argo.guildfromuid.<uid>.isenemy>)
-  return 1
-endif
-
-return 0
-
 [EOF]
