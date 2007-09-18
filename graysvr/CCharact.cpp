@@ -2390,8 +2390,11 @@ bool CChar::Death()
 		{
 			this->m_prev_id = this->GetID();
 		}
-
+#ifdef _NAZTEST
+		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED|MEMORY_WAR_TARG) )
+#else
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED) )
+#endif
 		{
 			pMemoryKiller = STATIC_CAST<CItemMemory *>(pItem);
 			if ( pMemoryKiller )
