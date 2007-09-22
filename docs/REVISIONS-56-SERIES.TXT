@@ -3659,3 +3659,6 @@ this all in desperation)
 
 16-09-2007, nazghul
 - Fixed #1257: Custom damage type didn´t work with COMBAT_USE_RESISTANCE
+
+22-09-2007, nazghul
+- Added: TAG.OVERRIDE.RANDE on items and/or characters overriding the RANGE property of the itemdef/chardef.
