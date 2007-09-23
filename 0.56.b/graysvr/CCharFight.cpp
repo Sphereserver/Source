@@ -2785,18 +2785,22 @@ void CChar::Fight_HitTry()
 
 int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 {
+	ADDTOCALLSTACK("CChar::CalcFightRange");
+
 	int iCharRange = 0;
 	int iWeaponRange = 0;
 	
-	ADDTOCALLSTACK("CChar::CalcFightRange");
-    CVarDefCont * pCharRange = GetKey("OVERRIDE.RANGE",true); 
-	iCharRange = pCharRange->GetValNum();
+    CVarDefCont * pCharRange = GetKey("OVERRIDE.RANGE", true); 
+	if ( pCharRange )
+		iCharRange = pCharRange->GetValNum();
 
 	if ( pWeapon )
 	{
 		pWeaponDef	= pWeapon->Item_GetDef();
-	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE",true); 
-		iWeaponRange = pWeaponRange->GetValNum();
+
+	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
+		if ( pWeaponRange )
+			iWeaponRange = pWeaponRange->GetValNum();
 	}
 
 	if ( !pWeaponDef )
