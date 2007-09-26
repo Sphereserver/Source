@@ -720,7 +720,7 @@ int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( pChar == NULL )
 	{
 		SysMessageDefault( DEFMSG_NON_ALIVE );
-		return( 1 );
+		return( -1 );
 	}
 
 	if ( fTest )
@@ -826,7 +826,7 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 	else
 	{
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_GOLD ),
-			pItemVend->GetVendorPrice(-15), (LPCTSTR) pItemVend->GetNameFull(true));
+			(pItemVend->GetVendorPrice(-15) * pItem->GetAmount()), (LPCTSTR) pItemVend->GetNameFull(true));
 	}
 
 	// Whats it made of ?
@@ -1078,7 +1078,7 @@ int CClient::OnSkill_Anatomy( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( pChar == NULL )
 	{
 		addObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_NON_ALIVE ), pChar );
-		return( 1 );
+		return( -1 );
 	}
 
 	if ( fTest )
