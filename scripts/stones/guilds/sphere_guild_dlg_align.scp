@@ -33,14 +33,14 @@ dorigin 85 50
 local.align=0
 While (!<isempty <def.guildconfig_align_<dlocal.align>>>)
   If (<align> == <local.align>)
-    dhtmlgump 85 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild [CURRENT]
+    dhtmlgump 98 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild [CURRENT]
     gumppic 20 +0 4020
   else
-    dhtmlgump 85 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild
+    dhtmlgump 98 *50 200 100 0 0 <def.guildconfig_align_<dlocal.align>> guild
     button 20 +0 4005 4007 1 0 <eval <local.align>+1> // Change alignment
   endif
   If (<def0.guildconfig_alignshield_<dlocal.align>>)
-    tilepic 50 -7 <def.guildconfig_alignshield_<dlocal.align>>
+    tilepic 55 -7 <def.guildconfig_alignshield_<dlocal.align>>
   endif
   local.align += 1
 endwhile
@@ -64,3 +64,4 @@ on=0 3
   sdialog d_Guild_Master,0
   return 1
 
+[EOF]

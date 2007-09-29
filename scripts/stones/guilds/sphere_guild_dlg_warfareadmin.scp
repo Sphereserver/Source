@@ -80,7 +80,7 @@ ON=0 5
     src.ctag.guild_prompthandler_guilduid=<uid>
     local.guildsearch_promptmessage = Declare war through search
     if ( <def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH> )
-        local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Type 'AllGuilds' to get a full guild list)
+        local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Type '<def.GUILDCONFIG_ALLOW_ALLGUILD_TEXT>' to get a full guild list)
     endif
     local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Min <dDEF0.GUILDCONFIG_NSEARCH_MINLENGTH> chars) - Enter Guild Name:
     try src.promptconsole f_prompthandler_guilddclarewar,<local.guildsearch_promptmessage>

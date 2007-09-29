@@ -244,7 +244,7 @@ local.search_num=0
 local.search_uid=<serv.guildstones.<local.search_num>.uid>
 
 If (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
-    If (!STRCMPI("<local.textsearch>","allguilds"))
+    If (!STRCMPI("<local.textsearch>","<def.GUILDCONFIG_ALLOW_ALLGUILD_TEXT>"))
         local.allguilds=1
     endif
 endif

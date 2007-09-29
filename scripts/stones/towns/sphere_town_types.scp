@@ -1,6 +1,6 @@
-[TYPEDEF T_STONE_GUILD]
+[TYPEDEF T_STONE_TOWN]
 ON=@Click
-  message "a guildstone"
+  message "a townstone"
   message <name> <qval (<eval strlen(<abbrev>)>) ? [<abbrev>]:>
 return 1
 
@@ -8,31 +8,17 @@ ON=@Dclick
   If (<distance> > 2)
     src.sysmessage @038A That is too far away.
   elif (<member.count>==0)&&(!<masteruid>)	//(<masteruid>!=<src.uid>)
-    f_guildsys_addchartoguild <uid>,<src.uid>,1	//auto makes the master
+    f_townsys_addchartotown <uid>,<src.uid>,1	//auto makes the master
   elif (!<masteruid>)
-    f_guildsys_addchartoguild <uid>,<member.0.uid>,1	//first candidate since any member would auto be a master
+    f_townsys_addchartotown <uid>,<member.0.uid>,1	//first candidate since any member would auto be a master
   elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)// Not a member
-    src.message @03B2 You are not a member of this guild! To join, ask a current member to invite you into the guild.
+    // add apply for citizenship dialog
   elif (<memberfromuid.<src.uid>.priv> == <def0.STONEPRIV_ACCEPTED>)
-    f_guildsys_addchartoguild <uid>,<src.uid>,1
+    f_townsys_addchartotown <uid>,<src.uid>,1
   elif (<memberfromuid.<src.uid>.priv>==<def0.STONEPRIV_CANDIDATE>)&&(!<src.isgm>)
-    src.message @03B2 You are awaiting acceptance by the guildmaster.
+    src.message @03B2 You are awaiting acceptance by the townmaster.
   elif (<memberfromuid.<src.uid>.priv>==<def0.STONEPRIV_MEMBER>)||(<masteruid>==<src.uid>)||(<src.isgm>)
-    sdialog d_Guild_Main,0
-  endif
-return 1
-
-[TYPEDEF T_GUILD_DOOR]
-//Guild Members Only Door
-//Set the door to the Triger Type #, then Link the DOOR to the GUILDSTONE
-//DO NOT LINK THE GUILDSTONE TO THE DOOR - YOUR GUILDSTONE WILL DISAPPEAR IN THE NEXT SAVE.
-ON=@DCLICK
-  If (<SRC.MEMORYFINDTYPE.0400.LINK> == <LINK>)
-    MOREP=<P>
-    SRC.MESSAGE You've been allowed to pass through the door magically.
-    SRC.GO <MOREP>
-  else
-    SRC.MESSAGE The door seems magically locked.
+    sdialog d_Town_Main,0
   endif
 return 1
 
