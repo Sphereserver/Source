@@ -561,7 +561,7 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 	bool fDoMemBase = false;
 
 	if ( Noto_IsEvil() &&	// i am evil.
-		! m_pArea->IsGuarded() &&	// we are not in an evil town.
+		(m_pArea && !m_pArea->IsGuarded()) &&	// we are not in an evil town.
 		pCharTarg->m_pPlayer )	// my target is a player.
 	{
 		// If i'm evil i give no benefit to players with bad karma.

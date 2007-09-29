@@ -605,10 +605,20 @@ LPCTSTR CItemStone::GetAlignName() const
 	int iAlign = GetAlignType();
 
 	TemporaryString sDefname;
-	sprintf(sDefname, "GUILDCONFIG_ALIGN_%d", iAlign);
-	
-	LPCTSTR sRes = g_Exp.m_VarDefs.GetKeyStr(sDefname);
+	if ( GetType() == IT_STONE_GUILD )
+	{
+		sprintf(sDefname, "GUILDCONFIG_ALIGN_%d", iAlign);
+	}
+	else if ( GetType() == IT_STONE_TOWN )
+	{
+		sprintf(sDefname, "TOWNCONFIG_ALIGN_%d", iAlign);
+	}
+	else
+	{
+		return "";
+	}
 
+	LPCTSTR sRes = g_Exp.m_VarDefs.GetKeyStr(sDefname);
 	return ( sRes == NULL ) ? "" : sRes;
 #endif
 }
