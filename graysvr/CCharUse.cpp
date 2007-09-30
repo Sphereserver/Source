@@ -357,7 +357,9 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 	SKILL_TYPE skill = Fight_GetWeaponSkill();
 	char skilltag[32];
 	int skillcheck = 0;
-	sprintf( skilltag, "SKILL_%d", skill &~ 0xD2000000 );
+	sprintf( skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill &~ 0xD2000000 );
+
+	//SysMessagef("SKILLTAG=%s\n",skilltag);
 
 	if ( skill == SKILL_ARCHERY ) // We do not allow archerytraining on dummys.
 	{
@@ -365,8 +367,15 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 		return( false );
 	}
 
-	if ( ! ( skillcheck = ATOI( this->GetKeyStr( skilltag ) ) ) )
+	CVarDefCont * pSkillTag = pItem->GetKey(skilltag, true);
+	if ( pSkillTag )
+	{
+		//SysMessagef("skillcheck from TAG.%s=%d",skilltag, pSkillTag->GetValNum() );
+		skillcheck = pSkillTag->GetValNum();
+	} else {
 		skillcheck = g_Cfg.m_iSkillPracticeMax;
+		//SysMessagef("skillcheck from INI=%d", skillcheck );
+	}
 
 	if ( Skill_GetBase(skill) > skillcheck )
 	{
