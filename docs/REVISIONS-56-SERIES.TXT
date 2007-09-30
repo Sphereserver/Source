@@ -3661,4 +3661,9 @@ this all in desperation)
 - Fixed #1257: Custom damage type didn´t work with COMBAT_USE_RESISTANCE
 
 22-09-2007, nazghul
-- Added: TAG.OVERRIDE.RANDE on items and/or characters overriding the RANGE property of the itemdef/chardef.
+- Added: TAG.OVERRIDE.RANGE on items and/or characters overriding the RANGE property of the itemdef/chardef.
+
+30-09-2007, nazghul
+- Fixed: not-working tag override of SkillPracticeMax what may have caused problems with Linux builds.
+  Now TAG.OVERRIDE.PRACTICEMAX.SKILL_# (with "#" == "40" for swordsmanship, "42" for fencing, etc.)
+  on a training dummy can override the INI default upto what skill value one can practice with it.
