@@ -10,6 +10,128 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
+// ------------------------------------------------------
+// ------------------------------------------------------
+// ------------------------------------------------------
+[FUNCTION TRANSFERSTONE]
+src.targetf f_stonesys_transfer <args>
+src.sysmessage Who do you wish to transfer the <f_stonesys_gettypename <args>> to?
+
+[FUNCTION f_stonesys_transfer]
+// args = stone uid
+// argo = future owner
+ref1 = <args>
+local.typename = <f_stonesys_gettypename <ref1.uid>>
+
+If (<argo.isitem>)
+  sysmessage You cannot transfer a <local.typename> to that.
+elif (<argo.npc>)
+  sysmessage You cannot transfer a <local.typename> to an npc.
+elif (<argo> == <ref1.masteruid>)
+  sysmessage You are already the master of <ref1.name>.
+elif (<argo.memoryfindtype.memory_guild.link.uid> != <ref1.uid>)
+  sysmessage That player is not a member of the <local.typename>.
+elif (!<argo.npc>)
+  ref1.masteruid = <argo.uid>
+  serv.log <name> (<uid>) transferred <sex his/her> <local.typename> (<ref1.name>) to <argo.name> (<argo.uid>)
+  sysmessage @038A You have transfered the <local.typename> to <argo.name>.
+  argo.sysmessage @038A You are now the master of <ref1.name>.
+else
+  sysmessage You cannot transfer a <local.typename> to that.
+endif
+return 1
+
+// ------------------------------------------------------
+[FUNCTION f_stonesys_isnameused]
+local.stoneuid=<argv[0]>
+local.typeid=<qval (<uid.<local.stoneuid>.type> == t_stone_guild) ? 1 : 0>
+local.name=<strsub <eval (strlen(<local.stoneuid>) + 1)> <eval strlen(<args>)> <args>>
+
+
+local.index=0
+local.return=0
+local.totalstones=<qval (<local.typeid>) ? <serv.guildstones.count> : <serv.townstones.count>>
+
+while (<local.index> < <local.totalstones>)
+  local.currentstoneuid=<qval (<local.typeid>) ? <serv.guildstones.<local.index>.uid> : <serv.townstones.<local.index>.uid>>
+  If (<local.currentstoneuid>)
+    If (!strcmpi(<uid.<local.currentstoneuid>.name>,<local.name>))
+      local.return=1
+      local.index=<local.totalstones> + 1
+    endif
+  endif
+  
+  local.index += 1
+endwhile
+
+return <local.return>
+
+// ------------------------------------------------------
+[FUNCTION f_stonesys_isabbrevused]
+local.stoneuid=<argv[0]>
+local.typeid=<qval (<uid.<local.stoneuid>.type> == t_stone_guild) ? 1 : 0>
+local.abbrev=<strsub <eval (strlen(<local.stoneuid>) + 1)> <eval strlen(<args>)> <args>>
+
+local.index=0
+local.return=0
+local.totalstones=<qval (<local.typeid>) ? <serv.guildstones.count> : <serv.townstones.count>>
+
+while (<local.index> < <local.totalstones>)
+  local.currentstoneuid=<qval (<local.typeid>) ? <serv.guildstones.<local.index>.uid> : <serv.townstones.<local.index>.uid>>
+  If (<local.currentstoneuid>)
+    If (!strcmpi(<uid.<local.currentstoneuid>.abbrev>,<local.abbrev>))
+      local.return=1
+      local.index=<local.totalstones> + 1
+    endif
+  endif
+  
+  local.index += 1
+endwhile
+
+return <local.return>
+
+// ------------------------------------------------------
+[FUNCTION f_stonesys_sendsmsg]
+ref1=<argv[0]>
+local.message=<StrEat <args>>
+
+If ((<ref1.type>!=t_stone_guild) && (<ref1.type>!=t_stone_town))
+  return 0
+endif
+
+If (!strlen(<local.message>))
+  return 0
+endif
+
+ref1.allmembers -1,sysmessage @68,0,3 <f_stonesys_gettypename <ref1.uid>> Message: <local.message>
+
+// ------------------------------------------------------
+[FUNCTION f_stonesys_determine_timeleft]
+local.sec=<eval (<argn>-<serv.time>)/10>
+If (<eval <local.sec>/86400>)
+  local.timeleft=<eval <local.sec>/86400> day(s)
+elif (<eval <local.sec>/3600>)
+  local.timeleft=<eval <local.sec>/3600> hour(s)
+elif (<eval <local.sec>/60>)
+  local.timeleft=<eval <local.sec>/60> min(s)
+else
+  local.timeleft=<eval <local.sec>> second(s).
+endif
+return <local.timeleft>
+
+// ------------------------------------------------------
+[FUNCTION f_stonesys_gettypename]
+ref1 = <argv[0]> // The stone
+
+local.typename = <DEF.STONECONFIG_TYPENAME_UNK>
+if ( !<ref1.isitem> )
+elif ( <ref1.type> == t_stone_guild )
+	local.typename = <DEF.STONECONFIG_TYPENAME_GUILD>
+elif ( <ref1.type> == t_stone_town )
+	local.typename = <DEF.STONECONFIG_TYPENAME_GUILD>
+endif
+
+return <local.typename>
 
 // ------------------------------------------------------
 // -------   Hardcoded functions called by Sphere  -------

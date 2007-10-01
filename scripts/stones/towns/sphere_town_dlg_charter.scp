@@ -12,9 +12,9 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[dialog d_Guild_ViewCharter]
+[dialog d_Town_ViewCharter]
 5,25
-If (<type>!=t_stone_guild)
+If (<type>!=t_stone_town)
   return 1
 elif (<memberfromuid.<src.uid>.uid>!=<src.uid>)&&(!<src.isgm>)
   return 1
@@ -61,10 +61,10 @@ dhtmlgump 55 200 300 20 0 0 Visit the guild website :
   dhtmlgump 50 220 300 20 0 0 <local.website>
 
 
-[dialog d_Guild_ViewCharter Button]
+[dialog d_Town_ViewCharter Button]
 ON=0 1    
   If (<argn1>==0)	// Exit Gump
-    sdialog d_Guild_Main,0
+    sdialog d_Town_Main,0
   elif (<argn1>==1)	// Website
     local.website=<webpage>
     If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small
@@ -76,9 +76,9 @@ ON=0 1
 
 
 //------------------------------------------------------------------------
-[dialog d_Guild_SetCharter]
+[dialog d_Town_SetCharter]
 110, 70
-If (<type>!=t_stone_guild)
+If (<type>!=t_stone_town)
   return 1
 elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
   return 1
@@ -92,7 +92,7 @@ gumppic 76 126 95
 gumppic 85 135 96
 gumppic 264 126 97
 dtext 65 35 2301 <name>
-dtext 110 70 0 Set Guild Charter
+dtext 110 70 0 Set Town Charter
 dtext 120 85 0 and Web Link
 dtext 140 115 0 Charter
 dtext 125 290 0 Web Link
@@ -118,7 +118,7 @@ gumppic 40 328 1143
 dtextentry 50 331 250 32 0 1006 <webpage>
 
 
-[dialog d_Guild_SetCharter Button]
+[dialog d_Town_SetCharter Button]
 ON=0 1
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
     return 1
@@ -133,7 +133,7 @@ ON=0 1
     charter5=<argtxt[1005]>
     webpage=<argtxt[1006]>
   endif
-  sdialog d_Guild_Master,0
+  sdialog d_Town_Master,0
   return 1
 
 [EOF]

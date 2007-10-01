@@ -12,9 +12,9 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[dialog d_Guild_Master]
+[dialog d_Town_Master]
 5,25
-If (<type>!=t_stone_guild)
+If (<type>!=t_stone_town)
   return 1
 elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
   return 1
@@ -24,20 +24,20 @@ endif
 page 0
 resizepic 0 0 5054 570 400
 resizepic 10 10 3000 550 380
-dhtmlgump 20 15 510 25 0 0 <def0.center>GUILDMASTER FUNCTIONS<def0.centere>
-If (<tag0.changename_time> <= <serv.time>)	// Set Guild Name
+dhtmlgump 20 15 510 25 0 0 <def0.center>TOWNMASTER FUNCTIONS<def0.centere>
+If (<tag0.changename_time> <= <serv.time>)	// Set Town Name
   button 20 40 4005 4007 1 0 1 
-  dhtmlgump 55 40 240 30 0 0 Set the guild name.
+  dhtmlgump 55 40 240 30 0 0 Set the town name.
 else
   gumppic 20 40 4020
-  dhtmlgump 55 40 370 30 0 0 Set the guild name. N/A FOR <f_guildsys_determine_timeleft <tag0.changename_time>>
+  dhtmlgump 55 40 370 30 0 0 Set the town name. N/A FOR <f_stonesys_determine_timeleft <tag0.changename_time>>
 endif
-If (<tag0.changeabbrev_time> <= <serv.time>)	// Set Guild Abbrev
+If (<tag0.changeabbrev_time> <= <serv.time>)	// Set Town Abbrev
   button 20 70 4005 4007 1 0 2 
-  dhtmlgump 55 70 240 30 0 0 Set the guild's abbreviation.
+  dhtmlgump 55 70 240 30 0 0 Set the town's abbreviation.
 else
   gumppic 20 70 4020
-  dhtmlgump 55 70 370 30 0 0 Set the guild's abbreviation. N/A FOR <f_guildsys_determine_timeleft <tag0.changeabbrev_time>>
+  dhtmlgump 55 70 370 30 0 0 Set the town's abbreviation. N/A FOR <f_stonesys_determine_timeleft <tag0.changeabbrev_time>>
 endif
 If (<f_guildsys_iswarring>)
   gumppic 20 100 4020

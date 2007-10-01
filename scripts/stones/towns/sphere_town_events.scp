@@ -10,10 +10,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[EVENTS e_GuildGenericEvent]
-ON=@UserGuildButton
-src.groster
-return 1
+[EVENTS e_TownGenericEvent]
 
 
 [EOF]

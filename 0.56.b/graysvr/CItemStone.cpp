@@ -611,7 +611,7 @@ LPCTSTR CItemStone::GetAlignName() const
 	}
 	else if ( GetType() == IT_STONE_TOWN )
 	{
-		sprintf(sDefname, "TOWNCONFIG_ALIGN_%d", iAlign);
+		sprintf(sDefname, "TOWNSCONFIG_ALIGN_%d", iAlign);
 	}
 	else
 	{

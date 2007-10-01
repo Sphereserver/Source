@@ -10,38 +10,7 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-// ------------------------------------------------------
-// ------------------------------------------------------
-// ------------------------------------------------------
-[FUNCTION TRANSFERGUILD]
-src.targetf f_guildsys_transferguild <args>
-src.sysmessage Who do you wish to transfer the guild to?
 
-[FUNCTION f_guildsys_transferguild]
-// args = guildstone uid
-// argo = future owner
-ref1 = <args>
-
-If (<argo.isitem>)
-  sysmessage You cannot transfer a guild to that.
-elif (<argo.npc>)
-  sysmessage You cannot transfer a guild to an npc.
-elif (<argo> == <ref1.masteruid>)
-  sysmessage You are already the master of <uid.<args>.name>.
-elif (<argo.memoryfindtype.memory_guild.link.uid> != <args>)
-  sysmessage That player is not a member of the guild.
-elif (!<argo.npc>)
-  ref1.masteruid = <argo.uid>
-  serv.log <name> (<uid>) transferred <sex his/her> guild (<ref1.name>) to <argo.name> (<argo.uid>)
-  sysmessage @038A You have transfered the guild to <argo.name>.
-  argo.sysmessage @038A You are now the master of <ref1.name>.
-else
-  sysmessage You cannot transfer a guild to that.
-endif
-return 1
-
-
-// ------------------------------------------------------
 [FUNCTION f_guildsys_recruitguy]
 ref1 = <args>
 
@@ -56,7 +25,7 @@ elif (<argo.isItem>)
 elif (!<argo.isPlayer>)
   sysmessage @038a You may only recruit players into the guild.
   return 1
-elif (<argo.flags>&<def0.statf_dead>)
+elif (<argo.flags>&<def.statf_dead>)
   sysmessage @038A Only the living may be recruited.
   return 1
 endif
@@ -111,10 +80,8 @@ if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
   ref2.events +<def.GUILDCONFIG_CHAREVENT_NAME>
 endif
   
-if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
-  if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
-    ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
-  endif
+if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+  ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
 endif
 
 // ------------------------------------------------------
@@ -136,50 +103,11 @@ f_guildsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the guild.
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_isnameused]
-local.guild=<argv[0]>
-local.name=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
-
-local.index=0
-local.return=0
-local.totalguild=<serv.guildstones.count>
-
-while (<local.index> < <local.totalguild>)
-  local.currentguild=<serv.guildstones.<local.index>.uid>
-  If (<local.currentguild>)
-    If (!strcmpi(<uid.<local.currentguild>.name>,<local.name>))
-      local.return=1
-      local.index=<local.totalguild> + 1
-    endif
-  endif
-  
-  local.index += 1
-endwhile
-
-return <local.return>
-
+RETURN <f_stonesys_isnameused <args>>
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_isabbrevused]
-local.guild=<argv[0]>
-local.abbrev=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
-
-local.index=0
-local.return=0
-local.totalguild=<serv.guildstones.count>
-
-while (<local.index> < <local.totalguild>)
-  local.currentguild=<serv.guildstones.<local.index>.uid>
-  If (<local.currentguild>)
-    If (!strcmpi(<uid.<local.currentguild>.abbrev>,<local.abbrev>))
-      local.return=1
-      local.index=<local.totalguild> + 1
-    endif
-  endif
-  
-  local.index += 1
-endwhile
-
-return <local.return>
+RETURN <f_stonesys_isabbrevused <args>>
 
 
 // ------------------------------------------------------
@@ -335,35 +263,9 @@ endif
 
 return 1
 
-
-// ------------------------------------------------------
-[FUNCTION f_guildsys_determine_timeleft]
-local.sec=<eval (<argn>-<serv.time>)/10>
-If (<eval <local.sec>/86400>)
-  local.timeleft=<eval <local.sec>/86400> day(s)
-elif (<eval <local.sec>/3600>)
-  local.timeleft=<eval <local.sec>/3600> hour(s)
-elif (<eval <local.sec>/60>)
-  local.timeleft=<eval <local.sec>/60> min(s)
-else
-  local.timeleft=<eval <local.sec>> second(s).
-endif
-return <local.timeleft>
-
 // ------------------------------------------------------
 [FUNCTION f_guildsys_sendsmsg]
-ref1=<argv[0]>
-local.message=<StrEat <args>>
-
-If (<ref1.type>!=t_stone_guild)
-  return 0
-endif
-
-If (!strlen(<local.message>))
-  return 0
-endif
-
-ref1.allmembers -1,sysmessage @68,0,3 Guild Message: <local.message>
+f_stonesys_sendsmsg <args>
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_speech_sendsmsg]
@@ -378,7 +280,7 @@ If (!strlen(<local.message>))
   return 0
 endif
 
-ref1.allmembers -1,sysmessage @68,0,3 Guild Message[<name>]: <local.message>
+ref1.allmembers -1,sysmessage @68,0,3 <f_stonesys_gettypename <ref1.uid>> Message[<name>]: <local.message>
 
 
 // ------------------------------------------------------

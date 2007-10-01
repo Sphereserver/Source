@@ -4,6 +4,12 @@ ON=@Click
   message <name> <qval (<eval strlen(<abbrev>)>) ? [<abbrev>]:>
 return 1
 
+ON=@ClientToolTip
+  src.addcliloc 1070722,a townstone
+  src.addcliloc 1070722,Town name: <name>
+return 1
+
+
 ON=@Dclick
   If (<distance> > 2)
     src.sysmessage @038A That is too far away.

@@ -11,50 +11,19 @@
 VERSION=0.56b
 
 // ------------------------------------------------------
-// ------------------------------------------------------
-// ------------------------------------------------------
-[FUNCTION TRANSFERGUILD]
-src.targetf f_guildsys_transferguild <args>
-src.sysmessage Who do you wish to transfer the guild to?
-
-[FUNCTION f_guildsys_transferguild]
-// args = guildstone uid
-// argo = future owner
+[FUNCTION f_townsys_recruitguy]
 ref1 = <args>
 
-If (<argo.isitem>)
-  sysmessage You cannot transfer a guild to that.
-elif (<argo.npc>)
-  sysmessage You cannot transfer a guild to an npc.
-elif (<argo> == <ref1.masteruid>)
-  sysmessage You are already the master of <uid.<args>.name>.
-elif (<argo.memoryfindtype.memory_guild.link.uid> != <args>)
-  sysmessage That player is not a member of the guild.
-elif (!<argo.npc>)
-  ref1.masteruid = <argo.uid>
-  serv.log <name> (<uid>) transferred <sex his/her> guild (<ref1.name>) to <argo.name> (<argo.uid>)
-  sysmessage @038A You have transfered the guild to <argo.name>.
-  argo.sysmessage @038A You are now the master of <ref1.name>.
-else
-  sysmessage You cannot transfer a guild to that.
-endif
-return 1
-
-
-// ------------------------------------------------------
-[FUNCTION f_guildsys_recruitguy]
-ref1 = <args>
-
-If (<ref1.type> != t_stone_guild)
+If (<ref1.type> != t_town_town)
   return 1
 elif ((<ref1.masteruid> != <uid>) && (<ref1.memberfromuid.<uid>.priv> != <def0.STONEPRIV_MEMBER>) && (!<isgm>))
-  sysmessage @038a Only guild members can recruit new players.
+  sysmessage @038a Only town members can recruit new players.
   return 1
 elif (<argo.isItem>)
-  sysmessage @038a You may only recruit players into the guild.
+  sysmessage @038a You may only recruit players into the town.
   return 1
 elif (!<argo.isPlayer>)
-  sysmessage @038a You may only recruit players into the guild.
+  sysmessage @038a You may only recruit players into the town.
   return 1
 elif (<argo.flags>&<def0.statf_dead>)
   sysmessage @038A Only the living may be recruited.
@@ -62,40 +31,40 @@ elif (<argo.flags>&<def0.statf_dead>)
 endif
 If (<argo.memoryfindtype.<def0.memory_guild>.uid>)
   If (<argo.memoryfindtype.<def0.memory_guild>.link> == <ref1.uid>)
-    sysmessage @038A They are already a guildmember!
+    sysmessage @038A They are already a townmember!
   else
-    sysmessage @038A You can only recruit candidates who are not already in a guild.
+    sysmessage @038A You can only recruit candidates who are not already in a town.
   endif
   return 1
 endif
 
 If (<ref1.memberfromuid.<argo.uid>.uid> != <argo.uid>)
   If ((<ref1.masteruid> == <uid>) || (<isgm>))
-    If (<def0.GUILDCONFIG_MAXMEMBERS>)
-      If (<ref1.member.count <def0.STONEPRIV_MEMBER>> < <def0.GUILDCONFIG_MAXMEMBERS>)
-        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
+    If (<def0.TOWNSCONFIG_MAXMEMBERS>)
+      If (<ref1.member.count <def0.STONEPRIV_MEMBER>> < <def0.TOWNSCONFIG_MAXMEMBERS>)
+        f_townsys_addchartotown <ref1.uid>,<argo.uid>,1
       else
-        sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
+        sysmessage @038A There are already <dDEF0.TOWNSCONFIG_MAXMEMBERS> members. You cannot submit a member at this time.
       endif
     else
-      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,1
+      f_townsys_addchartotown <ref1.uid>,<argo.uid>,1
     endif
   else
-    If (<def0.GUILDCONFIG_MAXCANDIDATES>)
-      If (<ref1.member.count <def0.STONEPRIV_CANDIDATE>> < <def0.GUILDCONFIG_MAXCANDIDATES>)
-        f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
+    If (<def0.TOWNSCONFIG_MAXCANDIDATES>)
+      If (<ref1.member.count <def0.STONEPRIV_CANDIDATE>> < <def0.TOWNSCONFIG_MAXCANDIDATES>)
+        f_townsys_addchartotown <ref1.uid>,<argo.uid>,0
       else
-        sysmessage @038A There are already <dDEF0.GUILDCONFIG_MAXCANDIDATES> candidates awaiting a decision. You cannot submit a candidate at this time.
+        sysmessage @038A There are already <dDEF0.TOWNSCONFIG_MAXCANDIDATES> candidates awaiting a decision. You cannot submit a candidate at this time.
       endif
     else
-      f_guildsys_addchartoguild <ref1.uid>,<argo.uid>,0
+      f_townsys_addchartotown <ref1.uid>,<argo.uid>,0
     endif
 else
   sysmessage @038A They are already a candidate.
 endif
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_addchartoguild]
+[FUNCTION f_townsys_addchartotown]
 // no checks here, everything should be checked before calling this functions
 ref1 = <argv[0]> // The guild
 ref2 = <argv[1]> // The char
@@ -107,126 +76,83 @@ else
   ref1.ApplyToJoin <ref2.uid>
 endif
 
-if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
-  ref2.events +<def.GUILDCONFIG_CHAREVENT_NAME>
+if (!<ref2.isevent.<def.TOWNSCONFIG_CHAREVENT_NAME>>)
+  ref2.events +<def.TOWNSCONFIG_CHAREVENT_NAME>
 endif
   
-if (<def0.GUILDCFGSPEECH_GLOBAL_ENABLE>)
-  if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
-    ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
-  endif
+if (!<ref2.isdspeech <def.TOWNSCFGSPEECH_NAME>>)
+	ref2.dspeech +<def.TOWNSCFGSPEECH_NAME>
 endif
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_removecharfromguild]
+[FUNCTION f_townsys_removecharfromtown]
 // no checks here, everything should be checked before calling this functions
 ref1 = <argv[0]> // The guild
 ref2 = <argv[1]> // The char
 
-if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
-  ref2.events -<def.GUILDCONFIG_CHAREVENT_NAME>
+if (!<ref2.isevent.<def.TOWNSCONFIG_CHAREVENT_NAME>>)
+  ref2.events -<def.TOWNSCONFIG_CHAREVENT_NAME>
 endif
 
-if (<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
-  ref2.dspeech -<def.GUILDCFGSPEECH_NAME>
+if (<ref2.isdspeech <def.TOWNSCFGSPEECH_NAME>>)
+  ref2.dspeech -<def.TOWNSCFGSPEECH_NAME>
 endif
 
 ref1.resign <ref2.uid>
-f_guildsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the guild.
+f_townsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the town.
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_isnameused]
-local.guild=<argv[0]>
-local.name=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
-
-local.index=0
-local.return=0
-local.totalguild=<serv.guildstones.count>
-
-while (<local.index> < <local.totalguild>)
-  local.currentguild=<serv.guildstones.<local.index>.uid>
-  If (<local.currentguild>)
-    If (!strcmpi(<uid.<local.currentguild>.name>,<local.name>))
-      local.return=1
-      local.index=<local.totalguild> + 1
-    endif
-  endif
-  
-  local.index += 1
-endwhile
-
-return <local.return>
-
+[FUNCTION f_townsys_isnameused]
+RETURN <f_stonesys_isnameused <args>>
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_isabbrevused]
-local.guild=<argv[0]>
-local.abbrev=<strsub <eval (strlen(<local.guild>) + 1)> <eval strlen(<args>)> <args>>
-
-local.index=0
-local.return=0
-local.totalguild=<serv.guildstones.count>
-
-while (<local.index> < <local.totalguild>)
-  local.currentguild=<serv.guildstones.<local.index>.uid>
-  If (<local.currentguild>)
-    If (!strcmpi(<uid.<local.currentguild>.abbrev>,<local.abbrev>))
-      local.return=1
-      local.index=<local.totalguild> + 1
-    endif
-  endif
-  
-  local.index += 1
-endwhile
-
-return <local.return>
-
+[FUNCTION f_townsys_isabbrevused]
+RETURN <f_stonesys_isabbrevused <args>>
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_isatwarwith]
-local.myguild=<argv[0]>
-local.otherguild=<argv[1]>
+[FUNCTION f_townsys_isatwarwith]
+local.mytown=<argv[0]>
+local.othertown=<argv[1]>
 
-If ((<uid.<local.myguild>.type>!=t_stone_guild) || (<uid.<local.otherguild>.type>!=t_stone_guild))
+If ((<uid.<local.mytown>.type>!=t_stone_town) || (<uid.<local.othertown>.type>!=t_stone_town))
   return 0
 endif
 
-If (<uid.<local.myguild>.guildfromuid.<local.otherguild>.isenemy> && <uid.<local.otherguild>.guildfromuid.<local.myguild>.isenemy>)
+If (<uid.<local.mytown>.guildfromuid.<local.othertown>.isenemy> && <uid.<local.othertown>.guildfromuid.<local.mytown>.isenemy>)
   return 1
 endif
 
 return 0
 
-
 // ------------------------------------------------------
-[FUNCTION f_guildsys_candeclarewarwith]
-local.myguild=<argv[0]>
-local.otherguild=<argv[1]>
+[FUNCTION f_townsys_candeclarewarwith]
+local.mytown=<argv[0]>
+local.othertown=<argv[1]>
 
-If ((<uid.<local.myguild>.type>!=t_stone_guild) || (<uid.<local.otherguild>.type>!=t_stone_guild))
+If ((<uid.<local.mytown>.type>!=t_stone_town) || (<uid.<local.othertown>.type>!=t_stone_town))
   return 0
 endif
 
-local.myguild_count=<uid.<local.myguild>.member.count <def0.STONEPRIV_MEMBER>>
-If (<uid.<local.myguild>.masteruid>)
-  local.myguild_count += 1
+local.mytown_count=<uid.<local.mytown>.member.count <def0.STONEPRIV_MEMBER>>
+If (<uid.<local.mytown>.masteruid>)
+  local.mytown_count += 1
 endif
 
-If (<local.myguild_count>==0)
+If (<local.mytown_count>==0)
   return 0
 endif
 
-local.otherguild_count=<uid.<local.otherguild>.member.count <def0.STONEPRIV_MEMBER>>
-If (<uid.<local.otherguild>.masteruid>)
-  local.otherguild_count += 1
+local.othertown_count=<uid.<local.othertown>.member.count <def0.STONEPRIV_MEMBER>>
+If (<uid.<local.othertown>.masteruid>)
+  local.othertown_count += 1
 endif
 
-If (<local.otherguild_count>==0)
+If (<local.othertown_count>==0)
   return 0
 endif
 
 // Order cannot declare war.
-If ((<uid.<local.myguild>.align>==1) && (<uid.<local.myguild>.align>==<uid.<local.otherguild>.align>))
+If ((<uid.<local.mytown>.align>==1) && (<uid.<local.mytown>.align>==<uid.<local.othertown>.align>))
   return 0
 endif
 
@@ -284,11 +210,11 @@ return <local.returndata>
 
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_listsplit]
-local.guildlist_count=<argv>
-If (<local.guildlist_count>)
-  For x 0 <eval <local.guildlist_count>-1>
-    try local.guildlist_data<dLOCAL.X>=<argv[<dLOCAL.X>]>
+[FUNCTION f_townsys_listsplit]
+local.townlist_count=<argv>
+If (<local.townlist_count>)
+  For x 0 <eval <local.townlist_count>-1>
+    try local.townlist_data<dLOCAL.X>=<argv[<dLOCAL.X>]>
   endfor
 endif
 
@@ -335,87 +261,19 @@ endif
 
 return 1
 
-
-// ------------------------------------------------------
-[FUNCTION f_guildsys_determine_timeleft]
-local.sec=<eval (<argn>-<serv.time>)/10>
-If (<eval <local.sec>/86400>)
-  local.timeleft=<eval <local.sec>/86400> day(s)
-elif (<eval <local.sec>/3600>)
-  local.timeleft=<eval <local.sec>/3600> hour(s)
-elif (<eval <local.sec>/60>)
-  local.timeleft=<eval <local.sec>/60> min(s)
-else
-  local.timeleft=<eval <local.sec>> second(s).
-endif
-return <local.timeleft>
-
 // ------------------------------------------------------
 [FUNCTION f_guildsys_sendsmsg]
-ref1=<argv[0]>
-local.message=<StrEat <args>>
-
-If (<ref1.type>!=t_stone_guild)
-  return 0
-endif
-
-If (!strlen(<local.message>))
-  return 0
-endif
-
-ref1.allmembers -1,sysmessage @68,0,3 Guild Message: <local.message>
-
-// ------------------------------------------------------
-[FUNCTION f_guildsys_speech_sendsmsg]
-ref1=<argv[0]>
-local.message=<StrEat <args>>
-
-If (<ref1.type>!=t_stone_guild)
-  return 0
-endif
-
-If (!strlen(<local.message>))
-  return 0
-endif
-
-ref1.allmembers -1,sysmessage @68,0,3 Guild Message[<name>]: <local.message>
+f_stonesys_sendsmsg <args>
 
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_iswarring]
-for cguild 0 <guild.count>
-  If ((<guild.<local.cguild>.isenemy>) && (<uid.<guild.<local.cguild>.uid>.guildfromuid.<uid>.isenemy>))
+[FUNCTION f_townsys_iswarring]
+for ctown 0 <guild.count>
+  If ((<guild.<local.ctown>.isenemy>) && (<uid.<guild.<local.ctown>.uid>.guildfromuid.<uid>.isenemy>))
     local.wars += 1
   endif
 endfor
 
 return <dlocal.wars>
-
-
-// ------------------------------------------------------
-// -------   Hardcoded functions called by Sphere  -------
-// ------------------------------------------------------
-
-// Called to check If a guild is at war (If commented sphere will use its internal check)
-// I -> Guild
-// ARGO -> Guild to check against
-// return -> 0: not an enemy
-//           1: an enemy
-//           2: use sphere internal check
-
-[COMMENT FUNCTION f_guildsys_internal_isatwarwith]
-If ((<type>!=t_stone_guild) || (<argo.type>!=t_stone_guild))
-  return 0
-endif
-
-If (<align> && <argo.align>)
-  return (<align>!=<argo.align>)
-endif
-
-If (<guildfromuid.<argo.uid>.isenemy> && <argo.guildfromuid.<uid>.isenemy>)
-  return 1
-endif
-
-return 0
 
 [EOF]

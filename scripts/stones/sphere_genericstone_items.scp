@@ -10,42 +10,55 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[ITEMDEF i_guild_mover]
+[ITEMDEF i_stone_mover]
 ID=i_virtstone_1
 WEIGHT=1
 VALUE=0
-NAME=a guildstone teleporter
+NAME=stone teleporter
 CAN=0
 
 ON=@Click
-message "a guildstone teleporter"
 if (<link.isitem>)
     if (<link.type> == T_STONE_GUILD )
+    		message "guildstone teleporter"
         message <link.name> <qval (<eval strlen(<link.abbrev>)>) ? [<link.abbrev>]:>
+        return 1
+    elif (<link.type> == T_STONE_TOWN )
+    	  message "townstone teleporter"
+        message <link.name>
+        return 1
     endif
 endif
 
+message "stone teleporter"
 return 1
 
 ON=@ClientTooltip
-src.addcliloc 1041054
+
 if (<link.isitem>)
     if (<link.type> == T_STONE_GUILD )
+    		src.addcliloc 1041054
         src.addcliloc 1070722, <link.name> <qval (<eval strlen(<link.abbrev>)>) ? [<link.abbrev>]:>
+        return 1
+    elif (<link.type> == T_STONE_TOWN )
+    	  src.addcliloc 1070722,townstone teleporter
+        src.addcliloc 1070722,<link.name>
+        return 1
     endif
 endif
 
+src.addcliloc 1070722,stone teleporter
 return 1
 
 ON=@Dclick
 if (!<link.isitem>)
-    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+    src.sysmessage This teleporting object can not determine what stone to teleport.
     remove
     return 1
 endif
 
-if (<link.type> != T_STONE_GUILD )
-    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+if ((<link.type> != T_STONE_GUILD ) && (<link.type> != T_STONE_TOWN ))
+    src.sysmessage This teleporting object can not determine what stone to teleport.
     remove
     return 1
 endif
@@ -61,7 +74,7 @@ if ( !<src.isgm> && ( <link.masteruid> != <src.uid> ))
 endif
 
 if ( <link.tag0.guildsys_moveruid> != <uid> )
-    src.sysmessage This teleporting object can not determine what guildstone to teleport.
+    src.sysmessage This teleporting object can not determine what stone to teleport.
     return 1
 endif
 
@@ -73,7 +86,7 @@ return 1
 
 ON=@Destroy
 if (<link.isitem>)
-    if (<link.type> == T_STONE_GUILD )
+    if ((<link.type> == T_STONE_GUILD ) || (<link.type> == T_STONE_TOWN ))
         link.tag.guildsys_moveruid =
     endif
 endif
