@@ -264,9 +264,9 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	{
 		return GetSkillClass()->r_WriteVal(pszKey + 11, sVal, pChar);
 	}
-	else if ( !strnicmp(pszKey, "GUILD", 5) )
+	else if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
 	{
-		pszKey += 5;
+		pszKey += ( !strnicmp(pszKey, "TOWN", 4) ) ? 4 : 5;
 		if ( *pszKey == 0 )
 		{
 			CItemStone *pMyGuild = pChar->Guild_Find(MEMORY_GUILD);
