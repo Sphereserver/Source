@@ -269,19 +269,7 @@ f_stonesys_sendsmsg <args>
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_speech_sendsmsg]
-ref1=<argv[0]>
-local.message=<StrEat <args>>
-
-If (<ref1.type>!=t_stone_guild)
-  return 0
-endif
-
-If (!strlen(<local.message>))
-  return 0
-endif
-
-ref1.allmembers -1,sysmessage @68,0,3 <f_stonesys_gettypename <ref1.uid>> Message[<name>]: <local.message>
-
+f_stonesys_speech_sendsmsg <args>
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_iswarring]

@@ -37,9 +37,11 @@ local.loyalto=<memberfromuid.<src.uid>.loyalto>
 dhtmlgump 55 70 470 20 0 0 <qval (!<local.loyalto>)||(<local.loyalto>==<src.uid>) ? yourself:<uid.<local.loyalto>.name>>
   button 20 50 4005 4007 1 0 1 
 
-// dhtmlgump 275 50 470 20 0 0 Display town abbreviation: <abbrev>
-// dhtmlgump 275 70 90 20 0 0 Currently: <AbbreviationToggle>
-//   button 240 50 4005 4007 1 0 2
+if (<def0.TOWNSCONFIG_ALLOW_CHANGEABBR>)
+	dhtmlgump 275 50 470 20 0 0 Display town abbreviation: <abbrev>
+	dhtmlgump 275 70 90 20 0 0 Currently: <AbbreviationToggle>
+	  button 240 50 4005 4007 1 0 2
+endif
 
 dhtmlgump 55 100 240 30 0 0 View the current roster.
   button 20 100 4005 4007 1 0 3
@@ -76,12 +78,17 @@ dhtmlgump 55 360 470 30 0 0 EXIT
 
 [dialog d_Town_Main Button]
 ON=0 9
-If ((<argn1>==0) || (<argn1>==2)) // Exit Gump
+If (<argn1>==0) // Exit Gump
   return 1
 endif
 
 If (<argn1>==1 )	// Declare LoyalTo Dialog
   sdialog d_Town_CharList,0,<def0.GUILDDLG_LISTTYPE_LOYALITY>
+elif (<argn1>==2)
+	if (<def0.TOWNSCONFIG_ALLOW_CHANGEABBR>)
+	  toggleabbreviation <src.uid>
+  	sdialog d_Town_Main,0,<uid>
+	endif
 elif (<argn1>==3)	// Roster List
   sdialog d_Town_CharList,0,<def0.GUILDDLG_LISTTYPE_ROSTER>
 elif (<argn1>==4)	// Recruit New Member

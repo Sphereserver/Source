@@ -10,23 +10,23 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[dialog d_Guild_Master_Warfare_DeclareWar]
+[dialog d_Town_Master_Warfare_DeclareWar]
 5,25
 local.tosearch=<args>
-If (<type>!=t_stone_guild)
+If (<type>!=t_stone_town)
   return 1
 elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
   return 1
 endif
 
-src.ctag.dialog_guildmasterwarfaredclarewar_guildlist=<f_guildsys_searchguildname <uid>,<local.tosearch>>
-If (!<isempty <src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>>)
-  CALL f_guildsys_listsplit <src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>
+src.ctag.dialog_townmasterwarfaredclarewar_townlist=<f_townsys_searchtownname <uid>,<local.tosearch>>
+If (!<isempty <src.ctag.dialog_townmasterwarfaredclarewar_townlist>>)
+  CALL f_townsys_listsplit <src.ctag.dialog_townmasterwarfaredclarewar_townlist>
 else
-  local.guildlist_count=0
+  local.townlist_count=0
 endif
 
-If (!<local.guildlist_count>)
+If (!<local.townlist_count>)
   src.sysmessage No results found for "<local.tosearch>".
   return 1
 endif
@@ -35,13 +35,13 @@ endif
 page 0
 resizepic 0 0 5054 550 440
 resizepic 10 10 3000 530 420
-dhtmlgump 20 10 400 25 0 0 Select the guild you wish to declare war on.
+dhtmlgump 20 10 400 25 0 0 Select the town you wish to declare war on.
 dhtmlgump 55 400 245 30 0 0 Send the challenge!
   button 20 400 4005 4007 1 0 1
 dhtmlgump 335 400 100 35 0 0 CANCEL
   button 300 400 4005 4007 1 0 0
 
-For num 0 <eval <local.guildlist_count>-1>
+For num 0 <eval <local.townlist_count>-1>
   If (! (<local.num> % 11))
     If (<local.num>)
       button 300 370 4005 4007 0 <eval ((<local.num> / 11) + 1)> 0
@@ -57,72 +57,72 @@ For num 0 <eval <local.guildlist_count>-1>
 
   radio 20 <eval (35 + ((<local.num> % 11) * 30))> 208 209 0 <eval (<local.num> + 10)>
 
-  local.currentguilduid=<local.guildlist_data<dLOCAL.num>>
+  local.currenttownuid=<local.townlist_data<dLOCAL.num>>
 
-  If (<local.currentguilduid> <= 0)
+  If (<local.currenttownuid> <= 0)
     dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 (unnamed)
   else
-    dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currentguilduid>.Name> <qval (strlen(<uid.<local.currentguilduid>.abbrev>))&&(<DEF0.GUILDCONFIG_GUILDLIST_SHOWABBREV>) ? [<uid.<local.currentguilduid>.abbrev>]:>
+    dhtmlgump 55 <eval (35 + ((<local.num> % 11) * 30))> 300 35 0 0 <uid.<local.currenttownuid>.Name> <qval (strlen(<uid.<local.currenttownuid>.abbrev>))&&(<DEF0.TOWNSCONFIG_TOWNSLIST_SHOWABBREV>) ? [<uid.<local.currenttownuid>.abbrev>]:>
   endif
 
 endfor
 
 
 
-[dialog d_Guild_Master_Warfare_DeclareWar Button]
+[dialog d_Town_Master_Warfare_DeclareWar Button]
 ON=0 1
-  If (!<src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>)
+  If (!<src.ctag.dialog_townmasterwarfaredclarewar_townlist>)
     serv.log Declare war search function improperly returned info!!  Ctag not set!
     return 1
   endif
 
-  local.war_guildlist=<src.ctag.dialog_guildmasterwarfaredclarewar_guildlist>
-  src.ctag.dialog_guildmasterwarfaredclarewar_guildlist=
+  local.war_townlist=<src.ctag.dialog_townmasterwarfaredclarewar_townlist>
+  src.ctag.dialog_townmasterwarfaredclarewar_townlist=
   
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>)
     return 1
   endif
   
   If (<argn1>==0)
-    sdialog d_Guild_Master_Warfare,0
+    sdialog d_Town_Master_Warfare,0
   elif (<argn1>==1)
-    CALL f_guildsys_listsplit <local.war_guildlist>
+    CALL f_townsys_listsplit <local.war_townlist>
   
-    If (!<local.guildlist_count>)
+    If (!<local.townlist_count>)
       return 1
     endif
     
     local.num=<ARGCHKID>-10
-    If ((<local.num> < 0) || (<local.num> > <local.guildlist_count>))
+    If ((<local.num> < 0) || (<local.num> > <local.townlist_count>))
       return 1
     endif
 
-    local.selectedguild=<local.guildlist_data<dlocal.num>>
+    local.selectedtown=<local.townlist_data<dlocal.num>>
 
-    If (!<local.selectedguild>)
+    If (!<local.selectedtown>)
       return 1
     endif
     
-    If (<uid.<local.selectedguild>.type>!=T_STONE_GUILD)
+    If (<uid.<local.selectedtown>.type>!=T_STONE_TOWN)
       return 1
     endif
 
 
-    If ( <guildfromuid.<local.selectedguild>.isenemy> )
-        src.sysmessage @038A You're already at war with <uid.<local.selectedguild>.name>.
-    elseif ( <guildfromuid.<local.selectedguild>.theywar> && !<guildfromuid.<local.selectedguild>.wewar> )
-      If ( <f_guildsys_candeclarewarwith <uid>,<local.selectedguild>> )
-        f_guildsys_declarewar <uid>,<local.selectedguild>,1
+    If ( <guildfromuid.<local.selectedtown>.isenemy> )
+        src.sysmessage @038A You're already at war with <uid.<local.selectedtown>.name>.
+    elseif ( <guildfromuid.<local.selectedtown>.theywar> && !<guildfromuid.<local.selectedtown>.wewar> )
+      If ( <f_townsys_candeclarewarwith <uid>,<local.selectedtown>> )
+        f_townsys_declarewar <uid>,<local.selectedtown>,1
       endif
-    elseif ( <guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
-        src.sysmessage @038A A declaration of war is already made to <uid.<local.selectedguild>.name>.
-    elseif ( !<guildfromuid.<local.selectedguild>.wewar> && !<guildfromuid.<local.selectedguild>.theywar> )
-      If ( <f_guildsys_candeclarewarwith <uid>,<local.selectedguild>> )
-        f_guildsys_declarewar <uid>,<local.selectedguild>,2
+    elseif ( <guildfromuid.<local.selectedtown>.wewar> && !<guildfromuid.<local.selectedtown>.theywar> )
+        src.sysmessage @038A A declaration of war is already made to <uid.<local.selectedtown>.name>.
+    elseif ( !<guildfromuid.<local.selectedtown>.wewar> && !<guildfromuid.<local.selectedtown>.theywar> )
+      If ( <f_townsys_candeclarewarwith <uid>,<local.selectedtown>> )
+        f_townsys_declarewar <uid>,<local.selectedtown>,2
       endif
     endif
 
-    sdialog d_Guild_Master_Warfare,0
+    sdialog d_Town_Master_Warfare,0
   endif
   return 1
 

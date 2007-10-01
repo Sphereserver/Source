@@ -11,6 +11,7 @@
 VERSION=0.56b
 
 [DEFNAME DEF_STONESYS_MEMBERPRIV]
+// You MUST NEVER modify the values in this block
 STONEPRIV_CANDIDATE			0
 STONEPRIV_MEMBER				1
 STONEPRIV_MASTER				2
@@ -18,6 +19,7 @@ STONEPRIV_UNUSED				3
 STONEPRIV_ACCEPTED			4	// The candidate has been accepted. But they have not dclicked on the stone yet.
 
 [DEFNAME DEF_STONESYS_STONEPRIV]
+// You MUST NEVER modify the values in this block
 STONEPRIV_WEDECLARED		1
 STONEPRIV_THEYDECLARED	2
 STONEPRIV_ENEMY					3	// Internally this is 100 (3 for scripting purpose)

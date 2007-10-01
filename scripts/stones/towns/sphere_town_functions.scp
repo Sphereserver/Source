@@ -66,7 +66,7 @@ endif
 // ------------------------------------------------------
 [FUNCTION f_townsys_addchartotown]
 // no checks here, everything should be checked before calling this functions
-ref1 = <argv[0]> // The guild
+ref1 = <argv[0]> // The town
 ref2 = <argv[1]> // The char
 local.addasmember = <argv[2]>
 
@@ -87,7 +87,7 @@ endif
 // ------------------------------------------------------
 [FUNCTION f_townsys_removecharfromtown]
 // no checks here, everything should be checked before calling this functions
-ref1 = <argv[0]> // The guild
+ref1 = <argv[0]> // The town
 ref2 = <argv[1]> // The char
 
 if (!<ref2.isevent.<def.TOWNSCONFIG_CHAREVENT_NAME>>)
@@ -160,24 +160,24 @@ return 1
 
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_searchguildname]
-local.currentuid=<argv[0]>	// Current guild uid
-local.textsearch=<argv[1]>	// Text to search in other guild names
-local.allguilds=0           	// Allguilds check
+[FUNCTION f_townsys_searchtownname]
+local.currentuid=<argv[0]>	// Current town uid
+local.textsearch=<argv[1]>	// Text to search in other town names
+local.alltowns=0           	// Alltowns check
 
 local.search_found=0
 local.search_num=0
-local.search_uid=<serv.guildstones.<local.search_num>.uid>
+local.search_uid=<serv.townstones.<local.search_num>.uid>
 
-If (<def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH>)
-    If (!STRCMPI("<local.textsearch>","allguilds"))
-        local.allguilds=1
+If (<def0.TOWNSCONFIG_ALLOW_ALLTOWN_SEARCH>)
+    If (!STRCMPI("<local.textsearch>","<def.TOWNSCONFIG_ALLOW_ALLTOWN_TEXT>"))
+        local.alltowns=1
     endif
 endif
 
 while (<local.search_uid>)
   If (<local.currentuid>!=<local.search_uid>)
-    If (<local.allguilds>)
+    If (<local.alltowns>)
       If (!<local.returndata>)
         local.returndata=<local.search_uid>
       else
@@ -195,9 +195,9 @@ while (<local.search_uid>)
   endif
   
   local.search_num += 1
-  local.search_uid=<serv.guildstones.<local.search_num>.uid>
-  If (<def0.GUILDCONFIG_MAX_NSEARCH_RES>)
-    If (<local.search_num> >= <def0.GUILDCONFIG_MAX_NSEARCH_RES>)
+  local.search_uid=<serv.townstones.<local.search_num>.uid>
+  If (<def0.TOWNSCONFIG_MAX_NSEARCH_RES>)
+    If (<local.search_num> >= <def0.TOWNSCONFIG_MAX_NSEARCH_RES>)
       local.search_uid=0 // Break the loop
     endif
   endif
@@ -220,11 +220,11 @@ endif
 
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_declarewar]
+[FUNCTION f_townsys_declarewar]
 local.firstuid=<argv[0]>
 local.seconduid=<argv[1]>
 
-If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type>!=t_stone_guild))
+If ((<uid.<local.firstuid>.type>!=t_stone_town) || (<uid.<local.seconduid>.type>!=t_stone_town))
   return 0
 endif
 
@@ -232,22 +232,22 @@ ref1 = <local.firstuid>
 ref1.declarewar <local.seconduid>
 
 If (<argv[2]> == 1)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild is now at war with <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
-  f_guildsys_sendsmsg <local.seconduid>,Your guild is now at war with <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
+  f_townsys_sendsmsg <local.firstuid>,Your town is now at war with <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_townsys_sendsmsg <local.seconduid>,Your town is now at war with <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
 elseif (<argv[2]> == 2)
-  f_guildsys_sendsmsg <local.firstuid>,Your guild has sent a war invitation to <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
-  f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
+  f_townsys_sendsmsg <local.firstuid>,Your town has sent a war invitation to <uid.<local.seconduid>.name> <qval (strlen(<uid.<local.seconduid>.abbrev>)) ? [<uid.<local.seconduid>.abbrev>]:>
+  f_townsys_sendsmsg <local.seconduid>,Your town has received a war invitation from <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
 endif
 
 return 1
 
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_declarepeace]
+[FUNCTION f_townsys_declarepeace]
 local.firstuid=<argv[0]>
 local.seconduid=<argv[1]>
 
-If ((<uid.<local.firstuid>.type>!=t_stone_guild) || (<uid.<local.seconduid>.type>!=t_stone_guild))
+If ((<uid.<local.firstuid>.type>!=t_stone_town) || (<uid.<local.seconduid>.type>!=t_stone_town))
   return 0
 endif
 
@@ -255,16 +255,19 @@ ref1 = <local.firstuid>
 ref1.declarepeace <local.seconduid>
 
 If (<argv[2]> != 0)
-  f_guildsys_sendsmsg <local.firstuid>,You are now at peace with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
-  f_guildsys_sendsmsg <local.seconduid>,You are now at peace with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
+  f_townsys_sendsmsg <local.firstuid>,You are now at peace with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
+  f_townsys_sendsmsg <local.seconduid>,You are now at peace with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 endif
 
 return 1
 
 // ------------------------------------------------------
-[FUNCTION f_guildsys_sendsmsg]
+[FUNCTION f_townsys_sendsmsg]
 f_stonesys_sendsmsg <args>
 
+// ------------------------------------------------------
+[FUNCTION f_townsys_speech_sendsmsg]
+f_stonesys_speech_sendsmsg <args>
 
 // ------------------------------------------------------
 [FUNCTION f_townsys_iswarring]

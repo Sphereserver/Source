@@ -12,9 +12,9 @@
 // FILE LAST UPDATED: 14-March-2007
 VERSION=0.56b
 
-[dialog d_Guild_Master_Warfare]
+[dialog d_Town_Master_Warfare]
 5,25
-If (<type>!=t_stone_guild)
+If (<type>!=t_stone_town)
   return 1
 elif (<masteruid>!=<src.uid>)&&(!<src.isgm>)
   return 1
@@ -24,7 +24,7 @@ page 0
 resizepic 0 0 5054 550 440
 resizepic 10 10 3000 530 420
 dhtmlgump 20 10 510 35 0 0 <def0.center>WAR FUNCTIONS<def0.centere>
-dhtmlgump 55 40 400 30 0 0 Declare war through guild name search.
+dhtmlgump 55 40 400 30 0 0 Declare war through town name search.
   button 20 40 4005 4007 1 0 1 // Search
 local.gcount=0
 If (<guild.count <def0.STONEPRIV_ENEMY>>)
@@ -64,7 +64,7 @@ button 20 400 4005 4007 1 0 0
 dhtmlgump 55 400 400 35 0 0 Return to the previous menu.
 
 
-[dialog d_Guild_Master_Warfare Button]
+[dialog d_Town_Master_Warfare Button]
 ON=0 5  
   If (<masteruid>!=<src.uid>)&&(!<src.isgm>))
     return 1
@@ -72,26 +72,26 @@ ON=0 5
   
   If (<argn1>==0)
     If (<masteruid>==<src.uid>)||(<src.isgm>)
-      sdialog d_Guild_Master,0
+      sdialog d_Town_Master,0
     else
-      sdialog d_Guild_Main,0
+      sdialog d_Town_Main,0
     endif
   elif (<argn1>==1)
-    src.ctag.guild_prompthandler_guilduid=<uid>
-    local.guildsearch_promptmessage = Declare war through search
-    if ( <def0.GUILDCONFIG_ALLOW_ALLGUILD_SEARCH> )
-        local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Type 'AllGuilds' to get a full guild list)
+    src.ctag.town_prompthandler_townuid=<uid>
+    local.townsearch_promptmessage = Declare war through search
+    if ( <def0.TOWNSCONFIG_ALLOW_ALLTOWN_SEARCH> )
+        local.townsearch_promptmessage = <local.townsearch_promptmessage> (Type '<def.TOWNSCONFIG_ALLOW_ALLTOWN_TEXT>' to get a full town list)
     endif
-    local.guildsearch_promptmessage = <local.guildsearch_promptmessage> (Min <dDEF0.GUILDCONFIG_NSEARCH_MINLENGTH> chars) - Enter Guild Name:
-    try src.promptconsole f_prompthandler_guilddclarewar,<local.guildsearch_promptmessage>
+    local.townsearch_promptmessage = <local.townsearch_promptmessage> (Min <dDEF0.TOWNSCONFIG_NSEARCH_MINLENGTH> chars) - Enter Town Name:
+    try src.promptconsole f_prompthandler_towndclarewar,<local.townsearch_promptmessage>
   elif (<argn1>==2)
-    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_DECLAREPEACE>
+    sdialog d_Town_TownList,0,<def0.TOWNSDLG_LISTTYPE_G_DECLAREPEACE>
   elif (<argn1>==3)
-    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_ACCEPTWAR>
+    sdialog d_Town_TownList,0,<def0.TOWNSDLG_LISTTYPE_G_ACCEPTWAR>
   elif (<argn1>==4)
-    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_REJECTWAR>
+    sdialog d_Town_TownList,0,<def0.TOWNSDLG_LISTTYPE_G_REJECTWAR>
   elif (<argn1>==5)
-    sdialog d_Guild_GuildList,0,<def0.GUILDDLG_LISTTYPE_G_RESCIND>
+    sdialog d_Town_TownList,0,<def0.TOWNSDLG_LISTTYPE_G_RESCIND>
   endif
 
   return 1

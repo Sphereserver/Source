@@ -73,7 +73,7 @@ if ( !<src.isgm> && ( <link.masteruid> != <src.uid> ))
     return 1
 endif
 
-if ( <link.tag0.guildsys_moveruid> != <uid> )
+if ( <link.tag0.stonesys_moveruid> != <uid> )
     src.sysmessage This teleporting object can not determine what stone to teleport.
     return 1
 endif
@@ -87,7 +87,7 @@ return 1
 ON=@Destroy
 if (<link.isitem>)
     if ((<link.type> == T_STONE_GUILD ) || (<link.type> == T_STONE_TOWN ))
-        link.tag.guildsys_moveruid =
+        link.tag.stonesys_moveruid =
     endif
 endif
 

@@ -106,6 +106,21 @@ endif
 ref1.allmembers -1,sysmessage @68,0,3 <f_stonesys_gettypename <ref1.uid>> Message: <local.message>
 
 // ------------------------------------------------------
+[FUNCTION f_stonesys_speech_sendsmsg]
+ref1=<argv[0]>
+local.message=<StrEat <args>>
+
+If ((<ref1.type>!=t_stone_guild) && (<ref1.type>!=t_stone_town))
+  return 0
+endif
+
+If (!strlen(<local.message>))
+  return 0
+endif
+
+ref1.allmembers -1,sysmessage @68,0,3 <f_stonesys_gettypename <ref1.uid>> Message[<name>]: <local.message>
+
+// ------------------------------------------------------
 [FUNCTION f_stonesys_determine_timeleft]
 local.sec=<eval (<argn>-<serv.time>)/10>
 If (<eval <local.sec>/86400>)

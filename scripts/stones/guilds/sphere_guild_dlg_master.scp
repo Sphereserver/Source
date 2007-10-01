@@ -78,7 +78,7 @@ else
 endif
 If (<def0.GUILDCONFIG_ALLOWTELEPORT>) // Teleport the stone
   button 20 310 4005 4007 1 0 10
-  dhtmlgump 55 310 240 30 0 0 Move this guildstone. <qval <tag0.guildsys_moveruid> ? IN PROGRESS. : >
+  dhtmlgump 55 310 240 30 0 0 Move this guildstone. <qval <tag0.stonesys_moveruid> ? IN PROGRESS. : >
 else
   gumppic 20 310 4020
   dhtmlgump 55 310 240 30 0 0 Move this guildstone. NOT AVAILABLE.
@@ -136,8 +136,8 @@ ON=0 12
     sdialog d_Guild_CharList,0,<def0.GUILDDLG_LISTTYPE_GRANTTITLE>
   elif (<argn1>==10)	// Move stone
     If (<def0.GUILDCONFIG_ALLOWTELEPORT>)
-      if ( <tag0.guildsys_moveruid> )
-        ref1 = <tag0.guildsys_moveruid>
+      if ( <tag0.stonesys_moveruid> )
+        ref1 = <tag0.stonesys_moveruid>
         ref1.link = 0
         ref1.remove
       endif
@@ -145,7 +145,7 @@ ON=0 12
       serv.newitem i_stone_mover
       new.link = <uid>
       new.attr = attr_newbie
-      tag.guildsys_moveruid = <new.uid>
+      tag.stonesys_moveruid = <new.uid>
       new.cont <src.findlayer(layer_pack).uid>
       src.sysmessage @038A Use the teleporting object placed in your backpack to move this guildstone.
       sdialog d_Guild_Master,0
