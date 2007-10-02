@@ -271,7 +271,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		if ( *pszKey == 0 )
 		{
 		CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-			if ( pMyGuild ) sVal.FormatVal((DWORD)pMyGuild->GetUID());
+			if ( pMyGuild ) sVal.FormatHex((DWORD)pMyGuild->GetUID());
 			else sVal.FormatVal(0);
 			return true;
 		}

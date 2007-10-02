@@ -1,3 +1,15 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2007
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 02-October-2007
+VERSION=0.56b
+
 [TYPEDEF T_STONE_TOWN]
 ON=@Click
   message "a townstone"
@@ -5,7 +17,7 @@ ON=@Click
 return 1
 
 ON=@ClientToolTip
-  src.addcliloc 1070722,a townstone
+  src.addcliloc 1042971,a townstone
   src.addcliloc 1070722,Town name: <name>
 return 1
 

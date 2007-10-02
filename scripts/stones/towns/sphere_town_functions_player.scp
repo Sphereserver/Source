@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -11,7 +11,7 @@
 VERSION=0.56b
 
 [PLEVEL 1]
-tc          // replacement for guild chat in older client
+tc
 
 [FUNCTION tc]
 IF ( !<DEF0.TOWNSCFGSPEECH_GLOBAL_ENABLE> )

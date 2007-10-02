@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2006
+// SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.com
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -52,7 +52,7 @@ else
   dhtmlgump 20 20 500 150 0 1 <local.chartertext>
 endif
 
-dhtmlgump 55 200 300 20 0 0 Visit the guild website : 
+dhtmlgump 55 200 300 20 0 0 Visit the town website : 
   button 20 200 4005 4007 1 0 1 // Website
   local.website=<webpage>
   If (<eval Strlen(<local.website>)> <= 3) // A website cant be that small

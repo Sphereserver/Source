@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -53,7 +53,7 @@ GUILDCONFIG_ALLOW_ALLGUILD_TEXT			"allguilds"
 GUILDCONFIG_NSEARCH_MINLENGTH				4       			// Don't set to 0, to allow allguild search simply set the above to 1
 GUILDCONFIG_MAX_NSEARCH_RES		    	75						// 0 = unlimited
 GUILDCONFIG_CHAREVENT_NAME          e_GuildGenericEvent
-GUILDCONFIC_USEGUILDBUTTON          1
+GUILDCONFIG_USEGUILDBUTTON          1
 
 [DEFNAME DEF_GUILDSYS_CONFIG_SPEECH]
 GUILDCFGSPEECH_GLOBAL_ENABLE         0

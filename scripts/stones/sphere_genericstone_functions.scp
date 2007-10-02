@@ -29,7 +29,7 @@ elif (<argo.npc>)
   sysmessage You cannot transfer a <local.typename> to an npc.
 elif (<argo> == <ref1.masteruid>)
   sysmessage You are already the master of <ref1.name>.
-elif (<argo.memoryfindtype.memory_guild.link.uid> != <ref1.uid>)
+elif (<argo.memoryfindtype.memory_guild.link.uid> != <ref1.uid>) && (<argo.memoryfindtype.memory_town.link.uid> != <ref1.uid>)
   sysmessage That player is not a member of the <local.typename>.
 elif (!<argo.npc>)
   ref1.masteruid = <argo.uid>

@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -80,7 +80,7 @@ if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
   ref2.events +<def.GUILDCONFIG_CHAREVENT_NAME>
 endif
   
-if (!<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+if (!<ref2.isdspeech.<def.GUILDCFGSPEECH_NAME>>)
   ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
 endif
 
@@ -94,7 +94,7 @@ if (!<ref2.isevent.<def.GUILDCONFIG_CHAREVENT_NAME>>)
   ref2.events -<def.GUILDCONFIG_CHAREVENT_NAME>
 endif
 
-if (<ref2.isdspeech <def.GUILDCFGSPEECH_NAME>>)
+if (<ref2.isdspeech.<def.GUILDCFGSPEECH_NAME>>)
   ref2.dspeech -<def.GUILDCFGSPEECH_NAME>
 endif
 

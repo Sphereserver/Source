@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -83,26 +83,26 @@ If (<argn1>==0) // Exit Gump
 endif
 
 If (<argn1>==1 )	// Declare LoyalTo Dialog
-  sdialog d_Town_CharList,0,<def0.GUILDDLG_LISTTYPE_LOYALITY>
+  sdialog d_Town_CharList,0,<def0.TOWNSDLG_LISTTYPE_LOYALITY>
 elif (<argn1>==2)
 	if (<def0.TOWNSCONFIG_ALLOW_CHANGEABBR>)
 	  toggleabbreviation <src.uid>
   	sdialog d_Town_Main,0,<uid>
 	endif
 elif (<argn1>==3)	// Roster List
-  sdialog d_Town_CharList,0,<def0.GUILDDLG_LISTTYPE_ROSTER>
+  sdialog d_Town_CharList,0,<def0.TOWNSDLG_LISTTYPE_ROSTER>
 elif (<argn1>==4)	// Recruit New Member
   src.targetf f_townsys_recruitguy <uid>
   src.sysmessage Select a character to recruit
 elif (<argn1>==5)	// Candidates list
-  sdialog  d_Town_CharList,0,<def0.GUILDDLG_LISTTYPE_CANDIDATES>
-elif (<argn1>==6)	// Guild charter
+  sdialog  d_Town_CharList,0,<def0.TOWNSDLG_LISTTYPE_CANDIDATES>
+elif (<argn1>==6)	// Town charter
   sdialog d_Town_ViewCharter,0,<uid>
 elif (<argn1>==7)	// Resign
   resign
 elif (<argn1>==8)	// Enemies
   sdialog d_Town_WarfareStatus,0,<uid>
-elif (<argn1>==9)	// Guildmaster Menu
+elif (<argn1>==9)	// Townmaster Menu
   If (<src.isgm>)||(<masteruid>==<src.uid>)
     sdialog d_Town_Master,0
   endif

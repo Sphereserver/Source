@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2006
+//SPHERE by : Menasoft ©1997-2007
 //www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -29,8 +29,8 @@ elif (<argo.flags>&<def0.statf_dead>)
   sysmessage @038A Only the living may be recruited.
   return 1
 endif
-If (<argo.memoryfindtype.<def0.memory_guild>.uid>)
-  If (<argo.memoryfindtype.<def0.memory_guild>.link> == <ref1.uid>)
+If (<argo.memoryfindtype.<def0.memory_town>.uid>)
+  If (<argo.memoryfindtype.<def0.memory_town>.link> == <ref1.uid>)
     sysmessage @038A They are already a townmember!
   else
     sysmessage @038A You can only recruit candidates who are not already in a town.
@@ -80,7 +80,7 @@ if (!<ref2.isevent.<def.TOWNSCONFIG_CHAREVENT_NAME>>)
   ref2.events +<def.TOWNSCONFIG_CHAREVENT_NAME>
 endif
   
-if (!<ref2.isdspeech <def.TOWNSCFGSPEECH_NAME>>)
+if (!<ref2.isdspeech.<def.TOWNSCFGSPEECH_NAME>>)
 	ref2.dspeech +<def.TOWNSCFGSPEECH_NAME>
 endif
 
@@ -94,7 +94,7 @@ if (!<ref2.isevent.<def.TOWNSCONFIG_CHAREVENT_NAME>>)
   ref2.events -<def.TOWNSCONFIG_CHAREVENT_NAME>
 endif
 
-if (<ref2.isdspeech <def.TOWNSCFGSPEECH_NAME>>)
+if (<ref2.isdspeech.<def.TOWNSCFGSPEECH_NAME>>)
   ref2.dspeech -<def.TOWNSCFGSPEECH_NAME>
 endif
 
