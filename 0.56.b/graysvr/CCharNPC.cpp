@@ -266,10 +266,11 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	}
 	else if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
 	{
-		pszKey += ( !strnicmp(pszKey, "TOWN", 4) ) ? 4 : 5;
+		bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
+		pszKey += bIsGuild ? 5 : 4;
 		if ( *pszKey == 0 )
 		{
-			CItemStone *pMyGuild = pChar->Guild_Find(MEMORY_GUILD);
+		CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
 			if ( pMyGuild ) sVal.FormatVal((DWORD)pMyGuild->GetUID());
 			else sVal.FormatVal(0);
 			return true;
@@ -277,7 +278,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		else if ( *pszKey == '.' )
 		{
 			pszKey += 1;
-			CItemStone *pMyGuild = pChar->Guild_Find(MEMORY_GUILD);
+			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
 			if ( pMyGuild ) return pMyGuild->r_WriteVal(pszKey, sVal, pChar);
 		}
 		return false;
