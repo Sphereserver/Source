@@ -3667,3 +3667,6 @@ this all in desperation)
 - Fixed: not-working tag override of SkillPracticeMax what may have caused problems with Linux builds.
   Now TAG.OVERRIDE.PRACTICEMAX.SKILL_# (with "#" == "40" for swordsmanship, "42" for fencing, etc.)
   on a training dummy can override the INI default upto what skill value one can practice with it.
+
+02-10-2007, coruja747 (Script pack)
+- Updated #1224: sphere_admin.scp (Added character updates when modifying flags)
