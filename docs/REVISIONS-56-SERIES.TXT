@@ -3128,79 +3128,85 @@ this all in desperation)
 
 15-02-2007, Nazghul
 - Added: First version of support for TNG's webscript reader. Use console command
-  "tngstrip" to create a file what contains the information TNG needs from all your scripts
-  (thus completely useless for script thieves). The file will be placed at the location
-  defined with "StripPath=" in sphere.ini and is named "tngstrip.scp. Can be delivered
-  either by a dedicated web server or the built-in of sphere itself.
+  "tngstrip" to create a file what contains the information TNG needs from all 
+  your scripts (thus completely useless for script thieves). The file will be 
+  placed at the location defined with "StripPath=" in sphere.ini and is named 
+  "tngstrip.scp. Can be delivered either by a dedicated web server or the built-in 
+  of sphere itself.
 
 15-02-2007, Babidi (Script pack)
 - Modified: sphere_dialog.scp - line 217, the highest skill is now SKILL_SPELLWEAVING.
 
 16-02-2007, Nazghul
-- Added: TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally override the
-  color of the effect what will be used for displaying the shot.
+- Added: TAG.OVERRIDE.AMMOANIMHUE for bow and crossboy-type weapons to locally 
+  override the color of the effect what will be used for displaying the shot.
 
 18-02-2007, MrSugarCube
 - Fixed #1069: Stable masters giving food to invisible characters.
 
 20-02-2007, Nazghul
-- Added SPELLFLAG_NO_CASTANIM (0x80000) to suppress the usual cast anim. This way a custom
-  (perhaps race-, class-, magery-, experience-related) anim can be played @START/@SPELLCAST
+- Added SPELLFLAG_NO_CASTANIM (0x80000) to suppress the usual cast anim. 
+  This way a custom (perhaps race-, class-, magery-, experience-related) anim 
+  can be played @START/@SPELLCAST
 
 21-02-2007, MrSugarCube
 - Fixed #1071: Undefined Symbol error caused when a function returns a string.
 - Fixed #1075: The last line in script files being ignored.
 - Fixed #1076: ALLSHOW switching off too late upon login.
-- Added: Skill flag SKF_CRAFT. Skills with this flag set will function correctly with the
-  MAKEITEM command.
+- Added: Skill flag SKF_CRAFT. Skills with this flag set will function 
+  correctly with the MAKEITEM command.
 
 21-02-2007, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added SKF_CRAFT definition)
-- Updated: sphere_map_points0.scp and sphere_map_points1.scp (Removed duplicate teleporters)
+- Updated: sphere_map_points0.scp and sphere_map_points1.scp 
+  (Removed duplicate teleporters)
 
 22-02-2007, MrSugarCube
 - Fixed #1078: Exception when walking in the top left corner of maps.
-- Added #1079: ARGO in f_onchar_create, f_onchar_delete and f_onaccount_login is now the
-  the client that is performing the action (note that at the time these functions are
-  called, there is no character attached to the client so character properties are not
-  accessible).
+- Added #1079: ARGO in f_onchar_create, f_onchar_delete and f_onaccount_login 
+  is now the the client that is performing the action (note that at the time 
+  these functions are called, there is no character attached to the client so 
+  character properties are not accessible).
 
 22-02-2007, Nazghul
 - Added: Character trigger @statchange (argn1: the stat, argn2: new value).
 
 25-02-2007, Ellessar
-- Added: TAG.DEATHFLAGS which changes some death related behavior. The list of flags is in
-  sphere_defs.scp and their names are pretty self-explaining.
+- Added: TAG.DEATHFLAGS which changes some death related behavior. The list of 
+  flags is in sphere_defs.scp and their names are pretty self-explaining.
 - Fixed #1081: SERV.WRITELINE not adding a new line on Windows.
 
 25-02-2007, Ellessar (Script pack)
 - Updated: sphere_defs.scp (Added death_flags defname)
 
 25-02-2007, Nazghul
-- Added: TAG.OVERRIDE.MAXWEIGHT and TAG.OVERRIDE.MAXITEMS now are applying to all containers
-  if set. If not, maximum weight is still unlimited, while max. item count is still default.
+- Added: TAG.OVERRIDE.MAXWEIGHT and TAG.OVERRIDE.MAXITEMS now are applying 
+  to all containers if set. If not, maximum weight is still unlimited, while 
+  max. item count is still default.
 
 26-02-2007, Ellessar
-- Modified: Region trigger @Step will now work only with EF_New_Triggers on and
-  EF_Minimize_Triggers off.
+- Modified: Region trigger @Step will now work only with EF_New_Triggers 
+  on and EF_Minimize_Triggers off.
 
 27-02-2007, Ellessar
-- Added: sphere.ini settings EventsPlayer, EventsRegion. These events are applied on all
-  players/regions in the world.
+- Added: sphere.ini settings EventsPlayer, EventsRegion. These events are 
+  applied on all players/regions in the world.
 - Updated: sphere.ini
 
 01-03-2007, Furio
-- Added: LASTEVENT keyword on clients, returning the time of last packet receive (like serv.time).
-- Modified: OF_OSIDamageMod and OF_Archery_CanMove are now CombatFlags (look in sphere.ini)
+- Added: LASTEVENT keyword on clients, returning the time of last packet 
+  receive (like serv.time).
+- Modified: OF_OSIDamageMod and OF_Archery_CanMove are now CombatFlags 
+  (look in sphere.ini)
 - Updated: sphere.ini
 
 01-03-2007, MrSugarCube
 - Fixed #1092: Dead characters not showing on the status page.
-- Fixed #1090: MOUNTHEIGHT checks preventing characters teleporting to valid locations if they are
-  stuck under a low ceiling.
-- Fixed #1085: MAXBASESKILL in sphere.ini applying to skills that players are unable to see in
-  their skill menu. An INITHIDDENSKILLS setting has been added to sphere.ini so that this behaviour
-  can be toggled.
+- Fixed #1090: MOUNTHEIGHT checks preventing characters teleporting to valid 
+  locations if they are stuck under a low ceiling.
+- Fixed #1085: MAXBASESKILL in sphere.ini applying to skills that players are 
+  unable to see in their skill menu. An INITHIDDENSKILLS setting has been added 
+  to sphere.ini so that this behaviour can be toggled.
 - Fixed #1084: Vendor's constantly restocking goods instantly after selling them.
 - Fixed: Players able to create characters with skill in undefined skills.
 
@@ -3208,39 +3214,44 @@ this all in desperation)
 - Updated: sphere_skills.scp (Missing skill cap for Animal Lore in SKILLCLASS 0)
 
 02-03-2007, Ellessar
-- Fixed #1093: serv.restock not working. Now it updates all vendor boxes and world gem bits.
+- Fixed #1093: serv.restock not working. Now it updates all vendor boxes and 
+  world gem bits.
 - Fixed: NPCs sometimes not spawning with EF_NewPositionChecks on.
-- Modified: Trigger @CallGuards now have a reference "REF1", which refers to the target of the guard.
-- Modified: NPCs now won't 'talk and follow' you, if your distance from their spawn bit is greater than
-  their homedist.
+- Modified: Trigger @CallGuards now have a reference "REF1", which refers to 
+  the target of the guard.
+- Modified: NPCs now won't 'talk and follow' you, if your distance from their 
+  spawn bit is greater than their homedist.
 
 02-03-2007, Vjaka
 - Fixed: red NPCs spawning in cities from spawns at the edges of the town.
 - Modified: now clients which spawns too many exceptions are disconnected.
-- Added: GOLD property for character. It counts all gold coins on character and return them. Or,
-  if used with argument, sets a new amount of gold, adding gold coins to reach the new sum. The
-  most common usage would be similar to GOLD += 5000 and so on.
+- Added: GOLD property for character. It counts all gold coins on character 
+  and return them. Or, if used with argument, sets a new amount of gold, adding 
+  gold coins to reach the new sum. The most common usage would be similar to 
+  GOLD += 5000 and so on.
 - Fixed: NPCs not being able to stumble upon hidden player character.
 
 05-03-2007, Furio
 - Fixed #1098: Explosion potion activate with decay timer also if not activated.
 
 06-03-2007, Ellessar
-- Added: ATTACKER.LAST, which works like ATTACKER.MAX, but returns the char which hit the victim
-  for the last time.
+- Added: ATTACKER.LAST, which works like ATTACKER.MAX, but returns the char which 
+  hit the victim for the last time.
 
 10-03-2007, Ellessar
-- Added: Experimental flag EF_AllowTelnetPacketFilter, which allows telnet connections to fire
-  a PACKETx function.
+- Added: Experimental flag EF_AllowTelnetPacketFilter, which allows telnet 
+  connections to fire a PACKETx function.
 - Updated: sphere.ini
 
 12-03-2007, MrSugarCube
-- Fixed #1062: "RETURN x" not always halting script execution or even returning the correct value.
-- Fixed: Exceptions that are sometimes caused when attempting to use/take an item that cannot be reached.
+- Fixed #1062: "RETURN x" not always halting script execution or even returning 
+  the correct value.
+- Fixed: Exceptions that are sometimes caused when attempting to use/take an item 
+  that cannot be reached.
 
 13-03-2007, Nazghul
-- Added: keyword VISUALRANGE, parameter 1..18 to limit the visualrange of a client. After changing the
-  visual range you should update the character in question once.
+- Added: keyword VISUALRANGE, parameter 1..18 to limit the visualrange of a client. 
+  After changing the visual range you should update the character in question once.
 
 13-03-2007, Ellessar
 - Fixed #1106: PACKETx sometimes caused errors in console.
@@ -3253,8 +3264,8 @@ this all in desperation)
 - Updated: sphere_item_treasure_maps.scp (Updated to use 0.56b features)
 
 17-03-2007, Ellessar
-- Added: Function SKILLTEST, which tests values of skills sent as arguments on the default character.
-  Usage: <skilltest carpentry 68.9>
+- Added: Function SKILLTEST, which tests values of skills sent as arguments 
+  on the default character. Usage: <skilltest carpentry 68.9>
 - Fixed: SKILLMAKE replacing types with item names.
 
 17-03-2007, Furio
@@ -3272,7 +3283,8 @@ this all in desperation)
 - Updated: sphereCrypt.ini with 5.0.9.0 keys.
 - Removed: MEMORY_GUMPRECORD to track open dialogs. It now uses an internal system.
 - Updated: sphere_defs.scp
-- Added: ISDIALOGOPEN $dialogId. It returns the number of the opened $dialogId on the client.
+- Added: ISDIALOGOPEN $dialogId. It returns the number of the opened $dialogId 
+  on the client.
 - Fixed #1127: Items of the hatch can't be moved.
 - Fixed #1129: GumpPicTiled don't work with dynamic origin.
 
@@ -3317,17 +3329,18 @@ this all in desperation)
 - Updated: sphere_map2.scp (Corrected a_shrine_virtues area definition)
 
 27-04-2007, Ellessar
-- Added: Character trigger @TradeAccepted (+@charTradeAccepted), which is called after both
-  trade sides tick Accept Trade button. Default, ARGO - the first trader, SRC - the second one,
-  ARGN1 - the number of items the first trader gets, ARGN2 - the number of items the second trader
-  gets, REF1...REF<argn1> - references to items the first trader gets. Return 1 prevents the trade.
+- Added: Character trigger @TradeAccepted (+@charTradeAccepted), which is called 
+  after both trade sides tick Accept Trade button. Default, ARGO - the first 
+  trader, SRC - the second one, ARGN1 - the number of items the first trader gets, 
+  ARGN2 - the number of items the second trader gets, REF1...REF<argn1> - 
+  references to items the first trader gets. Return 1 prevents the trade.
 - Fixed: CTAGs deleted before calling @LogOut
 
 30-04-2007, MrSugarCube
-- Modified #1162: A comma ',' can be used under the NOTOTITLES section to optionally specify
-  seperate titles for female characters.
-- Modified: EF_MapDiff_Support has been removed, and map diffs are now enabled via the USEMAPDIFFS
-  setting in sphere.ini.
+- Modified #1162: A comma ',' can be used under the NOTOTITLES section to 
+  optionally specify seperate titles for female characters.
+- Modified: EF_MapDiff_Support has been removed, and map diffs are now enabled 
+  via the USEMAPDIFFS setting in sphere.ini.
 
 02-05-2007, MrSugarCube
 - Fixed: Exception when using ACCOUNT.CHAR.x.KEY when the index 'x' does not exist.
@@ -3336,22 +3349,25 @@ this all in desperation)
 - Fixed: Server IPs on the server list being sent incorrectly to older clients.
 
 05-05-2007, MrSugarCube
-- Added: Experimental flag EF_UsePingServer. This will enable a server for receiving pings from
-  clients viewing the server list. Uses UDP port 12000.
+- Added: Experimental flag EF_UsePingServer. This will enable a server for 
+  receiving pings from clients viewing the server list. Uses UDP port 12000.
 
 06-05-2007, Ellessar
-- Added: Missing character trigger @SpellFail (called before @Fail in a SPELL section)
+- Added: Missing character trigger @SpellFail (called before @Fail in a 
+  SPELL section)
 
 06-05-2007, MrSugarCube
-- Fixed #1169: Exception caused by the count parameter being negative in the STRSUB function.
+- Fixed #1169: Exception caused by the count parameter being negative in the 
+  STRSUB function.
 
 08-05-2007, Ellessar
 - Fixed: POW (@) does not work when using inside 'floatval'.
 
 10-05-2007, MrSugarCube
-- Fixed #1176: RANGE property on items returning 0 when the minimum range is 0, when in this case it
-  should return the maximum range.
-- Fixed #1178: Automatic loading of backup saves not unloading all of the data from the previous save.
+- Fixed #1176: RANGE property on items returning 0 when the minimum range is 0, 
+  when in this case it should return the maximum range.
+- Fixed #1178: Automatic loading of backup saves not unloading all of the data 
+  from the previous save.
 
 17-05-2007, Sir Dwayne (Script pack)
 - Updated: sphere_item_building_fence.scp, sphere_item_building_stairs.scp,
@@ -3359,27 +3375,30 @@ this all in desperation)
 
 17-05-2007, MrSugarCube
 - Fixed: SPELLFLAG_NOUNPARALYZE doing the opposite of its description.
-- Fixed #1181: Casting field spells on players not giving criminal status even when
-  SPELLFLAG_HARM is set.
-- Fixed #1182: Crash when opening the .edit menu on a player with too many equipped items.
+- Fixed #1181: Casting field spells on players not giving criminal status even 
+  when SPELLFLAG_HARM is set.
+- Fixed #1182: Crash when opening the .edit menu on a player with too many 
+  equipped items.
 
 17-05-2007, Furio
-- Added: DSPEECH prop to players. Its purpose is to intercept player speech like SpeechSelf, but it
-  allows multiple speech block (DSPEECH +spk_lol add spk_lol, DSPEECH -spk_lol removes it). Return 1
-  on the speech block interrupt execution and prevent the player from speaking, Return 4 blocks the
-  execution while allowing the player to speech.
-- Added: ISDSPEECH prop to players. Its purpose is to chech if a speech block is in DSPEECH in a
-  similar way of ISEVENT.
+- Added: DSPEECH prop to players. Its purpose is to intercept player speech 
+  like SpeechSelf, but it allows multiple speech block (DSPEECH +spk_lol add spk_lol, 
+  DSPEECH -spk_lol removes it). Return 1 on the speech block interrupt execution and 
+  prevent the player from speaking, Return 4 blocks the execution while allowing the 
+  player to speech.
+- Added: ISDSPEECH prop to players. Its purpose is to chech if a speech block is in
+  DSPEECH in a similar way of ISEVENT.
 
 18-05-2007, MrSugarCube
-- Modified #1155: The COMPONENT property of multi definitions can now be given the ID of
-  any scripted item.
+- Modified #1155: The COMPONENT property of multi definitions can now be given 
+  the ID of any scripted item.
   
 20-05-2007, Furio
 - Fixed: Trade windows not bouncing correctly some of the items.
 
 20-05-2007, MrSugarCube
-- Fixed: Sphere running slowly, due to new threading not ticking as much as old threading.
+- Fixed: Sphere running slowly, due to new threading not ticking as much as 
+  old threading.
 
 22-05-2007, ShadowDragon
 - Added: Support for Int and Color options to CHARDEF.
@@ -3400,10 +3419,12 @@ this all in desperation)
 - Fixed #1203: Multis not being visible from a distance.
 
 31-05-2007, Nazghul
-- Fixed #1206: using character function ".gold" with negative numbers crashed the server.
+- Fixed #1206: using character function ".gold" with negative numbers crashed 
+  the server.
 
 02-06-2007, Furio
-- Fixed #1208: If modstat is negative and > ostat, all skills affected by that stat become 65535.
+- Fixed #1208: If modstat is negative and > ostat, all skills affected by 
+  that stat become 65535.
 - Fixed #1186: Starvation incorrectly damages affected player's equipment
 
 02-06-2007, Almost all the dev team
@@ -3421,48 +3442,50 @@ this all in desperation)
 - Fixed #1212: Reactive Armor causing a server crash when damaging self.
 
 11-06-2007, MrSugarCube
-- Fixed: Vendor menus on clients later than 4.0.0 not showing correctly for renamed items when
-  ACCOUNT.RESDISP is not correctly set to AOS+.
+- Fixed: Vendor menus on clients later than 4.0.0 not showing correctly for 
+  renamed items when ACCOUNT.RESDISP is not correctly set to AOS+.
 
 14-06-2007, Fire-Dragon-DoL
 - Fixed #1220: typos in sphere_guild_functions.scp
 
 26-06-2007, Nazghul
-- Added: Character trigger @SkillChange. Fires whenever the skill raises due to a gain. ARGN1 is
-  the skill number (e.g. 43 for wrestling), ARGN1 is the skill value AFTER the change happens.
-  RETURN 1 (or 2, or 666) means that the skill will NOT change.
-
+- Added: Character trigger @SkillChange. Fires whenever the skill raises due 
+  to a gain. ARGN1 is the skill number (e.g. 43 for wrestling), ARGN1 is the 
+  skill value AFTER the change happens. RETURN 1 (or 2, or 666) means that the 
+  skill will NOT change.
 
 29-06-2007, Torfo
-- Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to bypass the hashing
-  algorithm, if MD5 isn't enabled it's the same as ADD.
+- Added: ADDMD5. If md5 is enabled in the sphere.ini you can use ADDMD5 to 
+  bypass the hashing algorithm, if MD5 isn't enabled it's the same as ADD.
   Usage: "ACCOUNT ADDMD5 name hash"
 
 06-07-2007, Nazghul
-- Fixed: RETURN 1 in region triggers @exit, @enter did not tell the client that the movement
-  was stopped what led to some weird rubberband effects (thx. to MrSugarCube for help)
-- Added: Character triggers @RegionEnter, @RegionLeave. ARGO is the region in question, RETURN 1
-  works like in region triggers @exit, @enter.
+- Fixed: RETURN 1 in region triggers @exit, @enter did not tell the client that 
+  the movement was stopped what led to some weird rubberband effects. 
+  (thx. to MrSugarCube for help)
+- Added: Character triggers @RegionEnter, @RegionLeave. ARGO is the region in 
+  question, RETURN 1 works like in region triggers @exit, @enter.
 
 12-07-2007, Nazghul
 - Fixed: #1222 MAGICF_IGNOREAR rendered armor useless even on non magic damage
 - some cleanups regarding NPC accepting/rejecting items
 - Added: Hungry NPC try to pick ripe crops if available
-- Added: ACTP character property (like ACTDIFF, ACTARG etc.) to work with for example ACTION 102
-- Added: Poisoned Food (MOREz = poison strength [0..100]) will poison whoever eats it;
-  NPC might refuse eating poisoned food depending on their TasteID skill
+- Added: ACTP character property (like ACTDIFF, ACTARG etc.) to work with for 
+  example ACTION 102
+- Added: Poisoned Food (MOREz = poison strength [0..100]) will poison whoever 
+  eats it; NPC might refuse eating poisoned food depending on their TasteID skill
 
 15-07-2007, Ellessar
-- Modified: Now you can get AREADEF regions from inside a multi with the help of an additional
-  "region" keyword (e.g. region.region.name).
+- Modified: Now you can get AREADEF regions from inside a multi with the help 
+  of an additional "region" keyword (e.g. region.region.name).
 
 17-07-2007, MrSugarCube
 - Fixed: Multis from newer expansions not loading correctly.
 
 17-07-2007, Admin BladeCraft (Script pack)
 - Updated #1236: sphere_item_magic_weapon.scp, sphere_template.scp,
-  sphere_backward_compatibility.scp (Changed misspelled defname i_axe_war_VANQUISIHNG
-  to i_axe_war_VANQ)
+  sphere_backward_compatibility.scp (Changed misspelled defname 
+  i_axe_war_VANQUISIHNG to i_axe_war_VANQ)
 - Updated #1237: sphere_defs.scp (Fixed broken random templates)
 
 18-07-2007, Nazghul
@@ -3635,6 +3658,9 @@ this all in desperation)
 05-09-2007, Furio
 - Fixed #1254: Console error when guild member delete char.
 - Fixed: Login relay problems from localhost.
+- Added #1260: "Setup_Start acct" with IP on the same LOG line.
+- Added #1261: Incognito names in kill logs.
+- Added: CLEARCTAGS (working like cleartags for ctags).
 
 06-09-2007, MrSugarCube
 - Fixed: "GetMapBlock failed at x" errors when logging in or placing a multi
@@ -3654,19 +3680,22 @@ this all in desperation)
 - Modified: Added more "Bad Login x" codes along with expanded descriptions
   to assist in identifying login issues.
 
-16-09-2007, coruja747 (script pack)
+16-09-2007, coruja747 (Script pack)
 - Fixed #1258: ctags will be cleared when leaving admin menu
 
 16-09-2007, nazghul
 - Fixed #1257: Custom damage type didn´t work with COMBAT_USE_RESISTANCE
 
 22-09-2007, nazghul
-- Added: TAG.OVERRIDE.RANGE on items and/or characters overriding the RANGE property of the itemdef/chardef.
+- Added: TAG.OVERRIDE.RANGE on items and/or characters overriding the RANGE 
+  property of the itemdef/chardef.
 
 30-09-2007, nazghul
-- Fixed: not-working tag override of SkillPracticeMax what may have caused problems with Linux builds.
-  Now TAG.OVERRIDE.PRACTICEMAX.SKILL_# (with "#" == "40" for swordsmanship, "42" for fencing, etc.)
-  on a training dummy can override the INI default upto what skill value one can practice with it.
+- Fixed: not-working tag override of SkillPracticeMax what may have caused 
+  problems with Linux builds. Now TAG.OVERRIDE.PRACTICEMAX.SKILL_# 
+  (with "#" == "40" for swordsmanship, "42" for fencing, etc.) on a training 
+  dummy can override the INI default upto what skill value one can practice 
+  with it.
 
 02-10-2007, coruja747 (Script pack)
-- Updated #1224: sphere_admin.scp (Added character updates when modifying flags)
+- Updated #1224: sphere_admin.scp (Added char updates when modifying flags)
