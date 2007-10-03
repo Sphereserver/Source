@@ -269,6 +269,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 
 	CRectMap rectNew;
 	rectNew.SetRectEmpty();
+	rectNew.m_map = GetTopMap();
 
 	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); i++)
 	{
@@ -397,7 +398,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 		{
 			// determine z level based on player's position
 			if ( pClientSrc )
-				z = GetPlaneZ(GetPlane(pClientSrc->GetChar()->GetTopZ()));
+				z = GetPlaneZ(GetPlane(pClientSrc->GetChar()->GetTopZ() - GetTopZ()));
 			else
 				z = 0;
 		}
@@ -1117,7 +1118,7 @@ const CGRect CItemMultiCustom::GetDesignArea()
 	CGRect rect;
 	const CPointMap pt = GetTopPoint();
 	
-	rect.SetRect(m_rectDesignArea.m_left, m_rectDesignArea.m_top, m_rectDesignArea.m_right, m_rectDesignArea.m_bottom, m_rectDesignArea.m_map);
+	rect.SetRect(m_rectDesignArea.m_left, m_rectDesignArea.m_top, m_rectDesignArea.m_right, m_rectDesignArea.m_bottom, GetTopMap());
 	rect.OffsetRect(pt.m_x, pt.m_y);
 
 	return rect;

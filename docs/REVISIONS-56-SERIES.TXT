@@ -3699,3 +3699,6 @@ this all in desperation)
 
 02-10-2007, coruja747 (Script pack)
 - Updated #1224: sphere_admin.scp (Added char updates when modifying flags)
+
+03-10-2007, MrSugarCube
+- Fixed #1269: Fixed house design commit issues on alternate maps.
