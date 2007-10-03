@@ -20,7 +20,8 @@ LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
 #LIBS	= -L/usr/lib -pthread
 #DEFBSD	= -D_BSD
 
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) -D_LINUX
+#EXTRADEFS = -D_NEWGUILDSYSTEM
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) -D_LINUX $(EXTRADEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
