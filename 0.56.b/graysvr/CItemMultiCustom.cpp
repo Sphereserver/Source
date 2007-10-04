@@ -1382,7 +1382,7 @@ bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 
 		case IMCC_DESIGN:
 		{
-			pszKey += 4;
+			pszKey += 6;
 			const CItemBaseMulti *pMultiDef = Multi_GetDef();
 
 			if ( !*pszKey )

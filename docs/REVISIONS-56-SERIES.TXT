@@ -3706,3 +3706,4 @@ this all in desperation)
 
 04-10-2007, MrSugarCube
 - Fixed: House components being affected by OF_OSIMultiSight.
+- Fixed: DESIGN.x.KEY not working on custom housing.
