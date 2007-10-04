@@ -874,9 +874,9 @@ enum RWC_TYPE
 {
 	RWC_DEFNAME,
 	RWC_EVENTS,
-	RWC_RESOURCES,
 	RWC_ISEVENT,
 	RWC_REGION,
+	RWC_RESOURCES,
 	RWC_TAG,
 	RWC_TAG0,
 	RWC_TAGAT,
@@ -888,9 +888,9 @@ LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
 {
 	"DEFNAME",
 	"EVENTS",
-	"RESOURCES",
 	"ISEVENT",
 	"REGION",
+	"RESOURCES",
 	"TAG",
 	"TAG0",
 	"TAGAT",
