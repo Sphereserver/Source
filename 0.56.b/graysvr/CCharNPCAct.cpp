@@ -1673,7 +1673,7 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 	{
 	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
 		if ( pWeaponRange )
-			iWeaponRange = pWeaponRange->GetValNum();
+			iMaxDist = pWeaponRange->GetValNum();
 	}
 
 	// if range is not set on the weapon, default to ini settings
