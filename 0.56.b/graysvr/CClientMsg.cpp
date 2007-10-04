@@ -2620,7 +2620,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 
 		if (fOsiSight)
 		{
-			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->IsTypeMulti() ))
+			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
 				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
 				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))

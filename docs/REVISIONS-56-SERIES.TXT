@@ -3703,3 +3703,6 @@ this all in desperation)
 03-10-2007, MrSugarCube
 - Fixed #1269: Fixed house design commit issues on alternate maps.
 - Fixed #1270: Fixed ISEVENT not working on regions.
+
+04-10-2007, MrSugarCube
+- Fixed: House components being affected by OF_OSIMultiSight.
