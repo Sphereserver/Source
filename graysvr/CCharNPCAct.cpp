@@ -1669,6 +1669,13 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 		iMaxDist = pWeaponDef->RangeL();
 	}
 
+	if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
+	{
+	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
+		if ( pWeaponRange )
+			iWeaponRange = pWeaponRange->GetValNum();
+	}
+
 	// if range is not set on the weapon, default to ini settings
 	if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
 		iMaxDist = g_Cfg.m_iArcheryMaxDist;
