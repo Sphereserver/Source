@@ -2774,6 +2774,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		return( ridinvalid );
 	}
 
+#ifndef _ZORM_IMPROVEMENT
 	if ( iPage )
 	{
 		rid = RESOURCE_ID( restype, index, iPage );
@@ -2802,6 +2803,42 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
 		}
 	}
+#else
+	static DWORD lastUID[RES_QTY] = {0};
+	if ( iPage ) 	{
+		//If there is an iPage, its important information and we have to resort to using
+		//the stupid search method to find a free UID, for the moment.
+		rid = RESOURCE_ID( restype, index, iPage );
+		assert ( iHashRange );
+		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
+		rid.SetPrivateUID((rid.GetPrivateUID()&~0x3ffff)|(lastUID[restype]&0x3ffff));
+		while(true) 		{
+			if ( m_ResHash.FindKey( rid ) < 0 ) 			{
+				lastUID[restype] = rid.GetPrivateUID()+1;
+				break;
+			}
+			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+		}
+		if (lastUID[restype] != 0) 		{
+			rid.SetPrivateUID(lastUID[restype]);
+		}
+	} 	else 	{
+		rid = RESOURCE_ID( restype, index );
+		assert ( iHashRange );
+		// find a new FREE entry starting here
+		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
+		if (lastUID[restype] != 0) 		{
+			rid.SetPrivateUID(lastUID[restype]);
+		}
+		while(true)		{
+			if ( m_ResHash.FindKey( rid ) < 0 ) 			{
+				lastUID[restype] = rid.GetPrivateUID()+1;
+				break;
+			}
+			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+		}
+	}
+#endif
 
 	if ( pszName )
 	{
