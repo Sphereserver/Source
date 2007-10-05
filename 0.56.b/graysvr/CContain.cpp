@@ -885,7 +885,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
 	{
 		// the grid index we've been given is already in use, so find the
 		// first unused grid index
-		for ( gridIndex = 0; (gridIndex < 255 || !bValidGrid); gridIndex++ )
+		for ( gridIndex = 0; (gridIndex < 255 && !bValidGrid); gridIndex++ )
 		{
 			bValidGrid = true;
 
