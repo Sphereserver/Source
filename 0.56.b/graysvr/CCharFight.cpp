@@ -1953,26 +1953,24 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 		int		iDef;
 		iDef	= Calc_GetRandVal( max(pCharDef->m_defense + m_ModAr, 0) );
-
-		if ( ! ( uType & DAMAGE_GENERAL ))
-		{
-			iDmg	= OnTakeDamageHitPoint( iDmg, pSrc, uType );
-
-			if ( uType & DAMAGE_MAGIC )
+	    if ( ! ( uType & DAMAGE_GGOD) )
+			if ( ! ( uType & DAMAGE_GENERAL ))
 			{
-				if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
+				iDmg	= OnTakeDamageHitPoint( iDmg, pSrc, uType );
+
+				if ( uType & DAMAGE_MAGIC )
 				{
-					iDef = 0;
-				} 
-				else 
-				{
-					iDef	/= 2;
+					if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
+					{
+						iDef = 0;
+					} 
+					else 
+					{
+						iDef	/= 2;
+					}
 				}
+				iDmg -= iDef;
 			}
-			iDmg -= iDef;
-		}
-		else if ( ! ( uType & DAMAGE_GOD ))
-		{
 			if ( ! ( IsSetMagicFlags( MAGICF_IGNOREAR ) && (uType & DAMAGE_MAGIC) ) )
 			{
 				// general overall damage.
