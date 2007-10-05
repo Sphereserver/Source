@@ -1817,13 +1817,13 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	i_coldDamage -= (i_coldDamage * m_ResCold) / 100;
 	i_fireDamage -= (i_fireDamage * m_ResFire) / 100;
 
-	if ( (iDmg <= 0) && 
-		 (i_coldDamage <= 0) &&
-		 (i_energyDamage <= 0) &&
-		 (i_fireDamage <= 0) &&
-		 (i_poisonDamage <= 0) )	
+	if ( (iDmg < 0) && 
+		 (i_coldDamage < 0) &&
+		 (i_energyDamage < 0) &&
+		 (i_fireDamage < 0) &&
+		 (i_poisonDamage < 0) )	
 	{
-		DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+		//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
 		return( 0 );
 	}
 
@@ -1901,13 +1901,13 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_coldDamage -= (i_coldDamage * m_ResCold) / 100;
 		i_fireDamage -= (i_fireDamage * m_ResFire) / 100;
 
-		if ( (iDmg <= 0) && 
-			 (i_coldDamage <= 0) &&
-			 (i_energyDamage <= 0) &&
-			 (i_fireDamage <= 0) &&
-			 (i_poisonDamage <= 0) )	
+		if ( (iDmg < 0) && 
+			 (i_coldDamage < 0) &&
+			 (i_energyDamage < 0) &&
+			 (i_fireDamage < 0) &&
+			 (i_poisonDamage < 0) )	
 		{
-			DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+			//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
 			return( 0 );
 		}
 	
