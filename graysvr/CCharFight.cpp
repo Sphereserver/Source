@@ -1953,7 +1953,8 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 		int		iDef;
 		iDef	= Calc_GetRandVal( max(pCharDef->m_defense + m_ModAr, 0) );
-	    if ( ! ( uType & DAMAGE_GGOD) )
+	    if ( ! ( uType & DAMAGE_GOD) )
+		{
 			if ( ! ( uType & DAMAGE_GENERAL ))
 			{
 				iDmg	= OnTakeDamageHitPoint( iDmg, pSrc, uType );
