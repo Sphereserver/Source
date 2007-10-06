@@ -1258,6 +1258,9 @@ void CChar::SoundChar( CRESND_TYPE type )
 			id = pCharDef->m_soundbase + type;
 			switch ( pCharDef->m_soundbase )	// some creatures have no base sounds.
 			{
+				case 0:
+					id = 0;
+					break;
 				case 128: // old versions
 				case 181:
 				case 199:
