@@ -2535,10 +2535,14 @@ bool CChar::NPC_Act_Food()
 		// found any crops or foliage at least (nearby, of course)?
 		if ( pCropItem )
 		{
+#ifdef _NAZDEBUG
 			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s\n", GetName(), pCropItem->GetName() );
+#endif
 			if (GetDist( pCropItem) < 5)
 			{
+#ifdef _NAZDEBUG
 				g_Log.EventError("CChar::NPC_LookAtItem: '%s' is near %s\n", GetName(), pCropItem->GetName() );
+#endif
 				Use_Item( pCropItem );
 				bSearchGrass = false;	// no need to eat grass if at next tick we can eat better stuff
 			}
