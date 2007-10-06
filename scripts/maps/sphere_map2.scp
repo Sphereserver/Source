@@ -508,7 +508,6 @@ NAME=Ancient Lair
 P=86,744,-27,2
 RECT=24,664,136,760,2
 GROUP=Ancient Lair
-RESOURCES=r_Dungeon_Dragon
 FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 
 [AREADEF a_savage_village]

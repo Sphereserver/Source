@@ -3707,3 +3707,7 @@ this all in desperation)
 04-10-2007, MrSugarCube
 - Fixed: House components being affected by OF_OSIMultiSight.
 - Fixed: DESIGN.x.KEY not working on custom housing.
+
+06-10-2007, Fire-Dragon-Dol
+- Updated: sphere_map2.scp (Removed reference to non-existant resource)
+
