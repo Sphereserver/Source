@@ -716,27 +716,6 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 
 		cmd.CompressedGumpDialog.m_len = len;
 		xSend( &cmd, len );
-
-/*
-		TCHAR * buf = Str_GetTemp();
-		TCHAR * buft = Str_GetTemp();
-		BYTE * post = &cmd.CompressedGumpDialog.m_Cmd;
-
-		strcpy(buf, "Packet 0xDD:\n");
-		int poss = 0;
-
-		for ( int ilist = 0; ilist < len; ilist++ )
-		{
-			if ( poss == 0x10 ) { strcat( buf, "\n" ); poss = 0; }
-		
-			sprintf( buft, "0x%0x ", *post );
-			post += 1;
-			poss += 1;
-			strcat( buf, buft );
-		}
-
-		g_Log.Event(0, "%s\n", buf);
-*/
 	}
 	else
 	{
@@ -744,52 +723,67 @@ olddialogprocedure:
 		// Send the fixed length stuff
 		CCommand cmd;
 		memset( &cmd, 0, sizeof( cmd ) );
+		int len = 0;
 
 		cmd.GumpDialog.m_Cmd = XCMD_GumpDialog;
-		cmd.GumpDialog.m_len = lengthText;
+		cmd.GumpDialog.m_len = 0;
 		cmd.GumpDialog.m_UID = pObj->GetUID();
 		cmd.GumpDialog.m_context = context_mode;
 		cmd.GumpDialog.m_x = x;
 		cmd.GumpDialog.m_y = y;
 		cmd.GumpDialog.m_lenCmds = lengthControls;
-		xSend( &cmd, 21, true );
+		len += 21;
 
-		TemporaryString pszMsg;
-		for ( i=0; i<iControls; ++i)
 		{
-			sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);
-			xSend(pszMsg, strlen(pszMsg), true );
+			TemporaryString pszMsg; int mLen = 0;
+			TCHAR * pszFull = new TCHAR[lengthControls];
+
+			for ( i=0; i<iControls; ++i)
+			{
+				sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);	
+				if ( i == 0 )
+					strcpy(pszFull, pszMsg);
+				else
+					strcat(pszFull, pszMsg);
+			}
+
+			memcpy((&cmd.GumpDialog.m_Cmd + len), pszFull, lengthControls);
+			delete [] pszFull;
+
+			len += lengthControls;
 		}
 
-		// Pack up the variable length stuff
-		BYTE Pkt_gump2[3];
-		Pkt_gump2[0] = '\0';
-		PACKWORD( &Pkt_gump2[1], iTexts );
-		xSend( Pkt_gump2, 3, true);
+		//BYTE * m_zeroterm = (BYTE *)(&cmd.GumpDialog.m_Cmd + len);
+		//*m_zeroterm = '\0';
+		//len += sizeof(BYTE);
 
-		// Pack in UNICODE type format.
-		for ( i=0; i < iTexts; i++)
+		NWORD * m_textlines = (NWORD *)(&cmd.GumpDialog.m_Cmd + len);
+		*m_textlines = (WORD) iTexts;
+		len += sizeof(NWORD);
+
 		{
-			int len1 = psText[i].GetLength();
-
-			NWORD len2;
-			len2 = len1;
-			xSend( &len2, sizeof(NWORD), true);
-			if ( len1 )
+			for ( i=0; i < iTexts; i++)
 			{
-				NCHAR szTmp[MAX_TALK_BUFFER];
-				int len3 = CvtSystemToNUNICODE( szTmp, COUNTOF(szTmp), psText[i], -1 );
-				xSend( szTmp, len2*sizeof(NCHAR), true);
+				int lenText_i = psText[i].GetLength();
+				NWORD nlenText_i; nlenText_i = (WORD)lenText_i;
+
+				memcpy((&cmd.GumpDialog.m_Cmd + len), &nlenText_i, sizeof(NWORD));
+				len += sizeof(NWORD);
+
+				if ( lenText_i )
+				{
+					NCHAR szTmp[MAX_TALK_BUFFER];
+					int lenNstring = CvtSystemToNUNICODE( szTmp, COUNTOF(szTmp), psText[i], lenText_i );
+
+					memcpy((&cmd.GumpDialog.m_Cmd + len), &szTmp, sizeof(NCHAR)*lenText_i);
+					len += (sizeof(NCHAR)*lenText_i);
+				}
 			}
 		}
-		
-		// Send the queued dialog
-		xFlush();
+
+		cmd.GumpDialog.m_len = len;
+		xSend( &cmd, len );
 	}
-
-	// m_tmGumpDialog.m_UID = pObj->GetUID();
-
-	// SetTargMode( mode );
 	
 	if ( m_pChar )
 	{
