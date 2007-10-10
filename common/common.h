@@ -19,6 +19,7 @@
 #include <time.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <queue>
 #include <deque>
 #include <vector>
 #include <stack>
