@@ -189,25 +189,29 @@ public:
 
 #ifdef _WIN32
 
-struct STACK_INFO_REC {
-	const char *functionName;
-	LONGLONG	startTime;
-};
-extern STACK_INFO_REC g_stackInfo[0x1000];
-extern long g_stackPos;
+	struct STACK_INFO_REC {
+		const char *functionName;
+		LONGLONG	startTime;
+	};
+	extern STACK_INFO_REC g_stackInfo[0x1000];
+	extern long g_stackPos;
 
-class StackDebugInformation {
-public:
-	StackDebugInformation(const char *name);
-	~StackDebugInformation();
-	
-	static void printStackTrace();
-};
+	class StackDebugInformation {
+	public:
+		StackDebugInformation(const char *name);
+		~StackDebugInformation();
+		
+		static void printStackTrace();
+	};
 
-#define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+#ifdef _DEBUG
+	#define ADDTOCALLSTACK(_function_)
+#else
+	#define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+#endif
 
 #else
-#define ADDTOCALLSTACK(_function_)
+	#define ADDTOCALLSTACK(_function_)
 #endif
 
 #endif

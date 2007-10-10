@@ -583,7 +583,14 @@ bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, int iLen )
 {
 	ADDTOCALLSTACK("CCrypt::Init");
 	bool bReturn = true;
-	// fprintf( stderr, "Called Init\n" );
+
+#ifdef DEBUG_CRYPT_MSGS
+#ifndef _WIN32
+		fprintf(stderr, "Called Init Seed(0x%x)\n", dwIP);
+#else
+		DEBUG_ERR(("Called Init Seed(0x%x)\n", dwIP));
+#endif
+#endif
 	
 	if ( iLen == 62 ) // SERVER_Login 1.26.0
 	{
