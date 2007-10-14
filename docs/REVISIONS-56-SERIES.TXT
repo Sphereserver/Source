@@ -3711,3 +3711,8 @@ this all in desperation)
 06-10-2007, Fire-Dragon-Dol (Script pack)
 - Updated #1274: sphere_map2.scp (Removed reference to non-existant resource)
 
+15-10-2007, MrSugarCube
+- Added #1283: FEATURE_ML_NINTHAGE feature flag in sphere.ini. Setting this
+  enables the crystal and shadow components in custom houses.
+- Fixed #1281: Unable to disembark ships on west-facing planks.
+

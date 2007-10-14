@@ -1682,8 +1682,8 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		//	0x20	Sixth Character Slot
 		//	0x40	Samurai Empire?
 		//	0x80	Elves?
-		//	0x100
-		//	0x200
+		//	0x100	Eighth Age
+		//	0x200	Ninth Age
 		//	0x400
 		//	0x800
 		//	0x1000
@@ -1729,7 +1729,8 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		bResOk = ( res >= RDS_ML );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureML ) ? 0x080 : 0x00;
+			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
+			retValue |= ( this->m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
 		}
 	}
 
@@ -2805,37 +2806,37 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	}
 #else
 	static DWORD lastUID[RES_QTY] = {0};
-	if ( iPage ) 	{
+	if ( iPage ) 
+	{
 		//If there is an iPage, its important information and we have to resort to using
-		//the stupid search method to find a free UID, for the moment.
-		rid = RESOURCE_ID( restype, index, iPage );
-		assert ( iHashRange );
-		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
-		rid.SetPrivateUID((rid.GetPrivateUID()&~0x3ffff)|(lastUID[restype]&0x3ffff));
-		while(true) 		{
-			if ( m_ResHash.FindKey( rid ) < 0 ) 			{
+		//the stupid search method to find a free UID, for the moment. 		rid = RESOURCE_ID( restype, index, iPage );
+		assert ( iHashRange ); 		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
+		rid.SetPrivateUID((rid.GetPrivateUID()&~0x3ffff)|(lastUID[restype]&0x3ffff)); 		while(true) 
+		{
+			if ( m_ResHash.FindKey( rid ) < 0 ) 
+			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
-			}
-			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
-		}
-		if (lastUID[restype] != 0) 		{
+			} 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+		} 		if (lastUID[restype] != 0) 
+		{
 			rid.SetPrivateUID(lastUID[restype]);
 		}
-	} 	else 	{
+	} 
+	else 
+	{
 		rid = RESOURCE_ID( restype, index );
-		assert ( iHashRange );
-		// find a new FREE entry starting here
-		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
-		if (lastUID[restype] != 0) 		{
+		assert ( iHashRange ); 		// find a new FREE entry starting here
+		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange )); 		if (lastUID[restype] != 0) 
+		{
 			rid.SetPrivateUID(lastUID[restype]);
-		}
-		while(true)		{
-			if ( m_ResHash.FindKey( rid ) < 0 ) 			{
+		} 		while(true)
+		{
+			if ( m_ResHash.FindKey( rid ) < 0 ) 
+			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
-			}
-			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+			} 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
 		}
 	}
 #endif

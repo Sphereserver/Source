@@ -3323,7 +3323,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 
 			// don't allow characters to pass through walls or other blocked
 			// paths when they're disembarking from a ship
-			if ( bFromShip && (wBlockFlags & CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) )
+			if ( bFromShip && (wBlockFlags & CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) && (pt.m_z > startZ) )
 			{
 				break;
 			}
