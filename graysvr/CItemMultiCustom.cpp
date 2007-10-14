@@ -1541,20 +1541,29 @@ bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool b
 	else if ( bMulti && (id < ITEMID_MULTI || id > ITEMID_MULTI_MAX) )
 		return false;
 
+	// scripts can place any item
 	if ( pClientSrc == NULL )
 		return true;
 
+	// gms can place any item
 	if ( pClientSrc->IsPriv( PRIV_GM ) )
 		return true;
 
+	// load item lists
 	if ( !LoadValidItems() )
 		return false;
 
+	// check the item exists in the database
 	ValidItemsContainer::iterator it = sm_mapValidItems.find(id);
 	if ( it == sm_mapValidItems.end() )
 		return false;
 
-	return it->second;
+	// check that the client's enabled features contains the item's featuremask
+	int iFeatureFlag = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)pClientSrc->GetResDisp());
+	if ((iFeatureFlag & it->second) != it->second)
+		return false;
+
+	return true;
 }
 
 CItemMultiCustom::ValidItemsContainer CItemMultiCustom::sm_mapValidItems;
@@ -1618,7 +1627,7 @@ bool CItemMultiCustom::LoadValidItems()
 						continue;
 				}
 
-				sm_mapValidItems[itemid] = true;
+				sm_mapValidItems[itemid] = atoi(csvDataRow["FeatureMask"].c_str());
 			}
 		} while ( !csvDataRow.empty() );
 
@@ -1626,7 +1635,7 @@ bool CItemMultiCustom::LoadValidItems()
 	}
 
 	// make sure we have at least 1 item
-	sm_mapValidItems[ITEMID_NOTHING] = false;
+	sm_mapValidItems[ITEMID_NOTHING] = 0xFFFFFFFF;
 	return true;
 	EXC_CATCH;
 

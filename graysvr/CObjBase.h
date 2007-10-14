@@ -1485,7 +1485,7 @@ private:
 	void CopyDesign(DesignDetails * designFrom, DesignDetails * designTo);
 
 private:
-	typedef std::map<ITEMID_TYPE,bool> ValidItemsContainer;
+	typedef std::map<ITEMID_TYPE,int> ValidItemsContainer;	// ItemID, FeatureMask
 	static ValidItemsContainer sm_mapValidItems;
 	static bool LoadValidItems();
 

@@ -144,6 +144,7 @@
 #define FEATURE_SE_UPDATE		0x01	// 0x08 in 0xA9
 #define FEATURE_SE_NINJASAM		0x02	// 0x040 in feature
 #define FEATURE_ML_UPDATE		0x01 	// 0x100 on charlist and 0x0080 for feature to activate
+#define FEATURE_ML_NINTHAGE		0x02	// 0x200 feature (unlock house designer items)
 
 #include "common.h"
 #include "CException.h"
