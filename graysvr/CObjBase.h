@@ -2993,7 +2993,7 @@ public:
 	void Skill_Cleanup();	 // may have just cancelled targetting.
 
 	// test for skill towards making an item
-	int SkillResourceTest( const CResourceQtyArray * pResources, ITEMID_TYPE id );
+	int SkillResourceTest( const CResourceQtyArray * pResources );
 
 	void Spell_Effect_Remove(CItem * pSpell);
 	void Spell_Effect_Add( CItem * pSpell );
