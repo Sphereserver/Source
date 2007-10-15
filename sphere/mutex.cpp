@@ -1,6 +1,9 @@
 #define _WIN32_DCOM
-
 #include "mutex.h"
+
+// *************************
+//		SimpleMutex
+// *************************
 
 SimpleMutex::SimpleMutex()
 {
@@ -42,6 +45,10 @@ void SimpleMutex::unlock()
 #endif
 }
 
+// ****************************
+//		SimpleThreadLock
+// ****************************
+
 SimpleThreadLock::SimpleThreadLock(SimpleMutex &mutex) : m_mutex(mutex), m_locked(true)
 {
 	mutex.lock();
@@ -59,8 +66,44 @@ SimpleThreadLock::operator bool() const
 	return m_locked;
 }
 
-//unlock
-void SimpleThreadLock::setUnlock()
+// ****************************
+//		ManualThreadLock
+// ****************************
+
+ManualThreadLock::ManualThreadLock() : m_locked(false)
 {
-	m_locked = false;        
+}
+
+ManualThreadLock::ManualThreadLock(SimpleMutex * mutex) : m_locked(false)
+{
+	setMutex(mutex);
+}
+
+//the destructor
+ManualThreadLock::~ManualThreadLock()
+{
+	doUnlock();
+}
+
+void ManualThreadLock::setMutex(SimpleMutex * mutex)
+{
+	m_mutex = mutex;
+}
+
+//report the state of locking when used as a boolean
+ManualThreadLock::operator bool() const
+{
+	return m_locked;
+}
+
+void ManualThreadLock::doLock()
+{
+	m_mutex->lock();
+	m_locked = true;
+}
+
+void ManualThreadLock::doUnlock()
+{
+	m_locked = false;
+	m_mutex->unlock();
 }
