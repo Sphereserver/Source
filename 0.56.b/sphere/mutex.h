@@ -28,10 +28,27 @@ public:
 	~SimpleThreadLock();
 
 	operator bool() const;
-	void setUnlock();
 
 private:
 	SimpleMutex &m_mutex;
+	bool m_locked;
+};
+
+class ManualThreadLock
+{
+public:
+	ManualThreadLock();
+	ManualThreadLock(SimpleMutex * mutex);
+	~ManualThreadLock();
+
+	void setMutex(SimpleMutex * mutex);
+
+	operator bool() const;
+	void doLock();
+	void doUnlock();
+
+private:
+	SimpleMutex * m_mutex;
 	bool m_locked;
 };
 
