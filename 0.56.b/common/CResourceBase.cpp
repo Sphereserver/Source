@@ -1320,7 +1320,7 @@ int CResourceQtyArray::FindResourceMatch( CObjBase * pObj ) const
 	return( -1 );
 }
 
-bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar, DWORD dwArg ) const
+bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::IsResourceMatchAll");
 	// Check all required skills and non-consumable items.
@@ -1331,7 +1331,7 @@ bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar, DWORD dwArg ) const
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 
-		if ( ! pChar->IsResourceMatch( ridtest, GetAt(i).GetResQty(), dwArg ))
+		if ( ! pChar->IsResourceMatch( ridtest, GetAt(i).GetResQty() ))
 			return( false );
 	}
 

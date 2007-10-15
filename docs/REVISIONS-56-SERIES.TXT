@@ -3715,4 +3715,5 @@ this all in desperation)
 - Added #1283: FEATURE_ML_NINTHAGE feature flag in sphere.ini. Setting this
   enables the crystal and shadow components in custom houses.
 - Fixed #1281: Unable to disembark ships on west-facing planks.
+- Fixed #1278: Unable to craft crafting tools.
 

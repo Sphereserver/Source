@@ -1014,10 +1014,10 @@ bool CChar::Skill_MakeItem_Success()
 }
 
 
-int CChar::SkillResourceTest( const CResourceQtyArray * pResources, ITEMID_TYPE id )
+int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 {
 	ADDTOCALLSTACK("CChar::SkillResourceTest");
-	return pResources->IsResourceMatchAll( this, (DWORD) id );
+	return pResources->IsResourceMatchAll( this );
 }
 
 
@@ -1064,8 +1064,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		}
 	}
 
-
-	if ( !SkillResourceTest( &(pItemDef->m_SkillMake), fSkillOnly ? (ITEMID_TYPE) 0: id ) )
+	if ( !SkillResourceTest( &(pItemDef->m_SkillMake) ) )
 	{
 		return( false );
 	}

@@ -209,7 +209,7 @@ public:
 	int FindResourceID( RESOURCE_ID_BASE rid ) const;
 	int FindResourceType( RES_TYPE type ) const;
 	int FindResourceMatch( CObjBase * pObj ) const;
-	bool IsResourceMatchAll( CChar * pChar, DWORD dwArg = 0 ) const;
+	bool IsResourceMatchAll( CChar * pChar ) const;
 
 	void setNoMergeOnLoad();
 

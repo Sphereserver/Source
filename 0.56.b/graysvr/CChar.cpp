@@ -1950,7 +1950,7 @@ do_default:
 				if ( *pszKey )
 				{
 					CResourceQtyArray Resources;
-					if ( Resources.Load(pszKey) && SkillResourceTest( &Resources, (ITEMID_TYPE) 0 ) )
+					if ( Resources.Load(pszKey) && SkillResourceTest( &Resources ) )
 					{
 						sVal.FormatVal(1);
 						return true;
