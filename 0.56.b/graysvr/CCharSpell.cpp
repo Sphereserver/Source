@@ -202,8 +202,28 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 				return NULL;
 			}
 		}
-		pChar->NPC_PetSetOwner( this );
 
+#ifdef _NAZTEST
+		// if we cannot control the creature it will not be tame - what might be somewhat risky :)
+		CVarDefCont * pTagStorage = pChar->GetKey("FOLLOWERSLOTS", true);
+		unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+		if ((iFollowerSlotsNeeded + m_pPlayer->m_curFollower) > m_pPlayer->m_maxFollower )
+		{
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SUMMON_NO_SLOTS_FREE) );
+		} else
+		{
+			pChar->NPC_PetSetOwner( this );
+			// now increase curfollowers property
+			m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
+			// send an update packet for the stats
+			CClient * pClient = this->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( this->GetUID() );
+		}
+
+#else
+		pChar->NPC_PetSetOwner( this );
+#endif
 		pChar->OnSpellEffect( SPELL_Summon, this, Skill_GetAdjusted( SKILL_MAGERY ), NULL );
 
 		// ASSERT(pChar->m_pNPC);

@@ -1223,6 +1223,30 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	//pPet->MoveNear( pItem->GetTopLevelObj()->GetTopPoint(), iPaces );
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 
+
+#ifdef _NAZTEST
+	// first check if it's a ridden creature (don't mess with m_curFollower then)
+	CItem * pCheckItem = this->LayerFind( LAYER_HORSE );
+	if (pCheckItem != pItem)
+	{
+		CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
+		unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+		if ((iFollowerSlotsNeeded + m_pPlayer->m_curFollower) > m_pPlayer->m_maxFollower )
+		{
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_UNSHRINK_NO_SLOTS_FREE) );
+			// curse the figurine so the beast is untame
+			pItem->SetAttr( ATTR_CURSED );
+		} else
+		{
+	  		m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
+			// send an update packet for the stats
+			CClient * pClient = this->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( this->GetUID() );
+		}
+	}
+#endif
+
 	if ( ! pItem->IsAttr( ATTR_CURSED|ATTR_CURSED2 ))
 	{
 		pPet->NPC_PetSetOwner( this );
