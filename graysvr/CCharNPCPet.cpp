@@ -129,7 +129,11 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	if ( ! pSrc->IsClient())
 		return( false );
-
+#ifdef _NAZTEST
+	CClient * pClient;
+	CVarDefCont * pTagStorage;
+	unsigned short int iFollowerSlotsNeeded;
+#endif
 	switch ( iCmd )
 	{
 		case PC_ATTACK:
@@ -169,6 +173,21 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			break;
 		case PC_RELEASE:
 			Skill_Start( SKILL_NONE );
+#ifdef _NAZTEST
+			pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
+			iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+			// pet's owner is pSrc
+			if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
+			{
+	  			pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
+			} else
+			{
+				pSrc->m_pPlayer->m_curFollower = 0;
+			}
+			pClient = pSrc->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( this->GetUID() );
+#endif
 			NPC_PetClearOwners();
 			SoundChar( CRESND_RAND2 );	// No noise
 			return( true );
@@ -357,7 +376,37 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 		if ( pCharTarg == NULL )
 			break;
 		if ( pCharTarg->IsClient() )
+		{
+#ifdef _NAZTEST
+			CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
+			unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+			// transferrer is pSrc
+			// transferree is pCharTarg
+			if ((iFollowerSlotsNeeded + pCharTarg->m_pPlayer->m_curFollower) > pCharTarg->m_pPlayer->m_maxFollower )
+			{
+				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TRANSFER_NO_SLOTS_FREE) );
+				break;
+			}
+	  		pCharTarg->m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
+			// send an update packet for the stats
+			CClient * pClient = pCharTarg->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( this->GetUID() );
+
+			// free a follower slot at the transferrer
+			if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
+			{
+	  			pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
+			} else
+			{
+				pSrc->m_pPlayer->m_curFollower = 0;
+			}
+			pClient = pSrc->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( this->GetUID() );
+#endif
 			fSuccess = NPC_PetSetOwner( pCharTarg );
+		}
 		break;
 
 	case PC_KILL:
