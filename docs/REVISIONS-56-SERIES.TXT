@@ -3708,12 +3708,6 @@ this all in desperation)
 - Fixed: House components being affected by OF_OSIMultiSight.
 - Fixed: DESIGN.x.KEY not working on custom housing.
 
-06-10-2007, Fire-Dragon-Dol (Script pack)
-- Updated #1274: sphere_map2.scp (Removed reference to non-existant resource)
-
-15-10-2007, MrSugarCube
-- Added #1283: FEATURE_ML_NINTHAGE feature flag in sphere.ini. Setting this
-  enables the crystal and shadow components in custom houses.
-- Fixed #1281: Unable to disembark ships on west-facing planks.
-- Fixed #1278: Unable to craft crafting tools.
-
+17-10-2007, Nazghul
+- Changed: Behaviour of TAG.OVERRIDE.RANGE. Now the largest TAG value (on weapon 
+  and/or char) takes precedence over the other.
