@@ -2805,7 +2805,9 @@ int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 	if ( !pWeaponDef )
 		return iCharRange ? iCharRange : Char_GetDef()->RangeL();
 
-	return (iCharRange ? iCharRange : Char_GetDef()->RangeL()) + (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL()) - 1;
+	return ( maximum( (iCharRange ? iCharRange : Char_GetDef()->RangeL()) , (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL())) );
+
+	//return (iCharRange ? iCharRange : Char_GetDef()->RangeL()) + (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL()) - 1;
 }
 
 
