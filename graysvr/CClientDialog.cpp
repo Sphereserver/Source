@@ -360,6 +360,24 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			m_iControls++;
 			return true;
 		}
+		case GUMPCTL_CHECKBOX:
+		{
+			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+				return false;
+
+			GET_RELATIVE( x, m_iOriginX );
+			GET_RELATIVE( y, m_iOriginY );
+			GET_ABSOLUTE( down );
+			GET_ABSOLUTE( up );
+			GET_ABSOLUTE( state );
+			GET_ABSOLUTE( id );
+
+			m_sControls[m_iControls].Format( "checkbox %d %d %d %d %d %d", x, y, down, up, state, id );
+
+			m_iControls++;
+			return true;
+			return true;
+		}
 		case GUMPCTL_DORIGIN:
 		{
 			// GET_RELATIVE( x, m_iOriginX );
