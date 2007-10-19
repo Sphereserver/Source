@@ -3720,3 +3720,8 @@ this all in desperation)
 17-10-2007, Nazghul
 - Changed: Behaviour of TAG.OVERRIDE.RANGE. Now the largest TAG value (on weapon 
   and/or char) takes precedence over the other.
+
+18-10-2007, Nazghul
+- Added: TAG.OVERRIDE.TRAINSKILLMAX and TAG.OVERRIDE.TRAINSKILLMAXPERCENT
+  overriding the respective defaults from Sphere.INI based on an individual
+  trainer (NPC).

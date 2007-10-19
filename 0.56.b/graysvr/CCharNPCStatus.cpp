@@ -266,9 +266,27 @@ int CChar::NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetTrainMax");
 	// What is the max I can train to ?
-	int iMax = IMULDIV( g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100 );
-	if ( iMax > g_Cfg.m_iTrainSkillMax )
-		return( g_Cfg.m_iTrainSkillMax );
+	int iMax;
+	int iMaxAllowed;
+
+	CVarDefCont * pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT",true);
+	if ( pValue ) 
+	{
+		iMax = IMULDIV( pValue->GetValNum(), Skill_GetBase(Skill), 100 );
+	} else {
+		iMax = IMULDIV( g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100 );
+	}
+
+	pValue = GetKey("OVERRIDE.TRAINSKILLMAX",true);
+	if ( pValue ) 
+	{
+		iMaxAllowed = pValue->GetValNum();
+	} else {
+		iMaxAllowed = g_Cfg.m_iTrainSkillMax;
+	}
+	
+	if ( iMax > iMaxAllowed )
+		return minimum(iMaxAllowed, pStudent->Skill_GetMax(Skill));
 
 	// Is this more that the student can take ?
 	return minimum(iMax, pStudent->Skill_GetMax(Skill));
