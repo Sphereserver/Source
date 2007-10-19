@@ -3725,3 +3725,12 @@ this all in desperation)
 - Added: TAG.OVERRIDE.TRAINSKILLMAX and TAG.OVERRIDE.TRAINSKILLMAXPERCENT
   overriding the respective defaults from Sphere.INI based on an individual
   trainer (NPC).
+
+19-10-2007, MrSugarCube
+- Fixed #1293: Checkbox positions in dialogs not working with dorigin.
+- Fixed #1292: House designer not working with RESDISP less than 3, a minimum
+  client version of 4.0.0 is still required though.
+- Fixed #511: Character spawn tooltip modified to avoid bad token ID messages
+  with characters using random names (#NAMES_xxx).
+- Fixed: Quest and Guild buttons on the paperdoll not working with RESDISP less
+  than 3.

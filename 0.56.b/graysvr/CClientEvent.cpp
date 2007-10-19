@@ -4717,8 +4717,7 @@ int CClient::xDispatchMsg()
 				RETURN_FALSE();
 			if ( ! xCheckMsgSize( pEvent->ExtAosData.m_len ))
 				RETURN_FALSE();
-			if ( IsResClient( RDS_AOS ) )
-				Event_ExtAosData( (EXTAOS_TYPE)(WORD) pEvent->ExtAosData.m_type, &(pEvent->ExtAosData.m_u), (DWORD) pEvent->ExtAosData.m_uid, pEvent->ExtAosData.m_len-9 );
+			Event_ExtAosData( (EXTAOS_TYPE)(WORD) pEvent->ExtAosData.m_type, &(pEvent->ExtAosData.m_u), (DWORD) pEvent->ExtAosData.m_uid, pEvent->ExtAosData.m_len-9 );
 			break;
 
 		case XCMD_AOSTooltip:

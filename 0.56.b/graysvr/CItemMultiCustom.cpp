@@ -89,6 +89,9 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	if ( m_pArchitect != NULL )
 		EndCustomize(true);
 
+	if ( pClientSrc->GetClientVersion() < 0x0400000 && pClientSrc->GetClientVersionReported() < 0x0400000 )
+		return;
+
 	// copy the main design to working, ready for editing
 	CopyDesign(&m_designMain, &m_designWorking);
 	m_designWorking.m_iRevision++;
@@ -628,6 +631,9 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	// send the design details of this building to the given
 	// client
 	if ( pClientSrc == NULL || !pClientSrc->GetChar() )
+		return;
+
+	if ( pClientSrc->GetClientVersion() < 0x0400000 && pClientSrc->GetClientVersionReported() < 0x0400000 )
 		return;
 
 	DesignDetails * pDesign = NULL;

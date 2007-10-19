@@ -4289,8 +4289,21 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 					case IT_SPAWN_CHAR:
 						{
 							CResourceDef * pSpawnCharDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnChar.m_CharID );
+							LPCTSTR pszName = NULL;
+							if ( pSpawnCharDef )
+							{
+								CCharBase *pCharBase = dynamic_cast<CCharBase*>( pSpawnCharDef );
+								if ( pCharBase )
+									pszName = pCharBase->GetTradeName();
+								else
+									pszName = pSpawnCharDef->GetName();
+
+								while (*pszName == '#')
+									pszName++;
+							}
+
 							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Character\t%s", pSpawnCharDef ? pSpawnCharDef->GetName() : "none" );
+							t->FormatArgs( "Character\t%s", pszName ? pszName : "none" );
 							this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
 							t->FormatArgs( "%d", pItem->m_itSpawnChar.m_DistMax );
 							this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
