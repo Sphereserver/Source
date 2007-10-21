@@ -535,6 +535,7 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 	
 	m_ResDisp = g_Cfg.m_iAutoResDisp;
 	m_PrivFlags = g_Cfg.m_iAutoPrivFlags;
+	m_MaxChars = 0;
 
 	m_Total_Connect_Time = 0;
 	m_Last_Connect_Time = 0;
@@ -975,6 +976,7 @@ enum AC_TYPE
 	AC_LASTCONNECTDATE,
 	AC_LASTCONNECTTIME,
 	AC_LASTIP,
+	AC_MAXCHARS,
 	AC_NAME,
 	AC_NEWPASSWORD,
 	AC_PASSWORD,
@@ -1004,6 +1006,7 @@ LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY+1] = // static
 	"LASTCONNECTDATE",
 	"LASTCONNECTTIME",
 	"LASTIP",
+	"MAXCHARS",
 	"NAME",
 	"NEWPASSWORD",
 	"PASSWORD",
@@ -1088,6 +1091,9 @@ bool CAccount::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 		case AC_LASTIP:
 			sVal = m_Last_IP.GetAddrStr();
+			break;
+		case AC_MAXCHARS:
+			sVal.FormatVal( GetMaxChars() );
 			break;
 		case AC_PLEVEL:
 			sVal.FormatVal( m_PrivLevel );
@@ -1229,6 +1235,9 @@ bool CAccount::r_LoadVal( CScript & s )
 		case AC_LASTIP:
 			m_Last_IP.SetAddrStr( s.GetArgStr());
 			break;
+		case AC_MAXCHARS:
+			SetMaxChars( s.GetArgVal() );
+			break;
 		case AC_PLEVEL:
 			SetPrivLevel( GetPrivLevelText( s.GetArgRaw()));
 			break;
@@ -1298,6 +1307,10 @@ void CAccount::r_Write(CScript &s)
 	if ( GetResDisp() != g_Cfg.m_iAutoResDisp )
 	{
 		s.WriteKeyVal( "RESDISP", GetResDisp() );
+	}
+	if ( m_MaxChars > 0 )
+	{
+		s.WriteKeyVal( "MAXCHARS", m_MaxChars );
 	}
 	if ( IsPriv( PRIV_JAILED ))
 	{

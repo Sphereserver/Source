@@ -1137,12 +1137,15 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				// ussually just a gm command
 				CCommand cmd;
+				int charCount = Setup_FillCharList( cmd.CharList3.m_char, m_pChar );
+				int len = sizeof(cmd.CharList3) + (sizeof(cmd.CharList3.m_char[0]) * (charCount - 1));
+
 				cmd.CharList3.m_Cmd = XCMD_CharList3;
-				cmd.CharList3.m_len = sizeof( cmd.CharList3 );
-				cmd.CharList3.m_count = Setup_FillCharList( cmd.CharList3.m_char, m_pChar );
+				cmd.CharList3.m_len = len;
+				cmd.CharList3.m_count = charCount;
 				cmd.CharList3.m_unk = 0;
 
-				xSendPkt( &cmd, sizeof( cmd.CharList3 ));
+				xSendPkt( &cmd, len);
 
 				CharDisconnect();	// since there is no undoing this in the client.
 				SetTargMode( CLIMODE_SETUP_CHARLIST );

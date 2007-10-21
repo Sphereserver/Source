@@ -2169,6 +2169,7 @@ int CClient::Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharF
 		j++;
 	}
 
+	int iMax = pAccount->GetMaxChars();
 	int iQty = pAccount->m_Chars.GetCharCount();
 	for ( int k=0; k<iQty; k++ )
 	{
@@ -2178,10 +2179,8 @@ int CClient::Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharF
 			continue;
 		if ( pCharFirst == pChar )
 			continue;
-		if ( j >= MAX_CHARS_PER_ACCT )
+		if ( j >= iMax )
 			break;
-
-		// if ( j >= g_Cfg.m_iMaxCharsPerAccount && ! IsPriv(PRIV_GM)) break;
 
 		m_tmSetupCharList[j] = uid;
 		strcpylen( pCharList[j].m_charname, pChar->GetName(), sizeof( pCharList[0].m_charname ));
@@ -2199,9 +2198,9 @@ int CClient::Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharF
 	}
 
 	if ( IsClientVer( 0x300001 ) || IsNoCryptVer(0x300001) || (!m_Crypt.GetClientVer()) )	// the 2nd or wiil fail at this stage
-		return iQty;
+		return maximum( iQty, 5 );
 	else
-		return( MAX_CHARS_PER_ACCT );
+		return 5;
 }
 
 void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt )
@@ -4701,7 +4700,7 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 	}
 
 	// Make sure they don't already have too many chars !
-	int iMaxChars = ( IsPriv( PRIV_GM )) ? MAX_CHARS_PER_ACCT : ( g_Cfg.m_iMaxCharsPerAccount );
+	int iMaxChars = GetAccount()->GetMaxChars();
 	int iQtyChars = GetAccount()->m_Chars.GetCharCount();
 	if ( iQtyChars >= iMaxChars )
 	{
@@ -4826,11 +4825,14 @@ DELETE_ERR_TYPE CClient::Setup_Delete( int iSlot ) // Deletion of character
 	// refill the list.
 
 	CCommand cmd;
+	int charCount = Setup_FillCharList( cmd.CharList2.m_char, GetAccount()->m_uidLastChar.CharFind());
+	int len = sizeof(cmd.CharList2) + (sizeof(cmd.CharList2.m_char[0]) * (charCount - 1));
+
 	cmd.CharList2.m_Cmd = XCMD_CharList2;
-	int len = sizeof( cmd.CharList2 );
 	cmd.CharList2.m_len = len;
-	cmd.CharList2.m_count = Setup_FillCharList( cmd.CharList2.m_char, GetAccount()->m_uidLastChar.CharFind());
-	xSendPkt( &cmd, len );
+	cmd.CharList2.m_count = charCount;
+
+	xSendPkt( &cmd, len);
 
 	return( DELETE_SUCCESS );
 }
@@ -4889,35 +4891,39 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 	{
 		CCommand cmd;
 		cmd.FeaturesEnable.m_Cmd = XCMD_Features;
-		cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp());
+		cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), GetAccount()->GetMaxChars());
 		// Here always use xSendPktNow, since this packet has to be separated from the next one
 		xSendPktNow( &cmd, sizeof( cmd.FeaturesEnable ));
 	}
 
 	CCommand cmd;
-	cmd.CharList.m_Cmd = XCMD_CharList;
-	int len = sizeof( cmd.CharList ) - sizeof(cmd.CharList.m_start) + ( g_Cfg.m_StartDefs.GetCount() * sizeof(cmd.CharList.m_start[0]));
-	cmd.CharList.m_len = len;
-	NDWORD *	flags	= (NDWORD*) (&(cmd.CharList.m_Cmd) + len - sizeof(NDWORD));
-
-	*flags	= g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)GetAccount()->GetResDisp());
+	CCommand *pCmdOffset = &cmd;
 
 	// list chars to your account that may still be logged in !
 	// "LASTCHARUID" = list this one first.
-	cmd.CharList.m_count = Setup_FillCharList( cmd.CharList.m_char, pCharLast );
+	int charCount = Setup_FillCharList( cmd.CharList.m_char, pCharLast );
+	pCmdOffset = (CCommand *)(((BYTE *)pCmdOffset) + (sizeof(cmd.CharList.m_char[0]) * (charCount - 1)));
 
 	// now list all the starting locations. (just in case we create a new char.)
 	// NOTE: New Versions of the client just ignore all this stuff.
-
-	int iCount = g_Cfg.m_StartDefs.GetCount();
-	cmd.CharList.m_startcount = iCount;
-	for ( int i=0;i<iCount;i++)
+	int startCount = g_Cfg.m_StartDefs.GetCount();
+	for (int i = 0; i < startCount; i++)
 	{
-		cmd.CharList.m_start[i].m_id = i+1;
-		strcpylen( cmd.CharList.m_start[i].m_area, g_Cfg.m_StartDefs[i]->m_sArea, sizeof(cmd.CharList.m_start[i].m_area));
-		strcpylen( cmd.CharList.m_start[i].m_name, g_Cfg.m_StartDefs[i]->m_sName, sizeof(cmd.CharList.m_start[i].m_name));
+		pCmdOffset->CharList.m_start[i].m_id = i + 1;
+		strcpylen( pCmdOffset->CharList.m_start[i].m_area, g_Cfg.m_StartDefs[i]->m_sArea, sizeof(cmd.CharList.m_start[i].m_area));
+		strcpylen( pCmdOffset->CharList.m_start[i].m_name, g_Cfg.m_StartDefs[i]->m_sName, sizeof(cmd.CharList.m_start[i].m_name));
 	}
 
+	// fill in the remaining data
+	int len = sizeof(cmd.CharList) + ((charCount - 1) * sizeof(cmd.CharList.m_char[0])) + ((startCount - 1) * sizeof(cmd.CharList.m_start[0]));
+
+	cmd.CharList.m_Cmd = XCMD_CharList;
+	cmd.CharList.m_len = len;
+	cmd.CharList.m_count = charCount;
+
+	pCmdOffset->CharList.m_startcount = startCount;
+	pCmdOffset = (CCommand *)(((BYTE *)pCmdOffset) + (sizeof(cmd.CharList.m_start[0]) * (startCount - 1)));
+	pCmdOffset->CharList.m_flags = g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), GetAccount()->GetMaxChars());
 
 	xSendPkt( &cmd, len );
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;

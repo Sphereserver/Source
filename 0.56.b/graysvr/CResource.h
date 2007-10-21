@@ -625,7 +625,7 @@ public:
 	int  m_iGuestsMax;		// Allow guests who have no accounts ?
 	int  m_iClientLingerTime;	// How long logged out clients linger in seconds.
 	int  m_iMinCharDeleteTime;	// How old must a char be ? (minutes)
-	int  m_iMaxCharsPerAccount;	// MAX_CHARS_PER_ACCT
+	int  m_iMaxCharsPerAccount;	// Maximum characters allowed on an account.
 	bool m_fLocalIPAdmin;		// The local ip is the admin ?
 	bool m_fMd5Passwords;		// Should MD5 hashed passwords be used?
 
@@ -895,7 +895,7 @@ public:
 	void PrintEFOFFlags( bool bEF = true, bool bOF = true, CTextConsole *pSrc = NULL );
 
 	// ResDisp Flag
-	int GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res = RDS_T2A );
+	int GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res = RDS_T2A, unsigned char chars = 5 );
 
 	// Specialized resource accessors.
 

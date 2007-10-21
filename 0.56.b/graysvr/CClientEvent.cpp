@@ -4304,7 +4304,7 @@ int CClient::xDispatchMsg()
 			case XCMD_Spy2:
 			{
 				EXC_SET("not logged - spy");
-				int wSpyLen = ( pEvent->Default.m_Cmd == XCMD_Spy ) ? CCrypt::GetPacketSize(XCMD_Spy) : min(MAX_BUFFER,maximum(CCrypt::GetPacketSize(XCMD_Spy2), pEvent->Spy2.m_len));
+				int wSpyLen = ( pEvent->Default.m_Cmd == XCMD_Spy ) ? CCrypt::GetPacketSize(XCMD_Spy) : minimum(MAX_BUFFER,maximum(CCrypt::GetPacketSize(XCMD_Spy2), pEvent->Spy2.m_len));
 				if ( !xCheckMsgSize( wSpyLen ) )
 				{
 					if ( xCheckMsgSize0( wSpyLen ) )
@@ -4400,6 +4400,24 @@ int CClient::xDispatchMsg()
 	if ( m_pChar == NULL )
 	{
 		EXC_SET("no char");
+
+		switch ( pEvent->Default.m_Cmd )
+		{
+			case XCMD_ExtData:
+				EXC_SET("no char - ext data");
+				if ( ! xCheckMsgSize(3))
+					RETURN_FALSE();
+				if ( ! xCheckMsgSize( pEvent->ExtData.m_len ))
+					RETURN_FALSE();
+				return 1;
+			case XCMD_ExtAosData:
+				EXC_SET("no char - ext aos");
+				if ( ! xCheckMsgSize(3))
+					RETURN_FALSE();
+				if ( ! xCheckMsgSize( pEvent->ExtAosData.m_len ))
+					RETURN_FALSE();
+				return 1;
+		}
 		RETURN_FALSE();
 	}
 

@@ -3734,3 +3734,14 @@ this all in desperation)
   with characters using random names (#NAMES_xxx).
 - Fixed: Quest and Guild buttons on the paperdoll not working with RESDISP less
   than 3.
+
+20-10-2007, MrSugarCube
+- Fixed #1295: Radio positions in dialogs not working with dorigin.
+- Modified: MAXCHARSPERACCOUNT limit has been raised to 7. Note that the client
+  must support extra character slot(s) for them to be visible at the character
+  selection menu, older clients can only display 5 or 6.
+- Added: MAXCHARS property to accounts. Setting it to 0 will link it to
+  MAXCHARSPERACCOUNT in the ini (default behaviour).
+
+21-10-2007, MrSugarCube
+- Fixed #1297: No resources lost when failing to craft.
