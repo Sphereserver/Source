@@ -40,6 +40,7 @@ private:
 	WORD m_PrivFlags;			// optional privileges for char (bit-mapped)
 
 	BYTE m_ResDisp;
+	BYTE m_MaxChars;
 	
 	typedef struct { long m_First; long m_Last; long m_Delay; } TimeTriesStruct_t;
 	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
@@ -144,6 +145,15 @@ public:
 	bool IsResDisp(BYTE what) const
 	{
 		return ( (m_ResDisp == what) ? true : false );
+	}
+
+	BYTE GetMaxChars() const
+	{
+		return minimum(m_MaxChars > 0? m_MaxChars : g_Cfg.m_iMaxCharsPerAccount, MAX_CHARS_PER_ACCT);
+	}
+	void SetMaxChars(BYTE chars)
+	{
+		m_MaxChars = minimum(chars, MAX_CHARS_PER_ACCT);
 	}
 	
 	

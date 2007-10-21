@@ -57,7 +57,7 @@ CResource::CResource()
 	m_iClientLingerTime = 60 * TICK_PER_SEC;
 	m_iDeadSocketTime = 5*60*TICK_PER_SEC;
 	m_iMinCharDeleteTime = 3*24*60*60*TICK_PER_SEC;
-	m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
+	m_iMaxCharsPerAccount = 5;
 	m_fLocalIPAdmin = true;
 
 	// Save
@@ -1620,7 +1620,7 @@ void	CResource::LoadSortSpells()
 
 //*************************************************************
 
-int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
+int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned char chars )
 {
 	int retValue = 0;
 	bool bResOk = false;
@@ -1628,17 +1628,18 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 	if ( bCharlist )
 	{
 		//	BYTE[4] Flags
-		//		0x01	= unknown
-		//		0x02	= send config/req logout (IGR?)
-		//		0x04	= single character (siege) (alternative seen, Limit Characters)
-		//		0x08	= enable npcpopup menus
-		//		0x10	= unknown, (alternative seen, single character)
-		//		0x20	= enable common AOS features (tooltip thing/fight system book, but not AOS monsters/map/skills)
-		//		0x40	= Sixth Character Slot?
-		//		0x80	= Samurai Empire?
-		//		0x100	= Elf races?
-		//		0x200	= Flag KR Unknown 1
-		//		0x400	= Flag KR Unknown 2
+		//		0x0001	= unknown
+		//		0x0002	= send config/req logout (IGR?)
+		//		0x0004	= single character (siege) (alternative seen, Limit Characters)
+		//		0x0008	= enable npcpopup menus
+		//		0x0010	= unknown, (alternative seen, single character)
+		//		0x0020	= enable common AOS features (tooltip thing/fight system book, but not AOS monsters/map/skills)
+		//		0x0040	= Sixth Character Slot?
+		//		0x0080	= Samurai Empire?
+		//		0x0100	= Elf races?
+		//		0x0200	= Flag KR Unknown 1
+		//		0x0400	= Flag KR Unknown 2
+		//		0x1000	= Seventh Character Slot
 
 		// T2A - LBR don't have char list flags
 		bResOk = ( res >= RDS_AOS );
@@ -1646,8 +1647,6 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		{
 			retValue |= ( (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) ) ? 0x020 : 0x00;
 			retValue |= ( this->m_iFeatureAOS & FEATURE_AOS_POPUP ) ? 0x008 : 0x00;
-			retValue |= ( (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) && (this->m_iMaxCharsPerAccount == 1) ) ? ( 0x010 | 0x004 ) : 0x00;
-			retValue |= ( (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) && (this->m_iMaxCharsPerAccount == 6) ) ? 0x040 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SE );
@@ -1669,24 +1668,28 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 			retValue |= 0x200 | 0x400;
 		}
 #endif
+		
+		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
+		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
+		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
 	}
 	else
 	{
 		//         BYTE[2] feature#
-		//	0x01	T2A upgrade, enables chatbutton
-		//	0x02	Enables LBR update.  (of course LBR installation is required)
+		//	0x0001	T2A upgrade, enables chatbutton
+		//	0x0002	Enables LBR update.  (of course LBR installation is required)
 		//			(plays MP3 instead of midis, 2D LBR client shows new LBR monsters, ... )
-		//	0x04	Unknown, never seen it set	(single char?)
-		//	0x08	Unknown, set on OSI servers that have AOS code - no matter of account status (doesn�t seem to �unlock/lock� anything on client side)
-		//	0x10	Enables AOS update (necro/paladin skills for all clients, malas map/AOS monsters if AOS installation present)
-		//	0x20	Sixth Character Slot
-		//	0x40	Samurai Empire?
-		//	0x80	Elves?
-		//	0x100	Eighth Age
-		//	0x200	Ninth Age
-		//	0x400
-		//	0x800
-		//	0x1000
+		//	0x0004	Unknown, never seen it set	(single char?)
+		//	0x0008	Unknown, set on OSI servers that have AOS code - no matter of account status (doesn�t seem to �unlock/lock� anything on client side)
+		//	0x0010	Enables AOS update (necro/paladin skills for all clients, malas map/AOS monsters if AOS installation present)
+		//	0x0020	Sixth Character Slot
+		//	0x0040	Samurai Empire?
+		//	0x0080	Elves?
+		//	0x0100	Eighth Age
+		//	0x0200	Ninth Age
+		//	0x0400
+		//	0x0800
+		//	0x1000	Seventh Character Slot
 		//	0x2000
 		//	0x4000
 		//	0x8000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
@@ -1717,7 +1720,6 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 		if ( bResOk )
 		{
 			retValue |= ( this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A ) ? 0x08010 : 0x00;
-			retValue |= ( (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) && (this->m_iMaxCharsPerAccount == 6) ) ? 0x020 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SE );
@@ -1732,6 +1734,9 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res )
 			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
 			retValue |= ( this->m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
 		}
+		
+		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;
+		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
 	}
 
 	return( retValue );

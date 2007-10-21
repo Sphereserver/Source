@@ -1054,7 +1054,7 @@ struct CEvent	// event buffer from client to server..
 #define MAX_ITEMS_CONT		256		// Max items in a container. (arbitrary)
 #define MAX_ITEMS_VENDOR	115		// Max items for client not to crash (arbitary)
 #define MAX_MENU_ITEMS		64		// number of items in a menu. (arbitrary)
-#define MAX_CHARS_PER_ACCT	5
+#define MAX_CHARS_PER_ACCT	7
 
 	// Some messages are bydirectional.
 
@@ -2344,7 +2344,7 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_len;
 			BYTE m_count;
 			BYTE m_unk;	// ? not sure.
-			CEventCharDef m_char[MAX_CHARS_PER_ACCT];
+			CEventCharDef m_char[1];
 		} CharList3;
 
 		struct // size = 2
@@ -2364,7 +2364,7 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;		// 0 = 0x86
 			NWORD m_len;
 			BYTE m_count;
-			CEventCharDef m_char[MAX_CHARS_PER_ACCT];
+			CEventCharDef m_char[1];
 		} CharList2;
 
 		struct // size = 66
@@ -2533,7 +2533,7 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;		// 0 = 0xa9
 			NWORD m_len;	// 1-2 = var len
 			BYTE m_count;	// 3=5 needs to be 5 for some reason.
-			CEventCharDef m_char[MAX_CHARS_PER_ACCT];
+			CEventCharDef m_char[1];
 
 			BYTE m_startcount;
 			struct	// size = 63
@@ -2542,7 +2542,7 @@ struct CCommand	// command buffer from server to client.
 				char m_area[MAX_NAME_SIZE+1];
 				char m_name[MAX_NAME_SIZE+1];
 			} m_start[1];
-			NDWORD	flags;
+			NDWORD	m_flags;
 		} CharList;
 
 		struct // size = 5 = response to attack.
