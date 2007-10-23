@@ -50,9 +50,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
 	m_amount = 1;
-#ifdef __UOKRSCARYADDONS
 	m_containedGridIndex = 0;
-#endif
 
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;
@@ -1995,10 +1993,8 @@ void CItem::r_Write( CScript & s )
 		if ( pCont->IsItem() )
 		{
 			s.WriteKey("P", GetContainedPoint().WriteUsed());
-#ifdef __UOKRSCARYADDONS
 			if ( GetContainedGridIndex() )
 				s.WriteKeyVal("CONTGRID", GetContainedGridIndex());
-#endif
 		}
 	}
 	else
@@ -2114,9 +2110,7 @@ enum IC_TYPE
 	IC_AMOUNT,
 	IC_ATTR,
 	IC_CONT,
-#ifdef __UOKRSCARYADDONS
 	IC_CONTGRID,
-#endif
 	IC_CONTP,
 	IC_DISPID,
 	IC_DISPIDDEC,
@@ -2156,9 +2150,7 @@ LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
 	"AMOUNT",
 	"ATTR",
 	"CONT",
-#ifdef __UOKRSCARYADDONS
 	"CONTGRID",
-#endif
 	"CONTP",
 	"DISPID",
 	"DISPIDDEC",
@@ -2228,13 +2220,11 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				sVal.FormatHex( pCont ? ((DWORD) pCont->GetUID() ) : 0 );
 			}
 			break;
-#ifdef __UOKRSCARYADDONS
 		case IC_CONTGRID:
 			if ( !IsItemInContainer() )
 				return false;
 			sVal.FormatVal(GetContainedGridIndex());
 			break;
-#endif
 		case IC_CONTP:
 			{
 				CObjBase * pContainer = GetContainer();
@@ -2419,13 +2409,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				}
 				return normcont;
 			}
-#ifdef __UOKRSCARYADDONS
 		case IC_CONTGRID:
 			if ( !IsItemInContainer() )
 				return false;
 			SetContainedGridIndex(s.GetArgVal());
 			return true;
-#endif
 		case IC_CONTP:
 			{
 				CPointMap pt;	// invalid point
@@ -3293,11 +3281,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 			if ( ! pClient->CanSee( this ))
 				continue;
 
-#ifdef __UOKRSCARYADDONS
 			if ( pClient->GetClientVersion() >= 0x0600018 || pClient->GetClientVersionReported() >= 0x0600018 || pClient->IsClientKR() )
-#else
-			if ( pClient->GetClientVersion() >= 0x0600018 || pClient->GetClientVersionReported() >= 0x0600018 )
-#endif
 				pClient->xSendPkt( &cmdNew, sizeof(cmd.ContAddNew) );
 			else
 				pClient->xSendPkt( &cmd, sizeof(cmd.ContAdd) );

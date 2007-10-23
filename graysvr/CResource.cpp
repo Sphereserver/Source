@@ -147,6 +147,7 @@ CResource::CResource()
 	m_iFeatureAOS		= 0;
 	m_iFeatureSE		= 0;
 	m_iFeatureML		= 0;
+	m_iFeatureKR		= 0;
 
 	m_iStatFlag = 0;
 
@@ -355,6 +356,7 @@ enum RC_TYPE
 	RC_EXPERIENCESYSTEM,	// m_bExperienceSystem
 	RC_EXPERIMENTAL,		// m_iExperimental
 	RC_FEATURESAOS,
+	RC_FEATURESKR,
 	RC_FEATURESLBR,
 	RC_FEATURESML,
 	RC_FEATURESSE,
@@ -535,6 +537,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "EXPERIENCESYSTEM",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bExperienceSystem)	}},
 	{ "EXPERIMENTAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iExperimental)	}},
 	{ "FEATUREAOS",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureAOS)	}},
+	{ "FEATUREKR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureKR)	}},
 	{ "FEATURELBR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureLBR)	}},
 	{ "FEATUREML",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureML)	}},
 	{ "FEATURESE",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureSE)	}},
@@ -1661,13 +1664,11 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 			retValue |= ( this->m_iFeatureML ) ? 0x0100 : 0x00;
 		}
 
-#ifdef __UOKRSCARYADDONS
 		bResOk = ( res >= RDS_KR );
 		if ( bResOk )
 		{
-			retValue |= 0x200 | 0x400;
+			retValue |= ( this->m_iFeatureKR ) ? (0x200 | 0x400) : 0x00;
 		}
-#endif
 		
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;

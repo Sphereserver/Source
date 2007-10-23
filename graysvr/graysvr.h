@@ -126,9 +126,7 @@ enum RESDISPLAY_VERSION
 	RDS_AOS,
 	RDS_SE,
 	RDS_ML,
-#ifdef __UOKRSCARYADDONS
 	RDS_KR,
-#endif
 	RDS_QTY,
 };
 
@@ -761,9 +759,7 @@ private:
 
 	// Reported ClientVersion
 	bool m_bClient3d;
-#ifdef __UOKRSCARYADDONS
 	bool m_bClientKR;
-#endif
 	int m_reportedCliver;
 
 	// Screensize
@@ -807,9 +803,7 @@ public:
 private:
 	CLIMODE_TYPE m_Targ_Mode;	// Type of async operation under way.
 public:
-#if __UOKRSCARYADDONS
 	CGrayUID m_Targ_Last;	// The last object targeted by the client
-#endif
 	CGrayUID m_Targ_UID;			// The object of interest to apply to the target.
 	CGrayUID m_Targ_PrvUID;		// The object of interest before this.
 	CGString m_Targ_Text;		// Text transfered up from client.
@@ -1076,11 +1070,9 @@ private:
 	bool Event_WalkingCheck(DWORD dwEcho);
 	void Event_AOSItemInfo( int count , const NDWORD * uidList );
 	void Event_AllNames3D( CGrayUID uid );
-#ifdef __UOKRSCARYADDONS
 	void Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
 	void Event_MacroEquipItems( const NDWORD * pItems, int count );
 	void Event_MacroUnEquipItems( const NWORD * pLayers, int count );
-#endif
 
 public:
 	inline void Event_VendorSell_Cheater( int iCode = 0 );
@@ -1233,9 +1225,7 @@ public:
 	void addTargetVerb( LPCTSTR pCmd, LPCTSTR pArg );
 	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround );
 	void addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime );
-#ifdef __UOKRSCARYADDONS
 	void addTargetCancel();
-#endif
 	void addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage );
 
 	void addScrollScript( CResourceLock &s, SCROLL_TYPE type, DWORD dwcontext = 0, LPCTSTR pszHeader = NULL );
@@ -1309,11 +1299,7 @@ private:
 	short int m_PopupLen;
 
 public:
-#ifdef __UOKRSCARYADDONS
-	void AOSPopupMenuAdd( WORD entrytag, DWORD textid, WORD flags );
-#else
 	void AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags, WORD color );
-#endif
 	void Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag );
 	void Event_AOSPopupMenuRequest( DWORD uid );
 
@@ -1448,12 +1434,10 @@ public:
 		return m_reportedCliver;
 	}
 
-#ifdef __UOKRSCARYADDONS
 	bool IsClientKR()
 	{
 		return m_bClientKR;
 	}
-#endif
 
 private:
 	CGString	m_BarkBuffer;
