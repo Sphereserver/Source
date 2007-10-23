@@ -807,11 +807,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		0 ));
 }
 
-#ifdef __UOKRSCARYADDONS
 void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char gridIndex )
-#else
-void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
-#endif
 {
 	ADDTOCALLSTACK("CItemContainer::ContentAdd");
 	// Add to CItemContainer
@@ -865,7 +861,6 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
 			pt = GetRandContainerLoc();
 	}
 
-#ifdef __UOKRSCARYADDONS
 	bool bValidGrid = true;
 	{	
 		// check that the grid index isn't already in use
@@ -904,13 +899,10 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt )
 				break;
 		}
 	}
-#endif
 
 	CContainer::ContentAddPrivate( pItem );
 	pItem->SetContainedPoint( pt );
-#ifdef __UOKRSCARYADDONS
 	pItem->SetContainedGridIndex( gridIndex );
-#endif
 
 	switch ( GetType())
 	{

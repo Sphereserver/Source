@@ -752,6 +752,7 @@ public:
 	int		m_iFeatureAOS;
 	int		m_iFeatureSE;
 	int		m_iFeatureML;
+	int		m_iFeatureKR;
 	
 	int		m_iMaxLoopTimes;
 #define	STAT_FLAG_NORMAL	0x00	//	MAX* status allowed (default)

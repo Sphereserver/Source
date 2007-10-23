@@ -63,9 +63,7 @@ CClient::CClient( SOCKET client ) :
 	m_tNextPickup.Init();
 	m_reportedCliver = 0;
 	m_bClient3d = false; // Client by default are 2d
-#ifdef __UOKRSCARYADDONS
 	m_bClientKR = false;
-#endif
 	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
 	m_LastTooltipSend = 0;
@@ -671,15 +669,9 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		index = CC_SCREENSIZE;
 	else if ( !strnicmp( "REPORTEDCLIVER", pszKey, 14 ) && ( pszKey[14] == '\0' || pszKey[14] == '.' ) )
 		index = CC_REPORTEDCLIVER;
-#ifdef __UOKRSCARYADDONS
-	else if ( !strcmpi( "CLIENTISKR", pszKey ) )
-	{
-		sVal.FormatVal( m_bClientKR );
-		return true;
-	}
-#endif
 	else
 		index	= FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
+
 	switch (index)
 	{
 		case CC_ALLMOVE:
@@ -690,6 +682,9 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case CC_CLIENTIS3D:
 			sVal.FormatVal( m_bClient3d );
+			break;
+		case CC_CLIENTISKR:
+			sVal.FormatVal( m_bClientKR );
 			break;
 		case CC_CLIENTVERSION:
 			{
@@ -1051,9 +1046,6 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 				DWORD textid = Exp_GetVal(ppLocArgs[1]);
 
-#ifdef __UOKRSCARYADDONS
-				AOSPopupMenuAdd( entrytag, int(textid), Exp_GetVal(ppLocArgs[2]) );
-#else
 				if ( textid > 32767 )
 				{
 					if ( ( textid >= 3000000 ) && ( textid <= 3032767) )
@@ -1067,7 +1059,6 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				AOSPopupMenuAdd( entrytag, int(textid), Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]) );
-#endif
 			}
 			break;
 		case CV_ARROWQUEST:

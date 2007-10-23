@@ -286,10 +286,7 @@ private:
 	WORD m_wDispIndex;		// The current display type. ITEMID_TYPE
 	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
-
-#ifdef __UOKRSCARYADDONS
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
-#endif
 
 public:
 	// Attribute flags.
@@ -892,7 +889,6 @@ public:
 		return pObj->GetTopLevelObj();
 	}
 
-#ifdef __UOKRSCARYADDONS
 	unsigned char GetContainedGridIndex() const
 	{
 		return m_containedGridIndex;
@@ -902,7 +898,6 @@ public:
 	{
 		m_containedGridIndex = index;
 	}
-#endif
 
 	LPCTSTR GetKeyStr( LPCTSTR pszKey ) const
 	{
@@ -1311,11 +1306,7 @@ public:
 	void OnWeightChange( int iChange );
 
 	void ContentAdd( CItem * pItem );
-#ifdef __UOKRSCARYADDONS
 	void ContentAdd( CItem * pItem, CPointMap pt, unsigned char gridIndex = 0 );
-#else
-	void ContentAdd( CItem * pItem, CPointMap pt );
-#endif
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
@@ -2214,9 +2205,7 @@ enum CTRIG_TYPE
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
 
 	// Packet related triggers
-#ifdef __UOKRSCARYADDONS
 	CTRIG_UserBugReport,
-#endif
 	CTRIG_UserChatButton,
 	CTRIG_UserExtCmd,
 	CTRIG_UserExWalkLimit,
@@ -3158,12 +3147,8 @@ public:
 	int  Fight_CalcDamage( CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
 
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
-#ifdef __UOKRSCARYADDONS
 	void InitPlayer( CClient * pClient, CEvent * pEvent, bool bCreateNew = false );
 	void InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, bool bElf, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  );
-#else
-	void InitPlayer( const CEvent * pEvent, CClient * pClient );
-#endif
 	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
 	bool ReadScript(CResourceLock &s, bool bVendor = false);
 	void NPC_LoadScript( bool fRestock );

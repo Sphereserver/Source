@@ -788,7 +788,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	ASSERT( iLen <= sizeof(bincopy));
 	memcpy( bincopy.m_Raw, pEvent->m_Raw, iLen );
 
-	if ( !m_Crypt.Init( m_tmSetup.m_dwIP, bincopy.m_Raw, iLen ) )
+	if ( !m_Crypt.Init( m_tmSetup.m_dwIP, bincopy.m_Raw, iLen, IsClientKR() ) )
 	{
 		DEBUG_MSG(( "%x:Odd login message length %d?\n", m_Socket.GetSocket(), iLen ));
 		addLoginErr( LOGIN_ERR_ENC_BADLENGTH );
@@ -1178,11 +1178,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 	}
 	else if ( GetConnectType() == CONNECT_GAME )
 	{
-#ifdef __UOKRSCARYADDONS
-		if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !m_bClientKR )
-#else
-		if ( IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 ) )
-#endif
+		if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !IsClientKR() )
 			if ( !bQueue )
 				xFlush();
 	}
@@ -1275,12 +1271,13 @@ bool CClient::xRecvData() // Receive message from client
 		SetConnectType( CONNECT_CRYPT );
 		if ( iCountNew <= 0 )
 		{
-#ifdef __UOKRSCARYADDONS
 			if (m_tmSetup.m_dwIP == 0xFFFFFFFF)
 			{
 				// UOKR Client opens connection with 255.255.255.255
-				DEBUG_ERR(("UOKR Client Detected.\n"));
+				DEBUG_WARN(("UOKR Client Detected.\n"));
 				m_bClientKR = true;
+				
+				/*
 				BYTE pData[77] = {	0xe3,
 									0x00, 0x4d,
 									0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,
@@ -1310,19 +1307,19 @@ bool CClient::xRecvData() // Receive message from client
 									0x00, 0x00, 0x00, 0x20,
 									0x00, 0x00, 0x00, 0x10, 0x00, 0xce, 0x3e, 0xe3, 0x97, 0x92, 0xe4, 0x8a, 0xf1, 0x9a, 0xd3, 0x04, 0x41, 0x03, 0xcb, 0x53 };
 				*/
-				/*
+				
 				// Attempt to zero as much as possible
-				BYTE pData3[77] = {0xe3,
+				static BYTE pDataKR_E3[77] = {0xe3,
 									0x00, 0x4d,
 									0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,
 									0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0x00, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
 									0x00, 0x00, 0x00, 0x10, 0x00, 0x13, 0xb7, 0x00, 0xce, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 									0x00, 0x00, 0x00, 0x20,
 									0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				*/
-				this->xSend(pData, 77);
+
+				xSend(pDataKR_E3, 77);
 			}
-#endif
+
 			return( true );
 		}
 
@@ -1349,7 +1346,6 @@ bool CClient::xRecvData() // Receive message from client
 				SetConnectType( CONNECT_UNK );
 				return( OnRxPing( Event.m_Raw, iCountNew ) );
 			}
-#ifdef __UOKRSCARYADDONS
 			else if ( Event.Default.m_Cmd == XCMD_EncryptionReply )
 			{
 				int iEncKrLen = Event.EncryptionReply.m_len;
@@ -1364,7 +1360,6 @@ bool CClient::xRecvData() // Receive message from client
 					return( xProcessClientSetup( (CEvent*)(Event.m_Raw+iEncKrLen), iCountNew ));
 				}
 			}
-#endif
 
 			// try to figure out which client version we are talking to.
 			// (CEvent::ServersReq) or (CEvent::CharListReq)

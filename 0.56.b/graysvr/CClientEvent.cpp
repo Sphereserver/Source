@@ -321,26 +321,17 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 	CGrayUID uidItem( pEvent->ItemDropReq.m_UID );
 	CItem * pItem = uidItem.ItemFind();
 	CGrayUID uidOn;	// dropped on this item.
-#ifdef __UOKRSCARYADDONS
 	unsigned char gridIndex;
 
-	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
-#else
-
-	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
-#endif
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() )
 	{
 		uidOn = (DWORD)pEvent->ItemDropReqNew.m_UIDCont;
-#ifdef __UOKRSCARYADDONS
 		gridIndex = pEvent->ItemDropReqNew.m_grid;
-#endif
 	}
 	else
 	{
 		uidOn = (DWORD)pEvent->ItemDropReq.m_UIDCont;
-#ifdef __UOKRSCARYADDONS
 		gridIndex = 0;
-#endif
 	}
 
 	CObjBase * pObjOn = uidOn.ObjFind();
@@ -560,11 +551,8 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 		m_pChar->UpdateDrag( pItem, pObjOn );
 		CItemContainer * pContOn = dynamic_cast <CItemContainer *>(pObjOn);
 		ASSERT(pContOn);
-#ifdef __UOKRSCARYADDONS
+
 		pContOn->ContentAdd( pItem, pt, gridIndex );
-#else
-		pContOn->ContentAdd( pItem, pt );
-#endif
 		addSound( pItem->GetDropSound( pObjOn ));
 	}
 	else
@@ -3010,10 +2998,8 @@ void CClient::Event_Target( const CEvent * pEvent )
 	CLIMODE_TYPE prevmode = GetTargMode();
 	ClearTargMode();
 
-#ifdef __UOKRSCARYADDONS
-	if ( pEvent->Target.m_fCheckCrime&0xA0 )
+	if ( IsClientKR() && ( pEvent->Target.m_fCheckCrime & 0xA0 ) )
 		uid = m_Targ_Last;
-#endif
 
 	CObjBase * pObj = uid.ObjFind();
 	if ( IsPriv( PRIV_GM ))
@@ -3046,10 +3032,8 @@ void CClient::Event_Target( const CEvent * pEvent )
 
 	if ( pObj )
 	{
-#ifdef __UOKRSCARYADDONS
 		// Remember the last existing target
 		m_Targ_Last = uid;
-#endif
 
 		// Point inside a container is not really meaningful here.
 		pt = pObj->GetTopLevelObj()->GetTopPoint();
@@ -3087,56 +3071,56 @@ void CClient::Event_Target( const CEvent * pEvent )
 	}
 }
 
-#ifdef __UOKRSCARYADDONS
-	void CClient::AOSPopupMenuAdd( WORD entrytag, DWORD textid, WORD flags = 0 )
+void CClient::AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags = 0, WORD color = 0 )
+{
+	ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
+	
+	if ( m_context_popup <= -1 )
 	{
-		ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
-		if ( m_context_popup <= -1 )
+		DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
+		return;
+	}
+
+	if ( m_context_popup < MAX_POPUPS )
+	{
+		if ( IsClientKR() )
 		{
-			DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
-			return;
-		}
-		if ( m_context_popup < MAX_POPUPS )
-		{
-			m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
-			m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
-			m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
+			if ( flags & POPUPFLAG_COLOR )
+			{
+				flags &= ~POPUPFLAG_COLOR;
+			}
+
+			m_pPopupCur->KRPopup_Display.m_List.m_TextID = (3000000 + textid);
+			m_pPopupCur->KRPopup_Display.m_List.m_EntryTag = entrytag;
+			m_pPopupCur->KRPopup_Display.m_List.m_Flags = flags;
 			++m_context_popup;
 			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + 8 );
 			m_PopupLen += 8;
 		}
 		else
-			DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
-	}
-#else
-	void CClient::AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags = 0, WORD color = 0 )
-	{
-		ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
-		if ( m_context_popup <= -1 )
-		{
-			DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
-			return;
-		}
-		if ( m_context_popup < MAX_POPUPS )
 		{
 			short int length = 0;
 			m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
 			m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
 			m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
 			length += 6;
-			if ( flags & 0x20 )
+			
+			if ( flags & POPUPFLAG_COLOR )
 			{
 				m_pPopupCur->Popup_Display.m_List.m_Color = color;
 				length += 2;
 			}
+
 			++m_context_popup;
 			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + length );
 			m_PopupLen += length;
 		}
-		else
-			DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
 	}
-#endif
+	else
+	{
+		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
+	}
+}
 
 void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a client request
 {
@@ -3158,13 +3142,16 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 
 	bool fPreparePacket = false;
 
-#ifdef __UOKRSCARYADDONS
-	cmd.Popup_Display.m_unk1 = 2;
-#else
-	cmd.Popup_Display.m_unk1 = 1;
-#endif
-
-	cmd.Popup_Display.m_UID = uid;
+	if ( IsClientKR() )
+	{
+		cmd.KRPopup_Display.m_unk1 = 2;
+		cmd.KRPopup_Display.m_UID = uid;
+	}
+	else
+	{
+		cmd.Popup_Display.m_unk1 = 1;
+		cmd.Popup_Display.m_UID = uid;
+	}
 
 	if ( uObj.IsItem() )
 	{
@@ -3197,18 +3184,10 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	{
 
 		if ( pChar->IsHuman() )
-#ifdef __UOKRSCARYADDONS
-			AOSPopupMenuAdd(POPUP_PAPERDOLL, 3000000 + 6123);
-#else
 			AOSPopupMenuAdd(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 
 		if ( pChar == m_pChar )
-#ifdef __UOKRSCARYADDONS
-			AOSPopupMenuAdd(POPUP_BACKPACK, 3000000 + 6145);
-#else
 			AOSPopupMenuAdd(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 
 		if ( pChar->m_pNPC )
 		{
@@ -3216,49 +3195,24 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			{
 				case NPCBRAIN_BANKER:
 					{
-#ifdef __UOKRSCARYADDONS
-						AOSPopupMenuAdd(POPUP_BANKBOX, 3000000 + 6105);
-						AOSPopupMenuAdd(POPUP_BANKBALANCE, 3000000 + 6124);
-#else
 						AOSPopupMenuAdd(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
 						AOSPopupMenuAdd(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 						break;
 					}
 
 				case NPCBRAIN_STABLE:
-#ifdef __UOKRSCARYADDONS
-					AOSPopupMenuAdd(POPUP_STABLESTABLE, 3000000 + 6126);
-					AOSPopupMenuAdd(POPUP_STABLERETRIEVE, 3000000 + 6127);
-#else
 					AOSPopupMenuAdd(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
 					AOSPopupMenuAdd(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 
 				case NPCBRAIN_VENDOR:
 				case NPCBRAIN_HEALER:
-#ifdef __UOKRSCARYADDONS
-					AOSPopupMenuAdd(POPUP_VENDORBUY, 3000000 + 6103);
-					AOSPopupMenuAdd(POPUP_VENDORSELL, 3000000 + 6104);
-#else
 					AOSPopupMenuAdd(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
 					AOSPopupMenuAdd(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 					break;
 			}
 
 			if ( pChar->NPC_IsOwnedBy( m_pChar, false ) )
 			{
-#ifdef __UOKRSCARYADDONS
-				AOSPopupMenuAdd(POPUP_PETGUARD, 3000000 + 6107);
-				AOSPopupMenuAdd(POPUP_PETFOLLOW, 3000000 + 6108);
-				AOSPopupMenuAdd(POPUP_PETDROP, 3000000 + 6109);
-				AOSPopupMenuAdd(POPUP_PETKILL, 3000000 + 6111);
-				AOSPopupMenuAdd(POPUP_PETSTOP, 3000000 + 6112);
-				AOSPopupMenuAdd(POPUP_PETSTAY, 3000000 + 6114);
-				AOSPopupMenuAdd(POPUP_PETFRIEND, 3000000 + 6110);
-				AOSPopupMenuAdd(POPUP_PETTRANSFER, 3000000 + 6113);
-#else
 				AOSPopupMenuAdd(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
@@ -3267,20 +3221,26 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				AOSPopupMenuAdd(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
 				AOSPopupMenuAdd(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
-#endif
 			}
 		}
+
 		if (( Args.m_iN1 != 1 ) && ( !IsSetEF(EF_Minimize_Triggers)))
 		{
 			Args = 2;
 			pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
 		}
 	}
+	
 	if ( m_context_popup > 0 )
 	{
-		cmd.Popup_Display.m_NumPopups = m_context_popup;
+		if ( IsClientKR() )
+			cmd.KRPopup_Display.m_NumPopups = m_context_popup;
+		else
+			cmd.Popup_Display.m_NumPopups = m_context_popup;
+
 		addExtData(EXTDATA_Popup_Display, &cmd, m_PopupLen);
 	}
+
 	m_context_popup = -1;
 }
 
@@ -3465,8 +3425,6 @@ void CClient::Event_AllNames3D( CGrayUID uid )
 	xSendPkt(&cmd, cmd.AllNames3D.m_len);
 }
 
-#ifdef __UOKRSCARYADDONS
-
 void CClient::Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CClient::Event_BugReport");
@@ -3530,8 +3488,6 @@ void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
 		m_pChar->ItemBounce(pItem);
 	}
 }
-
-#endif
 
 void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
 {
@@ -4354,16 +4310,16 @@ int CClient::xDispatchMsg()
 				RETURN_FALSE();
 			Setup_CreateDialog( pEvent );
 			return 1;
-#ifdef __UOKRSCARYADDONS
 		case XCMD_CreateNew: // Character Create (UOKR)
 			EXC_SET("create char new");
 			if ( !xCheckMsgSize( 3 ))
 				RETURN_FALSE();
 			if ( !xCheckMsgSize( pEvent->CreateNew.m_len ))
 				RETURN_FALSE();
+			if ( !IsClientKR() )
+				RETURN_FALSE();
 			Setup_CreateDialog(pEvent);
 			return 1;
-#endif
 		case XCMD_CharDelete: // Character Delete
 			EXC_SET("delete char");
 			if ( ! xCheckMsgSize( sizeof( pEvent->CharDelete )))
@@ -4460,11 +4416,7 @@ int CClient::xDispatchMsg()
 			break;
 		case XCMD_ItemDropReq: // Drop Item
 			EXC_SET("drop item");
-#ifdef __UOKRSCARYADDONS
-			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
-#else
-			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
-#endif
+			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() )
 			{
 				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReqNew ) ) )
 					RETURN_FALSE();
@@ -4761,7 +4713,6 @@ int CClient::xDispatchMsg()
 				Event_AllNames3D( (DWORD) pEvent->AllNames3D.m_UID );
 			} break;
 
-#ifdef __UOKRSCARYADDONS
 		case XCMD_BugReport:
 			{
 				EXC_SET("bugreport");
@@ -4769,8 +4720,12 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if ( ! xCheckMsgSize( pEvent->BugReport.m_len ))
 					RETURN_FALSE();
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
 				Event_BugReport( pEvent->BugReport.m_utext, pEvent->BugReport.m_len, (BUGREPORT_TYPE)(WORD)pEvent->BugReport.m_type, CLanguageID( pEvent->BugReport.m_Language ) );
 			} break;
+
 		case XCMD_MacroEquipItem:
 			{
 				EXC_SET("macro - equip items");
@@ -4778,8 +4733,12 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
 					RETURN_FALSE();
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
 				Event_MacroEquipItems(pEvent->MacroEquipItems.m_items, pEvent->MacroEquipItems.m_count);
 			} break;
+
 		case XCMD_MacroUnEquipItem:
 			{
 				EXC_SET("macro - unequip items");
@@ -4787,14 +4746,33 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
 					RETURN_FALSE();
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
 				Event_MacroUnEquipItems(pEvent->MacroUnEquipItems.m_layers, pEvent->MacroUnEquipItems.m_count);
 			} break;
-		case XCMD_UnknownCharSelect:
+
+		case XCMD_KRCharListUpdate:
 			{
-				DEBUG_WARN(("%x:Unknown KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
+				if ( !xCheckMsgSize(3) )
+					RETURN_FALSE();
+				if ( !xCheckMsgSize(pEvent->KRCharListUpdate.m_len) )
+					RETURN_FALSE();
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
+				DEBUG_WARN(("%x:KRCharListUpdate packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
 				xDumpPacket( m_bin.GetDataQty(), pEvent->m_Raw );
 			} break;
-#endif
+
+		case XCMD_HighlightUIRemove:
+		case XCMD_UseHotbar:
+			{
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
+				DEBUG_WARN(("%x:Unimplemented KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
+			} break;
 
 		default:
 			EXC_SET("unknown");

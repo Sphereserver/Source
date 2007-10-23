@@ -208,9 +208,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_CorpEquip		= 0x89,
 	XCMD_GumpTextDisp	= 0x8b,
 	XCMD_Relay			= 0x8c,
-#ifdef __UOKRSCARYADDONS
 	XCMD_CreateNew		= 0x8d,
-#endif
 	//	0x90
 	XCMD_MapDisplay		= 0x90,
 	XCMD_CharListReq	= 0x91,
@@ -277,18 +275,23 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_AOSTooltipInfo	= 0xdc,
 	XCMD_CompressedGumpDialog	= 0xdd,
 	XCMD_BuffPacket		= 0xdf,
-#ifdef __UOKRSCARYADDONS
 	//	0xE0
-	XCMD_BugReport		= 0xe0,
-	XCMD_UnknownCharSelect	= 0xe1,
-	XCMD_EncryptionReply	= 0xe4,
-	XCMD_MacroEquipItem		= 0xec,
-	XCMD_MacroUnEquipItem	= 0xed,
+	XCMD_BugReport				= 0xe0,
+	XCMD_KRCharListUpdate		= 0xe1,
+	XCMD_NewAnimUpdate			= 0xe2,
+	XCMD_EncryptionReq			= 0xe3,
+	XCMD_EncryptionReply		= 0xe4,
+	XCMD_WaypointShow			= 0xe5,
+	XCMD_WaypointHide			= 0xe6,
+	XCMD_HighlightUIContinue	= 0xe7,
+	XCMD_HighlightUIRemove		= 0xe8,
+	XCMD_HighlightUIToggle		= 0xe9,
+	XCMD_ToggleHotbar			= 0xea,
+	XCMD_UseHotbar				= 0xeb,
+	XCMD_MacroEquipItem			= 0xec,
+	XCMD_MacroUnEquipItem		= 0xed,
 	
 	XCMD_QTY		= 0xee,
-#else
-	XCMD_QTY		= 0xe0,
-#endif
 };
 
 enum PARTYMSG_TYPE
@@ -478,7 +481,6 @@ union CExtData
 		NDWORD m_UID;
 	} Popup_Request; // from client
 
-#ifdef __UOKRSCARYADDONS
 	struct  // EXTDATA_Popup_Display = 0x14
 	{
 		NWORD m_unk1; // 2
@@ -491,8 +493,8 @@ union CExtData
 			NWORD m_Flags;
 			char memreserve[112];
 		} m_List;
-	} Popup_Display;
-#else
+	} KRPopup_Display;
+
 	struct  // EXTDATA_Popup_Display = 0x14
 	{
 		NWORD m_unk1; // 1
@@ -507,7 +509,6 @@ union CExtData
 			char memreserve[112];
 		} m_List;
 	} Popup_Display;
-#endif
 
 	struct  // EXTDATA_Popup_Select = 0x15
 	{
@@ -1002,8 +1003,6 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	LOGIN_SUCCESS	= 255,
 };
 
-#ifdef __UOKRSCARYADDONS
-
 enum BUGREPORT_TYPE	// bug report codes
 {
 	BUGREPORT_ENVIRONMENT	= 0x01,
@@ -1034,8 +1033,6 @@ enum PROFESSION_TYPE	// profession ids
 	PROFESSION_SAMURAI		= 0x06,
 	PROFESSION_NINJA		= 0x07,
 };
-
-#endif
 
 
 struct CEventCharDef
@@ -1638,8 +1635,6 @@ struct CEvent	// event buffer from client to server..
 			CExtAosData m_u;
 		} ExtAosData;
 
-#ifdef __UOKRSCARYADDONS
-
 		struct // XCMD_CreateNew, size = ? // create a new char (uokr)
 		{
 			BYTE m_Cmd;						// 0 = 0x8D
@@ -1689,6 +1684,14 @@ struct CEvent	// event buffer from client to server..
 			NCHAR m_utext[1];	// 9 - ? (NCHAR[?] text)
 		} BugReport;
 
+		struct // XCMD_KRCharListUpdate
+		{
+			BYTE m_Cmd;			// 0=0xe1
+			NWORD m_len;		// 1 - 2 (len = )
+			NWORD m_one;		// 3 - 4 (0x01)
+			NDWORD m_flags;		// 5 - 9 (always 0x2) is offset for 0x8D packet flags – character creation
+		} KRCharListUpdate;
+
 		struct // XCMD_EncryptionReply
 		{
 			BYTE m_Cmd;			// 0 = 0xE4
@@ -1696,6 +1699,26 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_lenUnk1;				// 3 - 6 = length of m_unk1
 			BYTE m_unk1[1];					// 7 - ? = ?
 		} EncryptionReply;
+
+		struct // XCMD_HighlightUIRemove
+		{
+			BYTE m_Cmd;				// 0 = 0xE8
+			NDWORD m_Uid;			// 1 - 4 = serial uid
+			NWORD m_IdUi;			// 5 - 6 = id ui
+			NDWORD m_destUid;		// 7 - 11 = destination serial uid
+			BYTE m_One;				// 12 = 0x01
+			BYTE m_One2;			// 13 = 0x01
+		} HighlightUIRemove;
+
+		struct // XCMD_UseHotbar
+		{
+			BYTE m_Cmd;				// 0 = 0xEB
+			NWORD m_One;			// 1 - 2 = 0x01
+			NWORD m_Six;			// 3 - 4 = 0x06
+			BYTE m_Type;			// 5 = 0x1 – spell, 0x2 – weapon ability, 0x3 – skill, 0x4 – item, 0x5 – scroll
+			BYTE m_Zero;			// 6 = 0x00
+			NDWORD m_ObjectUID;		// 7 - 11 = serial uid
+		} UseHotbar;
 
 		struct // XCMD_MacroEquipItem
 		{
@@ -1712,7 +1735,6 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_count;		// 3	 (number of layers)
 			NWORD m_layers[1];	// 4 - ? (layers to unequip)
 		} MacroUnEquipItems;
-#endif
 	};
 } PACK_NEEDED;
 
@@ -2795,7 +2817,6 @@ struct CCommand	// command buffer from server to client.
 			} m_stairsList[1];
 		} AOSCustomHouse;
 
-
 		struct
 		{
 			BYTE m_Cmd;	// 0 = 0xdc
@@ -2857,6 +2878,61 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_Show;
 			NDWORD m_unk_1;
 		} RemoveBuff;
+
+		struct // XCMD_NewAnimUpdate
+		{
+			BYTE m_Cmd;			// 0=0xe2
+			NDWORD m_uid;		// 1 - 4 (len)
+			NWORD m_action;		// 5 - 6
+			BYTE m_zero;		// 7	 (0x00)
+			NWORD m_count;		// 8 - 10 (layers to unequip)
+		} NewAnimUpdate;
+
+		struct // XCMD_WaypointShow
+		{
+			BYTE m_Cmd;				// 0 = 0xE5
+			NWORD m_len;			// 1 - 2 = length
+			NDWORD m_Wpnt_uid;		// 3 - 7 = serial uid
+			NWORD m_Wpnt_px;		// 8 - 9 = X
+			NWORD m_Wpnt_py;		// 10 - 11 = Y
+			BYTE m_Wpnt_pz;			// 12 = Y
+			BYTE m_Wpnt_pmap;		// 13 = MAP
+			NWORD m_Wpnt_type;		// 14 - 15 = object type (??)
+			NWORD m_ignoreUid;		// 16 - 17 = don't use the uid (0/1)
+			NDWORD m_ClilocId;		// 18 - 22 = clilocId
+			NCHAR m_ClilocArgs[1];	// 23 - ? = clilocArgs
+			NWORD m_zero;			// ? - ?+1 = zero
+		} WaypointShow;
+
+		struct // XCMD_WaypointHide
+		{
+			BYTE m_Cmd;				// 0 = 0xE6
+			NDWORD m_Wpnt_uid;		// 1 - 4 = serial uid
+		} WaypointHide;
+
+		struct // XCMD_HighlightUIContinue
+		{
+			BYTE m_Cmd;				// 0 = 0xE7
+			NDWORD m_Uid;			// 1 - 4 = serial uid
+			NWORD m_IdUi;			// 5 - 6 = id ui
+			NDWORD m_destUid;		// 7 - 11 = destination serial uid
+			BYTE m_One;				// 12 = 0x01
+		} HighlightUIContinue;
+
+		struct // XCMD_HighlightUIToggle
+		{
+			BYTE m_Cmd;				// 0 = 0xE9
+			NDWORD m_Uid;			// 1 - 4 = serial uid
+			NWORD m_IdUi;			// 5 - 6 = id ui
+			char m_Desc[64];		// 7 - 71 = dexcription: ”ToggleInventory”, ”TogglePaperdoll”, ”ToggleMap”, ””
+			NDWORD m_commandId;		// 72 - 76 = command Id
+		} HighlightUIToggle;
+
+		struct // XCMD_ToggleHotbar
+		{
+			BYTE m_Cmd;				// 0 = 0xEA
+			NWORD m_Enable;			// 1 - 2 = enable
+		} ToggleHotbar;
 	};
 } PACK_NEEDED;
 

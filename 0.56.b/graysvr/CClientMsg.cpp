@@ -480,14 +480,13 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 
 	xSendPkt( &cmd, iLen );
 
-#ifdef __UOKRSCARYADDONS
-	if (m_bClientKR)
+	if ( IsClientKR() )
 	{
+		// KR confirm on drop
 		CCommand cmdKr;
 		cmdKr.Default.m_Cmd = 0x29;
 		xSendPkt( &cmdKr, 1 );
 	}
-#endif
 
 	if ( pItem->IsType(IT_SOUND))
 	{
@@ -590,17 +589,9 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	}
 	cmd.ContAdd.m_wHue = wHue;
 
-#ifdef __UOKRSCARYADDONS
-	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR )
-#else
-	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 )
-#endif
+	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() )
 	{
-#ifdef __UOKRSCARYADDONS
 		cmd.ContAddNew.m_grid = pItem->GetContainedGridIndex();
-#else
-		cmd.ContAddNew.m_grid = 0;
-#endif
 		cmd.ContAddNew.m_UIDCont = pCont->GetUID();
 		cmd.ContAddNew.m_wHue = wHue;
 		xSendPkt( &cmd, sizeof( cmd.ContAddNew ));
@@ -612,14 +603,12 @@ void CClient::addItem_InContainer( const CItem * pItem )
 		xSendPkt( &cmd, sizeof( cmd.ContAdd ));
 	}
 
-#ifdef __UOKRSCARYADDONS
-	if (m_bClientKR)
+	if ( IsClientKR() )
 	{
 		CCommand cmdKr;
 		cmdKr.Default.m_Cmd = 0x29;
 		xSendPkt( &cmdKr, 1 );
 	}
-#endif
 
 	addAOSTooltip( pItem );
 }
@@ -657,11 +646,7 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 	CCommand cmdNew;	// for 6.0.1.7+ clients
 	CItemBase * pItemDef = NULL;
 
-#ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
-#else
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
-#endif
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() );
 
 	// send all the items in the container.
 	int count = 0;
@@ -770,11 +755,7 @@ int CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, 
 				cmdNew.ContentNew.m_item[count].m_y = cmd.Content.m_item[count].m_y;
 				cmdNew.ContentNew.m_item[count].m_UIDCont = cmd.Content.m_item[count].m_UIDCont;
 				cmdNew.ContentNew.m_item[count].m_wHue = cmd.Content.m_item[count].m_wHue;
-#ifdef __UOKRSCARYADDONS
 				cmdNew.ContentNew.m_item[count].m_grid = pItem->GetContainedGridIndex();
-#else
-				cmdNew.ContentNew.m_item[count].m_grid = 0;
-#endif
 			}
 		}
 		count ++;
@@ -2363,7 +2344,6 @@ bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGroun
 	return true;
 }
 
-#ifdef __UOKRSCARYADDONS
 void CClient::addTargetCancel()
 {
 	ADDTOCALLSTACK("CClient::addTargetCancel");
@@ -2374,7 +2354,6 @@ void CClient::addTargetCancel()
 
 	xSendPkt( &cmd, sizeof( cmd.Target ));
 }
-#endif
 
 void CClient::addDyeOption( const CObjBase * pObj )
 {
@@ -3158,11 +3137,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	if (!count)
 		return;
 
-#ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
-#else
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
-#endif
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() );
 
 	CCommand cmd;
 	int len;
@@ -3234,11 +3209,7 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 	if ( !count )
 		return;
 
-#ifdef __UOKRSCARYADDONS
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || m_bClientKR );
-#else
-	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 );
-#endif
+	bool bNewPacket = ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() );
 
 	CCommand cmd;
 		int len;
@@ -4714,20 +4685,16 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 
 	CChar * pChar = CChar::CreateBasic( CREID_MAN );
 	ASSERT(pChar);
-#ifdef __UOKRSCARYADDONS
-	CEvent * pCreateEvent = const_cast<CEvent*>( pEvent );
 
+	CEvent * pCreateEvent = const_cast<CEvent*>( pEvent );
 	pChar->InitPlayer( this, pCreateEvent, pCreateEvent->Default.m_Cmd == XCMD_CreateNew );
-#else
-	pChar->InitPlayer( pEvent, this );
-#endif
 
 	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_CreateDialog acct='%s', char='%s'\n",
 		m_Socket.GetSocket(), (LPCTSTR)GetAccount()->GetName(), (LPCTSTR)pChar->GetName());
 
 	enum TRIGRET_TYPE	tr;
 	CScriptTriggerArgs createArgs;
-#ifdef __UOKRSCARYADDONS
+
 	if ( pCreateEvent->Default.m_Cmd == XCMD_CreateNew )
 	{
 		createArgs.m_iN1 = 0xFFFFFFFF;
@@ -4743,11 +4710,7 @@ void CClient::Setup_CreateDialog( const CEvent * pEvent ) // All the character c
 		createArgs.m_iN2 = (int) pCreateEvent->Create.m_prof;
 		createArgs.m_iN3 = ((pCreateEvent->Create.m_sex - 2) >= 0);
 	}
-#else
-	createArgs.m_iN1 = (DWORD) pEvent->Create.m_flags;
-	createArgs.m_iN2 = (int) pEvent->Create.m_prof;
-	createArgs.m_iN3 = ((pEvent->Create.m_sex - 2) >= 0);
-#endif
+
 	createArgs.m_s1 = GetAccount()->GetName();
 	createArgs.m_pO1 = this;
 
