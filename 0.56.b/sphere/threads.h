@@ -57,6 +57,8 @@ public:
 	virtual void terminate() = 0;
 	virtual void waitForClose() = 0;
 
+	virtual void setPriority(Priority) = 0;
+
 protected:
 	virtual bool shouldExit() = 0;
 };
@@ -107,6 +109,8 @@ public:
 	virtual void start();
 	virtual void terminate();
 	virtual void waitForClose();
+
+	virtual void setPriority(Priority pri = IThread::Normal);
 
 protected:
 	virtual void tick() = 0;
