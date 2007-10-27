@@ -146,7 +146,7 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 	m_name = name;
 	m_handle = NULL;
 	m_hangCheck = 0;
-	m_priority = priority;
+	setPriority(priority);
 }
 
 AbstractThread::~AbstractThread()
@@ -373,6 +373,11 @@ void AbstractThread::checkStuck()
 void AbstractThread::onStart()
 {
 	//	empty. override if need in subclass
+}
+
+void AbstractThread::setPriority(IThread::Priority pri)
+{
+	m_priority = pri;
 }
 
 bool AbstractThread::shouldExit()
