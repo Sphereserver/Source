@@ -2813,15 +2813,16 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	CItemContainer * pPack = NULL;
 	if ( !NPC_WantThisItem(pItem) )
 	{
-		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
 		{
-			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() ));
-			pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
+			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() ));
+			if ( pCharSrc->IsClient() )
+				pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
 			return false;
 		} 
 		else 
 		{
-			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() ));
+			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() ));
 			//DEBUG_ERR(("CChar::NPC_OnItemGive: Trying to drop %s in  '%s's pack\n", pItem->GetName(), GetName() ));
 			if ( pPack == NULL )
 				pPack = GetPackSafe();
