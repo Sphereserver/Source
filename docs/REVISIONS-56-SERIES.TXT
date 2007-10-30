@@ -3755,6 +3755,7 @@ this all in desperation)
   characters.
 
 30-10-2007, MrSugarCube
+- Fixed #1306: NPCs accepting every item given to them.
 - Fixed #1298: Infinite loop caused by combat between two characters with the
   statf_reactive flag set and the reflected damage being greater than the
   original damage.
