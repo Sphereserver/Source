@@ -307,6 +307,21 @@ void inline CClient::Event_Item_Drop_Fail( CItem * pItem )
 	ADDTOCALLSTACK("CClient::Event_Item_Drop_Fail");
 	// The item was in the LAYER_DRAGGING.
 	// Try to bounce it back to where it came from.
+	if ( pItem == NULL )
+		return;
+
+	// Game pieces should be returned to their game boards.
+	if ( pItem->IsType(IT_GAME_PIECE) )
+	{
+		CItemContainer *pGame = dynamic_cast<CItemContainer *>( m_Targ_PrvUID.ItemFind() );
+		if ( pGame != NULL )
+			pGame->ContentAdd( pItem, m_Targ_p );
+		else
+			pItem->Delete();
+
+		return;
+	}
+
 	if ( pItem == m_pChar->LayerFind( LAYER_DRAGGING ) )	// if still being dragged
 		m_pChar->ItemBounce( pItem );
 }
@@ -527,7 +542,7 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 		}
 	}
 
-	// Game pieces can only be droped on their game boards.
+	// Game pieces can only be dropped on their game boards.
 	if ( pItem->IsType(IT_GAME_PIECE))
 	{
 		if ( pObjOn == NULL || m_Targ_PrvUID != pObjOn->GetUID())

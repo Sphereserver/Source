@@ -1933,19 +1933,26 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( IsStatFlag(STATF_Reactive) && ! ( uType & DAMAGE_GOD ) )
 		{
 			// reflect some damage back.
-			if ( !pSrc ) ;
-			else if ( pSrc == this ) ;
+			if ( !pSrc || pSrc == this ) ;
 			else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD )) ; // guards should not react by reactive armor
 			else if ( GetTopDist3D(pSrc) <= 2 )
 			{
-				int iSkillVal;
 				// Spell strength is NOT the same as MAGERY !!!???
-				iSkillVal = Skill_GetAdjusted(SKILL_MAGERY);
+				int iSkillVal = Skill_GetAdjusted(SKILL_MAGERY);
 				int iEffect = g_Cfg.GetSpellEffect( SPELL_Reactive_Armor, iSkillVal );
 				int iRefDam = Calc_GetRandVal( IMULDIV( iDmg, iEffect, 1000 ));
-				iDmg -= iRefDam;
-				pSrc->OnTakeDamage( iRefDam, this, uType );
-				pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 9, 6 );
+
+				// make sure the reflected damage is between 0 and iDmg-1 or else
+				// 2 reactive armour users could get caught in an infinite loop of
+				// reflecting damage
+				iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
+
+				if ( iRefDam > 0 )
+				{
+					iDmg -= iRefDam;
+					pSrc->OnTakeDamage( iRefDam, this, uType );
+					pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 9, 6 );
+				}
 			}
 		}
 

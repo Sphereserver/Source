@@ -1804,12 +1804,6 @@ do_default:
 					sVal.FormatVal(1);
 				return true;
 			}
-		case CHC_ISTEVENT:
-			if ( pszKey[8] != '.' )
-				return( false );
-			pszKey += 8;
-			sVal = ( pCharDef->m_TEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
-			return true;
 		case CHC_ISVENDOR:
 			sVal.FormatVal(NPC_IsVendor() ? 1 : 0);
 			return true;
