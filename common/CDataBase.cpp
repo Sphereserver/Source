@@ -267,6 +267,8 @@ bool CDataBase::query(const char *query)
 			}
 			rownum++;
 		}
+
+		mysql_free_result(m_res);
 		return true;
 	}
 	else
