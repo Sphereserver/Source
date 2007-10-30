@@ -688,6 +688,12 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			pszKey += 8;
 			sVal = ( m_OEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
 			return true;
+		case OC_ISTEVENT:
+			if ( pszKey[8] != '.' )
+				return( false );
+			pszKey += 8;
+			sVal = ( Base_GetDef()->m_TEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
+			return true;
 		case OC_ISITEM:
 			sVal.FormatVal( IsItem());
 			break;

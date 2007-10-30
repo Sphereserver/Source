@@ -120,6 +120,7 @@
     <Compile Include="Packets\ContainerDisplay.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Packets\ExtendedCommand.cs" />
     <Compile Include="Packets\CorpseEquip.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -284,7 +284,7 @@ bool CChar::Use_Kindling( CItem * pKindling )
 {
 	ADDTOCALLSTACK("CChar::Use_Kindling");
 	ASSERT(pKindling);
-	if ( pKindling->IsItemInContainer())
+	if ( !pKindling->IsTopLevel() )
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_KINDLING_CONT );
 		return false ;

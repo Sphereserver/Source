@@ -2619,6 +2619,12 @@ reflectit:
 
 			CCharBase * pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
+			
+			// re-apply our incognito name
+			if ( IsStatFlag( STATF_Incognito ) )
+			{
+				SetName( pCharDef->GetTypeName() );
+			}
 
 			// set to creature type stats.
 			if ( pCharDef->m_Str )

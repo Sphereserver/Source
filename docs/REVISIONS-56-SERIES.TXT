@@ -3745,3 +3745,16 @@ this all in desperation)
 
 21-10-2007, MrSugarCube
 - Fixed #1297: No resources lost when failing to craft.
+
+26-10-2007, MrSugarCube
+- Fixed #1304: Being able to light kindling whilst it is being dragged.
+- Fixed #1300: Polymorphing whilst incognito'ed not updating the character's
+  name correctly with creatures using random names (#NAMES_xxx).
+- Fixed: Various means of removing game board pieces from their game boards.
+- Modified #1303: ISTEVENT now works on items, exactly the same as it does with
+  characters.
+
+30-10-2007, MrSugarCube
+- Fixed #1298: Infinite loop caused by combat between two characters with the
+  statf_reactive flag set and the reflected damage being greater than the
+  original damage.

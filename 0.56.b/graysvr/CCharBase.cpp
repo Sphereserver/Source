@@ -205,9 +205,6 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case CBC_TSPEECH:
 			m_Speech.WriteResourceRefList( sVal );
 			break;
-		case CBC_TEVENTS:
-			m_TEvents.WriteResourceRefList(sVal);
-			break;
 		default:
 			return( CBaseBaseDef::r_WriteVal( pszKey, sVal ));
 	}
@@ -292,8 +289,6 @@ bool CCharBase::r_LoadVal( CScript & s )
 			break;
 		case CBC_TSPEECH:
 			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
-		case CBC_TEVENTS:
-			return ( m_TEvents.r_LoadVal(s, RES_EVENTS));
 		default:
 			return( CBaseBaseDef::r_LoadVal( s ));
 	}
