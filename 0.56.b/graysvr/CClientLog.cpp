@@ -1305,7 +1305,6 @@ bool CClient::xRecvData() // Receive message from client
 			else if ( bNewLogin )
 			{
 				DEBUG_WARN(("6.0.5.0+ Client Detected.\n"));
-				xSend(pDataKR_E3, 77);
 			}
 
 			return( true );

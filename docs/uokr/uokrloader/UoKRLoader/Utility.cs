@@ -30,9 +30,14 @@ namespace UoKRLoader
         private static byte[] UOKR_IPDATA_2b = { 0xC7, 0x00, 0x39, 0xC4, 0x99, 0x9F, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E, 0xC3, 
                                                  0xCC, 0xCC, 0xCC, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E };
 
+        private static byte[] UOKR_IPDATA_3a = { 0xC7, 0x44, 0x24, 0x10, 0x29, 0xC4, 0x99, 0x9F, 0x66, 0xC7, 0x44, 0x24, 0x14, 
+                                                 0x5F, 0x1E};
+        private static byte[] UOKR_IPDATA_3b = { 0xC7, 0x00, 0x29, 0xC4, 0x99, 0x9F, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E, 0xC3, 
+                                                 0xCC, 0xCC, 0xCC, 0x66, 0xC7, 0x40, 0x04, 0x5F, 0x1E };
+
         public static int UOKR_IPDATA_VERSION
         {
-            get { return 3; }
+            get { return 4; }
         }
 
         public static List<byte[]> GetIPData(int iVersion)
@@ -41,6 +46,12 @@ namespace UoKRLoader
 
             switch (iVersion)
             {
+                case 3:
+                    {
+                        ipThing.Add(StaticData.UOKR_IPDATA_3a);
+                        ipThing.Add(StaticData.UOKR_IPDATA_3b);
+                    } break;
+
                 case 2:
                     {
                         ipThing.Add(StaticData.UOKR_IPDATA_2a);
@@ -73,6 +84,31 @@ namespace UoKRLoader
 
             switch (iVersion)
             {
+                case 3:
+                    {
+                        byte[] ipdata = new byte[StaticData.UOKR_IPDATA_3a.Length];
+                        StaticData.UOKR_IPDATA_3a.CopyTo(ipdata, 0);
+                        ipdata[4] = theIP.GetAddressBytes()[3];
+                        ipdata[5] = theIP.GetAddressBytes()[2];
+                        ipdata[6] = theIP.GetAddressBytes()[1];
+                        ipdata[7] = theIP.GetAddressBytes()[0];
+                        ipdata[13] = (byte)(thePort & 0xFF);
+                        ipdata[14] = (byte)((thePort & 0xFF00) >> 8);
+                        patchedThing.Add(ipdata);
+
+                        byte[] ipdata2 = new byte[StaticData.UOKR_IPDATA_3b.Length];
+                        StaticData.UOKR_IPDATA_3b.CopyTo(ipdata2, 0);
+                        ipdata2[2] = theIP.GetAddressBytes()[3];
+                        ipdata2[3] = theIP.GetAddressBytes()[2];
+                        ipdata2[4] = theIP.GetAddressBytes()[1];
+                        ipdata2[5] = theIP.GetAddressBytes()[0];
+                        ipdata2[10] = (byte)(thePort & 0xFF);
+                        ipdata2[11] = (byte)((thePort & 0xFF00) >> 8);
+                        ipdata2[20] = (byte)(thePort & 0xFF);
+                        ipdata2[21] = (byte)((thePort & 0xFF00) >> 8);
+                        patchedThing.Add(ipdata2);
+                    } break;
+
                 case 2:
                     {
                         byte[] ipdata = new byte[StaticData.UOKR_IPDATA_2a.Length];
