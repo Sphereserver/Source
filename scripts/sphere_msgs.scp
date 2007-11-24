@@ -653,7 +653,7 @@
 //npc_vendor_guards		"Ahh, Guards my goods are gone !!"
 //npc_vendor_sell_ty		"Here you are, %d gold coin%s. I thank thee for thy business."
 //non_alive		"That does not appear to be a living being."
-//npc_animal_poop		"grunt and poop the ground"
+//npc_animal_poop		"grunt and poop on the ground"
 //npc_banker_deposit		"I shall deposit %d gold in your account"
 //npc_beggar_beg_1		"Could thou spare a few coins?"
 //npc_beggar_beg_2		"I have a family to feed, think of the children."
