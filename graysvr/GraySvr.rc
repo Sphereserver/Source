@@ -7,7 +7,12 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+
+#ifdef VC2008_EXPRESS
+	#include "windows.h"
+#else
+	#include "afxres.h"
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -81,11 +86,19 @@ BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
-BEGIN
-    "#include ""afxres.h""\r\n"
-    "\0"
-END
+#ifdef VC2008_EXPRESS
+	2 TEXTINCLUDE 
+	BEGIN
+		"#include ""windows.h""\r\n"
+		"\0"
+	END
+#else
+	2 TEXTINCLUDE 
+	BEGIN
+		"#include ""afxres.h""\r\n"
+		"\0"
+	END
+#endif
 
 3 TEXTINCLUDE 
 BEGIN
