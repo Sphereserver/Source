@@ -1197,6 +1197,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
+	g_Log.EventDebug("stage '%d' qty '%d' time '%d'\n", m_iSaveStage, m_SectorsQty, m_timeSave);
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save
