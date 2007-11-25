@@ -7,10 +7,12 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-//SE Building Walls script, 
-//by Exer
-//changes, additions, and fixes by Rattlehead
-// FILE LAST UPDATED: Tuesday, October 25th, 2005
+// FILE LAST UPDATED: Sunday, November 25, 2007
+//
+// SE Building Walls script, 
+// by Exer
+// changes, additions, and fixes by Rattlehead + Elric
+//
 VERSION=0.56b
 
 [ITEMDEF 021ff]
@@ -161,7 +163,6 @@ dupeitem=029f8
 //plaster brown
 dupeitem=029f8
 
-
 [itemdef 026d0]
 defname=i_window_marble
 type=t_wall
@@ -207,7 +208,6 @@ dupeitem=026d0
 [itemdef 026d9]
 //marble window
 dupeitem=026d0
-
 
 [itemdef 02713]
 defname=i_latticed_wall_white
@@ -384,61 +384,38 @@ SUBSECTION=Japanese Walls 1
 DESCRIPTION=@
 DUPELIST=02480,02481,02482,02483,02484,02485,02486,02487,02488,02489,0248a
 
-
 [itemdef 02480]
 DUPEITEM=0247f
-
 
 [itemdef 02481]
 DUPEITEM=0247f
 
-
 [itemdef 02482]
 DUPEITEM=0247f
-
 
 [itemdef 02483]
 DUPEITEM=0247f
 
-
 [itemdef 02484]
 DUPEITEM=0247f
-
 
 [itemdef 02485]
 DUPEITEM=0247f
 
-
 [itemdef 02486]
 DUPEITEM=0247f
-
 
 [itemdef 02487]
 DUPEITEM=0247f
 
-
 [itemdef 02488]
 DUPEITEM=0247f
-
 
 [itemdef 02489]
 DUPEITEM=0247f
 
-
 [itemdef 0248a]
 DUPEITEM=0247f
-
-
-[itemdef 0248b]
-TYPE=t_wall
-RESOURCES=200 i_log, 10 i_ingot_iron
-DUPELIST=0248c
-CATEGORY=Buildings - SE Walls
-SUBSECTION=Wooden Wall (large)
-DESCRIPTION=@
-
-[itemdef 0248c]
-DUPEITEM=0248b
 
 [itemdef 0285f]
 defname=i_wall_wood_old
@@ -505,7 +482,6 @@ dupeitem=0285f
 [itemdef 0286d]
 //wooden wall old
 dupeitem=0285f
-
 
 [ITEMDEF 02888]
 defname=i_wall_latticed_plaster
@@ -624,7 +600,6 @@ dupeitem=02888
 [itemdef 028a3]
 //latticed wall plaster
 dupeitem=02888
-
 
 [itemdef 02938]
 defname=i_wall_clay
@@ -771,7 +746,6 @@ dupeitem=02938
 [ITEMDEF 0295a]
 //Clay wall
 dupeitem=02938
-
 
 [itemdef 029a0]
 defname=i_wall_stained_glass

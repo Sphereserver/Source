@@ -3759,3 +3759,26 @@ this all in desperation)
 - Fixed #1298: Infinite loop caused by combat between two characters with the
   statf_reactive flag set and the reflected damage being greater than the
   original damage.
+
+30-10-2007, Furio
+- Fixed #1307: MySQL client running out of memory.
+
+24-10-2007, Furio
+- Added: Support for login protocol in 6.0.5.0+ clients.
+
+25-11-2007, MrSugarCube
+- Fixed #1284: Multi regions being overlapped by area regions when map files are
+  resynced.
+- Fixed: Mount items are now adjusted using the RES* settings on the ride
+  itself, to display themselves appropriately to lower RESDISP clients.
+
+25-11-2007, Elric (Script pack)
+- Updated: sphere_item_aos_se.scp (Removed duplicate item definitions)
+- Updated: sphere_item_building_walls_se.scp (Removed duplicate item
+  definitions)
+- Updated: sphere_item_misc_se.scp (Removed duplicate item definitions)
+- Updated: sphere_item_ml_floor_wall.scp (Removed duplicate item definition)
+- Updated: sphere_item_provisions_armor_ml.scp (Corrected Vulture Helm item
+  definition)
+- Updated: sphere_item_unsorted.scp (Removed duplicate item definitions)
+

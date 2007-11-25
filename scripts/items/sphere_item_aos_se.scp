@@ -6,7 +6,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, December 6, 2005
+// FILE LAST UPDATED: Sunday, November 25, 2007
 //
 VERSION=0.56b
 
@@ -80,16 +80,6 @@ TYPE=t_normal
 [ITEMDEF 02232]
 DEFNAME=i_ant_hill
 NAME=Ant Hill
-TYPE=t_normal
-
-[ITEMDEF 02328]
-DEFNAME=i_snowman
-NAME=Snow Man
-TYPE=t_normal
-
-[ITEMDEF 0232a]
-DEFNAME=i_giftbox
-NAME=Gift Box
 TYPE=t_normal
 
 [ITEMDEF i_gem_arcane]
@@ -328,16 +318,6 @@ ON=@UNEQUIP
 
 ON=@CLIENTTOOLTIP
 	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
-
-[ITEMDEF 0232f]
-DEFNAME=i_snowflake
-NAME=Snow Flake
-TYPE=t_normal
-
-[ITEMDEF 02313]
-DEFNAME=i_mini_tower1
-NAME=Mini House
-TYPE=t_normal
 
 [ITEMDEF 02206]
 DEFNAME=i_crystal_1

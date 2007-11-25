@@ -347,7 +347,13 @@ bool CSectorBase::LinkRegion( CRegionBase * pRegionNew )
 				DEBUG_ERR(( "Conflicting region!\n" ));
 				return( false );
 			}
-			if ( pRegionNew->IsInside(pRegion))	// it is accurate in the TRUE case.
+
+			// it is accurate in the TRUE case.
+			if ( pRegionNew->IsInside(pRegion))
+				continue;
+
+			// keep item (multi) regions on top
+			if ( pRegion->GetResourceID().IsItem() && !pRegionNew->GetResourceID().IsItem() )
 				continue;
 
 			// must insert before this.

@@ -419,13 +419,7 @@ DUPEITEM=02198
 //nodraw
 DUPEITEM=02198
 
-[ITEMDEF 02ac0]
-//unused
-
 [ITEMDEF 02ad8]
-//unused
-
-[ITEMDEF 02adf]
 //unused
 
 [ITEMDEF 02ae3]
@@ -437,15 +431,6 @@ DEFNAME=i_vendorbox
 NAME=Vendor Box
 TYPE=T_EQ_VENDOR_BOX
 TDATA2=04a
-
-[ITEMDEF 02b97]
-//unused
-
-[ITEMDEF 02b98]
-//unused
-
-[ITEMDEF 02b99]
-//unused
 
 [ITEMDEF 03584]
 // These items should appear in a gump only !

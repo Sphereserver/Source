@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, August 7th, 2005
+// FILE LAST UPDATED: Sunday, November 25, 2007
 //
-// By Rattlehead
+// By Rattlehead + Elric
 //
 VERSION=0.56b
 
@@ -736,6 +736,7 @@ DUPEITEM=024b4
 DUPEITEM=024b4
 
 [itemdef 0232a]
+DEFNAME=i_giftbox
 TYPE=t_normal
 RESOURCES=100 i_log
 CATEGORY=Decoration - Miscellaneous
@@ -769,6 +770,7 @@ DUPELIST=0232f
 DUPEITEM=0232e
 
 [itemdef 02328]
+DEFNAME=i_snowman
 TYPE=t_normal
 RESOURCES=100 i_log
 CATEGORY=Decoration - Miscellaneous
@@ -789,30 +791,6 @@ DUPELIST=0232d
 
 [itemdef 0232d]
 DUPEITEM=0232c
-
-[itemdef 022c4]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Mini Houses
-DESCRIPTION=@
-
-[itemdef 02313]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Mini Houses
-DESCRIPTION=@
-DUPELIST=02314,02315,02316
-
-[itemdef 02314]
-DUPEITEM=02313
-
-[itemdef 02315]
-DUPEITEM=02313
-
-[itemdef 02316]
-DUPEITEM=02313
 
 [itemdef 026b1]
 TYPE=t_normal
@@ -854,10 +832,6 @@ RESOURCES=100 i_log
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Trophies
 DESCRIPTION=@
-DUPELIST=02251
-
-[itemdef 02251]
-DUPEITEM=02250
 
 [itemdef 02234]
 TYPE=t_normal
@@ -1051,187 +1025,4 @@ CATEGORY=Miscellaneous
 SUBSECTION=BOD
 DESCRIPTION=@
 
-[itemdef 022c9]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Mini Houses
-DESCRIPTION=@
-DUPELIST=022ca,022cb,022cc,022cd,022ce,022cf,022d0,022d1,022d2,022d3,022d4,022d5,022d6,022d7,022d8,022d9,022da,022db,022dc,022dd,022de,022df,022e0,022e1,022e2,022e3,022e4,022e5,022e6,022e7,022e8,022e9,022ea,022eb,022ec,022ed,022ee,022ef,022f0,022f1,022f2,022f3,022f4,022f5,022f6,022f7,022f8,022f9,022fa,022fb,022fc,022fd,022fe,022ff,02300,02301,02302,02303,02304
-
-[itemdef 022ca]
-DUPEITEM=022c9
-
-[itemdef 022cb]
-DUPEITEM=022c9
-
-[itemdef 022cc]
-DUPEITEM=022c9
-
-[itemdef 022cd]
-DUPEITEM=022c9
-
-[itemdef 022ce]
-DUPEITEM=022c9
-
-[itemdef 022cf]
-DUPEITEM=022c9
-
-[itemdef 022d0]
-DUPEITEM=022c9
-
-[itemdef 022d1]
-DUPEITEM=022c9
-
-[itemdef 022d2]
-DUPEITEM=022c9
-
-[itemdef 022d3]
-DUPEITEM=022c9
-
-[itemdef 022d4]
-DUPEITEM=022c9
-
-[itemdef 022d5]
-DUPEITEM=022c9
-
-[itemdef 022d6]
-DUPEITEM=022c9
-
-[itemdef 022d7]
-DUPEITEM=022c9
-
-[itemdef 022d8]
-DUPEITEM=022c9
-
-[itemdef 022d9]
-DUPEITEM=022c9
-
-[itemdef 022da]
-DUPEITEM=022c9
-
-[itemdef 022db]
-DUPEITEM=022c9
-
-[itemdef 022dc]
-DUPEITEM=022c9
-
-[itemdef 022dd]
-DUPEITEM=022c9
-
-[itemdef 022de]
-DUPEITEM=022c9
-
-[itemdef 022df]
-DUPEITEM=022c9
-
-[itemdef 022e0]
-DUPEITEM=022c9
-
-[itemdef 022e1]
-DUPEITEM=022c9
-
-[itemdef 022e2]
-DUPEITEM=022c9
-
-[itemdef 022e3]
-DUPEITEM=022c9
-
-[itemdef 022e4]
-DUPEITEM=022c9
-
-[itemdef 022e5]
-DUPEITEM=022c9
-
-[itemdef 022e6]
-DUPEITEM=022c9
-
-[itemdef 022e7]
-DUPEITEM=022c9
-
-[itemdef 022e8]
-DUPEITEM=022c9
-
-[itemdef 022e9]
-DUPEITEM=022c9
-
-[itemdef 022ea]
-DUPEITEM=022c9
-
-[itemdef 022eb]
-DUPEITEM=022c9
-
-[itemdef 022ec]
-DUPEITEM=022c9
-
-[itemdef 022ed]
-DUPEITEM=022c9
-
-[itemdef 022ee]
-DUPEITEM=022c9
-
-[itemdef 022ef]
-DUPEITEM=022c9
-
-[itemdef 022f0]
-DUPEITEM=022c9
-
-[itemdef 022f1]
-DUPEITEM=022c9
-
-[itemdef 022f2]
-DUPEITEM=022c9
-
-[itemdef 022f3]
-DUPEITEM=022c9
-
-[itemdef 022f4]
-DUPEITEM=022c9
-
-[itemdef 022f5]
-DUPEITEM=022c9
-
-[itemdef 022f6]
-DUPEITEM=022c9
-
-[itemdef 022f7]
-DUPEITEM=022c9
-
-[itemdef 022f8]
-DUPEITEM=022c9
-
-[itemdef 022f9]
-DUPEITEM=022c9
-
-[itemdef 022fa]
-DUPEITEM=022c9
-
-[itemdef 022fb]
-DUPEITEM=022c9
-
-[itemdef 022fc]
-DUPEITEM=022c9
-
-[itemdef 022fd]
-DUPEITEM=022c9
-
-[itemdef 022fe]
-DUPEITEM=022c9
-
-[itemdef 022ff]
-DUPEITEM=022c9
-
-[itemdef 02300]
-DUPEITEM=022c9
-
-[itemdef 02301]
-DUPEITEM=022c9
-
-[itemdef 02302]
-DUPEITEM=022c9
-
-[itemdef 02303]
-DUPEITEM=022c9
-
-[itemdef 02304]
-DUPEITEM=022c9
+[eof]

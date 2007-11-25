@@ -1412,7 +1412,34 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 	ASSERT( pChar );
 
 	id = pItem->GetDispID();
+	wHue = pItem->GetHue();
 	CItemBase * pItemDef = pItem->Item_GetDef();
+
+	if ( pItem->IsType(IT_EQ_HORSE) )
+	{
+		// check the reslevel of the ridden horse
+		CREID_TYPE idHorse = pItem->m_itFigurine.m_ID;
+		CCharBase * pCharDef = CCharBase::FindCharBase(idHorse);
+		if ( pCharDef && ( GetResDisp() < pCharDef->GetResLevel() ) )
+		{
+			idHorse = (CREID_TYPE) pCharDef->GetResDispDnId();
+			wHue = pCharDef->GetResDispDnHue();
+
+			// adjust the item to display the mount item associated with
+			// the resdispdnid of the mount's chardef
+			if ( idHorse != pItem->m_itFigurine.m_ID )
+			{
+				TCHAR * sMountDefname = Str_GetTemp();
+				sprintf(sMountDefname, "mount_0x%x", idHorse);
+				ITEMID_TYPE idMountItem = (ITEMID_TYPE)g_Exp.m_VarDefs.GetKeyNum(sMountDefname);
+				if ( idMountItem > ITEMID_NOTHING )
+				{
+					id = idMountItem;
+					pItemDef = CItemBase::FindItemBase(id);
+				}
+			}
+		}
+	}
 
 	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
 	{
@@ -1424,8 +1451,6 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 	}
 	else
 	{
-		wHue = pItem->GetHue();
-
 		if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
 			if ( pItemDef->GetResDispDnHue() != HUE_DEFAULT )
 				wHue = pItemDef->GetResDispDnHue();
