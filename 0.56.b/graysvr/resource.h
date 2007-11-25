@@ -2,6 +2,11 @@
 // Microsoft Developer Studio generated include file.
 // Used by GraySvr.rc
 //
+
+#ifndef IDC_STATIC
+	#define IDC_STATIC						0
+#endif
+
 #define IDR_MAINFRAME                   100
 #define IDR_ABOUT_BOX                   101
 #define IDM_POP_TRAY                    102
