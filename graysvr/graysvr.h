@@ -733,6 +733,9 @@ public:
 class CClient : public CGObListRec, public CScriptObj, public CChatChanMember, public CTextConsole
 {
 	// TCP/IP connection to the player or console.
+private:
+	static LPCTSTR const sm_szCmd_Redirect[];		// default to redirect these.
+
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szRefKeys[];

@@ -9,6 +9,22 @@
 /////////////////////////////////
 // Events from the Client.
 
+LPCTSTR const CClient::sm_szCmd_Redirect[12] =
+{
+	"BANK",
+	"CONTROL",
+	"DUPE",
+	"FORGIVE",
+	"JAIL",
+	"KICK",
+	"KILL",
+	"NUDGEDOWN",
+	"NUDGEUP",
+	"PRIVSET",
+	"REMOVE",
+	"SHRINK",
+};
+
 void CClient::Event_ChatButton(const NCHAR * pszName) // Client's chat button was pressed
 {
 	ADDTOCALLSTACK("CClient::Event_ChatButton");
@@ -1115,21 +1131,6 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 		m_bAllowSay = false;
 
 		// Assume you don't mean yourself !
-		static LPCTSTR const sm_szCmd_Redirect[] =		// default to redirect these.
-		{
-			"BANK",
-			"CONTROL",
-			"DUPE",
-			"FORGIVE",
-			"JAIL",
-			"KICK",
-			"KILL",
-			"NUDGEDOWN",
-			"NUDGEUP",
-			"PRIVSET",
-			"REMOVE",
-			"SHRINK",
-		};
 		if ( FindTableHeadSorted( pszCommand, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
 		{
 			// targetted verbs are logged once the target is selected.
@@ -2502,6 +2503,10 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 	// Do we have the right to do this ?
 	if ( m_pChar == pChar || ! pChar->NPC_IsOwnedBy( m_pChar, true ))
 		return;
+	if ( FindTableSorted( pszCharName, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect) ) >= 0 )
+		return;
+	if ( FindTableSorted( pszCharName, CCharNPC::sm_szVerbKeys, 14 ) >= 0 )
+		return;
 	if ( g_Cfg.IsObscene(pszCharName))
 		return;
 
@@ -2510,6 +2515,7 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 	args.m_s1 = pszCharName;
 	if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 		return;
+
 	pChar->SetName(pszCharName);
 }
 
