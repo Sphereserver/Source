@@ -675,6 +675,11 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 	ADDTOCALLSTACK("CClient::Event_Skill_Use");
 	// All the push button skills come through here.
 	// Any "Last skill" macro comes here as well. (push button only)
+	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
+	{
+		SysMessage( "There is no such skill. Please tell support you saw this message.");
+		return;
+	}
 
 	bool fContinue = false;
 
