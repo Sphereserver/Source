@@ -4376,6 +4376,13 @@ int CClient::xDispatchMsg()
 			if ( ! xCheckMsgSize(pEvent->ConfigFile.m_len ))
 				RETURN_FALSE();
 			return 1;
+		case XCMD_KRCharListUpdate:
+			EXC_SET("charlist update");
+			if ( ! xCheckMsgSize( sizeof( pEvent->KRCharListUpdate )))
+				RETURN_FALSE();
+			// What response is expected, if any? Re-sending char list
+			// triggers another E1
+			return 1;
 	}
 
 	// must have a logged in char to use any other messages.
