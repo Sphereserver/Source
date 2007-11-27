@@ -1161,7 +1161,6 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 	// RETURN: true = halt prodcessing (don't allow in this region
 
 	TRIGRET_TYPE iRet;
-	CResourceLock s;
 
 	int iQty = m_Events.GetCount();
 	for ( int i = 0; i < iQty; ++i )
@@ -1169,6 +1168,7 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 		CResourceLink	*pLink = m_Events[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
 			continue;
+		CResourceLock s;
 		if ( pLink->ResourceLock(s) )
 		{
 			iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
@@ -1178,6 +1178,7 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 	}
 	if ( g_Cfg.m_pEventsRegionLink && g_Cfg.m_pEventsRegionLink->HasTrigger(iAction) )
 	{
+		CResourceLock s;
 		if ( g_Cfg.m_pEventsRegionLink->ResourceLock(s) )
 		{
 			iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
