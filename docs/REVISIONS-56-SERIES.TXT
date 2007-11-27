@@ -3783,4 +3783,5 @@ this all in desperation)
 - Updated: sphere_item_unsorted.scp (Removed duplicate item definitions)
 
 27-11-2007, MrSugarCube
+- Fixed #1323: Criminal status for attacking dead players.
 - Fixed #1250: Exception with region triggers.

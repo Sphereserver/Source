@@ -1543,6 +1543,8 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 		return true;	// field spell ?
 	if ( pCharSrc == this )
 		return true;	// self induced
+	if ( IsStatFlag( STATF_DEAD ) )
+		return false;
 
 	if (fShouldReveal)
 		pCharSrc->Reveal();	// fix invis exploit
@@ -2013,7 +2015,7 @@ effect_bounce:
 		}
 	}
 
-	if ( Stat_GetVal(STAT_STR) <= 0 )	// Already dead.
+	if ( Stat_GetVal(STAT_STR) <= 0 || IsStatFlag(STATF_DEAD) )	// Already dead.
 		return( -1 );
 
 	if ( uType & DAMAGE_FIRE )
