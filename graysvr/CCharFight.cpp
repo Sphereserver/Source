@@ -2719,13 +2719,15 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		return true;
 
 	const CSpellDef *	pSpellDef;
-	if (   skillActive == SKILL_MAGERY
-		&& (pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell)) )
+	if ( IsSkillMagic(skillActive) && (pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell)) )
 	{
-		int iInterrupt = pSpellDef->m_Interrupt.GetLinear(
-			       			Skill_GetBase(SKILL_MAGERY) );
-		if ( Calc_GetRandVal( 1000 ) >= iInterrupt )
-			return true;
+		int skill;
+		if (pSpellDef->GetPrimarySkill(&skill, NULL))
+		{
+			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase((SKILL_TYPE)skill) );
+			if ( Calc_GetRandVal( 1000 ) >= iInterrupt )
+				return true;
+		}
 	}
 	m_Act_Targ = pCharTarg->GetUID();
 	Skill_Start( skillWeapon );

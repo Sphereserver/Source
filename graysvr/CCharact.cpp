@@ -2594,7 +2594,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	// RETURN:
 	//  ptDst.m_z = the new z
 	//  NULL = failed to walk here.
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && m_Act_SkillCurrent == SKILL_MAGERY )
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && IsSkillMagic(m_Act_SkillCurrent) )
 	{
 		// Casting prevents movement with precasting enabled.
 		return( NULL );
@@ -2897,8 +2897,12 @@ bool CChar::CheckLocation( bool fStanding )
 		else switch ( iSkillActive )
 		{
 		case SKILL_MEDITATION:
-		case SKILL_NECROMANCY:
 		case SKILL_MAGERY:
+		case SKILL_NECROMANCY:
+		case SKILL_CHIVALRY:
+		case SKILL_BUSHIDO:
+		case SKILL_NINJITSU:
+		case SKILL_SPELLWEAVING:
 			// Skill is broken if we move ?
 			break;
 		case SKILL_HIDING:	// this should become stealth ?

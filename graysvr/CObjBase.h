@@ -2356,6 +2356,11 @@ public:
 		} m_atUnk;
 
 		// SKILL_MAGERY
+		// SKILL_NECROMANCY
+		// SKILL_CHIVALRY
+		// SKILL_BUSHIDO
+		// SKILL_NINJITSU
+		// SKILL_SPELLWEAVING
 		struct
 		{
 			SPELL_TYPE	m_Spell;		// ACTARG1=Currently casting spell.
@@ -2943,6 +2948,7 @@ public:
 	// skills and actions. -------------------------------------------
 	static bool IsSkillBase( SKILL_TYPE skill );
 	static bool IsSkillNPC( SKILL_TYPE skill );
+	static bool IsSkillMagic( SKILL_TYPE skill );
 
 	SKILL_TYPE Skill_GetBest( int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
@@ -3339,6 +3345,25 @@ inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 	// Is this in the base set of skills.
 	return( IS_SKILL_BASE(skill));
 }
+inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
+{
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
+		return true;
+	switch(skill)
+	{
+		case SKILL_MAGERY:
+		case SKILL_NECROMANCY:
+		case SKILL_CHIVALRY:
+		case SKILL_BUSHIDO:
+		case SKILL_NINJITSU:
+		case SKILL_SPELLWEAVING:
+			return true;
+	}
+	return false;
+}
+
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static
 {
 	// Is this in the NPC set of skills.

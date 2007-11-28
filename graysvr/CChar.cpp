@@ -2911,6 +2911,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 		case CHV_POLY:	// result of poly spell script choice. (casting a spell)
 			{
+				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Polymorph);
+				if (pSpellDef == NULL)
+					return( false );
+
 				m_atMagery.m_Spell = SPELL_Polymorph;
 				m_atMagery.m_SummonID = (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr());
 
@@ -2930,7 +2934,12 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					Spell_CastDone();
 					break;
 				}
-				Skill_Start( SKILL_MAGERY );
+
+				int skill;
+				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+					return( false );
+
+				Skill_Start( (SKILL_TYPE)skill );
 				break;
 			}
 		case CHV_PRIVSET:

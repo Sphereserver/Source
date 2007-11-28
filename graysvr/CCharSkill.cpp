@@ -3774,6 +3774,10 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Lockpicking(stage);
 		case SKILL_MAGERY:
 		case SKILL_NECROMANCY:
+		case SKILL_CHIVALRY:
+		case SKILL_BUSHIDO:
+		case SKILL_NINJITSU:
+		case SKILL_SPELLWEAVING:
 			return Skill_Magery(stage);
 		case SKILL_MAGICRESISTANCE:
 			return 0;
