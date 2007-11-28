@@ -3785,3 +3785,7 @@ this all in desperation)
 27-11-2007, MrSugarCube
 - Fixed #1323: Criminal status for attacking dead players.
 - Fixed #1250: Exception with region triggers.
+- Fixed #1017: Magery skill being used for all spells. Now the first skill listed
+  in the spell's SKILLREQ line will be the action used when casting. Note that
+  unexpected things will happen if you've set this to be a non-magic skill (for
+  example, Begging), so make sure the SKF_MAGIC flag is set on such skills.

@@ -325,11 +325,19 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SCROLL:	// activate the scroll.
 			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 			{
+				CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell));
+				if (pSpellDef == NULL)
+					return false;
+
+				int skill;
+				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+					return false;
+
 				m_tmSkillMagery.m_Spell = (SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell);	// m_atMagery.m_Spell
 				m_pChar->m_atMagery.m_Spell = (SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell);
 				m_Targ_UID = pItem->GetUID();	// default target.
 				m_Targ_PrvUID = pItem->GetUID();
-				m_pChar->Skill_Start( SKILL_MAGERY );
+				m_pChar->Skill_Start( (SKILL_TYPE)skill );
 				return true;
 			}
 			return Cmd_Skill_Magery( (SPELL_TYPE)RES_GET_INDEX(pItem->m_itWeapon.m_spell), pItem );
@@ -914,7 +922,11 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 
 		if ( !IsSetMagicFlags( MAGICF_PRECAST ) )
 		{
-			return( m_pChar->Skill_Start( SKILL_MAGERY ) );
+			int skill;
+			if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+				return false;
+
+			return( m_pChar->Skill_Start( (SKILL_TYPE)skill ) );
 		}
 		else
 		{

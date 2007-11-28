@@ -868,7 +868,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		return;
 
 	// Movement whilst precasting is not allowed
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && m_pChar->m_Act_SkillCurrent == SKILL_MAGERY )
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
 		SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
 		addPlayerWalkCancel();
@@ -3854,11 +3854,19 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 
 				if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 				{
+					CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) iSpell);
+					if (pSpellDef == NULL)
+						return;
+
+					int skill;
+					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+						return;
+
 					m_tmSkillMagery.m_Spell = (SPELL_TYPE) iSpell;
 					m_pChar->m_atMagery.m_Spell = (SPELL_TYPE) iSpell;	// m_atMagery.m_Spell
 					m_Targ_UID = m_pChar->GetUID();	// default target.
 					m_Targ_PrvUID = m_pChar->GetUID();
-					m_pChar->Skill_Start( SKILL_MAGERY );
+					m_pChar->Skill_Start( (SKILL_TYPE)skill );
 				}
 				else
 					Cmd_Skill_Magery( (SPELL_TYPE) iSpell, m_pChar );
@@ -4050,11 +4058,19 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
 			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 			{
+				CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) ATOI( ppArgs[0] ));
+				if (pSpellDef == NULL)
+					return;
+
+				int skill;
+				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+					return;
+
 				m_tmSkillMagery.m_Spell = (SPELL_TYPE) ATOI( ppArgs[0] );
 				m_pChar->m_atMagery.m_Spell = (SPELL_TYPE) ATOI( ppArgs[0] );	// m_atMagery.m_Spell
 				m_Targ_UID = m_pChar->GetUID();	// default target.
 				m_Targ_PrvUID = m_pChar->GetUID();
-				m_pChar->Skill_Start( SKILL_MAGERY );
+				m_pChar->Skill_Start( (SKILL_TYPE)skill );
 			}
 			else
 				Cmd_Skill_Magery( (SPELL_TYPE) ATOI( ppArgs[0] ), m_pChar );

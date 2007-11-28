@@ -1114,11 +1114,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_CAST:
 			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 			{
+				CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, s.GetArgStr()));
+				if (pSpellDef == NULL)
+					return true;
+
+				int skill;
+				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+					return true;
+
 				m_tmSkillMagery.m_Spell = (SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, s.GetArgStr());	// m_atMagery.m_Spell
 				m_pChar->m_atMagery.m_Spell = (SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, s.GetArgStr());
 				m_Targ_UID = dynamic_cast <CObjBase *>(pSrc)->GetUID();	// default target.
 				m_Targ_PrvUID = dynamic_cast <CObjBase *>(pSrc)->GetUID();
-				m_pChar->Skill_Start( SKILL_MAGERY );
+				m_pChar->Skill_Start( (SKILL_TYPE)skill );
 				break;
 			}
 			else
@@ -1411,11 +1419,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_TELE:
 			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 			{
+				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
+				if (pSpellDef == NULL)
+					return true;
+
+				int skill;
+				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+					return true;
+
 				m_tmSkillMagery.m_Spell = SPELL_Teleport;
 				m_pChar->m_atMagery.m_Spell = SPELL_Teleport;
 				m_Targ_UID = dynamic_cast <CObjBase *>(pSrc)->GetUID();	// default target.
 				m_Targ_PrvUID = dynamic_cast <CObjBase *>(pSrc)->GetUID();
-				m_pChar->Skill_Start( SKILL_MAGERY );
+				m_pChar->Skill_Start( (SKILL_TYPE)skill );
 				break;
 			}
 			else

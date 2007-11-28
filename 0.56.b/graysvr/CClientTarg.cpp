@@ -1499,16 +1499,20 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 
 	if ( IsSetMagicFlags( MAGICF_PRECAST ) && m_pChar->IsClient() )
 	{
-		if ( m_pChar->m_Act_SkillCurrent == SKILL_MAGERY )
+		if ( CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 		{
 			this->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_MAGERY_5 ) ); // You have not yet finished preparing the spell.
 			return false;
 		}
-		else
-			return( m_pChar->Spell_CastDone() );
+
+		return( m_pChar->Spell_CastDone() );
 	}
-	else
-		return( m_pChar->Skill_Start( SKILL_MAGERY ));
+
+	int skill;
+	if (!pSpell->GetPrimarySkill(&skill, NULL))
+		return false;
+
+	return( m_pChar->Skill_Start( (SKILL_TYPE)skill ));
 }
 
 bool CClient::OnTarg_Pet_Command( CObjBase * pObj, const CPointMap & pt )

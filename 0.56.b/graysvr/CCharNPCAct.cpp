@@ -1762,6 +1762,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	else
 		i = Calc_GetRandVal( imaxspell );
 
+	int skill;
 	for ( ; 1; i++ )
 	{
 		if ( i > imaxspell )	// didn't find a spell.
@@ -1771,6 +1772,8 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 		if ( pSpellDef == NULL )
 			continue;
+		if ( !pSpellDef->GetPrimarySkill( &skill, NULL ))
+			skill = SKILL_MAGERY;
 
 		if ( pSpellDef->IsSpellType(SPELLFLAG_DISABLED|SPELLFLAG_PLAYERONLY) ) continue;
 
@@ -1922,7 +1925,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	m_Act_p = pMageryTarget->GetTopPoint();
 
 	// Calculate the difficulty
-	return( Skill_Start( SKILL_MAGERY ));
+	return( Skill_Start( (SKILL_TYPE)skill ));
 }
 
 void CChar::NPC_Act_Fight()

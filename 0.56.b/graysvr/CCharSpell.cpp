@@ -224,7 +224,15 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 #else
 		pChar->NPC_PetSetOwner( this );
 #endif
-		pChar->OnSpellEffect( SPELL_Summon, this, Skill_GetAdjusted( SKILL_MAGERY ), NULL );
+		int skill;
+		CSpellDef *pSpellDef = g_Cfg.GetSpellDef( CChar::IsSkillMagic(m_Act_SkillCurrent)? m_atMagery.m_Spell : SPELL_Summon );
+		if (!pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL))
+		{
+			pChar->Delete();
+			return( NULL );
+		}
+
+		pChar->OnSpellEffect( SPELL_Summon, this, Skill_GetAdjusted( (SKILL_TYPE)skill ), NULL );
 
 		// ASSERT(pChar->m_pNPC);
 	}
@@ -1579,6 +1587,10 @@ bool CChar::Spell_CastDone()
 	if ( pSpellDef == NULL )
 		return( false );
 
+	int iSkill, iDifficulty;
+	if (!pSpellDef->GetPrimarySkill(&iSkill, &iDifficulty))
+		return( false );
+
 	int iSkillLevel;
 	if ( pObjSrc != this )
 	{
@@ -1593,7 +1605,7 @@ bool CChar::Spell_CastDone()
 	}
 	else
 	{
-		iSkillLevel = Skill_GetAdjusted( SKILL_MAGERY );
+		iSkillLevel = Skill_GetAdjusted( (SKILL_TYPE)iSkill );
 	}
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -2146,12 +2158,8 @@ bool CChar::Spell_CastDone()
 	// At this point we should gain skill if precasting is enabled
 	if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) )
 	{
-		int iDifficulty;
-		if (pSpellDef->GetPrimarySkill( NULL, &iDifficulty ))
-		{
-			iDifficulty /= 10;
-			Skill_Experience( SKILL_MAGERY, iDifficulty );
-		}
+		iDifficulty /= 10;
+		Skill_Experience( (SKILL_TYPE)iSkill, iDifficulty );
 	}
 	return( true );
 }
