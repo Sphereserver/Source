@@ -1838,6 +1838,64 @@ void CItem::SetAmountUpdate( int amount )
 	Update();
 }
 
+inline bool CItem::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult)
+{
+	TCHAR * ppCmdTrigger[3];
+	int iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
+	
+	if ( iResultArgs > 0 )
+	{
+		LPCTSTR callTrigger = ppCmdTrigger[0];
+		int iTriggerArgType = 0;
+		CScriptTriggerArgs csTriggerArgs;
+
+		if ( iResultArgs == 3 )
+		{
+			iTriggerArgType = ATOI(ppCmdTrigger[1]);
+
+			if ( iTriggerArgType == 1 ) // 3 ARGNs
+			{
+				int Arg_piCmd[3];
+				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
+
+				if ( iResultArgs == 3 )
+				{
+					csTriggerArgs.m_iN3 = Arg_piCmd[2];
+				}
+
+				if ( iResultArgs >= 2 )
+				{
+					csTriggerArgs.m_iN2 = Arg_piCmd[1];
+				}
+
+				if ( iResultArgs >= 1 )
+				{
+					csTriggerArgs.m_iN1 = Arg_piCmd[0];
+				}
+			}
+			else if ( iTriggerArgType == 2 ) // ARGS
+			{
+				csTriggerArgs.m_s1 = ppCmdTrigger[2];
+				csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
+			}
+			else if ( iTriggerArgType == 3 ) // ARGO
+			{
+				CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
+				CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
+				if ( pTriggerArgObj )
+				{
+					csTriggerArgs.m_pO1 = pTriggerArgObj;
+				}
+			}
+		}
+
+		trResult = OnTrigger(callTrigger, pSrc, &csTriggerArgs);
+		return true;
+	}
+
+	return false;
+}
+
 void CItem::WriteUOX( CScript & s, int index )
 {
 	ADDTOCALLSTACK("CItem::WriteUOX");
@@ -2105,81 +2163,17 @@ bool CItem::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 enum IC_TYPE
 {
-	IC_ADDCIRCLE,
-	IC_ADDSPELL,
-	IC_AMOUNT,
-	IC_ATTR,
-	IC_CONT,
-	IC_CONTGRID,
-	IC_CONTP,
-	IC_DISPID,
-	IC_DISPIDDEC,
-	IC_DMGCOLD,
-	IC_DMGENERGY,
-	IC_DMGFIRE,
-	IC_DMGPOISON,
-	IC_FRUIT,
-	IC_HEIGHT,
-	IC_HITPOINTS,
-	IC_HITS,
-	IC_ID,
-	IC_LAYER,
-	IC_LINK,
-	IC_MAXHITS,
-	IC_MORE,
-	IC_MORE1,
-	IC_MORE1h,
-	IC_MORE1l,
-	IC_MORE2,
-	IC_MORE2h,
-	IC_MORE2l,
-	IC_MOREM,
-	IC_MOREP,
-	IC_MOREX,
-	IC_MOREY,
-	IC_MOREZ,
-	IC_P,
-	IC_TYPE,
+	#define ADD(a,b) IC_##a,
+	#include "../tables/CItem_props.tbl"
+	#undef ADD
 	IC_QTY,
 };
 
 LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
 {
-	"ADDCIRCLE",
-	"ADDSPELL",
-	"AMOUNT",
-	"ATTR",
-	"CONT",
-	"CONTGRID",
-	"CONTP",
-	"DISPID",
-	"DISPIDDEC",
-	"DMGCOLD",
-	"DMGENERGY",
-	"DMGFIRE",
-	"DMGPOISON",
-	"FRUIT",
-	"HEIGHT",
-	"HITPOINTS",	// for weapons
-	"HITS",
-	"ID",
-	"LAYER",
-	"LINK",
-	"MAXHITS",
-	"MORE",
-	"MORE1",
-	"more1h",
-	"more1l",
-	"MORE2",
-	"more2h",
-	"more2l",
-	"MOREM",
-	"MOREP",
-	"MOREX",
-	"MOREY",
-	"MOREZ",
-	"P",
-	"TYPE",
+	#define ADD(a,b) b,
+	#include "../tables/CItem_props.tbl"
+	#undef ADD
 	NULL,
 };
 
@@ -2189,8 +2183,10 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	ADDTOCALLSTACK("CItem::r_WriteVal");
 	EXC_TRY("WriteVal");
 	int index;
-	if ( !strnicmp( "ADDSPELL", pszKey, 8 ) )
+	if ( !strnicmp( CItem::sm_szLoadKeys[IC_ADDSPELL], pszKey, 8 ) )
 		index	= IC_ADDSPELL;
+	else if ( !strnicmp( CItem::sm_szLoadKeys[IC_TRIGGER], pszKey, 7 ) )
+		index	= IC_TRIGGER;
 	else
 		index	= FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
 
@@ -2345,6 +2341,21 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_P:
 			fDoDefault = true;
 			break;
+		case IC_TRIGGER:
+			{
+				pszKey += 7;
+				GETNONWHITESPACE( pszKey );
+
+				if ( *pszKey )
+				{
+					TRIGRET_TYPE trReturn;
+					bool bTrigReturn = CallPersonalTrigger((TCHAR*)pszKey, pSrc, trReturn);
+					if ( bTrigReturn )
+						sVal.FormatVal(trReturn);
+
+					return bTrigReturn;
+				}
+			} return false;
 		case IC_TYPE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
@@ -2654,31 +2665,17 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 
 enum CIV_TYPE
 {
-	CIV_BOUNCE,
-	CIV_CONSUME,
-	CIV_CONTCONSUME,
-	CIV_DECAY,
-	CIV_DROP,
-	CIV_DUPE,
-	CIV_EQUIP,
-	CIV_TRIGGER,
-	CIV_UNEQUIP,
-	CIV_USE,
+	#define ADD(a,b) CIV_##a,
+	#include "../tables/CItem_functions.tbl"
+	#undef ADD
 	CIV_QTY,
 };
 
 LPCTSTR const CItem::sm_szVerbKeys[CIV_QTY+1] =
 {
-	"BOUNCE",
-	"CONSUME",
-	"CONTCONSUME",
-	"DECAY",
-	"DROP",
-	"DUPE",
-	"EQUIP",	// engage the equip triggers.
-	"TRIGGER",
-	"UNEQUIP",	// engage the unequip triggers.
-	"USE",
+	#define ADD(a,b) b,
+	#include "../tables/CItem_functions.tbl"
+	#undef ADD
 	NULL,
 };
 

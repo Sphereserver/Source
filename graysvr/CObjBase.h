@@ -951,6 +951,7 @@ public:
 
 private:
 	TRIGRET_TYPE OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
+	bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 
 public:
 	TRIGRET_TYPE OnTrigger( ITRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
@@ -2891,6 +2892,8 @@ public:
 
 //private:
 	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
+private:
+	bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 
 public:
 	// Load/Save----------------------------------
