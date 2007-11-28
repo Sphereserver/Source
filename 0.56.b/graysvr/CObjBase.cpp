@@ -1419,7 +1419,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						pItemSrc	= uid.ItemFind();
 					}
 				case 3:
-					if ( piCmd[2] == 1 )
+					if ( piCmd[2] == -1 )
 					{
 						pCharSrc = dynamic_cast <CChar*> (this);
 					}
