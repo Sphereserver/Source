@@ -1213,7 +1213,7 @@ bool CClient::xRecvData() // Receive message from client
 	ADDTOCALLSTACK("CClient::xRecvData");
 	static BYTE pDataKR_E3[77] = {0xe3,
 						0x00, 0x4d,
-						0x00, 0x00, 0x00, 0x03, 0x02, 0x01, 0x03,
+						0x00, 0x00, 0x00, 0x03, 0x02, 0x00, 0x03,
 						0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0x00, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
 						0x00, 0x00, 0x00, 0x10, 0x00, 0x13, 0xb7, 0x00, 0xce, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 						0x00, 0x00, 0x00, 0x20,
@@ -1276,18 +1276,21 @@ bool CClient::xRecvData() // Receive message from client
 		int iSeedLen = 0;
 		bool bNewLogin = false;
 
-		if ((Event.m_Raw[0] == 0xEF) && ( iCountNew >= (sizeof( DWORD ) + 1 + 16) ))
+		if ((Event.Default.m_Cmd == XCMD_NewSeed) && ( iCountNew >= SEEDLENGTH_NEW ))
 		{
-		   DEBUG_WARN(("New Login Handshake Detected.\n"));
-		   m_tmSetup.m_dwIP = UNPACKDWORD(Event.m_Raw+1);
-		   iSeedLen = (sizeof( DWORD ) + 1 + 16);
+			DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)Event.NewSeed.m_Version_Maj, 
+						 (DWORD)Event.NewSeed.m_Version_Min, (DWORD)Event.NewSeed.m_Version_Rev, 
+						 (DWORD)Event.NewSeed.m_Version_Pat));
+
+		   m_tmSetup.m_dwIP = (DWORD) Event.NewSeed.m_Seed;
+		   iSeedLen = SEEDLENGTH_NEW;
 		   bNewLogin = true;
 		}
 		else
 		{
 			// Assume it's a normal client log in.
 			m_tmSetup.m_dwIP = UNPACKDWORD(Event.m_Raw);
-			iSeedLen = sizeof( DWORD );
+			iSeedLen = SEEDLENGTH_OLD;
 		}
 
 		iCountNew -= iSeedLen;
@@ -1304,7 +1307,7 @@ bool CClient::xRecvData() // Receive message from client
 			}
 			else if ( bNewLogin )
 			{
-				DEBUG_WARN(("6.0.5.0+ Client Detected.\n"));
+				// Specific actions for new seed here (if any).
 			}
 
 			return( true );

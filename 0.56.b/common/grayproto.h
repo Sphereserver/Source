@@ -290,9 +290,13 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_UseHotbar				= 0xeb,
 	XCMD_MacroEquipItem			= 0xec,
 	XCMD_MacroUnEquipItem		= 0xed,
-	
-	XCMD_QTY		= 0xee,
+	XCMD_NewSeed				= 0xef,
+
+	XCMD_QTY		= 0xf0,
 };
+
+#define SEEDLENGTH_OLD (sizeof( DWORD ))
+#define SEEDLENGTH_NEW (1 + sizeof( DWORD )*5)
 
 enum PARTYMSG_TYPE
 {
@@ -1735,6 +1739,16 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_count;		// 3	 (number of layers)
 			NWORD m_layers[1];	// 4 - ? (layers to unequip)
 		} MacroUnEquipItems;
+
+		struct // XCMD_NewSeed		// 21 bytes
+		{
+			BYTE m_Cmd;				// 0 = 0xEF
+			NDWORD m_Seed;			// 1 - 4   = seed
+			NDWORD m_Version_Maj;	// 5 - 8   = Ver Major
+			NDWORD m_Version_Min;	// 9 - 12  = Ver Minor
+			NDWORD m_Version_Rev;	// 13 - 16 = Ver Revision
+			NDWORD m_Version_Pat;	// 17 - 20 = Ver Patch
+		} NewSeed;
 	};
 } PACK_NEEDED;
 
