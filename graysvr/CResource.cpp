@@ -198,6 +198,7 @@ CResource::CResource()
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
+	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 }
 
 CResource::~CResource()
@@ -396,6 +397,7 @@ enum RC_TYPE
 	RC_MAXITEMCOMPLEXITY,		// m_iMaxItemComplexity
 	RC_MAXLOOPTIMES,			// m_iMaxLoopTimes
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
+	RC_MAXSHIPPLANKTELEPORT, // m_iMaxShipPlankTeleport
 	RC_MAXSKILL,
 	RC_MAXTOOLTIPFORTICK,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
@@ -577,6 +579,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXITEMCOMPLEXITY",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxItemComplexity)	}},
 	{ "MAXLOOPTIMES",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxLoopTimes)			}},
 	{ "MAXSECTORCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSectorComplexity)	}},
+	{ "MAXSHIPPLANKTELEPORT",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxShipPlankTeleport)	}},
 	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill)	}},
 	{ "MAXTOOLTIPFORTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxTooltipForTick)	}},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords) }},

@@ -808,6 +808,7 @@ public:
 	int		m_iColorNotoNeutral;
 
 	int		m_iMaxAccountLoginTries;
+	int		m_iMaxShipPlankTeleport;
 
 #ifndef _EXTERNAL_DLL
 	//	mySQL features

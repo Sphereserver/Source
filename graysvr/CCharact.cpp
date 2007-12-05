@@ -3018,7 +3018,7 @@ bool CChar::CheckLocation( bool fStanding )
 			if ( ! fStanding && ! IsStatFlag( STATF_Fly ))
 			{
 				// Find some place to go. (in direction of plank)
-				if ( MoveToValidSpot(m_dirFace, UO_MAP_VIEW_SIZE, 1, true) )
+				if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
 				{
 					pItem->SetTimeout(5*TICK_PER_SEC);	// autoclose it behind us.
 					return true;
