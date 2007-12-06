@@ -3766,7 +3766,9 @@ this all in desperation)
 24-11-2007, Furio
 - Fixed #1294: Error with the third parameter of "spelleffect". Now the third
   parameter refer to the current source if is -1. 
+- Fixed #1318: Owned NPC's names and NPC's vendors commands.
 - Added: Support for login protocol in 6.0.5.0+ clients.
+- Added #1329: Max dist to park boats (see sphere.ini MaxShipPlankTeleport).
 - Added #1296: "trigger" function returning the values returned by @CustomTrigger.
 
 25-11-2007, MrSugarCube
