@@ -6,6 +6,9 @@
 //
 
 #include "graysvr.h"	// predef header.
+#pragma warning(disable:4096)
+#include "../common/zlib/zlib.h"
+#pragma warning(default:4096)
 
 BYTE CClient::sm_xCompress_Buffer[MAX_BUFFER];	// static
 CHuffman CClient::m_Comp;
@@ -274,7 +277,12 @@ bool CClient::addRelay( const CServerDef * pServ )
 	DWORD dwCustomerId = 0x7f000001;
 	if ( g_Cfg.m_fUseAuthID )
 	{
-		dwCustomerId = Calc_GetRandVal(INT_MAX - 1);
+		CGString sCustomerID(pServ->GetName());
+		sCustomerID.Add(GetAccount()->GetName());
+
+		dwCustomerId = z_crc32(0L, Z_NULL, 0);
+		dwCustomerId = z_crc32(dwCustomerId, (const z_Bytef *)sCustomerID.GetPtr(), sCustomerID.GetLength());
+
 		GetAccount()->m_TagDefs.SetNum("customerid", dwCustomerId);
 	}
 
