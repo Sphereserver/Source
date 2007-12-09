@@ -51,9 +51,12 @@ public:
 	int GetDistBase( const CPointBase & pt ) const // Distance between points
 	{
 		// Do not consider z or m_map.
-		int dx = abs(m_x-pt.m_x);
-		int dy = abs(m_y-pt.m_y);
-		return( maximum( dx, dy ));
+		int dx = m_x - pt.m_x;
+		int dy = m_y - pt.m_y;
+
+		double dist = sqrt((double)(dx*dx+dy*dy));
+
+		return( (int) (( (dist - floor(dist)) > 0.5 ) ? (ceil(dist)) : (floor(dist))) );
 		// Return the real distance return((int) sqrt(dx*dx+dy*dy+dz*dz));
 	}
 	int GetDist( const CPointBase & pt ) const; // Distance between points

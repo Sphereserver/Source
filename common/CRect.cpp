@@ -376,7 +376,10 @@ int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between poi
 
 	// Get the deltas and correct the Z for height first
 	int dz = GetDistZAdj(pt); // Take player height into consideration
-	return( maximum( dist, dz ));
+			
+	double realdist = sqrt((double)(dist*dist+dz*dz));
+	
+	return( (int) (( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist))) );
 }
 
 DIR_TYPE CPointBase::GetDir( const CPointBase & pt, DIR_TYPE DirDefault ) const // Direction to point pt

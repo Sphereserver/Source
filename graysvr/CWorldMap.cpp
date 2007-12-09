@@ -517,6 +517,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 		{
 			CPointMap ptTest( x, y, pt.m_z, pt.m_map);
 			pMeter = GetMapMeter(ptTest);
+
 			if ( !pMeter )
 				continue;
 			if ( bLimitZ && ( pMeter->m_z != pt.m_z ) )
@@ -535,51 +536,74 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 			iDistance = iTestDistance;	// tighten up the search.
 			if ( ! iDistance )
 				return( ptFound );
+
 			rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
 				pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
 				pt.m_map);
 		}
 	}
 
-	// Any statics here? (checks just 1 8x8 block !???)
-	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	ASSERT( pMapBlock );
 
-	int iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty )  // no static items here.
+	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
+		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
+		pt.m_map);
+
+	const CGrayMapBlock * pMapBlock = NULL;
+	const CUOStaticItemRec * pStatic = NULL;
+	const CItemBase * pItemDef = NULL;
+	int iQty = 0;
+
+	for (int x = rect.m_left; x < rect.m_right; x += UO_BLOCK_SIZE, pMapBlock = NULL )
 	{
-		int x2=pMapBlock->GetOffsetX(pt.m_x);
-		int y2=pMapBlock->GetOffsetY(pt.m_y);
-		const CUOStaticItemRec * pStatic = NULL;
-		const CItemBase * pItemDef = NULL;
-
-		for ( int i=0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
+		for ( int y = rect.m_top; y < rect.m_bottom; y += UO_BLOCK_SIZE, pMapBlock = NULL )
 		{
-			pStatic = pMapBlock->m_Statics.GetStatic( i );
-			if ( bLimitZ && ( pStatic->m_z != pt.m_z ) )
+			CPointMap ptTest( x, y, pt.m_z, pt.m_map);
+			pMapBlock = GetMapBlock( ptTest );
+
+			if ( !pMapBlock )
+				continue;
+			
+			iQty = 0;
+			iQty = pMapBlock->m_Statics.GetStaticQty();
+
+			if ( !iQty )
 				continue;
 
-			// inside the range we want ?
-			CPointMap ptTest( pStatic->m_x+pMapBlock->m_x, pStatic->m_y+pMapBlock->m_y, pStatic->m_z, pt.m_map);
-			iTestDistance = pt.GetDist(ptTest);
-			if ( iTestDistance > iDistance )
-				continue;
+			pStatic = NULL; 
+			pItemDef = NULL;
 
-			ITEMID_TYPE idTile = pStatic->GetDispID();
+			for ( int i=0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
+			{
+				pStatic = pMapBlock->m_Statics.GetStatic( i );
+				if ( bLimitZ && ( pStatic->m_z != ptTest.m_z ) )
+					continue;
 
-			// Check the script def for the item.
-			pItemDef = CItemBase::FindItemBase( idTile );
-			if ( pItemDef == NULL )
-				continue;
-			if ( ! pItemDef->IsType( iType ))
-				continue;
-			ptFound = ptTest;
-			iDistance = iTestDistance;
-			if ( ! iDistance )
-				return( ptFound );
+				// inside the range we want ?
+				CPointMap ptStatic( pStatic->m_x+pMapBlock->m_x, pStatic->m_y+pMapBlock->m_y, pStatic->m_z, ptTest.m_map);
+				iTestDistance = pt.GetDist(ptStatic);
+				if ( iTestDistance > iDistance )
+					continue;
+
+				ITEMID_TYPE idTile = pStatic->GetDispID();
+
+				// Check the script def for the item.
+				pItemDef = CItemBase::FindItemBase( idTile );
+				if ( pItemDef == NULL )
+					continue;
+				if ( ! pItemDef->IsType( iType ))
+					continue;
+
+				ptFound = ptStatic;
+				iDistance = iTestDistance;
+				if ( ! iDistance )
+					return( ptFound );
+
+				rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
+					pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
+					pt.m_map);
+			}
 		}
 	}
-	// Parts of multis ?
 
 	return ptFound;
 }
