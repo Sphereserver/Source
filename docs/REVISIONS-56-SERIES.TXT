@@ -3794,3 +3794,7 @@ this all in desperation)
   in the spell's SKILLREQ line will be the action used when casting. Note that
   unexpected things will happen if you've set this to be a non-magic skill (for
   example, Begging), so make sure the SKF_MAGIC flag is set on such skills.
+  
+14-12-2007, coruja747 (Script pack)
+- Updated: sphere_item_building_walls_se.scp (Missing item 02753)
+- Updated: sphere_item_deco_evilitem.scp (Incorrect dupeitem on itemdef 02a59)

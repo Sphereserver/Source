@@ -23,7 +23,7 @@ DESCRIPTION=Bone Throne
 
 [ITEMDEF 02a59]
 //bone throne
-DUPEITEM=02a59
+DUPEITEM=02a58
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Evil Home Decor
 DESCRIPTION=Bone Throne

@@ -267,6 +267,16 @@ dupeitem=02713
 //latticed wall (white)
 dupeitem=02713
 
+[itemdef 02753]
+defname=i_latticed_wall_brown
+type=t_wall
+resources=100 i_log
+dupelist=02754,02755,02756,02757,02758,02759,0275a,0275b,0275c,0275d,0275e,0275f,02760,02761,02762,02992,02993,02994,02995,02996,02997,02998,02999,0299a,0299b,0299c,0299d
+
+CATEGORY=Buildings - SE Walls
+SUBSECTION=Latticed Wall (brown)
+DESCRIPTION=@
+
 [itemdef 02754]
 //latticed wall (brown)
 dupeitem=02753
