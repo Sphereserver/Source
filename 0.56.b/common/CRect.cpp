@@ -6,6 +6,14 @@
 
 #include "../graysvr/graysvr.h"
 
+extern "C"
+{
+	// for some reason, including the math.h file gave an error, so I'll declare it here.
+	double  __cdecl ceil(double);
+	double  __cdecl floor(double);
+	double  __cdecl sqrt(double);
+}
+
 //*************************************************************************
 // -CPointBase
 
@@ -82,6 +90,152 @@ LPCTSTR const CPointBase::sm_szLoadKeys[PT_QTY+1] =
 	"Z",
 	NULL,
 };
+
+void CPointBase::InitPoint()
+{
+	m_x = -1;	// invalid location.
+	m_y = -1;
+	m_z = 0;
+	m_map = 0;
+}
+void CPointBase::ZeroPoint()
+{
+	m_x = 0;	// invalid location.
+	m_y = 0;
+	m_z = 0;
+	m_map = 0;
+}
+int CPointBase::GetDistZ( const CPointBase & pt ) const
+{
+	return( abs(m_z-pt.m_z));
+}
+int CPointBase::GetDistZAdj( const CPointBase & pt ) const
+{
+	return( GetDistZ(pt) / (PLAYER_HEIGHT/2) );
+}
+int CPointBase::GetDistBase( const CPointBase & pt ) const // Distance between points
+{
+	// Do not consider z or m_map.
+	int dx = m_x - pt.m_x;
+	int dy = m_y - pt.m_y;
+
+	double dist = sqrt((double)(dx*dx+dy*dy));
+
+	return( (int) (( (dist - floor(dist)) > 0.5 ) ? (ceil(dist)) : (floor(dist))) );
+	// Return the real distance return((int) sqrt(dx*dx+dy*dy+dz*dz));
+}
+
+int CPointBase::GetDist( const CPointBase & pt ) const // Distance between points
+{
+	ADDTOCALLSTACK("CPointBase::GetDist");
+	// Get the basic 2d distance.
+	if ( !pt.IsValidPoint() )
+	{
+#ifndef _NIGHTLYBUILD
+		DEBUG_ERR(("GetDist::InvalidPoint -> '%s'\n", pt.WriteUsed()));
+#endif
+		return( SHRT_MAX );
+	}
+
+	if ( ! IsSameMap( pt.m_map ))	// as far apart as possible
+		return( SHRT_MAX );
+	return( GetDistBase( pt ));
+}
+
+int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between points
+{
+	ADDTOCALLSTACK("CPointBase::GetDist3D");
+	// OK, 1 unit of Z is not the same (real life) distance as 1
+	// unit of X (or Y)
+	int dist = GetDist(pt);
+
+	// Get the deltas and correct the Z for height first
+	int dz = GetDistZAdj(pt); // Take player height into consideration
+			
+	double realdist = sqrt((double)(dist*dist+dz*dz));
+	
+	return( (int) (( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist))) );
+}
+
+bool CPointBase::IsValidZ() const
+{
+	return( m_z > -UO_SIZE_Z && m_z < UO_SIZE_Z );
+}
+
+bool CPointBase::IsValidXY() const
+{
+	if ( m_x < 0 || m_x >= g_MapList.GetX(m_map) )
+		return( false );
+	if ( m_y < 0 || m_y >= g_MapList.GetY(m_map) )
+		return( false );
+	return( true );
+}
+
+bool CPointBase::IsValidPoint() const
+{
+	return( IsValidXY() && IsValidZ());
+}
+
+bool CPointBase::IsCharValid() const
+{
+	if ( m_z <= -UO_SIZE_Z || m_z >= UO_SIZE_Z )
+		return( false );
+	if ( m_x <= 0 || m_x >= g_MapList.GetX(m_map) )
+		return( false );
+	if ( m_y <= 0 || m_y >= g_MapList.GetY(m_map) )
+		return( false );
+	return( true );
+}
+
+void CPointBase::ValidatePoint()
+{
+	if ( m_x < 0 ) m_x = 0;
+	if ( m_x >= g_MapList.GetX(m_map) ) m_x = g_MapList.GetX(m_map)-1;
+	if ( m_y < 0 ) m_y = 0;
+	if ( m_y >= g_MapList.GetY(m_map) ) m_y = g_MapList.GetY(m_map)-1;
+}
+
+bool CPointBase::IsSameMap( BYTE map ) const
+{
+	return( map == m_map );
+}
+
+bool CPointBase::IsSame2D( const CPointBase & pt ) const
+{
+	return( m_x == pt.m_x && m_y == pt.m_y );
+}
+
+void CPointBase::Set( const CPointBase & pt )
+{
+	m_x = pt.m_x;
+	m_y = pt.m_y;
+	m_z = pt.m_z;
+	m_map = pt.m_map;
+}
+
+void CPointBase::Set( WORD x, WORD y, signed char z, unsigned char map )
+{
+	m_x = x;
+	m_y = y;
+	m_z = z;
+	m_map = map;
+}
+
+void CPointBase::Move( DIR_TYPE dir )
+{
+	// Move a point in a direction.
+	ASSERT( dir <= DIR_QTY );
+	m_x += sm_Moves[dir][0];
+	m_y += sm_Moves[dir][1];
+}
+
+void CPointBase::MoveN( DIR_TYPE dir, int amount )
+{
+	// Move a point in a direction.
+	ASSERT( dir <= DIR_QTY );
+	m_x += sm_Moves[dir][0] * amount;
+	m_y += sm_Moves[dir][1] * amount;
+}
 
 bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 {
@@ -350,37 +504,6 @@ bool CPointBase::r_LoadVal( LPCTSTR pszKey, LPCTSTR pszArgs )
 	return( true );
 }
 
-int CPointBase::GetDist( const CPointBase & pt ) const // Distance between points
-{
-	ADDTOCALLSTACK("CPointBase::GetDist");
-	// Get the basic 2d distance.
-	if ( !pt.IsValidPoint() )
-	{
-#ifndef _NIGHTLYBUILD
-		DEBUG_ERR(("GetDist::InvalidPoint -> '%s'\n", pt.WriteUsed()));
-#endif
-		return( SHRT_MAX );
-	}
-
-	if ( ! IsSameMap( pt.m_map ))	// as far apart as possible
-		return( SHRT_MAX );
-	return( GetDistBase( pt ));
-}
-
-int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between points
-{
-	ADDTOCALLSTACK("CPointBase::GetDist3D");
-	// OK, 1 unit of Z is not the same (real life) distance as 1
-	// unit of X (or Y)
-	int dist = GetDist(pt);
-
-	// Get the deltas and correct the Z for height first
-	int dz = GetDistZAdj(pt); // Take player height into consideration
-			
-	double realdist = sqrt((double)(dist*dist+dz*dz));
-	
-	return( (int) (( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist))) );
-}
 
 DIR_TYPE CPointBase::GetDir( const CPointBase & pt, DIR_TYPE DirDefault ) const // Direction to point pt
 {
@@ -439,6 +562,23 @@ int CPointBase::StepLinePath( const CPointBase & ptSrc, int iSteps )
 	m_x = ptSrc.m_x + IMULDIV( iSteps, dx, iDist2D );
 	m_y = ptSrc.m_y + IMULDIV( iSteps, dy, iDist2D );
 	return( iDist2D );
+}
+
+TCHAR * CPointBase::WriteUsed( TCHAR * pszBuffer ) const
+{
+	if ( m_map )
+	{
+		sprintf(pszBuffer, "%d,%d,%d,%d", m_x, m_y, m_z, m_map);
+	}
+	else if ( m_z )
+	{
+		sprintf(pszBuffer, "%d,%d,%d", m_x, m_y, m_z);
+	}
+	else
+	{
+		sprintf(pszBuffer, "%d,%d", m_x, m_y);
+	}
+	return pszBuffer;
 }
 
 LPCTSTR CPointBase::WriteUsed() const

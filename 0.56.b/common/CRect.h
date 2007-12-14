@@ -26,94 +26,16 @@ public:
 	BYTE m_map;			// another map? (only if top level.)
 
 public:
-	void InitPoint()
-	{
-		m_x = -1;	// invalid location.
-		m_y = -1;
-		m_z = 0;
-		m_map = 0;
-	}
-	void ZeroPoint()
-	{
-		m_x = 0;	// invalid location.
-		m_y = 0;
-		m_z = 0;
-		m_map = 0;
-	}
-	int GetDistZ( const CPointBase & pt ) const
-	{
-		return( abs(m_z-pt.m_z));
-	}
-	int GetDistZAdj( const CPointBase & pt ) const
-	{
-		return( GetDistZ(pt) / (PLAYER_HEIGHT/2) );
-	}
-	int GetDistBase( const CPointBase & pt ) const // Distance between points
-	{
-		// Do not consider z or m_map.
-		int dx = m_x - pt.m_x;
-		int dy = m_y - pt.m_y;
-
-		double dist = sqrt((double)(dx*dx+dy*dy));
-
-		return( (int) (( (dist - floor(dist)) > 0.5 ) ? (ceil(dist)) : (floor(dist))) );
-		// Return the real distance return((int) sqrt(dx*dx+dy*dy+dz*dz));
-	}
-	int GetDist( const CPointBase & pt ) const; // Distance between points
-	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
-
-	bool IsValidZ() const
-	{
-		return( m_z > -UO_SIZE_Z && m_z < UO_SIZE_Z );
-	}
-	bool IsValidXY() const
-	{
-		if ( m_x < 0 || m_x >= g_MapList.GetX(m_map) )
-			return( false );
-		if ( m_y < 0 || m_y >= g_MapList.GetY(m_map) )
-			return( false );
-		return( true );
-	}
-	bool IsValidPoint() const
-	{
-		return( IsValidXY() && IsValidZ());
-	}
-	bool IsCharValid() const
-	{
-		if ( m_z <= -UO_SIZE_Z || m_z >= UO_SIZE_Z )
-			return( false );
-		if ( m_x <= 0 || m_x >= g_MapList.GetX(m_map) )
-			return( false );
-		if ( m_y <= 0 || m_y >= g_MapList.GetY(m_map) )
-			return( false );
-		return( true );
-	}
-
-	void ValidatePoint()
-	{
-		if ( m_x < 0 ) m_x = 0;
-		if ( m_x >= g_MapList.GetX(m_map) ) m_x = g_MapList.GetX(m_map)-1;
-		if ( m_y < 0 ) m_y = 0;
-		if ( m_y >= g_MapList.GetY(m_map) ) m_y = g_MapList.GetY(m_map)-1;
-	}
-
-	bool IsSameMap( BYTE map ) const
-	{
-		return( map == m_map );
-	}
-
-	bool IsSame2D( const CPointBase & pt ) const
-	{
-		return( m_x == pt.m_x && m_y == pt.m_y );
-	}
 	bool operator == ( const CPointBase & pt ) const
 	{
 		return( m_x == pt.m_x && m_y == pt.m_y && m_z == pt.m_z && m_map == pt.m_map );
 	}
+
 	bool operator != ( const CPointBase & pt ) const
 	{
 		return( ! ( *this == pt ));
 	}
+
 	const CPointBase operator += ( const CPointBase & pt )
 	{
 		m_x += pt.m_x;
@@ -121,6 +43,7 @@ public:
 		m_z += pt.m_z;
 		return( * this );
 	}
+
 	const CPointBase operator -= ( const CPointBase & pt )
 	{
 		m_x -= pt.m_x;
@@ -128,54 +51,35 @@ public:
 		m_z -= pt.m_z;
 		return( * this );
 	}
-	void Set( const CPointBase & pt )
-	{
-		m_x = pt.m_x;
-		m_y = pt.m_y;
-		m_z = pt.m_z;
-		m_map = pt.m_map;
-	}
-	void Set( WORD x, WORD y, signed char z = 0, unsigned char map = 0 )
-	{
-		m_x = x;
-		m_y = y;
-		m_z = z;
-		m_map = map;
-	}
+
+	void InitPoint();
+	void ZeroPoint();
+	int GetDistZ( const CPointBase & pt ) const;
+	int GetDistZAdj( const CPointBase & pt ) const;
+	int GetDistBase( const CPointBase & pt ) const; // Distance between points
+	int GetDist( const CPointBase & pt ) const; // Distance between points
+	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
+
+	bool IsValidZ() const;
+	bool IsValidXY() const;
+	bool IsValidPoint() const;
+	bool IsCharValid() const;
+
+	void ValidatePoint();
+
+	bool IsSameMap( BYTE map ) const;
+
+	bool IsSame2D( const CPointBase & pt ) const;
+
+	void Set( const CPointBase & pt );
+	void Set( WORD x, WORD y, signed char z = 0, unsigned char map = 0 );
 	int Read( TCHAR * pVal );
 
-	TCHAR * WriteUsed( TCHAR * pszBuffer ) const
-	{
-		if ( m_map )
-		{
-			sprintf(pszBuffer, "%d,%d,%d,%d", m_x, m_y, m_z, m_map);
-		}
-		else if ( m_z )
-		{
-			sprintf(pszBuffer, "%d,%d,%d", m_x, m_y, m_z);
-		}
-		else
-		{
-			sprintf(pszBuffer, "%d,%d", m_x, m_y);
-		}
-		return pszBuffer;
-	}
+	TCHAR * WriteUsed( TCHAR * pszBuffer ) const;
 	LPCTSTR WriteUsed() const;
 
-	void Move( DIR_TYPE dir )
-	{
-		// Move a point in a direction.
-		ASSERT( dir <= DIR_QTY );
-		m_x += sm_Moves[dir][0];
-		m_y += sm_Moves[dir][1];
-	}
-	void MoveN( DIR_TYPE dir, int amount )
-	{
-		// Move a point in a direction.
-		ASSERT( dir <= DIR_QTY );
-		m_x += sm_Moves[dir][0] * amount;
-		m_y += sm_Moves[dir][1] * amount;
-	}
+	void Move( DIR_TYPE dir );
+	void MoveN( DIR_TYPE dir, int amount );
 
 	DIR_TYPE GetDir( const CPointBase & pt, DIR_TYPE DirDefault = DIR_QTY ) const; // Direction to point pt
 
