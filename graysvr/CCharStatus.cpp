@@ -1195,9 +1195,9 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	dy = ptDst.m_y - ptSrc.m_y;
 	dz = ptDst.m_z - ptSrc.m_z;
 	
-	dist2d = sqrt(pow((double)dx,2)+pow((double)dy,2));
+	dist2d = sqrt((double)(dx*dx + dy*dy));
 	if (dz)
-		dist3d = sqrt(pow((double)dist2d,2)+pow((double)dz,2));
+		dist3d = sqrt((double)(dist2d*dist2d + dz*dz));
 	else
 		dist3d = dist2d;
 	
