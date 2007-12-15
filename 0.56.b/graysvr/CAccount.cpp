@@ -466,7 +466,7 @@ bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 	ADDTOCALLSTACK("CAccount::NameStrip");
 	// allow just basic chars. No spaces, only numbers, letters and underbar. -+. and single quotes ?
 
-	int iLen = Str_GetBare(pszNameOut, pszNameInp, MAX_ACCOUNT_NAME_SIZE, " !\"#$%&()*,/:;<=>?@[\\]^{|}~");
+	int iLen = Str_GetBare(pszNameOut, pszNameInp, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
 
 	if ( iLen <= 0 )
 		return false;

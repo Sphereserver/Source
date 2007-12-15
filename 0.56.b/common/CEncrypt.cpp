@@ -637,9 +637,9 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 {
 	ADDTOCALLSTACK("CCrypt::LoginCryptStart");
 	BYTE m_Raw[ MAX_BUFFER ];
-	bool bFirstRun = false;
-	memcpy( m_Raw, pEvent, iLen );
-	
+	TCHAR pszAccountNameCheck[ MAX_ACCOUNT_NAME_SIZE ];
+
+	memcpy( m_Raw, pEvent, iLen );	
 	m_seed = dwIP;
 	SetConnectType( CONNECT_LOGIN );
 	
@@ -648,9 +648,8 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	
 	SetClientVerIndex(0);
 	SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo);
-#define GONEXTSTEP {bFirstRun=true; goto nextone;}
 	
-	int i = 0;
+	int i = 0; int iAccountNameLen = 0;
 	while ( true )
 	{
 		if ( i >= client_keys.size() )
@@ -679,7 +678,7 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 #endif
 #endif
 		
-		if ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 )
+		if ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 && m_Raw[61] == 0xFF )
 		{
 			// -----------------------------------------------------
 			// This is a sanity check, sometimes client keys (like 4.0.0) can intercept, incorrectly,
@@ -687,75 +686,14 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 			// regular account name/password). This prevents that fact, choosing the right keys
 			// to decrypt it correctly :)
 			
-			if ( !bFirstRun )
+			iAccountNameLen = Str_GetBare(pszAccountNameCheck, (const char *)(m_Raw+1), MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+			pszAccountNameCheck[iLen] = '\0';
+			if (iAccountNameLen != strlen((const char *)(m_Raw+1)) )
 			{
-				int x = 0;
-				int bOk = 0;
-				for ( x = 1; x <= 30; x++)
-				{
-#ifdef DEBUG_CRYPT_MSGS
-#ifndef _WIN32
-					fprintf(stderr, "0x%x ", m_Raw[x]);
-#else
-					DEBUG_MYFLAG((0x20000, "0x%x ", m_Raw[x] ));
-#endif
-#endif
-					if ( m_Raw[x] == 0x00 )
-					{
-						bOk = 1;
-					}
-					else
-					{
-						if ( bOk && x != 30 )
-						{
-							bOk = 2;
-							break;
-						}
-					}
-				}
-#ifdef DEBUG_CRYPT_MSGS
-#ifndef _WIN32
-					fprintf(stderr, "\n");
-#else
-					DEBUG_MYFLAG((0x20000, "\n" ));
-#endif
-#endif
-				if ( bOk == 2 )
-					GONEXTSTEP;
-				
-				bOk = 0;
-				for ( x = 31; x <= 60; x++ )
-				{
-#ifdef DEBUG_CRYPT_MSGS
-#ifndef _WIN32
-					fprintf(stderr, "0x%x ", m_Raw[x]);
-#else
-					DEBUG_MYFLAG((0x20000, "0x%x ", m_Raw[x] ));
-#endif
-#endif
-					if ( m_Raw[x] == 0x00 )
-					{
-						bOk = 1;
-					}
-					else
-					{
-						if ( bOk && x != 60 )
-						{
-							bOk = 2;
-							break;
-						}
-					}
-				}
-#ifdef DEBUG_CRYPT_MSGS
-#ifndef _WIN32
-					fprintf(stderr, "\n");
-#else
-					DEBUG_MYFLAG((0x20000, "\n" ));
-#endif
-#endif
-				if ( bOk == 2 )
-					GONEXTSTEP;
-			// -----------------------------------------------------
+				iAccountNameLen = 0;
+				i++;
+
+				continue;
 			}
 			
 			// set seed, clientversion, cryptmask
@@ -764,12 +702,10 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 			break;
 		}
 
-nextone:
 		// Next one
 		i++;
 	}
-	
-#undef GONEXTSTEP
+
 	m_fInit = true;
 }
 
