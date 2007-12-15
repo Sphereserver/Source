@@ -1043,6 +1043,7 @@ struct CEventCharDef
 {
 #define MAX_ITEM_NAME_SIZE	256		// imposed by client for protocol
 #define MAX_NAME_SIZE 30
+#define ACCOUNT_NAME_VALID_CHAR " !\"#$%&()*,/:;<=>?@[\\]^{|}~"
 #define MAX_ACCOUNT_NAME_SIZE MAX_NAME_SIZE
 #define MAX_ACCOUNT_PASSWORD_ENTER 16	// client only allows n chars.
 	char m_charname[MAX_ACCOUNT_NAME_SIZE];
