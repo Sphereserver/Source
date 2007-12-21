@@ -741,11 +741,17 @@ public:
 		signed short m_dy;
 		signed char m_dz;
 	};
+	struct ShipSpeed // speed of a ship
+	{
+		unsigned short period;	// time between movement
+		unsigned short tiles;	// distance to move
+	};
 
 	CGTypedArray<CMultiComponentItem,CMultiComponentItem&> m_Components;
 	CGRect m_rect;		// my region.
 	DWORD m_dwRegionFlags;	// Base region flags (REGION_FLAG_GUARDED etc)
 	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
+	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
 
 public:
 	CItemBaseMulti( CItemBase* pBase );

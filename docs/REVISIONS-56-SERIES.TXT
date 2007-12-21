@@ -3801,4 +3801,22 @@ this all in desperation)
 - Updated: sphere_item_building_walls_se.scp (Missing item 02753)
 - Updated: sphere_item_deco_evilitem.scp (Incorrect dupeitem on itemdef 02a59)
 - Updated: sphere_item_christimas.scp (Incorrect RESDISPx settings on i_Sleigh)
-- Updated: sphere_map_points2.scp (Inacessible teleports on Exodus Dungeon)
+- Updated: sphere_map_points2.scp (Inaccessible teleports on Exodus Dungeon)
+
+21-12-2007, MrSugarCube
+- Modified: Ships now move 2 spaces at a time instead of 1. This reduces a lot
+  of lag caused by ship movement and also fixes overhead messages disappearing
+  whilst the ship is in motion.
+- Added: SHIPSPEED property to ship ITEMDEFs. This controls how often and how far
+  the ship will move. SHIPSPEED.PERIOD and SHIPSPEED.TILES can be used to return
+  the separate values. Usage:
+    "SHIPSPEED=5,3"     Ship will move 3 tiles every half a second.
+    "SHIPSPEED=1,5"     Ship will move 5 tiles every tenth of a second.
+    "SHIPSPEED=20,2"    Ship will move 2 tiles every 2 seconds.
+  Note 1: If there is less space available than specified by SHIPSPEED.TILES,
+  the ship will still move as far as possible before stopping (so if a ship is
+  set to move 10 tiles and is heading towards a coast that is 16 tiles away, the
+  ship will move 10 tiles, then 6 tiles, and then stop.
+  Note 2: TAG.OVERRIDE.SHIPSPEED.PERIOD and TAG.OVERRIDE.SHIPSPEED.TILES can also
+  be set on the ships themselves to override their speed on an individual basis.
+
