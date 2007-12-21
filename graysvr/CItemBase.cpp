@@ -1439,6 +1439,8 @@ CItemBaseMulti::CItemBaseMulti( CItemBase* pBase ) :
 {
 	m_dwRegionFlags = REGION_FLAG_NODECAY | REGION_ANTIMAGIC_TELEPORT | REGION_ANTIMAGIC_RECALL_IN | REGION_FLAG_NOBUILDING;
 	m_rect.SetRectEmpty();
+	m_shipSpeed.period = 1 * TICK_PER_SEC;
+	m_shipSpeed.tiles = 2;
 	// copy the stuff from the pBase
 	CopyTransfer(pBase);
 }
@@ -1511,6 +1513,7 @@ enum MLC_TYPE
 	MLC_COMPONENT,
 	MLC_MULTIREGION,
 	MLC_REGIONFLAGS,
+	MLC_SHIPSPEED,
 	MLC_TSPEECH,
 	MLC_QTY,
 };
@@ -1520,6 +1523,7 @@ LPCTSTR const CItemBaseMulti::sm_szLoadKeys[] =
 	"COMPONENT",
 	"MULTIREGION",
 	"REGIONFLAGS",
+	"SHIPSPEED",
 	"TSPEECH",
 	NULL,
 };
@@ -1538,6 +1542,22 @@ bool CItemBaseMulti::r_LoadVal( CScript &s )
 	case MLC_REGIONFLAGS:
 		m_dwRegionFlags = s.GetArgVal();
 		return( true );
+	case MLC_SHIPSPEED:
+	{
+		if (!IsType(IT_SHIP))	// only valid for ships
+			return false;
+
+		// SHIPSPEED x[,y]
+		int ppArgs[2];
+		int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
+		if (iQty < 1)
+			return false;
+
+		m_shipSpeed.period = ppArgs[0];
+
+		if (iQty >= 2)
+			m_shipSpeed.tiles = ppArgs[1];
+	} break;
 	case MLC_TSPEECH:
 		return( m_Speech.r_LoadVal( s, RES_SPEECH ));
 	default:
@@ -1589,6 +1609,31 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 	case MLC_REGIONFLAGS:
 		sVal.FormatHex( m_dwRegionFlags );
 		return( true );
+	case MLC_SHIPSPEED:
+	{
+		if (!IsType(IT_SHIP))
+			return( false );
+
+		pszKey += 9;
+		if (*pszKey == '.')
+		{
+			pszKey++;
+			if ( !strcmpi(pszKey, "TILES"))
+			{
+				sVal.FormatVal(m_shipSpeed.tiles);
+				break;
+			}
+			else if (!strcmpi(pszKey, "PERIOD"))
+			{
+				sVal.FormatVal(m_shipSpeed.period);
+				break;
+			}
+			return false;
+		}
+
+		sVal.Format("%d,%d", m_shipSpeed.period, m_shipSpeed.tiles);
+		break;
+	}
 	default:
 		return( CItemBase::r_WriteVal( pszKey, sVal, pChar ));
 	}
@@ -1654,7 +1699,9 @@ CItemBase * CItemBase::FindItemBase( ITEMID_TYPE id ) // static
 		return( NULL );
 	}
 
-	// Read the Script file preliminary.
+	// Scan the item definition for keywords such as DUPEITEM and
+	// MULTIREGION, as these will adjust how our definition is processed
+	CScriptLineContext scriptStartContext = s.GetContext();
 	while ( s.ReadKeyParse())
 	{
 		if ( s.IsKey( "DUPEITEM" ))
@@ -1671,6 +1718,23 @@ CItemBase * CItemBase::FindItemBase( ITEMID_TYPE id ) // static
 		{
 			break;
 		}
+		if ( s.IsKey( "ID" ) || s.IsKey( "TYPE" ))	// These are required for CItemBaseMulti::MakeMultiRegion to function correctly
+		{
+			pBase->r_LoadVal( s );
+		}
+	}
+
+	// Return to the start of the item script
+	s.SeekContext(scriptStartContext);
+
+	// Read the Script file preliminary.
+	while ( s.ReadKeyParse())
+	{
+		if ( s.IsKey( "DUPEITEM" ) || s.IsKey( "MULTIREGION" ))
+			continue;
+		if ( s.IsKeyHead( "ON", 2 ))	// trigger scripting marks the end
+			break;
+
 		pBase->r_LoadVal( s );
 	}
 

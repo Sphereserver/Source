@@ -1537,7 +1537,7 @@ private:
 	bool Ship_SetMoveDir( DIR_TYPE dir );
 	bool Ship_MoveDelta( CPointBase pdelta );
 	bool Ship_Face( DIR_TYPE dir );
-	bool Ship_Move( DIR_TYPE dir );
+	bool Ship_Move( DIR_TYPE dir, int distance );
 	bool Ship_OnMoveTick();
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
@@ -1557,6 +1557,7 @@ public:
 	CItemContainer * GetShipHold();
 	int GetShipPlankCount();
 	CItem * GetShipPlank(int index);
+	CItemBaseMulti::ShipSpeed GetShipSpeed();
 };
 
 
