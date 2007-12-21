@@ -3768,6 +3768,7 @@ this all in desperation)
   parameter refer to the current source if is -1. 
 - Fixed #1318: Owned NPC's names and NPC's vendors commands.
 - Fixed #1330: Problems with client and accounts with 16 characters.
+- Fixed #1345: Clear Party TAG's.
 - Added: Support for login protocol in 6.0.5.0+ clients.
 - Added #1329: Max dist to park boats (see sphere.ini MaxShipPlankTeleport).
 - Added #1296: "trigger" function returning the values returned by @CustomTrigger.
@@ -3800,3 +3801,4 @@ this all in desperation)
 - Updated: sphere_item_building_walls_se.scp (Missing item 02753)
 - Updated: sphere_item_deco_evilitem.scp (Incorrect dupeitem on itemdef 02a59)
 - Updated: sphere_item_christimas.scp (Incorrect RESDISPx settings on i_Sleigh)
+- Updated: sphere_map_points2.scp (Inacessible teleports on Exodus Dungeon)

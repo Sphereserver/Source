@@ -114,6 +114,7 @@ int CPartyDef::DetachChar( CChar * pChar )
 	{
 		pChar->DeleteKey("PARTY_CANLOOTME");
 		pChar->DeleteKey("PARTY_LASTINVITE");
+		pChar->DeleteKey("PARTY_LASTINVITETIME");
 	}
 	return( i );
 }
