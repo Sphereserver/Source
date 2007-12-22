@@ -2625,8 +2625,14 @@ void CChar::NPC_Act_Idle()
 	// Specific creature random actions.
 	if ( Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX) && !Calc_GetRandVal(3) )
 	{
+		if ( !IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_NPCAct_Triggers))
+		{
+			if ( OnTrigger( CTRIG_NPCSpecialAction, this ) == TRIGRET_RET_TRUE )
+			{
+				return;
+			}
+		}
 
-#ifdef _NAZTEST
 		switch ( GetDispID())
 		{
 			case CREID_FIRE_ELEM:
@@ -2642,43 +2648,19 @@ void CChar::NPC_Act_Idle()
 				CVarDefCont * pValue = GetKey("OVERRIDE.SPIDERWEB",true);
 				if ( pValue )
 				{
-					DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB set\n", GetName()));
 					if ( GetDispID() != CREID_GIANT_SPIDER )
 					{
-						DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB set and is NOT a Giant Spider\n", GetName()));
 						Action_StartSpecial(CREID_GIANT_SPIDER);
 						return;
 					}
 				} else {
 					if ( GetDispID() == CREID_GIANT_SPIDER )
 					{
-						DEBUG_ERR(("NPCAI: NPC '%s' has TAG.OVERRIDE.SPIDERWEB NOT set and IS a Giant Spider\n", GetName()));
 						Action_StartSpecial(CREID_GIANT_SPIDER);
 						return;
 					}
 				}
 		}
-#else
-
-		switch ( GetDispID())
-		{
-			case CREID_FIRE_ELEM:
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE) )
-				{
-					Action_StartSpecial(CREID_FIRE_ELEM);
-					return;
-				}
-				break;
-			case CREID_GIANT_SPIDER:
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB) )
-				{
-					Action_StartSpecial(CREID_GIANT_SPIDER);
-					return;
-				}
-				break;
-		}
-#endif
-
 	}
 
 	// Periodically head home.
@@ -2818,15 +2800,12 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	{
 		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
 		{
-			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned ! '1'\n", GetName() ));
 			if ( pCharSrc->IsClient() )
 				pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
 			return false;
 		} 
 		else 
 		{
-			//DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCRefuseItem on '%s' returned '1'\n", GetName() ));
-			//DEBUG_ERR(("CChar::NPC_OnItemGive: Trying to drop %s in  '%s's pack\n", pItem->GetName(), GetName() ));
 			if ( pPack == NULL )
 				pPack = GetPackSafe();
 			pPack->ContentAdd( pItem );
@@ -2871,7 +2850,6 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	}
 
 	// The NPC might want it ?
-	DEBUG_ERR(("CChar::NPC_OnItemGive: '%s' wants %s\n", GetName(), pItem->GetName() ));
 	switch ( m_pNPC->m_Brain )
 	{
 		case NPCBRAIN_DRAGON:
@@ -2932,7 +2910,6 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 
 	if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
 	{
-		DEBUG_ERR(("CChar::NPC_OnItemGive: CTRIG_NPCAcceptItem on '%s' returns '1', means: REFUSE\n", GetName() ));
 		pCharSrc->ItemBounce( pItem );
 		pItem->Update();
 		return false;
@@ -2943,7 +2920,6 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	pPack->ContentAdd( pItem );
 	pItem->Update();
 
-	DEBUG_ERR(("'%s': accepted %s (default action)\n", GetName(), pItem->GetName()));
 	return( true );
 }
 
@@ -3249,7 +3225,7 @@ void CChar::NPC_Food()
 		EXC_SET("searching in pack");
 		for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
 		{
-									// i have some food personaly, so no need to search for something
+			// i have some food personaly, so no need to search for something
 			if ( pFood->IsType(IT_FOOD) )
 			{
 				if ( iEatAmount = Food_CanEat(pFood) )
@@ -3275,7 +3251,7 @@ void CChar::NPC_Food()
 		CItem	*pItem = AreaItems.GetItem();
 		if ( !pItem ) break;
 		if ( !CanSee(pItem) || pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) ) continue;
-		if ( pItem->GetTopPoint().m_z != iMyZ )
+		if ( (pItem->GetTopPoint().m_z < iMyZ) || (pItem->GetTopPoint().m_z > (iMyZ + (m_height / 2))) )
 			continue;
 
 		if ( iEatAmount = Food_CanEat(pItem) )
@@ -3431,15 +3407,25 @@ void CChar::NPC_AI()
 		return;
 
 	//	some very very basic actions which does not need any INT/DEX for self
+    CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
+
+	if ( !IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_NPCAct_Triggers))
+	{
+		if ( OnTrigger( CTRIG_NPCAction, this ) == TRIGRET_RET_TRUE )
+		{
+			return;
+		}
+	}
 
 	//	domestic animals pooping the ground
-  CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
-  if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag ( STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
+
+    if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag ( STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
 	{
 		if ( Calc_GetRandVal(130) ) ;
 		else if (( npcType == CREID_HORSE1 ) || ( npcType == CREID_Bull_Brown ) || ( npcType == CREID_Pig ) || ( npcType == CREID_Llama ))
 		{
 			EXC_SET("dung pooping");
+			
 			Sound( Calc_GetRandVal(2) ? 0xe3 : 0x23f );
 			Emote(g_Cfg.GetDefaultMsg(DEFMSG_NPC_ANIMAL_POOP));
 			CItem	*pDung = CItem::CreateBase( Calc_GetRandVal(2) ? ITEMID_Dung1 : ITEMID_Dung2 );
@@ -3497,21 +3483,21 @@ void CChar::NPC_AI()
 				{
 					//	TODO: when it will be possible to record a number of commands, vendor should
 					//	go unlock the door if nearby
-
 					m_pNPC->m_Brain = NPCBRAIN_VENDOR;
 					bActed = true;
 				}
 				break;
 			} // vendor off duty
+
 			case NPCBRAIN_THIEF:
 			{
 				EXC_SET("thief");
-
 				//	thief searches a target to steal something in the packs and ground around
 				//	if it is dark, steal and run to home position
 				//	TODO:
 				break;
 			} // thief
+
 			case NPCBRAIN_STABLE:				//	Stable Man
 			{
 				EXC_SET("stable man");
@@ -3531,7 +3517,7 @@ void CChar::NPC_AI()
 					//	gives some food for player to feed his animals
 					if ( pChar->IsClient() )
 					{
-						if (( iDist < 3 ) && !Calc_GetRandVal(50) )
+						if (( iDist < 3 ) && !Calc_GetRandVal(50))
 						{
 							RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "RANDOM_VEGGIE");
 							CItem	*pItem = CItem::CreateScript((ITEMID_TYPE)food.GetResIndex());
@@ -3556,7 +3542,7 @@ void CChar::NPC_AI()
 					//	feeds animals nearby
 					int iMaxFood = pChar->Stat_GetMax(STAT_FOOD);
 					int iFood = pChar->Stat_GetVal(STAT_FOOD);
-					if ( iMaxFood && ( iFood < iMaxFood/4 ))
+					if ( iMaxFood && ( iFood < iMaxFood/4 ) )
 					{
 						if ( iDist > 1 )
 						{
@@ -3583,34 +3569,41 @@ void CChar::NPC_AI()
 				}
 				break;
 			} // stabler
+
 			case NPCBRAIN_BEGGAR:
 			{
 				EXC_SET("beggar");
-
-				//	TODO: should go sleeping if darktime
+				if ( pSector->IsDark() )
+				{
+					//	TODO: should go sleeping if darktime
+					bActed = true;
+				}
 				break;
 			} // beggar
+
 			case NPCBRAIN_HEALER:
 			{
 				EXC_SET("healer");
-
-				//	healers searches for chars nearby to heal them. if can heal and have
-				//	bandages, go to him and apply bandages on him. these are converted to
-				//	bloody bandages
-				//	TODO:
-
-				//	healers searches for items nearby to gather bandages/bloody bandages,
-				//	water to clean the bandages
-				//	TODO:
+				if ( true )
+				{
+					//	healers searches for chars nearby to heal them. if can heal and have
+					//	bandages, go to him and apply bandages on him. these are converted to
+					//	bloody bandages
+					//	TODO:
+					//	healers searches for items nearby to gather bandages/bloody bandages,
+					//	water to clean the bandages
+					//	TODO:
+						bActed = true;
+				}
 				break;
 			} // healer
+
 			case NPCBRAIN_UNDEAD:
 			{
 				EXC_SET("undead");
-
-				//	TODO: if active combat in progress there should a chance to summon some char
 				break;
 			} // undead
+
 		} // switch brain
 
 		if ( bActed ) ;

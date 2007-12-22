@@ -1,4 +1,4 @@
-﻿
+
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -3819,4 +3819,30 @@ this all in desperation)
   ship will move 10 tiles, then 6 tiles, and then stop.
   Note 2: TAG.OVERRIDE.SHIPSPEED.PERIOD and TAG.OVERRIDE.SHIPSPEED.TILES can also
   be set on the ships themselves to override their speed on an individual basis.
+
+22-12-2007, Nazghul
+- Added: Triggers @NPCAction and @NPCSpecialAction
+  @NPCSpecialAction
+  If the NPC has a lot of spare time (i.e., nothing else to do) it
+  looks for some special action. For example, giant spiders lay webs,
+  and fire elems leave fire patches. This trigger fires on ANY type
+  of creature. If you return 1, it will not do it's special action,
+  on return 0 it will (what, as said above, will only be true with
+  giant spiders and fire elems; you can script other NPC special
+  events yourself).
+
+  @NPCAction
+  AI-related trigger. If the situation is so the NPC will do something
+  due to it's AI - things like animals pooping the ground, vendors
+  going off/on duty, (un)equipping a lightsource when it's dark, 
+  (un)equipping a weapon when fighting, stabler feeding animals or
+  giving players food for their animals etc. - (once hardcoded behaviour
+  was planned also for beggars who should sleep at night, for thieves,
+  undead mages, healers, and more, but never realized. Now you can script
+  this yourself) this trigger will be fired. On RETURN 0 
+  the NPC will continue with what it wants to do, RETURN 1 will abort it.
+
+  Both triggers will fire only if EF_NPCAct_Triggers is SET and 
+  EF_Minimize_Triggers is NOT SET in the sphere.INI. SO if you don't
+  change your INI, everything will stay as it was before.
 
