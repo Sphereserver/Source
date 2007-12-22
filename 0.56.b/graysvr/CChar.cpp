@@ -82,6 +82,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCAcceptItem",		// (NPC only) i've been given an item i like (according to DESIRES)
 	"@NPCActFight",
 	"@NPCActFollow",			// (NPC only) following someone right now
+	"@NPCAction",
 	"@NPCHearGreeting",		// (NPC only) i have been spoken to for the first time. (no memory of previous hearing)
 	"@NPCHearNeed",			// (NPC only) i heard someone mention something i need. (11)
 	"@NPCHearUnknown",		//+(NPC only) I heard something i don't understand.
@@ -92,6 +93,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCRestock",			// (NPC only)
 	"@NPCSeeNewPlayer",		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
 	"@NPCSeeWantItem",		// (NPC only) i see something good.
+	"@NPCSpecialAction",
 
 	"@PersonalSpace",	//+i just got stepped on.
 	"@PetDesert",		// I just went wild again
