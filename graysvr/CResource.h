@@ -62,6 +62,7 @@ enum EF_TYPE
 	EF_Minimize_Triggers		= 0x0001000,
 	EF_DamageTools				= 0x0002000,
 	EF_UsePingServer			= 0x0008000,
+	EF_NPCAct_Triggers			= 0x0010000,
     EF_Specific					= 0x1000000,	// Specific behaviour, not completly tested
 };
 
