@@ -2159,6 +2159,7 @@ enum CTRIG_TYPE
 	CTRIG_NPCAcceptItem,		// (NPC only) i've been given an item i like (according to DESIRES)
 	CTRIG_NPCActFight,
 	CTRIG_NPCActFollow,		// (NPC only) decided to follow someone
+	CTRIG_NPCAction,
 	CTRIG_NPCHearGreeting,		// (NPC only) i have been spoken to for the first time. (no memory of previous hearing)
 	CTRIG_NPCHearNeed,			// (NPC only) i heard someone mention something i need. (11)
 	CTRIG_NPCHearUnknown,		//+(NPC only) I heard something i don't understand.
@@ -2169,6 +2170,7 @@ enum CTRIG_TYPE
 	CTRIG_NPCRestock,			// (NPC only) 
 	CTRIG_NPCSeeNewPlayer,		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
 	CTRIG_NPCSeeWantItem,		// (NPC only) i see something good.
+	CTRIG_NPCSpecialAction,
 
 	CTRIG_PersonalSpace,	//+i just got stepped on.
 	CTRIG_PetDesert,
