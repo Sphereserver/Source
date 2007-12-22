@@ -1,4 +1,4 @@
-
+﻿
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -3845,4 +3845,10 @@ this all in desperation)
   Both triggers will fire only if EF_NPCAct_Triggers is SET and 
   EF_Minimize_Triggers is NOT SET in the sphere.INI. SO if you don't
   change your INI, everything will stay as it was before.
+
+22-12-2007, MrSugarCube
+- Fixed #1341: Arguments not being parsed correctly for commands entered
+  on the console.
+- Fixed #1331: Script verbs not being parsed correctly when there is a
+  space in them (ie. TAG.xxx_<EVAL yyy> = zzz).
 

@@ -2171,9 +2171,27 @@ jump_in:
 					}
 				} break;
 			default:
-				// Parse out any variables in it. (may act like a verb sometimes?)
-				EXC_SET("parsing");
-				ParseText( s.GetArgRaw(), pSrc, 0, pArgs );
+				{
+					// Parse out any variables in it. (may act like a verb sometimes?)
+					EXC_SET("parsing");
+					if( strchr(s.GetKey(), '<') ) 
+					{
+						EXC_SET("parsing <> in a key");
+						TemporaryString buf;
+						strcpy(buf, s.GetKey());
+						strcat(buf, " ");
+						strcat(buf, s.GetArgRaw());
+						ParseText(buf, pSrc, 0, pArgs);
+
+						CScript script(buf);
+						strcpy(s.GetKeyBuffer(), script.GetKey());
+						strcpy(s.GetArgRaw(), script.GetArgRaw());
+					}
+					else
+					{
+						ParseText( s.GetArgRaw(), pSrc, 0, pArgs );
+					}
+				}
 		}
 
 		switch ( iCmd )
@@ -2259,18 +2277,6 @@ jump_in:
 				break;
 
 			default:
-				if( strchr(s.GetKey(), '<') ) 
-				{
-					EXC_SET("parsing <> in a key");
-					TemporaryString buf;
-					strcpy(buf, s.GetKey());
-					ParseText(buf, pSrc, 0, pArgs);
-					strcat(buf, " ");
-					strcat(buf, s.GetArgRaw());
-					CScript script(buf);
-					r_Verb(script, pSrc);
-					break;
-				}
 				EXC_SET("parsing");
 				if ( !pArgs->r_Verb(s, pSrc) )
 				{

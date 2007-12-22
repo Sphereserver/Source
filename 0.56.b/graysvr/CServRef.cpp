@@ -484,10 +484,17 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		sVal = GRAY_VERSION;
 		break;
 	default:
-		CScriptTriggerArgs Args( pszKey );
-		if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
-			return true;
-		return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
+		{
+			LPCTSTR pszArgs = strchr(pszKey, ' ');
+			if (pszArgs != NULL)
+				GETNONWHITESPACE(pszArgs);
+
+			CScriptTriggerArgs Args( pszArgs ? pszArgs : "" );
+			if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
+				return true;
+
+			return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
+		}
 	}
 	return true;
 	EXC_CATCH("ServerDef");
