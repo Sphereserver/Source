@@ -996,6 +996,43 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			return pt.r_WriteVal(pszKey, sVal);
 		}
 
+		if ( !strnicmp( pszKey, "MAPLIST.",8) )
+		{
+			LPCTSTR pszCmd = pszKey + 8;
+			int iNumber = Exp_GetVal(pszCmd);
+			SKIP_SEPARATORS(pszCmd);
+			sVal.FormatVal(0);
+
+			if ( !*pszCmd )
+			{
+				sVal.FormatVal( g_MapList.IsMapSupported(iNumber) );
+			}
+			else
+			{
+				if ( g_MapList.IsMapSupported(iNumber) )
+				{
+					if (!strcmpi(pszCmd,"BOUND.X"))
+						sVal.FormatVal( g_MapList.GetX(iNumber) );
+					else if (!strcmpi(pszCmd,"BOUND.Y"))
+						sVal.FormatVal( g_MapList.GetY(iNumber) );
+					else if (!strcmpi(pszCmd,"CENTER.X"))
+						sVal.FormatVal( g_MapList.GetCenterX(iNumber) );
+					else if (!strcmpi(pszCmd,"CENTER.Y"))
+						sVal.FormatVal( g_MapList.GetCenterY(iNumber) );
+					else if (!strcmpi(pszCmd,"SECTOR.SIZE"))
+						sVal.FormatVal( g_MapList.GetSectorSize(iNumber) );
+					else if (!strcmpi(pszCmd,"SECTOR.ROWS"))
+						sVal.FormatVal( g_MapList.GetSectorRows(iNumber) );
+					else if (!strcmpi(pszCmd,"SECTOR.COLS"))
+						sVal.FormatVal( g_MapList.GetSectorCols(iNumber) );
+					else if (!strcmpi(pszCmd,"SECTOR.QTY"))
+						sVal.FormatVal( g_MapList.GetSectorQty(iNumber) );
+				}
+			}
+
+			return true;
+		}
+
 		if ( ( !strnicmp( pszKey, "GUILDSTONES.",12) ) || ( !strnicmp( pszKey, "TOWNSTONES.",11) ) )
 		{
 			bool bGuild = !strnicmp( pszKey, "GUILDSTONES.",12);
