@@ -947,6 +947,12 @@ void CClient::xSendPkt(const CCommand * pCmd, int length)
 void CClient::xSendPktNow( const CCommand * pCmd, int length )
 {
 	ADDTOCALLSTACK("CClient::xSendPktNow");
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+		xSendPkt(pCmd, length);
+		return;
+	}
+
 	const void *pData = (const void*)pCmd->m_Raw;
 
 	xFlush();	// Flush old packets.
@@ -1046,6 +1052,11 @@ void CClient::xProcessTooltipQueue()
 void CClient::xFlush()
 {
 	ADDTOCALLSTACK("CClient::xFlush");
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+		return;
+	}
+
 	// Sends buffered data at once
 	// NOTE:
 	// Make sure we do not overflow the Sockets Tx buffers!
@@ -1148,53 +1159,81 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 {
 	ADDTOCALLSTACK("CClient::xSend");
 	// buffer a packet to client.
-	if ( ! m_Socket.IsOpen() )
+	if ( ! m_Socket.IsOpen() || m_fClosed )
 		return;
 
-	if ( GetConnectType() != CONNECT_HTTP )	// acting as a login server to this client.
+	if ( !IsSetEF( EF_UseNetworkMulti ) )
 	{
-		if ( length > MAX_BUFFER )
+		if ( GetConnectType() != CONNECT_HTTP )	// acting as a login server to this client.
 		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out TOO BIG %d!\n", m_Socket.GetSocket(), length ));
-			m_fClosed	= true;
-			return;
-		}
+			if ( length > MAX_BUFFER )
+			{
+				if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out TOO BIG %d!\n", m_Socket.GetSocket(), length ));
+				m_fClosed	= true;
+				return;
+			}
 #ifdef VJAKA_REDO
-		if ( m_bout.bytes() + length > MAX_BUFFER )
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.bytes(), length ));
+			if ( m_bout.bytes() + length > MAX_BUFFER )
+			{
+				if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.bytes(), length ));
 #else
-		if ( m_bout.GetDataQty() + length > MAX_BUFFER )
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
+			if ( m_bout.GetDataQty() + length > MAX_BUFFER )
+			{
+				if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
 #endif
-			m_fClosed	= true;
-			return;
+				m_fClosed	= true;
+				return;
+			}
 		}
-	}
 
 #ifdef VJAKA_REDO
-	m_bout.append((BYTE*)pData, length);
+		m_bout.append((BYTE*)pData, length);
 #else
-	m_bout.AddNewData( (const BYTE*) pData, length );
+		m_bout.AddNewData( (const BYTE*) pData, length );
 #endif
 
-	if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
-	{
-		if ( !bQueue )
-			xFlush();
-	}
-	else if ( GetConnectType() == CONNECT_GAME )
-	{
-		if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !IsClientKR() )
+		if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
+		{
 			if ( !bQueue )
 				xFlush();
+		}
+		else if ( GetConnectType() == CONNECT_GAME )
+		{
+			if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !IsClientKR() )
+				if ( !bQueue )
+					xFlush();
+		}
+	}
+	else
+	{
+		if (GetConnectType() == CONNECT_GAME)
+		{
+			int iLenComp = xCompress( sm_xCompress_Buffer, (const BYTE *) pData, length);
+			ASSERT( iLenComp <= sizeof(sm_xCompress_Buffer) );
+
+			if ( m_Crypt.GetEncryptionType() == ENC_TFISH )
+			{
+				m_Crypt.Encrypt(sm_xCompress_Buffer, sm_xCompress_Buffer, iLenComp);
+			}
+
+			xAddNewData(sm_xCompress_Buffer, iLenComp);
+		}
+		else
+		{
+			xAddNewData((const BYTE*) pData, length);
+		}
 	}
 }
 
 void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We could send the packet now if we wanted to but wait til we have more.
 {
 	ADDTOCALLSTACK("CClient::xSendReady");
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+		xSend(pData, length);
+		return;
+	}
+
 	// We could send the packet now if we wanted to but wait til we have more.
 #ifdef VJAKA_REDO
 	if ( m_bout.bytes() + length >= MAX_BUFFER )
@@ -1214,6 +1253,71 @@ void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We
 	{
 		xFlush();
 	}
+}
+
+void CClient::xAddNewData(const BYTE * bIn, int iLength)
+{
+//	ADDTOCALLSTACK("CClient::xAddNewData");
+	SimpleThreadLock stlAddLock(m_sMutexInputVector);
+
+	m_bout.AddNewData(bIn, iLength);
+	m_vExtPacketLengths.push(iLength);
+}
+
+int CClient::xPacketsReady()
+{
+//	ADDTOCALLSTACK("CClient::xPacketsReady");
+	SimpleThreadLock stlAddLock(m_sMutexInputVector);
+
+	return m_vExtPacketLengths.size();
+}
+
+int CClient::xGetFrontPacketSize()
+{
+//	ADDTOCALLSTACK("CClient::xGetFrontPacketSize");
+	SimpleThreadLock stlAddLock(m_sMutexInputVector);
+
+	if ( !m_vExtPacketLengths.empty() )
+		return m_vExtPacketLengths.front();
+	else
+		return -1;
+}
+
+const BYTE * CClient::xGetFrontPacketData()
+{
+//	ADDTOCALLSTACK("CClient::xGetFrontPacketData");
+	SimpleThreadLock stlAddLock(m_sMutexInputVector);
+	
+	return m_bout.RemoveDataLock();
+}
+
+void CClient::xRemoveFrontPacket()
+{
+//	ADDTOCALLSTACK("CClient::xRemoveFrontPacket");
+	SimpleThreadLock stlAddLock(m_sMutexInputVector);
+
+	if ( !m_vExtPacketLengths.empty() )
+	{
+		m_bout.RemoveDataAmount(m_vExtPacketLengths.front());
+		m_vExtPacketLengths.pop();
+	}
+}
+
+void CClient::xSendError(int iErrCode)
+{
+#ifdef _WIN32
+	if ( iErrCode == WSAECONNRESET || iErrCode == WSAECONNABORTED )
+	{
+		m_fClosed	= true;
+		return;
+	}
+	if ( iErrCode == WSAEWOULDBLOCK )
+	{
+		// just try back later. or select() will close it for us later.
+		return;
+	}
+#endif
+	DEBUG_ERR(( "%x:Tx Error %d\n", m_Socket.GetSocket(), iErrCode ));
 }
 
 bool CClient::xRecvData() // Receive message from client
