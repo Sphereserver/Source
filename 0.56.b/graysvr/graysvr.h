@@ -137,7 +137,9 @@ enum RESDISPLAY_VERSION
 #include "../common/CResourceBase.h"
 #include "../common/CRegion.h"
 #include "../common/CGrayMap.h"
+#include "../sphere/mutex.h"
 #include "../sphere/threads.h"
+#include "../sphere/networkdata.h"
 #ifdef VJAKA_REDO
 #include "../sphere/queue.h"
 #else
@@ -893,24 +895,11 @@ public:
 		} m_tmUseItem;
 	};
 
-#ifdef VJAKA_REDO
-	ByteQueue m_bin;		// CEvent in buffer. (from client)
-#else
-	CQueueBytes m_bin;		// CEvent in buffer. (from client)
-#endif
-
 private:
 	// Low level data transfer to client.
 	XCMD_TYPE m_bin_PrvMsg;
 	XCMD_TYPE m_bin_ErrMsg;
 	int m_bin_msg_len;		// the current message packet to decode. (estimated length)
-
-	// ??? Since we really only deal with one input at a time we can make this static ?
-#ifdef VJAKA_REDO
-	ByteQueue m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
-#else
-	CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
-#endif
 
 	// encrypt/decrypt stuff.
 	CCrypt m_Crypt;			// Client source communications are always encrypted.
@@ -1104,6 +1093,33 @@ public:
 	bool Cmd_Skill_Cartography( int iLevel );
 	bool Cmd_SecureTrade( CChar * pChar, CItem * pItem );
 	bool Cmd_Control( CChar * pChar );
+
+public:
+	#ifdef VJAKA_REDO
+		ByteQueue m_bin;		// CEvent in buffer. (from client)
+	#else
+		CQueueBytes m_bin;		// CEvent in buffer. (from client)
+	#endif
+
+private:
+	std::queue<int> m_vExtPacketLengths;
+	SimpleMutex m_sMutexInputVector;
+	// ---------------------------------
+	// ??? Since we really only deal with one input at a time we can make this static ?
+	#ifdef VJAKA_REDO
+		ByteQueue m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
+	#else
+		CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
+	#endif
+
+public:
+	void xAddNewData(const BYTE * bIn, int iLength);
+	int xPacketsReady();
+	int xGetFrontPacketSize();
+	const BYTE * xGetFrontPacketData();
+	void xRemoveFrontPacket();
+
+	void xSendError(int);
 
 public:
 

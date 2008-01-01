@@ -5,6 +5,7 @@
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 
+extern NetworkContainer g_GlobalNetwork;
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
@@ -75,6 +76,9 @@ CClient::CClient( SOCKET client ) :
 
 CClient::~CClient()
 {
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+		g_GlobalNetwork.setLockFromClient();
+
 	g_Serv.StatDec( SERV_STAT_CLIENTS );
 	bool bWasChar;
 
@@ -106,6 +110,9 @@ CClient::~CClient()
 
 	if ( m_Socket.IsOpen() )
 		m_Socket.Close();
+
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+		g_GlobalNetwork.unsetLockFromClient();
 }
 
 bool CClient::IsSkillVisible(SKILL_TYPE skill)
