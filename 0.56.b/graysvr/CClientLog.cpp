@@ -1218,10 +1218,6 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 
 			xAddNewData(sm_xCompress_Buffer, iLenComp);
 		}
-		else if (GetConnectType() == CONNECT_TELNET)
-		{
-			xAccumulateNewData((const BYTE*) pData, length, 8);
-		}
 		else
 		{
 			xAddNewData((const BYTE*) pData, length);
@@ -1266,23 +1262,6 @@ void CClient::xAddNewData(const BYTE * bIn, int iLength)
 
 	m_bout.AddNewData(bIn, iLength);
 	m_vExtPacketLengths.push(iLength);
-}
-
-void CClient::xAccumulateNewData(const BYTE * bIn, int iLength, int iAccumulateFactor = 1)
-{
-//	ADDTOCALLSTACK("CClient::xAccumulateNewData");
-	SimpleThreadLock stlAddLock(m_sMutexInputVector);
-
-	iAccumulateFactor = max(1,iAccumulateFactor);
-	if ( (m_bout.GetDataQty() + iLength) > (MAX_BUFFER / iAccumulateFactor) )
-	{
-		m_bout.AddNewData(bIn, iLength);
-		m_vExtPacketLengths.push(m_bout.GetDataQty());
-	}
-	else
-	{
-		m_bout.AddNewData(bIn, iLength);
-	}
 }
 
 int CClient::xPacketsReady()
