@@ -352,11 +352,11 @@ void NetworkOut::tick()
 						else
 						{
 							int iLenRetn = pClient->m_Socket.Send(pClient->xGetFrontPacketData(), iLenSend);
+							pClient->xRemoveFrontPacket();
 
 							if ( iLenRetn != SOCKET_ERROR )
 							{
 								g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenSend );
-								pClient->xRemoveFrontPacket();
 							}
 							
 							if ( iLenRetn != iLenSend )

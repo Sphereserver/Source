@@ -71,6 +71,7 @@ CClient::CClient( SOCKET client ) :
 	m_context_popup = -1;
 	m_packetExceptions = 0;
 	m_pHouseDesign = NULL;
+	m_iAccumulatedQueueBytes = 0;
 }
 
 

@@ -1114,7 +1114,7 @@ private:
 
 public:
 	void xAddNewData(const BYTE * bIn, int iLength);
-	void xAccumulateNewData(const BYTE * bIn, int iLength, int iAccumulateFactor);
+	void xAccumulateNewData(const BYTE * bIn, int iLength, int iBytes);
 	int xPacketsReady();
 	int xGetFrontPacketSize();
 	const BYTE * xGetFrontPacketData();
