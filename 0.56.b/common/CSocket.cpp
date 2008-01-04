@@ -425,7 +425,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 
 	int CGSocket::SendAsync( struct aiocb *aiocbp ) const
 	{
-		aiocbp->aio_filedes = m_hSocket;
+		aiocbp->aio_fildes = m_hSocket;
 		aiocbp->aio_offset = 0;
 
 		return aio_write( aiocbp );
@@ -433,7 +433,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 #endif
 
 
-void CGSocket::ClearAsync(void * pArgs)
+void CGSocket::ClearAsync()
 {
      // TO BE CALLED IN CClient destructor !!!
 #ifdef _WIN32
@@ -441,13 +441,12 @@ void CGSocket::ClearAsync(void * pArgs)
 	SleepEx(1, TRUE);
 #else
 	int count = 0;
-	struct aiocb * aiocbp = (struct aiocb *)pArgs;
-	int result = aio_cancel(aiocbp);
+	int result = aio_cancel(m_hSocket, NULL);
 
 	while ( ( result == AIO_NOTCANCELED ) && (count++ < 255) )
 	{
 		sleep(1);
-		result = aio_cancel(aiocbp);
+		result = aio_cancel(m_hSocket, NULL);
 	}
 #endif
 }

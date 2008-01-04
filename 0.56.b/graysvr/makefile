@@ -14,7 +14,7 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
+LIBS	= -dynamic -L/usr/lib -lrt -lpthread -lmysqlclient -ldl
 
 # FreeBSD
 #LIBS	= -L/usr/lib -pthread
@@ -172,7 +172,7 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h

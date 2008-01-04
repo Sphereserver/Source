@@ -138,7 +138,7 @@ public:
 
 	void SetNonBlocking();
 	void Close();
-	void ClearAsync(void * pArgs = NULL);
+	void ClearAsync();
 
 	static void CloseSocket( SOCKET hClose );
 	static short GetProtocolIdByName( LPCTSTR pszName );
