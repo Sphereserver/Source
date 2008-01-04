@@ -135,8 +135,7 @@ SRC	:= 	CAccount.cpp \
 		../common/graycom.cpp \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
-		../sphere/threads.cpp \
-		../tests/threads.cpp
+		../sphere/threads.cpp
 
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)

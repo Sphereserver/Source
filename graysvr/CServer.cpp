@@ -17,11 +17,6 @@
 	#include "../common/crashdump/crashdump.h"
 #endif
 
-#ifdef VJAKA_REDO
-	#include "../sphere/network.h"
-	extern void testThreads();
-#endif
-
 ////////////////////////////////////////////////////////
 // -CTextConsole
 
@@ -1614,10 +1609,7 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	int nfds = 0;
 
 	FD_ZERO(&readfds);
-#ifdef VJAKA_REDO
-#else
 	ADDTOSELECT(m_SocketMain.GetSocket());
-#endif
 
 	int	connecting	= 0;
 
@@ -1668,13 +1660,10 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	}
 
 	// Process new connections.
-#ifdef VJAKA_REDO
-#else
 	if ( FD_ISSET( m_SocketMain.GetSocket(), &readfds))
 	{
 		SocketsReceive( m_SocketMain );
 	}
-#endif
 
 	// Any events from clients ?
 	for ( pClient = GetClientHead(); pClient!=NULL; pClient = pClientNext )
@@ -1747,17 +1736,11 @@ bool CServer::SocketsInit( CGSocket & socket )
 		return false;
 	}
 
-#ifdef VJAKA_REDO
-	Network *network = new Network();
-	network->start();
-#else
 	linger lval;
 	lval.l_onoff = 0;
 	lval.l_linger = 10;
 	socket.SetSockOpt(SO_LINGER, (const char*) &lval, sizeof(lval));
-
 	socket.SetNonBlocking();
-#endif
 
 #ifndef _WIN32
 	int onNotOff = 1;
@@ -1890,11 +1873,7 @@ void CServer::OnTick()
 
 		for ( CClient * pClient = GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
 		{
-#ifdef VJAKA_REDO
-			if( !pClient->m_bin.bytes() )
-#else
 			if ( !pClient->m_bin.GetDataQty() )
-#endif
 				continue;
 
 			EXC_TRYSUB("ProcessMessage");

@@ -9,6 +9,8 @@
 #include <exception>
 #include <setjmp.h>
 #include <dlfcn.h>
+#include <errno.h>
+#include <aio.h>
 
 #ifndef _MAX_PATH			// stdlib.h ?
 	#define _MAX_PATH   260 	// max. length of full pathname

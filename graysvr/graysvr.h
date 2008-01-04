@@ -139,12 +139,7 @@ enum RESDISPLAY_VERSION
 #include "../common/CGrayMap.h"
 #include "../sphere/mutex.h"
 #include "../sphere/threads.h"
-#include "../sphere/networkdata.h"
-#ifdef VJAKA_REDO
-#include "../sphere/queue.h"
-#else
 #include "../common/CQueue.h"
-#endif
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
 
@@ -1095,32 +1090,23 @@ public:
 	bool Cmd_Control( CChar * pChar );
 
 public:
-	#ifdef VJAKA_REDO
-		ByteQueue m_bin;		// CEvent in buffer. (from client)
-	#else
-		CQueueBytes m_bin;		// CEvent in buffer. (from client)
-	#endif
+	CQueueBytes m_bin;		// CEvent in buffer. (from client)
 
 private:
 	std::queue<int> m_vExtPacketLengths;
-	SimpleMutex m_sMutexInputVector;
-	// ---------------------------------
-	// ??? Since we really only deal with one input at a time we can make this static ?
-	#ifdef VJAKA_REDO
-		ByteQueue m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
-	#else
-		CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
-	#endif
+	bool m_sendingData;
+	CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
+#ifdef _WIN32
+	WSABUF m_WSABuf;
+	WSAOVERLAPPED m_overlapped;
+#else
+	struct aiocb m_aiocb;
+#endif
 
 public:
-	void xAddNewData(const BYTE * bIn, int iLength);
-	void xAccumulateNewData(const BYTE * bIn, int iLength, int iBytes);
-	int xPacketsReady();
-	int xGetFrontPacketSize();
-	const BYTE * xGetFrontPacketData();
-	void xRemoveFrontPacket();
-
-	void xSendError(int);
+	bool xSendError(int);
+	void xFlushAsync();
+	void xAsyncSendComplete();
 
 public:
 
