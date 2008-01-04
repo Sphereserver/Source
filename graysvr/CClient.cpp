@@ -109,11 +109,7 @@ CClient::~CClient()
 	{
 		if ( IsSetEF( EF_UseNetworkMulti ) )
 		{
-#ifdef _WIN32
 			m_Socket.ClearAsync();
-#else
-			m_Socket.ClearAsync(&m_aiocb);
-#endif
 		}
 
 		m_Socket.Close();
