@@ -131,7 +131,7 @@ public:
 	int IOCtlSocket( long icmd, DWORD * pdwArgs );
 	int SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const;
 #else
-	int SendAsync( struct aiocb_t *aiocbp ) const;
+	int SendAsync( struct aiocb *aiocbp ) const;
 	int IOCtlSocket( long icmd, int iVal );
 	int GetIOCtlSocketFlags( void );
 #endif
