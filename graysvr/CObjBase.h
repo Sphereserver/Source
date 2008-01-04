@@ -2107,6 +2107,7 @@ enum CTRIG_TYPE
 	CTRIG_Death,			//+I just got killed.
 	CTRIG_DeathCorpse,		// Corpse
 	CTRIG_Destroy,			//+I am nearly destroyed
+	CTRIG_Dismount,
 	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
@@ -2153,6 +2154,7 @@ enum CTRIG_TYPE
 	CTRIG_Kill,				//+I have just killed someone
 	CTRIG_LogIn,			// Client logs in
 	CTRIG_LogOut,			// Client logs out (21)
+	CTRIG_Mount,
 	CTRIG_MurderDecay,		// I have decayed one of my kills
 	CTRIG_MurderMark,		// I am gonna to be marked as a murder
 
