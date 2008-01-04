@@ -423,7 +423,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 		return fcntl( m_hSocket, F_GETFL );
 	}
 
-	int CGSocket::SendAsync( struct aiocb_t *aiocbp ) const
+	int CGSocket::SendAsync( struct aiocb *aiocbp ) const
 	{
 		aiocbp->aio_filedes = m_hSocket;
 		aiocbp->aio_offset = 0;
@@ -441,7 +441,7 @@ void CGSocket::ClearAsync(void * pArgs)
 	SleepEx(1, TRUE);
 #else
 	int count = 0;
-	aiocb_t * aiocbp = (aiocb_t *)pArgs;
+	struct aiocb * aiocbp = (struct aiocb *)pArgs;
 	int result = aio_cancel(aiocbp);
 
 	while ( ( result == AIO_NOTCANCELED ) && (count++ < 255) )
