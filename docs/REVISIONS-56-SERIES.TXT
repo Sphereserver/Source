@@ -1,4 +1,4 @@
-﻿
+
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -3852,3 +3852,14 @@ this all in desperation)
 - Fixed #1331: Script verbs not being parsed correctly when there is a
   space in them (ie. TAG.xxx_<EVAL yyy> = zzz).
 
+
+04-01-08, Nazghul
+- Added: Triggers @Mount & @Dismount
+  @DISMOUNT
+  character trigger, firing when a character tries to dismout it's ride (and will be able to).
+  ARGO is the UID of the (still disconnected!) pet.
+  RETURN 1 stops the dismount process.
+  @MOUNT
+  character trigger, firing when a character tries to get on it's ride (and will be able to).
+  ARGO is the UID of the NPC bound to be ridden.
+  RETURN 1 stops the mounting process.

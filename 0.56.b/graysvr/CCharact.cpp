@@ -1912,6 +1912,10 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		}
 	}
 
+	CScriptTriggerArgs Args(pHorse);
+   	if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
+		return false;
+
 	Horse_UnMount();	// unmount if already on a horse.
 
 	CItem * pItem = pHorse->Make_Figurine(GetUID(), id);
@@ -1939,6 +1943,18 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 		StatFlag_Clear( STATF_OnHorse );	// flag got out of sync !
 		return( false );
 	}
+
+
+#ifdef _NAZTEST
+	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
+	if ( (pPet == NULL) || !pPet->IsDisconnected())	// no ridden horse
+		return ( false );
+
+	CScriptTriggerArgs Args(pPet);
+   	if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
+		return ( false );
+
+#endif
 
 	// What creature is the horse item ?
 	CChar * pHorse = Use_Figurine( pItem, 0 );

@@ -29,6 +29,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Death",				//+I just got killed.
 	"@DeathCorpse",
 	"@Destroy",				//+I am nearly destroyed
+	"@Dismount",			// I am trying to get rid of my ride right now
 	"@EnvironChange",		// my environment changed somehow (light,weather,season,region)
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
@@ -76,6 +77,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Kill",				//+I have just killed someone
 	"@LogIn",				// Client logs in
 	"@LogOut",				// Client logs out (21)
+	"@Mount",				// I'm trying to mount my horse (or whatever)
 	"@MurderDecay",			// One of my kills is gonna to be cleared
 	"@MurderMark",			// I am gonna to be marked as a murderer
 
