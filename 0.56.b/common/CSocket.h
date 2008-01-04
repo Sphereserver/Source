@@ -7,7 +7,7 @@
 #include "common.h"
 
 #ifdef _WIN32
-	#include <winsock.h>
+	#include <winsock2.h>
 	typedef int socklen_t;
 #else	// else assume LINUX
 
@@ -18,6 +18,7 @@
 	#include <arpa/inet.h>
 	#include <signal.h>
 	#include <fcntl.h>
+	#include <aio.h>
 
 	// Compatibility stuff.
 	#define INVALID_SOCKET  (SOCKET)(~0)
@@ -100,7 +101,7 @@ public:
 	CGSocket( SOCKET socket );
 	~CGSocket();
 
-	static int GetLastError();
+	static int GetLastError(bool bUseErrno = false);
 	bool IsOpen() const;
 	SOCKET GetSocket() const;
 
@@ -128,13 +129,16 @@ public:
 	int GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLevel = SOL_SOCKET ) const;
 #ifdef _WIN32
 	int IOCtlSocket( long icmd, DWORD * pdwArgs );
+	int SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const;
 #else
+	int SendAsync( struct aiocb_t *aiocbp ) const;
 	int IOCtlSocket( long icmd, int iVal );
 	int GetIOCtlSocketFlags( void );
 #endif
 
 	void SetNonBlocking();
 	void Close();
+	void ClearAsync(void * pArgs = NULL);
 
 	static void CloseSocket( SOCKET hClose );
 	static short GetProtocolIdByName( LPCTSTR pszName );

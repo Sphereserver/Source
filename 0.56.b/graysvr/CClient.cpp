@@ -5,7 +5,6 @@
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 
-extern NetworkContainer g_GlobalNetwork;
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
@@ -58,6 +57,7 @@ CClient::CClient( SOCKET client ) :
 	// Send as fast as we can. we handle packing ourselves.
 	BOOL nbool=TRUE;
 	m_Socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
+	m_sendingData = false;
 
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
@@ -76,9 +76,6 @@ CClient::CClient( SOCKET client ) :
 
 CClient::~CClient()
 {
-	if ( IsSetEF( EF_UseNetworkMulti ) )
-		g_GlobalNetwork.setLockFromClient();
-
 	g_Serv.StatDec( SERV_STAT_CLIENTS );
 	bool bWasChar;
 
@@ -109,10 +106,18 @@ CClient::~CClient()
 	xFlush();
 
 	if ( m_Socket.IsOpen() )
-		m_Socket.Close();
+	{
+		if ( IsSetEF( EF_UseNetworkMulti ) )
+		{
+#ifdef _WIN32
+			m_Socket.ClearAsync();
+#else
+			m_Socket.ClearAsync(&m_aiocb);
+#endif
+		}
 
-	if ( IsSetEF( EF_UseNetworkMulti ) )
-		g_GlobalNetwork.unsetLockFromClient();
+		m_Socket.Close();
+	}
 }
 
 bool CClient::IsSkillVisible(SKILL_TYPE skill)

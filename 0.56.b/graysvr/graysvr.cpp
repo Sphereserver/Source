@@ -225,7 +225,6 @@ CAccounts	g_Accounts;	// All the player accounts. name sorted CAccount
 CGStringList	g_AutoComplete;	// auto-complete list
 TScriptProfiler g_profiler;		// script profiler
 CMapList	g_MapList;			// global maps information
-extern NetworkContainer g_GlobalNetwork;
 
 DIR_TYPE GetDirStr( LPCTSTR pszDir )
 {
@@ -613,9 +612,6 @@ void Sphere_ExitServer()
 
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
-	
-	if ( IsSetEF( EF_UseNetworkMulti ) )
-		g_GlobalNetwork.stop();
 
 	g_Serv.SocketsClose();
 	g_World.Close();
@@ -1025,9 +1021,6 @@ int _cdecl main( int argc, char * argv[] )
 		// Start the ping server, this can only be ran in a separate thread
 		if ( IsSetEF( EF_UsePingServer ) )
 			g_PingServer.start();
-
-		if ( IsSetEF( EF_UseNetworkMulti ) )
-			g_GlobalNetwork.start();
 			
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
 

@@ -242,12 +242,12 @@ void CGSocket::Clear()
 	m_hSocket = INVALID_SOCKET;
 }
 
-int CGSocket::GetLastError()
+int CGSocket::GetLastError(bool bUseErrno)
 {
 #ifdef _WIN32
 	return( WSAGetLastError() );
 #else
-	return( h_errno );	// WSAGetLastError()
+	return( !bUseErrno ? h_errno : errno );	// WSAGetLastError()
 #endif
 }
 
@@ -407,6 +407,12 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	{
 		return ioctlsocket( m_hSocket, icmd, pdwArgs );
 	}
+
+	int CGSocket::SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const
+	{
+		 // RETURN: length sent
+		 return( WSASend( m_hSocket, lpBuffers, dwBufferCount, lpNumberOfBytesSent, dwFlags, lpOverlapped, lpCompletionRoutine ));
+	}
 #else
 	int CGSocket::IOCtlSocket( long icmd, int iVal )	// LINUX ?
 	{
@@ -416,7 +422,35 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	{
 		return fcntl( m_hSocket, F_GETFL );
 	}
+
+	int CGSocket::SendAsync( struct aiocb_t *aiocbp ) const
+	{
+		aiocbp->aio_filedes = m_hSocket;
+		aiocbp->aio_offset = 0;
+
+		return aio_write( aiocbp );
+	}
 #endif
+
+
+void CGSocket::ClearAsync(void * pArgs)
+{
+     // TO BE CALLED IN CClient destructor !!!
+#ifdef _WIN32
+	CancelIo((HANDLE)m_hSocket);
+	SleepEx(1, TRUE);
+#else
+	int count = 0;
+	aiocb_t * aiocbp = (aiocb_t *)pArgs;
+	int result = aio_cancel(aiocbp);
+
+	while ( ( result == AIO_NOTCANCELED ) && (count++ < 255) )
+	{
+		sleep(1);
+		result = aio_cancel(aiocbp);
+	}
+#endif
+}
 
 void CGSocket::SetNonBlocking()
 {
