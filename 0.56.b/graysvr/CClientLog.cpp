@@ -952,7 +952,7 @@ void CClient::xSendPktNow( const CCommand * pCmd, int length )
 			return;
 		}
 
-		if ( m_bout.GetDataQty() + length > MAX_BUFFER )
+		if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
 
@@ -1046,7 +1046,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 			return;
 		}
 
-		if ( m_bout.GetDataQty() + length > MAX_BUFFER )
+		if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
 
@@ -1063,8 +1063,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 
 	if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
 	{
-		if ( !bQueue )
-			xFlush();
+		xFlush();
 	}
 	else if ( GetConnectType() == CONNECT_GAME )
 	{
@@ -1079,14 +1078,14 @@ void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We
 	ADDTOCALLSTACK("CClient::xSendReady");
 
 	// We could send the packet now if we wanted to but wait til we have more.
-	if ( m_bout.GetDataQty() + length >= MAX_BUFFER )
+	if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length >= MAX_BUFFER ))
 	{
 		xFlush();
 	}
 //	DEBUG_ERR(("SEND: %x:adding %d bytes\n", m_Socket.GetSocket(), length));
 	xSend( pData, length );
 
-	if ( bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 ) )	// send only if we have a bunch.
+	if ( IsSetEF( EF_UseNetworkMulti ) || (bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 )))	// send only if we have a bunch.
 	{
 		xFlush();
 	}
@@ -1210,7 +1209,6 @@ void CClient::xAsyncSendComplete()
 
 		int iResult = aio_error(aiocbptr);
 		if ( iResult == 0 ) {}	// success
-		else if ( iResult == ECANCELED ) {}	// cancelled request
 		else
 		{
 			m_fClosed = true;
@@ -1220,9 +1218,10 @@ void CClient::xAsyncSendComplete()
 
     int packetLength = m_vExtPacketLengths.front();
     m_bout.RemoveDataAmount(packetLength);
-    m_sendingData = false;
     m_vExtPacketLengths.pop();
-    xFlush();
+	m_sendingData = false;
+
+    xFlushAsync();
 }
 
 #ifdef _WIN32
@@ -1252,15 +1251,16 @@ void CClient::xFlushAsync()
     if (m_vExtPacketLengths.empty() || !m_Socket.IsOpen() || m_fClosed || m_sendingData)
         return;
 
-    unsigned short packetLength = m_vExtPacketLengths.front();
-    if (!packetLength)
+    int packetLength = m_vExtPacketLengths.front();
+    if ( packetLength <= 0 )
     {
         m_vExtPacketLengths.pop();
-        xFlush();
+        xFlushAsync();
         return;
     }
 
     m_timeLastSend = CServTime::GetCurrentTime();
+
 #ifndef _WIN32
 	struct aiocb *aiocbptr = &m_aiocb;
 	memset(aiocbptr, '\0', sizeof(struct aiocb));
@@ -1268,7 +1268,7 @@ void CClient::xFlushAsync()
 	aiocbptr->aio_sigevent.sigev_notify = SIGEV_THREAD;
 	aiocbptr->aio_sigevent.sigev_notify_function = SendCompleted;
 	aiocbptr->aio_sigevent.sigev_notify_attributes = 0;
-	aiocbptr->aio_sigevent.sigev_value.sival_ptr = this ;
+	aiocbptr->aio_sigevent.sigev_value.sival_ptr = this;
 #endif
 
     if (GetConnectType() == CONNECT_GAME)
@@ -1295,7 +1295,7 @@ void CClient::xFlushAsync()
         m_WSABuf.buf = (CHAR *)const_cast<BYTE*>( m_bout.RemoveDataLock() );
         m_WSABuf.len = packetLength;
 #else
-		aiocbptr->aio_buf = (void*)m_bout.RemoveDataLock();
+		aiocbptr->aio_buf = (void*)const_cast<BYTE*>( m_bout.RemoveDataLock() );
 		aiocbptr->aio_nbytes = packetLength;
 #endif
     }

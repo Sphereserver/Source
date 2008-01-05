@@ -418,6 +418,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	{
 		return fcntl( m_hSocket, icmd, iVal );
 	}
+
 	int CGSocket::GetIOCtlSocketFlags( void )
 	{
 		return fcntl( m_hSocket, F_GETFL );
