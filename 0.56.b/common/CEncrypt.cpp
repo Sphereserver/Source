@@ -686,9 +686,10 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 			// regular account name/password). This prevents that fact, choosing the right keys
 			// to decrypt it correctly :)
 			
-			iAccountNameLen = Str_GetBare(pszAccountNameCheck, (const char *)(m_Raw+1), MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+			LPCTSTR sRawAccountName = reinterpret_cast<LPCTSTR>( m_Raw + 1 );
+			iAccountNameLen = Str_GetBare(pszAccountNameCheck, sRawAccountName, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
 			pszAccountNameCheck[iLen] = '\0';
-			if (iAccountNameLen != strlen((const char *)(m_Raw+1)) )
+			if (sRawAccountName && (iAccountNameLen != strlen(sRawAccountName)))
 			{
 				iAccountNameLen = 0;
 				i++;

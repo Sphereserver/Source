@@ -1115,6 +1115,7 @@ void CSector::OnTick(int iPulseCount)
 		EXC_DEBUGSUB_END;
 #else
 		}
+#ifndef _DEBUG
 		catch ( CGrayError &e )
 		{
 			CPointMap pt = GetBasePoint();
@@ -1129,6 +1130,7 @@ void CSector::OnTick(int iPulseCount)
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			EXC_CATCH_SUB(NULL, "Sector");
 		}
+#endif
 #endif
 	}
 	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
