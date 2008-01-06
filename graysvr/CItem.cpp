@@ -4845,6 +4845,7 @@ bool CItem::OnTick()
 	
 #ifndef _WIN32
 	}
+#ifndef _DEBUG
 	catch ( CGrayError &e )
 	{
 		EXC_CATCH_EXCEPTION(&e);
@@ -4855,6 +4856,7 @@ bool CItem::OnTick()
 		EXC_CATCH_EXCEPTION(NULL);
 		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), (DWORD)GetUID());
 	}
+#endif
 #else
 	EXC_CATCH;
 	
