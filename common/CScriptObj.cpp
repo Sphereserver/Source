@@ -1295,7 +1295,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 
 		case SSV_NEWITEM:	// just add an item but don't put it anyplace yet..
 			{
-				TCHAR	*ppCmd[3];
+				TCHAR	*ppCmd[4];
 				int iQty = Str_ParseCmds(s.GetArgRaw(), ppCmd, COUNTOF(ppCmd), ",");
 				if ( !iQty )
 					return false;
@@ -1306,10 +1306,28 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					g_World.m_uidNew = (DWORD)0;
 					return false;
 				}
+				
 				if ( ppCmd[1] )
 					pItem->SetAmount(Exp_GetVal(ppCmd[1]));
+				
 				if ( ppCmd[2] )
-					pItem->LoadSetContainer(Exp_GetVal(ppCmd[2]), LAYER_NONE);
+				{
+					CGrayUID uidEquipper = Exp_GetVal(ppCmd[2]);
+					bool bTriggerEquip = ppCmd[3] ? Exp_GetVal(ppCmd[3]) : false;
+
+					if ( !bTriggerEquip || uid.IsItem() )
+						pItem->LoadSetContainer(uidEquipper, LAYER_NONE);
+					else
+					{
+						if ( bTriggerEquip )
+						{
+							CChar * pCharEquipper = uidEquipper.CharFind();
+							if ( pCharEquipper != NULL )
+								pCharEquipper->ItemEquip(pItem);
+						}
+					}
+				}
+
 				g_World.m_uidNew = pItem->GetUID();
 
 				if ( this != &g_Serv )
