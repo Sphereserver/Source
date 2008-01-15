@@ -5,6 +5,10 @@
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 
+#ifndef _WIN32
+	extern LinuxEv g_NetworkEvent;
+#endif
+
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
@@ -58,6 +62,13 @@ CClient::CClient( SOCKET client ) :
 	BOOL nbool=TRUE;
 	m_Socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
 	m_sendingData = false;
+	
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+#ifndef _WIN32
+		g_NetworkEvent.registerClient(this, LinuxEv::Write);
+#endif
+	}	
 
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
@@ -109,7 +120,11 @@ CClient::~CClient()
 	{
 		if ( IsSetEF( EF_UseNetworkMulti ) )
 		{
+#ifdef _WIN32
 			m_Socket.ClearAsync();
+#else
+			g_NetworkEvent.unregisterClient(this);
+#endif
 		}
 
 		m_Socket.Close();
@@ -1486,4 +1501,3 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	EXC_DEBUG_END;
 	return false;
 }
-

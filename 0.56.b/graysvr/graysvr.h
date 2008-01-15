@@ -139,6 +139,9 @@ enum RESDISPLAY_VERSION
 #include "../common/CGrayMap.h"
 #include "../sphere/mutex.h"
 #include "../sphere/threads.h"
+#ifndef _WIN32
+	#include "../sphere/linuxev.h"
+#endif
 #include "../common/CQueue.h"
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
@@ -1100,13 +1103,18 @@ private:
 	WSABUF m_WSABuf;
 	WSAOVERLAPPED m_overlapped;
 #else
-	struct aiocb m_aiocb;
+	struct ev_io m_eventWatcher;
 #endif
 
 public:
 	bool xSendError(int);
 	void xFlushAsync();
 	void xAsyncSendComplete();
+#ifndef _WIN32
+	struct ev_io * GetIOCB();
+	bool xCanSend();
+	void xSetCanSend(bool);
+#endif
 
 public:
 

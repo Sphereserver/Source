@@ -12,6 +12,9 @@
 
 BYTE CClient::sm_xCompress_Buffer[MAX_BUFFER];	// static
 CHuffman CClient::m_Comp;
+#ifndef _WIN32
+	extern LinuxEv g_NetworkEvent;
+#endif
 
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
@@ -1064,6 +1067,12 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 	if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
 	{
 		xFlush();
+#ifndef _WIN32
+		if ( IsSetEF( EF_UseNetworkMulti ) )
+		{
+			g_NetworkEvent.forceClientwrite(this);
+		}
+#endif
 	}
 	else if ( GetConnectType() == CONNECT_GAME )
 	{
@@ -1123,9 +1132,12 @@ bool CClient::xSendError(int iErrCode)
 void CClient::xFlush()
 {
 	ADDTOCALLSTACK("CClient::xFlush");
+	
 	if ( IsSetEF( EF_UseNetworkMulti ) )
 	{
+#ifdef _WIN32
 		xFlushAsync();
+#endif
 		return;
 	}
 
@@ -1197,30 +1209,13 @@ Do_Handle_Error:
 
 void CClient::xAsyncSendComplete()
 {
-#ifndef _WIN32
-	struct aiocb *aiocbptr = &m_aiocb;
-
-	if ( aio_return(aiocbptr) == -1 )
-	{
-		while (aio_error(aiocbptr) == EINPROGRESS)
-		{
-			// Should we sleep???
-		}
-
-		int iResult = aio_error(aiocbptr);
-		if ( iResult == 0 ) {}	// success
-		else
-		{
-			m_fClosed = true;
-		}
-	}
-#endif
-
+#ifdef _WIN32
     int packetLength = m_vExtPacketLengths.front();
     m_bout.RemoveDataAmount(packetLength);
     m_vExtPacketLengths.pop();
-	m_sendingData = false;
-
+    m_sendingData = false;
+#endif
+	
     xFlushAsync();
 }
 
@@ -1233,12 +1228,19 @@ void CClient::xAsyncSendComplete()
 		client->xAsyncSendComplete();
 	}
 #else
-	void SendCompleted(sigval_t cb_data);
-
-	void SendCompleted(sigval_t cb_data)
+	struct ev_io * CClient::GetIOCB()
 	{
-		CClient *client = reinterpret_cast<CClient *>(cb_data.sival_ptr);
-		client->xAsyncSendComplete();
+		return &m_eventWatcher;		
+	}
+	
+	bool CClient::xCanSend()
+	{
+		return m_sendingData;	
+	}
+	
+	void CClient::xSetCanSend(bool sending)
+	{
+		m_sendingData = sending;
 	}
 #endif
 
@@ -1248,29 +1250,29 @@ void CClient::xFlushAsync()
     // Sends buffered data at once
     // NOTE:
     // Make sure we do not overflow the Sockets Tx buffers!
+#ifdef _WIN32
     if (m_vExtPacketLengths.empty() || !m_Socket.IsOpen() || m_fClosed || m_sendingData)
+#else
+	if (m_vExtPacketLengths.empty() || !m_Socket.IsOpen() || m_fClosed )
+#endif
         return;
 
     int packetLength = m_vExtPacketLengths.front();
     if ( packetLength <= 0 )
     {
         m_vExtPacketLengths.pop();
+#ifdef _WIN32
         xFlushAsync();
+#endif
         return;
     }
 
     m_timeLastSend = CServTime::GetCurrentTime();
-
+	
 #ifndef _WIN32
-	struct aiocb *aiocbptr = &m_aiocb;
-	memset(aiocbptr, '\0', sizeof(struct aiocb));
-
-	aiocbptr->aio_sigevent.sigev_notify = SIGEV_THREAD;
-	aiocbptr->aio_sigevent.sigev_notify_function = SendCompleted;
-	aiocbptr->aio_sigevent.sigev_notify_attributes = 0;
-	aiocbptr->aio_sigevent.sigev_value.sival_ptr = this;
+	BYTE * toSend = NULL; int iLenToSend = 0;
 #endif
-
+	
     if (GetConnectType() == CONNECT_GAME)
     {
         int iLenComp = xCompress( sm_xCompress_Buffer, m_bout.RemoveDataLock(), packetLength);
@@ -1285,18 +1287,18 @@ void CClient::xFlushAsync()
         m_WSABuf.buf = (CHAR *)sm_xCompress_Buffer;
         m_WSABuf.len = iLenComp;
 #else
-		aiocbptr->aio_buf = (void*)sm_xCompress_Buffer;
-		aiocbptr->aio_nbytes = iLenComp;
+		toSend = sm_xCompress_Buffer;
+		iLenToSend = iLenComp;
 #endif
     }
     else
     {
-#ifdef _WIN32
+#ifdef _WIN32		
         m_WSABuf.buf = (CHAR *)const_cast<BYTE*>( m_bout.RemoveDataLock() );
         m_WSABuf.len = packetLength;
 #else
-		aiocbptr->aio_buf = (void*)const_cast<BYTE*>( m_bout.RemoveDataLock() );
-		aiocbptr->aio_nbytes = packetLength;
+		toSend = m_bout.RemoveDataLock();
+		iLenToSend = packetLength;
 #endif
     }
 
@@ -1306,17 +1308,20 @@ void CClient::xFlushAsync()
 #ifdef _WIN32
     ZeroMemory(&m_overlapped, sizeof(WSAOVERLAPPED));
     m_overlapped.hEvent = this;
-
 	result = m_Socket.SendAsync(&m_WSABuf, 1, &dwSent, 0, &m_overlapped, SendCompleted);
 #else
-	result = m_Socket.SendAsync(aiocbptr);
+	dwSent = m_Socket.Send( toSend, iLenToSend );
 #endif
     
     if (!result)
     {
+#ifdef _WIN32		
         m_sendingData = true;
-#ifdef _WIN32
         SleepEx(1, TRUE);
+#else
+		g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenToSend );
+    	m_bout.RemoveDataAmount(packetLength);
+    	m_vExtPacketLengths.pop();		
 #endif
     }
     else
