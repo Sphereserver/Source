@@ -17,6 +17,10 @@
 	#include "../common/crashdump/crashdump.h"
 #endif
 
+#ifndef _WIN32
+	extern LinuxEv g_NetworkEvent;
+#endif
+
 ////////////////////////////////////////////////////////
 // -CTextConsole
 
@@ -1607,9 +1611,12 @@ void CServer::SocketsReceive() // Check for messages from the clients
 	// What sockets do I want to look at ?
 	fd_set readfds;
 	int nfds = 0;
-
 	FD_ZERO(&readfds);
-	ADDTOSELECT(m_SocketMain.GetSocket());
+	
+#ifndef _WIN32
+	if ( !IsSetEF( EF_UseNetworkMulti ) )
+#endif
+		ADDTOSELECT(m_SocketMain.GetSocket());
 
 	int	connecting	= 0;
 
@@ -1659,12 +1666,19 @@ void CServer::SocketsReceive() // Check for messages from the clients
 		return;
 	}
 
+#ifndef _WIN32
+	if ( !IsSetEF( EF_UseNetworkMulti ) )
+	{
+#endif
 	// Process new connections.
 	if ( FD_ISSET( m_SocketMain.GetSocket(), &readfds))
 	{
 		SocketsReceive( m_SocketMain );
 	}
-
+#ifndef _WIN32
+	}
+#endif
+		
 	// Any events from clients ?
 	for ( pClient = GetClientHead(); pClient!=NULL; pClient = pClientNext )
 	{
@@ -1761,6 +1775,14 @@ bool CServer::SocketsInit( CGSocket & socket )
 		return false;
 	}
 	socket.Listen();
+	
+#ifndef _WIN32
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+		g_NetworkEvent.registerMainsocket();
+	}
+#endif
+		
 	return true;
 }
 
@@ -1804,6 +1826,12 @@ bool CServer::SocketsInit() // Initialize sockets
 void CServer::SocketsClose()
 {
 	ADDTOCALLSTACK("CServer::SocketsClose");
+#ifndef _WIN32
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+	{
+		g_NetworkEvent.unregisterMainsocket();
+	}
+#endif
 	m_SocketMain.Close();
 	m_Clients.DeleteAll();
 }
@@ -2009,5 +2037,3 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_DEBUG_END;
 	return false;
 }
-
-

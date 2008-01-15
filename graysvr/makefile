@@ -14,23 +14,24 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lrt -lpthread -lmysqlclient -ldl
+LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
 
 # FreeBSD
 #LIBS	= -L/usr/lib -pthread
 #DEFBSD	= -D_BSD
 
 #EXTRADEFS = -D_NEWGUILDSYSTEM
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) -D_LINUX $(EXTRADEFS)
+#DEBUGDEFS = -D_DEBUG
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) -D_LINUX $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
 
-CC	= g++
-#CC	= g++-3.4
+#CC	= g++
+CC	= g++-3.4
 
-CCO	= gcc
-#CCO	= gcc-3.4
+#CCO	= gcc
+CCO	= gcc-3.4
 
 NO	= -fno-rtti -fno-exceptions
 #EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
@@ -92,6 +93,7 @@ SRC	:= 	CAccount.cpp \
 		PingServer.cpp \
 		../common/mtrand/mtrand.cpp \
 		../common/twofish/twofish2.cpp \
+		../common/libev/wrapper_ev.c \
 		../common/zlib/adler32.c \
 		../common/zlib/compress.c \
 		../common/zlib/crc32.c \
@@ -135,8 +137,8 @@ SRC	:= 	CAccount.cpp \
 		../common/graycom.cpp \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
-		../sphere/threads.cpp
-
+		../sphere/threads.cpp \
+		../sphere/linuxev.cpp
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
@@ -147,7 +149,7 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
 	@$(CCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
@@ -155,7 +157,8 @@ clean:	tidy
 
 tidy:
 	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
-													 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak ../common/zlib/*~ ../common/zlib/*orig \
+													 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak ../common/libev/*~ \
+													 ../common/libev/*orig ../common/libev/*bak ../common/zlib/*~ ../common/zlib/*orig \
 													 ../common/zlib/*bak ../sphere/*~ ../sphere/*orig ../sphere/*bak ../tests/*~ ../tests/*orig ../tests/*bak
 
 tags:	$(SRC)
@@ -172,7 +175,7 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/zlib/*.o ../sphere/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
@@ -200,4 +203,3 @@ dist:
 	@echo -----------
 #	@scp SphereServer$(VER)-$(PLAT).tgz REVISIONS.TXT MANUAL.TXT uo@www.dagonar.com:~/public_html/sphere/files/
 	@rm Revisions$(VER).txt Manual$(VER).txt $(REXE) sphere_msgs.scp sphere_types.scp sphere_serv_triggers.scp
-

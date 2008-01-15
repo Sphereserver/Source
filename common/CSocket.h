@@ -9,8 +9,8 @@
 #ifdef _WIN32
 	#include <winsock2.h>
 	typedef int socklen_t;
-#else	// else assume LINUX
-
+#else	
+	// else assume LINUX
 	#include <sys/socket.h>
 	#include <netdb.h>
 	#include <netinet/in.h>
@@ -18,7 +18,6 @@
 	#include <arpa/inet.h>
 	#include <signal.h>
 	#include <fcntl.h>
-	#include <aio.h>
 
 	// Compatibility stuff.
 	#define INVALID_SOCKET  (SOCKET)(~0)
@@ -130,15 +129,14 @@ public:
 #ifdef _WIN32
 	int IOCtlSocket( long icmd, DWORD * pdwArgs );
 	int SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const;
+	void ClearAsync();
 #else
-	int SendAsync( struct aiocb *aiocbp ) const;
 	int IOCtlSocket( long icmd, int iVal );
 	int GetIOCtlSocketFlags( void );
 #endif
 
 	void SetNonBlocking();
 	void Close();
-	void ClearAsync();
 
 	static void CloseSocket( SOCKET hClose );
 	static short GetProtocolIdByName( LPCTSTR pszName );

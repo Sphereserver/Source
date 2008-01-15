@@ -413,6 +413,14 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 		 // RETURN: length sent
 		 return( WSASend( m_hSocket, lpBuffers, dwBufferCount, lpNumberOfBytesSent, dwFlags, lpOverlapped, lpCompletionRoutine ));
 	}
+	
+	void CGSocket::ClearAsync()
+	{
+     	// TO BE CALLED IN CClient destructor !!!
+		CancelIo((HANDLE)m_hSocket);
+		SleepEx(1, TRUE);
+	}
+
 #else
 	int CGSocket::IOCtlSocket( long icmd, int iVal )	// LINUX ?
 	{
@@ -423,34 +431,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	{
 		return fcntl( m_hSocket, F_GETFL );
 	}
-
-	int CGSocket::SendAsync( struct aiocb *aiocbp ) const
-	{
-		aiocbp->aio_fildes = m_hSocket;
-		aiocbp->aio_offset = 0;
-
-		return aio_write( aiocbp );
-	}
 #endif
-
-
-void CGSocket::ClearAsync()
-{
-     // TO BE CALLED IN CClient destructor !!!
-#ifdef _WIN32
-	CancelIo((HANDLE)m_hSocket);
-	SleepEx(1, TRUE);
-#else
-	int count = 0;
-	int result = aio_cancel(m_hSocket, NULL);
-
-	while ( ( result == AIO_NOTCANCELED ) && (count++ < 255) )
-	{
-		sleep(1);
-		result = aio_cancel(m_hSocket, NULL);
-	}
-#endif
-}
 
 void CGSocket::SetNonBlocking()
 {

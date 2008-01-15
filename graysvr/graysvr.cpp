@@ -5,6 +5,9 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "PingServer.h"	// ping server
+#ifndef _WIN32
+	#include "../sphere/linuxev.h"
+#endif
 
 #if !defined(pid_t)
 #define pid_t int
@@ -387,7 +390,9 @@ void Main::tick()
 
 Main g_Main;
 extern PingServer g_PingServer;
-
+#ifndef _WIN32
+	extern LinuxEv g_NetworkEvent;
+#endif
 //*******************************************************************
 // CProfileData
 
@@ -612,7 +617,11 @@ void Sphere_ExitServer()
 
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
-
+#ifndef _WIN32
+	if ( IsSetEF( EF_UseNetworkMulti ) )
+		g_NetworkEvent.waitForClose();
+#endif
+		
 	g_Serv.SocketsClose();
 	g_World.Close();
 
@@ -1008,10 +1017,10 @@ int Sphere_MainEntryPoint( int argc, char *argv[] )
 int _cdecl main( int argc, char * argv[] )
 #endif
 {
-	#ifndef _WIN32
+#ifndef _WIN32
 	// Initialize nonblocking IO and disable readline on linux
 	setNonBlockingIo();
-	#endif
+#endif
 
 	g_Serv.m_iExitFlag = Sphere_InitServer( argc, argv );
 	if ( ! g_Serv.m_iExitFlag )
@@ -1021,6 +1030,11 @@ int _cdecl main( int argc, char * argv[] )
 		// Start the ping server, this can only be ran in a separate thread
 		if ( IsSetEF( EF_UsePingServer ) )
 			g_PingServer.start();
+		
+#ifndef _WIN32
+		if ( IsSetEF( EF_UseNetworkMulti ) )
+			g_NetworkEvent.start();
+#endif
 			
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
 
