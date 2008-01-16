@@ -1315,7 +1315,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					CGrayUID uidEquipper = Exp_GetVal(ppCmd[2]);
 					bool bTriggerEquip = ppCmd[3] ? Exp_GetVal(ppCmd[3]) : false;
 
-					if ( !bTriggerEquip || uid.IsItem() )
+					if ( !bTriggerEquip || uidEquipper.IsItem() )
 						pItem->LoadSetContainer(uidEquipper, LAYER_NONE);
 					else
 					{
