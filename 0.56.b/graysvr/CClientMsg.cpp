@@ -1978,6 +1978,7 @@ void CClient::addPlayerStart( CChar * pChar )
 		pChar->m_pParty->SendAddList(NULL);
 	}
 
+	addSeason(SEASON_Summer);
 	addWeather(WEATHER_DEFAULT);
 	addLight();
 	addPlayerWarMode();

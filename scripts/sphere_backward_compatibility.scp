@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, July 17, 2007
+// FILE LAST UPDATED: Tuesday, January 19, 2008
 
 VERSION=0.56b
 
@@ -125,5 +125,44 @@ ON=@timer
 
 [ITEMDEF i_gate_wood_2]
 DUPEITEM=i_fence_wood_3
+
+//
+// This function can be used to force a character to cast a specific
+// spell. Works on both players and NPCs. Two arguments can be given:
+//
+// "NpcCast <spell>, <target>"
+// spell  -->  spell id to cast
+// target -->  target (optional, default: previous action's target)
+//             - can be a uid or map location
+//
+[FUNCTION npccast]
+// Determine spell and skill used to cast
+LOCAL.SPELL = <EVAL <ARGV[0]> &~ 0ff000000>
+LOCAL.SKILL = <EVAL (<STREAT <SERV.SPELL.<LOCAL.SPELL>.SKILLREQ>>) &~ 0ff000000>
+IF !(<LOCAL.SKILL>)
+	LOCAL.SKILL = 25
+ENDIF
+
+// Set spell target
+IF (<ARGV> > 2)
+	ACT = 0
+	ACTP = <ARGV[1]>, <ARGV[2]>, <ARGV[3]>, <ARGV[4]>
+ELSE
+	REF1 = <ARGV[1]>
+	IF !(<REF1.UID>)
+		REF1 = <ACT.UID>
+		IF !(<REF1.UID>)
+			REF1 = <UID>
+		ENDIF
+	ENDIF
+	ACT = <REF1.UID>
+	ACTP = <REF1.P>
+ENDIF
+
+// Set character action
+ACTPRV = <UID>
+ACTARG1 = <LOCAL.SPELL>
+ACTION = <LOCAL.SKILL>
+RETURN 1
 
 [EOF]

@@ -2201,9 +2201,7 @@ jump_in:
 						strcat(buf, s.GetArgRaw());
 						ParseText(buf, pSrc, 0, pArgs);
 
-						CScript script(buf);
-						strcpy(s.GetKeyBuffer(), script.GetKey());
-						strcpy(s.GetArgRaw(), script.GetArgRaw());
+						s.ParseKey(buf);
 					}
 					else
 					{
@@ -2302,38 +2300,58 @@ jump_in:
 					if ( !strcmpi(s.GetKey(), "call" ) )
 					{
 						EXC_SET("call");
-						char *argRaw = s.GetArgRaw();
-						char *z = strchr(argRaw, ' ');
 						CGString sVal;
+						char *argRaw = s.GetArgRaw();
+						CScriptObj *pRef = this;
 
-						if( z )
+						// Parse object references, src.* is not parsed
+						// by r_GetRef so do it manually
+						r_GetRef(argRaw, pRef);
+						if ( !strnicmp("SRC.", argRaw, 4) )
 						{
-							*z = 0;
-							++z;
-							GETNONWHITESPACE(z);
+							argRaw += 4;
+							pRef = pSrc->GetChar();
 						}
 
-						if ( z && *z )
+						// Check that an object is referenced
+						if (pRef != NULL)
 						{
-							int iN1 = pArgs->m_iN1;
-							int iN2 = pArgs->m_iN2;
-							int iN3 = pArgs->m_iN3;
-							CScriptObj *pO1 = pArgs->m_pO1;
-							CGString s1 = pArgs->m_s1;
-							CGString s1_raw = pArgs->m_s1;
-							pArgs->Init(z);
+							// Locate arguments for the called function
+							char *z = strchr(argRaw, ' ');
 
-							fRes = this->r_Call(argRaw, pSrc, pArgs, &sVal);
+							if( z )
+							{
+								*z = 0;
+								++z;
+								GETNONWHITESPACE(z);
+							}
 
-							pArgs->m_iN1 = iN1;
-							pArgs->m_iN2 = iN2;
-							pArgs->m_iN3 = iN3;
-							pArgs->m_pO1 = pO1;
-							pArgs->m_s1 = s1;
-							pArgs->m_s1_raw = s1_raw;
+							if ( z && *z )
+							{
+								int iN1 = pArgs->m_iN1;
+								int iN2 = pArgs->m_iN2;
+								int iN3 = pArgs->m_iN3;
+								CScriptObj *pO1 = pArgs->m_pO1;
+								CGString s1 = pArgs->m_s1;
+								CGString s1_raw = pArgs->m_s1;
+								pArgs->m_v.SetCount(0);
+								pArgs->Init(z);
+
+								fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
+
+								pArgs->m_iN1 = iN1;
+								pArgs->m_iN2 = iN2;
+								pArgs->m_iN3 = iN3;
+								pArgs->m_pO1 = pO1;
+								pArgs->m_s1 = s1;
+								pArgs->m_s1_raw = s1_raw;
+								pArgs->m_v.SetCount(0);
+							}
+							else
+							{
+								fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
+							}
 						}
-						else
-							fRes = this->r_Call(argRaw, pSrc, pArgs, &sVal);
 					}
 					else
 					{

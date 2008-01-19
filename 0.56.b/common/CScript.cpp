@@ -470,11 +470,21 @@ bool CScript::ReadKeyParse() // Read line from script
 		sprintf( (char*)buf, "<%s>%s", m_pszKey, pszArgs );
 	}
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '+' )
+	{
+		if ( m_pszArg[2] != '\0' )
+			return true;
 		sprintf( (char*)buf, "<eval (<%s> +1)>", m_pszKey );
+	}
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '-' )
+	{
+		if ( m_pszArg[2] != '\0' )
+			return true;
 		sprintf( (char*)buf, "<eval (<%s> -1)>", m_pszKey );
+	}
 	else
+	{
 		sprintf( (char*)buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
+	}
 	strcpy( m_pszArg, buf );
 
 	return true;

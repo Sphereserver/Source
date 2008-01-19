@@ -1,4 +1,4 @@
-
+﻿
 ---- 0.56a --------------------------------------------------------------------
 ---- 08/12/2004
 
@@ -3852,8 +3852,7 @@ this all in desperation)
 - Fixed #1331: Script verbs not being parsed correctly when there is a
   space in them (ie. TAG.xxx_<EVAL yyy> = zzz).
 
-
-04-01-08, Nazghul
+04-01-2008, Nazghul
 - Added: Triggers @Mount & @Dismount
   @DISMOUNT
   character trigger, firing when a character tries to dismout it's ride (and will be able to).
@@ -3863,3 +3862,17 @@ this all in desperation)
   character trigger, firing when a character tries to get on it's ride (and will be able to).
   ARGO is the UID of the NPC bound to be ridden.
   RETURN 1 stops the mounting process.
+
+19-01-2008, MrSugarCube
+- Fixed #1351: Gaining tactics when fighting players in no-pvp regions.
+- Fixed #1337: Foundations of custom housing deletable by players.
+- Fixed #1132: Maps other than #0 not showing up when logging in.
+- Added #1003: ACTPRV property to characters. This is used in some skills, for example with
+  magery to hold the source of the spell (character, wand, scroll, etc).
+- Fixed: CALL not working with object references. (eg. "CALL src.myfunction")
+- Fixed: ++/-- in scripts being parsed as +=1 when not being used as operators.
+
+19-01-2008, MrSugarCube (Script pack)
+- Updated #1360: sphere_admin.scp (Fixed blank client list when using .admin twice)
+- Updated: sphere_backward_compatibility.scp (Added NpcCast function, which can be used to make
+  a character start casting a spell)
