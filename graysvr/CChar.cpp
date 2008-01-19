@@ -1990,6 +1990,9 @@ do_default:
 		case CHC_ACTP:
 			sVal = m_Act_p.WriteUsed();
 			break;
+		case CHC_ACTPRV:
+			sVal.FormatHex( m_Act_TargPrv.GetObjUID());
+			break;
 		case CHC_ACTDIFF:
 			sVal.FormatVal( m_Act_Difficulty * 10 );
 			break;
@@ -2218,6 +2221,9 @@ do_default:
 				m_Act_p = GetTopPoint();
 			else
 				m_Act_p.Read( s.GetArgStr());
+			break;
+		case CHC_ACTPRV:
+			m_Act_TargPrv = s.GetArgVal();
 			break;
 		case CHC_ACTDIFF:
 			m_Act_Difficulty = (s.GetArgVal() / 10);

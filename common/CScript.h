@@ -111,7 +111,6 @@ protected:
 protected:
 	TCHAR * GetKeyBufferRaw( int iSize );
 
-	bool ParseKey( LPCTSTR pszKey );
 	bool ParseKey( LPCTSTR pszKey, LPCTSTR pszArgs );
 	int ParseKeyEnd();
 
@@ -123,6 +122,7 @@ public:
 		ASSERT(m_Mem.GetData());
 		return((TCHAR *) m_Mem.GetData());
 	}
+	bool ParseKey( LPCTSTR pszKey );
 	void ParseKeyLate();
 
 	CScriptKeyAlloc()

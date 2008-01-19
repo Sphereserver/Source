@@ -521,6 +521,20 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	ADDTOCALLSTACK("CItemMultiCustom::RemoveItem");
 	// remove the item that's found at given location
 	// ITEMID_NOTHING means we should remove any items found
+	CGRect rectDesign = GetDesignArea();
+	CPointMap pt(GetTopPoint());
+	pt.m_x += x;
+	pt.m_y += y;
+
+	if ( pClientSrc && GetPlane(z) == 0 )
+	{
+		// At ground level, clients can only remove components along the bottom edge (stairs)
+		if ( pt.m_y != rectDesign.m_bottom )
+		{
+			SendStructureTo(pClientSrc);
+			return;
+		}
+	}
 
 	Component * pComponents[128];
 	int iCount = GetComponentsAt(x, y, z, pComponents, &m_designWorking);
@@ -554,11 +568,6 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	if ( pClientSrc && bReplaceDirt )
 	{
 		// make sure that the location is within the proper boundaries
-		CPointMap pt(GetTopPoint());
-		pt.m_x += x;
-		pt.m_y += y;
-
-		CGRect rectDesign = GetDesignArea();
 		if ( rectDesign.IsInsideX(pt.m_x) && rectDesign.IsInsideX(pt.m_x-1) && rectDesign.IsInsideY(pt.m_y) && rectDesign.IsInsideY(pt.m_y-1) )
 			AddItem(NULL, ITEMID_DIRT_TILE, x, y, 7);
 	}

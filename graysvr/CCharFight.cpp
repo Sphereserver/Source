@@ -3192,7 +3192,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Raise skill
-	Skill_UseQuick( SKILL_TACTICS, pCharTarg->Skill_GetBase(SKILL_TACTICS)/10 );
+	if ( !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) || !m_pPlayer || !pCharTarg->m_pPlayer )
+		Skill_UseQuick( SKILL_TACTICS, pCharTarg->Skill_GetBase(SKILL_TACTICS)/10 );
 
 	// Hit noise. based on weapon type.
 	SoundChar( CRESND_HIT );
