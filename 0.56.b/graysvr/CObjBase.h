@@ -2838,12 +2838,30 @@ public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
 	BYTE GetModeFlag( bool fTrueSight = false ) const;
-	BYTE GetDirFlag() const
+	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
 		BYTE dir = m_dirFace;
 		ASSERT( dir<DIR_QTY );
+
+		if ( fSquelchForwardStep )
+		{
+			// not so sure this is an intended 'feature' but it seems to work (5.0.2d)
+			switch ( dir )
+			{
+				case DIR_S:
+					return 0x2a;	// 0x32; 0x5a; 0x5c; all also work
+				case DIR_SW:
+					return 0x1d;	// 0x29; 0x5d; 0x65; all also work
+				case DIR_W:
+					return 0x60;
+				default:
+					return ( dir | 0x08 );
+			}
+		}
+
 		if ( IsStatFlag( STATF_Fly ))
 			dir |= 0x80; // running/flying ?
+		
 		return( dir );
 	}
 	WORD GetMoveBlockFlags() const

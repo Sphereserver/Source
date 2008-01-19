@@ -1533,6 +1533,13 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE 
 void CClient::addCharMove( const CChar * pChar )
 {
 	ADDTOCALLSTACK("CClient::addCharMove");
+
+	addCharMove(pChar, pChar->GetDirFlag());
+}
+
+void CClient::addCharMove( const CChar * pChar, BYTE bCharDir )
+{
+	ADDTOCALLSTACK("CClient::addCharMove");
 	// This char has just moved on screen.
 	// or changed in a subtle way like "hidden"
 	// NOTE: If i have been turned this will NOT update myself.
@@ -1554,8 +1561,7 @@ void CClient::addCharMove( const CChar * pChar )
 	cmd.CharMove.m_x  = pt.m_x;
 	cmd.CharMove.m_y  = pt.m_y;
 	cmd.CharMove.m_z = pt.m_z;
-	EXC_SET("GetDirFlag");
-	cmd.CharMove.m_dir = pChar->GetDirFlag();
+	cmd.CharMove.m_dir = bCharDir;
 	EXC_SET("GetModeFlag");
 	cmd.CharMove.m_mode = pChar->GetModeFlag( pChar->CanSeeTrue( m_pChar ));
 	EXC_SET("Noto_GetFlag");

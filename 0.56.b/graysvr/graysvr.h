@@ -1203,6 +1203,7 @@ public:
 	void addPlayerWalkCancel(const CPointMap & pt, BYTE bDir);
 
 	void addCharMove( const CChar * pChar );
+	void addCharMove( const CChar * pChar, BYTE bCharDir );
 	void addChar( const CChar * pChar );
 	void addCharName( const CChar * pChar ); // Singleclick text for a character
 	void addItemName( const CItem * pItem );

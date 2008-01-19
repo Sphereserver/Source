@@ -1075,10 +1075,9 @@ void CChar::UpdateVisualRange()
 	if ( !m_pPlayer )
 		return;
 
+	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
+
 	if ( IsClient() )
-
-		DEBUG_ERR(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
-
 		GetClient()->addVisualRange( m_iVisualRange );
 }
 
@@ -1161,19 +1160,6 @@ void CChar::UpdateDir( const CObjBaseTemplate * pObj )
 	if ( pObj == this )		// In our own pack.
 		return;
 	UpdateDir( pObj->GetTopPoint());
-/*
-	if ( CClient * pClient = GetClient() )
-	{
-		//pClient->addWeather();
-		//pClient->addReSync();
-		// addWeather does nothing here, and addReSync forces the client to print
-		// "it begins to ..." on every hit in combat, so unuseable :(
-		//DEBUG_ERR(( "Weather Effect Re-Added in CChar::UpdateDir for %s\n", this->GetName()));
-	} else
-	{
-		//DEBUG_ERR(( "Weather Effect: No client -  %s\n", this->GetName()));
-	}
-*/
 }
 
 void CChar::Update( const CClient * pClientExclude ) // If character status has been changed (Polymorph), resend him
