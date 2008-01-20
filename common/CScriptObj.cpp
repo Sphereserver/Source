@@ -2301,7 +2301,7 @@ jump_in:
 					{
 						EXC_SET("call");
 						CGString sVal;
-						char *argRaw = s.GetArgRaw();
+						LPCTSTR argRaw = s.GetArgRaw();
 						CScriptObj *pRef = this;
 
 						// Parse object references, src.* is not parsed
