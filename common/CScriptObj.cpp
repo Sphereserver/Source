@@ -2301,12 +2301,12 @@ jump_in:
 					{
 						EXC_SET("call");
 						CGString sVal;
-						LPCTSTR argRaw = s.GetArgRaw();
+						char * argRaw = s.GetArgRaw();
 						CScriptObj *pRef = this;
 
 						// Parse object references, src.* is not parsed
 						// by r_GetRef so do it manually
-						r_GetRef(argRaw, pRef);
+						r_GetRef((LPCTSTR &)argRaw, pRef);
 						if ( !strnicmp("SRC.", argRaw, 4) )
 						{
 							argRaw += 4;
