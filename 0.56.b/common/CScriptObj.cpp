@@ -889,13 +889,13 @@ badcmd:
 			return( true );
 //FLOAT STUFF BEGINS HERE
 		case SSC_FEVAL: //Float EVAL
-			sVal.FormatVal( atoi( pszKey ) );
+			sVal.FormatVal( ATOI( pszKey ) );
 			break;
 		/*case SSC_FFVAL: //Float FVAL doesn't make sense
-			sVal.FormatVal( atoi( pszKey ) );
+			sVal.FormatVal( ATOI( pszKey ) );
 			break;*/
 		case SSC_FHVAL: //Float HVAL
-			sVal.FormatHex( atoi( pszKey ) );
+			sVal.FormatHex( ATOI( pszKey ) );
 			break;
 		case SSC_FLOATVAL: //Float math
 			{

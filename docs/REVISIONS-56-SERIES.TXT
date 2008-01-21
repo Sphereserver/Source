@@ -3853,26 +3853,47 @@ this all in desperation)
   space in them (ie. TAG.xxx_<EVAL yyy> = zzz).
 
 04-01-2008, Nazghul
-- Added: Triggers @Mount & @Dismount
+- Added: Triggers @Mount and @Dismount, both are character trigger, firing 
+	when a character tries to mount/dismout it's ride (and will be able to).
   @DISMOUNT
-  character trigger, firing when a character tries to dismout it's ride (and will be able to).
-  ARGO is the UID of the (still disconnected!) pet.
-  RETURN 1 stops the dismount process.
+    ARGO is the UID of the (still disconnected!) pet.
+    RETURN 1 stops the dismount process.
   @MOUNT
-  character trigger, firing when a character tries to get on it's ride (and will be able to).
-  ARGO is the UID of the NPC bound to be ridden.
-  RETURN 1 stops the mounting process.
+    ARGO is the UID of the NPC bound to be ridden.
+    RETURN 1 stops the mounting process.
 
 19-01-2008, MrSugarCube
 - Fixed #1351: Gaining tactics when fighting players in no-pvp regions.
 - Fixed #1337: Foundations of custom housing deletable by players.
 - Fixed #1132: Maps other than #0 not showing up when logging in.
-- Added #1003: ACTPRV property to characters. This is used in some skills, for example with
-  magery to hold the source of the spell (character, wand, scroll, etc).
+- Added #1003: ACTPRV property to characters. This is used in some skills, 
+  for example with magery to hold the source of the spell (character, wand, 
+  scroll, etc).
 - Fixed: CALL not working with object references. (eg. "CALL src.myfunction")
 - Fixed: ++/-- in scripts being parsed as +=1 when not being used as operators.
 
 19-01-2008, MrSugarCube (Script pack)
 - Updated #1360: sphere_admin.scp (Fixed blank client list when using .admin twice)
-- Updated: sphere_backward_compatibility.scp (Added NpcCast function, which can be used to make
-  a character start casting a spell)
+- Updated: sphere_backward_compatibility.scp (Added NpcCast function, which can be 
+  used to make a character start casting a spell)
+
+19-01-2008, Furio
+- Fixed: isneartype not searching through all statics.
+- Updated: sphere.ini with missing values.
+- Added #1358: now serv.newitem has a 4th argument if set to 1 trigger @Equip will
+  be called upon item equipping.
+- Added: SERV.MAPLIST.$mapid.$prop to cycle through maps to get props. The list of
+  properties that can be accessed (read only) are:
+  BOUND.X = maximum x for the map
+	BOUND.Y = maximum y for the map
+	CENTER.X = x coord of map center
+  CENTER.Y = y coord of map center
+	SECTOR.SIZE = size of sectors
+	SECTOR.ROWS = qty of sector rows for the map
+  SECTOR.COLS = qty of sector columns for the map
+  SECTOR.QTY = total number of sectors for the map
+- Added: FeatureKR and Kr reslevel (6). Guess what they do (it's a wip).
+- Added: EF_UseNetworkMulti (00800000) to experimental flags. Tired of crashing due
+  too many items/npcs, try it. Don't change it while the server is running.
+  (Thx to Z. for the windows version)
+				 
