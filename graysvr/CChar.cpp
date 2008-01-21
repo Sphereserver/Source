@@ -1597,7 +1597,7 @@ do_default:
 						DEBUG_ERR(("'%s' is not a valid fame value.\n", ppLevel_sep[i]));
 						continue;
 					}
-					else if ( iFame >= atoi(ppLevel_sep[ i ]) )
+					else if ( iFame >= ATOI(ppLevel_sep[ i ]) )
 					{
 						sVal = ( ! strcmpi( (pszKey+5), g_Cfg.m_Fame.GetAt( i+1 ) )) ? "1" : "0";
 						delete[] FameAt0;
@@ -1667,7 +1667,7 @@ do_default:
 						DEBUG_ERR(("'%s' is not a valid karma value.\n", ppLevel_sep[i]));
 						continue;
 					}
-					else if ( iKarma >= atoi(ppLevel_sep[ i ]) )
+					else if ( iKarma >= ATOI(ppLevel_sep[ i ]) )
 					{
 						sVal = ( ! strcmpi( (pszKey+6), g_Cfg.m_Karma.GetAt( i+1 ) )) ? "1" : "0";
 						delete[] KarmaAt0;

@@ -1482,11 +1482,11 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 				return false;
 
 			AddItem(NULL,
-					(ITEMID_TYPE)atoi(ppArgs[0]),
-					atoi(ppArgs[1]),
-					atoi(ppArgs[2]),
-					atoi(ppArgs[3]),
-					atoi(ppArgs[4]));
+					(ITEMID_TYPE)ATOI(ppArgs[0]),
+					ATOI(ppArgs[1]),
+					ATOI(ppArgs[2]),
+					ATOI(ppArgs[3]),
+					ATOI(ppArgs[4]));
 			return true;
 		}
 		else if ( s.IsKey("REVISION") )
@@ -1631,7 +1631,7 @@ bool CItemMultiCustom::LoadValidItems()
 
 			for (int ii = 1; sm_szItemFiles[i][ii] != NULL; ii++)
 			{
-				ITEMID_TYPE itemid = (ITEMID_TYPE)atoi(csvDataRow[sm_szItemFiles[i][ii]].c_str());
+				ITEMID_TYPE itemid = (ITEMID_TYPE)ATOI(csvDataRow[sm_szItemFiles[i][ii]].c_str());
 				if ( itemid <= 0 || itemid > 0x3FFF )
 					continue;
 
@@ -1642,7 +1642,7 @@ bool CItemMultiCustom::LoadValidItems()
 						continue;
 				}
 
-				sm_mapValidItems[itemid] = atoi(csvDataRow["FeatureMask"].c_str());
+				sm_mapValidItems[itemid] = ATOI(csvDataRow["FeatureMask"].c_str());
 			}
 		} while ( !csvDataRow.empty() );
 
