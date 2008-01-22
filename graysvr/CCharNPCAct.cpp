@@ -756,7 +756,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 			EXC_SET("CanMoveWalkTo after array shift");
 			//	do the recorded move
-			if ( CanMoveWalkTo(pMe, true, false, Dir) ) //	make standart default move if failed the recorded one
+			if ( ! CanMoveWalkTo(pMe, true, false, Dir) ) //	make standart default move if failed the recorded one
 				bUsePathfinding = true;
 			else
 				pMe = local; //no pathfinding

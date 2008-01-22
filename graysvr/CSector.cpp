@@ -34,6 +34,7 @@ enum SC_TYPE
 	SC_LOCALTOD,
 	SC_RAINCHANCE,
 	SC_SEASON,
+	SC_WEATHER,
 	SC_QTY,
 };
 
@@ -50,6 +51,7 @@ LPCTSTR const CSector::sm_szLoadKeys[SC_QTY+1] =
 	"LOCALTOD",
 	"RAINCHANCE",
 	"SEASON",
+	"WEATHER",
 	NULL,
 };
 
@@ -108,6 +110,9 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case SC_SEASON:
 			sVal.FormatVal((int)GetSeason());
 			return true;
+		case SC_WEATHER:
+			sVal.FormatVal((int)GetWeather());
+			return true;
 	}
 	EXC_CATCH;
 
@@ -136,6 +141,9 @@ bool CSector::r_LoadVal( CScript &s )
 		case SC_SEASON:
 			SetSeason(s.HasArgs() ? (SEASON_TYPE) s.GetArgVal() : SEASON_Summer);
 			return (true);
+		case SC_WEATHER:
+			SetWeather(s.HasArgs() ? (WEATHER_TYPE) s.GetArgVal() : WEATHER_DRY);
+			return( true );
 	}
 	EXC_CATCH;
 

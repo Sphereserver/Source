@@ -2853,7 +2853,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	int dist = GetTopDist3D(pCharTarg);
 	if ( dist > UO_MAP_VIEW_RADAR )
-		return WAR_SWING_INVALID;
+	{
+		if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+			return( WAR_SWING_INVALID );
+
+		return( WAR_SWING_EQUIPPING );
+	}
 
 	//	I am on ship. Should be able to combat only inside the ship to avoid free sea and
 	//	ground characters hunting
@@ -2870,10 +2875,20 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( CanSee(pCharTarg) )
 	{
 		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, ((Skill_GetActive() == SKILL_ARCHERY) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
-			return WAR_SWING_READY;
+		{
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+				return( WAR_SWING_READY );
+
+			return( WAR_SWING_EQUIPPING );
+		}
 	}
 	else
-		return WAR_SWING_READY;
+	{
+		if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+			return( WAR_SWING_READY );
+
+		return( WAR_SWING_EQUIPPING );
+	}
 
 	//	conjured npc removed on guard hit
 	if ( m_pNPC && ( m_pNPC->m_Brain == NPCBRAIN_GUARD ) && pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Conjured) )
@@ -2909,7 +2924,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iMinDist	= g_Cfg.m_iArcheryMinDist;
 
 		if ( dist > iMaxDist )
-			return( WAR_SWING_READY );	// can't hit now.
+		{
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+				return( WAR_SWING_READY );	// can't hit now.
+
+			return( WAR_SWING_EQUIPPING );
+		}
 
 		if ( IsStatFlag( STATF_HasShield ))	// this should never happen.
 		{
@@ -3035,7 +3055,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		int	iMaxDist	= CalcFightRange( NULL, pWeaponDef );
 
 		if (( dist < iMinDist ) || ( dist > iMaxDist + 1 ))
-			return WAR_SWING_READY;
+		{
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+				return( WAR_SWING_READY );
+
+			return( WAR_SWING_EQUIPPING );
+		}
 
 		// A hand weapon of some sort.
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )

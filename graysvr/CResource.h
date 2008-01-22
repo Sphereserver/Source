@@ -88,6 +88,7 @@ enum COMBATFLAGS_TYPE
 	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships
 	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
 	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// firing bow while moving
+	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
 };
 
 enum BODYPART_TYPE
