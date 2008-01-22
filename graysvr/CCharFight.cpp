@@ -226,7 +226,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 					{
 						if ( pViewerGuild == pMyGuild ) // Same guild?
 							return NOTO_GUILD_SAME; // return green
-						if ( pMyGuild->IsSameAlignType( pViewerGuild ))
+						if ( pMyGuild->IsAlliedWith(pViewerGuild))
 							return NOTO_GUILD_SAME;
 						// Are we in different guilds but at war? (not actually a crime right?)
 						if ( pMyGuild->IsAtWarWith(pViewerGuild))
