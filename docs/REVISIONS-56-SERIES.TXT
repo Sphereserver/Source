@@ -3896,4 +3896,9 @@ this all in desperation)
 - Added: EF_UseNetworkMulti (00800000) to experimental flags. Tired of crashing due
   too many items/npcs, try it. Don't change it while the server is running.
   (Thx to Z. for the windows version)
-				 
+
+21-01-2008, MrSugarCube
+- Fixed #1311: NPC Pathfinding failing when EF_DiagonalWalkCheck is enabled.
+- Added #738: Combat flag COMBAT_STAYINRANGE. Causes out-of-range attacks to fail
+  at the end of the swing instead of waiting until the target is in range.
+- Added: WEATHER property to sectors, sets or gets the current weather.
