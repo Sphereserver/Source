@@ -158,7 +158,6 @@ return <local.typename>
 // return -> 0: not an enemy
 //           1: an enemy
 //           2: use sphere internal check
-
 [COMMENT FUNCTION f_stonesys_internal_isatwarwith]
 If ((<type> == t_stone_guild) && (<argo.type> == t_stone_guild))
 	If (<align> && <argo.align>)
@@ -175,6 +174,24 @@ else If ((<type> == t_stone_town) && (<argo.type> == t_stone_town))
 	  return 1
 	endif
 	
+	return 0
+endif
+
+return 2
+
+
+// Called to check If a stone is allied (If commented sphere will use its internal check)
+// I -> Stone
+// ARGO -> Stone to check against
+// return -> 0: not an ally
+//           1: an ally
+//           2: use sphere internal check
+[COMMENT FUNCTION f_stonesys_internal_isalliedwith]
+If ((<type> == t_stone_guild) && (<argo.type> == t_stone_guild))
+	If (<align> && <argo.align>)
+	  return (<align>==<argo.align>)
+	endif
+
 	return 0
 endif
 

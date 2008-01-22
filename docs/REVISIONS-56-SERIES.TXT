@@ -3902,3 +3902,8 @@ this all in desperation)
 - Added #738: Combat flag COMBAT_STAYINRANGE. Causes out-of-range attacks to fail
   at the end of the swing instead of waiting until the target is in range.
 - Added: WEATHER property to sectors, sets or gets the current weather.
+
+22-01-2008, MrSugarCube (Script pack)
+- Updated #1107: sphere_genericstone_functions.scp (added function to control or 
+  override ally status between guilds (f_stonesys_internal_isalliedwith), see
+  comments for details)

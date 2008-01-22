@@ -500,14 +500,6 @@ STONEALIGN_TYPE CItemStone::GetAlignType() const { return m_itStone.m_iAlign; }
 void CItemStone::SetAlignType(STONEALIGN_TYPE iAlign) { m_itStone.m_iAlign = iAlign; }
 LPCTSTR CItemStone::GetAbbrev() const { return( m_sAbbrev ); }
 void CItemStone::SetAbbrev( LPCTSTR pAbbrev ) { m_sAbbrev = pAbbrev; }
-bool CItemStone::IsSameAlignType( const CItemStone * pStone) const
-{
-	ADDTOCALLSTACK("CItemStone::IsSameAlignType");
-	if ( pStone == NULL )
-		return( false );
-	return( GetAlignType() != STONEALIGN_STANDARD &&
-		GetAlignType() == pStone->GetAlignType());
-}
 
 LPCTSTR CItemStone::GetTypeName() const
 {
@@ -1207,11 +1199,6 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	// Little to no security checking here !!!
 
 	ASSERT(pSrc);
-	CChar * pCharSrc = pSrc->GetChar();
-	if ( pCharSrc == NULL || ! pCharSrc->IsClient())
-	{
-		return( CItem::r_Verb( s, pSrc ));
-	}
 
 	int index = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1 );
 	if ( index < 0 )
@@ -1219,7 +1206,8 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		return( CItem::r_Verb( s, pSrc ));
 	}
 
-	CClient * pClient = pCharSrc->GetClient();
+	CChar * pCharSrc = pSrc->GetChar();
+	CClient * pClient = pCharSrc? pCharSrc->GetClient() : NULL;
 	ASSERT(pClient);
 	CStoneMember * pMember = GetMember(pCharSrc);
 
@@ -1340,7 +1328,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				}
 			}
 #ifndef _NEWGUILDSYSTEM
-			else
+			else if ( pClient != NULL )
 			{
 				AddRecruit( pClient->GetChar(), STONEPRIV_CANDIDATE );
 			}
@@ -1355,7 +1343,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				Speak(pszMsg);
 			}
 #ifndef _NEWGUILDSYSTEM
-			else
+			else if ( pClient != NULL )
 			{
 				pClient->Menu_Setup( g_Cfg.ResourceGetIDType( RES_MENU, "MENU_GUILD_ALIGN"), this );
 			}
@@ -1363,6 +1351,8 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_DECLAREFEALTY:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_FEALTY);
 			break;
 #endif
@@ -1373,7 +1363,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				WeDeclarePeace(pMemberUid);
 			}
 #ifndef _NEWGUILDSYSTEM
-			else
+			else if ( pClient != NULL )
 			{
 				addStoneDialog(pClient,STONEDISP_DECLAREPEACE);
 			}
@@ -1394,7 +1384,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				}
 			}
 #ifndef _NEWGUILDSYSTEM
-			else
+			else if ( pClient != NULL )
 			{
 				addStoneDialog(pClient,STONEDISP_DECLAREWAR);
 			}
@@ -1402,6 +1392,8 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_DISMISSMEMBER:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_DISMISSMEMBER);
 			break;
 #endif
@@ -1410,6 +1402,8 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_GRANTTITLE:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_GRANTTITLE);
 			break;
 #endif
@@ -1450,7 +1444,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				}
 			}
 #ifndef _NEWGUILDSYSTEM
-			else
+			else if ( pClient != NULL )
 			{
 				AddRecruit( pClient->GetChar(), STONEPRIV_MEMBER );
 			}
@@ -1458,9 +1452,13 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_MASTERMENU:
+			if ( pClient == NULL )
+				return( false );
 			SetupMenu( pClient, true );
 			break;
 		case ISV_RECRUIT:
+			if ( pClient == NULL )
+				return( false );
 			if ( pClient->IsPriv(PRIV_GM ) || 
 				( pMember != NULL && pMember->IsPrivMember()))
 			{
@@ -1498,19 +1496,29 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_RETURNMAINMENU:
+			if ( pClient == NULL )
+				return( false );
 			SetupMenu( pClient );
 			break;
 		case ISV_SETABBREVIATION:
+			if ( pClient == NULL )
+				return( false );
 			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_ABBREV, "What shall the abbreviation be?" );
 			break;
 		case ISV_SETCHARTER:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_SETCHARTER);
 			break;
 		case ISV_SETGMTITLE:
+			if ( pClient == NULL )
+				return( false );
 			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_TITLE, "What shall thy title be?" );
 			break;
 		case ISV_SETNAME:
 			{
+				if ( pClient == NULL )
+					return( false );
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
 				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME, pszMsg);
@@ -1537,24 +1545,35 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					break;
 				pMember->ToggleAbbrev();
 #ifndef _NEWGUILDSYSTEM
-				SetupMenu( pClient );
+				if ( pClient != NULL )
+					SetupMenu( pClient );
 #endif
 			}
 			break;
 #ifndef _NEWGUILDSYSTEM
 		case ISV_VIEWCANDIDATES:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_CANDIDATES);
 			break;
 		case ISV_VIEWCHARTER:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_VIEWCHARTER);
 			break;
 		case ISV_VIEWENEMYS:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_VIEWENEMYS);
 			break;
 		case ISV_VIEWROSTER:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_ROSTER);
 			break;
 		case ISV_VIEWTHREATS:
+			if ( pClient == NULL )
+				return( false );
 			addStoneDialog(pClient,STONEDISP_VIEWTHREATS);
 			break;
 #endif
@@ -1923,6 +1942,35 @@ int CItemStone::FixWeirdness()
 	return( 0 );
 }
 
+bool CItemStone::IsAlliedWith( const CItemStone * pStone) const
+{
+	ADDTOCALLSTACK("CItemStone::IsAlliedWith");
+	if ( pStone == NULL )
+		return( false );
+
+#ifdef _NEWGUILDSYSTEM
+
+	CScriptTriggerArgs Args;
+	Args.m_pO1 = (CItem *) pStone;
+	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
+
+	if ( ((CItem *)this)->r_Call("f_stonesys_internal_isalliedwith", &g_Serv, &Args, NULL, &tr) )
+	{
+		if ( tr == TRIGRET_RET_FALSE )
+		{
+			return false;
+		}
+		else if ( tr == TRIGRET_RET_TRUE )
+		{
+			return true;
+		}
+	}
+#endif
+
+	return( GetAlignType() != STONEALIGN_STANDARD &&
+		GetAlignType() == pStone->GetAlignType());
+}
+
 bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
 {
 	ADDTOCALLSTACK("CItemStone::IsAtWarWith");
@@ -1937,7 +1985,7 @@ bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
 	Args.m_pO1 = (CItem *) pEnemyStone;
 	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 
-	if ( ((CItem *)this)->r_Call("f_guildsys_internal_isatwarwith", NULL, &Args, NULL, &tr) )
+	if ( ((CItem *)this)->r_Call("f_stonesys_internal_isatwarwith", &g_Serv, &Args, NULL, &tr) )
 	{
 		if ( tr == TRIGRET_RET_FALSE )
 		{

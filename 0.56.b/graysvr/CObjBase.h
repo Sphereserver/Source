@@ -1829,7 +1829,7 @@ private:
 	void AnnounceWar( const CItemStone * pEnemyStone, bool fWeDeclare, bool fWar );
 public:
 	bool IsAtWarWith( const CItemStone * pStone ) const;
-	bool IsSameAlignType( const CItemStone * pStone) const;
+	bool IsAlliedWith( const CItemStone * pStone ) const;
 
 	bool CheckValidMember(CStoneMember * pMember);
 	int FixWeirdness();
