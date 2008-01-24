@@ -1426,8 +1426,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	int iAmountMax = pItem->GetAmount();
 	if ( iAmountMax <= 0 )
 		return -1;
-	amount = maximum(1, minimum(amount, iAmountMax));
-	int iItemWeight = ( amount == 1 ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
+
+	if ( !pItem->Item_GetDef()->IsStackableType() )
+		amount = iAmountMax;	// it's not stackable, so we must pick up the entire amount
+	else
+		amount = maximum(1, minimum(amount, iAmountMax));
+
+	int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
 
 	// Is it too heavy to even drag ?
 	bool fDrop = false;
@@ -1481,6 +1486,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 	}
 
+
 	if ( pItem->Item_GetDef()->IsStackableType() && amount )
 	{
 		// Did we only pick up part of it ?
@@ -1492,8 +1498,6 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			pItemNew->SetTimeout( pItem->GetTimerDAdjusted() ); //since this was commented in DupeCopy
 		}
 	}
-	else
-		amount = iAmountMax;
 
 	if ( fDrop )
 	{
