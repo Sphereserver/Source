@@ -3907,3 +3907,6 @@ this all in desperation)
 - Updated #1107: sphere_genericstone_functions.scp (added function to control or 
   override ally status between guilds (f_stonesys_internal_isalliedwith), see
   comments for details)
+
+24-01-2008, MrSugarCube
+- Fixed #1363: Players unable to pick up single items from heavy stacks.
