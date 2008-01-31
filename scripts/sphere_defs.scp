@@ -1149,6 +1149,8 @@ CENTERE		</CENTER>
 BR		<BR>
 BRE		</BR>
 
+BFONT_SIZE1	<basefont SIZE="1">
+BFONT_SIZE2	<basefont SIZE="2">
 BFONT_SIZE3	<basefont SIZE="3">
 BFONT_SIZE4	<basefont SIZE="4">
 BFONT_SIZE5	<basefont SIZE="5">
