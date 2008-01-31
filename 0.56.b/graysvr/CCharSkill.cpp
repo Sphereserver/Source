@@ -1681,41 +1681,42 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	}
 
 	//Distance checks
-		CRegionBase * pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);
-		if (( pRegion ) && ( !pRegion->IsFlag(REGION_FLAG_SHIP) ))
+	CRegionBase * pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);
+	if (( pRegion ) && ( !pRegion->IsFlag(REGION_FLAG_SHIP) ))
+	{
+		// Are we in a house ?
+		SysMessageDefault( DEFMSG_FISHING_3 );
+		return( -SKTRIG_QTY );
+	}
+
+	if (m_Act_p.GetRegion(REGION_TYPE_MULTI)) // Do not allow him to fish through ship floor
+	{
+		SysMessageDefault( DEFMSG_FISHING_4 );
+		return( -SKTRIG_QTY );
+	}
+
+	
+	if ( IsSetEF(EF_NewPositionChecks) && (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC )))
+	{
+		if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
 		{
-			// Are we in a house ?
-			SysMessageDefault( DEFMSG_FISHING_3 );
+			SysMessageDefault( DEFMSG_FISHING_LOS );
 			return( -SKTRIG_QTY );
 		}
-
-		if (m_Act_p.GetRegion(REGION_TYPE_MULTI)) // Do not allow him to fish through ship floor
+		if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
 		{
-			SysMessageDefault( DEFMSG_FISHING_4 );
+			SysMessageDefault( DEFMSG_FISHING_REACH );
 			return( -SKTRIG_QTY );
 		}
-
-		if ( IsSetEF(EF_NewPositionChecks) )
+	}
+	else
+	{
+		if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
 		{
-			if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
-			{
-				SysMessageDefault( DEFMSG_FISHING_LOS );
-				return( -SKTRIG_QTY );
-			}
-			if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
-			{
-				SysMessageDefault( DEFMSG_FISHING_REACH );
-				return( -SKTRIG_QTY );
-			}
+			SysMessageDefault( DEFMSG_FISHING_REACH );
+			return( -SKTRIG_QTY );
 		}
-		else
-		{
-			if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
-			{
-				SysMessageDefault( DEFMSG_FISHING_REACH );
-				return( -SKTRIG_QTY );
-			}
-		}
+	}
 
 	// resource check
 	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p,
