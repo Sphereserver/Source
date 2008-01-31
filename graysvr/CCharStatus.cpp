@@ -1047,7 +1047,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 bool CChar::CanSeeLOS( const CPointMap & ptDst, CPointMap * pptBlock, int iMaxDist, WORD wFlags ) const
 {
 	ADDTOCALLSTACK("CChar::CanSeeLOS");
-	if ( ( m_pPlayer || m_pNPC ) && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER) )
+	if (( m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER) ) || ( m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC) ))
 		return CanSeeLOS_New( ptDst, pptBlock, iMaxDist, wFlags );
 	
 	// Max distance of iMaxDist
@@ -1705,7 +1705,7 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate * pObj, WORD wFlags ) const
 	if ( ! CanSee( pObj ))
 		return( false );
 	pObj = pObj->GetTopLevelObj();
-	if ( ( m_pPlayer || m_pNPC ) && ( g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) )
+	if (( m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER) ) || ( m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC) ))
 	{
 		CPointMap pt = pObj->GetTopPoint();
 		const CChar * pChar = dynamic_cast<const CChar*>(pObj);
