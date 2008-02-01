@@ -763,7 +763,18 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( pClientToCheck )
 				{
-					int context = GETINTRESOURCE( (DWORD) g_Cfg.ResourceGetIDType( RES_DIALOG, pszKey ) );
+					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, pszKey );
+					int context;
+
+					if ( pClientToCheck->IsClientKR() )
+					{
+						context = GETINTRESOURCE( g_Cfg.GetKRDialog( (DWORD)rid ) );
+					}
+					else
+					{
+						context = GETINTRESOURCE( (DWORD)rid  );
+					}
+
 					CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientToCheck->m_mapOpenedGumps.find( context );
 
 					if ( itGumpFound != pClientToCheck->m_mapOpenedGumps.end() )
@@ -1550,7 +1561,18 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 				if ( index == OV_SDIALOG )
 				{
-					int context = GETINTRESOURCE( (DWORD) g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] ) );
+					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
+					int context;
+
+					if ( pClientSrc->IsClientKR() )
+					{
+						context = GETINTRESOURCE( g_Cfg.GetKRDialog( (DWORD)rid ) );
+					}
+					else
+					{
+						context = GETINTRESOURCE( (DWORD)rid  );
+					}
+
 					CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find( context );
 
 					if ( pCharSrc && (( itGumpFound != pClientSrc->m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 )) )
@@ -1572,7 +1594,12 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( iQty < 1 )
 					return false;
 
-				pClientSrc->Dialog_Close( this, g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] ), iQty > 1 ? Exp_GetVal( Arg_ppCmd[1]) : 0 );
+				DWORD rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
+
+				if ( pClientSrc->IsClientKR() )
+					rid = g_Cfg.GetKRDialog( rid );
+
+				pClientSrc->Dialog_Close( this, rid, iQty > 1 ? Exp_GetVal( Arg_ppCmd[1]) : 0 );
 			}
 			break;
 		case OV_TRYP:

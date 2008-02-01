@@ -1459,6 +1459,65 @@ bool CResource::SetLogIPBlock( LPCTSTR szIP, bool fBlock, int iTimeDecay )
 	return( true );
 }
 
+bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
+{
+	ADDTOCALLSTACK("CResource::SetKRDialogMap");
+	// Defines a link between the given ResourceID and KR DialogID, so that
+	// the dialogs of KR clients can be handled in scripts.
+	KRGumpsMap::iterator it;
+
+	// prevent double mapping of same dialog
+	it = m_mapKRGumps.find(rid);
+	if ( it != m_mapKRGumps.end() )
+	{
+		if ( it->second == idKRDialog )	// already mapped to this kr dialog
+			return true;
+
+		g_Log.Event( LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%d'.\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+	}
+
+	// prevent double mapping of KR dialog
+	for (it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); it++)
+	{
+		if (it->second != idKRDialog)
+			continue;
+
+		DEBUG_ERR(("KR Dialog '%d' is already mapped to dialog '%s'.\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		return false;
+	}
+
+	m_mapKRGumps[rid] = idKRDialog;
+	return true;
+}
+
+DWORD CResource::GetKRDialogMap(DWORD idKRDialog)
+{
+	ADDTOCALLSTACK("CResource::GetKRDialogMap");
+	// Translates the given KR DialogID into the ResourceID of its scripted dialog.
+	// Returns 0 on failure
+	for (KRGumpsMap::iterator it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); it++)
+	{
+		if (it->second != idKRDialog)
+			continue;
+
+		return it->first;
+	}
+
+	return 0;
+}
+
+DWORD CResource::GetKRDialog(DWORD rid)
+{
+	ADDTOCALLSTACK("CResource::GetKRDialog");
+	// Translates the given ResourceID into it's equivalent KR DialogID.
+	// Returns 0 on failure
+	KRGumpsMap::iterator it = m_mapKRGumps.find(rid);
+	if (it != m_mapKRGumps.end())
+		return it->second;
+
+	return 0;
+}
+
 const CGrayMulti * CResource::GetMultiItemDefs( ITEMID_TYPE itemid )
 {
 	ADDTOCALLSTACK("CResource::GetMultiItemDefs");
@@ -2485,6 +2544,20 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 		}
 		return( true );
+	case RES_KRDIALOGLIST:
+		while ( pScript->ReadKeyParse())
+		{
+			CDialogDef *pDef = dynamic_cast<CDialogDef *>( g_Cfg.ResourceGetDefByName(RES_DIALOG, pScript->GetKey()) );
+			if ( pDef != NULL )
+			{
+				g_Cfg.SetKRDialogMap( (DWORD)pDef->GetResourceID(), pScript->GetArgVal());
+			}
+			else
+			{
+				DEBUG_ERR(("Dialog '%s' not found...\n", pScript->GetKey()));
+			}
+		}
+		return true;
 
 	// Saved in the world file.
 
@@ -2569,6 +2642,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	case RES_BLOCKIP:
 	case RES_COMMENT:
 	case RES_DEFNAME:
+	case RES_KRDIALOGLIST:
 	case RES_MOONGATES:
 	case RES_NOTOTITLES:
 	case RES_OBSCENE:

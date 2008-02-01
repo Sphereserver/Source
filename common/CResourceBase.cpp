@@ -28,6 +28,7 @@ LPCTSTR const CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
 	"GMPAGE",			// A GM page. (SAVED in World)
 	"ITEMDEF",		// Define an item type
 	"KARMA",
+	"KRDIALOGLIST",	// mapping of dialog<->kr ids
 	"MENU",			// General scriptable menus.
 	"MOONGATES",		// (SL) Define where the moongates are.
 	"NAMES",		// A block of possible names for a NPC type. (read as needed)
