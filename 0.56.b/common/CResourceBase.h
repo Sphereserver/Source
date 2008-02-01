@@ -32,6 +32,7 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with !
 	RES_GMPAGE,			// A GM page. (SAVED in World)
 	RES_ITEMDEF,		// Define an item type. (overlap with RES_TEMPLATE)
 	RES_KARMA,
+	RES_KRDIALOGLIST,	// Mapping of dialog<->kr ids
 	RES_MENU,			// General scriptable menus.
 	RES_MOONGATES,		// (SL) Define where the moongates are.
 	RES_NAMES,			// A block of possible names for a NPC type. (read as needed)

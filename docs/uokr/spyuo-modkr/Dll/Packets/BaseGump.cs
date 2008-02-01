@@ -201,7 +201,7 @@ namespace SpyUO.Packets
 		public void WriteSphereGump( StreamWriter writer )
 		{
 			writer.WriteLine( "[DIALOG d_SpyUO]" );
-			writer.WriteLine( "SetLocation={0},{1}", m_X, m_Y );
+			writer.WriteLine( "{0},{1}", m_X, m_Y );
 			foreach ( GumpEntry entry in m_Layout )
 			{
 				if ( entry is GumpPage )

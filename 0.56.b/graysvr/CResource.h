@@ -1001,6 +1001,13 @@ public:
 #define SysMessageDefault( msg )	SysMessage( g_Cfg.GetDefaultMsg( msg ) )
 	LPCTSTR CResource::GetDefaultMsg(LPCTSTR pszKey);
 	LPCTSTR	GetDefaultMsg(long lKeyNum);
+
+typedef std::map<DWORD,DWORD> KRGumpsMap;
+	KRGumpsMap m_mapKRGumps;
+
+	bool SetKRDialogMap(DWORD rid, DWORD idKRDialog);
+	DWORD GetKRDialogMap(DWORD idKRDialog);
+	DWORD GetKRDialog(DWORD rid);
 } g_Cfg;
 
 

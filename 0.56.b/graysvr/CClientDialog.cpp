@@ -538,7 +538,19 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 
 	// Now pack it up to send,
 	// m_tmGumpDialog.m_ResourceID = rid;
-	addGumpDialog( mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, rid );
+	DWORD context = (DWORD)rid;
+	if ( IsClientKR() )
+	{
+		// translate to KR's equivalent DialogID
+		context = g_Cfg.GetKRDialog( context );
+
+		if ( context == 0 )
+		{
+			g_Log.Event( LOGL_WARN, "A Kingdom Reborn equivalent of dialog '%s' has not been defined.\n", pDlg->GetResourceName());
+		}
+	}
+
+	addGumpDialog( mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, context );
 	return( true );
 }
 
@@ -628,13 +640,13 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 		lengthText += (lentext2*2)+2;
 	}
 
-	int	context_mode	= mode;
+	int	context_mode = mode;
 	if ( mode == CLIMODE_DIALOG && rid != 0 )
 	{
-		context_mode	= GETINTRESOURCE( rid );
+		context_mode = GETINTRESOURCE( rid );
 	}
 
-	if ( IsClientVer(0x500000) || IsNoCryptVer(0x500000) )
+	if ( IsClientVer(0x500000) || IsNoCryptVer(0x500000) || IsClientKR() )
 	{
 		CCommand cmd;
 		memset( &cmd, 0, sizeof( cmd ) );
@@ -895,7 +907,7 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 }
 
 
-bool CClient::Dialog_Close( CObjBase * pObj, RESOURCE_ID_BASE rid, int buttonID )
+bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Close");
 	int gumpContext = GETINTRESOURCE( rid );

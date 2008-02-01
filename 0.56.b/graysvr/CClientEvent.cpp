@@ -2832,6 +2832,11 @@ void CClient::Event_GumpDialogRet( const CEvent * pEvent )
 			break;
 	}
 
+	if ( IsClientKR() )
+	{
+		context = g_Cfg.GetKRDialogMap(context);
+	}
+
 	RESOURCE_ID_BASE	rid	= RESOURCE_ID(RES_DIALOG,context);
 	//
 	// Call the scripted response. Lose all the checks and text.
