@@ -3878,6 +3878,7 @@ this all in desperation)
   used to make a character start casting a spell)
 
 19-01-2008, Furio
+- Fixed #1324: Undefined Symbols on attacker when accessing a bad attacker #
 - Fixed: isneartype not searching through all statics.
 - Updated: sphere.ini with missing values.
 - Added #1358: now serv.newitem has a 4th argument if set to 1 trigger @Equip will

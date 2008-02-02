@@ -634,10 +634,60 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 		case OC_COMPLEXITY:
 			{
-			if ( IsDisconnected() || !GetTopLevelObj()->GetTopPoint().IsValidPoint() )
-				return false;
-			return GetTopLevelObj()->GetTopSector()->r_WriteVal( pszKey, sVal, pSrc );
+				if ( IsDisconnected() || !GetTopLevelObj()->GetTopPoint().IsValidPoint() )
+					return false;
+				return GetTopLevelObj()->GetTopSector()->r_WriteVal( pszKey, sVal, pSrc );
 			}
+		case OC_DIALOGLIST:
+			{
+				pszKey += 10;
+				if ( *pszKey == '.' )
+				{
+					SKIP_SEPARATORS( pszKey );
+					GETNONWHITESPACE( pszKey );
+
+					CClient * pThisClient = pSrc->GetChar() ? ( pSrc->GetChar()->IsClient() ? pSrc->GetChar()->GetClient() : NULL ) : NULL;
+					sVal.FormatVal(0);
+
+					if ( pThisClient )
+					{
+						if( !strnicmp(pszKey, "COUNT", 5) )
+						{
+							sVal.FormatVal( pThisClient->m_mapOpenedGumps.size() );
+						}
+						else
+						{
+							CClient::OpenedGumpsMap_t * ourMap = &(pThisClient->m_mapOpenedGumps);
+							int iDialogIndex = Exp_GetVal( pszKey );
+							SKIP_SEPARATORS(pszKey);
+
+							if (( iDialogIndex >= 0 ) && ( iDialogIndex <= ourMap->size()))
+							{
+								CClient::OpenedGumpsMap_t::iterator itGumpFound = ourMap->begin();
+								while ( iDialogIndex-- ) { ++itGumpFound; }
+
+								if ( !strnicmp(pszKey, "ID", 2) )
+								{
+									sVal.Format("%s", g_Cfg.ResourceGetName( RESOURCE_ID(RES_DIALOG, (*itGumpFound).first )) );
+								}
+								else if ( !strnicmp(pszKey, "COUNT", 5) )
+								{
+									sVal.FormatVal( (*itGumpFound).second );
+								}
+							}
+						}
+					}
+					else
+					{
+						DEBUG_ERR(( "DIALOGLIST called on non-client object.\n" ));
+					}
+
+					return( true );
+				}
+				else
+					return( false );
+			}
+			break; 
 		case OC_DISTANCE:
 			{
 				pszKey	+= 8;

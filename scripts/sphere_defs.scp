@@ -1200,6 +1200,7 @@ RDS_LBR			2
 RDS_AOS			3
 RDS_SE			4
 RDS_ML			5
+RDS_KR			6
 
 // When client or server send a speech packet these have a type
 // You can use them to send a packet or to check ARGN1 in the global speech hook
