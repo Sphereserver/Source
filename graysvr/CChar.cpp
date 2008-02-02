@@ -1496,7 +1496,10 @@ do_default:
 					sVal.FormatVal(m_lastAttackers.size());
 					return true;
 				}
+
+				sVal.FormatVal(0);
 				pszKey += 8;
+
 				if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
 				{
 					pszKey++;
@@ -1555,14 +1558,6 @@ do_default:
 							sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
 						}
 					}
-					else
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
 				}
 
 				return true;

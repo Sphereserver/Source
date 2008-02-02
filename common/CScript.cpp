@@ -450,11 +450,19 @@ bool CScript::ReadKeyParse() // Read line from script
 	if ( !m_pszArg[0] || ( m_pszArg[1] != '=' && m_pszArg[1] != '+' && m_pszArg[1] != '-' ) || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
 		return true;
 
+	static LPCTSTR const sm_szEvalTypes[] =
+	{
+		"eval",
+		"floatval"
+	};
+
 	EXC_SET("parse");
 	LPCTSTR	pszArgs	= m_pszArg;
 	pszArgs+=2;
 	GETNONWHITESPACE( pszArgs );
 	TemporaryString buf;
+
+	int iKeyIndex = (strnicmp(m_pszKey, "float.", 6) == 0) ? 1 : 0;
 
 	if ( m_pszArg[0] == '.' )
 	{
@@ -483,7 +491,7 @@ bool CScript::ReadKeyParse() // Read line from script
 	}
 	else
 	{
-		sprintf( (char*)buf, "<eval (<%s> %c (%s))>", m_pszKey, *m_pszArg, pszArgs );
+		sprintf( (char*)buf, "<%s (<%s> %c (%s))>", sm_szEvalTypes[iKeyIndex], m_pszKey, *m_pszArg, pszArgs );
 	}
 	strcpy( m_pszArg, buf );
 
