@@ -635,7 +635,7 @@ GROUP=Ilshenar Unknown
 [AREADEF a_Twisted_Weald]
 NAME=Twisted Weald
 P=2211,1262,3,2
-Rect=2100,1300,2258,1141,3
+Rect=2100,1300,2258,1141,2
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
 GROUP=Ilshenar
 
