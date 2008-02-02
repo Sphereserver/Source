@@ -835,6 +835,8 @@ public:
 	CGString	m_sZeroPoint;
 	bool		m_bAllowBuySellAgent;
 
+	bool		m_NPCNoFameTitle;
+
 	bool		m_bAgree;
 
 	// End INI file options.

@@ -199,6 +199,8 @@ CResource::CResource()
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
+
+	m_NPCNoFameTitle = 0;
 }
 
 CResource::~CResource()
@@ -419,6 +421,7 @@ enum RC_TYPE
 	RC_NORESROBE,
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
+	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
 	RC_NPCTRAINMAX,			// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
 	RC_NTSERVICE,				// m_fUseNTService
@@ -601,6 +604,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe)	}},
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather)	}},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi)		}},
+	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle)		}},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax)	}},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent) }},
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService)	}},

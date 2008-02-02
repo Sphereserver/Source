@@ -335,7 +335,7 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 		}
 	}
 
-	if (( Stat_GetAdjusted(STAT_FAME) > 9900 ) && m_pPlayer )
+	if (( Stat_GetAdjusted(STAT_FAME) > 9900 ) && (m_pPlayer || !g_Cfg.m_NPCNoFameTitle))
 		return Char_GetDef()->IsFemale() ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_LADY ) : g_Cfg.GetDefaultMsg( DEFMSG_TITLE_LORD );	//"Lady " : "Lord ";
 
 	return "";

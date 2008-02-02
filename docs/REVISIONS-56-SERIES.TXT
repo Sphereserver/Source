@@ -3912,7 +3912,8 @@ this all in desperation)
 - Fixed #1363: Players unable to pick up single items from heavy stacks.
 
 31-01-2008, Nazghul
-- Fixed #989: Fame-titles will not be shown on NPC anymore.
+- Fixed #989: Fame-titles will not be shown on NPC anymore if INI option NPCNoFameTitle
+  is set.
 
 31-01-2008, MrSugarCube
 - Fixed #1372: EF_NewPositionChecks causing fishing to fail from boats when
