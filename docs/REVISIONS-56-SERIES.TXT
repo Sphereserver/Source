@@ -3921,3 +3921,9 @@ this all in desperation)
   AdvancedLos is disabled.
 - Fixed: ADVANCEDLOS_PLAYER enabling AdvancedLos for all characters including
   NPCs (ADVANCEDLOS_NPC being ignored).
+
+02-02-2008, Furio
+- added DIALOGLIST keyword. DIALOGLIST.COUNT gives the number of open gump dialogs,
+  DIALOGLIST.$x.ID ($x = a number between 0 and DIALOGLIST.COUNT-1) the ID of the
+  respective gump dialog, and DIALOGLIST.$x.COUNT the number of active instances of
+  this dialog. So to close a specified gump, DIALOGCLOSE <DIALOGLIST.$n.ID> should do.
