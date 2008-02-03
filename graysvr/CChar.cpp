@@ -34,7 +34,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
 
-	"@Fame",				// Fame changed
+	"@FameChange",				// Fame changed
 
 	"@GetHit",				// I just got hit.
 	"@Hit",					// I just hit someone. (TARG)
@@ -77,7 +77,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@Jailed",
 
-	"@Karma",				// Karma chaged
+	"@KarmaChange",				// Karma chaged
 
 	"@Kill",				//+I have just killed someone
 	"@LogIn",				// Client logs in
@@ -149,6 +149,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@UserStats",
 	"@UserVirtue",
 	"@UserWarmode",
+	"@UserKRToolbar",
 
 	// War mode ?
 	 NULL,

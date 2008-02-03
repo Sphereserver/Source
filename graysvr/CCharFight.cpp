@@ -465,7 +465,7 @@ void CChar::Noto_Fame( int iFameChange )
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
 		CScriptTriggerArgs Args(iFameChange);	// ARGN1 - Fame change modifier
-		TRIGRET_TYPE retType = OnTrigger(CTRIG_Fame, this, &Args);
+		TRIGRET_TYPE retType = OnTrigger(CTRIG_FameChange, this, &Args);
 
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
@@ -506,7 +506,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
 		CScriptTriggerArgs Args(iKarmaChange);	// ARGN1 - Karma change modifier
-		TRIGRET_TYPE retType = OnTrigger(CTRIG_Karma, this, &Args);
+		TRIGRET_TYPE retType = OnTrigger(CTRIG_KarmaChange, this, &Args);
 
 		if ( retType == TRIGRET_RET_TRUE )
 			return;

@@ -1063,6 +1063,7 @@ private:
 	void Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
 	void Event_MacroEquipItems( const NDWORD * pItems, int count );
 	void Event_MacroUnEquipItems( const NWORD * pLayers, int count );
+	void Event_UseToolbar(BYTE bType, DWORD dwArg);
 
 public:
 	inline void Event_VendorSell_Cheater( int iCode = 0 );
@@ -1323,6 +1324,7 @@ public:
 	void addSpeedMode( int speedMode = 0 );
 	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
 	void addIdleWarning( bool bSameChar = false );
+	void addKRToolbar( bool bEnable );
 
 	void SendPacket( TCHAR * pszPacket );
 
