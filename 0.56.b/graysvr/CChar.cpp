@@ -33,6 +33,9 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@EnvironChange",		// my environment changed somehow (light,weather,season,region)
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
+
+	"@Fame",				// Fame changed
+
 	"@GetHit",				// I just got hit.
 	"@Hit",					// I just hit someone. (TARG)
 	"@HitMiss",				// I just missed.
@@ -73,6 +76,8 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemUNEQUIP",			// i have unequipped (or try to unequip) an item
 
 	"@Jailed",
+
+	"@Karma",				// Karma chaged
 
 	"@Kill",				//+I have just killed someone
 	"@LogIn",				// Client logs in
