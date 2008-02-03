@@ -2010,6 +2010,7 @@ private:
 	BYTE m_SkillLock[SKILL_QTY];	// SKILLLOCK_TYPE List of skill lock states for this player character
 	BYTE m_StatLock[STAT_BASE_QTY]; // SKILLLOCK_TYPE Applied to stats
 	CResourceRef m_SkillClass;	// RES_SKILLCLASS CSkillClassDef What skill class group have we selected.
+	bool m_bKrToolbarEnabled;
 
 public:
 	static const char *m_sClassName;
@@ -2035,30 +2036,12 @@ public:
 
 public:
 	SKILL_TYPE Skill_GetLockType( LPCTSTR pszKey ) const;
-
-	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
-	{
-		ASSERT( skill < COUNTOF(m_SkillLock));
-		return((SKILLLOCK_TYPE) m_SkillLock[skill] );
-	}
-	void Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
-	{
-		ASSERT( skill < COUNTOF(m_SkillLock));
-		m_SkillLock[skill] = state;
-	}
+	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const;
+	void Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state );
 
 	STAT_TYPE Stat_GetLockType( LPCTSTR pszKey ) const;
-
-	SKILLLOCK_TYPE Stat_GetLock( STAT_TYPE stat ) const
-	{
-		ASSERT( stat < COUNTOF(m_StatLock));
-		return((SKILLLOCK_TYPE) m_StatLock[stat] );
-	}
-	void Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
-	{
-		ASSERT( stat < COUNTOF(m_StatLock));
-		m_StatLock[stat] = state;
-	}
+	SKILLLOCK_TYPE Stat_GetLock( STAT_TYPE stat ) const;
+	void Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state );
 
 	void r_WriteChar( CChar * pChar, CScript & s );
 	bool r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & s );
@@ -2067,11 +2050,9 @@ public:
 	bool SetSkillClass( CChar * pChar, RESOURCE_ID rid );
 	CSkillClassDef * GetSkillClass() const;
 
-	CAccountRef GetAccount() const
-	{
-		ASSERT( m_pAccount );
-		return( m_pAccount );
-	}
+	bool getKrToolbarStatus();
+
+	CAccountRef GetAccount() const;
 
 	CCharPlayer( CChar * pChar, CAccount * pAccount );
 	~CCharPlayer();
@@ -2112,7 +2093,7 @@ enum CTRIG_TYPE
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
 
-	CTRIG_Fame,				// Fame chaged
+	CTRIG_FameChange,				// Fame chaged
 
 	CTRIG_GetHit,			// I just got hit.
 	CTRIG_Hit,				// I just hit someone. (TARG)
@@ -2154,7 +2135,7 @@ enum CTRIG_TYPE
 
 	CTRIG_Jailed,			// I'm up to be send to jail, or to be forgiven
 
-	CTRIG_Karma,			// Karma chaged
+	CTRIG_KarmaChange,			// Karma chaged
 
 	CTRIG_Kill,				//+I have just killed someone
 	CTRIG_LogIn,			// Client logs in
@@ -2228,8 +2209,9 @@ enum CTRIG_TYPE
 	CTRIG_UserStats,
 	CTRIG_UserVirtue,
 	CTRIG_UserWarmode,
+	CTRIG_UserKRToolbar,
 
-	CTRIG_QTY,				// 114
+	CTRIG_QTY,				// 115
 };
 
 class CPartyDef;

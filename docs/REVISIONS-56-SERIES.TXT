@@ -3923,13 +3923,15 @@ this all in desperation)
   NPCs (ADVANCEDLOS_NPC being ignored).
 
 02-02-2008, Furio
-- added DIALOGLIST keyword. DIALOGLIST.COUNT gives the number of open gump dialogs,
+- Added DIALOGLIST keyword. DIALOGLIST.COUNT gives the number of open gump dialogs,
   DIALOGLIST.$x.ID ($x = a number between 0 and DIALOGLIST.COUNT-1) the ID of the
   respective gump dialog, and DIALOGLIST.$x.COUNT the number of active instances of
   this dialog. So to close a specified gump, DIALOGCLOSE <DIALOGLIST.$n.ID> should do.
+- Added KRTOOLBARSTATUS (prop/verb) and @UserKRToolbar (ARGN1 type, ARGN2 arg) to
+  interact with the hotbar in the KR client.
 
 03-02-2008, Shadow Dragon
-- added @Karma, @Fame. Called when Karma/Fame adjusting.
+- added @KarmaChange, @FameChange. Called when Karma/Fame adjusting.
   ARGN1 = Karma/Fame modifier, it's writable.
   return 0 will use Argn1 value in adjusting.
   return 1 will break adjusting.

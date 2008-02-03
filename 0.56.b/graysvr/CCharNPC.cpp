@@ -8,22 +8,6 @@
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 
-enum CPC_TYPE	// Player char.
-{
-	#define ADD(a,b) CPC_##a,
-	#include "../tables/CCharPlayer_props.tbl"
-	#undef ADD
-	CPC_QTY,
-};
-
-LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
-{
-	#define ADD(a,b) b,
-	#include "../tables/CCharPlayer_props.tbl"
-	#undef ADD
-	NULL,
-};
-
 enum CNC_TYPE
 {
 	#define ADD(a,b) CNC_##a,
@@ -146,6 +130,22 @@ bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
 //////////////////////////
 // -CCharPlayer
 
+enum CPC_TYPE	// Player char.
+{
+	#define ADD(a,b) CPC_##a,
+	#include "../tables/CCharPlayer_props.tbl"
+	#undef ADD
+	CPC_QTY,
+};
+
+LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CCharPlayer_props.tbl"
+	#undef ADD
+	NULL,
+};
+
 CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
 {
 	m_wDeaths = m_wMurders = 0;
@@ -153,6 +153,8 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 	m_luck = m_iTithingPoints = 0;
 	m_speedMode = 0;
 	m_pflag = 0;
+	m_bKrToolbarEnabled = false;
+
 	memset(m_SkillLock, 0, sizeof(m_SkillLock));
 	memset(m_StatLock, 0, sizeof(m_StatLock));
 	SetSkillClass(pChar, RESOURCE_ID(RES_SKILLCLASS));
@@ -161,6 +163,17 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 CCharPlayer::~CCharPlayer()
 {
 	m_Speech.RemoveAll();
+}
+
+CAccountRef CCharPlayer::GetAccount() const
+{
+	ASSERT( m_pAccount );
+	return( m_pAccount );
+}
+
+bool CCharPlayer::getKrToolbarStatus()
+{
+	return m_bKrToolbarEnabled;
 }
 
 bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
@@ -225,6 +238,18 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	return( (SKILL_TYPE) i );
 }
 
+SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
+{
+	ASSERT( skill < COUNTOF(m_SkillLock));
+	return((SKILLLOCK_TYPE) m_SkillLock[skill] );
+}
+
+void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
+{
+	ASSERT( skill < COUNTOF(m_SkillLock));
+	m_SkillLock[skill] = state;
+}
+
 STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 {
 	ADDTOCALLSTACK("CCharPlayer::Stat_GetLockType");
@@ -251,6 +276,18 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 	return( (STAT_TYPE) i );
 }
 
+SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
+{
+	ASSERT( stat < COUNTOF(m_StatLock));
+	return((SKILLLOCK_TYPE) m_StatLock[stat] );
+}
+
+void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
+{
+	ASSERT( stat < COUNTOF(m_StatLock));
+	m_StatLock[stat] = state;
+}
+
 bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 {
 	ADDTOCALLSTACK("CCharPlayer::r_WriteVal");
@@ -270,7 +307,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		pszKey += bIsGuild ? 5 : 4;
 		if ( *pszKey == 0 )
 		{
-		CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
+			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
 			if ( pMyGuild ) sVal.FormatHex((DWORD)pMyGuild->GetUID());
 			else sVal.FormatVal(0);
 			return true;
@@ -301,6 +338,9 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		case CPC_KILLS:
 			sVal.FormatVal( m_wMurders );
 			return( true );
+		case CPC_KRTOOLBARSTATUS:
+			sVal.FormatVal( m_bKrToolbarEnabled );
+			return true;
 		case CPC_ISDSPEECH:
 			if ( pszKey[9] != '.' )
 				return( false );
@@ -430,6 +470,11 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_KILLS:
 			m_wMurders = s.GetArgVal();
 			return true;
+		case CPC_KRTOOLBARSTATUS:
+			m_bKrToolbarEnabled = s.GetArgVal();
+			if ( pChar->GetClient() )
+				pChar->GetClient()->addKRToolbar( m_bKrToolbarEnabled );
+			return true;
 		case CPC_LASTUSED:
 			m_timeLastUsed = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
 			return( true );
@@ -524,6 +569,8 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
 	if ( m_iTithingPoints )
 		s.WriteKeyVal("TITHING", m_iTithingPoints);
+	if (( GetAccount()->GetResDisp() >= RDS_KR ) && m_bKrToolbarEnabled )
+		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 
 	EXC_SET("saving dynamic speech");
 	if ( m_Speech.GetCount() )
@@ -566,10 +613,19 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	EXC_DEBUG_END;
 }
 
-LPCTSTR const CCharPlayer::sm_szVerbKeys[] =
+enum CPV_TYPE	// Player char.
 {
-	"KICK",
-	"PASSWORD",
+	#define ADD(a,b) CPV_##a,
+	#include "../tables/CCharPlayer_functions.tbl"
+	#undef ADD
+	CPV_QTY,
+};
+
+LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CCharPlayer_functions.tbl"
+	#undef ADD
 	NULL,
 };
 
@@ -581,9 +637,9 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 
 	switch ( FindTableSorted( s.GetKey(), CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys)-1 ))
 	{
-		case 0: // "KICK" = kick and block the account
+		case CPV_KICK: // "KICK" = kick and block the account
 			return (IsClient() && GetClient()->addKick(pSrc));
-		case 1:	// "PASSWORD"
+		case CPV_PASSWORD:	// "PASSWORD"
 			// Set/Clear the password
 			if ( pSrc != this )
 			{

@@ -2925,9 +2925,6 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 	return( true );
 }
 
-
-
-
 void CClient::Event_SingleClick( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CClient::Event_SingleClick");
@@ -3518,6 +3515,49 @@ void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
 
 		m_pChar->ItemBounce(pItem);
 	}
+}
+
+void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
+{
+	ADDTOCALLSTACK("CClient::Event_UseToolbar");
+	if ( !m_pChar )
+		return;
+
+	if ( !IsSetEF(EF_Minimize_Triggers) )
+	{
+		CScriptTriggerArgs Args( bType, dwArg );
+		if ( m_pChar->OnTrigger( CTRIG_UserKRToolbar, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+			return;
+	}
+
+	switch(bType)
+	{
+		case 0x01: // Spell call
+		{
+			Cmd_Skill_Magery((SPELL_TYPE)dwArg, m_pChar);
+		} break;
+
+		case 0x02: // Weapon ability
+		{
+
+		} break;
+
+		case 0x03: // Skill
+		{
+			Event_Skill_Use((SKILL_TYPE)dwArg);
+		} break;
+
+		case 0x04: // Item
+		{
+			Event_DoubleClick(CGrayUID(dwArg), true, true);
+		} break;
+
+		case 0x05: // Scroll
+		{
+
+		} break;
+	}
+
 }
 
 void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
@@ -4803,9 +4843,22 @@ int CClient::xDispatchMsg()
 				xDumpPacket( m_bin.GetDataQty(), pEvent->m_Raw );
 			} break;
 
-		case XCMD_HighlightUIRemove:
 		case XCMD_UseHotbar:
 			{
+				if ( !xCheckMsgSize(11) )
+					RETURN_FALSE();
+				if (( pEvent->UseHotbar.m_One != 0x01 ) || ( pEvent->UseHotbar.m_One != 0x06 ))
+					RETURN_FALSE();
+				if ( ! IsClientKR() )
+					RETURN_FALSE();
+
+				Event_UseToolbar(pEvent->UseHotbar.m_Type, pEvent->UseHotbar.m_ObjectUID);
+			} break;
+
+		case XCMD_HighlightUIRemove:
+			{
+				if ( !xCheckMsgSize(3) )
+					RETURN_FALSE();
 				if ( ! IsClientKR() )
 					RETURN_FALSE();
 

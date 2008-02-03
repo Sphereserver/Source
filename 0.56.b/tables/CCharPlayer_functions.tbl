@@ -1,0 +1,8 @@
+//
+//	Class:	CCharPlayer
+//	Set:	attributes
+//	Prefix:	CPV_
+//
+
+ADD(KICK,	"KICK")
+ADD(PASSWORD, "PASSWORD")

@@ -1982,6 +1982,7 @@ void CClient::addPlayerStart( CChar * pChar )
 	addWeather(WEATHER_DEFAULT);
 	addLight();
 	addPlayerWarMode();
+	addKRToolbar( pChar->m_pPlayer->getKrToolbarStatus() );
 }
 
 void CClient::addPlayerWarMode()
@@ -4491,6 +4492,18 @@ void CClient::addIdleWarning( bool bSameChar )
 	cmd.IdleWarning.m_Cmd = XCMD_IdleWarning;
 	cmd.IdleWarning.m_Value = (bSameChar) ? 0x05 : 0x07;
 	xSend(&cmd, sizeof(cmd.IdleWarning));
+}
+
+void CClient::addKRToolbar( bool bEnable )
+{
+	ADDTOCALLSTACK("CClient::addKRToolbar");
+	if ( !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
+		return;
+
+	CCommand cmd;
+	cmd.ToggleHotbar.m_Cmd = XCMD_ToggleHotbar;
+	cmd.ToggleHotbar.m_Enable = bEnable;
+	xSend(&cmd, sizeof(cmd.ToggleHotbar));
 }
 
 

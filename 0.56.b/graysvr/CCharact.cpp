@@ -1934,8 +1934,6 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 		return( false );
 	}
 
-
-#ifdef _NAZTEST
 	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
 	if ( (pPet == NULL) || !pPet->IsDisconnected())	// no ridden horse
 		return ( false );
@@ -1943,8 +1941,6 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 	CScriptTriggerArgs Args(pPet);
    	if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
 		return ( false );
-
-#endif
 
 	// What creature is the horse item ?
 	CChar * pHorse = Use_Figurine( pItem, 0 );
