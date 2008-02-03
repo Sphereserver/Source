@@ -2111,6 +2111,9 @@ enum CTRIG_TYPE
 	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
+
+	CTRIG_Fame,				// Fame chaged
+
 	CTRIG_GetHit,			// I just got hit.
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitMiss,			// I just missed.
@@ -2150,6 +2153,8 @@ enum CTRIG_TYPE
 	CTRIG_itemUNEQUIP,		// i have unequipped (or try to unequip) an item
 
 	CTRIG_Jailed,			// I'm up to be send to jail, or to be forgiven
+
+	CTRIG_Karma,			// Karma chaged
 
 	CTRIG_Kill,				//+I have just killed someone
 	CTRIG_LogIn,			// Client logs in
@@ -2224,7 +2229,7 @@ enum CTRIG_TYPE
 	CTRIG_UserVirtue,
 	CTRIG_UserWarmode,
 
-	CTRIG_QTY,				// 112
+	CTRIG_QTY,				// 114
 };
 
 class CPartyDef;

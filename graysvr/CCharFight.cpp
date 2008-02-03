@@ -461,6 +461,20 @@ void CChar::Noto_Fame( int iFameChange )
 	int iFame = maximum(Stat_GetAdjusted(STAT_FAME), 0);
 
 	iFameChange = g_Cfg.Calc_FameScale( iFame, iFameChange );
+
+	if ( !IsSetEF(EF_Minimize_Triggers) )
+	{
+		CScriptTriggerArgs Args(iFameChange);	// ARGN1 - Fame change modifier
+		TRIGRET_TYPE retType = OnTrigger(CTRIG_Fame, this, &Args);
+
+		if ( retType == TRIGRET_RET_TRUE )
+			return;
+		else if ( retType != TRIGRET_RET_DEFAULT )
+		{
+			iFameChange = Args.m_iN1;
+		}
+	}
+
 	if ( ! iFameChange )
 		return;
 
@@ -488,6 +502,20 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 	int	iKarma = Stat_GetAdjusted(STAT_KARMA);
 
 	iKarmaChange = g_Cfg.Calc_KarmaScale( iKarma, iKarmaChange );
+
+	if ( !IsSetEF(EF_Minimize_Triggers) )
+	{
+		CScriptTriggerArgs Args(iKarmaChange);	// ARGN1 - Karma change modifier
+		TRIGRET_TYPE retType = OnTrigger(CTRIG_Karma, this, &Args);
+
+		if ( retType == TRIGRET_RET_TRUE )
+			return;
+		else if ( retType != TRIGRET_RET_DEFAULT )
+		{
+			iKarmaChange = Args.m_iN1;
+		}
+	}
+
 	if ( ! iKarmaChange )
 		return;
 
