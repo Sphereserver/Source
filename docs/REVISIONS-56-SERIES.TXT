@@ -3936,4 +3936,4 @@ this all in desperation)
   return 0 will use Argn1 value in adjusting.
   return 1 will break adjusting.
   return 2 will ignore Argn1 and continue default adjusting.
-  Borth triggers work only when EF_Minimize_Triggers isn't set.
+  Both triggers work only when EF_Minimize_Triggers isn't set.
