@@ -33,14 +33,22 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
 	TemporaryString buf;
+	int nStrLen;
+	bool bUTF = false, bFirstLine = true;
 	
 	while( !feof(m_pStream) ) 
 	{
 		buf.setAt(0, '\0');
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
+		nStrLen = strlen(buf);
 
-		std::string strLine(buf, strlen(buf));
+		if ( bFirstLine && nStrLen >= 3 && buf[0] == (char)0xEF && buf[1] == (char)0xBB && buf[2] == (char)0xBF )
+			bUTF = true;
+
+		std::string strLine((bUTF ? &buf[3]:buf), nStrLen - (bUTF ? 3:0));
 		m_fileContent->push_back(strLine);
+		bFirstLine = false;
+		bUTF = false;
 	}
 
 	fclose(m_pStream);
