@@ -820,6 +820,7 @@ public:
 		{
 			DWORD m_dwIP;
 			int m_iConnect;	// used for debug only.
+			bool m_bNewSeed;
 		} m_tmSetup;
 
 		// CLIMODE_SETUP_CHARLIST
