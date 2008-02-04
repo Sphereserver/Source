@@ -396,7 +396,13 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 	CHARFORMAT cf;
 	memset( &cf, 0, sizeof(cf));
 	cf.cbSize = sizeof(cf);
+// Some people have troubles with too small font in console
+#ifdef _CONSOLE_FONT
+	cf.dwMask = CFM_COLOR|CFM_SIZE;
+	cf.yHeight = 180;
+#else
 	cf.dwMask = CFM_COLOR;
+#endif
 	cf.crTextColor = m_dwColorPrv;
 	cf.bCharSet = ANSI_CHARSET;
 	cf.bPitchAndFamily = FF_MODERN | FIXED_PITCH;
