@@ -416,7 +416,7 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 	int iLen = sizeof(cmd.ServerList) - sizeof(cmd.ServerList.m_serv) + ( j * sizeof(cmd.ServerList.m_serv[0]));
 	cmd.ServerList.m_len = iLen;
 	cmd.ServerList.m_count = j;
-	cmd.ServerList.m_unk3 = 0xFF;
+	cmd.ServerList.m_nextLoginKey = 0xFF;
 	xSendPkt( &cmd, iLen );
 
 	m_Targ_Mode = CLIMODE_SETUP_SERVERS;
