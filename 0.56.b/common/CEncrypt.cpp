@@ -677,7 +677,7 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 		DEBUG_ERR(("LoginCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
-		bool isValid = ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 && m_Raw[61] == 0xFF );
+		bool isValid = ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 );
 		if ( isValid )
 		{
 			// -----------------------------------------------------

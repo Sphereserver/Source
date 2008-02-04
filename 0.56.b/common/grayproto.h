@@ -1353,7 +1353,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_Cmd;	// 0 = 0x80 = XCMD_ServersReq
 			char m_acctname[ MAX_ACCOUNT_NAME_SIZE ];
 			char m_acctpass[ MAX_NAME_SIZE ];
-			BYTE m_unk;	// 61 = ff
+			BYTE m_loginKey;	// 61 = NextLoginKey from uo.cfg
 		} ServersReq;
 
 		struct	// size = 39  // delete the char in this slot.
@@ -2548,10 +2548,10 @@ struct CCommand	// command buffer from server to client.
 
 		struct // size = 6+servers*40
 		{
-			BYTE m_Cmd;			// 0 = 0xA8
-			NWORD m_len;		// 1-2
-			BYTE m_unk3;		// 3=0x14 ?
-			NWORD m_count;	// 4-5=num servers.
+			BYTE m_Cmd;				// 0 = 0xA8
+			NWORD m_len;			// 1-2
+			BYTE m_nextLoginKey;	// 3=next login key the client should use in ServersReq (0x80) packet
+			NWORD m_count;			// 4-5=num servers.
 
 #define MAX_SERVERS 32
 #define MAX_SERVER_NAME_SIZE 32
