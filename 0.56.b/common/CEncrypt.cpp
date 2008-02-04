@@ -677,30 +677,46 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 		DEBUG_ERR(("LoginCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
-		
-		if ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 && m_Raw[61] == 0xFF )
+		bool isValid = ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 && m_Raw[61] == 0xFF );
+		if ( isValid )
 		{
 			// -----------------------------------------------------
 			// This is a sanity check, sometimes client keys (like 4.0.0) can intercept, incorrectly,
 			// a login packet. When is decrypted it is done not correctly (strange chars after
 			// regular account name/password). This prevents that fact, choosing the right keys
 			// to decrypt it correctly :)
-			
-			LPCTSTR sRawAccountName = reinterpret_cast<LPCTSTR>( m_Raw + 1 );
-			iAccountNameLen = Str_GetBare(pszAccountNameCheck, sRawAccountName, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
-			pszAccountNameCheck[iLen] = '\0';
-			if (sRawAccountName && (iAccountNameLen != strlen(sRawAccountName)))
+			for (int toCheck = 21; toCheck <= 30; toCheck++)
 			{
-				iAccountNameLen = 0;
-				i++;
+				// no official client allows the account name or password to
+				// exceed 20 chars (2d=16,kr=20), meaning that chars 21-30 must
+				// always be 0x00 (some unofficial clients may allow the user
+				// to enter more, but as they generally don't use encryption
+				// it shouldn't be a problem)
+				if (m_Raw[toCheck] == 0x00 && m_Raw[toCheck+30] == 0x00)
+					continue;
 
-				continue;
+				isValid = false;
+				break;
 			}
-			
-			// set seed, clientversion, cryptmask
-			SetClientVerIndex(i);
-			SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo);
-			break;
+
+			if ( isValid == true )
+			{
+				LPCTSTR sRawAccountName = reinterpret_cast<LPCTSTR>( m_Raw + 1 );
+				iAccountNameLen = Str_GetBare(pszAccountNameCheck, sRawAccountName, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+				pszAccountNameCheck[iLen] = '\0';
+				if (sRawAccountName && (iAccountNameLen != strlen(sRawAccountName)))
+				{
+					iAccountNameLen = 0;
+					i++;
+
+					continue;
+				}
+				
+				// set seed, clientversion, cryptmask
+				SetClientVerIndex(i);
+				SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo);
+				break;
+			}
 		}
 
 		// Next one

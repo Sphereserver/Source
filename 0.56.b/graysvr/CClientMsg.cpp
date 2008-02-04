@@ -4497,7 +4497,7 @@ void CClient::addIdleWarning( bool bSameChar )
 void CClient::addKRToolbar( bool bEnable )
 {
 	ADDTOCALLSTACK("CClient::addKRToolbar");
-	if ( !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
+	if ( !IsClientKR() || !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
 		return;
 
 	CCommand cmd;
