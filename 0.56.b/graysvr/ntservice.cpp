@@ -436,6 +436,7 @@ do_not_nt_service:
 		NTWindow_Init(hInstance, lpCmdLine, nCmdShow);
 		int iRet = Sphere_MainEntryPoint(argc, argv);
 		NTWindow_Exit();
+		TerminateProcess(GetCurrentProcess(), iRet);
 		return iRet;
 	}
 
