@@ -1365,8 +1365,12 @@ bool CClient::xRecvData() // Receive message from client
 	{
 		// This is the first data we get on a new connection.
 		// Figure out what the other side wants.
-
-		if ( iCountNew < 4 )	// just a ping for server info. (maybe, or CONNECT_TELNET?)
+		if ( iCountNew == 1 && Event.Default.m_Cmd == XCMD_NewSeed )
+		{
+			m_tmSetup.m_bNewSeed = true;
+			return( true );
+		}
+		else if ( iCountNew < 4 )	// just a ping for server info. (maybe, or CONNECT_TELNET?)
 		{
 			if ( IsBlockedIP())
 				return( false );
@@ -1401,17 +1405,28 @@ bool CClient::xRecvData() // Receive message from client
 		}
 
 		int iSeedLen = 0;
-		bool bNewLogin = false;
 
-		if ((Event.Default.m_Cmd == XCMD_NewSeed) && ( iCountNew >= SEEDLENGTH_NEW ))
+		if ( m_tmSetup.m_bNewSeed || ( Event.Default.m_Cmd == XCMD_NewSeed && iCountNew >= SEEDLENGTH_NEW ))
 		{
-			DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)Event.NewSeed.m_Version_Maj, 
-						 (DWORD)Event.NewSeed.m_Version_Min, (DWORD)Event.NewSeed.m_Version_Rev, 
-						 (DWORD)Event.NewSeed.m_Version_Pat));
+			CEvent *pEvent = &Event;
 
-		   m_tmSetup.m_dwIP = (DWORD) Event.NewSeed.m_Seed;
-		   iSeedLen = SEEDLENGTH_NEW;
-		   bNewLogin = true;
+			if ( m_tmSetup.m_bNewSeed )
+			{
+				// we already received the 0xEF on its own, so move the 
+				// pointer back 1 byte to align it
+				iSeedLen = SEEDLENGTH_NEW - 1;
+				pEvent = (CEvent *)(((BYTE*)pEvent) - 1);
+			}
+			else
+			{
+				iSeedLen = SEEDLENGTH_NEW;
+				m_tmSetup.m_bNewSeed = true;
+			}
+
+			DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)pEvent->NewSeed.m_Version_Maj, 
+						 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
+						 (DWORD)pEvent->NewSeed.m_Version_Pat));
+			m_tmSetup.m_dwIP = (DWORD) pEvent->NewSeed.m_Seed;
 		}
 		else
 		{
@@ -1432,7 +1447,7 @@ bool CClient::xRecvData() // Receive message from client
 				m_bClientKR = true;
 				xSend(pDataKR_E3, 77);
 			}
-			else if ( bNewLogin )
+			else if ( m_tmSetup.m_bNewSeed )
 			{
 				// Specific actions for new seed here (if any).
 			}
