@@ -3937,3 +3937,6 @@ this all in desperation)
   return 1 will break adjusting.
   return 2 will ignore Argn1 and continue default adjusting.
   Both triggers work only when EF_Minimize_Triggers isn't set.
+
+07-02-2008, MrSugarCube
+- Fixed #718: Ships unable to travel over static water tiles.

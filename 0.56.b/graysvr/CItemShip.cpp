@@ -220,11 +220,12 @@ bool CItemShip::Ship_CanMoveTo( const CPointMap & pt ) const
 		return( true );
 
 	WORD wBlockFlags = CAN_I_WATER;
-	signed char z = g_World.GetHeightPoint( pt, wBlockFlags, true );
-	if ( ! ( wBlockFlags & CAN_I_WATER ))
-		return false;
 
-	return true;
+	g_World.GetHeightPoint( pt, wBlockFlags, true );
+	if ( wBlockFlags & CAN_I_WATER )
+		return true;
+
+	return false;
 }
 
 static const DIR_TYPE sm_Ship_FaceDir[] =
