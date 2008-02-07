@@ -115,12 +115,15 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	if ( zBottom < ( m_z + m_iHeight/2 ))
 	{
 		// This is the new item ( that would be ) under me.
-		// NOTE: Platform items should take precendence over non-platforms.
+		// NOTE: Platform items should take precedence over non-platforms.
+		//       (Water acts as a platform for ships, so this also takes precedence)
 		if ( zTop >= m_Bottom.m_z )
 		{
 			if ( zTop == m_Bottom.m_z )
 			{
 				if ( m_Bottom.m_dwBlockFlags & CAN_I_PLATFORM )
+					return( true );
+				else if ( (m_Bottom.m_dwBlockFlags & CAN_I_WATER) && !(wItemBlockFlags & CAN_I_PLATFORM))
 					return( true );
 			}
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
