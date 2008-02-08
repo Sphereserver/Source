@@ -3940,3 +3940,4 @@ this all in desperation)
 
 07-02-2008, MrSugarCube
 - Fixed #718: Ships unable to travel over static water tiles.
+- Fixed #1378: Armour rating being factored in twice during damage calculations.

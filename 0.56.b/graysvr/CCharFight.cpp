@@ -1986,34 +1986,39 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			}
 		}
 
-		// absorbed by armor ?
-
-		int		iDef;
-		iDef	= Calc_GetRandVal( max(pCharDef->m_defense + m_ModAr, 0) );
+		// Armour calculations
 	    if ( ! ( uType & DAMAGE_GOD) )
 		{
 			if ( ! ( uType & DAMAGE_GENERAL ))
 			{
-				iDmg	= OnTakeDamageHitPoint( iDmg, pSrc, uType );
+				// Armour calculation for normal damage (a specific part of the body/armour is hit and damaged)
+				int iDef = Calc_GetRandVal( max(pCharDef->m_defense + m_ModAr, 0) );
+				iDmg = OnTakeDamageHitPoint( iDmg, pSrc, uType );
 
 				if ( uType & DAMAGE_MAGIC )
 				{
+					// Magical damage halves effectiveness of defense (or bypasses it with MAGICF_IGNOREAR)
 					if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
 					{
 						iDef = 0;
 					} 
 					else 
 					{
-						iDef	/= 2;
+						iDef /= 2;
 					}
 				}
+
 				iDmg -= iDef;
 			}
-			if ( ! ( IsSetMagicFlags( MAGICF_IGNOREAR ) && (uType & DAMAGE_MAGIC) ) )
+			else
 			{
-				// general overall damage.
-				iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense + m_ModAr );
-				// ??? take some random damage to my equipped items.
+				// Armour calculation for general damage (not hitting a specific body part or armour piece)
+				// MAGICF_IGNOREAR bypasses defense completely
+				if ( !IsSetMagicFlags( MAGICF_IGNOREAR ) || !(uType & DAMAGE_MAGIC) )
+				{
+					iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense + m_ModAr );
+					// ??? take some random damage to my equipped items.
+				}
 			}
 		}
 	}
