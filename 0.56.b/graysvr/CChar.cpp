@@ -1226,7 +1226,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		int iSkill;
 		switch ( i )
 		{
-			case 0: iSkill = ( bFemale ) ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT;
+			case 0: iSkill = ( bFemale ) ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT; break;
 			case 1: iSkill = skSkill1; break;
 			case 2: iSkill = skSkill2; break;
 			case 3: iSkill = skSkill3; break;
