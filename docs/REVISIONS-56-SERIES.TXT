@@ -3943,8 +3943,8 @@ this all in desperation)
 - Fixed #1378: Armour rating being factored in twice during damage calculations.
 
 11-02-2008, MrSugarCube
-- Fixed: Newly created characters not starting with the NEWBIE_MALE_DEFAULT / 
-  NEWBIE_FEMALE_DEFAULT templates.
+- Fixed: Newly created characters not starting with the MALE_DEFAULT / FEMALE_DEFAULT
+  newbie templates.
 - Fixed: Exception caused by using ARGO.Verb when argo is not set.
 - Modified: "Vendor uid=xxx selling unmovable item" message no longer shown when
   listing the items that a player can sell to a vendor.
