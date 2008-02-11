@@ -209,7 +209,10 @@ bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const
 	// Can this individual item be sold or bought ?
 	if ( ! IsMovableType())
 	{
-		DEBUG_ERR(( "Vendor uid=0%lx selling unmovable item %s='%s'\n", (DWORD) GetTopLevelObj()->GetUID(), GetResourceName(), GetName()));
+		if ( fBuyFromVendor )
+		{
+			DEBUG_ERR(( "Vendor uid=0%lx selling unmovable item %s='%s'\n", (DWORD) GetTopLevelObj()->GetUID(), GetResourceName(), GetName()));
+		}
 		return( false );
 	}
 	if ( ! fBuyFromVendor )

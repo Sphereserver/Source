@@ -211,6 +211,9 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 				if ( *pszTemp == '.' )
 				{
 					++pszTemp;
+					if ( !m_pO1 )
+						return false;
+
 					CScript script( pszTemp, s.GetArgStr() );
 					return m_pO1->r_Verb( script, pSrc );
 				}
