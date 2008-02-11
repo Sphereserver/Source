@@ -3941,3 +3941,8 @@ this all in desperation)
 07-02-2008, MrSugarCube
 - Fixed #718: Ships unable to travel over static water tiles.
 - Fixed #1378: Armour rating being factored in twice during damage calculations.
+
+11-02-2008, MrSugarCube
+- Fixed: Exception caused by using ARGO.Verb when argo is not set.
+- Modified: "Vendor uid=xxx selling unmovable item" message no longer shown when
+  listing the items that a player can sell to a vendor.
