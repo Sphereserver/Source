@@ -220,8 +220,8 @@ SRC.TAG.HaarID=0
 ENDIF
 
 ON=@unequip
-IF !(<SRC.TAG.HaarID> == 0)
-Serv.NEWITEM=<src.tag.haarid>
+IF !(<SRC.TAG0.HaarID> == 0)
+Serv.NEWITEM=<SRC.TAG0.HaarID>
 New.EQUIP
 SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
 SRC.TAG.HaarFarbe=
@@ -250,8 +250,8 @@ SRC.TAG.HaarID=0
 ENDIF
 
 ON=@unequip
-IF !(<SRC.TAG.HaarID> == 0)
-Serv.NEWITEM=<src.tag.haarid>
+IF !(<SRC.TAG0.HaarID> == 0)
+Serv.NEWITEM=<SRC.TAG0.HaarID>
 New.EQUIP
 SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
 SRC.TAG.HaarFarbe=
@@ -277,8 +277,8 @@ SRC.TAG.HaarID=0
 ENDIF
 
 ON=@unequip
-IF !(<SRC.TAG.HaarID> == 0)
-Serv.NEWITEM=<src.tag.haarid>
+IF !(<SRC.TAG0.HaarID> == 0)
+Serv.NEWITEM=<SRC.TAG0.HaarID>
 New.EQUIP
 SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
 SRC.TAG.HaarFarbe=
@@ -309,8 +309,8 @@ SRC.TAG.HaarID=0
 ENDIF
 
 ON=@unequip
-IF !(<SRC.TAG.HaarID> == 0)
-Serv.NEWITEM=<src.tag.haarid>
+IF !(<SRC.TAG0.HaarID> == 0)
+Serv.NEWITEM=<SRC.TAG0.HaarID>
 New.EQUIP
 SRC.FINDLAYER(11).color=<src.tag.HaarFarbe>
 SRC.TAG.HaarFarbe=
