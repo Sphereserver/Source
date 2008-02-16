@@ -564,6 +564,7 @@ NAME=Lord Blackthorn's Ilshenar Castle
 P=1084,652,0,2
 RECT=1048,616,1120,688,2
 RECT=1080,688,1104,712,2
+FLAGS=region_flag_nobuilding
 GROUP=Third Dawn
 
 [AREADEF a_shrine_virtues]
