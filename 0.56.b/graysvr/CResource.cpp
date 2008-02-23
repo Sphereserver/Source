@@ -166,13 +166,8 @@ CResource::CResource()
 	m_iLevelMode = 1;
 	m_iLevelNextAt = 0;
 
-#ifndef _EXTERNAL_DLL
 	//	mySQL support
 	m_bMySql = false;
-#else
-	m_sDbDll.Empty();
-	m_iDbDllQueryBuffer = DEFAULT_RESULT_SIZE;
-#endif
 
 	m_cCommandPrefix = '.';
 	m_iMaxTooltipForTick = 7;
@@ -331,14 +326,6 @@ enum RC_TYPE
 	RC_CORPSENPCDECAY,
 	RC_CORPSEPLAYERDECAY,
 	RC_CRIMINALTIMER,		// m_iCriminalTimer
-#ifdef _EXTERNAL_DLL
-	RC_DBDLL,				//	m_sDbDll
-	RC_DBDLLDATABASE,		//	m_sDbDllDB
-	RC_DBDLLHOST,			//	m_sDbDllHost
-	RC_DBDLLPASSWORD,		//	m_sDbDllPass
-	RC_DBDLLQUERYBUFFER,	//	m_iDbDllQueryBuffer
-	RC_DBDLLUSER,			//	m_sDbDllUser
-#endif
 	RC_DEADSOCKETTIME,
 	RC_DEBUGFLAGS,
 	RC_DECAYTIMER,
@@ -411,13 +398,11 @@ enum RC_TYPE
 	RC_MULFILES,
 	RC_MURDERDECAYTIME,		// m_iMurderDecayTime;
 	RC_MURDERMINCOUNT,			//	m_iMurderMinCount
-#ifndef _EXTERNAL_DLL
 	RC_MYSQL,					//	m_bMySql
 	RC_MYSQLDB,					//	m_sMySqlDatabase
 	RC_MYSQLHOST,				//	m_sMySqlHost
 	RC_MYSQLPASS,				//	m_sMySqlPassword
 	RC_MYSQLUSER,				//	m_sMySqlUser
-#endif
 	RC_NORESROBE,
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
@@ -514,14 +499,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CORPSENPCDECAY",			{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpseNPC)	}},
 	{ "CORPSEPLAYERDECAY",		{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpsePlayer) }},
 	{ "CRIMINALTIMER",			{ ELEM_INT,		OFFSETOF(CResource,m_iCriminalTimer)	}},
-#ifdef _EXTERNAL_DLL
-	{ "DBDLL",					{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDll)		}},
-	{ "DBDLLDATABASE",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDllDB)		}},
-	{ "DBDLLHOST",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sDbDllHost)	}},
-	{ "DBDLLPASSWORD",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDllPass)	}},
-	{ "DBDLLQUERYBUFFER",		{ ELEM_INT,		OFFSETOF(CResource,m_iDbDllQueryBuffer)	}},
-	{ "DBDLLUSER",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDllUser)	}},
-#endif
 	{ "DEADSOCKETTIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iDeadSocketTime)	}},
 	{ "DEBUGFLAGS",				{ ELEM_WORD,	OFFSETOF(CResource,m_wDebugFlags)	}},
 	{ "DECAYTIMER",				{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_Item)	}},
@@ -594,13 +571,11 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MULFILES" },
 	{ "MURDERDECAYTIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMurderDecayTime)	}},
 	{ "MURDERMINCOUNT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMurderMinCount)	}}, // amount of murders before we get title.
-#ifndef _EXTERNAL_DLL
 	{ "MYSQL",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bMySql)		}},
 	{ "MYSQLDATABASE",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlDB)		}},
 	{ "MYSQLHOST",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sMySqlHost)	}},
 	{ "MYSQLPASSWORD",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlPass)	}},
 	{ "MYSQLUSER",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlUser)	}},
-#endif
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe)	}},
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather)	}},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi)		}},
@@ -758,31 +733,6 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_STRIPPATH:	// Put TNG stripped files here.
 			m_sStripPath = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
-#ifdef _EXTERNAL_DLL
-		case RC_DBDLL:
-			{
-				m_sDbDll.Empty();
-				if ( s.HasArgs() )
-				{
-					TCHAR * pTmpName = Str_TrimWhitespace( s.GetArgStr() );
-					if ( pTmpName && *pTmpName )
-					{
-						m_sDbDll = pTmpName;
-					}
-
-					cDatabaseLoader::ForceIstanceReload();
-				}
-			} break;
-
-		case RC_DBDLLQUERYBUFFER:
-			{
-				if ( s.HasArgs() )
-				{
-					int iTempValue = s.GetArgVal();
-					m_iDbDllQueryBuffer = ( iTempValue >= 0 ) ? iTempValue : DEFAULT_RESULT_SIZE;
-				}
-			} break;
-#endif
 		case RC_DEADSOCKETTIME:
 			m_iDeadSocketTime = s.GetArgVal()*60*TICK_PER_SEC;
 			break;

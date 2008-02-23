@@ -529,14 +529,6 @@ SOURCE=..\common\CDataBase.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\CDatabaseLoader.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\CDatabaseLoader.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\common\CException.cpp
 # End Source File
 # Begin Source File
