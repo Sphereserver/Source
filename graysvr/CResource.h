@@ -813,21 +813,12 @@ public:
 	int		m_iMaxAccountLoginTries;
 	int		m_iMaxShipPlankTeleport;
 
-#ifndef _EXTERNAL_DLL
 	//	mySQL features
 	bool		m_bMySql;
 	CGString	m_sMySqlHost;
 	CGString	m_sMySqlUser;
 	CGString	m_sMySqlPass;
 	CGString	m_sMySqlDB;
-#else
-	CGString	m_sDbDll;
-	CGString	m_sDbDllHost;
-	CGString	m_sDbDllUser;
-	CGString	m_sDbDllPass;
-	CGString	m_sDbDllDB;
-	int			m_iDbDllQueryBuffer;
-#endif
 
 	int			m_iRegenRate[STAT_QTY];
 	int			m_iTimerCall;

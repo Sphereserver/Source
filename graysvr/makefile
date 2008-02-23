@@ -110,7 +110,6 @@ SRC	:= 	CAccount.cpp \
 		../common/CAtom.cpp \
 		../common/CAssoc.cpp \
 		../common/CDataBase.cpp \
-		../common/CDatabaseLoader.cpp \
 		../common/CEncrypt.cpp \
 		../common/CExpression.cpp \
 		../common/CException.cpp \
