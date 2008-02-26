@@ -36,6 +36,10 @@ namespace UoKRLoader
         {
             InitializeComponent();
 
+            // Link color
+            this.lnkOpen.VisitedLinkColor = this.lnkOpen.ActiveLinkColor;
+
+            // Fill combobox
             this.cmbEncryption.SuspendLayout();
             this.cmbEncryption.Items.Clear();
             for (int i = 0; i < (int)ENCRYPTION_PATCH_TYPE.End; i++)
@@ -43,12 +47,14 @@ namespace UoKRLoader
             this.cmbEncryption.SelectedIndex = (int)ENCRYPTION_PATCH_TYPE.None;
             this.cmbEncryption.ResumeLayout();
 
+            // Fill path textbox
             string tmpKrPath = Utility.GetExePath(StaticData.UOKR_REGKEY);
             if (tmpKrPath != null)
             {
                 this.txtUokrPath.Text = tmpKrPath;
             }
 
+            // Load config
             if (File.Exists(StaticData.LAUNCH_CFG))
             {
                 string sConfig = null;
@@ -89,7 +95,7 @@ namespace UoKRLoader
             }
         }
 
-        private void btnOpen_Click(object sender, EventArgs e)
+        private void lnkOpen_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             DialogResult drOpenFile = ofdUOKRClient.ShowDialog(this);
 
@@ -131,7 +137,21 @@ namespace UoKRLoader
                 return null;
             }
 
-            IPAddress ip = host.AddressList[0];
+            IPAddress ip = null;
+            for (int iAddr = 0; iAddr <= host.AddressList.Length; iAddr++)
+            {
+                if ( host.AddressList[iAddr].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork )
+                {
+                    ip = host.AddressList[iAddr];
+                    break;
+                }
+            }
+
+            if (ip == null)
+            {
+                MessageBox.Show("Cannot find a valid IPV4 ip for: " + txtIptopatch.Text + " !", Application.ProductName + " Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
 
             if (this.ckbRemind.Checked)
             {

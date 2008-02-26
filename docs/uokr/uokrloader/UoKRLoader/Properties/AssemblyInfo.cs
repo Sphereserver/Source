@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Two Unknown Guys")]
 [assembly: AssemblyProduct("UoKRLoader")]
-[assembly: AssemblyCopyright("Copyright © 2007 Two Unknown Guys")]
+[assembly: AssemblyCopyright("Copyright © 2007-2008 Two Unknown Guys")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Numero build
 //      Revisione
 //
-[assembly: AssemblyVersion("1.0.6.3")]
-[assembly: AssemblyFileVersion("1.0.6.3")]
+[assembly: AssemblyVersion("1.0.7.0")]
+[assembly: AssemblyFileVersion("1.0.7.0")]

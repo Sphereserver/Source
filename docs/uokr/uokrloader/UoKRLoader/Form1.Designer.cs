@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.txtUokrPath = new System.Windows.Forms.TextBox();
-            this.btnOpen = new System.Windows.Forms.Button();
             this.lblClient = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnAbout = new System.Windows.Forms.Button();
@@ -44,6 +43,7 @@
             this.lblIP = new System.Windows.Forms.Label();
             this.txtIptopatch = new System.Windows.Forms.TextBox();
             this.ofdUOKRClient = new System.Windows.Forms.OpenFileDialog();
+            this.lnkOpen = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPort)).BeginInit();
             this.SuspendLayout();
@@ -54,29 +54,19 @@
             this.txtUokrPath.Location = new System.Drawing.Point(12, 25);
             this.txtUokrPath.Name = "txtUokrPath";
             this.txtUokrPath.ReadOnly = true;
-            this.txtUokrPath.Size = new System.Drawing.Size(331, 20);
+            this.txtUokrPath.Size = new System.Drawing.Size(445, 20);
             this.txtUokrPath.TabIndex = 0;
             this.txtUokrPath.TabStop = false;
             this.txtUokrPath.WordWrap = false;
-            // 
-            // btnOpen
-            // 
-            this.btnOpen.Location = new System.Drawing.Point(349, 12);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(108, 33);
-            this.btnOpen.TabIndex = 1;
-            this.btnOpen.Text = "O&pen ...";
-            this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
             // lblClient
             // 
             this.lblClient.AutoSize = true;
             this.lblClient.Location = new System.Drawing.Point(9, 9);
             this.lblClient.Name = "lblClient";
-            this.lblClient.Size = new System.Drawing.Size(103, 13);
-            this.lblClient.TabIndex = 2;
-            this.lblClient.Text = "UO:KR Client path:  ";
+            this.lblClient.Size = new System.Drawing.Size(100, 13);
+            this.lblClient.TabIndex = 100;
+            this.lblClient.Text = "UO:KR Client path: ";
             // 
             // panel1
             // 
@@ -94,7 +84,7 @@
             this.panel1.Location = new System.Drawing.Point(12, 51);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(445, 115);
-            this.panel1.TabIndex = 3;
+            this.panel1.TabIndex = 101;
             // 
             // btnAbout
             // 
@@ -102,7 +92,8 @@
             this.btnAbout.Location = new System.Drawing.Point(407, 78);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(25, 25);
-            this.btnAbout.TabIndex = 10;
+            this.btnAbout.TabIndex = 6;
+            this.btnAbout.TabStop = false;
             this.btnAbout.Text = "?";
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
@@ -112,7 +103,7 @@
             this.btnPatch.Location = new System.Drawing.Point(336, 44);
             this.btnPatch.Name = "btnPatch";
             this.btnPatch.Size = new System.Drawing.Size(96, 28);
-            this.btnPatch.TabIndex = 9;
+            this.btnPatch.TabIndex = 5;
             this.btnPatch.Text = "Pa&tch  ...";
             this.btnPatch.UseVisualStyleBackColor = true;
             this.btnPatch.Click += new System.EventHandler(this.btnPatch_Click);
@@ -123,8 +114,8 @@
             this.cmbEncryption.FormattingEnabled = true;
             this.cmbEncryption.Location = new System.Drawing.Point(81, 74);
             this.cmbEncryption.Name = "cmbEncryption";
-            this.cmbEncryption.Size = new System.Drawing.Size(103, 21);
-            this.cmbEncryption.TabIndex = 7;
+            this.cmbEncryption.Size = new System.Drawing.Size(102, 21);
+            this.cmbEncryption.TabIndex = 2;
             // 
             // lblEnc
             // 
@@ -132,7 +123,7 @@
             this.lblEnc.Location = new System.Drawing.Point(15, 74);
             this.lblEnc.Name = "lblEnc";
             this.lblEnc.Size = new System.Drawing.Size(60, 13);
-            this.lblEnc.TabIndex = 6;
+            this.lblEnc.TabIndex = 104;
             this.lblEnc.Text = "Encryption:";
             // 
             // btnLaunch
@@ -140,7 +131,7 @@
             this.btnLaunch.Location = new System.Drawing.Point(336, 10);
             this.btnLaunch.Name = "btnLaunch";
             this.btnLaunch.Size = new System.Drawing.Size(96, 28);
-            this.btnLaunch.TabIndex = 5;
+            this.btnLaunch.TabIndex = 4;
             this.btnLaunch.Text = "&Launch";
             this.btnLaunch.UseVisualStyleBackColor = true;
             this.btnLaunch.Click += new System.EventHandler(this.btnLaunch_Click);
@@ -150,7 +141,7 @@
             this.ckbRemind.Location = new System.Drawing.Point(234, 78);
             this.ckbRemind.Name = "ckbRemind";
             this.ckbRemind.Size = new System.Drawing.Size(85, 17);
-            this.ckbRemind.TabIndex = 4;
+            this.ckbRemind.TabIndex = 3;
             this.ckbRemind.Text = "Remind it";
             this.ckbRemind.UseVisualStyleBackColor = true;
             // 
@@ -163,8 +154,8 @@
             0,
             0});
             this.nudPort.Name = "nudPort";
-            this.nudPort.Size = new System.Drawing.Size(103, 20);
-            this.nudPort.TabIndex = 3;
+            this.nudPort.Size = new System.Drawing.Size(102, 20);
+            this.nudPort.TabIndex = 1;
             this.nudPort.Value = new decimal(new int[] {
             2593,
             0,
@@ -177,7 +168,7 @@
             this.lblPort.Location = new System.Drawing.Point(15, 43);
             this.lblPort.Name = "lblPort";
             this.lblPort.Size = new System.Drawing.Size(29, 13);
-            this.lblPort.TabIndex = 2;
+            this.lblPort.TabIndex = 103;
             this.lblPort.Text = "Port:";
             // 
             // lblIP
@@ -186,7 +177,7 @@
             this.lblIP.Location = new System.Drawing.Point(15, 14);
             this.lblIP.Name = "lblIP";
             this.lblIP.Size = new System.Drawing.Size(20, 13);
-            this.lblIP.TabIndex = 1;
+            this.lblIP.TabIndex = 102;
             this.lblIP.Text = "IP:";
             // 
             // txtIptopatch
@@ -203,14 +194,25 @@
             this.ofdUOKRClient.FileName = "openFileDialog1";
             this.ofdUOKRClient.Filter = "UO:KR Client|uokr.exe";
             // 
+            // lnkOpen
+            // 
+            this.lnkOpen.AutoSize = true;
+            this.lnkOpen.Location = new System.Drawing.Point(366, 9);
+            this.lnkOpen.Name = "lnkOpen";
+            this.lnkOpen.Size = new System.Drawing.Size(93, 13);
+            this.lnkOpen.TabIndex = 10;
+            this.lnkOpen.TabStop = true;
+            this.lnkOpen.Text = "Select a new path";
+            this.lnkOpen.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkOpen_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(469, 178);
+            this.Controls.Add(this.lnkOpen);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.lblClient);
-            this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.txtUokrPath);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -228,7 +230,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox txtUokrPath;
-        private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Label lblClient;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox txtIptopatch;
@@ -242,6 +243,7 @@
         private System.Windows.Forms.Label lblEnc;
         private System.Windows.Forms.Button btnPatch;
         private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.LinkLabel lnkOpen;
     }
 }
 

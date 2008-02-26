@@ -53,9 +53,9 @@
             this.lblCopyright.AutoSize = true;
             this.lblCopyright.Location = new System.Drawing.Point(65, 43);
             this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(190, 13);
+            this.lblCopyright.Size = new System.Drawing.Size(217, 13);
             this.lblCopyright.TabIndex = 3;
-            this.lblCopyright.Text = "Copyright © 2007 Two Unknown Guys";
+            this.lblCopyright.Text = "Copyright © 2007-2008 Two Unknown Guys";
             // 
             // label3
             // 

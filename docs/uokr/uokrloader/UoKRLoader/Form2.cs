@@ -21,7 +21,7 @@ namespace UoKRLoader
 
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
             this.lblLoaderVersion.Text = "Version " + Application.ProductVersion;
-            this.lblCopyright.Text = "Copyright © 2007 " + Application.CompanyName;
+            this.lblCopyright.Text = "Copyright © 2007-2008 " + Application.CompanyName;
             this.btnUpdates.Text = BTNUPDATE_UNCLICK;
         }
 
