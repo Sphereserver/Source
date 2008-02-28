@@ -14,7 +14,9 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `kqueue' function. */
-/* #undef HAVE_KQUEUE */
+#ifdef _BSD
+ #define HAVE_KQUEUE 1
+#endif
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1

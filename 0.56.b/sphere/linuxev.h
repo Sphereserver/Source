@@ -5,6 +5,12 @@
 	#include "../common/libev/ev.h"
 	#include "threads.h"
 	#include "mutex.h"
+
+	#ifdef _BSD
+		#define EV_BACKEND_LIST (EVBACKEND_SELECT | EVBACKEND_POLL | EVBACKEND_KQUEUE)
+	#else
+		#define EV_BACKEND_LIST (EVBACKEND_SELECT | EVBACKEND_POLL | EVBACKEND_EPOLL)
+	#endif
 	
 	class CGSocket;
 	class CClient;

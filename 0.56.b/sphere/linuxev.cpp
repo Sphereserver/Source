@@ -45,7 +45,7 @@ static void socketslave_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 
 LinuxEv::LinuxEv(void) : AbstractSphereThread("NetworkEvents", IThread::High), m_active(true)
 {
-	m_eventLoop = ev_loop_new(EVBACKEND_SELECT | EVBACKEND_POLL | EVBACKEND_EPOLL);
+	m_eventLoop = ev_loop_new(EV_BACKEND_LIST);
 	ev_set_io_collect_interval(m_eventLoop, 0.01);
 	
 	memset(&m_watchMainsock, 0, sizeof(struct ev_io));
