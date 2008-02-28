@@ -31,9 +31,11 @@
 #ifndef ERROR_SUCCESS
 	#define ERROR_SUCCESS	0
 #endif
+
 #ifndef UNREFERENCED_PARAMETER
 	#define UNREFERENCED_PARAMETER(P)	(P)
 #endif
+
 #ifndef HKEY_LOCAL_MACHINE
 	#define HKEY_LOCAL_MACHINE	(( HKEY ) 0x80000002 )
 #endif

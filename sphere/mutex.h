@@ -3,6 +3,10 @@
 
 #include "../common/common.h"
 
+#ifdef _BSD
+	#define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE
+#endif
+
 class SimpleMutex
 {
 public:
