@@ -11,27 +11,28 @@ WARN	= -w
 
 #DEBUG	= -ggdb2
 DEBUG	= -s
-INCLUDE	= -I../common -I/usr/include/mysql
+INCLUDE	= -I../common -I/usr/local/include/mysql
 
 # Linux
 LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
+DEFNIX  = -D_LINUX
 
 # FreeBSD
-#LIBS	= -L/usr/lib -pthread
+#LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
 #DEFBSD	= -D_BSD
 
 #EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) -D_LINUX $(EXTRADEFS) $(DEBUGDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(DEFNIX) $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
 
 #CC	= g++
-CC	= g++-3.4
+SCC	= g++41
 
 #CCO	= gcc
-CCO	= gcc-3.4
+SCCO	= gcc41
 
 NO	= -fno-rtti -fno-exceptions
 #EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
@@ -151,7 +152,7 @@ clean:	tidy
 	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
-	@$(CCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
+	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
 	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
 
 tidy:
@@ -171,10 +172,10 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 #	ar r $@ $?
 
 flags:  
-	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
+	@echo "Compiler Flags: $(SCC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
+	@$(SCC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
@@ -182,11 +183,11 @@ version.h:	VERSION
 
 %.o:	%.cpp
 	@echo " Compiling $<"
-	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
+	@$(SCC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
 
 %.co:	%.c
 	@echo " Compiling $<"
-	@$(CCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
+	@$(SCCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
 
 dist:
 	@cp $(EXE) $(REXE)
