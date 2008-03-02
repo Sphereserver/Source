@@ -108,6 +108,14 @@ int ThreadHolder::getActiveThreads()
 	return m_threadCount;
 }
 
+IThread * ThreadHolder::getThreadAt(int at)
+{
+	if (( at < 0 ) || ( at > getActiveThreads() ))
+		return NULL;
+
+	return m_threads[at];
+}
+
 void ThreadHolder::init()
 {
 	if( !m_inited )

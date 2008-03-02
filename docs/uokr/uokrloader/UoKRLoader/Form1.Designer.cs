@@ -191,7 +191,6 @@
             // 
             // ofdUOKRClient
             // 
-            this.ofdUOKRClient.FileName = "openFileDialog1";
             this.ofdUOKRClient.Filter = "UO:KR Client|uokr.exe";
             // 
             // lnkOpen

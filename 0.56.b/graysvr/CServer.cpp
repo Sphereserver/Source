@@ -595,6 +595,16 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				CScript script( "SECURE" );
 				r_Verb( script, pSrc );
 			} break;
+		case 't':
+			{
+				pSrc->SysMessagef("Current active threads: %d.\n", ThreadHolder::getActiveThreads());
+				for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
+				{
+					IThread * thrCurrent = ThreadHolder::getThreadAt(iThreads);
+					if ( thrCurrent != NULL )
+						pSrc->SysMessagef("%d - Id: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), thrCurrent->getName() );
+				}
+			} break;
 		case 'x':
 			{
 				if (( len > 1 ) && ( sText[1] == '#' ))	//	X# - exit with save. Such exit is not protected by secure mode
