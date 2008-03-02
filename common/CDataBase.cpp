@@ -1,7 +1,7 @@
 #include "../common/CDataBase.h"
 #include "../graysvr/graysvr.h"
 
-CDataBase::CDataBase() : _bConnected(false)
+CDataBase::CDataBase() : _bConnected(false), stlqueryLock(&m_resultMutex)
 {
 }
 
@@ -71,11 +71,11 @@ void CDataBase::Close()
 	_bConnected = false;
 }
 
-bool CDataBase::query(const char *query)
+bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 {
 	ADDTOCALLSTACK("CDataBase::query");
-	m_QueryResult.Empty();
-	m_QueryResult.SetNumNew("NUMROWS", 0);
+	mapQueryResult.Empty();
+	mapQueryResult.SetNumNew("NUMROWS", 0);
 
 	if ( !isConnected() )
 		return false;
@@ -93,8 +93,8 @@ bool CDataBase::query(const char *query)
 		MYSQL_FIELD *fields = mysql_fetch_fields(m_res);
 		int			num_fields = mysql_num_fields(m_res);
 
-		m_QueryResult.SetNum("NUMROWS", mysql_num_rows(m_res));
-		m_QueryResult.SetNum("NUMCOLS", num_fields);
+		mapQueryResult.SetNum("NUMROWS", mysql_num_rows(m_res));
+		mapQueryResult.SetNum("NUMCOLS", num_fields);
 
 		char	key[12];
 		char	**trow = NULL;
@@ -107,14 +107,14 @@ bool CDataBase::query(const char *query)
 				char	*z = trow[i];
 				if ( !rownum )
 				{
-					m_QueryResult.SetStr(ITOA(i, key, 10), true, z);
-					m_QueryResult.SetStr(fields[i].name, true, z);
+					mapQueryResult.SetStr(ITOA(i, key, 10), true, z);
+					mapQueryResult.SetStr(fields[i].name, true, z);
 				}
 
 				sprintf(zStore, "%d.%d", rownum, i);
-				m_QueryResult.SetStr(zStore, true, z);
+				mapQueryResult.SetStr(zStore, true, z);
 				sprintf(zStore, "%d.%s", rownum, fields[i].name);
-				m_QueryResult.SetStr(zStore, true, z);
+				mapQueryResult.SetStr(zStore, true, z);
 			}
 			rownum++;
 		}
@@ -136,7 +136,7 @@ bool CDataBase::query(const char *query)
 	return false;
 }
 
-bool __cdecl CDataBase::queryf(char *fmt, ...)
+bool __cdecl CDataBase::queryf(CVarDefMap & mapQueryResult, char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::queryf");
 	TemporaryString buf;
@@ -146,25 +146,29 @@ bool __cdecl CDataBase::queryf(char *fmt, ...)
 	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
-	return this->query(buf);
+	return this->query(buf, mapQueryResult);
 }
 
-void CDataBase::exec(const char *query)
+bool CDataBase::exec(const char *query)
 {
 	ADDTOCALLSTACK("CDataBase::exec");
 
 	if ( !isConnected() )
-		return;
+		return false;
 
 	if ( mysql_query(_myData, query) )
 	{
 		const char *myErr = mysql_error(_myData);
 		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL query \"%s\" failed due to \"%s\"\n",
 			query, ( *myErr ? myErr : "unknown reason"));
+
+		return false;
 	}
+
+	return true;
 }
 
-void __cdecl CDataBase::execf(char *fmt, ...)
+bool __cdecl CDataBase::execf(char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::execf");
 	TemporaryString buf;
@@ -174,13 +178,20 @@ void __cdecl CDataBase::execf(char *fmt, ...)
 	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
-	this->exec(buf);
+	return this->exec(buf);
 }
 
 UINT CDataBase::getLastId()
 {
 	ADDTOCALLSTACK("CDataBase::getLastId");
 	return mysql_insert_id(_myData);
+}
+
+void CDataBase::addQueryResult(CGString theFunction, CScriptTriggerArgs theResult)
+{
+	SimpleThreadLock stlThelock(m_resultMutex);
+
+	m_QueryArgs.push(FunctionArgsPair_t(theFunction,theResult));
 }
 
 bool CDataBase::OnTick()
@@ -195,6 +206,7 @@ bool CDataBase::OnTick()
 	//	do not ping sql server too heavily
 	if ( ++tickcnt < 1000 )
 		return true;
+
 	tickcnt = 0;
 
 	if ( isConnected() )	//	currently connected - just check that the link is alive
@@ -208,6 +220,21 @@ bool CDataBase::OnTick()
 			{
 				g_Log.EventError("MySQL reattach failed/timed out. SQL operations disabled.\n");
 			}
+		}
+	}
+
+	if ( !m_QueryArgs.empty() && !(tickcnt % 10) )
+	{
+		stlqueryLock.doLock();
+
+		FunctionArgsPair_t currentPair = m_QueryArgs.front();
+		m_QueryArgs.pop();
+
+		stlqueryLock.doUnlock();
+
+		if ( !g_Serv.r_Call(currentPair.first, &g_Serv, &(currentPair.second)) )
+		{
+			// error
 		}
 	}
 
@@ -369,7 +396,7 @@ bool CDataBase::r_Verb(CScript & s, CTextConsole * pSrc)
 			break;
 
 		case DBOV_QUERY:
-			query(s.GetArgRaw());
+			query(s.GetArgRaw(), m_QueryResult);
 			break;
 
 		default:

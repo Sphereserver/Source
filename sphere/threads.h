@@ -75,6 +75,8 @@ public:
 	static void pop(IThread *thread);
 	// returns number of running threads. Sould NOT be called, unit tests usage
 	static int getActiveThreads();
+	// returns thread at i pos
+	static IThread * getThreadAt(int at);
 
 private:
 	static void init();
