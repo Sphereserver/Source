@@ -482,6 +482,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"P = Profile Info (%s) (P# to dump to profiler_dump.txt)\n"
 				"R = Resync Pause\n"
 				"S = Secure mode toggle (%s)\n"
+				"T = List of active Threads\n"
 				"X = immediate exit of the server (X# to save world and statics before exit)\n"
 				,
 				m_Clients.GetCount(),
@@ -602,7 +603,8 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				{
 					IThread * thrCurrent = ThreadHolder::getThreadAt(iThreads);
 					if ( thrCurrent != NULL )
-						pSrc->SysMessagef("%d - Id: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), thrCurrent->getName() );
+						pSrc->SysMessagef("%d - Id: %d, Priority: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), 
+											thrCurrent->getPriority(), thrCurrent->getName() );
 				}
 			} break;
 		case 'x':
