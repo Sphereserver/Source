@@ -5,6 +5,7 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "PingServer.h"	// ping server
+#include "../sphere/asyncdb.h"
 #ifndef _WIN32
 	#include "../sphere/linuxev.h"
 #endif
@@ -390,6 +391,7 @@ void Main::tick()
 
 Main g_Main;
 extern PingServer g_PingServer;
+extern CDataBaseAsyncHelper g_asyncHdb;
 #ifndef _WIN32
 	extern LinuxEv g_NetworkEvent;
 #endif
@@ -617,6 +619,7 @@ void Sphere_ExitServer()
 
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
+	g_asyncHdb.waitForClose();
 #ifndef _WIN32
 	if ( IsSetEF( EF_UseNetworkMulti ) )
 		g_NetworkEvent.waitForClose();

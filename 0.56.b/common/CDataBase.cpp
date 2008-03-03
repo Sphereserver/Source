@@ -1,5 +1,8 @@
 #include "../common/CDataBase.h"
 #include "../graysvr/graysvr.h"
+#include "../sphere/asyncdb.h"
+
+extern CDataBaseAsyncHelper g_asyncHdb;
 
 CDataBase::CDataBase() : _bConnected(false), stlqueryLock(&m_resultMutex)
 {
@@ -187,7 +190,24 @@ UINT CDataBase::getLastId()
 	return mysql_insert_id(_myData);
 }
 
-void CDataBase::addQueryResult(CGString theFunction, CScriptTriggerArgs theResult)
+bool CDataBase::addQuery(bool isQuery, LPCTSTR theFunction, LPCTSTR theQuery)
+{
+	if ( g_Cfg.m_Functions.FindKey( theFunction ) == -1 )
+	{
+		DEBUG_ERR(("Invalid callback function (%s) for AEXECUTE/AQUERY.\n", theFunction));
+		return false;
+	}
+	else
+	{
+		if ( !g_asyncHdb.isActive() )
+			g_asyncHdb.start();
+
+		g_asyncHdb.addQuery(isQuery,theFunction,theQuery);
+		return true;
+	}
+}
+
+void CDataBase::addQueryResult(CGString theFunction, CScriptTriggerArgs * theResult)
 {
 	SimpleThreadLock stlThelock(m_resultMutex);
 
@@ -223,7 +243,7 @@ bool CDataBase::OnTick()
 		}
 	}
 
-	if ( !m_QueryArgs.empty() && !(tickcnt % 10) )
+	if ( !m_QueryArgs.empty() )
 	{
 		stlqueryLock.doLock();
 
@@ -232,10 +252,12 @@ bool CDataBase::OnTick()
 
 		stlqueryLock.doUnlock();
 
-		if ( !g_Serv.r_Call(currentPair.first, &g_Serv, &(currentPair.second)) )
+		if ( !g_Serv.r_Call(currentPair.first, &g_Serv, currentPair.second) )
 		{
 			// error
 		}
+
+		delete currentPair.second;
 	}
 
 	return true;
@@ -248,6 +270,8 @@ bool CDataBase::OnTick()
 
 enum DBO_TYPE
 {
+	DBO_AEXECUTE,
+	DBO_AQUERY,
 	DBO_CONNECTED,
 	DBO_ESCAPEDATA,
 	DBO_ROW,
@@ -256,6 +280,8 @@ enum DBO_TYPE
 
 LPCTSTR const CDataBase::sm_szLoadKeys[DBO_QTY+1] =
 {
+	"AEXECUTE",
+	"AQUERY",
 	"CONNECTED",
 	"ESCAPEDATA",
 	"ROW",
@@ -324,6 +350,33 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1);
 	switch ( index )
 	{
+		case DBO_AEXECUTE:
+		case DBO_AQUERY:
+			{
+				pszKey += strlen(sm_szLoadKeys[index]);
+				GETNONWHITESPACE(pszKey);
+				sVal.FormatVal(0);
+
+				if ( pszKey && *pszKey )
+				{
+					TCHAR * ppArgs[2];
+					int ArgCount;
+
+					if ( Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF( ppArgs )) != 2) 
+					{
+						DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));
+					}
+					else
+					{
+						sVal.FormatVal( addQuery((index == DBO_AQUERY), ppArgs[0], ppArgs[1]) );
+					}
+				}
+				else
+				{
+					DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));
+				}
+			} break;
+
 		case DBO_CONNECTED:
 			sVal.FormatVal(isConnected());
 			break;

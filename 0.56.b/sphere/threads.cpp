@@ -388,6 +388,11 @@ void AbstractThread::setPriority(IThread::Priority pri)
 	m_priority = pri;
 }
 
+IThread::Priority AbstractThread::getPriority()
+{
+	return m_priority;
+}
+
 bool AbstractThread::shouldExit()
 {
 	return false;

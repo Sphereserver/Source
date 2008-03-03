@@ -3,7 +3,7 @@
 
 CDataBaseAsyncHelper g_asyncHdb;
 
-CDataBaseAsyncHelper::CDataBaseAsyncHelper(void) : AbstractSphereThread("AsyncDatabaseHelper", IThread::Normal), m_active(true)
+CDataBaseAsyncHelper::CDataBaseAsyncHelper(void) : AbstractSphereThread("AsyncDatabaseHelper", IThread::Low), m_active(false)
 {
 }
 
@@ -13,6 +13,7 @@ CDataBaseAsyncHelper::~CDataBaseAsyncHelper(void)
 
 void CDataBaseAsyncHelper::onStart()
 {
+	m_active = true;
 	stlqueryLock.setMutex(&m_queryMutex);
 }
 
@@ -29,15 +30,16 @@ void CDataBaseAsyncHelper::tick()
 
 		FunctionQueryPair_t currentFunctionPair = currentPair.second;
 
-		CScriptTriggerArgs theArgs;
-		theArgs.m_iN1 = currentPair.first;
-		theArgs.m_s1 = currentFunctionPair.second;
+		CScriptTriggerArgs * theArgs = new CScriptTriggerArgs();
+		theArgs->m_iN1 = currentPair.first;
+		theArgs->m_s1 = currentFunctionPair.second;
 
 		if ( currentPair.first )
-			theArgs.m_iN2 = g_Serv.m_hdb.query(currentFunctionPair.second, theArgs.m_VarsLocal);
+			theArgs->m_iN2 = g_Serv.m_hdb.query(currentFunctionPair.second, theArgs->m_VarsLocal);
 		else
-			theArgs.m_iN2 = g_Serv.m_hdb.exec(currentFunctionPair.second);
+			theArgs->m_iN2 = g_Serv.m_hdb.exec(currentFunctionPair.second);
 
+		g_Serv.m_hdb.addQueryResult(currentFunctionPair.first, theArgs);
 	}
 }
 
@@ -58,6 +60,5 @@ void CDataBaseAsyncHelper::addQuery(bool isQuery, LPCTSTR sFunction, LPCTSTR sQu
 {
 	SimpleThreadLock stlThelock(m_queryMutex);
 
-	if ( m_active )
-		m_queriesTodo.push_back( QueryBlob_t(isQuery, FunctionQueryPair_t(CGString(sFunction), CGString(sQuery))) );
+	m_queriesTodo.push_back( QueryBlob_t(isQuery, FunctionQueryPair_t(CGString(sFunction), CGString(sQuery))) );
 }
