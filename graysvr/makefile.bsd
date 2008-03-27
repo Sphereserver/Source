@@ -13,17 +13,13 @@ WARN	= -w
 DEBUG	= -s
 INCLUDE	= -I../common -I/usr/local/include/mysql
 
-# Linux
-#LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
-#DEFNIX  = -D_LINUX
-
 # FreeBSD
 LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
 DEFBSD	= -D_BSD
 
 #EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(DEFNIX) $(EXTRADEFS) $(DEBUGDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr

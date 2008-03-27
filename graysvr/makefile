@@ -11,28 +11,21 @@ WARN	= -w
 
 #DEBUG	= -ggdb2
 DEBUG	= -s
-INCLUDE	= -I../common -I/usr/local/include/mysql
+INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -ldl
+LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient
 DEFNIX  = -D_LINUX
 
-# FreeBSD
-#LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
-#DEFBSD	= -D_BSD
-
-EXTRADEFS = -D_NEWGUILDSYSTEM
+#EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(DEFNIX) $(EXTRADEFS) $(DEBUGDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
 
-#CC	= g++
-SCC	= g++41
-
-#CCO	= gcc
-SCCO	= gcc41
+CC	= g++
+CCO	= gcc
 
 NO	= -fno-rtti -fno-exceptions
 #EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
@@ -173,10 +166,10 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 #	ar r $@ $?
 
 flags:  
-	@echo "Compiler Flags: $(SCC) -c $(O_FLAGS) $(C_FLAGS)"
+	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): flags gray
-	@$(SCC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
@@ -184,11 +177,11 @@ version.h:	VERSION
 
 %.o:	%.cpp
 	@echo " Compiling $<"
-	@$(SCC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
+	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
 
 %.co:	%.c
 	@echo " Compiling $<"
-	@$(SCCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
+	@$(CCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
 
 dist:
 	@cp $(EXE) $(REXE)
