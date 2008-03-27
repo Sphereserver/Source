@@ -21,7 +21,7 @@ DEFNIX  = -D_LINUX
 #LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
 #DEFBSD	= -D_BSD
 
-#EXTRADEFS = -D_NEWGUILDSYSTEM
+EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
 DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(DEFNIX) $(EXTRADEFS) $(DEBUGDEFS)
 
@@ -138,7 +138,8 @@ SRC	:= 	CAccount.cpp \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
-		../sphere/linuxev.cpp
+		../sphere/linuxev.cpp \
+		../sphere/asyncdb.cpp
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
