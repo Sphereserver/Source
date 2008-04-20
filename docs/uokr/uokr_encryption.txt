@@ -52,3 +52,15 @@ To break it:
 006E6E09  |. 5B             POP EBX
 006E6E0A  |. C9             LEAVE
 006E6E0B  \. C2 0C00        RETN 0C
+
+
+// Login crypt
+
+005E2237   . 8A4E 04        MOV CL,BYTE PTR DS:[ESI+4]
+005E223A   . 3008           XOR BYTE PTR DS:[EAX],CL
+005E223C   . 8B4E 04        MOV ECX,DWORD PTR DS:[ESI+4]
+005E223F   . 8B46 08        MOV EAX,DWORD PTR DS:[ESI+8]
+005E2242   . 8BD0           MOV EDX,EAX
+005E2244   . D1E8           SHR EAX,1
+
+Patch @005E223A 0x90 0x90
