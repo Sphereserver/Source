@@ -1478,7 +1478,7 @@ bool CClient::xRecvData() // Receive message from client
 				SetConnectType( CONNECT_UNK );
 				return( OnRxPing( Event.m_Raw, iCountNew ) );
 			}
-			else if ( Event.Default.m_Cmd == XCMD_EncryptionReply )
+			else if ( Event.Default.m_Cmd == XCMD_EncryptionReply && IsClientKR() )
 			{
 				int iEncKrLen = Event.EncryptionReply.m_len;
 

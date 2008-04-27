@@ -7,11 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 25, 2007
+// FILE LAST UPDATED: Sunday, April 27, 2008
 //
 // SE Building Walls script, 
 // by Exer
-// changes, additions, and fixes by Rattlehead + Elric
+// changes, additions, and fixes by Rattlehead + Elric + coruja747
 //
 VERSION=0.56b
 
@@ -45,7 +45,7 @@ dupeitem=029f8
 
 [itemdef 029de]
 //plaster brown
-dupeitem=
+dupeitem=029f8
 
 [itemdef 029df]
 //plaster brown

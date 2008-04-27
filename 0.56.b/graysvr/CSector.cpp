@@ -623,7 +623,8 @@ void CSector::SetLightNow( bool fFlash )
 			pClient->addLight();
 		}
 
-		if ( ! g_Serv.IsLoading())
+		// don't fire trigger when server is loading or light is flashing
+		if ( ! g_Serv.IsLoading() && fFlash == false )
 		{
 			pChar->OnTrigger( CTRIG_EnvironChange, pChar );
 		}

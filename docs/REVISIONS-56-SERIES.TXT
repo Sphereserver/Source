@@ -3943,8 +3943,23 @@ this all in desperation)
 - Fixed #1378: Armour rating being factored in twice during damage calculations.
 
 11-02-2008, MrSugarCube
-- Fixed: Newly created characters not starting with the MALE_DEFAULT / FEMALE_DEFAULT
+- Fixed #1406: Newly created characters not starting with the MALE_DEFAULT / FEMALE_DEFAULT
   newbie templates.
 - Fixed: Exception caused by using ARGO.Verb when argo is not set.
 - Modified: "Vendor uid=xxx selling unmovable item" message no longer shown when
   listing the items that a player can sell to a vendor.
+
+27-04-2008, MrSugarCube
+- Fixed #1404: Restoring custom house design without first making a backup allowing players
+  to remove the entire house foundation.
+- Fixed #1398: Lightning spells causing @EnvironChange to be called on nearby characters.
+- Fixed #1381: Maps with non-matching courses plotted can be stacked.
+- Modified #1389: Character list to show filled character slots that are over the account's
+  limit (eg. account containing 7 characters shows all 7 even when the limit is 5 ,assuming
+  the client is capable of displaying all 7).
+
+27-04-2008, coruja747 (Script pack)
+- Updated #1402: sphere_item_building_walls_se.scp (Fixed empty dupelist property)
+
+27-04-2008, Mordaunt (Script pack)
+- Updated: sphere_item_multis_foundations.scp (Added the remaining house foundation sizes)

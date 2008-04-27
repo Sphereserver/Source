@@ -2183,7 +2183,7 @@ int CClient::Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharF
 		j++;
 	}
 
-	int iMax = pAccount->GetMaxChars();
+	int iMax = minimum(maximum(pAccount->m_Chars.GetCharCount(), pAccount->GetMaxChars()), MAX_CHARS_PER_ACCT);
 	int iQty = pAccount->m_Chars.GetCharCount();
 	for ( int k=0; k<iQty; k++ )
 	{
@@ -4899,7 +4899,7 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 	{
 		CCommand cmd;
 		cmd.FeaturesEnable.m_Cmd = XCMD_Features;
-		cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), GetAccount()->GetMaxChars());
+		cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), maximum(GetAccount()->GetMaxChars(), GetAccount()->m_Chars.GetCharCount()));
 		// Here always use xSendPktNow, since this packet has to be separated from the next one
 		xSendPktNow( &cmd, sizeof( cmd.FeaturesEnable ));
 	}
@@ -4931,7 +4931,7 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 
 	pCmdOffset->CharList.m_startcount = startCount;
 	pCmdOffset = (CCommand *)(((BYTE *)pCmdOffset) + (sizeof(cmd.CharList.m_start[0]) * (startCount - 1)));
-	pCmdOffset->CharList.m_flags = g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), GetAccount()->GetMaxChars());
+	pCmdOffset->CharList.m_flags = g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), maximum(GetAccount()->GetMaxChars(), GetAccount()->m_Chars.GetCharCount()));
 
 	xSendPkt( &cmd, len );
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;

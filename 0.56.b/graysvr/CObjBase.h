@@ -825,7 +825,7 @@ public:
 
 	bool  IsStackableException() const;
 	bool  IsStackable( const CItem * pItem ) const;
-	bool  IsSameType( const CObjBase * pObj ) const;
+	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	bool  Stack( CItem * pItem );
 	int ConsumeAmount( int iQty = 1, bool fTest = false );
 
@@ -1635,6 +1635,7 @@ public:
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
 
+	virtual bool IsSameType( const CObjBase * pObj ) const;
 	virtual void r_Write( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc = NULL );
 	virtual bool r_LoadVal( CScript & s );
