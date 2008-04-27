@@ -512,6 +512,28 @@ void CItem::Plant_CropReset()
 /////////////////////////////////////////////////////////////////////////////
 // -CItemMap
 
+bool CItemMap::IsSameType(const CObjBase *pObj) const
+{
+	const CItemMap *pItemMap = dynamic_cast<const CItemMap *>( pObj );
+	if ( pItemMap )
+	{
+		// maps can only stack on top of each other if the pins match
+		if ( m_Pins.GetCount() != pItemMap->m_Pins.GetCount() )
+			return false;
+
+		// check individual pins are in the same place
+		for (int i = 0; i < m_Pins.GetCount(); i++)
+		{
+			if ( m_Pins[i].m_x != pItemMap->m_Pins[i].m_x )
+				return false;
+			else if ( m_Pins[i].m_y != pItemMap->m_Pins[i].m_y )
+				return false;
+		}
+	}
+
+	return CItemVendable::IsSameType( pObj );
+}
+
 bool CItemMap::r_LoadVal( CScript & s ) // Load an item Script
 {
 	ADDTOCALLSTACK("CItemMap::r_LoadVal");

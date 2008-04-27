@@ -15,9 +15,9 @@ CItemMultiCustom::CItemMultiCustom( ITEMID_TYPE id, CItemBase * pItemDef ) : CIt
 	m_designMain.m_pData = NULL;
 	m_designWorking.m_iRevision = 1;
 	m_designWorking.m_pData = NULL;
-	m_designBackup.m_iRevision = 1;
+	m_designBackup.m_iRevision = 0;
 	m_designBackup.m_pData = NULL;
-	m_designRevert.m_iRevision = 1;
+	m_designRevert.m_iRevision = 0;
 	m_designRevert.m_pData = NULL;
 	m_pArchitect = NULL;
 	m_pGrayMulti = NULL;
@@ -25,8 +25,8 @@ CItemMultiCustom::CItemMultiCustom( ITEMID_TYPE id, CItemBase * pItemDef ) : CIt
 
 	if ( !g_Serv.IsLoading() )
 	{
-		ResetStructure(NULL);
-		CommitChanges(NULL);
+		ResetStructure();
+		CommitChanges();
 	}
 }
 
@@ -907,7 +907,7 @@ void CItemMultiCustom::BackupStructure(CClient * pClientSrc)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::BackupStructure");
 	// create a backup of the working copy
-	if ( m_designWorking.m_iRevision == m_designBackup.m_iRevision)
+	if ( m_designWorking.m_iRevision == m_designBackup.m_iRevision )
 		return;
 
 	CopyDesign(&m_designWorking, &m_designBackup);
@@ -918,7 +918,7 @@ void CItemMultiCustom::RestoreStructure(CClient * pClientSrc)
 	ADDTOCALLSTACK("CItemMultiCustom::RestoreStructure");
 	// restore the working copy using the details stored in the
 	// backup design
-	if ( m_designWorking.m_iRevision == m_designBackup.m_iRevision)
+	if ( m_designWorking.m_iRevision == m_designBackup.m_iRevision || m_designBackup.m_iRevision == 0)
 		return;
 
 	CopyDesign(&m_designBackup, &m_designWorking);
@@ -932,7 +932,7 @@ void CItemMultiCustom::RevertChanges( CClient * pClientSrc )
 	ADDTOCALLSTACK("CItemMultiCustom::RevertChanges");
 	// restore the working copy using the details stored in the
 	// revert design
-	if ( m_designWorking.m_iRevision == m_designRevert.m_iRevision )
+	if ( m_designWorking.m_iRevision == m_designRevert.m_iRevision || m_designRevert.m_iRevision == 0 )
 		return;
 
 	CopyDesign(&m_designRevert, &m_designWorking);
