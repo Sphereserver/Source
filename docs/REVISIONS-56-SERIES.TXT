@@ -3963,3 +3963,16 @@ this all in desperation)
 
 27-04-2008, Mordaunt (Script pack)
 - Updated: sphere_item_multis_foundations.scp (Added the remaining house foundation sizes)
+
+28-04-2008, MrSugarCube
+- Fixed #1394: Advanced pathfinding (NPC_AI_PATH) allowing NPCs to make invalid movements
+  (for example walking whilst paralyzed). Some other adjustments have also been made,
+  allowing NPCs to properly assess characters that may be blocking the way (to walk around
+  them), negotiate corners with EF_DiagonalWalkCheck enabled, and attempt to compensate
+  when new obstacles block a previously valid path.
+- Fixed #1390: Locals not working in SKILLMENUs.
+
+28-04-2008, coruja747 (Script pack)
+- Updated #1392: spherechar_new_mounts.scp, spherechar_mondains_legacy.scp (Updated
+  RESDISPDNHUE property on rides)
+

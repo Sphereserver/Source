@@ -7,8 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 08-09-2005
-
+// FILE LAST UPDATED: April 28 2008
 VERSION=0.56b
 
 [chardef 256]
@@ -775,7 +774,7 @@ ARMOR=20
 RESOURCES=15 i_ribs_raw,10 i_hide
 CAN=MT_WALK|MT_RUN
 RESLEVEL=5
-RESDISPDNHUE=33
+RESDISPDNHUE=083e7
 RESDISPDNID=c_horse_gray
 FOODTYPE=55 i_ribs_raw
 DESIRES=c_elf_male,c_elf_female

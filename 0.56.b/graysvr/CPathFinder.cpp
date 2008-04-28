@@ -25,34 +25,14 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointR
 				if ( IsSetEF( EF_DiagonalWalkCheck ) )
 				{
 					// Don't go diagonally beside a non walkable block
-					if ( x == -1 && y == -1 && RealX > 0 && RealY > 0)
-						if ( m_Points[RealX-1][RealY].m_Walkable == false || m_Points[RealX][RealY-1].m_Walkable == false )
-							continue;
-					if ( x == 1 && y == 1 && RealY < 23 && RealX < 23 )
-						if ( m_Points[RealX+1][RealY].m_Walkable == false || m_Points[RealX][RealY+1].m_Walkable == false )
-							continue;
-					if ( x == -1 && y == 1 && RealX > 0 && RealY < 23 )
-						if ( m_Points[RealX-1][RealY].m_Walkable == false || m_Points[RealX][RealY+1].m_Walkable == false )
-							continue;
-					if ( x == 1 && y == -1 && RealY > 0 && RealX < 23)
-						if ( m_Points[RealX+1][RealY].m_Walkable == false || m_Points[RealX][RealY-1].m_Walkable == false )
-							continue;
+					if ( m_Points[RealX - x][RealY].m_Walkable == false || m_Points[RealX][RealY - y].m_Walkable == false )
+						continue;
 				}
 				else
 				{
 					//Don't go diagonally between two non walkable blocks
-					if ( x == -1 && y == -1 && RealX > 0 && RealY > 0)
-						if ( m_Points[RealX-1][RealY].m_Walkable == false && m_Points[RealX][RealY-1].m_Walkable == false )
-							continue;
-					if ( x == 1 && y == 1 && RealY < 23 && RealX < 23 )
-						if ( m_Points[RealX+1][RealY].m_Walkable == false && m_Points[RealX][RealY+1].m_Walkable == false )
-							continue;
-					if ( x == -1 && y == 1 && RealX > 0 && RealY < 23 )
-						if ( m_Points[RealX-1][RealY].m_Walkable == false && m_Points[RealX][RealY+1].m_Walkable == false )
-							continue;
-					if ( x == 1 && y == -1 && RealY > 0 && RealX < 23)
-						if ( m_Points[RealX+1][RealY].m_Walkable == false && m_Points[RealX][RealY-1].m_Walkable == false )
-							continue;
+					if ( m_Points[RealX - x][RealY].m_Walkable == false && m_Points[RealX][RealY - y].m_Walkable == false )
+						continue;
 				}
 			}
 
