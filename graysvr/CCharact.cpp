@@ -2687,6 +2687,8 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 						return NULL;	// not through non-players
 					if ( pChar->IsStatFlag(STATF_DEAD|STATF_Insubstantial) || pChar->IsDisconnected())
 						continue;
+					if ( m_pNPC && !pChar->IsStatFlag(STATF_Hidden))
+						return NULL;
 
 					//	How much stamina to push past ?
 					int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);

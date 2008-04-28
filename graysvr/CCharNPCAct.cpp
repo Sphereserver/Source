@@ -737,125 +737,145 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		local.m_y = m_pNPC->m_nextY[0];
 			// no steps available yet, or pathfinding not usable in this situation
 			// so, use default movements
-		if (!(( local.m_x < 1 ) || ( local.m_y < 1 )))
+
+		if (local.m_x > 0 && local.m_y > 0)
 		{
-			Dir = pMe.GetDir(local);
-			local = pMe;
-			pMe.Move(Dir);
+			bUsePathfinding = true;
 
-			EXC_TRYSUB("Array Shift");
-			//	also shift the steps array
-			for ( int j = 0; j < MAX_NPC_PATH_STORAGE_SIZE-1; ++j )
+			if ( pMe.GetDist(local) > 1 )
 			{
-				m_pNPC->m_nextX[j] = m_pNPC->m_nextX[j+1];
-				m_pNPC->m_nextY[j] = m_pNPC->m_nextY[j+1];
+				// The next step is too far away, pathfinding route has become invalid
+				m_pNPC->m_nextPt.InitPoint();
+				m_pNPC->m_nextX[0] = 0;
+				m_pNPC->m_nextY[0] = 0;
 			}
-			m_pNPC->m_nextX[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
-			m_pNPC->m_nextY[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
-			EXC_CATCHSUB("NPCAI");
-
-			EXC_SET("CanMoveWalkTo after array shift");
-			//	do the recorded move
-			if ( ! CanMoveWalkTo(pMe, true, false, Dir) ) //	make standart default move if failed the recorded one
-				bUsePathfinding = true;
 			else
-				pMe = local; //no pathfinding
+			{
+				// Update our heading to the way we need to go
+				Dir = pMe.GetDir(local);
+
+				EXC_TRYSUB("Array Shift");
+				//	also shift the steps array
+				for ( int j = 0; j < MAX_NPC_PATH_STORAGE_SIZE-1; ++j )
+				{
+					m_pNPC->m_nextX[j] = m_pNPC->m_nextX[j+1];
+					m_pNPC->m_nextY[j] = m_pNPC->m_nextY[j+1];
+				}
+				m_pNPC->m_nextX[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
+				m_pNPC->m_nextY[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
+				EXC_CATCHSUB("NPCAI");
+			}
 		}
 	}
+
 	EXC_SET("Non-Advanced pathfinding");
-	if ( ! bUsePathfinding )
+	pMe.Move( Dir );
+	if ( ! CanMoveWalkTo(pMe, true, false, Dir ) )
 	{
-//		DEBUG_ERR(("ADVAI:%d: NPC '%s' uses default walk\n", irrr, GetName()));
-		pMe.Move( Dir );
-		if ( ! CanMoveWalkTo(pMe, true, false, Dir ) )
+		CPointMap	ptFirstTry = pMe;
+
+		// try to step around it ?
+		int iDiff = 0;
+		int iRand = Calc_GetRandVal( 100 );
+		if ( iRand < 30 )	// do nothing.
 		{
-			CPointMap	ptFirstTry = pMe;
-
-			// try to step around it ?
-			int iDiff = 0;
-			int iRand = Calc_GetRandVal( 100 );
-			if ( iRand < 30 )	// do nothing.
-				return( 2 );
-			if ( iRand < 35 ) iDiff = 4;	// 5
-			else if ( iRand < 40 ) iDiff = 3;	// 10
-			else if ( iRand < 65 ) iDiff = 2;
-			else iDiff = 1;
-			if ( iRand & 1 ) iDiff = -iDiff;
-			pMe = GetTopPoint();
-			Dir = GetDirTurn( Dir, iDiff );
-			pMe.Move( Dir );
-			if ( ! CanMoveWalkTo(pMe, true, false, Dir ))
+			// whilst pathfinding we should keep trying to find new ways to our destination
+			if ( bUsePathfinding == true )
 			{
-				bool	bClearedWay = false;
-				// Some object in my way that i could move ? Try to move it.
-				if ( !pCharDef->Can(CAN_C_USEHANDS) ) ;		// i cannot use hands, so cannot move objects
-				else if (( g_Cfg.m_iNpcAi&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
-				{
-					int			i;
-					CPointMap	point;
-					for ( i = 0; i < 2; i++ )
-					{
-						if ( !i ) point = pMe;
-						else point = ptFirstTry;
+				SetTimeout( TICK_PER_SEC ); // wait a moment before finding a new route
+				return( 1 );
+			}
+			return( 2 );
+		}
 
-						//	Scan point for items that could be moved by me and move them to my position
-						CWorldSearch	AreaItems(point);
-						while ( true )
+		if ( iRand < 35 ) iDiff = 4;	// 5
+		else if ( iRand < 40 ) iDiff = 3;	// 10
+		else if ( iRand < 65 ) iDiff = 2;
+		else iDiff = 1;
+		if ( iRand & 1 ) iDiff = -iDiff;
+		pMe = GetTopPoint();
+		Dir = GetDirTurn( Dir, iDiff );
+		pMe.Move( Dir );
+		if ( ! CanMoveWalkTo(pMe, true, false, Dir ))
+		{
+			bool	bClearedWay = false;
+			// Some object in my way that i could move ? Try to move it.
+			if ( !pCharDef->Can(CAN_C_USEHANDS) ) ;		// i cannot use hands, so cannot move objects
+			else if (( g_Cfg.m_iNpcAi&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
+			{
+				int			i;
+				CPointMap	point;
+				for ( i = 0; i < 2; i++ )
+				{
+					if ( !i ) point = pMe;
+					else point = ptFirstTry;
+
+					//	Scan point for items that could be moved by me and move them to my position
+					CWorldSearch	AreaItems(point);
+					while ( true )
+					{
+						CItem	*pItem = AreaItems.GetItem();
+						if ( !pItem ) break;
+						else if ( abs(pItem->GetTopZ() - pMe.m_z) > 3 ) continue;		// item is too high
+						else if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_OWNED|ATTR_INVIS|ATTR_STATIC|ATTR_MAGIC) ) bClearedWay = false;
+						else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
+						else if ( !CanCarry(pItem) ) bClearedWay = false;
+						else
 						{
-							CItem	*pItem = AreaItems.GetItem();
-							if ( !pItem ) break;
-							else if ( abs(pItem->GetTopZ() - pMe.m_z) > 3 ) continue;		// item is too high
-							else if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_OWNED|ATTR_INVIS|ATTR_STATIC|ATTR_MAGIC) ) bClearedWay = false;
-							else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
-							else if ( !CanCarry(pItem) ) bClearedWay = false;
-							else
+							//	If the item is a valuable one, investigate the way to loot it
+							//	or not. Do it only with first direction we try to move items and
+							//	if we are not too busy with something else
+							SKILL_TYPE	st = Skill_GetActive();
+							if ( !Calc_GetRandVal(4) )	// 25% chance for item review
 							{
-								//	If the item is a valuable one, investigate the way to loot it
-								//	or not. Do it only with first direction we try to move items and
-								//	if we are not too busy with something else
-								SKILL_TYPE	st = Skill_GetActive();
-								if ( !Calc_GetRandVal(4) )	// 25% chance for item review
+								if (( st == NPCACT_WANDER ) || ( st == NPCACT_LOOKING ) || ( st == NPCACT_GO_HOME ))
 								{
-									if (( st == NPCACT_WANDER ) || ( st == NPCACT_LOOKING ) || ( st == NPCACT_GO_HOME ))
+									CItemVendable *pVend = dynamic_cast <CItemVendable*>(pItem);
+									if ( pVend )	// the item is valuable
 									{
-										CItemVendable *pVend = dynamic_cast <CItemVendable*>(pItem);
-										if ( pVend )	// the item is valuable
+										LONG price = pVend->GetBasePrice();
+													//	the more intelligent i am, the more valuable
+													//	staff I will look to
+										if ( Calc_GetRandVal(price) < iInt )
 										{
-											LONG price = pVend->GetBasePrice();
-														//	the more intelligent i am, the more valuable
-														//	staff I will look to
-											if ( Calc_GetRandVal(price) < iInt )
-											{
-												m_Act_Targ = pItem->GetUID();
-												NPC_Act_Looting();
-												bClearedWay = false;
-												break;
-											}
+											m_Act_Targ = pItem->GetUID();
+											NPC_Act_Looting();
+											bClearedWay = false;
+											break;
 										}
 									}
 								}
-								bClearedWay = true;
-
-								//	move this item to the position I am currently in
-								pItem->SetTopPoint(GetTopPoint());
-								pItem->Update();
 							}
+							bClearedWay = true;
 
-							if ( !bClearedWay ) break;
+							//	move this item to the position I am currently in
+							pItem->SetTopPoint(GetTopPoint());
+							pItem->Update();
 						}
 
-						if ( bClearedWay ) break;
-						//	If not cleared the way still, but I am still clever enough
-						//	I should try to move in the first step I was trying to move to
-						else if ( iInt < iRand*3 ) break;
+						if ( !bClearedWay ) break;
 					}
 
-					//	we have just cleared our way
-					if ( bClearedWay )
-						if ( point == ptFirstTry )
-							Dir = pMe.GetDir(m_Act_p);
+					if ( bClearedWay ) break;
+					//	If not cleared the way still, but I am still clever enough
+					//	I should try to move in the first step I was trying to move to
+					else if ( iInt < iRand*3 ) break;
 				}
-				if ( !bClearedWay ) return 2;
+
+				//	we have just cleared our way
+				if ( bClearedWay )
+					if ( point == ptFirstTry )
+						Dir = pMe.GetDir(m_Act_p);
+			}
+			if ( !bClearedWay )
+			{
+				// whilst pathfinding we should keep trying to find new ways to our destination
+				if ( bUsePathfinding == true )
+				{
+					SetTimeout( TICK_PER_SEC ); // wait a moment before finding a new route
+					return 1;
+				}
+				return 2;
 			}
 		}
 	}

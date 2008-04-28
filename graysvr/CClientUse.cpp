@@ -741,6 +741,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	int iOnCount = 0;
 	int iShowCount = 0;
 	bool fShowMenu = false;	// are we showing a menu?
+	CScriptTriggerArgs Args;
 
 	while ( s.ReadKeyParse())
 	{
@@ -818,7 +819,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			m_pChar->m_Act_Targ = m_Targ_UID;
 
 			// Execute command from script
-			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, m_pChar, NULL );
+			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, m_pChar, &Args );
 			if ( tRet == TRIGRET_RET_TRUE )
 			{
 				return( false );
