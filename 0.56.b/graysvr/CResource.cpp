@@ -273,7 +273,12 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	else
 	{
 		RESOURCE_ID	rid	= ResourceGetID( (RES_TYPE) iResType, pszKey );
-		pRef = ResourceGetDef( rid );
+
+		// check the found resource type matches what we searched for
+		if ( rid.GetResType() == iResType )
+		{
+			pRef = ResourceGetDef( rid );
+		}
 	}
 
 	if ( pszSep != NULL )

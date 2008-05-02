@@ -3976,3 +3976,6 @@ this all in desperation)
 - Updated #1392: spherechar_new_mounts.scp, spherechar_mondains_legacy.scp (Updated
   RESDISPDNHUE property on rides)
 
+02-05-2008, MrSugarCube
+- Fixed #1348: Problem where <SERV.ResourceType.Id> returns 1 when the id is a different
+  resource type (e.g. <SERV.TEMPLATE.i_dagger> (dagger being an item not a template)).
