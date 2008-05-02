@@ -526,10 +526,24 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	pt.m_x += x;
 	pt.m_y += y;
 
-	if ( pClientSrc && GetPlane(z) == 0 )
+	if ( pClientSrc )
 	{
-		// At ground level, clients can only remove components along the bottom edge (stairs)
-		if ( pt.m_y != rectDesign.m_bottom )
+		bool allowRemove = true;
+		switch ( GetPlane(z) )
+		{
+			case 1:
+				// at first level, clients cannot remove dirt tiles
+				if ( id == ITEMID_DIRT_TILE )
+					allowRemove = false;
+				break;
+
+			case 0:
+				// at ground level, clients can only remove components along the bottom edge (stairs)
+				if ( pt.m_y != rectDesign.m_bottom )
+					allowRemove = false;
+		}
+
+		if ( allowRemove == false )
 		{
 			SendStructureTo(pClientSrc);
 			return;
@@ -767,7 +781,6 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			if (!bFoundItems)
 				continue;
 
-
 			int iPlaneSize = (iMaxIndex + 1) * sizeof(pCmdOffset->AOSCustomHouse.m_planeList[0].m_data);
 
 			pCmdOffset->AOSCustomHouse.m_planeList[0].m_index = iCurrentPlane | 0x20;
@@ -779,7 +792,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			z_uLong mCompressLen = z_compressBound(PLANEDATA_BUFFER);
 			BYTE * mCompress = new BYTE[mCompressLen];
 
-			int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_planeList[0].m_data, PLANEDATA_BUFFER, Z_DEFAULT_COMPRESSION);
+			int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_planeList[0].m_data, iPlaneSize, Z_DEFAULT_COMPRESSION);
 			if ( error != Z_OK )
 			{
 				// an error occured with this floor, but we should be able to
@@ -840,12 +853,13 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			if ( iStairsCount >= STAIRSPERBLOCK || ((i+1) == vectorStairs.end()) )
 			{
 				iPlaneCount++;
+				iStairsSize = (iStairsCount * 5);
 
 				// compress m_data
 				z_uLong mCompressLen = z_compressBound(STAIRDATA_BUFFER);
 				BYTE * mCompress = new BYTE[mCompressLen];
 
-				int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, STAIRDATA_BUFFER, Z_DEFAULT_COMPRESSION);
+				int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, iStairsSize, Z_DEFAULT_COMPRESSION);
 				if ( error != Z_OK )
 				{
 					// an error occured with this block, but we should be able to
@@ -868,9 +882,8 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 					goto end_stairslist;
 				}
 
-				iStairsSize = (iStairsCount * 5);
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_index = 9 | iStairsIndex;
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_size = (iStairsCount * 5);
+				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_index = 9 + iStairsIndex;
+				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_size = iStairsSize;
 				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_length = mCompressLen;
 				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_flags = ((iStairsSize >> 4) & 0xF0) | ((mCompressLen >> 8) & 0x0F);
 
