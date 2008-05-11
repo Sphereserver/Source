@@ -290,7 +290,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		if( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ) {
 			CItem *pTiller = Multi_GetSign();
 			ASSERT(pTiller);
-			pTiller->Speak("We cannot turn that way Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
 			return false;
 		}
 	}
@@ -459,9 +459,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 		CItem * pTiller = Multi_GetSign();
 		ASSERT(pTiller);
 		if (bTurbulent == true)
-			pTiller->Speak( "Turbulent waters Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_TURB_WATER ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
 		else
-			pTiller->Speak( "We've stopped Cap'n", HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_STOPPED ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
 		return false;
 	}
 
@@ -666,7 +666,7 @@ doturn:
 			if ( m_itShip.m_fAnchored )
 			{
 anchored:
-				pszSpeak = "The anchor is down <SEX Sir/Mam>!";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_DOWN );
 				break;
 			}
 			m_itShip.m_DirMove = GetDirTurn( DirFace, DirMoveChange );
@@ -754,7 +754,7 @@ dodirmovechange:
 		{
 			if ( ! m_itShip.m_fAnchored )
 			{
-				pszSpeak = "The anchor is already up <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_ALL_UP );
 				break;
 			}
 			m_itShip.m_fAnchored = false;
@@ -765,7 +765,7 @@ dodirmovechange:
 		{
 			if ( m_itShip.m_fAnchored )
 			{
-				pszSpeak = "The anchor is already down <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_ALL_DOWN );
 				break;
 			}
 			m_itShip.m_fAnchored = true;
@@ -790,11 +790,11 @@ dodirmovechange:
 			pt.m_z = PLAYER_HEIGHT;
 			if ( Ship_MoveDelta( pt ))
 			{
-				pszSpeak = "As you command <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CONFIRM );
 			}
 			else
 			{
-				pszSpeak = "Can't do that <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_DENY );
 			}
 			break;
 		}
@@ -807,11 +807,11 @@ dodirmovechange:
 			pt.m_z = -PLAYER_HEIGHT;
 			if ( Ship_MoveDelta( pt ))
 			{
-				pszSpeak = "As you command <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CONFIRM );
 			}
 			else
 			{
-				pszSpeak = "Can't do that <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_DENY );
 			}
 			break;
 		}
@@ -832,11 +832,11 @@ dodirmovechange:
 			if ( pt.m_z )
 			{
 				Ship_MoveDelta( pt );
-				pszSpeak = "As you command <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CONFIRM );
 			}
 			else
 			{
-				pszSpeak = "We have landed <SEX Sir/Mam>";
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_DENY );;
 			}
 			break;
 		}
@@ -851,13 +851,16 @@ dodirmovechange:
 	{
 		if ( pszSpeak == NULL )
 		{
-			static LPCTSTR const sm_pszAye[] =
+			int i_foo = Calc_GetRandVal(3);
+			switch ( i_foo )
 			{
-				"Aye",
-				"Aye Cap'n",
-				"Aye <SEX Sir/Mam>",
-			};
-			pszSpeak = sm_pszAye[ Calc_GetRandVal( COUNTOF( sm_pszAye )) ];
+				case 1:
+					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_1 );
+				case 2:
+					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_2 );
+				default:
+					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_3 );
+			}
 		}
 
 		TCHAR szText[ MAX_TALK_BUFFER ];
