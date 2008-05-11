@@ -1119,5 +1119,14 @@ MSG(TAMING_NO_SLOTS_FREE,	"taming_no_slots_free",		"You fail to tame the creatur
 MSG(UNSHRINK_NO_SLOTS_FREE,	"unshrink_no_slots_free",	"As you cannot control the creature, it goes wild.")
 MSG(SUMMON_NO_SLOTS_FREE,	"summon_no_slots_free",		"As you cannot control the creature, it goes wild.")
 MSG(TRANSFER_NO_SLOTS_FREE,	"transfer_no_slots_free",	"The designated new owner cannot control this creature.")
+MSG(TILLER_CANT_TURN,		"tiller_cant_turn",		"We cannot turn that way Cap'n")
+MSG(TILLER_REPLY_1,		"tiller_reply_1",	        "Aye")
+MSG(TILLER_REPLY_2,		"tiller_reply_2",	        "Aye Cap'n")
+MSG(TILLER_REPLY_3,		"tiller_reply_3",	        "Aye <SEX Sir/Mam>")
+MSG(TILLER_CONFIRM,		"tiller_confirm",	        "As you command <SEX Sir/Mam>")
+MSG(TILLER_DENY,		"tiller_deny",		        "Can't do that <SEX Sir/Mam")
+MSG(TILLER_ANCHOR_IS_DOWN,	"tiller_anchor_is_down",	"The anchor is down <SEX Sir/Mam>!")
+MSG(TILLER_ANCHOR_IS_ALL_UP,	"tiller_anchor_is_all_up",	"The anchor is already up <SEX Sir/Mam>")
+MSG(TILLER_ANCHOR_IS_ALL_DOWN,	"tiller_anchor_is_all_down",	"The anchor is already down <SEX Sir/Mam>")
 
 
