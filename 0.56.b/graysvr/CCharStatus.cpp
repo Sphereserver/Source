@@ -271,6 +271,12 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 	CItem * pItemPrev = NULL;
 	switch ( layer )
 	{
+	case LAYER_AUCTION:
+		if ( !pItem->IsType(IT_CONTAINER) )
+		{
+			fCantEquip = true; // We can have only one IT_CONTAINER here
+		}
+		break;
 	case LAYER_NONE:
 	case LAYER_SPECIAL:
 		switch ( pItem->GetType() )
@@ -396,6 +402,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 	{
 		switch ( layer )
 		{
+		case LAYER_AUCTION:
 		case LAYER_PACK:
 			// this should not happen.
 			// Put it in my main pack.

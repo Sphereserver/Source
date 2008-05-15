@@ -1032,6 +1032,7 @@ layer_flag_potionused				50   // track the time till we can use a potion again.
 layer_flag_stuck					51   // in a trap or web.
 layer_flag_murders  	     		52	// how many murders do we have ? and decay timer.
 layer_flag_bandage	    				53	// bandages go here for healing
+layer_auction	    				54	// layer for script purposes to equip container on character (like auction system)
 
 [defname def_gumps]	
 // name the gumps.
