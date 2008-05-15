@@ -1748,6 +1748,8 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	LAYER_FLAG_Stuck,			// In a trap or web.
 	LAYER_FLAG_Murders,			// How many murders do we have ? decay over time
 	LAYER_FLAG_Bandage,			// 53 = Bandages go here for healing
+
+	LAYER_AUCTION,				// Auction layer
 	
 	LAYER_QTY,
 };
