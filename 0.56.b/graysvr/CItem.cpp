@@ -4450,7 +4450,7 @@ forcedamage:
 		if ( m_itArmor.m_Hits_Cur <= 1 )
 		{
 			m_itArmor.m_Hits_Cur = 0;
-			Emote( "is destroyed" );
+			Emote( g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DESTROYED ) );
 			Delete();
 			return( INT_MAX );
 		}
@@ -4461,9 +4461,9 @@ forcedamage:
 		if ( pSrc )	// tell hitter they scored !
 		{
 			if ( pChar && pChar != pSrc )
-				sprintf(pszMsg, "You damage %s's %s", (LPCTSTR) pChar->GetName(), (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE1 ), (LPCTSTR) pChar->GetName(), (LPCTSTR) GetName());
 			else
-				sprintf(pszMsg, "You damage the %s", (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE2 ), (LPCTSTR) GetName());
 			pSrc->SysMessage(pszMsg);
 		}
 		if ( pChar && pChar != pSrc )
@@ -4474,10 +4474,10 @@ forcedamage:
 			{
 				int iPercent = Armor_GetRepairPercent();
 				if ( pChar->Skill_GetAdjusted( SKILL_ARMSLORE ) / 10 > iPercent )
-					sprintf(pszMsg, "Your %s is damaged and looks %s", (LPCTSTR) GetName(), (LPCTSTR) Armor_GetRepairDesc());
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE3 ), (LPCTSTR) GetName(), (LPCTSTR) Armor_GetRepairDesc());
 			}
 			if ( !*pszMsg )
-				sprintf(pszMsg, "Your %s may have been damaged", (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE4 ), (LPCTSTR) GetName());
 			pChar->SysMessage(pszMsg);
 		}
 		return( 2 );

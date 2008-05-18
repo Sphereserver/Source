@@ -1140,4 +1140,10 @@
 //tiller_anchor_is_down   "The anchor is down <SEX Sir/Mam>!"
 //tiller_anchor_is_all_up "The anchor is already up <SEX Sir/Mam>"
 //tiller_anchor_is_all_down "The anchor is already down <SEX Sir/Mam>"
+//item_dmg_destroyed	"is destroyed"
+//item_dmg_damage1		"You damage %s's %s"
+//item_dmg_damage2		"You damage the %s"
+//item_dmg_damage3		"Your %s is damaged and looks %s"
+//item_dmg_damage4		"Your %s may have been damaged"
+
 [EOF]
