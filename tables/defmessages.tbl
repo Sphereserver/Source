@@ -1128,5 +1128,8 @@ MSG(TILLER_DENY,		"tiller_deny",		        "Can't do that <SEX Sir/Mam")
 MSG(TILLER_ANCHOR_IS_DOWN,	"tiller_anchor_is_down",	"The anchor is down <SEX Sir/Mam>!")
 MSG(TILLER_ANCHOR_IS_ALL_UP,	"tiller_anchor_is_all_up",	"The anchor is already up <SEX Sir/Mam>")
 MSG(TILLER_ANCHOR_IS_ALL_DOWN,	"tiller_anchor_is_all_down",	"The anchor is already down <SEX Sir/Mam>")
-
-
+MSG(ITEM_DMG_DESTROYED,		"item_dmg_destroyed",		"is destroyed")
+MSG(ITEM_DMG_DAMAGE1,		"item_dmg_damage1",		"You damage %s's %s")
+MSG(ITEM_DMG_DAMAGE2,		"item_dmg_damage2",		"You damage the %s")
+MSG(ITEM_DMG_DAMAGE3,		"item_dmg_damage3",		"Your %s is damaged and looks %s")
+MSG(ITEM_DMG_DAMAGE4,		"item_dmg_damage4",		"Your %s may have been damaged")
