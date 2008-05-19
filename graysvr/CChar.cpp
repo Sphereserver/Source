@@ -2299,7 +2299,7 @@ do_default:
 							CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
 							gold->SetAmount( amount > 65000 ? 65000 : amount);
 							amount -= gold->GetAmount();
-							GetPackSafe()->ContentAdd(gold);
+							/*GetPackSafe()*/GetBank()->ContentAdd(gold);
 						}
 					}
 				}
