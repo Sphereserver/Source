@@ -3979,3 +3979,9 @@ this all in desperation)
 02-05-2008, MrSugarCube
 - Fixed #1348: Problem where <SERV.ResourceType.Id> returns 1 when the id is a different
   resource type (e.g. <SERV.TEMPLATE.i_dagger> (dagger being an item not a template)).
+
+15.05.2008, Shadow Dragon
+- Added LAYER_AUCTION that can contain container on character for script purposes, like auction system
+
+19.05.2008, Shadow Dragon
+- Modified: GOLD property adds new gold stacks to bankbox
