@@ -1145,5 +1145,6 @@
 //item_dmg_damage2		"You damage the %s"
 //item_dmg_damage3		"Your %s is damaged and looks %s"
 //item_dmg_damage4		"Your %s may have been damaged"
+//combat_target_missed	"You miss your desired target!"
 
 [EOF]

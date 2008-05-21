@@ -3985,3 +3985,7 @@ this all in desperation)
 
 19.05.2008, Shadow Dragon
 - Modified: GOLD property adds new gold stacks to bankbox
+
+21.05.2008, Nazghul (dev compiles only)
+- added combat flags to Sphere.ini to allow stacking armor and aimed hits. Example of usage
+  is in scripts/AddOns
