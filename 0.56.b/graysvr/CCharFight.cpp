@@ -2281,21 +2281,35 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	BODYPART_TYPE iHitArea=ARMOR_HEAD;
 
 #ifdef _NAZTEST
-	int iTagValue = 0;
-	CVarDefCont * pTagValue = pSrc->GetKey("HITPREFERENCE", true); 
-	if ( pTagValue )
-		iTagValue = pTagValue->GetValNum();	// 1 .. 8
+	int iHitPref = 0;
+	int iHitPrefChance = pSrc->m_Skill[SKILL_TACTICS];
+	int iHitPrefPenalty = 30;	// means: percent
+	int iHitPrefBonus = 30;		// means: percent
+
+	CVarDefCont * pHitPref = pSrc->GetKey("HITPREFERENCE", true); 
+	if ( pHitPref )
+		iHitPref = pHitPref->GetValNum();	// 1 .. 8
+	CVarDefCont * pHitPrefChance = pSrc->GetKey("HITPREFERENCE_CHANCE", true); 
+	if ( pHitPrefChance )
+		iHitPrefChance = pHitPrefChance->GetValNum();	// 1 .. 8
+	CVarDefCont * pHitPrefPenalty = pSrc->GetKey("HITPREFERENCE_PENALTY", true); 
+	if ( pHitPrefPenalty )
+		iHitPrefPenalty = pHitPrefPenalty->GetValNum();	// 1 .. 8
+	CVarDefCont * pHitPrefBonus = pSrc->GetKey("HITPREFERENCE_BONUS", true); 
+	if ( pHitPrefBonus )
+		iHitPrefBonus = pHitPrefBonus->GetValNum();	// 1 .. 8
+
 	if ( IsSetCombatFlags(COMBAT_TARGETTEDHIT) && 
-		 (iTagValue != 0) && 
+		 (iHitPref != 0) && 
 		 (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )) && 
 		 ! (uType & (DAMAGE_GENERAL|DAMAGE_GOD)) ) {
-		if ( Calc_GetRandVal( 1100 ) < pSrc->m_Skill[SKILL_TACTICS]) {
-			while (iTagValue > ARMOR_QTY)	// gt8 - 8 to get a valid bodypart number +1
-				iTagValue -= ARMOR_QTY;
-			iHitArea = (BODYPART_TYPE) (iTagValue - 1);	// 1->0, 2->1, ... 8->7
-			iDmg += (iDmg * Calc_GetRandVal(50)) / 100;
+		if ( Calc_GetRandVal( 1100 ) < iHitPrefChance ) {
+			while (iHitPref > ARMOR_QTY)	// gt8 - 8 to get a valid bodypart number +1
+				iHitPref -= ARMOR_QTY;
+			iHitArea = (BODYPART_TYPE) (iHitPref - 1);	// 1->0, 2->1, ... 8->7
+			iDmg += (iDmg * iHitPrefBonus) / 100;
 		} else {
-			iDmg -= (iDmg * (Calc_GetRandVal(40) + 30)) / 100;
+			iDmg -= (iDmg * iHitPrefPenalty) / 100;
 			pSrc->SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_TARGET_MISSED ));
 			while ( iHitArea<ARMOR_QTY-1 )
 			{
