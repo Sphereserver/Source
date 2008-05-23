@@ -1682,7 +1682,6 @@ int CChar::CalcArmorDefense() const
 		// reverse of sm_ArmorLayers
 		switch ( pItem->GetEquipLayer())
 		{
-#ifdef _NAZTEST
 			case LAYER_HELM:		// 6
 				if (IsSetCombatFlags(COMBAT_STACKARMOR))
 					ArmorRegionMax[ ARMOR_HEAD ] += iDefense;
@@ -1764,48 +1763,48 @@ int CChar::CalcArmorDefense() const
 					ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
 				}
 				break;
-#else
-			case LAYER_HELM:		// 6
-				ArmorRegionMax[ ARMOR_HEAD ] = maximum( ArmorRegionMax[ ARMOR_HEAD ], iDefense );
-				break;
-			case LAYER_COLLAR:	// 10 = gorget or necklace.
-				ArmorRegionMax[ ARMOR_NECK ] = maximum( ArmorRegionMax[ ARMOR_NECK ], iDefense );
-				break;
-			case LAYER_SHIRT:
-			case LAYER_CHEST:	// 13 = armor chest
-			case LAYER_TUNIC:	// 17 = jester suit
-				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-				break;
-			case LAYER_ARMS:		// 19 = armor
-				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-				break;
-			case LAYER_PANTS:
-			case LAYER_SKIRT:
-			case LAYER_HALF_APRON:
-				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-				break;
-			case LAYER_SHOES:
-				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
-				break;
-			case LAYER_GLOVES:	// 7
-				ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
-				break;
-			case LAYER_CAPE:		// 20 = cape
-				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-				break;
-			case LAYER_ROBE:		// 22 = robe over all.
-				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-				break;
-			case LAYER_LEGS:
-				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
-				break;
-#endif
+
+//			case LAYER_HELM:		// 6
+//				ArmorRegionMax[ ARMOR_HEAD ] = maximum( ArmorRegionMax[ ARMOR_HEAD ], iDefense );
+//				break;
+//			case LAYER_COLLAR:	// 10 = gorget or necklace.
+//				ArmorRegionMax[ ARMOR_NECK ] = maximum( ArmorRegionMax[ ARMOR_NECK ], iDefense );
+//				break;
+//			case LAYER_SHIRT:
+//			case LAYER_CHEST:	// 13 = armor chest
+//			case LAYER_TUNIC:	// 17 = jester suit
+//				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
+//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
+//				break;
+//			case LAYER_ARMS:		// 19 = armor
+//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
+//				break;
+//			case LAYER_PANTS:
+//			case LAYER_SKIRT:
+//			case LAYER_HALF_APRON:
+//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
+//				break;
+//			case LAYER_SHOES:
+//				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
+//				break;
+//			case LAYER_GLOVES:	// 7
+//				ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
+//				break;
+//			case LAYER_CAPE:		// 20 = cape
+//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
+//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
+//				break;
+//			case LAYER_ROBE:		// 22 = robe over all.
+//				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
+//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
+//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
+//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
+//				break;
+//			case LAYER_LEGS:
+//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
+//				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
+//				break;
+
 			case LAYER_HAND2:
 				// Shield effect.
 				if ( pItem->IsType( IT_SHIELD ))
@@ -2280,7 +2279,6 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	int iHitRoll = Calc_GetRandVal( 100 ); // determine area of body hit
 	BODYPART_TYPE iHitArea=ARMOR_HEAD;
 
-#ifdef _NAZTEST
 	int iHitPref = 0;
 	int iHitPrefChance = pSrc->m_Skill[SKILL_TACTICS];
 	int iHitPrefPenalty = 30;	// means: percent
@@ -2328,15 +2326,14 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
 		}
 	}
-#else
-	while ( iHitArea<ARMOR_QTY-1 )
-	{
-		iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
-		if ( iHitRoll < 0 )
-			break;
-		iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
-	}
-#endif
+
+//	while ( iHitArea<ARMOR_QTY-1 )
+//	{
+//		iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
+//		if ( iHitRoll < 0 )
+//			break;
+//		iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
+//	}
 
 	if ( (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH |DAMAGE_FIRE|DAMAGE_ELECTRIC)) &&
 		! (uType & (DAMAGE_GENERAL|DAMAGE_GOD)))
@@ -2482,14 +2479,14 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			if ( pArmorLayer->m_pLayers[i] == layer )
 			{
 				// This piece of armor takes damage.
-#ifdef _NAZTEST
+
 				if (IsSetCombatFlags(COMBAT_STACKARMOR))
 					iMaxCoverage += pArmor->Armor_GetDefense();
 				else
 					iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
-#else
-				iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
-#endif
+
+//				iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
+
 				pArmor->OnTakeDamage( iDmg, pSrc, uType );
 				break;
 			}
