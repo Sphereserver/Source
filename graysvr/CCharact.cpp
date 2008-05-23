@@ -297,8 +297,12 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			case IT_EQ_SCRIPT:	// pure script.
 				break;
 			case IT_EQ_MEMORY_OBJ:
-				Memory_UpdateFlags( dynamic_cast <CItemMemory *>(pItem) );
+			{
+				CItemMemory *pMemory = dynamic_cast<CItemMemory *>( pItem );
+				if (pMemory != NULL)
+					Memory_UpdateFlags(pMemory);
 				break;
+			}
 			case IT_EQ_HORSE:
 				StatFlag_Set(STATF_OnHorse);
 				break;
@@ -393,9 +397,13 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				StatFlag_Clear(STATF_OnHorse);
 				break;
 			case IT_EQ_MEMORY_OBJ:
+			{
 				// Clear the associated flags.
-				Memory_UpdateClearTypes( dynamic_cast<CItemMemory*>(pItem), 0xFFFF );
+				CItemMemory *pMemory = dynamic_cast<CItemMemory*>(pItem);
+				if (pMemory != NULL)
+					Memory_UpdateClearTypes( pMemory, 0xFFFF );
 				break;
+			}
 		}
 
 		// If items are magical then remove effect here.
@@ -1985,12 +1993,18 @@ bool CChar::OnTickEquip( CItem * pItem )
 	case LAYER_SPECIAL:
 		switch ( pItem->GetType())
 		{
-		case IT_EQ_SCRIPT:	// pure script.
-			break;
-		case IT_EQ_MEMORY_OBJ:
-			return Memory_OnTick( dynamic_cast <CItemMemory*>( pItem ));
-		default:
-			break;
+			case IT_EQ_SCRIPT:	// pure script.
+				break;
+			case IT_EQ_MEMORY_OBJ:
+			{
+				CItemMemory *pMemory = dynamic_cast<CItemMemory*>( pItem );
+				if (pMemory)
+					return Memory_OnTick(pMemory);
+
+				return false;
+			}
+			default:
+				break;
 		}
 		break;
 

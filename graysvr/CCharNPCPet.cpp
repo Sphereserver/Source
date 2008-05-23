@@ -588,7 +588,8 @@ bool CChar::NPC_CheckHirelingStatus()
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_HIRE_TIMEUP ) );
 
 			CItem * pMemory = Memory_AddObjTypes( pOwner, MEMORY_SPEAK );
-			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
+			if ( pMemory )
+				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
 
 			NPC_PetDesert();
 			return false;
@@ -722,7 +723,8 @@ bool CChar::NPC_OnHireHear( CChar * pCharSrc )
 	Speak(pszMsg);
 
 	pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
-	pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
+	if ( pMemory )
+		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
 	return true;
 }
 
