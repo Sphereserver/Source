@@ -3987,9 +3987,19 @@ this all in desperation)
 19-05-2008, Shadow Dragon
 - Modified: GOLD property adds new gold stacks to bankbox.
 
-21-05-2008, Nazghul (dev compiles only)
+21-05-2008, Nazghul 
 - Added: Combat flags to Sphere.ini to allow stacking armor and aimed hits. Example of usage
-  is in scripts/AddOns.
+  is in scripts/AddOns. 
+  Aimed hits are controlled by tags on the "hitter": TAG.HITPREFERENCE holds the targetted
+  zone: 1=head, 2=neck/throat, 3=back, 4=chest, 5=arms, 6=hands, 7=legs, 8=feet (if the value
+  is out of this range it will be changed by %9; "0" means: no preference set);
+  TAG.HITPREFERENCE_CHANCE (0..1000) is the chance to really hit the desired area;
+  TAG.HITPREFERENCE.BONUS is the percent the damage is raised when hit where desired,
+  TAG.HITPREFERENCE.PENALTY is the percent the damage is lowered if the area was missed.
+  The last two values are defaulting to "30".
+  The system is perhaps useful to script a system where a player can look for weak armored
+  bodyparts of his opponent and try to hit him there; could be essential if armor stacking
+  is used.
 
 23-05-2008, MrSugarCube
 - Fixed #1418: Tracking being used to reveal the location of invisible staff members.
