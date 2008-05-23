@@ -652,7 +652,7 @@ void CChatChannel::WhoIs(const char * pszBy, const char * pszMember)
 	ADDTOCALLSTACK("CChatChannel::WhoIs");
 	CChatChanMember * pBy = FindMember(pszBy);
 	CChatChanMember * pMember = FindMember(pszMember);
-	CChar * pChar = pMember->GetClient()->GetChar();
+	CChar * pChar = pMember? pMember->GetClient()->GetChar() : NULL;
 	if (!pMember||!pChar)
 	{
 		pBy->SendChatMsg(CHATMSG_NoPlayer, pszMember);
