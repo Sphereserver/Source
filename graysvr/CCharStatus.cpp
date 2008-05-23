@@ -556,21 +556,17 @@ bool CChar::IsSwimming() const
 	int iDistZ = ptTop.m_z - pt.m_z;
 	if ( iDistZ < -PLAYER_HEIGHT )	// far under the water somehow
 		return false;
-	if ( iDistZ <= 0 )	// in or below the water
-		return true;
 
 	// Is there a solid surface under us ?
 	WORD wBlockFlags = GetMoveBlockFlags();
+	char iSurfaceZ;
 	if ( IsSetEF( EF_WalkCheck ) )
-	{
-		if ( g_World.GetHeightPoint_New(ptTop, wBlockFlags, true) == pt.m_z )
-			return true;
-	}
+		iSurfaceZ = g_World.GetHeightPoint_New(ptTop, wBlockFlags, true);
 	else
-	{
-		if ( g_World.GetHeightPoint(ptTop, wBlockFlags, true) == pt.m_z )
-			return true;
-	}
+		iSurfaceZ = g_World.GetHeightPoint(ptTop, wBlockFlags, true);
+
+	if ( (iSurfaceZ == pt.m_z) && (wBlockFlags & CAN_I_WATER) )
+		return true;
 
 	return false;
 }
