@@ -240,7 +240,7 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 	if ( pChar != NULL )
 	{
 		m_itShip.m_UIDCreator = pChar->GetUID();
-		CItemMemory * pMemory = pChar->Memory_AddObjTypes( this, MEMORY_GUARD );
+		pChar->Memory_AddObjTypes( this, MEMORY_GUARD );
 
 		if ( pKey )
 		{

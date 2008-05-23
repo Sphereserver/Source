@@ -3980,12 +3980,20 @@ this all in desperation)
 - Fixed #1348: Problem where <SERV.ResourceType.Id> returns 1 when the id is a different
   resource type (e.g. <SERV.TEMPLATE.i_dagger> (dagger being an item not a template)).
 
-15.05.2008, Shadow Dragon
-- Added LAYER_AUCTION that can contain container on character for script purposes, like auction system
+15-05-2008, Shadow Dragon
+- Added LAYER_AUCTION that can contain container on character for script purposes, like
+  auction system.
 
-19.05.2008, Shadow Dragon
-- Modified: GOLD property adds new gold stacks to bankbox
+19-05-2008, Shadow Dragon
+- Modified: GOLD property adds new gold stacks to bankbox.
 
-21.05.2008, Nazghul (dev compiles only)
-- added combat flags to Sphere.ini to allow stacking armor and aimed hits. Example of usage
-  is in scripts/AddOns
+21-05-2008, Nazghul (dev compiles only)
+- Added: Combat flags to Sphere.ini to allow stacking armor and aimed hits. Example of usage
+  is in scripts/AddOns.
+
+23-05-2008, MrSugarCube
+- Fixed: Variety of exceptions caused when items are being set to type t_eq_memory_obj after
+  after creation.
+- Modified: RESTOCK function on vendors now accepts a parameter to specify whether or not
+  new stock should be spawned immediately (0=empty existing stock (default), 1=empty stock
+  and spawn next set).

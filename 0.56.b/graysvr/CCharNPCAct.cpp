@@ -99,7 +99,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 	case NV_PETSTABLE:
 		return( NPC_StablePetSelect( pCharSrc ));
 	case NV_RESTOCK:	// individual restock command.
-		return NPC_Vendor_Restock(true);
+		return NPC_Vendor_Restock(true, s.GetArgVal());
 	case NV_RUN:
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirStr( s.GetArgRaw()));
@@ -469,7 +469,7 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	return 0;
 }
 
-bool CChar::NPC_OnTrainPay(CChar *pCharSrc,CItemMemory *pMemory, CItem * pGold)
+bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
 	SKILL_TYPE skill = (SKILL_TYPE)( pMemory->m_itEqMemory.m_Skill );
@@ -1370,7 +1370,8 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 			{
 				// record that we attempted to speak to them.
 				CItemMemory * pMemory = Memory_AddObjTypes( pChar, MEMORY_SPEAK );
-				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
+				if ( pMemory )
+					pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
 				// m_Act_Hear_Unknown = 0;
 			}
 		}
@@ -3426,9 +3427,6 @@ void CChar::NPC_AI()
 	if ( !pSector )
 		return;
 
-	//	some very very basic actions which does not need any INT/DEX for self
-    CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
-
 	if ( !IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_NPCAct_Triggers))
 	{
 		if ( OnTrigger( CTRIG_NPCAction, this ) == TRIGRET_RET_TRUE )
@@ -3437,8 +3435,10 @@ void CChar::NPC_AI()
 		}
 	}
 
-	//	domestic animals pooping the ground
+	//	some very very basic actions which does not need any INT/DEX for self
+    CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
 
+	//	domestic animals pooping the ground
     if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag ( STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
 	{
 		if ( Calc_GetRandVal(130) ) ;
