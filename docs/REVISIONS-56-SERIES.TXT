@@ -3992,6 +3992,7 @@ this all in desperation)
   is in scripts/AddOns.
 
 23-05-2008, MrSugarCube
+- Fixed: Characters "drifting to shore" when logging in on a ship.
 - Fixed: Variety of exceptions caused when items are being set to type t_eq_memory_obj after
   after creation.
 - Modified: RESTOCK function on vendors now accepts a parameter to specify whether or not
