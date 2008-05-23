@@ -1401,6 +1401,17 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 		return false;
 	}
 
+	if ( pObjTop->IsChar() )
+	{
+		// prevent tracking of hidden staff
+		CChar *pChar = dynamic_cast<CChar*>( pObjTop );
+		if ( pChar )
+		{
+			if ( GetPrivLevel() < pChar->GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
+				return false;
+		}
+	}
+
 	DIR_TYPE dir = GetDir( pObjTop );
 	if (( dirPrv != dir ) || ! Calc_GetRandVal(10))
 	{
