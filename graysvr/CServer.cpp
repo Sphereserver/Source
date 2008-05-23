@@ -988,27 +988,32 @@ bool CServer::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	{
 		pszKey += 8;
 		CAccountRef pAccount = NULL;
+		
+		// extract account name/index to a temporary buffer
+		char *pszTemp = Str_GetTemp();
+		char *pszTempStart = pszTemp;
+
+		strcpy(pszTemp, pszKey);
+		char *split = strchr(pszTemp, '.');
+		if ( split )
+			*split = 0;
+
+		// adjust pszKey to point to end of account name/index
+		pszKey += strlen(pszTemp);
 
 		//	try to fetch using indexes
-		if (( *pszKey >= '0' ) && ( *pszKey <= '9' ))
+		if (( *pszTemp >= '0' ) && ( *pszTemp <= '9' ))
 		{
-			int num = Exp_GetVal(pszKey);
-			if (( num >= 0 ) && ( num < g_Accounts.Account_GetCount() ))
+			int num = Exp_GetVal(pszTemp);
+			if ((*pszTemp == '\0') && ( num >= 0 ) && ( num < g_Accounts.Account_GetCount() ))
 				pAccount = g_Accounts.Account_Get(num);
 		}
 
 		//	indexes failed, try to fetch using names
 		if ( !pAccount )
 		{
-			char *pszTemp = Str_GetTemp();
-
-			strcpy(pszTemp, pszKey);
-			char *split = strchr(pszTemp, '.');
-			if ( split )
-				*split = 0;
-
+			pszTemp = pszTempStart;
 			pAccount = g_Accounts.Account_Find(pszTemp);
-			pszKey += strlen(pszTemp);
 		}
 
 		if ( !*pszKey) // we're just checking if the account exists
