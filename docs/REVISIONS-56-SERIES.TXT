@@ -4003,6 +4003,8 @@ this all in desperation)
 
 23-05-2008, MrSugarCube
 - Fixed #1418: Tracking being used to reveal the location of invisible staff members.
+- Fixed #1417: Unable to access account properties using [SERV.]ACCOUNT.x.KEY where account
+  x begins with a number.
 - Fixed: Characters "drifting to shore" when logging in on a ship.
 - Fixed: Variety of exceptions caused when items are being set to type t_eq_memory_obj after
   after creation.
