@@ -790,31 +790,31 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 		}
 
 		TCHAR * pszText = Str_GetTemp();
-		sprintf( pszText, "use %s", g_Cfg.GetSkillKey(skill));
+		sprintf( pszText, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
 		return( pszText );
 	}
 
 	switch ( skill )
 	{
-	case NPCACT_FOLLOW_TARG: return( "Following" );
-	case NPCACT_STAY: return( "Staying" );
-	case NPCACT_GOTO: return( "GoingTo" );
-	case NPCACT_WANDER: return( "Wandering" );
-	case NPCACT_FLEE: return( "Fleeing" );
-	case NPCACT_TALK: return( "Talking" );
-	case NPCACT_TALK_FOLLOW: return( "TalkFollow" );
-	case NPCACT_GUARD_TARG: return( "Guarding" );
-	case NPCACT_GO_HOME: return( "GoingHome" );
-	case NPCACT_BREATH: return( "Breathing" );
-	case NPCACT_LOOTING: return( "Looting" );
-	case NPCACT_THROWING: return( "Throwing" );
-	case NPCACT_LOOKING: return( "Looking" );
-	case NPCACT_TRAINING: return( "Training" );
-	case NPCACT_Napping: return( "Napping" );
-	case NPCACT_FOOD: return( "SearchingForFood" );
+	case NPCACT_FOLLOW_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
+	case NPCACT_STAY: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
+	case NPCACT_GOTO: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
+	case NPCACT_WANDER: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
+	case NPCACT_FLEE: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
+	case NPCACT_TALK: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
+	case NPCACT_TALK_FOLLOW: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
+	case NPCACT_GUARD_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
+	case NPCACT_GO_HOME: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
+	case NPCACT_BREATH: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
+	case NPCACT_LOOTING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
+	case NPCACT_THROWING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
+	case NPCACT_LOOKING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
+	case NPCACT_TRAINING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
+	case NPCACT_Napping: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
+	case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
 	}
 
-	return( "Thinking" );
+	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 }
 
 void CChar::Skill_SetTimeout()
