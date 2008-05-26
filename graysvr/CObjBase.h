@@ -2209,10 +2209,11 @@ enum CTRIG_TYPE
 	CTRIG_UserSpecialMove,
 	CTRIG_UserStats,
 	CTRIG_UserVirtue,
+	CTRIG_UserVirtueInvoke,
 	CTRIG_UserWarmode,
 	CTRIG_UserKRToolbar,
 
-	CTRIG_QTY,				// 115
+	CTRIG_QTY,				// 116
 };
 
 class CPartyDef;

@@ -148,6 +148,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@UserSpecialMove",
 	"@UserStats",
 	"@UserVirtue",
+	"@UserVirtueInvoke",
 	"@UserWarmode",
 	"@UserKRToolbar",
 
