@@ -816,6 +816,7 @@ enum EXTCMD_TYPE
 	EXTCMD_CAST_BOOK		= 39,	// cast spell from book. "spell number"
 	EXTCMD_DOOR_AUTO		= 88,	// open door macro = Attempt to open a door around us.
 	EXTCMD_UNKGODCMD		= 107,  // Unknow god command
+	EXTCMD_INVOKE_VIRTUE	= 244,	// invoke virtue
 };
 
 enum CHATMSG_TYPE	// Chat system messages.

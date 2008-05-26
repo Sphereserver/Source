@@ -643,7 +643,7 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 	int	context_mode = mode;
 	if ( mode == CLIMODE_DIALOG && rid != 0 )
 	{
-		context_mode = GETINTRESOURCE( rid );
+		context_mode = rid & 0x00FFFFFF;
 	}
 
 	if ( IsClientVer(0x500000) || IsNoCryptVer(0x500000) || IsClientKR() )
@@ -910,7 +910,7 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Close");
-	int gumpContext = GETINTRESOURCE( rid );
+	int gumpContext = rid & 0x00FFFFFF;
 
 	CExtData ExtData;
 	ExtData.GumpChange.dialogID		= (DWORD)gumpContext;

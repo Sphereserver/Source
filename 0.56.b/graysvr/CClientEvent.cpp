@@ -2750,7 +2750,19 @@ void CClient::Event_GumpDialogRet( const CEvent * pEvent )
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers) )
 		{
-			m_pChar->OnTrigger( CTRIG_UserVirtue, (CTextConsole *) m_pChar, NULL );
+			CChar *pCharViewed = m_pChar;
+			if ( dwButtonID == 1 && pEvent->GumpDialogRet.m_checkQty > 0 )
+			{
+				// when button id is 1, player is trying to view character uid sent as the first check id
+				pCharViewed = CGrayUID(pEvent->GumpDialogRet.m_checkIds[0]).CharFind();
+				if ( pCharViewed == NULL )
+					pCharViewed = m_pChar;
+			}
+
+			CScriptTriggerArgs Args(pCharViewed);
+			Args.m_iN1 = dwButtonID;
+
+			m_pChar->OnTrigger( CTRIG_UserVirtue, (CTextConsole *) m_pChar, &Args );
 		}
 		return;
 	}
@@ -4144,6 +4156,16 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 			break;
 
 		case EXTCMD_UNKGODCMD: // 107, seen this but no idea what it does.
+			break;
+
+		case EXTCMD_INVOKE_VIRTUE:
+			{
+				int iVirtueID = ppArgs[0][0] - '0';	// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
+				CScriptTriggerArgs Args(m_pChar);
+				Args.m_iN1 = iVirtueID;
+
+				m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
+			}
 			break;
 
 		default:

@@ -4011,3 +4011,13 @@ this all in desperation)
 - Modified: RESTOCK function on vendors now accepts a parameter to specify whether or not
   new stock should be spawned immediately (0=empty existing stock (default), 1=empty stock
   and spawn next set).
+
+26-05-2008, MrSugarCube
+- Modified: @UserVirtue trigger now has 2 arguments:
+   ARGO  = The character whose virtue button has been pressed
+   ARGN1 = The button ID pressed (1=virtue button (on paperdoll), 105-112=icons within the
+           menu)
+           Note: Clients only specify the character they're viewing (ARGO) when pressing the
+           paperdoll button (ARGN1=1)
+- Added: @UserVirtueInvoke trigger, called when a virtue is invoked through client macros.
+   ARGN1 = The virtue ID (1=Honor, 2=Sacrifice, 3=Valor)
