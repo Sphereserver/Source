@@ -4013,6 +4013,7 @@ this all in desperation)
   and spawn next set).
 
 26-05-2008, MrSugarCube
+- Fixed: Code not being skipped properly when incorrect loop syntax is used.
 - Modified: @UserVirtue trigger now has 2 arguments:
    ARGO  = The character whose virtue button has been pressed
    ARGN1 = The button ID pressed (1=virtue button (on paperdoll), 105-112=icons within the

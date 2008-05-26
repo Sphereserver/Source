@@ -2090,11 +2090,13 @@ jump_in:
 						else
 						{
 							DEBUG_ERR(( "FORCHAR[layer/memorytype] called on char 0%x (%s) without arguments.\n", (DWORD)pCharThis->GetUID(), pCharThis->GetName() ));
+							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
 					else
 					{
-						DEBUG_ERR(( "FORCHAR[layer/memorytype] called on non-char object.\n" ));
+						DEBUG_ERR(( "FORCHAR[layer/memorytype] called on non-char object '%s'.\n", GetName() ));
+						iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 					}
 				} break;
 			case SK_FORCONT:
@@ -2129,21 +2131,25 @@ jump_in:
 								else
 								{
 									DEBUG_ERR(( "FORCONT called on invalid uid/invalid container (UID: 0%x).\n", pCurUid.GetObjUID() ));
+									iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 								}
 							}
 							else
 							{
 								DEBUG_ERR(( "FORCONT called with invalid arguments (UID: 0%x, LEVEL: %s).\n", pCurUid.GetObjUID(), (ppArgs[1] && *ppArgs[1]) ? ppArgs[1] : "255" ));
+								iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 							}
 						}
 						else
 						{
 							DEBUG_ERR(( "FORCONT called without arguments.\n" ));
+							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
 					else
 					{
 						DEBUG_ERR(( "FORCONT called without arguments.\n" ));
+						iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 					}
 				} break;
 			case SK_FORCONTID:
@@ -2174,21 +2180,25 @@ jump_in:
 								else
 								{
 									DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+									iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 								}
 							}
 							else
 							{
 								DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+								iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 							}
 						}
 						else
 						{
 							DEBUG_ERR(( "FORCONT[id/type] called on container 0%x without arguments.\n", (DWORD)pObjCont->GetUID() ));
+							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
 					else
 					{
-						DEBUG_ERR(( "FORCONT[id/type] called on non-container object.\n" ));
+						DEBUG_ERR(( "FORCONT[id/type] called on non-container object '%s'.\n", GetName() ));
+						iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 					}
 				} break;
 			default:
