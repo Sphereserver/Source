@@ -17,7 +17,7 @@ extern "C"
 //*************************************************************************
 // -CPointBase
 
-
+/*
 LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
 {
 	"North",
@@ -30,7 +30,7 @@ LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
 	"North West",
 	"Here",
 };
-/*
+*/
 LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
 {
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_0),
@@ -43,7 +43,7 @@ LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_7),
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_8),
 };
-*/
+
 const int CPointBase::sm_Moves[DIR_QTY+1][2] =
 {
 	 0, -1, // DIR_N
