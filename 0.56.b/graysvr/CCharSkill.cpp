@@ -584,15 +584,18 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		if ( iRoll <= iChance )
 		{
+			iSkillLevel++;
 			if ( !IsSetEF(EF_Minimize_Triggers) )
 			{
 				CScriptTriggerArgs args;
 				args.m_iN1 = (int) skill;
-				args.m_iN2 = iSkillLevel + 1;
+				args.m_iN2 = iSkillLevel;
 				if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
+
+				iSkillLevel = args.m_iN2;
 			}
-			Skill_SetBase( skill, iSkillLevel + 1 );
+			Skill_SetBase( skill, iSkillLevel );
 		}
 	}
 
@@ -1434,8 +1437,8 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 			strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAP_DIR_8 ));
 
 		TCHAR *zBuf = Str_GetTemp();
-		sprintf(zBuf, "%s is%s%s", (LPCTSTR) pObj->GetName(),
-			pObjTop->IsDisconnected() ? " disconnected" : "", pszMsg);
+		sprintf(zBuf, g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT), (LPCTSTR) pObj->GetName(),
+			pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_DISCONNECTED) : "", pszMsg);
 		ObjMessage(zBuf, this);
 	}
 

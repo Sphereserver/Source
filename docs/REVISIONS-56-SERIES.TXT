@@ -3450,7 +3450,7 @@ this all in desperation)
 
 26-06-2007, Nazghul
 - Added: Character trigger @SkillChange. Fires whenever the skill raises due 
-  to a gain. ARGN1 is the skill number (e.g. 43 for wrestling), ARGN1 is the 
+  to a gain. ARGN1 is the skill number (e.g. 43 for wrestling), ARGN2 is the 
   skill value AFTER the change happens. RETURN 1 (or 2, or 666) means that the 
   skill will NOT change.
 
@@ -4022,3 +4022,9 @@ this all in desperation)
            paperdoll button (ARGN1=1)
 - Added: @UserVirtueInvoke trigger, called when a virtue is invoked through client macros.
    ARGN1 = The virtue ID (1=Honor, 2=Sacrifice, 3=Valor)
+
+27-05-2008, MrSugarCube
+- Modified: ARGN2 in @SkillChange trigger is now writeable.
+
+27-05-2008, MrSugarCube (Script pack)
+- Updated: sphere_msgs.scp (Added 2 more "tracking_*" defmessages)
