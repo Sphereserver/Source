@@ -832,7 +832,7 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_OPTIONFLAGS:
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
-			PrintEFOFFlags(true, false);
+			PrintEFOFFlags(false, true);
 			break;
 
 		default:
