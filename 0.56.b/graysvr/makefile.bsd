@@ -17,9 +17,10 @@ INCLUDE	= -I../common -I/usr/local/include/mysql
 LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
 DEFBSD	= -D_BSD
 
+NIGHTLYDEFS = -D_NIGHTLYBUILD
 #EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(EXTRADEFS) $(DEBUGDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
