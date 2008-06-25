@@ -13,6 +13,7 @@
 #define backend_fudge ((loop)->backend_fudge)
 #define backend_modify ((loop)->backend_modify)
 #define backend_poll ((loop)->backend_poll)
+#define evfd ((loop)->evfd)
 #define evpipe ((loop)->evpipe)
 #define pipeev ((loop)->pipeev)
 #define curpid ((loop)->curpid)
@@ -21,6 +22,7 @@
 #define vec_ro ((loop)->vec_ro)
 #define vec_wi ((loop)->vec_wi)
 #define vec_wo ((loop)->vec_wo)
+#define vec_eo ((loop)->vec_eo)
 #define vec_max ((loop)->vec_max)
 #define polls ((loop)->polls)
 #define pollmax ((loop)->pollmax)
@@ -84,6 +86,7 @@
 #undef backend_fudge
 #undef backend_modify
 #undef backend_poll
+#undef evfd
 #undef evpipe
 #undef pipeev
 #undef curpid
@@ -92,6 +95,7 @@
 #undef vec_ro
 #undef vec_wi
 #undef vec_wo
+#undef vec_eo
 #undef vec_max
 #undef polls
 #undef pollmax
