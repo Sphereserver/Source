@@ -38,7 +38,7 @@ static LPTSTR GetLastErrorText(LPTSTR lpszBuf, DWORD dwSize)
 	//		destination buffer
 
 	int nChars = CGrayError::GetSystemErrorMessage( GetLastError(), lpszBuf, dwSize );
-	sprintf( lpszBuf+nChars, " (ox%x)", GetLastError());
+	sprintf( lpszBuf+nChars, " (0x%x)", GetLastError());
 	return lpszBuf;
 }
 
@@ -300,6 +300,39 @@ bailout1:
 		return;
 	}
 
+	// Configure service - Service description
+	char szDescription[MAX_PATH];
+	sprintf(szDescription, "SphereServer Service for %s", g_Serv.GetName());
+
+	SERVICE_DESCRIPTION sdDescription;
+	sdDescription.lpDescription = szDescription;
+	if ( !ChangeServiceConfig2(schService, SERVICE_CONFIG_DESCRIPTION, &sdDescription) )
+	{
+		// not critical, so no need to abort the service creation
+		ReportEvent(EVENTLOG_WARNING_TYPE, 0, "Install SetDescription", GetLastErrorText(szErr, sizeof(szErr)));
+	}
+
+	// Configure service - Restart options
+	SC_ACTION scAction[3];
+	scAction[0].Type = SC_ACTION_RESTART;	// restart process on failure
+	scAction[0].Delay = 10000;				// wait 10 seconds before restarting
+	scAction[1].Type = SC_ACTION_RESTART;	
+	scAction[1].Delay = 10000;				
+	scAction[2].Type = SC_ACTION_RESTART;	// wait 2 minutes before restarting the third time
+	scAction[2].Delay = 120000;
+
+	SERVICE_FAILURE_ACTIONS sfaFailure;
+	sfaFailure.dwResetPeriod = (1 * 60 * 60); // reset failure count after an hour passes with no fails
+	sfaFailure.lpRebootMsg = NULL;	// no reboot message
+	sfaFailure.lpCommand = NULL;	// no command executed
+	sfaFailure.cActions = COUNTOF(scAction);		// number of actions
+	sfaFailure.lpsaActions = scAction;	// 
+	if ( !ChangeServiceConfig2(schService, SERVICE_CONFIG_FAILURE_ACTIONS, &sfaFailure) )
+	{
+		// not critical, so no need to abort the service creation
+		ReportEvent(EVENTLOG_WARNING_TYPE, 0, "Install SetAutoRestart", GetLastErrorText(szErr, sizeof(szErr)));
+	}
+
 	HKEY	hKey;
 	char	szKey[MAX_PATH];
 
@@ -467,8 +500,10 @@ do_not_nt_service:
 	{
 		if ( argv[1][1] == 'k' )		// service control
 		{
-			if ( argc < 2 )
+			if ( argc < 3 )
+			{
 				printf("Use \"-k command\" with operation to proceed (install/remove)\n");
+			}
 			else if ( !strcmp(argv[2], "install") )
 			{
 				g_Service.CmdInstallService();

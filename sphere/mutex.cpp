@@ -70,7 +70,7 @@ SimpleThreadLock::operator bool() const
 //		ManualThreadLock
 // ****************************
 
-ManualThreadLock::ManualThreadLock() : m_locked(false)
+ManualThreadLock::ManualThreadLock() : m_locked(false), m_mutex(NULL)
 {
 }
 
@@ -82,7 +82,8 @@ ManualThreadLock::ManualThreadLock(SimpleMutex * mutex) : m_locked(false)
 //the destructor
 ManualThreadLock::~ManualThreadLock()
 {
-	doUnlock();
+	if (m_mutex != NULL)
+		doUnlock();
 }
 
 void ManualThreadLock::setMutex(SimpleMutex * mutex)
