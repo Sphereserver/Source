@@ -4028,3 +4028,7 @@ this all in desperation)
 
 27-05-2008, MrSugarCube (Script pack)
 - Updated: sphere_msgs.scp (Added 2 more "tracking_*" defmessages)
+
+26-06-2007, MrSugarCube
+- Modified: Installing Sphere as a Windows service (using "-k install" with NTService=1) will
+  now configure the service with an automatic restart configuration.
