@@ -800,7 +800,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		{
 			bool	bClearedWay = false;
 			// Some object in my way that i could move ? Try to move it.
-			if ( !pCharDef->Can(CAN_C_USEHANDS) ) ;		// i cannot use hands, so cannot move objects
+			if ( !pCharDef->Can(CAN_C_USEHANDS) || IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) ) ;		// i cannot use hands or i am frozen, so cannot move objects
 			else if (( g_Cfg.m_iNpcAi&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
 			{
 				int			i;

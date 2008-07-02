@@ -4032,3 +4032,6 @@ this all in desperation)
 25-06-2008, MrSugarCube
 - Modified: Installing Sphere as a Windows service (using "-k install" with NTService=1) will
   now configure the service with an automatic restart configuration.
+
+02-07-2008, MrSugarCube
+- Fixed #1439: NPC_AI_MOVEOBSTACLES allowing NPCs to move items whilst paralyzed.
