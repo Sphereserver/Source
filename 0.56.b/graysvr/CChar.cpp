@@ -131,6 +131,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SpellEffect",		//+A spell just hit me.
 	"@SpellFail",		// The spell failed
 	"@SpellSelect",		// Selected a spell
+	"@SpellSuccess",	// The spell succeeded
 	"@StatChange",
 	"@Step",			// Very expensive!
 	"@StepStealth",		//+Made a step in stealth mode

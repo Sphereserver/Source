@@ -4035,3 +4035,5 @@ this all in desperation)
 
 02-07-2008, MrSugarCube
 - Fixed #1439: NPC_AI_MOVEOBSTACLES allowing NPCs to move items whilst paralyzed.
+- Added #850: @SpellSuccess trigger, fires on the caster just before the @Success trigger is
+  fired on spell blocks.
