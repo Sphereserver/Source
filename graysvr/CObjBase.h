@@ -2191,6 +2191,7 @@ enum CTRIG_TYPE
 	CTRIG_SpellEffect,		//+A spell just hit me.
 	CTRIG_SpellFail,		// The spell failed
 	CTRIG_SpellSelect,		// selected a spell
+	CTRIG_SpellSuccess,		// The spell succeeded
 	CTRIG_StatChange,
 	CTRIG_Step,				// I took a step.
 	CTRIG_StepStealth,		//+Made a step while being in stealth mode
@@ -2213,7 +2214,7 @@ enum CTRIG_TYPE
 	CTRIG_UserWarmode,
 	CTRIG_UserKRToolbar,
 
-	CTRIG_QTY,				// 116
+	CTRIG_QTY,				// 117
 };
 
 class CPartyDef;

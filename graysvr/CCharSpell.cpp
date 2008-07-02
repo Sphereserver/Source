@@ -1614,6 +1614,8 @@ bool CChar::Spell_CastDone()
 		Args.m_VarsLocal.SetNum("CreateObject1",0);
 		Args.m_VarsLocal.SetNum("CreateObject2",0);
 
+		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
+			return false;
 		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
 		iSkillLevel		= Args.m_iN2;
