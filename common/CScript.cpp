@@ -120,7 +120,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey )
 	strncpy( pBuffer, pszKey, iLen );
 	pBuffer[iLen] = '\0';
 
-	Str_Parse( pBuffer, &m_pszArg, "=, \t()[]{}" );
+	Str_Parse( pBuffer, &m_pszArg );
 	return( true );
 }
 
@@ -563,7 +563,7 @@ bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 
 		if ( pszSep )
 		{
-			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating" );
+			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating\n" );
 			ch		= *pszSep;
 			*pszSep	= '\0';
 		}
@@ -581,7 +581,7 @@ bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 
 		if ( pszSep )
 		{
-			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating" );
+			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating\n" );
 			ch		= *pszSep;
 			*pszSep	= '\0';
 		}
