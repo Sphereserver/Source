@@ -4037,3 +4037,6 @@ this all in desperation)
 - Fixed #1439: NPC_AI_MOVEOBSTACLES allowing NPCs to move items whilst paralyzed.
 - Added #850: @SpellSuccess trigger, fires on the caster just before the @Success trigger is
   fired on spell blocks.
+
+04-07-2008, MrSugarCube
+- Fixed #1177: Client command parsing using brackets as argument separators.

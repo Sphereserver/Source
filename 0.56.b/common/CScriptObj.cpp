@@ -2386,7 +2386,7 @@ jump_in:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("key '%s' runtype '%d' pargs '%lx' ret '%s' [0%lx]",
+	g_Log.EventDebug("key '%s' runtype '%d' pargs '%lx' ret '%s' [0%lx]\n",
 		s.GetKey(), trigrun, pArgs, *pResult, pSrc);
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;

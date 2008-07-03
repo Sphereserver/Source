@@ -2569,7 +2569,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("section '%s' args '%s'", pszSection, pScript ? pScript->GetArgStr() : "");
+	g_Log.EventDebug("section '%s' args '%s'\n", pszSection, pScript ? pScript->GetArgStr() : "");
 	EXC_DEBUG_END;
 	return false;
 }
