@@ -562,19 +562,31 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 	//   -100 = love them
 	//
 
+
 	if ( !pCharTarg || !m_pNPC )
 		return 0;
+
+	int iHostility = 0;
 
 	// if it is a pet - register it the same as it's master.
 	CChar * pCharOwn = pCharTarg->NPC_PetGetOwner();
 	if ( pCharOwn != NULL && pCharOwn != this )
 	{
-		return( NPC_GetHostilityLevelToward( pCharOwn ));
+		static int sm_iReentrant = 0;
+		if (sm_iReentrant > 32)
+		{
+			DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring hostility level towards %s uid=0%x\n", pCharOwn->GetName(), pCharOwn->GetUID().GetPrivateUID()));
+			return 0;
+		}
+
+		++sm_iReentrant;
+		iHostility = NPC_GetHostilityLevelToward( pCharOwn );
+		--sm_iReentrant;
+
+		return iHostility;
 	}
 
 	int iKarma = Stat_GetAdjusted(STAT_KARMA);
-
-	int iHostility = 0;
 
 	bool fDoMemBase = false;
 

@@ -4040,3 +4040,5 @@ this all in desperation)
 
 04-07-2008, MrSugarCube
 - Fixed #1177: Client command parsing using brackets as argument separators.
+- Fixed #1097: Possible infinite loop involving circular ownership (e.g. two characters set as
+  owners of each other).
