@@ -129,7 +129,7 @@ elif ( strregex([^A-Za-z0-9\s]+,<local.title>) == 1 )
 else
   // Change the title
   sysmessage Title for <uid.<local.thisuid>.name> changed to: <local.title>
-  try obj.memberfromuid.<local.thisuid>.title=<local.title>
+  try obj.memberfromuid.<local.thisuid>.guildtitle=<local.title>
 endif
 
 trysrc <uid> obj.sdialog d_Guild_Master,0

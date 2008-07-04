@@ -4043,5 +4043,10 @@ this all in desperation)
 - Fixed #1097: Possible infinite loop involving circular ownership (e.g. two characters set as
   owners of each other).
 
+04-07-2008, MrSugarCube (Script pack)
+- Updated #1443: sphere_guild_dlg_charlist.scp, sphere_guild_promptconsole.scp,
+  sphere_town_dlg_charlist.scp, sphere_town_promptconsole.scp (Fixed guild and town stones
+  using TITLE property instead of GUILDTITLE)
+
 04-07-2008, Nazghul
 - Added skilltitles "Elder" and "Legendary"
