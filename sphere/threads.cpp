@@ -344,11 +344,6 @@ bool AbstractThread::isActive()
 
 void AbstractThread::waitForClose()
 {
-	int count = 150; // 15 seconds = 15000ms
-	while( isActive() && count-- )
-	{
-		Sleep(100);
-	}
 	terminate();
 }
 
