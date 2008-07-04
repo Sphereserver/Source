@@ -843,7 +843,9 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), 700,
 		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), 800,
 		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), 900,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 980,
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 990,
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), 1090,
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), 1190,
 		NULL, INT_MAX,
 	};
 

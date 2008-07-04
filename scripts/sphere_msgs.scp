@@ -958,6 +958,8 @@
 //skilltitle_adept		"Adept"
 //skilltitle_master		"Master"
 //skilltitle_grandmaster	"Grandmaster"
+//skilltitle_elder		"Elder"
+//skilltitle_legendary		"Legendary"
 //target_cancel_1		"Targeting cancelled."
 //target_cancel_2		"Previous targeting cancelled."
 //where_to_summon		"Where would you like to summon the"
