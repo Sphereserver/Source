@@ -14,7 +14,7 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/local/include/mysql
 
 # FreeBSD
-LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient
+LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient -lrt
 DEFBSD	= -D_BSD
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD

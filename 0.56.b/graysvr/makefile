@@ -14,7 +14,7 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient
+LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -lrt
 DEFNIX  = -D_LINUX
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD
