@@ -1419,27 +1419,23 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	if (( dirPrv != dir ) || ! Calc_GetRandVal(10))
 	{
 		dirPrv = dir;
-		TCHAR	*pszMsg = Str_GetTemp();
-		if ( dist )
-		{
-			LPCTSTR pszDist;
-			if ( dist < 16 ) // Closing in message?
-				pszDist = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_DIST_1 );
-			else if ( dist < 32 )
-				pszDist = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_DIST_2 );
-			else if ( dist < 100 )
-				pszDist = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_DIST_3 );
-			else
-				pszDist = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_DIST_4 );
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_DIST_0), pszDist, (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
-		}
-		else
-			strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAP_DIR_8 ));
 
-		TCHAR *zBuf = Str_GetTemp();
-		sprintf(zBuf, g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT), (LPCTSTR) pObj->GetName(),
-			pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_DISCONNECTED) : "", pszMsg);
-		ObjMessage(zBuf, this);
+		TCHAR *pszMsg = Str_GetTemp();
+		LPCTSTR pszDef;
+		// select tracking message based on distance
+		if (dist <= 0)
+			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_0 );
+		else if (dist < 16)
+			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_1 );
+		else if (dist < 32)
+			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_2 );
+		else if (dist < 100)
+			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_3 );
+		else
+			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
+
+		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", (LPCTSTR)CPointBase::sm_szDirs[dir]);
+		ObjMessage(pszMsg, this);
 	}
 
 	return true;		// keep the skill active.
