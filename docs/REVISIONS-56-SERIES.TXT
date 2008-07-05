@@ -4050,3 +4050,7 @@ this all in desperation)
 
 04-07-2008, Nazghul
 - Added skilltitles "Elder" and "Legendary"
+
+05-07-2008, MrSugarCube (Script pack)
+- Updated #1130: sphere_msgs.scp (Removed tracking_dis* defmessages and replaced them with
+  simpler tracking_result* defmessages)
