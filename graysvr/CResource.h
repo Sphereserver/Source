@@ -360,6 +360,7 @@ private:
 #define SPELLFLAG_NO_CASTANIM	0x80000	// play no anim while casting (also override SPELLFLAG_DIR_ANIM)
 #define SPELLFLAG_TARG_NO_PLAYER	0x100000 // if a char may be targetted, it may not be a player
 #define SPELLFLAG_TARG_NO_NPC	0x200000 // if a char may be targetted, it may not be an NPC
+#define SPELLFLAG_NOPRECAST	0x400000 // disable precasting for this spell
 	CGString m_sName;	// spell name
 
 public:

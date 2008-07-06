@@ -942,6 +942,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	}
 
 	int index = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1 );
+	CSpellDef *pSpellDef;
 	switch (index)
 	{
 		case CV_ADD:
@@ -1136,9 +1137,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			addBankOpen( m_pChar, (LAYER_TYPE) s.GetArgVal());
 			break;
 		case CV_CAST:
-			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
+			pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, s.GetArgStr()));
+			if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 			{
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, s.GetArgStr()));
 				if (pSpellDef == NULL)
 					return true;
 
@@ -1441,9 +1442,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			break;
 		case CV_TELE:
-			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
+			pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
+			if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 			{
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
 				if (pSpellDef == NULL)
 					return true;
 

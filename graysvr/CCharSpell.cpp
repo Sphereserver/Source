@@ -2158,7 +2158,7 @@ bool CChar::Spell_CastDone()
 	}
 
 	// At this point we should gain skill if precasting is enabled
-	if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) )
+	if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
 	{
 		iDifficulty /= 10;
 		Skill_Experience( (SKILL_TYPE)iSkill, iDifficulty );
@@ -2205,14 +2205,14 @@ int CChar::Spell_CastStart()
 	// RETURN:
 	//  0-100
 	//  -1 = instant failure.
-	if ( ! IsSetMagicFlags( MAGICF_PRECAST ) || !IsClient() )
+	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( ! IsSetMagicFlags( MAGICF_PRECAST ) || !IsClient() || pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
 	{
 		if ( ! Spell_TargCheck())
 			return( -1 );
 	}
 
 	// Animate casting.
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( pSpellDef == NULL )
 		return( -1 );
 
