@@ -4054,3 +4054,7 @@ this all in desperation)
 05-07-2008, MrSugarCube (Script pack)
 - Updated #1130: sphere_msgs.scp (Removed tracking_dis* defmessages and replaced them with
   simpler tracking_result* defmessages)
+
+06-07-2008, Nazghul
+- added SPELLFLAG_NOPRECAST what disbles PRECASTING on a per-spell-base.
+  Only valid if PRECAST is activated by Sphere.ini

@@ -3014,7 +3014,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					m_Act_TargPrv = GetUID();
 				}
 
-				if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) )
+				if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 				{
 					Spell_CastDone();
 					break;

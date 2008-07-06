@@ -3191,7 +3191,8 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) )
+		CSpellDef *		tSpell	= g_Cfg.GetSpellDef( m_atMagery.m_Spell );
+		if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !tSpell->IsSpellType( SPELLFLAG_NOPRECAST ))
 		{
 			this->GetClient()->Cmd_Skill_Magery( this->m_atMagery.m_Spell, this->GetClient()->m_Targ_PrvUID.ObjFind() );
 

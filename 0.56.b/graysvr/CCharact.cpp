@@ -1115,9 +1115,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		CChar * pChar = pClient->GetChar();
 		if ( pChar == NULL )
 			continue;
-// NAZTEST
 
-//		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= UO_MAP_VIEW_SIZE );
 		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= pChar->GetSight() );
 		EXC_SET("if cansee");
 		if ( ! pClient->CanSee( this ))
@@ -2610,7 +2608,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	// RETURN:
 	//  ptDst.m_z = the new z
 	//  NULL = failed to walk here.
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && IsSkillMagic(m_Act_SkillCurrent) )
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && IsSkillMagic(m_Act_SkillCurrent) && !g_Cfg.GetSpellDef((SPELL_TYPE) m_atMagery.m_Spell)->IsSpellType( SPELLFLAG_NOPRECAST ))
 	{
 		// Casting prevents movement with precasting enabled.
 		return( NULL );

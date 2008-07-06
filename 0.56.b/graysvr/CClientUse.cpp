@@ -121,7 +121,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	SetTargMode();
 	m_Targ_UID = pItem->GetUID();	// probably already set anyhow.
 	m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify.
-
+	CSpellDef *pSpellDef;
 	// Use types of items. (specific to client)
 	switch ( pItem->GetType() )
 	{
@@ -323,9 +323,9 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 		case IT_WAND:
 		case IT_SCROLL:	// activate the scroll.
-			if ( IsSetMagicFlags( MAGICF_PRECAST ) )
+			pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell));
+			if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 			{
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell));
 				if (pSpellDef == NULL)
 					return false;
 
@@ -895,8 +895,9 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	// start casting a spell. prompt for target.
 	// pSrc = you the char.
 	// pSrc = magic object is source ?
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) )
-		iSpell = m_tmSkillMagery.m_Spell;
+	iSpell = m_tmSkillMagery.m_Spell;
+	CSpellDef * tSpellDef = g_Cfg.GetSpellDef( iSpell );
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && !tSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 	// static const TCHAR sm_Txt_Summon[] = "Where would you like to summon the creature ?";
 
 	// Do we have the regs ? etc.
@@ -921,7 +922,7 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		m_pChar->m_Act_TargPrv		= m_Targ_PrvUID;
 		m_Targ_p					= m_pChar->GetTopPoint();
 
-		if ( !IsSetMagicFlags( MAGICF_PRECAST ) )
+		if ( !IsSetMagicFlags( MAGICF_PRECAST ) || tSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
 		{
 			int skill;
 			if (!pSpellDef->GetPrimarySkill(&skill, NULL))
