@@ -1497,7 +1497,7 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 	m_pChar->m_Act_p					= pt;
 	m_Targ_p							= pt;
 
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && !g_Cfg.GetSpellDef((SPELL_TYPE) m_pChar->m_atMagery.m_Spell)->IsSpellType( SPELLFLAG_NOPRECAST ) && m_pChar->IsClient() )
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpell->IsSpellType( SPELLFLAG_NOPRECAST ) && m_pChar->IsClient() )
 	{
 		if ( CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 		{
