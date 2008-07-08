@@ -1405,7 +1405,7 @@ LPCTSTR CItem::GetName() const
 			{
 				if ( RES_GET_INDEX(m_itPotion.m_Type) != SPELL_Explosion )
 				{
-					CSpellDef * pSpell	= g_Cfg.GetSpellDef( (SPELL_TYPE) m_itSpell.m_spell );
+					const CSpellDef * pSpell	= g_Cfg.GetSpellDef( (SPELL_TYPE) m_itSpell.m_spell );
 					if ( pSpell )
 						pszNameBase	= pSpell->GetName();
 				}

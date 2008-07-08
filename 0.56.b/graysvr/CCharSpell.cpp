@@ -225,7 +225,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		pChar->NPC_PetSetOwner( this );
 #endif
 		int skill;
-		CSpellDef *pSpellDef = g_Cfg.GetSpellDef( CChar::IsSkillMagic(m_Act_SkillCurrent)? m_atMagery.m_Spell : SPELL_Summon );
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef( CChar::IsSkillMagic(m_Act_SkillCurrent)? m_atMagery.m_Spell : SPELL_Summon );
 		if (!pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL))
 		{
 			pChar->Delete();
