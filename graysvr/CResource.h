@@ -47,24 +47,25 @@ enum OF_TYPE
 
 enum EF_TYPE
 {
-	EF_DiagonalWalkCheck		= 0x0000001,
-	EF_UNICODE					= 0x0000002,
-	EF_Unused04					= 0x0000004,
-	EF_New_Triggers				= 0x0000008,
-	EF_Unused010				= 0x0000010,
-	EF_Intrinsic_Locals			= 0x0000020,
-	EF_Item_Strict_Comparison	= 0x0000040,
-	EF_NewPositionChecks		= 0x0000080,
-	EF_WalkCheck				= 0x0000100,
-	EF_AllowTelnetPacketFilter	= 0x0000200,
-	EF_Script_Profiler			= 0x0000400,
-	EF_Size_Optimise			= 0x0000800,
-	EF_Minimize_Triggers		= 0x0001000,
-	EF_DamageTools				= 0x0002000,
-	EF_UsePingServer			= 0x0008000,
-	EF_NPCAct_Triggers			= 0x0010000,
-	EF_UseNetworkMulti			= 0x0800000,
-    EF_Specific					= 0x1000000,	// Specific behaviour, not completly tested
+	EF_DiagonalWalkCheck			= 0x0000001,
+	EF_UNICODE						= 0x0000002,
+	EF_Unused04						= 0x0000004,
+	EF_New_Triggers					= 0x0000008,
+	EF_Unused010					= 0x0000010,
+	EF_Intrinsic_Locals				= 0x0000020,
+	EF_Item_Strict_Comparison		= 0x0000040,
+	EF_NewPositionChecks			= 0x0000080,
+	EF_WalkCheck					= 0x0000100,
+	EF_AllowTelnetPacketFilter		= 0x0000200,
+	EF_Script_Profiler				= 0x0000400,
+	EF_Size_Optimise				= 0x0000800,
+	EF_Minimize_Triggers			= 0x0001000,
+	EF_DamageTools					= 0x0002000,
+	EF_UsePingServer				= 0x0008000,
+	EF_NPCAct_Triggers				= 0x0010000,
+	EF_NoWalkingThroughStairsFix	= 0x0400000,
+	EF_UseNetworkMulti				= 0x0800000,
+    EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };
 
 enum MAGICFLAGS_TYPE
