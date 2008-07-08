@@ -4049,12 +4049,19 @@ this all in desperation)
   using TITLE property instead of GUILDTITLE)
 
 04-07-2008, Nazghul
-- Added skilltitles "Elder" and "Legendary"
+- Added: skilltitles "Elder" and "Legendary"
 
 05-07-2008, MrSugarCube (Script pack)
 - Updated #1130: sphere_msgs.scp (Removed tracking_dis* defmessages and replaced them with
   simpler tracking_result* defmessages)
 
 06-07-2008, Nazghul
-- added SPELLFLAG_NOPRECAST what disbles PRECASTING on a per-spell-base.
+- Added: SPELLFLAG_NOPRECAST what disbles PRECASTING on a per-spell-base.
   Only valid if PRECAST is activated by Sphere.ini
+
+08-07-2008, MrSugarCube
+- Fixed #1446: GM/MT_FLY enabled characters walking through stairs when EF_WalkCheck is not
+  enabled. [Note: Due to potentially negative side-effects of this fix a temporary EF flag
+  (EF_NoWalkingThroughStairsFix) has been added to sphere.ini which disables the fix just in
+  case something bad happens (if no issues are reported that are caused by this fix then you
+  can expect it to disappear very soon)]
