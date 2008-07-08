@@ -868,11 +868,15 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		return;
 
 	// Movement whilst precasting is not allowed
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) && !g_Cfg.GetSpellDef((SPELL_TYPE) m_pChar->m_atMagery.m_Spell)->IsSpellType( SPELLFLAG_NOPRECAST ))
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
-		SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
-		addPlayerWalkCancel();
-		return;
+		CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
+		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST))
+		{
+			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
+			addPlayerWalkCancel();
+			return;
+		}
 	}
 
 	if (( m_pChar->IsStatFlag(STATF_Freeze|STATF_Stone) && m_pChar->OnFreezeCheck() ) || m_pChar->OnFreezeCheck(true) )
@@ -4063,7 +4067,6 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 
 	TCHAR * ppArgs[2];
 	Str_ParseCmds( szTmp, ppArgs, COUNTOF(ppArgs), " " );
-	CSpellDef *pSpellDef;
 	switch ( type )
 	{
 		case EXTCMD_OPEN_SPELLBOOK: // 67 = open spell book if we have one.
@@ -4117,24 +4120,27 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 
 		case EXTCMD_CAST_MACRO:	// macro spell.
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
-			pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) ATOI( ppArgs[0] ));
-			if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 			{
+				SPELL_TYPE spell = (SPELL_TYPE) ATOI(ppArgs[0]);
+				CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return;
 
-				int skill;
-				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-					return;
+				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
+				{
+					int skill;
+					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+						return;
 
-				m_tmSkillMagery.m_Spell = (SPELL_TYPE) ATOI( ppArgs[0] );
-				m_pChar->m_atMagery.m_Spell = (SPELL_TYPE) ATOI( ppArgs[0] );	// m_atMagery.m_Spell
-				m_Targ_UID = m_pChar->GetUID();	// default target.
-				m_Targ_PrvUID = m_pChar->GetUID();
-				m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					m_tmSkillMagery.m_Spell = spell;
+					m_pChar->m_atMagery.m_Spell = spell;	// m_atMagery.m_Spell
+					m_Targ_UID = m_pChar->GetUID();	// default target.
+					m_Targ_PrvUID = m_pChar->GetUID();
+					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+				}
+				else
+					Cmd_Skill_Magery(spell, m_pChar );
 			}
-			else
-				Cmd_Skill_Magery( (SPELL_TYPE) ATOI( ppArgs[0] ), m_pChar );
 			break;
 
 		case EXTCMD_DOOR_AUTO: // open door macro = Attempt to open a door around us.
@@ -4914,4 +4920,5 @@ int CClient::xDispatchMsg()
 	EXC_DEBUG_END;
 	return 0;
 }
+
 

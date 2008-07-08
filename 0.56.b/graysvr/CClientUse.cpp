@@ -121,7 +121,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	SetTargMode();
 	m_Targ_UID = pItem->GetUID();	// probably already set anyhow.
 	m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify.
-	CSpellDef *pSpellDef;
 	// Use types of items. (specific to client)
 	switch ( pItem->GetType() )
 	{
@@ -323,24 +322,27 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 		case IT_WAND:
 		case IT_SCROLL:	// activate the scroll.
-			pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell));
-			if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 			{
+				SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itWeapon.m_spell);
+				CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return false;
 
-				int skill;
-				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-					return false;
+				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
+				{
+					int skill;
+					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+						return false;
 
-				m_tmSkillMagery.m_Spell = (SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell);	// m_atMagery.m_Spell
-				m_pChar->m_atMagery.m_Spell = (SPELL_TYPE)RES_GET_INDEX(pItem->m_itSpell.m_spell);
-				m_Targ_UID = pItem->GetUID();	// default target.
-				m_Targ_PrvUID = pItem->GetUID();
-				m_pChar->Skill_Start( (SKILL_TYPE)skill );
-				return true;
+					m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
+					m_pChar->m_atMagery.m_Spell = spell;
+					m_Targ_UID = pItem->GetUID();	// default target.
+					m_Targ_PrvUID = pItem->GetUID();
+					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					return true;
+				}
+				return Cmd_Skill_Magery( spell, pItem );
 			}
-			return Cmd_Skill_Magery( (SPELL_TYPE)RES_GET_INDEX(pItem->m_itWeapon.m_spell), pItem );
 		case IT_RUNE:
 			// name the rune.
 			if ( ! m_pChar->CanMove( pItem, true ))
@@ -895,17 +897,24 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	// start casting a spell. prompt for target.
 	// pSrc = you the char.
 	// pSrc = magic object is source ?
-	iSpell = m_tmSkillMagery.m_Spell;
-	CSpellDef * tSpellDef = g_Cfg.GetSpellDef( iSpell );
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && !tSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 	// static const TCHAR sm_Txt_Summon[] = "Where would you like to summon the creature ?";
+	ASSERT(m_pChar);
+
+	const CSpellDef * pSpellDef;
+
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && iSpell == m_tmSkillMagery.m_Spell )
+	{
+		pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
+		if (pSpellDef != NULL && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+			iSpell = m_tmSkillMagery.m_Spell;
+	}
+	else
+		pSpellDef = g_Cfg.GetSpellDef( iSpell );
 
 	// Do we have the regs ? etc.
-	ASSERT(m_pChar);
 	if ( ! m_pChar->Spell_CanCast( iSpell, true, pSrc, true ))
 		return false;
 
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( iSpell );
 	ASSERT(pSpellDef);
 
 	SetTargMode();
@@ -922,7 +931,7 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		m_pChar->m_Act_TargPrv		= m_Targ_PrvUID;
 		m_Targ_p					= m_pChar->GetTopPoint();
 
-		if ( !IsSetMagicFlags( MAGICF_PRECAST ) || tSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+		if ( !IsSetMagicFlags( MAGICF_PRECAST ) || pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
 		{
 			int skill;
 			if (!pSpellDef->GetPrimarySkill(&skill, NULL))
@@ -1342,4 +1351,5 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	pCont1->ContentAdd( pItem, pt );
 	return( true );
 }
+
 

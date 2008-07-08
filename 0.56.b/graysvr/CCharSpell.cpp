@@ -2206,6 +2206,9 @@ int CChar::Spell_CastStart()
 	//  0-100
 	//  -1 = instant failure.
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( pSpellDef == NULL )
+		return( -1 );
+
 	if ( ! IsSetMagicFlags( MAGICF_PRECAST ) || !IsClient() || pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
 	{
 		if ( ! Spell_TargCheck())
@@ -2213,9 +2216,6 @@ int CChar::Spell_CastStart()
 	}
 
 	// Animate casting.
-	if ( pSpellDef == NULL )
-		return( -1 );
-
 	if (!pSpellDef->IsSpellType( SPELLFLAG_NO_CASTANIM ))
 		UpdateAnimate(( pSpellDef->IsSpellType( SPELLFLAG_DIR_ANIM )) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
 
