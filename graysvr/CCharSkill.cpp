@@ -3191,7 +3191,7 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		CSpellDef *		tSpell	= g_Cfg.GetSpellDef( m_atMagery.m_Spell );
+		const CSpellDef *		tSpell	= g_Cfg.GetSpellDef( m_atMagery.m_Spell );
 		if (tSpell == NULL)
 			return( 0 );
 

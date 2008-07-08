@@ -2608,10 +2608,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	// RETURN:
 	//  ptDst.m_z = the new z
 	//  NULL = failed to walk here.
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && IsSkillMagic(m_Act_SkillCurrent) && !g_Cfg.GetSpellDef((SPELL_TYPE) m_atMagery.m_Spell)->IsSpellType( SPELLFLAG_NOPRECAST ))
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && IsSkillMagic(m_Act_SkillCurrent) )
 	{
-		// Casting prevents movement with precasting enabled.
-		return( NULL );
+		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST))
+		{
+			// Casting prevents movement with precasting enabled.
+			return( NULL );
+		}
 	}
 
 	if (( IsStatFlag( STATF_Freeze | STATF_Stone ) && OnFreezeCheck()) || OnFreezeCheck(true) )

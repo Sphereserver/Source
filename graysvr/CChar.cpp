@@ -2996,7 +2996,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 		case CHV_POLY:	// result of poly spell script choice. (casting a spell)
 			{
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Polymorph);
+				const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Polymorph);
 				if (pSpellDef == NULL)
 					return( false );
 

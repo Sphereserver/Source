@@ -870,7 +870,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	// Movement whilst precasting is not allowed
 	if ( IsSetMagicFlags( MAGICF_PRECAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
-		CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
+		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
 		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST))
 		{
 			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
@@ -3915,7 +3915,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 
 				if ( IsSetMagicFlags( MAGICF_PRECAST ) )
 				{
-					CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) iSpell);
+					const CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) iSpell);
 					if (pSpellDef == NULL)
 						return;
 					if ( pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
@@ -4122,7 +4122,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
 			{
 				SPELL_TYPE spell = (SPELL_TYPE) ATOI(ppArgs[0]);
-				CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
+				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return;
 
