@@ -1046,7 +1046,7 @@ bool CItem::IsStackable( const CItem * pItem ) const
 	if ( ! pItemDef->IsStackableType())
 	{
 		// Vendor boxes can stack normally un-stackable stuff.
-		if ( ! IsStackableException())
+		if ( ! pItem->IsStackableException())
 			return( false );
 	}
 

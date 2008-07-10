@@ -4065,3 +4065,7 @@ this all in desperation)
   (EF_NoWalkingThroughStairsFix) has been added to sphere.ini which disables the fix just in
   case something bad happens (if no issues are reported that are caused by this fix then you
   can expect it to disappear very soon)]
+
+10-07-2008, MrSugarCube
+- Fixed #3: Unstackable items becoming stacked after being bought off a player-owned vendor,
+  when the buyer cannot carry the items.
