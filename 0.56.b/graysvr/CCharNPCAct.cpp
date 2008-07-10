@@ -3381,11 +3381,16 @@ void CChar::NPC_Food()
 								pt = g_World.FindTypeNear_Top(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
 							else
 								pt = g_World.FindItemTypeNearby(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander), true);
+
 							if (( pt.m_x >= 1 ) && ( pt.m_y >= 1 ))
 							{
-								if ( CanMoveWalkTo(pt) )
+								// we found grass nearby, but has it already been consumed?
+								pResBit = g_World.CheckNaturalResource(pt, IT_GRASS, false, this);
+								if ( pResBit != NULL && pResBit->GetAmount() && CanMoveWalkTo(pt) )
 								{
 									EXC_SET("walking to grass");
+									pResBit->m_TagDefs.SetNum("NOSAVE", 1);
+									pResBit->SetTimeout(60*10*TICK_PER_SEC);
 									m_Act_p = pt;
 									Skill_Start(NPCACT_GOTO);
 									//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
