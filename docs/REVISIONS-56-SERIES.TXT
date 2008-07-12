@@ -4071,3 +4071,6 @@ this all in desperation)
   when the buyer cannot carry the items.
 - Fixed ##2: NPC_AI_FOOD causing NPCs to get stuck whilst they attempt to eat grass from a
   tile where grass has already been eaten from recently.
+
+13-07-2008, Beyonder
+- Fixed ##1: Sphere crashes with Experimental Flag UseNetworkMulti.
