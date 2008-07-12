@@ -1258,13 +1258,14 @@ void CClient::xFlushAsync()
         return;
 
     int packetLength = m_vExtPacketLengths.front();
-    if ( packetLength <= 0 )
+    while ( packetLength <= 0 )
     {
         m_vExtPacketLengths.pop();
-#ifdef _WIN32
-        xFlushAsync();
-#endif
-        return;
+
+		if (m_vExtPacketLengths.empty())
+			return;
+
+		packetLength = m_vExtPacketLengths.front();
     }
 
     m_timeLastSend = CServTime::GetCurrentTime();
