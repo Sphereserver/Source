@@ -1318,7 +1318,8 @@ void CClient::xFlushAsync()
     {
 #ifdef _WIN32		
         m_sendingData = true;
-        SleepEx(1, TRUE);
+
+        //SleepEx(1, TRUE);
 #else
 		g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenToSend );
     	m_bout.RemoveDataAmount(packetLength);
