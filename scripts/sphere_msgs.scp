@@ -1139,7 +1139,7 @@
 //tiller_reply_2          "Aye Cap'n"
 //tiller_reply_3          "Aye <SEX Sir/Mam>"
 //tiller_confirm          "As you command <SEX Sir/Mam>"
-//tiller_deny             "Can't do that <SEX Sir/Mam"
+//tiller_deny             "Can't do that <SEX Sir/Mam>"
 //tiller_anchor_is_down   "The anchor is down <SEX Sir/Mam>!"
 //tiller_anchor_is_all_up "The anchor is already up <SEX Sir/Mam>"
 //tiller_anchor_is_all_down "The anchor is already down <SEX Sir/Mam>"
