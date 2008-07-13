@@ -4074,3 +4074,7 @@ this all in desperation)
 
 13-07-2008, Beyonder
 - Fixed ##1: Sphere crashes with Experimental Flag UseNetworkMulti.
+- Added: LOCAL.FIELDWIDTH and LOCAL.FIELDGAUGE to @SpellSuccess and @Success
+  triggers.
+  LOCAL.FIELDWIDTH sets the width of the field from character point of view.
+  LOCAL.FIELDGAUGE sets the thickness of the field.
