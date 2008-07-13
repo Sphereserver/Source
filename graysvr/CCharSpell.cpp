@@ -1152,14 +1152,17 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 	}
 }
 
-void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iSkillLevel )
+void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel )
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
 	// ARGS:
-	// m_atMagery.m_Spell = the spell
+	// pntTarg = target
+	// idEW = ID of EW aligned spell object
+	// idNS = ID of NS aligned spell object
+	// fieldWidth = width of the field (looking from char's point of view)
+	// fieldGauge = thickness of the field
 	// iSkillLevel = 0-1000
-	//
 
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	ASSERT(pSpellDef);
@@ -1172,70 +1175,83 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 	int dy = abs( pntTarg.m_y - GetTopPoint().m_y );
 	ITEMID_TYPE id = ( dx > dy ) ? idNS : idEW;
 
-	for ( int i=-3; i<=3; i++ )
+	int minX = (int)((fieldWidth-1)/2) - (fieldWidth-1);
+	int maxX = minX+(fieldWidth-1);
+
+	int minY = (int)((fieldGauge-1)/2) - (fieldGauge-1);
+	int maxY = minY+(fieldGauge-1);
+
+	for ( int ix=minX; ix<=maxX; ix++ )
 	{
-		bool fGoodLoc = true;
-
-		// Where is this ?
-		CPointMap ptg = pntTarg;
-		if ( dx > dy )
-			ptg.m_y += i;
-		else
-			ptg.m_x += i;
-
-		// Check for direct cast on a creature.
-		CWorldSearch AreaChar( ptg );
-		while (true)
+		for ( int iy=minY; iy<=maxY; iy++) 
 		{
-			CChar * pChar = AreaChar.GetChar();
-			if ( pChar == NULL )
-				break;
+			bool fGoodLoc = true;
 
-			if ( pChar->GetPrivLevel() > GetPrivLevel() )	// skip higher priv characters
-				continue;
-
-			if (( pSpellDef->IsSpellType(SPELLFLAG_HARM) ) && ( !pChar->OnAttackedBy( this, 1, false ) ))	// they should know they where attacked.
-				continue;
-
-			if ( !pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) )
-			{
-				if (pChar->LayerFind( LAYER_FLAG_Stuck ))
-					pChar->LayerFind( LAYER_FLAG_Stuck )->Delete();
-				pChar->StatFlag_Clear( STATF_Freeze );
+			// Where is this ?
+			CPointMap ptg = pntTarg;
+			if ( dx > dy ) {
+				ptg.m_y += ix;
+				ptg.m_x += iy;
+			}
+			else {
+				ptg.m_x += ix;
+				ptg.m_y += iy;
 			}
 
-			if (( idEW == ITEMID_STONE_WALL ) || ( idEW == ITEMID_FX_ENERGY_F_EW ) || ( idEW == ITEMID_FX_ENERGY_F_NS ))	// don't place stone wall over characters
+			// Check for direct cast on a creature.
+			CWorldSearch AreaChar( ptg );
+			while (true)
 			{
-				fGoodLoc = false;
-				break;
+				CChar * pChar = AreaChar.GetChar();
+				if ( pChar == NULL )
+					break;
+
+				if ( pChar->GetPrivLevel() > GetPrivLevel() )	// skip higher priv characters
+					continue;
+
+				if (( pSpellDef->IsSpellType(SPELLFLAG_HARM) ) && ( !pChar->OnAttackedBy( this, 1, false ) ))	// they should know they where attacked.
+					continue;
+
+				if ( !pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) )
+				{
+					if (pChar->LayerFind( LAYER_FLAG_Stuck ))
+						pChar->LayerFind( LAYER_FLAG_Stuck )->Delete();
+					pChar->StatFlag_Clear( STATF_Freeze );
+				}
+
+				if (( idEW == ITEMID_STONE_WALL ) || ( idEW == ITEMID_FX_ENERGY_F_EW ) || ( idEW == ITEMID_FX_ENERGY_F_NS ))	// don't place stone wall over characters
+				{
+					fGoodLoc = false;
+					break;
+				}
 			}
-		}
 
-		// Check for direct cast on an item.
-		CWorldSearch AreaItem( ptg );
-		while (true)
-		{
-			CItem * pItem = AreaItem.GetItem();
-			if ( pItem == NULL )
-				break;
-			pItem->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
-		}
+			// Check for direct cast on an item.
+			CWorldSearch AreaItem( ptg );
+			while (true)
+			{
+				CItem * pItem = AreaItem.GetItem();
+				if ( pItem == NULL )
+					break;
+				pItem->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
+			}
 
-		if ( fGoodLoc)
-		{
-		CItem * pSpell = CItem::CreateScript( id, this );
-		ASSERT(pSpell);
-		pSpell->SetType(IT_SPELL);
-		pSpell->SetAttr(ATTR_MAGIC);
-		pSpell->m_itSpell.m_spell = m_atMagery.m_Spell;
-		pSpell->m_itSpell.m_spelllevel = iSkillLevel;
-		pSpell->m_itSpell.m_spellcharges = 1;
-		pSpell->m_uidLink = GetUID();	// Link it back to you
+			if ( fGoodLoc)
+			{
+			CItem * pSpell = CItem::CreateScript( id, this );
+			ASSERT(pSpell);
+			pSpell->SetType(IT_SPELL);
+			pSpell->SetAttr(ATTR_MAGIC);
+			pSpell->m_itSpell.m_spell = m_atMagery.m_Spell;
+			pSpell->m_itSpell.m_spelllevel = iSkillLevel;
+			pSpell->m_itSpell.m_spellcharges = 1;
+			pSpell->m_uidLink = GetUID();	// Link it back to you
 
-		// Add some random element.
-		int iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
+			// Add some random element.
+			int iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
 
-		pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ));
+			pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ));
+			}
 		}
 	}
 }
@@ -1582,6 +1598,9 @@ bool CChar::Spell_CastDone()
     ITEMID_TYPE iT2;
 	CREID_TYPE iC1;
 
+	unsigned int fieldWidth;
+	unsigned int fieldGauge;
+
 	SPELL_TYPE spell = m_atMagery.m_Spell;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( pSpellDef == NULL )
@@ -1614,6 +1633,9 @@ bool CChar::Spell_CastDone()
 		Args.m_VarsLocal.SetNum("CreateObject1",0);
 		Args.m_VarsLocal.SetNum("CreateObject2",0);
 
+		Args.m_VarsLocal.SetNum("fieldWidth",0);
+		Args.m_VarsLocal.SetNum("fieldGauge",0);
+
 		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
 		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
@@ -1622,6 +1644,11 @@ bool CChar::Spell_CastDone()
 		iT1 = (ITEMID_TYPE) (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
 		iT2 = (ITEMID_TYPE) (Args.m_VarsLocal.GetKeyNum("CreateObject2",true) & 0xFFFF);
 		iC1 = (CREID_TYPE)  (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
+
+		//Can't be < 0, so max it to 0
+		fieldWidth = max(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
+		fieldGauge = max(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
+
 		//DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
 		//DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
 	}
@@ -1714,9 +1741,13 @@ bool CChar::Spell_CastDone()
 		if ( ! iT2 )
 			iT2 = ITEMID_STONE_WALL;
 
-		Spell_Field( m_Act_p, iT1, iT2, iSkillLevel );
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
 
-		//Spell_Field( m_Act_p, ITEMID_STONE_WALL, ITEMID_STONE_WALL, iSkillLevel );
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
+
 		break;
 
 		// 4th
@@ -1733,13 +1764,18 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 	case SPELL_Fire_Field:
+
 		if ( ! iT1 )
 			iT1 = ITEMID_FX_FIRE_F_EW;
 		if ( ! iT2 )
 			iT2 = ITEMID_FX_FIRE_F_NS;
 
-		Spell_Field( m_Act_p, iT1, iT2, iSkillLevel );
-		//Spell_Field( m_Act_p, ITEMID_FX_FIRE_F_EW, ITEMID_FX_FIRE_F_NS, iSkillLevel );
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
+
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
 
 	case SPELL_Recall:
@@ -1799,13 +1835,18 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Poison_Field:
+
 		if ( ! iT1 )
 			iT1 = (ITEMID_TYPE) 0x3915;
 		if ( ! iT2 )
 			iT2 = ITEMID_FX_POISON_F_NS;
 
-		Spell_Field( m_Act_p, iT1, iT2, iSkillLevel );
-		//Spell_Field( m_Act_p, (ITEMID_TYPE) 0x3915, ITEMID_FX_POISON_F_NS, iSkillLevel );
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
+
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
 
 	case SPELL_Summon:
@@ -1840,13 +1881,18 @@ bool CChar::Spell_CastDone()
 		Spell_Area( m_Act_p, 5, iSkillLevel );
 		break;
 	case SPELL_Paralyze_Field:
+
 		if ( ! iT1 )
 			iT1 = ITEMID_FX_PARA_F_EW;
 		if ( ! iT2 )
 			iT2 = ITEMID_FX_PARA_F_NS;
 
-		Spell_Field( m_Act_p, iT1, iT2, iSkillLevel );
-		//Spell_Field( m_Act_p, ITEMID_FX_PARA_F_EW, ITEMID_FX_PARA_F_NS, iSkillLevel );
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
+
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
 	case SPELL_Reveal:
 		Spell_Area( m_Act_p, UO_MAP_VIEW_SIGHT, iSkillLevel );
@@ -1858,13 +1904,18 @@ bool CChar::Spell_CastDone()
 		Spell_Area( m_Act_p, 5, iSkillLevel );
 		break;
 	case SPELL_Energy_Field:
+
 		if ( ! iT1 )
 			iT1 = ITEMID_FX_ENERGY_F_EW;
 		if ( ! iT2 )
 			iT2 = ITEMID_FX_ENERGY_F_NS;
 
-		Spell_Field( m_Act_p, iT1, iT2, iSkillLevel );
-		//Spell_Field( m_Act_p, ITEMID_FX_ENERGY_F_EW, ITEMID_FX_ENERGY_F_NS, iSkillLevel );
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
+
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
 
 	case SPELL_Flame_Strike:
