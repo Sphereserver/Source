@@ -2994,7 +2994,8 @@ public:
 	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
 	void Skill_Fail( bool fCancel = false );
 	int Skill_Stage( SKTRIG_TYPE stage );
-	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, int * argn2 = NULL, int * argn3 = NULL ); // call script triggers
+	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
+	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
