@@ -4096,3 +4096,6 @@ this all in desperation)
   all of the item/character properties are fully accessible.
   "return 1" forbids deletion. WARNING! putting return 1 in this trigger means it won't be deleted
   in any possible way! Use it with caution.
+
+15-07-2008, MrSugarCube
+- Fixed: World saves being aborted when they are taking a long time to complete.

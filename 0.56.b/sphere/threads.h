@@ -51,7 +51,7 @@ public:
 	virtual const char *getName() = 0;
 
 	virtual bool isActive() = 0;
-	virtual void checkStuck() = 0;
+	virtual bool checkStuck() = 0;
 
 	virtual void start() = 0;
 	virtual void terminate() = 0;
@@ -107,7 +107,7 @@ public:
 	virtual const char *getName();
 
 	virtual bool isActive();
-	virtual void checkStuck();
+	virtual bool checkStuck();
 
 	virtual void start();
 	virtual void terminate();

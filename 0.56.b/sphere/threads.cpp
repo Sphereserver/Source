@@ -347,7 +347,7 @@ void AbstractThread::waitForClose()
 	terminate();
 }
 
-void AbstractThread::checkStuck()
+bool AbstractThread::checkStuck()
 {
 	if( isActive() )
 	{
@@ -369,8 +369,11 @@ void AbstractThread::checkStuck()
 			//g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", m_name);
 			terminate();
 			start();
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void AbstractThread::onStart()
