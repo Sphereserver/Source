@@ -682,12 +682,13 @@ static void Sphere_MainMonitorLoop()
 
 		EXC_SET("Checks");
 		// Don't look for freezing when doing certain things.
-		if ( g_Serv.IsLoading() || ! g_Cfg.m_fSecure )
+		if ( g_Serv.IsLoading() || ! g_Cfg.m_fSecure || g_Serv.IsValidBusy() )
 			continue;
 
 		EXC_SET("Check Stuck");
 #ifndef _DEBUG
-		g_Main.checkStuck();
+		if (g_Main.checkStuck() == true)
+			g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", g_Main.getName());
 #endif
 		EXC_CATCH;
 
