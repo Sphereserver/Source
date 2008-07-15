@@ -559,8 +559,10 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
-		if ( Skill_OnTrigger( skill, SKTRIG_GAIN, &iChance, &iSkillMax ) == TRIGRET_RET_TRUE )
+		CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
+		if ( Skill_OnTrigger( skill, SKTRIG_GAIN, &pArgs ) == TRIGRET_RET_TRUE )
 			return;
+		pArgs.getArgNs(0,&iChance,&iSkillMax);
 	}
 
 	if ( iChance <= 0 )
@@ -745,7 +747,10 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain )
 
 	if ( ! IsSetEF( EF_Minimize_Triggers ) )
 	{
-		TRIGRET_TYPE ret = Skill_OnTrigger( skill, SKTRIG_USEQUICK, &difficulty, &result );
+		CScriptTriggerArgs pArgs( 0 , difficulty, result);
+		TRIGRET_TYPE ret = Skill_OnTrigger( skill, SKTRIG_USEQUICK, &pArgs );
+		pArgs.getArgNs(0,&difficulty,&result);
+
 		if ( ret == TRIGRET_RET_TRUE )
 			return( true );
 		else if ( ret == TRIGRET_RET_FALSE )
@@ -772,6 +777,12 @@ void CChar::Skill_Cleanup()
 	// We may have succeeded, failed, or cancelled.
 	m_Act_Difficulty = 0;
 	m_Act_SkillCurrent = SKILL_NONE;
+
+	//Cleanup the createitem stuff to look good in @Select trigger
+	m_atCreate.m_ItemID = ITEMID_NOTHING;
+	m_atCreate.m_Amount = 0;
+	m_atCreate.m_Stroke_Count = 0;
+
 	SetTimeout( m_pPlayer ? -1 : TICK_PER_SEC ); // we should get a brain tick next time.
 }
 
@@ -3915,8 +3926,13 @@ void CChar::Skill_Fail( bool fCancel )
 	Skill_Cleanup();
 }
 
+TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage) 
+{
+	CScriptTriggerArgs pArgs;
+	return Skill_OnTrigger(skill,stage,&pArgs);
+}
 
-TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, int * argn2, int * argn3 )
+TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs ) 
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
 	if ( !IsSkillBase(skill) )
@@ -3941,13 +3957,10 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, int *
 	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK) )
 		m_Act_SkillCurrent = skill;
 
-	CScriptTriggerArgs Args( (int) skill, argn2 ? *argn2 : 0, argn3 ? *argn3 : 0);
-	if ( OnTrigger( ctrig, this, &Args ) == TRIGRET_RET_TRUE )
+	pArgs->m_iN1 = skill;
+
+	if ( OnTrigger( ctrig, this, pArgs ) == TRIGRET_RET_TRUE )
 		return TRIGRET_RET_TRUE;
-	if ( argn2 )
-		*argn2	= Args.m_iN2;
-	if ( argn3 )
-		*argn3	= Args.m_iN3;
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
@@ -3959,7 +3972,7 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, int *
 			CResourceLock s;
 			if ( pSkillDef->ResourceLock( s ))
 			{
-				if ( CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, &Args )
+				if ( CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs )
 						== TRIGRET_RET_TRUE  )
 				{
 					return TRIGRET_RET_TRUE;
@@ -4109,11 +4122,25 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			return false;
 		}
 		m_Act_Difficulty = Skill_Stage(SKTRIG_START);
-		if (( Skill_OnTrigger( skill, SKTRIG_START ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+
+		//Execute the @START trigger and pass various craft parameters there
+		//If this is not a crafting skill nothing bad will happen
+		CScriptTriggerArgs pArgs;
+
+		CItemBase * pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
+		pArgs.m_VarsLocal.SetNum("CraftItemdef",pItemDef->GetResourceID().GetPrivateUID());
+		pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
+		pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
+		if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
 		{
 			Skill_Cleanup();
 			return false;
 		}
+		RESOURCE_ID_BASE pResBase;
+		pResBase.SetPrivateUID(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true));
+		m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex());
+		m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
+		m_atCreate.m_Amount = pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true);
 
 		if ( IsSkillBase(skill) )
 		{

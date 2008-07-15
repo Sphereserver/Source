@@ -179,6 +179,19 @@
 		{
 			m_pO1 = NULL;
 		}
+
+		void getArgNs( int *iVar1 = NULL, int *iVar2 = NULL, int *iVar3 = NULL) //Puts the ARGN's into the specified variables
+		{
+			if (iVar1)
+				*iVar1 = this->m_iN1;
+
+			if (iVar2)
+				*iVar2 = this->m_iN2;
+
+			if (iVar3)
+				*iVar3 = this->m_iN3;
+		}
+
 		CScriptTriggerArgs( int iVal1, int iVal2, CScriptObj * pObj ) :
 			m_iN1(iVal1), m_iN2(iVal2), m_iN3(0), m_pO1(pObj)
 		{
