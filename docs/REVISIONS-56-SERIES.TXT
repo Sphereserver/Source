@@ -4092,3 +4092,7 @@ this all in desperation)
   has DELAY specified in SKILL section. Readable/Writable.
   LOCAL.CRAFTAMOUNT - amount of items that will be created. Only usable for REPLICATable items,
   otherwise will make no effect. Readable/Writable.
+- Modified: @Destroy on items and characters is triggered before deletion, not after. This way
+  all of the item/character properties are fully accessible.
+  "return 1" forbids deletion. WARNING! putting return 1 in this trigger means it won't be deleted
+  in any possible way! Use it with caution.
