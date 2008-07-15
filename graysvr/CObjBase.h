@@ -82,7 +82,7 @@ public:
 	virtual bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg ) = 0;
 
 	virtual int IsWeird() const;
-	void Delete();
+	virtual void Delete();
 
 	// Accessors
 
@@ -1147,6 +1147,8 @@ public:
 	static CItem * ReadTemplate( CResourceLock & s, CObjBase * pCont );
 
 	int GetAbilityFlags() const;
+
+	virtual void Delete();
 };
 
 class CItemVendable : public CItem
@@ -2484,7 +2486,7 @@ public:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
-	void Delete();
+	virtual void Delete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
 		return(( m_StatFlag & dwStatFlag) ? true : false );
