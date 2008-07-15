@@ -4079,3 +4079,16 @@ this all in desperation)
   LOCAL.FIELDWIDTH sets the width of the field from character point of view.
   LOCAL.FIELDGAUGE sets the thickness of the field.
 - Fixed #1449: Damage spells backfire when selecting summon while casting.
+
+15-07-2008, Beyonder
+- Added: Extra local arguments to @SkillStart and @Start (skill section) triggers for crafting 
+  skills:
+  LOCAL.CRAFTITEMDEF - the UID of defname of the item we are currently crafting. Readable/Writable.
+  Accepts ONLY UIDs of ITEMDEFs, for example:
+	if (<LOCAL.CRAFTITEMDEF> == <DEF.i_katana>)
+		LOCAL.CRAFTITEMDEF = <DEF.i_sword_long>
+	endif
+  LOCAL.CRAFTSTROKECNT - amount of strokes character makes while creating the item. Each stroke 
+  has DELAY specified in SKILL section. Readable/Writable.
+  LOCAL.CRAFTAMOUNT - amount of items that will be created. Only usable for REPLICATable items,
+  otherwise will make no effect. Readable/Writable.
