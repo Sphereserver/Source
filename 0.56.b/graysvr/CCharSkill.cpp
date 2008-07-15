@@ -4127,8 +4127,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		//If this is not a crafting skill nothing bad will happen
 		CScriptTriggerArgs pArgs;
 
-		CItemBase * pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-		pArgs.m_VarsLocal.SetNum("CraftItemdef",pItemDef->GetResourceID().GetPrivateUID());
+		RESOURCE_ID pResBase(RES_ITEMDEF,m_atCreate.m_ItemID,0);
+		pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
 		pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
 		pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
@@ -4136,7 +4136,6 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			Skill_Cleanup();
 			return false;
 		}
-		RESOURCE_ID_BASE pResBase;
 		pResBase.SetPrivateUID(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true));
 		m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex();
 		m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
