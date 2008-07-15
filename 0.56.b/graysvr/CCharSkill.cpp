@@ -4138,7 +4138,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		}
 		RESOURCE_ID_BASE pResBase;
 		pResBase.SetPrivateUID(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true));
-		m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex());
+		m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex();
 		m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
 		m_atCreate.m_Amount = pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true);
 
