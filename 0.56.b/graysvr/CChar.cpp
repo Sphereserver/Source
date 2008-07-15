@@ -254,13 +254,6 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 CChar::~CChar() // Delete character
 {
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
-		CChar	*pChar = dynamic_cast <CChar*> (this);
-		if ( pChar )
-			pChar->OnTrigger(CTRIG_Destroy, &g_Serv);
-	}
-
 	DeletePrepare();	// remove me early so virtuals will work.
 	if ( IsStatFlag( STATF_Ridden ))
 	{
@@ -372,7 +365,15 @@ void CChar::SetDisconnected()
 
 void CChar::Delete()
 {
-	ADDTOCALLSTACK("CChar::SetDisconnected");
+	ADDTOCALLSTACK("CChar::Delete");
+
+	if ( !IsSetEF(EF_Minimize_Triggers) )
+	{
+		//We can forbid the deletion in here with no pain
+		if (CChar::OnTrigger(CTRIG_Destroy,&g_Serv) == TRIGRET_RET_TRUE)
+			return;
+	}
+
 	// Character has been deleted
 	if ( IsClient() )
 	{

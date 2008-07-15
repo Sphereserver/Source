@@ -67,15 +67,20 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	ASSERT( IsDisconnected());
 }
 
-CItem::~CItem()
+void CItem::Delete()
 {
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
-		CItem	*pItem = dynamic_cast <CItem*> (this);
-		if ( pItem )
-			pItem->OnTrigger(ITRIG_DESTROY, &g_Serv);
+		//We can forbid the deletion in here with no pain
+		if (CItem::OnTrigger(ITRIG_DESTROY,&g_Serv) == TRIGRET_RET_TRUE)
+			return;
 	}
 
+	CObjBase::Delete();
+}
+
+CItem::~CItem()
+{
 	DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	if ( ! g_Serv.IsLoading())
 	switch ( m_type )

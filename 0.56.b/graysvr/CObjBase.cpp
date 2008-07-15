@@ -1966,6 +1966,7 @@ void CObjBase::DeletePrepare()
 void CObjBase::Delete()
 {
 	ADDTOCALLSTACK("CObjBase::Delete");
+
 	DeletePrepare();
 	g_World.m_TimedFunctions.Erase( GetUID() );
 	g_World.m_ObjDelete.InsertHead(this);
