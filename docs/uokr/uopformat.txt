@@ -1,6 +1,6 @@
 ﻿UOP Fileformat ( aka Mythic Package )
 ---------------------------------------
-credits: - OMISSIS -
+credits: SENE, Kelon, Dantalion, Arahil
 
 (Every Offset value is its first evidence as example)
 All values are stored in Little Endian sequence, as usual in x86 architecture.
@@ -14,34 +14,43 @@ Byte(23) 0x0 - 0x17 -> Containing general file headers (Version etc.)
 DWORD? 0x18 -> Amount of contained files/indexes
 byte(12) -> Unknown gibberish
 
-[2] - Index Block Header (sizeof: 12bytes)
+DWORD MYTH    -> Start of every Myth package
+DWORD       -> Version
+DWORD 0xFD   -> Date
+DWORD      -> Header Size
+DWORD 0x00   -> Empty bytes
+DWORD       -> Block size
+DWORD       -> File count
+
+
+[2] - Index Block Header (sizeof: 24bytes)
 There can be multiple index blocks, they are splitted into chunks.
 DWORD 0x28 -> Amount of contained files in this index, max 100/0x64
 QWORD 0x2c -> Offset to the next index block header OR Zero
 When a index block doesn't contain 100 index definitions, it will be padded with nulls
 
+
+
    [3] - FileIndex Definitions (sizeof: 34bytes )
    QWORD 0x34 -> Offset to start of Data Block of this file
    DWORD 0x3c -> Length of Data Block header (usually 0x0C)
    DWORD 0x40 -> Lenght of compressed data
-   DWORD 0x44 -> Size of decompressed file (if it's == to compressed then the file is not compressed)
-   DWORD 0x48 -> some hash (filename? extension?)
-   DWORD 0x52 -> some hash (filename? extension?)
-   DWORD 0x56 -> some hash (folder? because in warhammers-mft.myp this is 0x00 and in all other myp's this is != 0x00) 
-   WORD  0x5a -> Compressed flag (0x0001 = compressed; 0x0000 = uncompressed)
+   DWORD 0x44 -> Size of decompressed file
+   QWORD 0x48 -> Filehash
+   DWORD 0x50 -> Adler32 CRC of Data in littleEndian ( flag offset data )
+   WORD  0x54 -> Compressed Flag 
    ...this repreats, until all FileIndexes are processed
 
+
+
    [4] - Data Block/File (sizeof: 12+Lenght bytes)
-   WORD 0xd7c -> some flag (0x0003 in uokr-myp's, 0x0004 in warhammer-myp's)
-   WORD       -> offset to file data from this position (in warhammer-myp's 
-                  this is 133 and sometimes 132. so the data block header
-                  has no fixed size) 
-   QWORD 0xd80 -> UNKNOWN, possibly a CRC
-                 (don't think so because this value isn't unique for every data
-                 block header. if this is a crc it has to be unique unless there are
-                 to equal files inside a myp ... or not?) 
+   WORD -> flag compressed ( 0008 )
+   WORD -> offset  ( 0003 )
+   QWORD 0xd80 -> filetime (DateTime.FromFileTime(unk); )
    BYTE(Lenght) 0xd88 -> compressed data
    ...this is repeated until all Files from FileIndexes are processed
+
+
 
 repreat until next Index Block=0.
 
@@ -57,6 +66,6 @@ while ( repreatindex ) do
       [3] - FileIndex Definitions (sizeof: 34bytes )
    end
    while ( indexfilenumber~=indexfilecounter ) do
-      [4] - Data Block/File (sizeof: 12+Lenght bytes)
+      [4] - Data Block/File (sizeof: 8+Lenght bytes)
    end
 end 

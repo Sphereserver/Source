@@ -64,3 +64,74 @@ To break it:
 005E2244   . D1E8           SHR EAX,1
 
 Patch @005E223A 0x90 0x90
+
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+
+
+I did some reversing over the last two days and reversed how the game server encryption of UO:KR works.
+
+As was said before, UO:KR uses AES/CFB/NoPadding for game server encryption. What was not yet known was the 
+meaning of the E3 and E4 packets and how the encryption key is calculated.
+
+First off, the structure of the 0xE3 packet:
+Code:
+
+byte[1] packet cmd (0xe3)
+byte[2] packet length
+byte[4] length base
+byte[length base] base
+byte[4] length prime
+byte[length prime] prime
+byte[4] length public key
+byte[length public key] public key
+byte[4] unkD (0x00000020)
+byte[4] length iv
+byte[length iv] iv
+
+
+Then the 0xE4 structure:
+Code:
+
+byte[1] packet cmd (0xe4)
+byte[2] packet length
+byte[4] length public key
+byte[length public key] public key
+
+
+Now for the details:
+Ultima Online now uses strong cryptography for game server encryption (Why not for login?). Diffie-Hellman-Merkle 
+is used to exchange a symmetric cipher key in a secure way. The 0xE3 packet is the first key agreement packet and 
+contains the information required by the client to obtain the secret session key.
+
+The base for diffie hellman is represented as an ASN.1 BER encoded integer (The original dump said 02 01 03, 
+which is just 3 encoded using the BER).
+
+The prime is also represented as a BER encoded integer.
+
+The public key is just the binary representation of the public key. No BER encoding here. 
+(This is a peculiarity of the Crypto++ interface for DH).
+
+The last unknown element could possibly be the AES key size although I don't know why it is included in the packet...
+
+After receiving 0xE3, the client generates his private and public key from the prime/base received by the server. 
+(He chooses a random number for this). He then proceeds to calculate the secret session key and sends his 
+public key to the server (packet 0xE4).
+
+The client has a hardcoded prime, base, public and private key on the stack of the initialization function and 
+proceeds to compute a diffie hellman session key from this information. The values currently used in the client are:
+Base: 3 (As in the dynamic data)
+Prime: 00 c7 77 96 c9 ea 6a 9e 9f 71 a7 27 19 d6 77 80 43
+Private Key: 00 00 00 00 00 00 00 00 02 B3 43 65 0B 45 D4 AA
+Public Key: 72 0E EF C3 38 13 27 5A 18 F8 AB 8A 24 68 CE 62
+
+The resulting static session key is: 26 5D E0 9A D8 C9 1F 51 8B 62 6D 16 72 4B 83 A3
+
+To get the AES encryption key, SHA256(static secret | dynamic secret) is computed and used directly as the 
+256bit key for AES as mentioned above.
+
+If you need a proof of concept implemented in Java, feel free to ask.
