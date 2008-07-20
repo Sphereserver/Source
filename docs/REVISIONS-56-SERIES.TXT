@@ -4101,6 +4101,7 @@ this all in desperation)
 - Fixed: World saves being aborted when they are taking a long time to complete.
 
 20-07-2008, MrSugarCube
+- Fixed #1459: Weather effects not being updated when walking in/outdoors.
 - Fixed #1458: ARGV[x] not being updated when ARGS is set to a new value.
 
 20-07-2008, Coruja (Script pack)

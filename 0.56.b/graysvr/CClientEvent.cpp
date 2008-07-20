@@ -991,6 +991,9 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 		pt.Move(dir);
 
+		// Before moving, check if we were indoors
+		bool fRoof = m_pChar->IsStatFlag( STATF_InDoors );
+
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
@@ -1009,10 +1012,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		}
 //		m_pChar->MoveToChar( pt );
 
-		// Check if we have gone indoors.
-		bool fRoof = m_pChar->IsStatFlag( STATF_InDoors );
-
-		// Should i update the weather ?
+		// Now we've moved, are we now or no longer indoors and need to update weather?
 		if ( fRoof != m_pChar->IsStatFlag( STATF_InDoors ))
 		{
 			addWeather( WEATHER_DEFAULT );
