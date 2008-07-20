@@ -4099,3 +4099,6 @@ this all in desperation)
 
 15-07-2008, MrSugarCube
 - Fixed: World saves being aborted when they are taking a long time to complete.
+
+20-07-2008, MrSugarCube
+- Fixed #1458: ARGV[x] not being updated when ARGS is set to a new value.

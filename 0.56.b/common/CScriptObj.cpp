@@ -52,6 +52,9 @@ void CScriptTriggerArgs::Init( LPCTSTR pszStr )
 			}
 		}
 	}
+
+	// ensure argv will be recalculated next time it is accessed
+	m_v.SetCount(0);
 }
 
 
