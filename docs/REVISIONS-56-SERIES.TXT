@@ -4078,7 +4078,7 @@ this all in desperation)
   triggers.
   LOCAL.FIELDWIDTH sets the width of the field from character point of view.
   LOCAL.FIELDGAUGE sets the thickness of the field.
-- Fixed ##1449: Damage spells backfire when selecting summon while casting.
+- Fixed #1449: Damage spells backfire when selecting summon while casting.
 
 15-07-2008, Beyonder
 - Added: Extra local arguments to @SkillStart and @Start (skill section) triggers for crafting 
@@ -4102,3 +4102,8 @@ this all in desperation)
 
 20-07-2008, MrSugarCube
 - Fixed #1458: ARGV[x] not being updated when ARGS is set to a new value.
+
+20-07-2008, Coruja (Script pack)
+- Updated #1457: sphere_items_multis_houses_ships.scp (Corrected sign height and door type for the
+  stone and marble shops)
+- Updated #1456: spherechar_new_mounts.scp (Added FOODTYPE for c_giant_beetle)

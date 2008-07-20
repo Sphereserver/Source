@@ -147,6 +147,7 @@ SOUND=snd_rune_beetle
 ICON=i_pet_giantbeetle
 DAM=5,10
 ARMOR=30
+FOODTYPE=40 t_meat_raw
 DESIRES=i_gold
 AVERSIONS=r_civilization,r_water
 MOVERATE=40

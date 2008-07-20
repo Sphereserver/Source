@@ -808,8 +808,8 @@ CATEGORY=Multis
 SUBSECTION=Houses
 DESCRIPTION=Small Stone Shop
 MULTIREGION=-3,-3,3,4
-COMPONENT=i_door_wood_2, -2, 0, 27
-COMPONENT=i_sign_brass_2, 3, 4, 6
+COMPONENT=067b, -2, 0, 27
+COMPONENT=i_sign_brass_2, 3, 4, 7
 
 [ITEMDEF 040a2]
 DEFNAME=i_multi_shop_marble_small
@@ -820,7 +820,7 @@ CATEGORY=Multis
 SUBSECTION=Houses
 DESCRIPTION=Small Marble Shop
 MULTIREGION=-3,-3,3,4
-COMPONENT=i_door_wood_2, -2, 0, 24
+COMPONENT=067b, -2, 0, 24
 COMPONENT=i_sign_brass_2, 3, 4, 5
 
 [ITEMDEF 043e8]
