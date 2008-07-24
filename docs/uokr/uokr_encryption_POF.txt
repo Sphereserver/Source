@@ -1,0 +1,125 @@
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class AESCFBTest {
+
+   public static byte[] sha256(byte[] in) throws NoSuchAlgorithmException {
+
+      MessageDigest digest = MessageDigest.getInstance("sha-256");
+      return digest.digest(in);
+   }
+
+   public static byte[] parseHex(String str) {
+
+      String[] parts = str.split(" ");
+      byte[] res = new byte[parts.length];
+      for (int i = 0; i < parts.length; ++i) {
+         res[i] = (byte) (Integer.valueOf(parts[i], 16) & 0xFF);
+      }
+      return res;
+   }
+
+   // The 0x91 packet the client sends after 0xE3 (encrypted). Sent by the
+   // client.
+   private static final byte[] ciphertext = parseHex("...");
+
+   // The payload of the 0xE4 packet. Sent by the client. Prefix this with 00 if BigInteger complains about negative
+   // numbers
+   private static final byte[] rawOtherPublic = parseHex("...");
+
+   // Initialization Vector. Always 16 byte. Random. Sent by server.
+   private static final byte[] rawIv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9,
+         10, 11, 12, 13, 14, 15, 16 };
+
+   public static void main(String[] args) throws Exception {
+
+      Formatter f = new Formatter(System.out);
+
+      /**
+       * The following values are chosen by the server and may differ.
+       */
+      BigInteger g = BigInteger.valueOf(3);
+      BigInteger p1 = new BigInteger(
+            new byte[] { 0x00, (byte) 0xF6, 0x19, 0x45, (byte) 0xEA,
+                  (byte) 0x54, (byte) 0x89, (byte) 0xB0, (byte) 0xB6,
+                  (byte) 0xF6, (byte) 0x2E, (byte) 0x24, (byte) 0xD4,
+                  (byte) 0x6D, (byte) 0xE5, (byte) 0x12, (byte) 0x9B });
+      BigInteger privateKey = new BigInteger(new byte[] { 0x02, (byte) 0xB3,
+            (byte) 0x43, (byte) 0x65, (byte) 0x0B, (byte) 0x45,
+            (byte) 0xD4, (byte) 0xAA });
+      @SuppressWarnings("unused")
+      BigInteger publicKey = g.modPow(privateKey, p1);
+
+      /*
+       * Here you would send 0xE3 with (BEREncode(g), BEREncode(p1),
+       * publicKey.toByteArray(), 0x20, IV) to the client
+       */
+
+      /*
+       * Here we continue after receiving 0xE4 from the client.
+       */
+      BigInteger otherPublic = new BigInteger(rawOtherPublic);
+
+      // Calculate the shared session secret
+      BigInteger realKey = otherPublic.modPow(privateKey, p1);
+      byte[] rawRealKey = realKey.toByteArray();
+      System.out.print("DYNAMIC SECRET: ");
+      for (byte b : rawRealKey) {
+         f.format("%02X ", b);
+      }
+      System.out.println('\n');
+
+      System.out
+            .println("-------------------------------------------------------------------------------");
+
+      // The following values are harcoded in the client
+      BigInteger staticPublicKey = new BigInteger(
+            parseHex("72 0E EF C3 38 13 27 5A 18 F8 AB 8A 24 68 CE 62"));
+      BigInteger staticPrivateKey = new BigInteger(
+            parseHex("00 00 00 00 00 00 00 00 02 B3 43 65 0B 45 D4 AA"));
+      BigInteger p2 = new BigInteger(
+            parseHex("00 c7 77 96 c9 ea 6a 9e 9f 71 a7 27 19 d6 77 80 43"));
+
+      // This could also be included as a constant as the value is always the same.
+      BigInteger staticSecret = staticPublicKey.modPow(staticPrivateKey, p2);
+
+      System.out.print("STATIC SECRET: ");
+      for (byte b : staticSecret.toByteArray()) {
+         f.format("%02X ", b);
+      }
+      System.out.println('\n');
+
+      System.out
+            .println("-------------------------------------------------------------------------------");
+
+      // Compute AES Key from staticSecret|dynamicSecret
+      byte[] sha256Input = new byte[32];
+      byte[] rawStaticSecret = staticSecret.toByteArray();
+      System.arraycopy(rawStaticSecret, rawStaticSecret.length - 0x10,
+            sha256Input, 0, 0x10);
+      System.arraycopy(rawRealKey, rawRealKey.length - 0x10, sha256Input,
+            0x10, 0x10);
+
+      SecretKeySpec key = new SecretKeySpec(sha256(sha256Input), "AES");
+      IvParameterSpec ivParam = new IvParameterSpec(rawIv);
+
+      Cipher c = Cipher.getInstance("AES/CFB/NoPadding");
+      c.init(Cipher.DECRYPT_MODE, key, ivParam);
+
+      // Decode the value sent by the client
+      byte[] plain = c.update(ciphertext);
+
+      for (byte b : plain) {
+         f.format("%02X ", b);
+      }
+
+      System.out.println('\n');
+   }
+
+} 
