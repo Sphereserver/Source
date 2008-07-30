@@ -1,0 +1,81 @@
+00000000h: 4D 59 50 00 04 00 00 00 43 EC 23 FD 28 00 00 00 ; MYP.....Cì#ý(...
+00000010h: 00 00 00 00 64 00 00 00 01 1C 00 00 00 00 00 00 ; ....d...........
+00000020h: 00 00 00 00 00 00 00 00 64 00 00 00 D5 8B 03 00 ; ........d...Õ‹..
+00000030h: 00 00 00 00 7C 0D 00 00 00 00 00 00 0C 00 00 00 ; ....|...........
+
+UOP Fileformat ( aka Mythic Package )
+---------------------------------------
+credits: SENE, Kelon, Dantalion, Arahil
+
+(Every Offset value is its first evidence as example)
+All values are stored in Little Endian sequence, as usual in x86 architecture.
+Compression method is DEFLATE using zlib.
+
+sizeof(DWORD) = 4
+sizeof(QWORD) = 8
+
+[1] - General Format Header (sizeof: 40bytes )
+Byte(24) 0x0 - 0x17 -> Containing general file headers (Version etc.)
+DWORD? 0x18 -> Amount of contained files/indexes
+byte(12) -> Unknown gibberish
+
+DWORD MYTH    -> Start of every Myth package
+DWORD       -> Version
+DWORD 0xFD   -> Misc ( 0xFD23EC43 ) filetime
+DWORD      -> Header Size
+DWORD 0x00   -> Empty bytes
+DWORD       -> Block size
+DWORD       -> File count
+
+
+[2] - Index Block Header (sizeof: 24bytes)
+There can be multiple index blocks, they are splitted into chunks.
+DWORD 0x28 -> Amount of contained files in this index, max 100/0x64
+QWORD 0x2c -> Offset to the next index block header OR Zero
+When a index block doesn't contain 100 index definitions, it will be padded with nulls
+
+
+
+   [3] - FileIndex Definitions (sizeof: 34bytes )
+   QWORD 0x34 -> Offset to start of Data Block of this file
+   DWORD 0x3c -> Length of Data Block header (usually 0x0C)
+   DWORD 0x40 -> Lenght of compressed data
+   DWORD 0x44 -> Size of decompressed file
+   QWORD 0x48 -> Filehash
+   DWORD 0x50 -> Adler32 CRC of Data in littleEndian ( flag offset data )
+   WORD  0x54 -> Compressed Flag 
+   ...this repreats, until all FileIndexes are processed
+
+
+
+   [4] - Data Block/File (sizeof: 12+Lenght bytes)
+   WORD -> flag compressed ( 0008 )
+   WORD -> offset  ( 0003 )
+   QWORD 0xd80 -> filtetime*
+   BYTE(Lenght) 0xd88 -> compressed data
+   ...this is repeated until all Files from FileIndexes are processed
+
+
+
+repreat until next Index Block=0.
+
+
+Pseudocode:
+
+[1] - General Format Header (sizeof: 40bytes )
+
+while ( repreatindex ) do
+   [2] - Index Block Header (sizeof: 12bytes)
+
+   while ( indexfilenumber~=indexfilecounter ) do
+      [3] - FileIndex Definitions (sizeof: 34bytes )
+   end
+   while ( indexfilenumber~=indexfilecounter ) do
+      [4] - Data Block/File (sizeof: 8+Lenght bytes)
+   end
+end 
+
+
+
+The FILETIME structure represents the number of 100-nanosecond intervals since January 1, 1601. The structure consists of two 32-bit values that combine to form a single 64-bit value. 
+DateTime.FromFileTime(unk);
