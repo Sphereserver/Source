@@ -807,7 +807,6 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 	{
 		case RV_ALLCLIENTS:
 		{
-			bool fRet = false;
 			for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
 			{
 				CChar * pChar = pClient->GetChar();
@@ -815,9 +814,9 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 					continue;
 
 				CScript script( s.GetArgStr() );
-				fRet |= pChar->r_Verb(script, pSrc);
+				pChar->r_Verb(script, pSrc);
 			}
-			return fRet;
+			return true;
 		}
 	}
 

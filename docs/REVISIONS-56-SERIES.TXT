@@ -4111,3 +4111,6 @@ this all in desperation)
 
 24-07-2008, Coruja (Script pack)
 - Fixed #1465: Wrong spellflag for MARK spell
+
+02-08-2008, MrSugarCube
+- Fixed #1475: Undefined keyword error when using 'REGION.ALLCLIENTS' in a region with no clients.
