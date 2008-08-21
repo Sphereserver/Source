@@ -46,7 +46,7 @@ bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD 
 	return( true );
 }
 
-int CFileList::ReadDir( LPCTSTR pszFileDir )
+int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 {
 	ADDTOCALLSTACK("CFileList::ReadDir");
 	// NOTE: It seems NOT to like the trailing \ alone
@@ -79,7 +79,10 @@ int CFileList::ReadDir( LPCTSTR pszFileDir )
 	if ( !dirp )
 #endif
 	{
-		DEBUG_ERR(("Unable to open directory %s\n", szFileDir));
+		if (bShowError == true)
+		{
+			DEBUG_ERR(("Unable to open directory %s\n", szFileDir));
+		}
 		return -1;
 	}
 

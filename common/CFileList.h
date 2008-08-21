@@ -15,7 +15,7 @@ class CFileList : public CGStringList
 public:
 	static const char *m_sClassName;
 	static bool ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD & dwSize );
-	int ReadDir( LPCTSTR pszFilePath );
+	int ReadDir( LPCTSTR pszFilePath, bool bShowError = true );
 };
 
 #endif	// _INC_CFILELIST_H
