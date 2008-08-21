@@ -1039,6 +1039,8 @@ public:
 	int			m_iOriginX;	// keep track of position when parsing
 	int			m_iOriginY;
 	WORD		m_iPage;		// page to open the dialog in
+
+	bool		m_bNoDispose;	// contains 'nodispose' control
 };
 
 

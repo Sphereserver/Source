@@ -29,8 +29,8 @@ enum GUMPCTL_TYPE	// controls we can put in a gump.
 	GUMPCTL_HTMLGUMP,		// 7 = x,y,sx,sy, 0 0 0
 
 	// Not really controls but more attributes.
-	GUMPCTL_NOCLOSE,		// 0 = not really used
-	GUMPCTL_NODISPOSE,		// 0 = not really used  (modal?)
+	GUMPCTL_NOCLOSE,		// 0 = The gump cannot be closed by right clicking.
+	GUMPCTL_NODISPOSE,		// 0 = The gump cannot be closed by gump-closing macro.
 	GUMPCTL_NOMOVE,			// 0 = The gump cannot be moved around.
 
 	GUMPCTL_PAGE,			// 1 = set current page number	// for multi tab dialogs.
@@ -413,6 +413,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			
 			return true;
 		}
+		case GUMPCTL_NODISPOSE:
+			m_bNoDispose = true;
+			break;
 		case GUMPCTL_CROPPEDTEXT:
 		case GUMPCTL_TEXT:
 		case GUMPCTL_TEXTENTRY:
@@ -475,6 +478,7 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	m_iOriginX		= 0;
 	m_iOriginY		= 0;
 	m_iPage			= iPage;
+	m_bNoDispose	= false;
 
 	CScriptTriggerArgs	Args(iPage, 0, pObjSrc);
 	//DEBUG_ERR(("Args.m_s1_raw %s  Args.m_s1 %s  Arguments 0x%x\n",Args.m_s1_raw, Args.m_s1, Arguments));
