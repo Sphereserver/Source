@@ -1253,12 +1253,17 @@ LPCTSTR CResource::GetNotoTitle( int iLevel, bool bFemale ) const
 	}
 	else
 	{
-		char * pTitles[2];
-		int iQty = Str_ParseCmds( m_NotoTitles[ iLevel ], pTitles, COUNTOF(pTitles), ",");
-		if ( iQty < 2 )
+		// check if a female title is present
+		char* pFemaleTitle = strchr(m_NotoTitles[iLevel], ',');
+		if (pFemaleTitle == NULL)
 			return m_NotoTitles[iLevel];
+		else if (bFemale == true)
+			return pFemaleTitle+1;
 
-		return pTitles[bFemale? 1:0];
+		// copy string so that it can be null-terminated without modifying m_NotoTitles
+		char* pTitle = Str_GetTemp();
+		strcpylen(pTitle, m_NotoTitles[iLevel], strlen(m_NotoTitles[iLevel]) - strlen(pFemaleTitle+1));
+		return pTitle;
 	}
 }
 
