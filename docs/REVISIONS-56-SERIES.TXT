@@ -4110,7 +4110,40 @@ this all in desperation)
 - Updated #1456: spherechar_new_mounts.scp (Added FOODTYPE for c_giant_beetle)
 
 24-07-2008, Coruja (Script pack)
-- Fixed #1465: Wrong spellflag for MARK spell
+- Updated #1465: sphere_spells.scp (Wrong spellflag for MARK spell)
 
 02-08-2008, MrSugarCube
 - Fixed #1475: Undefined keyword error when using 'REGION.ALLCLIENTS' in a region with no clients.
+
+08-08-2008, MrSugarCube
+- Fixed #1479: Custom layer values not being restored correctly when loading from world save.
+- Fixed #1470: Entering house customization with open dialogs causing the sphere to lose track of
+  which dialogs are still open on the client.
+- Fixed #1468: Exiting house customization mode sending characters to the house sign's height
+  instead of ground level.
+
+09-08-2008, MrSugarCube
+- Fixed #1476: Players under the incognito spell being unable to read other players' profile
+  scrolls.
+- Fixed #1033: Mass Curse spell not affecting character stats.
+- Modified #963: ARGN1 in @[item]DropOn_Ground can now be used to read/write the decay time (in
+  tenths of a second) that will be set on the dropped item.
+
+10-08-2008, Coruja (Script pack)
+- Updated #1486: sphere_map_points4.scp (Added teleports for Yomotsu Mines and Fan Dancer's Dojo)
+- Updated #1485: sphere_map3.scp (Added missing Malas locations)
+- Updated #1480: sphere_map_points0.scp, sphere_map_points1.scp (Incorrect teleports for Ice
+  Dungeon)
+
+11-08-2008, MrSugarCube
+- Fixed #1483: Issues with trying to load scripts from directories outside of where the Sphere
+  executable is located.
+
+12-08-2008, MrSugarCube
+- Fixed #1489: Longer ships being able to manoeuvre themselves into invalid positions.
+
+13-08-2008, MrSugarCube
+- Fixed #1490: Formatting error when showing murderer/criminal title on the paperdoll.
+
+14-08-2008, MrSugarCube
+- Fixed #1484: Client showing the wrong season and light level upon login.

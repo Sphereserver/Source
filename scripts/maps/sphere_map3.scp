@@ -14,93 +14,129 @@ VERSION=0.56b
 [AREADEF a_aos]
 NAME=Malas
 P=848,160,-90,3
-Rect=0,0,2554,2042,3
+RECT=0,0,2554,2042,3
 GROUP=ALLMAP
 EVENTS=r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_luna]
 NAME=Luna
 P=989,520,-50,3
-Rect=945,490,1036,551,3
+RECT=945,490,1036,551,3
 FLAGS=region_flag_nobuilding|region_flag_safe|region_antimagic_all
 GROUP=Malas
 
 [AREADEF a_umbra]
 NAME=Umbra
 P=2049,1344,-85,3
-Rect=2042,1265,2090,1278,3
-Rect=1960,1278,2106,1413,3
-Rect=2004,1413,2040,1419,3
+RECT=2042,1265,2090,1278,3
+RECT=1960,1278,2106,1413,3
+RECT=2004,1413,2040,1419,3
 FLAGS=region_flag_nobuilding|region_flag_safe|region_antimagic_all
 GROUP=Malas
 
 [AREADEF a_doom]
 NAME=Doom
 P=2366,1268,-85,3
-Rect=256,2,512,557,3
+RECT=256,2,512,304,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
-GROUP=Malas
-
-[AREADEF a_orc_fortress]
-NAME=Orc Fortress
-P=1340,1226,-90,3
-Rect=1295,1189,1395,1294,3
-FLAGS=0880
-GROUP=Malas
-
-[AREADEF a_crystal_cave_entrance]
-NAME=Crystal Cave Entrance
-P=1195,515,-90,3
-Rect=1176,509,1219,522,3
-FLAGS=0880
-GROUP=Malas
-
-[AREADEF a_protected_island]
-NAME=Protected Island
-P=2104,380,-90,3
-Rect=1976,101,2448,345,3
-Rect=2051,345,2356,382,3
-Rect=2026,345,2051,370,3
-Rect=2069,382,2144,396,3
-Rect=2254,382,2352,420,3
-Rect=2222,382,2254,402,3
-FLAGS=080
-GROUP=Malas
-
-[ROOMDEF a_hanse_hotel]
-NAME=Hanse's Hostel
-P=1063,1435,-90,3
-Rect=1049,1420,1062,1445,3
-Rect=1062,1420,1065,1431,3
-Rect=1062,1439,1065,1445,3
-FLAGS=0880
-GROUP=Malas
-
-[ROOMDEF a_house]
-NAME=House
-P=2156,122,0,3
-Rect=2151,117,2161,127,3
 GROUP=Malas
 
 [AREADEF a_doom_gauntlet]
 NAME=Doom Gauntlet
 P=428,341,-1,3
-Rect=260,322,515,558,3
+RECT=260,304,515,558,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
 GROUP=Malas
 
-[AREADEF a_Labyrinth]
+[AREADEF a_grand_arena]
+NAME=Grand Arena
+P=961,637,-90,3
+RECT=919,622,962,652,3
+FLAGS=region_flag_nobuilding
+GROUP=Malas
+
+[AREADEF a_orc_fortress]
+NAME=Orc Fortress
+P=1340,1226,-90,3
+RECT=1295,1189,1395,1294,3
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=Malas
+
+[AREADEF a_crystal_cave_entrance]
+NAME=Crystal Cave Entrance
+P=1195,515,-90,3
+RECT=1176,509,1219,522,3
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=Malas
+
+[AREADEF a_protected_island]
+NAME=Protected Island
+P=2104,380,-90,3
+RECT=1976,101,2448,345,3
+RECT=2051,345,2356,382,3
+RECT=2026,345,2051,370,3
+RECT=2069,382,2144,396,3
+RECT=2254,382,2352,420,3
+RECT=2222,382,2254,402,3
+FLAGS=region_flag_nobuilding
+GROUP=Malas
+
+[AREADEF a_hanse_hotel]
+NAME=Hanse's Hostel
+P=1063,1435,-90,3
+RECT=1049,1420,1062,1445,3
+RECT=1062,1420,1065,1431,3
+RECT=1062,1439,1065,1445,3
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=Malas
+
+[AREADEF a_labyrinth]
 NAME=Labyrinth
 P=329,1973,2,3
-Rect=256,1792,511,2047,3
+RECT=256,1792,511,2047,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
 GROUP=Malas
 
-[AREADEF a_Bedlam]
+[AREADEF a_bedlam]
 NAME=Bedlam
 P=121,1684,0,3
-Rect=60,1580,216,1703,3
+RECT=60,1580,216,1703,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
 GROUP=Malas
+
+[AREADEF a_yomotsu_mines]
+NAME=Yomotsu Mines
+P=6,118,0,3
+RECT=0,0,129,129,3
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=Tokuno Islands
+
+[AREADEF a_fan_dancers_dojo]
+NAME=Fan Dancer's Dojo
+P=71,337,0,3
+RECT=40,320,210,720,3
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=Tokuno Islands
+
+[AREADEF a_samurai_start]
+NAME=Samurai Start Location
+P=392,776,-1,3
+RECT=320,690,435,790,3
+FLAGS=region_flag_nobuilding
+GROUP=Tokuno Islands
+
+[AREADEF a_ninja_start]
+NAME=Ninja Start Location
+P=416,823,-1,3
+RECT=360,795,440,835,3
+FLAGS=region_flag_nobuilding
+GROUP=Tokuno Islands
+
+[AREADEF a_ninja_cave]
+NAME=Ninja Cave
+P=404,1167,0,3
+RECT=360,960,460,1175,3
+FLAGS=region_flag_nobuilding
+GROUP=Tokuno Islands 
 
 [EOF]

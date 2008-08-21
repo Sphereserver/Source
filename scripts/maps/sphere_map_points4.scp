@@ -16,7 +16,25 @@ VERSION=0.56b
 1169,998,0,4=mg_isamu_jima
 802,1204,0,4=mg_makoto_jima
 270,628,0,4=mg_homare_jima
-		
+
 [Teleporters]
+257,783,63,4=3,127,-1,3=tp_yomotsu_mines_entrance1
+258,783,63,4=5,127,-1,3=tp_yomotsu_mines_entrance2
+259,783,63,4=6,127,-1,3=tp_yomotsu_mines_entrance3
+260,783,63,4=7,127,-1,3=tp_yomotsu_mines_entrance4
+3,128,-1,3=257,784,64,4=tp_yomotsu_mines_exit1
+4,128,-1,3=257,784,64,4=tp_yomotsu_mines_exit2
+5,128,-1,3=258,784,64,4=tp_yomotsu_mines_exit3
+6,128,-1,3=259,784,64,4=tp_yomotsu_mines_exit4
+7,128,-1,3=260,784,64,4=tp_yomotsu_mines_exit5
+8,128,-1,3=260,784,64,4=tp_yomotsu_mines_exit6
+988,197,5,4=67,339,-1,3=tp_fan_dancers_dojo_entrance_1
+988,196,5,4=67,338,-1,3=tp_fan_dancers_dojo_entrance_2
+988,195,5,4=67,337,-1,3=tp_fan_dancers_dojo_entrance_3
+988,194,5,4=67,336,-1,3=tp_fan_dancers_dojo_entrance_4
+64,339,11,3=987,197,12,4=tp_fan_dancers_dojo_exit_1
+64,338,11,3=987,196,12,4=tp_fan_dancers_dojo_exit_2
+64,337,11,3=987,195,12,4=tp_fan_dancers_dojo_exit_3
+64,336,11,3=987,194,12,4=tp_fan_dancers_dojo_exit_4 
 
 [EOF]
