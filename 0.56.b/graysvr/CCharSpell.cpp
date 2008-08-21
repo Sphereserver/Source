@@ -2537,6 +2537,11 @@ reflectit:
 				GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 		break;
 
+	case SPELL_Mass_Curse:
+		Spell_Effect_Create( SPELL_Curse, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_STATS, iSkillLevel,
+				GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
+		break;
+
 	case SPELL_Heal:
 	case SPELL_Great_Heal:
 		UpdateStatVal( STAT_STR, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
