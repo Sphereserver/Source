@@ -4118,9 +4118,6 @@ this all in desperation)
 08-08-2008, MrSugarCube
 - Fixed #1479: Custom layer values not being restored correctly when loading from world save.
 - Fixed #1470: Entering house customization with open dialogs causing the sphere to lose track of
-  which dialogs are still open on the client.
-- Fixed #1468: Exiting house customization mode sending characters to the house sign's height
-  instead of ground level.
 
 09-08-2008, MrSugarCube
 - Fixed #1476: Players under the incognito spell being unable to read other players' profile
@@ -4147,3 +4144,12 @@ this all in desperation)
 
 14-08-2008, MrSugarCube
 - Fixed #1484: Client showing the wrong season and light level upon login.
+
+16-08-2008, Nazghul
+- Added character Trigger @UserQuestArrowClick what fires if the user clicks on the quest arrow.
+  No RETURN value checks, no arguments. Trigger works only with EF_MinimizeTriggers disabled.
+  which dialogs are still open on the client.
+- Fixed #1468: Exiting house customization mode sending characters to the house sign's height
+  instead of ground level.
+
+

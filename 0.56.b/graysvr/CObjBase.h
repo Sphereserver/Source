@@ -2207,6 +2207,7 @@ enum CTRIG_TYPE
 	CTRIG_UserExWalkLimit,
 	CTRIG_UserGuildButton,
 	CTRIG_UserMailBag,
+	CTRIG_UserQuestArrowClick,
 	CTRIG_UserQuestButton,
 	CTRIG_UserSkills,
 	CTRIG_UserSpecialMove,

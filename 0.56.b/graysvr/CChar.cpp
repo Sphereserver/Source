@@ -144,6 +144,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@UserExWalkLimit",
 	"@UserGuildButton",
 	"@UserMailBag",
+	"@UserQuestArrowClick",
 	"@UserQuestButton",
 	"@UserSkills",
 	"@UserSpecialMove",
