@@ -3804,7 +3804,10 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 			SysMessageDefault( DEFMSG_FOLLOW_ARROW );
 			if ( !IsSetEF(EF_Minimize_Triggers) )
 			{
-				m_pChar->OnTrigger(CTRIG_UserQuestArrowClick, m_pChar, NULL);
+				CScriptTriggerArgs Args;
+				Args.m_iN1 = (pData->QuestArrow.m_rightClick > 0? 1:0);
+
+				m_pChar->OnTrigger(CTRIG_UserQuestArrowClick, m_pChar, &Args);
 			}
 			break;
 

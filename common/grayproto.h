@@ -464,6 +464,11 @@ union CExtData
 		NDWORD m_y;
 	} ScreenSize;	// from client
 
+	struct	// EXTDATA_Arrow_Click = 0x07
+	{
+		BYTE m_rightClick;	// arrow was right clicked
+	} QuestArrow;
+
 	struct	// EXTDATA_Lang = 0x0b
 	{
 		char m_code[3];	// CLanguageID
