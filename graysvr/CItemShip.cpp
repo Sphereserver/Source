@@ -399,13 +399,15 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 	ptDelta.ZeroPoint();
 
 	CPointMap ptFore(m_pRegion->GetRegionCorner(dir));
-	CPointMap ptLeft(m_pRegion->GetRegionCorner(GetDirTurn(dir, -1)));
-	CPointMap ptRight(m_pRegion->GetRegionCorner(GetDirTurn(dir, +1)));
+	CPointMap ptLeft(m_pRegion->GetRegionCorner(GetDirTurn(dir, -1 - (dir % 2))));	// acquiring the flat edges requires two 'turns' for diagonal movement
+	CPointMap ptRight(m_pRegion->GetRegionCorner(GetDirTurn(dir, 1 + (dir % 2))));
+	CPointMap ptTest(ptLeft.m_x, ptLeft.m_y, GetTopZ(), GetTopMap());
 
 	bool bStopped = false, bTurbulent = false;
 
 	for (int i = 0; i < distance; ++i)
 	{
+		// Check that we aren't sailing off the edge of the world
 		ptFore.Move(dir);
 		ptFore.m_z = GetTopZ();
 		if ( ! ptFore.IsValidPoint() || ( ptFore.m_x < UO_SIZE_X_REAL && ptFore.m_x >= UO_SIZE_X_REAL && ( ptFore.m_map <= 1 )))
@@ -417,30 +419,101 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 			break;
 		}
 
-		// We should check all relevant corners.
-		if ( ! Ship_CanMoveTo( ptFore ))
-		{
-			bStopped = true;
-			break;
-		}
+#ifdef _DEBUG
+		// In debug builds, this flashes some spots over tiles as they are checked for valid movement
+		CItem* pItemDebug = NULL;
+#define SPAWNSHIPTRACK(a,b)		pItemDebug = CItem::CreateBase(ITEMID_WorldGem);	\
+								pItemDebug->SetType(IT_NORMAL);						\
+								pItemDebug->SetAttr(ATTR_MOVE_NEVER|ATTR_DECAY);	\
+								pItemDebug->SetHue(b);								\
+								pItemDebug->MoveToDecay(a, TICK_PER_SEC / 2);						\
+								a.GetSector()->SetSectorWakeStatus();
+#else
+#define SPAWNSHIPTRACK(a,b)
+#endif
 
-		// left side
+		// Test along the ship's edge to make sure nothing is blocking movement, this is split into two switch
+		// statements (n/s and e/w) since moving diagonally requires the testing of both edges (i.e. 'north+east')
 		ptLeft.Move(dir);
-		ptLeft.m_z = GetTopZ();
-		if ( ! Ship_CanMoveTo( ptLeft ))
+		ptRight.Move(dir);
+
+		// test north/south edge (as needed)
+		switch (dir)
 		{
-			bStopped = true;
-			break;
+			case DIR_N:
+			case DIR_NE:
+			case DIR_NW:
+				ptTest.m_y = ptFore.m_y; // align y coordinate
+				for (int x = ptLeft.m_x; x <= ptRight.m_x; x++)
+				{
+					ptTest.m_x = x;
+					SPAWNSHIPTRACK(ptTest, 0x40)
+					if (Ship_CanMoveTo(ptTest) == false)
+					{
+						bStopped = true;
+						break;
+					}
+				}
+				break;
+
+			case DIR_S:
+			case DIR_SE:
+			case DIR_SW:
+				ptTest.m_y = ptFore.m_y;
+				for (int x = ptRight.m_x; x <= ptLeft.m_x; x++)
+				{
+					ptTest.m_x = x;
+					SPAWNSHIPTRACK(ptTest, 0x40)
+					if (Ship_CanMoveTo(ptTest) == false)
+					{
+						bStopped = true;
+						break;
+					}
+				}
+				break;
 		}
 
-		// right side.
-		ptRight.Move(dir);
-		ptRight.m_z = GetTopZ();
-		if ( ! Ship_CanMoveTo( ptRight ))
+		// test east/west edge (as needed)
+		switch (dir)
 		{
-			bStopped = true;
-			break;
+			case DIR_E:
+			case DIR_NE:
+			case DIR_SE:
+				ptTest.m_x = ptFore.m_x; // align x coordinate
+				for (int y = ptLeft.m_y; y <= ptRight.m_y; y++)
+				{
+					ptTest.m_y = y;
+					SPAWNSHIPTRACK(ptTest, 0xe0)
+					if (Ship_CanMoveTo(ptTest) == false)
+					{
+						bStopped = true;
+						break;
+					}
+				}
+				break;
+
+			case DIR_W:
+			case DIR_NW:
+			case DIR_SW:
+				ptTest.m_x = ptFore.m_x;
+				for (int y = ptRight.m_y; y <= ptLeft.m_y; y++)
+				{
+					ptTest.m_y = y;
+					SPAWNSHIPTRACK(ptTest, 0xe0)
+					if (Ship_CanMoveTo(ptTest) == false)
+					{
+						bStopped = true;
+						break;
+					}
+				}
+				break;
 		}
+
+#undef SHIPSPAWNTRACK // macro no longer needed
+
+		// If the ship has been flagged as stopped, then abort movement here
+		if (bStopped == true)
+			break;
 
 		// Move delta one space
 		ptDelta.Move(dir);
