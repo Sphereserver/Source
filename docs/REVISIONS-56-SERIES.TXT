@@ -4153,3 +4153,5 @@ this all in desperation)
   No RETURN value checks, ARGN1 is the mouse button used (0=left, 1=right). Trigger works only
   with EF_MinimizeTriggers disabled.
 
+22-08-2008, MrSugarCube
+- Fixed #1496: Female NotoTitles not always being shown on the paperdoll.
