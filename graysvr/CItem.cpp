@@ -1313,51 +1313,34 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	CScriptTriggerArgs args;
 	args.m_s1 = ptNewPlace.WriteUsed();
 	args.m_s1_raw = args.m_s1;
+	args.m_iN1 = iDecayTime;
 	ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
+
+	iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
 
 	if (( IsDeleted() ) || ( pOldCont != this->GetContainer()))
 		return false;
 
 	if (ttResult != TRIGRET_RET_TRUE)
 	{
-		if ( this->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
+		// when a player (not npcs or gms) drops an item on water it is deleted (not static/unmovable items)
+		if ( (IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) == false) &&
+			((pCharMover != NULL) && (pCharMover->m_pPlayer != NULL && pCharMover->IsPriv(PRIV_GM) == false)) )
 		{
-			MoveToDecay(ptNewPlace, iDecayTime);
-			Sound(GetDropSound(NULL));
-			return true;
-		}
-		else
-		{
-			if ( pCharMover )
+			const CUOMapMeter * pMeter = g_World.GetMapMeter(ptNewPlace);
+			if ( pMeter && (pMeter->m_z == ptNewPlace.m_z) )
 			{
-				if ( pCharMover->m_pNPC || pCharMover->IsPriv(PRIV_GM) )
+				if ( IT_WATER == g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
 				{
-					MoveToDecay(ptNewPlace, iDecayTime);
-					Sound(GetDropSound(NULL));
-					return true;
+					Speak("*Blub*");
+					Delete();
+					return( false );
 				}
-			}
-			else
-			{
-				MoveToDecay(ptNewPlace, iDecayTime);
-				Sound(GetDropSound(NULL));
-				return true;
-			}
-		}
-		
-		const CUOMapMeter * pMeter = g_World.GetMapMeter(ptNewPlace);
-		if ( pMeter && (pMeter->m_z == ptNewPlace.m_z) )
-		{
-			if ( IT_WATER == g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
-			{
-				Speak("*Blub*");
-				Delete();
-				return( false );
-			}
-			else if ( pMeter->m_wTerrainIndex == 0x0244 )
-			{
-				Delete();
-				return( false );
+				else if ( pMeter->m_wTerrainIndex == 0x0244 )
+				{
+					Delete();
+					return( false );
+				}
 			}
 		}
 	}
