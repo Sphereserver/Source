@@ -3802,6 +3802,10 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 			break;
 		case EXTDATA_Arrow_Click:
 			SysMessageDefault( DEFMSG_FOLLOW_ARROW );
+			if ( !IsSetEF(EF_Minimize_Triggers) )
+			{
+				m_pChar->OnTrigger(CTRIG_UserQuestArrowClick, m_pChar, NULL);
+			}
 			break;
 
 		case EXTDATA_StatusClose:
