@@ -96,6 +96,18 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	CopyDesign(&m_designMain, &m_designWorking);
 	m_designWorking.m_iRevision++;
 
+	// client will silently close all open dialogs and let the server think they're still open, so we need to update opened gump counts here
+	CDialogDef* pDlg = NULL;
+	for (CClient::OpenedGumpsMap_t::iterator it = pClientSrc->m_mapOpenedGumps.begin(); it != pClientSrc->m_mapOpenedGumps.end(); it++)
+	{
+		// the client leaves 'nodispose' dialogs open
+		pDlg = dynamic_cast<CDialogDef*>( g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, it->first)) );
+		if (pDlg != NULL && pDlg->m_bNoDispose == true)
+			continue;
+
+		it->second = 0;
+	}
+
 	// hide dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
 	while ( true )
@@ -192,7 +204,13 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 		if ( Multi_GetSign() && m_pRegion->IsInside2d(pChar->GetTopPoint()) )
 		{
 			CPointMap ptOld = pChar->GetTopPoint();
-			pChar->MoveToChar(Multi_GetSign()->GetTopPoint());
+			CPointMap ptDest = Multi_GetSign()->GetTopPoint();
+
+			// find ground height, since the signpost is usually raised
+			WORD wBlockFlags = 0;
+			ptDest.m_z = g_World.GetHeightPoint(ptDest, wBlockFlags, true);
+
+			pChar->MoveToChar(ptDest);
 			pChar->UpdateMove(ptOld, NULL, true);
 		}
 
