@@ -220,14 +220,17 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		// NOTE: CanEquipLayer may bounce an item . If it stacks with this we are in trouble !
 	}
 
-	// This takes care of any conflicting items in the slot !
-	layer = CanEquipLayer(pItem, layer, NULL, false);
-	if ( layer == LAYER_NONE )
+	if ( g_Serv.IsLoading() == false )
 	{
-		// we should not allow non-layered stuff to be put here ?
-		// Put in pack instead ?
-		ItemBounce( pItem );
-		return;
+		// This takes care of any conflicting items in the slot !
+		layer = CanEquipLayer(pItem, layer, NULL, false);
+		if ( layer == LAYER_NONE )
+		{
+			// we should not allow non-layered stuff to be put here ?
+			// Put in pack instead ?
+			ItemBounce( pItem );
+			return;
+		}
 	}
 
 	if ( layer == LAYER_SPECIAL )
