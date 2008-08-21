@@ -4149,7 +4149,7 @@ this all in desperation)
 - Fixed #1484: Client showing the wrong season and light level upon login.
 
 16-08-2008, Nazghul
-- Added character Trigger @UserQuestArrowClick what fires if the user clicks on the quest arrow.
-  No RETURN value checks, no arguments. Trigger works only with EF_MinimizeTriggers disabled.
-
+- Added: Character Trigger @UserQuestArrowClick what fires if the user clicks on the quest arrow.
+  No RETURN value checks, ARGN1 is the mouse button used (0=left, 1=right). Trigger works only
+  with EF_MinimizeTriggers disabled.
 
