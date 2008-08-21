@@ -865,6 +865,10 @@ void CClient::addSeason(SEASON_TYPE season)
 	cmd.Season.m_season = season;
 	cmd.Season.m_cursor = 1;
 	xSendPkt(&cmd, sizeof(cmd.Season));
+
+	// client resets light level on season change, so resend light here too
+	m_Env.m_Light = -1;
+	addLight();
 }
 
 void CClient::addWeather( WEATHER_TYPE weather ) // Send new weather to player
@@ -1978,9 +1982,17 @@ void CClient::addPlayerStart( CChar * pChar )
 		pChar->m_pParty->SendAddList(NULL);
 	}
 
+	// the client doesn't appear to load expansion maps when logging in during spring, so tell
+	// them it's summer to begin with
 	addSeason(SEASON_Summer);
 	addWeather(WEATHER_DEFAULT);
 	addLight();
+
+	// now send the correct season
+	CSector* pSector = pt.GetSector();
+	if (pSector != NULL)
+		addSeason(pSector->GetSeason());
+
 	addPlayerWarMode();
 	addKRToolbar( pChar->m_pPlayer->getKrToolbarStatus() );
 }
