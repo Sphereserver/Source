@@ -1856,7 +1856,8 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEven
 	}
 	else
 	{
-		bool fIncognito = m_pChar->IsStatFlag( STATF_Incognito ) && ! IsPriv(PRIV_GM);
+		// alter profile when viewing an incognitoed player, unless being viewed by a GM or the profile is our own
+		bool fIncognito = pChar->IsStatFlag( STATF_Incognito ) && ! IsPriv(PRIV_GM) && (pChar != m_pChar);
 
 		CGString sConstText;
 		CCommand cmd;
@@ -1866,7 +1867,10 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEven
 
 		int len = strcpylen(cmd.CharProfile.m_title, pChar->GetName()) + 1;
 
-		sConstText.Format( "%s, %s", pChar->Noto_GetTitle(), pChar->GetTradeTitle());
+		if (fIncognito == false)
+			sConstText.Format( "%s, %s", pChar->Noto_GetTitle(), pChar->GetTradeTitle());
+		else
+			sConstText.Format( "%s", pChar->Noto_GetTitle());
 
 		int iWLen = CvtSystemToNUNICODE(
 			(NCHAR *) ( cmd.CharProfile.m_title + len ), 1024,
