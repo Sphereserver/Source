@@ -1937,19 +1937,19 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 		return( false );
 
 	CItem * pItem = LayerFind( LAYER_HORSE );
-	if ( pItem == NULL )
+	if ( pItem == NULL || pItem->IsDeleted() )
 	{
 		StatFlag_Clear( STATF_OnHorse );	// flag got out of sync !
 		return( false );
 	}
 
 	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
-	if ( (pPet == NULL) || !pPet->IsDisconnected())	// no ridden horse
-		return ( false );
-
-	CScriptTriggerArgs Args(pPet);
-   	if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
-		return ( false );
+	if (pPet != NULL && pPet->IsDisconnected() && !pPet->IsDeleted()) // valid horse for trigger
+	{
+		CScriptTriggerArgs Args(pPet);
+   		if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
+			return ( false );
+	}
 
 	// What creature is the horse item ?
 	CChar * pHorse = Use_Figurine( pItem, 0 );
