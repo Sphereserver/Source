@@ -227,7 +227,8 @@ enum STONEALIGN_TYPE // Types of Guild/Town stones
 enum ITRIG_TYPE
 {
 	// XTRIG_UNKNOWN = some named trigger not on this list.
-	ITRIG_Buy=1,
+	ITRIG_AfterClick=1,
+	ITRIG_Buy,
 	ITRIG_Click,
 	ITRIG_CLIENTTOOLTIP, // Sending tooltip to client for this item
 	ITRIG_ContextMenuRequest,
@@ -2072,6 +2073,7 @@ enum WAR_SWING_TYPE	// m_Act_War_Swing_State
 enum CTRIG_TYPE
 {
 	CTRIG_AAAUNUSED		= 0,
+	CTRIG_AfterClick,
 	CTRIG_Attack,			// I am attacking someone (SRC)
 	CTRIG_CallGuards,
 
@@ -2106,6 +2108,7 @@ enum CTRIG_TYPE
 	CTRIG_HouseDesignExit,	// I exited house design mode
 	CTRIG_Hunger,			//+Ready to update the food level
 
+	CTRIG_itemAfterClick,
 	CTRIG_itemBuy,
 	CTRIG_itemClick,		// I clicked on an item
 	CTRIG_itemClientTooltip,

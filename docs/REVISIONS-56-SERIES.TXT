@@ -4158,3 +4158,10 @@ this all in desperation)
 
 25-08-2008, MrSugarCube
 - Fixed: @Dismount trigger being fired multiple times under certain circumstances.
+
+26-08-2008, Shadow Dragon
+- Fixed: Skills doesn't gain when lower than 1.8
+- Added: New trigger @AfterClick and @ItemAfterClick. LOCAL.ClickMsgText will contain text, 
+  that will be shown after click on object, LOCAL.ClickMsgHue will contain color of the
+  message. Both locals are writable. RETURN 1 - will cancel showing text.
+- Fixed: Mounts removing when world save (error: Ridden NPC without a mount item).

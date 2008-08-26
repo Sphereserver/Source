@@ -446,7 +446,7 @@ int Str_TrimEndWhitespace( TCHAR * pStr, int len )
 	while ( len>0 )
 	{
 		len --;
-		if ( ! ISWHITESPACE( pStr[len] ))
+		if ( pStr[len] < 0 || ! ISWHITESPACE( pStr[len] ))
 		{
 			++len;
 			break;
