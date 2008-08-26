@@ -8,6 +8,7 @@
 LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
+	"@AfterClick",
 	"@Buy",
 	"@Click",
 	"@ClientTooltip",	// Sending tooltip to a client
@@ -2849,7 +2850,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger( (CTRIG_TYPE)( (CTRIG_itemBuy-1)+iAction ),  pSrc, pArgs );
+			iRet = pChar->OnTrigger( (CTRIG_TYPE)( (CTRIG_itemAfterClick-1)+iAction ),  pSrc, pArgs );
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.

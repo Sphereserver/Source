@@ -508,6 +508,9 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if ( iSkillLevel < 300 )
 		{
 			difficulty = (( minimum( -difficulty, iSkillLevel )) / 2 ) - 8;
+
+			if ( difficulty <= 0 )
+				difficulty = 1;
 		}
 		else
 		{

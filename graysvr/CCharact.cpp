@@ -1816,10 +1816,10 @@ CItem * CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
 		pItem->SetAttr(ATTR_INVIS);
 
 	SoundChar(CRESND_RAND1);	// Horse winny
-	m_atRidden.m_FigurineUID = pItem->GetUID();
 	StatFlag_Set(STATF_Ridden);
 	Skill_Start(NPCACT_RIDDEN);
 	SetDisconnected();
+	m_atRidden.m_FigurineUID = pItem->GetUID();
 
 	return pItem;
 }

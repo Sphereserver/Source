@@ -10,6 +10,7 @@
 LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
+	"@AfterClick",
 	"@Attack",				// I am attacking someone (SRC)
 	"@CallGuards",
 
@@ -45,6 +46,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Hunger",					//+Ready to update the food level
 
 	// ITRIG_QTY
+	"@itemAfterClick",
 	"@itemBuy",
 	"@itemClick",			// I clicked on an item
 	"@itemClientTooltip", // Receiving tooltip for something
