@@ -1038,7 +1038,11 @@ int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 }
 
 
+#ifndef _NTEST
 bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly )
+#else
+bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, int iReplicationQty )
+#endif
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
 	// "MAKEITEM"
@@ -1086,8 +1090,9 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		return( false );
 	}
 	if ( fSkillOnly ) return true;
-
+#ifndef _NTEST
 	int iReplicationQty = 1;
+#endif
 	if ( pItemDef->Can( CAN_I_REPLICATE ))
 	{
 		// For arrows/bolts, how many do they want ?

@@ -3005,7 +3005,11 @@ public:
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
+#ifndef _NTEST
 	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false );
+#else
+	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
+#endif
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
 	void Skill_Cleanup();	 // may have just cancelled targetting.
