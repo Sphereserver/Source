@@ -4165,3 +4165,7 @@ this all in desperation)
   that will be shown after click on object, LOCAL.ClickMsgHue will contain color of the
   message. Both locals are writable. RETURN 1 - will cancel showing text.
 - Fixed: Mounts removing when world save (error: Ridden NPC without a mount item).
+
+31-08-2008, MrSugarCube
+- Added #1507: REVERT function to custom housing (t_multi_custom), calling this will clear any
+  uncommitted changes that have been made to the building design.
