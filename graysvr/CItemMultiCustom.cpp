@@ -1216,6 +1216,7 @@ enum
 	IMCV_REMOVEITEM,
 	IMCV_RESET,
 	IMCV_RESYNC,
+	IMCV_REVERT,
 	IMCV_QTY,
 };
 
@@ -1230,6 +1231,7 @@ LPCTSTR const CItemMultiCustom::sm_szVerbKeys[IMCV_QTY+1] =
 	"REMOVEITEM",
 	"RESET",
 	"RESYNC",
+	"REVERT",
 	NULL,
 };
 
@@ -1353,6 +1355,12 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 				return false;
 
 			SendStructureTo(pChar->GetClient());
+		} break;
+
+		case IMCV_REVERT:
+		{
+			CopyDesign(&m_designMain, &m_designWorking);
+			m_designWorking.m_iRevision++;
 		} break;
 
 		default:
