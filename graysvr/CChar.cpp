@@ -2916,7 +2916,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_MAKEITEM:
 		{
 			TCHAR *psTmp = Str_GetTemp();
-			strcpy( psTmp, s.GetArgStr() );
+			strcpy( psTmp, s.GetArgRaw() );
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
 			int iTmp = 1;
@@ -2928,6 +2928,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					iTmp = ATOI( ttVal[1] );
 				}
 			}
+			//DEBUG_ERR(( "CHV_MAKEITEM iTmp is %d, arg was %s\n",iTmp,psTmp ));
+
 			return Skill_MakeItem(
 				(ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ttVal[0]),
 				m_Act_Targ, SKTRIG_START, false, iTmp );
@@ -3243,7 +3245,7 @@ bool CChar::OnTriggerSpeech( bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMOD
 				}
 				else
 				{
-					DEBUG_ERR(("TriggerSpeech: couldn't not run script for speech %s\n", pszName));
+					DEBUG_ERR(("TriggerSpeech: couldn't run script for speech %s\n", pszName));
 				}
 			}
 			else
