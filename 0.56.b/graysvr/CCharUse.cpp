@@ -970,9 +970,7 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	case IT_MEAT_RAW:
 		if ( pFood->m_itFood.m_poison_skill )
 		{
-#ifdef _NAZTEST
-			SetPoison( pFood->m_itFood.m_poison_skill, pFood->m_itFood.m_poison_skill/50, this );
-#endif
+			SetPoison( pFood->m_itFood.m_poison_skill*10, 1+(pFood->m_itFood.m_poison_skill/50), this );
 		}
 		break;
 	}
@@ -1121,6 +1119,11 @@ void CChar::Use_Drink( CItem * pItem )
 
 	if ( pItem->IsType(IT_DRINK) && IsSetOF(OF_DrinkIsFood))
 	{
+		if ( pItem->m_itFood.m_poison_skill )
+		{
+			SetPoison( pItem->m_itFood.m_poison_skill*10, 1+(pItem->m_itFood.m_poison_skill/50), this );
+		}
+
 		if ( Stat_GetVal(STAT_FOOD) < Stat_GetMax(STAT_FOOD) )
 		{
 			int fValue;
