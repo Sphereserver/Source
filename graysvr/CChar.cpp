@@ -2907,12 +2907,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				g_Log.Event( LOGL_EVENT|LOGM_KILLS|LOGM_GM_CMDS, "'%s' was KILLed by '%s'\n", (LPCTSTR) GetName(), (LPCTSTR) pSrc->GetName());
 			}
 			break;
-#ifndef _NTEST
-		case CHV_MAKEITEM:
-			return Skill_MakeItem(
-				(ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgRaw()),
-				m_Act_Targ, SKTRIG_START );
-#else
 		case CHV_MAKEITEM:
 		{
 			TCHAR *psTmp = Str_GetTemp();
@@ -2934,7 +2928,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				(ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ttVal[0]),
 				m_Act_Targ, SKTRIG_START, false, iTmp );
 		}
-#endif
 
 		case CHV_MOUNT:
 			{
