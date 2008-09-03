@@ -4169,3 +4169,10 @@ this all in desperation)
 31-08-2008, MrSugarCube
 - Added #1507: REVERT function to custom housing (t_multi_custom), calling this will clear any
   uncommitted changes that have been made to the building design.
+
+03-09-2008, nazghul
+- Added #1504, optional second parameter "amount" to MAKEITEM. Please understand that the
+  "additional" items crafted will neither fire any trigger, nor give experience or skill. So,
+  from that point of view there's no difference between "MAKEITEM i_dagger" and "MAKEITEM i_dagger,10"
+  (except for the number of daggers created). If the resources you have are insufficiant for
+  the amount, it will be shortened respectively.

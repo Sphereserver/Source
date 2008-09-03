@@ -860,12 +860,8 @@ bool CChar::Skill_MakeItem_Success()
 	TCHAR *pszMsg = Str_GetTemp();
 
 	int iSkillLevel = Skill_GetBase( Skill_GetActive());	// primary skill value.
-#ifdef _NTEST
-//	DEBUG_ERR(( "Skill_MakeItem_Success m_atCreate.m_Amount = %d\n", m_atCreate.m_Amount ));
-#endif
 	if ( m_atCreate.m_Amount != 1 )
 	{
-#ifdef _NTEST
 		if ( pItem->IsType( IT_SCROLL ))
 			pItem->m_itSpell.m_spelllevel = iSkillLevel;
 
@@ -884,9 +880,6 @@ bool CChar::Skill_MakeItem_Success()
 				ItemBounce( ptItem );
 			}
 		}
-#else
-		pItem->SetAmount( m_atCreate.m_Amount ); // Set the quantity if we are making bolts, arrows or shafts
-#endif
 	}
 	else if ( pItem->IsType( IT_SCROLL ))
 	{
@@ -1060,11 +1053,7 @@ int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 }
 
 
-#ifndef _NTEST
-bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly )
-#else
 bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, int iReplicationQty )
-#endif
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
 	// "MAKEITEM"
@@ -1112,12 +1101,6 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		return( false );
 	}
 	if ( fSkillOnly ) return true;
-#ifndef _NTEST
-	int iReplicationQty = 1;
-#endif
-#ifdef _NTEST
-	//DEBUG_ERR(( "ReplicationQty0 is %d\n",iReplicationQty ));
-#endif
 	if ( pItemDef->Can( CAN_I_REPLICATE ))
 	{
 		// For arrows/bolts, how many do they want ?
@@ -1151,18 +1134,12 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		return( false );
 	}
 
-#ifdef _NTEST
-	//DEBUG_ERR(( "ReplicationQty1 is %d\n",iReplicationQty ));
-#endif
 	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
 	if ( ! iReplicationQty )
 	{
 		return( false );
 	}
 
-#ifdef _NTEST
-	//DEBUG_ERR(( "ReplicationQty2 is %d\n",iReplicationQty ));
-#endif
 
 	if ( stage == SKTRIG_START )
 	{
@@ -1179,19 +1156,12 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		m_atCreate.m_ItemID = id;
 		m_atCreate.m_Amount = iReplicationQty;
 
-#ifdef _NTEST
-		//DEBUG_ERR(( "m_atCreate.m_Amount0 is %d\n",m_atCreate.m_Amount ));
-#endif
-
 		return Skill_Start( (SKILL_TYPE) RetMainSkill.GetResIndex(), RetMainSkill.GetResQty() / 10 );
 	}
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		m_atCreate.m_Amount = iReplicationQty; // how much resources we really consumed
-#ifdef _NTEST
-		//DEBUG_ERR(( "m_atCreate.m_Amount1 is %d\n",m_atCreate.m_Amount ));
-#endif
 		return( Skill_MakeItem_Success() );
 	}
 
