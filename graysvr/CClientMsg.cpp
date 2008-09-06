@@ -1796,7 +1796,7 @@ void CClient::addItemName( const CItem * pItem )
 		LPCTSTR pNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 
 		if ( pNewStr != NULL )
-			strcpy_s(&szName[0], _countof(szName), pNewStr);
+			strcpylen(szName, pNewStr, COUNTOF(szName));
 
 		wHue = (HUE_TYPE)Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true);
 	}
