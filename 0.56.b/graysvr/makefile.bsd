@@ -1,5 +1,5 @@
 VER	= 0.56b
-PLAT	= FreeBSD
+PLAT = FreeBSD
 
 # Generic makefile
 MARCH = -march=i686
@@ -18,7 +18,7 @@ LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient -lrt
 DEFBSD	= -D_BSD
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD
-#EXTRADEFS = -D_NEWGUILDSYSTEM
+EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
 DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS)
 
