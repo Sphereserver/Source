@@ -1782,21 +1782,24 @@ void CClient::addItemName( const CItem * pItem )
 	if ( IsPriv(PRIV_DEBUG) )
 		len += sprintf(szName+len, " [0%lx]", (DWORD) pItem->GetUID());
 
-	CScriptTriggerArgs Args( this );
-	Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
-	Args.m_VarsLocal.SetNumNew("ClickMsgHue", (int)wHue);
+	if ( IsSetEF(EF_New_Triggers) )
+	{
+		CScriptTriggerArgs Args( this );
+		Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
+		Args.m_VarsLocal.SetNumNew("ClickMsgHue", (int)wHue);
 
-	TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CItem*>(pItem))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
+		TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CItem*>(pItem))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
 
-	if ( ret == TRIGRET_RET_TRUE )
-		return;
+		if ( ret == TRIGRET_RET_TRUE )
+			return;
 
-	LPCTSTR pNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
+		LPCTSTR pNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 
-	if ( pNewStr != NULL )
-		strcpy_s(&szName[0], _countof(szName), pNewStr);
+		if ( pNewStr != NULL )
+			strcpy_s(&szName[0], _countof(szName), pNewStr);
 
-	wHue = (HUE_TYPE)Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true);
+		wHue = (HUE_TYPE)Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true);
+	}
 
 	addObjMessage(szName, pItem, wHue);
 }
@@ -1894,21 +1897,24 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 		strcat( pszTemp, "]" );
 	}
 
-	CScriptTriggerArgs Args( this );
-	Args.m_VarsLocal.SetStrNew("ClickMsgText", pszTemp);
-	Args.m_VarsLocal.SetNumNew("ClickMsgHue", (int)wHue);
+	if ( IsSetEF(EF_New_Triggers) )
+	{
+		CScriptTriggerArgs Args( this );
+		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszTemp);
+		Args.m_VarsLocal.SetNumNew("ClickMsgHue", (int)wHue);
 
-	TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CChar*>(pChar))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
+		TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CChar*>(pChar))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
 
-	if ( ret == TRIGRET_RET_TRUE )
-		return;
+		if ( ret == TRIGRET_RET_TRUE )
+			return;
 
-	LPCTSTR pNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
+		LPCTSTR pNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 
-	if ( pNewStr != NULL )
-		strcpy(pszTemp, pNewStr);
+		if ( pNewStr != NULL )
+			strcpy(pszTemp, pNewStr);
 
-	wHue = (HUE_TYPE)Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true);
+		wHue = (HUE_TYPE)Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true);
+	}
 
 	addObjMessage( pszTemp, pChar, wHue );
 }

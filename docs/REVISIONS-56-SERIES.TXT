@@ -4161,17 +4161,18 @@ this all in desperation)
 
 26-08-2008, Shadow Dragon
 - Fixed: Skills doesn't gain when lower than 1.8
-- Added: New trigger @AfterClick and @ItemAfterClick. LOCAL.ClickMsgText will contain text, 
-  that will be shown after click on object, LOCAL.ClickMsgHue will contain color of the
-  message. Both locals are writable. RETURN 1 - will cancel showing text.
+- Added: New trigger @AfterClick and @ItemAfterClick. LOCAL.ClickMsgText will contain text, that
+  will be shown after click on object, LOCAL.ClickMsgHue will contain color of the message. Both
+  locals are writable. RETURN 1 - will cancel showing text. Requires EF_New_Triggers to be
+  enabled.
 - Fixed: Mounts removing when world save (error: Ridden NPC without a mount item).
 
 31-08-2008, MrSugarCube
 - Added #1507: REVERT function to custom housing (t_multi_custom), calling this will clear any
   uncommitted changes that have been made to the building design.
 
-03-09-2008, nazghul
-- Added #1504, optional second parameter "amount" to MAKEITEM. Please understand that the
+03-09-2008, Nazghul
+- Added #1504: Optional second parameter "amount" to MAKEITEM. Please understand that the
   "additional" items crafted will neither fire any trigger, nor give experience or skill. So,
   from that point of view there's no difference between "MAKEITEM i_dagger" and "MAKEITEM i_dagger,10"
   (except for the number of daggers created). If the resources you have are insufficiant for
