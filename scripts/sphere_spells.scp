@@ -786,6 +786,9 @@ MANAUSE=20
 SKILLREQ=MAGERY 60.0
 INTERRUPT=100.0,100.0
 
+ON=@Effect
+ FLAGS &= ~statf_hidden
+
 [Spell 45]
 DEFNAME=s_mark
 NAME=Mark
