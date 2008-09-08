@@ -107,7 +107,7 @@ GROUP=Malas
 [AREADEF a_yomotsu_mines]
 NAME=Yomotsu Mines
 P=6,118,0,3
-RECT=0,0,129,129,3
+RECT=1,1,129,129,3
 FLAGS=region_flag_underground|region_flag_nobuilding
 GROUP=Tokuno Islands
 

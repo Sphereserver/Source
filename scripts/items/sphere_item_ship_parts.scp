@@ -461,26 +461,10 @@ TDATA1=03e89
 //deck
 //DUPEITEM=03e61
 
-[ITEMDEF 03e90]
-//ship
-//DUPEITEM=03e66
-
-[ITEMDEF 03e91]
-//ship
-//DUPEITEM=03e66
-
-[ITEMDEF 03e92]
-//hold
-//DUPEITEM=03e64
-
 [ITEMDEF 03e93]
 //hatch
 DEFNAME=i_ship_hatch_w
 DUPEITEM=i_ship_hatch_e
-
-[ITEMDEF 03e94]
-//ship
-//DUPEITEM=03e66
 
 [ITEMDEF 03e95]
 //prow
@@ -544,10 +528,6 @@ DESCRIPTION=Ship Door
 //deck
 //DUPEITEM=03e61
 
-[ITEMDEF 03ead]
-//deck
-//DUPEITEM=03e61
-
 [ITEMDEF 03eae]
 //hatch
 DEFNAME=i_ship_hatch_n
@@ -578,10 +558,6 @@ SUBSECTION=Stern
 DESCRIPTION=@
 //DUPELIST=03eb8
 
-[ITEMDEF 03eb4]
-//prow
-//DUPEITEM=03e68
-
 [ITEMDEF 03eb5]
 //ship
 //DUPEITEM=03e66
@@ -594,34 +570,10 @@ DESCRIPTION=@
 //hold
 //DUPEITEM=03e64
 
-[ITEMDEF 03eb8]
-//stern
-//DUPEITEM=03eb3
-
 [ITEMDEF 03eb9]
 //hatch
 DEFNAME=i_ship_hatch_s
 DUPEITEM=i_ship_hatch_e
-
-[ITEMDEF 03eba]
-//prow
-//DUPEITEM=03e68
-
-[ITEMDEF 03ebb]
-//rudder
-//DUPEITEM=03e6f
-
-[ITEMDEF 03ebc]
-//rudder
-//DUPEITEM=03e6f
-
-[ITEMDEF 03ebd]
-//tiller
-//DUPEITEM=03e4a
-
-[ITEMDEF 03ebe]
-//rudder
-//DUPEITEM=03e6f
 
 [ITEMDEF 03ebf]
 //tiller
@@ -819,6 +771,91 @@ DEFNAME=i_mt_llama
 TYPE=T_EQ_HORSE
 LAYER=layer_horse
 TDATA3=c_LLAMA
+
+[ITEMDEF 03e90]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_reptalon
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_m_reptalon
+
+[ITEMDEF 03e91]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_cu_sidhe
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_cu_sidhe
+
+[ITEMDEF 03e92]
+//hold (really used as horse equipped)
+DEFNAME=i_mt_armor_steed
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_m_armor_steed
+
+[ITEMDEF 03e94]
+//ship (really used as horse equipped)
+DEFNAME=i_mt_hiryu
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_m_hiryu
+
+[ITEMDEF 03ead]
+//deck (really used as horse equipped)
+DEFNAME=i_mt_kirin
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_kirin
+
+[ITEMDEF 03eb4]
+//prow (really used as horse equipped)
+DEFNAME=i_mt_unicorn
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_m_unicorn
+
+[ITEMDEF 03eb8]
+//stern (really used as horse equipped)
+DEFNAME=i_mt_savage_ridgeback
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_savage_ridgeback
+
+[ITEMDEF 03eba]
+//prow (really used as horse equipped)
+DEFNAME=i_mt_ridgeback
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_ridgeback
+
+[ITEMDEF 03ebb]
+//rudder (really used as horse equipped)
+DEFNAME=i_mt_skeletal_mount
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_skeletal_mount
+
+[ITEMDEF 03ebc]
+//rudder (really used as horse equipped)
+DEFNAME=i_mt_giant_beetle
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_giant_beetle
+
+[ITEMDEF 03ebd]
+//tiller (really used as horse equipped)
+DEFNAME=i_mt_swamp_dragon
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_swamp_dragon
+
+[ITEMDEF 03ebe]
+//tiller (really used as horse equipped)
+DEFNAME=i_mt_armored_swamp_dragon
+TYPE=T_EQ_HORSE
+LAYER=layer_horse
+TDATA3=c_armored_swamp_dragon
+
 
 [ITEMDEF 03ed3]
 //gang plank
