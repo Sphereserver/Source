@@ -4177,3 +4177,7 @@ this all in desperation)
   from that point of view there's no difference between "MAKEITEM i_dagger" and "MAKEITEM i_dagger,10"
   (except for the number of daggers created). If the resources you have are insufficiant for
   the amount, it will be shortened respectively.
+
+08-09-2008, MrSugarCube
+- Fixed #1514: Players and NPCs unable to cast spells.
+- Fixed #1508: Dropped items stacking regardless of their difference in height.

@@ -1268,14 +1268,22 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	while (true)
 	{
 		pItem = AreaItems.GetItem();
-		if ( pItem == NULL ) break;
-		iItemCount ++;
-		// ITRIG_STACKON
-		if ( Stack( pItem ))
-		{
-			dMyZ = 100;
+		if ( pItem == NULL )
 			break;
+
+		iItemCount ++;
+
+		// can't stack from a distance
+		if ( ptNewPlace.GetDistZ(pItem->GetTopPoint()) <= 1 )
+		{
+			// ITRIG_STACKON
+			if ( Stack( pItem ))
+			{
+				dMyZ = 100;
+				break;
+			}
 		}
+
 		if ( pItem->GetTopPoint().m_z > dMyZ ) dMyZ = pItem->GetTopPoint().m_z + 1;
 	}
 	// one floor. needs some configuration on that
