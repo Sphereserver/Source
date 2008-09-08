@@ -2971,6 +2971,7 @@ public:
 	static bool IsSkillBase( SKILL_TYPE skill );
 	static bool IsSkillNPC( SKILL_TYPE skill );
 	static bool IsSkillMagic( SKILL_TYPE skill );
+	static bool IsSkillCraft( SKILL_TYPE skill );
 
 	SKILL_TYPE Skill_GetBest( int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
@@ -3368,6 +3369,7 @@ inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 	// Is this in the base set of skills.
 	return( IS_SKILL_BASE(skill));
 }
+
 inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
 {
 	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
@@ -3382,6 +3384,26 @@ inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
 		case SKILL_BUSHIDO:
 		case SKILL_NINJITSU:
 		case SKILL_SPELLWEAVING:
+			return true;
+	}
+	return false;
+}
+
+inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
+{
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+	if (g_Cfg.IsSkillFlag(skill, SKF_CRAFT))
+		return true;
+	switch (skill)
+	{
+		case SKILL_ALCHEMY:
+		case SKILL_BLACKSMITHING:
+		case SKILL_BOWCRAFT:
+		case SKILL_CARPENTRY:
+		case SKILL_INSCRIPTION:
+		case SKILL_TAILORING:
+		case SKILL_TINKERING:
 			return true;
 	}
 	return false;

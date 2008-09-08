@@ -781,11 +781,6 @@ void CChar::Skill_Cleanup()
 	m_Act_Difficulty = 0;
 	m_Act_SkillCurrent = SKILL_NONE;
 
-	//Cleanup the createitem stuff to look good in @Select trigger
-	m_atCreate.m_ItemID = ITEMID_NOTHING;
-	m_atCreate.m_Amount = 0;
-	m_atCreate.m_Stroke_Count = 0;
-
 	SetTimeout( m_pPlayer ? -1 : TICK_PER_SEC ); // we should get a brain tick next time.
 }
 
@@ -4139,23 +4134,33 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		}
 		m_Act_Difficulty = Skill_Stage(SKTRIG_START);
 
-		//Execute the @START trigger and pass various craft parameters there
-		//If this is not a crafting skill nothing bad will happen
+		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
-
+		bool bCraftSkill = IsSkillCraft(skill);
 		RESOURCE_ID pResBase(RES_ITEMDEF,m_atCreate.m_ItemID,0);
-		pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
-		pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
-		pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
+
+		if ( bCraftSkill == true )
+		{
+			// set crafting parameters
+			pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
+			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
+			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
+		}
+
 		if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
 		{
 			Skill_Cleanup();
 			return false;
 		}
-		pResBase.SetPrivateUID(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true));
-		m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex();
-		m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
-		m_atCreate.m_Amount = pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true);
+
+		if ( bCraftSkill == true )
+		{
+			// read crafting parameters
+			pResBase.SetPrivateUID(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true));
+			m_atCreate.m_ItemID = (ITEMID_TYPE) pResBase.GetResIndex();
+			m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
+			m_atCreate.m_Amount = pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true);
+		}
 
 		if ( IsSkillBase(skill) )
 		{
