@@ -3673,17 +3673,30 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	// a rock or a boulder ?
 	ITEMID_TYPE id;
 	int iDamage;
-	if ( Calc_GetRandVal( 3 ) )
+#ifdef _NAZTEST_THROW
+	CVarDefCont * pTagStorage = NULL; 
+    pTagStorage = GetKey("OVERRIDE.ROCK", true);
+    if ( pTagStorage->GetValNum() )
+    {
+		id = (ITEMID_TYPE) pTagStorage->GetValNum();
+    } else
 	{
-		iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-		id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
-	}
-	else
-	{
-		iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-		id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
-	}
+#endif
 
+
+		if ( Calc_GetRandVal( 3 ) )
+		{
+			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+			id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
+		}
+		else
+		{
+			iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+			id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
+		}
+#ifdef _NAZTEST_THROW
+	}
+#endif
 	CItem *pRock = CItem::CreateScript(id, this);
 	if ( pRock )
 	{

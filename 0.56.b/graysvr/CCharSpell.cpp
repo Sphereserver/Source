@@ -203,7 +203,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			}
 		}
 
-#ifdef _NAZTEST
+#ifdef _NAZTEST_PETS
 		// if we cannot control the creature it will not be tame - what might be somewhat risky :)
 		CVarDefCont * pTagStorage = pChar->GetKey("FOLLOWERSLOTS", true);
 		unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;

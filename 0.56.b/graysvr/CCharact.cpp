@@ -2410,7 +2410,7 @@ bool CChar::Death()
 		{
 			this->m_prev_id = this->GetID();
 		}
-#ifdef _NAZTEST
+#ifdef _NAZTEST_WARTARG
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED|MEMORY_WAR_TARG) )
 #else
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED) )
