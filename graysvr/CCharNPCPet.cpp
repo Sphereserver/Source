@@ -129,7 +129,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	if ( ! pSrc->IsClient())
 		return( false );
-#ifdef _NAZTEST
+#ifdef _NAZTEST_PETS
 	CClient * pClient;
 	CVarDefCont * pTagStorage;
 	unsigned short int iFollowerSlotsNeeded;
@@ -173,7 +173,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			break;
 		case PC_RELEASE:
 			Skill_Start( SKILL_NONE );
-#ifdef _NAZTEST
+#ifdef _NAZTEST_PETS
 			pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
 			iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
 			// pet's owner is pSrc
@@ -377,7 +377,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			break;
 		if ( pCharTarg->IsClient() )
 		{
-#ifdef _NAZTEST
+#ifdef _NAZTEST_PETS
 			CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
 			unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
 			// transferrer is pSrc

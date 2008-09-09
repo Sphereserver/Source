@@ -1227,7 +1227,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 
 
-#ifdef _NAZTEST
+#ifdef _NAZTEST_PETS
 	// first check if it's a ridden creature (don't mess with m_curFollower then)
 	CItem * pCheckItem = this->LayerFind( LAYER_HORSE );
 	if (pCheckItem != pItem)

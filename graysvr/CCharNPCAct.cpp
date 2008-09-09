@@ -2029,7 +2029,7 @@ void CChar::NPC_Act_Fight()
 
 		// If I am a giant. i can throw stones.
 		// NPCACT_THROWING
-
+#ifndef _NAZTEST_THROW
 		if (( GetDispID() == CREID_OGRE ||
 			GetDispID() == CREID_ETTIN ||
 			GetDispID() == CREID_Cyclops ) &&
@@ -2042,6 +2042,30 @@ void CChar::NPC_Act_Fight()
 			Skill_Start( NPCACT_THROWING );
 			return;
 		}
+#else
+		// any special ammunition defined?
+		CVarDefCont * pTagStorage = NULL; 
+		pTagStorage = GetKey("OVERRIDE.ROCK", true);
+		ITEMID_TYPE id;
+		id = (ITEMID_TYPE) 0;
+
+	    if ( pTagStorage->GetValNum() )
+		{
+			id = (ITEMID_TYPE) pTagStorage->GetValNum();
+	    } 
+
+		if (( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops || id ) &&
+			iDist >= 2 && iDist <= 9 && CanSeeLOS( pChar,LOS_NB_WINDOWS ) ) //NPCs can throw stones through a window
+		{
+			// in theory, I can throw. Do I have ammunition?
+			if ( id || ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
+			{
+				UpdateDir( pChar );
+				Skill_Start( NPCACT_THROWING );
+				return;
+			}
+		}
+#endif
 	}
 
 	// Maybe i'll cast a spell if I can. if so maintain a distance.

@@ -3373,7 +3373,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 		return( WAR_SWING_EQUIPPING );
 #ifdef _NAZTEST
-	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
+	//Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif
 	iDmg	= Args.m_iN1;
 
