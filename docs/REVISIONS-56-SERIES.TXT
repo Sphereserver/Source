@@ -4181,3 +4181,6 @@ this all in desperation)
 08-09-2008, MrSugarCube
 - Fixed #1514: Players and NPCs unable to cast spells.
 - Fixed #1508: Dropped items stacking regardless of their difference in height.
+
+09-09-2008, MrSugarCube
+- Fixed #1516: NPCs unable to use pathfinding when trying to follow or walk up to another character.

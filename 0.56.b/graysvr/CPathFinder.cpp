@@ -234,13 +234,23 @@ void CPathFinder::FillMap()
 	{
 		for ( y = 0; y != PATH_SIZE; ++y )
 		{
-			pt.m_x = x + m_RealX;
-			pt.m_y = y + m_RealY;
-			if (IsSetEF( EF_NewPositionChecks ))
-				pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
+			if (x == m_Target.m_x && y == m_Target.m_y)
+			{
+				// always assume that our target position is walkable
+				m_Points[x][y].m_Walkable = PATH_WALKABLE;
+			}
 			else
-				pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY);
-			m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
+			{
+				pt.m_x = x + m_RealX;
+				pt.m_y = y + m_RealY;
+				if (IsSetEF( EF_NewPositionChecks ))
+					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
+				else
+					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY);
+
+				m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
+			}
+
 			m_Points[x][y].Set(x,y);
 
 			//DEBUG_ERR(( "[%i:%i:%i]",m_Points[x][y].GetPoint()->m_x,m_Points[x][y].GetPoint()->m_y,m_Points[x][y].m_Walkable ));
