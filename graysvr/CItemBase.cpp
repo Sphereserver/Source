@@ -1510,6 +1510,7 @@ int CItemBaseMulti::GetMaxDist() const
 
 enum MLC_TYPE 
 {
+	MLC_BASECOMPONENT,
 	MLC_COMPONENT,
 	MLC_MULTIREGION,
 	MLC_REGIONFLAGS,
@@ -1520,6 +1521,7 @@ enum MLC_TYPE
 
 LPCTSTR const CItemBaseMulti::sm_szLoadKeys[] =
 {
+	"BASECOMPONENT",
 	"COMPONENT",
 	"MULTIREGION",
 	"REGIONFLAGS",
@@ -1578,6 +1580,39 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 	EXC_TRY("WriteVal");
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ) )
 	{
+	case MLC_BASECOMPONENT:
+	{
+		pszKey += 13;
+		const CGrayMulti* pMulti = g_Cfg.GetMultiItemDefs(GetDispID());
+		if (pMulti == NULL)
+			return false;
+
+		if (*pszKey == '\0')
+			sVal.FormatVal(pMulti->GetItemCount());
+		else if (*pszKey == '.')
+		{
+			SKIP_SEPARATORS( pszKey );
+			int index = Exp_GetVal( pszKey );
+
+			if ((index < 0) || (index >= pMulti->GetItemCount()))
+				return false;
+			SKIP_SEPARATORS( pszKey );
+			const CUOMultiItemRec* item = pMulti->GetItem(index);
+
+			if ( *pszKey == '\0' )						sVal.Format("%i,%i,%i,%i", item->m_wTileID, item->m_dx, item->m_dy, item->m_dz);
+			else if ( !strnicmp(pszKey, "ID", 2) )		sVal.FormatVal(item->m_wTileID);
+			else if ( !strnicmp(pszKey, "DX", 2) )		sVal.FormatVal(item->m_dx);
+			else if ( !strnicmp(pszKey, "DY", 2) )		sVal.FormatVal(item->m_dy);
+			else if ( !strnicmp(pszKey, "DZ", 2) )		sVal.FormatVal(item->m_dz);
+			else if ( !strnicmp(pszKey, "D", 1) )		sVal.Format("%i,%i,%i", item->m_dx, item->m_dy, item->m_dz);
+			else if ( !strnicmp(pszKey, "VISIBLE", 7) )	sVal.FormatVal(item->m_visible);
+			else return false;
+		}
+		else
+			return false;
+
+		return true;
+	}
 	case MLC_COMPONENT:
 		{
 			pszKey += 9;
