@@ -113,15 +113,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 
 	// if i can't fit under this anyhow. it is something below me. (potentially)
 	// we can climb a bit higher to reach climbables and platforms
-	int iMinHeight = m_z + (m_iHeight / 2);
-	if (!IsSetEF(EF_NoWalkingThroughStairsFix) && (wItemBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) )
-		iMinHeight += (zHeight / 2);
-
-	// todo: remove EF and iMinHeight, then replace statement below with:
-	//  if ( zBottom < ( m_z + (m_iHeight / 2) + ((wItemBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) ? (zHeight / 2) : 0) ) )
-	// or maybe:
-	//  if ( zBottom < ( m_z + (( m_iHeight + ((wItemBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) ? zHeight : 0) ) / 2) )
-	if ( zBottom < iMinHeight )
+	if ( zBottom < (m_z + (( m_iHeight + ((wItemBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) ? zHeight : 0) ) / 2)) )
 	{
 		// This is the new item ( that would be ) under me.
 		// NOTE: Platform items should take precedence over non-platforms.
