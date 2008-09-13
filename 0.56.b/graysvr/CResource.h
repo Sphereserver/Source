@@ -63,7 +63,6 @@ enum EF_TYPE
 	EF_DamageTools					= 0x0002000,
 	EF_UsePingServer				= 0x0008000,
 	EF_NPCAct_Triggers				= 0x0010000,
-	EF_NoWalkingThroughStairsFix	= 0x0400000,
 	EF_UseNetworkMulti				= 0x0800000,
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };

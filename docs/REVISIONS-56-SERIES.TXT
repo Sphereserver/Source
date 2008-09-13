@@ -4061,10 +4061,7 @@ this all in desperation)
 
 08-07-2008, MrSugarCube
 - Fixed #1446: GM/MT_FLY enabled characters walking through stairs when EF_WalkCheck is not
-  enabled. [Note: Due to potentially negative side-effects of this fix a temporary EF flag
-  (EF_NoWalkingThroughStairsFix) has been added to sphere.ini which disables the fix just in
-  case something bad happens (if no issues are reported that are caused by this fix then you
-  can expect it to disappear very soon)]
+  enabled.
 
 10-07-2008, MrSugarCube
 - Fixed ##3: Unstackable items becoming stacked after being bought off a player-owned vendor,

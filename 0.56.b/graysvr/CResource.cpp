@@ -3087,7 +3087,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
-		if ( IsSetEF(EF_NoWalkingThroughStairsFix) ) catresname(zExperimentalFlags, "NoWalkingThroughStairsFix");
 		if ( IsSetEF(EF_UseNetworkMulti) ) catresname(zExperimentalFlags, "UseAsyncNetwork");
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
