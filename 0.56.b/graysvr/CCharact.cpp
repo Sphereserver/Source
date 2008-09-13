@@ -1853,6 +1853,31 @@ CItem * CChar::Horse_GetMountItem() const
 		return( NULL );
 
 	CItem * pItem = m_atRidden.m_FigurineUID.ItemFind();
+
+	if ( pItem == NULL )
+	{
+		CItemMemory* pItemMem = Memory_FindTypes( MEMORY_IPET );
+
+		if ( pItemMem != NULL )
+		{
+			CChar* pOwner = pItemMem->m_uidLink.CharFind();
+
+			if ( pOwner != NULL )
+			{
+				CItem* pItemMount = pOwner->LayerFind(LAYER_HORSE);
+
+				if ( pItemMount != NULL && pItemMount->m_itNormal.m_more2 == GetUID() )
+				{
+					const_cast<CGrayUIDBase&>(m_atRidden.m_FigurineUID) = pItemMount->GetUID();
+					pItem = pItemMount;
+
+					DEBUG_ERR(("UID=0%x, id=0%x '%s', Fixed mount item UID=0%x, id=0%x '%s'\n",
+						(int)GetUID(), GetBaseID(), GetName(), (int)(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
+				}
+			}
+		}
+	}
+
 	if ( pItem == NULL ||
 		( ! pItem->IsType( IT_FIGURINE ) && ! pItem->IsType( IT_EQ_HORSE )))
 	{
