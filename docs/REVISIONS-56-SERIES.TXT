@@ -4184,3 +4184,9 @@ this all in desperation)
 
 09-09-2008, MrSugarCube
 - Fixed #1516: NPCs unable to use pathfinding when trying to follow or walk up to another character.
+
+13-09-2008, MrSugarCube
+- Added: BASECOMPONENT property to multis. Usage is similar to COMPONENT except it returns
+  information for the components specified in the mul files, and when accessing
+  individual components (BASECOMPONENT.n.[ID/DX/DY/DZ/D] there is an additional "VISIBLE"
+  property which returns 0 if the component is invisible (usually applies to doors and signs).
