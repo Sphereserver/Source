@@ -2049,10 +2049,13 @@ void CChar::NPC_Act_Fight()
 		ITEMID_TYPE id;
 		id = (ITEMID_TYPE) 0;
 
-	    if ( pTagStorage->GetValNum() )
+		if ( pTagStorage )
 		{
-			id = (ITEMID_TYPE) pTagStorage->GetValNum();
-	    } 
+			if ( pTagStorage->GetValNum() )
+			{
+				id = (ITEMID_TYPE) pTagStorage->GetValNum();
+			}
+		}
 
 		if (( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops || id ) &&
 			iDist >= 2 && iDist <= 9 && CanSeeLOS( pChar,LOS_NB_WINDOWS ) ) //NPCs can throw stones through a window

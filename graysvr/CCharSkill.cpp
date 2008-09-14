@@ -3676,25 +3676,28 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 #ifdef _NAZTEST_THROW
 	CVarDefCont * pTagStorage = NULL; 
     pTagStorage = GetKey("OVERRIDE.ROCK", true);
-    if ( pTagStorage->GetValNum() )
-    {
-		id = (ITEMID_TYPE) pTagStorage->GetValNum();
-    } else
+    if ( pTagStorage )
 	{
+		if ( pTagStorage->GetValNum() )
+		{
+			id = (ITEMID_TYPE) pTagStorage->GetValNum();
+		} else
+		{
 #endif
 
-
-		if ( Calc_GetRandVal( 3 ) )
-		{
-			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-			id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
-		}
-		else
-		{
-			iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-			id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
-		}
+	
+			if ( Calc_GetRandVal( 3 ) )
+			{
+				iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+				id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
+			}
+			else
+			{
+				iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+				id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
+			}
 #ifdef _NAZTEST_THROW
+		}
 	}
 #endif
 	CItem *pRock = CItem::CreateScript(id, this);
