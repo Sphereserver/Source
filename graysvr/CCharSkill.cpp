@@ -3671,7 +3671,7 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	SoundChar( CRESND_GETHIT );
 
 	// a rock or a boulder ?
-	ITEMID_TYPE id;
+	ITEMID_TYPE id = (ITEMID_TYPE) 0;
 	int iDamage;
 #ifdef _NAZTEST_THROW
 	CVarDefCont * pTagStorage = NULL; 
@@ -3681,38 +3681,43 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 		if ( pTagStorage->GetValNum() )
 		{
 			id = (ITEMID_TYPE) pTagStorage->GetValNum();
-		} else
-		{
+			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+		}
+	} else
+	{
 #endif
 
 	
-			if ( Calc_GetRandVal( 3 ) )
-			{
-				iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-				id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
-			}
-			else
-			{
-				iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-				id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
-			}
-#ifdef _NAZTEST_THROW
+		if ( Calc_GetRandVal( 3 ) )
+		{
+			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+			id = (ITEMID_TYPE)( ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
 		}
+		else
+		{
+			iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+			id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
+		}
+#ifdef _NAZTEST_THROW
+	}
+	if ( id != (ITEMID_TYPE) 0 )
+	{
+#endif
+		CItem *pRock = CItem::CreateScript(id, this);
+		if ( pRock )
+		{
+			pRock->SetAttr(ATTR_DECAY);
+			pRock->MoveToCheck(m_Act_p, this);
+			pRock->Effect(EFFECT_BOLT, id, this);
+		}
+		// did it hit ?
+		if ( ! Calc_GetRandVal( pChar->GetTopPoint().GetDist( m_Act_p )))
+		{
+			pChar->OnTakeDamage( iDamage, this, DAMAGE_HIT_BLUNT );
+		}
+#ifdef _NAZTEST_THROW
 	}
 #endif
-	CItem *pRock = CItem::CreateScript(id, this);
-	if ( pRock )
-	{
-		pRock->SetAttr(ATTR_DECAY);
-		pRock->MoveToCheck(m_Act_p, this);
-		pRock->Effect(EFFECT_BOLT, id, this);
-	}
-
-	// did it hit ?
-	if ( ! Calc_GetRandVal( pChar->GetTopPoint().GetDist( m_Act_p )))
-	{
-		pChar->OnTakeDamage( iDamage, this, DAMAGE_HIT_BLUNT );
-	}
 	
 	return 0;
 }
