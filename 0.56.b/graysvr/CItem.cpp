@@ -1186,6 +1186,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 	// Get a special drop sound for the item.
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
+	SOUND_TYPE iSnd = NULL;
 
 	switch ( pItemDef->GetType())
 	{
@@ -1194,24 +1195,39 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		// depends on amount.
 		switch ( GetAmount())
 		{
-		case 1: return( 0x035 );
-		case 2: return( 0x032 );
+		case 1: iSnd = 0x035; break;
+		case 2: iSnd = 0x032; break;
 		case 3:
-		case 4:	return( 0x036 );
+		case 4:	iSnd = 0x036; break;
+		default: iSnd = 0x037;
 		}
-		return( 0x037 );
+		break;
 	case IT_GEM:
-		return(( GetID() > ITEMID_GEMS ) ? 0x034 : 0x032 );  // Small vs Large Gems
+		iSnd = (( GetID() > ITEMID_GEMS ) ? 0x034 : 0x032 );  // Small vs Large Gems
+		break;
 	case IT_INGOT:  // Any Ingot
 		if ( pObjOn == NULL )
 		{
-			return( 0x033 );
+			iSnd = 0x033;
 		}
 		break;
 	}
-
+#ifdef _NAZTEST_ALTSOUND
+	CVarDefCont * pTagStorage = NULL; 
+	pTagStorage = GetKey("OVERRIDE.DROPSOUND", true);
+	if ( pTagStorage )
+	{
+		if ( pTagStorage->GetValNum() )
+		{
+			iSnd = pTagStorage->GetValNum();
+		}
+	}
+#endif
 	// normal drop sound for what dropped in/on.
-	return( pObjOn ? 0x057 : 0x042 );
+	if ( iSnd == NULL )
+		return( pObjOn ? 0x057 : 0x042 );
+	else
+		return ( iSnd );
 }
 
 bool CItem::MoveTo( CPointMap pt ) // Put item on the ground here.
@@ -3363,7 +3379,24 @@ bool CItem::Use_Portculis()
 
 	MoveTo( pt );
 	Update();
+#ifdef _NAZTEST_ALTSOUND
+	SOUND_TYPE iSnd = NULL;
+	CVarDefCont * pTagStorage = NULL; 
+	pTagStorage = GetKey("OVERRIDE.PORTCULISSOUND", true);
+	if ( pTagStorage )
+	{
+		if ( pTagStorage->GetValNum() )
+			iSnd = pTagStorage->GetValNum();
+		else
+			iSnd = 0x21d;
+	} else 
+		iSnd = 0x21d;
+
+	Sound( iSnd );
+
+#else
 	Sound( 0x21d );
+#endif
 	return( true );
 }
 
@@ -3481,6 +3514,33 @@ bool CItem::Use_Door( bool fJustOpen )
 	// SetType( typelock );	// preserve the fact that it was locked.
 	MoveTo(pt);
 
+#ifdef _NAZTEST_ALTSOUND
+	CVarDefCont * pTagStorage = NULL; 
+	int piVal[2];
+	int t_setFlag = 0;
+	pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
+	if ( pTagStorage )
+	{
+		piVal[0] = pTagStorage->GetValNum();
+		t_setFlag = 1;
+	} else
+		piVal[0] = 0;
+	pTagStorage = NULL;
+	pTagStorage = GetKey("OVERRIDE.DOORSOUND_OPEN", true);
+	if ( pTagStorage )
+	{
+		piVal[1] = pTagStorage->GetValNum();
+		t_setFlag = 1;
+	} else
+		piVal[1] = 0;
+
+	if ( t_setFlag )
+	{
+			Sound( fClosing ? piVal[0] : piVal[1] );
+			SetTimeout( fClosing ? -1 : 60*TICK_PER_SEC );
+			return( ! fClosing );
+	} 
+#endif
 	switch ( id )
 	{
 		case ITEMID_DOOR_SECRET_1:

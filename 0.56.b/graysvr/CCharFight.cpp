@@ -3007,7 +3007,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_EQUIPPING = swing made.
 	//  WAR_SWING_READY = can't take my swing right now. but i'm ready
 	//  WAR_SWING_SWINGING = taking my swing now.
-
+#ifdef _NAZTEST_WARSOUND
+	SOUND_TYPE iSnd;
+#endif
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3289,6 +3291,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		UpdateStatVal( STAT_DEX, -1 );
 	}
 
+#ifdef _NAZTEST_WARSOUND
+	CVarDefCont * pTagStorage = NULL; 
+#endif
 	// Check if we hit something;
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
@@ -3298,6 +3303,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( OnTrigger( CTRIG_HitMiss, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 				return( WAR_SWING_EQUIPPING );
 		}
+#ifdef _NAZTEST_WARSOUND
+		pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_MISS", true);
+		if ( pTagStorage )
+		{
+			if ( pTagStorage->GetValNum() )
+			{
+				iSnd = pTagStorage->GetValNum();
+			}
+		}
+
+#endif
 	}
 
 	if ( m_Act_Difficulty < 0 )		// if not changed within trigger
@@ -3307,7 +3323,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// 0x223 = bolt miss or dart ?
 			// do some thing with the arrow.
-			Sound( Calc_GetRandVal(2) ? 0x233 : 0x238 );
+#ifdef _NAZTEST_WARSOUND
+			if ( pTagStorage != NULL )
+				Sound( iSnd );
+			else
+#endif
+				Sound( Calc_GetRandVal(2) ? 0x233 : 0x238 );
+
 			// Sometime arrows should be lost/broken when we miss
 
 			if ( pAmmo && Calc_GetRandVal(5))
@@ -3324,8 +3346,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			0x239, // = swish02
 			0x23a, // = swish03
 		};
-
-		Sound( sm_Snd_Miss[ Calc_GetRandVal( COUNTOF( sm_Snd_Miss )) ] );
+#ifdef _NAZTEST_WARSOUND
+		if ( pTagStorage != NULL )
+			Sound( iSnd );
+		else
+#endif
+			Sound( sm_Snd_Miss[ Calc_GetRandVal( COUNTOF( sm_Snd_Miss )) ] );
 
 		if ( IsPriv(PRIV_DETAIL))
 		{
@@ -3372,8 +3398,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 		return( WAR_SWING_EQUIPPING );
-#ifdef _NAZTEST
-	//Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
+#ifdef _NAZTEST_WARTARG
+	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif
 	iDmg	= Args.m_iN1;
 

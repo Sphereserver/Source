@@ -1,0 +1,17 @@
+_NAZTEST_ALTSOUND activates
+	TAG.OVERRIDE.DOORSOUND_CLOSE	(sfx a door makes when closed; 0 = no sound)
+	TAG.OVERRIDE.DOORSOUND_OPEN	(sfx a door makes when opened; 0 = no sound)
+
+	TAG.OVERRIDE.DROPSOUND		(sfx an item makes when dropped; 0 = no sound)
+	TAG.OVERRIDE.PORTCULISSOUND	(sfx a portculis makes when opened or closed; 0 = no sound)
+
+_NAZTEST_WARTARG activates automated setting/checking of MEMORY_WAR_TARG
+
+_NAZTEST_WARSOUND activates
+	TAG.OVERRIDE.SOUND_HIT		(sfx a weapon makes when it hits; 0 = no sound)
+	TAG.OVERRIDE.SOUND_MISS		(sfx a weapon makes when it misses; 0 = no sound)
+
+_NAZTEST_THROW activates
+	TAG.OVERRIDE.ROCK		(item a monster throws; 0 disables throwing)
+
+

@@ -2055,18 +2055,21 @@ void CChar::NPC_Act_Fight()
 			{
 				id = (ITEMID_TYPE) pTagStorage->GetValNum();
 			}
-		}
-
-		if (( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops || id ) &&
-			iDist >= 2 && iDist <= 9 && CanSeeLOS( pChar,LOS_NB_WINDOWS ) ) //NPCs can throw stones through a window
+		} else
 		{
-			// in theory, I can throw. Do I have ammunition?
-			if ( id || ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
+			if (( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops ) &&
+			iDist >= 2 && iDist <= 9 && CanSeeLOS( pChar,LOS_NB_WINDOWS ) ) //NPCs can throw stones through a window
 			{
-				UpdateDir( pChar );
-				Skill_Start( NPCACT_THROWING );
-				return;
+				// in theory, I can throw. Do I have ammunition?
+				if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
+					id = (ITEMID_TYPE) 1;
 			}
+		}
+		if ( id != (ITEMID_TYPE) 0 )
+		{
+			UpdateDir( pChar );
+			Skill_Start( NPCACT_THROWING );
+			return;
 		}
 #endif
 	}

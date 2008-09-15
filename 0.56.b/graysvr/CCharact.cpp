@@ -1280,7 +1280,6 @@ void CChar::SoundChar( CRESND_TYPE type )
 		if ( pWeapon != NULL )
 		{
 			// weapon type strike noise based on type of weapon and how hard hit.
-
 			switch ( pWeapon->GetType() )
 			{
 				case IT_WEAPON_MACE_CROOK:
@@ -1314,6 +1313,18 @@ void CChar::SoundChar( CRESND_TYPE type )
 					id = 0x234;
 					break;
 			}
+#ifdef _NAZTEST_WARSOUND
+			CVarDefCont * pTagStorage = NULL; 
+			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_HIT", true);
+			if ( pTagStorage )
+			{
+				if ( pTagStorage->GetValNum() )
+				{
+					id = pTagStorage->GetValNum();
+				}
+			}
+
+#endif
 		}
 		else if ( id == 0 )
 		{
