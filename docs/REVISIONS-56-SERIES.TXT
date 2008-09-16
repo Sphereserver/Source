@@ -4187,3 +4187,21 @@ this all in desperation)
   information for the components specified in the mul files, and when accessing
   individual components (BASECOMPONENT.n.[ID/DX/DY/DZ/D] there is an additional "VISIBLE"
   property which returns 0 if the component is invisible (usually applies to doors and signs).
+
+16-09-2008, Nazghul
+- added: Override Tags for item/action related sound.
+  TAG.OVERRIDE.DOORSOUND_CLOSE / TAG.OVERRIDE.DOORSOUND_OPEN 
+    (what it does should be obvious)
+  TAG.OVERRIDE.PORTCULISSOUND - holds an sfx number played when 
+    opening/closing a portculis
+  TAG.OVERRIDE.DROPSOUND - sfx an items makes when dropped. Att:
+    system default sounds sometimes change due to the amount dropped
+    (gold, ingots), or on what surface/item the item is dropped. All
+    this will be overridden!
+  TAG.OVERRIDE.SOUND_HIT - on weapons holds the sound when it hits,
+    regardless of WHAT it hits!
+  TAG.OVERRIDE.SOUND_MISS - on weapons, sound they make when missing
+
+  all TAGs need to hold a number (defname MAY be possible -> test!),
+  what also can be "0" (zero) with the meaning: don't play any sound.
+

@@ -1212,7 +1212,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		}
 		break;
 	}
-#ifdef _NAZTEST_ALTSOUND
+
 	CVarDefCont * pTagStorage = NULL; 
 	pTagStorage = GetKey("OVERRIDE.DROPSOUND", true);
 	if ( pTagStorage )
@@ -1222,7 +1222,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 			iSnd = pTagStorage->GetValNum();
 		}
 	}
-#endif
+
 	// normal drop sound for what dropped in/on.
 	if ( iSnd == NULL )
 		return( pObjOn ? 0x057 : 0x042 );
@@ -3379,7 +3379,7 @@ bool CItem::Use_Portculis()
 
 	MoveTo( pt );
 	Update();
-#ifdef _NAZTEST_ALTSOUND
+
 	SOUND_TYPE iSnd = NULL;
 	CVarDefCont * pTagStorage = NULL; 
 	pTagStorage = GetKey("OVERRIDE.PORTCULISSOUND", true);
@@ -3394,9 +3394,6 @@ bool CItem::Use_Portculis()
 
 	Sound( iSnd );
 
-#else
-	Sound( 0x21d );
-#endif
 	return( true );
 }
 
@@ -3514,7 +3511,6 @@ bool CItem::Use_Door( bool fJustOpen )
 	// SetType( typelock );	// preserve the fact that it was locked.
 	MoveTo(pt);
 
-#ifdef _NAZTEST_ALTSOUND
 	CVarDefCont * pTagStorage = NULL; 
 	int piVal[2];
 	int t_setFlag = 0;
@@ -3540,7 +3536,7 @@ bool CItem::Use_Door( bool fJustOpen )
 			SetTimeout( fClosing ? -1 : 60*TICK_PER_SEC );
 			return( ! fClosing );
 	} 
-#endif
+
 	switch ( id )
 	{
 		case ITEMID_DOOR_SECRET_1:

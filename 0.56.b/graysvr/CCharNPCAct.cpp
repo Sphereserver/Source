@@ -2029,7 +2029,7 @@ void CChar::NPC_Act_Fight()
 
 		// If I am a giant. i can throw stones.
 		// NPCACT_THROWING
-#ifndef _NAZTEST_THROW
+/* #ifndef _NAZTEST_THROW
 		if (( GetDispID() == CREID_OGRE ||
 			GetDispID() == CREID_ETTIN ||
 			GetDispID() == CREID_Cyclops ) &&
@@ -2042,7 +2042,7 @@ void CChar::NPC_Act_Fight()
 			Skill_Start( NPCACT_THROWING );
 			return;
 		}
-#else
+#else */
 		// any special ammunition defined?
 		CVarDefCont * pTagStorage = NULL; 
 		pTagStorage = GetKey("OVERRIDE.ROCK", true);
@@ -2071,7 +2071,7 @@ void CChar::NPC_Act_Fight()
 			Skill_Start( NPCACT_THROWING );
 			return;
 		}
-#endif
+// #endif
 	}
 
 	// Maybe i'll cast a spell if I can. if so maintain a distance.
