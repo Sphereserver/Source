@@ -1313,7 +1313,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 					id = 0x234;
 					break;
 			}
-#ifdef _NAZTEST_WARSOUND
+
 			CVarDefCont * pTagStorage = NULL; 
 			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_HIT", true);
 			if ( pTagStorage )
@@ -1324,7 +1324,6 @@ void CChar::SoundChar( CRESND_TYPE type )
 				}
 			}
 
-#endif
 		}
 		else if ( id == 0 )
 		{
