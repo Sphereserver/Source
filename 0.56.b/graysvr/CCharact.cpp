@@ -1515,6 +1515,10 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			// create left over item.
 			CItem * pItemNew = pItem->UnStackSplit(amount, this);
 			pItemNew->SetTimeout( pItem->GetTimerDAdjusted() ); //since this was commented in DupeCopy
+			CScriptTriggerArgs Args2(pItemNew);
+			if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
+				return -1;
+
 		}
 	}
 

@@ -4205,3 +4205,8 @@ this all in desperation)
   all TAGs need to hold a number (defname MAY be possible -> test!),
   what also can be "0" (zero) with the meaning: don't play any sound.
 
+
+17-09-2008, Nazghul
+- added trigger @PICKUP_STACK what fires only if an item was picked up from a pile.
+  ARGO is the remaining part of the stack. (There's a char trigger itemPICKUP_STACK
+  also)

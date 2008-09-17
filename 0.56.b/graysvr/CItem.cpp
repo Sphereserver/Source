@@ -5,6 +5,11 @@
 
 #include "graysvr.h"	// predef header.
 
+/*
+	If you add a new trigger here, be sure to also and ALWAYS add a corresponding
+	character trigger (even if it does not make sense)! CTRIG_item* will be automatically
+	called when one of these triggers fired, depending on their index. So NEVER unalign the two lists!
+*/
 LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
@@ -28,6 +33,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@PICKUP_GROUND",	// I was picked up off the ground.
 	"@PICKUP_PACK",	// picked up from inside some container.
 	"@PICKUP_SELF", // picked up from here
+	"@PICKUP_STACK",	// was picked up from a stack
 	"@SELL",
 	"@SpellEffect",		// cast some spell on me.
 	"@STEP",			// I have been walked on.
