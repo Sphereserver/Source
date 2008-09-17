@@ -247,6 +247,7 @@ enum ITRIG_TYPE
 	ITRIG_PICKUP_GROUND,
 	ITRIG_PICKUP_PACK,	// picked up from inside some container.
 	ITRIG_PICKUP_SELF,	// picked up from this container
+	ITRIG_PICKUP_STACK,	// picked up from a stack (ARGO)
 	ITRIG_Sell,
 	ITRIG_SPELLEFFECT,		// cast some spell on me.
 	ITRIG_STEP,			// I have been walked on. (or shoved)
@@ -2128,6 +2129,7 @@ enum CTRIG_TYPE
 	CTRIG_itemPICKUP_GROUND,
 	CTRIG_itemPICKUP_PACK,	// picked up from inside some container.
 	CTRIG_itemPICKUP_SELF,	// picked up from this (ACT) container.
+	CTRIG_itemPICKUP_STACK,	// was picked up from a stack
 	CTRIG_itemSell,
 	CTRIG_itemSPELL,		// cast some spell on the item.
 	CTRIG_itemSTEP,			// stepped on an item

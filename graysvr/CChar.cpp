@@ -66,6 +66,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemPICKUP_GROUND",
 	"@itemPICKUP_PACK",		// picked up from inside some container.
 	"@itemPICKUP_SELF",		// picked up from this container
+	"@itemPICKUP_STACK",	// picked up from a stack
 	"@itemSELL",
 	"@itemSPELL",			// cast some spell on the item.
 	"@itemSTEP",			// stepped on an item
