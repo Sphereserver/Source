@@ -4210,3 +4210,7 @@ this all in desperation)
 - added trigger @PICKUP_STACK what fires only if an item was picked up from a pile.
   ARGO is the remaining part of the stack. (There's a char trigger itemPICKUP_STACK
   also)
+
+18-09-2008, Nazghul
+- added TAG.OVERRIDE.RUNNINGPENALTY and TAG.OVERRIDE.STAMINALOSSATWEIGHT to
+  override the respective INI settings on a per character base
