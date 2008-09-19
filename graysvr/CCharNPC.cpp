@@ -413,8 +413,10 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 {
 	ADDTOCALLSTACK("CCharPlayer::r_LoadVal");
 	EXC_TRY("LoadVal");
+	
 	LPCTSTR pszKey = s.GetKey();
 	LPCTSTR pszArgs = s.GetArgStr();
+
 	if ( !strnicmp(pszKey, "GMPAGE", 6) )		//	GM pages
 	{
 		CGMPage	*pPage;

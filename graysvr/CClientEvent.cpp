@@ -2075,18 +2075,21 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 	sMsg.Format("%s%s", pszPrefix, szText);
 	switch (pItem->GetType())
 	{
-	case IT_STONE_GUILD:
-	case IT_STONE_TOWN:
-		{
-			CItemStone * pStone = dynamic_cast <CItemStone*> ( pItem );
-			if ( !pStone || !pStone->OnPromptResp(this, PrvTargMode, szText, sMsg) )
-				return;
-		}
-		break;
-	default:
-		pItem->SetName(sMsg);
-		sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
-		break;
+#ifndef _NEWGUILDSYSTEM
+		case IT_STONE_GUILD:
+		case IT_STONE_TOWN:
+			{
+				CItemStone * pStone = dynamic_cast <CItemStone*> ( pItem );
+				if ( !pStone || !pStone->OnPromptResp(this, PrvTargMode, szText, sMsg) )
+					return;
+			}
+			break;
+#endif
+
+		default:
+			pItem->SetName(sMsg);
+			sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
+			break;
 	}
 
 	SysMessage(sMsg);
@@ -2843,12 +2846,17 @@ void CClient::Event_GumpDialogRet( const CEvent * pEvent )
 
 	switch ( context ) // This is the page number
 	{
+#ifndef _NEWGUILDSYSTEM
 		case CLIMODE_DIALOG_GUILD: // Guild/Leige/Townstones stuff comes here
 			{
 				CItemStone * pStone = dynamic_cast <CItemStone *> ( m_Targ_UID.ItemFind());
 				if ( !pStone || pStone->OnDialogButton( this, (STONEDISP_TYPE) dwButtonID, resp ))
 					return;
 			}
+			break;
+#endif
+
+		default:
 			break;
 	}
 

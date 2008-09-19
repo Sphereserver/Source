@@ -1131,7 +1131,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		case STC_Master:
 			{
 				CChar * pMaster = GetMaster();
-#ifndef _NEWGUILDSYSTEM
+#ifdef _NEWGUILDSYSTEM
 				sVal = (pMaster) ? pMaster->GetName() : g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_PENDVOTE");
 #else
 				sVal = (pMaster) ? pMaster->GetName() : "vote pending";
@@ -2219,6 +2219,8 @@ void CItemStone::SetupMenu( CClient * pClient, bool fMasterFunc )
 void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 {
 	ADDTOCALLSTACK("CItemStone::addStoneSetViewCharter");
+
+#ifndef _NEWGUILDSYSTEM
 	static LPCTSTR const sm_szDefControls[] =
 	{
 		"page 0",							// Default page
@@ -2298,46 +2300,51 @@ void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iSton
 	ASSERT( iControls <= COUNTOF(sControls));
 
 	pClient->addGumpDialog( CLIMODE_DIALOG_GUILD, sControls, iControls, sText, iTexts, 0x6e, 0x46 );
+#endif
 }
 
 bool CItemStone::IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const
 {
 	ADDTOCALLSTACK("CItemStone::IsInMenu");
 	ASSERT( pMember );
+
+#ifndef _NEWGUILDSYSTEM
 	switch ( iStoneMenu )
 	{
-	case STONEDISP_ROSTER:
-	case STONEDISP_FEALTY:
-	case STONEDISP_GRANTTITLE:
-		if ( ! pMember->IsPrivMember())
+		case STONEDISP_ROSTER:
+		case STONEDISP_FEALTY:
+		case STONEDISP_GRANTTITLE:
+			if ( ! pMember->IsPrivMember())
+				return( false );
+			break;
+		case STONEDISP_DISMISSMEMBER:
+			if ( ! pMember->IsPrivMember() && pMember->GetPriv() != STONEPRIV_ACCEPTED )
+				return( false );
+			break;
+		case STONEDISP_ACCEPTCANDIDATE:
+		case STONEDISP_REFUSECANDIDATE:
+		case STONEDISP_CANDIDATES:
+			if ( pMember->GetPriv() != STONEPRIV_CANDIDATE )
+				return( false );
+			break;
+		case STONEDISP_DECLAREPEACE:
+		case STONEDISP_VIEWENEMYS:
+			if ( pMember->GetPriv() != STONEPRIV_ENEMY)
+				return( false );
+			if ( !pMember->GetWeDeclared())
+				return( false );
+			break;
+		case STONEDISP_VIEWTHREATS:
+			if ( pMember->GetPriv() != STONEPRIV_ENEMY)
+				return( false );
+			if ( !pMember->GetTheyDeclared())
+				return( false );
+			break;
+		default:
 			return( false );
-		break;
-	case STONEDISP_DISMISSMEMBER:
-		if ( ! pMember->IsPrivMember() && pMember->GetPriv() != STONEPRIV_ACCEPTED )
-			return( false );
-		break;
-	case STONEDISP_ACCEPTCANDIDATE:
-	case STONEDISP_REFUSECANDIDATE:
-	case STONEDISP_CANDIDATES:
-		if ( pMember->GetPriv() != STONEPRIV_CANDIDATE )
-			return( false );
-		break;
-	case STONEDISP_DECLAREPEACE:
-	case STONEDISP_VIEWENEMYS:
-		if ( pMember->GetPriv() != STONEPRIV_ENEMY)
-			return( false );
-		if ( !pMember->GetWeDeclared())
-			return( false );
-		break;
-	case STONEDISP_VIEWTHREATS:
-		if ( pMember->GetPriv() != STONEPRIV_ENEMY)
-			return( false );
-		if ( !pMember->GetTheyDeclared())
-			return( false );
-		break;
-	default:
-		return( false );
 	}
+#endif
+
 	return( true );
 }
 
@@ -2370,6 +2377,7 @@ int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText,
 	ADDTOCALLSTACK("CItemStone::addStoneListSetup");
 	// ARGS: psText = NULL if i just want to count.
 
+#ifndef _NEWGUILDSYSTEM
 	if ( iStoneMenu == STONEDISP_DECLAREWAR )
 	{
 		// This list is special.
@@ -2426,12 +2434,16 @@ int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText,
 		}
 		iTexts ++;
 	}
+#endif
+
 	return( iTexts );
 }
 
 void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 {
 	ADDTOCALLSTACK("CItemStone::addStoneList");
+
+#ifndef _NEWGUILDSYSTEM
 	// Add a list of members of a type.
 	// Estimate the size first.
 	static LPCTSTR const sm_szDefControls[] =
@@ -2604,6 +2616,7 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	iTexts = addStoneListSetup( iStoneMenu, sText, iTexts );
 
 	pClient->addGumpDialog( CLIMODE_DIALOG_GUILD, sControls, iControls, sText, iTexts, 0x6e, 0x46 );
+#endif
 }
 
 void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
@@ -2611,27 +2624,29 @@ void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
 	ADDTOCALLSTACK("CItemStone::addStoneDialog");
 	ASSERT( pClient );
 
+#ifndef _NEWGUILDSYSTEM
 	// Use this for a stone dispatch routine....
 	switch (menuid)
 	{
-	case STONEDISP_ROSTER:
-	case STONEDISP_CANDIDATES:
-	case STONEDISP_FEALTY:
-	case STONEDISP_ACCEPTCANDIDATE:
-	case STONEDISP_REFUSECANDIDATE:
-	case STONEDISP_DISMISSMEMBER:
-	case STONEDISP_DECLAREWAR:
-	case STONEDISP_DECLAREPEACE:
-	case STONEDISP_VIEWENEMYS:
-	case STONEDISP_VIEWTHREATS:
-	case STONEDISP_GRANTTITLE:
-		addStoneList(pClient,menuid);
-		break;
-	case STONEDISP_VIEWCHARTER:
-	case STONEDISP_SETCHARTER:
-		addStoneSetViewCharter(pClient,menuid);
-		break;
+		case STONEDISP_ROSTER:
+		case STONEDISP_CANDIDATES:
+		case STONEDISP_FEALTY:
+		case STONEDISP_ACCEPTCANDIDATE:
+		case STONEDISP_REFUSECANDIDATE:
+		case STONEDISP_DISMISSMEMBER:
+		case STONEDISP_DECLAREWAR:
+		case STONEDISP_DECLAREPEACE:
+		case STONEDISP_VIEWENEMYS:
+		case STONEDISP_VIEWTHREATS:
+		case STONEDISP_GRANTTITLE:
+			addStoneList(pClient,menuid);
+			break;
+		case STONEDISP_VIEWCHARTER:
+		case STONEDISP_SETCHARTER:
+			addStoneSetViewCharter(pClient,menuid);
+			break;
 	}
+#endif
 }
 
 bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialogResponseArgs & resp )
@@ -2639,57 +2654,59 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 	ADDTOCALLSTACK("CItemStone::OnDialogButton");
 	// Button presses come here
 	ASSERT( pClient );
+
+#ifndef _NEWGUILDSYSTEM
 	switch ( type )
 	{
-	case STONEDISP_NONE: // They right clicked out, or hit the cancel button, no more stone functions
-		return true;
+		case STONEDISP_NONE: // They right clicked out, or hit the cancel button, no more stone functions
+			return true;
 
-	case STONEDISP_VIEWCHARTER:
-		// The only button is the web button, so just go there
-		pClient->addWebLaunch( GetWebPageURL());
-		return true;
+		case STONEDISP_VIEWCHARTER:
+			// The only button is the web button, so just go there
+			pClient->addWebLaunch( GetWebPageURL());
+			return true;
 
-	case STONEDISP_SETCHARTER:
-		{
-			for (int i = 0; i < resp.m_TextArray.GetCount(); i++)
+		case STONEDISP_SETCHARTER:
 			{
-				int id = resp.m_TextArray[i]->m_ID - 1000;
-				switch ( id )
+				for (int i = 0; i < resp.m_TextArray.GetCount(); i++)
 				{
-				case 0:	// Charter[0]
-				case 1:	// Charter[1]
-				case 2:	// Charter[2]
-				case 3:	// Charter[3]
-				case 4:	// Charter[4]
-				case 5:	// Charter[5]
-					SetCharter(id, resp.m_TextArray[i]->m_sText);
-					break;
-				case 6:	// Weblink
-					SetWebPage( resp.m_TextArray[i]->m_sText );
-					break;
+					int id = resp.m_TextArray[i]->m_ID - 1000;
+					switch ( id )
+					{
+					case 0:	// Charter[0]
+					case 1:	// Charter[1]
+					case 2:	// Charter[2]
+					case 3:	// Charter[3]
+					case 4:	// Charter[4]
+					case 5:	// Charter[5]
+						SetCharter(id, resp.m_TextArray[i]->m_sText);
+						break;
+					case 6:	// Weblink
+						SetWebPage( resp.m_TextArray[i]->m_sText );
+						break;
+					}
 				}
 			}
-		}
-		return true;
+			return true;
 
-	case STONEDISP_DISMISSMEMBER:
-	case STONEDISP_ACCEPTCANDIDATE:
-	case STONEDISP_REFUSECANDIDATE:
-	case STONEDISP_FEALTY:
-	case STONEDISP_DECLAREWAR:
-	case STONEDISP_DECLAREPEACE:
-	case STONEDISP_GRANTTITLE:
-		break;
+		case STONEDISP_DISMISSMEMBER:
+		case STONEDISP_ACCEPTCANDIDATE:
+		case STONEDISP_REFUSECANDIDATE:
+		case STONEDISP_FEALTY:
+		case STONEDISP_DECLAREWAR:
+		case STONEDISP_DECLAREPEACE:
+		case STONEDISP_GRANTTITLE:
+			break;
 
-	case STONEDISP_ROSTER:
-	case STONEDISP_VIEWTHREATS:
-	case STONEDISP_VIEWENEMYS:
-	case STONEDISP_CANDIDATES:
-		SetupMenu( pClient );
-		return( true );
+		case STONEDISP_ROSTER:
+		case STONEDISP_VIEWTHREATS:
+		case STONEDISP_VIEWENEMYS:
+		case STONEDISP_CANDIDATES:
+			SetupMenu( pClient );
+			return( true );
 
-	default:
-		return( false );
+		default:
+			return( false );
 	}
 
 	if ( resp.m_CheckArray.GetCount() == 0 )	 // If they hit ok but didn't pick one, treat it like a cancel
@@ -2783,17 +2800,18 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 
 	switch ( type )
 	{
-	case STONEDISP_ACCEPTCANDIDATE:
-	case STONEDISP_REFUSECANDIDATE:
-	case STONEDISP_DISMISSMEMBER:
-	case STONEDISP_DECLAREPEACE:
-	case STONEDISP_DECLAREWAR:
-		SetupMenu( pClient, true );
-		break;
-	default:
-		SetupMenu( pClient, false );
-		break;
+		case STONEDISP_ACCEPTCANDIDATE:
+		case STONEDISP_REFUSECANDIDATE:
+		case STONEDISP_DISMISSMEMBER:
+		case STONEDISP_DECLAREPEACE:
+		case STONEDISP_DECLAREWAR:
+			SetupMenu( pClient, true );
+			break;
+		default:
+			SetupMenu( pClient, false );
+			break;
 	}
+#endif
 
 	return true;
 }
@@ -2838,55 +2856,59 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 {
 	ADDTOCALLSTACK("CItemStone::OnPromptResp");
 	ASSERT( pClient );
+
+#ifndef _NEWGUILDSYSTEM
 	switch ( TargMode )
 	{
-	case CLIMODE_PROMPT_STONE_NAME:
-		// Set the stone or town name !
-		if ( ! CItemStone::IsUniqueName( pszText ))
-		{
-			if (!strcmpi( pszText, GetName()))
+		case CLIMODE_PROMPT_STONE_NAME:
+			// Set the stone or town name !
+			if ( ! CItemStone::IsUniqueName( pszText ))
 			{
-				pClient->SysMessage( "Name is unchanged." );
+				if (!strcmpi( pszText, GetName()))
+				{
+					pClient->SysMessage( "Name is unchanged." );
+					return false;
+				}
+				pClient->SysMessage( "That name is already taken." );
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
+				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME,pszMsg);
 				return false;
 			}
-			pClient->SysMessage( "That name is already taken." );
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
-			pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME,pszMsg);
-			return false;
-		}
 
-		SetName( pszText );
-		if ( NoMembers()) // No members? It must be a brand new stone then, fix it up
-		{
-			AddRecruit( pClient->GetChar(), STONEPRIV_MEMBER );
-		}
-		sMsg.Format( "%s renamed: %s", (LPCTSTR) GetTypeName(), (LPCTSTR) pszText );
-		break;
-
-	case CLIMODE_PROMPT_STONE_SET_ABBREV:
-		SetAbbrev(pszText);
-		sMsg.Format( "Abbreviation set: %s", pszText );
-		break;
-
-	case CLIMODE_PROMPT_STONE_GRANT_TITLE:
-		{
-			CStoneMember * pMember = GetMember( pClient->m_Targ_PrvUID.CharFind());
-			if (pMember)
+			SetName( pszText );
+			if ( NoMembers()) // No members? It must be a brand new stone then, fix it up
 			{
-				pMember->SetTitle(pszText);
+				AddRecruit( pClient->GetChar(), STONEPRIV_MEMBER );
+			}
+			sMsg.Format( "%s renamed: %s", (LPCTSTR) GetTypeName(), (LPCTSTR) pszText );
+			break;
+
+		case CLIMODE_PROMPT_STONE_SET_ABBREV:
+			SetAbbrev(pszText);
+			sMsg.Format( "Abbreviation set: %s", pszText );
+			break;
+
+		case CLIMODE_PROMPT_STONE_GRANT_TITLE:
+			{
+				CStoneMember * pMember = GetMember( pClient->m_Targ_PrvUID.CharFind());
+				if (pMember)
+				{
+					pMember->SetTitle(pszText);
+					sMsg.Format( "Title set: %s", pszText);
+				}
+			}
+			break;
+		case CLIMODE_PROMPT_STONE_SET_TITLE:
+			{
+				CStoneMember * pMaster = GetMasterMember();
+				pMaster->SetTitle(pszText);
 				sMsg.Format( "Title set: %s", pszText);
 			}
-		}
-		break;
-	case CLIMODE_PROMPT_STONE_SET_TITLE:
-		{
-			CStoneMember * pMaster = GetMasterMember();
-			pMaster->SetTitle(pszText);
-			sMsg.Format( "Title set: %s", pszText);
-		}
-		break;
+			break;
 	}
+#endif
+
 	return( true );
 }
 
