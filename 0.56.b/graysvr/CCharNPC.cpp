@@ -456,6 +456,18 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		}
 		return false;
 	}
+	else if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
+	{
+		bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
+		pszKey += bIsGuild ? 5 : 4;
+		if ( *pszKey == '.' )
+		{
+			pszKey += 1;
+			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
+			if ( pMyGuild ) return pMyGuild->r_SetVal(pszKey, s.GetArgRaw());
+		}
+		return false;
+	}
 
 	switch ( FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
@@ -637,7 +649,26 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 	if ( !m_pPlayer )
 		return false;
 
-	switch ( FindTableSorted( s.GetKey(), CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys)-1 ))
+	LPCTSTR pszKey = s.GetKey();
+	int cpVerb = FindTableSorted( pszKey, CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys)-1 );
+
+	if ( cpVerb <= -1 )
+	{
+		if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
+		{
+			bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
+			pszKey += bIsGuild ? 5 : 4;
+			if ( *pszKey == '.' )
+			{
+				pszKey += 1;
+				CItemStone *pMyGuild = Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
+				if ( pMyGuild ) return pMyGuild->r_Verb(CScript(pszKey, s.GetArgRaw()), pSrc);
+			}
+			return false;
+		}
+	}
+
+	switch ( cpVerb )
 	{
 		case CPV_KICK: // "KICK" = kick and block the account
 			return (IsClient() && GetClient()->addKick(pSrc));
