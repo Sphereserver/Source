@@ -17,21 +17,7 @@ extern "C"
 //*************************************************************************
 // -CPointBase
 
-/*
-LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
-{
-	"North",
-	"North East",
-	"East",
-	"South East",
-	"South",
-	"South West",
-	"West",
-	"North West",
-	"Here",
-};
-*/
-LPCTSTR const CPointBase::sm_szDirs[DIR_QTY+1] =
+LPCTSTR CPointBase::sm_szDirs[DIR_QTY+1] =
 {
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_0),
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_1),

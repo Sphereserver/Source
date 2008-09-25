@@ -4377,27 +4377,27 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 	ADDTOCALLSTACK("CItem::Armor_GetRepairDesc");
 	if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
 	{
-		return "absolutely flawless";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_PERFECT );
 	}
 	else if ( m_itArmor.m_Hits_Cur == m_itArmor.m_Hits_Max )
 	{
-		return  "in full repair";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_FULL );
 	}
 	else if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max / 2 )
 	{
-		return  "a bit worn";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_SCRATCHED );
 	}
 	else if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max / 3 )
 	{
-		return  "well worn";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_WELLWORN );
 	}
 	else if ( m_itArmor.m_Hits_Cur > 3 )
 	{
-		return  "badly damaged";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_BADLY );
 	}
 	else
 	{
-		return  "about to fall apart";
+		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_FALL_APART );
 	}
 }
 
@@ -4468,14 +4468,14 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	case IT_WEB:
 		if ( ! ( uType & (DAMAGE_FIRE|DAMAGE_HIT_BLUNT|DAMAGE_HIT_SLASH|DAMAGE_GOD)))
 		{
-			if ( pSrc ) pSrc->SysMessage( "You have no effect on the web" );
+			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_NOEFFECT ) );
 			return( 0 );
 		}
 
 		iDmg = Calc_GetRandVal( iDmg ) + 1;
 		if ( iDmg > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
 		{
-			if ( pSrc ) pSrc->SysMessage( "You destroy the web" );
+			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
 			if ( Calc_GetRandVal( 2 ) || ( uType & DAMAGE_FIRE ))
 			{
 				Delete();
@@ -4486,7 +4486,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			return( 2 );
 		}
 
-		if ( pSrc ) pSrc->SysMessage( "You weaken the web" );
+		if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_WEAKEN ) );
 		m_itWeb.m_Hits_Cur -= iDmg;
 		return( 1 );
 	}
