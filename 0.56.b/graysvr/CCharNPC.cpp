@@ -662,7 +662,11 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 			{
 				pszKey += 1;
 				CItemStone *pMyGuild = Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-				if ( pMyGuild ) return pMyGuild->r_Verb(CScript(pszKey, s.GetArgRaw()), pSrc);
+                if ( pMyGuild )
+                {
+                        CScript sToParse(pszKey, s.GetArgRaw());
+                        return pMyGuild->r_Verb(sToParse, (CTextConsole*)pSrc);
+                }
 			}
 			return false;
 		}
