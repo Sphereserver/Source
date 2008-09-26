@@ -15,7 +15,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <StartupObject>Unpacker.Program</StartupObject>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <ManifestCertificateThumbprint>4842AA32A215226489B303D257A6A804BFE56612</ManifestCertificateThumbprint>
     <ManifestKeyFile>Unpacker_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
@@ -181,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <None Include="Properties\app.manifest" />
     <None Include="Resources\banner.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

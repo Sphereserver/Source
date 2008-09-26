@@ -608,7 +608,7 @@ namespace Unpacker
 		{
 			FileFileNameInfo.Text = idx.FileName;
 			FileHashInfo.Text = idx.FileHash.ToString( "X16" );
-			FileUnknownInfo.Text = idx.Unknown.ToString( "X8" );
+			FileUnknownInfo.Text = idx.CRC.ToString( "X8" );
 			FileCompressedInfo.Text = ConvertSize( idx.CompressedSize );
 			FileDecompressedInfo.Text = ConvertSize( idx.DecompressedSize );
 			FileCompressed.Checked = idx.Compressed;

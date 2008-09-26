@@ -64,7 +64,7 @@ namespace Unpacker.Mythic
 			set{ m_FileName = value; }
 		}
 
-		public int Unknown
+		public int CRC
 		{
 			get{ return m_Unknown; }
 			set{ m_Unknown = value; }
@@ -162,7 +162,7 @@ namespace Unpacker.Mythic
 			index.DecompressedSize = reader.ReadInt32();
 			index.FileHash = reader.ReadInt64();
 			index.FileName = HashDictionary.Get( index.FileHash );			
-			index.Unknown = reader.ReadInt32();
+			index.CRC = reader.ReadInt32();
 
 			if ( index.FileName != null )
 				found += 1;
