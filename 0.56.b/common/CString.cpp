@@ -497,7 +497,7 @@ bool Str_Parse( TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep )
 	}
 
 	*pLine++ = '\0';
-	if ( isspace( ch ))	// space separators might have other seps as well ?
+	if ( IsSpace( ch ))	// space separators might have other seps as well ?
 	{
 		GETNONWHITESPACE( pLine );
 		ch = *pLine;

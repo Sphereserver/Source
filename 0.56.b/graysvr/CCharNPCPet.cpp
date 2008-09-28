@@ -447,7 +447,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			break;
 
 		// did they name a price
-		if ( isdigit( pszArgs[0] ))
+		if ( IsDigit( pszArgs[0] ))
 		{
 			return NPC_SetVendorPrice( pItemTarg, ATOI(pszArgs) );
 		}

@@ -2451,7 +2451,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				strcpy( pszTemp, s.GetArgStr() );
 				GETNONWHITESPACE( pszTemp );
 				int iArgs = 0;
-				if ( isdigit( pszTemp[0] ) || pszTemp[0] == '-' )
+				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
 				{
 					pt.m_map = 0; pt.m_z = 0;
 					TCHAR * ppVal[2];
@@ -2584,7 +2584,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				strcpy( pszTemp, s.GetArgStr() );
 				GETNONWHITESPACE( pszTemp );
 				int iArgs = 0;
-				if ( isdigit( pszTemp[0] ) || pszTemp[0] == '-' )
+				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
 				{
 					pt.m_map = 0; pt.m_z = 0;
 					TCHAR * ppVal[4];
@@ -2593,12 +2593,12 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 					{
 						default:
 						case 4:	// m_map
-							if ( isdigit(ppVal[3][0]))
+							if ( IsDigit(ppVal[3][0]))
 							{
 								pt.m_map = ATOI(ppVal[3]);
 							}
 						case 3: // m_z
-							if ( isdigit(ppVal[2][0]) || ppVal[2][0] == '-' )
+							if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
 							{
 								pt.m_z = ATOI(ppVal[2]);
 							}

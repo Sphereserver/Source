@@ -392,7 +392,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		TCHAR ch = pszVersion[i];
 		if ( iPoint < 3 )
 		{
-			if ( isdigit(ch))
+			if ( IsDigit(ch))
 			{
 				iVer *= 0x10;
 				iVer += ( ch - '0' );
@@ -434,7 +434,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 			continue;
 		}
 	
-		if ( ! iPoint && ! isalpha(ch) && ! isdigit(ch) )
+		if ( ! iPoint && ! IsAlpha(ch) && ! IsDigit(ch) )
 		{
 			iVer *= 0x10;
 			break;
@@ -448,13 +448,13 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 
 		// last char digit slot.
 		iVer *= 0x10;
-		if ( isalpha(ch))
+		if ( IsAlpha(ch))
 		{
 			iVer += ( tolower(ch) - 'a' ) + 1;
 		}
-		else if ( isdigit(ch) )
+		else if ( IsDigit(ch) )
 		{
-			if ( !isdigit(pszVersion[i+1]))
+			if ( !IsDigit(pszVersion[i+1]))
 				iVer += ( ch - '0' ) + 1;
 			else
 				iVer += ((( ch - '0' ) * 10) + (pszVersion[i+1] - '0') + 1) & 0x0F;

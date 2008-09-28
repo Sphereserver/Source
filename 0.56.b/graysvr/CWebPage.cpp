@@ -636,7 +636,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 static int GetHexDigit( TCHAR ch )
 {
-	if ( isdigit( ch ))
+	if ( IsDigit( ch ))
 		return( ch - '0' );
 
 	ch = toupper(ch);
@@ -707,7 +707,7 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 	for ( int i=0; i<iArgs; i++ )
 	{
 		TCHAR	*pszNum = ppArgs[i];
-		while ( isalpha(*pszNum) )
+		while ( IsAlpha(*pszNum) )
 			pszNum++;
 
 		int iNum = ATOI(pszNum);

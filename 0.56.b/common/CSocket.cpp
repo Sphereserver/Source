@@ -97,7 +97,7 @@ bool CSocketAddressIP::SetHostStr( LPCTSTR pszHostName )
 	// try to resolve the host name with DNS for the true ip address.
 	if ( pszHostName[0] == '\0' )
 		return( false );
-	if ( isdigit( pszHostName[0] ))
+	if ( IsDigit( pszHostName[0] ))
 	{
 		SetAddrStr( pszHostName ); // 0.1.2.3
 		return( true );

@@ -4214,3 +4214,7 @@ this all in desperation)
 18-09-2008, Nazghul
 - added TAG.OVERRIDE.RUNNINGPENALTY and TAG.OVERRIDE.STAMINALOSSATWEIGHT to
   override the respective INI settings on a per character base
+
+28-09-2008, Shadow Dragon
+- Fixed: Sphere crashing when injection tries to add one item to another non-container item
+  (errors in injection script and so).

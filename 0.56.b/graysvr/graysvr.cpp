@@ -357,7 +357,7 @@ int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 			return( 0 );
 		if ( !j && i )
 		{
-			if ( isalpha( pTextSearch[i-1] ))	// not start of word ?
+			if ( IsAlpha( pTextSearch[i-1] ))	// not start of word ?
 				continue;
 		}
 		if ( toupper( pTextSearch[i] ) == toupper( pszKeyWord[j] ))

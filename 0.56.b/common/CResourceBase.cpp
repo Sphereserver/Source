@@ -1238,7 +1238,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	GETNONWHITESPACE(pszCmds);	// Skip leading spaces.
 
 	m_iQty = 0;
-	if ( !isalpha(*pszCmds) ) // might be { or .
+	if ( !IsAlpha(*pszCmds) ) // might be { or .
 	{
 		m_iQty = Exp_GetVal(pszCmds);
 		GETNONWHITESPACE(pszCmds);

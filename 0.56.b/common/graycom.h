@@ -301,4 +301,11 @@ struct CGrayUID : public CGrayUIDBase
 	}
 };
 
+#ifdef _DEBUG
+	#ifdef _NO_DEBUG_ASSERTS
+		#undef ASSERT
+		#define ASSERT(exp)
+	#endif
+#endif
+
 #endif	// _INC_GRAYCOM_H

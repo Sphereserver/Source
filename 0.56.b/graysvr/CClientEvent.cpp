@@ -583,6 +583,26 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 		CItemContainer * pContOn = dynamic_cast <CItemContainer *>(pObjOn);
 		ASSERT(pContOn);
 
+		if ( !pContOn )
+		{
+			if ( pObjOn->IsChar() )
+			{
+				CChar* pChar = dynamic_cast <CChar*>(pObjOn);
+				
+				if ( pChar )
+					pContOn = pChar->GetBank( LAYER_PACK );
+			}
+
+			if ( !pContOn )
+			{
+				// on ground
+				m_pChar->UpdateDrag( pItem, NULL, &pt );
+				m_pChar->ItemDrop( pItem, pt );
+
+				return;
+			}
+		}
+
 		pContOn->ContentAdd( pItem, pt, gridIndex );
 		addSound( pItem->GetDropSound( pObjOn ));
 	}
@@ -996,7 +1016,11 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir, false, true) )
+#else
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
+#endif
 		{
 			addPlayerWalkCancel();
 			return;

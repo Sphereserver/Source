@@ -116,7 +116,7 @@ int	CDialogDef::GumpAddText( LPCTSTR pszText )
 
 #define GET_RELATIVE( c, base )								\
 	SKIP_ALL( pszArgs ); int c;								\
-	if ( *pszArgs == '-' && isspace(pszArgs[1]))				\
+	if ( *pszArgs == '-' && IsSpace(pszArgs[1]))				\
 		c	= base, ++pszArgs;								\
 	else if ( *pszArgs == '+' )								\
 		c = base + Exp_GetSingle( ++pszArgs );					\
@@ -402,12 +402,12 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			// m_iOriginY	= y;
 			
 			SKIP_ALL( pszArgs );
-			if ( *pszArgs == '-' && (isspace( pszArgs[1] ) || !pszArgs[1]) )		pszArgs++;
+			if ( *pszArgs == '-' && (IsSpace( pszArgs[1] ) || !pszArgs[1]) )		pszArgs++;
 			else  if ( *pszArgs == '*' )	m_iOriginX	+= Exp_GetSingle( ++pszArgs );
 			else							m_iOriginX	 = Exp_GetSingle( pszArgs );
 
 			SKIP_ALL( pszArgs );
-			if ( *pszArgs == '-' && (isspace( pszArgs[1] ) || !pszArgs[1]) )		pszArgs++;
+			if ( *pszArgs == '-' && (IsSpace( pszArgs[1] ) || !pszArgs[1]) )		pszArgs++;
 			else  if ( *pszArgs == '*' )	m_iOriginY	+= Exp_GetSingle( ++pszArgs );
 			else							m_iOriginY	= Exp_GetSingle( pszArgs );
 			

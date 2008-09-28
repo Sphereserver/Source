@@ -665,7 +665,7 @@ bool CResource::r_LoadVal( CScript &s )
 			std::string str = s.GetKey()+3;
 			for( int iLen = 0; str.size() > iLen; ++iLen )
 			{
-				if( !isdigit(str[iLen]) )
+				if( !IsDigit(str[iLen]) )
 				{
 					ok = 0;
 					break;
@@ -911,7 +911,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			int			x = 0;
 			int			iArgs = 0;
 
-			if ( isdigit( pszKey[0] ) || pszKey[0] == '-' )
+			if ( IsDigit( pszKey[0] ) || pszKey[0] == '-' )
 			{
 				pt.m_map = 0; pt.m_z = 0;
 				TCHAR * ppVal[4];
@@ -921,12 +921,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				{
 					default:
 					case 4:
-						if ( isdigit(ppVal[3][0]) )
+						if ( IsDigit(ppVal[3][0]) )
 						{
 							pt.m_map = ATOI(ppVal[3]);
 						}
 					case 3:
-						if ( isdigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
+						if ( IsDigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
 						{
 							pt.m_z = ( iArgs == 4 ) ? ATOI(ppVal[2]) : 0;
 							if ( iArgs == 3 )
@@ -1206,7 +1206,7 @@ SKILL_TYPE CResource::FindSkillKey( LPCTSTR pszKey ) const
 	// Find the skill name in the alpha sorted list.
 	// RETURN: SKILL_NONE = error.
 
-	if ( isdigit( pszKey[0] ))
+	if ( IsDigit( pszKey[0] ))
 	{
 		SKILL_TYPE skill = (SKILL_TYPE) Exp_GetVal(pszKey);
 		if ( (!CChar::IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill)) &&
@@ -1619,7 +1619,7 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	}
 
 	CPointMap pt;	// invalid point
-	if ( isdigit( pCmd[0] ) || pCmd[0] == '-' )
+	if ( IsDigit( pCmd[0] ) || pCmd[0] == '-' )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		strcpy( pszTemp, pCmd );
@@ -2684,7 +2684,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			// This might be ok.
 			return( RESOURCE_ID( restype, 0, iPage ) );
 		}
-		if ( isdigit(pszName[0]))	// Its just an index.
+		if ( IsDigit(pszName[0]))	// Its just an index.
 		{
 			index = Exp_GetVal(pszName);
 			rid = RESOURCE_ID( restype, index );

@@ -2160,7 +2160,11 @@ bool CChar::CanUse( CItem * pItem, bool fMoveOrConsume ) const
 	return( true );
 }
 
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, bool bWalkCheck ) const
+#else
 CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir ) const
+#endif
 {
 	ADDTOCALLSTACK("CChar::CheckValidMove");
 	// Is it ok to move here ? is it blocked ?
@@ -2171,7 +2175,11 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	//  pwBlockFlags = what is blocking me. (can be null = don't care)
 
 	//	test diagonal dirs by two others *only* when already having a normal location
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+	if ( ( bWalkCheck || IsSetEF( EF_DiagonalWalkCheck ) ) && GetTopPoint().IsValidPoint() && (dir % 2) )
+#else
 	if ( IsSetEF( EF_DiagonalWalkCheck ) && GetTopPoint().IsValidPoint() && (dir % 2) )
+#endif
 	{
 		CPointMap	ptTest;
 		DIR_TYPE	dirTest1	= (DIR_TYPE) (dir-1);	// get 1st ortogonal
@@ -2215,6 +2223,15 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			if ( pItem == NULL )
 				break;
 
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+			CVarDefCont* pKey = NULL;
+
+			if ( m_pPlayer != NULL && ( pKey = pItem->GetKey("NoWalk", true) ) != NULL )
+			{
+				if ( pKey->GetValNum() == 1 )
+					return NULL;
+			}
+#endif
 			CItemBase * pItemDef = pItem->Item_GetDef();
 			if ( (pItem->GetTopZ() <= ptDest.m_z + PLAYER_HEIGHT) && (pItem->GetTopZ() >= ptDest.m_z) && (pItemDef->m_Can != 00) )
 			{ // it IS in my way and HAS a flag set, check further

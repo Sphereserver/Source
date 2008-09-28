@@ -35,7 +35,7 @@ bool GetDeltaStr( CPointMap & pt, TCHAR * pszDir )
 	TCHAR chDir = toupper( ppCmd[0][0] );
 	int iTmp = Exp_GetVal( ppCmd[1] );
 
-	if ( isdigit( chDir ) || chDir == '-' )
+	if ( IsDigit( chDir ) || chDir == '-' )
 	{
 		pt.m_x += Exp_GetVal( ppCmd[0] );
 		pt.m_y += iTmp;

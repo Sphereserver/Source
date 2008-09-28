@@ -253,7 +253,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	/*bool IsNum = true; // Old Ellessar's code without support for negative numbers
 	for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
 	{
-		if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
+		if (( IsDigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
 			continue;
 
 		if ((( ch >= '*' ) && ( ch <= '/' )) || (( ch == ')' ) || ( ch == ']' )) || ( ch == '@' ))
@@ -265,9 +265,9 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	bool IsNum = false;
     for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
     {
-        if (( isdigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
+        if (( IsDigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
         {
-            IsNum = IsNum ? IsNum : isdigit( ch );
+            IsNum = IsNum ? IsNum : IsDigit( ch );
             continue;
         }
 
