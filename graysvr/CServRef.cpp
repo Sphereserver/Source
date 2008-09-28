@@ -284,7 +284,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_ACCAPP:
 		case SC_ACCAPPS:
 			// Treat it as a value or a string.
-			if ( isdigit( s.GetArgStr()[0] ))
+			if ( IsDigit( s.GetArgStr()[0] ))
 			{
 				m_eAccApp = (ACCAPP_TYPE) s.GetArgVal();
 			}

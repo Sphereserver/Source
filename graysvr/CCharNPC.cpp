@@ -225,7 +225,7 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	if ( i <= 1 )
 		return( SKILL_NONE );
 
-	if ( isdigit( ppArgs[1][0] ))
+	if ( IsDigit( ppArgs[1][0] ))
 	{
 		i = ATOI( ppArgs[1] );
 	}
@@ -263,7 +263,7 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 	if ( i <= 1 )
 		return( STAT_NONE );
 
-	if ( isdigit( ppArgs[1][0] ))
+	if ( IsDigit( ppArgs[1][0] ))
 	{
 		i = ATOI( ppArgs[1] );
 	}

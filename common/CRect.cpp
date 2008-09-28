@@ -586,7 +586,7 @@ int CPointBase::Read( TCHAR * pszVal )
 	{
 	default:
 	case 4:	// m_map
-		if ( isdigit(ppVal[3][0]))
+		if ( IsDigit(ppVal[3][0]))
 		{
 			m_map = ATOI(ppVal[3]);
 			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
@@ -596,7 +596,7 @@ int CPointBase::Read( TCHAR * pszVal )
 			}
 		}
 	case 3: // m_z
-		if ( isdigit(ppVal[2][0]) || ppVal[2][0] == '-' )
+		if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
 		{
 			m_z = ATOI(ppVal[2]);
 		}

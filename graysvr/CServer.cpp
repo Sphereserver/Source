@@ -946,10 +946,10 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 bool CServer::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 {
 	ADDTOCALLSTACK("CServer::r_GetRef");
-	if ( isdigit( pszKey[0] ))
+	if ( IsDigit( pszKey[0] ))
 	{
 		int i=1;
-		while ( isdigit( pszKey[i] ))
+		while ( IsDigit( pszKey[i] ))
 			i++;
 		if ( pszKey[i] == '.' )
 		{

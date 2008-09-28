@@ -352,7 +352,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 
 	if ( strcmpi( pszName, "CurTick" ) == 0 )
 	{
-		if ( isdigit(pszVal[0] ) )
+		if ( IsDigit(pszVal[0] ) )
 		{
 			m_curTick = ATOI(pszVal);
 		}
@@ -368,7 +368,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 		int iArgs = Str_ParseCmds( tempBuffer, ppVal, COUNTOF( ppVal ), " ,\t" );
 		if ( iArgs == 3 )
 		{
-			if ( isdigit( ppVal[0][0] ) && isdigit( ppVal[1][0] ) && isdigit( ppVal[2][0] ) )
+			if ( IsDigit( ppVal[0][0] ) && IsDigit( ppVal[1][0] ) && IsDigit( ppVal[2][0] ) )
 			{
 				int tick = ATOI(ppVal[0]);
 				int uid = ATOI(ppVal[1]);

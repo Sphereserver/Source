@@ -2918,7 +2918,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			int iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
-				if ( isdigit( ttVal[1][0] ) )
+				if ( IsDigit( ttVal[1][0] ) )
 				{
 					iTmp = ATOI( ttVal[1] );
 				}

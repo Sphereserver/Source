@@ -683,7 +683,7 @@ void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyEx
 
 		pszVal = pVar->GetValStr();
 		const CVarDefContStr * pVarStr = dynamic_cast <const CVarDefContStr *>(pVar);
-		if ( pVarStr ) // isspace(pszVal[0]) || isspace( pszVal[strlen(pszVal)-1] )
+		if ( pVarStr ) // IsSpace(pszVal[0]) || IsSpace( pszVal[strlen(pszVal)-1] )
 			s.WriteKeyFormat(z, "\"%s\"", pszVal);
 		else
 			s.WriteKey(z, pszVal);

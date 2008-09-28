@@ -56,7 +56,7 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 	while ( true )
 	{
 		TCHAR ch = toupper(*pszStr);
-		if ( isdigit(ch) )
+		if ( IsDigit(ch) )
 			ch -= '0';
 		else if ( bHex && ( ch >= 'A' ) && ( ch <= 'F' ))
 		{
@@ -88,7 +88,7 @@ inline bool IsCharNumeric( char & Test )
 	if ( !Test )
 		return false;
 	
-	if ( isdigit( Test ) )
+	if ( IsDigit( Test ) )
 		return true;
 	if ( tolower(Test) >= 'a' && tolower(Test) <= 'f' )
 		return true;
@@ -102,7 +102,7 @@ bool IsStrEmpty( LPCTSTR pszTest )
 
 	do
 	{
-		if ( !isspace(*pszTest) ) return false;
+		if ( !IsSpace(*pszTest) ) return false;
 	}
 	while( *(++pszTest) );
 	return true;
@@ -114,7 +114,7 @@ bool IsStrNumericDec( LPCTSTR pszTest )
 
 	do
 	{
-		if ( !isdigit(*pszTest) ) return false;
+		if ( !IsDigit(*pszTest) ) return false;
 	}
 	while ( *(++pszTest) );
 
@@ -132,7 +132,7 @@ bool IsStrNumeric( LPCTSTR pszTest )
 
 	do
 	{
-		if ( isdigit( *pszTest ) )
+		if ( IsDigit( *pszTest ) )
 			continue;
 		if ( fHex && tolower(*pszTest) >= 'a' && tolower(*pszTest) <= 'f' )
 			continue;
@@ -168,13 +168,13 @@ bool IsSimpleNumberString( LPCTSTR pszTest )
 			fMathSep = false;
 			continue;
 		}
-		if ( isspace( ch ))
+		if ( IsSpace( ch ))
 		{
 			fHextDigitStart = false;
 			fWhiteSpace = true;
 			continue;
 		}
-		if ( isdigit( ch ))
+		if ( IsDigit( ch ))
 		{
 			if ( fWhiteSpace && ! fMathSep )
 				return false;
@@ -344,7 +344,7 @@ int CExpression::GetSingle( LPCTSTR & pszArgs )
 		while ( true )
 		{
 			TCHAR ch = *pszArgs;
-			if ( isdigit( ch ))
+			if ( IsDigit( ch ))
 				ch -= '0';
 			else
 			{
@@ -366,7 +366,7 @@ int CExpression::GetSingle( LPCTSTR & pszArgs )
 		}
 		return( val );
 	}
-	else if ( pszArgs[0] == '.' || isdigit(pszArgs[0]))
+	else if ( pszArgs[0] == '.' || IsDigit(pszArgs[0]))
 	{
 		// A decminal number
 try_dec:
@@ -375,7 +375,7 @@ try_dec:
 		{
 			if ( *pszArgs == '.' )
 				continue;	// just skip this.
-			if ( ! isdigit( *pszArgs ))
+			if ( ! IsDigit( *pszArgs ))
 				break;
 			iVal *= 10;
 			iVal += *pszArgs - '0';

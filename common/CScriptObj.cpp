@@ -38,15 +38,15 @@ void CScriptTriggerArgs::Init( LPCTSTR pszStr )
 	m_iN3	= 0;
 
 	// attempt to parse this.
-	if ( isdigit(*pszStr) || ((*pszStr == '-') && isdigit(*(pszStr+1))) )
+	if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr+1))) )
 	{
 		m_iN1 = Exp_GetSingle(pszStr);
 		SKIP_ARGSEP( pszStr );
-		if ( isdigit(*pszStr) || ((*pszStr == '-') && isdigit(*(pszStr+1))) )
+		if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr+1))) )
 		{
 			m_iN2 = Exp_GetSingle(pszStr);
 			SKIP_ARGSEP( pszStr );
-			if ( isdigit(*pszStr) || ((*pszStr == '-') && isdigit(*(pszStr+1))) )
+			if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr+1))) )
 			{
 				m_iN3 = Exp_GetSingle(pszStr);
 			}
@@ -82,7 +82,7 @@ bool CScriptTriggerArgs::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	{
 		LPCTSTR pszTemp = pszKey;
 		pszTemp += 3;
-		if (*pszTemp && isdigit( *pszTemp ))
+		if (*pszTemp && IsDigit( *pszTemp ))
 		{
 			char * pEnd;
 			unsigned short number = strtol( pszTemp, &pEnd, 10 );
@@ -158,7 +158,7 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 	{
 		LPCTSTR pszTemp = pszKey;
 		pszTemp += 3;
-		if (*pszTemp && isdigit( *pszTemp ))
+		if (*pszTemp && IsDigit( *pszTemp ))
 		{
 			char * pEnd;
 			unsigned short number = strtol( pszTemp, &pEnd, 10 );
@@ -294,7 +294,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 			while ( *s )
 			{
 				// ignore leading spaces
-				if ( isspace(*s ) )
+				if ( IsSpace(*s ) )
 				{
 					++s;
 					continue;
@@ -948,7 +948,7 @@ badcmd:
 				GETNONWHITESPACE( pszKey );
 				int	iPos	= Exp_GetVal( pszKey );
 				TCHAR	ch;
-				if ( isdigit( *pszKey) && isdigit( *(pszKey+1) ) )
+				if ( IsDigit( *pszKey) && IsDigit( *(pszKey+1) ) )
 					ch	= (TCHAR) Exp_GetVal( pszKey );
 				else
 				{
@@ -1008,7 +1008,7 @@ badcmd:
 				if ( *pszKey == '"' )
 					++pszKey;
 				int	i	= 0;
-				while ( *pszKey && !isspace( *pszKey ) && *pszKey != ',' )
+				while ( *pszKey && !IsSpace( *pszKey ) && *pszKey != ',' )
 				{
 					buf[i]	= *pszKey;
 					++pszKey;
@@ -1021,7 +1021,7 @@ badcmd:
 		case SSC_StrEat:
 			{
 				GETNONWHITESPACE( pszKey );
-				while ( *pszKey && !isspace( *pszKey ) && *pszKey != ',' )
+				while ( *pszKey && !IsSpace( *pszKey ) && *pszKey != ',' )
 					++pszKey;
 				SKIP_ARGSEP( pszKey );
 				sVal	= pszKey;
@@ -1595,7 +1595,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			iMax	= Exp_GetSingle( ppArgs[0] );
 			break;
 		case 2:
-			if ( isdigit( *ppArgs[0] ) )
+			if ( IsDigit( *ppArgs[0] ) )
 			{
 				iMin	= Exp_GetSingle( ppArgs[0] );
 				iMax	= Exp_GetSingle( ppArgs[1] );

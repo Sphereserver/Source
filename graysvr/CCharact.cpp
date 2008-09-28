@@ -2640,7 +2640,11 @@ void CChar::Flip()
 	UpdateDir( GetDirTurn( m_dirFace, 1 ));
 }
 
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool fCheckOnly, DIR_TYPE dir, bool fPathFinding, bool bWalkCheck )
+#else
 CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool fCheckOnly, DIR_TYPE dir, bool fPathFinding )
+#endif
 {
 	ADDTOCALLSTACK("CChar::CanMoveWalkTo");
 
@@ -2716,7 +2720,11 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight);
 	}
 	else
+	#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+		pArea = CheckValidMove(ptDst, &wBlockFlags, dir, bWalkCheck);
+	#else
 		pArea = CheckValidMove(ptDst, &wBlockFlags, dir);
+	#endif
 #endif
 	if ( !pArea )
 	{
