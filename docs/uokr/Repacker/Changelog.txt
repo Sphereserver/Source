@@ -1,3 +1,6 @@
+v1.11
+-fix for single file
+-converted to Net Framework 2.0
 v1.1
 - Added panels
 - Added hash panel, to change not right hashes ( i.e.: Index_0_0.dat name is not right)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -57,7 +56,8 @@ namespace Repacker
                 seehash_btn.Enabled = true;
                 //End
                 string[] files = Directory.GetFiles(FolderName, "*", SearchOption.AllDirectories);       //Get all files in directory ( MUST also check subDirs )
-                Hash_Grid.Rows.Add(files.Length-1);
+                Hash_Grid.Rows.Clear();
+                Hash_Grid.Rows.Add(files.Length);
                 for(int i=0;i<files.Length;i++)
                 {
 

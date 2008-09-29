@@ -118,7 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="changelog_box.Text" xml:space="preserve">
-    <value>v1.1
+    <value>v1.11
+-fix for single file
+-converted to Net Framework 2.0
+v1.1
 - Added panels
 - Added hash panel, to change not right hashes ( i.e.: Index_0_0.dat name is not right)
 - Added links to UoDev forum and Kons' Site.
