@@ -2515,7 +2515,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 
 	if ( !pChar->IsClient() )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, "The creature ignores your offer");
+		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_NONPCADD ));
 		return( false );
 	}
 
@@ -2523,13 +2523,13 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	{
 		if ( !(m_pChar->m_pParty->IsPartyMaster(m_pChar)) )
 		{
-			CPartyDef::SysMessageStatic(m_pChar, "You may only add members to the party if you are the leader.");
+			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ADD_NOTLEADER ));
 			return( false );
 		}
 
 		if ( m_pChar->m_pParty->IsPartyFull() )
 		{
-			CPartyDef::SysMessageStatic(m_pChar, "You may only have 10 in your party.");
+			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_IS_FULL ));
 			return( false );
 		}
 	}
@@ -2538,26 +2538,37 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	{
 		if ( m_pChar->m_pParty == pChar->m_pParty )	// already in this party
 		{
-			CPartyDef::SysMessageStatic(m_pChar, "This person is already in your party!");
+			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ALREADY_IN_THIS ));
 			return( true );
 		}
 
-		CPartyDef::SysMessageStatic(m_pChar, "This person is already in a party!");
+		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ALREADY_IN ));
 		return( false );
 	}
 
 	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE", true) )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, "This person auto refuse any invite!");
+		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_AUTODECLINE ));
 		return( false );
 	}
 
 	CVarDefCont * pTagInvitetime = m_pChar->m_TagDefs.GetKey("PARTY_LASTINVITETIME");
 	if ( pTagInvitetime && ( g_World.GetCurrentTime().GetTimeRaw() < pTagInvitetime->GetValNum() ) )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, "You must wait a bit before inviting someone else!");
+		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ADD_TOO_FAST ));
 		return( false );
 	}
+
+#ifdef _NAZTEST
+	/*
+	@partyinvite
+	SRC=m_pChar
+	Def=pChar
+	*/
+	CScriptTriggerArgs args;
+	if ( pChar->OnTrigger(CTRIG_PartyInvite, m_pChar, &args) == TRIGRET_RET_TRUE )
+		return( false );
+#endif
 
 	TCHAR * sTemp = Str_GetTemp();
 	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE ), (LPCTSTR) pChar->GetName() );
