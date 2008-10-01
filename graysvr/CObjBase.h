@@ -2168,6 +2168,10 @@ enum CTRIG_TYPE
 	CTRIG_NPCSeeWantItem,		// (NPC only) i see something good.
 	CTRIG_NPCSpecialAction,
 
+#ifdef _NAZTEST	
+	CTRIG_PartyInvite,			//SRC invited me to join a party, so I may chose
+#endif
+
 	CTRIG_PersonalSpace,	//+i just got stepped on.
 	CTRIG_PetDesert,
 	CTRIG_Profile,			// someone hit the profile button for me.
