@@ -841,7 +841,15 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 
 			if ( s.IsKey("SKILLMENU"))
 			{
+				static int sm_iReentrant = 0;
+				if (sm_iReentrant > 128)
+				{
+					DEBUG_ERR(("Too many skill menus (circular menus?) to continue searching in menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName()));
+					return false;
+				}
+
 				// Test if there is anything in this skillmenu we can do.
+				++sm_iReentrant;
 				if ( ! Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()), iSelect-1 ))
 				{
 					iShowCount--;
@@ -852,6 +860,8 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 					fShowMenu = true;
 					ASSERT( ! fSkip );
 				}
+
+				--sm_iReentrant;
 				continue;
 			}
 			if ( s.IsKey("MAKEITEM"))

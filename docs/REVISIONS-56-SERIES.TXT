@@ -4220,6 +4220,7 @@ this all in desperation)
   (errors in injection script and so).
 
 26-10-2008, MrSugarCube
+- Fixed #1539: Infinite loop caused by "back" options on SKILLMENUs leading to a server crash.
 - Modified: EVENTSPLAYER, EVENTSPET and EVENTSREGION settings now accept a comma-delimited list of
   events.
 
