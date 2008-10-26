@@ -4222,3 +4222,6 @@ this all in desperation)
 26-10-2008, MrSugarCube
 - Modified: EVENTSPLAYER, EVENTSPET and EVENTSREGION settings now accept a comma-delimited list of
   events.
+
+26-10-2008, MrSugarCube (Script pack)
+- Updated #1535: sphere_defs.scp (Corrected sounds for snd_rune_beetle through to snd_hiryu)

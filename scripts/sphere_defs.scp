@@ -465,23 +465,23 @@ snd_monster_ophidian_mage1    639
 snd_monster_ophidian_queen1   644
 snd_monster_lavalizard1       649
 
-snd_rune_beetle 1256
-snd_yomotsu 1262
-snd_kappa 1291
-snd_crane 1241
-snd_gaman 1272
-snd_tsuki_wolf 1323
-snd_rav_lion 1304
-snd_oni 1251
-snd_pixie 1140
-snd_elec_1 757
-snd_elec_2 477
-snd_fire_1 838
-snd_centaur 680
+snd_rune_beetle 1255
+snd_yomotsu 1261
+snd_kappa 1290
+snd_crane 1240
+snd_gaman 1271
+snd_tsuki_wolf 1324
+snd_rav_lion 1303
+snd_oni 1250
+snd_pixie 1139
+snd_elec_1 756
+snd_elec_2 476
+snd_fire_1 837
+snd_centaur 679
 
 //new animals sounds
-snd_kirin 966
-snd_hiryu 1276
+snd_kirin 965
+snd_hiryu 1277
 
 // sounds - spells
 snd_spell_lightning                  41
