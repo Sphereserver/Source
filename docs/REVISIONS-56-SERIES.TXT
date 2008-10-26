@@ -4226,6 +4226,8 @@ this all in desperation)
   attempting to repair an item that cannot be repaired.
 - Fixed #1518: Possibility of world save notification not being broadcasted.
 - Fixed #1510: IsNum not working with negative numbers.
+- Fixed #1158: Possibility of the statf_fly flag not being removed from players who have been stood
+  still for some time.
 - Fixed: "You can't think of a way to use that item." when failing to repair an item.
 - Modified: EVENTSPLAYER, EVENTSPET and EVENTSREGION settings now accept a comma-delimited list of
   events.

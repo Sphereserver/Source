@@ -792,6 +792,7 @@ public:
 
 	CServTime m_timeLogin;		// World clock of login time. "LASTCONNECTTIME"
 	CServTime m_timeLastEvent;	// Last time we got event from client.
+	CServTime m_timeLastEventWalk;	// Last time we got a walk event from client
 	CServTime m_timeLastSend;		// Last time i tried to send to the client
 
 	// GM only stuff.
