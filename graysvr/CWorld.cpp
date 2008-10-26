@@ -972,6 +972,7 @@ CWorld::CWorld()
 {
 	m_iSaveCountID = 0;
 	m_iSaveStage = 0;
+	m_bSaveNotificationSent = false;
 	m_timeSector.Init();
 	m_timeRespawn.Init();
 	m_timeStartup.Init();
@@ -1319,6 +1320,7 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 
 	m_fSaveParity = ! m_fSaveParity; // Flip the parity of the save.
 	m_iSaveStage = -1;
+	m_bSaveNotificationSent = false;
 	m_timeSave.Init();
 
 	// Write the file headers.
@@ -2238,8 +2240,11 @@ void CWorld::OnTick()
 	m_TimedFunctions.OnTick();
 	EXC_CATCHSUB("TimerFunction");
 
-	if ( m_timeSave - 100 == GetCurrentTime() )
+	if ( (m_bSaveNotificationSent == false) && ((m_timeSave - 100) <= GetCurrentTime()) )
+	{
 		Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVENOTIFY ) );
+		m_bSaveNotificationSent = true;
+	}
 
 	if ( m_timeSave <= GetCurrentTime())
 	{
