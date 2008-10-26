@@ -318,6 +318,7 @@ private:
 	// Special purpose timers.
 	CServTime	m_timeSector;		// next time to do sector stuff.
 	CServTime	m_timeSave;		// when to auto save ?
+	bool m_bSaveNotificationSent;	// has notification been sent?
 	CServTime	m_timeRespawn;	// when to res dead NPC's ?
 	CServTime	m_timeCallUserFunc;	// when to call next user func
 	int		m_Sector_Pulse;		// Slow some stuff down that doesn't need constant processing.
