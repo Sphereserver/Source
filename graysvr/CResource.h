@@ -724,13 +724,13 @@ public:
 #endif
 
 	CGString	m_sEventsPet;
-	CResourceLink *	m_pEventsPetLink;
+	CResourceRefArray m_pEventsPetLink;
 
 	CGString	m_sEventsPlayer;
-	CResourceLink *	m_pEventsPlayerLink;
+	CResourceRefArray m_pEventsPlayerLink;
 
 	CGString	m_sEventsRegion;
-	CResourceLink *	m_pEventsRegionLink;
+	CResourceRefArray m_pEventsRegionLink;
 
 	CGString	m_sStripPath;
 

@@ -3552,17 +3552,20 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
 		}
+
 		// 4) EVENTSPET triggers
 		EXC_SET("NPC triggers - EVENTSPET");
-		if ( g_Cfg.m_pEventsPetLink && g_Cfg.m_pEventsPetLink->HasTrigger(iAction) )	//	EVENTSPET (constant events of NPCs set from sphere.ini)
+		for ( i=0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )//	EVENTSPET (constant events of NPCs set from sphere.ini)
 		{
+			CResourceLink	*pLink = g_Cfg.m_pEventsPetLink[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
 			CResourceLock s;
-			if ( g_Cfg.m_pEventsPetLink->ResourceLock(s) )
-			{
-				TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-					return iRet;
-			}
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
 		}
 	}
 
@@ -3581,20 +3584,23 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			}
 		}
 	}
+
 	// 6) EVENTSPLAYER triggers
 	if ( m_pPlayer )
 	{
 		//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)
 		EXC_SET("chardef triggers - EVENTSPLAYER");
-		if ( g_Cfg.m_pEventsPlayerLink && g_Cfg.m_pEventsPlayerLink->HasTrigger(iAction) )
+		for ( i=0; i < g_Cfg.m_pEventsPlayerLink.GetCount(); ++i )
 		{
+			CResourceLink	*pLink = g_Cfg.m_pEventsPlayerLink[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
 			CResourceLock s;
-			if ( g_Cfg.m_pEventsPlayerLink->ResourceLock(s) )
-			{
-				TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-					return iRet;
-			}
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
 		}
 	}
 	EXC_CATCH;

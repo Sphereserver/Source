@@ -1161,8 +1161,9 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 
 	TRIGRET_TYPE iRet;
 
+	int i;
 	int iQty = m_Events.GetCount();
-	for ( int i = 0; i < iQty; ++i )
+	for ( i = 0; i < iQty; ++i )
 	{
 		CResourceLink	*pLink = m_Events[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
@@ -1175,16 +1176,21 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 				return iRet;
 		}
 	}
-	if ( g_Cfg.m_pEventsRegionLink && g_Cfg.m_pEventsRegionLink->HasTrigger(iAction) )
+
+	//	EVENTSREGION triggers (constant events of regions set from sphere.ini)
+	for ( i = 0; i < g_Cfg.m_pEventsRegionLink.GetCount(); ++i )
 	{
+		CResourceLink	*pLink = g_Cfg.m_pEventsRegionLink[i];
+		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
+			continue;
 		CResourceLock s;
-		if ( g_Cfg.m_pEventsRegionLink->ResourceLock(s) )
-		{
-			iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
-			if ( iRet == TRIGRET_RET_TRUE )
-				return iRet;
-		}
+		if ( !pLink->ResourceLock(s) )
+			continue;
+		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
+		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+			return iRet;
 	}
+
 	return TRIGRET_RET_DEFAULT;
 }
 
