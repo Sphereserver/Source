@@ -69,6 +69,14 @@ struct tm* CGTime::GetLocalTm(struct tm* ptm) const
 	#define maxTimeBufferSize 128
 #endif
 
+#ifdef _WIN32
+void invalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved)
+{
+	// bad format has been specified
+	DEBUG_ERR(("Invalid time format specified.\n"));
+}
+#endif
+
 LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 {
 	TCHAR * pszTemp = Str_GetTemp();
@@ -85,11 +93,22 @@ LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 		return( pszTemp );
 	}
 
+#ifdef _WIN32
+	// set invalid parameter handler, or else the program will terminate when a bad format is encountered
+	_invalid_parameter_handler oldHandler, newHandler;
+	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
+	oldHandler = _set_invalid_parameter_handler(newHandler);
+#endif
+
 	if (!strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp))
 	{
 		pszTemp[0] = '\0';
 	}
 
+#ifdef _WIN32
+	// restore previous parameter handler
+	_set_invalid_parameter_handler(oldHandler);
+#endif
 	return( pszTemp );
 }
 
@@ -108,10 +127,22 @@ LPCTSTR CGTime::FormatGmt(LPCTSTR pszFormat) const
 		return( pszTemp );
 	}
 
+#ifdef _WIN32
+	// set invalid parameter handler, or else the program will terminate when a bad format is encountered
+	_invalid_parameter_handler oldHandler, newHandler;
+	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
+	oldHandler = _set_invalid_parameter_handler(newHandler);
+#endif
+
 	if (!strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp))
 	{
 		pszTemp[0] = '\0';
 	}
+
+#ifdef _WIN32
+	// restore previous parameter handler
+	_set_invalid_parameter_handler(oldHandler);
+#endif
 	return pszTemp;
 }
 

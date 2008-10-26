@@ -4220,6 +4220,7 @@ this all in desperation)
   (errors in injection script and so).
 
 26-10-2008, MrSugarCube
+- Fixed #1540: Server crash when invalid parameters are passed into RTIME.FORMAT.
 - Fixed #1539: Infinite loop caused by "back" options on SKILLMENUs leading to a server crash.
 - Fixed #1538: Possibility of quickly gaining arms lore skill through repairing, by repeatedly
   attempting to repair an item that cannot be repaired.
