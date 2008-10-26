@@ -1099,19 +1099,19 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 			{
 				continue;
 			}
-			if ( g_Cfg.m_pEventsPetLink == pResourceLink )
+			if ( g_Cfg.m_pEventsPetLink.FindPtr(pResourceLink) >= 0 )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsPet));
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
-			else if ( g_Cfg.m_pEventsPlayerLink == pResourceLink )
+			else if ( g_Cfg.m_pEventsPlayerLink.FindPtr(pResourceLink) >= 0 )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsPlayer));
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
-			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink == pResourceLink )
+			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink.FindPtr(pResourceLink) >= 0 )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n",g_Cfg.m_sEventsRegion));
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 

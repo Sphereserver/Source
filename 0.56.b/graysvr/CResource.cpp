@@ -126,9 +126,6 @@ CResource::CResource()
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
 
 	m_iCommandLog		= 0;
-	m_pEventsPetLink 	= NULL;
-	m_pEventsPlayerLink	= NULL;
-	m_pEventsRegionLink	= NULL;
 
 	m_fUsecrypt 		= true; // Server want crypt client ?
 	m_fUsenocrypt		= false; // Server want un-crypt client ? (version guessed by cliver)
@@ -3313,35 +3310,30 @@ bool CResource::Load( bool fResync )
 			pRegion->MakeRegionName();
 		}
 	}
+	
+	// parse eventspet
+	m_pEventsPetLink.Empty();
 	if ( ! m_sEventsPet.IsEmpty() )
 	{
-		m_pEventsPetLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_EVENTS, m_sEventsPet ) );
-
-		if ( m_pEventsPetLink == NULL )
-			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSPET)\n", (LPCTSTR) m_sEventsPet );
+		CScript script("EVENTSPET", m_sEventsPet);
+		m_pEventsPetLink.r_LoadVal(script, RES_EVENTS);
 	}
-	else if ( fResync )
-		m_pEventsRegionLink = NULL;
 
+	// parse eventsplayer
+	m_pEventsPlayerLink.Empty();
 	if ( ! m_sEventsPlayer.IsEmpty() )
 	{
-		m_pEventsPlayerLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_EVENTS, m_sEventsPlayer ) );
-
-		if ( m_pEventsPlayerLink == NULL )
-			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSPLAYER)\n", (LPCTSTR) m_sEventsPlayer );
+		CScript script("EVENTSPLAYER", m_sEventsPlayer);
+		m_pEventsPlayerLink.r_LoadVal(script, RES_EVENTS);
 	}
-	else if ( fResync )
-		m_pEventsRegionLink = NULL;
 
+	// parse eventsregion
+	m_pEventsRegionLink.Empty();
 	if ( ! m_sEventsRegion.IsEmpty() )
 	{
-		m_pEventsRegionLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_REGIONTYPE, m_sEventsRegion ) );
-
-		if ( m_pEventsRegionLink == NULL )
-			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Can't find definition for '%s' (EVENTSREGION)\n", (LPCTSTR) m_sEventsRegion );
+		CScript script("EVENTSREGION", m_sEventsRegion);
+		m_pEventsRegionLink.r_LoadVal(script, RES_REGIONTYPE);
 	}
-	else if ( fResync )
-		m_pEventsRegionLink = NULL;
 
 	LoadSortSpells();
 	g_Serv.SysMessage("\n");

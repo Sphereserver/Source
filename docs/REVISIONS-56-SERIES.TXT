@@ -4218,3 +4218,7 @@ this all in desperation)
 28-09-2008, Shadow Dragon
 - Fixed: Sphere crashing when injection tries to add one item to another non-container item
   (errors in injection script and so).
+
+26-10-2008, MrSugarCube
+- Modified: EVENTSPLAYER, EVENTSPET and EVENTSREGION settings now accept a comma-delimited list of
+  events.
