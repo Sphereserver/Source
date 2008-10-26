@@ -30,12 +30,14 @@ CClient::CClient( SOCKET client ) :
 	m_timeLogin.Init();
 	m_timeLastSend =
 	m_timeLastEvent = CServTime::GetCurrentTime();
+	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
 	m_bin_PrvMsg = XCMD_QTY;
 
 	m_wWalkCount = -1;
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg	= 100;
+	m_timeWalkStep = m_timeLastEventWalk.GetTimeRaw();
 	m_fClosed = false;
 
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;

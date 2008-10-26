@@ -3705,7 +3705,7 @@ bool CChar::OnTick()
 		// Players have a silly "always run" flag that gets stuck on.
 		if ( IsClient() )
 		{
-			if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEvent) > TICK_PER_SEC )
+			if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
 				StatFlag_Clear(STATF_Fly);
 		}
 
