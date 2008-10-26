@@ -941,6 +941,8 @@ badcmd:
 			return true;
 		case SSC_ISNUM:
 			GETNONWHITESPACE( pszKey );
+			if (*pszKey == '-')
+				pszKey++;
 			sVal.FormatVal( IsStrNumeric( pszKey ) );
 			return true;
 		case SSC_StrPos:
