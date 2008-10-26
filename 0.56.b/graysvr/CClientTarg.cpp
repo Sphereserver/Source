@@ -1947,8 +1947,8 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		else if ( pItemTarg->Armor_IsRepairable())
 		{
 			// Near an anvil ? repair ?
-			if ( m_pChar->Use_Repair( pItemTarg ))
-				return( true );
+			m_pChar->Use_Repair( pItemTarg );
+			return( true );
 		}
 		break;
 

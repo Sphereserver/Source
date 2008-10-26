@@ -806,8 +806,12 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 		return( false );
 	}
 
-	if ( ! Skill_UseQuick( SKILL_ARMSLORE, Calc_GetRandVal(30)))
+	// quickly use arms lore skill, but don't gain any skill until later on
+	int iArmsLoreDiff = Calc_GetRandVal(30);
+	if ( ! Skill_UseQuick( SKILL_ARMSLORE, iArmsLoreDiff, false ) )
 	{
+		// apply arms lore skillgain for failure
+		Skill_Experience( SKILL_ARMSLORE, -iArmsLoreDiff );
 		SysMessageDefault( DEFMSG_REPAIR_UNK );
 		return( false );
 	}
@@ -866,6 +870,9 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	}
 
 	LPCTSTR pszText;
+
+	// apply arms lore skillgain now
+	Skill_Experience( SKILL_ARMSLORE, iArmsLoreDiff );
 	bool fSuccess = Skill_UseQuick( (SKILL_TYPE) RetMainSkill.GetResIndex(), iDifficulty );
 	if ( fSuccess )
 	{
