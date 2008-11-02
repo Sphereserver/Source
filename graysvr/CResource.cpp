@@ -67,6 +67,7 @@ CResource::CResource()
 	m_iSavePeriod = 15*60*TICK_PER_SEC;
 
 	// In game effects.
+	m_fCanUndressPets   = false;
 	m_fMonsterFight		= true;
 	m_fMonsterFear		= true;
 	m_iLightDungeon		= 17;
@@ -307,6 +308,7 @@ enum RC_TYPE
 	RC_BACKUPLEVELS,		// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
 	RC_BANKMAXWEIGHT,
+	RC_CANUNDRESSPETS,		// m_fCanUndressPets
 	RC_CHARTAGS,			// m_fCharTags
 	RC_CLIENTLINGER,
 	RC_CLIENTMAX,			// m_iClientsMax
@@ -480,6 +482,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels)	}},
 	{ "BANKMAXITEMS",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankIMax)	}},
 	{ "BANKMAXWEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankWMax)	}},
+	{ "CANUNDRESSPETS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fCanUndressPets) }},
 	{ "CHARTAGS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCharTags)	}},
 	{ "CLIENTLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientLingerTime)	}},
 	{ "CLIENTMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMax)	}},

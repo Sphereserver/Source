@@ -4083,7 +4083,7 @@ void CClient::addCharPaperdoll( CChar * pChar )
 	unsigned char mode = 0;
 	if ( pChar->IsStatFlag( STATF_War ) )
 		mode |= 0x1;
-	if ( pChar == m_pChar || (m_pChar->IsPriv( PRIV_GM ) && ( m_pChar->GetPrivLevel() > pChar->GetPrivLevel() )) )
+	if ( pChar == m_pChar || g_Cfg.m_fCanUndressPets? pChar->NPC_IsOwnedBy(m_pChar) : (m_pChar->IsPriv( PRIV_GM ) && ( m_pChar->GetPrivLevel() > pChar->GetPrivLevel() )) )
 		mode |= 0x2;
 
 	cmd.PaperDoll.m_text[ sizeof(cmd.PaperDoll.m_text)-1 ] = '\0';
