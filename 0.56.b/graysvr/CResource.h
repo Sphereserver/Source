@@ -659,6 +659,7 @@ public:
 	bool m_fNoWeather;			// Turn off all weather.
 	bool m_fCharTags;			// Put [NPC] tags over chars.
 	bool m_fFlipDroppedItems;	// Flip dropped items.
+	bool m_fCanUndressPets;	// Can players undress their pets?
 	bool m_fMonsterFight;	// Will creatures fight amoung themselves.
 	bool m_fMonsterFear;	// will they run away if hurt ?
 	int	 m_iBankIMax;	// Maximum number of items allowed in bank.

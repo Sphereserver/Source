@@ -1468,7 +1468,15 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	ITRIG_TYPE trigger;
 	if ( pChar != NULL )
 	{
-		if ( ! pChar->NPC_IsOwnedBy( this ))
+		bool bCanTake = false;
+		if (pChar == this) // we can always take our own items
+			bCanTake = true;
+		else if (pItem->GetContainer() != pChar || g_Cfg.m_fCanUndressPets == true) // our owners can take items from us (with CanUndressPets=true, they can undress us too)
+			bCanTake = pChar->NPC_IsOwnedBy(this);
+		else  // higher priv players can take items and undress us
+			bCanTake = IsPriv(PRIV_GM) && GetPrivLevel() > pChar->GetPrivLevel();
+
+		if (bCanTake == false)
 		{
 			SysMessageDefault(DEFMSG_STEAL);
 			return -1;

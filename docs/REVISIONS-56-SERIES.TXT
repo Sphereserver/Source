@@ -4234,3 +4234,7 @@ this all in desperation)
 
 26-10-2008, MrSugarCube (Script pack)
 - Updated #1535: sphere_defs.scp (Corrected sounds for snd_rune_beetle through to snd_hiryu)
+
+02-11-2008, MrSugarCube
+- Added #1499: CanUndressPets setting to sphere.ini. Setting this to 1 will enable players to
+  take equipment from their pets' paperdolls.
