@@ -932,6 +932,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 	if ( dir == m_pChar->m_dirFace )
 	{
+		LONGLONG	CurrTime	= GetTickCount();
 		m_iWalkStepCount++;
 		// Move in this dir.
 		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?)
@@ -939,7 +940,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 			// Client only allows 4 steps of walk ahead.
 			if ( g_Cfg.m_iWalkBuffer )
 			{
-				int		iTimeDiff	= ((m_timeLastEventWalk.GetTimeRaw() - m_timeWalkStep)/10);
+				int		iTimeDiff	= ((CurrTime - m_timeWalkStep)/10);
 				int		iTimeMin;
 				if (m_pChar->m_pPlayer)
 				{
@@ -1007,7 +1008,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 					}
 				}
 			}
-			m_timeWalkStep = m_timeLastEventWalk.GetTimeRaw();
+			m_timeWalkStep = CurrTime;
 		}	// nth step
 
 		pt.Move(dir);
