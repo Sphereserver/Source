@@ -37,7 +37,7 @@ CClient::CClient( SOCKET client ) :
 	m_wWalkCount = -1;
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg	= 100;
-	m_timeWalkStep = m_timeLastEventWalk.GetTimeRaw();
+	m_timeWalkStep = GetTickCount();
 	m_fClosed = false;
 
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
