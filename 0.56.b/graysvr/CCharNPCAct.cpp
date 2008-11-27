@@ -486,6 +486,35 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
 
 	// Consume as much money as we can train for.
+#ifdef _NAZTEST
+	int iTrainPricePerPercent=1;
+
+	CVarDefCont * pValue = GetKey("OVERRIDE.TRAINSKILLCOST",true);
+	if ( pValue ) 
+	{
+		iTrainPricePerPercent = pValue->GetValNum();
+	} else {
+		iTrainPricePerPercent = g_Cfg.m_iTrainSkillCost;
+	}
+
+	if ( pGold->GetAmount() < (iTrainCost * iTrainPricePerPercent) )
+	{
+		iTrainCost = (pGold->GetAmount() / iTrainPricePerPercent);
+	}
+	else if ( pGold->GetAmount() == (iTrainCost * iTrainPricePerPercent) )
+	{
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_1 ) );
+		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
+	}
+	else
+	{
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_2 ) );
+		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
+
+		// Give change back.
+		pGold->UnStackSplit( (iTrainCost * iTrainPricePerPercent), pCharSrc );
+	}
+#else
 	if ( pGold->GetAmount() < iTrainCost )
 	{
 		iTrainCost = pGold->GetAmount();
@@ -503,7 +532,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		// Give change back.
 		pGold->UnStackSplit( iTrainCost, pCharSrc );
 	}
-
+#endif
 	GetPackSafe()->ContentAdd( pGold );	// take my cash.
 
 	// Give credit for training.

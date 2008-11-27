@@ -1183,6 +1183,10 @@
 //web_noeffect			"You have no effect on the web"
 //web_destroy			"You destroy the web"
 //web_weaken			"You weaken the web"
-
+//nuked_items	            "Items nuked!"
+//nuked_chars	            "Chars Nuked!"
+//tiled_items	            "Items Created"
+//nudged_objects	        "Objects Nudged"
+//tile_same_point	        "Thats the same point."
 
 [EOF]
