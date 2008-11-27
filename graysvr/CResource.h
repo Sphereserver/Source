@@ -678,6 +678,9 @@ public:
 	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int	 m_iTrainSkillMax;
+#ifdef _NAZTEST
+	int m_iTrainSkillCost;
+#endif
 	int	 m_iMountHeight;		// The height at which a mounted person clears ceilings.
 	int	 m_iMoveRate;			// The percent rate of NPC movement
 	int  m_iArcheryMaxDist;

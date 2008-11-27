@@ -79,6 +79,9 @@ CResource::CResource()
 	m_iSnoopCriminal	= 500;
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
+#ifdef _NAZTEST
+	m_iTrainSkillCost	= 1;
+#endif
 	m_iSkillPracticeMax	= 300;
 	m_fCharTags		= true;
 	m_iVendorMaxSell	= 30;
@@ -413,6 +416,9 @@ enum RC_TYPE
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
 	RC_NPCTRAINMAX,			// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
+#ifdef _NAZTEST
+	RC_NPCTRAINSKILLCOST,		// m_iTrainSkillCost
+#endif
 	RC_NTSERVICE,				// m_fUseNTService
 	RC_OPTIONFLAGS,			// m_iOptionFlags
 	RC_OVERSKILLMULTIPLY,		//	m_iOverSkillMultiply
@@ -587,6 +593,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle)		}},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax)	}},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent) }},
+#ifdef _NAZTEST
+	{ "NPCTRAINSKILLCOST",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost) }},
+#endif
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService)	}},
 	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags)	}},
 	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply)	}},

@@ -520,7 +520,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 
 	if ( pt == m_tmTile.m_ptFirst && m_tmTile.m_Code != CV_EXTRACT ) // Extract can work with one square
 	{
-		SysMessage("Thats the same point.");
+		SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_TILE_SAME_POINT ) );
 		addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_TARG_PC ), true );
 		return true;
 	}
@@ -606,7 +606,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 				iCount++;
 			}
 
-			SysMessagef( "%d Objects Nudged", iCount );
+			SysMessagef( "%d %s", iCount, g_Cfg.GetDefaultMsg( DEFMSG_NUDGED_OBJECTS ) );
 		}
 		break;
 
@@ -634,7 +634,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 				}
 				iCount++;
 			}
-			SysMessagef( "%d Items Nuked!", iCount );
+			SysMessagef( "%d %s", iCount, g_Cfg.GetDefaultMsg( DEFMSG_NUKED_ITEMS ) );
 		}
 		break;
 
@@ -663,7 +663,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 				}
 				iCount++;
 			}
-			SysMessagef( "%d Chars Nuked!", iCount );
+			SysMessagef( "%d %s", iCount, g_Cfg.GetDefaultMsg( DEFMSG_NUKED_CHARS ) );
 		}
 		break;
 
@@ -692,7 +692,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 				}
 			}
 
-			SysMessagef( "%d Items Created", iCount );
+			SysMessagef( "%d %s", iCount, g_Cfg.GetDefaultMsg( DEFMSG_TILED_ITEMS ) );
 		}
 		break;
 	}
