@@ -1945,7 +1945,9 @@ void CObjBase::ResendTooltip( bool bForce )
 	// Remove this item from all clients.
 	// In a destructor this can do funny things.
 
-	if ( IsDisconnected())
+	if ( !bForce && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) == false )
+		return; // tooltips are disabled.
+	else if ( IsDisconnected())
 		return;	// not in the world.
 
 	CChar * pChar = NULL;
