@@ -35,7 +35,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 		}
 		else
 		{
-			if ( !g_World.IsItemTypeNear(pt, Type) ) //cannot be used, because it does no Z check... what if there is a static tile 70 tiles under me?
+			if ( !g_World.IsItemTypeNear(pt, Type, 0, false) ) //cannot be used, because it does no Z check... what if there is a static tile 70 tiles under me?
 				return NULL;
 		}
 	}
@@ -459,16 +459,16 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 #undef RESOURCE_Z_CHECK
 }
 
-bool CWorld::IsItemTypeNear( const CPointMap & pt, IT_TYPE iType, int iDistance )
+bool CWorld::IsItemTypeNear( const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti )
 {
 	ADDTOCALLSTACK("CWorld::IsItemTypeNear");
 	if ( !pt.IsValidPoint() )
 		return false;
-	CPointMap ptn = FindItemTypeNearby( pt, iType, iDistance );
+	CPointMap ptn = FindItemTypeNearby( pt, iType, iDistance, bCheckMulti );
 	return( ptn.IsValidPoint());
 }
 
-CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bLimitZ)
+CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti, bool bLimitZ)
 {
 	ADDTOCALLSTACK("CWorld::FindItemTypeNearby");
 	// Find the closest item of this type.
@@ -544,6 +544,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	}
 
 
+	// Check for statics
 	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
 		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
 		pt.m_map);
@@ -601,6 +602,82 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 				rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
 					pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
 					pt.m_map);
+			}
+		}
+	}
+
+	// Check for multi components
+	if (bCheckMulti == true)
+	{
+		rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
+			pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
+			pt.m_map);
+
+		for (int x = rect.m_left; x < rect.m_right; x++)
+		{
+			for (int y = rect.m_top; y < rect.m_bottom; y++)
+			{
+				CPointMap ptTest(x, y, pt.m_z, pt.m_map);
+
+				CRegionLinks rlinks;
+				if ( int iQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks) )
+				{
+					for (int i = 0; i < iQty; i++)
+					{
+						CRegionBase* pRegion = rlinks.GetAt(i);
+						CItem* pItem = pRegion->GetResourceID().ItemFind();
+						if (pItem == NULL)
+							continue;
+
+						const CGrayMulti* pMulti;
+						CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
+						if ( pItemMulti == NULL )
+							pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
+						else
+							pMulti = pItemMulti->GetMultiItemDefs();
+
+						if (pMulti == NULL)
+							continue;
+
+						int x2 = ptTest.m_x - pItem->GetTopPoint().m_x;
+						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
+						int z2 = ptTest.m_z - pItem->GetTopPoint().m_z;
+
+						int iItemQty = pMulti->GetItemCount();
+						for (int i = 0; i < iItemQty; i++)
+						{
+							const CUOMultiItemRec* pMultiItem = pMulti->GetItem(i);
+							ASSERT(pMultiItem);
+
+							if ( !pMultiItem->m_visible )
+								continue;
+							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
+								continue;
+							if ( bLimitZ && (pMultiItem->m_dz != ptTest.m_z))
+								continue;
+
+							iTestDistance = pt.GetDist(ptTest);
+							if (iTestDistance > iDistance)
+								continue;
+
+							ITEMID_TYPE idTile = pMultiItem->GetDispID();
+
+							// Check the script def for the item.
+							pItemDef = CItemBase::FindItemBase(idTile);
+							if (pItemDef == NULL || !pItemDef->IsType(iType))
+								continue;
+
+							ptFound = ptTest;
+							iDistance = iTestDistance;
+							if ( !iDistance )
+								return( ptFound );
+
+							rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
+										  pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
+										  pt.m_map);
+						}
+					}
+				}
 			}
 		}
 	}

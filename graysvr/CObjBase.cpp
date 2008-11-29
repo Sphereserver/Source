@@ -769,6 +769,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				{
 					int iType = g_Cfg.ResourceGetIndexType( RES_TYPEDEF, pszKey );
 					int iDistance;
+					bool bCheckMulti;
 
 					SKIP_IDENTIFIERSTRING( pszKey );
 					SKIP_SEPARATORS( pszKey );
@@ -779,9 +780,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					else
 						iDistance	= Exp_GetVal( pszKey );
 
+					if ( !*pszKey )
+						bCheckMulti = false;
+					else
+						bCheckMulti = Exp_GetVal( pszKey ) != 0;
+
 					if ( fP )
 					{
-						CPointMap pt = ( index == OC_ISNEARTYPETOP ) ? ( g_World.FindTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.FindItemTypeNearby(GetTopPoint(), (IT_TYPE) iType, iDistance ) );
+						CPointMap pt = ( index == OC_ISNEARTYPETOP ) ? ( g_World.FindTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.FindItemTypeNearby(GetTopPoint(), (IT_TYPE) iType, iDistance, bCheckMulti ) );
 
 						if ( !pt.IsValidPoint() )
 							sVal.FormatVal( 0 );
@@ -789,7 +795,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 							sVal = pt.WriteUsed();
 					}
 					else
-						sVal.FormatVal( ( index == OC_ISNEARTYPETOP ) ? ( g_World.IsTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.IsItemTypeNear(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) );
+						sVal.FormatVal( ( index == OC_ISNEARTYPETOP ) ? ( g_World.IsTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.IsItemTypeNear(GetTopPoint(), (IT_TYPE) iType, iDistance, bCheckMulti ) ) );
 				}
 				return true;
 			}

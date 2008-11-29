@@ -1273,7 +1273,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	}
 	else
 	{
-		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, SKILL_SMELT_FORGE_DIST );
+		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, SKILL_SMELT_FORGE_DIST, false );
 	}
 
 	if ( ! m_Act_p.IsValidPoint() || ! CanTouch(m_Act_p))
@@ -3385,7 +3385,7 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 	// m_Act_p = the anvil.
 	// m_Act_Targ = the hammer.
 
-	m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 3 );
+	m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 3, false );
 	if ( ! m_Act_p.IsValidPoint())
 	{
 		SysMessageDefault( DEFMSG_SMITHING_FORGE );

@@ -1200,7 +1200,7 @@ bool CClient::Cmd_Skill_Smith( CItem * pIngots )
 
 	// Select the blacksmith item type.
 	// repair items or make type of items.
-	if ( ! g_World.IsItemTypeNear( m_pChar->GetTopPoint(), IT_FORGE, 3 ))
+	if ( ! g_World.IsItemTypeNear( m_pChar->GetTopPoint(), IT_FORGE, 3, false ))
 	{
 		SysMessageDefault( DEFMSG_SMITHING_FORGE );
 		return( false );

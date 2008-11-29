@@ -549,7 +549,7 @@ bool CChar::IsSwimming() const
 
 	CPointMap ptTop = GetTopPoint();
 
-	CPointMap pt = g_World.FindItemTypeNearby( ptTop, IT_WATER );
+	CPointMap pt = g_World.FindItemTypeNearby( ptTop, IT_WATER, 0, false );
 	if ( ! pt.IsValidPoint())
 		return( false );	// no water here.
 
