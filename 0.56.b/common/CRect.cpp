@@ -370,13 +370,15 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 
 			int iType = g_Cfg.ResourceGetIndexType( RES_TYPEDEF, pszKey );
 			int iDistance = 0;
+			bool bCheckMulti = false;
 
 			SKIP_IDENTIFIERSTRING( pszKey );
 			SKIP_SEPARATORS( pszKey );
 			SKIP_ARGSEP( pszKey );
 
 			if ( *pszKey ) iDistance = Exp_GetVal(pszKey);
-			sVal.FormatVal( g_World.IsItemTypeNear(*this, (IT_TYPE) iType, iDistance));
+			if ( *pszKey ) bCheckMulti = Exp_GetVal(pszKey) != 0;
+			sVal.FormatVal( g_World.IsItemTypeNear(*this, (IT_TYPE) iType, iDistance, bCheckMulti));
 			break;
 		}
 		case PT_REGION:

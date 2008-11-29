@@ -4238,3 +4238,7 @@ this all in desperation)
 02-11-2008, MrSugarCube
 - Added #1499: CanUndressPets setting to sphere.ini. Setting this to 1 will enable players to
   take equipment from their pets' paperdolls.
+
+29-11-2008, MrSugarCube
+- Modified: IsNearType (including IsNearType.P) now accepts a third parameter, which when set to 1
+  will cause the function to include multi components in the search.

@@ -2716,7 +2716,7 @@ void CChar::NPC_Act_Idle()
 		switch ( GetDispID())
 		{
 			case CREID_FIRE_ELEM:
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE) )
+				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE, 0, false) )
 				{
 					Action_StartSpecial(CREID_FIRE_ELEM);
 					return;
