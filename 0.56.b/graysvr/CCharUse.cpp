@@ -922,6 +922,10 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	{
 		pItemArmor->Delete();
 	}
+	else
+	{
+		pItemArmor->ResendTooltip();
+	}
 
 	return( fSuccess );
 }

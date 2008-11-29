@@ -4240,5 +4240,6 @@ this all in desperation)
   take equipment from their pets' paperdolls.
 
 29-11-2008, MrSugarCube
+- Fixed #1553: Repairing an item does not update its tooltip.
 - Modified: IsNearType (including IsNearType.P) now accepts a third parameter, which when set to 1
   will cause the function to include multi components in the search.
