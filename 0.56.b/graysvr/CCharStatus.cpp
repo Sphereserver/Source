@@ -318,7 +318,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 		break;
 	case LAYER_HORSE:
 		// Only humans can ride horses !?
-		if ( ! pItem->IsType(IT_EQ_HORSE) || ! IsHuman())
+		if ( ! pItem->IsType(IT_EQ_HORSE) || ! IsMountCapable())
 		{
 			fCantEquip = true;
 			break;
@@ -2158,6 +2158,25 @@ bool CChar::CanUse( CItem * pItem, bool fMoveOrConsume ) const
 	}
 
 	return( true );
+}
+
+bool CChar::IsMountCapable() const
+{
+	ADDTOCALLSTACK("CChar::IsMountCapable");
+	// Is the character capable of mounting rides?
+	// RETURN:
+	//  false = incapable of riding
+
+	if ( IsStatFlag(STATF_DEAD) )
+		return false;
+
+	if ( IsHuman() )	// humans can ride horses.
+		return true;
+
+	if ( GetAbilityFlags() & CAN_C_MOUNT )
+		return true;
+
+	return false;
 }
 
 #ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY

@@ -2705,6 +2705,7 @@ public:
 	bool CanMove( CItem * pItem, bool fMsg = true ) const;
 	BYTE GetLightLevel() const;
 	bool CanUse( CItem * pItem, bool fMoveOrConsume ) const;
+	bool IsMountCapable() const;
 
 	int  Food_CanEat( CObjBase * pObj ) const;
 	int  Food_GetLevelPercent() const;

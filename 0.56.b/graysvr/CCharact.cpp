@@ -1937,7 +1937,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 	if ( id <= ITEMID_NOTHING )
 		return false;
 
-	if ( IsStatFlag(STATF_DEAD) || ! IsHuman() )	// only humans can ride horses.
+	if ( !IsMountCapable() )
 	{
 		SysMessageDefault(DEFMSG_MOUNT_UNABLE);
 		return false;

@@ -70,7 +70,7 @@ public:
 	// CCharBase specific defs.
 #define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)
 #define CAN_C_USEHANDS		0x0200	// Can wield weapons (INT dependant), open doors ?, pick up/manipulate things
-
+#define CAN_C_MOUNT			0x0400	// can mount rides
 #define CAN_C_FEMALE		0x0800	// It is female by nature.
 #define CAN_C_NONHUMANOID	0x1000	// Body type for combat messages.
 #define CAN_C_RUN			0x2000	// Can run (not needed if they can fly)

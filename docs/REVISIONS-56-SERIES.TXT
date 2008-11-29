@@ -4189,7 +4189,7 @@ this all in desperation)
   property which returns 0 if the component is invisible (usually applies to doors and signs).
 
 16-09-2008, Nazghul
-- added: Override Tags for item/action related sound.
+- Added: Override Tags for item/action related sound.
   TAG.OVERRIDE.DOORSOUND_CLOSE / TAG.OVERRIDE.DOORSOUND_OPEN 
     (what it does should be obvious)
   TAG.OVERRIDE.PORTCULISSOUND - holds an sfx number played when 
@@ -4207,12 +4207,12 @@ this all in desperation)
 
 
 17-09-2008, Nazghul
-- added trigger @PICKUP_STACK what fires only if an item was picked up from a pile.
+- Added: Trigger @PICKUP_STACK what fires only if an item was picked up from a pile.
   ARGO is the remaining part of the stack. (There's a char trigger itemPICKUP_STACK
   also)
 
 18-09-2008, Nazghul
-- added TAG.OVERRIDE.RUNNINGPENALTY and TAG.OVERRIDE.STAMINALOSSATWEIGHT to
+- Added: TAG.OVERRIDE.RUNNINGPENALTY and TAG.OVERRIDE.STAMINALOSSATWEIGHT to
   override the respective INI settings on a per character base
 
 28-09-2008, Shadow Dragon
@@ -4243,3 +4243,11 @@ this all in desperation)
 - Fixed #1553: Repairing an item does not update its tooltip.
 - Modified: IsNearType (including IsNearType.P) now accepts a third parameter, which when set to 1
   will cause the function to include multi components in the search.
+- Added: New mt_mount flag (00400) which will allow character bodies to become capable of mounting
+  rides. Note that this flag is not required for the bodies that could already mount rides prior
+  to this flag's existence (c_man/c_woman/c_man_gm/c_elf_man/c_elf_woman). Also be aware that not
+  all character bodies are intended to be used for mounting rides and won't have proper riding
+  animations.
+
+29-11-2008, MrSugarCube (Script pack)
+- Updated: sphere_defs.scp (Added mt_mount to the can_flags defname section)
