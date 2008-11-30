@@ -3673,7 +3673,6 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	// a rock or a boulder ?
 	ITEMID_TYPE id = (ITEMID_TYPE) 0;
 	int iDamage;
-// #ifdef _NAZTEST_THROW
 	CVarDefCont * pTagStorage = NULL; 
     pTagStorage = GetKey("OVERRIDE.ROCK", true);
     if ( pTagStorage )
@@ -3685,9 +3684,6 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 		}
 	} else
 	{
-// #endif
-
-	
 		if ( Calc_GetRandVal( 3 ) )
 		{
 			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
@@ -3698,11 +3694,9 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 			iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 			id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
 		}
-// #ifdef _NAZTEST_THROW
 	}
 	if ( id != (ITEMID_TYPE) 0 )
 	{
-// #endif
 		CItem *pRock = CItem::CreateScript(id, this);
 		if ( pRock )
 		{
@@ -3715,9 +3709,7 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 		{
 			pChar->OnTakeDamage( iDamage, this, DAMAGE_HIT_BLUNT );
 		}
-// #ifdef _NAZTEST_THROW
 	}
-// #endif
 	
 	return 0;
 }

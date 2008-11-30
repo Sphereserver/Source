@@ -61,6 +61,7 @@ enum EF_TYPE
 	EF_Size_Optimise				= 0x0000800,
 	EF_Minimize_Triggers			= 0x0001000,
 	EF_DamageTools					= 0x0002000,
+	EF_PetSlots						= 0x0004000,
 	EF_UsePingServer				= 0x0008000,
 	EF_NPCAct_Triggers				= 0x0010000,
 	EF_UseNetworkMulti				= 0x0800000,
