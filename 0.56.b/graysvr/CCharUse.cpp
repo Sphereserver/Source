@@ -1239,24 +1239,27 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 
 
 #ifdef _NAZTEST_PETS
-	// first check if it's a ridden creature (don't mess with m_curFollower then)
-	CItem * pCheckItem = this->LayerFind( LAYER_HORSE );
-	if (pCheckItem != pItem)
+	if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
 	{
-		CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
-		unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
-		if ((iFollowerSlotsNeeded + m_pPlayer->m_curFollower) > m_pPlayer->m_maxFollower )
+		// first check if it's a ridden creature (don't mess with m_curFollower then)
+		CItem * pCheckItem = this->LayerFind( LAYER_HORSE );
+		if (pCheckItem != pItem)
 		{
-			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_UNSHRINK_NO_SLOTS_FREE) );
-			// curse the figurine so the beast is untame
-			pItem->SetAttr( ATTR_CURSED );
-		} else
-		{
-	  		m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
-			// send an update packet for the stats
-			CClient * pClient = this->GetClient();
-			if (pClient)
-				pClient->addCharStatWindow( this->GetUID() );
+			CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
+			unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+			if ((iFollowerSlotsNeeded + m_pPlayer->m_curFollower) > m_pPlayer->m_maxFollower )
+			{
+				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_UNSHRINK_NO_SLOTS_FREE) );
+				// curse the figurine so the beast is untame
+				pItem->SetAttr( ATTR_CURSED );
+			} else
+			{
+	  			m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
+				// send an update packet for the stats
+				CClient * pClient = this->GetClient();
+				if (pClient)
+					pClient->addCharStatWindow( this->GetUID() );
+			}
 		}
 	}
 #endif
