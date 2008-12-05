@@ -693,6 +693,15 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 				goto olddialogprocedure;
 			}
 
+			// check that the entire dialog length will fit in the packet buffer
+			if (( len + mCompressLen ) > sizeof(CCommand) )
+			{
+				delete [] mCompress;
+
+				// resulting packet will be too large, error message already exists in olddialogprocedure
+				goto olddialogprocedure;
+			}
+
 			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
 			cmd.CompressedGumpDialog.m_compressed_lenCmds = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
 			delete [] mCompress;
@@ -754,6 +763,15 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 				goto olddialogprocedure;
 			}
 
+			// check that the entire dialog length will fit in the packet buffer
+			if (( len + mCompressLen ) > sizeof(CCommand) )
+			{
+				delete [] mCompress;
+
+				// resulting packet will be too large, error message already exists in olddialogprocedure
+				goto olddialogprocedure;
+			}
+
 			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
 
 			*m_compressed_lenTxts = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
@@ -770,6 +788,17 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 	else
 	{
 olddialogprocedure:
+		// check that the entire dialog length will fit in the packet buffer
+		if (lengthText > sizeof(CCommand))
+		{
+			// log an error to console and cancel sending the dialog
+			if (rid != 0)
+				g_Log.EventError("%x:Gump packet for dialog '%s' too big to send to client.\n", m_Socket.GetSocket(), g_Cfg.ResourceGetName((RESOURCE_ID(RES_DIALOG, context_mode))));
+			else
+				g_Log.EventError("%x:Gump packet too big to send to client.\n", m_Socket.GetSocket());
+			return;
+		}
+		
 		// Send the fixed length stuff
 		CCommand cmd;
 		memset( &cmd, 0, sizeof( cmd ) );
