@@ -4251,3 +4251,6 @@ this all in desperation)
 
 29-11-2008, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added mt_mount to the can_flags defname section)
+
+05-12-2008, MrSugarCube
+- Fixed: Server crash caused by exceedingly large dialogs being sent to clients.
