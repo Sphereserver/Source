@@ -123,7 +123,7 @@ while (<local.currentgump> < <local.totalprivcount>)
     local.currentmemberuid=<member.<local.current>.uid>
       
     If (<eval strlen(<uid.<local.currentmemberuid>.name>)>)
-      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentmemberuid>.name><QVAL (!<ISEMPTY <uid.<local.currentmemberuid>.guildtitle>>)&&(<DEF0.TOWNSCONFIG_CHARLIST_SHOWTITLE>) ? , <uid.<local.currentmemberuid>.guildtitle>:>
+      dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 <uid.<local.currentmemberuid>.name><QVAL (!<ISEMPTY <memberfromuid.<local.currentmemberuid>.guildtitle>>)&&(<DEF0.TOWNSCONFIG_CHARLIST_SHOWTITLE>) ? , <memberfromuid.<local.currentmemberuid>.guildtitle>:>
     else
       dtext <QVAL <local.showcheckbox> ? 55 : 20> <EVAL (35 + <EVAL ((<local.currentgump> % 11) * 30)>)> 0 Empty
     endif

@@ -4254,3 +4254,7 @@ this all in desperation)
 
 05-12-2008, MrSugarCube
 - Fixed: Server crash caused by exceedingly large dialogs being sent to clients.
+
+06-12-2008, jeem (Script pack)
+- Updated #1555: sphere_guild_dlg_charlist.scp, sphere_town_dlg_charlist.scp (Fixed script error
+  when showing guild member titles)
