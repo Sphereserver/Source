@@ -4260,6 +4260,9 @@ this all in desperation)
   when showing guild member titles)
 
 07-12-2008, MrSugarCube
+- Added #1086: Skill degradation for skills that have been set to decrease. @SkillChange trigger
+  is called for decaying skills just as it does when they gain (compare <ARGN2> to <<ARGN1>> to
+  determine if the skill is being increased or lowered).
 - Added: Experimental flag EF_UseNetworkMultiVersionMod. This modifies the behaviour of the
   EF_UseNetworkMulti flag (don't forget to set this too) so that clients older than 4.0.0 will
   be unaffected and continue to use the original networking code as if the EF_UseNetworkMulti
