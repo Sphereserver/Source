@@ -3033,6 +3033,10 @@ void CClient::Event_ClientVersion( const char * pData, int Len )
 	if (strstr(sTemp, "UO:3D"))
 		this->m_bClient3d = true;
 
+	// a new client version change may toggle async mode, it's important
+	// to flush pending data to the client before this happens
+	xFlush();
+
 	int len = Str_GetBare( sTemp, sTemp, minimum(Len,10), " '`-+!\"#$%&()*,/:;<=>?@[\\]^{|}~" );
 	if ( len )
 	{

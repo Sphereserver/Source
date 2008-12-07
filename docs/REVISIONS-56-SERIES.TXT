@@ -4258,3 +4258,9 @@ this all in desperation)
 06-12-2008, jeem (Script pack)
 - Updated #1555: sphere_guild_dlg_charlist.scp, sphere_town_dlg_charlist.scp (Fixed script error
   when showing guild member titles)
+
+07-12-2008, MrSugarCube
+- Added: Experimental flag EF_UseNetworkMultiVersionMod. This modifies the behaviour of the
+  EF_UseNetworkMulti flag (don't forget to set this too) so that clients older than 4.0.0 will
+  be unaffected and continue to use the original networking code as if the EF_UseNetworkMulti
+  flag was never set.

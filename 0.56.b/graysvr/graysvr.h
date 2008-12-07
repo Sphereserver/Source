@@ -1113,6 +1113,8 @@ public:
 	bool xSendError(int);
 	void xFlushAsync();
 	void xAsyncSendComplete();
+	bool xUseAsync();
+
 #ifndef _WIN32
 	struct ev_io * GetIOCB();
 	bool xCanSend();

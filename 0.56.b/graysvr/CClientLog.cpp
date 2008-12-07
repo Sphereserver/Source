@@ -787,6 +787,10 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	ASSERT( iLen <= sizeof(bincopy));
 	memcpy( bincopy.m_Raw, pEvent->m_Raw, iLen );
 
+	// a client version change may toggle async mode, it's important
+	// to flush pending data to the client before this happens
+	xFlush();
+
 	if ( !m_Crypt.Init( m_tmSetup.m_dwIP, bincopy.m_Raw, iLen, IsClientKR() ) )
 	{
 		DEBUG_MSG(( "%x:Odd login message length %d?\n", m_Socket.GetSocket(), iLen ));
@@ -872,7 +876,13 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 					if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
 					{
 						if ( tmVer != NULL )
+						{
+							// a client version change may toggle async mode, it's important
+							// to flush pending data to the client before this happens
+							xFlush();
+
 							m_Crypt.SetClientVerEnum(tmVer, false);
+						}
 
 						if ( !xCanEncLogin(true) )
 							lErr = LOGIN_ERR_BAD_CLIVER;
@@ -955,7 +965,7 @@ void CClient::xSendPktNow( const CCommand * pCmd, int length )
 			return;
 		}
 
-		if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
+		if ( !xUseAsync() && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
 
@@ -965,7 +975,7 @@ void CClient::xSendPktNow( const CCommand * pCmd, int length )
 	}
 
 	m_bout.AddNewData((const BYTE*) pData, length);
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( xUseAsync() )
 	{
 		m_vExtPacketLengths.push(length);
 	}
@@ -1049,7 +1059,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 			return;
 		}
 
-		if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
+		if ( !xUseAsync() && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
 		{
 			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
 
@@ -1059,7 +1069,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 	}
 
 	m_bout.AddNewData( (const BYTE*) pData, length );
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( xUseAsync() )
 	{
 		m_vExtPacketLengths.push(length);
 	}
@@ -1068,7 +1078,7 @@ void CClient::xSend( const void *pData, int length, bool bQueue)
 	{
 		xFlush();
 #ifndef _WIN32
-		if ( IsSetEF( EF_UseNetworkMulti ) )
+		if ( xUseAsync() )
 		{
 			g_NetworkEvent.forceClientwrite(this);
 		}
@@ -1087,14 +1097,14 @@ void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We
 	ADDTOCALLSTACK("CClient::xSendReady");
 
 	// We could send the packet now if we wanted to but wait til we have more.
-	if ( !IsSetEF( EF_UseNetworkMulti ) && ( m_bout.GetDataQty() + length >= MAX_BUFFER ))
+	if ( !xUseAsync() && ( m_bout.GetDataQty() + length >= MAX_BUFFER ))
 	{
 		xFlush();
 	}
 //	DEBUG_ERR(("SEND: %x:adding %d bytes\n", m_Socket.GetSocket(), length));
 	xSend( pData, length );
 
-	if ( IsSetEF( EF_UseNetworkMulti ) || (bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 )))	// send only if we have a bunch.
+	if ( xUseAsync() || (bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 )))	// send only if we have a bunch.
 	{
 		xFlush();
 	}
@@ -1103,7 +1113,7 @@ void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We
 bool CClient::xSendError(int iErrCode)
 {
 #ifdef _WIN32
-	if ( IsSetEF( EF_UseNetworkMulti ) && (iErrCode == WSA_IO_PENDING))
+	if ( xUseAsync() && (iErrCode == WSA_IO_PENDING))
     {
 		m_sendingData = true;
 		return false; //Success!
@@ -1113,7 +1123,7 @@ bool CClient::xSendError(int iErrCode)
 		m_fClosed = true;
 		return true;
 	}
-	else if ( !IsSetEF( EF_UseNetworkMulti ) && (iErrCode == WSAEWOULDBLOCK ))
+	else if ( !xUseAsync() && (iErrCode == WSAEWOULDBLOCK ))
 	{
 		// just try back later. or select() will close it for us later.
 		return true;
@@ -1133,7 +1143,7 @@ void CClient::xFlush()
 {
 	ADDTOCALLSTACK("CClient::xFlush");
 	
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( xUseAsync() )
 	{
 #ifdef _WIN32
 		xFlushAsync();
@@ -1243,6 +1253,27 @@ void CClient::xAsyncSendComplete()
 		m_sendingData = sending;
 	}
 #endif
+
+bool CClient::xUseAsync()
+{
+	// is async mode enabled?
+	if ( !IsSetEF( EF_UseNetworkMulti ) )
+		return false;
+
+	// if the version mod flag is not set, always use async mode
+	if ( !IsSetEF( EF_UseNetworkMultiVersionMod ) )
+		return true;
+
+	// only use async with clients newer than 4.0.0
+	// - normally the client version is unknown for the first 1 or 2 packets, so all clients will begin
+	//   without async networking (but should switch over as soon as it has been determined)
+	// - a minor issue with this is that for clients without encryption we cannot determine their version
+	//   until after they have fully logged into the game server and sent a client version packet.
+	if ( IsClientVersion( 0x400000 ) || IsClientKR() )
+		return true;
+
+	return false;
+}
 
 void CClient::xFlushAsync()
 {

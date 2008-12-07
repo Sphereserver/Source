@@ -3097,7 +3097,11 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
-		if ( IsSetEF(EF_UseNetworkMulti) ) catresname(zExperimentalFlags, "UseAsyncNetwork");
+		if ( IsSetEF(EF_UseNetworkMulti) )
+		{
+			if ( IsSetEF(EF_UseNetworkMultiVersionMod) ) catresname(zExperimentalFlags, "UseAsyncNetworkVersionMod")
+			else catresname(zExperimentalFlags, "UseAsyncNetwork");
+		}
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
 		if ( zExperimentalFlags[0] )
