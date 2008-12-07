@@ -484,6 +484,63 @@ int CChar::Skill_GetSum() const
 	return( iSkillSum );
 }
 
+void CChar::Skill_Decay()
+{
+	ADDTOCALLSTACK("CChar::Skill_Decay");
+	// Decay the character's skill levels.
+
+	SKILL_TYPE skillDeduct = SKILL_NONE;
+	int iSkillLevel = 0;
+
+	// look for a skill to deduct from
+	for (int i = 0; i < MAX_SKILL; ++i)
+	{
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) == false )
+			continue;
+
+		// check that the skill is set to decrease and that it is not already at 0
+		if ( Skill_GetLock((SKILL_TYPE)i) != SKILLLOCK_DOWN || Skill_GetBase((SKILL_TYPE)i) <= 0 )
+			continue;
+
+		// prefer to deduct from lesser skills
+		if ( skillDeduct != SKILL_NONE && iSkillLevel > Skill_GetBase((SKILL_TYPE)i))
+			continue;
+
+		skillDeduct = (SKILL_TYPE)i;
+		iSkillLevel = Skill_GetBase(skillDeduct);
+	}
+
+	// debug message
+#ifdef _DEBUG
+	if ( ( g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS ) && IsPriv( PRIV_DETAIL ) && GetPrivLevel() >= PLEVEL_GM )
+	{
+		if ( skillDeduct == SKILL_NONE )
+			SysMessage("No suitable skill to reduce.\n");
+		else
+			SysMessagef("Reducing %s=%d.%d\n", g_Cfg.GetSkillKey(skillDeduct), iSkillLevel/10, iSkillLevel%10);
+	}
+#endif
+
+	// deduct a point from the chosen skill
+	if ( skillDeduct != SKILL_NONE )
+	{
+		iSkillLevel--;
+
+		if ( !IsSetEF(EF_Minimize_Triggers) )
+		{
+			CScriptTriggerArgs args;
+			args.m_iN1 = (int) skillDeduct;
+			args.m_iN2 = iSkillLevel;
+			if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
+				return;
+
+			iSkillLevel = args.m_iN2;
+		}
+
+		Skill_SetBase(skillDeduct, iSkillLevel);
+	}
+}
+
 void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 {
 	ADDTOCALLSTACK("CChar::Skill_Experience");
@@ -573,34 +630,41 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 	int iRoll = Calc_GetRandVal(1000);
 
-	if ( iSkillLevel < iSkillMax && difficulty ) // Are we in position to gain skill ?
+	if ( iSkillLevel < iSkillMax ) // Are we in position to gain skill ?
 	{
-#ifdef _DEBUG
-		if ( IsPriv( PRIV_DETAIL ) &&
-			GetPrivLevel() >= PLEVEL_GM &&
-			( g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS ))
+		// slightly more chance of decay than gain
+		if ( (iRoll * 3) <= (iChance * 4) )
+			Skill_Decay();
+
+		if ( difficulty > 0 )
 		{
-			SysMessagef( "%s=%d.%d Difficult=%d Gain Chance=%d.%d%% Roll=%d%%",
-				(LPCTSTR) pSkillDef->GetKey(),
-				iSkillLevel/10,(iSkillLevel)%10,
-				difficulty/10, iChance/10, iChance%10, iRoll/10 );
-		}
+#ifdef _DEBUG
+			if ( IsPriv( PRIV_DETAIL ) &&
+				GetPrivLevel() >= PLEVEL_GM &&
+				( g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS ))
+			{
+				SysMessagef( "%s=%d.%d Difficult=%d Gain Chance=%d.%d%% Roll=%d%%",
+					(LPCTSTR) pSkillDef->GetKey(),
+					iSkillLevel/10,(iSkillLevel)%10,
+					difficulty/10, iChance/10, iChance%10, iRoll/10 );
+			}
 #endif
 
-		if ( iRoll <= iChance )
-		{
-			iSkillLevel++;
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( iRoll <= iChance )
 			{
-				CScriptTriggerArgs args;
-				args.m_iN1 = (int) skill;
-				args.m_iN2 = iSkillLevel;
-				if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
-					return;
+				iSkillLevel++;
+				if ( !IsSetEF(EF_Minimize_Triggers) )
+				{
+					CScriptTriggerArgs args;
+					args.m_iN1 = (int) skill;
+					args.m_iN2 = iSkillLevel;
+					if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
+						return;
 
-				iSkillLevel = args.m_iN2;
+					iSkillLevel = args.m_iN2;
+				}
+				Skill_SetBase( skill, iSkillLevel );
 			}
-			Skill_SetBase( skill, iSkillLevel );
 		}
 	}
 
