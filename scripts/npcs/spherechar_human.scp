@@ -252,6 +252,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Provisions - Deeds
+SUBSECTION=Vendor Deeds
+DESCRIPTION=Player Vendor Female
 
 ON=@Create
 	NPC=brain_vendor
@@ -280,9 +283,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Provisions - Deeds
-	SUBSECTION=Vendor Deeds
-	DESCRIPTION=Player Vendor Female
+
 
 [CHARDEF 0410]
 DEFNAME=C_H_ACTOR
@@ -300,6 +301,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Actor (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -326,9 +330,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Actor (male)
+
 
 [CHARDEF 0411]
 DEFNAME=C_H_ACTOR_F
@@ -348,6 +350,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Actor (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -372,9 +377,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Actor (female)
+
 
 [CHARDEF 0412]
 DEFNAME=C_H_ARCHITECT
@@ -394,6 +397,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Architect (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -422,9 +428,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_DEED_TEMPLATE
 	BUY=VENDOR_B_DEED_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Architect (male)
+
 
 [CHARDEF 0413]
 DEFNAME=C_H_ARCHITECT_F
@@ -444,6 +448,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Architect (female)
 
 ON=@Create
 	NPC=BRAIN_VENDOR
@@ -470,9 +477,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_DEED_TEMPLATE
 	BUY=VENDOR_B_DEED_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Architect (female)
+
 
 [CHARDEF 0414]
 DEFNAME=C_H_ARTIST
@@ -492,6 +497,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Artist (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -520,9 +528,6 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=random_coin_purse
 	ITEM=i_PALETTE
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Artist (male)
 
 [CHARDEF 0415]
 DEFNAME=C_H_ARTIST_F
@@ -544,6 +549,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Artist (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -570,9 +578,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=random_coin_purse
 	ITEM=i_PALETTE
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Artist (female)
+
 
 [CHARDEF 0416]
 DEFNAME=C_H_BAKER
@@ -594,6 +600,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Baker (male)
 
 ON=@Create
 	NPC=BRAIN_VENDOR
@@ -624,9 +633,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_BAKER_TEMPLATE
 	BUY=VENDOR_B_BAKER_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Baker (male)
+
 
 [CHARDEF 0417]
 DEFNAME=C_H_BAKER_F
@@ -647,6 +654,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Baker (female)
 
 ON=@Create
 	NPC=BRAIN_VENDOR
@@ -675,9 +685,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_BAKER_TEMPLATE
 	BUY=VENDOR_B_BAKER_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Baker (female)
+
 
 [CHARDEF 0418]
 DEFNAME=C_H_BANKER
@@ -697,6 +705,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Banker (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -722,9 +733,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Banker (male)
+
 
 [CHARDEF 0419]
 DEFNAME=C_H_BANKER_F
@@ -746,6 +755,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Banker (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -770,9 +782,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
 	ITEM=RANDOM_LIGHT
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Banker (female)
+
 
 [CHARDEF 0420]
 DEFNAME=C_H_BEEKEEPER
@@ -795,6 +805,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Beekeeper (male)
 
 ON=@Create
 	NPC=BRAIN_VENDOR
@@ -820,9 +833,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=i_jar_honey,{14 40}
 	BUY=i_jar_honey,{4 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Beekeeper (male)
+
 
 [CHARDEF 0421]
 DEFNAME=C_H_BEEKEEPER_F
@@ -845,6 +856,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Beekeeper (female)
 
 ON=@Create
 	NPC=BRAIN_VENDOR
@@ -869,9 +883,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=i_jar_honey,{14 40}
 	BUY=i_jar_honey,{4 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Beekeeper (female)
+
 
 [CHARDEF 0422]
 DEFNAME=C_H_BRIGAND
@@ -894,6 +906,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Brigand (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -928,9 +943,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=random_weapon
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Brigand (male)
+
 
 [CHARDEF 0423]
 DEFNAME=C_H_BRIGAND_F
@@ -951,6 +964,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Brigand (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -983,9 +999,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=random_weapon
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Brigand (female)
+
 
 [CHARDEF 0424]
 //Male BUTCHER
@@ -1007,6 +1021,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Butcher (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1035,9 +1052,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_BUTCHER_TEMPLATE
 	BUY=VENDOR_B_BUTCHER_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Butcher (male)
+
 
 [CHARDEF 0425]
 DEFNAME=C_H_BUTCHER_F
@@ -1060,6 +1075,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Butcher (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1084,9 +1102,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_BUTCHER_TEMPLATE
 	BUY=VENDOR_B_BUTCHER_TEMPLATE
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Butcher (female)
+
 
 [CHARDEF 0426]
 DEFNAME=C_H_CARPENTER
@@ -1107,6 +1123,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Carpenter (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1136,9 +1155,7 @@ ON=@NPCRestock
 	//vendor items
 	SELL=VENDOR_S_CARPENTER
 	BUY=VENDOR_B_CARPENTER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Carpenter (male)
+
 
 [CHARDEF 0427]
 //Female CARPENTER
@@ -1160,6 +1177,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Carpenter (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1186,9 +1206,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_CARPENTER
 	BUY=VENDOR_B_CARPENTER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Carpenter (female)
+
 
 [CHARDEF 0428]
 //Male COBBLER
@@ -1210,6 +1228,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Cobbler (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1241,9 +1262,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	SELL=VENDOR_S_COBBLER
 	BUY=VENDOR_B_COBBLER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Cobbler (male)
+
 
 [CHARDEF 0429]
 DEFNAME=C_H_COBBLER_F
@@ -1264,6 +1283,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Cobbler (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1293,9 +1315,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	SELL=vendor_s_cobbler
 	BUY=vendor_b_cobbler
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Cobbler (female)
+
 
 [CHARDEF 0430]
 DEFNAME=C_H_FARMER
@@ -1316,6 +1336,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Farmer (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1347,9 +1370,7 @@ ON=@NPCRestock
 	ITEM=random_boots
 	SELL=VENDOR_S_FARMER
 	BUY=VENDOR_B_FARMER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Farmer (male)
+
 
 [CHARDEF 0431]
 DEFNAME=C_H_FARMER_F
@@ -1370,6 +1391,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Farmer (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1397,9 +1421,7 @@ ON=@NPCRestock
 	ITEM=random_boots
 	SELL=VENDOR_S_FARMER
 	BUY=VENDOR_B_FARMER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Farmer (female)
+
 
 [CHARDEF 0432]
 DEFNAME=C_H_FURTRADER
@@ -1422,6 +1444,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Fur Trader (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1453,9 +1478,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_FURTRADER
 	BUY=VENDOR_B_FURTRADER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Fur Trader (male)
+
 
 [CHARDEF 0433]
 DEFNAME=C_H_FURTRADER_F
@@ -1478,6 +1501,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Fur Trader (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1507,9 +1533,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_FURTRADER
 	BUY=VENDOR_B_FURTRADER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Fur Trader (female)
+
 
 [CHARDEF 0434]
 DEFNAME=C_H_GAMBLER
@@ -1532,6 +1556,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Gambler (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -1560,9 +1587,7 @@ ON=@NPCRestock
 	ITEM=random_footwear
 	ITEM=random_dagger
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Gambler (male)
+
 
 [CHARDEF 0435]
 DEFNAME=C_H_GAMBLER_F
@@ -1583,6 +1608,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Gambler (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -1611,9 +1639,7 @@ ON=@NPCRestock
 	ITEM=random_footwear
 	ITEM=random_dagger
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Gambler (female)
+
 
 [CHARDEF 0436]
 DEFNAME=C_H_GLASSBLOWER
@@ -1634,6 +1660,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Glassblower (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1664,9 +1693,7 @@ ON=@NPCRestock
 	BUY=i_BOTTLE_EMPTY,{2 10}
 	BUY=i_jar_empty,{2 10}
 	BUY=i_pitcher_glass,{2 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Glassblower (male)
+
 
 [CHARDEF 0437]
 //Female GLASSBLOWER
@@ -1688,6 +1715,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Glassblower (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -1716,9 +1746,7 @@ ON=@NPCRestock
 	BUY=i_BOTTLE_EMPTY,{2 10}
 	BUY=i_jar_empty,{2 10}
 	BUY=i_pitcher_glass,{2 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Glassblower (female)
+
 
 [CHARDEF 0438]
 //Male GUARD
@@ -1874,6 +1902,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Gypsy (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -1910,9 +1941,7 @@ ON=@NPCRestock
 	COLOR=colors_blue
 	ITEM=random_footwear
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Gypsy (male)
+
 
 [CHARDEF 0441]
 DEFNAME=C_H_GYPSY_F
@@ -1933,6 +1962,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Gypsy (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -1967,9 +1999,7 @@ ON=@NPCRestock
 	COLOR=colors_blue
 	ITEM=random_footwear
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Gypsy (female)
+
 
 [CHARDEF 0442]
 DEFNAME=C_H_HERBALIST
@@ -1990,6 +2020,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Herbalist (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -2031,9 +2064,7 @@ ON=@NPCRestock
 	BUY=i_reag_nightshade,{4 19}
 	BUY=i_reag_blood_moss,{4 19}
 	BUY=i_mortar_pestle,{4 19}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Herbalist (male)
+
 
 [CHARDEF 0443]
 DEFNAME=C_H_HERBALIST_F
@@ -2054,6 +2085,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Herbalist (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -2093,9 +2127,7 @@ ON=@NPCRestock
 	BUY=i_reag_nightshade,{4 19}
 	BUY=i_reag_blood_moss,{4 19}
 	BUY=i_mortar_pestle,{4 19}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Herbalist (female)
+
 
 [CHARDEF 0444]
 DEFNAME=C_H_JAILOR
@@ -2116,6 +2148,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guards & Law
+DESCRIPTION=Jailor (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2144,9 +2179,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sword_long
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guards & Law
-	DESCRIPTION=Jailor (male)
+
 
 [CHARDEF 0445]
 DEFNAME=C_H_JAILOR_F
@@ -2167,6 +2200,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guards & Law
+DESCRIPTION=Jailor (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2193,9 +2229,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sword_long
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guards & Law
-	DESCRIPTION=Jailor (female)
+
 
 [CHARDEF 0446]
 DEFNAME=C_H_JUDGE
@@ -2216,6 +2250,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guards & Law
+DESCRIPTION=Judge (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2242,9 +2279,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guards & Law
-	DESCRIPTION=Judge (male)
+
 
 [CHARDEF 0447]
 DEFNAME=C_H_JUDGE_F
@@ -2265,6 +2300,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guards & Law
+DESCRIPTION=Judge (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2289,9 +2327,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guards & Law
-	DESCRIPTION=Judge (female)
+
 
 [CHARDEF 0448]
 DEFNAME=C_H_MAGINCIA_COUNCIL
@@ -2312,6 +2348,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Magincia Town Members
+DESCRIPTION=Magincia Council Member (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2340,9 +2379,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sword_long
 	ITEM=backpack_loaded
-	CATEGORY=Civilized
-	SUBSECTION=Magincia Town Members
-	DESCRIPTION=Magincia Council Member (male)
+
 
 [CHARDEF 0449]
 DEFNAME=C_H_MAGINCIA_COUNCIL_F
@@ -2363,6 +2400,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Magincia Town Members
+DESCRIPTION=Magincia Council Member (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2393,9 +2433,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sword_long
 	ITEM=backpack_loaded
-	CATEGORY=Civilized
-	SUBSECTION=Magincia Town Members
-	DESCRIPTION=Magincia Council Member (female)
+
 
 [CHARDEF 0450]
 DEFNAME=C_H_MAGINCIA_SERVANT
@@ -2416,6 +2454,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Magincia Town Members
+DESCRIPTION=Magincia Servant (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2436,9 +2477,7 @@ ON=@NPCRestock
 	ITEM=i_sandals
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Magincia Town Members
-	DESCRIPTION=Magincia Servant (male)
+
 
 [CHARDEF 0451]
 DEFNAME=C_H_MAGINCIA_SERVANT_F
@@ -2459,6 +2498,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Magincia Town Members
+DESCRIPTION=Magincia Servant (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2479,9 +2521,7 @@ ON=@NPCRestock
 	ITEM=i_sandals
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Magincia Town Members
-	DESCRIPTION=Magincia Servant (female)
+
 
 [CHARDEF 0452]
 DEFNAME=C_H_MAYOR
@@ -2502,6 +2542,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Mayor (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2530,9 +2573,7 @@ ON=@NPCRestock
 	ITEM=i_SASH
 	COLOR=colors_red
 	ITEM=backpack_rich
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Mayor (male)
+
 
 [CHARDEF 0453]
 DEFNAME=C_H_MAYOR_F
@@ -2553,6 +2594,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Mayor (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2577,9 +2621,7 @@ ON=@NPCRestock
 	ITEM=i_SASH
 	COLOR=colors_red
 	ITEM=backpack_rich
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Mayor (female)
+
 
 [CHARDEF 0454]
 DEFNAME=C_H_MILLER
@@ -2600,6 +2642,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Miller (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -2628,9 +2673,7 @@ ON=@NPCRestock
 	SELL=i_hay_sheaf,{4 10}
 	BUY=i_FLOUR_SACK,{4 10}
 	BUY=i_hay_sheaf,{4 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Miller (male)
+
 
 [CHARDEF 0455]
 DEFNAME=C_H_MILLER_F
@@ -2651,6 +2694,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Miller (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -2677,9 +2723,7 @@ ON=@NPCRestock
 	SELL=i_hay_sheaf,{4 10}
 	BUY=i_FLOUR_SACK,{4 10}
 	BUY=i_hay_sheaf,{4 10}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Miller (female)
+
 
 [CHARDEF 0456]
 DEFNAME=C_H_MINTER
@@ -2700,6 +2744,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Minter (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2725,9 +2772,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Minter (male)
+
 
 [CHARDEF 0457]
 DEFNAME=C_H_MINTER_F
@@ -2748,6 +2793,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Minter (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2771,9 +2819,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Minter (female)
+
 
 [CHARDEF 0458]
 DEFNAME=C_H_MONK
@@ -2793,6 +2839,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Religious
+DESCRIPTION=Monk (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2815,9 +2864,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Religious
-	DESCRIPTION=Monk (male)
+
 
 [CHARDEF 0459]
 DEFNAME=C_H_MONK_F
@@ -2837,6 +2884,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Religious
+DESCRIPTION=Monk (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2857,9 +2907,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Religious
-	DESCRIPTION=Monk (female)
+
 
 [CHARDEF 0460]
 DEFNAME=C_H_NOBLE
@@ -2879,6 +2927,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Noble (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2911,9 +2962,7 @@ ON=@NPCRestock
 	ITEM=random_boots
 	ITEM=i_sword_long
 	ITEM=backpack_loaded
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Noble (male)
+
 
 [CHARDEF 0461]
 DEFNAME=C_H_NOBLE_F
@@ -2933,6 +2982,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Noble (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2961,9 +3013,7 @@ ON=@NPCRestock
 	ITEM=random_boots
 	ITEM=i_sword_long
 	ITEM=backpack_loaded
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Noble (female)
+
 
 [CHARDEF 0462]
 DEFNAME=C_H_CASHUAL
@@ -2984,6 +3034,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Ocllo Town Members
+DESCRIPTION=Ocllo Casual (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3015,9 +3068,7 @@ ON=@NPCRestock
 	SELL=i_spellbook,{3 14}
 	BUY=RANDOM_POTION,{12 20}
 	BUY=RANDOM_REAGENT,{12 20}
-	CATEGORY=Civilized
-	SUBSECTION=Ocllo Town Members
-	DESCRIPTION=Ocllo Casual (male)
+
 
 [CHARDEF 0463]
 DEFNAME=C_H_CASHUAL_F
@@ -3038,6 +3089,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Ocllo Town Members
+DESCRIPTION=Ocllo Casual (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3067,9 +3121,7 @@ ON=@NPCRestock
 	SELL=i_spellbook,{3 14}
 	BUY=RANDOM_POTION,{12 20}
 	BUY=RANDOM_REAGENT,{12 20}
-	CATEGORY=Civilized
-	SUBSECTION=Ocllo Town Members
-	DESCRIPTION=Ocllo Casual (female)
+
 
 [CHARDEF 0464]
 DEFNAME=C_H_PRIEST
@@ -3175,6 +3227,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Ocllo Town Members
+DESCRIPTION=Ocllo Runner (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3200,9 +3255,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Ocllo Town Members
-	DESCRIPTION=Ocllo Runner (male)
+
 
 [CHARDEF 0467]
 DEFNAME=C_H_OCLLORUNNER_F
@@ -3222,6 +3275,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Ocllo Town Members
+DESCRIPTION=Ocllo Runner (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3245,9 +3301,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Ocllo Town Members
-	DESCRIPTION=Ocllo Runner (female)
+
 
 [CHARDEF 0468]
 DEFNAME=C_H_PEASANT
@@ -3270,6 +3324,9 @@ TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Peasant (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3292,9 +3349,7 @@ ON=@NPCRestock
 	ITEM=random_pants
 	COLOR=colors_all
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Peasant (male)
+
 
 [CHARDEF 0469]
 DEFNAME=C_H_PEASANT_F
@@ -3317,6 +3372,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Peasant (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3337,9 +3395,7 @@ ON=@NPCRestock
 	ITEM=random_skirt
 	COLOR=colors_all
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Peasant (female)
+
 
 [CHARDEF 0470]
 DEFNAME=C_H_PIRATE
@@ -3360,6 +3416,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Pirate (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3390,9 +3449,7 @@ ON=@NPCRestock
 	ITEM=i_boots_thigh
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Pirate (male)
+
 
 [CHARDEF 0471]
 DEFNAME=C_H_PIRATE_F
@@ -3413,6 +3470,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Pirate (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3441,9 +3501,7 @@ ON=@NPCRestock
 	ITEM=i_boots_thigh
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Pirate (female)
+
 
 [CHARDEF 0472]
 DEFNAME=C_H_PRISONER
@@ -3464,6 +3522,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Prisoner (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3483,9 +3544,7 @@ ON=@NPCRestock
 	ITEM=i_pants_short
 	COLOR=colors_all
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Prisoner (male)
+
 
 [CHARDEF 0473]
 DEFNAME=C_H_PRISONER_F
@@ -3506,6 +3565,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Prisoner (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3525,9 +3587,7 @@ ON=@NPCRestock
 	ITEM=random_skirt
 	COLOR=colors_all
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Prisoner (female)
+
 
 [CHARDEF 0474]
 DEFNAME=C_H_RANCHER
@@ -3549,6 +3609,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Rancher (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3587,9 +3650,7 @@ ON=@NPCRestock
 	BUY=i_hay_sheaf,{50 300}
 	BUY=i_fruit_apple,{20 50}
 	BUY=i_fruit_carrot,50
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Rancher (male)
+
 
 [CHARDEF 0475]
 DEFNAME=C_H_RANCHER_F
@@ -3611,6 +3672,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Rancher (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3647,9 +3711,7 @@ ON=@NPCRestock
 	BUY=i_hay_sheaf,{50 300}
 	BUY=i_fruit_apple,{20 50}
 	BUY=i_fruit_carrot,50
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Rancher (female)
+
 
 [CHARDEF 0476]
 DEFNAME=C_H_SCRIBE
@@ -3671,6 +3733,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Scribe (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3706,9 +3771,7 @@ ON=@NPCRestock
 	BUY=i_book_sm_pub,{6 24}
 	BUY=i_book_lg_pub,{6 24}
 	BUY=i_deed_GUILDSTONE,{1 2}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Scribe (male)
+
 
 [CHARDEF 0477]
 DEFNAME=C_H_SCRIBE_F
@@ -3730,6 +3793,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Scribe (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3763,9 +3829,7 @@ ON=@NPCRestock
 	BUY=i_book_sm_pub,{6 24}
 	BUY=i_book_lg_pub,{6 24}
 	BUY=i_deed_GUILDSTONE,{1 2}
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Scribe (female)
+
 
 [CHARDEF 0478]
 DEFNAME=C_H_SCULPTOR
@@ -3785,6 +3849,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Sculptor (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3809,9 +3876,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Sculptor (male)
+
 
 [CHARDEF 0479]
 DEFNAME=C_H_SCULPTOR_F
@@ -3831,6 +3896,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Sculptor (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -3853,9 +3921,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Sculptor (female)
+
 
 [CHARDEF 0480]
 DEFNAME=C_H_SHEPHERD
@@ -3876,6 +3942,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Shepherd (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3909,9 +3978,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_SHEPHERD
 	BUY=VENDOR_B_SHEPHERD
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Shepherd (male)
+
 
 [CHARDEF 0481]
 DEFNAME=C_H_SHEPHERD_F
@@ -3932,6 +3999,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+	CATEGORY=Civilized
+	SUBSECTION=Tradesmen
+	DESCRIPTION=Shepherd (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -3963,9 +4033,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_SHEPHERD
 	BUY=VENDOR_B_SHEPHERD
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Shepherd (female)
+
 
 [CHARDEF 0482]
 DEFNAME=C_H_TANNER
@@ -3986,6 +4054,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tanner (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4014,9 +4085,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TANNER
 	BUY=VENDOR_B_TANNER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tanner (male)
+
 
 [CHARDEF 0483]
 DEFNAME=C_H_TANNER_F
@@ -4037,6 +4106,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tanner (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4063,9 +4135,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TANNER
 	BUY=VENDOR_B_TANNER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tanner (female)
+
 
 [CHARDEF 0484]
 DEFNAME=C_H_VEGISELLER
@@ -4086,6 +4156,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Vegetable Seller (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4112,9 +4185,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_VEGSELLER
 	BUY=VENDOR_B_VEGSELLER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Vegetable Seller (male)
+
 
 [CHARDEF 0485]
 DEFNAME=C_H_VEGISELLER_F
@@ -4134,6 +4205,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Vegetable Seller (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4158,9 +4232,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_VEGSELLER
 	BUY=VENDOR_B_VEGSELLER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Vegetable Seller (female)
+
 
 [CHARDEF 0486]
 DEFNAME=C_H_VET
@@ -4181,6 +4253,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Veterinarian (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4207,9 +4282,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_VET
 	BUY=VENDOR_B_VET
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Veterinarian (male)
+
 
 [CHARDEF 0487]
 DEFNAME=C_H_VET_F
@@ -4230,6 +4303,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Veterinarian (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4254,9 +4330,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_VET
 	BUY=VENDOR_B_VET
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Veterinarian (female)
+
 
 [CHARDEF 0488]
 DEFNAME=C_H_WAITER
@@ -4277,6 +4351,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Waiter (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4308,9 +4385,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_WAITER
 	BUY=VENDOR_B_WAITER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Waiter (male)
+
 
 [CHARDEF 0489]
 DEFNAME=C_H_WAITRESS
@@ -4331,6 +4406,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_HearUnk
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Waitress (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4358,9 +4436,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_WAITER
 	BUY=VENDOR_B_WAITER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Waitress (female)
+
 
 [CHARDEF 0490]
 DEFNAME=C_H_ALCHEMIST
@@ -4381,6 +4457,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Alchemist (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4412,9 +4491,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_ALCHEMIST
 	BUY=VENDOR_B_ALCHEMIST
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Alchemist (male)
+
 
 [CHARDEF 0491]
 DEFNAME=C_H_ALCHEMIST_F
@@ -4435,6 +4512,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Alchemist (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4464,9 +4544,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_ALCHEMIST
 	BUY=VENDOR_B_ALCHEMIST
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Alchemist (female)
+
 
 [CHARDEF 0492]
 DEFNAME=C_H_MAGESHOP
@@ -4488,6 +4566,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Mage (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4544,9 +4625,7 @@ ON=@NPCRestock
 	ITEM=random_upper_scroll
 	SELL=VENDOR_S_MAGE_SHOP
 	BUY=VENDOR_B_MAGE_SHOP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Mage (male)
+
 
 [CHARDEF 0493]
 DEFNAME=C_H_MAGESHOP_F
@@ -4567,6 +4646,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Mage (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4622,9 +4704,7 @@ ON=@NPCRestock
 	ITEM=random_upper_scroll
 	SELL=VENDOR_S_MAGE_SHOP
 	BUY=VENDOR_B_MAGE_SHOP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Mage (female)
+
 
 [CHARDEF 0494]
 DEFNAME=C_H_MAGE
@@ -4644,6 +4724,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Mage (male) (Non Shopkeeper)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4670,9 +4753,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_all
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Mage (male) (Non Shopkeeper)
+
 
 [CHARDEF 0495]
 DEFNAME=C_H_MAGE_F
@@ -4692,6 +4773,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Mage (female) (Non Shopkeeper)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4716,9 +4800,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_all
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Mage (female) (Non Shopkeeper)
+
 
 [CHARDEF 0496]
 DEFNAME=C_H_EVILMAGE
@@ -4739,6 +4821,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Evil Mage (Male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4769,9 +4854,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Evil Mage (Male)
+	
 
 [CHARDEF 0497]
 DEFNAME=C_H_EVILMAGE_F
@@ -4792,6 +4875,9 @@ TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_HearUnk
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Outlaws & Rogues
+DESCRIPTION=Evil Mage (Female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4820,9 +4906,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Outlaws & Rogues
-	DESCRIPTION=Evil Mage (Female)
+
 
 [CHARDEF 0498]
 DEFNAME=C_H_GUILD_ARCANE
@@ -4844,6 +4928,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster of Arcane Arts (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4874,9 +4961,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster of Arcane Arts (male)
+
 
 [CHARDEF 0499]
 DEFNAME=C_H_GUILD_ARCANE_F
@@ -4898,6 +4983,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster of Arcane Arts (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -4926,9 +5014,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster of Arcane Arts (female)
+
 
 [CHARDEF 0500]
 DEFNAME=C_H_COOK
@@ -4949,6 +5035,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Cook (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -4977,9 +5066,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_COOK
 	BUY=VENDOR_B_COOK
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Cook (male)
+
 
 [CHARDEF 0501]
 DEFNAME=C_H_COOK_F
@@ -5000,6 +5087,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Cook (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5026,9 +5116,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_COOK
 	BUY=VENDOR_B_COOK
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Cook (female)
+
 
 [CHARDEF 0502]
 DEFNAME=C_H_WEAVER
@@ -5049,6 +5137,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaver (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5074,9 +5165,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_WEAVER
 	BUY=VENDOR_B_WEAVER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaver (male)
+
 
 [CHARDEF 0503]
 DEFNAME=C_H_WEAVER_F
@@ -5097,6 +5186,9 @@ TEVENTS=e_Human_ConvInit
 TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaver (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5120,9 +5212,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_WEAVER
 	BUY=VENDOR_B_WEAVER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaver (female)
+
 
 [CHARDEF 0504]
 DEFNAME=C_H_GUILD_CLOTHIER
@@ -5144,6 +5234,9 @@ TEVENTS=e_Human_ConvInit
 TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Clothier  (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5170,9 +5263,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Clothier  (male)
+
 
 [CHARDEF 0506]
 DEFNAME=C_H_TAILOR
@@ -5192,6 +5283,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tailor (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5218,9 +5312,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TAILOR
 	BUY=VENDOR_B_TAILOR
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tailor (male)
+
 
 [CHARDEF 0507]
 DEFNAME=C_H_TAILOR_F
@@ -5240,6 +5332,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tailor (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5264,9 +5359,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TAILOR
 	BUY=VENDOR_B_TAILOR
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tailor (female)
+
 
 [CHARDEF 0508]
 DEFNAME=C_H_BARD
@@ -5286,6 +5379,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Bard (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5320,9 +5416,7 @@ ON=@NPCRestock
 	ITEM=random_instrument
 	ITEM=random_instrument
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Bard (male)
+
 
 [CHARDEF 0509]
 DEFNAME=C_H_BARD_F
@@ -5342,6 +5436,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Arts & Music
+DESCRIPTION=Bard (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5374,9 +5471,7 @@ ON=@NPCRestock
 	ITEM=random_instrument
 	ITEM=random_instrument
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Arts & Music
-	DESCRIPTION=Bard (female)
+
 
 [CHARDEF 0510]
 DEFNAME=C_H_GUILD_BARD
@@ -5398,6 +5493,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Bard (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5432,9 +5530,7 @@ ON=@NPCRestock
 	ITEM=random_instrument
 	ITEM=random_instrument
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Bard (male)
+
 
 [CHARDEF 0511]
 DEFNAME=C_H_GUILD_BARD_F
@@ -5456,6 +5552,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Bard (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5488,9 +5587,7 @@ ON=@NPCRestock
 	ITEM=random_instrument
 	ITEM=random_instrument
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Bard (female)
+
 
 [CHARDEF 0512]
 DEFNAME=C_H_TINKER
@@ -5511,7 +5608,10 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
-
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tinker (male)
+	
 ON=@Create
 	NPC=brain_vendor
 	COLOR=colors_skin
@@ -5543,9 +5643,7 @@ ON=@NPCRestock
 	ITEM=i_tinker_tools
 	SELL=VENDOR_S_TINKER
 	BUY=VENDOR_B_TINKER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tinker (male)
+
 
 [CHARDEF 0513]
 DEFNAME=C_H_TINKER_F
@@ -5566,6 +5664,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tinker (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -5596,9 +5697,7 @@ ON=@NPCRestock
 	ITEM=i_tinker_tools
 	SELL=VENDOR_S_TINKER
 	BUY=VENDOR_B_TINKER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tinker (female)
+
 
 [CHARDEF 0514]
 DEFNAME=C_H_GUILD_ENGINEER
@@ -5620,6 +5719,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Engineer (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5649,9 +5751,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Engineer (male)
+
 
 [CHARDEF 0515]
 DEFNAME=C_H_GUILD_ENGINEER_F
@@ -5673,6 +5773,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Engineer (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5700,9 +5803,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Engineer (female)
+
 
 [CHARDEF 0516]
 // shopkeep
@@ -5724,6 +5825,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Healer (male)
 
 ON=@Create
 	NPC=brain_healer
@@ -5750,9 +5854,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_HEALER_SHOP
 	BUY=VENDOR_B_HEALER_SHOP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Healer (male)
+
 
 [CHARDEF 0517]
 DEFNAME=C_H_HEALER_F
@@ -5773,6 +5875,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Healer (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5797,9 +5902,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_HEALER_SHOP
 	BUY=VENDOR_B_HEALER_SHOP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Healer (female)
+
 
 [CHARDEF 0518]
 //Male HEALER NON-SHOPKEEPER
@@ -5821,6 +5924,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Healer (male) (Non Shopkeeper)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5847,9 +5953,7 @@ ON=@NPCRestock
 	COLOR=colors_yellow
 	ITEM=i_sandals
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Healer (male) (Non Shopkeeper)
+
 
 [CHARDEF 0519]
 DEFNAME=C_H_HEAL_WANDER_F
@@ -5870,6 +5974,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Healer (female) (Non Shopkeeper)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5894,9 +6001,7 @@ ON=@NPCRestock
 	COLOR=colors_yellow
 	ITEM=i_sandals
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Healer (female) (Non Shopkeeper)
+
 
 [CHARDEF 0520]
 DEFNAME=C_H_GUILD_HEALER
@@ -5918,6 +6023,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Healer (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5942,9 +6050,7 @@ ON=@NPCRestock
 	COLOR=colors_yellow
 	ITEM=i_sandals
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Healer (male)
+
 
 [CHARDEF 0521]
 DEFNAME=C_H_GUILD_HEALER_F
@@ -5966,6 +6072,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Healer (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -5988,9 +6097,7 @@ ON=@NPCRestock
 	COLOR=colors_yellow
 	ITEM=i_sandals
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Healer (female)
+
 
 [CHARDEF 0522]
 DEFNAME=C_H_FISHER
@@ -6011,6 +6118,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Fisherman (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6038,9 +6148,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_FISHER
 	BUY=VENDOR_B_FISHER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Fisherman (male)
+
 
 [CHARDEF 0523]
 DEFNAME=C_H_FISHER_F
@@ -6061,6 +6169,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Fisherwoman (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6086,9 +6197,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_FISHER
 	BUY=VENDOR_B_FISHER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Fisherwoman (female)
+
 
 [CHARDEF 0524]
 DEFNAME=C_H_MAPMAKER
@@ -6109,6 +6218,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Mapmaker (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6135,9 +6247,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_MAPMAKER
 	BUY=VENDOR_B_MAPMAKER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Mapmaker (male)
+
 
 [CHARDEF 0525]
 DEFNAME=C_H_MAPMAKER_F
@@ -6158,6 +6268,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Mapmaker (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6182,9 +6295,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_MAPMAKER
 	BUY=VENDOR_B_MAPMAKER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Mapmaker (female)
+
 
 [CHARDEF 0526]
 DEFNAME=C_H_SHIPWRIGHT
@@ -6205,6 +6316,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Shipwright (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6232,9 +6346,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_SHIP
 	BUY=VENDOR_B_SHIP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Shipwright (male)
+
 
 [CHARDEF 0527]
 DEFNAME=C_H_SHIPWRIGHT_F
@@ -6255,6 +6367,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Shipwright (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6280,9 +6395,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_SHIP
 	BUY=VENDOR_B_SHIP
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Shipwright (female)
+
 
 [CHARDEF 0528]
 DEFNAME=C_H_GUILD_MARITIME
@@ -6304,6 +6417,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Maritime Guildmaster  (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6329,9 +6445,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Maritime Guildmaster  (male)
+
 
 [CHARDEF 0529]
 DEFNAME=C_H_GUILD_MARITIME_F
@@ -6353,6 +6467,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Maritime Guildmaster (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6376,9 +6493,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Maritime Guildmaster (female)
+
 
 [CHARDEF 0530]
 DEFNAME=C_H_SAILOR
@@ -6400,6 +6515,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Sailor (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6427,9 +6545,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Sailor (male)
+
 
 [CHARDEF 0531]
 DEFNAME=C_H_SAILOR_F
@@ -6451,6 +6567,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Sailor (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6476,9 +6595,7 @@ ON=@NPCRestock
 	ITEM=random_shoes
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Sailor (female)
+
 
 [CHARDEF 0532]
 DEFNAME=C_H_INNKEEPER
@@ -6603,6 +6720,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Provisioner (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6633,9 +6753,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_PROVISIONER
 	BUY=VENDOR_B_PROVISIONER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Provisioner (male)
+
 
 [CHARDEF 0535]
 //Female PROVISIONER
@@ -6657,6 +6775,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Provisioner (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6685,9 +6806,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_PROVISIONER
 	BUY=VENDOR_B_PROVISIONER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Provisioner (female)
+
 
 [CHARDEF 0536]
 DEFNAME=C_H_JEWELER
@@ -6708,6 +6827,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Jeweler (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6737,9 +6859,7 @@ ON=@NPCRestock
 	ITEM=backpack_rich
 	SELL=VENDOR_S_JEWELER
 	BUY=VENDOR_B_JEWELER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Jeweler (male)
+
 
 [CHARDEF 0537]
 DEFNAME=C_H_JEWELER_F
@@ -6760,6 +6880,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Jeweler (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6787,9 +6910,7 @@ ON=@NPCRestock
 	ITEM=backpack_rich
 	SELL=VENDOR_S_JEWELER
 	BUY=VENDOR_B_JEWELER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Jeweler (female)
+
 
 [CHARDEF 0538]
 DEFNAME=C_H_TAVERNKEEPER
@@ -6810,6 +6931,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tavernkeeper (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6840,9 +6964,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TAVERNKEEPER
 	BUY=VENDOR_B_TAVERNKEEPER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tavernkeeper (male)
+
 
 [CHARDEF 0539]
 DEFNAME=C_H_TAVERNKEEPER_F
@@ -6863,6 +6985,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Tavernkeeper (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -6891,9 +7016,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TAVERNKEEPER
 	BUY=VENDOR_B_TAVERNKEEPER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Tavernkeeper (female)
+
 
 [CHARDEF 0540]
 DEFNAME=C_H_GUILD_MERCHANT
@@ -6915,6 +7038,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Merchant (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6943,9 +7069,7 @@ ON=@NPCRestock
 	ITEM=random_rings
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Merchant (male)
+
 
 [CHARDEF 0541]
 DEFNAME=C_H_GUILD_MERCHANT_F
@@ -6967,6 +7091,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Merchant (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -6993,9 +7120,7 @@ ON=@NPCRestock
 	COLOR=colors_neutral
 	ITEM=random_rings
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Merchant (female)
+
 
 [CHARDEF 0542]
 DEFNAME=C_H_RANGER
@@ -7015,6 +7140,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Ranger (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7049,9 +7177,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=i_bow
 	ITEM=i_arrow,{5 20}
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Ranger (male)
+
 
 [CHARDEF 0543]
 DEFNAME=C_H_RANGER_F
@@ -7071,6 +7197,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Ranger (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7103,9 +7232,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=i_bow
 	ITEM=i_arrow,{5 20}
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Ranger (female)
+
 
 [CHARDEF 0544]
 DEFNAME=C_H_GUILD_RANGER
@@ -7128,6 +7255,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Ranger (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7165,9 +7295,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=i_bow
 	ITEM=i_arrow,{5 20}
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Ranger (male)
+
 
 [CHARDEF 0545]
 DEFNAME=C_H_GUILD_RANGER_F
@@ -7190,6 +7318,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Ranger (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7225,9 +7356,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	ITEM=i_bow
 	ITEM=i_arrow,{5 20}
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Ranger (female)
+
 
 [CHARDEF 0546]
 DEFNAME=C_H_BOWYER
@@ -7248,6 +7377,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Bowyer (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -7278,9 +7410,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_BOWYER
 	BUY=VENDOR_B_BOWYER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Bowyer (male)
+
 
 [CHARDEF 0547]
 DEFNAME=C_H_BOWYER_F
@@ -7301,6 +7431,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Bowyer (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -7329,9 +7462,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_BOWYER
 	BUY=VENDOR_B_BOWYER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Bowyer (female)
+
 
 [CHARDEF 0548]
 DEFNAME=C_H_ANIMALTRAINER
@@ -7352,6 +7483,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Animal Trainer (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7380,9 +7514,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TRAINER
 	BUY=VENDOR_B_TRAINER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Animal Trainer (male)
+
 
 [CHARDEF 0549]
 DEFNAME=C_H_ANIMALTRAINER_F
@@ -7403,6 +7535,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Animal Trainer (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7429,9 +7564,7 @@ ON=@NPCRestock
 	ITEM=random_coin_purse
 	SELL=VENDOR_S_TRAINER
 	BUY=VENDOR_B_TRAINER
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Animal Trainer (female)
+
 
 [CHARDEF 0550]
 DEFNAME=C_H_MINER
@@ -7452,6 +7585,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Miner (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7482,9 +7618,7 @@ ON=@NPCRestock
 	COLOR=colors_brown
 	ITEM=i_pickaxe
 	ITEM=backpack_meager
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Miner (male)
+
 
 [CHARDEF 0551]
 DEFNAME=C_H_MINER_F
@@ -7505,6 +7639,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Miner (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7533,9 +7670,7 @@ ON=@NPCRestock
 	COLOR=colors_brown
 	ITEM=i_pickaxe
 	ITEM=backpack_meager
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Miner (female)
+
 
 [CHARDEF 0552]
 DEFNAME=C_H_GUILD_MINER
@@ -7557,6 +7692,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Miner (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7587,9 +7725,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Miner (male)
+
 
 [CHARDEF 0553]
 DEFNAME=C_H_GUILD_MINER_F
@@ -7611,6 +7747,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Miner (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7639,9 +7778,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	COLOR=colors_neutral
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Miner (female)
+
 
 [CHARDEF 0554]
 //Male ARMORER
@@ -7663,7 +7800,10 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
-
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Armorer (male)
+	
 ON=@Create
 	NPC=brain_vendor
 	COLOR=colors_skin
@@ -7710,9 +7850,7 @@ ON=@NPCRestock
 	BUY=VENDOR_B_COLOURED_ARMOR
 	BUY=VENDOR_B_MAGIC_ARMOR
 	BUY=i_log
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Armorer (male)
+
 
 [CHARDEF 0555]
 DEFNAME=C_H_ARMORER_F
@@ -7733,6 +7871,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Armorer (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -7778,9 +7919,7 @@ ON=@NPCRestock
 	BUY=VENDOR_B_COLOURED_ARMOR
 	BUY=VENDOR_B_MAGIC_ARMOR
 	BUY=i_log
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Armorer (female)
+
 
 [CHARDEF 0556]
 DEFNAME=C_H_BLACKSMITH
@@ -7801,6 +7940,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Blacksmith (male)
 
 ON=@Create
 	NPC=brain_vendor
@@ -7859,9 +8001,7 @@ ON=@NPCRestock
 	BUY=VENDOR_B_COLOURED_ARMOR
 	BUY=VENDOR_B_MAGIC_ARMOR
 	BUY=VENDOR_B_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Blacksmith (male)
+
 
 [CHARDEF 0557]
 DEFNAME=C_H_BLACKSMITH_F
@@ -7882,6 +8022,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Blacksmith (female)
 
 ON=@Create
 	NPC=brain_vendor
@@ -7935,9 +8078,7 @@ ON=@NPCRestock
 	BUY=VENDOR_B_COLOURED_ARMOR
 	BUY=VENDOR_B_MAGIC_ARMOR
 	BUY=VENDOR_B_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Blacksmith (female)
+
 
 [CHARDEF 0558]
 DEFNAME=C_H_BEGGER
@@ -7960,6 +8101,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Beggar (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -7985,9 +8129,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Beggar (male)
+
 
 [CHARDEF 0559]
 DEFNAME=C_H_BEGGER_F
@@ -8010,6 +8152,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Beggar (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8033,9 +8178,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=i_sandals
 	ITEM=backpack_poor
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Beggar (female)
+
 
 [CHARDEF 0560]
 DEFNAME=C_H_THIEF
@@ -8058,6 +8201,10 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Thief (male)
+
 
 ON=@Create
 	COLOR=colors_skin
@@ -8093,9 +8240,7 @@ ON=@NPCRestock
 	ITEM=random_dagger
 	ITEM=random_coin_purse
 	ITEM=i_lockpick
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Thief (male)
+
 
 [CHARDEF 0561]
 DEFNAME=C_H_THIEF_F
@@ -8118,6 +8263,9 @@ TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Scavenge
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Villagers
+DESCRIPTION=Thief (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8151,9 +8299,7 @@ ON=@NPCRestock
 	ITEM=random_dagger
 	ITEM=random_coin_purse
 	ITEM=i_lockpick
-	CATEGORY=Civilized
-	SUBSECTION=Villagers
-	DESCRIPTION=Thief (female)
+
 
 [CHARDEF 0562]
 DEFNAME=C_H_GUILD_THIEF
@@ -8175,6 +8321,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Thief (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8210,9 +8359,7 @@ ON=@NPCRestock
 	ITEM=i_dagger
 	ITEM=random_coin_purse
 	ITEM=i_lockpick
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Thief (male)
+
 
 [CHARDEF 0563]
 DEFNAME=C_H_GUILD_THIEF_F
@@ -8234,6 +8381,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Thief (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8267,9 +8417,7 @@ ON=@NPCRestock
 	ITEM=i_dagger
 	ITEM=random_coin_purse
 	ITEM=i_lockpick
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Thief (female)
+
 
 [CHARDEF 0564]
 DEFNAME=C_H_FIGHTER
@@ -8289,6 +8437,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Fighter (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8319,9 +8470,7 @@ ON=@NPCRestock
 	ITEM=i_sword_broad
 	ITEM=i_boots_calf
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Fighter (male)
+
 
 [CHARDEF 0565]
 DEFNAME=C_H_FIGHTER_F
@@ -8341,6 +8490,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Fighter (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8369,9 +8521,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	ITEM=i_sword_broad
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Fighter (female)
+
 
 [CHARDEF 0566]
 DEFNAME=C_H_WARRIOR
@@ -8393,6 +8543,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Warrior (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8424,9 +8577,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	ITEM=i_sword_broad
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Warrior (male)
+
 
 [CHARDEF 0567]
 DEFNAME=C_H_WARRIOR_F
@@ -8448,6 +8599,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Warrior (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8477,9 +8631,7 @@ ON=@NPCRestock
 	ITEM=i_shield_wood
 	ITEM=i_sword_broad
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Warrior (female)
+
 
 [CHARDEF 0568]
 DEFNAME=C_H_MERCENARY
@@ -8501,6 +8653,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Mercenary (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8535,9 +8690,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	ITEM=random_weapon
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Mercenary (male)
+
 
 [CHARDEF 0569]
 DEFNAME=C_H_MERCENARY_F
@@ -8559,6 +8712,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Mercenary (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8590,9 +8746,7 @@ ON=@NPCRestock
 	ITEM=random_weapon
 	ITEM=i_boots_calf
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Mercenary (female)
+
 
 [CHARDEF 0570]
 DEFNAME=C_H_PALADIN
@@ -8615,6 +8769,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Paladin (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8649,9 +8806,7 @@ ON=@NPCRestock
 	ITEM=i_sword_viking
 	ITEM=random_boots
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Paladin (male)
+
 
 [CHARDEF 0571]
 // female paladins ?
@@ -8675,6 +8830,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Paladin (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8707,9 +8865,7 @@ ON=@NPCRestock
 	ITEM=i_sword_viking
 	ITEM=random_boots
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Paladin (female)
+
 
 [CHARDEF 0572]
 DEFNAME=C_H_WEAPONSTRAINER
@@ -8729,6 +8885,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Weapons Trainer (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8755,9 +8914,7 @@ ON=@NPCRestock
 	ITEM=i_studded_gloves
 	ITEM=random_boots
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Weapons Trainer (male)
+
 
 [CHARDEF 0573]
 DEFNAME=C_H_WEAPONSTRAINER_F
@@ -8777,6 +8934,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Fighters
+DESCRIPTION=Weapons Trainer (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8801,9 +8961,7 @@ ON=@NPCRestock
 	ITEM=i_studded_gloves
 	ITEM=random_boots
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Fighters
-	DESCRIPTION=Weapons Trainer (female)
+
 
 [CHARDEF 0574]
 DEFNAME=C_H_GUILD_WARRIOR
@@ -8825,6 +8983,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Warrior (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8855,9 +9016,7 @@ ON=@NPCRestock
 	ITEM=i_platemail_gorget
 	ITEM=i_axe_double
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Warrior (male)
+
 
 [CHARDEF 0575]
 DEFNAME=C_H_GUILD_WARRIOR_F
@@ -8879,6 +9038,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Guildmasters
+DESCRIPTION=Guildmaster Warrior (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -8908,9 +9070,7 @@ ON=@NPCRestock
 	ITEM=i_platemail_gorget
 	ITEM=i_axe_double
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Guildmasters
-	DESCRIPTION=Guildmaster Warrior (female)
+
 
 [CHARDEF 0576]
 DEFNAME=C_H_WEAPONSMITH_BLADE
@@ -8931,6 +9091,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaponsmith (male) (Bladed)
 
 ON=@Create
 	NPC=brain_vendor
@@ -8964,9 +9127,7 @@ ON=@NPCRestock
 	SELL=VENDOR_S_MAGIC_WEAPONS
 	BUY=VENDOR_B_WEAPONS_BLADED
 	BUY=VENDOR_S_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaponsmith (male) (Bladed)
+	
 
 [CHARDEF 0577]
 DEFNAME=C_H_WEAPONSMITH_BLADE_F
@@ -8987,6 +9148,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaponsmith (female) (Bladed)
 
 ON=@Create
 	NPC=brain_vendor
@@ -9018,9 +9182,7 @@ ON=@NPCRestock
 	SELL=VENDOR_S_MAGIC_WEAPONS
 	BUY=VENDOR_B_WEAPONS_BLADED
 	BUY=VENDOR_B_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaponsmith (female) (Bladed)
+
 
 [CHARDEF 0578]
 DEFNAME=C_H_WEAPONSMITH_BLUNT
@@ -9041,6 +9203,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaponsmith (male) (Blunt)
 
 ON=@Create
 	NPC=brain_vendor
@@ -9074,9 +9239,7 @@ ON=@NPCRestock
 	SELL=VENDOR_S_MAGIC_WEAPONS
 	BUY=VENDOR_B_WEAPONS_BLUNT
 	BUY=VENDOR_B_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaponsmith (male) (Blunt)
+
 
 [CHARDEF 0579]
 DEFNAME=C_H_WEAPONSMITH_BLUNT_F
@@ -9097,6 +9260,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Refuse
 TEVENTS=e_Human_Environ
+CATEGORY=Civilized
+SUBSECTION=Tradesmen
+DESCRIPTION=Weaponsmith (female) (Blunt)
 
 ON=@Create
 	NPC=brain_vendor
@@ -9128,9 +9294,7 @@ ON=@NPCRestock
 	SELL=VENDOR_S_MAGIC_WEAPONS
 	BUY=VENDOR_B_WEAPONS_BLUNT
 	BUY=VENDOR_B_MAGIC_WEAPONS
-	CATEGORY=Civilized
-	SUBSECTION=Tradesmen
-	DESCRIPTION=Weaponsmith (female) (Blunt)
+
 
 [CHARDEF C_H_FIGHT_OVERSEER]
 // Gladiator Overseer

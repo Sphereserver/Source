@@ -288,6 +288,9 @@ CAN=MT_WALK
 RESOURCES=8 t_magic
 //SHELTER==r_caves,r_mountains
 DESIRES=r_caves
+CATEGORY=Monsters
+SUBSECTION=Elementals
+DESCRIPTION=Ice Elemental
 
 ON=@Create
 	COLOR=color_ice
@@ -305,9 +308,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_elem_ice
-	CATEGORY=Monsters
-	SUBSECTION=Elementals
-	DESCRIPTION=Ice Elemental
+
 
 [CHARDEF 01019]
 DEFNAME=c_m_icefiend
@@ -359,6 +360,9 @@ FOODTYPE=5 t_meat_raw, 5 t_arock
 DESIRES=i_gold, t_arock, c_harpy
 //SHELTER==r_forests,r_mountains
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Stone Harpy
 
 ON=@Create
 	NPC=brain_monster
@@ -376,9 +380,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_STONE_HARPY
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Stone Harpy
+
 
 [CHARDEF 01021]
 DEFNAME=c_m_mongbat_arboreal
@@ -395,6 +397,9 @@ CAN=MT_WALK|MT_FLY
 FOODTYPE=5 t_meat_raw
 //SHELTER==r_forests,r_jungle,r_spooky,r_swamp,r_dungeon
 DESIRES=i_gold
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Arboreal Mongbat
 
 ON=@Create
 	STR={6 10}
@@ -411,9 +416,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_MONGBAT
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Arboreal Mongbat
+
 
 [CHARDEF 01022]
 DEFNAME=c_m_mummy
@@ -429,6 +432,9 @@ CAN=MT_WALK
 //SHELTER==r_dungeon,r_spooky
 DESIRES=i_gold
 TEVENTS=e_undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Mummy
 
 ON=@Create
 	NPC=brain_undead
@@ -445,9 +451,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_MUMMY
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Mummy
+
 
 [CHARDEF 01023]
 DEFNAME=c_m_imp
@@ -463,6 +467,9 @@ FOODTYPE=9 t_meat_raw
 DESIRES=C_M_IMP
 //SHELTER==r_caves,r_dungeon,r_spooky
 AVERSIONS=r_civilization,r_water
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Imp
 
 ON=@Create
 	COLOR=color_red1
@@ -483,9 +490,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_IMP
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Imp
+
 
 [CHARDEF 01024]
 DEFNAME=c_m_kraken
@@ -500,6 +505,9 @@ RESOURCES=10 t_eerie_stuff
 CAN=MT_WALK|MT_SWIM
 FOODTYPE=24 t_meat_raw
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Kraken
 
 ON=@Create
 	COLOR=01e9
@@ -517,9 +525,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_KRAKEN
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Kraken
+
 
 [CHARDEF 01025]
 DEFNAME=c_m_dragon_wyrm
@@ -538,6 +544,9 @@ FOODTYPE=80 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_civilization,r_water
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Wyrm
 
 ON=@Create
 	COLOR=colors_wyrm
@@ -555,9 +564,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_ANCIENT_WYRM
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Wyrm
+
 
 [CHARDEF 01028]
 DEFNAME=c_m_balron
@@ -574,6 +581,9 @@ CAN=MT_WALK|MT_FLY
 //SHELTER==r_dungeon,r_caves
 DESIRES=c_DAEMON,i_gold,t_wand
 AVERSIONS=r_water,r_mountains
+CATEGORY=Monsters
+SUBSECTION=Daemons & Gargoyles
+DESCRIPTION=Balron
 
 ON=@Create
 	COLOR=colors_daemon
@@ -591,9 +601,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_BALRON
-	CATEGORY=Monsters
-	SUBSECTION=Daemons & Gargoyles
-	DESCRIPTION=Balron
+
 
 [CHARDEF 01033]
 DEFNAME=c_m_gargoyle_stone
@@ -609,6 +617,9 @@ FOODTYPE=2 t_arock, 2 t_meat_raw
 DESIRES=c_m_gargoyle_stone,c_GARGOYLE,t_bone,i_gold,t_wand
 //SHELTER==r_caves,r_dungeon
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Daemons & Gargoyles
+DESCRIPTION=Stone Gargoyle
 
 ON=@Create
 	COLOR=color_rock
@@ -628,9 +639,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_STONE_GARGOYLE
-	CATEGORY=Monsters
-	SUBSECTION=Daemons & Gargoyles
-	DESCRIPTION=Stone Gargoyle
+
 
 [CHARDEF 01034]
 DEFNAME=c_m_gazer_elder
@@ -644,6 +653,9 @@ RESOURCES=8 i_ribs_raw
 DESIRES=c_gazer
 //SHELTER==r_caves
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Elder Gazer
 
 ON=@Create
 	STR=295
@@ -662,9 +674,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_ELDER_GAZER
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Elder Gazer
+
 
 [CHARDEF 01035]
 DEFNAME=c_m_frostooze
@@ -678,6 +688,9 @@ CAN=MT_WALK
 FOODTYPE=35 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=c_m_frostooze,c_SLIME
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Frost Ooze
 
 ON=@Create
 	COLOR=color_snow
@@ -695,9 +708,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_SLIME
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Frost Ooze
+
 
 [CHARDEF 01036]
 DEFNAME=c_m_hellcat
@@ -778,6 +789,9 @@ CAN=MT_WALK
 FOODTYPE=
 //SHELTER==r_mountains
 DESIRES=r_mountains
+CATEGORY=Monsters
+SUBSECTION=Elementals
+DESCRIPTION=Efreet
 
 ON=@Create
 	COLOR=color_rock
@@ -797,9 +811,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_EFREET
-	CATEGORY=Monsters
-	SUBSECTION=Elementals
-	DESCRIPTION=Efreet
+
 
 [CHARDEF 01039]
 DEFNAME=c_m_nightmare
@@ -816,6 +828,9 @@ FOODTYPE=5 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_civilization,r_water
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Nightmare
 
 ON=@Create
 	COLOR=colors_black
@@ -833,9 +848,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_NIGHTMARE
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Nightmare
+
 
 [CHARDEF 01040]
 DEFNAME=c_m_ogre_lord
@@ -852,6 +865,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_forests,r_mountains
 DESIRES=C_OGRE
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
+DESCRIPTION=Ogre Lord
 
 ON=@Create
 	STR={765 945}
@@ -867,9 +883,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_OGRE_LORD
-	CATEGORY=Monsters
-	SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
-	DESCRIPTION=Ogre Lord
+
 
 [CHARDEF 01041]
 DEFNAME=c_m_liche_lord
@@ -883,6 +897,9 @@ CAN=MT_WALK
 //SHELTER==r_dungeon,r_caves,r_spooky
 DESIRES=t_bone,i_gold,t_wand,t_reagent,e_undead
 TEVENTS=e_undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Liche Lord
 
 ON=@Create
 	NPC=brain_undead
@@ -901,9 +918,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_LICH_LORD
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Liche Lord
+
 
 [CHARDEF 01042]
 DEFNAME=c_m_phoenix
@@ -917,6 +932,9 @@ ARMOR=25
 RESOURCES=2 i_ribs_raw, 36 i_feather
 FOODTYPE=5 t_meat_raw
 //SHELTER==r_mountains
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Phoenix
 
 ON=@Create
 	COLOR=colors_lava
@@ -935,9 +953,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_PHOENIX
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Phoenix
+	
 
 [CHARDEF 01043]
 DEFNAME=c_m_elem_poison
@@ -951,6 +967,9 @@ ARMOR=35
 RESOURCES=3 t_magic
 //SHELTER==r_dungeon
 DESIRES=r_dungeon
+CATEGORY=Monsters
+SUBSECTION=Elementals
+DESCRIPTION=Poison Elemental
 
 ON=@Create
 	NPC=brain_monster
@@ -970,9 +989,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_elem_poison
-	CATEGORY=Monsters
-	SUBSECTION=Elementals
-	DESCRIPTION=Poison Elemental
+
 
 [CHARDEF 01044]
 DEFNAME=c_m_ophidian_archmage
@@ -984,6 +1001,9 @@ RESOURCES=8 i_ribs_raw
 FOODTYPE=5 t_meat_raw, 5 t_food
 //SHELTER==r_civilization
 DESIRES=i_gold,t_magic,i_reag_spider_silk
+CATEGORY=Monsters
+SUBSECTION=T2A Monsters
+DESCRIPTION=Ophidian Archmage
 
 ON=@Create
 	NPC=brain_monster
@@ -1002,9 +1022,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_OPHIDIAN_ARCHMAGE
-	CATEGORY=Monsters
-	SUBSECTION=T2A Monsters
-	DESCRIPTION=Ophidian Archmage
+
 
 [CHARDEF 01045]
 DEFNAME=c_m_silver_serpent
@@ -1017,6 +1035,9 @@ ARMOR=20
 RESOURCES=1 i_ribs_raw, 8 i_reag_serpent_scale
 //ALIGNMENT=EVIL
 CAN=MT_WALK
+CATEGORY=Monsters
+SUBSECTION=Giant Insects and Reptiles
+DESCRIPTION=Silver Serpent
 
 ON=@Create
 	STR={160 360}
@@ -1035,9 +1056,7 @@ ON=@NPCRestock
 	ITEM={ random_jewel 1 0 1 }
 	ITEM={ random_jewel 1 0 1 }
 	ITEM={ random_jewel 1 0 1 }
-	CATEGORY=Monsters
-	SUBSECTION=Giant Insects and Reptiles
-	DESCRIPTION=Silver Serpent
+
 
 [CHARDEF 01046]
 DEFNAME=c_m_skeleton_mage
@@ -1048,6 +1067,9 @@ ARMOR=19
 RESOURCES=8 i_reag_bone
 //SHELTER==r_spooky
 TEVENTS=e_Undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Skeleton Mage
 
 ON=@Create
 	NPC=brain_undead
@@ -1067,9 +1089,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_SKELETAL_MAGE
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Skeleton Mage
+
 
 [CHARDEF 01047]
 DEFNAME=c_m_skeleton_knight
@@ -1081,6 +1101,9 @@ RESOURCES=8 i_reag_bone
 //ALIGNMENT=EVIL
 //SHELTER==r_spooky
 TEVENTS=e_Undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Skeleton Knight
 
 ON=@Create
 	NPC=brain_undead
@@ -1096,9 +1119,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_SKELETAL_KNIGHT
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Skeleton Knight
+
 
 [CHARDEF 01048]
 DEFNAME=c_m_ophidian_knight
@@ -1112,6 +1133,9 @@ RESOURCES=10 i_ribs_raw
 //ALIGNMENT=EVIL
 CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
+CATEGORY=Monsters
+SUBSECTION=T2A Monsters
+DESCRIPTION=Ophidian Knight
 
 ON=@Create
 	STR={415 595}
@@ -1127,9 +1151,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_OPHIDIAN_KNIGHT
-	CATEGORY=Monsters
-	SUBSECTION=T2A Monsters
-	DESCRIPTION=Ophidian Knight
+
 
 [CHARDEF 01049]
 DEFNAME=c_m_ice_serpent
@@ -1145,6 +1167,9 @@ CAN=MT_WALK
 FOODTYPE=6 t_meat_raw
 //SHELTER==r_dungeon
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Giant Insects and Reptiles
+DESCRIPTION=Ice Serpent
 
 ON=@Create
 	COLOR=color_ice
@@ -1161,9 +1186,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_GIANT_ICE_SERPENT
-	CATEGORY=Monsters
-	SUBSECTION=Giant Insects and Reptiles
-	DESCRIPTION=Ice Serpent
+
 
 [CHARDEF 01050]
 DEFNAME=c_m_lava_serpent
@@ -1176,6 +1199,9 @@ FOODTYPE=6 t_meat_raw
 RESOURCES=20 i_ribs_raw, 15 i_hide, 8 i_reag_serpent_scale
 //ALIGNMENT=EVIL
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Giant Insects and Reptiles
+DESCRIPTION=Lava Serpent
 
 ON=@Create
 	COLOR=065a
@@ -1192,9 +1218,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_LAVA_LIZARD
-	CATEGORY=Monsters
-	SUBSECTION=Giant Insects and Reptiles
-	DESCRIPTION=Lava Serpent
+
 
 [CHARDEF 01051]
 DEFNAME=c_m_elem_snow
@@ -1207,6 +1231,9 @@ ARMOR=25
 RESOURCES=8 t_magic
 DESIRES=r_mountains
 //SHELTER==r_mountains
+CATEGORY=Monsters
+SUBSECTION=Elementals
+DESCRIPTION=Snow Elemental
 
 ON=@Create
 	NPC=brain_monster
@@ -1224,9 +1251,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_elem_snow
-	CATEGORY=Monsters
-	SUBSECTION=Elementals
-	DESCRIPTION=Snow Elemental
+
 
 [CHARDEF 01052]
 DEFNAME=c_m_frostspider
@@ -1240,6 +1265,9 @@ RESOURCES=8 i_reag_spider_silk, 5 t_eerie_stuff
 CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
 //SHELTER==t_WEB,r_caves,r_dungeon
+CATEGORY=Monsters
+SUBSECTION=Giant Insects and Reptiles
+DESCRIPTION=Frost Spider
 
 ON=@Create
 	COLOR=color_snow
@@ -1257,9 +1285,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_FROST_SPIDER
-	CATEGORY=Monsters
-	SUBSECTION=Giant Insects and Reptiles
-	DESCRIPTION=Frost Spider
+
 
 [CHARDEF 01053]
 DEFNAME=c_m_swamp_tentacles
@@ -1275,6 +1301,9 @@ ARMOR=15
 //ALIGNMENT=CHAOTIC
 //SHELTER==r_swamp
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Miscellaneous
+DESCRIPTION=Swamp Tentacles
 
 ON=@Create
 	COLOR=colors_green
@@ -1292,9 +1321,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_SWAMP_TENTACLE
-	CATEGORY=Monsters
-	SUBSECTION=Miscellaneous
-	DESCRIPTION=Swamp Tentacles
+
 
 [CHARDEF 01054]
 DEFNAME=c_m_frost_troll
@@ -1310,6 +1337,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_forests,r_mountains
 DESIRES=i_gold
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
+DESCRIPTION=Frost Troll
 
 ON=@Create
 	COLOR=color_snow
@@ -1327,9 +1357,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_FROST_TROLL
-	CATEGORY=Monsters
-	SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
-	DESCRIPTION=Frost Troll
+
 
 [CHARDEF 01055]
 DEFNAME=c_m_terathan_avenger
@@ -1344,6 +1372,9 @@ RESOURCES=10 i_ribs_raw
 CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=T2A Monsters
+DESCRIPTION=Terathan Avenger
 
 ON=@Create
 	STR={465 645}
@@ -1360,9 +1391,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_TERATHAN_AVENGER
-	CATEGORY=Monsters
-	SUBSECTION=T2A Monsters
-	DESCRIPTION=Terathan Avenger
+
 
 [CHARDEF 01057]
 DEFNAME=c_m_orc_captain
@@ -1377,6 +1406,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Orcs
+DESCRIPTION=Orc Captain
 
 ON=@Create
 	STR={110 145}
@@ -1393,9 +1425,7 @@ ON=@Create
 ON=@NPCRestock
 	CONTAINER=i_backpack
 	ITEM=loot_ORC_CAPTAIN
-	CATEGORY=Monsters
-	SUBSECTION=Orcs
-	DESCRIPTION=Orc Captain
+
 
 [CHARDEF 01058]
 DEFNAME=c_m_orc_mage
@@ -1408,6 +1438,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Orcs
+DESCRIPTION=Orc Mage
 
 ON=@Create
 	COLOR=colors_green
@@ -1430,9 +1463,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_ORCISH_MAGE
-	CATEGORY=Monsters
-	SUBSECTION=Orcs
-	DESCRIPTION=Orc Mage
+
 
 [CHARDEF 01063]
 DEFNAME=c_m_energy_vortex
@@ -1444,6 +1475,9 @@ DAM=8,10
 ARMOR=10
 CAN=MT_WALK|MT_FLY|MT_FIRE_IMMUNE|MT_RUN|MT_USEHANDS
 FOODTYPE=
+CATEGORY=Miscellaneous
+SUBSECTION=Blade Spirits
+DESCRIPTION=Energy Vortex
 
 ON=@Create
 	COLOR=color_energy_vortex
@@ -1460,9 +1494,7 @@ ON=@Create
 	KARMA=-100
 	ITEMNEWBIE=i_light_source
 	ATTR=attr_magic|attr_newbie
-	CATEGORY=Miscellaneous
-	SUBSECTION=Blade Spirits
-	DESCRIPTION=Energy Vortex
+
 
 [CHARDEF 01064]
 DEFNAME=c_m_goblin
@@ -1475,6 +1507,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Goblins
+DESCRIPTION=Goblin
 
 ON=@Create
 	COLOR=colors_green
@@ -1495,9 +1530,7 @@ ON=@NPCRestock
 	ITEM={ poor_gold_pile 1 meager_gold_pile 1 }
 	ITEM={ i_boots_thigh 1 0 1 }
 	ITEM={ poor_gold_pile 1 meager_gold_pile 1 0 1 }
-	CATEGORY=Monsters
-	SUBSECTION=Goblins
-	DESCRIPTION=Goblin
+
 
 [CHARDEF 01065]
 DEFNAME=c_m_goblin_mage
@@ -1511,6 +1544,9 @@ ARMOR=10
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Goblins
+DESCRIPTION=Goblin Mage
 
 ON=@Create
 	COLOR=colors_green
@@ -1536,9 +1572,7 @@ ON=@NPCRestock
 	ITEM={ poor_gold_pile 1 meager_gold_pile 1 0 1 }
 	ITEM=random_first_circle,R3
 	ITEM=random_second_circle,R6
-	CATEGORY=Monsters
-	SUBSECTION=Goblins
-	DESCRIPTION=Goblin Mage
+
 
 [CHARDEF 01066]
 DEFNAME=c_m_goblin_chief
@@ -1552,6 +1586,9 @@ ARMOR=13
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Goblins
+DESCRIPTION=Goblin Chief
 
 ON=@Create
 	NPC=BRAIN_MONSTER
@@ -1571,9 +1608,7 @@ ON=@NPCRestock
 	ITEM={ i_boots_thigh 1 0 1 }
 	ITEM={ meager_gold_pile 1 0 1 }
 	ITEM=random_weapons
-	CATEGORY=Monsters
-	SUBSECTION=Goblins
-	DESCRIPTION=Goblin Chief
+
 
 [CHARDEF 01067]
 DEFNAME=c_m_ghoul
@@ -1588,6 +1623,9 @@ CAN=MT_WALK
 DAM=4,16
 ARMOR={15 24}
 TEVENTS=e_Undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Ghoul
 
 ON=@Create
 	NPC=BRAIN_UNDEAD
@@ -1604,9 +1642,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_GHOUL
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Ghoul
+
 
 [CHARDEF 01068]
 DEFNAME=c_m_wraith
@@ -1619,6 +1655,9 @@ CAN=MT_GHOST|MT_WALK
 DAM=12,20
 ARMOR=20,25
 TEVENTS=e_Undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Wraith
 
 ON=@Create
 	NPC=BRAIN_UNDEAD
@@ -1636,9 +1675,7 @@ ON=@Create
 
 ON=@NPCRestock
 	ITEM=loot_WRAITH
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Wraith
+
 
 [CHARDEF 01069]
 DEFNAME=c_m_ghost
@@ -1651,6 +1688,9 @@ ARMOR=20,25
 FOODTYPE=
 CAN=MT_GHOST|MT_WALK
 TEVENTS=e_Undead
+CATEGORY=Monsters
+SUBSECTION=Undeads
+DESCRIPTION=Ghost
 
 ON=@Create
 	NPC=BRAIN_UNDEAD
@@ -1668,9 +1708,7 @@ ON=@Create
 ON=@NPCRestock
 	ITEM={ average_undead_backpack 1 rich_undead_backpack 1 }
 	ITEM={ random_gold_pile 1 0 2 }
-	CATEGORY=Monsters
-	SUBSECTION=Undeads
-	DESCRIPTION=Ghost
+
 
 [CHARDEF 01070]
 DEFNAME=c_h_sprite_sprite
@@ -1683,6 +1721,9 @@ DAM=6,10
 //ARMOR=
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Sprite-Elf (Evil)
+DESCRIPTION=Sprite
 
 ON=@Create
 	COLOR=045e
@@ -1711,9 +1752,7 @@ ON=@NPCRestock
 	COLOR=0599
 	ITEM=random_coin_purse
 	ITEM={ backpack_meager 1 backpack_average 2 }
-	CATEGORY=Civilized
-	SUBSECTION=Sprite-Elf (Evil)
-	DESCRIPTION=Sprite
+
 
 [CHARDEF 01071]
 DEFNAME=c_h_sprte_mage
@@ -1727,6 +1766,9 @@ AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_FLY|MT_FEMALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Sprite-Elf (Evil)
+DESCRIPTION=Sprite Mage
 
 ON=@Create
 	COLOR=045e
@@ -1751,9 +1793,7 @@ ON=@NPCRestock
 	ITEM=backpack_average
 	ITEM=random_scroll
 	ITEM=random_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Sprite-Elf (Evil)
-	DESCRIPTION=Sprite Mage
+
 
 [CHARDEF 01072]
 DEFNAME=c_h_sprite_sorc
@@ -1768,6 +1808,9 @@ AVERSIONS=t_TRAP,t_eerie_stuff
 CAN=MT_WALK|MT_FLY|MT_FEMALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Sprite-Elf (Evil)
+DESCRIPTION=Sprite Sorcerous
 
 ON=@Create
 	COLOR=045e
@@ -1794,9 +1837,7 @@ ON=@NPCRestock
 	ITEM=backpack_average
 	ITEM=random_upper_scroll
 	ITEM=random_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Sprite-Elf (Evil)
-	DESCRIPTION=Sprite Sorcerous
+
 
 [CHARDEF 01073]
 DEFNAME=c_h_sprite_archer
@@ -1809,6 +1850,9 @@ DESIRES=i_gold,e_notoriety
 AVERSIONS=t_TRAP,t_eerie_stuff
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Sprite-Elf (Evil)
+DESCRIPTION=Sprite Archer
 
 ON=@Create
 	COLOR=045e
@@ -1841,9 +1885,7 @@ ON=@NPCRestock
 	COLOR=0599
 	ITEM=random_coin_purse
 	ITEM={ backpack_meager 1 backpack_average 2 }
-	CATEGORY=Civilized
-	SUBSECTION=Sprite-Elf (Evil)
-	DESCRIPTION=Sprite Archer
+
 
 [CHARDEF 01074]
 DEFNAME=c_h_frostelf_archer
@@ -1855,6 +1897,9 @@ CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 //ALIGNMENT=EVIL
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Frost-Elf (Evil)
+DESCRIPTION=Frost Elven Archer
 
 ON=@Create
 	COLOR=05d
@@ -1879,9 +1924,7 @@ ON=@NPCRestock
 	ITEM=i_arrow,{10 50}
 	ITEM=random_jewel
 	ITEM=i_gold,{60 80}
-	CATEGORY=Civilized
-	SUBSECTION=Frost-Elf (Evil)
-	DESCRIPTION=Frost Elven Archer
+
 
 [CHARDEF 01075]
 DEFNAME=c_h_frostelf_warrior
@@ -1893,6 +1936,9 @@ TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 DAM=10,20
 ARMOR=15
+CATEGORY=Civilized
+SUBSECTION=Frost-Elf (Evil)
+DESCRIPTION=Frost Elven Warrior
 
 ON=@Create
 	COLOR=05d
@@ -1916,9 +1962,7 @@ ON=@NPCRestock
 	COLOR=01bb
 	ITEM=i_halberd
 	ITEM=random_jewel
-	CATEGORY=Civilized
-	SUBSECTION=Frost-Elf (Evil)
-	DESCRIPTION=Frost Elven Warrior
+
 
 [CHARDEF 01076]
 DEFNAME=c_h_frostelf_chief
@@ -1930,6 +1974,9 @@ CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 //ALIGNMENT=EVIL
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Frost-Elf (Evil)
+DESCRIPTION=Frost Elf Chieftain
 
 ON=@Create
 	COLOR=05d
@@ -1958,9 +2005,7 @@ ON=@NPCRestock
 	ITEM=random_jewel
 	ITEM=random_average_magic_loot
 	ITEM=backpack_loaded
-	CATEGORY=Civilized
-	SUBSECTION=Frost-Elf (Evil)
-	DESCRIPTION=Frost Elf Chieftain
+
 
 [CHARDEF 01077]
 DEFNAME=c_h_frostelf_shaman
@@ -1972,6 +2017,9 @@ DAM=15,20
 ARMOR={15 20}
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Frost-Elf (Evil)
+DESCRIPTION=Frost Elf Shaman
 
 ON=@Create
 	COLOR=05d
@@ -2008,9 +2056,7 @@ ON=@NPCRestock
 	//ADDSPELL=
 	MORE1=0ffffffff
 	MORE2=0ffffffff
-	CATEGORY=Civilized
-	SUBSECTION=Frost-Elf (Evil)
-	DESCRIPTION=Frost Elf Shaman
+
 
 [CHARDEF 01078]
 DEFNAME=c_h_frostelf_warrioress
@@ -2022,6 +2068,9 @@ CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 //ALIGNMENT=EVIL
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Frost-Elf (Evil)
+DESCRIPTION=Frost Elven Warrioress
 
 ON=@Create
 	COLOR=05d
@@ -2044,9 +2093,7 @@ ON=@NPCRestock
 	COLOR=01bb
 	ITEM=i_staff_quarter
 	ITEM=random_jewel
-	CATEGORY=Civilized
-	SUBSECTION=Frost-Elf (Evil)
-	DESCRIPTION=Frost Elven Warrioress
+
 
 [CHARDEF 01079]
 DEFNAME=c_h_barbarian_warrior
@@ -2057,6 +2104,9 @@ TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 DAM=20,25
 ARMOR=20
+CATEGORY=Civilized
+SUBSECTION=Barbarians (Evil)
+DESCRIPTION=Barbarian Warrior
 
 ON=@Create
 	STR={150 200}
@@ -2085,9 +2135,7 @@ ON=@NPCRestock
 	ITEM=i_kilt
 	COLOR=01bb
 	ITEM=backpack_rich
-	CATEGORY=Civilized
-	SUBSECTION=Barbarians (Evil)
-	DESCRIPTION=Barbarian Warrior
+
 
 [CHARDEF 01080]
 DEFNAME=c_h_barbarian_chieftan
@@ -2099,6 +2147,9 @@ TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 DAM={25 28}
 ARMOR=22
+CATEGORY=Civilized
+SUBSECTION=Barbarians (Evil)
+DESCRIPTION=Barbarian Chieftain
 
 ON=@Create
 	STR={200 250}
@@ -2126,9 +2177,7 @@ ON=@NPCRestock
 	ITEM=backpack_rich
 	ITEM=i_axe_battle_large_ruin
 	ITEM=i_mask_bear
-	CATEGORY=Civilized
-	SUBSECTION=Barbarians (Evil)
-	DESCRIPTION=Barbarian Chieftain
+
 
 [CHARDEF 01081]
 DEFNAME=c_h_barbarian_shaman
@@ -2140,6 +2189,9 @@ ARMOR=20
 CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Barbarians (Evil)
+DESCRIPTION=Barbarian Shaman
 
 ON=@Create
 	STR={100 150}
@@ -2170,9 +2222,7 @@ ON=@NPCRestock
 	ITEM=backpack_rich
 	ITEM=i_mask_tribal_red
 	ITEM=random_average_magic_loot
-	CATEGORY=Civilized
-	SUBSECTION=Barbarians (Evil)
-	DESCRIPTION=Barbarian Shaman
+
 
 [CHARDEF 01082]
 DEFNAME=c_h_barbarian_warrioress
@@ -2184,6 +2234,9 @@ ARMOR=20
 CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Barbarians (Evil)
+DESCRIPTION=Barbarian Warrioress
 
 ON=@Create
 	STR={90 110}
@@ -2207,9 +2260,7 @@ ON=@NPCRestock
 	ITEM=i_axe_battle
 	ITEM=backpack_rich
 	ITEM=i_mask_deer
-	CATEGORY=Civilized
-	SUBSECTION=Barbarians (Evil)
-	DESCRIPTION=Barbarian Warrioress
+
 
 [CHARDEF 01083]
 DEFNAME=c_h_warlock
@@ -2221,6 +2272,9 @@ ARMOR=15,20
 CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_MALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Witches (Evil)
+DESCRIPTION=Warlock
 
 ON=@Create
 	COLOR=0599
@@ -2260,9 +2314,7 @@ ON=@NPCRestock
 	ITEM=i_reag_nightshade,{ 1 15 }
 	ITEM=i_reag_sulfur_ash,{ 1 15 }
 	ITEM=i_reag_spider_silk,{ 1 15 }
-	CATEGORY=Civilized
-	SUBSECTION=Witches (Evil)
-	DESCRIPTION=Warlock
+
 
 [CHARDEF 01084]
 DEFNAME=c_h_witch
@@ -2273,6 +2325,9 @@ ARMOR=15,20
 CAN=MT_EQUIP|MT_USEHANDS|MT_WALK|MT_FEMALE
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Witches (Evil)
+DESCRIPTION=Witch
 
 ON=@Create
 	COLOR=0599
@@ -2306,9 +2361,7 @@ ON=@NPCRestock
 	ITEM=i_reag_eye_of_newt,{ 1 5 }
 	ITEM=i_staff_gnarled
 	ITEM=i_gold,{50 80}
-	CATEGORY=Civilized
-	SUBSECTION=Witches (Evil)
-	DESCRIPTION=Witch
+
 
 [CHARDEF 01085]
 DEFNAME=c_h_witch_high
@@ -2319,6 +2372,9 @@ DAM=15,20
 ARMOR=15,20
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Witches (Evil)
+DESCRIPTION=High Witch
 
 ON=@Create
 	COLOR=0599
@@ -2351,9 +2407,7 @@ ON=@NPCRestock
 	ITEM=i_reag_eye_of_newt,{ 1 5 }
 	ITEM=I_STAFF_BLACK
 	ITEM=i_gold,{100 200}
-	CATEGORY=Civilized
-	SUBSECTION=Witches (Evil)
-	DESCRIPTION=High Witch
+
 
 [CHARDEF 01086]
 DEFNAME=c_a_black_cat
@@ -2405,6 +2459,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Refuse
+CATEGORY=Civilized
+SUBSECTION=Bandits (Evil)
+DESCRIPTION=Bandit (male)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2439,9 +2496,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=random_sword
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Bandits (Evil)
-	DESCRIPTION=Bandit (male)
+
 
 [CHARDEF 01088]
 DEFNAME=c_h_bandit_f
@@ -2462,6 +2517,9 @@ TEVENTS=e_Human_Greet
 TEVENTS=e_Human_Space
 TEVENTS=e_Human_Needs
 TEVENTS=e_Human_Refuse
+CATEGORY=Civilized
+SUBSECTION=Bandits (Evil)
+DESCRIPTION=Bandit (female)
 
 ON=@Create
 	COLOR=colors_skin
@@ -2494,9 +2552,7 @@ ON=@NPCRestock
 	COLOR=colors_all
 	ITEM=random_mace
 	ITEM=random_coin_purse
-	CATEGORY=Civilized
-	SUBSECTION=Bandits (Evil)
-	DESCRIPTION=Bandit (female)
+
 
 [CHARDEF 01089]
 DEFNAME=c_h_dreadlord
@@ -2513,6 +2569,9 @@ TSPEECH=jobMageEvil
 TSPEECH=spk_needs
 TSPEECH=spk_rehello
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Dread Lords
+DESCRIPTION=Dread Lord
 
 ON=@Create
 	COLOR=colors_skin
@@ -2553,9 +2612,7 @@ ON=@NPCRestock
 	ITEM={ random_jewel 1 0 1 }
 	ITEM={ random_jewel 1 0 1 }
 	ITEM=i_gold,{250 450}
-	CATEGORY=Civilized
-	SUBSECTION=Dread Lords
-	DESCRIPTION=Dread Lord
+
 
 [CHARDEF 01090]
 DEFNAME=c_h_dreadlord_captain
@@ -2572,6 +2629,9 @@ TSPEECH=jobMageEvil
 TSPEECH=spk_needs
 TSPEECH=spk_rehello
 TSPEECH=spk_human_default
+CATEGORY=Civilized
+SUBSECTION=Dread Lords
+DESCRIPTION=Dread Lord Captain
 
 ON=@Create
 	COLOR=colors_skin
@@ -2614,9 +2674,7 @@ ON=@NPCRestock
 	ITEM=i_gold,{400 600}
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Civilized
-	SUBSECTION=Dread Lords
-	DESCRIPTION=Dread Lord Captain
+
 
 [CHARDEF 01091]
 DEFNAME=c_m_scorpion_prince
@@ -2631,6 +2689,9 @@ CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
 //SHELTER==r_dungeon,r_caves,r_desert
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Scorpion Race
+DESCRIPTION=Scorpion Prince
 
 ON=@Create
 	COLOR=0387
@@ -2651,9 +2712,7 @@ ON=@NPCRestock
 	ITEM={ random_jewel 1 0 1 }
 	ITEM={ random_jewel 1 0 1 }
 	ITEM=i_gold,{100 200}
-	CATEGORY=Monsters
-	SUBSECTION=Scorpion Race
-	DESCRIPTION=Scorpion Prince
+
 
 [CHARDEF 01092]
 DEFNAME=c_m_scorpion_king
@@ -2668,6 +2727,9 @@ CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
 //SHELTER==r_dungeon,r_caves,r_desert
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Scorpion Race
+DESCRIPTION=Scorpion King
 
 ON=@Create
 	//ALIGNMENT=EVIL
@@ -2694,9 +2756,7 @@ ON=@NPCRestock
 	ITEM=i_gold, {600 800}
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Monsters
-	SUBSECTION=Scorpion Race
-	DESCRIPTION=Scorpion King
+
 
 [CHARDEF 01093]
 DEFNAME=c_m_scorpion_queen
@@ -2711,6 +2771,9 @@ CAN=MT_WALK
 FOODTYPE=15 t_meat_raw
 //SHELTER==r_dungeon,r_caves,r_desert
 AVERSIONS=r_civilization
+CATEGORY=Monsters
+SUBSECTION=Scorpion Race
+DESCRIPTION=Scorpion Queen
 
 ON=@Create
 	COLOR=0513
@@ -2742,9 +2805,7 @@ ON=@NPCRestock
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
 	ITEM=random_upper_scroll
-	CATEGORY=Monsters
-	SUBSECTION=Scorpion Race
-	DESCRIPTION=Scorpion Queen
+
 
 [CHARDEF 01094]
 DEFNAME=c_m_scorpion_thrall
@@ -2759,6 +2820,9 @@ RESOURCES=8 i_reag_spider_silk
 CAN=MT_WALK
 FOODTYPE=15 i_ribs_raw
 //SHELTER==t_WEB,r_caves,r_dungeon
+CATEGORY=Monsters
+SUBSECTION=Scorpion Race
+DESCRIPTION=Scorpion Thrall
 
 ON=@Create
 	COLOR=colors_gray
@@ -2778,9 +2842,7 @@ ON=@NPCRestock
 	ITEM={i_reag_spider_silk 1 0 1},{3 10}
 	ITEM={ random_jewel 1 0 1 }
 	ITEM=i_gold,{50 100}
-	CATEGORY=Monsters
-	SUBSECTION=Scorpion Race
-	DESCRIPTION=Scorpion Thrall
+
 
 [CHARDEF 01095]
 DEFNAME=c_h_woodelf_elite_ranger
@@ -2791,6 +2853,9 @@ CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 DAM=15,30
 ARMOR=19,19
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf Elite Ranger
 
 ON=@Create
 	COLOR=0597
@@ -2829,9 +2894,7 @@ ON=@NPCRestock
 	COLOR=045e
 	ITEM=i_arrow,{10 30}
 	ITEM=i_gold,{80 200}
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf Elite Ranger
+
 
 [CHARDEF 01096]
 DEFNAME=c_h_woodelf_elite_warrior
@@ -2842,6 +2905,9 @@ CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 DAM=10,30
 ARMOR=19,19
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf Elite Warrior
 
 ON=@Create
 	COLOR=0597
@@ -2877,9 +2943,7 @@ ON=@NPCRestock
 	ITEM=i_boots_calf
 	COLOR=045e
 	ITEM=i_gold,{90 200}
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf Elite Warrior
+
 
 [CHARDEF 01097]
 DEFNAME=c_h_woodelf_ranger
@@ -2890,6 +2954,9 @@ DAM=5,20
 ARMOR=13,13
 CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf Ranger
 
 ON=@Create
 	COLOR=0597
@@ -2928,9 +2995,7 @@ ON=@NPCRestock
 	ITEM=i_bow
 	ITEM=i_arrow,{10 50}
 	ITEM=i_gold,{50 150}
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf Ranger
+
 
 [CHARDEF 01098]
 DEFNAME=c_h_woodelf_hunter
@@ -2941,6 +3006,9 @@ DAM=5,20
 ARMOR=13
 CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf hunter
 
 ON=@Create
 	COLOR=0597
@@ -2964,9 +3032,7 @@ ON=@NPCRestock
 	ITEM=i_spear
 	ITEM=i_gold,{25 70}
 	ITEM=i_hides_cut,{1 3}
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf hunter
+
 
 [CHARDEF 01099]
 DEFNAME=c_darkelf_war_sword
@@ -3022,6 +3088,9 @@ DAM=5,10
 ARMOR=5,10
 CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf Fighter
 
 ON=@Create
 	COLOR=0597
@@ -3047,9 +3116,7 @@ ON=@NPCRestock
 	COLOR=0599
 	ITEM=i_studded_leggings
 	COLOR=0599
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf Fighter
+
 
 [CHARDEF 01101]
 DEFNAME=c_darkelf_fight_mace
@@ -3104,6 +3171,9 @@ DAM=10,20
 ARMOR=15,15
 CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Dark Elves
+DESCRIPTION=Dark-Elf Grunt
 
 ON=@Create
 	COLOR=0597
@@ -3137,9 +3207,7 @@ ON=@NPCRestock
 	COLOR=0455
 	ITEM=i_shield_wood
 	ITEM=i_axe_war
-	CATEGORY=Civilized
-	SUBSECTION=Dark Elves
-	DESCRIPTION=Dark-Elf Grunt
+
 
 [CHARDEF 01103]
 DEFNAME=c_darkelf_fight_sword
@@ -3243,6 +3311,9 @@ DAM=5,15
 ARMOR=9
 CAN=MT_EQUIP|MT_RUN|MT_USEHANDS|MT_WALK
 TSPEECH=jobFighter
+CATEGORY=Civilized
+SUBSECTION=Wood Elves
+DESCRIPTION=Wood-Elf Archer
 
 ON=@Create
 	COLOR=0597
@@ -3271,9 +3342,7 @@ ON=@NPCRestock
 	ITEM=i_bow
 	ITEM=i_sandals
 	ITEM=i_gold,{50 110}
-	CATEGORY=Civilized
-	SUBSECTION=Wood Elves
-	DESCRIPTION=Wood-Elf Archer
+
 
 [CHARDEF 01106]
 DEFNAME=c_m_dragon_crystal
@@ -3291,6 +3360,9 @@ FOODTYPE=80 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Crystal Dragon
 
 ON=@Create
 	NPC=brain_dragon
@@ -3321,9 +3393,7 @@ ON=@NPCRestock
 	ITEM=random_jewel, {1 4}, R2
 	ITEM=i_gold,{2200 2900}
 	ITEM=TTM_LVL5,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Crystal Dragon
+
 
 [CHARDEF 01107]
 DEFNAME=c_m_dragon_greendrake
@@ -3339,6 +3409,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Green
 
 ON=@Create
 	COLOR=0175
@@ -3362,9 +3435,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Green
+
 
 [CHARDEF 01108]
 DEFNAME=c_m_dragon_copperdrake
@@ -3380,6 +3451,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Copper
 
 ON=@Create
 	COLOR=091
@@ -3401,9 +3475,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Copper
+
 
 [CHARDEF 01109]
 DEFNAME=c_m_dragon_bluedrake
@@ -3421,6 +3493,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Blue
 
 ON=@Create
 	COLOR=05d
@@ -3442,9 +3517,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Blue
+
 
 [CHARDEF 01110]
 DEFNAME=c_m_dragon_golddrake
@@ -3462,6 +3535,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Gold
 
 ON=@Create
 	COLOR=033
@@ -3483,9 +3559,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Gold
+
 
 [CHARDEF 01111]
 DEFNAME=c_m_dragon_blackdrake
@@ -3503,6 +3577,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Black
 
 ON=@Create
 	COLOR=0455
@@ -3524,9 +3601,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Black
+
 
 [CHARDEF 01112]
 DEFNAME=c_m_dragon_silverdrake
@@ -3544,6 +3619,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Silver
 
 ON=@Create
 	COLOR=037a
@@ -3565,9 +3643,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Silver
+
 
 [CHARDEF 01113]
 DEFNAME=c_m_dragon_crystaldrake
@@ -3585,6 +3661,9 @@ FOODTYPE=25 t_meat_raw
 //SHELTER==r_caves,r_dungeon
 DESIRES=i_gold
 AVERSIONS=r_water,r_civilization
+CATEGORY=Monsters
+SUBSECTION=Dragons and Drakes
+DESCRIPTION=Drake, Crystal
 
 ON=@Create
 	COLOR=07fff
@@ -3606,9 +3685,7 @@ ON=@NPCRestock
 	ITEM={ RANDOM_RICH_MONSTER_GOODIE 1 RANDOM_FILTHY_RICH_MONSTER_GOODIE 1 }
 	ITEM={ random_gold_pile 3 0 1 }
 	ITEM=TTM_LVL3,R99
-	CATEGORY=Monsters
-	SUBSECTION=Dragons and Drakes
-	DESCRIPTION=Drake, Crystal
+
 
 [CHARDEF 01124]
 DEFNAME=c_m_frost_ettin
@@ -3622,6 +3699,9 @@ ARMOR=17,17
 FOODTYPE=5 t_meat_raw
 RESOURCES={5 10} i_ribs_raw
 //ALIGNMENT=EVIL
+CATEGORY=Monsters
+SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
+DESCRIPTION=Frost Ettin
 
 ON=@Create
 	COLOR=color_snow
@@ -3646,9 +3726,7 @@ ON=@NPCRestock
 	ITEM=random_chest_armor,R30
 	ITEM=i_deed,R100000
 	ITEM=random_clothing
-	CATEGORY=Monsters
-	SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
-	DESCRIPTION=Frost Ettin
+
 
 [CHARDEF 01125]
 DEFNAME=c_m_goblin_shaman
@@ -3662,6 +3740,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Goblins
+DESCRIPTION=Goblin Shaman
 
 ON=@Create
 	COLOR=colors_green
@@ -3687,9 +3768,7 @@ ON=@NPCRestock
 	ITEM=random_scroll
 	ITEM=random_body_armor,{1 2},R5
 	ITEM=random_eighth_circle,R25
-	CATEGORY=Monsters
-	SUBSECTION=Goblins
-	DESCRIPTION=Goblin Shaman
+
 
 [CHARDEF 01126]
 DEFNAME=c_m_goblin_lord
@@ -3702,6 +3781,9 @@ FOODTYPE=15 t_meat_raw
 //SHELTER==r_caves,r_dungeon,r_orc_camp
 DESIRES=i_gold,spk_orc
 TSPEECH=spk_orc
+CATEGORY=Monsters
+SUBSECTION=Goblins
+DESCRIPTION=Goblin Lord  (club)
 
 ON=@Create
 	COLOR=colors_green
@@ -3742,9 +3824,7 @@ ON=@NPCRestock
 	ITEM=random_eighth_circle,R20
 	ITEM=random_all_armor
 	ITEM=i_deed,R5000
-	CATEGORY=Monsters
-	SUBSECTION=Goblins
-	DESCRIPTION=Goblin Lord  (club)
+
 
 [CHARDEF 01127]
 DEFNAME=c_m_cyclops_king
@@ -3757,6 +3837,9 @@ RESOURCES=30 i_ribs_raw
 FOODTYPE=15 t_meat_raw
 CAN=MT_WALK
 //ALIGNMENT=EVIL
+CATEGORY=Monsters
+SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
+DESCRIPTION=Cyclops King
 
 ON=@Create
 	STR={350 390}
@@ -3787,9 +3870,7 @@ ON=@NPCRestock
 	ITEM=random_All_armor,R18
 	ITEM=random_chest_armor,R14
 	ITEM=i_gold,{500 1500}
-	CATEGORY=Monsters
-	SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
-	DESCRIPTION=Cyclops King
+
 
 [CHARDEF 01128]
 DEFNAME=c_m_ettin_lord
@@ -3802,6 +3883,9 @@ RESOURCES=20 i_ribs_raw
 CAN=MT_USEHANDS|MT_WALK
 FOODTYPE=15 t_meat_raw
 //ALIGNMENT=EVIL
+CATEGORY=Monsters
+SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
+DESCRIPTION=Ettin Lord
 
 ON=@Create
 	STR={155 200}
@@ -3835,8 +3919,6 @@ ON=@NPCRestock
 	ITEM=random_pole_arms,R3
 	ITEM=random_masks,R10
 	ITEM=i_gem_diamond,{3 5}
-	CATEGORY=Monsters
-	SUBSECTION=Ettins, Ogres, Trolls, Cyclops, and Titans
-	DESCRIPTION=Ettin Lord
+
 
 [EOF]
