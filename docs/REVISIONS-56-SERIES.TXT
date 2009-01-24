@@ -4268,6 +4268,9 @@ this all in desperation)
   be unaffected and continue to use the original networking code as if the EF_UseNetworkMulti
   flag was never set.
 
-03-01-2009, Dwayne1988
-- ScriptPack: Axis Tags in spherechar_human.scp and spherechar_evil.scp were messed up (came after @NPCRESTOCK _and_ had a leading TAB so Axis won't find them).
+03-01-2009, Dwayne1988 (Script pack)
+- Updated: spherechar_human.scp, spherechar_evil.scp (Axis Tags were messed up, came after
+  @NPCRESTOCK _and_ had a leading TAB so Axis won't find them)
 
+24-01-2009, MrSugarCube
+- Fixed #1569: @UserWarmode trigger not being fired.

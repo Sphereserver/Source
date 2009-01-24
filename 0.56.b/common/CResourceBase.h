@@ -439,7 +439,7 @@ public:
 	bool	MakeResourceName();
 };
 
-#define MAX_TRIGGERS_ARRAY	4
+#define MAX_TRIGGERS_ARRAY	5
 
 class CResourceLink : public CResourceDef
 {
