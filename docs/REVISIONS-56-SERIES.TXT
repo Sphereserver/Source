@@ -4274,3 +4274,4 @@ this all in desperation)
 
 24-01-2009, MrSugarCube
 - Fixed #1569: @UserWarmode trigger not being fired.
+- Fixed #1572: Exception on Linux builds when mounting a horse.
