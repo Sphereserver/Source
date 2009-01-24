@@ -4273,5 +4273,6 @@ this all in desperation)
   @NPCRESTOCK _and_ had a leading TAB so Axis won't find them)
 
 24-01-2009, MrSugarCube
-- Fixed #1569: @UserWarmode trigger not being fired.
 - Fixed #1572: Exception on Linux builds when mounting a horse.
+- Fixed #1569: @UserWarmode trigger not being fired.
+- Fixed #1568: Default webpage paths in Sphere.ini not valid for Linux.
