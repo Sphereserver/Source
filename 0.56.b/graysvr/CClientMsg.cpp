@@ -5034,6 +5034,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 
 		if ( bInUse )
 		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%x: Account '%s' already in use.\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 			sMsg = "Account already in use.";
 			return LOGIN_ERR_USED;
 		}

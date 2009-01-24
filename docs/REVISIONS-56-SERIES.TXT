@@ -4276,3 +4276,5 @@ this all in desperation)
 - Fixed #1572: Exception on Linux builds when mounting a horse.
 - Fixed #1569: @UserWarmode trigger not being fired.
 - Fixed #1568: Default webpage paths in Sphere.ini not valid for Linux.
+- Fixed #1532: Added log message to indicate the account name being referred to when an account
+  is already in use.
