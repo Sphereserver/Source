@@ -4214,7 +4214,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
 		bool bCraftSkill = IsSkillCraft(skill);
-		RESOURCE_ID pResBase(RES_ITEMDEF,m_atCreate.m_ItemID,0);
+		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
 
 		if ( bCraftSkill == true )
 		{
