@@ -233,10 +233,17 @@ void _cdecl CGString::Format( LPCTSTR pStr, ... )
 	FormatV( pStr, vargs );
 	va_end( vargs );
 }
+
 void CGString::FormatVal( long iVal )
 {
 	Format("%d", iVal);
 }
+
+void CGString::FormatUVal( unsigned long iVal )
+{
+	Format("%u", iVal);
+}
+
 void CGString::FormatHex( DWORD dwVal )
 {
 	Format("0%x", dwVal);

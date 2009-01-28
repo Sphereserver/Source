@@ -4278,3 +4278,7 @@ this all in desperation)
 - Fixed #1568: Default webpage paths in Sphere.ini not valid for Linux.
 - Fixed #1532: Added log message to indicate the account name being referred to when an account
   is already in use.
+
+28-01-2009, Shadow Dragon
+- Added: SERV.RTicks for reading purposes. Returns real system time in ticks as unsigned value (0..4294967295).
+- Added: UVAL, which works like EVAL, but for unsigned values.

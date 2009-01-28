@@ -427,6 +427,7 @@ enum RC_TYPE
 	RC_PROFILE,
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
 	RC_REAGENTSREQUIRED,
+	RC_RTICKS,
 	RC_RTIME,
 	RC_RUNNINGPENALTY,		// m_iStamRunningPenalty
 	RC_SAVEBACKGROUND,			// m_iSaveBackgroundTime
@@ -604,6 +605,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "PROFILE" },
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail)	}},
 	{ "REAGENTSREQUIRED",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentsRequired)	}},
+	{ "RTICKS" },
 	{ "RTIME" },
 	{ "RUNNINGPENALTY",			{ ELEM_INT,		OFFSETOF(CResource,m_iStamRunningPenalty)	}},
 	{ "SAVEBACKGROUND",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackgroundTime)	}},
@@ -1144,6 +1146,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_PROFILE:
 			sVal.FormatVal(g_Serv.m_Profile.GetActiveWindow());
+			break;
+		case RC_RTICKS:
+			{
+				sVal.FormatUVal(static_cast<unsigned long>(CGTime::GetCurrentTime().GetTime()));
+			}
 			break;
 		case RC_RTIME:
 			{

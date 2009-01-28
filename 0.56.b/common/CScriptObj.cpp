@@ -884,6 +884,9 @@ badcmd:
 		case SSC_EVAL:
 			sVal.FormatVal( Exp_GetVal( pszKey ));
 			return( true );
+		case SSC_UVAL:
+			sVal.FormatUVal( static_cast<unsigned long>(Exp_GetVal( pszKey )));
+			return( true );
 		case SSC_FVAL:
 			{
 				int	iVal		= Exp_GetVal( pszKey );
