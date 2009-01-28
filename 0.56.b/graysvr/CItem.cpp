@@ -2892,11 +2892,30 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_SET("events");
 	int origEvents = m_OEvents.GetCount();
 	int curEvents = origEvents;
+
+	LPCTSTR pszOrigTrigName = pszTrigName;
+
 	for ( i=0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
 	{
 		CResourceLink	*pLink = m_OEvents[i];
-		if ( !pLink || !pLink->HasTrigger(iAction) )
+
+		// Allowing items to use EVENTS, but triggers like 'itemTrigger' (will be same as Trigger),
+		// cause ITRIG table differs from CTRIG.
+		// Sample:
+		// [EVENTS e_event_foritem]
+		// ON=@ItemClick
+		// Blablabla...
+		//
+		// SERV.NewItem i_gold
+		// NEW.Events +e_event_foritem
+		// 
+		// When you click on this coin, it will rise @Click item (but in EVENTS section it MUST be
+		// @ItemClick, not @Click
+		if ( !pLink || !pLink->HasTrigger(iAction + (CTRIG_itemAfterClick - 1)) )
 			continue;
+
+		pszTrigName = CChar::sm_szTrigName[iAction + (CTRIG_itemAfterClick - 1)];
+
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) )
 			continue;
@@ -2912,6 +2931,9 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			origEvents = curEvents;
 		}
 	}
+
+	pszTrigName = pszOrigTrigName;
+	pszOrigTrigName = NULL;
 
 	// 3) TEVENTS on the item
 	EXC_SET("tevents");
