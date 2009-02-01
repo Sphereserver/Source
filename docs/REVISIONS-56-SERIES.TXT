@@ -4292,6 +4292,8 @@ this all in desperation)
   LIST.xxx.COUNT to get count of elements in list
   LIST.xxx.index.REMOVE to remove element at specified index in list
   LIST.xxx.index.INSERT to insert element at specified index in list
+  LIST.xxx.FINDELEM search_value returns index of first found element in list. Search starting from begin
+  LIST.xxx.index.FINDELEM search_value returns index of first found element in list. Search starting from index
   SERV.PRINTLISTS to print all lists and their elements
   SERV.CLEARLISTS to clear all lists. If used with mask parameter, then clear all lists, which name countains specified mask
 - Added: SERV.Map.x.AllSectors some_verb_to_use

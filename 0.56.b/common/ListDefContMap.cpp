@@ -256,15 +256,21 @@ int CListDefCont::GetValNum(int nIndex) const
 	return pElem->GetValNum();
 }
 
-int CListDefCont::FindValStr( LPCTSTR pVal ) const
+int CListDefCont::FindValStr( LPCTSTR pVal, int nStartIndex /* = 0 */ ) const
 {
 	ADDTOCALLSTACK("CListDefCont::FindValStr");
+
+	if ( !pVal || !(*pVal) )
+		return -1;
 
 	int nIndex = 0;
 	DefList::const_iterator i;
 
 	for ( i = m_listElements.begin(), nIndex = 0; i != m_listElements.end(); ++i, ++nIndex )
 	{
+		if ( nIndex < nStartIndex )
+			continue;
+
 		const CListDefContElem * pListBase = (*i);
 		ASSERT( pListBase );
 
@@ -280,7 +286,7 @@ int CListDefCont::FindValStr( LPCTSTR pVal ) const
 	return -1;
 }
 
-int CListDefCont::FindValNum( int iVal ) const
+int CListDefCont::FindValNum( int iVal, int nStartIndex /* = 0 */ ) const
 {
 	ADDTOCALLSTACK("CListDefCont::FindValNum");
 
@@ -289,6 +295,9 @@ int CListDefCont::FindValNum( int iVal ) const
 
 	for ( i = m_listElements.begin(), nIndex = 0; i != m_listElements.end(); ++i, ++nIndex )
 	{
+		if ( nIndex < nStartIndex )
+			continue;
+
 		const CListDefContElem * pListBase = (*i);
 		ASSERT( pListBase );
 
@@ -906,28 +915,53 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 
 	// LIST.<list_name>.<list_elem_index>
 
+	int nStartIndex = -1;
+	Str_Parse(ppCmds[1], &(ppCmds[2]), "." );
+
 	if ( IsSimpleNumberString(ppCmds[1]) )
 	{
 		CListDefContElem* pListElem = NULL;
 		CListDefContStr* pListElemStr = NULL;
 
-		pListElem = pListBase->GetAt(Exp_GetVal(ppCmds[1]));
+		nStartIndex = Exp_GetVal(ppCmds[1]);
+		pListElem = pListBase->GetAt(nStartIndex);
 
 		if ( pListElem )
 		{
-			pListElemStr = dynamic_cast<CListDefContStr*>(pListElem);
+			if ( !(*(ppCmds[2])) )
+			{
+				pListElemStr = dynamic_cast<CListDefContStr*>(pListElem);
 
-			if ( pListElemStr )
-				strVal.Format("\"%s\"", pListElemStr->GetValStr());
-			else
-				strVal = pListElem->GetValStr();
+				if ( pListElemStr )
+					strVal.Format("\"%s\"", pListElemStr->GetValStr());
+				else
+					strVal = pListElem->GetValStr();
 
-			return true;
+				return true;
+			}
 		}
+		else
+			return false;
 	}
 	else if ( stricmp(ppCmds[1], "count") == 0 )
 	{
 		strVal.Format("%d", pListBase->GetCount());
+
+		return true;
+	}
+
+	CScript s(nStartIndex == -1 ? ppCmds[1]:ppCmds[2]);
+	nStartIndex = max(0, nStartIndex);
+
+	if ( stricmp(s.GetKey(), "findelem") == 0 )
+	{
+		bool fQuoted = false;
+		LPCTSTR pszArg = s.GetArgStr(&fQuoted);
+
+		if ( fQuoted )
+			strVal.Format("%d", pListBase->FindValStr(pszArg, nStartIndex));
+		else
+			strVal.Format("%d", pListBase->FindValNum(Exp_GetVal(pszArg), nStartIndex));
 
 		return true;
 	}

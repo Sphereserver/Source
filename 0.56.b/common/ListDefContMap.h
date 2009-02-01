@@ -101,8 +101,8 @@ public:
 	LPCTSTR GetValStr(int nIndex) const;
 	int GetValNum(int nIndex) const;
 
-	int FindValNum( int iVal ) const;
-	int FindValStr( LPCTSTR pVal ) const;
+	int FindValNum( int iVal, int nStartIndex = 0 ) const;
+	int FindValStr( LPCTSTR pVal, int nStartIndex = 0 ) const;
 
 	bool AddElementNum(int iVal);
 	bool AddElementStr(LPCTSTR pszKey);
