@@ -697,6 +697,14 @@ SOURCE=..\common\CVarDefMap.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\ListDefContMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\ListDefContMap.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\CWindow.cpp
 # End Source File
 # Begin Source File

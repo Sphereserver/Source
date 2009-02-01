@@ -69,6 +69,7 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with !
 	RES_WI,				// =WORLDITEM
 	RES_WORLDCHAR,		// Define instance of char in the world. (SAVED in World)
 	RES_WORLDITEM,		// Define instance of item in the world. (SAVED in World)
+	RES_WORLDLISTS,
 	RES_WORLDSCRIPT,	// Something to load into a script.
 	RES_WORLDVARS,
 	RES_WS,				// =WORLDSCRIPT
