@@ -128,6 +128,7 @@ SRC	:= 	CAccount.cpp \
 		../common/CString.cpp \
 		../common/CVarDefMap.cpp \
 		../common/CVarFloat.cpp \
+		../common/ListDefContMap.cpp \
 		../common/graycom.cpp \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \

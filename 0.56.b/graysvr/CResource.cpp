@@ -686,6 +686,35 @@ bool CResource::r_LoadVal( CScript &s )
 				return g_MapList.Load(ATOI(str.c_str()), s.GetArgRaw());
 			else
 			{
+				int nLength = static_cast<int>(str.size());
+
+				if ( nLength >= 2/*at least .X*/ && str[0] == '.' && isdigit(str[1]) )
+				{
+					LPCTSTR pszStr = &(str[1]);
+					int nMapNumber = Exp_GetVal(pszStr);
+
+					if ( g_MapList.IsMapSupported(nMapNumber) )
+					{
+						SKIP_SEPARATORS(pszStr);
+
+						if ( stricmp(pszStr, "ALLSECTORS") == 0 )
+						{
+							int nSectors = g_MapList.GetSectorQty(nMapNumber);
+							pszStr = s.GetArgRaw();
+
+							if ( pszStr && *pszStr )
+							{
+								CScript scp(pszStr);
+
+								for ( int nIndex = 0; nIndex < nSectors; ++nIndex )
+									g_World.GetSector(nMapNumber, nIndex)->r_Verb(scp, (CTextConsole *)&g_Serv);
+							}
+
+							return true;
+						}
+					}
+				}
+	
 				DEBUG_ERR(("Bad usage of MAPx. Check your sphere.ini or scripts (SERV.MAP is a read only property)\n"));
 				return false;
 			}
@@ -1857,6 +1886,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	{
 		restype			= RES_WORLDVARS;
 	}
+	else if ( !strnicmp( pszSection, "LIST", 4) )
+	{
+		restype			= RES_WORLDLISTS;
+	}
 	else if ( !strnicmp( pszSection, "TIMERF", 7 ) )
 	{
 		restype			= RES_TIMERF;
@@ -2504,6 +2537,24 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			g_Exp.m_VarGlobals.SetStr( pszKey, fQuoted, pScript->GetArgStr( &fQuoted ) );
 		}
 		return true;
+	case RES_WORLDLISTS:
+		{
+			CListDefCont* pListBase = g_Exp.m_ListGlobals.AddList(pScript->GetArgStr());
+
+			if ( !pListBase )
+			{
+				DEBUG_ERR(("Unable to create list '%s'...\n", pScript->GetArgStr()));
+
+				return false;
+			}
+
+			while ( pScript->ReadKeyParse() )
+			{
+				if ( !pListBase->r_LoadVal(*pScript) )
+					DEBUG_ERR(("Unable to add element '%s' to list '%s'...\n", pScript->GetArgStr(), pListBase->GetKey()));
+			}
+		}
+		return true;
 	case RES_TIMERF:
 		while ( pScript->ReadKeyParse() )
 		{
@@ -2634,6 +2685,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	case RES_TELEPORTERS:
 	case RES_TYPEDEFS:
 	case RES_WORLDVARS:
+	case RES_WORLDLISTS:
 		// Single instance stuff. (fully read in)
 		// Ignore any resource name.
 		return( RESOURCE_ID( restype ));

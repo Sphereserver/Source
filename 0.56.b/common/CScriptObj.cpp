@@ -588,6 +588,14 @@ bool CScriptObj::r_LoadVal( CScript & s )
 		return( true );
 	}
 
+	if ( index == SSC_LIST )
+	{
+		if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
+			DEBUG_ERR(("Unable to proceed command '%s %s'\n", pszKey, s.GetArgRaw()));
+
+		return true;
+	}
+
 	if ( index == SSC_DEFMSG )
 	{
 		long	l;
@@ -868,6 +876,11 @@ badcmd:
 					sVal	= pVar->GetValStr();
 				else if ( fZero )
 					sVal	= "0";
+			}
+			return true;
+		case SSC_LIST:
+			{
+				g_Exp.m_ListGlobals.r_Write(pSrc, pszKey, sVal);					
 			}
 			return true;
 		case SSC_DEF0:

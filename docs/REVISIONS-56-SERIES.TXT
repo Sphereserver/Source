@@ -4282,3 +4282,17 @@ this all in desperation)
 28-01-2009, Shadow Dragon
 - Added: SERV.RTicks for reading purposes. Returns real system time in ticks as unsigned value (0..4294967295).
 - Added: UVAL, which works like EVAL, but for unsigned values.
+
+01-02-2009, Shadow Dragon
+- Added: Basic LIST support.
+  LIST.xxx to show elements in list. Also, can be used like LIST.xxx=value to clear list and add a value
+  LIST.xxx.ADD to add new element to list, can be number or string
+  LIST.xxx.CLEAR to clear list
+  LIST.xxx.index to read/write value on element in list
+  LIST.xxx.COUNT to get count of elements in list
+  LIST.xxx.index.REMOVE to remove element at specified index in list
+  LIST.xxx.index.INSERT to insert element at specified index in list
+  SERV.PRINTLISTS to print all lists and their elements
+  SERV.CLEARLISTS to clear all lists. If used with mask parameter, then clear all lists, which name countains specified mask
+- Added: SERV.Map.x.AllSectors some_verb_to_use
+  If used not in this syntax, then gives old error about MAP is readonly.

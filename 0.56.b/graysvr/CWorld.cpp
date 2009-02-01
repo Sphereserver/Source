@@ -1118,6 +1118,8 @@ bool CWorld::SaveStage() // Save world state in stages.
 		iQty = g_Exp.m_VarGlobals.GetCount();
 		g_Exp.m_VarGlobals.r_WritePrefix(m_FileData, NULL);
 
+		g_Exp.m_ListGlobals.r_WriteSave(m_FileData);
+
 		iQty = g_Cfg.m_RegionDefs.GetCount();
 		for ( i = 0; i < iQty; i++ )
 		{

@@ -1044,6 +1044,7 @@ enum SV_TYPE
 	SV_ALLCLIENTS,
 	SV_B,
 	SV_BLOCKIP,
+	SV_CLEARLISTS,
 	SV_CONSOLE,
 #ifdef _TEST_EXCEPTION
 	SV_CRASH,
@@ -1055,6 +1056,7 @@ enum SV_TYPE
 	SV_INFORMATION,
 	SV_LOAD,
 	SV_LOG,
+	SV_PRINTLISTS,
 	SV_RESPAWN,
 	SV_RESTOCK,
 	SV_RESTORE,
@@ -1075,6 +1077,7 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"ALLCLIENTS",
 	"B",
 	"BLOCKIP",
+	"CLEARLISTS",
 	"CONSOLE",
 #ifdef _TEST_EXCEPTION
 	"CRASH",
@@ -1086,6 +1089,7 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"INFORMATION",
 	"LOAD",
 	"LOG",
+	"PRINTLISTS",
 	"RESPAWN",
 	"RESTOCK",
 	"RESTORE",
@@ -1402,7 +1406,14 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				pSrc = (CTextConsole *)&g_Serv;
 			g_Exp.m_VarGlobals.DumpKeys(pSrc, "VAR.");
 			break;
-
+		case SV_PRINTLISTS:
+			if ( ! strcmpi( s.GetArgStr(), "log" ))
+				pSrc = (CTextConsole *)&g_Serv;
+			g_Exp.m_ListGlobals.DumpKeys(pSrc, "LIST.");
+			break;
+		case SV_CLEARLISTS:
+			g_Exp.m_ListGlobals.ClearKeys(s.GetArgStr());
+			break;
 		default:
 			return CScriptObj::r_Verb(s, pSrc);
 	}
