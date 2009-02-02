@@ -801,14 +801,14 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 
 		if ( !IsSimpleNumberString(ppCmds[1]) )
 		{
-			if ( stricmp(ppCmds[1], "clear") == 0 )
+			if ( strcmpi(ppCmds[1], "clear") == 0 )
 			{
 				if ( pListBase )
 					DeleteKey(ppCmds[0]);
 
 				return true;
 			}
-			else if ( stricmp(ppCmds[1], "add") == 0 )
+			else if ( strcmpi(ppCmds[1], "add") == 0 )
 			{
 				if ( !pszArg || !(*pszArg) )
 					return false;
@@ -831,9 +831,9 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 
 			if ( ppCmds[2] && *(ppCmds[2]) )
 			{
-				if ( stricmp(ppCmds[2], "remove") == 0 )
+				if ( strcmpi(ppCmds[2], "remove") == 0 )
 					return pListBase->RemoveElement(nIndex);
-				else if ( stricmp(ppCmds[2], "insert") == 0 && pszArg && *pszArg )
+				else if ( strcmpi(ppCmds[2], "insert") == 0 && pszArg && *pszArg )
 				{
 					bool bIsNum = ( IsSimpleNumberString(pszArg) );
 
@@ -943,7 +943,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 		else
 			return false;
 	}
-	else if ( stricmp(ppCmds[1], "count") == 0 )
+	else if ( strcmpi(ppCmds[1], "count") == 0 )
 	{
 		strVal.Format("%d", pListBase->GetCount());
 
@@ -953,7 +953,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 	CScript s(nStartIndex == -1 ? ppCmds[1]:ppCmds[2]);
 	nStartIndex = max(0, nStartIndex);
 
-	if ( stricmp(s.GetKey(), "findelem") == 0 )
+	if ( strcmpi(s.GetKey(), "findelem") == 0 )
 	{
 		bool fQuoted = false;
 		LPCTSTR pszArg = s.GetArgStr(&fQuoted);

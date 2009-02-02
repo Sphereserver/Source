@@ -697,7 +697,7 @@ bool CResource::r_LoadVal( CScript &s )
 					{
 						SKIP_SEPARATORS(pszStr);
 
-						if ( stricmp(pszStr, "ALLSECTORS") == 0 )
+						if ( strcmpi(pszStr, "ALLSECTORS") == 0 )
 						{
 							int nSectors = g_MapList.GetSectorQty(nMapNumber);
 							pszStr = s.GetArgRaw();
