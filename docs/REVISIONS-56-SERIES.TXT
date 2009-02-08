@@ -4301,3 +4301,4 @@ this all in desperation)
 
 08-02-2009, MrSugarCube
 - Fixed #1517: Unable to cast polymorph spell.
+- Fixed: Possible infinite loop when creating fight memories in scripts.
