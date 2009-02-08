@@ -65,7 +65,8 @@ LPCTSTR const CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
 	"WI",				// =WORLDITEM
 	"WORLDCHAR",		// Define instance of char in the world. (SAVED in World)
 	"WORLDITEM",		// Define instance of item in the world. (SAVED in World)
-	"WORLDSCRIPT",		// Define instance of item in the world. (SAVED in World)
+	"WORLDLISTS",		// Define instance of list in the world. (SAVED in World)
+	"WORLDSCRIPT",		// Define instance of resource in the world. (SAVED in World)
 	"WORLDVARS",		// block of global variables
 	"WS",				// =WORLDSCRIPT
 };
