@@ -701,7 +701,7 @@ bool CChar::NPC_OnHireHear( CChar * pCharSrc )
 		return false;
 	}
 
-	CItem * pMemory = Memory_FindObj( pCharSrc );
+	CItemMemory * pMemory = Memory_FindObj( pCharSrc );
 	if ( pMemory )
 	{
 		if ( pMemory->IsMemoryTypes(MEMORY_IPET|MEMORY_FRIEND))

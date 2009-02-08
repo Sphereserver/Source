@@ -1861,7 +1861,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 							if ( !pTarget )
 								break;
 
-							CItem *pMemory = pTarget->Memory_FindObj(pChar);
+							CItemMemory *pMemory = pTarget->Memory_FindObj(pChar);
 							if ( pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY) )
 							{
 								pFriend[iFriendIndex++] = pTarget;
