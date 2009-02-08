@@ -818,15 +818,8 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		// select to execute any entries here ?
 		if ( iOnCount == iSelect )
 		{
-			//Save old ACT
-			CGrayUID uidOldAct	= m_pChar->m_Act_Targ;
-			m_pChar->m_Act_Targ = m_Targ_UID;
-
 			// Execute command from script
 			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, m_pChar, &Args );
-
-			//Restore the ACT
-			m_pChar->m_Act_Targ = uidOldAct;
 
 			if ( tRet == TRIGRET_RET_TRUE )
 			{

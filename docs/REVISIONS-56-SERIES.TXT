@@ -4298,3 +4298,6 @@ this all in desperation)
   SERV.CLEARLISTS to clear all lists. If used with mask parameter, then clear all lists, which name countains specified mask
 - Added: SERV.Map.x.AllSectors some_verb_to_use
   If used not in this syntax, then gives old error about MAP is readonly.
+
+08-02-2009, MrSugarCube
+- Fixed #1517: Unable to cast polymorph spell.
