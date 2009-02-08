@@ -2928,6 +2928,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				}
 			}
 			//DEBUG_ERR(( "CHV_MAKEITEM iTmp is %d, arg was %s\n",iTmp,psTmp ));
+ 
+			if ( IsClient() )
+			{
+				m_Act_Targ = m_pClient->m_Targ_UID;
+			}
 
 			return Skill_MakeItem(
 				(ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ttVal[0]),
