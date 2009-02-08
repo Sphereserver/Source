@@ -2587,7 +2587,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	{
 		// I have no memory of them yet.
 		// There was no fight. Am I the aggressor ?
-		CItem * pTargMemory = pTarg->Memory_FindObj( this );
+		CItemMemory * pTargMemory = pTarg->Memory_FindObj( this );
 		if ( pTargMemory != NULL )	// My target remembers me.
 		{
 			if ( pTargMemory->IsMemoryTypes( MEMORY_IAGGRESSOR ))
@@ -2797,7 +2797,15 @@ CChar * CChar::Fight_FindBestTarget()
 	{
 		if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
 			continue;
+		// check that the item is actually a memory item
+		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
+		if ( pMemory == NULL )
+			continue;
+
 		pChar = pItem->m_uidLink.CharFind();
+		if ( pChar == NULL)
+			continue;
+
 		int iDist = GetDist(pChar);
 
 		if ( skillWeapon == SKILL_ARCHERY )
