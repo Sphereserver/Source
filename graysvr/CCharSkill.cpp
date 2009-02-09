@@ -1727,7 +1727,12 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		}
 		UpdateDir( m_Act_p );
 		if ( IsSetEF(EF_DamageTools) )
-			pShovel->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
+		{
+			if ( pShovel->m_itWeapon.m_Hits_Cur )
+				pShovel->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
+			else
+				pShovel->Delete();
+		}
 
 		if ( m_atResource.m_Stroke_Count )
 		{
@@ -2007,7 +2012,12 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		UpdateDir( m_Act_p );
 
 		if (IsSetEF(EF_DamageTools) )
-			pAxe->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
+		{
+			if ( pAxe->m_itWeapon.m_Hits_Cur )
+				pAxe->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
+			else
+				pAxe->Delete();
+		}
 
 		if ( m_atResource.m_Stroke_Count )
 		{
