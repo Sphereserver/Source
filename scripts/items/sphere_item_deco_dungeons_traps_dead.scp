@@ -192,7 +192,6 @@ DESCRIPTION=Spider Web 02 (N)
 
 [ITEMDEF 0ee8]
 //grave
-DUPEITEM=0e9f
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Graves & Gravestones
 DESCRIPTION=Grave

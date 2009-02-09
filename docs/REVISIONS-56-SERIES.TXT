@@ -4302,3 +4302,7 @@ this all in desperation)
 08-02-2009, MrSugarCube
 - Fixed #1517: Unable to cast polymorph spell.
 - Fixed: Possible infinite loop when creating fight memories in scripts.
+
+09-02-2009, Coruja (Script pack)
+- Updated #1576: sphere_item_profession.scp, sphere_item_deco_dungeons_traps_dead.scp (Corrected
+  portrait DUPELISTs)

@@ -273,7 +273,7 @@ CATEGORY=Items by Professions
 SUBSECTION=Artists
 DESCRIPTION=Portrait
 SKILLMAKE=CARPENTRY 80.0, TAILORING 65.0, t_carpentry, t_sewing_kit
-DUPELIST=0ee8
+DUPELIST=0ec8
 
 [ITEMDEF 0ea0]
 //painting
@@ -472,11 +472,11 @@ CATEGORY=Items by Professions
 SUBSECTION=Artists
 DESCRIPTION=Painting
 SKILLMAKE=CARPENTRY 80.0, TAILORING 65.0, t_carpentry, t_sewing_kit
-DUPELIST=0ec9
+DUPELIST=0e9f
 
 [ITEMDEF 0ec9]
 //painting
-DUPEITEM=0ec8
+DUPEITEM=0ee7
 
 [ITEMDEF 0ee7]
 //portrait
@@ -487,6 +487,7 @@ SUBSECTION=Artists
 DESCRIPTION=Portrait
 RESOURCES=15 i_log,25 i_cloth
 SKILLMAKE=CARPENTRY 80.0, TAILORING 65.0, t_carpentry, t_sewing_kit
+DUPELIST=0ec9
 
 [ITEMDEF 0ee9]
 //clean bandages
