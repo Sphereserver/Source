@@ -235,6 +235,9 @@ enum ITRIG_TYPE
 	ITRIG_ContextMenuSelect,
 	ITRIG_Create,		// Item is being created.
 	ITRIG_DAMAGE,		// I have been damaged in some way
+#ifdef _NAZTEST_WARTARG	
+	ITRIG_DAMAGEGIVEN,	// I gave some kind of damage to someone
+#endif
 	ITRIG_DCLICK,		// I have been dclicked.
 	ITRIG_DESTROY,		//+I am nearly destroyed
 	ITRIG_DROPON_CHAR,		// I have been dropped on this char

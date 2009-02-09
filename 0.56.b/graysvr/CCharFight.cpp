@@ -3457,7 +3457,20 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-	iDmg = pCharTarg->OnTakeDamage( iDmg, this, ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH ));
+	int iTyp = ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH );
+#ifdef _NAZTEST_WARTARG
+	if (pWeapon != NULL )
+	{
+		CScriptTriggerArgs weaponArgs( iDmg, (int) iTyp );
+		if ( pWeapon->OnTrigger( ITRIG_DAMAGEGIVEN, this, &weaponArgs ) == TRIGRET_RET_TRUE )
+			iDmg = 0;
+		else {
+			iDmg = weaponArgs.m_iN1;
+			iTyp = weaponArgs.m_iN2;
+		}
+	}
+#endif
+	iDmg = pCharTarg->OnTakeDamage( iDmg, this, iTyp );
 	if ( iDmg > 0 )
 	{
 		// Is we do no damage we get no experience!
