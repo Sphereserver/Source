@@ -2120,6 +2120,9 @@ enum CTRIG_TYPE
 	CTRIG_itemContextMenuSelect,
 	CTRIG_itemCreate,		//?
 	CTRIG_itemDamage,		//?
+#ifdef _NAZTEST_WARTARG
+	CTRIG_itemDamageGiven,
+#endif
 	CTRIG_itemDCLICK,		// I have dclicked item
 	CTRIG_itemDestroy,		//+Item is nearly destroyed
 	CTRIG_itemDROPON_CHAR,		// I have been dropped on this char
