@@ -54,6 +54,9 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemContextMenuSelect",
 	"@itemCreate",			//?
 	"@itemDamage",			//?
+#ifdef _NAZTEST_WARTARG
+	"@itemDagageGiven",
+#endif
 	"@itemDCLICK",			// I have dclicked item
 	"@itemDestroy",			//+I am nearly destroyed
 	"@itemDropOn_Char",		// I have been dropped on this char
