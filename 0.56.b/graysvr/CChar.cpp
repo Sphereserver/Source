@@ -55,7 +55,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemCreate",			//?
 	"@itemDamage",			//?
 #ifdef _NAZTEST_WARTARG
-	"@itemDagageGiven",
+	"@itemDamageGiven",
 #endif
 	"@itemDCLICK",			// I have dclicked item
 	"@itemDestroy",			//+I am nearly destroyed
