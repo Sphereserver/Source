@@ -4410,7 +4410,7 @@ int CClient::xDispatchMsg()
 				EXC_SET("not logged - char list req");
 				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
 					RETURN_FALSE();
-				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ));
+				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) == LOGIN_SUCCESS);
 			}
 			case XCMD_Spy:
 			case XCMD_Spy2:
@@ -4518,6 +4518,13 @@ int CClient::xDispatchMsg()
 
 		switch ( pEvent->Default.m_Cmd )
 		{
+			case XCMD_CharListReq: // Second Login to select char, only valid if there is no char selected yet
+			{
+				EXC_SET("not logged - char list req");
+				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
+					RETURN_FALSE();
+				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) == LOGIN_SUCCESS);
+			}
 			case XCMD_ExtData:
 				EXC_SET("no char - ext data");
 				if ( ! xCheckMsgSize(3))

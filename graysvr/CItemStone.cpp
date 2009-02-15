@@ -1658,11 +1658,13 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 		Speak( "Only players can be members!");
 		return NULL;
 	}
+#ifndef _NEWGUILDSYSTEM
 	else if ( !pChar->IsClient() )
 	{
 		Speak( "This player must be online to become a member." );
 		return NULL;
 	}
+#endif
 
 	char	*z = Str_GetTemp();
 	CItemStone * pStone = pChar->Guild_Find( GetMemoryType());

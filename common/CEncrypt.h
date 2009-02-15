@@ -79,6 +79,7 @@ public:
 	};
 private:
 	bool m_fInit;
+	bool m_fRelayPacket;
 	int m_iClientVersion;
 	ENCRYPTION_TYPE m_GameEnc;
 
@@ -245,13 +246,13 @@ public:
 public:
 	CCrypt();
 	bool Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr = false );
-	void InitFast( DWORD dwIP, CONNECT_TYPE ctInit );
+	void InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay = true );
 	void Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen );
 	void Encrypt( BYTE * pOutput, const BYTE * pInput, int iLen );
 protected:
 	void LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen );
 	void GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen );
-	
+	void RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, int iLen );
 };
 
 #endif
