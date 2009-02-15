@@ -308,7 +308,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 
 	EXC_SET("fast init encryption");
 	// just in case they are on the same machine, change over to the new game encrypt
-	m_Crypt.InitFast( UNPACKDWORD( cmd.Relay.m_ip ), CONNECT_GAME ); // Init decryption table
+	m_Crypt.InitFast( dwCustomerId, CONNECT_GAME ); // Init decryption table
 	SetConnectType( m_Crypt.GetConnectType() );
 	
 	return( true );

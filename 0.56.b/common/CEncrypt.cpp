@@ -616,17 +616,32 @@ bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr )
 		}
 	}
 	
+	m_fRelayPacket = false;
 	return bReturn;
 }
 
-void CCrypt::InitFast( DWORD dwIP, CONNECT_TYPE ctInit )
+void CCrypt::InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay)
 {
+	/**
+	 * Quickly set seed and connection type.
+	 *  dwIP   = Seed
+	 *  ctInit = Connection type
+	 *  fRelay = Switched via relay packet (server selection) / Expect next game packet to be encrypted twice
+	 **/
 	ADDTOCALLSTACK("CCrypt::InitFast");
 	// fprintf( stderr, "Called FastInit\n" );
+
 	SetConnectType( ctInit );
 	m_seed = dwIP;
-	
-	if ( ctInit == CONNECT_GAME )
+
+	if ( fRelay == true )
+	{
+		m_fRelayPacket = true;
+
+		// no need to init game encryption here, we will only need to init again
+		// with a new seed on the next game packet anyway
+	}
+	else if ( ctInit == CONNECT_GAME )
 	{
 		InitBlowFish();
 		InitTwoFish();
@@ -782,6 +797,82 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	m_fInit = true;
 }
 
+void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, int iLen )
+{
+	/**
+	 * When the client switches between login and game server without opening a new connection, the first game packet
+	 * is encrypted with both login and game server encryptions. This method attempts to initialse the game encryption
+	 * from this initial game packet.
+	 *
+	 * If this wasn't inconvenient enough, it seems that not all client versions behave like this and some earlier ones
+	 * do properly switch over to game encryption:
+	 * - Earliest Confirmed "Double Crypt" Client = 6.0.1.6
+	 * - Latest Confirmed "Single Crypt" Client   = 2.0.3.0
+	 **/
+	ADDTOCALLSTACK("CCrypt::RelayGameCryptStart");
+
+	// don't decrypt any future packets here
+	m_fRelayPacket = false;
+
+	// assume that clients prior to 2.0.4 do not double encrypt
+	// (note: assumption has been made based on the encryption type in spherecrypt.ini, further testing is required!)
+	if ( GetClientVer() < 0x200040 )
+	{
+		InitBlowFish();
+		InitTwoFish();
+		Decrypt(pOutput, pInput, iLen);
+		return;
+	}
+
+	// calculate new seed
+	DWORD dwNewSeed = m_MasterHi ^ m_MasterLo;
+	dwNewSeed = ((dwNewSeed >> 24) & 0xFF) | ((dwNewSeed >> 8) & 0xFF00) | ((dwNewSeed << 8) & 0xFF0000) | ((dwNewSeed << 24) & 0xFF000000);
+	dwNewSeed ^= m_seed;
+	
+	// set seed
+	m_seed = dwNewSeed;
+
+	// new seed requires a reset of the md5 engine
+	md5_engine.reset();
+
+	ENCRYPTION_TYPE etPrevious = GetEncryptionType();
+
+	// decrypt packet as game
+	// - rather than trust spherecrypt.ini, we can autodetect the encryption type
+	//   by looking for the 0x91 command if the packet length is 65 (which it should be anyway)
+	bool bFoundEncrypt = false;
+	if ( iLen == 65 )
+	{
+		for (int i = ENC_NONE; i < ENC_QTY; i++)
+		{
+			SetEncryptionType((ENCRYPTION_TYPE)i);
+
+			InitBlowFish();
+			InitTwoFish();
+			Decrypt(pOutput, pInput, iLen);
+
+			if ((pOutput[0] ^ (BYTE) m_CryptMaskLo) == 0x91)
+			{
+				bFoundEncrypt = true;
+				break;
+			}
+		}
+	}
+
+	if (bFoundEncrypt == false)
+	{
+		// auto-detect failed, assume spherecrypt was correct and see what happens
+		SetEncryptionType(etPrevious);
+
+		InitBlowFish();
+		InitTwoFish();
+		Decrypt(pOutput, pInput, iLen);
+	}
+
+	// decrypt decrypted packet as login
+	DecryptOld( pOutput, pOutput, iLen );
+}
+
 void CCrypt::Encrypt( BYTE * pOutput, const BYTE * pInput, int iLen )
 {
 	ADDTOCALLSTACK("CCrypt::Encrypt");
@@ -812,6 +903,12 @@ void CCrypt::Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen  )
 	if ( m_ConnectType == CONNECT_LOGIN )
 	{
 		DecryptOld( pOutput, pInput, iLen );
+		return;
+	}
+
+	if ( m_fRelayPacket == true )
+	{
+		RelayGameCryptStart(pOutput, pInput, iLen );
 		return;
 	}
 	

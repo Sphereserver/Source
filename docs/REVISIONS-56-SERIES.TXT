@@ -4306,3 +4306,8 @@ this all in desperation)
 09-02-2009, Coruja (Script pack)
 - Updated #1576: sphere_item_profession.scp, sphere_item_deco_dungeons_traps_dead.scp (Corrected
   portrait DUPELISTs)
+
+15-02-2008, MrSugarCube
+- Modified #1545: JOINASMEMBER function no longer requires that the new member be online.
+- Fixed: Unable to connect to local server with an encrypted client when it decides to reuse its
+  login server connection instead of open a new one.
