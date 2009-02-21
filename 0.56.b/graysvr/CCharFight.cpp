@@ -194,12 +194,49 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		return NOTO_INVUL;
 	}
 
-	// Are we in the same party ?
-	if ( this != pCharViewer && m_pParty && m_pParty == pCharViewer->m_pParty )
+	if ( this != pCharViewer )
 	{
-		if ( m_pParty->GetLootFlag(this))
+		if ( g_Cfg.m_iPetsInheritNotoriety != 0 )
 		{
-			return(NOTO_GUILD_SAME);
+			// Do we have a master to inherit notoriety from?
+			CChar* pMaster = NPC_PetGetOwner();
+			if (pMaster != NULL && pMaster != pCharViewer) // master doesn't want to see their own status
+			{
+				// protect against infinite loop
+				static int sm_iReentrant = 0;
+				if (sm_iReentrant < 32)
+				{
+					// return master's notoriety
+					++sm_iReentrant;
+					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, false, false);
+					--sm_iReentrant;
+
+					// check if notoriety is inheritable based on bitmask setting:
+					//		NOTO_GOOD		= 0x01
+					//		NOTO_GUILD_SAME	= 0x02
+					//		NOTO_NEUTRAL	= 0x04
+					//		NOTO_CRIMINAL	= 0x08
+					//		NOTO_GUILD_WAR	= 0x10
+					//		NOTO_EVIL		= 0x20
+					int iNotoFlag = 1 << (notoMaster - 1);
+					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlag) == iNotoFlag )
+						return notoMaster;
+				}
+				else
+				{
+					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s uid=0%x\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
+					// too many owners, return the notoriety for however far we got down the chain
+				}
+			}
+		}
+
+		// Are we in the same party ?
+		if ( m_pParty && m_pParty == pCharViewer->m_pParty )
+		{
+			if ( m_pParty->GetLootFlag(this))
+			{
+				return(NOTO_GUILD_SAME);
+			}
 		}
 	}
 

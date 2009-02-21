@@ -819,6 +819,9 @@ public:
 	int		m_iColorNotoGuildWar;
 	int		m_iColorNotoNeutral;
 
+	// notoriety inheritance
+	int     m_iPetsInheritNotoriety;
+
 	int		m_iMaxAccountLoginTries;
 	int		m_iMaxShipPlankTeleport;
 

@@ -4307,7 +4307,12 @@ this all in desperation)
 - Updated #1576: sphere_item_profession.scp, sphere_item_deco_dungeons_traps_dead.scp (Corrected
   portrait DUPELISTs)
 
-15-02-2008, MrSugarCube
+15-02-2009, MrSugarCube
 - Modified #1545: JOINASMEMBER function no longer requires that the new member be online.
 - Fixed: Unable to connect to local server with an encrypted client when it decides to reuse its
   login server connection instead of open a new one.
+
+20-02-2009, MrSugarCube
+- Added #1564: PetsInheritNotoriety setting to sphere.ini. This can be used to specify which
+  notoriety flags a pet will inherit from its master (so if for example a pet has an evil owner
+  and the NotoEvil flag is set then the pet will also show as evil regardless of its real notoriety).

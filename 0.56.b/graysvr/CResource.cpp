@@ -193,6 +193,8 @@ CResource::CResource()
 	m_iColorNotoGuildWar = 0x002b;		// orange (enemy guild)
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 
+	m_iPetsInheritNotoriety = 0;
+
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
@@ -423,6 +425,7 @@ enum RC_TYPE
 	RC_OPTIONFLAGS,			// m_iOptionFlags
 	RC_OVERSKILLMULTIPLY,		//	m_iOverSkillMultiply
 	RC_PAYFROMPACKONLY,			//	m_fPayFromPackOnly
+	RC_PETSINHERITNOTORIETY,		// m_iPetsInheritNotoriety
 	RC_PLAYERNEUTRAL,		// m_iPlayerKarmaNeutral
 	RC_PROFILE,
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
@@ -601,6 +604,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags)	}},
 	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply)	}},
 	{ "PAYFROMPACKONLY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fPayFromPackOnly)	}},
+	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety)	}},
 	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral)	}},
 	{ "PROFILE" },
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail)	}},
