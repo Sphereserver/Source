@@ -2620,6 +2620,11 @@ bool CChar::OnFreezeCheck(bool bTagCheck)
 			g_Cfg.GetDefaultMsg( DEFMSG_UNCONSCIOUS ) :
 			g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
 	}
+	else if ( pFlag->IsDeleted() == true )
+	{
+		// not actually stuck!
+		return( false );
+	}
 	else
 	{
 		// IT_EQ_STUCK

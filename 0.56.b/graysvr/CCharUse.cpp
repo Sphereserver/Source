@@ -700,7 +700,7 @@ bool CChar::Use_Item_Web( CItem * pItemWeb )
 	CItem * pFlag = LayerFind( LAYER_FLAG_Stuck );
 
 	// Since broken webs become spider silk, we should get out of here now if we aren't in a web.
-	if ( CanMove( pItemWeb ))
+	if ( CanMove( pItemWeb, false ))
 	{
 		if (pFlag)
 			pFlag->Delete();
@@ -716,8 +716,22 @@ bool CChar::Use_Item_Web( CItem * pItemWeb )
 
 	int iDmg = pItemWeb->OnTakeDamage( Stat_GetAdjusted(STAT_STR), this );
 
-	if ( iDmg != INT_MAX && GetTopPoint() != pItemWeb->GetTopPoint())
-		return( false ); // at a distance ?
+	switch (iDmg)
+	{
+		case 0:			// damage blocked
+		case 1:			// web survived
+		default:		// unknown
+			// is character still stuck on the web?
+			if ( GetTopPoint() == pItemWeb->GetTopPoint() )
+				break;
+
+		case 2:			// web turned into silk
+		case INT_MAX:	// web destroyed
+			if (pFlag)
+				pFlag->Delete();
+
+			return( false );
+	}
 
 	// Stuck in it still.
 	if ( pFlag == NULL )
@@ -1876,7 +1890,10 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	case IT_WEB:
 		// try to get out of web.
 		if ( !fLink )
-		return( Use_Item_Web( pItem ));
+		{
+			Use_Item_Web( pItem );
+			return true;
+		}
 		else
 			return false;
 

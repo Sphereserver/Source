@@ -4317,6 +4317,8 @@ this all in desperation)
   generated.
 - Fixed #1548: Armor MODAR being factored in twice when calculating total armour value, and sometimes
   character MODAR being factored in twice when calculating damage.
+- Fixed: Messages such as "You can't reach anything in your state." and "You can't think of a way to
+  use that item." being sent to players as they try to free themselves from spider webs.
 - Added #1564: PetsInheritNotoriety setting to sphere.ini. This can be used to specify which
   notoriety flags a pet will inherit from its master (so if for example a pet has an evil owner
   and the NotoEvil flag is set then the pet will also show as evil regardless of its real notoriety).
