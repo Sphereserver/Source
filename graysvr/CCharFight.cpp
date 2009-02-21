@@ -1698,7 +1698,7 @@ int CChar::CalcArmorDefense() const
 #endif
 	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItem->GetNext())
 	{
-		int iDefense = pItem->Armor_GetDefense() + pItem->m_ModAr;
+		int iDefense = pItem->Armor_GetDefense();
 
 		// IsTypeSpellable() ? ! IT_WAND
 		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
@@ -2136,7 +2136,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				// MAGICF_IGNOREAR bypasses defense completely
 				if ( !IsSetMagicFlags( MAGICF_IGNOREAR ) || !(uType & DAMAGE_MAGIC) )
 				{
-					iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense + m_ModAr );
+					iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense );
 					// ??? take some random damage to my equipped items.
 				}
 			}
