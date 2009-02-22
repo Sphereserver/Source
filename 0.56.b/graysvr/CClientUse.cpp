@@ -796,6 +796,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		// Check for a skill / non-consumables required.
 		if ( s.IsKey("TEST"))
 		{
+			m_pChar->ParseText( s.GetArgRaw(), m_pChar );
 			CResourceQtyArray skills( s.GetArgStr());
 			if ( ! skills.IsResourceMatchAll(m_pChar))
 			{

@@ -4325,6 +4325,7 @@ this all in desperation)
 
 22-02-2009, MrSugarCube
 - Fixed #1575: Improved handling of unicode speech in Linux build.
+- Fixed #1537: TEST in skillmenus not being parsed in the same way as TESTIF.
 
 22-02-2009, nazghul
 ALPHA additions:
