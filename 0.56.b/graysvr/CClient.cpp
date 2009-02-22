@@ -1092,6 +1092,16 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				int piVal[2];
 				int iQty = Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
 				addArrowQuest( piVal[0], piVal[1] );
+#ifdef _NAZTEST
+				if ( piVal[0] && piVal[1] && m_pChar )
+				{
+					m_pChar->SetKeyNum("ARROWQUEST_X", piVal[0]);
+					m_pChar->SetKeyNum("ARROWQUEST_Y", piVal[1]);
+				} else {
+					m_pChar->DeleteKey("ARROWQUEST_X");
+					m_pChar->DeleteKey("ARROWQUEST_Y");
+				}
+#endif
 			}
 			break;
 		case CV_BADSPAWN:

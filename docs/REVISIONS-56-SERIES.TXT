@@ -4318,6 +4318,7 @@ this all in desperation)
 - Fixed #1548: Armor MODAR being factored in twice when calculating total armour value, and sometimes
   character MODAR being factored in twice when calculating damage.
 - Fixed: Messages such as "You can't reach anything in your state." and "You can't think of a way to
+- Fixed: Messages such as "You can't reach anything in your state." and "You can't think of a way to
   use that item." being sent to players as they try to free themselves from spider webs.
 - Added #1564: PetsInheritNotoriety setting to sphere.ini. This can be used to specify which
   notoriety flags a pet will inherit from its master (so if for example a pet has an evil owner
@@ -4325,3 +4326,12 @@ this all in desperation)
 
 22-02-2009, MrSugarCube
 - Fixed #1575: Improved handling of unicode speech in Linux build.
+
+22-02-2009, nazghul
+ALPHA additions:
+- Added: ARROWQUEST x,y command now addts TAG.arrowquest_x and TAG.arrowquest_y to the
+  character it was used on; ARROWQUEST without arguments (to remove the quest arrow)
+  clears these tags. 
+- Added: Character trigger @UserQuestArrowClick now has ARGN2 (x-ccord) and ARGN3 (y-coord).
+  Just rightclicking the arrow does not clear the tags mentioned above, so the quest arrow
+  can be restarted by script if the user illegitimely switched it off
