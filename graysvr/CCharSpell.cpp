@@ -203,7 +203,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			}
 		}
 
-#ifdef _ALPHA_PETS
+#ifdef _ALPHASPHERE_PETS
 		if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
 		{
 			// if we cannot control the creature it will not be tame - what might be somewhat risky :)

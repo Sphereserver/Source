@@ -1252,7 +1252,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 
 
-#ifdef _ALPHA_PETS
+#ifdef _ALPHASPHERE_PETS
 	if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
 	{
 		// first check if it's a ridden creature (don't mess with m_curFollower then)

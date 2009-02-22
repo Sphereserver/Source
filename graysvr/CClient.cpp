@@ -1092,7 +1092,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				int piVal[2];
 				int iQty = Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
 				addArrowQuest( piVal[0], piVal[1] );
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 				if ( piVal[0] && piVal[1] && m_pChar )
 				{
 					m_pChar->SetKeyNum("ARROWQUEST_X", piVal[0]);

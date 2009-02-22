@@ -54,7 +54,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemContextMenuSelect",
 	"@itemCreate",			//?
 	"@itemDamage",			//?
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	"@itemDamageGiven",
 #endif
 	"@itemDCLICK",			// I have dclicked item
@@ -108,7 +108,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCSeeWantItem",		// (NPC only) i see something good.
 	"@NPCSpecialAction",
 
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	"@PartyInvite",			//SRC invited me to join a party, so I may chose
 #endif
 

@@ -676,7 +676,7 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 		iHostility += 50;
 	}
 
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	/* 
 		foes or allies? 
 		Defined by tag.ff_group, tag.ff_foe and/or tag.ff_ally

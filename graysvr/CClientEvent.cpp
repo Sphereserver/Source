@@ -3844,7 +3844,7 @@ void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len 
 			{
 				CScriptTriggerArgs Args;
 				Args.m_iN1 = (pData->QuestArrow.m_rightClick > 0? 1:0);
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 				Args.m_iN2 = m_pChar->GetKeyNum("ARROWQUEST_X", true);
 				Args.m_iN3 = m_pChar->GetKeyNum("ARROWQUEST_Y", true);
 #endif
