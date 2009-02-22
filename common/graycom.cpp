@@ -85,7 +85,7 @@ static int CvtSystemToUNICODE( WCHAR & wChar, LPCTSTR pInp, int iSizeInBytes )
 	// 3 16 1110bbbb 10bbbbbb 10bbbbbb 
 	// 4 21 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb 
 
-	TCHAR ch = *pInp;
+	BYTE ch = *pInp;
 	ASSERT( ch >= 0x80 );	// needs special UTF8 decoding.
 
 	int iBytes;
@@ -118,7 +118,7 @@ static int CvtSystemToUNICODE( WCHAR & wChar, LPCTSTR pInp, int iSizeInBytes )
 	for ( ; iInp < iBytes; iInp++ )
 	{
 		ch = pInp[iInp];
-		if (( ch & 0xc0 ) != 0x08 )	// bad coding.
+		if (( ch & 0xc0 ) != 0x80 )	// bad coding.
 			return( -1 );
 		wCharTmp <<= 6;
 		wCharTmp |= ch & 0x3f;
@@ -247,7 +247,7 @@ int CvtSystemToNUNICODE( NCHAR * pOut, int iSizeOutChars, LPCTSTR pInp, int iSiz
 		int iInp=0;
 		for ( ; iInp < iSizeInBytes; )
 		{
-			TCHAR ch = pInp[iInp];
+			BYTE ch = pInp[iInp];
 			if ( ch == 0 )
 				break;
 
