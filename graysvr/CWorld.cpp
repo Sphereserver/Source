@@ -1387,7 +1387,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 void CWorld::SaveStatics()
 {
 	ADDTOCALLSTACK("CWorld::SaveStatics");
-#ifdef _NAZTEST
+#ifdef _ALPHA
 	if ( IsSetEF(EF_Specific) )
 	{
 		g_Log.Event(LOGM_SAVE, "Statics data NOT saved due to EF_Specific flag.\n");

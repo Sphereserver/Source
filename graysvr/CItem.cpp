@@ -21,7 +21,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@ContextMenuSelect",
 	"@Create",
 	"@DAMAGE",				// I have been damaged in some way
-#ifdef _NAZTEST_WARTARG
+#ifdef _ALPHA
 	"@DAMAGEGIVEN",
 #endif
 	"@DCLICK",				// I have been dclicked.

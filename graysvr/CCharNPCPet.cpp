@@ -129,7 +129,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	if ( ! pSrc->IsClient())
 		return( false );
-#ifdef _NAZTEST_PETS
+#ifdef _ALPHA_PETS
 	CClient * pClient;
 	CVarDefCont * pTagStorage;
 	unsigned short int iFollowerSlotsNeeded;
@@ -173,7 +173,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			break;
 		case PC_RELEASE:
 			Skill_Start( SKILL_NONE );
-#ifdef _NAZTEST_PETS
+#ifdef _ALPHA_PETS
 			if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
 			{
 				pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
@@ -380,7 +380,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			break;
 		if ( pCharTarg->IsClient() )
 		{
-#ifdef _NAZTEST_PETS
+#ifdef _ALPHA_PETS
 			if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
 			{
 

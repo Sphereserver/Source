@@ -2559,7 +2559,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 		return( false );
 	}
 
-#ifdef _NAZTEST
+#ifdef _ALPHA
 	/*
 	@partyinvite
 	SRC=m_pChar
