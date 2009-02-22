@@ -3436,7 +3436,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 		return( WAR_SWING_EQUIPPING );
-#ifdef _NAZTEST_WARTARG
+#ifdef _ALPHA
 	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif
 	iDmg	= Args.m_iN1;
@@ -3495,7 +3495,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	// Took my swing. Do Damage !
 	int iTyp = ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH );
-#ifdef _NAZTEST_WARTARG
+#ifdef _ALPHA
 	if (pWeapon != NULL )
 	{
 		CScriptTriggerArgs weaponArgs( iDmg, (int) iTyp );

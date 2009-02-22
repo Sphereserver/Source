@@ -294,7 +294,7 @@ void CSector::r_Write()
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
-#ifdef _NAZTEST
+#ifdef _ALPHA
 		else if ( !pItem->IsAttr(ATTR_STATIC) || IsSetEF(EF_Specific) )
 #else
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
@@ -307,7 +307,7 @@ void CSector::r_Write()
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
-#ifdef _NAZTEST
+#ifdef _ALPHA
 		else if ( !pItem->IsAttr(ATTR_STATIC) || IsSetEF(EF_Specific) )
 #else
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
