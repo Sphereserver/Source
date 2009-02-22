@@ -184,7 +184,7 @@ void CServerDef::addToServersList( CCommand & cmd, int index, int j, bool bRever
 	strcpylen( cmd.ServerList.m_serv[j].m_servname, GetName(), sizeof(cmd.ServerList.m_serv[j].m_servname));
 
 	if ( this == &g_Serv )
-		cmd.ServerList.m_serv[j].m_percentfull = maximum(0, minimum((StatGet(SERV_STAT_CLIENTS) * 100) / g_Cfg.m_iClientsMax, 100));
+		cmd.ServerList.m_serv[j].m_percentfull = maximum(0, minimum((StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
 	else
 		cmd.ServerList.m_serv[j].m_percentfull = minimum(StatGet(SERV_STAT_CLIENTS), 100);
 	cmd.ServerList.m_serv[j].m_timezone = m_TimeZone;	// GRAY_TIMEZONE

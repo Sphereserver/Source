@@ -4996,6 +4996,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 
 	if ( pAccount->IsPriv( PRIV_BLOCKED ))
 	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%x: Account '%s' is blocked.\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_BLOCKED ), (LPCTSTR) g_Serv.m_sEMail );
 		return( LOGIN_ERR_BLOCKED );
 	}
@@ -5046,6 +5047,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		CSocketAddress SockName = m_Socket.GetSockName();
 		if ( ! m_PeerName.IsLocalAddr() && SockName.GetAddrIP() != m_PeerName.GetAddrIP() )
 		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%x: Account '%s', maximum clients reached (only local connections allowed).\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_LD );
 			return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
 		}
@@ -5055,6 +5057,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		// Allow no one but Administrator on.
 		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
 		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%x: Account '%s', maximum clients reached (only administrators allowed).\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_AO );
 			return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
 		}
@@ -5063,6 +5066,7 @@ LOGIN_ERR_TYPE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		g_Serv.m_Clients.GetCount() > g_Cfg.m_iClientsMax  )
 	{
 		// Give them a polite goodbye.
+		g_Log.Event(LOGM_CLIENTS_LOG, "%x: Account '%s', maximum clients reached.\n", m_Socket.GetSocket(), (LPCTSTR) pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_FULL );
 		return( LOGIN_ERR_BLOCKED_MAXCLIENTS );
 	}
