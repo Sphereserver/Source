@@ -2559,7 +2559,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 		return( false );
 	}
 
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	/*
 	@partyinvite
 	SRC=m_pChar

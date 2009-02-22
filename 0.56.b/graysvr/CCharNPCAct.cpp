@@ -486,7 +486,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
 
 	// Consume as much money as we can train for.
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	int iTrainPricePerPercent=1;
 
 	CVarDefCont * pValue = GetKey("OVERRIDE.TRAINSKILLCOST",true);
@@ -2058,7 +2058,7 @@ void CChar::NPC_Act_Fight()
 
 		// If I am a giant. i can throw stones.
 		// NPCACT_THROWING
-/* #ifndef _ALPHA
+/* #ifndef _ALPHASPHERE
 		if (( GetDispID() == CREID_OGRE ||
 			GetDispID() == CREID_ETTIN ||
 			GetDispID() == CREID_Cyclops ) &&

@@ -235,7 +235,7 @@ enum ITRIG_TYPE
 	ITRIG_ContextMenuSelect,
 	ITRIG_Create,		// Item is being created.
 	ITRIG_DAMAGE,		// I have been damaged in some way
-#ifdef _ALPHA	
+#ifdef _ALPHASPHERE	
 	ITRIG_DAMAGEGIVEN,	// I gave some kind of damage to someone
 #endif
 	ITRIG_DCLICK,		// I have been dclicked.
@@ -2120,7 +2120,7 @@ enum CTRIG_TYPE
 	CTRIG_itemContextMenuSelect,
 	CTRIG_itemCreate,		//?
 	CTRIG_itemDamage,		//?
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	CTRIG_itemDamageGiven,
 #endif
 	CTRIG_itemDCLICK,		// I have dclicked item
@@ -2174,7 +2174,7 @@ enum CTRIG_TYPE
 	CTRIG_NPCSeeWantItem,		// (NPC only) i see something good.
 	CTRIG_NPCSpecialAction,
 
-#ifdef _ALPHA	
+#ifdef _ALPHASPHERE	
 	CTRIG_PartyInvite,			//SRC invited me to join a party, so I may chose
 #endif
 

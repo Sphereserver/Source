@@ -79,7 +79,7 @@ CResource::CResource()
 	m_iSnoopCriminal	= 500;
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	m_iTrainSkillCost	= 1;
 #endif
 	m_iSkillPracticeMax	= 300;
@@ -418,7 +418,7 @@ enum RC_TYPE
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
 	RC_NPCTRAINMAX,			// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	RC_NPCTRAINSKILLCOST,		// m_iTrainSkillCost
 #endif
 	RC_NTSERVICE,				// m_fUseNTService
@@ -597,7 +597,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle)		}},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax)	}},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent) }},
-#ifdef _ALPHA
+#ifdef _ALPHASPHERE
 	{ "NPCTRAINSKILLCOST",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost) }},
 #endif
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService)	}},
