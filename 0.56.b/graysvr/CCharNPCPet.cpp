@@ -468,9 +468,8 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 		// Now set it's price.
 		if ( ! pSrc->IsClient())
 			break;
-		pSrc->m_pClient->m_Targ_PrvUID = GetUID();
-		pSrc->m_pClient->m_Targ_UID = pItemTarg->GetUID();
-		pSrc->m_pClient->addPromptConsole( CLIMODE_PROMPT_VENDOR_PRICE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_SETPRICE_2 ) );
+		
+		pSrc->m_pClient->addPromptConsole( CLIMODE_PROMPT_VENDOR_PRICE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_SETPRICE_2 ), pItemTarg->GetUID(), GetUID() );
 		return( true );
 	}
 

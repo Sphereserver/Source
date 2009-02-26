@@ -349,7 +349,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			{
 				return false;
 			}
-			addPromptConsole( CLIMODE_PROMPT_NAME_RUNE, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_RUNE_NAME ) );
+			addPromptConsole( CLIMODE_PROMPT_NAME_RUNE, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_RUNE_NAME ), pItem->GetUID() );
 			return true;
 
 		case IT_CARPENTRY:

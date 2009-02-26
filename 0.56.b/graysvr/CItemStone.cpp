@@ -1503,7 +1503,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case ISV_SETABBREVIATION:
 			if ( pClient == NULL )
 				return( false );
-			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_ABBREV, "What shall the abbreviation be?" );
+			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_ABBREV, "What shall the abbreviation be?", GetUID() );
 			break;
 		case ISV_SETCHARTER:
 			if ( pClient == NULL )
@@ -1513,7 +1513,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case ISV_SETGMTITLE:
 			if ( pClient == NULL )
 				return( false );
-			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_TITLE, "What shall thy title be?" );
+			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_SET_TITLE, "What shall thy title be?", GetUID() );
 			break;
 		case ISV_SETNAME:
 			{
@@ -1521,7 +1521,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					return( false );
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
-				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME, pszMsg);
+				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME, pszMsg, GetUID());
 			}
 			break;
 #endif
@@ -2788,8 +2788,7 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 			break;
 		case STONEDISP_GRANTTITLE:
 			ASSERT( pMember );
-			pClient->m_Targ_PrvUID = pMember->GetLinkUID();
-			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_GRANT_TITLE, "What title dost thou grant?" );
+			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_GRANT_TITLE, "What title dost thou grant?", GetUID(), pMember->GetLinkUID() );
 			return( true );
 		}
 	}
@@ -2854,7 +2853,7 @@ bool CItemStone::SetName( LPCTSTR pszName )
 	return true;
 }
 
-bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg )
+bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg, CGrayUID context )
 {
 	ADDTOCALLSTACK("CItemStone::OnPromptResp");
 	ASSERT( pClient );
@@ -2874,7 +2873,7 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 				pClient->SysMessage( "That name is already taken." );
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
-				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME,pszMsg);
+				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME, pszMsg, GetUID());
 				return false;
 			}
 
@@ -2893,7 +2892,7 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 
 		case CLIMODE_PROMPT_STONE_GRANT_TITLE:
 			{
-				CStoneMember * pMember = GetMember( pClient->m_Targ_PrvUID.CharFind());
+				CStoneMember * pMember = GetMember( context.CharFind());
 				if (pMember)
 				{
 					pMember->SetTitle(pszText);

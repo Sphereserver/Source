@@ -4335,3 +4335,7 @@ ALPHA additions:
 - Added: Character trigger @UserQuestArrowClick now has ARGN2 (x-ccord) and ARGN3 (y-coord).
   Just rightclicking the arrow does not clear the tags mentioned above, so the quest arrow
   can be restarted by script if the user illegitimely switched it off
+
+26-02-2009, MrSugarCube
+- Modified #1560: Separated PROMPTCONSOLE from the targeting system. Targeting no longer interferes
+  with prompts and vice-versa.

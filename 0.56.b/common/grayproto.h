@@ -1407,9 +1407,11 @@ struct CEvent	// event buffer from client to server..
 		struct // size = 16+var = console Prompt response.
 		{
 			BYTE m_Cmd;		// 0x9a
-			NWORD m_len;
-			BYTE m_unk3[12];
-			char m_text[1];	// null terminated text.
+			NWORD m_len;	// 1-2
+			NDWORD m_serial;	// 3-6 = serial
+			NDWORD m_prompt;	// 7-10 = prompt id
+			NDWORD m_type;	// 11-14 = type (0=request/esc, 1=reply)
+			char m_text[1];	// 15+ = null terminated text.
 		} Prompt;
 
 		struct // size = 0x102	// GM page = request for help.
@@ -2505,8 +2507,10 @@ struct CCommand	// command buffer from server to client.
 		{
 			BYTE m_Cmd;		// 0 = 0x9a
 			NWORD m_len;	// 1-2 = length = 16
-			BYTE m_unk3[12];
-			char m_text[1];	// 3 = null terminated text? doesn't seem to work.
+			NDWORD m_serial;	// 3-6 = serial
+			NDWORD m_prompt;	// 7-10 = prompt id
+			NDWORD m_type;	// 11-14 = type (0=request/esc, 1=reply)
+			char m_text[1];	// 15+ = null terminated text? doesn't seem to work.
 		} Prompt;
 
 		struct // size = var	// vendor sell dialog
