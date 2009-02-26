@@ -1867,7 +1867,7 @@ public:
 	LPCTSTR GetAbbrev() const;
 	void SetAbbrev( LPCTSTR pAbbrev );
 
-	bool OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg );
+	bool OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg, CGrayUID context );
 	bool OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialogResponseArgs & resp );
 	void Use_Item( CClient * pClient );
 };

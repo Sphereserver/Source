@@ -41,6 +41,8 @@ CClient::CClient( SOCKET client ) :
 	m_fClosed = false;
 
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
+	m_Prompt_Mode = CLIMODE_NORMAL;
+
 	m_tmSetup.m_dwIP = 0;
 	m_tmSetup.m_iConnect = 0;
 	m_tmSetup.m_bNewSeed = false;
@@ -578,7 +580,7 @@ void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessa
 	ADDTOCALLSTACK("CClient::addPromptConsoleFunction");
 	// Target a verb at some object .
 	ASSERT(pszFunction);
-	m_Targ_Text.Format( pszFunction );
+	m_Prompt_Text.Format( pszFunction );
 	addPromptConsole( CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage );
 }
 
@@ -1212,8 +1214,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			} break;
 
 		case CV_EVERBTARG:
-			m_Targ_Text = s.GetArgStr();
-			addPromptConsole( CLIMODE_PROMPT_TARG_VERB, m_Targ_Text.IsEmpty() ? "Enter the verb" : "Enter the text" );
+			m_Prompt_Text = s.GetArgStr();
+			addPromptConsole( CLIMODE_PROMPT_TARG_VERB, m_Targ_Text.IsEmpty() ? "Enter the verb" : "Enter the text",  m_Targ_UID );
 			break;
 
 		case CV_EXTRACT:

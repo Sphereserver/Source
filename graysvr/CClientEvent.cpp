@@ -1966,7 +1966,7 @@ void CClient::Event_ToolTip( CGrayUID uid )
 	addToolTip(uid.ObjFind(), z);
 }
 
-void CClient::Event_PromptResp( LPCTSTR pszText, int len )
+void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type )
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
 	// result of addPrompt
@@ -1975,14 +1975,19 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 	if ( Str_Check( pszText ) )
 		return;
 
-	CLIMODE_TYPE PrvTargMode = GetTargMode();
-	ClearTargMode();
+	CLIMODE_TYPE promptMode = m_Prompt_Mode;
+	m_Prompt_Mode = CLIMODE_NORMAL;
+
+	if ( m_Prompt_Uid != context1 )
+		return;
 
 	if ( len <= 0 )	// cancel
+	{
 		szText[0] = 0;
+	}
 	else
 	{
-		if ( PrvTargMode == CLIMODE_PROMPT_SCRIPT_VERB )
+		if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
 			len = Str_GetBare( szText, pszText, sizeof(szText), "|~=[]{|}~" );
 		else
 			len = Str_GetBare( szText, pszText, sizeof(szText), "|~,=[]{|}~" );
@@ -1991,7 +1996,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 	LPCTSTR pszReName = NULL;
 	LPCTSTR pszPrefix = NULL;
 
-	switch ( PrvTargMode )
+	switch ( promptMode )
 	{
 		case CLIMODE_PROMPT_GM_PAGE_TEXT:
 			// m_Targ_Text
@@ -2001,25 +2006,23 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 		case CLIMODE_PROMPT_VENDOR_PRICE:
 			// Setting the vendor price for an item.
 			{
-				if ( szText[0] == '\0' )	// cancel
+				if ( type == 0 || szText[0] == '\0' )	// cancel
 					return;
-				CChar * pCharVendor = m_Targ_PrvUID.CharFind();
+				CChar * pCharVendor = CGrayUID(context2).CharFind();
 				if ( pCharVendor )
 				{
-					pCharVendor->NPC_SetVendorPrice( m_Targ_UID.ItemFind(), ATOI(szText) );
+					pCharVendor->NPC_SetVendorPrice( m_Prompt_Uid.ItemFind(), ATOI(szText) );
 				}
 			}
 			return;
 
 		case CLIMODE_PROMPT_NAME_RUNE:
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME);
-			//pszPrefix = "Rune to:";
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_TO);
 			break;
 
 		case CLIMODE_PROMPT_NAME_KEY:
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_KEY_NAME);
-			//pszPrefix = "Key to:";
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_KEY_TO);
 			break;
 
@@ -2034,10 +2037,8 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 			break;
 
 		case CLIMODE_PROMPT_STONE_NAME:
-			//pszReName = "Stone";
 			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_STONE_NAME);
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_STONE_FOR);
-			//pszPrefix = "Stone for the ";
 			break;
 
 		case CLIMODE_PROMPT_STONE_SET_ABBREV:
@@ -2053,14 +2054,14 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 
 		case CLIMODE_PROMPT_TARG_VERB:
 			// Send a msg to the pre-tergetted player. "ETARGVERB"
-			// m_Targ_UID = the target.
-			// m_Targ_Text = the prefix.
+			// m_Prompt_Uid = the target.
+			// m_Prompt_Text = the prefix.
 			if ( szText[0] != '\0' )
 			{
-				CObjBase * pObj = m_Targ_UID.ObjFind();
+				CObjBase * pObj = m_Prompt_Uid.ObjFind();
 				if ( pObj )
 				{
-					CScript script( m_Targ_Text, szText );
+					CScript script( m_Prompt_Text, szText );
 					pObj->r_Verb( script, this );
 				}
 			}
@@ -2068,8 +2069,8 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 
 		case CLIMODE_PROMPT_SCRIPT_VERB:
 			{
-				// CChar * pChar = m_Targ_PrvUID.CharFind();
-				CScript script( m_Targ_Text, szText );
+				// CChar * pChar = CGrayUID(context2).CharFind();
+				CScript script( m_Prompt_Text, szText );
 				if ( m_pChar )
 					m_pChar->r_Verb( script, this );
 			}
@@ -2084,9 +2085,9 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 	ASSERT(pszReName);
 
 	CGString sMsg;
-	CItem * pItem = m_Targ_UID.ItemFind();
 
-	if ( pItem == NULL || szText[0] == '\0' )
+	CItem * pItem = m_Prompt_Uid.ItemFind();
+	if ( pItem == NULL || type == 0 || szText[0] == '\0' )
 	{
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_RENAME_CANCEL ), pszReName );
 		return;
@@ -2106,7 +2107,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len )
 		case IT_STONE_TOWN:
 			{
 				CItemStone * pStone = dynamic_cast <CItemStone*> ( pItem );
-				if ( !pStone || !pStone->OnPromptResp(this, PrvTargMode, szText, sMsg) )
+				if ( !pStone || !pStone->OnPromptResp(this, promptMode, szText, sMsg, CGrayUID(context2)) )
 					return;
 			}
 			break;
@@ -4742,7 +4743,7 @@ int CClient::xDispatchMsg()
 				RETURN_FALSE();
 			if ( ! xCheckMsgSize( pEvent->Prompt.m_len ))
 				RETURN_FALSE();
-			Event_PromptResp( pEvent->Prompt.m_text, pEvent->Prompt.m_len-sizeof(pEvent->Prompt));
+			Event_PromptResp( pEvent->Prompt.m_text, pEvent->Prompt.m_len-sizeof(pEvent->Prompt), (DWORD)pEvent->Prompt.m_serial, (DWORD)pEvent->Prompt.m_prompt, pEvent->Prompt.m_type);
 			break;
 		case XCMD_HelpPage: // GM Page (i want to page a gm!)
 			{

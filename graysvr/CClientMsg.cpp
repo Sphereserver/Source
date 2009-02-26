@@ -2309,15 +2309,22 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt )
 		addSysMessage( pPrompt );
 }
 
-void CClient::addPromptConsole( CLIMODE_TYPE targmode, LPCTSTR pPrompt )
+void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID context1, CGrayUID context2 )
 {
 	ADDTOCALLSTACK("CClient::addPromptConsole");
-	SetTargMode( targmode, pPrompt );
+
+	m_Prompt_Uid = context1;
+	m_Prompt_Mode = mode;
+
+	if ( pPrompt && *pPrompt ) // Check that the message is not blank.
+		addSysMessage( pPrompt );
 
 	CCommand cmd;
 	cmd.Prompt.m_Cmd = XCMD_Prompt;
 	cmd.Prompt.m_len = sizeof( cmd.Prompt );
-	memset( cmd.Prompt.m_unk3, 0, sizeof(cmd.Prompt.m_unk3));
+	cmd.Prompt.m_serial = (DWORD)context1;	// client passes these back in response
+	cmd.Prompt.m_prompt = (DWORD)context2;
+	cmd.Prompt.m_type = 0;
 	cmd.Prompt.m_text[0] = '\0';
 
 	xSendPkt( &cmd, cmd.Prompt.m_len );

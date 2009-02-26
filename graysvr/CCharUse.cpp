@@ -1357,7 +1357,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 		// We may rename the key.
 		if ( IsClient())
 		{
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg( DEFMSG_KEY_SETNAME ) );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg( DEFMSG_KEY_SETNAME ), pKey->GetUID() );
 		}
 		return false;
 	}
@@ -1400,8 +1400,7 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 		// We may rename the sign.
 		if ( IsClient())
 		{
-			GetClient()->m_Targ_UID = pItemTarg->GetUID();
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg( DEFMSG_KEY_TARG_SIGN ) );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg( DEFMSG_KEY_TARG_SIGN ), pItemTarg->GetUID() );
 		}
 		return true;
 	case IT_CONTAINER:
@@ -1432,8 +1431,7 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 	case IT_SHIP_TILLER:
 		if ( IsClient())
 		{
-			GetClient()->m_Targ_UID = pItemTarg->GetUID();
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg( DEFMSG_SHIPNAME_PROMT ) );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg( DEFMSG_SHIPNAME_PROMT ), pItemTarg->GetUID() );
 		}
 		return true;
 	case IT_SHIP_PLANK:

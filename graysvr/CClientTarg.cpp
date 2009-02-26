@@ -1735,8 +1735,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 	if ( pItemDef->IsType(IT_STONE_GUILD))
 	{
 		// Now name the guild
-		m_Targ_UID = pItemNew->GetUID();
-		addPromptConsole( CLIMODE_PROMPT_STONE_NAME, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_GUILDSTONE_NEW ) );
+		addPromptConsole( CLIMODE_PROMPT_STONE_NAME, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_GUILDSTONE_NEW ), pItemNew->GetUID() );
 	}
 	else if ( fShip )
 	{

@@ -779,6 +779,11 @@ private:
 		BYTE count;
 	} m_BfAntiCheat;
 
+	// Promptconsole
+	CLIMODE_TYPE m_Prompt_Mode;	// type of prompt
+	CGrayUID m_Prompt_Uid;		// context uid
+	CGString m_Prompt_Text;		// text (i.e. callback function)
+
 	int m_packetExceptions;
 
 public:
@@ -1039,7 +1044,7 @@ private:
 	void Event_Walking( BYTE rawdir, BYTE count, DWORD dwCryptCode = 0 ); // Player moves
 	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
 	void Event_MenuChoice( const CEvent * pEvent ); // Choice from GMMenu or Itemmenu received
-	void Event_PromptResp( LPCTSTR pszText, int len );
+	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type );
 	void Event_Talk_Common(char *szText ); // PC speech
 	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
 	void Event_TalkUNICODE( const CEvent * pEvent );
@@ -1237,7 +1242,7 @@ public:
 	void addItemDragCancel( BYTE type );
 	void addWebLaunch( LPCTSTR pMsg ); // Direct client to a web page
 
-	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg );
+	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0 );
 	void addTarget( CLIMODE_TYPE targmode, LPCTSTR pMsg, bool fAllowGround = false, bool fCheckCrime = false ); // Send targetting cursor to client
 	void addTargetDeed( const CItem * pDeed );
 	bool addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGround = true );
