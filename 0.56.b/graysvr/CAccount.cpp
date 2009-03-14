@@ -453,7 +453,16 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 	}
 	else
 	{
-		CScript script( ppCmd[1], ppCmd[2] );
+		CGString cmdArgs;
+		if (ppCmd[4] && ppCmd[4][0])
+			cmdArgs.Format("%s %s %s", ppCmd[2], ppCmd[3], ppCmd[4]);
+		else if (ppCmd[3] && ppCmd[3][0])
+			cmdArgs.Format("%s %s", ppCmd[2], ppCmd[3]);
+		else if (ppCmd[2] && ppCmd[2][0])
+			cmdArgs.Format("%s", ppCmd[2]);
+		
+		CScript script( ppCmd[1], cmdArgs.GetPtr() );
+		
 		return pAccount->r_Verb( script, pSrc );
 	}
 }

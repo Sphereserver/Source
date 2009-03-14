@@ -4339,3 +4339,7 @@ ALPHA additions:
 26-02-2009, MrSugarCube
 - Modified #1560: Separated PROMPTCONSOLE from the targeting system. Targeting no longer interferes
   with prompts and vice-versa.
+
+14-03-2009, MrSugarCube
+- Fixed #1585: Multiple arguments not being passed into commands when using the syntax
+  [SERV.]ACCOUNT <name> <command> <args>
