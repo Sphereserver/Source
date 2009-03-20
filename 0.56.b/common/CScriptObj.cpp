@@ -1298,6 +1298,12 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			{
 				CGrayUID uid(s.GetArgVal());
 				CObjBase	*pObj = uid.ObjFind();
+				if (pObj == NULL)
+				{
+					g_World.m_uidNew = 0;
+					return false;
+				}
+
 				g_World.m_uidNew = uid;
 				CScript script("DUPE");
 				bool bRc = pObj->r_Verb(script, pSrc);

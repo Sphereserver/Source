@@ -4343,3 +4343,7 @@ ALPHA additions:
 14-03-2009, MrSugarCube
 - Fixed #1585: Multiple arguments not being passed into commands when using the syntax
   [SERV.]ACCOUNT <name> <command> <args>
+
+20-03-2009, MrSugarCube
+- Fixed #1586: Exception in Linux build when using the ADDCLILOC function with DEBUGF_SCRIPTS enabled.
+- Fixed: Exception when passing an invalid object uid into the NEWDUPE function.
