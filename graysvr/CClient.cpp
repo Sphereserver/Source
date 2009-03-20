@@ -1039,7 +1039,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					g_Log.EventDebug("SCRIPT: addcliloc(%d,'%s')\n", clilocid, LocArgs);
+					g_Log.EventDebug("SCRIPT: addcliloc(%d,'%s')\n", clilocid, (LPCTSTR)LocArgs);
 				this->m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
 			}
 			break;
