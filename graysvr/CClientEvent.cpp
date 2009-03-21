@@ -2446,7 +2446,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 
 	if ( IsSetEF( EF_UNICODE ) )
 	{
-		wcsncpy( (wchar_t *)wszText, (wchar_t *)&pEvent->TalkUNICODE.m_utext[0], MAX_TALK_BUFFER - 2 );
+		wcsncpy( (wchar_t *)wszText, (wchar_t *)&pEvent->TalkUNICODE.m_utext[0], (sizeof(wszText) / sizeof(wchar_t)) - 2 );
    		iLen = CvtNUNICODEToSystem( szText, sizeof(szText), wszText, iLenChars );
 		puText	= wszText;
 	}
@@ -2496,7 +2496,7 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 						if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
 							szText[i] += 0x20;
 
-					CvtSystemToNUNICODE(wszText, iLenChars, szText, chars);
+					CvtSystemToNUNICODE(wszText, COUNTOF(wszText), szText, chars);
 				}
 			}
 		}
