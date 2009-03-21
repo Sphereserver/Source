@@ -4347,3 +4347,7 @@ ALPHA additions:
 20-03-2009, MrSugarCube
 - Fixed #1586: Exception in Linux build when using the ADDCLILOC function with DEBUGF_SCRIPTS enabled.
 - Fixed: Exception when passing an invalid object uid into the NEWDUPE function.
+
+21-03-2009, MrSugarCube
+- Fixed: Crashes with EF_Unicode enabled on Linux builds.
+- Fixed: SuppressCapitals causing speech to be blanked out.
