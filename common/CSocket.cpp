@@ -433,13 +433,16 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	}
 #endif
 
-void CGSocket::SetNonBlocking()
+void CGSocket::SetNonBlocking(bool bEnable)
 {
 #ifdef _WIN32
-	DWORD lVal = 1;	// 0 =  block
+	DWORD lVal = bEnable? 1 : 0;	// 0 =  block
 	ioctlsocket(m_hSocket, FIONBIO, &lVal);
 #else
-	fcntl(m_hSocket, F_SETFL, GetIOCtlSocketFlags()|O_NONBLOCK);
+	if (bEnable)
+		fcntl(m_hSocket, F_SETFL, GetIOCtlSocketFlags()|O_NONBLOCK);
+	else
+		fcntl(m_hSocket, F_SETFL, GetIOCtlSocketFlags()&~O_NONBLOCK);
 #endif
 }
 
