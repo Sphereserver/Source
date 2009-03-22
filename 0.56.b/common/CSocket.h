@@ -135,7 +135,7 @@ public:
 	int GetIOCtlSocketFlags( void );
 #endif
 
-	void SetNonBlocking();
+	void SetNonBlocking(bool bEnable = true);
 	void Close();
 
 	static void CloseSocket( SOCKET hClose );

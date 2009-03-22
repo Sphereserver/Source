@@ -646,7 +646,9 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 		TCHAR	*pszArgs = Str_TrimWhitespace(ppLines[j]);
 		if ( !strnicmp(pszArgs, "Connection:", 11 ) )
 		{
-			if ( strstr(pszArgs + 11, "Keep-Alive") )
+			pszArgs += 11;
+			GETNONWHITESPACE(pszArgs);
+			if ( !strnicmp(pszArgs, "Keep-Alive", 10) )
 				fKeepAlive = true;
 		}
 		else if ( !strnicmp(pszArgs, "Referer:", 8) )
@@ -674,6 +676,18 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 
 	if ( strchr(ppRequest[1], '\r') || strchr(ppRequest[1], 0x0c) )
 		return false;
+
+	// if the client hasn't requested a keep alive, we must act as if they had
+	// when async networking is used, otherwise data may not be completely sent
+	if ( fKeepAlive == false )
+	{
+		fKeepAlive = xUseAsync();
+
+		// must switch to a blocking socket when the connection is not being kept
+		// alive, or else pending data will be lost when the socket shuts down
+		if ( fKeepAlive == false )
+			m_Socket.SetNonBlocking(false);
+	}
 
 	linger llinger;
 	llinger.l_onoff = 1;
@@ -706,7 +720,14 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 		if ( pWebPage )
 		{
 			if ( pWebPage->ServPagePost(this, ppRequest[1], ppLines[iQtyLines-1], iContentLength) )
-				return fKeepAlive;
+			{
+				if ( fKeepAlive )
+					return true;
+
+				// ensure all data is flushed to the client before the connection closes
+				xFlush();
+				return false;
+			}
 			return false;
 		}
 	}
@@ -723,7 +744,14 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 
 		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%x:HTTP Page Request '%s', alive=%d\n", m_Socket.GetSocket(), (LPCTSTR)szPageName, fKeepAlive);
 		if ( CWebPageDef::ServPage(this, szPageName, &dateIfModifiedSince) )
-			return fKeepAlive;
+		{
+			if ( fKeepAlive )
+				return true;
+
+			// ensure all data is flushed to the client before the connection closes
+			xFlush();
+			return false;
+		}
 	}
 
 
@@ -1234,6 +1262,9 @@ void CClient::xAsyncSendComplete()
 
 	void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags)
 	{
+		if (dwError == WSAEFAULT)
+			return;
+
 		CClient *client = reinterpret_cast<CClient *>(lpOverlapped->hEvent);
 		client->xAsyncSendComplete();
 	}
@@ -1263,6 +1294,10 @@ bool CClient::xUseAsync()
 	// if the version mod flag is not set, always use async mode
 	if ( !IsSetEF( EF_UseNetworkMultiVersionMod ) )
 		return true;
+
+	// http clients do not want to be using async networking unless they have keep-alive set
+	if ( GetConnectType() == CONNECT_HTTP )
+		return false;
 
 	// only use async with clients newer than 4.0.0
 	// - normally the client version is unknown for the first 1 or 2 packets, so all clients will begin

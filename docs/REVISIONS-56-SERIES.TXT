@@ -4351,3 +4351,9 @@ ALPHA additions:
 21-03-2009, MrSugarCube
 - Fixed: Crashes with EF_Unicode enabled on Linux builds.
 - Fixed: SuppressCapitals causing speech to be blanked out.
+
+22-03-2009, MrSugarCube
+- Fixed #1557: Sphere only sending partial webpages to certain browsers such as FireFox.
+- Fixed: Sphere only sending partial webpages to all browsers when EF_UseNetworkMulti is used.
+- Modified: EF_UseNetworkMultiVersionMod now also disables the effects of EF_UseNetworkMulti for HTTP
+  clients.
