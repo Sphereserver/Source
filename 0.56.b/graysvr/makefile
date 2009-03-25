@@ -4,8 +4,8 @@ PLAT	= Linux
 # Generic makefile
 MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
-#OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-OPT	= -O2 $(OPTDEFAULT)
+OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
+#OPT	= -O2 $(OPTDEFAULT)
 #WARN	= -Wall -W
 WARN	= -w
 
