@@ -4357,3 +4357,7 @@ ALPHA additions:
 - Fixed: Sphere only sending partial webpages to all browsers when EF_UseNetworkMulti is used.
 - Modified: EF_UseNetworkMultiVersionMod now also disables the effects of EF_UseNetworkMulti for HTTP
   clients.
+
+29-03-2009, MrSugarCube
+- Fixed #1589: TWOHANDS returning 1 with items that are equipped in the second hand but aren't
+  two-handed, such as shields and lanterns.
