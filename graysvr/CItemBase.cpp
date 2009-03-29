@@ -1143,11 +1143,13 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			sVal.FormatHex( GetTFlags() );
 			break;
 		case IBC_TWOHANDS:
-			// In some cases the layer is not set right.
-			// override the layer here.
 			if ( ! IsTypeEquippable())
 				return( false );
-			sVal.FormatVal( m_layer == LAYER_HAND2 );
+
+			if ( ! IsTypeWeapon(GetType()) && ! IsType(IT_FISH_POLE))
+				sVal.FormatVal(0);
+			else
+				sVal.FormatVal( m_layer == LAYER_HAND2 );
 			break;
 		case IBC_TYPE:
 			// sVal.FormatVal( m_type );
