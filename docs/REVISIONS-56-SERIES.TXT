@@ -4361,3 +4361,8 @@ ALPHA additions:
 29-03-2009, MrSugarCube
 - Fixed #1589: TWOHANDS returning 1 with items that are equipped in the second hand but aren't
   two-handed, such as shields and lanterns.
+
+04-03-2009, MrSugarCube
+- Fixed #1588: Possibility of overflow when applying markups to vendor prices (note that prices are
+  limited to a maximum of 2,147,483,647gp inclusive of markup).
+
