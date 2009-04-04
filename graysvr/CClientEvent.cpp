@@ -1266,7 +1266,7 @@ void CClient::Event_VendorBuy(CGrayUID uidVendor, const CEvent *pEvent)
 	memset(BuyPrices, 0, sizeof(BuyPrices));
 
 #define	MAX_COST (INT_MAX/2)
-	int		costtotal=0;
+	LONGLONG		costtotal=0;
 	unsigned int nItems = minimum((pEvent->VendorBuy.m_len - 8)/sizeof(pEvent->VendorBuy.m_item[0]), MAX_ITEMS_CONT);
 	int		i;
 
@@ -1626,7 +1626,7 @@ void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
 			amount = pItem->GetAmount();
 		}
 
-		long iPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
+		LONGLONG iPrice = (LONGLONG)pItemSell->GetVendorPrice(iConvertFactor) * amount;
 
 		// Can vendor afford this ?
 		if ( iPrice > pBank->m_itEqBankBox.m_Check_Amount )

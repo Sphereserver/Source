@@ -170,13 +170,14 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	// iConvertFactor will consider:
 	//  Vendors Karma.
 	//  Players Karma
-	// -100 = player selling to the vendor (lower price)
-	// +100 = vendor selling to player (higher price)
+	// -100 = reduce price by 100%   (player selling to vendor?)
+	//    0 = base price
+	// +100 = increase price by 100% (vendor selling to player?)
 
-	int iPrice = m_price;
-	if ( iPrice <= 0 )	// set on player vendor.
+	LONGLONG lPrice = m_price;
+	if ( lPrice <= 0 )	// set on player vendor.
 	{
-		if ( iPrice == 0 )	// set a new randomized price for the item
+		if ( lPrice == 0 )	// set a new randomized price for the item
 		{
 			CItemBase * pItemDef;
 			if ( IsType( IT_DEED ))
@@ -190,17 +191,22 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 			{
 				pItemDef = Item_GetDef();
 			}
-			iPrice = pItemDef->GetMakeValue(GetQuality());
-			m_price = -iPrice;
+			lPrice = pItemDef->GetMakeValue(GetQuality());
+			m_price = -lPrice;
 		}
 		else
 		{
-			iPrice = -iPrice;
+			lPrice = -lPrice;
 		}
 	}
 
-	iPrice += IMULDIV( iPrice, iConvertFactor, 100 );
-	return iPrice;
+	lPrice += IMULDIV( lPrice, maximum(iConvertFactor, -100), 100 );
+	if (lPrice > LONG_MAX)
+		return LONG_MAX;
+	else if (lPrice <= 0)
+		return 0;
+	
+	return lPrice;
 }
 
 bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const
