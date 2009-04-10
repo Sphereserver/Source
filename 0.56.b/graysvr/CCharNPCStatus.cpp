@@ -97,7 +97,7 @@ CREID_TYPE CChar::NPC_GetAllyGroupType(CREID_TYPE idTest)	// static
 	return( idTest );
 }
 
-
+#ifndef _ALPHASPHERE
 int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetVendorMarkup");
@@ -116,6 +116,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	
 	if ( pCharDef )
 	{
+		// get markup value of NPC-chardef
 		pVarCharDef = pCharDef->m_TagDefs.GetKey("VENDORMARKUP");
 	}
 
@@ -126,6 +127,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	if ( pVar )
 	{
 		iHostility += pVar->GetValNum();
+		// add NPC's markup to hostility made by karma difference
 	}
 	else
 	{
@@ -133,9 +135,11 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 		if ( pVar )
 		{
 			iHostility += pVar->GetValNum();
+			// if NPC is unmarked, look if the region is
 		}
 		else
 		{
+			// neither NPC nor REGION are marked, so look for the chardef
 			if ( pVarCharDef )
 			{
 				iHostility += pVarCharDef->GetValNum();
@@ -146,6 +150,74 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	return( iHostility );
 }
 
+#else
+
+int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
+{
+	ADDTOCALLSTACK("CChar::NPC_GetVendorMarkup");
+	// This vendor marks stuff up/down this percentage.
+	// Base this on KARMA. Random is calculated at Restock time
+	// When vendor sells to players this is the markup value.
+	// fBuy: Client buying
+	// RETURN:
+	//  0-100
+
+	if ( !pChar || IsStatFlag(STATF_Pet) )	// Not on a hired vendor.
+		return( 0 );
+
+	CVarDefCont	*pVarRegion, *pVarCharDef, *pVarNPC, *pVarPlayer;
+	CCharBase * pCharDef = Char_GetDef();	// NPC CharDef
+	int iMarkUp = 0;
+	
+	if ( pCharDef )
+	{
+		// get markup value of NPC-chardef
+		pVarCharDef = pCharDef->m_TagDefs.GetKey("VENDORMARKUP");
+	}
+
+	pVarPlayer = pChar->m_TagDefs.GetKey("VENDORMARKUP");
+
+	int iHostility = maximum(NPC_GetHostilityLevelToward(pChar), 0);
+	iHostility = minimum(iHostility + 15, 100);
+
+	// go thru all possible tweaks
+
+	// Region's markup
+	pVarRegion = GetRegion()->m_TagDefs.GetKey("VENDORMARKUP");
+	if ( pVarRegion )
+	{
+		iMarkUp = pVarRegion->GetValNum();
+	}
+
+	// NPC's CharDef's markup
+	if ( pVarCharDef )
+	{
+		iMarkUp += pVarCharDef->GetValNum();
+	}
+
+	// NPC's personal markup
+	pVarNPC = m_TagDefs.GetKey("VENDORMARKUP");
+	if ( pVarNPC )
+	{
+		iMarkUp += pVarNPC->GetValNum();
+	}
+
+	// finally: Player char's markup
+	pVarPlayer = pChar->m_TagDefs.GetKey("VENDORMARKUP");
+	if ( pVarPlayer )
+	{
+		iMarkUp += pVarPlayer->GetValNum();
+	}
+
+	// ensure that the return value is between -100 or positive
+	iMarkUp += iHostility;
+	if ( iMarkUp < -100 )
+		return (-100);
+	else
+		return ( iMarkUp );
+}
+
+#endif
 
 int CChar::NPC_OnHearName( LPCTSTR pszText ) const
 {
