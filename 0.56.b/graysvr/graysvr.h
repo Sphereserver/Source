@@ -1081,6 +1081,7 @@ public:
 private:
 	void Cmd_GM_PageInfo();
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
+	int Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, int iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
 	bool Cmd_CreateItem( ITEMID_TYPE id, bool fStatic = false );
 	bool Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell = SPELL_Summon, bool fPet = true );
