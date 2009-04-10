@@ -696,18 +696,94 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	if ( rid.GetResType() != RES_SKILLMENU )
 		return( false );
 
-	int iDifficulty = 0;
+	bool fShowMenu = false;
+	bool fLimitReached = false;
+
+	if ( iSelect == 0 )
+	{
+		// menu cancelled
+		return( Cmd_Skill_Menu_Build( rid, iSelect, NULL, 0, fShowMenu, fLimitReached ));
+	}
+
+	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];
+	int iShowCount = Cmd_Skill_Menu_Build( rid, iSelect, item, COUNTOF(item), fShowMenu, fLimitReached);
+
+	if ( iSelect < -1 )		// just a test.
+	{
+		return( iShowCount ? true : false );
+	}
+
+	if ( iSelect > 0 )	// seems our resources disappeared.
+	{
+		if ( ! iShowCount )
+		{
+			SysMessageDefault( DEFMSG_CANT_MAKE );
+		}
+		return( iShowCount ? true : false );
+	}
+
+	if ( ! iShowCount )
+	{
+		SysMessageDefault( DEFMSG_CANT_MAKE_RES );
+		return( false );
+	}
+
+	if ( iShowCount == 1 && fShowMenu == true && fLimitReached == false )
+	{
+		static int sm_iReentrant = 0;
+		if ( sm_iReentrant < 12 )
+		{
+			sm_iReentrant++;
+
+			// If there is just one menu then select it.
+			bool fSuccess = Cmd_Skill_Menu( rid, m_tmMenu.m_Item[1] );
+
+			sm_iReentrant--;
+			return( fSuccess );
+		}
+
+		if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
+			g_Log.EventDebug("SCRIPT: Too many empty skill menus to continue seeking through menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName());
+	}
+
+	addItemMenu( CLIMODE_MENU_SKILL, item, iShowCount );
+	return( true );
+}
+
+int CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, int iMaxSize, bool &fShowMenu, bool &fLimitReached )
+{
+	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu_Build");
+	// Build the skill menu for the curent active skill.
+	// Only list the things we have skill and ingrediants to make.
+	//
+	// ARGS:
+	//	m_Targ_UID = the object used to get us here.
+	//  rid = which menu ?
+	//	iSelect = -2 = Just a test of the whole menu.,
+	//	iSelect = -1 = 1st setup.
+	//	iSelect = 0 = cancel
+	//	iSelect = x = execute the selection.
+	//  fShowMenu = whether or not menus can be shown
+	//  item = pointer to entries list
+	//  iMaxSize = maximum number of entries
+	//
+	// RETURN: number of entries in menu
+	//   m_tmMenu.m_Item = the menu entries.
+
+	ASSERT(m_pChar);
+	if ( rid.GetResType() != RES_SKILLMENU )
+		return( 0 );
 
 	// Find section.
 	CResourceLock s;
 	if ( ! g_Cfg.ResourceLock( s, rid ))
 	{
-		return false;
+		return 0;
 	}
 
 	// Get title line
 	if ( ! s.ReadKey())
-		return( false );
+		return( 0 );
 
 	if ( iSelect == 0 )	// cancelled
 	{
@@ -721,14 +797,13 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 
 			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
 			if ( tRet == TRIGRET_RET_TRUE )
-				return false;
+				return 0;
 
 			break;
 		}
-		return true;
+		return 1;
 	}
 
-	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];
 	if ( iSelect < 0 )
 	{
 		item[0].m_sText = s.GetKey();
@@ -739,10 +814,8 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	}
 
 	bool fSkip = false;	// skip this if we lack resources or skill.
-	bool fSuccess = false;
 	int iOnCount = 0;
 	int iShowCount = 0;
-	bool fShowMenu = false;	// are we showing a menu?
 	CScriptTriggerArgs Args;
 
 	while ( s.ReadKeyParse())
@@ -763,10 +836,10 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			{
 				if ( iSelect < -1 && iShowCount >= 1 )		// just a test. so we are done.
 				{
-					return( true );
+					return( 1 );
 				}
 				iShowCount ++;
-				if ( ! item[iShowCount].ParseLine( s.GetArgRaw(), NULL, m_pChar ))
+				if ( ! item[iSelect == -2? 0 : iShowCount].ParseLine( s.GetArgRaw(), NULL, m_pChar ))
 				{
 					// remove if the item is invalid.
 					iShowCount --;
@@ -777,7 +850,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 				{
 					m_tmMenu.m_Item[iShowCount] = iOnCount;
 				}
-				if ( iShowCount >= COUNTOF( item )-1 )
+				if ( iShowCount >= iMaxSize-1 )
 					break;
 			}
 			else
@@ -822,12 +895,15 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			// Execute command from script
 			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, m_pChar, &Args );
 
-			if ( tRet == TRIGRET_RET_TRUE )
+			if (tRet != TRIGRET_RET_DEFAULT)
 			{
-				return( false );
+				if (tRet == TRIGRET_RET_TRUE)
+					return( 0 );
+
+				return( 1 );
 			}
 
-			fSuccess = true;	// we are good. but continue til the end
+			iShowCount++;	// we are good. but continue til the end
 		}
 		else
 		{
@@ -836,26 +912,31 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 			if ( s.IsKey("SKILLMENU"))
 			{
 				static int sm_iReentrant = 0;
-				if (sm_iReentrant > 128)
+				if (sm_iReentrant > 1024)
 				{
-					DEBUG_ERR(("Too many skill menus (circular menus?) to continue searching in menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName()));
-					return false;
-				}
+					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
+						g_Log.EventDebug("SCRIPT: Too many skill menus (circular menus?) to continue searching in menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName());
 
-				// Test if there is anything in this skillmenu we can do.
-				++sm_iReentrant;
-				if ( ! Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()), iSelect-1 ))
-				{
-					iShowCount--;
-					fSkip = true;
+					fLimitReached = true;
 				}
 				else
 				{
-					fShowMenu = true;
-					ASSERT( ! fSkip );
-				}
+					// Test if there is anything in this skillmenu we can do.
+					++sm_iReentrant;
 
-				--sm_iReentrant;
+					CMenuItem item;
+					if ( ! Cmd_Skill_Menu_Build( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()), -2, &item, iMaxSize, fShowMenu, fLimitReached ))
+					{
+						iShowCount--;
+						fSkip = true;
+					}
+					else
+					{
+						fShowMenu = true;
+					}
+
+					--sm_iReentrant;
+				}
 				continue;
 			}
 			if ( s.IsKey("MAKEITEM"))
@@ -873,32 +954,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		}
 	}
 
-	if ( iSelect < -1 )		// just a test.
-	{
-		return( iShowCount ? true : false );
-	}
-	if ( iSelect > 0 )	// seems our resources disappeared.
-	{
-		if ( ! fSuccess )
-		{
-			SysMessageDefault( DEFMSG_CANT_MAKE );
-		}
-		return( fSuccess );
-	}
-
-
-	if ( ! iShowCount )
-	{
-		SysMessageDefault( DEFMSG_CANT_MAKE_RES );
-		return( false );
-	}
-	if ( iShowCount == 1 && fShowMenu )
-	{
-		// If there is just one menu then select it.
-		return( Cmd_Skill_Menu( rid, m_tmMenu.m_Item[1] ));
-	}
-	addItemMenu( CLIMODE_MENU_SKILL, item, iShowCount );
-	return( true );
+	return iShowCount;
 }
 
 bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
