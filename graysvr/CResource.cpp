@@ -1182,7 +1182,46 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_RTICKS:
 			{
-				sVal.FormatUVal(static_cast<unsigned long>(CGTime::GetCurrentTime().GetTime()));
+				if ( pszKey[6] != '.' )
+					sVal.FormatUVal(static_cast<unsigned long>(CGTime::GetCurrentTime().GetTime()));
+				else
+				{
+					pszKey += 6;
+					SKIP_SEPARATORS(pszKey);
+					if ( !strnicmp("FROMTIME", pszKey, 8) )
+					{
+						pszKey += 8;
+						GETNONWHITESPACE(pszKey);
+						int piVal[6];
+
+						// year, month, day, hour, minute, second
+						int iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
+						if ( iQty != 6 )
+							return false;
+
+						CGTime datetime(piVal[0], piVal[1], piVal[2], piVal[3], piVal[4], piVal[5]);
+						if ( datetime.GetTime() == -1 )
+							sVal.FormatVal(-1);
+						else
+							sVal.FormatUVal(datetime.GetTime());
+					}
+					else if ( !strnicmp("FORMAT", pszKey, 6) )
+					{
+						pszKey += 6;
+						GETNONWHITESPACE( pszKey );
+						TCHAR *ppVal[2];
+
+						// timestamp, formatstr
+						int iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), ppVal, COUNTOF(ppVal));
+						if ( iQty < 1 )
+							return false;
+
+						time_t lTime = Exp_GetVal(ppVal[0]);
+
+						CGTime datetime(lTime);
+						sVal = datetime.Format(iQty > 1? ppVal[1]: NULL);
+					}
+				}
 			}
 			break;
 		case RC_RTIME:
