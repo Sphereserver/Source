@@ -4370,3 +4370,10 @@ ALPHA additions:
 - Fixed: Server crash caused by deeply nested SKILLMENUs.
 - Modified: Menu options are no longer hidden from SKILLMENUs when Sphere is unable to fully search
   within them.
+
+13-03-2009, MrSugarCube
+- Added: SERV.RTICKS.FROMTIME year,month,day,hour,minute,second. Returns the timestamp for the given
+  date.
+- Added: SERV.RTICKS.FORMAT timestamp[,format]. Converts the given timestamp into a formatted date
+  string (similar to SERV.RTIME.FORMAT).
+
