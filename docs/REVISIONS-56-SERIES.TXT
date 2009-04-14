@@ -4377,3 +4377,5 @@ ALPHA additions:
 - Added: SERV.RTICKS.FORMAT timestamp[,format]. Converts the given timestamp into a formatted date
   string (similar to SERV.RTIME.FORMAT).
 
+14-03-2009, MrSugarCube (Script pack)
+- Updated #1497: sphere_item_multis_houses_ships.scp (Fixed ship masts not blocking line of sight)
