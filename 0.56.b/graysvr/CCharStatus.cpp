@@ -1593,7 +1593,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							continue;
 
 						iQty = pMulti->GetItemCount();
-						for ( iii = 0; --iQty; pItemDef = NULL, pMultiItem = NULL, ++iii )
+						for ( iii = 0; iii < iQty; pItemDef = NULL, pMultiItem = NULL, ++iii )
 						{
 							pMultiItem = pMulti->GetItem(iii);
 		

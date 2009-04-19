@@ -4380,5 +4380,10 @@ ALPHA additions:
 14-04-2009, MrSugarCube (Script pack)
 - Updated #1497: sphere_item_multis_houses_ships.scp (Fixed ship masts not blocking line of sight)
 
+19-04-2009, MrSugarCube
+- Fixed #1586: Possible exception when checking line of sight near multis when AdvancedLos is enabled.
+- Fixed: Exception when EF_NewPositionChecks is enabled and there are statics placed on the map which
+  don't have scripts.
+
 19-04-2009, MrSugarCube (Script pack)
 - Updated #1469: sphere_item_ground_tiles.scp (Corrected height of i_waterfall_low)
