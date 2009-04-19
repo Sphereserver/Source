@@ -4382,6 +4382,8 @@ ALPHA additions:
 
 19-04-2009, MrSugarCube
 - Fixed #1586: Possible exception when checking line of sight near multis when AdvancedLos is enabled.
+- Fixed #1495: Ghosts able to teleport through walls when resurrecting. Line of sight is now required
+  for a ghost to resurrect with their corpse.
 - Fixed: Exception when EF_NewPositionChecks is enabled and there are statics placed on the map which
   don't have scripts.
 

@@ -513,7 +513,7 @@ bool CChar::CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fT
 CItemCorpse *CChar::FindMyCorpse( int iRadius ) const
 {
 	ADDTOCALLSTACK("CChar::FindMyCorpse");
-	// If they are standing on there own corpse then res the corpse !
+	// If they are standing on their own corpse then res the corpse !
 	CWorldSearch Area(GetTopPoint(), iRadius);
 	while ( true )
 	{
@@ -527,7 +527,10 @@ CItemCorpse *CChar::FindMyCorpse( int iRadius ) const
 			continue;
 		// not morphed type.
 		if ( pCorpse->m_itCorpse.m_BaseID != m_prev_id )
-			break;
+			continue;
+		// not on the other side of a wall, through the floor, etc
+		if ( CanSeeLOS(pCorpse) == false )
+			continue;
 		return pCorpse;
 	}
 	return NULL;
