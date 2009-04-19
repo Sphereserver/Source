@@ -195,6 +195,9 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			continue;
 
 		pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );
+		if ( pItemDef == NULL )
+			continue;
+
 		Height = pItemDef->GetHeight();
 		if ( pItemDef->GetID() != pItem->GetDispID() ) //not a parent item
 		{
@@ -252,7 +255,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			if ( !pMulti )
 				continue;
 			int iQty = pMulti->GetItemCount();
-			for ( int ab = 0; iQty--; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++ab )
+			for ( int ab = 0; ab < iQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++ab )
 			{
 				pMultiItem = pMulti->GetItem(ab);
 				
@@ -267,6 +270,9 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				ptTest = CPointMap( pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, pMultiItem->m_dz + pt.m_z, pt.m_map );
 
 				pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
+				if ( pItemDef == NULL )
+					continue;
+
 				Height = pItemDef->GetHeight();
 				if ( pItemDef->GetID() != pMultiItem->GetDispID() ) //not a parent item
 				{
@@ -295,9 +301,6 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 		        //DEBUG_ERR(("pMultiItem->GetDispID()%x\n",pMultiItem->GetDispID()));
 				ptElem[1] = ptTest;
 				fElem[1] = false;
-				
-				if ( !pItemDef )
-					continue;
 
 				//DEBUG_ERR(("multi pItemDef->IsType( iType %d) %d\n",iType,pItemDef->IsType( iType )));
 				if ( pItemDef->IsType( iType ) )
@@ -331,6 +334,9 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			ptTest = CPointMap( pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z, pt.m_map );
 
 			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
+			if ( pItemDef == NULL )
+				continue;
+
 			//DEBUG_ERR(("pStatic->GetDispID() %d; name %s; pStatic->m_z %d\n",pStatic->GetDispID(),pItemDef->GetName(),pStatic->m_z));
 			Height = pItemDef->GetHeight();
 			if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
@@ -364,9 +370,6 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 
 			ptElem[2] = ptTest;
 			fElem[2] = false;
-
-			if ( pItemDef == NULL )
-				continue;
 
 			//DEBUG_ERR(("static pItemDef->IsType( iType %d) %d;pItemDef->GetType() %d;pItemDef->GetID() %d;pItemDef->GetDispID() %d\n",iType,pItemDef->IsType( iType ),pItemDef->GetType(),pItemDef->GetID(),pItemDef->GetDispID()));
 			if ( pItemDef->IsType( iType ) )
@@ -750,7 +753,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 						int y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
 						int iQty = pMulti->GetItemCount();
-						for ( int i=0; iQty--; i++ )
+						for ( int i=0; i < iQty; i++ )
 						{
 							const CUOMultiItemRec * pMultiItem = pMulti->GetItem(i);
 							ASSERT(pMultiItem);
@@ -1012,7 +1015,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 						y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
 						iQty = pMulti->GetItemCount();
-						for ( ii = 0; --iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
+						for ( ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
 						{
 							pMultiItem = pMulti->GetItem(ii);
 
