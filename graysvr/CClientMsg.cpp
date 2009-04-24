@@ -4705,7 +4705,7 @@ LOGIN_ERR_TYPE CClient::Setup_Start( CChar * pChar ) // Send character startup s
 	}
 	if ( IsPriv(PRIV_JAILED) )
 	{
-		m_pChar->Jail(&g_Serv, true, 0);
+		m_pChar->Jail(&g_Serv, true, GetAccount()->m_TagDefs.GetKeyNum("JailCell", true));
 	}
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
 	{

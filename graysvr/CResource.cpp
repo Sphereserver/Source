@@ -1720,29 +1720,44 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	else
 	{
 		// Match the region name with global regions.
-
-		for ( int i=0; i<COUNTOF(m_ResHash.m_Array); i++ )
-		for ( int j=0; j<m_ResHash.m_Array[i].GetCount(); j++ )
+		CRegionBase * pRegion = GetRegion(pCmd);
+		if ( pRegion != NULL )
 		{
-			CResourceDef* pResDef = m_ResHash.m_Array[i][j];
-			ASSERT(pResDef);
-			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (pResDef);
-			if ( pRegion == NULL )
-				continue;
-
-			if ( ! pRegion->GetNameStr().CompareNoCase( pCmd ) ||
-				! strcmpi( pRegion->GetResourceName(), pCmd ))
-			{
-				return( pRegion->m_pt );
-			}
+			return( pRegion->m_pt );
 		}
 	}
 	// no match.
 	return( pt );
 }
 
+CRegionBase * CResource::GetRegion( LPCTSTR pKey ) const
+{
+	ADDTOCALLSTACK("CResource::GetRegion");
+	// get a region from a name or areadef.
 
+	GETNONWHITESPACE( pKey );
+	for ( int i=0; i<COUNTOF(m_ResHash.m_Array); i++ )
+	{
+		for ( int j=0; j<m_ResHash.m_Array[i].GetCount(); j++ )
+		{
+			CResourceDef* pResDef = m_ResHash.m_Array[i][j];
+			ASSERT(pResDef);
 
+			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (pResDef);
+			if ( pRegion == NULL )
+				continue;
+
+			if ( ! pRegion->GetNameStr().CompareNoCase( pKey ) ||
+				! strcmpi( pRegion->GetResourceName(), pKey ))
+			{
+				return( pRegion );
+			}
+		}
+	}
+
+	// no match.
+	return( NULL );
+}
 
 void	CResource::LoadSortSpells()
 {

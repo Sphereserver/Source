@@ -988,6 +988,7 @@ public:
 	bool IsConsoleCmd( TCHAR ch ) const;
 
 	CPointMap GetRegionPoint( LPCTSTR pCmd ) const; // Decode a teleport location number into X/Y/Z
+	CRegionBase * GetRegion( LPCTSTR pKey ) const; // Find a region with the given name/defname
 
 	int Calc_MaxCarryWeight( const CChar * pChar ) const;
 	int Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent );
