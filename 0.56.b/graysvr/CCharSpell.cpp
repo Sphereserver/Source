@@ -54,14 +54,33 @@ bool CChar::Spell_Teleport( CPointBase ptNew,
 
 	if ( IsPriv(PRIV_JAILED))
 	{
-		// Must be /PARDONed
+		CRegionBase *pJail = g_Cfg.GetRegion( "jail" );
+		if (pJail == NULL || pJail->IsInside2d(ptNew) == false)
+		{
+			// Must be /PARDONed to leave jail area
 static LPCTSTR const sm_szPunishMsg[] =
 {
 	g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_1 ),
 	g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_2 ),
 };
-		SysMessage( sm_szPunishMsg[ Calc_GetRandVal( COUNTOF( sm_szPunishMsg )) ]);
-		ptNew = g_Cfg.GetRegionPoint( "jail" );
+			SysMessage( sm_szPunishMsg[ Calc_GetRandVal( COUNTOF( sm_szPunishMsg )) ]);
+
+			int iCell = 0;
+			if ( m_pPlayer && m_pPlayer->GetAccount() )
+				iCell = m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell", true);
+
+			if ( iCell )
+			{
+				TCHAR szJailName[ 128 ];
+				sprintf( szJailName, "jail%d", iCell );
+				pJail = g_Cfg.GetRegion( szJailName );
+			}
+
+			if ( pJail != NULL )
+				ptNew = pJail->m_pt;
+			else
+				ptNew.InitPoint();
+		}
 	}
 
 	// Is it a valid teleport location that allows this ?

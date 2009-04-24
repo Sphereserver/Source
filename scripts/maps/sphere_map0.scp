@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2009
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: March 26, 2006
+// FILE LAST UPDATED: April 25, 2009
 
 VERSION=0.56b
 
@@ -2694,85 +2694,94 @@ P=877,1683,0,0
 RECT=834,1670,872,1704,0
 RECT=871,1678,880,1688,0
 
-[AREADEF a_jail_10_1]
+[AREADEF a_jail_2]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail 10
+NAME=Jail
+GROUP=Jails
+FLAGS=06d9f
+P=5295,1187,0,0
+RECT=5269,1157,5314,1194,0
+TAG.GUARDOWNER=SPHERE Jailors
+
+[ROOMDEF jail1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 1
 GROUP=Jails
 FLAGS=0900
-P=5304,1184,0,0
-RECT=5292,1180,5311,1191,0
+P=5276,1164,0,0
+RECT=5272,1160,5281,1169,0
 
-[AREADEF a_jail9_1]
+[ROOMDEF jail2]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail9
-GROUP=Jails
-FLAGS=0180
-P=5283,1184,0,0
-RECT=5272,1180,5291,1191,0
-
-[AREADEF a_jail8_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail8
-GROUP=Jails
-FLAGS=0180
-P=5306,1174,0,0
-RECT=5302,1170,5311,1179,0
-
-[AREADEF a_jail7_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail7
-GROUP=Jails
-FLAGS=0180
-P=5296,1174,0,0
-RECT=5292,1170,5301,1179,0
-
-[AREADEF a_jail6_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail6
-GROUP=Jails
-FLAGS=0180
-P=5286,1174,0,0
-RECT=5282,1170,5291,1179,0
-
-[AREADEF a_jail5_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail5
-GROUP=Jails
-FLAGS=0180
-P=5276,1174,0,0
-RECT=5272,1170,5281,1179,0
-
-[AREADEF a_jail4_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail4
-GROUP=Jails
-FLAGS=0180
-P=5306,1164,0,0
-RECT=5302,1160,5311,1169,0
-
-[AREADEF a_jail3_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail3
-GROUP=Jails
-FLAGS=0180
-P=5296,1164,0,0
-RECT=5292,1160,5301,1169,0
-
-[AREADEF a_jail2_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail2
+NAME=Jail Cell 2
 GROUP=Jails
 FLAGS=0180
 P=5286,1164,0,0
 RECT=5282,1160,5291,1169,0
 
-[AREADEF a_jail1_1]
+[ROOMDEF jail3]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail1
+NAME=Jail Cell 3
+GROUP=Jails
+FLAGS=0180
+P=5296,1164,0,0
+RECT=5292,1160,5301,1169,0
+
+[ROOMDEF jail4]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 4
+GROUP=Jails
+FLAGS=0180
+P=5306,1164,0,0
+RECT=5302,1160,5311,1169,0
+
+[ROOMDEF jail5]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 5
+GROUP=Jails
+FLAGS=0180
+P=5276,1174,0,0
+RECT=5272,1170,5281,1179,0
+
+[ROOMDEF jail6]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 6
+GROUP=Jails
+FLAGS=0180
+P=5286,1174,0,0
+RECT=5282,1170,5291,1179,0
+
+[ROOMDEF jail7]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 7
+GROUP=Jails
+FLAGS=0180
+P=5296,1174,0,0
+RECT=5292,1170,5301,1179,0
+
+[ROOMDEF jail8]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 8
+GROUP=Jails
+FLAGS=0180
+P=5306,1174,0,0
+RECT=5302,1170,5311,1179,0
+
+[ROOMDEF jail9]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 9
+GROUP=Jails
+FLAGS=0180
+P=5283,1184,0,0
+RECT=5272,1180,5291,1191,0
+
+[ROOMDEF jail10]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Jail Cell 10
 GROUP=Jails
 FLAGS=0900
-P=5276,1164,0,0
-RECT=5272,1160,5281,1169,0
+P=5304,1184,0,0
+RECT=5292,1180,5311,1191,0
 
 [AREADEF a_yew_graveyard_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -5359,15 +5368,6 @@ GROUP=Shrines
 FLAGS=02580
 P=1729,3528,3,0
 RECT=1721,3524,1729,3531,0
-
-[AREADEF a_jail_2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jail
-GROUP=Jails
-FLAGS=06d9f
-P=5295,1187,0,0
-RECT=5269,1157,5314,1194,0
-TAG.GUARDOWNER=SPHERE Jailors
 
 [AREADEF a_helpdesk]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass

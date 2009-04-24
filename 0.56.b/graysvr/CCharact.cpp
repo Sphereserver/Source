@@ -129,16 +129,21 @@ bool CChar::TeleportToCli( int iType, int iArgs )
 void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 {
 	ADDTOCALLSTACK("CChar::Jail");
+
+	CScriptTriggerArgs Args( fSet? 1 : 0, iCell, NULL);
+
 	if ( fSet )	// set the jailed flag.
 	{
-
-		CScriptTriggerArgs Args( 1, iCell ? iCell : NULL, NULL );
 		if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return;
 
 		if ( m_pPlayer )	// allow setting of this to offline chars.
 		{
-			m_pPlayer->GetAccount()->SetPrivFlags( PRIV_JAILED );
+			CAccount *pAccount = m_pPlayer->GetAccount();
+			ASSERT(pAccount != NULL);
+
+			pAccount->SetPrivFlags( PRIV_JAILED );
+			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
 		}
 		if ( IsClient())
 		{
@@ -158,8 +163,6 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 	}
 	else	// forgive.
 	{
-
-		CScriptTriggerArgs Args( NULL, NULL, NULL );
 		if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return;
 
@@ -171,7 +174,12 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 		}
 		if ( m_pPlayer )
 		{
-			m_pPlayer->GetAccount()->ClearPrivFlags( PRIV_JAILED );
+			CAccount *pAccount = m_pPlayer->GetAccount();
+			ASSERT(pAccount != NULL);
+
+			pAccount->ClearPrivFlags( PRIV_JAILED );
+			if ( pAccount->m_TagDefs.GetKey("JailCell") != NULL )
+				pAccount->m_TagDefs.DeleteKey("JailCell");
 		}
 		SysMessageDefault( DEFMSG_FORGIVEN );
 	}

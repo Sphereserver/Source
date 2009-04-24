@@ -4389,3 +4389,11 @@ ALPHA additions:
 
 19-04-2009, MrSugarCube (Script pack)
 - Updated #1469: sphere_item_ground_tiles.scp (Corrected height of i_waterfall_low)
+
+25-04-2009, MrSugarCube
+- Modified: Jailing players (".JAIL cell#" command) now remembers the cell number that was specified,
+  stored in Tag.JailCell on the account and used when returning players to jail.
+- Modified: Jailed players are no longer blocked from being teleported within the jail region.
+
+25-04-2009, MrSugarCube (Script pack)
+- Updated: sphere_map0.scp (Renamed individual jail AREADEFs to jail cell ROOMDEFs)
