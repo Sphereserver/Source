@@ -4397,3 +4397,6 @@ ALPHA additions:
 
 25-04-2009, MrSugarCube (Script pack)
 - Updated: sphere_map0.scp (Renamed individual jail AREADEFs to jail cell ROOMDEFs)
+
+02-05-2009, MrSugarCube
+- Fixed #1581: Characters unable to see objects that are in the corners of their visual range.

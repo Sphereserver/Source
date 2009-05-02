@@ -1052,17 +1052,20 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 	{
 		if ( pExcludeClient == pClient )
 			continue;
+		if ( pClient->GetChar() == NULL )
+			continue;
+
 		if ( ! pClient->CanSee( this ))
 		{
 			// In the case of "INVIS" used by GM's we must use this.
-			if ( GetDist( pClient->GetChar()) <= UO_MAP_VIEW_SIZE )
+			if ( GetTopPoint().GetDistSight( pClient->GetChar()->GetTopPoint()) <= UO_MAP_VIEW_SIZE )
 			{
 				pClient->addObjectRemove( this );
 			}
 			continue;
 		}
 // VisRangeCheck
-		if ( pClient->GetChar()->GetSight() >= GetDist( pClient->GetChar()) )
+		if ( pClient->GetChar()->GetSight() >= GetTopPoint().GetDistSight( pClient->GetChar()->GetTopPoint()) )
 		{
 			if ( fFull )
 				pClient->addChar(this);
@@ -1127,7 +1130,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		if ( pChar == NULL )
 			continue;
 
-		bool fCouldSee = ( pold.GetDist( pChar->GetTopPoint()) <= pChar->GetSight() );
+		bool fCouldSee = ( pold.GetDistSight( pChar->GetTopPoint()) <= pChar->GetSight() );
 		EXC_SET("if cansee");
 		if ( ! pClient->CanSee( this ))
 		{	// can't see me now.

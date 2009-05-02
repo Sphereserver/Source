@@ -2691,7 +2691,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
 				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
-				if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDist(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 				{
 					if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 					{
@@ -2705,7 +2705,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		}
 		else
 		{
-			if ((( m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDist(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDist(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )))
+			if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )))
 			{
 				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 				{
@@ -2730,7 +2730,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		if (( m_pChar == pChar ) || !CanSee(pChar) )
 			continue;
 
-		if ( ptold.GetDist( pChar->GetTopPoint()) > tViewDist )
+		if ( ptold.GetDistSight( pChar->GetTopPoint()) > tViewDist )
 		{
 			if ( dSeeChars < g_Cfg.m_iMaxCharComplexity*5 )
 			{
@@ -4119,8 +4119,8 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 		bNameOnly = true;
 	}
 
-	//DEBUG_MSG(("(( m_pChar->GetTopPoint().GetDist(pObj->GetTopPoint()) (%x) > UO_MAP_VIEW_SIZE (%x) ) && ( !bShop ) (%x) )", m_pChar->GetTopPoint().GetDist(pObj->GetTopPoint()), UO_MAP_VIEW_SIZE, ( !bShop )));
-	if (( m_pChar->GetTopPoint().GetDist(pObj->GetTopPoint()) > UO_MAP_VIEW_SIZE ) && ( m_pChar->GetTopPoint().GetDist(pObj->GetTopPoint()) <= UO_MAP_VIEW_RADAR ) && ( !bShop ) ) //we do not need to send tooltips for items not in LOS (multis/ships)
+	//DEBUG_MSG(("(( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) (%x) > UO_MAP_VIEW_SIZE (%x) ) && ( !bShop ) (%x) )", m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()), UO_MAP_VIEW_SIZE, ( !bShop )));
+	if (( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) > UO_MAP_VIEW_SIZE ) && ( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) <= UO_MAP_VIEW_RADAR ) && ( !bShop ) ) //we do not need to send tooltips for items not in LOS (multis/ships)
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items

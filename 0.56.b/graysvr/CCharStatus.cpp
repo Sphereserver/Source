@@ -964,7 +964,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 
 	//	first check the distance since if this will fail, we do not need to scan all
 	//	subcontainers to find this result ;)
-	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDist(GetTopPoint()) > iVisualRange )
+	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > iVisualRange )
 		return false;
 
 	if ( pObj->IsItem() )

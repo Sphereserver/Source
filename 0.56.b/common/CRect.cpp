@@ -128,6 +128,19 @@ int CPointBase::GetDist( const CPointBase & pt ) const // Distance between point
 	return( GetDistBase( pt ));
 }
 
+int CPointBase::GetDistSight( const CPointBase & pt ) const // Distance between points based on UO sight
+{
+	ADDTOCALLSTACK("CPointBase::GetDistSight");
+	if ( !pt.IsValidPoint() )
+		return( SHRT_MAX );
+	else if ( ! IsSameMap( pt.m_map ))
+		return( SHRT_MAX );
+
+	int dx = abs(m_x-pt.m_x);
+	int dy = abs(m_y-pt.m_y);
+	return( maximum( dx, dy ));
+}
+
 int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between points
 {
 	ADDTOCALLSTACK("CPointBase::GetDist3D");
