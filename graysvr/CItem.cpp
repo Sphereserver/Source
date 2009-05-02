@@ -4751,6 +4751,9 @@ bool CItem::OnTick()
 						// Transform to the next shape.
 						m_itLight.m_charges = 0;
 						SetID(id);
+
+						if ( IsAttr(ATTR_DECAY) )
+							SetTimeout( GetDecayTime() );
 					}
 					Update();
 				}
