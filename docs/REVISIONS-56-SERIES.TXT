@@ -4400,3 +4400,6 @@ ALPHA additions:
 
 02-05-2009, MrSugarCube
 - Fixed #1581: Characters unable to see objects that are in the corners of their visual range.
+
+03-05-2009, MrSugarCube
+- Fixed #1526: No decay timer set on lights after they become unlit.
