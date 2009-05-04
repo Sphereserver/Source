@@ -110,6 +110,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 
 	// hide dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
+	Area.SetSearchSquare(true);
 	while ( true )
 	{
 		CItem * pItem = Area.GetItem();
@@ -275,6 +276,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 
 	// remove all existing dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
+	Area.SetSearchSquare(true);
 	CItem * pItem;
 	while ( true )
 	{

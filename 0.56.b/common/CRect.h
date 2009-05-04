@@ -58,6 +58,7 @@ public:
 	int GetDistZAdj( const CPointBase & pt ) const;
 	int GetDistBase( const CPointBase & pt ) const; // Distance between points
 	int GetDist( const CPointBase & pt ) const; // Distance between points
+	int GetDistSightBase( const CPointBase & pt ) const; // Distance between points based on UO sight
 	int GetDistSight( const CPointBase & pt ) const; // Distance between points based on UO sight
 	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
 

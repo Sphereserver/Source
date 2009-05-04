@@ -111,6 +111,7 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 
 	CWorldSearch AreaChar( GetTopPoint(), iMaxDist );
 	AreaChar.SetAllShow( true );
+	AreaChar.SetSearchSquare( true );
 	while ( iCount < MAX_MULTI_LIST_OBJS )
 	{
 		CChar * pChar = AreaChar.GetChar();
@@ -127,6 +128,7 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 	}
 
 	CWorldSearch AreaItem( GetTopPoint(), iMaxDist );
+	AreaItem.SetSearchSquare( true );
 	while ( iCount < MAX_MULTI_LIST_OBJS )
 	{
 		CItem * pItem = AreaItem.GetItem();

@@ -1047,7 +1047,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 	if ( IsPriv(PRIV_ALLSHOW) && ( pObj->IsTopLevel() || pObj->IsDisconnected() ))
 	{
 		// don't exclude for logged out and diff maps.
-		return (GetTopPoint().GetDistBase(pObj->GetTopPoint()) <= pObj->GetVisualRange());
+		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= pObj->GetVisualRange());
 	}
 	return true;
 }

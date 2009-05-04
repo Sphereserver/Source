@@ -443,6 +443,7 @@ CWorldSearch::CWorldSearch( const CPointMap & pt, int iDist ) :
 {
 	// define a search of the world.
 	m_fAllShow = false;
+	m_fSearchSquare = false;
 	m_pObj = m_pObjNext = NULL;
 	m_fInertToggle = false;
 
@@ -511,15 +512,31 @@ CItem * CWorldSearch::GetItem()
 
 jumpover:
 		m_pObjNext = m_pObj->GetNext();
-		if ( m_fAllShow )
+		if ( m_fSearchSquare )
 		{
-			if ( m_pt.GetDistBase( m_pObj->GetTopPoint()) <= m_iDist )
-				return( STATIC_CAST <CItem *> ( m_pObj ));
+			if ( m_fAllShow )
+			{
+				if ( m_pt.GetDistSightBase( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CItem *> ( m_pObj ));
+			}
+			else
+			{
+				if ( m_pt.GetDistSight( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CItem *> ( m_pObj ));
+			}
 		}
 		else
 		{
-			if ( m_pt.GetDist( m_pObj->GetTopPoint()) <= m_iDist )
-				return( STATIC_CAST <CItem *> ( m_pObj ));
+			if ( m_fAllShow )
+			{
+				if ( m_pt.GetDistBase( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CItem *> ( m_pObj ));
+			}
+			else
+			{
+				if ( m_pt.GetDist( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CItem *> ( m_pObj ));
+			}
 		}
 	}
 }
@@ -554,15 +571,31 @@ CChar * CWorldSearch::GetChar()
 
 jumpover:
 		m_pObjNext = m_pObj->GetNext();
-		if ( m_fAllShow )
+		if ( m_fSearchSquare )
 		{
-			if ( m_pt.GetDistBase( m_pObj->GetTopPoint()) <= m_iDist )
-				return( STATIC_CAST <CChar *> ( m_pObj ));
+			if ( m_fAllShow )
+			{
+				if ( m_pt.GetDistSightBase( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CChar *> ( m_pObj ));
+			}
+			else
+			{
+				if ( m_pt.GetDistSight( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CChar *> ( m_pObj ));
+			}
 		}
 		else
 		{
-			if ( m_pt.GetDist( m_pObj->GetTopPoint()) <= m_iDist )
-				return( STATIC_CAST <CChar *> ( m_pObj ));
+			if ( m_fAllShow )
+			{
+				if ( m_pt.GetDistBase( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CChar *> ( m_pObj ));
+			}
+			else
+			{
+				if ( m_pt.GetDist( m_pObj->GetTopPoint()) <= m_iDist )
+					return( STATIC_CAST <CChar *> ( m_pObj ));
+			}
 		}
 	}
 }

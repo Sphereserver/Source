@@ -309,6 +309,7 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 		// Remove any multi objects first ! or client will hang
 		CWorldSearch AreaItems( GetChar()->GetTopPoint(), UO_MAP_VIEW_RADAR );
 		AreaItems.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
+		AreaItems.SetSearchSquare(true);
 		while (true)
 		{
 			CItem * pItem = AreaItems.GetItem();
@@ -322,6 +323,7 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 		// Remove any multi objects first ! or client will hang
 		CWorldSearch AreaChars( GetChar()->GetTopPoint(), UO_MAP_VIEW_SIZE );
 		AreaChars.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
+		AreaChars.SetSearchSquare(true);
 		while (true)
 		{
 			CChar * pChar = AreaChars.GetChar();
@@ -2601,6 +2603,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
 	AreaItems.SetAllShow(fAllShow);
+	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
 	while (true)
@@ -2639,6 +2642,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 	//	Characters around
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
 	AreaChars.SetAllShow(fAllShow);
+	AreaChars.SetSearchSquare(true);
 	DWORD	dSeeChars(0);
 	while ( true )
 	{
@@ -2676,6 +2680,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
 	AreaItems.SetAllShow(fAllShow);
+	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
 	while (true)
@@ -2721,6 +2726,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	//	Characters around
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
 	AreaChars.SetAllShow(fAllShow);
+	AreaChars.SetSearchSquare(true);
 	DWORD	dSeeChars(0);
 	while ( true )
 	{

@@ -4403,3 +4403,6 @@ ALPHA additions:
 
 03-05-2009, MrSugarCube
 - Fixed #1526: No decay timer set on lights after they become unlit.
+
+04-05-2009, MrSugarCube
+- Fixed: Objects on the corners of .EXTRACT, .NUKE, .NUKECHAR areas not being affected by the command.
