@@ -166,7 +166,7 @@ tags:	$(SRC)
 #cmn:	$(COMMONSRC:.cpp=.o)
 
 svn:
-	$(SVNREV) $(SVNREVARG)
+	@$(SVNREV) $(SVNREVARG)
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
