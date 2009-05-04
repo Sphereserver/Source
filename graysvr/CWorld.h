@@ -463,6 +463,7 @@ private:
 	const CPointMap m_pt;		// Base point of our search.
 	const int m_iDist;			// How far from the point are we interested in
 	bool m_fAllShow;		// Include Even inert items.
+	bool m_fSearchSquare;		// Search in a square (uo-sight distance) rather than a circle (standard distance).
 
 	CObjBase * m_pObj;	// The current object of interest.
 	CObjBase * m_pObjNext;	// In case the object get deleted.
@@ -478,6 +479,7 @@ public:
 	static const char *m_sClassName;
 	CWorldSearch( const CPointMap & pt, int iDist = 0 );
 	void SetAllShow( bool fView ) { m_fAllShow = fView; }
+	void SetSearchSquare( bool fSquareSearch ) { m_fSearchSquare = fSquareSearch; }
 	CChar * GetChar();
 	CItem * GetItem();
 };
