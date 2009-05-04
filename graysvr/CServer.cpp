@@ -8,6 +8,9 @@
 #include "../common/grayver.h"	// sphere version
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
+#ifdef _SUBVERSION
+	#include "../common/subversion/SvnRevision.h"
+#endif
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
@@ -2006,7 +2009,13 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
+
+#ifdef __SVNREVISION__
+	g_Log.Event(LOGM_INIT, "%s, compiled at " __DATE__ " (" __TIME__ "), internal build #" __SVNREVISION__  "\n", g_szServerDescription);
+#else
 	g_Log.Event(LOGM_INIT, "%s, compiled at " __DATE__ " (" __TIME__ ")\n", g_szServerDescription);
+#endif
+
 #ifdef _WIN32
 	if ( wSockInfo[0] )
 		g_Log.Event(LOGM_INIT, wSockInfo);

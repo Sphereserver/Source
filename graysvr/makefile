@@ -20,7 +20,8 @@ DEFNIX  = -D_LINUX
 NIGHTLYDEFS = -D_NIGHTLYBUILD
 EXTRADEFS = -D_NEWGUILDSYSTEM
 #DEBUGDEFS = -D_DEBUG
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS)
+SVNDEFS = -D_SUBVERSION
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
@@ -36,6 +37,9 @@ SPECIAL = $(EX) $(STRICT) $(DEBUG)
 
 PROF	= -pg
 PIPE	= -pipe
+
+SVNREV     = ../common/subversion/svnwcrev
+SVNREVARG  = ../ ../common/subversion/SvnRevision.tmpl ../common/subversion/SvnRevision.h
 
 SRC	:= 	CAccount.cpp \
 		CBase.cpp \
@@ -161,6 +165,9 @@ tags:	$(SRC)
 
 #cmn:	$(COMMONSRC:.cpp=.o)
 
+svn:
+	$(SVNREV) $(SVNREVARG)
+
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
 #commonlib:	$(COMMONSRC:.cpp=.o)
@@ -169,7 +176,7 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
-$(EXE): flags gray
+$(EXE): svn flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
 
 version.h:	VERSION
