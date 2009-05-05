@@ -4410,3 +4410,8 @@ ALPHA additions:
 05-05-2009, MrSugarCube
 - Fixed #1451: Missing mana checks, skill checks and @Select triggers not being fired before casting,
   when precasting is enabled.
+- Modified: Separated the movement behaviour of the MAGICF_PRECAST flag into a new MAGIC_FREEZEONCAST
+  flag. Enable MAGICF_PRECAST to enable casting before targeting, and enable MAGICF_FREEZEONCAST to
+  prevent characters from moving whilst casting (enable both to retain the previous behaviour of
+  MAGICF_PRECAST). Also added SPELLFLAG_NOFREEZEONCAST to disable the effects of MAGICF_FREEZEONCAST
+  for individual spells.

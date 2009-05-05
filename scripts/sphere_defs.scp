@@ -574,27 +574,28 @@ region_flag_no_pvp			08000	// players cannot directly harm each other here.
 
 [defname spell_flags]
 // spell flags.
-spellflag_dir_anim		000001		// Evoke type cast or directed. (animation)
-spellflag_targ_item		000002		// Need to target an object
-spellflag_targ_char		000004		// Needs to target a living thing
-spellflag_targ_obj		000006
-spellflag_targ_xyz		000008		// Can just target a location.
-spellflag_harm			000010		// The spell is in some way harmfull.
-spellflag_fx_bolt		000020		// Effect is a bolt to the target.
-spellflag_fx_targ		000040		// Effect is at the target.
-spellflag_field		000080		// create a field of stuff. (fire,poison,wall)
-spellflag_summon		000100		// summon a creature.
-spellflag_good			000200		// The spell is a good spell. u intend to help to receiver.
-spellflag_resist		000400		// Allowed to resist this.	
-spellflag_targ_noself	000800		// cannot target spell to self
-spellflag_disabled		008000		// spell is disabled
-spellflag_scripted		010000		// spell is scripted
-spellflag_playeronly	020000		// spell is not casted by npc ai
-spellflag_nounparalyze	040000		// do not unparalyze the victim
-spellflag_no_castanim	080000		// don't play (default) cast anim
-spellflag_targ_no_player	0100000	// // if a char may be targetted, it may not be a player
-spellflag_targ_no_npc	0200000	// // if a char may be targetted, it may not be an NPC
-spellflag_noprecast     0400000     // disables PRECASTING with a spell (only valid if PRECASTING activated by Sphere.ini)
+spellflag_dir_anim              0000001	// evoke type cast or directed. (animation)
+spellflag_targ_item             0000002	// need to target an object
+spellflag_targ_char             0000004	// needs to target a living thing
+spellflag_targ_obj              0000006
+spellflag_targ_xyz              0000008	// can just target a location.
+spellflag_harm                  0000010	// the spell is in some way harmfull.
+spellflag_fx_bolt               0000020	// effect is a bolt to the target.
+spellflag_fx_targ               0000040	// effect is at the target.
+spellflag_field                 0000080	// create a field of stuff. (fire,poison,wall)
+spellflag_summon                0000100	// summon a creature.
+spellflag_good                  0000200	// the spell is a good spell. You intend to help to receiver.
+spellflag_resist                0000400	// allowed to resist this.	
+spellflag_targ_noself           0000800	// cannot target spell to self
+spellflag_disabled              0008000	// spell is disabled
+spellflag_scripted              0010000	// spell is scripted
+spellflag_playeronly            0020000	// spell is not casted by npc ai
+spellflag_nounparalyze          0040000	// do not unparalyze the victim
+spellflag_no_castanim           0080000	// don't play (default) cast anim
+spellflag_targ_no_player        0100000	// if a char may be targeted, it may not be a player
+spellflag_targ_no_npc           0200000	// if a char may be targeted, it may not be an NPC
+spellflag_noprecast             0400000	// disables effects of MAGICF_PRECAST with a spell (only valid if MAGICF_PRECAST actived in Sphere.ini)
+spellflag_nofreezeoncast        0800000 // disables effects of MAGICF_FREEZEONCAST with a spell (only valid if MAGICF_FREEZEONCAST actived in Sphere.ini)
 
 [defname mem_flags]
 memory_sawcrime	    00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
