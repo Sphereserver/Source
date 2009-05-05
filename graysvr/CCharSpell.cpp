@@ -2284,7 +2284,19 @@ int CChar::Spell_CastStart()
 	if ( pSpellDef == NULL )
 		return( -1 );
 
-	if ( ! IsSetMagicFlags( MAGICF_PRECAST ) || !IsClient() || pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+	if ( IsSetMagicFlags( MAGICF_PRECAST ) && ! pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
+	{
+		if ( IsClient() == true )
+		{
+			m_Act_p = GetTopPoint();
+			m_Act_Targ = GetClient()->m_Targ_UID;
+			m_Act_TargPrv = GetClient()->m_Targ_PrvUID;
+		}
+
+		if ( ! Spell_CanCast(m_atMagery.m_Spell, true, m_Act_TargPrv.ObjFind(), true))
+			return( -1 );
+	}
+	else if ( !IsClient() )
 	{
 		if ( ! Spell_TargCheck())
 			return( -1 );
