@@ -887,11 +887,11 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	if ( !m_pChar || !Event_WalkingCheck(dwEcho) )
 		return;
 
-	// Movement whilst precasting is not allowed
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
+	// Movement whilst freeze-on-cast enabled is not allowed
+	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
 		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
-		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST))
+		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
 		{
 			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
 			addPlayerWalkCancel();
