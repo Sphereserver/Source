@@ -4406,3 +4406,7 @@ ALPHA additions:
 
 04-05-2009, MrSugarCube
 - Fixed: Objects on the corners of .EXTRACT, .NUKE, .NUKECHAR areas not being affected by the command.
+
+05-05-2009, MrSugarCube
+- Fixed #1451: Missing mana checks, skill checks and @Select triggers not being fired before casting,
+  when precasting is enabled.
