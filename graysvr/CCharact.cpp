@@ -3726,11 +3726,15 @@ bool CChar::OnTick()
 		}
 
 
-		// Players have a silly "always run" flag that gets stuck on.
 		if ( IsClient() )
 		{
+			// Players have a silly "always run" flag that gets stuck on.
 			if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
 				StatFlag_Clear(STATF_Fly);
+
+			// Check targeting timeout, if set
+			if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
+				GetClient()->addTargetCancel();
 		}
 
 		// NOTE: Summon flags can kill our hp here. check again.

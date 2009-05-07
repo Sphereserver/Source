@@ -653,6 +653,7 @@ public:
 	SOUND_TYPE m_iSpell_Teleport_Sound_Players;
 	ITEMID_TYPE m_iSpell_Teleport_Effect_Staff;
 	SOUND_TYPE m_iSpell_Teleport_Sound_Staff;
+	int m_iSpellTimeout; // Timeout for spell targeting
 
 	// In Game Effects
 	int	 m_iLightDungeon;
