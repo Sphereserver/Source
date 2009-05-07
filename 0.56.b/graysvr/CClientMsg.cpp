@@ -2269,7 +2269,7 @@ int CClient::Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharF
 		return 5;
 }
 
-void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt )
+void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout )
 {
 	ADDTOCALLSTACK("CClient::SetTargMode");
 	// ??? Get rid of menu stuff if previous targ mode.
@@ -2293,6 +2293,12 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt )
 			}
 		}
 	}
+
+	// determine timeout time
+	if (iTimeout > 0)
+		m_Targ_Timeout = CServTime::GetCurrentTime() + iTimeout;
+	else
+		m_Targ_Timeout.Init();
 
 	if ( GetTargMode() == targmode )
 		return;
@@ -2332,13 +2338,13 @@ void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID con
 	xSendPkt( &cmd, cmd.Prompt.m_len );
 }
 
-void CClient::addTarget( CLIMODE_TYPE targmode, LPCTSTR pPrompt, bool fAllowGround, bool fCheckCrime ) // Send targetting cursor to client
+void CClient::addTarget( CLIMODE_TYPE targmode, LPCTSTR pPrompt, bool fAllowGround, bool fCheckCrime, int iTimeout ) // Send targetting cursor to client
 {
 	ADDTOCALLSTACK("CClient::addTarget");
 	// Expect XCMD_Target back.
 	// ??? will this be selective for us ? objects only or chars only ? not on the ground (statics) ?
 
-	SetTargMode( targmode, pPrompt );
+	SetTargMode( targmode, pPrompt, iTimeout );
 
 	CCommand cmd;
 	memset( &(cmd.Target), 0, sizeof( cmd.Target ));
@@ -2361,7 +2367,7 @@ void CClient::addTargetDeed( const CItem * pDeed )
 	addTargetItems( CLIMODE_TARG_USE_ITEM, iddef );
 }
 
-bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCheck )
+bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCheck, int iTimeout )
 {
 	ADDTOCALLSTACK("CClient::addTargetChars");
 	CCharBase * pBase = CCharBase::FindCharBase( baseID );
@@ -2371,7 +2377,7 @@ bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCh
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%s '%s'?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), (LPCTSTR) pBase->GetTradeName());
 
-	addTarget(mode, pszTemp, true, fNotoCheck);
+	addTarget(mode, pszTemp, true, fNotoCheck, iTimeout);
 	return true;
 }
 
@@ -2439,6 +2445,14 @@ bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGroun
 void CClient::addTargetCancel()
 {
 	ADDTOCALLSTACK("CClient::addTargetCancel");
+
+	// handle the cancellation now, in an ideal world the client would normally respond to
+	// the cancel target packet as if the user had pressed ESC, but we shouldn't rely on
+	// this happening (older clients for example don't support the cancel command and will
+	// bring up a new target cursor)
+	SetTargMode();
+
+	// tell the client to cancel their cursor
 	CCommand cmd;
 	memset( &(cmd.Target), 0, sizeof( cmd.Target ));
 	cmd.Target.m_Cmd = XCMD_Target;

@@ -33,6 +33,7 @@ CResource::CResource()
 	m_fWordsOfPowerStaff = false;
 	m_fEquippedCast = true;
 	m_iMagicUnlockDoor = 1000;
+	m_iSpellTimeout = 0;
 
 	m_iSpell_Teleport_Effect_Staff = ITEMID_FX_FLAMESTRIKE;	// drama
 	m_iSpell_Teleport_Sound_Staff = 0x1f3;
@@ -444,6 +445,7 @@ enum RC_TYPE
 	RC_SPEECHPET,
 	RC_SPEECHSELF,
 	RC_SPEEDSCALEFACTOR,
+	RC_SPELLTIMEOUT,
 	RC_STAMINALOSSATWEIGHT,	// m_iStaminaLossAtWeight
 	RC_STATSFLAGS,				//	m_iStatFlag
 	RC_STRIPPATH,				// for TNG
@@ -623,6 +625,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "SPEECHPET",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSpeechPet )	}},
 	{ "SPEECHSELF",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSpeechSelf)	}},
 	{ "SPEEDSCALEFACTOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpeedScaleFactor)	}},
+	{ "SPELLTIMEOUT",			{ ELEM_INT,		OFFSETOF(CResource,m_iSpellTimeout) }},
 	{ "STAMINALOSSATWEIGHT",	{ ELEM_INT,		OFFSETOF(CResource,m_iStaminaLossAtWeight)	}},
 	{ "STATSFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iStatFlag) }},
 	{ "STRIPPATH",				{ ELEM_INT,		OFFSETOF(CResource,m_sStripPath) }},

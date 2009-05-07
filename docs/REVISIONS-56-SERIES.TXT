@@ -4415,3 +4415,8 @@ ALPHA additions:
   prevent characters from moving whilst casting (enable both to retain the previous behaviour of
   MAGICF_PRECAST). Also added SPELLFLAG_NOFREEZEONCAST to disable the effects of MAGICF_FREEZEONCAST
   for individual spells.
+
+06-06-2009, MrSugarCube
+- Added #1599: SpellTimeout setting to Sphere.ini. If set to a value greater than zero then when
+  casting a spell the player is given this many seconds to choose a target before the spell is
+  automatically cancelled.

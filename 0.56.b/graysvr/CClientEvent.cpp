@@ -3064,7 +3064,7 @@ void CClient::Event_Target( const CEvent * pEvent )
 	ASSERT(m_pChar);
 	if ( pEvent->Target.m_context != GetTargMode())
 	{
-		if ( pEvent->Target.m_context != 0 || pEvent->Target.m_x != 0xFFFF || pEvent->Target.m_UID != 0 )
+		if ( pEvent->Target.m_context != 0 && ( pEvent->Target.m_x != 0xFFFF || pEvent->Target.m_UID != 0 ) )
 		{
 			// DEBUG_ERR(( "%x: Unrequested target info ?\n", m_Socket.GetSocket()));
 			SysMessage( "Unexpected target info" );

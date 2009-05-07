@@ -817,6 +817,7 @@ public:
 	CGrayUID m_Targ_PrvUID;		// The object of interest before this.
 	CGString m_Targ_Text;		// Text transfered up from client.
 	CPointMap  m_Targ_p;			// For script targeting,
+	CServTime m_Targ_Timeout;	// timeout time for targeting
 
 	// Context of the targetting setup. depends on CLIMODE_TYPE m_Targ_Mode
 	union
@@ -1244,10 +1245,10 @@ public:
 	void addWebLaunch( LPCTSTR pMsg ); // Direct client to a web page
 
 	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0 );
-	void addTarget( CLIMODE_TYPE targmode, LPCTSTR pMsg, bool fAllowGround = false, bool fCheckCrime = false ); // Send targetting cursor to client
+	void addTarget( CLIMODE_TYPE targmode, LPCTSTR pMsg, bool fAllowGround = false, bool fCheckCrime = false, int iTimeout = 0 ); // Send targetting cursor to client
 	void addTargetDeed( const CItem * pDeed );
 	bool addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGround = true );
-	bool addTargetChars( CLIMODE_TYPE mode, CREID_TYPE id, bool fNoto );
+	bool addTargetChars( CLIMODE_TYPE mode, CREID_TYPE id, bool fNoto, int iTimeout = 0 );
 	void addTargetVerb( LPCTSTR pCmd, LPCTSTR pArg );
 	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround );
 	void addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime );
@@ -1442,11 +1443,12 @@ public:
 	{
 		return( m_Targ_Mode );
 	}
-	void SetTargMode( CLIMODE_TYPE targmode = CLIMODE_NORMAL, LPCTSTR pszPrompt = NULL );
+	void SetTargMode( CLIMODE_TYPE targmode = CLIMODE_NORMAL, LPCTSTR pszPrompt = NULL, int iTimeout = 0 );
 	void ClearTargMode()
 	{
 		// done with the last mode.
 		m_Targ_Mode = CLIMODE_NORMAL;
+		m_Targ_Timeout.Init();
 	}
 
 	bool IsConnecting();

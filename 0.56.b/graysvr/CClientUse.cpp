@@ -672,7 +672,7 @@ bool CClient::Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell, bool fPet )
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( iSpell );
 	ASSERT( pSpellDef );
 
-	return addTargetChars( CLIMODE_TARG_SKILL_MAGERY, id, pSpellDef->IsSpellType( SPELLFLAG_HARM ));
+	return addTargetChars( CLIMODE_TARG_SKILL_MAGERY, id, pSpellDef->IsSpellType( SPELLFLAG_HARM ), g_Cfg.m_iSpellTimeout * TICK_PER_SEC);
 }
 
 bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
@@ -1073,7 +1073,8 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		pPrompt	= pSpellDef->m_sTargetPrompt;
 	addTarget( CLIMODE_TARG_SKILL_MAGERY, pPrompt,
 		pSpellDef->IsSpellType( SPELLFLAG_TARG_XYZ ),
-		pSpellDef->IsSpellType( SPELLFLAG_HARM ));
+		pSpellDef->IsSpellType( SPELLFLAG_HARM ),
+		g_Cfg.m_iSpellTimeout * TICK_PER_SEC);
 	return( true );
 }
 
