@@ -40,6 +40,7 @@ CClient::CClient( SOCKET client ) :
 	m_timeWalkStep = GetTickCount();
 	m_fClosed = false;
 
+	m_Targ_Timeout.Init();
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
 	m_Prompt_Mode = CLIMODE_NORMAL;
 
