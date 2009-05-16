@@ -203,6 +203,30 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 	}
 	else
 	{
+		// Check if the target location is valid for summoning this creature
+		if ( IsSetMagicFlags( MAGICF_SUMMONWALKCHECK ) && !IsPriv(PRIV_GM))
+		{
+			WORD wCan = 0xFFFF;
+			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
+			if (pSummonDef != NULL)
+				wCan = pSummonDef->m_Can;
+
+			if (wCan != 0xFFFF)
+			{
+				WORD wBlockFlags = 0;
+				if ( IsSetEF( EF_WalkCheck ) )
+					g_World.GetHeightPoint_New(pntTarg, wBlockFlags, true);
+				else
+					g_World.GetHeightPoint(pntTarg, wBlockFlags, true);
+
+				if (wBlockFlags &~ wCan)
+				{
+					SysMessageDefault(DEFMSG_SUMMON_INVALIDTARG);
+					return NULL;
+				}
+			}
+		}
+
 		// These type summons make me it's master. (for a limited time)
 		pChar = CChar::CreateBasic( id );
 		if ( pChar == NULL )

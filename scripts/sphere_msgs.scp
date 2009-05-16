@@ -562,6 +562,7 @@
 //msg_mailbag_drop_2		"'%s' has dropped mail on you."
 //msg_maxchars		"You already have %d character(s)."
 //msg_summon_ceiling		"The ceiling is too low for the summoned creature!"
+//msg_summon_invalidtarg		"The creature cannot be summoned at this location."
 //msg_mount_ceiling		"The ceiling is too low for you!"
 //msg_mount_dist		"You can't reach the creature."
 //msg_mount_dontown		"You dont own that horse."

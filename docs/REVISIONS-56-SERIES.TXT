@@ -4424,3 +4424,8 @@ ALPHA additions:
 16-05-2009, MrSugarCube
 - Modified #1610: Cure spell just sends the packet needed to update the health bar rather than sending
   a full refresh of the entire screen.
+- Added #1609: MAGICF_SUMMONWALKCHECK flag to ensure that summoned creatures can only be successfully
+  summoned on tiles that are walkable for them (i.e. a sea creature can only be summoned on water).
+
+16-05-2009, MrSugarCube (Script pack)
+- Updated: sphere_msgs.scp (Added msg_summon_invalidtarg defmessage)
