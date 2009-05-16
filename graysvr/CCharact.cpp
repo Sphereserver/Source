@@ -2147,7 +2147,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 bool CChar::SetPoisonCure( int iSkill, bool fExtra )
 {
 	ADDTOCALLSTACK("CChar::SetPoisonCure");
-	// Leave the anitdote in your body for a while.
+	// Leave the antidote in your body for a while.
 	// iSkill = 0-1000
 
 	CItem * pPoison = LayerFind( LAYER_FLAG_Poison );
@@ -2165,7 +2165,7 @@ bool CChar::SetPoisonCure( int iSkill, bool fExtra )
 			pPoison->Delete();
 		}
 	}
-	Update();
+	UpdateMode();
 	return( true );
 }
 
