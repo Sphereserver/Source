@@ -1229,6 +1229,52 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 	int minY = (int)((fieldGauge-1)/2) - (fieldGauge-1);
 	int maxY = minY+(fieldGauge-1);
 
+	if ( IsSetMagicFlags( MAGICF_NOFIELDSOVERWALLS ) )
+	{
+		// check if anything is blocking the field from fully extending to its desired width
+
+		// first checks center piece, then left direction (minX), and finally right direction (maxX)
+		// (structure of the loop looks a little odd but it should be more effective for wide fields (we don't really
+		// want to be testing the far left or right of the field when it has been blocked towards the center))
+		for (int ix = 0; true; ix <= 0? ix-- : ix++)
+		{
+			if (ix < minX)
+				ix = 1;	// start checking right extension
+			if (ix > maxX)
+				break; // all done
+
+			// check the whole width of the field for anything that would block this placement
+			for (int iy = minY; iy <= maxY; iy++)
+			{
+				CPointMap ptg = pntTarg;
+				if ( dx > dy )
+				{
+					ptg.m_y += ix;
+					ptg.m_x += iy;
+				}
+				else
+				{
+					ptg.m_x += ix;
+					ptg.m_y += iy;
+				}
+
+				WORD wBlockFlags = 0;
+				g_World.GetHeightPoint(ptg, wBlockFlags, true);
+				if ( wBlockFlags & ( CAN_I_BLOCK | CAN_I_DOOR ) )
+				{
+					if (ix < 0)	// field cannot extend fully to the left
+						minX = ix + 1;
+					else if (ix > 0) // field cannot extend fully to the right
+						maxX = ix - 1;
+					else	// center piece is blocked, field cannot be created at all
+						return;
+
+					break;
+				}
+			}
+		}
+	}
+
 	for ( int ix=minX; ix<=maxX; ix++ )
 	{
 		for ( int iy=minY; iy<=maxY; iy++) 
@@ -1286,19 +1332,19 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 
 			if ( fGoodLoc)
 			{
-			CItem * pSpell = CItem::CreateScript( id, this );
-			ASSERT(pSpell);
-			pSpell->SetType(IT_SPELL);
-			pSpell->SetAttr(ATTR_MAGIC);
-			pSpell->m_itSpell.m_spell = m_atMagery.m_Spell;
-			pSpell->m_itSpell.m_spelllevel = iSkillLevel;
-			pSpell->m_itSpell.m_spellcharges = 1;
-			pSpell->m_uidLink = GetUID();	// Link it back to you
+				CItem * pSpell = CItem::CreateScript( id, this );
+				ASSERT(pSpell);
+				pSpell->SetType(IT_SPELL);
+				pSpell->SetAttr(ATTR_MAGIC);
+				pSpell->m_itSpell.m_spell = m_atMagery.m_Spell;
+				pSpell->m_itSpell.m_spelllevel = iSkillLevel;
+				pSpell->m_itSpell.m_spellcharges = 1;
+				pSpell->m_uidLink = GetUID();	// Link it back to you
 
-			// Add some random element.
-			int iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
+				// Add some random element.
+				int iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
 
-			pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ));
+				pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ));
 			}
 		}
 	}

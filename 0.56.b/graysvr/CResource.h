@@ -71,13 +71,14 @@ enum EF_TYPE
 
 enum MAGICFLAGS_TYPE
 {
-	MAGICF_NODIRCHANGE      = 0x0000001,	// not rotate player when casting/targeting
-	MAGICF_PRECAST          = 0x0000002,	// use precasting (cast spell before targeting)
-	MAGICF_IGNOREAR         = 0x0000004,	// magic ignore ar
-	MAGICF_CANHARMSELF      = 0x0000008,	// i can do damage on self
-	MAGICF_STACKSTATS       = 0x0000010,	// allow multiple stat spells at once
-	MAGICF_FREEZEONCAST     = 0x0000020,	// disallow movement whilst casting
-	MAGICF_SUMMONWALKCHECK  = 0x0000040,	// disallow summoning creatures to places they can't normally step
+	MAGICF_NODIRCHANGE       = 0x0000001,	// not rotate player when casting/targeting
+	MAGICF_PRECAST           = 0x0000002,	// use precasting (cast spell before targeting)
+	MAGICF_IGNOREAR          = 0x0000004,	// magic ignore ar
+	MAGICF_CANHARMSELF       = 0x0000008,	// i can do damage on self
+	MAGICF_STACKSTATS        = 0x0000010,	// allow multiple stat spells at once
+	MAGICF_FREEZEONCAST      = 0x0000020,	// disallow movement whilst casting
+	MAGICF_SUMMONWALKCHECK   = 0x0000040,	// disallow summoning creatures to places they can't normally step
+	MAGICF_NOFIELDSOVERWALLS = 0x0000080,	// prevent fields from being formed over blocking objects.
 };
 
 enum COMBATFLAGS_TYPE

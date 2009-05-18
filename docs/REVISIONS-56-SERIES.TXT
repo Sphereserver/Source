@@ -4429,3 +4429,7 @@ ALPHA additions:
 
 16-05-2009, MrSugarCube (Script pack)
 - Updated: sphere_msgs.scp (Added msg_summon_invalidtarg defmessage)
+
+18-05-2009, MrSugarCube
+- Added #1466: MAGICF_NOFIELDSOVERWALLS flag to enable additional checks when casting field spells to
+  prevent them from passing through blocking objects (CAN_I_BLOCK and/or CAN_I_DOOR).
