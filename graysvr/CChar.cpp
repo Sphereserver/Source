@@ -3152,9 +3152,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		case CHV_SMSG:
 		case CHV_SMSGL:
+		case CHV_SMSGLEX:
 		case CHV_SMSGU:
 		case CHV_SYSMESSAGE:
 		case CHV_SYSMESSAGELOC:
+		case CHV_SYSMESSAGELOCEX:
 		case CHV_SYSMESSAGEUA:
 			// just eat this if it's not a client.
 			break;

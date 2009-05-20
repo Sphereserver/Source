@@ -260,6 +260,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_EffectParticle	= 0xc7,
 	XCMD_ViewRange		= 0xc8,
 	XCMD_GQCount		= 0xcb,
+	XCMD_SpeakLocalizedEx	= 0xcc,
 	//	0xD0
 	XCMD_ConfigFile		= 0xd0,
 	XCMD_LogoutStatus	= 0xd1,
@@ -2759,8 +2760,8 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_wHue;		// 10-11 = HUE_TYPE.
 			NWORD m_font;		// 12-13 = FONT_TYPE
 			NDWORD m_clilocId;	// 14-17 = Cliloc ID to display
-			char m_charname[MAX_NAME_SIZE];	// 18-48
-			TCHAR m_args[1];		// 49+ = arguments
+			char m_charname[MAX_NAME_SIZE];	// 18-47
+			TCHAR m_args[1];		// 48+ = arguments
 		} SpeakLocalized;
 		
 		struct
@@ -2775,6 +2776,22 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;		// 0 =0xC8
 			BYTE m_Value;	// 0x01 to UO_MAP_VIEW_SIZE
 		} VisualRange;
+
+		struct
+		{
+			BYTE m_Cmd;			// 0 = 0xCC
+			NWORD m_len;		// 1-2 = var len size.
+			NDWORD m_UID;		// 3-6 = UID num of speaker. 01010101 = system
+			NWORD m_id;			// 7-8 = CREID_TYPE of speaker.
+			BYTE m_mode;		// 9 = TALKMODE_TYPE
+			NWORD m_wHue;		// 10-11 = HUE_TYPE.
+			NWORD m_font;		// 12-13 = FONT_TYPE
+			NDWORD m_clilocId;	// 14-17 = Cliloc ID to display
+			BYTE m_affixType;	// 18 = Affix type (0=append, 1=prepend, 2=system)
+			char m_charname[MAX_NAME_SIZE];	// 19-48
+			char m_affix[1];	// 49+ = affix (ASCII only)
+			TCHAR m_args[1];	// 50+len(affix)+ = arguments (UNICODE only)
+		} SpeakLocalizedEx;
 
 		struct	// size = 2 // Logout Confirm Answer
 		{
