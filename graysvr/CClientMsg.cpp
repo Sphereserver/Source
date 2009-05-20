@@ -2411,7 +2411,7 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 		addSysMessage( pPrompt );
 }
 
-void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID context1, CGrayUID context2 )
+void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID context1, CGrayUID context2, bool bUnicode )
 {
 	ADDTOCALLSTACK("CClient::addPromptConsole");
 
@@ -2422,12 +2422,25 @@ void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID con
 		addSysMessage( pPrompt );
 
 	CCommand cmd;
-	cmd.Prompt.m_Cmd = XCMD_Prompt;
-	cmd.Prompt.m_len = sizeof( cmd.Prompt );
-	cmd.Prompt.m_serial = (DWORD)context1;	// client passes these back in response
-	cmd.Prompt.m_prompt = (DWORD)context2;
-	cmd.Prompt.m_type = 0;
-	cmd.Prompt.m_text[0] = '\0';
+	if (bUnicode == false)
+	{
+		cmd.Prompt.m_Cmd = XCMD_Prompt;
+		cmd.Prompt.m_len = sizeof( cmd.Prompt );
+		cmd.Prompt.m_serial = (DWORD)context1;	// client passes these back in response
+		cmd.Prompt.m_prompt = (DWORD)context2;
+		cmd.Prompt.m_type = 0;
+		cmd.Prompt.m_text[0] = '\0';
+	}
+	else
+	{
+		cmd.PromptUNICODE.m_Cmd = XCMD_PromptUNICODE;
+		cmd.PromptUNICODE.m_len = sizeof( cmd.PromptUNICODE );
+		cmd.PromptUNICODE.m_serial = (DWORD)context1;	// client passes these back in response
+		cmd.PromptUNICODE.m_prompt = (DWORD)context2;
+		cmd.PromptUNICODE.m_type = 0;
+		cmd.PromptUNICODE.m_lang[0] = '\0';
+		cmd.PromptUNICODE.m_utext[0] = '\0';
+	}
 
 	xSendPkt( &cmd, cmd.Prompt.m_len );
 }

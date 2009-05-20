@@ -576,13 +576,13 @@ void CClient::addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fC
 	addTarget( CLIMODE_TARG_OBJ_FUNC, "", fAllowGround, fCheckCrime );
 }
 
-void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage )
+void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode )
 {
 	ADDTOCALLSTACK("CClient::addPromptConsoleFunction");
 	// Target a verb at some object .
 	ASSERT(pszFunction);
 	m_Prompt_Text.Format( pszFunction );
-	addPromptConsole( CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage );
+	addPromptConsole( CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode );
 }
 
 

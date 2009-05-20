@@ -255,7 +255,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	//	0xC0
 	XCMD_EffectEx		= 0xc0,
 	XCMD_SpeakLocalized	= 0xc1,
-	XCMD_TextentryUnicode	= 0xc2,
+	XCMD_PromptUNICODE	= 0xc2,
 	XCMD_Semivisible	= 0xc4,
 	XCMD_EffectParticle	= 0xc7,
 	XCMD_ViewRange		= 0xc8,
@@ -1587,6 +1587,17 @@ struct CEvent	// event buffer from client to server..
 			NWORD m_type;	// 3 - 4 EXTDATA_TYPE 1=prime LIFO stack, 2=add to beginning of LIFO stack, 6=add to party
 			CExtData m_u;
 		} ExtData;
+
+		struct // size = 21+var = console Prompt response.
+		{
+			BYTE m_Cmd;			// 0xc2
+			NWORD m_len;		// 1-2
+			NDWORD m_serial;	// 3-6 = serial
+			NDWORD m_prompt;	// 7-10 = prompt id
+			NDWORD m_type;		// 11-14 = type (0=request/esc, 1=reply)
+			char m_lang[4];		// 15-18 = language (3 chars + NULL)
+			WCHAR m_utext[1];	// 19+ = null terminated unicode text.
+		} PromptUNICODE;
 		
 		struct	// size = ?? // Config File (IGR)
 		{
@@ -2763,6 +2774,17 @@ struct CCommand	// command buffer from server to client.
 			char m_charname[MAX_NAME_SIZE];	// 18-47
 			TCHAR m_args[1];		// 48+ = arguments
 		} SpeakLocalized;
+
+		struct // size = 21 // console prompt request. (unicode version)
+		{
+			BYTE m_Cmd;			// 0 = 0xc2
+			NWORD m_len;		// 1-2 = length = 16
+			NDWORD m_serial;	// 3-6 = serial
+			NDWORD m_prompt;	// 7-10 = prompt id
+			NDWORD m_type;		// 11-14 = type (0=request/esc, 1=reply)
+			char m_lang[4];		// 15-18 = lang (3 chars + NULL)
+			WCHAR m_utext[1];	// 19+ = response
+		} PromptUNICODE;
 		
 		struct
 		{
