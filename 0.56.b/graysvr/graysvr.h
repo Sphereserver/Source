@@ -1045,7 +1045,8 @@ private:
 	void Event_Walking( BYTE rawdir, BYTE count, DWORD dwCryptCode = 0 ); // Player moves
 	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
 	void Event_MenuChoice( const CEvent * pEvent ); // Choice from GMMenu or Itemmenu received
-	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type );
+	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
+	void Event_PromptRespUNICODE( const CEvent * pEvent );
 	void Event_Talk_Common(char *szText ); // PC speech
 	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
 	void Event_TalkUNICODE( const CEvent * pEvent );
@@ -1245,7 +1246,7 @@ public:
 	void addItemDragCancel( BYTE type );
 	void addWebLaunch( LPCTSTR pMsg ); // Direct client to a web page
 
-	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0 );
+	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0, bool bUnicode = false );
 	void addTarget( CLIMODE_TYPE targmode, LPCTSTR pMsg, bool fAllowGround = false, bool fCheckCrime = false, int iTimeout = 0 ); // Send targetting cursor to client
 	void addTargetDeed( const CItem * pDeed );
 	bool addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGround = true );
@@ -1254,7 +1255,7 @@ public:
 	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround );
 	void addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime );
 	void addTargetCancel();
-	void addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage );
+	void addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode = false );
 
 	void addScrollScript( CResourceLock &s, SCROLL_TYPE type, DWORD dwcontext = 0, LPCTSTR pszHeader = NULL );
 	void addScrollResource( LPCTSTR szResourceName, SCROLL_TYPE type, DWORD dwcontext = 0 );

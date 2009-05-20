@@ -1404,8 +1404,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			MoveTo( g_Cfg.GetRegionPoint( s.GetArgStr()));
 			break;
 		case OV_PROMPTCONSOLE:
+		case OV_PROMPTCONSOLEU:
 			{
-				EXC_SET("PROMPTCONSOLE");
+				EXC_SET("PROMPTCONSOLE/U");
 				if ( pClientSrc == NULL )
 					return( false );
 
@@ -1415,7 +1416,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( iArgQty == 0 )
 					break;
 					
-				pClientSrc->addPromptConsoleFunction( pszArgs[0], pszArgs[1] );
+				pClientSrc->addPromptConsoleFunction( pszArgs[0], pszArgs[1], (index == OV_PROMPTCONSOLEU) );
 			}
 			break;
 		case OV_INFO:

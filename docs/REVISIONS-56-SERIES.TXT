@@ -4435,6 +4435,8 @@ ALPHA additions:
   prevent them from passing through blocking objects (CAN_I_BLOCK and/or CAN_I_DOOR).
 
 20-05-2009, MrSugarCube
+- Added #1604: PROMPTCONSOLEU function. This is an alternative to the PROMPTCONSOLE which enables the
+  client to respond with unicode text.
 - Added: SYSMESSAGELOCEX, an extended version of SYSMESSAGELOC which can be used for sending localized
   messages to clients with a non-localized string attached to the start or end of the message. SMSGLEX
   can also be used as a shortcut.

@@ -1966,7 +1966,41 @@ void CClient::Event_ToolTip( CGrayUID uid )
 	addToolTip(uid.ObjFind(), z);
 }
 
-void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type )
+void CClient::Event_PromptRespUNICODE( const CEvent * pEvent )
+{
+	ADDTOCALLSTACK("CClient::Event_PromptRespUNICODE");
+	// result of addPrompt in unicode
+
+	int iLen = pEvent->PromptUNICODE.m_len - (sizeof(pEvent->PromptUNICODE) - sizeof(pEvent->PromptUNICODE.m_utext));
+	if ( iLen <= 0 )
+		return;
+
+	int iLenChars = iLen/sizeof(WCHAR);
+	TCHAR szText[MAX_TALK_BUFFER];
+   	NCHAR wszText[MAX_TALK_BUFFER];
+	LPCTSTR pszText;
+
+	if ( iLenChars <= 0 )
+		return;
+
+	// flip byte order
+	for (int i = 0; i < iLenChars; i++)
+		wszText[i] = pEvent->PromptUNICODE.m_utext[i];
+	wszText[iLenChars] = '\0';
+
+	// convert to system text
+	iLen = CvtNUNICODEToSystem( szText, sizeof(szText), (NCHAR*)wszText, iLenChars );
+	if ( iLen <= 0 )
+		return;
+
+	pszText = szText;
+	GETNONWHITESPACE(pszText);
+
+	// continue to handle the event as if it were a standard response
+	Event_PromptResp(pszText, iLen, (DWORD)pEvent->PromptUNICODE.m_serial, (DWORD)pEvent->PromptUNICODE.m_prompt, pEvent->PromptUNICODE.m_type, true);
+}
+
+void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip )
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
 	// result of addPrompt
@@ -1987,7 +2021,9 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD 
 	}
 	else
 	{
-		if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
+		if ( bNoStrip )	// Str_GetBare will eat unicode characters
+			len = strcpylen( szText, pszText, sizeof(szText) );
+		else if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
 			len = Str_GetBare( szText, pszText, sizeof(szText), "|~=[]{|}~" );
 		else
 			len = Str_GetBare( szText, pszText, sizeof(szText), "|~,=[]{|}~" );
@@ -4744,6 +4780,14 @@ int CClient::xDispatchMsg()
 			if ( ! xCheckMsgSize( pEvent->Prompt.m_len ))
 				RETURN_FALSE();
 			Event_PromptResp( pEvent->Prompt.m_text, pEvent->Prompt.m_len-sizeof(pEvent->Prompt), (DWORD)pEvent->Prompt.m_serial, (DWORD)pEvent->Prompt.m_prompt, pEvent->Prompt.m_type);
+			break;
+		case XCMD_PromptUNICODE: // Response to console prompt in unicode.
+			EXC_SET("console resp");
+			if ( ! xCheckMsgSize(3))
+				RETURN_FALSE();
+			if ( ! xCheckMsgSize( pEvent->PromptUNICODE.m_len ))
+				RETURN_FALSE();
+			Event_PromptRespUNICODE( pEvent );
 			break;
 		case XCMD_HelpPage: // GM Page (i want to page a gm!)
 			{
