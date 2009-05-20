@@ -1556,6 +1556,13 @@ enum FONT_TYPE
 	FONT_QTY,
 };
 
+enum AFFIX_TYPE
+{
+	AFFIX_APPEND  = 0x0,	// 0 - Append affix to end of message
+	AFFIX_PREPEND = 0x1,	// 1 - Prepend affix to front of message
+	AFFIX_SYSTEM  = 0x2		// 2 - Message is displayed as a system message
+};
+
 enum DIR_TYPE	// Walking directions. m_dir
 {
 	DIR_INVALID = -1,

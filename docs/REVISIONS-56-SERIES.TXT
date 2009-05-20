@@ -4433,3 +4433,20 @@ ALPHA additions:
 18-05-2009, MrSugarCube
 - Added #1466: MAGICF_NOFIELDSOVERWALLS flag to enable additional checks when casting field spells to
   prevent them from passing through blocking objects (CAN_I_BLOCK and/or CAN_I_DOOR).
+
+20-05-2009, MrSugarCube
+- Added: SYSMESSAGELOCEX, an extended version of SYSMESSAGELOC which can be used for sending localized
+  messages to clients with a non-localized string attached to the start or end of the message. SMSGLEX
+  can also be used as a shortcut.
+  Syntax is: "SYSMESSAGELOCEX color,clilocid,flags,affix[,arguments]"
+  All arguments must be separated by a comma ",". Specify -1 for color if you do not wish to override
+  it. Known possible values for flags are:
+    0x00 = Append text to message
+    0x01 = Prepend text to message
+    0x02 = Forces message to show as a system message
+  A couple of examples of this being used (latest clilocs) are:
+   "SYSMESSAGELOCEX -1,1008078,01,MrSugarCube"                    - Displays "MrSugarCube : Attempting to heal you."
+   "SYSMESSAGELOCEX -1,3002003,00,Smoking is bad for your health" - Displays "Note to self:  Smoking is bad for your health"
+  For overriding messages in sphere_msgs.scp (or other message functions such as SAY and MESSAGE) the
+  syntax "@hue,font,3 clilocid,flags,affix[,arguments]" can be used, for example:
+   "SAY @022,,3 1008097,01,MrSugarCube"                           - Object says "MrSugarCube : poisoned you!" in red

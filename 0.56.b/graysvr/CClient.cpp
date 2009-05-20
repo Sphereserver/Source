@@ -1437,7 +1437,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SYSMESSAGELOC:
 			{
 				TCHAR * ppArgs[256];
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs) );
+				int iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
 				if ( iArgQty > 1 )
 				{
 					int hue = -1;
@@ -1456,6 +1456,35 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					}
 
 					addBarkLocalized( iClilocId, NULL, (HUE_TYPE)hue, TALKMODE_SYSTEM, FONT_NORMAL, (TCHAR*)CArgs.GetPtr() );
+				}
+			}
+			break;
+		case CV_SMSGLEX:
+		case CV_SYSMESSAGELOCEX:
+			{
+				TCHAR * ppArgs[256];
+				int iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
+				if ( iArgQty > 2 )
+				{
+					int hue = -1;
+					int affix = 0;
+					if ( ppArgs[0] )
+						hue = Exp_GetVal( ppArgs[0] );
+					int iClilocId = Exp_GetVal( ppArgs[1] );
+					if ( ppArgs[2] )
+						affix = Exp_GetVal( ppArgs[2] );
+
+					if ( hue == -1 )	hue = HUE_TEXT_DEF;
+
+					CGString CArgs;
+					for ( int i = 4; i < iArgQty; i++ )
+					{
+						if ( CArgs.GetLength() )
+							CArgs += "\t";
+						CArgs += ( !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i] );
+					}
+
+					addBarkLocalizedEx( iClilocId, NULL, (HUE_TYPE)hue, TALKMODE_SYSTEM, FONT_NORMAL, (AFFIX_TYPE)affix, ppArgs[3], (TCHAR*)CArgs.GetPtr() );
 				}
 			}
 			break;

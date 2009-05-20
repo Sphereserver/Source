@@ -1170,6 +1170,82 @@ void CClient::addBarkLocalized( int iClilocId, const CObjBaseTemplate * pSrc, HU
 	xSendPkt( &cmd, len );
 }
 
+void CClient::addBarkLocalizedEx( int iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affix, TCHAR * pAffix, TCHAR * pArgs )
+{
+	ADDTOCALLSTACK("CClient::addBarkLocalizedEx");
+	if ( iClilocId <= 0 )
+		return;
+
+	if ( !IsConnectTypePacket() )
+		return;
+
+	if ( mode == TALKMODE_BROADCAST )
+	{
+		mode = TALKMODE_SYSTEM;
+		pSrc = NULL;
+	}
+
+	CCommand cmd;
+	cmd.SpeakLocalizedEx.m_Cmd = XCMD_SpeakLocalizedEx;
+	cmd.SpeakLocalizedEx.m_mode = mode;
+	cmd.SpeakLocalizedEx.m_wHue = wHue;
+	cmd.SpeakLocalizedEx.m_font = font;
+	cmd.SpeakLocalizedEx.m_affixType = affix;
+
+	int iNameLen;
+	if ( pSrc == NULL )
+	{
+		cmd.SpeakLocalizedEx.m_UID = 0xFFFFFFFF;
+		iNameLen = strcpylen( cmd.SpeakLocalizedEx.m_charname, "System" );
+	}
+	else
+	{
+		cmd.SpeakLocalizedEx.m_UID = pSrc->GetUID();
+		iNameLen = strcpylen( cmd.SpeakLocalizedEx.m_charname, pSrc->GetName(), sizeof(cmd.SpeakLocalizedEx.m_charname) );
+	}
+	memset( cmd.SpeakLocalizedEx.m_charname+iNameLen, 0, sizeof(cmd.SpeakLocalizedEx.m_charname)-iNameLen );
+
+	if ( pSrc == NULL || pSrc->IsItem())
+	{
+		cmd.SpeakLocalizedEx.m_id = 0xFFFF; // 0x0101;
+	}
+	else	// char id only.
+	{
+		const CChar * pChar = dynamic_cast <const CChar*>(pSrc);
+		ASSERT(pChar);
+		cmd.SpeakLocalizedEx.m_id = pChar->GetDispID();
+	}
+
+	cmd.SpeakLocalizedEx.m_clilocId = iClilocId;
+
+	TCHAR * pArg = pArgs;
+	int len = sizeof(cmd.SpeakLocalizedEx) - 1;
+	int affixLen = 0;
+
+	if ( pAffix != NULL )
+		affixLen = strcpylen(cmd.SpeakLocalizedEx.m_affix, pAffix);
+
+	cmd.SpeakLocalizedEx.m_affix[affixLen] = '\0'; // ensure NULL terminated
+	len += affixLen;
+
+	int i = affixLen;
+	if ( pArg )
+	{
+		while ( *pArg )
+		{
+			cmd.SpeakLocalizedEx.m_args[i++] = 0;
+			cmd.SpeakLocalizedEx.m_args[i++] = *pArg;
+			pArg++;
+			len += 2;
+		}
+	}
+	cmd.SpeakLocalizedEx.m_args[i++] = '\0';
+	cmd.SpeakLocalizedEx.m_args[i++] = '\0';
+	len += 2;
+	cmd.SpeakLocalizedEx.m_len = len;
+	xSendPkt( &cmd, len );
+}
+
 void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR name)
 {
 	ADDTOCALLSTACK("CClient::addBarkParse");
@@ -1219,6 +1295,24 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 
 	switch ( Args[2] )
 	{
+		case 3:	// Extended localized message (with affixed ASCII text)
+		{
+            TCHAR * ppArgs[256];
+			int iQty = Str_ParseCmds( (TCHAR *)m_BarkBuffer.GetPtr(), ppArgs, COUNTOF(ppArgs), "," );
+			int iClilocId = Exp_GetVal( ppArgs[0] );
+			int iAffixType = Exp_GetVal( ppArgs[1] );
+			CGString CArgs;
+			for ( int i = 3; i < iQty; i++ )
+			{
+				if ( CArgs.GetLength() )
+					CArgs += "\t";
+				CArgs += ( !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i] );
+			}
+
+			addBarkLocalizedEx( iClilocId, pSrc, (HUE_TYPE) Args[0], mode, (FONT_TYPE) Args[1], (AFFIX_TYPE)iAffixType, ppArgs[2], (TCHAR *)CArgs.GetPtr());
+			break;
+		}
+
 		case 2:	// Localized
 		{
             TCHAR * ppArgs[256];
