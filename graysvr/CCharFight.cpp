@@ -3127,8 +3127,28 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	CItem	*pWeapon		= m_uidWeapon.ItemFind();
 	CItem	*pAmmo			= NULL;
 	CItemBase * pWeaponDef	= NULL;
+	int iTyp = DAMAGE_HIT_BLUNT;
 	if ( pWeapon )
-		pWeaponDef			= pWeapon->Item_GetDef();
+	{
+		pWeaponDef = pWeapon->Item_GetDef();
+		// set damage type according to weapon type
+		switch (pWeaponDef->GetType())
+		{
+			case IT_WEAPON_SWORD:
+			case IT_WEAPON_AXE:
+				iTyp |= DAMAGE_HIT_SLASH;
+			case IT_WEAPON_FENCE:
+			case IT_WEAPON_BOW:
+			case IT_WEAPON_XBOW:
+				iTyp |= DAMAGE_HIT_PIERCE;
+		}
+
+		// look for override TAG on the specific weapon
+		CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE",true);
+		if (pDamTypeOverride)
+			iTyp = pDamTypeOverride->GetValNum();
+	}
+
 
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( skill == SKILL_ARCHERY )
@@ -3494,7 +3514,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-	int iTyp = ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH );
+	// iTyp = ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH );
 #ifdef _ALPHASPHERE
 	if (pWeapon != NULL )
 	{
