@@ -4452,3 +4452,10 @@ ALPHA additions:
   For overriding messages in sphere_msgs.scp (or other message functions such as SAY and MESSAGE) the
   syntax "@hue,font,3 clilocid,flags,affix[,arguments]" can be used, for example:
    "SAY @022,,3 1008097,01,MrSugarCube"                           - Object says "MrSugarCube : poisoned you!" in red
+
+30-05-2009, Nazghul
+- fixed: @GetHit always gave damagetype type (argn2) 0C02 (physical | slash | pierce). Now the type is set 
+  to dam_physical, dam_slash or dam_pierce is added depending on weapon type (wrestling and mace weapons
+  don't set extra flags).
+- added: TAG.OVERRIDE.DAMAGETYPE for weapon type items. Holds a numerical value and overrides the
+  type specific damage type.
