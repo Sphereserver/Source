@@ -3137,6 +3137,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
 				iTyp |= DAMAGE_HIT_SLASH;
+				break;
 			case IT_WEAPON_FENCE:
 			case IT_WEAPON_BOW:
 			case IT_WEAPON_XBOW:
@@ -3514,7 +3515,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-	// iTyp = ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH );
 #ifdef _ALPHASPHERE
 	if (pWeapon != NULL )
 	{
