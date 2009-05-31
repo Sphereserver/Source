@@ -1977,6 +1977,49 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		return( 0 );
 	}
 
+#ifdef _ALPHASPHERE
+	CVarDefCont * pRes = 0;
+	int nRes = 0;
+		
+	if ( uType & DAMAGE_HIT_BLUNT )
+	{
+		if ( uType & DAMAGE_HIT_SLASH )
+		{
+			// check for TAG.PHYSRES.SLASH
+			pRes = GetKey("PHYSRES.SLASH",true);
+			if ( pRes ) 
+			{
+				nRes = pRes->GetValNum();
+				if ( (nRes < -100) || (nRes > 100))
+					nRes = 0;
+				iDmg += (iDmg * (100 - nRes)) / 100;
+			}
+		} else if ( uType & DAMAGE_HIT_PIERCE )
+		{
+			// check for TAG.PHYSRES.PIERCE
+			pRes = GetKey("PHYSRES.PIERCE",true);
+			if ( pRes ) 
+			{
+				nRes = pRes->GetValNum();
+				if ( (nRes < -100) || (nRes > 100))
+					nRes = 0;
+				iDmg += (iDmg * (100 - nRes)) / 100;
+			}
+		} else {
+			// check for TAG.PHYSRES.BLUNT
+			pRes = GetKey("PHYSRES.BLUNT",true);
+			if ( pRes ) 
+			{
+				nRes = pRes->GetValNum();
+				if ( (nRes < -100) || (nRes > 100))
+					nRes = 0;
+				iDmg += (iDmg * (100 - nRes)) / 100;
+			}
+		}
+	}
+#endif
+
+
 	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
 	int damMod = 0;
 	int damModLJ = 0;
