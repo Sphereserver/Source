@@ -2806,7 +2806,7 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 			GetClient()->addBuff( BI_HIDDEN , 1075655, 1075656, 0 );
 		}
 		StatFlag_Set( STATF_Hidden );
-		UpdateMode();
+		UpdateModeFlag();
 		return( 0 );
 	}
 

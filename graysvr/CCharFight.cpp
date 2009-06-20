@@ -1586,7 +1586,7 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 	Fight_Attack(pCharSrc);
 	if ( !fFightActive )	// auto defend puts us in war mode.
 	{
-		UpdateMode();
+		UpdateModeFlag();
 	}
 }
 
@@ -2857,7 +2857,7 @@ void CChar::Fight_ClearAll()
 	StatFlag_Clear( STATF_War );
 	Skill_Start( SKILL_NONE );
 	m_Act_Targ.InitUID();
-	UpdateMode();
+	UpdateModeFlag();
 }
 
 CChar * CChar::Fight_FindBestTarget()
@@ -3185,6 +3185,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			case IT_WEAPON_BOW:
 			case IT_WEAPON_XBOW:
 				iTyp |= DAMAGE_HIT_PIERCE;
+				break;
 		}
 
 		// look for override TAG on the specific weapon

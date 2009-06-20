@@ -25,7 +25,6 @@ void CChar::Spell_Dispel( int iLevel )
 			pItem->Delete();
 		}
 	}
-	Update();
 }
 
 bool CChar::Spell_Teleport( CPointBase ptNew,
@@ -491,12 +490,13 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	case SPELL_Clumsy:
 		Stat_AddMod(STAT_DEX, iStatEffect);
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_CLUMSY);
+			GetClient()->removeBuff(BI_CLUMSY);
 		}
 		break;
 	case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 	case SPELL_Stone:
 		StatFlag_Clear( STATF_Stone );
+		UpdateModeFlag();
 		break;
 	case SPELL_Hallucination:
 		StatFlag_Clear( STATF_Hallucinating );
@@ -504,17 +504,20 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		{
 			m_pClient->addReSync();
 		}
+		UpdateModeFlag();
 	case SPELL_Feeblemind:
 		Stat_AddMod( STAT_INT, iStatEffect );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_FEEBLEMIND);
+			GetClient()->removeBuff(BI_FEEBLEMIND);
 		}
 		break;
 	case SPELL_Weaken:
 		Stat_AddMod( STAT_STR, iStatEffect );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_WEAKEN);
+			GetClient()->removeBuff(BI_WEAKEN);
 		}
+
+		UpdateHitsFlag();
 		break;
 	case SPELL_Curse:
 		{
@@ -523,25 +526,29 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_CURSE);
 			}
+
+			UpdateHitsFlag();
 		}
 		break;
 	case SPELL_Agility:
 		Stat_AddMod( STAT_DEX, -iStatEffect );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_AGILITY);
+			GetClient()->removeBuff(BI_AGILITY);
 		}
 		break;
 	case SPELL_Cunning:
 		Stat_AddMod( STAT_INT, -iStatEffect );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_CUNNING);
+			GetClient()->removeBuff(BI_CUNNING);
 		}
 		break;
 	case SPELL_Strength:
 		Stat_AddMod( STAT_STR, -iStatEffect );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_STRENGTH);
+			GetClient()->removeBuff(BI_STRENGTH);
 		}
+
+		UpdateHitsFlag();
 		break;
 	case SPELL_Bless:
 		{
@@ -550,6 +557,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_BLESS);
 			}
+
+			UpdateHitsFlag();
 		}
 		break;
 
@@ -557,16 +566,17 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	case SPELL_Wine:	// 91 = mild drunkeness ?
 	case SPELL_Liquor:	// 92 = extreme drunkeness ?
 		{
-
 			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
 				Stat_AddMod( (STAT_TYPE) i, iStatEffect );
+
+			UpdateHitsFlag();
 		}
 		break;
 
 	case SPELL_Reactive_Armor:
 		StatFlag_Clear( STATF_Reactive );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_REACTIVEARMOR);
+			GetClient()->removeBuff(BI_REACTIVEARMOR);
 		}
 		return;
 	case SPELL_Night_Sight:
@@ -574,35 +584,35 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		if ( IsClient())
 		{
 			m_pClient->addLight();
-				if (IsSetOF(OF_Buffs)) {
-					GetClient()->removeBuff(BI_NIGHTSIGHT);
-				}
+			if (IsSetOF(OF_Buffs)) {
+				GetClient()->removeBuff(BI_NIGHTSIGHT);
+			}
 		}
 
 		return;
 	case SPELL_Magic_Reflect:
 		StatFlag_Clear( STATF_Reflection );
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_MAGICREFLECTION);
+			GetClient()->removeBuff(BI_MAGICREFLECTION);
 		}
 		return;
 	case SPELL_Poison:
 	case SPELL_Poison_Field:
 		StatFlag_Clear( STATF_Poisoned );
-		UpdateMode();
+		UpdateModeFlag();
 		if (IsClient()) {
-				GetClient()->removeBuff(BI_POISON);
+			GetClient()->removeBuff(BI_POISON);
 		}
 		break;
 	case SPELL_Arch_Prot:
 		if (IsClient()) {
-					GetClient()->removeBuff(BI_ARCHPROTECTION);
+			GetClient()->removeBuff(BI_ARCHPROTECTION);
 		}
 		m_defense = CalcArmorDefense();
 		break;
 	case SPELL_Protection:
 		if (IsClient()) {
-					GetClient()->removeBuff(BI_PROTECTION);
+			GetClient()->removeBuff(BI_PROTECTION);
 		}
 	case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 	case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
@@ -618,21 +628,22 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
 		ResendTooltip();
 		if (IsClient()) {
-					GetClient()->removeBuff(BI_INCOGNITO);
+			GetClient()->removeBuff(BI_INCOGNITO);
 		}
 		break;
 	case SPELL_Invis:
 		Reveal(STATF_Invisible);
 		if (IsClient()) {
-					GetClient()->removeBuff(BI_INVISIBILITY);
+			GetClient()->removeBuff(BI_INVISIBILITY);
 		}
 		return;
 	case SPELL_Paralyze:
 	case SPELL_Paralyze_Field:
 		StatFlag_Clear( STATF_Freeze );
 		if (IsClient()) {
-					GetClient()->removeBuff(BI_PARALYZE);
+			GetClient()->removeBuff(BI_PARALYZE);
 		}
+		UpdateModeFlag();
 		return;
 
 
@@ -653,7 +664,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			Update();
 			StatFlag_Clear( STATF_Polymorph );
 			if (IsClient()) {
-						GetClient()->removeBuff(BI_POLYMORPH);
+				GetClient()->removeBuff(BI_POLYMORPH);
 			}
 		}
 		return;
@@ -718,7 +729,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
 			StatFlag_Set( STATF_Poisoned );
-			UpdateMode();
+			UpdateModeFlag();
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff( BI_POISON );
@@ -759,9 +770,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 		case SPELL_Stone:
 			StatFlag_Set( STATF_Stone );
+			UpdateModeFlag();
 			break;
 		case SPELL_Hallucination:
 			StatFlag_Set( STATF_Hallucinating );
+			UpdateModeFlag();
 		case SPELL_Feeblemind:
 			// NOTE: Allow stats to go negative !
 			Stat_AddMod( STAT_INT, -iStatEffect );
@@ -785,6 +798,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 				GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 			}
+
+			UpdateHitsFlag();
 			break;
 		case SPELL_Curse:
 			// NOTE: Allow stats to go negative !
@@ -804,6 +819,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 
 					GetClient()->addBuff(BI_CURSE,1075835,1075840,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 				}
+
+				UpdateHitsFlag();
 			} break;
 		case SPELL_Agility:
 			Stat_AddMod( STAT_DEX, +iStatEffect );
@@ -838,6 +855,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					CharToMultiByteNonNull(WideMsg, NumBuff, 3);
 					GetClient()->addBuff(BI_STRENGTH,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 				}
+
+				UpdateHitsFlag();
 			} break;
 		case SPELL_Bless:
 			{
@@ -856,6 +875,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 
 					GetClient()->addBuff(BI_BLESS,1075847,1075848,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
 				}
+
+				UpdateHitsFlag();
 			} break;
 		case SPELL_Ale:		// 90 = drunkeness ?
 		case SPELL_Wine:	// 91 = mild drunkeness ?
@@ -865,6 +886,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				int i = STAT_STR;
 				for ( i=STAT_STR; i<STAT_BASE_QTY; i++ )
 					Stat_AddMod( (STAT_TYPE) i, -iStatEffect );
+
+				UpdateHitsFlag();
 			}
 			break;
 		case SPELL_Incognito:
@@ -932,6 +955,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_PARALYZE);
 				GetClient()->addBuff(BI_PARALYZE, 1075827,1075828,(WORD)(pSpell->GetTimerAdjusted()) );
 			}
+			UpdateModeFlag();
 			break;
 		case SPELL_Polymorph:
 			StatFlag_Set( STATF_Polymorph );

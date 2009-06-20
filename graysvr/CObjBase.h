@@ -2350,8 +2350,10 @@ public:
 	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
 	CServTime m_timeCreate;		// When was i created ?
 
+#define SU_UPDATE_HITS			0x01	// update hits to others
+#define SU_UPDATE_MODE			0x02	// update mode to all
 	CServTime m_timeLastHitsUpdate;
-	bool m_fHitsUpdate;
+	char m_fStatusUpdate;
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
@@ -2836,6 +2838,7 @@ public:
 	void UpdateStatsFlag() const;
 	void UpdateStatVal( STAT_TYPE x, int iChange = 0, int iLimit = 0 );
 	void UpdateHitsFlag();
+	void UpdateModeFlag();
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
 	void UpdateHitsForOthers() const;
