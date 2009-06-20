@@ -998,7 +998,7 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			{
 				pszArg++;
 				int nMember = Exp_GetVal(pszArg);
-				if ( nMember < 0 || nMember > m_Chars.GetCharCount() )
+				if ( nMember < 0 || nMember >= m_Chars.GetCharCount() )
 					return( false );
 
 				toRemove = m_Chars.GetChar(nMember);

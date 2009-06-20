@@ -616,10 +616,19 @@ void CChar::UpdateHitsFlag()
 	if ( g_Serv.IsLoading() )
 		return;
 
-	m_fHitsUpdate = true;
+	m_fStatusUpdate |= SU_UPDATE_HITS;
 
 	if ( IsClient() )
 		GetClient()->addUpdateHitsFlag();
+}
+
+void CChar::UpdateModeFlag()
+{
+	ADDTOCALLSTACK("CChar::UpdateModeFlag");
+	if ( g_Serv.IsLoading() )
+		return;
+
+	m_fStatusUpdate |= SU_UPDATE_MODE;
 }
 
 void CChar::UpdateManaFlag() const
@@ -1048,6 +1057,11 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 	ADDTOCALLSTACK("CChar::UpdateMode");
 	// If character status has been changed
 	// (Polymorph, war mode or hide), resend him
+
+	// no need to update the mode in the next tick
+	if ( pExcludeClient == NULL )
+		m_fStatusUpdate &= ~SU_UPDATE_MODE;
+
 	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
 	{
 		if ( pExcludeClient == pClient )
@@ -1108,6 +1122,11 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 	ADDTOCALLSTACK("CChar::UpdateMove");
 	// Who now sees this char ?
 	// Did they just see him move ?
+
+	// no need to update the mode in the next tick
+	if ( pExcludeClient == NULL )
+		m_fStatusUpdate &= ~SU_UPDATE_MODE;
+
 	EXC_TRY("UpdateMove");
 	CClient * pClient = g_Serv.GetClientHead();
 	EXC_SET("FOR LOOP");
@@ -1187,6 +1206,11 @@ void CChar::Update( const CClient * pClientExclude ) // If character status has 
 	ADDTOCALLSTACK("CChar::Update");
 	// Or I changed looks.
 	// I moved or somebody moved me  ?
+
+	// no need to update the mode in the next tick
+	if ( pClientExclude == NULL)
+		m_fStatusUpdate &= ~SU_UPDATE_MODE;
+
 	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
 	{
 		if ( pClient == pClientExclude )
@@ -2165,7 +2189,7 @@ bool CChar::SetPoisonCure( int iSkill, bool fExtra )
 			pPoison->Delete();
 		}
 	}
-	UpdateMode();
+	UpdateModeFlag();
 	return( true );
 }
 
@@ -3862,12 +3886,18 @@ bool CChar::OnTick()
 	iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
 	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) ) // update hits for all
 	{
-		if ( m_fHitsUpdate )
+		if ( m_fStatusUpdate & SU_UPDATE_HITS )
 		{
 			UpdateHitsForOthers();
-			m_fHitsUpdate = false;
+			m_fStatusUpdate &= ~SU_UPDATE_HITS;
 		}
 		m_timeLastHitsUpdate = CServTime::GetCurrentTime();
+	}
+
+	if ( m_fStatusUpdate & SU_UPDATE_MODE )
+	{
+		UpdateMode();
+		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 	}
 	EXC_CATCH;
 

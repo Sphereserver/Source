@@ -4454,8 +4454,12 @@ ALPHA additions:
    "SAY @022,,3 1008097,01,MrSugarCube"                           - Object says "MrSugarCube : poisoned you!" in red
 
 30-05-2009, Nazghul
-- fixed: @GetHit always gave damagetype type (argn2) 0C02 (physical | slash | pierce). Now the type is set 
+- Fixed: @GetHit always gave damagetype type (argn2) 0C02 (physical | slash | pierce). Now the type is set 
   to dam_physical, dam_slash or dam_pierce is added depending on weapon type (wrestling and mace weapons
   don't set extra flags).
-- added: TAG.OVERRIDE.DAMAGETYPE for weapon type items. Holds a numerical value and overrides the
+- Added: TAG.OVERRIDE.DAMAGETYPE for weapon type items. Holds a numerical value and overrides the
   type specific damage type.
+
+20-06-2009, MrSugarCube
+- Fixed #1617: Dispel and Mass Dispel spells sending an unnecessary full client update to all players
+  touched by the spell.
