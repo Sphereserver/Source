@@ -427,6 +427,7 @@ enum RC_TYPE
 	RC_OVERSKILLMULTIPLY,		//	m_iOverSkillMultiply
 	RC_PAYFROMPACKONLY,			//	m_fPayFromPackOnly
 	RC_PETSINHERITNOTORIETY,		// m_iPetsInheritNotoriety
+	RC_PLAYEREVIL,		// m_iPlayerKarmaEvil
 	RC_PLAYERNEUTRAL,		// m_iPlayerKarmaNeutral
 	RC_PROFILE,
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
@@ -607,6 +608,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply)	}},
 	{ "PAYFROMPACKONLY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fPayFromPackOnly)	}},
 	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety)	}},
+	{ "PLAYEREVIL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil)	}},
 	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral)	}},
 	{ "PROFILE" },
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail)	}},
@@ -834,6 +836,11 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 		case RC_PROFILE:
 			g_Serv.m_Profile.SetActive(s.GetArgVal());
+			break;
+		case RC_PLAYEREVIL:	// How much bad karma makes a player evil?
+			m_iPlayerKarmaEvil = s.GetArgVal();
+			if ( m_iPlayerKarmaNeutral < m_iPlayerKarmaEvil )
+				m_iPlayerKarmaNeutral = m_iPlayerKarmaEvil;
 			break;
 		case RC_PLAYERNEUTRAL:	// How much bad karma makes a player neutral?
 			m_iPlayerKarmaNeutral = s.GetArgVal();
@@ -1271,6 +1278,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_CLIENTS:		// this is handled by CServerDef as SV_CLIENTS
 			return false;
+		case RC_PLAYEREVIL:
+			sVal.FormatVal( g_Cfg.m_iPlayerKarmaEvil );
+			break;
+		case RC_PLAYERNEUTRAL:
+			sVal.FormatVal( g_Cfg.m_iPlayerKarmaNeutral );
+			break;
 		default:
 			return( sm_szLoadKeys[i].m_elem.GetValStr( this, sVal ));
 	}

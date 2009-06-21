@@ -4463,3 +4463,7 @@ ALPHA additions:
 20-06-2009, MrSugarCube
 - Fixed #1617: Dispel and Mass Dispel spells sending an unnecessary full client update to all players
   touched by the spell.
+
+21-06-2009, MrSugarCube
+- Added #1627: PlayerEvil setting to Sphere.ini. Similar to the PlayerNeutral setting, this will control
+  the karma level at which a player will be considered evil.
