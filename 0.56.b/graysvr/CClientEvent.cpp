@@ -4509,8 +4509,6 @@ int CClient::xDispatchMsg()
 				RETURN_FALSE();
 			if ( !xCheckMsgSize( pEvent->CreateNew.m_len ))
 				RETURN_FALSE();
-			if ( !IsClientKR() )
-				RETURN_FALSE();
 			Setup_CreateDialog(pEvent);
 			return 1;
 		case XCMD_CharDelete: // Character Delete
@@ -4594,6 +4592,20 @@ int CClient::xDispatchMsg()
 			if ( ! xCheckMsgSize(sizeof(pEvent->Walk)))
 				RETURN_FALSE();
 			Event_Walking( pEvent->Walk.m_dir, pEvent->Walk.m_count, pEvent->Walk.m_cryptcode );
+			break;
+		case XCMD_WalkNew: // Walk (new version, since SA)
+			EXC_SET("walk_sa");
+			if ( ! xCheckMsgSize(3))
+				RETURN_FALSE();
+			if ( ! xCheckMsgSize( pEvent->WalkNew.m_len ))
+				RETURN_FALSE();
+			Event_Walking( pEvent->WalkNew.m_dir, pEvent->WalkNew.m_count, 0 );
+			break;
+		case XCMD_WalkUnknown: // Unknown, possibly a new walk ack (since SA)
+			EXC_SET("walk_unk");
+			if ( ! xCheckMsgSize(sizeof(pEvent->WalkUnknown)))
+				RETURN_FALSE();
+			// appears to be safe to ignore this
 			break;
 		case XCMD_Talk: // Speech or at least text was typed.
 			EXC_SET("talk");
@@ -4935,8 +4947,6 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if ( ! xCheckMsgSize( pEvent->BugReport.m_len ))
 					RETURN_FALSE();
-				if ( ! IsClientKR() )
-					RETURN_FALSE();
 
 				Event_BugReport( pEvent->BugReport.m_utext, pEvent->BugReport.m_len, (BUGREPORT_TYPE)(WORD)pEvent->BugReport.m_type, CLanguageID( pEvent->BugReport.m_Language ) );
 			} break;
@@ -4947,8 +4957,6 @@ int CClient::xDispatchMsg()
 				if ( !xCheckMsgSize(3) )
 					RETURN_FALSE();
 				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
-					RETURN_FALSE();
-				if ( ! IsClientKR() )
 					RETURN_FALSE();
 
 				Event_MacroEquipItems(pEvent->MacroEquipItems.m_items, pEvent->MacroEquipItems.m_count);
@@ -4961,8 +4969,6 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
 					RETURN_FALSE();
-				if ( ! IsClientKR() )
-					RETURN_FALSE();
 
 				Event_MacroUnEquipItems(pEvent->MacroUnEquipItems.m_layers, pEvent->MacroUnEquipItems.m_count);
 			} break;
@@ -4972,8 +4978,6 @@ int CClient::xDispatchMsg()
 				if ( !xCheckMsgSize(3) )
 					RETURN_FALSE();
 				if ( !xCheckMsgSize(pEvent->KRCharListUpdate.m_len) )
-					RETURN_FALSE();
-				if ( ! IsClientKR() )
 					RETURN_FALSE();
 
 				DEBUG_WARN(("%x:KRCharListUpdate packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
@@ -4986,8 +4990,6 @@ int CClient::xDispatchMsg()
 					RETURN_FALSE();
 				if (( pEvent->UseHotbar.m_One != 0x01 ) || ( pEvent->UseHotbar.m_One != 0x06 ))
 					RETURN_FALSE();
-				if ( ! IsClientKR() )
-					RETURN_FALSE();
 
 				Event_UseToolbar(pEvent->UseHotbar.m_Type, pEvent->UseHotbar.m_ObjectUID);
 			} break;
@@ -4995,8 +4997,6 @@ int CClient::xDispatchMsg()
 		case XCMD_HighlightUIRemove:
 			{
 				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-				if ( ! IsClientKR() )
 					RETURN_FALSE();
 
 				DEBUG_WARN(("%x:Unimplemented KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));

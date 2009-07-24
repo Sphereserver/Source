@@ -5064,9 +5064,13 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 		return( lErr );
 	}
 
-	ASSERT( GetAccount() );
+	CAccountRef pAcc = GetAccount();
+	ASSERT( pAcc );
 
-	CChar * pCharLast = GetAccount()->m_uidLastChar.CharFind();
+	CChar * pCharLast = pAcc->m_uidLastChar.CharFind();
+	DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion");
+	DWORD tmVerReported = pAcc->m_TagDefs.GetKeyNum("reportedcliver");
+
 /*	if ( pCharLast &&
 		GetAccount()->IsMyAccountChar( pCharLast ) &&
 		GetAccount()->GetPrivLevel() <= PLEVEL_GM &&
@@ -5083,9 +5087,22 @@ LOGIN_ERR_TYPE CClient::Setup_ListReq( const char * pszAccName, const char * psz
 	{
 		CCommand cmd;
 		cmd.FeaturesEnable.m_Cmd = XCMD_Features;
-		cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), maximum(GetAccount()->GetMaxChars(), GetAccount()->m_Chars.GetCharCount()));
+		int len;
+
+		// since 6.0.14.2, feature flags are 4 bytes instead of 2.
+		if ( (tmVer >= 0x0600143) || (tmVerReported >= 0x0600143) )
+		{
+			cmd.FeaturesEnableNew.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), maximum(GetAccount()->GetMaxChars(), GetAccount()->m_Chars.GetCharCount()));
+			len = sizeof( cmd.FeaturesEnableNew );
+		}
+		else
+		{
+			cmd.FeaturesEnable.m_enable = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)GetAccount()->GetResDisp(), maximum(GetAccount()->GetMaxChars(), GetAccount()->m_Chars.GetCharCount()));
+			len = sizeof( cmd.FeaturesEnable );
+		}
+
 		// Here always use xSendPktNow, since this packet has to be separated from the next one
-		xSendPktNow( &cmd, sizeof( cmd.FeaturesEnable ));
+		xSendPktNow( &cmd, len );
 	}
 
 	CCommand cmd;

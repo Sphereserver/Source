@@ -295,3 +295,59 @@ byte[2]                 item count
 
 --> Same as old 0x3c, except for the inserted 'grid number' byte, which represents
     the grid where the item is located.
+
+
+========================
+0xF0  (client -> server)
+MOVEMENT REQUEST
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[1]                 unk1
+byte[4]                 unk2 (0x00000122)
+byte[4]                 unk3
+byte[4]                 unk4 (0x00000122)
+byte[4]                 unk5
+byte[1]                 move counter
+byte[1]                 new direction
+byte[4]                 movement mode (1=walk, 2=run)
+byte[4]                 new x position
+byte[4]                 new y position
+byte[4]                 new z position
+
+--> Activated by [as of yet undetermined] feature flag.
+
+
+========================
+0xF1  (client -> server)
+MOVEMENT SYNC (maybe)
+========================
+
+byte[1]                 packet cmd
+byte[4]                 unk1 (0x00000122)
+byte[4]                 unk2
+
+--> Activated by [as of yet undetermined] feature flag.
+--> Client automatically sends once per minute.
+
+
+========================
+0xF2  (server -> client)
+MOVEMENT SYNC (maybe)
+========================
+
+byte[1]                 packet cmd
+byte[4]                 unk1 (always 0x00000116)
+byte[2]                 unkA
+byte[2]                 unkB
+byte[4]                 unk2 (always 0x00000116)
+byte[2]                 unkA
+byte[2]                 unkC
+byte[4]                 unk3 (always 0x00000116)
+byte[2]                 unkA
+byte[2]                 unkC
+
+--> Client always responds with 0xF1 packet (data doesn't appear to relate)
+
+

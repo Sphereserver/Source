@@ -214,6 +214,7 @@ public:
 	void SetClientVer( const CCrypt & crypt );
 	bool SetClientVer( LPCTSTR pszVersion );
 	static int GetVerFromString( LPCTSTR pszVersion );
+	static int GetVerFromVersion( int maj, int min, int rev, int pat );
 	static TCHAR* WriteClientVerString( int iClientVersion, TCHAR * pStr );
 
 public:

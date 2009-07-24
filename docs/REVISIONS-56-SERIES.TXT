@@ -4467,3 +4467,7 @@ ALPHA additions:
 21-06-2009, MrSugarCube
 - Added #1627: PlayerEvil setting to Sphere.ini. Similar to the PlayerNeutral setting, this will control
   the karma level at which a player will be considered evil.
+
+25-07-2009, MrSugarCube
+- Added: Support for packet changes found in client 6.0.14.2.
+
