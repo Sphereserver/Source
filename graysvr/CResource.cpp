@@ -150,6 +150,7 @@ CResource::CResource()
 	m_iFeatureSE		= 0;
 	m_iFeatureML		= 0;
 	m_iFeatureKR		= 0;
+	m_iFeatureSA		= 0;
 
 	m_iStatFlag = 0;
 
@@ -359,6 +360,7 @@ enum RC_TYPE
 	RC_FEATURESKR,
 	RC_FEATURESLBR,
 	RC_FEATURESML,
+	RC_FEATURESSA,
 	RC_FEATURESSE,
 	RC_FEATUREST2A,
 	RC_FLIPDROPPEDITEMS,	// m_fFlipDroppedItems
@@ -540,6 +542,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "FEATUREKR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureKR)	}},
 	{ "FEATURELBR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureLBR)	}},
 	{ "FEATUREML",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureML)	}},
+	{ "FEATURESA",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureSA)	}},
 	{ "FEATURESE",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureSE)	}},
 	{ "FEATURET2A",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureT2A)	}},
 	{ "FLIPDROPPEDITEMS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fFlipDroppedItems)	}},
@@ -1825,6 +1828,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x0200	= Flag KR Unknown 1
 		//		0x0400	= Flag KR Unknown 2
 		//		0x1000	= Seventh Character Slot
+		//		0x4000	= New walk packets
 
 		// T2A - LBR don't have char list flags
 		bResOk = ( res >= RDS_AOS );
@@ -1851,6 +1855,12 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		{
 			retValue |= ( this->m_iFeatureKR ) ? (0x200 | 0x400) : 0x00;
 		}
+
+		bResOk = ( res >= RDS_SA );
+		if ( bResOk )
+		{
+			retValue |= ( this->m_iFeatureSA & FEATURE_SA_MOVEMENT ) ? 0x4000 : 0x00;
+		}
 		
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
@@ -1858,32 +1868,35 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 	}
 	else
 	{
-		//         BYTE[2] feature#
-		//	0x0001	T2A upgrade, enables chatbutton
-		//	0x0002	Enables LBR update.  (of course LBR installation is required)
-		//			(plays MP3 instead of midis, 2D LBR client shows new LBR monsters, ... )
-		//	0x0004	Unknown, never seen it set	(single char?)
-		//	0x0008	Unknown, set on OSI servers that have AOS code - no matter of account status (doesn�t seem to �unlock/lock� anything on client side)
-		//	0x0010	Enables AOS update (necro/paladin skills for all clients, malas map/AOS monsters if AOS installation present)
-		//	0x0020	Sixth Character Slot
-		//	0x0040	Samurai Empire?
-		//	0x0080	Elves?
-		//	0x0100	Eighth Age
-		//	0x0200	Ninth Age
-		//	0x0400
-		//	0x0800
-		//	0x1000	Seventh Character Slot
-		//	0x2000
-		//	0x4000
-		//	0x8000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
-		// Thus	0		neither T2A NOR LBR, equal to not sending it at all,
-		//		1		is T2A, chatbutton,
-		//		2		is LBR without chatbutton,
-		//		3		is LBR with chatbutton�
-		//		8013	LBR + chatbutton + AOS enabled
-		// Note1: this message is send immediately after login.
-		// Note2: on OSI  servers this controls features OSI enables/disables via �upgrade codes.�
-		// Note3: a 3 doesn�t seem to �hurt� older (NON LBR) clients.
+		//	BYTE[2] feature# (<= 6.0.14.1)
+		//	BYTE[4] feature# (>= 6.0.14.2)
+		//		0x00001	T2A upgrade, enables chatbutton
+		//		0x00002	Enables LBR update.  (of course LBR installation is required)
+		//				(plays MP3 instead of midis, 2D LBR client shows new LBR monsters, ... )
+		//		0x00004	Unknown, never seen it set	(single char?)
+		//		0x00008	Unknown, set on OSI servers that have AOS code - no matter of account status (doesn�t seem to �unlock/lock� anything on client side)
+		//		0x00010	Enables AOS update (necro/paladin skills for all clients, malas map/AOS monsters if AOS installation present)
+		//		0x00020	Sixth Character Slot
+		//		0x00040	Samurai Empire?
+		//		0x00080	Elves?
+		//		0x00100	Eighth Age
+		//		0x00200	Ninth Age
+		//		0x00400
+		//		0x00800
+		//		0x01000	Seventh Character Slot
+		//		0x02000
+		//		0x04000
+		//		0x08000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
+		//		0x10000	Gargoyles
+		//	Thus	0		neither T2A NOR LBR, equal to not sending it at all,
+		//			1		is T2A, chatbutton,
+		//			2		is LBR without chatbutton,
+		//			3		is LBR with chatbutton�
+		//			8013	LBR + chatbutton + AOS enabled
+		//	Note1: this message is send immediately after login.
+		//	Note2: on OSI  servers this controls features OSI enables/disables via �upgrade codes.�
+		//	Note3: a 3 doesn�t seem to �hurt� older (NON LBR) clients.
+		//	Note4: value is BYTE[2] prior to client 6.0.14.2
 
 		bResOk = ( res >= RDS_T2A );
 		if ( bResOk )
@@ -1916,6 +1929,12 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		{
 			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
 			retValue |= ( this->m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
+		}
+
+		bResOk = ( res >= RDS_SA );
+		if ( bResOk )
+		{
+			retValue |= ( this->m_iFeatureSA & FEATURE_SA_UPDATE ) ? 0x10000 : 0x00;
 		}
 		
 		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;

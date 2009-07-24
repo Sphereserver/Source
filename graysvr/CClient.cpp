@@ -187,6 +187,14 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 
 	switch ( GetResDisp() )
 	{
+		case RDS_SA:
+			iMaxSkill = MAX_SKILL_SA;
+			break;
+
+		case RDS_KR:
+			iMaxSkill = MAX_SKILL_KR;
+			break;
+
 		case RDS_ML:
 			iMaxSkill = MAX_SKILL_ML;
 			break;
@@ -746,7 +754,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				pszKey += strlen(sm_szLoadKeys[index]);
 				GETNONWHITESPACE( pszKey );
 
-				int iCliVer = (m_reportedCliver&0xFFFFF0);
+				int iCliVer = (m_reportedCliver&0xFFFFFF0);
 				if ( pszKey && strlen(pszKey) )
 					iCliVer = m_reportedCliver;
 

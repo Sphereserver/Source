@@ -34,11 +34,11 @@ CMapList::CMapList()
 	memset(m_mapid, -1, sizeof(m_mapid));
 	memset(m_sectorsize, 0, sizeof(m_sectorsize));
 
-	Load(0, 0x1800, 0x1000, 64, 0, 0);	// #0 map0.mul
-	Load(1, 0x1800, 0x1000, 64, 0, 1);	// #1 map0.mul
-	Load(2, 0x900, 0x640, 64, 2, 2);	// #2 map2.mul
-	Load(3, 0xa00, 0x800, 64, 3, 3);	// #3 map3.mul
-	Load(4, 0x5a8, 0x5a8, 8, 4, 4);		// #4 map4.mul
+	Load(0, 0x1800, 0x1000, 64, 0, 0);	// #0 map0.mul (felucca)
+	Load(1, 0x1800, 0x1000, 64, 0, 1);	// #1 map0.mul (trammel)
+	Load(2, 0x900, 0x640, 64, 2, 2);	// #2 map2.mul (ilshenar)
+	Load(3, 0xa00, 0x800, 64, 3, 3);	// #3 map3.mul (malas)
+	Load(4, 0x5a8, 0x5a8, 8, 4, 4);		// #4 map4.mul (tokuno islands)
 
 	m_pMapDiffCollection = NULL;
 }

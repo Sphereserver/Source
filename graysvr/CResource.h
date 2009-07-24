@@ -17,6 +17,8 @@ class CServerDef;
 typedef CServerDef * CServerRef;
 
 #define MAX_SKILL	(g_Cfg.m_iMaxSkill)
+#define MAX_SKILL_SA	55	// The number of skills viewable by SA clients
+#define MAX_SKILL_KR	55	// The number of skills viewable by KR clients
 #define MAX_SKILL_ML	55	// The number of skills viewable by ML clients
 #define MAX_SKILL_SE	54	// The number of skills viewable by SE clients
 #define MAX_SKILL_AOS	52	// The number of skills viewable by AOS clients
@@ -769,6 +771,7 @@ public:
 	int		m_iFeatureSE;
 	int		m_iFeatureML;
 	int		m_iFeatureKR;
+	int		m_iFeatureSA;
 	
 	int		m_iMaxLoopTimes;
 #define	STAT_FLAG_NORMAL	0x00	//	MAX* status allowed (default)

@@ -465,6 +465,16 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	return iVer;
 }
 
+int CCrypt::GetVerFromVersion( int maj, int min, int rev, int pat )
+{
+	ADDTOCALLSTACK("CCrypt::SetClientVer");
+
+	TCHAR *z = Str_GetTemp();
+	sprintf(z, "%d.%d.%d.%d", maj, min, rev, pat);
+
+	return GetVerFromString(z);
+}
+
 TCHAR* CCrypt::WriteClientVerString( int iClientVersion, TCHAR * pStr )
 {
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");

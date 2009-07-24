@@ -866,6 +866,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 				if (pAcc)
 				{
 					pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
+					pAcc->m_TagDefs.SetNum("reportedcliver", m_reportedCliver);
 				}
 				else
 				{
@@ -891,6 +892,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 				if (pAcc)
 				{
 					DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
+					DWORD tmVerReported = pAcc->m_TagDefs.GetKeyNum("reportedcliver"); pAcc->m_TagDefs.DeleteKey("reportedcliver");
 					DWORD tmSid = 0x7f000001;
 					if ( g_Cfg.m_fUseAuthID )
 					{
@@ -903,13 +905,17 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 
 					if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
 					{
-						if ( tmVer != NULL )
+						if ( tmVer != NULL || tmVerReported != NULL)
 						{
 							// a client version change may toggle async mode, it's important
 							// to flush pending data to the client before this happens
 							xFlush();
 
-							m_Crypt.SetClientVerEnum(tmVer, false);
+							if ( tmVer != NULL )
+								m_Crypt.SetClientVerEnum(tmVer, false);
+
+							if ( tmVerReported != NULL)
+								m_reportedCliver = tmVerReported;
 						}
 
 						if ( !xCanEncLogin(true) )
@@ -1492,6 +1498,8 @@ bool CClient::xRecvData() // Receive message from client
 			DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)pEvent->NewSeed.m_Version_Maj, 
 						 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
 						 (DWORD)pEvent->NewSeed.m_Version_Pat));
+
+			m_reportedCliver = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
 			m_tmSetup.m_dwIP = (DWORD) pEvent->NewSeed.m_Seed;
 		}
 		else

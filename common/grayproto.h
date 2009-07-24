@@ -292,8 +292,11 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MacroEquipItem			= 0xec,
 	XCMD_MacroUnEquipItem		= 0xed,
 	XCMD_NewSeed				= 0xef,
+	//	0xF0
+	XCMD_WalkNew		= 0xf0,
+	XCMD_WalkUnknown	= 0xf1,
 
-	XCMD_QTY		= 0xf0,
+	XCMD_QTY		= 0xf2,
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -1130,6 +1133,30 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_count; 	// 2 = just a count that goes up as we walk. (handshake)
 			NDWORD m_cryptcode;
 		} Walk;
+
+		struct // size = 38
+		{
+			BYTE m_Cmd;		// 0     = 0xF0  XCMD_WalkNew
+			NWORD m_len;	// 1-2   = length of packet
+			BYTE m_unk1;	// 3     = 01
+			NDWORD m_unk2;	// 4-7   = 00 00 01 22
+			NDWORD m_unk3;	// 8-11  = AE . DF 64
+			NDWORD m_unk4;	// 12-15 = 00 00 01 22
+			NDWORD m_unk5;	// 16-19 = AE 8A BC 1A
+			BYTE m_count;	// 20    = increments every packet
+			BYTE m_dir;		// 21    = new direction
+			NDWORD m_mode;	// 22-25 = movement mode (1 = walk, 2 = run)
+			NDWORD m_x;		// 26-29 = new x position
+			NDWORD m_y;		// 30-33 = new y position
+			NDWORD m_z;		// 34-37 = new z position
+		} WalkNew;
+
+		struct // size = 9
+		{
+			BYTE m_Cmd;		// 0   = 0xF1  XCMD_WalkUnknown
+			NDWORD m_unk1;	// 1-4 = 00 00 01 22
+			NDWORD m_unk2;	// 5-8 = AE .. E1 0E
+		} WalkUnknown;
 
 		struct	// size = >3	// user typed in text.
 		{
@@ -2724,7 +2751,7 @@ struct CCommand	// command buffer from server to client.
 			NCHAR m_utext2[1];	// Player Description 3 (unicode!, zero terminated)
 		} CharProfile;
 
-		struct // size = 3	// response to pressing the chat button
+		struct // size = 3	// enable features on client
 		{
 #define CLI_FEAT_T2A_CHAT	0x0001
 #define CLI_FEAT_LBR_SOUND	0x0002
@@ -2736,6 +2763,12 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;		// 0 = 0xb9
 			NWORD m_enable;
 		} FeaturesEnable;
+
+		struct // size = 5	// enable features on client (new)
+		{
+			BYTE m_Cmd;		// 0 = 0xb9
+			NDWORD m_enable;
+		} FeaturesEnableNew;
 
 		struct
 		{

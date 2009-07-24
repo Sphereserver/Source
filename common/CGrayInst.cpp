@@ -277,6 +277,8 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 
 		if ( j == 5 ) // ML
 			bSup = ( g_MapList.GetX(0) == 7168 );
+		else if ( j > 5 ) // SA+
+			bSup = ( g_MapList.m_maps[j-1] );
 		else
 			bSup = ( g_MapList.m_maps[j] );
 
@@ -284,11 +286,12 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		{
 			switch ( j )
 			{
-			case 0: strcpy(z1, "T2A"); break;
-			case 2: strcpy(z1, "LBR"); break;
-			case 3: strcpy(z1, "AOS"); break;
-			case 4: strcpy(z1, "SE"); break;
-			case 5: strcpy(z1, "ML"); break;
+				case 0: strcpy(z1, "T2A"); break;
+				case 2: strcpy(z1, "LBR"); break;
+				case 3: strcpy(z1, "AOS"); break;
+				case 4: strcpy(z1, "SE"); break;
+				case 5: strcpy(z1, "ML"); break;
+				case 6: strcpy(z1, "SA"); break;
 			}
 			if ( *z )
 				strcat(z, ", ");
