@@ -4471,3 +4471,6 @@ ALPHA additions:
 25-07-2009, MrSugarCube
 - Added: Support for packet changes found in client 6.0.14.2.
 
+02-08-2009, MrSugarCube
+- Fixed #1636: Exception caused when an online player character is deleted.
+
