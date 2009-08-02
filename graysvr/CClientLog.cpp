@@ -1045,7 +1045,7 @@ void CClient::xProcessTooltipQueue()
 
 		// Check that the object is still valid and that the client
 		// can still actually see it
-		if ( pTemp && pTemp->IsObjectValid() && ( pChar->GetTopDist( pTemp->GetObject()->GetTopLevelObj() ) <= UO_MAP_VIEW_SIZE ) )
+		if ( pTemp && pTemp->IsObjectValid() && ( pChar->GetTopDistSight( pTemp->GetObject()->GetTopLevelObj() ) <= UO_MAP_VIEW_SIZE ) )
 		{
 			DEBUG_MSG(("Sending tooltip for 0%x (%d)\n", pTemp->GetObjUid(), llCurrentTick));
 
