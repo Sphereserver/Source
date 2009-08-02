@@ -295,8 +295,9 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	//	0xF0
 	XCMD_WalkNew		= 0xf0,
 	XCMD_WalkUnknown	= 0xf1,
+	XCMD_CrashReport    = 0xf4,
 
-	XCMD_QTY		= 0xf2,
+	XCMD_QTY		= 0xf5,
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -1797,6 +1798,26 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_Version_Rev;	// 13 - 16 = Ver Revision
 			NDWORD m_Version_Pat;	// 17 - 20 = Ver Patch
 		} NewSeed;
+
+		struct // XCMD_CrashReport	// 291 bytes
+		{
+			BYTE m_Cmd;					// 0 = 0xF4
+			NWORD m_len;				// 1-2 = length
+			BYTE m_versionMaj;			// 3 = exe version (major)
+			BYTE m_versionMin;			// 4 = exe version (minor)
+			BYTE m_versionRev;			// 5 = exe version (revision)
+			BYTE m_versionPat;			// 6 = exe version (patch)
+			NWORD m_x;					// 7-8 = location x
+			NWORD m_y;					// 9-10 = location y
+			BYTE m_z;					// 11= location z
+			BYTE m_map;					// 12 = location map
+			char m_account[32];			// 13-44 = account name
+			char m_charname[32];		// 45-76 = character name
+			NDWORD m_errorCode;			// 77-80 = error code
+			char m_executable[100];		// 81-180 = executable name
+			char m_description[100];	// 181-280 = error description
+			BYTE m_unk[10];			// 281-290 = unknown
+		} CrashReport;
 	};
 } PACK_NEEDED;
 

@@ -351,3 +351,26 @@ byte[2]                 unkC
 --> Client always responds with 0xF1 packet (data doesn't appear to relate)
 
 
+========================
+0xF4  (client -> server)
+CRASH REPORT
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[1]                 file version (major)
+byte[1]                 file version (minor)
+byte[1]                 file version (revision)
+byte[1]                 file version (patch)
+byte[2]                 position x
+byte[2]                 position y
+byte[1]                 position z
+byte[1]                 position map
+byte[32]                account name
+byte[32]                character name
+byte[4]                 error code
+byte[100]               executable name
+byte[100]               error description
+byte[10]                unknown [00 6D 34 28 E1 01 00 58 9F 14]
+
+--> Client sends this as they crash
