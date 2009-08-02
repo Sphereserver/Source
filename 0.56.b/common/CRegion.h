@@ -163,6 +163,21 @@ public:
 		return( GetTopPoint().GetDist( pObj->GetTopPoint()));
 	}
 
+	int GetTopDistSight( const CPointMap & pt ) const
+	{
+		return( GetTopPoint().GetDistSight( pt ));
+	}
+
+	int GetTopDistSight( const CObjBaseTemplate * pObj ) const
+	{
+		// don't check for logged out.
+		// Assume both already at top level.
+		ASSERT( pObj );
+		if ( pObj->IsDisconnected())
+			return( SHRT_MAX );
+		return( GetTopPoint().GetDistSight( pObj->GetTopPoint()));
+	}
+
 	int GetDist( const CObjBaseTemplate * pObj ) const
 	{
 		// logged out chars have infinite distance

@@ -4473,4 +4473,4 @@ ALPHA additions:
 
 02-08-2009, MrSugarCube
 - Fixed #1636: Exception caused when an online player character is deleted.
-
+- Fixed #1639: Tooltips not being sent for objects on the edge of the client's screen.

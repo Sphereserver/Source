@@ -3146,7 +3146,7 @@ void CClient::Event_Target( const CEvent * pEvent )
 		else
 		{
 			// The point must be valid.
-			if ( m_pChar->GetTopDist(pt) > UO_MAP_VIEW_SIZE )
+			if ( m_pChar->GetTopDistSight(pt) > UO_MAP_VIEW_SIZE )
 			{
 				return;
 			}

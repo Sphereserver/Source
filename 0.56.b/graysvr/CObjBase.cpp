@@ -1929,7 +1929,7 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 		pChar = pClient->GetChar();
 		if ( pChar == NULL )
 			continue;
-		if ( pChar->GetTopDist( pObjTop ) > UO_MAP_VIEW_SIZE ) //Client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
+		if ( pChar->GetTopDistSight( pObjTop ) > UO_MAP_VIEW_SIZE ) //Client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
 			continue;
 		if (( pItem ) && ( pItem->IsItemEquipped() ) && ( !pChar->IsPriv(PRIV_GM) ))
 		{
