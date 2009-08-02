@@ -5002,6 +5002,16 @@ int CClient::xDispatchMsg()
 				DEBUG_WARN(("%x:Unimplemented KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
 			} break;
 
+		case XCMD_CrashReport:
+			{
+				if ( !xCheckMsgSize(3) )
+					RETURN_FALSE();
+				if ( !xCheckMsgSize(pEvent->CrashReport.m_len) )
+					RETURN_FALSE();
+
+				g_Log.EventWarn("%x:Client crashed at %d,%d,%d,%d: 0x%08X %s (%s, %d.%d.%d.%d)\n", m_Socket.GetSocket(), (WORD)pEvent->CrashReport.m_x, (WORD)pEvent->CrashReport.m_y, pEvent->CrashReport.m_z, pEvent->CrashReport.m_map, (DWORD)pEvent->CrashReport.m_errorCode, pEvent->CrashReport.m_description, pEvent->CrashReport.m_executable, pEvent->CrashReport.m_versionMaj, pEvent->CrashReport.m_versionMin, pEvent->CrashReport.m_versionRev, pEvent->CrashReport.m_versionPat);
+			} break;
+
 		default:
 			EXC_SET("unknown");
 			DEBUG_WARN(( "%x:Unknown game packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
