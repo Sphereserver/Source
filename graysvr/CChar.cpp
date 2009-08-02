@@ -388,7 +388,9 @@ void CChar::Delete()
 	// Character has been deleted
 	if ( IsClient() )
 	{
-		GetClient()->m_fClosed = true;
+		CClient* pClient = GetClient();
+		pClient->CharDisconnect();
+		pClient->m_fClosed = true;
 	}
 
 	CObjBase::Delete();
