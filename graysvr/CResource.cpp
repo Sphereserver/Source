@@ -1826,7 +1826,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x0080	= Samurai Empire?
 		//		0x0100	= Elf races?
 		//		0x0200	= Flag KR Unknown 1
-		//		0x0400	= Flag KR Unknown 2
+		//		0x0400	= (KR) Enables 0xE1 packet at character list (possibly other unknown effects)
 		//		0x1000	= Seventh Character Slot
 		//		0x4000	= New walk packets
 
@@ -1841,19 +1841,20 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		bResOk = ( res >= RDS_SE );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureSE ) ? 0x080 : 0x00;
+			retValue |= ( this->m_iFeatureSE & FEATURE_SE_UPDATE ) ? 0x080 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_ML );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureML ) ? 0x0100 : 0x00;
+			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x0100 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_KR );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureKR ) ? (0x200 | 0x400) : 0x00;
+			retValue |= ( this->m_iFeatureKR & FEATURE_KR_UPDATE ) ? 0x200 : 0x00;
+			retValue |= ( this->m_iFeatureKR & FEATURE_KR_CLIENTTYPE ) ? 0x400 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SA );
