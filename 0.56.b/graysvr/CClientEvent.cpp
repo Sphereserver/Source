@@ -3068,7 +3068,7 @@ void CClient::Event_ClientVersion( const char * pData, int Len )
 	memcpy(sTemp, pData, minimum(Len,20));
 
 	if (strstr(sTemp, "UO:3D"))
-		this->m_bClient3d = true;
+		this->SetClientType(CLIENTTYPE_3D);
 
 	// a new client version change may toggle async mode, it's important
 	// to flush pending data to the client before this happens
@@ -4541,12 +4541,14 @@ int CClient::xDispatchMsg()
 			if ( ! xCheckMsgSize(pEvent->ConfigFile.m_len ))
 				RETURN_FALSE();
 			return 1;
-		case XCMD_KRCharListUpdate:
+		case XCMD_KRClientType:
 			EXC_SET("charlist update");
-			if ( ! xCheckMsgSize( sizeof( pEvent->KRCharListUpdate )))
+			if ( ! xCheckMsgSize( sizeof( pEvent->KRClientType )))
 				RETURN_FALSE();
-			// What response is expected, if any? Re-sending char list
-			// triggers another E1
+
+			// this packet is not entirely reliable, since it depends on the KR feature
+			// flag being enabled otherwise the client won't send it
+			SetClientType((GAMECLIENT_TYPE)((DWORD)pEvent->KRClientType.m_clientType));
 			return 1;
 	}
 
@@ -4973,15 +4975,14 @@ int CClient::xDispatchMsg()
 				Event_MacroUnEquipItems(pEvent->MacroUnEquipItems.m_layers, pEvent->MacroUnEquipItems.m_count);
 			} break;
 
-		case XCMD_KRCharListUpdate:
+		case XCMD_KRClientType:
 			{
 				if ( !xCheckMsgSize(3) )
 					RETURN_FALSE();
-				if ( !xCheckMsgSize(pEvent->KRCharListUpdate.m_len) )
+				if ( !xCheckMsgSize(pEvent->KRClientType.m_len) )
 					RETURN_FALSE();
 
-				DEBUG_WARN(("%x:KRCharListUpdate packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
-				xDumpPacket( m_bin.GetDataQty(), pEvent->m_Raw );
+				SetClientType((GAMECLIENT_TYPE)((DWORD)pEvent->KRClientType.m_clientType));
 			} break;
 
 		case XCMD_UseHotbar:

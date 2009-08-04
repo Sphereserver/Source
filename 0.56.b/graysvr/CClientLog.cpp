@@ -1518,7 +1518,7 @@ bool CClient::xRecvData() // Receive message from client
 			{
 				// UOKR Client opens connection with 255.255.255.255
 				DEBUG_WARN(("UOKR Client Detected.\n"));
-				m_bClientKR = true;
+				SetClientType(CLIENTTYPE_KR);
 				xSend(pDataKR_E3, 77);
 			}
 			else if ( m_tmSetup.m_bNewSeed )

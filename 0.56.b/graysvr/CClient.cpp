@@ -80,8 +80,7 @@ CClient::CClient( SOCKET client ) :
 	m_zLastObjMessage[0] = 0;
 	m_tNextPickup.Init();
 	m_reportedCliver = 0;
-	m_bClient3d = false; // Client by default are 2d
-	m_bClientKR = false;
+	m_reportedType = CLIENTTYPE_2D; // Client by default are 2d
 	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
 	m_LastTooltipSend = 0;
@@ -719,10 +718,13 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( IsPriv( PRIV_ALLSHOW ));
 			break;
 		case CC_CLIENTIS3D:
-			sVal.FormatVal( m_bClient3d );
+			sVal.FormatVal( IsClient3D() );
 			break;
 		case CC_CLIENTISKR:
-			sVal.FormatVal( m_bClientKR );
+			sVal.FormatVal( IsClientKR() );
+			break;
+		case CC_CLIENTISSA:
+			sVal.FormatVal( IsClientSA() );
 			break;
 		case CC_CLIENTVERSION:
 			{

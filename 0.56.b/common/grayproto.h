@@ -278,7 +278,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_BuffPacket		= 0xdf,
 	//	0xE0
 	XCMD_BugReport				= 0xe0,
-	XCMD_KRCharListUpdate		= 0xe1,
+	XCMD_KRClientType			= 0xe1,
 	XCMD_NewAnimUpdate			= 0xe2,
 	XCMD_EncryptionReq			= 0xe3,
 	XCMD_EncryptionReply		= 0xe4,
@@ -1049,6 +1049,14 @@ enum PROFESSION_TYPE	// profession ids
 	PROFESSION_NINJA		= 0x07,
 };
 
+enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, other values are for convenience
+{
+	CLIENTTYPE_2D = 0x00,	// standard client
+	CLIENTTYPE_3D = 0x01,	// 3D client
+	CLIENTTYPE_KR = 0x02,	// KR client
+	CLIENTTYPE_SA = 0x03	// SA client
+};
+
 
 struct CEventCharDef
 {
@@ -1737,13 +1745,13 @@ struct CEvent	// event buffer from client to server..
 			NCHAR m_utext[1];	// 9 - ? (NCHAR[?] text)
 		} BugReport;
 
-		struct // XCMD_KRCharListUpdate
+		struct // XCMD_KRClientType
 		{
 			BYTE m_Cmd;			// 0=0xe1
 			NWORD m_len;		// 1 - 2 (len = )
 			NWORD m_one;		// 3 - 4 (0x01)
-			NDWORD m_flags;		// 5 - 9 (always 0x2) is offset for 0x8D packet flags – character creation
-		} KRCharListUpdate;
+			NDWORD m_clientType;		// 5 - 9 (0x02 = KR, 0x03 = SA)
+		} KRClientType;
 
 		struct // XCMD_EncryptionReply
 		{

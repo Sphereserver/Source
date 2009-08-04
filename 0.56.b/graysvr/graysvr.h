@@ -762,8 +762,7 @@ private:
 	int	m_Walk_CodeQty;
 
 	// Reported ClientVersion
-	bool m_bClient3d;
-	bool m_bClientKR;
+	GAMECLIENT_TYPE m_reportedType;
 	int m_reportedCliver;
 
 	// Screensize
@@ -1466,9 +1465,24 @@ public:
 		return m_reportedCliver;
 	}
 
+	bool IsClient3D()
+	{
+		return(m_reportedType == CLIENTTYPE_3D);
+	}
+
 	bool IsClientKR()
 	{
-		return m_bClientKR;
+		return(m_reportedType == CLIENTTYPE_KR);
+	}
+
+	bool IsClientSA()
+	{
+		return(m_reportedType == CLIENTTYPE_SA);
+	}
+
+	void SetClientType(GAMECLIENT_TYPE type)
+	{
+		m_reportedType = type;
 	}
 
 private:
