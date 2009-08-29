@@ -3184,7 +3184,25 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 			cmd.StatusNew.m_statcap		= cmd.Status.m_statcap;
 
 			cmd.StatusNew.m_maxWeight = g_Cfg.Calc_MaxCarryWeight(m_pChar) / WEIGHT_UNITS;
-			cmd.StatusNew.m_race = (((m_pChar->GetDispID() == CREID_ELFMAN) || (m_pChar->GetDispID() == CREID_ELFWOMAN))? 1:0);
+
+			switch (m_pChar->GetDispID())
+			{
+				case CREID_MAN:
+				case CREID_WOMAN:
+				case CREID_GHOSTMAN:
+				case CREID_GHOSTWOMAN:
+					cmd.StatusNew.m_race = RACETYPE_HUMAN;
+					break;
+				case CREID_ELFMAN:
+				case CREID_ELFWOMAN:
+				case CREID_ELFGHOSTMAN:
+				case CREID_ELFGHOSTWOMAN:
+					cmd.StatusNew.m_race = RACETYPE_ELF;
+					break;
+				default:
+					cmd.StatusNew.m_race = RACETYPE_UNDEFINED;
+					break;
+			}
 		}
 	}
 	else

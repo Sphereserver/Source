@@ -17,7 +17,7 @@ class CServerDef;
 typedef CServerDef * CServerRef;
 
 #define MAX_SKILL	(g_Cfg.m_iMaxSkill)
-#define MAX_SKILL_SA	55	// The number of skills viewable by SA clients
+#define MAX_SKILL_SA	58	// The number of skills viewable by SA clients
 #define MAX_SKILL_KR	55	// The number of skills viewable by KR clients
 #define MAX_SKILL_ML	55	// The number of skills viewable by ML clients
 #define MAX_SKILL_SE	54	// The number of skills viewable by SE clients
