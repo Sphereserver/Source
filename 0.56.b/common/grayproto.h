@@ -1057,6 +1057,13 @@ enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, ot
 	CLIENTTYPE_SA = 0x03	// SA client
 };
 
+enum RACE_TYPE		// character race, used in new character creation (0x8D) and status (0x11) packets
+{
+	RACETYPE_UNDEFINED = 0x00,	// none of the below
+	RACETYPE_HUMAN = 0x01,		// human
+	RACETYPE_ELF = 0x02,		// elf
+	RACETYPE_GARGOYLE = 0x03	// gargoyle
+};
 
 struct CEventCharDef
 {

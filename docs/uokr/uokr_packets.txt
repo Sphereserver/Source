@@ -374,3 +374,17 @@ byte[100]               error description
 byte[10]                unknown [00 6D 34 28 E1 01 00 58 9F 14]
 
 --> Client sends this as they crash
+
+
+========================
+0x17  (server -> client)
+HEALTH BAR UPDATE
+========================
+
+byte[1]                 packet cmd
+byte[2]                 packet length
+byte[4]                 character serial
+byte[2]                 color count
+     - foreach color
+       byte[2]          color (1=green, 2=yellow)
+       byte[1]          color state (0=off, 1=on)

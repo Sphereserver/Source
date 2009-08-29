@@ -4474,3 +4474,9 @@ ALPHA additions:
 02-08-2009, MrSugarCube
 - Fixed #1636: Exception caused when an online player character is deleted.
 - Fixed #1639: Tooltips not being sent for objects on the edge of the client's screen.
+
+29-08-2009, MrSugarCube
+- Fixed: Unable to drop 'new' spell scrolls (necro+) into spellbooks even when MOREZ has been correctly set
+  on the book.
+- Fixed: Incorrect character race being sent to clients.
+

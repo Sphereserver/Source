@@ -1592,7 +1592,7 @@ char CItemMultiCustom::GetPlaneZ( unsigned char plane )
 bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti )
 {
 	ADDTOCALLSTACK("CItemMultiCustom::IsValidItem");
-	if ( !bMulti && (id <= 0 || id > 0x3FFF) )
+	if ( !bMulti && (id <= 0 || id >= ITEMID_MULTI) )
 		return false;
 	else if ( bMulti && (id < ITEMID_MULTI || id > ITEMID_MULTI_MAX) )
 		return false;
@@ -1673,7 +1673,7 @@ bool CItemMultiCustom::LoadValidItems()
 			for (int ii = 1; sm_szItemFiles[i][ii] != NULL; ii++)
 			{
 				ITEMID_TYPE itemid = (ITEMID_TYPE)ATOI(csvDataRow[sm_szItemFiles[i][ii]].c_str());
-				if ( itemid <= 0 || itemid > 0x3FFF )
+				if ( itemid <= 0 || itemid >= ITEMID_MULTI )
 					continue;
 
 				if ( bMultiFile )

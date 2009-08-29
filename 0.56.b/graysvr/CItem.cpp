@@ -3187,11 +3187,11 @@ SPELL_TYPE CItem::GetScrollSpell() const
 {
 	ADDTOCALLSTACK("CItem::GetScrollSpell");
 	// Given a scroll type. what spell is this ?
-	for ( int i=SPELL_Clumsy; true; i++ )
+	for (int i = SPELL_Clumsy; i < g_Cfg.m_SpellDefs.GetCount(); i++)
 	{
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( (SPELL_TYPE) i );
-		if ( pSpellDef == NULL )
-			break;
+		if ( pSpellDef == NULL || pSpellDef->m_idScroll == ITEMID_NOTHING )
+			continue;
 		if ( GetID() == pSpellDef->m_idScroll )
 			return((SPELL_TYPE) i );
 	}

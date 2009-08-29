@@ -1888,7 +1888,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x02000
 		//		0x04000
 		//		0x08000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
-		//		0x10000	Gargoyles
+		//		0x10000	Gargoyles, SA housing
 		//	Thus	0		neither T2A NOR LBR, equal to not sending it at all,
 		//			1		is T2A, chatbutton,
 		//			2		is LBR without chatbutton,
