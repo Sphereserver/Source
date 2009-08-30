@@ -4482,4 +4482,4 @@ ALPHA additions:
 
 30-08-2009, MrSugarCube
 - Fixed #1625: Extremely high vendor prices on Linux build.
-
+- Modified #1642: Reduced delay between asynchronous database query callbacks.
