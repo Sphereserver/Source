@@ -361,7 +361,7 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 
 	//SysMessagef("SKILLTAG=%s\n",skilltag);
 
-	if ( skill == SKILL_ARCHERY ) // We do not allow archerytraining on dummys.
+	if ( g_Cfg.IsSkillRanged(skill) ) // We do not allow archerytraining on dummys.
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_TDUMMY_ARCH );
 		return( false );
@@ -531,12 +531,12 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	// We have to be using the archery skill on this
 	SKILL_TYPE skill = Fight_GetWeaponSkill();
-	if ( skill != SKILL_ARCHERY )
+	if ( !g_Cfg.IsSkillRanged(skill) )
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_WS );
 		return ( true );
 	}
-	if ( Skill_GetBase(SKILL_ARCHERY) > g_Cfg.m_iSkillPracticeMax )
+	if ( Skill_GetBase(skill) > g_Cfg.m_iSkillPracticeMax )
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_SKILL );
 		return ( true );
@@ -547,7 +547,23 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	CItem * pWeapon = m_uidWeapon.ItemFind();
 	ASSERT(pWeapon);
 	const CItemBase * pWeaponDef = pWeapon->Item_GetDef();
-	AmmoID = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex();
+
+	// determine ammo type
+	CVarDefCont * pVarAmmoType = pWeapon->GetKey("OVERRIDE.AMMOTYPE", true);
+	RESOURCE_ID_BASE rid;
+	LPCTSTR t_Str;
+
+	if ( pVarAmmoType )
+	{
+		t_Str = pVarAmmoType->GetValStr();
+		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCSTR&) t_Str );
+		AmmoID = (ITEMID_TYPE) rid.GetResIndex();
+	}
+	else
+	{
+		rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
+		AmmoID = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex();
+	}
 
 	// If there is a different ammo type on the butte currently,
 	// tell us to remove the current type first.
@@ -614,7 +630,37 @@ badalign:
 	// Check the skill
 	bool fSuccess = Skill_UseQuick( skill, Calc_GetRandVal(40));
 
-	pButte->Effect( EFFECT_BOLT, (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex(), this, 16, 0, false );
+	// determine animation parameters
+	CVarDefCont * pVarAnim = pWeapon->GetKey("OVERRIDE.AMMOANIM", true);
+	CVarDefCont * pVarAnimColor = pWeapon->GetKey("OVERRIDE.AMMOANIMHUE", true);
+	CVarDefCont * pVarAnimRender = pWeapon->GetKey("OVERRIDE.AMMOANIMRENDER", true);
+	ITEMID_TYPE AmmoAnim;
+	DWORD AmmoHue;
+	DWORD AmmoRender;
+
+	if ( pVarAnim )
+	{
+		t_Str = pVarAnim->GetValStr();
+		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCSTR&) t_Str );
+		AmmoAnim = (ITEMID_TYPE) rid.GetResIndex();
+	}
+	else
+	{
+		AmmoAnim = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex();
+	}
+
+	if ( pVarAnimColor )
+		AmmoHue = pVarAnimColor->GetValNum();
+	else
+		AmmoHue = 0;
+
+	if ( pVarAnimRender )
+		AmmoRender = pVarAnimRender->GetValNum();
+	else
+		AmmoRender = false;
+	
+	// show firing effect
+	pButte->Effect( EFFECT_BOLT, AmmoAnim, this, 16, 0, false, AmmoHue, AmmoRender );
 	pButte->Sound( 0x224 );
 
 static LPCTSTR const sm_Txt_ArcheryButte_Failure[] =
@@ -633,15 +679,15 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_HIT_4 )
 };
 
-	if ( ! AmmoID )
-		return( true );
-
 	// Did we destroy the ammo?
-	const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
+	const CItemBase * pAmmoDef = NULL;
+	if ( AmmoID )
+		pAmmoDef = CItemBase::FindItemBase(AmmoID);
+
 	if (!fSuccess)
 	{
 		// Small chance of destroying the ammo
-		if ( !Calc_GetRandVal(10))
+		if ( pAmmoDef != NULL && !Calc_GetRandVal(10))
 		{
 			TCHAR *pszMsg = Str_GetTemp();
 			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_DEST ), (LPCTSTR) pAmmoDef->GetName() );
@@ -654,7 +700,7 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 	else
 	{
 		// Very small chance of destroying another arrow
-		if ( !Calc_GetRandVal(50) && pButte->m_itArcheryButte.m_AmmoCount )
+		if ( pAmmoDef != NULL && !Calc_GetRandVal(50) && pButte->m_itArcheryButte.m_AmmoCount )
 		{
 			TCHAR *pszMsg = Str_GetTemp();
 			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_SPLIT ), (LPCTSTR) pAmmoDef->GetName());
@@ -664,9 +710,13 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 
 		Emote( sm_Txt_ArcheryButte_Success[ Calc_GetRandVal(COUNTOF(sm_Txt_ArcheryButte_Success)) ]);
 	}
+
 	// Update the target
-	pButte->m_itArcheryButte.m_AmmoType = AmmoID;
-	pButte->m_itArcheryButte.m_AmmoCount++;
+	if ( AmmoID )
+	{
+		pButte->m_itArcheryButte.m_AmmoType = AmmoID;
+		pButte->m_itArcheryButte.m_AmmoCount++;
+	}
 	return( true );
 }
 

@@ -205,8 +205,8 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * 
 	// a fight etc. Just use 90% of the statvalue when defending so its easier
 	// to hit than defend == more fun in combat.
 	int iStam = pCharTarg->Stat_GetVal(STAT_DEX);
-	if ( pCharTarg->Skill_GetActive() == SKILL_ARCHERY &&
-		skill != SKILL_ARCHERY )
+	if ( g_Cfg.IsSkillRanged(pCharTarg->Skill_GetActive()) &&
+		!g_Cfg.IsSkillRanged(skill) )
 		// The defender uses ranged weapon and the attacker is not.
 		// Make just a bit easier to hit.
 		iSkillDefend = ( iSkillDefend + iStam*9 ) / 2;
