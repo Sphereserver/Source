@@ -174,7 +174,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	//    0 = base price
 	// +100 = increase price by 100% (vendor selling to player?)
 
-	LONGLONG lPrice = m_price;
+	INT64 lPrice = m_price;
 	if ( lPrice <= 0 )	// set on player vendor.
 	{
 		if ( lPrice == 0 )	// set a new randomized price for the item
