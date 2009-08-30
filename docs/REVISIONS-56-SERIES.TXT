@@ -4480,3 +4480,6 @@ ALPHA additions:
   on the book.
 - Fixed: Incorrect character race being sent to clients.
 
+30-08-2009, MrSugarCube
+- Fixed #1625: Extremely high vendor prices on Linux build.
+
