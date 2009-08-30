@@ -224,26 +224,26 @@ bool CDataBase::OnTick()
 		return true;
 
 	//	do not ping sql server too heavily
-	if ( ++tickcnt < 1000 )
-		return true;
-
-	tickcnt = 0;
-
-	if ( isConnected() )	//	currently connected - just check that the link is alive
+	if ( ++tickcnt >= 1000 )
 	{
-		if ( mysql_ping(_myData) )
-		{
-			g_Log.EventError("MySQL server link has been lost. Trying to reattach to it\n");
-			Close();
+		tickcnt = 0;
 
-			if ( !Connect(g_Cfg.m_sMySqlUser, g_Cfg.m_sMySqlPass, g_Cfg.m_sMySqlDB, g_Cfg.m_sMySqlHost) )
+		if ( isConnected() )	//	currently connected - just check that the link is alive
+		{
+			if ( mysql_ping(_myData) )
 			{
-				g_Log.EventError("MySQL reattach failed/timed out. SQL operations disabled.\n");
+				g_Log.EventError("MySQL server link has been lost. Trying to reattach to it\n");
+				Close();
+
+				if ( !Connect(g_Cfg.m_sMySqlUser, g_Cfg.m_sMySqlPass, g_Cfg.m_sMySqlDB, g_Cfg.m_sMySqlHost) )
+				{
+					g_Log.EventError("MySQL reattach failed/timed out. SQL operations disabled.\n");
+				}
 			}
 		}
 	}
 
-	if ( !m_QueryArgs.empty() )
+	if ( !m_QueryArgs.empty() && !(tickcnt % TICK_PER_SEC) )
 	{
 		stlqueryLock.doLock();
 
