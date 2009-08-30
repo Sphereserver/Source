@@ -514,7 +514,8 @@ enum	SKF_TYPE
 	SKF_SELECTABLE		= 0x0020,		// allows skill to be selected from the skill menu
 	SKF_NOMINDIST		= 0x0040,		// you can mine, fish, chop, hack on the same point you are standing on
 	SKF_NOANIM			= 0x0080,		// prevents hardcoded animation from playing
-	SKF_NOSFX			= 0x0100		// prevents hardcoded sound from playing
+	SKF_NOSFX			= 0x0100,		// prevents hardcoded sound from playing
+	SKF_RANGED			= 0x0200		// considered a ranged skill (combine with SKF_FIGHT)
 };
 
 struct CSkillDef : public CResourceLink // For skill def table
@@ -955,6 +956,14 @@ public:
 			return false;
 		const CSkillDef *	pSkillDef	= GetSkillDef( index );
 		return ( pSkillDef && (pSkillDef->m_dwFlags & skf) );
+	}
+
+	const bool IsSkillRanged( SKILL_TYPE index ) const
+	{
+		if ( index == SKILL_ARCHERY )
+			return true;
+
+		return IsSkillFlag( index, SKF_RANGED );
 	}
 
 	const CSkillDef* GetSkillDef( SKILL_TYPE index ) const

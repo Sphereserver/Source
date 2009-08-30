@@ -1704,7 +1704,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 bool CChar::NPC_FightArchery( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_FightArchery");
-	if ( Skill_GetActive() != SKILL_ARCHERY )
+	if ( !g_Cfg.IsSkillRanged(Skill_GetActive()) )
 		return( false );
 
 	int iMinDist = 0;

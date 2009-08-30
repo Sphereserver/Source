@@ -2791,7 +2791,7 @@ int CChar::Fight_CalcDamage( CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom )
 
 	int iDmg = 1;
 	int iDmgAdj;
-	if ( skill != SKILL_ARCHERY )
+	if ( !g_Cfg.IsSkillRanged(skill) )
 		iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_STR) : Calc_GetRandVal( Stat_GetAdjusted(STAT_STR));
 	else
 		iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_DEX) : Calc_GetRandVal( Stat_GetAdjusted(STAT_DEX));
@@ -2888,7 +2888,7 @@ CChar * CChar::Fight_FindBestTarget()
 
 		int iDist = GetDist(pChar);
 
-		if ( skillWeapon == SKILL_ARCHERY )
+		if ( g_Cfg.IsSkillRanged( skillWeapon ) )
 		{
 			// archery dist is different.
 			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
@@ -3136,7 +3136,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( CanSee(pCharTarg) )
 	{
-		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, ((Skill_GetActive() == SKILL_ARCHERY) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
+		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, (g_Cfg.IsSkillRanged(Skill_GetActive()) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
 		{
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return( WAR_SWING_READY );
@@ -3196,7 +3196,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 
 	SKILL_TYPE skill = Skill_GetActive();
-	if ( skill == SKILL_ARCHERY )
+	if ( g_Cfg.IsSkillRanged(skill) )
 	{
 		// Archery type skill.
 		int	iMinDist	= pWeaponDef->RangeH();
@@ -3426,7 +3426,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( m_Act_Difficulty < 0 )		// if not changed within trigger
 	{
 		// We missed. (miss noise)
-		if ( skill == SKILL_ARCHERY )
+		if ( g_Cfg.IsSkillRanged(skill) )
 		{
 			// 0x223 = bolt miss or dart ?
 			// do some thing with the arrow.
@@ -3484,7 +3484,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	CScriptTriggerArgs	Args( iDmg, 0, pWeapon );
 
-	if ( skill == SKILL_ARCHERY )
+	if ( g_Cfg.IsSkillRanged(skill) )
 	{
 		// Get uid of the current arrow.
 		if ( pAmmo )
@@ -3506,7 +3506,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 #endif
 	iDmg	= Args.m_iN1;
 
-	if ( skill == SKILL_ARCHERY )
+	if ( g_Cfg.IsSkillRanged(skill) )
 	{
 		// There's a chance that the arrow will stick in the target
 		if ( pAmmo && !Calc_GetRandVal(2))

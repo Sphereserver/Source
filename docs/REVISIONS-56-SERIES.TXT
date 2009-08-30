@@ -4465,8 +4465,8 @@ ALPHA additions:
   touched by the spell.
 
 21-06-2009, MrSugarCube
-- Added #1627: PlayerEvil setting to Sphere.ini. Similar to the PlayerNeutral setting, this will control
-  the karma level at which a player will be considered evil.
+- Added #1627: PlayerEvil setting to Sphere.ini. Similar to the PlayerNeutral setting, this
+  will control the karma level at which a player will be considered evil.
 
 25-07-2009, MrSugarCube
 - Added: Support for packet changes found in client 6.0.14.2.
@@ -4476,10 +4476,17 @@ ALPHA additions:
 - Fixed #1639: Tooltips not being sent for objects on the edge of the client's screen.
 
 29-08-2009, MrSugarCube
-- Fixed: Unable to drop 'new' spell scrolls (necro+) into spellbooks even when MOREZ has been correctly set
-  on the book.
+- Fixed: Unable to drop 'new' spell scrolls (necro+) into spellbooks even when MOREZ has
+  been correctly set on the book.
 - Fixed: Incorrect character race being sent to clients.
 
 30-08-2009, MrSugarCube
 - Fixed #1625: Extremely high vendor prices on Linux build.
+- Fixed: Archery buttes not checking for OVERRIDE.AMMOTYPE and OVERRIDE.ANIM* tags on the
+  character's weapon.
 - Modified #1642: Reduced delay between asynchronous database query callbacks.
+- Added: Skill flag SKF_RANGED. Combine this with the SKF_FIGHT flag to create ranged
+  (i.e. archery) combat skills.
+
+30-08-2009, MrSugarCube (Script pack)
+- Updated: sphere_defs.scp (Added SKF_RANGED definition)

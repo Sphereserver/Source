@@ -3011,6 +3011,13 @@ bool CChar::CheckLocation( bool fStanding )
 		{
 			// Are we using a skill that is effected by motion ?
 			m_atFight.m_fMoved	= 1;
+
+			if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_RANGED ) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
+			{
+				// If we moved and are wielding are in combat and are using a
+				// ranged weapon, then reset the weaponswingtimer.
+				Fight_ResetWeaponSwingTimer();
+			}
 		}
 		else switch ( iSkillActive )
 		{

@@ -1224,15 +1224,16 @@ talkmode_guild		13	// \ guild speech ( client -> server )
 talkmode_alliance	14	// alliance speech ( client -> server )
 
 [DEFNAME skill_flags]
-SKF_SCRIPTED		0001	// fully scripted, no hardcoded behaviour
-SKF_FIGHT		0002	// considered a fight skill, maintains fight active
-SKF_MAGIC		0004	// considered a magic skill
-SKF_CRAFT		0008	// considered a crafting skill, compatible with MAKEITEM function
-SKF_IMMOBILE		0010	// skilluser can not move while skilluse
-SKF_SELECTABLE		0020	// from skill list. ATTENTION: This does _not_ place the button next to the skill in the client's skill list! For this you have to edit skills.mul.
-SKF_NOMINDIST		0040	// you can mine, fish, chop, hack on the same point you are standing on
-SKF_NOANIM		0080	// don't show hardcoded anim for this skill
-SKF_NOSFX		0100	// don't play hardcoded sound for this skill
+SKF_SCRIPTED            0001	// fully scripted, no hardcoded behaviour
+SKF_FIGHT               0002	// considered a fight skill, maintains fight active
+SKF_MAGIC               0004	// considered a magic skill
+SKF_CRAFT               0008	// considered a crafting skill, compatible with MAKEITEM function
+SKF_IMMOBILE            0010	// skilluser can not move while skilluse
+SKF_SELECTABLE          0020	// from skill list. ATTENTION: This does _not_ place the button next to the skill in the client's skill list! For this you have to edit skills.mul.
+SKF_NOMINDIST           0040	// you can mine, fish, chop, hack on the same point you are standing on
+SKF_NOANIM              0080	// don't show hardcoded anim for this skill
+SKF_NOSFX               0100	// don't play hardcoded sound for this skill
+SKF_RANGED              0200	// considered a ranged skill (combine with SKF_FIGHT)
 
 [DEFNAME trigger_argtype]
 TAT_AS_ARGN	1		// Treat the arguments as ARGN1/2/3
