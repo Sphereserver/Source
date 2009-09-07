@@ -4490,3 +4490,8 @@ ALPHA additions:
 
 30-08-2009, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added SKF_RANGED definition)
+
+07-09-2009, MrSugarCube
+- Added: Console command "d ui" to generate a file named "unscripted_items.scp" that
+  contains *basic* definitions for items in tiledata.mul that have no corresponding
+  Sphere script.

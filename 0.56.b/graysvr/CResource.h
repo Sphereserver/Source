@@ -1030,6 +1030,9 @@ typedef std::map<DWORD,DWORD> KRGumpsMap;
 	bool SetKRDialogMap(DWORD rid, DWORD idKRDialog);
 	DWORD GetKRDialogMap(DWORD idKRDialog);
 	DWORD GetKRDialog(DWORD rid);
+
+	bool GenerateDefname(TCHAR *pObjectName, int iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict = true, CVarDefMap* vDefnames = NULL);
+	bool DumpUnscriptedItems(CTextConsole * pSrc, LPCTSTR pszFilename);
 } g_Cfg;
 
 

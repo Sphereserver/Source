@@ -25,8 +25,8 @@ DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFBSD) $(NIGHTLYDEFS) $(EXTRADEF
 EXE	= graysvr
 REXE	= spheresvr
 
-SCC	= g++41
-SCCO	= gcc41
+SCC	= g++
+SCCO	= gcc
 
 NO	= -fno-rtti -fno-exceptions
 #EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
