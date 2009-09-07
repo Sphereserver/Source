@@ -514,20 +514,43 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			{
 				ListClients( pSrc );
 			} break;
-		case 'd':
+		case 'd': // dump
 			{
 				LPCTSTR		pszKey	= sText;			pszKey++;
 				GETNONWHITESPACE( pszKey );
-				if ( tolower(*pszKey) == 'a' )
+				switch ( tolower(*pszKey) )
 				{
-					pszKey++;	GETNONWHITESPACE( pszKey );
-					if ( !g_World.DumpAreas( pSrc, pszKey ) )
-						pSrc->SysMessage( "Area dump failed.\n" );
-					else
-						pSrc->SysMessage( "Area dump successful.\n" );
+					case 'a': // areas
+						pszKey++;	GETNONWHITESPACE( pszKey );
+						if ( !g_World.DumpAreas( pSrc, pszKey ) )
+							pSrc->SysMessage( "Area dump failed.\n" );
+						else
+							pSrc->SysMessage( "Area dump successful.\n" );
+						break;
+
+					case 'u': // unscripted
+						pszKey++;
+
+						switch ( tolower(*pszKey) )
+						{
+							case 'i': // items
+							{
+								pszKey++;	GETNONWHITESPACE( pszKey );
+								if ( !g_Cfg.DumpUnscriptedItems( pSrc, pszKey ) )
+									pSrc->SysMessage( "Unscripted item dump failed.\n" );
+								else
+									pSrc->SysMessage( "Unscripted item dump successful.\n" );
+								break;
+							}
+
+							default:
+								goto longcommand;
+						}
+						break;
+
+					default:
+						goto longcommand;
 				}
-				else
-					goto longcommand;
 			} break;
 		case 'e':
 			{

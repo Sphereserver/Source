@@ -3,7 +3,6 @@
 #pragma once
 
 #include <pthread.h>
-#include <iconv.h>
 #include <unistd.h>
 #include <signal.h>
 #include <exception>
