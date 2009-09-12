@@ -902,9 +902,9 @@ SUBSECTION=Reagents - Pagan
 DESCRIPTION=Dead Wood
 
 [ITEMDEF 0f91]
-// Worms Heart
-DEFNAME=i_reag_worm_heart
-DEFNAME2=worm_heart
+// Wyrms Heart
+DEFNAME=i_reag_wyrm_heart
+DEFNAME2=wyrm_heart
 TYPE=T_REAGENT
 VALUE=3
 PILE=1

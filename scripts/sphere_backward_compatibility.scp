@@ -14,6 +14,7 @@ VERSION=0.56b
 [DEFNAME backward_compability_defs]
 loot_ORGE_LORD loot_OGRE_LORD
 i_axe_war_VANQUISIHNG i_axe_war_VANQ
+i_reag_worm_heart i_reag_wyrm_heart
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

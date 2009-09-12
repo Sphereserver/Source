@@ -379,7 +379,7 @@ ID=i_bottle_WHITE
 NAME=Invisibility
 TYPE=T_POTION
 TDATA1=i_bottle_empty
-RESOURCES=i_reag_worm_heart 4, i_bottle_EMPTY
+RESOURCES=i_reag_wyrm_heart 4, i_bottle_EMPTY
 SKILLMAKE=ALCHEMY 65.1
 
 ON=@Create

@@ -4498,3 +4498,11 @@ ALPHA additions:
 
 12-09-2009, MrSugarCube
 - Fixed #1655: Setting RAINCHANCE and COLDCHANCE to zero does did not disable rain or snow.
+- Modified: When loading a WORLD* block from a save Sphere can resolve defnames to find the
+  object being loaded (like the ones in sphere_backward_compatibility.scp, for example).
+
+12-09-2009, Coruja (Script pack)
+- Updated #1645: sphere_template_vend.scp, sphere_item_resources.scp, spherechar_human.scp,
+  sphere_item_provisions_potions.scp, sphere_backward_compatibility.scp (Corrected spelling
+  of the wyrm heart defname (i_reag_worm_heart->i_reag_wyrm_heart))
+- Updated #1654: sphere_defs.scp (Adjusted height of the Meer characters)
