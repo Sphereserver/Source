@@ -2894,8 +2894,23 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			CVarDefContNum * pVarNum = dynamic_cast <CVarDefContNum*>( pVarBase );
 			if ( pVarNum == NULL )
 			{
-				DEBUG_ERR(( "Re-Using name '%s' to define block\n", (LPCTSTR) pszName ));
-				return( ridinvalid );
+				switch (restype)
+				{
+					case RES_WC:
+					case RES_WI:
+					case RES_WS:
+					case RES_WORLDCHAR:
+					case RES_WORLDITEM:
+					case RES_WORLDSCRIPT:
+					{
+						CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr*>( pVarBase );
+						if ( pVarStr != NULL )
+							return( ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef) );
+					}
+					default:
+						DEBUG_ERR(( "Re-Using name '%s' to define block\n", (LPCTSTR) pszName ));
+						return( ridinvalid );
+				}
 			}
 			rid.SetPrivateUID( pVarNum->GetValNum());
 			if ( restype != rid.GetResType())
