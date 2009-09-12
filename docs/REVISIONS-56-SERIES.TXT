@@ -4495,3 +4495,6 @@ ALPHA additions:
 - Added: Console command "d ui" to generate a file named "unscripted_items.scp" that
   contains *basic* definitions for items in tiledata.mul that have no corresponding
   Sphere script.
+
+12-09-2009, MrSugarCube
+- Fixed #1655: Setting RAINCHANCE and COLDCHANCE to zero does did not disable rain or snow.
