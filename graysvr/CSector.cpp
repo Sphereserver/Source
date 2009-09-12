@@ -684,8 +684,12 @@ WEATHER_TYPE CSector::GetWeatherCalc() const
 	if ( iRainRoll > GetRainChance())
 		return WEATHER_CLOUDY;
 
-	// It is snowing
-	if ( Calc_GetRandVal(100) <= GetColdChance()) // Can it actually snow here?
+	// Rain chance also controls the chance of snow. If it isn't possible to rain then it cannot snow either
+	if ( !GetRainChance() )
+		return WEATHER_DRY;
+
+	// Is it snowing?
+	if ( GetColdChance() && Calc_GetRandVal(100) <= GetColdChance()) // Can it actually snow here?
 		return WEATHER_SNOW;
 
 	// It is raining
