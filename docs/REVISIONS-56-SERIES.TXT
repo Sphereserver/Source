@@ -4497,6 +4497,9 @@ ALPHA additions:
   Sphere script.
 
 12-09-2009, MrSugarCube
+- Fixed #1623: RESTEST requiring 1 of an item when checking for a quantity of 0. This also
+  affects other resource-list-based functions and properties such as CONSUME, FOODTYPE,
+  RESOURCES, SKILLMAKE, SKILLTEST, etc.
 - Fixed #1655: Setting RAINCHANCE and COLDCHANCE to zero does did not disable rain or snow.
 - Modified: When loading a WORLD* block from a save Sphere can resolve defnames to find the
   object being loaded (like the ones in sphere_backward_compatibility.scp, for example).
