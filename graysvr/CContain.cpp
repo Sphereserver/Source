@@ -301,6 +301,28 @@ void CContainer::ContentAttrMod( WORD wAttr, bool fSet )
 	}
 }
 
+void CContainer::ContentNotifyDelete()
+{
+	ADDTOCALLSTACK("CContainer::ContentNotifyDelete");
+	if ( IsSetEF(EF_Minimize_Triggers) ) // no point entering this loop if the trigger is disabled
+		return;
+
+	// trigger @Destroy on contained items
+	CItem *pItemNext = NULL;
+	for (CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext)
+	{
+		pItemNext = pItem->GetNext();
+
+		if ( pItem->NotifyDelete() == false )
+		{
+			// item shouldn't be destroyed and so cannot remain in this container,
+			// drop it to the ground if it hasn't been moved already
+			if (pItem->GetParent() == this)
+				pItem->MoveToCheck( pItem->GetTopLevelObj()->GetTopPoint() );
+		}
+	}
+}
+
 void CContainer::ContentsDump( const CPointMap & pt, WORD wAttrLeave )
 {
 	ADDTOCALLSTACK("CContainer::ContentsDump");
@@ -540,6 +562,16 @@ CItemContainer::CItemContainer( ITEMID_TYPE id, CItemBase * pItemDef ) :
 	CItemVendable( id, pItemDef )
 {
 	// m_fTinkerTrapped = false;
+}
+
+bool CItemContainer::NotifyDelete()
+{
+	// notify destruction of the container before its contents
+	if ( CItem::NotifyDelete() == false )
+		return false;
+
+	ContentNotifyDelete();
+	return true;
 }
 
 void CItemContainer::r_Write( CScript & s )

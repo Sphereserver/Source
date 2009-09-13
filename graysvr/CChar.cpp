@@ -374,16 +374,25 @@ void CChar::SetDisconnected()
 	GetTopSector()->m_Chars_Disconnect.InsertHead( this );
 }
 
+bool CChar::NotifyDelete()
+{
+	if ( !IsSetEF(EF_Minimize_Triggers) )
+	{
+		//We can forbid the deletion in here with no pain
+		if (CChar::OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE)
+			return false;
+	}
+
+	ContentNotifyDelete();
+	return true;
+}
+
 void CChar::Delete()
 {
 	ADDTOCALLSTACK("CChar::Delete");
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
-		//We can forbid the deletion in here with no pain
-		if (CChar::OnTrigger(CTRIG_Destroy,&g_Serv) == TRIGRET_RET_TRUE)
-			return;
-	}
+	if ( NotifyDelete() == false )
+		return;
 
 	// Character has been deleted
 	if ( IsClient() )
