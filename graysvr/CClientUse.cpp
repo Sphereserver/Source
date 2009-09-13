@@ -1379,9 +1379,21 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	}
 
 	// Open a new one.
-	CItemContainer* pCont1 = dynamic_cast <CItemContainer*> (CItem::CreateBase( ITEMID_Bulletin1 ));
-	ASSERT(pCont1);
+	CItem* pItem1 = CItem::CreateBase( ITEMID_Bulletin1 );
+	if ( !pItem1 )
+		return( false );
+
+	CItemContainer* pCont1 = dynamic_cast <CItemContainer*> ( pItem1 );
+	if ( !pCont1 )
+	{
+		DEBUG_ERR(("Item 0%x must be a container type to enable player trading.\n", ITEMID_Bulletin1));
+		pItem1->Delete();
+		return( false );
+	}
+
 	pCont1->SetType( IT_EQ_TRADE_WINDOW );
+
+	// no need to perform the same tests on the second, since it is identical to the first
 	CItemContainer* pCont2 = dynamic_cast <CItemContainer*> (CItem::CreateBase( ITEMID_Bulletin1 ));
 	ASSERT(pCont2);
 	pCont2->SetType( IT_EQ_TRADE_WINDOW );
