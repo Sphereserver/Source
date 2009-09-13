@@ -1154,6 +1154,7 @@ public:
 	int GetAbilityFlags() const;
 
 	virtual void Delete();
+	virtual bool NotifyDelete();
 };
 
 class CItemVendable : public CItem
@@ -1235,6 +1236,7 @@ public:
 	void ContentsDump( const CPointMap & pt, WORD wAttr = 0 );
 	void ContentsTransfer( CItemContainer * pCont, bool fNoNewbie );
 	void ContentAttrMod( WORD wAttr, bool fSet );
+	void ContentNotifyDelete();
 
 	// For resource usage and gold.
 	CItem * ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 ) const;
@@ -1258,6 +1260,7 @@ class CItemContainer : public CItemVendable, public CContainer
 public:
 	static const char *m_sClassName;
 	// bool m_fTinkerTrapped;	// magic trap is diff.
+	bool NotifyDelete();
 	void DeletePrepare()
 	{
 		if ( IsType( IT_EQ_TRADE_WINDOW ))
@@ -2505,6 +2508,7 @@ public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
 	virtual void Delete();
+	virtual bool NotifyDelete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
 		return(( m_StatFlag & dwStatFlag) ? true : false );

@@ -77,14 +77,21 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	ASSERT( IsDisconnected());
 }
 
-void CItem::Delete()
+bool CItem::NotifyDelete()
 {
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
-		//We can forbid the deletion in here with no pain
-		if (CItem::OnTrigger(ITRIG_DESTROY,&g_Serv) == TRIGRET_RET_TRUE)
-			return;
+		if (CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE)
+			return false;
 	}
+
+	return true;
+}
+
+void CItem::Delete()
+{
+	if ( NotifyDelete() == false )
+		return;
 
 	CObjBase::Delete();
 }

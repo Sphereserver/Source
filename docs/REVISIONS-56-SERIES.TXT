@@ -4511,5 +4511,9 @@ ALPHA additions:
 - Updated #1654: sphere_defs.scp (Adjusted height of the Meer characters)
 
 13-09-2009, MrSugarCube
+- Fixed #1595: @Destroy trigger not being fired for items inside removed containers. When
+  returning 1 in @Destroy on an item inside a container about to be deleted, the item will
+  be dropped to the ground (unless the item has already been moved elsewhere).
 - Fixed #1656: Exception when players trade and item 01e5e has not been set as a container
   type.
+
