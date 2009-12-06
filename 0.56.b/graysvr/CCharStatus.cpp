@@ -6,6 +6,7 @@
 
 #include <math.h>
 #include "graysvr.h"	// predef header.
+#include "../network/network.h"
 
 bool CChar::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwAmount )
 {
@@ -684,16 +685,19 @@ LPCTSTR CChar::GetPossessPronoun() const
 	}
 }
 
-BYTE CChar::GetModeFlag( bool fTrueSight ) const
+BYTE CChar::GetModeFlag( bool fTrueSight, CClient* pViewer ) const
 {
 	ADDTOCALLSTACK("CChar::GetModeFlag");
 	BYTE mode = 0;
-	if ( IsStatFlag( STATF_Poisoned ))
-		mode |= CHARMODE_POISON;
+	if (pViewer == NULL || (pViewer->GetNetState()->isClientLessVersion(MINCLIVER_SA) && pViewer->GetNetState()->isClientSA() == false))
+	{
+		if ( IsStatFlag( STATF_Poisoned ))
+			mode |= CHARMODE_POISON;
+		if ( IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone) )
+			mode |= CHARMODE_YELLOW;
+	}
 	if ( IsStatFlag( STATF_War ))
 		mode |= CHARMODE_WAR;
-	if ( IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone) )
-		mode |= CHARMODE_YELLOW;
 	if ( ! fTrueSight && IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden | STATF_Sleeping ))	// if not me, this will not show up !
 		mode |= CHARMODE_INVIS;
 	return( mode );

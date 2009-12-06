@@ -146,6 +146,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Status			= 0x11,
 	XCMD_ExtCmd			= 0x12,
 	XCMD_ItemEquipReq	= 0x13,
+	XCMD_HealthBarColor	= 0x17,
 	XCMD_Put			= 0x1a,
 	XCMD_Start			= 0x1b,
 	XCMD_Speak			= 0x1c,
@@ -947,6 +948,7 @@ enum NOTO_TYPE
 };
 
 #define MINCLIVER_NOTOINVUL 0x400000	// minimum client required to view noto_invul health bar
+#define MINCLIVER_SA		0x700000	// minimum client to activate SA packets
 
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
@@ -1937,6 +1939,21 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_maxDamage;
 			NDWORD m_Tithing;
 		} StatusNew;
+ 
+		struct // size = ? change colour of hp bar, SA
+		{
+#define HEALTHCOLOR_GREEN	1
+#define HEALTHCOLOR_YELLOW	2
+			BYTE m_Cmd;		// 0 = 0x17 / XCMD_HealthBarColor
+			NWORD m_len;	// 1-2 = len
+			NDWORD m_UID;	// 3-6 = character serial
+			NWORD m_count;	// 7-8 = number of states
+			struct
+			{
+				NWORD m_color;	// 9-10 = status color (1=green, 2=yellow)
+				BYTE m_state;	// 11 = color state
+			} m_states[1];
+		} HealthBarColor;
 
 		struct // size = 19	or var len // draw the item at a location
 		{
@@ -1978,8 +1995,9 @@ struct CCommand	// command buffer from server to client.
 		} Start;
 
 		// Char mode flags
-#define CHARMODE_POISON		0x04	// green status bar.
-#define CHARMODE_YELLOW		0x08	// ? yellow status bar.
+#define CHARMODE_POISON		0x04	// green status bar. (note: see XCMD_HealthBarColor for SA)
+#define CHARMODE_FLYING		0x04	// flying (gargoyles, SA)
+#define CHARMODE_YELLOW		0x08	// yellow status bar. (note: see XCMD_HealthBarColor for SA)
 #define CHARMODE_WAR		0x40
 #define CHARMODE_INVIS		0x80
 

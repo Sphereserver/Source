@@ -1020,7 +1020,10 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 			if ( fFull )
 				pClient->addChar(this);
 			else
+			{
 				pClient->addCharMove(this);
+				pClient->addHealthBarUpdate(this);
+			}
 		}
 	}
 }
@@ -2976,6 +2979,7 @@ bool CChar::CheckLocation( bool fStanding )
 		case SKILL_BUSHIDO:
 		case SKILL_NINJITSU:
 		case SKILL_SPELLWEAVING:
+		case SKILL_MYSTICISM:
 			// Skill is broken if we move ?
 			break;
 		case SKILL_HIDING:	// this should become stealth ?

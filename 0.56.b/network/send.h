@@ -74,6 +74,30 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0x17 : PacketHealthBarUpdate		update health bar colour (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketHealthBarUpdate : public PacketSend
+{
+private:
+	CGrayUID m_character;
+
+public:
+	enum Color
+	{
+		GreenBar = 1,
+		YellowBar = 2
+	};
+
+	PacketHealthBarUpdate(CClient* target, const CChar* character);
+
+	virtual bool onSend(CClient* client);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0x1A : PacketItemWorld			sends item on ground (NORMAL)
  *
  *

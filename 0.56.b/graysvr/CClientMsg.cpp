@@ -911,6 +911,9 @@ void CClient::addChar( const CChar * pChar )
 	EXC_SET("Wake sector");
 	pChar->GetTopPoint().GetSector()->SetSectorWakeStatus();	// if it can be seen then wake it.
 
+	EXC_SET("Health bar colour");
+	addHealthBarUpdate( pChar );
+
 	EXC_SET("AOSToolTip adding (end)");
 	addAOSTooltip( pChar );
 
@@ -1884,6 +1887,17 @@ void CClient::addStamUpdate( CGrayUID uid )
 	pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
 }
 
+void CClient::addHealthBarUpdate( const CChar * pChar )
+{
+	ADDTOCALLSTACK("CClient::addHealthBarUpdate");
+	if ( pChar == NULL )
+		return;
+	else if ( GetNetState()->isClientLessVersion(MINCLIVER_SA) && GetNetState()->isClientSA() == false)
+		return;
+
+	PacketHealthBarUpdate* cmd = new PacketHealthBarUpdate(this, pChar);
+}
+
 void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 {
 	ADDTOCALLSTACK("CClient::addSpellbookOpen");
@@ -2527,6 +2541,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 					case IT_SPELLBOOK_BUSHIDO:
 					case IT_SPELLBOOK_NINJITSU:
 					case IT_SPELLBOOK_ARCANIST:
+					case IT_SPELLBOOK_MYSTIC:
 						{
 							int count = pItem->GetSpellcountInBook();
 							if ( count > 0 )

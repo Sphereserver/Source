@@ -1,0 +1,320 @@
+//****************************************************************************
+//SPHERE by : Menasoft ©1997-2007
+//www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: 18-Oct-2009
+
+// mysticism spellbook
+[ITEMDEF 02d9d]
+DEFNAME=i_spellbook_mystic
+TYPE=t_spellbook_mystic
+NAME=Mystic Spellbook
+RESOURCES=80 i_parchment, 1 i_hide, 1 i_cloth
+
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism
+DESCRIPTION=Mystic Spellbook
+
+ON=@Create
+	ATTR = attr_magic|attr_newbie
+	MOREZ = 677
+
+// nether bolt scroll
+[ITEMDEF 02d9e]
+DEFNAME=i_scroll_nether_bolt
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=1
+RESOURCES=i_scroll_blank, i_reag_black_pearl, i_reag_sulfur_ash
+SKILLMAKE=INSCRIPTION 10.0, MYSTICISM 5.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Nether Bolt
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_nether_bolt
+	MOREY = {10 50}
+
+// healing stone scroll
+[ITEMDEF 02d9f]
+DEFNAME=i_scroll_healing_stone
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=1
+RESOURCES=i_scroll_blank, i_reag_bone, i_reag_garlic, i_reag_ginseng, i_reag_spider_silk
+SKILLMAKE=INSCRIPTION 10.0, MYSTICISM 5.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Healing Stone
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_healing_stone
+	MOREY = {10 50}
+
+// purge magic scroll
+[ITEMDEF 02da0]
+DEFNAME=i_scroll_purge_magic
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=2
+RESOURCES=i_scroll_blank, i_reag_fertile_dirt, i_reag_garlic, i_reag_mandrake_root, i_reag_sulfur_ash
+SKILLMAKE=INSCRIPTION 20.0, MYSTICISM 10.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Purge Magic
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_purge_magic
+	MOREY = {20 60}
+
+// enchant weapon scroll
+[ITEMDEF 02da1]
+DEFNAME=i_scroll_enchant_weapon
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=2
+RESOURCES=i_scroll_blank, i_reag_spider_silk, i_reag_mandrake_root, i_reag_sulfur_ash
+SKILLMAKE=INSCRIPTION 20.0, MYSTICISM 10.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Enchant Weapon
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_enchant_weapon
+	MOREY = {20 60}
+
+// sleep scroll
+[ITEMDEF 02da2]
+DEFNAME=i_scroll_sleep
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=3
+RESOURCES=i_scroll_blank, i_reag_nightshade, i_reag_spider_silk, i_reag_black_pearl
+SKILLMAKE=INSCRIPTION 30.0, MYSTICISM 20.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Sleep
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_sleep
+	MOREY = {30 70}
+
+// eagle strike scroll
+[ITEMDEF 02da3]
+DEFNAME=i_scroll_eagle_strike
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=3
+RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_bone, i_reag_spider_silk, i_reag_mandrake_root
+SKILLMAKE=INSCRIPTION 30.0, MYSTICISM 20.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Eagle Strike
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_eagle_strike
+	MOREY = {30 70}
+
+// animated weapon scroll
+[ITEMDEF 02da4]
+DEFNAME=i_scroll_animated_weapon
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=4
+RESOURCES=i_scroll_blank, i_reag_bone, i_reag_black_pearl, i_reag_mandrake_root, i_reag_nightshade
+SKILLMAKE=INSCRIPTION 40.0, MYSTICISM 30.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Animated Weapon
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_animated_weapon
+	MOREY = {40 75}
+
+// stone form scroll
+[ITEMDEF 02da5]
+DEFNAME=i_scroll_stone_form
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=4
+RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_fertile_dirt, i_reag_garlic
+SKILLMAKE=INSCRIPTION 40.0, MYSTICISM 30.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Stone Form
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_stone_form
+	MOREY = {40 75}
+
+// spell trigger scroll
+[ITEMDEF 02da6]
+DEFNAME=i_scroll_spell_trigger
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=5
+RESOURCES=i_scroll_blank, i_reag_dragon_blood, i_reag_garlic, i_reag_mandrake_root, i_reag_spider_silk
+SKILLMAKE=INSCRIPTION 50.0, MYSTICISM 40.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Spell Trigger
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_spell_trigger
+	MOREY = {50 80}
+
+// mass sleep scroll
+[ITEMDEF 02da7]
+DEFNAME=i_scroll_mass_sleep
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=5
+RESOURCES=i_scroll_blank, i_reag_ginseng, i_reag_nightshade, i_reag_spider_silk
+SKILLMAKE=INSCRIPTION 50.0, MYSTICISM 40.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Mass Sleep
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_mass_sleep
+	MOREY = {50 80}
+
+// cleansing winds scroll
+[ITEMDEF 02da8]
+DEFNAME=i_scroll_cleansing_winds
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=6
+RESOURCES=i_scroll_blank, i_reag_dragon_blood, i_reag_garlic, i_reag_ginseng, i_reag_mandrake_root
+SKILLMAKE=INSCRIPTION 60.0, MYSTICISM 50.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Cleansing Winds
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_cleansing_winds
+	MOREY = {60 85}
+
+// bombard scroll
+[ITEMDEF 02da9]
+DEFNAME=i_scroll_bombard
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=6
+RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_dragon_blood, i_reag_garlic, i_reag_sulfur_ash
+SKILLMAKE=INSCRIPTION 60.0, MYSTICISM 50.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Bombard
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_bombard
+	MOREY = {60 85}
+
+// spell plague scroll
+[ITEMDEF 02daa]
+DEFNAME=i_scroll_spell_plague
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=7
+RESOURCES=i_scroll_blank, i_reag_daemon_bone, i_reag_dragon_blood, i_reag_nightshade, i_reag_sulfur_ash
+SKILLMAKE=INSCRIPTION 70.0, MYSTICISM 60.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Spell Plague
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_spell_plague
+	MOREY = {70 90}
+
+// hail storm scroll
+[ITEMDEF 02dab]
+DEFNAME=i_scroll_hail_storm
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=7
+RESOURCES=i_scroll_blank, i_reag_dragon_blood, i_reag_blood_moss, i_reag_black_pearl, i_reag_mandrake_root
+SKILLMAKE=INSCRIPTION 70.0, MYSTICISM 60.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Hail Storm
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_hail_storm
+	MOREY = {70 90}
+
+// nether cyclone scroll
+[ITEMDEF 02dac]
+DEFNAME=i_scroll_nether_cyclone
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=8
+RESOURCES=i_scroll_blank, i_reag_mandrake_root, i_reag_nightshade, i_reag_sulfur_ash, i_reag_blood_moss
+SKILLMAKE=INSCRIPTION 80.0, MYSTICISM 70.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Nether Cyclone
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_nether_cyclone
+	MOREY = {80 100}
+
+// rising colossus scroll
+[ITEMDEF 02dad]
+DEFNAME=i_scroll_rising_colossus
+TYPE=t_scroll
+WEIGHT=1
+//CIRCLE=8
+RESOURCES=i_scroll_blank, i_reag_daemon_bone, i_reag_dragon_blood, i_reag_fertile_dirt, i_reag_nightshade
+SKILLMAKE=INSCRIPTION 80.0, MYSTICISM 70.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Mysticism Scrolls
+DESCRIPTION=Rising Colossus
+
+ON=@Create
+	ATTR = attr_magic
+	MOREX = s_rising_colossus
+	MOREY = {80 100}
+
+// mystic template
+[TEMPLATE tm_mystic]
+CONTAINER=i_bag
+ITEM=i_spellbook_mystic
+ITEM=i_scroll_nether_bolt
+ITEM=i_scroll_healing_stone
+ITEM=i_scroll_purge_magic
+ITEM=i_scroll_enchant_weapon
+ITEM=i_scroll_sleep
+ITEM=i_scroll_eagle_strike
+ITEM=i_scroll_animated_weapon
+ITEM=i_scroll_stone_form
+ITEM=i_scroll_spell_trigger
+ITEM=i_scroll_mass_sleep
+ITEM=i_scroll_cleansing_winds
+ITEM=i_scroll_bombard
+ITEM=i_scroll_spell_plague
+ITEM=i_scroll_hail_storm
+ITEM=i_scroll_nether_cyclone
+ITEM=i_scroll_rising_colossus
+
+[EOF]

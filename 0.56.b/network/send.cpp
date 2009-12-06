@@ -238,6 +238,34 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
 /***************************************************************************
  *
  *
+ *	Packet 0x17 : PacketHealthBarUpdate		update health bar colour (LOW)
+ *
+ *
+ ***************************************************************************/
+PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, PRI_LOW), m_character(character->GetUID())
+{
+	initLength();
+
+	writeInt32(character->GetUID());
+
+	writeInt16(2);
+	writeInt16(GreenBar);
+	writeByte(character->IsStatFlag(STATF_Poisoned));
+	writeInt16(YellowBar);
+	writeByte(character->IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone));
+
+	push(target);
+}
+
+bool PacketHealthBarUpdate::onSend(CClient* client)
+{
+	return client->CanSee(m_character.CharFind());
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0x1A : PacketItemWorld			sends item on ground (NORMAL)
  *
  *
@@ -470,7 +498,7 @@ PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_Vi
 	writeInt16(id);
 	writeByte(0);
 	writeInt16(hue);
-	writeByte(character->GetModeFlag());
+	writeByte(character->GetModeFlag(false, target));
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 	writeInt16(0);
@@ -1715,7 +1743,7 @@ PacketCharacterMove::PacketCharacterMove(CClient* target, const CChar* character
 	writeByte(pos.m_z);
 	writeByte(direction);
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(character->CanSee(target->GetChar())));
+	writeByte(character->GetModeFlag(character->CanSee(target->GetChar()), target));
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
 	push(target);
@@ -1747,7 +1775,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(pos.m_z);
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
-	writeByte(character->GetModeFlag());
+	writeByte(character->GetModeFlag(false, target));
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
 	if (character->IsStatFlag(STATF_Sleeping) == false)

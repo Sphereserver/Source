@@ -4534,9 +4534,14 @@ ALPHA additions:
   must have a RESDISP of 7+ and the FEATURE_SA_UPDATE flag needs to be enabled in Sphere.ini.
   ARGN3 in the f_onchar_create (sphere_serv_trigger.scp) is now the character race (1=human,
   2=elf, 3=gargoyle).
+- Added: Basic support for mysticism spellbook and skill (the actual spell effects need to be
+  scripted).
+- Fixed: Status bar not correctly showing green or yellow in 7.0.0+ clients.
 - Modified: The size of Map5.mul is now automatically detected.
 
 06-12-2009, MrSugarCube (Script pack)
 - Added: spherechar_sa.scp (Added gargoyle character definitions)
-- Updated: sphere_defs.scp (Added defname for RDS_SA RESDISP)
+- Added: sphere_item_provisions_alchemy_magic_sa.scp (Added mysticism spellbook and scrolls)
+- Updated: sphere_defs.scp (Added defname for RDS_SA RESDISP, t_spellbook_mystic)
 - Updated: sphere_serv_triggers.scp (Updated description for f_onchar_create)
+- Updated: sphere_skills.scp (Added base definitions for mysticism, imbuing and throwing skills)

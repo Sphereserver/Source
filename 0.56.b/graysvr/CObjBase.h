@@ -2864,7 +2864,7 @@ public:
 public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
-	BYTE GetModeFlag( bool fTrueSight = false ) const;
+	BYTE GetModeFlag( bool fTrueSight = false, CClient* pViewer = NULL ) const;
 	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
 		BYTE dir = m_dirFace;
@@ -3415,6 +3415,7 @@ inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
 		case SKILL_BUSHIDO:
 		case SKILL_NINJITSU:
 		case SKILL_SPELLWEAVING:
+		case SKILL_MYSTICISM:
 			return true;
 	}
 	return false;

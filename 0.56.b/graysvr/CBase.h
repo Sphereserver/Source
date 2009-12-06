@@ -380,6 +380,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_NINJITSU,	// 188 = SE Ninjitsu spellbook (should have MOREZ=500 by default)
 	IT_SPELLBOOK_ARCANIST,	// 189 = ML Spellweaver spellbook (should have MOREZ=600 by default)
 	IT_MULTI_CUSTOM,	// 190 = Customisable multi
+	IT_SPELLBOOK_MYSTIC,	// 191 = SA Mysticism spellbook (should have MOREX=677 by default)
 
 	IT_QTY,
 	IT_TRIGGER = 1000,	// custom triggers starts from here

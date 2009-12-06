@@ -1131,7 +1131,7 @@ public:
 	void resendBuffs();
 
 	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump );
-	void  addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
+	void addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
 	bool addContainerSetup( const CItemContainer * pCont ); // Send Backpack (with items)
 
 	void addPlayerStart( CChar * pChar );
@@ -1197,6 +1197,7 @@ public:
 	void addHitsUpdate( CGrayUID uid );
 	void addManaUpdate( CGrayUID uid );
 	void addStamUpdate( CGrayUID uid );
+	void addHealthBarUpdate( const CChar* pChar );
 	void addSkillWindow(SKILL_TYPE skill, bool bFromInfo = false); // Opens the skills list
 	void addBulletinBoard( const CItemContainer * pBoard );
 	bool addBBoardMessage( const CItemContainer * pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg );

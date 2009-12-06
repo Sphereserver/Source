@@ -3902,6 +3902,7 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		case SKILL_BUSHIDO:
 		case SKILL_NINJITSU:
 		case SKILL_SPELLWEAVING:
+		case SKILL_MYSTICISM:
 			return Skill_Magery(stage);
 		case SKILL_MAGICRESISTANCE:
 			return 0;

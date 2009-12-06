@@ -973,6 +973,7 @@ t_spellbook_bushido	187 // SE Bushido spellbook (should have MOREZ=400 by defaul
 t_spellbook_ninjitsu	188 // SE Ninjitsu spellbook (should have MOREZ=500 by default)
 t_spellbook_arcanist	189 // ML Spellweaver spellbook (should have MOREZ=600 by default)
 t_multi_custom		190 // Customisable multi
+t_spellbook_mystic	191 // SA Mysticism spellbook (should have MOREX=677 by default)
 
 [defname layers]
 layer_hand1		1

@@ -508,6 +508,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SPELLBOOK_ARCANIST:
 			addSpellbookOpen( pItem, 601 );
 			return true;
+ 
+		case IT_SPELLBOOK_MYSTIC:
+			addSpellbookOpen( pItem, 678 );
+			return true;
 
 		case IT_HAIR_DYE:
 			if (!m_pChar->LayerFind( LAYER_BEARD ) && !m_pChar->LayerFind( LAYER_HAIR ))
