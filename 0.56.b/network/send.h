@@ -107,8 +107,13 @@ class PacketItemWorld : public PacketSend
 private:
 	CGrayUID m_item;
 
+protected:
+	PacketItemWorld(BYTE id, long size, CGrayUID uid);
+
 public:
 	PacketItemWorld(CClient* target, CItem* item);
+
+	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags);
 
 	virtual bool onSend(CClient* client);
 };
@@ -1555,6 +1560,25 @@ class PacketToggleHotbar : public PacketSend
 {
 public:
 	PacketToggleHotbar(CClient* target, bool enable);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF3 : PacketItemWorld			sends item on ground (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketItemWorldNew : public PacketItemWorld
+{
+public:
+	enum DataSource
+	{
+		TileData = 0x0,
+		Multi = 0x2
+	};
+
+	PacketItemWorldNew(CClient* target, CItem* item);
 };
 
 #endif

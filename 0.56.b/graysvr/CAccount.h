@@ -122,7 +122,7 @@ public:
 	}
 	void TogPrivFlags( WORD wPrivFlags, LPCTSTR pszArgs );
 	
-	BYTE GetResDisp()
+	BYTE GetResDisp() const
 	{
 		return m_ResDisp;
 	}

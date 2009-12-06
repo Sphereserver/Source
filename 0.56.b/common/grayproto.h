@@ -298,6 +298,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	//	0xF0
 	XCMD_WalkNew		= 0xf0,
 	XCMD_WalkUnknown	= 0xf1,
+	XCMD_PutNew			= 0xf3,
 	XCMD_CrashReport    = 0xf4,
 
 	XCMD_QTY		= 0xf5,
@@ -1817,6 +1818,24 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_Version_Rev;	// 13 - 16 = Ver Revision
 			NDWORD m_Version_Pat;	// 17 - 20 = Ver Patch
 		} NewSeed;
+
+		struct // XCMD_PutNew	// size = 24	// draw the item at a location
+		{
+			BYTE m_Cmd;		// 0 = 0xF3
+			NWORD m_unk;	// 1-2 = 0x001
+			BYTE m_type;	// 3 = type (0x0=TileData, 0x2=Multi)
+			NDWORD m_UID;	// 4-7 = UID | UID_O_ITEM | UID_F_RESOURCE
+			NWORD m_id;		// 8-9
+			BYTE m_dir;		// 10 = direction
+			NWORD m_amount;	// 11-12 = amount
+			NWORD m_unkAmount; // 13-14 = amount, no noticable effect on client
+			NWORD m_x;		// 15-18 = x
+			NWORD m_y;		// 19-22 = y
+			BYTE m_z;		// 23 = signed char
+			BYTE m_layer;	// 24 = item layer
+			NWORD m_wHue;	// 25-26 = HUE_TYPE
+			BYTE m_flags;	// 27 = 0x20 = is it movable, 0x80 = hidden
+		} PutNew;
 
 		struct // XCMD_CrashReport	// 291 bytes
 		{

@@ -4536,6 +4536,10 @@ ALPHA additions:
   2=elf, 3=gargoyle).
 - Added: Basic support for mysticism spellbook and skill (the actual spell effects need to be
   scripted).
+- Added: Support for the increased tiledata size in client 7.0.0+. As a consequence, multis
+  must now start from 08000 instead of 04000 and scripts must be adjusted accordingly (the
+  default script pack has been updated). If an older client encounters an item within the
+  04000-07fff range they will only see a worldgem bit (01ea7).
 - Fixed: Status bar not correctly showing green or yellow in 7.0.0+ clients.
 - Modified: The size of Map5.mul is now automatically detected.
 
@@ -4545,3 +4549,5 @@ ALPHA additions:
 - Updated: sphere_defs.scp (Added defname for RDS_SA RESDISP, t_spellbook_mystic)
 - Updated: sphere_serv_triggers.scp (Updated description for f_onchar_create)
 - Updated: sphere_skills.scp (Added base definitions for mysticism, imbuing and throwing skills)
+- Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
+  sphere_item_multis_stairs.scp (Increased multi IDs by 04000)

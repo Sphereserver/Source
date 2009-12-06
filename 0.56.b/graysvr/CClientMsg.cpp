@@ -247,7 +247,10 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	ADDTOCALLSTACK("CClient::addItem_OnGround");
 	ASSERT(pItem);
 	
-	PacketItemWorld* cmd = new PacketItemWorld(this, pItem);
+	if ( GetNetState()->isClientLessVersion(MINCLIVER_SA) && GetNetState()->isClientSA() == false)
+		PacketItemWorld* cmd = new PacketItemWorld(this, pItem);
+	else
+		PacketItemWorldNew* cmd = new PacketItemWorldNew(this, pItem);
 
 	// send KR drop confirmation
 	if ( GetNetState()->isClientKR() )

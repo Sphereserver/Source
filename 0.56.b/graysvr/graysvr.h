@@ -1293,7 +1293,7 @@ public:
 			return( false );
 		return( GetAccount()->IsResDisp( flag ) );
 	}
-	BYTE GetResDisp()
+	BYTE GetResDisp() const
 	{
 		if ( GetAccount() == NULL )
 			return( -1 );

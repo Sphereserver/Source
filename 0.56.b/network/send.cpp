@@ -270,9 +270,12 @@ bool PacketHealthBarUpdate::onSend(CClient* client)
  *
  *
  ***************************************************************************/
+PacketItemWorld::PacketItemWorld(BYTE id, long size, CGrayUID uid) : PacketSend(id, size, PRI_NORMAL), m_item(uid)
+{
+}
+
 PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD_Put, 20, PRI_NORMAL), m_item(item->GetUID())
 {
-	CChar* character = target->GetChar();
 	DWORD uid = item->GetUID();
 	long amount = ( item->GetAmount() > 1 ) ? item->GetAmount() : 0;
 	ITEMID_TYPE id = item->GetDispID();
@@ -280,6 +283,56 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 	BYTE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
+
+	adjustItemData(target, item, id, hue, amount, p, dir, flags);
+
+	if (target->GetNetState()->isClientLessVersion(MINCLIVER_SA) && target->GetNetState()->isClientSA() == false)
+	{
+		// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
+		// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
+		// to something safer
+		if (id >= ITEMID_MULTI)
+			id = (ITEMID_TYPE)(id - ITEMID_MULTI_LEGACY);
+		else if (id >= ITEMID_MULTI_LEGACY)
+			id = ITEMID_WorldGem;
+	}
+
+	if (amount > 0)
+		uid |= 0x80000000;
+	else
+		uid &= 0x7fffffff;
+
+	p.m_x &= 0x7fff;
+	if (dir > 0)
+		p.m_x |= 0x8000;
+	p.m_y &= 0x3fff;
+	if (hue > 0)
+		p.m_y |= 0x8000;
+	if (flags > 0)
+		p.m_y |= 0x4000;
+
+	initLength();
+	writeInt32(uid);
+	writeInt16(id);
+	if (amount > 0)
+		writeInt16(amount);
+	writeInt16(p.m_x);
+	writeInt16(p.m_y);
+	if (dir > 0)
+		writeByte(dir);
+	writeByte(p.m_z);
+	if (hue > 0)
+		writeInt16(hue);
+	if (flags > 0)
+		writeByte(flags);
+
+	push(target);
+}
+
+void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags)
+{
+	CChar* character = target->GetChar();
+	ASSERT(character);
 
 	// modify the values for the specific client/item.
 	if (id != ITEMID_CORPSE)
@@ -348,37 +401,6 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 			dir = item->m_itCorpse.m_facing_dir;
 		}
 	}
-
-	if (amount > 0)
-		uid |= 0x80000000;
-	else
-		uid &= 0x7fffffff;
-
-	p.m_x &= 0x7fff;
-	if (dir > 0)
-		p.m_x |= 0x8000;
-	p.m_y &= 0x3fff;
-	if (hue > 0)
-		p.m_y |= 0x8000;
-	if (flags > 0)
-		p.m_y |= 0x4000;
-
-	initLength();
-	writeInt32(uid);
-	writeInt16(id);
-	if (amount > 0)
-		writeInt16(amount);
-	writeInt16(p.m_x);
-	writeInt16(p.m_y);
-	if (dir > 0)
-		writeByte(dir);
-	writeByte(p.m_z);
-	if (hue > 0)
-		writeInt16(hue);
-	if (flags > 0)
-		writeByte(flags);
-
-	push(target);
 }
 
 bool PacketItemWorld::onSend(CClient* client)
@@ -3825,6 +3847,51 @@ PacketKREncryption::PacketKREncryption(CClient* target) : PacketSend(XCMD_Encryp
 PacketToggleHotbar::PacketToggleHotbar(CClient* target, bool enable) : PacketSend(XCMD_ToggleHotbar, 3, PRI_NORMAL)
 {
 	writeInt16(enable? 0x01 : 0x00);
+
+	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF3 : PacketItemWorldNew		sends item on ground (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 24, item->GetUID())
+{
+	DataSource source = TileData;
+	DWORD uid = item->GetUID();
+	long amount = item->GetAmount();
+	ITEMID_TYPE id = item->GetDispID();
+	CPointMap p = item->GetTopPoint();
+	BYTE dir = DIR_N;
+	HUE_TYPE hue = item->GetHue();
+	BYTE flags = 0;
+	BYTE layer = LAYER_NONE;
+
+	adjustItemData(target, item, id, hue, amount, p, dir, flags);
+
+	if (id >= ITEMID_MULTI)
+	{
+		id = (ITEMID_TYPE)(id - ITEMID_MULTI);
+		source = Multi;
+	}
+
+	writeInt16(1);
+	writeByte(source);// 0=tiledata,1=multi
+	writeInt32(uid);
+	writeInt16(id);
+	writeByte(dir);
+	writeInt16(amount);
+	writeInt16(amount);
+	writeInt16(p.m_x);
+	writeInt16(p.m_y);
+	writeByte(p.m_z);
+	writeByte(layer);
+	writeInt16(hue);
+	writeByte(flags);
 
 	push(target);
 }
