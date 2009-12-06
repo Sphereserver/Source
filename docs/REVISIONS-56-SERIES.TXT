@@ -4546,8 +4546,11 @@ ALPHA additions:
 06-12-2009, MrSugarCube (Script pack)
 - Added: spherechar_sa.scp (Added gargoyle character definitions)
 - Added: sphere_item_provisions_alchemy_magic_sa.scp (Added mysticism spellbook and scrolls)
+- Added: sphere_map5.scp, sphere_map_points5.scp (Added SA map areas)
 - Updated: sphere_defs.scp (Added defname for RDS_SA RESDISP, t_spellbook_mystic)
 - Updated: sphere_serv_triggers.scp (Updated description for f_onchar_create)
 - Updated: sphere_skills.scp (Added base definitions for mysticism, imbuing and throwing skills)
 - Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
   sphere_item_multis_stairs.scp (Increased multi IDs by 04000)
+- Updated: spheretables.scp (Added sphere_map5.scp and sphere_map_points5.scp to resources,
+  commented out by default)
