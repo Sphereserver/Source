@@ -5,6 +5,7 @@
 //
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"
+#include "../network/network.h"
 
 bool CObjBaseTemplate::IsDeleted() const
 {
@@ -268,7 +269,8 @@ void CObjBase::Sound( SOUND_TYPE id, int iOnce ) const // Play sound effect for 
 	if (( id <= 0 ) || !g_Cfg.m_fGenericSounds )
 		return;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! pClient->CanHear( this, TALKMODE_OBJ ))
 			continue;
@@ -285,7 +287,8 @@ void CObjBase::Effect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSou
 	// bLoop
 	// fExplode
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! pClient->CanSee( this ))
 			continue;
@@ -405,7 +408,8 @@ void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * 
 	ADDTOCALLSTACK("CObjBase::UpdateObjMessage");
 	// Show everyone a msg coming form this object.
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
 			continue;
@@ -416,19 +420,21 @@ void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * 
 	}
 }
 
-void CObjBase::UpdateCanSee( const CCommand * pCmd, int iLen, CClient * pClientExclude ) const
+void CObjBase::UpdateCanSee(PacketSend *packet, CClient *exclude) const
 {
 	ADDTOCALLSTACK("CObjBase::UpdateCanSee");
 	// Send this update message to everyone who can see this.
 	// NOTE: Need not be a top level object. CanSee() will calc that.
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if ( pClient == pClientExclude )
+		if (( pClient == exclude ) || !pClient->CanSee(this) )
 			continue;
-		if ( ! pClient->CanSee( this ))
-			continue;
-		pClient->xSendPkt( pCmd, iLen );
+
+		packet->send(pClient);
 	}
+	delete packet;
 }
 
 TRIGRET_TYPE CObjBase::OnHearTrigger( CResourceLock & s, LPCTSTR pszCmd, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue)
@@ -822,7 +828,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, pszKey );
 					int context;
 
-					if ( pClientToCheck->IsClientKR() )
+					if ( pClientToCheck->GetNetState()->isClientKR() )
 					{
 						context = g_Cfg.GetKRDialog( (DWORD)rid ) & 0x00FFFFFF;
 					}
@@ -1621,7 +1627,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
 					int context;
 
-					if ( pClientSrc->IsClientKR() )
+					if ( pClientSrc->GetNetState()->isClientKR() )
 					{
 						context = g_Cfg.GetKRDialog( (DWORD)rid ) & 0x00FFFFFF;
 					}
@@ -1652,7 +1658,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return false;
 
 				DWORD rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
-				if ( pClientSrc->IsClientKR() )
+				if ( pClientSrc->GetNetState()->isClientKR() )
 					rid = g_Cfg.GetKRDialog( rid );
 
 				pClientSrc->Dialog_Close( this, rid, iQty > 1 ? Exp_GetVal( Arg_ppCmd[1]) : 0 );
@@ -1922,7 +1928,9 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 	CItem * pItem = fHardcoded ? (dynamic_cast<CItem*>(this)) : (NULL);
 	CChar * pChar = NULL;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClientExclude == pClient )
 			continue;
@@ -1953,7 +1961,8 @@ void CObjBase::ResendTooltip( bool bForce )
 
 	CChar * pChar = NULL;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext(), pChar = NULL)
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		pChar = pClient->GetChar();
 		if ( pChar == NULL )

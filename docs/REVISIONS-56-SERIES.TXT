@@ -4517,3 +4517,14 @@ ALPHA additions:
 - Fixed #1656: Exception when players trade and item 01e5e has not been set as a container
   type.
 
+05-12-2009, MrSugarCube
+- Fixed: Unable to connect to remoteadmin from telnet clients that operate in 'line mode'
+  and need the enter key to be pressed after CTRL+A/Space (the one in Ubuntu, for example).
+- Modified: Rewritten networking system, based on the code Vjaka wrote for 0.57 combined
+  with updates added since such as EF_UseNetworkMulti. This new system introduces features
+  such as packet prioritisation which should help to keep clients responsive even in areas
+  with a large number of objects.
+  The EF_UseNetworkMulti and EF_UseNetworkMultiVersion experimental flags have been removed
+  from the ini and different settings have been added to a new "Network Behaviour" section.
+  The default settings should suit most users, but in some cases it may help to tweak the
+  MaxPacketsPerTick and MaxQueueSize settings.

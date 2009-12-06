@@ -2,6 +2,7 @@
 // CContain.CPP
 //
 #include "graysvr.h"	// predef header.
+#include "../network/send.h"
 
 //***************************************************************************
 // -CContainer
@@ -620,25 +621,17 @@ void CItemContainer::Trade_Status( bool fCheck )
 		pPartner->m_itEqTradeWindow.m_fCheck = false;
 	}
 
-	CCommand cmd;
-	cmd.SecureTrade.m_Cmd = XCMD_SecureTrade;
-	cmd.SecureTrade.m_len = 0x11;
-	cmd.SecureTrade.m_action = SECURE_TRADE_CHANGE;	// status
-	cmd.SecureTrade.m_fname = 0;
+	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
 
 	if ( pChar1->IsClient())
 	{
-		cmd.SecureTrade.m_UID = GetUID();
-		cmd.SecureTrade.m_UID1 = m_itEqTradeWindow.m_fCheck;
-		cmd.SecureTrade.m_UID2 = pPartner->m_itEqTradeWindow.m_fCheck;
-		pChar1->GetClient()->xSendPkt( &cmd, 0x11 );
+		cmd.prepareReadyChange(this, pPartner);
+		cmd.send(pChar1->GetClient());
 	}
 	if ( pChar2->IsClient())
 	{
-		cmd.SecureTrade.m_UID = pPartner->GetUID();
-		cmd.SecureTrade.m_UID1 = pPartner->m_itEqTradeWindow.m_fCheck;
-		cmd.SecureTrade.m_UID2 = m_itEqTradeWindow.m_fCheck;
-		pChar2->GetClient()->xSendPkt( &cmd, 0x11 );
+		cmd.prepareReadyChange(pPartner, this);
+		cmd.send(pChar2->GetClient());
 	}
 
 	// if both checked then done.
@@ -711,15 +704,9 @@ void CItemContainer::Trade_Delete()
 	if ( pChar->IsClient())
 	{
 		// Send the cancel trade message.
-		CCommand cmd;
-		cmd.SecureTrade.m_Cmd = XCMD_SecureTrade;
-		cmd.SecureTrade.m_len = 0x11;
-		cmd.SecureTrade.m_action = SECURE_TRADE_CLOSE;
-		cmd.SecureTrade.m_UID = GetUID();
-		cmd.SecureTrade.m_UID1 = 0;
-		cmd.SecureTrade.m_UID2 = 0;
-		cmd.SecureTrade.m_fname = 0;
-		pChar->GetClient()->xSendPkt( &cmd, 0x11 );
+		PacketTradeAction cmd(SECURE_TRADE_CLOSE);
+		cmd.prepareClose(this);
+		cmd.send(pChar->GetClient());
 	}
 
 	// Drop items back in my pack.

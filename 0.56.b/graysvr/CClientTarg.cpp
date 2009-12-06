@@ -6,6 +6,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/send.h"
 
 ////////////////////////////////////////////////////////
 // Targetted GM functions.
@@ -2585,10 +2586,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", (DWORD)pChar->GetUID());
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2,5) * TICK_PER_SEC));
 
-	CExtData ExtData;
-	ExtData.Party_Msg_Rsp.m_code = PARTYMSG_NotoInvited;
-	ExtData.Party_Msg_Rsp.m_UID = m_pChar->GetUID();
-	pChar->GetClient()->addExtData( EXTDATA_Party_Msg, &ExtData, 9 );
+	PacketPartyInvite* cmd = new PacketPartyInvite(pChar->GetClient(), m_pChar);
 
 	// Now up to them to decide to accept.
 	return( true );

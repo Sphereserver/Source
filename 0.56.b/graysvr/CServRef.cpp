@@ -174,40 +174,6 @@ int CServerDef::GetTimeSinceLastValid() const
 	return( - g_World.GetTimeDiff( m_timeLastValid ));
 }
 
-void CServerDef::addToServersList( CCommand & cmd, int index, int j, bool bReverse ) const
-{
-	ADDTOCALLSTACK("CServerDef::addToServersList");
-	// Add myself to the server list.
-	cmd.ServerList.m_serv[j].m_count = index;
-
-	//pad zeros to length.
-	strcpylen( cmd.ServerList.m_serv[j].m_servname, GetName(), sizeof(cmd.ServerList.m_serv[j].m_servname));
-
-	if ( this == &g_Serv )
-		cmd.ServerList.m_serv[j].m_percentfull = maximum(0, minimum((StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
-	else
-		cmd.ServerList.m_serv[j].m_percentfull = minimum(StatGet(SERV_STAT_CLIENTS), 100);
-	cmd.ServerList.m_serv[j].m_timezone = m_TimeZone;	// GRAY_TIMEZONE
-
-	DWORD dwAddr = m_ip.GetAddrIP();
-	if ( bReverse )
-	{
-		// Clients less than 4.0.0 require IP to be sent in reverse
-		cmd.ServerList.m_serv[j].m_ip[3] = ( dwAddr >> 24 ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[2] = ( dwAddr >> 16 ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[1] = ( dwAddr >> 8  ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[0] = ( dwAddr       ) & 0xFF;
-	}
-	else
-	{
-		// Clients since 4.0.0 require IP to be sent in order
-		cmd.ServerList.m_serv[j].m_ip[0] = ( dwAddr >> 24 ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[1] = ( dwAddr >> 16 ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[2] = ( dwAddr >> 8  ) & 0xFF;
-		cmd.ServerList.m_serv[j].m_ip[3] = ( dwAddr       ) & 0xFF;
-	}
-}
-
 enum SC_TYPE
 {
 	SC_ACCAPP,

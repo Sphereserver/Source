@@ -62,5 +62,7 @@ ADD(CVarDefContNum, "CVarDefContNum");
 ADD(CVarDefContStr, "CVarDefContStr");
 ADD(CVarDefMap, "CVarDefMap");
 ADD(CVarDefMap::CVarDefContTest, "CVarDefContTest");
+ADD(NetworkIn, "NetworkIn");
+ADD(NetworkOut, "NetworkOut");
 
 #undef ADD

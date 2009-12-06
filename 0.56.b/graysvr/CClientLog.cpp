@@ -6,11 +6,12 @@
 //
 
 #include "graysvr.h"	// predef header.
+#include "../network/network.h"
+#include "../network/send.h"
 #pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
 #pragma warning(default:4096)
 
-BYTE CClient::sm_xCompress_Buffer[MAX_BUFFER];	// static
 CHuffman CClient::m_Comp;
 #ifndef _WIN32
 	extern LinuxEv g_NetworkEvent;
@@ -26,15 +27,7 @@ int CClient::xCompress( BYTE * pOutput, const BYTE * pInput, int iLen ) // stati
 	return m_Comp.Compress( pOutput, pInput, iLen );
 }
 
-CLogIP * CClient::GetLogIP() const
-{
-	ADDTOCALLSTACK("CClient::GetLogIP");
-	if ( ! m_PeerName.IsValidAddr())	// can't get ip ? why ?
-		return( NULL );
-	return g_Cfg.FindLogIP( m_PeerName, true );
-}
-
-bool	CClient::IsConnecting()
+bool CClient::IsConnecting()
 {
 	ADDTOCALLSTACK("CClient::IsConnecting");
 	switch ( GetConnectType() )
@@ -53,82 +46,16 @@ void	CClient::SetConnectType( CONNECT_TYPE iType )
 	ADDTOCALLSTACK("CClient::SetConnectType");
 	m_iConnectType	= iType;
 	if ( iType == CONNECT_GAME )
-		UpdateLogIPConnecting( false );
-}
-	
-
-int	CClient::GetLogIPConnecting() const
-{
-	ADDTOCALLSTACK("CClient::GetLogIPConnecting");
-	CLogIP *	pLogIP	= GetLogIP();
-	if ( !pLogIP )	return 0;
-	return pLogIP->m_iConnecting;
-}
-
-
-int	CClient::GetLogIPConnected() const
-{
-	ADDTOCALLSTACK("CClient::GetLogIPConnected");
-	CLogIP *	pLogIP	= GetLogIP();
-	if ( !pLogIP )	return 0;
-	return pLogIP->m_iConnected;
-}
-
-
-void	CClient::UpdateLogIPConnecting( bool fIncrease )
-{
-	ADDTOCALLSTACK("CClient::UpdateLogIPConnecting");
-	CLogIP *	pLogIP	= GetLogIP();
-	if ( !pLogIP )	return;
-	if ( fIncrease )
-		pLogIP->m_iConnecting++;
-	else if ( pLogIP->m_iConnecting > 0 )
-		pLogIP->m_iConnecting--;
-
-}
-
-
-void CClient::UpdateLogIPConnected( bool fIncrease )
-{
-	ADDTOCALLSTACK("CClient::UpdateLogIPConnected");
-	CLogIP *	pLogIP	= GetLogIP();
-	if ( !pLogIP )	return;
-	if ( fIncrease )
-		pLogIP->m_iConnected++;
-	else if ( pLogIP->m_iConnected > 0 )
-		pLogIP->m_iConnected--;
-}
-
-
-bool CClient::IsBlockedIP() const
-{
-	ADDTOCALLSTACK("CClient::IsBlockedIP");
-	CLogIP * pLogIP;
-
-	for ( int i=0; i < g_Cfg.m_LogIP.GetCount(); i++ )
 	{
-		pLogIP = g_Cfg.m_LogIP[i];
-
-		if ( pLogIP->IsSameIP( m_PeerName ) )		// checked below
-			continue;
-
-		if ( pLogIP->IsMatchIP( m_PeerName ) )
-		{
-			if ( pLogIP->IsBlocked() )
-				return true;
-		}
+		NetworkIn::HistoryIP *hist = &g_NetworkIn.getHistoryForIP(GetPeer());
+		hist->m_connecting--;
 	}
-
-	pLogIP = GetLogIP();
-	if ( pLogIP == NULL )
-		return( true );
-	return( pLogIP->CheckPingBlock( false ));
 }
 
 //---------------------------------------------------------------------
 // Push world display data to this client only.
 
-bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
+bool CClient::addLoginErr(BYTE code)
 {
 	ADDTOCALLSTACK("CClient::addLoginErr");
 	// code
@@ -138,7 +65,7 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 	// 3 = no password
 	// LOGIN_ERR_OTHER
 
-	if ( code == LOGIN_SUCCESS )
+	if (code == PacketLoginError::Success)
 		return( true );
 
 	// console message to display for each login error code
@@ -165,52 +92,50 @@ bool CClient::addLoginErr( LOGIN_ERR_TYPE code )
 		"The maximum number of guests has been reached. See the GUESTSMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of password tries has been reached",
 	};
+
+	if (code < 0 || code >= COUNTOF(sm_Login_ErrMsg))
+		code = PacketLoginError::Other;
 	
-	DEBUG_ERR(( "%x:Bad Login %d (%s)\n", m_Socket.GetSocket(), code, sm_Login_ErrMsg[((int)code)] ));
+	DEBUG_ERR(( "%x:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[((int)code)] ));
 
 	// translate the code into a code the client will understand
 	switch (code)
 	{
-		case LOGIN_ERR_NONE:
-			code = LOGIN_ERR_NONE;
+		case PacketLoginError::Invalid:
+			code = PacketLoginError::Invalid;
 			break;
-		case LOGIN_ERR_USED:
-		case LOGIN_ERR_CHARIDLE:
-			code = LOGIN_ERR_USED;
+		case PacketLoginError::InUse:
+		case PacketLoginError::CharIdle:
+			code = PacketLoginError::InUse;
 			break;
-		case LOGIN_ERR_BLOCKED:
-		case LOGIN_ERR_BLOCKED_IP:
-		case LOGIN_ERR_BLOCKED_MAXCLIENTS:
-		case LOGIN_ERR_BLOCKED_MAXGUESTS:
-			code = LOGIN_ERR_BLOCKED;
+		case PacketLoginError::Blocked:
+		case PacketLoginError::BlockedIP:
+		case PacketLoginError::MaxClients:
+		case PacketLoginError::MaxGuests:
+			code = PacketLoginError::Blocked;
 			break;
-		case LOGIN_ERR_BAD_PASS:
-		case LOGIN_ERR_BAD_ACCTNAME:
-		case LOGIN_ERR_BAD_PASSWORD:
-			code = LOGIN_ERR_BAD_PASS;
+		case PacketLoginError::BadPass:
+		case PacketLoginError::BadAccount:
+		case PacketLoginError::BadPassword:
+			code = PacketLoginError::BadPass;
 			break;
-		case LOGIN_ERR_OTHER:
-		case LOGIN_ERR_BAD_CLIVER:
-		case LOGIN_ERR_BAD_CHAR:
-		case LOGIN_ERR_BAD_AUTHID:
-		case LOGIN_ERR_ENC_BADLENGTH:
-		case LOGIN_ERR_ENC_CRYPT:
-		case LOGIN_ERR_ENC_NOCRYPT:
-		case LOGIN_ERR_TOOMANYCHARS:
-		case LOGIN_ERR_MAXPASSTRIES:
-		case LOGIN_ERR_ENC_UNKNOWN:
+		case PacketLoginError::Other:
+		case PacketLoginError::BadVersion:
+		case PacketLoginError::BadCharacter:
+		case PacketLoginError::BadAuthID:
+		case PacketLoginError::BadEncLength:
+		case PacketLoginError::EncCrypt:
+		case PacketLoginError::EncNoCrypt:
+		case PacketLoginError::TooManyChars:
+		case PacketLoginError::MaxPassTries:
+		case PacketLoginError::EncUnknown:
 		default:
-			code = LOGIN_ERR_OTHER;
+			code = PacketLoginError::Other;
 			break;
 	}
 
-	CCommand cmd;
-	cmd.LogBad.m_Cmd = XCMD_LogBad;
-	cmd.LogBad.m_code = code;
-	xSendPkt( &cmd, sizeof( cmd.LogBad ));
-	xFlush();
-
-	m_fClosed	= true;
+	PacketLoginError* cmd = new PacketLoginError(this, (PacketLoginError::Reason)code);
+	GetNetState()->markClosed();
 	return( false );
 }
 
@@ -241,12 +166,7 @@ void CClient::addWebLaunch( LPCTSTR pPage )
 	if ( !pPage || !pPage[0] )
 		return;
 
-	CCommand cmd;
-	cmd.Web.m_Cmd = XCMD_Web;
-	int iLen = sizeof(cmd.Web) + strlen(pPage);
-	cmd.Web.m_len = iLen;
-	strcpy( cmd.Web.m_page, pPage );
-	xSendPkt( &cmd, iLen );
+	PacketWebPage* cmd = new PacketWebPage(this, pPage);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -265,13 +185,13 @@ bool CClient::addRelay( const CServerDef * pServ )
 
 	if ( ipAddr.IsLocalAddr())	// local server address not yet filled in.
 	{
-		ipAddr = m_Socket.GetSockName();
-		DEBUG_MSG(( "%x:Login_Relay to %s\n", m_Socket.GetSocket(), ipAddr.GetAddrStr() ));
+		ipAddr = GetPeer();
+		DEBUG_MSG(( "%x:Login_Relay to %s\n", GetSocketID(), ipAddr.GetAddrStr() ));
 	}
 
-	if ( m_PeerName.IsLocalAddr() || m_PeerName.IsSameIP( ipAddr ))	// weird problem with client relaying back to self.
+	if ( GetPeer().IsLocalAddr() || GetPeer().IsSameIP( ipAddr ))	// weird problem with client relaying back to self.
 	{
-		DEBUG_MSG(( "%x:Login_Relay loopback to server %s\n", m_Socket.GetSocket(), ipAddr.GetAddrStr() ));
+		DEBUG_MSG(( "%x:Login_Relay loopback to server %s\n", GetSocketID(), ipAddr.GetAddrStr() ));
 		ipAddr.SetAddrIP( SOCKET_LOCAL_ADDRESS );
 	}
 
@@ -289,28 +209,12 @@ bool CClient::addRelay( const CServerDef * pServ )
 		GetAccount()->m_TagDefs.SetNum("customerid", dwCustomerId);
 	}
 
-	DEBUG_MSG(( "%x:Login_Relay to server %s with AuthId %d\n", m_Socket.GetSocket(), ipAddr.GetAddrStr(), dwCustomerId ));
+	DEBUG_MSG(( "%x:Login_Relay to server %s with AuthId %d\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId ));
 
 	EXC_SET("server relay packet");
-	CCommand cmd;
-	cmd.Relay.m_Cmd = XCMD_Relay;
-	cmd.Relay.m_ip[3] = ( dwAddr >> 24 ) & 0xFF;
-	cmd.Relay.m_ip[2] = ( dwAddr >> 16 ) & 0xFF;
-	cmd.Relay.m_ip[1] = ( dwAddr >> 8  ) & 0xFF;
-	cmd.Relay.m_ip[0] = ( dwAddr	   ) & 0xFF;
-	cmd.Relay.m_port = pServ->m_ip.GetPort();
-	cmd.Relay.m_Account = dwCustomerId; // customer account handshake. (it was 0x7f000001)
-
-	xSendPkt( &cmd, sizeof(cmd.Relay));
-	xFlush();	// flush b4 we turn into a game server.
-
-	m_Targ_Mode = CLIMODE_SETUP_RELAY;
-
-	EXC_SET("fast init encryption");
-	// just in case they are on the same machine, change over to the new game encrypt
-	m_Crypt.InitFast( dwCustomerId, CONNECT_GAME ); // Init decryption table
-	SetConnectType( m_Crypt.GetConnectType() );
+	PacketServerRelay* cmd = new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
 	
+	m_Targ_Mode = CLIMODE_SETUP_RELAY;
 	return( true );
 	EXC_CATCH;
 
@@ -346,7 +250,7 @@ bool CClient::Login_Relay( int iRelay ) // Relay player to a selected IP
 		pServ = g_Cfg.Server_GetDef(iRelay);
 		if ( pServ == NULL )
 		{
-			DEBUG_ERR(( "%x:Login_Relay BAD index! %d\n", m_Socket.GetSocket(), iRelay ));
+			DEBUG_ERR(( "%x:Login_Relay BAD index! %d\n", GetSocketID(), iRelay ));
 			return( false );
 		}
 	}
@@ -354,7 +258,7 @@ bool CClient::Login_Relay( int iRelay ) // Relay player to a selected IP
 	return addRelay( pServ );
 }
 
-LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * pszPassword )
+BYTE CClient::Login_ServerList( const char * pszAccount, const char * pszPassword )
 {
 	ADDTOCALLSTACK("CClient::Login_ServerList");
 	// XCMD_ServersReq
@@ -364,63 +268,35 @@ LOGIN_ERR_TYPE CClient::Login_ServerList( const char * pszAccount, const char * 
 	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE+3];
 	int iLenAccount = Str_GetBare( szAccount, pszAccount, sizeof(szAccount)-1 );
 	if ( iLenAccount > MAX_ACCOUNT_NAME_SIZE )
-		return( LOGIN_ERR_BAD_ACCTNAME );
+		return( PacketLoginError::BadAccount );
 	if ( iLenAccount != strlen(pszAccount))
-		return( LOGIN_ERR_BAD_ACCTNAME );
+		return( PacketLoginError::BadAccount );
 
 	TCHAR szPassword[MAX_NAME_SIZE+3];
 	int iLenPassword = Str_GetBare( szPassword, pszPassword, sizeof( szPassword )-1 );
 	if ( iLenPassword > MAX_NAME_SIZE )
-		return( LOGIN_ERR_BAD_PASSWORD );
+		return( PacketLoginError::BadPassword );
 	if ( iLenPassword != strlen(pszPassword))
-		return( LOGIN_ERR_BAD_PASSWORD );
+		return( PacketLoginError::BadPassword );
 
 	// don't bother logging in yet.
 	// Give the server list to everyone.
 	// if ( LogIn( pszAccount, pszPassword ) )
-	//   return( LOGIN_ERR_BAD_PASS );
+	//   return( PacketLoginError::BadPass );
 	CGString sMsg;
-	LOGIN_ERR_TYPE lErr = LOGIN_ERR_OTHER;
+	BYTE lErr = PacketLoginError::Other;
 
 	lErr = LogIn( pszAccount, pszPassword, sMsg );
 	
-	if ( lErr != LOGIN_SUCCESS )
+	if ( lErr != PacketLoginError::Success )
 	{
 		return( lErr );
 	}
 
-	CCommand cmd;
-	cmd.ServerList.m_Cmd = XCMD_ServerList;
-
-	int indexoffset = 2; // Client older than 1.26.00 --> 1;
-
-	// clients before 4.0.0 require serverlist ips to be in reverse
-	bool bReverse = (m_Crypt.GetClientVer() < 0x400000);
-
-	// always list myself first here.
-	g_Serv.addToServersList( cmd, indexoffset-1, 0, bReverse );
-
-	//	too many servers in list can crash the client
-#define	MAX_SERVERS_LIST	32
-
-	int j = 1;
-	for ( int i=0; j < MAX_SERVERS_LIST; i++ )
-	{
-		CServerRef pServ = g_Cfg.Server_GetDef(i);
-		if ( pServ == NULL )
-			break;
-		pServ->addToServersList( cmd, i+indexoffset, j, bReverse );
-		j++;
-	}
-
-	int iLen = sizeof(cmd.ServerList) - sizeof(cmd.ServerList.m_serv) + ( j * sizeof(cmd.ServerList.m_serv[0]));
-	cmd.ServerList.m_len = iLen;
-	cmd.ServerList.m_count = j;
-	cmd.ServerList.m_nextLoginKey = 0xFF;
-	xSendPkt( &cmd, iLen );
+	PacketServerList* cmd = new PacketServerList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_SERVERS;
-	return( LOGIN_SUCCESS );
+	return( PacketLoginError::Success );
 }
 
 //*****************************************
@@ -437,10 +313,10 @@ bool CClient::OnRxConsoleLoginComplete()
 		return false;
 	}
 
-	if ( ! m_PeerName.IsValidAddr())
+	if ( ! GetPeer().IsValidAddr())
 		return( false );
 
-	SysMessagef( "%s '%s','%s'\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2), GetName(), m_PeerName.GetAddrStr());
+	SysMessagef( "%s '%s','%s'\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2), GetName(), GetPeerStr());
 	return( true );
 }
 
@@ -488,7 +364,7 @@ bool CClient::OnRxConsole( const BYTE * pData, int iLen )
 						m_Targ_Text.Empty();
 						return false;
 					}
-					if ( LogIn(m_zLogin, m_Targ_Text, sMsg ) == LOGIN_SUCCESS )
+					if ( LogIn(m_zLogin, m_Targ_Text, sMsg ) == PacketLoginError::Success )
 					{
 						m_Targ_Text.Empty();
 						return OnRxConsoleLoginComplete();
@@ -531,7 +407,10 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 		case '\x1':
 		case ' ':
 		{
-			if ( iLen > 1 )
+			if ( (iLen > 1) &&
+				 (iLen != 2 || pData[1] != '\n') &&
+				 (iLen != 3 || pData[1] != '\r' || pData[2] != '\n') &&
+				 (iLen != 3 || pData[1] != '\n' || pData[2] != '\0') )
 				break;
 
 			// enter into remote admin mode. (look for password).
@@ -543,7 +422,7 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 			{
 				// don't bother logging in if local.
 
-				if ( m_PeerName.IsLocalAddr() )
+				if ( GetPeer().IsLocalAddr() )
 				{
 					CAccountRef pAccount = g_Accounts.Account_Find("Administrator");
 					if ( !pAccount )
@@ -551,10 +430,10 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 					if ( pAccount )
 					{
 						CGString sMsg;
-						LOGIN_ERR_TYPE lErr = LogIn( pAccount, sMsg );
-						if ( lErr != LOGIN_SUCCESS )
+						BYTE lErr = LogIn( pAccount, sMsg );
+						if ( lErr != PacketLoginError::Success )
 						{
-							if ( lErr != LOGIN_ERR_NONE )
+							if ( lErr != PacketLoginError::Invalid )
 								SysMessage( sMsg );
 							return( false );
 						}
@@ -584,7 +463,7 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 			// enter 'remote admin mode'
 			SetConnectType( CONNECT_TELNET );
 
-			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:CUO Status request from %s\n", m_Socket.GetSocket(), (LPCTSTR) m_PeerName.GetAddrStr());
+			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:CUO Status request from %s\n", GetSocketID(), GetPeerStr());
 
 			SysMessage( g_Serv.GetStatusString( 0x25 ) );
 
@@ -603,7 +482,7 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 			// enter 'remote admin mode'
 			SetConnectType( CONNECT_TELNET );
 
-			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:UOG Status request from %s\n", m_Socket.GetSocket(), (LPCTSTR) m_PeerName.GetAddrStr());
+			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:UOG Status request from %s\n", GetSocketID(), GetPeerStr());
 
 			SysMessage( g_Serv.GetStatusString( 0x22 ) );
 
@@ -613,7 +492,7 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 		}
 	}
 
-	g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Unknown/invalid ping data '0x%x' from %s (Len: %d)\n", m_Socket.GetSocket(), pData[0], (LPCTSTR) m_PeerName.GetAddrStr(), iLen);
+	g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Unknown/invalid ping data '0x%x' from %s (Len: %d)\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
 	return false;
 }
 
@@ -681,24 +560,25 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 	// when async networking is used, otherwise data may not be completely sent
 	if ( fKeepAlive == false )
 	{
-		fKeepAlive = xUseAsync();
+		fKeepAlive = m_net->isAsyncMode();
 
 		// must switch to a blocking socket when the connection is not being kept
 		// alive, or else pending data will be lost when the socket shuts down
+
 		if ( fKeepAlive == false )
-			m_Socket.SetNonBlocking(false);
+			m_net->m_socket.SetNonBlocking(false);
 	}
 
 	linger llinger;
 	llinger.l_onoff = 1;
 	llinger.l_linger = 500;	// in mSec
-	m_Socket.SetSockOpt(SO_LINGER, (char*)&llinger, sizeof(struct linger));
+	m_net->m_socket.SetSockOpt(SO_LINGER, (char*)&llinger, sizeof(struct linger));
 	BOOL nbool = true;
-	m_Socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
+	m_net->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
 
 	// disable NAGLE algorythm for data compression
 	nbool=true;
-	m_Socket.SetSockOpt( TCP_NODELAY,&nbool,sizeof(BOOL),IPPROTO_TCP);
+	m_net->m_socket.SetSockOpt( TCP_NODELAY,&nbool,sizeof(BOOL),IPPROTO_TCP);
 	
 	if ( !memcmp(ppLines[0], "POST", 4) )
 	{
@@ -712,7 +592,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 		// Content-Length: 29
 		// T1=stuff1&B1=Submit&T2=stuff2
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%x:HTTP Page Post '%s'\n", m_Socket.GetSocket(), (LPCTSTR)ppRequest[1]);
+		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%x:HTTP Page Post '%s'\n", GetSocketID(), (LPCTSTR)ppRequest[1]);
 
 		CWebPageDef	*pWebPage = g_Cfg.FindWebPage(ppRequest[1]);
 		if ( !pWebPage )
@@ -723,9 +603,6 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 			{
 				if ( fKeepAlive )
 					return true;
-
-				// ensure all data is flushed to the client before the connection closes
-				xFlush();
 				return false;
 			}
 			return false;
@@ -742,55 +619,17 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 		if ( !Str_GetBare( szPageName, Str_TrimWhitespace(ppRequest[1]), sizeof(szPageName), "!\"#$%&()*,:;<=>?[]^{|}-+'`" ) )
 			return false;
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%x:HTTP Page Request '%s', alive=%d\n", m_Socket.GetSocket(), (LPCTSTR)szPageName, fKeepAlive);
+		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%x:HTTP Page Request '%s', alive=%d\n", GetSocketID(), (LPCTSTR)szPageName, fKeepAlive);
 		if ( CWebPageDef::ServPage(this, szPageName, &dateIfModifiedSince) )
 		{
 			if ( fKeepAlive )
 				return true;
-
-			// ensure all data is flushed to the client before the connection closes
-			xFlush();
 			return false;
 		}
 	}
 
 
 	return false;
-}
-
-void CClient::xProcessMsg(int fGood)
-{
-	ADDTOCALLSTACK("CClient::xProcessMsg");
-	// Done with the current packet.
-	// m_bin_msg_len = size of the current packet we are processing.
-
-	if ( !m_bin_msg_len )	// hmm, nothing to do !
-		return;
-
-	if ( fGood < 1 )	// toss all.
-	{
-		if ( !fGood )
-		{
-			DEBUG_ERR(("%s (%x):Bad Msg(%x) Eat %d bytes, prv=0%x, type=%d\n", m_pAccount ? m_pAccount->GetName() : "", 
-					m_Socket.GetSocket(), m_bin_ErrMsg, m_bin.GetDataQty(), m_bin_PrvMsg, GetConnectType() ));
-
-#ifdef _PACKETDUMP
-			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
-#endif
-		}
-
-		m_bin.Empty();	// eat the buffer.
-		if ( GetConnectType() == CONNECT_LOGIN )	// tell them about it.
-		{
-			addLoginErr(LOGIN_ERR_OTHER);
-		}
-	}
-	else
-	{
-		m_bin.RemoveDataAmount(m_bin_msg_len);
-	}
-
-	m_bin_msg_len = 0;
 }
 
 bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
@@ -800,52 +639,40 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	// try to figure out which client version we are talking to.
 	// (CEvent::ServersReq) or (CEvent::CharListReq)
 	// NOTE: Anything else we get at this point is tossed !
-
 	ASSERT( GetConnectType() == CONNECT_CRYPT );
 	ASSERT( !m_Crypt.IsInit());
 	ASSERT( iLen );
 
-#if _PACKETDUMP
-	DEBUG_ERR(("CClient::xProcessClientSetup\n"));
-	xDumpPacket(iLen, (const BYTE *)pEvent);
-#endif
-	
 	// Try all client versions on the msg.
 	CEvent bincopy;		// in buffer. (from client)
 	ASSERT( iLen <= sizeof(bincopy));
 	memcpy( bincopy.m_Raw, pEvent->m_Raw, iLen );
 
-	// a client version change may toggle async mode, it's important
-	// to flush pending data to the client before this happens
-	xFlush();
-
-	if ( !m_Crypt.Init( m_tmSetup.m_dwIP, bincopy.m_Raw, iLen, IsClientKR() ) )
+	if ( !m_Crypt.Init( m_net->m_seed, bincopy.m_Raw, iLen, GetNetState()->isClientKR() ) )
 	{
-		DEBUG_MSG(( "%x:Odd login message length %d?\n", m_Socket.GetSocket(), iLen ));
-		addLoginErr( LOGIN_ERR_ENC_BADLENGTH );
+		DEBUG_MSG(( "%x:Odd login message length %d?\n", GetSocketID(), iLen ));
+#ifdef _DEBUG
+	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
+#endif
+		addLoginErr( PacketLoginError::BadEncLength );
 		return( false );
 	}
 	
+	GetNetState()->setAsyncMode();
 	SetConnectType( m_Crypt.GetConnectType() );
 
 	if ( !xCanEncLogin() )
 	{
-		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE? LOGIN_ERR_ENC_NOCRYPT:LOGIN_ERR_ENC_CRYPT) );
+		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE? PacketLoginError::EncNoCrypt:PacketLoginError::EncCrypt) );
 		return( false );
 	}
 	else if ( m_Crypt.GetConnectType() == CONNECT_LOGIN && !xCanEncLogin(true) )
 	{
-		addLoginErr( LOGIN_ERR_BAD_CLIVER );
+		addLoginErr( PacketLoginError::BadVersion );
 		return( false );
 	}
-
-	if ( IsBlockedIP())	// we are a blocked ip so i guess it does not matter.
-	{
-		addLoginErr( LOGIN_ERR_BLOCKED_IP );
-		return( false );
-	}
-
-	LOGIN_ERR_TYPE lErr = LOGIN_ERR_ENC_UNKNOWN;
+	
+	BYTE lErr = PacketLoginError::EncUnknown;
 	
 	m_Crypt.Decrypt( pEvent->m_Raw, bincopy.m_Raw, iLen );
 	
@@ -859,19 +686,19 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 				return(false);
 
 			lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
-			if ( lErr == LOGIN_SUCCESS )
+			if ( lErr == PacketLoginError::Success )
 			{
 				int iLenAccount = Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
 					pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
-					pAcc->m_TagDefs.SetNum("reportedcliver", m_reportedCliver);
+					pAcc->m_TagDefs.SetNum("reportedcliver", GetNetState()->getReportedVersion());
 				}
 				else
 				{
 					// If i can't set the tag is better to stop login now
-					lErr = LOGIN_ERR_NONE;
+					lErr = PacketLoginError::Invalid;
 				}
 			}
 
@@ -884,7 +711,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 				return(false);
 
 			lErr = Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true );
-			if ( lErr == LOGIN_SUCCESS )
+			if ( lErr == PacketLoginError::Success )
 			{
 				// pass detected client version to the game server to make valid cliver used
 				int iLenAccount = Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
@@ -900,42 +727,45 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 						pAcc->m_TagDefs.DeleteKey("customerid");
 					}
 
-					DEBUG_MSG(( "%x:xProcessClientSetup for %s, with AuthId %d and CliVersion 0x%x\n", m_Socket.GetSocket(), 
+					DEBUG_MSG(( "%x:xProcessClientSetup for %s, with AuthId %d and CliVersion 0x%x\n", GetSocketID(), 
 						pAcc->GetName(), tmSid, tmVer ));
 
 					if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
 					{
 						if ( tmVer != NULL || tmVerReported != NULL)
 						{
-							// a client version change may toggle async mode, it's important
-							// to flush pending data to the client before this happens
-							xFlush();
-
+							//// a client version change may toggle async mode, it's important
+							//// to flush pending data to the client before this happens
 							if ( tmVer != NULL )
+							{
 								m_Crypt.SetClientVerEnum(tmVer, false);
+								GetNetState()->m_clientVersion = tmVer;
+							}
 
 							if ( tmVerReported != NULL)
-								m_reportedCliver = tmVerReported;
+								GetNetState()->m_reportedVersion = tmVerReported;
+
+							GetNetState()->setAsyncMode();
 						}
 
 						if ( !xCanEncLogin(true) )
-							lErr = LOGIN_ERR_BAD_CLIVER;
+							lErr = PacketLoginError::BadVersion;
 					}
 					else
 					{
-						lErr = LOGIN_ERR_BAD_AUTHID;
+						lErr = PacketLoginError::BadAuthID;
 					}
 				}
 				else
 				{
-					lErr = LOGIN_ERR_NONE;
+					lErr = PacketLoginError::Invalid;
 				}
 			}
 
 			break;
 		}
 
-#if _DEBUG
+#ifdef _DEBUG
 		default:
 		{
 			DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
@@ -943,12 +773,14 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 #endif
 	}
 	
-	if ( lErr != LOGIN_SUCCESS )	// it never matched any crypt format.
+	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
+
+	if ( lErr != PacketLoginError::Success )	// it never matched any crypt format.
 	{
 		addLoginErr( lErr );
 	}
 
-	return( lErr == LOGIN_SUCCESS );
+	return( lErr == PacketLoginError::Success );
 }
 
 bool CClient::xCanEncLogin(bool bCheckCliver)
@@ -972,629 +804,6 @@ bool CClient::xCanEncLogin(bool bCheckCliver)
 			return( true );	// if unencrypted we check that later
 	}
 }
-
-void CClient::xSendPkt(const CCommand * pCmd, int length)
-{
-	ADDTOCALLSTACK("CClient::xSendPkt");
-	xSendReady((const void *)( pCmd->m_Raw ), length );
-}
-
-void CClient::xSendPktNow( const CCommand * pCmd, int length )
-{
-	ADDTOCALLSTACK("CClient::xSendPktNow");
-	const void *pData = (const void*)pCmd->m_Raw;
-
-	xFlush();	// Flush old packets.
-	
-	// Add my packet
-	if ( ! m_Socket.IsOpen() )
-		return;
-
-	if ( GetConnectType() != CONNECT_HTTP )	// acting as a login server to this client.
-	{
-		if ( length > MAX_BUFFER )
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out TOO BIG %d!\n", m_Socket.GetSocket(), length ));
-			m_fClosed	= true;
-			return;
-		}
-
-		if ( !xUseAsync() && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
-
-			m_fClosed	= true;
-			return;
-		}
-	}
-
-	m_bout.AddNewData((const BYTE*) pData, length);
-	if ( xUseAsync() )
-	{
-		m_vExtPacketLengths.push(length);
-	}
-
-	xFlush();
-}
-
-void CClient::xProcessTooltipQueue()
-{
-	ADDTOCALLSTACK("CClient::xProcessTooltipQueue");
-	if ( m_TooltipQueue.empty() )
-		return;
-
-	long llCurrentTick = g_World.GetCurrentTime().GetTimeRaw();
-
-	if ( m_LastTooltipSend == llCurrentTick )
-		return;
-
-	if ( (llCurrentTick % 2) != 1 )
-		return;
-
-	std::vector<CTooltipData *>::iterator i = m_TooltipQueue.begin();
-	int iMaxTooltipPerTick = g_Cfg.m_iMaxTooltipForTick;
-	CTooltipData * pTemp = NULL;
-	CChar * pChar = GetChar();
-	if ( !pChar )
-		return;
-
-	while ( i != m_TooltipQueue.end() )
-	{
-		bool bTooltipSent = false;
-		pTemp = (*i);
-
-		// Check that the object is still valid and that the client
-		// can still actually see it
-		if ( pTemp && pTemp->IsObjectValid() && ( pChar->GetTopDistSight( pTemp->GetObject()->GetTopLevelObj() ) <= UO_MAP_VIEW_SIZE ) )
-		{
-			DEBUG_MSG(("Sending tooltip for 0%x (%d)\n", pTemp->GetObjUid(), llCurrentTick));
-
-			// Don't bother sending the tooltip if the client has
-			// already been waiting for over 30 seconds for it
-			if ( (pTemp->GetTime() + (TICK_PER_SEC * 30)) > llCurrentTick )
-			{
-				xSend(pTemp->GetData(), pTemp->GetLength(), false);
-				bTooltipSent = true;
-			}
-		}
-
-		m_TooltipQueue.erase(i);
-		i = m_TooltipQueue.begin();
-
-		if ( pTemp )
-			delete pTemp;
-
-		// This tooltip was not valid, don't count it towards the limit
-		if ( !bTooltipSent )
-			continue;
-
-		if ( --iMaxTooltipPerTick == 0 )
-			break;
-	}
-
-	m_LastTooltipSend = llCurrentTick;
-}
-
-
-void CClient::xSend( const void *pData, int length, bool bQueue)
-{
-	ADDTOCALLSTACK("CClient::xSend");
-	// buffer a packet to client.
-	if ( ! m_Socket.IsOpen() || m_fClosed )
-		return;
-
-	if ( GetConnectType() != CONNECT_HTTP )	// acting as a login server to this client.
-	{
-		if ( length > MAX_BUFFER )
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out TOO BIG %d!\n", m_Socket.GetSocket(), length ));
-
-			m_fClosed	= true;
-			return;
-		}
-
-		if ( !xUseAsync() && ( m_bout.GetDataQty() + length > MAX_BUFFER ))
-		{
-			if ( !m_fClosed ) DEBUG_ERR(( "%x:Client out overflow %d+%d!\n", m_Socket.GetSocket(), m_bout.GetDataQty(), length ));
-
-			m_fClosed	= true;
-			return;
-		}
-	}
-
-	m_bout.AddNewData( (const BYTE*) pData, length );
-	if ( xUseAsync() )
-	{
-		m_vExtPacketLengths.push(length);
-	}
-
-	if ( GetConnectType() == CONNECT_LOGIN ) // During login we flush always, so we have no problem with any client version
-	{
-		xFlush();
-#ifndef _WIN32
-		if ( xUseAsync() )
-		{
-			g_NetworkEvent.forceClientwrite(this);
-		}
-#endif
-	}
-	else if ( GetConnectType() == CONNECT_GAME )
-	{
-		if ( (IsClientVer( 0x400000 ) || IsNoCryptVer( 0x400000 )) && !IsClientKR() )
-			if ( !bQueue )
-				xFlush();
-	}
-}
-
-void CClient::xSendReady( const void *pData, int length, bool bNextFlush ) // We could send the packet now if we wanted to but wait til we have more.
-{
-	ADDTOCALLSTACK("CClient::xSendReady");
-
-	// We could send the packet now if we wanted to but wait til we have more.
-	if ( !xUseAsync() && ( m_bout.GetDataQty() + length >= MAX_BUFFER ))
-	{
-		xFlush();
-	}
-//	DEBUG_ERR(("SEND: %x:adding %d bytes\n", m_Socket.GetSocket(), length));
-	xSend( pData, length );
-
-	if ( xUseAsync() || (bNextFlush && ( m_bout.GetDataQty() >= MAX_BUFFER / 2 )))	// send only if we have a bunch.
-	{
-		xFlush();
-	}
-}
-
-bool CClient::xSendError(int iErrCode)
-{
-#ifdef _WIN32
-	if ( xUseAsync() && (iErrCode == WSA_IO_PENDING))
-    {
-		m_sendingData = true;
-		return false; //Success!
-    } 
-	else if ( iErrCode == WSAECONNRESET || iErrCode == WSAECONNABORTED )
-	{
-		m_fClosed = true;
-		return true;
-	}
-	else if ( !xUseAsync() && (iErrCode == WSAEWOULDBLOCK ))
-	{
-		// just try back later. or select() will close it for us later.
-		return true;
-	}
-#endif
-
-	DEBUG_ERR(( "%x:Tx Error %d\n", m_Socket.GetSocket(), iErrCode ));
-#ifdef _WIN32	
-	return false;
-#else
-	return true;
-#endif
-}
-
-
-void CClient::xFlush()
-{
-	ADDTOCALLSTACK("CClient::xFlush");
-	
-	if ( xUseAsync() )
-	{
-#ifdef _WIN32
-		xFlushAsync();
-#endif
-		return;
-	}
-
-	// Sends buffered data at once
-	// NOTE:
-	// Make sure we do not overflow the Sockets Tx buffers!
-
-	int iLen = m_bout.GetDataQty();
-	if ( !iLen || !m_Socket.IsOpen() || m_fClosed )
-		return;
-
-	m_timeLastSend = CServTime::GetCurrentTime();
-
-	int iLenRet;
-	if ( GetConnectType() != CONNECT_GAME )	// acting as a login server to this client.
-	{
-		iLenRet = m_Socket.Send( m_bout.RemoveDataLock(), iLen );
-
-		if ( iLenRet != SOCKET_ERROR )
-		{
-			// Tx overflow may be handled gracefully.
-			g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenRet );
-			m_bout.RemoveDataAmount(iLenRet);
-		}
-		else	
-		{
-			// Assume nothing was transmitted.
-Do_Handle_Error:
-			if ( xSendError(CGSocket::GetLastError()) )
-			{
-#ifndef _WIN32
-				m_fClosed = true;
-#endif
-				return;
-			}
-		}
-	}
-	else
-	{
-		// Only the game server does this.
-		// This acts as a compression alg. tho it may expand the data some times.
-
-		int iLenComp = xCompress( sm_xCompress_Buffer, m_bout.RemoveDataLock(), iLen );
-		ASSERT( iLenComp <= sizeof(sm_xCompress_Buffer));
-
-		// This now works. Thx to Necr0 post and library, i've understood how to do it.
-		// ( MD5 server -> client )
-		if ( m_Crypt.GetEncryptionType() == ENC_TFISH )
-		{
-			m_Crypt.Encrypt( sm_xCompress_Buffer, sm_xCompress_Buffer, iLenComp );
-		}
-
-		iLenRet = m_Socket.Send( sm_xCompress_Buffer, iLenComp );
-		if ( iLenRet != SOCKET_ERROR )
-		{
-			g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLen );
-			m_bout.RemoveDataAmount(iLen);	// must use all of it since we have no idea what was really sent.
-		}
-
-		if ( iLenRet != iLenComp )
-		{
-			// Tx overflow is not allowed here !
-			// no idea what effect this would have. assume nothing is sent.
-			goto Do_Handle_Error;
-		}
-	}
-}
-
-
-void CClient::xAsyncSendComplete()
-{
-#ifdef _WIN32
-    int packetLength = m_vExtPacketLengths.front();
-    m_bout.RemoveDataAmount(packetLength);
-    m_vExtPacketLengths.pop();
-    m_sendingData = false;
-#endif
-	
-    xFlushAsync();
-}
-
-#ifdef _WIN32
-	void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-
-	void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags)
-	{
-		if (dwError == WSAEFAULT)
-			return;
-
-		CClient *client = reinterpret_cast<CClient *>(lpOverlapped->hEvent);
-		client->xAsyncSendComplete();
-	}
-#else
-	struct ev_io * CClient::GetIOCB()
-	{
-		return &m_eventWatcher;		
-	}
-	
-	bool CClient::xCanSend()
-	{
-		return m_sendingData;	
-	}
-	
-	void CClient::xSetCanSend(bool sending)
-	{
-		m_sendingData = sending;
-	}
-#endif
-
-bool CClient::xUseAsync()
-{
-	// is async mode enabled?
-	if ( !IsSetEF( EF_UseNetworkMulti ) )
-		return false;
-
-	// if the version mod flag is not set, always use async mode
-	if ( !IsSetEF( EF_UseNetworkMultiVersionMod ) )
-		return true;
-
-	// http clients do not want to be using async networking unless they have keep-alive set
-	if ( GetConnectType() == CONNECT_HTTP )
-		return false;
-
-	// only use async with clients newer than 4.0.0
-	// - normally the client version is unknown for the first 1 or 2 packets, so all clients will begin
-	//   without async networking (but should switch over as soon as it has been determined)
-	// - a minor issue with this is that for clients without encryption we cannot determine their version
-	//   until after they have fully logged into the game server and sent a client version packet.
-	if ( IsClientVersion( 0x400000 ) || IsClientKR() )
-		return true;
-
-	return false;
-}
-
-void CClient::xFlushAsync()
-{
-    ADDTOCALLSTACK("CClient::xFlushAsync");
-    // Sends buffered data at once
-    // NOTE:
-    // Make sure we do not overflow the Sockets Tx buffers!
-#ifdef _WIN32
-    if (m_vExtPacketLengths.empty() || !m_Socket.IsOpen() || m_fClosed || m_sendingData)
-#else
-	if (m_vExtPacketLengths.empty() || !m_Socket.IsOpen() || m_fClosed )
-#endif
-        return;
-
-    int packetLength = m_vExtPacketLengths.front();
-    while ( packetLength <= 0 )
-    {
-        m_vExtPacketLengths.pop();
-
-		if (m_vExtPacketLengths.empty())
-			return;
-
-		packetLength = m_vExtPacketLengths.front();
-    }
-
-    m_timeLastSend = CServTime::GetCurrentTime();
-	
-#ifndef _WIN32
-	BYTE * toSend = NULL; int iLenToSend = 0;
-#endif
-	
-    if (GetConnectType() == CONNECT_GAME)
-    {
-        int iLenComp = xCompress( sm_xCompress_Buffer, m_bout.RemoveDataLock(), packetLength);
-        ASSERT( iLenComp <= sizeof(sm_xCompress_Buffer) );
-
-        if ( m_Crypt.GetEncryptionType() == ENC_TFISH )
-        {
-            m_Crypt.Encrypt(sm_xCompress_Buffer, sm_xCompress_Buffer, iLenComp);
-        }
-
-#ifdef _WIN32
-        m_WSABuf.buf = (CHAR *)sm_xCompress_Buffer;
-        m_WSABuf.len = iLenComp;
-#else
-		toSend = sm_xCompress_Buffer;
-		iLenToSend = iLenComp;
-#endif
-    }
-    else
-    {
-#ifdef _WIN32		
-        m_WSABuf.buf = (CHAR *)const_cast<BYTE*>( m_bout.RemoveDataLock() );
-        m_WSABuf.len = packetLength;
-#else
-		toSend = m_bout.RemoveDataLock();
-		iLenToSend = packetLength;
-#endif
-    }
-
-	DWORD dwSent = 0;
-	int result = 0;
-
-#ifdef _WIN32
-    ZeroMemory(&m_overlapped, sizeof(WSAOVERLAPPED));
-    m_overlapped.hEvent = this;
-	result = m_Socket.SendAsync(&m_WSABuf, 1, &dwSent, 0, &m_overlapped, SendCompleted);
-#else
-	dwSent = m_Socket.Send( toSend, iLenToSend );
-#endif
-    
-    if (!result)
-    {
-#ifdef _WIN32		
-        m_sendingData = true;
-#else
-		g_Serv.m_Profile.Count( PROFILE_DATA_TX, iLenToSend );
-    	m_bout.RemoveDataAmount(packetLength);
-    	m_vExtPacketLengths.pop();		
-#endif
-    }
-    else
-    {
-		if ( xSendError(CGSocket::GetLastError(true)) )
-		{
-#ifndef _WIN32
-			m_fClosed = true;
-#endif
-		}
-    }
-}
-
-bool CClient::xRecvData() // Receive message from client
-{
-	ADDTOCALLSTACK("CClient::xRecvData");
-	static BYTE pDataKR_E3[77] = {0xe3,
-						0x00, 0x4d,
-						0x00, 0x00, 0x00, 0x03, 0x02, 0x00, 0x03,
-						0x00, 0x00, 0x00, 0x13, 0x02, 0x11, 0x00, 0x00, 0x2f, 0xe3, 0x81, 0x93, 0xcb, 0xaf, 0x98, 0xdd, 0x83, 0x13, 0xd2, 0x9e, 0xea, 0xe4, 0x13,
-						0x00, 0x00, 0x00, 0x10, 0x00, 0x13, 0xb7, 0x00, 0xce, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-						0x00, 0x00, 0x00, 0x20,
-						0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
-	// High level Rx from Client.
-	// RETURN: false = dump the client.
-	CEvent Event;
-	int iCountNew = m_Socket.Receive( &Event, sizeof(Event), 0 );
-
-	if ( iCountNew <= 0 )	// I should always get data here.
-		return( false ); // this means that the client is gone.
-
-#if _PACKETDUMP
-	DEBUG_ERR(("CClient::xRecvData RAW\n"));
-	xDumpPacket(iCountNew, Event.m_Raw);
-#endif
-
-	g_Serv.m_Profile.Count( PROFILE_DATA_RX, iCountNew );
-
-	if ( GetConnectType() == CONNECT_UNK ) // first thing
-	{
-		// This is the first data we get on a new connection.
-		// Figure out what the other side wants.
-		if ( iCountNew == 1 && Event.Default.m_Cmd == XCMD_NewSeed )
-		{
-			m_tmSetup.m_bNewSeed = true;
-			return( true );
-		}
-		else if ( iCountNew < 4 )	// just a ping for server info. (maybe, or CONNECT_TELNET?)
-		{
-			if ( IsBlockedIP())
-				return( false );
-			return( OnRxPing( Event.m_Raw, iCountNew ));
-		}
-
-		if ( iCountNew > 5 )
-		{
-			// Is it a HTTP request ?
-			// Is it HTTP post ?
-			if ( ! memcmp( Event.m_Raw, "POST /", 6 ) ||
-				! memcmp( Event.m_Raw, "GET /", 5 ))
-			{
-				if ( g_Cfg.m_fUseHTTP != 2 )
-					return( false );
-
-				// IsBlockedIP
-				SetConnectType( CONNECT_HTTP );	// we are serving web pages to this client.
-
-				CLogIP * pLogIP = GetLogIP();
-				if ( pLogIP == NULL )
-					return( false );
-				if ( pLogIP->CheckPingBlock( false ))
-					return( false );
-
-				// We might have an existing account connection.
-				// ??? Is this proper to connect this way ?
-				m_pAccount = pLogIP->GetAccount();
-
-				return( OnRxWebPageRequest( Event.m_Raw, iCountNew ));
-			}
-		}
-
-		int iSeedLen = 0;
-
-		if ( m_tmSetup.m_bNewSeed || ( Event.Default.m_Cmd == XCMD_NewSeed && iCountNew >= SEEDLENGTH_NEW ))
-		{
-			CEvent *pEvent = &Event;
-
-			if ( m_tmSetup.m_bNewSeed )
-			{
-				// we already received the 0xEF on its own, so move the 
-				// pointer back 1 byte to align it
-				iSeedLen = SEEDLENGTH_NEW - 1;
-				pEvent = (CEvent *)(((BYTE*)pEvent) - 1);
-			}
-			else
-			{
-				iSeedLen = SEEDLENGTH_NEW;
-				m_tmSetup.m_bNewSeed = true;
-			}
-
-			DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)pEvent->NewSeed.m_Version_Maj, 
-						 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
-						 (DWORD)pEvent->NewSeed.m_Version_Pat));
-
-			m_reportedCliver = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
-			m_tmSetup.m_dwIP = (DWORD) pEvent->NewSeed.m_Seed;
-		}
-		else
-		{
-			// Assume it's a normal client log in.
-			m_tmSetup.m_dwIP = UNPACKDWORD(Event.m_Raw);
-			iSeedLen = SEEDLENGTH_OLD;
-		}
-
-		iCountNew -= iSeedLen;
-		SetConnectType( CONNECT_CRYPT );
-
-		if ( iCountNew <= 0 )
-		{
-			if (m_tmSetup.m_dwIP == 0xFFFFFFFF)
-			{
-				// UOKR Client opens connection with 255.255.255.255
-				DEBUG_WARN(("UOKR Client Detected.\n"));
-				SetClientType(CLIENTTYPE_KR);
-				xSend(pDataKR_E3, 77);
-			}
-			else if ( m_tmSetup.m_bNewSeed )
-			{
-				// Specific actions for new seed here (if any).
-			}
-
-			return( true );
-		}
-
-		if ( iCountNew < 5 )
-		{
-			// Not enough data to be an actual client?
-			SetConnectType( CONNECT_UNK );
-			return( OnRxPing( Event.m_Raw+iSeedLen, iCountNew ) );
-		}
-
-		return( xProcessClientSetup( (CEvent*)(Event.m_Raw+iSeedLen), iCountNew ));
-	}
-
-	if ( ! m_Crypt.IsInit())
-	{
-		// This is not a client connection it seems.
-		// Must process the whole thing as one packet right now.
-
-		if ( GetConnectType() == CONNECT_CRYPT )
-		{
-			if ( iCountNew < 5 )
-			{
-				// Not enough data to be an actual client?
-				SetConnectType( CONNECT_UNK );
-				return( OnRxPing( Event.m_Raw, iCountNew ) );
-			}
-			else if ( Event.Default.m_Cmd == XCMD_EncryptionReply && IsClientKR() )
-			{
-				int iEncKrLen = Event.EncryptionReply.m_len;
-
-				if ( iCountNew < iEncKrLen )
-					return false; // Crapness !!
-				if ( iCountNew == iEncKrLen )
-					return true; // Just toss it
-				else
-				{
-					iCountNew -= iEncKrLen;
-					return( xProcessClientSetup( (CEvent*)(Event.m_Raw+iEncKrLen), iCountNew ));
-				}
-			}
-
-			// try to figure out which client version we are talking to.
-			// (CEvent::ServersReq) or (CEvent::CharListReq)
-			return( xProcessClientSetup( &Event, iCountNew ));
-		}
-
-		if ( GetConnectType() == CONNECT_HTTP )
-		{
-			// we are serving web pages to this client.
-			return( OnRxWebPageRequest( Event.m_Raw, iCountNew ));
-		}
-		if ( GetConnectType() == CONNECT_TELNET )
-		{
-			// We already logged in or are in the process of logging in.
-			return( OnRxConsole( Event.m_Raw, iCountNew ));
-		}
-
-		g_Log.Event( LOGM_CLIENTS_LOG, "xRecvData() %x:Junk with non inited Crypt\n", m_Socket.GetSocket());
-		return( false );	// No idea what this junk is.
-	}
-
-	// Decrypt the client data.
-	// TCP = no missed packets ! If we miss a packet we are screwed !
-	m_Crypt.Decrypt( m_bin.AddNewDataLock(iCountNew), Event.m_Raw, iCountNew );
-	m_bin.AddNewDataFinish(iCountNew);
-
-	return( true );
-}
-
 
 void CClient::xDumpPacket( int iDataLen, const BYTE * pData )
 {

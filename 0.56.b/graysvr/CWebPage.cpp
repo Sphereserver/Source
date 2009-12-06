@@ -6,6 +6,8 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "../common/CFileList.h"
+#include "../network/network.h"
+#include "../network/send.h"
 
 enum WV_TYPE
 {
@@ -191,7 +193,8 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 	
 		case WV_CLIENTLIST:
 			{
-				for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+				ClientIterator it;
+				for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 				{
 					CChar * pChar = pClient->GetChar();
 					if ( pChar == NULL )
@@ -584,7 +587,8 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 		TCHAR *pszTemp = Str_GetTemp();
 		sprintf(pszTemp, 
 			"HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
-		pClient->xSendReady(pszTemp, strlen(pszTemp));
+
+		PacketWeb* cmd = new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
 		return(0);
 	}
 
@@ -616,14 +620,17 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 		dwSize
 		);
 
-	pClient->xSendReady( szTmp, iLen, false );
+	PacketWeb packet;
+	packet.setData((BYTE*)szTmp, iLen);
+	packet.send(pClient);
 
 	while( true )
 	{
 		iLen = FileRead.Read( szTmp, sizeof( szTmp ) );
 		if ( iLen <= 0 )
 			break;
-		pClient->xSendReady( szTmp, iLen );
+		packet.setData((BYTE*)szTmp, iLen);
+		packet.send(pClient);
 		dwSize -= iLen;
 		if ( iLen < sizeof( szTmp ) )
 		{
@@ -850,7 +857,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 		sText.GetLength(),
 		(LPCTSTR) sText );
 
-	pClient->xSendReady((LPCTSTR)sMsgHead, sMsgHead.GetLength());
+	PacketWeb* cmd = new PacketWeb(pClient, (BYTE*)sMsgHead.GetPtr(), sMsgHead.GetLength());
 	return false;
 }
 

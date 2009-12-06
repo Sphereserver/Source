@@ -5,6 +5,7 @@
 //
 
 #include "../graysvr/graysvr.h"
+#include "../network/network.h"
 
 //************************************************************************
 // -CTeleport
@@ -807,7 +808,8 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 	{
 		case RV_ALLCLIENTS:
 		{
-			for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+			ClientIterator it;
+			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 			{
 				CChar * pChar = pClient->GetChar();
 				if ( !pChar || ( pChar->GetRegion() != this ))

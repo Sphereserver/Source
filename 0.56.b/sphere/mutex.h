@@ -14,6 +14,7 @@ public:
 	~SimpleMutex();
 
 	void lock();
+	bool tryLock();
 	void unlock();
 
 private:
@@ -49,6 +50,7 @@ public:
 
 	operator bool() const;
 	void doLock();
+	bool doTryLock();
 	void doUnlock();
 
 private:

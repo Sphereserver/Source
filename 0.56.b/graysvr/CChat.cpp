@@ -6,6 +6,7 @@
 //
 
 #include "graysvr.h"	// predef header.
+#include "../network/network.h"
 
 ////////////////////////////////////////////////////////////////////////////
 // -CChat
@@ -428,8 +429,9 @@ void CChat::KillChannels()
 void CChat::WhereIs(CChatChanMember * pBy, LPCTSTR pszName ) const
 {
 	ADDTOCALLSTACK("CChat::WhereIs");
-	CClient * pClient = g_Serv.GetClientHead();
-	for ( ; pClient; pClient = pClient->GetNext())
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! strcmp( pClient->GetChatName(), pszName))
 			continue;
@@ -459,8 +461,9 @@ void CChat::SendDeleteChannel(CChatChannel * pChannel)
 {
 	ADDTOCALLSTACK("CChat::SendDeleteChannel");
 	// Send a delete channel name message to all clients using the chat system
-	CClient * pClient = g_Serv.GetClientHead();
-	for ( ; pClient; pClient = pClient->GetNext())
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! pClient->IsChatActive())
 			continue;
@@ -494,8 +497,8 @@ void CChat::SendNewChannel(CChatChannel * pNewChannel)
 {
 	ADDTOCALLSTACK("CChat::SendNewChannel");
 	// Send this new channel name to all clients using the chat system
-	CClient * pClient = g_Serv.GetClientHead();
-	for ( ; pClient; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! pClient->IsChatActive())
 			continue;
@@ -537,8 +540,9 @@ void CChat::DecorateName(CGString &sName, const CChatChanMember * pMember, bool 
 void CChat::Broadcast(CChatChanMember * pFrom, LPCTSTR pszText, CLanguageID lang, bool fOverride)
 {
 	ADDTOCALLSTACK("CChat::Broadcast");
-	CClient * pClient = g_Serv.GetClientHead();
-	for ( ; pClient; pClient = pClient->GetNext())
+
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! pClient->IsChatActive())
 			continue;

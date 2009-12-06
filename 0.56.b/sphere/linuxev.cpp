@@ -2,6 +2,7 @@
 
 #include "linuxev.h"
 #include "../graysvr/graysvr.h"
+#include "../network/network.h"
 
 LinuxEv g_NetworkEvent;
 
@@ -12,8 +13,8 @@ static void socketmain_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 	if ( !g_Serv.IsLoading() )
 	{
 		if ( revents & EV_READ )
-		{	
-			g_Serv.SocketsReceive( g_Serv.m_SocketMain );
+		{
+			g_NetworkIn.acceptConnection();
 		}
 	}
 	
@@ -29,15 +30,15 @@ static void socketslave_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 	{
 		if ( revents & EV_READ )
 		{	
-			// theClient->xAsyncSendComplete();
+			// g_NetworkOut.onAsyncSendComplete(theClient);
 		}		
 		else if ( revents & EV_WRITE )
 		{	
-			theClient->xAsyncSendComplete();
+			g_NetworkOut.onAsyncSendComplete(theClient);
 		}
 	}
 	
-	if ( theClient->xCanSend() )
+	if ( theClient->GetNetState()->isSendingAsync() )
 	{
 		ev_io_start(loop, w);
 	}
@@ -79,25 +80,30 @@ bool LinuxEv::shouldExit()
 
 void LinuxEv::registerClient(CClient * theClient, EventsID eventCheck)
 {
-	memset(theClient->GetIOCB(), 0, sizeof(struct ev_io));
-		
-	ev_io_init(theClient->GetIOCB(), socketslave_cb, theClient->m_Socket.GetSocket(), (int)eventCheck);
-	theClient->GetIOCB()->data = theClient;
-	theClient->xSetCanSend(true);
+	NetState* state = theClient->GetNetState();
 	
-    ev_io_start(m_eventLoop, theClient->GetIOCB());	
+	memset(state->iocb(), 0, sizeof(struct ev_io));
+		
+	ev_io_init(state->iocb(), socketslave_cb, state->m_socket.GetSocket(), (int)eventCheck);
+	state->iocb()->data = theClient;
+	state->setSendingAsync(true);
+	
+    ev_io_start(m_eventLoop, state->iocb());	
 }
 
 void LinuxEv::unregisterClient(CClient * theClient)
 {
-	theClient->xSetCanSend(false);
+	NetState* state = theClient->GetNetState();
+
+	state->setSendingAsync(false);
 	
-	ev_io_stop(m_eventLoop, theClient->GetIOCB());
+	ev_io_stop(m_eventLoop, state->iocb());
 }
 
 void LinuxEv::forceClientevent(CClient * theClient, EventsID eventForce)
 {
-	ev_invoke(m_eventLoop, theClient->GetIOCB(), (int)eventForce);
+	NetState* state = theClient->GetNetState();
+	ev_invoke(m_eventLoop, state->iocb(), (int)eventForce);
 }
 
 void LinuxEv::forceClientread(CClient * theClient)

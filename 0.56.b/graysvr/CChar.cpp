@@ -6,6 +6,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
 
 LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 {
@@ -279,7 +280,7 @@ CChar::~CChar() // Delete character
 	if ( IsClient())	// this should never happen.
 	{
 		ASSERT( m_pClient );
-		m_pClient->m_fClosed	= true;
+		m_pClient->GetNetState()->markClosed();
 	}
 
 	Guild_Resign(MEMORY_GUILD);
@@ -359,7 +360,7 @@ void CChar::SetDisconnected()
 	// Client logged out or NPC is dead.
 	if ( IsClient())
 	{
-		GetClient()->m_fClosed	= true;
+		GetClient()->GetNetState()->markClosed();
 		return;
 	}
 	if ( m_pParty )
@@ -399,7 +400,7 @@ void CChar::Delete()
 	{
 		CClient* pClient = GetClient();
 		pClient->CharDisconnect();
-		pClient->m_fClosed = true;
+		pClient->GetNetState()->markClosed();
 	}
 
 	CObjBase::Delete();

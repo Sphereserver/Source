@@ -102,6 +102,8 @@ public:
 
 	static int GetLastError(bool bUseErrno = false);
 	bool IsOpen() const;
+
+	void SetSocket(SOCKET socket);
 	SOCKET GetSocket() const;
 
 	bool Create();

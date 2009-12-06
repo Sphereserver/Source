@@ -5,6 +5,7 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "PingServer.h"	// ping server
+#include "../network/network.h" // network thread
 #include "../sphere/asyncdb.h"
 #ifndef _WIN32
 	#include "../sphere/linuxev.h"
@@ -395,6 +396,7 @@ extern CDataBaseAsyncHelper g_asyncHdb;
 #ifndef _WIN32
 	extern LinuxEv g_NetworkEvent;
 #endif
+
 //*******************************************************************
 // CProfileData
 
@@ -617,11 +619,15 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
+#ifdef NETWORK_MULTITHREADED
+	g_NetworkOut.waitForClose();
+#endif
+
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
 #ifndef _WIN32
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( g_Cfg.m_fUseAsyncNetwork )
 		g_NetworkEvent.waitForClose();
 #endif
 		
@@ -646,8 +652,22 @@ int Sphere_OnTick()
 	EXC_SET("world");
 	g_World.OnTick();
 
+	// process incoming data
+	g_Serv.m_Profile.Start( PROFILE_NETWORK_RX );
+	g_NetworkIn.tick();
+	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
+
 	EXC_SET("server");
 	g_Serv.OnTick();
+
+	// push outgoing data
+	g_Serv.m_Profile.Start( PROFILE_NETWORK_TX );
+#ifdef NETWORK_MULTITHREADED
+	g_NetworkOut.pushHoldingQueues();
+#else
+	g_NetworkOut.tick();
+#endif
+	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_CATCH;
 
@@ -1036,8 +1056,13 @@ int _cdecl main( int argc, char * argv[] )
 			g_PingServer.start();
 		
 #ifndef _WIN32
-		if ( IsSetEF( EF_UseNetworkMulti ) )
+		if ( g_Cfg.m_fUseAsyncNetwork )
 			g_NetworkEvent.start();
+#endif
+
+		g_NetworkIn.onStart();
+#ifdef NETWORK_MULTITHREADED
+		g_NetworkOut.start();
 #endif
 			
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );

@@ -111,8 +111,6 @@ public:
 	{
 		m_ClientVersion.SetClientVer(m_sClientVersion.GetPtr());
 	}
-
-	void addToServersList( CCommand & cmd, int iThis, int jArray, bool bReverse ) const;
 };
 
 #endif // _INC_CSERVERDEF_H

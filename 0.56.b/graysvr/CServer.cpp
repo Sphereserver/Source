@@ -8,6 +8,7 @@
 #include "../common/grayver.h"	// sphere version
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
+#include "../network/network.h"
 #ifdef _SUBVERSION
 	#include "../common/subversion/SvnRevision.h"
 #endif
@@ -272,7 +273,8 @@ void CServer::PrintTelnet( LPCTSTR pszMsg ) const
 	if ( ! m_iAdminClients )
 		return;
 
-	for ( CClient * pClient = GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if (( pClient->GetConnectType() == CONNECT_TELNET ) && pClient->GetAccount() )
 		{
@@ -389,7 +391,8 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 	TCHAR *pszMsg = Str_GetTemp();
 	TCHAR *tmpMsg = Str_GetTemp();
 	int numClients = 0;
-	for ( CClient * pClient = GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		numClients++;
 		CChar * pChar = pClient->GetChar();
@@ -407,10 +410,10 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 
 			sprintf(pszMsg, "%s%x:Acc%c'%s', (%s) Char='%s',(%s)\n",
 				pszMsg,
-				pClient->m_Socket.GetSocket(),
+				pClient->GetSocketID(),
 				chRank,
 				(LPCTSTR) pClient->GetAccount()->GetName(),
-				(LPCTSTR) pClient->m_PeerName.GetAddrStr(),
+				pClient->GetPeerStr(),
 				(LPCTSTR) pChar->GetName(),
 				(LPCTSTR) pChar->GetTopPoint().WriteUsed());
 		}
@@ -430,9 +433,9 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 
 			sprintf(pszMsg, "%s%x:Acc='%s', (%s) %s\n",
 				pszMsg,
-				pClient->m_Socket.GetSocket(),
+				pClient->GetSocketID(),
 				pClient->GetAccount() ? (LPCTSTR) pClient->GetAccount()->GetName() : "<NA>",
-				(LPCTSTR) pClient->m_PeerName.GetAddrStr(),
+				pClient->GetPeerStr(),
 				(LPCTSTR) pszState );
 		}
 	}
@@ -488,7 +491,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"T = List of active Threads\n"
 				"X = immediate exit of the server (X# to save world and statics before exit)\n"
 				,
-				m_Clients.GetCount(),
+				StatGet(SERV_STAT_CLIENTS),
 				g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ) ? "ON" : "OFF",
 				g_Log.IsFileOpen() ? "OPEN" : "CLOSED",
 				m_Profile.IsActive() ? "ON" : "OFF",
@@ -1192,7 +1195,8 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 		case SV_ALLCLIENTS:	// "ALLCLIENTS"
 			{
 				// Send a verb to all clients
-				for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+				ClientIterator it;
+				for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 				{
 					if ( pClient->GetChar() == NULL )
 						continue;
@@ -1207,29 +1211,28 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			break;
 
 		case SV_BLOCKIP:
+			if ( pSrc->GetPrivLevel() >= PLEVEL_Admin )
 			{
-				if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
-					return( false );
+				int iTimeDecay(-1);
 
-				int iTimeDecay = -1;
+				TCHAR* ppArgs[2];
+				if (Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ", ") == false)
+					return false;
 
-				TCHAR * ppArgs[2];
-				if ( !Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ", " ) )
-					return( false );
+				if (ppArgs[1])
+					iTimeDecay = Exp_GetVal(ppArgs[1]);
 
-				if ( ppArgs[1] )
-					iTimeDecay = Exp_GetVal( ppArgs[1] );
+				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(ppArgs[0]);
 
-				if ( g_Cfg.SetLogIPBlock( ppArgs[0], true, iTimeDecay ))
-				{
-					pSrc->SysMessage( "IP Blocked\n" );
-				}
+				if (iTimeDecay >= 0)
+					pSrc->SysMessagef("IP blocked for %d seconds\n", iTimeDecay);
 				else
-				{
-					pSrc->SysMessage( "IP Already Blocked\n" );
-				}
-				break;
+					pSrc->SysMessagef("IP%s blocked\n", hist->m_blocked ? " already" : "");
+
+				hist->setBlocked(true, iTimeDecay);
 			}
+			break;
+
 		case SV_CONSOLE:
 			{
 				CGString z = s.GetArgRaw();
@@ -1415,15 +1418,11 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			break;
 
 		case SV_UNBLOCKIP:	// "UNBLOCKIP"
-			if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
-				return( false );
-			if ( g_Cfg.SetLogIPBlock( s.GetArgRaw(), false ))
+			if (pSrc->GetPrivLevel() >= PLEVEL_Admin)
 			{
-				pSrc->SysMessage( "IP UN-Blocked\n" );
-			}
-			else
-			{
-				pSrc->SysMessage( "IP Was NOT Blocked\n" );
+				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(s.GetArgRaw());
+				pSrc->SysMessagef("IP%s unblocked\n", hist->m_blocked ? "" : " already");
+				hist->setBlocked(false);
 			}
 			break;
 
@@ -1616,184 +1615,6 @@ void CServer::SetResyncPause(bool fPause, CTextConsole * pSrc, bool bMessage)
 
 //*********************************************************
 
-CClient * CServer::SocketsReceive( CGSocket & socket ) // Check for messages from the clients
-{
-	ADDTOCALLSTACK("CServer::SocketsReceive");
-	CSocketAddress client_addr;
-	SOCKET hSocketClient = socket.Accept( client_addr );
-	if ( hSocketClient < 0 || hSocketClient == INVALID_SOCKET )
-	{
-		// NOTE: Client_addr might be invalid.
-		g_Log.Event( LOGL_FATAL|LOGM_CLIENTS_LOG, "Failed at client connection to '%s'(?)\n", (LPCTSTR) client_addr.GetAddrStr());
-		return NULL;
-	}
-
-	CLogIP * pLogIP = g_Cfg.FindLogIP( client_addr, true );
-	if ( pLogIP == NULL || pLogIP->CheckPingBlock( true ))
-	{
-		// kill it by allowing it to go out of scope.
-		CGSocket::CloseSocket( hSocketClient );
-		return NULL;
-	}
-
-	// too many connecting on this IP
-	if ( ( (g_Cfg.m_iConnectingMaxIP > 0) && (pLogIP->m_iConnecting > g_Cfg.m_iConnectingMaxIP) )
-			|| (  (g_Cfg.m_iClientsMaxIP > 0) && (pLogIP->m_iConnected > g_Cfg.m_iClientsMaxIP) ) )
-	{
-		// kill
-		CGSocket::CloseSocket( hSocketClient );
-		return NULL;
-	}
-
-	CClient *client = new CClient(hSocketClient);
-	return client;
-}
-
-//	Berkeley sockets needs nfds to be updated that while in Windows that's ignored
-#ifdef _WIN32
-#define ADDTOSELECT(_x_)	FD_SET(_x_, &readfds)
-#else
-#define ADDTOSELECT(_x_)	{ FD_SET(_x_, &readfds); if ( _x_ > nfds ) nfds = _x_; }
-#endif
-
-void CServer::SocketsReceive() // Check for messages from the clients
-{
-	ADDTOCALLSTACK("CServer::SocketsReceive");
-	//	Do not accept packets while loading
-	if ( m_iModeCode > SERVMODE_ResyncPause ) return;
-
-	// What sockets do I want to look at ?
-	fd_set readfds;
-	int nfds = 0;
-	FD_ZERO(&readfds);
-	
-#ifndef _WIN32
-	if ( !IsSetEF( EF_UseNetworkMulti ) )
-#endif
-		ADDTOSELECT(m_SocketMain.GetSocket());
-
-	int	connecting	= 0;
-
-	CClient * pClientNext;
-	CClient * pClient = GetClientHead();
-	for ( ; pClient!=NULL; pClient = pClientNext )
-	{
-		pClientNext = pClient->GetNext();
-		if ( !pClient->m_Socket.IsOpen() || pClient->m_fClosed )
-		{
-			delete pClient;
-			continue;
-		}
-
-		if ( pClient->IsConnecting() )
-		{
-			connecting++;
-			if ( connecting > g_Cfg.m_iConnectingMax )
-			{
-				delete pClient;
-				continue;
-			}
-		}
-
-		ADDTOSELECT(pClient->m_Socket.GetSocket());
-	}
-
-	if ( connecting > g_Cfg.m_iConnectingMax )
-	{
-		g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%d clients in connect mode (max %d), closing %d\n",
-			connecting, g_Cfg.m_iConnectingMax, connecting - g_Cfg.m_iConnectingMax);
-	}
-	// we task sleep in here. NOTE: this is where we give time back to the OS.
-
-	m_Profile.Start(PROFILE_IDLE);
-
-	timeval Timeout;	// time to wait for data.
-	Timeout.tv_sec = 0;
-	Timeout.tv_usec = 100;	// micro seconds = 1/1000000
-	int ret = select( nfds+1, &readfds, NULL, NULL, &Timeout );
-
-	m_Profile.Start( PROFILE_NETWORK_RX );
-
-	if ( ret <= 0 )
-	{
-		m_Profile.Start( PROFILE_OVERHEAD );
-		return;
-	}
-
-#ifndef _WIN32
-	if ( !IsSetEF( EF_UseNetworkMulti ) )
-	{
-#endif
-	// Process new connections.
-	if ( FD_ISSET( m_SocketMain.GetSocket(), &readfds))
-	{
-		SocketsReceive( m_SocketMain );
-	}
-#ifndef _WIN32
-	}
-#endif
-		
-	// Any events from clients ?
-	for ( pClient = GetClientHead(); pClient!=NULL; pClient = pClientNext )
-	{
-		pClientNext = pClient->GetNext();
-		if ( !pClient->m_Socket.IsOpen() || pClient->m_fClosed )
-		{
-			delete pClient;
-			continue;
-		}
-
-		if ( FD_ISSET( pClient->m_Socket.GetSocket(), &readfds ))
-		{
-			pClient->m_timeLastEvent = CServTime::GetCurrentTime();	// We should always get pinged every couple minutes or so
-			if ( !pClient->xRecvData() )
-			{
-				delete pClient;
-				continue;
-			}
-			if ( pClient->m_fClosed )		// can happen due to data received
-			{
-				delete pClient;
-				continue;
-			}
-		}
-		else
-		{
-			// NOTE: Not all CClient are game clients.
-
-			int iLastEventDiff = -g_World.GetTimeDiff( pClient->m_timeLastEvent );
-
-			if ( g_Cfg.m_iDeadSocketTime &&
-				iLastEventDiff > g_Cfg.m_iDeadSocketTime &&
-				pClient->GetConnectType() != CONNECT_TELNET )
-			{
-				// We have not talked in several minutes.
-				DEBUG_ERR(( "%x:Dead Socket Timeout\n", pClient->m_Socket.GetSocket()));
-				delete pClient;
-				continue;
-			}
-		}
-
-		// On a timer allow the client to walk.
-		// catch up with real time !
-		// pClient->addWalkCode( EXTDATA_WalkCode_Add, 1 );
-	}
-
-	m_Profile.Start( PROFILE_OVERHEAD );
-}
-
-#undef ADDTOSELECT
-
-void CServer::SocketsFlush() // Sends ALL buffered data
-{
-	ADDTOCALLSTACK("CServer::SocketsFlush");
-	for ( CClient *pClient = GetClientHead(); pClient ; pClient = pClient->GetNext() )
-	{
-		pClient->xFlush(); // first we send any other packet
-		pClient->xProcessTooltipQueue(); // then we process tooltip (lowest priority)
-	}
-}
-
 bool CServer::SocketsInit( CGSocket & socket )
 {
 	ADDTOCALLSTACK("CServer::SocketsInit");
@@ -1831,7 +1652,7 @@ bool CServer::SocketsInit( CGSocket & socket )
 	socket.Listen();
 	
 #ifndef _WIN32
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( g_Cfg.m_fUseAsyncNetwork )
 	{
 		g_NetworkEvent.registerMainsocket();
 	}
@@ -1881,13 +1702,12 @@ void CServer::SocketsClose()
 {
 	ADDTOCALLSTACK("CServer::SocketsClose");
 #ifndef _WIN32
-	if ( IsSetEF( EF_UseNetworkMulti ) )
+	if ( g_Cfg.m_fUseAsyncNetwork )
 	{
 		g_NetworkEvent.unregisterMainsocket();
 	}
 #endif
 	m_SocketMain.Close();
-	m_Clients.DeleteAll();
 }
 
 void CServer::OnTick()
@@ -1944,33 +1764,6 @@ void CServer::OnTick()
 	EXC_SET("SetTime");
 	SetValidTime();	// we are a valid game server.
 
-	// Check clients for incoming packets.
-	// Do this on a timer so clients with faster connections can't overwealm the system.
-	EXC_SET("receive");
-	SocketsReceive();
-
-	if ( !IsLoading() )
-	{
-		m_Profile.Start( PROFILE_CLIENTS );
-
-		for ( CClient * pClient = GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
-		{
-			if ( !pClient->m_bin.GetDataQty() )
-				continue;
-
-			EXC_TRYSUB("ProcessMessage");
-
-			pClient->xProcessMsg(pClient->xDispatchMsg());
-			continue;
-
-			EXC_CATCHSUB("Server");
-			pClient->xProcessMsg();
-		}
-	}
-
-	EXC_SET("send");
-	m_Profile.Start( PROFILE_NETWORK_TX );
-	SocketsFlush();
 	m_Profile.Start( PROFILE_OVERHEAD );
 
 	if ( m_timeShutdown.IsTimeValid() )

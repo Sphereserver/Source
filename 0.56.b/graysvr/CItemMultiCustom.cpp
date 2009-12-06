@@ -3,9 +3,8 @@
 //
 
 #include "graysvr.h"	// predef header.
-#pragma warning(disable:4096)
-#include "../common/zlib/zlib.h"
-#pragma warning(default:4096)
+#include "../network/network.h"
+#include "../network/send.h"
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,12 +12,16 @@ CItemMultiCustom::CItemMultiCustom( ITEMID_TYPE id, CItemBase * pItemDef ) : CIt
 {
 	m_designMain.m_iRevision = 1;
 	m_designMain.m_pData = NULL;
+	m_designMain.m_iDataRevision = 0;
 	m_designWorking.m_iRevision = 1;
 	m_designWorking.m_pData = NULL;
+	m_designWorking.m_iDataRevision = 0;
 	m_designBackup.m_iRevision = 0;
 	m_designBackup.m_pData = NULL;
+	m_designBackup.m_iDataRevision = 0;
 	m_designRevert.m_iRevision = 0;
 	m_designRevert.m_pData = NULL;
+	m_designRevert.m_iDataRevision = 0;
 	m_pArchitect = NULL;
 	m_pGrayMulti = NULL;
 	m_rectDesignArea.SetRectEmpty();
@@ -55,6 +58,7 @@ CItemMultiCustom::~CItemMultiCustom()
 	{
 		delete[] m_designMain.m_pData;
 		m_designMain.m_pData = NULL;
+		m_designMain.m_iDataRevision = 0;
 	}
 
 	m_designWorking.m_vectorComponents.clear();
@@ -62,6 +66,7 @@ CItemMultiCustom::~CItemMultiCustom()
 	{
 		delete[] m_designWorking.m_pData;
 		m_designWorking.m_pData = NULL;
+		m_designWorking.m_iDataRevision = 0;
 	}
 
 	m_designBackup.m_vectorComponents.clear();
@@ -69,6 +74,7 @@ CItemMultiCustom::~CItemMultiCustom()
 	{
 		delete[] m_designBackup.m_pData;
 		m_designBackup.m_pData = NULL;
+		m_designBackup.m_iDataRevision = 0;
 	}
 
 	m_designRevert.m_vectorComponents.clear();
@@ -76,6 +82,7 @@ CItemMultiCustom::~CItemMultiCustom()
 	{
 		delete[] m_designRevert.m_pData;
 		m_designRevert.m_pData = NULL;
+		m_designRevert.m_iDataRevision = 0;
 	}
 }
 
@@ -89,7 +96,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	if ( m_pArchitect != NULL )
 		EndCustomize(true);
 
-	if ( pClientSrc->GetClientVersion() < 0x0400000 && pClientSrc->GetClientVersionReported() < 0x0400000 && !pClientSrc->IsClientKR() )
+	if ( !pClientSrc->GetNetState()->isClientVersion(0x0400000) && !pClientSrc->GetNetState()->isClientKR() )
 		return;
 
 	// copy the main design to working, ready for editing
@@ -130,15 +137,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	m_pArchitect = pClientSrc;
 	m_pArchitect->m_pHouseDesign = this;
 
-	// display customize gump
-	CExtData ExtData;
-	ExtData.HouseCustom.m_HouseSerial = (DWORD)GetUID();
-	ExtData.HouseCustom.m_type = 0x04;
-	ExtData.HouseCustom.m_unk1 = 0x0000;
-	ExtData.HouseCustom.m_unk2 = 0xFFFF;
-	ExtData.HouseCustom.m_unk3 = 0xFFFF;
-	ExtData.HouseCustom.m_unk4 = 0xFF;
-	pClientSrc->addExtData( EXTDATA_HouseCustom, &ExtData, sizeof(ExtData.HouseCustom) );
+	PacketHouseBeginCustomise* cmd = new PacketHouseBeginCustomise(pClientSrc, this);
 
 	// make sure they know the building exists
 	pClientSrc->addItem(this);
@@ -166,14 +165,7 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 		return;
 
 	// exit the 'architect' from customise mode
-	CExtData ExtData;
-	ExtData.HouseCustom.m_HouseSerial = (DWORD)GetUID();
-	ExtData.HouseCustom.m_type = 0x05;
-	ExtData.HouseCustom.m_unk1 = 0x0000;
-	ExtData.HouseCustom.m_unk2 = 0xFFFF;
-	ExtData.HouseCustom.m_unk3 = 0xFFFF;
-	ExtData.HouseCustom.m_unk4 = 0xFF;
-	m_pArchitect->addExtData( EXTDATA_HouseCustom, &ExtData, sizeof(ExtData.HouseCustom) );
+	PacketHouseEndCustomise* cmd = new PacketHouseEndCustomise(m_pArchitect, this);
 	m_pArchitect->m_pHouseDesign = NULL;
 
 	CClient * pClient = m_pArchitect;
@@ -658,14 +650,7 @@ void CItemMultiCustom::SendVersionTo(CClient * pClientSrc)
 		return;
 
 	// send multi version
-	CCommand cmd;
-	cmd.ExtData.m_Cmd = XCMD_ExtData;
-	cmd.ExtData.m_len = sizeof(cmd.ExtData.m_u.HouseDesignVersion) + sizeof(cmd.ExtData.m_Cmd) + sizeof(cmd.ExtData.m_len) + sizeof(cmd.ExtData.m_type);
-	cmd.ExtData.m_type = EXTDATA_HouseDesignVer;
-	cmd.ExtData.m_u.HouseDesignVersion.m_HouseUID = (DWORD)GetUID();
-	cmd.ExtData.m_u.HouseDesignVersion.m_Version = GetRevision(pClientSrc);
-
-	pClientSrc->xSendPkt( &cmd, cmd.ExtData.m_len );
+	PacketHouseDesignVersion* cmd = new PacketHouseDesignVersion(pClientSrc, this);
 }
 
 void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
@@ -676,7 +661,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	if ( pClientSrc == NULL || !pClientSrc->GetChar() )
 		return;
 
-	if ( pClientSrc->GetClientVersion() < 0x0400000 && pClientSrc->GetClientVersionReported() < 0x0400000 && !pClientSrc->IsClientKR() )
+	if ( !pClientSrc->GetNetState()->isClientVersion(0x0400000) && !pClientSrc->GetNetState()->isClientKR() )
 		return;
 
 	DesignDetails * pDesign = NULL;
@@ -689,33 +674,19 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	if ( pDesign->m_pData != NULL )
 	{
 		// check the saved packet matches the design revision
-		if ( pDesign->m_pData->AOSCustomHouse.m_revision == pDesign->m_iRevision )
+		if ( pDesign->m_iDataRevision == pDesign->m_iRevision )
 		{
-			pClientSrc->xSendPkt( pDesign->m_pData, pDesign->m_pData->AOSCustomHouse.m_len );
+			pDesign->m_pData->send(pClientSrc);
 			return;
 		}
 
 		// remove the saved packet and continue to build a new one
-		delete[] pDesign->m_pData;
+		delete pDesign->m_pData;
 		pDesign->m_pData = NULL;
+		pDesign->m_iDataRevision = 0;
 	}
 
-	CCommand cmd;
-	cmd.AOSCustomHouse.m_Cmd = XCMD_AOSCustomHouse;
-	cmd.AOSCustomHouse.m_compression = 0x03;
-	cmd.AOSCustomHouse.m_unk1 = 0x00;
-	cmd.AOSCustomHouse.m_UID = (DWORD)GetUID();
-	cmd.AOSCustomHouse.m_revision = pDesign->m_iRevision;
-	cmd.AOSCustomHouse.m_itemcount = 0;
-	cmd.AOSCustomHouse.m_datasize = sizeof(cmd.AOSCustomHouse.m_planeCount);
-	cmd.AOSCustomHouse.m_planeCount = 0;
-
-	int iLen = ( sizeof(cmd.AOSCustomHouse.m_Cmd) + sizeof(cmd.AOSCustomHouse.m_len) +
-				sizeof(cmd.AOSCustomHouse.m_compression) + sizeof(cmd.AOSCustomHouse.m_unk1) +
-				sizeof(cmd.AOSCustomHouse.m_UID) + sizeof(cmd.AOSCustomHouse.m_revision) +
-				sizeof(cmd.AOSCustomHouse.m_itemcount) + sizeof(cmd.AOSCustomHouse.m_datasize) +
-				sizeof(cmd.AOSCustomHouse.m_planeCount));
-
+	PacketHouseDesign* cmd = new PacketHouseDesign(this, pDesign->m_iRevision);
 
 	if ( pDesign->m_vectorComponents.size() )
 	{
@@ -726,11 +697,10 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 		int iWidth = rectDesign.GetWidth();
 		int iHeight = rectDesign.GetHeight();
 
-		int iPlaneCount = 0, iMaxPlane = 0;
+		int iMaxPlane = 0;
 		ComponentsContainer vectorStairs;
 		Component * pComp;
 		CItemBase * pItemBase;
-		CCommand * pCmdOffset = &cmd;
 
 		// find the highest plane/floor
 		for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); i++ )
@@ -741,17 +711,16 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			iMaxPlane = GetPlane(*i);
 		}
 
+		NWORD wPlaneBuffer[PLANEDATA_BUFFER];
+
 		for (int iCurrentPlane = 0; iCurrentPlane <= iMaxPlane; iCurrentPlane++)
 		{
 			// for each plane, generate a list of items
-#define PLANEDATA_BUFFER	1024	// bytes reserved for plane data
-#define STAIRSPERBLOCK		750
-#define STAIRDATA_BUFFER	STAIRSPERBLOCK * 5		// bytes reserved for stairs data
 			bool bFoundItems = false;
 			int iItemCount = 0;
 			int iMaxIndex = 0;
 
-			memset(pCmdOffset->AOSCustomHouse.m_planeList[0].m_data, 0, PLANEDATA_BUFFER);
+			memset(wPlaneBuffer, 0, sizeof(wPlaneBuffer));
 			for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); i++ )
 			{
 				if ( GetPlane(*i) != iCurrentPlane )
@@ -792,70 +761,19 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 					continue;
 				}
 
-				pCmdOffset->AOSCustomHouse.m_planeList[0].m_data[index] = pComp->m_item.GetDispID();
+				wPlaneBuffer[index] = pComp->m_item.GetDispID();
 				bFoundItems = true;
 				iItemCount++;
 				iMaxIndex = maximum(iMaxIndex, index);
 			}
 
-			if (!bFoundItems)
+			if (bFoundItems == false)
 				continue;
 
-			int iPlaneSize = (iMaxIndex + 1) * sizeof(pCmdOffset->AOSCustomHouse.m_planeList[0].m_data);
-
-			pCmdOffset->AOSCustomHouse.m_planeList[0].m_index = iCurrentPlane | 0x20;
-			pCmdOffset->AOSCustomHouse.m_planeList[0].m_size = iPlaneSize;
-
-			iPlaneCount++;
-
-			// compress m_data
-			z_uLong mCompressLen = z_compressBound(PLANEDATA_BUFFER);
-			BYTE * mCompress = new BYTE[mCompressLen];
-
-			int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_planeList[0].m_data, iPlaneSize, Z_DEFAULT_COMPRESSION);
-			if ( error != Z_OK )
-			{
-				// an error occured with this floor, but we should be able to
-				// continue to the next without problems
-				delete[] mCompress;
-				g_Log.EventError("Compress failed with error %d when generating house design for floor %d on building 0%x.\n", error, iCurrentPlane, (DWORD)GetUID());
-				iPlaneCount--;
-				continue;
-			}
-
-			memcpy(&pCmdOffset->AOSCustomHouse.m_planeList[0].m_data, mCompress, mCompressLen);
-			delete[] mCompress;
-
-			if ( mCompressLen <= 0 || mCompressLen >= PLANEDATA_BUFFER )
-			{
-				// too much data, but we should be able to continue to the next
-				// floor without problems
-				g_Log.EventWarn("Floor %d on building 0%x too large with compressed length of %d.\n", iCurrentPlane, (DWORD)GetUID(), mCompressLen);
-				iPlaneCount--;
-				continue;
-			}
-
-			pCmdOffset->AOSCustomHouse.m_planeList[0].m_length = mCompressLen;
-			pCmdOffset->AOSCustomHouse.m_planeList[0].m_flags = ((iPlaneSize >> 4) & 0xF0) | ((mCompressLen >> 8) & 0x0F);
-
-			mCompressLen += sizeof(pCmdOffset->AOSCustomHouse.m_planeList[0]) - (sizeof(pCmdOffset->AOSCustomHouse.m_planeList[0].m_data));
-
-			cmd.AOSCustomHouse.m_itemcount = iItemCount + (cmd.AOSCustomHouse.m_itemcount);
-			cmd.AOSCustomHouse.m_datasize = (cmd.AOSCustomHouse.m_datasize + mCompressLen);
-
-			// increase the pointer so that m_planeList[0] is actually m_planeList[1]
-			pCmdOffset = (CCommand *)(((BYTE*)pCmdOffset) + mCompressLen);
-			iLen += mCompressLen;
+			int iPlaneSize = (iMaxIndex + 1) * sizeof(NWORD);
+			cmd->writePlaneData(iCurrentPlane, iItemCount, (BYTE*)wPlaneBuffer, iPlaneSize);
 		}
 
-		// set the pointer so that m_stairsList[0] doesn't point to the middle of m_planeList
-		pCmdOffset = &cmd;
-		pCmdOffset = (CCommand *)((((BYTE*)&cmd) - (sizeof(cmd.AOSCustomHouse.m_planeList[0]) + 1)) + (cmd.AOSCustomHouse.m_datasize));
-
-		int iStairsIndex = 0;
-		int iStairsCount = 0;
-		int iStairsSize = 0;
-		memset(pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, 0, STAIRDATA_BUFFER);
 		for ( ComponentsContainer::iterator i = vectorStairs.begin(); i != vectorStairs.end(); i++ )
 		{
 			pComp = *i;
@@ -863,77 +781,18 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 				continue;
 
 			// stair items can be sent in any order
-			int index = iStairsCount++;
-
-			pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data[index].m_id = pComp->m_item.GetDispID();
-			pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data[index].m_x = pComp->m_item.m_dx;
-			pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data[index].m_y = pComp->m_item.m_dy;
-			pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data[index].m_z = pComp->m_item.m_dz;
-
-			if ( iStairsCount >= STAIRSPERBLOCK || ((i+1) == vectorStairs.end()) )
-			{
-				iPlaneCount++;
-				iStairsSize = (iStairsCount * 5);
-
-				// compress m_data
-				z_uLong mCompressLen = z_compressBound(STAIRDATA_BUFFER);
-				BYTE * mCompress = new BYTE[mCompressLen];
-
-				int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, iStairsSize, Z_DEFAULT_COMPRESSION);
-				if ( error != Z_OK )
-				{
-					// an error occured with this block, but we should be able to
-					// continue to the next without problems
-					delete[] mCompress;
-					g_Log.EventError("Compress failed with error %d when generating house design on building 0%x.\n", error, (DWORD)GetUID());
-					iPlaneCount--;
-					goto end_stairslist;
-				}
-
-				memcpy(&pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, mCompress, mCompressLen);
-				delete[] mCompress;
-
-				if ( mCompressLen <= 0 || mCompressLen >= STAIRDATA_BUFFER )
-				{
-					// too much data, but we should be able to continue to the next
-					// block without problems
-					g_Log.EventWarn("Building 0%x too large with compressed length of %d.\n", (DWORD)GetUID(), mCompressLen);
-					iPlaneCount--;
-					goto end_stairslist;
-				}
-
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_index = 9 + iStairsIndex;
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_size = iStairsSize;
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_length = mCompressLen;
-				pCmdOffset->AOSCustomHouse.m_stairsList[0].m_flags = ((iStairsSize >> 4) & 0xF0) | ((mCompressLen >> 8) & 0x0F);
-
-				mCompressLen += sizeof(pCmdOffset->AOSCustomHouse.m_stairsList[0]) - sizeof(pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data);
-				cmd.AOSCustomHouse.m_itemcount = iStairsCount + (cmd.AOSCustomHouse.m_itemcount);
-				cmd.AOSCustomHouse.m_datasize = (cmd.AOSCustomHouse.m_datasize + mCompressLen);
-
-				// increase the pointer so that m_stairsList[0] is actually m_stairsList[1]
-				pCmdOffset = (CCommand *)(((BYTE*)pCmdOffset) + mCompressLen);
-				iLen += mCompressLen;
-
-end_stairslist:
-				// add data, inc
-				iStairsIndex++;
-				iStairsCount = 0;
-				memset(pCmdOffset->AOSCustomHouse.m_stairsList[0].m_data, 0, STAIRDATA_BUFFER);
-			}
+			cmd->writeStairData(pComp->m_item.GetDispID(), pComp->m_item.m_dx, pComp->m_item.m_dy, pComp->m_item.m_dz);
 		}
-
-		cmd.AOSCustomHouse.m_planeCount = iPlaneCount;
 	}
 
-	cmd.AOSCustomHouse.m_len = iLen;
+	cmd->finalise();
 
 	// save the packet in the design data
-	pDesign->m_pData = new CCommand;
-	memcpy(pDesign->m_pData->m_Raw, cmd.m_Raw, cmd.AOSCustomHouse.m_len);
+	pDesign->m_pData = cmd;
+	pDesign->m_iDataRevision = pDesign->m_iRevision;
 
 	// send the packet
-	pClientSrc->xSendPkt(&cmd, cmd.AOSCustomHouse.m_len);
+	pDesign->m_pData->send(pClientSrc);
 }
 
 void CItemMultiCustom::BackupStructure(CClient * pClientSrc)
@@ -1198,12 +1057,13 @@ void CItemMultiCustom::CopyDesign(DesignDetails * designFrom, DesignDetails * de
 
 	if ( designFrom->m_pData != NULL )
 	{
-		designTo->m_pData = new CCommand;
-		memcpy(designTo->m_pData->m_Raw, designFrom->m_pData->m_Raw, designFrom->m_pData->AOSCustomHouse.m_len);
+		designTo->m_pData = new PacketHouseDesign(designFrom->m_pData);
+		designTo->m_iDataRevision = designFrom->m_iDataRevision;
 	}
 	else
 	{
 		designTo->m_pData = NULL;
+		designTo->m_iDataRevision = 0;
 	}
 }
 

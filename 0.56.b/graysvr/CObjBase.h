@@ -40,6 +40,8 @@ enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.
 	NPC_MEM_ACT_IGNORE,		// I looted or looked at and discarded this item (ignore it)
 };
 
+class PacketSend;
+class PacketHouseDesign;
 
 class CObjBase : public CObjBaseTemplate, public CScriptObj
 {
@@ -193,7 +195,7 @@ public:
 
 	void RemoveFromView( CClient * pClientExclude = NULL , bool fHardcoded = true );	// remove this item from all clients.
 	void ResendTooltip( bool bForce = false );	// force reload of tooltip for this object
-	void UpdateCanSee( const CCommand * pCmd, int iLen, CClient * pClientExclude = NULL ) const;
+	void UpdateCanSee( PacketSend * pPacket, CClient * pClientExclude = NULL ) const;
 	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode ) const;
 
 	TRIGRET_TYPE OnHearTrigger(CResourceLock &s, LPCTSTR pCmd, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
@@ -1454,7 +1456,8 @@ private:
 	{
 		int m_iRevision;
 		ComponentsContainer m_vectorComponents;
-		CCommand * m_pData;
+		PacketHouseDesign* m_pData;;
+		int m_iDataRevision;
 	};
 	
 	class CGrayMultiCustom : public CGrayMulti

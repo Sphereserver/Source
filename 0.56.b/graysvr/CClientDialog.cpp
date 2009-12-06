@@ -1,5 +1,8 @@
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
+#include "../network/send.h"
+#include "../network/receive.h"
 #pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
 #pragma warning(default:4096)
@@ -543,7 +546,7 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 	// Now pack it up to send,
 	// m_tmGumpDialog.m_ResourceID = rid;
 	DWORD context = (DWORD)rid;
-	if ( IsClientKR() )
+	if ( GetNetState()->isClientKR() )
 	{
 		// translate to KR's equivalent DialogID
 		context = g_Cfg.GetKRDialog( context );
@@ -569,47 +572,19 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
 {
 	ADDTOCALLSTACK("CClient::addGumpInpVal");
 	// CLIMODE_INPVAL
-	// Should result in Event_GumpInpValRet
+	// Should result in PacketGumpValueInputResponse::onReceive
 	// just input an objects attribute.
 
 	// ARGS:
 	// 	m_Targ_UID = pObj->GetUID();
 	//  m_Targ_Text = verb
 
+	if (pObj == NULL)
+		return;
+
 	ASSERT( pObj );
 
-	CCommand cmd;
-
-	cmd.GumpInpVal.m_Cmd = XCMD_GumpInpVal;
-	cmd.GumpInpVal.m_len = sizeof(cmd.GumpInpVal);
-
-	cmd.GumpInpVal.m_UID = pObj->GetUID();
-	cmd.GumpInpVal.m_context = CLIMODE_INPVAL; // LOWORD( m_tmGumpDialog.m_ResourceID); // CLIMODE_INPVAL;
-
-	cmd.GumpInpVal.m_textlen1 = sizeof(cmd.GumpInpVal.m_text1);
-	strcpy( cmd.GumpInpVal.m_text1, pszText1 );
-
-	cmd.GumpInpVal.m_cancel = fCancel ? 1 : 0;
-	cmd.GumpInpVal.m_style = (BYTE) style;
-	cmd.GumpInpVal.m_mask = iMaxLength;	// !!!
-	cmd.GumpInpVal.m_textlen2 = sizeof(cmd.GumpInpVal.m_text2);
-	cmd.GumpInpVal.m_text2[0] = '\0';	// clear just in case.
-
-	switch ( style )
-	{
-	case INPVAL_STYLE_NOEDIT: // None
-		break;
-	case INPVAL_STYLE_TEXTEDIT: // Text
-		sprintf(cmd.GumpInpVal.m_text2,
-			"%s (%i chars max)", pszText2, iMaxLength );
-		break;
-	case INPVAL_STYLE_NUMEDIT: // Numeric
-		sprintf(cmd.GumpInpVal.m_text2,
-			"%s (0 - %i)", pszText2, iMaxLength );
-		break;
-	}
-
-	xSendPkt( &cmd, sizeof(cmd.GumpInpVal));
+	PacketGumpValueInput* cmd = new PacketGumpValueInput(this, fCancel, style, iMaxLength, pszText1, pszText2, pObj);
 
 	// m_tmInpVal.m_UID = pObj->GetUID();
 	// m_tmInpVal.m_PrvGumpID = m_tmGumpDialog.m_ResourceID;
@@ -624,25 +599,12 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 {
 	ADDTOCALLSTACK("CClient::addGumpDialog");
 	// Add a generic GUMP menu.
-	// Should return a Event_GumpDialogRet
+	// Should return a PacketGumpDialogRet::onReceive
 	// NOTE: These packets can get rather LARGE.
 	// x,y = where on the screen ?
 
 	if ( pObj == NULL )
 		pObj = m_pChar;
-	int lengthControls=1;
-	int i=0;
-	for ( ; i < iControls; i++)
-	{
-		lengthControls += psControls[i].GetLength() + 2;
-	}
-
-	int lengthText = lengthControls + 20 + 3;
-	for ( i=0; i < iTexts; i++)
-	{
-		int lentext2 = psText[i].GetLength();
-		lengthText += (lentext2*2)+2;
-	}
 
 	int	context_mode = mode;
 	if ( mode == CLIMODE_DIALOG && rid != 0 )
@@ -650,225 +612,14 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int
 		context_mode = rid & 0x00FFFFFF;
 	}
 
-	if ( IsClientVer(0x500000) || IsNoCryptVer(0x500000) || IsClientKR() )
-	{
-		CCommand cmd;
-		memset( &cmd, 0, sizeof( cmd ) );
-		int len = 0;
-
-		cmd.CompressedGumpDialog.m_Cmd = XCMD_CompressedGumpDialog;
-		cmd.CompressedGumpDialog.m_len = 0;	// to set later
-		cmd.CompressedGumpDialog.m_UID = pObj->GetUID();
-		cmd.CompressedGumpDialog.m_context = context_mode;
-		cmd.CompressedGumpDialog.m_x = x;
-		cmd.CompressedGumpDialog.m_y = y;
-		cmd.CompressedGumpDialog.m_compressed_lenCmds = 0;
-		cmd.CompressedGumpDialog.m_uncompressed_lenCmds = lengthControls;
-		len += 27;
-
-		{
-			z_uLong mCompressLen = z_compressBound( lengthControls );
-			BYTE * mCompress = new BYTE[mCompressLen];
-
-			TemporaryString pszMsg;
-			TCHAR * pszFull = new TCHAR[lengthControls];
-
-			for ( i=0; i<iControls; ++i)
-			{
-				sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);	
-				if ( i == 0 )
-					strcpy(pszFull, pszMsg);
-				else
-					strcat(pszFull, pszMsg);
-			}
-	
-			int error = z_compress2(mCompress, &mCompressLen, (BYTE *)pszFull, lengthControls, Z_DEFAULT_COMPRESSION);
-			delete [] pszFull;
-
-			if ( error != Z_OK )
-			{
-				delete [] mCompress;
-
-				g_Log.EventError( "Compress failed with error %d when generating gump. Using old packet.\n", error );
-				goto olddialogprocedure;
-			}
-
-			// check that the entire dialog length will fit in the packet buffer
-			if (( len + mCompressLen ) > sizeof(CCommand) )
-			{
-				delete [] mCompress;
-
-				// resulting packet will be too large, error message already exists in olddialogprocedure
-				goto olddialogprocedure;
-			}
-
-			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
-			cmd.CompressedGumpDialog.m_compressed_lenCmds = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
-			delete [] mCompress;
-
-			len += (int)mCompressLen;
-		}
-
-		NDWORD * m_lineTxts = (NDWORD *)(&cmd.CompressedGumpDialog.m_Cmd + len);
-		len += sizeof(NDWORD);
-		*m_lineTxts = (DWORD) iTexts;
-
-		NDWORD * m_compressed_lenTxts = (NDWORD *)(&cmd.CompressedGumpDialog.m_Cmd + len);
-		len += sizeof(NDWORD);
-
-		NDWORD * m_uncompressed_lenTxts = (NDWORD *)(&cmd.CompressedGumpDialog.m_Cmd + len);
-		len += sizeof(NDWORD);
-
-		{
-			int mLen = 0;
-			int iLenghtTxt = lengthText - lengthControls - 23;
-			BYTE * m_Deflated = new BYTE[iLenghtTxt];
-
-			for ( int i = 0; i < iTexts; i++ )
-			{
-				int wLen1 = psText[i].GetLength();
-				NWORD wLen2; wLen2 = (WORD) wLen1;
-				
-				memcpy( (m_Deflated + mLen), &wLen2, sizeof(NWORD) );
-				mLen += sizeof(NWORD);
-
-				if ( wLen1 )
-				{
-					NCHAR szTmp[MAX_TALK_BUFFER];
-					int len3 = CvtSystemToNUNICODE( szTmp, COUNTOF(szTmp), psText[i], wLen1 );
-					memcpy( (m_Deflated + mLen), &szTmp, wLen1*sizeof(NCHAR) );
-					mLen += (wLen1*sizeof(NCHAR));
-				}
-			}
-
-			if ( mLen != iLenghtTxt )
-			{
-				delete [] m_Deflated;
-
-				g_Log.EventError( "Mismatch in text length (%d - %d). Using old packet.\n", (mLen + 2), iLenghtTxt );
-				goto olddialogprocedure;
-			}
-
-			z_uLong mCompressLen = z_compressBound( iLenghtTxt );
-			BYTE * mCompress = new BYTE[mCompressLen];
-
-			int error = z_compress2(mCompress, &mCompressLen, m_Deflated, iLenghtTxt, Z_DEFAULT_COMPRESSION);
-			delete [] m_Deflated;
-
-			if ( error != Z_OK )
-			{
-				delete [] mCompress;
-
-				g_Log.EventError( "Compress failed with error %d when generating gump. Using old packet.\n", error );
-				goto olddialogprocedure;
-			}
-
-			// check that the entire dialog length will fit in the packet buffer
-			if (( len + mCompressLen ) > sizeof(CCommand) )
-			{
-				delete [] mCompress;
-
-				// resulting packet will be too large, error message already exists in olddialogprocedure
-				goto olddialogprocedure;
-			}
-
-			memcpy((&cmd.CompressedGumpDialog.m_Cmd + len), mCompress, mCompressLen);
-
-			*m_compressed_lenTxts = (DWORD) mCompressLen + sizeof(cmd.CompressedGumpDialog.m_uncompressed_lenCmds);
-			*m_uncompressed_lenTxts = (DWORD) iLenghtTxt;
-
-			delete [] mCompress;
-
-			len += (int)mCompressLen;
-		}
-
-		cmd.CompressedGumpDialog.m_len = len;
-		xSend( &cmd, len );
-	}
-	else
-	{
-olddialogprocedure:
-		// check that the entire dialog length will fit in the packet buffer
-		if (lengthText > sizeof(CCommand))
-		{
-			// log an error to console and cancel sending the dialog
-			if (rid != 0)
-				g_Log.EventError("%x:Gump packet for dialog '%s' too big to send to client.\n", m_Socket.GetSocket(), g_Cfg.ResourceGetName((RESOURCE_ID(RES_DIALOG, context_mode))));
-			else
-				g_Log.EventError("%x:Gump packet too big to send to client.\n", m_Socket.GetSocket());
-			return;
-		}
-		
-		// Send the fixed length stuff
-		CCommand cmd;
-		memset( &cmd, 0, sizeof( cmd ) );
-		int len = 0;
-
-		cmd.GumpDialog.m_Cmd = XCMD_GumpDialog;
-		cmd.GumpDialog.m_len = 0;
-		cmd.GumpDialog.m_UID = pObj->GetUID();
-		cmd.GumpDialog.m_context = context_mode;
-		cmd.GumpDialog.m_x = x;
-		cmd.GumpDialog.m_y = y;
-		cmd.GumpDialog.m_lenCmds = lengthControls;
-		len += 21;
-
-		{
-			TemporaryString pszMsg; int mLen = 0;
-			TCHAR * pszFull = new TCHAR[lengthControls];
-
-			for ( i=0; i<iControls; ++i)
-			{
-				sprintf(pszMsg, "{%s}", (LPCTSTR) psControls[i]);	
-				if ( i == 0 )
-					strcpy(pszFull, pszMsg);
-				else
-					strcat(pszFull, pszMsg);
-			}
-
-			memcpy((&cmd.GumpDialog.m_Cmd + len), pszFull, lengthControls);
-			delete [] pszFull;
-
-			len += lengthControls;
-		}
-
-		//BYTE * m_zeroterm = (BYTE *)(&cmd.GumpDialog.m_Cmd + len);
-		//*m_zeroterm = '\0';
-		//len += sizeof(BYTE);
-
-		NWORD * m_textlines = (NWORD *)(&cmd.GumpDialog.m_Cmd + len);
-		*m_textlines = (WORD) iTexts;
-		len += sizeof(NWORD);
-
-		{
-			for ( i=0; i < iTexts; i++)
-			{
-				int lenText_i = psText[i].GetLength();
-				NWORD nlenText_i; nlenText_i = (WORD)lenText_i;
-
-				memcpy((&cmd.GumpDialog.m_Cmd + len), &nlenText_i, sizeof(NWORD));
-				len += sizeof(NWORD);
-
-				if ( lenText_i )
-				{
-					NCHAR szTmp[MAX_TALK_BUFFER];
-					int lenNstring = CvtSystemToNUNICODE( szTmp, COUNTOF(szTmp), psText[i], lenText_i );
-
-					memcpy((&cmd.GumpDialog.m_Cmd + len), &szTmp, sizeof(NCHAR)*lenText_i);
-					len += (sizeof(NCHAR)*lenText_i);
-				}
-			}
-		}
-
-		cmd.GumpDialog.m_len = len;
-		xSend( &cmd, len );
-	}
+	PacketGumpDialog* cmd = new PacketGumpDialog(x, y, pObj, context_mode);
+	cmd->writeControls(this, psControls, iControls, psText, iTexts);
+	cmd->push(this);
 	
 	if ( m_pChar )
 	{
 		m_mapOpenedGumps[context_mode]++;
 	}
-	
 }
 
 bool CClient::addGumpDialogProps( CGrayUID uid )
@@ -945,12 +696,9 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 	ADDTOCALLSTACK("CClient::Dialog_Close");
 	int gumpContext = rid & 0x00FFFFFF;
 
-	CExtData ExtData;
-	ExtData.GumpChange.dialogID		= (DWORD)gumpContext;
-	ExtData.GumpChange.buttonID		= buttonID;
-	addExtData( EXTDATA_GumpChange, &ExtData, sizeof(ExtData.GumpChange) );
+	PacketGumpChange* cmd = new PacketGumpChange(this, gumpContext, buttonID);
 
-	if ( IsClientVer( 0x400040 ) || IsNoCryptVer( 0x400040 ) )
+	if ( GetNetState()->isClientVersion( 0x400040 ) )
 	{
 		CChar * pSrc = dynamic_cast<CChar*>( pObj );
 		if ( pSrc )
@@ -958,16 +706,18 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 			OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find( gumpContext );
 			if (( itGumpFound != m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 ))
 			{
-				CEvent eGump;
-				eGump.GumpDialogRet.m_Cmd = XCMD_GumpDialogRet;
-				eGump.GumpDialogRet.m_len = (WORD) 27;
-				eGump.GumpDialogRet.m_UID = (DWORD) pObj->GetUID();
-				eGump.GumpDialogRet.m_context = (DWORD) gumpContext;
-				eGump.GumpDialogRet.m_buttonID = (DWORD) buttonID;
-				eGump.GumpDialogRet.m_checkIds[0] = (DWORD) 0;
-				eGump.GumpDialogRet.m_checkQty = (DWORD) 0;
-				eGump.GumpDialogRet.m_textQty = (DWORD) 0;
-				Event_GumpDialogRet(&eGump);
+				PacketGumpDialogRet packet;
+				packet.writeByte(XCMD_GumpDialogRet);
+				packet.writeInt16(27);
+				packet.writeInt32(pObj->GetUID());
+				packet.writeInt32(gumpContext);
+				packet.writeInt32(buttonID);
+				packet.writeInt32(0);
+				packet.writeInt32(0);
+				packet.writeInt32(0);
+
+				packet.seek(1);
+				packet.onReceive(GetNetState());
 			}
 		}
 	}
@@ -1116,7 +866,7 @@ void CClient::Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::Menu_Setup");
 	// Menus for general purpose
-	// Expect Event_MenuChoice() back.
+	// Expect PacketMenuChoice::onReceive() back.
 
 	CResourceLock s;
 	if ( ! g_Cfg.ResourceLock( s, rid ))

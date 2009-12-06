@@ -39,13 +39,8 @@ private:
 	CGString m_pSpeechFunction;
 
 private:
-	bool SendMemberMsg( CChar * pCharDest, const CExtData * pExtData, int iLen );
-	void SendAll( const CExtData * pExtData, int iLen );
-	// Packet Crafting
-	int CraftAddList( CExtData * pExtData );
-	int CraftEmptyList( CExtData * pExtData, CChar * pChar );
-	int CraftRemoveList( CExtData * pExtData, CChar * pChar );
-	int CraftMessage( CExtData * pExtData, CChar * pFrom, const NCHAR * pText, int len );
+	bool SendMemberMsg( CChar * pCharDest, PacketSend * pPacket );
+	void SendAll( PacketSend * pPacket );
 	// List manipulation
 	int AttachChar( CChar * pChar );
 	int DetachChar( CChar * pChar );
@@ -80,7 +75,7 @@ public:
 
 	
 	// Refresh status for party members
-	void AddStatsUpdate( CChar * pChar, CCommand * cmd, int iLen );
+	void AddStatsUpdate( CChar * pChar, PacketSend * pPacket );
 	// List sending wrappers
 	bool SendRemoveList( CChar * pCharRemove, bool bFor );
 	bool SendAddList( CChar * pCharDest );

@@ -236,6 +236,11 @@ CGSocket::~CGSocket()
 	Close();
 }
 
+void CGSocket::SetSocket(SOCKET socket)
+{
+	m_hSocket = socket;
+}
+
 void CGSocket::Clear()
 {
 	// Transfer the socket someplace else.

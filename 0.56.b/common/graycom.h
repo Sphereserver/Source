@@ -125,11 +125,6 @@
 #endif
 
 // Macro for fast NoCrypt Client version check
-#define IsClientVer( value )		( m_Crypt.GetClientVer() && m_Crypt.GetClientVer() >= (value) )
-#define IsClientLessVer( value )	( m_Crypt.GetClientVer() && m_Crypt.GetClientVer() < (value) )
-#define IsNoCryptVer( value )		( !m_Crypt.GetClientVer() && m_reportedCliver >= (value) )
-#define IsNoCryptLessVer( value )	( !m_Crypt.GetClientVer() && m_reportedCliver < (value) )
-#define IsClientVersion( _x_ )		( IsClientVer(_x_) || IsNoCryptVer(_x_) )
 #define IsAosFlagEnabled( value )	( g_Cfg.m_iFeatureAOS & (value) )
 #define IsResClient( value )		( GetAccount()->GetResDisp() >= (value) )
 

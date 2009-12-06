@@ -644,17 +644,18 @@ void CCrypt::InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay)
 	SetConnectType( ctInit );
 	m_seed = dwIP;
 
+	if ( ctInit == CONNECT_GAME )
+	{
+		InitBlowFish();
+		InitTwoFish();
+	}
+
 	if ( fRelay == true )
 	{
 		m_fRelayPacket = true;
 
 		// no need to init game encryption here, we will only need to init again
 		// with a new seed on the next game packet anyway
-	}
-	else if ( ctInit == CONNECT_GAME )
-	{
-		InitBlowFish();
-		InitTwoFish();
 	}
 }
 

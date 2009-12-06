@@ -7,6 +7,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/send.h"
 
 CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
 {
@@ -2707,12 +2708,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	{
 		// This may be a useless command. How do i say the fight is over ?
 		// This causes the funny turn to the target during combat !
-		CCommand cmd;
-		cmd.Fight.m_Cmd = XCMD_Fight;
-		cmd.Fight.m_dir = 0; // GetDirFlag();
-		cmd.Fight.m_AttackerUID = GetUID();
-		cmd.Fight.m_AttackedUID = pTarg->GetUID();
-		GetClient()->xSendPkt( &cmd, sizeof( cmd.Fight ));
+		new PacketSwing(GetClient(), pTarg);
 	}
 	else
 	{

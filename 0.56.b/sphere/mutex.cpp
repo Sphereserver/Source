@@ -36,6 +36,16 @@ void SimpleMutex::lock()
 #endif
 }
 
+//try lock
+bool SimpleMutex::tryLock()
+{
+#ifdef _WIN32
+	return TryEnterCriticalSection(&m_criticalSection) == TRUE;
+#else
+	return pthread_mutex_trylock(&m_criticalSection) == 0;
+#endif
+}
+
 //unlock
 void SimpleMutex::unlock()
 {
@@ -102,6 +112,15 @@ void ManualThreadLock::doLock()
 {
 	m_mutex->lock();
 	m_locked = true;
+}
+
+bool ManualThreadLock::doTryLock()
+{
+	if (m_mutex->tryLock() == false)
+		return false;
+
+	m_locked = true;
+	return true;
 }
 
 void ManualThreadLock::doUnlock()

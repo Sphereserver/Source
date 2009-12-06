@@ -4,6 +4,8 @@
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
+#include "../network/send.h"
 
 bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 {
@@ -102,11 +104,13 @@ bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 bool CChar::TeleportToCli( int iType, int iArgs )
 {
 	ADDTOCALLSTACK("CChar::TeleportToCli");
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( ! iType )
 		{
-			if ( pClient->m_Socket.GetSocket() != iArgs )
+			if ( pClient->GetSocketID() != iArgs )
 				continue;
 		}
 		CChar * pChar = pClient->GetChar();
@@ -531,67 +535,14 @@ void CChar::UpdateDrag( CItem * pItem, CObjBase * pCont, CPointMap * ppt )
 	ADDTOCALLSTACK("CChar::UpdateDrag");
 	// Show the world that I am picking up or putting down this object.
 	// NOTE: This makes people disapear.
-	CCommand cmd;
-	cmd.DragAnim.m_Cmd = XCMD_DragAnim;
-	cmd.DragAnim.m_id = pItem->GetDispID();
-	cmd.DragAnim.m_unk3 = 0;
-	cmd.DragAnim.m_unk5 = 0;
-	cmd.DragAnim.m_unk7 = 0;
 
-	CPointMap ptThis = GetTopPoint();
+	if (pCont != NULL && pCont->GetTopLevelObj() == this)
+		return; // moving to my own backpack
+	else if (pCont == NULL && ppt == NULL && pItem->GetTopLevelObj() == this)
+		return; // doesn't work for ground objects
 
-	if ( pCont != NULL )
-	{
-		// I'm putting an object in a cont..
-		CObjBaseTemplate * pObjTop = pCont->GetTopLevelObj();
-		if ( pObjTop == this )
-			return;	// move stuff in my own pack.
-
-		CPointMap ptTop = pObjTop->GetTopPoint();
-
-		cmd.DragAnim.m_srcUID = GetUID();
-		cmd.DragAnim.m_src_x = ptThis.m_x;
-		cmd.DragAnim.m_src_y = ptThis.m_y;
-		cmd.DragAnim.m_src_x = ptThis.m_z;
-		cmd.DragAnim.m_dstUID = pObjTop->GetUID();
-		cmd.DragAnim.m_dst_x = ptTop.m_x;
-		cmd.DragAnim.m_dst_y = ptTop.m_y;
-		cmd.DragAnim.m_dst_z = ptTop.m_z;
-	}
-	else if ( ppt != NULL )
-	{
-		// putting on ground.
-		cmd.DragAnim.m_srcUID = GetUID();
-		cmd.DragAnim.m_src_x = ptThis.m_x;
-		cmd.DragAnim.m_src_y = ptThis.m_y;
-		cmd.DragAnim.m_src_x = ptThis.m_z;
-		cmd.DragAnim.m_dstUID = 0;
-		cmd.DragAnim.m_dst_x = ppt->m_x;
-		cmd.DragAnim.m_dst_y = ppt->m_y;
-		cmd.DragAnim.m_dst_z = ppt->m_z;
-	}
-	else
-	{
-		// I'm getting an object from where ever it is.
-
-		// ??? Note: this doesn't work for ground objects !
-		CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
-		if ( pObjTop == this )
-			return;	// move stuff in my own pack.
-
-		CPointMap ptTop = pObjTop->GetTopPoint();
-
-		cmd.DragAnim.m_srcUID = (pObjTop==pItem) ? 0 : (DWORD) pObjTop->GetUID();
-		cmd.DragAnim.m_src_x = ptTop.m_x;
-		cmd.DragAnim.m_src_y = ptTop.m_y;
-		cmd.DragAnim.m_src_z = ptTop.m_z;
-		cmd.DragAnim.m_dstUID = 0; // GetUID();
-		cmd.DragAnim.m_dst_x = ptThis.m_x;
-		cmd.DragAnim.m_dst_y = ptThis.m_y;
-		cmd.DragAnim.m_dst_x = ptThis.m_z;
-	}
-
-	UpdateCanSee( &cmd, sizeof(cmd.DragAnim), m_pClient );
+	PacketDragAnimation* cmd = new PacketDragAnimation(this, pItem, pCont, ppt);
+	UpdateCanSee(cmd, m_pClient);
 }
 
 
@@ -654,14 +605,10 @@ void CChar::UpdateStamFlag() const
 void CChar::UpdateHitsForOthers() const
 {
 	ADDTOCALLSTACK("CChar::UpdateHitsForOthers");
-	int iMaxHits = maximum(Stat_GetMax(STAT_STR),1);
 
-	CCommand cmd;
-	cmd.StatChng.m_Cmd = XCMD_StatChngStr;
-	cmd.StatChng.m_UID = GetUID();
-	cmd.StatChng.m_max = 50;
-	cmd.StatChng.m_val = ( (Stat_GetVal( STAT_STR ) * 50) / iMaxHits );
-	UpdateCanSee( &cmd, sizeof(cmd.StatChng), m_pClient );
+	PacketHealthUpdate* cmd = new PacketHealthUpdate(this, false);
+
+	UpdateCanSee(cmd, m_pClient);
 }
 
 void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
@@ -1035,20 +982,8 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 		}
 	}
 
-	WORD wRepeat = 1;
-
-	CCommand cmd;
-	cmd.CharAction.m_Cmd = XCMD_CharAction;
-	cmd.CharAction.m_UID = GetUID();
-	cmd.CharAction.m_action = action;
-	cmd.CharAction.m_zero7 = 0;
-	cmd.CharAction.m_dir = m_dirFace;
-	cmd.CharAction.m_repeat = wRepeat;		// 1, repeat count. 0=forever.
-	cmd.CharAction.m_backward = fBackward ? 1 : 0;	// 0, backwards (0/1)
-	cmd.CharAction.m_repflag = ( wRepeat == 1 ) ? 0 : 1;	// 0=dont repeat. 1=repeat
-	cmd.CharAction.m_framedelay = iFrameDelay;	// 1, 0=fastest.
-
-	UpdateCanSee( &cmd, sizeof(cmd.CharAction));
+	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay);
+	UpdateCanSee(cmd);
 	return( true );
 }
 
@@ -1062,7 +997,8 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 	if ( pExcludeClient == NULL )
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pExcludeClient == pClient )
 			continue;
@@ -1128,9 +1064,9 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
 	EXC_TRY("UpdateMove");
-	CClient * pClient = g_Serv.GetClientHead();
 	EXC_SET("FOR LOOP");
-	for ( ; pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pExcludeClient )
 			continue;	// no need to see self move.
@@ -1211,7 +1147,8 @@ void CChar::Update( const CClient * pClientExclude ) // If character status has 
 	if ( pClientExclude == NULL)
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
 			continue;
@@ -2366,14 +2303,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	}
 
 	// Death anim. default is to fall backwards. lie face up.
-	CCommand cmd;
-	cmd.CharDeath.m_Cmd = XCMD_CharDeath;
-	cmd.CharDeath.m_UID = GetUID();	// 1-4
-	cmd.CharDeath.m_UIDCorpse = ( pCorpse == NULL ) ? 0 : (DWORD) pCorpse->GetUID(); // 9-12
-	cmd.CharDeath.m_DeathFlight = IsStatFlag( STATF_Fly ) ? 1 : 0; 	// Die in flight ?
-	cmd.CharDeath.m_Death2Anim = ( dir & 0x80 ) ? 1 : 0; // Fore/Back Death ?
-
-	UpdateCanSee( &cmd, sizeof( cmd.CharDeath ), m_pClient );
+	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
 
 	// Move non-newbie contents of the pack to corpse. (before it is displayed)
 	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) && !(wFlags & DEATH_NOCORPSE) )

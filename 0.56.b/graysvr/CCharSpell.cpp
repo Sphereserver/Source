@@ -720,8 +720,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 
 	//Buffs related variables:
 	int iBuffPercent;
-	BYTE WideMsg[18] = { 0 };
-	char NumBuff[4] = { 0 };
+	TCHAR NumBuff[3][4];
+	LPCTSTR pNumBuff[3] = {(LPCTSTR)NumBuff[0], (LPCTSTR)NumBuff[1], (LPCTSTR)NumBuff[2]};
 	//------------------------
 
 	switch ( spell )
@@ -762,9 +762,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				GetClient()->removeBuff(BI_CLUMSY);
 				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
-				ITOA(iBuffPercent, NumBuff, 10);
-				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				GetClient()->addBuff(BI_CLUMSY,1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				GetClient()->addBuff(BI_CLUMSY,1075831,1075832,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 			}
 			break;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
@@ -782,9 +781,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				GetClient()->removeBuff(BI_FEEBLEMIND);
 				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
-				ITOA(iBuffPercent, NumBuff, 10);
-				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				GetClient()->addBuff(BI_FEEBLEMIND,1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				GetClient()->addBuff(BI_FEEBLEMIND,1075833,1075834,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 			}
 			break;
 		case SPELL_Weaken:
@@ -794,9 +792,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				GetClient()->removeBuff(BI_WEAKEN);
 				iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
-				ITOA(iBuffPercent, NumBuff, 10);
-				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				GetClient()->addBuff(BI_WEAKEN,1075837,1075838,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 			}
 
 			UpdateHitsFlag();
@@ -813,11 +810,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
-						ITOA(iBuffPercent, NumBuff, 10);
-						CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
+						ITOA(iBuffPercent, NumBuff[idx], 10);
 					}
 
-					GetClient()->addBuff(BI_CURSE,1075835,1075840,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+					GetClient()->addBuff(BI_CURSE,1075835,1075840,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY);
 				}
 
 				UpdateHitsFlag();
@@ -828,9 +824,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				GetClient()->removeBuff(BI_AGILITY);
 				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
-				ITOA(iBuffPercent, NumBuff, 10);
-				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				GetClient()->addBuff(BI_AGILITY,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				GetClient()->addBuff(BI_AGILITY,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 			}
 			break;
 		case SPELL_Cunning:
@@ -839,9 +834,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				GetClient()->removeBuff(BI_CUNNING);
 				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
-				ITOA(iBuffPercent, NumBuff, 10);
-				CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-				GetClient()->addBuff(BI_CUNNING,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				GetClient()->addBuff(BI_CUNNING,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 			}
 			break;
 		case SPELL_Strength:
@@ -851,9 +845,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				{
 					GetClient()->removeBuff(BI_STRENGTH);
 					iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
-					ITOA(iBuffPercent, NumBuff, 10);
-					CharToMultiByteNonNull(WideMsg, NumBuff, 3);
-					GetClient()->addBuff(BI_STRENGTH,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+					ITOA(iBuffPercent, NumBuff[0], 10);
+					GetClient()->addBuff(BI_STRENGTH,0x106A85,0x106A86,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, 1);
 				}
 
 				UpdateHitsFlag();
@@ -869,11 +862,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
-						ITOA(iBuffPercent, NumBuff, 10);
-						CharToMultiByteNonNull(WideMsg + (idx*6), NumBuff, 3);
+						ITOA(iBuffPercent, NumBuff[idx], 10);
 					}
 
-					GetClient()->addBuff(BI_BLESS,1075847,1075848,(WORD)(pSpell->GetTimerAdjusted()), WideMsg);
+					GetClient()->addBuff(BI_BLESS,1075847,1075848,(WORD)(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY);
 				}
 
 				UpdateHitsFlag();

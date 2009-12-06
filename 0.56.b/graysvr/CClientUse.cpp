@@ -4,6 +4,7 @@
 //
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/send.h"
 
 inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem )
 {
@@ -169,7 +170,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			if ( !fScript )
 			g_Log.Event( LOGL_WARN|LOGM_CHEAT,
 				"%x:Cheater '%s' is using 3rd party tools to open bank box\n",
-				m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName());
+				GetSocketID(), (LPCTSTR) GetAccount()->GetName());
 			return false;
 
 		case IT_CONTAINER_LOCKED:
@@ -1407,24 +1408,11 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	m_pChar->LayerAdd( pCont1, LAYER_SPECIAL );
 	pChar->LayerAdd( pCont2, LAYER_SPECIAL );
 
-	CCommand cmd;
-	int len = sizeof(cmd.SecureTrade);
-
-	cmd.SecureTrade.m_Cmd = XCMD_SecureTrade;
-	cmd.SecureTrade.m_len = len;
-	cmd.SecureTrade.m_action = SECURE_TRADE_OPEN;	// init
-	cmd.SecureTrade.m_UID = pChar->GetUID();
-	cmd.SecureTrade.m_UID1 = pCont1->GetUID();
-	cmd.SecureTrade.m_UID2 = pCont2->GetUID();
-	cmd.SecureTrade.m_fname = 1;
-	strcpy( cmd.SecureTrade.m_charname, pChar->GetName());
-	xSendPkt( &cmd, len );
-
-	cmd.SecureTrade.m_UID = m_pChar->GetUID();
-	cmd.SecureTrade.m_UID1 = pCont2->GetUID();
-	cmd.SecureTrade.m_UID2 = pCont1->GetUID();
-	strcpy( cmd.SecureTrade.m_charname, m_pChar->GetName());
-	pChar->GetClient()->xSendPkt( &cmd, len );
+	PacketTradeAction cmd(SECURE_TRADE_OPEN);
+	cmd.prepareContainerOpen(pChar, pCont1, pCont2);
+	cmd.send(this);
+	cmd.prepareContainerOpen(m_pChar, pCont2, pCont1);
+	cmd.send(pChar->GetClient());
 
 	CPointMap pt( 30, 30, 9 );
 	pCont1->ContentAdd( pItem, pt );

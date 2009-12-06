@@ -731,6 +731,12 @@ public:
 	}
 };
 
+class NetState;
+class Packet;
+class PacketServerRelay;
+struct VendorItem;
+class PacketDisplayPopup;
+
 class CClient : public CGObListRec, public CScriptObj, public CChatChanMember, public CTextConsole
 {
 	// TCP/IP connection to the player or console.
@@ -744,6 +750,7 @@ public:
 	static LPCTSTR const sm_szVerbKeys[];
 private:
 	CChar * m_pChar;			// What char are we playing ?
+	NetState* m_net; // network state
 
 	// Client last know state stuff.
 	CSectorEnviron m_Env;		// Last Environment Info Sent. so i don't have to keep resending if it's the same.
@@ -751,7 +758,6 @@ private:
 	char m_fUpdateStats;	// update our own status (weight change) when done with the cycle.
 
 	// Walk limiting code
-	WORD m_wWalkCount;		// Make sure we are synced up with client walk count. may be be off by 4
 	int	m_iWalkTimeAvg;
 	int m_iWalkStepCount;		// Count the actual steps . Turning does not count.
 	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
@@ -760,10 +766,6 @@ private:
 	DWORD	m_Walk_LIFO[16];	// Client > 1.26 must match these .
 	int	m_Walk_InvalidEchos;
 	int	m_Walk_CodeQty;
-
-	// Reported ClientVersion
-	GAMECLIENT_TYPE m_reportedType;
-	int m_reportedCliver;
 
 	// Screensize
 	struct __screensize
@@ -784,16 +786,9 @@ private:
 	CGrayUID m_Prompt_Uid;		// context uid
 	CGString m_Prompt_Text;		// text (i.e. callback function)
 
-	int m_packetExceptions;
-
 public:
 	CONNECT_TYPE	m_iConnectType;	// what sort of a connection is this ?
-	CGSocket		m_Socket;
-	bool			m_fClosed;	// flag it to get the socket closed
-	CSocketAddress	m_PeerName;
 	CAccount * m_pAccount;		// The account name. we logged in on
-
-	static BYTE sm_xCompress_Buffer[MAX_BUFFER];
 
 	CServTime m_timeLogin;		// World clock of login time. "LASTCONNECTTIME"
 	CServTime m_timeLastEvent;	// Last time we got event from client.
@@ -902,11 +897,6 @@ public:
 	};
 
 private:
-	// Low level data transfer to client.
-	XCMD_TYPE m_bin_PrvMsg;
-	XCMD_TYPE m_bin_ErrMsg;
-	int m_bin_msg_len;		// the current message packet to decode. (estimated length)
-
 	// encrypt/decrypt stuff.
 	CCrypt m_Crypt;			// Client source communications are always encrypted.
 	static CHuffman m_Comp;
@@ -942,10 +932,6 @@ private:
 			bool IsObjectValid() { return (CGrayUID(objUid).ObjFind() != NULL); }
 	};
 
-	long m_LastTooltipSend;
-	std::vector<CTooltipData *> m_TooltipQueue;
-	void CleanTooltipQueue();
-
 private:
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 
@@ -955,40 +941,16 @@ private:
 	bool OnRxWebPageRequest( CWebPageDef * pPage, LPCTSTR pszMatch );
 	bool OnRxWebPageRequest( BYTE * pRequest, int len );
 
-	LOGIN_ERR_TYPE LogIn( CAccountRef pAccount, CGString & sMsg );
-	LOGIN_ERR_TYPE LogIn( LPCTSTR pszName, LPCTSTR pPassword, CGString & sMsg );
-
-	bool IsBlockedIP() const;
-	CLogIP * GetLogIP() const;
-	void	UpdateLogIPConnecting( bool fIncrease );
-	void	UpdateLogIPConnected( bool fIncrease );
-	int	GetLogIPConnecting() const;
-	int	GetLogIPConnected() const;
+	BYTE LogIn( CAccountRef pAccount, CGString & sMsg );
+	BYTE LogIn( LPCTSTR pszName, LPCTSTR pPassword, CGString & sMsg );
 
 	// Low level message traffic.
-	bool xCheckMsgSize0( int len );	// check packet only for sizeof
-	bool xCheckMsgSize( int len );	// check packet.
 	void xDumpPacket(int iDataLen, const BYTE * pData); // dump the packet received
-
-	int  Setup_FillCharList( CEventCharDef * pCharList, const CChar * pCharFirst );
 
 	bool CanInstantLogOut() const;
 	void Cmd_GM_PageClear();
-	void GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE &wHue );
-	void GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE &wHue );
 
-	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
-	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
-
-	LOGIN_ERR_TYPE Login_ServerList( const char * pszAccount, const char * pszPassword );		// Initial login (Login on "loginserver", new format)
-	bool Login_Relay( int iServer );			// Relay player to a certain IP
 	void Announce( bool fArrive ) const;
-
-	LOGIN_ERR_TYPE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest );	// Gameserver login and character listing
-	LOGIN_ERR_TYPE Setup_Start( CChar * pChar );	// Send character startup stuff to player
-	void Setup_CreateDialog( const CEvent * pEvent );	// All the character creation stuff
-	DELETE_ERR_TYPE Setup_Delete( int iSlot );			// Deletion of character
-	LOGIN_ERR_TYPE Setup_Play( int iSlot );		// After hitting "Play Character" button
 
 	// GM stuff.
 	bool OnTarg_Obj_Set( CObjBase * pObj );
@@ -1025,59 +987,56 @@ private:
 	bool OnTarg_Pet_Stable( CChar * pCharPet );
 
 	// Commands from client
-	void Event_ClientVersion( const char * pData, int Len );
-	void Event_Target( const CEvent * pEvent );
-	void Event_Attack( CGrayUID uid );
-	void Event_Skill_Locks( const CEvent * pEvent );
 	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
-	void Event_Tips( WORD i); // Tip of the day window
-	void Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor );
-	void Event_Book_Page( CGrayUID uid, const CEvent * pEvent ); // Book window
-	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
-	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
-	void Event_Item_Equip( const CEvent * pEvent ); // Item is dropped on paperdoll
 	inline void Event_Item_Drop_Fail( CItem * pItem );
-	void Event_Item_Drop( const CEvent * pEvent ); // Item is dropped on ground
-	inline void Event_VendorBuy_Cheater( int iCode = 0 );
-	void Event_VendorBuy( CGrayUID uidVendor, const CEvent * pEvent );
-	void Event_SecureTrade( CGrayUID uid, const CEvent * pEvent );
-	bool Event_DeathOption( DEATH_MODE_TYPE mode, const CEvent * pEvent );
-	void Event_Walking( BYTE rawdir, BYTE count, DWORD dwCryptCode = 0 ); // Player moves
-	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
-	void Event_MenuChoice( const CEvent * pEvent ); // Choice from GMMenu or Itemmenu received
-	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
-	void Event_PromptRespUNICODE( const CEvent * pEvent );
 	void Event_Talk_Common(char *szText ); // PC speech
-	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
-	void Event_TalkUNICODE( const CEvent * pEvent );
-	void Event_SingleClick( CGrayUID uid );
-	void Event_SetName( CGrayUID uid, const char * pszCharName );
-	void Event_ExtCmd( EXTCMD_TYPE type, const char * pszName );
 	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
-	void Event_GumpInpValRet( const CEvent * pEvent );
-	void Event_GumpDialogRet( const CEvent * pEvent );
-	void Event_ToolTip( CGrayUID uid );
-	void Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len );
-	void Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
-	void Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len );
-	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
-	void Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEvent );
-	void Event_MapEdit( CGrayUID uid, const CEvent * pEvent );
-	void Event_BBoardRequest( CGrayUID uid, const CEvent * pEvent );
-	void Event_ChatButton(const NCHAR * pszName); // Client's chat button was pressed
-	void Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang = 0 ); // Text from a client
-	bool Event_WalkingCheck(DWORD dwEcho);
-	void Event_AOSItemInfo( int count , const NDWORD * uidList );
-	void Event_AllNames3D( CGrayUID uid );
-	void Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
-	void Event_MacroEquipItems( const NDWORD * pItems, int count );
-	void Event_MacroUnEquipItems( const NWORD * pLayers, int count );
-	void Event_UseToolbar(BYTE bType, DWORD dwArg);
 
 public:
-	inline void Event_VendorSell_Cheater( int iCode = 0 );
-	void Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent );
+	void GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE &wHue );
+	void GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE &wHue );
+
+	void Event_Attack( CGrayUID uid );
+	void Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor );
+	void Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
+	void Event_ChatButton(const NCHAR * pszName); // Client's chat button was pressed
+	void Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang = 0 ); // Text from a client
+	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
 	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
+	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
+	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex = 0 ); // Item is dropped on ground
+	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
+	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
+	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
+	void Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen );
+	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
+	void Event_SetName( CGrayUID uid, const char * pszCharName );
+	void Event_SingleClick( CGrayUID uid );
+	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
+	void Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang );
+	void Event_Target( DWORD context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING );
+	void Event_Tips( WORD i ); // Tip of the day window
+	void Event_ToolTip( CGrayUID uid );
+	void Event_UseToolbar(BYTE bType, DWORD dwArg);
+	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD itemCount);
+	inline void Event_VendorBuy_Cheater( int iCode = 0 );
+	void Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD itemCount);
+	inline void Event_VendorSell_Cheater( int iCode = 0 );
+	bool Event_Walking( BYTE rawdir ); // Player moves
+	bool Event_WalkingCheck(DWORD dwEcho);
+	
+	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
+	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
+
+	bool Login_Relay( int iServer ); // Relay player to a certain IP
+	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
+
+	BYTE Setup_Delete( int iSlot ); // Deletion of character
+	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
+	BYTE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest ); // Gameserver login and character listing
+	BYTE Setup_Play( int iSlot ); // After hitting "Play Character" button
+	BYTE Setup_Start( CChar * pChar ); // Send character startup stuff to player
+	
 
 	// translated commands.
 private:
@@ -1104,34 +1063,12 @@ public:
 	bool Cmd_Control( CChar * pChar );
 
 public:
-	CQueueBytes m_bin;		// CEvent in buffer. (from client)
-
-private:
-	std::queue<int> m_vExtPacketLengths;
-	bool m_sendingData;
-	CQueueBytes m_bout;		// CCommand out buffer. (to client) (we can build output to multiple clients at the same time)
-#ifdef _WIN32
-	WSABUF m_WSABuf;
-	WSAOVERLAPPED m_overlapped;
-#else
-	struct ev_io m_eventWatcher;
-#endif
+	CSocketAddress &GetPeer();								// get peer address
+	LPCTSTR GetPeerStr();									// get string representation of the peer address
+	long GetSocketID();									// get socket id
 
 public:
-	bool xSendError(int);
-	void xFlushAsync();
-	void xAsyncSendComplete();
-	bool xUseAsync();
-
-#ifndef _WIN32
-	struct ev_io * GetIOCB();
-	bool xCanSend();
-	void xSetCanSend(bool);
-#endif
-
-public:
-
-	CClient( SOCKET client );
+	CClient(NetState* state);
 	~CClient();
 	void CharDisconnect();
 
@@ -1147,22 +1084,13 @@ public:
 	// Low level message traffic.
 	static int xCompress( BYTE * pOutput, const BYTE * pInput, int inplen );
 
-	void xSendReady( const void *pData, int length, bool bNextFlush = true ); // We could send the packet now if we wanted to but wait til we have more.
-	void xSend( const void *pData, int length, bool bQueue = false ); // Buffering send function
-	void xProcessTooltipQueue();
-	void xFlush();				// Sends buffered data at once
-	void xSendPkt( const CCommand * pCmd, int length );
-	void xSendPktNow( const CCommand * pCmd, int length );
 	bool xProcessClientSetup( CEvent * pEvent, int iLen );
-	void xProcessMsg(int fGood = 0);		// Process a packet
 	bool xPacketFilter(const CEvent * pEvent, int iLen = 0);
-	int xDispatchMsg();
-	bool xRecvData();			// High Level Receive message from client
 	bool xCanEncLogin(bool bCheckCliver = false);	// Login crypt check
 	// Low level push world data to the client.
 
 	bool addRelay( const CServerDef * pServ );
-	bool addLoginErr( LOGIN_ERR_TYPE code );
+	bool addLoginErr(BYTE code);
 #define SF_UPDATE_HITS		0x01
 #define SF_UPDATE_MANA		0x02
 #define SF_UPDATE_STAM		0x04
@@ -1185,8 +1113,7 @@ public:
 		m_fUpdateStats |= SF_UPDATE_STAM;
 	}
 	void UpdateStats();
-	bool addDeleteErr( DELETE_ERR_TYPE code );
-	void addExtData( EXTDATA_TYPE type, const CExtData * pData, int iSize );
+	bool addDeleteErr(BYTE code);
 	void addSeason(SEASON_TYPE season);
 	void addTime( bool bCurrent = false );
 	void addObjectRemoveCantSee( CGrayUID uid, LPCTSTR pszName = NULL );
@@ -1199,12 +1126,12 @@ public:
 	void addItem_InContainer( const CItem * pItem );
 	void addItem( CItem * pItem );
 
-	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, BYTE * pText = 0);
+	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs = 0, int iArgCount = 0);
 	void removeBuff (const WORD IconId);
 	void resendBuffs();
 
 	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump );
-	int  addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
+	void  addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
 	bool addContainerSetup( const CItemContainer * pCont ); // Send Backpack (with items)
 
 	void addPlayerStart( CChar * pChar );
@@ -1212,8 +1139,6 @@ public:
 	void addPlayerSee( const CPointMap & pt ); // Send objects the player can now see
 	void addPlayerView( const CPointMap & pt, bool playerStart = false );
 	void addPlayerWarMode();
-	void addPlayerWalkCancel();
-	void addPlayerWalkCancel(const CPointMap & pt, BYTE bDir);
 
 	void addCharMove( const CChar * pChar );
 	void addCharMove( const CChar * pChar, BYTE bCharDir );
@@ -1231,7 +1156,6 @@ public:
 	void addReSync(bool bForceMap = false);
 	void addMap( const CPointMap * pOldP, bool playerStart = false );
 	void addMapDiff();
-	void addPing( BYTE bCode = 0 );
 	void addChangeServer();
 
 	void addBark( LPCTSTR pText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD );
@@ -1243,7 +1167,6 @@ public:
 	void addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_TEXT_DEF ); // The message when an item is clicked
 
 	void addDyeOption( const CObjBase * pBase );
-	void addItemDragCancel( BYTE type );
 	void addWebLaunch( LPCTSTR pMsg ); // Direct client to a web page
 
 	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0, bool bUnicode = false );
@@ -1263,14 +1186,13 @@ public:
 	void addVendorClose( const CChar * pVendor );
 	int  addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal = true);
 	bool addShopMenuBuy( CChar * pVendor );
-	int  addShopMenuSellFind( CItemContainer * pSearch, CItemContainer * pFrom1, CItemContainer * pFrom2, int iConvertFactor, CCommand * & pCur );
 	bool addShopMenuSell( CChar * pVendor );
 	void addBankOpen( CChar * pChar, LAYER_TYPE layer = LAYER_BANKBOX );
 
 	void addSpellbookOpen( CItem * pBook, WORD offset = 1 );
 	void addCustomSpellbookOpen( CItem * pBook, DWORD gumpID );
 	bool addBookOpen( CItem * pBook );
-	void addBookPage( const CItem * pBook, int iPage );
+	void addBookPage( const CItem * pBook, int iPage, int iCount = -1 );
 	void addCharStatWindow( CGrayUID uid, bool fRequested = false ); // Opens the status window
 	void addHitsUpdate( CGrayUID uid );
 	void addManaUpdate( CGrayUID uid );
@@ -1323,12 +1245,10 @@ private:
 	#define POPUP_PETTRANSFER 48
 	#define POPUP_STABLESTABLE 51
 	#define POPUP_STABLERETRIEVE 52
-	CExtData * m_pPopupCur;
-	short int m_context_popup;
-	short int m_PopupLen;
+
+	PacketDisplayPopup* m_pPopupPacket;
 
 public:
-	void AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags, WORD color );
 	void Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag );
 	void Event_AOSPopupMenuRequest( DWORD uid );
 
@@ -1336,7 +1256,7 @@ public:
 	void addShowDamage( int damage, DWORD uid_damage );
 	void addSpeedMode( int speedMode = 0 );
 	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
-	void addIdleWarning( bool bSameChar = false );
+	void addIdleWarning( BYTE message );
 	void addKRToolbar( bool bEnable );
 
 	void SendPacket( TCHAR * pszPacket );
@@ -1391,6 +1311,11 @@ public:
 		return( GetAccount()->SetGreaterResDisp( res ) );
 	}
 	// ------------------------------------------------
+	void SetScreenSize(DWORD x, DWORD y)
+	{
+		m_ScreenSize.x = x;
+		m_ScreenSize.y = y;
+	}
 
 	PLEVEL_TYPE GetPrivLevel() const
 	{
@@ -1455,35 +1380,7 @@ public:
 
 	bool IsConnecting();
 
-	int GetClientVersion()
-	{
-		return m_Crypt.GetClientVer();
-	}
-
-	int GetClientVersionReported()
-	{
-		return m_reportedCliver;
-	}
-
-	bool IsClient3D()
-	{
-		return(m_reportedType == CLIENTTYPE_3D);
-	}
-
-	bool IsClientKR()
-	{
-		return(m_reportedType == CLIENTTYPE_KR);
-	}
-
-	bool IsClientSA()
-	{
-		return(m_reportedType == CLIENTTYPE_SA);
-	}
-
-	void SetClientType(GAMECLIENT_TYPE type)
-	{
-		m_reportedType = type;
-	}
+	NetState* GetNetState(void) const { return m_net; };
 
 private:
 	CGString	m_BarkBuffer;
@@ -1500,6 +1397,11 @@ public:
 	CGObArray<CClientTooltip *> m_TooltipData; // Storage for tooltip data while in trigger
 
 	CItemMultiCustom * m_pHouseDesign; // The building this client is designing
+
+	friend class NetworkIn;
+	friend class NetworkOut;
+	friend class PacketCreate;
+	friend class PacketServerRelay;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -1611,7 +1513,7 @@ public:
 
 	CServTime m_timeShutdown;	// When to perform the shutdowm (g_World.clock)
 
-	CGObList m_Clients;		// Current list of clients (CClient)
+//	CGObList m_Clients;		// Current list of clients (CClient)
 
 	CProfileData m_Profile;	// the current active statistical profile.
 	CChat m_Chats;	// keep all the active chats
@@ -1646,7 +1548,6 @@ public:
 	bool SocketsInit( CGSocket & socket );
 	void SocketsReceive();
 	CClient * SocketsReceive( CGSocket & socket );
-	void SocketsFlush();
 	void SocketsClose();
 
 	bool Load();
@@ -1670,12 +1571,6 @@ public:
 
 public:
 	void ListClients( CTextConsole * pClient ) const;
-
-	CClient * GetClientHead() const
-	{
-		return( STATIC_CAST <CClient*>( m_Clients.GetHead()));
-	}
-
 	void SetResyncPause(bool fPause, CTextConsole * pSrc, bool bMessage = false);
 	bool CommandLine( int argc, TCHAR * argv[] );
 

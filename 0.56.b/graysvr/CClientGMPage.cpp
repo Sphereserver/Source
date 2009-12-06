@@ -4,6 +4,7 @@
 //
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
 
 /////////////////////////////////////////////
 
@@ -26,7 +27,9 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 	g_Log.Event( LOGM_GM_PAGE, "%s\n", (LPCTSTR)pszMsg);
 
 	bool fFound=false;
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient->GetChar() && pClient->IsPriv( PRIV_GM_PAGE )) // found GM
 		{

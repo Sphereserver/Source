@@ -5,6 +5,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/send.h"
 
 //*****************************************************************
 // -CCharRefArray
@@ -164,82 +165,7 @@ bool CPartyDef::FixWeirdness( CChar * pChar )
 }
 
 // ---------------------------------------------------------
-int CPartyDef::CraftAddList( CExtData * pExtData )
-{
-	ADDTOCALLSTACK("CPartyDef::CraftAddList");
-	pExtData->Party_Msg_Data.m_code = PARTYMSG_Add;
-
-	int iQty;
-	iQty = m_Chars.GetCharCount();
-	
-	if ( !iQty )
-		return( -1 );
-
-	for ( int i = 0; i < iQty; i++ )
-	{
-		pExtData->Party_Msg_Data.m_uids[i] = m_Chars.GetChar(i);
-	}
-
-	pExtData->Party_Msg_Data.m_Qty = iQty;
-
-	return( (iQty*sizeof(DWORD)) + 2 );
-}
-
-int CPartyDef::CraftEmptyList( CExtData * pExtData, CChar * pChar )
-{
-	ADDTOCALLSTACK("CPartyDef::CraftEmptyList");
-	pExtData->Party_Msg_Data.m_code = PARTYMSG_Remove;
-	pExtData->Party_Msg_Data.m_uids[0] = pChar->GetUID();
-	pExtData->Party_Msg_Data.m_Qty = 0;
-
-	return( (sizeof(DWORD)) + 2 );
-}
-
-int CPartyDef::CraftRemoveList( CExtData * pExtData, CChar * pChar )
-{
-	ADDTOCALLSTACK("CPartyDef::CraftRemoveList");
-	pExtData->Party_Msg_Data.m_code = PARTYMSG_Remove;
-	pExtData->Party_Msg_Data.m_uids[0] = pChar->GetUID();
-
-	int iQty;
-	iQty = m_Chars.GetCharCount();
-	
-	if ( !iQty )
-	{
-		return( -1 );
-	}
-
-	int x = 1;
-	for ( int i = 0; i < iQty; i++ )
-	{
-		if ( (m_Chars.GetChar(i)) && ( pChar->GetUID() != m_Chars.GetChar(i) ) )
-		{
-			pExtData->Party_Msg_Data.m_uids[x] = m_Chars.GetChar(i);
-			x++;
-		}
-	}
-
-	pExtData->Party_Msg_Data.m_Qty = x;
-
-	return( (x*sizeof(DWORD)) + 2 );
-}
-
-int CPartyDef::CraftMessage( CExtData * pExtData, CChar * pFrom, const NCHAR * pText, int len )
-{
-	ADDTOCALLSTACK("CPartyDef::CraftMessage");
-	pExtData->Party_Msg_Rsp.m_code = PARTYMSG_Msg;
-	pExtData->Party_Msg_Rsp.m_UID = pFrom->GetUID();
-
-	if ( len > MAX_TALK_BUFFER )
-		len = MAX_TALK_BUFFER;
-	
-	memcpy( pExtData->Party_Msg_Rsp.m_msg, pText, len );
-
-	return( len + 5 );
-}
-
-// ---------------------------------------------------------
-void CPartyDef::AddStatsUpdate( CChar * pChar, CCommand * cmd, int iLen )
+void CPartyDef::AddStatsUpdate( CChar * pChar, PacketSend * pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::AddStatsUpdate");
 	int iQty;
@@ -255,7 +181,7 @@ void CPartyDef::AddStatsUpdate( CChar * pChar, CCommand * cmd, int iLen )
 		{
 			if ( pCharNow->CanSee( pChar ) && pCharNow->IsClient() )
 			{
-				pCharNow->GetClient()->xSendPkt(cmd, iLen);
+				pPacket->send(pCharNow->GetClient());
 			}
 		}
 	}
@@ -289,12 +215,12 @@ void CPartyDef::SysMessageAll( LPCTSTR pText )
 
 
 // ---------------------------------------------------------
-bool CPartyDef::SendMemberMsg( CChar * pCharDest, const CExtData * pExtData, int iLen )
+bool CPartyDef::SendMemberMsg( CChar * pCharDest, PacketSend * pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendMemberMsg");
 	if ( pCharDest == NULL )
 	{
-		SendAll( pExtData, iLen );
+		SendAll( pPacket );
 		return( true );
 	}
 
@@ -315,17 +241,17 @@ bool CPartyDef::SendMemberMsg( CChar * pCharDest, const CExtData * pExtData, int
 	{
 		CClient * pClient = pCharDest->GetClient();
 		ASSERT(pClient);
-		pClient->addExtData( EXTDATA_Party_Msg, pExtData, iLen );
-		if ( pExtData->Party_Msg_Data.m_code == PARTYMSG_Remove )
-		{
+
+		pPacket->send(pClient);
+
+		if (*pPacket->getData() == PARTYMSG_Remove )
 			pClient->addReSync();
-		}
 	}
 
 	return( true );
 }
 
-void CPartyDef::SendAll( const CExtData * pExtData, int iLen )
+void CPartyDef::SendAll( PacketSend * pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAll");
 	// Send this to all members of the party.
@@ -334,7 +260,7 @@ void CPartyDef::SendAll( const CExtData * pExtData, int iLen )
 	{
 		CChar * pChar = m_Chars.GetChar(i).CharFind();
 		ASSERT(pChar);
-		if ( ! SendMemberMsg( pChar, pExtData, iLen ))
+		if ( ! SendMemberMsg( pChar, pPacket ))
 		{
 			iQty--;
 			i--;
@@ -346,49 +272,38 @@ void CPartyDef::SendAll( const CExtData * pExtData, int iLen )
 bool CPartyDef::SendAddList( CChar * pCharDest )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAddList");
-	CExtData extdata;
-	int iLen = CraftAddList(&extdata);
-	
-	if (iLen != -1)
-	{
-		if ( pCharDest )
-		{
-			SendMemberMsg(pCharDest, &extdata, iLen);
-		}
-		else
-		{
-			SendAll(&extdata, iLen);
-		}
-	}
 
-	return ( iLen != -1 );
+	if (m_Chars.GetCharCount() <= 0)
+		return false;
+
+	PacketPartyList cmd(&m_Chars);
+
+	if (pCharDest)
+		SendMemberMsg(pCharDest, &cmd);
+	else
+		SendAll(&cmd);
+
+	return true;
 }
 
 bool CPartyDef::SendRemoveList( CChar * pCharRemove, bool bFor )
 {
 	ADDTOCALLSTACK("CPartyDef::SendRemoveList");
-	CExtData ExtData;
-	int iLen;
 
 	if ( bFor )
 	{
-		iLen = CraftEmptyList( &ExtData, pCharRemove );
+		PacketPartyRemoveMember cmd(pCharRemove, NULL);
+
+		SendMemberMsg(pCharRemove, &cmd);
 	}
 	else
 	{
-		iLen = CraftRemoveList( &ExtData, pCharRemove );
-	}
+		if (m_Chars.GetCharCount() <= 0)
+			return false;
 
-	if ( iLen == -1 )
-		return( false );
+		PacketPartyRemoveMember cmd(pCharRemove, &m_Chars);
 
-	if ( bFor ) 
-	{
-		SendMemberMsg(pCharRemove, &ExtData, iLen);
-	}
-	else
-	{
-		SendAll( &ExtData, iLen );
+		SendAll(&cmd);
 	}
 
 	return( true );
@@ -432,18 +347,15 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pT
 
 	if ( g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ))
 	{
-		g_Log.Event( LOGM_PLAYER_SPEAK, "%x:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->m_Socket.GetSocket(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all" );
+		g_Log.Event( LOGM_PLAYER_SPEAK, "%x:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all" );
 	}
 
-	CExtData extData;
-	int iLen = CraftMessage( &extData, pFrom, pText, ilenmsg );
-	if ( iLen == -1 )
-		return( false );
+	PacketPartyChat cmd(pFrom, pText);
 
-	if ( pTo )
-		SendMemberMsg( pTo, &extData, iLen );
+	if ( pTo != NULL )
+		SendMemberMsg(pTo, &cmd);
 	else
-		SendAll( &extData, iLen );
+		SendAll(&cmd);
 
 	return( true );
 }

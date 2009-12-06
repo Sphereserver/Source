@@ -7,6 +7,7 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"
 #include "../common/CFileList.h"
+#include "../network/network.h"
 
 CResource::CResource()
 {
@@ -173,7 +174,6 @@ CResource::CResource()
 	m_bMySql = false;
 
 	m_cCommandPrefix = '.';
-	m_iMaxTooltipForTick = 7;
 
 	m_iRegenRate[STAT_STR] = 6*TICK_PER_SEC;		// Seconds to heal ONE hp (before stam/food adjust)
 	m_iRegenRate[STAT_INT] = 5*TICK_PER_SEC;		// Seconds to heal ONE mn
@@ -196,6 +196,13 @@ CResource::CResource()
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 
 	m_iPetsInheritNotoriety = 0;
+
+	m_fUseAsyncNetwork = 1;
+	m_iNetMaxPings = 15;
+	m_iNetHistoryTTL = 300;
+	m_iNetMaxPacketsPerTick = 25;
+	m_iNetMaxLengthPerTick = 12000;
+	m_iNetMaxQueueSize = 50;
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
@@ -397,10 +404,13 @@ enum RC_TYPE
 	RC_MAXCOMPLEXITY,			// m_iMaxCharComplexity
 	RC_MAXITEMCOMPLEXITY,		// m_iMaxItemComplexity
 	RC_MAXLOOPTIMES,			// m_iMaxLoopTimes
+	RC_MAXPACKETSPERTICK,	// m_iNetMaxPacketsPerTick
+	RC_MAXPINGS,				// m_iNetMaxPings
+	RC_MAXQUEUESIZE,			// m_iNetMaxQueueSize
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
 	RC_MAXSHIPPLANKTELEPORT, // m_iMaxShipPlankTeleport
+	RC_MAXSIZEPERTICK,		// m_iNetMaxLengthPerTick
 	RC_MAXSKILL,
-	RC_MAXTOOLTIPFORTICK,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
 	RC_MINCHARDELETETIME,
 	RC_MONSTERFEAR,			// m_fMonsterFear
@@ -415,6 +425,7 @@ enum RC_TYPE
 	RC_MYSQLHOST,				//	m_sMySqlHost
 	RC_MYSQLPASS,				//	m_sMySqlPassword
 	RC_MYSQLUSER,				//	m_sMySqlUser
+	RC_NETTTL,					// m_iNetHistoryTTL
 	RC_NORESROBE,
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
@@ -461,6 +472,7 @@ enum RC_TYPE
 	RC_TELEPORTSOUNDSTAFF,		//	m_iSpell_Teleport_Sound_Staff
 	RC_TIMERCALL,				//	m_iTimerCall
 	RC_TIMEUP,
+	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
 	RC_USEAUTHID,				// m_fUseAuthID
 	RC_USECRYPT,				// m_Usecrypt
 	RC_USEHTTP,					// m_fUseHTTP
@@ -579,10 +591,13 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity)	}},
 	{ "MAXITEMCOMPLEXITY",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxItemComplexity)	}},
 	{ "MAXLOOPTIMES",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxLoopTimes)			}},
+	{ "MAXPACKETSPERTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPacketsPerTick)	}},
+	{ "MAXPINGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPings)	}},
+	{ "MAXQUEUESIZE",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxQueueSize)	}},
 	{ "MAXSECTORCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSectorComplexity)	}},
 	{ "MAXSHIPPLANKTELEPORT",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxShipPlankTeleport)	}},
+	{ "MAXSIZEPERTICK",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxLengthPerTick)	}},
 	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill)	}},
-	{ "MAXTOOLTIPFORTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxTooltipForTick)	}},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords) }},
 	{ "MINCHARDELETETIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMinCharDeleteTime)	}},
 	{ "MONSTERFEAR",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFear)	}},
@@ -597,6 +612,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MYSQLHOST",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sMySqlHost)	}},
 	{ "MYSQLPASSWORD",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlPass)	}},
 	{ "MYSQLUSER",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlUser)	}},
+	{ "NETTTL",					{ ELEM_INT,		OFFSETOF(CResource,m_iNetHistoryTTL)	}},
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe)	}},
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather)	}},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi)		}},
@@ -643,6 +659,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TELEPORTSOUNDSTAFF",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Staff) }},
 	{ "TIMERCALL",				{ ELEM_INT,		OFFSETOF(CResource,m_iTimerCall) }},
 	{ "TIMEUP" },
+	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork) }},
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID)	}},	// we use authid like osi
 	{ "USECRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsecrypt)	}},	// we don't want crypt clients
 	{ "USEHTTP",				{ ELEM_INT,		OFFSETOF(CResource,m_fUseHTTP)	}},
@@ -1116,7 +1133,8 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				return false;
 
 			sVal.FormatVal(0);
-			for ( CClient * pClient = g_Serv.GetClientHead(); pClient != NULL; pClient = pClient->GetNext())
+			ClientIterator it;
+			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 			{
 				if ( cli_num == i )
 				{
@@ -1461,73 +1479,6 @@ bool CResource::IsObscene( LPCTSTR pszText ) const
 			return( true );
 	}
 	return( false );
-}
-
-CLogIP * CResource::FindLogIP( CSocketAddressIP IP, bool fCreate )
-{
-	ADDTOCALLSTACK("CResource::FindLogIP");
-	if ( ! IP.IsValidAddr() )
-	{
-		// this address is always blocked.
-		return( NULL );
-	}
-
-	// Will create if not found.
-	for ( int i=0; i<m_LogIP.GetCount(); i++ )
-	{
-		CLogIP * pLogIP = m_LogIP[i];
-
-		if ( pLogIP->IsSameIP( IP ))
-		{
-			if ( pLogIP->IsTimeDecay())	// time to decay the whole record ?
-			{
-				pLogIP->InitTimes();	// it has decayed but we didn't get rid of it yet.
-			}
-			return( pLogIP );
-		}
-		if ( pLogIP->IsTimeDecay())
-		{
-			// remove it.
-			m_LogIP.DeleteAt( i );
-			i--;
-		}
-	}
-
-	// Create a new 1.
-	if ( ! fCreate )
-		return( NULL );
-
-	CLogIP * pLogIP = new CLogIP( IP );
-	m_LogIP.Add( pLogIP );
-	return( pLogIP );
-}
-
-bool CResource::SetLogIPBlock( LPCTSTR szIP, bool fBlock, int iTimeDecay )
-{
-	ADDTOCALLSTACK("CResource::SetLogIPBlock");
-	// Block or unblock an IP.
-	// RETURN: true = set, false = already that state.
-	CSocketAddressIP dwIP;
-	dwIP.SetAddrStr( szIP );
-
-	CLogIP * pLogIP = FindLogIP( dwIP, fBlock );
-	if ( pLogIP == NULL )
-		return( false );
-
-	bool fPrevBlock = pLogIP->IsBlocked();
-	if ( ! fBlock )
-	{
-		if ( ! fPrevBlock )
-			return( false );	// already unblocked.
-		m_LogIP.DeleteOb( pLogIP );
-	}
-	else
-	{
-		if ( fPrevBlock )
-			return( false );	// already blocked.
-		pLogIP->SetBlocked( true, iTimeDecay );
-	}
-	return( true );
 }
 
 bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
@@ -2086,9 +2037,14 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		return( true );
 
 	case RES_BLOCKIP:
-		while ( pScript->ReadKeyParse())
 		{
-			SetLogIPBlock( pScript->GetKey(), true );
+			TCHAR* ipBuffer = Str_GetTemp();
+			while ( pScript->ReadKeyParse())
+			{
+				strcpy(ipBuffer, pScript->GetKey());
+				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(ipBuffer);
+				hist->setBlocked(true);
+			}
 		}
 		return( true );
 
@@ -3265,11 +3221,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
-		if ( IsSetEF(EF_UseNetworkMulti) )
-		{
-			if ( IsSetEF(EF_UseNetworkMultiVersionMod) ) catresname(zExperimentalFlags, "UseAsyncNetworkVersionMod")
-			else catresname(zExperimentalFlags, "UseAsyncNetwork");
-		}
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
 		if ( zExperimentalFlags[0] )
@@ -3343,7 +3294,6 @@ void CResource::Unload( bool fResync )
 
 	// m_ResHash.RemoveAll();
 
-	// m_LogIP
 	m_Obscene.RemoveAll();
 	m_Fame.RemoveAll();
 	m_Karma.RemoveAll();

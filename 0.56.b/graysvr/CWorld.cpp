@@ -5,6 +5,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
+#include "../network/network.h"
 
 #if !defined( _WIN32 )
 #include <sys/time.h>
@@ -1968,7 +1969,8 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 	bool fCanSee = false;
 	CChar * pChar = NULL;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext(), fCanSee = false, pChar = NULL)
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next(), fCanSee = false, pChar = NULL)
 	{
 		if ( ! pClient->CanHear( pSrc, mode ))
 			continue;
@@ -2055,7 +2057,8 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 	bool fCanSee = false;
 	CChar * pChar = NULL;
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext(), fCanSee = false, pChar = NULL)
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next(), fCanSee = false, pChar = NULL)
 	{
 		if ( ! pClient->CanHear( pSrc, mode ))
 			continue;
@@ -2143,7 +2146,6 @@ void __cdecl CWorld::Broadcast(LPCTSTR pMsg, ...) // System broadcast in bold te
 	_vsnprintf(sTemp, sTemp.realLength(), pMsg, vargs);
 	va_end(vargs);
 	Speak( NULL, sTemp, HUE_TEXT_DEF, TALKMODE_BROADCAST, FONT_BOLD );
-	g_Serv.SocketsFlush();
 }
 
 void CWorld::Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD wFlags )

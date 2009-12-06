@@ -4,6 +4,9 @@
 //
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
+#include "../network/send.h"
+#include "../network/receive.h"
 #include <wchar.h>
 
 /////////////////////////////////
@@ -70,74 +73,6 @@ void CClient::Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang )
 	ADDTOCALLSTACK("CClient::Event_ChatText");
 	// Just send it all to the chat system
 	g_Serv.m_Chats.EventMsg( this, pszText, len, lang );
-}
-
-void CClient::Event_MapEdit( CGrayUID uid, const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_MapEdit");
-	CItemMap * pMap = dynamic_cast <CItemMap*> ( uid.ItemFind());
-	if ( ! m_pChar->CanTouch( pMap ))	// sanity check.
-	{
-		SysMessage( "You can't reach it" );
-		return;
-	}
-	if ( pMap->m_itMap.m_fPinsGlued )
-	{
-		SysMessage( "The pins seem to be glued in place" );
-		if ( ! IsPriv(PRIV_GM))
-		{
-			return;
-		}
-	}
-
-	// NOTE: while in edit mode, right click canceling of the
-	// dialog sends the same msg as
-	// request to edit in either mode...strange huh?
-
-	switch (pEvent->MapEdit.m_action)
-	{
-		case MAP_ADD: // add pin
-			{
-				if ( pMap->m_Pins.GetCount() > CItemMap::MAX_PINS )
-					return;	// too many.
-				CMapPinRec pin( pEvent->MapEdit.m_pin_x, pEvent->MapEdit.m_pin_y );
-				pMap->m_Pins.Add( pin );
-				break;
-			}
-		case MAP_INSERT: // insert between 2 pins
-			{
-			if ( pMap->m_Pins.GetCount() > CItemMap::MAX_PINS )
-				return;	// too many.
-			CMapPinRec pin( pEvent->MapEdit.m_pin_x, pEvent->MapEdit.m_pin_y );
-			pMap->m_Pins.InsertAt( pEvent->MapEdit.m_pin, pin);
-			break;
-			}
-		case MAP_MOVE: // move pin
-			if ( pEvent->MapEdit.m_pin >= pMap->m_Pins.GetCount())
-			{
-				SysMessage( "That's strange... (bad pin)" );
-				return;
-			}
-			pMap->m_Pins[pEvent->MapEdit.m_pin].m_x = pEvent->MapEdit.m_pin_x;
-			pMap->m_Pins[pEvent->MapEdit.m_pin].m_y = pEvent->MapEdit.m_pin_y;
-			break;
-		case MAP_DELETE: // delete pin
-			{
-				if ( pEvent->MapEdit.m_pin >= pMap->m_Pins.GetCount())
-				{
-					SysMessage( "That's strange... (bad pin)" );
-					return;
-				}
-				pMap->m_Pins.RemoveAt(pEvent->MapEdit.m_pin);
-			}
-			break;
-		case MAP_CLEAR: // clear all pins
-			pMap->m_Pins.RemoveAll();
-			break;
-		case MAP_TOGGLE: // edit req/cancel
-			addMapMode( pMap, MAP_SENT, ! pMap->m_fPlotMode );
-			break;
-	}
 }
 
 void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
@@ -218,56 +153,6 @@ void CClient::Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAutho
 	pBook->m_sAuthor = pszAuthor;
 }
 
-void CClient::Event_Book_Page( CGrayUID uid, const CEvent * pEvent ) // Book window
-{
-	ADDTOCALLSTACK("CClient::Event_Book_Page");
-	// XCMD_BookPage : read or write to a book page.
-
-	CItem	*pBook = uid.ItemFind();
-	if ( !m_pChar->CanSee(pBook) )
-	{
-		addObjectRemoveCantSee(uid, "the book");
-		return;
-	}
-
-	int iPage = pEvent->BookPage.m_page[0].m_pagenum;
-
-	if ( pEvent->BookPage.m_page[0].m_lines == 0xFFFF || pEvent->BookPage.m_len <= 0x0d )
-	{
-		addBookPage(pBook, iPage);	// just a request for pages.
-		return;
-	}
-
-	// Trying to write to the book.
-	CItemMessage * pText = dynamic_cast <CItemMessage *> (pBook);
-	int iLines = minimum(pEvent->BookPage.m_page[0].m_lines, MAX_BOOK_LINES);
-
-	if ( !pText || !pBook->IsBookWritable() )
-		return;
-	if (( iLines <= 0 ) || ( iPage <= 0 ) || iPage > MAX_BOOK_PAGES )
-		return;
-	iPage--;
-
-	int		len = 0;
-	TCHAR	*pszTemp = Str_GetTemp();
-	int		maxlen = pEvent->BookPage.m_len - sizeof(NDWORD) - sizeof(NWORD)*4 - sizeof(BYTE);
-
-	if (( maxlen <= 0 ) || ( maxlen >= SCRIPT_MAX_LINE_LEN ))
-		return;
-
-	for ( int i = 0; i < iLines; i++ )
-	{
-		len += strcpylen(pszTemp+len, pEvent->BookPage.m_page[0].m_text + len);
-		pszTemp[len++] = '\t';
-	}
-	pszTemp[--len] = '\0';
-
-    if ( Str_Check(pszTemp) )
-		return;
-
-	pText->SetPageText(iPage, pszTemp);
-}
-
 void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an item
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
@@ -281,7 +166,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 		EXC_SET("Item - addObjectRemove(uid)");
 		addObjectRemove(uid);
 		EXC_SET("Item - addItemDragCancel(0)");
-		addItemDragCancel(0);
+		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 
@@ -290,7 +175,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	if ( m_tNextPickup > m_tNextPickup.GetCurrentTime() )
 	{
 		EXC_SET("FastLoot - addItemDragCancel(0)");
-		addItemDragCancel(0);
+		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 	m_tNextPickup = m_tNextPickup.GetCurrentTime() + 3;
@@ -306,7 +191,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	if ( amount < 0 )
 	{
 		EXC_SET("ItemPickup - addItemDragCancel(0)");
-		addItemDragCancel(0);
+		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 	else if ( amount > 1 )
@@ -342,31 +227,15 @@ void inline CClient::Event_Item_Drop_Fail( CItem * pItem )
 		m_pChar->ItemBounce( pItem );
 }
 
-void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
+void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex )
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Drop");
 	// This started from the Event_Item_Pickup()
 	if ( !m_pChar )
 		return;
 
-	CGrayUID uidItem( pEvent->ItemDropReq.m_UID );
 	CItem * pItem = uidItem.ItemFind();
-	CGrayUID uidOn;	// dropped on this item.
-	unsigned char gridIndex;
-
-	if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() )
-	{
-		uidOn = (DWORD)pEvent->ItemDropReqNew.m_UIDCont;
-		gridIndex = pEvent->ItemDropReqNew.m_grid;
-	}
-	else
-	{
-		uidOn = (DWORD)pEvent->ItemDropReq.m_UIDCont;
-		gridIndex = 0;
-	}
-
 	CObjBase * pObjOn = uidOn.ObjFind();
-	CPointMap  pt( pEvent->ItemDropReq.m_x, pEvent->ItemDropReq.m_y, pEvent->ItemDropReq.m_z, m_pChar->GetTopMap() );
 
 	// Are we out of sync ?
 	if ( pItem == NULL ||
@@ -374,7 +243,7 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 		GetTargMode() != CLIMODE_DRAG ||
 		pItem != m_pChar->LayerFind( LAYER_DRAGGING ))
 	{
-		addItemDragCancel(5);
+		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::Other);
 		return;
 	}
 
@@ -616,80 +485,6 @@ void CClient::Event_Item_Drop( const CEvent * pEvent ) // Item is dropped
 
 
 
-void CClient::Event_Item_Equip( const CEvent * pEvent ) // Item is dropped on paperdoll
-{
-	ADDTOCALLSTACK("CClient::Event_Item_Equip");
-	// This started from the Event_Item_Pickup()
-
-	CGrayUID uidItem( pEvent->ItemEquipReq.m_UID );
-	CItem * pItem = uidItem.ItemFind();
-	CGrayUID uidChar( pEvent->ItemEquipReq.m_UIDChar );
-	CChar * pChar = uidChar.CharFind();
-	LAYER_TYPE layer = (LAYER_TYPE)( pEvent->ItemEquipReq.m_layer );
-
-	if ( pItem == NULL ||
-		GetTargMode() != CLIMODE_DRAG ||
-		pItem != m_pChar->LayerFind( LAYER_DRAGGING ))
-	{
-		// I have no idea why i got here.
-		addItemDragCancel(5);
-		return;
-	}
-
-	ClearTargMode(); // done dragging.
-
-	if ( pChar == NULL ||
-		layer >= LAYER_HORSE )	// Can't equip this way.
-	{
-		// The item was in the LAYER_DRAGGING.
-		m_pChar->ItemBounce( pItem );	// put in pack or drop at our feet.
-		return;
-	}
-
-	if ( ! pChar->NPC_IsOwnedBy( m_pChar ))
-	{
-		// trying to equip another char ?
-		// can if he works for you.
-		// else just give it to him ?
-		m_pChar->ItemBounce( pItem ); //cannot equip
-		return;
-	}
-
-	if ( ! pChar->ItemEquip( pItem, m_pChar ))
-	{
-		m_pChar->ItemBounce( pItem ); //cannot equip
-		return;
-	}
-}
-
-
-
-void CClient::Event_Skill_Locks( const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_Skill_Locks");
-	// Skill lock buttons in the skills window.
-	if ( !GetChar() || !GetChar()->m_pPlayer )
-		return;
-
-	int len = pEvent->Skill.m_len;
-	len -= 3;
-
-	if ( !len || ((len % sizeof( pEvent->Skill.skills[0] )) != 0) )
-		return;
-
-	for ( int i=0; len; i++ )
-	{
-		SKILL_TYPE index = (SKILL_TYPE)(WORD) pEvent->Skill.skills[i].m_index;
-		SKILLLOCK_TYPE state = (SKILLLOCK_TYPE) pEvent->Skill.skills[i].m_lock;
-
-		GetChar()->m_pPlayer->Skill_SetLock( index, state );
-
-		len -= sizeof( pEvent->Skill.skills[0] );
-	}
-}
-
-
-
 void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the skill list
 {
 	ADDTOCALLSTACK("CClient::Event_Skill_Use");
@@ -791,7 +586,7 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 		// Go into targtting mode.
 		if ( g_Cfg.GetSkillDef(skill)->m_sTargetPrompt.IsEmpty() )
 		{
-			DEBUG_ERR(( "%x: Event_Skill_Use bad skill %d\n", m_Socket.GetSocket(), skill ));
+			DEBUG_ERR(( "%x: Event_Skill_Use bad skill %d\n", GetSocketID(), skill ));
 			return;
 		}
 
@@ -814,12 +609,6 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 	// RETURN:
 	//  true = ok to walk.
 	//  false = the client is cheating. I did not send that code.
-
-	if ( IsNoCryptLessVer(0x126000) )
-		return( true );
-
-	if ( IsClientLessVer(0x126000) )
-		return( true );
 
 	if ( ! ( g_Cfg.m_wDebugFlags & DEBUGF_WALKCODES ))
 		return( true );
@@ -852,8 +641,7 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 	{
 		// If we're here, we got at least one valid echo....therefore
 		// we should never get another one
-		DEBUG_ERR(( "%x: Invalid walk echo (0%x). Invalid after valid.\n", m_Socket.GetSocket(), dwEcho ));
-		addPlayerWalkCancel();
+		DEBUG_ERR(( "%x: Invalid walk echo (0%x). Invalid after valid.\n", GetSocketID(), dwEcho ));
 		return false;
 	}
 
@@ -864,8 +652,7 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 		// The most I ever got was 2 of these, but I've seen 4
 		// a couple of times on a real server...we might have to
 		// increase this # if it becomes a problem (but I doubt that)
-		DEBUG_ERR(( "%x: Invalid walk echo. Too many initial invalid.\n", m_Socket.GetSocket()));
-		addPlayerWalkCancel();
+		DEBUG_ERR(( "%x: Invalid walk echo. Too many initial invalid.\n", GetSocketID()));
 		return false;
 	}
 
@@ -875,7 +662,7 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 
 
 
-void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player moves
+bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 {
 	ADDTOCALLSTACK("CClient::Event_Walking");
 	// XCMD_Walk
@@ -884,9 +671,6 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	//	walking (the invalid non zeros happen when you log off and don't exit the
 	//	client.exe all the way and then log back in, XXX doesn't clear the stack)
 
-	if ( !m_pChar || !Event_WalkingCheck(dwEcho) )
-		return;
-
 	// Movement whilst freeze-on-cast enabled is not allowed
 	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
@@ -894,23 +678,13 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
 		{
 			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
-			addPlayerWalkCancel();
-			return;
+			return false;
 		}
 	}
 
 	if (( m_pChar->IsStatFlag(STATF_Freeze|STATF_Stone) && m_pChar->OnFreezeCheck() ) || m_pChar->OnFreezeCheck(true) )
 	{
-		addPlayerWalkCancel();
-		return;
-	}
-
-	if ( count != (BYTE)( m_wWalkCount+1 ))	// && count != 255
-	{
-		if ( (WORD)(m_wWalkCount) == 0xFFFF )
-			return;	// just playing catch up with last reset. don't cancel again.
-		addPlayerWalkCancel();
-		return;
+		return false;
 	}
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
@@ -922,9 +696,9 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 	DIR_TYPE dir = (DIR_TYPE)( rawdir & 0x0F );
 	if ( dir >= DIR_QTY )
 	{
-		addPlayerWalkCancel();
-		return;
+		return false;
 	}
+
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptold = pt;
 	bool	fMove = true;
@@ -992,7 +766,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 				if ( m_iWalkTimeAvg < 0 && iTimeDiff >= 0 && ! IsPriv(PRIV_GM) )	// TICK_PER_SEC
 				{
 					// walking too fast.
-					DEBUG_WARN(("%s (%x): Fast Walk ?\n", GetName(), m_Socket.GetSocket()));
+					DEBUG_WARN(("%s (%x): Fast Walk ?\n", GetName(), GetSocketID()));
 
 					TRIGRET_TYPE iAction = TRIGRET_RET_DEFAULT;
 					if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -1003,8 +777,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 					if ( iAction != TRIGRET_RET_TRUE )
 					{
-						addPlayerWalkCancel();
-						return;
+						return false;
 					}
 				}
 			}
@@ -1024,8 +797,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
 #endif
 		{
-			addPlayerWalkCancel();
-			return;
+			return false;
 		}
 
 		// Are we invis ?
@@ -1033,10 +805,8 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 
 		if (!m_pChar->MoveToChar( pt ))
 		{
-			addPlayerWalkCancel();
-			return;
+			return false;
 		}
-//		m_pChar->MoveToChar( pt );
 
 		// Now we've moved, are we now or no longer indoors and need to update weather?
 		if ( fRoof != m_pChar->IsStatFlag( STATF_InDoors ))
@@ -1048,7 +818,7 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		if ( m_pChar->CheckLocation())
 		{
 			// We stepped on teleporter
-			return;
+			return false;
 		}
 	}
 
@@ -1058,14 +828,6 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		fMove = false;
 	}
 
-	// Ack the move. ( if this does not go back we get rubber banding )
-	m_wWalkCount = count;	// m_wWalkCount++
-	CCommand cmd;
-	cmd.WalkAck.m_Cmd = XCMD_WalkAck;
-	cmd.WalkAck.m_count = (BYTE) m_wWalkCount;
-	cmd.WalkAck.m_noto = m_pChar->Noto_GetFlag( m_pChar, false, IsClientVersion(MINCLIVER_NOTOINVUL) );
-	xSendPkt( &cmd, sizeof( cmd.WalkAck ));
-
 	if ( !fMove )
 		m_pChar->UpdateMode(this);			// Show others I have turned !!
 	else
@@ -1073,6 +835,8 @@ void CClient::Event_Walking( BYTE rawdir, BYTE count, DWORD dwEcho ) // Player m
 		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
 		addPlayerSee( ptold );				// What new stuff do I now see ?
 	}
+
+	return true;
 }
 
 
@@ -1180,7 +944,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event( LOGM_GM_CMDS, "%x:'%s' commands '%s'=%d\n", m_Socket.GetSocket(), (LPCTSTR) GetName(), (LPCTSTR) pszCommand, m_bAllowCommand);
+		g_Log.Event( LOGM_GM_CMDS, "%x:'%s' commands '%s'=%d\n", GetSocketID(), (LPCTSTR) GetName(), (LPCTSTR) pszCommand, m_bAllowCommand);
 
 	return !m_bAllowSay;
 }
@@ -1195,11 +959,7 @@ void CClient::Event_Attack( CGrayUID uid )
 	if ( pChar == NULL )
 		return;
 
-	// Accept or decline the attack.
-	CCommand cmd;
-	cmd.AttackOK.m_Cmd = XCMD_AttackOK;
-	cmd.AttackOK.m_UID = (m_pChar->Fight_Attack( pChar )) ? (DWORD) pChar->GetUID() : 0;
-	xSendPkt( &cmd, sizeof( cmd.AttackOK ));
+	PacketAttack* cmd = new PacketAttack(this, (m_pChar->Fight_Attack(pChar) ? (DWORD)pChar->GetUID() : 0));
 }
 
 // Client/Player buying items from the Vendor
@@ -1219,136 +979,53 @@ inline void CClient::Event_VendorBuy_Cheater( int iCode )
 		"Total cost is too great",
 	};
 
-	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal buy packet (%s)\n", this->m_Socket.GetSocket(),
-		this->GetAccount()->GetName(),
+	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(),
+		GetAccount()->GetName(),
 		sm_BuyPacketCheats[iCode]);
 	SysMessage("You cannot buy that.");
 }
 
-void CClient::Event_VendorBuy(CGrayUID uidVendor, const CEvent *pEvent)
+void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD itemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy");
-	if ( !pEvent->VendorBuy.m_flag )	// just a close command.
+	if (m_pChar == NULL || pVendor == NULL || items == NULL || itemCount <= 0)
 		return;
 
-	CChar	*pVendor = uidVendor.CharFind();
-	bool	bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
+#define MAX_COST (INT_MAX / 2)
+	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
+	CItemContainer* pStock = pVendor->GetBank(LAYER_VENDOR_STOCK);
+	CItemContainer* pPack = m_pChar->GetPackSafe();
 
-	if ( !pVendor || ( !pVendor->NPC_IsVendor() && pVendor->m_pNPC->m_Brain != NPCBRAIN_VENDOR_OFFDUTY ) )
+	CItemVendable* pItem;
+	INT64 costtotal = 0;
+	int i;
+
+	//	Check if the vendor really has so much items
+	for (i = 0; i < itemCount; ++i)
 	{
-		Event_VendorBuy_Cheater( 0x1 );
-		return;
-	}
+		if ( !items[i].m_serial )
+			continue;
 
-	if ( !m_pChar->CanTouch(pVendor) )
-	{
-		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
-		return;
-	}
+		pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
+		if ( pItem == NULL )
+			continue;
 
-	if ( pVendor->m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY ) //cheaters
-	{
-		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-		Event_VendorBuy_Cheater( 0x2 );
-		return;
-	}
-
-	CItemContainer	*pContStock = pVendor->GetBank(LAYER_VENDOR_STOCK);
-	CItemContainer	*pPack = m_pChar->GetPackSafe();
-
-	int			iConvertFactor = pVendor->NPC_GetVendorMarkup(m_pChar);
-
-	DWORD	BuyUids[MAX_ITEMS_CONT];
-	DWORD	BuyAmounts[MAX_ITEMS_CONT];
-	DWORD	BuyPrices[MAX_ITEMS_CONT];
-	memset(BuyUids, 0, sizeof(BuyUids));
-	memset(BuyAmounts, 0, sizeof(BuyAmounts));
-	memset(BuyPrices, 0, sizeof(BuyPrices));
-
-#define	MAX_COST (INT_MAX/2)
-	INT64		costtotal=0;
-	unsigned int nItems = minimum((pEvent->VendorBuy.m_len - 8)/sizeof(pEvent->VendorBuy.m_item[0]), MAX_ITEMS_CONT);
-	int		i;
-
-	CVarDefCont *vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : m_TagDefs.GetKey("BUYSELLTIME");
-
-	if ( vardef )
-	{
-		CServTime	allowsell;
-		allowsell.InitTime(vardef->GetValNum() + ( nItems*3 ));
-		if ( g_World.GetCurrentTime() < allowsell )
+		if ((items[i].m_amount <= 0) || (items[i].m_amount > pItem->GetAmount()))
 		{
-			SysMessage("You are buying too fast.");
-			return;
-		}
-	}
-
-	CItemVendable * pItem = NULL;
-
-	//	Step #1
-	//	Combine all goods into one list.
-	for ( i = 0 ; i < nItems ; ++i )
-	{
-		DWORD			d = pEvent->VendorBuy.m_item[i].m_UID;
-		int				index;
-		CGrayUID		uid(d);
-		pItem = dynamic_cast <CItemVendable *> (uid.ItemFind());
-
-		if ( !pItem || !pItem->IsValidSaleItem(true) )
-		{
-			Event_VendorBuy_Cheater( 0x3 );
-			return;
-		}
-
-		//	search if it is already in the list
-		for ( index = 0; index < nItems; index++ )
-		{
-			if ( d == BuyUids[index] )
-				break;
-			else if ( !BuyUids[index] )	// zero-entry (empty)
-			{
-				BuyUids[index] = d;
-				BuyPrices[index] = pItem->GetVendorPrice(iConvertFactor);
-				break;
-			}
-		}
-		BuyAmounts[index] += pEvent->VendorBuy.m_item[i].m_amount;
-
-		if ( ( BuyPrices[index] <= 0 ) || !pContStock || !pContStock->IsItemInside(pItem) )
-		{
-			pVendor->Speak("Alas, I don't have these goods currently stocked. Let me know if there is something else thou wouldst buy.");
+			pVendor->Speak("Alas, I don't have all those goods in stock. Let me know if there is something else thou wouldst buy.");
 			Event_VendorBuy_Cheater( 0x4 );
 			return;
 		}
-	}
 
-	//	Step #2
-	//	Check if the vendor really has so much items
-	for ( i = 0; i < nItems; ++i )
-	{
-		if ( BuyUids[i] )
+		costtotal += (items[i].m_amount * items[i].m_price);
+		if ( costtotal > MAX_COST )
 		{
-			CGrayUID		uid(BuyUids[i]);
-			pItem = dynamic_cast <CItemVendable *> (uid.ItemFind());
-
-			if (( BuyAmounts[i] <= 0 ) || ( BuyAmounts[i] > pItem->GetAmount() ))
-			{
-				pVendor->Speak("Alas, I don't have all those goods in stock. Let me know if there is something else thou wouldst buy.");
-				Event_VendorBuy_Cheater( 0x4 );
-				return;
-			}
-
-			costtotal += BuyAmounts[i] * BuyPrices[i];
-			if ( costtotal > MAX_COST )
-			{
-				pVendor->Speak("Alas, I am not allowed to operate such huge sums.");
-				Event_VendorBuy_Cheater( 0x5 );
-				return;
-			}
+			pVendor->Speak("Alas, I am not allowed to operate such huge sums.");
+			Event_VendorBuy_Cheater( 0x5 );
+			return;
 		}
 	}
 
-	//	Step #3
 	//	Check for gold being enough to buy this
 	bool fBoss = pVendor->NPC_IsOwnedBy(m_pChar);
 	if ( !fBoss )
@@ -1369,21 +1046,21 @@ void CClient::Event_VendorBuy(CGrayUID uidVendor, const CEvent *pEvent)
 		return;
 	}
 
-	//	Step #4
 	//	Move the items bought into your pack.
-	for ( i = 0; i < nItems; ++i )
+	for ( i = 0; i < itemCount; ++i )
 	{
-		if ( !BuyUids[i] )
+		if ( !items[i].m_serial )
 			break;
 
-		CGrayUID		uid(BuyUids[i]);
-		pItem = dynamic_cast <CItemVendable *> (uid.ItemFind());
+		pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
+		WORD amount = items[i].m_amount;
 
-		WORD amount = BuyAmounts[i];
+		if ( pItem == NULL )
+			continue;
 
 		if ( IsSetEF(EF_New_Triggers) )
 		{
-			CScriptTriggerArgs Args( amount, BuyAmounts[i] * BuyPrices[i], pVendor );
+			CScriptTriggerArgs Args( amount, items[i].m_amount * items[i].m_price, pVendor );
 			Args.m_VarsLocal.SetNum( "TOTALCOST", costtotal);
 			if ( pItem->OnTrigger( ITRIG_Buy, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
 				continue;
@@ -1519,63 +1196,19 @@ inline void CClient::Event_VendorSell_Cheater( int iCode )
 		"Bad item UID",
 	};
 
-	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal sell packet (%s)\n", this->m_Socket.GetSocket(),
-		this->GetAccount()->GetName(),
+	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is submitting illegal sell packet (%s)\n", GetSocketID(),
+		GetAccount()->GetName(),
 		sm_SellPacketCheats[iCode]);
 	SysMessage("You cannot sell that.");
 }
 
-void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
+void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD itemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell");
 	// Player Selling items to the vendor.
 	// Done with the selling action.
-
-	CChar * pVendor = uidVendor.CharFind();
-	if ( !pVendor || ( !pVendor->NPC_IsVendor() && pVendor->m_pNPC->m_Brain != NPCBRAIN_VENDOR_OFFDUTY ) )
-	{
-		Event_VendorSell_Cheater( 0x1 );
+	if (m_pChar == NULL || pVendor == NULL || items == NULL || itemCount <= 0)
 		return;
-	}
-
-	if ( !m_pChar->CanTouch(pVendor) )
-	{
-		SysMessage("You can't reach the vendor");
-		return;
-	}
-
-	if ( pVendor->m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY ) //cheaters
-	{
-		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-		Event_VendorSell_Cheater( 0x2 );
-		return;
-	}
-
-	if ( pEvent->VendorSell.m_count < 1 )
-	{
-		addVendorClose(pVendor);
-		return;
-	}
-
-				//	selling list has same container limitations as all others
-	if ( pEvent->VendorSell.m_count >= MAX_ITEMS_CONT )
-	{
-		SysMessage("You cannot sell so much.");
-		return;
-	}
-
-	CVarDefCont *vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : m_TagDefs.GetKey("BUYSELLTIME");
-
-	if ( vardef )
-	{
-		CServTime	allowsell;
-		allowsell.InitTime(vardef->GetValNum() + ( pEvent->VendorSell.m_count*3 ));
-		if ( g_World.GetCurrentTime() < allowsell )
-		{
-			SysMessage("You are selling too fast.");
-			return;
-		}
-	}
 
 	CItemContainer	*pBank = pVendor->GetBank();
 	CItemContainer	*pContStock = pVendor->GetBank( LAYER_VENDOR_STOCK );
@@ -1593,10 +1226,10 @@ void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
 	int iGold = 0;
 	bool fShortfall = false;
 
-	for ( int i = 0; i < pEvent->VendorSell.m_count ; ++i )
+	for (int i = 0; i < itemCount; i++)
 	{
-		CGrayUID uid( pEvent->VendorSell.m_item[i].m_UID );
-		CItemVendable * pItem = dynamic_cast <CItemVendable *> (uid.ItemFind());
+
+		CItemVendable * pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
 		if ( !pItem || !pItem->IsValidSaleItem(true) )
 		{
 			Event_VendorSell_Cheater( 0x3 );
@@ -1620,7 +1253,7 @@ void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
 			continue;
 
 		// Now how much did i say i wanted to sell ?
-		int amount = pEvent->VendorSell.m_item[i].m_amount;
+		int amount = items[i].m_amount;
 		if ( pItem->GetAmount() < amount )	// Selling more than i have ?
 		{
 			amount = pItem->GetAmount();
@@ -1681,165 +1314,7 @@ void CClient::Event_VendorSell( CGrayUID uidVendor, const CEvent * pEvent )
 	}
 }
 
-void CClient::Event_BBoardRequest( CGrayUID uid, const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_BBoardRequest");
-	// Answer a request reguarding the BBoard.
-	// addBulletinBoard
-
-	CItemContainer * pBoard = dynamic_cast <CItemContainer *> ( uid.ItemFind());
-	if ( ! m_pChar->CanSee( pBoard ))
-	{
-		addObjectRemoveCantSee( uid, "the board" );
-		return;
-	}
-
-	if ( !pBoard->IsType(IT_BBOARD) )
-		return;
-
-	CGrayUID uidMsg( (DWORD)( pEvent->BBoard.m_UIDMsg ) );
-
-	switch ( pEvent->BBoard.m_flag )
-	{
-		case BBOARDF_REQ_FULL:
-		case BBOARDF_REQ_HEAD:
-			// request for message header and/or body.
-			if ( pEvent->BBoard.m_len != 0x0c )
-			{
-				DEBUG_ERR(( "%x:BBoard feed back message bad length %d\n", m_Socket.GetSocket(), (int) pEvent->BBoard.m_len ));
-				return;
-			}
-			if ( ! addBBoardMessage( pBoard, (BBOARDF_TYPE) pEvent->BBoard.m_flag, uidMsg ))
-			{
-				// sanity check fails.
-				addObjectRemoveCantSee( (DWORD)( pEvent->BBoard.m_UIDMsg ), "the message" );
-				return;
-			}
-			break;
-		case BBOARDF_NEW_MSG:
-			{
-				// Submit a message
-				if ( pEvent->BBoard.m_len < 0x0c )
-					return;
-				if ( !m_pChar->CanTouch(pBoard) )
-				{
-					SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_REACH);
-					return;
-				}
-				if ( pBoard->GetCount() > 32 )
-				{
-					// Role a message off.
-					delete pBoard->GetAt(pBoard->GetCount()-1);
-				}
-
-				int lenstr = pEvent->BBoard.m_data[0];
-				if ( Str_Check((LPCTSTR)&pEvent->BBoard.m_data[1]) )
-					return;
-
-				// if pMsgItem then this is a reply to it !
-				CItemMessage * pMsgNew = dynamic_cast <CItemMessage *>( CItem::CreateBase( ITEMID_BBOARD_MSG ));
-				if ( !pMsgNew )
-				{
-					DEBUG_ERR(( "%x:BBoard can't create message item\n", m_Socket.GetSocket()));
-					return;
-				}
-
-				pMsgNew->SetAttr( ATTR_MOVE_NEVER );
-				pMsgNew->SetName((LPCTSTR)&pEvent->BBoard.m_data[1]);
-				pMsgNew->m_itBook.m_Time = CServTime::GetCurrentTime();
-				pMsgNew->m_sAuthor = m_pChar->GetName();
-				pMsgNew->m_uidLink = m_pChar->GetUID();	// Link it to you forever.
-
-				int len = 1 + lenstr;
-				int lines = pEvent->BBoard.m_data[len++];
-				if ( lines > 32 ) lines = 32;	// limit this.
-
-				while ( lines-- )
-				{
-					lenstr = pEvent->BBoard.m_data[len++];
-					if ( !Str_Check((LPCTSTR) &pEvent->BBoard.m_data[len]) )
-						pMsgNew->AddPageText( (LPCTSTR) &pEvent->BBoard.m_data[len] );
-					len += lenstr;
-				}
-
-				pBoard->ContentAdd( pMsgNew );
-			}
-			break;
-
-		case BBOARDF_DELETE:
-			// remove the msg. (if it is yours?)
-			{
-				CItemMessage * pMsgItem = dynamic_cast <CItemMessage *> ( uidMsg.ItemFind());
-				if ( ! pBoard->IsItemInside( pMsgItem ))
-				{
-					SysMessageDefault( DEFMSG_ITEMUSE_BBOARD_COR );
-					return;
-				}
-				if ( ! IsPriv(PRIV_GM) && pMsgItem->m_uidLink != m_pChar->GetUID())
-				{
-					SysMessageDefault( DEFMSG_ITEMUSE_BBOARD_DEL );
-					return;
-				}
-
-				pMsgItem->Delete();
-			}
-			break;
-
-		default:
-			DEBUG_ERR(( "%x:BBoard unknown flag %d\n", m_Socket.GetSocket(), (int) pEvent->BBoard.m_flag ));
-			return;
-	}
-}
-
-
-
-void CClient::Event_SecureTrade( CGrayUID uid, const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_SecureTrade");
-	// pressed a button on the secure trade window.
-
-	CItemContainer * pCont = dynamic_cast <CItemContainer *> ( uid.ItemFind());
-	if ( pCont == NULL )
-		return;
-	if ( m_pChar != pCont->GetParent())
-		return;
-
-	// perform the trade.
-	switch ( pEvent->SecureTrade.m_action )
-	{
-		case SECURE_TRADE_CLOSE: // Cancel trade.  Send each person cancel messages, move items.
-			pCont->Delete();
-			return;
-		case SECURE_TRADE_CHANGE: // Change check marks.  Possibly conclude trade
-			if ( m_pChar->GetDist( pCont ) > UO_MAP_VIEW_SIZE )
-			{
-				// To far away.
-				SysMessageDefault( DEFMSG_TRADE_TOOFAR );
-				return;
-			}
-			long need2wait(0);
-			CVarDefCont *vardef = pCont->GetTagDefs()->GetKey("wait1sec");
-			if ( vardef ) need2wait = vardef->GetValNum();
-			if ( need2wait > 0 )
-			{
-				long timerow = g_World.GetCurrentTime().GetTimeRaw();
-				if ( need2wait > timerow )
-				{
-					TCHAR *pszMsg = Str_GetTemp();
-					long		seconds = (need2wait-timerow)/TICK_PER_SEC;
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_TRADE_WAIT ), seconds);
-					SysMessage(pszMsg);
-					return;
-				}
-			}
-			pCont->Trade_Status( pEvent->SecureTrade.m_UID1 );
-			return;
-	}
-}
-
-
-
-void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEvent )
+void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen )
 {
 	ADDTOCALLSTACK("CClient::Event_Profile");
 	// mode = 0 = Get profile, 1 = Set profile
@@ -1862,56 +1337,12 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, const CEvent * pEven
 				return;
 		}
 
-		const int iSizeAll = sizeof(pEvent->CharProfile);
-		const int iSizeTxt = sizeof(pEvent->CharProfile.m_utext);
-
-		int len = pEvent->CharProfile.m_len;
-		if ( len <= (sizeof(pEvent->CharProfile)-sizeof(pEvent->CharProfile.m_utext)))
-			return;
-
-		int iTextLen = pEvent->CharProfile.m_textlen;
-		if ( iTextLen*sizeof(NCHAR) != len - (sizeof(pEvent->CharProfile)-sizeof(pEvent->CharProfile.m_utext)) )
-			return;
-
-		BYTE retcode = pEvent->CharProfile.m_retcode;	// 0=canceled, 1=okayed or something similar???
-
-		TCHAR szLine[SCRIPT_MAX_LINE_LEN-16];
-		int iWLen = CvtNUNICODEToSystem( szLine, COUNTOF(szLine), pEvent->CharProfile.m_utext, iTextLen );
-		if ( szLine && !strchr(szLine, 0x0A) )
-			pChar->m_pPlayer->m_sProfile = szLine;
+		if (pszProfile && !strchr(pszProfile, 0x0A))
+			pChar->m_pPlayer->m_sProfile = pszProfile;
 	}
 	else
 	{
-		// alter profile when viewing an incognitoed player, unless being viewed by a GM or the profile is our own
-		bool fIncognito = pChar->IsStatFlag( STATF_Incognito ) && ! IsPriv(PRIV_GM) && (pChar != m_pChar);
-
-		CGString sConstText;
-		CCommand cmd;
-
-		cmd.CharProfile.m_Cmd = XCMD_CharProfile;
-		cmd.CharProfile.m_UID = uid;
-
-		int len = strcpylen(cmd.CharProfile.m_title, pChar->GetName()) + 1;
-
-		if (fIncognito == false)
-			sConstText.Format( "%s, %s", pChar->Noto_GetTitle(), pChar->GetTradeTitle());
-		else
-			sConstText.Format( "%s", pChar->Noto_GetTitle());
-
-		int iWLen = CvtSystemToNUNICODE(
-			(NCHAR *) ( cmd.CharProfile.m_title + len ), 1024,
-			sConstText, sConstText.GetLength() );
-		len += (iWLen+1)*sizeof(NCHAR);
-
-		LPCTSTR pszProfile = fIncognito ? "" : ((LPCTSTR)pChar->m_pPlayer->m_sProfile);
-		iWLen = CvtSystemToNUNICODE(
-			(NCHAR *) ( cmd.CharProfile.m_title + len ), SCRIPT_MAX_LINE_LEN-16,
-			pszProfile, -1 );
-		len += (iWLen+1)*sizeof(NCHAR);
-		len += 7;
-
-		cmd.CharProfile.m_len = len;
-		xSendPkt(&cmd, len);
+		PacketProfile* cmd = new PacketProfile(this, pChar);
 	}
 }
 
@@ -1964,40 +1395,6 @@ void CClient::Event_ToolTip( CGrayUID uid )
 	char *z = Str_GetTemp();
 	sprintf(z, "'%s'", pObj->GetName());
 	addToolTip(uid.ObjFind(), z);
-}
-
-void CClient::Event_PromptRespUNICODE( const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_PromptRespUNICODE");
-	// result of addPrompt in unicode
-
-	int iLen = pEvent->PromptUNICODE.m_len - (sizeof(pEvent->PromptUNICODE) - sizeof(pEvent->PromptUNICODE.m_utext));
-	if ( iLen <= 0 )
-		return;
-
-	int iLenChars = iLen/sizeof(WCHAR);
-	TCHAR szText[MAX_TALK_BUFFER];
-   	NCHAR wszText[MAX_TALK_BUFFER];
-	LPCTSTR pszText;
-
-	if ( iLenChars <= 0 )
-		return;
-
-	// flip byte order
-	for (int i = 0; i < iLenChars; i++)
-		wszText[i] = pEvent->PromptUNICODE.m_utext[i];
-	wszText[iLenChars] = '\0';
-
-	// convert to system text
-	iLen = CvtNUNICODEToSystem( szText, sizeof(szText), (NCHAR*)wszText, iLenChars );
-	if ( iLen <= 0 )
-		return;
-
-	pszText = szText;
-	GETNONWHITESPACE(pszText);
-
-	// continue to handle the event as if it were a standard response
-	Event_PromptResp(pszText, iLen, (DWORD)pEvent->PromptUNICODE.m_serial, (DWORD)pEvent->PromptUNICODE.m_prompt, pEvent->PromptUNICODE.m_type, true);
 }
 
 void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip )
@@ -2381,7 +1778,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
 		{
 			g_Log.Event( LOGM_PLAYER_SPEAK, "%x:'%s' Says '%s' mode=%d%s\n",
-				m_Socket.GetSocket(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
+				GetSocketID(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
 		}
 
 		// Guild and Alliance mode will not pass this.
@@ -2414,7 +1811,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 	}
 }
 
-void CClient::Event_TalkUNICODE( const CEvent * pEvent )
+void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mMode, FONT_TYPE font, LPCTSTR pszLang )
 {
 	ADDTOCALLSTACK("CClient::Event_TalkUNICODE");
 	// Get the text in wide bytes.
@@ -2426,37 +1823,8 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 	if ( !pAccount )	// this should not happen
 		return;
 
-	unsigned char	mMode	= pEvent->TalkUNICODE.m_mode;
-	HUE_TYPE wHue = pEvent->TalkUNICODE.m_wHue;
-	int iLen = pEvent->TalkUNICODE.m_len - sizeof(pEvent->TalkUNICODE);
-	if ( iLen <= 0 )
+	if ( iTextLen <= 0 )
 		return;
-
-	bool bHasKeywords = ( mMode & 0xc0 ) != 0;
-	if ( bHasKeywords )
-	{
-		mMode &= ~0xc0;
-		BYTE * pKeywords = (BYTE*)(&pEvent->TalkUNICODE.m_utext);
-
-		int count = (UNPACKWORD(pKeywords) & 0xFFF0) >> 4;
-		if ( count < 0 || count > 50 )	// malformed check
-			return;
-
-		count += 1;
-		count *= 12;
-
-		int toskip = count / 8;
-		if ( count % 8 > 0 )
-			toskip++;
-
-		if ( toskip > (iLen * 2) )	// malformed check
-			return;
-
-		Event_Talk( (const char *)(pKeywords + toskip), wHue, (TALKMODE_TYPE)mMode, true );
-		return;
-	}
-
-	TALKMODE_TYPE	Mode	= (TALKMODE_TYPE) mMode;
 
 	if ( mMode < 0 || mMode > 14 ) // Less or greater is an exploit
 		return;
@@ -2469,50 +1837,33 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 		wHue = HUE_TEXT_DEF;
 
 	// store the default language of choice. CLanguageID
-	pAccount->m_lang.Set( pEvent->TalkUNICODE.m_lang );
+	pAccount->m_lang.Set(pszLang);
 
-	int iLenChars = iLen/sizeof(WCHAR);
 	TCHAR szText[MAX_TALK_BUFFER];
-   	NWORD wszText[MAX_TALK_BUFFER];
-	LPCTSTR pszText;
-	const NWORD * puText;
+	const NWORD * puText = wszText;
 
-	if ( iLenChars <= 0 )
-		return;
-
-	if ( IsSetEF( EF_UNICODE ) )
-	{
-		wcsncpy( (wchar_t *)wszText, (wchar_t *)&pEvent->TalkUNICODE.m_utext[0], (sizeof(wszText) / sizeof(wchar_t)) - 2 );
-   		iLen = CvtNUNICODEToSystem( szText, sizeof(szText), wszText, iLenChars );
-		puText	= wszText;
-	}
-	else
-	{
-		puText = &pEvent->TalkUNICODE.m_utext[0];
-		iLen = CvtNUNICODEToSystem( szText, sizeof(szText), pEvent->TalkUNICODE.m_utext, iLenChars );
-	}
-
+	int iLen = CvtNUNICODEToSystem( szText, sizeof(szText), wszText, iTextLen );
 	if ( iLen <= 0 )
 		return;
 
-	pszText = szText;
+	LPCTSTR pszText = szText;
 	GETNONWHITESPACE(pszText);
 
-	if ( !Event_Command(pszText,Mode) )
+	if ( !Event_Command(pszText, mMode) )
 	{
 		bool	fCancelSpeech	= false;
 
-		if ( m_pChar->OnTriggerSpeech( false, (TCHAR *) pszText, m_pChar, Mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech( false, (TCHAR *)pszText, m_pChar, mMode, wHue) )
 			fCancelSpeech	= true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
 		{
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%x:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", m_Socket.GetSocket(),
-				m_pChar->GetName(), pAccount->m_lang.GetStr(), pszText, Mode, fCancelSpeech ? " (muted)" : "" );
+			g_Log.Event(LOGM_PLAYER_SPEAK, "%x:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(),
+				m_pChar->GetName(), pAccount->m_lang.GetStr(), pszText, mMode, fCancelSpeech ? " (muted)" : "" );
 		}
 
 		// Guild and Alliance mode will not pass this.
-		if ( Mode == 13 || Mode == 14 )
+		if ( mMode == 13 || mMode == 14 )
 			return;
 
 		if ( IsSetEF(EF_UNICODE) )
@@ -2539,34 +1890,11 @@ void CClient::Event_TalkUNICODE( const CEvent * pEvent )
 
 		if ( !fCancelSpeech && ( iLen <= 128 ) ) // From this point max 128 chars
 		{
-			m_pChar->SpeakUTF8Ex(puText, wHue, Mode, m_pChar->m_fonttype, pAccount->m_lang);
+			m_pChar->SpeakUTF8Ex(puText, wHue, mMode, font, pAccount->m_lang);
 			Event_Talk_Common((char *)pszText);
 		}
 	}
 }
-
-bool CClient::Event_DeathOption( DEATH_MODE_TYPE mode, const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_DeathOption");
-	if ( m_pChar == NULL )
-		return false;
-	if ( mode != DEATH_MODE_MANIFEST )
-	{
-		// Play as a ghost.
-		SysMessage("You are a ghost");
-		addSound(0x17f);
-		addPlayerStart(m_pChar); // Do practically a full reset (to clear death menu)
-		return true;
-	}
-
-	// Toggle manifest mode. (this has more data) (anomoly to size rules)
-	if ( !xCheckMsgSize(sizeof(pEvent->DeathMenu)) )
-		return false;
-
-	Event_CombatMode(pEvent->DeathMenu.m_manifest);
-	return true;
-}
-
 
 void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 {
@@ -2596,133 +1924,6 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 		return;
 
 	pChar->SetName(pszCharName);
-}
-
-
-void CClient::Event_MenuChoice( const CEvent * pEvent ) // Choice from GMMenu or Itemmenu received
-{
-	ADDTOCALLSTACK("CClient::Event_MenuChoice");
-	// Select from a menu. CMenuItem
-	// result of addItemMenu call previous.
-	// select = 0 = cancel.
-
-	CGrayUID uidItem( pEvent->MenuChoice.m_UID );
-	WORD context = pEvent->MenuChoice.m_context;
-
-	if ( context != GetTargMode() || uidItem != m_tmMenu.m_UID )
-	{
-		// DEBUG_ERR(( "%x: Menu choice unrequested %d!=%d\n", m_Socket.GetSocket(), context, m_Targ_Mode ));
-		SysMessage( "Unexpected menu info" );
-		return;
-	}
-
-	ClearTargMode();
-	WORD select = pEvent->MenuChoice.m_select;
-
-	// Item Script or GM menu script got us here.
-	switch ( context )
-	{
-	case CLIMODE_MENU:
-		// A generic menu from script.
-		Menu_OnSelect( m_tmMenu.m_ResourceID, select, uidItem.ObjFind() );
-		return;
-	case CLIMODE_MENU_SKILL:
-		// Some skill menu got us here.
-		if ( select >= COUNTOF(m_tmMenu.m_Item))
-			return;
-		Cmd_Skill_Menu( m_tmMenu.m_ResourceID, (select) ? m_tmMenu.m_Item[select] : 0 );
-		return;
-	case CLIMODE_MENU_SKILL_TRACK_SETUP:
-		// PreTracking menu got us here.
-		Cmd_Skill_Tracking( select, false );
-		return;
-	case CLIMODE_MENU_SKILL_TRACK:
-		// Tracking menu got us here. Start tracking the selected creature.
-		Cmd_Skill_Tracking( select, true );
-		return;
-
-	case CLIMODE_MENU_GM_PAGES:
-		// Select a GM page from the menu.
-		Cmd_GM_PageSelect( select );
-		return;
-	case CLIMODE_MENU_EDIT:
-		// m_Targ_Text = what are we doing to it ?
-		Cmd_EditItem( uidItem.ObjFind(), select );
-		return;
-	default:
-		DEBUG_ERR(( "%x:Unknown Targetting mode for menu %d\n", m_Socket.GetSocket(), context ));
-		return;
-	}
-}
-
-
-
-void CClient::Event_GumpInpValRet( const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_GumpInpValRet");
-	// Text was typed into the gump on the screen.
-	// pEvent->GumpInpValRet
-	// result of addGumpInputBox. GumpInputBox
-	// ARGS:
-	// 	m_Targ_UID = pObj->GetUID();
-	//  m_Targ_Text = verb
-
-	CGrayUID uidItem( pEvent->GumpInpValRet.m_UID );
-	WORD context = pEvent->GumpInpValRet.m_context;	// word context is odd.
-
-	BYTE retcode = pEvent->GumpInpValRet.m_retcode; // 0=canceled, 1=okayed
-	WORD textlen = pEvent->GumpInpValRet.m_textlen; // length of text entered
-	LPCTSTR pszText = pEvent->GumpInpValRet.m_text;
-
-	TCHAR *		pFix;
-	if ( ( pFix = const_cast<TCHAR*>(strchr( pszText, '\n' )) ) )
-		*pFix	= '\0';
-	if ( ( pFix = const_cast<TCHAR*>(strchr( pszText, '\r' )) ) )
-		*pFix	= '\0';
-	if ( ( pFix = const_cast<TCHAR*>(strchr( pszText, '\t' )) ) )
-		*pFix	= ' ';
-
-	if ( GetTargMode() != CLIMODE_INPVAL || uidItem != m_Targ_UID )
-	{
-		// DEBUG_ERR(( "%x:Event_GumpInpValRetIn unexpected input %d!=%d\n", m_Socket.GetSocket(), context, GetTargMode()));
-		SysMessage( "Unexpected text input" );
-		return;
-	}
-
-	ClearTargMode();
-
-	CObjBase * pObj = uidItem.ObjFind();
-	if ( pObj == NULL )
-		return;
-
-	// take action based on the parent context.
-	if (retcode == 1)	// ok
-	{
-		// Properties Dialog, page x
-		// m_Targ_Text = the verb we are dealing with.
-		// m_Prop_UID = object we are after.
-
-		CScript script( m_Targ_Text, pszText );
-		bool fRet = pObj->r_Verb( script, m_pChar );
-		if ( ! fRet )
-		{
-			SysMessagef( "Invalid set: %s = %s", (LPCTSTR) m_Targ_Text, (LPCTSTR) pszText );
-		}
-		else
-		{
-			if ( IsPriv( PRIV_DETAIL ))
-			{
-				SysMessagef( "Set: %s = %s", (LPCTSTR) m_Targ_Text, (LPCTSTR) pszText );
-			}
-			pObj->RemoveFromView(); // weird client thing
-			pObj->Update();
-		}
-
-		g_Log.Event( LOGM_GM_CMDS, "%x:'%s' tweak uid=0%x (%s) to '%s %s'=%d\n",
-			m_Socket.GetSocket(), (LPCTSTR) GetName(),
-			(DWORD) pObj->GetUID(), (LPCTSTR) pObj->GetName(),
-			(LPCTSTR) m_Targ_Text, (LPCTSTR) pszText, fRet );
-	}
 }
 
 bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
@@ -2800,143 +2001,6 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 	EXC_DEBUG_END;
 	return false;
 }
-
-void CClient::Event_GumpDialogRet( const CEvent * pEvent )
-{
-	ADDTOCALLSTACK("CClient::Event_GumpDialogRet");
-	// CLIMODE_DIALOG
-	// initiated by addGumpDialog()
-	// A button was pressed in a gump on the screen.
-	// possibly multiple check boxes.
-
-	// First let's completely decode this packet
-	CGrayUID	uid		( pEvent->GumpDialogRet.m_UID );
-	DWORD	context		= pEvent->GumpDialogRet.m_context;
-	DWORD dwButtonID	= pEvent->GumpDialogRet.m_buttonID;
-
-	// relying on the context given by the gump might be a security problem, much like
-	// relying on the uid returned.
-	// maybe keep a memory for each gump?
-	CObjBase * pObj = uid.ObjFind();
-
-	// Virtue button -- Handleing this here because the packet is a little different and causes exceptions somewhere
-	if ( ( context == CLIMODE_DIALOG_VIRTUE ) && ( (CObjBase *)m_pChar == pObj ) )
-	{
-		if ( !IsSetEF(EF_Minimize_Triggers) )
-		{
-			CChar *pCharViewed = m_pChar;
-			if ( dwButtonID == 1 && pEvent->GumpDialogRet.m_checkQty > 0 )
-			{
-				// when button id is 1, player is trying to view character uid sent as the first check id
-				pCharViewed = CGrayUID(pEvent->GumpDialogRet.m_checkIds[0]).CharFind();
-				if ( pCharViewed == NULL )
-					pCharViewed = m_pChar;
-			}
-
-			CScriptTriggerArgs Args(pCharViewed);
-			Args.m_iN1 = dwButtonID;
-
-			m_pChar->OnTrigger( CTRIG_UserVirtue, (CTextConsole *) m_pChar, &Args );
-		}
-		return;
-	}
-
-#ifdef _DEBUG
-	{
-		CResourceDef *	pRes = g_Cfg.ResourceGetDef(RESOURCE_ID( RES_DIALOG, context ));
-		if ( !pRes )
-			g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)uid, dwButtonID);
-		else
-		{
-			CDialogDef * pDlg = dynamic_cast <CDialogDef*>(pRes);
-			if ( !pDlg )
-				g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)uid, dwButtonID);
-			else
-				g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, (LPCTSTR) pDlg->GetName(), (DWORD)uid, dwButtonID);
-		}
-	}
-#endif
-
-	// Sanity check
-	OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find( ((int)(context)) );
-	if (( itGumpFound != m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 ))
-	{
-		(*itGumpFound).second--;
-	}
-	else
-	{
-		return;
-	}
-
-	// package up the gump response info.
-	CDialogResponseArgs resp;
-
-	DWORD iCheckQty = pEvent->GumpDialogRet.m_checkQty; // this has the total of all checked boxes and radios
-	int i = 0;
-	for ( ; i < iCheckQty; i++ ) // Store the returned checked boxes' ids for possible later use
-	{
-		resp.m_CheckArray.Add( pEvent->GumpDialogRet.m_checkIds[i] );
-	}
-
-	// Find out how many textentry boxes we have that returned data
-	CEvent * pMsg = (CEvent *)(((BYTE*)(pEvent))+(iCheckQty-1)*sizeof(pEvent->GumpDialogRet.m_checkIds[0]));
-	DWORD iTextQty = pMsg->GumpDialogRet.m_textQty;
-	for ( i = 0; i < iTextQty; i++)
-	{
-		// Get the length....no need to store this permanently
-		int lenstr = pMsg->GumpDialogRet.m_texts[0].m_len;
-
-		TCHAR *scratch = Str_GetTemp(); // use this as scratch storage
-
-		// Do a loop and "convert" from unicode to normal ascii
-		CvtNUNICODEToSystem( scratch, SCRIPT_MAX_LINE_LEN, pMsg->GumpDialogRet.m_texts[0].m_utext, lenstr );
-
-		TCHAR *		pFix;
-		if ( ( pFix = strchr( scratch, '\n' ) ) )
-			*pFix	= '\0';
-		if ( ( pFix = strchr( scratch, '\r' ) ) )
-			*pFix	= '\0';
-		if ( ( pFix = strchr( scratch, '\t' ) ) )
-			*pFix	= ' ';
-
-		resp.AddText( pMsg->GumpDialogRet.m_texts[0].m_id, scratch );
-
-		lenstr = sizeof(pMsg->GumpDialogRet.m_texts[0]) + ( lenstr - 1 ) * sizeof(NCHAR);
-		pMsg = (CEvent *)(((BYTE*)pMsg)+lenstr);
-	}
-
-	// ClearTargMode();
-
-	switch ( context ) // This is the page number
-	{
-#ifndef _NEWGUILDSYSTEM
-		case CLIMODE_DIALOG_GUILD: // Guild/Leige/Townstones stuff comes here
-			{
-				CItemStone * pStone = dynamic_cast <CItemStone *> ( m_Targ_UID.ItemFind());
-				if ( !pStone || pStone->OnDialogButton( this, (STONEDISP_TYPE) dwButtonID, resp ))
-					return;
-			}
-			break;
-#endif
-
-		default:
-			break;
-	}
-
-	if ( IsClientKR() )
-	{
-		context = g_Cfg.GetKRDialogMap(context);
-	}
-
-	RESOURCE_ID_BASE	rid	= RESOURCE_ID(RES_DIALOG,context);
-	//
-	// Call the scripted response. Lose all the checks and text.
-	//
-	Dialog_OnButton( rid, dwButtonID, pObj, &resp );
-}
-
-
-
 
 bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript )
 {
@@ -3052,44 +2116,7 @@ void CClient::Event_SingleClick( CGrayUID uid )
 	SysMessagef( "Bogus item uid=0%x?", (DWORD) uid );
 }
 
-void CClient::Event_ClientVersion( const char * pData, int Len )
-{
-	ADDTOCALLSTACK("CClient::Event_ClientVersion");
-	// XCMD_ClientVersion
-	DEBUG_MSG(( "%x:XCMD_ClientVersion %s\n", m_Socket.GetSocket(), pData));
-
-	if ( Str_Check(pData) )
-		return;
-
-	if ( m_reportedCliver )
-		return;
-
-	TCHAR * sTemp = Str_GetTemp();
-	memcpy(sTemp, pData, minimum(Len,20));
-
-	if (strstr(sTemp, "UO:3D"))
-		this->SetClientType(CLIENTTYPE_3D);
-
-	// a new client version change may toggle async mode, it's important
-	// to flush pending data to the client before this happens
-	xFlush();
-
-	int len = Str_GetBare( sTemp, sTemp, minimum(Len,10), " '`-+!\"#$%&()*,/:;<=>?@[\\]^{|}~" );
-	if ( len )
-	{
-		m_reportedCliver = CCrypt::GetVerFromString(sTemp);
-		DEBUG_MSG(( "Getting cliver 0x%x/0x%x\n",m_reportedCliver, (m_reportedCliver&0xFFFFF0) ));
-		if (g_Serv.m_ClientVersion.GetClientVer() && ((m_reportedCliver&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
-			this->addLoginErr(LOGIN_ERR_BAD_CLIVER);
-		if (( m_Crypt.GetClientVer() < 400000 ) && ( m_reportedCliver >= 400000 ) && ( IsResClient(RDS_AOS) ) && ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )) //workaround for a "bug", which sends all items in LOS before processing this packet
-		{
-			DEBUG_MSG(("m_Crypt.GetClientVer()(%x) != m_reportedCliver(%x) == %x\n", m_Crypt.GetClientVer(), m_reportedCliver, (m_Crypt.GetClientVer() != m_reportedCliver)));
-			addAOSPlayerSeeNoCrypt();
-		}
-	}
-}
-
-void CClient::Event_Target( const CEvent * pEvent )
+void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CClient::Event_Target");
 	// XCMD_Target
@@ -3097,151 +2124,91 @@ void CClient::Event_Target( const CEvent * pEvent )
 	// Assume addTarget was called before this.
 	// NOTE: Make sure they can actually validly trarget this item !
 
-	ASSERT(m_pChar);
-	if ( pEvent->Target.m_context != GetTargMode())
+	if (context != GetTargMode())
 	{
-		if ( pEvent->Target.m_context != 0 && ( pEvent->Target.m_x != 0xFFFF || pEvent->Target.m_UID != 0 ) )
-		{
-			// DEBUG_ERR(( "%x: Unrequested target info ?\n", m_Socket.GetSocket()));
-			SysMessage( "Unexpected target info" );
-		}
+		// unexpected context
+		if (context != 0 && (pt.m_x != 0xFFFF || uid.GetPrivateUID() != 0))
+			SysMessage("Unexpected target info");
+
 		return;
 	}
-	if ( pEvent->Target.m_x == 0xFFFF && pEvent->Target.m_UID == 0 )
+
+	if (pt.m_x == 0xFFFF && uid.GetPrivateUID() == 0)
 	{
-		// canceled
+		// cancelled
 		SetTargMode();
 		return;
 	}
 
-	CGrayUID uid( pEvent->Target.m_UID );
-	CPointMap pt( pEvent->Target.m_x, pEvent->Target.m_y, pEvent->Target.m_z, m_pChar->GetTopMap() );
-	ITEMID_TYPE id = (ITEMID_TYPE)(WORD) pEvent->Target.m_id;	// if static tile.
-
 	CLIMODE_TYPE prevmode = GetTargMode();
 	ClearTargMode();
 
-	if ( IsClientKR() && ( pEvent->Target.m_fCheckCrime & 0xA0 ) )
+	if (GetNetState()->isClientKR() && (flags & 0xA0))
 		uid = m_Targ_Last;
 
-	CObjBase * pObj = uid.ObjFind();
-	if ( IsPriv( PRIV_GM ))
+	CObjBase* pTarget = uid.ObjFind();
+	if (IsPriv(PRIV_GM))
 	{
-		if ( uid.IsValidUID() && pObj == NULL )
+		if (uid.IsValidUID() && pTarget == NULL)
 		{
-			addObjectRemoveCantSee( uid, "the target" );
+			addObjectRemoveCantSee(uid, "the target");
 			return;
 		}
 	}
 	else
 	{
-		if ( uid.IsValidUID())
+		if (uid.IsValidUID())
 		{
-			if ( ! m_pChar->CanSee(pObj))
+			if (m_pChar->CanSee(pTarget) == false)
 			{
-				addObjectRemoveCantSee( uid, "the target" );
+				addObjectRemoveCantSee(uid, "the target");
 				return;
 			}
 		}
 		else
 		{
-			// The point must be valid.
-			if ( m_pChar->GetTopDistSight(pt) > UO_MAP_VIEW_SIZE )
-			{
+			// the point must be valid
+			if (m_pChar->GetTopDistSight(pt) > UO_MAP_VIEW_SIZE)
 				return;
-			}
 		}
 	}
 
-	if ( pObj )
+	if (pTarget != NULL)
 	{
-		// Remember the last existing target
+		// remove the last existing target
 		m_Targ_Last = uid;
 
-		// Point inside a container is not really meaningful here.
-		pt = pObj->GetTopLevelObj()->GetTopPoint();
+		// point inside a container is not really meaningful here
+		pt = pTarget->GetTopLevelObj()->GetTopPoint();
 	}
 
-	bool fSuccess = false;
-
-	switch ( prevmode )
+	switch (prevmode)
 	{
 		// GM stuff.
-		case CLIMODE_TARG_OBJ_SET:			fSuccess = OnTarg_Obj_Set( pObj ); break;
-		case CLIMODE_TARG_OBJ_INFO:			fSuccess = OnTarg_Obj_Info( pObj, pt, id );  break;
-		case CLIMODE_TARG_OBJ_FUNC:			fSuccess = OnTarg_Obj_Function( pObj, pt, id );  break;
+		case CLIMODE_TARG_OBJ_SET:			OnTarg_Obj_Set( pTarget ); break;
+		case CLIMODE_TARG_OBJ_INFO:			OnTarg_Obj_Info( pTarget, pt, id );  break;
+		case CLIMODE_TARG_OBJ_FUNC:			OnTarg_Obj_Function( pTarget, pt, id );  break;
 
-		case CLIMODE_TARG_UNEXTRACT:		fSuccess = OnTarg_UnExtract( pObj, pt ); break;
-		case CLIMODE_TARG_ADDITEM:			fSuccess = OnTarg_Item_Add( pObj, pt ); break;
-		case CLIMODE_TARG_LINK:				fSuccess = OnTarg_Item_Link( pObj ); break;
-		case CLIMODE_TARG_TILE:				fSuccess = OnTarg_Tile( pObj, pt );  break;
+		case CLIMODE_TARG_UNEXTRACT:		OnTarg_UnExtract( pTarget, pt ); break;
+		case CLIMODE_TARG_ADDITEM:			OnTarg_Item_Add( pTarget, pt ); break;
+		case CLIMODE_TARG_LINK:				OnTarg_Item_Link( pTarget ); break;
+		case CLIMODE_TARG_TILE:				OnTarg_Tile( pTarget, pt );  break;
 
 		// Player stuff.
-		case CLIMODE_TARG_SKILL:			fSuccess = OnTarg_Skill( pObj ); break;
-		case CLIMODE_TARG_SKILL_MAGERY:     fSuccess = OnTarg_Skill_Magery( pObj, pt ); break;
-		case CLIMODE_TARG_SKILL_HERD_DEST:  fSuccess = OnTarg_Skill_Herd_Dest( pObj, pt ); break;
-		case CLIMODE_TARG_SKILL_POISON:		fSuccess = OnTarg_Skill_Poison( pObj ); break;
-		case CLIMODE_TARG_SKILL_PROVOKE:	fSuccess = OnTarg_Skill_Provoke( pObj ); break;
+		case CLIMODE_TARG_SKILL:			OnTarg_Skill( pTarget ); break;
+		case CLIMODE_TARG_SKILL_MAGERY:     OnTarg_Skill_Magery( pTarget, pt ); break;
+		case CLIMODE_TARG_SKILL_HERD_DEST:  OnTarg_Skill_Herd_Dest( pTarget, pt ); break;
+		case CLIMODE_TARG_SKILL_POISON:		OnTarg_Skill_Poison( pTarget ); break;
+		case CLIMODE_TARG_SKILL_PROVOKE:	OnTarg_Skill_Provoke( pTarget ); break;
 
-		case CLIMODE_TARG_REPAIR:			fSuccess = m_pChar->Use_Repair( uid.ItemFind()); break;
-		case CLIMODE_TARG_PET_CMD:			fSuccess = OnTarg_Pet_Command( pObj, pt ); break;
-		case CLIMODE_TARG_PET_STABLE:		fSuccess = OnTarg_Pet_Stable( uid.CharFind()); break;
+		case CLIMODE_TARG_REPAIR:			m_pChar->Use_Repair( uid.ItemFind() ); break;
+		case CLIMODE_TARG_PET_CMD:			OnTarg_Pet_Command( pTarget, pt ); break;
+		case CLIMODE_TARG_PET_STABLE:		OnTarg_Pet_Stable( uid.CharFind() ); break;
 
-		case CLIMODE_TARG_USE_ITEM:			fSuccess = OnTarg_Use_Item( pObj, pt, id );  break;
-		case CLIMODE_TARG_STONE_RECRUIT:	fSuccess = OnTarg_Stone_Recruit( uid.CharFind() );  break;
-		case CLIMODE_TARG_STONE_RECRUITFULL:fSuccess = OnTarg_Stone_Recruit(uid.CharFind(), true); break;
-		case CLIMODE_TARG_PARTY_ADD:		fSuccess = OnTarg_Party_Add( uid.CharFind() );  break;
-	}
-}
-
-void CClient::AOSPopupMenuAdd( WORD entrytag, WORD textid, WORD flags = 0, WORD color = 0 )
-{
-	ADDTOCALLSTACK("CClient::AOSPopupMenuAdd");
-	
-	if ( m_context_popup <= -1 )
-	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
-		return;
-	}
-
-	if ( m_context_popup < MAX_POPUPS )
-	{
-		if ( IsClientKR() )
-		{
-			if ( flags & POPUPFLAG_COLOR )
-			{
-				flags &= ~POPUPFLAG_COLOR;
-			}
-
-			m_pPopupCur->KRPopup_Display.m_List.m_TextID = (3000000 + textid);
-			m_pPopupCur->KRPopup_Display.m_List.m_EntryTag = entrytag;
-			m_pPopupCur->KRPopup_Display.m_List.m_Flags = flags;
-			++m_context_popup;
-			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + 8 );
-			m_PopupLen += 8;
-		}
-		else
-		{
-			short int length = 0;
-			m_pPopupCur->Popup_Display.m_List.m_EntryTag = entrytag;
-			m_pPopupCur->Popup_Display.m_List.m_TextID = textid;
-			m_pPopupCur->Popup_Display.m_List.m_Flags = flags;
-			length += 6;
-			
-			if ( flags & POPUPFLAG_COLOR )
-			{
-				m_pPopupCur->Popup_Display.m_List.m_Color = color;
-				length += 2;
-			}
-
-			++m_context_popup;
-			m_pPopupCur = (CExtData *)( ((BYTE*) m_pPopupCur ) + length );
-			m_PopupLen += length;
-		}
-	}
-	else
-	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
+		case CLIMODE_TARG_USE_ITEM:			OnTarg_Use_Item( pTarget, pt, id );  break;
+		case CLIMODE_TARG_STONE_RECRUIT:	OnTarg_Stone_Recruit( uid.CharFind() );  break;
+		case CLIMODE_TARG_STONE_RECRUITFULL:OnTarg_Stone_Recruit( uid.CharFind(), true ); break;
+		case CLIMODE_TARG_PARTY_ADD:		OnTarg_Party_Add( uid.CharFind() );  break;
 	}
 }
 
@@ -3257,24 +2224,18 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	if ( m_pChar && !(m_pChar->CanSeeLOS( uObj.ObjFind(), 0x0 )) )
 		return;
 
-	CExtData cmd;
-	m_pPopupCur = &cmd;
-	m_context_popup = 0;
-	m_PopupLen = 7; //size of header of Popup_Display struct
+	if (m_pPopupPacket != NULL)
+	{
+		DEBUG_ERR(("New popup packet being formed before previous one has been released."));
+
+		delete m_pPopupPacket;
+		m_pPopupPacket = NULL;
+	}
+
+	m_pPopupPacket = new PacketDisplayPopup(this, uid);
+
 	CScriptTriggerArgs Args;
-
 	bool fPreparePacket = false;
-
-	if ( IsClientKR() )
-	{
-		cmd.KRPopup_Display.m_unk1 = 2;
-		cmd.KRPopup_Display.m_UID = uid;
-	}
-	else
-	{
-		cmd.Popup_Display.m_unk1 = 1;
-		cmd.Popup_Display.m_UID = uid;
-	}
 
 	if ( uObj.IsItem() )
 	{
@@ -3285,7 +2246,11 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			fPreparePacket = true; // There is no hardcoded stuff for items
 		}
 		else
+		{
+			delete m_pPopupPacket;
+			m_pPopupPacket = NULL;
 			return;
+		}
 	}
 	else if ( uObj.IsChar() )
 	{
@@ -3299,7 +2264,8 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	}
 	else
 	{
-		m_context_popup = -1;
+		delete m_pPopupPacket;
+		m_pPopupPacket = NULL;
 		return;
 	}
 
@@ -3307,10 +2273,10 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	{
 
 		if ( pChar->IsHuman() )
-			AOSPopupMenuAdd(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
+			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
 		if ( pChar == m_pChar )
-			AOSPopupMenuAdd(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
+			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
 
 		if ( pChar->m_pNPC )
 		{
@@ -3318,32 +2284,32 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			{
 				case NPCBRAIN_BANKER:
 					{
-						AOSPopupMenuAdd(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
-						AOSPopupMenuAdd(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
+						m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
+						m_pPopupPacket->addOption(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
 						break;
 					}
 
 				case NPCBRAIN_STABLE:
-					AOSPopupMenuAdd(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
-					AOSPopupMenuAdd(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
 
 				case NPCBRAIN_VENDOR:
 				case NPCBRAIN_HEALER:
-					AOSPopupMenuAdd(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
-					AOSPopupMenuAdd(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
 					break;
 			}
 
 			if ( pChar->NPC_IsOwnedBy( m_pChar, false ) )
 			{
-				AOSPopupMenuAdd(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
-				AOSPopupMenuAdd(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
 			}
 		}
 
@@ -3354,17 +2320,16 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		}
 	}
 	
-	if ( m_context_popup > 0 )
+	if (m_pPopupPacket->getOptionCount() <= 0)
 	{
-		if ( IsClientKR() )
-			cmd.KRPopup_Display.m_NumPopups = m_context_popup;
-		else
-			cmd.Popup_Display.m_NumPopups = m_context_popup;
-
-		addExtData(EXTDATA_Popup_Display, &cmd, m_PopupLen);
+		delete m_pPopupPacket;
+		m_pPopupPacket = NULL;
+		return;
 	}
 
-	m_context_popup = -1;
+	m_pPopupPacket->finalise();
+	m_pPopupPacket->push(this);
+	m_pPopupPacket = NULL;
 }
 
 void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do something after a player selected something from a pop-up menu
@@ -3489,127 +2454,17 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	}
 }
 
-void CClient::Event_AOSItemInfo( int count , const NDWORD * uidList )
-{
-	ADDTOCALLSTACK("CClient::Event_AOSItemInfo");
-	if ( !m_pChar )
-		return;
-
-	if ( IsNoCryptVer(0x400000) )
-	{
-		if ( !IsResClient(RDS_AOS) || !IsAosFlagEnabled( FEATURE_AOS_UPDATE_B ) )
-			return;
-	}
-	else if ( IsClientVer(0x400000) )
-	{
-		if ( !IsResClient(RDS_AOS) || !IsAosFlagEnabled( FEATURE_AOS_UPDATE_B ) )
-			return;
-	}
-	else
-	{
-		return;
-	}
-
-	CObjBase * obj;
-	for ( int i = 0; i < count; i++, obj = NULL )
-	{
-		CGrayUID uid = (DWORD) uidList[i];
-		obj = uid.ObjFind();
-
-		if ( !obj )
-			return;
-
-		if ( m_pChar->CanSee(obj) )
-		{
-			this->addAOSTooltip(obj);
-		}
-	}
-}
-
-void CClient::Event_AllNames3D( CGrayUID uid )
-{
-	ADDTOCALLSTACK("CClient::Event_AllNames3D");
-	if ( !m_pChar || !uid )
-		return;
-
-	CObjBase * pObj = uid.ObjFind();
-	if ( !pObj )
-		return;
-
-	if ( ! m_pChar->CanSee(pObj) )
-		return;
-
-	CCommand cmd;
-	cmd.AllNames3D.m_Cmd = XCMD_AllNames3D;
-	cmd.AllNames3D.m_len = 37;
-	cmd.AllNames3D.m_UID = (DWORD) pObj->GetUID();
-	strcpylen(cmd.AllNames3D.m_name, pObj->GetName(), sizeof(cmd.AllNames3D.m_name));
-
-	xSendPkt(&cmd, cmd.AllNames3D.m_len);
-}
-
-void CClient::Event_BugReport( const NCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang )
+void CClient::Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CClient::Event_BugReport");
 	if ( !m_pChar )
 		return;
 
-	TCHAR szText[MAX_TALK_BUFFER * 2];
-	CvtNUNICODEToSystem( szText, sizeof(szText), pszText, len );
-
 	CScriptTriggerArgs Args(type);
-	Args.m_s1 = szText;
+	Args.m_s1 = pszText;
 	Args.m_VarsLocal.SetStr("LANG", false, lang.GetStr());
 
 	m_pChar->OnTrigger(CTRIG_UserBugReport, m_pChar, &Args);
-}
-
-void CClient::Event_MacroEquipItems( const NDWORD * pItems, int count )
-{
-	ADDTOCALLSTACK("CClient::Event_MacroEquipItems");
-	if ( !m_pChar )
-		return;
-
-	CItem * pItem;
-
-	for (int i = 0; i < count; i++ )
-	{
-		pItem = CGrayUID(pItems[i]).ItemFind();
-		if ( !pItem )
-			continue;
-		
-		if ( pItem->GetTopLevelObj() != m_pChar || pItem->IsItemEquipped() )
-			continue;
-
-		if ( m_pChar->ItemPickup(pItem, pItem->GetAmount()) < 1 )
-			continue;
-
-		m_pChar->ItemEquip(pItem);
-	}
-}
-
-void CClient::Event_MacroUnEquipItems( const NWORD * pLayers, int count )
-{
-	ADDTOCALLSTACK("CClient::Event_MacroUnEquipItems");
-	if ( !m_pChar )
-		return;
-
-	LAYER_TYPE layer;
-	CItem * pItem;
-
-	for (int i = 0; i < count; i++ )
-	{
-		layer = (LAYER_TYPE)(WORD)pLayers[i];
-
-		pItem = m_pChar->LayerFind(layer);
-		if ( !pItem )
-			continue;
-
-		if ( m_pChar->ItemPickup(pItem, pItem->GetAmount()) < 1 )
-			continue;
-
-		m_pChar->ItemBounce(pItem);
-	}
 }
 
 void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
@@ -3655,508 +2510,26 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 
 }
 
-void CClient::Event_HouseDesigner( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
-{
-	ADDTOCALLSTACK("CClient::Event_HouseDesigner");
-	if ( m_pChar == NULL || m_uid != m_pChar->GetUID() )
-		return;
-
-	CItemMultiCustom * pItemMulti = m_pHouseDesign;
-	if ( pItemMulti == NULL )
-	{
-		m_pHouseDesign = NULL;
-		return;
-	}
-
-	switch ( type )
-	{
-		case EXTAOS_HcBackup:
-			pItemMulti->BackupStructure(this);
-			break;
-
-		case EXTAOS_HcRestore:
-			pItemMulti->RestoreStructure(this);
-			break;
-
-		case EXTAOS_HcCommit:
-			pItemMulti->CommitChanges(this);
-			break;
-
-		case EXTAOS_HcDestroyItem:
-			pItemMulti->RemoveItem(this, (ITEMID_TYPE)(WORD)pData->HouseDestroyItem.m_Dispid, pData->HouseDestroyItem.m_PosX, pData->HouseDestroyItem.m_PosY, pData->HouseDestroyItem.m_PosZ);
-			break;
-
-		case EXTAOS_HcPlaceItem:
-			pItemMulti->AddItem(this, (ITEMID_TYPE)(WORD)pData->HousePlaceItem.m_Dispid, pData->HousePlaceItem.m_PosX, pData->HousePlaceItem.m_PosY);
-			break;
-
-		case EXTAOS_HcExit:
-			pItemMulti->EndCustomize();
-			break;
-
-		case EXTAOS_HcPlaceStair:
-			pItemMulti->AddStairs(this, (ITEMID_TYPE)((WORD)pData->HousePlaceStair.m_Dispid + ITEMID_MULTI), pData->HousePlaceStair.m_PosX, pData->HousePlaceStair.m_PosY);
-			break;
-
-		case EXTAOS_HcSynch:
-			pItemMulti->SendStructureTo(this);
-			break;
-
-		case EXTAOS_HcClear:
-			pItemMulti->ResetStructure(this);
-			break;
-
-		case EXTAOS_HcSwitch:
-			pItemMulti->SwitchToLevel(this, pData->HouseSwitchFloor.m_Floor);
-			break;
-			
-		case EXTAOS_HcPlaceRoof:
-			pItemMulti->AddRoof(this, (ITEMID_TYPE)(WORD)pData->HousePlaceRoof.m_Roof, pData->HousePlaceRoof.m_PosX, pData->HousePlaceRoof.m_PosY, pData->HousePlaceRoof.m_PosZ);
-			break;
-
-		case EXTAOS_HcDestroyRoof:
-			pItemMulti->RemoveRoof(this, (ITEMID_TYPE)(WORD)pData->HouseDestroyRoof.m_Roof, pData->HouseDestroyRoof.m_PosX, pData->HouseDestroyRoof.m_PosY, pData->HouseDestroyRoof.m_PosZ);
-			break;
-
-		case EXTAOS_HcRevert:
-			pItemMulti->RevertChanges(this);
-			break;
-
-		default:
-			SysMessagef("Unhandled AOS house designer msg 0x%2X.", type);
-			break;
-	}
-}
-
 //----------------------------------------------------------------------
 
-void CClient::Event_ExtAosData( EXTAOS_TYPE type, const CExtAosData * pData, DWORD m_uid, int len )
-{
-	ADDTOCALLSTACK("CClient::Event_ExtAosData");
-	// XCMD_ExtData = 5 bytes of overhead before this.
-	switch ( type )
-	{
-		case EXTAOS_HcBackup:
-		case EXTAOS_HcRestore:
-		case EXTAOS_HcCommit:
-		case EXTAOS_HcDestroyItem:
-		case EXTAOS_HcPlaceItem:
-		case EXTAOS_HcExit:
-		case EXTAOS_HcPlaceStair:
-		case EXTAOS_HcSynch:
-		case EXTAOS_HcPlaceRoof:
-		case EXTAOS_HcDestroyRoof:
-		case EXTAOS_HcClear:
-		case EXTAOS_HcSwitch:
-		case EXTAOS_HcRevert:
-			Event_HouseDesigner( type, pData, m_uid, len );
-			break;
-
-		case EXTAOS_SpecialMove:
-		{
-			CScriptTriggerArgs args;
-			args.m_iN1 = pData->SpecialMove.m_Ability;
-			m_pChar->OnTrigger(CTRIG_UserSpecialMove, m_pChar, &args);
-		} break;
-
-		case EXTAOS_EquipLastWeapon:
-			break;
-
-		case EXTAOS_GuildButton:
-		{
-			m_pChar->OnTrigger(CTRIG_UserGuildButton, m_pChar, NULL);
-		} break;
-
-		case EXTAOS_QuestButton:
-		{
-			m_pChar->OnTrigger(CTRIG_UserQuestButton, m_pChar, NULL);
-		} break;
-
-		default:
-			SysMessagef( "Unknown AOS extended msg 0x%2X.", type );
-			break;
-	}
-}
-
-void CClient::Event_ExtData( EXTDATA_TYPE type, const CExtData * pData, int len )
-{
-	ADDTOCALLSTACK("CClient::Event_ExtData");
-	// XCMD_ExtData = 5 bytes of overhead before this.
-	switch ( type )
-	{
-		case EXTDATA_ScreenSize:
-			// Sent at start up for the party system ?
-			{
-				DEBUG_MSG(("0x%x - 0x%x (%d-%d)\n", pData->ScreenSize.m_x, pData->ScreenSize.m_y,
-					pData->ScreenSize.m_x, pData->ScreenSize.m_y));
-
-				if ( m_ScreenSize.x != 0 )
-					m_ScreenSize.x = (DWORD)pData->ScreenSize.m_x;
-
-				if ( m_ScreenSize.y != 0 )
-					m_ScreenSize.y = (DWORD)pData->ScreenSize.m_y;
-			}
-			break;
-		case EXTDATA_Lang:
-			// Tell what lang i use.
-			GetAccount()->m_lang.Set( pData->Lang.m_code );
-			break;
-		case EXTDATA_Party_Msg: // = 6
-			// Messages about the party we are in.
-			ASSERT(m_pChar);
-			switch ( pData->Party_Msg_Opt.m_code )
-			{
-				case PARTYMSG_Add:
-					// request to add a new member. len=5. m_msg = 4x0's
-					// CScriptTriggerArgs Args( m_pChar );
-					// OnTrigger( CTRIG_PartyInvite, this, &Args );
-					addTarget( CLIMODE_TARG_PARTY_ADD, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_TARG_WHO ), false, false );
-					break;
-				case PARTYMSG_Disband:
-					if ( m_pChar->m_pParty == NULL )
-						return;
-					m_pChar->m_pParty->Disband( m_pChar->GetUID());
-					break;
-				case PARTYMSG_Remove:
-					// Request to remove this member of the party.
-					if ( m_pChar->m_pParty == NULL )
-						return;
-					if ( len != 5 )
-						return;
-					m_pChar->m_pParty->RemoveMember( (DWORD) pData->Party_Msg_Rsp.m_UID, m_pChar->GetUID());
-					break;
-				case PARTYMSG_MsgMember:
-					// Message a specific member of my party.
-					if ( m_pChar->m_pParty == NULL )
-						return;
-					if ( len < 6 )
-						return;
-					m_pChar->m_pParty->MessageEvent( (DWORD) pData->Party_Msg_Rsp.m_UID, m_pChar->GetUID(), pData->Party_Msg_Rsp.m_msg, len-1 );
-					break;
-				case PARTYMSG_Msg:
-					// Send this message to the whole party.
-					if ( len < 6 )
-						return;
-					if ( m_pChar->m_pParty == NULL )
-					{
-						// No Party !
-						// We must send a response back to the client for this or it will hang !?
-						// CPartyDef::MessageClient( this, m_pChar->GetUID(), (const NCHAR*)( pData->Party_Msg_Opt.m_data ), len-1 );
-						return;
-					}
-					// else
-					// {
-						m_pChar->m_pParty->MessageEvent( (DWORD) 0, m_pChar->GetUID(), (const NCHAR*)( pData->Party_Msg_Opt.m_data ), len-1 );
-					// }
-					break;
-				case PARTYMSG_Option:
-					// set the loot flag.
-					if ( m_pChar->m_pParty == NULL )
-						return;
-					if ( len != 2 )
-						return;
-					m_pChar->m_pParty->SetLootFlag( m_pChar, pData->Party_Msg_Opt.m_data[0] );
-					break;
-				case PARTYMSG_Accept:
-					// We accept or decline the offer of an invite.
-					if ( len != 5 )
-						return;
-					CPartyDef::AcceptEvent( m_pChar, (DWORD) pData->Party_Msg_Rsp.m_UID );
-					break;
-
-				case PARTYMSG_Decline:
-					// decline party invite.
-					// " You notify %s that you do not wish to join the party"
-					CPartyDef::DeclineEvent( m_pChar, (DWORD) pData->Party_Msg_Rsp.m_UID );
-					break;
-
-				default:
-					SysMessagef( "Unknown party system msg %d", pData->Party_Msg_Rsp.m_code );
-					break;
-			}
-			break;
-		case EXTDATA_Arrow_Click:
-			SysMessageDefault( DEFMSG_FOLLOW_ARROW );
-			if ( !IsSetEF(EF_Minimize_Triggers) )
-			{
-				CScriptTriggerArgs Args;
-				Args.m_iN1 = (pData->QuestArrow.m_rightClick > 0? 1:0);
-#ifdef _ALPHASPHERE
-				Args.m_iN2 = m_pChar->GetKeyNum("ARROWQUEST_X", true);
-				Args.m_iN3 = m_pChar->GetKeyNum("ARROWQUEST_Y", true);
-#endif
-
-				m_pChar->OnTrigger(CTRIG_UserQuestArrowClick, m_pChar, &Args);
-			}
-			break;
-
-		case EXTDATA_StatusClose:
-			// The status window has been closed. (need send no more updates)
-			// 4 bytes = uid of the char status closed.
-			break;
-
-		case EXTDATA_Stats_Change:
-			{
-				if ( !this->m_pChar )
-					return;
-
-				if ( !this->m_pChar->m_pPlayer )
-					return;
-
-				if (( pData->Stats_Change.m_stat <= STAT_NONE ) || ( pData->Stats_Change.m_stat >= STAT_BASE_QTY ))
-					return;
-
-				if (( pData->Stats_Change.m_status < SKILLLOCK_UP ) || ( pData->Stats_Change.m_status > SKILLLOCK_LOCK ))
-					return;
-
-				// OSI/EA use different IDs for Stats so we cannot just
-				// simply pass m_stat to Stat_SetLock()
-				STAT_TYPE stat = STAT_NONE;
-				switch (pData->Stats_Change.m_stat)
-				{
-					case 0:
-						stat = STAT_STR;
-						break;
-					case 1:
-						stat = STAT_DEX;
-						break;
-					case 2:
-						stat = STAT_INT;
-						break;
-				}
-				if ( stat != STAT_NONE )
-					this->m_pChar->m_pPlayer->Stat_SetLock(stat,(SKILLLOCK_TYPE)pData->Stats_Change.m_status);
-
-			} break;
-
-		case EXTDATA_Wrestle_DisArm:	// From Client: Wrestling disarm
-		case EXTDATA_Wrestle_Stun:		// From Client: Wrestling stun
-			SysMessageDefault( DEFMSG_WRESTLING_NOGO );
-			break;
-
-		case EXTDATA_Yawn:
-			{
-				static int validAnimations[] =
-				{
-					6, 21, 32, 33,
-					100, 101, 102,
-					103, 104, 105,
-					106, 107, 108,
-					109, 110, 111,
-					112, 113, 114,
-					115, 116, 117,
-					118, 119, 120,
-					121, 123, 124,
-					125, 126, 127,
-					128
-				};
-
-				DWORD anim = (DWORD)pData->ScreenSize.m_x;
-				bool ok = false;
-				for ( int i = 0; !ok && ( i < COUNTOF(validAnimations) ); i++ )
-					ok = ( anim == validAnimations[i] );
-
-				if ( ok )
-					m_pChar->UpdateAnimate((ANIM_TYPE)anim);
-			}
-			break;
-
-		case EXTDATA_Unk15:
-			break;
-
-		case EXTDATA_OldAOSTooltipInfo:
-			{
-				if ( len != 4 )
-					return;
-
-				Event_AOSItemInfo(1, &(pData->OldAOSTooltipRequest.m_uid));
-			} break;
-
-		case EXTDATA_Popup_Request:
-			if ( IsAosFlagEnabled( FEATURE_AOS_POPUP ) && IsResClient( RDS_AOS ) )
-				Event_AOSPopupMenuRequest( (DWORD) pData->Popup_Request.m_UID );
-			break;
-
-		case EXTDATA_Popup_Select:
-			if ( IsAosFlagEnabled( FEATURE_AOS_POPUP ) && IsResClient( RDS_AOS ) )
-				Event_AOSPopupMenuSelect( (DWORD) pData->Popup_Select.m_UID, (WORD) pData->Popup_Select.m_EntryTag );
-			break;
-
-		case EXTDATA_HouseDesignDet:
-		{
-			CGrayUID uid( (DWORD) pData->HouseDesignDetail.m_HouseUID );
-
-			CItem * pItem = uid.ItemFind();
-			if ( pItem == NULL )
-				break;
-
-			CItemMultiCustom * pMulti = dynamic_cast<CItemMultiCustom *>( pItem );
-			if ( pMulti == NULL )
-				break;
-
-			pMulti->SendStructureTo(this);
-			break;
-		}
-
-		case EXTDATA_NewSpellSelect:
-			{
-				WORD iSpell = pData->NewSpellSelect.m_SpellId;
-				// DEBUG_ERR(("Spell selected: %d (%x)\n", iSpell, iSpell));
-
-				if ( IsSetMagicFlags( MAGICF_PRECAST ) )
-				{
-					const CSpellDef *pSpellDef = g_Cfg.GetSpellDef((SPELL_TYPE) iSpell);
-					if (pSpellDef == NULL)
-						return;
-					if ( pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
-					{
-						Cmd_Skill_Magery( (SPELL_TYPE) iSpell, m_pChar );
-					} else {
-						int skill;
-						if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-							return;
-
-						m_tmSkillMagery.m_Spell = (SPELL_TYPE) iSpell;
-						m_pChar->m_atMagery.m_Spell = (SPELL_TYPE) iSpell;	// m_atMagery.m_Spell
-						m_Targ_UID = m_pChar->GetUID();	// default target.
-						m_Targ_PrvUID = m_pChar->GetUID();
-						m_pChar->Skill_Start( (SKILL_TYPE)skill );
-					}
-				}
-				else
-					Cmd_Skill_Magery( (SPELL_TYPE) iSpell, m_pChar );
-			}
-			break;
-
-		case EXTDATA_AntiCheat:
-			{
-				/*
-				if ( IsPriv(PRIV_GM) )
-				{
-					return;
-				}
-
-				if ( (pData->AntiCheat.m_unk >= 0x25) && (pData->AntiCheat.m_unk <= 0x83) )
-				{
-					if ( m_BfAntiCheat.lastvalue != pData->AntiCheat.m_unk )
-					{
-						m_BfAntiCheat.count = 0;
-					}
-					else // something wrong it always change
-					{
-						if ( m_BfAntiCheat.count >= 20 )
-						{
-							g_Log.Event( LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is using 3rd party tools to alter client functionality\n",
-								m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName());
-
-							m_BfAntiCheat.count = 0;
-						}
-						else
-						{
-							m_BfAntiCheat.count++;
-						}
-					}
-
-					m_BfAntiCheat.lastvalue = pData->AntiCheat.m_unk;
-				}
-				else
-				{
-					g_Log.Event( LOGL_WARN|LOGM_CHEAT, "%x:Cheater '%s' is using 3rd party tools to alter client functionality\n",
-						m_Socket.GetSocket(), (LPCTSTR) GetAccount()->GetName());
-				}
-				*/
-			}
-			break;
-
-		case EXTDATA_BandageMacro:
-			{
-				CGrayUID bandageSerial = (DWORD)pData->BandageMacro.m_bandageSerial;
-				CGrayUID targetSerial = (DWORD)pData->BandageMacro.m_targetSerial;
-
-				CItem * pBandage = bandageSerial.ItemFind();
-				CObjBase * pTarget = targetSerial.ObjFind();
-
-				if ( !pBandage || !pTarget )
-					return;
-
-				// Check the client can see the bandage that they're
-				// trying to use.
-				if ( !m_pChar->CanSee( pBandage ) )
-				{
-					addObjectRemoveCantSee( bandageSerial, "the target" );
-					return;
-				}
-
-				// Check the client is capable of using the bandage
-				if ( ! m_pChar->CanUse( pBandage, false ))
-					return;
-
-				// Check the bandage is in the possession of the client
-				if ( pBandage->GetTopLevelObj() != m_pChar )
-					return;
-
-				// Make sure the macro isn't used for other types of items.
-				if ( !pBandage->IsType( IT_BANDAGE ) )
-					return;
-
-				// Clear previous Target
-				SetTargMode();
-
-				// Should we simulate the dclick?
-				// m_Targ_UID = pBandage->GetUID();
-				// CScriptTriggerArgs extArgs(1); // Signal we're from the macro
-				// if ( pBandage->OnTrigger( ITRIG_DCLICK, m_pChar, &extArgs ) == TRIGRET_RET_TRUE )
-				// {
-				// 		return true;
-				// }
-				// SetTargMode();
-
-				// Prepare targeting information
-				m_Targ_UID = pBandage->GetUID();
-				m_tmUseItem.m_pParent = pBandage->GetParent();
-				SetTargMode( CLIMODE_TARG_USE_ITEM );
-
-				CEvent Event;
-				CPointMap pt = pTarget->GetUnkPoint();
-				Event.Target.m_context = GetTargMode();
-				Event.Target.m_x = pt.m_x;
-				Event.Target.m_y = pt.m_y;
-				Event.Target.m_z = pt.m_z;
-				Event.Target.m_UID = pTarget->GetUID();
-				Event.Target.m_id = 0;
-
-				Event_Target( &Event );
-			}
-			break;
-
-		default:
-			SysMessagef( "Unknown extended msg %d.", type );
-			break;
-	}
-}
-
-void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
+void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 {
 	ADDTOCALLSTACK("CClient::Event_ExtCmd");
-	// parse the args.
-	TCHAR szTmp[ MAX_TALK_BUFFER ];
-	strcpylen( szTmp, pszName, sizeof(szTmp));
-
 
 	if ( m_pChar )
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers) )
 		{
-			CScriptTriggerArgs	Args( szTmp );
+			CScriptTriggerArgs	Args( pszName );
 			Args.m_iN1	= type;
 			if ( m_pChar->OnTrigger( CTRIG_UserExtCmd, m_pChar, &Args ) == TRIGRET_RET_TRUE )
 				return;
-			strcpy( szTmp, Args.m_s1 );
+			strcpy( pszName, Args.m_s1 );
 		}
 	}
 
 	TCHAR * ppArgs[2];
-	Str_ParseCmds( szTmp, ppArgs, COUNTOF(ppArgs), " " );
+	Str_ParseCmds( pszName, ppArgs, COUNTOF(ppArgs), " " );
 	switch ( type )
 	{
 		case EXTCMD_OPEN_SPELLBOOK: // 67 = open spell book if we have one.
@@ -4184,7 +2557,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				m_pChar->UpdateAnimate( ANIM_SALUTE );
 			else
 			{
-				DEBUG_ERR(( "%x:Event Animate '%s'\n", m_Socket.GetSocket(), ppArgs[0] ));
+				DEBUG_ERR(( "%x:Event Animate '%s'\n", GetSocketID(), ppArgs[0] ));
 			}
 			break;
 
@@ -4199,11 +2572,11 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 				CObjBase * pObj = uid.ObjFind();
 				if ( pObj )
 				{
-					DEBUG_ERR(( "%x:Event Autotarget '%s' '%s'\n", m_Socket.GetSocket(), pObj->GetName(), ppArgs[1] ));
+					DEBUG_ERR(( "%x:Event Autotarget '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1] ));
 				}
 				else
 				{
-					DEBUG_ERR(( "%x:Event Autotarget UNK '%s' '%s'\n", m_Socket.GetSocket(), ppArgs[0], ppArgs[1] ));
+					DEBUG_ERR(( "%x:Event Autotarget UNK '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1] ));
 				}
 			}
 			break;
@@ -4269,59 +2642,28 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, const char * pszName )
 			break;
 
 		default:
-			DEBUG_ERR(( "%x:Event_ExtCmd unk %d, '%s'\n", m_Socket.GetSocket(), type, pszName ));
+			DEBUG_ERR(( "%x:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName ));
 	}
 }
 
 // ---------------------------------------------------------------------
-
-bool CClient::xCheckMsgSize0( int len )
-{
-	ADDTOCALLSTACK("CClient::xCheckMsgSize0");
-	if ( ! len || len > sizeof( CEvent ))
-		return( false );	// junk
-	return true;
-}
-
-
-bool CClient::xCheckMsgSize( int len )
-{
-	ADDTOCALLSTACK("CClient::xCheckMsgSize");
-	if ( !xCheckMsgSize0( len ) )
-		return false;
-	// Is there enough data from client to process this packet ?
-	m_bin_msg_len = len;
-	return( m_bin.GetDataQty() >= len );
-}
-
-#define RETURN_FALSE() 		\
-{				\
-	m_bin_ErrMsg = (XCMD_TYPE) pEvent->Default.m_Cmd;	\
-	return 0;		\
-}
 
 bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
 	
 	EXC_TRY("packet filter");
-	if ( g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
+	if ( iLen && g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
 	{
 		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
 		enum TRIGRET_TYPE trigReturn;
 		char idx[5];
 
-		Args.m_s1 = m_PeerName.GetAddrStr();
+		Args.m_s1 = GetPeerStr();
 		Args.m_pO1 = this; // Yay for ARGO.SENDPACKET
 		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
-		int bytes;
-		if ( iLen )
-			bytes = iLen;
-		else
-		{
-			bytes = minimum(m_bin.GetDataQty(), MAX_BUFFER);
-		}
+		int bytes = iLen;
 		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
 		char *zBuf = Str_GetTemp();
 
@@ -4354,687 +2696,3 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 	EXC_CATCH;
 	return false;
 }
-
-int CClient::xDispatchMsg()
-{
-	ADDTOCALLSTACK("CClient::xDispatchMsg");
-	EXC_TRY("DispatchMsg");
-
-#ifdef _DUMPSUPPORT
-	if ( ! g_Cfg.m_sDumpAccPackets.IsEmpty() )
-	{
-		EXC_SET("DumpedClient Packets");
-		if ( ! strnicmp( GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( GetAccount()->GetName() ) ) )
-			xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
-	}
-#else
-	#if _PACKETDUMP
-		DEBUG_ERR(("xDispatchMsg\n"));
-		xDumpPacket(m_bin.GetDataQty(), m_bin.RemoveDataLock());
-	#endif
-#endif
-
-	EXC_SET("check message size");
-	if ( !xCheckMsgSize(1) )	// just get the command
-		return 0;
-
-	EXC_SET("remove data");
-	const CEvent * pEvent = (const CEvent *) m_bin.RemoveDataLock();
-
-	//DEBUG_ERR(("Packet: 0x%x\n", pEvent->Default.m_Cmd));
-
-	//	Packet filtering - check if any function triggeting is installed
-	//		allow skipping the packet which we do not wish to get
-	EXC_SET("packet filter");
-	if ( xPacketFilter(pEvent) )
-		return -1;
-
-	EXC_SET("packet parsing");
-	if ( pEvent->Default.m_Cmd >= XCMD_QTY ) // bad packet type ?
-	{
-		DEBUG_ERR(( "Unimplemented command %d\n", pEvent->Default.m_Cmd ) );
-#ifdef _PACKETDUMP
-		xDumpPacket( minimum(m_bin.GetDataQty(), MAX_BUFFER), m_bin.RemoveDataLock() );
-#endif
-		RETURN_FALSE();
-	}
-
-#ifdef _PACKET_LEN_CHECK
-	// check the packet size first.
-	if ( pEvent->Default.m_Cmd < XCMD_QTY )
-	{
-		WORD pLen = CCrypt::GetPacketSize(pEvent->Default.m_Cmd);
-		if ( pLen >= 0x8000 )
-		{
-			if ( !xCheckMsgSize(3) ) // id + len
-				return 0;
-		}
-		else
-		{
-			if ( !xCheckMsgSize(pLen) )
-				return 0;
-		}
-	}
-#endif
-
-	if ( pEvent->Default.m_Cmd == XCMD_Ping )
-	{
-		EXC_SET("ping");
-		// Ping from client. Respond with the same packet id & code
-		if ( ! xCheckMsgSize( sizeof( pEvent->Ping )))
-			RETURN_FALSE();
-		addPing( pEvent->Ping.m_bCode );
-		return 1;
-	}
-
-	// login server or a game server that has not yet logged in.
-	if ( GetConnectType() != CONNECT_GAME || ! GetAccount() )
-	{
-		switch ( pEvent->Default.m_Cmd )
-		{
-			case XCMD_ServersReq: // First Login
-			{
-				EXC_SET("not logged - server list");
-				if ( ! xCheckMsgSize( sizeof( pEvent->ServersReq )))
-					RETURN_FALSE();
-				LOGIN_ERR_TYPE lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
-				addLoginErr(lErr);
-				return( lErr == LOGIN_SUCCESS );
-			}
-			case XCMD_ServerSelect:// Server Select - relay me to the server.
-				EXC_SET("not logged - login relay");
-				if ( ! xCheckMsgSize( sizeof( pEvent->ServerSelect )))
-					RETURN_FALSE();
-				return( Login_Relay( pEvent->ServerSelect.m_select ));
-			case XCMD_CharListReq: // Second Login to select char
-			{
-				EXC_SET("not logged - char list req");
-				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
-					RETURN_FALSE();
-				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) == LOGIN_SUCCESS);
-			}
-			case XCMD_Spy:
-			case XCMD_Spy2:
-			{
-				EXC_SET("not logged - spy");
-				int wSpyLen = ( pEvent->Default.m_Cmd == XCMD_Spy ) ? CCrypt::GetPacketSize(XCMD_Spy) : minimum(MAX_BUFFER,maximum(CCrypt::GetPacketSize(XCMD_Spy2), pEvent->Spy2.m_len));
-				if ( !xCheckMsgSize( wSpyLen ) )
-				{
-					if ( xCheckMsgSize0( wSpyLen ) )
-					{
-						m_bin_msg_len = m_bin.GetDataQty();
-					}
-					else
-						RETURN_FALSE();
-				}
-				return 1;
-			}
-			case XCMD_War:
-			{
-				EXC_SET("not logged - war");
-				if ( !xCheckMsgSize( sizeof( pEvent->War ) ) )
-					RETURN_FALSE();
-				return 1;
-			}
-			default:
-			{
-				EXC_SET("not logged - anything");
-
-				DEBUG_WARN(( "%x:Packet (0x%x) received, but it should not be here.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
-				if ( ! xCheckMsgSize( sizeof( pEvent->Default ) ) )
-					RETURN_FALSE();
-				return 1;	// Should be -1 since any weird packet in login sequence can screw the normal login process
-			}
-		}
-
-		RETURN_FALSE();
-	}
-
-	/////////////////////////////////////////////////////
-	// We should be encrypted below here. CONNECT_GAME
-	// Get messages from the client.
-	EXC_SET("game packet");
-	switch ( pEvent->Default.m_Cmd )
-	{
-		case XCMD_Create: // Character Create
-			EXC_SET("create char");
-			// Removed support for 1.25 client
-			if ( ! xCheckMsgSize( sizeof( pEvent->Create )))
-				RETURN_FALSE();
-			Setup_CreateDialog( pEvent );
-			return 1;
-		case XCMD_CreateNew: // Character Create (UOKR)
-			EXC_SET("create char new");
-			if ( !xCheckMsgSize( 3 ))
-				RETURN_FALSE();
-			if ( !xCheckMsgSize( pEvent->CreateNew.m_len ))
-				RETURN_FALSE();
-			Setup_CreateDialog(pEvent);
-			return 1;
-		case XCMD_CharDelete: // Character Delete
-			EXC_SET("delete char");
-			if ( ! xCheckMsgSize( sizeof( pEvent->CharDelete )))
-				RETURN_FALSE();
-			addDeleteErr( Setup_Delete( pEvent->CharDelete.m_slot ));
-			return 1;
-		case XCMD_CharPlay: // Character Select
-			EXC_SET("select char");
-			if ( ! xCheckMsgSize( sizeof( pEvent->CharPlay )))
-				RETURN_FALSE();
-			addLoginErr(Setup_Play( pEvent->CharPlay.m_slot ));
-			return 1;
-		case XCMD_TipReq: // Get Tip
-			EXC_SET("get tip");
-			if ( ! xCheckMsgSize( sizeof( pEvent->TipReq )))
-				RETURN_FALSE();
-			Event_Tips( pEvent->TipReq.m_index + 1 );
-			return 1;
-		case XCMD_LogoutStatus: // Logout Confirm
-			EXC_SET("logout confirm");
-			if ( ! xCheckMsgSize( sizeof( pEvent->LogoutStatus )))
-				RETURN_FALSE();
-			return 1;
-		case XCMD_ConfigFile: // ConfigFile NOT SUPPORTED
-			EXC_SET("config file");
-			if ( ! xCheckMsgSize( 3 ))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize(pEvent->ConfigFile.m_len ))
-				RETURN_FALSE();
-			return 1;
-		case XCMD_KRClientType:
-			EXC_SET("charlist update");
-			if ( ! xCheckMsgSize( sizeof( pEvent->KRClientType )))
-				RETURN_FALSE();
-
-			// this packet is not entirely reliable, since it depends on the KR feature
-			// flag being enabled otherwise the client won't send it
-			SetClientType((GAMECLIENT_TYPE)((DWORD)pEvent->KRClientType.m_clientType));
-			return 1;
-	}
-
-	// must have a logged in char to use any other messages.
-	if ( m_pChar == NULL )
-	{
-		EXC_SET("no char");
-
-		switch ( pEvent->Default.m_Cmd )
-		{
-			case XCMD_CharListReq: // Second Login to select char, only valid if there is no char selected yet
-			{
-				EXC_SET("not logged - char list req");
-				if ( ! xCheckMsgSize( sizeof( pEvent->CharListReq )))
-					RETURN_FALSE();
-				return( Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, false ) == LOGIN_SUCCESS);
-			}
-			case XCMD_ExtData:
-				EXC_SET("no char - ext data");
-				if ( ! xCheckMsgSize(3))
-					RETURN_FALSE();
-				if ( ! xCheckMsgSize( pEvent->ExtData.m_len ))
-					RETURN_FALSE();
-				return 1;
-			case XCMD_ExtAosData:
-				EXC_SET("no char - ext aos");
-				if ( ! xCheckMsgSize(3))
-					RETURN_FALSE();
-				if ( ! xCheckMsgSize( pEvent->ExtAosData.m_len ))
-					RETURN_FALSE();
-				return 1;
-		}
-		RETURN_FALSE();
-	}
-
-	//////////////////////////////////////////////////////
-	// We are now playing.
-
-	switch ( pEvent->Default.m_Cmd )
-	{
-		case XCMD_Walk: // Walk
-			EXC_SET("walk");
-			if ( ! xCheckMsgSize(sizeof(pEvent->Walk)))
-				RETURN_FALSE();
-			Event_Walking( pEvent->Walk.m_dir, pEvent->Walk.m_count, pEvent->Walk.m_cryptcode );
-			break;
-		case XCMD_WalkNew: // Walk (new version, since SA)
-			EXC_SET("walk_sa");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->WalkNew.m_len ))
-				RETURN_FALSE();
-			Event_Walking( pEvent->WalkNew.m_dir, pEvent->WalkNew.m_count, 0 );
-			break;
-		case XCMD_WalkUnknown: // Unknown, possibly a new walk ack (since SA)
-			EXC_SET("walk_unk");
-			if ( ! xCheckMsgSize(sizeof(pEvent->WalkUnknown)))
-				RETURN_FALSE();
-			// appears to be safe to ignore this
-			break;
-		case XCMD_Talk: // Speech or at least text was typed.
-			EXC_SET("talk");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize(pEvent->Talk.m_len ))
-				RETURN_FALSE();
-			Event_Talk( pEvent->Talk.m_text, pEvent->Talk.m_wHue, (TALKMODE_TYPE)( pEvent->Talk.m_mode ));
-			break;
-		case XCMD_Attack: // Attack
-			EXC_SET("attack");
-			if ( ! xCheckMsgSize( sizeof( pEvent->Click )))
-				RETURN_FALSE();
-			Event_Attack( (DWORD) pEvent->Click.m_UID );
-			break;
-		case XCMD_DClick:// Doubleclick
-			EXC_SET("dclick");
-			if ( ! xCheckMsgSize( sizeof( pEvent->Click )))
-				RETURN_FALSE();
-			Event_DoubleClick( ((DWORD)(pEvent->Click.m_UID)) &~ UID_F_RESOURCE, ((DWORD)(pEvent->Click.m_UID)) & UID_F_RESOURCE, true );
-			break;
-		case XCMD_ItemPickupReq: // Pick up Item
-			EXC_SET("pickup item");
-			if ( ! xCheckMsgSize( sizeof( pEvent->ItemPickupReq )))
-				RETURN_FALSE();
-			Event_Item_Pickup( (DWORD) pEvent->ItemPickupReq.m_UID, pEvent->ItemPickupReq.m_amount );
-			break;
-		case XCMD_ItemDropReq: // Drop Item
-			EXC_SET("drop item");
-			if ( IsClientVersion(0x0600018) || m_reportedCliver >= 0x0600018 || IsClientKR() )
-			{
-				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReqNew ) ) )
-					RETURN_FALSE();
-			}
-			else
-			{
-				if ( ! xCheckMsgSize( sizeof( pEvent->ItemDropReq )))
-					RETURN_FALSE();
-			}
-			Event_Item_Drop(pEvent);
-			break;
-		case XCMD_Click: // Singleclick
-			EXC_SET("singleclick");
-			if ( ! xCheckMsgSize( sizeof( pEvent->Click )))
-				RETURN_FALSE();
-			Event_SingleClick( (DWORD) pEvent->Click.m_UID );
-			break;
-		case XCMD_ExtCmd: // Ext. Command
-			EXC_SET("ext cmd");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->ExtCmd.m_len ))
-				RETURN_FALSE();
-			Event_ExtCmd( (EXTCMD_TYPE) pEvent->ExtCmd.m_type, pEvent->ExtCmd.m_name );
-			break;
-		case XCMD_ItemEquipReq: // Equip Item
-			EXC_SET("equip item");
-			if ( ! xCheckMsgSize( sizeof( pEvent->ItemEquipReq )))
-				RETURN_FALSE();
-			Event_Item_Equip(pEvent);
-			break;
-		case XCMD_WalkAck: // Resync Request
-			EXC_SET("resync req");
-			if ( ! xCheckMsgSize( sizeof( pEvent->WalkAck )))
-				RETURN_FALSE();
-			addReSync();
-			break;
-		case XCMD_DeathMenu:	// DeathOpt (un)Manifest ghost (size anomoly)
-			EXC_SET("death menu");
-			if ( ! xCheckMsgSize(2))
-				RETURN_FALSE();
-			if ( ! Event_DeathOption( (DEATH_MODE_TYPE) pEvent->DeathMenu.m_mode, pEvent ))
-				RETURN_FALSE();
-			break;
-		case XCMD_CharStatReq: // Status Request
-			EXC_SET("status req");
-			if ( ! xCheckMsgSize( sizeof( pEvent->CharStatReq )))
-				RETURN_FALSE();
-			if ( pEvent->CharStatReq.m_type == 4 )
-			{
-				addCharStatWindow( (DWORD) pEvent->CharStatReq.m_UID, true );
-			}
-			if ( pEvent->CharStatReq.m_type == 5 )
-				addSkillWindow(SKILL_QTY);
-			break;
-		case XCMD_Skill:	// Skill locking.
-			EXC_SET("skill lock");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->Skill.m_len ))
-				RETURN_FALSE();
-			Event_Skill_Locks(pEvent);
-			break;
-		case XCMD_VendorBuy:	// Buy item from vendor.
-			EXC_SET("vendor buy");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->VendorBuy.m_len ))
-				RETURN_FALSE();
-			Event_VendorBuy( (DWORD) pEvent->VendorBuy.m_UIDVendor, pEvent );
-			break;
-		case XCMD_MapEdit:	// plot course on map.
-			EXC_SET("plot map course");
-			if ( ! xCheckMsgSize( sizeof( pEvent->MapEdit )))
-				RETURN_FALSE();
-			Event_MapEdit( (DWORD) pEvent->MapEdit.m_UID, pEvent );
-			break;
-		case XCMD_BookPage: // Read/Change Book
-			EXC_SET("read/edit book");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->BookPage.m_len ))
-				RETURN_FALSE();
-			Event_Book_Page( (DWORD) pEvent->BookPage.m_UID, pEvent );
-			break;
-		case XCMD_Options: // Options set UNSUPPORTED
-			EXC_SET("set opt");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->Options.m_len ))
-				RETURN_FALSE();
-			DEBUG_MSG(( "%x:XCMD_Options len=%d\n", m_Socket.GetSocket(), pEvent->Options.m_len ));
-			break;
-		case XCMD_Target: // Targeting
-			EXC_SET("target");
-			if ( ! xCheckMsgSize( sizeof( pEvent->Target )))
-				RETURN_FALSE();
-			Event_Target( pEvent );
-			break;
-		case XCMD_SecureTrade: // Secure trading
-			EXC_SET("secure trade");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->SecureTrade.m_len ))
-				RETURN_FALSE();
-			Event_SecureTrade( (DWORD) pEvent->SecureTrade.m_UID, pEvent );
-			break;
-		case XCMD_BBoard: // BBoard Request.
-			EXC_SET("bboard");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->BBoard.m_len ))
-				RETURN_FALSE();
-			Event_BBoardRequest( (DWORD) pEvent->BBoard.m_UID, pEvent );
-			break;
-		case XCMD_War: // Combat Mode
-			EXC_SET("combat mode");
-			if ( ! xCheckMsgSize( sizeof( pEvent->War )))
-				RETURN_FALSE();
-			Event_CombatMode( pEvent->War.m_warmode );
-			break;
-		case XCMD_CharName: // Rename Character(pet)
-			{
-				EXC_SET("rename pet");
-				if ( ! xCheckMsgSize( sizeof( pEvent->CharName )))
-					RETURN_FALSE();
-				char *zCharName = Str_GetTemp();
-				strcpylen(zCharName, pEvent->CharName.m_charname, MAX_NAME_SIZE);
-				Event_SetName((DWORD)pEvent->CharName.m_UID, zCharName);
-			}
-			break;
-		case XCMD_MenuChoice: // Menu Choice
-				EXC_SET("menu choice");
-			if ( ! xCheckMsgSize( sizeof( pEvent->MenuChoice )))
-				RETURN_FALSE();
-			Event_MenuChoice(pEvent);
-			break;
-		case XCMD_BookOpen:	// Change a books title/author.
-			EXC_SET("open book");
-			if ( ! xCheckMsgSize( sizeof(pEvent->BookOpen)))
-				RETURN_FALSE();
-			Event_Book_Title((DWORD)pEvent->BookOpen.m_UID, pEvent->BookOpen.m_title, pEvent->BookOpen.m_author);
-			break;
-		case XCMD_DyeVat: // Color Select Dialog
-			EXC_SET("color dialog");
-			if ( ! xCheckMsgSize( sizeof( pEvent->DyeVat )))
-				RETURN_FALSE();
-			Event_Item_Dye( (DWORD) pEvent->DyeVat.m_UID, pEvent->DyeVat.m_wHue );
-			break;
-		case XCMD_Prompt: // Response to console prompt.
-			EXC_SET("console resp");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->Prompt.m_len ))
-				RETURN_FALSE();
-			Event_PromptResp( pEvent->Prompt.m_text, pEvent->Prompt.m_len-sizeof(pEvent->Prompt), (DWORD)pEvent->Prompt.m_serial, (DWORD)pEvent->Prompt.m_prompt, pEvent->Prompt.m_type);
-			break;
-		case XCMD_PromptUNICODE: // Response to console prompt in unicode.
-			EXC_SET("console resp");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->PromptUNICODE.m_len ))
-				RETURN_FALSE();
-			Event_PromptRespUNICODE( pEvent );
-			break;
-		case XCMD_HelpPage: // GM Page (i want to page a gm!)
-			{
-				EXC_SET("help page");
-				if ( ! xCheckMsgSize( sizeof( pEvent->HelpPage )))
-					RETURN_FALSE();
-				if ( !m_pChar )
-					return 0;
-				CScript script("HelpPage");
-				m_pChar->r_Verb( script, this );
-				break;
-			}
-		case XCMD_VendorSell: // Vendor Sell
-			EXC_SET("vendor sell");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->VendorSell.m_len ))
-				RETURN_FALSE();
-			Event_VendorSell( (DWORD) pEvent->VendorSell.m_UIDVendor, pEvent );
-			break;
-		case XCMD_Scroll:	// Scroll Closed
-			EXC_SET("scroll");
-			if ( !xCheckMsgSize( sizeof(pEvent->Scroll)) )
-				RETURN_FALSE();
-			// void
-			break;
-		case XCMD_GumpInpValRet:	// Gump text input
-			EXC_SET("gumptext input");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->GumpInpValRet.m_len ))
-				RETURN_FALSE();
-			Event_GumpInpValRet(pEvent);
-			break;
-		case XCMD_TalkUNICODE:	// Talk unicode.
-			EXC_SET("unicode talk");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize(pEvent->TalkUNICODE.m_len ))
-				RETURN_FALSE();
-			Event_TalkUNICODE(pEvent);
-			break;
-		case XCMD_GumpDialogRet:	// Gump menu.
-			EXC_SET("dialog ret");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->GumpDialogRet.m_len ))
-				RETURN_FALSE();
-			Event_GumpDialogRet(pEvent);
-			break;
-		case XCMD_ChatText:	// ChatText
-			EXC_SET("chat text");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->ChatText.m_len ))
-				RETURN_FALSE();
-			Event_ChatText( pEvent->ChatText.m_utext, pEvent->ChatText.m_len, CLanguageID( pEvent->ChatText.m_lang ));
-			break;
-		case XCMD_Chat: // Chat
-			EXC_SET("chat");
-			if ( ! xCheckMsgSize( sizeof( pEvent->Chat)))
-				RETURN_FALSE();
-			Event_ChatButton(pEvent->Chat.m_uname);
-			break;
-		case XCMD_ToolTipReq:	// Tool Tip
-			EXC_SET("tooltip");
-			if ( ! xCheckMsgSize( sizeof( pEvent->ToolTipReq )))
-				RETURN_FALSE();
-			Event_ToolTip( (DWORD) pEvent->ToolTipReq.m_UID );
-			break;
-		case XCMD_CharProfile:	// Get Character Profile.
-			EXC_SET("profile");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->CharProfile.m_len ))
-				RETURN_FALSE();
-			Event_Profile( pEvent->CharProfile.m_WriteMode, (DWORD) pEvent->CharProfile.m_UID, pEvent );
-			break;
-		case XCMD_MailMsg:
-			EXC_SET("mailmsg");
-			if ( ! xCheckMsgSize( sizeof(pEvent->MailMsg)))
-				RETURN_FALSE();
-			Event_MailMsg( (DWORD) pEvent->MailMsg.m_uid1, (DWORD) pEvent->MailMsg.m_uid2 );
-			break;
-		case XCMD_ClientVersion:	// Client Version string packet
-			EXC_SET("client version");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize(pEvent->ClientVersion.m_len))
-				RETURN_FALSE();
-			Event_ClientVersion( pEvent->ClientVersion.m_text, pEvent->ClientVersion.m_len );
-			break;
-		case XCMD_ViewRange:
-			EXC_SET("view range");
-			if ( !xCheckMsgSize(2) )
-				RETURN_FALSE();
-			if ( !xCheckMsgSize(sizeof(pEvent->ViewRange)) )
-				RETURN_FALSE();
-			// void
-			return 1;
-		case XCMD_ExtData:	// Add someone to the party system.
-			EXC_SET("ext data");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->ExtData.m_len ))
-				RETURN_FALSE();
-			Event_ExtData( (EXTDATA_TYPE)(WORD) pEvent->ExtData.m_type, &(pEvent->ExtData.m_u), pEvent->ExtData.m_len-5 );
-			break;
-		case XCMD_ExtAosData:	// Add someone to the party system.
-			EXC_SET("ext aos");
-			if ( ! xCheckMsgSize(3))
-				RETURN_FALSE();
-			if ( ! xCheckMsgSize( pEvent->ExtAosData.m_len ))
-				RETURN_FALSE();
-			Event_ExtAosData( (EXTAOS_TYPE)(WORD) pEvent->ExtAosData.m_type, &(pEvent->ExtAosData.m_u), (DWORD) pEvent->ExtAosData.m_uid, pEvent->ExtAosData.m_len-9 );
-			break;
-
-		case XCMD_AOSTooltip:
-			{
-				EXC_SET("tooltip request");
-				if ( ! xCheckMsgSize(3))
-					RETURN_FALSE();
-				if ( ! xCheckMsgSize( pEvent->AosItemInfoRequest.m_len ))
-					RETURN_FALSE();
-				WORD wLen = ((WORD) pEvent->AosItemInfoRequest.m_len) - 3;
-				if ( wLen < 0 || (wLen%4) != 0 )
-					RETURN_FALSE();
-				Event_AOSItemInfo( (int)(wLen/4), (NDWORD *) &pEvent->AosItemInfoRequest.m_uid );
-			} break;
-
-		case XCMD_AllNames3D:
-			{
-				EXC_SET("allnames 3D");
-				if ( ! xCheckMsgSize(3))
-					RETURN_FALSE();
-				if ( ! xCheckMsgSize( pEvent->AllNames3D.m_len ))
-					RETURN_FALSE();
-				Event_AllNames3D( (DWORD) pEvent->AllNames3D.m_UID );
-			} break;
-
-		case XCMD_BugReport:
-			{
-				EXC_SET("bugreport");
-				if ( ! xCheckMsgSize(3))
-					RETURN_FALSE();
-				if ( ! xCheckMsgSize( pEvent->BugReport.m_len ))
-					RETURN_FALSE();
-
-				Event_BugReport( pEvent->BugReport.m_utext, pEvent->BugReport.m_len, (BUGREPORT_TYPE)(WORD)pEvent->BugReport.m_type, CLanguageID( pEvent->BugReport.m_Language ) );
-			} break;
-
-		case XCMD_MacroEquipItem:
-			{
-				EXC_SET("macro - equip items");
-				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
-					RETURN_FALSE();
-
-				Event_MacroEquipItems(pEvent->MacroEquipItems.m_items, pEvent->MacroEquipItems.m_count);
-			} break;
-
-		case XCMD_MacroUnEquipItem:
-			{
-				EXC_SET("macro - unequip items");
-				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-				if ( !xCheckMsgSize(pEvent->MacroEquipItems.m_len) )
-					RETURN_FALSE();
-
-				Event_MacroUnEquipItems(pEvent->MacroUnEquipItems.m_layers, pEvent->MacroUnEquipItems.m_count);
-			} break;
-
-		case XCMD_KRClientType:
-			{
-				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-				if ( !xCheckMsgSize(pEvent->KRClientType.m_len) )
-					RETURN_FALSE();
-
-				SetClientType((GAMECLIENT_TYPE)((DWORD)pEvent->KRClientType.m_clientType));
-			} break;
-
-		case XCMD_UseHotbar:
-			{
-				if ( !xCheckMsgSize(11) )
-					RETURN_FALSE();
-				if (( pEvent->UseHotbar.m_One != 0x01 ) || ( pEvent->UseHotbar.m_One != 0x06 ))
-					RETURN_FALSE();
-
-				Event_UseToolbar(pEvent->UseHotbar.m_Type, pEvent->UseHotbar.m_ObjectUID);
-			} break;
-
-		case XCMD_HighlightUIRemove:
-			{
-				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-
-				DEBUG_WARN(("%x:Unimplemented KR packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
-			} break;
-
-		case XCMD_CrashReport:
-			{
-				if ( !xCheckMsgSize(3) )
-					RETURN_FALSE();
-				if ( !xCheckMsgSize(pEvent->CrashReport.m_len) )
-					RETURN_FALSE();
-
-				g_Log.EventWarn("%x:Client crashed at %d,%d,%d,%d: 0x%08X %s (%s, %d.%d.%d.%d)\n", m_Socket.GetSocket(), (WORD)pEvent->CrashReport.m_x, (WORD)pEvent->CrashReport.m_y, pEvent->CrashReport.m_z, pEvent->CrashReport.m_map, (DWORD)pEvent->CrashReport.m_errorCode, pEvent->CrashReport.m_description, pEvent->CrashReport.m_executable, pEvent->CrashReport.m_versionMaj, pEvent->CrashReport.m_versionMin, pEvent->CrashReport.m_versionRev, pEvent->CrashReport.m_versionPat);
-			} break;
-
-		default:
-			EXC_SET("unknown");
-			DEBUG_WARN(( "%x:Unknown game packet (0x%x) received.\n", m_Socket.GetSocket(), pEvent->Default.m_Cmd ));
-			RETURN_FALSE();
-	}
-
-	// This is the last message we are pretty sure we got correctly.
-	m_bin_PrvMsg = (XCMD_TYPE) pEvent->Default.m_Cmd;
-	return 1;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	m_packetExceptions++;
-	g_Log.EventDebug("account '%s'\n", GetAccount() ? GetAccount()->GetName() : "");
-	if( m_packetExceptions > 10 )
-	{
-		g_Log.EventWarn("Disconnecting client from account '%s' since it is causing exceptions problems\n",
-			GetAccount() ? GetAccount()->GetName() : "");
-		addKick(&g_Serv, false);
-	}
-	EXC_DEBUG_END;
-	return 0;
-}
-
-

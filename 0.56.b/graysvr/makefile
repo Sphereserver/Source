@@ -138,7 +138,11 @@ SRC	:= 	CAccount.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
 		../sphere/linuxev.cpp \
-		../sphere/asyncdb.cpp
+		../sphere/asyncdb.cpp \
+		../network/network.cpp \
+		../network/packet.cpp \
+		../network/send.cpp \
+		../network/receive.cpp
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 
@@ -148,17 +152,21 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../tests/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
 	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
 	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
 
 tidy:
-	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
-													 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak ../common/libev/*~ \
-													 ../common/libev/*orig ../common/libev/*bak ../common/zlib/*~ ../common/zlib/*orig \
-													 ../common/zlib/*bak ../sphere/*~ ../sphere/*orig ../sphere/*bak ../tests/*~ ../tests/*orig ../tests/*bak
+	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak \
+				 ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
+				 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak \
+				 ../common/libev/*~ ../common/libev/*orig ../common/libev/*bak \
+				 ../common/zlib/*~ ../common/zlib/*orig ../common/zlib/*bak \
+				 ../sphere/*~ ../sphere/*orig ../sphere/*bak \
+				 ../network/*~ ../network/*orig ../network/*bak \
+				 ../tests/*~ ../tests/*orig ../tests/*bak
 
 tags:	$(SRC)
 	ctags $(SRC)
@@ -177,7 +185,7 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): svn flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h

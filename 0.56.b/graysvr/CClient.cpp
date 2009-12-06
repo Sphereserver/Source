@@ -4,6 +4,8 @@
 //
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
+#include "../network/network.h"
+#include "../network/send.h"
 
 #ifndef _WIN32
 	extern LinuxEv g_NetworkEvent;
@@ -12,14 +14,16 @@
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
-CClient::CClient( SOCKET client ) :
-	m_Socket( client )
+CClient::CClient(NetState* state)
 {
 	// This may be a web connection or Telnet ?
-	m_PeerName		= m_Socket.GetPeerName(); // store ip address
+	m_net = state;
 	SetConnectType( CONNECT_UNK );	// don't know what sort of connect this is yet.
-	UpdateLogIPConnecting( true );
-	UpdateLogIPConnected( true );
+
+	// update ip history
+	NetworkIn::HistoryIP* history = &g_NetworkIn.getHistoryForIP(GetPeer());
+	history->m_connecting++;
+	history->m_connected++;
 
 	m_Crypt.SetClientVer( g_Serv.m_ClientVersion );
 	m_pAccount = NULL;
@@ -32,13 +36,9 @@ CClient::CClient( SOCKET client ) :
 	m_timeLastEvent = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
-	m_bin_PrvMsg = XCMD_QTY;
-
-	m_wWalkCount = -1;
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg	= 100;
 	m_timeWalkStep = GetTickCount();
-	m_fClosed = false;
 
 	m_Targ_Timeout.Init();
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
@@ -54,38 +54,16 @@ CClient::CClient( SOCKET client ) :
 
 	m_Env.SetInvalid();
 
-	g_Serv.StatInc(SERV_STAT_CLIENTS);
-	g_Serv.m_Clients.InsertHead(this);
-
-	g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client connected [Total:%i] ('%s' %i/%i)\n",
-		m_Socket.GetSocket(), g_Serv.StatGet(SERV_STAT_CLIENTS), m_PeerName.GetAddrStr(),
-		GetLogIPConnecting(), GetLogIPConnected());
-
-	m_Socket.SetNonBlocking();
-
-	// disable NAGLE algorythm for data compression/coalescing.
-	// Send as fast as we can. we handle packing ourselves.
-	BOOL nbool=TRUE;
-	m_Socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
-	m_sendingData = false;
-	
-	if ( IsSetEF( EF_UseNetworkMulti ) )
-	{
-#ifndef _WIN32
-		g_NetworkEvent.registerClient(this, LinuxEv::Write);
-#endif
-	}	
+	g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client connected [Total:%d] ('%s' %d/%d)\n",
+		GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history->m_connecting, history->m_connected);
 
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
 	m_tNextPickup.Init();
-	m_reportedCliver = 0;
-	m_reportedType = CLIENTTYPE_2D; // Client by default are 2d
+
 	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
-	m_LastTooltipSend = 0;
-	m_context_popup = -1;
-	m_packetExceptions = 0;
+	m_pPopupPacket = NULL;
 	m_pHouseDesign = NULL;
 	m_fUpdateStats = 0;
 }
@@ -96,13 +74,11 @@ CClient::~CClient()
 	g_Serv.StatDec( SERV_STAT_CLIENTS );
 	bool bWasChar;
 
+	// update ip history
+	NetworkIn::HistoryIP* history = &g_NetworkIn.getHistoryForIP(GetPeer());
 	if ( GetConnectType() != CONNECT_GAME )
-		UpdateLogIPConnecting( false );
-	UpdateLogIPConnected( false );
-
-	g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client disconnected [Total:%i] ('%s' %i/%i)\n",
-		m_Socket.GetSocket(), g_Serv.StatGet(SERV_STAT_CLIENTS), m_PeerName.GetAddrStr(),
-		GetLogIPConnecting(), GetLogIPConnected());
+		history->m_connecting--;
+	history->m_connected--;
 
 	bWasChar = ( m_pChar != NULL );
 	CharDisconnect();	// am i a char in game ?
@@ -111,7 +87,6 @@ CClient::~CClient()
 	// Clear containers (CTAG and TOOLTIP)
 	m_TagDefs.Empty();
 	m_TooltipData.Clean(true);
-	CleanTooltipQueue();
 
 	CAccount * pAccount = GetAccount();
 	if ( pAccount )
@@ -120,21 +95,14 @@ CClient::~CClient()
 		m_pAccount = NULL;
 	}
 
-	xFlush();
-
-	if ( m_Socket.IsOpen() )
+	if (m_pPopupPacket != NULL)
 	{
-		if ( IsSetEF( EF_UseNetworkMulti ) )
-		{
-#ifdef _WIN32
-			m_Socket.ClearAsync();
-#else
-			g_NetworkEvent.unregisterClient(this);
-#endif
-		}
-
-		m_Socket.Close();
+		delete m_pPopupPacket;
+		m_pPopupPacket = NULL;
 	}
+
+	if (m_net->isValid(this))
+		m_net->clear();
 }
 
 bool CClient::IsSkillVisible(SKILL_TYPE skill)
@@ -144,7 +112,7 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	// skill menu.
 
 	// ML Clients can always see ML skills regardless of enabled features
-	if ( skill >= SKILL_SPELLWEAVING && IsClientVersion( 0x500000 ) )
+	if ( skill >= SKILL_SPELLWEAVING && GetNetState()->isClientVersion( 0x500000 ) )
 		return true;
 
 	int iClientReq = 0x000000;	// The minimum client version required to see this skill
@@ -175,7 +143,7 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	}
 
 	// Check that the client has a valid client version
-	if ( !IsClientVersion( iClientReq ) )
+	if ( !GetNetState()->isClientVersion( iClientReq ) )
 		return false;
 
 	// Check that the skill is enabled
@@ -219,27 +187,6 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 		return false;
 
 	return true;
-}
-
-void CClient::CleanTooltipQueue()
-{
-	ADDTOCALLSTACK("CClient::CleanTooltipQueue");
-	std::vector<CTooltipData *>::iterator i = m_TooltipQueue.begin();
-	CTooltipData * pData = NULL;
-
-	while ( i != m_TooltipQueue.end() )
-	{
-		pData = (*i);
-		m_TooltipQueue.erase(i);
-		i = m_TooltipQueue.begin();
-
-		if ( pData )
-		{
-			delete pData;
-		}
-	}
-
-	m_TooltipQueue.clear();
 }
 
 bool CClient::CanInstantLogOut() const
@@ -338,13 +285,9 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 	{
 		case CONNECT_TELNET:
 			{
-				if ( ISINTRESOURCE(pszMsg) ) return;
-				for ( ; *pszMsg != '\0'; pszMsg++ )
-				{
-					if ( *pszMsg == '\n' )	// translate.
-						(const_cast <CClient*>(this))->xSendReady("\r", 1);
-					(const_cast <CClient*>(this))->xSendReady(pszMsg, 1);
-				}
+				if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' ) return;
+
+				PacketTelnet* packet = new PacketTelnet(const_cast<CClient*>(this), pszMsg);
 			}
 			return;
 		case CONNECT_CRYPT:
@@ -390,7 +333,8 @@ void CClient::Announce( bool fArrive ) const
 
 		sprintf(zMsg, "@231 STAFF: %s %s logged %s.", zTitle, m_pChar->GetName(), ( fArrive ? "in" : "out" ));
 
-		for ( CClient *pClient = g_Serv.GetClientHead(); pClient ; pClient = pClient->GetNext() )
+		ClientIterator it;
+		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 		{
 			if (( pClient == this ) || ( GetPrivLevel() > pClient->GetPrivLevel() ))
 				continue;
@@ -400,7 +344,9 @@ void CClient::Announce( bool fArrive ) const
 	else if ( g_Cfg.m_iArriveDepartMsg == 1 )		// notify of players
 	{
 		TCHAR *pszMsg = Str_GetTemp();
-		for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+		
+		ClientIterator it;
+		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 		{
 			if ( pClient == this )
 				continue;
@@ -556,18 +502,7 @@ void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, b
 	{
 		SetTargMode(CLIMODE_TARG_OBJ_FUNC, "");
 
-		CCommand cmd;
-		cmd.TargetMulti.m_Cmd = XCMD_TargetMulti;
-		cmd.TargetMulti.m_fAllowGround = fGround;
-		cmd.TargetMulti.m_context = CLIMODE_TARG_OBJ_FUNC;	// 5=my id code for action.
-		memset( cmd.TargetMulti.m_zero6, 0, sizeof(cmd.TargetMulti.m_zero6));
-		cmd.TargetMulti.m_id = itemid - ITEMID_MULTI;
-
-		// Add any extra stuff attached to the multi. preview this.
-
-		memset( cmd.TargetMulti.m_zero20, 0, sizeof(cmd.TargetMulti.m_zero20));
-
-		xSendPkt( &cmd, sizeof( cmd.TargetMulti ));
+		PacketAddTarget* cmd = new PacketAddTarget(this, fGround? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid);
 	}
 	addTargetFunction( pszFunction, fGround, false );
 }
@@ -718,13 +653,13 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( IsPriv( PRIV_ALLSHOW ));
 			break;
 		case CC_CLIENTIS3D:
-			sVal.FormatVal( IsClient3D() );
+			sVal.FormatVal( GetNetState()->isClient3D() );
 			break;
 		case CC_CLIENTISKR:
-			sVal.FormatVal( IsClientKR() );
+			sVal.FormatVal( GetNetState()->isClientKR() );
 			break;
 		case CC_CLIENTISSA:
-			sVal.FormatVal( IsClientSA() );
+			sVal.FormatVal( GetNetState()->isClientSA() );
 			break;
 		case CC_CLIENTVERSION:
 			{
@@ -756,9 +691,9 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				pszKey += strlen(sm_szLoadKeys[index]);
 				GETNONWHITESPACE( pszKey );
 
-				int iCliVer = (m_reportedCliver&0xFFFFFF0);
+				int iCliVer = (GetNetState()->getReportedVersion() & 0xFFFFFF0);
 				if ( pszKey && strlen(pszKey) )
-					iCliVer = m_reportedCliver;
+					iCliVer = GetNetState()->getReportedVersion();
 
 				TCHAR szVersion[ 128 ];
 				sVal = CCrypt::WriteClientVerString( iCliVer, szVersion );
@@ -996,7 +931,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					DEBUG_ERR(("Too few addbuff arguments\n"));
 					break;
 				}
-				BYTE MBUArg[18] = {0};
+
+				TCHAR Arg[10] = {0};
 				for (char idx = 0; idx != 4; ++idx) {
 					if (!IsStrNumeric(ppArgs[idx]) || IsStrEmpty(ppArgs[idx])) {
 						DEBUG_ERR(("Invalid addbuff argument number %i\n",idx+1));
@@ -1012,13 +948,17 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					DEBUG_ERR(("Invalid addbuff argument number 5\n"));
 					break;
 				}
-				CharToMultiByteNonNull(MBUArg, ppArgs[4], 3);
-				if (ppArgs[5])
-					CharToMultiByteNonNull(MBUArg + 6 * sizeof(BYTE), ppArgs[5], 3);
-				if (ppArgs[6])
-					CharToMultiByteNonNull(MBUArg + 12 * sizeof(BYTE), ppArgs[6], 3);
-				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], MBUArg);
 
+				TCHAR* Args[3];
+				Args[0] = ppArgs[4];
+				Args[1] = ppArgs[5];
+				Args[2] = ppArgs[6];
+
+				int ArgsCount = 0;
+				for (int i = 0; Args[i] != NULL && i < 3; i++)
+					ArgsCount++;
+
+				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], (LPCTSTR*)Args, ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:
@@ -1098,7 +1038,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					}
 				}
 
-				AOSPopupMenuAdd( entrytag, int(textid), Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]) );
+				if (m_pPopupPacket != NULL)
+					m_pPopupPacket->addOption(entrytag, textid, Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]));
+				else
+					DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
 			}
 			break;
 		case CV_ARROWQUEST:
@@ -1188,17 +1131,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 		case CV_CHARLIST:
 			{
-				// ussually just a gm command
-				CCommand cmd;
-				int charCount = Setup_FillCharList( cmd.CharList3.m_char, m_pChar );
-				int len = sizeof(cmd.CharList3) + (sizeof(cmd.CharList3.m_char[0]) * (charCount - 1));
-
-				cmd.CharList3.m_Cmd = XCMD_CharList3;
-				cmd.CharList3.m_len = len;
-				cmd.CharList3.m_count = charCount;
-				cmd.CharList3.m_unk = 0;
-
-				xSendPkt( &cmd, len);
+				// usually just a gm command
+				PacketChangeCharacter* cmd = new PacketChangeCharacter(this);
 
 				CharDisconnect();	// since there is no undoing this in the client.
 				SetTargMode( CLIMODE_SETUP_CHARLIST );
@@ -1316,15 +1250,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				CObjBase * pObj = m_pChar->m_Act_Targ.ObjFind();
 				if ( pObj != NULL )
 				{
-					CEvent Event;
-					CPointMap pt = pObj->GetUnkPoint();
-					Event.Target.m_context = GetTargMode();
-					Event.Target.m_x = pt.m_x;
-					Event.Target.m_y = pt.m_y;
-					Event.Target.m_z = pt.m_z;
-					Event.Target.m_UID = pObj->GetUID();
-					Event.Target.m_id = 0;
-					Event_Target( &Event );
+					Event_Target(GetTargMode(), pObj->GetUID(), pObj->GetUnkPoint());
 				}
 				break;
 			}
@@ -1380,8 +1306,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			addTarget( CLIMODE_TARG_REPAIR, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_ITEM_REPAIR ) );
 			break;
 		case CV_FLUSH:
-			xFlush();
-			break;
+			g_NetworkOut.flush(this);
+			return false;
 		case CV_RESEND:
 			addReSync();
 			break;
@@ -1400,15 +1326,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			if ( GetTargMode() >= CLIMODE_MOUSE_TYPE )
 			{
 				ASSERT(m_pChar);
-				CEvent Event;
-				Event.Target.m_context = GetTargMode();
-				CPointMap pt = m_pChar->GetTopPoint();
-				Event.Target.m_x = pt.m_x;
-				Event.Target.m_y = pt.m_y;
-				Event.Target.m_z = pt.m_z;
-				Event.Target.m_UID = m_pChar->GetUID();
-				Event.Target.m_id = 0;
-				Event_Target(&Event);
+				Event_Target(GetTargMode(), m_pChar->GetUID(), m_pChar->GetTopPoint());
 				break;
 			}
 			return( false );
@@ -1562,4 +1480,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	EXC_ADD_SCRIPTSRC;
 	EXC_DEBUG_END;
 	return false;
+}
+
+long CClient::GetSocketID()
+{
+	return m_net->id();
+}
+
+CSocketAddress &CClient::GetPeer()
+{
+	return m_net->m_peerAddress;
+}
+
+LPCTSTR CClient::GetPeerStr()
+{
+	return m_net->m_peerAddress.GetAddrStr();
 }

@@ -159,6 +159,8 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_ContAdd		= 0x25,
 	XCMD_Kick			= 0x26,
 	XCMD_DragCancel		= 0x27,
+	XCMD_DropRejected	= 0x28,
+	XCMD_DropAccepted	= 0x29,
 	XCMD_DeathMenu		= 0x2c,
 	XCMD_ItemEquip		= 0x2e,
 	XCMD_Fight			= 0x2f,
@@ -987,7 +989,7 @@ enum DELETE_ERR_TYPE
 	DELETE_ERR_NOT_OLD_ENOUGH, // 3 That character is not old enough to delete. The character must be 7 days old before it can be deleted.
 	DELETE_SUCCESS = 255,
 };
-
+/*
 enum LOGIN_ERR_TYPE	// error codes sent to client.
 {
 	LOGIN_ERR_NONE = 0,			// no account
@@ -1017,7 +1019,7 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	// this 'error' code indicates there was no error
 	LOGIN_SUCCESS	= 255,
 };
-
+*/
 enum BUGREPORT_TYPE	// bug report codes
 {
 	BUGREPORT_ENVIRONMENT	= 0x01,
@@ -1757,7 +1759,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_Cmd;			// 0=0xe1
 			NWORD m_len;		// 1 - 2 (len = )
 			NWORD m_one;		// 3 - 4 (0x01)
-			NDWORD m_clientType;		// 5 - 9 (0x02 = KR, 0x03 = SA)
+			NDWORD m_clientType;		// 5 - 8 (0x02 = KR, 0x03 = SA)
 		} KRClientType;
 
 		struct // XCMD_EncryptionReply
@@ -1831,7 +1833,10 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_errorCode;			// 77-80 = error code
 			char m_executable[100];		// 81-180 = executable name
 			char m_description[100];	// 181-280 = error description
-			BYTE m_unk[10];			// 281-290 = unknown
+			BYTE m_zero;				// 281 = 0
+			NDWORD m_offset;			// 282-285 = exception offset
+			BYTE m_addressCount;		// 286 = address count
+			NDWORD m_address[1];		// 287.. = address
 		} CrashReport;
 	};
 } PACK_NEEDED;
@@ -2470,7 +2475,7 @@ struct CCommand	// command buffer from server to client.
 		struct // size = 2
 		{
 			BYTE m_Cmd;		// 0 = 0x82
-			BYTE m_code;	// 1 = LOGIN_ERR_TYPE
+			BYTE m_code;	// 1 = PacketLoginError::Reason
 		} LogBad;
 
 		struct // size = 2
@@ -2570,12 +2575,14 @@ struct CCommand	// command buffer from server to client.
 
 		struct // size = 26	// preview a house/multi
 		{
-			BYTE m_Cmd;		// 0 = 0x99
-			BYTE m_fAllowGround;	 // 1 = 1=ground only, 0=dynamic object
-			NDWORD m_context;	// 2-5 = we sent this at target setup.
-			BYTE m_zero6[12];	// 6-17
-			NWORD m_id;		// 18-19 = The multi id to preview. (id-0x4000)
-			BYTE m_zero20[6];
+			BYTE m_Cmd;				// 0 = 0x99
+			BYTE m_fAllowGround;	// 1 = 1=ground only, 0=dynamic object
+			NDWORD m_context;		// 2-5 = we sent this at target setup.
+			BYTE m_zero6[12];		// 6-17
+			NWORD m_id;				// 18-19 = The multi id to preview. (id-0x4000)
+			NWORD m_x;				// 20-21 = x offset
+			NWORD m_y;				// 22-23 = y offset
+			NWORD m_z;				// 24-25 = z offset
 		} TargetMulti;
 
 		struct // size = 16 // console prompt request.

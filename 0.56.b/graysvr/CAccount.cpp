@@ -5,6 +5,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "../common/CMD5.h"
+#include "../network/network.h"
 
 extern "C"
 {
@@ -558,7 +559,7 @@ void CAccount::DeleteChars()
 	CClient * pClient = FindClient();
 	if ( pClient )
 	{	// we have no choice but to kick them.
-		pClient->m_fClosed	= true;
+		pClient->GetNetState()->markClosed();
 	}
 
 	// Now track down all my disconnected chars !
@@ -593,8 +594,10 @@ CClient * CAccount::FindClient( const CClient * pExclude ) const
 	// Is the account logged in.
 	if ( this == NULL )
 		return( NULL );	// this might be possible.
-	CClient * pClient = g_Serv.GetClientHead();
-	for ( ; pClient!=NULL; pClient = pClient->GetNext())
+	
+	CClient* pClient = NULL;
+	ClientIterator it;
+	for (pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pExclude )
 			continue;
@@ -691,11 +694,11 @@ void CAccount::OnLogin( CClient * pClient )
 
 	if ( !m_Total_Connect_Time )	// first time - save first ip and timestamp
 	{
-		m_First_IP = pClient->m_PeerName;
+		m_First_IP = pClient->GetPeer();
 		m_dateFirstConnect = datetime;
 	}
 
-	m_Last_IP = pClient->m_PeerName;
+	m_Last_IP = pClient->GetPeer();
 	m_TagDefs.SetStr("LastLogged", false, m_dateLastConnect.Format(NULL));
 	m_dateLastConnect = datetime;
 
@@ -704,7 +707,7 @@ void CAccount::OnLogin( CClient * pClient )
 		// link the admin client.
 		g_Serv.m_iAdminClients++;
 	}
-	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Login '%s'\n", pClient->m_Socket.GetSocket(), (LPCTSTR) GetName());
+	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Login '%s'\n", pClient->GetSocketID(), (LPCTSTR) GetName());
 }
 
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
@@ -1434,7 +1437,7 @@ bool CAccount::r_Verb( CScript &s, CTextConsole * pSrc )
 				if ( pClient )
 				{
 					pClient->CharDisconnect();
-					pClient->m_fClosed = true;
+					pClient->GetNetState()->markClosed();
 				}
 
 				char *z = Str_GetTemp();

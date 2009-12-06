@@ -173,56 +173,6 @@ public:
 
 typedef CAccount * CAccountRef;
 
-class CLogIP
-{
-	// Keep a log of ALL recent ip's we have talked to.
-	// Prevent ping floods etc.
-private:
-	const	CSocketAddressIP m_ip;
-	bool	m_fBlocked;	// block further input from this ip til decay time.
-	int	m_iPings;		// how many pings have we seen ?
-
-	CServTime m_timeDecay;		// Time this record should be gone.
-	CServTime m_timeFirst;		// when did this first happen ? CServTime::GetCurrentTime() TICK_PER_SEC
-	CServTime m_timeLast;		// CServTime::GetCurrentTime() TICK_PER_SEC
-	CAccount * m_pAccount;	// associate this with an account.
-public:
-	static const char *m_sClassName;
-	int	m_iConnecting;
-	int	m_iConnected;
-	
-	CLogIP( const CSocketAddressIP dwIP );
-	bool IsMatchIP( const CSocketAddressIP ip ) const
-	{
-		return m_ip.IsMatchIP( ip );
-	}
-	bool IsSameIP( const CSocketAddressIP ip ) const
-	{
-		return m_ip.IsSameIP( ip );
-	}
-	int GetPings() const
-	{
-		return( m_iPings );
-	}
-	bool IsBlocked() const
-	{
-		return( m_fBlocked );
-	}
-	void InitTimes();
-	void SetBlocked( bool fBlocked, int iTimeDecay );
-	bool CheckPingBlock( bool fPreAccept );
-	bool IsTimeDecay() const;
-
-	void SetAccount( CAccount * pAccount )
-	{
-		m_pAccount = pAccount;
-	}
-	CAccountRef GetAccount() const
-	{
-		return m_pAccount;	// associate this with an account.
-	}
-};
-
 extern class CAccounts
 {
 	// The full accounts database.

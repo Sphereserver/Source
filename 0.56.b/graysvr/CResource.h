@@ -11,7 +11,6 @@
 
 class CAccount;
 class CClient;
-class CLogIP;
 class CServerDef;
 
 typedef CServerDef * CServerRef;
@@ -66,8 +65,8 @@ enum EF_TYPE
 	EF_PetSlots						= 0x0004000,
 	EF_UsePingServer				= 0x0008000,
 	EF_NPCAct_Triggers				= 0x0010000,
-	EF_UseNetworkMultiVersionMod	= 0x0400000,
-	EF_UseNetworkMulti				= 0x0800000,
+	EF_Unused0400000				= 0x0400000,
+	EF_Unused0800000				= 0x0800000,
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };
 
@@ -615,6 +614,7 @@ public:
 #define	DEBUGF_SCRIPTS			0x0800	// debug flags for scripts
 #define DEBUGF_LOS				0x1000	// debug flags for AdvancedLOS
 #define DEBUGF_WALK				0x2000	// debug flags for Walking stuff
+#define DEBUGF_PACKETS			0x4000	// log packets to file
 	WORD m_wDebugFlags;			// DEBUG In game effects to turn on and off.
 
 	// Decay
@@ -816,8 +816,6 @@ public:
 
 	char	m_cCommandPrefix;
 
-	int		m_iMaxTooltipForTick;
-
 	//	color noto flag
 	int		m_iColorNotoCriminal;
 	int		m_iColorNotoDefault;
@@ -840,6 +838,14 @@ public:
 	CGString	m_sMySqlPass;
 	CGString	m_sMySqlDB;
 
+	// network settings
+	int			m_fUseAsyncNetwork;			// 0=normal send, 1=async send, 2=async send for 4.0.0+ only
+	int			m_iNetMaxPings;				// max pings before blocking an ip
+	int			m_iNetHistoryTTL;			// time to remember an ip
+	int			m_iNetMaxPacketsPerTick;	// max packets to send per tick (per queue)
+	int			m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
+	int			m_iNetMaxQueueSize;			// max packets to hold per queue (comment out for unlimited)
+
 	int			m_iRegenRate[STAT_QTY];
 	int			m_iTimerCall;
 	bool		m_bAllowLightOverride;
@@ -854,7 +860,6 @@ public:
 	
 	CResourceScript m_scpIni;	// Keep this around so we can link to it.
 	CResourceScript m_scpCryptIni; // Encryption keys are in here
-	CGObArray< CLogIP *> m_LogIP;	// Block these IP numbers
 
 public:
 	CResourceScript m_scpTables;
@@ -919,9 +924,6 @@ public:
 
 	bool CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTextConsole * pSrc ) const;
 	PLEVEL_TYPE GetPrivCommandLevel( LPCTSTR pszCmd ) const;
-
-	CLogIP * FindLogIP( CSocketAddressIP dwIP, bool fCreate );
-	bool SetLogIPBlock( LPCTSTR pszIP, bool fBlock, int iTimeDecay = -1 );
 
 	static STAT_TYPE FindStatKey( LPCTSTR pszKey );
 	static bool IsValidEmailAddressFormat( LPCTSTR pszText );

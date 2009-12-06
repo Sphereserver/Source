@@ -7,6 +7,7 @@
 
 #include "graysvr.h"	// predef header.
 #include "../graysvr/CPathFinder.h"
+#include "../network/receive.h"
 
 //////////////////////////
 // CChar
@@ -2920,11 +2921,10 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	{
 		if ( pCharSrc->IsClient() && !IsStatFlag(STATF_Pet) )
 		{
-			CEvent	sell;
-			sell.VendorSell.m_count = 1;
-			sell.VendorSell.m_item[0].m_UID = pItem->GetUID();
-			sell.VendorSell.m_item[0].m_amount = pItem->GetAmount();
-			pCharSrc->GetClient()->Event_VendorSell(GetUID(), &sell);
+			VendorItem item;
+			item.m_serial = pItem->GetUID();
+			item.m_amount = pItem->GetAmount();
+			pCharSrc->GetClient()->Event_VendorSell(this, &item, 1);
 		}
 		return false;
 	}

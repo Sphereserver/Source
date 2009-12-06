@@ -617,7 +617,6 @@ void CSector::SetLightNow( bool fFlash )
 				BYTE bPrvLight = m_Env.m_Light;
 				m_Env.m_Light = LIGHT_BRIGHT;	// full bright.
 				pClient->addLight();
-				pClient->xFlush();
 				m_Env.m_Light = bPrvLight;	// back to previous.
 			}
 			pClient->addLight();

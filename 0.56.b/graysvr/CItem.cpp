@@ -4,6 +4,8 @@
 //
 
 #include "graysvr.h"	// predef header.
+#include "../network/network.h"
+#include "../network/send.h"
 
 /*
 	If you add a new trigger here, be sure to also and ALWAYS add a corresponding
@@ -3033,7 +3035,8 @@ void CItem::Update( const CClient * pClientExclude )
 	ADDTOCALLSTACK("CItem::Update");
 	// Send this new item to all that can see it.
 
-	for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
 			continue;
@@ -3286,31 +3289,16 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	// update the spellbook
 	if ( fUpdate)
 	{
-		CCommand cmd;
-		cmd.ContAdd.m_Cmd = XCMD_ContAdd;
-		cmd.ContAdd.m_UID = UID_F_ITEM + UID_O_INDEX_FREE + spell;
-		cmd.ContAdd.m_id = pSpellDef->m_idScroll;
-		cmd.ContAdd.m_zero7 = 0;
-		cmd.ContAdd.m_amount = spell;
-		cmd.ContAdd.m_x = 0x48;
-		cmd.ContAdd.m_y = 0x7D;
-		cmd.ContAdd.m_UIDCont = GetUID();
-		cmd.ContAdd.m_wHue = HUE_DEFAULT;
+		PacketItemContainer cmd(this, pSpellDef);
 
-		CCommand cmdNew = cmd;
-		cmd.ContAddNew.m_grid = 0;
-		cmd.ContAddNew.m_UIDCont = cmd.ContAdd.m_UIDCont;
-		cmd.ContAddNew.m_wHue = cmd.ContAdd.m_wHue;
-
-		for ( CClient * pClient = g_Serv.GetClientHead(); pClient!=NULL; pClient = pClient->GetNext())
+		ClientIterator it;
+		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 		{
 			if ( ! pClient->CanSee( this ))
 				continue;
 
-			if ( pClient->GetClientVersion() >= 0x0600018 || pClient->GetClientVersionReported() >= 0x0600018 || pClient->IsClientKR() )
-				pClient->xSendPkt( &cmdNew, sizeof(cmd.ContAddNew) );
-			else
-				pClient->xSendPkt( &cmd, sizeof(cmd.ContAdd) );
+			cmd.completeForTarget(pClient, this);
+			cmd.send(pClient);
 		}
 	}
 
