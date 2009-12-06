@@ -430,7 +430,7 @@ void NetworkIn::onStart(void)
 #endif
 
 	// standard packets
-	registerPacket(XCMD_Create, new PacketCreate());							//
+	registerPacket(XCMD_Create, new PacketCreate());							// create character
 	registerPacket(XCMD_Walk, new PacketMovementReq());							// movement request
 	registerPacket(XCMD_Talk, new PacketSpeakReq());							// speak
 	registerPacket(XCMD_Attack, new PacketAttackReq());							// begin attack
@@ -458,6 +458,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_MenuChoice, new PacketMenuChoice());					// select menu item
 	registerPacket(XCMD_ServersReq, new PacketServersReq());					// request server list
 	registerPacket(XCMD_CharDelete, new PacketCharDelete());					// delete character
+	registerPacket(XCMD_CreateNew, new PacketCreateNew());						// create character
 	registerPacket(XCMD_CharListReq, new PacketCharListReq());					// request character list
 	registerPacket(XCMD_BookOpen, new PacketBookHeaderEdit());					// edit book
 	registerPacket(XCMD_DyeVat, new PacketDyeObject());							// colour selection dialog

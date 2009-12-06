@@ -645,11 +645,15 @@ LPCTSTR CChar::GetPronoun() const
 		case CREID_GHOSTMAN:
 		case CREID_ELFMAN:
 		case CREID_ELFGHOSTMAN:
+		case CREID_GARGMAN:
+		case CREID_GARGGHOSTMAN:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_HE) );
 		case CREID_WOMAN:
 		case CREID_GHOSTWOMAN:
 		case CREID_ELFWOMAN:
 		case CREID_ELFGHOSTWOMAN:
+		case CREID_GARGWOMAN:
+		case CREID_GARGGHOSTWOMAN:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_SHE) );
 		default:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_IT) );
@@ -665,11 +669,15 @@ LPCTSTR CChar::GetPossessPronoun() const
 		case CREID_GHOSTMAN:
 		case CREID_ELFMAN:
 		case CREID_ELFGHOSTMAN:
+		case CREID_GARGMAN:
+		case CREID_GARGGHOSTMAN:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_HIS) );
 		case CREID_WOMAN:
 		case CREID_GHOSTWOMAN:
 		case CREID_ELFWOMAN:
 		case CREID_ELFGHOSTWOMAN:
+		case CREID_GARGWOMAN:
+		case CREID_GARGGHOSTWOMAN:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_HER) );
 		default:
 			return( g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_ITS) );

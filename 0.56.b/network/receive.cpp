@@ -66,31 +66,55 @@ bool PacketCreate::onReceive(NetState* net)
 	HUE_TYPE shirthue = (HUE_TYPE)readInt16();
 	HUE_TYPE pantshue = (HUE_TYPE)readInt16();
 
-	bool bSex = false; // Male
-	bool bElf = false; // Human
-	if (net->getClient()->GetAccount() && net->getClient()->GetAccount()->GetResDisp() >= RDS_ML)
+	bool bFemale = (sex % 2); // Even=Male, Odd=Female (rule applies to all clients)
+	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
+
+	if (net->getClient()->GetAccount() && net->getClient()->GetAccount()->GetResDisp() >= RDS_SA)
 	{
-		if ((sex - 2) >= 0)
+		/*
+			m_sex values from client 7.0.0.0+
+			0x2 = Human, Male
+			0x3 = Human, Female
+			0x4 = Elf, Male
+			0x5 = Elf, Female
+			0x6 = Gargoyle, Male
+			0x7 = Gargoyle, Female
+		*/
+		
+		switch (sex)
 		{
-			bElf = true;
-			bSex = ((sex - 2) == 1 );
-		}
-		else
-		{
-			bSex = ( sex == 1 );
+			case 0x0:
+			case 0x1:
+			case 0x2:
+			case 0x3:
+			default:
+				rtRace = RACETYPE_HUMAN;
+				break;
+
+			case 0x4:
+			case 0x5:
+				rtRace = RACETYPE_ELF;
+				break;
+			case 0x6:
+			case 0x7:
+				rtRace = RACETYPE_GARGOYLE;
+				break;
 		}
 	}
-	else
-		bSex = ( sex == 1 );
+	else if (net->getClient()->GetAccount() && net->getClient()->GetAccount()->GetResDisp() >= RDS_ML)
+	{
+		if ((sex - 2) >= 0)
+			rtRace = RACETYPE_ELF;
+	}
 	
-	return doCreate(net, charname, bSex, bElf,
+	return doCreate(net, charname, bFemale, rtRace,
 		strength, dexterity, intelligence, prof,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, (SKILL_TYPE)0, 0,
 		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
 		startloc, 0, flags);
 }
 
-bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, bool bElf, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags)
+bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags)
 {
 	CClient* client = net->getClient();
 	ASSERT(client);
@@ -130,7 +154,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, bool 
 	CChar* pChar = CChar::CreateBasic(CREID_MAN);
 	ASSERT(pChar != NULL);
 
-	pChar->InitPlayer(client, charname, bFemale, bElf, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
+	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
 	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_CreateDialog acct='%s', char='%s'\n",
 		net->id(), (LPCTSTR)account->GetName(), (LPCTSTR)pChar->GetName());
@@ -139,7 +163,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, bool 
 	CScriptTriggerArgs createArgs;
 	createArgs.m_iN1 = iFlags;
 	createArgs.m_iN2 = prProf;
-	createArgs.m_iN3 = bElf;
+	createArgs.m_iN3 = rtRace;
 	createArgs.m_VarsLocal.SetNum("PORTRAIT", iPortrait);
 	createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", skSkill4);
 	createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", iSkillVal4 * 10);
@@ -1350,9 +1374,9 @@ PacketCreateNew::PacketCreateNew(void) : PacketCreate(-1)
 
 bool PacketCreateNew::onReceive(NetState* net)
 {
+	skip(2);
 	DWORD pattern1 = readInt32();
 	DWORD pattern2 = readInt32();
-	BYTE kuoc = readByte();
 	TCHAR charname[MAX_NAME_SIZE];
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(30);
@@ -1466,7 +1490,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 			break;
 	}
 
-	return doCreate(net, charname, sex > 0, race > 0,
+	return doCreate(net, charname, sex > 0, (RACE_TYPE)race,
 		strength, dexterity, intelligence, (PROFESSION_TYPE)profession,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
 		hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT,

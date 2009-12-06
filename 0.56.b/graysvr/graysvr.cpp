@@ -40,6 +40,7 @@ CMapList::CMapList()
 	Load(2, 0x900, 0x640, 64, 2, 2);	// #2 map2.mul (ilshenar)
 	Load(3, 0xa00, 0x800, 64, 3, 3);	// #3 map3.mul (malas)
 	Load(4, 0x5a8, 0x5a8, 8, 4, 4);		// #4 map4.mul (tokuno islands)
+	Load(5, 0x500, 0x1000, 64, 5, 5);	// #5 map5.mul (tel mur)
 
 	m_pMapDiffCollection = NULL;
 }

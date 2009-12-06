@@ -46,7 +46,7 @@ f_onserver_blockip
 // SRC   --> char being created
 // ARGN1 --> flags
 // ARGN2 --> profession chosen
-// ARGN3 --> elf
+// ARGN3 --> race (1=human, 2=elf, 3=gargoyle)
 // ARGS  --> account name
 // ARGO  --> the client creating the character
 [FUNCTION f_onchar_create]

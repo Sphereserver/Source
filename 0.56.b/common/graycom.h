@@ -147,7 +147,7 @@
 #define FEATURE_KR_UPDATE		0x01	// 0x200 in 0xA9 (KR crapness)
 #define FEATURE_KR_CLIENTTYPE	0x02	// 0x400 in 0xA9 (enables 0xE1 packet)
 
-#define FEATURE_SA_UPDATE		0x01	// 0x10000 feature (unlock gargoyle character)
+#define FEATURE_SA_UPDATE		0x01	// 0x10000 feature (unlock gargoyle character, housing items)
 #define FEATURE_SA_MOVEMENT		0x02	// 0x4000 on charlist (new movement packets)
 
 #include "common.h"

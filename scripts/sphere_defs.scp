@@ -1198,13 +1198,14 @@ prof_ninja				7
 
 // RESDISP
 [DEFNAME resdisp_version]
-RDS_PRET2A	0
-RDS_T2A			1
-RDS_LBR			2
-RDS_AOS			3
-RDS_SE			4
-RDS_ML			5
-RDS_KR			6
+RDS_PRET2A      0
+RDS_T2A         1
+RDS_LBR         2
+RDS_AOS         3
+RDS_SE          4
+RDS_ML          5
+RDS_KR          6
+RDS_SA          7
 
 // When client or server send a speech packet these have a type
 // You can use them to send a packet or to check ARGN1 in the global speech hook

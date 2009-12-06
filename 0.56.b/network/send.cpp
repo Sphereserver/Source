@@ -166,6 +166,12 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
 				case CREID_ELFGHOSTWOMAN:
 					writeByte(RACETYPE_ELF);
 					break;
+				case CREID_GARGMAN:
+				case CREID_GARGWOMAN:
+				case CREID_GARGGHOSTMAN:
+				case CREID_GARGGHOSTWOMAN:
+					writeByte(RACETYPE_GARGOYLE);
+					break;
 				default:
 					writeByte(RACETYPE_UNDEFINED);
 					break;

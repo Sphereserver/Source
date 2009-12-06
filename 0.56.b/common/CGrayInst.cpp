@@ -268,7 +268,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 	}
 
 	char *z = Str_GetTemp(), *z1 = Str_GetTemp();
-	for ( int j = 0; j < 6; j++ )
+	for ( int j = 0; j < 7; j++ )
 	{
 		bool bSup = false;
 

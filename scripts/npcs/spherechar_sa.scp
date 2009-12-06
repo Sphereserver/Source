@@ -1,0 +1,126 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2009
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, August 14 2009
+VERSION=0.56b
+
+[CHARDEF 666]
+DEFNAME=c_gargoyle_male
+NAME=Gargoyle Male
+ICON=i_pet_man
+RESLEVEL=7
+RESDISPDNHUE=0410
+RESDISPDNID=c_man
+CAN=mt_equip|mt_walk|mt_run|mt_usehands
+RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
+FOODTYPE=15 t_food, t_fruit
+DESIRES=i_gold,e_notoriety
+AVERSIONS=t_trap,t_eerie_stuff
+BLOODCOLOR=0
+TSPEECH=spk_human_prime
+TSPEECH=spk_human_default
+TEVENTS=e_human_hearunk
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Male
+
+ON=@Create
+	NPC = brain_human
+	COLOR = colors_skin
+	FENCING = {15.0 38.0}
+	PARRYING = {15.0 38.0}
+	SWORDSMANSHIP = {15.0 38.0}
+	WRESTLING = {15.0 38.0}
+	MACEFIGHTING = {15.0 38.0}
+	MAGICRESISTANCE = {15.0 38.0}
+	TACTICS = {15.0 38.0}
+
+[CHARDEF 667]
+DEFNAME=c_gargoyle_female
+NAME=Gargoyle Female
+ICON=i_pet_woman
+RESLEVEL=5
+RESDISPDNHUE=0410
+RESDISPDNID=c_woman
+CAN=mt_equip|mt_walk|mt_run|mt_usehands
+RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
+FOODTYPE=15 t_food, t_fruit
+DESIRES=i_gold,e_notoriety
+AVERSIONS=t_trap,t_eerie_stuff
+BLOODCOLOR=0
+TSPEECH=spk_human_prime
+TSPEECH=spk_human_default
+TEVENTS=e_human_hearunk
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Female
+
+ON=@Create
+	NPC = brain_human
+	COLOR = colors_skin
+	FENCING = {15.0 38.0}
+	PARRYING = {15.0 38.0}
+	SWORDSMANSHIP = {15.0 38.0}
+	WRESTLING = {15.0 38.0}
+	MACEFIGHTING = {15.0 38.0}
+	MAGICRESISTANCE = {15.0 38.0}
+	TACTICS = {15.0 38.0}
+
+[CHARDEF 694]
+DEFNAME=c_garg_ghost_man
+NAME=Gargoyle Male Ghost
+ICON=i_pet_man
+RESLEVEL=7
+RESDISPDNHUE=0410
+RESDISPDNID=c_ghost_man
+CAN=mt_equip|mt_walk|mt_run|mt_usehands
+RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
+FOODTYPE=15 t_food, t_fruit
+DESIRES=i_gold,e_notoriety
+AVERSIONS=t_trap,t_eerie_stuff
+BLOODCOLOR=0
+TSPEECH=spk_human_prime
+TSPEECH=spk_human_default
+TEVENTS=e_human_hearunk
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Ghost Male
+
+ON=@Create
+	NPC = brain_human
+	COLOR = colors_skin
+	FENCING = {15.0 38.0}
+	PARRYING = {15.0 38.0}
+	SWORDSMANSHIP = {15.0 38.0}
+	WRESTLING = {15.0 38.0}
+	MACEFIGHTING = {15.0 38.0}
+	MAGICRESISTANCE = {15.0 38.0}
+	TACTICS = {15.0 38.0}
+
+[CHARDEF 695]
+DEFNAME=c_garg_ghost_woman
+NAME=Gargoyle Female Ghost
+ICON=i_pet_woman
+RESLEVEL=7
+RESDISPDNHUE=0410
+RESDISPDNID=c_ghost_woman
+CAN=mt_equip|mt_walk|mt_run|mt_usehands
+RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
+FOODTYPE=15 t_food, t_fruit
+DESIRES=i_gold,e_notoriety
+AVERSIONS=t_trap,t_eerie_stuff
+BLOODCOLOR=0
+TSPEECH=spk_human_prime
+TSPEECH=spk_human_default
+TEVENTS=e_human_hearunk
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Ghost Female
+
+[EOF]

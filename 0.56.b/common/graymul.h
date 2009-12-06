@@ -69,6 +69,9 @@ enum HUE_CODE
 	HUE_WHITE			= 0x0481,	// white....yup! a REAL white...
 	HUE_STONE			= 0x0482,	// kinda like rock when you do it to a monster.....mabey for the Stone Harpy?
 	HUE_HAIR_HIGH		= 0x04ad,
+ 
+	HUE_GARGSKIN_LOW	= 0x06DB,	// lowest gargoyle skin color
+	HUE_GARGSKIN_HIGH	= 0x06F3,	// highest
 
 	HUE_MASK_LO		= 0x07FF,	// mask for items. (not really a valid thing to do i know)
 
@@ -1402,6 +1405,11 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_ELFWOMAN			= 0x025E,
 	CREID_ELFGHOSTMAN		= 0x025F,
 	CREID_ELFGHOSTWOMAN		= 0x0260,
+ 
+	CREID_GARGMAN			= 0x029A,	// 666 decimal
+	CREID_GARGWOMAN			= 0x029B,
+	CREID_GARGGHOSTMAN		= 0x02B6,	// 694
+	CREID_GARGGHOSTWOMAN	= 0x02B7,
 
 	//	new monsters lies between this range
 	CREID_IRON_GOLEM	= 0x02f0,		// LBR
@@ -1645,9 +1653,14 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 
 #define SKILL_ML SKILL_SPELLWEAVING
 	SKILL_SPELLWEAVING = 54,		// 54
+ 
+#define SKILL_SA SKILL_IMBUEING
+	SKILL_MYSTICISM = 55,	// 55
+	SKILL_IMBUING,
+	SKILL_THROWING,
 
 #define SKILL_SCRIPTED SKILL_SCRIPTED00
-	SKILL_SCRIPTED00,		// 55
+	SKILL_SCRIPTED00,		// 58
 	SKILL_SCRIPTED01,
 	SKILL_SCRIPTED02,
 	SKILL_SCRIPTED03,
@@ -1657,7 +1670,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_SCRIPTED07,
 	SKILL_SCRIPTED08,
 	SKILL_SCRIPTED09,
-	SKILL_SCRIPTED10,		// 65
+	SKILL_SCRIPTED10,		// 68
 	SKILL_SCRIPTED11,
 	SKILL_SCRIPTED12,
 	SKILL_SCRIPTED13,
@@ -1667,7 +1680,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_SCRIPTED17,
 	SKILL_SCRIPTED18,
 	SKILL_SCRIPTED19,
-	SKILL_QTY,				// 75
+	SKILL_QTY,				// 78
 
 	// Actions a npc will perform. (no need to track skill level for these)
 	NPCACT_FOLLOW_TARG = 100,	// 100 = following a char.

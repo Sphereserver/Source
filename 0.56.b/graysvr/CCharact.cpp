@@ -1186,6 +1186,10 @@ void CChar::SoundChar( CRESND_TYPE type )
 		case CREID_ELFWOMAN:
 		case CREID_ELFGHOSTMAN:
 		case CREID_ELFGHOSTWOMAN:
+		case CREID_GARGMAN:
+		case CREID_GARGWOMAN:
+		case CREID_GARGGHOSTMAN:
+		case CREID_GARGGHOSTWOMAN:
 		{
 			id = 0;
 
@@ -2526,11 +2530,25 @@ bool CChar::Death()
 	{
 		SetHue( HUE_DEFAULT );	// Get all pale.
 
-		LPCTSTR pszGhostName = ( m_prev_id == CREID_ELFMAN ) ? "c_elf_ghost_man" : "c_ghost_man";
+		LPCTSTR pszGhostName = NULL;
 		CCharBase	*pCharDefPrev = CCharBase::FindCharBase( m_prev_id );
 
-		if ( pCharDefPrev && pCharDefPrev->IsFemale() )
-			pszGhostName = ( m_prev_id == CREID_ELFWOMAN ) ? "c_elf_ghost_woman" : "c_ghost_woman";
+		switch ( m_prev_id )
+		{
+			case CREID_GARGMAN:
+			case CREID_GARGWOMAN:
+				pszGhostName = ( pCharDefPrev && pCharDefPrev->IsFemale() ? "c_garg_ghost_woman" : "c_garg_ghost_man" );
+				break;
+			case CREID_ELFMAN:
+			case CREID_ELFWOMAN:
+				pszGhostName = ( pCharDefPrev && pCharDefPrev->IsFemale() ? "c_garg_ghost_woman" : "c_garg_ghost_man" );
+				break;
+			default:
+				pszGhostName = ( pCharDefPrev && pCharDefPrev->IsFemale() ? "c_ghost_woman" : "c_ghost_man" );
+				break;
+		}
+
+		ASSERT(pszGhostName != NULL);
 
 		SetID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName ));
 		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ));

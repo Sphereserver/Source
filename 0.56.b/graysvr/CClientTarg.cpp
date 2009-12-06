@@ -236,7 +236,9 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 			pChar1->GetID() == CREID_GHOSTMAN ||
 			pChar1->GetID() == CREID_GHOSTWOMAN ||
 			pChar1->GetID() == CREID_ELFGHOSTMAN || 
-			pChar1->GetID() == CREID_ELFGHOSTWOMAN )	// CREID_EQUIP_GM_ROBE
+			pChar1->GetID() == CREID_ELFGHOSTWOMAN ||
+			pChar1->GetID() == CREID_GARGGHOSTMAN || 
+			pChar1->GetID() == CREID_GARGGHOSTWOMAN )	// CREID_EQUIP_GM_ROBE
 		{
 			pChar1->Delete();
 		}

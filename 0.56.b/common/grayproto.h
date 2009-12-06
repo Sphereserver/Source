@@ -1716,7 +1716,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_profession;				// 71 = profession (0=custom)
 			BYTE m_unk1;	// 72;
 			BYTE m_sex;						// 73 = sex (0=male, 1=female)
-			BYTE m_race;					// 74 = race (0=human, 1=elf)
+			BYTE m_race;					// 74 = race (1=human, 2=elf, 3=gargoyle) (RACE_TYPE)
 			BYTE m_str;						// 75 = str
 			BYTE m_dex;						// 76 = dex
 			BYTE m_int;						// 77 = int
@@ -1924,7 +1924,7 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_armor;		// 62-63 = armor class
 			NWORD m_weight;		// 64-65 = weight in stones
 			NWORD m_maxWeight;	// 66-68 = max weight in stones
-			BYTE m_race;		// 69 = race (0=human, 1=elf)
+			BYTE m_race;		// 69 = race (1=human, 2=elf, 3=gargoyle) (RACE_TYPE)
 			NWORD m_statcap;
 			BYTE m_curFollower;
 			BYTE m_maxFollower;
