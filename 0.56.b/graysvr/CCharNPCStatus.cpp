@@ -116,7 +116,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	if ( !pChar || IsStatFlag(STATF_Pet) )	// Not on a hired vendor.
 		return( 0 );
 
-	CVarDefCont	*pVar, *pVarCharDef;
+	CVarDefCont	*pVar = NULL, *pVarCharDef = NULL;
 	CCharBase * pCharDef = Char_GetDef();
 	
 	if ( pCharDef )
@@ -170,7 +170,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	if ( !pChar || IsStatFlag(STATF_Pet) )	// Not on a hired vendor.
 		return( 0 );
 
-	CVarDefCont	*pVarRegion, *pVarCharDef, *pVarNPC, *pVarPlayer;
+	CVarDefCont	*pVarRegion = NULL, *pVarCharDef = NULL, *pVarNPC = NULL, *pVarPlayer = NULL;
 	CCharBase * pCharDef = Char_GetDef();	// NPC CharDef
 	int iMarkUp = 0;
 	

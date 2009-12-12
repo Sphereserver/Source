@@ -81,7 +81,7 @@ public:
 
 	#define EXC_TRY(a) \
 		const char *inLocalBlock = ""; \
-		char *inLocalArgs = a; \
+		const char *inLocalArgs = a; \
 		int inLocalBlockCnt(0); \
 		bool bCATCHExcept = false; \
 		try \

@@ -509,7 +509,7 @@ void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 		return;
 	}
 
-	if ( pItemBase->GetTFlags()&UFLAG4_ROOF == 0 )
+	if ( (pItemBase->GetTFlags() & UFLAG4_ROOF) == 0 )
 	{
 		g_Log.EventWarn("Non-roof tile 0%x being added as a roof to building 0%x by 0%x.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
 		SendStructureTo(pClientSrc);
@@ -635,7 +635,7 @@ void CItemMultiCustom::RemoveRoof(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	if ( pItemBase == NULL )
 		return;
 
-	if ( pItemBase->GetTFlags()&UFLAG4_ROOF == 0 )
+	if ( (pItemBase->GetTFlags() & UFLAG4_ROOF) == 0 )
 		return;
 
 	RemoveItem(pClientSrc, id, x, y, z);

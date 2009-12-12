@@ -450,7 +450,6 @@ PacketPlayerStart::PacketPlayerStart(CClient* target) : PacketSend(XCMD_Start, 3
  ***************************************************************************/
 PacketMessageASCII::PacketMessageASCII(CClient* target, LPCTSTR pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font) : PacketSend(XCMD_Speak, 42, PRI_NORMAL)
 {
-	CChar* character = target->GetChar();
 	initLength();
 
 	if (source == NULL)
@@ -1976,7 +1975,7 @@ PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : Pack
 	if (character->IsStatFlag(STATF_War))
 		mode |= 0x1;
 	if (character == target->GetChar() ||
-		g_Cfg.m_fCanUndressPets? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel()) )
+		(g_Cfg.m_fCanUndressPets? (character->NPC_IsOwnedBy(target->GetChar())) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())) )
 		mode |= 0x2;
 
 	writeInt32(character->GetUID());
@@ -2019,7 +2018,6 @@ PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : Pack
 PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContainer* corpse) : PacketSend(XCMD_CorpEquip, 7, PRI_NORMAL), m_corpse(corpse->GetUID())
 {
 	CChar* viewer = target->GetChar();
-	CItemBase* itemDefinition;
 
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, false, sizeof(isLayerSent));
@@ -2642,6 +2640,8 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 PacketAttack::PacketAttack(CClient* target, CGrayUID serial) : PacketSend(XCMD_AttackOK, 5, PRI_NORMAL)
 {
 	writeInt32(serial);
+
+	push(target);
 }
 
 
@@ -2703,7 +2703,6 @@ PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_
  ***************************************************************************/
 PacketMessageUNICODE::PacketMessageUNICODE(CClient* target, const NWORD* pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID language) : PacketSend(XCMD_SpeakUNICODE, 48, PRI_NORMAL)
 {
-	CChar* character = target->GetChar();
 	initLength();
 
 	if (source == NULL)
@@ -3433,7 +3432,6 @@ PacketSpeedMode::PacketSpeedMode(CClient* target, BYTE mode) : PacketExtended(EX
  ***************************************************************************/
 PacketMessageLocalised::PacketMessageLocalised(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
 {
-	CChar* character = target->GetChar();
 	initLength();
 
 	if (source == NULL)
@@ -3491,7 +3489,6 @@ PacketVisualRange::PacketVisualRange(CClient* target, BYTE range) : PacketSend(X
  ***************************************************************************/
 PacketMessageLocalisedEx::PacketMessageLocalisedEx(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
 {
-	CChar* character = target->GetChar();
 	initLength();
 
 	if (source == NULL)
