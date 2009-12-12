@@ -11,7 +11,7 @@
 //
 
 // 7x* foundations
-[ITEMDEF 093ec]
+[MULTIDEF 013ec]
 DEFNAME=i_multi_foundation_7x7
 TYPE=t_multi_custom
 NAME=7x7 2-Story Customizable House
@@ -25,7 +25,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=7x7 2-Story Customizable House
 
-[ITEMDEF 093ed]
+[MULTIDEF 013ed]
 DEFNAME=i_multi_foundation_7x8
 TYPE=t_multi_custom
 NAME=7x8 2-Story Customizable House
@@ -39,7 +39,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=7x8 2-Story Customizable House
 
-[ITEMDEF 093ee]
+[MULTIDEF 013ee]
 DEFNAME=i_multi_foundation_7x9
 TYPE=t_multi_custom
 NAME=7x9 2-Story Customizable House
@@ -53,7 +53,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=7x9 2-Story Customizable House
 
-[ITEMDEF 093ef]
+[MULTIDEF 013ef]
 DEFNAME=i_multi_foundation_7x10
 TYPE=t_multi_custom
 NAME=7x10 2-Story Customizable House
@@ -67,7 +67,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=7x10 2-Story Customizable House
 
-[ITEMDEF 093f0]
+[MULTIDEF 013f0]
 DEFNAME=i_multi_foundation_7x11
 TYPE=t_multi_custom
 NAME=7x11 2-Story Customizable House
@@ -81,7 +81,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=7x11 2-Story Customizable House
 
-[ITEMDEF 093f1]
+[MULTIDEF 013f1]
 DEFNAME=i_multi_foundation_7x12
 TYPE=t_multi_custom
 NAME=7x12 2-Story Customizable House
@@ -97,7 +97,7 @@ DESCRIPTION=7x12 2-Story Customizable House
 
 
 // 8x* foundations
-[ITEMDEF 093f8]
+[MULTIDEF 013f8]
 DEFNAME=i_multi_foundation_8x7
 TYPE=t_multi_custom
 NAME=8x7 2-Story Customizable House
@@ -111,7 +111,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=8x7 2-Story Customizable House
 
-[ITEMDEF 093f9]
+[MULTIDEF 013f9]
 DEFNAME=i_multi_foundation_8x8
 TYPE=t_multi_custom
 NAME=8x8 2-Story Customizable House
@@ -125,7 +125,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=8x8 2-Story Customizable House
 
-[ITEMDEF 093fa]
+[MULTIDEF 013fa]
 DEFNAME=i_multi_foundation_8x9
 TYPE=t_multi_custom
 NAME=8x9 2-Story Customizable House
@@ -139,7 +139,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=8x9 2-Story Customizable House
 
-[ITEMDEF 093fb]
+[MULTIDEF 013fb]
 DEFNAME=i_multi_foundation_8x10
 TYPE=t_multi_custom
 NAME=8x10 2-Story Customizable House
@@ -153,7 +153,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=8x10 2-Story Customizable House
 
-[ITEMDEF 093fc]
+[MULTIDEF 013fc]
 DEFNAME=i_multi_foundation_8x11
 TYPE=t_multi_custom
 NAME=8x11 2-Story Customizable House
@@ -167,7 +167,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=8x11 2-Story Customizable House
 
-[ITEMDEF 093fd]
+[MULTIDEF 013fd]
 DEFNAME=i_multi_foundation_8x12
 TYPE=t_multi_custom
 NAME=8x12 2-Story Customizable House
@@ -182,7 +182,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=8x12 2-Story Customizable House
 
 
-[ITEMDEF 093fe]
+[MULTIDEF 013fe]
 DEFNAME=i_multi_foundation_8x13
 TYPE=t_multi_custom
 NAME=8x13 2-Story Customizable House
@@ -197,7 +197,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=8x13 2-Story Customizable House
 
 //9x* foundations
-[ITEMDEF 09404]
+[MULTIDEF 01404]
 DEFNAME=i_multi_foundation_9x7
 TYPE=t_multi_custom
 NAME=9x7 2-Story Customizable House
@@ -211,7 +211,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x7 2-Story Customizable House
 
-[ITEMDEF 09405]
+[MULTIDEF 01405]
 DEFNAME=i_multi_foundation_9x8
 TYPE=t_multi_custom
 NAME=9x8 2-Story Customizable House
@@ -225,7 +225,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x8 2-Story Customizable House
 
-[ITEMDEF 09406]
+[MULTIDEF 01406]
 DEFNAME=i_multi_foundation_9x9
 TYPE=t_multi_custom
 NAME=9x9 2-Story Customizable House
@@ -239,7 +239,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x9 2-Story Customizable House
 
-[ITEMDEF 09407]
+[MULTIDEF 01407]
 DEFNAME=i_multi_foundation_9x10
 TYPE=t_multi_custom
 NAME=9x10 2-Story Customizable House
@@ -253,7 +253,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x10 2-Story Customizable House
 
-[ITEMDEF 09408]
+[MULTIDEF 01408]
 DEFNAME=i_multi_foundation_9x11
 TYPE=t_multi_custom
 NAME=9x11 2-Story Customizable House
@@ -267,7 +267,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x11 2-Story Customizable House
 
-[ITEMDEF 09409]
+[MULTIDEF 01409]
 DEFNAME=i_multi_foundation_9x12
 TYPE=t_multi_custom
 NAME=9x12 2-Story Customizable House
@@ -281,7 +281,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x12 2-Story Customizable House
 
-[ITEMDEF 0940a]
+[MULTIDEF 0140a]
 DEFNAME=i_multi_foundation_9x13
 TYPE=t_multi_custom
 NAME=9x13 2-Story Customizable House
@@ -295,7 +295,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=9x13 2-Story Customizable House
 
-[ITEMDEF 0940b]
+[MULTIDEF 0140b]
 DEFNAME=i_multi_foundation_9x14
 TYPE=t_multi_custom
 NAME=9x14 3-Story Customizable House
@@ -310,7 +310,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=9x14 3-Story Customizable House
 
 //10x* foundations
-[ITEMDEF 09410]
+[MULTIDEF 01410]
 DEFNAME=i_multi_foundation_10x7
 TYPE=t_multi_custom
 NAME=10x7 2-Story Customizable House
@@ -324,7 +324,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x7 2-Story Customizable House
 
-[ITEMDEF 09411]
+[MULTIDEF 01411]
 DEFNAME=i_multi_foundation_10x8
 TYPE=t_multi_custom
 NAME=10x8 2-Story Customizable House
@@ -338,7 +338,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x8 2-Story Customizable House
 
-[ITEMDEF 09412]
+[MULTIDEF 01412]
 DEFNAME=i_multi_foundation_10x9
 TYPE=t_multi_custom
 NAME=10x9 2-Story Customizable House
@@ -352,7 +352,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x9 2-Story Customizable House
 
-[ITEMDEF 09413]
+[MULTIDEF 01413]
 DEFNAME=i_multi_foundation_10x10
 TYPE=t_multi_custom
 NAME=10x10 2-Story Customizable House
@@ -366,7 +366,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x10 2-Story Customizable House
 
-[ITEMDEF 09414]
+[MULTIDEF 01414]
 DEFNAME=i_multi_foundation_10x11
 TYPE=t_multi_custom
 NAME=10x11 2-Story Customizable House
@@ -380,7 +380,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x11 2-Story Customizable House
 
-[ITEMDEF 09415]
+[MULTIDEF 01415]
 DEFNAME=i_multi_foundation_10x12
 TYPE=t_multi_custom
 NAME=10x12 2-Story Customizable House
@@ -394,7 +394,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x12 2-Story Customizable House
 
-[ITEMDEF 09416]
+[MULTIDEF 01416]
 DEFNAME=i_multi_foundation_10x13
 TYPE=t_multi_custom
 NAME=10x13 2-Story Customizable House
@@ -408,7 +408,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x13 2-Story Customizable House
 
-[ITEMDEF 09417]
+[MULTIDEF 01417]
 DEFNAME=i_multi_foundation_10x14
 TYPE=t_multi_custom
 NAME=10x14 3-Story Customizable House
@@ -422,7 +422,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=10x14 3-Story Customizable House
 
-[ITEMDEF 09418]
+[MULTIDEF 01418]
 DEFNAME=i_multi_foundation_10x15
 TYPE=t_multi_custom
 NAME=10x15 3-Story Customizable House
@@ -437,7 +437,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=10x15 3-Story Customizable House
 
 //11x* foundations
-[ITEMDEF 0941c]
+[MULTIDEF 0141c]
 DEFNAME=i_multi_foundation_11x7
 TYPE=t_multi_custom
 NAME=11x7 2-Story Customizable House
@@ -451,7 +451,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x7 2-Story Customizable House
 
-[ITEMDEF 0941d]
+[MULTIDEF 0141d]
 DEFNAME=i_multi_foundation_11x8
 TYPE=t_multi_custom
 NAME=11x8 2-Story Customizable House
@@ -465,7 +465,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x8 2-Story Customizable House
 
-[ITEMDEF 0941e]
+[MULTIDEF 0141e]
 DEFNAME=i_multi_foundation_11x9
 TYPE=t_multi_custom
 NAME=11x9 2-Story Customizable House
@@ -479,7 +479,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x9 2-Story Customizable House
 
-[ITEMDEF 0941f]
+[MULTIDEF 0141f]
 DEFNAME=i_multi_foundation_11x10
 TYPE=t_multi_custom
 NAME=11x10 2-Story Customizable House
@@ -493,7 +493,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x10 2-Story Customizable House
 
-[ITEMDEF 09420]
+[MULTIDEF 01420]
 DEFNAME=i_multi_foundation_11x11
 TYPE=t_multi_custom
 NAME=11x11 2-Story Customizable House
@@ -507,7 +507,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x11 2-Story Customizable House
 
-[ITEMDEF 09421]
+[MULTIDEF 01421]
 DEFNAME=i_multi_foundation_11x12
 TYPE=t_multi_custom
 NAME=11x12 2-Story Customizable House
@@ -521,7 +521,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x12 2-Story Customizable House
 
-[ITEMDEF 09422]
+[MULTIDEF 01422]
 DEFNAME=i_multi_foundation_11x13
 TYPE=t_multi_custom
 NAME=11x13 2-Story Customizable House
@@ -535,7 +535,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x13 2-Story Customizable House
 
-[ITEMDEF 09423]
+[MULTIDEF 01423]
 DEFNAME=i_multi_foundation_11x14
 TYPE=t_multi_custom
 NAME=11x14 3-Story Customizable House
@@ -549,7 +549,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x14 3-Story Customizable House
 
-[ITEMDEF 09424]
+[MULTIDEF 01424]
 DEFNAME=i_multi_foundation_11x15
 TYPE=t_multi_custom
 NAME=11x15 3-Story Customizable House
@@ -563,7 +563,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=11x15 3-Story Customizable House
 
-[ITEMDEF 09425]
+[MULTIDEF 01425]
 DEFNAME=i_multi_foundation_11x16
 TYPE=t_multi_custom
 NAME=11x16 3-Story Customizable House
@@ -578,7 +578,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=11x16 3-Story Customizable House
 
 //12x* foundations
-[ITEMDEF 09428]
+[MULTIDEF 01428]
 DEFNAME=i_multi_foundation_12x7
 TYPE=t_multi_custom
 NAME=12x7 2-Story Customizable House
@@ -592,7 +592,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x7 2-Story Customizable House
 
-[ITEMDEF 09429]
+[MULTIDEF 01429]
 DEFNAME=i_multi_foundation_12x8
 TYPE=t_multi_custom
 NAME=12x8 2-Story Customizable House
@@ -606,7 +606,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x8 2-Story Customizable House
 
-[ITEMDEF 0942a]
+[MULTIDEF 0142a]
 DEFNAME=i_multi_foundation_12x9
 TYPE=t_multi_custom
 NAME=12x9 2-Story Customizable House
@@ -620,7 +620,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x9 2-Story Customizable House
 
-[ITEMDEF 0942b]
+[MULTIDEF 0142b]
 DEFNAME=i_multi_foundation_12x10
 TYPE=t_multi_custom
 NAME=12x10 2-Story Customizable House
@@ -635,7 +635,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=12x10 2-Story Customizable House
 
 
-[ITEMDEF 0942c]
+[MULTIDEF 0142c]
 DEFNAME=i_multi_foundation_12x11
 TYPE=t_multi_custom
 NAME=12x11 2-Story Customizable House
@@ -649,7 +649,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x11 2-Story Customizable House
 
-[ITEMDEF 0942d]
+[MULTIDEF 0142d]
 DEFNAME=i_multi_foundation_12x12
 TYPE=t_multi_custom
 NAME=12x12 2-Story Customizable House
@@ -663,7 +663,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x12 2-Story Customizable House
 
-[ITEMDEF 0942e]
+[MULTIDEF 0142e]
 DEFNAME=i_multi_foundation_12x13
 TYPE=t_multi_custom
 NAME=12x13 2-Story Customizable House
@@ -677,7 +677,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x13 2-Story Customizable House
 
-[ITEMDEF 0942f]
+[MULTIDEF 0142f]
 DEFNAME=i_multi_foundation_12x14
 TYPE=t_multi_custom
 NAME=12x14 3-Story Customizable House
@@ -691,7 +691,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x14 3-Story Customizable House
 
-[ITEMDEF 09430]
+[MULTIDEF 01430]
 DEFNAME=i_multi_foundation_12x15
 TYPE=t_multi_custom
 NAME=12x15 3-Story Customizable House
@@ -705,7 +705,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x15 3-Story Customizable House
 
-[ITEMDEF 09431]
+[MULTIDEF 01431]
 DEFNAME=i_multi_foundation_12x16
 TYPE=t_multi_custom
 NAME=12x16 3-Story Customizable House
@@ -719,7 +719,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=12x16 3-Story Customizable House
 
-[ITEMDEF 09432]
+[MULTIDEF 01432]
 DEFNAME=i_multi_foundation_12x17
 TYPE=t_multi_custom
 NAME=12x17 3-Story Customizable House
@@ -734,7 +734,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=12x17 3-Story Customizable House
 
 //13x* foundations
-[ITEMDEF 09435]
+[MULTIDEF 01435]
 DEFNAME=i_multi_foundation_13x8
 TYPE=t_multi_custom
 NAME=13x8 2-Story Customizable House
@@ -748,7 +748,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x8 2-Story Customizable House
 
-[ITEMDEF 09436]
+[MULTIDEF 01436]
 DEFNAME=i_multi_foundation_13x9
 TYPE=t_multi_custom
 NAME=13x9 2-Story Customizable House
@@ -762,7 +762,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x9 2-Story Customizable House
 
-[ITEMDEF 09437]
+[MULTIDEF 01437]
 DEFNAME=i_multi_foundation_13x10
 TYPE=t_multi_custom
 NAME=13x10 2-Story Customizable House
@@ -776,7 +776,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x10 2-Story Customizable House
 
-[ITEMDEF 09438]
+[MULTIDEF 01438]
 DEFNAME=i_multi_foundation_13x11
 TYPE=t_multi_custom
 NAME=13x11 2-Story Customizable House
@@ -790,7 +790,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x11 2-Story Customizable House
 
-[ITEMDEF 09439]
+[MULTIDEF 01439]
 DEFNAME=i_multi_foundation_13x12
 TYPE=t_multi_custom
 NAME=13x12 2-Story Customizable House
@@ -804,7 +804,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x12 2-Story Customizable House
 
-[ITEMDEF 0943a]
+[MULTIDEF 0143a]
 DEFNAME=i_multi_foundation_13x13
 TYPE=t_multi_custom
 NAME=13x13 2-Story Customizable House
@@ -818,7 +818,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x13 2-Story Customizable House
 
-[ITEMDEF 0943b]
+[MULTIDEF 0143b]
 DEFNAME=i_multi_foundation_13x14
 TYPE=t_multi_custom
 NAME=13x14 3-Story Customizable House
@@ -832,7 +832,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x14 3-Story Customizable House
 
-[ITEMDEF 0943c]
+[MULTIDEF 0143c]
 DEFNAME=i_multi_foundation_13x15
 TYPE=t_multi_custom
 NAME=13x15 3-Story Customizable House
@@ -846,7 +846,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x15 3-Story Customizable House
 
-[ITEMDEF 0943d]
+[MULTIDEF 0143d]
 DEFNAME=i_multi_foundation_13x16
 TYPE=t_multi_custom
 NAME=13x16 3-Story Customizable House
@@ -860,7 +860,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x16 3-Story Customizable House
 
-[ITEMDEF 0943e]
+[MULTIDEF 0143e]
 DEFNAME=i_multi_foundation_13x17
 TYPE=t_multi_custom
 NAME=13x17 3-Story Customizable House
@@ -874,7 +874,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=13x17 3-Story Customizable House
 
-[ITEMDEF 0943f]
+[MULTIDEF 0143f]
 DEFNAME=i_multi_foundation_13x18
 TYPE=t_multi_custom
 NAME=13x18 3-Story Customizable House
@@ -889,7 +889,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=13x18 3-Story Customizable House
 
 //14x* foundations
-[ITEMDEF 09442]
+[MULTIDEF 01442]
 DEFNAME=i_multi_foundation_14x9
 TYPE=t_multi_custom
 NAME=14x9 3-Story Customizable House
@@ -903,7 +903,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x9 3-Story Customizable House
 
-[ITEMDEF 09443]
+[MULTIDEF 01443]
 DEFNAME=i_multi_foundation_14x10
 TYPE=t_multi_custom
 NAME=14x10 3-Story Customizable House
@@ -917,7 +917,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x10 3-Story Customizable House
 
-[ITEMDEF 09444]
+[MULTIDEF 01444]
 DEFNAME=i_multi_foundation_14x11
 TYPE=t_multi_custom
 NAME=14x11 3-Story Customizable House
@@ -931,7 +931,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x11 3-Story Customizable House
 
-[ITEMDEF 09445]
+[MULTIDEF 01445]
 DEFNAME=i_multi_foundation_14x12
 TYPE=t_multi_custom
 NAME=14x12 3-Story Customizable House
@@ -945,7 +945,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x12 3-Story Customizable House
 
-[ITEMDEF 09446]
+[MULTIDEF 01446]
 DEFNAME=i_multi_foundation_14x13
 TYPE=t_multi_custom
 NAME=14x13 3-Story Customizable House
@@ -959,7 +959,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x13 3-Story Customizable House
 
-[ITEMDEF 09447]
+[MULTIDEF 01447]
 DEFNAME=i_multi_foundation_14x14
 TYPE=t_multi_custom
 NAME=14x14 3-Story Customizable House
@@ -973,7 +973,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x14 3-Story Customizable House
 
-[ITEMDEF 09448]
+[MULTIDEF 01448]
 DEFNAME=i_multi_foundation_14x15
 TYPE=t_multi_custom
 NAME=14x15 3-Story Customizable House
@@ -987,7 +987,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x15 3-Story Customizable House
 
-[ITEMDEF 09449]
+[MULTIDEF 01449]
 DEFNAME=i_multi_foundation_14x16
 TYPE=t_multi_custom
 NAME=14x16 3-Story Customizable House
@@ -1001,7 +1001,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x16 3-Story Customizable House
 
-[ITEMDEF 0944a]
+[MULTIDEF 0144a]
 DEFNAME=i_multi_foundation_14x17
 TYPE=t_multi_custom
 NAME=14x17 3-Story Customizable House
@@ -1015,7 +1015,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=14x17 3-Story Customizable House
 
-[ITEMDEF 0944b]
+[MULTIDEF 0144b]
 DEFNAME=i_multi_foundation_14x18
 TYPE=t_multi_custom
 NAME=14x18 3-Story Customizable House
@@ -1030,7 +1030,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=14x18 3-Story Customizable House
 
 //15x* foundations  
-[ITEMDEF 0944f]
+[MULTIDEF 0144f]
 DEFNAME=i_multi_foundation_15x10
 TYPE=t_multi_custom
 NAME=15x10 3-Story Customizable House
@@ -1044,7 +1044,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x10 3-Story Customizable House
 
-[ITEMDEF 09450]
+[MULTIDEF 01450]
 DEFNAME=i_multi_foundation_15x11
 TYPE=t_multi_custom
 NAME=15x11 3-Story Customizable House
@@ -1058,7 +1058,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x11 3-Story Customizable House
 
-[ITEMDEF 09451]
+[MULTIDEF 01451]
 DEFNAME=i_multi_foundation_15x12
 TYPE=t_multi_custom
 NAME=15x12 3-Story Customizable House
@@ -1072,7 +1072,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x12 3-Story Customizable House
 
-[ITEMDEF 09452]
+[MULTIDEF 01452]
 DEFNAME=i_multi_foundation_15x13
 TYPE=t_multi_custom
 NAME=15x13 3-Story Customizable House
@@ -1086,7 +1086,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x13 3-Story Customizable House
 
-[ITEMDEF 09453]
+[MULTIDEF 01453]
 DEFNAME=i_multi_foundation_15x14
 TYPE=t_multi_custom
 NAME=15x14 3-Story Customizable House
@@ -1100,7 +1100,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x14 3-Story Customizable House
 
-[ITEMDEF 09454]
+[MULTIDEF 01454]
 DEFNAME=i_multi_foundation_15x15
 TYPE=t_multi_custom
 NAME=15x15 3-Story Customizable House
@@ -1114,7 +1114,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x15 3-Story Customizable House
 
-[ITEMDEF 09455]
+[MULTIDEF 01455]
 DEFNAME=i_multi_foundation_15x16
 TYPE=t_multi_custom
 NAME=15x16 3-Story Customizable House
@@ -1128,7 +1128,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x16 3-Story Customizable House
 
-[ITEMDEF 09456]
+[MULTIDEF 01456]
 DEFNAME=i_multi_foundation_15x17
 TYPE=t_multi_custom
 NAME=15x17 3-Story Customizable House
@@ -1142,7 +1142,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x17 3-Story Customizable House
 
-[ITEMDEF 09457]
+[MULTIDEF 01457]
 DEFNAME=i_multi_foundation_15x18
 TYPE=t_multi_custom
 NAME=15x18 3-Story Customizable House
@@ -1156,7 +1156,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=15x18 3-Story Customizable House
 
-[ITEMDEF 0945c]
+[MULTIDEF 0145c]
 DEFNAME=i_multi_foundation_16x11
 TYPE=t_multi_custom
 NAME=16x11 3-Story Customizable House
@@ -1170,7 +1170,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x11 3-Story Customizable House
 
-[ITEMDEF 0945d]
+[MULTIDEF 0145d]
 DEFNAME=i_multi_foundation_16x12
 TYPE=t_multi_custom
 NAME=16x12 3-Story Customizable House
@@ -1184,7 +1184,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x12 3-Story Customizable House
 
-[ITEMDEF 0945e]
+[MULTIDEF 0145e]
 DEFNAME=i_multi_foundation_16x13
 TYPE=t_multi_custom
 NAME=16x13 3-Story Customizable House
@@ -1198,7 +1198,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x13 3-Story Customizable House
 
-[ITEMDEF 0945f]
+[MULTIDEF 0145f]
 DEFNAME=i_multi_foundation_16x14
 TYPE=t_multi_custom
 NAME=16x14 3-Story Customizable House
@@ -1212,7 +1212,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x14 3-Story Customizable House
 
-[ITEMDEF 09460]
+[MULTIDEF 01460]
 DEFNAME=i_multi_foundation_16x15
 TYPE=t_multi_custom
 NAME=16x15 3-Story Customizable House
@@ -1226,7 +1226,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x15 3-Story Customizable House
 
-[ITEMDEF 09461]
+[MULTIDEF 01461]
 DEFNAME=i_multi_foundation_16x16
 TYPE=t_multi_custom
 NAME=16x16 3-Story Customizable House
@@ -1240,7 +1240,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x16 3-Story Customizable House
 
-[ITEMDEF 09462]
+[MULTIDEF 01462]
 DEFNAME=i_multi_foundation_16x17
 TYPE=t_multi_custom
 NAME=16x17 3-Story Customizable House
@@ -1254,7 +1254,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=16x17 3-Story Customizable House
 
-[ITEMDEF 09463]
+[MULTIDEF 01463]
 DEFNAME=i_multi_foundation_16x18
 TYPE=t_multi_custom
 NAME=16x18 3-Story Customizable House
@@ -1269,7 +1269,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=16x18 3-Story Customizable House
 
 //17x* foundations
-[ITEMDEF 09469]
+[MULTIDEF 01469]
 DEFNAME=i_multi_foundation_17x12
 TYPE=t_multi_custom
 NAME=17x12 3-Story Customizable House
@@ -1283,7 +1283,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x12 3-Story Customizable House
 
-[ITEMDEF 0946a]
+[MULTIDEF 0146a]
 DEFNAME=i_multi_foundation_17x13
 TYPE=t_multi_custom
 NAME=17x13 3-Story Customizable House
@@ -1297,7 +1297,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x13 3-Story Customizable House
 
-[ITEMDEF 0946b]
+[MULTIDEF 0146b]
 DEFNAME=i_multi_foundation_17x14
 TYPE=t_multi_custom
 NAME=17x14 3-Story Customizable House
@@ -1311,7 +1311,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x14 3-Story Customizable House
 
-[ITEMDEF 0946c]
+[MULTIDEF 0146c]
 DEFNAME=i_multi_foundation_17x15
 TYPE=t_multi_custom
 NAME=17x15 3-Story Customizable House
@@ -1325,7 +1325,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x15 3-Story Customizable House
 
-[ITEMDEF 0946d]
+[MULTIDEF 0146d]
 DEFNAME=i_multi_foundation_17x16
 TYPE=t_multi_custom
 NAME=17x16 3-Story Customizable House
@@ -1339,7 +1339,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x16 3-Story Customizable House
 
-[ITEMDEF 0946e]
+[MULTIDEF 0146e]
 DEFNAME=i_multi_foundation_17x17
 TYPE=t_multi_custom
 NAME=17x17 3-Story Customizable House
@@ -1353,7 +1353,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=17x17 3-Story Customizable House
 
-[ITEMDEF 0946f]
+[MULTIDEF 0146f]
 DEFNAME=i_multi_foundation_17x18
 TYPE=t_multi_custom
 NAME=17x18 3-Story Customizable House
@@ -1368,7 +1368,7 @@ SUBSECTION=House Foundations
 DESCRIPTION=17x18 3-Story Customizable House
 
 //18x* foundations
-[ITEMDEF 09476]
+[MULTIDEF 01476]
 DEFNAME=i_multi_foundation_18x13
 TYPE=t_multi_custom
 NAME=18x13 3-Story Customizable House
@@ -1382,7 +1382,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=18x13 3-Story Customizable House
 
-[ITEMDEF 09477]
+[MULTIDEF 01477]
 DEFNAME=i_multi_foundation_18x14
 TYPE=t_multi_custom
 NAME=18x14 3-Story Customizable House
@@ -1396,7 +1396,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=18x14 3-Story Customizable House
 
-[ITEMDEF 09478]
+[MULTIDEF 01478]
 DEFNAME=i_multi_foundation_18x15
 TYPE=t_multi_custom
 NAME=18x15 3-Story Customizable House
@@ -1410,7 +1410,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=18x15 3-Story Customizable House
 
-[ITEMDEF 09479]
+[MULTIDEF 01479]
 DEFNAME=i_multi_foundation_18x16
 TYPE=t_multi_custom
 NAME=18x16 3-Story Customizable House
@@ -1424,7 +1424,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=18x16 3-Story Customizable House
 
-[ITEMDEF 0947a]
+[MULTIDEF 0147a]
 DEFNAME=i_multi_foundation_18x17
 TYPE=t_multi_custom
 NAME=18x17 3-Story Customizable House
@@ -1438,7 +1438,7 @@ CATEGORY=Multis
 SUBSECTION=House Foundations
 DESCRIPTION=18x17 3-Story Customizable House
 
-[ITEMDEF 0947b]
+[MULTIDEF 0147b]
 DEFNAME=i_multi_foundation_18x18
 TYPE=t_multi_custom
 NAME=18x18 3-Story Customizable House

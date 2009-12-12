@@ -241,10 +241,20 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	*pszSep = '\0';
 
 	int iResType = FindTableSorted( pszKey, sm_szResourceBlocks, RES_QTY );
+	bool fNewStyleDef = false;
+
 	if ( iResType < 0 )
 	{
-		*pszSep = oldChar;
-		return( false );
+		if (strcmpi(pszKey, "MULTIDEF") == 0)
+		{
+			iResType = RES_ITEMDEF;
+			fNewStyleDef = true;
+		}
+		else
+		{
+			*pszSep = oldChar;
+			return( false );
+		}
 	}
 
 	*pszSep = '.';
@@ -271,7 +281,10 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	}
 	else if ( iResType == RES_ITEMDEF )
 	{
-		pRef = CItemBase::FindItemBase((ITEMID_TYPE)g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey));
+		if (fNewStyleDef && IsDigit(pszKey[0]))
+			pRef = CItemBase::FindItemBase((ITEMID_TYPE)(Exp_GetVal(pszKey) + ITEMID_MULTI));
+		else
+			pRef = CItemBase::FindItemBase((ITEMID_TYPE)g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey));
 	}
 	else if ( iResType == RES_SPELL && *pszKey == '-' )
 	{
@@ -1947,6 +1960,11 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	{
 		restype			= RES_KARMA;
 	}
+	else if ( !strnicmp( pszSection, "MULTIDEF", 8 ) )
+	{
+		restype			= RES_ITEMDEF;
+		fNewStyleDef	= true;
+	}
 	else
 		restype	= (RES_TYPE) FindTableSorted( pszSection, sm_szResourceBlocks, COUNTOF( sm_szResourceBlocks ));
 
@@ -2822,8 +2840,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			case RES_TIP:			// Tips (similar to RES_SCROLL) that can come up at startup.
 			case RES_TYPEDEF:			// Define a trigger block for a RES_WORLDITEM m_type.
 			case RES_CHARDEF:		// Define a char type.
-			case RES_ITEMDEF:		// Define an item type
 			case RES_TEMPLATE:		// Define lists of items. (for filling loot etc)
+				break;
+			case RES_ITEMDEF:		// Define an item type
+				if (fNewStyleDef)	// indicates this is a multi and should have an appropriate offset applied
+					rid = RESOURCE_ID( restype, index + ITEMID_MULTI);
 				break;
 			default:
 				return( rid );

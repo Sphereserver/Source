@@ -4566,8 +4566,15 @@ ALPHA additions:
    - When stamina is lost on movement, the running penalty is always applied
    - Always revealed when moving whilst hidden
    - Will not teleport off ships when moving on to a ship plank
+- Added: MULTIDEF block. This can be used to safeguard against any future changes to the size
+  of tiledata.mul. This basically acts as a 'shortcut' for ITEMDEF, except the ID will 
+  automatically be increased by 08000. Items defined with this are still accessible as normal
+  via SERV.ITEMDEF.id(+08000)/defname, or SERV.MULTIDEF.id/defname can be used if you prefer
+  for consistency.
 
 12-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added defnames for statf_hovering, mt_hover, can_i_hover,
   tilef_hoverover, t_hoverover)
+- Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
+  sphere_item_multis_stairs.scp (Replaced multi ITEMDEFs with MULTIDEFs)
 - Added: sphere_item_ground_tiles_sa.scp (Added hover-over item definitions)

@@ -10,7 +10,7 @@
 // FILE LAST UPDATED: Sunday, December 6 2009
 //
 
-[ITEMDEF 09db0]
+[MULTIDEF 01db0]
 DEFNAME=i_multi_stairs_wood_sn
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -20,7 +20,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (s->n)
 
-[ITEMDEF 09db1]
+[MULTIDEF 01db1]
 DEFNAME=i_multi_stairs_wood_we
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -30,7 +30,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (w->e)
 
-[ITEMDEF 09db2]
+[MULTIDEF 01db2]
 DEFNAME=i_multi_stairs_wood_ns
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -40,7 +40,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (n->s)
 
-[ITEMDEF 09db3]
+[MULTIDEF 01db3]
 DEFNAME=i_multi_stairs_wood_ew
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -50,7 +50,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (e->w)
 
-[ITEMDEF 09db4]
+[MULTIDEF 01db4]
 DEFNAME=i_multi_stairs_stone_sn
 TYPE=t_multi
 NAME=Stone Stairs
@@ -60,7 +60,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (s->n)
 
-[ITEMDEF 09db5]
+[MULTIDEF 01db5]
 DEFNAME=i_multi_stairs_stone_we
 TYPE=t_multi
 NAME=Stone Stairs
@@ -70,7 +70,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (w->e)
 
-[ITEMDEF 09db6]
+[MULTIDEF 01db6]
 DEFNAME=i_multi_stairs_stone_ns
 TYPE=t_multi
 NAME=Stone Stairs
@@ -80,7 +80,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (n->s)
 
-[ITEMDEF 09db7]
+[MULTIDEF 01db7]
 DEFNAME=i_multi_stairs_stone_ew
 TYPE=t_multi
 NAME=Stone Stairs
@@ -90,7 +90,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (e->w)
 
-[ITEMDEF 09db8]
+[MULTIDEF 01db8]
 DEFNAME=i_multi_stairs_stone_2_sn
 TYPE=t_multi
 NAME=Stone Stairs
@@ -100,7 +100,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (s->n)
 
-[ITEMDEF 09db9]
+[MULTIDEF 01db9]
 DEFNAME=i_multi_stairs_stone_2_we
 TYPE=t_multi
 NAME=Stone Stairs
@@ -110,7 +110,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (w->e)
 
-[ITEMDEF 09dba]
+[MULTIDEF 01dba]
 DEFNAME=i_multi_stairs_stone_2_ns
 TYPE=t_multi
 NAME=Stone Stairs
@@ -120,7 +120,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (n->s)
 
-[ITEMDEF 09dbb]
+[MULTIDEF 01dbb]
 DEFNAME=i_multi_stairs_stone_2_ew
 TYPE=t_multi
 NAME=Stone Stairs
@@ -130,7 +130,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (e->w)
 
-[ITEMDEF 09dbc]
+[MULTIDEF 01dbc]
 DEFNAME=i_multi_stairs_wood_2_sn
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -140,7 +140,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (s->n)
 
-[ITEMDEF 09dbd]
+[MULTIDEF 01dbd]
 DEFNAME=i_multi_stairs_wood_2_we
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -150,7 +150,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (w->e)
 
-[ITEMDEF 09dbe]
+[MULTIDEF 01dbe]
 DEFNAME=i_multi_stairs_wood_2_ns
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -160,7 +160,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (n->s)
 
-[ITEMDEF 09dbf]
+[MULTIDEF 01dbf]
 DEFNAME=i_multi_stairs_wood_2_ew
 TYPE=t_multi
 NAME=Wooden Stairs
@@ -170,7 +170,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Wooden Stairs (e->w)
 
-[ITEMDEF 09dc0]
+[MULTIDEF 01dc0]
 DEFNAME=i_multi_stairs_stone_3_sn
 TYPE=t_multi
 NAME=Stone Stairs
@@ -180,7 +180,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (s->n)
 
-[ITEMDEF 09dc1]
+[MULTIDEF 01dc1]
 DEFNAME=i_multi_stairs_stone_3_we
 TYPE=t_multi
 NAME=Stone Stairs
@@ -190,7 +190,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (w->e)
 
-[ITEMDEF 09dc2]
+[MULTIDEF 01dc2]
 DEFNAME=i_multi_stairs_stone_3_ns
 TYPE=t_multi
 NAME=Stone Stairs
@@ -200,7 +200,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (n->s)
 
-[ITEMDEF 09dc3]
+[MULTIDEF 01dc3]
 DEFNAME=i_multi_stairs_stone_3_ew
 TYPE=t_multi
 NAME=Stone Stairs
@@ -210,7 +210,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (e->w)
 
-[ITEMDEF 09dc4]
+[MULTIDEF 01dc4]
 DEFNAME=i_multi_stairs_marble_sn
 TYPE=t_multi
 NAME=Marble Stairs
@@ -220,7 +220,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Marble Stairs (s->n)
 
-[ITEMDEF 09dc5]
+[MULTIDEF 01dc5]
 DEFNAME=i_multi_stairs_marble_we
 TYPE=t_multi
 NAME=Marble Stairs
@@ -230,7 +230,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Marble Stairs (w->e)
 
-[ITEMDEF 09dc6]
+[MULTIDEF 01dc6]
 DEFNAME=i_multi_stairs_marble_ns
 TYPE=t_multi
 NAME=Marble Stairs
@@ -240,7 +240,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Marble Stairs (n->s)
 
-[ITEMDEF 09dc7]
+[MULTIDEF 01dc7]
 DEFNAME=i_multi_stairs_marble_ew
 TYPE=t_multi
 NAME=Marble Stairs
@@ -250,7 +250,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Marble Stairs (e->w)
 
-[ITEMDEF 09dc8]
+[MULTIDEF 01dc8]
 DEFNAME=i_multi_stairs_stone_4_sn
 TYPE=t_multi
 NAME=Stone Stairs
@@ -260,7 +260,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (s->n)
 
-[ITEMDEF 09dc9]
+[MULTIDEF 01dc9]
 DEFNAME=i_multi_stairs_stone_4_we
 TYPE=t_multi
 NAME=Stone Stairs
@@ -270,7 +270,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (w->e)
 
-[ITEMDEF 09dca]
+[MULTIDEF 01dca]
 DEFNAME=i_multi_stairs_stone_4_ns
 TYPE=t_multi
 NAME=Stone Stairs
@@ -280,7 +280,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (n->s)
 
-[ITEMDEF 09dcb]
+[MULTIDEF 01dcb]
 DEFNAME=i_multi_stairs_stone_4_ew
 TYPE=t_multi
 NAME=Stone Stairs
@@ -290,7 +290,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (e->w)
 
-[ITEMDEF 09dcc]
+[MULTIDEF 01dcc]
 DEFNAME=i_multi_stairs_sandstone_sn
 TYPE=t_multi
 NAME=Sandstone Stairs
@@ -300,7 +300,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Sandstone Stairs (s->n)
 
-[ITEMDEF 09dcd]
+[MULTIDEF 01dcd]
 DEFNAME=i_multi_stairs_sandstone_we
 TYPE=t_multi
 NAME=Sandstone Stairs
@@ -310,7 +310,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Sandstone Stairs (w->e)
 
-[ITEMDEF 09dce]
+[MULTIDEF 01dce]
 DEFNAME=i_multi_stairs_sandstone_ns
 TYPE=t_multi
 NAME=Sandstone Stairs
@@ -320,7 +320,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Sandstone Stairs (n->s)
 
-[ITEMDEF 09dcf]
+[MULTIDEF 01dcf]
 DEFNAME=i_multi_stairs_sandstone_ew
 TYPE=t_multi
 NAME=Sandstone Stairs
@@ -330,7 +330,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Sandstone Stairs (e->w)
 
-[ITEMDEF 09dd0]
+[MULTIDEF 01dd0]
 DEFNAME=i_multi_stairs_stone_5_sn
 TYPE=t_multi
 NAME=Stone Stairs
@@ -340,7 +340,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (s->n)
 
-[ITEMDEF 09dd1]
+[MULTIDEF 01dd1]
 DEFNAME=i_multi_stairs_stone_5_we
 TYPE=t_multi
 NAME=Stone Stairs
@@ -350,7 +350,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (w->e)
 
-[ITEMDEF 09dd2]
+[MULTIDEF 01dd2]
 DEFNAME=i_multi_stairs_stone_5_ns
 TYPE=t_multi
 NAME=Stone Stairs
@@ -360,7 +360,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (n->s)
 
-[ITEMDEF 09dd3]
+[MULTIDEF 01dd3]
 DEFNAME=i_multi_stairs_stone_5_ew
 TYPE=t_multi
 NAME=Stone Stairs
@@ -370,7 +370,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Stone Stairs (e->w)
 
-[ITEMDEF 09dd4]
+[MULTIDEF 01dd4]
 DEFNAME=i_multi_stairs_carpet_sn
 TYPE=t_multi
 NAME=Carpeted Stairs
@@ -380,7 +380,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Carpeted Stairs (s->n)
 
-[ITEMDEF 09dd5]
+[MULTIDEF 01dd5]
 DEFNAME=i_multi_stairs_carpet_we
 TYPE=t_multi
 NAME=Carpeted Stairs
@@ -390,7 +390,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Carpeted Stairs (w->e)
 
-[ITEMDEF 09dd6]
+[MULTIDEF 01dd6]
 DEFNAME=i_multi_stairs_carpet_ns
 TYPE=t_multi
 NAME=Carpeted Stairs
@@ -400,7 +400,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Carpeted Stairs (n->s)
 
-[ITEMDEF 09dd7]
+[MULTIDEF 01dd7]
 DEFNAME=i_multi_stairs_carpet_ew
 TYPE=t_multi
 NAME=Carpeted Stairs
@@ -410,7 +410,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Carpeted Stairs (e->w)
 
-[ITEMDEF 09dd8]
+[MULTIDEF 01dd8]
 DEFNAME=i_multi_stairs_crystal_sn
 TYPE=t_multi
 NAME=Crystal Stairs
@@ -420,7 +420,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Crystal Stairs (s->n)
 
-[ITEMDEF 09dd9]
+[MULTIDEF 01dd9]
 DEFNAME=i_multi_stairs_crystal_we
 TYPE=t_multi
 NAME=Crystal Stairs
@@ -430,7 +430,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Crystal Stairs (w->e)
 
-[ITEMDEF 09dda]
+[MULTIDEF 01dda]
 DEFNAME=i_multi_stairs_crystal_ns
 TYPE=t_multi
 NAME=Crystal Stairs
@@ -440,7 +440,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Crystal Stairs (n->s)
 
-[ITEMDEF 09ddb]
+[MULTIDEF 01ddb]
 DEFNAME=i_multi_stairs_crystal_ew
 TYPE=t_multi
 NAME=Crystal Stairs
@@ -450,7 +450,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Crystal Stairs (e->w)
 
-[ITEMDEF 09ddc]
+[MULTIDEF 01ddc]
 DEFNAME=i_multi_stairs_shadow_sn
 TYPE=t_multi
 NAME=Shadow Stairs
@@ -460,7 +460,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Shadow Stairs (s->n)
 
-[ITEMDEF 09ddd]
+[MULTIDEF 01ddd]
 DEFNAME=i_multi_stairs_shadow_we
 TYPE=t_multi
 NAME=Shadow Stairs
@@ -470,7 +470,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Shadow Stairs (w->e)
 
-[ITEMDEF 09dde]
+[MULTIDEF 01dde]
 DEFNAME=i_multi_stairs_shadow_ns
 TYPE=t_multi
 NAME=Shadow Stairs
@@ -480,7 +480,7 @@ CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Shadow Stairs (n->s)
 
-[ITEMDEF 09ddf]
+[MULTIDEF 01ddf]
 DEFNAME=i_multi_stairs_shadow_ew
 TYPE=t_multi
 NAME=Shadow Stairs
