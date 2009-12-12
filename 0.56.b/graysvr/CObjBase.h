@@ -2267,7 +2267,7 @@ private:
 #define STATF_HasShield		0x00010000	// Using a shield
 #define STATF_ArcherCanMove	0x00020000	// Can move with archery
 #define STATF_Stone			0x00040000	// turned to stone.
-//							0x00080000
+#define STATF_Hovering		0x00080000	// hovering (flying gargoyle)
 #define STATF_Fly			0x00100000	// Flying or running ? (anim)
 //							0x00200000
 #define STATF_Hallucinating	0x00400000	// eat 'shrooms or bad food.
@@ -2898,6 +2898,9 @@ public:
 			return( 0xFFFF );
 		CCharBase * pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
+		if ( IsStatFlag(STATF_Hovering) )
+			return pCharDef->m_Can | CAN_C_HOVER;
+
 		return( pCharDef->m_Can );
 	}
 

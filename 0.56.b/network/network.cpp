@@ -514,6 +514,7 @@ void NetworkIn::onStart(void)
 	registerExtended(EXTDATA_HouseDesignDet, new PacketHouseDesignReq());		// house design request
 	registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown
 	registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());			//
+	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				//
 
 	// encoded packets (0xD7)
 	registerEncoded(EXTAOS_HcBackup, new PacketHouseDesignBackup());			// house design - backup

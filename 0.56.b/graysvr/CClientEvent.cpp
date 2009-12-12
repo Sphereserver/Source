@@ -721,13 +721,13 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 					switch (m_pChar->m_pPlayer->m_speedMode)
 					{
 						case 0: // Normal Speed
-							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse )? 70 : 140; // it should check of walking (80 - 160)
+							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 70 : 140; // it should check of walking (80 - 160)
 							break;
 						case 1: // Foot=Double Speed, Mount=Normal
 							iTimeMin = 70;
 							break;
 						case 2: // Foot=Always Walk, Mount=Always Walk (Half Speed)
-							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse )? 140 : 280;
+							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 140 : 280;
 							break;
 						case 3: // Foot=Always Run, Mount=Always Walk
 						default:
@@ -736,7 +736,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 					}
 				}
 				else
-					iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse ) ? 70 : 140;
+					iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering ) ? 70 : 140;
 
 				if ( iTimeDiff > iTimeMin )
 				{

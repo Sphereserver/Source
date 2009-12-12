@@ -1,0 +1,26 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2009
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, December 12, 2009
+//
+VERSION=0.56b
+
+// hover over (hidden)
+[ITEMDEF 0219f]
+TYPE=t_hoverover
+
+// hover over (sparkle)
+[ITEMDEF 05683]
+TYPE=t_hoverover
+
+// hover over (hidden)
+[ITEMDEF 05690]
+TYPE=t_hoverover
+
+[EOF]

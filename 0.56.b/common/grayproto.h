@@ -353,23 +353,27 @@ enum EXTDATA_TYPE
 	EXTDATA_NewSpellSelect	= 0x1c,
 	EXTDATA_HouseDesignVer	= 0x1d,	// server
 	EXTDATA_HouseDesignDet	= 0x1e, // client
-	
+	//
 	EXTDATA_HouseCustom		= 0x20,
 	EXTDATA_Ability_Confirm	= 0x21,	// server (empty packet only id is required)
 	EXTDATA_DamagePacketOld	= 0x22,	//  server
-	
+	//
 	EXTDATA_Unk23			= 0x23,
 	EXTDATA_AntiCheat		= 0x24, // Sent by SE clients, every second or so.
 	EXTDATA_SpellSE			= 0x25,
-	EXTDATA_SpeedMode		= 0x26,
-
-
-
-
-
-	EXTDATA_BandageMacro	= 0x2c,
-
-
+	EXTDATA_SpeedMode		= 0x26, // server message
+	//
+	//
+	//
+	//
+	//
+	EXTDATA_BandageMacro	= 0x2c, // client message
+	//
+	//
+	//
+	//
+	//
+	EXTDATA_GargoyleFly		= 0x32, // client message
 	EXTDATA_QTY,
 };
 
@@ -651,6 +655,12 @@ union CExtData
 		NDWORD m_bandageSerial;
 		NDWORD m_targetSerial;
 	} BandageMacro;
+
+	struct // EXTDATA_GargoyleFly = 0x32
+	{
+		NWORD m_one;	// always 1
+		DWORD m_zero;	// always 0
+	} GargoyleFly;
 
 }PACK_NEEDED;
 

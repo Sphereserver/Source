@@ -838,7 +838,7 @@ BYTE CChar::GetHeightMount( bool fEyeSubstract ) const
 {
 	ADDTOCALLSTACK("CChar::GetHeightMount");
 	BYTE Height = GetHeight();
-	if ( IsStatFlag(STATF_OnHorse) )
+	if ( IsStatFlag(STATF_OnHorse|STATF_Hovering) )
 		Height += 4;
 	if ( fEyeSubstract )
 		--Height;

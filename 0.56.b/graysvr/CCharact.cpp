@@ -2515,7 +2515,7 @@ bool CChar::Death()
 
 	// create the corpse item.
 	StatFlag_Set(STATF_DEAD);
-	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping);
+	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
 	Stat_SetVal(STAT_STR, 0);
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
@@ -2919,7 +2919,7 @@ void CChar::CheckRevealOnMove()
 		// Wake up if sleeping and this is possible.
 		bool bReveal = false;
 
-		if ( IsStatFlag(STATF_Fly|STATF_Sleeping) || !IsStatFlag(STATF_Hidden) ||
+		if ( IsStatFlag(STATF_Fly|STATF_Sleeping|STATF_Hovering) || !IsStatFlag(STATF_Hidden) ||
 			!Skill_UseQuick(SKILL_STEALTH, Calc_GetRandVal(105)) )
 			bReveal = true;
 
@@ -3092,7 +3092,7 @@ bool CChar::CheckLocation( bool fStanding )
 			return( true );
 		case IT_SHIP_PLANK:
 			// a plank is a teleporter off the ship.
-			if ( ! fStanding && ! IsStatFlag( STATF_Fly ))
+			if ( ! fStanding && ! IsStatFlag( STATF_Fly|STATF_Hovering ))
 			{
 				// Find some place to go. (in direction of plank)
 				if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )

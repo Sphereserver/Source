@@ -874,6 +874,14 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, WORD & wBlockFlags, b
 	if ( block.m_Top.m_dwBlockFlags )
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
+	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
+	{
+		if ( wCan & CAN_C_HOVER )
+			wBlockFlags = 0; // we can hover over this
+		else
+			wBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
+	}
+
 	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( wCan & CAN_C_WALK ))
 	{
 		wBlockFlags &= ~CAN_I_CLIMB;
@@ -940,7 +948,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 					if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
 					{
 						zHeight = pItemDef->GetHeight();
-						wBlockThis = ( pItemDef->m_Can & 0x7f ); //Use only Block flags, other remove
+						wBlockThis = ( pItemDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove
 					}
 					else //non-parent item
 					{
@@ -949,12 +957,12 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 						{
 							g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
 							zHeight = pItemDef->GetHeight();
-							wBlockThis = ( pItemDef->m_Can & 0x7f );
+							wBlockThis = ( pItemDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) );
 						}
 						else
 						{
 							zHeight = pDupeDef->GetHeight();
-							wBlockThis = ( pDupeDef->m_Can & 0x7f ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+							wBlockThis = ( pDupeDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 						}
 					}
 				}
@@ -1040,7 +1048,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 									if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
 									{
 										zHeight = pItemDef->GetHeight();
-										wBlockThis = ( pItemDef->m_Can & 0x7f ); //Use only Block flags, other remove
+										wBlockThis = ( pItemDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove
 									}
 									else //non-parent item
 									{
@@ -1049,12 +1057,12 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 										{
 											g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
 											zHeight = pDupeDef->GetHeight();
-											wBlockThis = ( pDupeDef->m_Can & 0x7f ); 
+											wBlockThis = ( pDupeDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); 
 										}
 										else
 										{
 											zHeight = pDupeDef->GetHeight();
-											wBlockThis = ( pDupeDef->m_Can & 0x7f ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+											wBlockThis = ( pDupeDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 										}
 									}
 								}
@@ -1108,7 +1116,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 				if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
 				{
 					zHeight = pItemDef->GetHeight();
-					wBlockThis = ( pItemDef->m_Can & 0x7f ); //Use only Block flags, other remove
+					wBlockThis = ( pItemDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove
 				}
 				else //non-parent item
 				{
@@ -1117,12 +1125,12 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
 						zHeight = pItemDef->GetHeight();
-						wBlockThis = ( pItemDef->m_Can & 0x7f );
+						wBlockThis = ( pItemDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) );
 					}
 					else
 					{
 						zHeight = pDupeDef->GetHeight();
-						wBlockThis = ( pDupeDef->m_Can & 0x7f ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+						wBlockThis = ( pDupeDef->m_Can & (CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER) ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 					}
 				}
 			}
@@ -1194,6 +1202,15 @@ signed char CWorld::GetHeightPoint_New( const CPointBase & pt, WORD & wBlockFlag
 	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
 	if ( block.m_Top.m_dwBlockFlags )
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
+
+	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
+	{
+		if ( wCan & CAN_C_HOVER )
+			wBlockFlags = 0; // we can hover over this
+		else
+			wBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
+	}
+
 	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( wCan & CAN_C_WALK ))
 	{
 		wBlockFlags &= ~CAN_I_CLIMB;

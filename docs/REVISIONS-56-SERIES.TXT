@@ -4547,10 +4547,27 @@ ALPHA additions:
 - Added: spherechar_sa.scp (Added gargoyle character definitions)
 - Added: sphere_item_provisions_alchemy_magic_sa.scp (Added mysticism spellbook and scrolls)
 - Added: sphere_map5.scp, sphere_map_points5.scp (Added SA map areas)
-- Updated: sphere_defs.scp (Added defname for RDS_SA RESDISP, t_spellbook_mystic)
+- Updated: sphere_defs.scp (Added defnames for RDS_SA RESDISP, t_spellbook_mystic)
 - Updated: sphere_serv_triggers.scp (Updated description for f_onchar_create)
 - Updated: sphere_skills.scp (Added base definitions for mysticism, imbuing and throwing skills)
 - Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
   sphere_item_multis_stairs.scp (Increased multi IDs by 04000)
 - Updated: spheretables.scp (Added sphere_map5.scp and sphere_map_points5.scp to resources,
   commented out by default)
+
+12-12-2009, MrSugarCube
+- Added: Support for gargoyle flying ability. Flying characters will have statf_hovering set
+  on their FLAGS property and will be allowed to pass over items that have the CAN_I_HOVER
+  flag set.
+  The exact effects of the statf_hovering flag are:
+   - Can pass over hidden 'hover over' tiles to get to special areas
+   - Can move at the same speed as a mounted player
+   - Height is increased by 4 in LOS/movement checks (same effects as when mounted)
+   - When stamina is lost on movement, the running penalty is always applied
+   - Always revealed when moving whilst hidden
+   - Will not teleport off ships when moving on to a ship plank
+
+12-12-2009, MrSugarCube (Script pack)
+- Updated: sphere_defs.scp (Added defnames for statf_hovering, mt_hover, can_i_hover,
+  tilef_hoverover, t_hoverover)
+- Added: sphere_item_ground_tiles_sa.scp (Added hover-over item definitions)

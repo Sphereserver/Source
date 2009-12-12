@@ -2276,7 +2276,7 @@ struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 #define UFLAG3_EQUIP2		0x00400000	//16= equipable (not sure why there are 2 of these)
 #define UFLAG3_LIGHT		0x00800000	//17= light source
 #define UFLAG4_ANIM			0x01000000	//18= animation with next several object frames.
-#define UFLAG4_UNK1			0x02000000	//19= 3 items = archway, easel, fountain - I have no idea.
+#define UFLAG4_HOVEROVER	0x02000000  //19= item can be hovered over (SA tiledata) (older tiledata has this applied to archway, easel, fountain - unknown purpose)
 #define UFLAG4_WALL3		0x04000000	//1a= tend to be types of walls ? I have no idea.
 #define UFLAG4_BODYITEM		0x08000000	//1b= Whole body item (ex.British", "Blackthorne", "GM Robe" and "Death shroud")
 #define UFLAG4_ROOF			0x10000000	//1c=

@@ -674,7 +674,7 @@ inline signed char CItemBase::GetItemHeightFlags( const CUOItemTypeRec & tiledat
 	{
 		//DEBUG_ERR(("tiledata.m_flags 0x%x\n",tiledata.m_flags));
 		wBlockThis = 0;
-		if ( ! ( tiledata.m_flags & (UFLAG2_PLATFORM|UFLAG4_ROOF) ))
+		if ( ! ( tiledata.m_flags & (UFLAG2_PLATFORM|UFLAG4_ROOF|UFLAG4_HOVEROVER) ))
 			return 0;	// have no effective height if it doesn't block.
 	}
 	if ( IsSetEF( EF_WalkCheck ) )
@@ -700,6 +700,8 @@ inline signed char CItemBase::GetItemHeightFlags( const CUOItemTypeRec & tiledat
 		// actual standing height is height/2
 		wBlockThis |= CAN_I_CLIMB;
 	}
+	if ( tiledata.m_flags & UFLAG4_HOVEROVER )
+		wBlockThis |= CAN_I_HOVER;
 	//DEBUG_WARN(("tiledata.m_height(%d)\n",tiledata.m_height));
 	return( tiledata.m_height );
 }

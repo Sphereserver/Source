@@ -689,8 +689,16 @@ BYTE CChar::GetModeFlag( bool fTrueSight, CClient* pViewer ) const
 {
 	ADDTOCALLSTACK("CChar::GetModeFlag");
 	BYTE mode = 0;
-	if (pViewer == NULL || (pViewer->GetNetState()->isClientLessVersion(MINCLIVER_SA) && pViewer->GetNetState()->isClientSA() == false))
+
+	if (pViewer != NULL && (pViewer->GetNetState()->isClientVersion(MINCLIVER_SA) || pViewer->GetNetState()->isClientSA()))
 	{
+		// only SA clients support these flags
+		if ( IsStatFlag( STATF_Hovering ) )
+			mode |= CHARMODE_FLYING;
+	}
+	else
+	{
+		// SA clients don't support these flags
 		if ( IsStatFlag( STATF_Poisoned ))
 			mode |= CHARMODE_POISON;
 		if ( IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone) )
@@ -2295,6 +2303,9 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	}
 
 	WORD wBlockFlags = wCan;
+	if ( IsStatFlag(STATF_Hovering) )
+		wBlockFlags |= CAN_C_HOVER;
+
 	signed char z = g_World.GetHeightPoint( ptDest, wBlockFlags, true );
 	if ( wCan != 0xFFFF )
 	{
@@ -2386,7 +2397,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 
 	WORD wCan = GetMoveBlockFlags();
 	WARNWALK(("GetMoveBlockFlags() (0x%x)\n",wCan));
-	if ( !( wCan & (CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY |CAN_C_RUN ) ) )
+	if ( !(wCan & (CAN_C_SWIM |CAN_C_WALK |CAN_C_FLY |CAN_C_RUN |CAN_C_HOVER)))
 		return NULL;  // cannot move at all, so WTF?
 
 
@@ -2431,34 +2442,24 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 		ASSERT(pCharDef);
 
 		if ( ( wBlockFlags & CAN_I_DOOR ) && ! pCharDef->Can( CAN_C_GHOST ))
-		{
 			wBlockFlags |= CAN_I_BLOCK;
-		}
-		if ( ( wBlockFlags & CAN_I_WATER ) && ! pCharDef->Can( CAN_C_SWIM ))
-		{
+		else if ( ( wBlockFlags & CAN_I_WATER ) && ! pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags |= CAN_I_BLOCK;
-		}
-		if ( ( wBlockFlags & CAN_I_ROOF ) && ! pCharDef->Can( CAN_C_INDOORS ))
-		{
+		else if ( ( wBlockFlags & CAN_I_ROOF ) && ! pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags |= CAN_I_BLOCK;
-		}
+		else if ( ( wBlockFlags & CAN_I_HOVER ) && ! pCharDef->Can( CAN_C_HOVER ) && ! IsStatFlag(STATF_Hovering))
+			wBlockFlags |= CAN_I_BLOCK;
 
 		if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
-		{
 			wBlockFlags &= ~CAN_I_BLOCK;
-		}
-		if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
-		{
+		else if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags &= ~CAN_I_BLOCK;
-		}
-		if ( ( wBlockFlags & CAN_I_PLATFORM ) && pCharDef->Can( CAN_C_WALK ))
-		{
+		else if ( ( wBlockFlags & CAN_I_PLATFORM ) && pCharDef->Can( CAN_C_WALK ))
 			wBlockFlags &= ~CAN_I_BLOCK;
-		}
-		if ( ( wBlockFlags & CAN_I_ROOF ) && pCharDef->Can( CAN_C_INDOORS ))
-		{
+		else if ( ( wBlockFlags & CAN_I_ROOF ) && pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags &= ~CAN_I_BLOCK;
-		}
+		else if ( ( wBlockFlags & CAN_I_HOVER ) && (pCharDef->Can( CAN_C_HOVER ) || IsStatFlag(STATF_Hovering)))
+			wBlockFlags &= ~CAN_I_BLOCK;
 
 		//DEBUG_ERR(("wBlockFlags (0%x) pCharDef->m_Can (0%x)\n",wBlockFlags,pCharDef->m_Can));
 		if ( ! pCharDef->Can( CAN_C_FLY ))

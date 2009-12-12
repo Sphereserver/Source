@@ -2873,6 +2873,67 @@ bool PacketBandageMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x32 : PacketGargoyleFly			gargoyle toggle flying
+ *
+ *
+ ***************************************************************************/
+PacketGargoyleFly::PacketGargoyleFly() : Packet(-1)
+{
+}
+
+bool PacketGargoyleFly::onReceive(NetState* net)
+{
+	CClient* client = net->getClient();
+	ASSERT(client);
+	CChar* character = client->GetChar();
+	if (character == NULL)
+		return false;
+
+#ifdef _DEBUG
+	int one = readInt16();
+	int zero = readInt32();
+
+	if (one != 1 || zero != 0)
+		g_Log.EventDebug("Unexpected flying parameters: %d, %d.\n", one, zero);
+
+#endif
+
+	switch (character->GetDispID())
+	{
+		case CREID_GARGMAN:
+		case CREID_GARGWOMAN:
+		case CREID_GARGGHOSTMAN:
+		case CREID_GARGGHOSTWOMAN:
+			if (character->IsStatFlag(STATF_DEAD))
+				break;
+
+			if (character->IsStatFlag(STATF_Hovering))
+			{
+				// stop hovering
+				character->StatFlag_Clear(STATF_Hovering);
+			}
+			else
+			{
+				// begin hovering
+				character->StatFlag_Set(STATF_Hovering);
+
+				// float player up to the hover Z
+				CPointMap ptHover = g_World.FindItemTypeNearby(character->GetTopPoint(), IT_HOVEROVER, 0, false, false);
+				if (ptHover.IsValidPoint())
+					character->MoveTo(ptHover);
+			}
+
+			character->UpdateModeFlag();
+			break;
+	}
+
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xC2 : PacketPromptResponseUnicode		prompt response (unicode)
  *
  *

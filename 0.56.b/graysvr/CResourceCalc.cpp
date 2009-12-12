@@ -60,7 +60,7 @@ int CResource::Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent )
 
 	CVarDefCont * pVal = pChar->GetKey("OVERRIDE.RUNNINGPENALTY",true);
 
-	if ( pChar->IsStatFlag( STATF_Fly ))	// i'm running ?
+	if ( pChar->IsStatFlag( STATF_Fly|STATF_Hovering ))	// i'm running ?
 	{
 		iWeightLoadPercent += pVal ? pVal->GetValNum() : m_iStamRunningPenalty;
 	}

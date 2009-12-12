@@ -83,6 +83,7 @@ struct CGrayMapBlockState
 	//		CAN_C_PASSWALLS	= walk through all blcking items - CAN_I_BLOCK = UFLAG1_BLOCK
 	//		CAN_C_FLY  = gravity does not effect me. -  CAN_I_CLIMB = UFLAG2_CLIMBABLE
 	//		CAN_C_FIRE_IMMUNE = i can walk into lava etc. - CAN_I_FIRE = UFLAG1_DAMAGE
+	//		CAN_C_HOVER = i can follow hover routes. - CAN_I_HOVER = UFLAG4_HOVEROVER
 
 	const DWORD m_dwBlockFlags;	// The block flags we can overcome.	
 	const signed char m_z;	// the z we start at. (stay at if we are flying)

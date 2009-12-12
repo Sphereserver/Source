@@ -47,6 +47,7 @@ public:
 #define CAN_C_FLY			0x0010	// Mongbat etc.
 #define CAN_C_FIRE_IMMUNE	0x0020	// Has some immunity to fire ? (will walk into it (lava))
 #define CAN_C_INDOORS		0x0040	// Can go under roof. Not really used except to mask.
+#define CAN_C_HOVER			0x0080	// Can hover.
 
 #define CAN_I_DOOR			0x0001	// Is a door UFLAG4_DOOR
 #define CAN_I_WATER			0x0002	// Need to swim in it. UFLAG1_WATER
@@ -55,6 +56,7 @@ public:
 #define CAN_I_CLIMB			0x0010	// step up on it, UFLAG2_CLIMBABLE
 #define CAN_I_FIRE			0x0020	// Is a fire. Ussually blocks as well. UFLAG1_DAMAGE
 #define CAN_I_ROOF			0x0040	// We are under a roof. can't rain on us. UFLAG4_ROOF
+#define CAN_I_HOVER			0x0080	// We are hovering. UFLAG4_HOVEROVER
 
 	// CItemBase specific defs.
 #define CAN_I_PILE			0x0100	// Can item be piled UFLAG2_STACKABLE (*.mul)
@@ -381,6 +383,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_ARCANIST,	// 189 = ML Spellweaver spellbook (should have MOREZ=600 by default)
 	IT_MULTI_CUSTOM,	// 190 = Customisable multi
 	IT_SPELLBOOK_MYSTIC,	// 191 = SA Mysticism spellbook (should have MOREX=677 by default)
+	IT_HOVEROVER,		// 192 = Hover-over item (CAN_C_HOVER can hover over blocking items)
 
 	IT_QTY,
 	IT_TRIGGER = 1000,	// custom triggers starts from here

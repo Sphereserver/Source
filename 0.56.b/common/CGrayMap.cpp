@@ -87,6 +87,10 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 
 	if ( zTop < m_Bottom.m_z )	// below something i can already step on.
 		return true;
+	
+	// hover flag has no effect for non-hovering entities
+	if ( (wItemBlockFlags & CAN_I_HOVER) && !(m_dwBlockFlags & CAN_C_HOVER) )
+		wItemBlockFlags &= ~CAN_I_HOVER;
 
 	if ( ! wItemBlockFlags )	// no effect.
 		return( true );
@@ -152,6 +156,10 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	// RETURN:
 	//  true = continue processing
 
+	// hover flag has no effect for non-hovering entities
+	if ( (wItemBlockFlags & CAN_I_HOVER) && !(m_dwBlockFlags & CAN_C_HOVER) )
+		wItemBlockFlags &= ~CAN_I_HOVER;
+
 	if ( ! wItemBlockFlags )	// no effect.
 		return( true );
 
@@ -182,7 +190,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 
 	if ( ! ( wItemBlockFlags &~ m_dwBlockFlags ))
 	{	// this does not block me.
-		if ( ! ( wItemBlockFlags & ( CAN_I_CLIMB | CAN_I_PLATFORM ) ) )
+		if ( ! ( wItemBlockFlags & ( CAN_I_CLIMB | CAN_I_PLATFORM | CAN_I_HOVER ) ) )
 		{
 			return true;
 		}

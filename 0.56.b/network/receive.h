@@ -943,6 +943,20 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x32 : PacketGargoyleFly			gargoyle toggle flying
+ *
+ *
+ ***************************************************************************/
+class PacketGargoyleFly : public Packet
+{
+public:
+	PacketGargoyleFly();
+	virtual bool onReceive(NetState* net);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xC2 : PacketPromptResponseUnicode		prompt response (unicode)
  *
  *
