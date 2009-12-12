@@ -3489,7 +3489,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
 
-	TRIGRET_TYPE iRet;
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	EXC_TRY("Trigger");
 	// 1) Triggers installed on characters, sensitive to actions on all chars
@@ -3531,7 +3531,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		if ( !pLink->ResourceLock(s) )
 			continue;
 
-		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 			return iRet;
 
@@ -3555,7 +3555,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			CResourceLock s;
 			if ( !pLink->ResourceLock(s) )
 				continue;
-			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
 		}
@@ -3570,7 +3570,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			CResourceLock s;
 			if ( !pLink->ResourceLock(s) )
 				continue;
-			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
 		}
@@ -3605,7 +3605,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			CResourceLock s;
 			if ( !pLink->ResourceLock(s) )
 				continue;
-			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
 		}
@@ -3615,7 +3615,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_DEBUG_START;
 	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, (DWORD)GetUID());
 	EXC_DEBUG_END;
-	return TRIGRET_RET_DEFAULT;
+	return iRet;
 }
 
 void CChar::OnTickFood()

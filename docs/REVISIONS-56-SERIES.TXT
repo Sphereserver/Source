@@ -4536,11 +4536,11 @@ ALPHA additions:
   2=elf, 3=gargoyle).
 - Added: Basic support for mysticism spellbook and skill (the actual spell effects need to be
   scripted).
-- Added: Support for the increased tiledata size in client 7.0.0+. As a consequence, multis
-  must now start from 08000 instead of 04000 and scripts must be adjusted accordingly (the
-  default script pack has been updated). If an older client encounters an item within the
+- Added #1657: Support for the increased tiledata size in client 7.0.0+. As a consequence,
+  multis must now start from 08000 instead of 04000 and scripts must be adjusted accordingly
+  (the default script pack has been updated). If an older client encounters an item within the
   04000-07fff range they will only see a worldgem bit (01ea7).
-- Fixed: Status bar not correctly showing green or yellow in 7.0.0+ clients.
+- Fixed #1661: Status bar not correctly showing green or yellow in 7.0.0+ clients.
 - Modified: The size of Map5.mul is now automatically detected.
 
 06-12-2009, MrSugarCube (Script pack)
@@ -4571,6 +4571,7 @@ ALPHA additions:
   automatically be increased by 08000. Items defined with this are still accessible as normal
   via SERV.ITEMDEF.id(+08000)/defname, or SERV.MULTIDEF.id/defname can be used if you prefer
   for consistency.
+- Fixed #1672: Situations where returning 0 in a trigger would return as 2.
 
 12-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_defs.scp (Added defnames for statf_hovering, mt_hover, can_i_hover,

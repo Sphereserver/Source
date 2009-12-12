@@ -2913,7 +2913,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		if ( !pLink->ResourceLock(s) )
 			continue;
 
-		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 			return iRet;
 
@@ -2936,7 +2936,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) )
 			continue;
-		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 			return iRet;
 	}
