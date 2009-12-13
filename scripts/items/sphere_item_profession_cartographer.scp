@@ -11,8 +11,7 @@
 //
 VERSION=0.56b
 
-[ITEMDEF 04261]
-DEFNAME=i_map_blank
+[ITEMDEF i_map_blank]
 ID=i_map
 NAME=Blank Map
 TYPE=T_MAP_BLANK
@@ -25,8 +24,7 @@ ON=@Create
 	MORE1=0
 	MORE2=0
 
-[ITEMDEF 04262]
-DEFNAME=i_map_STOCK_1
+[ITEMDEF i_map_STOCK_1]
 ID=i_map
 TYPE=T_MAP
 NAME=Map of Vesper
@@ -40,8 +38,7 @@ ON=@Create
 	MORE2=0bf803f4
 	MORE1=0a4c0250
 
-[ITEMDEF 04263]
-DEFNAME=i_map_STOCK_2
+[ITEMDEF i_map_STOCK_2]
 ID=i_map
 NAME=Map of Yew
 TYPE=T_MAP
@@ -55,8 +52,7 @@ ON=@Create
 	MORE2=02fe04f5
 	MORE1=00ec02e5
 
-[ITEMDEF 04264]
-DEFNAME=i_map_STOCK_3
+[ITEMDEF i_map_STOCK_3]
 ID=i_map
 NAME=Map of Skara Brae
 TYPE=T_MAP
@@ -70,8 +66,7 @@ ON=@Create
 	MORE2=03c00994
 	MORE1=020c0810
 
-[ITEMDEF 04265]
-DEFNAME=i_map_STOCK_4
+[ITEMDEF i_map_STOCK_4]
 ID=i_map
 NAME=Map of Jhelom
 TYPE=T_MAP
@@ -85,8 +80,7 @@ ON=@Create
 	MORE2=05f80fd8
 	MORE1=04400df4
 
-[ITEMDEF 04266]
-DEFNAME=i_map_STOCK_5
+[ITEMDEF i_map_STOCK_5]
 ID=i_map
 NAME=Map of Trinsic
 TYPE=T_MAP
@@ -100,9 +94,8 @@ ON=@Create
 	MORE2=08460b88
 	MORE1=07000a46
 
-[ITEMDEF 04267]
+[ITEMDEF i_map_STOCK_6]
 // Map of Minoc template
-DEFNAME=i_map_STOCK_6
 ID=i_map
 NAME=Map of Minoc
 TYPE=T_MAP
@@ -116,8 +109,7 @@ ON=@Create
 	MORE2=0a9202be
 	MORE1=09380164
 
-[ITEMDEF 04268]
-DEFNAME=i_map_STOCK_7
+[ITEMDEF i_map_STOCK_7]
 // Map of Bucaneer's Den template
 ID=i_map
 NAME=Map of Bucaneer's Den
@@ -132,8 +124,7 @@ ON=@Create
 	MORE2=0acf08d7
 	MORE1=0a380818
 
-[ITEMDEF 04269]
-DEFNAME=i_map_STOCK_8
+[ITEMDEF i_map_STOCK_8]
 // Map of Serpent's Hold template
 ID=i_map
 NAME=Map of Serpent's Hold
@@ -148,8 +139,7 @@ ON=@Create
 	MORE2=0c1c0e37
 	MORE1=0a9a0d01
 
-[ITEMDEF 0426a]
-DEFNAME=i_map_STOCK_9
+[ITEMDEF i_map_STOCK_9]
 // Map of Nujelm template
 ID=i_map
 NAME=Map of Nujelm
@@ -164,8 +154,7 @@ ON=@Create
 	MORE2=0ef80590
 	MORE1=0d760406
 
-[ITEMDEF 0426b]
-DEFNAME=i_map_STOCK_10
+[ITEMDEF i_map_STOCK_10]
 // Map of Magincia template
 ID=i_map
 NAME=Map of Magincia
@@ -180,8 +169,7 @@ ON=@Create
 	MORE2=0eea08fa
 	MORE1=0dca07e6
 
-[ITEMDEF 0426c]
-DEFNAME=i_map_STOCK_11
+[ITEMDEF i_map_STOCK_11]
 // Map of Ocllo template
 ID=i_map
 NAME=Map of Ocllo
@@ -196,8 +184,7 @@ ON=@Create
 	MORE2=0eba0ab6
 	MORE1=0dfe0998
 
-[ITEMDEF 0426d]
-DEFNAME=i_map_STOCK_12
+[ITEMDEF i_map_STOCK_12]
 // Map of Moonglow template
 ID=i_map
 NAME=Map of Moonglow
@@ -212,8 +199,7 @@ ON=@Create
 	MORE2=0127c05f8
 	MORE1=0103c0328
 
-[ITEMDEF 0426e]
-DEFNAME=i_map_STOCK_13
+[ITEMDEF i_map_STOCK_13]
 // Map of Britain template
 ID=i_map
 NAME=Map of Britain
@@ -228,8 +214,7 @@ ON=@Create
 	MORE2=06c80784
 	MORE1=04440574
 
-[ITEMDEF 0426f]
-DEFNAME=i_map_STOCK_14
+[ITEMDEF i_map_STOCK_14]
 // Map of Minoc to Yew template
 ID=i_map
 NAME=Map of Minoc to Yew
@@ -244,8 +229,7 @@ ON=@Create
 	MORE2=09000c00
 	MORE1=00000100
 
-[ITEMDEF 04270]
-DEFNAME=i_map_STOCK_15
+[ITEMDEF i_map_STOCK_15]
 // Map of Minoc to Vesper template
 ID=i_map
 NAME=Map of Minoc to Vesper
@@ -260,8 +244,7 @@ ON=@Create
 	MORE2=0b3e02ea
 	MORE1=09a3023c
 
-[ITEMDEF 04271]
-DEFNAME=i_map_STOCK_16
+[ITEMDEF i_map_STOCK_16]
 // Map of Britain to Trinsic template
 ID=i_map
 NAME=Map of Britain to Trinsic
@@ -276,8 +259,7 @@ ON=@Create
 	MORE2=09000c00
 	MORE1=04000500
 
-[ITEMDEF 04272]
-DEFNAME=i_map_STOCK_17
+[ITEMDEF i_map_STOCK_17]
 // Map of Trinsic to Bucaneer's Den template
 ID=i_map
 NAME=Map of Trinsic to Bucaneer's Den
@@ -292,8 +274,7 @@ ON=@Create
 	MORE2=0c000c00
 	MORE1=07000700
 
-[ITEMDEF 04273]
-DEFNAME=i_map_STOCK_18
+[ITEMDEF i_map_STOCK_18]
 // Map of Bucaneer's Den to Ocllo template
 ID=i_map
 NAME=Map of Bucaneer's Den to Ocllo
@@ -308,8 +289,7 @@ ON=@Create
 	MORE2=0f000c00
 	MORE1=0a000700
 
-[ITEMDEF 04274]
-DEFNAME=i_map_STOCK_19
+[ITEMDEF i_map_STOCK_19]
 // Map of Trinsic to Jhelom template
 ID=i_map
 NAME=Map of Trinsic to Jhelom
@@ -324,8 +304,7 @@ ON=@Create
 	MORE2=09000fff
 	MORE1=01000700
 
-[ITEMDEF 04275]
-DEFNAME=i_map_STOCK_20
+[ITEMDEF i_map_STOCK_20]
 // Map of Vesper to Nujelm template
 ID=i_map
 NAME=Map of Vesper to Nujelm
@@ -340,8 +319,7 @@ ON=@Create
 	MORE2=0f000600
 	MORE1=0a4c0250
 
-[ITEMDEF 04276]
-DEFNAME=i_map_STOCK_21
+[ITEMDEF i_map_STOCK_21]
 // Map of Nujelm to Magincia template
 ID=i_map
 NAME=Map of Nujelm to Magincia
@@ -356,8 +334,7 @@ ON=@Create
 	MORE2=0f000900
 	MORE1=0d000400
 
-[ITEMDEF 04277]
-DEFNAME=i_map_STOCK_22
+[ITEMDEF i_map_STOCK_22]
 // Map of Bucden to Magincia template
 ID=i_map
 NAME=Map of Bucden to Magincia
@@ -372,8 +349,7 @@ ON=@Create
 	MORE2=0f000a00
 	MORE1=0a000700
 
-[ITEMDEF 04278]
-DEFNAME=i_map_STOCK_23
+[ITEMDEF i_map_STOCK_23]
 // Map of Magincia to Ocllo template
 ID=i_map
 NAME=Map of Magincia to Ocllo
@@ -388,8 +364,7 @@ ON=@Create
 	MORE2=0f000900
 	MORE1=0d000700
 
-[ITEMDEF 04279]
-DEFNAME=i_map_STOCK_24
+[ITEMDEF i_map_STOCK_24]
 // Map of Serpent's Hold to Ocllo template
 ID=i_map
 NAME=Map of Serpent's Hold to Ocllo
@@ -404,8 +379,7 @@ ON=@Create
 	MORE2=0f000f00
 	MORE1=0a000a00
 
-[ITEMDEF 0427a]
-DEFNAME=i_map_STOCK_25
+[ITEMDEF i_map_STOCK_25]
 // Map of Moonglow to Nujelm template
 ID=i_map
 NAME=Map of Moonglow to Nujelm
@@ -420,8 +394,7 @@ ON=@Create
 	MORE2=013000600
 	MORE1=00d000300
 
-[ITEMDEF 0427b]
-DEFNAME=i_map_STOCK_26
+[ITEMDEF i_map_STOCK_26]
 // Map of Yew to Britain template
 ID=i_map
 NAME=Map of Yew to Britain
@@ -436,8 +409,7 @@ ON=@Create
 	MORE2=07000800
 	MORE1=00000200
 
-[ITEMDEF 0427c]
-DEFNAME=i_map_STOCK_27
+[ITEMDEF i_map_STOCK_27]
 // Map of Britain to Skara Brae template
 ID=i_map
 NAME=Map of Britain to Skara Brae
@@ -452,8 +424,7 @@ ON=@Create
 	MORE2=06c80a00
 	MORE1=01000700
 
-[ITEMDEF 0427d]
-DEFNAME=i_map_STOCK_28
+[ITEMDEF i_map_STOCK_28]
 ID=i_map
 NAME=Map of the World
 TYPE=T_MAP

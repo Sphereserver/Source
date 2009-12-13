@@ -4571,6 +4571,7 @@ ALPHA additions:
   automatically be increased by 08000. Items defined with this are still accessible as normal
   via SERV.ITEMDEF.id(+08000)/defname, or SERV.MULTIDEF.id/defname can be used if you prefer
   for consistency.
+- Added #1674: PINS property to maps, to return the number of pins on the map.
 - Fixed #1672: Situations where returning 0 in a trigger would return as 2.
 
 12-12-2009, MrSugarCube (Script pack)
@@ -4579,3 +4580,9 @@ ALPHA additions:
 - Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
   sphere_item_multis_stairs.scp (Replaced multi ITEMDEFs with MULTIDEFs)
 - Added: sphere_item_ground_tiles_sa.scp (Added hover-over item definitions)
+- Updated: sphere_item_magic_armor.scp, sphere_item_magic_leather.scp,
+  sphere_item_magic_weapon.scp, sphere_item_misc.scp, sphere_item_profession_cartographer.scp,
+  sphere_item_provisions_armor_color.scp, sphere_item_provisions_deed.scp,
+  sphere_item_provisions_ore.scp (Replaced custom script IDs with defnames to fix conflicts
+  with new tiledata size -- some items did not have a defname so watch out if you have any of
+  these in an existing world save)

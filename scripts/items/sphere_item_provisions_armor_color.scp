@@ -15,8 +15,7 @@ VERSION=0.56b
 //
 // Ore colored armor
 
-[ITEMDEF 04554]
-DEFNAME=i_GOLDEN_PLATEMAIL_ARMS
+[ITEMDEF i_GOLDEN_PLATEMAIL_ARMS]
 NAME=Golden Platemail Arms
 ID=i_platemail_arms
 ARMOR=30
@@ -32,8 +31,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={51 65}
 
-[ITEMDEF 04555]
-DEFNAME=i_GOLDEN_PLATEMAIL_leggings
+[ITEMDEF i_GOLDEN_PLATEMAIL_leggings]
 NAME=Golden Platemail Legs
 ID=i_platemail_leggings
 WEIGHT=15
@@ -49,8 +47,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={51 65}
 
-[ITEMDEF 04556]
-DEFNAME=i_GOLDEN_PLATE_HELM
+[ITEMDEF i_GOLDEN_PLATE_HELM]
 NAME=Golden Plate Helm
 ID=i_platemail_helm
 ARMOR=30
@@ -66,8 +63,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={46 58}
 
-[ITEMDEF 04557]
-DEFNAME=i_GOLDEN_PLATEMAIL_GORGET
+[ITEMDEF i_GOLDEN_PLATEMAIL_GORGET]
 NAME=Golden Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=30
@@ -83,8 +79,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={51 65}
 
-[ITEMDEF 04558]
-DEFNAME=i_GOLDEN_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_GOLDEN_PLATEMAIL_GAUNTLETS]
 NAME=Golden Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=30
@@ -100,8 +95,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={51 65}
 
-[ITEMDEF 04559]
-DEFNAME=i_GOLDEN_PLATEMAIL
+[ITEMDEF i_GOLDEN_PLATEMAIL]
 NAME=Golden Platemail
 ID=i_platemail_chest
 ARMOR=30
@@ -117,8 +111,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={51 65}
 
-[ITEMDEF 0455a]
-DEFNAME=i_GOLDEN_RINGMAIL_LEGGINGS
+[ITEMDEF i_GOLDEN_RINGMAIL_LEGGINGS]
 NAME=Golden Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=20
@@ -134,8 +127,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={41 51}
 
-[ITEMDEF 0455b]
-DEFNAME=i_GOLDEN_RINGMAIL_SLEEVES
+[ITEMDEF i_GOLDEN_RINGMAIL_SLEEVES]
 NAME=Golden Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=20
@@ -151,8 +143,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={41 51}
 
-[ITEMDEF 0455c]
-DEFNAME=i_GOLDEN_RINGMAIL_GLOVES
+[ITEMDEF i_GOLDEN_RINGMAIL_GLOVES]
 NAME=Golden Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=20
@@ -168,8 +159,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={41 51}
 
-[ITEMDEF 0455d]
-DEFNAME=i_GOLDEN_RINGMAIL_TUNIC
+[ITEMDEF i_GOLDEN_RINGMAIL_TUNIC]
 NAME=Golden Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=20
@@ -185,8 +175,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={41 51}
 
-[ITEMDEF 0455e]
-DEFNAME=i_GOLDEN_BUCKLER_SHIELD
+[ITEMDEF i_GOLDEN_BUCKLER_SHIELD]
 NAME=Golden Buckler
 ID=i_shield_buckler
 ARMOR=7
@@ -202,8 +191,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS={41 51}
 
-[ITEMDEF 0455f]
-DEFNAME=i_GOLDEN_METAL_SHIELD
+[ITEMDEF i_GOLDEN_METAL_SHIELD]
 NAME=Golden Metal Shield
 ID=i_shield_round_metal
 ARMOR=11
@@ -219,8 +207,7 @@ ON=@Create
 	HITPOINTS={51 65}
 	COLOR=color_o_gold
 
-[ITEMDEF 04560]
-DEFNAME=i_COPPER_PLATEMAIL_ARMS
+[ITEMDEF i_COPPER_PLATEMAIL_ARMS]
 NAME=Copper Platemail Arms
 ID=i_platemail_arms
 ARMOR=30
@@ -236,8 +223,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={51 65}
 
-[ITEMDEF 04561]
-DEFNAME=i_COPPER_PLATEMAIL_leggings
+[ITEMDEF i_COPPER_PLATEMAIL_leggings]
 NAME=Copper Platemail Legs
 ID=i_platemail_leggings
 ARMOR=30
@@ -253,8 +239,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={51 65}
 
-[ITEMDEF 04562]
-DEFNAME=i_COPPER_PLATE_HELM
+[ITEMDEF i_COPPER_PLATE_HELM]
 NAME=Copper Plate Helm
 ID=i_platemail_helm
 ARMOR=30
@@ -270,8 +255,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={46 58}
 
-[ITEMDEF 04563]
-DEFNAME=i_COPPER_PLATEMAIL_GORGET
+[ITEMDEF i_COPPER_PLATEMAIL_GORGET]
 NAME=Copper Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=30
@@ -287,8 +271,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={51 65}
 
-[ITEMDEF 04564]
-DEFNAME=i_COPPER_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_COPPER_PLATEMAIL_GAUNTLETS]
 NAME=Copper Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=30
@@ -304,8 +287,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={51 65}
 
-[ITEMDEF 04565]
-DEFNAME=i_COPPER_PLATEMAIL
+[ITEMDEF i_COPPER_PLATEMAIL]
 NAME=Copper Platemail
 ID=i_platemail_chest
 ARMOR=30
@@ -321,8 +303,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS={51 65}
 
-[ITEMDEF 04566]
-DEFNAME=i_SILVER_PLATEMAIL_ARMS
+[ITEMDEF i_SILVER_PLATEMAIL_ARMS]
 NAME=Silver Platemail Arms
 ID=i_platemail_arms
 ARMOR=30
@@ -338,8 +319,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={51 65}
 
-[ITEMDEF 04567]
-DEFNAME=i_SILVER_PLATEMAIL_leggings
+[ITEMDEF i_SILVER_PLATEMAIL_leggings]
 NAME=Silver Platemail Legs
 ID=i_platemail_leggings
 ARMOR=30
@@ -355,8 +335,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={51 65}
 
-[ITEMDEF 04568]
-DEFNAME=i_SILVER_PLATE_HELM
+[ITEMDEF i_SILVER_PLATE_HELM]
 NAME=Silver Plate Helm
 ID=i_platemail_helm
 ARMOR=30
@@ -372,8 +351,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={46 58}
 
-[ITEMDEF 04569]
-DEFNAME=i_SILVER_PLATEMAIL_GORGET
+[ITEMDEF i_SILVER_PLATEMAIL_GORGET]
 NAME=Silver Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=30
@@ -389,8 +367,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={51 65}
 
-[ITEMDEF 0456a]
-DEFNAME=i_SILVER_RINGMAIL_LEGGINGS
+[ITEMDEF i_SILVER_RINGMAIL_LEGGINGS]
 NAME=Silver Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=20
@@ -406,8 +383,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={41 51}
 
-[ITEMDEF 0456b]
-DEFNAME=i_SILVER_RINGMAIL_SLEEVES
+[ITEMDEF i_SILVER_RINGMAIL_SLEEVES]
 NAME=Silver Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=20
@@ -423,8 +399,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={41 51}
 
-[ITEMDEF 0456c]
-DEFNAME=i_SILVER_RINGMAIL_GLOVES
+[ITEMDEF i_SILVER_RINGMAIL_GLOVES]
 NAME=Silver Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=20
@@ -440,8 +415,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS={41 51}
 
-[ITEMDEF 0456d]
-DEFNAME=i_SILVER_RINGMAIL_TUNIC
+[ITEMDEF i_SILVER_RINGMAIL_TUNIC]
 NAME=Silver Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=20
@@ -457,8 +431,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=41
 
-[ITEMDEF 0456e]
-DEFNAME=i_SILVER_BUCKLER_SHIELD
+[ITEMDEF i_SILVER_BUCKLER_SHIELD]
 NAME=Silver Buckler
 ID=i_shield_buckler
 ARMOR=7
@@ -474,8 +447,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=41
 
-[ITEMDEF 0456f]
-DEFNAME=i_SILVER_METAL_SHIELD
+[ITEMDEF i_SILVER_METAL_SHIELD]
 NAME=Silver Metal Shield
 ID=i_shield_round_metal
 ARMOR=11
@@ -491,8 +463,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_silver
 
-[ITEMDEF 04570]
-DEFNAME=i_SILVER_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_SILVER_PLATEMAIL_GAUNTLETS]
 NAME=Silver Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=30
@@ -508,8 +479,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=51
 
-[ITEMDEF 04571]
-DEFNAME=i_SILVER_PLATEMAIL
+[ITEMDEF i_SILVER_PLATEMAIL]
 NAME=Silver Platemail
 ID=i_platemail_chest
 ARMOR=30
@@ -525,8 +495,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=51
 
-[ITEMDEF 04572]
-DEFNAME=i_GOLDEN_FEMALE_PLATEMAIL
+[ITEMDEF i_GOLDEN_FEMALE_PLATEMAIL]
 NAME=Golden Platemail
 ID=i_armor_female_plate
 ARMOR=15
@@ -542,8 +511,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_gold
 
-[ITEMDEF 04573]
-DEFNAME=i_GOLDEN_CHAINMAIL_COIF
+[ITEMDEF i_GOLDEN_CHAINMAIL_COIF]
 NAME=Golden Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=23
@@ -559,8 +527,7 @@ ON=@Create
 	HITPOINTS=36
 	COLOR=color_o_gold
 
-[ITEMDEF 04574]
-DEFNAME=i_GOLDEN_CHAINMAIL_LEGGINGS
+[ITEMDEF i_GOLDEN_CHAINMAIL_LEGGINGS]
 NAME=Golden Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=23
@@ -576,8 +543,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_gold
 
-[ITEMDEF 04575]
-DEFNAME=i_GOLDEN_CHAINMAIL_TUNIC
+[ITEMDEF i_GOLDEN_CHAINMAIL_TUNIC]
 NAME=Golden Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=23
@@ -593,8 +559,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_gold
 
-[ITEMDEF 04576]
-DEFNAME=i_GOLDEN_HEATER_SHIELD
+[ITEMDEF i_GOLDEN_HEATER_SHIELD]
 NAME=Golden Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=23
@@ -610,8 +575,7 @@ ON=@Create
 	HITPOINTS=31
 	COLOR=color_o_gold
 
-[ITEMDEF 04577]
-DEFNAME=i_COPPER_FEMALE_PLATEMAIL
+[ITEMDEF i_COPPER_FEMALE_PLATEMAIL]
 NAME=Copper Platemail
 ID=i_armor_female_plate
 ARMOR=15
@@ -627,8 +591,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_copper
 
-[ITEMDEF 04578]
-DEFNAME=i_COPPER_CHAINMAIL_COIF
+[ITEMDEF i_COPPER_CHAINMAIL_COIF]
 NAME=Copper Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=23
@@ -644,8 +607,7 @@ ON=@Create
 	HITPOINTS=36
 	COLOR=color_o_copper
 
-[ITEMDEF 04579]
-DEFNAME=i_COPPER_CHAINMAIL_LEGGINGS
+[ITEMDEF i_COPPER_CHAINMAIL_LEGGINGS]
 NAME=Copper Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=23
@@ -661,8 +623,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_copper
 
-[ITEMDEF 0457a]
-DEFNAME=i_COPPER_RINGMAIL_LEGGINGS
+[ITEMDEF i_COPPER_RINGMAIL_LEGGINGS]
 NAME=Copper Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=20
@@ -678,8 +639,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=41
 
-[ITEMDEF 0457b]
-DEFNAME=i_COPPER_RINGMAIL_SLEEVES
+[ITEMDEF i_COPPER_RINGMAIL_SLEEVES]
 NAME=Copper Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=20
@@ -695,8 +655,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=41
 
-[ITEMDEF 0457c]
-DEFNAME=i_COPPER_RINGMAIL_GLOVES
+[ITEMDEF i_COPPER_RINGMAIL_GLOVES]
 NAME=Copper Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=20
@@ -712,8 +671,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=41
 
-[ITEMDEF 0457d]
-DEFNAME=i_COPPER_RINGMAIL_TUNIC
+[ITEMDEF i_COPPER_RINGMAIL_TUNIC]
 NAME=Copper Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=20
@@ -729,8 +687,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=41
 
-[ITEMDEF 0457e]
-DEFNAME=i_COPPER_BUCKLER_SHIELD
+[ITEMDEF i_COPPER_BUCKLER_SHIELD]
 NAME=Copper Buckler
 ID=i_shield_buckler
 ARMOR=7
@@ -746,8 +703,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=41
 
-[ITEMDEF 0457f]
-DEFNAME=i_COPPER_METAL_SHIELD
+[ITEMDEF i_COPPER_METAL_SHIELD]
 NAME=Copper Metal Shield
 ID=i_shield_round_metal
 ARMOR=11
@@ -763,8 +719,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_copper
 
-[ITEMDEF 04580]
-DEFNAME=i_COPPER_CHAINMAIL_TUNIC
+[ITEMDEF i_COPPER_CHAINMAIL_TUNIC]
 NAME=Copper Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=23
@@ -780,8 +735,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_copper
 
-[ITEMDEF 04581]
-DEFNAME=i_COPPER_HEATER_SHIELD
+[ITEMDEF i_COPPER_HEATER_SHIELD]
 NAME=Copper Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=23
@@ -797,8 +751,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=31
 
-[ITEMDEF 04582]
-DEFNAME=i_SILVER_FEMALE_PLATEMAIL
+[ITEMDEF i_SILVER_FEMALE_PLATEMAIL]
 NAME=Silver Platemail
 ID=i_armor_female_plate
 ARMOR=15
@@ -814,8 +767,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_silver
 
-[ITEMDEF 04583]
-DEFNAME=i_SILVER_CHAINMAIL_COIF
+[ITEMDEF i_SILVER_CHAINMAIL_COIF]
 NAME=Silver Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=23
@@ -831,8 +783,7 @@ ON=@Create
 	HITPOINTS=36
 	COLOR=color_o_silver
 
-[ITEMDEF 04584]
-DEFNAME=i_SILVER_CHAINMAIL_LEGGINGS
+[ITEMDEF i_SILVER_CHAINMAIL_LEGGINGS]
 NAME=Silver Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=23
@@ -848,8 +799,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_silver
 
-[ITEMDEF 04585]
-DEFNAME=i_SILVER_CHAINMAIL_TUNIC
+[ITEMDEF i_SILVER_CHAINMAIL_TUNIC]
 NAME=Silver Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=23
@@ -865,8 +815,7 @@ ON=@Create
 	HITPOINTS=46
 	COLOR=color_o_silver
 
-[ITEMDEF 04586]
-DEFNAME=i_SILVER_HEATER_SHIELD
+[ITEMDEF i_SILVER_HEATER_SHIELD]
 NAME=Silver Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=23
@@ -882,8 +831,7 @@ ON=@Create
 	HITPOINTS=31
 	COLOR=color_o_silver
 
-[ITEMDEF 04587]
-DEFNAME=i_GOLDEN_CLOSED_HELM
+[ITEMDEF i_GOLDEN_CLOSED_HELM]
 NAME=Golden Closed Helm
 ID=i_helm_closed
 ARMOR=30
@@ -899,8 +847,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS=101
 
-[ITEMDEF 04588]
-DEFNAME=i_GOLDEN_HELMET
+[ITEMDEF i_GOLDEN_HELMET]
 NAME=Golden Helmet
 ID=i_helm_open
 ARMOR=30
@@ -916,8 +863,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS=51
 
-[ITEMDEF 04589]
-DEFNAME=i_GOLDEN_BASCINET
+[ITEMDEF i_GOLDEN_BASCINET]
 NAME=Golden Bascinet
 ID=i_bascinet
 ARMOR=30
@@ -933,8 +879,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS=101
 
-[ITEMDEF 0458a]
-DEFNAME=i_GOLDEN_NOSE_HELM
+[ITEMDEF i_GOLDEN_NOSE_HELM]
 NAME=Golden Nose Helm
 ID=i_helm_nose
 ARMOR=30
@@ -950,8 +895,7 @@ ON=@Create
 	COLOR=color_o_gold
 	HITPOINTS=101
 
-[ITEMDEF 0458b]
-DEFNAME=i_COPPER_CLOSED_HELM
+[ITEMDEF i_COPPER_CLOSED_HELM]
 NAME=Copper Closed Helm
 ID=i_helm_closed
 ARMOR=30
@@ -967,8 +911,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=101
 
-[ITEMDEF 0458c]
-DEFNAME=i_COPPER_HELMET
+[ITEMDEF i_COPPER_HELMET]
 NAME=Copper Helmet
 ID=i_helm_open
 ARMOR=30
@@ -984,8 +927,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=51
 
-[ITEMDEF 0458d]
-DEFNAME=i_COPPER_BASCINET
+[ITEMDEF i_COPPER_BASCINET]
 NAME=Copper Bascinet
 ID=i_bascinet
 ARMOR=30
@@ -1001,8 +943,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=101
 
-[ITEMDEF 0458e]
-DEFNAME=i_COPPER_NOSE_HELM
+[ITEMDEF i_COPPER_NOSE_HELM]
 NAME=Copper Nose Helm
 ID=i_helm_nose
 ARMOR=30
@@ -1018,8 +959,7 @@ ON=@Create
 	COLOR=color_o_copper
 	HITPOINTS=101
 
-[ITEMDEF 0458f]
-DEFNAME=i_SILVER_CLOSED_HELM
+[ITEMDEF i_SILVER_CLOSED_HELM]
 NAME=Silver Closed Helm
 ID=i_helm_closed
 ARMOR=30
@@ -1035,8 +975,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=101
 
-[ITEMDEF 04590]
-DEFNAME=i_SILVER_HELMET
+[ITEMDEF i_SILVER_HELMET]
 NAME=Silver Helmet
 ID=i_helm_open
 ARMOR=30
@@ -1052,8 +991,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=51
 
-[ITEMDEF 04591]
-DEFNAME=i_SILVER_BASCINET
+[ITEMDEF i_SILVER_BASCINET]
 NAME=Silver Bascinet
 ID=i_bascinet
 ARMOR=30
@@ -1069,8 +1007,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=101
 
-[ITEMDEF 04592]
-DEFNAME=i_SILVER_NOSE_HELM
+[ITEMDEF i_SILVER_NOSE_HELM]
 NAME=Silver Nose Helm
 ID=i_helm_nose
 ARMOR=30
@@ -1087,8 +1024,7 @@ ON=@Create
 	COLOR=color_o_silver
 	HITPOINTS=101
 
-[ITEMDEF 04595]
-DEFNAME=i_OLD_COPPER_PLATEMAIL
+[ITEMDEF i_OLD_COPPER_PLATEMAIL]
 NAME=Old Copper Platemail
 ID=i_platemail_chest
 WEIGHT=10.0
@@ -1104,8 +1040,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_oldcopper
 
-[ITEMDEF 04596]
-DEFNAME=i_OLD_COPPER_PLATEMAIL_ARMS
+[ITEMDEF i_OLD_COPPER_PLATEMAIL_ARMS]
 NAME=Old Copper Platemail Arms
 ID=i_platemail_arms
 ARMOR=25
@@ -1121,8 +1056,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 04597]
-DEFNAME=i_OLD_COPPER_PLATEMAIL_leggings
+[ITEMDEF i_OLD_COPPER_PLATEMAIL_leggings]
 NAME=Old Copper Platemail Legs
 ID=i_platemail_leggings
 ARMOR=25
@@ -1138,8 +1072,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 04598]
-DEFNAME=i_OLD_COPPER_PLATE_HELM
+[ITEMDEF i_OLD_COPPER_PLATE_HELM]
 NAME=Old Copper Plate Helm
 ID=i_platemail_helm
 ARMOR=25
@@ -1155,8 +1088,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=46
 
-[ITEMDEF 04599]
-DEFNAME=i_OLD_COPPER_PLATEMAIL_GORGET
+[ITEMDEF i_OLD_COPPER_PLATEMAIL_GORGET]
 NAME=Old Copper Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=25
@@ -1172,8 +1104,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 0459a]
-DEFNAME=i_OLD_COPPER_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_OLD_COPPER_PLATEMAIL_GAUNTLETS]
 NAME=Old Copper Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=25
@@ -1189,8 +1120,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 0459b]
-DEFNAME=i_OLD_COPPER_FEMALE_PLATEMAIL
+[ITEMDEF i_OLD_COPPER_FEMALE_PLATEMAIL]
 NAME=Old Copper Platemail
 ID=i_armor_female_plate
 ARMOR=14
@@ -1206,8 +1136,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS={51 65}
 
-[ITEMDEF 0459c]
-DEFNAME=i_OLD_COPPER_CHAINMAIL_COIF
+[ITEMDEF i_OLD_COPPER_CHAINMAIL_COIF]
 NAME=Old Copper Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=20
@@ -1223,8 +1152,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=36
 
-[ITEMDEF 0459d]
-DEFNAME=i_OLD_COPPER_CHAINMAIL_LEGGINGS
+[ITEMDEF i_OLD_COPPER_CHAINMAIL_LEGGINGS]
 NAME=Old Copper Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=20
@@ -1240,8 +1168,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=46
 
-[ITEMDEF 0459e]
-DEFNAME=i_OLD_COPPER_CHAINMAIL_TUNIC
+[ITEMDEF i_OLD_COPPER_CHAINMAIL_TUNIC]
 NAME=Old Copper Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=20
@@ -1257,8 +1184,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=46
 
-[ITEMDEF 0459f]
-DEFNAME=i_OLD_COPPER_RINGMAIL_LEGGINGS
+[ITEMDEF i_OLD_COPPER_RINGMAIL_LEGGINGS]
 NAME=Old Copper Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=18
@@ -1274,8 +1200,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=41
 
-[ITEMDEF 045a0]
-DEFNAME=i_OLD_COPPER_RINGMAIL_SLEEVES
+[ITEMDEF i_OLD_COPPER_RINGMAIL_SLEEVES]
 NAME=Old Copper Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=18
@@ -1291,8 +1216,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=41
 
-[ITEMDEF 045a1]
-DEFNAME=i_OLD_COPPER_RINGMAIL_GLOVES
+[ITEMDEF i_OLD_COPPER_RINGMAIL_GLOVES]
 NAME=Old Copper Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=18
@@ -1308,8 +1232,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=41
 
-[ITEMDEF 045a2]
-DEFNAME=i_OLD_COPPER_RINGMAIL_TUNIC
+[ITEMDEF i_OLD_COPPER_RINGMAIL_TUNIC]
 NAME=Old Copper Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=18
@@ -1325,8 +1248,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=41
 
-[ITEMDEF 045a3]
-DEFNAME=i_OLD_COPPER_METAL_SHIELD
+[ITEMDEF i_OLD_COPPER_METAL_SHIELD]
 NAME=Old Copper Metal Shield
 ID=i_shield_round_metal
 ARMOR=10
@@ -1342,8 +1264,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 045a4]
-DEFNAME=i_OLD_COPPER_HEATER_SHIELD
+[ITEMDEF i_OLD_COPPER_HEATER_SHIELD]
 NAME=Old Copper Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=20
@@ -1359,8 +1280,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=31
 
-[ITEMDEF 045a5]
-DEFNAME=i_OLD_COPPER_BUCKLER_SHIELD
+[ITEMDEF i_OLD_COPPER_BUCKLER_SHIELD]
 NAME=Old Copper Buckler
 ID=i_shield_buckler
 ARMOR=6
@@ -1376,8 +1296,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=41
 
-[ITEMDEF 045a6]
-DEFNAME=i_OLD_COPPER_CLOSED_HELM
+[ITEMDEF i_OLD_COPPER_CLOSED_HELM]
 NAME=Old Copper Closed Helm
 ID=i_helm_closed
 ARMOR=25
@@ -1393,8 +1312,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=101
 
-[ITEMDEF 045a7]
-DEFNAME=i_OLD_COPPER_HELMET
+[ITEMDEF i_OLD_COPPER_HELMET]
 NAME=Old Copper Helmet
 ID=i_helm_open
 ARMOR=25
@@ -1410,8 +1328,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=51
 
-[ITEMDEF 045a8]
-DEFNAME=i_OLD_COPPER_BASCINET
+[ITEMDEF i_OLD_COPPER_BASCINET]
 NAME=Old Copper Bascinet
 ID=i_bascinet
 ARMOR=25
@@ -1427,8 +1344,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=101
 
-[ITEMDEF 045a9]
-DEFNAME=i_OLD_COPPER_NOSE_HELM
+[ITEMDEF i_OLD_COPPER_NOSE_HELM]
 NAME=Old Copper Nose Helm
 ID=i_helm_nose
 ARMOR=25
@@ -1445,8 +1361,7 @@ ON=@Create
 	COLOR=color_o_oldcopper
 	HITPOINTS=101
 
-[ITEMDEF 045aa]
-DEFNAME=i_RUSTY_PLATEMAIL
+[ITEMDEF i_RUSTY_PLATEMAIL]
 NAME=Rusty Platemail
 ID=i_platemail_chest
 ARMOR=25
@@ -1462,8 +1377,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045ab]
-DEFNAME=i_RUSTY_PLATEMAIL_ARMS
+[ITEMDEF i_RUSTY_PLATEMAIL_ARMS]
 NAME=Rusty Platemail Arms
 ID=i_platemail_arms
 ARMOR=25
@@ -1479,8 +1393,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045ac]
-DEFNAME=i_RUSTY_PLATEMAIL_leggings
+[ITEMDEF i_RUSTY_PLATEMAIL_leggings]
 NAME=Rusty Platemail Legs
 ID=i_platemail_leggings
 ARMOR=25
@@ -1496,8 +1409,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045ad]
-DEFNAME=i_RUSTY_PLATE_HELM
+[ITEMDEF i_RUSTY_PLATE_HELM]
 NAME=Rusty Plate Helm
 ID=i_platemail_helm
 ARMOR=25
@@ -1513,8 +1425,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=46
 
-[ITEMDEF 045ae]
-DEFNAME=i_RUSTY_PLATEMAIL_GORGET
+[ITEMDEF i_RUSTY_PLATEMAIL_GORGET]
 NAME=Rusty Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=25
@@ -1530,8 +1441,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045af]
-DEFNAME=i_RUSTY_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_RUSTY_PLATEMAIL_GAUNTLETS]
 NAME=Rusty Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=25
@@ -1547,8 +1457,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045b0]
-DEFNAME=i_RUSTY_FEMALE_PLATEMAIL
+[ITEMDEF i_RUSTY_FEMALE_PLATEMAIL]
 NAME=Rusty Platemail
 ID=i_armor_female_plate
 ARMOR=14
@@ -1564,8 +1473,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045b1]
-DEFNAME=i_RUSTY_CHAINMAIL_COIF
+[ITEMDEF i_RUSTY_CHAINMAIL_COIF]
 NAME=Rusty Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=20
@@ -1581,8 +1489,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=36
 
-[ITEMDEF 045b2]
-DEFNAME=i_RUSTY_CHAINMAIL_LEGGINGS
+[ITEMDEF i_RUSTY_CHAINMAIL_LEGGINGS]
 NAME=Rusty Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=20
@@ -1598,8 +1505,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=46
 
-[ITEMDEF 045b3]
-DEFNAME=i_RUSTY_CHAINMAIL_TUNIC
+[ITEMDEF i_RUSTY_CHAINMAIL_TUNIC]
 NAME=Rusty Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=20
@@ -1615,8 +1521,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=46
 
-[ITEMDEF 045b4]
-DEFNAME=i_RUSTY_RINGMAIL_LEGGINGS
+[ITEMDEF i_RUSTY_RINGMAIL_LEGGINGS]
 NAME=Rusty Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=18
@@ -1632,8 +1537,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=41
 
-[ITEMDEF 045b5]
-DEFNAME=i_RUSTY_RINGMAIL_SLEEVES
+[ITEMDEF i_RUSTY_RINGMAIL_SLEEVES]
 NAME=Rusty Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=18
@@ -1649,8 +1553,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=41
 
-[ITEMDEF 045b6]
-DEFNAME=i_RUSTY_RINGMAIL_GLOVES
+[ITEMDEF i_RUSTY_RINGMAIL_GLOVES]
 NAME=Rusty Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=18
@@ -1666,8 +1569,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=41
 
-[ITEMDEF 045b7]
-DEFNAME=i_RUSTY_RINGMAIL_TUNIC
+[ITEMDEF i_RUSTY_RINGMAIL_TUNIC]
 NAME=Rusty Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=18
@@ -1683,8 +1585,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=41
 
-[ITEMDEF 045b8]
-DEFNAME=i_RUSTY_BUCKLER_shield
+[ITEMDEF i_RUSTY_BUCKLER_shield]
 NAME=Rusty Buckler
 ID=i_shield_buckler
 ARMOR=6
@@ -1700,8 +1601,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=41
 
-[ITEMDEF 045b9]
-DEFNAME=i_RUSTY_HEATER_SHIELD
+[ITEMDEF i_RUSTY_HEATER_SHIELD]
 NAME=Rusty Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=20
@@ -1717,8 +1617,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=31
 
-[ITEMDEF 045ba]
-DEFNAME=i_RUSTY_METAL_SHIELD
+[ITEMDEF i_RUSTY_METAL_SHIELD]
 NAME=Rusty Metal Shield
 ID=i_shield_round_metal
 ARMOR=10
@@ -1734,8 +1633,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045bb]
-DEFNAME=i_RUSTY_CLOSED_HELM
+[ITEMDEF i_RUSTY_CLOSED_HELM]
 NAME=Rusty Closed Helm
 ID=i_helm_closed
 ARMOR=25
@@ -1751,8 +1649,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=101
 
-[ITEMDEF 045bc]
-DEFNAME=i_RUSTY_HELMET
+[ITEMDEF i_RUSTY_HELMET]
 NAME=Rusty Helmet
 ID=i_helm_open
 ARMOR=25
@@ -1768,8 +1665,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=51
 
-[ITEMDEF 045bd]
-DEFNAME=i_RUSTY_BASCINET
+[ITEMDEF i_RUSTY_BASCINET]
 NAME=Rusty Bascinet
 ID=i_bascinet
 ARMOR=25
@@ -1785,8 +1681,7 @@ ON=@Create
 	COLOR=color_o_rusty
 	HITPOINTS=101
 
-[ITEMDEF 045be]
-DEFNAME=i_RUSTY_NOSE_HELM
+[ITEMDEF i_RUSTY_NOSE_HELM]
 NAME=Rusty Nose Helm
 ID=i_helm_nose
 ARMOR=25
@@ -1803,8 +1698,7 @@ ON=@Create
 	HITPOINTS=101
 	//----------------------- Dull Copper ---------------------
 
-[ITEMDEF 045c0]
-DEFNAME=i_DULL_COPPER_PLATEMAIL
+[ITEMDEF i_DULL_COPPER_PLATEMAIL]
 NAME=Dull Copper Platemail
 ID=i_platemail_chest
 ARMOR=25
@@ -1820,8 +1714,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c1]
-DEFNAME=i_DULL_COPPER_PLATEMAIL_ARMS
+[ITEMDEF i_DULL_COPPER_PLATEMAIL_ARMS]
 NAME=Dull Copper Platemail Arms
 ID=i_platemail_arms
 ARMOR=25
@@ -1837,8 +1730,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c2]
-DEFNAME=i_DULL_COPPER_PLATEMAIL_leggings
+[ITEMDEF i_DULL_COPPER_PLATEMAIL_leggings]
 NAME=Dull Copper Platemail Legs
 ID=i_platemail_leggings
 ARMOR=25
@@ -1854,8 +1746,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c3]
-DEFNAME=i_DULL_COPPER_PLATE_HELM
+[ITEMDEF i_DULL_COPPER_PLATE_HELM]
 NAME=Dull Copper Plate Helm
 ID=i_platemail_helm
 ARMOR=25
@@ -1871,8 +1762,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=46
 
-[ITEMDEF 045c4]
-DEFNAME=i_DULL_COPPER_PLATEMAIL_GORGET
+[ITEMDEF i_DULL_COPPER_PLATEMAIL_GORGET]
 NAME=Dull Copper Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=29
@@ -1888,8 +1778,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c5]
-DEFNAME=i_DULL_COPPER_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_DULL_COPPER_PLATEMAIL_GAUNTLETS]
 NAME=Dull Copper Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=25
@@ -1905,8 +1794,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c6]
-DEFNAME=i_DULL_COPPER_FEMALE_PLATEMAIL
+[ITEMDEF i_DULL_COPPER_FEMALE_PLATEMAIL]
 NAME=Dull Copper Platemail
 ID=i_armor_female_plate
 ARMOR=25
@@ -1922,8 +1810,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045c7]
-DEFNAME=i_DULL_COPPER_CHAINMAIL_COIF
+[ITEMDEF i_DULL_COPPER_CHAINMAIL_COIF]
 NAME=Dull Copper Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=20
@@ -1939,8 +1826,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=36
 
-[ITEMDEF 045c8]
-DEFNAME=i_DULL_COPPER_CHAINMAIL_LEGGINGS
+[ITEMDEF i_DULL_COPPER_CHAINMAIL_LEGGINGS]
 NAME=Dull Copper Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=20
@@ -1956,8 +1842,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=46
 
-[ITEMDEF 045c9]
-DEFNAME=i_DULL_COPPER_CHAINMAIL_TUNIC
+[ITEMDEF i_DULL_COPPER_CHAINMAIL_TUNIC]
 NAME=Dull Copper Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=20
@@ -1973,8 +1858,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=46
 
-[ITEMDEF 045ca]
-DEFNAME=i_DULL_COPPER_RINGMAIL_LEGGINGS
+[ITEMDEF i_DULL_COPPER_RINGMAIL_LEGGINGS]
 NAME=Dull Copper Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=18
@@ -1990,8 +1874,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=46
 
-[ITEMDEF 045cb]
-DEFNAME=i_DULL_COPPER_RINGMAIL_SLEEVES
+[ITEMDEF i_DULL_COPPER_RINGMAIL_SLEEVES]
 NAME=Dull Copper Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=18
@@ -2007,8 +1890,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=41
 
-[ITEMDEF 045cc]
-DEFNAME=i_DULL_COPPER_RINGMAIL_GLOVES
+[ITEMDEF i_DULL_COPPER_RINGMAIL_GLOVES]
 NAME=Dull Copper Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=18
@@ -2024,8 +1906,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=41
 
-[ITEMDEF 045cd]
-DEFNAME=i_DULL_COPPER_RINGMAIL_TUNIC
+[ITEMDEF i_DULL_COPPER_RINGMAIL_TUNIC]
 NAME=Dull Copper Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=18
@@ -2041,8 +1922,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=41
 
-[ITEMDEF 045ce]
-DEFNAME=i_DULL_COPPER_BUCKLER_shield
+[ITEMDEF i_DULL_COPPER_BUCKLER_shield]
 NAME=Dull Copper Buckler
 ID=i_shield_buckler
 ARMOR=2
@@ -2058,8 +1938,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=41
 
-[ITEMDEF 045cf]
-DEFNAME=i_DULL_COPPER_HEATER_SHIELD
+[ITEMDEF i_DULL_COPPER_HEATER_SHIELD]
 NAME=Dull Copper Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=18
@@ -2075,8 +1954,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=31
 
-[ITEMDEF 045d0]
-DEFNAME=i_DULL_COPPER_METAL_SHIELD
+[ITEMDEF i_DULL_COPPER_METAL_SHIELD]
 NAME=Dull Copper Metal Shield
 ID=i_shield_round_metal
 ARMOR=7
@@ -2092,8 +1970,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045d1]
-DEFNAME=i_DULL_COPPER_CLOSED_HELM
+[ITEMDEF i_DULL_COPPER_CLOSED_HELM]
 NAME=Dull Copper Closed Helm
 ID=i_helm_closed
 ARMOR=25
@@ -2109,8 +1986,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=30
 
-[ITEMDEF 045d2]
-DEFNAME=i_DULL_COPPER_HELMET
+[ITEMDEF i_DULL_COPPER_HELMET]
 NAME=Dull Copper Helmet
 ID=i_helm_open
 ARMOR=20
@@ -2126,8 +2002,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=51
 
-[ITEMDEF 045d3]
-DEFNAME=i_DULL_COPPER_BASCINET
+[ITEMDEF i_DULL_COPPER_BASCINET]
 NAME=Dull Copper Bascinet
 ID=i_bascinet
 ARMOR=25
@@ -2143,8 +2018,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=30
 
-[ITEMDEF 045d4]
-DEFNAME=i_DULL_COPPER_NOSE_HELM
+[ITEMDEF i_DULL_COPPER_NOSE_HELM]
 NAME=Dull Copper Nose Helm
 ID=i_helm_nose
 ARMOR=20
@@ -2160,8 +2034,7 @@ ON=@Create
 	COLOR=color_o_dullcopper
 	HITPOINTS=30
 
-[ITEMDEF 04700]
-DEFNAME=i_BLOODROCK_PLATEMAIL
+[ITEMDEF i_BLOODROCK_PLATEMAIL]
 NAME=Blood Rock Platemail
 ID=i_platemail_chest
 WEIGHT=10.0
@@ -2177,8 +2050,7 @@ ON=@Create
 	HITPOINTS=51
 	COLOR=color_o_bloodrock
 
-[ITEMDEF 04701]
-DEFNAME=i_BLOODROCK_PLATEMAIL_ARMS
+[ITEMDEF i_BLOODROCK_PLATEMAIL_ARMS]
 NAME=Blood Rock Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -2194,8 +2066,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04702]
-DEFNAME=i_BLOODROCK_PLATEMAIL_leggings
+[ITEMDEF i_BLOODROCK_PLATEMAIL_leggings]
 NAME=Blood Rock Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -2211,8 +2082,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04703]
-DEFNAME=i_BLOODROCK_PLATE_HELM
+[ITEMDEF i_BLOODROCK_PLATE_HELM]
 NAME=Blood Rock Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -2228,8 +2098,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=46
 
-[ITEMDEF 04704]
-DEFNAME=i_BLOODROCK_PLATEMAIL_GORGET
+[ITEMDEF i_BLOODROCK_PLATEMAIL_GORGET]
 NAME=Blood Rock Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -2245,8 +2114,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04705]
-DEFNAME=i_BLOODROCK_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_BLOODROCK_PLATEMAIL_GAUNTLETS]
 NAME=Blood Rock Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -2262,8 +2130,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04706]
-DEFNAME=i_BLOODROCK_FEMALE_PLATEMAIL
+[ITEMDEF i_BLOODROCK_FEMALE_PLATEMAIL]
 NAME=Blood Rock Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -2279,8 +2146,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04707]
-DEFNAME=i_BLOODROCK_CHAINMAIL_COIF
+[ITEMDEF i_BLOODROCK_CHAINMAIL_COIF]
 NAME=Blood Rock Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -2296,8 +2162,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=36
 
-[ITEMDEF 04708]
-DEFNAME=i_BLOODROCK_CHAINMAIL_LEGGINGS
+[ITEMDEF i_BLOODROCK_CHAINMAIL_LEGGINGS]
 NAME=Blood Rock Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -2313,8 +2178,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=46
 
-[ITEMDEF 04709]
-DEFNAME=i_BLOODROCK_CHAINMAIL_TUNIC
+[ITEMDEF i_BLOODROCK_CHAINMAIL_TUNIC]
 NAME=Blood Rock Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -2330,8 +2194,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=46
 
-[ITEMDEF 0470a]
-DEFNAME=i_BLOODROCK_RINGMAIL_LEGGINGS
+[ITEMDEF i_BLOODROCK_RINGMAIL_LEGGINGS]
 NAME=Blood Rock Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -2347,8 +2210,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=41
 
-[ITEMDEF 0470b]
-DEFNAME=i_BLOODROCK_RINGMAIL_SLEEVES
+[ITEMDEF i_BLOODROCK_RINGMAIL_SLEEVES]
 NAME=Blood Rock Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -2364,8 +2226,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=41
 
-[ITEMDEF 0470c]
-DEFNAME=i_BLOODROCK_RINGMAIL_GLOVES
+[ITEMDEF i_BLOODROCK_RINGMAIL_GLOVES]
 NAME=Blood Rock Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -2381,8 +2242,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=41
 
-[ITEMDEF 0470d]
-DEFNAME=i_BLOODROCK_RINGMAIL_TUNIC
+[ITEMDEF i_BLOODROCK_RINGMAIL_TUNIC]
 NAME=Blood Rock Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -2398,8 +2258,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=41
 
-[ITEMDEF 0470e]
-DEFNAME=i_BLOODROCK_METAL_SHIELD
+[ITEMDEF i_BLOODROCK_METAL_SHIELD]
 NAME=Blood Rock Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -2415,8 +2274,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 0470f]
-DEFNAME=i_BLOODROCK_HEATER_SHIELD
+[ITEMDEF i_BLOODROCK_HEATER_SHIELD]
 NAME=Blood Rock Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -2432,8 +2290,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=31
 
-[ITEMDEF 04710]
-DEFNAME=i_BLOODROCK_BUCKLER_SHIELD
+[ITEMDEF i_BLOODROCK_BUCKLER_SHIELD]
 NAME=Blood Rock Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -2449,8 +2306,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=41
 
-[ITEMDEF 04711]
-DEFNAME=i_BLOODROCK_CLOSED_HELM
+[ITEMDEF i_BLOODROCK_CLOSED_HELM]
 NAME=Blood Rock Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -2466,8 +2322,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=101
 
-[ITEMDEF 04712]
-DEFNAME=i_BLOODROCK_HELMET
+[ITEMDEF i_BLOODROCK_HELMET]
 NAME=Blood Rock Helmet
 ID=i_helm_open
 ARMOR=37
@@ -2483,8 +2338,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=51
 
-[ITEMDEF 04713]
-DEFNAME=i_BLOODROCK_BASCINET
+[ITEMDEF i_BLOODROCK_BASCINET]
 NAME=Blood Rock Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -2500,8 +2354,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=101
 
-[ITEMDEF 04714]
-DEFNAME=i_BLOODROCK_NOSE_HELM
+[ITEMDEF i_BLOODROCK_NOSE_HELM]
 NAME=Blood Rock Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -2518,8 +2371,7 @@ ON=@Create
 	COLOR=color_o_bloodrock
 	HITPOINTS=101
 
-[ITEMDEF 04715]
-DEFNAME=i_BLACKROCK_PLATEMAIL
+[ITEMDEF i_BLACKROCK_PLATEMAIL]
 NAME=Black Rock Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -2535,8 +2387,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 04716]
-DEFNAME=i_BLACKROCK_PLATEMAIL_ARMS
+[ITEMDEF i_BLACKROCK_PLATEMAIL_ARMS]
 NAME=Black Rock Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -2552,8 +2403,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 04717]
-DEFNAME=i_BLACKROCK_PLATEMAIL_leggings
+[ITEMDEF i_BLACKROCK_PLATEMAIL_leggings]
 NAME=Black Rock Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -2569,8 +2419,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 04718]
-DEFNAME=i_BLACKROCK_PLATE_HELM
+[ITEMDEF i_BLACKROCK_PLATE_HELM]
 NAME=Black Rock Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -2586,8 +2435,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=46
 
-[ITEMDEF 04719]
-DEFNAME=i_BLACKROCK_PLATEMAIL_GORGET
+[ITEMDEF i_BLACKROCK_PLATEMAIL_GORGET]
 NAME=Black Rock Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -2603,8 +2451,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 0471a]
-DEFNAME=i_BLACKROCK_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_BLACKROCK_PLATEMAIL_GAUNTLETS]
 NAME=Black Rock Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -2620,8 +2467,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 0471b]
-DEFNAME=i_BLACKROCK_FEMALE_PLATEMAIL
+[ITEMDEF i_BLACKROCK_FEMALE_PLATEMAIL]
 NAME=Black Rock Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -2637,8 +2483,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 0471c]
-DEFNAME=i_BLACKROCK_CHAINMAIL_COIF
+[ITEMDEF i_BLACKROCK_CHAINMAIL_COIF]
 NAME=Black Rock Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -2654,8 +2499,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=36
 
-[ITEMDEF 0471d]
-DEFNAME=i_BLACKROCK_CHAINMAIL_LEGGINGS
+[ITEMDEF i_BLACKROCK_CHAINMAIL_LEGGINGS]
 NAME=Black Rock Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -2671,8 +2515,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=46
 
-[ITEMDEF 0471e]
-DEFNAME=i_BLACKROCK_CHAINMAIL_TUNIC
+[ITEMDEF i_BLACKROCK_CHAINMAIL_TUNIC]
 NAME=Black Rock Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -2688,8 +2531,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=46
 
-[ITEMDEF 0471f]
-DEFNAME=i_BLACKROCK_RINGMAIL_LEGGINGS
+[ITEMDEF i_BLACKROCK_RINGMAIL_LEGGINGS]
 NAME=Black Rock Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -2705,8 +2547,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=41
 
-[ITEMDEF 04720]
-DEFNAME=i_BLACKROCK_RINGMAIL_SLEEVES
+[ITEMDEF i_BLACKROCK_RINGMAIL_SLEEVES]
 NAME=Black Rock Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -2722,8 +2563,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=41
 
-[ITEMDEF 04721]
-DEFNAME=i_BLACKROCK_RINGMAIL_GLOVES
+[ITEMDEF i_BLACKROCK_RINGMAIL_GLOVES]
 NAME=Black Rock Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -2739,8 +2579,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=41
 
-[ITEMDEF 04722]
-DEFNAME=i_BLACKROCK_RINGMAIL_TUNIC
+[ITEMDEF i_BLACKROCK_RINGMAIL_TUNIC]
 NAME=Black Rock Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -2756,8 +2595,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=41
 
-[ITEMDEF 04723]
-DEFNAME=i_BLACKROCK_METAL_SHIELD
+[ITEMDEF i_BLACKROCK_METAL_SHIELD]
 NAME=Black Rock Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -2773,8 +2611,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 04724]
-DEFNAME=i_BLACKROCK_HEATER_SHIELD
+[ITEMDEF i_BLACKROCK_HEATER_SHIELD]
 NAME=Black Rock Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -2790,8 +2627,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=31
 
-[ITEMDEF 04725]
-DEFNAME=i_BLACKROCK_BUCKLER_SHIELD
+[ITEMDEF i_BLACKROCK_BUCKLER_SHIELD]
 NAME=Black Rock Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -2807,8 +2643,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=41
 
-[ITEMDEF 04726]
-DEFNAME=i_BLACKROCK_CLOSED_HELM
+[ITEMDEF i_BLACKROCK_CLOSED_HELM]
 NAME=Black Rock Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -2824,8 +2659,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=101
 
-[ITEMDEF 04727]
-DEFNAME=i_BLACKROCK_HELMET
+[ITEMDEF i_BLACKROCK_HELMET]
 NAME=Black Rock Helmet
 ID=i_helm_open
 SKILLMAKE=BLACKSMITHING 64.6
@@ -2841,8 +2675,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=51
 
-[ITEMDEF 04728]
-DEFNAME=i_BLACKROCK_BASCINET
+[ITEMDEF i_BLACKROCK_BASCINET]
 NAME=Black Rock Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -2858,8 +2691,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=101
 
-[ITEMDEF 04729]
-DEFNAME=i_BLACKROCK_NOSE_HELM
+[ITEMDEF i_BLACKROCK_NOSE_HELM]
 NAME=Black Rock Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -2876,8 +2708,7 @@ ON=@Create
 	COLOR=color_o_blackrock
 	HITPOINTS=101
 
-[ITEMDEF 0472a]
-DEFNAME=i_MYTHERIL_PLATEMAIL
+[ITEMDEF i_MYTHERIL_PLATEMAIL]
 NAME=Mytheril Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -2893,8 +2724,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 0472b]
-DEFNAME=i_MYTHERIL_PLATEMAIL_ARMS
+[ITEMDEF i_MYTHERIL_PLATEMAIL_ARMS]
 NAME=Mytheril Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -2910,8 +2740,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 0472c]
-DEFNAME=i_MYTHERIL_PLATEMAIL_leggings
+[ITEMDEF i_MYTHERIL_PLATEMAIL_leggings]
 NAME=Mytheril Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -2927,8 +2756,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 0472d]
-DEFNAME=i_MYTHERIL_PLATE_HELM
+[ITEMDEF i_MYTHERIL_PLATE_HELM]
 NAME=Mytheril Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -2944,8 +2772,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=46
 
-[ITEMDEF 0472e]
-DEFNAME=i_MYTHERIL_PLATEMAIL_GORGET
+[ITEMDEF i_MYTHERIL_PLATEMAIL_GORGET]
 NAME=Mytheril Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -2961,8 +2788,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 0472f]
-DEFNAME=i_MYTHERIL_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_MYTHERIL_PLATEMAIL_GAUNTLETS]
 NAME=Mytheril Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -2978,8 +2804,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 04730]
-DEFNAME=i_MYTHERIL_FEMALE_PLATEMAIL
+[ITEMDEF i_MYTHERIL_FEMALE_PLATEMAIL]
 NAME=Mytheril Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -2995,8 +2820,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=51
 
-[ITEMDEF 04731]
-DEFNAME=i_MYTHERIL_CHAINMAIL_COIF
+[ITEMDEF i_MYTHERIL_CHAINMAIL_COIF]
 NAME=Mytheril Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -3012,8 +2836,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS=36
 
-[ITEMDEF 04732]
-DEFNAME=i_MYTHERIL_CHAINMAIL_LEGGINGS
+[ITEMDEF i_MYTHERIL_CHAINMAIL_LEGGINGS]
 NAME=Mytheril Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -3029,8 +2852,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={46 58}
 
-[ITEMDEF 04733]
-DEFNAME=i_MYTHERIL_CHAINMAIL_TUNIC
+[ITEMDEF i_MYTHERIL_CHAINMAIL_TUNIC]
 NAME=Mytheril Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -3046,8 +2868,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={46 58}
 
-[ITEMDEF 04734]
-DEFNAME=i_MYTHERIL_RINGMAIL_LEGGINGS
+[ITEMDEF i_MYTHERIL_RINGMAIL_LEGGINGS]
 NAME=Mytheril Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -3063,8 +2884,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={41 51}
 
-[ITEMDEF 04735]
-DEFNAME=i_MYTHERIL_RINGMAIL_SLEEVES
+[ITEMDEF i_MYTHERIL_RINGMAIL_SLEEVES]
 NAME=Mytheril Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -3080,8 +2900,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={41 51}
 
-[ITEMDEF 04736]
-DEFNAME=i_MYTHERIL_RINGMAIL_GLOVES
+[ITEMDEF i_MYTHERIL_RINGMAIL_GLOVES]
 NAME=Mytheril Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -3097,8 +2916,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={41 51}
 
-[ITEMDEF 04737]
-DEFNAME=i_MYTHERIL_RINGMAIL_TUNIC
+[ITEMDEF i_MYTHERIL_RINGMAIL_TUNIC]
 NAME=Mytheril Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -3114,8 +2932,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={41 51}
 
-[ITEMDEF 04738]
-DEFNAME=i_MYTHERIL_BUCKLER_SHIELD
+[ITEMDEF i_MYTHERIL_BUCKLER_SHIELD]
 NAME=Mytheril Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -3131,8 +2948,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={41 51}
 
-[ITEMDEF 04739]
-DEFNAME=i_MYTHERIL_HEATER_SHIELD
+[ITEMDEF i_MYTHERIL_HEATER_SHIELD]
 NAME=Mytheril Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -3148,8 +2964,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={31 37}
 
-[ITEMDEF 0473a]
-DEFNAME=i_MYTHERIL_METAL_SHIELD
+[ITEMDEF i_MYTHERIL_METAL_SHIELD]
 NAME=Mytheril Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -3165,8 +2980,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={51 65}
 
-[ITEMDEF 0473b]
-DEFNAME=i_MYTHERIL_CLOSED_HELM
+[ITEMDEF i_MYTHERIL_CLOSED_HELM]
 NAME=Mytheril Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -3182,8 +2996,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={101 115}
 
-[ITEMDEF 0473c]
-DEFNAME=i_MYTHERIL_HELMET
+[ITEMDEF i_MYTHERIL_HELMET]
 NAME=Mytheril Helmet
 ID=i_helm_open
 ARMOR=37
@@ -3199,8 +3012,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={51 65}
 
-[ITEMDEF 0473d]
-DEFNAME=i_MYTHERIL_BASCINET
+[ITEMDEF i_MYTHERIL_BASCINET]
 NAME=Mytheril Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -3216,8 +3028,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={101 115}
 
-[ITEMDEF 0473e]
-DEFNAME=i_MYTHERIL_NOSE_HELM
+[ITEMDEF i_MYTHERIL_NOSE_HELM]
 NAME=Mytheril Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -3234,8 +3045,7 @@ ON=@Create
 	COLOR=color_o_mytheril
 	HITPOINTS={101 115}
 
-[ITEMDEF 04740]
-DEFNAME=i_ROSE_PLATEMAIL
+[ITEMDEF i_ROSE_PLATEMAIL]
 NAME=Rose Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -3251,8 +3061,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04741]
-DEFNAME=i_ROSE_PLATEMAIL_ARMS
+[ITEMDEF i_ROSE_PLATEMAIL_ARMS]
 NAME=Rose Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -3268,8 +3077,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04742]
-DEFNAME=i_ROSE_PLATEMAIL_leggings
+[ITEMDEF i_ROSE_PLATEMAIL_leggings]
 NAME=Rose Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -3285,8 +3093,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04743]
-DEFNAME=i_ROSE_PLATE_HELM
+[ITEMDEF i_ROSE_PLATE_HELM]
 NAME=Rose Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -3302,8 +3109,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={46 58}
 
-[ITEMDEF 04744]
-DEFNAME=i_ROSE_PLATEMAIL_GORGET
+[ITEMDEF i_ROSE_PLATEMAIL_GORGET]
 NAME=Rose Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -3319,8 +3125,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04745]
-DEFNAME=i_ROSE_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_ROSE_PLATEMAIL_GAUNTLETS]
 NAME=Rose Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -3336,8 +3141,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04746]
-DEFNAME=i_ROSE_FEMALE_PLATEMAIL
+[ITEMDEF i_ROSE_FEMALE_PLATEMAIL]
 NAME=Rose Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -3353,8 +3157,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04747]
-DEFNAME=i_ROSE_CHAINMAIL_COIF
+[ITEMDEF i_ROSE_CHAINMAIL_COIF]
 NAME=Rose Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -3370,8 +3173,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={36 44}
 
-[ITEMDEF 04748]
-DEFNAME=i_ROSE_CHAINMAIL_LEGGINGS
+[ITEMDEF i_ROSE_CHAINMAIL_LEGGINGS]
 NAME=Rose Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -3387,8 +3189,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={46 58}
 
-[ITEMDEF 04749]
-DEFNAME=i_ROSE_CHAINMAIL_TUNIC
+[ITEMDEF i_ROSE_CHAINMAIL_TUNIC]
 NAME=Rose Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -3404,8 +3205,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={46 58}
 
-[ITEMDEF 0474a]
-DEFNAME=i_ROSE_RINGMAIL_LEGGINGS
+[ITEMDEF i_ROSE_RINGMAIL_LEGGINGS]
 NAME=Rose Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -3421,8 +3221,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={41 51}
 
-[ITEMDEF 0474b]
-DEFNAME=i_ROSE_RINGMAIL_SLEEVES
+[ITEMDEF i_ROSE_RINGMAIL_SLEEVES]
 NAME=Rose Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -3438,8 +3237,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={41 51}
 
-[ITEMDEF 0474c]
-DEFNAME=i_ROSE_RINGMAIL_GLOVES
+[ITEMDEF i_ROSE_RINGMAIL_GLOVES]
 NAME=Rose Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -3455,8 +3253,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={41 51}
 
-[ITEMDEF 0474d]
-DEFNAME=i_ROSE_RINGMAIL_TUNIC
+[ITEMDEF i_ROSE_RINGMAIL_TUNIC]
 NAME=Rose Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -3472,8 +3269,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={41 51}
 
-[ITEMDEF 0474e]
-DEFNAME=i_ROSE_BUCKLER_SHIELD
+[ITEMDEF i_ROSE_BUCKLER_SHIELD]
 NAME=Rose Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -3489,8 +3285,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={41 51}
 
-[ITEMDEF 0474f]
-DEFNAME=i_ROSE_HEATER_SHIELD
+[ITEMDEF i_ROSE_HEATER_SHIELD]
 NAME=Rose Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -3506,8 +3301,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={31 37}
 
-[ITEMDEF 04750]
-DEFNAME=i_ROSE_METAL_SHIELD
+[ITEMDEF i_ROSE_METAL_SHIELD]
 NAME=Rose Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -3523,8 +3317,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04751]
-DEFNAME=i_ROSE_CLOSED_HELM
+[ITEMDEF i_ROSE_CLOSED_HELM]
 NAME=Rose Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -3540,8 +3333,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={101 115}
 
-[ITEMDEF 04752]
-DEFNAME=i_ROSE_HELMET
+[ITEMDEF i_ROSE_HELMET]
 NAME=Rose Helmet
 ID=i_helm_open
 ARMOR=37
@@ -3557,8 +3349,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={51 65}
 
-[ITEMDEF 04753]
-DEFNAME=i_ROSE_BASCINET
+[ITEMDEF i_ROSE_BASCINET]
 NAME=Rose Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -3574,8 +3365,7 @@ ON=@Create
 	COLOR=color_o_rose
 	HITPOINTS={101 115}
 
-[ITEMDEF 04754]
-DEFNAME=i_ROSE_NOSE_HELM
+[ITEMDEF i_ROSE_NOSE_HELM]
 NAME=Rose Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -3601,8 +3391,7 @@ if ( <cont.karma> > 0 )
 	TIMER=20	// check again later
 endif
 
-[ITEMDEF 04755]
-DEFNAME=i_SHADOW_PLATEMAIL
+[ITEMDEF i_SHADOW_PLATEMAIL]
 NAME=Shadow Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -3627,8 +3416,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04756]
-DEFNAME=i_SHADOW_PLATEMAIL_ARMS
+[ITEMDEF i_SHADOW_PLATEMAIL_ARMS]
 NAME=Shadow Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -3653,8 +3441,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04757]
-DEFNAME=i_SHADOW_PLATEMAIL_leggings
+[ITEMDEF i_SHADOW_PLATEMAIL_leggings]
 NAME=Shadow Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -3679,8 +3466,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04758]
-DEFNAME=i_SHADOW_PLATE_HELM
+[ITEMDEF i_SHADOW_PLATE_HELM]
 NAME=Shadow Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -3705,8 +3491,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04759]
-DEFNAME=i_SHADOW_PLATEMAIL_GORGET
+[ITEMDEF i_SHADOW_PLATEMAIL_GORGET]
 NAME=Shadow Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -3731,8 +3516,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475a]
-DEFNAME=i_SHADOW_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_SHADOW_PLATEMAIL_GAUNTLETS]
 NAME=Shadow Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -3757,8 +3541,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475b]
-DEFNAME=i_SHADOW_FEMALE_PLATEMAIL
+[ITEMDEF i_SHADOW_FEMALE_PLATEMAIL]
 NAME=Shadow Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -3783,8 +3566,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475c]
-DEFNAME=i_SHADOW_CHAINMAIL_COIF
+[ITEMDEF i_SHADOW_CHAINMAIL_COIF]
 NAME=Shadow Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -3809,8 +3591,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475d]
-DEFNAME=i_SHADOW_CHAINMAIL_LEGGINGS
+[ITEMDEF i_SHADOW_CHAINMAIL_LEGGINGS]
 NAME=Shadow Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -3835,8 +3616,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475e]
-DEFNAME=i_SHADOW_CHAINMAIL_TUNIC
+[ITEMDEF i_SHADOW_CHAINMAIL_TUNIC]
 NAME=Shadow Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -3861,8 +3641,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0475f]
-DEFNAME=i_SHADOW_RINGMAIL_LEGGINGS
+[ITEMDEF i_SHADOW_RINGMAIL_LEGGINGS]
 NAME=Shadow Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -3887,8 +3666,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04760]
-DEFNAME=i_SHADOW_RINGMAIL_SLEEVES
+[ITEMDEF i_SHADOW_RINGMAIL_SLEEVES]
 NAME=Shadow Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -3913,8 +3691,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04761]
-DEFNAME=i_SHADOW_RINGMAIL_GLOVES
+[ITEMDEF i_SHADOW_RINGMAIL_GLOVES]
 NAME=Shadow Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -3939,8 +3716,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04762]
-DEFNAME=i_SHADOW_RINGMAIL_TUNIC
+[ITEMDEF i_SHADOW_RINGMAIL_TUNIC]
 NAME=Shadow Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -3965,8 +3741,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04763]
-DEFNAME=i_SHADOW_BUCKLER_SHIELD
+[ITEMDEF i_SHADOW_BUCKLER_SHIELD]
 NAME=Shadow Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -3991,8 +3766,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04764]
-DEFNAME=i_SHADOW_HEATER_SHIELD
+[ITEMDEF i_SHADOW_HEATER_SHIELD]
 NAME=Shadow Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -4017,8 +3791,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04765]
-DEFNAME=i_SHADOW_METAL_SHIELD
+[ITEMDEF i_SHADOW_METAL_SHIELD]
 NAME=Shadow Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -4043,8 +3816,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04766]
-DEFNAME=i_SHADOW_CLOSED_HELM
+[ITEMDEF i_SHADOW_CLOSED_HELM]
 NAME=Shadow Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -4069,8 +3841,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04767]
-DEFNAME=i_SHADOW_HELMET
+[ITEMDEF i_SHADOW_HELMET]
 NAME=Shadow Helmet
 ID=i_helm_open
 ARMOR=37
@@ -4095,8 +3866,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04768]
-DEFNAME=i_SHADOW_BASCINET
+[ITEMDEF i_SHADOW_BASCINET]
 NAME=Shadow Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -4121,8 +3891,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04769]
-DEFNAME=i_SHADOW_NOSE_HELM
+[ITEMDEF i_SHADOW_NOSE_HELM]
 NAME=Shadow Bascinet
 ID=i_helm_nose
 ARMOR=37
@@ -4148,8 +3917,7 @@ ON=@Timer
 	endif
 	//Verite Armor
 
-[ITEMDEF 0476a]
-DEFNAME=i_VERITE_PLATEMAIL
+[ITEMDEF i_VERITE_PLATEMAIL]
 NAME=Verite Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -4165,8 +3933,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0476b]
-DEFNAME=i_VERITE_PLATEMAIL_ARMS
+[ITEMDEF i_VERITE_PLATEMAIL_ARMS]
 NAME=Verite Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -4182,8 +3949,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0476c]
-DEFNAME=i_VERITE_PLATEMAIL_leggings
+[ITEMDEF i_VERITE_PLATEMAIL_leggings]
 NAME=Verite Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -4199,8 +3965,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0476d]
-DEFNAME=i_VERITE_PLATE_HELM
+[ITEMDEF i_VERITE_PLATE_HELM]
 NAME=Verite Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -4216,8 +3981,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={46 58}
 
-[ITEMDEF 0476e]
-DEFNAME=i_VERITE_PLATEMAIL_GORGET
+[ITEMDEF i_VERITE_PLATEMAIL_GORGET]
 NAME=Verite Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -4233,8 +3997,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0476f]
-DEFNAME=i_VERITE_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_VERITE_PLATEMAIL_GAUNTLETS]
 NAME=Verite Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -4250,8 +4013,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 04770]
-DEFNAME=i_VERITE_FEMALE_PLATEMAIL
+[ITEMDEF i_VERITE_FEMALE_PLATEMAIL]
 NAME=Verite Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -4267,8 +4029,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 04771]
-DEFNAME=i_VERITE_CHAINMAIL_COIF
+[ITEMDEF i_VERITE_CHAINMAIL_COIF]
 NAME=Verite Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -4284,8 +4045,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={36 44}
 
-[ITEMDEF 04772]
-DEFNAME=i_VERITE_CHAINMAIL_LEGGINGS
+[ITEMDEF i_VERITE_CHAINMAIL_LEGGINGS]
 NAME=Verite Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -4301,8 +4061,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={46 58}
 
-[ITEMDEF 04773]
-DEFNAME=i_VERITE_CHAINMAIL_TUNIC
+[ITEMDEF i_VERITE_CHAINMAIL_TUNIC]
 NAME=Verite Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -4318,8 +4077,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={46 58}
 
-[ITEMDEF 04774]
-DEFNAME=i_VERITE_RINGMAIL_LEGGINGS
+[ITEMDEF i_VERITE_RINGMAIL_LEGGINGS]
 NAME=Verite Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -4335,8 +4093,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={41 51}
 
-[ITEMDEF 04775]
-DEFNAME=i_VERITE_RINGMAIL_SLEEVES
+[ITEMDEF i_VERITE_RINGMAIL_SLEEVES]
 NAME=Verite Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -4352,8 +4109,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={41 51}
 
-[ITEMDEF 04776]
-DEFNAME=i_VERITE_RINGMAIL_GLOVES
+[ITEMDEF i_VERITE_RINGMAIL_GLOVES]
 NAME=Verite Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -4369,8 +4125,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={41 51}
 
-[ITEMDEF 04777]
-DEFNAME=i_VERITE_RINGMAIL_TUNIC
+[ITEMDEF i_VERITE_RINGMAIL_TUNIC]
 NAME=Verite Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -4386,8 +4141,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={41 51}
 
-[ITEMDEF 04778]
-DEFNAME=i_VERITE_BUCKLER_SHIELD
+[ITEMDEF i_VERITE_BUCKLER_SHIELD]
 NAME=Verite Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -4403,8 +4157,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={41 51}
 
-[ITEMDEF 04779]
-DEFNAME=i_VERITE_HEATER_SHIELD
+[ITEMDEF i_VERITE_HEATER_SHIELD]
 NAME=Verite Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -4420,8 +4173,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={31 37}
 
-[ITEMDEF 0477a]
-DEFNAME=i_VERITE_METAL_SHIELD
+[ITEMDEF i_VERITE_METAL_SHIELD]
 NAME=Verite Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -4437,8 +4189,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0477b]
-DEFNAME=i_VERITE_CLOSED_HELM
+[ITEMDEF i_VERITE_CLOSED_HELM]
 NAME=Verite Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -4454,8 +4205,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={101 115}
 
-[ITEMDEF 0477c]
-DEFNAME=i_VERITE_HELMET
+[ITEMDEF i_VERITE_HELMET]
 NAME=Verite Helmet
 ID=i_helm_open
 ARMOR=37
@@ -4471,8 +4221,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0477d]
-DEFNAME=i_VERITE_BASCINET
+[ITEMDEF i_VERITE_BASCINET]
 NAME=Verite Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -4488,8 +4237,7 @@ ON=@Create
 	COLOR=color_o_verite
 	HITPOINTS={101 115}
 
-[ITEMDEF 0477e]
-DEFNAME=i_VERITE_NOSE_HELM
+[ITEMDEF i_VERITE_NOSE_HELM]
 NAME=Verite Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -4516,8 +4264,7 @@ if ( 0 > <cont.karma> )
 endif
 TIMER=60	// check again later
 
-[ITEMDEF 04780]
-DEFNAME=i_AGAPITE_PLATEMAIL
+[ITEMDEF i_AGAPITE_PLATEMAIL]
 NAME=Agapite Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -4542,8 +4289,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04781]
-DEFNAME=i_AGAPITE_PLATEMAIL_ARMS
+[ITEMDEF i_AGAPITE_PLATEMAIL_ARMS]
 NAME=Agapite Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -4568,8 +4314,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04782]
-DEFNAME=i_AGAPITE_PLATEMAIL_leggings
+[ITEMDEF i_AGAPITE_PLATEMAIL_leggings]
 NAME=Agapite Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -4594,8 +4339,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04783]
-DEFNAME=i_AGAPITE_PLATE_HELM
+[ITEMDEF i_AGAPITE_PLATE_HELM]
 NAME=Agapite Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -4620,8 +4364,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04784]
-DEFNAME=i_AGAPITE_PLATEMAIL_GORGET
+[ITEMDEF i_AGAPITE_PLATEMAIL_GORGET]
 NAME=Agapite Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -4646,8 +4389,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04785]
-DEFNAME=i_AGAPITE_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_AGAPITE_PLATEMAIL_GAUNTLETS]
 NAME=Agapite Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -4672,8 +4414,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04786]
-DEFNAME=i_AGAPITE_FEMALE_PLATEMAIL
+[ITEMDEF i_AGAPITE_FEMALE_PLATEMAIL]
 NAME=Agapite Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -4698,8 +4439,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04787]
-DEFNAME=i_AGAPITE_CHAINMAIL_COIF
+[ITEMDEF i_AGAPITE_CHAINMAIL_COIF]
 NAME=Agapite Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -4724,8 +4464,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04788]
-DEFNAME=i_AGAPITE_CHAINMAIL_LEGGINGS
+[ITEMDEF i_AGAPITE_CHAINMAIL_LEGGINGS]
 NAME=Agapite Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -4750,8 +4489,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04789]
-DEFNAME=i_AGAPITE_CHAINMAIL_TUNIC
+[ITEMDEF i_AGAPITE_CHAINMAIL_TUNIC]
 NAME=Agapite Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -4776,8 +4514,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478a]
-DEFNAME=i_AGAPITE_RINGMAIL_LEGGINGS
+[ITEMDEF i_AGAPITE_RINGMAIL_LEGGINGS]
 NAME=Agapite Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -4802,8 +4539,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478b]
-DEFNAME=i_AGAPITE_RINGMAIL_SLEEVES
+[ITEMDEF i_AGAPITE_RINGMAIL_SLEEVES]
 NAME=Agapite Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -4828,8 +4564,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478c]
-DEFNAME=i_AGAPITE_RINGMAIL_GLOVES
+[ITEMDEF i_AGAPITE_RINGMAIL_GLOVES]
 NAME=Agapite Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -4854,8 +4589,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478d]
-DEFNAME=i_AGAPITE_RINGMAIL_TUNIC
+[ITEMDEF i_AGAPITE_RINGMAIL_TUNIC]
 NAME=Agapite Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -4880,8 +4614,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478e]
-DEFNAME=i_AGAPITE_BUCKLER_SHIELD
+[ITEMDEF i_AGAPITE_BUCKLER_SHIELD]
 NAME=Agapite Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -4906,8 +4639,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 0478f]
-DEFNAME=i_AGAPITE_HEATER_SHIELD
+[ITEMDEF i_AGAPITE_HEATER_SHIELD]
 NAME=Agapite Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -4932,8 +4664,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04790]
-DEFNAME=i_AGAPITE_METAL_SHIELD
+[ITEMDEF i_AGAPITE_METAL_SHIELD]
 NAME=Agapite Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -4958,8 +4689,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04791]
-DEFNAME=i_AGAPITE_CLOSED_HELM
+[ITEMDEF i_AGAPITE_CLOSED_HELM]
 NAME=Agapite Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -4984,8 +4714,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04792]
-DEFNAME=i_AGAPITE_HELMET
+[ITEMDEF i_AGAPITE_HELMET]
 NAME=Agapite Helmet
 ID=i_helm_open
 ARMOR=37
@@ -5010,8 +4739,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04793]
-DEFNAME=i_AGAPITE_BASCINET
+[ITEMDEF i_AGAPITE_BASCINET]
 NAME=Agapite Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -5036,8 +4764,7 @@ ON=@Timer
 		return 1
 	endif
 
-[ITEMDEF 04794]
-DEFNAME=i_AGAPITE_NOSE_HELM
+[ITEMDEF i_AGAPITE_NOSE_HELM]
 NAME=Agapite Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -5063,8 +4790,7 @@ ON=@Timer
 	endif
 	//Valorite Armor
 
-[ITEMDEF 04795]
-DEFNAME=i_VALORITE_PLATEMAIL
+[ITEMDEF i_VALORITE_PLATEMAIL]
 NAME=Valorite Platemail
 ID=i_platemail_chest
 ARMOR=37
@@ -5080,8 +4806,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 04796]
-DEFNAME=i_VALORITE_PLATEMAIL_ARMS
+[ITEMDEF i_VALORITE_PLATEMAIL_ARMS]
 NAME=Valorite Platemail Arms
 ID=i_platemail_arms
 ARMOR=37
@@ -5097,8 +4822,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 04797]
-DEFNAME=i_VALORITE_PLATEMAIL_leggings
+[ITEMDEF i_VALORITE_PLATEMAIL_leggings]
 NAME=Valorite Platemail Legs
 ID=i_platemail_leggings
 ARMOR=37
@@ -5114,8 +4838,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 04798]
-DEFNAME=i_VALORITE_PLATE_HELM
+[ITEMDEF i_VALORITE_PLATE_HELM]
 NAME=Valorite Plate Helm
 ID=i_platemail_helm
 ARMOR=37
@@ -5131,8 +4854,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={46 58}
 
-[ITEMDEF 04799]
-DEFNAME=i_VALORITE_PLATEMAIL_GORGET
+[ITEMDEF i_VALORITE_PLATEMAIL_GORGET]
 NAME=Valorite Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=37
@@ -5148,8 +4870,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0479a]
-DEFNAME=i_VALORITE_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_VALORITE_PLATEMAIL_GAUNTLETS]
 NAME=Valorite Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=37
@@ -5165,8 +4886,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0479b]
-DEFNAME=i_VALORITE_FEMALE_PLATEMAIL
+[ITEMDEF i_VALORITE_FEMALE_PLATEMAIL]
 NAME=Valorite Platemail
 ID=i_armor_female_plate
 ARMOR=22
@@ -5182,8 +4902,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 0479c]
-DEFNAME=i_VALORITE_CHAINMAIL_COIF
+[ITEMDEF i_VALORITE_CHAINMAIL_COIF]
 NAME=Valorite Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=27
@@ -5199,8 +4918,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={36 44}
 
-[ITEMDEF 0479d]
-DEFNAME=i_VALORITE_CHAINMAIL_LEGGINGS
+[ITEMDEF i_VALORITE_CHAINMAIL_LEGGINGS]
 NAME=Valorite Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=27
@@ -5216,8 +4934,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={46 58}
 
-[ITEMDEF 0479e]
-DEFNAME=i_VALORITE_CHAINMAIL_TUNIC
+[ITEMDEF i_VALORITE_CHAINMAIL_TUNIC]
 NAME=Valorite Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=27
@@ -5233,8 +4950,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={46 58}
 
-[ITEMDEF 0479f]
-DEFNAME=i_valorite_ringmail_leggings
+[ITEMDEF i_valorite_ringmail_leggings]
 NAME=Valorite Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=22
@@ -5250,8 +4966,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={41 51}
 
-[ITEMDEF 047a0]
-DEFNAME=i_VALORITE_RINGMAIL_SLEEVES
+[ITEMDEF i_VALORITE_RINGMAIL_SLEEVES]
 NAME=Valorite Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=22
@@ -5267,8 +4982,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={41 51}
 
-[ITEMDEF 047a1]
-DEFNAME=i_VALORITE_RINGMAIL_GLOVES
+[ITEMDEF i_VALORITE_RINGMAIL_GLOVES]
 NAME=Valorite Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=22
@@ -5284,8 +4998,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={41 51}
 
-[ITEMDEF 047a2]
-DEFNAME=i_VALORITE_RINGMAIL_TUNIC
+[ITEMDEF i_VALORITE_RINGMAIL_TUNIC]
 NAME=Valorite Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=22
@@ -5301,9 +5014,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={41 51}
 
-[ITEMDEF 047a3]
-//DEFNAME=i_VALORITE_BUCKLER
-DEFNAME=i_VALORITE_BUCKLER_SHIELD
+[ITEMDEF i_VALORITE_BUCKLER_SHIELD]
 NAME=Valorite Buckler
 ID=i_shield_buckler
 ARMOR=9
@@ -5319,8 +5030,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={41 51}
 
-[ITEMDEF 047a4]
-DEFNAME=i_VALORITE_HEATER_SHIELD
+[ITEMDEF i_VALORITE_HEATER_SHIELD]
 NAME=Valorite Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=25
@@ -5336,8 +5046,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={31 37}
 
-[ITEMDEF 047a5]
-DEFNAME=i_valorite_metal_shield
+[ITEMDEF i_valorite_metal_shield]
 NAME=Valorite Metal Shield
 ID=i_shield_round_metal
 ARMOR=13
@@ -5353,8 +5062,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 047a6]
-DEFNAME=i_VALORITE_CLOSED_HELM
+[ITEMDEF i_VALORITE_CLOSED_HELM]
 NAME=Valorite Closed Helm
 ID=i_helm_closed
 ARMOR=37
@@ -5370,8 +5078,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={101 115}
 
-[ITEMDEF 047a7]
-DEFNAME=i_VALORITE_HELMET
+[ITEMDEF i_VALORITE_HELMET]
 NAME=Valorite Helmet
 ID=i_helm_open
 ARMOR=37
@@ -5387,8 +5094,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={51 65}
 
-[ITEMDEF 047a8]
-DEFNAME=i_VALORITE_BASCINET
+[ITEMDEF i_VALORITE_BASCINET]
 NAME=Valorite Bascinet
 ID=i_bascinet
 ARMOR=37
@@ -5404,8 +5110,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={101 115}
 
-[ITEMDEF 047a9]
-DEFNAME=i_VALORITE_NOSE_HELM
+[ITEMDEF i_VALORITE_NOSE_HELM]
 NAME=Valorite Nose Helm
 ID=i_helm_nose
 ARMOR=37
@@ -5422,8 +5127,7 @@ ON=@Create
 	COLOR=color_o_valorite
 	HITPOINTS={101 115}
 
-[ITEMDEF 04801]
-DEFNAME=i_BRONZE_PLATEMAIL
+[ITEMDEF i_BRONZE_PLATEMAIL]
 NAME=Bronze Platemail
 ID=i_platemail_chest
 ARMOR=25
@@ -5439,8 +5143,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04802]
-DEFNAME=i_BRONZE_PLATEMAIL_ARMS
+[ITEMDEF i_BRONZE_PLATEMAIL_ARMS]
 NAME=Bronze Platemail Arms
 ID=i_platemail_arms
 ARMOR=25
@@ -5456,8 +5159,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04803]
-DEFNAME=i_BRONZE_PLATEMAIL_leggings
+[ITEMDEF i_BRONZE_PLATEMAIL_leggings]
 NAME=Bronze Platemail Legs
 ID=i_platemail_leggings
 ARMOR=25
@@ -5473,8 +5175,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04804]
-DEFNAME=i_BRONZE_PLATE_HELM
+[ITEMDEF i_BRONZE_PLATE_HELM]
 NAME=Bronze Plate Helm
 ID=i_platemail_helm
 ARMOR=25
@@ -5490,8 +5191,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={46 58}
 
-[ITEMDEF 04805]
-DEFNAME=i_BRONZE_PLATEMAIL_GORGET
+[ITEMDEF i_BRONZE_PLATEMAIL_GORGET]
 NAME=Bronze Platemail Gorget
 ID=i_platemail_gorget
 ARMOR=29
@@ -5507,8 +5207,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04806]
-DEFNAME=i_BRONZE_PLATEMAIL_GAUNTLETS
+[ITEMDEF i_BRONZE_PLATEMAIL_GAUNTLETS]
 NAME=Bronze Platemail Gauntlets
 ID=i_platemail_gloves
 ARMOR=25
@@ -5524,8 +5223,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04807]
-DEFNAME=i_BRONZE_FEMALE_PLATEMAIL
+[ITEMDEF i_BRONZE_FEMALE_PLATEMAIL]
 NAME=Bronze Platemail
 ID=i_armor_female_plate
 ARMOR=25
@@ -5541,8 +5239,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04808]
-DEFNAME=i_BRONZE_CHAINMAIL_COIF
+[ITEMDEF i_BRONZE_CHAINMAIL_COIF]
 NAME=Bronze Chainmail Coif
 ID=i_chainmail_coif
 ARMOR=20
@@ -5558,8 +5255,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={36 44}
 
-[ITEMDEF 04809]
-DEFNAME=i_BRONZE_CHAINMAIL_LEGGINGS
+[ITEMDEF i_BRONZE_CHAINMAIL_LEGGINGS]
 NAME=Bronze Chainmail Leggings
 ID=i_chainmail_leggings
 ARMOR=20
@@ -5575,8 +5271,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={46 58}
 
-[ITEMDEF 04810]
-DEFNAME=i_BRONZE_CHAINMAIL_TUNIC
+[ITEMDEF i_BRONZE_CHAINMAIL_TUNIC]
 NAME=Bronze Chainmail Tunic
 ID=i_chainmail_tunic
 ARMOR=20
@@ -5592,8 +5287,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={46 58}
 
-[ITEMDEF 04811]
-DEFNAME=i_BRONZE_RINGMAIL_LEGGINGS
+[ITEMDEF i_BRONZE_RINGMAIL_LEGGINGS]
 NAME=Bronze Ringmail Leggings
 ID=i_ringmail_leggings
 ARMOR=18
@@ -5609,8 +5303,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={41 51}
 
-[ITEMDEF 04812]
-DEFNAME=i_BRONZE_RINGMAIL_SLEEVES
+[ITEMDEF i_BRONZE_RINGMAIL_SLEEVES]
 NAME=Bronze Ringmail Sleeves
 ID=i_ringmail_sleeves
 ARMOR=18
@@ -5626,8 +5319,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={41 51}
 
-[ITEMDEF 04813]
-DEFNAME=i_BRONZE_RINGMAIL_GLOVES
+[ITEMDEF i_BRONZE_RINGMAIL_GLOVES]
 NAME=Bronze Ringmail Gloves
 ID=i_ringmail_gloves
 ARMOR=18
@@ -5643,8 +5335,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={41 51}
 
-[ITEMDEF 04814]
-DEFNAME=i_BRONZE_RINGMAIL_TUNIC
+[ITEMDEF i_BRONZE_RINGMAIL_TUNIC]
 NAME=Bronze Ringmail Tunic
 ID=i_ringmail_tunic
 ARMOR=18
@@ -5660,8 +5351,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={41 51}
 
-[ITEMDEF 04815]
-DEFNAME=i_BRONZE_BUCKLER_shield
+[ITEMDEF i_BRONZE_BUCKLER_shield]
 NAME=Bronze Buckler
 ID=i_shield_buckler
 ARMOR=6
@@ -5677,8 +5367,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={41 51}
 
-[ITEMDEF 04816]
-DEFNAME=i_BRONZE_HEATER_SHIELD
+[ITEMDEF i_BRONZE_HEATER_SHIELD]
 NAME=Bronze Heater Shield
 ID=I_SHIELD_HEATER
 ARMOR=20
@@ -5694,8 +5383,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={31 37}
 
-[ITEMDEF 04817]
-DEFNAME=i_BRONZE_METAL_SHIELD
+[ITEMDEF i_BRONZE_METAL_SHIELD]
 NAME=Bronze Metal Shield
 ID=i_shield_round_metal
 ARMOR=10
@@ -5711,8 +5399,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04818]
-DEFNAME=i_BRONZE_CLOSED_HELM
+[ITEMDEF i_BRONZE_CLOSED_HELM]
 NAME=Bronze Closed Helm
 ID=i_helm_closed
 ARMOR=25
@@ -5728,8 +5415,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={30 45}
 
-[ITEMDEF 04819]
-DEFNAME=i_BRONZE_HELMET
+[ITEMDEF i_BRONZE_HELMET]
 NAME=Bronze Helmet
 ID=i_helm_open
 ARMOR=20
@@ -5745,8 +5431,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={51 65}
 
-[ITEMDEF 04820]
-DEFNAME=i_BRONZE_BASCINET
+[ITEMDEF i_BRONZE_BASCINET]
 NAME=Bronze Bascinet
 ID=i_bascinet
 ARMOR=25
@@ -5762,8 +5447,7 @@ ON=@Create
 	COLOR=color_o_bronze
 	HITPOINTS={30 35}
 
-[ITEMDEF 04821]
-DEFNAME=i_BRONZE_NOSE_HELM
+[ITEMDEF i_BRONZE_NOSE_HELM]
 NAME=Bronze Nose Helm
 ID=i_helm_nose
 ARMOR=20

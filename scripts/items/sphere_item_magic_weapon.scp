@@ -50,9 +50,8 @@ ON=@DCLICK
 	SRC.UPDATE
 	RETURN 1
 
-[ITEMDEF 04129]
-//Same as [ITEMDEF 0412f] Do not remove! Here for backward compatility!
-DEFNAME=i_BOW_RUIN_O
+[ITEMDEF i_BOW_RUIN_O]
+//Same as [ITEMDEF i_BOW_RUIN] Do not remove! Here for backward compatility!
 ID=i_bow
 NAME=Bow of Ruin
 RESOURCES=i_bow,i_enchant_weapon
@@ -63,9 +62,8 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04139]
-//Same as [ITEMDEF 0413f] Do not remove! Here for backward compatility!
-DEFNAME=i_KRYSS_RUIN_O
+[ITEMDEF i_KRYSS_RUIN_O]
+//Same as [ITEMDEF i_KRYSS_RUIN] Do not remove! Here for backward compatility!
 ID=i_kryss
 NAME=Kryss of Ruin
 RESOURCES=i_kryss,i_enchant_weapon
@@ -76,8 +74,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04105]
-DEFNAME=i_SCIMITAR_FORCE
+[ITEMDEF i_SCIMITAR_FORCE]
 ID=i_scimitar
 NAME=Scimitar of Force
 RESOURCES=i_scimitar,3 i_enchant_weapon
@@ -91,8 +88,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=60.0
 
-[ITEMDEF 04106]
-DEFNAME=i_SCIMITAR_vanq
+[ITEMDEF i_SCIMITAR_vanq]
 ID=i_scimitar
 NAME=Scimitar of Vanquishing
 RESOURCES=i_scimitar,5 i_enchant_weapon
@@ -106,8 +102,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=100.0
 
-[ITEMDEF 04107]
-DEFNAME=i_HALBERD_FORCE
+[ITEMDEF i_HALBERD_FORCE]
 ID=i_halberd
 NAME=Halberd of Force
 RESOURCES=i_halberd,3 i_enchant_weapon
@@ -121,8 +116,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=60.0
 
-[ITEMDEF 04108]
-DEFNAME=i_HALBERD_vanq
+[ITEMDEF i_HALBERD_vanq]
 ID=i_halberd
 Name=Halberd of Vanquishing
 RESOURCES=i_halberd,5 i_enchant_weapon
@@ -136,8 +130,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=100.0
 
-[ITEMDEF 04109]
-DEFNAME=i_CROSSBOW_FORCE
+[ITEMDEF i_CROSSBOW_FORCE]
 ID=i_crossbow
 NAME=Crossbow of Force
 RESOURCES=i_crossbow,3 i_enchant_weapon
@@ -151,8 +144,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=60.0
 
-[ITEMDEF 0410a]
-DEFNAME=i_SCIMITAR_RUIN
+[ITEMDEF i_SCIMITAR_RUIN]
 ID=i_scimitar
 NAME=Scimitar of Ruin
 RESOURCES=i_scimitar,i_enchant_weapon
@@ -166,8 +158,7 @@ ON=@Create
 	MOREY=20.0
 	ATTR=attr_magic
 
-[ITEMDEF 0410b]
-DEFNAME=i_SCIMITAR_MIGHT
+[ITEMDEF i_SCIMITAR_MIGHT]
 ID=i_scimitar
 NAME=Scimitar of Might
 RESOURCES=i_scimitar,2 i_enchant_weapon
@@ -181,8 +172,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=40.0
 
-[ITEMDEF 0410c]
-DEFNAME=i_SCIMITAR_POWER
+[ITEMDEF i_SCIMITAR_POWER]
 ID=i_scimitar
 NAME=Scimitar of Power
 RESOURCES=i_scimitar,4 i_enchant_weapon
@@ -196,8 +186,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=80.0
 
-[ITEMDEF 0410d]
-DEFNAME=i_CROSSBOW_RUIN
+[ITEMDEF i_CROSSBOW_RUIN]
 ID=i_crossbow
 NAME=Crossbow of Ruin
 RESOURCES=i_crossbow,i_enchant_weapon
@@ -210,8 +199,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=20.0
 
-[ITEMDEF 0410e]
-DEFNAME=i_CROSSBOW_MIGHT
+[ITEMDEF i_CROSSBOW_MIGHT]
 ID=i_crossbow
 NAME=Crossbow of Might
 RESOURCES=i_crossbow,2 i_enchant_weapon
@@ -225,8 +213,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=40.0
 
-[ITEMDEF 0410f]
-DEFNAME=i_CROSSBOW_POWER
+[ITEMDEF i_CROSSBOW_POWER]
 ID=i_crossbow
 NAME=Crossbow of Power
 RESOURCES=i_crossbow,4 i_enchant_weapon
@@ -239,8 +226,7 @@ ON=@Create
 	ATTR=attr_magic
 	HITPOINTS={100 101}
 
-[ITEMDEF 04110]
-DEFNAME=i_CROSSBOW_vanq
+[ITEMDEF i_CROSSBOW_vanq]
 ID=i_crossbow
 NAME=Crossbow of Vanquishing
 RESOURCES=i_crossbow,5 i_enchant_weapon
@@ -254,8 +240,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=100.0
 
-[ITEMDEF 04111]
-DEFNAME=i_HALBERD_RUIN
+[ITEMDEF i_HALBERD_RUIN]
 ID=i_halberd
 NAME=Halberd of Ruin
 RESOURCES=i_halberd,i_enchant_weapon
@@ -269,8 +254,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=20.0
 
-[ITEMDEF 04112]
-DEFNAME=i_HALBERD_MIGHT
+[ITEMDEF i_HALBERD_MIGHT]
 ID=i_halberd
 NAME=Halberd of Might
 RESOURCES=i_halberd,2 i_enchant_weapon
@@ -284,8 +268,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=40.0
 
-[ITEMDEF 04113]
-DEFNAME=i_HALBERD_POWER
+[ITEMDEF i_HALBERD_POWER]
 ID=i_halberd
 NAME=Halberd of Power
 RESOURCES=i_halberd,4 i_enchant_weapon
@@ -299,8 +282,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=80.0
 
-[ITEMDEF 04114]
-DEFNAME=i_BARDICHE_RUIN
+[ITEMDEF i_BARDICHE_RUIN]
 ID=i_bardiche
 NAME=Bardiche of Ruin
 RESOURCES=i_bardiche,i_enchant_weapon
@@ -314,8 +296,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=20.0
 
-[ITEMDEF 04115]
-DEFNAME=i_BARDICHE_MIGHT
+[ITEMDEF i_BARDICHE_MIGHT]
 ID=i_bardiche
 NAME=Bardiche of Might
 RESOURCES=i_bardiche,2 i_enchant_weapon
@@ -329,8 +310,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04116]
-DEFNAME=i_BARDICHE_FORCE
+[ITEMDEF i_BARDICHE_FORCE]
 ID=i_bardiche
 NAME=Bardiche of Force
 RESOURCES=i_bardiche,3 i_enchant_weapon
@@ -344,8 +324,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04117]
-DEFNAME=i_BARDICHE_POWER
+[ITEMDEF i_BARDICHE_POWER]
 ID=i_bardiche
 NAME=Bardiche of Power
 RESOURCES=i_bardiche,4 i_enchant_weapon
@@ -359,8 +338,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04118]
-DEFNAME=i_BARDICHE_vanq
+[ITEMDEF i_BARDICHE_vanq]
 ID=i_bardiche
 NAME=Bardiche of Vanquishing
 RESOURCES=i_bardiche,5 i_enchant_weapon
@@ -374,8 +352,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411a]
-DEFNAME=i_CUTLASS_RUIN
+[ITEMDEF i_CUTLASS_RUIN]
 ID=i_cutlass
 NAME=Cutlass of Ruin
 RESOURCES=i_cutlass,i_enchant_weapon
@@ -389,8 +366,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411b]
-DEFNAME=i_CUTLASS_MIGHT
+[ITEMDEF i_CUTLASS_MIGHT]
 ID=i_cutlass
 NAME=Cutlass of Might
 RESOURCES=i_cutlass,2 i_enchant_weapon
@@ -404,8 +380,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411c]
-DEFNAME=i_CUTLASS_FORCE
+[ITEMDEF i_CUTLASS_FORCE]
 ID=i_cutlass
 NAME=Cutlass of Force
 RESOURCES=i_cutlass,3 i_enchant_weapon
@@ -419,8 +394,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411d]
-DEFNAME=i_CUTLASS_POWER
+[ITEMDEF i_CUTLASS_POWER]
 ID=i_cutlass
 NAME=Cutlass of Power
 RESOURCES=i_cutlass,4 i_enchant_weapon
@@ -434,8 +408,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411e]
-DEFNAME=i_CUTLASS_vanq
+[ITEMDEF i_CUTLASS_vanq]
 ID=i_cutlass
 NAME=Cutlass of Vanquishing
 RESOURCES=i_cutlass,5 i_enchant_weapon
@@ -449,8 +422,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0411f]
-DEFNAME=i_sword_viking_RUIN
+[ITEMDEF i_sword_viking_RUIN]
 ID=i_sword_viking
 NAME=Viking Sword of Ruin
 RESOURCES=i_sword_viking,i_enchant_weapon
@@ -464,8 +436,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04120]
-DEFNAME=i_sword_viking_MIGHT
+[ITEMDEF i_sword_viking_MIGHT]
 ID=i_sword_viking
 NAME=Viking Sword of Might
 RESOURCES=i_sword_viking,2 i_enchant_weapon
@@ -479,8 +450,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04121]
-DEFNAME=i_sword_viking_FORCE
+[ITEMDEF i_sword_viking_FORCE]
 ID=i_sword_viking
 NAME=Viking Sword of Force
 RESOURCES=i_sword_viking,3 i_enchant_weapon
@@ -494,8 +464,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04122]
-DEFNAME=i_sword_viking_POWER
+[ITEMDEF i_sword_viking_POWER]
 ID=i_sword_viking
 NAME=Viking Sword of Power
 RESOURCES=i_sword_viking,4 i_enchant_weapon
@@ -509,8 +478,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04123]
-DEFNAME=i_sword_viking_vanq
+[ITEMDEF i_sword_viking_vanq]
 ID=i_sword_viking
 NAME=Viking Sword of Vanquishing
 RESOURCES=i_sword_viking,5 i_enchant_weapon
@@ -524,8 +492,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04124]
-DEFNAME=i_crossbow_heavy_RUIN
+[ITEMDEF i_crossbow_heavy_RUIN]
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Ruin
 RESOURCES=i_crossbow_heavy,i_enchant_weapon
@@ -539,8 +506,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04125]
-DEFNAME=i_crossbow_heavy_MIGHT
+[ITEMDEF i_crossbow_heavy_MIGHT]
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Might
 RESOURCES=i_crossbow_heavy,2 i_enchant_weapon
@@ -554,8 +520,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04126]
-DEFNAME=i_crossbow_heavy_FORCE
+[ITEMDEF i_crossbow_heavy_FORCE]
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Force
 RESOURCES=i_crossbow_heavy,3 i_enchant_weapon
@@ -569,8 +534,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04127]
-DEFNAME=i_crossbow_heavy_POWER
+[ITEMDEF i_crossbow_heavy_POWER]
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Power
 RESOURCES=i_crossbow_heavy,4 i_enchant_weapon
@@ -584,8 +548,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04128]
-DEFNAME=i_crossbow_heavy_vanq
+[ITEMDEF i_crossbow_heavy_vanq]
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Vanquishing
 RESOURCES=i_crossbow_heavy,5 i_enchant_weapon
@@ -599,8 +562,7 @@ ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412a]
-DEFNAME=i_KATANA_RUIN
+[ITEMDEF i_KATANA_RUIN]
 ID=i_katana
 NAME=Katana of Ruin
 RESOURCES=i_katana,i_enchant_weapon
@@ -614,8 +576,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412b]
-DEFNAME=i_KATANA_MIGHT
+[ITEMDEF i_KATANA_MIGHT]
 ID=i_katana
 NAME=Katana of Might
 RESOURCES=i_katana,2 i_enchant_weapon
@@ -629,8 +590,7 @@ ON=@Create
 	HITPOINTS={95 96}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412c]
-DEFNAME=i_KATANA_FORCE
+[ITEMDEF i_KATANA_FORCE]
 ID=i_katana
 NAME=Katana of Force
 RESOURCES=i_katana,3 i_enchant_weapon
@@ -644,8 +604,7 @@ ON=@Create
 	HITPOINTS={100 101}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412d]
-DEFNAME=i_KATANA_POWER
+[ITEMDEF i_KATANA_POWER]
 ID=i_katana
 NAME=Katana of Power
 RESOURCES=i_katana,4 i_enchant_weapon
@@ -659,8 +618,7 @@ ON=@Create
 	HITPOINTS={105 106}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412e]
-DEFNAME=i_KATANA_vanq
+[ITEMDEF i_KATANA_vanq]
 ID=i_katana
 NAME=Katana of Vanquishing
 RESOURCES=i_katana,5 i_enchant_weapon
@@ -674,8 +632,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0412f]
-DEFNAME=i_BOW_RUIN
+[ITEMDEF i_BOW_RUIN]
 ID=i_bow
 NAME=Bow of Ruin
 RESOURCES=i_bow,i_enchant_weapon
@@ -689,8 +646,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04130]
-DEFNAME=i_BOW_MIGHT
+[ITEMDEF i_BOW_MIGHT]
 ID=i_bow
 NAME=Bow of Might
 RESOURCES=i_bow,2 i_enchant_weapon
@@ -704,8 +660,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04131]
-DEFNAME=i_BOW_FORCE
+[ITEMDEF i_BOW_FORCE]
 ID=i_bow
 NAME=Bow of Force
 RESOURCES=i_bow,3 i_enchant_weapon
@@ -719,8 +674,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04132]
-DEFNAME=i_BOW_POWER
+[ITEMDEF i_BOW_POWER]
 ID=i_bow
 NAME=Bow of Power
 RESOURCES=i_bow,4 i_enchant_weapon
@@ -734,8 +688,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04133]
-DEFNAME=i_BOW_vanq
+[ITEMDEF i_BOW_vanq]
 ID=i_bow
 NAME=Bow of Vanquishing
 RESOURCES=i_bow,5 i_enchant_weapon
@@ -746,8 +699,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=100.0
 
-[ITEMDEF 04134]
-DEFNAME=i_PITCHFORK_RUIN
+[ITEMDEF i_PITCHFORK_RUIN]
 ID=i_PITCHFORK
 NAME=Pitchfork of Ruin
 RESOURCES=i_PITCHFORK,i_enchant_weapon
@@ -761,8 +713,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=20.0
 
-[ITEMDEF 04135]
-DEFNAME=i_PITCHFORK_MIGHT
+[ITEMDEF i_PITCHFORK_MIGHT]
 ID=i_PITCHFORK
 NAME=Pitchfork of Might
 RESOURCES=i_PITCHFORK,2 i_enchant_weapon
@@ -776,8 +727,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04136]
-DEFNAME=i_PITCHFORK_FORCE
+[ITEMDEF i_PITCHFORK_FORCE]
 ID=i_PITCHFORK
 NAME=Pitchfork of Force
 RESOURCES=i_PITCHFORK,3 i_enchant_weapon
@@ -791,8 +741,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04137]
-DEFNAME=i_PITCHFORK_POWER
+[ITEMDEF i_PITCHFORK_POWER]
 ID=i_PITCHFORK
 NAME=Pitchfork of Power
 RESOURCES=i_PITCHFORK,4 i_enchant_weapon
@@ -806,8 +755,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04138]
-DEFNAME=i_PITCHFORK_vanq
+[ITEMDEF i_PITCHFORK_vanq]
 ID=i_PITCHFORK
 NAME=Pitchfork of Vanquishing
 RESOURCES=i_PITCHFORK,5 i_enchant_weapon
@@ -821,8 +769,7 @@ ON=@Create
 	HITPOINTS={31 60}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413a]
-DEFNAME=i_BROADSWORD_RUIN
+[ITEMDEF i_BROADSWORD_RUIN]
 ID=i_sword_broad
 NAME=Broadsword of Ruin
 RESOURCES=i_sword_broad,i_enchant_weapon
@@ -836,8 +783,7 @@ ON=@Create
 	HITPOINTS={100 101}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413b]
-DEFNAME=i_BROADSWORD_MIGHT
+[ITEMDEF i_BROADSWORD_MIGHT]
 ID=i_sword_broad
 NAME=Broadsword of Might
 RESOURCES=i_sword_broad,2 i_enchant_weapon
@@ -851,8 +797,7 @@ ON=@Create
 	HITPOINTS={105 106}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413c]
-DEFNAME=i_BROADSWORD_FORCE
+[ITEMDEF i_BROADSWORD_FORCE]
 ID=i_sword_broad
 NAME=Broadsword of Force
 RESOURCES=i_sword_broad,3 i_enchant_weapon
@@ -866,8 +811,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413d]
-DEFNAME=i_BROADSWORD_POWER
+[ITEMDEF i_BROADSWORD_POWER]
 ID=i_sword_broad
 NAME=Broadsword of Power
 RESOURCES=i_sword_broad,4 i_enchant_weapon
@@ -881,8 +825,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413e]
-DEFNAME=i_BROADSWORD_vanq
+[ITEMDEF i_BROADSWORD_vanq]
 ID=i_sword_broad
 NAME=Broadsword of Vanquishing
 RESOURCES=i_sword_broad,5 i_enchant_weapon
@@ -896,8 +839,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0413f]
-DEFNAME=i_KRYSS_RUIN
+[ITEMDEF i_KRYSS_RUIN]
 ID=i_kryss
 NAME=Kryss of Ruin
 RESOURCES=i_kryss,i_enchant_weapon
@@ -911,8 +853,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04140]
-DEFNAME=i_KRYSS_MIGHT
+[ITEMDEF i_KRYSS_MIGHT]
 ID=i_kryss
 NAME=Kryss of Might
 RESOURCES=i_kryss,2 i_enchant_weapon
@@ -926,8 +867,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04141]
-DEFNAME=i_KRYSS_FORCE
+[ITEMDEF i_KRYSS_FORCE]
 ID=i_kryss
 NAME=Kryss of Force
 RESOURCES=i_kryss,3 i_enchant_weapon
@@ -941,8 +881,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04142]
-DEFNAME=i_KRYSS_POWER
+[ITEMDEF i_KRYSS_POWER]
 ID=i_kryss
 NAME=Kryss of Power
 RESOURCES=i_kryss,4 i_enchant_weapon
@@ -956,8 +895,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04143]
-DEFNAME=i_KRYSS_vanq
+[ITEMDEF i_KRYSS_vanq]
 ID=i_kryss
 NAME=Kryss of Vanquishing
 RESOURCES=i_kryss,5 i_enchant_weapon
@@ -971,8 +909,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04144]
-DEFNAME=i_SPEAR_RUIN
+[ITEMDEF i_SPEAR_RUIN]
 ID=i_spear
 NAME=Spear of Ruin
 RESOURCES=i_spear,i_enchant_weapon
@@ -986,8 +923,7 @@ ON=@Create
 	HITPOINTS={31 80}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04145]
-DEFNAME=i_SPEAR_MIGHT
+[ITEMDEF i_SPEAR_MIGHT]
 ID=i_spear
 NAME=Spear of Might
 RESOURCES=i_spear,2 i_enchant_weapon
@@ -1001,8 +937,7 @@ ON=@Create
 	HITPOINTS={31 80}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04146]
-DEFNAME=i_SPEAR_FORCE
+[ITEMDEF i_SPEAR_FORCE]
 ID=i_spear
 NAME=Spear of Force
 RESOURCES=i_spear,3 i_enchant_weapon
@@ -1016,8 +951,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=60.0
 
-[ITEMDEF 04147]
-DEFNAME=i_SPEAR_POWER
+[ITEMDEF i_SPEAR_POWER]
 ID=i_spear
 NAME=Spear of Power
 RESOURCES=i_spear,4 i_enchant_weapon
@@ -1031,8 +965,7 @@ ON=@Create
 	HITPOINTS={31 80}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04148]
-DEFNAME=i_SPEAR_vanq
+[ITEMDEF i_SPEAR_vanq]
 ID=i_spear
 NAME=Spear of Vanquishing
 RESOURCES=i_spear,5 i_enchant_weapon
@@ -1046,7 +979,7 @@ ON=@Create
 	HITPOINTS={31 80}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04149]
+[ITEMDEF i_sword_viking_vanq_Daemon_Breath]
 //Viking Sword of Vanquishing & Fireball 40 charges
 ID=i_sword_viking
 NAME=Viking of Vanquishing and Daemon's Breath
@@ -1063,8 +996,7 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0414a]
-DEFNAME=i_sword_long_RUIN
+[ITEMDEF i_sword_long_RUIN]
 ID=i_sword_long
 NAME=Longsword of Ruin
 RESOURCES=i_sword_long,i_enchant_weapon
@@ -1078,8 +1010,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0414b]
-DEFNAME=i_sword_long_MIGHT
+[ITEMDEF i_sword_long_MIGHT]
 ID=i_sword_long
 NAME=Longsword of Might
 RESOURCES=i_sword_long,2 i_enchant_weapon
@@ -1093,8 +1024,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0414c]
-DEFNAME=i_sword_long_FORCE
+[ITEMDEF i_sword_long_FORCE]
 ID=i_sword_long
 NAME=Longsword of Force
 RESOURCES=i_sword_long,3 i_enchant_weapon
@@ -1108,8 +1038,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0414d]
-DEFNAME=i_sword_long_POWER
+[ITEMDEF i_sword_long_POWER]
 ID=i_sword_long
 NAME=Longsword of Power
 RESOURCES=i_sword_long,4 i_enchant_weapon
@@ -1123,8 +1052,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0414e]
-DEFNAME=i_sword_long_vanq
+[ITEMDEF i_sword_long_vanq]
 ID=i_sword_long
 NAME=Longsword of Vanquishing
 RESOURCES=i_sword_long,5 i_enchant_weapon
@@ -1138,9 +1066,8 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04150]
+[ITEMDEF i_sword_viking_vanq_Brimstone]
 //Viking Sword of Vanquishing & Flamestrike 40 charges
-DEFNAME=i_sword_viking_vanq_Brimstone
 ID=i_sword_viking
 NAME=Viking of Vanquishing and Brimstone
 RESOURCES=i_sword_viking,5 i_enchant_weapon,i_wand_1,40 i_scroll_flamestrike
@@ -1156,9 +1083,8 @@ ON=@Create
 	MOREY=100.0
 	MORE2=40
 
-[ITEMDEF 04151]
+[ITEMDEF i_sword_viking_vanq_Electricity]
 //Viking Sword of Vanquishing & Energy Bolt 40 charges
-DEFNAME=i_sword_viking_vanq_Electricity
 ID=i_sword_viking
 NAME=Viking of Vanquishing and Electricity
 RESOURCES=i_sword_viking,5 i_enchant_weapon,i_wand_1,40 i_scroll_energy_bolt
@@ -1174,9 +1100,8 @@ ON=@Create
 	HITPOINTS={31 90}
 	COLOR=063
 
-[ITEMDEF 04152]
+[ITEMDEF i_crossbow_heavy_vanq_Daemon_Breath]
 //Heavy Crossbow of Vanquishing & Fireball 40 charges
-DEFNAME=i_crossbow_heavy_vanq_Daemon_Breath
 ID=i_crossbow_heavy
 NAME=Heavy Crossbow of Vanquishing & Daemon's Breath
 RESOURCES=i_crossbow_heavy,5 i_enchant_weapon,i_wand_1,40 i_scroll_fireball
@@ -1192,9 +1117,8 @@ ON=@Create
 	HITPOINTS=31 100
 	COLOR=color_magic_weap
 
-[ITEMDEF 04153]
+[ITEMDEF i_bow_vanq_Electricity]
 //Bow of Vanquishing & Energy Bolt 40 Charges
-DEFNAME=i_bow_vanq_Electricity
 ID=i_bow
 NAME=Bow of Vanquishing & Electricity
 RESOURCES=i_bow,5 i_enchant_weapon,i_wand_1,40 i_scroll_energy_bolt
@@ -1210,9 +1134,8 @@ ON=@Create
 	HITPOINTS=31 60
 	COLOR=063
 
-[ITEMDEF 04154]
+[ITEMDEF i_BOW_Smite_Electricity]
 //GM Bow of Smite and Energy Bolt
-DEFNAME=i_BOW_Smite_Electricity
 ID=i_bow
 NAME=GM Bow of Smite and Electricity
 RESOURCES=i_bow,50 i_enchant_weapon,i_wand_1,100 i_scroll_energy_bolt
@@ -1228,8 +1151,7 @@ ON=@Create
 	HITPOINTS={20 30}
 	COLOR=063
 
-[ITEMDEF 04155]
-DEFNAME=i_SPEAR_SHORT_RUIN
+[ITEMDEF i_SPEAR_SHORT_RUIN]
 ID=i_spear_short
 NAME=Short Spear of Ruin
 RESOURCES=i_spear_short,i_enchant_weapon
@@ -1243,8 +1165,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04156]
-DEFNAME=i_SPEAR_SHORT_MIGHT
+[ITEMDEF i_SPEAR_SHORT_MIGHT]
 ID=i_spear_short
 NAME=Short Spear of Might
 RESOURCES=i_spear_short,2 i_enchant_weapon
@@ -1258,8 +1179,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04157]
-DEFNAME=i_spear_short_FORCE
+[ITEMDEF i_spear_short_FORCE]
 ID=i_spear_short
 NAME=Short Spear of Force
 RESOURCES=i_spear_short,3 i_enchant_weapon
@@ -1273,8 +1193,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04158]
-DEFNAME=i_spear_short_POWER
+[ITEMDEF i_spear_short_POWER]
 ID=i_spear_short
 NAME=Short Spear of Power
 RESOURCES=i_spear_short,4 i_enchant_weapon
@@ -1288,8 +1207,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04159]
-DEFNAME=i_spear_short_vanq
+[ITEMDEF i_spear_short_vanq]
 ID=i_spear_short
 NAME=Short Spear of Vanquishing
 RESOURCES=i_spear_short,4 i_enchant_weapon
@@ -1303,8 +1221,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0415a]
-DEFNAME=i_WAR_FORK_RUIN
+[ITEMDEF i_WAR_FORK_RUIN]
 ID=I_WAR_FORK
 NAME=War Fork of Ruin
 RESOURCES=i_WAR_FORK,i_enchant_weapon
@@ -1318,8 +1235,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0415b]
-DEFNAME=i_WAR_FORK_MIGHT
+[ITEMDEF i_WAR_FORK_MIGHT]
 ID=I_WAR_FORK
 NAME=War Fork of Might
 RESOURCES=i_WAR_FORK,2 i_enchant_weapon
@@ -1333,8 +1249,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0415c]
-DEFNAME=i_WAR_FORK_FORCE
+[ITEMDEF i_WAR_FORK_FORCE]
 ID=I_WAR_FORK
 NAME=War Fork of Force
 RESOURCES=i_WAR_FORK,3 i_enchant_weapon
@@ -1348,8 +1263,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0415d]
-DEFNAME=i_WAR_FORK_POWER
+[ITEMDEF i_WAR_FORK_POWER]
 ID=I_WAR_FORK
 NAME=War Fork of Power
 RESOURCES=i_WAR_FORK,4 i_enchant_weapon
@@ -1363,8 +1277,7 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0415e]
-DEFNAME=i_WAR_FORK_vanq
+[ITEMDEF i_WAR_FORK_vanq]
 ID=I_WAR_FORK
 NAME=War Fork of Vanquishing
 RESOURCES=i_WAR_FORK,5 i_enchant_weapon
@@ -1378,8 +1291,7 @@ ON=@Create
 	HITPOINTS={135 136}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04160]
-DEFNAME=i_CLUB_RUIN
+[ITEMDEF i_CLUB_RUIN]
 ID=i_club
 NAME=Club of Ruin
 RESOURCES=i_club,i_enchant_weapon
@@ -1393,8 +1305,7 @@ ON=@Create
 	HITPOINTS={45 46}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04161]
-DEFNAME=i_CLUB_MIGHT
+[ITEMDEF i_CLUB_MIGHT]
 ID=i_club
 NAME=Club of Might
 RESOURCES=i_club,2 i_enchant_weapon
@@ -1408,8 +1319,7 @@ ON=@Create
 	HITPOINTS={50 51}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04162]
-DEFNAME=i_CLUB_FORCE
+[ITEMDEF i_CLUB_FORCE]
 ID=i_club
 NAME=Club of Force
 RESOURCES=i_club,3 i_enchant_weapon
@@ -1423,8 +1333,7 @@ ON=@Create
 	HITPOINTS={55 56}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04163]
-DEFNAME=i_CLUB_POWER
+[ITEMDEF i_CLUB_POWER]
 ID=i_club
 NAME=Club of Power
 RESOURCES=i_club,4 i_enchant_weapon
@@ -1438,8 +1347,7 @@ ON=@Create
 	HITPOINTS={60 61}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04164]
-DEFNAME=i_CLUB_vanq
+[ITEMDEF i_CLUB_vanq]
 ID=i_club
 NAME=Club of Vanquishing
 RESOURCES=i_club,5 i_enchant_weapon
@@ -1453,8 +1361,7 @@ ON=@Create
 	HITPOINTS={65 66}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04165]
-DEFNAME=i_MACE_RUIN
+[ITEMDEF i_MACE_RUIN]
 ID=i_mace
 NAME=Mace of Ruin
 RESOURCES=i_mace,i_enchant_weapon
@@ -1468,8 +1375,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04166]
-DEFNAME=i_MACE_MIGHT
+[ITEMDEF i_MACE_MIGHT]
 ID=i_mace
 NAME=Mace of Might
 RESOURCES=i_mace,2 i_enchant_weapon
@@ -1483,8 +1389,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04167]
-DEFNAME=i_MACE_FORCE
+[ITEMDEF i_MACE_FORCE]
 ID=i_mace
 NAME=Mace of Force
 RESOURCES=i_mace,3 i_enchant_weapon
@@ -1498,8 +1403,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04168]
-DEFNAME=i_MACE_POWER
+[ITEMDEF i_MACE_POWER]
 ID=i_mace
 NAME=Mace of Power
 RESOURCES=i_mace,4 i_enchant_weapon
@@ -1513,8 +1417,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04169]
-DEFNAME=i_MACE_vanq
+[ITEMDEF i_MACE_vanq]
 ID=i_mace
 NAME=Mace of Vanquishing
 RESOURCES=i_mace,5 i_enchant_weapon
@@ -1528,8 +1431,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0416a]
-DEFNAME=i_MAUL_RUIN
+[ITEMDEF i_MAUL_RUIN]
 ID=i_maul
 NAME=Maul of Ruin
 RESOURCES=i_maul,i_enchant_weapon
@@ -1543,8 +1445,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0416b]
-DEFNAME=i_MAUL_MIGHT
+[ITEMDEF i_MAUL_MIGHT]
 ID=i_maul
 NAME=Maul of Might
 RESOURCES=i_maul,2 i_enchant_weapon
@@ -1558,8 +1459,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0416c]
-DEFNAME=i_MAUL_FORCE
+[ITEMDEF i_MAUL_FORCE]
 ID=i_maul
 NAME=Maul of Force
 RESOURCES=i_maul,3 i_enchant_weapon
@@ -1573,8 +1473,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0416d]
-DEFNAME=i_MAUL_POWER
+[ITEMDEF i_MAUL_POWER]
 ID=i_maul
 NAME=Maul of Power
 RESOURCES=i_maul,4 i_enchant_weapon
@@ -1588,8 +1487,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0416e]
-DEFNAME=i_MAUL_vanq
+[ITEMDEF i_MAUL_vanq]
 ID=i_maul
 NAME=Maul of Vanquishing
 RESOURCES=i_maul,5 i_enchant_weapon
@@ -1603,8 +1501,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04170]
-DEFNAME=i_mace_war_RUIN
+[ITEMDEF i_mace_war_RUIN]
 ID=i_mace_war
 NAME=War Mace of Ruin
 RESOURCES=i_mace_war,i_enchant_weapon
@@ -1618,8 +1515,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04171]
-DEFNAME=i_mace_war_MIGHT
+[ITEMDEF i_mace_war_MIGHT]
 ID=i_mace_war
 NAME=War Mace of Might
 RESOURCES=i_mace_war,2 i_enchant_weapon
@@ -1633,8 +1529,7 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04172]
-DEFNAME=i_mace_war_FORCE
+[ITEMDEF i_mace_war_FORCE]
 ID=i_mace_war
 NAME=War Mace of Force
 RESOURCES=i_mace_war,3 i_enchant_weapon
@@ -1648,8 +1543,7 @@ ON=@Create
 	HITPOINTS={135 136}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04173]
-DEFNAME=i_mace_war_POWER
+[ITEMDEF i_mace_war_POWER]
 ID=i_mace_war
 NAME=War Mace of Power
 RESOURCES=i_mace_war,4 i_enchant_weapon
@@ -1663,8 +1557,7 @@ ON=@Create
 	HITPOINTS={140 141}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04174]
-DEFNAME=i_mace_war_vanq
+[ITEMDEF i_mace_war_vanq]
 ID=i_mace_war
 NAME=War Mace of Vanquishing
 RESOURCES=i_mace_war,5 i_enchant_weapon
@@ -1678,8 +1571,7 @@ ON=@Create
 	HITPOINTS={145 146}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04175]
-DEFNAME=i_HAMMER_PICK_RUIN
+[ITEMDEF i_HAMMER_PICK_RUIN]
 ID=i_hammer_pick
 NAME=Hammer Pick of Ruin
 RESOURCES=i_hammer_pick,i_enchant_weapon
@@ -1693,8 +1585,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04176]
-DEFNAME=i_HAMMER_PICK_MIGHT
+[ITEMDEF i_HAMMER_PICK_MIGHT]
 ID=i_hammer_pick
 NAME=Hammer Pick of Might
 RESOURCES=i_hammer_pick,2 i_enchant_weapon
@@ -1708,8 +1599,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04177]
-DEFNAME=i_HAMMER_PICK_FORCE
+[ITEMDEF i_HAMMER_PICK_FORCE]
 ID=i_hammer_pick
 NAME=Hammer Pick of Force
 RESOURCES=i_hammer_pick,3 i_enchant_weapon
@@ -1723,8 +1613,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04178]
-DEFNAME=i_HAMMER_PICK_POWER
+[ITEMDEF i_HAMMER_PICK_POWER]
 ID=i_hammer_pick
 NAME=Hammer Pick of Power
 RESOURCES=i_hammer_pick,4 i_enchant_weapon
@@ -1738,8 +1627,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04179]
-DEFNAME=i_HAMMER_PICK_vanq
+[ITEMDEF i_HAMMER_PICK_vanq]
 ID=i_hammer_pick
 NAME=Hammer Pick of Vanquishing
 RESOURCES=i_hammer_pick,5 i_enchant_weapon
@@ -1753,8 +1641,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0417a]
-DEFNAME=i_hammer_war_RUIN
+[ITEMDEF i_hammer_war_RUIN]
 ID=i_hammer_war
 NAME=War Hammer of Ruin
 RESOURCES=i_hammer_war,i_enchant_weapon
@@ -1768,8 +1655,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0417b]
-DEFNAME=i_hammer_war_MIGHT
+[ITEMDEF i_hammer_war_MIGHT]
 ID=i_hammer_war
 NAME=War Hammer of Might
 RESOURCES=i_hammer_war,2 i_enchant_weapon
@@ -1783,8 +1669,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0417c]
-DEFNAME=i_hammer_war_FORCE
+[ITEMDEF i_hammer_war_FORCE]
 ID=i_hammer_war
 NAME=War Hammer of Force
 RESOURCES=i_hammer_war,3 i_enchant_weapon
@@ -1798,8 +1683,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0417d]
-DEFNAME=i_hammer_war_POWER
+[ITEMDEF i_hammer_war_POWER]
 ID=i_hammer_war
 NAME=War Hammer of Power
 RESOURCES=i_hammer_war,4 i_enchant_weapon
@@ -1813,8 +1697,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0417e]
-DEFNAME=i_hammer_war_vanq
+[ITEMDEF i_hammer_war_vanq]
 ID=i_hammer_war
 NAME=War Hammer of Vanquishing
 RESOURCES=i_hammer_war,5 i_enchant_weapon
@@ -1828,8 +1711,7 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04180]
-DEFNAME=i_AXE_RUIN
+[ITEMDEF i_AXE_RUIN]
 ID=i_axe
 NAME=Axe of Ruin
 RESOURCES=i_axe,i_enchant_weapon
@@ -1843,8 +1725,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04181]
-DEFNAME=i_AXE_MIGHT
+[ITEMDEF i_AXE_MIGHT]
 ID=i_axe
 NAME=Axe of Might
 RESOURCES=i_axe,2 i_enchant_weapon
@@ -1858,8 +1739,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04182]
-DEFNAME=i_AXE_FORCE
+[ITEMDEF i_AXE_FORCE]
 ID=i_axe
 NAME=Axe of Force
 RESOURCES=i_axe,3 i_enchant_weapon
@@ -1873,8 +1753,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04183]
-DEFNAME=i_AXE_POWER
+[ITEMDEF i_AXE_POWER]
 ID=i_axe
 NAME=Axe of Power
 RESOURCES=i_axe,4 i_enchant_weapon
@@ -1888,8 +1767,7 @@ ON=@Create
 	HITPOINTS={95 96}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04184]
-DEFNAME=i_AXE_vanq
+[ITEMDEF i_AXE_vanq]
 ID=i_axe
 NAME=Axe of Vanquishing
 RESOURCES=i_axe,5 i_enchant_weapon
@@ -1903,8 +1781,7 @@ ON=@Create
 	HITPOINTS={100 101}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04185]
-DEFNAME=i_axe_exec_RUIN
+[ITEMDEF i_axe_exec_RUIN]
 ID=i_axe_exec
 NAME=Executioner's Axe of Ruin
 RESOURCES=i_axe_exec,i_enchant_weapon
@@ -1918,8 +1795,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04186]
-DEFNAME=i_axe_exec_MIGHT
+[ITEMDEF i_axe_exec_MIGHT]
 ID=i_axe_exec
 NAME=Executioner's Axe of Might
 RESOURCES=i_axe_exec,2 i_enchant_weapon
@@ -1933,8 +1809,7 @@ ON=@Create
 	HITPOINTS={95 96}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04187]
-DEFNAME=i_axe_exec_FORCE
+[ITEMDEF i_axe_exec_FORCE]
 ID=i_axe_exec
 NAME=Executioner's Axe of Force
 RESOURCES=i_axe_exec,3 i_enchant_weapon
@@ -1948,8 +1823,7 @@ ON=@Create
 	HITPOINTS={100 101}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04188]
-DEFNAME=i_axe_exec_POWER
+[ITEMDEF i_axe_exec_POWER]
 ID=i_axe_exec
 NAME=Executioner's Axe of Power
 RESOURCES=i_axe_exec,4 i_enchant_weapon
@@ -1963,8 +1837,7 @@ ON=@Create
 	HITPOINTS={105 106}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04189]
-DEFNAME=i_axe_exec_vanq
+[ITEMDEF i_axe_exec_vanq]
 ID=i_axe_exec
 NAME=Executioner's Axe of Vanquishing
 RESOURCES=i_axe_exec,5 i_enchant_weapon
@@ -1978,8 +1851,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0418a]
-DEFNAME=i_axe_battle_RUIN
+[ITEMDEF i_axe_battle_RUIN]
 ID=i_axe_battle
 NAME=Battle Axe of Ruin
 RESOURCES=i_axe_battle,i_enchant_weapon
@@ -1993,8 +1865,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0418b]
-DEFNAME=i_axe_battle_MIGHT
+[ITEMDEF i_axe_battle_MIGHT]
 ID=i_axe_battle
 NAME=Battle Axe of Might
 RESOURCES=i_axe_battle,2 i_enchant_weapon
@@ -2008,8 +1879,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0418c]
-DEFNAME=i_axe_battle_FORCE
+[ITEMDEF i_axe_battle_FORCE]
 ID=i_axe_battle
 NAME=Battle Axe of Force
 RESOURCES=i_axe_battle,3 i_enchant_weapon
@@ -2023,8 +1893,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0418d]
-DEFNAME=i_axe_battle_POWER
+[ITEMDEF i_axe_battle_POWER]
 ID=i_axe_battle
 NAME=Battle Axe of Power
 RESOURCES=i_axe_battle,4 i_enchant_weapon
@@ -2038,8 +1907,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0418e]
-DEFNAME=i_axe_battle_vanq
+[ITEMDEF i_axe_battle_vanq]
 ID=i_axe_battle
 NAME=Battle Axe of Vanquishing
 RESOURCES=i_axe_battle,5 i_enchant_weapon
@@ -2053,8 +1921,7 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04190]
-DEFNAME=i_axe_double_RUIN
+[ITEMDEF i_axe_double_RUIN]
 ID=i_axe_double
 NAME=Double Axe of Ruin
 RESOURCES=i_axe_double,i_enchant_weapon
@@ -2068,8 +1935,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04191]
-DEFNAME=i_axe_double_MIGHT
+[ITEMDEF i_axe_double_MIGHT]
 ID=i_axe_double
 NAME=Double Axe of Might
 RESOURCES=i_axe_double,2 i_enchant_weapon
@@ -2083,8 +1949,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04192]
-DEFNAME=i_axe_double_FORCE
+[ITEMDEF i_axe_double_FORCE]
 ID=i_axe_double
 NAME=Double Axe of Force
 RESOURCES=i_axe_double,3 i_enchant_weapon
@@ -2098,8 +1963,7 @@ ON=@Create
 	HITPOINTS={120 121}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04193]
-DEFNAME=i_axe_double_POWER
+[ITEMDEF i_axe_double_POWER]
 ID=i_axe_double
 NAME=Double Axe of Power
 RESOURCES=i_axe_double,4 i_enchant_weapon
@@ -2113,8 +1977,7 @@ ON=@Create
 	HITPOINTS={125 126}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04194]
-DEFNAME=i_axe_double_vanq
+[ITEMDEF i_axe_double_vanq]
 ID=i_axe_double
 NAME=Double Axe of Vanquishing
 RESOURCES=i_axe_double,5 i_enchant_weapon
@@ -2128,8 +1991,7 @@ ON=@Create
 	HITPOINTS={130 131}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04195]
-DEFNAME=i_axe_two_hand_RUIN
+[ITEMDEF i_axe_two_hand_RUIN]
 ID=i_axe_two_hand
 NAME=Two Handed Axe of Ruin
 RESOURCES=i_axe_two_hand,i_enchant_weapon
@@ -2143,8 +2005,7 @@ ON=@Create
 	HITPOINTS={70 71}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04196]
-DEFNAME=i_axe_two_hand_MIGHT
+[ITEMDEF i_axe_two_hand_MIGHT]
 ID=i_axe_two_hand
 NAME=Two Handed Axe of Might
 RESOURCES=i_axe_two_hand,2 i_enchant_weapon
@@ -2158,8 +2019,7 @@ ON=@Create
 	HITPOINTS={75 76}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04197]
-DEFNAME=i_axe_two_hand_FORCE
+[ITEMDEF i_axe_two_hand_FORCE]
 ID=i_axe_two_hand
 NAME=Two Handed Axe of Force
 RESOURCES=i_axe_two_hand,3 i_enchant_weapon
@@ -2173,8 +2033,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04198]
-DEFNAME=i_axe_two_hand_POWER
+[ITEMDEF i_axe_two_hand_POWER]
 ID=i_axe_two_hand
 NAME=Two Handed Axe of Power
 RESOURCES=i_axe_two_hand,4 i_enchant_weapon
@@ -2188,8 +2047,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 04199]
-DEFNAME=i_axe_two_hand_vanq
+[ITEMDEF i_axe_two_hand_vanq]
 ID=i_axe_two_hand
 NAME=Two Handed Axe of Vanquishing
 RESOURCES=i_axe_two_hand,5 i_enchant_weapon
@@ -2203,8 +2061,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0419a]
-DEFNAME=i_axe_war_RUIN
+[ITEMDEF i_axe_war_RUIN]
 ID=i_axe_war
 NAME=War Axe of Ruin
 RESOURCES=i_axe_war,i_enchant_weapon
@@ -2218,8 +2075,7 @@ ON=@Create
 	HITPOINTS={80 81}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0419b]
-DEFNAME=i_axe_war_MIGHT
+[ITEMDEF i_axe_war_MIGHT]
 ID=i_axe_war
 NAME=War Axe of Might
 RESOURCES=i_axe_war,2 i_enchant_weapon
@@ -2233,8 +2089,7 @@ ON=@Create
 	HITPOINTS={85 86}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0419c]
-DEFNAME=i_axe_war_FORCE
+[ITEMDEF i_axe_war_FORCE]
 ID=i_axe_war
 NAME=War Axe of Force
 RESOURCES=i_axe_war,3 i_enchant_weapon
@@ -2248,8 +2103,7 @@ ON=@Create
 	HITPOINTS={90 91}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0419d]
-DEFNAME=i_axe_war_POWER
+[ITEMDEF i_axe_war_POWER]
 ID=i_axe_war
 NAME=War Axe of Power
 RESOURCES=i_axe_war,4 i_enchant_weapon
@@ -2263,8 +2117,7 @@ ON=@Create
 	HITPOINTS={95 96}
 	COLOR=color_magic_weap
 
-[ITEMDEF 0419e]
-DEFNAME=i_axe_war_VANQ
+[ITEMDEF i_axe_war_VANQ]
 ID=i_axe_war
 NAME=War Axe of Vanquishing
 RESOURCES=i_axe_war,5 i_enchant_weapon
@@ -2278,8 +2131,7 @@ ON=@Create
 	HITPOINTS={100 101}
 	COLOR=color_magic_weap
 
-[ITEMDEF 041a0]
-DEFNAME=i_axe_battle_large_RUIN
+[ITEMDEF i_axe_battle_large_RUIN]
 ID=i_axe_battle_large
 NAME=Large Battle Axe of Ruin
 RESOURCES=i_axe_battle_large,i_enchant_weapon
@@ -2293,8 +2145,7 @@ ON=@Create
 	HITPOINTS={110 111}
 	COLOR=color_magic_weap
 
-[ITEMDEF 041a1]
-DEFNAME=i_axe_battle_large_MIGHT
+[ITEMDEF i_axe_battle_large_MIGHT]
 ID=i_axe_battle_large
 NAME=Large Battle Axe of Might
 RESOURCES=i_axe_battle_large,2 i_enchant_weapon
@@ -2308,8 +2159,7 @@ ON=@Create
 	HITPOINTS={115 116}
 	COLOR=color_magic_weap
 
-[ITEMDEF 041a2]
-DEFNAME=i_axe_battle_large_FORCE
+[ITEMDEF i_axe_battle_large_FORCE]
 ID=i_axe_battle_large
 NAME=Large Battle Axe of Force
 RESOURCES=i_axe_battle_large,3 i_enchant_weapon
@@ -2323,8 +2173,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=60.0
 
-[ITEMDEF 041a3]
-DEFNAME=i_axe_battle_large_POWER
+[ITEMDEF i_axe_battle_large_POWER]
 ID=i_axe_battle_large
 NAME=Large Battle Axe of Power
 RESOURCES=i_axe_battle_large,4 i_enchant_weapon
@@ -2338,8 +2187,7 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=80.0
 
-[ITEMDEF 041a4]
-DEFNAME=i_axe_battle_large_vanq
+[ITEMDEF i_axe_battle_large_vanq]
 ID=i_axe_battle_large
 NAME=Large Battle Axe of Vanquishing
 RESOURCES=i_axe_battle_large,5 i_enchant_weapon

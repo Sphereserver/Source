@@ -11,9 +11,8 @@
 //
 VERSION=0.56b
 
-[ITEMDEF 048eb]
+[ITEMDEF i_leather_sleeves_invulnerability]
 //Leather Arms of Invulnerability
-DEFNAME=i_leather_sleeves_invulnerability
 NAME=Leather Arms of Invulnerability
 ID=i_leather_sleeves
 RESOURCES=i_leather_sleeves,6 i_enchant_armor
@@ -28,9 +27,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048ec]
+[ITEMDEF i_leather_gorget_invulnerability]
 //Leather Gorget of Invulnerability
-DEFNAME=i_leather_gorget_invulnerability
 NAME=Leather Gorget of Invulnerability
 ID=i_leather_gorget
 RESOURCES=i_leather_sleeves,6 i_enchant_armor
@@ -45,9 +43,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048ed]
+[ITEMDEF i_leather_leggings_invulnerability]
 //Leather Leggings of Invulnerability
-DEFNAME=i_leather_leggings_invulnerability
 NAME=Leather Leggings of Invulnerability
 ID=i_leather_leggings
 RESOURCES=i_leather_leggings,6 i_enchant_armor
@@ -62,9 +59,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048ee]
+[ITEMDEF i_leather_tunic_invulnerability]
 //Leather Tunic of Invulnerability
-DEFNAME=i_leather_tunic_invulnerability
 NAME=Leather Tunic of Invulnerability
 ID=i_leather_tunic
 RESOURCES=i_leather_tunic,6 i_enchant_armor
@@ -79,9 +75,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048ef]
+[ITEMDEF i_leather_gloves_invulnerability]
 //Leather Gloves of Invulnerability
-DEFNAME=i_leather_gloves_invulnerability
 NAME=Leather Gloves of Invulnerability
 ID=i_leather_gloves
 RESOURCES=i_leather_gloves,6 i_enchant_armor
@@ -96,9 +91,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048f0]
+[ITEMDEF i_leather_cap_invulnerability]
 //leather cap of Invulnerability
-DEFNAME=i_leather_cap_invulnerability
 NAME=leather cap of Invulnerability
 ID=i_leather_cap
 RESOURCES=i_leather_cap,6 i_enchant_armor
@@ -113,8 +107,7 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048fa]
-DEFNAME=i_leather_shorts_invulnerability
+[ITEMDEF i_leather_shorts_invulnerability]
 NAME=Leather Shorts of Invulnerability
 ID=i_armor_female_shorts
 RESOURCES=i_armor_female_shorts,6 i_enchant_armor
@@ -129,9 +122,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048fb]
+[ITEMDEF i_leather_armor_invulnerability_female]
 //Female Leather Armor
-DEFNAME=i_leather_armor_invulnerability_female
 NAME=Leather Armor of Invulnerability
 ID=i_armor_female_leather
 RESOURCES=i_armor_female_leather,6 i_enchant_armor
@@ -146,8 +138,7 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048fc]
-DEFNAME=i_leather_skirt_invulnerability
+[ITEMDEF i_leather_skirt_invulnerability]
 NAME=Leather Skirt of Invulnerability
 ID=i_armor_female_skirt
 RESOURCES=i_armor_female_skirt,6 i_enchant_armor
@@ -162,8 +153,7 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048fd]
-DEFNAME=i_leather_bustier_invulnerability
+[ITEMDEF i_leather_bustier_invulnerability]
 NAME=Leather Bustier of Invulnerability
 ID=i_armor_female_bustier
 RESOURCES=i_armor_female_bustier,6 i_enchant_armor
@@ -178,9 +168,8 @@ ON=@Create
 	HITPOINTS={31 37}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048fe]
+[ITEMDEF i_studded_sleeves_invulnerability]
 //Studded Sleeves of Invulnerability
-DEFNAME=i_studded_sleeves_invulnerability
 NAME=Studded Sleeves of Invulnerability
 ID=i_studded_sleeves
 RESOURCES=i_studded_sleeves,6 i_enchant_armor
@@ -195,9 +184,8 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 048ff]
+[ITEMDEF i_studded_gloves_invulnerability]
 //Studded Gloves of Invulnerability
-DEFNAME=i_studded_gloves_invulnerability
 NAME=Studded Gloves of Invulnerability
 ID=i_studded_gloves
 RESOURCES=i_studded_gloves,6 i_enchant_armor
@@ -212,9 +200,8 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 04900]
+[ITEMDEF i_studded_gorget_invulnerability]
 //Studded Gorget of Invulnerability
-DEFNAME=i_studded_gorget_invulnerability
 ID=i_studded_gorget
 NAME=Studded Gorget of Invulnerability
 RESOURCES=i_studded_gorget,6 i_enchant_armor
@@ -229,9 +216,8 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 04901]
+[ITEMDEF i_studded_leggings_invulnerability]
 //Studded Leggings of Invulnerability
-DEFNAME=i_studded_leggings_invulnerability
 NAME=Studded Leggings of Invulnerability
 ID=i_studded_leggings
 RESOURCES=i_studded_leggings,6 i_enchant_armor
@@ -246,9 +232,8 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 04902]
+[ITEMDEF i_studded_tunic_invulnerability]
 //Studded Tunic of Invulnerability
-DEFNAME=i_studded_tunic_invulnerability
 NAME=Studded Tunic of Invulnerability
 ID=i_studded_tunic
 RESOURCES=i_studded_tunic,6 i_enchant_armor
@@ -263,8 +248,7 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 04903]
-DEFNAME=i_studded_armor_invulnerability
+[ITEMDEF i_studded_armor_invulnerability]
 NAME=Studded Armor of Invulnerability
 ID=i_armor_female_studded
 RESOURCES=i_armor_female_studded,6 i_enchant_armor
@@ -279,8 +263,7 @@ ON=@Create
 	HITPOINTS={36 44}
 	COLOR=color_magic_invulnerability
 
-[ITEMDEF 04904]
-DEFNAME=i_studded_bustier_invulnerability
+[ITEMDEF i_studded_bustier_invulnerability]
 NAME=Studded Bustier of Invulnerability
 ID=i_armor_female_bustier_studded
 RESOURCES=i_armor_female_bustier_studded,6 i_enchant_armor

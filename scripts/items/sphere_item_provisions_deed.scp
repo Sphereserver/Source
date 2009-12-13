@@ -11,9 +11,8 @@
 //
 VERSION=0.56b
 
-[ITEMDEF 04200]
+[ITEMDEF i_deed_house_stone_plaster_small]
 //HOUSE_DEED_TEMPLATE_0
-DEFNAME=i_deed_house_stone_plaster_small
 NAME=Deed to a Small Stone and Plaster House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_stone_plaster_small
@@ -24,9 +23,8 @@ DESCRIPTION=Small Stone and Plaster House
 ON=@Create
 	MORE=i_multi_house_stone_plaster_small
 
-[ITEMDEF 04202]
+[ITEMDEF i_deed_House_stone_small]
 //HOUSE_DEED_TEMPLATE_1
-DEFNAME=i_deed_House_stone_small
 ID=i_deed
 NAME=Deed to a Small Stone House
 RESOURCES=i_deed,i_multi_house_stone_small
@@ -37,9 +35,8 @@ DESCRIPTION=Small Stone House
 ON=@Create
 	MORE=i_multi_house_stone_small
 
-[ITEMDEF 04204]
+[ITEMDEF i_deed_House_stone_brick_small]
 //HOUSE_DEED_TEMPLATE_2
-DEFNAME=i_deed_House_stone_brick_small
 NAME=Deed to a Small Brick House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_stone_brick_small
@@ -50,9 +47,8 @@ DESCRIPTION=Small Brick House
 ON=@Create
 	MORE=i_multi_house_stone_brick_small
 
-[ITEMDEF 04206]
+[ITEMDEF i_deed_House_stone_wood_small]
 //HOUSE_DEED_TEMPLATE_3
-DEFNAME=i_deed_House_stone_wood_small
 NAME=Deed to a Small Wood House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_stone_wood_small
@@ -63,9 +59,8 @@ DESCRIPTION=Small Wood House
 ON=@Create
 	MORE=i_multi_house_stone_wood_small
 
-[ITEMDEF 04208]
+[ITEMDEF i_deed_House_wood_plaster_small]
 //HOUSE_DEED_TEMPLATE_4
-DEFNAME=i_deed_House_wood_plaster_small
 NAME=Deed to a Small Wood and Plaster House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_wood_plaster_small
@@ -76,9 +71,8 @@ DESCRIPTION=Small Wood and Plaster House
 ON=@Create
 	MORE=i_multi_house_wood_plaster_small
 
-[ITEMDEF 04210]
+[ITEMDEF i_deed_House_wood_thatched_small]
 //HOUSE_DEED_TEMPLATE_5
-DEFNAME=i_deed_House_wood_thatched_small
 NAME=Deed to a Small Wood House Thatched Roof
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_wood_thatched_small
@@ -89,9 +83,8 @@ DESCRIPTION=Small Wood House Thatched Roof
 ON=@Create
 	MORE=i_multi_house_wood_thatched_small
 
-[ITEMDEF 04212]
+[ITEMDEF i_deed_tent_blue]
 //HOUSE_DEED_TEMPLATE_6
-DEFNAME=i_deed_tent_blue
 NAME=Deed to a Blue Tent
 ID=i_deed
 RESOURCES=i_deed,i_multi_tent_blue
@@ -102,9 +95,8 @@ DESCRIPTION=Blue Tent
 ON=@Create
 	MORE=i_multi_tent_blue
 
-[ITEMDEF 04214]
+[ITEMDEF i_deed_tent_green]
 //HOUSE_DEED_TEMPLATE_7
-DEFNAME=i_deed_tent_green
 NAME=Deed to a Green Tent
 ID=i_deed
 RESOURCES=i_deed,i_multi_tent_green
@@ -115,9 +107,8 @@ DESCRIPTION=Green Tent
 ON=@Create
 	MORE=i_multi_tent_green
 
-[ITEMDEF 04216]
+[ITEMDEF i_deed_house_3room]
 //HOUSE_DEED_TEMPLATE_8
-DEFNAME=i_deed_house_3room
 NAME=Deed to a Three Room House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_3room
@@ -128,9 +119,8 @@ DESCRIPTION=Three Room House
 ON=@Create
 	MORE=i_multi_house_3room
 
-[ITEMDEF 04218]
+[ITEMDEF i_deed_house_wood_plaster_2story]
 //HOUSE_DEED_TEMPLATE_9
-DEFNAME=i_deed_house_wood_plaster_2story
 NAME=Deed to a Two Story Wood and Plaster House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_wood_plaster_2story
@@ -141,9 +131,8 @@ DESCRIPTION=Two Story Wood and Plaster House
 ON=@Create
 	MORE=i_multi_house_wood_plaster_2story
 
-[ITEMDEF 04220]
+[ITEMDEF i_deed_house_stone_plaster_2story]
 //HOUSE_DEED_TEMPLATE_10
-DEFNAME=i_deed_house_stone_plaster_2story
 NAME=Deed to a Two Story Stone and Plaster House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_stone_plaster_2story
@@ -154,9 +143,8 @@ DESCRIPTION=Two Story Stone and Plaster House
 ON=@Create
 	MORE=i_multi_house_stone_plaster_2story
 
-[ITEMDEF 04222]
+[ITEMDEF i_deed_tower]
 //HOUSE_DEED_TEMPLATE_11
-DEFNAME=i_deed_tower
 NAME=Deed to a Tower
 ID=i_deed
 RESOURCES=i_deed,i_multi_tower
@@ -167,9 +155,8 @@ DESCRIPTION=Tower
 ON=@Create
 	MORE=i_multi_tower
 
-[ITEMDEF 04224]
+[ITEMDEF i_deed_keep]
 // HOUSE_DEED_TEMPLATE_12
-DEFNAME=i_deed_keep
 NAME=Deed to a Keep
 ID=i_deed
 RESOURCES=i_deed,i_multi_keep
@@ -180,9 +167,8 @@ DESCRIPTION=Keep
 ON=@Create
 	MORE=i_multi_keep
 
-[ITEMDEF 04226]
+[ITEMDEF i_deed_Castle]
 //HOUSE_DEED_TEMPLATE_13
-DEFNAME=i_deed_Castle
 NAME=Deed to a Castle
 ID=i_deed
 RESOURCES=i_deed,i_multi_castle
@@ -193,9 +179,8 @@ DESCRIPTION=Castle
 ON=@Create
 	MORE=i_multi_castle
 
-[ITEMDEF 04228]
+[ITEMDEF i_deed_shop_blacksmithy_large]
 //HOUSE_DEED_LARGE_SMITHY
-DEFNAME=i_deed_shop_blacksmithy_large
 NAME=Deed to a Large Blacksmithy Shop
 ID=i_deed
 RESOURCES=i_deed,i_multi_shop_blacksmithy_large
@@ -206,8 +191,7 @@ DESCRIPTION=Large Black Smithy
 ON=@Create
 	MORE=i_multi_shop_blacksmithy_large
 
-[ITEMDEF 04229]
-DEFNAME=i_deed_house_patio_marble
+[ITEMDEF i_deed_house_patio_marble]
 NAME=Deed to a Large Marble Patio House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_patio_marble
@@ -218,8 +202,7 @@ DESCRIPTION=Large Marble Patio House
 ON=@Create
 	MORE=i_multi_house_patio_marble
 
-[ITEMDEF 0422a]
-DEFNAME=i_deed_tower_wizard
+[ITEMDEF i_deed_tower_wizard]
 NAME=Deed to a Wizards Tower
 ID=i_deed
 RESOURCES=i_deed,i_multi_tower_wizard
@@ -230,8 +213,7 @@ DESCRIPTION=Wizards Tower
 ON=@Create
 	MORE=i_multi_tower_wizard
 
-[ITEMDEF 0422b]
-DEFNAME=i_deed_cabin_log_2story
+[ITEMDEF i_deed_cabin_log_2story]
 NAME=Deed to a Two Story Log Cabin
 ID=i_deed
 RESOURCES=i_deed,i_multi_cabin_log_2story
@@ -242,8 +224,7 @@ DESCRIPTION=Two Story Log Cabin
 ON=@Create
 	MORE=i_multi_cabin_log_2story
 
-[ITEMDEF 0422c]
-DEFNAME=i_deed_house_patio_sand
+[ITEMDEF i_deed_house_patio_sand]
 NAME=Deed to a Sandstone Patio House
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_patio_sand
@@ -254,8 +235,7 @@ DESCRIPTION=Sandstone Patio House
 ON=@Create
 	MORE=i_multi_house_patio_sand
 
-[ITEMDEF 0422d]
-DEFNAME=i_deed_villa_2story
+[ITEMDEF i_deed_villa_2story]
 NAME=Deed to a Two Story Villa
 ID=i_deed
 RESOURCES=i_deed,i_multi_villa_2story
@@ -266,8 +246,7 @@ DESCRIPTION=Two Story Villa
 ON=@Create
 	MORE1=i_multi_villa_2story
 
-[ITEMDEF 0422e]
-DEFNAME=i_deed_shop_stone_small
+[ITEMDEF i_deed_shop_stone_small]
 NAME=Deed to a Small Stone Shop
 ID=i_deed
 RESOURCES=i_deed,i_multi_shop_stone_small
@@ -278,8 +257,7 @@ DESCRIPTION=Small Stone Shop
 ON=@Create
 	MORE=i_multi_shop_stone_small
 
-[ITEMDEF 0422f]
-DEFNAME=i_deed_shop_marble_small
+[ITEMDEF i_deed_shop_marble_small]
 NAME=Deed to a Small Marble Shop
 ID=i_deed
 RESOURCES=i_deed,i_multi_shop_marble_small
@@ -290,8 +268,7 @@ DESCRIPTION=Small Marble Shop
 ON=@Create
 	MORE=i_multi_shop_marble_small
 
-[ITEMDEF 04230]
-DEFNAME=i_deed_GUILDSTONE
+[ITEMDEF i_deed_GUILDSTONE]
 NAME=Deed to a Guildstone
 ID=i_deed
 RESOURCES=i_deed,i_guildstone
@@ -302,8 +279,7 @@ DESCRIPTION=Guild Stone
 ON=@Create
 	MORE=i_guildstone
 
-[ITEMDEF 0423A]
-DEFNAME=i_deed_house_wheat_cottage
+[ITEMDEF i_deed_house_wheat_cottage]
 NAME=Deed to a Wheat Cottage
 ID=i_deed
 RESOURCES=i_deed,i_multi_house_wheat_cottage
@@ -314,8 +290,7 @@ DESCRIPTION=Wheat Cottage
 ON=@Create
 	MORE=i_multi_house_wheat_cottage
 
-[ITEMDEF 0423B]
-DEFNAME=i_deed_evil_compound
+[ITEMDEF i_deed_evil_compound]
 NAME=Evil Compound
 ID=i_deed
 RESOURCES=i_deed,i_multi_evil_compound
@@ -326,9 +301,8 @@ DESCRIPTION=Evil Compound
 ON=@Create
 	MORE=i_multi_evil_compound
 
-[ITEMDEF 04240]
+[ITEMDEF i_deed_ship_small_N]
 //i_deed_ship_small_N
-DEFNAME=i_deed_ship_small_N
 NAME=Deed to a small ship
 ID=i_deed_ship
 RESOURCES=i_deed,i_multi_ship_small_N
@@ -339,8 +313,7 @@ DESCRIPTION=Small Ship
 ON=@Create
 	MORE=i_multi_ship_small_N
 
-[ITEMDEF 04241]
-DEFNAME=i_deed_ship_dragon_small_N
+[ITEMDEF i_deed_ship_dragon_small_N]
 ID=i_deed_ship
 NAME=Deed to a small dragon ship
 RESOURCES=i_deed,i_multi_ship_dragon_small_N
@@ -351,8 +324,7 @@ DESCRIPTION=Small Dragon Ship
 ON=@Create
 	MORE=i_multi_ship_dragon_small_N
 
-[ITEMDEF 04242]
-DEFNAME=i_deed_ship_medium_N
+[ITEMDEF i_deed_ship_medium_N]
 ID=i_deed_ship
 NAME=Deed to a medium ship
 RESOURCES=i_deed,i_multi_ship_medium_N
@@ -363,8 +335,7 @@ DESCRIPTION=Medium Ship
 ON=@Create
 	MORE=i_multi_ship_medium_N
 
-[ITEMDEF 04243]
-DEFNAME=i_deed_ship_dragon_medium_N
+[ITEMDEF i_deed_ship_dragon_medium_N]
 NAME=Deed to a medium dragon ship
 ID=i_deed_ship
 RESOURCES=i_deed,i_multi_ship_dragon_medium_N
@@ -375,8 +346,7 @@ DESCRIPTION=Medium Dragon Ship
 ON=@Create
 	MORE=i_multi_ship_dragon_medium_N
 
-[ITEMDEF 04244]
-DEFNAME=i_deed_ship_long_N
+[ITEMDEF i_deed_ship_long_N]
 ID=i_deed_ship
 NAME=Deed to a long ship
 RESOURCES=i_deed,i_multi_ship_long_N
@@ -387,8 +357,7 @@ DESCRIPTION=Long Ship
 ON=@Create
 	MORE=i_multi_ship_long_N
 
-[ITEMDEF 04245]
-DEFNAME=i_deed_ship_dragon_long_N
+[ITEMDEF i_deed_ship_dragon_long_N]
 ID=i_deed_ship
 NAME=Deed to a long dragon ship
 RESOURCES=i_deed,i_multi_ship_dragon_long_N
@@ -399,8 +368,7 @@ DESCRIPTION=Long Dragon Ship
 ON=@Create
 	MORE=i_multi_ship_dragon_long_N
 
-[ITEMDEF 05007]
-DEFNAME=i_deed_bboardw
+[ITEMDEF i_deed_bboardw]
 NAME=Deed to a Bulletin Board W
 ID=i_deed
 RESOURCES=i_deed,i_bulletin_board
@@ -411,8 +379,7 @@ DESCRIPTION=Bulletin Board W
 ON=@Create
 	MORE=i_bulletin_board
 
-[ITEMDEF 05008]
-DEFNAME=i_deed_bboardn
+[ITEMDEF i_deed_bboardn]
 NAME=Deed to a Bulletin Board N
 ID=i_deed
 RESOURCES=i_deed,i_bulletin_board_2
@@ -423,9 +390,8 @@ DESCRIPTION=Bulletin Board N
 ON=@Create
 	MORE=i_bulletin_board_2
 
-[ITEMDEF 05009]
+[ITEMDEF i_deed_spinwheel]
 //no additional directional deed needed
-DEFNAME=i_deed_spinwheel
 NAME=Deed to a Spinning Wheel
 ID=i_deed
 RESOURCES=i_deed,i_spinning_wheel
@@ -436,8 +402,7 @@ DESCRIPTION=Spinning Wheel
 ON=@Create
 	MORE=i_spinning_wheel
 
-[ITEMDEF 0500a]
-DEFNAME=I_DEED_FORGE
+[ITEMDEF I_DEED_FORGE]
 NAME=Deed to a Forge
 ID=i_deed
 RESOURCES=i_deed,i_forge
@@ -448,8 +413,7 @@ DESCRIPTION=Forge
 ON=@Create
 	MORE=i_forge
 
-[ITEMDEF 0500b]
-DEFNAME=I_DEED_ANVIL
+[ITEMDEF I_DEED_ANVIL]
 NAME=Deed to an Anvil
 ID=i_deed
 RESOURCES=i_deed,i_anvil
@@ -460,8 +424,7 @@ DESCRIPTION=Anvil
 ON=@Create
 	MORE=i_anvil
 
-[ITEMDEF 05010]
-DEFNAME=I_DEED_DUMMYW
+[ITEMDEF I_DEED_DUMMYW]
 NAME=Deed to a Training Dummy (West)
 ID=i_deed
 RESOURCES=i_deed,i_training_dummy
@@ -472,8 +435,7 @@ DESCRIPTION=Training Dummy (W)
 ON=@Create
 	MORE=i_training_dummy
 
-[ITEMDEF 05011]
-DEFNAME=I_DEED_DUMMYN
+[ITEMDEF I_DEED_DUMMYN]
 NAME=Deed to a Training Dummy (North)
 ID=i_deed
 RESOURCES=i_deed,i_training_dummy_n
@@ -484,8 +446,7 @@ DESCRIPTION=Training Dummy (N)
 ON=@Create
 	MORE=i_training_dummy_n
 
-[ITEMDEF 05012]
-DEFNAME=I_DEED_ARCHBUTTEW
+[ITEMDEF I_DEED_ARCHBUTTEW]
 NAME=Deed to a Archery Butte (West)
 ID=i_deed
 RESOURCES=i_deed,i_archery_butte
@@ -496,8 +457,7 @@ DESCRIPTION=Archery Butte (W)
 ON=@Create
 	MORE=i_archery_butte
 
-[ITEMDEF 05013]
-DEFNAME=I_DEED_ARCHBUTTEN
+[ITEMDEF I_DEED_ARCHBUTTEN]
 NAME=Deed to a Archery Butte (North)
 ID=i_deed
 RESOURCES=i_deed,i_archery_butte2
@@ -508,8 +468,7 @@ DESCRIPTION=Archery Butte (N)
 ON=@Create
 	MORE=i_archery_butte2
 
-[ITEMDEF 05014]
-DEFNAME=I_DEED_PICKPOCKN
+[ITEMDEF I_DEED_PICKPOCKN]
 NAME=Deed to a Pickpocket Dip (North)
 ID=i_deed
 RESOURCES=i_deed,i_pickpocket_dip_n
@@ -520,8 +479,7 @@ DESCRIPTION=Pickpocket Dip (N)
 ON=@Create
 	MORE=i_pickpocket_dip_n
 
-[ITEMDEF 05015]
-DEFNAME=i_deed_pickpockw
+[ITEMDEF i_deed_pickpockw]
 NAME=Deed to a Pickpocket Dip (West)
 ID=i_deed
 RESOURCES=i_deed,i_pickpocket_dip_w

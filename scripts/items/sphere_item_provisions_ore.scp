@@ -250,8 +250,7 @@ CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Silver Ingot
 
-[ITEMDEF 04541]
-DEFNAME=i_ingot_shadow
+[ITEMDEF i_ingot_shadow]
 NAME=Shadow Ingot
 ID=i_ingot_iron
 SKILLMAKE=MINING 70.0
@@ -265,8 +264,7 @@ DESCRIPTION=Shadow Ingot
 ON=@Create
 	COLOR=color_o_shadow
 
-[ITEMDEF 04542]
-DEFNAME=i_ingot_agapite
+[ITEMDEF i_ingot_agapite]
 ID=i_ingot_iron
 NAME=Agapite
 SKILLMAKE=MINING 90.0
@@ -280,8 +278,7 @@ DESCRIPTION=Agapite Ingot
 ON=@Create
 	COLOR=color_o_agapite
 
-[ITEMDEF 04543]
-DEFNAME=i_ingot_verite
+[ITEMDEF i_ingot_verite]
 NAME=Verite Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_verite
@@ -295,8 +292,7 @@ DESCRIPTION=Verite Ingot
 ON=@Create
 	COLOR=color_o_verite
 
-[ITEMDEF 04544]
-DEFNAME=i_ingot_rose
+[ITEMDEF i_ingot_rose]
 ID=i_ingot_iron
 NAME=Rose Ingot
 RESOURCES=i_ore_rose
@@ -310,8 +306,7 @@ DESCRIPTION=Rose Ingot
 ON=@Create
 	COLOR=color_o_rose
 
-[ITEMDEF 04545]
-DEFNAME=i_ingot_mytheril
+[ITEMDEF i_ingot_mytheril]
 ID=i_ingot_iron
 NAME=Mytheril Ingot
 RESOURCES=i_ore_mytheril
@@ -325,8 +320,7 @@ DESCRIPTION=Mytheril Ingot
 ON=@Create
 	COLOR=color_o_mytheril
 
-[ITEMDEF 04546]
-DEFNAME=i_ingot_blackrock
+[ITEMDEF i_ingot_blackrock]
 ID=i_ingot_iron
 NAME=Black Rock Ingot
 RESOURCES=i_ore_blackrock
@@ -340,8 +334,7 @@ DESCRIPTION=Black Rock Ingot
 ON=@Create
 	COLOR=color_o_blackrock
 
-[ITEMDEF 04547]
-DEFNAME=i_ingot_bloodrock
+[ITEMDEF i_ingot_bloodrock]
 ID=i_ingot_iron
 NAME=Blood Rock Ingot
 RESOURCES=i_ore_bloodrock
@@ -355,8 +348,7 @@ DESCRIPTION=Blood Rock Ingot
 ON=@Create
 	COLOR=color_o_bloodrock
 
-[ITEMDEF 0454a]
-DEFNAME=i_ingot_valorite
+[ITEMDEF i_ingot_valorite]
 NAME=Valorite Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_valorite
@@ -370,8 +362,7 @@ DESCRIPTION=Valorite Ingot
 ON=@Create
 	COLOR=color_o_valorite
 
-[ITEMDEF 0454c]
-DEFNAME=i_ingot_bronze
+[ITEMDEF i_ingot_bronze]
 NAME=Bronze Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_bronze
@@ -385,8 +376,7 @@ DESCRIPTION=Bronze Ingot
 ON=@Create
 	COLOR=color_o_bronze
 
-[ITEMDEF 04548]
-DEFNAME=i_ingot_rusty
+[ITEMDEF i_ingot_rusty]
 NAME=Rusty Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_rusty
@@ -400,8 +390,7 @@ DESCRIPTION=Rusty Ingot
 ON=@Create
 	COLOR=color_o_rusty
 
-[ITEMDEF 04549]
-DEFNAME=i_ingot_old_copper
+[ITEMDEF i_ingot_old_copper]
 NAME=Old Copper Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_old_copper
@@ -415,8 +404,7 @@ DESCRIPTION=Old Copper Ingot
 ON=@Create
 	COLOR=color_o_oldcopper
 
-[ITEMDEF 0454b]
-DEFNAME=i_ingot_dull_copper
+[ITEMDEF i_ingot_dull_copper]
 ID=i_ingot_iron
 NAME=Dull Copper Ingot
 RESOURCES=i_ore_dull_copper

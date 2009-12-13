@@ -559,9 +559,14 @@ bool CItemMap::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CItemMap::r_WriteVal");
 	EXC_TRY("WriteVal");
-	if ( ! strnicmp( pszKey, "PIN", 3 ))
+	if ( ! strnicmp( pszKey, "PINS", 4 ))
 	{
-		pszKey += 3;
+		sVal.FormatVal(m_Pins.GetCount());
+		return true;
+	}
+	if ( ! strnicmp( pszKey, "PIN.", 4 ))
+	{
+		pszKey += 4;
 		int i = Exp_GetVal(pszKey) - 1;
 		if ( i >= 0 && i < m_Pins.GetCount())
 		{
