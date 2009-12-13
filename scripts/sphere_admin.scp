@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 19-January-2008
+// FILE LAST UPDATED: Sunday, December 13, 2009
 
 VERSION=0.56b
 
@@ -18,7 +18,9 @@ VERSION=0.56b
 //
 // This is ment for clients with a 800x600 gameplay window size
 //
-// Written by Radiant - Last modified: 19-01-2008 (MrSugarCube)
+// Written by Radiant
+//
+//Changelog:
 //- Start position of dialogs set to 0,21
 //- Default page of the tweaking menu set to "action"
 //- + shown before account name for higher privs and - before guest accounts (like the old admin panel)
@@ -27,6 +29,9 @@ VERSION=0.56b
 //- Added number of online clients in the main page title and changed "Administration Console" to "Admin Panel", which is shorter
 //- Added "remove note" button
 //- Added character updates when modifying flags
+// -Added ability to hide status flags by giving them an empty title
+// -Updated admin_flag_20 (statf_hovering)
+// -Hidden admin_flag_22 (unused)
 
 [DEFNAME admin_options]
 // If you do not want clients of lower or equal plevel see the IP addresses
@@ -41,7 +46,7 @@ admin_hidehighpriv 0
 // control whether to call UPDATEX, UPDATE or RESENDTOOLTIP on the character
 // based on which flags have been modified.
 admin_updatexflags		statf_invisible|statf_insubstantial|statf_hidden
-admin_updateflags		statf_invul|statf_freeze|statf_stone|statf_hallucinating|statf_poisoned|statf_criminal|statf_nightsight
+admin_updateflags		statf_invul|statf_freeze|statf_stone|statf_hallucinating|statf_poisoned|statf_criminal|statf_nightsight|statf_hovering
 admin_resendtooltipflags	statf_incognito
 
 [DEFNAME admin_strings]
@@ -81,9 +86,9 @@ admin_flag_16		"Comm Crystal"
 admin_flag_17		"Has Shield"
 admin_flag_18		"Can move with bow"
 admin_flag_19		"Stoned"
-admin_flag_20		"Recording Script"
+admin_flag_20		"Hovering"
 admin_flag_21		"Flying"
-admin_flag_22		"Respawn"
+admin_flag_22		"" // unused
 admin_flag_23		"Hallucinating"
 admin_flag_24		"Hidden"
 admin_flag_25		"Indoors"
@@ -278,16 +283,19 @@ local.flag=01
 local.ox=160
 local.oy=40
 for x 0 31
-	checkbox <eval <local.ox>> <eval <local.oy>> 210 211 <hval (<flags> & <local.flag>)> <eval 300 + <local.x>>
-	dtext <eval <local.ox> + 40> <eval <local.oy>> 0480 <def0.admin_flag_<eval <local.x> + 1>>
+	if !(<isempty <def.admin_flag_<eval <local.x> + 1>>>)
+		checkbox <eval <local.ox>> <eval <local.oy>> 210 211 <hval (<flags> & <local.flag>)> <eval 300 + <local.x>>
+		dtext <eval <local.ox> + 40> <eval <local.oy>> 0480 <def0.admin_flag_<eval <local.x> + 1>>
+		local.oy += 20
+		if (<local.oy> > 360)
+			local.ox += 200
+			local.oy = 40
+		endif
+	endif
+
 	// Workaround for sphere bug - local.flag=<hval <local.flag> << 1> attempts to evaluate << !
 	local.flag="<local.flag> << 1"
 	local.flag=<hval <local.flag>>
-	local.oy += 20
-	if (<local.oy> > 360)
-		local.ox += 200
-		local.oy = 40
-	endif
 end
 button 360 360 4005 4006 1 0 31
 dtext 400 360 0c1 Set flags
@@ -366,10 +374,12 @@ on=31
 	local.resendtooltipflags = <flags>&<def0.admin_resendtooltipflags>
 	local.flag=01
 	for x 0 31
-		if (<argchk[<eval 300 + <local.x>>]>)
-			flags |= <local.flag>
-		else
-			flags &= ~<local.flag>
+		if !(<isempty <def.admin_flag_<eval <local.x> + 1>>>)
+			if (<argchk[<eval 300 + <local.x>>]>)
+				flags |= <local.flag>
+			else
+				flags &= ~<local.flag>
+			endif
 		endif
 		// Workaround for sphere bug - local.flag=<hval <local.flag> << 1> attempts to evaluate << !
 		local.flag="<local.flag> << 1"

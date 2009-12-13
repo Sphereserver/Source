@@ -4580,7 +4580,7 @@ ALPHA additions:
 - Updated: sphere_item_multis_foundations.scp, sphere_item_multis_houses_ships.scp,
   sphere_item_multis_stairs.scp (Replaced multi ITEMDEFs with MULTIDEFs)
 - Added: sphere_item_ground_tiles_sa.scp (Added hover-over item definitions)
-- Updated: sphere_item_magic_armor.scp, sphere_item_magic_leather.scp,
+- Updated #1684: sphere_item_magic_armor.scp, sphere_item_magic_leather.scp,
   sphere_item_magic_weapon.scp, sphere_item_misc.scp, sphere_item_profession_cartographer.scp,
   sphere_item_provisions_armor_color.scp, sphere_item_provisions_deed.scp,
   sphere_item_provisions_ore.scp (Replaced custom script IDs with defnames to fix conflicts
@@ -4591,3 +4591,12 @@ ALPHA additions:
 - Fixed #1683: Hiding skill not properly updating clients to show the character is gray.
 - Modified: The -E switch now shows a message in the console to indicate that is has been
   successfully enabled.
+
+13-12-2009, Coruja (Script pack)
+- Updated #1659: sphere_map2 (Renamed "Blood Dungeon Level 1" to "Blood Dungeon")
+- Updated #1665: sphere_item_profession_tailor_tanner.scp (Adjusted flipping behaviour of
+  spinning wheel)
+
+13-12-2009, MrSugarCube (Script pack)
+- Updated #1685: sphere_admin.scp (Updated hover flag description, added ability to hide
+  status flags by blanking their description)

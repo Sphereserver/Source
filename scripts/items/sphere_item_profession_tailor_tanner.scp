@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 26, 2006
+// FILE LAST UPDATED: Sunday, December 13, 2009
 //
 VERSION=0.56b
 
@@ -190,7 +190,7 @@ TYPE=T_SPINWHEEL
 RESOURCES=20 i_BOARD, 1 i_ingot_iron
 SKILLMAKE=CARPENTRY 73.6, TAILORING 65.0, T_CARPENTRY
 WEIGHT=15
-DUPELIST=01016,01017,01019,0101a,0101b,0101c,0101d,0101e,010a4,010a5,010a6
+DUPELIST=01016,01017
 
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
@@ -206,27 +206,29 @@ DUPEITEM=01015
 
 [ITEMDEF 01019]
 //spinning wheel
-DUPEITEM=01015
+TYPE=T_SPINWHEEL
+DUPELIST=0101a,0101b
 
 [ITEMDEF 0101a]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=01019
 
 [ITEMDEF 0101b]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=01019
 
 [ITEMDEF 0101c]
 //spinning wheel
-DUPEITEM=01015
+TYPE=T_SPINWHEEL
+DUPELIST=0101d,0101e
 
 [ITEMDEF 0101d]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=0101c
 
 [ITEMDEF 0101e]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=0101c
 
 [ITEMDEF 0101f]
 DUPEITEM=0df8
@@ -422,15 +424,16 @@ DUPEITEM=011f4
 
 [ITEMDEF 010a4]
 //spinning wheel
-DUPEITEM=01015
+TYPE=T_SPINWHEEL
+DUPELIST=010a5,010a6
 
 [ITEMDEF 010a5]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=010a4
 
 [ITEMDEF 010a6]
 //spinning wheel
-DUPEITEM=01015
+DUPEITEM=010a4
 
 [ITEMDEF 0175e]
 //folded cloth

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, July 22, 2006
+// FILE LAST UPDATED: Sunday, December 13, 2009
 // Made by Admin Peter (OnlineUO), modified for 56b by Furio
 VERSION=0.56b
 
@@ -260,8 +260,8 @@ RECT=1736,1224,1760,1240,2
 GROUP=Blood Dungeon
 //EVENTS=r_Dungeon
 
-[AREADEF a_blood_dungeon_lvl1]
-NAME=Blood Dungeon Level 1
+[AREADEF a_blood_dungeon]
+NAME=Blood Dungeon
 P=2114,839,-28,2
 RECT=2032,808,2200,1064,2
 GROUP=Blood Dungeon
