@@ -4589,3 +4589,5 @@ ALPHA additions:
 
 13-12-2009, MrSugarCube
 - Fixed #1683: Hiding skill not properly updating clients to show the character is gray.
+- Modified: The -E switch now shows a message in the console to indicate that is has been
+  successfully enabled.
