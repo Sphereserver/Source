@@ -1764,7 +1764,7 @@ PacketCharacterMove::PacketCharacterMove(CClient* target, const CChar* character
 	writeByte(pos.m_z);
 	writeByte(direction);
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(character->CanSee(target->GetChar()), target));
+	writeByte(character->GetModeFlag(character->CanSeeTrue(target->GetChar()), target));
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
 	push(target);
@@ -1796,7 +1796,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(pos.m_z);
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(false, target));
+	writeByte(character->GetModeFlag(character->CanSeeTrue(target->GetChar()), target));
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
 	if (character->IsStatFlag(STATF_Sleeping) == false)

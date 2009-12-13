@@ -4586,3 +4586,6 @@ ALPHA additions:
   sphere_item_provisions_ore.scp (Replaced custom script IDs with defnames to fix conflicts
   with new tiledata size -- some items did not have a defname so watch out if you have any of
   these in an existing world save)
+
+13-12-2009, MrSugarCube
+- Fixed #1683: Hiding skill not properly updating clients to show the character is gray.
