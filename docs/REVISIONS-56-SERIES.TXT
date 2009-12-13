@@ -4589,6 +4589,8 @@ ALPHA additions:
 
 13-12-2009, MrSugarCube
 - Fixed #1683: Hiding skill not properly updating clients to show the character is gray.
+- Added #1678: Logging for commands issued via telnet. "TelnetLog" setting can be used
+  to enable or disable this feature.
 - Modified: The -E switch now shows a message in the console to indicate that is has been
   successfully enabled.
 

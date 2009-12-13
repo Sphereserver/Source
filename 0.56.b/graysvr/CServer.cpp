@@ -458,7 +458,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CServer::OnConsoleCmd");
-	// RETURN: false = boot the client.
+	// RETURN: false = unsuccessful command.
 	int		len = sText.GetLength();
 
 	// We can't have a command with no length
@@ -467,6 +467,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 
 	// Convert first character to lowercase
 	char	low = tolower(sText[0]);
+	bool fRet = true;
 
 	if ((( len > 2 ) || (( len == 2 ) && ( sText[1] != '#' ))) && ( sText[0] != 'd' )) goto longcommand;
 
@@ -526,7 +527,10 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 					case 'a': // areas
 						pszKey++;	GETNONWHITESPACE( pszKey );
 						if ( !g_World.DumpAreas( pSrc, pszKey ) )
+						{
 							pSrc->SysMessage( "Area dump failed.\n" );
+							fRet = false;
+						}
 						else
 							pSrc->SysMessage( "Area dump successful.\n" );
 						break;
@@ -540,7 +544,10 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 							{
 								pszKey++;	GETNONWHITESPACE( pszKey );
 								if ( !g_Cfg.DumpUnscriptedItems( pSrc, pszKey ) )
+								{
 									pSrc->SysMessage( "Unscripted item dump failed.\n" );
+									fRet = false;
+								}
 								else
 									pSrc->SysMessage( "Unscripted item dump successful.\n" );
 								break;
@@ -585,12 +592,14 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				{
 	do_resync:
 					pSrc->SysMessage("Not allowed during resync pause. Use 'R' to restart.\n");
+					fRet = false;
 					break;
 				}
 				if ( g_World.IsSaving() )
 				{
 	do_saving:
 					pSrc->SysMessage("Not allowed during background worldsave. Use '#' to finish.\n");
+					fRet = false;
 					break;
 				}
 				g_World.GarbageCollection();
@@ -598,17 +607,17 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 		case 'h':	// Hear all said.
 			{
 				CScript script( "HEARALL" );
-				r_Verb( script, pSrc );
+				fRet = r_Verb( script, pSrc );
 			} break;
 		case 'i':
 			{
 				CScript script( "INFORMATION" );
-				r_Verb( script, pSrc );
+				fRet = r_Verb( script, pSrc );
 			} break;
 		case 'l': // Turn the log file on or off.
 			{
 				CScript script( "LOG" );
-				r_Verb( script, pSrc );
+				fRet = r_Verb( script, pSrc );
 			} break;
 		case 'p':	// Display profile information.
 			{
@@ -623,7 +632,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 		case 's':
 			{
 				CScript script( "SECURE" );
-				r_Verb( script, pSrc );
+				fRet = r_Verb( script, pSrc );
 			} break;
 		case 't':
 			{
@@ -651,6 +660,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				else if ( g_Cfg.m_fSecure )
 				{
 					pSrc->SysMessage( "NOTE: Secure mode prevents keyboard exit!\n" );
+					fRet = false;
 				}
 				else
 				{
@@ -697,7 +707,7 @@ longcommand:
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
 				pSrc->SysMessage("StripPath not defined, function aborted.\n");
-				return 1;
+				return( false );
 			}
 
 			dirname = g_Cfg.m_sStripPath;
@@ -709,7 +719,7 @@ longcommand:
 			if ( !f1 )
 			{
 				pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-				return 1;
+				return( false );
 			}
 
 			while ( script = g_Cfg.GetResourceFile(i++) )
@@ -751,7 +761,7 @@ longcommand:
 			}
 			fclose(f1);
 			pSrc->SysMessagef("Scripts have just been stripped.\n");
-			return 1;
+			return( true );
 		}
 		else if ( !strnicmp(pszText, "strip", 5) )
 		{
@@ -806,7 +816,7 @@ longcommand:
 				fclose(f1);
 			}
 			pSrc->SysMessagef("Scripts have just been stripped.\n");
-			return 1;
+			return( true );
 		}
 
 		if ( g_Cfg.IsConsoleCmd(low) ) pszText++;
@@ -815,17 +825,23 @@ longcommand:
 		if ( !g_Cfg.CanUsePrivVerb(this, pszText, pSrc) )
 		{
 			pSrc->SysMessagef("not privileged for command '%s'\n", pszText);
+			fRet = false;
 		}
 		else if ( !r_Verb(script, pSrc) )
 		{
 			pSrc->SysMessagef("unknown command '%s'\n", pszText);
+			fRet = false;
 		}
 	}
-	else pSrc->SysMessagef("unknown command '%s'\n", (LPCTSTR)sText);
+	else
+	{
+		pSrc->SysMessagef("unknown command '%s'\n", (LPCTSTR)sText);
+		fRet = false;
+	}
 
 endconsole:
 	sText.Empty();
-	return( true );
+	return( fRet );
 }
 
 //************************************************

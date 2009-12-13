@@ -751,6 +751,7 @@ public:
 	int		m_iWalkRegen;
 
 	int		m_iCommandLog;
+	bool	m_fTelnetLog;
 	
 	bool 		m_fUsecrypt;
 	bool 		m_fUsenocrypt;

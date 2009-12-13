@@ -132,6 +132,7 @@ CResource::CResource()
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
 
 	m_iCommandLog		= 0;
+	m_fTelnetLog		= false;
 
 	m_fUsecrypt 		= true; // Server want crypt client ?
 	m_fUsenocrypt		= false; // Server want un-crypt client ? (version guessed by cliver)
@@ -483,6 +484,7 @@ enum RC_TYPE
 	RC_TELEPORTSOUNDNPC,		//	m_iSpell_Teleport_Sound_NPC
 	RC_TELEPORTSOUNDPLAYERS,	//	m_iSpell_Teleport_Sound_Players
 	RC_TELEPORTSOUNDSTAFF,		//	m_iSpell_Teleport_Sound_Staff
+	RC_TELNETLOG,				//  m_fTelnetLog
 	RC_TIMERCALL,				//	m_iTimerCall
 	RC_TIMEUP,
 	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
@@ -670,6 +672,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TELEPORTSOUNDNPC",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_NPC) }},
 	{ "TELEPORTSOUNDPLAYERS",	{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Players) }},
 	{ "TELEPORTSOUNDSTAFF",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Staff) }},
+	{ "TELNETLOG",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fTelnetLog) }},
 	{ "TIMERCALL",				{ ELEM_INT,		OFFSETOF(CResource,m_iTimerCall) }},
 	{ "TIMEUP" },
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork) }},
