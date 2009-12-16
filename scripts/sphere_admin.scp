@@ -66,6 +66,8 @@ admin_resdisp_2		"Lord Blackthorn's Revenge"
 admin_resdisp_3		"Age Of Shadows"
 admin_resdisp_4		"Samurai Empire"
 admin_resdisp_5		"Mondain's Legacy"
+admin_resdisp_6		"Kingdom Reborn"
+admin_resdisp_7		"Stygian Abyss"
 // Titles for flags, copied from axis (slightly modified)
 admin_flag_1		"Invulnerability"
 admin_flag_2		"Dead"
