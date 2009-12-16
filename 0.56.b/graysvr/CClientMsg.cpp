@@ -247,10 +247,10 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	ADDTOCALLSTACK("CClient::addItem_OnGround");
 	ASSERT(pItem);
 	
-	if ( GetNetState()->isClientLessVersion(MINCLIVER_SA) && GetNetState()->isClientSA() == false)
-		PacketItemWorld* cmd = new PacketItemWorld(this, pItem);
-	else
+	if ( GetNetState()->isClientVersion(MINCLIVER_SA) || GetNetState()->isClientSA() )
 		PacketItemWorldNew* cmd = new PacketItemWorldNew(this, pItem);
+	else
+		PacketItemWorld* cmd = new PacketItemWorld(this, pItem);
 
 	// send KR drop confirmation
 	if ( GetNetState()->isClientKR() )
@@ -1895,10 +1895,9 @@ void CClient::addHealthBarUpdate( const CChar * pChar )
 	ADDTOCALLSTACK("CClient::addHealthBarUpdate");
 	if ( pChar == NULL )
 		return;
-	else if ( GetNetState()->isClientLessVersion(MINCLIVER_SA) && GetNetState()->isClientSA() == false)
-		return;
 
-	PacketHealthBarUpdate* cmd = new PacketHealthBarUpdate(this, pChar);
+	if ( GetNetState()->isClientVersion(MINCLIVER_SA) || GetNetState()->isClientSA() )
+		PacketHealthBarUpdate* cmd = new PacketHealthBarUpdate(this, pChar);
 }
 
 void CClient::addSpellbookOpen( CItem * pBook, WORD offset )

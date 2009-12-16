@@ -286,16 +286,13 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 
 	adjustItemData(target, item, id, hue, amount, p, dir, flags);
 
-	if (target->GetNetState()->isClientLessVersion(MINCLIVER_SA) && target->GetNetState()->isClientSA() == false)
-	{
-		// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
-		// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
-		// to something safer
-		if (id >= ITEMID_MULTI)
-			id = (ITEMID_TYPE)(id - ITEMID_MULTI_LEGACY);
-		else if (id >= ITEMID_MULTI_LEGACY)
-			id = ITEMID_WorldGem;
-	}
+	// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
+	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
+	// to something safer
+	if (id >= ITEMID_MULTI)
+		id = (ITEMID_TYPE)(id - ITEMID_MULTI_LEGACY);
+	else if (id >= ITEMID_MULTI_LEGACY)
+		id = ITEMID_WorldGem;
 
 	if (amount > 0)
 		uid |= 0x80000000;

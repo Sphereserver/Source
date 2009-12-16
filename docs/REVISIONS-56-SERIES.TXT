@@ -4602,3 +4602,7 @@ ALPHA additions:
 13-12-2009, MrSugarCube (Script pack)
 - Updated #1685: sphere_admin.scp (Updated hover flag description, added ability to hide
   status flags by blanking their description)
+
+16-12-2009, MrSugarCube
+- Fixed: Crash dumps not being created at all.
+- Fixed: Wrong packets being sent to pre-7.0.0.0 clients whose encryption had been removed.
