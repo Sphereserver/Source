@@ -4606,6 +4606,7 @@ ALPHA additions:
 16-12-2009, MrSugarCube
 - Fixed: Crash dumps not being created at all.
 - Fixed: Wrong packets being sent to pre-7.0.0.0 clients whose encryption had been removed.
+- Fixed: Summon and field spells not working correctly with EF_MinimiseTriggers set.
 
 16-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_admins.scp (Added admin_resdisp_6 and admin_resdisp_7 defnames)

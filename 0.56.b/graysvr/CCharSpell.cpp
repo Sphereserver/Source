@@ -1704,12 +1704,12 @@ bool CChar::Spell_CastDone()
 
 	CObjBase * pObj		= m_Act_Targ.ObjFind();	// dont always need a target.
 	CObjBase * pObjSrc	= m_Act_TargPrv.ObjFind();
-    ITEMID_TYPE iT1;
-    ITEMID_TYPE iT2;
-	CREID_TYPE iC1;
+    ITEMID_TYPE iT1 = ITEMID_NOTHING;
+    ITEMID_TYPE iT2 = ITEMID_NOTHING;
+	CREID_TYPE iC1 = CREID_INVALID;
 
-	unsigned int fieldWidth;
-	unsigned int fieldGauge;
+	unsigned int fieldWidth = 0;
+	unsigned int fieldGauge = 0;
 
 	SPELL_TYPE spell = m_atMagery.m_Spell;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
