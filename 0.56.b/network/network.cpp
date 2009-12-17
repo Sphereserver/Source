@@ -110,6 +110,9 @@ void NetState::clear(void)
 			m_socket.ClearAsync();
 #endif
 		}
+
+		//	record the client reference to the garbage collection to be deleted on it's time
+		g_World.m_ObjDelete.InsertHead(m_client);
 	}
 
 #ifdef NETWORK_MULTITHREADED

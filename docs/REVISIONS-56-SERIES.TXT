@@ -4613,3 +4613,4 @@ ALPHA additions:
 
 17-12-2009, MrSugarCube
 - Fixed #1689: Unable to move with FEATURE_SA_MOVEMENT enabled.
+- Fixed #1688: Characters not being logged out properly when clients disconnect.

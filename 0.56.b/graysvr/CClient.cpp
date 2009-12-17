@@ -71,7 +71,6 @@ CClient::CClient(NetState* state)
 
 CClient::~CClient()
 {
-	g_Serv.StatDec( SERV_STAT_CLIENTS );
 	bool bWasChar;
 
 	// update ip history
