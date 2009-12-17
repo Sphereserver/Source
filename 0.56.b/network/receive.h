@@ -45,8 +45,11 @@ protected:
 class PacketMovementReq : public Packet
 {
 public:
-	PacketMovementReq();
+	PacketMovementReq(long size = 7);
 	virtual bool onReceive(NetState* net);
+
+protected:
+	void doMovement(NetState* net, BYTE direction, int sequence, DWORD crypt);
 };
 
 /***************************************************************************
@@ -1357,6 +1360,20 @@ class PacketUnEquipItemMacro : public Packet
 {
 public:
 	PacketUnEquipItemMacro();
+	virtual bool onReceive(NetState* net);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF0 : PacketMovementReqNew				movement request (KR/SA)
+ *
+ *
+ ***************************************************************************/
+class PacketMovementReqNew : public PacketMovementReq
+{
+public:
+	PacketMovementReqNew();
 	virtual bool onReceive(NetState* net);
 };
 

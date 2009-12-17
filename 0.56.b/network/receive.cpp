@@ -184,16 +184,22 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
  *
  *
  ***************************************************************************/
-PacketMovementReq::PacketMovementReq() : Packet(7)
+PacketMovementReq::PacketMovementReq(long size) : Packet(size)
 {
 }
 
 bool PacketMovementReq::onReceive(NetState* net)
 {
-	BYTE dir = readByte();
-	int seq = readByte();
+	BYTE direction = readByte();
+	int sequence = readByte();
 	DWORD crypt = readInt32(); // fast walk key
 
+	doMovement(net, direction, sequence, crypt);
+	return true;
+}
+
+void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, DWORD crypt)
+{
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -204,12 +210,12 @@ bool PacketMovementReq::onReceive(NetState* net)
 		canMoveThere = client->Event_WalkingCheck(crypt);
 
 	// check sequence
-	if (net->m_sequence == 0 && seq != 0)
+	if (net->m_sequence == 0 && sequence != 0)
 		canMoveThere = false;
 
 	// perform movement
 	if (canMoveThere)
-		canMoveThere = client->Event_Walking(dir);
+		canMoveThere = client->Event_Walking(direction);
 
 	if (canMoveThere == false)
 	{
@@ -218,14 +224,13 @@ bool PacketMovementReq::onReceive(NetState* net)
 	}
 	else
 	{
-		if (++seq == 256)
-			seq = 1;
+		if (++sequence == 256)
+			sequence = 1;
 
 		// Ack the move. ( if this does not go back we get rubber banding )
 		PacketMovementAck* packet = new PacketMovementAck(client);
-		net->m_sequence = seq;
+		net->m_sequence = sequence;
 	}
-	return true;
 }
 
 
@@ -3771,6 +3776,32 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		character->ItemBounce(item);
 	}
 
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF0 : PacketMovementReqNew	movement request (KR/SA)
+ *
+ *
+ ***************************************************************************/
+PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(-1)
+{
+}
+
+bool PacketMovementReqNew::onReceive(NetState* net)
+{
+	skip(2);
+	skip(17);
+	int sequence = readByte();
+	BYTE direction = readByte();
+	DWORD mode = readInt32();
+	if (mode == 2)
+		direction |= 0x80;
+
+	doMovement(net, direction, sequence, 0);
 	return true;
 }
 

@@ -493,6 +493,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_UseHotbar, new PacketUseHotbar());						//
 	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			//
 	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		//
+	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
 	registerPacket(XCMD_WalkUnknown, new PacketUnknown(9));						//
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
 

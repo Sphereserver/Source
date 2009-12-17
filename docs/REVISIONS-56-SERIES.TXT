@@ -4610,3 +4610,6 @@ ALPHA additions:
 
 16-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_admins.scp (Added admin_resdisp_6 and admin_resdisp_7 defnames)
+
+17-12-2009, MrSugarCube
+- Fixed #1689: Unable to move with FEATURE_SA_MOVEMENT enabled.
