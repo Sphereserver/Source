@@ -4614,3 +4614,7 @@ ALPHA additions:
 17-12-2009, MrSugarCube
 - Fixed #1689: Unable to move with FEATURE_SA_MOVEMENT enabled.
 - Fixed #1688: Characters not being logged out properly when clients disconnect.
+
+18-12-2009, MrSugarCube
+- Fixed #1663: Human characters being created as elves with the SA client and with a RESDISP
+  less than 7.

@@ -69,7 +69,8 @@ bool PacketCreate::onReceive(NetState* net)
 	bool bFemale = (sex % 2); // Even=Male, Odd=Female (rule applies to all clients)
 	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
 
-	if (net->getClient()->GetAccount() && net->getClient()->GetAccount()->GetResDisp() >= RDS_SA)
+	// determine which race the client has selected
+	if (net->isClientVersion(MINCLIVER_SA))
 	{
 		/*
 			m_sex values from client 7.0.0.0+
@@ -80,31 +81,37 @@ bool PacketCreate::onReceive(NetState* net)
 			0x6 = Gargoyle, Male
 			0x7 = Gargoyle, Female
 		*/
-		
 		switch (sex)
 		{
-			case 0x0:
-			case 0x1:
-			case 0x2:
-			case 0x3:
+			case 0x0: case 0x1: case 0x2: case 0x3:
 			default:
 				rtRace = RACETYPE_HUMAN;
 				break;
-
-			case 0x4:
-			case 0x5:
+			case 0x4: case 0x5:
 				rtRace = RACETYPE_ELF;
 				break;
-			case 0x6:
-			case 0x7:
+			case 0x6: case 0x7:
 				rtRace = RACETYPE_GARGOYLE;
 				break;
 		}
 	}
-	else if (net->getClient()->GetAccount() && net->getClient()->GetAccount()->GetResDisp() >= RDS_ML)
+	else 
 	{
 		if ((sex - 2) >= 0)
 			rtRace = RACETYPE_ELF;
+	}
+
+	// validate race against resdisp
+	BYTE resdisp = net->getClient()->GetAccount() != NULL? net->getClient()->GetAccount()->GetResDisp() : RDS_T2A;
+	if (resdisp < RDS_ML) // prior to ML, only human
+	{
+		if (rtRace >= RACETYPE_ELF)
+			rtRace = RACETYPE_HUMAN;
+	}
+	else if (resdisp < RDS_SA) // prior to SA, only human and elf
+	{
+		if (rtRace >= RACETYPE_GARGOYLE)
+			rtRace = RACETYPE_HUMAN;
 	}
 	
 	return doCreate(net, charname, bFemale, rtRace,
