@@ -1,0 +1,238 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2009
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, December 18, 2009
+//
+VERSION=0.56b
+
+[ITEMDEF 04258]
+DEFNAME=i_horn_gargoyle_male_1
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04259]
+DEFNAME=i_horn_gargoyle_male_2
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425a]
+DEFNAME=i_horn_gargoyle_male_3
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425b]
+DEFNAME=i_horn_gargoyle_male_4
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425c]
+DEFNAME=i_horn_gargoyle_male_5
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425d]
+DEFNAME=i_horn_gargoyle_male_6
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425e]
+DEFNAME=i_horn_gargoyle_male_7
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 0425f]
+DEFNAME=i_horn_gargoyle_male_8
+NAME=male gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04261]
+DEFNAME=i_horn_gargoyle_female_1
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04262]
+DEFNAME=i_horn_gargoyle_female_2
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04273]
+DEFNAME=i_horn_gargoyle_female_3
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04274]
+DEFNAME=i_horn_gargoyle_female_4
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 04275]
+DEFNAME=i_horn_gargoyle_female_5
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042aa]
+DEFNAME=i_horn_gargoyle_female_5
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042ab]
+DEFNAME=i_horn_gargoyle_female_6
+NAME=female gargoyle horns
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042ad]
+DEFNAME=i_horn_gargoyle_facial_1
+NAME=facial gargoyle horns
+TYPE=T_BEARD
+LAYER=layer_beard
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042ae]
+DEFNAME=i_horn_gargoyle_facial_2
+NAME=facial gargoyle horns
+TYPE=T_BEARD
+LAYER=layer_beard
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042af]
+DEFNAME=i_horn_gargoyle_facial_3
+NAME=facial gargoyle horns
+TYPE=T_BEARD
+LAYER=layer_beard
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042b0]
+DEFNAME=i_horn_gargoyle_facial_4
+NAME=facial gargoyle horns
+TYPE=T_BEARD
+LAYER=layer_beard
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[ITEMDEF 042b1]
+DEFNAME=i_horn_gargoyle_female_2
+NAME=female gargoyle horn
+TYPE=T_HAIR
+
+ON=@Create
+	ATTR = attr_newbie
+
+ON=@Timer
+	RETURN 1
+
+[EOF]
