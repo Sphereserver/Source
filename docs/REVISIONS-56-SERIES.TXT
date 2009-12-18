@@ -4618,3 +4618,4 @@ ALPHA additions:
 18-12-2009, MrSugarCube
 - Fixed #1663: Human characters being created as elves with the SA client and with a RESDISP
   less than 7.
+- Fixed: @UserVirtue trigger not being fired.

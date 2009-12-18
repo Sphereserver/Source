@@ -70,7 +70,7 @@ bool PacketCreate::onReceive(NetState* net)
 	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
 
 	// determine which race the client has selected
-	if (net->isClientVersion(MINCLIVER_SA))
+	if (net->isClientVersion(MINCLIVER_SA) || net->isClientSA())
 	{
 		/*
 			m_sex values from client 7.0.0.0+
@@ -1987,7 +1987,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	// virtue button -- Handling this here because the packet is a little different
 	if ((context == CLIMODE_DIALOG_VIRTUE) && (character == object))
 	{
-		if (IsSetEF(EF_Minimize_Triggers))
+		if ( !IsSetEF(EF_Minimize_Triggers))
 		{
 			CChar* viewed = character;
 			if (button == 1 && checkCount > 0)
