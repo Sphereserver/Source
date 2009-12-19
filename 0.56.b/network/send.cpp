@@ -3065,11 +3065,11 @@ PacketFastWalk::PacketFastWalk(CClient* target, DWORD* codes, int count, int sen
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x04 : PacketGumpChange		change gump (NORMAL)
+ *	Packet 0xBF.0x04 : PacketGumpChange		change gump (LOW)
  *
  *
  ***************************************************************************/
-PacketGumpChange::PacketGumpChange(CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, PRI_NORMAL)
+PacketGumpChange::PacketGumpChange(CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, PRI_LOW)
 {
 	writeInt32(context);
 	writeInt32(buttonId);

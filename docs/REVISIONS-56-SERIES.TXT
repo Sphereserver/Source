@@ -4625,6 +4625,8 @@ ALPHA additions:
 
 19-12-2009, MrSugarCube
 - Fixed #1690: CheckerTrans positions in dialogs not working with dorigin.
+- Fixed #1692: DIALOGCLOSE immediately after DIALOG not working due to packet priorities.
+- Fixed: FLUSH command on clients claiming to be undefined.
 
 19-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)

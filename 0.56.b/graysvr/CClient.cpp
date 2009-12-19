@@ -1306,7 +1306,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_FLUSH:
 			g_NetworkOut.flush(this);
-			return false;
+			break;
 		case CV_RESEND:
 			addReSync();
 			break;

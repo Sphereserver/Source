@@ -1192,7 +1192,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x04 : PacketGumpChange		change gump (NORMAL)
+ *	Packet 0xBF.0x04 : PacketGumpChange		change gump (LOW)
  *
  *
  ***************************************************************************/
