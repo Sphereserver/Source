@@ -329,16 +329,20 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			continue;
 
 		// Parse the line.
-		TCHAR * pArg = const_cast<TCHAR*>(strchr( s.GetKey(), ' ' ));
-		if ( pArg != NULL )
+		TCHAR* pKey = const_cast<TCHAR*>(strchr(s.GetKey(), ' '));
+		LPCTSTR pArg = NULL;
+
+		if (pKey != NULL)
 		{
-			*pArg++ = '\0';
-			GETNONWHITESPACE(pArg);
+			*pKey++ = '\0';
+			GETNONWHITESPACE(pKey);
+			pArg = pKey;
 		}
 		else
 		{
 			pArg = "";
 		}
+
 		if ( s.IsKey("SERIAL" ))
 		{
 			if ( m_pCurSer != NULL )

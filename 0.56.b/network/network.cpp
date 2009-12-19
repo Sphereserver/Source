@@ -1087,7 +1087,7 @@ void NetworkIn::periodic(void)
 	{
 		EXC_SET("limiting connecting clients");
 		ClientIterator clients(this);
-		while (client = clients.next())
+		while ((client = clients.next()) != NULL)
 		{
 			if (client->IsConnecting())
 			{

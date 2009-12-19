@@ -1475,7 +1475,7 @@ void CChar::CallGuards( CChar * pCriminal )
 		bSearchedGuard = true;
 		CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIGHT);
 		CChar	*pChar;
-		while ( pChar = AreaCrime.GetChar() )
+		while ( (pChar = AreaCrime.GetChar()) != NULL )
 		{
 			if ( pChar == this )
 				continue;
@@ -2435,45 +2435,45 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 		static LPCTSTR const sm_Hit_Head1[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3O ) },
 		};
 		static LPCTSTR const sm_Hit_Head2[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6O ) },
 		};
 		static LPCTSTR const sm_Hit_Chest1[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3O ) },
 		};
 		static LPCTSTR const sm_Hit_Chest2[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6O ) },
 		};
 		static LPCTSTR const sm_Hit_Arm[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3O ) },
 		};
 		static LPCTSTR const sm_Hit_Legs[][2] =
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3O ) },
 		};
 		static LPCTSTR const sm_Hit_Hands[][2] =	// later include exclusion of left hand if have shield
 		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2O ),
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3O ),
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2O ) },
+			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3O ) },
 		};
 		static LPCTSTR const sm_Hit_Neck1[2] =
 		{

@@ -724,7 +724,7 @@ longcommand:
 				return( false );
 			}
 
-			while ( script = g_Cfg.GetResourceFile(i++) )
+			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				strcpy(z, script->GetFilePath());
 				f = fopen(z, "r");
@@ -776,7 +776,7 @@ longcommand:
 			while ( *pszText == ' ' ) pszText++;
 			dirname = ( *pszText ? pszText : "" );
 
-			while ( script = g_Cfg.GetResourceFile(i++) )
+			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				strcpy(z, script->GetFilePath());
 				f = fopen(z, "r");

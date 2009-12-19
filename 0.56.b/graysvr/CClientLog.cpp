@@ -692,7 +692,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 			lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
 			if ( lErr == PacketLoginError::Success )
 			{
-				int iLenAccount = Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
+				Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
@@ -718,7 +718,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 			if ( lErr == PacketLoginError::Success )
 			{
 				// pass detected client version to the game server to make valid cliver used
-				int iLenAccount = Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
+				Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
@@ -734,19 +734,19 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 					DEBUG_MSG(( "%x:xProcessClientSetup for %s, with AuthId %d and CliVersion 0x%x\n", GetSocketID(), 
 						pAcc->GetName(), tmSid, tmVer ));
 
-					if ( tmSid != NULL && tmSid == pEvent->CharListReq.m_Account )
+					if ( tmSid != 0 && tmSid == pEvent->CharListReq.m_Account )
 					{
-						if ( tmVer != NULL || tmVerReported != NULL)
+						if ( tmVer != 0 || tmVerReported != 0)
 						{
 							//// a client version change may toggle async mode, it's important
 							//// to flush pending data to the client before this happens
-							if ( tmVer != NULL )
+							if ( tmVer != 0 )
 							{
 								m_Crypt.SetClientVerEnum(tmVer, false);
 								GetNetState()->m_clientVersion = tmVer;
 							}
 
-							if ( tmVerReported != NULL)
+							if ( tmVerReported != 0)
 								GetNetState()->m_reportedVersion = tmVerReported;
 
 							GetNetState()->setAsyncMode();
@@ -807,42 +807,4 @@ bool CClient::xCanEncLogin(bool bCheckCliver)
 		else
 			return( true );	// if unencrypted we check that later
 	}
-}
-
-void CClient::xDumpPacket( int iDataLen, const BYTE * pData )
-{
-	ADDTOCALLSTACK("CClient::xDumpPacket");
-
-	char lineBytes[64] = { '\0' };
-	char lineChars[64] = { '\0' };
-	int i = 0;
-
-	g_Log.EventDebug("Packet Dump for 0x%0.2X (len=%d):\n", pData[0], iDataLen);
-
-	for (i = 0; i < iDataLen; i++)
-	{
-		sprintf(lineBytes, "%s%0.2X ", lineBytes, pData[i]);
-		sprintf(lineChars, "%s%c", lineChars, (pData[i]? (pData[i]<0xF? '?':pData[i]):'.'));
-
-		if (((i + 1) % 0x10) == 0)
-		{
-			g_Log.EventDebug("%s--- %s\n", lineBytes, lineChars);
-			lineBytes[0] = '\0';
-			lineChars[0] = '\0';
-		}
-
-	}
-
-	if (lineBytes[0] != '\0')
-	{
-		for ( ; (i % 0x10) != 0; i++)
-		{
-			sprintf(lineBytes, "%s   ", lineBytes);
-			sprintf(lineChars, "%s ", lineChars);
-		}
-
-		g_Log.EventDebug("%s--- %s\n", lineBytes, lineChars);
-	}
-
-	g_Log.EventDebug("-------------\n");
 }

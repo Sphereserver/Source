@@ -296,8 +296,8 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", (int)i);
 		int iStatMax;
-		if ( pTagStorage = GetKey(sStatName, true) )
-			iStatMax = GetKeyNum(sStatName);
+		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
+			iStatMax = pTagStorage->GetValNum();
 		else
 			iStatMax = pSkillClass->m_StatMax[i];
 
@@ -319,8 +319,8 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 
 		int iStatMax = 100;
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", (int)i);
-		if ( pTagStorage = GetKey(sStatName, true) )
-			iStatMax = GetKeyNum(sStatName);
+		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
+			iStatMax = pTagStorage->GetValNum();
 
 		return iStatMax;
 	}
@@ -445,7 +445,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 
 		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", (int)skill);
 		int iSkillMax;
-		if ( pTagStorage = GetKey(sSkillName, true) )
+		if ( (pTagStorage = GetKey(sSkillName, true)) != NULL )
 			iSkillMax = pTagStorage->GetValNum();
 		else
 			iSkillMax = pSkillClass->m_SkillLevelMax[skill];
@@ -469,7 +469,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 
 		int iSkillMax = 1000;
 		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", (int)skill);
-		if ( pTagStorage = GetKey(sSkillName, true) )
+		if ( (pTagStorage = GetKey(sSkillName, true)) != NULL )
 			iSkillMax = pTagStorage->GetValNum();
 
 		return iSkillMax;

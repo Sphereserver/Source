@@ -935,8 +935,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					break;
 				}
 
-				TCHAR Arg[10] = {0};
-				for (char idx = 0; idx != 4; ++idx) {
+				for (int idx = 0; idx != 4; ++idx) {
 					if (!IsStrNumeric(ppArgs[idx]) || IsStrEmpty(ppArgs[idx])) {
 						DEBUG_ERR(("Invalid addbuff argument number %i\n",idx+1));
 						return true;
@@ -1050,7 +1049,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_ARROWQUEST:
 			{
 				int piVal[2];
-				int iQty = Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
+				Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
 				addArrowQuest( piVal[0], piVal[1] );
 #ifdef _ALPHASPHERE
 				if ( piVal[0] && piVal[1] && m_pChar )

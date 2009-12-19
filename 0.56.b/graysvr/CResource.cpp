@@ -262,7 +262,7 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 	// Now get the index.
 	pszKey = pszSep+1;
-	if ( pszKey[0] == ' \0' )
+	if ( pszKey[0] == '\0' )
 		return( false );
 
 	pszSep = const_cast<TCHAR*>(strchr( pszKey, '.' ));
@@ -998,7 +998,6 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			Str_Parse( const_cast<TCHAR*>(pszKey), &(pszArgsNext), ")" );
 
 			CPointMap	pt;
-			int			x = 0;
 			int			iArgs = 0;
 
 			if ( IsDigit( pszKey[0] ) || pszKey[0] == '-' )
@@ -1659,7 +1658,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 	myCmd[pOs] = '\0';
 
 	char * pOd; //position of dot :)
-	while (pOd=strchr(myCmd,'.'))
+	while ( (pOd = strchr(myCmd,'.')) != NULL )
 	{
 		ilevel = GetPrivCommandLevel( myCmd );
 		if ( ilevel > pSrc->GetPrivLevel())
@@ -2102,8 +2101,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			int i = 0;
 			while ( pScript->ReadKey())
 			{
-				TCHAR * pName = pScript->GetKeyBuffer();
-				if ( * pName == '<' )
+				LPCTSTR pName = pScript->GetKeyBuffer();
+				if ( *pName == '<' )
 					pName = "";
 				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
 				strcpy( pNew, pName );
@@ -2117,8 +2116,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			int i = 0;
 			while ( pScript->ReadKey())
 			{
-				TCHAR * pName = pScript->GetKeyBuffer();
-				if ( * pName == '<' )
+				LPCSTR pName = pScript->GetKeyBuffer();
+				if ( *pName == '<' )
 					pName = "";
 				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
 				strcpy( pNew, pName );
@@ -2132,8 +2131,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			int i = 0;
 			while ( pScript->ReadKey())
 			{
-				TCHAR * pName = pScript->GetKeyBuffer();
-				if ( * pName == '<' )
+				LPCSTR pName = pScript->GetKeyBuffer();
+				if ( *pName == '<' )
 					pName = "";
 				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
 				strcpy( pNew, pName );

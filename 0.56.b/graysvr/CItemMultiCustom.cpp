@@ -693,7 +693,6 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 		// determine the dimensions of the building
 		const CGRect rectDesign = GetDesignArea();
 		int iMinX = rectDesign.m_left, iMinY = rectDesign.m_top;
-		int iMaxX = rectDesign.m_right, iMaxY = rectDesign.m_bottom;
 		int iWidth = rectDesign.GetWidth();
 		int iHeight = rectDesign.GetHeight();
 
@@ -1299,8 +1298,6 @@ bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 		case IMCC_DESIGN:
 		{
 			pszKey += 6;
-			const CItemBaseMulti *pMultiDef = Multi_GetDef();
-
 			if ( !*pszKey )
 				sVal.FormatVal(m_designMain.m_vectorComponents.size());
 			else if ( *pszKey == '.' )

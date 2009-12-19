@@ -108,7 +108,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 						if ( !inf.ReadString(buf, SCRIPT_MAX_LINE_LEN) )
 							break;
 
-						if ( head = strstr(buf, "VmSize:") )
+						if ( (head = strstr(buf, "VmSize:")) != NULL )
 						{
 							head += 7;
 							GETNONWHITESPACE(head)

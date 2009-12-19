@@ -865,18 +865,18 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	ADDTOCALLSTACK("CChar::GetTradeTitle");
 	static const CValStr sm_SkillTitles[] =
 	{
-		"", INT_MIN,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), 300,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), 400,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), 500,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), 600,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), 700,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), 800,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), 900,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 990,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), 1090,
-		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), 1190,
-		NULL, INT_MAX,
+		{ "", INT_MIN },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), 300 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), 400 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), 500 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), 600 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), 700 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), 800 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), 900 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 990 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), 1090 },
+		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), 1190 },
+		{ NULL, INT_MAX },
 	};
 
 	if ( ! m_sTitle.IsEmpty())
@@ -1320,7 +1320,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	CRegionBase * pNowRegion = NULL;
 	
 	int lp_x = 0; int lp_y = 0; 
-	signed char min_z = 0, max_z = 0, z = 0;
+	signed char min_z = 0, max_z = 0;
 	
 	for( i = 0; i < path.size(); lp_x = ptNow.m_x, lp_y = ptNow.m_y, pItemDef = NULL, pStatic = NULL, pMulti = NULL, pMultiItem = NULL, min_z = 0, max_z = 0, ++i )
 	{
@@ -1773,8 +1773,6 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 
 	if ( !pObj )
 		return false;
-
-	const CItem * thisItem = dynamic_cast <const CItem*> (pObj);
 
 	const CObjBaseTemplate	*pObjTop = pObj->GetTopLevelObj();
 	int iDist = GetTopDist3D(pObjTop);

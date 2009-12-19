@@ -63,7 +63,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Curse:
 		{
-			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -88,7 +88,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Bless:
 		{
-			for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);

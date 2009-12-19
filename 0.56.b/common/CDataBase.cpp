@@ -33,7 +33,7 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 
 	int portnum = 0;
 	char *port = NULL;
-	if ( port = const_cast<char*>(strchr(host, ':')) )
+	if ( (port = const_cast<char*>(strchr(host, ':'))) != NULL )
 	{
 		char *pszTemp = Str_GetTemp();
 		strcpy(pszTemp, host);
@@ -103,7 +103,7 @@ bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 		char	**trow = NULL;
 		int		rownum = 0;
 		char	*zStore = Str_GetTemp();
-		while ( trow = mysql_fetch_row(m_res) )
+		while ( (trow = mysql_fetch_row(m_res)) != NULL )
 		{
 			for ( int i = 0; i < num_fields; i++ )
 			{

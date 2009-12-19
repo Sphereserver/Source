@@ -944,9 +944,6 @@ private:
 	BYTE LogIn( CAccountRef pAccount, CGString & sMsg );
 	BYTE LogIn( LPCTSTR pszName, LPCTSTR pPassword, CGString & sMsg );
 
-	// Low level message traffic.
-	void xDumpPacket(int iDataLen, const BYTE * pData); // dump the packet received
-
 	bool CanInstantLogOut() const;
 	void Cmd_GM_PageClear();
 

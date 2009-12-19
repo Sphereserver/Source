@@ -32,15 +32,15 @@ LPCTSTR CPointBase::sm_szDirs[DIR_QTY+1] =
 
 const int CPointBase::sm_Moves[DIR_QTY+1][2] =
 {
-	 0, -1, // DIR_N
-	 1, -1, // DIR_NE
-	 1,  0, // DIR_E
-	 1,  1, // DIR_SE
-	 0,  1, // DIR_S
-	-1,  1, // DIR_SW
-	-1,  0, // DIR_W
-	-1, -1, // DIR_NW
- 	 0,	 0,	// DIR_QTY = here.
+	{  0, -1 }, // DIR_N
+	{  1, -1 }, // DIR_NE
+	{  1,  0 }, // DIR_E
+	{  1,  1 }, // DIR_SE
+	{  0,  1 }, // DIR_S
+	{ -1,  1 }, // DIR_SW
+	{ -1,  0 }, // DIR_W
+	{ -1, -1 }, // DIR_NW
+	{  0,  0 },	// DIR_QTY = here.
 };
 
 

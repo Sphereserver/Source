@@ -3119,7 +3119,7 @@ CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
 	void Spell_Bolt( CObjBase * pObj, ITEMID_TYPE idBolt, int iSkill );
 	void Spell_Field( CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill );
 	void Spell_Area( CPointMap pt, int iDist, int iSkill );
-	bool CChar::Spell_TargCheck_Face();
+	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
 	bool Spell_Unequip( LAYER_TYPE layer );
 
@@ -3249,7 +3249,7 @@ public:
 	bool SetPoisonCure( int iLevel, bool fExtra );
 	bool CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fTest );
 	CItemCorpse * FindMyCorpse( int iRadius = 2 ) const;
-	bool CChar::MakeCorpse_Fail();
+	bool MakeCorpse_Fail();
 	CItemCorpse * MakeCorpse( bool fFrontFall );
 	bool RaiseCorpse( CItemCorpse * pCorpse );
 	bool Death();

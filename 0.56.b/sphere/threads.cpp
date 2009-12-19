@@ -339,7 +339,11 @@ SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread)
 
 bool AbstractThread::isActive()
 {
+#ifdef _WIN32
 	return m_handle != NULL;
+#else
+	return m_handle != 0;
+#endif
 }
 
 void AbstractThread::waitForClose()

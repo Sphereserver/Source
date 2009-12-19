@@ -120,7 +120,7 @@ public:
 
 	#define EXC_TRYSUB(a) \
 		const char *inLocalSubBlock = ""; \
-		char *inLocalSubArgs = a; \
+		const char *inLocalSubArgs = a; \
 		int inLocalSubBlockCnt(0); \
 		bool bCATCHExceptSub = false; \
 		try \

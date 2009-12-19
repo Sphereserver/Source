@@ -59,13 +59,15 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CSector::r_WriteVal");
 	EXC_TRY("WriteVal");
+
 	static const CValStr sm_ComplexityTitles[] =
 	{
-		"HIGH", INT_MIN,	// speech can be very complex if low char count
-		"MEDIUM", 5,
-		"LOW", 10,
-		NULL, INT_MAX,
+		{ "HIGH", INT_MIN },	// speech can be very complex if low char count
+		{ "MEDIUM", 5 },
+		{ "LOW", 10 },
+		{ NULL, INT_MAX },
 	};
+
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		case SC_CLIENTS:
