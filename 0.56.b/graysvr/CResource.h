@@ -1024,7 +1024,7 @@ public:
 	LPCTSTR Calc_MaptoSextant( CPointMap pntCoords );
 	
 #define SysMessageDefault( msg )	SysMessage( g_Cfg.GetDefaultMsg( msg ) )
-	LPCTSTR CResource::GetDefaultMsg(LPCTSTR pszKey);
+	LPCTSTR GetDefaultMsg(LPCTSTR pszKey);
 	LPCTSTR	GetDefaultMsg(long lKeyNum);
 
 typedef std::map<DWORD,DWORD> KRGumpsMap;

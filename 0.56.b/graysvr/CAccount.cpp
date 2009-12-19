@@ -85,7 +85,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 
 											//	auto-creating account files
 			if ( !Account_SaveAll() )
-				g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", s.GetFilePath());
+				g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", (LPCTSTR)s.GetFilePath());
 			else
 				return true;
 		}

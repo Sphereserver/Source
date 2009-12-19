@@ -395,7 +395,7 @@ public:
 		NormalizeRect();
 	}
 
-	void CGRect::NormalizeRectMax( int cx, int cy )
+	void NormalizeRectMax( int cx, int cy )
 	{
 		if ( m_left < 0 )
 			m_left = 0;
