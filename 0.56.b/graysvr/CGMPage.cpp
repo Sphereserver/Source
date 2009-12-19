@@ -19,12 +19,7 @@ CGMPage::CGMPage( LPCTSTR pszAccount ) :
 
 CGMPage::~CGMPage()
 {
-	if ( m_pGMClient )	// break the link to the client.
-	{
-		ASSERT( m_pGMClient->m_pGMPage == this );
-		m_pGMClient->m_pGMPage = NULL;
-		ClearGMHandler();
-	}
+	ClearGMHandler();
 }
 
 int CGMPage::GetAge() const
@@ -32,6 +27,30 @@ int CGMPage::GetAge() const
 	ADDTOCALLSTACK("CGMPage::GetAge");
 	// How old in seconds.
 	return( (-g_World.GetTimeDiff( m_timePage )) / TICK_PER_SEC );
+}
+
+void CGMPage::ClearGMHandler()
+{
+	if ( m_pGMClient != NULL)	// break the link to the client.
+	{
+		ASSERT( m_pGMClient->m_pGMPage == this );
+		m_pGMClient->m_pGMPage = NULL;
+	}
+
+	m_pGMClient = NULL;
+}
+
+void CGMPage::SetGMHandler(CClient* pClient)
+{
+	if ( m_pGMClient == pClient )
+		return;
+
+	if ( m_pGMClient != NULL)	// break the link to the previous client.
+		ClearGMHandler();
+
+	m_pGMClient = pClient;
+	if ( m_pGMClient != NULL )
+		m_pGMClient->m_pGMPage = this;
 }
 
 void CGMPage::r_Write( CScript & s ) const

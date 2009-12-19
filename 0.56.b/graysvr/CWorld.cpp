@@ -1758,29 +1758,41 @@ bool CWorld::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 	if ( !strnicmp(pszKey, "GMPAGE", 6) )		//	GM pages
 	{
-		CGMPage	*pPage;
 		pszKey += 6;
 		if (( *pszKey == 'S' ) || ( *pszKey == 's' ))	//	SERV.GMPAGES
+		{
+			pszKey++;
+			if ( *pszKey != '\0' )
+				return false;
+
 			sVal.FormatVal(m_GMPages.GetCount());
+		}
 		else if ( *pszKey == '.' )						//	SERV.GMPAGE.*
 		{
 			SKIP_SEPARATORS(pszKey);
-			int iQty = Exp_GetVal(pszKey);
-			if (( iQty < 0 ) || ( iQty >= m_GMPages.GetCount() )) return false;
-			SKIP_SEPARATORS(pszKey);
-			pPage = STATIC_CAST <CGMPage*> (m_GMPages.GetAt(iQty));
-			if ( !pPage ) return false;
+			int index = Exp_GetVal(pszKey);
+			if (( index < 0 ) || ( index >= m_GMPages.GetCount() ))
+				return false;
 
-			if ( !strnicmp(pszKey, "HANDLED", 7) )
+			SKIP_SEPARATORS(pszKey);
+			CGMPage* pPage = STATIC_CAST <CGMPage*> (m_GMPages.GetAt(index));
+			if ( pPage == NULL )
+				return false;
+
+			if ( !strcmpi(pszKey, "HANDLED") )
 			{
 				CClient *pClient = pPage->FindGMHandler();
-				if ( pClient ) sVal.FormatVal(pClient->GetChar()->GetUID());
-				else sVal.FormatVal(0);
+				if ( pClient != NULL && pClient->GetChar() != NULL )
+					sVal.FormatHex(pClient->GetChar()->GetUID());
+				else
+					sVal.FormatVal(0);
 				return true;
 			}
-			else return (pPage->r_WriteVal(pszKey, sVal, pSrc));
+			else
+				return pPage->r_WriteVal(pszKey, sVal, pSrc);
 		}
-		else sVal.FormatVal(0);
+		else
+			sVal.FormatVal(0);
 		return true;
 	}
 

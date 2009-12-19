@@ -4628,6 +4628,8 @@ ALPHA additions:
 - Fixed #1690: CheckerTrans positions in dialogs not working with dorigin.
 - Fixed #1692: DIALOGCLOSE immediately after DIALOG not working due to packet priorities.
 - Fixed: FLUSH command on clients claiming to be undefined.
+- Fixed: Previous page handlers not being removed when assigning pages via GMPAGE.x.HANDLE,
+  leading to possible exceptions.
 
 19-12-2009, MrSugarCube (Script pack)
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)

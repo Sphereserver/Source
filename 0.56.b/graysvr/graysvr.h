@@ -310,14 +310,8 @@ public:
 	{
 		return( m_pGMClient );
 	}
-	void ClearGMHandler()
-	{
-		m_pGMClient = NULL;
-	}
-	void SetGMHandler( CClient * pClient )
-	{
-		m_pGMClient = pClient;
-	}
+	void ClearGMHandler();
+	void SetGMHandler( CClient * pClient );
 	int GetAge() const;
 
 	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );

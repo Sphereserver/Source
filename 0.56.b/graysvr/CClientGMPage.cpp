@@ -78,7 +78,6 @@ void CClient::Cmd_GM_PageClear()
 	if ( m_pGMPage )
 	{
 		m_pGMPage->ClearGMHandler();
-		m_pGMPage = NULL;
 	}
 }
 
@@ -369,8 +368,7 @@ void CClient::Cmd_GM_PageSelect( int iSelect )
 			return;	// someone already has this.
 		}
 
-		m_pGMPage = pPage;
-		m_pGMPage->SetGMHandler( this );
+		pPage->SetGMHandler( this );
 		Cmd_GM_PageInfo();
 		Cmd_GM_PageCmd( "GO" );	// go there.
 	}

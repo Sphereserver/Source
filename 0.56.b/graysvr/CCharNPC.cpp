@@ -419,39 +419,50 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 
 	if ( !strnicmp(pszKey, "GMPAGE", 6) )		//	GM pages
 	{
-		CGMPage	*pPage;
 		pszKey += 6;
-		if ( *pszKey == '.' )						//	SERV.GMPAGE.*
+		if ( *pszKey == '.' )						//	GMPAGE.*
 		{
 			SKIP_SEPARATORS(pszKey);
-			int iQty = Exp_GetVal(pszKey);
-			if (( iQty < 0 ) || ( iQty >= g_World.m_GMPages.GetCount() )) return false;
-			SKIP_SEPARATORS(pszKey);
-			pPage = STATIC_CAST <CGMPage*> (g_World.m_GMPages.GetAt(iQty));
-			if ( !pPage ) return false;
+			int index = Exp_GetVal(pszKey);
+			if (( index < 0 ) || ( index >= g_World.m_GMPages.GetCount() ))
+				return false;
 
-			if ( !strnicmp(pszKey, "HANDLE", 6) )
+			CGMPage* pPage = STATIC_CAST <CGMPage*> (g_World.m_GMPages.GetAt(index));
+			if ( pPage == NULL )
+				return false;
+
+			SKIP_SEPARATORS(pszKey);
+			if ( !strcmpi(pszKey, "HANDLE") )
 			{
 				CChar *ppChar = pChar;
 
-				if ( *pszArgs ) ppChar = STATIC_CAST <CChar*> (g_World.FindUID(s.GetArgVal()));
-				if ( !pChar ) return false;
-				CClient *pClient = pChar->GetClient();
-				if ( !pClient ) return false;
+				if ( *pszArgs )
+					ppChar = STATIC_CAST <CChar*> (g_World.FindUID(s.GetArgVal()));
 
-				pClient->m_pGMPage = pPage;
+				if ( ppChar == NULL )
+					return false;
+
+				CClient *pClient = ppChar->GetClient();
+				if ( pClient == NULL )
+					return false;
+
 				pPage->SetGMHandler(pClient);
 			}
-			else if ( !strnicmp(pszKey, "DELETE", 6) )
+			else if ( !strcmpi(pszKey, "DELETE") )
 			{
-				pPage->RemoveSelf();
+				delete pPage;
 			}
 			else if ( pPage->FindGMHandler() )
 			{
-				CClient	*pClient = pChar->GetClient();
-				if ( pClient ) pClient->Cmd_GM_PageCmd(pszKey);
+				CClient* pClient = pChar->GetClient();
+				if ( pClient != NULL && pClient->GetChar() != NULL )
+					pClient->Cmd_GM_PageCmd(pszKey);
 			}
-			else return false;
+			else
+			{
+				return false;
+			}
+
 			return true;
 		}
 		return false;
