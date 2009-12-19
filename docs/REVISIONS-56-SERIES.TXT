@@ -4622,3 +4622,6 @@ ALPHA additions:
 
 18-12-2009, MrSugarCube (Script pack)
 - Added: sphere_item_profession_barber_sa.scp (Added gargoyle horn definitions)
+
+19-12-2009, MrSugarCube (Script pack)
+- Added: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)

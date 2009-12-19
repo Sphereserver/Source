@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, December 18, 2009
+// FILE LAST UPDATED: Saturday, December 19, 2009
 //
 VERSION=0.56b
 
@@ -155,7 +155,7 @@ ON=@Timer
 	RETURN 1
 
 [ITEMDEF 042aa]
-DEFNAME=i_horn_gargoyle_female_5
+DEFNAME=i_horn_gargoyle_female_6
 NAME=female gargoyle horns
 TYPE=T_HAIR
 
@@ -166,7 +166,7 @@ ON=@Timer
 	RETURN 1
 
 [ITEMDEF 042ab]
-DEFNAME=i_horn_gargoyle_female_6
+DEFNAME=i_horn_gargoyle_female_7
 NAME=female gargoyle horns
 TYPE=T_HAIR
 
@@ -225,7 +225,7 @@ ON=@Timer
 	RETURN 1
 
 [ITEMDEF 042b1]
-DEFNAME=i_horn_gargoyle_female_2
+DEFNAME=i_horn_gargoyle_female_8
 NAME=female gargoyle horn
 TYPE=T_HAIR
 
