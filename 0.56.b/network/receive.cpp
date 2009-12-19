@@ -477,6 +477,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	if ( target == NULL ||
 		 itemLayer >= LAYER_HORSE ||
 		!target->NPC_IsOwnedBy(source) || 
+		!target->CanCarry(item) ||
 		!target->ItemEquip(item, source) )
 	{
 		source->ItemBounce(item); //cannot equip

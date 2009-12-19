@@ -9,12 +9,17 @@
 inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Use_Item_MustEquip");
-	if ( ! m_pChar->CanMove( pItem ) || ! m_pChar->ItemEquip( pItem ))
+	if ( ! m_pChar->CanMove( pItem ) )
 	{
-		// SysMessage( "The item should be equipped to use." );
 		return false;
 	}
-	return true;
+	else if ( ! m_pChar->CanCarry( pItem ) )
+	{
+		SysMessageDefault(DEFMSG_HEAVY);
+		return false;
+	}
+	
+	return m_pChar->ItemEquip( pItem );
 }
 
 bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
