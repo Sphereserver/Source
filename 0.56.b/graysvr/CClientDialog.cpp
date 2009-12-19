@@ -397,6 +397,20 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			m_iControls++;
 			return true;
 		}
+		case GUMPCTL_CHECKERTRANS:
+		{
+			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+				return false;
+
+			GET_RELATIVE( x, m_iOriginX );
+			GET_RELATIVE( y, m_iOriginY );
+			GET_ABSOLUTE( width );
+			GET_ABSOLUTE( height );
+
+			m_sControls[m_iControls].Format( "checkertrans %d %d %d %d", x, y, width, height );
+			m_iControls++;
+			return true;
+		}
 		case GUMPCTL_DORIGIN:
 		{
 			// GET_RELATIVE( x, m_iOriginX );

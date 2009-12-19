@@ -4623,5 +4623,8 @@ ALPHA additions:
 18-12-2009, MrSugarCube (Script pack)
 - Added: sphere_item_profession_barber_sa.scp (Added gargoyle horn definitions)
 
+19-12-2009, MrSugarCube
+- Fixed #1690: CheckerTrans positions in dialogs not working with dorigin.
+
 19-12-2009, MrSugarCube (Script pack)
-- Added: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
+- Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
