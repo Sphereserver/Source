@@ -2137,7 +2137,7 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	CItem * pItem = ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_MAP_BLANK), 0 );
 	if ( pItem == NULL )
 	{
-		SysMessageDefault( DEFMSG_CARTOGRAPHY_NOMAP );
+		SysMessageDefault( DEFMSG_CARTOGRAPHY_FAIL );
 		return( -SKTRIG_QTY );
 	}
 

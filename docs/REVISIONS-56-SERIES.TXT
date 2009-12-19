@@ -4627,6 +4627,8 @@ ALPHA additions:
 - Fixed #1669: Maximum weight not being checked when a client equips an item.
 - Fixed #1690: CheckerTrans positions in dialogs not working with dorigin.
 - Fixed #1692: DIALOGCLOSE immediately after DIALOG not working due to packet priorities.
+- Modified #1681: Swapped the situations where cartography_nomap and cartography_fail
+  defmessages are displayed.
 - Fixed: FLUSH command on clients claiming to be undefined.
 - Fixed: Previous page handlers not being removed when assigning pages via GMPAGE.x.HANDLE,
   leading to possible exceptions.

@@ -1345,7 +1345,7 @@ bool CClient::Cmd_Skill_Cartography( int iLevel )
 
 	if ( ! m_pChar->ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_MAP_BLANK)))
 	{
-		SysMessageDefault( DEFMSG_CARTOGRAPHY_FAIL );
+		SysMessageDefault( DEFMSG_CARTOGRAPHY_NOMAP );
 		return( false );
 	}
 
