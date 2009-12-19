@@ -503,7 +503,7 @@ void CListDefCont::DumpElements( CTextConsole * pSrc, LPCTSTR pszPrefix /* = NUL
 	CGString strResult;
 
 	PrintElements(strResult);
-	pSrc->SysMessagef("%s%s=%s\n", (LPCTSTR) pszPrefix, (LPCTSTR) m_Key.GetPtr(), strResult);
+	pSrc->SysMessagef("%s%s=%s\n", (LPCTSTR) pszPrefix, (LPCTSTR) m_Key.GetPtr(), (LPCTSTR) strResult);
 }
 
 int CListDefCont::GetCount() const

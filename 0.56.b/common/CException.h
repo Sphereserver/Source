@@ -167,7 +167,7 @@ public:
 
 	#define EXC_ADD_SCRIPT		g_Log.EventDebug("command '%s' args '%s'\n", s.GetKey(), s.GetArgRaw());
 	#define EXC_ADD_SCRIPTSRC	g_Log.EventDebug("command '%s' args '%s' [0%lx]\n", s.GetKey(), s.GetArgRaw(), pSrc);
-	#define EXC_ADD_KEYRET(src)	g_Log.EventDebug("command '%s' ret '%s' [0%lx]\n", pszKey, (LPCTSTR)sVal, src);
+	#define EXC_ADD_KEYRET(src)	g_Log.EventDebug("command '%s' ret '%s' [0%lx]\n", pszKey, (LPCTSTR)sVal, (DWORD)src);
 
 #else
 

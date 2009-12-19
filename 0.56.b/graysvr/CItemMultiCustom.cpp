@@ -1559,12 +1559,15 @@ bool CItemMultiCustom::LoadValidItems()
 	g_Log.EventDebug("file index '%d\n", iFileIndex);
 	g_Log.EventDebug("file name '%s'\n", sm_szItemFiles[i][0]);
 
-	char * pszRowFull = Str_GetTemp();
-	char * pszHeaderFull = Str_GetTemp();
+	TCHAR* pszRowFull = Str_GetTemp();
+	TCHAR* pszHeaderFull = Str_GetTemp();
 	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); itCsv++ )
 	{
-		sprintf(pszHeaderFull, "%s\t%s", itCsv->first);
-		sprintf(pszRowFull, "%s\t%s", itCsv->second);
+		strcat(pszHeaderFull, "\t");
+		strcat(pszHeaderFull, itCsv->first.c_str());
+
+		strcat(pszRowFull, "\t");
+		strcat(pszRowFull, itCsv->second.c_str());
 	}
 
 	g_Log.EventDebug("header count '%d', header text '%s'\n", csvDataRow.size(), pszRowFull);

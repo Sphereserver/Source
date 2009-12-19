@@ -2414,7 +2414,7 @@ jump_in:
 
 	EXC_DEBUG_START;
 	g_Log.EventDebug("key '%s' runtype '%d' pargs '%lx' ret '%s' [0%lx]\n",
-		s.GetKey(), trigrun, pArgs, *pResult, pSrc);
+		s.GetKey(), trigrun, pArgs, pResult == NULL? "" : (LPCTSTR)(*pResult), pSrc);
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;
 }
@@ -2575,7 +2575,7 @@ bool CFileObj::r_LoadVal( CScript & s )
 		}
 		else
 		{
-			g_Log.Event(LOGL_ERROR, "FILE (%s): Cannot set mode after file opening\n", sWrite->GetFilePath());
+			g_Log.Event(LOGL_ERROR, "FILE (%s): Cannot set mode after file opening\n", (LPCTSTR)sWrite->GetFilePath());
 		}	
 		return( false );
 	}
@@ -2627,7 +2627,7 @@ bool CFileObj::r_LoadVal( CScript & s )
 		
 				if ( !bSuccess )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Failed writing to \"%s\".\n", sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Failed writing to \"%s\".\n", (LPCTSTR)sWrite->GetFilePath());
 					return false;
 				}
 			} break;
@@ -2718,7 +2718,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			} break;
 
 		case FO_FILEPATH:
-			sVal.Format("%s", sWrite->IsFileOpen() ? sWrite->GetFilePath() : "" );
+			sVal.Format("%s", sWrite->IsFileOpen() ? (LPCTSTR)sWrite->GetFilePath() : "" );
 			break;
 
 		case FO_INUSE:
@@ -2744,7 +2744,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( sWrite->IsFileOpen() )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Cannot open file (%s). First close \"%s\".\n", ppCmd, sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Cannot open file (%s). First close \"%s\".\n", ppCmd, (LPCTSTR)sWrite->GetFilePath());
 					return( false );
 				}
 
@@ -2773,7 +2773,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( ( ( sWrite->GetPosition() + iRead ) > sWrite->GetLength() ) || ( sWrite->IsEOF() ) )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\". Too near to EOF.\n", iRead, sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\". Too near to EOF.\n", iRead, (LPCTSTR)sWrite->GetFilePath());
 					return( false );
 				}
 
@@ -2781,7 +2781,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( iRead != sWrite->Read(ppArg,iRead) )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\".\n", iRead, sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\".\n", iRead, (LPCTSTR)sWrite->GetFilePath());
 					return( false );
 				}
 
