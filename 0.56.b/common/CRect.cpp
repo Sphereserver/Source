@@ -604,28 +604,28 @@ int CPointBase::Read( TCHAR * pszVal )
 	int iArgs = Str_ParseCmds( pszVal, ppVal, COUNTOF( ppVal ), " ,\t" );
 	switch ( iArgs )
 	{
-	default:
-	case 4:	// m_map
-		if ( IsDigit(ppVal[3][0]))
-		{
-			m_map = ATOI(ppVal[3]);
-			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
+		default:
+		case 4:	// m_map
+			if ( IsDigit(ppVal[3][0]))
 			{
-				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
-				m_map = 0;
+				m_map = ATOI(ppVal[3]);
+				if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
+				{
+					g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
+					m_map = 0;
+				}
 			}
-		}
-	case 3: // m_z
-		if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
-		{
-			m_z = ATOI(ppVal[2]);
-		}
-	case 2:
-		m_y = ATOI(ppVal[1]);
-	case 1:
-		m_x = ATOI(ppVal[0]);
-	case 0:
-		break;
+		case 3: // m_z
+			if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
+			{
+				m_z = ATOI(ppVal[2]);
+			}
+		case 2:
+			m_y = ATOI(ppVal[1]);
+		case 1:
+			m_x = ATOI(ppVal[0]);
+		case 0:
+			break;
 	}
 	return( iArgs );
 }
@@ -685,17 +685,17 @@ int CGRect::Read( LPCTSTR pszVal )
 	int i = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t");
 	switch (i)
 	{
-	case 5:
-		m_map = ATOI(ppVal[4]);
-		if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
-		{
-			g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
-			m_map = 0;
-		}
-	case 4: m_bottom = ATOI(ppVal[3]);
-	case 3: m_right = ATOI(ppVal[2]);
-	case 2: m_top =	ATOI(ppVal[1]);
-	case 1: m_left = ATOI(ppVal[0]);
+		case 5:
+			m_map = ATOI(ppVal[4]);
+			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
+			{
+				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
+				m_map = 0;
+			}
+		case 4: m_bottom = ATOI(ppVal[3]);
+		case 3: m_right = ATOI(ppVal[2]);
+		case 2: m_top =	ATOI(ppVal[1]);
+		case 1: m_left = ATOI(ppVal[0]);
 	}
 	NormalizeRect();
 	return( i );
@@ -716,41 +716,43 @@ CPointBase CGRect::GetRectCorner( DIR_TYPE dir ) const
 	pt.m_map = m_map;
 	switch ( dir )
 	{
-	case DIR_N:
-		pt.m_x = ( m_left + m_right ) / 2;
-		pt.m_y = m_top;
-		break;
-	case DIR_NE:
-		pt.m_x = m_right;
-		pt.m_y = m_top;
-		break;
-	case DIR_E:
-		pt.m_x = m_right;
-		pt.m_y = ( m_top + m_bottom ) / 2;
-		break;
-	case DIR_SE:
-		pt.m_x = m_right;
-		pt.m_y = m_bottom;
-		break;
-	case DIR_S:
-		pt.m_x = ( m_left + m_right ) / 2;
-		pt.m_y = m_bottom;
-		break;
-	case DIR_SW:
-		pt.m_x = m_left;
-		pt.m_y = m_bottom;
-		break;
-	case DIR_W:
-		pt.m_x = m_left;
-		pt.m_y = ( m_top + m_bottom ) / 2;
-		break;
-	case DIR_NW:
-		pt.m_x = m_left;
-		pt.m_y = m_top;
-		break;
-	case DIR_QTY:
-		pt = GetCenter();
-		break;
+		case DIR_N:
+			pt.m_x = ( m_left + m_right ) / 2;
+			pt.m_y = m_top;
+			break;
+		case DIR_NE:
+			pt.m_x = m_right;
+			pt.m_y = m_top;
+			break;
+		case DIR_E:
+			pt.m_x = m_right;
+			pt.m_y = ( m_top + m_bottom ) / 2;
+			break;
+		case DIR_SE:
+			pt.m_x = m_right;
+			pt.m_y = m_bottom;
+			break;
+		case DIR_S:
+			pt.m_x = ( m_left + m_right ) / 2;
+			pt.m_y = m_bottom;
+			break;
+		case DIR_SW:
+			pt.m_x = m_left;
+			pt.m_y = m_bottom;
+			break;
+		case DIR_W:
+			pt.m_x = m_left;
+			pt.m_y = ( m_top + m_bottom ) / 2;
+			break;
+		case DIR_NW:
+			pt.m_x = m_left;
+			pt.m_y = m_top;
+			break;
+		case DIR_QTY:
+			pt = GetCenter();
+			break;
+		default:
+			break;
 	}
 	return( pt );
 }

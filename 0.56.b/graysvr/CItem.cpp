@@ -118,6 +118,8 @@ CItem::~CItem()
 				}
 			}
 			break;
+		default:
+			break;
 	}
 	g_Serv.StatDec(SERV_STAT_ITEMS);
 }
@@ -263,6 +265,8 @@ CItem * CItem::CreateScript( ITEMID_TYPE id, CChar * pSrc ) // static
 					iBlood = 0;
 				pItem->m_TagDefs.SetNum("BLOOD", iBlood, true);
 			}
+			break;
+		default:
 			break;
 	}
 
@@ -769,6 +773,9 @@ int CItem::FixWeirdness()
 				return( iResultCode );	// get rid of it.
 			}
 			break;
+
+		default:
+			break;
 	}
 
 	switch ( GetType() )
@@ -916,12 +923,12 @@ int CItem::FixWeirdness()
 			case LAYER_SPECIAL:
 				switch ( GetType())
 				{
-				case IT_EQ_MEMORY_OBJ:
-				case IT_EQ_SCRIPT:	// pure script.
-					break;
-				default:
-					iResultCode = 0x2231;
-					return( iResultCode );	// get rid of it.
+					case IT_EQ_MEMORY_OBJ:
+					case IT_EQ_SCRIPT:	// pure script.
+						break;
+					default:
+						iResultCode = 0x2231;
+						return( iResultCode );	// get rid of it.
 				}
 				break;
 			case LAYER_VENDOR_STOCK:
@@ -961,6 +968,9 @@ int CItem::FixWeirdness()
 					iResultCode = 0x2235;
 					return( iResultCode );	// get rid of it.
 				}
+				break;
+
+			default:
 				break;
 		}
 	}
@@ -1116,18 +1126,21 @@ int CItem::GetDecayTime() const
 
 	switch ( GetType())
 	{
-	case IT_FOLIAGE:
-	case IT_CROPS: // Crops "decay" as they grow
-		return g_World.GetTimeDiff(g_World.GetNextNewMoon( ( GetTopPoint().m_map == 1 ) ? false : true ) +
-			Calc_GetRandVal(20) * g_Cfg.m_iGameMinuteLength);
-	case IT_MULTI:
-	case IT_SHIP:
-	case IT_MULTI_CUSTOM:
-		// very long decay updated as people use it.
-		return( 14*24*60*60*TICK_PER_SEC );	// days to rot a structure.
-	case IT_TRASH_CAN:
-		// Empties every n seconds.
-		return( 15*TICK_PER_SEC );
+		case IT_FOLIAGE:
+		case IT_CROPS: // Crops "decay" as they grow
+			return g_World.GetTimeDiff(g_World.GetNextNewMoon( ( GetTopPoint().m_map == 1 ) ? false : true ) +
+				Calc_GetRandVal(20) * g_Cfg.m_iGameMinuteLength);
+		case IT_MULTI:
+		case IT_SHIP:
+		case IT_MULTI_CUSTOM:
+			// very long decay updated as people use it.
+			return( 14*24*60*60*TICK_PER_SEC );	// days to rot a structure.
+		case IT_TRASH_CAN:
+			// Empties every n seconds.
+			return( 15*TICK_PER_SEC );
+
+		default:
+			break;
 	}
 
 	if ( IsAttr(ATTR_CAN_DECAY|ATTR_STATIC|ATTR_MOVE_NEVER) || !IsMovableType() )
@@ -1208,27 +1221,30 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 
 	switch ( pItemDef->GetType())
 	{
-	case IT_COIN:
-	case IT_GOLD:
-		// depends on amount.
-		switch ( GetAmount())
-		{
-		case 1: iSnd = 0x035; break;
-		case 2: iSnd = 0x032; break;
-		case 3:
-		case 4:	iSnd = 0x036; break;
-		default: iSnd = 0x037;
-		}
-		break;
-	case IT_GEM:
-		iSnd = (( GetID() > ITEMID_GEMS ) ? 0x034 : 0x032 );  // Small vs Large Gems
-		break;
-	case IT_INGOT:  // Any Ingot
-		if ( pObjOn == NULL )
-		{
-			iSnd = 0x033;
-		}
-		break;
+		case IT_COIN:
+		case IT_GOLD:
+			// depends on amount.
+			switch ( GetAmount())
+			{
+				case 1: iSnd = 0x035; break;
+				case 2: iSnd = 0x032; break;
+				case 3:
+				case 4:	iSnd = 0x036; break;
+				default: iSnd = 0x037;
+			}
+			break;
+		case IT_GEM:
+			iSnd = (( GetID() > ITEMID_GEMS ) ? 0x034 : 0x032 );  // Small vs Large Gems
+			break;
+		case IT_INGOT:  // Any Ingot
+			if ( pObjOn == NULL )
+			{
+				iSnd = 0x033;
+			}
+			break;
+
+		default:
+			break;
 	}
 
 	CVarDefCont * pTagStorage = NULL; 
@@ -1605,6 +1621,8 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			}
 			break;
+		default:
+			break;
 	}
 
 	len += strcpylen( pTemp+len, pszName );
@@ -1695,6 +1713,9 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 					len += sprintf( pTemp+len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
 				}
 			}
+			break;
+
+		default:
 			break;
 	}
 
@@ -1953,46 +1974,50 @@ void CItem::r_WriteMore1( CGString & sVal )
 	// do special processing to represent this.
 	switch ( GetType())
 	{
-	case IT_SPAWN_CHAR:
-		sVal = g_Cfg.ResourceGetName( m_itSpawnChar.m_CharID );
-		return;
-	case IT_SPAWN_ITEM:
-		sVal = g_Cfg.ResourceGetName( m_itSpawnItem.m_ItemID );
-		return;
-	case IT_TREE:
-	case IT_GRASS:
-	case IT_ROCK:
-	case IT_WATER:
-		sVal = g_Cfg.ResourceGetName( m_itResource.m_rid_res );
-		return;
+		case IT_SPAWN_CHAR:
+			sVal = g_Cfg.ResourceGetName( m_itSpawnChar.m_CharID );
+			return;
+		case IT_SPAWN_ITEM:
+			sVal = g_Cfg.ResourceGetName( m_itSpawnItem.m_ItemID );
+			return;
+		case IT_TREE:
+		case IT_GRASS:
+		case IT_ROCK:
+		case IT_WATER:
+			sVal = g_Cfg.ResourceGetName( m_itResource.m_rid_res );
+			return;
 
-	case IT_FRUIT:
-	case IT_FOOD:
-	case IT_FOOD_RAW:
-	case IT_MEAT_RAW:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itFood.m_cook_id ));
-		return;
+		case IT_FRUIT:
+		case IT_FOOD:
+		case IT_FOOD_RAW:
+		case IT_MEAT_RAW:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itFood.m_cook_id ));
+			return;
 
-	case IT_TRAP:
-	case IT_TRAP_ACTIVE:
-	case IT_TRAP_INACTIVE:
-	case IT_ANIM_ACTIVE:
-	case IT_SWITCH:
-	case IT_DEED:
-	case IT_LOOM:
-	case IT_ARCHERY_BUTTE:
-	case IT_ITEM_STONE:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itNormal.m_more1 ));
-		return;
+		case IT_TRAP:
+		case IT_TRAP_ACTIVE:
+		case IT_TRAP_INACTIVE:
+		case IT_ANIM_ACTIVE:
+		case IT_SWITCH:
+		case IT_DEED:
+		case IT_LOOM:
+		case IT_ARCHERY_BUTTE:
+		case IT_ITEM_STONE:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itNormal.m_more1 ));
+			return;
 
-	case IT_FIGURINE:
-	case IT_EQ_HORSE:
-		sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_CHARDEF, m_itNormal.m_more1));
-		return;
+		case IT_FIGURINE:
+		case IT_EQ_HORSE:
+			sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_CHARDEF, m_itNormal.m_more1));
+			return;
 
-	case IT_POTION:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_SPELL, m_itPotion.m_Type ));
-		return;
+		case IT_POTION:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_SPELL, m_itPotion.m_Type ));
+			return;
+
+		default:
+			sVal.FormatHex( m_itNormal.m_more1 );
+			return;
 	}
 
 	sVal.FormatHex( m_itNormal.m_more1 );
@@ -2004,31 +2029,35 @@ void CItem::r_WriteMore2( CGString & sVal )
 	// do special processing to represent this.
 	switch ( GetType())
 	{
-	case IT_FRUIT:
-	case IT_FOOD:
-	case IT_FOOD_RAW:
-	case IT_MEAT_RAW:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itFood.m_MeatType ));
-		return;
+		case IT_FRUIT:
+		case IT_FOOD:
+		case IT_FOOD_RAW:
+		case IT_MEAT_RAW:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itFood.m_MeatType ));
+			return;
 
-	case IT_CROPS:
-	case IT_FOLIAGE:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itCrop.m_ReapFruitID ));
-		return;
+		case IT_CROPS:
+		case IT_FOLIAGE:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itCrop.m_ReapFruitID ));
+			return;
 
-	case IT_LEATHER:
-	case IT_HIDE:
-	case IT_FEATHER:
-	case IT_FUR:
-	case IT_WOOL:
-	case IT_BLOOD:
-	case IT_BONE:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itNormal.m_more2 ));
-		return;
+		case IT_LEATHER:
+		case IT_HIDE:
+		case IT_FEATHER:
+		case IT_FUR:
+		case IT_WOOL:
+		case IT_BLOOD:
+		case IT_BONE:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itNormal.m_more2 ));
+			return;
 
-	case IT_ANIM_ACTIVE:
-		sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_itAnim.m_PrevType ));
-		return;
+		case IT_ANIM_ACTIVE:
+			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_itAnim.m_PrevType ));
+			return;
+
+		default:
+			sVal.FormatHex( m_itNormal.m_more2 );
+			return;
 	}
 	sVal.FormatHex( m_itNormal.m_more2 );
 }
@@ -3585,30 +3614,30 @@ bool CItem::Armor_IsRepairable() const
 
 	switch ( m_type )
 	{
-	case IT_CLOTHING:
-	case IT_ARMOR_LEATHER:
-		return( false );	// Not this way anyhow.
-	case IT_SHIELD:
-	case IT_ARMOR:				// some type of armor. (no real action)
-		// ??? Bone armor etc is not !
-		break;
-	case IT_WEAPON_MACE_CROOK:
-	case IT_WEAPON_MACE_PICK:
-	case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-	case IT_WEAPON_MACE_STAFF:
-	case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-	case IT_WEAPON_SWORD:
-	case IT_WEAPON_FENCE:
-	case IT_WEAPON_AXE:
-		break;
+		case IT_CLOTHING:
+		case IT_ARMOR_LEATHER:
+			return( false );	// Not this way anyhow.
+		case IT_SHIELD:
+		case IT_ARMOR:				// some type of armor. (no real action)
+			// ??? Bone armor etc is not !
+			break;
+		case IT_WEAPON_MACE_CROOK:
+		case IT_WEAPON_MACE_PICK:
+		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+		case IT_WEAPON_MACE_STAFF:
+		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+		case IT_WEAPON_SWORD:
+		case IT_WEAPON_FENCE:
+		case IT_WEAPON_AXE:
+			break;
 
-	case IT_WEAPON_BOW:
-		// wood Bows are not repairable !
-		return( false );
-	case IT_WEAPON_XBOW:
-		return( true );
-	default:
-		return( false );
+		case IT_WEAPON_BOW:
+			// wood Bows are not repairable !
+			return( false );
+		case IT_WEAPON_XBOW:
+			return( true );
+		default:
+			return( false );
 	}
 
 	return( true );
@@ -3699,6 +3728,8 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 		case IT_WEAPON_BOW:
 		case IT_WEAPON_XBOW:
 			return( SKILL_ARCHERY );
+		default:
+			return( SKILL_WRESTLING );
 	}
 
 	return( SKILL_WRESTLING );
@@ -3730,12 +3761,12 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		return pResult;
 	switch ( pMeter->m_wTerrainIndex )
 	{
-	case TERRAIN_WATER1:
-	case TERRAIN_WATER2:
-	case TERRAIN_WATER3:
-	case TERRAIN_WATER4:
-	case TERRAIN_WATER5:
-	case TERRAIN_WATER6:
+		case TERRAIN_WATER1:
+		case TERRAIN_WATER2:
+		case TERRAIN_WATER3:
+		case TERRAIN_WATER4:
+		case TERRAIN_WATER5:
+		case TERRAIN_WATER6:
 		{
 			// Look for land if at sea
 			CPointMap ptLand;
@@ -3773,8 +3804,10 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			strcpy( pResult, sSearch );
 			break;
 		}
-	default:
-		pResult[0] = '\0';
+
+		default:
+			pResult[0] = '\0';
+			break;
 	}
 
 	// Check for interesting items, like boats, carpets, etc.., ignore our stuff
@@ -4163,7 +4196,7 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 		default:
 			pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_CAN_NOT ) );
 			return false;
-		}
+	}
 
 	return( true );
 }
@@ -4184,8 +4217,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	switch ( iRet )
 	{
-	case TRIGRET_RET_TRUE:		return false;
-	case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		case TRIGRET_RET_TRUE:		return false;
+		case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		default:					break;
 	}
 	
 	if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -4198,8 +4232,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	switch ( iRet )
 	{
-	case TRIGRET_RET_TRUE:		return false;
-	case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		case TRIGRET_RET_TRUE:		return false;
+		case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		default:					break;
 	}
 
 	if ( IsType(IT_WAND) )	// try to recharge the wand.
@@ -4249,19 +4284,20 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	case SPELL_Mass_Dispel:
 		switch ( GetType())
 		{
-		case IT_CAMPFIRE:
-		case IT_FIRE:
-		case IT_SPELL:
-			// ??? compare the strength of the spells ?
+			case IT_CAMPFIRE:
+			case IT_FIRE:
+			case IT_SPELL: // ??? compare the strength of the spells ?
 			{
-			if ( IsTopLevel())
-			{
-				CItem * pItem = CItem::CreateScript( ITEMID_FX_SPELL_FAIL, pCharSrc );
-				pItem->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
-			}
-			Delete();
-			}
-			break;
+				if ( IsTopLevel())
+				{
+					CItem * pItem = CItem::CreateScript( ITEMID_FX_SPELL_FAIL, pCharSrc );
+					pItem->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
+				}
+				Delete();
+			} break;
+
+			default:
+				break;
 		}
 		break;
 
@@ -4350,6 +4386,8 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				pChar->RaiseCorpse(pCorpse);
 			}
 		}
+		break;
+	default:
 		break;
 	}
 
@@ -4487,6 +4525,9 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_WEAKEN ) );
 		m_itWeb.m_Hits_Cur -= iDmg;
 		return( 1 );
+
+	default:
+		break;
 	}
 
 	// Break armor etc..
@@ -4612,82 +4653,85 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 
 	switch ( restype )
 	{
-	case RES_TYPEDEF:
-		if ( ! IsType( (IT_TYPE) index ))
-			return( false );
+		case RES_TYPEDEF:
+			if ( ! IsType( (IT_TYPE) index ))
+				return( false );
 
-		if ( dwArg )
-		{
-			switch ( index )
+			if ( dwArg )
 			{
-			case IT_MAP:
-				// matching maps.
-				if ( LOWORD(dwArg) != m_itMap.m_top ||
-					HIWORD(dwArg) != m_itMap.m_left )
+				switch ( index )
 				{
-					return( false );
-				}
-				break;
-			case IT_KEY:
-				if ( ! IsKeyLockFit( dwArg ))
-					return( false );
-				break;
-			}
+					case IT_MAP:
+						// matching maps.
+						if ( LOWORD(dwArg) != m_itMap.m_top ||
+							HIWORD(dwArg) != m_itMap.m_left )
+						{
+							return( false );
+						}
+						break;
 
+					case IT_KEY:
+						if ( ! IsKeyLockFit( dwArg ))
+							return( false );
+						break;
+				}
+
+				if ( dwArg == GetID())
+					return( false );
+			}
+			return( true );
+
+		case RES_ITEMDEF:
 			if ( dwArg == GetID())
 				return( false );
-		}
-		return( true );
 
-	case RES_ITEMDEF:
+			if ( GetID() == index )
+				return true;
 
-		if ( dwArg == GetID())
+			if ( IsSetEF( EF_Item_Strict_Comparison ) )
+				return false;
+
+			switch ( index )
+			{
+				case ITEMID_CLOTH1:
+					if ( IsType(IT_CLOTH) || IsType(IT_CLOTH_BOLT))
+					{
+						ConvertBolttoCloth();
+						return( true );
+					}
+					break;
+				case ITEMID_LEATHER_1:
+				case ITEMID_HIDES:
+					if ( IsType( IT_HIDE ) || IsType( IT_LEATHER ))
+					{
+						// We should be able to use leather in place of hides.
+						return( true );
+					}
+					break;
+				case ITEMID_LOG_1:
+				case ITEMID_LUMBER1:
+					if ( IsType(IT_LOG) || IsType(IT_LUMBER))
+					{
+						return( true );
+					}
+					break;
+				case ITEMID_Arrow:
+					if ( IsType(IT_WEAPON_ARROW))
+					{
+						return( true );
+					}
+					break;
+				case ITEMID_XBolt:
+					if ( IsType(IT_WEAPON_BOLT))
+					{
+						return( true );
+					}
+					break;
+			}
+			break;
+
+		default:
 			return( false );
-
-		if ( GetID() == index )
-			return true;
-
-		if ( IsSetEF( EF_Item_Strict_Comparison ) )
-			return false;
-
-		switch ( index )
-		{
-		case ITEMID_CLOTH1:
-			if ( IsType(IT_CLOTH) || IsType(IT_CLOTH_BOLT))
-			{
-				ConvertBolttoCloth();
-				return( true );
-			}
-			break;
-		case ITEMID_LEATHER_1:
-		case ITEMID_HIDES:
-			if ( IsType( IT_HIDE ) || IsType( IT_LEATHER ))
-			{
-				// We should be able to use leather in place of hides.
-				return( true );
-			}
-			break;
-		case ITEMID_LOG_1:
-		case ITEMID_LUMBER1:
-			if ( IsType(IT_LOG) || IsType(IT_LUMBER))
-			{
-				return( true );
-			}
-			break;
-		case ITEMID_Arrow:
-			if ( IsType(IT_WEAPON_ARROW))
-			{
-				return( true );
-			}
-			break;
-		case ITEMID_XBolt:
-			if ( IsType(IT_WEAPON_BOLT))
-			{
-				return( true );
-			}
-			break;
-		}
-		break;
 	}
 
 	return( false );
@@ -4890,6 +4934,9 @@ bool CItem::OnTick()
 				EXC_SET("default behaviour::IT_SIGN_GUMP");
 			}
 			return true;
+
+		default:
+			break;
 	}
 
 	EXC_SET("default behaviour2");

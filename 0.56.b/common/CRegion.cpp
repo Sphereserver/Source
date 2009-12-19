@@ -562,7 +562,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, (LPCTSTR)sVal, pSrc);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -820,6 +820,9 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 			}
 			return true;
 		}
+
+		default:
+			break;
 	}
 
 	if ( index < 0 )
@@ -1003,7 +1006,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, (LPCTSTR)sVal, pSrc);
 	EXC_DEBUG_END;
 	return false;
 }

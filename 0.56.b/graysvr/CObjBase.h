@@ -989,6 +989,8 @@ public:
 			case IT_LAVA:
 			case IT_WINDOW:
 				return( true );
+			default:
+				return( false );
 		}
 		return( false );
 	}
@@ -996,9 +998,11 @@ public:
 	{
 		switch( m_type )
 		{
-		case IT_BOOK:
-		case IT_MESSAGE:
-			return( true );
+			case IT_BOOK:
+			case IT_MESSAGE:
+				return( true );
+			default:
+				return( false );
 		}
 		return( false );
 	}
@@ -1021,33 +1025,35 @@ public:
 	bool IsTypeArmorWeapon() const
 	{
 		// Armor or weapon.
-		if ( IsTypeArmor())
-			return( true );
-		return( IsTypeWeapon());
+		return( IsTypeArmor() || IsTypeWeapon());
 	}
 	bool IsTypeLocked() const
 	{
 		switch ( m_type )
 		{
-		case IT_SHIP_SIDE_LOCKED:
-		case IT_CONTAINER_LOCKED:
-		case IT_SHIP_HOLD_LOCK:
-		case IT_DOOR_LOCKED:
-			return( true );
+			case IT_SHIP_SIDE_LOCKED:
+			case IT_CONTAINER_LOCKED:
+			case IT_SHIP_HOLD_LOCK:
+			case IT_DOOR_LOCKED:
+				return( true );
+			default:
+				return( false );
 		}
-		return(false);
+		return( false );
 	}
 	bool IsTypeLockable() const
 	{
 		switch( m_type )
 		{
-		case IT_CONTAINER:
-		case IT_DOOR:
-		case IT_DOOR_OPEN:
-		case IT_SHIP_SIDE:
-		case IT_SHIP_PLANK:
-		case IT_SHIP_HOLD:
-			return( true );
+			case IT_CONTAINER:
+			case IT_DOOR:
+			case IT_DOOR_OPEN:
+			case IT_SHIP_SIDE:
+			case IT_SHIP_PLANK:
+			case IT_SHIP_HOLD:
+				return( true );
+			default:
+				return( IsTypeLocked() );
 		}
 		return( IsTypeLocked() );
 	}
@@ -1056,10 +1062,12 @@ public:
 		// m_itSpell
 		switch( m_type )
 		{
-		case IT_SCROLL:
-		case IT_SPELL:
-		case IT_FIRE:
-			return( true );
+			case IT_SCROLL:
+			case IT_SPELL:
+			case IT_FIRE:
+				return( true );
+			default:
+				return( IsTypeArmorWeapon() );
 		}
 		return( IsTypeArmorWeapon());
 	}
@@ -3420,6 +3428,8 @@ inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
 		case SKILL_SPELLWEAVING:
 		case SKILL_MYSTICISM:
 			return true;
+		default:
+			return false;
 	}
 	return false;
 }
@@ -3440,6 +3450,8 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 		case SKILL_TAILORING:
 		case SKILL_TINKERING:
 			return true;
+		default:
+			return false;
 	}
 	return false;
 }

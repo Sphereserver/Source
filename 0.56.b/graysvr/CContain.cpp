@@ -849,11 +849,15 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 				pItem->Use_Light();
 				break;
 			case IT_GAME_BOARD:
+			{
 				// Can't be put into any sort of a container.
 				// delete all it's pieces.
 				CItemContainer* pCont = dynamic_cast <CItemContainer*> (pItem);
 				ASSERT(pCont);
 				pCont->DeleteAll();
+				break;
+			}
+			default:
 				break;
 		}
 	}
@@ -954,6 +958,8 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 		g_Log.Event( LOGL_WARN, "Game board contains invalid item: %s uid=0%x, board: %s uid=0%x\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 		pItem->Delete();
 		break;
+	default:
+		break;
 	}
 
 	switch( pItem->GetID())
@@ -962,6 +968,8 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 	case ITEMID_BEDROLL_O_NS:
 		// Close the bedroll
 		pItem->SetDispID( ITEMID_BEDROLL_C );
+		break;
+	default:
 		break;
 	}
 
@@ -1230,6 +1238,9 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 			pCharMsg->SysMessageDefault( DEFMSG_ITEMUSE_TRASHCAN );
 			SetTimeout( 15*TICK_PER_SEC );
 			break;
+
+		default:
+			break;
 	}
 
 	return( true );
@@ -1289,6 +1300,9 @@ void CItemContainer::Restock()
 				if ( m_itEqBankBox.m_Check_Amount < m_itEqBankBox.m_Check_Restock )
 					m_itEqBankBox.m_Check_Amount = m_itEqBankBox.m_Check_Restock;
 				return;
+				
+			default:
+				break;
 			}
 		}
 	}
@@ -1621,6 +1635,8 @@ bool CItemContainer::OnTick()
 			Restock();
 			SetTimeout( -1 );
 			return true;
+		default:
+			break;
 	}
 	return CItemVendable::OnTick();
 }

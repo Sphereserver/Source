@@ -1130,6 +1130,8 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 			else if ((idBeard < 0x42ad) || (idBeard > 0x42b0))
 				idBeard = (ITEMID_TYPE) 0;
 			break;
+		default:
+			break;
 	}
 
 	if ( idBeard )

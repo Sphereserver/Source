@@ -151,27 +151,29 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, 
 
 	switch ( pItem->GetType() )
 	{
-	case IT_KEY:	// it will get locked down with the house ?
-	case IT_SIGN_GUMP:
-	case IT_SHIP_TILLER:
-		pItem->m_itKey.m_lockUID.SetPrivateUID( dwKeyCode );	// Set the key id for the key/sign.
-		m_uidLink.SetPrivateUID(pItem->GetUID());
-		fNeedKey = true;
-		break;
-	case IT_DOOR:
-		pItem->SetType(IT_DOOR_LOCKED);
-		fNeedKey = true;
-		break;
-	case IT_CONTAINER:
-		pItem->SetType(IT_CONTAINER_LOCKED);
-		fNeedKey = true;
-		break;
-	case IT_SHIP_SIDE:
-		pItem->SetType(IT_SHIP_SIDE_LOCKED);
-		break;
-	case IT_SHIP_HOLD:
-		pItem->SetType(IT_SHIP_HOLD_LOCK);
-		break;
+		case IT_KEY:	// it will get locked down with the house ?
+		case IT_SIGN_GUMP:
+		case IT_SHIP_TILLER:
+			pItem->m_itKey.m_lockUID.SetPrivateUID( dwKeyCode );	// Set the key id for the key/sign.
+			m_uidLink.SetPrivateUID(pItem->GetUID());
+			fNeedKey = true;
+			break;
+		case IT_DOOR:
+			pItem->SetType(IT_DOOR_LOCKED);
+			fNeedKey = true;
+			break;
+		case IT_CONTAINER:
+			pItem->SetType(IT_CONTAINER_LOCKED);
+			fNeedKey = true;
+			break;
+		case IT_SHIP_SIDE:
+			pItem->SetType(IT_SHIP_SIDE_LOCKED);
+			break;
+		case IT_SHIP_HOLD:
+			pItem->SetType(IT_SHIP_HOLD_LOCK);
+			break;
+		default:
+			break;
 	}
 
 	if ( pItem->GetHue() == HUE_DEFAULT )

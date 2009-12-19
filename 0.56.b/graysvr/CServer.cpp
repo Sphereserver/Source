@@ -210,13 +210,15 @@ bool CServer::IsValidBusy() const
 	// ?
 	switch ( m_iModeCode )
 	{
-	case SERVMODE_Saving:
-		if ( g_World.IsSaving())
-			return true;
-		break;
-	case SERVMODE_Loading:
-	case SERVMODE_RestockAll:	// these may look stuck but are not.
-		return( true );
+		case SERVMODE_Saving:
+			if ( g_World.IsSaving())
+				return true;
+			break;
+		case SERVMODE_Loading:
+		case SERVMODE_RestockAll:	// these may look stuck but are not.
+			return( true );
+		default:
+			return( false );
 	}
 	return( false );
 }
@@ -426,9 +428,9 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 			LPCTSTR pszState;
 			switch ( pClient->GetConnectType() )
 			{
-			case CONNECT_TELNET:	pszState = "TelNet"; break;
-			case CONNECT_HTTP:		pszState = "Web"; break;
-			default: pszState = "NOT LOGGED IN"; break;
+				case CONNECT_TELNET:	pszState = "TelNet"; break;
+				case CONNECT_HTTP:		pszState = "Web"; break;
+				default: pszState = "NOT LOGGED IN"; break;
 			}
 
 			sprintf(pszMsg, "%s%x:Acc='%s', (%s) %s\n",

@@ -122,7 +122,8 @@ void CClient::resendBuffs()
 			break;
 		//case SPELL_Mass_Curse:
 		//	break;
-
+		default:
+			break;
 		}
 
 	}
@@ -992,25 +993,28 @@ void CClient::addItemName( const CItem * pItem )
 		}
 		switch ( pItem->GetType() )
 		{
-		case IT_SPAWN_CHAR:
-		case IT_SPAWN_ITEM:
-			{
-				len += pItem->Spawn_GetName( szName + len );
-			}
-			break;
+			case IT_SPAWN_CHAR:
+			case IT_SPAWN_ITEM:
+				{
+					len += pItem->Spawn_GetName( szName + len );
+				}
+				break;
 
-		case IT_TREE:
-		case IT_GRASS:
-		case IT_ROCK:
-		case IT_WATER:
-			{
-			const CResourceDef * pResDef = g_Cfg.ResourceGetDef( pItem->m_itResource.m_rid_res );
-			if ( pResDef)
-			{
-				len += sprintf( szName+len, " (%s)", pResDef->GetName());
-			}
-			}
-			break;
+			case IT_TREE:
+			case IT_GRASS:
+			case IT_ROCK:
+			case IT_WATER:
+				{
+				const CResourceDef * pResDef = g_Cfg.ResourceGetDef( pItem->m_itResource.m_rid_res );
+				if ( pResDef)
+				{
+					len += sprintf( szName+len, " (%s)", pResDef->GetName());
+				}
+				}
+				break;
+
+			default:
+				break;
 		}
 	}
 	if ( IsPriv(PRIV_DEBUG) )
@@ -2620,6 +2624,9 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 								}
 							}
 						} break;
+
+					default:
+						break;
 				}
 			}
 		}
@@ -2955,6 +2962,9 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 	{
 		case CLIMODE_SETUP_RELAY:
 			ClearTargMode();
+			break;
+
+		default:
 			break;
 	}
 

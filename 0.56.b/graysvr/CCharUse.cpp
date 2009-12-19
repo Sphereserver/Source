@@ -164,6 +164,8 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 				}
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
+			default:
+				break;
 		}
 
 		if ( pszMsg == NULL )
@@ -1039,15 +1041,18 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	// Poisoned ?
 	switch ( pFood->GetType())
 	{
-	case IT_FRUIT:
-	case IT_FOOD:
-	case IT_FOOD_RAW:
-	case IT_MEAT_RAW:
-		if ( pFood->m_itFood.m_poison_skill )
-		{
-			SetPoison( pFood->m_itFood.m_poison_skill*10, 1+(pFood->m_itFood.m_poison_skill/50), this );
-		}
-		break;
+		case IT_FRUIT:
+		case IT_FOOD:
+		case IT_FOOD_RAW:
+		case IT_MEAT_RAW:
+			if ( pFood->m_itFood.m_poison_skill )
+			{
+				SetPoison( pFood->m_itFood.m_poison_skill*10, 1+(pFood->m_itFood.m_poison_skill/50), this );
+			}
+			break;
+
+		default:
+			break;
 	}
 
 	pFood->ConsumeAmount( iQty );
@@ -1628,6 +1633,8 @@ putonground:
 		pItem->SetID( ITEMID_BEDROLL_C );
 		pItem->Update();
 		return true;
+	default:
+		return false;
 	}
 
 	return false;

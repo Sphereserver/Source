@@ -164,13 +164,13 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 			//	make some MULs optional
 			switch ( i )
 			{
-			case VERFILE_MAP:						//	map #0 is permanent and should exist!
-			case VERFILE_STATICS:
-			case VERFILE_STAIDX:
-				memset(g_MapList.m_maps, false, sizeof(g_MapList.m_maps));
-				break;
-			case VERFILE_VERDATA:
-				continue;
+				case VERFILE_MAP:						//	map #0 is permanent and should exist!
+				case VERFILE_STATICS:
+				case VERFILE_STAIDX:
+					memset(g_MapList.m_maps, false, sizeof(g_MapList.m_maps));
+					break;
+				case VERFILE_VERDATA:
+					continue;
 			}
 			break;
 		}

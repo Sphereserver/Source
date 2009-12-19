@@ -298,6 +298,9 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 		case CONNECT_HTTP:
 			const_cast <CClient*>(this)->m_Targ_Text = pszMsg;
 			return;
+
+		default:
+			return;
 	}
 }
 
@@ -328,6 +331,7 @@ void CClient::Announce( bool fArrive ) const
 				break;
 			default:
 				zTitle = "GM";
+				break;
 		}
 
 		sprintf(zMsg, "@231 STAFF: %s %s logged %s.", zTitle, m_pChar->GetName(), ( fArrive ? "in" : "out" ));

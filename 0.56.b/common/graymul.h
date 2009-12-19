@@ -2196,8 +2196,8 @@ struct CUOMapMeter	// 3 bytes (map0.mul)
 	{
 		switch ( wTerrainIndex )
 		{
-		case 0x244: //580
-			return true;
+			case 0x244: //580
+				return true;
 		}
 		return false;
 	}

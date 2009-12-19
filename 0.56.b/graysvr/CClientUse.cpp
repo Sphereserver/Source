@@ -1020,58 +1020,61 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	LPCTSTR pPrompt = g_Cfg.GetDefaultMsg( DEFMSG_SELECT_MAGIC_TARGET );
 	switch ( iSpell )
 	{
-	case SPELL_Recall:
-		// pPrompt = g_Cfg.GetDefaultMsg( "Select rune to recall from." );
-		break;
-	case SPELL_Blade_Spirit:
-		// pPrompt = sm_Txt_Summon;
-		break;
-	case SPELL_Summon:
-		{
-			CScriptTriggerArgs args("sm_summon");
-			if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
-			return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_summon" ) );
-		}
-	case SPELL_Mark:
-		// pPrompt = "Select rune to mark.";
-		break;
-	case SPELL_Gate_Travel:	// gate travel
-		// pPrompt = "Select rune to gate from.";
-		break;
-	case SPELL_Polymorph:
-		// polymorph creature menu.
-		{
-			if ( IsPriv(PRIV_GM))
+		case SPELL_Recall:
+			// pPrompt = g_Cfg.GetDefaultMsg( "Select rune to recall from." );
+			break;
+		case SPELL_Blade_Spirit:
+			// pPrompt = sm_Txt_Summon;
+			break;
+		case SPELL_Summon:
 			{
-				// pPrompt = "Select creature to polymorph.";
-				break;
+				CScriptTriggerArgs args("sm_summon");
+				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_summon" ) );
 			}
-			CScriptTriggerArgs args("sm_polymorph");
-			if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
-			return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
-		}
-	case SPELL_Resurrection:
-		// pPrompt = "Select ghost to resurrect.";
-		break;
-	case SPELL_Vortex:
-	case SPELL_Air_Elem:
-	case SPELL_Daemon:
-	case SPELL_Earth_Elem:
-	case SPELL_Fire_Elem:
-	case SPELL_Water_Elem:
-		// pPrompt = sm_Txt_Summon;
-		break;
+		case SPELL_Mark:
+			// pPrompt = "Select rune to mark.";
+			break;
+		case SPELL_Gate_Travel:	// gate travel
+			// pPrompt = "Select rune to gate from.";
+			break;
+		case SPELL_Polymorph:
+			// polymorph creature menu.
+			{
+				if ( IsPriv(PRIV_GM))
+				{
+					// pPrompt = "Select creature to polymorph.";
+					break;
+				}
+				CScriptTriggerArgs args("sm_polymorph");
+				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
+			}
+		case SPELL_Resurrection:
+			// pPrompt = "Select ghost to resurrect.";
+			break;
+		case SPELL_Vortex:
+		case SPELL_Air_Elem:
+		case SPELL_Daemon:
+		case SPELL_Earth_Elem:
+		case SPELL_Fire_Elem:
+		case SPELL_Water_Elem:
+			// pPrompt = sm_Txt_Summon;
+			break;
 
-		// Necro spells
-	case SPELL_Summon_Undead: // Summon an undead
-		// pPrompt = sm_Txt_Summon;
-		break;
-	case SPELL_Animate_Dead: // Corpse to zombie
-		// pPrompt = "Choose a corpse";
-		break;
-	case SPELL_Bone_Armor: // Skeleton corpse to bone armor
-		// pPrompt = "Chose a skeleton";
-		break;
+			// Necro spells
+		case SPELL_Summon_Undead: // Summon an undead
+			// pPrompt = sm_Txt_Summon;
+			break;
+		case SPELL_Animate_Dead: // Corpse to zombie
+			// pPrompt = "Choose a corpse";
+			break;
+		case SPELL_Bone_Armor: // Skeleton corpse to bone armor
+			// pPrompt = "Chose a skeleton";
+			break;
+
+		default:
+			break;
 	}
 
 	if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )

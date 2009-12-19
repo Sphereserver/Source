@@ -13,91 +13,93 @@ CREID_TYPE CChar::NPC_GetAllyGroupType(CREID_TYPE idTest)	// static
 	ADDTOCALLSTACK("CChar::NPC_GetAllyGroupType");
 	switch ( idTest )
 	{
-	case CREID_MAN:
-	case CREID_WOMAN:
-	case CREID_GHOSTMAN:
-	case CREID_GHOSTWOMAN:
-		return( CREID_MAN );
-	case CREID_ELFMAN:
-	case CREID_ELFWOMAN:
-	case CREID_ELFGHOSTMAN:
-	case CREID_ELFGHOSTWOMAN:
-		return( CREID_ELFMAN );
-	case CREID_GARGMAN:
-	case CREID_GARGWOMAN:
-	case CREID_GARGGHOSTMAN:
-	case CREID_GARGGHOSTWOMAN:
-		return( CREID_GARGMAN );
-	case CREID_ETTIN:
-	case CREID_ETTIN_AXE:
-		return( CREID_ETTIN );
-	case CREID_ORC_LORD:
-	case CREID_ORC:
-	case CREID_ORC_CLUB:
-		return( CREID_ORC );
-	case CREID_DAEMON:
-	case CREID_DAEMON_SWORD:
-		return( CREID_DAEMON );
-	case CREID_DRAGON_GREY:
-	case CREID_DRAGON_RED:
-	case CREID_DRAKE_GREY:
-	case CREID_DRAKE_RED:
-		return( CREID_DRAGON_GREY );
-	case CREID_LIZMAN:
-	case CREID_LIZMAN_SPEAR:
-	case CREID_LIZMAN_MACE:
-		return( CREID_LIZMAN );
-	case CREID_RATMAN:
-	case CREID_RATMAN_CLUB:
-	case CREID_RATMAN_SWORD:
-		return( CREID_RATMAN );
-	case CREID_SKELETON:
-	case CREID_SKEL_AXE:
-	case CREID_SKEL_SW_SH:
-		return( CREID_SKELETON );
-	case CREID_TROLL_SWORD:
-	case CREID_TROLL:
-	case CREID_TROLL_MACE:
-		return( CREID_TROLL );
-	case CREID_Tera_Warrior:
-	case CREID_Tera_Drone:
-	case CREID_Tera_Matriarch:
-		return( CREID_Tera_Drone );
-	case CREID_Ophid_Mage:
-	case CREID_Ophid_Warrior:
-	case CREID_Ophid_Queen:
-		return( CREID_Ophid_Warrior );
-	case CREID_HORSE1:
-	case CREID_HORSE4:
-	case CREID_HORSE2:
-	case CREID_HORSE3:
-	case CREID_HORSE_PACK:
-		return( CREID_HORSE1 );
-	case CREID_BrownBear:
-	case CREID_GrizzlyBear:
-	case CREID_PolarBear:
-		return( CREID_BrownBear );
-	case CREID_Cow_BW:
-	case CREID_Cow2:
-	case CREID_Bull_Brown:
-	case CREID_Bull2:
-		return( CREID_Bull_Brown );
-	case CREID_Ostard_Desert:
-	case CREID_Ostard_Frenz:
-	case CREID_Ostard_Forest:
-		return( CREID_Ostard_Forest );
-	case CREID_Sheep:
-	case CREID_Sheep_Sheered:
-		return( CREID_Sheep );
-	case CREID_Hart:
-	case CREID_Deer:
-		return( CREID_Deer );
-	case CREID_Pig:
-	case CREID_Boar:
-		return( CREID_Pig );
-	case CREID_Llama:
-	case CREID_LLAMA_PACK:
-		return( CREID_Llama );
+		case CREID_MAN:
+		case CREID_WOMAN:
+		case CREID_GHOSTMAN:
+		case CREID_GHOSTWOMAN:
+			return( CREID_MAN );
+		case CREID_ELFMAN:
+		case CREID_ELFWOMAN:
+		case CREID_ELFGHOSTMAN:
+		case CREID_ELFGHOSTWOMAN:
+			return( CREID_ELFMAN );
+		case CREID_GARGMAN:
+		case CREID_GARGWOMAN:
+		case CREID_GARGGHOSTMAN:
+		case CREID_GARGGHOSTWOMAN:
+			return( CREID_GARGMAN );
+		case CREID_ETTIN:
+		case CREID_ETTIN_AXE:
+			return( CREID_ETTIN );
+		case CREID_ORC_LORD:
+		case CREID_ORC:
+		case CREID_ORC_CLUB:
+			return( CREID_ORC );
+		case CREID_DAEMON:
+		case CREID_DAEMON_SWORD:
+			return( CREID_DAEMON );
+		case CREID_DRAGON_GREY:
+		case CREID_DRAGON_RED:
+		case CREID_DRAKE_GREY:
+		case CREID_DRAKE_RED:
+			return( CREID_DRAGON_GREY );
+		case CREID_LIZMAN:
+		case CREID_LIZMAN_SPEAR:
+		case CREID_LIZMAN_MACE:
+			return( CREID_LIZMAN );
+		case CREID_RATMAN:
+		case CREID_RATMAN_CLUB:
+		case CREID_RATMAN_SWORD:
+			return( CREID_RATMAN );
+		case CREID_SKELETON:
+		case CREID_SKEL_AXE:
+		case CREID_SKEL_SW_SH:
+			return( CREID_SKELETON );
+		case CREID_TROLL_SWORD:
+		case CREID_TROLL:
+		case CREID_TROLL_MACE:
+			return( CREID_TROLL );
+		case CREID_Tera_Warrior:
+		case CREID_Tera_Drone:
+		case CREID_Tera_Matriarch:
+			return( CREID_Tera_Drone );
+		case CREID_Ophid_Mage:
+		case CREID_Ophid_Warrior:
+		case CREID_Ophid_Queen:
+			return( CREID_Ophid_Warrior );
+		case CREID_HORSE1:
+		case CREID_HORSE4:
+		case CREID_HORSE2:
+		case CREID_HORSE3:
+		case CREID_HORSE_PACK:
+			return( CREID_HORSE1 );
+		case CREID_BrownBear:
+		case CREID_GrizzlyBear:
+		case CREID_PolarBear:
+			return( CREID_BrownBear );
+		case CREID_Cow_BW:
+		case CREID_Cow2:
+		case CREID_Bull_Brown:
+		case CREID_Bull2:
+			return( CREID_Bull_Brown );
+		case CREID_Ostard_Desert:
+		case CREID_Ostard_Frenz:
+		case CREID_Ostard_Forest:
+			return( CREID_Ostard_Forest );
+		case CREID_Sheep:
+		case CREID_Sheep_Sheered:
+			return( CREID_Sheep );
+		case CREID_Hart:
+		case CREID_Deer:
+			return( CREID_Deer );
+		case CREID_Pig:
+		case CREID_Boar:
+			return( CREID_Pig );
+		case CREID_Llama:
+		case CREID_LLAMA_PACK:
+			return( CREID_Llama );
+		default:
+			return( idTest );
 	}
 	return( idTest );
 }
@@ -435,44 +437,46 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 
 		switch ( pItem->GetType() )
 		{
-		case IT_SHRINE:
-			// always avoid.
-			return( false );
+			case IT_SHRINE:
+				// always avoid.
+				return( false );
 
-		case IT_WEB:
-			if ( GetDispID() == CREID_GIANT_SPIDER )
-				continue;
-			iIntToAvoid = 80;
-			fAvoid = true;
-			break;
-		case IT_FIRE: // fire object hurts us ?
-			if ( pCharDef->Can(CAN_C_FIRE_IMMUNE))	// i like fire.
-				continue;
-			iIntToAvoid = 20;	// most creatures recognize fire as bad.
-			fAvoid = true;
-			break;
-		case IT_SPELL:
-			switch ( pItem->m_itSpell.m_spell )
-			{
-			case SPELL_Fire_Field:		iIntToAvoid = 100;		break;
-			case SPELL_Poison_Field:	iIntToAvoid = 100;		break;
-			case SPELL_Paralyze_Field:	iIntToAvoid = 100;		break;
-			default:					iIntToAvoid = 150;		break;
-			}	
-			fAvoid = true;
-			break;
-		case IT_TRAP:
-			iIntToAvoid = 150;
-			fAvoid = true;
-			break;
-		case IT_TRAP_ACTIVE:
-			iIntToAvoid = 50;
-			fAvoid = true;
-			break;
-		case IT_MOONGATE:
-		case IT_TELEPAD:
-			fAvoid = true;
-			break;
+			case IT_WEB:
+				if ( GetDispID() == CREID_GIANT_SPIDER )
+					continue;
+				iIntToAvoid = 80;
+				fAvoid = true;
+				break;
+			case IT_FIRE: // fire object hurts us ?
+				if ( pCharDef->Can(CAN_C_FIRE_IMMUNE))	// i like fire.
+					continue;
+				iIntToAvoid = 20;	// most creatures recognize fire as bad.
+				fAvoid = true;
+				break;
+			case IT_SPELL:
+				switch ( pItem->m_itSpell.m_spell )
+				{
+					case SPELL_Fire_Field:		iIntToAvoid = 100;		break;
+					case SPELL_Poison_Field:	iIntToAvoid = 100;		break;
+					case SPELL_Paralyze_Field:	iIntToAvoid = 100;		break;
+					default:					iIntToAvoid = 150;		break;
+				}	
+				fAvoid = true;
+				break;
+			case IT_TRAP:
+				iIntToAvoid = 150;
+				fAvoid = true;
+				break;
+			case IT_TRAP_ACTIVE:
+				iIntToAvoid = 50;
+				fAvoid = true;
+				break;
+			case IT_MOONGATE:
+			case IT_TELEPAD:
+				fAvoid = true;
+				break;
+			default:
+				break;
 		}
 	}
 	if ( fAvoid )

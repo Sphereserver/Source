@@ -804,14 +804,14 @@ void Str_MakeUnFiltered( TCHAR * pStrOut, LPCTSTR pStrIn, int iSizeMax )
 		TCHAR ch = pStrIn[iIn];
 		switch ( ch )
 		{
-		case '\b': ch = 'b'; break;
-		case '\n': ch = 'n'; break;
-		case '\r': ch = 'r'; break;
-		case '\t': ch = 't'; break;
-		case '\\': ch = '\\'; break;
-		default:
-			pStrOut[iOut] = ch;
-			continue;
+			case '\b': ch = 'b'; break;
+			case '\n': ch = 'n'; break;
+			case '\r': ch = 'r'; break;
+			case '\t': ch = 't'; break;
+			case '\\': ch = '\\'; break;
+			default:
+				pStrOut[iOut] = ch;
+				continue;
 		}
 
 		pStrOut[iOut++] = '\\';

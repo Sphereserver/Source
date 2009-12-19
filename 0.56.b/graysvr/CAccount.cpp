@@ -420,6 +420,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 					pSrc->SysMessage( sm_pszCmds[i] );
 			}
 			return true;
+
 		case VACS_JAILED:
 			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_JAILED);
 
@@ -429,6 +430,9 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 
 		case VACS_UNUSED:
 			return Cmd_ListUnused( pSrc, ppCmd[1], ppCmd[2], ppCmd[3] );
+
+		default:
+			break;
 	}
 
 	// Must be a valid account ?
@@ -1479,6 +1483,9 @@ bool CAccount::r_Verb( CScript &s, CTextConsole * pSrc )
 		case AV_TAGLIST:
 			m_TagDefs.DumpKeys( pSrc, "TAG." );
 			return( true );
+
+		default:
+			break;
 	}
 	EXC_CATCH;
 

@@ -360,117 +360,120 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 
 	switch ( iCmd )
 	{
-	case PC_GO:
-		// Go to the location x,y
-		if ( ! pt.IsValidPoint())
+		case PC_GO:
+			// Go to the location x,y
+			if ( ! pt.IsValidPoint())
+				break;
+			m_Act_p = pt;
+			fSuccess = Skill_Start( NPCACT_GOTO );
 			break;
-		m_Act_p = pt;
-		fSuccess = Skill_Start( NPCACT_GOTO );
-		break;
 
-	case PC_GUARD:
-		if ( pItemTarg == NULL )
+		case PC_GUARD:
+			if ( pItemTarg == NULL )
+				break;
+			m_Act_Targ = pItemTarg->GetUID();
+			fSuccess = Skill_Start( NPCACT_GUARD_TARG );
 			break;
-		m_Act_Targ = pItemTarg->GetUID();
-		fSuccess = Skill_Start( NPCACT_GUARD_TARG );
-		break;
-	case PC_TRANSFER:
-		// transfer ownership via the transfer command.
-		if ( pCharTarg == NULL )
-			break;
-		if ( pCharTarg->IsClient() )
-		{
-#ifdef _ALPHASPHERE_PETS
-			if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+		case PC_TRANSFER:
+			// transfer ownership via the transfer command.
+			if ( pCharTarg == NULL )
+				break;
+			if ( pCharTarg->IsClient() )
 			{
+	#ifdef _ALPHASPHERE_PETS
+				if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+				{
 
-				CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
-				unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
-				// transferrer is pSrc
-				// transferree is pCharTarg
-				if ((iFollowerSlotsNeeded + pCharTarg->m_pPlayer->m_curFollower) > pCharTarg->m_pPlayer->m_maxFollower )
-				{
-					SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TRANSFER_NO_SLOTS_FREE) );
-					break;
-				}
-		  		pCharTarg->m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
-				// send an update packet for the stats
-				CClient * pClient = pCharTarg->GetClient();
-				if (pClient)
-					pClient->addCharStatWindow( this->GetUID() );
+					CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
+					unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
+					// transferrer is pSrc
+					// transferree is pCharTarg
+					if ((iFollowerSlotsNeeded + pCharTarg->m_pPlayer->m_curFollower) > pCharTarg->m_pPlayer->m_maxFollower )
+					{
+						SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TRANSFER_NO_SLOTS_FREE) );
+						break;
+					}
+		  			pCharTarg->m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
+					// send an update packet for the stats
+					CClient * pClient = pCharTarg->GetClient();
+					if (pClient)
+						pClient->addCharStatWindow( this->GetUID() );
 
-				// free a follower slot at the transferrer
-				if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
-				{
-		  			pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
-				} else
-				{
-					pSrc->m_pPlayer->m_curFollower = 0;
+					// free a follower slot at the transferrer
+					if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
+					{
+		  				pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
+					} else
+					{
+						pSrc->m_pPlayer->m_curFollower = 0;
+					}
+					pClient = pSrc->GetClient();
+					if (pClient)
+						pClient->addCharStatWindow( this->GetUID() );
 				}
-				pClient = pSrc->GetClient();
-				if (pClient)
-					pClient->addCharStatWindow( this->GetUID() );
+	#endif
+				fSuccess = NPC_PetSetOwner( pCharTarg );
 			}
-#endif
-			fSuccess = NPC_PetSetOwner( pCharTarg );
-		}
-		break;
-
-	case PC_KILL:
-	case PC_ATTACK:
-		// Attack the target.
-		if ( pCharTarg == NULL )
-			break;
-		// refuse to attack friends.
-		if ( NPC_IsOwnedBy( pCharTarg, true ))
-		{
-			fSuccess = false;	// take no commands
-			break;
-		}
-		fSuccess = pCharTarg->OnAttackedBy( pSrc, 1, true );	// we know who told them to do this.
-		if ( fSuccess )
-		{
-			fSuccess = Fight_Attack( pCharTarg );
-		}
-		break;
-
-	case PC_FOLLOW:
-		if ( pCharTarg == NULL )
-			break;
-		m_Act_Targ = pCharTarg->GetUID();
-		fSuccess = Skill_Start( NPCACT_FOLLOW_TARG );
-		break;
-	case PC_FRIEND:
-		// Not the same as owner,
-		if ( pCharTarg == NULL )
-			break;
-		Memory_AddObjTypes( pCharTarg, MEMORY_FRIEND );
-		break;
-
-	case PC_PRICE:	// "PRICE" the vendor item.
-		if ( pItemTarg == NULL )
-			break;
-		if ( ! NPC_IsVendor())
 			break;
 
-		// did they name a price
-		if ( IsDigit( pszArgs[0] ))
-		{
-			return NPC_SetVendorPrice( pItemTarg, ATOI(pszArgs) );
-		}
-
-		// test if it is pricable.
-		if ( ! NPC_SetVendorPrice( pItemTarg, -1 ))
-		{
-			return false;
-		}
-
-		// Now set it's price.
-		if ( ! pSrc->IsClient())
+		case PC_KILL:
+		case PC_ATTACK:
+			// Attack the target.
+			if ( pCharTarg == NULL )
+				break;
+			// refuse to attack friends.
+			if ( NPC_IsOwnedBy( pCharTarg, true ))
+			{
+				fSuccess = false;	// take no commands
+				break;
+			}
+			fSuccess = pCharTarg->OnAttackedBy( pSrc, 1, true );	// we know who told them to do this.
+			if ( fSuccess )
+			{
+				fSuccess = Fight_Attack( pCharTarg );
+			}
 			break;
-		
-		pSrc->m_pClient->addPromptConsole( CLIMODE_PROMPT_VENDOR_PRICE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_SETPRICE_2 ), pItemTarg->GetUID(), GetUID() );
-		return( true );
+
+		case PC_FOLLOW:
+			if ( pCharTarg == NULL )
+				break;
+			m_Act_Targ = pCharTarg->GetUID();
+			fSuccess = Skill_Start( NPCACT_FOLLOW_TARG );
+			break;
+		case PC_FRIEND:
+			// Not the same as owner,
+			if ( pCharTarg == NULL )
+				break;
+			Memory_AddObjTypes( pCharTarg, MEMORY_FRIEND );
+			break;
+
+		case PC_PRICE:	// "PRICE" the vendor item.
+			if ( pItemTarg == NULL )
+				break;
+			if ( ! NPC_IsVendor())
+				break;
+
+			// did they name a price
+			if ( IsDigit( pszArgs[0] ))
+			{
+				return NPC_SetVendorPrice( pItemTarg, ATOI(pszArgs) );
+			}
+
+			// test if it is pricable.
+			if ( ! NPC_SetVendorPrice( pItemTarg, -1 ))
+			{
+				return false;
+			}
+
+			// Now set it's price.
+			if ( ! pSrc->IsClient())
+				break;
+			
+			pSrc->m_pClient->addPromptConsole( CLIMODE_PROMPT_VENDOR_PRICE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_SETPRICE_2 ), pItemTarg->GetUID(), GetUID() );
+			return( true );
+
+		default:
+			break;
 	}
 
 	// Make the yes/no noise.

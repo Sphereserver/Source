@@ -615,6 +615,9 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						}
 					}
 				} break;
+
+				default:
+					break;
 			}
 
 			pArgs = pArgsNext;

@@ -487,213 +487,216 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 	switch ( spell )
 	{
-	case SPELL_Clumsy:
-		Stat_AddMod(STAT_DEX, iStatEffect);
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_CLUMSY);
-		}
-		break;
-	case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
-	case SPELL_Stone:
-		StatFlag_Clear( STATF_Stone );
-		UpdateModeFlag();
-		break;
-	case SPELL_Hallucination:
-		StatFlag_Clear( STATF_Hallucinating );
-		if ( IsClient() )
-		{
-			m_pClient->addReSync();
-		}
-		UpdateModeFlag();
-	case SPELL_Feeblemind:
-		Stat_AddMod( STAT_INT, iStatEffect );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_FEEBLEMIND);
-		}
-		break;
-	case SPELL_Weaken:
-		Stat_AddMod( STAT_STR, iStatEffect );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_WEAKEN);
-		}
-
-		UpdateHitsFlag();
-		break;
-	case SPELL_Curse:
-		{
-			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
-				Stat_AddMod( (STAT_TYPE) i, iStatEffect );
+		case SPELL_Clumsy:
+			Stat_AddMod(STAT_DEX, iStatEffect);
 			if (IsClient()) {
-				GetClient()->removeBuff(BI_CURSE);
+				GetClient()->removeBuff(BI_CLUMSY);
+			}
+			break;
+		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
+		case SPELL_Stone:
+			StatFlag_Clear( STATF_Stone );
+			UpdateModeFlag();
+			break;
+		case SPELL_Hallucination:
+			StatFlag_Clear( STATF_Hallucinating );
+			if ( IsClient() )
+			{
+				m_pClient->addReSync();
+			}
+			UpdateModeFlag();
+		case SPELL_Feeblemind:
+			Stat_AddMod( STAT_INT, iStatEffect );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_FEEBLEMIND);
+			}
+			break;
+		case SPELL_Weaken:
+			Stat_AddMod( STAT_STR, iStatEffect );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_WEAKEN);
 			}
 
 			UpdateHitsFlag();
-		}
-		break;
-	case SPELL_Agility:
-		Stat_AddMod( STAT_DEX, -iStatEffect );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_AGILITY);
-		}
-		break;
-	case SPELL_Cunning:
-		Stat_AddMod( STAT_INT, -iStatEffect );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_CUNNING);
-		}
-		break;
-	case SPELL_Strength:
-		Stat_AddMod( STAT_STR, -iStatEffect );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_STRENGTH);
-		}
+			break;
+		case SPELL_Curse:
+			{
+				for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
+					Stat_AddMod( (STAT_TYPE) i, iStatEffect );
+				if (IsClient()) {
+					GetClient()->removeBuff(BI_CURSE);
+				}
 
-		UpdateHitsFlag();
-		break;
-	case SPELL_Bless:
-		{
-			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
-				Stat_AddMod( (STAT_TYPE) i, -iStatEffect );
+				UpdateHitsFlag();
+			}
+			break;
+		case SPELL_Agility:
+			Stat_AddMod( STAT_DEX, -iStatEffect );
 			if (IsClient()) {
-				GetClient()->removeBuff(BI_BLESS);
+				GetClient()->removeBuff(BI_AGILITY);
+			}
+			break;
+		case SPELL_Cunning:
+			Stat_AddMod( STAT_INT, -iStatEffect );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_CUNNING);
+			}
+			break;
+		case SPELL_Strength:
+			Stat_AddMod( STAT_STR, -iStatEffect );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_STRENGTH);
 			}
 
 			UpdateHitsFlag();
-		}
-		break;
+			break;
+		case SPELL_Bless:
+			{
+				for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
+					Stat_AddMod( (STAT_TYPE) i, -iStatEffect );
+				if (IsClient()) {
+					GetClient()->removeBuff(BI_BLESS);
+				}
 
-	case SPELL_Ale:		// 90 = drunkeness ?
-	case SPELL_Wine:	// 91 = mild drunkeness ?
-	case SPELL_Liquor:	// 92 = extreme drunkeness ?
-		{
-			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
-				Stat_AddMod( (STAT_TYPE) i, iStatEffect );
-
-			UpdateHitsFlag();
-		}
-		break;
-
-	case SPELL_Reactive_Armor:
-		StatFlag_Clear( STATF_Reactive );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_REACTIVEARMOR);
-		}
-		return;
-	case SPELL_Night_Sight:
-		StatFlag_Clear( STATF_NightSight );
-		if ( IsClient())
-		{
-			m_pClient->addLight();
-			if (IsSetOF(OF_Buffs)) {
-				GetClient()->removeBuff(BI_NIGHTSIGHT);
+				UpdateHitsFlag();
 			}
-		}
+			break;
 
-		return;
-	case SPELL_Magic_Reflect:
-		StatFlag_Clear( STATF_Reflection );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_MAGICREFLECTION);
-		}
-		return;
-	case SPELL_Poison:
-	case SPELL_Poison_Field:
-		StatFlag_Clear( STATF_Poisoned );
-		UpdateModeFlag();
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_POISON);
-		}
-		break;
-	case SPELL_Arch_Prot:
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_ARCHPROTECTION);
-		}
-		m_defense = CalcArmorDefense();
-		break;
-	case SPELL_Protection:
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_PROTECTION);
-		}
-	case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
-	case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-		m_defense = CalcArmorDefense();
-		break;
-	case SPELL_Incognito:
-		StatFlag_Clear( STATF_Incognito );
-		SetName( pSpell->GetName());	// restore your name
-		if ( ! IsStatFlag( STATF_Polymorph ))
-		{
-			SetHue( m_prev_Hue );
-		}
-		pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
-		ResendTooltip();
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_INCOGNITO);
-		}
-		break;
-	case SPELL_Invis:
-		Reveal(STATF_Invisible);
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_INVISIBILITY);
-		}
-		return;
-	case SPELL_Paralyze:
-	case SPELL_Paralyze_Field:
-		StatFlag_Clear( STATF_Freeze );
-		if (IsClient()) {
-			GetClient()->removeBuff(BI_PARALYZE);
-		}
-		UpdateModeFlag();
-		return;
+		case SPELL_Ale:		// 90 = drunkeness ?
+		case SPELL_Wine:	// 91 = mild drunkeness ?
+		case SPELL_Liquor:	// 92 = extreme drunkeness ?
+			{
+				for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
+					Stat_AddMod( (STAT_TYPE) i, iStatEffect );
 
+				UpdateHitsFlag();
+			}
+			break;
 
-	case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-		break;
-	case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-	case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-	case SPELL_Polymorph:
-		{
-			//  m_prev_id != GetID()
-			// poly back to orig form.
-			SetID( m_prev_id );
-			// set back to original stats as well.
-			Stat_AddMod( STAT_STR, -pSpell->m_itSpell.m_PolyStr );
-			Stat_AddMod( STAT_DEX, -pSpell->m_itSpell.m_PolyDex );
-			Stat_SetVal(STAT_STR,  minimum( Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR) ));
-			Stat_SetVal(STAT_DEX,  minimum( Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX) ));
-			Update();
-			StatFlag_Clear( STATF_Polymorph );
+		case SPELL_Reactive_Armor:
+			StatFlag_Clear( STATF_Reactive );
 			if (IsClient()) {
-				GetClient()->removeBuff(BI_POLYMORPH);
+				GetClient()->removeBuff(BI_REACTIVEARMOR);
 			}
-		}
-		return;
-	case SPELL_Summon:
-		// Delete the creature completely.
-		// ?? Drop anything it might have had ?
-		if ( ! g_Serv.IsLoading())
-		{
-			const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
-			ASSERT(pSpellDef);
-
-			CItem * pEffect = CItem::CreateBase( ITEMID_FX_TELE_VANISH );
-			ASSERT(pEffect);
-			pEffect->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY); // why is this movable ?
-			pEffect->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
-			pEffect->Sound( pSpellDef->m_sound  );
-		}
-		if ( m_pPlayer )	// summoned players ? thats odd.
 			return;
-		Delete();
-		return;
-		break;
+		case SPELL_Night_Sight:
+			StatFlag_Clear( STATF_NightSight );
+			if ( IsClient())
+			{
+				m_pClient->addLight();
+				if (IsSetOF(OF_Buffs)) {
+					GetClient()->removeBuff(BI_NIGHTSIGHT);
+				}
+			}
 
-	case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
-		Skill_SetBase( SKILL_MEDITATION, Skill_GetBase( SKILL_MEDITATION ) - iStatEffect );
-		break;
+			return;
+		case SPELL_Magic_Reflect:
+			StatFlag_Clear( STATF_Reflection );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_MAGICREFLECTION);
+			}
+			return;
+		case SPELL_Poison:
+		case SPELL_Poison_Field:
+			StatFlag_Clear( STATF_Poisoned );
+			UpdateModeFlag();
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_POISON);
+			}
+			break;
+		case SPELL_Arch_Prot:
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_ARCHPROTECTION);
+			}
+			m_defense = CalcArmorDefense();
+			break;
+		case SPELL_Protection:
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_PROTECTION);
+			}
+		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
+		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
+			m_defense = CalcArmorDefense();
+			break;
+		case SPELL_Incognito:
+			StatFlag_Clear( STATF_Incognito );
+			SetName( pSpell->GetName());	// restore your name
+			if ( ! IsStatFlag( STATF_Polymorph ))
+			{
+				SetHue( m_prev_Hue );
+			}
+			pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
+			ResendTooltip();
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_INCOGNITO);
+			}
+			break;
+		case SPELL_Invis:
+			Reveal(STATF_Invisible);
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_INVISIBILITY);
+			}
+			return;
+		case SPELL_Paralyze:
+		case SPELL_Paralyze_Field:
+			StatFlag_Clear( STATF_Freeze );
+			if (IsClient()) {
+				GetClient()->removeBuff(BI_PARALYZE);
+			}
+			UpdateModeFlag();
+			return;
 
-	case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-		break;
+
+		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
+			break;
+		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+		case SPELL_Polymorph:
+			{
+				//  m_prev_id != GetID()
+				// poly back to orig form.
+				SetID( m_prev_id );
+				// set back to original stats as well.
+				Stat_AddMod( STAT_STR, -pSpell->m_itSpell.m_PolyStr );
+				Stat_AddMod( STAT_DEX, -pSpell->m_itSpell.m_PolyDex );
+				Stat_SetVal(STAT_STR,  minimum( Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR) ));
+				Stat_SetVal(STAT_DEX,  minimum( Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX) ));
+				Update();
+				StatFlag_Clear( STATF_Polymorph );
+				if (IsClient()) {
+					GetClient()->removeBuff(BI_POLYMORPH);
+				}
+			}
+			return;
+		case SPELL_Summon:
+			// Delete the creature completely.
+			// ?? Drop anything it might have had ?
+			if ( ! g_Serv.IsLoading())
+			{
+				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
+				ASSERT(pSpellDef);
+
+				CItem * pEffect = CItem::CreateBase( ITEMID_FX_TELE_VANISH );
+				ASSERT(pEffect);
+				pEffect->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY); // why is this movable ?
+				pEffect->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
+				pEffect->Sound( pSpellDef->m_sound  );
+			}
+			if ( m_pPlayer )	// summoned players ? thats odd.
+				return;
+			Delete();
+			return;
+			break;
+
+		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
+			Skill_SetBase( SKILL_MEDITATION, Skill_GetBase( SKILL_MEDITATION ) - iStatEffect );
+			break;
+
+		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
+			break;
+
+		default:
+			return;
 	}
 	UpdateStatsFlag();
 }
@@ -2304,11 +2307,14 @@ bool CChar::Spell_CastDone()
 		ASSERT( pChar );
 		switch ( pChar->Noto_GetFlag( this, false ))
 		{
-		case NOTO_CRIMINAL:
-		case NOTO_GUILD_WAR:
-		case NOTO_EVIL:
-			Noto_Criminal();
-			break;
+			case NOTO_CRIMINAL:
+			case NOTO_GUILD_WAR:
+			case NOTO_EVIL:
+				Noto_Criminal();
+				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -2519,6 +2525,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	{
 		case TRIGRET_RET_TRUE:	return( false );
 		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		default:				break;
 	}
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -2534,6 +2541,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	{
 		case TRIGRET_RET_TRUE:	return( false );
 		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		default:				break;
 	}
 
 
@@ -2548,18 +2556,20 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	bool fResistAttempt = true;
 	switch ( spell )	// just strengthen the effect.
 	{
-	case SPELL_Poison:
-	case SPELL_Poison_Field:
-		if ( IsStatFlag(STATF_Poisoned))
-		{
-			fResistAttempt = false;
-		}	// no further effect. don't count resist effect.
-		break;
-	case SPELL_Paralyze_Field:
-	case SPELL_Paralyze:
-		if ( IsStatFlag(STATF_Freeze))
-			return false;	// no further effect.
-		break;
+		case SPELL_Poison:
+		case SPELL_Poison_Field:
+			if ( IsStatFlag(STATF_Poisoned))
+			{
+				fResistAttempt = false;
+			}	// no further effect. don't count resist effect.
+			break;
+		case SPELL_Paralyze_Field:
+		case SPELL_Paralyze:
+			if ( IsStatFlag(STATF_Freeze))
+				return false;	// no further effect.
+			break;
+		default:
+			break;
 	}
 
 	bool fPotion = ( pSourceItem != NULL && pSourceItem->IsType( IT_POTION ));

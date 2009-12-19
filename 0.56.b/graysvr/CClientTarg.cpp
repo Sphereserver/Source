@@ -165,10 +165,13 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 			continue;
 		switch ( pItem->GetEquipLayer())
 		{
-		case LAYER_BEARD:
-		case LAYER_HAIR:
-		case LAYER_PACK:
-			continue;
+			case LAYER_BEARD:
+			case LAYER_HAIR:
+			case LAYER_PACK:
+				continue;
+
+			default:
+				break;
 		}
 		pChar2->LayerAdd( pItem );	// add content
 	}
@@ -1010,34 +1013,34 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 
 	switch ( pItem->GetType() )
 	{
-	case IT_ARMOR:				// some type of armor. (no real action)
-	case IT_SHIELD:
-	case IT_ARMOR_LEATHER:
-	case IT_CLOTHING:
-	case IT_JEWELRY:
-		fWeapon = false;
-		iHitsCur = pItem->m_itArmor.m_Hits_Cur;
-		iHitsMax = pItem->m_itArmor.m_Hits_Max;
-		len += sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF ), pItem->Armor_GetDefense());
-		break;
-	case IT_WEAPON_MACE_CROOK:
-	case IT_WEAPON_MACE_PICK:
-	case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-	case IT_WEAPON_MACE_STAFF:
-	case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-	case IT_WEAPON_SWORD:
-	case IT_WEAPON_AXE:
-	case IT_WEAPON_FENCE:
-	case IT_WEAPON_BOW:
-	case IT_WEAPON_XBOW:
-		fWeapon = true;
-		iHitsCur = pItem->m_itWeapon.m_Hits_Cur;
-		iHitsMax = pItem->m_itWeapon.m_Hits_Max;
-		len += sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM ), pItem->Weapon_GetAttack());
-		break;
-	default:
-		SysMessageDefault( DEFMSG_ARMSLORE_UNABLE );
-		return( -SKTRIG_QTY );
+		case IT_ARMOR:				// some type of armor. (no real action)
+		case IT_SHIELD:
+		case IT_ARMOR_LEATHER:
+		case IT_CLOTHING:
+		case IT_JEWELRY:
+			fWeapon = false;
+			iHitsCur = pItem->m_itArmor.m_Hits_Cur;
+			iHitsMax = pItem->m_itArmor.m_Hits_Max;
+			len += sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF ), pItem->Armor_GetDefense());
+			break;
+		case IT_WEAPON_MACE_CROOK:
+		case IT_WEAPON_MACE_PICK:
+		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+		case IT_WEAPON_MACE_STAFF:
+		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+		case IT_WEAPON_SWORD:
+		case IT_WEAPON_AXE:
+		case IT_WEAPON_FENCE:
+		case IT_WEAPON_BOW:
+		case IT_WEAPON_XBOW:
+			fWeapon = true;
+			iHitsCur = pItem->m_itWeapon.m_Hits_Cur;
+			iHitsMax = pItem->m_itWeapon.m_Hits_Max;
+			len += sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM ), pItem->Weapon_GetAttack());
+			break;
+		default:
+			SysMessageDefault( DEFMSG_ARMSLORE_UNABLE );
+			return( -SKTRIG_QTY );
 	}
 
 	len += sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_REP ), pItem->Armor_GetRepairDesc());
@@ -1310,13 +1313,14 @@ int CClient::OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iSkillLevel, bool
 	//  <0 = immediate failure.
 	switch ( skill )
 	{
-	case SKILL_ANIMALLORE:	return OnSkill_AnimalLore( uid, iSkillLevel, fTest );
-	case SKILL_ARMSLORE:	return OnSkill_ArmsLore( uid, iSkillLevel, fTest );
-	case SKILL_ANATOMY:		return OnSkill_Anatomy( uid, iSkillLevel, fTest );
-	case SKILL_ITEMID:		return OnSkill_ItemID( uid, iSkillLevel, fTest );
-	case SKILL_EVALINT:		return OnSkill_EvalInt( uid, iSkillLevel, fTest );
-	case SKILL_FORENSICS:	return OnSkill_Forensics( uid, iSkillLevel, fTest );
-	case SKILL_TASTEID:		return OnSkill_TasteID( uid, iSkillLevel, fTest );
+		case SKILL_ANIMALLORE:	return OnSkill_AnimalLore( uid, iSkillLevel, fTest );
+		case SKILL_ARMSLORE:	return OnSkill_ArmsLore( uid, iSkillLevel, fTest );
+		case SKILL_ANATOMY:		return OnSkill_Anatomy( uid, iSkillLevel, fTest );
+		case SKILL_ITEMID:		return OnSkill_ItemID( uid, iSkillLevel, fTest );
+		case SKILL_EVALINT:		return OnSkill_EvalInt( uid, iSkillLevel, fTest );
+		case SKILL_FORENSICS:	return OnSkill_Forensics( uid, iSkillLevel, fTest );
+		case SKILL_TASTEID:		return OnSkill_TasteID( uid, iSkillLevel, fTest );
+		default:				return -SKTRIG_QTY;
 	}
 
 	return( -SKTRIG_QTY );
@@ -2249,6 +2253,8 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 					iOutID = ITEMID_LEATHER_1;
 					iOutQty = pItemTarg->GetAmount();
 					break;
+				default:
+					break;
 			}
 			if ( iOutQty )
 			{
@@ -2348,18 +2354,18 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 		// Use these on water to clean them.
 		switch ( m_pChar->CanTouchStatic( pt, id, pItemTarg ))
 		{
-		case IT_WATER:
-		case IT_WATER_WASH:
-			// Make clean.
-			pItemUse->SetID( ITEMID_BANDAGES1 );
-			pItemUse->Update();
-			return( true );
-		case IT_JUNK:
-			SysMessageDefault( DEFMSG_ITEMUSE_BANDAGE_REACH );
-			break;
-		default:
-			SysMessageDefault( DEFMSG_ITEMUSE_BANDAGE_CLEAN );
-			break;
+			case IT_WATER:
+			case IT_WATER_WASH:
+				// Make clean.
+				pItemUse->SetID( ITEMID_BANDAGES1 );
+				pItemUse->Update();
+				return( true );
+			case IT_JUNK:
+				SysMessageDefault( DEFMSG_ITEMUSE_BANDAGE_REACH );
+				break;
+			default:
+				SysMessageDefault( DEFMSG_ITEMUSE_BANDAGE_CLEAN );
+				break;
 		}
 		return( false );
 
@@ -2440,17 +2446,17 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 		// Fill it up with water.
 		switch ( m_pChar->CanTouchStatic( pt, id, pItemTarg ))
 		{
-		case IT_JUNK:
-			SysMessageDefault( DEFMSG_ITEMUSE_PITCHER_REACH );
-			return( false );
-		case IT_WATER:
-		case IT_WATER_WASH:
-			pItemUse->SetID( ITEMID_PITCHER_WATER );
-			pItemUse->Update();
-			return( true );
-		default:
-			SysMessageDefault( DEFMSG_ITEMUSE_PITCHER_FILL );
-			return( false );
+			case IT_JUNK:
+				SysMessageDefault( DEFMSG_ITEMUSE_PITCHER_REACH );
+				return( false );
+			case IT_WATER:
+			case IT_WATER_WASH:
+				pItemUse->SetID( ITEMID_PITCHER_WATER );
+				pItemUse->Update();
+				return( true );
+			default:
+				SysMessageDefault( DEFMSG_ITEMUSE_PITCHER_FILL );
+				return( false );
 		}
 		break;
 
@@ -2468,25 +2474,30 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 
 		switch ( pItemTarg->GetType())
 		{
-		case IT_LEATHER:
-		case IT_HIDE:
+			case IT_LEATHER:
+			case IT_HIDE:
 			{
 				CScriptTriggerArgs args("sm_tailor_leather");
 				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tailor_leather" ) );
 			}
-		case IT_CLOTH:
-		case IT_CLOTH_BOLT:
+			case IT_CLOTH:
+			case IT_CLOTH_BOLT:
 			{
 				pItemTarg->ConvertBolttoCloth();
 				CScriptTriggerArgs args("sm_tailor_cloth");
 				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tailor_cloth" ) );
 			}
+			default:
+				break;
 		}
 
 		SysMessageDefault( DEFMSG_ITEMUSE_SKIT_UNABLE );
 		return (false);
+
+	default:
+		break;
 	}
 
 	SysMessageDefault( DEFMSG_ITEMUSE_UNABLE );

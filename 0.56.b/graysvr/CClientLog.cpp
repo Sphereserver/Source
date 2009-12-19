@@ -32,10 +32,13 @@ bool CClient::IsConnecting()
 	ADDTOCALLSTACK("CClient::IsConnecting");
 	switch ( GetConnectType() )
 	{
-	case CONNECT_TELNET:
-	case CONNECT_HTTP:
-	case CONNECT_GAME:
-		return false;
+		case CONNECT_TELNET:
+		case CONNECT_HTTP:
+		case CONNECT_GAME:
+			return false;
+
+		default:
+			return true;
 	}
 	return true;
 }

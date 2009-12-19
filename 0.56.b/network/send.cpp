@@ -1506,6 +1506,11 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CO
 			writeInt32(dst->GetUID());
 			writeInt32(0);
 			break;
+
+		default: // unknown (should never happen)
+			writeInt32(0);
+			writeInt32(0);
+			break;
 	}
 
 	writeInt16(id);
@@ -2669,6 +2674,7 @@ PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_
 	switch (style)
 	{
 		case INPVAL_STYLE_NOEDIT: // None
+		default:
 			len = 1;
 			break;
 

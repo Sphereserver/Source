@@ -2051,6 +2051,9 @@ jump_in:
 
 			case SK_ELSE:
 				return( TRIGRET_ELSE );
+
+			default:
+				break;
 		}
 
 		if ( fSectionFalse )
@@ -2083,6 +2086,8 @@ jump_in:
 				case SK_BEGIN:
 					EXC_SET("begin/loop cycle");
 					iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
+					break;
+				default:
 					break;
 			}
 			if ( trigrun >= TRIGRUN_SINGLE_EXEC )

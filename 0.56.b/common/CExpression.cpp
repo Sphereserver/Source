@@ -693,6 +693,9 @@ try_dec:
 							else iResult = ( iCount < 5 ) ? 0 : GetSingle(ppCmd[4]);
 						}
 					} break;
+
+					default:
+						break;
 				}
 
 				pszArgs = pszArgsNext;

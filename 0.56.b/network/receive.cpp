@@ -828,6 +828,9 @@ bool PacketMapEdit::onReceive(NetState* net)
 		case MAP_TOGGLE: // edit req/cancel
 			client->addMapMode(map, MAP_SENT, !map->m_fPlotMode);
 			break;
+
+		default:
+			break;
 	}
 
 	return true;
@@ -1019,6 +1022,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 			return true;
 
 		case SECURE_TRADE_CHANGE: // change check marks. possible conclude trade
+		{
 			if (character->GetDist(container) > UO_MAP_VIEW_SIZE)
 			{
 				// to far away
@@ -1044,6 +1048,10 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 			container->Trade_Status(arg);
 			return true;
+		}
+
+		default:
+			break;
 	}
 
 	return true;
@@ -2715,6 +2723,9 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 		case 2:
 			stat = STAT_INT;
 			break;
+		default:
+			stat = STAT_NONE;
+			break;
 	}
 
 	if (stat != STAT_NONE)
@@ -2936,6 +2947,9 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 			}
 
 			character->UpdateModeFlag();
+			break;
+
+		default:
 			break;
 	}
 

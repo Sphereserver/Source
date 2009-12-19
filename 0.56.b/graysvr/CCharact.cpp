@@ -303,6 +303,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_FLAG_Stuck:
 			StatFlag_Set( STATF_Freeze );
 			break;
+		default:
+			break;
 	}
 
 	if ( layer != LAYER_DRAGGING )
@@ -323,6 +325,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 				break;
 			case IT_COMM_CRYSTAL:
 				StatFlag_Set(STATF_COMM_CRYSTAL);
+				break;
+			default:
 				break;
 		}
 	}
@@ -395,6 +399,8 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		case LAYER_FLAG_Stuck:
 			StatFlag_Clear( STATF_Freeze );
 			break;
+		default:
+			break;
 	}
 
 	// Items with magic effects.
@@ -419,6 +425,8 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 					Memory_UpdateClearTypes( pMemory, 0xFFFF );
 				break;
 			}
+			default:
+				break;
 		}
 
 		// If items are magical then remove effect here.
@@ -471,45 +479,45 @@ void CChar::UnEquipAllItems( CItemContainer * pDest )
 	{
 		pItemNext = pItem->GetNext();
 		LAYER_TYPE layer = pItem->GetEquipLayer();
-		switch ( layer )
-		{
-		case LAYER_NONE:
-			pItem->Delete();	// Get rid of any trades.
-			continue;
-		case LAYER_FLAG_Poison:
-		case LAYER_FLAG_Criminal:
-		case LAYER_FLAG_Hallucination:
-		case LAYER_FLAG_Potion:
-		case LAYER_FLAG_Drunk:
-		case LAYER_FLAG_Stuck:
-		case LAYER_FLAG_PotionUsed:
-			if ( IsStatFlag( STATF_DEAD ))
-				pItem->Delete();
-			continue;
-		case LAYER_PACK:
-		case LAYER_HORSE:
-			continue;
-		case LAYER_HAIR:	// leave this.
-		case LAYER_BEARD:
-			// Copy hair and beard to corpse.
-			if ( pDest == NULL )
-				continue;
-			if ( pDest->IsType(IT_CORPSE))
+			switch ( layer )
 			{
-				CItem * pDupe = CItem::CreateDupeItem( pItem );
-				pDest->ContentAdd( pDupe );	// add content
-				// Equip layer only matters on a corpse.
-				pDupe->SetContainedLayer( layer );
-			}
-			continue;
-		case LAYER_DRAGGING:
-			layer = LAYER_NONE;
-			break;
-		default:
-			// can't transfer this to corpse.
-			if ( ! CItemBase::IsVisibleLayer( layer ))
+			case LAYER_NONE:
+				pItem->Delete();	// Get rid of any trades.
 				continue;
-			break;
+			case LAYER_FLAG_Poison:
+			case LAYER_FLAG_Criminal:
+			case LAYER_FLAG_Hallucination:
+			case LAYER_FLAG_Potion:
+			case LAYER_FLAG_Drunk:
+			case LAYER_FLAG_Stuck:
+			case LAYER_FLAG_PotionUsed:
+				if ( IsStatFlag( STATF_DEAD ))
+					pItem->Delete();
+				continue;
+			case LAYER_PACK:
+			case LAYER_HORSE:
+				continue;
+			case LAYER_HAIR:	// leave this.
+			case LAYER_BEARD:
+				// Copy hair and beard to corpse.
+				if ( pDest == NULL )
+					continue;
+				if ( pDest->IsType(IT_CORPSE))
+				{
+					CItem * pDupe = CItem::CreateDupeItem( pItem );
+					pDest->ContentAdd( pDupe );	// add content
+					// Equip layer only matters on a corpse.
+					pDupe->SetContainedLayer( layer );
+				}
+				continue;
+			case LAYER_DRAGGING:
+				layer = LAYER_NONE;
+				break;
+			default:
+				// can't transfer this to corpse.
+				if ( ! CItemBase::IsVisibleLayer( layer ))
+					continue;
+				break;
 		}
 		if ( pDest != NULL &&
 			! pItem->IsAttr( ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2 ))
@@ -646,14 +654,16 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 
 	switch ( type )
 	{
-	case STAT_STR:
-		UpdateHitsFlag();
-		break;
-	case STAT_INT:
-		UpdateManaFlag();
-		break;
-	case STAT_DEX:
-		UpdateStamFlag();
+		case STAT_STR:
+			UpdateHitsFlag();
+			break;
+		case STAT_INT:
+			UpdateManaFlag();
+			break;
+		case STAT_DEX:
+			UpdateStamFlag();
+		default:
+			break;
 	}
 }
 
@@ -709,6 +719,8 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 				case IT_WEAPON_XBOW:
 					action = ANIM_ATTACK_XBOW;
 					break;
+				default:
+					break;
 			}
 			if (( Calc_GetRandVal( 2 ) ) && ( pWeapon->GetType() != IT_WEAPON_BOW ) && ( pWeapon->GetType() != IT_WEAPON_XBOW ) )
 			{
@@ -729,67 +741,67 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 			// Horse back anims are dif.
 			switch ( action )
 			{
-			case ANIM_WALK_UNARM:
-			case ANIM_WALK_ARM:
-				action = ANIM_HORSE_RIDE_SLOW;
-				break;
-			case ANIM_RUN_UNARM:
-			case ANIM_RUN_ARMED:
-				action = ANIM_HORSE_RIDE_FAST;
-				break;
-			case ANIM_STAND:
-				action = ANIM_HORSE_STAND;
-				break;
-			case ANIM_FIDGET1:
-			case ANIM_FIDGET_YAWN:
-				action = ANIM_HORSE_SLAP;
-				break;
-			case ANIM_STAND_WAR_1H:
-			case ANIM_STAND_WAR_2H:
-				action = ANIM_HORSE_STAND;
-				break;
-			case ANIM_ATTACK_1H_WIDE:
-			case ANIM_ATTACK_1H_JAB:
-			case ANIM_ATTACK_1H_DOWN:
-				action = ANIM_HORSE_ATTACK;
-				break;
-			case ANIM_ATTACK_2H_JAB:
-			case ANIM_ATTACK_2H_WIDE:
-			case ANIM_ATTACK_2H_DOWN:
-				action = ANIM_HORSE_SLAP;
-				break;
-			case ANIM_WALK_WAR:
-				action = ANIM_HORSE_RIDE_SLOW;
-				break;
-			case ANIM_CAST_DIR:
-				action = ANIM_HORSE_ATTACK;
-				break;
-			case ANIM_CAST_AREA:
-				action = ANIM_HORSE_ATTACK_BOW;
-				break;
-			case ANIM_ATTACK_BOW:
-				action = ANIM_HORSE_ATTACK_BOW;
-				break;
-			case ANIM_ATTACK_XBOW:
-				action = ANIM_HORSE_ATTACK_XBOW;
-				break;
-			case ANIM_GET_HIT:
-				action = ANIM_HORSE_SLAP;
-				break;
-			case ANIM_BLOCK:
-				action = ANIM_HORSE_SLAP;
-				break;
-			case ANIM_ATTACK_UNARM:
-				action = ANIM_HORSE_ATTACK;
-				break;
-			case ANIM_BOW:
-			case ANIM_SALUTE:
-			case ANIM_EAT:
-				action = ANIM_HORSE_ATTACK_XBOW;
-				break;
-			default:
-				action = ANIM_HORSE_STAND;
-				break;
+				case ANIM_WALK_UNARM:
+				case ANIM_WALK_ARM:
+					action = ANIM_HORSE_RIDE_SLOW;
+					break;
+				case ANIM_RUN_UNARM:
+				case ANIM_RUN_ARMED:
+					action = ANIM_HORSE_RIDE_FAST;
+					break;
+				case ANIM_STAND:
+					action = ANIM_HORSE_STAND;
+					break;
+				case ANIM_FIDGET1:
+				case ANIM_FIDGET_YAWN:
+					action = ANIM_HORSE_SLAP;
+					break;
+				case ANIM_STAND_WAR_1H:
+				case ANIM_STAND_WAR_2H:
+					action = ANIM_HORSE_STAND;
+					break;
+				case ANIM_ATTACK_1H_WIDE:
+				case ANIM_ATTACK_1H_JAB:
+				case ANIM_ATTACK_1H_DOWN:
+					action = ANIM_HORSE_ATTACK;
+					break;
+				case ANIM_ATTACK_2H_JAB:
+				case ANIM_ATTACK_2H_WIDE:
+				case ANIM_ATTACK_2H_DOWN:
+					action = ANIM_HORSE_SLAP;
+					break;
+				case ANIM_WALK_WAR:
+					action = ANIM_HORSE_RIDE_SLOW;
+					break;
+				case ANIM_CAST_DIR:
+					action = ANIM_HORSE_ATTACK;
+					break;
+				case ANIM_CAST_AREA:
+					action = ANIM_HORSE_ATTACK_BOW;
+					break;
+				case ANIM_ATTACK_BOW:
+					action = ANIM_HORSE_ATTACK_BOW;
+					break;
+				case ANIM_ATTACK_XBOW:
+					action = ANIM_HORSE_ATTACK_XBOW;
+					break;
+				case ANIM_GET_HIT:
+					action = ANIM_HORSE_SLAP;
+					break;
+				case ANIM_BLOCK:
+					action = ANIM_HORSE_SLAP;
+					break;
+				case ANIM_ATTACK_UNARM:
+					action = ANIM_HORSE_ATTACK;
+					break;
+				case ANIM_BOW:
+				case ANIM_SALUTE:
+				case ANIM_EAT:
+					action = ANIM_HORSE_ATTACK_XBOW;
+					break;
+				default:
+					action = ANIM_HORSE_STAND;
+					break;
 			}
 		}
 		else if ( GetDispID() < CREID_MAN )
@@ -801,68 +813,68 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 				// All animals have all these anims thankfully
 				switch ( action )
 				{
-				case ANIM_WALK_UNARM:
-				case ANIM_WALK_ARM:
-				case ANIM_WALK_WAR:
-					action = ANIM_ANI_WALK;
-					break;
-				case ANIM_RUN_UNARM:
-				case ANIM_RUN_ARMED:
-					action = ANIM_ANI_RUN;
-					break;
-				case ANIM_STAND:
-				case ANIM_STAND_WAR_1H:
-				case ANIM_STAND_WAR_2H:
-				default:
-					action = ANIM_ANI_STAND;
-					break;
+					case ANIM_WALK_UNARM:
+					case ANIM_WALK_ARM:
+					case ANIM_WALK_WAR:
+						action = ANIM_ANI_WALK;
+						break;
+					case ANIM_RUN_UNARM:
+					case ANIM_RUN_ARMED:
+						action = ANIM_ANI_RUN;
+						break;
+					case ANIM_STAND:
+					case ANIM_STAND_WAR_1H:
+					case ANIM_STAND_WAR_2H:
+					default:
+						action = ANIM_ANI_STAND;
+						break;
 
-				case ANIM_FIDGET1:
-					action = ANIM_ANI_FIDGET1;
-					break;
-				case ANIM_FIDGET_YAWN:
-					action = ANIM_ANI_FIDGET2;
-					break;
-				case ANIM_CAST_DIR:
-					action = ANIM_ANI_ATTACK1;
-					break;
-				case ANIM_CAST_AREA:
-					action = ANIM_ANI_EAT;
-					break;
-				case ANIM_GET_HIT:
-					action = ANIM_ANI_GETHIT;
-					break;
+					case ANIM_FIDGET1:
+						action = ANIM_ANI_FIDGET1;
+						break;
+					case ANIM_FIDGET_YAWN:
+						action = ANIM_ANI_FIDGET2;
+						break;
+					case ANIM_CAST_DIR:
+						action = ANIM_ANI_ATTACK1;
+						break;
+					case ANIM_CAST_AREA:
+						action = ANIM_ANI_EAT;
+						break;
+					case ANIM_GET_HIT:
+						action = ANIM_ANI_GETHIT;
+						break;
 
-				case ANIM_ATTACK_1H_WIDE:
-				case ANIM_ATTACK_1H_JAB:
-				case ANIM_ATTACK_1H_DOWN:
-				case ANIM_ATTACK_2H_DOWN:
-				case ANIM_ATTACK_2H_JAB:
-				case ANIM_ATTACK_2H_WIDE:
-				case ANIM_ATTACK_BOW:
-				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_UNARM:
-					switch ( Calc_GetRandVal(2))
-					{
-					case 0: action = ANIM_ANI_ATTACK1; break;
-					case 1: action = ANIM_ANI_ATTACK2; break;
-					}
-					break;
+					case ANIM_ATTACK_1H_WIDE:
+					case ANIM_ATTACK_1H_JAB:
+					case ANIM_ATTACK_1H_DOWN:
+					case ANIM_ATTACK_2H_DOWN:
+					case ANIM_ATTACK_2H_JAB:
+					case ANIM_ATTACK_2H_WIDE:
+					case ANIM_ATTACK_BOW:
+					case ANIM_ATTACK_XBOW:
+					case ANIM_ATTACK_UNARM:
+						switch ( Calc_GetRandVal(2))
+						{
+							case 0: action = ANIM_ANI_ATTACK1; break;
+							case 1: action = ANIM_ANI_ATTACK2; break;
+						}
+						break;
 
-				case ANIM_DIE_BACK:
-					action = ANIM_ANI_DIE1;
-					break;
-				case ANIM_DIE_FORWARD:
-					action = ANIM_ANI_DIE2;
-					break;
-				case ANIM_BLOCK:
-				case ANIM_BOW:
-				case ANIM_SALUTE:
-					action = ANIM_ANI_SLEEP;
-					break;
-				case ANIM_EAT:
-					action = ANIM_ANI_EAT;
-					break;
+					case ANIM_DIE_BACK:
+						action = ANIM_ANI_DIE1;
+						break;
+					case ANIM_DIE_FORWARD:
+						action = ANIM_ANI_DIE2;
+						break;
+					case ANIM_BLOCK:
+					case ANIM_BOW:
+					case ANIM_SALUTE:
+						action = ANIM_ANI_SLEEP;
+						break;
+					case ANIM_EAT:
+						action = ANIM_ANI_EAT;
+						break;
 				}
 
 				while ( action != ANIM_WALK_UNARM && ! ( pCharDef->m_Anims & (1<<action)))
@@ -870,12 +882,12 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 					// This anim is not supported. Try to use one that is.
 					switch ( action )
 					{
-					case ANIM_ANI_SLEEP:	// All have this.
-						action = ANIM_ANI_EAT;
-						break;
-					default:
-						action = ANIM_WALK_UNARM;
-						break;
+						case ANIM_ANI_SLEEP:	// All have this.
+							action = ANIM_ANI_EAT;
+							break;
+						default:
+							action = ANIM_WALK_UNARM;
+							break;
 					}
 				}
 			}
@@ -885,45 +897,45 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 
 				switch ( action )
 				{
-				case ANIM_CAST_DIR:
-					action = ANIM_MON_Stomp;
-					break;
-				case ANIM_CAST_AREA:
-					action = ANIM_MON_PILLAGE;
-					break;
-				case ANIM_DIE_BACK:
-					action = ANIM_MON_DIE1;
-					break;
-				case ANIM_DIE_FORWARD:
-					action = ANIM_MON_DIE2;
-					break;
-				case ANIM_GET_HIT:
-					switch ( Calc_GetRandVal(3))
-					{
-					case 0: action = ANIM_MON_GETHIT; break;
-					case 1: action = ANIM_MON_BlockRight; break;
-					case 2: action = ANIM_MON_BlockLeft; break;
-					}
-					break;
-				case ANIM_ATTACK_1H_WIDE:
-				case ANIM_ATTACK_1H_JAB:
-				case ANIM_ATTACK_1H_DOWN:
-				case ANIM_ATTACK_2H_DOWN:
-				case ANIM_ATTACK_2H_JAB:
-				case ANIM_ATTACK_2H_WIDE:
-				case ANIM_ATTACK_BOW:
-				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_UNARM:
-					switch ( Calc_GetRandVal(3))
-					{
-					case 0: action = ANIM_MON_ATTACK1; break;
-					case 1: action = ANIM_MON_ATTACK2; break;
-					case 2: action = ANIM_MON_ATTACK3; break;
-					}
-					break;
-				default:
-					action = ANIM_WALK_UNARM;
-					break;
+					case ANIM_CAST_DIR:
+						action = ANIM_MON_Stomp;
+						break;
+					case ANIM_CAST_AREA:
+						action = ANIM_MON_PILLAGE;
+						break;
+					case ANIM_DIE_BACK:
+						action = ANIM_MON_DIE1;
+						break;
+					case ANIM_DIE_FORWARD:
+						action = ANIM_MON_DIE2;
+						break;
+					case ANIM_GET_HIT:
+						switch ( Calc_GetRandVal(3))
+						{
+						case 0: action = ANIM_MON_GETHIT; break;
+						case 1: action = ANIM_MON_BlockRight; break;
+						case 2: action = ANIM_MON_BlockLeft; break;
+						}
+						break;
+					case ANIM_ATTACK_1H_WIDE:
+					case ANIM_ATTACK_1H_JAB:
+					case ANIM_ATTACK_1H_DOWN:
+					case ANIM_ATTACK_2H_DOWN:
+					case ANIM_ATTACK_2H_JAB:
+					case ANIM_ATTACK_2H_WIDE:
+					case ANIM_ATTACK_BOW:
+					case ANIM_ATTACK_XBOW:
+					case ANIM_ATTACK_UNARM:
+						switch ( Calc_GetRandVal(3))
+						{
+							case 0: action = ANIM_MON_ATTACK1; break;
+							case 1: action = ANIM_MON_ATTACK2; break;
+							case 2: action = ANIM_MON_ATTACK3; break;
+						}
+						break;
+					default:
+						action = ANIM_WALK_UNARM;
+						break;
 				}
 				// NOTE: Available actions depend HEAVILY on creature type !
 				// ??? Monsters don't have all anims in common !
@@ -933,49 +945,49 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 					// This anim is not supported. Try to use one that is.
 					switch ( action )
 					{
-					case ANIM_MON_ATTACK1:	// All have this.
-						DEBUG_ERR(( "Anim 0%x This is wrong! Invalid SCP file data.\n", GetDispID()));
-						action = ANIM_WALK_UNARM;
-						break;
-
-					case ANIM_MON_ATTACK2:	// Dolphins, Eagles don't have this.
-					case ANIM_MON_ATTACK3:
-						action = ANIM_MON_ATTACK1;	// ALL creatures have at least this attack.
-						break;
-					case ANIM_MON_Cast2:	// Trolls, Spiders, many others don't have this.
-						action = ANIM_MON_BlockRight;	// Birds don't have this !
-						break;
-					case ANIM_MON_BlockRight:
-						action = ANIM_MON_BlockLeft;
-						break;
-					case ANIM_MON_BlockLeft:
-						action = ANIM_MON_GETHIT;
-						break;
-					case ANIM_MON_GETHIT:
-						if ( pCharDef->m_Anims & (1<<ANIM_MON_Cast2))
-							action = ANIM_MON_Cast2;
-						else
+						case ANIM_MON_ATTACK1:	// All have this.
+							DEBUG_ERR(( "Anim 0%x This is wrong! Invalid SCP file data.\n", GetDispID()));
 							action = ANIM_WALK_UNARM;
-						break;
+							break;
 
-					case ANIM_MON_Stomp:
-						action = ANIM_MON_PILLAGE;
-						break;
-					case ANIM_MON_PILLAGE:
-						action = ANIM_MON_ATTACK3;
-						break;
-					case ANIM_MON_AttackBow:
-					case ANIM_MON_AttackXBow:
-						action = ANIM_MON_ATTACK3;
-						break;
-					case ANIM_MON_AttackThrow:
-						action = ANIM_MON_AttackXBow;
-						break;
+						case ANIM_MON_ATTACK2:	// Dolphins, Eagles don't have this.
+						case ANIM_MON_ATTACK3:
+							action = ANIM_MON_ATTACK1;	// ALL creatures have at least this attack.
+							break;
+						case ANIM_MON_Cast2:	// Trolls, Spiders, many others don't have this.
+							action = ANIM_MON_BlockRight;	// Birds don't have this !
+							break;
+						case ANIM_MON_BlockRight:
+							action = ANIM_MON_BlockLeft;
+							break;
+						case ANIM_MON_BlockLeft:
+							action = ANIM_MON_GETHIT;
+							break;
+						case ANIM_MON_GETHIT:
+							if ( pCharDef->m_Anims & (1<<ANIM_MON_Cast2))
+								action = ANIM_MON_Cast2;
+							else
+								action = ANIM_WALK_UNARM;
+							break;
 
-					default:
-						DEBUG_ERR(( "Anim Unsupported 0%x for 0%x\n", action, GetDispID()));
-						action = ANIM_WALK_UNARM;
-						break;
+						case ANIM_MON_Stomp:
+							action = ANIM_MON_PILLAGE;
+							break;
+						case ANIM_MON_PILLAGE:
+							action = ANIM_MON_ATTACK3;
+							break;
+						case ANIM_MON_AttackBow:
+						case ANIM_MON_AttackXBow:
+							action = ANIM_MON_ATTACK3;
+							break;
+						case ANIM_MON_AttackThrow:
+							action = ANIM_MON_AttackXBow;
+							break;
+
+						default:
+							DEBUG_ERR(( "Anim Unsupported 0%x for 0%x\n", action, GetDispID()));
+							action = ANIM_WALK_UNARM;
+							break;
 					}
 				}
 			}
@@ -1211,6 +1223,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 					case CRESND_DIE:
 						id = sm_Snd_Wom_Die[ Calc_GetRandVal( COUNTOF(sm_Snd_Wom_Die)) ];
 						break;
+					default:
+						break;
 				}
 			}
 			else
@@ -1222,6 +1236,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 						break;
 					case CRESND_DIE:
 						id = sm_Snd_Man_Die[ Calc_GetRandVal( COUNTOF(sm_Snd_Man_Die)) ];
+						break;
+					default:
 						break;
 				}
 			}
@@ -1248,6 +1264,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 						id = 0;
 					else
 						id -= 2;
+					break;
+				default:
 					break;
 			}
 		} break;
@@ -1290,6 +1308,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 				case IT_WEAPON_XBOW:
 					// 0x234 = xbow ( hit)
 					id = 0x234;
+					break;
+				default:
 					break;
 			}
 
@@ -2002,106 +2022,111 @@ bool CChar::OnTickEquip( CItem * pItem )
 
 	switch ( pItem->GetEquipLayer())
 	{
-	case LAYER_FLAG_Wool:
-		// This will regen the sheep it was sheered from.
-		// Sheared sheep regen wool on a new day.
-		if ( GetID() != CREID_Sheep_Sheered )
+		case LAYER_FLAG_Wool:
+			// This will regen the sheep it was sheered from.
+			// Sheared sheep regen wool on a new day.
+			if ( GetID() != CREID_Sheep_Sheered )
+				return false;
+
+			// Is it a new day ? regen my wool.
+			SetID( CREID_Sheep );
 			return false;
 
-		// Is it a new day ? regen my wool.
-		SetID( CREID_Sheep );
-		return false;
+		case LAYER_FLAG_ClientLinger:
+			// remove me from other clients screens.
+			SetDisconnected();
+			return( false );
 
-	case LAYER_FLAG_ClientLinger:
-		// remove me from other clients screens.
-		SetDisconnected();
-		return( false );
-
-	case LAYER_SPECIAL:
-		switch ( pItem->GetType())
-		{
-			case IT_EQ_SCRIPT:	// pure script.
-				break;
-			case IT_EQ_MEMORY_OBJ:
+		case LAYER_SPECIAL:
+			switch ( pItem->GetType())
 			{
-				CItemMemory *pMemory = dynamic_cast<CItemMemory*>( pItem );
-				if (pMemory)
-					return Memory_OnTick(pMemory);
+				case IT_EQ_SCRIPT:	// pure script.
+					break;
+				case IT_EQ_MEMORY_OBJ:
+				{
+					CItemMemory *pMemory = dynamic_cast<CItemMemory*>( pItem );
+					if (pMemory)
+						return Memory_OnTick(pMemory);
 
-				return false;
+					return false;
+				}
+				default:
+					break;
 			}
-			default:
-				break;
-		}
-		break;
+			break;
 
-	case LAYER_FLAG_Stuck:
-		// Only allow me to try to damage the web so often
-		// Non-magical. held by something.
-		// IT_EQ_STUCK
-		pItem->SetTimeout( -1 );
-		return( true );
+		case LAYER_FLAG_Stuck:
+			// Only allow me to try to damage the web so often
+			// Non-magical. held by something.
+			// IT_EQ_STUCK
+			pItem->SetTimeout( -1 );
+			return( true );
 
-	case LAYER_HORSE:
-		// Give my horse a tick. (It is still in the game !)
-		// NOTE: What if my horse dies (poisoned?)
-		{
-			// NPCs with just an item equipped is fine
-			// but still give ticks just in case
-			if ( m_pNPC )
+		case LAYER_HORSE:
+			// Give my horse a tick. (It is still in the game !)
+			// NOTE: What if my horse dies (poisoned?)
 			{
+				// NPCs with just an item equipped is fine
+				// but still give ticks just in case
+				if ( m_pNPC )
+				{
+					pItem->SetTimeout( 10 * TICK_PER_SEC );
+					return( true );
+				}
+
+				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
+				if ( pHorse == NULL )
+					return( false );
+
+				if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
+				{
+					DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
+					this->Horse_UnMount();
+
+					if ( pHorse != NULL )
+						pHorse->Delete();
+
+					return( false );
+				}
+
 				pItem->SetTimeout( 10 * TICK_PER_SEC );
+
+				if ( pHorse->Fight_IsActive() )
+					pHorse->Fight_ClearAll();
+
+				if ( pHorse->Skill_GetActive() != NPCACT_RIDDEN )
+					pHorse->Skill_Start( NPCACT_RIDDEN );
+
+				bool bHorseTick = pHorse->OnTick();
+				if ( !bHorseTick )
+					pHorse->Delete();
+
+				return( bHorseTick );
+			}
+
+		case LAYER_FLAG_Murders:
+			// decay the murder count.
+			{
+				if ( ! m_pPlayer || m_pPlayer->m_wMurders <= 0  )
+					return( false );
+
+				CScriptTriggerArgs	args;
+				args.m_iN1 = m_pPlayer->m_wMurders-1;
+				args.m_iN2 = g_Cfg.m_iMurderDecayTime;
+				if ( !IsSetEF(EF_Minimize_Triggers) )
+				{
+					OnTrigger(CTRIG_MurderDecay, this, &args);
+					if ( args.m_iN1 < 0 ) args.m_iN1 = 0;
+					if ( args.m_iN2 < 1 ) args.m_iN2 = g_Cfg.m_iMurderDecayTime;
+				}
+				m_pPlayer->m_wMurders = args.m_iN1;
+				if ( m_pPlayer->m_wMurders == 0 ) return( false );
+				pItem->SetTimeout(args.m_iN2);	// update it's decay time.
 				return( true );
 			}
 
-			CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
-			if ( pHorse == NULL )
-				return( false );
-
-			if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
-			{
-				DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
-				this->Horse_UnMount();
-
-				if ( pHorse != NULL )
-					pHorse->Delete();
-
-				return( false );
-			}
-
-			pItem->SetTimeout( 10 * TICK_PER_SEC );
-
-			if ( pHorse->Fight_IsActive() )
-				pHorse->Fight_ClearAll();
-
-			if ( pHorse->Skill_GetActive() != NPCACT_RIDDEN )
-				pHorse->Skill_Start( NPCACT_RIDDEN );
-
-			bool bHorseTick = pHorse->OnTick();
-			if ( !bHorseTick )
-				pHorse->Delete();
-
-			return( bHorseTick );
-		}
-
-	case LAYER_FLAG_Murders:
-		// decay the murder count.
-		if ( ! m_pPlayer || m_pPlayer->m_wMurders <= 0  )
-			return( false );
-
-		CScriptTriggerArgs	args;
-		args.m_iN1 = m_pPlayer->m_wMurders-1;
-		args.m_iN2 = g_Cfg.m_iMurderDecayTime;
-		if ( !IsSetEF(EF_Minimize_Triggers) )
-		{
-			OnTrigger(CTRIG_MurderDecay, this, &args);
-			if ( args.m_iN1 < 0 ) args.m_iN1 = 0;
-			if ( args.m_iN2 < 1 ) args.m_iN2 = g_Cfg.m_iMurderDecayTime;
-		}
-		m_pPlayer->m_wMurders = args.m_iN1;
-		if ( m_pPlayer->m_wMurders == 0 ) return( false );
-		pItem->SetTimeout(args.m_iN2);	// update it's decay time.
-		return( true );
+		default:
+			break;
 	}
 
 	if ( pItem->IsType( IT_SPELL ))
@@ -2972,33 +2997,35 @@ bool CChar::CheckLocation( bool fStanding )
 		}
 		else switch ( iSkillActive )
 		{
-		case SKILL_MEDITATION:
-		case SKILL_MAGERY:
-		case SKILL_NECROMANCY:
-		case SKILL_CHIVALRY:
-		case SKILL_BUSHIDO:
-		case SKILL_NINJITSU:
-		case SKILL_SPELLWEAVING:
-		case SKILL_MYSTICISM:
-			// Skill is broken if we move ?
-			break;
-		case SKILL_HIDING:	// this should become stealth ?
-			break;
-		case SKILL_FENCING:
-		case SKILL_MACEFIGHTING:
-		case SKILL_SWORDSMANSHIP:
-		case SKILL_WRESTLING:
-			m_atFight.m_fMoved	= 1;
-			break;
-		case SKILL_ARCHERY:
-			m_atFight.m_fMoved	= 1;
-			if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
-			{
-				// If we moved and are wielding are in combat and are using a
-				// crossbow/bow kind of weapon, then reset the weaponswingtimer.
-				Fight_ResetWeaponSwingTimer();
-			}
-			break;
+			case SKILL_MEDITATION:
+			case SKILL_MAGERY:
+			case SKILL_NECROMANCY:
+			case SKILL_CHIVALRY:
+			case SKILL_BUSHIDO:
+			case SKILL_NINJITSU:
+			case SKILL_SPELLWEAVING:
+			case SKILL_MYSTICISM:
+				// Skill is broken if we move ?
+				break;
+			case SKILL_HIDING:	// this should become stealth ?
+				break;
+			case SKILL_FENCING:
+			case SKILL_MACEFIGHTING:
+			case SKILL_SWORDSMANSHIP:
+			case SKILL_WRESTLING:
+				m_atFight.m_fMoved	= 1;
+				break;
+			case SKILL_ARCHERY:
+				m_atFight.m_fMoved	= 1;
+				if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
+				{
+					// If we moved and are wielding are in combat and are using a
+					// crossbow/bow kind of weapon, then reset the weaponswingtimer.
+					Fight_ResetWeaponSwingTimer();
+				}
+				break;
+			default:
+				break;
 		}
 
 		// This could get REALLY EXPENSIVE !
@@ -3035,76 +3062,75 @@ bool CChar::CheckLocation( bool fStanding )
 
 		switch ( pItem->GetType() )
 		{
-		case IT_SHRINE:
-			// Resurrect the ghost
-			if ( fStanding )
+			case IT_SHRINE:
+				// Resurrect the ghost
+				if ( fStanding )
+					continue;
+				OnSpellEffect( SPELL_Resurrection, this, 1000, pItem );
+				return( false );
+			case IT_WEB:
+				if ( fStanding )
+					continue;
+				// Caught in a web.
+				if ( Use_Item_Web( pItem ))
+					return( true );
 				continue;
-			OnSpellEffect( SPELL_Resurrection, this, 1000, pItem );
-			return( false );
-		case IT_WEB:
-			if ( fStanding )
-				continue;
-			// Caught in a web.
-			if ( Use_Item_Web( pItem ))
+			// case IT_CAMPFIRE:	// does nothing. standing on burning kindling shouldn't hurt us
+			case IT_FIRE:
+				// fire object hurts us ?
+				// pItem->m_itSpell.m_spelllevel = 0-1000 = heat level.
+				{
+					int iSkillLevel = pItem->m_itSpell.m_spelllevel/2;
+					iSkillLevel = iSkillLevel + Calc_GetRandVal(iSkillLevel);
+					if ( IsStatFlag( STATF_Fly ))	// run through fire.
+					{
+						iSkillLevel /= 2;
+					}
+					OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE | DAMAGE_GENERAL );
+				}
+				Sound( 0x15f ); // Fire noise.
+				return( false );
+			case IT_SPELL:
+				{
+					SPELL_TYPE Spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itSpell.m_spell);
+					OnSpellEffect( Spell, pItem->m_uidLink.CharFind(), pItem->m_itSpell.m_spelllevel, pItem );
+					const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(Spell);
+					if ( pSpellDef )
+					{
+						Sound( pSpellDef->m_sound);
+					}
+				}
+				return( false );
+			case IT_TRAP:
+			case IT_TRAP_ACTIVE:
+				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL );
+				return( false );
+			case IT_SWITCH:
+				if ( pItem->m_itSwitch.m_fStep )
+				{
+					Use_Item( pItem );
+				}
+				return( false );
+			case IT_MOONGATE:
+			case IT_TELEPAD:
+				if ( fStanding )
+					continue;
+				Use_MoonGate( pItem );
 				return( true );
-			continue;
-		// case IT_CAMPFIRE:	// does nothing. standing on burning kindling shouldn't hurt us
-		case IT_FIRE:
-			// fire object hurts us ?
-			// pItem->m_itSpell.m_spelllevel = 0-1000 = heat level.
-			{
-				int iSkillLevel = pItem->m_itSpell.m_spelllevel/2;
-				iSkillLevel = iSkillLevel + Calc_GetRandVal(iSkillLevel);
-				if ( IsStatFlag( STATF_Fly ))	// run through fire.
+			case IT_SHIP_PLANK:
+				// a plank is a teleporter off the ship.
+				if ( ! fStanding && ! IsStatFlag( STATF_Fly|STATF_Hovering ))
 				{
-					iSkillLevel /= 2;
+					// Find some place to go. (in direction of plank)
+					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
+					{
+						pItem->SetTimeout(5*TICK_PER_SEC);	// autoclose it behind us.
+						return true;
+					}
 				}
-				OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE | DAMAGE_GENERAL );
-			}
-			Sound( 0x15f ); // Fire noise.
-			return( false );
-		case IT_SPELL:
-			{
-				SPELL_TYPE Spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itSpell.m_spell);
-				OnSpellEffect( Spell, pItem->m_uidLink.CharFind(), pItem->m_itSpell.m_spelllevel, pItem );
-				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(Spell);
-				if ( pSpellDef )
-				{
-					Sound( pSpellDef->m_sound);
-				}
-			}
-			return( false );
-		case IT_TRAP:
-		case IT_TRAP_ACTIVE:
-			OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL );
-			return( false );
-		case IT_SWITCH:
-			if ( pItem->m_itSwitch.m_fStep )
-			{
-				Use_Item( pItem );
-			}
-			return( false );
-		case IT_MOONGATE:
-		case IT_TELEPAD:
-			if ( fStanding )
 				continue;
-			Use_MoonGate( pItem );
-			return( true );
-		case IT_SHIP_PLANK:
-			// a plank is a teleporter off the ship.
-			if ( ! fStanding && ! IsStatFlag( STATF_Fly|STATF_Hovering ))
-			{
-				// Find some place to go. (in direction of plank)
-				if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
-				{
-					pItem->SetTimeout(5*TICK_PER_SEC);	// autoclose it behind us.
-					return true;
-				}
-			}
-			continue;
 
-		case IT_CORPSE:
-			{
+			case IT_CORPSE:
 				if ( m_pNPC && ( g_Cfg.m_iNpcAi&NPC_AI_LOOTING ) )
 				{
 					//	NPC are likely to loot corpses (but not if they are animals!)
@@ -3127,11 +3153,13 @@ bool CChar::CheckLocation( bool fStanding )
 								{
 									switch ( pItem->GetType() )
 									{
-									case IT_FOOD:
-									case IT_FOOD_RAW:
-									case IT_MEAT_RAW:
-									case IT_FRUIT:
-										bLoot = true;
+										case IT_FOOD:
+										case IT_FOOD_RAW:
+										case IT_MEAT_RAW:
+										case IT_FRUIT:
+											bLoot = true;
+										default:
+											break;
 									}
 								}
 								else
@@ -3161,7 +3189,8 @@ bool CChar::CheckLocation( bool fStanding )
 						}
 					}
 				}
-			}
+			default:
+				break;
 		}
 	}
 

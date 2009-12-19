@@ -31,40 +31,40 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 
 	switch ( id )
 	{
-	case CREID_FIRE_ELEM:
-		// leave a fire patch.
-		{
-			CItem * pItem = CItem::CreateScript( Calc_GetRandVal(2) ? ITEMID_FX_FIRE_F_EW : ITEMID_FX_FIRE_F_NS, this );
-			ASSERT(pItem);
-			pItem->SetType( IT_FIRE );
-			pItem->m_itSpell.m_spell = SPELL_Fire_Field;
-			pItem->m_itSpell.m_spelllevel = 100 + Calc_GetRandVal(500);
-			pItem->m_itSpell.m_spellcharges = 1;
-			pItem->m_uidLink = GetUID();	// Link it back to you
-			pItem->MoveToDecay( GetTopPoint(), 30*TICK_PER_SEC + Calc_GetRandVal(60*TICK_PER_SEC));
-		}
-		break;
-
-	case CREID_GIANT_SPIDER:
-		// Leave a web patch.
-		{
-			static const WORD sm_Webs[] =
+		case CREID_FIRE_ELEM:
+			// leave a fire patch.
 			{
-				ITEMID_WEB1_1,
-				ITEMID_WEB1_1+1,
-				ITEMID_WEB1_1+2,
-				ITEMID_WEB1_4,
-			};
-			CItem * pItem = CItem::CreateScript( (ITEMID_TYPE) sm_Webs[ Calc_GetRandVal( COUNTOF(sm_Webs))], this );
-			pItem->SetType(IT_WEB);
-			pItem->MoveToCheck( GetTopPoint(), this );
-			pItem->SetDecayTime( 3*60*TICK_PER_SEC );
-		}
-		break;
+				CItem * pItem = CItem::CreateScript( Calc_GetRandVal(2) ? ITEMID_FX_FIRE_F_EW : ITEMID_FX_FIRE_F_NS, this );
+				ASSERT(pItem);
+				pItem->SetType( IT_FIRE );
+				pItem->m_itSpell.m_spell = SPELL_Fire_Field;
+				pItem->m_itSpell.m_spelllevel = 100 + Calc_GetRandVal(500);
+				pItem->m_itSpell.m_spellcharges = 1;
+				pItem->m_uidLink = GetUID();	// Link it back to you
+				pItem->MoveToDecay( GetTopPoint(), 30*TICK_PER_SEC + Calc_GetRandVal(60*TICK_PER_SEC));
+			}
+			break;
 
-	default:
-		SysMessage( "You have no special abilities" );
-		return;	// No special ability.
+		case CREID_GIANT_SPIDER:
+			// Leave a web patch.
+			{
+				static const WORD sm_Webs[] =
+				{
+					ITEMID_WEB1_1,
+					ITEMID_WEB1_1+1,
+					ITEMID_WEB1_1+2,
+					ITEMID_WEB1_4,
+				};
+				CItem * pItem = CItem::CreateScript( (ITEMID_TYPE) sm_Webs[ Calc_GetRandVal( COUNTOF(sm_Webs))], this );
+				pItem->SetType(IT_WEB);
+				pItem->MoveToCheck( GetTopPoint(), this );
+				pItem->SetDecayTime( 3*60*TICK_PER_SEC );
+			}
+			break;
+
+		default:
+			SysMessage( "You have no special abilities" );
+			return;	// No special ability.
 	}
 
 	// loss of stamina for a bit.
@@ -144,6 +144,9 @@ void CChar::Stat_SetMax( STAT_TYPE i, short iVal )
 				break;
 			case STAT_DEX:
 				UpdateStamFlag();
+				break;
+			default:
+				break;
 		}
 	}
 }
@@ -265,6 +268,8 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 				DEBUG_ERR(( "ID=0%x,UID=0%x Fame set out of range %d\n", GetBaseID(), (DWORD) GetUID(), iVal ));
 				iVal = 0;
 			}
+			break;
+		default:
 			break;
 	}
 	
@@ -872,22 +877,23 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 
 	switch ( skill )
 	{
-	case NPCACT_FOLLOW_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
-	case NPCACT_STAY: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
-	case NPCACT_GOTO: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
-	case NPCACT_WANDER: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
-	case NPCACT_FLEE: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
-	case NPCACT_TALK: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
-	case NPCACT_TALK_FOLLOW: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
-	case NPCACT_GUARD_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
-	case NPCACT_GO_HOME: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
-	case NPCACT_BREATH: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
-	case NPCACT_LOOTING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
-	case NPCACT_THROWING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
-	case NPCACT_LOOKING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
-	case NPCACT_TRAINING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
-	case NPCACT_Napping: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
-	case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
+		case NPCACT_FOLLOW_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
+		case NPCACT_STAY: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
+		case NPCACT_GOTO: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
+		case NPCACT_WANDER: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
+		case NPCACT_FLEE: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
+		case NPCACT_TALK: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
+		case NPCACT_TALK_FOLLOW: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
+		case NPCACT_GUARD_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
+		case NPCACT_GO_HOME: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
+		case NPCACT_BREATH: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
+		case NPCACT_LOOTING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
+		case NPCACT_THROWING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
+		case NPCACT_LOOKING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
+		case NPCACT_TRAINING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
+		case NPCACT_Napping: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
+		case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
+		default: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 	}
 
 	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
@@ -2214,54 +2220,56 @@ int CChar::Skill_Peacemaking( SKTRIG_TYPE stage )
 
 	switch ( stage )
 	{
-	case SKTRIG_START:
-		{
-			// Basic skill check.
-			int iDifficulty = Use_PlayMusic(NULL, Calc_GetRandVal(40));
-			if ( iDifficulty < -1 )	// no instrument fail immediate
-				return -SKTRIG_FAIL;
-
-			if ( !iDifficulty )
-				iDifficulty = Calc_GetRandVal(40);	// Depend on evil of the creatures here.
-
-			return iDifficulty;
-		}
-
-	case SKTRIG_FAIL:
-		{
-			return 0;
-		}
-
-	case SKTRIG_SUCCESS:
-		{
-			int peace = Skill_GetAdjusted(SKILL_PEACEMAKING);
-			int iRadius = ( peace / 100 ) + 2;	// 2..12
-			CWorldSearch Area(GetTopPoint(), iRadius);
-			while ( true )
+		case SKTRIG_START:
 			{
-				CChar *pChar = Area.GetChar();
-				if ( pChar == NULL )
+				// Basic skill check.
+				int iDifficulty = Use_PlayMusic(NULL, Calc_GetRandVal(40));
+				if ( iDifficulty < -1 )	// no instrument fail immediate
 					return -SKTRIG_FAIL;
-				if (( pChar == this ) || !CanSee(pChar) )
-					continue;
 
-				if ( pChar->Skill_GetAdjusted(SKILL_PEACEMAKING) > peace )
-					SysMessagef("%s %s.", pChar->GetName(),g_Cfg.GetDefaultMsg( DEFMSG_PEACEMAKING_IGNORE ));
-				else if ( pChar->Skill_GetAdjusted(SKILL_PROVOCATION) > peace )
-				{
-					SysMessagef("%s %s.", pChar->GetName(),g_Cfg.GetDefaultMsg( DEFMSG_PEACEMAKING_DISOBEY ));
-					if ( pChar->Noto_IsEvil() )
-						pChar->Fight_Attack(this);
-				}
-				else
-				{
-					pChar->Fight_ClearAll();
-				}
+				if ( !iDifficulty )
+					iDifficulty = Calc_GetRandVal(40);	// Depend on evil of the creatures here.
 
-				break;
+				return iDifficulty;
 			}
-			return 0;
-		}
+
+		case SKTRIG_FAIL:
+			{
+				return 0;
+			}
+
+		case SKTRIG_SUCCESS:
+			{
+				int peace = Skill_GetAdjusted(SKILL_PEACEMAKING);
+				int iRadius = ( peace / 100 ) + 2;	// 2..12
+				CWorldSearch Area(GetTopPoint(), iRadius);
+				while ( true )
+				{
+					CChar *pChar = Area.GetChar();
+					if ( pChar == NULL )
+						return -SKTRIG_FAIL;
+					if (( pChar == this ) || !CanSee(pChar) )
+						continue;
+
+					if ( pChar->Skill_GetAdjusted(SKILL_PEACEMAKING) > peace )
+						SysMessagef("%s %s.", pChar->GetName(),g_Cfg.GetDefaultMsg( DEFMSG_PEACEMAKING_IGNORE ));
+					else if ( pChar->Skill_GetAdjusted(SKILL_PROVOCATION) > peace )
+					{
+						SysMessagef("%s %s.", pChar->GetName(),g_Cfg.GetDefaultMsg( DEFMSG_PEACEMAKING_DISOBEY ));
+						if ( pChar->Noto_IsEvil() )
+							pChar->Fight_Attack(this);
+					}
+					else
+					{
+						pChar->Fight_ClearAll();
+					}
+
+					break;
+				}
+				return 0;
+			}
+		default:
+			break;
 	}
 	return -SKTRIG_QTY;
 }
@@ -2282,42 +2290,45 @@ int CChar::Skill_Enticement( SKTRIG_TYPE stage )
 
 	switch ( stage )
 	{
-	case SKTRIG_START:
-		{
-			// Basic skill check.
-			int iDifficulty = Use_PlayMusic(NULL, Calc_GetRandVal(40));
-			if ( iDifficulty < -1 )	// no instrument fail immediate
-				return -SKTRIG_FAIL;
-
-			if ( !iDifficulty )
-				iDifficulty = Calc_GetRandVal(40);	// Depend on evil of the creatures here.
-
-			return iDifficulty;
-		}
-
-	case SKTRIG_FAIL:
-		{
-			return 0;
-		}
-
-	case SKTRIG_SUCCESS:
-		{
-			if ( pChar->m_pPlayer )
+		case SKTRIG_START:
 			{
-				SysMessagef("%s", g_Cfg.GetDefaultMsg( DEFMSG_ENTICEMENT_PLAYER ));
-				return -SKTRIG_ABORT;
-			}
-			else if ( pChar->IsStatFlag(STATF_War) )
-			{
-				SysMessagef("%s %s.", pChar->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_ENTICEMENT_BATTLE));
-				return -SKTRIG_ABORT;
+				// Basic skill check.
+				int iDifficulty = Use_PlayMusic(NULL, Calc_GetRandVal(40));
+				if ( iDifficulty < -1 )	// no instrument fail immediate
+					return -SKTRIG_FAIL;
+
+				if ( !iDifficulty )
+					iDifficulty = Calc_GetRandVal(40);	// Depend on evil of the creatures here.
+
+				return iDifficulty;
 			}
 
-			pChar->m_Act_p = GetTopPoint();
-			pChar->NPC_WalkToPoint( ( pChar->m_Act_p.GetDist(pChar->GetTopPoint()) > 6) );
+		case SKTRIG_FAIL:
+			{
+				return 0;
+			}
 
-			return 0;
-		}
+		case SKTRIG_SUCCESS:
+			{
+				if ( pChar->m_pPlayer )
+				{
+					SysMessagef("%s", g_Cfg.GetDefaultMsg( DEFMSG_ENTICEMENT_PLAYER ));
+					return -SKTRIG_ABORT;
+				}
+				else if ( pChar->IsStatFlag(STATF_War) )
+				{
+					SysMessagef("%s %s.", pChar->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_ENTICEMENT_BATTLE));
+					return -SKTRIG_ABORT;
+				}
+
+				pChar->m_Act_p = GetTopPoint();
+				pChar->NPC_WalkToPoint( ( pChar->m_Act_p.GetDist(pChar->GetTopPoint()) > 6) );
+
+				return 0;
+			}
+			
+		default:
+			break;
 	}
 	return -SKTRIG_QTY;
 }
@@ -2360,7 +2371,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 
 	switch ( stage )
 	{
-	case SKTRIG_START:
+		case SKTRIG_START:
 		{
 			int iDifficulty = Use_PlayMusic(NULL, Calc_GetRandVal(40));
 			if ( iDifficulty < -1 )	// no instrument fail immediate
@@ -2376,14 +2387,11 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			return iDifficulty;
 		}
 
-	case SKTRIG_FAIL:
-		{
+		case SKTRIG_FAIL:
 			pCharProv->Fight_Attack(this);
 			return 0;
-		}
 
-	case SKTRIG_SUCCESS:
-		{
+		case SKTRIG_SUCCESS:
 			// They are just too good for this.
 			if ( pCharProv->Stat_GetAdjusted(STAT_KARMA) >= Calc_GetRandVal2(1000, 10000) )
 			{
@@ -2440,7 +2448,9 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 
 			pCharProv->Fight_Attack(pCharTarg); // Make the actual provoking.
 			return 0;
-		}
+
+		default:
+			break;
 	}
 	return -SKTRIG_QTY;
 }
@@ -2497,20 +2507,20 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 
 	switch ( pItem->GetType() )
 	{
-	case IT_FRUIT:
-	case IT_FOOD:
-	case IT_FOOD_RAW:
-	case IT_MEAT_RAW:
-		pItem->m_itFood.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
-		break;
-	case IT_WEAPON_MACE_SHARP:
-	case IT_WEAPON_SWORD:		// 13 =
-	case IT_WEAPON_FENCE:		// 14 = can't be used to chop trees. (make kindling)
-		pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
-		break;
-	default:
-		SysMessageDefault( DEFMSG_POISONING_WITEM );
-		return( -SKTRIG_QTY );
+		case IT_FRUIT:
+		case IT_FOOD:
+		case IT_FOOD_RAW:
+		case IT_MEAT_RAW:
+			pItem->m_itFood.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
+			break;
+		case IT_WEAPON_MACE_SHARP:
+		case IT_WEAPON_SWORD:		// 13 =
+		case IT_WEAPON_FENCE:		// 14 = can't be used to chop trees. (make kindling)
+			pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
+			break;
+		default:
+			SysMessageDefault( DEFMSG_POISONING_WITEM );
+			return( -SKTRIG_QTY );
 	}
 	// skill + quality of the poison.
 	SysMessageDefault( DEFMSG_POISONING_SUCCESS );
@@ -2857,7 +2867,7 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 
 	switch ( stage )
 	{
-	case SKTRIG_START:
+		case SKTRIG_START:
 		{
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 			{
@@ -2867,12 +2877,12 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 			return iIntVal + Calc_GetRandVal(iIntVal);
 		}
 
-	case SKTRIG_FAIL:
+		case SKTRIG_FAIL:
 		{
 			return 0;
 		}
 
-	case SKTRIG_SUCCESS:
+		case SKTRIG_SUCCESS:
 		{
 			if ( IsPriv(PRIV_GM) )
 			{
@@ -2899,6 +2909,9 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 			ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_HERDING_SUCCESS), pChar);
 			return 0;
 		}
+
+		default:
+			break;
 	}
 	return -SKTRIG_QTY;
 }
@@ -3815,15 +3828,17 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 		{
 			switch ( pItem->GetType())
 			{
-			case IT_TRAIN_DUMMY:	// Train dummy.
-				Use_Train_Dummy(pItem, false);
-				break;
-			case IT_TRAIN_PICKPOCKET:
-				Use_Train_PickPocketDip(pItem, false);
-				break;
-			case IT_ARCHERY_BUTTE:	// Archery Butte
-				Use_Train_ArcheryButte(pItem, false);
-				break;
+				case IT_TRAIN_DUMMY:	// Train dummy.
+					Use_Train_Dummy(pItem, false);
+					break;
+				case IT_TRAIN_PICKPOCKET:
+					Use_Train_PickPocketDip(pItem, false);
+					break;
+				case IT_ARCHERY_BUTTE:	// Archery Butte
+					Use_Train_ArcheryButte(pItem, false);
+					break;
+				default:
+					break;
 			}
 		}
 	}

@@ -339,22 +339,22 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		int ydiff = GetTopPoint().m_y - pt.m_y;
 		switch ( iTurn )
 		{
-		case 2: // right
-		case (2-DIR_QTY):
-			iTmp = xdiff;
-			xdiff = ydiff;
-			ydiff = -iTmp;
-			break;
-		case -2: // left.
-		case (DIR_QTY-2):
-			iTmp = xdiff;
-			xdiff = -ydiff;
-			ydiff = iTmp;
-			break;
-		default: // u turn.
-			xdiff = -xdiff;
-			ydiff = -ydiff;
-			break;
+			case 2: // right
+			case (2-DIR_QTY):
+				iTmp = xdiff;
+				xdiff = ydiff;
+				ydiff = -iTmp;
+				break;
+			case -2: // left.
+			case (DIR_QTY-2):
+				iTmp = xdiff;
+				xdiff = -ydiff;
+				ydiff = iTmp;
+				break;
+			default: // u turn.
+				xdiff = -xdiff;
+				ydiff = -ydiff;
+				break;
 		}
 		pt.m_x = GetTopPoint().m_x + xdiff;
 		pt.m_y = GetTopPoint().m_y + ydiff;
@@ -473,6 +473,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 					}
 				}
 				break;
+
+			default:
+				break;
 		}
 
 		// test east/west edge (as needed)
@@ -508,6 +511,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 						break;
 					}
 				}
+				break;
+
+			default:
 				break;
 		}
 
@@ -926,15 +932,17 @@ dodirmovechange:
 	{
 		if ( pszSpeak == NULL )
 		{
-			int i_foo = Calc_GetRandVal(3);
-			switch ( i_foo )
+			switch ( Calc_GetRandVal(3) )
 			{
 				case 1:
 					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_1 );
+					break;
 				case 2:
 					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_2 );
+					break;
 				default:
 					pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_REPLY_3 );
+					break;
 			}
 		}
 
@@ -1202,6 +1210,9 @@ void CItemShip::OnComponentCreate( const CItem * pComponent )
 		case IT_SHIP_SIDE:
 		case IT_SHIP_SIDE_LOCKED:
 			m_uidPlanks.push_back( pComponent->GetUID() );
+			break;
+
+		default:
 			break;
 	}
 

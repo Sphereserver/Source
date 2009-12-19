@@ -1100,6 +1100,9 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD ite
 						m_pChar->Sound( SOUND_SNIP );	// snip noise.
 					}
 					continue;
+
+				default:
+					break;
 			}
 
 			if ( amount > 1 && !pItem->Item_GetDef()->IsStackableType() )
@@ -2209,6 +2212,8 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 		case CLIMODE_TARG_STONE_RECRUIT:	OnTarg_Stone_Recruit( uid.CharFind() );  break;
 		case CLIMODE_TARG_STONE_RECRUITFULL:OnTarg_Stone_Recruit( uid.CharFind(), true ); break;
 		case CLIMODE_TARG_PARTY_ADD:		OnTarg_Party_Add( uid.CharFind() );  break;
+
+		default:							break;
 	}
 }
 
@@ -2297,6 +2302,9 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				case NPCBRAIN_HEALER:
 					m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
 					m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
+					break;
+
+				default:
 					break;
 			}
 
@@ -2623,6 +2631,9 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 						case IT_DOOR:
 							m_pChar->Use_Obj( pItem, false );
 							return;
+
+						default:
+							break;
 					}
 				}
 			}
@@ -2643,6 +2654,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 
 		default:
 			DEBUG_ERR(( "%x:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName ));
+			break;
 	}
 }
 

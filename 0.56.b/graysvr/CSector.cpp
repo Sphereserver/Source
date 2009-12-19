@@ -471,24 +471,24 @@ bool CSector::IsMoonVisible(int iPhase, int iLocalTime) const
 	iLocalTime %= (24*60);		// just to make sure (day time in minutes) 1440
 	switch (iPhase)
 	{
-	case 0:	// new moon
-		return( (iLocalTime > 360) && (iLocalTime < 1080));
-	case 1:	// waxing crescent
-		return( (iLocalTime > 540) && (iLocalTime < 1270));
-	case 2:	// first quarter
-		return( iLocalTime > 720 );
-	case 3:	// waxing gibbous
-		return( (iLocalTime < 180) || (iLocalTime > 900));
-	case 4:	// full moon
-		return( (iLocalTime < 360) || (iLocalTime > 1080));
-	case 5:	// waning gibbous
-		return( (iLocalTime < 540) || (iLocalTime > 1270));
-	case 6:	// third quarter
-		return( iLocalTime < 720 );
-	case 7:	// waning crescent
-		return( (iLocalTime > 180) && (iLocalTime < 900));
-	default: // How'd we get here?
-		return false;
+		case 0:	// new moon
+			return( (iLocalTime > 360) && (iLocalTime < 1080));
+		case 1:	// waxing crescent
+			return( (iLocalTime > 540) && (iLocalTime < 1270));
+		case 2:	// first quarter
+			return( iLocalTime > 720 );
+		case 3:	// waxing gibbous
+			return( (iLocalTime < 180) || (iLocalTime > 900));
+		case 4:	// full moon
+			return( (iLocalTime < 360) || (iLocalTime > 1080));
+		case 5:	// waning gibbous
+			return( (iLocalTime < 540) || (iLocalTime > 1270));
+		case 6:	// third quarter
+			return( iLocalTime < 720 );
+		case 7:	// waning crescent
+			return( (iLocalTime > 180) && (iLocalTime < 900));
+		default: // How'd we get here?
+			return false;
 	}
 }
 
@@ -1015,29 +1015,32 @@ void CSector::OnTick(int iPulseCount)
 			// Lightning ?	// wind, rain,
 			switch ( GetWeather() )
 			{
-			case WEATHER_CLOUDY:
-				break;
+				case WEATHER_CLOUDY:
+					break;
 
-			case WEATHER_SNOW:
-				if ( ! Calc_GetRandVal(5) )
-					sound = sm_SfxWind[ Calc_GetRandVal( COUNTOF( sm_SfxWind )) ];
-				break;
-
-			case WEATHER_RAIN:
-				{
-					int iVal = Calc_GetRandVal(30);
-					if ( iVal < 5 )
-					{
-						// Mess up the light levels for a sec..
-						LightFlash();
-						sound = sm_SfxThunder[ Calc_GetRandVal( COUNTOF( sm_SfxThunder )) ];
-					}
-					else if ( iVal < 10 )
-						sound = sm_SfxRain[ Calc_GetRandVal( COUNTOF( sm_SfxRain )) ];
-					else if ( iVal < 15 )
+				case WEATHER_SNOW:
+					if ( ! Calc_GetRandVal(5) )
 						sound = sm_SfxWind[ Calc_GetRandVal( COUNTOF( sm_SfxWind )) ];
-				}
-				break;
+					break;
+
+				case WEATHER_RAIN:
+					{
+						int iVal = Calc_GetRandVal(30);
+						if ( iVal < 5 )
+						{
+							// Mess up the light levels for a sec..
+							LightFlash();
+							sound = sm_SfxThunder[ Calc_GetRandVal( COUNTOF( sm_SfxThunder )) ];
+						}
+						else if ( iVal < 10 )
+							sound = sm_SfxRain[ Calc_GetRandVal( COUNTOF( sm_SfxRain )) ];
+						else if ( iVal < 15 )
+							sound = sm_SfxWind[ Calc_GetRandVal( COUNTOF( sm_SfxWind )) ];
+					}
+					break;
+
+				default:
+					break;
 			}
 		}
 	}

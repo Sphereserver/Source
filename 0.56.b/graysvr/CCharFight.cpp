@@ -143,13 +143,15 @@ bool CChar::Noto_IsEvil() const
 		return true;
 	switch ( GetNPCBrain() )
 	{
-	case NPCBRAIN_UNDEAD:
-	case NPCBRAIN_MONSTER:
-		return ( iKarma< 0 );
-	case NPCBRAIN_BERSERK:
-		return true;
-	case NPCBRAIN_ANIMAL:
-		return ( iKarma<= -800 );
+		case NPCBRAIN_UNDEAD:
+		case NPCBRAIN_MONSTER:
+			return ( iKarma< 0 );
+		case NPCBRAIN_BERSERK:
+			return true;
+		case NPCBRAIN_ANIMAL:
+			return ( iKarma<= -800 );
+		default:
+			break;
 	}
 	if ( m_pPlayer )
 	{
@@ -165,11 +167,13 @@ bool CChar::Noto_IsNeutral() const
 	int iKarma = Stat_GetAdjusted(STAT_KARMA);
 	switch ( GetNPCBrain() )
 	{
-	case NPCBRAIN_MONSTER:
-	case NPCBRAIN_BERSERK:
-		return( iKarma<= 0 );
-	case NPCBRAIN_ANIMAL:
-		return( iKarma<= 100 );
+		case NPCBRAIN_MONSTER:
+		case NPCBRAIN_BERSERK:
+			return( iKarma<= 0 );
+		case NPCBRAIN_ANIMAL:
+			return( iKarma<= 100 );
+		default:
+			break;
 	}
 	if ( m_pPlayer )
 	{
@@ -337,6 +341,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_CRIMINAL:		return g_Cfg.m_iColorNotoCriminal;	// Grey 2 (criminal)
 		case NOTO_GUILD_WAR:	return g_Cfg.m_iColorNotoGuildWar;	// Orange (enemy guild)
 		case NOTO_EVIL:			return g_Cfg.m_iColorNotoEvil;		// Red
+		default:				return g_Cfg.m_iColorNotoDefault;	// Grey
 	}
 
 	return g_Cfg.m_iColorNotoDefault;	// Grey
@@ -364,12 +369,15 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_DEV );	//"Dev ";
 				case PLEVEL_GM:
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_GM );	//"GM ";
+				default:
+					break;
 			}
 		}
 		switch ( GetPrivLevel() )
 		{
 			case PLEVEL_Seer: return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_SEER );	//"Seer ";
 			case PLEVEL_Counsel: return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_COUNSEL );	//"Counselor ";
+			default: break;
 		}
 	}
 
@@ -1169,19 +1177,21 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 	if ( ! IsPriv(PRIV_GM))
 	switch ( pItem->GetType())
 	{
-	case IT_SHIP_HOLD_LOCK:
-	case IT_SHIP_HOLD:
-		// Must be on board a ship to open the hatch.
-		ASSERT(m_pArea);
-		if ( m_pArea->GetResourceID() != pItem->m_uidLink )
-		{
-			SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_HATCH_FAIL));
-			return( true );
-		}
-		break;
-	case IT_EQ_BANK_BOX:
-		// Some sort of cheater.
-		return( false );
+		case IT_SHIP_HOLD_LOCK:
+		case IT_SHIP_HOLD:
+			// Must be on board a ship to open the hatch.
+			ASSERT(m_pArea);
+			if ( m_pArea->GetResourceID() != pItem->m_uidLink )
+			{
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_HATCH_FAIL));
+				return( true );
+			}
+			break;
+		case IT_EQ_BANK_BOX:
+			// Some sort of cheater.
+			return( false );
+		default:
+			break;
 	}
 
 	CChar * pCharMark;
@@ -1713,6 +1723,9 @@ int CChar::CalcArmorDefense() const
 				case SPELL_Arch_Prot:
 					// Effect of protection spells.
 					iDefenseTotal += g_Cfg.GetSpellEffect(spell, pItem->m_itSpell.m_spelllevel ) * 100;
+					break;
+
+				default:
 					break;
 			}
 		}
@@ -2483,33 +2496,33 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		LPCTSTR const * ppMsg;
 		switch ( iHitArea )
 		{
-		case ARMOR_HEAD:
-			ppMsg = (iDmg>10) ? sm_Hit_Head2[iMsg] : sm_Hit_Head1[iMsg];
-			break;
-		case ARMOR_NECK:
-			ppMsg = (iDmg>10) ? sm_Hit_Neck2 : sm_Hit_Neck1;
-			break;
-		case ARMOR_BACK:
-			ppMsg = sm_Hit_Back;
-			break;
-		case ARMOR_CHEST:
-			ppMsg = (iDmg>10) ? sm_Hit_Chest2[iMsg] : sm_Hit_Chest1[iMsg];
-			break;
-		case ARMOR_ARMS:
-			ppMsg = sm_Hit_Arm[iMsg];
-			break;
-		case ARMOR_HANDS:
-			ppMsg = sm_Hit_Hands[iMsg];
-			break;
-		case ARMOR_LEGS:
-			ppMsg = sm_Hit_Legs[iMsg];
-			break;
-		case ARMOR_FEET:
-			ppMsg = sm_Hit_Feet;
-			break;
-		default:
-			ASSERT(0);
-			break;
+			case ARMOR_HEAD:
+				ppMsg = (iDmg>10) ? sm_Hit_Head2[iMsg] : sm_Hit_Head1[iMsg];
+				break;
+			case ARMOR_NECK:
+				ppMsg = (iDmg>10) ? sm_Hit_Neck2 : sm_Hit_Neck1;
+				break;
+			case ARMOR_BACK:
+				ppMsg = sm_Hit_Back;
+				break;
+			case ARMOR_CHEST:
+				ppMsg = (iDmg>10) ? sm_Hit_Chest2[iMsg] : sm_Hit_Chest1[iMsg];
+				break;
+			case ARMOR_ARMS:
+				ppMsg = sm_Hit_Arm[iMsg];
+				break;
+			case ARMOR_HANDS:
+				ppMsg = sm_Hit_Hands[iMsg];
+				break;
+			case ARMOR_LEGS:
+				ppMsg = sm_Hit_Legs[iMsg];
+				break;
+			case ARMOR_FEET:
+				ppMsg = sm_Hit_Feet;
+				break;
+			default:
+				ASSERT(0);
+				break;
 		}
 
 		if ( pSrc != this )
@@ -2539,13 +2552,15 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX(pArmor->m_itSpell.m_spell);
 			switch ( spell )
 			{
-			case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
-			case SPELL_Stoneskin:		// turns your skin into stone, giving a boost to your AR.
-			case SPELL_Arch_Prot:
-			case SPELL_Protection:
-				// Effect of protection spells are general.
-				iMaxCoverage = maximum( iMaxCoverage, g_Cfg.GetSpellEffect( spell, pArmor->m_itSpell.m_spelllevel ));
-				continue;
+				case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
+				case SPELL_Stoneskin:		// turns your skin into stone, giving a boost to your AR.
+				case SPELL_Arch_Prot:
+				case SPELL_Protection:
+					// Effect of protection spells are general.
+					iMaxCoverage = maximum( iMaxCoverage, g_Cfg.GetSpellEffect( spell, pArmor->m_itSpell.m_spelllevel ));
+					continue;
+				default:
+					break;
 			}
 		}
 
@@ -2757,12 +2772,15 @@ bool CChar::Fight_IsActive() const
 	SKILL_TYPE iSkillActive		= Skill_GetActive();
 	switch ( iSkillActive )
 	{
-	case SKILL_ARCHERY:
-	case SKILL_FENCING:
-	case SKILL_MACEFIGHTING:
-	case SKILL_SWORDSMANSHIP:
-	case SKILL_WRESTLING:
-		return( true );
+		case SKILL_ARCHERY:
+		case SKILL_FENCING:
+		case SKILL_MACEFIGHTING:
+		case SKILL_SWORDSMANSHIP:
+		case SKILL_WRESTLING:
+			return( true );
+
+		default:
+			break;
 	}
 
 	if ( iSkillActive == Fight_GetWeaponSkill() )
@@ -3043,6 +3061,8 @@ void CChar::Fight_HitTry()
 			return;
 		case WAR_SWING_SWINGING:	// must come back here again to complete.
 			return;
+		default:
+			break;
 	}
 
 	ASSERT(0);
@@ -3181,6 +3201,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			case IT_WEAPON_BOW:
 			case IT_WEAPON_XBOW:
 				iTyp |= DAMAGE_HIT_PIERCE;
+				break;
+			default:
 				break;
 		}
 

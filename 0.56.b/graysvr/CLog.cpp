@@ -86,18 +86,18 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 
 		switch (wMask & 0x07)
 		{
-		case LOGL_FATAL:	// fatal error !
-			pszLabel = "FATAL:";
-			break;
-		case LOGL_CRIT:	// critical.
-			pszLabel = "CRITICAL:";
-			break;
-		case LOGL_ERROR:	// non-fatal errors.
-			pszLabel = "ERROR:";
-			break;
-		case LOGL_WARN:
-			pszLabel = "WARNING:";
-			break;
+			case LOGL_FATAL:	// fatal error !
+				pszLabel = "FATAL:";
+				break;
+			case LOGL_CRIT:	// critical.
+				pszLabel = "CRITICAL:";
+				break;
+			case LOGL_ERROR:	// non-fatal errors.
+				pszLabel = "ERROR:";
+				break;
+			case LOGL_WARN:
+				pszLabel = "WARNING:";
+				break;
 		}
 		if ( !pszLabel && ( wMask & LOGM_DEBUG ) && !( wMask & LOGM_INIT ))
 			pszLabel = "DEBUG:";
@@ -240,7 +240,8 @@ void _cdecl CLog::CatchEvent( CGrayError * pErr, LPCTSTR pszCatchContext, ... )
 		else
 		{
 			eSeverity = LOGL_CRIT;
-			iLen = sprintf(szMsg, "Exception", CServTime::GetCurrentTime());
+			strcat(szMsg, "Exception");
+			iLen = strlen(szMsg);
 		}
 
 		iLen += sprintf( szMsg+iLen, ", in " );

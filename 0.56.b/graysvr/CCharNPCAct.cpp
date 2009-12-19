@@ -341,6 +341,8 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 				}
 			}
 			break;
+		default:
+			break;
 	}
 
 	// I've heard them for the first time.
@@ -1244,16 +1246,17 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 			switch( OnTrigger( CTRIG_NPCLookAtItem, this, &Args ) )
 			{
 #ifdef _NAZDEBUG
-			case  TRIGRET_RET_TRUE:	
-				g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned TRUE\n", GetName() );
-				return false;
-			case  TRIGRET_RET_FALSE:	
-				g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned FALSE\n", GetName() );
-				return true;
+				case  TRIGRET_RET_TRUE:	
+					g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned TRUE\n", GetName() );
+					return false;
+				case  TRIGRET_RET_FALSE:	
+					g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned FALSE\n", GetName() );
+					return true;
 #else
-			case  TRIGRET_RET_TRUE:		return true;
-			case  TRIGRET_RET_FALSE:	return false;
+				case  TRIGRET_RET_TRUE:		return true;
+				case  TRIGRET_RET_FALSE:	return false;
 #endif
+				default:					break;
 			}
 #ifdef _NAZDEBUG
 			g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned DEFAULT\n", GetName() );
@@ -1364,8 +1367,9 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 	{
 		switch ( OnTrigger(CTRIG_NPCLookAtChar, pChar) )
 		{
-		case  TRIGRET_RET_TRUE:		return true;
-		case  TRIGRET_RET_FALSE:	return false;
+			case  TRIGRET_RET_TRUE:		return true;
+			case  TRIGRET_RET_FALSE:	return false;
+			default:					break;
 		}
 	}
 
@@ -1409,62 +1413,65 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 
 	switch ( m_pNPC->m_Brain )	// my type of brain
 	{
-	case NPCBRAIN_GUARD:
-		// Guards should look around for criminals or nasty creatures.
-		if ( NPC_LookAtCharGuard( pChar ))
-			return true;
-		break;
+		case NPCBRAIN_GUARD:
+			// Guards should look around for criminals or nasty creatures.
+			if ( NPC_LookAtCharGuard( pChar ))
+				return true;
+			break;
 
-	case NPCBRAIN_BEGGAR:
-		if ( NPC_Act_Begging( pChar ))
-			return true;
-		if ( NPC_LookAtCharHuman( pChar ))
-			return( true );
-		break;
+		case NPCBRAIN_BEGGAR:
+			if ( NPC_Act_Begging( pChar ))
+				return true;
+			if ( NPC_LookAtCharHuman( pChar ))
+				return( true );
+			break;
 
-	case NPCBRAIN_MONSTER:
-	case NPCBRAIN_UNDEAD:
-	case NPCBRAIN_DRAGON:
-		if ( NPC_LookAtCharMonster( pChar ))
-			return( true );
-		break;
+		case NPCBRAIN_MONSTER:
+		case NPCBRAIN_UNDEAD:
+		case NPCBRAIN_DRAGON:
+			if ( NPC_LookAtCharMonster( pChar ))
+				return( true );
+			break;
 
-	case NPCBRAIN_BERSERK:
-		// Blades or EV.
-		// ??? Attack everyone you touch !
-		if ( iDist <= CalcFightRange( m_uidWeapon.ItemFind() ) )
-		{
-			Fight_Hit( pChar );
-		}
-		if ( Fight_IsActive()) // Is this a better target than my last ?
-		{
-			CChar * pCharTarg = m_Act_Targ.CharFind();
-			if ( pCharTarg != NULL )
+		case NPCBRAIN_BERSERK:
+			// Blades or EV.
+			// ??? Attack everyone you touch !
+			if ( iDist <= CalcFightRange( m_uidWeapon.ItemFind() ) )
 			{
-				if ( iDist >= GetTopDist3D( pCharTarg ))
-					break;
+				Fight_Hit( pChar );
 			}
-		}
-		Fight_Attack( pChar );
-		break;
+			if ( Fight_IsActive()) // Is this a better target than my last ?
+			{
+				CChar * pCharTarg = m_Act_Targ.CharFind();
+				if ( pCharTarg != NULL )
+				{
+					if ( iDist >= GetTopDist3D( pCharTarg ))
+						break;
+				}
+			}
+			Fight_Attack( pChar );
+			break;
 
-	case NPCBRAIN_HEALER:
-		// Healers should look around for ghosts.
-		if ( NPC_LookAtCharHealer( pChar ))
-			return( true );
-		if ( NPC_LookAtCharHuman( pChar ))
-			return( true );
-		break;
+		case NPCBRAIN_HEALER:
+			// Healers should look around for ghosts.
+			if ( NPC_LookAtCharHealer( pChar ))
+				return( true );
+			if ( NPC_LookAtCharHuman( pChar ))
+				return( true );
+			break;
 
-	case NPCBRAIN_BANKER:
-	case NPCBRAIN_VENDOR:
-	case NPCBRAIN_STABLE:
-	case NPCBRAIN_ANIMAL:
-	case NPCBRAIN_HUMAN:
-	case NPCBRAIN_THIEF:
-		if ( NPC_LookAtCharHuman(pChar) )
-			return true;
-		break;
+		case NPCBRAIN_BANKER:
+		case NPCBRAIN_VENDOR:
+		case NPCBRAIN_STABLE:
+		case NPCBRAIN_ANIMAL:
+		case NPCBRAIN_HUMAN:
+		case NPCBRAIN_THIEF:
+			if ( NPC_LookAtCharHuman(pChar) )
+				return true;
+			break;
+
+		default:
+			break;
 	}
 
 	return( false );
@@ -1636,9 +1643,11 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 		CScriptTriggerArgs Args( fFlee, maxDistance, forceDistance );
 		switch ( OnTrigger( CTRIG_NPCActFollow, pChar, &Args ) )
 		{
-			case TRIGRET_RET_TRUE:	return FALSE;
-			case TRIGRET_RET_FALSE:	return TRUE;
+			case TRIGRET_RET_TRUE:	return false;
+			case TRIGRET_RET_FALSE:	return true;
+			default:				break;
 		}
+
 		fFlee			= (Args.m_iN1 != 0);
 		maxDistance		= Args.m_iN2;
 		forceDistance	= Args.m_iN3;
@@ -1886,25 +1895,27 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 						//	check if the target need that
 						switch ( spell )
 						{
-						case SPELL_Heal:
-						case SPELL_Great_Heal:
-							if ( pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR)/3 ) bSpellSuits = true;
-							break;
-						case SPELL_Reactive_Armor:
-							if ( pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL ) bSpellSuits = true;
-							break;
-						case SPELL_Cure:
-							if ( pTarget->LayerFind(LAYER_FLAG_Poison) != NULL ) bSpellSuits = true;
-							break;
-						case SPELL_Protection:
-							if ( pTarget->LayerFind(LAYER_SPELL_Protection) == NULL ) bSpellSuits = true;
-							break;
-						case SPELL_Bless:
-							if ( pTarget->LayerFind(LAYER_SPELL_STATS) == NULL ) bSpellSuits = true;
-							break;
-						case SPELL_Magic_Reflect:
-							if ( pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL ) bSpellSuits = true;
-							break;
+							case SPELL_Heal:
+							case SPELL_Great_Heal:
+								if ( pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR)/3 ) bSpellSuits = true;
+								break;
+							case SPELL_Reactive_Armor:
+								if ( pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL ) bSpellSuits = true;
+								break;
+							case SPELL_Cure:
+								if ( pTarget->LayerFind(LAYER_FLAG_Poison) != NULL ) bSpellSuits = true;
+								break;
+							case SPELL_Protection:
+								if ( pTarget->LayerFind(LAYER_SPELL_Protection) == NULL ) bSpellSuits = true;
+								break;
+							case SPELL_Bless:
+								if ( pTarget->LayerFind(LAYER_SPELL_STATS) == NULL ) bSpellSuits = true;
+								break;
+							case SPELL_Magic_Reflect:
+								if ( pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL ) bSpellSuits = true;
+								break;
+							default:
+								break;
 						}
 
 						if ( bSpellSuits ) break;
@@ -1922,15 +1933,15 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 					//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
 					switch ( spell )
 					{
-					case SPELL_Air_Elem:
-					case SPELL_Daemon:
-					case SPELL_Earth_Elem:
-					case SPELL_Fire_Elem:
-					case SPELL_Water_Elem:
-					case SPELL_Summon_Undead:
-						break;
-					default:
-						continue;
+						case SPELL_Air_Elem:
+						case SPELL_Daemon:
+						case SPELL_Earth_Elem:
+						case SPELL_Fire_Elem:
+						case SPELL_Water_Elem:
+						case SPELL_Summon_Undead:
+							break;
+						default:
+							continue;
 					}
 				}
 
@@ -2024,7 +2035,9 @@ void CChar::NPC_Act_Fight()
 		{
 			case TRIGRET_RET_TRUE:	return;
 			case TRIGRET_RET_FALSE:	fSkipHardcoded	= true;	break;
+			default:				break;
 		}
+
 		iDist		= Args.m_iN1;
 		iMotivation	= Args.m_iN2;
 	}
@@ -2450,23 +2463,23 @@ void CChar::NPC_Act_Goto()
 
 	switch ( NPC_WalkToPoint())
 	{
-	case 0:
-		// We reached our destination
-		NPC_Act_Idle();	// look for something new to do.
-		break;
-	case 1:
-		// Took a step....keep trying to get there.
-		break;
-	case 2:
-		// Give it up...
-		// Go directly there...
-		if ( m_Act_p.IsValidPoint() &&
-			IsHuman() &&
-			!IsStatFlag( STATF_Freeze|STATF_Stone ))
-			Spell_Teleport( m_Act_p, true, false);
-		else
+		case 0:
+			// We reached our destination
 			NPC_Act_Idle();	// look for something new to do.
-		break;
+			break;
+		case 1:
+			// Took a step....keep trying to get there.
+			break;
+		case 2:
+			// Give it up...
+			// Go directly there...
+			if ( m_Act_p.IsValidPoint() &&
+				IsHuman() &&
+				!IsStatFlag( STATF_Freeze|STATF_Stone ))
+				Spell_Teleport( m_Act_p, true, false);
+			else
+				NPC_Act_Idle();	// look for something new to do.
+			break;
 	}
 }
 
@@ -2585,24 +2598,26 @@ bool CChar::NPC_Act_Food()
 			//	move towards this item
 			switch ( m_Act_SkillCurrent )
 			{
-			case NPCACT_STAY:
-			case NPCACT_GOTO:
-			case NPCACT_WANDER:
-			case NPCACT_LOOKING:
-			case NPCACT_GO_HOME:
-			case NPCACT_Napping:
-			case NPCACT_FLEE:
-				{
-					CPointMap pt = pClosestFood->GetTopPoint();
-					if ( CanMoveWalkTo(pt) )
+				case NPCACT_STAY:
+				case NPCACT_GOTO:
+				case NPCACT_WANDER:
+				case NPCACT_LOOKING:
+				case NPCACT_GO_HOME:
+				case NPCACT_Napping:
+				case NPCACT_FLEE:
 					{
-						m_Act_p = pt;
-						Skill_Start(NPCACT_GOTO);
-						return true;
-						//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
+						CPointMap pt = pClosestFood->GetTopPoint();
+						if ( CanMoveWalkTo(pt) )
+						{
+							m_Act_p = pt;
+							Skill_Start(NPCACT_GOTO);
+							return true;
+							//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
+						}
+						break;
 					}
+				default:
 					break;
-				}
 			}
 		}
 	}
@@ -2848,13 +2863,15 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 
 		switch ( pItem->GetType() )
 		{
-		case IT_POTION:
-		case IT_DRINK:
-		case IT_PITCHER:
-		case IT_WATER_WASH:
-		case IT_BOOZE:
-			if ( Use_Item(pItem) )
-				return true;
+			case IT_POTION:
+			case IT_DRINK:
+			case IT_PITCHER:
+			case IT_WATER_WASH:
+			case IT_BOOZE:
+				if ( Use_Item(pItem) )
+					return true;
+			default:
+				break;
 		}
 	}
 
@@ -2870,6 +2887,8 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 					return NPC_OnTrainPay(pCharSrc, pMemory, pItem);
 				case NPC_MEM_ACT_SPEAK_HIRE:
 					return NPC_OnHirePay(pCharSrc, pMemory, pItem);
+				default:
+					break;
 			}
 		}
 	}
@@ -2986,6 +3005,9 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 				Skill_Start( SKILL_NONE );
 			}
 			return( true );
+
+		default:
+			break;
 	}
 
 	if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
@@ -3371,24 +3393,26 @@ void CChar::NPC_Food()
 			//	move towards this item
 			switch ( m_Act_SkillCurrent )
 			{
-			case NPCACT_STAY:
-			case NPCACT_GOTO:
-			case NPCACT_WANDER:
-			case NPCACT_LOOKING:
-			case NPCACT_GO_HOME:
-			case NPCACT_Napping:
-			case NPCACT_FLEE:
-				{
-					EXC_SET("walking to desired");
-					CPointMap pt = pClosestFood->GetTopPoint();
-					if ( CanMoveWalkTo(pt) )
+				case NPCACT_STAY:
+				case NPCACT_GOTO:
+				case NPCACT_WANDER:
+				case NPCACT_LOOKING:
+				case NPCACT_GO_HOME:
+				case NPCACT_Napping:
+				case NPCACT_FLEE:
 					{
-						m_Act_p = pt;
-						Skill_Start(NPCACT_GOTO);
-						NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
+						EXC_SET("walking to desired");
+						CPointMap pt = pClosestFood->GetTopPoint();
+						if ( CanMoveWalkTo(pt) )
+						{
+							m_Act_p = pt;
+							Skill_Start(NPCACT_GOTO);
+							NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
+						}
+						break;
 					}
+				default:
 					break;
-				}
 			}
 		}
 	}
@@ -3458,6 +3482,8 @@ void CChar::NPC_Food()
 							}
 							break;
 						}
+					default:
+						break;
 				}
 			}
 		}
@@ -3688,6 +3714,8 @@ void CChar::NPC_AI()
 				break;
 			} // undead
 
+			default:
+				break;
 		} // switch brain
 
 		if ( bActed ) ;

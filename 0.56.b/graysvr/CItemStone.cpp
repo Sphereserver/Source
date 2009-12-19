@@ -403,6 +403,7 @@ LPCTSTR CStoneMember::GetPrivName() const
 		case STONEPRIV_MASTER: return "the master of";
 		case STONEPRIV_ACCEPTED: return "accepted in";
 		case STONEPRIV_ENEMY: return "the enemy of";
+		default: return "unknown";
 	}
 	return( "unknown" );
 #else
@@ -484,8 +485,9 @@ MEMORY_TYPE CItemStone::GetMemoryType() const
 	ADDTOCALLSTACK("CItemStone::GetMemoryType");
 	switch ( GetType() )
 	{
-	case IT_STONE_TOWN: return( MEMORY_TOWN );
-	case IT_STONE_GUILD: return( MEMORY_GUILD );
+		case IT_STONE_TOWN: return( MEMORY_TOWN );
+		case IT_STONE_GUILD: return( MEMORY_GUILD );
+		default: return( MEMORY_NONE );
 	}
 	// Houses have no memories.
 	return( MEMORY_NONE );
@@ -512,6 +514,8 @@ LPCTSTR CItemStone::GetTypeName() const
 			return "Guild";
 		case IT_STONE_TOWN:
 			return "Town";
+		default:
+			return "Unk";
 	}
 	return "Unk";
 #else
@@ -524,6 +528,8 @@ LPCTSTR CItemStone::GetTypeName() const
 			break;
 		case IT_STONE_TOWN:
 			pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_TOWN");
+			break;
+		default:
 			break;
 	}
 
@@ -1901,6 +1907,9 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 #endif */
 			}
 			return( true );
+
+		default:
+			break;
 	}
 
 	// just delete this member. (it is mislinked)
@@ -2465,20 +2474,22 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	int iControlLimit = COUNTOF(sm_szDefControls);
 	switch ( iStoneMenu )
 	{
-	case STONEDISP_FEALTY:
-	case STONEDISP_ACCEPTCANDIDATE:
-	case STONEDISP_REFUSECANDIDATE:
-	case STONEDISP_DISMISSMEMBER:
-	case STONEDISP_DECLAREWAR:
-	case STONEDISP_DECLAREPEACE:
-	case STONEDISP_GRANTTITLE:
-		break;
-	case STONEDISP_ROSTER:
-	case STONEDISP_CANDIDATES:
-	case STONEDISP_VIEWENEMYS:
-	case STONEDISP_VIEWTHREATS:
-		iControlLimit --;
-		break;
+		case STONEDISP_FEALTY:
+		case STONEDISP_ACCEPTCANDIDATE:
+		case STONEDISP_REFUSECANDIDATE:
+		case STONEDISP_DISMISSMEMBER:
+		case STONEDISP_DECLAREWAR:
+		case STONEDISP_DECLAREPEACE:
+		case STONEDISP_GRANTTITLE:
+			break;
+		case STONEDISP_ROSTER:
+		case STONEDISP_CANDIDATES:
+		case STONEDISP_VIEWENEMYS:
+		case STONEDISP_VIEWTHREATS:
+			iControlLimit --;
+			break;
+		default:
+			break;
 	}
 
 	while ( iControls < iControlLimit )
@@ -2506,61 +2517,65 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 
 	switch ( iStoneMenu )
 	{
-	case STONEDISP_ROSTER:
-		sText[0].Format(sm_szDefText[0], (LPCTSTR) GetName(), "Roster");
-		break;
-	case STONEDISP_CANDIDATES:
-		sText[0].Format(sm_szDefText[0], (LPCTSTR) GetName(), "Candidates");
-		break;
-	case STONEDISP_FEALTY:
-		sText[0].Format(sm_szDefText[0], "Declare your fealty", "" );
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
-			"I have selected my new lord");
-		break;
-	case STONEDISP_ACCEPTCANDIDATE:
-		sText[0].Format(sm_szDefText[0], "Accept candidate for", (LPCTSTR) GetName());
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
-			"Accept this candidate for membership");
-		break;
-	case STONEDISP_REFUSECANDIDATE:
-		sText[0].Format(sm_szDefText[0], "Refuse candidate for", (LPCTSTR) GetName());
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
-			"Refuse this candidate membership");
-		break;
-	case STONEDISP_DISMISSMEMBER:
-		sText[0].Format(sm_szDefText[0], "Dismiss member from", (LPCTSTR) GetName());
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
-			"Dismiss this member");
-		break;
-	case STONEDISP_DECLAREWAR:
-		sText[0].Format(sm_szDefText[0], "Declaration of war by", (LPCTSTR) GetName());
-		sText[COUNTOF(sm_szDefText)-1].Format(	"Declare war on this %s", (LPCTSTR) GetTypeName());
-		break;
-	case STONEDISP_DECLAREPEACE:
-		sText[0].Format(sm_szDefText[0], "Declaration of peace by", (LPCTSTR) GetName());
-		sText[COUNTOF(sm_szDefText)-1].Format( "Declare peace with this %s", (LPCTSTR) GetTypeName());
-		break;
-	case STONEDISP_GRANTTITLE:
-		sText[0] = "To whom do you wish to grant a title?";
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
-			"Grant this member a title");
-		break;
-	case STONEDISP_VIEWENEMYS:
-		sText[0].Format( "%ss we have declared war on", (LPCTSTR) GetTypeName());
-		break;
-	case STONEDISP_VIEWTHREATS:
-		sText[0].Format( "%ss which have declared war on us", (LPCTSTR) GetTypeName());
-		break;
+		case STONEDISP_ROSTER:
+			sText[0].Format(sm_szDefText[0], (LPCTSTR) GetName(), "Roster");
+			break;
+		case STONEDISP_CANDIDATES:
+			sText[0].Format(sm_szDefText[0], (LPCTSTR) GetName(), "Candidates");
+			break;
+		case STONEDISP_FEALTY:
+			sText[0].Format(sm_szDefText[0], "Declare your fealty", "" );
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
+				"I have selected my new lord");
+			break;
+		case STONEDISP_ACCEPTCANDIDATE:
+			sText[0].Format(sm_szDefText[0], "Accept candidate for", (LPCTSTR) GetName());
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
+				"Accept this candidate for membership");
+			break;
+		case STONEDISP_REFUSECANDIDATE:
+			sText[0].Format(sm_szDefText[0], "Refuse candidate for", (LPCTSTR) GetName());
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
+				"Refuse this candidate membership");
+			break;
+		case STONEDISP_DISMISSMEMBER:
+			sText[0].Format(sm_szDefText[0], "Dismiss member from", (LPCTSTR) GetName());
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
+				"Dismiss this member");
+			break;
+		case STONEDISP_DECLAREWAR:
+			sText[0].Format(sm_szDefText[0], "Declaration of war by", (LPCTSTR) GetName());
+			sText[COUNTOF(sm_szDefText)-1].Format(	"Declare war on this %s", (LPCTSTR) GetTypeName());
+			break;
+		case STONEDISP_DECLAREPEACE:
+			sText[0].Format(sm_szDefText[0], "Declaration of peace by", (LPCTSTR) GetName());
+			sText[COUNTOF(sm_szDefText)-1].Format( "Declare peace with this %s", (LPCTSTR) GetTypeName());
+			break;
+		case STONEDISP_GRANTTITLE:
+			sText[0] = "To whom do you wish to grant a title?";
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1],
+				"Grant this member a title");
+			break;
+		case STONEDISP_VIEWENEMYS:
+			sText[0].Format( "%ss we have declared war on", (LPCTSTR) GetTypeName());
+			break;
+		case STONEDISP_VIEWTHREATS:
+			sText[0].Format( "%ss which have declared war on us", (LPCTSTR) GetTypeName());
+			break;
+		default:
+			break;
 	}
 
 	switch ( iStoneMenu )
 	{
-	case STONEDISP_ROSTER:
-	case STONEDISP_CANDIDATES:
-	case STONEDISP_VIEWTHREATS:
-	case STONEDISP_VIEWENEMYS:
-		sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1], "Done");
-		break;
+		case STONEDISP_ROSTER:
+		case STONEDISP_CANDIDATES:
+		case STONEDISP_VIEWTHREATS:
+		case STONEDISP_VIEWENEMYS:
+			sText[COUNTOF(sm_szDefText)-1].Format(sm_szDefText[COUNTOF(sm_szDefText)-1], "Done");
+			break;
+		default:
+			break;
 	}
 	iTexts++;
 
@@ -2593,24 +2608,26 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 		}
 		switch ( iStoneMenu )
 		{
-		case STONEDISP_FEALTY:
-		case STONEDISP_DISMISSMEMBER:
-		case STONEDISP_ACCEPTCANDIDATE:
-		case STONEDISP_REFUSECANDIDATE:
-		case STONEDISP_DECLAREWAR:
-		case STONEDISP_DECLAREPEACE:
-		case STONEDISP_GRANTTITLE:
-			{
-				sControls[iControls++].Format("radio 20 %i 5002 5003 0 %i", ((iLoop % 10) * 25) + 35, iLoop + 1000);
-			}
-		case STONEDISP_ROSTER:
-		case STONEDISP_CANDIDATES:
-		case STONEDISP_VIEWENEMYS:
-		case STONEDISP_VIEWTHREATS:
-			{
-				sControls[iControls++].Format("text 55 %i 0 %i", ((iLoop % 10) * 25) + 32, iLoop + 4);
-			}
-			break;
+			case STONEDISP_FEALTY:
+			case STONEDISP_DISMISSMEMBER:
+			case STONEDISP_ACCEPTCANDIDATE:
+			case STONEDISP_REFUSECANDIDATE:
+			case STONEDISP_DECLAREWAR:
+			case STONEDISP_DECLAREPEACE:
+			case STONEDISP_GRANTTITLE:
+				{
+					sControls[iControls++].Format("radio 20 %i 5002 5003 0 %i", ((iLoop % 10) * 25) + 35, iLoop + 1000);
+				}
+			case STONEDISP_ROSTER:
+			case STONEDISP_CANDIDATES:
+			case STONEDISP_VIEWENEMYS:
+			case STONEDISP_VIEWTHREATS:
+				{
+					sControls[iControls++].Format("text 55 %i 0 %i", ((iLoop % 10) * 25) + 32, iLoop + 4);
+				}
+				break;
+			default:
+				break;
 		}
 		ASSERT( iControls < COUNTOF(sControls));
 	}
@@ -2647,6 +2664,8 @@ void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
 		case STONEDISP_SETCHARTER:
 			addStoneSetViewCharter(pClient,menuid);
 			break;
+		default:
+			break;
 	}
 #endif
 }
@@ -2675,17 +2694,17 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 					int id = resp.m_TextArray[i]->m_ID - 1000;
 					switch ( id )
 					{
-					case 0:	// Charter[0]
-					case 1:	// Charter[1]
-					case 2:	// Charter[2]
-					case 3:	// Charter[3]
-					case 4:	// Charter[4]
-					case 5:	// Charter[5]
-						SetCharter(id, resp.m_TextArray[i]->m_sText);
-						break;
-					case 6:	// Weblink
-						SetWebPage( resp.m_TextArray[i]->m_sText );
-						break;
+						case 0:	// Charter[0]
+						case 1:	// Charter[1]
+						case 2:	// Charter[2]
+						case 3:	// Charter[3]
+						case 4:	// Charter[4]
+						case 5:	// Charter[5]
+							SetCharter(id, resp.m_TextArray[i]->m_sText);
+							break;
+						case 6:	// Weblink
+							SetWebPage( resp.m_TextArray[i]->m_sText );
+							break;
 					}
 				}
 			}
@@ -2756,40 +2775,42 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 	{
 		switch ( type ) // Button presses come here
 		{
-		case STONEDISP_DECLAREWAR:
-			if ( ! WeDeclareWar(g_World.m_Stones[iStoneIndex]))
-			{
-				pClient->SysMessage( "Cannot declare war" );
-			}
-			break;
-		case STONEDISP_ACCEPTCANDIDATE:
-			ASSERT( pMember );
-			AddRecruit( pMember->GetLinkUID().CharFind(), STONEPRIV_ACCEPTED );
-			break;
-		case STONEDISP_REFUSECANDIDATE:
-			ASSERT( pMember );
-			delete pMember;
-			break;
-		case STONEDISP_DISMISSMEMBER:
-			ASSERT( pMember );
-			delete pMember;
-			break;
-		case STONEDISP_FEALTY:
-			ASSERT( pMember );
-			{
-				CStoneMember * pMe = GetMember(pClient->GetChar());
-				if ( pMe == NULL ) return( false );
-				pMe->SetLoyalTo( pMember->GetLinkUID().CharFind());
-			}
-			break;
-		case STONEDISP_DECLAREPEACE:
-			ASSERT( pMember );
-			WeDeclarePeace(pMember->GetLinkUID());
-			break;
-		case STONEDISP_GRANTTITLE:
-			ASSERT( pMember );
-			pClient->addPromptConsole( CLIMODE_PROMPT_STONE_GRANT_TITLE, "What title dost thou grant?", GetUID(), pMember->GetLinkUID() );
-			return( true );
+			case STONEDISP_DECLAREWAR:
+				if ( ! WeDeclareWar(g_World.m_Stones[iStoneIndex]))
+				{
+					pClient->SysMessage( "Cannot declare war" );
+				}
+				break;
+			case STONEDISP_ACCEPTCANDIDATE:
+				ASSERT( pMember );
+				AddRecruit( pMember->GetLinkUID().CharFind(), STONEPRIV_ACCEPTED );
+				break;
+			case STONEDISP_REFUSECANDIDATE:
+				ASSERT( pMember );
+				delete pMember;
+				break;
+			case STONEDISP_DISMISSMEMBER:
+				ASSERT( pMember );
+				delete pMember;
+				break;
+			case STONEDISP_FEALTY:
+				ASSERT( pMember );
+				{
+					CStoneMember * pMe = GetMember(pClient->GetChar());
+					if ( pMe == NULL ) return( false );
+					pMe->SetLoyalTo( pMember->GetLinkUID().CharFind());
+				}
+				break;
+			case STONEDISP_DECLAREPEACE:
+				ASSERT( pMember );
+				WeDeclarePeace(pMember->GetLinkUID());
+				break;
+			case STONEDISP_GRANTTITLE:
+				ASSERT( pMember );
+				pClient->addPromptConsole( CLIMODE_PROMPT_STONE_GRANT_TITLE, "What title dost thou grant?", GetUID(), pMember->GetLinkUID() );
+				return( true );
+			default:
+				break;
 		}
 	}
 	else
@@ -2906,6 +2927,9 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 				pMaster->SetTitle(pszText);
 				sMsg.Format( "Title set: %s", pszText);
 			}
+			break;
+
+		default:
 			break;
 	}
 #endif

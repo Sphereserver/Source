@@ -310,12 +310,15 @@ RESOURCE_ID CResourceBase::ResourceGetID( RES_TYPE restype, LPCTSTR & pszName )
 	// Try to handle private name spaces.
 	switch ( restype )
 	{
-	case RES_ACCOUNT:
-	case RES_AREA:
-	case RES_GMPAGE:
-	case RES_ROOM:
-	case RES_SECTOR:
-		break;
+		case RES_ACCOUNT:
+		case RES_AREA:
+		case RES_GMPAGE:
+		case RES_ROOM:
+		case RES_SECTOR:
+			break;
+
+		default:
+			break;
 	}
 
 	rid.SetPrivateUID( Exp_GetVal(pszName));	// May be some complex expression {}
@@ -821,34 +824,36 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 
 	switch (restype)
 	{
-	case RES_TYPEDEF:
-	case RES_ITEMDEF:
-		ppTable = CItem::sm_szTrigName;
-		iQty = ITRIG_QTY;
-		break;
-	case RES_CHARDEF:
-	case RES_EVENTS:
-	case RES_SKILLCLASS:
-		ppTable = CChar::sm_szTrigName;
-		iQty = CTRIG_QTY;
-		break;
-	case RES_SKILL:
-		ppTable = CSkillDef::sm_szTrigName;
-		iQty = SKTRIG_QTY;
-		break;
-	case RES_SPELL:
-		ppTable = CSpellDef::sm_szTrigName;
-		iQty = SPTRIG_QTY;
-		break;
-	case RES_AREA:
-	case RES_REGIONTYPE:
-		ppTable = CRegionWorld::sm_szTrigName;
-		iQty = RTRIG_QTY;
-		break;
-	case RES_WEBPAGE:
-		ppTable = CWebPageDef::sm_szTrigName;
-		iQty = WTRIG_QTY;
-		break;
+		case RES_TYPEDEF:
+		case RES_ITEMDEF:
+			ppTable = CItem::sm_szTrigName;
+			iQty = ITRIG_QTY;
+			break;
+		case RES_CHARDEF:
+		case RES_EVENTS:
+		case RES_SKILLCLASS:
+			ppTable = CChar::sm_szTrigName;
+			iQty = CTRIG_QTY;
+			break;
+		case RES_SKILL:
+			ppTable = CSkillDef::sm_szTrigName;
+			iQty = SKTRIG_QTY;
+			break;
+		case RES_SPELL:
+			ppTable = CSpellDef::sm_szTrigName;
+			iQty = SPTRIG_QTY;
+			break;
+		case RES_AREA:
+		case RES_REGIONTYPE:
+			ppTable = CRegionWorld::sm_szTrigName;
+			iQty = RTRIG_QTY;
+			break;
+		case RES_WEBPAGE:
+			ppTable = CWebPageDef::sm_szTrigName;
+			iQty = WTRIG_QTY;
+			break;
+		default:
+			break;
 	}
 	ClearTriggers();
 

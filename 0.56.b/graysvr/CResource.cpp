@@ -2685,6 +2685,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			return( false );
 		}
 		return( CItem::CreateBase((ITEMID_TYPE)rid.GetResIndex())->r_Load(*pScript));
+
+	default:
+		break;
 	}
 
 	if ( pNewLink )
@@ -2897,17 +2900,17 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			{
 				switch ( restype )
 				{
-				case RES_WC:
-				case RES_WI:
-				case RES_WORLDCHAR:
-				case RES_WORLDITEM:
-				case RES_NEWBIE:
-				case RES_PLEVEL:
-					// These are not truly defining a new DEFNAME
-					break;
-				default:
-					DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", (LPCTSTR) pszName, (LPCTSTR) GetResourceBlockName(rid.GetResType()), (LPCTSTR) GetResourceBlockName(restype) ));
-					return( ridinvalid );
+					case RES_WC:
+					case RES_WI:
+					case RES_WORLDCHAR:
+					case RES_WORLDITEM:
+					case RES_NEWBIE:
+					case RES_PLEVEL:
+						// These are not truly defining a new DEFNAME
+						break;
+					default:
+						DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", (LPCTSTR) pszName, (LPCTSTR) GetResourceBlockName(rid.GetResType()), (LPCTSTR) GetResourceBlockName(restype) ));
+						return( ridinvalid );
 				}
 			}
 			else if ( fNewStyleDef && pVarNum->GetValNum() != rid.GetPrivateUID() )
@@ -3107,49 +3110,49 @@ CResourceDef * CResource::ResourceGetDef( RESOURCE_ID_BASE rid ) const
 	int index = rid.GetResIndex();
 	switch ( rid.GetResType() )
 	{
-	case RES_WEBPAGE:
-		index = m_WebPages.FindKey( rid );
-		if ( index < 0 )
+		case RES_WEBPAGE:
+			index = m_WebPages.FindKey( rid );
+			if ( index < 0 )
+				return( NULL );
+			return( m_WebPages.GetAt( index ));
+
+		case RES_SKILL:
+			if ( ! m_SkillIndexDefs.IsValidIndex(index))
+				return( NULL );
+			return( const_cast <CSkillDef *>( m_SkillIndexDefs[ index ] ));
+
+		case RES_SPELL:
+			if ( ! m_SpellDefs.IsValidIndex(index))
+				return( NULL );
+			return( const_cast <CSpellDef *>( m_SpellDefs[ index ] ));
+
+		case RES_UNKNOWN:	// legal to use this as a ref but it is unknown
 			return( NULL );
-		return( m_WebPages.GetAt( index ));
 
-	case RES_SKILL:
-		if ( ! m_SkillIndexDefs.IsValidIndex(index))
-			return( NULL );
-		return( const_cast <CSkillDef *>( m_SkillIndexDefs[ index ] ));
+		case RES_BOOK:			// A book or a page from a book.
+		case RES_EVENTS:
+		case RES_DIALOG:			// A scriptable gump dialog: text or handler block.
+		case RES_MENU:
+		case RES_NAMES:			// A block of possible names for a NPC type. (read as needed)
+		case RES_NEWBIE:	// MALE_DEFAULT, FEMALE_DEFAULT, Skill
+		case RES_REGIONRESOURCE:
+		case RES_REGIONTYPE:		// Triggers etc. that can be assinged to a RES_AREA
+		case RES_SCROLL:		// SCROLL_GUEST=message scroll sent to player at guest login. SCROLL_MOTD: SCROLL_NEWBIE
+		case RES_SPEECH:
+		case RES_TIP:			// Tips (similar to RES_SCROLL) that can come up at startup.
+		case RES_TYPEDEF:			// Define a trigger block for a RES_WORLDITEM m_type.
+		case RES_TEMPLATE:
+		case RES_SKILLMENU:
+		case RES_ITEMDEF:
+		case RES_CHARDEF:
+		case RES_SPAWN:	// the char spawn tables
+		case RES_SKILLCLASS:
+		case RES_AREA:
+		case RES_ROOM:
+			break;
 
-	case RES_SPELL:
-		if ( ! m_SpellDefs.IsValidIndex(index))
-			return( NULL );
-		return( const_cast <CSpellDef *>( m_SpellDefs[ index ] ));
-
-	case RES_UNKNOWN:	// legal to use this as a ref but it is unknown
-		return( NULL );
-
-	case RES_BOOK:			// A book or a page from a book.
-	case RES_EVENTS:
-	case RES_DIALOG:			// A scriptable gump dialog: text or handler block.
-	case RES_MENU:
-	case RES_NAMES:			// A block of possible names for a NPC type. (read as needed)
-	case RES_NEWBIE:	// MALE_DEFAULT, FEMALE_DEFAULT, Skill
-	case RES_REGIONRESOURCE:
-	case RES_REGIONTYPE:		// Triggers etc. that can be assinged to a RES_AREA
-	case RES_SCROLL:		// SCROLL_GUEST=message scroll sent to player at guest login. SCROLL_MOTD: SCROLL_NEWBIE
-	case RES_SPEECH:
-	case RES_TIP:			// Tips (similar to RES_SCROLL) that can come up at startup.
-	case RES_TYPEDEF:			// Define a trigger block for a RES_WORLDITEM m_type.
-	case RES_TEMPLATE:
-	case RES_SKILLMENU:
-	case RES_ITEMDEF:
-	case RES_CHARDEF:
-	case RES_SPAWN:	// the char spawn tables
-	case RES_SKILLCLASS:
-	case RES_AREA:
-	case RES_ROOM:
-		break;
-
-	default:
-		return NULL;
+		default:
+			return NULL;
 	}
 
 	return CResourceBase::ResourceGetDef( rid );

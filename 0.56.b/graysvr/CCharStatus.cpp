@@ -282,11 +282,13 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 	case LAYER_SPECIAL:
 		switch ( pItem->GetType() )
 		{
-		case IT_EQ_TRADE_WINDOW:
-		case IT_EQ_MEMORY_OBJ:
-		case IT_EQ_SCRIPT:
-			// We can have multiple items of these.
-			return LAYER_SPECIAL;
+			case IT_EQ_TRADE_WINDOW:
+			case IT_EQ_MEMORY_OBJ:
+			case IT_EQ_SCRIPT:
+				// We can have multiple items of these.
+				return LAYER_SPECIAL;
+			default:
+				return LAYER_NONE;
 		}
 		return( LAYER_NONE );	// not legal !
 	case LAYER_HAIR:
@@ -493,12 +495,15 @@ bool CChar::CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fT
 	NOTO_TYPE noto = pCharGhost->Noto_GetFlag(this, false);
 	switch (noto)
 	{
-	case NOTO_NEUTRAL:		// animals etc.
-	case NOTO_GUILD_SAME:
-	case NOTO_CRIMINAL:
-	case NOTO_GUILD_WAR:
-	case NOTO_EVIL:
-		return false;	// not a crime.
+		case NOTO_NEUTRAL:		// animals etc.
+		case NOTO_GUILD_SAME:
+		case NOTO_CRIMINAL:
+		case NOTO_GUILD_WAR:
+		case NOTO_EVIL:
+			return false;	// not a crime.
+
+		default:
+			break;
 	}
 
 	if ( !fTest )
@@ -602,20 +607,20 @@ NPCBRAIN_TYPE CChar::GetNPCBrain( bool fDefault ) const
 
 			switch ( id )
 			{
-			case CREID_SERPENTINE_DRAGON:
-			case CREID_SKELETAL_DRAGON:
-			case CREID_REPTILE_LORD:
-			case CREID_ANCIENT_WYRM:
-			case CREID_SWAMP_DRAGON1:
-			case CREID_SWAMP_DRAGON2:
-				return NPCBRAIN_DRAGON;
+				case CREID_SERPENTINE_DRAGON:
+				case CREID_SKELETAL_DRAGON:
+				case CREID_REPTILE_LORD:
+				case CREID_ANCIENT_WYRM:
+				case CREID_SWAMP_DRAGON1:
+				case CREID_SWAMP_DRAGON2:
+					return NPCBRAIN_DRAGON;
 
-			case CREID_SHADE:
-			case CREID_MUMMY:
-				return NPCBRAIN_UNDEAD;
+				case CREID_SHADE:
+				case CREID_MUMMY:
+					return NPCBRAIN_UNDEAD;
 
-			default:
-				return NPCBRAIN_MONSTER;
+				default:
+					return NPCBRAIN_MONSTER;
 			}
 		}
 
@@ -625,14 +630,16 @@ NPCBRAIN_TYPE CChar::GetNPCBrain( bool fDefault ) const
 		return( NPCBRAIN_ANIMAL );
 	switch ( id )
 	{
-	case CREID_EAGLE:
-	case CREID_BIRD:
-	case CREID_GORILLA:
-	case CREID_Snake:
-	case CREID_Dolphin:
-	case CREID_Giant_Toad:
-	case CREID_Bull_Frog:
-		return NPCBRAIN_ANIMAL;
+		case CREID_EAGLE:
+		case CREID_BIRD:
+		case CREID_GORILLA:
+		case CREID_Snake:
+		case CREID_Dolphin:
+		case CREID_Giant_Toad:
+		case CREID_Bull_Frog:
+			return NPCBRAIN_ANIMAL;
+		default:
+			break;
 	}
 	return NPCBRAIN_MONSTER;
 }
@@ -1791,6 +1798,7 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 			case IT_SHRINE:	// We can use shrines when dead !!
 				fDeathImmune = true;
 				break;
+
 			case IT_SHIP_SIDE:
 			case IT_SHIP_SIDE_LOCKED:
 			case IT_SHIP_PLANK:
@@ -1798,6 +1806,9 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 				if ( IsStatFlag( STATF_Sleeping | STATF_Freeze | STATF_Stone ))
 					break;
 				return( GetTopDist3D( pItem->GetTopLevelObj()) <= UO_MAP_VIEW_SIZE );
+
+			default:
+				break;
 		}
 	}
 
@@ -2063,17 +2074,17 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 			LAYER_TYPE layer = pItem->GetEquipLayer();
 			switch ( layer )
 			{
-			case LAYER_DRAGGING:
-				return true;
-			case LAYER_HAIR:
-			case LAYER_BEARD:
-			case LAYER_PACK:
-				if ( !IsPriv(PRIV_GM) )
-					return false;
-				break;
-			default:
-				if ( !CItemBase::IsVisibleLayer(layer) && ! IsPriv(PRIV_GM) )
-					return false;
+				case LAYER_DRAGGING:
+					return true;
+				case LAYER_HAIR:
+				case LAYER_BEARD:
+				case LAYER_PACK:
+					if ( !IsPriv(PRIV_GM) )
+						return false;
+					break;
+				default:
+					if ( !CItemBase::IsVisibleLayer(layer) && ! IsPriv(PRIV_GM) )
+						return false;
 			}
 		}
 	}
