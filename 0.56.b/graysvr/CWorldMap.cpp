@@ -985,7 +985,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	pItemDef = NULL;
 	pDupeDef = NULL;
 	pItem = NULL;
-	wBlockThis, z, zHeight, x2, y2, iQty, i, ii = 0;
+	wBlockThis = z = zHeight = x2 = y2 = iQty = i = ii = 0;
 
 	// Any multi items here ?
 	// Check all of them
@@ -1090,7 +1090,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	pItemDef = NULL;
 	pDupeDef = NULL;
 	pItem = NULL;
-	wBlockThis, z, zHeight, x2, y2, iQty, i, ii = 0;
+	wBlockThis = z = zHeight = x2 = y2 = iQty = i = ii = 0;
 
 	// Any dynamic items here ?
 	// NOTE: This could just be an item that an NPC could just move ?

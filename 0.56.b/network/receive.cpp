@@ -102,7 +102,7 @@ bool PacketCreate::onReceive(NetState* net)
 	}
 
 	// validate race against resdisp
-	BYTE resdisp = net->getClient()->GetAccount() != NULL? net->getClient()->GetAccount()->GetResDisp() : RDS_T2A;
+	BYTE resdisp = net->getClient()->GetAccount() != NULL? net->getClient()->GetAccount()->GetResDisp() : (BYTE)RDS_T2A;
 	if (resdisp < RDS_ML) // prior to ML, only human
 	{
 		if (rtRace >= RACETYPE_ELF)
@@ -2706,7 +2706,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 	BYTE code = readByte();
 	SKILLLOCK_TYPE state = (SKILLLOCK_TYPE)readByte();
 
-	if (code <= STAT_NONE || code >= STAT_BASE_QTY)
+	if (code >= STAT_BASE_QTY)
 		return false;
 	else if (state < SKILLLOCK_UP || state > SKILLLOCK_LOCK)
 		return false;

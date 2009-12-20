@@ -43,7 +43,7 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointR
 	}
 }
 
-CPathFinderPoint::CPathFinderPoint() : FValue(0), GValue(0), HValue(0), m_Parent(0)
+CPathFinderPoint::CPathFinderPoint() : m_Parent(0), FValue(0), GValue(0), HValue(0)
 {
 	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
 	m_x = 0;
@@ -51,7 +51,7 @@ CPathFinderPoint::CPathFinderPoint() : FValue(0), GValue(0), HValue(0), m_Parent
 	m_z = 0;
 }
 
-CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : FValue(0), GValue(0), HValue(0), m_Parent(0)
+CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : m_Parent(0), FValue(0), GValue(0), HValue(0)
 {
 	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
 	m_x = pt.m_x;

@@ -141,8 +141,8 @@ static		fullSbox _sBox_;		/* permuted MDStab based on keys */
 #define	GetSboxKey	
 #endif
 
-CONST		char* moduleDescription = "Optimized C ";
-CONST		char* modeString = MOD_STRING;
+const char* moduleDescription = "Optimized C ";
+const char* modeString = MOD_STRING;
 
 
 /* macro(s) for debugging help */

@@ -1513,7 +1513,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	{
 		// Is there a free guard near by ?
 		CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_RADAR);
-		while ( pGuard = AreaGuard.GetChar() )
+		while ( (pGuard = AreaGuard.GetChar()) != NULL )
 		{
 			if (( pGuard->m_pPlayer ) || ( pGuard->m_pNPC->m_Brain != NPCBRAIN_GUARD ) || pGuard->IsStatFlag(STATF_War) )
 				continue;

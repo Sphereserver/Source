@@ -96,7 +96,7 @@ bool CClient::addLoginErr(BYTE code)
 		"The maximum number of password tries has been reached",
 	};
 
-	if (code < 0 || code >= COUNTOF(sm_Login_ErrMsg))
+	if (code >= COUNTOF(sm_Login_ErrMsg))
 		code = PacketLoginError::Other;
 	
 	DEBUG_ERR(( "%x:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[((int)code)] ));

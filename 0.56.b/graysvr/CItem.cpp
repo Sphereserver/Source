@@ -1217,7 +1217,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 	// Get a special drop sound for the item.
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
-	SOUND_TYPE iSnd = NULL;
+	SOUND_TYPE iSnd = 0;
 
 	switch ( pItemDef->GetType())
 	{
@@ -1258,7 +1258,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 	}
 
 	// normal drop sound for what dropped in/on.
-	if ( iSnd == NULL )
+	if ( iSnd == 0 )
 		return( pObjOn ? 0x057 : 0x042 );
 	else
 		return ( iSnd );

@@ -80,7 +80,7 @@ void xRecordPacket(CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0), m_useAsync(false), m_packetExceptions(0)
+NetState::NetState(long id) : m_id(id), m_client(NULL), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
 {
 #ifdef NETWORK_MULTITHREADED
 	m_queueLock.setMutex(&m_queueMutex);

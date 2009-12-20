@@ -55,7 +55,7 @@ typedef THREAD_ENTRY_RET ( _cdecl * PTHREAD_ENTRY_PROC )(void *);
 
 typedef unsigned int	ERROR_CODE;
 
-#define ISWHITESPACE(ch)			(IsSpace((unsigned char)ch)||(ch)==0xa0)	// IsSpace
+#define ISWHITESPACE(ch)			(IsSpace(ch)||((unsigned char)ch)==0xa0)	// IsSpace
 #define GETNONWHITESPACE( pStr )	while ( ISWHITESPACE( (pStr)[0] )) { (pStr)++; }
 #define _IS_SWITCH(c)    ((c) == '-' || (c) == '/' )	// command line switch.
 

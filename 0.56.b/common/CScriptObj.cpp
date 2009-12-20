@@ -86,7 +86,7 @@ bool CScriptTriggerArgs::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		{
 			char * pEnd;
 			unsigned short number = strtol( pszTemp, &pEnd, 10 );
-			if (( number > 0 ) && ( number <= 65535 )) // Can only use 1 to 65535 as REFs
+			if ( number > 0 ) // Can only use 1 to 65535 as REFs
 			{
 				pszTemp = pEnd;
 				// Make sure REFx or REFx.KEY is being used
@@ -162,7 +162,7 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 		{
 			char * pEnd;
 			unsigned short number = strtol( pszTemp, &pEnd, 10 );
-			if (( number > 0 ) && ( number <= 65535 )) // Can only use 1 to 65535 as REFs
+			if ( number > 0 ) // Can only use 1 to 65535 as REFs
 			{
 				pszTemp = pEnd;
 				if ( !*pszTemp ) // setting REFx to a new object
@@ -502,7 +502,7 @@ bool CScriptObj::r_Call( LPCTSTR pszFunction, CTextConsole * pSrc, CScriptTrigge
 
 			//	lowercase for speed, and strip arguments
 			strcpy(pName, pszFunction);
-			if ( pSpace = strchr(pName, ' ') ) *pSpace = 0;
+			if ( (pSpace = strchr(pName, ' ')) != NULL ) *pSpace = 0;
 			_strlwr(pName);
 
 			if ( g_profiler.initstate != 0xf1 )	// it is not initalised
@@ -720,7 +720,7 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			sVal.FormatHex( 0x08000 );
 		else if ( dynamic_cast<CClient*>(pTmpRef) )
 			sVal.FormatHex( 0x10000 );
-		else if ( pObj = dynamic_cast<CObjBase*>(pTmpRef) )
+		else if ( (pObj = dynamic_cast<CObjBase*>(pTmpRef)) != NULL )
 		{
 			if ( dynamic_cast<CChar*>(pObj) )
 				sVal.FormatHex( 0x40000 );

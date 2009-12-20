@@ -50,7 +50,7 @@ void PingServer::tick()
 	// prepare to receive data from somewhere
 	char buffer[PINGSERVER_BUFFER];
 	sockaddr_in addr;
-	int addr_len = sizeof(addr);
+	socklen_t addr_len = sizeof(addr);
 	
 	// receive data from someone
 	int length = recvfrom(m_socket.GetSocket(), buffer, sizeof(buffer), 0, (sockaddr *)&addr, &addr_len);

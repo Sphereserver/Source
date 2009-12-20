@@ -102,7 +102,7 @@ bool CGRegion::IsInside2d( const CPointBase & pt ) const
 	if ( ! m_rectUnion.IsInside2d( pt ))
 		return( false );
 	int iQty;
-	if ( iQty = m_Rects.GetCount() )
+	if ( (iQty = m_Rects.GetCount()) > 0 )
 	{
 		for ( int i=0; i<iQty; i++ )
 			if ( m_Rects[i].IsInside2d( pt ))

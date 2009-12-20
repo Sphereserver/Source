@@ -2381,7 +2381,7 @@ do_default:
 		case CHC_VISUALRANGE:
 			{
 				BYTE bIn = s.GetArgVal();
-				if (( bIn > UO_MAP_VIEW_SIZE ) || ( bIn < 0 ))
+				if ( bIn > UO_MAP_VIEW_SIZE )
 				{
 					DEBUG_ERR(("Illegal VisualRange Value %d, max. is %d, set to default\n", bIn, UO_MAP_VIEW_SIZE));
 					bIn = UO_MAP_VIEW_SIZE;
@@ -2678,10 +2678,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// Open the bank box for this person
 			if ( pCharSrc == NULL || ! pCharSrc->IsClient() )
 				return( false );
-			pCharSrc->GetClient()->addBankOpen( this, (LAYER_TYPE)((s.HasArgs()) ? s.GetArgVal() : LAYER_BANKBOX ));
+			pCharSrc->GetClient()->addBankOpen( this, ((s.HasArgs()) ? (LAYER_TYPE)s.GetArgVal() : LAYER_BANKBOX ));
 			break;
 		case CHV_BARK:
-			SoundChar( (CRESND_TYPE) ( s.HasArgs() ? s.GetArgVal() : ( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 )));
+			SoundChar( ( s.HasArgs() ? (CRESND_TYPE)s.GetArgVal() : ( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 )));
 			break;
 		case CHV_BOUNCE: // uid
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());

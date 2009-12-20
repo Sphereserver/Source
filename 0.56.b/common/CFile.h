@@ -7,6 +7,9 @@
 #pragma once
 
 #ifndef _WIN32
+#ifdef LONG
+#undef LONG
+#endif
 #define LONG int
 #include <sys/types.h>
 #include <sys/stat.h>

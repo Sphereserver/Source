@@ -980,7 +980,7 @@ bool Packet::onReceive(NetState* client)
  *
  ***************************************************************************/
 PacketSend::PacketSend(BYTE id, long len, Priority priority)
-	: m_target(NULL), m_priority(priority), m_lengthPosition(-1)
+	: m_priority(priority), m_target(NULL), m_lengthPosition(-1)
 {
 	if (len > 0)
 		resize(len);

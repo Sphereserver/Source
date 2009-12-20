@@ -673,8 +673,8 @@ static int HtmlDeCode( TCHAR * pszDst, LPCTSTR pszSrc )
 				if ( ch )
 				{
 					ch = iVal*0x10 + GetHexDigit(ch);
-					if ( ch == 0xa0 )
-						ch = 0;
+					if ( ((unsigned char)ch) == 0xa0 )
+						ch = '\0';
 				}
 			}
 		}

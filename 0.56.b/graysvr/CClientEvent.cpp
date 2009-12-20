@@ -2130,7 +2130,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	if (context != GetTargMode())
 	{
 		// unexpected context
-		if (context != 0 && (pt.m_x != 0xFFFF || uid.GetPrivateUID() != 0))
+		if (context != 0 && (pt.m_x != -1 || uid.GetPrivateUID() != 0))
 			SysMessage("Unexpected target info");
 
 		return;

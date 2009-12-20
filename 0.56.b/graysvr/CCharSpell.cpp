@@ -810,7 +810,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_CURSE);
-					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+					for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -862,7 +862,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_BLESS);
-					for( char idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+					for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff[idx], 10);

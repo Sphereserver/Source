@@ -1671,7 +1671,7 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	if ( m_Act_p.m_x == 0xFFFF )
+	if ( m_Act_p.m_x == -1 )
 	{
 		SysMessageDefault( DEFMSG_MINING_4 );
 		return( -SKTRIG_QTY );
@@ -1781,7 +1781,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	if ( m_Act_p.m_x == 0xFFFF )
+	if ( m_Act_p.m_x == -1 )
 	{
 		SysMessageDefault( DEFMSG_FISHING_4 );
 		return( -SKTRIG_QTY );
@@ -1937,7 +1937,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		return 0;
 	}*/
 
-	if ( m_Act_p.m_x == 0xFFFF )
+	if ( m_Act_p.m_x == -1 )
 	{
 		SysMessageDefault( DEFMSG_LUMBERJACKING_6 );
 		return( -SKTRIG_QTY );

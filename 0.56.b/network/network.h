@@ -99,7 +99,7 @@ public:
 	void setAsyncMode(void); // set asynchronous mode
 	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode
 #ifndef _WIN32
-	struct ev_io* iocb(void) const { return &m_eventWatcher; }; // get io callback
+	struct ev_io* iocb(void) { return &m_eventWatcher; }; // get io callback
 	bool isSendingAsync(void) const { return m_isSendingAsync; }; // get if async packeet is being sent
 	void setSendingAsync(bool isSending) { m_isSendingAsync = isSending; }; // set if async packet is being sent
 #endif

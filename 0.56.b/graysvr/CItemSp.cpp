@@ -37,7 +37,7 @@ CResourceDef * CItem::Spawn_FixDef()
 	// Get a proper RESOURCE_ID from the id provided.
 	// RETURN: true = ok.
 
-	RESOURCE_ID_BASE rid = ( IsType(IT_SPAWN_ITEM) ? rid = m_itSpawnItem.m_ItemID : rid = m_itSpawnChar.m_CharID );
+	RESOURCE_ID_BASE rid = ( IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID );
 
 	if ( rid.GetResType() != RES_UNKNOWN )
 	{

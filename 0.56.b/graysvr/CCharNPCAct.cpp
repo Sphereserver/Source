@@ -2512,7 +2512,7 @@ bool CChar::NPC_Act_Food()
 			// I have some food personaly, so no need to search for something
 			if ( pFood->IsType(IT_FOOD) )
 			{
-				if ( iEatAmount = Food_CanEat(pFood) )
+				if ( (iEatAmount = Food_CanEat(pFood)) > 0 )
 				{
 					Use_EatQty(pFood, iEatAmount);
 					return true;
@@ -2562,7 +2562,7 @@ bool CChar::NPC_Act_Food()
 		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
 			continue;
 
-		if ( iEatAmount = Food_CanEat(pItem) )
+		if ( (iEatAmount = Food_CanEat(pItem)) > 0 )
 		{
 			int iDist = GetDist(pItem);
 			if ( pClosestFood )
@@ -3330,7 +3330,7 @@ void CChar::NPC_Food()
 			// i have some food personaly, so no need to search for something
 			if ( pFood->IsType(IT_FOOD) )
 			{
-				if ( iEatAmount = Food_CanEat(pFood) )
+				if ( (iEatAmount = Food_CanEat(pFood)) > 0 )
 				{
 					EXC_SET("eating from pack");
 					Use_EatQty(pFood, iEatAmount);
@@ -3356,7 +3356,7 @@ void CChar::NPC_Food()
 		if ( (pItem->GetTopPoint().m_z < iMyZ) || (pItem->GetTopPoint().m_z > (iMyZ + (m_height / 2))) )
 			continue;
 
-		if ( iEatAmount = Food_CanEat(pItem) )
+		if ( (iEatAmount = Food_CanEat(pItem)) > 0 )
 		{
 			int iDist = GetDist(pItem);
 			if ( pClosestFood )

@@ -33,7 +33,7 @@
 #endif
 
 #ifndef UNREFERENCED_PARAMETER
-	#define UNREFERENCED_PARAMETER(P)	(P)
+	#define UNREFERENCED_PARAMETER(P)	(void)(P)
 #endif
 
 #ifndef HKEY_LOCAL_MACHINE
@@ -41,6 +41,13 @@
 #endif
 
 #ifndef BYTE	// might be a typedef ?
+	#ifdef LONGLONG
+		#undef LONGLONG
+	#endif
+	#ifdef LONG
+		#undef LONG
+	#endif
+
 	#define BYTE 		unsigned char	// 8 bits
 	#define WORD 		unsigned short	// 16 bits
 	#define DWORD		unsigned long	// 32 bits

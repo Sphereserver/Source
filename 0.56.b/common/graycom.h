@@ -46,8 +46,12 @@
 	#define HANDLE			DWORD
 	#define _cdecl
 	#define __cdecl
-	#define LONG			DWORD
-	#define LONGLONG		DWORD	// This should be 64 bit ???
+	#ifndef LONG
+		#define LONG			DWORD
+	#endif
+	#ifndef LONGLONG
+		#define LONGLONG		DWORD	// This should be 64 bit ???
+	#endif
 	#define WCHAR			unsigned short
 	#define FAR
 	#define E_FAIL			0x80004005
@@ -62,7 +66,6 @@
 	#endif
 
 	#define PUINT			unsigned int *
-	#define LPTSTR			LPCTSTR
 
 	#define IsBadReadPtr( p, len )		((p) == NULL)
 	#define IsBadStringPtr( p, len )	((p) == NULL)

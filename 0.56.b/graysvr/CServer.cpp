@@ -741,8 +741,7 @@ longcommand:
 					fgets(y, SCRIPT_MAX_LINE_LEN, f);
 
 					x = y;
-					while ( (x[0] == 0x20) || (x[0] == 0xA0) || (x[0] == 0x09) )
-						x++;
+					GETNONWHITESPACE(x);
 					strcpy(z,x);
 
 					_strlwr(z);

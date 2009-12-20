@@ -81,7 +81,7 @@ SimpleThreadLock::operator bool() const
 //		ManualThreadLock
 // ****************************
 
-ManualThreadLock::ManualThreadLock() : m_locked(false), m_mutex(NULL)
+ManualThreadLock::ManualThreadLock() : m_mutex(NULL), m_locked(false)
 {
 }
 
