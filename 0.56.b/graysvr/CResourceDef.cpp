@@ -543,6 +543,7 @@ LPCTSTR const CSpellDef::sm_szTrigName[SPTRIG_QTY+1] =
 	"@SELECT",
 	"@START",
 	"@SUCCESS",
+	"@TARGETCANCEL",
 	NULL,	
 };
 

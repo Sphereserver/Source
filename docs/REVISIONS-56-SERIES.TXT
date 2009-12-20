@@ -4637,6 +4637,11 @@ ALPHA additions:
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
 
 20-12-2009, MrSugarCube
+- Added #1658: @TargetCancel trigger to spells (and @SpellTargetCancel to characters). This
+  is called when a player cancels targeting with a spell.
+    ARGN1 = the spell that was being cast
+    ARGO  = the item used to cast the spell (e.g. a wand or scroll)
+    RETURN 1 = suppress the cancellation message
 - Added: @Wait trigger to skills (and @SkillWait to characters). This is called whenever
   Sphere wants to check if a character must wait before starting a skill. Normally this
   will be when a skill is selected from the skill menu (before @Select), but also when
@@ -4647,5 +4652,6 @@ ALPHA additions:
     RETURN 1 = The character must wait (bypasses default checks)
     RETURN 2 = Perform default checks
 - Fixed: Return 0 not working in @UseQuick trigger.
+- Fixed: @TargOn_Cancel trigger not being fired.
 - Modified #1687: Clients are now listed in order of newest to oldest.
 - Modified: TDATA1 and TDATA2 can be set on maps to specify the width and height of the gump.

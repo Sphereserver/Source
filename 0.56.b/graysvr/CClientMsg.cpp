@@ -1356,22 +1356,35 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 	// Can i close a menu ?
 	// Cancel a cursor input.
 
-	if ( GetTargMode() == CLIMODE_TARG_USE_ITEM )
+	bool bSuppressCancelMessage = false;
+
+	switch ( GetTargMode() )
 	{
-		CItem * pItemUse = m_Targ_UID.ItemFind();
-		if ( pItemUse )
+		case CLIMODE_TARG_USE_ITEM:
 		{
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			CItem * pItemUse = m_Targ_UID.ItemFind();
+			if ( pItemUse != NULL && !IsSetEF(EF_Minimize_Triggers) )
 			{
 				if ( pItemUse->OnTrigger( ITRIG_TARGON_CANCEL, m_pChar ) == TRIGRET_RET_TRUE )
-				{
-					m_Targ_Mode = targmode;
-					if ( targmode != CLIMODE_NORMAL )
-						addSysMessage( pPrompt );
-					return;
-				}
+					bSuppressCancelMessage = true;
 			}
-		}
+		} break;
+
+		case CLIMODE_TARG_SKILL_MAGERY:
+		{
+			const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
+			if (m_pChar != NULL && pSpellDef != NULL && !IsSetEF(EF_Minimize_Triggers))
+			{
+				CScriptTriggerArgs Args(m_tmSkillMagery.m_Spell, 0, m_Targ_PrvUID.ObjFind());
+				if ( m_pChar->OnTrigger( CTRIG_SpellTargetCancel, this, &Args ) == TRIGRET_RET_TRUE )
+					bSuppressCancelMessage = true;
+				else if ( m_pChar->Spell_OnTrigger( m_tmSkillMagery.m_Spell, SPTRIG_TARGETCANCEL, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+					bSuppressCancelMessage = true;
+			}
+		} break;
+
+		default:
+			break;
 	}
 
 	// determine timeout time
@@ -1386,12 +1399,13 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 	if ( GetTargMode() != CLIMODE_NORMAL && targmode != CLIMODE_NORMAL )
 	{
 		// Just clear the old target mode
-		addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_2) );
+		if (bSuppressCancelMessage == false)
+			addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_2) );
 	}
 
 	m_Targ_Mode = targmode;
 
-	if ( targmode == CLIMODE_NORMAL )
+	if ( targmode == CLIMODE_NORMAL && bSuppressCancelMessage == false )
 		addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_1) );
 	else if ( pPrompt && *pPrompt ) // Check that the message is not blank.
 		addSysMessage( pPrompt );

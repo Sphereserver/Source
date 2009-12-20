@@ -2136,7 +2136,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 		return;
 	}
 
-	if (pt.m_x == 0xFFFF && uid.GetPrivateUID() == 0)
+	if (pt.m_x == -1 && uid.GetPrivateUID() == 0)
 	{
 		// cancelled
 		SetTargMode();
