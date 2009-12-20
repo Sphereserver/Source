@@ -2153,14 +2153,20 @@ void PacketServerRelay::onSent(CClient* client)
  ***************************************************************************/
 PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplay, 19, PRI_LOW)
 {
+	CItemBase* itemDef = map->Item_GetDef();
+	ASSERT(itemDef != NULL);
+
+	WORD width = itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE;
+	WORD height = itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE;
+
 	writeInt32(map->GetUID());
 	writeInt16(GUMP_MAP_2_NORTH);
 	writeInt16(rect.m_left);
 	writeInt16(rect.m_top);
 	writeInt16(rect.m_right);
 	writeInt16(rect.m_bottom);
-	writeInt16(0xC8);
-	writeInt16(0xC8);
+	writeInt16(width);
+	writeInt16(height);
 
 	push(target);
 }

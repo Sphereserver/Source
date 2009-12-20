@@ -559,6 +559,13 @@ public:
 		{
 			ITEMID_TYPE m_idState;	// tdata1= next state open/close for the Ship Side
 		} m_ttShipPlank;
+
+		// IT_MAP
+		struct
+		{
+			int m_iGumpWidth;	// tdata1= map gump width
+			int m_iGumpHeight;	// tdata2= map gump height
+		} m_ttMap;
 	};
 
 	static LPCTSTR const sm_szLoadKeys[];

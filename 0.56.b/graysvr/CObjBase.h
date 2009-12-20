@@ -1641,6 +1641,7 @@ public:
 	enum
     {
         MAX_PINS = 128,
+		DEFAULT_SIZE = 200,
     };
 
 	bool m_fPlotMode;	// should really be per-client based but oh well.
