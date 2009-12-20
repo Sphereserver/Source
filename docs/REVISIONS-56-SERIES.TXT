@@ -4637,6 +4637,9 @@ ALPHA additions:
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
 
 20-12-2009, MrSugarCube
+- Added #1667: PARTY.SETMASTER, accepts either a character uid or @<N> for the Nth party
+  member, to change who the party master is. The character must be an existing member of the
+  party and cannot already be the master.
 - Added #1658: @TargetCancel trigger to spells (and @SpellTargetCancel to characters). This
   is called when a player cancels targeting with a spell.
     ARGN1 = the spell that was being cast

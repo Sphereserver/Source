@@ -212,6 +212,7 @@ public:
 		return( FindChar( pChar ) >= 0 );
 	}
 	int AttachChar( const CChar * pChar );
+	int InsertChar( const CChar * pChar, int i );
 	void DetachChar( int i );
 	int DetachChar( const CChar * pChar );
 	void DeleteChars();

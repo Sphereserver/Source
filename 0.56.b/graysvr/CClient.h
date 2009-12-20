@@ -93,6 +93,7 @@ public:
 	void AcceptMember( CChar * pChar );
 	void SetLootFlag( CChar * pChar, bool fSet );
 	bool GetLootFlag( const CChar * pChar );
+	bool SetMaster( CChar * pChar );
 	
 	// -------------------------------
 

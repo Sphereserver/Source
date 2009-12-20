@@ -36,6 +36,29 @@ int CCharRefArray::AttachChar( const CChar * pChar )
 	return m_uidCharArray.Add( pChar->GetUID() );
 }
 
+int CCharRefArray::InsertChar( const CChar * pChar, int i )
+{
+	ADDTOCALLSTACK("CCharRefArray::InsertChar");
+	int currentIndex = FindChar( pChar );
+	if ( currentIndex >= 0 )
+	{
+		// already there
+		if ( currentIndex == i )
+			return i;
+
+		// remove from list
+		DetachChar(currentIndex);
+	}
+
+	// prevent from being inserted too high
+	if ( i < 0 || i > GetCharCount() )
+		i = GetCharCount();
+
+	// insert
+	m_uidCharArray.InsertAt(i, pChar->GetUID() );
+	return i;
+}
+
 void CCharRefArray::DetachChar( int i )
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
@@ -118,6 +141,19 @@ int CPartyDef::DetachChar( CChar * pChar )
 		pChar->DeleteKey("PARTY_LASTINVITETIME");
 	}
 	return( i );
+}
+
+bool CPartyDef::SetMaster( CChar * pNewMaster )
+{
+	if ( pNewMaster == NULL )
+		return( false );
+	else if ( ! IsInParty( pNewMaster ) || IsPartyMaster( pNewMaster ) )
+		return( false );
+
+	int i = m_Chars.InsertChar( pNewMaster, 0 );
+	SendAddList(NULL);
+
+	return( i == 0 );
 }
 
 void CPartyDef::SetLootFlag( CChar * pChar, bool fSet )
@@ -922,6 +958,30 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 
 			if ( toRemove != (DWORD) 0 )
 				return( RemoveMember( toRemove, GetMaster() ) );
+
+			return( false );
+		} break;
+
+		case PDV_SETMASTER:
+		{
+			CGrayUID newMaster;
+			LPCTSTR pszArg = s.GetArgStr();
+			if ( *pszArg == '@' )
+			{
+				pszArg++;
+				int nMember = Exp_GetVal(pszArg);
+				if (nMember < 1 || nMember >= m_Chars.GetCharCount() )
+					return( false );
+
+				newMaster = m_Chars.GetChar(nMember);
+			}
+			else
+			{
+				newMaster = (DWORD) s.GetArgVal();
+			}
+
+			if ( newMaster != (DWORD) 0 )
+				return( SetMaster( newMaster.CharFind() ) );
 
 			return( false );
 		} break;
