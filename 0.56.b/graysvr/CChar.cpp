@@ -136,6 +136,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SkillStroke",
 	"@SkillSuccess",
 	"@SkillUseQuick",
+	"@SkillWait",
 
 	"@SpellBook",
 	"@SpellCast",		//+Char is casting a spell.

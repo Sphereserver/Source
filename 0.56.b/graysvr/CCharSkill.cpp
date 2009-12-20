@@ -4064,17 +4064,19 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 		case SKTRIG_STROKE:		ctrig	= CTRIG_SkillStroke;	break;
 		case SKTRIG_ABORT:		ctrig	= CTRIG_SkillAbort;		break;
 		case SKTRIG_USEQUICK:	ctrig	= CTRIG_SkillUseQuick;	break;
+		case SKTRIG_WAIT:		ctrig	= CTRIG_SkillWait;		break;
 		default:
 			return TRIGRET_RET_TRUE;
 	}
 
-	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK) )
+	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT ) )
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-
-	if ( OnTrigger( ctrig, this, pArgs ) == TRIGRET_RET_TRUE )
-		return TRIGRET_RET_TRUE;
+	
+	TRIGRET_TYPE iRet = OnTrigger( ctrig, this, pArgs );
+	if ( iRet == TRIGRET_RET_TRUE )
+		return iRet;
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
@@ -4086,15 +4088,14 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 			CResourceLock s;
 			if ( pSkillDef->ResourceLock( s ))
 			{
-				if ( CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs )
-						== TRIGRET_RET_TRUE  )
-				{
-					return TRIGRET_RET_TRUE;
-				}
+				iRet = CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs );
+				if ( iRet == TRIGRET_RET_TRUE )
+					return iRet;
 			}
 		}
 	}
-	return TRIGRET_RET_DEFAULT;
+
+	return iRet;
 }
 
 
@@ -4158,6 +4159,21 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	// We want to do some new skill. Can we ?
 	// If this is the same skill then tell them to wait.
 
+	if ( ! IsSetEF(EF_Minimize_Triggers))
+	{
+		CScriptTriggerArgs pArgs(skilltry, Skill_GetActive());
+		switch ( Skill_OnTrigger( skilltry, SKTRIG_WAIT, &pArgs ))
+		{
+			case TRIGRET_RET_TRUE:
+				return true;
+			case TRIGRET_RET_FALSE:
+				Skill_Fail( true );
+				return false;
+			default:
+				break;
+		}
+	}
+
 	if ( IsStatFlag( STATF_DEAD | STATF_Sleeping | STATF_Freeze | STATF_Stone ))
 	{
 		SysMessageDefault( DEFMSG_SKILLWAIT_1 );
@@ -4182,9 +4198,7 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	// SKILL_SPIRITSPEAK ?
 	if ( skilltry != skill )
 	{
-		if (	   skill == SKILL_MEDITATION
-			|| skill == SKILL_HIDING
-			|| skill == SKILL_STEALTH )
+		if ( skill == SKILL_MEDITATION || skill == SKILL_HIDING || skill == SKILL_STEALTH )
 		{
 			Skill_Fail( true );
 			return( false );

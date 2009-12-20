@@ -4637,5 +4637,15 @@ ALPHA additions:
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
 
 20-12-2009, MrSugarCube
+- Added: @Wait trigger to skills (and @SkillWait to characters). This is called whenever
+  Sphere wants to check if a character must wait before starting a skill. Normally this
+  will be when a skill is selected from the skill menu (before @Select), but also when
+  snooping a container or using a musical instrument.
+    ARGN1 = the skill the character is attempting
+    ARGN2 = the skill that is currently being used
+    RETURN 0 = The character can start the other skill (bypasses default checks)
+    RETURN 1 = The character must wait (bypasses default checks)
+    RETURN 2 = Perform default checks
+- Fixed: Return 0 not working in @UseQuick trigger.
 - Modified #1687: Clients are now listed in order of newest to oldest.
 - Modified: TDATA1 and TDATA2 can be set on maps to specify the width and height of the gump.

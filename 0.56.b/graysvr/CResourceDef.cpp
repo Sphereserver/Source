@@ -189,6 +189,7 @@ LPCTSTR const CSkillDef::sm_szTrigName[SKTRIG_QTY+1] =
 	"@STROKE",
 	"@SUCCESS",
 	"@UseQuick",
+	"@Wait",
 	NULL,	
 };
 

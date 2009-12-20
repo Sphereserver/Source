@@ -490,15 +490,16 @@ enum SKTRIG_TYPE
 {
 	// All skills may be scripted.
 	// XTRIG_UNKNOWN	= some named trigger not on this list.
-	SKTRIG_ABORT=1,	// Some odd thing went wrong.
-	SKTRIG_FAIL,	// we failed the skill check.
-	SKTRIG_GAIN,
-	SKTRIG_PRESTART, //called before any hardcoded messages
-	SKTRIG_SELECT,	// just selecting params for the skill
-	SKTRIG_START,	// params for skill are done. (stroke)
-	SKTRIG_STROKE,	
-	SKTRIG_SUCCESS,
-	SKTRIG_USEQUICK,
+	SKTRIG_ABORT=1,		// Some odd thing went wrong.
+	SKTRIG_FAIL,		// we failed the skill check.
+	SKTRIG_GAIN,		// called when there is a chance to gain skill
+	SKTRIG_PRESTART,	// called before any hardcoded messages
+	SKTRIG_SELECT,		// just selecting params for the skill
+	SKTRIG_START,		// params for skill are done. (stroke)
+	SKTRIG_STROKE,
+	SKTRIG_SUCCESS,		// we passed the skill check
+	SKTRIG_USEQUICK,	// called when a 'quick' usage of the skill is made
+	SKTRIG_WAIT,		// called when a test is made to see if the character must wait before starting
 	SKTRIG_QTY,
 };
 

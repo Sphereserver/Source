@@ -2217,6 +2217,7 @@ enum CTRIG_TYPE
 	CTRIG_SkillStroke,
 	CTRIG_SkillSuccess,
 	CTRIG_SkillUseQuick,
+	CTRIG_SkillWait,
 
 	CTRIG_SpellBook,
 	CTRIG_SpellCast,		//+Char is casting a spell.
