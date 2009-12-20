@@ -292,18 +292,31 @@ bool NetState::canReceive(PacketSend* packet) const
 
 ClientIterator::ClientIterator(const NetworkIn* network)
 {
-	m_id = -1;
 	m_network = (network == NULL? &g_NetworkIn : network);
+
+#ifdef NETWORK_MULTITHREADED
+	m_id = -1;
 	m_max = m_network->m_stateCount;
+#else
+	m_nextClient = STATIC_CAST <CClient*> (m_network->m_clients.GetHead());
+#endif
 }
 
 ClientIterator::~ClientIterator(void)
 {
 	m_network = NULL;
+
+#ifndef NETWORK_MULTITHREADED
+	m_nextClient = NULL;
+#endif
 }
 
 CClient* ClientIterator::next()
 {
+#ifdef NETWORK_MULTITHREADED
+	// this method should be thread-safe, but does not loop through clients in the order that they have
+	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
+	// newest client to oldest and be thread-safe)
 	while (++m_id < m_max)
 	{
 		NetState* state = m_network->m_states[m_id];
@@ -312,6 +325,17 @@ CClient* ClientIterator::next()
 	}
 
 	return NULL;
+
+#else
+	CClient* current = m_nextClient;
+	while (current != NULL && current->GetNetState()->isValid() == false)
+		current = current->GetNext();
+
+	if (current != NULL)
+		m_nextClient = current->GetNext();
+
+	return current;
+#endif
 }
 
 
@@ -986,6 +1010,9 @@ void NetworkIn::acceptConnection(void)
 			else
 			{
 				m_states[slot]->init(h, client_addr);
+#ifndef NETWORK_MULTITHREADED
+				m_clients.InsertHead(m_states[slot]->getClient());
+#endif
 			}
 		}
 	}

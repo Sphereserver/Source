@@ -144,9 +144,13 @@ public:
 class ClientIterator
 {
 protected:
-	long m_id;
-	long m_max;
 	const NetworkIn* m_network;
+#ifdef NETWORK_MULTITHREADED
+	int m_id;
+	int m_max;
+#else
+	CClient* m_nextClient;
+#endif
 
 public:
 	ClientIterator(const NetworkIn* network = NULL);
@@ -194,6 +198,9 @@ private:
 protected:
 	NetState** m_states; // client state pool
 	long m_stateCount; // client state count
+#ifndef NETWORK_MULTITHREADED
+	CGObList m_clients; // current list of clients (CClient)
+#endif
 
 public:
 	static const char* m_sClassName;

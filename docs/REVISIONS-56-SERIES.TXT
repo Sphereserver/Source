@@ -4637,4 +4637,5 @@ ALPHA additions:
 - Updated: sphere_item_profession_barber_sa.scp (Fixed defname conflicts)
 
 20-12-2009, MrSugarCube
+- Modified #1687: Clients are now listed in order of newest to oldest.
 - Modified: TDATA1 and TDATA2 can be set on maps to specify the width and height of the gump.
