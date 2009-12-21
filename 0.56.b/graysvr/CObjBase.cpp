@@ -587,28 +587,23 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				bool bCanSee = ( index == OC_CANSEE );
 				bool bFlags = ( index == OC_CANSEELOSFLAG );
 				CChar *pChar = pSrc->GetChar();
+				int flags = 0;
 
 				pszKey += (( bCanSee ) ? ( 6 ) : (( bFlags  ) ? ( 13 ) : ( 9 )));
 				SKIP_SEPARATORS(pszKey);
 				GETNONWHITESPACE(pszKey);
 
-				int flags = 0;
-				char * pszFlags;
-				if ( bFlags )
+				if ( bFlags && *pszKey )
 				{
-					short int length = strlen( pszKey )+1;
-					char * pszTmp = new char[length];
-					strcpylen( pszTmp, pszKey, length );
-					Str_ParseCmds( pszTmp, &pszFlags, 1, "," );
-					pszKey += strlen( pszFlags )+1;
-					flags = Exp_GetVal( pszFlags );
-					delete[] pszTmp;
+					flags = Exp_GetVal(pszKey);
+					SKIP_SEPARATORS(pszKey);
+					GETNONWHITESPACE(pszKey);
 				}
 				if ( *pszKey )		// has an argument - UID to see(los) or POS to los only
 				{
 					CPointMap pt;
 					CGrayUID uid;
-					CObjBase *pObj;
+					CObjBase *pObj = NULL;
 
 					if ( !bCanSee )
 						pt = g_Cfg.GetRegionPoint(pszKey);

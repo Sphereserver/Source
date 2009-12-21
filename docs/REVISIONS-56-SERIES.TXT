@@ -4658,3 +4658,6 @@ ALPHA additions:
 - Fixed: @TargOn_Cancel trigger not being fired.
 - Modified #1687: Clients are now listed in order of newest to oldest.
 - Modified: TDATA1 and TDATA2 can be set on maps to specify the width and height of the gump.
+
+21-12-2009, MrSugarCube
+- Fixed #1693: CANSEELOSFLAG always returning 0.
