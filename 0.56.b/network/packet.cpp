@@ -236,9 +236,12 @@ void Packet::writeStringASCII(const char* value, bool terminate)
 		writeCharASCII('\0');
 }
 
-void Packet::writeStringFixedASCII(const char* value, long size)
+void Packet::writeStringFixedASCII(const char* value, long size, bool terminate)
 {
 	long valueLength = value ? strlen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -283,12 +286,15 @@ void Packet::writeStringASCII(const WCHAR* value, bool terminate)
 #endif
 }
 
-void Packet::writeStringFixedASCII(const WCHAR* value, long size)
+void Packet::writeStringFixedASCII(const WCHAR* value, long size, bool terminate)
 {
 #ifdef USE_UNICODE_LIB
 
 	char* buffer = new char[MB_CUR_MAX];
 	long valueLength = value ? wcslen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -316,7 +322,7 @@ void Packet::writeStringFixedASCII(const WCHAR* value, long size)
 	
 	CvtNUNICODEToSystem(buffer, THREAD_STRING_LENGTH, (NWORD*)buffer, THREAD_STRING_LENGTH);
 
-	writeStringFixedASCII(buffer, size);
+	writeStringFixedASCII(buffer, size, terminate);
 #endif
 }
 
@@ -343,11 +349,14 @@ void Packet::writeStringUNICODE(const char* value, bool terminate)
 #endif
 }
 
-void Packet::writeStringFixedUNICODE(const char* value, long size)
+void Packet::writeStringFixedUNICODE(const char* value, long size, bool terminate)
 {
 #ifdef USE_UNICODE_LIB
 	WCHAR c;
 	long valueLength = value ? strlen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -363,7 +372,7 @@ void Packet::writeStringFixedUNICODE(const char* value, long size)
 	WCHAR* buffer = (WCHAR*)Str_GetTemp();
 	CvtSystemToNUNICODE((NWORD*)buffer, THREAD_STRING_LENGTH / sizeof(WCHAR), value, strlen(value));
 	
-	writeStringFixedNUNICODE(buffer, size);
+	writeStringFixedNUNICODE(buffer, size, terminate);
 #endif
 }
 
@@ -379,11 +388,14 @@ void Packet::writeStringUNICODE(const WCHAR* value, bool terminate)
 		writeCharUNICODE('\0');
 }
 
-void Packet::writeStringFixedUNICODE(const WCHAR* value, long size)
+void Packet::writeStringFixedUNICODE(const WCHAR* value, long size, bool terminate)
 {
 #ifdef USE_UNICODE_LIB
 
 	long valueLength = value ? wcslen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -392,6 +404,11 @@ void Packet::writeStringFixedUNICODE(const WCHAR* value, long size)
 			writeCharUNICODE(value[l]);
 	}
 #else
+
+	if (size <= 0)
+		return;
+	else if (terminate)
+		size--;
 
 	bool zero = false;
 	for (long l = 0; l < size; l++)
@@ -406,6 +423,9 @@ void Packet::writeStringFixedUNICODE(const WCHAR* value, long size)
 		else
 			writeCharUNICODE('\0');
 	}
+
+	if (terminate)
+		writeCharUNICODE('\0');
 #endif
 }
 
@@ -432,11 +452,14 @@ void Packet::writeStringNUNICODE(const char* value, bool terminate)
 #endif
 }
 
-void Packet::writeStringFixedNUNICODE(const char* value, long size)
+void Packet::writeStringFixedNUNICODE(const char* value, long size, bool terminate)
 {
 #ifdef USE_UNICODE_LIB
 	WCHAR c;
 	long valueLength = value ? strlen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -452,7 +475,7 @@ void Packet::writeStringFixedNUNICODE(const char* value, long size)
 	WCHAR* buffer = (WCHAR*)Str_GetTemp();
 	CvtSystemToNUNICODE((NWORD*)buffer, THREAD_STRING_LENGTH / sizeof(WCHAR), value, strlen(value));
 	
-	writeStringFixedUNICODE(buffer, size);
+	writeStringFixedUNICODE(buffer, size, terminate);
 #endif
 }
 
@@ -468,11 +491,14 @@ void Packet::writeStringNUNICODE(const WCHAR* value, bool terminate)
 		writeCharNUNICODE('\0');
 }
 
-void Packet::writeStringFixedNUNICODE(const WCHAR* value, long size)
+void Packet::writeStringFixedNUNICODE(const WCHAR* value, long size, bool terminate)
 {
 #ifdef USE_UNICODE_LIB
 
 	long valueLength = value ? wcslen(value) : 0;
+	if (terminate && valueLength >= size)
+		valueLength = size - 1;
+
 	for (long l = 0; l < size; l++)
 	{
 		if (l >= valueLength)
@@ -481,6 +507,11 @@ void Packet::writeStringFixedNUNICODE(const WCHAR* value, long size)
 			writeCharNUNICODE(value[l]);
 	}
 #else
+
+	if (size <= 0)
+		return;
+	else if (terminate)
+		size--;
 
 	bool zero = false;
 	for (long l = 0; l < size; l++)
@@ -495,6 +526,9 @@ void Packet::writeStringFixedNUNICODE(const WCHAR* value, long size)
 		else
 			writeCharNUNICODE('\0');
 	}
+
+	if (terminate)
+		writeCharNUNICODE('\0');
 #endif
 }
 

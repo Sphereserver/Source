@@ -4661,3 +4661,6 @@ ALPHA additions:
 
 21-12-2009, MrSugarCube
 - Fixed #1693: CANSEELOSFLAG always returning 0.
+
+02-01-2010, MrSugarCube
+- Fixed #1691: Older clients freezing when single-clicking an item or NPC with a long name.

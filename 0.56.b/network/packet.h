@@ -59,16 +59,16 @@ public:
 	void writeInt64(const DWORD hi, const DWORD lo); // write 64-bit integer (8 bytes)
 	void writeStringASCII(const char* value, bool terminate = true); // write ascii string until null terminator found
 	void writeStringASCII(const WCHAR* value, bool terminate = true); // write ascii string until null terminator found
-	void writeStringFixedASCII(const char* value, long size); // write fixed-length ascii string
-	void writeStringFixedASCII(const WCHAR* value, long size); // write fixed-length ascii string
+	void writeStringFixedASCII(const char* value, long size, bool terminate = false); // write fixed-length ascii string
+	void writeStringFixedASCII(const WCHAR* value, long size, bool terminate = false); // write fixed-length ascii string
 	void writeStringUNICODE(const char* value, bool terminate = true); // write unicode string until null terminator found
 	void writeStringUNICODE(const WCHAR* value, bool terminate = true); // write unicode string until null terminator found
-	void writeStringFixedUNICODE(const char* value, long size); // write fixed-length unicode string
-	void writeStringFixedUNICODE(const WCHAR* value, long size); // write fixed-length unicode string
+	void writeStringFixedUNICODE(const char* value, long size, bool terminate = false); // write fixed-length unicode string
+	void writeStringFixedUNICODE(const WCHAR* value, long size, bool terminate = false); // write fixed-length unicode string
 	void writeStringNUNICODE(const char* value, bool terminate = true); // write unicode string until null terminator found, network order
 	void writeStringNUNICODE(const WCHAR* value, bool terminate = true); // write unicode string until null terminator found, network order
-	void writeStringFixedNUNICODE(const char* value, long size); // write fixed-length unicode string, network order
-	void writeStringFixedNUNICODE(const WCHAR* value, long size); // write fixed-length unicode string, network order
+	void writeStringFixedNUNICODE(const char* value, long size, bool terminate = false); // write fixed-length unicode string, network order
+	void writeStringFixedNUNICODE(const WCHAR* value, long size, bool terminate = false); // write fixed-length unicode string, network order
 	void writeData(const BYTE* buffer, long size); // write block of data
 	void fill(void); // zeroes remaining buffer
 	long sync(void);

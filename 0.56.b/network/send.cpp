@@ -469,10 +469,12 @@ PacketMessageASCII::PacketMessageASCII(CClient* target, LPCTSTR pszText, const C
 	writeInt16(hue);
 	writeInt16(font);
 
+	// we need to ensure that the name is null terminated here when using TALKMODE_ITEM, otherwise
+	// the journal can freeze and crash older client versions
 	if (source == NULL)
 		writeStringFixedASCII("System", 30);
 	else
-		writeStringFixedASCII(source->GetName(), 30);
+		writeStringFixedASCII(source->GetName(), 30, mode == TALKMODE_ITEM);
 
 	writeStringASCII(pszText);
 
