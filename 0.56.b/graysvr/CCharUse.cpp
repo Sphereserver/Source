@@ -1710,26 +1710,29 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 		// Just make them spin.
 		if ( !fLink )
 		{
-		pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
-		SysMessageDefault( DEFMSG_ITEMUSE_SPINWHEEL );
-		return true;
+			pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
+			SysMessageDefault( DEFMSG_ITEMUSE_SPINWHEEL );
+			return true;
 		}
 		else
 			return false;
 
 	case IT_TRAIN_DUMMY:	// Train dummy.
 		if ( !fLink )
-		return Use_Train_Dummy(pItem, true );
+		{
+			Use_Train_Dummy(pItem, true );
+			return true;
+		}
 		else
 			return false;
 	case IT_TRAIN_PICKPOCKET:
 		if ( !fLink )
-		return Use_Train_PickPocketDip(pItem, true);
+			return Use_Train_PickPocketDip(pItem, true);
 		else
 			return false;
 	case IT_ARCHERY_BUTTE:	// Archery Butte
 		if ( !fLink )
-		return Use_Train_ArcheryButte(pItem, true);
+			return Use_Train_ArcheryButte(pItem, true);
 		else
 			return false;
 
@@ -1737,8 +1740,8 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 		//pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
 		if ( !fLink )
 		{
-		SysMessageDefault( DEFMSG_ITEMUSE_LOOM );
-		return true;
+			SysMessageDefault( DEFMSG_ITEMUSE_LOOM );
+			return true;
 		}
 		else
 			return false;
@@ -1938,7 +1941,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	case IT_WEAPON_MACE_STAFF:
 	case IT_JEWELRY:
 		if ( !fLink )
-		return ItemEquip( pItem );
+			return ItemEquip( pItem );
 		else
 			return false;
 

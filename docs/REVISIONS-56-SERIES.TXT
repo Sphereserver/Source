@@ -4664,3 +4664,5 @@ ALPHA additions:
 
 02-01-2010, MrSugarCube
 - Fixed #1691: Older clients freezing when single-clicking an item or NPC with a long name.
+- Fixed #1695: "You can't think of a way to use that item." message being shown when failing
+  to use a training dummy.
