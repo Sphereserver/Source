@@ -596,8 +596,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				if ( bFlags && *pszKey )
 				{
 					flags = Exp_GetVal(pszKey);
-					SKIP_SEPARATORS(pszKey);
-					GETNONWHITESPACE(pszKey);
+					SKIP_ARGSEP(pszKey);
 				}
 				if ( *pszKey )		// has an argument - UID to see(los) or POS to los only
 				{
