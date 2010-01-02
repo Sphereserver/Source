@@ -1727,12 +1727,18 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 			return false;
 	case IT_TRAIN_PICKPOCKET:
 		if ( !fLink )
-			return Use_Train_PickPocketDip(pItem, true);
+		{
+			Use_Train_PickPocketDip(pItem, true);
+			return true;
+		}
 		else
 			return false;
 	case IT_ARCHERY_BUTTE:	// Archery Butte
 		if ( !fLink )
-			return Use_Train_ArcheryButte(pItem, true);
+		{
+			Use_Train_ArcheryButte(pItem, true);
+			return true;
+		}
 		else
 			return false;
 
