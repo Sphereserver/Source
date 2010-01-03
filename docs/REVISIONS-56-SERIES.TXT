@@ -4667,3 +4667,6 @@ ALPHA additions:
 - Fixed #1695: "You can't think of a way to use that item." message being shown when failing
   to use a training dummy.
 - Fixed #1693: CANSEELOSFLAG not working when a uid is specified.
+
+03-01-2010, MrSugarCube
+- Fixed #1700: Armor rating not updated when being resurrected.

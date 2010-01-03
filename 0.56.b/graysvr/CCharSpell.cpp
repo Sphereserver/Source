@@ -442,6 +442,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		{
 			pCorpse = FindMyCorpse();
 		}
+
 		if ( pCorpse != NULL )
 		{
 			if ( RaiseCorpse( pCorpse ))
@@ -455,10 +456,17 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			}
 		}
 
-		if ( g_Cfg.m_fNoResRobe && pRobe != NULL )
+		if ( pRobe != NULL )
 		{
-			pRobe->Delete();
-			pRobe = NULL;
+			if ( g_Cfg.m_fNoResRobe )
+			{
+				pRobe->Delete();
+				pRobe = NULL;
+			}
+			else
+			{
+				m_defense = CalcArmorDefense();
+			}
 		}
 	}
 
