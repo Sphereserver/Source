@@ -2206,18 +2206,19 @@ enum CTRIG_TYPE
 	CTRIG_SeeCrime,			// I am seeing a crime
 
 	// SKTRIG_QTY
-	CTRIG_SkillAbort,		// SKTRIG_ABORT
+	CTRIG_SkillAbort,			// SKTRIG_ABORT
 	CTRIG_SkillChange,
-	CTRIG_SkillFail,		// SKTRIG_FAIL
-	CTRIG_SkillGain,		// SKTRIG_GAIN
+	CTRIG_SkillFail,			// SKTRIG_FAIL
+	CTRIG_SkillGain,			// SKTRIG_GAIN
 	CTRIG_SkillMakeItem,
-	CTRIG_SkillPreStart,	// SKTRIG_PRESTART
-	CTRIG_SkillSelect,
-	CTRIG_SkillStart,
-	CTRIG_SkillStroke,
-	CTRIG_SkillSuccess,
-	CTRIG_SkillUseQuick,
-	CTRIG_SkillWait,
+	CTRIG_SkillPreStart,		// SKTRIG_PRESTART
+	CTRIG_SkillSelect,			// SKTRIG_SELECT
+	CTRIG_SkillStart,			// SKTRIG_START
+	CTRIG_SkillStroke,			// SKTRIG_STROKE
+	CTRIG_SkillSuccess,			// SKTRIG_SUCCESS
+	CTRIG_SkillTargetCancel,	// SKTRIG_TARGETCANCEL
+	CTRIG_SkillUseQuick,		// SKTRIG_USEQUICK
+	CTRIG_SkillWait,			// SKTRIG_WAIT
 
 	CTRIG_SpellBook,
 	CTRIG_SpellCast,		//+Char is casting a spell.

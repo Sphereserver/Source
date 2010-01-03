@@ -1383,6 +1383,37 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 			}
 		} break;
 
+		case CLIMODE_TARG_SKILL:
+		case CLIMODE_TARG_SKILL_HERD_DEST:
+		case CLIMODE_TARG_SKILL_PROVOKE:
+		case CLIMODE_TARG_SKILL_POISON:
+		{
+			SKILL_TYPE action = SKILL_NONE;
+			switch (GetTargMode())
+			{
+				case CLIMODE_TARG_SKILL:
+					action = m_tmSkillTarg.m_Skill;
+					break;
+				case CLIMODE_TARG_SKILL_HERD_DEST:
+					action = SKILL_HERDING;
+					break;
+				case CLIMODE_TARG_SKILL_PROVOKE:
+					action = SKILL_PROVOCATION;
+					break;
+				case CLIMODE_TARG_SKILL_POISON:
+					action = SKILL_POISONING;
+					break;
+				default:
+					break;
+			}
+
+			if (action != SKILL_NONE && m_pChar != NULL)
+			{
+				if ( m_pChar->Skill_OnTrigger(action, SKTRIG_TARGETCANCEL) == TRIGRET_RET_TRUE )
+					bSuppressCancelMessage = true;
+			}
+		} break;
+
 		default:
 			break;
 	}

@@ -135,6 +135,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SkillStart",
 	"@SkillStroke",
 	"@SkillSuccess",
+	"@SkillTargetCancel",
 	"@SkillUseQuick",
 	"@SkillWait",
 

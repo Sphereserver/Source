@@ -4055,21 +4055,22 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 	CTRIG_TYPE		ctrig;
 	switch( stage )
 	{
-		case SKTRIG_FAIL:		ctrig	= CTRIG_SkillFail;		break;
-		case SKTRIG_GAIN:		ctrig	= CTRIG_SkillGain;		break;
-		case SKTRIG_PRESTART:	ctrig	= CTRIG_SkillPreStart;	break;
-		case SKTRIG_START:		ctrig	= CTRIG_SkillStart;		break;
-		case SKTRIG_SELECT:		ctrig	= CTRIG_SkillSelect;	break;
-		case SKTRIG_SUCCESS:	ctrig	= CTRIG_SkillSuccess;	break;
-		case SKTRIG_STROKE:		ctrig	= CTRIG_SkillStroke;	break;
-		case SKTRIG_ABORT:		ctrig	= CTRIG_SkillAbort;		break;
-		case SKTRIG_USEQUICK:	ctrig	= CTRIG_SkillUseQuick;	break;
-		case SKTRIG_WAIT:		ctrig	= CTRIG_SkillWait;		break;
+		case SKTRIG_FAIL:			ctrig	= CTRIG_SkillFail;			break;
+		case SKTRIG_GAIN:			ctrig	= CTRIG_SkillGain;			break;
+		case SKTRIG_PRESTART:		ctrig	= CTRIG_SkillPreStart;		break;
+		case SKTRIG_START:			ctrig	= CTRIG_SkillStart;			break;
+		case SKTRIG_SELECT:			ctrig	= CTRIG_SkillSelect;		break;
+		case SKTRIG_SUCCESS:		ctrig	= CTRIG_SkillSuccess;		break;
+		case SKTRIG_STROKE:			ctrig	= CTRIG_SkillStroke;		break;
+		case SKTRIG_ABORT:			ctrig	= CTRIG_SkillAbort;			break;
+		case SKTRIG_USEQUICK:		ctrig	= CTRIG_SkillUseQuick;		break;
+		case SKTRIG_WAIT:			ctrig	= CTRIG_SkillWait;			break;
+		case SKTRIG_TARGETCANCEL:	ctrig	= CTRIG_SkillTargetCancel;	break;
 		default:
 			return TRIGRET_RET_TRUE;
 	}
 
-	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT ) )
+	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL ) )
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;

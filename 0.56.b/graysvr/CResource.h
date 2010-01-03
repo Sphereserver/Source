@@ -500,6 +500,7 @@ enum SKTRIG_TYPE
 	SKTRIG_START,		// params for skill are done. (stroke)
 	SKTRIG_STROKE,
 	SKTRIG_SUCCESS,		// we passed the skill check
+	SKTRIG_TARGETCANCEL,// called when a target cursor is cancelled
 	SKTRIG_USEQUICK,	// called when a 'quick' usage of the skill is made
 	SKTRIG_WAIT,		// called when a test is made to see if the character must wait before starting
 	SKTRIG_QTY,

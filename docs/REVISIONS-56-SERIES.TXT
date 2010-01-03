@@ -4670,3 +4670,7 @@ ALPHA additions:
 
 03-01-2010, MrSugarCube
 - Fixed #1700: Armor rating not updated when being resurrected.
+- Added #1701: @TargetCancel trigger to skills (and @SkillTargetCancel to characters). This
+  is called when a player cancels targeting with a skill.
+    ARGN1 = the skill that was being used
+    RETURN 1 = suppress the cancellation message
