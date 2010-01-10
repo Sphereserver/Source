@@ -284,7 +284,7 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
 
-	adjustItemData(target, item, id, hue, amount, p, dir, flags);
+	adjustItemData(target, item, id, hue, amount, p, dir, flags, dir);
 
 	// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
 	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
@@ -326,7 +326,7 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 	push(target);
 }
 
-void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags)
+void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags, BYTE& light)
 {
 	CChar* character = target->GetChar();
 	ASSERT(character);
@@ -389,9 +389,9 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		if (item->Item_GetDef()->Can(CAN_I_LIGHT))
 		{
 			if (item->IsTypeLit())
-				dir = item->m_itLight.m_pattern;
+				light = item->m_itLight.m_pattern;
 			else
-				dir = LIGHT_LARGE;
+				light = LIGHT_LARGE;
 		}
 		else if (id == ITEMID_CORPSE)
 		{
@@ -3877,9 +3877,9 @@ PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketIte
 	BYTE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
-	BYTE layer = LAYER_NONE;
+	BYTE light = 0;
 
-	adjustItemData(target, item, id, hue, amount, p, dir, flags);
+	adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
 
 	if (id >= ITEMID_MULTI)
 	{
@@ -3897,7 +3897,7 @@ PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketIte
 	writeInt16(p.m_x);
 	writeInt16(p.m_y);
 	writeByte(p.m_z);
-	writeByte(layer);
+	writeByte(light);
 	writeInt16(hue);
 	writeByte(flags);
 

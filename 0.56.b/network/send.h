@@ -113,7 +113,7 @@ protected:
 public:
 	PacketItemWorld(CClient* target, CItem* item);
 
-	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags);
+	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags, BYTE &light);
 
 	virtual bool onSend(CClient* client);
 };
@@ -1565,7 +1565,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF3 : PacketItemWorld			sends item on ground (NORMAL)
+ *	Packet 0xF3 : PacketItemWorldNew		sends item on ground (NORMAL)
  *
  *
  ***************************************************************************/
