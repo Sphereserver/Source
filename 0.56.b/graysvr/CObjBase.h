@@ -3346,6 +3346,7 @@ private:
 	bool NPC_FightMayCast() const;
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool forceDistance = false );
+	void NPC_Act_Guard();
 	void NPC_Act_GoHome();
 	bool NPC_Act_Talk();
 	void NPC_Act_Wander();

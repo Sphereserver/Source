@@ -1375,20 +1375,12 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 
 	if ( NPC_IsOwnedBy( pChar, false ))
 	{
-		// pets should protect there owners unless told otherwise.
-		if ( pChar->Fight_IsActive())
-		{
-			CChar * pCharTarg = pChar->m_Act_Targ.CharFind();
-			if ( Fight_Attack(pCharTarg))
-				return true;
-		}
-
 		// follow my owner again. (Default action)
 		m_Act_Targ = pChar->GetUID();
 		m_atFollowTarg.m_DistMin = 1;
 		m_atFollowTarg.m_DistMax = 6;
 		m_pNPC->m_Act_Motivation = 50;
-		Skill_Start( NPCACT_FOLLOW_TARG );
+		Skill_Start( Skill_GetActive() == NPCACT_FOLLOW_TARG? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG );
 		return true;
 	}
 
@@ -1621,6 +1613,30 @@ void CChar::NPC_Act_Wander()
 	}
 
 	NPC_WalkToPoint();
+}
+
+void CChar::NPC_Act_Guard()
+{
+	ADDTOCALLSTACK("CChar::NPC_Act_Guard");
+	// Protect our target or owner. (m_Act_Targ)
+	if ( m_pNPC == NULL )
+		return;
+
+	CChar* pChar = m_Act_Targ.CharFind();
+	if ( pChar != NULL && pChar != this && CanSeeLOS(pChar, LOS_NB_WINDOWS) )
+	{
+		// protect the target if they're in a fight
+		if ( pChar->Fight_IsActive())
+		{
+			if ( Fight_Attack( pChar->m_Act_Targ.CharFind() ))
+				return;
+		}
+	}
+
+	NPC_LookAtChar( pChar, 1 );
+
+	// target is out of range or doesn't need protecting, so just follow for now
+	NPC_Act_Follow();
 }
 
 bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
@@ -3142,8 +3158,13 @@ void CChar::NPC_OnTickAction()
 				NPC_Act_Fight();
 				break;
 
-			case NPCACT_FOLLOW_TARG:
 			case NPCACT_GUARD_TARG:
+				// fight with the target, or follow it
+				EXC_SET("guard");
+				NPC_Act_Guard();
+				break;
+
+			case NPCACT_FOLLOW_TARG:
 				// continue to follow our target.
 				EXC_SET("look at char");
 				NPC_LookAtChar( m_Act_Targ.CharFind(), 1 );

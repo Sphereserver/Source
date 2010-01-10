@@ -369,9 +369,9 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			break;
 
 		case PC_GUARD:
-			if ( pItemTarg == NULL )
+			if ( pObj == NULL )
 				break;
-			m_Act_Targ = pItemTarg->GetUID();
+			m_Act_Targ = pObj->GetUID();
 			fSuccess = Skill_Start( NPCACT_GUARD_TARG );
 			break;
 		case PC_TRANSFER:
