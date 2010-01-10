@@ -2200,6 +2200,7 @@ enum CTRIG_TYPE
 
 	CTRIG_RegionEnter,
 	CTRIG_RegionLeave,
+	CTRIG_RegionResourceFound,	// I just discovered a resource
 
 	CTRIG_Rename,			// Changing my name or pets one
 

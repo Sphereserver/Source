@@ -120,6 +120,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@RegionEnter",
 	"@RegionLeave",
+	"@RegionResourceFound",	// I just discovered a resource
 
 	"@Rename",
 	"@SeeCrime",		// I saw a crime

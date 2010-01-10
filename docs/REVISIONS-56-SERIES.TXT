@@ -4676,6 +4676,8 @@ ALPHA additions:
     RETURN 1 = suppress the cancellation message
 
 10-01-2010, MrSugarCube
+- Added #1705: @RegionResourceFound trigger, fires on characters just before @ResourceFound
+  is fired on a region resource (shares the same arguments and return values).
 - Fixed #1706: Light sources not showing correctly on 7.0.0+ clients.
 - Fixed: Guard command not working with pets.
 - Modified: Pets default to guarding their master instead of following, and no longer attack
