@@ -620,10 +620,7 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
-#ifdef NETWORK_MULTITHREADED
 	g_NetworkOut.waitForClose();
-#endif
-
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
@@ -663,11 +660,10 @@ int Sphere_OnTick()
 
 	// push outgoing data
 	g_Serv.m_Profile.Start( PROFILE_NETWORK_TX );
-#ifdef NETWORK_MULTITHREADED
-	g_NetworkOut.pushHoldingQueues();
-#else
-	g_NetworkOut.tick();
-#endif
+
+	if (g_NetworkOut.isActive() == false)
+		g_NetworkOut.tick();
+
 	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_CATCH;
@@ -1062,9 +1058,8 @@ int _cdecl main( int argc, char * argv[] )
 #endif
 
 		g_NetworkIn.onStart();
-#ifdef NETWORK_MULTITHREADED
-		g_NetworkOut.start();
-#endif
+		if (IsSetEF( EF_NetworkOutThread ))
+			g_NetworkOut.start();
 			
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
 

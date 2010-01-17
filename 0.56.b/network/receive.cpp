@@ -234,8 +234,6 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 		if (++sequence == 256)
 			sequence = 1;
 
-		// Ack the move. ( if this does not go back we get rubber banding )
-		PacketMovementAck* packet = new PacketMovementAck(client);
 		net->m_sequence = sequence;
 	}
 }

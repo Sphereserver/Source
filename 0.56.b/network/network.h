@@ -4,9 +4,7 @@
 
 #include "packet.h"
 #include "../common/common.h"
-
-//#define NETWORK_MULTITHREADED		// uncomment to use seperate thread for outgoing data
-									// currently unstable and unusable for non-local servers
+#include "../sphere/containers.h"
 
 #define NETWORK_PACKETCOUNT 0x100	// number of unique packets
 #define NETWORK_BUFFERSIZE 0xF000	// size of receive buffer
@@ -54,7 +52,6 @@ protected:
 	bool m_newseed; // is the client using new seed
 
 	bool m_useAsync; // is this socket using asynchronous sends
-	queue<PacketSend*> m_asyncQueue; // outgoing async packet queue
 	bool m_isSendingAsync; // is a packet currently being sent asynchronously?
 #ifdef _WIN32
 	WSABUF m_bufferWSA; // Winsock Async Buffer
@@ -63,18 +60,10 @@ protected:
 	struct ev_io m_eventWatcher;
 #endif
 
-	queue<PacketSend*>	m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
-	
-#ifdef NETWORK_MULTITHREADED
-	SimpleMutex m_closeMutex;
-	ManualThreadLock m_closeLock;
+	typedef ThreadSafeQueue<PacketSend*> PacketQueue;
 
-	SimpleMutex m_queueMutex;
-	ManualThreadLock m_queueLock;
-	queue<PacketSend*> m_holdingQueue[PacketSend::PRI_QTY];
-
-	bool m_isReady;
-#endif
+	PacketQueue m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
+	PacketQueue m_asyncQueue; // outgoing async packet queue
 
 	int m_packetExceptions;
 
@@ -128,6 +117,7 @@ public:
 	friend class NetworkOut;
 	friend class CClient;
 	friend class ClientIterator;
+	friend class SafeClientIterator;
 #ifndef _WIN32
 	friend class LinuxEv;
 #endif
@@ -145,16 +135,33 @@ class ClientIterator
 {
 protected:
 	const NetworkIn* m_network;
-#ifdef NETWORK_MULTITHREADED
-	int m_id;
-	int m_max;
-#else
 	CClient* m_nextClient;
-#endif
 
 public:
 	ClientIterator(const NetworkIn* network = NULL);
 	~ClientIterator(void);
+
+	CClient* next(void); // finds next client
+};
+
+
+/***************************************************************************
+ *
+ *
+ *	class SafeClientIterator		Works as client iterator getting the clients in a thread-safe way
+ *
+ *
+ ***************************************************************************/
+class SafeClientIterator
+{
+protected:
+	const NetworkIn* m_network;
+	int m_id;
+	int m_max;
+
+public:
+	SafeClientIterator(const NetworkIn* network = NULL);
+	~SafeClientIterator(void);
 
 	CClient* next(void); // finds next client
 };
@@ -198,9 +205,7 @@ private:
 protected:
 	NetState** m_states; // client state pool
 	long m_stateCount; // client state count
-#ifndef NETWORK_MULTITHREADED
 	CGObList m_clients; // current list of clients (CClient)
-#endif
 
 public:
 	static const char* m_sClassName;
@@ -231,6 +236,7 @@ protected:
 	void periodic(void); // performs periodic actions
 
 	friend class ClientIterator;
+	friend class SafeClientIterator;
 };
 
 
@@ -259,9 +265,6 @@ public:
 	void scheduleOnce(PacketSend* packet); // schedule this packet to be sent MOVING it to the list
 
 	void flush(CClient* client); // forces immediate send of all packets
-#ifdef NETWORK_MULTITHREADED
-	void pushHoldingQueues(void); // move packets from holding queues into real queues
-#endif
 
 protected:
 	void proceedQueue(long priority); // send next set of packets with the specified priority

@@ -74,7 +74,7 @@ void PacketWeb::setData(BYTE* data, int length)
  *
  *
  ***************************************************************************/
-PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_LOW)
+PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	if ( damage >= 0x10000 )
 		damage = 0xffff;
@@ -92,7 +92,7 @@ PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID d
  *
  *
  ***************************************************************************/
-PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : PacketSend(XCMD_Status, 7, PRI_LOW)
+PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	CChar* character = target->GetChar();
 	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && !other->Char_GetDef()->GetHireDayWage() );
@@ -242,7 +242,7 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
  *
  *
  ***************************************************************************/
-PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, PRI_LOW), m_character(character->GetUID())
+PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_character(character->GetUID())
 {
 	initLength();
 
@@ -413,7 +413,7 @@ bool PacketItemWorld::onSend(CClient* client)
  *
  *
  ***************************************************************************/
-PacketPlayerStart::PacketPlayerStart(CClient* target) : PacketSend(XCMD_Start, 37, PRI_HIGH)
+PacketPlayerStart::PacketPlayerStart(CClient* target) : PacketSend(XCMD_Start, 37, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	CChar* character = target->GetChar();
 	CPointMap pt = character->GetTopPoint();
@@ -536,7 +536,7 @@ PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_Vi
  *
  *
  ***************************************************************************/
-PacketMovementRej::PacketMovementRej(CClient* target, BYTE sequence) : PacketSend(XCMD_WalkCancel, 8, PRI_HIGHEST)
+PacketMovementRej::PacketMovementRej(CClient* target, BYTE sequence) : PacketSend(XCMD_WalkCancel, 8, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	CChar* character = target->GetChar();
 	ASSERT(character);
@@ -558,7 +558,7 @@ PacketMovementRej::PacketMovementRej(CClient* target, BYTE sequence) : PacketSen
  *
  *
  ***************************************************************************/
-PacketMovementAck::PacketMovementAck(CClient* target) : PacketSend(XCMD_WalkAck, 3, PRI_HIGHEST)
+PacketMovementAck::PacketMovementAck(CClient* target) : PacketSend(XCMD_WalkAck, 3, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	writeByte(target->GetNetState()->m_sequence);
 	writeByte(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
@@ -572,7 +572,7 @@ PacketMovementAck::PacketMovementAck(CClient* target) : PacketSend(XCMD_WalkAck,
  *
  *
  ***************************************************************************/
-PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* container, CPointMap* pt) : PacketSend(XCMD_DragAnim, 26, PRI_LOW)
+PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* container, CPointMap* pt) : PacketSend(XCMD_DragAnim, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt16(item->GetDispID());
 	writeByte(0);
@@ -630,7 +630,7 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
  *
  *
  ***************************************************************************/
-PacketContainerOpen::PacketContainerOpen(CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 7, PRI_LOW), m_container(container->GetUID())
+PacketContainerOpen::PacketContainerOpen(CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
 {
 	writeInt32(container->GetUID());
 	writeInt16(gump);
@@ -749,7 +749,7 @@ PacketKick::PacketKick(CClient* target) : PacketSend(XCMD_Kick, 5, PRI_HIGHEST)
  *
  *
  ***************************************************************************/
-PacketDragCancel::PacketDragCancel(CClient* target, Reason code) : PacketSend(XCMD_DragCancel, 2, PRI_HIGH)
+PacketDragCancel::PacketDragCancel(CClient* target, Reason code) : PacketSend(XCMD_DragCancel, 2, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	writeByte(code);
 	push(target);
@@ -804,7 +804,7 @@ PacketItemEquipped::PacketItemEquipped(CClient* target, const CItem* item) : Pac
  *
  *
  ***************************************************************************/
-PacketSwing::PacketSwing(CClient* target, const CChar* defender) : PacketSend(XCMD_Fight, 10, PRI_LOW)
+PacketSwing::PacketSwing(CClient* target, const CChar* defender) : PacketSend(XCMD_Fight, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeByte(0);
 	writeInt32(target->GetChar()->GetUID());
@@ -820,7 +820,7 @@ PacketSwing::PacketSwing(CClient* target, const CChar* defender) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketSkills::PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill) : PacketSend(XCMD_Skill, 15, PRI_LOW)
+PacketSkills::PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill) : PacketSend(XCMD_Skill, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -1156,7 +1156,7 @@ PacketRedrawAll::PacketRedrawAll(CClient* target) : PacketSend(XCMD_ReDrawAll, 1
  *
  *
  ***************************************************************************/
-PacketMapPlot::PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, PRI_LOW)
+PacketMapPlot::PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(map->GetUID());
 	writeByte(mode);
@@ -1167,7 +1167,7 @@ PacketMapPlot::PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool
 	push(target);
 }
 
-PacketMapPlot::PacketMapPlot(CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, PRI_LOW)
+PacketMapPlot::PacketMapPlot(CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(map->GetUID());
 	writeByte(mode);
@@ -1189,7 +1189,7 @@ void PacketMapPlot::setPin(int x, int y)
  *
  *
  ***************************************************************************/
-PacketGameTime::PacketGameTime(CClient* target, int hours, int minutes, int seconds) : PacketSend(XCMD_Time, 4, PRI_IDLE)
+PacketGameTime::PacketGameTime(CClient* target, int hours, int minutes, int seconds) : PacketSend(XCMD_Time, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	writeByte(hours);
 	writeByte(minutes);
@@ -1205,7 +1205,7 @@ PacketGameTime::PacketGameTime(CClient* target, int hours, int minutes, int seco
  *
  *
  ***************************************************************************/
-PacketWeather::PacketWeather(CClient* target, WEATHER_TYPE weather, int severity, int temperature) : PacketSend(XCMD_Weather, 4, PRI_IDLE)
+PacketWeather::PacketWeather(CClient* target, WEATHER_TYPE weather, int severity, int temperature) : PacketSend(XCMD_Weather, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	switch (weather)
 	{
@@ -1242,7 +1242,7 @@ PacketWeather::PacketWeather(CClient* target, WEATHER_TYPE weather, int severity
  *
  *
  ***************************************************************************/
-PacketBookPageContent::PacketBookPageContent(CClient* target, const CItem* book, int startpage, int pagecount) : PacketSend(XCMD_BookPage, 8, PRI_LOW)
+PacketBookPageContent::PacketBookPageContent(CClient* target, const CItem* book, int startpage, int pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	m_pages = 0;
 
@@ -1333,7 +1333,7 @@ void PacketBookPageContent::addPage(const CItem* book, int page)
  *
  *
  ***************************************************************************/
-PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags) : PacketSend(XCMD_Target, 19, PRI_LOW)
+PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags) : PacketSend(XCMD_Target, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeByte(type);
 	writeInt32(context);
@@ -1350,7 +1350,7 @@ PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType ty
 	push(target);
 };
 
-PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 26, PRI_LOW)
+PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeByte(type);
 	writeInt32(context);
@@ -1378,7 +1378,7 @@ PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType ty
  *
  *
  ***************************************************************************/
-PacketPlayMusic::PacketPlayMusic(CClient* target, WORD musicID) : PacketSend(XCMD_PlayMusic, 3, PRI_IDLE)
+PacketPlayMusic::PacketPlayMusic(CClient* target, WORD musicID) : PacketSend(XCMD_PlayMusic, 3, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	writeInt16(musicID);
 	push(target);
@@ -1392,7 +1392,7 @@ PacketPlayMusic::PacketPlayMusic(CClient* target, WORD musicID) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketAction::PacketAction(CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, PRI_LOW)
+PacketAction::PacketAction(CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(character->GetUID());
 	writeInt16(action);
@@ -1554,7 +1554,7 @@ PacketBulletinBoard::PacketBulletinBoard(CClient* target, const CItemContainer* 
 	push(target);
 }
 
-PacketBulletinBoard::PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message) : PacketSend(XCMD_BBoard, 20, PRI_LOW)
+PacketBulletinBoard::PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message) : PacketSend(XCMD_BBoard, 20, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeByte(action == BBOARDF_REQ_FULL? BBOARDF_MSG_BODY : BBOARDF_MSG_HEAD);
@@ -1634,7 +1634,7 @@ PacketBulletinBoard::PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, c
  *
  *
  ***************************************************************************/
-PacketWarMode::PacketWarMode(CClient* target, const CChar* character) : PacketSend(XCMD_War, 5, PRI_LOW)
+PacketWarMode::PacketWarMode(CClient* target, const CChar* character) : PacketSend(XCMD_War, 5, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeBool(character->IsStatFlag(STATF_War));
 	writeByte(0x00);
@@ -1652,7 +1652,7 @@ PacketWarMode::PacketWarMode(CClient* target, const CChar* character) : PacketSe
  *
  *
  ***************************************************************************/
-PacketPingAck::PacketPingAck(CClient* target, BYTE value) : PacketSend(XCMD_Ping, 2, PRI_IDLE)
+PacketPingAck::PacketPingAck(CClient* target, BYTE value) : PacketSend(XCMD_Ping, 2, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	writeByte(value);
 	push(target);
@@ -1666,7 +1666,7 @@ PacketPingAck::PacketPingAck(CClient* target, BYTE value) : PacketSend(XCMD_Ping
  *
  *
  ***************************************************************************/
-PacketVendorBuyList::PacketVendorBuyList(void) : PacketSend(XCMD_VendOpenBuy, 8, PRI_LOW)
+PacketVendorBuyList::PacketVendorBuyList(void) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 }
 
@@ -1732,7 +1732,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
  *
  *
  ***************************************************************************/
-PacketZoneChange::PacketZoneChange(CClient* target, const CPointMap& pos) : PacketSend(XCMD_ZoneChange, 16, PRI_LOW)
+PacketZoneChange::PacketZoneChange(CClient* target, const CPointMap& pos) : PacketSend(XCMD_ZoneChange, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt16(pos.m_x);
 	writeInt16(pos.m_y);
@@ -1862,7 +1862,7 @@ bool PacketCharacter::onSend(CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayMenu::PacketDisplayMenu(CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, CObjBase* object) : PacketSend(XCMD_MenuItems, 11, PRI_LOW)
+PacketDisplayMenu::PacketDisplayMenu(CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, CObjBase* object) : PacketSend(XCMD_MenuItems, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(object->GetUID());
@@ -1896,7 +1896,7 @@ PacketDisplayMenu::PacketDisplayMenu(CClient* target, CLIMODE_TYPE mode, const C
  *
  *
  ***************************************************************************/
-PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_CharList3, 5, PRI_LOW)
+PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_CharList3, 5, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -1935,7 +1935,7 @@ PacketLoginError::PacketLoginError(CClient* target, PacketLoginError::Reason rea
  *
  *
  ***************************************************************************/
-PacketDeleteError::PacketDeleteError(CClient* target, PacketDeleteError::Reason reason) : PacketSend(XCMD_DeleteBad, 2, PRI_LOW)
+PacketDeleteError::PacketDeleteError(CClient* target, PacketDeleteError::Reason reason) : PacketSend(XCMD_DeleteBad, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeByte(reason);
 	push(target);
@@ -1949,7 +1949,7 @@ PacketDeleteError::PacketDeleteError(CClient* target, PacketDeleteError::Reason 
  *
  *
  ***************************************************************************/
-PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CChar* lastCharacter) : PacketSend(XCMD_CharList2, 4, PRI_LOW)
+PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CChar* lastCharacter) : PacketSend(XCMD_CharList2, 4, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -1973,7 +1973,7 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CCha
  *
  *
  ***************************************************************************/
-PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : PacketSend(XCMD_PaperDoll, 66, PRI_LOW)
+PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : PacketSend(XCMD_PaperDoll, 66, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	unsigned int mode = 0;
 	if (character->IsStatFlag(STATF_War))
@@ -2085,7 +2085,7 @@ bool PacketCorpseEquipment::onSend(CClient* client)
  *
  *
  ***************************************************************************/
-PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, PRI_LOW)
+PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(object->GetUID());
@@ -2126,7 +2126,7 @@ PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYP
  *
  *
  ***************************************************************************/
-PacketServerRelay::PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId) : PacketSend(XCMD_Relay, 11, PRI_IDLE)
+PacketServerRelay::PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId) : PacketSend(XCMD_Relay, 11, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	writeByte((ip      ) & 0xFF);
 	writeByte((ip >> 8 ) & 0xFF);
@@ -2153,7 +2153,7 @@ void PacketServerRelay::onSent(CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplay, 19, PRI_LOW)
+PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplay, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	CItemBase* itemDef = map->Item_GetDef();
 	ASSERT(itemDef != NULL);
@@ -2181,7 +2181,7 @@ PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const C
  *
  *
  ***************************************************************************/
-PacketDisplayBook::PacketDisplayBook(CClient* target, CItem* book) : PacketSend(XCMD_BookOpen, 99, PRI_LOW)
+PacketDisplayBook::PacketDisplayBook(CClient* target, CItem* book) : PacketSend(XCMD_BookOpen, 99, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	bool isWritable = false;
 	int pages = 0;
@@ -2248,7 +2248,7 @@ PacketDisplayBook::PacketDisplayBook(CClient* target, CItem* book) : PacketSend(
  *
  *
  ***************************************************************************/
-PacketShowDyeWindow::PacketShowDyeWindow(CClient* target, const CObjBase* object) : PacketSend(XCMD_DyeVat, 9, PRI_LOW)
+PacketShowDyeWindow::PacketShowDyeWindow(CClient* target, const CObjBase* object) : PacketSend(XCMD_DyeVat, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ITEMID_TYPE id;
 	if (object->IsItem())
@@ -2280,7 +2280,7 @@ PacketShowDyeWindow::PacketShowDyeWindow(CClient* target, const CObjBase* object
  *
  *
  ***************************************************************************/
-PacketAllNamesResponse::PacketAllNamesResponse(CClient* target, const CObjBase* object) : PacketSend(XCMD_AllNames3D, 37, PRI_IDLE)
+PacketAllNamesResponse::PacketAllNamesResponse(CClient* target, const CObjBase* object) : PacketSend(XCMD_AllNames3D, 37, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(object->GetUID());
@@ -2298,7 +2298,7 @@ PacketAllNamesResponse::PacketAllNamesResponse(CClient* target, const CObjBase* 
  *
  *
  ***************************************************************************/
-PacketAddPrompt::PacketAddPrompt(CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(useUnicode? XCMD_PromptUNICODE : XCMD_Prompt, 16, PRI_LOW)
+PacketAddPrompt::PacketAddPrompt(CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(useUnicode? XCMD_PromptUNICODE : XCMD_Prompt, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -2327,7 +2327,7 @@ PacketAddPrompt::PacketAddPrompt(CClient* target, CGrayUID context1, CGrayUID co
  *
  *
  ***************************************************************************/
-PacketVendorSellList::PacketVendorSellList(const CChar* vendor) : PacketSend(XCMD_VendOpenSell, 9, PRI_LOW)
+PacketVendorSellList::PacketVendorSellList(const CChar* vendor) : PacketSend(XCMD_VendOpenSell, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(vendor->GetUID());
@@ -2420,7 +2420,7 @@ int PacketVendorSellList::searchContainer(CClient* target, const CItemContainer*
  *
  *
  ***************************************************************************/
-PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : PacketSend(XCMD_StatChngStr, 9, PRI_LOW)
+PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : PacketSend(XCMD_StatChngStr, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(character->GetUID());
 
@@ -2446,7 +2446,7 @@ PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : Pack
  *
  *
  ***************************************************************************/
-PacketManaUpdate::PacketManaUpdate(const CChar* character) : PacketSend(XCMD_StatChngInt, 9, PRI_LOW)
+PacketManaUpdate::PacketManaUpdate(const CChar* character) : PacketSend(XCMD_StatChngInt, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(character->GetUID());
 	writeInt16(character->Stat_GetMax(STAT_INT));
@@ -2461,7 +2461,7 @@ PacketManaUpdate::PacketManaUpdate(const CChar* character) : PacketSend(XCMD_Sta
  *
  *
  ***************************************************************************/
-PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character) : PacketSend(XCMD_StatChngDex, 9, PRI_LOW)
+PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character) : PacketSend(XCMD_StatChngDex, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeInt32(character->GetUID());
 	writeInt16(character->Stat_GetMax(STAT_DEX));
@@ -2476,7 +2476,7 @@ PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketWebPage::PacketWebPage(CClient* target, LPCTSTR url) : PacketSend(XCMD_Web, 3, PRI_LOW)
+PacketWebPage::PacketWebPage(CClient* target, LPCTSTR url) : PacketSend(XCMD_Web, 3, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeStringASCII(url);
@@ -2492,7 +2492,7 @@ PacketWebPage::PacketWebPage(CClient* target, LPCTSTR url) : PacketSend(XCMD_Web
  *
  *
  ***************************************************************************/
-PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header) : PacketSend(XCMD_Scroll, 10, PRI_LOW)
+PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header) : PacketSend(XCMD_Scroll, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -2533,7 +2533,7 @@ PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYP
  *
  *
  ***************************************************************************/
-PacketServerList::PacketServerList(CClient* target) : PacketSend(XCMD_ServerList, 46, PRI_LOW)
+PacketServerList::PacketServerList(CClient* target) : PacketSend(XCMD_ServerList, 46, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	// clients before 4.0.0 require serverlist ips to be in reverse
 	bool reverseIp = target->GetNetState()->isClientLessVersion(0x400000);
@@ -2609,7 +2609,7 @@ void PacketServerList::writeServerEntry(CServerRef server, int index, bool rever
  *
  *
  ***************************************************************************/
-PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastCharacter) : PacketSend(XCMD_CharList, 9, PRI_LOW)
+PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastCharacter) : PacketSend(XCMD_CharList, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -2662,7 +2662,7 @@ PacketAttack::PacketAttack(CClient* target, CGrayUID serial) : PacketSend(XCMD_A
  *
  *
  ***************************************************************************/
-PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object) : PacketSend(XCMD_GumpInpVal, 21, PRI_LOW)
+PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object) : PacketSend(XCMD_GumpInpVal, 21, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(object->GetUID());
@@ -2771,7 +2771,7 @@ PacketDeath::PacketDeath(CChar* dead, CItemCorpse* corpse) : PacketSend(XCMD_Cha
  *
  *
  ***************************************************************************/
-PacketGumpDialog::PacketGumpDialog(int x, int y, CObjBase* object, DWORD context) : PacketSend(XCMD_GumpDialog, 24, PRI_LOW)
+PacketGumpDialog::PacketGumpDialog(int x, int y, CObjBase* object, DWORD context) : PacketSend(XCMD_GumpDialog, 24, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 
@@ -2912,7 +2912,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
  *
  *
  ***************************************************************************/
-PacketChatMessage::PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language) : PacketSend(XCMD_ChatReq, 11, PRI_LOW)
+PacketChatMessage::PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language) : PacketSend(XCMD_ChatReq, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	initLength();
 	writeInt16(type);
@@ -2939,7 +2939,7 @@ PacketChatMessage::PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR
  *
  *
  ***************************************************************************/
-PacketTooltip::PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR text) : PacketSend(XCMD_ToolTip, 8, PRI_IDLE)
+PacketTooltip::PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR text) : PacketSend(XCMD_ToolTip, 8, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	initLength();
 	writeInt32(object->GetUID());
@@ -2956,7 +2956,7 @@ PacketTooltip::PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR te
  *
  *
  ***************************************************************************/
-PacketProfile::PacketProfile(CClient* target, const CChar* character) : PacketSend(XCMD_CharProfile, 12, PRI_LOW)
+PacketProfile::PacketProfile(CClient* target, const CChar* character) : PacketSend(XCMD_CharProfile, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	// alter profile when viewing an incognitoed player, unless being viewed by a GM or the profile is our own
 	bool isIncognito = character->IsStatFlag(STATF_Incognito) && !target->IsPriv(PRIV_GM) && character != target->GetChar();
@@ -3543,7 +3543,7 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(CClient* target, int cliloc, 
  *
  *
  ***************************************************************************/
-PacketLogoutAck::PacketLogoutAck(CClient* target) : PacketSend(XCMD_LogoutStatus, 2, PRI_LOW)
+PacketLogoutAck::PacketLogoutAck(CClient* target) : PacketSend(XCMD_LogoutStatus, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	writeByte(1);
 	push(target);
@@ -3608,7 +3608,7 @@ bool PacketPropertyList::onSend(CClient* client)
  *
  *
  ***************************************************************************/
-PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom* house, int revision) : PacketSend(XCMD_AOSCustomHouse, 64, PRI_IDLE)
+PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom* house, int revision) : PacketSend(XCMD_AOSCustomHouse, 64, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	m_house = house;
 
@@ -3767,7 +3767,7 @@ void PacketHouseDesign::finalise(void)
  *
  *
  ***************************************************************************/
-PacketBuff::PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount) : PacketSend(XCMD_BuffPacket, 72, PRI_LOW)
+PacketBuff::PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	CChar* character = target->GetChar();
 	ASSERT(character != NULL);
@@ -3807,7 +3807,7 @@ PacketBuff::PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne
 	push(target);
 }
 
-PacketBuff::PacketBuff(CClient* target, const WORD iconId) : PacketSend(XCMD_BuffPacket, 15, PRI_LOW)
+PacketBuff::PacketBuff(CClient* target, const WORD iconId) : PacketSend(XCMD_BuffPacket, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	CChar* character = target->GetChar();
 	ASSERT(character != NULL);
@@ -3830,7 +3830,7 @@ PacketBuff::PacketBuff(CClient* target, const WORD iconId) : PacketSend(XCMD_Buf
  *
  *
  ***************************************************************************/
-PacketKREncryption::PacketKREncryption(CClient* target) : PacketSend(XCMD_EncryptionReq, 77, PRI_HIGH)
+PacketKREncryption::PacketKREncryption(CClient* target) : PacketSend(XCMD_EncryptionReq, 77, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	static BYTE pDataKR_E3[76] = {
 						0x00, 0x4d,

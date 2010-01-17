@@ -828,6 +828,9 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 		fMove = false;
 	}
 
+	// Ack the move. ( if this does not go back we get rubber banding )
+	PacketMovementAck* packet = new PacketMovementAck(this);
+
 	if ( !fMove )
 		m_pChar->UpdateMode(this);			// Show others I have turned !!
 	else

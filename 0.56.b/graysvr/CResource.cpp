@@ -204,6 +204,7 @@ CResource::CResource()
 	m_iNetMaxPacketsPerTick = 25;
 	m_iNetMaxLengthPerTick = 12000;
 	m_iNetMaxQueueSize = 50;
+	m_fUsePacketPriorities = true;
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
@@ -493,6 +494,7 @@ enum RC_TYPE
 	RC_USEHTTP,					// m_fUseHTTP
 	RC_USEMAPDIFFS,				// m_fUseMapDiffs
 	RC_USENOCRYPT,				// m_Usenocrypt
+	RC_USEPACKETPRIORITY,		// m_fUsePacketPriorities
 	RC_VENDORMAXSELL,			// m_iVendorMaxSell
 	RC_VERSION,
 	RC_WALKBUFFER,
@@ -681,6 +683,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "USEHTTP",				{ ELEM_INT,		OFFSETOF(CResource,m_fUseHTTP),				0 }},
 	{ "USEMAPDIFFS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseMapDiffs),			0 }},
 	{ "USENOCRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsenocrypt),			0 }},	// we don't want no-crypt clients
+	{ "USEPACKETPRIORITY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsePacketPriorities),	0 }},
 	{ "VENDORMAXSELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iVendorMaxSell),		0 }},
 	{ "VERSION",	{ELEM_VOID, 0, 0} },
 	{ "WALKBUFFER",				{ ELEM_INT,		OFFSETOF(CResource,m_iWalkBuffer),			0 }},
@@ -3247,6 +3250,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
+		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
 		if ( zExperimentalFlags[0] )

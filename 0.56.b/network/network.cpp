@@ -82,11 +82,6 @@ void xRecordPacket(CClient* client, Packet* packet, LPCTSTR heading)
 
 NetState::NetState(long id) : m_id(id), m_client(NULL), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
 {
-#ifdef NETWORK_MULTITHREADED
-	m_queueLock.setMutex(&m_queueMutex);
-	m_closeLock.setMutex(&m_closeMutex);
-#endif
-
 	clear();
 }
 
@@ -115,40 +110,20 @@ void NetState::clear(void)
 		g_World.m_ObjDelete.InsertHead(m_client);
 	}
 
-#ifdef NETWORK_MULTITHREADED
-	m_isReady = false;
-#endif
-
 	m_isClosed = true;
 	m_socket.Close();
 	m_client = NULL;
 
-#ifdef NETWORK_MULTITHREADED
-	m_queueLock.doLock();
-#endif
-
 	for (int i = 0; i < PacketSend::PRI_QTY; i++)
 	{
-		while (m_queue[i].size())
+		while (m_queue[i].empty() == false)
 		{
 			delete m_queue[i].front();
 			m_queue[i].pop();
 		}
-
-#ifdef NETWORK_MULTITHREADED
-		while (m_holdingQueue[i].size())
-		{
-			delete m_holdingQueue[i].front();
-			m_holdingQueue[i].pop();
-		}
-#endif
 	}
-	
-#ifdef NETWORK_MULTITHREADED
-	m_queueLock.doUnlock();
-#endif
 
-	while (m_asyncQueue.size())
+	while (m_asyncQueue.empty() == false)
 	{
 		delete m_asyncQueue.front();
 		m_asyncQueue.pop();
@@ -195,17 +170,10 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 #endif
 
 	m_isClosed = false;
-#ifdef NETWORK_MULTITHREADED
-	m_isReady = true;
-#endif
 }
 
 bool NetState::isValid(const CClient* client) const
 {
-#ifdef NETWORK_MULTITHREADED
-	if (m_isReady == false)
-		return false;
-#endif
 	if (client == NULL)
 		return m_socket.IsOpen() && !m_isClosed;
 	else
@@ -253,11 +221,6 @@ bool NetState::hasPendingData(void) const
 	{
 		if (m_queue[i].empty() == false)
 			return true;
-		
-#ifdef NETWORK_MULTITHREADED
-		if (m_holdingQueue[i].empty() == false)
-			return true;
-#endif
 	}
 
 	// check async data
@@ -293,27 +256,50 @@ bool NetState::canReceive(PacketSend* packet) const
 ClientIterator::ClientIterator(const NetworkIn* network)
 {
 	m_network = (network == NULL? &g_NetworkIn : network);
-
-#ifdef NETWORK_MULTITHREADED
-	m_id = -1;
-	m_max = m_network->m_stateCount;
-#else
 	m_nextClient = STATIC_CAST <CClient*> (m_network->m_clients.GetHead());
-#endif
 }
 
 ClientIterator::~ClientIterator(void)
 {
 	m_network = NULL;
-
-#ifndef NETWORK_MULTITHREADED
 	m_nextClient = NULL;
-#endif
 }
 
 CClient* ClientIterator::next()
 {
-#ifdef NETWORK_MULTITHREADED
+	CClient* current = m_nextClient;
+	while (current != NULL && current->GetNetState()->isValid() == false)
+		current = current->GetNext();
+
+	if (current != NULL)
+		m_nextClient = current->GetNext();
+
+	return current;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	class SafeClientIterator		Works as client iterator getting the clients in a thread-safe way
+ *
+ *
+ ***************************************************************************/
+
+SafeClientIterator::SafeClientIterator(const NetworkIn* network)
+{
+	m_network = (network == NULL? &g_NetworkIn : network);
+	m_id = -1;
+	m_max = m_network->m_stateCount;
+}
+
+SafeClientIterator::~SafeClientIterator(void)
+{
+	m_network = NULL;
+}
+
+CClient* SafeClientIterator::next()
+{
 	// this method should be thread-safe, but does not loop through clients in the order that they have
 	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
 	// newest client to oldest and be thread-safe)
@@ -325,17 +311,6 @@ CClient* ClientIterator::next()
 	}
 
 	return NULL;
-
-#else
-	CClient* current = m_nextClient;
-	while (current != NULL && current->GetNetState()->isValid() == false)
-		current = current->GetNext();
-
-	if (current != NULL)
-		m_nextClient = current->GetNext();
-
-	return current;
-#endif
 }
 
 
@@ -868,13 +843,12 @@ void NetworkIn::tick(void)
 		g_Log.EventDebug("Parsing %s", packet->dump());
 
 		client->m_packetExceptions++;
-		if (client->m_packetExceptions && client->m_client != NULL)
+		if (client->m_packetExceptions > 10 && client->m_client != NULL)
 		{
 			g_Log.EventWarn("Disconnecting client from account '%s' since it is causing exceptions problems\n", client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
 			client->m_client->addKick(&g_Serv, false);
 		}
 
-		client->m_client->addKick(&g_Serv, false);
 		EXC_DEBUGSUB_END;
 		delete packet;
 	}
@@ -917,23 +891,15 @@ int NetworkIn::checkForData(fd_set* storage)
 
 		if ( state->isClosed() )
 		{
-#ifdef NETWORK_MULTITHREADED
-			if (state->m_closeLock.doTryLock())
-#endif
-			{
 #ifdef DEBUGPACKETS
-				g_Log.Debug("Client '%x' is gonna being cleared since marked to close.\n",
-					state->id());
+			g_Log.Debug("Client '%x' is gonna being cleared since marked to close.\n",
+				state->id());
 #endif
-				g_NetworkOut.flush(state->getClient());
+			g_NetworkOut.flush(state->getClient());
 
-				if (state->hasPendingData() == false)
-					state->clear();
+			if (state->hasPendingData() == false)
+				state->clear();
 
-#ifdef NETWORK_MULTITHREADED
-				state->m_closeLock.doUnlock();
-#endif
-			}
 			continue;
 		}
 		ADDTOSELECT(state->m_socket.GetSocket());
@@ -1010,9 +976,7 @@ void NetworkIn::acceptConnection(void)
 			else
 			{
 				m_states[slot]->init(h, client_addr);
-#ifndef NETWORK_MULTITHREADED
 				m_clients.InsertHead(m_states[slot]->getClient());
-#endif
 			}
 		}
 	}
@@ -1207,7 +1171,7 @@ void NetworkIn::periodic(void)
  *
  ***************************************************************************/
 
-NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::Highest)
+NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::RealTime)
 {
 	m_encryptBuffer = new BYTE[MAX_BUFFER];
 }
@@ -1228,50 +1192,51 @@ void NetworkOut::tick(void)
 
 	EXC_TRY("NetworkOut");
 
-	static char iCount = 0;
+	static unsigned char iCount = 0;
 	iCount++;
 
-#ifndef NETWORK_MULTITHREADED
+	if (isActive() == false)
+	{
+		// process queues faster in single-threaded mode
+		EXC_SET("highest");
+		proceedQueue(PacketSend::PRI_HIGHEST);
 
-	// process queues faster in single-threaded mode
-	EXC_SET("highest");
-	proceedQueue(PacketSend::PRI_HIGHEST);
-
-	EXC_SET("high");
-	proceedQueue(PacketSend::PRI_HIGH);
-
-	EXC_SET("normal");
-	proceedQueue(PacketSend::PRI_NORMAL);
-
-	EXC_SET("low");
-	if ((iCount % 2) == 1)
-		proceedQueue(PacketSend::PRI_LOW);
-
-	EXC_SET("idle");
-	if ((iCount % 4) == 3)
-		proceedQueue(PacketSend::PRI_IDLE);
-#else
-
-	// throttle rate of sending in multi-threaded mode
-	EXC_SET("highest");
-	proceedQueue(PacketSend::PRI_HIGHEST);
-
-	EXC_SET("high");
-	if ((iCount % 2) == 1)
+		EXC_SET("high");
 		proceedQueue(PacketSend::PRI_HIGH);
 
-	EXC_SET("normal");
-	if ((iCount % 4) == 3)
+		EXC_SET("normal");
 		proceedQueue(PacketSend::PRI_NORMAL);
 
-	EXC_SET("low");
-	if ((iCount % 8) == 7)
-		proceedQueue(PacketSend::PRI_LOW);
+		EXC_SET("low");
+		if ((iCount % 2) == 1)
+			proceedQueue(PacketSend::PRI_LOW);
 
-	EXC_SET("idle");
-	if ((iCount % 16) == 15)
-		proceedQueue(PacketSend::PRI_IDLE);
-#endif
+		EXC_SET("idle");
+		if ((iCount % 4) == 3)
+			proceedQueue(PacketSend::PRI_IDLE);
+	}
+	else
+	{
+		// throttle rate of sending in multi-threaded mode
+		EXC_SET("highest");
+		proceedQueue(PacketSend::PRI_HIGHEST);
+
+		EXC_SET("high");
+		if ((iCount % 2) == 1)
+			proceedQueue(PacketSend::PRI_HIGH);
+
+		EXC_SET("normal");
+		if ((iCount % 4) == 3)
+			proceedQueue(PacketSend::PRI_NORMAL);
+
+		EXC_SET("low");
+		if ((iCount % 8) == 7)
+			proceedQueue(PacketSend::PRI_LOW);
+
+		EXC_SET("idle");
+		if ((iCount % 16) == 15)
+			proceedQueue(PacketSend::PRI_IDLE);
+	}
 
 	EXC_CATCH;
 }
@@ -1307,11 +1272,7 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 		long maxClientPackets = NETWORK_MAXQUEUESIZE;
 		if (maxClientPackets > 0)
 		{
-#ifdef NETWORK_MULTITHREADED
-			if (state->m_holdingQueue[priority].size() >= maxClientPackets)
-#else
 			if (state->m_queue[priority].size() >= maxClientPackets)
-#endif
 			{
 #ifdef DEBUGPACKETS
 				g_Log.Debug("%x:Packet decreased priority due to overal amount %d overlapping %d.\n",
@@ -1325,11 +1286,7 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 	}
 #endif
 
-#ifdef NETWORK_MULTITHREADED
-	state->m_holdingQueue[priority].push(packet);
-#else
 	state->m_queue[priority].push(packet);
-#endif
 }
 
 void NetworkOut::flush(CClient* client)
@@ -1340,48 +1297,9 @@ void NetworkOut::flush(CClient* client)
 	proceedQueueAsync(client);
 }
 
-#ifdef NETWORK_MULTITHREADED
-void NetworkOut::pushHoldingQueues(void)
-{
-	ClientIterator clients;
-
-	NetState* state;
-	while (CClient* client = clients.next())
-	{
-		state = client->GetNetState();
-		ASSERT(state != NULL);
-
-		bool lockAcquired(false);
-
-		for (long i = PacketSend::PRI_HIGHEST; i >= PacketSend::PRI_IDLE; i--)
-		{
-			if (state->m_holdingQueue[i].empty())
-				continue;
-
-			if (lockAcquired == false)
-			{
-				state->m_queueLock.doLock();
-				lockAcquired = true;
-			}
-
-			while (state->m_holdingQueue[i].size())
-			{
-				PacketSend* packet = state->m_holdingQueue[i].front();
-				state->m_holdingQueue[i].pop();
-
-				state->m_queue[i].push(packet);
-			}
-		}
-
-		if (lockAcquired)
-			state->m_queueLock.doUnlock();
-	}
-}
-#endif
-
 void NetworkOut::proceedQueue(long priority)
 {
-	ClientIterator clients;
+	SafeClientIterator clients;
 	while (CClient* client = clients.next())
 	{
 		proceedQueue(client, priority);
@@ -1398,23 +1316,17 @@ void NetworkOut::proceedQueue(CClient* client, long priority)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	long packets = state->m_queue[priority].size();
-	long length = 0;
-
-	if (packets <= 0)
+	if (state->m_queue[priority].empty())
 		return;
 
-	if (packets > maxClientPackets)
-		packets = maxClientPackets;
-
-#ifdef NETWORK_MULTITHREADED
-	state->m_closeLock.doLock();
-	state->m_queueLock.doLock();
-#endif
+	long length = 0;
 
 	// send N packets from the queue
-	for (int i = 0; i < packets; i++)
+	for (int i = 0; i < maxClientPackets; i++)
 	{
+		if (state->m_queue[priority].empty())
+			break;
+
 		PacketSend* packet = state->m_queue[priority].front();
 
 		// remove early to prevent exceptions
@@ -1425,13 +1337,9 @@ void NetworkOut::proceedQueue(CClient* client, long priority)
 			if (packet == NULL)
 				break;
 
-			// don't count this towards the limit
+			// don't count this towards the limit, allow an extra packet to be processed
 			delete packet;
-
-			// allow an extra packet to be processed, but take care not to axceed the queue size
-			if (((packets + 1) - i) < state->m_queue[priority].size())
-				packets++;
-
+			maxClientPackets++;
 			continue;
 		}
 
@@ -1457,14 +1365,9 @@ void NetworkOut::proceedQueue(CClient* client, long priority)
 		EXC_CATCH;
 		EXC_DEBUG_START;
 		g_Log.EventDebug("id='%x', pri='%d', packet '%d' of '%d' to send, length '%d' of '%d'\n",
-			state->id(), priority, i, packets, length, maxClientLength);
+			state->id(), priority, i, maxClientPackets, length, maxClientLength);
 		EXC_DEBUG_END;
 	}
-
-#ifdef NETWORK_MULTITHREADED
-	state->m_queueLock.doUnlock();
-	state->m_closeLock.doUnlock();
-#endif
 }
 
 void NetworkOut::proceedQueueAsync(CClient* client)
@@ -1472,17 +1375,8 @@ void NetworkOut::proceedQueueAsync(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-#ifdef NETWORK_MULTITHREADED
-	state->m_closeLock.doLock();
-#endif
-
 	if (state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->m_isSendingAsync)
-	{
-#ifdef NETWORK_MULTITHREADED
-		state->m_closeLock.doUnlock();
-#endif
 		return;
-	}
 
 	// get next packet
 	PacketSend* packet = NULL;
@@ -1512,10 +1406,6 @@ void NetworkOut::proceedQueueAsync(CClient* client)
 		if (sendPacketNow(client, packet) == false)
 			state->markClosed();
 	}
-
-#ifdef NETWORK_MULTITHREADED
-	state->m_closeLock.doUnlock();
-#endif
 }
 
 void NetworkOut::onAsyncSendComplete(CClient* client)

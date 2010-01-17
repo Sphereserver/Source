@@ -66,7 +66,7 @@ enum EF_TYPE
 	EF_UsePingServer				= 0x0008000,
 	EF_NPCAct_Triggers				= 0x0010000,
 	EF_Unused0400000				= 0x0400000,
-	EF_Unused0800000				= 0x0800000,
+	EF_NetworkOutThread				= 0x0800000,
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };
 
@@ -850,6 +850,7 @@ public:
 	int			m_iNetMaxPacketsPerTick;	// max packets to send per tick (per queue)
 	int			m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
 	int			m_iNetMaxQueueSize;			// max packets to hold per queue (comment out for unlimited)
+	bool		m_fUsePacketPriorities;		// true to prioritise sending packets
 
 	int			m_iRegenRate[STAT_QTY];
 	int			m_iTimerCall;

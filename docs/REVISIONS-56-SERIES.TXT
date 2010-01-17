@@ -4682,3 +4682,9 @@ ALPHA additions:
 - Fixed: Guard command not working with pets.
 - Modified: Pets default to guarding their master instead of following, and no longer attack
   the same target as their master when in "follow" mode.
+
+17-01-2010, MrSugarCube
+- Added: Experimental flag "EF_NetworkOutThread". If this is enabled then outgoing data will
+  be sent in a separate background thread.
+- Added: UsePacketPriority setting in sphere.ini. Leaving it at 1 (default) should be best
+  but if this is set to 0 then [most] packets won't be prioritised.
