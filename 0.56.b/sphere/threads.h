@@ -43,7 +43,7 @@ public:
 		Low,		// tick 200ms
 		Normal,		// tick 100ms
 		High,		// tick 50ms
-		Highest,	// tick 25ms
+		Highest,	// tick 5ms
 		RealTime	// tick almost instantly
 	};
 
@@ -107,6 +107,7 @@ public:
 	virtual const char *getName();
 
 	virtual bool isActive();
+	virtual bool isCurrentThread();
 	virtual bool checkStuck();
 
 	virtual void start();

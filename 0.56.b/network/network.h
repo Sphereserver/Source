@@ -45,6 +45,7 @@ protected:
 	CGSocket m_socket; // socket
 	CClient* m_client; // client
 	bool m_isClosed; // is socket to be closed
+	bool m_needsFlush; // does data need to be flushed
 	CSocketAddress m_peerAddress; // client address
 
 	bool m_seeded; // is seed received
@@ -100,6 +101,9 @@ public:
 	void markClosed(void); // mark socket as closed
 	bool isClosed(void) const { return m_isClosed; } // is the socket closed?
 
+	void markFlush(bool needsFlush); // mark socket as needing a flush
+	bool needsFlush(void) const { return m_needsFlush; } // does the socket need to be flushed?
+
 	CClient* getClient(void) const { return m_client; } // get linked client
 
 	bool isClient3D(void) const { return m_clientType == CLIENTTYPE_3D; }; // is this a 3D client?
@@ -141,7 +145,7 @@ public:
 	ClientIterator(const NetworkIn* network = NULL);
 	~ClientIterator(void);
 
-	CClient* next(void); // finds next client
+	CClient* next(bool includeClosed = false); // finds next client
 };
 
 
@@ -163,7 +167,7 @@ public:
 	SafeClientIterator(const NetworkIn* network = NULL);
 	~SafeClientIterator(void);
 
-	CClient* next(void); // finds next client
+	CClient* next(bool includeClosed = false); // finds next client
 };
 
 
@@ -270,6 +274,7 @@ protected:
 	void proceedQueue(long priority); // send next set of packets with the specified priority
 	void proceedQueue(CClient* client, long priority); // send next set of packets with the specified priority
 	void proceedQueueAsync(CClient* client); // send next set of asynchronous packets
+	void proceedFlush(void); // flush data to pending sockets
 	bool sendPacket(CClient* client, PacketSend* packet); // send packet to a client
 	bool sendPacketNow(CClient* client, PacketSend* packet); // send packet to a client now
 

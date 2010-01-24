@@ -203,7 +203,7 @@ void AbstractThread::terminate()
 	if( isActive() )
 	{
 #ifdef _WIN32
-		if( getId() == ::GetCurrentThreadId() )
+		if ( isCurrentThread() )
 		{
 			_endthreadex(0);
 		}
@@ -213,7 +213,7 @@ void AbstractThread::terminate()
 		}
 		CloseHandle(m_handle);
 #else
-		if( pthread_equal(m_handle,pthread_self()) )
+		if ( isCurrentThread() )
 		{
 			pthread_exit(0);
 		}
@@ -251,7 +251,7 @@ void AbstractThread::run()
 			tickPeriod = 50;
 			break;
 		case IThread::Highest:
-			tickPeriod = 25;
+			tickPeriod = 5;
 			break;
 		case IThread::RealTime:
 			tickPeriod = 0;
@@ -349,6 +349,15 @@ bool AbstractThread::isActive()
 void AbstractThread::waitForClose()
 {
 	terminate();
+}
+
+bool AbstractThread::isCurrentThread()
+{
+#ifdef _WIN32
+	return (getId() == ::GetCurrentThreadId());
+#else
+	return pthread_equal(m_handle,pthread_self());
+#endif
 }
 
 bool AbstractThread::checkStuck()

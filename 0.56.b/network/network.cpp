@@ -80,7 +80,7 @@ void xRecordPacket(CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
+NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
 {
 	clear();
 }
@@ -111,6 +111,7 @@ void NetState::clear(void)
 	}
 
 	m_isClosed = true;
+	m_needsFlush = false;
 	m_socket.Close();
 	m_client = NULL;
 
@@ -183,6 +184,11 @@ bool NetState::isValid(const CClient* client) const
 void NetState::markClosed(void)
 {
 	m_isClosed = true;
+}
+
+void NetState::markFlush(bool needsFlush)
+{
+	m_needsFlush = needsFlush;
 }
 
 void NetState::setAsyncMode(void)
@@ -265,10 +271,10 @@ ClientIterator::~ClientIterator(void)
 	m_nextClient = NULL;
 }
 
-CClient* ClientIterator::next()
+CClient* ClientIterator::next(bool includeClosed)
 {
 	CClient* current = m_nextClient;
-	while (current != NULL && current->GetNetState()->isValid() == false)
+	while (current != NULL && current->GetNetState()->isValid(includeClosed? current : NULL) == false)
 		current = current->GetNext();
 
 	if (current != NULL)
@@ -298,7 +304,7 @@ SafeClientIterator::~SafeClientIterator(void)
 	m_network = NULL;
 }
 
-CClient* SafeClientIterator::next()
+CClient* SafeClientIterator::next(bool includeClosed)
 {
 	// this method should be thread-safe, but does not loop through clients in the order that they have
 	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
@@ -306,7 +312,7 @@ CClient* SafeClientIterator::next()
 	while (++m_id < m_max)
 	{
 		NetState* state = m_network->m_states[m_id];
-		if ( state->isValid() && state->m_client != NULL && state->isValid(state->m_client) )
+		if ( (includeClosed || state->isValid()) && state->m_client != NULL && state->isValid(state->m_client) )
 			return state->m_client;
 	}
 
@@ -361,7 +367,7 @@ void NetworkIn::HistoryIP::setBlocked(bool isBlocked, int timeout)
  *
  ***************************************************************************/
 
-NetworkIn::NetworkIn(void) : AbstractThread("NetworkIn", IThread::RealTime)
+NetworkIn::NetworkIn(void) : AbstractThread("NetworkIn", IThread::Highest)
 {
 	m_buffer = NULL;
 	m_decryptBuffer = NULL;
@@ -874,41 +880,67 @@ int NetworkIn::checkForData(fd_set* storage)
 #define ADDTOSELECT(_x_)	{ FD_SET(_x_, storage); if ( _x_ > nfds ) nfds = _x_; }
 #endif
 
+
+	EXC_TRY("CheckForData");
 	int nfds = 0;
-		
+
+	EXC_SET("zero");
 	FD_ZERO(storage);
 
 #ifndef _WIN32
 	if ( !g_Cfg.m_fUseAsyncNetwork )
 #endif
+	{
+		EXC_SET("main socket");
 		ADDTOSELECT(g_Serv.m_SocketMain.GetSocket());
+	}
 
+	EXC_SET("check states");
 	for ( long l = 0; l < m_stateCount; l++ )
 	{
+		EXC_SET("check socket");
 		NetState* state = m_states[l];
 		if ( !state->m_socket.IsOpen() )
 			continue;
 
+		EXC_SET("check closed");
 		if ( state->isClosed() )
 		{
 #ifdef DEBUGPACKETS
 			g_Log.Debug("Client '%x' is gonna being cleared since marked to close.\n",
 				state->id());
 #endif
+			EXC_SET("flush data");
 			g_NetworkOut.flush(state->getClient());
 
+			EXC_SET("check pending data");
 			if (state->hasPendingData() == false)
+			{
+				EXC_SET("clear socket");
 				state->clear();
+			}
 
 			continue;
 		}
+
+		EXC_SET("add to select");
 		ADDTOSELECT(state->m_socket.GetSocket());
 	}
 
+	EXC_SET("prepare timeout");
 	timeval Timeout;	// time to wait for data.
 	Timeout.tv_sec=0;
 	Timeout.tv_usec=100;	// micro seconds = 1/1000000
+
+	EXC_SET("perform select");
 	return select(nfds+1, storage, NULL, NULL, &Timeout);
+
+	EXC_CATCH;
+	EXC_DEBUG_START;
+	
+	EXC_DEBUG_END;
+	return 0;
+
 #undef ADDTOSELECT
 }
 
@@ -968,6 +1000,7 @@ void NetworkIn::acceptConnection(void)
 			long slot = getStateSlot();
 			if ( slot == -1 )			// we do not have enough empty slots for clients
 			{
+				EXC_SET("no slot ready");
 #ifdef DEBUGPACKETS 
 				g_Log.Debug("Unable to allocate new slot for client, too many clients already.\n");
 #endif
@@ -975,7 +1008,10 @@ void NetworkIn::acceptConnection(void)
 			}
 			else
 			{
+				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
+
+				EXC_SET("recording client");
 				m_clients.InsertHead(m_states[slot]->getClient());
 			}
 		}
@@ -1171,7 +1207,7 @@ void NetworkIn::periodic(void)
  *
  ***************************************************************************/
 
-NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::RealTime)
+NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::Highest)
 {
 	m_encryptBuffer = new BYTE[MAX_BUFFER];
 }
@@ -1218,6 +1254,9 @@ void NetworkOut::tick(void)
 	else
 	{
 		// throttle rate of sending in multi-threaded mode
+		EXC_SET("flush");
+		proceedFlush();
+
 		EXC_SET("highest");
 		proceedQueue(PacketSend::PRI_HIGHEST);
 
@@ -1291,10 +1330,40 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 
 void NetworkOut::flush(CClient* client)
 {
-	for (int priority = 0; priority < PacketSend::PRI_QTY; priority++)
-		proceedQueue(client, priority);
+	ASSERT(client != NULL);
+	
+	NetState* state = client->GetNetState();
+	ASSERT(state != NULL);
+	if (state->isValid(client) == false)
+		return;
 
-	proceedQueueAsync(client);
+	// flushing is not thread-safe, and can only be performed by the NetworkOut thread
+	if (isActive() && isCurrentThread() == false)
+	{
+		// mark state to be flushed
+		state->markFlush(true);
+	}
+	else
+	{
+		for (int priority = 0; priority < PacketSend::PRI_QTY; priority++)
+			proceedQueue(client, priority);
+
+		proceedQueueAsync(client);
+		state->markFlush(false);
+	}
+}
+
+void NetworkOut::proceedFlush(void)
+{
+	SafeClientIterator clients;
+	while (CClient* client = clients.next(true))
+	{
+		NetState* state = client->GetNetState();
+		ASSERT(state != NULL);
+
+		if (state->needsFlush())
+			flush(client);
+	}
 }
 
 void NetworkOut::proceedQueue(long priority)
