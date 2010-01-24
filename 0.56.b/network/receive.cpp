@@ -1821,7 +1821,7 @@ bool PacketTipReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	client->Event_Tips(index);
+	client->Event_Tips(index - 1);
 	return true;
 }
 

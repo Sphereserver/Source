@@ -133,7 +133,7 @@ void CClient::Event_Tips( WORD i) // Tip of the day window
 		i = 1;
 	}
 
-	addScrollScript( s, SCROLL_TYPE_TIPS, i );
+	addScrollScript( s, SCROLL_TYPE_TIPS, i + 1 );
 }
 
 
