@@ -471,7 +471,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_ServerSelect, new PacketServerSelect());				// select server
 	registerPacket(XCMD_Spy, new PacketSystemInfo());							//
 	registerPacket(XCMD_Scroll, new PacketUnknown(5));							// scroll closed
-	registerPacket(XCMD_TipReq, new PacketTipReq());							//
+	registerPacket(XCMD_TipReq, new PacketTipReq());							// request tip of the day
 	registerPacket(XCMD_GumpInpValRet, new PacketGumpValueInputResponse());		// text input dialog
 	registerPacket(XCMD_TalkUNICODE, new PacketSpeakReqUNICODE());				// speech (unicode)
 	registerPacket(XCMD_GumpDialogRet, new PacketGumpDialogRet());				// dialog response (button press)
@@ -517,7 +517,7 @@ void NetworkIn::onStart(void)
 	registerExtended(EXTDATA_HouseDesignDet, new PacketHouseDesignReq());		// house design request
 	registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown
 	registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());			//
-	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				//
+	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				// gargoyle flying action
 
 	// encoded packets (0xD7)
 	registerEncoded(EXTAOS_HcBackup, new PacketHouseDesignBackup());			// house design - backup

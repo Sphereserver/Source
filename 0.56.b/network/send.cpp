@@ -2522,6 +2522,8 @@ PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYP
 	writeInt16(length);
 	seek(endPosition);
 
+	writeCharASCII('\0');
+
 	push(target);
 }
 

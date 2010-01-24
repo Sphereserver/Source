@@ -1811,8 +1811,13 @@ PacketTipReq::PacketTipReq() : Packet(4)
 
 bool PacketTipReq::onReceive(NetState* net)
 {
-	WORD index = readInt16() + 1;
-	skip(1); // font type
+	WORD index = readInt16();	// current tip shown to the client
+	bool forward = readBool();	// 0=previous, 1=next
+
+	if (forward)
+		index++;
+	else
+		index--;
 
 	CClient* client = net->getClient();
 	ASSERT(client);

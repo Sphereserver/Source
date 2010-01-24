@@ -4688,3 +4688,7 @@ ALPHA additions:
   be sent in a separate background thread.
 - Added: UsePacketPriority setting in sphere.ini. Leaving it at 1 (default) should be best
   but if this is set to 0 then [most] packets won't be prioritised.
+
+24-01-2010, MrSugarCube
+- Fixed #1713: Strange characters in the tip of the day window.
+- Fixed: Previous and Next buttons not working on the tip of the day window.

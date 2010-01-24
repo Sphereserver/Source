@@ -124,10 +124,16 @@ void CClient::Event_Tips( WORD i) // Tip of the day window
 	if (i==0)
 		i=1;
 	CResourceLock s;
-	if ( g_Cfg.ResourceLock( s, RESOURCE_ID( RES_TIP, i )))
+	if ( g_Cfg.ResourceLock( s, RESOURCE_ID( RES_TIP, i )) == false )
 	{
-		addScrollScript( s, SCROLL_TYPE_TIPS, i );
+		// requested tip was not found, default to tip 1 if possible
+		if ( i == 1 || ( g_Cfg.ResourceLock( s, RESOURCE_ID( RES_TIP, 1 )) == false ))
+			return;
+
+		i = 1;
 	}
+
+	addScrollScript( s, SCROLL_TYPE_TIPS, i );
 }
 
 
