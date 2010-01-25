@@ -1272,7 +1272,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 		CREID_TYPE id = pItem->m_itFigurine.m_ID;
 		if ( ! id )
 		{
-			id = CItemBase::FindCharTrack( pItem->GetDispID());
+			id = CItemBase::FindCharTrack( pItem->GetID());
 			if ( ! id )
 			{
 				DEBUG_ERR(( "FIGURINE id 0%x, no creature\n", pItem->GetDispID()));

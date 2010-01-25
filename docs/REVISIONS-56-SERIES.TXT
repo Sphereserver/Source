@@ -4692,3 +4692,7 @@ ALPHA additions:
 24-01-2010, MrSugarCube
 - Fixed #1713: Strange characters in the tip of the day window.
 - Fixed: Previous and Next buttons not working on the tip of the day window.
+
+25-01-2010, MrSugarCube
+- Fixed: Figurines using TDATA3 from the item's DISPID instead of BASEID, when a new pet is
+  spawned.
