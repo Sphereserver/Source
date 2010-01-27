@@ -43,15 +43,19 @@ bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelp
 		int nChars = GetSystemErrorMessage( m_hError, szCode, sizeof(szCode));
 		if ( nChars )
 		{
-			sprintf( lpszError, "Error Pri=%d, Code=%d(%s), Desc='%s'", 
-				m_eSeverity, m_hError, szCode, m_pszDescription );
+			if ( m_hError & 0x80000000 )
+				sprintf( lpszError, "Error Pri=%d, Code=0x%x(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
+			else
+				sprintf( lpszError, "Error Pri=%d, Code=%d(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
 			return( true );
 		}
 	}
 #endif
 
-	sprintf( lpszError, "Error Pri=%d, Code=%d, Desc='%s'", 
-		m_eSeverity, m_hError, m_pszDescription );
+	if ( m_hError & 0x80000000 )
+		sprintf( lpszError, "Error Pri=%d, Code=0x%x, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
+	else
+		sprintf( lpszError, "Error Pri=%d, Code=%d, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
 	return( true );
 }
 

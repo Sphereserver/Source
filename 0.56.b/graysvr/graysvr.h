@@ -205,6 +205,7 @@ public:
 #ifndef _WIN32
 	bool m_fColoredConsole;
 #endif
+	SimpleMutex m_mutex;
 
 public:
 	const CScript * SetScriptContext( const CScript * pScriptContext )

@@ -686,6 +686,10 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				CChar *character = NULL;
 				character->SetName("yo!");
 			}
+		case '*':	// throw custom exception
+			{
+				throw CGrayError(LOGL_CRIT, E_FAIL, "Test Exception");
+			}
 #endif
 		default:
 			goto longcommand;

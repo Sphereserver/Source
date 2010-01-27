@@ -4699,3 +4699,4 @@ ALPHA additions:
 
 27-01-2010, MrSugarCube
 - Fixed #1714: Unicode string corruption in dialogs.
+- Modified: Exceptions that occur in background threads should now be recorded in logs.

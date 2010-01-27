@@ -50,13 +50,16 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 {
 	// NOTE: This could be called in odd interrupt context so don't use dynamic stuff
+	if ( !IsLogged(wMask) )	// I don't care about these.
+		return 0;
+	else if ( !pszMsg || !*pszMsg )
+		return 0;
+
 	int iRet = 0;
+	m_mutex.lock();
+
 	try
 	{
-		if ( !IsLogged(wMask) )	// I don't care about these.
-			return 0;
-		else if ( !pszMsg || !*pszMsg )
-			return 0;
 
 		// Put up the date/time.
 		CGTime datetime = CGTime::GetCurrentTime();	// last real time stamp.
@@ -211,6 +214,8 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		iRet = 0;
 	}
 
+	m_mutex.unlock();
+
 	return( iRet );
 }
 
@@ -240,7 +245,7 @@ void _cdecl CLog::CatchEvent( CGrayError * pErr, LPCTSTR pszCatchContext, ... )
 		else
 		{
 			eSeverity = LOGL_CRIT;
-			strcat(szMsg, "Exception");
+			strcpy(szMsg, "Exception");
 			iLen = strlen(szMsg);
 		}
 

@@ -34,6 +34,8 @@ IThread *ThreadHolder::m_threads[MAX_THREADS];
 int ThreadHolder::m_threadCount = 0;
 bool ThreadHolder::m_inited = false;
 
+extern CLog g_Log;
+
 IThread *ThreadHolder::current()
 {
 	init();
@@ -276,15 +278,15 @@ void AbstractThread::run()
 		{
 			tick();
 		}
-		catch( CException e )
+		catch( CException &e )
 		{
 			gotException = true;
-			//	TODO: notify of exceptions
+			g_Log.CatchEvent(&e, "%s::tick", getName());
 		}
 		catch( ... )
 		{
 			gotException = true;
-			//	TODO: notify of exceptions
+			g_Log.CatchEvent(NULL, "%s::tick", getName());
 		}
 
 		if( gotException )
@@ -305,7 +307,7 @@ void AbstractThread::run()
 				// probably a thread restart can fix the problems
 				// but there is no real need to restart a thread, we will just simulate a thread restart,
 				// notifying a subclass like we have been just restarted, so it will restart it's operations
-				//	TODO: notify the logger
+				g_Log.Event(LOGL_CRIT, "'%s' thread raised too many exceptions, restarting...\n", getName());
 				onStart();
 				lastWasException = false;
 			}
