@@ -84,15 +84,15 @@ public:
 	DWORD readInt32(void); // read 32-bit integer (4 bytes)
 	void readStringASCII(char* buffer, long length, bool includeNull = true); // read fixed-length ascii string
 	void readStringASCII(WCHAR* buffer, long length, bool includeNull = true); // read fixed-length ascii string
-	void readStringUNICODE(char* buffer, long length, bool includeNull = true); // read fixed length unicode string
+	void readStringUNICODE(char* buffer, long bufferSize, long length, bool includeNull = true); // read fixed length unicode string
 	void readStringUNICODE(WCHAR* buffer, long length, bool includeNull = true); // read fixed length unicode string
-	void readStringNUNICODE(char* buffer, long length, bool includeNull = true); // read fixed length unicode string, network order
+	void readStringNUNICODE(char* buffer, long bufferSize, long length, bool includeNull = true); // read fixed length unicode string, network order
 	void readStringNUNICODE(WCHAR* buffer, long length, bool includeNull = true); // read fixed length unicode string, network order
 	long readStringNullASCII(char* buffer, long maxlength); // read ascii string until null terminator found
 	long readStringNullASCII(WCHAR* buffer, long maxlength); // read ascii string until null terminator found
-	long readStringNullUNICODE(char* buffer, long maxlength); // read unicode-string until null terminator found
+	long readStringNullUNICODE(char* buffer, long bufferSize, long maxlength); // read unicode-string until null terminator found
 	long readStringNullUNICODE(WCHAR* buffer, long maxlength); // read unicode-string until null terminator found
-	long readStringNullNUNICODE(char* buffer, long maxlength); // read unicode-string until null terminator found, network order
+	long readStringNullNUNICODE(char* buffer, long bufferSize, long maxlength); // read unicode-string until null terminator found, network order
 	long readStringNullNUNICODE(WCHAR* buffer, long maxlength); // read unicode-string until null terminator found, network order
 
 	long checkLength(NetState* client, Packet* packet);

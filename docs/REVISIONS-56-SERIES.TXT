@@ -4696,3 +4696,6 @@ ALPHA additions:
 25-01-2010, MrSugarCube
 - Fixed: Figurines using TDATA3 from the item's DISPID instead of BASEID, when a new pet is
   spawned.
+
+27-01-2010, MrSugarCube
+- Fixed #1714: Unicode string corruption in dialogs.

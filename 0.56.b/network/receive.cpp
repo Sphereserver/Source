@@ -2055,7 +2055,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	{
 		WORD id = readInt16();
 		WORD length = readInt16();
-		readStringNUNICODE(text, length, false);
+		readStringNUNICODE(text, THREAD_STRING_LENGTH, length, false);
 
 		TCHAR* fix;
 		if ((fix = strchr(text, '\n')) != NULL)
@@ -2202,7 +2202,7 @@ bool PacketProfileReq::onReceive(NetState* net)
 
 		textLength = readInt16();
 		text = Str_GetTemp();
-		readStringNUNICODE(text, textLength+1, false);
+		readStringNUNICODE(text, THREAD_STRING_LENGTH, textLength+1, false);
 	}
 
 	client->Event_Profile(write, serial, text, textLength);
@@ -2982,7 +2982,7 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 	readStringASCII(language, COUNTOF(language));
 	TCHAR* text = Str_GetTemp();
 	length = (length - getPosition()) / 2;
-	readStringUNICODE(text, length+1);
+	readStringUNICODE(text, THREAD_STRING_LENGTH, length+1);
 
 	net->getClient()->Event_PromptResp(text, length, context1, context2, type);
 	return true;
@@ -3637,7 +3637,7 @@ bool PacketBugReport::onReceive(NetState* net)
 	BUGREPORT_TYPE type = (BUGREPORT_TYPE)readInt16();
 
 	TCHAR text[MAX_TALK_BUFFER];
-	int textLength = readStringNullNUNICODE(text, MAX_TALK_BUFFER-1);
+	int textLength = readStringNullNUNICODE(text, MAX_TALK_BUFFER, MAX_TALK_BUFFER-1);
 
 	net->getClient()->Event_BugReport(text, textLength, type, CLanguageID(language));
 	return true;
