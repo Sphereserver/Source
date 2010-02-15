@@ -2383,10 +2383,11 @@ do_default:
 		case CHC_VISUALRANGE:
 			{
 				BYTE bIn = s.GetArgVal();
-				if ( bIn > UO_MAP_VIEW_SIZE )
+				//changed UO_MAP_VIEW_SIZE (18) to UO_MAP_VIEW_RADAR (31) because of complainments of grey leaves on big trees
+				if ( bIn > UO_MAP_VIEW_RADAR )
 				{
-					DEBUG_ERR(("Illegal VisualRange Value %d, max. is %d, set to default\n", bIn, UO_MAP_VIEW_SIZE));
-					bIn = UO_MAP_VIEW_SIZE;
+					DEBUG_ERR(("Illegal VisualRange Value %d, max. is %d, set to default\n", bIn, UO_MAP_VIEW_RADAR));
+					bIn = UO_MAP_VIEW_RADAR;
 //					return( false );
 				}
 				SetSight(bIn);
