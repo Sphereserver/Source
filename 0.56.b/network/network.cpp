@@ -1175,6 +1175,8 @@ void NetworkIn::periodic(void)
 
 		NetState** newStates = new NetState*[max];
 		memcpy(newStates, prevStates, m_stateCount * sizeof(NetState*));
+		for (long l = prevCount; l < max; l++)
+			newStates[l] = new NetState(l);
 		
 		m_states = newStates;
 		m_stateCount = max;
