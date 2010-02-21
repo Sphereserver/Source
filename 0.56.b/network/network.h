@@ -271,9 +271,8 @@ public:
 	void flush(CClient* client); // forces immediate send of all packets
 
 protected:
-	void proceedQueue(long priority); // send next set of packets with the specified priority
-	void proceedQueue(CClient* client, long priority); // send next set of packets with the specified priority
-	void proceedQueueAsync(CClient* client); // send next set of asynchronous packets
+	int proceedQueue(CClient* client, long priority); // send next set of packets with the specified priority (returns number of packets sent)
+	int proceedQueueAsync(CClient* client); // send next set of asynchronous packets (returns number of packets sent, 1 max)
 	void proceedFlush(void); // flush data to pending sockets
 	bool sendPacket(CClient* client, PacketSend* packet); // send packet to a client
 	bool sendPacketNow(CClient* client, PacketSend* packet); // send packet to a client now

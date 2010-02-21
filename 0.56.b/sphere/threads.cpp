@@ -236,32 +236,6 @@ void AbstractThread::run()
 	// is the very first since there is a possibility of something being altered there
 	onStart();
 
-	// detect a sleep period for thread depending on priority
-	int tickPeriod;
-	switch( m_priority )
-	{
-		case IThread::Idle:
-			tickPeriod = 1000;
-			break;
-		case IThread::Low:
-			tickPeriod = 200;
-			break;
-		case IThread::Normal:
-			tickPeriod = 100;
-			break;
-		case IThread::High:
-			tickPeriod = 50;
-			break;
-		case IThread::Highest:
-			tickPeriod = 5;
-			break;
-		case IThread::RealTime:
-			tickPeriod = 0;
-			break;
-		default:
-			throw new CException(LOGL_FATAL, 0, "Unable to determine thread priority");
-	}
-
 	int exceptions = 0;
 	bool lastWasException = false;
 	while( true )
@@ -321,7 +295,8 @@ void AbstractThread::run()
 		{
 			terminate();
 		}
-		Sleep(tickPeriod);
+
+		Sleep(m_tickPeriod);
 	}
 }
 
@@ -399,6 +374,31 @@ void AbstractThread::onStart()
 void AbstractThread::setPriority(IThread::Priority pri)
 {
 	m_priority = pri;
+
+	// detect a sleep period for thread depending on priority
+	switch( m_priority )
+	{
+		case IThread::Idle:
+			m_tickPeriod = 1000;
+			break;
+		case IThread::Low:
+			m_tickPeriod = 200;
+			break;
+		case IThread::Normal:
+			m_tickPeriod = 100;
+			break;
+		case IThread::High:
+			m_tickPeriod = 50;
+			break;
+		case IThread::Highest:
+			m_tickPeriod = 5;
+			break;
+		case IThread::RealTime:
+			m_tickPeriod = 0;
+			break;
+		default:
+			throw new CException(LOGL_FATAL, 0, "Unable to determine thread priority");
+	}
 }
 
 IThread::Priority AbstractThread::getPriority()

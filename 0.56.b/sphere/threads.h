@@ -98,6 +98,7 @@ private:
 	spherethread_t	m_handle;
 	unsigned	m_hangCheck;
 	Priority m_priority;
+	long m_tickPeriod;
 
 public:
 	AbstractThread(const char *name, Priority priority = IThread::Normal);

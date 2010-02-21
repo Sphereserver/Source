@@ -1209,7 +1209,7 @@ void NetworkIn::periodic(void)
  *
  ***************************************************************************/
 
-NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::Highest)
+NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::RealTime)
 {
 	m_encryptBuffer = new BYTE[MAX_BUFFER];
 }
@@ -1228,58 +1228,72 @@ void NetworkOut::tick(void)
 	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
 		return;
 
+	static unsigned char iCount = 0;
 	EXC_TRY("NetworkOut");
 
-	static unsigned char iCount = 0;
 	iCount++;
 
+	bool toProcess[PacketSend::PRI_QTY];
 	if (isActive() == false)
 	{
 		// process queues faster in single-threaded mode
-		EXC_SET("highest");
-		proceedQueue(PacketSend::PRI_HIGHEST);
-
-		EXC_SET("high");
-		proceedQueue(PacketSend::PRI_HIGH);
-
-		EXC_SET("normal");
-		proceedQueue(PacketSend::PRI_NORMAL);
-
-		EXC_SET("low");
-		if ((iCount % 2) == 1)
-			proceedQueue(PacketSend::PRI_LOW);
-
-		EXC_SET("idle");
-		if ((iCount % 4) == 3)
-			proceedQueue(PacketSend::PRI_IDLE);
+		toProcess[PacketSend::PRI_HIGHEST]	= true;
+		toProcess[PacketSend::PRI_HIGH]		= true;
+		toProcess[PacketSend::PRI_NORMAL]	= true;
+		toProcess[PacketSend::PRI_LOW]		= ((iCount % 2) == 1);
+		toProcess[PacketSend::PRI_IDLE]		= ((iCount % 4) == 3);
 	}
 	else
 	{
 		// throttle rate of sending in multi-threaded mode
+		toProcess[PacketSend::PRI_HIGHEST]	= true;
+		toProcess[PacketSend::PRI_HIGH]		= ((iCount %  2) == 1);
+		toProcess[PacketSend::PRI_NORMAL]	= ((iCount %  4) == 3);
+		toProcess[PacketSend::PRI_LOW]		= ((iCount %  8) == 7);
+		toProcess[PacketSend::PRI_IDLE]		= ((iCount % 16) == 15);
+
 		EXC_SET("flush");
 		proceedFlush();
-
-		EXC_SET("highest");
-		proceedQueue(PacketSend::PRI_HIGHEST);
-
-		EXC_SET("high");
-		if ((iCount % 2) == 1)
-			proceedQueue(PacketSend::PRI_HIGH);
-
-		EXC_SET("normal");
-		if ((iCount % 4) == 3)
-			proceedQueue(PacketSend::PRI_NORMAL);
-
-		EXC_SET("low");
-		if ((iCount % 8) == 7)
-			proceedQueue(PacketSend::PRI_LOW);
-
-		EXC_SET("idle");
-		if ((iCount % 16) == 15)
-			proceedQueue(PacketSend::PRI_IDLE);
 	}
 
+	int packetsSent = 0;
+	
+	SafeClientIterator clients;
+	while (CClient* client = clients.next())
+	{
+		EXC_SET("highest");
+		if (toProcess[PacketSend::PRI_HIGHEST])
+			packetsSent += proceedQueue(client, PacketSend::PRI_HIGHEST);
+
+		EXC_SET("high");
+		if (toProcess[PacketSend::PRI_HIGH])
+			packetsSent += proceedQueue(client, PacketSend::PRI_HIGH);
+
+		EXC_SET("normal");
+		if (toProcess[PacketSend::PRI_NORMAL])
+			packetsSent += proceedQueue(client, PacketSend::PRI_NORMAL);
+
+		EXC_SET("low");
+		if (toProcess[PacketSend::PRI_LOW])
+			packetsSent += proceedQueue(client, PacketSend::PRI_LOW);
+
+		EXC_SET("idle");
+		if (toProcess[PacketSend::PRI_IDLE])
+			packetsSent += proceedQueue(client, PacketSend::PRI_IDLE);
+
+		packetsSent += proceedQueueAsync(client);
+	}
+
+	// increase priority during 'active' periods
+	if (packetsSent > 0)
+		setPriority(IThread::RealTime);
+	else
+		setPriority(IThread::Highest);
+
 	EXC_CATCH;
+	EXC_DEBUG_START;
+	g_Log.EventDebug("ActiveThread=%d, TickCount=%d\n", isActive()? 1 : 0, iCount);
+	EXC_DEBUG_END;
 }
 
 void NetworkOut::waitForClose(void)
@@ -1368,17 +1382,7 @@ void NetworkOut::proceedFlush(void)
 	}
 }
 
-void NetworkOut::proceedQueue(long priority)
-{
-	SafeClientIterator clients;
-	while (CClient* client = clients.next())
-	{
-		proceedQueue(client, priority);
-		proceedQueueAsync(client);
-	}
-}
-
-void NetworkOut::proceedQueue(CClient* client, long priority)
+int NetworkOut::proceedQueue(CClient* client, long priority)
 {
 	long maxClientPackets = NETWORK_MAXPACKETS;
 	long maxClientLength = NETWORK_MAXPACKETLEN;
@@ -1388,12 +1392,13 @@ void NetworkOut::proceedQueue(CClient* client, long priority)
 	ASSERT(state != NULL);
 
 	if (state->m_queue[priority].empty())
-		return;
+		return 0;
 
 	long length = 0;
 
 	// send N packets from the queue
-	for (int i = 0; i < maxClientPackets; i++)
+	int i = 0;
+	for (i = 0; i < maxClientPackets; i++)
 	{
 		if (state->m_queue[priority].empty())
 			break;
@@ -1439,15 +1444,16 @@ void NetworkOut::proceedQueue(CClient* client, long priority)
 			state->id(), priority, i, maxClientPackets, length, maxClientLength);
 		EXC_DEBUG_END;
 	}
+	return i;
 }
 
-void NetworkOut::proceedQueueAsync(CClient* client)
+int NetworkOut::proceedQueueAsync(CClient* client)
 {
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
 	if (state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->m_isSendingAsync)
-		return;
+		return 0;
 
 	// get next packet
 	PacketSend* packet = NULL;
@@ -1476,7 +1482,11 @@ void NetworkOut::proceedQueueAsync(CClient* client)
 	{
 		if (sendPacketNow(client, packet) == false)
 			state->markClosed();
+
+		return 1;
 	}
+
+	return 0;
 }
 
 void NetworkOut::onAsyncSendComplete(CClient* client)
