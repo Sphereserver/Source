@@ -1226,7 +1226,10 @@ NetworkOut::~NetworkOut(void)
 void NetworkOut::tick(void)
 {
 	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
+	{
+		setPriority(IThread::Highest);
 		return;
+	}
 
 	static unsigned char iCount = 0;
 	EXC_TRY("NetworkOut");
