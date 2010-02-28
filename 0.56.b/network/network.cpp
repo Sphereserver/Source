@@ -91,8 +91,17 @@ NetState::~NetState(void)
 
 void NetState::clear(void)
 {
+	DEBUGNETWORK(("Clearing client state '%x'.\n", id()));
+
+	m_isReadClosed = true;
+	m_isWriteClosed = true;
+	m_needsFlush = false;
+
 	if (m_client != NULL)
 	{
+		CClient* client = m_client;
+		m_client = NULL;
+
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
 		g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client disconnected [Total:%d] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
@@ -100,18 +109,16 @@ void NetState::clear(void)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork)
 		{
 #ifndef _WIN32
-			g_NetworkEvent.unregisterClient(m_client);
+			g_NetworkEvent.unregisterClient(client);
 #else
 			m_socket.ClearAsync();
 #endif
 		}
 
 		//	record the client reference to the garbage collection to be deleted on it's time
-		g_World.m_ObjDelete.InsertHead(m_client);
+		g_World.m_ObjDelete.InsertHead(client);
 	}
 
-	m_isClosed = true;
-	m_needsFlush = false;
 	m_socket.Close();
 	m_client = NULL;
 
@@ -122,6 +129,7 @@ void NetState::clear(void)
 			delete m_queue[i].front();
 			m_queue[i].pop();
 		}
+		m_queue[i].clean();
 	}
 
 	while (m_asyncQueue.empty() == false)
@@ -129,6 +137,7 @@ void NetState::clear(void)
 		delete m_asyncQueue.front();
 		m_asyncQueue.pop();
 	}
+	m_asyncQueue.clean();
 
 	m_sequence = 0;
 	m_seeded = false;
@@ -143,19 +152,11 @@ void NetState::clear(void)
 
 void NetState::init(SOCKET socket, CSocketAddress addr)
 {
-	m_peerAddress = addr;
-
-	if (m_client != NULL)
-	{
-		//	record the client reference to the garbage collection to be deleted on it's time
-		g_World.m_ObjDelete.InsertHead(m_client);
-	}
-
 	clear();
 
-	g_Serv.StatInc(SERV_STAT_CLIENTS);
+	DEBUGNETWORK(("initialising client\n"));
+	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
-	m_client = new CClient(this);
 	m_socket.SetNonBlocking();
 
 	// disable NAGLE algorythm for data compression/coalescing.
@@ -163,27 +164,44 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	BOOL nbool = true;
 	m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
 
+	g_Serv.StatInc(SERV_STAT_CLIENTS);
+	CClient* client = new CClient(this);
+	m_client = client;
+
+	DEBUGNETWORK(("determining async mode\n"));
 	setAsyncMode();
 	
 #ifndef _WIN32
 	if (g_Cfg.m_fUseAsyncNetwork)
-		g_NetworkEvent.registerClient(m_client, LinuxEv::Write);
+	{
+		DEBUGNETWORK(("registering async client"));
+		g_NetworkEvent.registerClient(client, LinuxEv::Write);
+	}
 #endif
-
-	m_isClosed = false;
+	
+	DEBUGNETWORK(("Opening network state\n"));
+	m_isWriteClosed = false;
+	m_isReadClosed = false;
 }
 
 bool NetState::isValid(const CClient* client) const
 {
 	if (client == NULL)
-		return m_socket.IsOpen() && !m_isClosed;
+		return m_socket.IsOpen() && isClosing() == false;
 	else
 		return m_socket.IsOpen() && m_client == client;
 }
 
 void NetState::markClosed(void)
 {
-	m_isClosed = true;
+	DEBUGNETWORK(("Client '%x' being closed by read-thread\n", id()));
+	m_isReadClosed = true;
+}
+
+void NetState::markWriteClosed(void)
+{
+	DEBUGNETWORK(("Client '%x' being closed by write-thread\n", id()));
+	m_isWriteClosed = true;
 }
 
 void NetState::markFlush(bool needsFlush)
@@ -223,7 +241,7 @@ bool NetState::hasPendingData(void) const
 		return false;
 
 	// check packet queues (only count high priority+ for closed states)
-	for (int i = isClosed() ? NETWORK_DISCONNECTPRI : PacketSend::PRI_IDLE; i < PacketSend::PRI_QTY; i++)
+	for (int i = (isClosing() ? NETWORK_DISCONNECTPRI : PacketSend::PRI_IDLE); i < PacketSend::PRI_QTY; i++)
 	{
 		if (m_queue[i].empty() == false)
 			return true;
@@ -241,7 +259,7 @@ bool NetState::canReceive(PacketSend* packet) const
 	if (m_socket.IsOpen() == false || packet == NULL)
 		return false;
 
-	if (isClosed() && packet->getPriority() < NETWORK_DISCONNECTPRI)
+	if (isClosing() && packet->getPriority() < NETWORK_DISCONNECTPRI)
 		return false;
 
 	if (packet->getTarget()->m_client == NULL)
@@ -271,10 +289,10 @@ ClientIterator::~ClientIterator(void)
 	m_nextClient = NULL;
 }
 
-CClient* ClientIterator::next(bool includeClosed)
+CClient* ClientIterator::next(bool includeClosing)
 {
 	CClient* current = m_nextClient;
-	while (current != NULL && current->GetNetState()->isValid(includeClosed? current : NULL) == false)
+	while (current != NULL && current->GetNetState()->isClosed() == false && current->GetNetState()->isValid(includeClosing? current : NULL) == false)
 		current = current->GetNext();
 
 	if (current != NULL)
@@ -304,7 +322,7 @@ SafeClientIterator::~SafeClientIterator(void)
 	m_network = NULL;
 }
 
-CClient* SafeClientIterator::next(bool includeClosed)
+CClient* SafeClientIterator::next(bool includeClosing)
 {
 	// this method should be thread-safe, but does not loop through clients in the order that they have
 	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
@@ -312,7 +330,10 @@ CClient* SafeClientIterator::next(bool includeClosed)
 	while (++m_id < m_max)
 	{
 		NetState* state = m_network->m_states[m_id];
-		if ( (includeClosed || state->isValid()) && state->m_client != NULL && state->isValid(state->m_client) )
+		if (state->isClosed() || state->m_client == NULL || state->isValid(state->m_client) == false)
+			continue;
+
+		if (includeClosing || state->isValid())
 			return state->m_client;
 	}
 
@@ -433,9 +454,7 @@ void NetworkIn::onStart(void)
 	m_buffer = new BYTE[NETWORK_BUFFERSIZE];
 	m_decryptBuffer = new BYTE[NETWORK_BUFFERSIZE];
 
-#ifdef DEBUGPACKETS
-	g_Log.Debug("Registering packets...\n");
-#endif
+	DEBUGNETWORK(("Registering packets...\n"));
 
 	// standard packets
 	registerPacket(XCMD_Create, new PacketCreate());							// create character
@@ -583,7 +602,7 @@ void NetworkIn::tick(void)
 	for (long i = 0; i < m_stateCount; i++)
 	{
 		NetState* client = m_states[i];
-		if (client->m_client == NULL || client->isClosed())
+		if (client->m_client == NULL || client->isClosing())
 			continue;
 
 		if (!FD_ISSET(client->m_socket.GetSocket(), &readfds))
@@ -668,7 +687,7 @@ void NetworkIn::tick(void)
 
 					if ( !seed )
 					{
-						g_Log.EventError("Invalid client %d detected, disconnecting.", client->id());
+						g_Log.EventError("Invalid client '%x' detected, disconnecting.", client->id());
 						client->markClosed();
 						continue;
 					}
@@ -800,7 +819,7 @@ void NetworkIn::tick(void)
 
 		long len = packet->getLength();
 		long offset = 0;
-		while (len > 0 && !client->isClosed())
+		while (len > 0 && !client->isClosing())
 		{
 			long packetID = packet->getData()[offset];
 			Packet* handler = m_handlers[packetID];
@@ -813,9 +832,8 @@ void NetworkIn::tick(void)
 			if (handler != NULL)
 			{
 				long packetLength = handler->checkLength(client, packet);
-#ifdef DEBUGPACKETS
-				g_Log.Debug("Checking length: counted %d.\n", packetLength);
-#endif
+//				DEBUGNETWORK(("Checking length: counted %d.\n", packetLength));
+
 				//	fall back and delete the packet
 				if (packetLength <= 0)
 					break;
@@ -903,20 +921,29 @@ int NetworkIn::checkForData(fd_set* storage)
 		if ( !state->m_socket.IsOpen() )
 			continue;
 
-		EXC_SET("check closed");
-		if ( state->isClosed() )
+		EXC_SET("check closing");
+		if (state->isClosing())
 		{
-#ifdef DEBUGPACKETS
-			g_Log.Debug("Client '%x' is gonna being cleared since marked to close.\n",
-				state->id());
-#endif
-			EXC_SET("flush data");
-			g_NetworkOut.flush(state->getClient());
+			if (state->isClosed() == false)
+			{
+				DEBUGNETWORK(("Flushing data for client '%x'.\n", state->id()));
 
-			EXC_SET("check pending data");
-			if (state->hasPendingData() == false)
+				EXC_SET("flush data");
+				g_NetworkOut.flush(state->getClient());
+
+				EXC_SET("check pending data");
+				if (state->hasPendingData())
+					continue;
+			
+				if (g_NetworkOut.isActive() == false)
+					state->markWriteClosed();
+			}
+
+			EXC_SET("check closed");
+			if ( state->isClosed() )
 			{
 				EXC_SET("clear socket");
+				DEBUGNETWORK(("Client '%x' is being cleared since marked to close.\n", state->id()));
 				state->clear();
 			}
 
@@ -965,10 +992,9 @@ void NetworkIn::acceptConnection(void)
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
 
-#ifdef DEBUGPACKETS 
-		g_Log.Debug("Incoming connection from '%s' [blocked=%d, ttl=%d, pings=%d, connecting=%d, connected=%d]\n",
-			ip->m_ip.GetAddrStr(), ip->m_blocked, ip->m_ttl, ip->m_pings, ip->m_connecting, ip->m_connected);
-#endif
+		DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%d, pings=%d, connecting=%d, connected=%d]\n", 
+			ip->m_ip.GetAddrStr(), ip->m_blocked, ip->m_ttl, ip->m_pings, ip->m_connecting, ip->m_connected));
+
 		//	ip is blocked
 		if ( ip->checkPing() ||
 			// or too much connect tries from this ip
@@ -978,10 +1004,7 @@ void NetworkIn::acceptConnection(void)
 			)
 		{
 			EXC_SET("rejecting");
-#ifdef DEBUGPACKETS 
-			g_Log.Debug("Closing incoming connection [max ip=%d, clients max ip=%d).\n",
-				maxIp, climaxIp);
-#endif
+			DEBUGNETWORK(("Closing incoming connection [max ip=%d, clients max ip=%d).\n", maxIp, climaxIp));
 
 			CLOSESOCKET(h);
 
@@ -1001,18 +1024,20 @@ void NetworkIn::acceptConnection(void)
 			if ( slot == -1 )			// we do not have enough empty slots for clients
 			{
 				EXC_SET("no slot ready");
-#ifdef DEBUGPACKETS 
-				g_Log.Debug("Unable to allocate new slot for client, too many clients already.\n");
-#endif
+				DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already.\n"));
+
 				CLOSESOCKET(h);
 			}
 			else
 			{
+				DEBUGNETWORK(("Allocated slot '%x' for client (%d).\n", slot, m_states[slot]->id()));
+
 				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
 
 				EXC_SET("recording client");
-				m_clients.InsertHead(m_states[slot]->getClient());
+				if (m_states[slot]->m_client != NULL)
+					m_clients.InsertHead(m_states[slot]->getClient());
 			}
 		}
 	}
@@ -1120,9 +1145,8 @@ void NetworkIn::periodic(void)
 			{
 				if (++connecting > connectingMax)
 				{
-#ifdef DEBUGPACKETS
-					g_Log.EventDebug("Closing client '%x' since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax);
-#endif
+					DEBUGNETWORK(("Closing client '%x' since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax));
+
 					client->m_net->markClosed();
 				}
 			}
@@ -1169,6 +1193,8 @@ void NetworkIn::periodic(void)
 	if (max > m_stateCount)
 	{
 		EXC_SET("increasing network state size");
+		DEBUGNETWORK(("increasing number of client slots from %ld to %ld\n", m_stateCount, max));
+
 		// reallocate state buffer to accomodate additional clients
 		long prevCount = m_stateCount;
 		NetState** prevStates = m_states;
@@ -1187,6 +1213,8 @@ void NetworkIn::periodic(void)
 	else if (max < m_stateCount)
 	{
 		EXC_SET("decreasing network state size");
+		DEBUGNETWORK(("decreasing number of client slots from %ld to %ld\n", m_stateCount, max));
+
 		// delete excess states but leave array intact
 		for (long l = m_stateCount; l < max; l++)
 		{
@@ -1264,27 +1292,32 @@ void NetworkOut::tick(void)
 	SafeClientIterator clients;
 	while (CClient* client = clients.next())
 	{
+		NetState* state = client->GetNetState();
+		ASSERT(state != NULL);
+
 		EXC_SET("highest");
-		if (toProcess[PacketSend::PRI_HIGHEST])
+		if (toProcess[PacketSend::PRI_HIGHEST] && state->isClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_HIGHEST);
 
 		EXC_SET("high");
-		if (toProcess[PacketSend::PRI_HIGH])
+		if (toProcess[PacketSend::PRI_HIGH] && state->isClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_HIGH);
 
 		EXC_SET("normal");
-		if (toProcess[PacketSend::PRI_NORMAL])
+		if (toProcess[PacketSend::PRI_NORMAL] && state->isClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_NORMAL);
 
 		EXC_SET("low");
-		if (toProcess[PacketSend::PRI_LOW])
+		if (toProcess[PacketSend::PRI_LOW] && state->isClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_LOW);
 
 		EXC_SET("idle");
-		if (toProcess[PacketSend::PRI_IDLE])
+		if (toProcess[PacketSend::PRI_IDLE] && state->isClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_IDLE);
 
-		packetsSent += proceedQueueAsync(client);
+		EXC_SET("async");
+		if (state->isClosed() == false)
+			packetsSent += proceedQueueAsync(client);
 	}
 
 	// increase priority during 'active' periods
@@ -1332,10 +1365,8 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 		{
 			if (state->m_queue[priority].size() >= maxClientPackets)
 			{
-#ifdef DEBUGPACKETS
-				g_Log.Debug("%x:Packet decreased priority due to overal amount %d overlapping %d.\n",
-					state->id(), state->m_queue[priority].size(), maxClientPackets);
-#endif
+//				DEBUGNETWORK(("%x:Packet decreased priority due to overal amount %d overlapping %d.\n", state->id(), state->m_queue[priority].size(), maxClientPackets));
+
 				packet->m_priority = priority-1;
 				scheduleOnce(packet);
 				return;
@@ -1364,10 +1395,12 @@ void NetworkOut::flush(CClient* client)
 	}
 	else
 	{
-		for (int priority = 0; priority < PacketSend::PRI_QTY; priority++)
+		for (int priority = 0; priority < PacketSend::PRI_QTY && state->isClosed() == false; priority++)
 			proceedQueue(client, priority);
 
-		proceedQueueAsync(client);
+		if (state->isClosed() == false)
+			proceedQueueAsync(client);
+
 		state->markFlush(false);
 	}
 }
@@ -1382,6 +1415,9 @@ void NetworkOut::proceedFlush(void)
 
 		if (state->needsFlush())
 			flush(client);
+
+		if (state->isClosing())
+			state->markWriteClosed();
 	}
 }
 
@@ -1394,7 +1430,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->m_queue[priority].empty())
+	if (state->isClosed() || state->m_queue[priority].empty())
 		return 0;
 
 	long length = 0;
@@ -1426,18 +1462,19 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 		length += packet->getLength();
 
 		EXC_SET("sending");
-		if (sendPacket(client, packet) == true)
-			client->m_timeLastSend = time;
-		else
-			state->markClosed();
+		if (sendPacket(client, packet) == false)
+		{
+			state->markWriteClosed();
+			break;
+		}
+
+		client->m_timeLastSend = time;
 
 		EXC_SET("check length");
 		if (length > maxClientLength)
 		{
-#ifdef DEBUGPACKETS
-			g_Log.Debug("%x:Packets sending stopped at %d packet due to overall length %d overlapping %d.\n",
-				state->id(), i, length, maxClientLength);
-#endif
+//			DEBUGNETWORK(("%x:Packets sending stopped at %d packet due to overall length %d overlapping %d.\n", state->id(), i, length, maxClientLength));
+
 			break;
 		}
 
@@ -1455,7 +1492,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->m_isSendingAsync)
+	if (state->isClosed() || state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->m_isSendingAsync)
 		return 0;
 
 	// get next packet
@@ -1554,9 +1591,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		int ret = 0;
 		if (state->m_client == NULL)
 		{
-#ifdef DEBUGPACKETS
-			g_Log.Debug("%x:Sending packet to closed client?\n", state->id());
-#endif
+			DEBUGNETWORK(("%x:Sending packet to closed client?\n", state->id()));
 
 			sendBuffer = packet->getData();
 			sendBufferLength = packet->getLength();
@@ -1618,7 +1653,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		if (ret <= 0)
 		{
 			EXC_SET("error parse");
-			int errCode = CGSocket::GetLastError();
+			int errCode = CGSocket::GetLastError(true);
 
 #ifdef _WIN32
 			if (state->isAsyncMode() && errCode == WSA_IO_PENDING)
@@ -1640,7 +1675,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 			else
 #endif
 			{
-				if (state->isClosed() == false)
+				if (state->isClosing() == false)
 					g_Log.EventWarn("%x:TX Error %d\n", state->id(), errCode);
 
 #ifndef _WIN32

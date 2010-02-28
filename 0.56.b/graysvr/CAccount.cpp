@@ -561,7 +561,7 @@ void CAccount::DeleteChars()
 {
 	ADDTOCALLSTACK("CAccount::DeleteChars");
 	CClient * pClient = FindClient();
-	if ( pClient )
+	if ( pClient != NULL )
 	{	// we have no choice but to kick them.
 		pClient->GetNetState()->markClosed();
 	}

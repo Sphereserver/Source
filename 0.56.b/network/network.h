@@ -19,6 +19,16 @@
 
 #define NETWORK_DISCONNECTPRI	PacketSend::PRI_HIGHEST			// packet priorty to continue sending before closing sockets
 
+#ifdef DEBUGPACKETS
+	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
+#else
+#ifdef NDEBUGPACKETS
+	#define DEBUGNETWORK(_x_)
+#else
+	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
+#endif
+#endif
+
 class CClient;
 class NetworkIn;
 struct CSocketAddress;
@@ -44,9 +54,11 @@ protected:
 	long m_id; // net id
 	CGSocket m_socket; // socket
 	CClient* m_client; // client
-	bool m_isClosed; // is socket to be closed
-	bool m_needsFlush; // does data need to be flushed
 	CSocketAddress m_peerAddress; // client address
+
+	bool m_isReadClosed; // is closed by read thread
+	bool m_isWriteClosed; // is closed by write thread
+	bool m_needsFlush; // does data need to be flushed
 
 	bool m_seeded; // is seed received
 	DWORD m_seed; // client seed
@@ -98,8 +110,10 @@ public:
 	DWORD getCryptVersion(void) const { return m_clientVersion; }; // version as determined by encryption
 	DWORD getReportedVersion(void) const { return m_reportedVersion; }; // version as reported by client
 
-	void markClosed(void); // mark socket as closed
-	bool isClosed(void) const { return m_isClosed; } // is the socket closed?
+	void markClosed(void); // mark socket as closed by read thread
+	void markWriteClosed(void); // mark socket as closed by write thread
+	bool isClosing(void) const { return m_isReadClosed || m_isWriteClosed; } // is the socket closing?
+	bool isClosed(void) const { return m_isReadClosed && m_isWriteClosed; } // is the socked closed?
 
 	void markFlush(bool needsFlush); // mark socket as needing a flush
 	bool needsFlush(void) const { return m_needsFlush; } // does the socket need to be flushed?
@@ -145,7 +159,7 @@ public:
 	ClientIterator(const NetworkIn* network = NULL);
 	~ClientIterator(void);
 
-	CClient* next(bool includeClosed = false); // finds next client
+	CClient* next(bool includeClosing = false); // finds next client
 };
 
 
@@ -167,7 +181,7 @@ public:
 	SafeClientIterator(const NetworkIn* network = NULL);
 	~SafeClientIterator(void);
 
-	CClient* next(bool includeClosed = false); // finds next client
+	CClient* next(bool includeClosing = false); // finds next client
 };
 
 

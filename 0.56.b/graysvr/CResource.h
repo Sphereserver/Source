@@ -619,6 +619,7 @@ public:
 #define DEBUGF_LOS				0x1000	// debug flags for AdvancedLOS
 #define DEBUGF_WALK				0x2000	// debug flags for Walking stuff
 #define DEBUGF_PACKETS			0x4000	// log packets to file
+#define DEBUGF_NETWORK			0x8000	// debug flags for networking
 	WORD m_wDebugFlags;			// DEBUG In game effects to turn on and off.
 
 	// Decay

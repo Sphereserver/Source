@@ -101,7 +101,7 @@ CClient::~CClient()
 	}
 
 	if (m_net->isValid(this))
-		m_net->clear();
+		g_Log.EventError("Client being deleted without being safely removed from the network system\n");
 }
 
 bool CClient::IsSkillVisible(SKILL_TYPE skill)

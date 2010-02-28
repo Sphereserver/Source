@@ -30,6 +30,12 @@ public:
 	{
 		m_list.push_back(value);
 		m_tail = m_list.end();
+		clean();
+	}
+
+	// Erase elements from before reader head (writer)
+	void clean(void)
+	{
 		m_list.erase(m_list.begin(), m_head);
 	}
 
