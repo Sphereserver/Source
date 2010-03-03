@@ -601,10 +601,12 @@ void NetworkIn::tick(void)
 	BYTE* buffer = m_buffer;
 	for (long i = 0; i < m_stateCount; i++)
 	{
+		EXC_SET("messages - next client");
 		NetState* client = m_states[i];
 		if (client->m_client == NULL || client->isClosing())
 			continue;
 
+		EXC_SET("messages - check frozen");
 		if (!FD_ISSET(client->m_socket.GetSocket(), &readfds))
 		{
 			if (client->m_client->GetConnectType() != CONNECT_TELNET)
@@ -621,6 +623,7 @@ void NetworkIn::tick(void)
 		}
 
 		// receive data
+		EXC_SET("messages - receive");
 		int received = client->m_socket.Receive(buffer, NETWORK_BUFFERSIZE, 0);
 		if (received <= 0)
 		{
@@ -628,14 +631,17 @@ void NetworkIn::tick(void)
 			continue;
 		}
 
+		EXC_SET("messages - process");
 		if (client->m_client->GetConnectType() == CONNECT_UNK)
 		{
 			if (client->m_seeded == false)
 			{
 				if (received >= 4) // login connection
 				{
+					EXC_SET("login message");
 					if ( memcmp(buffer, "GET /", 5) == 0 || memcmp(buffer, "POST /", 6) == 0 ) // HTTP
 					{
+						EXC_SET("http request");
 						if ( g_Cfg.m_fUseHTTP != 2 )
 						{
 							client->markClosed();
@@ -652,6 +658,7 @@ void NetworkIn::tick(void)
 						continue;
 					}
 
+					EXC_SET("game client seed");
 					DWORD seed(0);
 					int iSeedLen(0);
 					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
@@ -706,6 +713,7 @@ void NetworkIn::tick(void)
 						continue;
 					}
 
+					EXC_SET("ping #1");
 					if (client->m_client->OnRxPing(buffer, received) == false)
 						client->markClosed();
 
@@ -718,6 +726,8 @@ void NetworkIn::tick(void)
 				if (client->m_seed == 0xFFFFFFFF)
 				{
 					// UOKR Client opens connection with 255.255.255.255
+					EXC_SET("KR client seed");
+
 					DEBUG_WARN(("UOKR Client Detected.\n"));
 					client->m_client->SetConnectType(CONNECT_CRYPT);
 					client->m_clientType = CLIENTTYPE_KR;
@@ -728,6 +738,7 @@ void NetworkIn::tick(void)
 
 			if (received < 5)
 			{
+				EXC_SET("ping #2");
 				if (client->m_client->OnRxPing(buffer, received) == false)
 					client->markClosed();
 
@@ -735,6 +746,7 @@ void NetworkIn::tick(void)
 			}
 
 			// log in the client
+			EXC_SET("messages - setup");
 			client->m_client->SetConnectType(CONNECT_CRYPT);
 			client->m_client->xProcessClientSetup((CEvent*)buffer, received);
 			continue;
@@ -745,6 +757,7 @@ void NetworkIn::tick(void)
 		// first data on a new connection - find out what should come next
 		if ( client->m_client->m_Crypt.IsInit() == false )
 		{
+			EXC_SET("encryption setup");
 			CEvent evt;
 			memcpy(&evt, buffer, received);
 
@@ -755,6 +768,8 @@ void NetworkIn::tick(void)
 					{
 						if (*buffer == XCMD_EncryptionReply && client->isClientKR())
 						{
+							EXC_SET("encryption reply");
+
 							// receiving response to 0xe3 packet
 							int iEncKrLen = evt.EncryptionReply.m_len;
 							if (received < iEncKrLen)
@@ -768,11 +783,15 @@ void NetworkIn::tick(void)
 						}
 						else
 						{
+							EXC_SET("encryption detection");
+
 							client->m_client->xProcessClientSetup(&evt, received);
 						}
 					}
 					else
 					{
+						EXC_SET("ping #3");
+
 						// not enough data to be a real client
 						client->m_client->SetConnectType(CONNECT_UNK);
 						if (client->m_client->OnRxPing(buffer, received) == false)
@@ -784,6 +803,7 @@ void NetworkIn::tick(void)
 					break;
 					
 				case CONNECT_HTTP:
+					EXC_SET("http message");
 					if ( !client->m_client->OnRxWebPageRequest(evt.m_Raw, received) )	
 					{
 						client->markClosed();
@@ -792,6 +812,7 @@ void NetworkIn::tick(void)
 					break;
 					
 				case CONNECT_TELNET:
+					EXC_SET("telnet message");
 					if ( !client->m_client->OnRxConsole(evt.m_Raw, received) )
 					{
 						client->markClosed();
@@ -809,9 +830,11 @@ void NetworkIn::tick(void)
 		}
 
 		// decrypt the client data and add it to queue
+		EXC_SET("decrypt messages");
 		client->m_client->m_Crypt.Decrypt(m_decryptBuffer, buffer, received);
 		Packet* packet = new Packet(m_decryptBuffer, received);
 
+		EXC_SET("record message");
 		xRecordPacket(client->m_client, packet, "client->server");
 
 		// process the message

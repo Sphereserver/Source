@@ -65,7 +65,7 @@ void Packet::clear(void)
 {
 	if (m_buffer != NULL)
 	{
-		delete m_buffer;
+		delete[] m_buffer;
 		m_buffer = NULL;
 	}
 
@@ -107,7 +107,7 @@ void Packet::resize(long newsize)
 		if (m_buffer != NULL)
 		{
 			memcpy(buffer, m_buffer, m_bufferSize);
-			delete m_buffer;
+			delete[] m_buffer;
 		}
 		
 		m_buffer = buffer;
@@ -266,7 +266,7 @@ void Packet::writeStringASCII(const WCHAR* value, bool terminate)
 
 		value++;
 	}
-	delete buffer;
+	delete[] buffer;
 	
 	if (terminate)
 		writeCharASCII('\0');
@@ -309,7 +309,7 @@ void Packet::writeStringFixedASCII(const WCHAR* value, long size, bool terminate
 		}
 	}
 
-	delete buffer;
+	delete[] buffer;
 #else
 
 	char* buffer = Str_GetTemp();
@@ -784,7 +784,7 @@ long Packet::readStringNullASCII(WCHAR* buffer, long maxlength)
 	char* bufferReal = new char[maxlength + 1];
 	long length = readStringNullASCII(bufferReal, maxlength);
 	long l = mbstowcs(buffer, bufferReal, maxlength + 1);
-	delete bufferReal;
+	delete[] bufferReal;
 #else
 
 	char* bufferReal = new char[maxlength + 1];
@@ -826,13 +826,13 @@ long Packet::readStringNullUNICODE(char* buffer, long bufferSize, long maxlength
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
 	long length = readStringNullUNICODE(bufferReal, maxlength);
 	long l = wcstombs(buffer, bufferReal, bufferSize);
-	delete bufferReal;
+	delete[] bufferReal;
 #else
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
 	long length = readStringNullNUNICODE(bufferReal, maxlength);
 	long l = CvtNUNICODEToSystem(buffer, bufferSize, (NWORD*)bufferReal, maxlength + 1);
-	delete bufferReal;
+	delete[] bufferReal;
 #endif
 
 	return l;
@@ -860,13 +860,13 @@ long Packet::readStringNullNUNICODE(char* buffer, long bufferSize, long maxlengt
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
 	long length = readStringNullNUNICODE(bufferReal, maxlength);
 	long l = wcstombs(buffer, bufferReal, bufferSize);
-	delete bufferReal;
+	delete[] bufferReal;
 #else
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
 	long length = readStringNullUNICODE(bufferReal, maxlength);
 	long l =CvtNUNICODEToSystem(buffer, bufferSize, (NWORD*)bufferReal, maxlength + 1);
-	delete bufferReal;
+	delete[] bufferReal;
 #endif
 
 	return l;
@@ -1087,6 +1087,7 @@ void PacketSend::push(CClient *client)
 		{
 			// since we are pushing this packet, we should clear the memory
 			//instantly if this packet will never be sent
+			DEBUGNETWORK(("Packet deleted due to exceeding maximum packet size (%ld/%d).\n", m_length, NETWORK_MAXPACKETLEN));
 			delete this;
 			return;
 		}
@@ -1094,7 +1095,10 @@ void PacketSend::push(CClient *client)
 		g_NetworkOut.scheduleOnce(this);
 	}
 	else
+	{
+		DEBUGNETWORK(("Packet deleted due to no target set.\n"));
 		delete this;
+	}
 }
 
 void PacketSend::target(CClient* client)
