@@ -254,6 +254,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 		Stat_SetMod( (STAT_TYPE)i, 0);
 		Stat_SetVal( (STAT_TYPE)i, 0);
 		Stat_SetMax( (STAT_TYPE)i, 0);
+		m_Stat[i].m_regen = 0;
 	}
 	Stat_SetVal( STAT_FOOD, Stat_GetMax(STAT_FOOD) );
 

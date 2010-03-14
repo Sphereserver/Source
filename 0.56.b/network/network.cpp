@@ -567,6 +567,8 @@ void NetworkIn::onStart(void)
 	for (long l = 0; l < g_Cfg.m_iClientsMax; l++)
 		m_states[l] = new NetState(l);
 	m_stateCount = g_Cfg.m_iClientsMax;
+
+	DEBUGNETWORK(("Created %ld network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
 }
 
 void NetworkIn::tick(void)
@@ -603,6 +605,9 @@ void NetworkIn::tick(void)
 	{
 		EXC_SET("messages - next client");
 		NetState* client = m_states[i];
+		ASSERT(client != NULL);
+
+		EXC_SET("messages - check client");
 		if (client->m_client == NULL || client->isClosing())
 			continue;
 
@@ -758,6 +763,8 @@ void NetworkIn::tick(void)
 		if ( client->m_client->m_Crypt.IsInit() == false )
 		{
 			EXC_SET("encryption setup");
+			ASSERT(received <= sizeof(CEvent));
+
 			CEvent evt;
 			memcpy(&evt, buffer, received);
 
@@ -944,6 +951,11 @@ int NetworkIn::checkForData(fd_set* storage)
 		if ( !state->m_socket.IsOpen() )
 			continue;
 
+		EXC_SET("cleaning queues");
+		for (int i = 0; i < PacketSend::PRI_QTY; i++)
+			state->m_queue[i].clean();
+		state->m_asyncQueue.clean();
+
 		EXC_SET("check closing");
 		if (state->isClosing())
 		{
@@ -963,7 +975,7 @@ int NetworkIn::checkForData(fd_set* storage)
 			}
 
 			EXC_SET("check closed");
-			if ( state->isClosed() )
+			if (state->isClosed() && state->isSendingAsync() == false)
 			{
 				EXC_SET("clear socket");
 				DEBUGNETWORK(("Client '%x' is being cleared since marked to close.\n", state->id()));
@@ -1363,21 +1375,25 @@ void NetworkOut::waitForClose(void)
 
 void NetworkOut::schedule(PacketSend* packet)
 {
+	ASSERT(packet != NULL);
 	scheduleOnce(packet->clone());
 }
 
 void NetworkOut::scheduleOnce(PacketSend* packet)
 {
+	ASSERT(packet != NULL);
 	NetState* state = packet->m_target;
+	ASSERT(state != NULL);
 
 	// don't bother queuing packets for invalid sockets
-	if (state->isValid() == false)
+	if (state == NULL || state->isValid() == false)
 	{
 		delete packet;
 		return;
 	}
 
 	long priority = packet->getPriority();
+	ASSERT(priority >= PacketSend::PRI_IDLE && priority < PacketSend::PRI_QTY);
 
 #ifdef NETWORK_MAXQUEUESIZE
 	// limit by number of packets to be in queue
@@ -1515,7 +1531,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isClosed() || state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->m_isSendingAsync)
+	if (state->isClosed() || state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->isSendingAsync())
 		return 0;
 
 	// get next packet
@@ -1554,10 +1570,12 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 
 void NetworkOut::onAsyncSendComplete(CClient* client)
 {
+	DEBUGNETWORK(("AsyncSendComplete\n"));
+	ASSERT(client != NULL);
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	state->m_isSendingAsync = false;
+	state->setSendingAsync(false);
 	proceedQueueAsync(client);
 }
 
@@ -1589,6 +1607,7 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 	if (dwError == WSAEFAULT)
 		return;
 
+	DEBUGNETWORK(("AsyncSend completed.\b"));
 	CClient* client = reinterpret_cast<CClient *>(lpOverlapped->hEvent);
 	if (client != NULL)
 		g_NetworkOut.onAsyncSendComplete(client);

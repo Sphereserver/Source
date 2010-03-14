@@ -8,12 +8,6 @@
 #define _INC_GRAYSVR_H_
 #pragma once
 
-// NOTE: If we want a max number of sockets we must compile for it !
-#ifdef _WIN32
-	#undef FD_SETSIZE		// This shuts off a warning
-	#define FD_SETSIZE 1024 // for max of n users ! default = 64
-#endif
-
 //	Enable advanced exceptions catching. Consumes some more resources, but is very useful
 //	for debug on a running environment. Also it makes sphere more stable since exceptions
 //	are local

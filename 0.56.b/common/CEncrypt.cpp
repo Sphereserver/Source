@@ -539,6 +539,7 @@ CCrypt::CCrypt()
 	}
 
 	m_fInit = false;
+	m_fRelayPacket = false;
 	//SetClientVerEnum(client_keys[0][2]);
 	SetClientVerEnum(0);
 }

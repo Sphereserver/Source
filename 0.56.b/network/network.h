@@ -56,16 +56,16 @@ protected:
 	CClient* m_client; // client
 	CSocketAddress m_peerAddress; // client address
 
-	bool m_isReadClosed; // is closed by read thread
-	bool m_isWriteClosed; // is closed by write thread
-	bool m_needsFlush; // does data need to be flushed
+	volatile bool m_isReadClosed; // is closed by read thread
+	volatile bool m_isWriteClosed; // is closed by write thread
+	volatile bool m_needsFlush; // does data need to be flushed
 
 	bool m_seeded; // is seed received
 	DWORD m_seed; // client seed
 	bool m_newseed; // is the client using new seed
 
 	bool m_useAsync; // is this socket using asynchronous sends
-	bool m_isSendingAsync; // is a packet currently being sent asynchronously?
+	volatile bool m_isSendingAsync; // is a packet currently being sent asynchronously?
 #ifdef _WIN32
 	WSABUF m_bufferWSA; // Winsock Async Buffer
 	WSAOVERLAPPED m_overlapped; // Winsock Overlapped structure
@@ -102,9 +102,9 @@ public:
 	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode
 #ifndef _WIN32
 	struct ev_io* iocb(void) { return &m_eventWatcher; }; // get io callback
+#endif
 	bool isSendingAsync(void) const { return m_isSendingAsync; }; // get if async packeet is being sent
 	void setSendingAsync(bool isSending) { m_isSendingAsync = isSending; }; // set if async packet is being sent
-#endif
 
 	GAMECLIENT_TYPE getClientType(void) const { return m_clientType; }; // determined client type
 	DWORD getCryptVersion(void) const { return m_clientVersion; }; // version as determined by encryption

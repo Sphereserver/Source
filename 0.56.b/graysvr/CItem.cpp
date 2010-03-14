@@ -63,6 +63,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_Attr = 0;
 	m_amount = 1;
 	m_containedGridIndex = 0;
+	m_wDispIndex = ITEMID_NOTHING;
 
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;

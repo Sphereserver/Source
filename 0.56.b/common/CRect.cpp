@@ -692,10 +692,39 @@ int CGRect::Read( LPCTSTR pszVal )
 				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
 				m_map = 0;
 			}
-		case 4: m_bottom = ATOI(ppVal[3]);
-		case 3: m_right = ATOI(ppVal[2]);
-		case 2: m_top =	ATOI(ppVal[1]);
-		case 1: m_left = ATOI(ppVal[0]);
+			m_bottom = ATOI(ppVal[3]);
+			m_right = ATOI(ppVal[2]);
+			m_top =	ATOI(ppVal[1]);
+			m_left = ATOI(ppVal[0]);
+			break;
+		case 4:
+			m_map = 0;
+			m_bottom = ATOI(ppVal[3]);
+			m_right = ATOI(ppVal[2]);
+			m_top =	ATOI(ppVal[1]);
+			m_left = ATOI(ppVal[0]);
+			break;
+		case 3:
+			m_map = 0;
+			m_bottom = 0;
+			m_right = ATOI(ppVal[2]);
+			m_top =	ATOI(ppVal[1]);
+			m_left = ATOI(ppVal[0]);
+			break;
+		case 2:
+			m_map = 0;
+			m_bottom = 0;
+			m_right = 0;
+			m_top =	ATOI(ppVal[1]);
+			m_left = ATOI(ppVal[0]);
+			break;
+		case 1:
+			m_map = 0;
+			m_bottom = 0;
+			m_right = 0;
+			m_top = 0;
+			m_left = ATOI(ppVal[0]);
+			break;
 	}
 	NormalizeRect();
 	return( i );

@@ -32,7 +32,7 @@ public:
 	Packet(long size = -1);
 	Packet(const Packet& other);
 	Packet(const BYTE* data, long size);
-	~Packet(void);
+	virtual ~Packet(void);
 
 	bool isValid(void) const;
 	long getLength(void) const;
