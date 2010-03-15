@@ -1570,7 +1570,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 
 void NetworkOut::onAsyncSendComplete(CClient* client)
 {
-	DEBUGNETWORK(("AsyncSendComplete\n"));
+	//DEBUGNETWORK(("AsyncSendComplete\n"));
 	ASSERT(client != NULL);
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
