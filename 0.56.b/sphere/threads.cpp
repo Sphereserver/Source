@@ -296,7 +296,7 @@ void AbstractThread::run()
 			terminate();
 		}
 
-		Sleep(m_tickPeriod);
+		SleepEx(m_tickPeriod, TRUE);
 	}
 }
 

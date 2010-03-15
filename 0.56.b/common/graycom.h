@@ -74,7 +74,8 @@
 
 	#define IsBadReadPtr( p, len )		((p) == NULL)
 	#define IsBadStringPtr( p, len )	((p) == NULL)
-	#define Sleep(mSec)								usleep(mSec*1000)	// arg is microseconds = 1/1000000
+	#define Sleep(mSec)					usleep(mSec*1000)	// arg is microseconds = 1/1000000
+	#define SleepEx(mSec, unused)		usleep(mSec*1000)	// arg is microseconds = 1/1000000
 
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp

@@ -954,7 +954,6 @@ int NetworkIn::checkForData(fd_set* storage)
 		EXC_SET("cleaning queues");
 		for (int i = 0; i < PacketSend::PRI_QTY; i++)
 			state->m_queue[i].clean();
-		state->m_asyncQueue.clean();
 
 		EXC_SET("check closing");
 		if (state->isClosing())
@@ -1531,7 +1530,11 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isClosed() || state->isAsyncMode() == false || state->m_asyncQueue.empty() || state->isSendingAsync())
+	if (state->isClosed() || state->isAsyncMode() == false)
+		return 0;
+
+	state->m_asyncQueue.clean();
+	if (state->m_asyncQueue.empty() || state->isSendingAsync())
 		return 0;
 
 	// get next packet
@@ -1680,10 +1683,13 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 			state->m_bufferWSA.len = sendBufferLength;
 
 			DWORD bytesSent;
-			if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) != 0)
-				ret = 0;
-			else
+			if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
+			{
 				ret = bytesSent;
+				state->setSendingAsync(true);
+			}
+			else
+				ret = 0;
 		}
 		else
 #endif
