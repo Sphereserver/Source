@@ -1607,7 +1607,7 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 	if (dwError == WSAEFAULT)
 		return;
 
-	DEBUGNETWORK(("AsyncSend completed.\b"));
+	//DEBUGNETWORK(("AsyncSend completed.\n"));
 	CClient* client = reinterpret_cast<CClient *>(lpOverlapped->hEvent);
 	if (client != NULL)
 		g_NetworkOut.onAsyncSendComplete(client);
