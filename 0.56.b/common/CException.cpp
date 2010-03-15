@@ -264,38 +264,3 @@ void SetUnixSignals( bool bSet )
 	signal( SIGPIPE,	bSet ? SIG_IGN : SIG_DFL );
 #endif
 }
-
-#ifdef _WIN32
-
-STACK_INFO_REC g_stackInfo[0x1000];
-long g_stackPos = 0;
-
-StackDebugInformation::StackDebugInformation(const char *name) {
-	g_stackInfo[g_stackPos].functionName = name;
-	g_stackInfo[g_stackPos].startTime = ::GetTickCount();
-	g_stackPos++;
-	g_stackInfo[g_stackPos].startTime = 0;
-}
-
-StackDebugInformation::~StackDebugInformation() {
-	g_stackPos--;
-}
-
-void StackDebugInformation::printStackTrace() {
-	LONGLONG startTime = g_stackInfo[0].startTime;
-	long timedelta;
-	g_Log.EventDebug("__ # | _____ function _____________ | ticks passed from previous function start ______\n");
-	for( int i = 0; i < 0x1000; i++ ) {
-		if( g_stackInfo[i].startTime == 0 ) {
-			break;
-		}
-		timedelta = (long)(g_stackInfo[i].startTime - startTime);
-		g_Log.EventDebug(">>%2d | %28s | +%d %s\n",
-			i, g_stackInfo[i].functionName, timedelta, ( i == g_stackPos-1 ) ?
-				"<-- exception catch point (below is guessed and could be incorrect!)" :
-				"");
-		startTime = g_stackInfo[i].startTime;
-	}
-}
-
-#endif

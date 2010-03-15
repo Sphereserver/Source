@@ -1565,7 +1565,7 @@ public:
 	PLEVEL_TYPE GetPrivLevel() const;
 } g_Serv;	// current state stuff not saved.
 
-class Main : public AbstractThread
+class Main : public AbstractSphereThread
 {
 public:
 	Main();

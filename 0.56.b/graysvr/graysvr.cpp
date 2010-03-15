@@ -373,7 +373,7 @@ int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 //	Main server loop
 
 Main::Main()
-	: AbstractThread("Main", IThread::RealTime)
+	: AbstractSphereThread("Main", IThread::RealTime)
 {
 }
 

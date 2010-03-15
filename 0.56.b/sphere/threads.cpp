@@ -417,6 +417,10 @@ bool AbstractThread::shouldExit()
 AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	: AbstractThread(name, priority)
 {
+#ifdef THREAD_TRACK_CALLSTACK
+	m_stackPos = 0;
+	memset(m_stackInfo, 0, sizeof(m_stackInfo));
+#endif
 }
 
 // IMHO we need a lock on allocateBuffer and allocateStringBuffer
@@ -498,6 +502,28 @@ bool AbstractSphereThread::shouldExit()
 	return false;
 }
 
+#ifdef THREAD_TRACK_CALLSTACK
+void AbstractSphereThread::printStackTrace()
+{
+	LONGLONG startTime = m_stackInfo[0].startTime;
+	long timedelta;
+
+	g_Log.EventDebug("__ # | _____ function _____________ | ticks passed from previous function start ______\n");
+	for( int i = 0; i < 0x1000; i++ )
+	{
+		if( m_stackInfo[i].startTime == 0 )
+			break;
+
+		timedelta = (long)(m_stackInfo[i].startTime - startTime);
+		g_Log.EventDebug(">>%2d | %28s | +%d %s\n",
+			i, m_stackInfo[i].functionName, timedelta, ( i == m_stackPos-1 ) ?
+				"<-- exception catch point (below is guessed and could be incorrect!)" :
+				"");
+		startTime = m_stackInfo[i].startTime;
+	}
+}
+#endif
+
 /*
  * DummySphereThread
 */
@@ -520,3 +546,27 @@ DummySphereThread *DummySphereThread::getInstance()
 void DummySphereThread::tick()
 {
 }
+
+#ifdef THREAD_TRACK_CALLSTACK
+/*
+ * StackDebugInformation
+*/
+StackDebugInformation::StackDebugInformation(const char *name)
+{
+	m_context = (AbstractSphereThread *)ThreadHolder::current();
+	if (m_context != NULL)
+		m_context->pushStackCall(name);
+}
+
+StackDebugInformation::~StackDebugInformation()
+{
+	if (m_context != NULL)
+		m_context->popStackCall();
+}
+
+void StackDebugInformation::printStackTrace()
+{
+	((AbstractSphereThread *)ThreadHolder::current())->printStackTrace();
+}
+
+#endif

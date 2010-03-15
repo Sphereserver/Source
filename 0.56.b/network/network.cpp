@@ -388,7 +388,7 @@ void NetworkIn::HistoryIP::setBlocked(bool isBlocked, int timeout)
  *
  ***************************************************************************/
 
-NetworkIn::NetworkIn(void) : AbstractThread("NetworkIn", IThread::Highest)
+NetworkIn::NetworkIn(void) : AbstractSphereThread("NetworkIn", IThread::Highest)
 {
 	m_buffer = NULL;
 	m_decryptBuffer = NULL;
@@ -1272,7 +1272,7 @@ void NetworkIn::periodic(void)
  *
  ***************************************************************************/
 
-NetworkOut::NetworkOut(void) : AbstractThread("NetworkOut", IThread::RealTime)
+NetworkOut::NetworkOut(void) : AbstractSphereThread("NetworkOut", IThread::RealTime)
 {
 	m_encryptBuffer = new BYTE[MAX_BUFFER];
 }

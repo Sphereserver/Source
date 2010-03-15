@@ -3,7 +3,7 @@
 PingServer g_PingServer;
 
 // run the thread in RealTime as we need pings to be responded to ASAP
-PingServer::PingServer() : AbstractThread("PingServer", IThread::RealTime)
+PingServer::PingServer() : AbstractSphereThread("PingServer", IThread::RealTime)
 {
 	m_socket.Close();
 	m_active = false;

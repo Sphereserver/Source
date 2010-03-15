@@ -9,6 +9,14 @@
 #include "../common/common.h"
 #include "../sphere/strings.h"
 
+
+// keep track of callstack on windows release builds
+#ifdef _WIN32
+#	ifndef _DEBUG
+#		define THREAD_TRACK_CALLSTACK
+#	endif
+#endif
+
 /**
  * Sphere threading system
  * Threads should be inherited from AbstractThread with overridden tick() method
@@ -134,6 +142,18 @@ struct TemporaryStringStorage;
 // Sphere thread. Have some sphere-specific
 class AbstractSphereThread : public AbstractThread
 {
+private:
+#ifdef THREAD_TRACK_CALLSTACK
+	struct STACK_INFO_REC
+	{
+		const char *functionName;
+		LONGLONG	startTime;
+	};
+
+	STACK_INFO_REC m_stackInfo[0x1000];
+	long m_stackPos;
+#endif
+
 public:
 	AbstractSphereThread(const char *name, Priority priority = IThread::Normal);
 
@@ -144,6 +164,23 @@ public:
 	// allocates a manageable String from the thread local storage
 	String allocateString();
 	void allocateString(TemporaryString &string);
+
+#ifdef THREAD_TRACK_CALLSTACK
+	inline void pushStackCall(const char *name)
+	{
+		m_stackInfo[m_stackPos].functionName = name;
+		m_stackInfo[m_stackPos].startTime = ::GetTickCount();
+		m_stackPos++;
+		m_stackInfo[m_stackPos].startTime = 0;
+	}
+
+	inline void popStackCall(void)
+	{
+		m_stackPos--;
+	}
+
+	void printStackTrace(void);
+#endif
 
 
 protected:
@@ -164,5 +201,23 @@ protected:
 	virtual void tick();
 };
 
+// used to hold debug information for stack
+#ifdef THREAD_TRACK_CALLSTACK
+class StackDebugInformation
+{
+private:
+	AbstractSphereThread* m_context;
+
+public:
+	StackDebugInformation(const char *name);
+	~StackDebugInformation();
+	
+	static void printStackTrace();
+};
+
+#define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+#else
+#define ADDTOCALLSTACK(_function_)
+#endif // THREAD_TRACK_CALLSTACK
 
 #endif

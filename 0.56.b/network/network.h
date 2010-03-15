@@ -192,7 +192,7 @@ public:
  *
  *
  ***************************************************************************/
-class NetworkIn : public AbstractThread
+class NetworkIn : public AbstractSphereThread
 {
 public:
 	struct HistoryIP
@@ -265,7 +265,7 @@ protected:
  *
  *
  ***************************************************************************/
-class NetworkOut : public AbstractThread
+class NetworkOut : public AbstractSphereThread
 {
 private:
 	BYTE* m_encryptBuffer; // buffer for encryption
