@@ -874,8 +874,11 @@ public:
 	CStringSortArray m_Obscene;	// Bad Names/Words etc.
 	CGObArray< TCHAR* > m_Fame;	// fame titles (fame.famous)
 	CGObArray< TCHAR* > m_Karma;	// karma titles (karma.wicked)
-	CGObArray< TCHAR* > m_NotoTitles;	// Noto titles.
 	CGObArray< TCHAR* > m_Runes;	// Words of power. (A-Z)
+
+	CGTypedArray< int, int > m_NotoKarmaLevels; // karma levels for noto titles
+	CGTypedArray< int, int > m_NotoFameLevels; // fame levels for noto titles
+	CGObArray< TCHAR* > m_NotoTitles;	// Noto titles.
 
 	CMultiDefArray m_MultiDefs;	// read from the MUL files. Cached here on demand.
 

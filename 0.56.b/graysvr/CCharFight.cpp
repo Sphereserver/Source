@@ -393,23 +393,17 @@ int CChar::Noto_GetLevel() const
 	// Paperdoll title for character
 	// This is so we can inform user of change in title !
 
-	static const int sm_KarmaLevel[] =
-	{ 9900, 5000, 1000, 500, 100, -100, -500, -1000, -5000, -9900 };
-
 	int i=0;
 	int iKarma = Stat_GetAdjusted(STAT_KARMA);
-	for ( ; i<COUNTOF( sm_KarmaLevel ) && iKarma < sm_KarmaLevel[i]; i++ )
+	for ( ; i < g_Cfg.m_NotoKarmaLevels.GetCount() && iKarma < g_Cfg.m_NotoKarmaLevels.GetAt(i); i++ )
 		;
-
-	static const WORD sm_FameLevel[] =
-	{ 500, 1000, 5000, 9900 };
 
 	int j =0;
 	int iFame = Stat_GetAdjusted(STAT_FAME);
-	for ( ; j<COUNTOF( sm_FameLevel ) && iFame > sm_FameLevel[j]; j++ )
+	for ( ; j < g_Cfg.m_NotoFameLevels.GetCount() && iFame > g_Cfg.m_NotoFameLevels.GetAt(j); j++ )
 		;
 
-	return( ( i * 5 ) + j );
+	return( ( i * (g_Cfg.m_NotoFameLevels.GetCount() + 1) ) + j );
 }
 
 LPCTSTR CChar::Noto_GetTitle() const

@@ -82,7 +82,10 @@ Neutral
 Kindly
 Goodhearted
 
-[NOTOTITLES] // NotoTitles[5*11]
+[NOTOTITLES] // NotoTitles
+9900,5000,1000,500,100,-100,-500,-1000,-5000,-9900    // karma levels
+500,1000,5000,9900                                    // fame levels
+
 // highest karma
 Trustworthy
 Estimable

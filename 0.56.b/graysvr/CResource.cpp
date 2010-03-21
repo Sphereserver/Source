@@ -2132,6 +2132,36 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_NOTOTITLES:
 		{
 			int i = 0;
+			int piNotoLevels[64], iQty;
+
+			if (pScript->ReadKey() == false)
+			{
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels.\n");
+				return true;
+			}
+
+			// read karma levels
+			iQty = Str_ParseCmds(pScript->GetKeyBuffer(), piNotoLevels, COUNTOF(piNotoLevels));
+			for (i = 0; i < iQty; i++)
+				m_NotoKarmaLevels.SetAtGrow(i, piNotoLevels[i]);
+
+			m_NotoKarmaLevels.SetCount(i);
+
+			if (pScript->ReadKey() == false)
+			{
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels.\n");
+				return true;
+			}
+
+			// read fame levels
+			iQty = Str_ParseCmds(pScript->GetKeyBuffer(), piNotoLevels, COUNTOF(piNotoLevels));
+			for (i = 0; i < iQty; i++)
+				m_NotoFameLevels.SetAtGrow(i, piNotoLevels[i]);
+
+			m_NotoFameLevels.SetCount(i);
+
+			// read noto titles
+			i = 0;
 			while ( pScript->ReadKey())
 			{
 				LPCSTR pName = pScript->GetKeyBuffer();
@@ -2142,6 +2172,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				m_NotoTitles.SetAtGrow( i, pNew );
 				++i;
 			}
+
+			if (m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)))
+				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %d titles in NOTOTITLES section but found %d.\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 		}
 		return( true );
 	case RES_OBSCENE:
@@ -3328,6 +3361,8 @@ void CResource::Unload( bool fResync )
 	m_Fame.RemoveAll();
 	m_Karma.RemoveAll();
 	m_NotoTitles.RemoveAll();
+	m_NotoKarmaLevels.RemoveAll();
+	m_NotoFameLevels.RemoveAll();
 	m_Runes.RemoveAll();	// Words of power. (A-Z)
 	// m_MultiDefs
 	m_SkillNameDefs.RemoveAll();	// Defined Skills

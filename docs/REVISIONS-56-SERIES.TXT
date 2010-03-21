@@ -4703,3 +4703,17 @@ ALPHA additions:
 
 20-02-2010, MrSugarCube
 - Modified #1720: SERV.EXPORT now exports in a square rather than a circle.
+
+21-02-2010, MrSugarCube
+- Modified: Network thread (used by EF_NetworkOutThread) will now lower its own priority
+  when there is no data to send (and raise again when needed)
+
+15-03-2010, MrSugarCube
+- Fixed: UseAsyncNetwork not working as it should on windows build.
+
+21-03-2010, MrSugarCube
+- Modified: First two lines of NOTOTITLES section are used to define the levels of karma and
+  fame needed for each title.
+
+21-03-2010, MrSugarCube (Script pack)
+- Updated: spheretables.scp (Added default karma and fame levels to NOTOTITLES section)
