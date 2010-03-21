@@ -521,8 +521,8 @@ void CChar::Noto_Fame( int iFameChange )
 	iFame += iFameChange;
 	if ( iFame < 0 )
 		iFame = 0;
-	if ( iFame > 10000)
-		iFame = 10000; // Maximum reached
+	if ( iFame > g_Cfg.m_iMaxFame)
+		iFame = g_Cfg.m_iMaxFame; // Maximum reached
 
 	Noto_ChangeDeltaMsg( iFame - Stat_GetAdjusted(STAT_FAME), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_FAME ) );
 	Stat_SetBase(STAT_FAME,iFame);
@@ -533,11 +533,13 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 	ADDTOCALLSTACK("CChar::Noto_Karma");
 	// iBottom is a variable where you control at what point
 	// the loss for this action stop (as in stealing shouldnt
-	// take you to dread ). iBottom def. to -10000 if you leave
+	// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
 	// it out.
 
 	if ( ! iKarmaChange )
 		return;
+	if (iBottom = INT_MIN)
+		iBottom = g_Cfg.m_iMinKarma;
 
 	int	iKarma = Stat_GetAdjusted(STAT_KARMA);
 
@@ -572,8 +574,8 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 	}
 	else
 	{
-		if ( iKarma > 10000 )
-			iKarma = 10000;
+		if ( iKarma > g_Cfg.m_iMaxKarma )
+			iKarma = g_Cfg.m_iMaxKarma;
 	}
 
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );

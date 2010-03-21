@@ -449,8 +449,8 @@ enum STAT_TYPE	// Character stats
 	STAT_FOOD = 3,	// just used as a regen rate. (as karma does not decay)
 
 	// Notoriety.
-	STAT_KARMA = 4,		// -10000 to 10000 - also used as the food consumption main timer.
-	STAT_FAME,
+	STAT_KARMA = 4,		// g_Cfg.m_iMinKarma to g_Cfg.m_iMaxKarma - also used as the food consumption main timer.
+	STAT_FAME,			// 0 to g_Cfg.m_iMaxFame
 	STAT_QTY,
 };
 
@@ -717,8 +717,10 @@ public:
 	bool m_fLootingIsACrime;	// Looting a blue corpse is bad.
 	int  m_iCriminalTimer;		// How many minutes are criminals flagged for?
 	int	 m_iPlayerKarmaNeutral;	// How much bad karma makes a player neutral?
-	int	 m_iPlayerKarmaEvil;
-
+	int	 m_iPlayerKarmaEvil;	// How much bad karma makes a player evil?
+	int m_iMinKarma;			// Minimum karma level
+	int m_iMaxKarma;			// Maximum karma level
+	int m_iMaxFame;				// Maximum fame level
 
 	// other
 	bool	m_fNoResRobe;

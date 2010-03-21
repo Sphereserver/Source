@@ -191,15 +191,15 @@ short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 	{
 		if ( val < 0 )
 			val = 0;
-		else if ( val > 10000 )
-			val = 10000;
+		else if ( val > g_Cfg.m_iMaxFame )
+			val = g_Cfg.m_iMaxFame;
 	}
 	else if ( i == STAT_KARMA )
 	{
-		if ( val < -10000 )
-			val = -10000;
-		else if ( val > 10000 )
-			val = 10000;
+		if ( val < g_Cfg.m_iMinKarma )
+			val = g_Cfg.m_iMinKarma;
+		else if ( val > g_Cfg.m_iMaxKarma )
+			val = g_Cfg.m_iMaxKarma;
 	}
 	return val;
 
@@ -259,8 +259,8 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 					pCharDef->m_Int = iVal;
 			}
 			break;
-		case STAT_KARMA:		// -10000 to 10000
-			iVal = maximum(-10000, minimum(10000, iVal));
+		case STAT_KARMA:		// m_iMinKarma to m_iMaxKarma
+			iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
 			break;
 		case STAT_FAME:
 			if ( iVal < 0 )

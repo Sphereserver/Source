@@ -4712,6 +4712,7 @@ ALPHA additions:
 - Fixed: UseAsyncNetwork not working as it should on windows build.
 
 21-03-2010, MrSugarCube
+- Added: MINKARMA, MAXKARMA and MAXFAME settings in sphere.ini.
 - Modified: First two lines of NOTOTITLES section are used to define the levels of karma and
   fame needed for each title.
 

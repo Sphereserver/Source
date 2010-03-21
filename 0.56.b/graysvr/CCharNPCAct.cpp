@@ -696,7 +696,7 @@ bool CChar::NPC_Act_Begging( CChar * pChar )
 		Speak( g_Cfg.GetDefaultMsg(sm_szSpeakBeggar[ Calc_GetRandVal( COUNTOF( sm_szSpeakBeggar )) ]) );
 	}
 
-	if ( ! Calc_GetRandVal( ( 10100 - pChar->Stat_GetAdjusted(STAT_FAME)) / 50 ))
+	if ( ! Calc_GetRandVal( ( IMULDIV(g_Cfg.m_iMaxFame, 101, 100) - pChar->Stat_GetAdjusted(STAT_FAME)) / 50 ))
 	{
 		UpdateAnimate( ANIM_BOW );
 		return( true );

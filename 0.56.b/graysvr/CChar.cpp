@@ -2126,7 +2126,14 @@ do_default:
 				// if ( g_Serv.IsLoading() || (m_Stat[i].m_base == 0) )
 				//	m_Stat[i].m_base	= s.GetArgVal();
 				// else
-				Stat_SetBase( (STAT_TYPE) i, s.GetArgVal() - Stat_GetMod( (STAT_TYPE) i ) );
+
+				int iVal = s.GetArgVal() - Stat_GetMod((STAT_TYPE) i);
+				if (iVal > SHRT_MAX)
+					iVal = SHRT_MAX;
+				else if (iVal < SHRT_MIN)
+					iVal = SHRT_MIN;
+
+				Stat_SetBase( (STAT_TYPE) i, iVal );
 						// - Stat_GetAdjusted((STAT_TYPE)i)
 
 				return true;

@@ -97,6 +97,9 @@ CResource::CResource()
 	m_iMaxSectorComplexity	= 1024;
 	m_iPlayerKarmaNeutral	= -2000; // How much bad karma makes a player neutral?
 	m_iPlayerKarmaEvil	= -8000;
+	m_iMinKarma = -10000;
+	m_iMaxKarma = 10000;
+	m_iMaxFame = 10000;
 	m_iGuardLingerTime	= 1*60*TICK_PER_SEC; // "GUARDLINGER",
 	m_iCriminalTimer	= 3*60*TICK_PER_SEC;
 	m_iHitpointPercentOnRez	= 10;
@@ -396,8 +399,8 @@ enum RC_TYPE
 	RC_GUILDS,
 	RC_HEARALL,
 	RC_HELPINGCRIMINALSISACRIME,	// m_fHelpingCriminalsIsACrime
-	RC_HITPOINTPERCENTONREZ, // m_iHitpointPercentOnRez
-	RC_HITSHUNGERLOSS,		// m_iHitsHungerLoss
+	RC_HITPOINTPERCENTONREZ,		// m_iHitpointPercentOnRez
+	RC_HITSHUNGERLOSS,				// m_iHitsHungerLoss
 	RC_HITSUPDATERATE,
 	RC_INITHIDDENSKILLS,	// m_fInitHiddenSkills
 	RC_LEVELMODE,			// m_iLevelMode
@@ -413,27 +416,30 @@ enum RC_TYPE
 	RC_MAGICFLAGS,
 	RC_MAGICUNLOCKDOOR,		// m_iMagicUnlockDoor
 	RC_MAPCACHETIME,
-	RC_MAXACCOUNTLOGINTRIES, // m_iMaxAccountLoginTries
+	RC_MAXACCOUNTLOGINTRIES,	// m_iMaxAccountLoginTries
 	RC_MAXBASESKILL,			// m_iMaxBaseSkill
-	RC_MAXCHARSPERACCOUNT,	// m_iMaxCharsPerAccount
+	RC_MAXCHARSPERACCOUNT,		// m_iMaxCharsPerAccount
 	RC_MAXCOMPLEXITY,			// m_iMaxCharComplexity
+	RC_MAXFAME,					// m_iMaxFame
 	RC_MAXITEMCOMPLEXITY,		// m_iMaxItemComplexity
+	RC_MAXKARMA,				// m_iMaxKarma
 	RC_MAXLOOPTIMES,			// m_iMaxLoopTimes
-	RC_MAXPACKETSPERTICK,	// m_iNetMaxPacketsPerTick
+	RC_MAXPACKETSPERTICK,		// m_iNetMaxPacketsPerTick
 	RC_MAXPINGS,				// m_iNetMaxPings
 	RC_MAXQUEUESIZE,			// m_iNetMaxQueueSize
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
-	RC_MAXSHIPPLANKTELEPORT, // m_iMaxShipPlankTeleport
-	RC_MAXSIZEPERTICK,		// m_iNetMaxLengthPerTick
+	RC_MAXSHIPPLANKTELEPORT,	// m_iMaxShipPlankTeleport
+	RC_MAXSIZEPERTICK,			// m_iNetMaxLengthPerTick
 	RC_MAXSKILL,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
 	RC_MINCHARDELETETIME,
-	RC_MONSTERFEAR,			// m_fMonsterFear
+	RC_MINKARMA,				// m_iMinKarma
+	RC_MONSTERFEAR,				// m_fMonsterFear
 	RC_MONSTERFIGHT,
-	RC_MOUNTHEIGHT,			// m_iMountHeight
+	RC_MOUNTHEIGHT,				// m_iMountHeight
 	RC_MOVERATE,				//	m_iMoveRate
 	RC_MULFILES,
-	RC_MURDERDECAYTIME,		// m_iMurderDecayTime;
+	RC_MURDERDECAYTIME,			// m_iMurderDecayTime;
 	RC_MURDERMINCOUNT,			//	m_iMurderMinCount
 	RC_MYSQL,					//	m_bMySql
 	RC_MYSQLDB,					//	m_sMySqlDatabase
@@ -445,37 +451,37 @@ enum RC_TYPE
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
-	RC_NPCTRAINMAX,			// m_iTrainSkillMax
+	RC_NPCTRAINMAX,				// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
 #ifdef _ALPHASPHERE
 	RC_NPCTRAINSKILLCOST,		// m_iTrainSkillCost
 #endif
 	RC_NTSERVICE,				// m_fUseNTService
-	RC_OPTIONFLAGS,			// m_iOptionFlags
+	RC_OPTIONFLAGS,				// m_iOptionFlags
 	RC_OVERSKILLMULTIPLY,		//	m_iOverSkillMultiply
 	RC_PAYFROMPACKONLY,			//	m_fPayFromPackOnly
-	RC_PETSINHERITNOTORIETY,		// m_iPetsInheritNotoriety
-	RC_PLAYEREVIL,		// m_iPlayerKarmaEvil
-	RC_PLAYERNEUTRAL,		// m_iPlayerKarmaNeutral
+	RC_PETSINHERITNOTORIETY,	// m_iPetsInheritNotoriety
+	RC_PLAYEREVIL,				// m_iPlayerKarmaEvil
+	RC_PLAYERNEUTRAL,			// m_iPlayerKarmaNeutral
 	RC_PROFILE,
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
 	RC_REAGENTSREQUIRED,
 	RC_RTICKS,
 	RC_RTIME,
-	RC_RUNNINGPENALTY,		// m_iStamRunningPenalty
+	RC_RUNNINGPENALTY,			// m_iStamRunningPenalty
 	RC_SAVEBACKGROUND,			// m_iSaveBackgroundTime
 	RC_SAVEPERIOD,
 	RC_SCPFILES,
 	RC_SECTORSLEEP,				// m_iSectorSleepMask
 	RC_SECURE,
-	RC_SKILLPRACTICEMAX,	// m_iSkillPracticeMax
+	RC_SKILLPRACTICEMAX,		// m_iSkillPracticeMax
 	RC_SNOOPCRIMINAL,
 	RC_SPEECHOTHER,
 	RC_SPEECHPET,
 	RC_SPEECHSELF,
 	RC_SPEEDSCALEFACTOR,
 	RC_SPELLTIMEOUT,
-	RC_STAMINALOSSATWEIGHT,	// m_iStaminaLossAtWeight
+	RC_STAMINALOSSATWEIGHT,		// m_iStaminaLossAtWeight
 	RC_STATSFLAGS,				//	m_iStatFlag
 	RC_STRIPPATH,				// for TNG
 	RC_SUPPRESSCAPITALS,
@@ -606,7 +612,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXBASESKILL",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxBaseSkill),		0 }},
 	{ "MAXCHARSPERACCOUNT",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharsPerAccount),	0 }},
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity),	0 }},
+	{ "MAXFAME",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxFame),				0 }},
 	{ "MAXITEMCOMPLEXITY",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxItemComplexity),	0 }},
+	{ "MAXKARMA",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxKarma),			0 }},
 	{ "MAXLOOPTIMES",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxLoopTimes),		0 }},
 	{ "MAXPACKETSPERTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPacketsPerTick),0 }},
 	{ "MAXPINGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPings),			0 }},
@@ -617,6 +625,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill),			0 }},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords),		0 }},
 	{ "MINCHARDELETETIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMinCharDeleteTime),	0 }},
+	{ "MINKARMA",				{ ELEM_INT,		OFFSETOF(CResource,m_iMinKarma),			0 }},
 	{ "MONSTERFEAR",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFear),			0 }},
 	{ "MONSTERFIGHT",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFight),		0 }},
 	{ "MOUNTHEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMountHeight),			0 }},
@@ -864,8 +873,23 @@ bool CResource::r_LoadVal( CScript &s )
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
 				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
 			break;
+		case RC_MAXFAME:
+			m_iMaxFame = s.GetArgVal();
+			if (m_iMaxFame < 0)
+				m_iMaxFame = 0;
+			break;
+		case RC_MAXKARMA:
+			m_iMaxKarma = s.GetArgVal();
+			if (m_iMaxKarma < m_iMinKarma)
+				m_iMinKarma = m_iMaxKarma - 1;
+			break;
 		case RC_MINCHARDELETETIME:
 			m_iMinCharDeleteTime = s.GetArgVal()*60*TICK_PER_SEC;
+			break;
+		case RC_MINKARMA:
+			m_iMinKarma = s.GetArgVal();
+			if (m_iMinKarma > m_iMaxKarma)
+				m_iMaxKarma = m_iMinKarma + 1;
 			break;
 		case RC_MURDERDECAYTIME:
 			m_iMurderDecayTime = s.GetArgVal() * TICK_PER_SEC;
@@ -1217,8 +1241,17 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_MAPCACHETIME:
 			sVal.FormatVal( m_iMapCacheTime / TICK_PER_SEC );
 			break;
+		case RC_MAXFAME:
+			sVal.FormatVal( m_iMaxFame );
+			break;
+		case RC_MAXKARMA:
+			sVal.FormatVal( m_iMaxKarma );
+			break;
 		case RC_MINCHARDELETETIME:
 			sVal.FormatVal( m_iMinCharDeleteTime /( 60*TICK_PER_SEC ));
+			break;
+		case RC_MINKARMA:
+			sVal.FormatVal( m_iMinKarma );
 			break;
 		case RC_MURDERDECAYTIME:
 			sVal.FormatVal( m_iMurderDecayTime / (TICK_PER_SEC ));
