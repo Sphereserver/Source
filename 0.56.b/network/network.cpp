@@ -97,27 +97,28 @@ void NetState::clear(void)
 	m_isWriteClosed = true;
 	m_needsFlush = false;
 
-	if (m_client != NULL)
+	CClient* client = m_client;
+	if (client != NULL)
 	{
-		CClient* client = m_client;
 		m_client = NULL;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
 		g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client disconnected [Total:%d] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
 
+#ifndef _WIN32
+		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
+			g_NetworkEvent.unregisterClient(client);
+#endif
+
 		//	record the client reference to the garbage collection to be deleted on it's time
 		g_World.m_ObjDelete.InsertHead(client);
 	}
-
-	if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
-	{
-#ifndef _WIN32
-		g_NetworkEvent.unregisterClient(client);
-#else
+	
+#ifdef _WIN32
+	if (m_socket.IsOpen() && isAsyncMode())
 		m_socket.ClearAsync();
 #endif
-	}
 
 
 	m_socket.Close();
