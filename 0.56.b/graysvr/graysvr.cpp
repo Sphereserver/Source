@@ -625,7 +625,7 @@ void Sphere_ExitServer()
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
 #ifndef _WIN32
-	if ( g_Cfg.m_fUseAsyncNetwork )
+	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.waitForClose();
 #endif
 		
@@ -659,12 +659,13 @@ int Sphere_OnTick()
 	g_Serv.OnTick();
 
 	// push outgoing data
-	g_Serv.m_Profile.Start( PROFILE_NETWORK_TX );
-
 	if (g_NetworkOut.isActive() == false)
+	{
+		g_Serv.m_Profile.Start( PROFILE_NETWORK_TX );
 		g_NetworkOut.tick();
+		g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
+	}
 
-	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_CATCH;
 
@@ -1053,7 +1054,7 @@ int _cdecl main( int argc, char * argv[] )
 			g_PingServer.start();
 		
 #ifndef _WIN32
-		if ( g_Cfg.m_fUseAsyncNetwork )
+		if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 			g_NetworkEvent.start();
 #endif
 

@@ -91,7 +91,7 @@ NetState::~NetState(void)
 
 void NetState::clear(void)
 {
-	DEBUGNETWORK(("Clearing client state '%x'.\n", id()));
+	DEBUGNETWORK(("%x:Clearing client state.\n", id()));
 
 	m_isReadClosed = true;
 	m_isWriteClosed = true;
@@ -106,18 +106,19 @@ void NetState::clear(void)
 		g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client disconnected [Total:%d] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
 
-		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork)
-		{
-#ifndef _WIN32
-			g_NetworkEvent.unregisterClient(client);
-#else
-			m_socket.ClearAsync();
-#endif
-		}
-
 		//	record the client reference to the garbage collection to be deleted on it's time
 		g_World.m_ObjDelete.InsertHead(client);
 	}
+
+	if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
+	{
+#ifndef _WIN32
+		g_NetworkEvent.unregisterClient(client);
+#else
+		m_socket.ClearAsync();
+#endif
+	}
+
 
 	m_socket.Close();
 	m_client = NULL;
@@ -154,7 +155,7 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 {
 	clear();
 
-	DEBUGNETWORK(("initialising client\n"));
+	DEBUGNETWORK(("%x:initialising client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	m_socket.SetNonBlocking();
@@ -168,18 +169,18 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	CClient* client = new CClient(this);
 	m_client = client;
 
-	DEBUGNETWORK(("determining async mode\n"));
+	DEBUGNETWORK(("%x:determining async mode\n", id()));
 	setAsyncMode();
 	
 #ifndef _WIN32
-	if (g_Cfg.m_fUseAsyncNetwork)
+	if (g_Cfg.m_fUseAsyncNetwork != 0)
 	{
-		DEBUGNETWORK(("registering async client"));
+		DEBUGNETWORK(("%x:registering async client\n", id()));
 		g_NetworkEvent.registerClient(client, LinuxEv::Write);
 	}
 #endif
 	
-	DEBUGNETWORK(("Opening network state\n"));
+	DEBUGNETWORK(("%x:Opening network state\n", id()));
 	m_isWriteClosed = false;
 	m_isReadClosed = false;
 }
@@ -194,13 +195,13 @@ bool NetState::isValid(const CClient* client) const
 
 void NetState::markClosed(void)
 {
-	DEBUGNETWORK(("Client '%x' being closed by read-thread\n", id()));
+	DEBUGNETWORK(("%x:Client being closed by read-thread\n", id()));
 	m_isReadClosed = true;
 }
 
 void NetState::markWriteClosed(void)
 {
-	DEBUGNETWORK(("Client '%x' being closed by write-thread\n", id()));
+	DEBUGNETWORK(("%x:Client being closed by write-thread\n", id()));
 	m_isWriteClosed = true;
 }
 
@@ -936,7 +937,7 @@ int NetworkIn::checkForData(fd_set* storage)
 	FD_ZERO(storage);
 
 #ifndef _WIN32
-	if ( !g_Cfg.m_fUseAsyncNetwork )
+	if (g_Cfg.m_fUseAsyncNetwork == 0)
 #endif
 	{
 		EXC_SET("main socket");
@@ -960,7 +961,7 @@ int NetworkIn::checkForData(fd_set* storage)
 		{
 			if (state->isClosed() == false)
 			{
-				DEBUGNETWORK(("Flushing data for client '%x'.\n", state->id()));
+				DEBUGNETWORK(("%x:Flushing data for client.\n", state->id()));
 
 				EXC_SET("flush data");
 				g_NetworkOut.flush(state->getClient());
@@ -977,7 +978,7 @@ int NetworkIn::checkForData(fd_set* storage)
 			if (state->isClosed() && state->isSendingAsync() == false)
 			{
 				EXC_SET("clear socket");
-				DEBUGNETWORK(("Client '%x' is being cleared since marked to close.\n", state->id()));
+				DEBUGNETWORK(("%x:Client is being cleared since marked to close.\n", state->id()));
 				state->clear();
 			}
 
@@ -1064,7 +1065,7 @@ void NetworkIn::acceptConnection(void)
 			}
 			else
 			{
-				DEBUGNETWORK(("Allocated slot '%x' for client (%d).\n", slot, m_states[slot]->id()));
+				DEBUGNETWORK(("%x:Allocated slot for client (%ld).\n", slot, (long)h));
 
 				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
@@ -1179,7 +1180,7 @@ void NetworkIn::periodic(void)
 			{
 				if (++connecting > connectingMax)
 				{
-					DEBUGNETWORK(("Closing client '%x' since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax));
+					DEBUGNETWORK(("%x:Closing client since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax));
 
 					client->m_net->markClosed();
 				}
