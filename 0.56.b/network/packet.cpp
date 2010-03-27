@@ -1096,7 +1096,7 @@ void PacketSend::push(CClient *client)
 	}
 	else
 	{
-		DEBUGNETWORK(("Packet deleted due to no target set.\n"));
+		//DEBUGNETWORK(("Packet deleted due to no target set.\n"));
 		delete this;
 	}
 }

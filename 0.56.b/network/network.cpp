@@ -670,6 +670,8 @@ void NetworkIn::tick(void)
 					int iSeedLen(0);
 					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
 					{
+						DEBUGNETWORK(("%x: Receiving new client login handshake.\n", client->id()));
+
 						CEvent* pEvent = (CEvent*)buffer;
 
 						if (client->m_newseed)
@@ -695,13 +697,17 @@ void NetworkIn::tick(void)
 					else
 					{
 						// assume it's a normal client log in
+						DEBUGNETWORK(("%x: Receiving old client login handshake.\n", client->id()));
+
 						seed = ( buffer[0] << 24 ) | ( buffer[1] << 16 ) | ( buffer[2] << 8 ) | buffer[3];
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
+					DEBUGNETWORK(("%x:Client connected with a seed of 0x%x (new handshake=%d, seed length=%d, received=%d, version=0x%x).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+
 					if ( !seed )
 					{
-						g_Log.EventError("Invalid client '%x' detected, disconnecting.", client->id());
+						g_Log.EventError("Invalid client '%x' detected, disconnecting.\n", client->id());
 						client->markClosed();
 						continue;
 					}
