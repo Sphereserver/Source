@@ -1646,7 +1646,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	if (packet != NULL)
 	{
 		if (sendPacketNow(client, packet) == false)
-			state->markClosed();
+			state->markWriteClosed();
 
 		return 1;
 	}
