@@ -1075,6 +1075,8 @@ void NetworkIn::acceptConnection(void)
 				DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already.\n"));
 
 				CLOSESOCKET(h);
+
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAX reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 			}
 			else
 			{
@@ -1793,23 +1795,31 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 #ifdef _WIN32
 			if (state->isAsyncMode() && errCode == WSA_IO_PENDING)
 			{
+				EXC_SET("send pending");
+
 				// safe to ignore this
 				g_Serv.m_Profile.Count(PROFILE_DATA_TX, sendBufferLength);
 			}
 			else if (state->isAsyncMode() == false && errCode == WSAEWOULDBLOCK)
 			{
+				EXC_SET("send failed - requeue packet");
+
 				// re-queue the packet and try again later
 				scheduleOnce(packet);
 				return true;
 			}
 			else if (errCode == WSAECONNRESET || errCode == WSAECONNABORTED)
 			{
+				EXC_SET("connection lost - delete packet");
+
 				delete packet;
 				return false;
 			}
 			else
 #endif
 			{
+				EXC_SET("connection lost - delete packet");
+
 				if (state->isClosing() == false)
 					g_Log.EventWarn("%x:TX Error %d\n", state->id(), errCode);
 
@@ -1821,6 +1831,8 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		}
 		else
 		{
+			EXC_SET("send successful");
+
 			g_Serv.m_Profile.Count(PROFILE_DATA_TX, ret);
 		}
 
