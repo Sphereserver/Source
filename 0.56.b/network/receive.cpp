@@ -16,6 +16,8 @@ PacketUnknown::PacketUnknown(long size) : Packet(size)
 
 bool PacketUnknown::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketUnknown::onReceive");
+
 	return true;
 }
 
@@ -33,6 +35,8 @@ PacketCreate::PacketCreate(long size) : Packet(size)
 
 bool PacketCreate::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCreate::onReceive");
+
 	DWORD pattern1 = readInt32();
 	DWORD pattern2 = readInt32();
 	BYTE kuoc = readByte();
@@ -123,6 +127,8 @@ bool PacketCreate::onReceive(NetState* net)
 
 bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags)
 {
+	ADDTOCALLSTACK("PacketCreate::doCreate");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CAccountRef account = client->GetAccount();
@@ -197,6 +203,8 @@ PacketMovementReq::PacketMovementReq(long size) : Packet(size)
 
 bool PacketMovementReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketMovementReq::onReceive");
+
 	BYTE direction = readByte();
 	int sequence = readByte();
 	DWORD crypt = readInt32(); // fast walk key
@@ -207,6 +215,8 @@ bool PacketMovementReq::onReceive(NetState* net)
 
 void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, DWORD crypt)
 {
+	ADDTOCALLSTACK("PacketMovementReq::doMovement");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -252,6 +262,8 @@ PacketSpeakReq::PacketSpeakReq() : Packet(-1)
 
 bool PacketSpeakReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSpeakReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	if (client->GetChar() == NULL)
@@ -284,6 +296,8 @@ PacketAttackReq::PacketAttackReq() : Packet(5)
 
 bool PacketAttackReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketAttackReq::onReceive");
+
 	CGrayUID target(readInt32());
 
 	CClient* client = net->getClient();
@@ -306,6 +320,8 @@ PacketDoubleClick::PacketDoubleClick() : Packet(5)
 
 bool PacketDoubleClick::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketDoubleClick::onReceive");
+
 	DWORD serial = readInt32();
 
 	CGrayUID target(serial &~ UID_F_RESOURCE);
@@ -331,6 +347,8 @@ PacketItemPickupReq::PacketItemPickupReq() : Packet(7)
 
 bool PacketItemPickupReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketItemPickupReq::onReceive");
+
 	CGrayUID serial(readInt32());
 	int amount = readInt16();
 	
@@ -354,6 +372,8 @@ PacketItemDropReq::PacketItemDropReq() : Packet(14)
 
 long PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 {
+	ADDTOCALLSTACK("PacketItemDropReq::getExpectedLength");
+
 	// different size depending on client
 	if (net != NULL && (net->isClientVersion(0x0600018) || net->isClientKR()))
 		return 15;
@@ -363,6 +383,8 @@ long PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 
 bool PacketItemDropReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketItemDropReq::onReceive");
+
 	CGrayUID serial(readInt32());
 	WORD x = readInt16();
 	WORD y = readInt16();
@@ -400,6 +422,8 @@ PacketSingleClick::PacketSingleClick() : Packet(5)
 
 bool PacketSingleClick::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSingleClick::onReceive");
+
 	CGrayUID serial(readInt32());
 
 	CClient* client = net->getClient();
@@ -422,6 +446,8 @@ PacketTextCommand::PacketTextCommand() : Packet(-1)
 
 bool PacketTextCommand::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketTextCommand::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	
@@ -451,6 +477,8 @@ PacketItemEquipReq::PacketItemEquipReq() : Packet(10)
 
 bool PacketItemEquipReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketItemEquipReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -498,6 +526,8 @@ PacketResynchronize::PacketResynchronize() : Packet(3)
 
 bool PacketResynchronize::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketResynchronize::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -520,6 +550,8 @@ PacketDeathStatus::PacketDeathStatus() : Packet(2)
 
 long PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
 {
+	ADDTOCALLSTACK("PacketDeathStatus::getExpectedLength");
+
 	// different size depending on client
 	int pos = packet->getPosition();
 	packet->seek(1);
@@ -534,6 +566,8 @@ long PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
 
 bool PacketDeathStatus::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketDeathStatus::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -574,6 +608,8 @@ PacketCharStatusReq::PacketCharStatusReq() : Packet(10)
 
 bool PacketCharStatusReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCharStatusReq::onReceive");
+
 	skip(4); // 0xedededed
 	BYTE requestType = readByte();
 	CGrayUID targetSerial(readInt32());
@@ -606,6 +642,8 @@ PacketSkillLockChange::PacketSkillLockChange() : Packet(-1)
 
 bool PacketSkillLockChange::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSkillLockChange::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -645,6 +683,8 @@ PacketVendorBuyReq::PacketVendorBuyReq() : Packet(-1)
 
 bool PacketVendorBuyReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketVendorBuyReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* buyer = client->GetChar();
@@ -752,6 +792,8 @@ PacketMapEdit::PacketMapEdit() : Packet(11)
 
 bool PacketMapEdit::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketMapEdit::onReceive");
+
 	CGrayUID mapSerial(readInt32());
 	MAPCMD_TYPE action = (MAPCMD_TYPE)readByte();
 	BYTE pin = readByte();
@@ -849,6 +891,8 @@ PacketCharPlay::PacketCharPlay() : Packet(73)
 
 bool PacketCharPlay::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCharPlay::onReceive");
+
 	skip(4); // 0xedededed
 	skip(MAX_NAME_SIZE); // char name
 	skip(MAX_NAME_SIZE); // char pass
@@ -878,6 +922,8 @@ PacketBookPageEdit::PacketBookPageEdit() : Packet(-1)
 
 bool PacketBookPageEdit::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketBookPageEdit::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -962,6 +1008,8 @@ PacketTarget::PacketTarget() : Packet(19)
 
 bool PacketTarget::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketTarget::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -996,6 +1044,8 @@ PacketSecureTradeReq::PacketSecureTradeReq() : Packet(-1)
 
 bool PacketSecureTradeReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSecureTradeReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -1070,6 +1120,8 @@ PacketBulletinBoardReq::PacketBulletinBoardReq() : Packet(-1)
 
 bool PacketBulletinBoardReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketBulletinBoardReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -1204,6 +1256,8 @@ PacketWarModeReq::PacketWarModeReq() : Packet(5)
 
 bool PacketWarModeReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketWarModeReq::onReceive");
+
 	bool war = readBool();
 	skip(3); // unknown
 	net->getClient()->Event_CombatMode(war);
@@ -1224,6 +1278,8 @@ PacketPingReq::PacketPingReq() : Packet(2)
 
 bool PacketPingReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPingReq::onReceive");
+
 	BYTE value = readByte();
 	PacketPingAck* packet = new PacketPingAck(net->getClient(), value);
 	return true;
@@ -1243,6 +1299,8 @@ PacketCharRename::PacketCharRename() : Packet(35)
 
 bool PacketCharRename::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCharRename::onReceive");
+
 	CGrayUID serial(readInt32());
 	TCHAR* name = Str_GetTemp();
 	readStringASCII(name, MAX_NAME_SIZE);
@@ -1265,6 +1323,8 @@ PacketMenuChoice::PacketMenuChoice() : Packet(13)
 
 bool PacketMenuChoice::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketMenuChoice::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -1340,6 +1400,8 @@ PacketServersReq::PacketServersReq() : Packet(62)
 
 bool PacketServersReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketServersReq::onReceive");
+
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
 	readStringASCII(acctname, COUNTOF(acctname));
 	TCHAR acctpass[MAX_NAME_SIZE];
@@ -1367,6 +1429,8 @@ PacketCharDelete::PacketCharDelete() : Packet(39)
 
 bool PacketCharDelete::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCharDelete::onReceive");
+
 	skip(MAX_NAME_SIZE); // charpass
 	int slot = readInt32();
 	skip(4); // client ip
@@ -1393,6 +1457,8 @@ PacketCreateNew::PacketCreateNew(void) : PacketCreate(-1)
 
 bool PacketCreateNew::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCreateNew::onReceive");
+
 	skip(2);
 	DWORD pattern1 = readInt32();
 	DWORD pattern2 = readInt32();
@@ -1530,6 +1596,8 @@ PacketCharListReq::PacketCharListReq() : Packet(65)
 
 bool PacketCharListReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCharListReq::onReceive");
+
 	skip(4);
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
 	readStringASCII(acctname, COUNTOF(acctname));
@@ -1554,6 +1622,8 @@ PacketBookHeaderEdit::PacketBookHeaderEdit() : Packet(99)
 
 bool PacketBookHeaderEdit::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketBookHeaderEdit::onReceive");
+
 	CGrayUID bookSerial(readInt32());
 	skip(1); // writable
 	skip(1); // unknown
@@ -1582,6 +1652,8 @@ PacketDyeObject::PacketDyeObject() : Packet(9)
 
 bool PacketDyeObject::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketDyeObject::onReceive");
+
 	CGrayUID serial(readInt32());
 	skip(2); // item id
 	HUE_TYPE hue = (HUE_TYPE)readInt16();
@@ -1604,6 +1676,8 @@ PacketAllNamesReq::PacketAllNamesReq() : Packet(-1)
 
 bool PacketAllNamesReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketAllNamesReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -1641,6 +1715,8 @@ PacketPromptResponse::PacketPromptResponse() : Packet(-1)
 
 bool PacketPromptResponse::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPromptResponse::onReceive");
+
 	WORD length = readInt16();
 	DWORD context1 = readInt32();
 	DWORD context2 = readInt32();
@@ -1667,6 +1743,8 @@ PacketHelpPageReq::PacketHelpPageReq() : Packet(258)
 
 bool PacketHelpPageReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHelpPageReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -1692,6 +1770,8 @@ PacketVendorSellReq::PacketVendorSellReq() : Packet(-1)
 
 bool PacketVendorSellReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketVendorSellReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* seller = client->GetChar();
@@ -1773,6 +1853,8 @@ PacketServerSelect::PacketServerSelect() : Packet(3)
 
 bool PacketServerSelect::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketServerSelect::onReceive");
+
 	int server = readInt16();
 
 	net->getClient()->Login_Relay(server);
@@ -1793,6 +1875,8 @@ PacketSystemInfo::PacketSystemInfo() : Packet(149)
 
 bool PacketSystemInfo::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSystemInfo::onReceive");
+
 	skip(148);
 	return true;
 }
@@ -1811,6 +1895,8 @@ PacketTipReq::PacketTipReq() : Packet(4)
 
 bool PacketTipReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketTipReq::onReceive");
+
 	WORD index = readInt16();	// current tip shown to the client
 	bool forward = readBool();	// 0=previous, 1=next
 
@@ -1839,6 +1925,8 @@ PacketGumpValueInputResponse::PacketGumpValueInputResponse() : Packet(-1)
 
 bool PacketGumpValueInputResponse::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketGumpValueInputResponse::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -1917,6 +2005,8 @@ PacketSpeakReqUNICODE::PacketSpeakReqUNICODE() : Packet(-1)
 
 bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSpeakReqUNICODE::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	if (client->GetChar() == NULL)
@@ -1979,6 +2069,8 @@ PacketGumpDialogRet::PacketGumpDialogRet() : Packet(-1)
 
 bool PacketGumpDialogRet::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketGumpDialogRet::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2108,6 +2200,8 @@ PacketChatCommand::PacketChatCommand() : Packet(-1)
 
 bool PacketChatCommand::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketChatCommand::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2139,6 +2233,8 @@ PacketChatButton::PacketChatButton() : Packet(64)
 
 bool PacketChatButton::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketChatButton::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2164,6 +2260,8 @@ PacketToolTipReq::PacketToolTipReq() : Packet(9)
 
 bool PacketToolTipReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketToolTipReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2186,6 +2284,8 @@ PacketProfileReq::PacketProfileReq() : Packet(-1)
 
 bool PacketProfileReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketProfileReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2223,6 +2323,8 @@ PacketMailMessage::PacketMailMessage() : Packet(9)
 
 bool PacketMailMessage::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketMailMessage::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2247,6 +2349,8 @@ PacketClientVersion::PacketClientVersion() : Packet(-1)
 
 bool PacketClientVersion::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketClientVersion::onReceive");
+
 	if (net->getReportedVersion() > 0)
 		return true;
 
@@ -2304,6 +2408,8 @@ PacketExtendedCommand::PacketExtendedCommand() : Packet(-1)
 
 bool PacketExtendedCommand::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketExtendedCommand::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	if (client->GetChar() == NULL)
@@ -2343,6 +2449,8 @@ PacketScreenSize::PacketScreenSize() : Packet(-1)
 
 bool PacketScreenSize::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketScreenSize::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2369,6 +2477,8 @@ PacketPartyMessage::PacketPartyMessage() : Packet(-1)
 
 bool PacketPartyMessage::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPartyMessage::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2466,6 +2576,8 @@ PacketArrowClick::PacketArrowClick() : Packet(-1)
 
 bool PacketArrowClick::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketArrowClick::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2503,6 +2615,8 @@ PacketWrestleDisarm::PacketWrestleDisarm() : Packet(-1)
 
 bool PacketWrestleDisarm::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketWrestleDisarm::onReceive");
+
 	net->getClient()->SysMessageDefault(DEFMSG_WRESTLING_NOGO);
 	return true;
 }
@@ -2521,6 +2635,8 @@ PacketWrestleStun::PacketWrestleStun() : Packet(-1)
 
 bool PacketWrestleStun::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketWrestleStun::onReceive");
+
 	net->getClient()->SysMessageDefault(DEFMSG_WRESTLING_NOGO);
 	return true;
 }
@@ -2539,6 +2655,8 @@ PacketLanguage::PacketLanguage() : Packet(-1)
 
 bool PacketLanguage::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketLanguage::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2563,6 +2681,8 @@ PacketStatusClose::PacketStatusClose() : Packet(-1)
 
 bool PacketStatusClose::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketStatusClose::onReceive");
+
 	return true;
 }
 
@@ -2580,6 +2700,8 @@ PacketAnimationReq::PacketAnimationReq() : Packet(-1)
 
 bool PacketAnimationReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketAnimationReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2627,6 +2749,8 @@ PacketClientInfo::PacketClientInfo() : Packet(-1)
 
 bool PacketClientInfo::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketClientInfo::onReceive");
+
 	BYTE a = readByte();
 	DWORD flags = readInt32();
 	return true;
@@ -2646,6 +2770,8 @@ PacketPopupReq::PacketPopupReq() : Packet(-1)
 
 bool PacketPopupReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPopupReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2672,6 +2798,8 @@ PacketPopupSelect::PacketPopupSelect() : Packet(-1)
 
 bool PacketPopupSelect::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPopupSelect::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2700,6 +2828,8 @@ PacketChangeStatLock::PacketChangeStatLock() : Packet(-1)
 
 bool PacketChangeStatLock::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketChangeStatLock::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2752,6 +2882,8 @@ PacketSpellSelect::PacketSpellSelect() : Packet(-1)
 
 bool PacketSpellSelect::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSpellSelect::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2800,6 +2932,8 @@ PacketHouseDesignReq::PacketHouseDesignReq() : Packet(-1)
 
 bool PacketHouseDesignReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -2829,6 +2963,8 @@ PacketAntiCheat::PacketAntiCheat() : Packet(-1)
 
 bool PacketAntiCheat::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketAntiCheat::onReceive");
+
 	return true;
 }
 
@@ -2846,6 +2982,8 @@ PacketBandageMacro::PacketBandageMacro() : Packet(-1)
 
 bool PacketBandageMacro::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketBandageMacro::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2910,6 +3048,8 @@ PacketGargoyleFly::PacketGargoyleFly() : Packet(-1)
 
 bool PacketGargoyleFly::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketGargoyleFly::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -2974,6 +3114,8 @@ PacketPromptResponseUnicode::PacketPromptResponseUnicode() : Packet(-1)
 
 bool PacketPromptResponseUnicode::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketPromptResponseUnicode::onReceive");
+
 	WORD length = readInt16();
 	DWORD context1 = readInt32();
 	DWORD context2 = readInt32();
@@ -3002,6 +3144,8 @@ PacketViewRange::PacketViewRange() : Packet(2)
 
 bool PacketViewRange::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketViewRange::onReceive");
+
 	BYTE range = readByte();
 	return true;
 }
@@ -3020,6 +3164,8 @@ PacketLogout::PacketLogout() : Packet(1)
 
 bool PacketLogout::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketLogout::onReceive");
+
 	PacketLogoutAck *packet = new PacketLogoutAck(net->getClient());
 	return true;
 }
@@ -3038,6 +3184,8 @@ PacketAOSTooltipReq::PacketAOSTooltipReq() : Packet(-1)
 
 bool PacketAOSTooltipReq::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketAOSTooltipReq::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3078,6 +3226,8 @@ PacketEncodedCommand::PacketEncodedCommand() : Packet(-1)
 
 bool PacketEncodedCommand::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketEncodedCommand::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	if (client->GetChar() == NULL)
@@ -3121,6 +3271,8 @@ PacketHouseDesignBackup::PacketHouseDesignBackup() : Packet(-1)
 
 bool PacketHouseDesignBackup::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignBackup::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3146,6 +3298,8 @@ PacketHouseDesignRestore::PacketHouseDesignRestore() : Packet(-1)
 
 bool PacketHouseDesignRestore::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignRestore::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3171,6 +3325,8 @@ PacketHouseDesignCommit::PacketHouseDesignCommit() : Packet(-1)
 
 bool PacketHouseDesignCommit::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignCommit::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3196,6 +3352,8 @@ PacketHouseDesignDestroyItem::PacketHouseDesignDestroyItem() : Packet(-1)
 
 bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignDestroyItem::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3230,6 +3388,8 @@ PacketHouseDesignPlaceItem::PacketHouseDesignPlaceItem() : Packet(-1)
 
 bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignPlaceItem::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3262,6 +3422,8 @@ PacketHouseDesignExit::PacketHouseDesignExit() : Packet(-1)
 
 bool PacketHouseDesignExit::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignExit::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3287,6 +3449,8 @@ PacketHouseDesignPlaceStair::PacketHouseDesignPlaceStair() : Packet(-1)
 
 bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignPlaceStair::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3319,6 +3483,8 @@ PacketHouseDesignSync::PacketHouseDesignSync() : Packet(-1)
 
 bool PacketHouseDesignSync::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignSync::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3344,6 +3510,8 @@ PacketHouseDesignClear::PacketHouseDesignClear() : Packet(-1)
 
 bool PacketHouseDesignClear::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignClear::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3369,6 +3537,8 @@ PacketHouseDesignSwitch::PacketHouseDesignSwitch() : Packet(-1)
 
 bool PacketHouseDesignSwitch::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignSwitch::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3397,6 +3567,8 @@ PacketHouseDesignPlaceRoof::PacketHouseDesignPlaceRoof() : Packet(-1)
 
 bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignPlaceRoof::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3431,6 +3603,8 @@ PacketHouseDesignDestroyRoof::PacketHouseDesignDestroyRoof() : Packet(-1)
 
 bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignDestroyRoof::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3465,6 +3639,8 @@ PacketSpecialMove::PacketSpecialMove() : Packet(-1)
 
 bool PacketSpecialMove::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketSpecialMove::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3494,6 +3670,8 @@ PacketHouseDesignRevert::PacketHouseDesignRevert() : Packet(-1)
 
 bool PacketHouseDesignRevert::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHouseDesignRevert::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 
@@ -3519,6 +3697,8 @@ PacketEquipLastWeapon::PacketEquipLastWeapon() : Packet(-1)
 
 bool PacketEquipLastWeapon::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketEquipLastWeapon::onReceive");
+
 	return true;
 }
 
@@ -3536,6 +3716,8 @@ PacketGuildButton::PacketGuildButton() : Packet(-1)
 
 bool PacketGuildButton::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketGuildButton::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3560,6 +3742,8 @@ PacketQuestButton::PacketQuestButton() : Packet(-1)
 
 bool PacketQuestButton::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketQuestButton::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3584,6 +3768,8 @@ PacketHardwareInfo::PacketHardwareInfo() : Packet(268)
 
 bool PacketHardwareInfo::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketHardwareInfo::onReceive");
+
 	skip(1); // client type
 	skip(4); // instance id
 	skip(4); // os major
@@ -3627,6 +3813,8 @@ PacketBugReport::PacketBugReport() : Packet(-1)
 
 bool PacketBugReport::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketBugReport::onReceive");
+
 	WORD packetLength = readInt16(); // packet length
 	if (packetLength < 10)
 		return false;
@@ -3657,6 +3845,8 @@ PacketClientType::PacketClientType() : Packet(-1)
 
 bool PacketClientType::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketClientType::onReceive");
+
 	WORD packetLength = readInt16(); // packet length
 	if (packetLength < 9)
 		return false;
@@ -3682,6 +3872,8 @@ PacketRemoveUIHighlight::PacketRemoveUIHighlight() : Packet(13)
 
 bool PacketRemoveUIHighlight::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketRemoveUIHighlight::onReceive");
+
 	skip(4); // serial
 	skip(2); // ui id
 	skip(4); // destination serial
@@ -3704,6 +3896,8 @@ PacketUseHotbar::PacketUseHotbar() : Packet(11)
 
 bool PacketUseHotbar::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketUseHotbar::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3734,6 +3928,8 @@ PacketEquipItemMacro::PacketEquipItemMacro() : Packet(-1)
 
 bool PacketEquipItemMacro::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketEquipItemMacro::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3776,6 +3972,8 @@ PacketUnEquipItemMacro::PacketUnEquipItemMacro() : Packet(-1)
 
 bool PacketUnEquipItemMacro::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketUnEquipItemMacro::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
@@ -3818,6 +4016,8 @@ PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(-1)
 
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
+
 	skip(2);
 	skip(17);
 	int sequence = readByte();
@@ -3844,6 +4044,8 @@ PacketCrashReport::PacketCrashReport() : Packet(-1)
 
 bool PacketCrashReport::onReceive(NetState* net)
 {
+	ADDTOCALLSTACK("PacketCrashReport::onReceive");
+
 	CClient* client = net->getClient();
 	ASSERT(client);
 

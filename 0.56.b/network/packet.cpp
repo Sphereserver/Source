@@ -1062,6 +1062,8 @@ PacketSend* PacketSend::clone(void)
 
 void PacketSend::send(CClient *client)
 {
+	ADDTOCALLSTACK("PacketSend::send");
+
 	fixLength();
 	if (client != NULL)
 		target(client);
@@ -1077,6 +1079,8 @@ void PacketSend::send(CClient *client)
 
 void PacketSend::push(CClient *client)
 {
+	ADDTOCALLSTACK("PacketSend::push");
+
 	fixLength();
 	if (client != NULL)
 		target(client);
@@ -1103,6 +1107,8 @@ void PacketSend::push(CClient *client)
 
 void PacketSend::target(CClient* client)
 {
+	ADDTOCALLSTACK("PacketSend::target");
+
 	m_target = NULL;
 
 	//	validate that the current slot is still taken by this client
@@ -1112,9 +1118,11 @@ void PacketSend::target(CClient* client)
 
 bool PacketSend::onSend(CClient* client)
 {
+	ADDTOCALLSTACK("PacketSend::onSend");
 	return true;
 }
 
 void PacketSend::onSent(CClient* client)
 {
+	ADDTOCALLSTACK("PacketSend::onSent");
 }

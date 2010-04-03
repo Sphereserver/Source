@@ -38,7 +38,7 @@ struct CSocketAddressIP : public in_addr
 
 	CSocketAddressIP();
 	CSocketAddressIP( DWORD dwIP );
-	CSocketAddressIP( char *ip );
+	CSocketAddressIP( const char *ip );
 
 	DWORD GetAddrIP() const;
 	void SetAddrIP( DWORD dwIP );

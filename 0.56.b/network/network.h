@@ -91,6 +91,7 @@ public:
 	~NetState(void);
 
 	long id(void) const { return m_id; }; // returns ID of the client
+	void setId(long id) { m_id = id; }; // changes ID of the client
 	void clear(void); // clears state
 
 	void init(SOCKET socket, CSocketAddress addr); // initialized socket
@@ -236,7 +237,7 @@ public:
 	virtual void waitForClose(void);
 
 	HistoryIP &getHistoryForIP(CSocketAddressIP ip);
-	HistoryIP &getHistoryForIP(char* ip);
+	HistoryIP &getHistoryForIP(const char* ip);
 
 	void registerPacket(int packetId, Packet* handler); // register packet handler
 	void registerExtended(int packetId, Packet* handler); // register extended packet handler
@@ -252,6 +253,7 @@ protected:
 	int checkForData(fd_set* storage); // executes network state request for new packets
 	long getStateSlot(long startFrom = -1); // finds suitable random slot for client to take
 	void periodic(void); // performs periodic actions
+	void defragSlots(long fromSlot = 0); // moves used network slots to front
 
 	friend class ClientIterator;
 	friend class SafeClientIterator;

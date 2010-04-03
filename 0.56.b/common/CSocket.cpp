@@ -15,7 +15,7 @@ CSocketAddressIP::CSocketAddressIP( DWORD dwIP )
 	s_addr = dwIP;
 }
 
-CSocketAddressIP::CSocketAddressIP(char *ip)
+CSocketAddressIP::CSocketAddressIP(const char *ip)
 {
 	s_addr = inet_addr(ip);
 }

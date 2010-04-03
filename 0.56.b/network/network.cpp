@@ -575,6 +575,8 @@ void NetworkIn::onStart(void)
 
 void NetworkIn::tick(void)
 {
+	ADDTOCALLSTACK("NetworkIn::tick");
+
 	EXC_TRY("NetworkIn");
 	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
 		return;
@@ -936,6 +938,8 @@ int NetworkIn::checkForData(fd_set* storage)
 #define ADDTOSELECT(_x_)	{ FD_SET(_x_, storage); if ( _x_ > nfds ) nfds = _x_; }
 #endif
 
+	ADDTOCALLSTACK("NetworkIn::checkForData");
+
 
 	EXC_TRY("CheckForData");
 	int nfds = 0;
@@ -1022,6 +1026,8 @@ int NetworkIn::checkForData(fd_set* storage)
 
 void NetworkIn::acceptConnection(void)
 {
+	ADDTOCALLSTACK("NetworkIn::acceptConnection");
+
 	EXC_TRY("acceptConnection");
 	CSocketAddress client_addr;
 
@@ -1121,6 +1127,8 @@ Packet* NetworkIn::getEncodedHandler(int packetId) const
 
 NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(CSocketAddressIP ip)
 {
+	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
+
 	vector<HistoryIP>::iterator it;
 
 	for ( it = m_ips.begin(); it != m_ips.end(); it++ )
@@ -1138,8 +1146,10 @@ NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(CSocketAddressIP ip)
 	return getHistoryForIP(ip);
 }
 
-NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(char* ip)
+NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(const char* ip)
 {
+	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
+
 	CSocketAddressIP	me(ip);
 
 	return getHistoryForIP(me);
@@ -1147,6 +1157,8 @@ NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(char* ip)
 
 long NetworkIn::getStateSlot(long startFrom)
 {
+	ADDTOCALLSTACK("NetworkIn::getStateSlot");
+
 	if ( startFrom == -1 )
 		startFrom = m_lastGivenSlot + 1;
 
@@ -1169,7 +1181,8 @@ long NetworkIn::getStateSlot(long startFrom)
 
 void NetworkIn::periodic(void)
 {
-	CClient* client;
+	ADDTOCALLSTACK("NetworkIn::periodic");
+
 	long connecting = 0;
 	long connectingMax = g_Cfg.m_iConnectingMax;
 	long decaystart = 0;
@@ -1181,7 +1194,7 @@ void NetworkIn::periodic(void)
 	{
 		EXC_SET("limiting connecting clients");
 		ClientIterator clients(this);
-		while ((client = clients.next()) != NULL)
+		for (CClient* client = clients.next(); client != NULL; client = clients.next())
 		{
 			if (client->IsConnecting())
 			{
@@ -1257,8 +1270,11 @@ void NetworkIn::periodic(void)
 		EXC_SET("decreasing network state size");
 		DEBUGNETWORK(("decreasing number of client slots from %ld to %ld\n", m_stateCount, max));
 
+		// move used slots to free spaces if possible
+		defragSlots(max);
+
 		// delete excess states but leave array intact
-		for (long l = m_stateCount; l < max; l++)
+		for (long l = max; l < m_stateCount; l++)
 		{
 			delete m_states[l];
 			m_states[l] = NULL;
@@ -1268,6 +1284,49 @@ void NetworkIn::periodic(void)
 	}
 
 	EXC_CATCH;
+}
+
+void NetworkIn::defragSlots(long fromSlot)
+{
+	ADDTOCALLSTACK("NetworkIn::defragSlots");
+
+	long l = 0;
+	long nextUsedSlot = fromSlot - 1;
+
+	for (l = 0; l < m_stateCount; l++)
+	{
+		// don't interfere with in-use states
+		if (m_states[l] != NULL && m_states[l]->isValid())
+			continue;
+
+		// find next used slot
+		bool slotFound = false;
+		while (slotFound == false)
+		{
+			if (++nextUsedSlot >= m_stateCount)
+				break;
+
+			NetState* state = m_states[nextUsedSlot];
+			if (state != NULL && state->isValid())
+				slotFound = true;
+		}
+
+		// no more slots to be moved
+		if (slotFound == false)
+			break;
+
+		if (nextUsedSlot != l)
+		{
+			DEBUGNETWORK(("Moving client '%x' to slot '%x'.\n", nextUsedSlot, l));
+
+			// swap states
+			NetState* usedSlot = m_states[nextUsedSlot];
+			usedSlot->setId(l);
+
+			m_states[nextUsedSlot] = m_states[l];
+			m_states[l] = usedSlot;
+		}
+	}
 }
 
 
@@ -1295,6 +1354,8 @@ NetworkOut::~NetworkOut(void)
 
 void NetworkOut::tick(void)
 {
+	ADDTOCALLSTACK("NetworkOut::tick");
+
 	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
 	{
 		setPriority(IThread::Highest);
@@ -1382,12 +1443,16 @@ void NetworkOut::waitForClose(void)
 
 void NetworkOut::schedule(PacketSend* packet)
 {
+	ADDTOCALLSTACK("NetworkOut::schedule");
+
 	ASSERT(packet != NULL);
 	scheduleOnce(packet->clone());
 }
 
 void NetworkOut::scheduleOnce(PacketSend* packet)
 {
+	ADDTOCALLSTACK("NetworkOut::scheduleOnce");
+
 	ASSERT(packet != NULL);
 	NetState* state = packet->m_target;
 	ASSERT(state != NULL);
@@ -1426,6 +1491,8 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 
 void NetworkOut::flush(CClient* client)
 {
+	ADDTOCALLSTACK("NetworkOut::flush");
+
 	ASSERT(client != NULL);
 	
 	NetState* state = client->GetNetState();
@@ -1453,6 +1520,8 @@ void NetworkOut::flush(CClient* client)
 
 void NetworkOut::proceedFlush(void)
 {
+	ADDTOCALLSTACK("NetworkOut::proceedFlush");
+
 	SafeClientIterator clients;
 	while (CClient* client = clients.next(true))
 	{
@@ -1469,6 +1538,8 @@ void NetworkOut::proceedFlush(void)
 
 int NetworkOut::proceedQueue(CClient* client, long priority)
 {
+	ADDTOCALLSTACK("NetworkOut::proceedQueue");
+
 	long maxClientPackets = NETWORK_MAXPACKETS;
 	long maxClientLength = NETWORK_MAXPACKETLEN;
 	CServTime time = CServTime::GetCurrentTime();
@@ -1535,6 +1606,8 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 
 int NetworkOut::proceedQueueAsync(CClient* client)
 {
+	ADDTOCALLSTACK("NetworkOut::proceedQueueAsync");
+
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
@@ -1581,6 +1654,8 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 
 void NetworkOut::onAsyncSendComplete(CClient* client)
 {
+	ADDTOCALLSTACK("NetworkOut::onAsyncSendComplete");
+
 	//DEBUGNETWORK(("AsyncSendComplete\n"));
 	ASSERT(client != NULL);
 	NetState* state = client->GetNetState();
@@ -1592,6 +1667,8 @@ void NetworkOut::onAsyncSendComplete(CClient* client)
 
 bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
 {
+	ADDTOCALLSTACK("NetworkOut::sendPacket");
+
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
@@ -1628,6 +1705,8 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 
 bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 {
+	ADDTOCALLSTACK("NetworkOut::sendPacketNow");
+
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
