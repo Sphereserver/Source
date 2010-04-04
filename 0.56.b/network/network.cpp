@@ -981,6 +981,7 @@ int NetworkIn::checkForData(fd_set* storage)
 				if (state->hasPendingData())
 					continue;
 			
+				state->markClosed();
 				if (g_NetworkOut.isActive() == false)
 					state->markWriteClosed();
 			}
