@@ -51,16 +51,23 @@ void PingServer::tick()
 	char buffer[PINGSERVER_BUFFER];
 	sockaddr_in addr;
 	socklen_t addr_len = sizeof(addr);
+
+	ProfileTask receiveTask(PROFILE_NETWORK_RX);
 	
 	// receive data from someone
 	int length = recvfrom(m_socket.GetSocket(), buffer, sizeof(buffer), 0, (sockaddr *)&addr, &addr_len);
 	if ( length <= 0 )
 		return;
 
+	CurrentProfileData.Count(PROFILE_DATA_RX, length);
+	ProfileTask sendTask(PROFILE_NETWORK_TX);
+
 	// return the data to them
 	int sent = sendto(m_socket.GetSocket(), buffer, length, 0, (sockaddr *)&addr, addr_len);
 	if ( sent <= 0 )
 		return;
+
+	CurrentProfileData.Count(PROFILE_DATA_TX, sent);
 }
 
 void PingServer::waitForClose()

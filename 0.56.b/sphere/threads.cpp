@@ -197,7 +197,7 @@ void AbstractThread::start()
 	else
 		m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
 #endif
-	push(this);
+	ThreadHolder::push(this);
 }
 
 void AbstractThread::terminate()
@@ -225,7 +225,7 @@ void AbstractThread::terminate()
 		}
 #endif
 		// Common things
-		pop(this);
+		ThreadHolder::pop(this);
 		m_id = 0;
 		m_handle = NULL;
 	}
@@ -251,6 +251,10 @@ void AbstractThread::run()
 		try
 		{
 			tick();
+
+			// ensure this is recorded as 'idle' time (ideally this should
+			// be in tick() but we cannot guarantee it to be called there
+			CurrentProfileData.Start(PROFILE_IDLE);
 		}
 		catch( CException &e )
 		{

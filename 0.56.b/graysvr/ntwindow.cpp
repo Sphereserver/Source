@@ -236,14 +236,31 @@ void CNTWindow::CStatusWnd::FillStats()
 {
 	if ( m_wndListStats.m_hWnd == NULL )
 		return;
+
 	m_wndListStats.ResetContent();
 
 	CNTWindow::CListTextConsole capture( m_wndListStats.m_hWnd );
-	for ( int i=0; i < PROFILE_QTY; i++ )
-	{
-		capture.SysMessagef( "'%s' = %s\n", g_Serv.m_Profile.GetName((PROFILE_TYPE) i), g_Serv.m_Profile.GetDesc((PROFILE_TYPE) i ));
-	}
 
+	for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
+	{
+		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
+		if (thrCurrent == NULL)
+			continue;
+
+		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
+		if (profile->HasData() == false)
+			continue;
+
+		capture.SysMessagef("Thread %d - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
+
+		for (int i = 0; i < PROFILE_QTY; i++)
+		{
+			if (profile->HasData((PROFILE_TYPE) i) == false)
+				continue;
+
+			capture.SysMessagef("'%-10s' = %s\n", profile->GetName((PROFILE_TYPE) i), profile->GetDescription((PROFILE_TYPE) i ));
+		}
+	}
 }
 
 bool CNTWindow::CStatusWnd::OnInitDialog()

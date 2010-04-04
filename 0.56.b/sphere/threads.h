@@ -8,6 +8,7 @@
 
 #include "../common/common.h"
 #include "../sphere/strings.h"
+#include "../sphere/ProfileData.h"
 
 
 // keep track of callstack on windows release builds
@@ -97,7 +98,7 @@ private:
 };
 
 // Thread implementation. See IThread for list of available methods.
-class AbstractThread : public IThread, ThreadHolder
+class AbstractThread : public IThread
 {
 private:
 	unsigned	m_id;
@@ -182,6 +183,7 @@ public:
 	void printStackTrace(void);
 #endif
 
+	ProfileData m_profile;	// the current active statistical profile.
 
 protected:
 	virtual bool shouldExit();

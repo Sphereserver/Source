@@ -898,7 +898,15 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iWoolGrowthTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_PROFILE:
-			g_Serv.m_Profile.SetActive(s.GetArgVal());
+			{
+				int seconds = s.GetArgVal();
+				for (int i = 0; i < ThreadHolder::getActiveThreads(); i++)
+				{
+					AbstractSphereThread* thread = (AbstractSphereThread*)ThreadHolder::getThreadAt(i);
+					if (thread != NULL)
+						thread->m_profile.SetActive(seconds);
+				}
+			}
 			break;
 		case RC_PLAYEREVIL:	// How much bad karma makes a player evil?
 			m_iPlayerKarmaEvil = s.GetArgVal();
@@ -1260,7 +1268,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_iWoolGrowthTime /( 60*TICK_PER_SEC ));
 			break;
 		case RC_PROFILE:
-			sVal.FormatVal(g_Serv.m_Profile.GetActiveWindow());
+			sVal.FormatVal(CurrentProfileData.GetActiveWindow());
 			break;
 		case RC_RTICKS:
 			{

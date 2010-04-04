@@ -190,7 +190,6 @@ void CTimedFunctionHandler::OnTick()
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::OnTick");
 	m_isBeingProcessed = true;
-	PROFILE_TYPE prvProfileTask	= g_Serv.m_Profile.GetCurrentTask();
 
 	m_curTick++;
 
@@ -201,7 +200,7 @@ void CTimedFunctionHandler::OnTick()
 
 	int tick = m_curTick;
 	std::vector<TimedFunction *>::iterator it;
-	g_Serv.m_Profile.Start(PROFILE_SCRIPTS);
+	ProfileTask scriptsTask(PROFILE_SCRIPTS);
 
 	if ( m_timedFunctions[tick].size() > 0 )
 	{
@@ -269,8 +268,6 @@ void CTimedFunctionHandler::OnTick()
 			}
 		}
 	}
-
-	g_Serv.m_Profile.Start(prvProfileTask);
 	
 	m_isBeingProcessed = false;
 

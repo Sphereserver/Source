@@ -607,6 +607,9 @@ void NetworkIn::tick(void)
 	BYTE* buffer = m_buffer;
 	for (long i = 0; i < m_stateCount; i++)
 	{
+		EXC_SET("start network profile");
+		ProfileTask networkTask(PROFILE_NETWORK_RX);
+
 		EXC_SET("messages - next client");
 		NetState* client = m_states[i];
 		ASSERT(client != NULL);
@@ -639,6 +642,10 @@ void NetworkIn::tick(void)
 			client->markClosed();
 			continue;
 		}
+
+		EXC_SET("start client profile");
+		CurrentProfileData.Count(PROFILE_DATA_RX, received);
+		ProfileTask clientTask(PROFILE_CLIENTS);
 
 		EXC_SET("messages - process");
 		if (client->m_client->GetConnectType() == CONNECT_UNK)
@@ -1358,6 +1365,7 @@ NetworkOut::~NetworkOut(void)
 void NetworkOut::tick(void)
 {
 	ADDTOCALLSTACK("NetworkOut::tick");
+	ProfileTask networkTask(PROFILE_NETWORK_TX);
 
 	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
 	{
@@ -1799,7 +1807,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 				EXC_SET("send pending");
 
 				// safe to ignore this
-				g_Serv.m_Profile.Count(PROFILE_DATA_TX, sendBufferLength);
+				CurrentProfileData.Count(PROFILE_DATA_TX, sendBufferLength);
 			}
 			else if (state->isAsyncMode() == false && errCode == WSAEWOULDBLOCK)
 			{
@@ -1834,7 +1842,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		{
 			EXC_SET("send successful");
 
-			g_Serv.m_Profile.Count(PROFILE_DATA_TX, ret);
+			CurrentProfileData.Count(PROFILE_DATA_TX, ret);
 		}
 
 		EXC_SET("sent trigger");

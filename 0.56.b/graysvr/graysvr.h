@@ -133,6 +133,7 @@ enum RESDISPLAY_VERSION
 #include "../common/CRegion.h"
 #include "../common/CGrayMap.h"
 #include "../sphere/mutex.h"
+#include "../sphere/ProfileData.h"
 #include "../sphere/threads.h"
 #ifndef _WIN32
 	#include "../sphere/linuxev.h"
@@ -1399,74 +1400,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-enum PROFILE_TYPE
-{
-	PROFILE_IDLE,		// Wait for stuff.
-	PROFILE_OVERHEAD,	// In between stuff.
-	PROFILE_NETWORK_RX,	// Just get client info and monitor new client requests. No processing.
-	PROFILE_CLIENTS,	// Client processing.
-	PROFILE_NETWORK_TX,
-	PROFILE_CHARS,
-	PROFILE_ITEMS,
-	PROFILE_MAP,
-	PROFILE_NPC_AI,
-	PROFILE_SCRIPTS,
-	PROFILE_TIME_QTY,
-
-	// Qty of bytes. Not Time.
-	PROFILE_DATA_TX = PROFILE_TIME_QTY,
-	PROFILE_DATA_RX,
-
-	PROFILE_QTY,
-};
-
-
-class CProfileData
-{
-protected:
-	struct CProfileDataRec
-	{
-		LONGLONG	m_Time;		// accumulated time in msec.
-		int			m_iCount;	// how many passes made into this.
-	};
-
-	CProfileDataRec	m_AvgTimes[PROFILE_QTY];
-	CProfileDataRec m_PrvTimes[PROFILE_QTY];
-	CProfileDataRec m_CurTimes[PROFILE_QTY];
-
-	int m_iActiveWindowSec;		// The sample window size in seconds. 0=off
-	int	m_iAvgCount;
-
-	LONGLONG m_TimeTotal;	// Average this over a total time period.
-
-	// Store the last time start time.
-	PROFILE_TYPE  m_CurTask;	// What task are we currently processing ?
-	LONGLONG m_CurTime;		// QueryPerformanceCount()
-
-public:
-	static const char *m_sClassName;
-	bool IsActive() const { return( m_iActiveWindowSec ? true : false ); }
-	void SetActive( int iSampleSec );
-	int GetActiveWindow() const { return m_iActiveWindowSec; }
-
-	PROFILE_TYPE	GetCurrentTask();
-	void Count( PROFILE_TYPE id, DWORD dwVal )
-	{
-		ASSERT( id >= PROFILE_TIME_QTY && id < PROFILE_QTY );
-		m_CurTimes[id].m_Time += dwVal;
-		m_CurTimes[id].m_iCount ++;
-	}
-	CProfileData()
-	{
-		SetActive(10);	// default to 10 sec window.
-	}
-
-	void Start( PROFILE_TYPE id );
-
-	LPCTSTR GetName( PROFILE_TYPE id ) const;
-	LPCTSTR GetDesc( PROFILE_TYPE id ) const;
-};
-
 enum SERVMODE_TYPE
 {
 	SERVMODE_RestockAll,	// Major event.
@@ -1499,10 +1432,6 @@ public:
 	bool m_fConsoleTextReadyFlag;	// interlocking flag for moving between tasks.
 
 	CServTime m_timeShutdown;	// When to perform the shutdowm (g_World.clock)
-
-//	CGObList m_Clients;		// Current list of clients (CClient)
-
-	CProfileData m_Profile;	// the current active statistical profile.
 	CChat m_Chats;	// keep all the active chats
 
 	char	m_PacketFilter[255][32];	// list of packet filtering functions

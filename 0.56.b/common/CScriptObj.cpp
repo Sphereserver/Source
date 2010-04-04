@@ -1865,8 +1865,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript( CScript & s, LPCTSTR pszTrigName, CTex
 	if ( !OnTriggerFind(s, pszTrigName) )
 		return TRIGRET_RET_DEFAULT;
 
-	PROFILE_TYPE	prvProfileTask	= g_Serv.m_Profile.GetCurrentTask();
-	g_Serv.m_Profile.Start(PROFILE_SCRIPTS);
+	ProfileTask scriptsTask(PROFILE_SCRIPTS);
 
 	TScriptProfiler::TScriptProfilerTrigger	*pTrig;
 	TIME_PROFILE_INIT;
@@ -1922,7 +1921,6 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript( CScript & s, LPCTSTR pszTrigName, CTex
 		g_profiler.total += llTicks;
 	}
 
-	g_Serv.m_Profile.Start(prvProfileTask);
 	return iRet;
 }
 

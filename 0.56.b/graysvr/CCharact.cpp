@@ -3832,7 +3832,7 @@ bool CChar::OnTick()
 
 		if ( m_pNPC )		// What to do next ?
 		{
-			g_Serv.m_Profile.Start(PROFILE_NPC_AI);
+			ProfileTask aiTask(PROFILE_NPC_AI);
 			EXC_SET("NPC action");
 			NPC_OnTickAction();
 
@@ -3841,7 +3841,6 @@ bool CChar::OnTick()
 				NPC_Food();
 			if ( g_Cfg.m_iNpcAi&NPC_AI_EXTRA )
 				NPC_AI();
-			g_Serv.m_Profile.Start(PROFILE_CHARS);
 		}
 	}
 	else

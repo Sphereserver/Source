@@ -497,7 +497,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				StatGet(SERV_STAT_CLIENTS),
 				g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ) ? "ON" : "OFF",
 				g_Log.IsFileOpen() ? "OPEN" : "CLOSED",
-				m_Profile.IsActive() ? "ON" : "OFF",
+				CurrentProfileData.IsActive() ? "ON" : "OFF",
 				g_Cfg.m_fSecure ? "ON" : "OFF"
 				);
 			break;
@@ -875,16 +875,33 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 		}
 	}
 
-	pSrc->SysMessagef("Profiles %s: (%d sec total)\n", m_Profile.IsActive() ? "ON" : "OFF", m_Profile.GetActiveWindow());
+	pSrc->SysMessagef("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
 	if ( bOk )
-		ftDump->Printf("Profiles %s: (%d sec total)\n", m_Profile.IsActive() ? "ON" : "OFF", m_Profile.GetActiveWindow());
+		ftDump->Printf("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
 
-
-	for ( int i=0; i < PROFILE_QTY; i++ )
+	for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
 	{
-		pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) m_Profile.GetName((PROFILE_TYPE) i), (LPCTSTR) m_Profile.GetDesc((PROFILE_TYPE) i ) );
-		if ( bOk )
-			ftDump->Printf( "%-10s = %s\n", (LPCTSTR) m_Profile.GetName((PROFILE_TYPE) i), (LPCTSTR) m_Profile.GetDesc((PROFILE_TYPE) i ) );
+		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
+		if (thrCurrent == NULL)
+			continue;
+
+		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
+		if (profile->HasData() == false)
+			continue;
+
+		pSrc->SysMessagef("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+		if (bOk)
+			ftDump->Printf("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+
+		for (int i = 0; i < PROFILE_QTY; i++)
+		{
+			if (profile->HasData((PROFILE_TYPE) i) == false)
+				continue;
+
+			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
+			if ( bOk )
+				ftDump->Printf( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
+		}
 	}
 
 	if ( IsSetEF(EF_Script_Profiler) )
@@ -1785,7 +1802,7 @@ void CServer::OnTick()
 	EXC_SET("SetTime");
 	SetValidTime();	// we are a valid game server.
 
-	m_Profile.Start( PROFILE_OVERHEAD );
+	ProfileTask overheadTask(PROFILE_OVERHEAD);
 
 	if ( m_timeShutdown.IsTimeValid() )
 	{

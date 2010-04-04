@@ -1049,7 +1049,7 @@ void CSector::OnTick(int iPulseCount)
 
 	// regen all creatures and do AI
 
-	g_Serv.m_Profile.Start( PROFILE_CHARS );
+	ProfileTask charactersTask(PROFILE_CHARS);
 
 	//pChar = STATIC_CAST <CChar*>( m_Chars_Active.GetHead());
 	pChar = dynamic_cast <CChar*>( m_Chars_Active.GetHead());
@@ -1100,7 +1100,7 @@ void CSector::OnTick(int iPulseCount)
 	// decay items on ground = time out spells / gates etc.. etc..
 	// No need to check these so often !
 
-	g_Serv.m_Profile.Start( PROFILE_ITEMS );
+	ProfileTask itemsTask(PROFILE_ITEMS);
 
 	CItem * pItemNext;
 	//CItem * pItem = STATIC_CAST <CItem*>( m_Items_Timer.GetHead());
@@ -1158,7 +1158,8 @@ void CSector::OnTick(int iPulseCount)
 #endif
 #endif
 	}
-	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
+
+	ProfileTask overheadTask(PROFILE_OVERHEAD);
 
 	EXC_SET("check map cache");
 	if ( fSleeping || ! ( iPulseCount & 0x7f ))	// 30 seconds or so.

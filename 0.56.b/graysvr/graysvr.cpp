@@ -385,10 +385,8 @@ void Main::onStart()
 void Main::tick()
 {
 	Sphere_OnTick();
-	if( g_Serv.m_iExitFlag )
-	{
+	if (g_Serv.m_iExitFlag != 0)
 		terminate();
-	}
 }
 
 Main g_Main;
@@ -397,124 +395,6 @@ extern CDataBaseAsyncHelper g_asyncHdb;
 #ifndef _WIN32
 	extern LinuxEv g_NetworkEvent;
 #endif
-
-//*******************************************************************
-// CProfileData
-
-void CProfileData::SetActive(int iSampleSec)
-{
-	ADDTOCALLSTACK("CProfileData::SetActive");
-	m_iActiveWindowSec = iSampleSec;
-	memset(m_AvgTimes, 0, sizeof(m_AvgTimes));
-	memset(m_CurTimes, 0, sizeof(m_CurTimes));
-	memset(m_PrvTimes, 0, sizeof(m_PrvTimes));
-	m_iAvgCount		= 1;
-
-	if ( !m_iActiveWindowSec )
-		return;
-
-	LONGLONG llTicks;
-	TIME_PROFILE_START;
-	m_CurTime = llTicks;
-
-	m_CurTask = PROFILE_OVERHEAD;
-	m_TimeTotal = 0;
-}
-
-void CProfileData::Start(PROFILE_TYPE id)
-{
-	ADDTOCALLSTACK("CProfileData::Start");
-	if (( id < 0 ) || ( id >= PROFILE_TIME_QTY ) || !m_iActiveWindowSec )
-		return;
-
-	// Stop prev task.
-	if ( m_TimeTotal >= llTimeProfileFrequency * m_iActiveWindowSec )
-	{
-		for ( int i = 0; i < PROFILE_QTY; i++ )
-		{
-			if ( m_iAvgCount < 4 )
-				memcpy( m_AvgTimes, m_CurTimes, sizeof( m_AvgTimes ));
-			else
-			{
-			if ( m_PrvTimes[i].m_Time > llTimeProfileFrequency )
-				m_PrvTimes[i].m_Time	= llTimeProfileFrequency;
-			m_AvgTimes[i].m_Time	= (((m_AvgTimes[i].m_Time * 90)
-									+ (m_PrvTimes[i].m_Time*10))/100);
-			m_AvgTimes[i].m_iCount	= (((m_AvgTimes[i].m_iCount * 95)
-									+ (m_PrvTimes[i].m_iCount*10))/100);
-			}
-		}
-
-		++m_iAvgCount;
-
-		memcpy( m_PrvTimes, m_CurTimes, sizeof( m_PrvTimes ));
-		memset( m_CurTimes, 0, sizeof( m_CurTimes ));
-		m_TimeTotal = 0;
-	}
-
-	// Get the current precise time.
-	LONGLONG llTicks;
-	TIME_PROFILE_START;
-
-	// accumulate the time for this task.
-	LONGLONG Diff = ( llTicks - m_CurTime );
-	m_TimeTotal += Diff;
-	m_CurTimes[m_CurTask].m_Time += Diff;
-	m_CurTimes[m_CurTask].m_iCount ++;
-
-	// We are now on to the new task.
-	m_CurTime = llTicks;
-	m_CurTask = id;
-}
-
-PROFILE_TYPE CProfileData::GetCurrentTask()
-{
-	return m_CurTask;
-}
-
-LPCTSTR CProfileData::GetName(PROFILE_TYPE id) const
-{
-	static LPCTSTR const sm_pszProfileName[PROFILE_QTY] =
-	{
-		"IDLE",
-		"OVERHEAD",
-		"NETWORK_RX",
-		"CLIENTS",
-		"NETWORK_TX",
-		"CHARS",
-		"ITEMS",
-		"MAP",
-		"NPC_AI",
-		"SCRIPTS",
-		"DATA_TX",
-		"DATA_RX",
-	};
-	return (( id >= 0 ) && ( id < PROFILE_QTY )) ? sm_pszProfileName[id] : "";
-}
-
-LPCTSTR CProfileData::GetDesc(PROFILE_TYPE id) const
-{
-	ADDTOCALLSTACK("CProfileData::GetDesc");
-	TCHAR	*pszTmp = Str_GetTemp();
-	int		iCount	= m_PrvTimes[id].m_iCount;
-
-	if ( id >= PROFILE_TIME_QTY )
-	{
-		sprintf(pszTmp, "%i (avg: %i) bytes", (int) m_PrvTimes[id].m_Time, m_AvgTimes[id].m_Time);
-	}
-	else
-	{
-		sprintf( pszTmp, "%i.%04is   avg: %i.%04is     [samples:%5i  avg:%5i ]  runtime: %is",
-			(int)( m_PrvTimes[id].m_Time / ( llTimeProfileFrequency )),
-			(int)((( m_PrvTimes[id].m_Time * 10000 ) / ( llTimeProfileFrequency )) % 10000 ),
-			(int) ( m_AvgTimes[id].m_Time / ( llTimeProfileFrequency )),
-			(int) ((( m_AvgTimes[id].m_Time * 10000 ) / ( llTimeProfileFrequency )) % 10000 ),
-			iCount,
-			(int) m_AvgTimes[id].m_iCount,
-			m_iAvgCount );
-	}
-	return pszTmp;
-}
 
 //*******************************************************************
 
@@ -651,21 +531,14 @@ int Sphere_OnTick()
 	g_World.OnTick();
 
 	// process incoming data
-	g_Serv.m_Profile.Start( PROFILE_NETWORK_RX );
 	g_NetworkIn.tick();
-	g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
 
 	EXC_SET("server");
 	g_Serv.OnTick();
 
 	// push outgoing data
 	if (g_NetworkOut.isActive() == false)
-	{
-		g_Serv.m_Profile.Start( PROFILE_NETWORK_TX );
 		g_NetworkOut.tick();
-		g_Serv.m_Profile.Start( PROFILE_OVERHEAD );
-	}
-
 
 	EXC_CATCH;
 
