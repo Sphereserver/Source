@@ -135,6 +135,7 @@ SRC	:= 	CAccount.cpp \
 		../sphere/threads.cpp \
 		../sphere/linuxev.cpp \
 		../sphere/asyncdb.cpp \
+		../sphere/ProfileData.cpp \
 		../network/network.cpp \
 		../network/packet.cpp \
 		../network/send.cpp \
