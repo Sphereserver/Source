@@ -28,7 +28,7 @@ PacketGeneric::PacketGeneric(CClient* target, BYTE *data, long length) : PacketS
  *
  *
  ***************************************************************************/
-PacketTelnet::PacketTelnet(CClient* target, LPCTSTR message) : PacketSend(0, 0, PRI_NORMAL)
+PacketTelnet::PacketTelnet(CClient* target, LPCTSTR message) : PacketSend(0, 0, PRI_HIGHEST)
 {
 	ADDTOCALLSTACK("PacketTelnet::PacketTelnet");
 
