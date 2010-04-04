@@ -90,14 +90,24 @@ public:
 	#define EXC_SET(a) inLocalBlock = a; inLocalBlockCnt++
 
 #ifdef _WIN32
-	#define EXC_CATCH_EXCEPTION(a) \
-		bCATCHExcept = true; \
-		StackDebugInformation::printStackTrace(); \
-		if ( inLocalBlock ) \
-			g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
-														inLocalBlockCnt, inLocalBlock); \
-		else \
-			g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+	#ifdef THREAD_TRACK_CALLSTACK
+		#define EXC_CATCH_EXCEPTION(a) \
+			bCATCHExcept = true; \
+			StackDebugInformation::printStackTrace(); \
+			if ( inLocalBlock ) \
+				g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
+															inLocalBlockCnt, inLocalBlock); \
+			else \
+				g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+	#else
+		#define EXC_CATCH_EXCEPTION(a) \
+			bCATCHExcept = true; \
+			if ( inLocalBlock ) \
+				g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
+															inLocalBlockCnt, inLocalBlock); \
+			else \
+				g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+	#endif
 #else
 		#define EXC_CATCH_EXCEPTION(a) \
 		bCATCHExcept = true; \
@@ -129,15 +139,26 @@ public:
 	#define EXC_SETSUB(a) inLocalSubBlock = a; inLocalSubBlockCnt++
 
 #ifdef _WIN32
-	#define EXC_CATCH_SUB(a,b) \
-		bCATCHExceptSub = true; \
-		StackDebugInformation::printStackTrace(); \
-		if ( inLocalSubBlock ) \
-			g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
-														inLocalSubBlockCnt, inLocalSubBlock); \
-		else \
-			g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
-		//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
+	#ifdef THREAD_TRACK_CALLSTACK
+		#define EXC_CATCH_SUB(a,b) \
+			bCATCHExceptSub = true; \
+			StackDebugInformation::printStackTrace(); \
+			if ( inLocalSubBlock ) \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
+															inLocalSubBlockCnt, inLocalSubBlock); \
+			else \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
+			//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
+	#else
+		#define EXC_CATCH_SUB(a,b) \
+			bCATCHExceptSub = true; \
+			if ( inLocalSubBlock ) \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
+															inLocalSubBlockCnt, inLocalSubBlock); \
+			else \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
+			//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
+	#endif
 #else
 		#define EXC_CATCH_SUB(a,b) \
 		bCATCHExceptSub = true; \
