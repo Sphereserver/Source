@@ -2,6 +2,25 @@
 #include "strings.h"
 #include "threads.h"
 
+ProfileData::ProfileData()
+{
+	// we don't want to use SetActive here because ADDTOCALLSTACK will cause an infinite loop
+
+	memset(m_AverageTimes, 0, sizeof(m_AverageTimes));
+	memset(m_CurrentTimes, 0, sizeof(m_CurrentTimes));
+	memset(m_PreviousTimes, 0, sizeof(m_PreviousTimes));
+
+	m_iActiveWindowSeconds = 10;
+	m_iAverageCount = 1;
+
+	LONGLONG llTicks;
+	TIME_PROFILE_START;
+
+	m_CurrentTime = llTicks;
+	m_CurrentTask = PROFILE_IDLE;
+	m_TimeTotal = 0;
+}
+
 void ProfileData::SetActive(int iSampleSec)
 {
 	ADDTOCALLSTACK("ProfileData::SetActive");

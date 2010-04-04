@@ -46,11 +46,7 @@ protected:
 	LONGLONG m_CurrentTime;			// QueryPerformanceCount()
 
 public:
-	ProfileData()
-	{
-		SetActive(10);	// default to 10 sec window.
-		Start(PROFILE_IDLE);
-	}
+	ProfileData();
 
 	bool IsActive() const { return( m_iActiveWindowSeconds > 0 ? true : false ); }
 	int GetActiveWindow() const { return m_iActiveWindowSeconds; }
