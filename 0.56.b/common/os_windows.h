@@ -7,6 +7,9 @@
 	#define _WIN32_WINNT 0x0501
 #endif
 
+#undef FD_SETSIZE
+#define FD_SETSIZE 1024 // for max of n users ! default = 64
+
 #include <winsock2.h>
 #include <windows.h>
 #include <process.h>

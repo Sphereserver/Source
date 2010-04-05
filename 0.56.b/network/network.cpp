@@ -679,7 +679,7 @@ void NetworkIn::tick(void)
 					int iSeedLen(0);
 					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
 					{
-						DEBUGNETWORK(("%x: Receiving new client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%x:Receiving new client login handshake.\n", client->id()));
 
 						CEvent* pEvent = (CEvent*)buffer;
 
@@ -706,7 +706,7 @@ void NetworkIn::tick(void)
 					else
 					{
 						// assume it's a normal client log in
-						DEBUGNETWORK(("%x: Receiving old client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%x:Receiving old client login handshake.\n", client->id()));
 
 						seed = ( buffer[0] << 24 ) | ( buffer[1] << 16 ) | ( buffer[2] << 8 ) | buffer[3];
 						iSeedLen = NETWORK_SEEDLEN_OLD;
@@ -1039,11 +1039,15 @@ void NetworkIn::acceptConnection(void)
 	EXC_TRY("acceptConnection");
 	CSocketAddress client_addr;
 
+	DEBUGNETWORK(("Receiving new connection\n"));
+
 	EXC_SET("accept");
 	SOCKET h = g_Serv.m_SocketMain.Accept(client_addr);
 	if (( h >= 0 ) && ( h != INVALID_SOCKET ))
 	{
 		EXC_SET("ip history");
+		
+		DEBUGNETWORK(("Retrieving IP history\n"));
 		HistoryIP* ip = &getHistoryForIP(client_addr);
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
@@ -1093,9 +1097,13 @@ void NetworkIn::acceptConnection(void)
 				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
 
+				DEBUGNETWORK(("%x:State initialised, registering client instance.\n", slot));
+
 				EXC_SET("recording client");
 				if (m_states[slot]->m_client != NULL)
 					m_clients.InsertHead(m_states[slot]->getClient());
+
+				DEBUGNETWORK(("%x:Client successfully initialised.\n", slot));
 			}
 		}
 	}
@@ -1777,8 +1785,8 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		{
 			ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
 			state->m_overlapped.hEvent = client;
-			state->m_bufferWSA.buf = (CHAR*)sendBuffer;
 			state->m_bufferWSA.len = sendBufferLength;
+			state->m_bufferWSA.buf = (CHAR*)sendBuffer;
 
 			DWORD bytesSent;
 			if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)

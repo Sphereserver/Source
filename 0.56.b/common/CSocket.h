@@ -7,6 +7,9 @@
 #include "common.h"
 
 #ifdef _WIN32
+	#undef FD_SETSIZE
+	#define FD_SETSIZE 1024 // for max of n users ! default = 64
+
 	#include <winsock2.h>
 	typedef int socklen_t;
 #else	

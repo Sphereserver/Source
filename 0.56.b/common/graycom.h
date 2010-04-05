@@ -20,10 +20,8 @@
 
 #ifdef _WIN32
 // NOTE: If we want a max number of sockets we must compile for it !
-	#ifdef _WIN32
-		#undef FD_SETSIZE
-		#define FD_SETSIZE 1024 // for max of n users ! default = 64
-	#endif
+	#undef FD_SETSIZE
+	#define FD_SETSIZE 1024 // for max of n users ! default = 64
 
 	#ifndef STRICT
 		#define STRICT			// strict conversion of handles and pointers.

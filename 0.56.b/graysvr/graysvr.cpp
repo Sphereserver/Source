@@ -531,6 +531,7 @@ int Sphere_OnTick()
 	g_World.OnTick();
 
 	// process incoming data
+	EXC_SET("network-in");
 	g_NetworkIn.tick();
 
 	EXC_SET("server");
@@ -538,7 +539,10 @@ int Sphere_OnTick()
 
 	// push outgoing data
 	if (g_NetworkOut.isActive() == false)
+	{
+		EXC_SET("network-out");
 		g_NetworkOut.tick();
+	}
 
 	EXC_CATCH;
 
