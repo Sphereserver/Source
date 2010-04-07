@@ -360,8 +360,6 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( pszKey && *pszKey )
 				{
 					TCHAR * ppArgs[2];
-					int ArgCount;
-
 					if ( Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF( ppArgs )) != 2) 
 					{
 						DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));

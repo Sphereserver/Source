@@ -4720,6 +4720,7 @@ ALPHA additions:
 - Updated: spheretables.scp (Added default karma and fame levels to NOTOTITLES section)
 
 04-04-2010, MrSugarCube
+- Fixed #1734: No response sent for UOG and CUO status requests.
 - Modified: (Windows) Status window now uses a courier font so that data is aligned like it
   is when using 'p' in the console.
 - Modified: Improved accuracy of profile data ('p' in console, or status window in Windows)
