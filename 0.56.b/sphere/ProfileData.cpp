@@ -9,6 +9,7 @@ ProfileData::ProfileData()
 	memset(m_AverageTimes, 0, sizeof(m_AverageTimes));
 	memset(m_CurrentTimes, 0, sizeof(m_CurrentTimes));
 	memset(m_PreviousTimes, 0, sizeof(m_PreviousTimes));
+	memset(m_EnabledProfiles, 0, sizeof(m_EnabledProfiles));
 
 	m_iActiveWindowSeconds = 10;
 	m_iAverageCount = 1;
@@ -48,6 +49,9 @@ void ProfileData::Start(PROFILE_TYPE id)
 	ADDTOCALLSTACK("ProfileData::Start");
 	if (( id < 0 ) || ( id >= PROFILE_TIME_QTY ) || !m_iActiveWindowSeconds )
 		return;
+
+	// ensure profile is enabled
+	EnableProfile(id);
 
 	// Stop prev task.
 	if ( m_TimeTotal >= llTimeProfileFrequency * m_iActiveWindowSeconds )
@@ -99,23 +103,31 @@ void ProfileData::Count(PROFILE_TYPE id, DWORD dwVal)
 	m_CurrentTimes[id].m_iCount ++;
 }
 
-bool ProfileData::HasData(PROFILE_TYPE id)
+bool ProfileData::IsEnabled(PROFILE_TYPE id) const
 {
-	ADDTOCALLSTACK("ProfileData::HasData");
+	ADDTOCALLSTACK("ProfileData::IsEnabled");
 	if (id < 0 || id > PROFILE_QTY)
 		return false;
 
 	if (id < PROFILE_QTY)
-		return m_CurrentTimes[id].m_iCount > 0;
+		return m_EnabledProfiles[id];
 
 	// check all profiles
 	for (int i = PROFILE_OVERHEAD; i < PROFILE_QTY; i++)
 	{
-		if (HasData((PROFILE_TYPE) i))
+		if (IsEnabled((PROFILE_TYPE) i))
 			return true;
 	}
 
 	return false;
+}
+
+void ProfileData::EnableProfile(PROFILE_TYPE id)
+{
+	if (id < 0 || id >= PROFILE_QTY)
+		return;
+
+	m_EnabledProfiles[id] = true;
 }
 
 PROFILE_TYPE ProfileData::GetCurrentTask() const

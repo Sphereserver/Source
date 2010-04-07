@@ -248,14 +248,14 @@ void CNTWindow::CStatusWnd::FillStats()
 			continue;
 
 		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
-		if (profile->HasData() == false)
+		if (profile->IsEnabled() == false)
 			continue;
 
 		capture.SysMessagef("Thread %d - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile->HasData((PROFILE_TYPE) i) == false)
+			if (profile->IsEnabled((PROFILE_TYPE) i) == false)
 				continue;
 
 			capture.SysMessagef("'%-10s' = %s\n", profile->GetName((PROFILE_TYPE) i), profile->GetDescription((PROFILE_TYPE) i ));

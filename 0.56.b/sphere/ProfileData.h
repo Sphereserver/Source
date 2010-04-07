@@ -35,6 +35,7 @@ protected:
 	ProfileDataRec m_AverageTimes[PROFILE_QTY];
 	ProfileDataRec m_PreviousTimes[PROFILE_QTY];
 	ProfileDataRec m_CurrentTimes[PROFILE_QTY];
+	bool m_EnabledProfiles[PROFILE_QTY];
 
 	int m_iActiveWindowSeconds;	// The sample window size in seconds. 0=off
 	int	m_iAverageCount;
@@ -54,11 +55,12 @@ public:
 	void SetActive(int iSampleSec);
 	void Start(PROFILE_TYPE id);
 	void Count(PROFILE_TYPE id, DWORD dwVal);
-	bool HasData(PROFILE_TYPE id = PROFILE_QTY);
+	void EnableProfile(PROFILE_TYPE id);
 
 	PROFILE_TYPE GetCurrentTask() const;
 	LPCTSTR GetName(PROFILE_TYPE id) const;
 	LPCTSTR GetDescription(PROFILE_TYPE id) const;
+	bool IsEnabled(PROFILE_TYPE id = PROFILE_QTY) const;
 };
 
 #define CurrentProfileData ((AbstractSphereThread *)ThreadHolder::current())->m_profile

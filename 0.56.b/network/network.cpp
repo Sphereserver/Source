@@ -1358,6 +1358,11 @@ void NetworkIn::defragSlots(long fromSlot)
 
 NetworkOut::NetworkOut(void) : AbstractSphereThread("NetworkOut", IThread::RealTime)
 {
+	m_profile.EnableProfile(PROFILE_IDLE);
+	m_profile.EnableProfile(PROFILE_OVERHEAD);
+	m_profile.EnableProfile(PROFILE_NETWORK_TX);
+	m_profile.EnableProfile(PROFILE_DATA_TX);
+
 	m_encryptBuffer = new BYTE[MAX_BUFFER];
 }
 

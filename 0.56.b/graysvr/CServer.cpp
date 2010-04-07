@@ -886,7 +886,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			continue;
 
 		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
-		if (profile->HasData() == false)
+		if (profile->IsEnabled() == false)
 			continue;
 
 		pSrc->SysMessagef("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
@@ -895,7 +895,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile->HasData((PROFILE_TYPE) i) == false)
+			if (profile->IsEnabled((PROFILE_TYPE) i) == false)
 				continue;
 
 			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
