@@ -581,7 +581,7 @@ void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
 			if (g_Accounts.Account_FindChat((LPCTSTR)sTempName) == NULL)
 				break;
 
-			sName.Empty();
+			sTempName.Empty();
 		}
 	}
 
