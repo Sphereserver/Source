@@ -542,7 +542,9 @@ public:
 
 	void Broadcast(CChatChanMember * pFrom, LPCTSTR pszText, CLanguageID lang = 0, bool fOverride = false);
 	void QuitChat(CChatChanMember * pClient);
+
 	static void DecorateName(CGString & sName, const CChatChanMember * pMember = NULL, bool fSystem = false);
+	static void GenerateChatName(CGString & sName, const CClient * pClient);
 };
 
 class CDialogResponseArgs : public CScriptTriggerArgs

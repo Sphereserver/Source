@@ -2209,7 +2209,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 	NCHAR text[MAX_TALK_BUFFER];
-	int textLength = packetLength - getPosition();
+	int textLength = (packetLength - getPosition()) / 2;
 	if (textLength >= MAX_TALK_BUFFER)
 		textLength = MAX_TALK_BUFFER-1;
 

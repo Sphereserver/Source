@@ -20,6 +20,22 @@ void CChat::EventMsg( CClient * pClient, const NCHAR * pszText, int len, CLangua
 
 	CChatChanMember * pMe = pClient;
 	ASSERT(pMe);
+
+	// newer clients do not send the 'chat button' packet, leading to all kinds of problems
+	// with the client not being initialised properly for chat (e.g. blank name and exceptions
+	// when leaving a chat room) - if chat is not active then we must simulate the chat button
+	// event before processing the chat message
+	if (pMe->IsChatActive() == false)
+	{
+		// simulate the chat button being clicked
+		NCHAR name[MAX_NAME_SIZE+1] = { '\0' };
+		pClient->Event_ChatButton(name);
+
+		// if chat isn't active now then cancel processing the event
+		if (pMe->IsChatActive() == false)
+			return;
+	}
+
 	CChatChannel * pChannel =  pMe->GetChannel();
 
 	TCHAR szText[MAX_TALK_BUFFER * 2];
@@ -535,6 +551,42 @@ void CChat::DecorateName(CGString &sName, const CChatChanMember * pMember, bool 
 		sName.Format("%i%s", iResult, "SYSTEM");
 	else
 		sName.Format("%i%s", iResult, (LPCTSTR) pMember->GetChatName());
+}
+
+void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
+{
+	if (pClient == NULL)
+		return;
+
+	// decide upon 'base' name
+	LPCTSTR pszName = NULL;
+	if (pClient->GetChar() != NULL)
+		pszName = pClient->GetChar()->GetName();
+	else if (pClient->GetAccount() != NULL)
+		pszName = pClient->GetAccount()->GetName();
+
+	if (pszName == NULL)
+		return;
+
+	// try the base name
+	CGString sTempName(pszName);
+	if (g_Accounts.Account_FindChat(sTempName.GetPtr()) != NULL)
+	{
+		sTempName.Empty();
+
+		// append (n) to the name to make it unique
+		for (int attempts = 2; attempts <= g_Accounts.Account_GetCount(); attempts++)
+		{
+			sTempName.Format("%s (%d)", pszName, attempts);
+			if (g_Accounts.Account_FindChat((LPCTSTR)sTempName) == NULL)
+				break;
+
+			sName.Empty();
+		}
+	}
+
+	// copy name to output
+	sName.Copy(sTempName.GetPtr());
 }
 
 void CChat::Broadcast(CChatChanMember * pFrom, LPCTSTR pszText, CLanguageID lang, bool fOverride)
