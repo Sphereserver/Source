@@ -27,7 +27,7 @@ int CClient::xCompress( BYTE * pOutput, const BYTE * pInput, int iLen ) // stati
 	return m_Comp.Compress( pOutput, pInput, iLen );
 }
 
-bool CClient::IsConnecting()
+bool CClient::IsConnecting() const
 {
 	ADDTOCALLSTACK("CClient::IsConnecting");
 	switch ( GetConnectType() )

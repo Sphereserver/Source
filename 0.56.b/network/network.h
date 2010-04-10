@@ -34,8 +34,8 @@ class NetworkIn;
 struct CSocketAddress;
 
 #if _PACKETDUMP || _DUMPSUPPORT
-	void xRecordPacketData(CClient* client, const BYTE* data, int length, LPCTSTR heading);
-	void xRecordPacket(CClient* client, Packet* packet, LPCTSTR heading);
+	void xRecordPacketData(const CClient* client, const BYTE* data, int length, LPCTSTR heading);
+	void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading);
 #else
 	#define xRecordPacketData(_client_, _data_, _length, _heading_)
 	#define xRecordPacket(_client_, _packet_, _heading_)

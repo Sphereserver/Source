@@ -286,7 +286,7 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 			{
 				if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' ) return;
 
-				PacketTelnet* packet = new PacketTelnet(const_cast<CClient*>(this), pszMsg);
+				PacketTelnet* packet = new PacketTelnet(this, pszMsg);
 			}
 			return;
 		case CONNECT_CRYPT:
@@ -1484,7 +1484,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	return false;
 }
 
-long CClient::GetSocketID()
+long CClient::GetSocketID() const
 {
 	return m_net->id();
 }
@@ -1494,7 +1494,7 @@ CSocketAddress &CClient::GetPeer()
 	return m_net->m_peerAddress;
 }
 
-LPCTSTR CClient::GetPeerStr()
+LPCTSTR CClient::GetPeerStr() const
 {
 	return m_net->m_peerAddress.GetAddrStr();
 }

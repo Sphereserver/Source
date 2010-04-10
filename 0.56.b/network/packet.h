@@ -136,15 +136,15 @@ public:
 
 	void initLength(void); // write empty length and ensure that it is remembered
 
-	void target(CClient* client); // sets person to send packet to
+	void target(const CClient* client); // sets person to send packet to
 
-	void send(CClient* client = NULL); // adds the packet to the send queue
-	void push(CClient* client = NULL); // moves the packet to the send queue (will not be used anywhere else)
+	void send(const CClient* client = NULL); // adds the packet to the send queue
+	void push(const CClient* client = NULL); // moves the packet to the send queue (will not be used anywhere else)
 
 	long getPriority() const { return m_priority; }; // get packet priority
 	NetState* getTarget() const { return m_target; }; // get target state
 
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 	virtual void onSent(CClient* client);
 
 	friend class NetworkOut;

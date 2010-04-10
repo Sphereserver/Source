@@ -104,8 +104,9 @@ public:
 	{
 		if ( !pItem )
 			return false;
-		return( const_cast <const CGObList *>( pItem->GetParent()) == &(m_Items_Inert) ||
-			const_cast <const CGObList *>( pItem->GetParent()) == &(m_Items_Timer));
+
+		return pItem->GetParent() == &m_Items_Inert ||
+			   pItem->GetParent() == &m_Items_Timer;
 	}
 	void MoveItemToSector( CItem * pItem, bool fActive );
 

@@ -1060,7 +1060,7 @@ PacketSend* PacketSend::clone(void)
 	return new PacketSend(this);
 }
 
-void PacketSend::send(CClient *client)
+void PacketSend::send(const CClient *client)
 {
 	ADDTOCALLSTACK("PacketSend::send");
 
@@ -1077,7 +1077,7 @@ void PacketSend::send(CClient *client)
 	}
 }
 
-void PacketSend::push(CClient *client)
+void PacketSend::push(const CClient *client)
 {
 	ADDTOCALLSTACK("PacketSend::push");
 
@@ -1105,7 +1105,7 @@ void PacketSend::push(CClient *client)
 	}
 }
 
-void PacketSend::target(CClient* client)
+void PacketSend::target(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketSend::target");
 
@@ -1116,7 +1116,7 @@ void PacketSend::target(CClient* client)
 		m_target = client->GetNetState();
 }
 
-bool PacketSend::onSend(CClient* client)
+bool PacketSend::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketSend::onSend");
 	return true;

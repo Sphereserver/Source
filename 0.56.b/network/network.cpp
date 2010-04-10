@@ -14,7 +14,7 @@ NetworkOut g_NetworkOut;
 //
 #if _PACKETDUMP || _DUMPSUPPORT
 
-void xRecordPacketData(CClient* client, const BYTE* data, int length, LPCTSTR heading)
+void xRecordPacketData(const CClient* client, const BYTE* data, int length, LPCTSTR heading)
 {
 #ifdef _DUMPSUPPORT
 	if (client->GetAccount() != NULL && strnicmp(client->GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( client->GetAccount()->GetName())))
@@ -28,7 +28,7 @@ void xRecordPacketData(CClient* client, const BYTE* data, int length, LPCTSTR he
 	xRecordPacket(client, &packet, heading);
 }
 
-void xRecordPacket(CClient* client, Packet* packet, LPCTSTR heading)
+void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 {
 #ifdef _DUMPSUPPORT
 	if (client->GetAccount() != NULL && strnicmp(client->GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( client->GetAccount()->GetName())))
@@ -1212,7 +1212,7 @@ void NetworkIn::periodic(void)
 	{
 		EXC_SET("limiting connecting clients");
 		ClientIterator clients(this);
-		for (CClient* client = clients.next(); client != NULL; client = clients.next())
+		for (const CClient* client = clients.next(); client != NULL; client = clients.next())
 		{
 			if (client->IsConnecting())
 			{

@@ -32,14 +32,13 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 		return false;
 
 	int portnum = 0;
-	char *port = NULL;
-	if ( (port = const_cast<char*>(strchr(host, ':'))) != NULL )
+	const char *port = NULL;
+	if ( (port = strchr(host, ':')) != NULL )
 	{
 		char *pszTemp = Str_GetTemp();
 		strcpy(pszTemp, host);
 		*(strchr(pszTemp, ':')) = 0;
-		port++;
-		portnum = ATOI(port);
+		portnum = ATOI(port+1);
 		host = pszTemp;
 	}
 

@@ -655,8 +655,8 @@ public:
 		LPCSTR objStr = pObj->GetName();
 		if ( fNoSpaces )
 		{
-			char *	p	= const_cast<char*>(strchr( pszID, ' ' ));
-			if ( p )
+			const char * p = strchr( pszID, ' ' );
+			if (p != NULL)
 			{
 				int		iLen	= p - pszID;
 				// return( strnicmp( pszID, pObj->GetName(), iLen ) );

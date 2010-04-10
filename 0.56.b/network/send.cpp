@@ -28,7 +28,7 @@ PacketGeneric::PacketGeneric(CClient* target, BYTE *data, long length) : PacketS
  *
  *
  ***************************************************************************/
-PacketTelnet::PacketTelnet(CClient* target, LPCTSTR message) : PacketSend(0, 0, PRI_HIGHEST)
+PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(0, 0, PRI_HIGHEST)
 {
 	ADDTOCALLSTACK("PacketTelnet::PacketTelnet");
 
@@ -269,7 +269,7 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* chara
 	push(target);
 }
 
-bool PacketHealthBarUpdate::onSend(CClient* client)
+bool PacketHealthBarUpdate::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::onSend");
 
@@ -418,7 +418,7 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	}
 }
 
-bool PacketItemWorld::onSend(CClient* client)
+bool PacketItemWorld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemWorld::onSend");
 
@@ -674,7 +674,7 @@ PacketContainerOpen::PacketContainerOpen(CClient* target, const CObjBase* contai
 	push(target);
 }
 
-bool PacketContainerOpen::onSend(CClient* client)
+bool PacketContainerOpen::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketContainerOpen::onSend");
 
@@ -766,7 +766,7 @@ void PacketItemContainer::completeForTarget(CClient* target, const CItem* spellb
 	trim();
 }
 
-bool PacketItemContainer::onSend(CClient* client)
+bool PacketItemContainer::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContainer::onSend");
 
@@ -1146,7 +1146,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* sp
 	push(target);
 }
 
-bool PacketItemContents::onSend(CClient* client)
+bool PacketItemContents::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContents::onSend");
 
@@ -1979,7 +1979,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	push(target);
 }
 
-bool PacketCharacter::onSend(CClient* client)
+bool PacketCharacter::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCharacter::onSend");
 
@@ -2215,7 +2215,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	push(target);
 }
 
-bool PacketCorpseEquipment::onSend(CClient* client)
+bool PacketCorpseEquipment::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCorpseEquipment::onSend");
 
@@ -3848,7 +3848,7 @@ PacketPropertyList::PacketPropertyList(CClient* target, const CObjBase* object, 
 		push(target);
 }
 
-bool PacketPropertyList::onSend(CClient* client)
+bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
 

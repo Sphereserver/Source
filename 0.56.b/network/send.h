@@ -28,7 +28,7 @@ class PacketTelnet : public PacketSend
 {
 public:
 
-	PacketTelnet(CClient* target, LPCTSTR message);
+	PacketTelnet(const CClient* target, LPCTSTR message);
 };
 
 /***************************************************************************
@@ -92,7 +92,7 @@ public:
 
 	PacketHealthBarUpdate(CClient* target, const CChar* character);
 
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -115,7 +115,7 @@ public:
 
 	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags, BYTE &light);
 
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -224,7 +224,7 @@ private:
 public:
 	PacketContainerOpen(CClient* target, const CObjBase* container, GUMP_TYPE gump);
 
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -244,7 +244,7 @@ public:
 	PacketItemContainer(const CItem* spellbook, const CSpellDef* spell);
 
 	void completeForTarget(CClient* target, const CItem* spellbook);
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -365,7 +365,7 @@ public:
 	PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers); // standard content
 	PacketItemContents(CClient* target, const CItem* spellbook); // spellbook spells
 	PacketItemContents(CClient* target, const CItemContainer* spellbook); // custom spellbook spells
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -676,7 +676,7 @@ private:
 public:
 	PacketCharacter(CClient* target, const CChar* character);
 
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -812,7 +812,7 @@ private:
 
 public:
 	PacketCorpseEquipment(CClient* target, const CItemContainer* corpse);
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************
@@ -1476,7 +1476,7 @@ protected:
 
 public:
 	PacketPropertyList(CClient* target, const CObjBase* object, DWORD hash, CGObArray<CClientTooltip*>* data);
-	virtual bool onSend(CClient* client);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************

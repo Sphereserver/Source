@@ -1053,8 +1053,8 @@ public:
 
 public:
 	CSocketAddress &GetPeer();								// get peer address
-	LPCTSTR GetPeerStr();									// get string representation of the peer address
-	long GetSocketID();									// get socket id
+	LPCTSTR GetPeerStr() const;								// get string representation of the peer address
+	long GetSocketID() const;								// get socket id
 
 public:
 	CClient(NetState* state);
@@ -1368,7 +1368,7 @@ public:
 		m_Targ_Timeout.Init();
 	}
 
-	bool IsConnecting();
+	bool IsConnecting() const;
 
 	NetState* GetNetState(void) const { return m_net; };
 
