@@ -272,6 +272,8 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* chara
 bool PacketHealthBarUpdate::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_character.CharFind());
 }
@@ -421,6 +423,8 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 bool PacketItemWorld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemWorld::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_item.ItemFind());
 }
@@ -677,6 +681,8 @@ PacketContainerOpen::PacketContainerOpen(CClient* target, const CObjBase* contai
 bool PacketContainerOpen::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketContainerOpen::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_container.ObjFind());
 }
@@ -769,6 +775,8 @@ void PacketItemContainer::completeForTarget(CClient* target, const CItem* spellb
 bool PacketItemContainer::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContainer::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_item.ItemFind());
 }
@@ -1152,6 +1160,8 @@ bool PacketItemContents::onSend(const CClient* client)
 
 	if (m_count <= 0)
 		return false;
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_container.ItemFind());
 }
@@ -1982,6 +1992,8 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 bool PacketCharacter::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCharacter::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_character.CharFind());
 }
@@ -2221,6 +2233,8 @@ bool PacketCorpseEquipment::onSend(const CClient* client)
 
 	if (m_count <= 0)
 		return false;
+	if (g_NetworkOut.isActive())
+		return true;
 
 	return client->CanSee(m_corpse.ItemFind());
 }
@@ -3851,6 +3865,8 @@ PacketPropertyList::PacketPropertyList(CClient* target, const CObjBase* object, 
 bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
 
 	const CChar* character = client->GetChar();
 	if (character == NULL)

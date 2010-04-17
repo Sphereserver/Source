@@ -1839,6 +1839,7 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x0400	= (KR) Enables 0xE1 packet at character list (possibly other unknown effects)
 		//		0x1000	= Seventh Character Slot
 		//		0x4000	= New walk packets
+		//		0x8000  = New faction strongholds (uses map0x.mul, statics0x.mul, etc) - 7.0.6
 
 		// T2A - LBR don't have char list flags
 		bResOk = ( res >= RDS_AOS );
@@ -1876,6 +1877,10 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
+
+#ifdef _DEBUG
+		retValue |= g_Exp.m_VarGlobals.GetKeyNum("FEATUREA");
+#endif
 	}
 	else
 	{
@@ -1950,6 +1955,10 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		
 		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
+
+#ifdef _DEBUG
+		retValue |= g_Exp.m_VarGlobals.GetKeyNum("FEATUREB");
+#endif
 	}
 
 	return( retValue );
