@@ -2127,6 +2127,7 @@ public:
 
 protected:
 	bool m_mapsinitalized[256];
+	bool DetectMapSize(int map);
 
 public:
 	CMapList();

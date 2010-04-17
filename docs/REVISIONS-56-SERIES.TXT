@@ -4725,3 +4725,9 @@ ALPHA additions:
   is when using 'p' in the console.
 - Modified: Improved accuracy of profile data ('p' in console, or status window in Windows)
   by recording and displaying it for each thread.
+
+17-04-2010, MrSugarCube
+- Fixed: Wrong mapdif*.mul and stadif*.mul files being used with custom maps.
+- Modified: If Map1.mul is present then it will automatically be used.
+- Modified: The larger ML map sizes are now automatically detected, so there should be no
+  need to specify it in the ini file.

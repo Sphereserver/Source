@@ -207,30 +207,30 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 					}
 					if ( g_Cfg.m_fUseMapDiffs )
 					{
-						if ( !m_Mapdif[m].IsFileOpen() )
+						if ( !m_Mapdif[index].IsFileOpen() )
 						{
-							sprintf(z, "mapdif%d.mul", m);
-							OpenFile(m_Mapdif[m], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(z, "mapdif%d.mul", index);
+							OpenFile(m_Mapdif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 						}
-						if ( !m_Mapdifl[m].IsFileOpen() )
+						if ( !m_Mapdifl[index].IsFileOpen() )
 						{
-							sprintf(z, "mapdifl%d.mul", m);
-							OpenFile(m_Mapdifl[m], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(z, "mapdifl%d.mul", index);
+							OpenFile(m_Mapdifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 						}
-						if ( !m_Stadif[m].IsFileOpen() )
+						if ( !m_Stadif[index].IsFileOpen() )
 						{
-							sprintf(z, "stadif%d.mul", m);
-							OpenFile(m_Stadif[m], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(z, "stadif%d.mul", index);
+							OpenFile(m_Stadif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 						}
-						if ( !m_Stadifi[m].IsFileOpen() )
+						if ( !m_Stadifi[index].IsFileOpen() )
 						{
-							sprintf(z, "stadifi%d.mul", m);
-							OpenFile(m_Stadifi[m], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(z, "stadifi%d.mul", index);
+							OpenFile(m_Stadifi[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 						}
-						if ( !m_Stadifl[m].IsFileOpen() )
+						if ( !m_Stadifl[index].IsFileOpen() )
 						{
-							sprintf(z, "stadifl%d.mul", m);
-							OpenFile(m_Stadifl[m], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(z, "stadifl%d.mul", index);
+							OpenFile(m_Stadifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 						}
 					}
 
@@ -243,29 +243,35 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 						if ( m_Maps[index].IsFileOpen() )		m_Maps[index].Close();
 						if ( m_Staidx[index].IsFileOpen() )		m_Staidx[index].Close();
 						if ( m_Statics[index].IsFileOpen() )	m_Statics[index].Close();
-						g_MapList.m_maps[m] = false;
+						
+						if (index == 1 && m_Maps[0].IsFileOpen())
+							g_MapList.m_mapnum[m] = 0;
+						else
+							g_MapList.m_mapid[m] = false;
 					}
 
 					//	mapdif and mapdifl are not required, but if one exists so should
 					//	the other
-					if ( m_Mapdif[m].IsFileOpen() != m_Mapdifl[m].IsFileOpen() )
+					if ( m_Mapdif[index].IsFileOpen() != m_Mapdifl[index].IsFileOpen() )
 					{
-						if ( m_Mapdif[m].IsFileOpen() )			m_Mapdif[m].Close();
-						if ( m_Mapdifl[m].IsFileOpen() )		m_Mapdifl[m].Close();
+						if ( m_Mapdif[index].IsFileOpen() )		m_Mapdif[index].Close();
+						if ( m_Mapdifl[index].IsFileOpen() )	m_Mapdifl[index].Close();
 					}
 
 					//	if one of the stadif files exissts, so should the others
-					if ( m_Stadif[m].IsFileOpen() != m_Stadifi[m].IsFileOpen() ||
-						 m_Stadif[m].IsFileOpen() != m_Stadifl[m].IsFileOpen() )
+					if ( m_Stadif[index].IsFileOpen() != m_Stadifi[index].IsFileOpen() ||
+						 m_Stadif[index].IsFileOpen() != m_Stadifl[index].IsFileOpen() )
 					{
-						if ( m_Stadif[m].IsFileOpen() )			m_Stadif[m].Close();
-						if ( m_Stadifi[m].IsFileOpen() )		m_Stadifi[m].Close();
-						if ( m_Stadifl[m].IsFileOpen() )		m_Stadifl[m].Close();
+						if ( m_Stadif[index].IsFileOpen() )		m_Stadif[index].Close();
+						if ( m_Stadifi[index].IsFileOpen() )	m_Stadifi[index].Close();
+						if ( m_Stadifl[index].IsFileOpen() )	m_Stadifl[index].Close();
 					}
 				}
 			}
 		}
 	}
+
+	g_MapList.Init();
 
 	char *z = Str_GetTemp(), *z1 = Str_GetTemp();
 	for ( int j = 0; j < 7; j++ )
@@ -299,7 +305,6 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		}
 	}
 	g_Log.Event(LOGM_INIT, "Expansion maps supported: %s\n", z);
-	g_MapList.Init();
 
 	return (VERFILE_TYPE)i;
 }

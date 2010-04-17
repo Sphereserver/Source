@@ -35,12 +35,8 @@ CMapList::CMapList()
 	memset(m_mapid, -1, sizeof(m_mapid));
 	memset(m_sectorsize, 0, sizeof(m_sectorsize));
 
-	Load(0, 0x1800, 0x1000, 64, 0, 0);	// #0 map0.mul (felucca)
-	Load(1, 0x1800, 0x1000, 64, 0, 1);	// #1 map0.mul (trammel)
-	Load(2, 0x900, 0x640, 64, 2, 2);	// #2 map2.mul (ilshenar)
-	Load(3, 0xa00, 0x800, 64, 3, 3);	// #3 map3.mul (malas)
-	Load(4, 0x5a8, 0x5a8, 8, 4, 4);		// #4 map4.mul (tokuno islands)
-	Load(5, 0x500, 0x1000, 64, 5, 5);	// #5 map5.mul (tel mur)
+	for (int i = 0; i < 6; i++)
+		Load(i, 0, 0, 0, i, i);
 
 	m_pMapDiffCollection = NULL;
 }
@@ -121,6 +117,77 @@ bool CMapList::Load(int map, char *args)
 	return true;
 }
 
+bool CMapList::DetectMapSize(int map)
+{
+	if ( m_maps[map] == false )
+		return false;
+
+	int	index = m_mapnum[map];
+	if ( index < 0 )
+		return false;
+
+	if (g_Install.m_Maps[index].IsFileOpen() == false)
+		return false;
+
+	//
+	//	#0 - map0.mul			(felucca, 6144x4096 or 7168x4096, 77070336 or 89915392 bytes)
+	//	#1 - map0 or map1.mul	(trammel, 6144x4096 or 7168x4096, 77070336 or 89915392 bytes)
+	//	#2 - map2.mul			(ilshenar, 2304x1600, 11289600 bytes)
+	//	#3 - map3.mul			(malas, 2560x2048, 16056320 bytes)
+	//	#4 - map4.mul			(tokuno islands, 1448x1448, 6421156 bytes)
+	//	#6 - map5.mul			(tel mur, 1280x4096, 16056320 bytes)
+	//
+
+	switch (index)
+	{
+		case 0: // map0.mul
+		case 1: // map1.mul
+			if (g_Install.m_Maps[index].GetLength() == 89915392) // ML-sized
+			{
+				if (m_sizex[map] <= 0)		m_sizex[map] = 7168;
+				if (m_sizey[map] <= 0)		m_sizey[map] = 4096;
+			}
+			else
+			{
+				if (m_sizex[map] <= 0)		m_sizex[map] = 6144;
+				if (m_sizey[map] <= 0)		m_sizey[map] = 4096;
+			}
+
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 64;
+			break;
+
+		case 2: // map2.mul
+			if (m_sizex[map] <= 0)		m_sizex[map] = 2304;
+			if (m_sizey[map] <= 0)		m_sizey[map] = 1600;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 64;
+			break;
+
+		case 3: // map3.mul
+			if (m_sizex[map] <= 0)		m_sizex[map] = 2560;
+			if (m_sizey[map] <= 0)		m_sizey[map] = 2048;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 64;
+			break;
+
+		case 4: // map4.mul
+			if (m_sizex[map] <= 0)		m_sizex[map] = 1448;
+			if (m_sizey[map] <= 0)		m_sizey[map] = 1448;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 8;
+			break;
+
+		case 5: // map5.mul
+			if (m_sizex[map] <= 0)		m_sizex[map] = 1280;
+			if (m_sizey[map] <= 0)		m_sizey[map] = 4096;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 64;
+			break;
+
+		default:
+			DEBUG_ERR(("Unknown map index %d with file size of %u bytes. Please specify the correct size manually.\n", index, g_Install.m_Maps[index].GetLength()));
+			break;
+	}
+
+	return (m_sizex[map] > 0 && m_sizey[map] > 0 && m_sectorsize[map] > 0);
+}
+
 void CMapList::Init()
 {
 	for ( int i = 0; i < 256; i++ )
@@ -128,8 +195,10 @@ void CMapList::Init()
 		if ( m_maps[i] )	// map marked as available. check whatever it's possible
 		{
 			//	check coordinates first
-			if ( !m_sizex[i] || !m_sizey[i] || !m_sectorsize[i] || ( m_mapnum[i] == -1 ) )
+			if ( m_mapnum[i] == -1 )
 				m_maps[i] = false;
+			else if ( m_sizex[i] == 0 || m_sizey[i] == 0 || m_sectorsize[i] == 0 )
+				m_maps[i] = DetectMapSize(i);
 		}
 	}
 
