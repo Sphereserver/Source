@@ -1832,7 +1832,7 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 		}
 
 		CObjBase * pObjCont;
-		CObjBase * pObjTest = const_cast<CObjBase*>(pObj);
+		const CObjBase * pObjTest = pObj;
 		while (true)
 		{
 			pItem = dynamic_cast <const CItem*>(pObjTest);

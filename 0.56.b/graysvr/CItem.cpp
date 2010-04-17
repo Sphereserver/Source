@@ -1708,8 +1708,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			// how many charges ?
 			if ( m_itLight.m_charges != USHRT_MAX )
 			{
-				CItem * pLightItem = const_cast<CItem *>(this);
-				if ( pLightItem && pLightItem->Light_GetOverride(pItemDef) )
+				if ( Light_GetOverride(pItemDef) )
 				{
 					len += sprintf( pTemp+len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
 				}
@@ -3959,7 +3958,7 @@ bool CItem::Use_Light()
 	return( true );
 }
 
-int CItem::Light_GetOverride(CItemBase * pBase)
+int CItem::Light_GetOverride(const CItemBase * pBase) const
 {
 	ADDTOCALLSTACK("CItem::Light_GetOverride");
 	if ( !pBase )

@@ -411,13 +411,9 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 		return( false );
 	if ( m_pHouseDesign && pObj->IsItem() )
 	{
-		const CItem * pItemConst = STATIC_CAST<const CItem *>( pObj );
-		if ( pItemConst )
-		{
-			CItem * pItem = const_cast<CItem *>( pItemConst );
-			if ( pItem && (pItem->GetTagDefs()->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()) )
-				return( false );
-		}
+		const CItem * pItem = STATIC_CAST<const CItem *>( pObj );
+		if (pItem != NULL && (pItem->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()))
+			return( false );
 	}
 	return( m_pChar->CanSee( pObj ));
 }

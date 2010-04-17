@@ -1867,7 +1867,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%x', packet '%d', length '%d'\n",
+	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n",
 		state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;

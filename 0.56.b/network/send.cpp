@@ -3852,11 +3852,11 @@ bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
 
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
-	CObjBase* object = m_object.ObjFind();
+	const CObjBase* object = m_object.ObjFind();
 	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
 		return false;
 
