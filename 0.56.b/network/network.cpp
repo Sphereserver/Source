@@ -696,7 +696,8 @@ void NetworkIn::tick(void)
 							client->m_newseed = true;
 						}
 
-						DEBUG_WARN(("New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", (DWORD)pEvent->NewSeed.m_Version_Maj, 
+						DEBUG_WARN(("%x:New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", client->id(),
+									 (DWORD)pEvent->NewSeed.m_Version_Maj, 
 									 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
 									 (DWORD)pEvent->NewSeed.m_Version_Pat));
 
@@ -911,7 +912,7 @@ void NetworkIn::tick(void)
 
 		EXC_CATCHSUB("Network");
 		EXC_DEBUGSUB_START;
-		g_Log.EventDebug("Parsing %s", packet->dump());
+		g_Log.EventDebug("%x:Parsing %s", client->id(), packet->dump());
 
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)

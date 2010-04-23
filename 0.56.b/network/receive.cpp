@@ -487,6 +487,9 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	CGrayUID targetSerial(readInt32());
 
 	CChar* source = client->GetChar();
+	if (source == NULL)
+		return false;
+
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
 	if (item == NULL ||
 		client->GetTargMode() != CLIMODE_DRAG ||
@@ -3230,12 +3233,14 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+
+	CChar* character = client->GetChar();
+	if (character == NULL)
 		return false;
 
 	WORD packetLength = readInt16();
 	CGrayUID serial(readInt32());
-	if (client->GetChar()->GetUID() != serial)
+	if (character->GetUID() != serial)
 		return false;
 
 	EXTAOS_TYPE type = (EXTAOS_TYPE)readInt16();
