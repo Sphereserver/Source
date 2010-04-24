@@ -665,9 +665,19 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 	}
 	else
 	{
-		LOGFONT		logfont;
+		LOGFONT logfont;
    		memset( &logfont, 0, sizeof(logfont) );
    		strcpy( logfont.lfFaceName, pszFont );
+
+		// calculate height for a 10pt font, some systems can produce an unreadable
+		// font size if we let CreateFontIndirect pick a system default size
+		HDC hdc = GetDC(NULL);
+		if (hdc != NULL)
+		{
+			logfont.lfHeight = MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+			ReleaseDC(NULL, hdc);
+		}
+
    		m_hLogFont = CreateFontIndirect( &logfont );
 	}
    	m_wndLog.SetFont( m_hLogFont, true );
