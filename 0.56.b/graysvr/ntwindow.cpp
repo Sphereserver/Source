@@ -678,6 +678,7 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 			ReleaseDC(NULL, hdc);
 		}
 
+		logfont.lfPitchAndFamily = FF_MODERN;
    		m_hLogFont = CreateFontIndirect( &logfont );
 	}
    	m_wndLog.SetFont( m_hLogFont, true );
