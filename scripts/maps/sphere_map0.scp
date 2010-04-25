@@ -6005,7 +6005,7 @@ EVENTS=r_guard_tower
 TAG.GUARDOWNER=the wilderness
 
 [AREADEF a_townBritain]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_brit,r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Britain
 GROUP=Britain
 FLAGS=04180

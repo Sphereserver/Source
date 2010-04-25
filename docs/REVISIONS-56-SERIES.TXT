@@ -4734,3 +4734,6 @@ ALPHA additions:
 
 25-04-2010, MrSugarCube
 - Fixed #1725: Friends stealing ownership of a pet when mounting it.
+
+25-04-2010, MrSugarCube (Script pack)
+- Updated #1733: sphere_map0.scp (Added r_brit to events list for a_townBritain)
