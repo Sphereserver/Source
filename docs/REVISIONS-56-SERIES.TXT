@@ -4731,3 +4731,6 @@ ALPHA additions:
 - Modified: If Map1.mul is present then it will automatically be used.
 - Modified: The larger ML map sizes are now automatically detected, so there should be no
   need to specify it in the ini file.
+
+25-04-2010, MrSugarCube
+- Fixed #1725: Friends stealing ownership of a pet when mounting it.

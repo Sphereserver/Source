@@ -1335,8 +1335,11 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 
 	if ( ! pItem->IsAttr( ATTR_CURSED|ATTR_CURSED2 ))
 	{
-		pPet->NPC_PetSetOwner( this );
+		// set a new owner if it is not us (check first to prevent friends taking ownership)
+		if (pPet->NPC_IsOwnedBy(this, false) == false)
+			pPet->NPC_PetSetOwner( this );
 	}
+
 	pPet->Update();
 	pPet->Skill_Start( SKILL_NONE );	// was NPCACT_RIDDEN
 
