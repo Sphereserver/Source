@@ -1780,8 +1780,8 @@ void CClient::addReSync(bool bForceMap)
 	// Reloads the client with all it needs.
 	CPointMap ptold;	// invalid value.
 	addMap(NULL, !bForceMap);
-	addPlayerView(ptold);
 	addChar( m_pChar );
+	addPlayerView(ptold);
 	addLight();		// Current light level where I am.
 	addWeather();	// if any ...
 	addSpeedMode( m_pChar->m_pPlayer->m_speedMode );
