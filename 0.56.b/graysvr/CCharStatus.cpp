@@ -912,7 +912,7 @@ bool CChar::CanDisturb( CChar * pChar ) const
 	if ( !pChar )
 		return false;
 	if ( GetPrivLevel() < pChar->GetPrivLevel())
-		return pChar->IsStatFlag(STATF_Insubstantial);
+		return !pChar->IsStatFlag(STATF_Insubstantial);
 	return true;
 }
 

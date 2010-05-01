@@ -1486,12 +1486,16 @@ void CChar::CallGuards( CChar * pCriminal )
 				}
 			}
 
-			//	mark person a criminal if seen him criming
+			// don't allow guards to be called on someone we cant disturb
+			if (CanDisturb(pChar) == false)
+				continue;
+
+			// mark person a criminal if seen him criming
 			// Only players call guards this way. NPC's flag criminal instantly.
 			if ( m_pPlayer && Memory_FindObjTypes(pChar, MEMORY_SAWCRIME) )
 				pChar->Noto_Criminal();
 
-			//	not criminal or area is not guarded - we do not attack him
+			// not criminal or area is not guarded - we do not attack him
 			if ( !pChar->Noto_IsCriminal() || !pChar->m_pArea->IsGuarded() )
 				continue;
 

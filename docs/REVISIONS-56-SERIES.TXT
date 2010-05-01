@@ -4737,3 +4737,7 @@ ALPHA additions:
 
 25-04-2010, MrSugarCube (Script pack)
 - Updated #1733: sphere_map0.scp (Added r_brit to events list for a_townBritain)
+
+01-05-2010, MrSugarCube
+- Fixed #1738: Players calling guards on invisible staff members.
+- Fixed: 'msg_tingling' defmessage not being shown under the correct circumstances.

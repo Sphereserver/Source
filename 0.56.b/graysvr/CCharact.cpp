@@ -2831,7 +2831,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			if ( pChar->IsStatFlag( STATF_DEAD | STATF_Insubstantial ) ||
 				pChar->IsDisconnected())
 			{
-				if ( CanDisturb(pChar) && pChar->IsStatFlag(STATF_SpiritSpeak))
+				if ( CanDisturb(pChar) && IsStatFlag(STATF_SpiritSpeak))
 				{
 					SysMessageDefault( DEFMSG_TINGLING );
 				}
