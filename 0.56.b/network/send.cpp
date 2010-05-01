@@ -2293,6 +2293,7 @@ PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYP
 PacketServerRelay::PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId) : PacketSend(XCMD_Relay, 11, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketServerRelay::PacketServerRelay");
+	m_customerId = customerId;
 
 	writeByte((ip      ) & 0xFF);
 	writeByte((ip >> 8 ) & 0xFF);
@@ -2309,7 +2310,7 @@ void PacketServerRelay::onSent(CClient* client)
 	ADDTOCALLSTACK("PacketServerRelay::onSent");
 
 	// in case the client decides not to establish a new connection, change over to the game encryption
-	client->m_Crypt.InitFast(00, CONNECT_GAME); // init decryption table
+	client->m_Crypt.InitFast(m_customerId, CONNECT_GAME); // init decryption table
 	client->SetConnectType(client->m_Crypt.GetConnectType());
 }
 

@@ -837,6 +837,9 @@ public:
  ***************************************************************************/
 class PacketServerRelay : public PacketSend
 {
+private:
+	DWORD m_customerId;
+
 public:
 	PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId);
 	virtual void onSent(CClient* client);
