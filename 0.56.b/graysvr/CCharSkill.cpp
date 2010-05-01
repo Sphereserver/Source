@@ -1629,7 +1629,7 @@ int CChar::Skill_Alchemy( SKTRIG_TYPE stage )
 	{
 		// NOTE: Assume the bottle is ALWAYS LAST !
 		// Don't consume the bottle.
-		return -SKTRIG_ABORT;
+		return -SKTRIG_FAIL;
 	}
 
 	if ( ContentConsume( rid, item.GetResQty()))
