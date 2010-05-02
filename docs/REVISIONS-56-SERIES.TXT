@@ -4742,3 +4742,6 @@ ALPHA additions:
 - Fixed #1738: Players calling guards on invisible staff members.
 - Fixed #1740: @Abort being called when failing alchemy instead of @Fail.
 - Fixed: 'msg_tingling' defmessage not being shown under the correct circumstances.
+
+02-05-2010, MrSugarCube
+- Fixed #1742: DIALOGCLOSE function not obeying the UsePacketPriority setting.

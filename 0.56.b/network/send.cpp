@@ -3316,7 +3316,7 @@ PacketFastWalk::PacketFastWalk(CClient* target, DWORD* codes, int count, int sen
  *
  *
  ***************************************************************************/
-PacketGumpChange::PacketGumpChange(CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, PRI_LOW)
+PacketGumpChange::PacketGumpChange(CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpChange::PacketGumpChange");
 
@@ -3442,7 +3442,7 @@ PacketMapChange::PacketMapChange(CClient* target, int map) : PacketExtended(EXTD
  *
  *
  ***************************************************************************/
-PacketDisplayPopup::PacketDisplayPopup(CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 6, PRI_LOW)
+PacketDisplayPopup::PacketDisplayPopup(CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 6, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
@@ -3612,7 +3612,7 @@ PacketSpellbookContent::PacketSpellbookContent(CClient* target, const CItem* spe
  *
  *
  ***************************************************************************/
-PacketHouseDesignVersion::PacketHouseDesignVersion(CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseDesignVer, 13, PRI_LOW)
+PacketHouseDesignVersion::PacketHouseDesignVersion(CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseDesignVer, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseDesignVersion::PacketHouseDesignVersion");
 
@@ -3674,7 +3674,7 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(CClient* target, const CItemMul
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_LOW)
+PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
@@ -3693,7 +3693,7 @@ PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGra
  *
  *
  ***************************************************************************/
-PacketSpeedMode::PacketSpeedMode(CClient* target, BYTE mode) : PacketExtended(EXTDATA_SpeedMode, 6, PRI_HIGH)
+PacketSpeedMode::PacketSpeedMode(CClient* target, BYTE mode) : PacketExtended(EXTDATA_SpeedMode, 6, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSpeedMode::PacketSpeedMode");
 
