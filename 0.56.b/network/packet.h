@@ -6,6 +6,7 @@
 #include "../graysvr/graysvr.h"
 
 class NetState;
+class SimplePacketTransaction;
 
 #define PACKET_BUFFERDEFAULT 4
 #define PACKET_BUFFERGROWTH 4
@@ -148,10 +149,114 @@ public:
 	virtual void onSent(CClient* client);
 
 	friend class NetworkOut;
+	friend class SimplePacketTransaction;
 
 protected:
 	void fixLength(); // write correct packet length to it's slot
 	virtual PacketSend* clone(void);
 };
+
+
+/***************************************************************************
+ *
+ *
+ *	class PacketTransaction		Class for defining data to be sent
+ *
+ *
+ ***************************************************************************/
+class PacketTransaction
+{
+protected:
+	PacketTransaction(void) { };
+
+public:
+	virtual ~PacketTransaction(void) { };
+
+	virtual bool send(CClient* client) = 0; // send the transaction
+	virtual bool onSend(CClient* client) = 0; // transaction is about to be sent
+
+	virtual NetState* getTarget(void) const = 0; // get target of the transaction
+	virtual long getPriority(void) const = 0; // get priority of the transaction
+	virtual void setPriority(long priority) = 0; // set priority of the transaction
+	virtual long getLength(void) const = 0; // get length of the transaction
+
+};
+
+
+/***************************************************************************
+ *
+ *
+ *	class SimplePacketTransaction		Class for defining a single packet to be sent
+ *
+ *
+ ***************************************************************************/
+class SimplePacketTransaction : public PacketTransaction
+{
+private:
+	PacketSend* m_packet;
+
+public:
+	SimplePacketTransaction(PacketSend* packet) : m_packet(packet) { };
+	~SimplePacketTransaction(void);
+
+	bool send(CClient* client);
+	bool onSend(CClient* client) { return m_packet->onSend(client); }
+
+	NetState* getTarget(void) const { return m_packet->getTarget(); }
+	long getPriority(void) const { return m_packet->getPriority(); }
+	void setPriority(long priority) { m_packet->m_priority = priority; }
+	long getLength(void) const { return m_packet->getLength(); }
+
+};
+
+
+/***************************************************************************
+ *
+ *
+ *	class ExtendedPacketTransaction		Class for defining a set of packets to be sent together
+ *
+ *
+ ***************************************************************************/
+class ExtendedPacketTransaction : public PacketTransaction
+{
+private:
+	std::list<PacketSend*> m_packets;
+	NetState* m_target;
+	long m_priority;
+
+public:
+	ExtendedPacketTransaction(NetState* target, long priority) : m_target(target), m_priority(priority) { };
+	~ExtendedPacketTransaction(void);
+
+	bool send(CClient* client);
+	bool onSend(CClient* client);
+
+	NetState* getTarget(void) const	{ return m_target; }
+	long getPriority(void) const { return m_priority; }
+	void setPriority(long priority) { m_priority = priority; }
+	long getLength(void) const;
+
+	void push_back(PacketSend* packet) { m_packets.push_back(packet); }
+};
+
+
+
+/***************************************************************************
+ *
+ *
+ *	class OpenPacketTransaction		Class to automatically begin and end a transaction
+ *
+ *
+ ***************************************************************************/
+class OpenPacketTransaction
+{
+private:
+	NetState* m_client;
+
+public:
+	OpenPacketTransaction(const CClient* client, long priority);
+	~OpenPacketTransaction(void);
+};
+
 
 #endif

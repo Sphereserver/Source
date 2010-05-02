@@ -74,11 +74,14 @@ protected:
 #endif
 
 	typedef ThreadSafeQueue<PacketSend*> PacketQueue;
+	typedef ThreadSafeQueue<PacketTransaction*> PacketTransactionQueue;
 
-	PacketQueue m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
+	PacketTransactionQueue m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
 	PacketQueue m_asyncQueue; // outgoing async packet queue
 
 	int m_packetExceptions;
+
+	ExtendedPacketTransaction* m_transaction; // current transaction
 
 public:
 	GAMECLIENT_TYPE m_clientType; // type of client
@@ -98,6 +101,7 @@ public:
 	bool isValid(const CClient* client = NULL) const; // does this socket still belong to this client?
 	bool hasPendingData(void) const; // is there any data waiting to be sent?
 	bool canReceive(PacketSend* packet) const; // can the state receive the given packet?
+	bool canReceive(PacketTransaction* transaction) const; // can the state receive the given transaction?
 
 	void setAsyncMode(void); // set asynchronous mode
 	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode
@@ -131,6 +135,9 @@ public:
 	bool isCryptLessVersion(DWORD version) const { return m_clientVersion && m_clientVersion < version; }; // check the maximum crypt version
 	bool isReportedLessVersion(DWORD version) const { return m_reportedVersion && m_reportedVersion < version; }; // check the maximum reported version
 	bool isClientLessVersion(DWORD version) const { return isCryptLessVersion(version) || isReportedLessVersion(version); } // check the maximum client version
+
+	void beginTransaction(long priority); // begin a transaction for grouping packets
+	void endTransaction(void); // end transaction
 	
 	friend class NetworkIn;
 	friend class NetworkOut;
@@ -283,6 +290,7 @@ public:
 
 	void schedule(PacketSend* packet); // schedule this packet to be sent
 	void scheduleOnce(PacketSend* packet); // schedule this packet to be sent MOVING it to the list
+	void scheduleOnce(PacketTransaction* transaction); // schedule a transaction to be sent
 
 	void flush(CClient* client); // forces immediate send of all packets
 
@@ -295,6 +303,9 @@ protected:
 
 public:
 	void onAsyncSendComplete(CClient* client); // handle completion of async send
+
+	friend class SimplePacketTransaction;
+	friend class ExtendedPacketTransaction;
 };
 
 extern NetworkIn g_NetworkIn;

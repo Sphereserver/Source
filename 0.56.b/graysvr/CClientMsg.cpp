@@ -2083,6 +2083,8 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
 		return false;
 
+	OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
+
 	//	non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 	{
@@ -2095,16 +2097,18 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	int iRes = addShopItems(pVendor, LAYER_VENDOR_STOCK);
 	if ( iRes < 0 )
 		return false;
+
 	iTotal += iRes;
 	if ( iTotal <= 0 )
 		return false;
 
-		//	since older clients like 2.0.3 will crash without extra packets, let's provide
-		//	some empty packets specialy for them
+	//	since older clients like 2.0.3 will crash without extra packets, let's provide
+	//	some empty packets specialy for them
 	addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
 
 	addOpenGump( pVendor, GUMP_VENDOR_RECT );
 	addCharStatWindow( m_pChar->GetUID());	// Make sure the gold total has been updated.
+	
 	return( true );
 }
 
@@ -2117,6 +2121,8 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
 		return false;
+
+	OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
 
 	//	non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )

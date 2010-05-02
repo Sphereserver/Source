@@ -1126,3 +1126,115 @@ void PacketSend::onSent(CClient* client)
 {
 	ADDTOCALLSTACK("PacketSend::onSent");
 }
+
+
+/***************************************************************************
+ *
+ *
+ *	class SimplePacketTransaction		Class for defining a single packet to be sent
+ *
+ *
+ ***************************************************************************/
+SimplePacketTransaction::~SimplePacketTransaction(void)
+{
+	if (m_packet != NULL)
+		delete m_packet;
+}
+
+bool SimplePacketTransaction::send(CClient* client)
+{
+	ADDTOCALLSTACK("SimplePacketTransaction::send");
+	
+	PacketSend* packet = m_packet;
+	m_packet = NULL;
+
+	return g_NetworkOut.sendPacket(client, packet);
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	class ExtendedPacketTransaction		Class for defining a set of packets to be sent together
+ *
+ *
+ ***************************************************************************/
+ExtendedPacketTransaction::~ExtendedPacketTransaction(void)
+{
+	for (std::list<PacketSend*>::iterator it = m_packets.begin(); it != m_packets.end(); it++)
+		delete *it;
+
+	m_packets.clear();
+}
+
+long ExtendedPacketTransaction::getLength(void) const
+{
+	ADDTOCALLSTACK("ExtendedPacketTransaction::getLength");
+
+	long totalLength(0);
+	for (std::list<PacketSend*>::const_iterator it = m_packets.begin(); it != m_packets.end(); it++)
+		totalLength += (*it)->getLength();
+
+	return totalLength;
+}
+
+bool ExtendedPacketTransaction::send(CClient* client)
+{
+	ADDTOCALLSTACK("ExtendedPacketTransaction::send");
+
+	while (m_packets.empty() == false)
+	{
+		PacketSend* packet = m_packets.front();
+		m_packets.pop_front();
+
+		if (g_NetworkOut.sendPacket(client, packet) == false)
+			return false;
+	}
+
+	return true;
+}
+
+bool ExtendedPacketTransaction::onSend(CClient* client)
+{
+	ADDTOCALLSTACK("ExtendedPacketTransaction::onSend");
+
+	bool canSend = false;
+	for (std::list<PacketSend*>::iterator it = m_packets.begin(); it != m_packets.end(); )
+	{
+		if ((*it)->onSend(client) == false)
+		{
+			// remove the packet
+			delete *it;
+			it = m_packets.erase(it);
+			continue;
+		}
+
+		it++;
+		canSend = true;
+	}
+
+	return canSend;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	class OpenPacketTransaction		Class to automatically begin and end a transaction
+ *
+ *
+ ***************************************************************************/
+OpenPacketTransaction::OpenPacketTransaction(const CClient* client, long priority)
+{
+	ASSERT(client != NULL);
+
+	m_client = client->GetNetState();
+	if (m_client != NULL)
+		m_client->beginTransaction(priority);
+}
+
+OpenPacketTransaction::~OpenPacketTransaction(void)
+{
+	if (m_client != NULL)
+		m_client->endTransaction();
+}

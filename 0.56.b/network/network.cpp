@@ -80,7 +80,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
+NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0), m_transaction(NULL)
 {
 	clear();
 }
@@ -141,6 +141,9 @@ void NetState::clear(void)
 	}
 	m_asyncQueue.clean();
 
+	if (m_transaction != NULL)
+		delete m_transaction;
+
 	m_sequence = 0;
 	m_seeded = false;
 	m_newseed = false;
@@ -150,6 +153,7 @@ void NetState::clear(void)
 	m_isSendingAsync = false;
 	m_useAsync = false;
 	m_packetExceptions = 0;
+	m_transaction = NULL;
 }
 
 void NetState::init(SOCKET socket, CSocketAddress addr)
@@ -268,6 +272,44 @@ bool NetState::canReceive(PacketSend* packet) const
 		return false;
 
 	return true;
+}
+
+bool NetState::canReceive(PacketTransaction* transaction) const
+{
+	if (m_socket.IsOpen() == false || transaction == NULL)
+		return false;
+
+	if (isClosing() && transaction->getPriority() < NETWORK_DISCONNECTPRI)
+		return false;
+
+	if (transaction->getTarget()->m_client == NULL)
+		return false;
+
+	return true;
+}
+
+void NetState::beginTransaction(long priority)
+{
+	if (m_transaction != NULL)
+		DEBUGNETWORK(("%x:New network transaction started whilst a previous is still open.\n", id()));
+
+	// ensure previous transaction is committed
+	endTransaction();
+
+	//DEBUGNETWORK(("%x:Starting a new packet transaction.\n", id()));
+
+	m_transaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : PacketSend::PRI_NORMAL);
+}
+
+void NetState::endTransaction(void)
+{
+	if (m_transaction == NULL)
+		return;
+
+	//DEBUGNETWORK(("%x:Scheduling packet transaction to be sent.\n", id()));
+
+	g_NetworkOut.scheduleOnce(m_transaction);
+	m_transaction = NULL;
 }
 
 
@@ -1489,7 +1531,28 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 		return;
 	}
 
-	long priority = packet->getPriority();
+	if (state->m_transaction != NULL)
+		state->m_transaction->push_back(packet);
+	else
+		scheduleOnce(new SimplePacketTransaction(packet));
+}
+
+void NetworkOut::scheduleOnce(PacketTransaction* transaction)
+{
+	ADDTOCALLSTACK("NetworkOut::scheduleOnce[2]");
+
+	ASSERT(transaction != NULL);
+	NetState* state = transaction->getTarget();
+	ASSERT(state != NULL);
+
+	// don't bother queuing packets for invalid sockets
+	if (state == NULL || state->isValid() == false)
+	{
+		delete transaction;
+		return;
+	}
+
+	long priority = transaction->getPriority();
 	ASSERT(priority >= PacketSend::PRI_IDLE && priority < PacketSend::PRI_QTY);
 
 #ifdef NETWORK_MAXQUEUESIZE
@@ -1503,15 +1566,15 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 			{
 //				DEBUGNETWORK(("%x:Packet decreased priority due to overal amount %d overlapping %d.\n", state->id(), state->m_queue[priority].size(), maxClientPackets));
 
-				packet->m_priority = priority-1;
-				scheduleOnce(packet);
+				transaction->setPriority(priority-1);
+				scheduleOnce(transaction);
 				return;
 			}
 		}
 	}
 #endif
 
-	state->m_queue[priority].push(packet);
+	state->m_queue[priority].push(transaction);
 }
 
 void NetworkOut::flush(CClient* client)
@@ -1577,40 +1640,42 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 
 	long length = 0;
 
-	// send N packets from the queue
+	// send N transactions from the queue
 	int i = 0;
 	for (i = 0; i < maxClientPackets; i++)
 	{
 		if (state->m_queue[priority].empty())
 			break;
 
-		PacketSend* packet = state->m_queue[priority].front();
+		PacketTransaction* transaction = state->m_queue[priority].front();
 
 		// remove early to prevent exceptions
 		state->m_queue[priority].pop();
 
-		if (state->canReceive(packet) == false || packet->onSend(client) == false)
+		if (state->canReceive(transaction) == false || transaction->onSend(client) == false)
 		{
-			if (packet == NULL)
+			if (transaction == NULL)
 				break;
 
-			// don't count this towards the limit, allow an extra packet to be processed
-			delete packet;
+			// don't count this towards the limit, allow an extra transaction to be processed
+			delete transaction;
 			maxClientPackets++;
 			continue;
 		}
 
 		EXC_TRY("proceedQueue");
-		length += packet->getLength();
+		length += transaction->getLength();
 
 		EXC_SET("sending");
-		if (sendPacket(client, packet) == false)
+		if (transaction->send(client) == false)
 		{
 			state->markWriteClosed();
+			delete transaction;
 			break;
 		}
 
 		client->m_timeLastSend = time;
+		delete transaction;
 
 		EXC_SET("check length");
 		if (length > maxClientLength)
