@@ -158,16 +158,28 @@ bool CDataBase::exec(const char *query)
 	if ( !isConnected() )
 		return false;
 
-	if ( mysql_query(_myData, query) )
+	int result = mysql_query(_myData, query);
+	if (result == 0)
+	{
+		// even though we don't want (or expect) any result data, we must retrieve
+		// is anyway otherwise we will lose our connection to the server
+		MYSQL_RES* res = mysql_store_result(_myData);
+		if (res != NULL)
+			mysql_free_result(res);
+
+		return true;
+	}
+	else
 	{
 		const char *myErr = mysql_error(_myData);
 		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL query \"%s\" failed due to \"%s\"\n",
 			query, ( *myErr ? myErr : "unknown reason"));
-
-		return false;
 	}
+	
+	if (( result == CR_SERVER_GONE_ERROR ) || ( result == CR_SERVER_LOST ))
+		Close();
 
-	return true;
+	return false;
 }
 
 bool __cdecl CDataBase::execf(char *fmt, ...)

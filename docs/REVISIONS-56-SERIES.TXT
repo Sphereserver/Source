@@ -4745,3 +4745,6 @@ ALPHA additions:
 
 02-05-2010, MrSugarCube
 - Fixed #1742: DIALOGCLOSE function not obeying the UsePacketPriority setting.
+
+03-05-2010, MrSugarCube
+- Fixed: Database connection lost when using DB.EXECUTE with a query that returns results.
