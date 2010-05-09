@@ -14,6 +14,9 @@ static void socketmain_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 	{
 		if ( revents & EV_READ )
 		{
+			// warning: accepting a new connection here can result in a threading issue,
+			// where the main thread can clear the connection before it has been fully
+			// initialised
 			g_NetworkIn.acceptConnection();
 		}
 	}

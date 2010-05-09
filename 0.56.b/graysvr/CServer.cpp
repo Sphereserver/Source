@@ -1694,8 +1694,10 @@ bool CServer::SocketsInit( CGSocket & socket )
 	socket.Listen();
 	
 #ifndef _WIN32
+#ifdef LIBEV_REGISTERMAIN
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.registerMainsocket();
+#endif
 #endif
 		
 	return true;
@@ -1742,8 +1744,10 @@ void CServer::SocketsClose()
 {
 	ADDTOCALLSTACK("CServer::SocketsClose");
 #ifndef _WIN32
+#ifdef LIBEV_REGISTERMAIN
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.unregisterMainsocket();
+#endif
 #endif
 	m_SocketMain.Close();
 }

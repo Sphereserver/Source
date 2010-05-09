@@ -998,7 +998,9 @@ int NetworkIn::checkForData(fd_set* storage)
 	FD_ZERO(storage);
 
 #ifndef _WIN32
+#ifdef LIBEV_REGISTERMAIN
 	if (g_Cfg.m_fUseAsyncNetwork == 0)
+#endif
 #endif
 	{
 		EXC_SET("main socket");
