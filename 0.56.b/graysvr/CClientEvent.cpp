@@ -472,7 +472,6 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 		// in pack or other CItemContainer.
 		m_pChar->UpdateDrag( pItem, pObjOn );
 		CItemContainer * pContOn = dynamic_cast <CItemContainer *>(pObjOn);
-		ASSERT(pContOn);
 
 		if ( !pContOn )
 		{
@@ -494,6 +493,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			}
 		}
 
+		ASSERT(pContOn);
 		pContOn->ContentAdd( pItem, pt, gridIndex );
 		addSound( pItem->GetDropSound( pObjOn ));
 	}
