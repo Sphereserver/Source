@@ -139,8 +139,8 @@ public:
 
 	void target(const CClient* client); // sets person to send packet to
 
-	void send(const CClient* client = NULL); // adds the packet to the send queue
-	void push(const CClient* client = NULL); // moves the packet to the send queue (will not be used anywhere else)
+	void send(const CClient* client = NULL, bool appendTransaction = true); // adds the packet to the send queue
+	void push(const CClient* client = NULL, bool appendTransaction = true); // moves the packet to the send queue (will not be used anywhere else)
 
 	long getPriority() const { return m_priority; }; // get packet priority
 	NetState* getTarget() const { return m_target; }; // get target state

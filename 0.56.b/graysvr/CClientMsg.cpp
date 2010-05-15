@@ -382,6 +382,8 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 		return false;
 	}
 
+	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
+
 	addOpenGump(pContainer, gump);
 	addContents(pContainer, false, false, false);
 
@@ -1978,6 +1980,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	if ( count == -1 )
 		return;
 
+	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 	addOpenGump( pBook, GUMP_OPEN_SPELLBOOK );
 
 	//
@@ -2014,6 +2017,7 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 		count++;
 	}
 
+	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 	addOpenGump( pBook, (GUMP_TYPE) gumpID );
 	if (count <= 0)
 		return;

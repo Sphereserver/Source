@@ -1060,7 +1060,7 @@ PacketSend* PacketSend::clone(void)
 	return new PacketSend(this);
 }
 
-void PacketSend::send(const CClient *client)
+void PacketSend::send(const CClient *client, bool appendTransaction)
 {
 	ADDTOCALLSTACK("PacketSend::send");
 
@@ -1073,11 +1073,11 @@ void PacketSend::send(const CClient *client)
 		if (sync() > NETWORK_MAXPACKETLEN)
 			return;
 
-		g_NetworkOut.schedule(this);
+		g_NetworkOut.schedule(this, appendTransaction);
 	}
 }
 
-void PacketSend::push(const CClient *client)
+void PacketSend::push(const CClient *client, bool appendTransaction)
 {
 	ADDTOCALLSTACK("PacketSend::push");
 
@@ -1096,7 +1096,7 @@ void PacketSend::push(const CClient *client)
 			return;
 		}
 
-		g_NetworkOut.scheduleOnce(this);
+		g_NetworkOut.scheduleOnce(this, appendTransaction);
 	}
 	else
 	{

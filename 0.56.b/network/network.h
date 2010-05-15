@@ -288,8 +288,8 @@ public:
 	virtual void tick(void);
 	virtual void waitForClose(void);
 
-	void schedule(PacketSend* packet); // schedule this packet to be sent
-	void scheduleOnce(PacketSend* packet); // schedule this packet to be sent MOVING it to the list
+	void schedule(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent
+	void scheduleOnce(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent MOVING it to the list
 	void scheduleOnce(PacketTransaction* transaction); // schedule a transaction to be sent
 
 	void flush(CClient* client); // forces immediate send of all packets

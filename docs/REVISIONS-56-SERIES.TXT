@@ -4753,5 +4753,7 @@ ALPHA additions:
 - Fixed #1748: Exception when dropping an item onto a non-container.
 
 15-05-2010, MrSugarCube
+- Fixed #1747: Container contents near the boundaries showing in wrong position when
+  UsePacketPriority is enabled.
 - Fixed #1746: Damage showing in the corner of the screen instead of above an enemy when
   UsePacketPriority is enabled.

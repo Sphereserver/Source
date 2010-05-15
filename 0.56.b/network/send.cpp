@@ -3860,7 +3860,7 @@ PacketPropertyList::PacketPropertyList(CClient* target, const CObjBase* object, 
 	writeInt32(0);
 
 	if (target != NULL)
-		push(target);
+		push(target, false);
 }
 
 bool PacketPropertyList::onSend(const CClient* client)

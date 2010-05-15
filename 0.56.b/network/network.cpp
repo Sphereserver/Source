@@ -1510,15 +1510,15 @@ void NetworkOut::waitForClose(void)
 	return;
 }
 
-void NetworkOut::schedule(PacketSend* packet)
+void NetworkOut::schedule(PacketSend* packet, bool appendTransaction)
 {
 	ADDTOCALLSTACK("NetworkOut::schedule");
 
 	ASSERT(packet != NULL);
-	scheduleOnce(packet->clone());
+	scheduleOnce(packet->clone(), appendTransaction);
 }
 
-void NetworkOut::scheduleOnce(PacketSend* packet)
+void NetworkOut::scheduleOnce(PacketSend* packet, bool appendTransaction)
 {
 	ADDTOCALLSTACK("NetworkOut::scheduleOnce");
 
@@ -1533,7 +1533,7 @@ void NetworkOut::scheduleOnce(PacketSend* packet)
 		return;
 	}
 
-	if (state->m_transaction != NULL)
+	if (state->m_transaction != NULL && appendTransaction)
 		state->m_transaction->push_back(packet);
 	else
 		scheduleOnce(new SimplePacketTransaction(packet));
@@ -1895,7 +1895,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 				EXC_SET("send failed - requeue packet");
 
 				// re-queue the packet and try again later
-				scheduleOnce(packet);
+				scheduleOnce(packet, false);
 				return true;
 			}
 			else if (errCode == WSAECONNRESET || errCode == WSAECONNABORTED)
