@@ -76,11 +76,11 @@ void PacketWeb::setData(BYTE* data, int length)
 /***************************************************************************
  *
  *
- *	Packet 0x0B : PacketCombatDamage		sends notification of got damage (LOW)
+ *	Packet 0x0B : PacketCombatDamage		sends notification of got damage (NORMAL)
  *
  *
  ***************************************************************************/
-PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
@@ -3670,11 +3670,11 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(CClient* target, const CItemMul
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (LOW)
+ *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (NORMAL)
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 

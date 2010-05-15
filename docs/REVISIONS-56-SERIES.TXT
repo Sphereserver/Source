@@ -4751,3 +4751,7 @@ ALPHA additions:
 
 13-05-2010, MrSugarCube
 - Fixed #1748: Exception when dropping an item onto a non-container.
+
+15-05-2010, MrSugarCube
+- Fixed #1746: Damage showing in the corner of the screen instead of above an enemy when
+  UsePacketPriority is enabled.

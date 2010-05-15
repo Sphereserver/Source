@@ -48,7 +48,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x0B : PacketCombatDamage		sends notification of got damage (LOW)
+ *	Packet 0x0B : PacketCombatDamage		sends notification of got damage (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1389,7 +1389,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (LOW)
+ *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (NORMAL)
  *
  *
  ***************************************************************************/
