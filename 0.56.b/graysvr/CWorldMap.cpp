@@ -165,7 +165,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	CItemBase * pItemDef = NULL;
 	CItem * pItem = NULL;
 	CItemBaseDupe * pDupeDef = NULL;
-	BYTE Height = 0;
+	t_height Height = 0;
 	BYTE z = 0;
 	CPointMap ptTest;
 	int iQty;
@@ -175,9 +175,9 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	CPointMap ptElem[5];
 	memset(ptElem, 0, sizeof(ptElem));
 	//for ( iQty = 0; iQty < 4; ++iQty )
-	//	ptElem[iQty].m_z = -127;
-	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = -127;
-	ptElem[4] = CPointMap(-1,-1,-127);
+	//	ptElem[iQty].m_z = UO_SIZE_MIN_Z;
+	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = UO_SIZE_MIN_Z;
+	ptElem[4] = CPointMap(-1,-1,UO_SIZE_MIN_Z);
 
 	bool fElem[4] = { false, false, false, false };
 
@@ -211,7 +211,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			else
 				Height = pDupeDef->GetHeight();
 		}
-		z = ( Height + pItem->GetTopPoint().m_z ); //height + current position = the top point
+		z = minimum( Height + pItem->GetTopPoint().m_z, UO_SIZE_Z ); //height + current position = the top point
 
 		if ( ptElem[0].m_z > z ) //if ( ptElem[0].m_z > pItem->GetTopPoint().m_z )
 			continue;
@@ -286,7 +286,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 					else
 						Height = pDupeDef->GetHeight();
 				}
-				ptTest.m_z += Height; //height + current position = the top point
+				ptTest.m_z = minimum(ptTest.m_z + Height, UO_SIZE_Z); //height + current position = the top point
 
 				if ( pt.GetDist( ptTest ) > iDistance )
 					continue;
@@ -351,7 +351,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				else
 					Height = pDupeDef->GetHeight();
 			}
-			ptTest.m_z += Height; //height + current position = the top point
+			ptTest.m_z = minimum(ptTest.m_z + Height, UO_SIZE_Z); //height + current position = the top point
 
 			if ( pt.GetDist( ptTest ) > iDistance )
 				continue;
@@ -723,7 +723,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				// This static is at the coordinates in question.
 				// enough room for me to stand here ?
 				wBlockThis = 0;
-				signed char zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
+				t_height zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
 				block.CheckTile( wBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
 			}
 		}
@@ -769,7 +769,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 								continue;
 
 							wBlockThis = 0;
-							signed char zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), wBlockThis );
+							t_height zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), wBlockThis );
 							block.CheckTile( wBlockThis, zitem, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
 						}
 					}
@@ -904,7 +904,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	CItem * pItem = NULL;
 	WORD wBlockThis = 0;
 	signed char z = 0;
-	signed char zHeight = 0;
+	t_height zHeight = 0;
 	int x2, y2, i, ii, iQty = 0;
 
 	// Height of statics at/above given coordinates

@@ -1511,12 +1511,12 @@ public:
 	void EndCustomize(bool bForce = false);
 	void SwitchToLevel( CClient * pClientSrc, int iLevel );
 	void CommitChanges( CClient * pClientSrc = NULL );
-	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z = -128, int iStairID = 0);
-	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z = -128, int iStairID = -1 );
-	void AddRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
-	void RemoveItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
+	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z = -128, int iStairID = 0);
+	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z = -128, int iStairID = -1 );
+	void AddRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
+	void RemoveItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
 	bool RemoveStairs( Component * pStairComponent );
-	void RemoveRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z);
+	void RemoveRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
 	void SendVersionTo( CClient * pClientSrc );
 	void SendStructureTo( CClient * pClientSrc );
 	void BackupStructure( CClient * pClientSrc = NULL );
@@ -1527,14 +1527,14 @@ public:
 	const CGrayMultiCustom * GetMultiItemDefs();
 	const CGRect GetDesignArea();
 	int GetFixtureCount(DesignDetails * pDesign = NULL);
-	int GetComponentsAt(short dx, short dy, char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
+	int GetComponentsAt(short dx, short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
 	int GetRevision(CClient * pClientSrc = NULL) const;
 	int GetLevelCount();
 	int GetStairCount();
 
-	static unsigned char GetPlane( char z );
+	static unsigned char GetPlane( signed char z );
 	static unsigned char GetPlane( Component * pComponent );
-	static char GetPlaneZ( unsigned char plane );
+	static signed char GetPlaneZ( unsigned char plane );
 	static bool IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti );
 };
 
@@ -2327,7 +2327,7 @@ public:
 	CGrayUID m_uidWeapon;		// current Wielded weapon.	(could just get rid of this ?)
 	WORD m_defense;			// calculated armor worn (NOT intrinsic armor)
 
-	BYTE m_height;		//Height set in-game or under some trigger (height=) - for both items and chars
+	t_height m_height;		//Height set in-game or under some trigger (height=) - for both items and chars
 
 	signed int m_ModMaxWeight;
 	unsigned int m_exp;			//	character experience
@@ -2339,7 +2339,7 @@ public:
 	short int m_ResEnergy;
 	//DIR_TYPE m_dirClimb;	// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
-	signed char m_zClimbHeight;	// The height at the end of the climbable.
+	t_height m_zClimbHeight;	// The height at the end of the climbable.
 
 	// Saved stuff.
 	DIR_TYPE m_dirFace;	// facing this dir.
@@ -2372,7 +2372,7 @@ public:
 #define SU_UPDATE_HITS			0x01	// update hits to others
 #define SU_UPDATE_MODE			0x02	// update mode to all
 	CServTime m_timeLastHitsUpdate;
-	char m_fStatusUpdate;
+	unsigned char m_fStatusUpdate;
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
@@ -2690,8 +2690,8 @@ public:
 	}
 
 	bool SetName( LPCTSTR pName );
-	BYTE GetHeightMount( bool fEyeSubstract = false ) const;
-	BYTE GetHeight() const;
+	t_height GetHeightMount( bool fEyeSubstract = false ) const;
+	t_height GetHeight() const;
 
 	bool CanSeeTrue( const CChar * pChar = NULL ) const;
 	bool CanSeeInContainer( const CItemContainer * pContItem ) const;
@@ -2769,7 +2769,7 @@ private:
 #else
 	CRegionBase * CheckValidMove( CPointBase & pt, WORD * pwBlockFlags, DIR_TYPE dir = DIR_QTY ) const;
 #endif
-	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, signed char * ClimbHeight, bool fPathFinding = false ) const;
+	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, t_height * ClimbHeight, bool fPathFinding = false ) const;
 	void FixClimbHeight();
 	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject );
 	bool IsVerticalSpace( CPointMap ptDest, bool fForceMount = false );

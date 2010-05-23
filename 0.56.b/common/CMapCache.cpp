@@ -58,7 +58,7 @@ bool CMapCache::Init(int maxX, int maxY, int map, int mapDefaultHeight)
 			for ( int j = 0; j < maxY; j++ )
 			{
 				CPointMap pt(i, j, 0, map);
-				point.m_baseZ = 127;
+				point.m_baseZ = UO_SIZE_Z;
 				point.m_tileBlock = 0;
 
 				const CGrayMapBlock	*pMapBlock = g_World.GetMapBlock(pt);
@@ -93,7 +93,7 @@ bool CMapCache::Init(int maxX, int maxY, int map, int mapDefaultHeight)
 					}
 				}
 
-				if ( point.m_baseZ == 127 )
+				if ( point.m_baseZ == UO_SIZE_Z )
 					point.m_baseZ = mapDefaultHeight;
 
 				fwrite(&point, sizeof(point), 1, m_hFile);

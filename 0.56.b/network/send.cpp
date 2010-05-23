@@ -330,7 +330,7 @@ PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD
 	writeInt32(uid);
 	writeInt16(id);
 	if (amount > 0)
-		writeInt16(amount);
+		writeInt16((WORD)amount);
 	writeInt16(p.m_x);
 	writeInt16(p.m_y);
 	if (dir > 0)
@@ -3109,7 +3109,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
 	// write controls length
 	long endPosition(getPosition());
 	seek(controlLengthPosition);
-	writeInt16(endPosition - controlLengthPosition - 2);
+	writeInt16((WORD)(endPosition - controlLengthPosition - 2));
 	seek(endPosition);
 
 	// write texts
@@ -3230,7 +3230,7 @@ PacketEnableFeatures::PacketEnableFeatures(CClient* target, DWORD flags) : Packe
 	if (tmVer >= 0x0600143 || tmVerReported >= 0x0600143)
 		writeInt32(flags);
 	else
-		writeInt16(flags);
+		writeInt16((WORD)flags);
 
 	trim();
 	push(target);
@@ -3680,7 +3680,7 @@ PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGra
 
 	writeByte(0x01);
 	writeInt32(defender);
-	writeByte(minimum(damage, 255));
+	writeByte((BYTE)(minimum(damage, 255)));
 
 	push(target);
 }
@@ -3966,7 +3966,7 @@ bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int
 
 	writeByte(plane | 0x20);
 	writeByte(dataSize);
-	writeByte(compressLength);
+	writeByte((BYTE)compressLength);
 	writeByte(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
@@ -4027,7 +4027,7 @@ void PacketHouseDesign::flushStairData(void)
 
 	writeByte(9 + m_stairPlaneCount);
 	writeByte(stairSize);
-	writeByte(compressLength);
+	writeByte((BYTE)compressLength);
 	writeByte(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
@@ -4197,8 +4197,8 @@ PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketIte
 	writeInt32(uid);
 	writeInt16(id);
 	writeByte(dir);
-	writeInt16(amount);
-	writeInt16(amount);
+	writeInt16((WORD)amount);
+	writeInt16((WORD)amount);
 	writeInt16(p.m_x);
 	writeInt16(p.m_y);
 	writeByte(p.m_z);

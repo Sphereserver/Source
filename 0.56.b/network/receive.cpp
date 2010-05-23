@@ -70,7 +70,7 @@ bool PacketCreate::onReceive(NetState* net)
 	HUE_TYPE shirthue = (HUE_TYPE)readInt16();
 	HUE_TYPE pantshue = (HUE_TYPE)readInt16();
 
-	bool bFemale = (sex % 2); // Even=Male, Odd=Female (rule applies to all clients)
+	bool isFemale = (sex % 2) != 0; // Even=Male, Odd=Female (rule applies to all clients)
 	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
 
 	// determine which race the client has selected
@@ -118,7 +118,7 @@ bool PacketCreate::onReceive(NetState* net)
 			rtRace = RACETYPE_HUMAN;
 	}
 	
-	return doCreate(net, charname, bFemale, rtRace,
+	return doCreate(net, charname, isFemale, rtRace,
 		strength, dexterity, intelligence, prof,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, (SKILL_TYPE)0, 0,
 		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
@@ -275,7 +275,7 @@ bool PacketSpeakReq::onReceive(NetState* net)
 	FONT_TYPE font = (FONT_TYPE)readInt16();
 	TCHAR text[MAX_TALK_BUFFER];
 
-	packetLength -= getPosition();
+	packetLength = (WORD)(packetLength - getPosition());
 	readStringASCII(text, minimum(MAX_TALK_BUFFER, packetLength));
 
 	client->Event_Talk(text, hue, mode, false);
@@ -325,7 +325,7 @@ bool PacketDoubleClick::onReceive(NetState* net)
 	DWORD serial = readInt32();
 
 	CGrayUID target(serial &~ UID_F_RESOURCE);
-	bool macro = serial & UID_F_RESOURCE;
+	bool macro = (serial & UID_F_RESOURCE) == UID_F_RESOURCE;
 
 	CClient* client = net->getClient();
 	ASSERT(client);

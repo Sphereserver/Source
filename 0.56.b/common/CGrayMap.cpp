@@ -14,7 +14,7 @@
 #define CAN_I_DOOR		UFLAG4_DOOR
 #endif
 
-CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, signed char zHeight ) :
+CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, t_height zHeight ) :
 	m_dwBlockFlags(dwBlockFlags),	m_z(z), m_iHeight(iHeight), m_zClimb(0), m_zHeight(zHeight)
 {
 	// m_z = PLAYER_HEIGHT
@@ -33,7 +33,7 @@ CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int i
 	m_zClimbHeight = 0;
 }
 
-CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, signed char zClimb, signed char zHeight ) :
+CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, signed char zClimb, t_height zHeight ) :
 	m_dwBlockFlags(dwBlockFlags),	m_z(z), m_iHeight(iHeight), m_zClimb(zClimb), m_zHeight(zHeight)
 {
 	m_Top.m_dwBlockFlags = 0;
@@ -73,7 +73,7 @@ LPCTSTR CGrayMapBlockState::GetTileName( WORD wID )	// static
 	return( pStr );
 }
 
-bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, signed char zHeight, WORD wID )
+bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, WORD wID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile");
 	// RETURN:
@@ -81,9 +81,9 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 
 	signed char zTop = zBottom;
 	if ( (wItemBlockFlags & CAN_I_CLIMB) && !(wItemBlockFlags & CAN_I_PLATFORM) )
-		zTop += ( zHeight / 2 );	// standing position is half way up climbable items (except platforms).
+		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items (except platforms).
 	else
-		zTop += zHeight;
+		zTop = minimum(zTop + zHeight, UO_SIZE_Z);
 
 	if ( zTop < m_Bottom.m_z )	// below something i can already step on.
 		return true;
@@ -150,7 +150,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	return true;
 }
 
-bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, signed char zHeight, WORD wID )
+bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, WORD wID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile_Item");
 	// RETURN:
@@ -168,10 +168,10 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
 	{
 		//DEBUG_WARN(("EF_NewPositionChecks+Stairs\n"));
-		zTop += ( zHeight / 2 );	// standing position is half way up climbable items (except platforms).
+		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items (except platforms).
 	}
 	else
-		zTop += zHeight;
+		zTop = minimum(zTop + zHeight, UO_SIZE_Z);
 
 	if ( zTop < m_Bottom.m_z )	// below something i can already step on.
 		return true;

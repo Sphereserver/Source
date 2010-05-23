@@ -4757,3 +4757,7 @@ ALPHA additions:
   UsePacketPriority is enabled.
 - Fixed #1746: Damage showing in the corner of the screen instead of above an enemy when
   UsePacketPriority is enabled.
+
+23-05-2010, MrSugarCube
+- Fixed #1751: Movement/sight checks fail when an item is too tall to fit within the Z
+  boundaries.

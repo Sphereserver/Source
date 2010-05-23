@@ -1871,7 +1871,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 					else if ( pItem )
 					{
-						signed char zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
+						t_height zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
 						CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
 						g_World.GetHeightPoint_New( GetTopPoint(), block, true );
 						SetTopZ(block.m_Bottom.m_z);

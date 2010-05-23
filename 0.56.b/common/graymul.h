@@ -2112,6 +2112,8 @@ public:
 #define UO_SIZE_Z			127
 #define UO_SIZE_MIN_Z		-127
 
+typedef unsigned char t_height;
+
 class CMapDiffCollection;
 
 extern class CMapList

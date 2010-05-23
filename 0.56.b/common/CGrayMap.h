@@ -89,18 +89,18 @@ struct CGrayMapBlockState
 	const signed char m_z;	// the z we start at. (stay at if we are flying)
 	const int m_iHeight;		// The height we need to stand here.
 	const signed char m_zClimb; // We can climb at this height
-	const signed char m_zHeight; //our height
+	const t_height m_zHeight; //our height
 	
-	signed char m_zClimbHeight;	// return item climb height here
+	t_height m_zClimbHeight;	// return item climb height here
 
 	CGrayMapBlocker m_Top;		// What would be over my head.
 	CGrayMapBlocker m_Bottom;	// What i would be standing on.
 	CGrayMapBlocker m_Lowest;	// the lowest item we have found.	
 
 public:
-	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight = PLAYER_HEIGHT, signed char zHeight = PLAYER_HEIGHT );
-	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight, signed char zClimb, signed char zHeight = PLAYER_HEIGHT );
-	bool IsUsableZ( signed char zBottom, signed char zHeightEstimate ) const
+	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight = PLAYER_HEIGHT, t_height zHeight = PLAYER_HEIGHT );
+	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight, signed char zClimb, t_height zHeight = PLAYER_HEIGHT );
+	bool IsUsableZ( signed char zBottom, t_height zHeightEstimate ) const
 	{
 		if ( zBottom > m_Top.m_z )	// above something that is already over my head.
 			return( false );
@@ -109,8 +109,8 @@ public:
 			return( false );
 		return( true );	
 	}
-	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, signed char zheight, WORD wID );
-	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, signed char zheight, WORD wID );
+	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, WORD wID );
+	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, WORD wID );
 	inline void SetTop( DWORD &dwItemBlockFlags, signed char &z, WORD &wID );
 	bool CheckTile_Terrain( DWORD dwItemBlockFlags, signed char z, WORD wID );
 	static LPCTSTR GetTileName( WORD wID );

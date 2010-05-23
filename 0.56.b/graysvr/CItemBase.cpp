@@ -669,7 +669,7 @@ inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec & tiledata, WO
 	}
 }
 
-inline signed char CItemBase::GetItemHeightFlags( const CUOItemTypeRec & tiledata, WORD & wBlockThis ) // static
+inline t_height CItemBase::GetItemHeightFlags( const CUOItemTypeRec & tiledata, WORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeightFlags");
 	// Chairs are marked as blocking for some reason ?
@@ -724,7 +724,7 @@ inline signed char CItemBase::GetItemHeightFlags( const CUOItemTypeRec & tiledat
 	return( tiledata.m_height );
 }
 
-signed char CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
+t_height CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeight");
 	// Get just the height and the blocking flags for the item by id.
@@ -1408,7 +1408,7 @@ CItemBase * CItemBase::MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE idmas
 
 	// create the dupe stub.
 	CUOItemTypeRec tiledata;
-	BYTE Height = 0;
+	t_height Height = 0;
 	CItemBaseDupe * pBaseDupe = NULL;
 
 	memset( &tiledata, 0, sizeof(tiledata));

@@ -1220,7 +1220,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	if ( ptSrc == ptDst )	// Same point ^^
 		return true;
 
-	ptSrc.m_z += GetHeightMount( true ); //true - substract one from the height because of eyes height
+	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount( true ), UO_SIZE_Z); //true - substract one from the height because of eyes height
 	WARNLOS(("Total Z: %d\n",ptSrc.m_z))
 
 	int dx, dy, dz;
@@ -1311,7 +1311,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	bool IsID_Chair( ITEMID_TYPE id );
 
 	DWORD wTFlags = 0;
-	BYTE Height = 0;
+	t_height Height = 0;
 	WORD terrainid = 0;
 	bool bPath = true;
 	bool bNullTerrain = false;
@@ -1482,7 +1482,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						{
 							WARNLOS(("pStatic %0x %d,%d,%d - %d\n",pStatic->GetDispID(),pStatic->m_x,pStatic->m_y,pStatic->m_z,Height))
 							min_z = pStatic->m_z;
-							max_z = Height + min_z;
+							max_z = minimum(Height + min_z, UO_SIZE_Z);
 							WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 							WARNLOS(("pStatic %0x Z check: %d,%d (Now: %d) (Dest: %d).\n",pStatic->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
@@ -1570,7 +1570,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						{
 							WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height))
 							min_z = pItem->GetUnkPoint().m_z;
-							max_z = Height + min_z;
+							max_z = minimum(Height + min_z, UO_SIZE_Z);
 							WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z))
@@ -1684,7 +1684,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height))
 									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;
-									max_z = Height + min_z;
+									max_z = minimum(Height + min_z, UO_SIZE_Z);
 									WARNLOS(("wTFlags(0%x)\n",wTFlags))
 
 									if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
@@ -1745,7 +1745,7 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate * pObj, WORD wFlags ) const
 		CPointMap pt = pObj->GetTopPoint();
 		const CChar * pChar = dynamic_cast<const CChar*>(pObj);
 		if ( pChar )
-			pt.m_z += pChar->GetHeightMount(true);
+			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(true), UO_SIZE_Z);
 		return CanSeeLOS_New(  pt, NULL, pObj->GetVisualRange(), wFlags );
 	}
 	else
@@ -2367,7 +2367,7 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	return true;
 }
 
-CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, signed char * pClimbHeight, bool fPathFinding ) const
+CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, t_height * pClimbHeight, bool fPathFinding ) const
 {
 	ADDTOCALLSTACK("CChar::CheckValidMove_New");
 	// Is it ok to move here ? is it blocked ?

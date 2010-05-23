@@ -356,7 +356,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	Update();
 }
 
-void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z, int iStairID)
+void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z, int iStairID)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddItem");
 	// add an item to the building design at the given location
@@ -446,7 +446,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 	m_designWorking.m_iRevision++;
 }
 
-void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z, int iStairID)
+void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z, int iStairID)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddStairs");
 	// add a staircase to the building, the given ID must
@@ -494,7 +494,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, 
 	}
 }
 
-void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z)
+void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddRoof");
 	// add a roof piece to the building
@@ -528,7 +528,7 @@ void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 	AddItem(pClientSrc, id, x, y, z);
 }
 
-void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z)
+void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::RemoveItem");
 	// remove the item that's found at given location
@@ -627,7 +627,7 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 	return true;
 }
 
-void CItemMultiCustom::RemoveRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, char z)
+void CItemMultiCustom::RemoveRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::RemoveRoof");
 	
@@ -919,7 +919,7 @@ int CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 
 }
 
-int CItemMultiCustom::GetComponentsAt(short x, short y, char z, Component ** pComponents, DesignDetails * pDesign)
+int CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component ** pComponents, DesignDetails * pDesign)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentsAt");
 	// find a list of components that are located at the given
@@ -1403,7 +1403,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 	return false;
 }
 
-unsigned char CItemMultiCustom::GetPlane( char z )
+unsigned char CItemMultiCustom::GetPlane( signed char z )
 {
 	if ( z >= 67 )
 		return 4;
@@ -1422,7 +1422,7 @@ unsigned char CItemMultiCustom::GetPlane( Component * pComponent )
 	return GetPlane(pComponent->m_item.m_dz);
 }
 
-char CItemMultiCustom::GetPlaneZ( unsigned char plane )
+signed char CItemMultiCustom::GetPlaneZ( unsigned char plane )
 {
 	switch ( plane )
 	{
