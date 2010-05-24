@@ -4553,7 +4553,17 @@ forcedamage:
 			return( INT_MAX );
 		}
 
+		int previousDefense = Armor_GetDefense();
+
 		--m_itArmor.m_Hits_Cur;
+
+		if (pChar != NULL && IsItemEquipped() && previousDefense != Armor_GetDefense())
+		{
+			// this item's armor rating has been reduced, update the
+			// client's total defense rating
+			pChar->m_defense = pChar->CalcArmorDefense();
+			pChar->UpdateStatsFlag();
+		}
 
 		TCHAR *pszMsg = Str_GetTemp();
 		if ( pSrc )	// tell hitter they scored !

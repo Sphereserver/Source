@@ -4766,3 +4766,7 @@ ALPHA additions:
 - Fixed #1756: Packets being sent for items in containers the client cannot see inside (A
   side-effect of this is that CANSEE/LOS will return 0 for such items, until the client
   opens/snoops the container).
+
+25-05-2010, MrSugarCube
+- Fixed #1754: Armor rating in status window not updated when equipped armor pieces receive
+  damage.
