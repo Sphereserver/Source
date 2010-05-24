@@ -354,7 +354,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		CItemBase * pItemDef = CItemBase::FindItemBase( idTile );
 		if ( pItemDef == NULL )
 		{
-			DEBUG_ERR(("Must have ITEMDEF section for item ID %x\n", idTile ));
+			DEBUG_ERR(("Must have ITEMDEF section for item ID 0%x\n", idTile ));
 			return false;
 		}
 

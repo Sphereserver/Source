@@ -4761,3 +4761,8 @@ ALPHA additions:
 23-05-2010, MrSugarCube
 - Fixed #1751: Movement/sight checks fail when an item is too tall to fit within the Z
   boundaries.
+
+24-05-2010, MrSugarCube
+- Fixed #1756: Packets being sent for items in containers the client cannot see inside (A
+  side-effect of this is that CANSEE/LOS will return 0 for such items, until the client
+  opens/snoops the container).
