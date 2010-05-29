@@ -1621,7 +1621,7 @@ void NetworkOut::proceedFlush(void)
 		if (state->needsFlush())
 			flush(client);
 
-		if (state->isClosing())
+		if (state->isClosing() && state->hasPendingData() == false)
 			state->markWriteClosed();
 	}
 }

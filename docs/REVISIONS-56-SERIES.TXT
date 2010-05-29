@@ -4770,3 +4770,7 @@ ALPHA additions:
 25-05-2010, MrSugarCube
 - Fixed #1754: Armor rating in status window not updated when equipped armor pieces receive
   damage.
+
+29-05-2010, MrSugarCube
+- Fixed #1759: Client not always notified about login failure when EF_NetworkOutThread is
+  enabled.
