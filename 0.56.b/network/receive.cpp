@@ -236,7 +236,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 
 	if (canMoveThere == false)
 	{
-		PacketMovementRej* packet = new PacketMovementRej(client, net->m_sequence);
+		PacketMovementRej* packet = new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
 	else
