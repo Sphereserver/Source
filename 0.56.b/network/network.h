@@ -79,9 +79,10 @@ protected:
 	PacketTransactionQueue m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
 	PacketQueue m_asyncQueue; // outgoing async packet queue
 
-	int m_packetExceptions;
+	PacketTransaction* m_currentTransaction; // transaction currently being processed
+	ExtendedPacketTransaction* m_pendingTransaction; // transaction being built
 
-	ExtendedPacketTransaction* m_transaction; // current transaction
+	int m_packetExceptions;
 
 public:
 	GAMECLIENT_TYPE m_clientType; // type of client
@@ -101,7 +102,6 @@ public:
 	bool isValid(const CClient* client = NULL) const; // does this socket still belong to this client?
 	bool hasPendingData(void) const; // is there any data waiting to be sent?
 	bool canReceive(PacketSend* packet) const; // can the state receive the given packet?
-	bool canReceive(PacketTransaction* transaction) const; // can the state receive the given transaction?
 
 	void setAsyncMode(void); // set asynchronous mode
 	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode

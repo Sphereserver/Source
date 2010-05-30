@@ -172,14 +172,13 @@ protected:
 public:
 	virtual ~PacketTransaction(void) { };
 
-	virtual bool send(CClient* client) = 0; // send the transaction
-	virtual bool onSend(CClient* client) = 0; // transaction is about to be sent
+	virtual PacketSend* front(void) = 0; // get first packet in the transaction
+	virtual void pop(void) = 0; // remove first packet from the transaction
+	virtual bool empty(void) = 0; // check if any packets are available
 
 	virtual NetState* getTarget(void) const = 0; // get target of the transaction
 	virtual long getPriority(void) const = 0; // get priority of the transaction
 	virtual void setPriority(long priority) = 0; // set priority of the transaction
-	virtual long getLength(void) const = 0; // get length of the transaction
-
 };
 
 
@@ -199,14 +198,13 @@ public:
 	SimplePacketTransaction(PacketSend* packet) : m_packet(packet) { };
 	~SimplePacketTransaction(void);
 
-	bool send(CClient* client);
-	bool onSend(CClient* client) { return m_packet->onSend(client); }
-
 	NetState* getTarget(void) const { return m_packet->getTarget(); }
 	long getPriority(void) const { return m_packet->getPriority(); }
 	void setPriority(long priority) { m_packet->m_priority = priority; }
-	long getLength(void) const { return m_packet->getLength(); }
 
+	PacketSend* front(void) { return m_packet; };
+	void pop(void) { m_packet = NULL; }
+	bool empty(void) { return m_packet == NULL; }
 };
 
 
@@ -228,15 +226,14 @@ public:
 	ExtendedPacketTransaction(NetState* target, long priority) : m_target(target), m_priority(priority) { };
 	~ExtendedPacketTransaction(void);
 
-	bool send(CClient* client);
-	bool onSend(CClient* client);
-
 	NetState* getTarget(void) const	{ return m_target; }
 	long getPriority(void) const { return m_priority; }
 	void setPriority(long priority) { m_priority = priority; }
-	long getLength(void) const;
 
 	void push_back(PacketSend* packet) { m_packets.push_back(packet); }
+	PacketSend* front(void) { return m_packets.front(); };
+	void pop(void) { m_packets.pop_front(); }
+	bool empty(void) { return m_packets.empty(); }
 };
 
 
