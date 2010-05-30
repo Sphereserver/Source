@@ -4,13 +4,8 @@
 //  CChar is either an NPC or a Player.
 //
 
+#include <cmath>
 #include "graysvr.h"	// predef header.
-
-extern "C"
-{
-	// for some reason, including the math.h file gave an error, so I'll declare it here.
-	double _cdecl log10(double);
-}
 
 //----------------------------------------------------------------------
 

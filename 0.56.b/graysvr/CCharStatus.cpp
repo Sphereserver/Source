@@ -4,7 +4,7 @@
 //  CChar is either an NPC or a Player.
 //
 
-#include <math.h>
+#include <cmath>
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 

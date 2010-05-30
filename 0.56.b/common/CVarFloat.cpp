@@ -1,3 +1,4 @@
+#include <cmath>
 #include "../graysvr/graysvr.h"
 
 typedef double RealType;
@@ -63,19 +64,6 @@ CGString CVarFloat::Get( const char* VarName )
 
 	return CGString(szReal);
 };
-
-extern "C"
-{
-	// for some reason, including the math.h file gave an error, so I'll declare it here.
-	double  __cdecl exp(double);
-	double  __cdecl log(double);
-	double  __cdecl log10(double);
-	double  __cdecl pow(double, double);
-	double  __cdecl sqrt(double);
-	double	__cdecl sin(double);
-	double	__cdecl cos(double);
-	double  __cdecl tan(double);
-}
 
 short int Reentrant_Count = 0;
 

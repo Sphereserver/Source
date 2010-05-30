@@ -4,15 +4,8 @@
 // Common for client and server.
 //
 
+#include <cmath>
 #include "../graysvr/graysvr.h"
-
-extern "C"
-{
-	// for some reason, including the math.h file gave an error, so I'll declare it here.
-	double  __cdecl ceil(double);
-	double  __cdecl floor(double);
-	double  __cdecl sqrt(double);
-}
 
 //*************************************************************************
 // -CPointBase
