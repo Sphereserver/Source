@@ -4774,3 +4774,6 @@ ALPHA additions:
 29-05-2010, MrSugarCube
 - Fixed #1759: Client not always notified about login failure when EF_NetworkOutThread is
   enabled.
+
+31-05-2010, MrSugarCube
+- Fixed #1753: Client crash when moving into view of a character sitting on a chair.
