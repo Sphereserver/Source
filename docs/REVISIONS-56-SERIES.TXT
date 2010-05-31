@@ -4777,3 +4777,4 @@ ALPHA additions:
 
 31-05-2010, MrSugarCube
 - Fixed #1753: Client crash when moving into view of a character sitting on a chair.
+- Fixed #1760: Players unable to see items in the other player's trade window.

@@ -387,13 +387,23 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 	addOpenGump(pContainer, gump);
 	addContents(pContainer, false, false, false);
 
+	LogOpenedContainer(pContainer);
+	return true;
+}
+
+void CClient::LogOpenedContainer(const CItemContainer* pContainer) // record a container in opened container list
+{
+	ADDTOCALLSTACK("CClient::LogOpenedContainer");
+	if (pContainer == NULL)
+		return;
+
 	CObjBaseTemplate * pTopMostContainer = pContainer->GetTopLevelObj();
 	CObjBase * pTopContainer = pContainer->GetContainer();
 
 	DWORD dwTopMostContainerUID = pTopMostContainer->GetUID().GetPrivateUID();
 	DWORD dwTopContainerUID = 0;
 	
-	if ( pTopContainer )
+	if ( pTopContainer != NULL )
 		dwTopContainerUID = pTopContainer->GetUID().GetPrivateUID();
 	else
 		dwTopContainerUID = dwTopMostContainerUID;
@@ -402,7 +412,6 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 																std::make_pair( dwTopContainerUID, dwTopMostContainerUID ),
 																pTopMostContainer->GetTopPoint()
 															    );
-	return true;
 }
 
 void CClient::addSeason(SEASON_TYPE season)

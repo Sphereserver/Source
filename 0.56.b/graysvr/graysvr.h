@@ -1250,6 +1250,7 @@ public:
 	void addKRToolbar( bool bEnable );
 
 	void SendPacket( TCHAR * pszPacket );
+	void LogOpenedContainer(const CItemContainer* pContainer);
 
 	// Test what I can do
 	CAccountRef GetAccount() const

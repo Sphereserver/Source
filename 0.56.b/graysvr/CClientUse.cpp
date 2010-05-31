@@ -1426,9 +1426,11 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	cmd.prepareContainerOpen(m_pChar, pCont2, pCont1);
 	cmd.send(pChar->GetClient());
 
+	LogOpenedContainer(pCont2);
+	pChar->GetClient()->LogOpenedContainer(pCont1);
+
 	CPointMap pt( 30, 30, 9 );
 	pCont1->ContentAdd( pItem, pt );
 	return( true );
 }
-
 
