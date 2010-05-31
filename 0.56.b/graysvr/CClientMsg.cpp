@@ -1684,31 +1684,6 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		// dunno if this _can_ happen, but to be on the safe side ... Nazghul
 		tViewDist = UO_MAP_VIEW_SIZE;
 
-	//	Characters around
-	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
-	AreaChars.SetAllShow(fAllShow);
-	AreaChars.SetSearchSquare(true);
-	DWORD	dSeeChars(0);
-	while ( true )
-	{
-		CChar	*pChar = AreaChars.GetChar();
-		if ( !pChar )
-			break;
-		if (( m_pChar == pChar ) || !CanSee(pChar) )
-			continue;
-
-		if ( ptold.GetDistSight( pChar->GetTopPoint()) > tViewDist )
-		{
-			if ( dSeeChars < g_Cfg.m_iMaxCharComplexity*5 )
-			{
-				++dSeeChars;
-				addChar(pChar);
-			}
-			else
-				break;
-		}
-	}
-
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
 	AreaItems.SetAllShow(fAllShow);
@@ -1752,6 +1727,31 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 				else
 					break;
 			}
+		}
+	}
+
+	//	Characters around
+	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
+	AreaChars.SetAllShow(fAllShow);
+	AreaChars.SetSearchSquare(true);
+	DWORD	dSeeChars(0);
+	while ( true )
+	{
+		CChar	*pChar = AreaChars.GetChar();
+		if ( !pChar )
+			break;
+		if (( m_pChar == pChar ) || !CanSee(pChar) )
+			continue;
+
+		if ( ptold.GetDistSight( pChar->GetTopPoint()) > tViewDist )
+		{
+			if ( dSeeChars < g_Cfg.m_iMaxCharComplexity*5 )
+			{
+				++dSeeChars;
+				addChar(pChar);
+			}
+			else
+				break;
 		}
 	}
 }
