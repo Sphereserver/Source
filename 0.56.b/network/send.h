@@ -1286,6 +1286,23 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x10 : PacketPropertyListVersionOld		property (tool tip) version (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketPropertyListVersionOld : public PacketExtended
+{
+protected:
+	CGrayUID m_object;
+
+public:
+	PacketPropertyListVersionOld(CClient* target, const CObjBase* object, DWORD version);
+	virtual bool onSend(const CClient* client);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x14 : PacketDisplayPopup		display popup menu (LOW)
  *
  *
@@ -1476,10 +1493,20 @@ class PacketPropertyList : public PacketSend
 protected:
 	CGrayUID m_object;
 	long m_time;
+	DWORD m_version;
+	int m_entryCount;
 
 public:
-	PacketPropertyList(CClient* target, const CObjBase* object, DWORD hash, CGObArray<CClientTooltip*>* data);
+	PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip*>* data);
+	PacketPropertyList(CClient* target, const PacketPropertyList* other);
 	virtual bool onSend(const CClient* client);
+
+	CGrayUID getObject(void) const { return m_object; }
+	DWORD getVersion(void) const { return m_version; }
+	int getEntryCount(void) const { return m_entryCount; }
+	bool isEmpty(void) const { return m_entryCount == 0; }
+
+	bool hasExpired(int timeout) const;
 };
 
 /***************************************************************************
@@ -1523,6 +1550,23 @@ public:
 	bool writeStairData(ITEMID_TYPE id, int x, int y, int z);
 	void flushStairData(void);
 	void finalise(void);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xDC : PacketPropertyListVersion		property (tool tip) version (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketPropertyListVersion : public PacketSend
+{
+protected:
+	CGrayUID m_object;
+
+public:
+	PacketPropertyListVersion(CClient* target, const CObjBase* object, DWORD version);
+	virtual bool onSend(const CClient* client);
 };
 
 /***************************************************************************

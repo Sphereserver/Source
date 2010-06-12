@@ -1063,7 +1063,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 		m_count++;
 
 		// include tooltip
-		target->addAOSTooltip(item, isShop);
+		target->addAOSTooltip(item, false, isShop);
 	}
 
 	// write item count
@@ -2220,7 +2220,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 		m_count++;
 
 		// include tooltip
-		target->addAOSTooltip(item, false);
+		target->addAOSTooltip(item);
 	}
 
 	writeByte(0); // terminator
@@ -2565,7 +2565,7 @@ int PacketVendorSellList::searchContainer(CClient* target, const CItemContainer*
 						writeInt16(len);
 						writeStringFixedASCII(name, len);
 						
-						target->addAOSTooltip(vendItem, true);
+						target->addAOSTooltip(vendItem, false, true);
 						if (++count >= maxItems)
 							break;
 					}
@@ -3438,11 +3438,49 @@ PacketMapChange::PacketMapChange(CClient* target, int map) : PacketExtended(EXTD
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x10 : PacketPropertyListVersionOld		property (tool tip) version (LOW)
+ *
+ *
+ ***************************************************************************/
+PacketPropertyListVersionOld::PacketPropertyListVersionOld(CClient* target, const CObjBase* object, DWORD version) : PacketExtended(EXTDATA_OldAOSTooltipInfo, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketPropertyListVersionOld::PacketPropertyListVersionOld");
+
+	m_object = object->GetUID();
+
+	writeInt32(object->GetUID());
+	writeInt32(version);
+
+	if (target != NULL)
+		push(target, false);
+}
+
+bool PacketPropertyListVersionOld::onSend(const CClient* client)
+{
+	ADDTOCALLSTACK("PacketPropertyListVersionOld::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
+
+	const CChar* character = client->GetChar();
+	if (character == NULL)
+		return false;
+
+	const CObjBase* object = m_object.ObjFind();
+	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
+		return false;
+
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x14 : PacketDisplayPopup		display popup menu (LOW)
  *
  *
  ***************************************************************************/
-PacketDisplayPopup::PacketDisplayPopup(CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 6, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayPopup::PacketDisplayPopup(CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
@@ -3511,7 +3549,7 @@ void PacketDisplayPopup::finalise(void)
  *
  *
  ***************************************************************************/
-PacketEnableMapDiffs::PacketEnableMapDiffs(CClient* target) : PacketExtended(EXTDATA_Map_Diff, 6, PRI_NORMAL)
+PacketEnableMapDiffs::PacketEnableMapDiffs(CClient* target) : PacketExtended(EXTDATA_Map_Diff, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
@@ -3834,20 +3872,22 @@ PacketLogoutAck::PacketLogoutAck(CClient* target) : PacketSend(XCMD_LogoutStatus
  *
  *
  ***************************************************************************/
-PacketPropertyList::PacketPropertyList(CClient* target, const CObjBase* object, DWORD hash, CGObArray<CClientTooltip*>* data) : PacketSend(XCMD_AOSTooltip, 48, PRI_IDLE)
+PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip*>* data) : PacketSend(XCMD_AOSTooltip, 48, PRI_IDLE)
 {
 	ADDTOCALLSTACK("PacketPropertyList::PacketPropertyList");
 
-	m_object = object->GetUID();
 	m_time = g_World.GetCurrentTime().GetTimeRaw();
+	m_object = object->GetUID();
+	m_version = version;
+	m_entryCount = data->GetCount();
 
 	initLength();
 	writeInt16(1);
 	writeInt32(object->GetUID());
 	writeInt16(0);
-	writeInt32(hash);
+	writeInt32(version);
 	
-	for (int x = 0; data->GetCount() > x; x++)
+	for (int x = 0; x < data->GetCount(); x++)
 	{
 		CClientTooltip* tipEntry = data->GetAt(x);
 		int tipLength = strlen(tipEntry->m_args);
@@ -3858,9 +3898,18 @@ PacketPropertyList::PacketPropertyList(CClient* target, const CObjBase* object, 
 	}
 
 	writeInt32(0);
+}
 
-	if (target != NULL)
-		push(target, false);
+PacketPropertyList::PacketPropertyList(CClient* target, const PacketPropertyList* other) : PacketSend(other)
+{
+	ADDTOCALLSTACK("PacketPropertyList::PacketPropertyList2");
+
+	m_time = g_World.GetCurrentTime().GetTimeRaw();
+	m_object = other->getObject();
+	m_version = other->getVersion();
+	m_entryCount = other->getEntryCount();
+
+	push(target);
 }
 
 bool PacketPropertyList::onSend(const CClient* client)
@@ -3877,10 +3926,16 @@ bool PacketPropertyList::onSend(const CClient* client)
 	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
 		return false;
 
-	if ((m_time + (TICK_PER_SEC * 30)) < g_World.GetCurrentTime().GetTimeRaw())
+	if (hasExpired(TICK_PER_SEC * 30))
 		return false;
 
 	return true;
+}
+
+bool PacketPropertyList::hasExpired(int timeout) const
+{
+	ADDTOCALLSTACK("PacketPropertyList::hasExpired");
+	return (m_time + timeout) < g_World.GetCurrentTime().GetTimeRaw();
 }
 
 
@@ -4052,6 +4107,44 @@ void PacketHouseDesign::finalise(void)
 	writeByte(m_planeCount + m_stairPlaneCount);
 
 	seek(endPosition);
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xDC : PacketPropertyListVersion		property (tool tip) version (LOW)
+ *
+ *
+ ***************************************************************************/
+PacketPropertyListVersion::PacketPropertyListVersion(CClient* target, const CObjBase* object, DWORD version) : PacketSend(XCMD_AOSTooltipInfo, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketPropertyListVersion::PacketPropertyListVersion");
+
+	m_object = object->GetUID();
+
+	writeInt32(object->GetUID());
+	writeInt32(version);
+
+	if (target != NULL)
+		push(target, false);
+}
+
+bool PacketPropertyListVersion::onSend(const CClient* client)
+{
+	ADDTOCALLSTACK("PacketPropertyList::onSend");
+	if (g_NetworkOut.isActive())
+		return true;
+
+	const CChar* character = client->GetChar();
+	if (character == NULL)
+		return false;
+
+	const CObjBase* object = m_object.ObjFind();
+	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
+		return false;
+
+	return true;
 }
 
 

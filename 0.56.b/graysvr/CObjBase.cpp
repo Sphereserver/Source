@@ -6,6 +6,7 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"
 #include "../network/network.h"
+#include "../network/send.h"
 
 bool CObjBaseTemplate::IsDeleted() const
 {
@@ -67,6 +68,9 @@ CObjBase::CObjBase( bool fItem )
 
 	//	Init some global variables
 	m_ModAr = 0;
+	m_PropertyList = NULL;
+	m_PropertyHash = 0;
+	m_PropertyRevision = 0;
 
 	if ( g_Serv.IsLoading())
 	{
@@ -88,6 +92,8 @@ CObjBase::CObjBase( bool fItem )
 
 CObjBase::~CObjBase()
 {
+	FreePropertyList();
+
 	sm_iCount --;
 	ASSERT( IsDisconnected());
 
@@ -1434,9 +1440,23 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			RemoveFromView( NULL, false );	// remove this item from all clients.
 			return( true );
 		case OV_RESENDTOOLTIP:
-			EXC_SET("RESENDTOOLTIP");
-			ResendTooltip(s.GetArgVal());
-			return( true );
+			{
+				EXC_SET("RESENDTOOLTIP");
+			
+				int piCmd[2];
+				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+
+				bool bSendFull = false;
+				bool bUseCache = false;
+			
+				if (iArgQty >= 1)
+					bSendFull = (piCmd[0] != 0);
+				if (iArgQty >= 2)
+					bUseCache = (piCmd[1] != 0);
+
+				ResendTooltip(bSendFull, bUseCache);
+				return( true );
+			}
 		case OV_SAY: //speak so everyone can here
 			EXC_SET("SAY");
 			Speak( s.GetArgStr());
@@ -1942,16 +1962,57 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 	}
 }
 
-void CObjBase::ResendTooltip( bool bForce )
+void CObjBase::SetPropertyList(PacketPropertyList* propertyList)
+{
+	ADDTOCALLSTACK("CObjBase::SetPropertyList");
+	// set the property list for this object
+
+	if (propertyList == GetPropertyList())
+		return;
+
+	FreePropertyList();
+	m_PropertyList = propertyList;
+}
+
+void CObjBase::FreePropertyList()
+{
+	ADDTOCALLSTACK("CObjBase::FreePropertyList");
+	// free m_PropertyList
+
+	if (m_PropertyList == NULL)
+		return;
+
+	delete m_PropertyList;
+	m_PropertyList = NULL;
+}
+
+DWORD CObjBase::UpdatePropertyRevision(DWORD hash)
+{
+	ADDTOCALLSTACK("CObjBase::UpdatePropertyRevision");
+
+	if (hash != m_PropertyHash)
+	{
+		// the property list has changed, increment the revision number
+		m_PropertyHash = hash;
+		m_PropertyRevision++;
+	}
+
+	return m_PropertyRevision;
+}
+
+void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 {
 	ADDTOCALLSTACK("CObjBase::ResendTooltip");
 	// Remove this item from all clients.
 	// In a destructor this can do funny things.
 
-	if ( !bForce && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) == false )
+	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) == false )
 		return; // tooltips are disabled.
 	else if ( IsDisconnected())
 		return;	// not in the world.
+
+	if (bUseCache == false)
+		FreePropertyList();
 
 	CChar * pChar = NULL;
 
@@ -1963,7 +2024,8 @@ void CObjBase::ResendTooltip( bool bForce )
 			continue;
 		if ( !pChar->CanSee( this ) )
 			continue;
-		pClient->addAOSTooltip(this, bForce);
+
+		pClient->addAOSTooltip(this, bSendFull);
 	}
 }
 

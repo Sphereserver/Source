@@ -10,6 +10,18 @@
 #include "../network/network.h"
 #include "../network/send.h"
 
+// Simple string hashing algorithm function
+// Founded by D. J. Bernstein
+// Original code found at: http://www.cse.yorku.ca/~oz/hash.html
+unsigned long HashString(LPCTSTR str, size_t length)
+{
+    unsigned long hash = 5381;
+    for (size_t i = 0; i < length; i++)
+	    hash = ((hash << 5) + hash) + *str++;
+
+    return hash;
+}
+
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
@@ -2373,7 +2385,7 @@ void CClient::addCharPaperdoll( CChar * pChar )
 	PacketPaperdoll* cmd = new PacketPaperdoll(this, pChar);
 }
 
-void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
+void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop )
 {
 	ADDTOCALLSTACK("CClient::addAOSTooltip");
 	if ( !pObj )
@@ -2401,7 +2413,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 	// (client doesn't expect us to) but only in the world
 	if ( pObj->IsItem() )
 	{
-		CItem * pItem = (CItem *) dynamic_cast <const CItem *> ( pObj );
+		const CItem * pItem = dynamic_cast<const CItem *>( pObj );
 
 		if ( !pItem->GetContainer() && pItem->IsAttr(/*ATTR_MOVE_NEVER|*/ATTR_STATIC) )
 		{
@@ -2410,298 +2422,362 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bShop )
 		}
 	}
 
-#define DOHASH( value ) hash ^= ((value) & 0x3FFFFFF); \
-						hash ^= ((value) >> 26) & 0x3F;
+	PacketPropertyList* propertyList = pObj->GetPropertyList();
 
-	int hash = 0;
-	DOHASH( (pObj->GetUID() & UID_O_INDEX_MASK) );
-	DOHASH( pObj->GetBaseID() );
-	DOHASH( (Calc_GetRandVal( pObj->GetBaseID() ) + 1) );
-
-	CItem	*pItem = ( pObj->IsItem() ? (CItem *) dynamic_cast <const CItem *> (pObj) : NULL );
-	CChar	*pChar = ( pObj->IsChar() ? (CChar *) dynamic_cast <const CChar *> (pObj) : NULL );
-	CClientTooltip	*t;
-
-	this->m_TooltipData.Clean(true);
-
-	//DEBUG_MSG(("Preparing tooltip for 0%x (%s)\n", pObj->GetUID(), pObj->GetName()));
-
-	if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
+	if (propertyList == NULL || propertyList->hasExpired(g_Cfg.m_iTooltipCache))
 	{
-		this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-		t->FormatArgs(" \t%s\t ", pObj->GetName());
-	}
-	else // we have FEATURE_AOS_UPDATE_B enabled
-	{
-		TRIGRET_TYPE iRet = TRIGRET_RET_FALSE;
-		CScriptTriggerArgs args((CScriptObj *)pObj);
-		if ( pItem )
-			iRet = pItem->OnTrigger(ITRIG_CLIENTTOOLTIP, this->GetChar(), &args);
-		else if ( pChar )
-			iRet = pChar->OnTrigger(CTRIG_ClientTooltip, this->GetChar(), &args);
+		CItem	*pItem = ( pObj->IsItem() ? (CItem *) dynamic_cast <const CItem *> (pObj) : NULL );
+		CChar	*pChar = ( pObj->IsChar() ? (CChar *) dynamic_cast <const CChar *> (pObj) : NULL );
 
-		if ( iRet != TRIGRET_RET_TRUE )
+		if (pItem != NULL)
+			pItem->FreePropertyList();
+		else if (pChar != NULL)
+			pChar->FreePropertyList();
+
+		CClientTooltip* t = NULL;
+		this->m_TooltipData.Clean(true);
+
+		//DEBUG_MSG(("Preparing tooltip for 0%x (%s)\n", pObj->GetUID(), pObj->GetName()));
+
+		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
+			this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+			t->FormatArgs(" \t%s\t ", pObj->GetName());
+		}
+		else // we have FEATURE_AOS_UPDATE_B enabled
+		{
+			TRIGRET_TYPE iRet = TRIGRET_RET_FALSE;
+			CScriptTriggerArgs args((CScriptObj *)pObj);
+			args.m_iN1 = bRequested;
 			if ( pItem )
-			{
-				this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-				t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-			}
+				iRet = pItem->OnTrigger(ITRIG_CLIENTTOOLTIP, this->GetChar(), &args);
 			else if ( pChar )
+				iRet = pChar->OnTrigger(CTRIG_ClientTooltip, this->GetChar(), &args);
+
+			if ( iRet != TRIGRET_RET_TRUE )
 			{
-				LPCTSTR lpPrefix = pChar->GetKeyStr("NAME.PREFIX");
-				// HUE_TYPE wHue = m_pChar->Noto_GetHue( pChar, true );
-
-				if ( ! *lpPrefix )
-					lpPrefix = pChar->Noto_GetFameTitle();
-
-				if ( ! *lpPrefix )
-					lpPrefix = " ";
-
-				TCHAR * lpSuffix = Str_GetTemp();
-				strcpy(lpSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
-
-				CStoneMember * pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
-				if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
+				if ( pItem )
 				{
-					if ( pGuildMember && pGuildMember->IsAbbrevOn() && pGuildMember->GetParentStone()->GetAbbrev()[0] )
-					{
-						sprintf( lpSuffix, "%s [%s]", lpSuffix, pGuildMember->GetParentStone()->GetAbbrev() );
-					}
+					this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+					t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 				}
-
-				if ( *lpSuffix == '\0' )
-					strcpy( lpSuffix, " " );
-
-				// The name
-				this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-				t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-
-				// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
-				// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>",
-				//	(BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2),
-				//	(BYTE)((((int)wHue) & 0x1F) << 3),lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-
-				if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
+				else if ( pChar )
 				{
-					if ( pGuildMember && pGuildMember->IsAbbrevOn() )
+					LPCTSTR lpPrefix = pChar->GetKeyStr("NAME.PREFIX");
+					// HUE_TYPE wHue = m_pChar->Noto_GetHue( pChar, true );
+
+					if ( ! *lpPrefix )
+						lpPrefix = pChar->Noto_GetFameTitle();
+
+					if ( ! *lpPrefix )
+						lpPrefix = " ";
+
+					TCHAR * lpSuffix = Str_GetTemp();
+					strcpy(lpSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
+
+					CStoneMember * pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
+					if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
 					{
-						if ( pGuildMember->GetTitle()[0] )
+						if ( pGuildMember && pGuildMember->IsAbbrevOn() && pGuildMember->GetParentStone()->GetAbbrev()[0] )
 						{
-							this->m_TooltipData.Add(t = new CClientTooltip(1060776));
-							t->FormatArgs( "%s\t%s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName()); // ~1_val~, ~2_val~
-						}
-						else
-						{
-							this->m_TooltipData.Add(new CClientTooltip(1070722, pGuildMember->GetParentStone()->GetName())); // ~1_NOTHING~
+							sprintf( lpSuffix, "%s [%s]", lpSuffix, pGuildMember->GetParentStone()->GetAbbrev() );
 						}
 					}
-				}
-			}
 
+					if ( *lpSuffix == '\0' )
+						strcpy( lpSuffix, " " );
 
-			// Some default tooltip info if RETURN 0 or no script
-			if ( pChar )
-			{
-				// Character specific stuff
-				if ( ( pChar->IsPriv( PRIV_GM ) ) && ( ! pChar->IsPriv( PRIV_PRIV_NOSHOW ) ) )
-					this->m_TooltipData.Add( new CClientTooltip( 1018085 ) ); // Game Master
-			}
+					// The name
+					this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+					t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-			if ( pItem )
-			{
-				if ( pItem->IsAttr( ATTR_BLESSED ) )
-					this->m_TooltipData.Add( new CClientTooltip( 1038021 ) ); // Blessed
-				if ( pItem->IsAttr( ATTR_CURSED ) )
-					this->m_TooltipData.Add( new CClientTooltip( 1049643 ) ); // Cursed
-				if ( pItem->IsAttr( ATTR_NEWBIE ) )
-					this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
-				if ( pItem->IsAttr( ATTR_MAGIC ) )
-					this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
+					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
+					// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>",
+					//	(BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2),
+					//	(BYTE)((((int)wHue) & 0x1F) << 3),lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-				if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) ) // Negative amount?
-				{
-					this->m_TooltipData.Add( t = new CClientTooltip( 1060663 ) ); // ~1_val~: ~2_val~
-					t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_AMOUNT), pItem->GetAmount() );
-				}
-
-				// Some type specific default stuff
-				switch ( pItem->GetType() )
-				{
-					case IT_CONTAINER_LOCKED:
-						this->m_TooltipData.Add( new CClientTooltip( 3005142 ) ); // Locked
-					case IT_CONTAINER:
-					case IT_CORPSE:
-					case IT_TRASH_CAN:
-						if ( pItem->IsContainer() )
+					if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
+					{
+						if ( pGuildMember && pGuildMember->IsAbbrevOn() )
 						{
-							CContainer * pContainer = dynamic_cast <CContainer *> ( pItem );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1050044 ) );
-							t->FormatArgs( "%d\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
-						}
-						break;
-
-					case IT_ARMOR_LEATHER:
-					case IT_ARMOR:
-					case IT_CLOTHING:
-					case IT_SHIELD:
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-						t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_ARMOR), pItem->Armor_GetDefense() );
-						this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
-						t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-						t->FormatArgs( "%d\t%d", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
-						break;
-
-					case IT_WEAPON_MACE_SMITH:
-					case IT_WEAPON_MACE_SHARP:
-					case IT_WEAPON_MACE_STAFF:
-					case IT_WEAPON_MACE_CROOK:
-					case IT_WEAPON_SWORD:
-					case IT_WEAPON_FENCE:
-					case IT_WEAPON_BOW:
-					case IT_WAND:
-					case IT_WEAPON_AXE:
-					case IT_WEAPON_XBOW:
-						if ( pItem->GetType() == IT_WAND )
-						{
-							this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
-							t->FormatArgs( "%d", pItem->m_itWeapon.m_spellcharges );
-						}
-						else
-						{
-							if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
-								this->m_TooltipData.Add( new CClientTooltip( 1061171 ) );
+							if ( pGuildMember->GetTitle()[0] )
+							{
+								this->m_TooltipData.Add(t = new CClientTooltip(1060776));
+								t->FormatArgs( "%s\t%s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName()); // ~1_val~, ~2_val~
+							}
 							else
-								this->m_TooltipData.Add( new CClientTooltip( 1061824 ) );
+							{
+								this->m_TooltipData.Add(new CClientTooltip(1070722, pGuildMember->GetParentStone()->GetName())); // ~1_NOTHING~
+							}
 						}
+					}
+				}
 
-						this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
-						t->FormatArgs( "%d\t%d", pItem->Item_GetDef()->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
-						this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
-						t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-						t->FormatArgs( "%d\t%d", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
 
-						if ( pItem->m_itWeapon.m_poison_skill )
-							this->m_TooltipData.Add( new CClientTooltip( 1017383 ) ); // Poisoned
-						break;
+				// Some default tooltip info if RETURN 0 or no script
+				if ( pChar )
+				{
+					// Character specific stuff
+					if ( ( pChar->IsPriv( PRIV_GM ) ) && ( ! pChar->IsPriv( PRIV_PRIV_NOSHOW ) ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1018085 ) ); // Game Master
+				}
 
-					case IT_WEAPON_MACE_PICK:
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-						t->FormatArgs( "%d\t%d", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
-						break;
+				if ( pItem )
+				{
+					if ( pItem->IsAttr( ATTR_BLESSED ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1038021 ) ); // Blessed
+					if ( pItem->IsAttr( ATTR_CURSED ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1049643 ) ); // Cursed
+					if ( pItem->IsAttr( ATTR_NEWBIE ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
+					if ( pItem->IsAttr( ATTR_MAGIC ) )
+						this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
 
-					case IT_TELEPAD:
-					case IT_MOONGATE:
-						if ( this->IsPriv( PRIV_GM ) )
-						{
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "%s\t%s", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_DESTINATION), pItem->m_itTelepad.m_pntMark.WriteUsed() );
-						}
-						break;
+					if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) ) // Negative amount?
+					{
+						this->m_TooltipData.Add( t = new CClientTooltip( 1060663 ) ); // ~1_val~: ~2_val~
+						t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_AMOUNT), pItem->GetAmount() );
+					}
 
-					case IT_BOOK:
-						// Author?
-						break;
-
-					case IT_SPELLBOOK:
-					case IT_SPELLBOOK_NECRO:
-					case IT_SPELLBOOK_PALA:
-					case IT_SPELLBOOK_BUSHIDO:
-					case IT_SPELLBOOK_NINJITSU:
-					case IT_SPELLBOOK_ARCANIST:
-					case IT_SPELLBOOK_MYSTIC:
-						{
-							int count = pItem->GetSpellcountInBook();
-							if ( count > 0 )
+					// Some type specific default stuff
+					switch ( pItem->GetType() )
+					{
+						case IT_CONTAINER_LOCKED:
+							this->m_TooltipData.Add( new CClientTooltip( 3005142 ) ); // Locked
+						case IT_CONTAINER:
+						case IT_CORPSE:
+						case IT_TRASH_CAN:
+							if ( pItem->IsContainer() )
 							{
-								this->m_TooltipData.Add( t = new CClientTooltip( 1042886 ) ); // ~1_NUMBERS_OF_SPELLS~ Spells
-								t->FormatArgs( "%d", count );
+								const CContainer * pContainer = dynamic_cast <const CContainer *> ( pItem );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1050044 ) );
+								t->FormatArgs( "%d\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
 							}
-						} break;
+							break;
 
-					case IT_SPAWN_CHAR:
-						{
-							CResourceDef * pSpawnCharDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnChar.m_CharID );
-							LPCTSTR pszName = NULL;
-							if ( pSpawnCharDef )
+						case IT_ARMOR_LEATHER:
+						case IT_ARMOR:
+						case IT_CLOTHING:
+						case IT_SHIELD:
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+							t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_ARMOR), pItem->Armor_GetDefense() );
+							this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
+							t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
+							t->FormatArgs( "%d\t%d", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
+							break;
+
+						case IT_WEAPON_MACE_SMITH:
+						case IT_WEAPON_MACE_SHARP:
+						case IT_WEAPON_MACE_STAFF:
+						case IT_WEAPON_MACE_CROOK:
+						case IT_WEAPON_SWORD:
+						case IT_WEAPON_FENCE:
+						case IT_WEAPON_BOW:
+						case IT_WAND:
+						case IT_WEAPON_AXE:
+						case IT_WEAPON_XBOW:
+							if ( pItem->GetType() == IT_WAND )
 							{
-								CCharBase *pCharBase = dynamic_cast<CCharBase*>( pSpawnCharDef );
-								if ( pCharBase )
-									pszName = pCharBase->GetTradeName();
+								this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
+								t->FormatArgs( "%d", pItem->m_itWeapon.m_spellcharges );
+							}
+							else
+							{
+								if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
+									this->m_TooltipData.Add( new CClientTooltip( 1061171 ) );
 								else
-									pszName = pSpawnCharDef->GetName();
-
-								while (*pszName == '#')
-									pszName++;
+									this->m_TooltipData.Add( new CClientTooltip( 1061824 ) );
 							}
 
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Character\t%s", pszName ? pszName : "none" );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
-							t->FormatArgs( "%d", pItem->m_itSpawnChar.m_DistMax );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
-							t->FormatArgs( "%d\t%d", pItem->m_itSpawnChar.m_current, pItem->GetAmount() );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Min/max time\t%d min / %d min", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
-						} break;
+							this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
+							t->FormatArgs( "%d\t%d", pItem->Item_GetDef()->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
+							this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
+							t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
+							t->FormatArgs( "%d\t%d", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
 
-					case IT_SPAWN_ITEM:
-						{
-							CResourceDef * pSpawnItemDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnItem.m_ItemID );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Item\t%s", pSpawnItemDef ? pSpawnItemDef->GetName() : "none" );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060656 ) ); // amount to make: ~1_val~
-							t->FormatArgs( "%d", pItem->m_itSpawnItem.m_pile );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
-							t->FormatArgs( "??\t%d", pItem->GetAmount() );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Min/max time\t%d min / %d min", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
-						} break;
+							if ( pItem->m_itWeapon.m_poison_skill )
+								this->m_TooltipData.Add( new CClientTooltip( 1017383 ) ); // Poisoned
+							break;
 
-					case IT_COMM_CRYSTAL:
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-						t->FormatArgs( "Linked\t%s", ( ( (DWORD) pItem->m_uidLink == 0x4FFFFFFF ) ? "No" : "Yes" ) );
-						break;
+						case IT_WEAPON_MACE_PICK:
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
+							t->FormatArgs( "%d\t%d", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
+							break;
 
-					case IT_STONE_GUILD:
-						{
-							this->m_TooltipData.Clean(true);
-							this->m_TooltipData.Add( t = new CClientTooltip( 1041429 ) );
-							CItemStone * thisStone = dynamic_cast<CItemStone *>(pItem);
-							if ( thisStone )
+						case IT_TELEPAD:
+						case IT_MOONGATE:
+							if ( this->IsPriv( PRIV_GM ) )
 							{
-								if ( thisStone->GetAbbrev()[0] )
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
-									t->FormatArgs( "%s [%s]", thisStone->GetName(), thisStone->GetAbbrev() );
-								}
-								else
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
-									t->FormatArgs( "%s", thisStone->GetName() );
-								}
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "%s\t%s", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_DESTINATION), pItem->m_itTelepad.m_pntMark.WriteUsed() );
 							}
-						} break;
+							break;
 
-					default:
-						break;
+						case IT_BOOK:
+							// Author?
+							break;
+
+						case IT_SPELLBOOK:
+						case IT_SPELLBOOK_NECRO:
+						case IT_SPELLBOOK_PALA:
+						case IT_SPELLBOOK_BUSHIDO:
+						case IT_SPELLBOOK_NINJITSU:
+						case IT_SPELLBOOK_ARCANIST:
+						case IT_SPELLBOOK_MYSTIC:
+							{
+								int count = pItem->GetSpellcountInBook();
+								if ( count > 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1042886 ) ); // ~1_NUMBERS_OF_SPELLS~ Spells
+									t->FormatArgs( "%d", count );
+								}
+							} break;
+
+						case IT_SPAWN_CHAR:
+							{
+								CResourceDef * pSpawnCharDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnChar.m_CharID );
+								LPCTSTR pszName = NULL;
+								if ( pSpawnCharDef )
+								{
+									CCharBase *pCharBase = dynamic_cast<CCharBase*>( pSpawnCharDef );
+									if ( pCharBase )
+										pszName = pCharBase->GetTradeName();
+									else
+										pszName = pSpawnCharDef->GetName();
+
+									while (*pszName == '#')
+										pszName++;
+								}
+
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Character\t%s", pszName ? pszName : "none" );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
+								t->FormatArgs( "%d", pItem->m_itSpawnChar.m_DistMax );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
+								t->FormatArgs( "%d\t%d", pItem->m_itSpawnChar.m_current, pItem->GetAmount() );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Min/max time\t%d min / %d min", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
+							} break;
+
+						case IT_SPAWN_ITEM:
+							{
+								CResourceDef * pSpawnItemDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnItem.m_ItemID );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Item\t%s", pSpawnItemDef ? pSpawnItemDef->GetName() : "none" );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060656 ) ); // amount to make: ~1_val~
+								t->FormatArgs( "%d", pItem->m_itSpawnItem.m_pile );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
+								t->FormatArgs( "??\t%d", pItem->GetAmount() );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Min/max time\t%d min / %d min", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
+								t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
+							} break;
+
+						case IT_COMM_CRYSTAL:
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+							t->FormatArgs( "Linked\t%s", ( ( (DWORD) pItem->m_uidLink == 0x4FFFFFFF ) ? "No" : "Yes" ) );
+							break;
+
+						case IT_STONE_GUILD:
+							{
+								this->m_TooltipData.Clean(true);
+								this->m_TooltipData.Add( t = new CClientTooltip( 1041429 ) );
+								const CItemStone * thisStone = dynamic_cast<const CItemStone *>(pItem);
+								if ( thisStone )
+								{
+									if ( thisStone->GetAbbrev()[0] )
+									{
+										this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
+										t->FormatArgs( "%s [%s]", thisStone->GetName(), thisStone->GetAbbrev() );
+									}
+									else
+									{
+										this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
+										t->FormatArgs( "%s", thisStone->GetName() );
+									}
+								}
+							} break;
+
+						default:
+							break;
+					}
 				}
 			}
 		}
-	}
+	
+#define DOHASH( value ) hash ^= ((value) & 0x3FFFFFF); \
+						hash ^= ((value) >> 26) & 0x3F;
 
-	if ( !this->m_TooltipData.GetCount() )
-		return;
+		// build a hash value from the tooltip entries
+		DWORD hash = 0;
+		DWORD argumentHash = 0;
+		for (int i = 0; i < m_TooltipData.GetCount(); i++)
+		{
+			CClientTooltip* tipEntry = m_TooltipData.GetAt(i);
+			argumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
 
-	new PacketPropertyList(this, pObj, hash, &m_TooltipData);
+			DOHASH(tipEntry->m_clilocid);
+			DOHASH(argumentHash);
+		}
+		hash |= UID_F_ITEM;
 
 #undef DOHASH
+
+		// clients actually expect to use an incremental revision number and not a
+		// hash to check if a tooltip needs updating - the client will not request
+		// updated tooltip data if the hash happens to be less than the previous one
+		//
+		// we still want to generate a hash though, so we don't have to increment
+		// the revision number if the tooltip hasn't actually been changed
+		DWORD revision;
+		if (pItem != NULL)
+			revision = pItem->UpdatePropertyRevision(hash);
+		else if (pChar != NULL)
+			revision = pChar->UpdatePropertyRevision(hash);
+
+		propertyList = new PacketPropertyList(pObj, revision, &m_TooltipData);
+
+		// cache the property list for next time, unless property list is
+		// incomplete (name only) or caching is disabled
+		if (bNameOnly == false && g_Cfg.m_iTooltipCache > 0)
+		{
+			if (pItem != NULL)
+				pItem->SetPropertyList(propertyList);
+			else if (pChar != NULL)
+				pChar->SetPropertyList(propertyList);
+		}
+	}
+
+	if (propertyList->isEmpty())
+		return;
+
+	switch (g_Cfg.m_iTooltipMode)
+	{
+		case TOOLTIPMODE_SENDVERSION:
+			if (bRequested == false)
+			{
+				// send property list version (client will send a request for the full tooltip if needed)
+				if ( !GetNetState()->isClientVersion(0x400050) )
+					new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
+				else
+					new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+
+				break;
+			}
+
+			// fall through to send full list
+
+		case TOOLTIPMODE_SENDFULL:
+		default:
+			// send full property list
+			PacketPropertyList* packet = new PacketPropertyList(this, propertyList);
+			break;
+	}
 }
 
 void CClient::addShowDamage( int damage, DWORD uid_damage )

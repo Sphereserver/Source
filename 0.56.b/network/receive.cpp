@@ -2763,6 +2763,40 @@ bool PacketClientInfo::onReceive(NetState* net)
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x10 : PacketAosTooltipInfo			tooltip request (old)
+ *
+ *
+ ***************************************************************************/
+PacketAosTooltipInfo::PacketAosTooltipInfo() : Packet(-1)
+{
+}
+
+bool PacketAosTooltipInfo::onReceive(NetState* net)
+{
+	ADDTOCALLSTACK("PacketAosTooltipInfo::onReceive");
+	
+	CClient* client = net->getClient();
+	ASSERT(client);
+	CChar* character = client->GetChar();
+	if (character == NULL)
+		return false;
+
+	if (net->isClientVersion(0x400000) == false)
+		return true;
+	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+		return true;
+
+	CObjBase* object = CGrayUID(readInt32()).ObjFind();
+	if (object != NULL && character->CanSee(object))
+		client->addAOSTooltip(object, true);
+
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x13 : PacketPopupReq				request popup menu
  *
  *
@@ -3209,7 +3243,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 		else if (character->CanSee(object) == false)
 			continue;
 
-		client->addAOSTooltip(object);
+		client->addAOSTooltip(object, true);
 	}
 
 	return true;

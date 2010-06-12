@@ -1030,6 +1030,7 @@ PacketSend::PacketSend(const PacketSend *other)
 	m_target = other->m_target;
 	m_priority = other->m_priority;
 	m_lengthPosition = other->m_lengthPosition;
+	m_position = other->m_position;
 }
 
 void PacketSend::initLength(void)

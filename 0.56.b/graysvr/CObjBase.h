@@ -42,6 +42,7 @@ enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.
 
 class PacketSend;
 class PacketHouseDesign;
+class PacketPropertyList;
 
 class CObjBase : public CObjBaseTemplate, public CScriptObj
 {
@@ -194,7 +195,7 @@ public:
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
 	void RemoveFromView( CClient * pClientExclude = NULL , bool fHardcoded = true );	// remove this item from all clients.
-	void ResendTooltip( bool bForce = false );	// force reload of tooltip for this object
+	void ResendTooltip( bool bSendFull = false, bool bUseCache = false );	// force reload of tooltip for this object
 	void UpdateCanSee( PacketSend * pPacket, CClient * pClientExclude = NULL ) const;
 	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode ) const;
 
@@ -217,6 +218,17 @@ public:
 
 	//	Some global object variables
 	signed int m_ModAr;
+
+protected:
+	PacketPropertyList* m_PropertyList;	// currently cached property list packet
+	DWORD m_PropertyHash;				// latest property list hash
+	DWORD m_PropertyRevision;			// current property list revision
+
+public:
+	PacketPropertyList* GetPropertyList(void) const { return m_PropertyList; }
+	void SetPropertyList(PacketPropertyList* propertyList);
+	void FreePropertyList(void);
+	DWORD UpdatePropertyRevision(DWORD hash);
 };
 
 enum STONEALIGN_TYPE // Types of Guild/Town stones
@@ -1084,7 +1096,7 @@ public:
 	void ConvertBolttoCloth();
 	SPELL_TYPE GetScrollSpell() const;
 	bool IsSpellInBook( SPELL_TYPE spell ) const;
-	int GetSpellcountInBook();
+	int GetSpellcountInBook() const;
 	int  AddSpellbookScroll( CItem * pItem );
 	int AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate );
 

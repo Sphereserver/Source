@@ -4778,3 +4778,25 @@ ALPHA additions:
 31-05-2010, MrSugarCube
 - Fixed #1753: Client crash when moving into view of a character sitting on a chair.
 - Fixed #1760: Players unable to see items in the other player's trade window.
+
+13-06-2010, MrSugarCube
+- Added: 'TooltipMode' setting to sphere.ini. When this is set to '1', instead of always
+  sending a full tooltip packet for every item, Sphere will send a smaller 'header' packet
+  and wait for the client to request the full information (for unchanged tooltips, clients
+  can use a local cache and less data will need to be sent).
+  Note: Since the header packet requires knowledge of what the tooltip will contain,
+  @ClientTooltip should be expected to fire twice in this mode (once for the header, once
+  for the full data). ARGN1 can be used to determine if the client asked for the tooltip,
+  but it is important that you do not use it to change the tooltip content.
+- Added: Support for caching tooltip data for characters and items. Whilst a tooltip is
+  cached, @ClientTooltip won't be fired. A new 'TooltipCacheTime' setting is provided in
+  sphere.ini to control how long a cached tooltip will be valid for (set to 0 to disable
+  caching). If the new tooltip mode is being used then enabling this would be advisable
+  to avoid having @ClientTooltip fired twice for each client.
+- Modified: RESENDTOOLTIP now accepts parameters to control how the tooltip should be
+  sent.
+  The syntax is now: "RESENDTOOLTIP [sendfull=0,usecache=0]"
+   'sendfull' - 1 to force the full tooltip to be sent, or 0 to send just the header (when
+                TooltipMode=1, otherwise the full data will be sent anyway)
+   'usecache' = 1 to use cached tooltip if available, or 0 to clear the cache and force
+                @ClientTooltip to fire

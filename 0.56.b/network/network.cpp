@@ -554,7 +554,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_ViewRange, new PacketViewRange());						//
 	registerPacket(XCMD_ConfigFile, new PacketUnknown(-1));						//
 	registerPacket(XCMD_LogoutStatus, new PacketLogout());						//
-	registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					//
+	registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					// request tooltip data
 	registerPacket(XCMD_ExtAosData, new PacketEncodedCommand());				//
 	registerPacket(XCMD_Spy2, new PacketHardwareInfo());						// client hardware info
 	registerPacket(XCMD_BugReport, new PacketBugReport());						// bug report
@@ -577,7 +577,7 @@ void NetworkIn::onStart(void)
 	registerExtended(EXTDATA_StatusClose, new PacketStatusClose());				// status window closed
 	registerExtended(EXTDATA_Yawn, new PacketAnimationReq());					// play animation
 	registerExtended(EXTDATA_Unk15, new PacketClientInfo());					// client information
-	registerExtended(EXTDATA_OldAOSTooltipInfo, new PacketAOSTooltipReq());		//
+	registerExtended(EXTDATA_OldAOSTooltipInfo, new PacketAosTooltipInfo());	//
 	registerExtended(EXTDATA_Popup_Request, new PacketPopupReq());				// request popup menu
 	registerExtended(EXTDATA_Popup_Select, new PacketPopupSelect());			// select popup option
 	registerExtended(EXTDATA_Stats_Change, new PacketChangeStatLock());			// change stat lock

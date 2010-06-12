@@ -3259,7 +3259,7 @@ bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 		return false;
 }
 
-int CItem::GetSpellcountInBook()
+int CItem::GetSpellcountInBook() const
 {
 	ADDTOCALLSTACK("CItem::GetSpellcountInBook");
 	// -1 = can't count

@@ -1211,7 +1211,7 @@ public:
 
 	void addCharPaperdoll( CChar * pChar );
 
-	void addAOSTooltip( const CObjBase * pObj, bool bShop = false );
+	void addAOSTooltip( const CObjBase * pObj, bool bRequested = false, bool bShop = false );
 
 private:
 	#define MAX_POPUPS 15

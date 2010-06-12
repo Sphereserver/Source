@@ -98,6 +98,12 @@ enum COMBATFLAGS_TYPE
 	COMBAT_TARGETTEDHIT		= 0x0002000,	// Allows setting of preferred hit area by TAG.HITPREFERENCE
 };
 
+enum TOOLTIPMODE_TYPE
+{
+	TOOLTIPMODE_SENDFULL	= 0x00,	// always send full tooltip packet
+	TOOLTIPMODE_SENDVERSION	= 0x01,	// send version packet and wait for client to request full tooltip
+};
+
 enum BODYPART_TYPE
 {
 	ARMOR_HEAD = 0,
@@ -854,6 +860,9 @@ public:
 	int			m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
 	int			m_iNetMaxQueueSize;			// max packets to hold per queue (comment out for unlimited)
 	bool		m_fUsePacketPriorities;		// true to prioritise sending packets
+
+	int			m_iTooltipCache;			// time to cache tooltip for
+	int			m_iTooltipMode;				// tooltip mode (TOOLTIP_TYPE)
 
 	int			m_iRegenRate[STAT_QTY];
 	int			m_iTimerCall;

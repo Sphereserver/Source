@@ -209,6 +209,9 @@ CResource::CResource()
 	m_iNetMaxQueueSize = 50;
 	m_fUsePacketPriorities = true;
 
+	m_iTooltipCache = 60 * TICK_PER_SEC;
+	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
+
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
@@ -494,6 +497,8 @@ enum RC_TYPE
 	RC_TELNETLOG,				//  m_fTelnetLog
 	RC_TIMERCALL,				//	m_iTimerCall
 	RC_TIMEUP,
+	RC_TOOLTIPCACHE,			// m_iTooltipCache
+	RC_TOOLTIPMODE,				// m_iTooltipMode
 	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
 	RC_USEAUTHID,				// m_fUseAuthID
 	RC_USECRYPT,				// m_Usecrypt
@@ -686,6 +691,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TELNETLOG",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fTelnetLog),			0 }},
 	{ "TIMERCALL",				{ ELEM_INT,		OFFSETOF(CResource,m_iTimerCall),			0 }},
 	{ "TIMEUP",		{ELEM_VOID, 0, 0} },
+	{ "TOOLTIPCACHE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipCache),		0 }},
+	{ "TOOLTIPMODE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipMode),			0 }},
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork),		0 }},
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID),			0 }},	// we use authid like osi
 	{ "USECRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsecrypt),			0 }},	// we don't want crypt clients
@@ -958,6 +965,10 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_OPTIONFLAGS:
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
 			PrintEFOFFlags(false, true);
+			break;
+
+		case RC_TOOLTIPCACHE:
+			g_Cfg.m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
 			break;
 
 		default:
@@ -1363,6 +1374,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_PLAYERNEUTRAL:
 			sVal.FormatVal( g_Cfg.m_iPlayerKarmaNeutral );
+			break;
+		case RC_TOOLTIPCACHE:
+			sVal.FormatVal( g_Cfg.m_iTooltipCache / (TICK_PER_SEC) );
 			break;
 		default:
 			return( sm_szLoadKeys[i].m_elem.GetValStr( this, sVal ));
