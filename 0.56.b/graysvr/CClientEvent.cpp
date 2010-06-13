@@ -684,10 +684,15 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 
 
 
-bool CClient::Event_Walking( BYTE rawdir ) // Player moves
+TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 {
 	ADDTOCALLSTACK("CClient::Event_Walking");
 	// XCMD_Walk
+	// Return:
+	//  TRIGRET_RET_TRUE    = The walking was allowed
+	//  TRIGRET_RET_FALSE   = The walking was rejected
+	//  TRIGRET_RET_DEFAULT = A teleporter was used (walking is accepted without ack)
+
 	// The theory....
 	// The client sometimes echos 1 or 2 zeros or invalid echos when you first start
 	//	walking (the invalid non zeros happen when you log off and don't exit the
@@ -700,13 +705,13 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
 		{
 			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 	}
 
 	if (( m_pChar->IsStatFlag(STATF_Freeze|STATF_Stone) && m_pChar->OnFreezeCheck() ) || m_pChar->OnFreezeCheck(true) )
 	{
-		return false;
+		TRIGRET_RET_FALSE;
 	}
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
@@ -718,7 +723,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 	DIR_TYPE dir = (DIR_TYPE)( rawdir & 0x0F );
 	if ( dir >= DIR_QTY )
 	{
-		return false;
+		return TRIGRET_RET_FALSE;
 	}
 
 	CPointMap pt = m_pChar->GetTopPoint();
@@ -799,7 +804,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 					if ( iAction != TRIGRET_RET_TRUE )
 					{
-						return false;
+						return TRIGRET_RET_FALSE;
 					}
 				}
 			}
@@ -819,7 +824,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
 #endif
 		{
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 
 		// Are we invis ?
@@ -827,7 +832,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 		if (!m_pChar->MoveToChar( pt ))
 		{
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 
 		// Now we've moved, are we now or no longer indoors and need to update weather?
@@ -840,7 +845,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if ( m_pChar->CheckLocation())
 		{
 			// We stepped on teleporter
-			return false;
+			return TRIGRET_RET_DEFAULT;
 		}
 	}
 
@@ -861,7 +866,7 @@ bool CClient::Event_Walking( BYTE rawdir ) // Player moves
 		addPlayerSee( ptold );				// What new stuff do I now see ?
 	}
 
-	return true;
+	return TRIGRET_RET_TRUE;
 }
 
 

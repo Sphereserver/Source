@@ -220,26 +220,26 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 	CClient* client = net->getClient();
 	ASSERT(client);
 
-	bool canMoveThere(true);
+	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
 
 	// check crypt key
 	if (!net->isClientLessVersion(0x126000))
-		canMoveThere = client->Event_WalkingCheck(crypt);
+		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	// check sequence
 	if (net->m_sequence == 0 && sequence != 0)
-		canMoveThere = false;
+		canMoveThere = TRIGRET_RET_FALSE;
 
 	// perform movement
 	if (canMoveThere)
 		canMoveThere = client->Event_Walking(direction);
 
-	if (canMoveThere == false)
+	if (canMoveThere == TRIGRET_RET_FALSE)
 	{
 		PacketMovementRej* packet = new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
-	else
+	else if (canMoveThere == TRIGRET_RET_TRUE)
 	{
 		if (++sequence == 256)
 			sequence = 1;
