@@ -1005,13 +1005,16 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 			if ( !CanSeeInContainer( dynamic_cast <const CItemContainer*>(pObjCont) ))
 				return( false );
 
-			// a client cannot see the contents of someone else's container, unless they
-			// have opened it first
-			if ( IsClient() && pObjCont->IsItem() && pObjCont->GetTopLevelObj() != this )
+			if ( IsSetEF(EF_FixCanSeeInClosedConts) )
 			{
-				const CClient* pClient = GetClient();
-				if (pClient != NULL && pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == pClient->m_openedContainers.end())
-					return( false );
+				// a client cannot see the contents of someone else's container, unless they
+				// have opened it first
+				if ( IsClient() && pObjCont->IsItem() && pObjCont->GetTopLevelObj() != this )
+				{
+					const CClient* pClient = GetClient();
+					if (pClient != NULL && pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == pClient->m_openedContainers.end())
+						return( false );
+				}
 			}
 
 			return( CanSee( pObjCont ));

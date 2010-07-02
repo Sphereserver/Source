@@ -65,6 +65,7 @@ enum EF_TYPE
 	EF_PetSlots						= 0x0004000,
 	EF_UsePingServer				= 0x0008000,
 	EF_NPCAct_Triggers				= 0x0010000,
+	EF_FixCanSeeInClosedConts		= 0x0020000,
 	EF_Unused0400000				= 0x0400000,
 	EF_NetworkOutThread				= 0x0800000,
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested

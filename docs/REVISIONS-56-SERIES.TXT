@@ -4803,3 +4803,8 @@ ALPHA additions:
 
 02-07-2010, MrSugarCube
 - Fixed #1770: Possible exception on Linux builds when an NPC moves.
+
+03-07-2010, MrSugarCube
+- Modified #1761: The fix for issue #1756 (sending packets for items inside unopened
+  containers) must now be activated using the EF_FixCanSeeInClosedConts experimental flags,
+  since it has been reported to cause client crashes.
