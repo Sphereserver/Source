@@ -4800,3 +4800,6 @@ ALPHA additions:
                 TooltipMode=1, otherwise the full data will be sent anyway)
    'usecache' = 1 to use cached tooltip if available, or 0 to clear the cache and force
                 @ClientTooltip to fire
+
+02-07-2010, MrSugarCube
+- Fixed #1770: Possible exception on Linux builds when an NPC moves.
