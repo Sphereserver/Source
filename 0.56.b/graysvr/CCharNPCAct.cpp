@@ -896,8 +896,14 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 				//	we have just cleared our way
 				if ( bClearedWay )
+				{
 					if ( point == ptFirstTry )
-						Dir = pMe.GetDir(m_Act_p);
+					{
+						Dir = GetTopPoint().GetDir(m_Act_p);
+						if (Dir >= DIR_QTY)
+							bClearedWay = false;
+					}
+				}
 			}
 			if ( !bClearedWay )
 			{

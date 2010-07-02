@@ -33,7 +33,7 @@ class CClient;
 class NetworkIn;
 struct CSocketAddress;
 
-#if _PACKETDUMP || _DUMPSUPPORT
+#if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
 	void xRecordPacketData(const CClient* client, const BYTE* data, int length, LPCTSTR heading);
 	void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading);
 #else

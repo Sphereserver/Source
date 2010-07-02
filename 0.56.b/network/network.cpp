@@ -12,7 +12,7 @@ NetworkOut g_NetworkOut;
 //
 // Packet logging
 //
-#if _PACKETDUMP || _DUMPSUPPORT
+#if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
 
 void xRecordPacketData(const CClient* client, const BYTE* data, int length, LPCTSTR heading)
 {

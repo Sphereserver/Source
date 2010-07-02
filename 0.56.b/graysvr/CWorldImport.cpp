@@ -520,6 +520,8 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			else if ( s.IsKey("DIR" ))
 			{
 				pChar->m_dirFace = (DIR_TYPE) ATOI(pArg);
+				if ( pChar->m_dirFace < 0 || pChar->m_dirFace >= DIR_QTY )
+					pChar->m_dirFace = DIR_SE;
 				continue;
 			}
 			else if ( s.IsKey("XBODY" ))

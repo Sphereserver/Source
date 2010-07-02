@@ -230,6 +230,10 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 	if (net->m_sequence == 0 && sequence != 0)
 		canMoveThere = TRIGRET_RET_FALSE;
 
+// old sequence check
+//	if (sequence != net->m_sequence)
+//		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
+
 	// perform movement
 	if (canMoveThere)
 		canMoveThere = client->Event_Walking(direction);
