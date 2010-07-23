@@ -4789,7 +4789,7 @@ ALPHA additions:
   for the full data). ARGN1 can be used to determine if the client asked for the tooltip,
   but it is important that you do not use it to change the tooltip content.
 - Added: Support for caching tooltip data for characters and items. Whilst a tooltip is
-  cached, @ClientTooltip won't be fired. A new 'TooltipCacheTime' setting is provided in
+  cached, @ClientTooltip won't be fired. A new 'TooltipCache' setting is provided in
   sphere.ini to control how long a cached tooltip will be valid for (set to 0 to disable
   caching). If the new tooltip mode is being used then enabling this would be advisable
   to avoid having @ClientTooltip fired twice for each client.
