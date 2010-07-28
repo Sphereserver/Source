@@ -4808,3 +4808,9 @@ ALPHA additions:
 - Modified #1761: The fix for issue #1756 (sending packets for items inside unopened
   containers) must now be activated using the EF_FixCanSeeInClosedConts experimental flags,
   since it has been reported to cause client crashes.
+
+28-07-2010, MrSugarCube
+- Added #1776: P.COMPONENTS to access multi components at a location in the same way as with
+  P.STATICS. Usage is identical to P.STATICS, except that the COLOR property does not exist
+  for multi components. P.COMPONENTS.n.MULTI can be used as a reference to the multi that
+  contains the nth component at a location.
