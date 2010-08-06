@@ -4814,3 +4814,7 @@ ALPHA additions:
   P.STATICS. Usage is identical to P.STATICS, except that the COLOR property does not exist
   for multi components. P.COMPONENTS.n.MULTI can be used as a reference to the multi that
   contains the nth component at a location.
+
+06-08-2010, ShiryuX
+- Added #1790: TAG.NOTO.PERMAGREY which sets the player's notoriety to neutral/grey.
+  This will only happen if the character is blue, everything else will override it.
