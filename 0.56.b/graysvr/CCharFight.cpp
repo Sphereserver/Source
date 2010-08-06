@@ -316,7 +316,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		return( NOTO_NEUTRAL );
 	}
 
-	if ( Noto_IsNeutral() )
+	if ( Noto_IsNeutral() || m_TagDefs.GetKeyNum("NOTO.PERMAGREY", true))
 	{
 		return( NOTO_NEUTRAL );
 	}
