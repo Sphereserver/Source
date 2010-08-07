@@ -4818,3 +4818,7 @@ ALPHA additions:
 06-08-2010, ShiryuX
 - Added #1790: TAG.NOTO.PERMAGREY which sets the player's notoriety to neutral/grey.
   This will only happen if the character is blue, everything else will override it.
+
+07-08-2010, ShiryuX
+- Fixed #1772: Cooking skill wasn't counted as a crafting skill.
+- Fixed #1774: Renamed Occlo to Ocllo (correct spelling) (updated: sphere_map0.scp)

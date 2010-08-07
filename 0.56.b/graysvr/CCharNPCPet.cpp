@@ -283,8 +283,6 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			break;
 		case PC_STAY:
 		case PC_STOP:
-			m_ptHome = GetTopPoint();
-			m_pNPC->m_Home_Dist_Wander = UO_MAP_VIEW_SIGHT;
 			Skill_Start( NPCACT_STAY );
 			break;
 		case PC_TRANSFER:

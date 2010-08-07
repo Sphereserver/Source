@@ -963,7 +963,7 @@ RECT=1836,2699,1853,2721,0
 [AREADEF a_farm2_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farm2 W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3731,2638,40,0
 RECT=3728,2632,3737,2641,0
@@ -971,7 +971,7 @@ RECT=3728,2632,3737,2641,0
 [AREADEF a_pumpkin_patch_sw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Pumpkin patch SW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3739,2652,0,0
 RECT=3735,2647,3744,2657,0
@@ -979,7 +979,7 @@ RECT=3735,2647,3744,2657,0
 [AREADEF a_melon_patch_sw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Melon patch SW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3737,2663,40,0
 RECT=3731,2661,3738,2667,0
@@ -987,7 +987,7 @@ RECT=3731,2661,3738,2667,0
 [ROOMDEF a_albatross_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Albatross
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3667,2653,0,0
 RECT=3663,2640,3673,2657,0
@@ -996,7 +996,7 @@ RECT=3673,2648,3681,2657,0
 [ROOMDEF a_anchors_away_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Anchor's Away
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3635,2645,0,0
 RECT=3623,2632,3641,2642,0
@@ -1025,7 +1025,7 @@ RECT=1883,2644,1910,2660,0
 [AREADEF a_farm_nw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farm NW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3739,2566,40,0
 RECT=3736,2561,3745,2569,0
@@ -1033,7 +1033,7 @@ RECT=3736,2561,3745,2569,0
 [AREADEF a_watermelon_patch_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Watermelon patch W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3715,2571,20,0
 RECT=3713,2568,3717,2575,0
@@ -1041,7 +1041,7 @@ RECT=3713,2568,3717,2575,0
 [AREADEF a_pumpkin_patch_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Pumpkin patch W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3705,2572,20,0
 RECT=3703,2567,3707,2577,0
@@ -1049,17 +1049,17 @@ RECT=3703,2567,3707,2577,0
 [ROOMDEF a_stitchime_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Stitch in Time
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3658,2589,0,0
 RECT=3663,2575,3674,2601,0
 RECT=3655,2584,3663,2594,0
 RECT=3674,2584,3681,2593,0
 
-[ROOMDEF a_occlo_island_santuary_1]
+[ROOMDEF a_Ocllo_island_santuary_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Island Santuary
-GROUP=Occlo
+NAME=Ocllo Island Santuary
+GROUP=Ocllo
 FLAGS=0880
 P=3627,2613,0,0
 RECT=3623,2601,3641,2610,0
@@ -1068,7 +1068,7 @@ RECT=3623,2610,3633,2617,0
 [ROOMDEF a_last_chance_provisions_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Last Chance Provisions
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3635,2581,0,0
 RECT=3631,2561,3641,2585,0
@@ -1077,7 +1077,7 @@ RECT=3625,2568,3631,2577,0
 [ROOMDEF a_now_youre_cookin_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Now You're Cookin'
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3603,2581,0,0
 RECT=3599,2568,3625,2585,0
@@ -1085,25 +1085,25 @@ RECT=3599,2568,3625,2585,0
 [ROOMDEF a_bardic_collegium_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Bardic Collegium
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3660,2533,0,0
 RECT=3655,2528,3680,2537,0
 RECT=3671,2537,3680,2545,0
 
-[ROOMDEF a_occlo_councelors_guild_hall_1]
+[ROOMDEF a_Ocllo_councelors_guild_hall_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Councelor's Guild Hall
-GROUP=Occlo
+NAME=Ocllo Councelor's Guild Hall
+GROUP=Ocllo
 FLAGS=0880
 P=3667,2509,0,0
 RECT=3655,2504,3673,2513,0
 RECT=3663,2495,3673,2504,0
 
-[ROOMDEF a_occlo_guildorcery_1]
+[ROOMDEF a_Ocllo_guildorcery_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Guild of Sorcery
-GROUP=Occlo
+NAME=Ocllo Guild of Sorcery
+GROUP=Ocllo
 FLAGS=0880
 P=3630,2540,0,0
 RECT=3623,2528,3641,2553,0
@@ -1111,15 +1111,15 @@ RECT=3623,2528,3641,2553,0
 [ROOMDEF a_first_academyusic_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=First Academy of Music
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3675,2477,0,0
 RECT=3671,2472,3697,2481,0
 
-[ROOMDEF a_occlo_public_library_1]
+[ROOMDEF a_Ocllo_public_library_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Public Library
-GROUP=Occlo
+NAME=Ocllo Public Library
+GROUP=Ocllo
 FLAGS=0880
 P=3619,2477,0,0
 RECT=3607,2464,3618,2481,0
@@ -3938,7 +3938,7 @@ RECT=3007,3423,3025,3441,0
 [ROOMDEF a_farmland_sw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farmland SW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3738,2693,40,0
 RECT=3704,2663,3718,2697,0
@@ -3946,7 +3946,7 @@ RECT=3704,2663,3718,2697,0
 [ROOMDEF a_farm_sw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farm SW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3744,2684,0,0
 RECT=3735,2680,3753,2689,0
@@ -3955,7 +3955,7 @@ RECT=3735,2689,3745,2697,0
 [ROOMDEF a_farmland_nw_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farmland NW
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3739,2599,40,0
 RECT=3728,2575,3750,2624,0
@@ -3963,7 +3963,7 @@ RECT=3728,2575,3750,2624,0
 [AREADEF a_farmland_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farmland W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3711,2616,20,0
 RECT=3702,2607,3721,2633,0
@@ -3972,7 +3972,7 @@ RECT=3711,2633,3721,2640,0
 [ROOMDEF a_melon_field_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Melon Field W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=080
 P=3717,2627,20,0
 RECT=3712,2623,3720,2632,0
@@ -3980,7 +3980,7 @@ RECT=3712,2623,3720,2632,0
 [ROOMDEF a_farm_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Farm W
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3707,2589,20,0
 RECT=3704,2584,3713,2593,0
@@ -3988,7 +3988,7 @@ RECT=3704,2584,3713,2593,0
 [ROOMDEF a_bountiful_harvest_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Bountiful Harvest
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0c80
 P=3668,2621,0,0
 RECT=3663,2608,3681,2625,0
@@ -3996,16 +3996,16 @@ RECT=3663,2608,3681,2625,0
 [ROOMDEF a_better_leather_tannery_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Better Leather Tannery
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3605,2612,0,0
 RECT=3599,2600,3609,2625,0
 RECT=3591,2600,3599,2609,0
 
-[ROOMDEF a_occlo_paint_more_1]
+[ROOMDEF a_Ocllo_paint_more_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Paint & More
-GROUP=Occlo
+NAME=Ocllo Paint & More
+GROUP=Ocllo
 FLAGS=0880
 P=3642,2509,0,0
 RECT=3631,2496,3649,2505,0
@@ -4014,15 +4014,15 @@ RECT=3639,2505,3649,2513,0
 [ROOMDEF a_sweet_meat_butcher_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Sweet Meat Butcher
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3717,2651,20,0
 RECT=3703,2648,3721,2657,0
 
-[ROOMDEF a_occlo_docks_1]
+[ROOMDEF a_Ocllo_docks_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Docks
-GROUP=Occlo
+NAME=Ocllo Docks
+GROUP=Ocllo
 FLAGS=080
 P=3646,2650,-2,0
 RECT=3640,2657,3672,2685,0
@@ -4031,7 +4031,7 @@ RECT=3615,2648,3648,2658,0
 [ROOMDEF a_hammer_steel_smithy_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Hammer & Steel Smithy
-GROUP=Occlo
+GROUP=Ocllo
 FLAGS=0880
 P=3646,2596,0,0
 RECT=3631,2591,3649,2601,0
@@ -5759,10 +5759,10 @@ RECT=2867,3388,2931,3524,0
 RECT=2931,3485,3028,3542,0
 RECT=2891,3524,2916,3534,0
 
-[AREADEF a_occlo_7]
+[AREADEF a_Ocllo_7]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo
-GROUP=Occlo
+NAME=Ocllo
+GROUP=Ocllo
 FLAGS=0180
 P=3650,2519,0,0
 RECT=3588,2460,3707,2685,0
@@ -6068,10 +6068,10 @@ GROUP=Serpent's Hold
 P=2863,3518,8,0
 RECT=2717,3243,3196,3678,0
 
-[AREADEF a_occlo_territory_1]
+[AREADEF a_Ocllo_territory_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Occlo Territory
-GROUP=Occlo
+NAME=Ocllo Island
+GROUP=Ocllo
 P=3544,2518,16,0
 RECT=3287,2332,3874,2963,0
 

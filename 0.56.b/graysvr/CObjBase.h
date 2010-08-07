@@ -3464,6 +3464,7 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 		case SKILL_BLACKSMITHING:
 		case SKILL_BOWCRAFT:
 		case SKILL_CARPENTRY:
+		case SKILL_COOKING:
 		case SKILL_INSCRIPTION:
 		case SKILL_TAILORING:
 		case SKILL_TINKERING:
