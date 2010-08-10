@@ -711,7 +711,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 	if (( m_pChar->IsStatFlag(STATF_Freeze|STATF_Stone) && m_pChar->OnFreezeCheck() ) || m_pChar->OnFreezeCheck(true) )
 	{
-		TRIGRET_RET_FALSE;
+		return TRIGRET_RET_FALSE;
 	}
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
