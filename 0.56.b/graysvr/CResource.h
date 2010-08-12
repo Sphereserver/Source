@@ -43,6 +43,9 @@ enum OF_TYPE
 	OF_NoPrefix				= 0x0004000,
 	OF_DyeType				= 0x0008000,
 	OF_DrinkIsFood			= 0x0010000,
+#ifdef _ALPHASPHERE
+	OF_DClickNoTurn			= 0x0020000,
+#endif
 	OF_Specific				= 0x1000000
 };
 

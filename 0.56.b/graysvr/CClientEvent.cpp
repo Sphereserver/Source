@@ -2054,9 +2054,18 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 	}
 
 	// Face the object we are using/activating.
+#ifdef _ALPHASPHERE
+	if ( !IsSetOF(OF_DClickNoTurn) )
+	{
+		SetTargMode();
+		m_Targ_UID = uid;
+		m_pChar->UpdateDir( pObj );
+	}
+#else
 	SetTargMode();
 	m_Targ_UID = uid;
 	m_pChar->UpdateDir( pObj );
+#endif
 
 	if ( pObj->IsItem())
 	{
@@ -2647,7 +2656,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 		case EXTCMD_DOOR_AUTO: // open door macro = Attempt to open a door around us.
 			if ( m_pChar && !m_pChar->IsStatFlag( STATF_DEAD ) )
 			{
-				CWorldSearch Area( m_pChar->GetTopPoint(), 4 );
+				CWorldSearch Area( m_pChar->GetTopPoint(), 3 );
 				while(true)
 				{
 					CItem * pItem = Area.GetItem();
@@ -2659,7 +2668,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 						case IT_PORTCULIS:
 						case IT_DOOR_LOCKED:
 						case IT_DOOR:
-							m_pChar->Use_Obj( pItem, false );
+							m_pChar->Use_Obj( pItem, true );
 							return;
 
 						default:

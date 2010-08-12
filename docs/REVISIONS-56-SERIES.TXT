@@ -4821,4 +4821,13 @@ ALPHA additions:
 
 07-08-2010, ShiryuX
 - Fixed #1772: Cooking skill wasn't counted as a crafting skill.
-- Fixed #1774: Renamed Occlo to Ocllo (correct spelling) (updated: sphere_map0.scp)
+
+07-08-2010, ShiryuX (Script Pack)
+- Fixed #1774: sphere_map0.scp (Renamed Occlo to Ocllo, correct spelling)
+
+10-08-2010, ShiryuX
+- Fixed #1781: Walk buffer protection was counting steps even when step wasn't possible,
+  because of freeze status in the character.
+
+12-08-2010, ShiryuX
+- Fixed #1793: OpenDoor Macro now won't ignore LOS and Distance is 3 (max).
