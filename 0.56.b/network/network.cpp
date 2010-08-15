@@ -925,7 +925,10 @@ void NetworkIn::tick(void)
 
 				//	fall back and delete the packet
 				if (packetLength <= 0)
+				{
+					DEBUGNETWORK(("%x:Dropped game packet (0x%x) because it does not match expected length.\n", client->id(), packetID));
 					break;
+				}
 
 				len -= packetLength;
 				offset += packetLength;
