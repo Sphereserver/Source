@@ -94,7 +94,7 @@ public:
 	{
 		return( m_sCurPassword );
 	}
-	bool SetPassword( LPCTSTR pszPassword, bool dontUseMD5Config = false );
+	bool SetPassword( LPCTSTR pszPassword, bool isMD5Hash = false );
 
 	void ClearPassword()
 	{

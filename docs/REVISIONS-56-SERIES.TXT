@@ -4834,3 +4834,8 @@ ALPHA additions:
 
 15-08-2010, MrSugarCube
 - Fixed #1722: Game clients unable to connect when the server IP is set to 127.0.0.1.
+
+17-08-2010, ShiryuX
+- Added #1566: MD5PASSWORD account function/property to instert or change a MD5 hash as password.
+  This way you can call: "SERV.ACCOUNT foobar MD5PASSWORD f4d9ff51c527e8ef67d924d4f0a6db66"
+- Fixed #1799: Accounts created using ADDMD5 won't cut the hash anymore.

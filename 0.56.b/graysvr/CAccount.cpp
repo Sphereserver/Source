@@ -264,7 +264,7 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	ASSERT(pAccount);
 	pAccount->m_dateFirstConnect = pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
 
-	pAccount->SetPassword(pszArg, !md5);
+	pAccount->SetPassword(pszArg, md5);
 	return true;
 }
 
@@ -901,25 +901,27 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	return( false );	// failure.
 }
 
-bool CAccount::SetPassword( LPCTSTR pszPassword, bool dontUseMD5Config)
+bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 {
 	ADDTOCALLSTACK("CAccount::SetPassword");
-
-	//dontUseMD5Config allows to disable the hashing of the password (false means "use sphere.ini")
-	bool useMD5;
-	if (dontUseMD5Config)  
-		useMD5 = false;
-	else	
-		useMD5 = g_Cfg.m_fMd5Passwords;
+	bool useMD5 = g_Cfg.m_fMd5Passwords;
 	
-	if ( Str_Check( pszPassword ) )
+	if ( Str_Check( pszPassword ) )	// Prevents exploits
 		return false;
 
+	if ( isMD5Hash && useMD5 ) // If it is a hash, check length and set it directly
+	{
+		if ( strlen(pszPassword) == 32 )
+			m_sCurPassword = pszPassword;
+
+		return true;
+	}
+		
 	short int iSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER,strlen(pszPassword))+1;
 	char * pszPassw = new char[iSize];
 	strcpylen(pszPassw,pszPassword,iSize);
 
-	if( useMD5 )
+	if ( useMD5 )
 	{
 		char digest[33];
 
@@ -993,6 +995,7 @@ enum AC_TYPE
 	AC_LASTCONNECTTIME,
 	AC_LASTIP,
 	AC_MAXCHARS,
+	AC_MD5PASSWORD,
 	AC_NAME,
 	AC_NEWPASSWORD,
 	AC_PASSWORD,
@@ -1023,6 +1026,7 @@ LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY+1] = // static
 	"LASTCONNECTTIME",
 	"LASTIP",
 	"MAXCHARS",
+	"MD5PASSWORD",
 	"NAME",
 	"NEWPASSWORD",
 	"PASSWORD",
@@ -1122,6 +1126,7 @@ bool CAccount::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			}
 			sVal = GetNewPassword();
 			break;
+		case AC_MD5PASSWORD:
 		case AC_PASSWORD:
 			if ( pSrc->GetPrivLevel() < PLEVEL_Admin ||
 				pSrc->GetPrivLevel() < GetPrivLevel())	// can't see accounts higher than you
@@ -1253,6 +1258,9 @@ bool CAccount::r_LoadVal( CScript & s )
 			break;
 		case AC_MAXCHARS:
 			SetMaxChars( s.GetArgVal() );
+			break;
+		case AC_MD5PASSWORD:
+			SetPassword( s.GetArgStr(), true);
 			break;
 		case AC_PLEVEL:
 			SetPrivLevel( GetPrivLevelText( s.GetArgRaw()));
