@@ -438,6 +438,27 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		case GUMPCTL_TEXTENTRY:
 		case GUMPCTL_TEXTENTRYLIMITED:
 			break;
+
+		case GUMPCTL_XMFHTMLGUMP:		// 7 = x,y,sx,sy, cliloc(1003000) hasBack canScroll
+		case GUMPCTL_XMFHTMLGUMPCOLOR: // 7 + color. 
+		{
+			GET_RELATIVE( x, m_iOriginX );
+			GET_RELATIVE( y, m_iOriginY );
+			GET_ABSOLUTE( sX );
+			GET_ABSOLUTE( sY );
+			GET_ABSOLUTE( cliloc );
+			GET_ABSOLUTE( hasBack );
+			GET_ABSOLUTE( canScroll );
+			//SKIP_ALL( pszArgs )
+
+			if ( index == GUMPCTL_XMFHTMLGUMP ) // xmfhtmlgump doesn't use color
+				m_sControls[m_iControls].Format( "xmfhtmlgump %d %d %d %d %d %d %d" , x, y, sX, sY, cliloc, hasBack, canScroll );
+			else
+				m_sControls[m_iControls].Format( "xmfhtmlgumpcolor %d %d %d %d %d %d %d%s%s", x, y, sX, sY, cliloc, hasBack, canScroll, *pszArgs ? " " : "", *pszArgs ? pszArgs : "" );
+
+			m_iControls++;
+			return true;
+		}
 		default:
 			break;
 	}
