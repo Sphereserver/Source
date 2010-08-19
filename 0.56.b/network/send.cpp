@@ -529,11 +529,11 @@ PacketRemoveObject::PacketRemoveObject(CClient* target, CGrayUID uid) : PacketSe
 /***************************************************************************
  *
  *
- *	Packet 0x20 : PacketPlayerPosition		updates player position (NORMAL)
+ *	Packet 0x20 : PacketPlayerPosition		updates player position (HIGHEST)
  *
  *
  ***************************************************************************/
-PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_View, 19, PRI_NORMAL)
+PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_View, 19, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayerPosition::PacketPlayerPosition");
 
