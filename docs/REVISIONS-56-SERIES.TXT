@@ -4840,3 +4840,7 @@ ALPHA additions:
   This way you can call: "SERV.ACCOUNT foobar MD5PASSWORD f4d9ff51c527e8ef67d924d4f0a6db66"
 - Fixed #1799: Accounts created using ADDMD5 won't cut the hash anymore.
 - Fixed: Dialog properties xmfhtmlgump and xmfhtmlgumpcolor not working correctly with dorigin. 
+
+19-08-2010, ShiryuX
+- Modified #1786: Disabled 'r' console command to be used by remote telnet, use 'resync' instead. 
+  Any other way to access the console (physical or remote desktop) can still use it.
