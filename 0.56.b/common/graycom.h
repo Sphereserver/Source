@@ -45,6 +45,7 @@
 
 	#include <sys/types.h>
 	#include <sys/timeb.h>
+	#include <limits.h>
 
 	#define HANDLE			DWORD
 	#define _cdecl
@@ -78,16 +79,6 @@
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp
 	#define _vsnprintf	vsnprintf
-
-	#ifndef INT_MIN	// now in limits.h
-		#define INT_MIN			(-2147483647) // - 1)
-		#define INT_MAX       2147483647    /* maximum (signed) int value */
-	#endif
-	#ifndef SHRT_MIN
-		#define SHRT_MIN    (-32768)        /* minimum (signed) short value */
-		#define SHRT_MAX      32767         /* maximum (signed) short value */
-		#define USHRT_MAX	0xffff
-	#endif
 #endif // !_WIN32
 
 #ifdef _DEBUG

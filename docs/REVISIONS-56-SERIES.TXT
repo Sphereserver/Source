@@ -4857,3 +4857,6 @@ ALPHA additions:
 
 21-08-2010, khaos (Script Pack)
 - Updated: sphere_spells.scp (Added new bards spells from SA, no functionality though)
+
+22-08-2010, MrSugarCube
+- Fixed #1803: Items with a default value of 2147483647 on linux builds.
