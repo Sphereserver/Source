@@ -627,7 +627,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 'r':	// resync Pause mode. Allows resync of things in files.
 			{
-				if ( CONNECT_TYPE( CONNECT_TELNET ) && pSrc != this ) // telnet & not from console
+				if ( pSrc != this ) // not from console
 				{
 					pSrc->SysMessage("Not allowed to use 'r' command via telnet. Use 'resync' instead.\n");
 				} 

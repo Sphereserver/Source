@@ -585,7 +585,7 @@ spellflag_fx_targ               0000040	// effect is at the target.
 spellflag_field                 0000080	// create a field of stuff. (fire,poison,wall)
 spellflag_summon                0000100	// summon a creature.
 spellflag_good                  0000200	// the spell is a good spell. You intend to help to receiver.
-spellflag_resist                0000400	// allowed to resist this.	
+spellflag_resist                0000400	// allowed to resist this.
 spellflag_targ_noself           0000800	// cannot target spell to self
 spellflag_disabled              0008000	// spell is disabled
 spellflag_scripted              0010000	// spell is scripted
@@ -975,8 +975,9 @@ t_spellbook_bushido     187	// SE Bushido spellbook (should have MOREZ=400 by de
 t_spellbook_ninjitsu    188	// SE Ninjitsu spellbook (should have MOREZ=500 by default)
 t_spellbook_arcanist    189	// ML Spellweaver spellbook (should have MOREZ=600 by default)
 t_multi_custom          190	// Customisable multi
-t_spellbook_mystic      191	// SA Mysticism spellbook (should have MOREX=677 by default)
+t_spellbook_mystic      191	// SA Mysticism spellbook (should have MOREZ=677 by default)
 t_hoverover             192	// Hover-over item (CAN_C_HOVER can hover over blocking items)
+t_spellbook_bard        193	// SA Bard spellbook (should have MOREZ=700 by default)
 
 [DEFNAME layers]
 layer_hand1		1
@@ -1017,7 +1018,7 @@ layer_dragging		31
 
 // spells that are effecting us go here.
 layer_spell_stats             		32	// stats effecting spell. these cancel each other out.
-layer_spell_reactive	     		33 
+layer_spell_reactive	     		33
 layer_spell_night_sight       		34
 layer_spell_protection        		35
 layer_spell_incognito         		36
@@ -1041,23 +1042,23 @@ layer_flag_murders  	     		52	// how many murders do we have ? and decay timer.
 layer_flag_bandage	    				53	// bandages go here for healing
 layer_auction	    				54	// layer for script purposes to equip container on character (like auction system)
 
-[DEFNAME def_gumps]	
+[DEFNAME def_gumps]
 // name the gumps.
-g_btn_green_ok			081a	
-g_btn_green_ok_press	081b	
+g_btn_green_ok			081a
+g_btn_green_ok_press	081b
 g_btn_gray_apply		5204
 g_btn_gray_apply_press	5205
 
-[DEFNAME dam_flags] 
-dam_god                 00001     //unblockable "god" damage 
-dam_physical            00002     //some sort of physical damage (as opposed to magical) 
-dam_magic               00004     //some sort of magical damage 
-dam_poison              00008     //poisonous or biological (harm spell) damage 
-dam_fire                00010     //fire-based damage 
-dam_lightning           00020     //electrical damage (lightning) 
-dam_drain               00040     //draining damage 
-dam_general             00080     //damage that hits the entire body, rather than just one part of it 
-dam_acidic              00100     //acidic damage (will destroy armor) 
+[DEFNAME dam_flags]
+dam_god                 00001     //unblockable "god" damage
+dam_physical            00002     //some sort of physical damage (as opposed to magical)
+dam_magic               00004     //some sort of magical damage
+dam_poison              00008     //poisonous or biological (harm spell) damage
+dam_fire                00010     //fire-based damage
+dam_lightning           00020     //electrical damage (lightning)
+dam_drain               00040     //draining damage
+dam_general             00080     //damage that hits the entire body, rather than just one part of it
+dam_acidic              00100     //acidic damage (will destroy armor)
 dam_cold_old           	00200     //cold-based damage (old flag, should update to dam_cold_new)
 dam_slash               00400     //damage done by slashing (swords, etc)
 dam_pierce              00800     //damage done with spear and such.
@@ -1118,7 +1119,7 @@ tilef_armor             008000000	// Armor, okay, so does that count shields? Hm
 tilef_roof              010000000	// "Don't fall through me!" Or why isn't it just flagged surface or something?
 tilef_door              020000000	// Okay...
 tilef_stairBack         040000000	// Don't we have stairs that go forward or left too? This could cover both...
-tilef_stairRight        080000000	// Well, whatever, you can climb them, so, hey... Good use for a 
+tilef_stairRight        080000000	// Well, whatever, you can climb them, so, hey... Good use for a
 
 [DEFNAME def_html] // useful with htmlgumps
 L1	<
@@ -1151,7 +1152,7 @@ AE		</a>
 
 DIV_RIGHT	<div align="right">
 DIV_LEFT	<div align="left">
-DIV_END		</DIV> 
+DIV_END		</DIV>
 CENTER		<CENTER>
 CENTERE		</CENTER>
 BR		<BR>
@@ -1355,7 +1356,7 @@ buffcliloc_nightsight_2 1075644
 buffcliloc_hidden_1 1075655
 buffcliloc_hidden_2 1075656
 
-[DEFNAME charheight] 
+[DEFNAME charheight]
 height_0ae	35	//DEFNAME=c_abyss_lord
 height_0138	35	//DEFNAME=c_abyssmal_horror
 height_0CA	8	//DEFNAME=c_alligator
@@ -1440,7 +1441,7 @@ height_04	25	//DEFNAME=c_gargoyle
 height_016	23	//DEFNAME=c_gazer
 height_0192	16	//DEFNAME=c_ghost_man
 height_0193	16	//DEFNAME=c_ghost_woman
-height_0317 	12	//DEFNAME=c_giant_beetle 
+height_0317	12	//DEFNAME=c_giant_beetle
 height_0ad	20	//DEFNAME=c_Giant_Black_Widow
 height_0133	16	//DEFNAME=c_gibberling
 height_0d1	8	//DEFNAME=c_goat
@@ -1462,7 +1463,7 @@ height_062	6	//DEFNAME=c_ice_hound
 height_02f0	30	//DEFNAME=c_iron_golem
 height_0f0	16	//DEFNAME=c_kappa
 height_0c6	18	//DEFNAME=c_kaze_kemono
-height_084 	15	//DEFNAME=c_kirin 
+height_084 	15	//DEFNAME=c_kirin
 height_04d	16	//DEFNAME=c_kraken
 height_0102	19	//DEFNAME=c_lady_m
 height_0fc	14	//DEFNAME=c_lady_of_snow
@@ -1473,9 +1474,9 @@ height_023	20	//DEFNAME=c_lizardman_spear
 height_0dc	10	//DEFNAME=c_llama
 height_0124	10	//DEFNAME=c_llama_pack
 height_011c	16	//DEFNAME=c_m_armor_steed
-height_0f3 	15	//DEFNAME=c_m_hiryu 
+height_0f3 	15	//DEFNAME=c_m_hiryu
 height_0114	18	//DEFNAME=c_m_reptalon
-height_07a 	16	//DEFNAME=c_m_unicorn 
+height_07a 	16	//DEFNAME=c_m_unicorn
 height_0190	16	//DEFNAME=c_man
 height_03db	16	//DEFNAME=c_man_gm
 height_01a8	2	//DEFNAME=c_man_invisible
@@ -1524,10 +1525,10 @@ height_02f	40	//DEFNAME=c_reaper
 height_011d	30	//DEFNAME=c_reaper_redux
 height_031d	45	//DEFNAME=c_reptile_lord
 height_0fb	15	//DEFNAME=c_revenant_lion
-height_0bb 	21	//DEFNAME=c_ridgeback 
+height_0bb 	21	//DEFNAME=c_ridgeback
 height_0f4	20	//DEFNAME=c_rune_beetle
 height_010f	18	//DEFNAME=c_Satyr
-height_0bc 	21	//DEFNAME=c_savage_ridgeback 
+height_0bc 	21	//DEFNAME=c_savage_ridgeback
 height_030	10	//DEFNAME=c_scorpion_giant
 height_05f	8	//DEFNAME=c_sea_monster
 height_096	8	//DEFNAME=c_sea_serpent
@@ -1550,7 +1551,7 @@ height_01c	10	//DEFNAME=c_spider_giant
 height_0116	2	//DEFNAME=c_squirrel
 height_0EA	10	//DEFNAME=c_stag
 height_095	16	//DEFNAME=c_Succubus
-height_031a 	15	//DEFNAME=c_swamp_dragon 
+height_031a 	15	//DEFNAME=c_swamp_dragon
 height_030a	23	//DEFNAME=c_swarm
 height_098	18	//DEFNAME=c_terathan_avenger
 height_047	15	//DEFNAME=c_terathan_drone

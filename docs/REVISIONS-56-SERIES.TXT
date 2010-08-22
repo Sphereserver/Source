@@ -4844,3 +4844,16 @@ ALPHA additions:
 19-08-2010, ShiryuX
 - Modified #1786: Disabled 'r' console command to be used by remote telnet, use 'resync' instead. 
   Any other way to access the console (physical or remote desktop) can still use it.
+
+21-08-2010, ShiryuX
+- Added: Basic support for bard spellbook and skill (the actual spell effects need to be scripted).
+- Modified #1800: @UserWarMode will now have ARGN2 parameter, which by default is 1.
+  ARGN2 = 1 --> Will abort the skill action
+          0 --> Will _NOT_ abort the skill action
+- Fixed: SA Clients wasn't considered for Async connections.
+
+21-08-2010, ShiryuX (Script Pack)
+- Updated: sphere_defs.scp (Added 't_spellbook_bard' definition)
+
+21-08-2010, khaos (Script Pack)
+- Updated: sphere_spells.scp (Added new bards spells from SA, no functionality though)

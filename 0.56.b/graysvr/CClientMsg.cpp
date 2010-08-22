@@ -2626,6 +2626,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_SPELLBOOK_NINJITSU:
 						case IT_SPELLBOOK_ARCANIST:
 						case IT_SPELLBOOK_MYSTIC:
+						case IT_SPELLBOOK_BARD:
 							{
 								int count = pItem->GetSpellcountInBook();
 								if ( count > 0 )

@@ -318,6 +318,7 @@ bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 		case IT_SPELLBOOK_NINJITSU:
 		case IT_SPELLBOOK_ARCANIST:
 		case IT_SPELLBOOK_MYSTIC:
+		case IT_SPELLBOOK_BARD:
 			return( true );
 		default:
 			return( false );

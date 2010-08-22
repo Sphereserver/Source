@@ -880,8 +880,12 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = m_pChar->IsStatFlag(STATF_War) ? 1 : 0;
+		Args.m_iN2 = 1;
 		if (m_pChar->OnTrigger(CTRIG_UserWarmode, m_pChar, &Args) == TRIGRET_RET_TRUE)
 			return;
+
+		if ( Args.m_iN2 == 1 )
+			m_pChar->Skill_Fail( true );	// clean up current skill
 	}
 
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
@@ -892,8 +896,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		// War mode for ghosts.
 		m_pChar->StatFlag_Mod( STATF_Insubstantial, ! fWar );
 	}
-
-	m_pChar->Skill_Fail( true );	// clean up current skill.
+	
 	if ( ! fWar )
 	{
 		m_pChar->Fight_ClearAll();
