@@ -119,13 +119,13 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
 		writeBool(canRename);
 
 		int version(0);
-		if (target->GetNetState()->isClientLessVersion(0x300080))
+		if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V2))
 			version = 1;
-		else if (target->GetNetState()->isClientLessVersion(0x400000))
+		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V3))
 			version = 2;
-		else if (target->GetNetState()->isClientLessVersion(0x400010))
+		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V4))
 			version = 3;
-		else if (target->GetNetState()->isClientLessVersion(0x500000))
+		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V5))
 			version = 4;
 		else
 			version = 5;
@@ -726,7 +726,7 @@ PacketItemContainer::PacketItemContainer(CClient* target, const CItem* item) : P
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 
-	if (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR())
 		writeByte(item->GetContainedGridIndex());
 
 	writeInt32(container->GetUID());
@@ -755,7 +755,7 @@ void PacketItemContainer::completeForTarget(CClient* target, const CItem* spellb
 	if (getLength() >= 20)
 	{
 		// only append the additional information if it needs to be changed
-		bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR());
+		bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 		bool containsGrid = getLength() == 21;
 		if (shouldIncludeGrid == containsGrid)
 			return;
@@ -763,7 +763,7 @@ void PacketItemContainer::completeForTarget(CClient* target, const CItem* spellb
 
 	seek(14);
 
-	if (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR())
 		writeByte(0);
 
 	writeInt32(spellbook->GetUID());
@@ -893,7 +893,7 @@ PacketSkills::PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill) 
 	if (character == NULL)
 		character = target->GetChar();
 
-	bool includeCaps = target->GetNetState()->isClientVersion(0x400000);
+	bool includeCaps = target->GetNetState()->isClientVersion(MINCLIVER_SKILLCAPS);
 	if (skill >= MAX_SKILL)
 	{
 		// all skills
@@ -969,7 +969,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 	CChar* viewer = target->GetChar();
 	CItemBase* itemDefinition;
-	bool includeGrid = (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 
 	initLength();
 	skip(2);
@@ -1079,7 +1079,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItem* spellbook) 
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(2)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 
 	initLength();
 	skip(2);
@@ -1116,7 +1116,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* sp
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(3)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(0x0600018) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 	const CSpellDef* spellDefinition;
 
 	initLength();
@@ -2733,7 +2733,7 @@ PacketServerList::PacketServerList(CClient* target) : PacketSend(XCMD_ServerList
 	ADDTOCALLSTACK("PacketServerList::PacketServerList");
 
 	// clients before 4.0.0 require serverlist ips to be in reverse
-	bool reverseIp = target->GetNetState()->isClientLessVersion(0x400000);
+	bool reverseIp = target->GetNetState()->isClientLessVersion(MAXCLIVER_REVERSEIP);
 
 	initLength();
 	writeByte(0xFF);
@@ -2997,7 +2997,7 @@ void PacketGumpDialog::writeControls(CClient* target, const CGString* controls, 
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
 	NetState* net = target->GetNetState();
-	if (net->isClientVersion(0x500000) || net->isClientKR())
+	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR())
 		writeCompressedControls(controls, controlCount, texts, textCount);
 	else
 		writeStandardControls(controls, controlCount, texts, textCount);

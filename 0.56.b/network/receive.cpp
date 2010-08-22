@@ -223,7 +223,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
 
 	// check crypt key
-	if (!net->isClientLessVersion(0x126000))
+	if (!net->isClientLessVersion(MINCLIVER_CHECKWALKCODE))
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	// check sequence
@@ -379,7 +379,7 @@ long PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 	ADDTOCALLSTACK("PacketItemDropReq::getExpectedLength");
 
 	// different size depending on client
-	if (net != NULL && (net->isClientVersion(0x0600018) || net->isClientKR()))
+	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR()))
 		return 15;
 
 	return 14;
@@ -395,7 +395,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 	BYTE z = readByte();
 
 	BYTE grid(0);
-	if (net->isClientVersion(0x0600018) || net->isClientKR())
+	if (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR())
 		grid = readByte();
 
 	CGrayUID container(readInt32());
@@ -2391,7 +2391,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}
-		else if ((net->getCryptVersion() < 400000) && (version >= 0x400000) && (client->GetResDisp() >= RDS_AOS) && (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))) //workaround for a "bug", which sends all items in LOS before processing this packet
+		else if ((net->getCryptVersion() < MINCLIVER_TOOLTIP) && (version >= MINCLIVER_TOOLTIP) && (client->GetResDisp() >= RDS_AOS) && (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))) //workaround for a "bug", which sends all items in LOS before processing this packet
 		{
 			DEBUG_MSG(("m_Crypt.GetClientVer()(%x) != m_reportedCliver(%x) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
 			client->addAOSPlayerSeeNoCrypt();
@@ -2785,7 +2785,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	if (net->isClientVersion(0x400000) == false)
+	if (net->isClientVersion(MINCLIVER_TOOLTIP) == false)
 		return true;
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;
@@ -3233,7 +3233,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	if (net->isClientVersion(0x400000) == false)
+	if (net->isClientVersion(MINCLIVER_TOOLTIP) == false)
 		return true;
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;

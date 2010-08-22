@@ -111,7 +111,7 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	// skill menu.
 
 	// ML Clients can always see ML skills regardless of enabled features
-	if ( skill >= SKILL_SPELLWEAVING && GetNetState()->isClientVersion( 0x500000 ) )
+	if ( skill >= SKILL_SPELLWEAVING && GetNetState()->isClientVersion(MINCLIVER_ML) )
 		return true;
 
 	int iClientReq = 0x000000;	// The minimum client version required to see this skill
@@ -123,26 +123,26 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	}
 	else if ( skill < MAX_SKILL_LBR )
 	{
-		iClientReq = 0x300000;
+		iClientReq = MINCLIVER_LBR;
 	}
 	else if ( skill < MAX_SKILL_AOS )
 	{
-		iClientReq = 0x300080;
+		iClientReq = MINCLIVER_AOS;
 		bEnabled = ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B );
 	}
 	else if ( skill < MAX_SKILL_SE )
 	{
-		iClientReq = 0x400010;
+		iClientReq = MINCLIVER_SE;
 		bEnabled = ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM );
 	}
 	else
 	{
-		iClientReq = 0x500000;
+		iClientReq = MINCLIVER_ML;
 		bEnabled = ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE );
 	}
 
 	// Check that the client has a valid client version
-	if ( !GetNetState()->isClientVersion( iClientReq ) )
+	if ( !GetNetState()->isClientVersion(iClientReq) )
 		return false;
 
 	// Check that the skill is enabled

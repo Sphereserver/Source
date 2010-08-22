@@ -243,7 +243,7 @@ void NetState::setAsyncMode(void)
 	//   without async networking (but should switch over as soon as it has been determined)
 	// - a minor issue with this is that for clients without encryption we cannot determine their version
 	//   until after they have fully logged into the game server and sent a client version packet.
-	else if (isClientVersion(0x400000) || isClientKR() || isClientSA())
+	else if (isClientVersion(MINCLIVER_AUTOASYNC) || isClientKR() || isClientSA())
 		m_useAsync = true;
 	else
 		m_useAsync = false;

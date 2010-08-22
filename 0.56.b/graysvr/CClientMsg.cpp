@@ -32,7 +32,7 @@ void CClient::resendBuffs()
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(0x500030) )
+	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
 		return;
 
 	CContainer* Cont = dynamic_cast<CContainer*>(GetChar());
@@ -148,7 +148,7 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(0x500030) )
+	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
 		return;
 
 	PacketBuff* cmd = new PacketBuff(this, IconId, ClilocOne, ClilocTwo, Time, pArgs, iArgCount);
@@ -161,7 +161,7 @@ void CClient::removeBuff (const WORD IconId)
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(0x500030) )
+	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
 		return;
 
 	PacketBuff* cmd = new PacketBuff(this, IconId);
@@ -1360,7 +1360,7 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 	// always show max count for some stupid reason. (client bug)
 	// pad out the rest of the chars.
 	int iClientMin = 5;
-	if (GetNetState()->isClientVersion(0x300001) || !GetNetState()->getCryptVersion())
+	if (GetNetState()->isClientVersion(MINCLIVER_PADCHARLIST) || !GetNetState()->getCryptVersion())
 		iClientMin = maximum(iQty, 5);
 
 	for ( ; count < iClientMin; count++)
@@ -1907,7 +1907,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 		addStamUpdate( pChar->GetUID() );
 	}
 
-	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (GetNetState()->isClientVersion(0x400010) == true) )
+	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (GetNetState()->isClientVersion(MINCLIVER_STATLOCKS) == true) )
 	{
 		PacketStatLocks* cmd = new PacketStatLocks(this, pChar);
 	}
@@ -2008,7 +2008,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	// New AOS spellbook packet required by client 4.0.0 and above.
 	// Old packet is still required if both FEATURE_AOS_TOOLTIP and FEATURE_AOS_UPDATE aren't sent.
 	//
-	if ( GetNetState()->isClientVersion(0x400000) && IsResClient( RDS_AOS ) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) ) // IsResClient( RDS_AOS ) && g_Cfg.m_iFeatureAOS
+	if ( GetNetState()->isClientVersion(MINCLIVER_SPELLBOOK) && IsResClient( RDS_AOS ) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) ) // IsResClient( RDS_AOS ) && g_Cfg.m_iFeatureAOS
 	{
 		// Handle new AOS spellbook stuff (old packets no longer work)
 		PacketSpellbookContent* cmd = new PacketSpellbookContent(this, pBook, offset);
@@ -2163,7 +2163,7 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	CItemContainer * pContainer2 = pVendor->GetBank( LAYER_VENDOR_STOCK );
 	addItem( pContainer2 );
 
-	if ( GetNetState()->isClientLessVersion(0x300000) )
+	if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
 	{
 		// This avoid client crashes
 		CItemContainer * pContainer3 = pVendor->GetBank( LAYER_VENDOR_EXTRA );
@@ -2344,7 +2344,7 @@ bool CClient::addWalkCode( EXTDATA_TYPE iType, int iCodes )
 	if ( ! m_Crypt.IsInit() )	// This is not even a game client ! IsConnectTypePacket()
 		return false;
 
-	if ( GetNetState()->isClientLessVersion(0x126000) )
+	if ( GetNetState()->isClientLessVersion(MINCLIVER_CHECKWALKCODE) )
 		return false;
 
 	if ( ! ( g_Cfg.m_wDebugFlags & DEBUGF_WALKCODES ))
@@ -2391,7 +2391,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	if ( !pObj )
 		return;
 
-	if ( !GetNetState()->isClientVersion(0x400000) )
+	if ( !GetNetState()->isClientVersion(MINCLIVER_TOOLTIP) )
 		return;
 
 	bool bNameOnly = false;
@@ -2763,7 +2763,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 			if (bRequested == false)
 			{
 				// send property list version (client will send a request for the full tooltip if needed)
-				if ( !GetNetState()->isClientVersion(0x400050) )
+				if ( !GetNetState()->isClientVersion(MINCLIVER_TOOLTIPHASH) )
 					new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
 				else
 					new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
@@ -2787,9 +2787,9 @@ void CClient::addShowDamage( int damage, DWORD uid_damage )
 	if ( damage < 0 )
 		damage = 0;
 
-	if ( GetNetState()->isClientVersion(0x400070) )
+	if ( GetNetState()->isClientVersion(MINCLIVER_NEWDAMAGE) )
 		new PacketCombatDamage(this, damage, CGrayUID(uid_damage));
-	else if ( GetNetState()->isClientVersion(0x400000) )
+	else if ( GetNetState()->isClientVersion(MINCLIVER_DAMAGE) )
 		new PacketCombatDamageOld(this, damage, CGrayUID(uid_damage));
 }
 

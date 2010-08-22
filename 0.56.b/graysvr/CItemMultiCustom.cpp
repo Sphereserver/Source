@@ -96,7 +96,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	if ( m_pArchitect != NULL )
 		EndCustomize(true);
 
-	if ( !pClientSrc->GetNetState()->isClientVersion(0x0400000) && !pClientSrc->GetNetState()->isClientKR() )
+	if ( !pClientSrc->GetNetState()->isClientVersion(MINCLIVER_CUSTOMMULTI) && !pClientSrc->GetNetState()->isClientKR() )
 		return;
 
 	// copy the main design to working, ready for editing
@@ -661,7 +661,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	if ( pClientSrc == NULL || !pClientSrc->GetChar() )
 		return;
 
-	if ( !pClientSrc->GetNetState()->isClientVersion(0x0400000) && !pClientSrc->GetNetState()->isClientKR() )
+	if ( !pClientSrc->GetNetState()->isClientVersion(MINCLIVER_CUSTOMMULTI) && !pClientSrc->GetNetState()->isClientKR() )
 		return;
 
 	DesignDetails * pDesign = NULL;
