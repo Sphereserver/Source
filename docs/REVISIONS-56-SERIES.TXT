@@ -4862,5 +4862,9 @@ ALPHA additions:
 - Fixed #1803: Items with a default value of 2147483647 on linux builds.
 
 23-08-2010, MrSugarCube
+- Fixed #1796: Vendor speech containing the text "(null)".
 - Modified: MOREM on t_map items is now used to indicate which map has been drawn. Recent client
   versions (7.0.8.0+) are able to use this value to view maps other than map0.mul.
+
+23-08-2010, MrSugarCube (Script pack)
+- Updated: sphere_msgs.scp (Updated npc_vendor_s1 and npc_vendor_b1 defmessages)

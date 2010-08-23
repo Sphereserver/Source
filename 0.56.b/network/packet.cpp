@@ -876,8 +876,8 @@ TCHAR* Packet::dump(void) const
 {
 	// macro to hide password bytes in release mode
 #ifndef _DEBUG
-#	define PROTECT_BYTE(_b_)  if (m_buffer[0] == XCMD_ServersReq && idx >= 32 && idx <= 61 || \
-						       m_buffer[0] == XCMD_CharListReq && idx >= 36 && idx <= 65) _b_ = '*'
+#	define PROTECT_BYTE(_b_)  if ((m_buffer[0] == XCMD_ServersReq && idx >= 32 && idx <= 61) || \
+						       (m_buffer[0] == XCMD_CharListReq && idx >= 36 && idx <= 65)) _b_ = '*'
 #else
 #	define PROTECT_BYTE(_b_)
 #endif
