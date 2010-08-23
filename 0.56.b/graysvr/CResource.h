@@ -977,7 +977,7 @@ public:
 		return( m_SkillIndexDefs[index]->GetKey());
 	}
 
-	const bool IsSkillFlag( SKILL_TYPE index, SKF_TYPE skf ) const
+	bool IsSkillFlag( SKILL_TYPE index, SKF_TYPE skf ) const
 	{
 		if ( !m_SkillIndexDefs.IsValidIndex(index) )
 			return false;
@@ -985,7 +985,7 @@ public:
 		return ( pSkillDef && (pSkillDef->m_dwFlags & skf) );
 	}
 
-	const bool IsSkillRanged( SKILL_TYPE index ) const
+	bool IsSkillRanged( SKILL_TYPE index ) const
 	{
 		if ( index == SKILL_ARCHERY )
 			return true;

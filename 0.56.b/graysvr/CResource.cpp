@@ -3023,9 +3023,13 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				if ( g_Serv.m_iModeCode != SERVMODE_ResyncLoad )
 				{
 					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
+					{
 						g_pLog->EventWarn( "Redef resource '%s'\n", (LPCTSTR) pszName );
+					}
 					else
+					{
 						DEBUG_WARN(( "Redef resource '%s'\n", (LPCTSTR) pszName ));
+					}
 				}
 			}
 			rid = RESOURCE_ID( restype, rid.GetResIndex(), iPage );

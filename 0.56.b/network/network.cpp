@@ -80,7 +80,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_packetExceptions(0), m_currentTransaction(NULL), m_pendingTransaction(NULL), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
+NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_currentTransaction(NULL), m_pendingTransaction(NULL), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
 {
 	clear();
 }
@@ -298,7 +298,7 @@ void NetState::beginTransaction(long priority)
 
 	//DEBUGNETWORK(("%x:Starting a new packet transaction.\n", id()));
 
-	m_pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : PacketSend::PRI_NORMAL);
+	m_pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : (long)PacketSend::PRI_NORMAL);
 }
 
 void NetState::endTransaction(void)

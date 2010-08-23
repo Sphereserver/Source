@@ -538,7 +538,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 
 	if ( ! iKarmaChange )
 		return;
-	if (iBottom = INT_MIN)
+	if (iBottom == INT_MIN)
 		iBottom = g_Cfg.m_iMinKarma;
 
 	int	iKarma = Stat_GetAdjusted(STAT_KARMA);

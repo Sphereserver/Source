@@ -848,8 +848,9 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( iSkillLevel > 40 && pItemDef->m_BaseResources.GetCount())
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		int iLen = sprintf( pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_MADEOF ) );
-		pItemDef->m_BaseResources.WriteNames( pszTemp+iLen );
+		strcpy(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_MADEOF ));
+
+		pItemDef->m_BaseResources.WriteNames( pszTemp + strlen(pszTemp) );
 		SysMessage( pszTemp );
 	}
 

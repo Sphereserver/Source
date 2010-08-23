@@ -1059,7 +1059,7 @@ badcmd:
 				TCHAR	*buf = Str_GetTemp();
 				REMOVE_QUOTES( pszKey );
 				sVal.FormatHex( *pszKey );
-				sprintf( buf, sVal );
+				strcpy( buf, sVal );
 				while ( *(++pszKey) )
 				{
 					if ( *pszKey == '"' ) break;

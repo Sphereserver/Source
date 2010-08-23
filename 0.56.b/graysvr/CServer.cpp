@@ -704,7 +704,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 	goto endconsole;
 
 longcommand:
-	if (( len > 1 ) && ( sText[1] != ' ' ) || ( low == 'b' ))
+	if ((( len > 1 ) && ( sText[1] != ' ' )) || ( low == 'b' ))
 	{
 		LPCTSTR	pszText = sText;
 
