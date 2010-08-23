@@ -300,8 +300,9 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_WalkUnknown	= 0xf1,
 	XCMD_PutNew			= 0xf3,
 	XCMD_CrashReport    = 0xf4,
+	XCMD_MapDisplayNew	= 0xf5,
 
-	XCMD_QTY		= 0xf5,
+	XCMD_QTY		= 0xf6,
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -3152,6 +3153,20 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;				// 0 = 0xEA
 			NWORD m_Enable;			// 1 - 2 = enable
 		} ToggleHotbar;
+
+		struct	// XCMD_MapDisplayNew, size = 21
+		{
+			BYTE m_Cmd; // 0 = 0xF5
+			NDWORD m_UID; // uid of the map item
+			NWORD m_Gump_Corner; // GUMP_TYPE always 0x139d....compass tile id in the corner.,
+			NWORD m_x_ul; // upper left x coord.
+			NWORD m_y_ul; // upper left y coord.
+			NWORD m_x_lr; // lower right x coord.
+			NWORD m_y_lr; // lower right y coord.
+			NWORD m_xsize; // client width
+			NWORD m_ysize; // client height
+			NWORD m_map; // map id
+		} MapDisplayNew;	// MapX
 	};
 } PACK_NEEDED;
 

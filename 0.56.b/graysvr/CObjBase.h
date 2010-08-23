@@ -462,6 +462,7 @@ public:
 			WORD m_junk3;
 			WORD m_junk4;
 			BYTE m_fPinsGlued;	// morez=pins are glued in place. Cannot be moved.
+			BYTE m_map;			// morem=map
 		} m_itMap;
 
 		// IT_FRUIT

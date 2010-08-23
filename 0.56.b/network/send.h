@@ -1628,4 +1628,17 @@ public:
 	PacketItemWorldNew(CClient* target, CItem* item);
 };
 
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF5 : PacketDisplayMapNew		display map (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketDisplayMapNew : public PacketSend
+{
+public:
+	PacketDisplayMapNew(CClient* target, const CItemMap* map, const CRectMap& rect);
+};
+
 #endif

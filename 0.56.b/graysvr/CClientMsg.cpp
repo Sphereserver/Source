@@ -2223,14 +2223,17 @@ blank_map:
 		pMap->m_itMap.m_top,
 		pMap->m_itMap.m_right,
 		pMap->m_itMap.m_bottom,
-		GetChar()->GetTopPoint().m_map);
+		g_MapList.m_mapid[pMap->m_itMap.m_map]);
 
 	if ( ! rect.IsValid())
 		goto blank_map;
 	if ( rect.IsRectEmpty())
 		goto blank_map;
 
-	PacketDisplayMap* cmd = new PacketDisplayMap(this, pMap, rect);
+	if (GetNetState()->isClientVersion(MINCLIVER_NEWMAPDISPLAY) || GetNetState()->isClientSA())
+		new PacketDisplayMapNew(this, pMap, rect);
+	else
+		new PacketDisplayMap(this, pMap, rect);
 
 	addMapMode( pMap, MAP_UNSENT, false );
 

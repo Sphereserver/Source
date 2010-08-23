@@ -2179,6 +2179,7 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 		pItem->m_itMap.m_left = rect.m_left;
 		pItem->m_itMap.m_bottom = rect.m_bottom;
 		pItem->m_itMap.m_right = rect.m_right;
+		pItem->m_itMap.m_map = rect.m_map;
 		ItemBounce( pItem );
 		return( 0 );
 	}
