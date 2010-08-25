@@ -1001,7 +1001,7 @@ void CClient::Event_Attack( CGrayUID uid )
 
 // Client/Player buying items from the Vendor
 
-inline void CClient::Event_VendorBuy_Cheater( int iCode )
+void CClient::Event_VendorBuy_Cheater( int iCode )
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy_Cheater");
 
@@ -1223,7 +1223,7 @@ do_consume:
 		addSound( 0x057 );
 }
 
-inline void CClient::Event_VendorSell_Cheater( int iCode )
+void CClient::Event_VendorSell_Cheater( int iCode )
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell_Cheater");
 

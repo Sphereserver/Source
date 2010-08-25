@@ -59,10 +59,6 @@ typedef unsigned int	ERROR_CODE;
 #define GETNONWHITESPACE( pStr )	while ( ISWHITESPACE( (pStr)[0] )) { (pStr)++; }
 #define _IS_SWITCH(c)    ((c) == '-' || (c) == '/' )	// command line switch.
 
-#ifndef INT_MAX	// assumes 32 bit !
-	#define INT_MAX       2147483647    // maximum (signed) int value
-#endif
-
 // -----------------------------
 //	Time measurement macroses
 // -----------------------------

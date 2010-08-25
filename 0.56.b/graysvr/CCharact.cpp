@@ -2272,11 +2272,11 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	CItemCorpse * pCorpse = NULL;
 
 	if ( !(wFlags & DEATH_NOCORPSE) && fLoot &&
-		( GetDispID() != CREID_WATER_ELEM &&
+		(( GetDispID() != CREID_WATER_ELEM &&
 		  GetDispID() != CREID_AIR_ELEM &&
 		  GetDispID() != CREID_FIRE_ELEM &&
 		  GetDispID() != CREID_VORTEX &&
-		  GetDispID() != CREID_BLADES ) || (wFlags & DEATH_HASCORPSE) )
+		  GetDispID() != CREID_BLADES ) || (wFlags & DEATH_HASCORPSE)) )
 	{
 		if ( m_pPlayer )
 		{

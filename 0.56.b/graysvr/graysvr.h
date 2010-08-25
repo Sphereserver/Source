@@ -1008,9 +1008,9 @@ public:
 	void Event_ToolTip( CGrayUID uid );
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
 	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD itemCount);
-	inline void Event_VendorBuy_Cheater( int iCode = 0 );
+	void Event_VendorBuy_Cheater( int iCode = 0 );
 	void Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD itemCount);
-	inline void Event_VendorSell_Cheater( int iCode = 0 );
+	void Event_VendorSell_Cheater( int iCode = 0 );
 	TRIGRET_TYPE Event_Walking( BYTE rawdir ); // Player moves
 	bool Event_WalkingCheck(DWORD dwEcho);
 	
