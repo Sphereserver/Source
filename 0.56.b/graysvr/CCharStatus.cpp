@@ -2017,6 +2017,9 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 	if ( IsPriv(PRIV_ALLMOVE|PRIV_DEBUG|PRIV_GM) )
 		return true;
 
+	if ( !pItem->IsAttr(ATTR_MOVE_ALWAYS) && pItem->IsAttr(ATTR_MOVE_NEVER) )
+		return false;
+
 	if ( IsStatFlag(STATF_Stone|STATF_Freeze|STATF_Insubstantial|STATF_DEAD|STATF_Sleeping) )
 	{
 		if ( fMsg )

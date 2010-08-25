@@ -4868,3 +4868,6 @@ ALPHA additions:
 
 23-08-2010, MrSugarCube (Script pack)
 - Updated: sphere_msgs.scp (Updated npc_vendor_s1 and npc_vendor_b1 defmessages)
+
+25-08-2010, ShiryuX
+- Fixed #1795: Characters were able to dclick equipable items with attr_move_never.
