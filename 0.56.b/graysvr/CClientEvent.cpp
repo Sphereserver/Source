@@ -877,6 +877,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 	// If peacmaking then this doens't work ??
 	// Say "you are feeling too peacefull"
 	bool fCleanSkill = true;
+
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
 		CScriptTriggerArgs Args;
@@ -885,12 +886,18 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		if (m_pChar->OnTrigger(CTRIG_UserWarmode, m_pChar, &Args) == TRIGRET_RET_TRUE)
 			return;
 
-		if ( Args.m_iN2 != 1 )
+		if ( Args.m_iN2 == 0 )
+		{
 			fCleanSkill = false;
+			DEBUG_WARN(("UserWarMode - Setting fCleanSkill to false\n"));
+		}
 	}
-	
-	if ( fCleanSkill == true )
-		m_pChar->Skill_Fail( true );
+
+	if ( fCleanSkill )
+	{
+		m_pChar->Skill_Fail( true );	
+		DEBUG_WARN(("UserWarMode - Cleaning Skill Action\n"));
+	}
 
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
 
