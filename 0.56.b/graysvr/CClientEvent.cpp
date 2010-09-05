@@ -34,6 +34,9 @@ void CClient::Event_ChatButton(const NCHAR * pszName) // Client's chat button wa
 	// See if they've made a chatname yet
 	// m_ChatPersona.SetClient(this);
 
+	if (m_pChar == NULL)
+		return;
+
 	if (m_pChar->OnTrigger(CTRIG_UserChatButton, m_pChar) == TRIGRET_RET_TRUE)
 		return;
 
@@ -95,6 +98,9 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Dye");
 	// CLIMODE_DYE : Result from addDyeOption()
+	if (m_pChar == NULL)
+		return;
+
 	CObjBase	*pObj = uid.ObjFind();
 	CItem	*pItem;
 
@@ -158,6 +164,8 @@ void CClient::Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAutho
 {
 	ADDTOCALLSTACK("CClient::Event_Book_Title");
 	// XCMD_BookOpen : user is changing the books title/author info.
+	if ( m_pChar == NULL )
+		return;
 
 	CItemMessage * pBook = dynamic_cast <CItemMessage *> (uid.ItemFind());
 	if ( !m_pChar->CanTouch(pBook) )
@@ -180,6 +188,8 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
 	EXC_TRY("CClient::Event_Item_Pickup");
 	// Player/client is picking up an item.
+	if ( m_pChar == NULL )
+		return;
 
 	EXC_SET("Item");
 	CItem	*pItem = uid.ItemFind();
@@ -512,6 +522,9 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 	ADDTOCALLSTACK("CClient::Event_Skill_Use");
 	// All the push button skills come through here.
 	// Any "Last skill" macro comes here as well. (push button only)
+	if ( m_pChar == NULL )
+		return;
+
 	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 	{
 		SysMessage( "There is no such skill. Please tell support you saw this message.");
@@ -698,6 +711,9 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	//	walking (the invalid non zeros happen when you log off and don't exit the
 	//	client.exe all the way and then log back in, XXX doesn't clear the stack)
 
+	if ( m_pChar == NULL )
+		return TRIGRET_RET_FALSE;
+
 	// Movement whilst freeze-on-cast enabled is not allowed
 	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
 	{
@@ -876,6 +892,9 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 	ADDTOCALLSTACK("CClient::Event_CombatMode");
 	// If peacmaking then this doens't work ??
 	// Say "you are feeling too peacefull"
+	if ( m_pChar == NULL )
+		return;
+
 	bool fCleanSkill = true;
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -998,6 +1017,8 @@ void CClient::Event_Attack( CGrayUID uid )
 	ADDTOCALLSTACK("CClient::Event_Attack");
 	// d-click in war mode
 	// I am attacking someone.
+	if ( m_pChar == NULL )
+		return;
 
 	CChar * pChar = uid.CharFind();
 	if ( pChar == NULL )
@@ -1365,6 +1386,8 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, 
 {
 	ADDTOCALLSTACK("CClient::Event_Profile");
 	// mode = 0 = Get profile, 1 = Set profile
+	if ( m_pChar == NULL )
+		return;
 
 	CChar	*pChar = uid.CharFind();
 	if ( !pChar || !pChar->m_pPlayer )
@@ -1400,6 +1423,8 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	ADDTOCALLSTACK("CClient::Event_MailMsg");
 	// NOTE: How do i protect this from spamming others !!!
 	// Drag the mail bag to this clients char.
+	if ( m_pChar == NULL )
+		return;
 
 	CChar * pChar = uid1.CharFind();
 	if ( pChar == NULL )
@@ -1867,7 +1892,7 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 	// mode == TALKMODE_SYSTEM if coming from player talking.
 
 	CAccount * pAccount = GetAccount();
-	if ( !pAccount )	// this should not happen
+	if ( !pAccount || !GetChar() )	// this should not happen
 		return;
 
 	if ( iTextLen <= 0 )
@@ -2058,8 +2083,9 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 
 	// Allow some static in game objects to have function?
 	// Not possible with dclick.
+	if ( m_pChar == NULL )
+		return false;
 
-	ASSERT(m_pChar);
 	CObjBase * pObj = uid.ObjFind();
 	if ( !pObj || ( fTestTouch && !m_pChar->CanSee( pObj )) )
 	{
@@ -2140,7 +2166,8 @@ void CClient::Event_SingleClick( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CClient::Event_SingleClick");
 	// the ALLNAMES macro comes through here.
-	ASSERT(m_pChar);
+	if ( m_pChar == NULL )
+		return;
 
 	CObjBase * pObj = uid.ObjFind();
 	if ( !m_pChar->CanSee(pObj) )
@@ -2179,6 +2206,8 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	// If player clicks on something with the targetting cursor
 	// Assume addTarget was called before this.
 	// NOTE: Make sure they can actually validly trarget this item !
+	if (m_pChar == NULL)
+		return;
 
 	if (context != GetTargMode())
 	{
@@ -2396,7 +2425,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do something after a player selected something from a pop-up menu
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuSelect");
-	if ( !EntryTag )
+	if ( !EntryTag || m_pChar == NULL )
 		return;
 
 	CGrayUID uObj = uid;
@@ -2405,7 +2434,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	if ( !CanSee( uObj.ObjFind() ) )
 		return;
 
-	if ( m_pChar && !(m_pChar->CanSeeLOS( uObj.ObjFind(), 0x0 )) )
+	if ( m_pChar->CanSeeLOS( uObj.ObjFind(), 0x0 ) == false )
 		return;
 
 	if ( uObj.IsItem() )
@@ -2595,6 +2624,8 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 	{
 		case EXTCMD_OPEN_SPELLBOOK: // 67 = open spell book if we have one.
 			{
+				if (m_pChar == NULL)
+					break;
 				CItem * pBook = m_pChar->GetSpellbook();
 				if ( pBook == NULL )
 				{
@@ -2612,6 +2643,8 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 			break;
 
 		case EXTCMD_ANIMATE: // Cmd_Animate
+			if (m_pChar == NULL)
+				break;
 			if ( !strcmpi( ppArgs[0],"bow"))
 				m_pChar->UpdateAnimate( ANIM_BOW );
 			else if ( ! strcmpi( ppArgs[0],"salute"))
@@ -2644,6 +2677,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 
 		case EXTCMD_CAST_MACRO:	// macro spell.
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
+			if (m_pChar != NULL)
 			{
 				SPELL_TYPE spell = (SPELL_TYPE) ATOI(ppArgs[0]);
 				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
@@ -2696,6 +2730,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 			break;
 
 		case EXTCMD_INVOKE_VIRTUE:
+			if (m_pChar != NULL)
 			{
 				int iVirtueID = ppArgs[0][0] - '0';	// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
 				CScriptTriggerArgs Args(m_pChar);
