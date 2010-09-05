@@ -4749,6 +4749,9 @@ ALPHA additions:
 03-05-2010, MrSugarCube
 - Fixed: Database connection lost when using DB.EXECUTE with a query that returns results.
 
+09-05-2010, MrSugarCube
+- Fixed #1710,#1731: Numerous causes of instability when using EF_NetworkOutThread.
+
 13-05-2010, MrSugarCube
 - Fixed #1748: Exception when dropping an item onto a non-container.
 
