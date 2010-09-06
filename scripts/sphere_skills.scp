@@ -1135,6 +1135,7 @@ VALUES=1,30,200
 
 [SKILL 57]
 DEFNAME=SKILL_THROWING
+FLAGS=skf_ranged|skf_fight
 KEY=Throwing
 TITLE=Thrower
 STAT_STR=40

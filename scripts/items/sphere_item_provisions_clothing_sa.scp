@@ -1,0 +1,254 @@
+// SPHERE by : Menasoft ©1997-2010
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, September 3, 2010
+// Updated By: Khaos
+VERSION=0.56b
+
+[Itemdef 04000]
+Defname=i_gargish_robe
+Name=gargish robe
+Type=t_clothing
+Weight=3.0
+ReqStr=10
+Resources=16 i_cloth
+SkillMake=Tailoring 53.9, t_sewing_kit
+Dye=1
+Flip=1
+DupeList=04001
+
+Category=Provisions - Clothes
+Subsection=Shirts & Robes
+Description=Gargish Robe
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 04001]
+//gargoyle robe
+DupeItem=04000
+
+////////////////////
+
+[Itemdef 04002]
+Defname=i_gargish_fancy_robe
+Name=gargish fancy robe
+Type=t_clothing
+Weight=3.0
+ReqStr=10
+Resources=18 i_cloth
+SkillMake=Tailoring 75.0, t_sewing_kit
+Dye=1
+Flip=1
+DupeList=04003
+
+Category=Provisions - Clothes
+Subsection=Shirts & Robes
+Description=Gargish Fancy Robe
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 04003]
+//gargoyle fancy robe
+DupeItem=04002
+
+////////////////////
+
+[Itemdef 04210]
+Defname=i_gargish_necklace
+Name=gargish necklace
+Type=t_jewelry
+Weight=1.0
+Resources=3 i_ingot_iron
+SkillMake=Tinkering 60.0,t_tinker_tools
+
+Category=Provisions - Clothes
+Subsection=Jewelry
+Description=Gargish Necklace
+
+////////////////////
+
+[Itemdef 04211]
+Defname=i_gargish_bracelet
+Name=gargish bracelet
+Type=t_jewelry
+Weight=1.0
+Resources=3 i_ingot_iron
+SkillMake=Tinkering 55.0,t_tinker_tools
+
+Category=Provisions - Clothes
+Subsection=Jewelry
+Description=Gargish Bracelet
+
+////////////////////
+
+[Itemdef 04212]
+Defname=i_gargish_ring
+Name=gargish ring
+Type=t_jewelry
+Weight=1.0
+Resources=3 i_ingot_iron
+SkillMake=Tinkering 65.0,t_tinker_tools
+
+Category=Provisions - Clothes
+Subsection=Jewelry
+Description=Gargish Ring
+
+////////////////////
+
+[Itemdef 04213]
+Defname=i_gargish_earrings
+Name=gargish earrings
+Type=t_jewelry
+Weight=1.0
+Resources=3 i_ingot_iron
+SkillMake=Tinkering 55.0,t_tinker_tools
+
+Category=Provisions - Clothes
+Subsection=Jewelry
+Description=Gargish Earrings
+
+////////////////////
+
+[Itemdef 0450D]
+Defname=i_gargish_belt
+Name=gargish belt
+Type=t_clothing
+Dye=1
+Flip=1
+DupeList=0450E
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Belt (Wearable)
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 0450E]
+//Gargoyle Belt
+DupeItem=0450D
+
+////////////////////
+
+[Itemdef 045B1]
+Defname=i_gargish_glasses_f
+Name=gargish glasses
+Type=t_clothing
+Weight=2.0
+Flip=1
+DupeList=045B3
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Glasses (Female)
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 045B3]
+//Female Gargoyle Glasses
+DupeItem=045B1
+
+////////////////////
+
+[Itemdef 04644]
+Defname=i_gargish_glasses
+Name=gargish glasses
+Type=t_clothing
+Weight=2.0
+Flip=1
+DupeList=04645
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Glasses (Male)
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 04645]
+//Gargoyle Glasses
+DupeItem=04644
+
+////////////////////
+
+[Itemdef 046AA]
+Defname=i_gargish_sash_f
+Name=gargish sash
+Type=t_clothing
+Weight=2.0
+ReqStr=10
+Resources=4 i_cloth
+SkillMake=Tailoring 4.1, t_sewing_kit
+Dye=1
+Flip=1
+DupeList=046AB
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Sash (Female)
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 046AB]
+//Female Gargoyle Sash
+DupeItem=046AA
+
+////////////////////
+
+[Itemdef 046B4]
+Defname=i_gargish_sash
+Name=gargish sash
+Type=t_clothing
+Weight=2.0
+ReqStr=10
+Resources=4 i_cloth
+SkillMake=Tailoring 4.1, t_sewing_kit
+Dye=1
+Flip=1
+DupeList=046B5
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Sash (Male)
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 046B5]
+//Male Gargoyle Sash
+DupeItem=046B4
+
+////////////////////
+
+[Itemdef 050D8]
+Defname=i_gargish_half_apron
+Name=gargish half apron
+Type=t_clothing
+Weight=2.0
+ReqStr=10
+Resources=6 i_cloth
+SkillMake=Tailoring 20.7, t_sewing_kit
+Dye=1
+Flip=1
+//DupeList=050D9
+
+Category=Provisions - Clothes
+Subsection=Miscellaneous
+Description=Gargish Half Apron
+
+On=@Create
+Hitpoints={ 30 50 }
+
+[Itemdef 050D9]
+//This would misrepresentative a normal Flip obj. It is different in looks.
+//Half Apron
+DupeItem=050D8
