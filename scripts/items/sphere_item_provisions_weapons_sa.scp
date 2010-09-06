@@ -458,7 +458,7 @@ TwoHands=N
 Weight=2.0
 DupeList=048AF
 Flip=1
-Skillmake=Tinkering 20.0
+Skillmake=Tinkering 20.0, t_tinker_tools
 
 Category=Provisions - Weapons
 Subsection=Gargish Sword Weapons
@@ -561,7 +561,7 @@ DupeItem=048B4
 Name=gargish butcher knife
 Defname=i_gargish_butcher_knife
 Resources=1 i_ingot_iron
-Skillmake=Tinkering 0.0
+Skillmake=Tinkering 0.0, t_tinker_tools
 Weight=2
 Type=t_weapon_sword
 FLIP=1
