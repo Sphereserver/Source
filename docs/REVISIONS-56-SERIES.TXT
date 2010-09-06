@@ -4879,5 +4879,6 @@ ALPHA additions:
 - Added: sphere_item_provisions_clothing_sa.scp, sphere_item_provisions_armor_sa.scp,
   sphere_item_provisions_weapons_sa.scp. These files now contain all the default scripts
   for Stygian Abyss weapons, armor, clothing, jewelry, and other miscellaneous items.
-  As a note: all throwing weapons use the t_weapon_sword type. There is no archery animations for gargoyles.
+  As a note: all throwing weapons use the t_weapon_sword type. There is no archery
+  animations for gargoyles.
 - Updated: sphere_skills.scp; Added FLAGS=skf_ranged|skf_fight to the throwing skill (Skill 57).
