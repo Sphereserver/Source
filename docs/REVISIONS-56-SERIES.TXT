@@ -4875,6 +4875,9 @@ ALPHA additions:
 25-08-2010, ShiryuX
 - Fixed #1795: Characters were able to dclick equipable items with attr_move_never.
 
-05-09-2010, Khaos
-- Added: sphere_item_provisions_clothing_sa.scp, sphere_item_provisions_armor_sa.scp, sphere_item_provisions_weapons_sa.scp. These files now contain all the default scripts for Stygian Abyss weapons, armor, clothing, jewelry, and other miscellaneous items. As a note: all throwing weapons use the t_weapon_sword type. There is no archery animations for gargoyles.
+05-09-2010, Khaos (Script Pack)
+- Added: sphere_item_provisions_clothing_sa.scp, sphere_item_provisions_armor_sa.scp,
+  sphere_item_provisions_weapons_sa.scp. These files now contain all the default scripts
+  for Stygian Abyss weapons, armor, clothing, jewelry, and other miscellaneous items.
+  As a note: all throwing weapons use the t_weapon_sword type. There is no archery animations for gargoyles.
 - Updated: sphere_skills.scp; Added FLAGS=skf_ranged|skf_fight to the throwing skill (Skill 57).
