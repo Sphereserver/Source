@@ -23,6 +23,7 @@ Skillmake=75.0 Blacksmithing
 Resources=24 i_ingot_iron
 Speed=50
 Weight=4.0
+Flip=1
 DupeList=04068
 
 Category=Provisions - Weapons
@@ -35,7 +36,7 @@ On=@Create
 [Itemdef 04068]
 DupeItem=08FD
 
-///////////////////////////////
+
 
 [Itemdef 008FE]
 Defname=i_bloodblade
@@ -49,6 +50,7 @@ Skillmake=44.1 Blacksmithing
 Resources=8 i_ingot_iron
 Speed=75
 Weight=4.0
+Flip=1
 DupeList=04072
 
 Category=Provisions - Weapons
@@ -61,7 +63,7 @@ On=@Create
 [Itemdef 04072]
 DupeItem=008FE
 
-///////////////////////////////
+
 
 [Itemdef 008FF]
 Defname=i_boomerang
@@ -76,6 +78,7 @@ Skillmake=Blacksmithing 75.0
 Resources=5 i_ingot_iron
 Speed=75
 Weight=4.0
+Flip=1
 DupeList=04067
 Tdata3=0
 TData4=i_boomerang
@@ -90,7 +93,7 @@ On=@Create
 [Itemdef 04067]
 DupeItem=008FF
 
-///////////////////////////////
+
 
 [Itemdef 00900]
 Defname=i_stone_war_sword
@@ -104,6 +107,7 @@ Skillmake=Carpentry 100.0
 Resources=18 i_granite
 Speed=40
 Weight=6.0
+Flip=1
 DupeList=04071
 
 Category=Provisions - Weapons
@@ -116,7 +120,7 @@ On=@Create
 [Itemdef 04071]
 DupeItem=00900
 
-///////////////////////////////
+
 
 [Itemdef 00901]
 Defname=i_cyclone
@@ -131,6 +135,7 @@ Skillmake=Blacksmithing 75.0
 Resources=9 i_ingot_iron
 Speed=50
 Weight=6.0
+Flip=1
 DupeList=0406C
 
 TData3=0
@@ -146,7 +151,7 @@ Hitpoints={30 50}
 [Itemdef 0406C]
 DupeItem=00901
 
-///////////////////////////////
+
 
 [Itemdef 00902]
 Defname=i_gargish_dagger
@@ -160,6 +165,7 @@ Skillmake=Blacksmithing 0.0
 Resources=3 i_ingot_iron
 Speed=75
 Weight=1.0
+Flip=1
 DupeList=0406A
 
 Category=Provisions - Weapons
@@ -172,7 +178,7 @@ Hitpoints={30 50}
 [Itemdef 0406A]
 DupeItem=00902
 
-///////////////////////////////
+
 
 [Itemdef 00903]
 Defname=i_disc_mace
@@ -186,6 +192,7 @@ Skillmake=Blacksmithing 70.0
 Resources=20 i_ingot_iron
 Speed=54
 Weight=14.0
+Flip=1
 DupeList=0406E
 
 Category=Provisions - Weapons
@@ -198,7 +205,7 @@ Hitpoints={30 50}
 [Itemdef 0406E]
 DupeItem=00903
 
-///////////////////////////////
+
 
 [Itemdef 00904]
 Defname=i_dual_pointed_spear
@@ -212,6 +219,7 @@ Skillmake=Blacksmithing 47.0
 Resources=12 i_ingot_iron
 Speed=66
 Weight=2.0
+Flip=1
 DupeList=0406D
 
 Category=Provisions - Weapons
@@ -224,7 +232,7 @@ On=@Create
 [Itemdef 0406D]
 DupeItem=00904
 
-///////////////////////////////
+
 
 [Itemdef 00905]
 Defname=i_glass_staff
@@ -238,6 +246,7 @@ Skillmake=53.6 Alchemy
 Resources=10 i_sand
 Speed=66
 Weight=4.0
+Flip=1
 DupeList=04070
 
 Category=Provisions - Weapons
@@ -250,7 +259,7 @@ On=@Create
 [Itemdef 04070]
 DupeItem=00905
 
-///////////////////////////////
+
 
 [Itemdef 00906]
 Defname=i_serpentstone_staff
@@ -264,6 +273,7 @@ Skillmake=Carpentry 63.8
 Resources=16 i_log, 1 i_ecru_citrine
 Speed=46
 Weight=3.0
+Flip=1
 DupeList=0406F
 
 Category=Provisions - Weapons
@@ -276,7 +286,7 @@ On=@Create
 [Itemdef 0406F]
 DupeItem=00906
 
-///////////////////////////////
+
 
 [Itemdef 00907]
 Defname=i_shortblade
@@ -290,6 +300,7 @@ Skillmake=Blacksmithing 28.0
 Resources=12 i_ingot_iron
 Speed=75
 Weight=4.0
+Flip=1
 DupeList=04076
 
 Category=Provisions - Weapons
@@ -302,7 +313,7 @@ On=@Create
 [Itemdef 04076]
 DupeItem=00907
 
-///////////////////////////////
+
 
 [Itemdef 00908]
 Defname=i_gargish_talwar
@@ -316,6 +327,7 @@ Skillmake=Blacksmithing 75.0
 Resources=18 i_ingot_iron
 Speed=43
 Weight=4.0
+Flip=1
 DupeList=04075
 
 Category=Provisions - Weapons
@@ -328,7 +340,7 @@ On=@Create
 [Itemdef 04075]
 DupeItem=00908
 
-///////////////////////////////
+
 
 
 [Itemdef 00909]
@@ -336,6 +348,7 @@ DupeItem=00908
 //This one had a dupe though?
 Defname=i_glaive_anim_x
 Name=Weapon Glaive Animate
+Flip=1
 DupeList=04069
 
 Category=Provisions - Weapons
@@ -345,7 +358,7 @@ Description=Weapon Glaive Animate (???)
 [Itemdef 04069]
 DupeItem=00909
 
-///////////////////////////////
+
 
 [Itemdef 0090A]
 Defname=i_soul_glaive
@@ -360,6 +373,7 @@ Skillmake=Blacksmithing 75.0
 Resources=9 i_ingot_iron
 Speed=38
 Weight=8.0
+Flip=1
 DupeList=0406B
 
 TData3=0
@@ -375,7 +389,7 @@ Hitpoints={30 50}
 [Itemdef 0406B]
 DupeItem=0090A
 
-///////////////////////////////
+
 
 [Itemdef 0090B]
 Defname=i_dread_sword
@@ -389,6 +403,7 @@ Skillmake=Blacksmithing 75.0
 Resources=14 i_ingot_iron
 Speed=43
 Weight=7.0
+Flip=1
 DupeList=04074
 
 Category=Provisions - Weapons
@@ -401,7 +416,7 @@ On=@Create
 [Itemdef 04074]
 DupeItem=0090B
 
-///////////////////////////////
+
 
 [Itemdef 0090C]
 Defname=i_glass_sword
@@ -415,6 +430,7 @@ Skillmake=Alchemy 55.0
 Resources=14 i_sand
 Speed=54
 Weight=6.0
+Flip=1
 DupeList=04073
 
 Category=Provisions - Weapons
@@ -427,7 +443,7 @@ On=@Create
 [Itemdef 04073]
 DupeItem=0090C
 
-///////////////////////////////
+
 
 [Itemdef 048AE]
 Defname=i_gargish_cleaver
@@ -441,7 +457,8 @@ ReqStr=10
 TwoHands=N
 Weight=2.0
 DupeList=048AF
-Skillmake=TINKERING 20.0
+Flip=1
+Skillmake=Tinkering 20.0
 
 Category=Provisions - Weapons
 Subsection=Gargish Sword Weapons
@@ -454,7 +471,7 @@ Hitpoints={ 30 50 }
 DupeItem=048AE
 
 
-///////////////////////////////
+
 
 [Itemdef 048B0]
 Name=gargish battle axe
@@ -469,6 +486,7 @@ Speed=43
 Skill=Swordsmanship
 ReqStr=35
 TwoHands=Y
+Flip=1
 DupeList=048B1
 
 Category=Provisions - Weapons
@@ -481,7 +499,7 @@ Hitpoints={ 30 50 }
 [Itemdef 048B1]
 DupeItem=048B0
 
-///////////////////////////////
+
 
 [Itemdef 048B2]
 Name=gargish axe
@@ -496,6 +514,7 @@ Speed=50
 Skill=Swordsmanship
 ReqStr=35
 TwoHands=Y
+Flip=1
 DupeList=048B3
 
 Category=Provisions - Weapons
@@ -508,7 +527,7 @@ Hitpoints={ 30 50 }
 [Itemdef 048B3]
 DupeItem=048B2
 
-///////////////////////////////
+
 
 [Itemdef 048B4]
 Name=gargish bardiche
@@ -523,6 +542,7 @@ Speed=40
 Skill=Swordsmanship
 ReqStr=45
 TwoHands=Y
+Flip=1
 DupeList=048B5
 
 Category=Provisions - Weapons
@@ -535,13 +555,13 @@ Hitpoints={ 30 50 }
 [Itemdef 048B5]
 DupeItem=048B4
 
-///////////////////////////////
+
 
 [Itemdef 048b6]
 Name=gargish butcher knife
 Defname=i_gargish_butcher_knife
 Resources=1 i_ingot_iron
-Skillmake=TINKERING 0.0
+Skillmake=Tinkering 0.0
 Weight=2
 Type=t_weapon_sword
 FLIP=1
@@ -550,6 +570,7 @@ Speed=66
 Skill=Swordsmanship
 ReqStr=5
 TwoHands=N
+Flip=1
 DupeList=048B7
 
 Category=Provisions - Weapons
@@ -562,7 +583,7 @@ Hitpoints={ 30 50 }
 [Itemdef 048B7]
 DupeItem=048B6
 
-///////////////////////////////
+
 
 [Itemdef 048B8]
 Defname=i_gargish_gnarled_staff
@@ -576,7 +597,8 @@ Speed=46
 ReqStr=20
 TwoHands=Y
 DupeList=048B9
-Skillmake=CARPENTRY 78.9
+Skillmake=Carpentry 78.9
+Flip=1
 Resources=7 i_log
 
 Category=Provisions - Weapons
@@ -589,7 +611,7 @@ Hitpoints={ 30 50 }
 [Itemdef 048B9]
 DupeItem=048B8
 
-///////////////////////////////
+
 
 [Itemdef 048BA]
 Defname=i_gargish_katana
@@ -604,7 +626,8 @@ Skill=Swordsmanship
 ReqStr=25
 TwoHands=N
 DupeList=048bb
-Skillmake=BLACKSMITHING 44.1
+Flip=1
+Skillmake=Blacksmithing 44.1
 
 Category=Provisions - Weapons
 Subsection=Gargish Sword Weapons
@@ -616,7 +639,7 @@ Hitpoints=50
 [Itemdef 048BB]
 DupeItem=048BA
 
-///////////////////////////////
+
 
 [Itemdef 048BC]
 Defname=i_kryss_gargish
@@ -630,7 +653,8 @@ Speed=75
 Skill=Fencing
 ReqStr=10TwoHands=N
 DupeList=048BD
-Skillmake=BLACKSMITHING 36.7
+Flip=1
+Skillmake=Blacksmithing 36.7
 
 Category=Provisions - Weapons
 Subsection=Gargish Fencing Weapons
@@ -642,7 +666,7 @@ On=@Create
 [Itemdef 048BD]
 DupeItem=048BC
 
-///////////////////////////////
+
 
 [Itemdef 048BE]
 Defname=i_gargish_war_fork
@@ -657,7 +681,8 @@ Skill=Fencing
 ReqStr=45
 TwoHands=N
 DupeList=048BF
-Skillmake=BLACKSMITHING 42.9
+Flip=1
+Skillmake=Blacksmithing 42.9
 
 Category=Provisions - Weapons
 Subsection=Gargish Fencing Weapons
@@ -669,7 +694,7 @@ Hitpoints=50
 [Itemdef 048BF]
 DupeItem=048BE
 
-///////////////////////////////
+
 
 [Itemdef 048C0]
 Defname=i_gargish_war_hammer
@@ -684,7 +709,8 @@ Skill=MaceFighting
 ReqStr=95
 TwoHands=Y
 DupeList=048C1
-Skillmake=BLACKSMITHING 34.2
+Flip=1
+Skillmake=Blacksmithing 34.2
 
 Category=Provisions - Weapons
 Subsection=Gargish Mace Weapons
@@ -696,7 +722,7 @@ On=@Create
 [Itemdef 048C1]
 DupeItem=048C0
 
-///////////////////////////////
+
 
 [Itemdef 048C2]
 Defname=i_gargish_maul
@@ -711,7 +737,8 @@ Skill=MaceFighting
 ReqStr=45
 TwoHands=N
 DupeList=048C3
-Skillmake=BLACKSMITHING 19.4
+Flip=1
+Skillmake=Blacksmithing 19.4
 
 Category=Provisions - Weapons
 Subsection=Gargish Mace Weapons
@@ -723,7 +750,7 @@ On=@Create
 [Itemdef 048C3]
 DupeItem=048C2
 
-///////////////////////////////
+
 
 [Itemdef 048C4]
 Defname=i_gargish_scythe
@@ -732,10 +759,11 @@ Type=t_weapon_sword
 Skill=Swordsmanship
 Dam=7,36
 Resources=14 i_ingot_iron
-Skillmake=BLACKSMITHING 0.0
+Skillmake=Blacksmithing 0.0
 Weight=5.0
 Speed=43
 ReqStr=45
+Flip=1
 DupeList=048C5
 
 Category=Provisions - Weapons
@@ -748,7 +776,7 @@ Hitpoints=50
 [Itemdef 048C5]
 DupeItem=048C4
 
-///////////////////////////////
+
 
 [Itemdef 048C6]
 Defname=i_gargish_bone_harvester
@@ -760,8 +788,9 @@ ReqStr=25
 TwoHands=N
 Weight=3.0
 Speed=50
-Skillmake=BLACKSMITHING 0.0
+Skillmake=Blacksmithing 0.0
 Resources=10 i_ingot_iron
+Flip=1
 DupeList=048C7
 
 Category=Provisions - Weapons
@@ -774,7 +803,7 @@ Hitpoints=50
 [Itemdef 048C7]
 DupeItem=048C6
 
-///////////////////////////////
+
 
 [Itemdef 048C8]
 Defname=i_gargish_pike
@@ -786,8 +815,9 @@ ReqStr=50
 TwoHands=Y
 Weight=8.0
 Speed=50
-Skillmake=BLACKSMITHING 47.0
+Skillmake=Blacksmithing 47.0
 Resources=12 i_ingot_iron
+Flip=1
 DupeList=048C9
 
 Category=Provisions - Weapons
@@ -797,7 +827,7 @@ Description=Gargish Pike
 On=@Create
 Hitpoints=50
 
-///////////////////////////////
+
 
 [Itemdef 048c9]
 DupeItem=048c8
@@ -813,7 +843,8 @@ Resources=20 i_ingot_iron
 Weight=12.0
 ReqStr=95
 DupeList=048CB
-Skillmake=BLACKSMITHING 48.0
+Flip=1
+Skillmake=Blacksmithing 48.0
 
 Category=Provisions - Weapons
 Subsection=Gargish Fencing Weapons
@@ -825,20 +856,21 @@ Hitpoints=50
 [Itemdef 048CB]
 DupeItem=048CA
 
-///////////////////////////////
+
 
 [Itemdef 048CC]
 Defname=i_gargish_tessen
 Name=gargish tessen
 Type=t_weapon_mace_staff
 Resources=16 i_ingot_iron, 10 i_cloth
-Skillmake=BLACKSMITHING 50.0
+Skillmake=Blacksmithing 50.0
 TwoHands=Y
 ReqStr=35
 Weight=6.0
 Dam=5,24
 Speed=75
 DupeList=048CD
+Flip=1
 Skill=macefighting
 
 Category=Provisions - Weapons
@@ -851,7 +883,7 @@ Hitpoints=50
 [Itemdef 048CD]
 DupeItem=048CC
 
-///////////////////////////////
+
 
 [Itemdef 048CE]
 Defname=i_gargish_tekagi
@@ -863,8 +895,9 @@ Weight=5.0
 Skill=Fencing
 ReqStr=10
 TwoHands=Y
-Skillmake=BLACKSMITHING 55.0
+Skillmake=Blacksmithing 55.0
 Resources=12 i_ingot_iron
+Flip=1
 DupeList=048CF
 
 Category=Provisions - Weapons
@@ -877,7 +910,7 @@ Hitpoints=50
 [Itemdef 048CF]
 DupeItem=048CE
 
-///////////////////////////////
+
 
 
 [Itemdef 048D0]
@@ -890,8 +923,9 @@ Skill=Swordsmanship
 ReqStr=40
 TwoHands=Y
 Weight=8.0
-Skillmake=BLACKSMITHING 60.0
+Skillmake=Blacksmithing 60.0
 Resources=15 i_ingot_iron
+Flip=1
 DupeList=048D1
 
 Category=Provisions - Weapons
@@ -904,7 +938,7 @@ Hitpoints=50
 [Itemdef 048D1]
 DupeItem=048D0
 
-///////////////////////////////
+
 
 [Itemdef 048D2]
 Defname=i_gargish_soul_glaive_x
