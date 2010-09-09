@@ -4958,7 +4958,7 @@ bool CItem::OnTick()
 		return false;
 
 	EXC_SET("default behaviour4");
-	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=%x)?\n", GetName(), (DWORD)GetUID()));
+	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=0%lx)?\n", GetName(), (DWORD)GetUID()));
 	
 #ifndef _WIN32
 	}

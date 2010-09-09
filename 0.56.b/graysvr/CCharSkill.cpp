@@ -4279,6 +4279,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		if ( IsSkillBase(skill) )
 		{
 			const CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
+			ASSERT(pSkillDef);
 			int iWaitTime = pSkillDef->m_Delay.GetLinear( Skill_GetBase(skill) );
 			if ( iWaitTime )
 			{

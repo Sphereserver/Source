@@ -721,7 +721,7 @@ public:
 
 	CResourceScript* GetResourceFile( int i )
 	{
-		if ( i>=m_ResourceFiles.GetCount())
+		if ( ! m_ResourceFiles.IsValidIndex(i))
 		{
 			return( NULL );	// All resource files we need to get blocks from later.
 		}

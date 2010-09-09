@@ -3862,6 +3862,7 @@ bool CChar::OnTick()
 	if ( iTimeDiff >= TICK_PER_SEC )
 	{
 		// Check location periodically for standing in fire fields, traps, etc.
+		EXC_SET("check location");
 		CheckLocation(true);
 		m_timeLastRegen = CServTime::GetCurrentTime();
 	}

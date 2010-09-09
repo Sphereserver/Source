@@ -1942,7 +1942,7 @@ public:
 	}
 	LPCTSTR GetPageText( int iPage ) const
 	{
-		if ( iPage >= GetPageCount())
+		if ( iPage < 0 || iPage >= GetPageCount())
 			return( NULL );
 		if ( m_sBodyLines[iPage] == NULL )
 			return( NULL );

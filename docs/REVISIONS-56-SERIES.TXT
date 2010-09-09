@@ -4825,7 +4825,7 @@ ALPHA additions:
 07-08-2010, ShiryuX
 - Fixed #1772: Cooking skill wasn't counted as a crafting skill.
 
-07-08-2010, ShiryuX (Script Pack)
+07-08-2010, ShiryuX (Script pack)
 - Fixed #1774: sphere_map0.scp (Renamed Occlo to Ocllo, correct spelling)
 
 10-08-2010, ShiryuX
@@ -4855,10 +4855,10 @@ ALPHA additions:
           0 --> Will _NOT_ abort the skill action
 - Fixed: SA Clients wasn't considered for Async connections.
 
-21-08-2010, ShiryuX (Script Pack)
+21-08-2010, ShiryuX (Script pack)
 - Updated: sphere_defs.scp (Added 't_spellbook_bard' definition)
 
-21-08-2010, khaos (Script Pack)
+21-08-2010, khaos (Script pack)
 - Updated: sphere_spells.scp (Added new bards spells from SA, no functionality though)
 
 22-08-2010, MrSugarCube
@@ -4875,10 +4875,13 @@ ALPHA additions:
 25-08-2010, ShiryuX
 - Fixed #1795: Characters were able to dclick equipable items with attr_move_never.
 
-05-09-2010, Khaos (Script Pack)
+05-09-2010, Khaos (Script pack)
 - Added: sphere_item_provisions_clothing_sa.scp, sphere_item_provisions_armor_sa.scp,
-  sphere_item_provisions_weapons_sa.scp. These files now contain all the default scripts
+  sphere_item_provisions_weapons_sa.scp (These files now contain all the default scripts
   for Stygian Abyss weapons, armor, clothing, jewelry, and other miscellaneous items.
   As a note: all throwing weapons use the t_weapon_sword type. There is no archery
-  animations for gargoyles.
-- Updated: sphere_skills.scp; Added FLAGS=skf_ranged|skf_fight to the throwing skill (Skill 57).
+  animations for gargoyles)
+- Updated: sphere_skills.scp (Added FLAGS=skf_ranged|skf_fight to the throwing skill (Skill 57))
+
+09-09-2010, MrSugarCube
+- Fixed #1806: Possible causes of a critical "timer expired" error on Linux builds.

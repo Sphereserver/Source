@@ -1004,8 +1004,16 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	m_fonttype = FONT_NORMAL;
 
 	if ( ! g_Cfg.m_StartDefs.IsValidIndex( iStartLoc ))
-		iStartLoc = 0;
-	m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+	{
+		if ( g_Cfg.m_StartDefs.GetCount())
+			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
+		else
+			m_ptHome.InitPoint();
+	}
+	else
+	{
+		m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+	}
 
 	if ( ! m_ptHome.IsValidPoint())
 	{
@@ -1016,7 +1024,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		DEBUG_ERR(( "Invalid start location for character!\n" ));
 	}
 
-	SetUnkPoint( m_ptHome );	// Don't actaully put me in the world yet.
+	SetUnkPoint( m_ptHome );	// Don't actually put me in the world yet.
 
 	// randomize the skills first.
 	int i = 0;

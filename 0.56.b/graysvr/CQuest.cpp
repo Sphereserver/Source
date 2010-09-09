@@ -697,7 +697,7 @@ bool CPartyDef::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		int nNumber = Exp_GetVal(pszKey);
 		SKIP_SEPARATORS(pszKey);
 
-		if ( nNumber < 0 || nNumber > m_Chars.GetCharCount() )
+		if ( nNumber < 0 || nNumber >= m_Chars.GetCharCount() )
 			return( false );
 
 		CChar * pMember = m_Chars.GetChar(nNumber).CharFind();
@@ -1003,7 +1003,7 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 					strcpylen(pUid, __pszArg, ++x);
 
 					int nMember = Exp_GetVal(pUid);
-					if ( nMember < 0 || nMember > m_Chars.GetCharCount() )
+					if ( nMember < 0 || nMember >= m_Chars.GetCharCount() )
 						return( false );
 
 					toSysmessage = m_Chars.GetChar(nMember);

@@ -1745,7 +1745,12 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	{
 		int i = ( - ATOI(pCmd)) - 1;
 		if ( ! m_StartDefs.IsValidIndex( i ))
+		{
+			if ( m_StartDefs.GetCount() <= 0 )
+				return CPointMap();
+
 			i = 0;
+		}
 		return( m_StartDefs[i]->m_pt );
 	}
 
@@ -1804,7 +1809,10 @@ CRegionBase * CResource::GetRegion( LPCTSTR pKey ) const
 
 void	CResource::LoadSortSpells()
 {
-	int		iQtySpells	= m_SpellDefs.GetCount();
+	int iQtySpells = m_SpellDefs.GetCount();
+	if ( iQtySpells <= 0 )
+		return;
+
 	m_SpellDefs_Sorted.RemoveAll();
 	m_SpellDefs_Sorted.Add( m_SpellDefs[0] );		// the null spell
 
@@ -3222,12 +3230,12 @@ CResourceDef * CResource::ResourceGetDef( RESOURCE_ID_BASE rid ) const
 		case RES_SKILL:
 			if ( ! m_SkillIndexDefs.IsValidIndex(index))
 				return( NULL );
-			return( const_cast <CSkillDef *>( m_SkillIndexDefs[ index ] ));
+			return( m_SkillIndexDefs[ index ] );
 
 		case RES_SPELL:
 			if ( ! m_SpellDefs.IsValidIndex(index))
 				return( NULL );
-			return( const_cast <CSpellDef *>( m_SpellDefs[ index ] ));
+			return( m_SpellDefs[ index ] );
 
 		case RES_UNKNOWN:	// legal to use this as a ref but it is unknown
 			return( NULL );

@@ -231,7 +231,7 @@ void CAccounts::Account_Add( CAccount * pAccount )
 CAccountRef CAccounts::Account_Get( int index )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
-	if ( index >= m_Accounts.GetCount())
+	if ( ! m_Accounts.IsValidIndex(index))
 		return( NULL );
 	return( CAccountRef( STATIC_CAST <CAccount *>( m_Accounts[index])));
 }

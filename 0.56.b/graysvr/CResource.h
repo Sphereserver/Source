@@ -974,13 +974,13 @@ public:
 
 	LPCTSTR GetSkillKey( SKILL_TYPE index ) const
 	{
+		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+			return NULL;
 		return( m_SkillIndexDefs[index]->GetKey());
 	}
 
 	bool IsSkillFlag( SKILL_TYPE index, SKF_TYPE skf ) const
 	{
-		if ( !m_SkillIndexDefs.IsValidIndex(index) )
-			return false;
 		const CSkillDef *	pSkillDef	= GetSkillDef( index );
 		return ( pSkillDef && (pSkillDef->m_dwFlags & skf) );
 	}
@@ -995,11 +995,15 @@ public:
 
 	const CSkillDef* GetSkillDef( SKILL_TYPE index ) const
 	{
+		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+			return NULL;
 		return( m_SkillIndexDefs[index] );
 	}
 	
 	CSkillDef* GetSkillDef( SKILL_TYPE index )
 	{
+		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+			return NULL;
 		return( m_SkillIndexDefs[index] );
 	}
 
