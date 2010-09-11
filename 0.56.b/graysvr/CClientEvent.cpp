@@ -912,12 +912,6 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		}
 	}
 
-	if ( fCleanSkill )
-	{
-		m_pChar->Skill_Fail( true );	
-		DEBUG_WARN(("UserWarMode - Cleaning Skill Action\n"));
-	}
-
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
 
 	if ( m_pChar->IsStatFlag( STATF_DEAD ))
@@ -927,6 +921,12 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		m_pChar->StatFlag_Mod( STATF_Insubstantial, ! fWar );
 	}
 	
+	if ( fCleanSkill )
+	{
+		m_pChar->Skill_Fail( true );	
+		DEBUG_WARN(("UserWarMode - Cleaning Skill Action\n"));
+	}
+
 	if ( ! fWar )
 	{
 		m_pChar->Fight_ClearAll();

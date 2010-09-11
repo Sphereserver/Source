@@ -4885,3 +4885,6 @@ ALPHA additions:
 
 09-09-2010, MrSugarCube
 - Fixed #1806: Possible causes of a critical "timer expired" error on Linux builds.
+
+11-09-2010, ShiryuX
+- Fixed: 'group' keyword not being stripped with tngstrip command (used for locations tab).

@@ -2869,8 +2869,13 @@ void CChar::Fight_ClearAll()
 
 	// Our target is gone.
 	StatFlag_Clear( STATF_War );
-	Skill_Start( SKILL_NONE );
-	m_Act_Targ.InitUID();
+
+	if ( this->Fight_IsActive() )
+	{
+		Skill_Start( SKILL_NONE );
+		m_Act_Targ.InitUID();
+	}
+
 	UpdateModeFlag();
 }
 

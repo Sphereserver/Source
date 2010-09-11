@@ -764,7 +764,7 @@ longcommand:
 						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "p=", 2) ||
 						!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
 						!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "color", 5) ||
-						!strncmp(z, "resources", 9) )
+						!strncmp(z, "resources", 9) || !strncmp(z, "group", 5) )
 					{
 						fputs(y, f1);
 					}
