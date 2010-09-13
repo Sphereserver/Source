@@ -786,7 +786,7 @@ void CClient::addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTempl
 }
 
 
-void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE & wHue )
+void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE & wHue ) const
 {
 	ADDTOCALLSTACK("CClient::GetAdjustedItemID");
 	// An equipped item.
@@ -846,7 +846,7 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 		id = (ITEMID_TYPE) pItemDef->GetResDispDnId();
 }
 
-void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE & wHue )
+void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE & wHue ) const
 {
 	ADDTOCALLSTACK("CClient::GetAdjustedCharID");
 	// Some clients can't see all creature artwork and colors.

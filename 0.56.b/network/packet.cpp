@@ -1056,7 +1056,7 @@ void PacketSend::fixLength()
 	}
 }
 
-PacketSend* PacketSend::clone(void)
+PacketSend* PacketSend::clone(void) const
 {
 	return new PacketSend(this);
 }

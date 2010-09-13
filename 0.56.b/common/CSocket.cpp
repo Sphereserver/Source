@@ -238,6 +238,7 @@ CGSocket::~CGSocket()
 
 void CGSocket::SetSocket(SOCKET socket)
 {
+	Close();
 	m_hSocket = socket;
 }
 

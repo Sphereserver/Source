@@ -11,7 +11,7 @@
  *
  *
  ***************************************************************************/
-PacketGeneric::PacketGeneric(CClient* target, BYTE *data, long length) : PacketSend(0, length, PRI_NORMAL)
+PacketGeneric::PacketGeneric(const CClient* target, BYTE *data, long length) : PacketSend(0, length, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGeneric::PacketGeneric");
 
@@ -54,7 +54,7 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(
  *
  *
  ***************************************************************************/
-PacketWeb::PacketWeb(CClient* target, BYTE* data, int length) : PacketSend(0, 0, PRI_NORMAL)
+PacketWeb::PacketWeb(const CClient* target, BYTE* data, int length) : PacketSend(0, 0, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWeb::PacketWeb");
 
@@ -80,7 +80,7 @@ void PacketWeb::setData(BYTE* data, int length)
  *
  *
  ***************************************************************************/
-PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
+PacketCombatDamage::PacketCombatDamage(const CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
@@ -100,11 +100,11 @@ PacketCombatDamage::PacketCombatDamage(CClient* target, DWORD damage, CGrayUID d
  *
  *
  ***************************************************************************/
-PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCharacterStatus::PacketCharacterStatus");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && !other->Char_GetDef()->GetHireDayWage() );
 
 	initLength();
@@ -218,7 +218,7 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
 			writeInt16(other->m_ResEnergy);
 			writeInt16(other->m_pPlayer? other->m_pPlayer->m_luck : 0);
 
-			CItem* weapon = other->m_uidWeapon.ItemFind();
+			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			if (weapon != NULL)
 			{
 				writeInt16(weapon->Item_GetDef()->m_attackBase + weapon->m_ModAr);
@@ -252,7 +252,7 @@ PacketCharacterStatus::PacketCharacterStatus(CClient* target, CChar* other) : Pa
  *
  *
  ***************************************************************************/
-PacketHealthBarUpdate::PacketHealthBarUpdate(CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_character(character->GetUID())
+PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_character(character->GetUID())
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::PacketHealthBarUpdate");
 
@@ -290,7 +290,7 @@ PacketItemWorld::PacketItemWorld(BYTE id, long size, CGrayUID uid) : PacketSend(
 {
 }
 
-PacketItemWorld::PacketItemWorld(CClient* target, CItem *item) : PacketSend(XCMD_Put, 20, PRI_NORMAL), m_item(item->GetUID())
+PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSend(XCMD_Put, 20, PRI_NORMAL), m_item(item->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemWorld::PacketItemWorld");
 
@@ -348,13 +348,13 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	ASSERT(character);
 
 	// modify the values for the specific client/item.
 	if (id != ITEMID_CORPSE)
 	{
-		CItemBase* itemDefintion = item->Item_GetDef();
+		const CItemBase* itemDefintion = item->Item_GetDef();
 		if (itemDefintion && (target->GetResDisp() < itemDefintion->GetResLevel()))
 		{
 			id = (ITEMID_TYPE)itemDefintion->GetResDispDnId();
@@ -373,7 +373,7 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	else
 	{
 		// adjust amount and hue of corpse if necessary
-		CCharBase* charDefinition = CCharBase::FindCharBase(item->m_itCorpse.m_BaseID);
+		const CCharBase* charDefinition = CCharBase::FindCharBase(item->m_itCorpse.m_BaseID);
 		if (charDefinition && (target->GetResDisp() < charDefinition->GetResLevel()))
 		{
 			amount = charDefinition->GetResDispDnId();
@@ -437,12 +437,12 @@ bool PacketItemWorld::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketPlayerStart::PacketPlayerStart(CClient* target) : PacketSend(XCMD_Start, 37, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
+PacketPlayerStart::PacketPlayerStart(const CClient* target) : PacketSend(XCMD_Start, 37, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayerStart::PacketPlayerStart");
 
-	CChar* character = target->GetChar();
-	CPointMap pt = character->GetTopPoint();
+	const CChar* character = target->GetChar();
+	const CPointMap& pt = character->GetTopPoint();
 	
 	writeInt32(character->GetUID());
 	writeInt32(0);
@@ -471,7 +471,7 @@ PacketPlayerStart::PacketPlayerStart(CClient* target) : PacketSend(XCMD_Start, 3
  *
  *
  ***************************************************************************/
-PacketMessageASCII::PacketMessageASCII(CClient* target, LPCTSTR pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font) : PacketSend(XCMD_Speak, 42, PRI_NORMAL)
+PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font) : PacketSend(XCMD_Speak, 42, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageASCII::PacketMessageASCII");
 
@@ -517,7 +517,7 @@ PacketMessageASCII::PacketMessageASCII(CClient* target, LPCTSTR pszText, const C
  *
  *
  ***************************************************************************/
-PacketRemoveObject::PacketRemoveObject(CClient* target, CGrayUID uid) : PacketSend(XCMD_Remove, 5, PRI_NORMAL)
+PacketRemoveObject::PacketRemoveObject(const CClient* target, CGrayUID uid) : PacketSend(XCMD_Remove, 5, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketRemoveObject::PacketRemoveObject");
 
@@ -533,18 +533,18 @@ PacketRemoveObject::PacketRemoveObject(CClient* target, CGrayUID uid) : PacketSe
  *
  *
  ***************************************************************************/
-PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_View, 19, PRI_NORMAL)
+PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(XCMD_View, 19, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayerPosition::PacketPlayerPosition");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	ASSERT(character);
 
 	CREID_TYPE id;
 	HUE_TYPE hue;
 	target->GetAdjustedCharID(character, id, hue);
 
-	CPointMap pt = character->GetTopPoint();
+	const CPointMap& pt = character->GetTopPoint();
 
 	writeInt32(character->GetUID());
 	writeInt16(id);
@@ -568,14 +568,14 @@ PacketPlayerPosition::PacketPlayerPosition(CClient* target) : PacketSend(XCMD_Vi
  *
  *
  ***************************************************************************/
-PacketMovementRej::PacketMovementRej(CClient* target, BYTE sequence) : PacketSend(XCMD_WalkCancel, 8, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
+PacketMovementRej::PacketMovementRej(const CClient* target, BYTE sequence) : PacketSend(XCMD_WalkCancel, 8, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMovementRej::PacketMovementRej");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	ASSERT(character);
 
-	CPointMap pt = character->GetTopPoint();
+	const CPointMap& pt = character->GetTopPoint();
 	writeByte(sequence);
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
@@ -592,7 +592,7 @@ PacketMovementRej::PacketMovementRej(CClient* target, BYTE sequence) : PacketSen
  *
  *
  ***************************************************************************/
-PacketMovementAck::PacketMovementAck(CClient* target) : PacketSend(XCMD_WalkAck, 3, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
+PacketMovementAck::PacketMovementAck(const CClient* target) : PacketSend(XCMD_WalkAck, 3, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
@@ -617,12 +617,12 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 	writeInt16(item->GetHue());
 	writeInt16(item->GetAmount());
 
-	CPointMap sourcepos = source->GetTopPoint();
+	const CPointMap& sourcepos = source->GetTopPoint();
 
 	if (container != NULL)
 	{
-		CObjBaseTemplate* target = container->GetTopLevelObj();
-		CPointMap targetpos = target->GetTopPoint();
+		const CObjBaseTemplate* target = container->GetTopLevelObj();
+		const CPointMap& targetpos = target->GetTopPoint();
 
 		writeInt32(source->GetUID());
 		writeInt16(sourcepos.m_x);
@@ -646,8 +646,8 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 	}
 	else
 	{
-		CObjBaseTemplate* target = item->GetTopLevelObj();
-		CPointMap targetpos = target->GetTopPoint();
+		const CObjBaseTemplate* target = item->GetTopLevelObj();
+		const CPointMap& targetpos = target->GetTopPoint();
 
 		writeInt32((target == item)? 0 : (DWORD)target->GetUID());
 		writeInt16(targetpos.m_x);
@@ -668,7 +668,7 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
  *
  *
  ***************************************************************************/
-PacketContainerOpen::PacketContainerOpen(CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
+PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketContainerOpen::PacketContainerOpen");
 
@@ -695,14 +695,14 @@ bool PacketContainerOpen::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketItemContainer::PacketItemContainer(CClient* target, const CItem* item) : PacketSend(XCMD_ContAdd, 21, PRI_NORMAL), m_item(item->GetUID())
+PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* item) : PacketSend(XCMD_ContAdd, 21, PRI_NORMAL), m_item(item->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContainer::PacketItemContainer");
 
-	CItemContainer* container = dynamic_cast<CItemContainer*>( item->GetParent() );
-	CPointBase pt = item->GetContainedPoint();
+	const CItemContainer* container = dynamic_cast<CItemContainer*>( item->GetParent() );
+	const CPointBase& pt = item->GetContainedPoint();
 
-	CItemBase* itemDefinition = item->Item_GetDef();
+	const CItemBase* itemDefinition = item->Item_GetDef();
 	ITEMID_TYPE id = item->GetDispID();
 	HUE_TYPE hue = item->GetHue() & HUE_MASK_HI;
 
@@ -748,7 +748,7 @@ PacketItemContainer::PacketItemContainer(const CItem* spellbook, const CSpellDef
 	writeInt16(0x7D);
 }
 
-void PacketItemContainer::completeForTarget(CClient* target, const CItem* spellbook)
+void PacketItemContainer::completeForTarget(const CClient* target, const CItem* spellbook)
 {
 	ADDTOCALLSTACK("PacketItemContainer::completeForTarget");
 
@@ -789,7 +789,7 @@ bool PacketItemContainer::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketKick::PacketKick(CClient* target) : PacketSend(XCMD_Kick, 5, PRI_HIGHEST)
+PacketKick::PacketKick(const CClient* target) : PacketSend(XCMD_Kick, 5, PRI_HIGHEST)
 {
 	ADDTOCALLSTACK("PacketKick::PacketKick");
 
@@ -805,7 +805,7 @@ PacketKick::PacketKick(CClient* target) : PacketSend(XCMD_Kick, 5, PRI_HIGHEST)
  *
  *
  ***************************************************************************/
-PacketDragCancel::PacketDragCancel(CClient* target, Reason code) : PacketSend(XCMD_DragCancel, 2, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
+PacketDragCancel::PacketDragCancel(const CClient* target, Reason code) : PacketSend(XCMD_DragCancel, 2, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDragCancel::PacketDragCancel");
 
@@ -821,7 +821,7 @@ PacketDragCancel::PacketDragCancel(CClient* target, Reason code) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketDropAccepted::PacketDropAccepted(CClient* target) : PacketSend(XCMD_DropAccepted, 1, PRI_NORMAL)
+PacketDropAccepted::PacketDropAccepted(const CClient* target) : PacketSend(XCMD_DropAccepted, 1, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDropAccepted::PacketDropAccepted");
 
@@ -836,11 +836,11 @@ PacketDropAccepted::PacketDropAccepted(CClient* target) : PacketSend(XCMD_DropAc
  *
  *
  ***************************************************************************/
-PacketItemEquipped::PacketItemEquipped(CClient* target, const CItem* item) : PacketSend(XCMD_ItemEquip, 15, PRI_NORMAL)
+PacketItemEquipped::PacketItemEquipped(const CClient* target, const CItem* item) : PacketSend(XCMD_ItemEquip, 15, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketItemEquipped::PacketItemEquipped");
 
-	CChar* parent = dynamic_cast<CChar*>(item->GetParent());
+	const CChar* parent = dynamic_cast<CChar*>(item->GetParent());
 	ASSERT(parent);
 
 	LAYER_TYPE layer = item->GetEquipLayer();
@@ -866,7 +866,7 @@ PacketItemEquipped::PacketItemEquipped(CClient* target, const CItem* item) : Pac
  *
  *
  ***************************************************************************/
-PacketSwing::PacketSwing(CClient* target, const CChar* defender) : PacketSend(XCMD_Fight, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketSwing::PacketSwing(const CClient* target, const CChar* defender) : PacketSend(XCMD_Fight, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSwing::PacketSwing");
 
@@ -884,7 +884,7 @@ PacketSwing::PacketSwing(CClient* target, const CChar* defender) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketSkills::PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill) : PacketSend(XCMD_Skill, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_TYPE skill) : PacketSend(XCMD_Skill, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSkills::PacketSkills");
 
@@ -944,7 +944,7 @@ PacketSkills::PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill) 
  *
  *
  ***************************************************************************/
-PacketCloseVendor::PacketCloseVendor(CClient* target, const CChar* vendor) : PacketSend(XCMD_VendorBuy, 8, PRI_NORMAL)
+PacketCloseVendor::PacketCloseVendor(const CClient* target, const CChar* vendor) : PacketSend(XCMD_VendorBuy, 8, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCloseVendor::PacketCloseVendor");
 
@@ -967,8 +967,8 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents");
 
-	CChar* viewer = target->GetChar();
-	CItemBase* itemDefinition;
+	const CChar* viewer = target->GetChar();
+	const CItemBase* itemDefinition;
 	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 
 	initLength();
@@ -983,7 +983,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	LAYER_TYPE layer;
 	int amount;
 	CPointMap pos;
-	for (CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+	for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
 	{
 		if (isShop == false && item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
 			continue;
@@ -1019,7 +1019,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 		if (isShop == true)
 		{
-			CItemVendable* vendorItem = dynamic_cast<CItemVendable*>(item);
+			const CItemVendable* vendorItem = dynamic_cast<const CItemVendable*>(item);
 			if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
 				continue;
 
@@ -1075,7 +1075,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	push(target);
 }
 
-PacketItemContents::PacketItemContents(CClient* target, const CItem* spellbook) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(spellbook->GetUID())
+PacketItemContents::PacketItemContents(const CClient* target, const CItem* spellbook) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(spellbook->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(2)");
 
@@ -1112,7 +1112,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItem* spellbook) 
 	push(target);
 }
 
-PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* spellbook) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(spellbook->GetUID())
+PacketItemContents::PacketItemContents(const CClient* target, const CItemContainer* spellbook) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(spellbook->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(3)");
 
@@ -1174,7 +1174,7 @@ bool PacketItemContents::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketGlobalLight::PacketGlobalLight(CClient* target, int light) : PacketSend(XCMD_Light, 2, PRI_NORMAL)
+PacketGlobalLight::PacketGlobalLight(const CClient* target, int light) : PacketSend(XCMD_Light, 2, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGlobalLight::PacketGlobalLight");
 
@@ -1190,7 +1190,7 @@ PacketGlobalLight::PacketGlobalLight(CClient* target, int light) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketWarningMessage::PacketWarningMessage(CClient* target, PacketWarningMessage::Message code) : PacketSend(XCMD_IdleWarning, 2, PRI_NORMAL)
+PacketWarningMessage::PacketWarningMessage(const CClient* target, PacketWarningMessage::Message code) : PacketSend(XCMD_IdleWarning, 2, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWarningMessage::PacketWarningMessage");
 
@@ -1206,7 +1206,7 @@ PacketWarningMessage::PacketWarningMessage(CClient* target, PacketWarningMessage
  *
  *
  ***************************************************************************/
-PacketPlaySound::PacketPlaySound(CClient* target, SOUND_TYPE sound, int flags, int volume, CPointMap pos) : PacketSend(XCMD_Sound, 12, PRI_NORMAL)
+PacketPlaySound::PacketPlaySound(const CClient* target, SOUND_TYPE sound, int flags, int volume, const CPointMap& pos) : PacketSend(XCMD_Sound, 12, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlaySound::PacketPlaySound");
 
@@ -1227,7 +1227,7 @@ PacketPlaySound::PacketPlaySound(CClient* target, SOUND_TYPE sound, int flags, i
  *
  *
  ***************************************************************************/
-PacketRedrawAll::PacketRedrawAll(CClient* target) : PacketSend(XCMD_ReDrawAll, 1, PRI_NORMAL)
+PacketRedrawAll::PacketRedrawAll(const CClient* target) : PacketSend(XCMD_ReDrawAll, 1, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketRedrawAll::PacketRedrawAll");
 
@@ -1242,7 +1242,7 @@ PacketRedrawAll::PacketRedrawAll(CClient* target) : PacketSend(XCMD_ReDrawAll, 1
  *
  *
  ***************************************************************************/
-PacketMapPlot::PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketMapPlot::PacketMapPlot(const CClient* target, const CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMapPlot::PacketMapPlot");
 
@@ -1255,7 +1255,7 @@ PacketMapPlot::PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool
 	push(target);
 }
 
-PacketMapPlot::PacketMapPlot(CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketMapPlot::PacketMapPlot(const CItem* map, MAPCMD_TYPE mode, bool edit) : PacketSend(XCMD_MapEdit, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMapPlot::PacketMapPlot");
 
@@ -1281,7 +1281,7 @@ void PacketMapPlot::setPin(int x, int y)
  *
  *
  ***************************************************************************/
-PacketGameTime::PacketGameTime(CClient* target, int hours, int minutes, int seconds) : PacketSend(XCMD_Time, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketGameTime::PacketGameTime(const CClient* target, int hours, int minutes, int seconds) : PacketSend(XCMD_Time, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGameTime::PacketGameTime");
 
@@ -1299,7 +1299,7 @@ PacketGameTime::PacketGameTime(CClient* target, int hours, int minutes, int seco
  *
  *
  ***************************************************************************/
-PacketWeather::PacketWeather(CClient* target, WEATHER_TYPE weather, int severity, int temperature) : PacketSend(XCMD_Weather, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketWeather::PacketWeather(const CClient* target, WEATHER_TYPE weather, int severity, int temperature) : PacketSend(XCMD_Weather, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWeather::PacketWeather");
 
@@ -1338,7 +1338,7 @@ PacketWeather::PacketWeather(CClient* target, WEATHER_TYPE weather, int severity
  *
  *
  ***************************************************************************/
-PacketBookPageContent::PacketBookPageContent(CClient* target, const CItem* book, int startpage, int pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem* book, int startpage, int pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::PacketBookPageContent");
 
@@ -1433,7 +1433,7 @@ void PacketBookPageContent::addPage(const CItem* book, int page)
  *
  *
  ***************************************************************************/
-PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags) : PacketSend(XCMD_Target, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags) : PacketSend(XCMD_Target, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget");
 
@@ -1452,7 +1452,7 @@ PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType ty
 	push(target);
 };
 
-PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget(2)");
 
@@ -1482,7 +1482,7 @@ PacketAddTarget::PacketAddTarget(CClient* target, PacketAddTarget::TargetType ty
  *
  *
  ***************************************************************************/
-PacketPlayMusic::PacketPlayMusic(CClient* target, WORD musicID) : PacketSend(XCMD_PlayMusic, 3, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSend(XCMD_PlayMusic, 3, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayMusic::PacketPlayMusic");
 
@@ -1498,7 +1498,7 @@ PacketPlayMusic::PacketPlayMusic(CClient* target, WORD musicID) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketAction::PacketAction(CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAction::PacketAction");
 
@@ -1572,7 +1572,7 @@ void PacketTradeAction::prepareClose(const CItemContainer* container)
  *
  *
  ***************************************************************************/
-PacketEffect::PacketEffect(CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode) : PacketSend(XCMD_Effect, 20, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode) : PacketSend(XCMD_Effect, 20, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect");
 
@@ -1581,7 +1581,7 @@ PacketEffect::PacketEffect(CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, 
 	push(target);
 }
 
-PacketEffect::PacketEffect(CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render) : PacketSend(XCMD_EffectEx, 28, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render) : PacketSend(XCMD_EffectEx, 28, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(2)");
 
@@ -1668,7 +1668,7 @@ void PacketEffect::writeHuedEffect(DWORD hue, DWORD render)
  *
  *
  ***************************************************************************/
-PacketBulletinBoard::PacketBulletinBoard(CClient* target, const CItemContainer* board) : PacketSend(XCMD_BBoard, 20, PRI_NORMAL)
+PacketBulletinBoard::PacketBulletinBoard(const CClient* target, const CItemContainer* board) : PacketSend(XCMD_BBoard, 20, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBulletinBoard::PacketBulletinBoard");
 
@@ -1680,7 +1680,7 @@ PacketBulletinBoard::PacketBulletinBoard(CClient* target, const CItemContainer* 
 	push(target);
 }
 
-PacketBulletinBoard::PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message) : PacketSend(XCMD_BBoard, 20, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message) : PacketSend(XCMD_BBoard, 20, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBulletinBoard::PacketBulletinBoard(2)");
 
@@ -1762,7 +1762,7 @@ PacketBulletinBoard::PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, c
  *
  *
  ***************************************************************************/
-PacketWarMode::PacketWarMode(CClient* target, const CChar* character) : PacketSend(XCMD_War, 5, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketWarMode::PacketWarMode(const CClient* target, const CChar* character) : PacketSend(XCMD_War, 5, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWarMode::PacketWarMode");
 
@@ -1782,7 +1782,7 @@ PacketWarMode::PacketWarMode(CClient* target, const CChar* character) : PacketSe
  *
  *
  ***************************************************************************/
-PacketPingAck::PacketPingAck(CClient* target, BYTE value) : PacketSend(XCMD_Ping, 2, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketPingAck::PacketPingAck(const CClient* target, BYTE value) : PacketSend(XCMD_Ping, 2, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPingAck::PacketPingAck");
 
@@ -1866,7 +1866,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
  *
  *
  ***************************************************************************/
-PacketZoneChange::PacketZoneChange(CClient* target, const CPointMap& pos) : PacketSend(XCMD_ZoneChange, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketZoneChange::PacketZoneChange(const CClient* target, const CPointMap& pos) : PacketSend(XCMD_ZoneChange, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketZoneChange::PacketZoneChange");
 
@@ -1890,14 +1890,14 @@ PacketZoneChange::PacketZoneChange(CClient* target, const CPointMap& pos) : Pack
  *
  *
  ***************************************************************************/
-PacketCharacterMove::PacketCharacterMove(CClient* target, const CChar* character, BYTE direction) : PacketSend(XCMD_CharMove, 17, PRI_NORMAL)
+PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* character, BYTE direction) : PacketSend(XCMD_CharMove, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCharacterMove::PacketCharacterMove");
 
 	CREID_TYPE id;
 	HUE_TYPE hue;
 	target->GetAdjustedCharID(character, id, hue);
-	CPointMap pos = character->GetTopPoint();
+	const CPointMap& pos = character->GetTopPoint();
 
 	writeInt32(character->GetUID());
 	writeInt16(id);
@@ -1930,7 +1930,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	CREID_TYPE id;
 	HUE_TYPE hue;
 	target->GetAdjustedCharID(character, id, hue);
-	CPointMap pos = character->GetTopPoint();
+	const CPointMap& pos = character->GetTopPoint();
 
 	initLength();
 	writeInt32(character->GetUID());
@@ -1948,7 +1948,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 		bool isLayerSent[LAYER_HORSE+1];
 		memset(isLayerSent, false, sizeof(isLayerSent));
 
-		for (CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
+		for (const CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
 		{
 			LAYER_TYPE layer = item->GetEquipLayer();
 			if (CItemBase::IsVisibleLayer(layer) == false)
@@ -2006,7 +2006,7 @@ bool PacketCharacter::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayMenu::PacketDisplayMenu(CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, CObjBase* object) : PacketSend(XCMD_MenuItems, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, const CObjBase* object) : PacketSend(XCMD_MenuItems, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayMenu::PacketDisplayMenu");
 
@@ -2069,7 +2069,7 @@ PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_
  *
  *
  ***************************************************************************/
-PacketLoginError::PacketLoginError(CClient* target, PacketLoginError::Reason reason) : PacketSend(XCMD_LogBad, 2, PRI_HIGHEST)
+PacketLoginError::PacketLoginError(const CClient* target, PacketLoginError::Reason reason) : PacketSend(XCMD_LogBad, 2, PRI_HIGHEST)
 {
 	ADDTOCALLSTACK("PacketLoginError::PacketLoginError");
 
@@ -2085,7 +2085,7 @@ PacketLoginError::PacketLoginError(CClient* target, PacketLoginError::Reason rea
  *
  *
  ***************************************************************************/
-PacketDeleteError::PacketDeleteError(CClient* target, PacketDeleteError::Reason reason) : PacketSend(XCMD_DeleteBad, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDeleteError::PacketDeleteError(const CClient* target, PacketDeleteError::Reason reason) : PacketSend(XCMD_DeleteBad, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDeleteError::PacketDeleteError");
 
@@ -2127,7 +2127,7 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CCha
  *
  *
  ***************************************************************************/
-PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : PacketSend(XCMD_PaperDoll, 66, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) : PacketSend(XCMD_PaperDoll, 66, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPaperdoll::PacketPaperdoll");
 
@@ -2149,7 +2149,7 @@ PacketPaperdoll::PacketPaperdoll(CClient* target, const CChar* character) : Pack
 		TCHAR* text = Str_GetTemp();
 		int len = 0;
 
-		CStoneMember* guildMember = character->Guild_FindMember(MEMORY_GUILD);
+		const CStoneMember* guildMember = character->Guild_FindMember(MEMORY_GUILD);
 		if (guildMember != NULL && guildMember->IsAbbrevOn() && guildMember->GetParentStone()->GetAbbrev()[0])
 		{
 			len = sprintf(text, "%s [%s], %s", character->Noto_GetTitle(), guildMember->GetParentStone()->GetAbbrev(),
@@ -2179,7 +2179,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 {
 	ADDTOCALLSTACK("PacketCorpseEquipment::PacketCorpseEquipment");
 
-	CChar* viewer = target->GetChar();
+	const CChar* viewer = target->GetChar();
 
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, false, sizeof(isLayerSent));
@@ -2190,7 +2190,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	LAYER_TYPE layer;
 	m_count = 0;
 
-	for (CItem* item = corpse->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+	for (const CItem* item = corpse->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
 	{
 		if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
 			continue;
@@ -2247,7 +2247,7 @@ bool PacketCorpseEquipment::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSignGump::PacketSignGump");
 
@@ -2290,7 +2290,7 @@ PacketSignGump::PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYP
  *
  *
  ***************************************************************************/
-PacketServerRelay::PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId) : PacketSend(XCMD_Relay, 11, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketServerRelay::PacketServerRelay(const CClient* target, DWORD ip, WORD port, DWORD customerId) : PacketSend(XCMD_Relay, 11, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketServerRelay::PacketServerRelay");
 	m_customerId = customerId;
@@ -2322,11 +2322,11 @@ void PacketServerRelay::onSent(CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplay, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayMap::PacketDisplayMap(const CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplay, 19, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayMap::PacketDisplayMap");
 
-	CItemBase* itemDef = map->Item_GetDef();
+	const CItemBase* itemDef = map->Item_GetDef();
 	ASSERT(itemDef != NULL);
 
 	WORD width = itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE;
@@ -2352,7 +2352,7 @@ PacketDisplayMap::PacketDisplayMap(CClient* target, const CItemMap* map, const C
  *
  *
  ***************************************************************************/
-PacketDisplayBook::PacketDisplayBook(CClient* target, CItem* book) : PacketSend(XCMD_BookOpen, 99, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : PacketSend(XCMD_BookOpen, 99, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayBook::PacketDisplayBook");
 
@@ -2421,7 +2421,7 @@ PacketDisplayBook::PacketDisplayBook(CClient* target, CItem* book) : PacketSend(
  *
  *
  ***************************************************************************/
-PacketShowDyeWindow::PacketShowDyeWindow(CClient* target, const CObjBase* object) : PacketSend(XCMD_DyeVat, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketShowDyeWindow::PacketShowDyeWindow(const CClient* target, const CObjBase* object) : PacketSend(XCMD_DyeVat, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketShowDyeWindow::PacketShowDyeWindow");
 
@@ -2455,7 +2455,7 @@ PacketShowDyeWindow::PacketShowDyeWindow(CClient* target, const CObjBase* object
  *
  *
  ***************************************************************************/
-PacketAllNamesResponse::PacketAllNamesResponse(CClient* target, const CObjBase* object) : PacketSend(XCMD_AllNames3D, 37, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketAllNamesResponse::PacketAllNamesResponse(const CClient* target, const CObjBase* object) : PacketSend(XCMD_AllNames3D, 37, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAllNamesResponse::PacketAllNamesResponse");
 
@@ -2475,7 +2475,7 @@ PacketAllNamesResponse::PacketAllNamesResponse(CClient* target, const CObjBase* 
  *
  *
  ***************************************************************************/
-PacketAddPrompt::PacketAddPrompt(CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(useUnicode? XCMD_PromptUNICODE : XCMD_Prompt, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(useUnicode? XCMD_PromptUNICODE : XCMD_Prompt, 16, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddPrompt::PacketAddPrompt");
 
@@ -2665,7 +2665,7 @@ PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketWebPage::PacketWebPage(CClient* target, LPCTSTR url) : PacketSend(XCMD_Web, 3, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketWebPage::PacketWebPage(const CClient* target, LPCTSTR url) : PacketSend(XCMD_Web, 3, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWebPage::PacketWebPage");
 
@@ -2683,7 +2683,7 @@ PacketWebPage::PacketWebPage(CClient* target, LPCTSTR url) : PacketSend(XCMD_Web
  *
  *
  ***************************************************************************/
-PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header) : PacketSend(XCMD_Scroll, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header) : PacketSend(XCMD_Scroll, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketOpenScroll::PacketOpenScroll");
 
@@ -2728,7 +2728,7 @@ PacketOpenScroll::PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYP
  *
  *
  ***************************************************************************/
-PacketServerList::PacketServerList(CClient* target) : PacketSend(XCMD_ServerList, 46, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_ServerList, 46, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketServerList::PacketServerList");
 
@@ -2764,7 +2764,7 @@ PacketServerList::PacketServerList(CClient* target) : PacketSend(XCMD_ServerList
 	push(target);
 }
 
-void PacketServerList::writeServerEntry(CServerRef server, int index, bool reverseIp)
+void PacketServerList::writeServerEntry(const CServerRef& server, int index, bool reverseIp)
 {
 	ADDTOCALLSTACK("PacketServerList::writeServerEntry");
 
@@ -2834,7 +2834,7 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 		writeStringFixedASCII((LPCTSTR)g_Cfg.m_StartDefs[i]->m_sName, MAX_NAME_SIZE + 1);
 	}
 
-	CAccountRef account = target->GetAccount();
+	const CAccountRef account = target->GetAccount();
 	writeInt32(g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)account->GetResDisp(), maximum(account->GetMaxChars(), account->m_Chars.GetCharCount())));
 
 	push(target);
@@ -2848,7 +2848,7 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
  *
  *
  ***************************************************************************/
-PacketAttack::PacketAttack(CClient* target, CGrayUID serial) : PacketSend(XCMD_AttackOK, 5, PRI_NORMAL)
+PacketAttack::PacketAttack(const CClient* target, CGrayUID serial) : PacketSend(XCMD_AttackOK, 5, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAttack::PacketAttack");
 
@@ -2865,7 +2865,7 @@ PacketAttack::PacketAttack(CClient* target, CGrayUID serial) : PacketSend(XCMD_A
  *
  *
  ***************************************************************************/
-PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object) : PacketSend(XCMD_GumpInpVal, 21, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object) : PacketSend(XCMD_GumpInpVal, 21, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpValueInput::PacketGumpValueInput");
 
@@ -2917,7 +2917,7 @@ PacketGumpValueInput::PacketGumpValueInput(CClient* target, bool cancel, INPVAL_
  *
  *
  ***************************************************************************/
-PacketMessageUNICODE::PacketMessageUNICODE(CClient* target, const NWORD* pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID language) : PacketSend(XCMD_SpeakUNICODE, 48, PRI_NORMAL)
+PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* pszText, const CObjBaseTemplate * source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID language) : PacketSend(XCMD_SpeakUNICODE, 48, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageUNICODE::PacketMessageUNICODE");
 
@@ -2992,11 +2992,11 @@ PacketGumpDialog::PacketGumpDialog(int x, int y, CObjBase* object, DWORD context
 	writeInt32(y);
 }
 
-void PacketGumpDialog::writeControls(CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount)
+void PacketGumpDialog::writeControls(const CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount)
 {	
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
-	NetState* net = target->GetNetState();
+	const NetState* net = target->GetNetState();
 	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR())
 		writeCompressedControls(controls, controlCount, texts, textCount);
 	else
@@ -3129,7 +3129,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
  *
  *
  ***************************************************************************/
-PacketChatMessage::PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language) : PacketSend(XCMD_ChatReq, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketChatMessage::PacketChatMessage(const CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language) : PacketSend(XCMD_ChatReq, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketChatMessage::PacketChatMessage");
 
@@ -3158,7 +3158,7 @@ PacketChatMessage::PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR
  *
  *
  ***************************************************************************/
-PacketTooltip::PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR text) : PacketSend(XCMD_ToolTip, 8, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketTooltip::PacketTooltip(const CClient* target, const CObjBase* object, LPCTSTR text) : PacketSend(XCMD_ToolTip, 8, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketTooltip::PacketTooltip");
 
@@ -3177,7 +3177,7 @@ PacketTooltip::PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR te
  *
  *
  ***************************************************************************/
-PacketProfile::PacketProfile(CClient* target, const CChar* character) : PacketSend(XCMD_CharProfile, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketProfile::PacketProfile(const CClient* target, const CChar* character) : PacketSend(XCMD_CharProfile, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketProfile::PacketProfile");
 
@@ -3218,11 +3218,11 @@ PacketProfile::PacketProfile(CClient* target, const CChar* character) : PacketSe
  *
  *
  ***************************************************************************/
-PacketEnableFeatures::PacketEnableFeatures(CClient* target, DWORD flags) : PacketSend(XCMD_Features, 5, PRI_NORMAL)
+PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) : PacketSend(XCMD_Features, 5, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEnableFeatures::PacketEnableFeatures");
 
-	CAccountRef account = target->GetAccount();
+	const CAccountRef account = target->GetAccount();
 	DWORD tmVer = account->m_TagDefs.GetKeyNum("clientversion");
 	DWORD tmVerReported = account->m_TagDefs.GetKeyNum("reportedcliver");
 	
@@ -3244,7 +3244,7 @@ PacketEnableFeatures::PacketEnableFeatures(CClient* target, DWORD flags) : Packe
  *
  *
  ***************************************************************************/
-PacketArrowQuest::PacketArrowQuest(CClient* target, int x, int y) : PacketSend(XCMD_Arrow, 6, PRI_NORMAL)
+PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y) : PacketSend(XCMD_Arrow, 6, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketArrowQuest::PacketArrowQuest");
 
@@ -3263,7 +3263,7 @@ PacketArrowQuest::PacketArrowQuest(CClient* target, int x, int y) : PacketSend(X
  *
  *
  ***************************************************************************/
-PacketSeason::PacketSeason(CClient* target, SEASON_TYPE season, bool playMusic) : PacketSend(XCMD_Season, 3, PRI_NORMAL)
+PacketSeason::PacketSeason(const CClient* target, SEASON_TYPE season, bool playMusic) : PacketSend(XCMD_Season, 3, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSeason::PacketSeason");
 
@@ -3298,7 +3298,7 @@ PacketExtended::PacketExtended(EXTDATA_TYPE type, long len, Priority priority) :
  *
  *
  ***************************************************************************/
-PacketFastWalk::PacketFastWalk(CClient* target, DWORD* codes, int count, int sendCount) : PacketExtended(EXTDATA_WalkCode_Prime, 29, PRI_NORMAL)
+PacketFastWalk::PacketFastWalk(const CClient* target, DWORD* codes, int count, int sendCount) : PacketExtended(EXTDATA_WalkCode_Prime, 29, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketFastWalk::PacketFastWalk");
 
@@ -3316,7 +3316,7 @@ PacketFastWalk::PacketFastWalk(CClient* target, DWORD* codes, int count, int sen
  *
  *
  ***************************************************************************/
-PacketGumpChange::PacketGumpChange(CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketGumpChange::PacketGumpChange(const CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpChange::PacketGumpChange");
 
@@ -3408,7 +3408,7 @@ PacketPartyChat::PacketPartyChat(const CChar* source, const NCHAR* text) : Packe
  *
  *
  ***************************************************************************/
-PacketPartyInvite::PacketPartyInvite(CClient* target, const CChar* inviter) : PacketParty(PARTYMSG_NotoInvited, 10, PRI_NORMAL)
+PacketPartyInvite::PacketPartyInvite(const CClient* target, const CChar* inviter) : PacketParty(PARTYMSG_NotoInvited, 10, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPartyInvite::PacketPartyInvite");
 
@@ -3425,7 +3425,7 @@ PacketPartyInvite::PacketPartyInvite(CClient* target, const CChar* inviter) : Pa
  *
  *
  ***************************************************************************/
-PacketMapChange::PacketMapChange(CClient* target, int map) : PacketExtended(EXTDATA_Map_Change, 6, PRI_NORMAL)
+PacketMapChange::PacketMapChange(const CClient* target, int map) : PacketExtended(EXTDATA_Map_Change, 6, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMapChange::PacketMapChange");
 
@@ -3442,7 +3442,7 @@ PacketMapChange::PacketMapChange(CClient* target, int map) : PacketExtended(EXTD
  *
  *
  ***************************************************************************/
-PacketPropertyListVersionOld::PacketPropertyListVersionOld(CClient* target, const CObjBase* object, DWORD version) : PacketExtended(EXTDATA_OldAOSTooltipInfo, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target, const CObjBase* object, DWORD version) : PacketExtended(EXTDATA_OldAOSTooltipInfo, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPropertyListVersionOld::PacketPropertyListVersionOld");
 
@@ -3480,7 +3480,7 @@ bool PacketPropertyListVersionOld::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayPopup::PacketDisplayPopup(CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : PacketExtended(EXTDATA_Popup_Display, 12, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
@@ -3549,7 +3549,7 @@ void PacketDisplayPopup::finalise(void)
  *
  *
  ***************************************************************************/
-PacketEnableMapDiffs::PacketEnableMapDiffs(CClient* target) : PacketExtended(EXTDATA_Map_Diff, 13, PRI_NORMAL)
+PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtended(EXTDATA_Map_Diff, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
@@ -3601,7 +3601,7 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(CClient* target) : PacketExtended(EXT
  *
  *
  ***************************************************************************/
-PacketStatLocks::PacketStatLocks(CClient* target, const CChar* character) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
+PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketStatLocks::PacketStatLocks");
 
@@ -3629,7 +3629,7 @@ PacketStatLocks::PacketStatLocks(CClient* target, const CChar* character) : Pack
  *
  *
  ***************************************************************************/
-PacketSpellbookContent::PacketSpellbookContent(CClient* target, const CItem* spellbook, WORD offset) : PacketExtended(EXTDATA_NewSpellbook, 23, PRI_NORMAL)
+PacketSpellbookContent::PacketSpellbookContent(const CClient* target, const CItem* spellbook, WORD offset) : PacketExtended(EXTDATA_NewSpellbook, 23, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSpellbookContent::PacketSpellbookContent");
 
@@ -3650,7 +3650,7 @@ PacketSpellbookContent::PacketSpellbookContent(CClient* target, const CItem* spe
  *
  *
  ***************************************************************************/
-PacketHouseDesignVersion::PacketHouseDesignVersion(CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseDesignVer, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketHouseDesignVersion::PacketHouseDesignVersion(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseDesignVer, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseDesignVersion::PacketHouseDesignVersion");
 
@@ -3668,7 +3668,7 @@ PacketHouseDesignVersion::PacketHouseDesignVersion(CClient* target, const CItemM
  *
  *
  ***************************************************************************/
-PacketHouseBeginCustomise::PacketHouseBeginCustomise(CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseBeginCustomise::PacketHouseBeginCustomise");
 
@@ -3690,7 +3690,7 @@ PacketHouseBeginCustomise::PacketHouseBeginCustomise(CClient* target, const CIte
  *
  *
  ***************************************************************************/
-PacketHouseEndCustomise::PacketHouseEndCustomise(CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseEndCustomise::PacketHouseEndCustomise");
 
@@ -3712,7 +3712,7 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(CClient* target, const CItemMul
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
+PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
@@ -3731,7 +3731,7 @@ PacketCombatDamageOld::PacketCombatDamageOld(CClient* target, DWORD damage, CGra
  *
  *
  ***************************************************************************/
-PacketSpeedMode::PacketSpeedMode(CClient* target, BYTE mode) : PacketExtended(EXTDATA_SpeedMode, 6, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
+PacketSpeedMode::PacketSpeedMode(const CClient* target, BYTE mode) : PacketExtended(EXTDATA_SpeedMode, 6, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSpeedMode::PacketSpeedMode");
 
@@ -3748,7 +3748,7 @@ PacketSpeedMode::PacketSpeedMode(CClient* target, BYTE mode) : PacketExtended(EX
  *
  *
  ***************************************************************************/
-PacketMessageLocalised::PacketMessageLocalised(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
+PacketMessageLocalised::PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalised::PacketMessageLocalised");
 
@@ -3793,7 +3793,7 @@ PacketMessageLocalised::PacketMessageLocalised(CClient* target, int cliloc, cons
  *
  *
  ***************************************************************************/
-PacketVisualRange::PacketVisualRange(CClient* target, BYTE range) : PacketSend(XCMD_ViewRange, 2, PRI_NORMAL)
+PacketVisualRange::PacketVisualRange(const CClient* target, BYTE range) : PacketSend(XCMD_ViewRange, 2, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVisualRange::PacketVisualRange");
 
@@ -3809,7 +3809,7 @@ PacketVisualRange::PacketVisualRange(CClient* target, BYTE range) : PacketSend(X
  *
  *
  ***************************************************************************/
-PacketMessageLocalisedEx::PacketMessageLocalisedEx(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
+PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalisedEx::PacketMessageLocalisedEx");
 
@@ -3856,7 +3856,7 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(CClient* target, int cliloc, 
  *
  *
  ***************************************************************************/
-PacketLogoutAck::PacketLogoutAck(CClient* target) : PacketSend(XCMD_LogoutStatus, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketLogoutAck::PacketLogoutAck(const CClient* target) : PacketSend(XCMD_LogoutStatus, 2, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketLogoutAck::PacketLogoutAck");
 
@@ -3889,7 +3889,7 @@ PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, co
 	
 	for (int x = 0; x < data->GetCount(); x++)
 	{
-		CClientTooltip* tipEntry = data->GetAt(x);
+		const CClientTooltip* tipEntry = data->GetAt(x);
 		int tipLength = strlen(tipEntry->m_args);
 		
 		writeInt32(tipEntry->m_clilocid);
@@ -3900,7 +3900,7 @@ PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, co
 	writeInt32(0);
 }
 
-PacketPropertyList::PacketPropertyList(CClient* target, const PacketPropertyList* other) : PacketSend(other)
+PacketPropertyList::PacketPropertyList(const CClient* target, const PacketPropertyList* other) : PacketSend(other)
 {
 	ADDTOCALLSTACK("PacketPropertyList::PacketPropertyList2");
 
@@ -4117,7 +4117,7 @@ void PacketHouseDesign::finalise(void)
  *
  *
  ***************************************************************************/
-PacketPropertyListVersion::PacketPropertyListVersion(CClient* target, const CObjBase* object, DWORD version) : PacketSend(XCMD_AOSTooltipInfo, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, const CObjBase* object, DWORD version) : PacketSend(XCMD_AOSTooltipInfo, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPropertyListVersion::PacketPropertyListVersion");
 
@@ -4155,11 +4155,11 @@ bool PacketPropertyListVersion::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketBuff::PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBuff::PacketBuff");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	ASSERT(character != NULL);
 
 	initLength();
@@ -4197,11 +4197,11 @@ PacketBuff::PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne
 	push(target);
 }
 
-PacketBuff::PacketBuff(CClient* target, const WORD iconId) : PacketSend(XCMD_BuffPacket, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBuff::PacketBuff(const CClient* target, const WORD iconId) : PacketSend(XCMD_BuffPacket, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBuff::PacketBuff(2)");
 
-	CChar* character = target->GetChar();
+	const CChar* character = target->GetChar();
 	ASSERT(character != NULL);
 
 	initLength();
@@ -4222,7 +4222,7 @@ PacketBuff::PacketBuff(CClient* target, const WORD iconId) : PacketSend(XCMD_Buf
  *
  *
  ***************************************************************************/
-PacketKREncryption::PacketKREncryption(CClient* target) : PacketSend(XCMD_EncryptionReq, 77, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
+PacketKREncryption::PacketKREncryption(const CClient* target) : PacketSend(XCMD_EncryptionReq, 77, g_Cfg.m_fUsePacketPriorities? PRI_HIGH : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketKREncryption::PacketKREncryption");
 
@@ -4246,7 +4246,7 @@ PacketKREncryption::PacketKREncryption(CClient* target) : PacketSend(XCMD_Encryp
  *
  *
  ***************************************************************************/
-PacketToggleHotbar::PacketToggleHotbar(CClient* target, bool enable) : PacketSend(XCMD_ToggleHotbar, 3, PRI_NORMAL)
+PacketToggleHotbar::PacketToggleHotbar(const CClient* target, bool enable) : PacketSend(XCMD_ToggleHotbar, 3, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketToggleHotbar::PacketToggleHotbar");
 
@@ -4263,7 +4263,7 @@ PacketToggleHotbar::PacketToggleHotbar(CClient* target, bool enable) : PacketSen
  *
  *
  ***************************************************************************/
-PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 24, item->GetUID())
+PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 24, item->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
 
@@ -4310,11 +4310,11 @@ PacketItemWorldNew::PacketItemWorldNew(CClient* target, CItem *item) : PacketIte
  *
  *
  ***************************************************************************/
-PacketDisplayMapNew::PacketDisplayMapNew(CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplayNew, 21, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* map, const CRectMap& rect) : PacketSend(XCMD_MapDisplayNew, 21, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayMapNew::PacketDisplayMapNew");
 
-	CItemBase* itemDef = map->Item_GetDef();
+	const CItemBase* itemDef = map->Item_GetDef();
 	ASSERT(itemDef != NULL);
 
 	WORD width = itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE;

@@ -861,7 +861,7 @@ void CItemMultiCustom::ResetStructure( CClient * pClientSrc )
 		pClientSrc->addItem(this);
 }
 
-int CItemMultiCustom::GetRevision(CClient * pClientSrc) const
+int CItemMultiCustom::GetRevision(const CClient * pClientSrc) const
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetRevision");
 	// return the revision number, making sure to return

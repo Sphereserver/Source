@@ -2789,7 +2789,7 @@ bool CChar::Fight_IsActive() const
 	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
 }
 
-int CChar::Fight_CalcDamage( CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom ) const
+int CChar::Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom ) const
 {
 	ADDTOCALLSTACK("CChar::Fight_CalcDamage");
 	// STR bonus on close combat weapons.

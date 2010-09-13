@@ -288,7 +288,7 @@ public:
 	virtual void tick(void);
 	virtual void waitForClose(void);
 
-	void schedule(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent
+	void schedule(const PacketSend* packet, bool appendTransaction); // schedule this packet to be sent
 	void scheduleOnce(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent MOVING it to the list
 	void scheduleOnce(PacketTransaction* transaction); // schedule a transaction to be sent
 

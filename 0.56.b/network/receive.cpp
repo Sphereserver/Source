@@ -131,7 +131,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CAccountRef account = client->GetAccount();
+	const CAccountRef account = client->GetAccount();
 	ASSERT(account);
 
 	if (client->GetChar() != NULL)
@@ -143,7 +143,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	}
 
 	// make sure they don't have an idling character
-	CChar* pCharLast = account->m_uidLastChar.CharFind();
+	const CChar* pCharLast = account->m_uidLastChar.CharFind();
 	if (pCharLast != NULL && account->IsMyAccountChar(pCharLast) && account->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
 	{
 		client->addIdleWarning(PacketWarningMessage::CharacterInWorld);
@@ -223,24 +223,24 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
 
 	// check crypt key
-	if (!net->isClientLessVersion(MINCLIVER_CHECKWALKCODE))
+	if (net->isClientVersion(MINCLIVER_CHECKWALKCODE))
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	// check sequence
-	if (net->m_sequence == 0 && sequence != 0)
+	if (canMoveThere == TRIGRET_RET_TRUE && net->m_sequence == 0 && sequence != 0)
 		canMoveThere = TRIGRET_RET_FALSE;
 
 // old sequence check
-//	if (sequence != net->m_sequence)
+//	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
 //		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
 
 	// perform movement
-	if (canMoveThere)
+	if (canMoveThere == TRIGRET_RET_TRUE)
 		canMoveThere = client->Event_Walking(direction);
 
 	if (canMoveThere == TRIGRET_RET_FALSE)
 	{
-		PacketMovementRej* packet = new PacketMovementRej(client, sequence);
+		new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
 	else if (canMoveThere == TRIGRET_RET_TRUE)
@@ -402,7 +402,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 	
@@ -694,7 +694,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* buyer = client->GetChar();
+	const CChar* buyer = client->GetChar();
 	if (buyer == NULL)
 		return false;
 
@@ -731,7 +731,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	DWORD itemCount = minimum((packetLength - 8) / 7, MAX_ITEMS_CONT);
 
 	// check buying speed
-	CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
+	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
 	if (vardef != NULL)
 	{
 		CServTime allowsell;
@@ -809,7 +809,7 @@ bool PacketMapEdit::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -1055,7 +1055,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -1131,7 +1131,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -1288,7 +1288,7 @@ bool PacketPingReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketPingReq::onReceive");
 
 	BYTE value = readByte();
-	PacketPingAck* packet = new PacketPingAck(net->getClient(), value);
+	new PacketPingAck(net->getClient(), value);
 	return true;
 }
 
@@ -1334,7 +1334,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -1687,12 +1687,11 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
-	CObjBase* object;
-	PacketAllNamesResponse* cmd;
+	const CObjBase* object;
 
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
@@ -1702,7 +1701,7 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 		else if (character->CanSee(object) == false)
 			continue;
 
-		cmd = new PacketAllNamesResponse(client, object);
+		new PacketAllNamesResponse(client, object);
 	}
 
 	return true;
@@ -1781,7 +1780,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* seller = client->GetChar();
+	const CChar* seller = client->GetChar();
 	if (seller == NULL)
 		return false;
 
@@ -1821,7 +1820,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	}
 
 	// check selling speed
-	CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
+	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
 	if (vardef != NULL)
 	{
 		CServTime allowsell;
@@ -2119,12 +2118,12 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 
 #ifdef _DEBUG
 	{
-		CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
+		const CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
 		if (resource == NULL)
 			g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)serial, button);
 		else
 		{
-			CDialogDef* dialog = dynamic_cast<CDialogDef*>(resource);
+			const CDialogDef* dialog = dynamic_cast<const CDialogDef*>(resource);
 			if (dialog == NULL)
 				g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)serial, button);
 			else
@@ -2781,7 +2780,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -2790,7 +2789,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;
 
-	CObjBase* object = CGrayUID(readInt32()).ObjFind();
+	const CObjBase* object = CGrayUID(readInt32()).ObjFind();
 	if (object != NULL && character->CanSee(object))
 		client->addAOSTooltip(object, true);
 
@@ -2873,7 +2872,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL || character->m_pPlayer == NULL)
 		return false;
 
@@ -3027,7 +3026,7 @@ bool PacketBandageMacro::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -3207,7 +3206,7 @@ bool PacketLogout::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketLogout::onReceive");
 
-	PacketLogoutAck *packet = new PacketLogoutAck(net->getClient());
+	new PacketLogoutAck(net->getClient());
 	return true;
 }
 
@@ -3229,7 +3228,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 
@@ -3238,7 +3237,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;
 
-	CObjBase* object;
+	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();
@@ -3272,7 +3271,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 
-	CChar* character = client->GetChar();
+	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
 

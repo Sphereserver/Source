@@ -692,7 +692,7 @@ LPCTSTR CChar::GetPossessPronoun() const
 	}
 }
 
-BYTE CChar::GetModeFlag( bool fTrueSight, CClient* pViewer ) const
+BYTE CChar::GetModeFlag( bool fTrueSight, const CClient* pViewer ) const
 {
 	ADDTOCALLSTACK("CChar::GetModeFlag");
 	BYTE mode = 0;

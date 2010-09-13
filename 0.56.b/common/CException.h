@@ -90,7 +90,6 @@ public:
 
 	#define EXC_SET(a) inLocalBlock = a; inLocalBlockCnt++
 
-#ifdef _WIN32
 	#ifdef THREAD_TRACK_CALLSTACK
 		#define EXC_CATCH_EXCEPTION(a) \
 			bCATCHExcept = true; \
@@ -109,15 +108,6 @@ public:
 			else \
 				g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
 	#endif
-#else
-		#define EXC_CATCH_EXCEPTION(a) \
-		bCATCHExcept = true; \
-		if ( inLocalBlock ) \
-			g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
-														inLocalBlockCnt, inLocalBlock); \
-		else \
-			g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
-#endif
 
 	#define EXC_CATCH	}	\
 		catch ( CGrayError &e )	{ EXC_CATCH_EXCEPTION(&e); } \
@@ -139,7 +129,6 @@ public:
 
 	#define EXC_SETSUB(a) inLocalSubBlock = a; inLocalSubBlockCnt++
 
-#ifdef _WIN32
 	#ifdef THREAD_TRACK_CALLSTACK
 		#define EXC_CATCH_SUB(a,b) \
 			bCATCHExceptSub = true; \
@@ -160,16 +149,6 @@ public:
 				g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
 			//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
 	#endif
-#else
-		#define EXC_CATCH_SUB(a,b) \
-		bCATCHExceptSub = true; \
-		if ( inLocalSubBlock ) \
-			g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
-														inLocalSubBlockCnt, inLocalSubBlock); \
-		else \
-			g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
-		//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
-#endif
 
 	#define EXC_CATCHSUB(a)	}	\
 		catch ( CGrayError &e )	\

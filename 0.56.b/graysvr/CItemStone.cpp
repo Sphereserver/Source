@@ -385,7 +385,7 @@ CStoneMember::~CStoneMember()
 	}
 }
 
-CItemStone * CStoneMember::GetParentStone()
+CItemStone * CStoneMember::GetParentStone() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetParentStone");
 	return dynamic_cast <CItemStone *>( GetParent());

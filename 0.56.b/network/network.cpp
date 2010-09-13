@@ -1467,7 +1467,7 @@ void NetworkOut::tick(void)
 	SafeClientIterator clients;
 	while (CClient* client = clients.next())
 	{
-		NetState* state = client->GetNetState();
+		const NetState* state = client->GetNetState();
 		ASSERT(state != NULL);
 
 		EXC_SET("highest");
@@ -1513,7 +1513,7 @@ void NetworkOut::waitForClose(void)
 	return;
 }
 
-void NetworkOut::schedule(PacketSend* packet, bool appendTransaction)
+void NetworkOut::schedule(const PacketSend* packet, bool appendTransaction)
 {
 	ADDTOCALLSTACK("NetworkOut::schedule");
 

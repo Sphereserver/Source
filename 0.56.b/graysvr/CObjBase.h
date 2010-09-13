@@ -1541,7 +1541,7 @@ public:
 	const CGRect GetDesignArea();
 	int GetFixtureCount(DesignDetails * pDesign = NULL);
 	int GetComponentsAt(short dx, short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
-	int GetRevision(CClient * pClientSrc = NULL) const;
+	int GetRevision(const CClient * pClientSrc = NULL) const;
 	int GetLevelCount();
 	int GetStairCount();
 
@@ -1754,7 +1754,7 @@ public:
 	CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iType, LPCTSTR pTitle = "", CGrayUID loyaluidLink = 0, bool fArg1 = false, bool fArg2 = false, int nAccountGold = 0);
 	virtual ~CStoneMember();
 	CStoneMember* GetNext() const;
-	CItemStone * GetParentStone();
+	CItemStone * GetParentStone() const;
 
 	CGrayUID GetLinkUID() const;
 
@@ -2890,7 +2890,7 @@ public:
 public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
-	BYTE GetModeFlag( bool fTrueSight = false, CClient* pViewer = NULL ) const;
+	BYTE GetModeFlag( bool fTrueSight = false, const CClient* pViewer = NULL ) const;
 	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
 		BYTE dir = m_dirFace;
@@ -3235,7 +3235,7 @@ public:
 	bool Fight_AttackNext();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
-	int  Fight_CalcDamage( CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
+	int  Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
 
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
 	void InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  );

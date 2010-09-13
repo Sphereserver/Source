@@ -153,7 +153,7 @@ public:
 
 protected:
 	void fixLength(); // write correct packet length to it's slot
-	virtual PacketSend* clone(void);
+	virtual PacketSend* clone(void) const;
 };
 
 

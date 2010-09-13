@@ -14,7 +14,7 @@
 class PacketGeneric : public PacketSend
 {
 public:
-	PacketGeneric(CClient* target, BYTE *data, long length);
+	PacketGeneric(const CClient* target, BYTE *data, long length);
 };
 
 /***************************************************************************
@@ -41,7 +41,7 @@ public:
 class PacketWeb : public PacketSend
 {
 public:
-	PacketWeb(CClient* target = NULL, BYTE* data = NULL, int length = 0);
+	PacketWeb(const CClient* target = NULL, BYTE* data = NULL, int length = 0);
 	void setData(BYTE* data, int length);
 };
 
@@ -55,7 +55,7 @@ public:
 class PacketCombatDamage : public PacketSend
 {
 public:
-	PacketCombatDamage(CClient* target, DWORD damage, CGrayUID defender);
+	PacketCombatDamage(const CClient* target, DWORD damage, CGrayUID defender);
 };
 
 /***************************************************************************
@@ -68,7 +68,7 @@ public:
 class PacketCharacterStatus : public PacketSend
 {
 public:
-	PacketCharacterStatus(CClient* target, CChar* other);
+	PacketCharacterStatus(const CClient* target, CChar* other);
 };
 
 /***************************************************************************
@@ -90,7 +90,7 @@ public:
 		YellowBar = 2
 	};
 
-	PacketHealthBarUpdate(CClient* target, const CChar* character);
+	PacketHealthBarUpdate(const CClient* target, const CChar* character);
 
 	virtual bool onSend(const CClient* client);
 };
@@ -111,7 +111,7 @@ protected:
 	PacketItemWorld(BYTE id, long size, CGrayUID uid);
 
 public:
-	PacketItemWorld(CClient* target, CItem* item);
+	PacketItemWorld(const CClient* target, CItem* item);
 
 	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags, BYTE &light);
 
@@ -128,7 +128,7 @@ public:
 class PacketPlayerStart : public PacketSend
 {
 public:
-	PacketPlayerStart(CClient* target);
+	PacketPlayerStart(const CClient* target);
 };
 
 /***************************************************************************
@@ -141,7 +141,7 @@ public:
 class PacketMessageASCII : public PacketSend
 {
 public:
-	PacketMessageASCII(CClient* target, LPCTSTR pszText, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font);
+	PacketMessageASCII(const CClient* target, LPCTSTR pszText, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font);
 };
 
 /***************************************************************************
@@ -154,7 +154,7 @@ public:
 class PacketRemoveObject : public PacketSend
 {
 public:
-	PacketRemoveObject(CClient* target, CGrayUID uid);
+	PacketRemoveObject(const CClient* target, CGrayUID uid);
 };
 
 /***************************************************************************
@@ -167,7 +167,7 @@ public:
 class PacketPlayerPosition : public PacketSend
 {
 public:
-	PacketPlayerPosition(CClient* target);
+	PacketPlayerPosition(const CClient* target);
 };
 
 /***************************************************************************
@@ -180,7 +180,7 @@ public:
 class PacketMovementRej : public PacketSend
 {
 public:
-	PacketMovementRej(CClient* target, BYTE sequence);
+	PacketMovementRej(const CClient* target, BYTE sequence);
 };
 
 /***************************************************************************
@@ -193,7 +193,7 @@ public:
 class PacketMovementAck : public PacketSend
 {
 public:
-	PacketMovementAck(CClient* target);
+	PacketMovementAck(const CClient* target);
 };
 
 /***************************************************************************
@@ -222,7 +222,7 @@ private:
 	CGrayUID m_container;
 
 public:
-	PacketContainerOpen(CClient* target, const CObjBase* container, GUMP_TYPE gump);
+	PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump);
 
 	virtual bool onSend(const CClient* client);
 };
@@ -240,10 +240,10 @@ private:
 	CGrayUID m_item;
 
 public:
-	PacketItemContainer(CClient* target, const CItem* item);
+	PacketItemContainer(const CClient* target, const CItem* item);
 	PacketItemContainer(const CItem* spellbook, const CSpellDef* spell);
 
-	void completeForTarget(CClient* target, const CItem* spellbook);
+	void completeForTarget(const CClient* target, const CItem* spellbook);
 	virtual bool onSend(const CClient* client);
 };
 
@@ -257,7 +257,7 @@ public:
 class PacketKick : public PacketSend
 {
 public:
-	PacketKick(CClient* target);
+	PacketKick(const CClient* target);
 };
 
 /***************************************************************************
@@ -280,7 +280,7 @@ public:
 		Other = 0x05
 	};
 
-	PacketDragCancel(CClient* target, Reason code);
+	PacketDragCancel(const CClient* target, Reason code);
 };
 
 /***************************************************************************
@@ -293,7 +293,7 @@ public:
 class PacketDropAccepted : public PacketSend
 {
 public:
-	PacketDropAccepted(CClient* target);
+	PacketDropAccepted(const CClient* target);
 };
 
 /***************************************************************************
@@ -306,7 +306,7 @@ public:
 class PacketItemEquipped : public PacketSend
 {
 public:
-	PacketItemEquipped(CClient* target, const CItem* item);
+	PacketItemEquipped(const CClient* target, const CItem* item);
 };
 
 /***************************************************************************
@@ -319,7 +319,7 @@ public:
 class PacketSwing : public PacketSend
 {
 public:
-	PacketSwing(CClient* target, const CChar* defender);
+	PacketSwing(const CClient* target, const CChar* defender);
 };
 
 /***************************************************************************
@@ -332,7 +332,7 @@ public:
 class PacketSkills : public PacketSend
 {
 public:
-	PacketSkills(CClient* target, CChar* character, SKILL_TYPE skill);
+	PacketSkills(const CClient* target, const CChar* character, SKILL_TYPE skill);
 };
 
 /***************************************************************************
@@ -345,7 +345,7 @@ public:
 class PacketCloseVendor : public PacketSend
 {
 public:
-	PacketCloseVendor(CClient* target, const CChar* vendor);
+	PacketCloseVendor(const CClient* target, const CChar* vendor);
 };
 
 /***************************************************************************
@@ -363,8 +363,8 @@ private:
 
 public:
 	PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers); // standard content
-	PacketItemContents(CClient* target, const CItem* spellbook); // spellbook spells
-	PacketItemContents(CClient* target, const CItemContainer* spellbook); // custom spellbook spells
+	PacketItemContents(const CClient* target, const CItem* spellbook); // spellbook spells
+	PacketItemContents(const CClient* target, const CItemContainer* spellbook); // custom spellbook spells
 	virtual bool onSend(const CClient* client);
 };
 
@@ -378,7 +378,7 @@ public:
 class PacketGlobalLight : public PacketSend
 {
 public:
-	PacketGlobalLight(CClient* target, int light);
+	PacketGlobalLight(const CClient* target, int light);
 };
 
 /***************************************************************************
@@ -404,7 +404,7 @@ public:
 		InvalidName = 0x0A
 	};
 
-	PacketWarningMessage(CClient* target, Message code);
+	PacketWarningMessage(const CClient* target, Message code);
 };
 
 /***************************************************************************
@@ -417,7 +417,7 @@ public:
 class PacketPlaySound : public PacketSend
 {
 public:
-	PacketPlaySound(CClient* target, SOUND_TYPE sound, int flags, int volume, CPointMap pos);
+	PacketPlaySound(const CClient* target, SOUND_TYPE sound, int flags, int volume, const CPointMap& pos);
 };
 
 /***************************************************************************
@@ -430,7 +430,7 @@ public:
 class PacketRedrawAll : public PacketSend
 {
 public:
-	PacketRedrawAll(CClient* target);
+	PacketRedrawAll(const CClient* target);
 };
 
 /***************************************************************************
@@ -443,8 +443,8 @@ public:
 class PacketMapPlot : public PacketSend
 {
 public:
-	PacketMapPlot(CClient* target, CItem* map, MAPCMD_TYPE mode, bool edit);
-	PacketMapPlot(CItem* map, MAPCMD_TYPE mode, bool edit);
+	PacketMapPlot(const CClient* target, const CItem* map, MAPCMD_TYPE mode, bool edit);
+	PacketMapPlot(const CItem* map, MAPCMD_TYPE mode, bool edit);
 
 	void setPin(int x, int y);
 };
@@ -459,7 +459,7 @@ public:
 class PacketGameTime : public PacketSend
 {
 public:
-	PacketGameTime(CClient* target, int hours = 0, int minutes = 0, int seconds = 0);
+	PacketGameTime(const CClient* target, int hours = 0, int minutes = 0, int seconds = 0);
 };
 
 /***************************************************************************
@@ -472,7 +472,7 @@ public:
 class PacketWeather : public PacketSend
 {
 public:
-	PacketWeather(CClient* target, WEATHER_TYPE weather, int severity, int temperature);
+	PacketWeather(const CClient* target, WEATHER_TYPE weather, int severity, int temperature);
 };
 
 /***************************************************************************
@@ -488,7 +488,7 @@ protected:
 	int m_pages;
 
 public:
-	PacketBookPageContent(CClient* target, const CItem* book, int startpage, int pagecount = 1);
+	PacketBookPageContent(const CClient* target, const CItem* book, int startpage, int pagecount = 1);
 	void addPage(const CItem* book, int page);
 };
 
@@ -517,8 +517,8 @@ public:
 		Cancel = 0x03
 	};
 
-	PacketAddTarget(CClient* target, TargetType type, DWORD context, Flags flags);
-	PacketAddTarget(CClient* target, TargetType type, DWORD context, Flags flags, ITEMID_TYPE id);
+	PacketAddTarget(const CClient* target, TargetType type, DWORD context, Flags flags);
+	PacketAddTarget(const CClient* target, TargetType type, DWORD context, Flags flags, ITEMID_TYPE id);
 };
 
 /***************************************************************************
@@ -531,7 +531,7 @@ public:
 class PacketPlayMusic : public PacketSend
 {
 public:
-	PacketPlayMusic(CClient* target, WORD musicID);
+	PacketPlayMusic(const CClient* target, WORD musicID);
 };
 
 /***************************************************************************
@@ -544,7 +544,7 @@ public:
 class PacketAction : public PacketSend
 {
 public:
-	PacketAction(CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay);
+	PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay);
 };
 
 /***************************************************************************
@@ -574,8 +574,8 @@ public:
 class PacketEffect : public PacketSend
 {
 public:
-	PacketEffect(CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode);
-	PacketEffect(CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render);
+	PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode);
+	PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render);
 
 	void writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode);
 	void writeHuedEffect(DWORD hue, DWORD render);
@@ -591,8 +591,8 @@ public:
 class PacketBulletinBoard : public PacketSend
 {
 public:
-	PacketBulletinBoard(CClient* target, const CItemContainer* board);
-	PacketBulletinBoard(CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message);
+	PacketBulletinBoard(const CClient* target, const CItemContainer* board);
+	PacketBulletinBoard(const CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message);
 };
 
 /***************************************************************************
@@ -605,7 +605,7 @@ public:
 class PacketWarMode : public PacketSend
 {
 public:
-	PacketWarMode(CClient* target, const CChar* character);
+	PacketWarMode(const CClient* target, const CChar* character);
 };
 
 /***************************************************************************
@@ -618,7 +618,7 @@ public:
 class PacketPingAck : public PacketSend
 {
 public:
-	PacketPingAck(CClient* target, BYTE value = 0);
+	PacketPingAck(const CClient* target, BYTE value = 0);
 };
 
 /***************************************************************************
@@ -645,7 +645,7 @@ public:
 class PacketZoneChange : public PacketSend
 {
 public:
-	PacketZoneChange(CClient* target, const CPointMap& pos);
+	PacketZoneChange(const CClient* target, const CPointMap& pos);
 };
 
 /***************************************************************************
@@ -658,7 +658,7 @@ public:
 class PacketCharacterMove : public PacketSend
 {
 public:
-	PacketCharacterMove(CClient* target, const CChar* character, BYTE direction);
+	PacketCharacterMove(const CClient* target, const CChar* character, BYTE direction);
 };
 
 /***************************************************************************
@@ -689,7 +689,7 @@ public:
 class PacketDisplayMenu : public PacketSend
 {
 public:
-	PacketDisplayMenu(CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, CObjBase* object);
+	PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, const CObjBase* object);
 };
 
 /***************************************************************************
@@ -745,7 +745,7 @@ public:
 		Success = 0xFF  // no error
 	};
 
-	PacketLoginError(CClient* target, Reason reason);
+	PacketLoginError(const CClient* target, Reason reason);
 };
 
 /***************************************************************************
@@ -768,7 +768,7 @@ public:
 		Success      = 0xFF  // no error
 	};
 
-	PacketDeleteError(CClient* target, Reason reason);
+	PacketDeleteError(const CClient* target, Reason reason);
 };
 
 /***************************************************************************
@@ -794,7 +794,7 @@ public:
 class PacketPaperdoll : public PacketSend
 {
 public:
-	PacketPaperdoll(CClient* target, const CChar* character);
+	PacketPaperdoll(const CClient* target, const CChar* character);
 };
 
 /***************************************************************************
@@ -825,7 +825,7 @@ public:
 class PacketSignGump : public PacketSend
 {
 public:
-	PacketSignGump(CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text);
+	PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text);
 };
 
 /***************************************************************************
@@ -841,7 +841,7 @@ private:
 	DWORD m_customerId;
 
 public:
-	PacketServerRelay(CClient* target, DWORD ip, WORD port, DWORD customerId);
+	PacketServerRelay(const CClient* target, DWORD ip, WORD port, DWORD customerId);
 	virtual void onSent(CClient* client);
 };
 
@@ -855,7 +855,7 @@ public:
 class PacketDisplayMap : public PacketSend
 {
 public:
-	PacketDisplayMap(CClient* target, const CItemMap* map, const CRectMap& rect);
+	PacketDisplayMap(const CClient* target, const CItemMap* map, const CRectMap& rect);
 };
 
 /***************************************************************************
@@ -868,7 +868,7 @@ public:
 class PacketDisplayBook : public PacketSend
 {
 public:
-	PacketDisplayBook(CClient* target, CItem* book);
+	PacketDisplayBook(const CClient* target, CItem* book);
 };
 
 /***************************************************************************
@@ -881,7 +881,7 @@ public:
 class PacketShowDyeWindow : public PacketSend
 {
 public:
-	PacketShowDyeWindow(CClient* target, const CObjBase* object);
+	PacketShowDyeWindow(const CClient* target, const CObjBase* object);
 };
 
 /***************************************************************************
@@ -894,7 +894,7 @@ public:
 class PacketAllNamesResponse : public PacketSend
 {
 public:
-	PacketAllNamesResponse(CClient* target, const CObjBase* object);
+	PacketAllNamesResponse(const CClient* target, const CObjBase* object);
 };
 
 /***************************************************************************
@@ -908,7 +908,7 @@ public:
 class PacketAddPrompt : public PacketSend
 {
 public:
-	PacketAddPrompt(CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode);
+	PacketAddPrompt(const CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode);
 };
 
 /***************************************************************************
@@ -974,7 +974,7 @@ public:
 class PacketWebPage : public PacketSend
 {
 public:
-	PacketWebPage(CClient* target, LPCTSTR url);
+	PacketWebPage(const CClient* target, LPCTSTR url);
 };
 
 /***************************************************************************
@@ -987,7 +987,7 @@ public:
 class PacketOpenScroll : public PacketSend
 {
 public:
-	PacketOpenScroll(CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header);
+	PacketOpenScroll(const CClient* target, CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR header);
 };
 
 /***************************************************************************
@@ -1000,8 +1000,8 @@ public:
 class PacketServerList : public PacketSend
 {
 public:
-	PacketServerList(CClient* target);
-	void writeServerEntry(CServerRef server, int index, bool reverseIp);
+	PacketServerList(const CClient* target);
+	void writeServerEntry(const CServerRef& server, int index, bool reverseIp);
 };
 
 /***************************************************************************
@@ -1027,7 +1027,7 @@ public:
 class PacketAttack : public PacketSend
 {
 public:
-	PacketAttack(CClient* target, CGrayUID serial);
+	PacketAttack(const CClient* target, CGrayUID serial);
 };
 
 /***************************************************************************
@@ -1040,7 +1040,7 @@ public:
 class PacketGumpValueInput : public PacketSend
 {
 public:
-	PacketGumpValueInput(CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object);
+	PacketGumpValueInput(const CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object);
 };
 
 /***************************************************************************
@@ -1053,7 +1053,7 @@ public:
 class PacketMessageUNICODE : public PacketSend
 {
 public:
-	PacketMessageUNICODE(CClient* target, const NWORD* pszText, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID language);
+	PacketMessageUNICODE(const CClient* target, const NWORD* pszText, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID language);
 };
 
 /***************************************************************************
@@ -1081,7 +1081,7 @@ class PacketGumpDialog : public PacketSend
 {
 public:
 	PacketGumpDialog(int x, int y, CObjBase* object, DWORD context);
-	void writeControls(CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount);
+	void writeControls(const CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount);
 
 protected:
 	void writeCompressedControls(const CGString* controls, int controlCount, const CGString* texts, int textCount);
@@ -1098,7 +1098,7 @@ protected:
 class PacketChatMessage : public PacketSend
 {
 public:
-	PacketChatMessage(CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language);
+	PacketChatMessage(const CClient* target, CHATMSG_TYPE type, LPCTSTR param1, LPCTSTR param2, CLanguageID language);
 };
 
 /***************************************************************************
@@ -1111,7 +1111,7 @@ public:
 class PacketTooltip : public PacketSend
 {
 public:
-	PacketTooltip(CClient* target, const CObjBase* object, LPCTSTR text);
+	PacketTooltip(const CClient* target, const CObjBase* object, LPCTSTR text);
 };
 
 /***************************************************************************
@@ -1124,7 +1124,7 @@ public:
 class PacketProfile : public PacketSend
 {
 public:
-	PacketProfile(CClient* target, const CChar* character);
+	PacketProfile(const CClient* target, const CChar* character);
 };
 
 /***************************************************************************
@@ -1137,7 +1137,7 @@ public:
 class PacketEnableFeatures : public PacketSend
 {
 public:
-	PacketEnableFeatures(CClient* target, DWORD flags);
+	PacketEnableFeatures(const CClient* target, DWORD flags);
 };
 
 /***************************************************************************
@@ -1150,7 +1150,7 @@ public:
 class PacketArrowQuest : public PacketSend
 {
 public:
-	PacketArrowQuest(CClient* target, int x, int y);
+	PacketArrowQuest(const CClient* target, int x, int y);
 };
 
 /***************************************************************************
@@ -1163,7 +1163,7 @@ public:
 class PacketSeason : public PacketSend
 {
 public:
-	PacketSeason(CClient* target, SEASON_TYPE season, bool playMusic);
+	PacketSeason(const CClient* target, SEASON_TYPE season, bool playMusic);
 };
 
 /***************************************************************************
@@ -1189,7 +1189,7 @@ public:
 class PacketFastWalk : public PacketExtended
 {
 public:
-	PacketFastWalk(CClient* target, DWORD* codes, int count, int sendCount);
+	PacketFastWalk(const CClient* target, DWORD* codes, int count, int sendCount);
 };
 
 /***************************************************************************
@@ -1202,7 +1202,7 @@ public:
 class PacketGumpChange : public PacketExtended
 {
 public:
-	PacketGumpChange(CClient* target, DWORD context, int buttonId);
+	PacketGumpChange(const CClient* target, DWORD context, int buttonId);
 };
 
 /***************************************************************************
@@ -1267,7 +1267,7 @@ public:
 class PacketPartyInvite : public PacketParty
 {
 public:
-	PacketPartyInvite(CClient* target, const CChar* inviter);
+	PacketPartyInvite(const CClient* target, const CChar* inviter);
 };
 
 /***************************************************************************
@@ -1280,7 +1280,7 @@ public:
 class PacketMapChange : public PacketExtended
 {
 public:
-	PacketMapChange(CClient* target, int map);
+	PacketMapChange(const CClient* target, int map);
 };
 
 /***************************************************************************
@@ -1296,7 +1296,7 @@ protected:
 	CGrayUID m_object;
 
 public:
-	PacketPropertyListVersionOld(CClient* target, const CObjBase* object, DWORD version);
+	PacketPropertyListVersionOld(const CClient* target, const CObjBase* object, DWORD version);
 	virtual bool onSend(const CClient* client);
 };
 
@@ -1314,7 +1314,7 @@ private:
 	int m_popupCount;
 
 public:
-	PacketDisplayPopup(CClient* target, CGrayUID uid);
+	PacketDisplayPopup(const CClient* target, CGrayUID uid);
 
 	void addOption(WORD entryTag, WORD textId, WORD flags, WORD color);
 	void finalise(void);
@@ -1335,7 +1335,7 @@ public:
 class PacketEnableMapDiffs : public PacketExtended
 {
 public:
-	PacketEnableMapDiffs(CClient* target);
+	PacketEnableMapDiffs(const CClient* target);
 };
 
 /***************************************************************************
@@ -1348,7 +1348,7 @@ public:
 class PacketStatLocks : public PacketExtended
 {
 public:
-	PacketStatLocks(CClient* target, const CChar* character);
+	PacketStatLocks(const CClient* target, const CChar* character);
 };
 
 /***************************************************************************
@@ -1361,7 +1361,7 @@ public:
 class PacketSpellbookContent : public PacketExtended
 {
 public:
-	PacketSpellbookContent(CClient* target, const CItem* spellbook, WORD offset);
+	PacketSpellbookContent(const CClient* target, const CItem* spellbook, WORD offset);
 };
 
 /***************************************************************************
@@ -1374,7 +1374,7 @@ public:
 class PacketHouseDesignVersion : public PacketExtended
 {
 public:
-	PacketHouseDesignVersion(CClient* target, const CItemMultiCustom* house);
+	PacketHouseDesignVersion(const CClient* target, const CItemMultiCustom* house);
 };
 
 /***************************************************************************
@@ -1387,7 +1387,7 @@ public:
 class PacketHouseBeginCustomise : public PacketExtended
 {
 public:
-	PacketHouseBeginCustomise(CClient* target, const CItemMultiCustom* house);
+	PacketHouseBeginCustomise(const CClient* target, const CItemMultiCustom* house);
 };
 
 /***************************************************************************
@@ -1400,7 +1400,7 @@ public:
 class PacketHouseEndCustomise : public PacketExtended
 {
 public:
-	PacketHouseEndCustomise(CClient* target, const CItemMultiCustom* house);
+	PacketHouseEndCustomise(const CClient* target, const CItemMultiCustom* house);
 };
 
 /***************************************************************************
@@ -1413,7 +1413,7 @@ public:
 class PacketCombatDamageOld : public PacketExtended
 {
 public:
-	PacketCombatDamageOld(CClient* target, DWORD damage, CGrayUID defender);
+	PacketCombatDamageOld(const CClient* target, DWORD damage, CGrayUID defender);
 };
 
 /***************************************************************************
@@ -1426,7 +1426,7 @@ public:
 class PacketSpeedMode : public PacketExtended
 {
 public:
-	PacketSpeedMode(CClient* target, BYTE mode);
+	PacketSpeedMode(const CClient* target, BYTE mode);
 };
 
 /***************************************************************************
@@ -1439,7 +1439,7 @@ public:
 class PacketMessageLocalised : public PacketSend
 {
 public:
-	PacketMessageLocalised(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args);
+	PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args);
 };
 
 /***************************************************************************
@@ -1452,7 +1452,7 @@ public:
 class PacketVisualRange : public PacketSend
 {
 public:
-	PacketVisualRange(CClient* target, BYTE range);
+	PacketVisualRange(const CClient* target, BYTE range);
 };
 
 /***************************************************************************
@@ -1465,7 +1465,7 @@ public:
 class PacketMessageLocalisedEx : public PacketSend
 {
 public:
-	PacketMessageLocalisedEx(CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args);
+	PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args);
 };
 
 /***************************************************************************
@@ -1478,7 +1478,7 @@ public:
 class PacketLogoutAck : public PacketSend
 {
 public:
-	PacketLogoutAck(CClient* target);
+	PacketLogoutAck(const CClient* target);
 };
 
 /***************************************************************************
@@ -1498,7 +1498,7 @@ protected:
 
 public:
 	PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip*>* data);
-	PacketPropertyList(CClient* target, const PacketPropertyList* other);
+	PacketPropertyList(const CClient* target, const PacketPropertyList* other);
 	virtual bool onSend(const CClient* client);
 
 	CGrayUID getObject(void) const { return m_object; }
@@ -1565,7 +1565,7 @@ protected:
 	CGrayUID m_object;
 
 public:
-	PacketPropertyListVersion(CClient* target, const CObjBase* object, DWORD version);
+	PacketPropertyListVersion(const CClient* target, const CObjBase* object, DWORD version);
 	virtual bool onSend(const CClient* client);
 };
 
@@ -1579,8 +1579,8 @@ public:
 class PacketBuff : public PacketSend
 {
 public:
-	PacketBuff(CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount); // add buff
-	PacketBuff(CClient* target, const WORD iconId); // remove buff
+	PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount); // add buff
+	PacketBuff(const CClient* target, const WORD iconId); // remove buff
 };
 
 /***************************************************************************
@@ -1593,7 +1593,7 @@ public:
 class PacketKREncryption : public PacketSend
 {
 public:
-	PacketKREncryption(CClient* target);
+	PacketKREncryption(const CClient* target);
 };
 
 /***************************************************************************
@@ -1606,7 +1606,7 @@ public:
 class PacketToggleHotbar : public PacketSend
 {
 public:
-	PacketToggleHotbar(CClient* target, bool enable);
+	PacketToggleHotbar(const CClient* target, bool enable);
 };
 
 /***************************************************************************
@@ -1625,7 +1625,7 @@ public:
 		Multi = 0x2
 	};
 
-	PacketItemWorldNew(CClient* target, CItem* item);
+	PacketItemWorldNew(const CClient* target, CItem* item);
 };
 
 /***************************************************************************
@@ -1638,7 +1638,7 @@ public:
 class PacketDisplayMapNew : public PacketSend
 {
 public:
-	PacketDisplayMapNew(CClient* target, const CItemMap* map, const CRectMap& rect);
+	PacketDisplayMapNew(const CClient* target, const CItemMap* map, const CRectMap& rect);
 };
 
 #endif
