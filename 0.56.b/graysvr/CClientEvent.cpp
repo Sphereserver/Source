@@ -1938,25 +1938,22 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 		if ( mMode == 13 || mMode == 14 )
 			return;
 
-		if ( IsSetEF(EF_UNICODE) )
+		if ( g_Cfg.m_fSuppressCapitals )
 		{
-			if ( g_Cfg.m_fSuppressCapitals )
-			{
-				int chars = strlen(szText);
-				int capitals = 0;
-				int i = 0;
-				for ( i = 0; i < chars; i++ )
+			int chars = strlen(szText);
+			int capitals = 0;
+			int i = 0;
+			for ( i = 0; i < chars; i++ )
+				if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
+					capitals++;
+
+			if (( chars > 5 ) && ((( capitals * 100 )/chars) > 75 ))
+			{							// 80% of chars are in capital letters. lowercase it
+				for ( i = 1; i < chars; i++ )				// instead of the 1st char
 					if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
-						capitals++;
+						szText[i] += 0x20;
 
-				if (( chars > 5 ) && ((( capitals * 100 )/chars) > 75 ))
-				{							// 80% of chars are in capital letters. lowercase it
-					for ( i = 1; i < chars; i++ )				// instead of the 1st char
-						if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
-							szText[i] += 0x20;
-
-					CvtSystemToNUNICODE(wszText, COUNTOF(wszText), szText, chars);
-				}
+				CvtSystemToNUNICODE(wszText, COUNTOF(wszText), szText, chars);
 			}
 		}
 

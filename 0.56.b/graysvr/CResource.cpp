@@ -3348,7 +3348,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		zExperimentalFlags[0] = 0;
 
 		if ( IsSetEF(EF_DiagonalWalkCheck) ) catresname(zExperimentalFlags, "DiagonalWalkCheck");
-		if ( IsSetEF(EF_UNICODE) ) catresname(zExperimentalFlags, "Unicode");
 		if ( IsSetEF(EF_New_Triggers) ) catresname(zExperimentalFlags, "NewTriggersEnable");
 		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
