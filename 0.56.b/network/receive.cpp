@@ -226,13 +226,13 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 	if (net->isClientVersion(MINCLIVER_CHECKWALKCODE))
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
-	// check sequence
-	if (canMoveThere == TRIGRET_RET_TRUE && net->m_sequence == 0 && sequence != 0)
-		canMoveThere = TRIGRET_RET_FALSE;
+// check sequence
+//	if (canMoveThere == TRIGRET_RET_TRUE && net->m_sequence == 0 && sequence != 0)
+//		canMoveThere = TRIGRET_RET_FALSE;
 
-// old sequence check
-//	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
-//		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
+// check sequence (old method)
+	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
+		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
 
 	// perform movement
 	if (canMoveThere == TRIGRET_RET_TRUE)
