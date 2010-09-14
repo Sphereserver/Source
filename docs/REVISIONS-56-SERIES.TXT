@@ -4891,3 +4891,6 @@ ALPHA additions:
 
 13-09-2010, MrSugarCube
 - Removed: EF_Unicode; its behaviour is always enabled.
+
+14-09-2010, MrSugarCube
+- Fixed #1744: Desynchronisation of players' position between client and server.
