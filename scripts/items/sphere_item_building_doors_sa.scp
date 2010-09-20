@@ -1,0 +1,420 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2010
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Monday, September 4, 2010
+// CREATED BY: Khaos
+VERSION=0.56b
+
+//SA Wall Set 1
+[Itemdef 041CF]
+Defname=i_sa_door_ws1
+Type=t_door
+Dupelist=041D1,041D3,041D5
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Wall Set 1)
+
+[Itemdef 041D1]
+Dupeitem=041CF
+
+[Itemdef 041D3]
+Dupeitem=041CF
+
+[Itemdef 041D5]
+Dupeitem=041CF
+
+[Itemdef 041D0]
+Type=t_door_open
+Dupelist=041D2,041D4,041D6
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Wall Set 1)
+
+[Itemdef 041D2]
+Dupeitem=041D0
+
+[Itemdef 041D4]
+Dupeitem=041D0
+
+[Itemdef 041D6]
+Dupeitem=041D0
+
+
+//SA Door Wall Set 2
+[Itemdef 041C2]
+Defname=i_sa_door_ws2
+Type=t_door
+Dupelist=041C4,041C6,041C8
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Wall Set 2)
+
+[Itemdef 041C4]
+Dupeitem=041C2
+
+[Itemdef 041C6]
+Dupeitem=041C2
+
+[Itemdef 041C8]
+Dupeitem=041C2
+
+[Itemdef 041C3]
+Type=t_door_open
+Dupelist=041C5,041C7,041C9
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Wall Set 2)
+
+[Itemdef 041C5]
+Dupeitem=041C3
+
+[Itemdef 041C7]
+Dupeitem=041C3
+
+[Itemdef 041C9]
+Dupeitem=041C3
+
+
+//SA Door from Wall Set 3
+[Itemdef 0409B]
+Defname=i_sa_door_ws3
+Type=t_door
+Dupelist=0409D,0409F,040A1
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Wall Set 3)
+
+[Itemdef 0409D]
+Dupeitem=0409B
+
+[Itemdef 0409F]
+Dupeitem=0409B
+
+[Itemdef 040A1]
+Dupeitem=0409B
+
+[Itemdef 0409C]
+Type=t_door_open
+Dupelist=0409E,040A0,040A3
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Wall Set 3)
+
+[Itemdef 0409E]
+Dupeitem=0409C
+
+[Itemdef 040A0]
+Dupeitem=0409C
+
+[Itemdef 040A3]
+Dupeitem=0409C
+
+
+//SA Gargoyle Doors
+[Itemdef 0410C]
+Defname=i_sa_door_gd
+Type=t_door
+Dupelist=0410E,04110,04112
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Gargoyle)
+
+[Itemdef 0410E]
+Dupeitem=0410C
+
+[Itemdef 04110]
+Dupeitem=0410C
+
+[Itemdef 04112]
+Dupeitem=0410C
+
+[Itemdef 0410D]
+Type=t_door_open
+Dupelist=0410F,04111,04113
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Gargoyle)
+
+[Itemdef 0410F]
+Dupeitem=0410D
+
+[Itemdef 04111]
+Dupeitem=0410D
+
+[Itemdef 04113]
+Dupeitem=0410D
+
+
+//SA Barred Doors
+[Itemdef 05142]
+Defname=i_sa_door_barred
+Type=t_door
+Dupelist=05144,05146,05148
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Barred)
+
+[Itemdef 05144]
+Dupeitem=05142
+
+[Itemdef 05146]
+Dupeitem=05142
+
+[Itemdef 05148]
+Dupeitem=05142
+
+[Itemdef 05143]
+Type=t_door_open
+Dupelist=05145,05147,05149
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Barred)
+
+[Itemdef 05145]
+Dupeitem=05143
+
+[Itemdef 05147]
+Dupeitem=05143
+
+[Itemdef 05149]
+Dupeitem=05143
+
+
+//SA Doors Queen HUGE
+[Itemdef 04D1A]
+Defname=i_sa_door_qdh
+Type=t_door
+Dupelist=04D1C,04d1E,04D20
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Queen Doors, Huge)
+
+[Itemdef 04D1C]
+Dupeitem=04D1A
+
+[Itemdef 04D1E]
+Dupeitem=04D1A
+
+[Itemdef 04D20]
+Dupeitem=04D1A
+
+[Itemdef 04D1B]
+Type=t_door_open
+Dupelist=04D1D,04D1F,04D21
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Queen Doors, Huge)
+
+[Itemdef 04D1D]
+Dupeitem=04D1B
+
+[Itemdef 04D1F]
+Dupeitem=04D1B
+
+[Itemdef 04D21]
+Dupeitem=04D1B
+
+
+//SA Doors Queen Normal
+[Itemdef 04D22]
+Defname=i_sa_door_qd
+Type=t_door
+Dupelist=04D24,04D26,04D28
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Queen Doors)
+
+[Itemdef 04D24]
+Dupeitem=04D22
+
+[Itemdef 04D26]
+Dupeitem=04D22
+
+[Itemdef 04D28]
+Dupeitem=04D22
+
+[Itemdef 04D23]
+Type=t_door_open
+Dupelist=04D25,04D27,04D29
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Queen Doors)
+
+[Itemdef 04D25]
+Dupeitem=04D23
+
+[Itemdef 04D27]
+Dupeitem=04D23
+
+[Itemdef 04D29]
+Dupeitem=04D23
+
+
+//SA Door Misc 1
+[Itemdef 0436E]
+Defname=i_sa_door_m1
+Type=t_door
+Dupelist=04370,04376,04378
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Miscellaneous 1)
+
+[Itemdef 04370]
+Dupeitem=0436E
+
+[Itemdef 04376]
+Dupeitem=0436E
+
+[Itemdef 04378]
+Dupeitem=0436E
+
+[Itemdef 0436F]
+Type=t_door_open
+Dupelist=04371,04377,04379
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Miscellaneous 1)
+
+[Itemdef 04371]
+Dupeitem=0436F
+
+[Itemdef 04377]
+Dupeitem=0436F
+
+[Itemdef 04379]
+Dupeitem=0436F
+
+
+//SA Door Misc 2
+[Itemdef 04372]
+Defname=i_sa_door_m2
+Type=t_door
+Dupelist=04374,0437A,0437C
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Miscellaneous 2)
+
+[Itemdef 04374]
+Dupeitem=04372
+
+[Itemdef 0437A]
+Dupeitem=04372
+
+[Itemdef 0437C]
+Dupeitem=04372
+
+[Itemdef 04373]
+Type=t_door_open
+Dupelist=04375,0437B,0437D
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Miscellaneous 2)
+
+[Itemdef 04375]
+Dupeitem=04373
+
+[Itemdef 0437B]
+Dupeitem=04373
+
+[Itemdef 0437D]
+Dupeitem=04373
+
+
+//SA Door Misc 3
+[Itemdef 050C8]
+Defname=i_sa_door_m3
+Type=t_door
+Dupelist=050CA,050CC,050CE
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Miscellaneous 3)
+
+[Itemdef 050CA]
+Dupeitem=050C8
+
+[Itemdef 050CC]
+Dupeitem=050C8
+
+[Itemdef 050CE]
+Dupeitem=050C8
+
+[Itemdef 050C9]
+Type=t_door_open
+Dupelist=050CB,050CD,050CF
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Miscellaneous 3)
+
+[Itemdef 050CB]
+Dupeitem=050C9
+
+[Itemdef 050CD]
+Dupeitem=050C9
+
+[Itemdef 050CF]
+Dupeitem=050C9
+
+
+//SA Door Misc 4
+[Itemdef 050D0]
+Defname=i_sa_door_m4
+Type=t_door
+Dupelist=050D2,050D4,050D6
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Miscellaneous 4)
+
+[Itemdef 050D2]
+Dupeitem=050D0
+
+[Itemdef 050D4]
+Dupeitem=050D0
+
+[Itemdef 050D6]
+Dupeitem=050D0
+
+[Itemdef 050D1]
+Type=t_door_open
+Dupelist=050D3,050D5,050D7
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Miscellaneous 4)
+
+[Itemdef 050D3]
+Dupeitem=050D1
+
+[Itemdef 050D5]
+Dupeitem=050D1
+
+[Itemdef 050D7]
+Dupeitem=050D1
+
+[EOF]

@@ -18,6 +18,19 @@ TYPE=t_hoverover
 // hover over (sparkle)
 [ITEMDEF 05683]
 TYPE=t_hoverover
+Dupelist=05684,05685,05686
+
+[ITEMDEF 05684]
+// sparkle
+Dupeitem=05683
+
+[ITEMDEF 05685]
+// sparkle
+Dupeitem=05683
+
+[ITEMDEF 05686]
+// sparkle
+Dupeitem=05683
 
 // hover over (hidden)
 [ITEMDEF 05690]
