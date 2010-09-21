@@ -417,4 +417,40 @@ Dupeitem=050D1
 [Itemdef 050D7]
 Dupeitem=050D1
 
+//SA Wall Set 1
+[Itemdef 046DD]
+Defname=i_sa_door_rd
+Type=t_door
+Dupelist=046DF,046E1,046E3
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors (Ruined)
+
+[Itemdef 046DF]
+Dupeitem=046DD
+
+[Itemdef 046E1]
+Dupeitem=046DD
+
+[Itemdef 046E3]
+Dupeitem=046DD
+
+[Itemdef 046DE]
+Type=t_door_open
+Dupelist=046E0,046E2,046E4
+
+Category=Buildings - Doors
+Subsection=Stygian Abyss
+Description=Doors, Open (Ruined)
+
+[Itemdef 046E0]
+Dupeitem=046DE
+
+[Itemdef 046E2]
+Dupeitem=046DE
+
+[Itemdef 046E4]
+Dupeitem=046DE
+
 [EOF]
