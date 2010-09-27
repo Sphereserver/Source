@@ -4909,5 +4909,7 @@ ALPHA additions:
 - Updated: sphere_item_building_doors_sa.scp (added in ruined doors (Should be the last set))
 
 27-09-2010, MrSugarCube
+- Fixed #1819: "World save has been initiated" messages not being sent until after the save
+  completes.
 - Fixed: Large packets sent by the client sometimes not parsed correctly, leading to strange
   behaviours or console errors.

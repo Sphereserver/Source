@@ -293,6 +293,7 @@ public:
 	void scheduleOnce(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent MOVING it to the list
 	void scheduleOnce(PacketTransaction* transaction); // schedule a transaction to be sent
 
+	void flushAll(void); // forces immediate send of all packets for all clients
 	void flush(CClient* client); // forces immediate send of all packets
 
 protected:

@@ -1470,7 +1470,7 @@ void NetworkOut::tick(void)
 	ADDTOCALLSTACK("NetworkOut::tick");
 	ProfileTask networkTask(PROFILE_NETWORK_TX);
 
-	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode != SERVMODE_Run)
+	if (g_Serv.m_iExitFlag || g_Serv.m_iModeCode == SERVMODE_Exiting)
 	{
 		setPriority(IThread::Highest);
 		return;
@@ -1622,6 +1622,15 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 #endif
 
 	state->m_queue[priority].push(transaction);
+}
+
+void NetworkOut::flushAll(void)
+{
+	ADDTOCALLSTACK("NetworkOut::flushAll");
+
+	SafeClientIterator clients;
+	while (CClient* client = clients.next(true))
+		flush(client);
 }
 
 void NetworkOut::flush(CClient* client)
