@@ -4896,13 +4896,18 @@ ALPHA additions:
 - Fixed #1744,#1752: Desynchronisation of players' position between client and server.
 
 20-09-2010, Khaos (Script pack)
-- Modified/fixed: sphere_item_provisions_armor_sa.scp; added layers to
-the wearable armor -shields. Skirts were being treated as gloves.
-- Modified: sphere_item_ground_tiles_sa.scp; added the sparkle
-dupeitems for the hover over animation.
-- Added: sphere_item_building_floors_sa.scp; contains all the new SA
-floor tiles, even the runed items.
-- Added: sphere_item_building_doors_sa.scp; this file contains all the proper doors for the SA expansion.
+- Updated: sphere_item_provisions_armor_sa.scp (added layers to the wearable armor -shields.
+  Skirts were being treated as gloves)
+- Updated: sphere_item_ground_tiles_sa.scp (added the sparkle dupeitems for the hover over 
+  animation)
+- Added: sphere_item_building_floors_sa.scp (contains all the new SA floor tiles, even the
+  runed items)
+- Added: sphere_item_building_doors_sa.scp (this file contains all the proper doors for the
+  SA expansion)
 
 21-09-2010, Khaos (Script pack)
-- Modified: sphere_item_building_doors_sa.scp; added in ruined doors (Should be the last set).
+- Updated: sphere_item_building_doors_sa.scp (added in ruined doors (Should be the last set))
+
+27-09-2010, MrSugarCube
+- Fixed: Large packets sent by the client sometimes not parsed correctly, leading to strange
+  behaviours or console errors.

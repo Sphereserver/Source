@@ -379,7 +379,7 @@ long PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 	ADDTOCALLSTACK("PacketItemDropReq::getExpectedLength");
 
 	// different size depending on client
-	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR()))
+	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA()))
 		return 15;
 
 	return 14;
@@ -395,7 +395,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 	BYTE z = readByte();
 
 	BYTE grid(0);
-	if (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR())
+	if (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA())
 		grid = readByte();
 
 	CGrayUID container(readInt32());
@@ -952,7 +952,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	WORD lineCount = readInt16();
 	if (lineCount == 0xFFFF || getLength() <= 0x0D)
 	{
-		client->addBookPage(book, page); // just a request for a page
+		client->addBookPage(book, page, 1); // just a request for a page
 		return true;
 	}
 
@@ -1645,6 +1645,7 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 	net->getClient()->Event_Book_Title(bookSerial, title, author);
 	return true;
 }
+
 
 /***************************************************************************
  *
@@ -3207,6 +3208,41 @@ bool PacketLogout::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketLogout::onReceive");
 
 	new PacketLogoutAck(net->getClient());
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xD4 : PacketBookHeaderEditNew	edit book header (title/author)
+ *
+ *
+ ***************************************************************************/
+PacketBookHeaderEditNew::PacketBookHeaderEditNew() : Packet(-1)
+{
+}
+
+bool PacketBookHeaderEditNew::onReceive(NetState* net)
+{
+	ADDTOCALLSTACK("PacketBookHeaderEditNew::onReceive");
+
+	skip(2); // length
+	CGrayUID bookSerial(readInt32());
+	skip(1); // unknown
+	skip(1); // writable
+	skip(2); // pages
+
+	TCHAR title[2 * MAX_NAME_SIZE];
+	TCHAR author[MAX_NAME_SIZE];
+
+	int titleLength = readInt16();
+	readStringASCII(title, minimum(titleLength, COUNTOF(title)));
+
+	int authorLength = readInt16();
+	readStringASCII(author, minimum(authorLength, COUNTOF(author)));
+
+	net->getClient()->Event_Book_Title(bookSerial, title, author);
 	return true;
 }
 

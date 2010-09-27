@@ -1484,6 +1484,19 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xD4 : PacketDisplayBookNew		display book (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketDisplayBookNew : public PacketSend
+{
+public:
+	PacketDisplayBookNew(const CClient* target, CItem* book);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xD6 : PacketPropertyList		property (tool tip) for objects (IDLE)
  *
  *

@@ -726,7 +726,7 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 		writeByte(item->GetContainedGridIndex());
 
 	writeInt32(container->GetUID());
@@ -751,11 +751,12 @@ PacketItemContainer::PacketItemContainer(const CItem* spellbook, const CSpellDef
 void PacketItemContainer::completeForTarget(const CClient* target, const CItem* spellbook)
 {
 	ADDTOCALLSTACK("PacketItemContainer::completeForTarget");
+	
+	bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 
 	if (getLength() >= 20)
 	{
 		// only append the additional information if it needs to be changed
-		bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
 		bool containsGrid = getLength() == 21;
 		if (shouldIncludeGrid == containsGrid)
 			return;
@@ -763,7 +764,7 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 
 	seek(14);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR())
+	if (shouldIncludeGrid)
 		writeByte(0);
 
 	writeInt32(spellbook->GetUID());
@@ -969,7 +970,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 	const CChar* viewer = target->GetChar();
 	const CItemBase* itemDefinition;
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 
 	initLength();
 	skip(2);
@@ -1079,7 +1080,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(2)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 
 	initLength();
 	skip(2);
@@ -1116,7 +1117,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(3)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 	const CSpellDef* spellDefinition;
 
 	initLength();
@@ -2997,7 +2998,7 @@ void PacketGumpDialog::writeControls(const CClient* target, const CGString* cont
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
 	const NetState* net = target->GetNetState();
-	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR())
+	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR() || net->isClientSA())
 		writeCompressedControls(controls, controlCount, texts, textCount);
 	else
 		writeStandardControls(controls, controlCount, texts, textCount);
@@ -3861,6 +3862,78 @@ PacketLogoutAck::PacketLogoutAck(const CClient* target) : PacketSend(XCMD_Logout
 	ADDTOCALLSTACK("PacketLogoutAck::PacketLogoutAck");
 
 	writeByte(1);
+	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xD4 : PacketDisplayBookNew		display book  (LOW)
+ *
+ *
+ ***************************************************************************/
+PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) : PacketSend(XCMD_AOSBookPage, 17, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketDisplayBookNew::PacketDisplayBookNew");
+
+	bool isWritable = false;
+	int pages = 0;
+	CGString title;
+	CGString author;
+
+	if (book->IsBookSystem())
+	{
+		isWritable = false;
+
+		CResourceLock s;
+		if (g_Cfg.ResourceLock(s, book->m_itBook.m_ResID))
+		{
+			while (s.ReadKeyParse())
+			{
+				switch (FindTableSorted(s.GetKey(), CItemMessage::sm_szLoadKeys, COUNTOF(CItemMessage::sm_szLoadKeys )-1))
+				{
+					case CIC_AUTHOR:
+						author = s.GetArgStr();
+						break;
+					case CIC_PAGES:
+						pages = s.GetArgVal();
+						break;
+					case CIC_TITLE:
+						title = s.GetArgStr();
+						break;
+				}
+			}
+		}
+
+		// make sure book is named
+		if (title.IsEmpty() == false)
+			book->SetName((LPCTSTR)title);
+	}
+	else
+	{
+		// user written book
+		const CItemMessage* message = dynamic_cast<const CItemMessage*>(book);
+		if (message != NULL)
+		{
+			isWritable = message->IsBookWritable();
+			pages = isWritable? MAX_BOOK_PAGES : message->GetPageCount();
+			title = message->GetName();
+			author = message->m_sAuthor.IsEmpty()? g_Cfg.GetDefaultMsg(DEFMSG_BOOK_AUTHOR_UNKNOWN) : (LPCTSTR)message->m_sAuthor;
+		}
+	}
+
+
+	initLength();
+	writeInt32(book->GetUID());
+	writeByte(0x01);
+	writeBool(isWritable);
+	writeInt16(pages);
+	writeInt16(title.GetLength() + 1);
+	writeStringFixedASCII(title.GetPtr(), title.GetLength() + 1);
+	writeInt16(author.GetLength() + 1);
+	writeStringFixedASCII(author.GetPtr(), author.GetLength() + 1);
+
 	push(target);
 }
 

@@ -1002,6 +1002,20 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xD4 : PacketBookHeaderEditNew		edit book header (title/author)
+ *
+ *
+ ***************************************************************************/
+class PacketBookHeaderEditNew : public Packet
+{
+public:
+	PacketBookHeaderEditNew();
+	virtual bool onReceive(NetState* net);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xD6 : PacketAOSTooltipReq				aos tooltip request
  *
  *

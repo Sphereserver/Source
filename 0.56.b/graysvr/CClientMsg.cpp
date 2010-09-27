@@ -1278,6 +1278,7 @@ bool CClient::addBookOpen( CItem * pBook )
 		return false;
 
 	int iPagesNow = 0;
+	bool bNewPacket = GetNetState()->isClientVersion(MINCLIVER_NEWBOOK) || GetNetState()->isClientKR() || GetNetState()->isClientSA();
 
 	if (pBook->IsBookSystem() == false)
 	{
@@ -1290,7 +1291,10 @@ bool CClient::addBookOpen( CItem * pBook )
 			iPagesNow = pMsgItem->GetPageCount(); // for some reason we must send them now
 	}
 
-	PacketDisplayBook* cmd = new PacketDisplayBook(this, pBook);
+	if (bNewPacket)
+		new PacketDisplayBookNew(this, pBook);
+	else
+		new PacketDisplayBook(this, pBook);
 
 	// We could just send all the pages now if we want.
 	if (iPagesNow)

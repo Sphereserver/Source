@@ -985,6 +985,7 @@ enum NOTO_TYPE
 #define MINCLIVER_STATLOCKS			0x400010	// minimum client to receive 0xBF.0x19.0x02 packet
 #define MINCLIVER_TOOLTIPHASH		0x400050	// minimum client to receive 0xDC packet
 #define MINCLIVER_NEWDAMAGE			0x400070	// minimum client to receive 0x0B packet
+#define MINCLIVER_NEWBOOK			0x500000	// minimum client to receive 0xD4 packet
 #define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive 0xDD packet
 #define MINCLIVER_BUFFS				0x500030	// minimum client to receive buff packets
 #define MINCLIVER_NEWMAPDISPLAY		0x700080	// minimum client to receive 0xF5 packet
@@ -1703,6 +1704,20 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_Cmd;		// 0=0xD1
 			BYTE m_unk;	// always 1
 		} LogoutStatus;
+
+		struct // size = 17+var // Get a change to the book title.
+		{
+			BYTE m_Cmd;			// 0 = 0xD4
+			NWORD m_len;		// 1-2 = length
+			NDWORD m_UID;		// 3-6 = book
+			BYTE m_unk1;		// 7 = 0x00
+			BYTE m_writable;	// 8 = 0 = non writable, 1 = writable
+			NWORD m_pages;		// 9-10 = number of pages
+			NWORD m_titlelen;	// 11-12 = title length
+			char m_title[1];	// 13 - = title
+			NWORD m_authorlen;	// = author length
+			char m_author[1];	// = author
+		} BookOpenNew;
 		
 		struct	// sizeof = 268 // Spy2.
 		{
@@ -2976,6 +2991,20 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;		// 0=0xD1
 			BYTE m_unk;	// always 1
 		} LogoutStatus;
+
+		struct // size = 17+var // Get a change to the book title.
+		{
+			BYTE m_Cmd;			// 0 = 0xD4
+			NWORD m_len;		// 1-2 = length
+			NDWORD m_UID;		// 3-6 = book
+			BYTE m_unk1;		// 7 = 0x01
+			BYTE m_writable;	// 8 = 0 = non writable, 1 = writable
+			NWORD m_pages;		// 9-10 = number of pages
+			NWORD m_titlelen;	// 11-12 = title length
+			char m_title[1];	// 13 - = title
+			NWORD m_authorlen;	// = author length
+			char m_author[1];	// = author
+		} BookOpenNew;
 		
 		struct
 		{

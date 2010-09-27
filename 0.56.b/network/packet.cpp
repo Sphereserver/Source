@@ -185,7 +185,7 @@ void Packet::writeByte(const BYTE value)
 void Packet::writeData(const BYTE* buffer, long size)
 {
 	if ((m_position + (sizeof(BYTE) * size)) > m_bufferSize)
-		expand((sizeof(BYTE) * size) + 1);
+		expand((sizeof(BYTE) * size));
 
 	memcpy(&m_buffer[m_position], buffer, sizeof(BYTE) * size);
 	m_position += size;
@@ -975,13 +975,9 @@ long Packet::checkLength(NetState* client, Packet* packet)
 {
 	long packetLength = getExpectedLength(client, packet);
 
-	if (packetLength > 0)
+	if (packetLength < 0)
 	{
-		if (packet->getLength() < packetLength)
-			return 0;
-	}
-	else
-	{
+		// dynamic length
 		if (packet->getLength() < 3)
 			return 0;
 
@@ -993,6 +989,9 @@ long Packet::checkLength(NetState* client, Packet* packet)
 		if ( packetLength < 3 )
 			return 0;
 	}
+
+	if (packet->getLength() < packetLength)
+		return 0;
 
 	return packetLength;
 }

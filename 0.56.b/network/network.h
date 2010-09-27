@@ -82,7 +82,8 @@ protected:
 	PacketTransaction* m_currentTransaction; // transaction currently being processed
 	ExtendedPacketTransaction* m_pendingTransaction; // transaction being built
 
-	int m_packetExceptions;
+	int m_packetExceptions; // number of packet exceptions
+	Packet* m_receiveBuffer; // buffer for received data
 
 public:
 	GAMECLIENT_TYPE m_clientType; // type of client

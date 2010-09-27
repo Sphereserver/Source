@@ -80,7 +80,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_currentTransaction(NULL), m_pendingTransaction(NULL), m_packetExceptions(0), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
+NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_currentTransaction(NULL), m_pendingTransaction(NULL), m_packetExceptions(0), m_receiveBuffer(NULL), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
 {
 	clear();
 }
@@ -152,6 +152,12 @@ void NetState::clear(void)
 	{
 		delete m_pendingTransaction;
 		m_pendingTransaction = NULL;
+	}
+
+	if (m_receiveBuffer != NULL)
+	{
+		delete m_receiveBuffer;
+		m_receiveBuffer = NULL;
 	}
 
 	m_sequence = 0;
@@ -555,6 +561,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_ViewRange, new PacketViewRange());						//
 	registerPacket(XCMD_ConfigFile, new PacketUnknown(-1));						//
 	registerPacket(XCMD_LogoutStatus, new PacketLogout());						//
+	registerPacket(XCMD_AOSBookPage, new PacketBookHeaderEditNew());			// edit book
 	registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					// request tooltip data
 	registerPacket(XCMD_ExtAosData, new PacketEncodedCommand());				//
 	registerPacket(XCMD_Spy2, new PacketHardwareInfo());						// client hardware info
@@ -899,7 +906,23 @@ void NetworkIn::tick(void)
 		// decrypt the client data and add it to queue
 		EXC_SET("decrypt messages");
 		client->m_client->m_Crypt.Decrypt(m_decryptBuffer, buffer, received);
-		Packet* packet = new Packet(m_decryptBuffer, received);
+		
+		if (client->m_receiveBuffer == NULL)
+		{
+			// create new buffer
+			client->m_receiveBuffer = new Packet(m_decryptBuffer, received);
+		}
+		else
+		{
+			// append to buffer
+			long pos = client->m_receiveBuffer->getPosition();
+			client->m_receiveBuffer->seek(client->m_receiveBuffer->getLength());
+			client->m_receiveBuffer->writeData(m_decryptBuffer, received);
+			client->m_receiveBuffer->seek(pos);
+		}
+
+		Packet* packet = client->m_receiveBuffer;
+		long len = packet->getLength() - packet->getPosition();
 
 		EXC_SET("record message");
 		xRecordPacket(client->m_client, packet, "client->server");
@@ -907,17 +930,10 @@ void NetworkIn::tick(void)
 		// process the message
 		EXC_TRYSUB("ProcessMessage");
 
-		long len = packet->getLength();
-		long offset = 0;
 		while (len > 0 && !client->isClosing())
 		{
-			long packetID = packet->getData()[offset];
+			long packetID = packet->getData()[packet->getPosition()];
 			Packet* handler = m_handlers[packetID];
-
-			//	Packet filtering - check if any function triggering is installed
-			//		allow skipping the packet which we do not wish to get
-			if (client->m_client->xPacketFilter((CEvent*)(packet->getData() + offset), packet->getLength() - offset))
-				break;
 
 			if (handler != NULL)
 			{
@@ -927,13 +943,22 @@ void NetworkIn::tick(void)
 				//	fall back and delete the packet
 				if (packetLength <= 0)
 				{
-					DEBUGNETWORK(("%x:Dropped game packet (0x%x) because it does not match expected length.\n", client->id(), packetID));
+					DEBUGNETWORK(("%x:Game packet (0x%x) does not match the expected length, waiting for more data...\n", client->id(), packetID));
 					break;
 				}
 
 				len -= packetLength;
-				offset += packetLength;
 
+				//	Packet filtering - check if any function triggering is installed
+				//		allow skipping the packet which we do not wish to get
+				if (client->m_client->xPacketFilter((CEvent*)(packet->getData() + packet->getPosition()), packetLength))
+				{
+					packet->skip(len);
+					len = 0;
+					break;
+				}
+
+				// copy data to handler
 				handler->seek();
 				for (int i = 0; i < packetLength; i++)
 				{
@@ -947,11 +972,22 @@ void NetworkIn::tick(void)
 			}
 			else
 			{
-				g_Log.EventWarn("%x:Unknown game packet (0x%x) received.\n", client->id(), packetID);
+				//	Packet filtering - check if any function triggering is installed
+				//		allow skipping the packet which we do not wish to get
+				if (client->m_client->xPacketFilter((CEvent*)(packet->getData() + packet->getPosition()), packet->getLength() - packet->getPosition()))
+				{
+					// packet has been handled by filter but we don't know how big the packet
+					// actually is.. we can only assume the entire buffer is used.
+					len = 0;
+					break;
+				}
 
-				len -= 1;
-				offset += 1;
-				packet->skip(1);
+				// unknown packet.. we could skip 1 byte at a time but this can produce
+				// strange behaviours (it's unlikely that only 1 byte is incorrect), so
+				// it's best to discard everything we have
+				g_Log.EventWarn("%x:Unknown game packet (0x%x) received.\n", client->id(), packetID);
+				packet->skip(len);
+				len = 0;
 			}
 		}
 
@@ -967,7 +1003,13 @@ void NetworkIn::tick(void)
 		}
 
 		EXC_DEBUGSUB_END;
-		delete packet;
+
+		// delete the buffer once it has been exhausted
+		if (len <= 0)
+		{
+			client->m_receiveBuffer = NULL;
+			delete packet;
+		}
 	}
 
 	EXC_CATCH;
