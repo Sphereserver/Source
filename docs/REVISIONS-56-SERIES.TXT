@@ -4913,3 +4913,9 @@ ALPHA additions:
   completes.
 - Fixed: Large packets sent by the client sometimes not parsed correctly, leading to strange
   behaviours or console errors.
+
+30-09-2010, ShiryuX
+- Fixed #1825: not writable books not displaying content for 5.0.0+ clients.
+- Modified: Axis strip to use only ONE file to dump the stripped scripts (like TNG strip does)
+  Commands are = TNG: "strip tng" or "tngstrip" (dump file sphere_strip_tng.scp)
+                 Axis: "strip axis" or "strip" (dump file sphere_strip_axis.scp)

@@ -3926,7 +3926,7 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
 
 	initLength();
 	writeInt32(book->GetUID());
-	writeByte(0x01);
+	writeBool(isWritable);
 	writeBool(isWritable);
 	writeInt16(pages);
 	writeInt16(title.GetLength() + 1);

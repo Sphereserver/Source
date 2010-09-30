@@ -707,8 +707,8 @@ longcommand:
 	if ((( len > 1 ) && ( sText[1] != ' ' )) || ( low == 'b' ))
 	{
 		LPCTSTR	pszText = sText;
-
-		if ( !strnicmp(pszText, "tngstrip", 8) )
+		
+		if ( !strnicmp(pszText, "strip", 5) || !strnicmp(pszText, "tngstrip", 8))
 		{
 			int				i = 0;
 			CResourceScript	*script;
@@ -717,6 +717,7 @@ longcommand:
 			char			*y = Str_GetTemp();
 			char			*x;
 			LPCTSTR			dirname;
+
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
 				pSrc->SysMessage("StripPath not defined, function aborted.\n");
@@ -725,110 +726,115 @@ longcommand:
 
 			dirname = g_Cfg.m_sStripPath;
 
-			strcpy(z, dirname);
-			strcat(z, "tngstrip.scp");
-			pSrc->SysMessagef("StripFile is %s.\n", z);
-			f1 = fopen(z, "w");
-			if ( !f1 )
+
+			if ( !strnicmp(pszText, "strip tng", 9) || !strnicmp(pszText, "tngstrip", 8))
 			{
-				pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-				return( false );
-			}
-
-			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
-			{
-				strcpy(z, script->GetFilePath());
-				f = fopen(z, "r");
-				if ( !f )
-				{
-					pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-					continue;
-				}
-
-				while ( !feof(f) )
-				{
-					z[0] = 0;
-					y[0] = 0;
-					fgets(y, SCRIPT_MAX_LINE_LEN, f);
-
-					x = y;
-					GETNONWHITESPACE(x);
-					strcpy(z,x);
-
-					_strlwr(z);
-
-					if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
-						!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
-						!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
-						!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
-						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "p=", 2) ||
-						!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
-						!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "color", 5) ||
-						!strncmp(z, "resources", 9) || !strncmp(z, "group", 5) )
-					{
-						fputs(y, f1);
-					}
-				}
-				fclose(f);
-			}
-			fclose(f1);
-			pSrc->SysMessagef("Scripts have just been stripped.\n");
-			return( true );
-		}
-		else if ( !strnicmp(pszText, "strip", 5) )
-		{
-			int				i = 0;
-			CResourceScript	*script;
-			FILE			*f, *f1;
-			char			*z = Str_GetTemp();
-			LPCTSTR			dirname;
-			pszText += 5;
-			while ( *pszText == ' ' ) pszText++;
-			dirname = ( *pszText ? pszText : "" );
-
-			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
-			{
-				strcpy(z, script->GetFilePath());
-				f = fopen(z, "r");
-				if ( !f )
-				{
-					pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-					continue;
-				}
 				strcpy(z, dirname);
-				strcat(z, script->GetFilePath());
-				if ( !*dirname || !strcmpi(z, script->GetFilePath()) )
-					strcat(z, ".strip");	// rename to *.strip if operating the same dir
-
+				strcat(z, "sphere_strip_tng.scp");
+				pSrc->SysMessagef("StripFile is %s.\n", z);
+			
 				f1 = fopen(z, "w");
+			
 				if ( !f1 )
 				{
 					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-					fclose(f);
-					continue;
+					return( false );
 				}
-				while ( !feof(f) )
+
+				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 				{
-					z[0] = 0;
-					fgets(z, SCRIPT_MAX_LINE_LEN, f);
-					_strlwr(z);
-					if (( z[0] == '[' ) || !strncmp(z, "defname", 7) || !strncmp(z, "resources", 9) ||
-						!strncmp(z, "name=", 5) || !strncmp(z, "type=", 5) || !strncmp(z, "id=", 3) ||
-						!strncmp(z, "weight=", 7) || !strncmp(z, "value=", 6) || !strncmp(z, "dam=", 4) ||
-						!strncmp(z, "armor=", 6) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
-						!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id=", 3) ||
-						!strncmp(z, "can=", 4) || !strncmp(z, "tevents=", 8) || !strncmp(z, "subsection=", 11) ||
-						!strncmp(z, "description=", 12) || !strncmp(z, "category=", 9) || !strncmp(z, "p=", 2) ||
-						!strncmp(z, "rect=", 5) || !strncmp(z, "group=", 6) )
+					strcpy(z, script->GetFilePath());
+					f = fopen(z, "r");
+					if ( !f )
 					{
-						fputs(z, f1);
+						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
+						continue;
 					}
+
+					while ( !feof(f) )
+					{
+						z[0] = 0;
+						y[0] = 0;
+						fgets(y, SCRIPT_MAX_LINE_LEN, f);
+
+						x = y;
+						GETNONWHITESPACE(x);
+						strcpy(z,x);
+
+						_strlwr(z);
+
+						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
+							!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
+							!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
+							!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
+							!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "p=", 2) ||
+							!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
+							!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "color", 5) ||
+							!strncmp(z, "resources", 9) )
+						{
+							fputs(y, f1);
+						}
+					}
+					fclose(f);
 				}
-				fclose(f);
 				fclose(f1);
+				pSrc->SysMessagef("Scripts have just been stripped.\n");
+				return( true );
 			}
-			pSrc->SysMessagef("Scripts have just been stripped.\n");
-			return( true );
+			else if ( !strnicmp(pszText, "strip axis", 10) || !strnicmp(pszText, "strip", 5) )
+			{
+				strcpy(z, dirname);
+				strcat(z, "sphere_strip_axis.scp");
+				pSrc->SysMessagef("StripFile is %s.\n", z);
+			
+				f1 = fopen(z, "w");
+			
+				if ( !f1 )
+				{
+					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
+					return( false );
+				}
+
+				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
+				{
+					strcpy(z, script->GetFilePath());
+					f = fopen(z, "r");
+					if ( !f )
+					{
+						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
+						continue;
+					}
+
+					while ( !feof(f) )
+					{
+						z[0] = 0;
+						y[0] = 0;
+						fgets(y, SCRIPT_MAX_LINE_LEN, f);
+
+						x = y;
+						GETNONWHITESPACE(x);
+						strcpy(z,x);
+
+						_strlwr(z);
+
+						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
+							!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
+							!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
+							!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
+							!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id", 2) ||
+							!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
+							!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "p=", 5) ||
+							!strncmp(z, "resources", 9) || !strncmp(z, "group", 5) || !strncmp(z, "rect=", 5) )
+						{
+							fputs(y, f1);
+						}
+					}
+					fclose(f);
+				}
+				fclose(f1);
+				pSrc->SysMessagef("Scripts have just been stripped.\n");
+				return( true );
+			}
 		}
 
 		if ( g_Cfg.IsConsoleCmd(low) ) pszText++;
