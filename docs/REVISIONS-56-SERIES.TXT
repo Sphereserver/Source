@@ -4919,3 +4919,6 @@ ALPHA additions:
 - Modified: Axis strip to use only ONE file to dump the stripped scripts (like TNG strip does)
   Commands are = TNG: "strip tng" or "tngstrip" (dump file sphere_strip_tng.scp)
                  Axis: "strip axis" or "strip" (dump file sphere_strip_axis.scp)
+
+04-10-2010, MrSugarCube
+- Fixed: Editing a book page can cause the following page to be deleted.

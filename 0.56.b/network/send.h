@@ -1635,6 +1635,7 @@ public:
 	enum DataSource
 	{
 		TileData = 0x0,
+		Character = 0x1,
 		Multi = 0x2
 	};
 

@@ -308,7 +308,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
 	// to something safer
 	if (id >= ITEMID_MULTI)
-		id = (ITEMID_TYPE)(id - ITEMID_MULTI_LEGACY);
+		id = (ITEMID_TYPE)(id - (ITEMID_MULTI - ITEMID_MULTI_LEGACY));
 	else if (id >= ITEMID_MULTI_LEGACY)
 		id = ITEMID_WorldGem;
 
@@ -4359,7 +4359,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	}
 
 	writeInt16(1);
-	writeByte(source);// 0=tiledata,1=multi
+	writeByte(source);// 0=tiledata,1=character,2=multi
 	writeInt32(uid);
 	writeInt16(id);
 	writeByte(dir);

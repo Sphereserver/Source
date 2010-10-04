@@ -1950,14 +1950,8 @@ public:
 	}
 	void SetPageText( int iPage, LPCTSTR pszText )
 	{
-		if ( iPage < m_sBodyLines.GetCount() && m_sBodyLines[ iPage ] )
-		{
-			m_sBodyLines.RemoveAt( iPage );
-		}
 		if ( pszText == NULL )
-		{
 			return;
-		}
 		m_sBodyLines.SetAtGrow( iPage, new CGString( pszText ));
 	}
 	void AddPageText( LPCTSTR pszText )
