@@ -58,6 +58,10 @@ public:
 #define CAN_I_ROOF			0x0040	// We are under a roof. can't rain on us. UFLAG4_ROOF
 #define CAN_I_HOVER			0x0080	// We are hovering. UFLAG4_HOVEROVER
 
+// masks for movement-affecting flags
+#define CAN_C_MOVEMASK		(CAN_C_GHOST|CAN_C_SWIM|CAN_C_WALK|CAN_C_PASSWALLS|CAN_C_FLY|CAN_C_FIRE_IMMUNE|CAN_C_INDOORS|CAN_C_HOVER)
+#define CAN_I_MOVEMASK		(CAN_I_DOOR|CAN_I_WATER|CAN_I_PLATFORM|CAN_I_BLOCK|CAN_I_CLIMB|CAN_I_FIRE|CAN_I_ROOF|CAN_I_HOVER)
+
 	// CItemBase specific defs.
 #define CAN_I_PILE			0x0100	// Can item be piled UFLAG2_STACKABLE (*.mul)
 #define CAN_I_DYE			0x0200	// Can item be dyed UFLAG3_CLOTH? (sort of)

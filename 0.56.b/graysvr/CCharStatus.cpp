@@ -1459,7 +1459,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					}
 					else
 					{
-						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
+						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && ( pItemDef->Can(CAN_I_DOOR|CAN_I_PLATFORM|CAN_I_BLOCK|CAN_I_CLIMB|CAN_I_FIRE|CAN_I_ROOF) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 						{
 							WARNLOS(("pStatic blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 							bPath = false;
@@ -1546,7 +1546,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					}
 					else
 					{
-						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
+						if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && ( pItemDef->Can(CAN_I_DOOR|CAN_I_PLATFORM|CAN_I_BLOCK|CAN_I_CLIMB|CAN_I_FIRE|CAN_I_ROOF) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 						{
 							WARNLOS(("pItem blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 							bPath = false;
@@ -1660,7 +1660,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							}
 							else
 							{
-								if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && (( pItemDef->m_Can & CAN_I_DOOR ) || ( pItemDef->m_Can & CAN_I_PLATFORM ) || ( pItemDef->m_Can & CAN_I_BLOCK ) || ( pItemDef->m_Can & CAN_I_CLIMB ) || ( pItemDef->m_Can & CAN_I_FIRE ) || ( pItemDef->m_Can & CAN_I_ROOF ) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
+								if (( flags & LOS_FISHING ) && ( ptSrc.GetDist(ptNow) >= 2 ) && ( pItemDef->GetType() != IT_WATER ) && ( pItemDef->Can(CAN_I_DOOR|CAN_I_PLATFORM|CAN_I_BLOCK|CAN_I_CLIMB|CAN_I_FIRE|CAN_I_ROOF) || ( pItemDef->m_Can & CAN_I_BLOCKLOS )))
 								{
 									WARNLOS(("pMultiItem blocked - flags & 0800, distance >= 2 and type of pItemDef is not IT_WATER\n"))
 									bPath = false;
@@ -2302,23 +2302,28 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			CItemBase * pItemDef = pItem->Item_GetDef();
 			if ( (pItem->GetTopZ() <= ptDest.m_z + PLAYER_HEIGHT) && (pItem->GetTopZ() >= ptDest.m_z) && (pItemDef->m_Can != 00) )
 			{ // it IS in my way and HAS a flag set, check further
-				if ( (pItemDef->m_Can & 0x08) && !(wCan & 0x08) )
+				if ( pItemDef->Can(CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) )
 				{ // item is blocking, and I cannot pass thru walls
 					return (NULL);
-				} else if ( (pItemDef->m_Can & 0x01) && !(wCan & 0x01) )
+				}
+				else if ( pItemDef->Can(CAN_I_DOOR) && !(wCan & CAN_C_GHOST) )
 				{ // item is a door, and I'm no ghost
 					return (NULL);
-				} else if ( (pItemDef->m_Can & 0x02) && !(wCan & 0x02) )
+				}
+				else if ( pItemDef->Can(CAN_I_WATER) && !(wCan & CAN_C_SWIM) )
 				{ // item is water, and I cannot swim
 					return (NULL);
-				} else if ( (pItemDef->m_Can & 0x04) && !(wCan & 0x04) )
+				}
+				else if ( pItemDef->Can(CAN_I_PLATFORM) && !(wCan & CAN_C_WALK) )
 				{ // item is walkable, but I cannot walk at all!
 					return (NULL);
-				} else if ( (pItemDef->m_Can & 0x020) && !(wCan & 0x020) && (m_pPlayer == NULL) )
+				}
+				else if ( pItemDef->Can(CAN_I_FIRE) && !(wCan & CAN_C_FIRE_IMMUNE) && (m_pPlayer == NULL) )
 				{ // item is fire, and I'm not immune against this
 				  // should only work for NPC, they are way too smart to do sth so silly
 					return (NULL);
-				} else if ( (pItemDef->m_Can & 0x040) && !(wCan & 0x040) )
+				}
+				else if ( pItemDef->Can(CAN_I_ROOF) && !(wCan & CAN_C_INDOORS) )
 				{ // item is under a roof, and I'm too large to walk there
 					return (NULL);
 				}

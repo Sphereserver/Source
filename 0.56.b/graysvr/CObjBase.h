@@ -2918,10 +2918,12 @@ public:
 			return( 0xFFFF );
 		CCharBase * pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
-		if ( IsStatFlag(STATF_Hovering) )
-			return pCharDef->m_Can | CAN_C_HOVER;
 
-		return( pCharDef->m_Can );
+		WORD wCan = pCharDef->m_Can;
+		if ( IsStatFlag(STATF_Hovering) )
+			wCan |= CAN_C_HOVER;
+
+		return( wCan & CAN_C_MOVEMASK );
 	}
 
 	int FixWeirdness();

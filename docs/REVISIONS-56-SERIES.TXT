@@ -4922,3 +4922,6 @@ ALPHA additions:
 
 04-10-2010, MrSugarCube
 - Fixed: Editing a book page can cause the following page to be deleted.
+
+07-10-2010, MrSugarCube
+- Fixed #1826: Male characters unable to walk over items with CAN_I_LIGHT set.

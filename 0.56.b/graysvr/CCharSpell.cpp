@@ -208,7 +208,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			WORD wCan = 0xFFFF;
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
 			if (pSummonDef != NULL)
-				wCan = pSummonDef->m_Can;
+				wCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
 
 			if (wCan != 0xFFFF)
 			{

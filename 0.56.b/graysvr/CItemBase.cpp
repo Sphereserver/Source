@@ -740,7 +740,7 @@ t_height CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
 		CItemBase * pBase = dynamic_cast <CItemBase *>(pBaseStub);
 		if ( pBase )
 		{
-			wBlockThis = pBase->m_Can;
+			wBlockThis = pBase->m_Can & CAN_I_MOVEMASK;
 			return( pBase->GetHeight() );
 		}
 	}
@@ -750,7 +750,7 @@ t_height CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
 	CUOItemTypeRec tiledata;
 	if ( ! GetItemData( id, &tiledata ))
 	{
-		wBlockThis = 0xFF;
+		wBlockThis = CAN_I_MOVEMASK;
 		return( UO_SIZE_Z );
 	}
 	if ( IsID_Chair( id ))
