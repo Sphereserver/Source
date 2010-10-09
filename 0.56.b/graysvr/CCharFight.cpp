@@ -189,11 +189,11 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	// This allows the noto attack check in the client.
 	// NOTO_GOOD = it is criminal to attack me.
 
-	if ( m_TagDefs.GetKeyNum("NOTO", true) )
-		return (NOTO_TYPE)m_TagDefs.GetKeyNum("NOTO", true);
+	if ( m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true) )
+		return (NOTO_TYPE)m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true);
 
 	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
-	sprintf(getNoto, "NOTO.0%x", pCharViewer->GetUID() );
+	sprintf(getNoto, "OVERRIDE.NOTO.0%x", pCharViewer->GetUID() );
 	NOTO_TYPE iNotoFlag = (NOTO_TYPE)m_TagDefs.GetKeyNum(getNoto);
 	
 	if ( iNotoFlag != NOTO_INVALID )

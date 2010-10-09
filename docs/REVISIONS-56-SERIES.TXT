@@ -4927,10 +4927,11 @@ ALPHA additions:
 - Fixed #1826: Male characters unable to walk over items with CAN_I_LIGHT set.
 
 09-10-2010, ShiryuX
-- Added: "TAG.NOTO" and "TAG.NOTO.$uid" as notoriety flag overrides (usable flags at sphere_defs.scp)
-  TAG.NOTO is a general override for the notoriety flag.
-  TAG.NOTO.$uid overrides the noto flag according to the viewer $uid.
+- Added: "TAG.OVERRIDE.NOTO" and "TAG.OVERRIDE.NOTO.$uid" as notoriety flag overrides.
+  TAG.OVERRIDE.NOTO is a general override for the notoriety flag.
+  TAG.OVERRIDE.NOTO.$uid overrides the noto flag according to the viewer $uid.
   * NOTE: The general override is applied before the viewer tag. So it will override EVERYTHING.
+          Usable flags can be found on sphere_defs.scp
 
 09-10-2010, ShiryuX (script pack)
 - Updated: sphere_defs.scp (added noto_types defintion)
