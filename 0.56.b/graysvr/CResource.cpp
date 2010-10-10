@@ -3456,6 +3456,7 @@ void CResource::Unload( bool fResync )
 	m_MoonGates.Empty();
 	// m_WebPages
 	m_SpellDefs.RemoveAll();	// Defined Spells
+	m_SpellDefs_Sorted.RemoveAll();
 }
 
 bool CResource::Load( bool fResync )

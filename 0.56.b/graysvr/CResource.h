@@ -900,7 +900,7 @@ public:
 	CObNameSortArray m_SkillNameDefs;	// const CSkillDef* Name sorted
 	CGPtrTypeArray< CSkillDef* > m_SkillIndexDefs;	// Defined Skills indexed by number
 	CGObArray< CSpellDef* > m_SpellDefs;	// Defined Spells
-	CGObArray< CSpellDef* > m_SpellDefs_Sorted;	// Defined Spells, in skill order
+	CGPtrTypeArray< CSpellDef* > m_SpellDefs_Sorted; // Defined Spells, in skill order
 
 	CStringSortArray m_PrivCommands[PLEVEL_QTY];	// what command are allowed for a priv level?
 

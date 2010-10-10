@@ -331,7 +331,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
 		// shrink to nothing
 		if (m_nCount)
 		{
-			//DestructElements( m_pData, m_nCount );
+			DestructElements( m_pData, m_nCount );
 			delete [] (BYTE*) m_pData;
 			m_nCount = m_nRealCount = 0;	// that's probably wrong.. but SetCount(0) should be never called
 			m_pData = NULL;					// before Clean(true) in CGObArray
