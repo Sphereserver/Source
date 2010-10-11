@@ -13,7 +13,7 @@ VERSION=0.56b
 
 [Itemdef 008FD]
 Defname=i_dual_short_axes
-Name=dual short aces
+Name=dual short axes
 Type=t_weapon_axe
 Dam=7,32
 Skill=Swordsmanship
@@ -84,7 +84,7 @@ Tdata3=0
 TData4=i_boomerang
 
 Category=Provisions - Weapons
-Subsection=Gargisn Throwing Weapons
+Subsection=Gargish Throwing Weapons
 Description=Boomerang
 
 On=@Create
@@ -142,7 +142,7 @@ TData3=0
 Tdata4=i_gargish_cyclone_anim_x
 
 Category=Provisions - Weapons
-Subsection=Gargisn Throwing Weapons
+Subsection=Gargish Throwing Weapons
 Description=Cyclone
 
 On=@Create
@@ -236,7 +236,7 @@ DupeItem=00904
 
 [Itemdef 00905]
 Defname=i_glass_staff
-Name=Glass Staff
+Name=glass staff
 Type=t_weapon_mace_staff
 Dam=5,28
 Skill=Macefighting
@@ -342,7 +342,6 @@ DupeItem=00908
 
 
 
-
 [Itemdef 00909]
 //This is an oddity, there was two animate art icons for same weapon.
 //This one had a dupe though?
@@ -420,7 +419,7 @@ DupeItem=0090B
 
 [Itemdef 0090C]
 Defname=i_glass_sword
-Name=Glass Sword
+Name=glass sword
 Type=t_weapon_sword
 Dam=6,30
 Skill=Swordsmanship
@@ -474,8 +473,8 @@ DupeItem=048AE
 
 
 [Itemdef 048B0]
-Name=gargish battle axe
 Defname=i_gargish_battle_axe
+Name=gargish battle axe
 Resources=14 i_ingot_iron
 Skillmake=Blacksmithing 30.5
 Weight=4.0
@@ -502,8 +501,8 @@ DupeItem=048B0
 
 
 [Itemdef 048B2]
-Name=gargish axe
 Defname=i_gargish_axe
+Name=gargish axe
 Resources=14 i_ingot_iron
 Skillmake=Blacksmithing 34.2
 Weight=4.0
@@ -519,7 +518,7 @@ DupeList=048B3
 
 Category=Provisions - Weapons
 Subsection=Gargish Axe Weapons
-Description=Gargish Battle Axe
+Description=Gargish Axe
 
 On=@Create
 Hitpoints={ 30 50 }
@@ -530,8 +529,8 @@ DupeItem=048B2
 
 
 [Itemdef 048B4]
-Name=gargish bardiche
 Defname=i_gargish_bardiche
+Name=gargish bardiche
 Resources=18 i_ingot_iron
 Skillmake=Blacksmithing 31.7
 Weight=7.0
@@ -558,8 +557,8 @@ DupeItem=048B4
 
 
 [Itemdef 048b6]
-Name=gargish butcher knife
 Defname=i_gargish_butcher_knife
+Name=gargish butcher knife
 Resources=1 i_ingot_iron
 Skillmake=Tinkering 0.0, t_tinker_tools
 Weight=2
@@ -742,7 +741,7 @@ Skillmake=Blacksmithing 19.4
 
 Category=Provisions - Weapons
 Subsection=Gargish Mace Weapons
-Description=Maul
+Description=Gargish Maul
 
 On=@Create
 	Hitpoints=50
@@ -902,7 +901,7 @@ DupeList=048CF
 
 Category=Provisions - Weapons
 Subsection=Gargish Fencing Weapons
-Description=Tekagi
+Description=Gargish Tekagi
 
 On=@Create
 Hitpoints=50

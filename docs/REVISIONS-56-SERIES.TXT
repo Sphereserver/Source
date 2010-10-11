@@ -4935,3 +4935,8 @@ ALPHA additions:
 
 09-10-2010, ShiryuX (script pack)
 - Updated: sphere_defs.scp (added noto_types defintion)
+
+11-10-2010, Khaos (Script Pack)
+- Fixed: sphere_item_provisions_weapons_sa.scp; fixed some typos.
+- Fixed: spherechar_human.scp; Female barber was using male barber
+  names instead of the female name list.
