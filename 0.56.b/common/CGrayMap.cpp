@@ -19,15 +19,15 @@ CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int i
 {
 	// m_z = PLAYER_HEIGHT
 	m_Top.m_dwBlockFlags = 0;
-	m_Top.m_wTile = 0;
+	m_Top.m_dwTile = 0;
 	m_Top.m_z = UO_SIZE_Z;	// the z of the item that would be over our head.
 
 	m_Bottom.m_dwBlockFlags = CAN_I_BLOCK; // The bottom item has these blocking flags.
-	m_Bottom.m_wTile = 0;
+	m_Bottom.m_dwTile = 0;
 	m_Bottom.m_z = UO_SIZE_MIN_Z;	// the z we would stand on,
 
 	m_Lowest.m_dwBlockFlags = CAN_I_BLOCK; 
-	m_Lowest.m_wTile = 0;
+	m_Lowest.m_dwTile = 0;
 	m_Lowest.m_z = UO_SIZE_Z;
 
 	m_zClimbHeight = 0;
@@ -37,43 +37,43 @@ CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int i
 	m_dwBlockFlags(dwBlockFlags),	m_z(z), m_iHeight(iHeight), m_zClimb(zClimb), m_zHeight(zHeight)
 {
 	m_Top.m_dwBlockFlags = 0;
-	m_Top.m_wTile = 0;
+	m_Top.m_dwTile = 0;
 	m_Top.m_z = UO_SIZE_Z;	// the z of the item that would be over our head.
 
 	m_Bottom.m_dwBlockFlags = CAN_I_BLOCK; // The bottom item has these blocking flags.
-	m_Bottom.m_wTile = 0;
+	m_Bottom.m_dwTile = 0;
 	m_Bottom.m_z = UO_SIZE_MIN_Z;	// the z we would stand on,
 
 	m_Lowest.m_dwBlockFlags = CAN_I_BLOCK; 
-	m_Lowest.m_wTile = 0;
+	m_Lowest.m_dwTile = 0;
 	m_Lowest.m_z = UO_SIZE_Z;
 
 	m_zClimbHeight = 0;
 }
 
-LPCTSTR CGrayMapBlockState::GetTileName( WORD wID )	// static
+LPCTSTR CGrayMapBlockState::GetTileName( DWORD dwID )	// static
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::GetTileName");
-	if ( wID == 0 )
+	if ( dwID == 0 )
 	{
 		return( "<null>" );
 	}
 	TCHAR * pStr = Str_GetTemp();
-	if ( wID < TERRAIN_QTY )
+	if ( dwID < TERRAIN_QTY )
 	{
-		CGrayTerrainInfo land( wID );
+		CGrayTerrainInfo land( dwID );
 		strcpy( pStr, land.m_name );
 	}
 	else
 	{
-		wID -= TERRAIN_QTY;
-		CGrayItemInfo item( (ITEMID_TYPE) wID );
+		dwID -= TERRAIN_QTY;
+		CGrayItemInfo item( (ITEMID_TYPE) dwID );
 		strcpy( pStr, item.m_name );
 	}
 	return( pStr );
 }
 
-bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, WORD wID )
+bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, DWORD dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile");
 	// RETURN:
@@ -111,7 +111,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	if ( zTop < m_Lowest.m_z )
 	{
 		m_Lowest.m_dwBlockFlags = wItemBlockFlags;
-		m_Lowest.m_wTile = wID;
+		m_Lowest.m_dwTile = dwID;
 		m_Lowest.m_z = zTop;
 	}
 
@@ -132,7 +132,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 					return( true );
 			}
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
-			m_Bottom.m_wTile = wID;
+			m_Bottom.m_dwTile = dwID;
 			m_Bottom.m_z = zTop;
 		}
 	}
@@ -142,7 +142,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 		if ( zBottom <= m_Top.m_z )
 		{
 			m_Top.m_dwBlockFlags = wItemBlockFlags;
-			m_Top.m_wTile = wID;
+			m_Top.m_dwTile = dwID;
 			m_Top.m_z = zBottom;
 		}
 	}
@@ -150,7 +150,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	return true;
 }
 
-bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, WORD wID )
+bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, DWORD dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile_Item");
 	// RETURN:
@@ -184,7 +184,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	if ( zTop < m_Lowest.m_z )
 	{
 		m_Lowest.m_dwBlockFlags = wItemBlockFlags;
-		m_Lowest.m_wTile = wID;
+		m_Lowest.m_dwTile = dwID;
 		m_Lowest.m_z = zTop;
 	}
 
@@ -209,7 +209,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 			}
 			//DEBUG_ERR(("1wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
-			m_Bottom.m_wTile = wID;
+			m_Bottom.m_dwTile = dwID;
 			m_Bottom.m_z = zTop;
 			//DEBUG_ERR(("2wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
 
@@ -225,7 +225,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 		if ( zBottom < m_Top.m_z )
 		{
 			m_Top.m_dwBlockFlags = wItemBlockFlags;
-			m_Top.m_wTile = wID;
+			m_Top.m_dwTile = dwID;
 			m_Top.m_z = zBottom;
 		}
 	}
@@ -233,18 +233,18 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 
 }
 
-inline void CGrayMapBlockState::SetTop( DWORD &wItemBlockFlags, signed char &z, WORD &wID )
+inline void CGrayMapBlockState::SetTop( DWORD &wItemBlockFlags, signed char &z, DWORD &dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::SetTop");
 	if ( z < m_Top.m_z )
 	{
 		m_Top.m_dwBlockFlags = wItemBlockFlags;
-		m_Top.m_wTile = wID;
+		m_Top.m_dwTile = dwID;
 		m_Top.m_z = z;
 	}
 }
 
-bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z, WORD wID )
+bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z, DWORD dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile_Terrain");
 	// RETURN:
@@ -261,7 +261,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 	if ( z < m_Lowest.m_z )
 	{
 		m_Lowest.m_dwBlockFlags = wItemBlockFlags;
-		m_Lowest.m_wTile = wID;
+		m_Lowest.m_dwTile = dwID;
 		m_Lowest.m_z = z;
 	}
 
@@ -284,20 +284,20 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 			{
 				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z >= m_Bottom.m_z + PLAYER_HEIGHT/2) ) // we can walk under it
 				{
-					SetTop( wItemBlockFlags, z, wID );
+					SetTop( wItemBlockFlags, z, dwID );
 					return true;
 				}
 			}
 			//DEBUG_ERR(("wItemBlockFlags 0x%x\n",wItemBlockFlags));
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
-			m_Bottom.m_wTile = wID;
+			m_Bottom.m_dwTile = dwID;
 			m_Bottom.m_z = z;
 			m_zClimbHeight = 0;
 		}
 	}
 	else
 	{
-		SetTop( wItemBlockFlags, z, wID ); // I could potentially fit under this. ( it would be above me )
+		SetTop( wItemBlockFlags, z, dwID ); // I could potentially fit under this. ( it would be above me )
 	}
 	return true;
 }

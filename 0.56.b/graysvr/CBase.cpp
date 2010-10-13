@@ -66,7 +66,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_HEIGHT:
 			{
 				//CBaseBaseDef * pBaseBaseDef = dynamic_cast<CBaseBaseDef*>(this);
-				//DEBUG_ERR(("OBC_HEIGHT  -  m_wDispIndex %d  GetHeight() %d  pBaseBaseDef->GetHeight() %d  pBaseBaseDef 0x%x\n",m_wDispIndex,GetHeight(),pBaseBaseDef->GetHeight(),pBaseBaseDef));
+				//DEBUG_ERR(("OBC_HEIGHT  -  m_dwDispIndex %d  GetHeight() %d  pBaseBaseDef->GetHeight() %d  pBaseBaseDef 0x%x\n",m_wDispIndex,GetHeight(),pBaseBaseDef->GetHeight(),pBaseBaseDef));
 				sVal.FormatVal( GetHeight() );
 			}
 			break;
@@ -250,7 +250,7 @@ void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 	if ( m_sName.IsEmpty())	// Base type name. should set this itself most times. (don't overwrite it!)
 		m_sName = pBase->m_sName;
 
-	m_wDispIndex = pBase->m_wDispIndex;
+	m_dwDispIndex = pBase->m_dwDispIndex;
 
 	m_Height = pBase->m_Height;
 	// -------------- ResLevel -------------

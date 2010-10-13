@@ -28,12 +28,12 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 	if ( ! IsValidDispID( id ))
 	{
 		// There should be an ID= in the scripts later.
-		m_wDispIndex = ITEMID_GOLD_C1; // until i hear otherwise from the script file.
+		m_dwDispIndex = ITEMID_GOLD_C1; // until i hear otherwise from the script file.
 		return;
 	}
 
 	// Set the artwork/display id.
-	m_wDispIndex = id;
+	m_dwDispIndex = id;
 
 	// I have it indexed but it needs to be loaded.
 	// read it in from the script and *.mul files.
@@ -81,7 +81,7 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 		//CBaseBaseDef * pBaseBaseDef = dynamic_cast<CBaseBaseDef*>(this);
 		//pBaseBaseDef->SetHeight( GetItemHeightFlags( tiledata, m_Can ));
 		SetHeight( GetItemHeightFlags( tiledata, m_Can ));
-		//DEBUG_WARN(("GetItemHeightFlags( tiledata, m_Can )(%d),tiledata.m_height(%d),m_wDispIndex(0%x),GetHeight()(%d),pBaseBaseDef->GetHeight()(%d)\n",GetItemHeightFlags( tiledata, m_Can ),tiledata.m_height,m_wDispIndex,GetHeight(),pBaseBaseDef->GetHeight()));
+		//DEBUG_WARN(("GetItemHeightFlags( tiledata, m_Can )(%d),tiledata.m_height(%d),m_dwDispIndex(0%x),GetHeight()(%d),pBaseBaseDef->GetHeight()(%d)\n",GetItemHeightFlags( tiledata, m_Can ),tiledata.m_height,m_wDispIndex,GetHeight(),pBaseBaseDef->GetHeight()));
 	}
 	//DEBUG_ERR(("ID: 0%x; this (0x%x), m_dwFlags (0%x), tiledata.m_flags (0%x), tiledata.m_height (%d) GetHeight() (%d)\n",id,this,m_dwFlags,tiledata.m_flags,tiledata.m_height,GetHeight()));
 
@@ -1275,7 +1275,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 				}
 
 				CopyBasic( pItemDef );
-				m_wDispIndex = id;	// Might not be the default of a DUPEITEM
+				m_dwDispIndex = id;	// Might not be the default of a DUPEITEM
 			}
 			break;
 

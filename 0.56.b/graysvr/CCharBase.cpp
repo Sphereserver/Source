@@ -26,11 +26,11 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	if ( IsValidDispID(id))
 	{
 		// in display range.
-		m_wDispIndex = id;
+		m_dwDispIndex = id;
 	}
 	else
 	{
-		m_wDispIndex = 0;	// must read from SCP file later
+		m_dwDispIndex = 0;	// must read from SCP file later
 	}
 
 	SetResDispDnId(CREID_MAN);
@@ -316,7 +316,7 @@ bool CCharBase::r_Load( CScript & s )
 	if ( !IsValidDispID(GetDispID()) )
 	{
  		g_Log.Event(LOGL_WARN, "Char script '%s' has bad DISPID 0%x. Defaulting to 0%d.\n", GetResourceName(), GetDispID(), (int)CREID_MAN);
-		m_wDispIndex = CREID_MAN;
+		m_dwDispIndex = CREID_MAN;
 	}
 	if ( m_Can == CAN_C_INDOORS )
 		g_Log.Event(LOGL_WARN, "Char script '%s' has no CAN flags specified!\n", GetResourceName());

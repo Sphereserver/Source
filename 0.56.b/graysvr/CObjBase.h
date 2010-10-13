@@ -302,7 +302,7 @@ public:
 	static LPCTSTR const sm_szTemplateTable[ITC_QTY+1];
 
 private:
-	WORD m_wDispIndex;		// The current display type. ITEMID_TYPE
+	ITEMID_TYPE m_dwDispIndex;		// The current display type. ITEMID_TYPE
 	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
@@ -804,7 +804,7 @@ public:
 	{
 		// This is what the item looks like.
 		// May not be the same as the item that defines it's type.
-		return((ITEMID_TYPE) m_wDispIndex );
+		return( m_dwDispIndex );
 	}
 	bool IsSameDispID( ITEMID_TYPE id ) const	// account for flipped types ?
 	{

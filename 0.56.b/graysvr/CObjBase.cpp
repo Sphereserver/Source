@@ -1853,7 +1853,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						if ( block.m_Top.m_dwBlockFlags )
 						{
 							wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-							if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_wTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
+							if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
 								wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 						}
 						if (( wCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
@@ -1870,7 +1870,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 							{
 								if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
 								{
-									if ( block.m_Bottom.m_wTile > TERRAIN_QTY )
+									if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
 									{
 										if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + 2) // Too high to climb.
 											break;

@@ -15,7 +15,7 @@ struct CBaseBaseDef : public CResourceLink
 	static LPCTSTR const sm_szLoadKeys[];
 	// Base type of both CItemBase and CCharBase
 protected:
-	WORD	m_wDispIndex;	// The base artwork id. (may be the same as GetResourceID() in base set.) but can also be "flipped"
+	DWORD m_dwDispIndex;	// The base artwork id. (may be the same as GetResourceID() in base set.) but can also be "flipped"
 	CGString m_sName;		// default type name. (ei, "human" vs specific "Dennis")
 private:
 	t_height	m_Height;
@@ -87,7 +87,7 @@ public:
 	CBaseBaseDef( RESOURCE_ID id ) :
 		CResourceLink( id )
 	{
-		m_wDispIndex		= 0;	// Assume nothing til told differently.
+		m_dwDispIndex		= 0;	// Assume nothing til told differently.
 		m_attackBase		= 0;
 		m_attackRange		= 0;
 		m_Height			= 0;
@@ -635,7 +635,7 @@ public:
 	}
 	ITEMID_TYPE GetDispID() const
 	{
-		return((ITEMID_TYPE) m_wDispIndex );
+		return((ITEMID_TYPE) m_dwDispIndex );
 	}
 	DWORD GetTFlags() const
 	{
@@ -855,7 +855,7 @@ public:
 	}
 	CREID_TYPE GetDispID() const
 	{
-		return((CREID_TYPE) m_wDispIndex );
+		return((CREID_TYPE) m_dwDispIndex );
 	}
 	bool SetDispID( CREID_TYPE id );
 

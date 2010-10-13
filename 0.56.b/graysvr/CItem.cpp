@@ -63,7 +63,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_Attr = 0;
 	m_amount = 1;
 	m_containedGridIndex = 0;
-	m_wDispIndex = ITEMID_NOTHING;
+	m_dwDispIndex = ITEMID_NOTHING;
 
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;
@@ -1833,14 +1833,14 @@ bool CItem::SetDispID( ITEMID_TYPE id )
 
 	if ( CItemBase::IsValidDispID(id) && id < ITEMID_MULTI )
 	{
-		m_wDispIndex = id;
+		m_dwDispIndex = id;
 	}
 	else
 	{
 		CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
-		m_wDispIndex = pItemDef->GetDispID();
-		ASSERT( CItemBase::IsValidDispID((ITEMID_TYPE)m_wDispIndex));
+		m_dwDispIndex = pItemDef->GetDispID();
+		ASSERT( CItemBase::IsValidDispID((ITEMID_TYPE)m_dwDispIndex));
 	}
 	return( true );
 }
@@ -3032,7 +3032,7 @@ void CItem::DupeCopy( const CItem * pItem )
 
 	CObjBase::DupeCopy( pItem );
 
-	m_wDispIndex = pItem->m_wDispIndex;
+	m_dwDispIndex = pItem->m_dwDispIndex;
 	SetBase( pItem->Item_GetDef() );
 	m_type = pItem->m_type;
 	m_amount = pItem->m_amount;

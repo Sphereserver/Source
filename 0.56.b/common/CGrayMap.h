@@ -69,7 +69,7 @@ public:
 struct CGrayMapBlocker
 {
 	DWORD m_dwBlockFlags;	// How does this item block ? CAN_I_PLATFORM
-	WORD m_wTile;			// TERRAIN_QTY + id.
+	DWORD m_dwTile;			// TERRAIN_QTY + id.
 	signed char m_z;		// Top of a solid object. or bottom of non blocking one.
 };
 
@@ -109,11 +109,11 @@ public:
 			return( false );
 		return( true );	
 	}
-	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, WORD wID );
-	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, WORD wID );
-	inline void SetTop( DWORD &dwItemBlockFlags, signed char &z, WORD &wID );
-	bool CheckTile_Terrain( DWORD dwItemBlockFlags, signed char z, WORD wID );
-	static LPCTSTR GetTileName( WORD wID );
+	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, DWORD wID );
+	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, DWORD wID );
+	inline void SetTop( DWORD &dwItemBlockFlags, signed char &z, DWORD &dwID );
+	bool CheckTile_Terrain( DWORD dwItemBlockFlags, signed char z, DWORD dwID );
+	static LPCTSTR GetTileName( DWORD dwID );
 };
 
 struct CMapDiffBlock
