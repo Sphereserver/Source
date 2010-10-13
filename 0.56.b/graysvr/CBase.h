@@ -398,14 +398,14 @@ class CItemBase : public CBaseBaseDef
 {
 	// RES_ITEMDEF
 	// Describe basic stuff about all items.
-	// Partly based on CUOItemTypeRec
+	// Partly based on CUOItemTypeRec/CUOItemTypeRec2
 private:
 	WORD	m_weight;
 	CGTypedArray<ITEMID_TYPE,ITEMID_TYPE> m_flip_id;	//  can be flipped to make these display ids.
 	IT_TYPE	m_type;			// default double click action type. (if any)
 	CValueRangeDef m_values;		// range of values given a quality skill
 	BYTE    m_layer;		// Is this item equippable on paperdoll? LAYER=LAYER_TYPE defaults from the .MUL file.
-	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec
+	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec/CUOItemTypeRec2
 	BYTE	m_speed;		// weight in WEIGHT_UNITS (USHRT_MAX=not movable) defaults from the .MUL file.
 public:
 	static const char *m_sClassName;
@@ -582,13 +582,13 @@ private:
 protected:
 	static void ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew );
 public:
-	static t_height GetItemHeightFlags( const CUOItemTypeRec & tile, WORD & wBlockThis );
-	static void GetItemSpecificFlags( const CUOItemTypeRec & tile, WORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
+	static t_height GetItemHeightFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis );
+	static void GetItemSpecificFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
 	static bool IsTypeArmor( IT_TYPE type );
 	static bool IsTypeWeapon( IT_TYPE type );
 	static bool IsTypeSpellbook( IT_TYPE type );
 	static bool IsTypeMulti( IT_TYPE type );
-	static IT_TYPE GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec &tile );
+	static IT_TYPE GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tile );
 
 	static CItemBase * FindItemBase( ITEMID_TYPE id );
 	static bool IsValidDispID( ITEMID_TYPE id );
@@ -602,7 +602,7 @@ public:
 	static bool IsVisibleLayer( LAYER_TYPE layer );
 
 	static TCHAR * GetNamePluralize( LPCTSTR pszNameBase, bool fPluralize );
-	static bool GetItemData( ITEMID_TYPE id, CUOItemTypeRec * ptile );
+	static bool GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * ptile );
 	static t_height GetItemHeight( ITEMID_TYPE id, WORD & MoveFlags );
 
 	static CREID_TYPE FindCharTrack( ITEMID_TYPE trackID );
@@ -695,7 +695,7 @@ class CItemBaseDupe : public CResourceDef
 	// RES_ITEMDEF
 private:
 	CResourceRef m_MasterItem;	// What is the "master" item ?
-	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec
+	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec/CUOItemTypeRec2
 	t_height	m_Height;
 public:
 	WORD	m_Can;

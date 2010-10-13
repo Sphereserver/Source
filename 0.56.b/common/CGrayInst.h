@@ -24,6 +24,7 @@ private:
 	CGString m_sCDPath;		// For files that may still be on the CD. "InstCDPath"
 public:
 	CGFile m_File[ VERFILE_QTY ];	// Get our list of files we need to access.
+	VERFILE_FORMAT m_FileFormat[ VERFILE_QTY ]; // File format versions
 
 	CGFile	m_Maps[256];		// mapX.mul
 	CGFile	m_Mapdif[256];		// mapdifX.mul
@@ -48,6 +49,7 @@ public:
 
 public:
 	bool FindInstall();
+	void DetectMulVersions();
 	VERFILE_TYPE OpenFiles( DWORD dwMask );
 	bool OpenFile( CGFile & file, LPCTSTR pszName, WORD wFlags );
 	bool OpenFile( VERFILE_TYPE i );
@@ -58,6 +60,11 @@ public:
 	{
 		ASSERT( i<VERFILE_QTY );
 		return( &(m_File[i]));
+	}
+	VERFILE_FORMAT GetMulFormat( VERFILE_TYPE i )
+	{
+		ASSERT( i<VERFILE_QTY );
+		return( m_FileFormat[i] );
 	}
 
 	void SetPreferPath( LPCTSTR pszName )

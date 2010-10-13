@@ -241,7 +241,7 @@ class CGrayMulti : public CGrayCachedMulItem
 private:
 	MULTI_TYPE m_id;
 protected:
-	CUOMultiItemRec * m_pItems;
+	CUOMultiItemRec2 * m_pItems;
 	int m_iItemQty;
 private:
 	void Init()
@@ -278,7 +278,7 @@ public:
 	{
 		return( m_iItemQty );
 	}
-	const CUOMultiItemRec * GetItem( int i ) const
+	const CUOMultiItemRec2 * GetItem( int i ) const
 	{
 		ASSERT( i<m_iItemQty );
 		return( m_pItems+i);

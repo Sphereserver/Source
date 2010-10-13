@@ -3761,14 +3761,14 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 			continue;
 
 		// check item in tiledata
-		CUOItemTypeRec tiledata;
+		CUOItemTypeRec2 tiledata;
 		if (CItemBase::GetItemData((ITEMID_TYPE)i, &tiledata) == false)
 			continue;
 
 		// ensure there is actually some data here, treat "MissingName" as blank since some tiledata.muls
 		// have this name set in blank slots
 		if ( !tiledata.m_flags && !tiledata.m_weight && !tiledata.m_layer &&
-			 !tiledata.m_dwUnk6 && !tiledata.m_dwAnim && !tiledata.m_wUnk14 && !tiledata.m_height && 
+			 !tiledata.m_dwUnk11 && !tiledata.m_dwAnim && !tiledata.m_wUnk19 && !tiledata.m_height && 
 			 (!tiledata.m_name[0] || strcmp(tiledata.m_name, "MissingName") == 0))
 			 continue;
 

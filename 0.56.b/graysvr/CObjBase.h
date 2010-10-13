@@ -1466,7 +1466,7 @@ class CItemMultiCustom : public CItemMulti
 public:
 	struct Component
 	{
-		CUOMultiItemRec m_item;
+		CUOMultiItemRec2 m_item;
 		short m_isStair;
 		bool m_isFloor;
 	};

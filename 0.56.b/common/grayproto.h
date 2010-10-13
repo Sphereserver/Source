@@ -301,8 +301,9 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_PutNew			= 0xf3,
 	XCMD_CrashReport    = 0xf4,
 	XCMD_MapDisplayNew	= 0xf5,
+	XCMD_MoveShip		= 0xf6,
 
-	XCMD_QTY		= 0xf6,
+	XCMD_QTY		= 0xf7,
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -965,6 +966,7 @@ enum NOTO_TYPE
 #define MINCLIVER_SE				0x400010	// minimum client to activate SE packets
 #define MINCLIVER_ML				0x500000	// minimum client to activate ML packets
 #define MINCLIVER_SA				0x700000	// minimum client to activate SA packets
+#define MINCLIVER_HIGHSEAS			0x70008D	// minimum client to activate High Seas packets
 
 // client versions (behaviours)
 #define MINCLIVER_CHECKWALKCODE		0x126000	// minimum client to allow checking walking crypt-codes
@@ -989,6 +991,7 @@ enum NOTO_TYPE
 #define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive 0xDD packet
 #define MINCLIVER_BUFFS				0x500030	// minimum client to receive buff packets
 #define MINCLIVER_NEWMAPDISPLAY		0x700080	// minimum client to receive 0xF5 packet
+#define MINCLIVER_SMOOTHSHIP		0x70008D	// minimum client to receive 0xF6 packet
 #define MINCLIVER_STATUS_V2			0x300080	// minimum client to receive v1 of 0x11 packet
 #define MINCLIVER_STATUS_V3			0x400000	// minimum client to receive v2 of 0x11 packet
 #define MINCLIVER_STATUS_V4			0x400010	// minimum client to receive v3 of 0x11 packet
@@ -3196,6 +3199,27 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_ysize; // client height
 			NWORD m_map; // map id
 		} MapDisplayNew;	// MapX
+
+		struct	// XCMD_MoveShip, size = 18+var
+		{
+			BYTE m_Cmd; // 0 = 0xF6
+			NWORD m_len;
+			NDWORD m_UID; // uid of the ship
+			BYTE m_unk1; // 0x04
+			BYTE m_unk2; // 0x04
+			BYTE m_unk3; // 0x04
+			NWORD m_shipX; // ship x
+			NWORD m_shipY; // ship y
+			NWORD m_shipZ; // ship z
+			NWORD m_objectCount; // number of objects on deck
+			struct
+			{
+				NDWORD m_UID; // object uid
+				NWORD m_x; // object x
+				NWORD m_y; // object y
+				NWORD m_z; // object z
+			} m_objects[1];
+		} MoveShip;
 	};
 } PACK_NEEDED;
 

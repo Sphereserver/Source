@@ -1118,129 +1118,130 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 
 	// Large composite objects here.
 	ITEMID_MULTI_LEGACY	= 0x4000, // ITEMID_MULTI for old clients (<7.0.0.0)
-	ITEMID_MULTI		= 0x8000,
-	ITEMID_SHIP1_N		= 0x8000,
-	ITEMID_SHIP1_E		= 0x8001,
-	ITEMID_SHIP1_S		= 0x8002,
-	ITEMID_SHIP1_W		= 0x8003,
-	ITEMID_SHIP2_N		= 0x8004,
+	ITEMID_MULTI_SA		= 0x8000, // ITEMID_MULTI for sa clients (<7.0.8.44)
+	ITEMID_MULTI		= 0x10000,
+	ITEMID_SHIP1_N		= ITEMID_MULTI + 0x0000,
+	ITEMID_SHIP1_E		= ITEMID_MULTI + 0x0001,
+	ITEMID_SHIP1_S		= ITEMID_MULTI + 0x0002,
+	ITEMID_SHIP1_W		= ITEMID_MULTI + 0x0003,
+	ITEMID_SHIP2_N		= ITEMID_MULTI + 0x0004,
 	ITEMID_SHIP2_E,
 	ITEMID_SHIP2_S,
 	ITEMID_SHIP2_W,
-	ITEMID_SHIP3_N		= 0x8008,
-	ITEMID_SHIP4_N		= 0x800c,
-	ITEMID_SHIP5_N		= 0x8010,
-	ITEMID_SHIP6_N		= 0x8014,
+	ITEMID_SHIP3_N		= ITEMID_MULTI + 0x0008,
+	ITEMID_SHIP4_N		= ITEMID_MULTI + 0x000c,
+	ITEMID_SHIP5_N		= ITEMID_MULTI + 0x0010,
+	ITEMID_SHIP6_N		= ITEMID_MULTI + 0x0014,
 	ITEMID_SHIP6_E,
 	ITEMID_SHIP6_S,
-	ITEMID_SHIP6_W   	= 0x8017,
+	ITEMID_SHIP6_W   	= ITEMID_MULTI + 0x0017,
 
-	ITEMID_HOUSE		= 0x8064,
-	ITEMID_HOUSE_FORGE	= 0x8065,
-	ITEMID_HOUSE_STONE	= 0x8066,
-	ITEMID_TENT_BLUE	= 0x8070,
-	ITEMID_TENT_GREEN	= 0x8072,
-	ITEMID_3ROOM		= 0x8074,	// 3 room house
-	ITEMID_2STORY_STUKO = 0x8076,
-	ITEMID_2STORY_SAND	= 0x8078,
-	ITEMID_TOWER		= 0x807a,
-	ITEMID_KEEP		 	= 0x807C,	// keep
-	ITEMID_CASTLE		= 0x807E,	// castle 7f also.
-	ITEMID_LARGESHOP	= 0x808c,	// in verdata.mul file.
-	ITEMID_MULTI_EXT_1	= 0x8BB8,
-	ITEMID_MULTI_EXT_2	= 0x9388,	// minax tower.
-	ITEMID_HOUSEFOUNDATION_7x7	 	= 0x93ec,
+	ITEMID_HOUSE		= ITEMID_MULTI + 0x0064,
+	ITEMID_HOUSE_FORGE	= ITEMID_MULTI + 0x0065,
+	ITEMID_HOUSE_STONE	= ITEMID_MULTI + 0x0066,
+	ITEMID_TENT_BLUE	= ITEMID_MULTI + 0x0070,
+	ITEMID_TENT_GREEN	= ITEMID_MULTI + 0x0072,
+	ITEMID_3ROOM		= ITEMID_MULTI + 0x0074,	// 3 room house
+	ITEMID_2STORY_STUKO = ITEMID_MULTI + 0x0076,
+	ITEMID_2STORY_SAND	= ITEMID_MULTI + 0x0078,
+	ITEMID_TOWER		= ITEMID_MULTI + 0x007a,
+	ITEMID_KEEP		 	= ITEMID_MULTI + 0x007c,	// keep
+	ITEMID_CASTLE		= ITEMID_MULTI + 0x007e,	// castle 7f also.
+	ITEMID_LARGESHOP	= ITEMID_MULTI + 0x008c,	// in verdata.mul file.
+	ITEMID_MULTI_EXT_1	= ITEMID_MULTI + 0x0bb8,
+	ITEMID_MULTI_EXT_2	= ITEMID_MULTI + 0x1388,	// minax tower.
+	ITEMID_HOUSEFOUNDATION_7x7	 	= ITEMID_MULTI + 0x13ec,
 	ITEMID_HOUSEFOUNDATION_7x8,
 	ITEMID_HOUSEFOUNDATION_7x9,
 	ITEMID_HOUSEFOUNDATION_7x10,
 	ITEMID_HOUSEFOUNDATION_7x11,
 	ITEMID_HOUSEFOUNDATION_7x12,
-	ITEMID_HOUSEFOUNDATION_8x7	 	= 0x93f8,
+	ITEMID_HOUSEFOUNDATION_8x7	 	= ITEMID_MULTI + 0x13f8,
 	ITEMID_HOUSEFOUNDATION_8x8,
 	ITEMID_HOUSEFOUNDATION_8x9,
 	ITEMID_HOUSEFOUNDATION_8x10,
 	ITEMID_HOUSEFOUNDATION_8x11,
 	ITEMID_HOUSEFOUNDATION_8x12,
 	ITEMID_HOUSEFOUNDATION_8x13,
-	ITEMID_HOUSEFOUNDATION_9x7 		= 0x9404,
+	ITEMID_HOUSEFOUNDATION_9x7 		= ITEMID_MULTI + 0x1404,
 	ITEMID_HOUSEFOUNDATION_9x8,
 	ITEMID_HOUSEFOUNDATION_9x9,
 	ITEMID_HOUSEFOUNDATION_9x10,
 	ITEMID_HOUSEFOUNDATION_9x11,
 	ITEMID_HOUSEFOUNDATION_9x12,
 	ITEMID_HOUSEFOUNDATION_9x13,
-	ITEMID_HOUSEFOUNDATION_10x7 	= 0x9410,
+	ITEMID_HOUSEFOUNDATION_10x7 	= ITEMID_MULTI + 0x1410,
 	ITEMID_HOUSEFOUNDATION_10x8,
 	ITEMID_HOUSEFOUNDATION_10x9,
 	ITEMID_HOUSEFOUNDATION_10x10,
 	ITEMID_HOUSEFOUNDATION_10x11,
 	ITEMID_HOUSEFOUNDATION_10x12,
 	ITEMID_HOUSEFOUNDATION_10x13,
-	ITEMID_HOUSEFOUNDATION_11x7 	= 0x941c,
+	ITEMID_HOUSEFOUNDATION_11x7 	= ITEMID_MULTI + 0x141c,
 	ITEMID_HOUSEFOUNDATION_11x8,
 	ITEMID_HOUSEFOUNDATION_11x9,
 	ITEMID_HOUSEFOUNDATION_11x10,
 	ITEMID_HOUSEFOUNDATION_11x11,
 	ITEMID_HOUSEFOUNDATION_11x12,
 	ITEMID_HOUSEFOUNDATION_11x13,
-	ITEMID_HOUSEFOUNDATION_12x7 	= 0x9428,
+	ITEMID_HOUSEFOUNDATION_12x7 	= ITEMID_MULTI + 0x1428,
 	ITEMID_HOUSEFOUNDATION_12x8,
 	ITEMID_HOUSEFOUNDATION_12x9,
 	ITEMID_HOUSEFOUNDATION_12x10,
 	ITEMID_HOUSEFOUNDATION_12x11,
 	ITEMID_HOUSEFOUNDATION_12x12,
 	ITEMID_HOUSEFOUNDATION_12x13,
-	ITEMID_HOUSEFOUNDATION_13x8 	= 0x9435,
+	ITEMID_HOUSEFOUNDATION_13x8 	= ITEMID_MULTI + 0x1435,
 	ITEMID_HOUSEFOUNDATION_13x9,
 	ITEMID_HOUSEFOUNDATION_13x10,
 	ITEMID_HOUSEFOUNDATION_13x11,
 	ITEMID_HOUSEFOUNDATION_13x12,
 	ITEMID_HOUSEFOUNDATION_13x13,
-	ITEMID_MULTISTAIRS_WOOD_SN	= 0x9db0,
+	ITEMID_MULTISTAIRS_WOOD_SN	= ITEMID_MULTI + 0x1db0,
 	ITEMID_MULTISTAIRS_WOOD_WE,
 	ITEMID_MULTISTAIRS_WOOD_NS,
 	ITEMID_MULTISTAIRS_WOOD_EW,
-	ITEMID_MULTISTAIRS_STONE_SN	= 0x9db4,
+	ITEMID_MULTISTAIRS_STONE_SN	= ITEMID_MULTI + 0x1db4,
 	ITEMID_MULTISTAIRS_STONE_WE,
 	ITEMID_MULTISTAIRS_STONE_NS,
 	ITEMID_MULTISTAIRS_STONE_EW,
-	ITEMID_MULTISTAIRS_STONE2_SN	= 0x9db8,
+	ITEMID_MULTISTAIRS_STONE2_SN	= ITEMID_MULTI + 0x1db8,
 	ITEMID_MULTISTAIRS_STONE2_WE,
 	ITEMID_MULTISTAIRS_STONE2_NS,
 	ITEMID_MULTISTAIRS_STONE2_EW,
-	ITEMID_MULTISTAIRS_WOOD2_SN	= 0x9dbc,
+	ITEMID_MULTISTAIRS_WOOD2_SN	= ITEMID_MULTI + 0x1dbc,
 	ITEMID_MULTISTAIRS_WOOD2_WE,
 	ITEMID_MULTISTAIRS_WOOD2_NS,
 	ITEMID_MULTISTAIRS_WOOD2_EW,
-	ITEMID_MULTISTAIRS_STONE3_SN	= 0x9dc0,
+	ITEMID_MULTISTAIRS_STONE3_SN	= ITEMID_MULTI + 0x1dc0,
 	ITEMID_MULTISTAIRS_STONE3_WE,
 	ITEMID_MULTISTAIRS_STONE3_NS,
 	ITEMID_MULTISTAIRS_STONE3_EW,
-	ITEMID_MULTISTAIRS_MARBLE_SN	= 0x9dc4,
+	ITEMID_MULTISTAIRS_MARBLE_SN	= ITEMID_MULTI + 0x1dc4,
 	ITEMID_MULTISTAIRS_MARBLE_WE,
 	ITEMID_MULTISTAIRS_MARBLE_NS,
 	ITEMID_MULTISTAIRS_MARBLE_EW,
-	ITEMID_MULTISTAIRS_STONE4_SN	= 0x9dc8,
+	ITEMID_MULTISTAIRS_STONE4_SN	= ITEMID_MULTI + 0x1dc8,
 	ITEMID_MULTISTAIRS_STONE4_WE,
 	ITEMID_MULTISTAIRS_STONE4_NS,
 	ITEMID_MULTISTAIRS_STONE4_EW,
-	ITEMID_MULTISTAIRS_SANDSTONE_SN	= 0x9dcc,
+	ITEMID_MULTISTAIRS_SANDSTONE_SN	= ITEMID_MULTI + 0x1dcc,
 	ITEMID_MULTISTAIRS_SANDSTONE_WE,
 	ITEMID_MULTISTAIRS_SANDSTONE_NS,
 	ITEMID_MULTISTAIRS_SANDSTONE_EW,
-	ITEMID_MULTISTAIRS_STONE5_SN	= 0x9dd0,
+	ITEMID_MULTISTAIRS_STONE5_SN	= ITEMID_MULTI + 0x1dd0,
 	ITEMID_MULTISTAIRS_STONE5_WE,
 	ITEMID_MULTISTAIRS_STONE5_NS,
 	ITEMID_MULTISTAIRS_STONE5_EW,
-	ITEMID_MULTISTAIRS_CARPET_SN	= 0x9dd4,
+	ITEMID_MULTISTAIRS_CARPET_SN	= ITEMID_MULTI + 0x1dd4,
 	ITEMID_MULTISTAIRS_CARPET_WE,
 	ITEMID_MULTISTAIRS_CARPET_NS,
 	ITEMID_MULTISTAIRS_CARPET_EW,
-	ITEMID_MULTISTAIRS_CRYSTAL_SN	= 0x9dd8,
+	ITEMID_MULTISTAIRS_CRYSTAL_SN	= ITEMID_MULTI + 0x1dd8,
 	ITEMID_MULTISTAIRS_CRYSTAL_WE,
 	ITEMID_MULTISTAIRS_CRYSTAL_NS,
 	ITEMID_MULTISTAIRS_CRYSTAL_EW,
-	ITEMID_MULTISTAIRS_SHADOW_SN	= 0x9ddc,
+	ITEMID_MULTISTAIRS_SHADOW_SN	= ITEMID_MULTI + 0x1ddc,
 	ITEMID_MULTISTAIRS_SHADOW_WE,
 	ITEMID_MULTISTAIRS_SHADOW_NS,
 	ITEMID_MULTISTAIRS_SHADOW_EW,
@@ -1249,16 +1250,11 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 
 	// These overlap for now damnit !!! fix this.
 	// Special scriptable objects defined after this.
-	ITEMID_SCRIPT		= 0x4100,	// Script objects beyond here.
-	// ITEMID_SCRIPT1		= 0x5000,	// This should be the first scripted object really
-	// ITEMID_M_CAGE		= 0x50a0,
-	ITEMID_SCRIPT2		= 0x6000,	// Safe area for server admins.
-
-	ITEMID_QTY			= 0xFFFE,
+	ITEMID_QTY			= 0x10000,
 
 	// Put named items here.
-
-	ITEMID_TEMPLATE		= 0xFFFF,	// container item templates are beyond here.
+	ITEMID_SCRIPT2		= ITEMID_QTY,	// Safe area for server admins.
+	ITEMID_TEMPLATE		= ITEMID_SCRIPT2 + 0x9FFF,	// container item templates are beyond here.
 };
 
 // Door ID Attribute flags.
@@ -2021,6 +2017,13 @@ enum VERFILE_TYPE		// skew list. (verdata.mul)
 	VERFILE_QTY,				// NOTE: 021 is used for something ?!
 };
 
+enum VERFILE_FORMAT	// mul formats
+{
+	VERFORMAT_ORIGINAL = 0x01,	// original mul format
+	VERFORMAT_HIGHSEAS = 0x02,	// high seas mul format
+	VERFORMAT_QTY
+};
+
 struct CUOVersionBlock	// skew list. (verdata.mul)
 {
 	// First 4 bytes of this file = the qty of records.
@@ -2193,7 +2196,7 @@ public:
 
 struct CUOMapMeter	// 3 bytes (map0.mul)
 {
-	WORD m_wTerrainIndex;	// TERRAIN_TYPE index to Radarcol and CUOTerrainTypeRec
+	WORD m_wTerrainIndex;	// TERRAIN_TYPE index to Radarcol and CUOTerrainTypeRec/CUOTerrainTypeRec2
 	signed char m_z;
 	static bool IsTerrainNull( WORD wTerrainIndex )
 	{
@@ -2215,7 +2218,7 @@ struct CUOMapBlock	// 196 byte block = 8x8 meters, (map0.mul)
 
 struct CUOStaticItemRec	// 7 byte block = static items on the map (statics0.mul)
 {
-	WORD	m_wTileID;		// ITEMID_TYPE = Index to tile CUOItemTypeRec
+	WORD	m_wTileID;		// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	BYTE	m_x;		// x <= 7 = offset from block.
 	BYTE 	m_y;		// y <= 7
 	signed char m_z;	//
@@ -2243,13 +2246,25 @@ struct CUOTerrainTypeRec	// size = 0x1a = 26 (tiledata.mul)
 
 } PACK_NEEDED;
 
-struct CGrayTerrainInfo:public CUOTerrainTypeRec
+struct CUOTerrainTypeRec2	// size = 0x1e = 30 (tiledata.mul, High Seas+)
+{
+	// First half of tiledata.mul file is for terrain tiles.
+	DWORD m_flags;	// 0xc0=water, 0x40=dirt or rock, 0x60=lava, 0x50=cave, 0=floor
+	DWORD m_unknown;
+	WORD m_index;	// just counts up.  0 = unused.
+	char m_name[20];
+} PACK_NEEDED;
+
+struct CGrayTerrainInfo : public CUOTerrainTypeRec2
 {
 	CGrayTerrainInfo( TERRAIN_TYPE id );
 };
 
 	// 0x68800 = (( 0x4000 / 32 ) * 4 ) + ( 0x4000 * 26 )
 #define UOTILE_TERRAIN_SIZE ((( TERRAIN_QTY / UOTILE_BLOCK_QTY ) * 4 ) + ( TERRAIN_QTY * sizeof( CUOTerrainTypeRec )))
+
+	// 0x78800 = (( 0x4000 / 32 ) * 4 ) + ( 0x4000 * 30 )
+#define UOTILE_TERRAIN_SIZE2 ((( TERRAIN_QTY / UOTILE_BLOCK_QTY ) * 4 ) + ( TERRAIN_QTY * sizeof( CUOTerrainTypeRec2 )))
 
 struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 {	// Second half of tiledata.mul file is for item tiles (ITEMID_TYPE).
@@ -2297,7 +2312,20 @@ struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 	char m_name[20];	// sometimes legit not to have a name
 } PACK_NEEDED;
 
-struct CGrayItemInfo : public CUOItemTypeRec
+struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
+{
+	DWORD m_flags;
+	DWORD m_dwUnk5;		// ? new in HS
+	BYTE m_weight;		// 255 = unmovable.
+	BYTE m_layer;		// LAYER_TYPE for UFLAG1_EQUIP, UFLAG3_EQUIP2 or light index for UFLAG3_LIGHT
+	DWORD m_dwUnk11;	// ? qty in the case of UFLAG2_STACKABLE, Spell icons use this as well.
+	DWORD m_dwAnim;		// equipable items animation index. (50000 = male offset, 60000=female) Gump base as well
+	WORD m_wUnk19;		// ?
+	BYTE m_height;		// z height but may not be blocking. ex.UFLAG2_WINDOW
+	char m_name[20];	// sometimes legit not to have a name
+} PACK_NEEDED;
+
+struct CGrayItemInfo : public CUOItemTypeRec2
 {
 	CGrayItemInfo( ITEMID_TYPE id );
 };
@@ -2306,7 +2334,7 @@ struct CUOMultiItemRec // (Multi.mul)
 {
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files.
-	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec
+	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	short m_dx;		// signed delta.
 	short m_dy;
 	short m_dz;
@@ -2317,6 +2345,23 @@ struct CUOMultiItemRec // (Multi.mul)
 		return((ITEMID_TYPE) m_wTileID );
 	}
 
+} PACK_NEEDED;
+
+struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
+{
+	// Describe multi's like houses and boats. One single tile.
+	// From Multi.Idx and Multi.mul files
+	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
+	short m_dx;			// signed delta.
+	short m_dy;
+	short m_dz;
+	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
+	DWORD m_unknown;	// unknown data
+
+	ITEMID_TYPE GetDispID() const
+	{
+		return((ITEMID_TYPE) m_wTileID );
+	}
 } PACK_NEEDED;
 
 struct CUOHuesRec // (Hues.mul)

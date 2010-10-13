@@ -361,7 +361,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		const CRegionBase* pRegion = NULL;
 		CItem* pItem = NULL;
 		const CGrayMulti* pMulti = NULL;
-		const CUOMultiItemRec* pMultiItem = NULL;
+		const CUOMultiItemRec2* pMultiItem = NULL;
 		int iMultiQty = GetRegions(REGION_TYPE_MULTI, rlinks);
 
 		if ( *pszKey == '\0' )

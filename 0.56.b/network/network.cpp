@@ -998,7 +998,7 @@ void NetworkIn::tick(void)
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)
 		{
-			g_Log.EventWarn("Disconnecting client from account '%s' since it is causing exceptions problems\n", client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
+			g_Log.EventWarn("%x:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
 			client->m_client->addKick(&g_Serv, false);
 		}
 

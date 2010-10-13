@@ -668,13 +668,16 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
  *
  *
  ***************************************************************************/
-PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
+PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketContainerOpen::PacketContainerOpen");
 
 	writeInt32(container->GetUID());
 	writeInt16(gump);
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+		writeInt16(0);
 
+	trim();
 	push(target);
 }
 
@@ -1453,7 +1456,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	push(target);
 };
 
-PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 30, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget(2)");
 
@@ -1472,6 +1475,13 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	writeInt16(0); // y
 	writeInt16(0); // z
 
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	{
+		writeInt16(0);
+		writeInt16(0); // hue
+	}
+
+	trim();
 	push(target);
 };
 
@@ -4336,7 +4346,7 @@ PacketToggleHotbar::PacketToggleHotbar(const CClient* target, bool enable) : Pac
  *
  *
  ***************************************************************************/
-PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 24, item->GetUID())
+PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 26, item->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
 
@@ -4357,6 +4367,10 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 		id = (ITEMID_TYPE)(id - ITEMID_MULTI);
 		source = Multi;
 	}
+	else if (target->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS) && id >= ITEMID_MULTI_SA)
+	{
+		id = ITEMID_WorldGem;
+	}
 
 	writeInt16(1);
 	writeByte(source);// 0=tiledata,1=character,2=multi
@@ -4372,6 +4386,10 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	writeInt16(hue);
 	writeByte(flags);
 
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+		writeInt16(0);
+	
+	trim();
 	push(target);
 }
 
@@ -4404,5 +4422,43 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
 	writeInt16(rect.m_map);
 
 	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF6 : PacketMoveShip			move ship (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, int objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
+	
+	const CPointMap& shipLocation = ship->GetTopPoint();
+
+	initLength();
+	writeInt32(ship->GetUID());
+	writeByte(speed);
+	writeByte(direction);
+	writeByte(direction); // unknown
+	writeInt16(shipLocation.m_x);
+	writeInt16(shipLocation.m_y);
+	writeInt16(shipLocation.m_z);
+
+	// assume that first object is the ship itself
+	writeInt16(objectCount - 1);
+
+	for (int i = 1; i < objectCount; i++)
+	{
+		const CObjBase* object = objects[i];
+		const CPointMap& objectLocation = object->GetTopPoint();
+		
+		writeInt32(object->GetUID());
+		writeInt16(objectLocation.m_x);
+		writeInt16(objectLocation.m_y);
+		writeInt16(objectLocation.m_z);
+	}
 }
 

@@ -236,7 +236,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 
 	// Parts of multis ?
 	const CGrayMulti * pMulti 			= NULL;		// Multi Def (multi check)
-	const CUOMultiItemRec * pMultiItem 	= NULL;		// Multi item iterator
+	const CUOMultiItemRec2 * pMultiItem = NULL;		// Multi item iterator
 	CRegionBase * pRegion				= NULL;
 	CRegionLinks rlinks;
 	int iQtyr = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
@@ -650,7 +650,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 						int iItemQty = pMulti->GetItemCount();
 						for (int i = 0; i < iItemQty; i++)
 						{
-							const CUOMultiItemRec* pMultiItem = pMulti->GetItem(i);
+							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(i);
 							ASSERT(pMultiItem);
 
 							if ( !pMultiItem->m_visible )
@@ -756,7 +756,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 						int iQty = pMulti->GetItemCount();
 						for ( int i=0; i < iQty; i++ )
 						{
-							const CUOMultiItemRec * pMultiItem = pMulti->GetItem(i);
+							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(i);
 							ASSERT(pMultiItem);
 
 							if ( ! pMultiItem->m_visible )
@@ -999,7 +999,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 			//  ------------ For variables --------------------
 			CRegionBase * pRegion = NULL;
 			const CGrayMulti * pMulti = NULL;
-			const CUOMultiItemRec * pMultiItem = NULL;
+			const CUOMultiItemRec2 * pMultiItem = NULL;
 			x2 = 0;
 			y2 = 0;
 			//  ------------ For variables --------------------

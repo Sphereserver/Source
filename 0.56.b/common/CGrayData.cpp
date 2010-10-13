@@ -159,16 +159,30 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 	VERFILE_TYPE filedata;
 	long offset;
 	CUOIndexRec Index;
+	VERFILE_FORMAT format;
 	if ( g_VerData.FindVerDataBlock( VERFILE_TILEDATA, (id+TERRAIN_QTY)/UOTILE_BLOCK_QTY, Index ))
 	{
 		filedata = VERFILE_VERDATA;
+		format = VERFORMAT_ORIGINAL;
 		offset = Index.GetFileOffset() + 4 + (sizeof(CUOItemTypeRec)*(id%UOTILE_BLOCK_QTY));
 		ASSERT( Index.GetBlockLength() >= sizeof( CUOItemTypeRec ));
 	}
 	else
 	{
 		filedata = VERFILE_TILEDATA;
-		offset = UOTILE_TERRAIN_SIZE + 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOItemTypeRec ));
+		format = g_Install.GetMulFormat(filedata);
+		
+		switch (format)
+		{
+			case VERFORMAT_HIGHSEAS: // high seas format (CUOItemTypeRec2)
+				offset = UOTILE_TERRAIN_SIZE2 + 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOItemTypeRec2 ));
+				break;
+
+			case VERFORMAT_ORIGINAL: // original format (CUOItemTypeRec)
+			default:
+				offset = UOTILE_TERRAIN_SIZE + 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOItemTypeRec ));
+				break;
+		}
 	}
 
 	if ( g_Install.m_File[filedata].Seek( offset, SEEK_SET ) != offset )
@@ -176,9 +190,31 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileItemType.ReadInfo: TileData Seek");
 	}
 
-	if ( g_Install.m_File[filedata].Read( static_cast <CUOItemTypeRec *>(this), sizeof(CUOItemTypeRec)) <= 0 )
+	switch (format)
 	{
-		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileItemType.ReadInfo: TileData Read");
+		case VERFORMAT_HIGHSEAS: // high seas format (CUOItemTypeRec2)
+			if ( g_Install.m_File[filedata].Read( static_cast <CUOItemTypeRec2 *>(this), sizeof(CUOItemTypeRec2)) <= 0 )
+				throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileItemType.ReadInfo: TileData Read");
+			break;
+
+		case VERFORMAT_ORIGINAL: // old format (CUOItemTypeRec)
+		default:
+		{
+			CUOItemTypeRec record;
+			if ( g_Install.m_File[filedata].Read( static_cast <CUOItemTypeRec *>(&record), sizeof(CUOItemTypeRec)) <= 0 )
+				throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileTerrainType.ReadInfo: TileData Read");
+			
+			m_flags = record.m_flags;
+			m_weight = record.m_weight;
+			m_layer = record.m_layer;
+			m_dwAnim = record.m_dwAnim;
+			m_height = record.m_height;
+			m_wUnk19 = record.m_wUnk14;
+			m_dwUnk11 = record.m_dwUnk6;
+			m_dwUnk5 = 0;
+			strcpylen(m_name, record.m_name, COUNTOF(m_name));
+			break;
+		}
 	}
 }
 
@@ -189,16 +225,30 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 	VERFILE_TYPE filedata;
 	long offset;
 	CUOIndexRec Index;
+	VERFILE_FORMAT format;
 	if ( g_VerData.FindVerDataBlock( VERFILE_TILEDATA, id/UOTILE_BLOCK_QTY, Index ))
 	{
 		filedata = VERFILE_VERDATA;
+		format = VERFORMAT_ORIGINAL;
 		offset = Index.GetFileOffset() + 4 + (sizeof(CUOTerrainTypeRec)*(id%UOTILE_BLOCK_QTY));
 		ASSERT( Index.GetBlockLength() >= sizeof( CUOTerrainTypeRec ));
 	}
 	else
 	{
 		filedata = VERFILE_TILEDATA;
-		offset = 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOTerrainTypeRec ));
+		format = g_Install.GetMulFormat(filedata);
+
+		switch (format)
+		{
+			case VERFORMAT_HIGHSEAS: // high seas format (CUOTerrainTypeRec2)
+				offset = (id == 0? 0 : 4) + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOTerrainTypeRec2 ));
+				break;
+
+			case VERFORMAT_ORIGINAL: // original format (CUOTerrainTypeRec)
+			default:
+				offset = 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOTerrainTypeRec ));
+				break;
+		}
 	}
 
 	if ( g_Install.m_File[filedata].Seek( offset, SEEK_SET ) != offset )
@@ -206,9 +256,26 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileTerrainType.ReadInfo: TileData Seek");
 	}
 
-	if ( g_Install.m_File[filedata].Read(static_cast <CUOTerrainTypeRec *>(this), sizeof(CUOTerrainTypeRec)) <= 0 )
+	switch (format)
 	{
-		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileTerrainType.ReadInfo: TileData Read");
+		case VERFORMAT_HIGHSEAS: // high seas format (CUOTerrainTypeRec2)
+			if ( g_Install.m_File[filedata].Read(static_cast <CUOTerrainTypeRec2 *>(this), sizeof(CUOTerrainTypeRec2)) <= 0 )
+				throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileTerrainType.ReadInfo: TileData Read");
+			break;
+
+		case VERFORMAT_ORIGINAL: // old format (CUOTerrainTypeRec)
+		default:
+		{
+			CUOTerrainTypeRec record;
+			if ( g_Install.m_File[filedata].Read(static_cast <CUOTerrainTypeRec *>(&record), sizeof(CUOTerrainTypeRec)) <= 0 )
+				throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CTileTerrainType.ReadInfo: TileData Read");
+
+			m_flags = record.m_flags;
+			m_unknown = 0;
+			m_index = record.m_index;
+			strcpylen(m_name, record.m_name, COUNTOF(m_name));
+			break;
+		}
 	}
 }
 
@@ -220,21 +287,53 @@ int CGrayMulti::Load( MULTI_TYPE id )
 	Release();
 	InitCacheTime();		// This is invalid !
 
-	if ( id < 0 || id > MULTI_QTY )
+	if ( id < 0 || id >= MULTI_QTY )
 		return( 0 );
 	m_id = id;
 
 	CUOIndexRec Index;
 	if ( ! g_Install.ReadMulIndex( VERFILE_MULTIIDX, VERFILE_MULTI, id, Index ))
-		return( 0 );
+		return 0;
 
-	m_iItemQty = Index.GetBlockLength() / sizeof(CUOMultiItemRec);
-	m_pItems = new CUOMultiItemRec [ m_iItemQty ];
-	ASSERT( m_pItems );
-
-	if ( ! g_Install.ReadMulData( VERFILE_MULTI, Index, (void*) m_pItems ))
+	switch ( g_Install.GetMulFormat( VERFILE_MULTIIDX ) )
 	{
-		return( 0 );
+		case VERFORMAT_HIGHSEAS: // high seas multi format (CUOMultiItemRec2)
+			m_iItemQty = Index.GetBlockLength() / sizeof(CUOMultiItemRec2);
+			m_pItems = new CUOMultiItemRec2 [ m_iItemQty ];
+			ASSERT( m_pItems );
+
+			ASSERT( (sizeof(m_pItems[0]) * m_iItemQty) >= Index.GetBlockLength() );
+			if ( ! g_Install.ReadMulData( VERFILE_MULTI, Index, static_cast <CUOMultiItemRec2 *>(m_pItems) ))
+				return 0;
+			break;
+
+		case VERFORMAT_ORIGINAL: // old format (CUOMultiItemRec)
+		default:
+			m_iItemQty = Index.GetBlockLength() / sizeof(CUOMultiItemRec);
+			m_pItems = new CUOMultiItemRec2 [ m_iItemQty ];
+			ASSERT( m_pItems );
+
+			CUOMultiItemRec* pItems = new CUOMultiItemRec[m_iItemQty];
+			ASSERT( (sizeof(pItems[0]) * m_iItemQty) >= Index.GetBlockLength() );
+			if ( ! g_Install.ReadMulData( VERFILE_MULTI, Index, static_cast <CUOMultiItemRec *>(pItems) ))
+			{
+				delete[] pItems;
+				return 0;
+			}
+
+			// copy to new format
+			for (int i = 0; i < m_iItemQty; i++)
+			{
+				m_pItems[i].m_wTileID = pItems[i].m_wTileID;
+				m_pItems[i].m_dx = pItems[i].m_dx;
+				m_pItems[i].m_dy = pItems[i].m_dy;
+				m_pItems[i].m_dz = pItems[i].m_dz;
+				m_pItems[i].m_visible = pItems[i].m_visible;
+				m_pItems[i].m_unknown = 0;
+			}
+
+			delete[] pItems;
+			break;
 	}
 
 	HitCacheTime();

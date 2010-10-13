@@ -1313,7 +1313,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	const CGrayMapBlock * pBlock		= NULL;		// Block of the map (for statics)
 	const CUOStaticItemRec * pStatic	= NULL;		// Statics iterator (based on GrayMapBlock)
 	const CGrayMulti * pMulti 			= NULL;		// Multi Def (multi check)
-	const CUOMultiItemRec * pMultiItem	= NULL;		// Multi item iterator
+	const CUOMultiItemRec2 * pMultiItem	= NULL;		// Multi item iterator
 	CRegionBase * pRegion				= NULL;		// Nulti regions
 	CRegionLinks rlinks;							// Links to multi regions
 	CItem * pItem						= NULL;

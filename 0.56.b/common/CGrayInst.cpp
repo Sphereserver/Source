@@ -64,6 +64,28 @@ bool CGrayInstall::FindInstall()
 	return true;
 }
 
+void CGrayInstall::DetectMulVersions()
+{
+	ADDTOCALLSTACK("CGrayInstall::DetectMulVersions");
+
+	// assume all formats are original to start with
+	for (int i = 0; i < COUNTOF(m_FileFormat); i++)
+		m_FileFormat[i] = VERFORMAT_ORIGINAL;
+
+	// check for High Seas tiledata format
+	// this can be tested for by checking the file size, which was 3188736 bytes at release
+	if ( m_File[VERFILE_TILEDATA].IsFileOpen() && m_File[VERFILE_TILEDATA].GetLength() >= 3188736 )
+		m_FileFormat[VERFILE_TILEDATA] = VERFORMAT_HIGHSEAS;
+	
+	// check for High Seas multi format
+	// we can't use multi.mul length because it varies and multi.idx is always 98184 bytes, the best option
+	// so far seems to be to check the size of the first entry to see if its length is divisible by the new
+	// format length (risky if the first entry is custom and happens to be be divisible by both lengths)
+	CUOIndexRec index;
+	if (ReadMulIndex( VERFILE_MULTIIDX, VERFILE_MULTI, 0x00, index) && (index.GetBlockLength() % sizeof(CUOMultiItemRec2)) == 0)
+		m_FileFormat[VERFILE_MULTIIDX] = VERFORMAT_HIGHSEAS;
+}
+
 bool CGrayInstall::OpenFile( CGFile & file, LPCTSTR pszName, WORD wFlags )
 {
 	ADDTOCALLSTACK("CGrayInstall::OpenFile");
@@ -271,6 +293,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		}
 	}
 
+	DetectMulVersions();
 	g_MapList.Init();
 
 	char *z = Str_GetTemp(), *z1 = Str_GetTemp();

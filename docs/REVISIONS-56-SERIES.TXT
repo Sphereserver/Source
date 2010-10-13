@@ -4933,10 +4933,17 @@ ALPHA additions:
   * NOTE: The general override is applied before the viewer tag. So it will override EVERYTHING.
           Usable flags can be found on sphere_defs.scp
 
-09-10-2010, ShiryuX (script pack)
+09-10-2010, ShiryuX (Script pack)
 - Updated: sphere_defs.scp (added noto_types defintion)
 
-11-10-2010, Khaos (Script Pack)
-- Fixed: sphere_item_provisions_weapons_sa.scp; fixed some typos.
-- Fixed: spherechar_human.scp; Female barber was using male barber
-  names instead of the female name list.
+11-10-2010, Khaos (Script pack)
+- Updated: sphere_item_provisions_weapons_sa.scp (fixed some typos)
+- Updated: spherechar_human.scp (Female barber was using male barber names instead of
+  the female name list)
+
+13-10-2010, MrSugarCube
+- Added: Support for packet changes found in client 7.0.9.0.
+- Added: Support for new tiledata.mul and multi.mul formats found with client 7.0.9.0.
+  Since the tiledata size has increased again (supporting a maximum slot of 0FFFF),
+  multis must now start from 010000. If multi scripts are already using the new MULTIDEF
+  syntax then everything should work without any change to scripts.

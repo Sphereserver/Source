@@ -1655,4 +1655,17 @@ public:
 	PacketDisplayMapNew(const CClient* target, const CItemMap* map, const CRectMap& rect);
 };
 
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF6 : PacketMoveShip			move ship (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketMoveShip : public PacketSend
+{
+public:
+	PacketMoveShip(const CItemShip* ship, CObjBase** objects, int objectCount, DIR_TYPE direction, BYTE speed);
+};
+
 #endif
