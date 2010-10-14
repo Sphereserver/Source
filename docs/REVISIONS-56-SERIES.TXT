@@ -4947,3 +4947,6 @@ ALPHA additions:
   Since the tiledata size has increased again (supporting a maximum slot of 0FFFF),
   multis must now start from 010000. If multi scripts are already using the new MULTIDEF
   syntax then everything should work without any change to scripts.
+
+14-10-2010, MrSugarCube
+- Fixed #1832: Exception on Linux build when logging in.
