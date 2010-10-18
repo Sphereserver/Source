@@ -104,6 +104,9 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
+	int	iShipHeight	= Item_GetDef()->GetHeight();
+	if ( iShipHeight < 3 )
+		iShipHeight	= 3;
 
 	// always list myself first. All other items must see my new region !
 	int iCount = 0;
@@ -121,9 +124,11 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 			continue;
 		if ( pChar->IsDisconnected() && pChar->m_pNPC )
 			continue;
+
 		int zdiff = pChar->GetTopZ() - GetTopZ();
-		if ( abs( zdiff ) > 3 )
+		if ( zdiff < -3 || zdiff > iShipHeight )
 			continue;
+
 		ppObjList[iCount++] = pChar;
 	}
 
@@ -142,8 +147,9 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 				continue;
 			if ( ! pItem->IsMovable())
 				continue;
+
 			int zdiff = pItem->GetTopZ() - GetTopZ();
-			if ( abs( zdiff ) > 3 )
+			if ( zdiff < -3 || zdiff > iShipHeight )
 				continue;
 		}
 		ppObjList[iCount++] = pItem;

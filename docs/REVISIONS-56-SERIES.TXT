@@ -4950,3 +4950,7 @@ ALPHA additions:
 
 14-10-2010, MrSugarCube
 - Fixed #1832: Exception on Linux build when logging in.
+
+18-10-2010, MrSugarCube
+- Modified: Ships use their HEIGHT property to detect objects that are on the deck,
+  rather than assuming a value of 3.

@@ -3049,8 +3049,6 @@ bool CChar::CheckLocation( bool fStanding )
 			height	= 3;
 
 		if ( zdiff > height || zdiff < -3 )
-
-		// if ( abs(zdiff) > 3 )
 			continue;
 
 		CScriptTriggerArgs Args( (int) fStanding );
