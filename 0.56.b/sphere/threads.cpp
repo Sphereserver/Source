@@ -65,7 +65,7 @@ void ThreadHolder::push(IThread *thread)
 	init();
 	if( m_threadCount >= MAX_THREADS-1 )
 	{
-		throw new CException(LOGL_FATAL, 0, "Too many opened threads");
+		throw CException(LOGL_FATAL, 0, "Too many opened threads");
 	}
 
 	for( int i = 0; i < MAX_THREADS; i++ )
@@ -78,7 +78,7 @@ void ThreadHolder::push(IThread *thread)
 		}
 	}
 
-	throw new CException(LOGL_FATAL, 0, "Unable to find an empty slot for thread");
+	throw CException(LOGL_FATAL, 0, "Unable to find an empty slot for thread");
 }
 
 void ThreadHolder::pop(IThread *thread)
@@ -86,7 +86,7 @@ void ThreadHolder::pop(IThread *thread)
 	init();
 	if( m_threadCount <= 0 )
 	{
-		throw new CException(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
+		throw CException(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
 	}
 
 	for( int i = 0; i < MAX_THREADS; i++ )
@@ -102,7 +102,7 @@ void ThreadHolder::pop(IThread *thread)
 		}
 	}
 
-	throw new CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
+	throw CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
 }
 
 int ThreadHolder::getActiveThreads()
@@ -147,7 +147,7 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 #ifdef _WIN32
 		if( CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK )
 		{
-			throw new CException(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
+			throw CException(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
 		}
 #endif
 		AbstractThread::m_threadsAvailable++;
@@ -192,7 +192,7 @@ void AbstractThread::start()
 	if ( pthread_create( &m_handle, NULL, &runner, this ) )
 	{
 		m_handle = (spherethread_t) NULL;
-		throw new CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
+		throw CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
 	}
 	else
 		m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
@@ -298,6 +298,7 @@ void AbstractThread::run()
 		if( shouldExit() )
 		{
 			terminate();
+			return;
 		}
 
 		SleepEx(m_tickPeriod, TRUE);
@@ -401,7 +402,7 @@ void AbstractThread::setPriority(IThread::Priority pri)
 			m_tickPeriod = 0;
 			break;
 		default:
-			throw new CException(LOGL_FATAL, 0, "Unable to determine thread priority");
+			throw CException(LOGL_FATAL, 0, "Unable to determine thread priority");
 	}
 }
 
@@ -475,7 +476,7 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 			// but the best is to throw an exception to give better formed information for end users
 			// rather than access violations
 			DEBUG_WARN(( "Thread temporary string buffer is full.\n" ));
-			throw new CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
+			throw CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}
 }

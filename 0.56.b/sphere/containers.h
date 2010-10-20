@@ -70,7 +70,7 @@ public:
 	void pop(void)
 	{
 		if (empty())
-			throw new CException(LOGL_ERROR, 0, "No elements to read from queue.");
+			throw CException(LOGL_ERROR, 0, "No elements to read from queue.");
 
 		iterator next = m_head;
 		next++;
@@ -92,7 +92,7 @@ public:
 		}
 
 		// this should never happen
-		throw new CException(LOGL_ERROR, 0, "No elements to read from queue.");
+		throw CException(LOGL_ERROR, 0, "No elements to read from queue.");
 	}
 };
 

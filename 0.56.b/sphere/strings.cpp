@@ -186,7 +186,7 @@ void String::ensureLength(int newLength)
 
 		if( newBuf == NULL )
 		{
-			throw new CException(LOGL_FATAL, 0, "Run out of memory while allocating memory for string");
+			throw CException(LOGL_FATAL, 0, "Run out of memory while allocating memory for string");
 		}
 
 		if( m_buf != NULL )
@@ -280,10 +280,33 @@ void TemporaryString::ensureLength(int newLength)
 	{
 		if( newLength >= m_realLength )
 		{
-			// NOTE: in the future rather than throw an exception, we should simulate a normal string instead
-			// meaning: 1. allocate memory, 2. move data there, 3. clear the state of the used string, so to move
-			// to heap if thread context does not suit.
-			throw new CException(LOGL_FATAL, 0, "Too long line was requested to be constructed for current context");
+			// switch back to behaving like a normal string, since the thread context does not have the
+			// capacity we need. To accomplish this we:
+			// 1. create a new buffer with the desired length (+20%)
+			// 2. copy the old buffer content to the new buffer
+			// 3. replace the old buffer with the new buffer
+			// 4. clear the state to allow the old buffer to be used elsewhere
+			// 5. flag this string instance to use the heap (String::)
+			
+			m_realLength = newLength + newLength/5;
+			char *newBuf = new char[m_realLength+1];
+			if ( newBuf == NULL )
+				throw CException(LOGL_FATAL, 0, "Run out of memory while allocating memory for string");
+
+			strncpy(newBuf, m_buf, m_length);
+			newBuf[m_length] = '\0';
+			
+			m_buf = newBuf;
+			if( m_state != NULL )
+			{
+				*m_state = '\0';
+				m_state = NULL;
+			}
+
+			m_useHeap = true;
 		}
+
+		m_length = newLength;
+		m_buf[m_length] = '\0';
 	}
 }

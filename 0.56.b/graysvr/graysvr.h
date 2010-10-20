@@ -1509,6 +1509,7 @@ public:
 
 protected:
 	virtual void onStart();
+	virtual bool shouldExit();
 };
 
 //////////////////////////////////////////////////////////////

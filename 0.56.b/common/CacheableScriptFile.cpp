@@ -73,9 +73,11 @@ void CacheableScriptFile::CloseBase()
 		//	clear all data
 		if( m_realFile ) 
 		{
-			m_fileContent->clear();
-			if ( m_fileContent )
+			if ( m_fileContent != NULL )
+			{
+				m_fileContent->clear();
 				delete m_fileContent;
+			}
 		}
 
 		m_fileContent = NULL;

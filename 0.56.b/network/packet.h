@@ -39,7 +39,7 @@ public:
 	long getLength(void) const;
 	long getPosition(void) const;
 	BYTE* getData(void) const;
-	TCHAR* dump(void) const;
+	void dump(AbstractString& output) const;
 
 	void expand(long size = 0); // expand packet (resize whilst maintaining position)
 	void resize(long newsize); // resize packet

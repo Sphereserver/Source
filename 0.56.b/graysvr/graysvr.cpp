@@ -466,8 +466,11 @@ void Main::onStart()
 void Main::tick()
 {
 	Sphere_OnTick();
-	if (g_Serv.m_iExitFlag != 0)
-		terminate();
+}
+
+bool Main::shouldExit()
+{
+	return g_Serv.m_iExitFlag != 0;
 }
 
 Main g_Main;

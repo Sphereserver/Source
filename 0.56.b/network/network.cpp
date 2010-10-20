@@ -38,11 +38,12 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 		return;
 #endif
 
-	TCHAR* dump = packet->dump();
+	TemporaryString dump;
+	packet->dump(dump);
 
 #ifdef _DEBUG
 	// write to console
-	g_Log.EventDebug("%s %s\n", heading, dump);
+	g_Log.EventDebug("%s %s\n", heading, (LPCTSTR)dump);
 #endif
 
 	// build file name
@@ -65,7 +66,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 	CFileText out;
 	if (out.Open(sFullFileName, OF_READWRITE|OF_TEXT))
 	{
-		out.Printf("%s %s\n\n", heading, dump);
+		out.Printf("%s %s\n\n", heading, (LPCTSTR)dump);
 		out.Close();
 	}
 }
@@ -993,7 +994,10 @@ void NetworkIn::tick(void)
 
 		EXC_CATCHSUB("Network");
 		EXC_DEBUGSUB_START;
-		g_Log.EventDebug("%x:Parsing %s", client->id(), packet->dump());
+		TemporaryString dump;
+		packet->dump(dump);
+
+		g_Log.EventDebug("%x:Parsing %s", client->id(), (LPCTSTR)dump);
 
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)

@@ -872,7 +872,7 @@ long Packet::readStringNullNUNICODE(char* buffer, long bufferSize, long maxlengt
 	return l;
 }
 
-TCHAR* Packet::dump(void) const
+void Packet::dump(AbstractString& output) const
 {
 	// macro to hide password bytes in release mode
 #ifndef _DEBUG
@@ -881,14 +881,13 @@ TCHAR* Packet::dump(void) const
 #else
 #	define PROTECT_BYTE(_b_)
 #endif
-	
 
 	TemporaryString z;
-	TemporaryString output;
 
-	sprintf(output, "Packet len=%d id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
-	strcat(output, "        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
-	strcat(output, "       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
+	sprintf(z, "Packet len=%d id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
+	output.append(z);
+	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
+	output.append("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
 
 	int byteIndex = 0;
 	int whole = m_length >> 4;
@@ -923,11 +922,11 @@ TCHAR* Packet::dump(void) const
 		}
 
 		sprintf(z, "%04x   ", byteIndex);
-		strcat(output, z);
-		strcat(output, bytes);
-		strcat(output, "  ");
-		strcat(output, chars);
-		strcat(output, "\n");
+		output.append(z);
+		output.append(bytes);
+		output.append("  ");
+		output.append(chars);
+		output.append("\n");
 	}
 
 	if (rem != 0)
@@ -960,14 +959,12 @@ TCHAR* Packet::dump(void) const
 		}
 
 		sprintf(z, "%04x   ", byteIndex);
-		strcat(output, z);
-		strcat(output, bytes);
-		strcat(output, "  ");
-		strcat(output, chars);
-		strcat(output, "\n");
+		output.append(z);
+		output.append(bytes);
+		output.append("  ");
+		output.append(chars);
+		output.append("\n");
 	}
-
-	return output;
 #undef PROTECT_BYTE
 }
 
