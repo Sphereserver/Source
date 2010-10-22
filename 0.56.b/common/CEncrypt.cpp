@@ -917,7 +917,7 @@ void CCrypt::EncryptMD5( BYTE * pOutput, const BYTE * pInput, int iLen )
 void CCrypt::DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, int iLen )
 {
 	ADDTOCALLSTACK("CCrypt::DecryptBlowFish");
-	if ( m_gameStreamPos + iLen > CRYPT_GAMETABLE_TRIGGER) 
+	while ( (m_gameStreamPos + iLen) > CRYPT_GAMETABLE_TRIGGER) 
 	{
 		int lenOld = CRYPT_GAMETABLE_TRIGGER - m_gameStreamPos;
 

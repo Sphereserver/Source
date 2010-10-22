@@ -693,6 +693,8 @@ void NetworkIn::tick(void)
 			continue;
 		}
 
+		ASSERT(received <= NETWORK_BUFFERSIZE);
+
 		EXC_SET("start client profile");
 		CurrentProfileData.Count(PROFILE_DATA_RX, received);
 		ProfileTask clientTask(PROFILE_CLIENTS);
@@ -794,7 +796,7 @@ void NetworkIn::tick(void)
 				}
 			}
 
-			if (!received)
+			if (received == 0)
 			{
 				if (client->m_seed == 0xFFFFFFFF)
 				{
@@ -1224,16 +1226,25 @@ void NetworkIn::registerEncoded(int packetId, Packet* handler)
 
 Packet* NetworkIn::getHandler(int packetId) const
 {
+	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
+		return NULL;
+
 	return m_handlers[packetId];
 }
 
 Packet* NetworkIn::getExtendedHandler(int packetId) const
 {
+	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
+		return NULL;
+
 	return m_extended[packetId];
 }
 
 Packet* NetworkIn::getEncodedHandler(int packetId) const
 {
+	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
+		return NULL;
+
 	return m_encoded[packetId];
 }
 

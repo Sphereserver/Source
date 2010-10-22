@@ -645,7 +645,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 	// NOTE: Anything else we get at this point is tossed !
 	ASSERT( GetConnectType() == CONNECT_CRYPT );
 	ASSERT( !m_Crypt.IsInit());
-	ASSERT( iLen );
+	ASSERT( iLen > 0 );
 
 	// Try all client versions on the msg.
 	CEvent bincopy;		// in buffer. (from client)

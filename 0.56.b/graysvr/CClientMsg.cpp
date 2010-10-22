@@ -3031,7 +3031,7 @@ BYTE CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
 
 	if ( ! GetAccount())
 		return( PacketLoginError::Invalid );
-	if ( iSlot >= COUNTOF(m_tmSetupCharList))
+	if ( iSlot < 0 || iSlot >= COUNTOF(m_tmSetupCharList))
 		return( PacketLoginError::BadCharacter );
 
 	CChar * pChar = m_tmSetupCharList[ iSlot ].CharFind();
@@ -3054,7 +3054,7 @@ BYTE CClient::Setup_Delete( int iSlot ) // Deletion of character
 	ADDTOCALLSTACK("CClient::Setup_Delete");
 	ASSERT( GetAccount() );
 	DEBUG_MSG(( "%x:Setup_Delete slot=%d\n", GetSocketID(), iSlot ));
-	if ( iSlot >= COUNTOF(m_tmSetupCharList))
+	if ( iSlot < 0 || iSlot >= COUNTOF(m_tmSetupCharList))
 		return PacketDeleteError::NotExist;
 
 	CChar * pChar = m_tmSetupCharList[iSlot].CharFind();

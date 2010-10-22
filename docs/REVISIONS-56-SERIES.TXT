@@ -4954,3 +4954,6 @@ ALPHA additions:
 18-10-2010, MrSugarCube
 - Modified: Ships use their HEIGHT property to detect objects that are on the deck,
   rather than assuming a value of 3.
+
+22-10-2010, MrSugarCube
+- Fixed #1828: Instability when receiving large amounts of data from a client.
