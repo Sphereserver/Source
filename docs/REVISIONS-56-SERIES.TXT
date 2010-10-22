@@ -4957,5 +4957,7 @@ ALPHA additions:
 
 22-10-2010, MrSugarCube
 - Fixed #1828: Instability when receiving large amounts of data from a client.
+- Fixed #1838: Fixed "Bad MENU item id" error when trying to display a custom item in a
+  menu or skill menu.
 - Fixed #1839: Exception when showing the edit menu for a container containing more than
   64 items.
