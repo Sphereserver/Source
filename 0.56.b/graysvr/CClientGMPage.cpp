@@ -105,7 +105,7 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 		if ( pGM != NULL )
 			continue;
 
-		if ( ++count >= COUNTOF( item )-1 )
+		if ( ++count >= (COUNTOF( item )-1) )
 		{
 			// Add the "MORE" option if there is more than 1 more.
 			if ( pPage->GetNext() != NULL )
@@ -134,6 +134,8 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 		SysMessage( "No GM pages queued. Use .page ?" );
 		return;
 	}
+
+	ASSERT(count < COUNTOF(item));
 	addItemMenu( CLIMODE_MENU_GM_PAGES, item, count );
 }
 

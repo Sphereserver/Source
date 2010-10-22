@@ -926,16 +926,20 @@ void CClient::Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj )
 	{
 		if ( ! s.IsKey( "ON" ))
 			continue;
-		if ( ++i >= COUNTOF( item ))
-			break;
+
+		i++;
 		if ( ! item[i].ParseLine( s.GetArgRaw(), pObj, m_pChar ))
 		{
 			i--;			
 		}
+
+		if ( i >= (COUNTOF( item ) - 1))
+			break;
 	}
 
 	m_tmMenu.m_ResourceID = rid;
 
+	ASSERT(i < COUNTOF(item));
 	addItemMenu( CLIMODE_MENU, item, i, pObj );
 }
 

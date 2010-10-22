@@ -626,17 +626,15 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 		}
 		return;
 	}
-
-	CMenuItem item[MAX_MENU_ITEMS];	// Most as we want to display at one time.
+	
+	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];	// Most as we want to display at one time.
 	item[0].m_sText.Format( "Contents of %s", (LPCTSTR) pObj->GetName());
 
 	int count = 0;
 	CItem * pItemNext;
 	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
-		if ( ++count >= MAX_MENU_ITEMS )
-			break;
-
+		count++;
 		pItemNext = pItem->GetNext();
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
@@ -653,8 +651,12 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 				item[count].m_color = wHue;
 			}
 		}
+		
+		if ( count >= (COUNTOF( item ) - 1) )
+			break;
 	}
-
+	
+	ASSERT(count < COUNTOF(item));
 	addItemMenu( CLIMODE_MENU_EDIT, item, count, pObj );
 }
 
@@ -759,7 +761,8 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 			g_Log.EventDebug("SCRIPT: Too many empty skill menus to continue seeking through menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName());
 	}
-
+	
+	ASSERT(iShowCount < COUNTOF(item));
 	addItemMenu( CLIMODE_MENU_SKILL, item, iShowCount );
 	return( true );
 }
@@ -864,7 +867,7 @@ int CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem*
 				{
 					m_tmMenu.m_Item[iShowCount] = iOnCount;
 				}
-				if ( iShowCount >= iMaxSize-1 )
+				if ( iShowCount >= (iMaxSize-1) )
 					break;
 			}
 			else
@@ -1208,7 +1211,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();
 			m_tmMenu.m_Item[count] = pChar->GetUID();
-			if ( count >= COUNTOF( item )-1 )
+			if ( count >= (COUNTOF( item )-1) )
 				break;
 		}
 
@@ -1216,6 +1219,8 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		{
 			// Some credit for trying.
 			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandVal( 30 ));
+
+			ASSERT(count < COUNTOF(item));
 			addItemMenu( CLIMODE_MENU_SKILL_TRACK, item, count );
 			return( true );
 		}
