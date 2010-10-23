@@ -571,6 +571,10 @@ bool CItemContainer::NotifyDelete()
 	if ( CItem::NotifyDelete() == false )
 		return false;
 
+	// ensure trade contents are moved out
+	if ( IsType(IT_EQ_TRADE_WINDOW) )
+		Trade_Delete();
+
 	ContentNotifyDelete();
 	return true;
 }

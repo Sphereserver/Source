@@ -4961,3 +4961,7 @@ ALPHA additions:
   menu or skill menu.
 - Fixed #1839: Exception when showing the edit menu for a container containing more than
   64 items.
+
+23-10-2010, MrSugarCube
+- Fixed #1835: @Destroy incorrectly firing on trade window contents when the container
+  is removed.
