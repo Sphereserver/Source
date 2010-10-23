@@ -1549,10 +1549,13 @@ do_default:
 				}
 
 				TCHAR * ppLevel_sep[100];
-				TCHAR * FameAt0 = new TCHAR[strlen(g_Cfg.m_Fame.GetAt( 0 ))+1];
-				strcpylen(FameAt0, g_Cfg.m_Fame.GetAt( 0 ));
-				short int i = Str_ParseCmds( FameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
-				short int iFame = Stat_GetAdjusted(STAT_FAME);
+				const CGString* pFameAt0 = g_Cfg.m_Fame.GetAt(0);
+
+				TCHAR * pszFameAt0 = new TCHAR[pFameAt0->GetLength() + 1];
+				strcpylen(pszFameAt0, pFameAt0->GetPtr());
+
+				int i = Str_ParseCmds( pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
+				int iFame = Stat_GetAdjusted(STAT_FAME);
 				for ( ; i >= 0 ; --i )
 				{
 					if ( !IsStrNumeric( ppLevel_sep[i] ) )
@@ -1562,13 +1565,14 @@ do_default:
 					}
 					else if ( iFame >= ATOI(ppLevel_sep[ i ]) )
 					{
-						sVal = ( ! strcmpi( (pszKey+5), g_Cfg.m_Fame.GetAt( i+1 ) )) ? "1" : "0";
-						delete[] FameAt0;
+						sVal = ( ! g_Cfg.m_Fame.GetAt(i + 1)->CompareNoCase( pszKey + 5 )) ? "1" : "0";
+						delete[] pszFameAt0;
 						return( true );
 					}
 				}
+
 				sVal = 0;
-				delete[] FameAt0;
+				delete[] pszFameAt0;
 				return( true );
 			}
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers.
@@ -1619,10 +1623,14 @@ do_default:
 				}
 
 				TCHAR * ppLevel_sep[100];
-				TCHAR * KarmaAt0 = new TCHAR[strlen(g_Cfg.m_Karma.GetAt( 0 ))+1];
-				strcpylen(KarmaAt0, g_Cfg.m_Karma.GetAt( 0 ));
-				short int i = Str_ParseCmds( KarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
-				short int iKarma = Stat_GetAdjusted(STAT_KARMA);
+				const CGString* pKarmaAt0 = g_Cfg.m_Karma.GetAt(0);
+
+				TCHAR * pszKarmaAt0 = new TCHAR[pKarmaAt0->GetLength() + 1];
+				strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
+
+				int i = Str_ParseCmds( pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
+				int iKarma = Stat_GetAdjusted(STAT_KARMA);
+
 				for ( ; i >= 0 ; --i )
 				{
 					if ( ppLevel_sep[i][0] != '-' && !IsStrNumeric( ppLevel_sep[i] ) )
@@ -1632,13 +1640,14 @@ do_default:
 					}
 					else if ( iKarma >= ATOI(ppLevel_sep[ i ]) )
 					{
-						sVal = ( ! strcmpi( (pszKey+6), g_Cfg.m_Karma.GetAt( i+1 ) )) ? "1" : "0";
-						delete[] KarmaAt0;
+						sVal = ( ! g_Cfg.m_Karma.GetAt(i + 1)->CompareNoCase( pszKey + 6 )) ? "1" : "0";
+						delete[] pszKarmaAt0;
 						return( true );
 					}
 				}
+
 				sVal = 0;
-				delete[] KarmaAt0;
+				delete[] pszKarmaAt0;
 				return( true );
 			}
 		case CHC_AR:

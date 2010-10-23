@@ -887,13 +887,13 @@ public:
 	CResourceScript m_scpTables;
 
 	CStringSortArray m_Obscene;	// Bad Names/Words etc.
-	CGObArray< TCHAR* > m_Fame;	// fame titles (fame.famous)
-	CGObArray< TCHAR* > m_Karma;	// karma titles (karma.wicked)
-	CGObArray< TCHAR* > m_Runes;	// Words of power. (A-Z)
+	CGObArray< CGString* > m_Fame;	// fame titles (fame.famous)
+	CGObArray< CGString* > m_Karma;	// karma titles (karma.wicked)
+	CGObArray< CGString* > m_Runes;	// Words of power. (A-Z)
 
 	CGTypedArray< int, int > m_NotoKarmaLevels; // karma levels for noto titles
 	CGTypedArray< int, int > m_NotoFameLevels; // fame levels for noto titles
-	CGObArray< TCHAR* > m_NotoTitles;	// Noto titles.
+	CGObArray< CGString* > m_NotoTitles;	// Noto titles.
 
 	CMultiDefArray m_MultiDefs;	// read from the MUL files. Cached here on demand.
 
@@ -1026,7 +1026,7 @@ public:
 		ch = toupper(ch) - 'A';
 		if ( ! m_Runes.IsValidIndex(ch))
 			return "?";
-		return( m_Runes[ ch ] );
+		return( m_Runes[ ch ]->GetPtr() );
 	}
 	LPCTSTR GetNotoTitle( int iLevel, bool bFemale ) const;
 

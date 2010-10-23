@@ -2332,7 +2332,8 @@ void CWorld::OnTick()
 CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 {
 	ADDTOCALLSTACK("CWorld::GetSector");
-									// if the map is not supported, return empty sector
+
+	// if the map is not supported, return empty sector
 	if (( map < 0 ) || ( map >= 256 ) || !g_MapList.m_maps[map] ) return NULL;
 
 	if ( i >= g_MapList.GetSectorQty(map) )

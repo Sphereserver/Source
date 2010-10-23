@@ -624,6 +624,21 @@ public:
 
 struct CStringSortArray : public CGObSortArray< TCHAR*, TCHAR* >
 {
+	virtual void DestructElements( TCHAR** pElements, int nCount )
+	{
+		// delete the objects that we own.
+		for ( int i = 0; i < nCount; i++ )
+		{
+			if ( pElements[i] != NULL )
+			{
+				delete[] pElements[i];
+				pElements[i] = NULL;
+			}
+		}
+
+		CGObSortArray<TCHAR*, TCHAR*>::DestructElements(pElements, nCount);
+	}
+
 	// Sorted array of strings
 	int CompareKey( TCHAR* pszID1, TCHAR* pszID2, bool fNoSpaces ) const
 	{

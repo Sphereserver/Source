@@ -1452,15 +1452,17 @@ LPCTSTR CResource::GetNotoTitle( int iLevel, bool bFemale ) const
 	else
 	{
 		// check if a female title is present
-		char* pFemaleTitle = strchr(m_NotoTitles[iLevel], ',');
+		LPCTSTR pFemaleTitle = strchr(m_NotoTitles[iLevel]->GetPtr(), ',');
 		if (pFemaleTitle == NULL)
-			return m_NotoTitles[iLevel];
-		else if (bFemale == true)
-			return pFemaleTitle+1;
+			return m_NotoTitles[iLevel]->GetPtr();
 
+		pFemaleTitle++;
+		if (bFemale)
+			return pFemaleTitle;
+		
 		// copy string so that it can be null-terminated without modifying m_NotoTitles
-		char* pTitle = Str_GetTemp();
-		strcpylen(pTitle, m_NotoTitles[iLevel], strlen(m_NotoTitles[iLevel]) - strlen(pFemaleTitle+1));
+		TCHAR* pTitle = Str_GetTemp();
+		strcpylen(pTitle, m_NotoTitles[iLevel]->GetPtr(), m_NotoTitles[iLevel]->GetLength() - strlen(pFemaleTitle));
 		return pTitle;
 	}
 }
@@ -1544,10 +1546,11 @@ bool CResource::IsObscene( LPCTSTR pszText ) const
 
 	for ( int i=0; i<m_Obscene.GetCount(); i++ )
 	{
-		char * match = new char[ strlen(m_Obscene[i])+3 ];
+		TCHAR* match = new TCHAR[ strlen(m_Obscene[i])+3 ];
 		sprintf(match,"%s%s%s","*",m_Obscene[i],"*");
 		MATCH_TYPE ematch = Str_Match( match , pszText );
 		delete[] match;
+
 		if ( ematch == MATCH_VALID )
 			return( true );
 	}
@@ -2179,9 +2182,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				LPCTSTR pName = pScript->GetKeyBuffer();
 				if ( *pName == '<' )
 					pName = "";
-				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
-				strcpy( pNew, pName );
-				m_Fame.SetAtGrow( i, pNew );
+				
+				m_Fame.SetAtGrow( i, new CGString(pName) );
 				++i;
 			}
 		}
@@ -2194,9 +2196,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				LPCSTR pName = pScript->GetKeyBuffer();
 				if ( *pName == '<' )
 					pName = "";
-				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
-				strcpy( pNew, pName );
-				m_Karma.SetAtGrow( i, pNew );
+				
+				m_Karma.SetAtGrow( i, new CGString(pName) );
 				++i;
 			}
 		}
@@ -2239,9 +2240,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				LPCSTR pName = pScript->GetKeyBuffer();
 				if ( *pName == '<' )
 					pName = "";
-				TCHAR * pNew = new TCHAR [ strlen( pName ) + 1 ];
-				strcpy( pNew, pName );
-				m_NotoTitles.SetAtGrow( i, pNew );
+
+				m_NotoTitles.SetAtGrow( i, new CGString(pName) );
 				++i;
 			}
 
@@ -2279,9 +2279,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		m_Runes.RemoveAll();
 		while ( pScript->ReadKey())
 		{
-			TCHAR * pNew = new TCHAR [ strlen( pScript->GetKey()) + 1 ];
-			strcpy( pNew, pScript->GetKey());
-			m_Runes.Add( pNew );
+			m_Runes.Add( new CGString(pScript->GetKey()) );
 		}
 		return( true );
 	case RES_SECTOR: // saved in world file.
