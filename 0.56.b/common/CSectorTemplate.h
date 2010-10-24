@@ -73,6 +73,7 @@ public:
 	CItemsList m_Items_Inert;				// CItem(s) in this CSector. (no timer required)
 public:
 	CSectorBase();
+	~CSectorBase();
 	void Init(int index, int newmap);
 
 	// Location map units.
@@ -83,6 +84,7 @@ public:
 	bool IsInDungeon() const;
 
 	bool static CheckMapBlockTime( const MapBlockCache::value_type& Elem );
+	void ClearMapBlockCache();
 	void CheckMapBlockCache();
 	static int m_iMapBlockCacheTime;
 	const CGrayMapBlock * GetMapBlock( const CPointMap & pt );

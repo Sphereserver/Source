@@ -22,14 +22,14 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::OpenBase");
-	m_fileContent = new std::vector<std::string>();
+
 	m_pStream = fopen(GetFilePath(), GetModeStr());
-	
 	if( m_pStream == NULL ) 
 	{
 		return false;
 	}
 
+	m_fileContent = new std::vector<std::string>();
 	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
 	TemporaryString buf;

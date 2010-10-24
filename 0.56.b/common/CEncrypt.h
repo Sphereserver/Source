@@ -100,6 +100,7 @@ protected:
 	static const WORD packet_size[0xde];
 
 public:
+	static void ClearKeyTable(void);
 	static void LoadKeyTable(CScript & s);
 	static std::vector<CCryptClientKey *> client_keys;
 	static void addNoCryptKey(void);

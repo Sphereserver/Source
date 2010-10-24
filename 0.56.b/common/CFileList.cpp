@@ -7,23 +7,23 @@
 
 #if defined(_WIN32)
 #include <io.h> 		// findfirst
-static struct _finddata_t fileinfo;
 #else	// LINUX
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-static struct dirent * fileinfo;
-static DIR * dirp;
 #endif
 
 // Similar to the MFC CFileFind
 bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD & dwSize ) // static
 {
 	ADDTOCALLSTACK("CFileList::ReadFileInfo");
-#if defined(_WIN32)
+#ifdef _WIN32
+	// WIN32
+	struct _finddata_t fileinfo;
 	fileinfo.attrib = _A_NORMAL;
 	long lFind = _findfirst( pszFilePath, &fileinfo );
+
 	if ( lFind == -1 )
 #else
 	// LINUX
@@ -34,7 +34,9 @@ bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD 
 		DEBUG_ERR(( "Can't open input dir [%s]\n", pszFilePath ));
 		return( false );
 	}
-#if defined(_WIN32)
+
+#ifdef _WIN32
+	// WIN32
 	dwDateChange = fileinfo.time_write;
 	dwSize = fileinfo.size;
 	_findclose( lFind );
@@ -43,6 +45,7 @@ bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD 
 	dwDateChange = fileStat.st_mtime;
 	dwSize = fileStat.st_size;
 #endif
+
 	return( true );
 }
 
@@ -61,8 +64,10 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 	}
 #endif
 
-#if defined(_WIN32)
+#ifdef _WIN32
+	struct _finddata_t fileinfo;
 	long lFind = _findfirst(szFileDir, &fileinfo);
+
 	if ( lFind == -1 )
 #else
 	char szFilename[_MAX_PATH];
@@ -75,7 +80,10 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 			break;
 		}
 	}
-	dirp = opendir(szFileDir);
+	
+	DIR* dirp = opendir(szFileDir);
+	struct dirent * fileinfo = NULL;
+
 	if ( !dirp )
 #endif
 	{
@@ -107,9 +115,12 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 	}
 #if defined(_WIN32)
 	while ( !_findnext(lFind, &fileinfo));
+
 	_findclose(lFind);
 #else
 	while ( fileinfo != NULL );
+
+	closedir(dirp);
 #endif
 	return GetCount();
 }

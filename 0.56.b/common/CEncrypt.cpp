@@ -10,10 +10,24 @@
 
 std::vector<CCryptClientKey *> CCrypt::client_keys;
 
+void CCrypt::ClearKeyTable(void)
+{
+	ADDTOCALLSTACK("CCrypt::ClearKeyTable");
+	
+	for ( int i = 0; i < client_keys.size(); i++ )
+	{
+		CCryptClientKey* key = client_keys.at(i);
+
+		delete key;
+	}
+
+	client_keys.clear();
+}
+
 void CCrypt::LoadKeyTable(CScript & s)
 {
 	ADDTOCALLSTACK("CCrypt::LoadKeyTable");
-	client_keys.clear();
+	ClearKeyTable();
 
 	// Always add nocrypt
 	addNoCryptKey();

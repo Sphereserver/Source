@@ -93,6 +93,11 @@ CSectorBase::CSectorBase()
 	m_index = 0;
 }
 
+CSectorBase::~CSectorBase()
+{
+	ClearMapBlockCache();
+}
+
 void CSectorBase::Init(int index, int newmap)
 {
 	ADDTOCALLSTACK("CSectorBase::Init");
@@ -128,6 +133,16 @@ bool CSectorBase::CheckMapBlockTime( const MapBlockCache::value_type& Elem ) //s
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");
 	return (Elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
+}
+
+void CSectorBase::ClearMapBlockCache()
+{
+	ADDTOCALLSTACK("CSectorBase::ClearMapBlockCache");
+
+	for (MapBlockCache::iterator it = m_MapBlockCache.begin(); it != m_MapBlockCache.end(); ++it)
+		delete it->second;
+
+	m_MapBlockCache.clear();
 }
 
 void CSectorBase::CheckMapBlockCache()
