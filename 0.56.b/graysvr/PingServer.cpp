@@ -76,9 +76,3 @@ void PingServer::tick()
 
 	CurrentProfileData.Count(PROFILE_DATA_TX, sent);
 }
-
-void PingServer::waitForClose()
-{
-	terminate();
-	return;
-}

@@ -74,6 +74,8 @@ void LinuxEv::waitForClose()
 {
 	m_active = false;
 	ev_unloop(m_eventLoop, EVUNLOOP_ALL);
+
+	AbstractSphereThread::waitForClose();
 }
 
 bool LinuxEv::shouldExit()

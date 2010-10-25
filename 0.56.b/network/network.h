@@ -242,7 +242,6 @@ public:
 
 	virtual void onStart(void);
 	virtual void tick(void);
-	virtual void waitForClose(void);
 
 	HistoryIP &getHistoryForIP(CSocketAddressIP ip);
 	HistoryIP &getHistoryForIP(const char* ip);
@@ -287,7 +286,6 @@ public:
 	~NetworkOut(void);
 
 	virtual void tick(void);
-	virtual void waitForClose(void);
 
 	void schedule(const PacketSend* packet, bool appendTransaction); // schedule this packet to be sent
 	void scheduleOnce(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent MOVING it to the list

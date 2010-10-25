@@ -1033,7 +1033,7 @@ void CWorld::Init()
 		sectors += g_MapList.GetSectorQty(m);
 	}
 
-	m_Sectors = (CSector**)malloc(sectors * sizeof(CSector*));
+	m_Sectors = new CSector*[sectors];
 	TemporaryString z;
 	TemporaryString z1;
 
@@ -1919,7 +1919,7 @@ void CWorld::Close()
 	m_Parties.DeleteAll();
 	m_GMPages.DeleteAll();
 
-	if ( m_Sectors )
+	if ( m_Sectors != NULL )
 	{
 		//	free memory allocated by sectors
 		for ( int s = 0; s < m_SectorsQty; s++ )
@@ -1928,12 +1928,15 @@ void CWorld::Close()
 			delete m_Sectors[s];
 			m_Sectors[s] = NULL;
 		}
-		free(m_Sectors);
+
+		delete[] m_Sectors;
 		m_Sectors = NULL;
 		m_SectorsQty = 0;
 	}
 
-	if ( g_MapList.m_pMapDiffCollection )
+	memset(g_MapList.m_maps, false, sizeof(g_MapList.m_maps));
+
+	if ( g_MapList.m_pMapDiffCollection != NULL )
 	{
 		delete g_MapList.m_pMapDiffCollection;
 		g_MapList.m_pMapDiffCollection = NULL;
@@ -2334,7 +2337,8 @@ CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 	ADDTOCALLSTACK("CWorld::GetSector");
 
 	// if the map is not supported, return empty sector
-	if (( map < 0 ) || ( map >= 256 ) || !g_MapList.m_maps[map] ) return NULL;
+	if (( map < 0 ) || ( map >= 256 ) || !g_MapList.m_maps[map] )
+		return NULL;
 
 	if ( i >= g_MapList.GetSectorQty(map) )
 	{
@@ -2345,13 +2349,17 @@ CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 	int base = 0;
 	for ( int m = 0; m < 256; m++ )
 	{
-		if ( !g_MapList.m_maps[m] ) continue;
+		if ( !g_MapList.m_maps[m] )
+			continue;
 
 		if ( m == map )
 		{
-			if ( g_MapList.GetSectorQty(map) < i ) return NULL;
+			if ( g_MapList.GetSectorQty(map) < i )
+				return NULL;
+
 			return m_Sectors[base + i];
 		}
+
 		base += g_MapList.GetSectorQty(m);
 	}
 	return NULL;

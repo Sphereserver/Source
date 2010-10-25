@@ -1024,12 +1024,6 @@ void NetworkIn::tick(void)
 	EXC_DEBUG_END;
 }
 
-void NetworkIn::waitForClose(void)
-{
-	terminate();
-	return;
-}
-
 int NetworkIn::checkForData(fd_set* storage)
 {
 //	Berkeley sockets needs nfds to be updated that while in Windows that's ignored
@@ -1562,12 +1556,6 @@ void NetworkOut::tick(void)
 	EXC_DEBUG_START;
 	g_Log.EventDebug("ActiveThread=%d, TickCount=%d\n", isActive()? 1 : 0, iCount);
 	EXC_DEBUG_END;
-}
-
-void NetworkOut::waitForClose(void)
-{
-	terminate();
-	return;
 }
 
 void NetworkOut::schedule(const PacketSend* packet, bool appendTransaction)

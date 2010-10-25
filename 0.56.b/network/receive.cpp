@@ -667,10 +667,13 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 		// set next lock
 		SKILL_TYPE index = (SKILL_TYPE)readInt16();
 		SKILLLOCK_TYPE state = (SKILLLOCK_TYPE)readByte();
+		len -= 3;
+		
+		if (index <= SKILL_NONE || index >= SKILL_QTY ||
+			state < SKILLLOCK_UP || state > SKILLLOCK_LOCK)
+			continue;
 
 		character->m_pPlayer->Skill_SetLock(index, state);
-
-		len -= 3;
 	}
 
 	return true;

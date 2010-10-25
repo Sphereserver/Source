@@ -45,10 +45,14 @@ void CDataBaseAsyncHelper::tick()
 
 void CDataBaseAsyncHelper::waitForClose()
 {
-	SimpleThreadLock stlThelock(m_queryMutex);
+	{
+		SimpleThreadLock stlThelock(m_queryMutex);
 
-	m_queriesTodo.clear();
-	m_active = false;
+		m_queriesTodo.clear();
+		m_active = false;
+	}
+
+	AbstractSphereThread::waitForClose();
 }
 
 bool CDataBaseAsyncHelper::shouldExit()
