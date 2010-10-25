@@ -76,3 +76,17 @@ void PingServer::tick()
 
 	CurrentProfileData.Count(PROFILE_DATA_TX, sent);
 }
+
+void PingServer::waitForClose()
+{
+	m_socket.Close();
+
+	// note: closing the socket can give the recvfrom in tick() to return gracefully and
+	// avoid an exception, but we need to also wait a bit to make this possible
+	// (a better approach in the future could be avoid having waitForClose forcing threads
+	// to end with terminate() and instead let them complete naturally by setting a flag
+	// somewhere)
+	Sleep(100);
+
+	AbstractSphereThread::waitForClose();
+}

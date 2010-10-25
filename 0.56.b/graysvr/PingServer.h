@@ -20,6 +20,7 @@ public:
 
 	virtual void onStart();
 	virtual void tick();
+	virtual void waitForClose();
 };
 
 #endif

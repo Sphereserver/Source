@@ -4965,3 +4965,8 @@ ALPHA additions:
 23-10-2010, MrSugarCube
 - Fixed #1835: @Destroy incorrectly firing on trade window contents when the container
   is removed.
+
+25-10-2010, MrSugarCube
+- Fixed #1822: Exception when a client sends a malformed skill lock packet.
+- Fixed #1782: Exception on linux build leading to sphere.pid file never being removed
+  when shutting down Sphere.
