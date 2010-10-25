@@ -215,6 +215,8 @@ void AbstractThread::terminate()
 		}
 		CloseHandle(m_handle);
 #else
+		pthread_detach(m_handle); // required for thread memory to be freed after exit
+
 		if ( isCurrentThread() )
 		{
 			pthread_exit(0);
