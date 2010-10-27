@@ -4970,3 +4970,8 @@ ALPHA additions:
 - Fixed #1822: Exception when a client sends a malformed skill lock packet.
 - Fixed #1782: Exception on linux build leading to sphere.pid file never being removed
   when shutting down Sphere.
+
+27-10-2010, Khaos
+- Added: Race selectors to newbie templates. Code works as follows: [newbie xxx <race>] Races
+  that can be set are "human", "elf", "gargoyle", or leave it default for normal functionality.
+  This works for the male_default, female_default, and all the skills defined in Newbie sections.

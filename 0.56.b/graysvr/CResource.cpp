@@ -2902,10 +2902,25 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		}
 		break;
 	case RES_NEWBIE:	// MALE_DEFAULT, FEMALE_DEFAULT, Skill
-		if ( ! strcmpi( pszName, "MALE_DEFAULT" ))
-			return( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT ));
-		if ( ! strcmpi( pszName, "FEMALE_DEFAULT" ))
-			return( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_FEMALE_DEFAULT ));
+		{
+			if ( pszName[0] == '\0' )
+				return( ridinvalid );
+			TCHAR * pArg1 = Str_GetTemp();
+			strcpy( pArg1, pszName );
+			pszName = pArg1;
+			TCHAR * pArg2;
+			Str_Parse( pArg1, &pArg2 );
+			if ( ! strcmpi( pArg2, "HUMAN" ))
+				iPage = RACETYPE_HUMAN;
+			else if ( ! strcmpi( pArg2, "ELF" ))
+				iPage = RACETYPE_ELF;
+			else if ( ! strcmpi( pArg2, "GARGOYLE" ))
+				iPage = RACETYPE_GARGOYLE;
+			if ( ! strcmpi( pszName, "MALE_DEFAULT" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT, iPage ));
+			else if ( ! strcmpi( pszName, "FEMALE_DEFAULT" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_FEMALE_DEFAULT, iPage ));
+		}
 		break;
 	case RES_AREA:
 	case RES_ROOM:
