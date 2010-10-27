@@ -4975,3 +4975,6 @@ ALPHA additions:
 - Added: Race selectors to newbie templates. Code works as follows: [newbie xxx <race>] Races
   that can be set are "human", "elf", "gargoyle", or leave it default for normal functionality.
   This works for the male_default, female_default, and all the skills defined in Newbie sections.
+- Added #1598: All max* stat values (Hits, stam, mana, food) can be _safely_ set up to 1 million.
+  Though you can go past this, we don't recommend it. Note: This should not be used on players
+  max values, and we _highly_ don't recommend it.

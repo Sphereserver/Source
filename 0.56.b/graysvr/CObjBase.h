@@ -2368,8 +2368,8 @@ public:
 	{
 		short	m_base;
 		short	m_mod;			// signed for modifier
-		short	m_val;			// signed for karma
-		short	m_max;			// max
+		int		m_val;			// signed for karma
+		int		m_max;			// max
 		unsigned short m_regen;	// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
@@ -2757,11 +2757,11 @@ public:
 	void	Stat_SetMod( STAT_TYPE i, short iVal );
 	short	Stat_GetMod( STAT_TYPE i ) const;
 
-	void	Stat_SetVal( STAT_TYPE i, short iVal );
-	short	Stat_GetVal( STAT_TYPE i ) const;
+	void	Stat_SetVal( STAT_TYPE i, int iVal );
+	int		Stat_GetVal( STAT_TYPE i ) const;
 
-	void	Stat_SetMax( STAT_TYPE i, short iVal );
-	short	Stat_GetMax( STAT_TYPE i ) const;
+	void	Stat_SetMax( STAT_TYPE i, int iVal );
+	int		Stat_GetMax( STAT_TYPE i ) const;
 	int		Stat_GetSum() const;
 
 	short	Stat_GetLimit( STAT_TYPE i ) const;

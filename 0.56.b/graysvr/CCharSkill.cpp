@@ -91,7 +91,7 @@ short CChar::Stat_GetMod( STAT_TYPE i ) const
 	return m_Stat[i].m_mod;
 }
 
-void CChar::Stat_SetVal( STAT_TYPE i, short iVal )
+void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
 	if ( i > STAT_BASE_QTY )
@@ -103,7 +103,7 @@ void CChar::Stat_SetVal( STAT_TYPE i, short iVal )
 	m_Stat[i].m_val = iVal;
 }
 
-short CChar::Stat_GetVal( STAT_TYPE i ) const
+int CChar::Stat_GetVal( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
 	if ( i > STAT_BASE_QTY )
@@ -113,7 +113,7 @@ short CChar::Stat_GetVal( STAT_TYPE i ) const
 }
 
 
-void CChar::Stat_SetMax( STAT_TYPE i, short iVal )
+void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
 	ASSERT(((WORD)i) < (STAT_QTY) );	// allow for food
@@ -146,7 +146,7 @@ void CChar::Stat_SetMax( STAT_TYPE i, short iVal )
 	}
 }
 
-short CChar::Stat_GetMax( STAT_TYPE i ) const
+int CChar::Stat_GetMax( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
 	int	val;
