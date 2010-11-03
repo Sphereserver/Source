@@ -56,6 +56,7 @@ protected:
 	CClient* m_client; // client
 	CSocketAddress m_peerAddress; // client address
 
+	volatile bool m_isInUse; // is currently in use
 	volatile bool m_isReadClosed; // is closed by read thread
 	volatile bool m_isWriteClosed; // is closed by write thread
 	volatile bool m_needsFlush; // does data need to be flushed
@@ -100,7 +101,7 @@ public:
 	void clear(void); // clears state
 
 	void init(SOCKET socket, CSocketAddress addr); // initialized socket
-	bool isValid(const CClient* client = NULL) const; // does this socket still belong to this client?
+	bool isInUse(const CClient* client = NULL) const; // does this socket still belong to this/a client?
 	bool hasPendingData(void) const; // is there any data waiting to be sent?
 	bool canReceive(PacketSend* packet) const; // can the state receive the given packet?
 
@@ -116,10 +117,12 @@ public:
 	DWORD getCryptVersion(void) const { return m_clientVersion; }; // version as determined by encryption
 	DWORD getReportedVersion(void) const { return m_reportedVersion; }; // version as reported by client
 
-	void markClosed(void); // mark socket as closed by read thread
+	void markReadClosed(void); // mark socket as closed by read thread
 	void markWriteClosed(void); // mark socket as closed by write thread
 	bool isClosing(void) const { return m_isReadClosed || m_isWriteClosed; } // is the socket closing?
-	bool isClosed(void) const { return m_isReadClosed && m_isWriteClosed; } // is the socked closed?
+	bool isClosed(void) const { return m_isReadClosed && m_isWriteClosed; } // is the socket closed?
+	bool isReadClosed(void) const { return m_isReadClosed; }	// is the socket closed by read-thread?
+	bool isWriteClosed(void) const { return m_isWriteClosed; }	// is the socket closed by write-thread?
 
 	void markFlush(bool needsFlush); // mark socket as needing a flush
 	bool needsFlush(void) const { return m_needsFlush; } // does the socket need to be flushed?

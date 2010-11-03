@@ -100,7 +100,7 @@ CClient::~CClient()
 		m_pPopupPacket = NULL;
 	}
 
-	if (m_net->isValid(this))
+	if (m_net->isClosed() == false)
 		g_Log.EventError("Client being deleted without being safely removed from the network system\n");
 }
 

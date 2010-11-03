@@ -563,7 +563,7 @@ void CAccount::DeleteChars()
 	CClient * pClient = FindClient();
 	if ( pClient != NULL )
 	{	// we have no choice but to kick them.
-		pClient->GetNetState()->markClosed();
+		pClient->GetNetState()->markReadClosed();
 	}
 
 	// Now track down all my disconnected chars !
@@ -1449,7 +1449,7 @@ bool CAccount::r_Verb( CScript &s, CTextConsole * pSrc )
 				if ( pClient )
 				{
 					pClient->CharDisconnect();
-					pClient->GetNetState()->markClosed();
+					pClient->GetNetState()->markReadClosed();
 				}
 
 				char *z = Str_GetTemp();

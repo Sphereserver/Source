@@ -138,7 +138,7 @@ bool CClient::addLoginErr(BYTE code)
 	}
 
 	PacketLoginError* cmd = new PacketLoginError(this, (PacketLoginError::Reason)code);
-	GetNetState()->markClosed();
+	GetNetState()->markReadClosed();
 	return( false );
 }
 

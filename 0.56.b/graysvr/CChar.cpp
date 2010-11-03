@@ -285,7 +285,7 @@ CChar::~CChar() // Delete character
 	if ( IsClient())	// this should never happen.
 	{
 		ASSERT( m_pClient );
-		m_pClient->GetNetState()->markClosed();
+		m_pClient->GetNetState()->markReadClosed();
 	}
 
 	Guild_Resign(MEMORY_GUILD);
@@ -365,7 +365,7 @@ void CChar::SetDisconnected()
 	// Client logged out or NPC is dead.
 	if ( IsClient())
 	{
-		GetClient()->GetNetState()->markClosed();
+		GetClient()->GetNetState()->markReadClosed();
 		return;
 	}
 	if ( m_pParty )
@@ -405,7 +405,7 @@ void CChar::Delete()
 	{
 		CClient* pClient = GetClient();
 		pClient->CharDisconnect();
-		pClient->GetNetState()->markClosed();
+		pClient->GetNetState()->markReadClosed();
 	}
 
 	CObjBase::Delete();

@@ -1166,7 +1166,7 @@ void PacketSend::target(const CClient* client)
 	m_target = NULL;
 
 	//	validate that the current slot is still taken by this client
-	if (client != NULL && client->GetNetState()->isValid(client))
+	if (client != NULL && client->GetNetState()->isInUse(client))
 		m_target = client->GetNetState();
 }
 

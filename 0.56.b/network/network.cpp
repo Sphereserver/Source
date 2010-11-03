@@ -81,8 +81,21 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
  *
  ***************************************************************************/
 
-NetState::NetState(long id) : m_id(id), m_client(NULL), m_needsFlush(false), m_useAsync(false), m_currentTransaction(NULL), m_pendingTransaction(NULL), m_packetExceptions(0), m_receiveBuffer(NULL), m_clientType(CLIENTTYPE_2D), m_clientVersion(0), m_reportedVersion(0)
+NetState::NetState(long id)
 {
+	m_id = id;
+	m_client = NULL;
+	m_needsFlush = false;
+	m_useAsync = false;
+	m_currentTransaction = NULL;
+	m_pendingTransaction = NULL;
+	m_packetExceptions = 0;
+	m_receiveBuffer = NULL;
+	m_clientType = CLIENTTYPE_2D;
+	m_clientVersion = 0;
+	m_reportedVersion = 0;
+	m_isInUse = false;
+
 	clear();
 }
 
@@ -168,15 +181,16 @@ void NetState::clear(void)
 	m_clientVersion = m_reportedVersion = 0;
 	m_clientType = CLIENTTYPE_2D;
 	m_isSendingAsync = false;
-	m_useAsync = false;
 	m_packetExceptions = 0;
+	setAsyncMode();
+	m_isInUse = false;
 }
 
 void NetState::init(SOCKET socket, CSocketAddress addr)
 {
 	clear();
 
-	DEBUGNETWORK(("%x:initialising client\n", id()));
+	DEBUGNETWORK(("%x:Initialising client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	m_socket.SetNonBlocking();
@@ -189,14 +203,11 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	g_Serv.StatInc(SERV_STAT_CLIENTS);
 	CClient* client = new CClient(this);
 	m_client = client;
-
-	DEBUGNETWORK(("%x:determining async mode\n", id()));
-	setAsyncMode();
 	
 #ifndef _WIN32
 	if (g_Cfg.m_fUseAsyncNetwork != 0)
 	{
-		DEBUGNETWORK(("%x:registering async client\n", id()));
+		DEBUGNETWORK(("%x:Registering async client\n", id()));
 		g_NetworkEvent.registerClient(client, LinuxEv::Write);
 	}
 #endif
@@ -204,17 +215,21 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	DEBUGNETWORK(("%x:Opening network state\n", id()));
 	m_isWriteClosed = false;
 	m_isReadClosed = false;
+	m_isInUse = true;
+
+	DEBUGNETWORK(("%x:Determining async mode\n", id()));
+	setAsyncMode();
 }
 
-bool NetState::isValid(const CClient* client) const
+bool NetState::isInUse(const CClient* client) const
 {
-	if (client == NULL)
-		return m_socket.IsOpen() && isClosing() == false;
-	else
-		return m_socket.IsOpen() && m_client == client;
+	if (m_isInUse == false)
+		return false;
+
+	return client == NULL || m_client == client;
 }
 
-void NetState::markClosed(void)
+void NetState::markReadClosed(void)
 {
 	DEBUGNETWORK(("%x:Client being closed by read-thread\n", id()));
 	m_isReadClosed = true;
@@ -233,8 +248,10 @@ void NetState::markFlush(bool needsFlush)
 
 void NetState::setAsyncMode(void)
 {
+	bool wasAsync = m_useAsync;
+
 	// is async mode enabled?
-	if ( !g_Cfg.m_fUseAsyncNetwork )
+	if ( !g_Cfg.m_fUseAsyncNetwork || !isInUse() )
 		m_useAsync = false;
 
 	// if the version mod flag is not set, always use async mode
@@ -255,12 +272,20 @@ void NetState::setAsyncMode(void)
 	else
 		m_useAsync = false;
 
+#ifdef _DEBUG
+	if (wasAsync != m_useAsync)
+		DEBUGNETWORK(("%x:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", m_useAsync? "1":"0"));
+#endif
 }
 
 bool NetState::hasPendingData(void) const
 {
 	// check if state is even valid
-	if (m_socket.IsOpen() == false)
+	if (isInUse() == false || m_socket.IsOpen() == false)
+		return false;
+
+	// even if there are packets, it doesn't matter once the write thread considers the state closed
+	if (isWriteClosed())
 		return false;
 
 	// check packet queues (only count high priority+ for closed states)
@@ -283,7 +308,7 @@ bool NetState::hasPendingData(void) const
 
 bool NetState::canReceive(PacketSend* packet) const
 {
-	if (m_socket.IsOpen() == false || packet == NULL)
+	if (isInUse() == false || m_socket.IsOpen() == false || packet == NULL)
 		return false;
 
 	if (isClosing() && packet->getPriority() < NETWORK_DISCONNECTPRI)
@@ -342,14 +367,21 @@ ClientIterator::~ClientIterator(void)
 
 CClient* ClientIterator::next(bool includeClosing)
 {
-	CClient* current = m_nextClient;
-	while (current != NULL && current->GetNetState()->isClosed() == false && current->GetNetState()->isValid(includeClosing? current : NULL) == false)
-		current = current->GetNext();
+	for (CClient* current = m_nextClient; current != NULL; current = current->GetNext())
+	{
+		// skip clients without a state, or whose state is invalid/closed
+		if (current->GetNetState() == NULL || current->GetNetState()->isInUse(current) == false || current->GetNetState()->isClosed())
+			continue;
 
-	if (current != NULL)
+		// skip clients whose connection is being closed
+		if (includeClosing == false && current->GetNetState()->isClosing())
+			continue;
+
 		m_nextClient = current->GetNext();
+		return current;
+	}
 
-	return current;
+	return NULL;
 }
 
 
@@ -380,12 +412,17 @@ CClient* SafeClientIterator::next(bool includeClosing)
 	// newest client to oldest and be thread-safe)
 	while (++m_id < m_max)
 	{
-		NetState* state = m_network->m_states[m_id];
-		if (state->isClosed() || state->m_client == NULL || state->isValid(state->m_client) == false)
+		const NetState* state = m_network->m_states[m_id];
+
+		// skip states which do not have a valid client, or are closed
+		if (state->isInUse(state->getClient()) == false || state->isClosed())
 			continue;
 
-		if (includeClosing || state->isValid())
-			return state->m_client;
+		// skip states which are being closed
+		if (includeClosing == false && state->isClosing())
+			continue;
+
+		return state->getClient();
 	}
 
 	return NULL;
@@ -665,7 +702,8 @@ void NetworkIn::tick(void)
 		ASSERT(client != NULL);
 
 		EXC_SET("messages - check client");
-		if (client->m_client == NULL || client->isClosing())
+		if (client->isInUse() == false || client->isClosing() ||
+			client->getClient() == NULL || client->m_socket.IsOpen() == false)
 			continue;
 
 		EXC_SET("messages - check frozen");
@@ -678,7 +716,7 @@ void NetworkIn::tick(void)
 				if ( g_Cfg.m_iDeadSocketTime && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
 					g_Log.EventError("%x:Frozen client connection disconnected.\n", client->m_id);
-					client->markClosed();
+					client->markReadClosed();
 				}
 			}
 			continue;
@@ -689,7 +727,7 @@ void NetworkIn::tick(void)
 		int received = client->m_socket.Receive(buffer, NETWORK_BUFFERSIZE, 0);
 		if (received <= 0)
 		{
-			client->markClosed();
+			client->markReadClosed();
 			continue;
 		}
 
@@ -712,14 +750,14 @@ void NetworkIn::tick(void)
 						EXC_SET("http request");
 						if ( g_Cfg.m_fUseHTTP != 2 )
 						{
-							client->markClosed();
+							client->markReadClosed();
 							continue;
 						}
 
 						client->m_client->SetConnectType(CONNECT_HTTP);
 						if ( !client->m_client->OnRxWebPageRequest(buffer, received) )
 						{
-							client->markClosed();
+							client->markReadClosed();
 							continue;
 						}
 
@@ -770,7 +808,7 @@ void NetworkIn::tick(void)
 					if ( !seed )
 					{
 						g_Log.EventError("Invalid client '%x' detected, disconnecting.\n", client->id());
-						client->markClosed();
+						client->markReadClosed();
 						continue;
 					}
 
@@ -790,7 +828,7 @@ void NetworkIn::tick(void)
 
 					EXC_SET("ping #1");
 					if (client->m_client->OnRxPing(buffer, received) == false)
-						client->markClosed();
+						client->markReadClosed();
 
 					continue;
 				}
@@ -815,7 +853,7 @@ void NetworkIn::tick(void)
 			{
 				EXC_SET("ping #2");
 				if (client->m_client->OnRxPing(buffer, received) == false)
-					client->markClosed();
+					client->markReadClosed();
 
 				continue;
 			}
@@ -873,7 +911,7 @@ void NetworkIn::tick(void)
 						client->m_client->SetConnectType(CONNECT_UNK);
 						if (client->m_client->OnRxPing(buffer, received) == false)
 						{
-							client->markClosed();
+							client->markReadClosed();
 							continue;
 						}
 					}
@@ -883,7 +921,7 @@ void NetworkIn::tick(void)
 					EXC_SET("http message");
 					if ( !client->m_client->OnRxWebPageRequest(evt.m_Raw, received) )	
 					{
-						client->markClosed();
+						client->markReadClosed();
 						continue;
 					}
 					break;
@@ -892,14 +930,14 @@ void NetworkIn::tick(void)
 					EXC_SET("telnet message");
 					if ( !client->m_client->OnRxConsole(evt.m_Raw, received) )
 					{
-						client->markClosed();
+						client->markReadClosed();
 						continue;
 					}
 					break;
 					
 				default:
 					g_Log.Event(LOGM_CLIENTS_LOG,"%x:Junk messages with no crypt\n", client->m_id);
-					client->markClosed();
+					client->markReadClosed();
 					continue;
 			}
 
@@ -1057,7 +1095,7 @@ int NetworkIn::checkForData(fd_set* storage)
 	{
 		EXC_SET("check socket");
 		NetState* state = m_states[l];
-		if ( !state->m_socket.IsOpen() )
+		if ( state->isInUse() == false )
 			continue;
 
 		EXC_SET("cleaning queues");
@@ -1069,16 +1107,19 @@ int NetworkIn::checkForData(fd_set* storage)
 		{
 			if (state->isClosed() == false)
 			{
-				DEBUGNETWORK(("%x:Flushing data for client.\n", state->id()));
+				if (state->isWriteClosed() == false)
+				{
+					DEBUGNETWORK(("%x:Flushing data for client.\n", state->id()));
 
-				EXC_SET("flush data");
-				g_NetworkOut.flush(state->getClient());
+					EXC_SET("flush data");
+					g_NetworkOut.flush(state->getClient());
 
-				EXC_SET("check pending data");
-				if (state->hasPendingData())
-					continue;
+					EXC_SET("check pending data");
+					if (state->hasPendingData())
+						continue;
+				}
 			
-				state->markClosed();
+				state->markReadClosed();
 				if (g_NetworkOut.isActive() == false)
 					state->markWriteClosed();
 			}
@@ -1094,8 +1135,11 @@ int NetworkIn::checkForData(fd_set* storage)
 			continue;
 		}
 
-		EXC_SET("add to select");
-		ADDTOSELECT(state->m_socket.GetSocket());
+		if (state->m_socket.IsOpen())
+		{
+			EXC_SET("add to select");
+			ADDTOSELECT(state->m_socket.GetSocket());
+		}
 	}
 
 	EXC_SET("prepare timeout");
@@ -1137,7 +1181,7 @@ void NetworkIn::acceptConnection(void)
 	{
 		EXC_SET("ip history");
 		
-		DEBUGNETWORK(("Retrieving IP history\n"));
+		DEBUGNETWORK(("Retrieving IP history for '%s'.\n", client_addr.GetAddrStr()));
 		HistoryIP* ip = &getHistoryForIP(client_addr);
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
@@ -1282,10 +1326,10 @@ long NetworkIn::getStateSlot(long startFrom)
 	//	give ordered slot number, each time incrementing by 1 for easier log view
 	for ( long l = startFrom; l < m_stateCount; l++ )
 	{
-		if ( !m_states[l]->isValid() )
-		{
-			return ( m_lastGivenSlot = l );
-		}
+		if (m_states[l]->isInUse())
+			continue;
+
+		return ( m_lastGivenSlot = l );
 	}
 
 	//	we did not find empty slots till the end, try rescan from beginning
@@ -1319,7 +1363,7 @@ void NetworkIn::periodic(void)
 				{
 					DEBUGNETWORK(("%x:Closing client since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax));
 
-					client->m_net->markClosed();
+					client->m_net->markReadClosed();
 				}
 			}
 			if (connecting > connectingMax)
@@ -1365,7 +1409,7 @@ void NetworkIn::periodic(void)
 	if (max > m_stateCount)
 	{
 		EXC_SET("increasing network state size");
-		DEBUGNETWORK(("increasing number of client slots from %ld to %ld\n", m_stateCount, max));
+		DEBUGNETWORK(("Increasing number of client slots from %ld to %ld\n", m_stateCount, max));
 
 		// reallocate state buffer to accomodate additional clients
 		long prevCount = m_stateCount;
@@ -1385,7 +1429,7 @@ void NetworkIn::periodic(void)
 	else if (max < m_stateCount)
 	{
 		EXC_SET("decreasing network state size");
-		DEBUGNETWORK(("decreasing number of client slots from %ld to %ld\n", m_stateCount, max));
+		DEBUGNETWORK(("Decreasing number of client slots from %ld to %ld\n", m_stateCount, max));
 
 		// move used slots to free spaces if possible
 		defragSlots(max);
@@ -1413,7 +1457,7 @@ void NetworkIn::defragSlots(long fromSlot)
 	for (l = 0; l < m_stateCount; l++)
 	{
 		// don't interfere with in-use states
-		if (m_states[l] != NULL && m_states[l]->isValid())
+		if (m_states[l] != NULL && m_states[l]->isInUse())
 			continue;
 
 		// find next used slot
@@ -1424,7 +1468,7 @@ void NetworkIn::defragSlots(long fromSlot)
 				break;
 
 			NetState* state = m_states[nextUsedSlot];
-			if (state != NULL && state->isValid())
+			if (state != NULL && state->isInUse())
 				slotFound = true;
 		}
 
@@ -1522,27 +1566,27 @@ void NetworkOut::tick(void)
 		ASSERT(state != NULL);
 
 		EXC_SET("highest");
-		if (toProcess[PacketSend::PRI_HIGHEST] && state->isClosed() == false)
+		if (toProcess[PacketSend::PRI_HIGHEST] && state->isWriteClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_HIGHEST);
 
 		EXC_SET("high");
-		if (toProcess[PacketSend::PRI_HIGH] && state->isClosed() == false)
+		if (toProcess[PacketSend::PRI_HIGH] && state->isWriteClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_HIGH);
 
 		EXC_SET("normal");
-		if (toProcess[PacketSend::PRI_NORMAL] && state->isClosed() == false)
+		if (toProcess[PacketSend::PRI_NORMAL] && state->isWriteClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_NORMAL);
 
 		EXC_SET("low");
-		if (toProcess[PacketSend::PRI_LOW] && state->isClosed() == false)
+		if (toProcess[PacketSend::PRI_LOW] && state->isWriteClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_LOW);
 
 		EXC_SET("idle");
-		if (toProcess[PacketSend::PRI_IDLE] && state->isClosed() == false)
+		if (toProcess[PacketSend::PRI_IDLE] && state->isWriteClosed() == false)
 			packetsSent += proceedQueue(client, PacketSend::PRI_IDLE);
 
 		EXC_SET("async");
-		if (state->isClosed() == false)
+		if (state->isWriteClosed() == false)
 			packetsSent += proceedQueueAsync(client);
 	}
 
@@ -1575,7 +1619,7 @@ void NetworkOut::scheduleOnce(PacketSend* packet, bool appendTransaction)
 	ASSERT(state != NULL);
 
 	// don't bother queuing packets for invalid sockets
-	if (state == NULL || state->isValid() == false)
+	if (state == NULL || state->isInUse() == false || state->isWriteClosed())
 	{
 		delete packet;
 		return;
@@ -1596,7 +1640,7 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 	ASSERT(state != NULL);
 
 	// don't bother queuing packets for invalid sockets
-	if (state == NULL || state->isValid() == false)
+	if (state == NULL || state->isInUse() == false || state->isWriteClosed())
 	{
 		delete transaction;
 		return;
@@ -1644,7 +1688,7 @@ void NetworkOut::flush(CClient* client)
 	
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
-	if (state->isValid(client) == false)
+	if (state->isInUse(client) == false)
 		return;
 
 	// flushing is not thread-safe, and can only be performed by the NetworkOut thread
@@ -1655,10 +1699,10 @@ void NetworkOut::flush(CClient* client)
 	}
 	else
 	{
-		for (int priority = 0; priority < PacketSend::PRI_QTY && state->isClosed() == false; priority++)
+		for (int priority = 0; priority < PacketSend::PRI_QTY && state->isWriteClosed() == false; priority++)
 			proceedQueue(client, priority);
 
-		if (state->isClosed() == false)
+		if (state->isWriteClosed() == false)
 			proceedQueueAsync(client);
 
 		state->markFlush(false);
@@ -1674,6 +1718,9 @@ void NetworkOut::proceedFlush(void)
 	{
 		NetState* state = client->GetNetState();
 		ASSERT(state != NULL);
+
+		if (state->isWriteClosed())
+			continue;
 
 		if (state->needsFlush())
 			flush(client);
@@ -1694,7 +1741,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isClosed() || state->m_queue[priority].empty())
+	if (state->isWriteClosed() || state->m_queue[priority].empty())
 		return 0;
 
 	long length = 0;
@@ -1772,7 +1819,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isClosed() || state->isAsyncMode() == false)
+	if (state->isWriteClosed() || state->isAsyncMode() == false)
 		return 0;
 
 	state->m_asyncQueue.clean();

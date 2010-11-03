@@ -517,7 +517,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 	ASSERT( pSrc );
 	if ( GetAccount() == NULL )
 	{
-		GetNetState()->markClosed();
+		GetNetState()->markReadClosed();
 		return( true );
 	}
 
@@ -532,7 +532,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 		PacketKick* cmd = new PacketKick(this);
 	}
 
-	GetNetState()->markClosed();
+	GetNetState()->markReadClosed();
 	return( true );
 }
 
@@ -3200,7 +3200,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket())
 				{
 					pClientPrev->CharDisconnect();
-					pClientPrev->GetNetState()->markClosed();
+					pClientPrev->GetNetState()->markReadClosed();
 				}
 				else if ( GetConnectType() == pClientPrev->GetConnectType() ) bInUse = true;
 			}
