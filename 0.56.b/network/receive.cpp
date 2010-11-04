@@ -4141,15 +4141,19 @@ bool PacketCrashReport::onReceive(NetState* net)
 	BYTE map = readByte();
 	skip(32); // account name
 	skip(32); // character name
+	skip(15); // ip address
+	skip(4); // unknown
 	DWORD errorCode = readInt32();
 	TCHAR executable[100];
 	readStringASCII(executable, COUNTOF(executable));
 	TCHAR description[100];
 	readStringASCII(description, COUNTOF(description));
+	skip(1); // zero
+	DWORD errorOffset = readInt32();
 
-	g_Log.EventWarn("%x:Client crashed at %d,%d,%d,%d: 0x%08X %s (%s, %d.%d.%d.%d)\n", net->id(),
+	g_Log.EventWarn("%x:Client crashed at %d,%d,%d,%d: 0x%08X %s @ 0x%08X (%s, %d.%d.%d.%d)\n", net->id(),
 					x, y, z, map,
-					errorCode, description, executable,
+					errorCode, description, errorOffset, executable,
 					versionMaj, versionMin, versionRev, versionPat);
 	return true;
 }

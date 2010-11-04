@@ -1898,7 +1898,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_flags;	// 27 = 0x20 = is it movable, 0x80 = hidden
 		} PutNew;
 
-		struct // XCMD_CrashReport	// 291 bytes
+		struct // XCMD_CrashReport	// 310+ bytes
 		{
 			BYTE m_Cmd;					// 0 = 0xF4
 			NWORD m_len;				// 1-2 = length
@@ -1912,13 +1912,15 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_map;					// 12 = location map
 			char m_account[32];			// 13-44 = account name
 			char m_charname[32];		// 45-76 = character name
-			NDWORD m_errorCode;			// 77-80 = error code
-			char m_executable[100];		// 81-180 = executable name
-			char m_description[100];	// 181-280 = error description
-			BYTE m_zero;				// 281 = 0
-			NDWORD m_offset;			// 282-285 = exception offset
-			BYTE m_addressCount;		// 286 = address count
-			NDWORD m_address[1];		// 287.. = address
+			char m_ipAddress[15];		// 77-91
+			NDWORD m_unk;				// 92-95
+			NDWORD m_errorCode;			// 96-99 = error code
+			char m_executable[100];		// 100-199 = executable name
+			char m_description[100];	// 200-299 = error description
+			BYTE m_zero;				// 300
+			NDWORD m_offset;			// 301-304 = exception offset
+			BYTE m_addressCount;		// 305 = address count
+			NDWORD m_address[1];		// 306-.. = address
 		} CrashReport;
 	};
 } PACK_NEEDED;

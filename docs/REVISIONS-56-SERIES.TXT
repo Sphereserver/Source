@@ -4978,3 +4978,6 @@ ALPHA additions:
 - Added #1598: All max* stat values (Hits, stam, mana, food) can be _safely_ set up to 1 million.
   Though you can go past this, we don't recommend it. Note: This should not be used on players
   max values, and we _highly_ don't recommend it.
+
+03-11-2010, MrSugarCube
+- Fixed: Exception on linux build when accessing guild functions without an SRC.

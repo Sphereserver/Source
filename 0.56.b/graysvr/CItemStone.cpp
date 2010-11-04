@@ -1214,7 +1214,6 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 
 	CChar * pCharSrc = pSrc->GetChar();
 	CClient * pClient = pCharSrc? pCharSrc->GetClient() : NULL;
-	ASSERT(pClient);
 	CStoneMember * pMember = GetMember(pCharSrc);
 
 	switch ( index )
