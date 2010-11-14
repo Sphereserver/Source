@@ -32,7 +32,7 @@ void CClient::resendBuffs()
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
+	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
 	CContainer* Cont = dynamic_cast<CContainer*>(GetChar());
@@ -148,7 +148,7 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
+	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
 	PacketBuff* cmd = new PacketBuff(this, IconId, ClilocOne, ClilocTwo, Time, pArgs, iArgCount);
@@ -161,7 +161,7 @@ void CClient::removeBuff (const WORD IconId)
 		return;
 	if ( !IsResClient(RDS_AOS))
 		return;
-	if ( !GetNetState()->isClientVersion(MINCLIVER_BUFFS) )
+	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
 	PacketBuff* cmd = new PacketBuff(this, IconId);
@@ -260,14 +260,14 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	ADDTOCALLSTACK("CClient::addItem_OnGround");
 	ASSERT(pItem);
 	
-	if ( GetNetState()->isClientVersion(MINCLIVER_SA) || GetNetState()->isClientSA() )
-		PacketItemWorldNew* cmd = new PacketItemWorldNew(this, pItem);
+	if ( PacketItemWorldNew::CanSendTo(GetNetState()) )
+		new PacketItemWorldNew(this, pItem);
 	else
-		PacketItemWorld* cmd = new PacketItemWorld(this, pItem);
+		new PacketItemWorld(this, pItem);
 
 	// send KR drop confirmation
-	if ( GetNetState()->isClientKR() )
-		PacketDropAccepted* cmdKr = new PacketDropAccepted(this);
+	if ( PacketDropAccepted::CanSendTo(GetNetState()) )
+		new PacketDropAccepted(this);
 
 	// send item sound
 	if (pItem->IsType(IT_SOUND))
@@ -324,10 +324,10 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	if ( pCont == NULL )
 		return;
 
-	PacketItemContainer* cmd = new PacketItemContainer(this, pItem);
-
-	if ( GetNetState()->isClientKR() )
-		PacketDropAccepted* cmdKr = new PacketDropAccepted(this);
+	new PacketItemContainer(this, pItem);
+	
+	if ( PacketDropAccepted::CanSendTo(GetNetState()) )
+		new PacketDropAccepted(this);
 
 	addAOSTooltip( pItem );
 }
@@ -1278,7 +1278,7 @@ bool CClient::addBookOpen( CItem * pBook )
 		return false;
 
 	int iPagesNow = 0;
-	bool bNewPacket = GetNetState()->isClientVersion(MINCLIVER_NEWBOOK) || GetNetState()->isClientKR() || GetNetState()->isClientSA();
+	bool bNewPacket = PacketDisplayBookNew::CanSendTo(GetNetState());
 
 	if (pBook->IsBookSystem() == false)
 	{
@@ -1911,7 +1911,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 		addStamUpdate( pChar->GetUID() );
 	}
 
-	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (GetNetState()->isClientVersion(MINCLIVER_STATLOCKS) == true) )
+	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (PacketStatLocks::CanSendTo(GetNetState())) )
 	{
 		PacketStatLocks* cmd = new PacketStatLocks(this, pChar);
 	}
@@ -1972,8 +1972,8 @@ void CClient::addHealthBarUpdate( const CChar * pChar )
 	if ( pChar == NULL )
 		return;
 
-	if ( GetNetState()->isClientVersion(MINCLIVER_SA) || GetNetState()->isClientSA() )
-		PacketHealthBarUpdate* cmd = new PacketHealthBarUpdate(this, pChar);
+	if ( PacketHealthBarUpdate::CanSendTo(GetNetState()) )
+		new PacketHealthBarUpdate(this, pChar);
 }
 
 void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
@@ -2012,10 +2012,10 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	// New AOS spellbook packet required by client 4.0.0 and above.
 	// Old packet is still required if both FEATURE_AOS_TOOLTIP and FEATURE_AOS_UPDATE aren't sent.
 	//
-	if ( GetNetState()->isClientVersion(MINCLIVER_SPELLBOOK) && IsResClient( RDS_AOS ) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) ) // IsResClient( RDS_AOS ) && g_Cfg.m_iFeatureAOS
+	if ( PacketSpellbookContent::CanSendTo(GetNetState()) && IsResClient( RDS_AOS ) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) ) // IsResClient( RDS_AOS ) && g_Cfg.m_iFeatureAOS
 	{
 		// Handle new AOS spellbook stuff (old packets no longer work)
-		PacketSpellbookContent* cmd = new PacketSpellbookContent(this, pBook, offset);
+		new PacketSpellbookContent(this, pBook, offset);
 		return;
 	}
 
@@ -2234,7 +2234,7 @@ blank_map:
 	if ( rect.IsRectEmpty())
 		goto blank_map;
 
-	if (GetNetState()->isClientVersion(MINCLIVER_NEWMAPDISPLAY) || GetNetState()->isClientSA())
+	if ( PacketDisplayMapNew::CanSendTo(GetNetState()))
 		new PacketDisplayMapNew(this, pMap, rect);
 	else
 		new PacketDisplayMap(this, pMap, rect);
@@ -2398,7 +2398,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	if ( !pObj )
 		return;
 
-	if ( !GetNetState()->isClientVersion(MINCLIVER_TOOLTIP) )
+	if ( PacketPropertyList::CanSendTo(GetNetState()) == false )
 		return;
 
 	bool bNameOnly = false;
@@ -2770,7 +2770,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 			if (bRequested == false)
 			{
 				// send property list version (client will send a request for the full tooltip if needed)
-				if ( !GetNetState()->isClientVersion(MINCLIVER_TOOLTIPHASH) )
+				if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )
 					new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
 				else
 					new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
@@ -2794,9 +2794,9 @@ void CClient::addShowDamage( int damage, DWORD uid_damage )
 	if ( damage < 0 )
 		damage = 0;
 
-	if ( GetNetState()->isClientVersion(MINCLIVER_NEWDAMAGE) )
+	if ( PacketCombatDamage::CanSendTo(GetNetState()) )
 		new PacketCombatDamage(this, damage, CGrayUID(uid_damage));
-	else if ( GetNetState()->isClientVersion(MINCLIVER_DAMAGE) )
+	else if ( PacketCombatDamageOld::CanSendTo(GetNetState()) )
 		new PacketCombatDamageOld(this, damage, CGrayUID(uid_damage));
 }
 
@@ -2826,10 +2826,10 @@ void CClient::addIdleWarning( BYTE message )
 void CClient::addKRToolbar( bool bEnable )
 {
 	ADDTOCALLSTACK("CClient::addKRToolbar");
-	if ( !GetNetState()->isClientKR() || !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
+	if ( PacketToggleHotbar::CanSendTo(GetNetState()) == false || !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
 		return;
 
-	PacketToggleHotbar* cmd = new PacketToggleHotbar(this, bEnable);
+	new PacketToggleHotbar(this, bEnable);
 }
 
 

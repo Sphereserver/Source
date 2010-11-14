@@ -1121,14 +1121,15 @@ void PacketSend::send(const CClient *client, bool appendTransaction)
 	fixLength();
 	if (client != NULL)
 		target(client);
+	
+	// check target is set and can receive this packet
+	if (m_target == NULL || canSendTo(m_target) == false)
+		return;
 
-	if (m_target != NULL)
-	{
-		if (sync() > NETWORK_MAXPACKETLEN)
-			return;
+	if (sync() > NETWORK_MAXPACKETLEN)
+		return;
 
-		g_NetworkOut.schedule(this, appendTransaction);
-	}
+	g_NetworkOut.schedule(this, appendTransaction);
 }
 
 void PacketSend::push(const CClient *client, bool appendTransaction)
@@ -1139,24 +1140,23 @@ void PacketSend::push(const CClient *client, bool appendTransaction)
 	if (client != NULL)
 		target(client);
 
-	if (m_target != NULL)
+	// check target is set and can receive this packet
+	if (m_target == NULL || canSendTo(m_target) == false)
 	{
-		if (sync() > NETWORK_MAXPACKETLEN)
-		{
-			// since we are pushing this packet, we should clear the memory
-			//instantly if this packet will never be sent
-			DEBUGNETWORK(("Packet deleted due to exceeding maximum packet size (%ld/%d).\n", m_length, NETWORK_MAXPACKETLEN));
-			delete this;
-			return;
-		}
-
-		g_NetworkOut.scheduleOnce(this, appendTransaction);
-	}
-	else
-	{
-		//DEBUGNETWORK(("Packet deleted due to no target set.\n"));
 		delete this;
+		return;
 	}
+
+	if (sync() > NETWORK_MAXPACKETLEN)
+	{
+		// since we are pushing this packet, we should clear the memory
+		// instantly if this packet will never be sent
+		DEBUGNETWORK(("Packet deleted due to exceeding maximum packet size (%ld/%d).\n", m_length, NETWORK_MAXPACKETLEN));
+		delete this;
+		return;
+	}
+
+	g_NetworkOut.scheduleOnce(this, appendTransaction);
 }
 
 void PacketSend::target(const CClient* client)
@@ -1172,13 +1172,16 @@ void PacketSend::target(const CClient* client)
 
 bool PacketSend::onSend(const CClient* client)
 {
-	ADDTOCALLSTACK("PacketSend::onSend");
 	return true;
 }
 
 void PacketSend::onSent(CClient* client)
 {
-	ADDTOCALLSTACK("PacketSend::onSent");
+}
+
+bool PacketSend::canSendTo(const NetState* state) const
+{
+	return true;
 }
 
 

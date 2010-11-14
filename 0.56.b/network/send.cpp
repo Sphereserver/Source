@@ -608,7 +608,7 @@ PacketMovementAck::PacketMovementAck(const CClient* target) : PacketSend(XCMD_Wa
  *
  *
  ***************************************************************************/
-PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* container, CPointMap* pt) : PacketSend(XCMD_DragAnim, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDragAnimation::PacketDragAnimation(const CChar* source, const CItem* item, const CObjBase* container, const CPointMap* pt) : PacketSend(XCMD_DragAnim, 26, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDragAnimation::PacketDragAnimation");
 
@@ -621,6 +621,7 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 
 	if (container != NULL)
 	{
+		// item is being dragged into a container
 		const CObjBaseTemplate* target = container->GetTopLevelObj();
 		const CPointMap& targetpos = target->GetTopPoint();
 
@@ -635,6 +636,7 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 	}
 	else if (pt != NULL)
 	{
+		// item is being dropped onto the floor
 		writeInt32(source->GetUID());
 		writeInt16(sourcepos.m_x);
 		writeInt16(sourcepos.m_y);
@@ -646,6 +648,7 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 	}
 	else
 	{
+		// item is being picked up from the ground
 		const CObjBaseTemplate* target = item->GetTopLevelObj();
 		const CPointMap& targetpos = target->GetTopPoint();
 
@@ -660,6 +663,14 @@ PacketDragAnimation::PacketDragAnimation(CChar* source, CItem* item, CObjBase* c
 	}
 }
 
+bool PacketDragAnimation::canSendTo(const NetState* state) const
+{
+	// don't send to SA clients
+	if (state->isClientSA() || state->isClientVersion(MINCLIVER_SA))
+		return false;
+
+	return PacketSend::canSendTo(state);
+}
 
 /***************************************************************************
  *

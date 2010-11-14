@@ -43,7 +43,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 
 #ifdef _DEBUG
 	// write to console
-	g_Log.EventDebug("%s %s\n", heading, (LPCTSTR)dump);
+	g_Log.EventDebug("%x:%s %s\n", client->GetSocketID(), heading, (LPCTSTR)dump);
 #endif
 
 	// build file name

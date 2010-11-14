@@ -4981,3 +4981,7 @@ ALPHA additions:
 
 03-11-2010, MrSugarCube
 - Fixed: Exception on linux build when accessing guild functions without an SRC.
+
+14-11-2010, MrSugarCube
+- Fixed #1847: Crash on 7.0.0+ clients when other clients are picking up and dropping
+  items.

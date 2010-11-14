@@ -147,6 +147,7 @@ public:
 
 	virtual bool onSend(const CClient* client);
 	virtual void onSent(CClient* client);
+	virtual bool canSendTo(const NetState* client) const;
 
 	friend class NetworkOut;
 	friend class SimplePacketTransaction;

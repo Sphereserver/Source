@@ -96,7 +96,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	if ( m_pArchitect != NULL )
 		EndCustomize(true);
 
-	if ( !pClientSrc->GetNetState()->isClientVersion(MINCLIVER_CUSTOMMULTI) && !pClientSrc->GetNetState()->isClientKR() && !pClientSrc->GetNetState()->isClientSA() )
+	if ( PacketHouseBeginCustomise::CanSendTo(pClientSrc->GetNetState()) == false )
 		return;
 
 	// copy the main design to working, ready for editing
@@ -661,7 +661,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	if ( pClientSrc == NULL || !pClientSrc->GetChar() )
 		return;
 
-	if ( !pClientSrc->GetNetState()->isClientVersion(MINCLIVER_CUSTOMMULTI) && !pClientSrc->GetNetState()->isClientKR() && !pClientSrc->GetNetState()->isClientSA() )
+	if ( PacketHouseDesign::CanSendTo(pClientSrc->GetNetState()) == false )
 		return;
 
 	DesignDetails * pDesign = NULL;
