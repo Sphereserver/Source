@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mysql", "mysql\mysql.vcxproj", "{751A388A-1B1C-4EC9-9ACD-18AB69F023C7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "odbc", "odbc\odbc.vcxproj", "{89B82F5E-76B0-4C11-96D8-0A5F3DD21977}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{751A388A-1B1C-4EC9-9ACD-18AB69F023C7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{751A388A-1B1C-4EC9-9ACD-18AB69F023C7}.Debug|Win32.Build.0 = Debug|Win32
+		{751A388A-1B1C-4EC9-9ACD-18AB69F023C7}.Release|Win32.ActiveCfg = Release|Win32
+		{751A388A-1B1C-4EC9-9ACD-18AB69F023C7}.Release|Win32.Build.0 = Release|Win32
+		{89B82F5E-76B0-4C11-96D8-0A5F3DD21977}.Debug|Win32.ActiveCfg = Debug|Win32
+		{89B82F5E-76B0-4C11-96D8-0A5F3DD21977}.Debug|Win32.Build.0 = Debug|Win32
+		{89B82F5E-76B0-4C11-96D8-0A5F3DD21977}.Release|Win32.ActiveCfg = Release|Win32
+		{89B82F5E-76B0-4C11-96D8-0A5F3DD21977}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

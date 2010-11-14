@@ -1,0 +1,59 @@
+PLAT = Linux
+
+# Generic makefile
+MARCH = -march=i686
+OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
+OPT = -O2 $(OPTDEFAULT) -fPIC -shared
+WARN = -Wall -Wno-unknown-pragmas
+
+DEBUG = -ggdb2
+#DEBUG = -s
+
+# Linux
+LIBS = -L/usr/lib
+INCLUDE =
+SRC =
+
+DEFNIX  = -D_LINUX
+DEBUGDEFS = -D_DEBUG
+DEFINES = -D_REENTRANT $(DEFNIX) $(DEBUGDEFS)
+
+CC	= g++
+CCO	= gcc
+
+NO	= -fno-rtti -fno-exceptions
+EX	= -fexceptions -fnon-call-exceptions
+STRICT  = # -mstrict-align
+SPECIAL = $(EX) $(STRICT) $(DEBUG)
+
+PROF	= -pg
+PIPE	= -pipe
+
+O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
+C_FLAGS	= $(OPT) $(DEFINES)
+
+# Targets
+
+.PHONY:	all clean tidy
+
+all: $(PLUGIN)
+
+.depend:
+	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
+	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
+
+tags: $(SRC)
+	ctags $(SRC)
+
+flags:
+	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS) $(INCLUDE)"
+
+%.o: %.cpp
+	@echo " Compiling $<"
+	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $(INCLUDE) $< -o $@
+
+%.co: %.c
+	@echo " Compiling $<"
+	@$(CCO) -c $(O_FLAGS) $(C_FLAGS) $(INCLUDE) $< -o $(@:.co=.o)
+
+

@@ -849,12 +849,21 @@ public:
 	int		m_iMaxAccountLoginTries;
 	int		m_iMaxShipPlankTeleport;
 
+#ifndef _DBPLUGIN
 	//	mySQL features
 	bool		m_bMySql;
 	CGString	m_sMySqlHost;
 	CGString	m_sMySqlUser;
 	CGString	m_sMySqlPass;
 	CGString	m_sMySqlDB;
+#else
+	CGString	m_sDbDll;
+	CGString	m_sDbHost;
+	CGString	m_sDbUser;
+	CGString	m_sDbPass;
+	CGString	m_sDbDatabase;
+	int			m_iDbQueryBuffer;
+#endif
 
 	// network settings
 	int			m_fUseAsyncNetwork;			// 0=normal send, 1=async send, 2=async send for 4.0.0+ only
