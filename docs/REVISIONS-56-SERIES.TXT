@@ -4985,3 +4985,6 @@ ALPHA additions:
 14-11-2010, MrSugarCube
 - Fixed #1847: Crash on 7.0.0+ clients when other clients are picking up and dropping
   items.
+
+21-11-2010, MrSugarCube
+- Fixed: Unable to access basic properties for non-game clients through SERV.CLIENT.x.

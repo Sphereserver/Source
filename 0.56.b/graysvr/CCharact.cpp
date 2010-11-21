@@ -1127,7 +1127,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 void CChar::UpdateDir( DIR_TYPE dir )
 {
 	ADDTOCALLSTACK("CChar::UpdateDir");
-	if ( dir != m_dirFace && dir < DIR_QTY )
+	if ( dir != m_dirFace && dir > DIR_INVALID && dir < DIR_QTY )
 	{
 		m_dirFace = dir;	// face victim.
 		UpdateMove( GetTopPoint(), NULL, true );

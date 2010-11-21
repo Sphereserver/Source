@@ -2234,9 +2234,12 @@ do_default:
 			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
 			break;
 		case CHC_DIR:
-			m_dirFace = (DIR_TYPE) s.GetArgVal();
-			if ( m_dirFace < 0 || m_dirFace >= DIR_QTY )
-				m_dirFace = DIR_SE;
+			{
+				DIR_TYPE dir = (DIR_TYPE)s.GetArgVal();
+				if (dir <= DIR_INVALID || dir >= DIR_QTY)
+					dir = DIR_SE;
+				m_dirFace = dir;
+			}
 			break;
 		case CHC_DISMOUNT:
 			Horse_UnMount();

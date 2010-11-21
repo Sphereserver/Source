@@ -922,6 +922,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	//Finish Move Action
 
 	// ??? Make sure we are not facing a wall.
+	ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
 	m_dirFace = Dir;	// Face this direction.
 	if ( fRun && ( ! pCharDef->Can(CAN_C_RUN|CAN_C_FLY) || Stat_GetVal(STAT_DEX) <= 1 ))
 		fRun = false;

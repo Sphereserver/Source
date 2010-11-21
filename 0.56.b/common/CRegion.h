@@ -248,6 +248,7 @@ inline DIR_TYPE GetDirTurn( DIR_TYPE dir, int offset )
 	// Turn in a direction.
 	// +1 = to the right.
 	// -1 = to the left.
+	ASSERT((offset + DIR_QTY + dir) >= 0);
 	offset += DIR_QTY + dir;
 	offset %= DIR_QTY;
 	return( (DIR_TYPE) (offset));

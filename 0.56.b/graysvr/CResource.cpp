@@ -1250,13 +1250,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				{
 					CChar * pChar = pClient->GetChar();
 
-					if ( pChar == NULL ) // Not an ingame client
-						sVal.FormatVal(0);
-					else if (!*pszKey)   // Checking reference
-						sVal.FormatVal(1);
-					else                 // Function of some kind
+					if ( *pszKey == '\0' ) // checking reference
+						sVal.FormatVal( pChar != NULL? 1 : 0 );
+					else if ( pChar != NULL )
 						return pChar->r_WriteVal(pszKey, sVal, pSrc);
-					break;
+					else
+						return pClient->r_WriteVal(pszKey, sVal, pSrc);
 				}
 				i++;
 			}
