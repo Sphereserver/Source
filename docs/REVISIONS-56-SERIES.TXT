@@ -4988,3 +4988,6 @@ ALPHA additions:
 
 21-11-2010, MrSugarCube
 - Fixed: Unable to access basic properties for non-game clients through SERV.CLIENT.x.
+
+22-11-2010, Coruja (script pack)
+- Updated: sphere_map0.scp (renamed Trinsic Passage to Delucia Passage)

@@ -5118,9 +5118,9 @@ P=6006,3464,6,0
 RECT=5890,3328,6134,3574,0
 EVENTS=r_swamp
 
-[AREADEF a_trinsic_passage_3]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Trinsic Passage
+[AREADEF a_delucia_passage]
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+NAME=Delucia Passage
 GROUP=T2A
 FLAGS=0880
 P=5955,1352,0,0
