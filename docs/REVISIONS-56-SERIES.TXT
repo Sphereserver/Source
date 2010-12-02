@@ -4991,3 +4991,9 @@ ALPHA additions:
 
 22-11-2010, Coruja (script pack)
 - Updated: sphere_map0.scp (renamed Trinsic Passage to Delucia Passage)
+
+02-12-2010, MrSugarCube
+- Fixed #1861: Elven players turning into gargoyle ghosts when dead.
+- Fixed: Mana Vampire spell always gives mana to the caster even when the spell is blocked in
+  an @Effect trigger.
+

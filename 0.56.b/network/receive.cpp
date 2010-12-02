@@ -2386,7 +2386,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DWORD version = CCrypt::GetVerFromString(versionStr);
 		net->m_reportedVersion = version;
-		net->setAsyncMode();
+		net->detectAsyncMode();
 
 		DEBUG_MSG(("Getting cliver 0x%x/0x%x\n", version, (version&0xFFFFF0)));
 		

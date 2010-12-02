@@ -182,7 +182,7 @@ void NetState::clear(void)
 	m_clientType = CLIENTTYPE_2D;
 	m_isSendingAsync = false;
 	m_packetExceptions = 0;
-	setAsyncMode();
+	setAsyncMode(false);
 	m_isInUse = false;
 }
 
@@ -218,10 +218,10 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	m_isInUse = true;
 
 	DEBUGNETWORK(("%x:Determining async mode\n", id()));
-	setAsyncMode();
+	detectAsyncMode();
 }
 
-bool NetState::isInUse(const CClient* client) const
+bool NetState::isInUse(const CClient* client) const volatile
 {
 	if (m_isInUse == false)
 		return false;
@@ -229,38 +229,38 @@ bool NetState::isInUse(const CClient* client) const
 	return client == NULL || m_client == client;
 }
 
-void NetState::markReadClosed(void)
+void NetState::markReadClosed(void) volatile
 {
-	DEBUGNETWORK(("%x:Client being closed by read-thread\n", id()));
+	DEBUGNETWORK(("%x:Client being closed by read-thread\n", m_id));
 	m_isReadClosed = true;
 }
 
-void NetState::markWriteClosed(void)
+void NetState::markWriteClosed(void) volatile
 {
-	DEBUGNETWORK(("%x:Client being closed by write-thread\n", id()));
+	DEBUGNETWORK(("%x:Client being closed by write-thread\n", m_id));
 	m_isWriteClosed = true;
 }
 
-void NetState::markFlush(bool needsFlush)
+void NetState::markFlush(bool needsFlush) volatile
 {
 	m_needsFlush = needsFlush;
 }
 
-void NetState::setAsyncMode(void)
+void NetState::detectAsyncMode(void)
 {
-	bool wasAsync = m_useAsync;
+	bool wasAsync = isAsyncMode();
 
 	// is async mode enabled?
 	if ( !g_Cfg.m_fUseAsyncNetwork || !isInUse() )
-		m_useAsync = false;
+		setAsyncMode(false);
 
 	// if the version mod flag is not set, always use async mode
 	else if ( g_Cfg.m_fUseAsyncNetwork != 2 )
-		m_useAsync = true;
+		setAsyncMode(true);
 
 	// http clients do not want to be using async networking unless they have keep-alive set
 	else if (getClient() != NULL && getClient()->GetConnectType() == CONNECT_HTTP)
-		m_useAsync = false;
+		setAsyncMode(false);
 
 	// only use async with clients newer than 4.0.0
 	// - normally the client version is unknown for the first 1 or 2 packets, so all clients will begin
@@ -268,14 +268,12 @@ void NetState::setAsyncMode(void)
 	// - a minor issue with this is that for clients without encryption we cannot determine their version
 	//   until after they have fully logged into the game server and sent a client version packet.
 	else if (isClientVersion(MINCLIVER_AUTOASYNC) || isClientKR() || isClientSA())
-		m_useAsync = true;
+		setAsyncMode(true);
 	else
-		m_useAsync = false;
+		setAsyncMode(false);
 
-#ifdef _DEBUG
-	if (wasAsync != m_useAsync)
-		DEBUGNETWORK(("%x:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", m_useAsync? "1":"0"));
-#endif
+	if (wasAsync != isAsyncMode())
+		DEBUGNETWORK(("%x:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));
 }
 
 bool NetState::hasPendingData(void) const
@@ -2039,6 +2037,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		{
 			EXC_SET("send successful");
 
+			ASSERT(ret == sendBufferLength);
 			CurrentProfileData.Count(PROFILE_DATA_TX, ret);
 		}
 

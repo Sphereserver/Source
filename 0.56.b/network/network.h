@@ -101,12 +101,13 @@ public:
 	void clear(void); // clears state
 
 	void init(SOCKET socket, CSocketAddress addr); // initialized socket
-	bool isInUse(const CClient* client = NULL) const; // does this socket still belong to this/a client?
+	bool isInUse(const CClient* client = NULL) const volatile; // does this socket still belong to this/a client?
 	bool hasPendingData(void) const; // is there any data waiting to be sent?
 	bool canReceive(PacketSend* packet) const; // can the state receive the given packet?
 
-	void setAsyncMode(void); // set asynchronous mode
-	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode
+	void detectAsyncMode(void);
+	void setAsyncMode(bool isAsync) volatile { m_isSendingAsync = isAsync; }; // set asynchronous mode
+	bool isAsyncMode(void) const volatile { return m_useAsync; }; // get asyncronous mode
 #ifndef _WIN32
 	struct ev_io* iocb(void) { return &m_eventWatcher; }; // get io callback
 #endif
@@ -117,15 +118,15 @@ public:
 	DWORD getCryptVersion(void) const { return m_clientVersion; }; // version as determined by encryption
 	DWORD getReportedVersion(void) const { return m_reportedVersion; }; // version as reported by client
 
-	void markReadClosed(void); // mark socket as closed by read thread
-	void markWriteClosed(void); // mark socket as closed by write thread
-	bool isClosing(void) const { return m_isReadClosed || m_isWriteClosed; } // is the socket closing?
-	bool isClosed(void) const { return m_isReadClosed && m_isWriteClosed; } // is the socket closed?
-	bool isReadClosed(void) const { return m_isReadClosed; }	// is the socket closed by read-thread?
-	bool isWriteClosed(void) const { return m_isWriteClosed; }	// is the socket closed by write-thread?
+	void markReadClosed(void) volatile; // mark socket as closed by read thread
+	void markWriteClosed(void) volatile; // mark socket as closed by write thread
+	bool isClosing(void) const volatile { return m_isReadClosed || m_isWriteClosed; } // is the socket closing?
+	bool isClosed(void) const volatile { return m_isReadClosed && m_isWriteClosed; } // is the socket closed?
+	bool isReadClosed(void) const volatile { return m_isReadClosed; }	// is the socket closed by read-thread?
+	bool isWriteClosed(void) const volatile { return m_isWriteClosed; }	// is the socket closed by write-thread?
 
-	void markFlush(bool needsFlush); // mark socket as needing a flush
-	bool needsFlush(void) const { return m_needsFlush; } // does the socket need to be flushed?
+	void markFlush(bool needsFlush) volatile; // mark socket as needing a flush
+	bool needsFlush(void) const volatile { return m_needsFlush; } // does the socket need to be flushed?
 
 	CClient* getClient(void) const { return m_client; } // get linked client
 

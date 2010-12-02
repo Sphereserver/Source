@@ -662,7 +662,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 		return( false );
 	}
 	
-	GetNetState()->setAsyncMode();
+	GetNetState()->detectAsyncMode();
 	SetConnectType( m_Crypt.GetConnectType() );
 
 	if ( !xCanEncLogin() )
@@ -749,7 +749,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 							if ( tmVerReported != 0)
 								GetNetState()->m_reportedVersion = tmVerReported;
 
-							GetNetState()->setAsyncMode();
+							GetNetState()->detectAsyncMode();
 						}
 
 						if ( !xCanEncLogin(true) )

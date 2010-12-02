@@ -2079,7 +2079,9 @@ bool CChar::Spell_CastDone()
 				else
 					iDiff = Calc_GetRandVal( iDiff );
 				iDiff += Calc_GetRandVal( 25 );
-				pChar->OnSpellEffect( spell, this, iDiff, NULL );
+				if ( pChar->OnSpellEffect( spell, this, iDiff, NULL ) == false )
+					break;
+
 				if ( spell == SPELL_Mana_Vamp )
 				{
 					// Give some back to me.
