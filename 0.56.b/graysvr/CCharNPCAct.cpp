@@ -774,7 +774,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		{
 			bUsePathfinding = true;
 
-			if ( pMe.GetDist(local) > 1 )
+			if ( pMe.GetDist(local) != 1 )
 			{
 				// The next step is too far away, pathfinding route has become invalid
 				m_pNPC->m_nextPt.InitPoint();
@@ -785,6 +785,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			{
 				// Update our heading to the way we need to go
 				Dir = pMe.GetDir(local);
+				ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
 
 				EXC_TRYSUB("Array Shift");
 				//	also shift the steps array
@@ -900,6 +901,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 					if ( point == ptFirstTry )
 					{
 						Dir = GetTopPoint().GetDir(m_Act_p);
+						ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
 						if (Dir >= DIR_QTY)
 							bClearedWay = false;
 					}
