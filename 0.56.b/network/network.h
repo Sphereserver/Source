@@ -106,13 +106,13 @@ public:
 	bool canReceive(PacketSend* packet) const; // can the state receive the given packet?
 
 	void detectAsyncMode(void);
-	void setAsyncMode(bool isAsync) volatile { m_isSendingAsync = isAsync; }; // set asynchronous mode
-	bool isAsyncMode(void) const volatile { return m_useAsync; }; // get asyncronous mode
+	void setAsyncMode(bool isAsync) { m_useAsync = isAsync; }; // set asynchronous mode
+	bool isAsyncMode(void) const { return m_useAsync; }; // get asyncronous mode
 #ifndef _WIN32
 	struct ev_io* iocb(void) { return &m_eventWatcher; }; // get io callback
 #endif
-	bool isSendingAsync(void) const { return m_isSendingAsync; }; // get if async packeet is being sent
-	void setSendingAsync(bool isSending) { m_isSendingAsync = isSending; }; // set if async packet is being sent
+	bool isSendingAsync(void) const volatile { return m_isSendingAsync; }; // get if async packeet is being sent
+	void setSendingAsync(bool isSending) volatile { m_isSendingAsync = isSending; }; // set if async packet is being sent
 
 	GAMECLIENT_TYPE getClientType(void) const { return m_clientType; }; // determined client type
 	DWORD getCryptVersion(void) const { return m_clientVersion; }; // version as determined by encryption
