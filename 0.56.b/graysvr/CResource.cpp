@@ -3633,7 +3633,7 @@ bool CResource::Load( bool fResync )
 		ASSERT(pSkillClass);
 		m_ResHash.AddSortKey( RESOURCE_ID( RES_SKILLCLASS, 0 ), pSkillClass );
 	}
-	g_Serv.SysMessage( "Done loading scripts.\n" );
+	g_Log.Event(LOGM_INIT, "Done loading scripts.\n");
 
 	if ( !m_StartDefs.GetCount() )
 	{

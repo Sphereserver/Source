@@ -4997,3 +4997,5 @@ ALPHA additions:
 - Fixed: Mana Vampire spell always gives mana to the caster even when the spell is blocked in
   an @Effect trigger.
 
+10-12-2010, MrSugarCube
+- Fixed #1854: LogMask setting not have any effect on the messages being logged.

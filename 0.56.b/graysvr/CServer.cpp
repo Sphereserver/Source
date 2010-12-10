@@ -1378,7 +1378,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 		case SV_LOG:
 			{
 				LPCTSTR	pszArgs = s.GetArgStr();
-				int		mask = LOGM_CLIENTS_LOG|LOGL_EVENT;
+				int		mask = LOGL_EVENT;
 				if ( pszArgs && ( *pszArgs == '@' ))
 				{
 					pszArgs++;
@@ -1882,7 +1882,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	g_Log.WriteString("\n");
 
 #ifdef __SVNREVISION__
-	g_Log.Event(LOGM_INIT, "%s, compiled at " __DATE__ " (" __TIME__ "), internal build #" __SVNREVISION__  "\n", g_szServerDescription);
+	g_Log.Event(0, "%s, compiled at " __DATE__ " (" __TIME__ "), internal build #" __SVNREVISION__  "\n", g_szServerDescription);
 #else
 	g_Log.Event(LOGM_INIT, "%s, compiled at " __DATE__ " (" __TIME__ ")\n", g_szServerDescription);
 #endif

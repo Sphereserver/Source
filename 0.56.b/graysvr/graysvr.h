@@ -232,11 +232,12 @@ public:
 	}
 	void SetLogMask( DWORD dwMask )
 	{
-		m_dwMsgMask = GetLogLevel() | dwMask;
+		m_dwMsgMask = GetLogLevel() | ( dwMask &~ 0x0f );
 	}
 	bool IsLoggedMask( DWORD dwMask ) const
 	{
-		return(( GetLogMask() & ( dwMask &~ 0x0f )) ? true : false );
+		return( ((dwMask &~ (0x0f | LOGM_NOCONTEXT | LOGM_DEBUG)) == 0) ||
+				(( GetLogMask() & ( dwMask &~ 0x0f )) != 0) );
 	}
 	LOGL_TYPE GetLogLevel() const
 	{
@@ -244,12 +245,16 @@ public:
 	}
 	void SetLogLevel( LOGL_TYPE level )
 	{
-		m_dwMsgMask = GetLogMask() | level;
+		m_dwMsgMask = GetLogMask() | ( level & 0x0f );
+	}
+	bool IsLoggedLevel( LOGL_TYPE level ) const
+	{
+		return ( ((level & 0x0f) != 0) &&
+				 (GetLogLevel() >= ( level & 0x0f ) ) );
 	}
 	bool IsLogged( DWORD wMask ) const
 	{
-		return( IsLoggedMask(wMask) ||
-			( (DWORD)GetLogLevel() >= ( wMask & 0x0f )));
+		return( IsLoggedMask(wMask) || IsLoggedLevel((LOGL_TYPE)wMask) );
 	}
 
 	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );
@@ -262,7 +267,7 @@ public:
 #endif
 		m_fLockOpen = false;
 		m_pScriptContext = NULL;
-		m_dwMsgMask = LOGL_EVENT |
+		m_dwMsgMask = LOGL_ERROR |
 			LOGM_INIT | LOGM_CLIENTS_LOG | LOGM_GM_PAGE;
 		SetFilePath( GRAY_FILE "log.log" );	// default name to go to.
 	}

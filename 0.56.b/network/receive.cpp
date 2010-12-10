@@ -4151,7 +4151,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	skip(1); // zero
 	DWORD errorOffset = readInt32();
 
-	g_Log.EventWarn("%x:Client crashed at %d,%d,%d,%d: 0x%08X %s @ 0x%08X (%s, %d.%d.%d.%d)\n", net->id(),
+	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Client crashed at %d,%d,%d,%d: 0x%08X %s @ 0x%08X (%s, %d.%d.%d.%d)\n", net->id(),
 					x, y, z, map,
 					errorCode, description, errorOffset, executable,
 					versionMaj, versionMin, versionRev, versionPat);

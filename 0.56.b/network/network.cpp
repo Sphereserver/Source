@@ -117,7 +117,7 @@ void NetState::clear(void)
 		m_client = NULL;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
-		g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client disconnected [Total:%d] ('%s')\n",
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Client disconnected [Total:%d] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
 
 #ifndef _WIN32
@@ -713,7 +713,7 @@ void NetworkIn::tick(void)
 				int iLastEventDiff = -g_World.GetTimeDiff( client->m_client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.EventError("%x:Frozen client connection disconnected.\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Frozen client connection disconnected.\n", client->m_id);
 					client->markReadClosed();
 				}
 			}
@@ -805,7 +805,7 @@ void NetworkIn::tick(void)
 
 					if ( !seed )
 					{
-						g_Log.EventError("Invalid client '%x' detected, disconnecting.\n", client->id());
+						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "Invalid client '%x' detected, disconnecting.\n", client->id());
 						client->markReadClosed();
 						continue;
 					}
@@ -934,7 +934,7 @@ void NetworkIn::tick(void)
 					break;
 					
 				default:
-					g_Log.Event(LOGM_CLIENTS_LOG,"%x:Junk messages with no crypt\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Junk messages with no crypt\n", client->m_id);
 					client->markReadClosed();
 					continue;
 			}
@@ -1024,7 +1024,7 @@ void NetworkIn::tick(void)
 				// unknown packet.. we could skip 1 byte at a time but this can produce
 				// strange behaviours (it's unlikely that only 1 byte is incorrect), so
 				// it's best to discard everything we have
-				g_Log.EventWarn("%x:Unknown game packet (0x%x) received.\n", client->id(), packetID);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Unknown game packet (0x%x) received.\n", client->id(), packetID);
 				packet->skip(len);
 				len = 0;
 			}
@@ -1040,7 +1040,7 @@ void NetworkIn::tick(void)
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)
 		{
-			g_Log.EventWarn("%x:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
 			client->m_client->addKick(&g_Serv, false);
 		}
 
@@ -1366,7 +1366,7 @@ void NetworkIn::periodic(void)
 			}
 			if (connecting > connectingMax)
 			{
-				g_Log.EventWarn("%d clients in connect mode (max %d), closing %d\n", connecting, connectingMax, connecting - connectingMax);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%d clients in connect mode (max %d), closing %d\n", connecting, connectingMax, connecting - connectingMax);
 			}
 		}
 	}
@@ -2025,7 +2025,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 				EXC_SET("connection lost - delete packet");
 
 				if (state->isClosing() == false)
-					g_Log.EventWarn("%x:TX Error %d\n", state->id(), errCode);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:TX Error %d\n", state->id(), errCode);
 
 #ifndef _WIN32
 				delete packet;
