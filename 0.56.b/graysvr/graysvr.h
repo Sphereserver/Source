@@ -1144,7 +1144,7 @@ public:
 	void addWeather( WEATHER_TYPE weather = WEATHER_DEFAULT ); // Send new weather to player
 	void addLight( int iLight = -1 );
 	void addMusic( MIDI_TYPE id );
-	void addArrowQuest( int x, int y );
+	void addArrowQuest( int x, int y, int id );
 	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0 );
 	void addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase = NULL, int iRepeat = 1 );
 	void addReSync(bool bForceMap = false);

@@ -496,11 +496,11 @@ void CClient::addLight( int iLight )
 	PacketGlobalLight *cmd = new PacketGlobalLight(this, iLight);
 }
 
-void CClient::addArrowQuest( int x, int y )
+void CClient::addArrowQuest( int x, int y, int id )
 {
 	ADDTOCALLSTACK("CClient::addArrowQuest");
 
-	PacketArrowQuest* cmd = new PacketArrowQuest(this, x, y);
+	PacketArrowQuest* cmd = new PacketArrowQuest(this, x, y, id);
 }
 
 void CClient::addMusic( WORD id )

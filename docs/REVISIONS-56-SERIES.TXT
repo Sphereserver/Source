@@ -4999,3 +4999,16 @@ ALPHA additions:
 
 10-12-2010, MrSugarCube
 - Fixed #1854: LogMask setting not have any effect on the messages being logged.
+
+12-12-2010, MrSugarCube
+- Added #1865: ARROWQUEST function now accepts a third parameter to specify the arrow's id
+  (defaults to 0). This can be used to display more than one arrow at once on newer clients,
+  but bear in mind that older clients can still only show one arrow at a time and so the id
+  will effectively be ignored in their case.
+  If an id has been specified when showing the arrow, then you will also need to specify it
+  again when you want to remove it ("ARROWQUEST" with no arguments will only remove the arrow
+  with id 0).
+    ARROWQUEST 1000,1000,0 // show an arrow pointing to 1000,1000, id=0
+    ARROWQUEST 1020,1000,1 // show an arrow pointing to 1020,1000, id=1
+    ARROWQUEST 1000,1020,2 // show an arrow pointing to 1000,1020, id=2
+    ARROWQUEST 0,0,1       // remove the arrow pointing to 1020,1000

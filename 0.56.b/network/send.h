@@ -1171,7 +1171,7 @@ public:
 class PacketArrowQuest : public PacketSend
 {
 public:
-	PacketArrowQuest(const CClient* target, int x, int y);
+	PacketArrowQuest(const CClient* target, int x, int y, int id);
 };
 
 /***************************************************************************

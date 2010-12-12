@@ -3266,7 +3266,7 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
  *
  *
  ***************************************************************************/
-PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y) : PacketSend(XCMD_Arrow, 6, PRI_NORMAL)
+PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y, int id) : PacketSend(XCMD_Arrow, 10, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketArrowQuest::PacketArrowQuest");
 
@@ -3274,6 +3274,10 @@ PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y) : Packet
 	writeInt16(x);
 	writeInt16(y);
 
+	if (target->GetNetState()->isClientVersion(MINCLIVER_SA) || target->GetNetState()->isClientSA())
+		writeInt32(id);
+	
+	trim();
 	push(target);
 }
 
