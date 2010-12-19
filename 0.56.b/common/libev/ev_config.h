@@ -106,4 +106,4 @@
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "3.1"
+#define VERSION "4.1"

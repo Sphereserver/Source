@@ -7,7 +7,7 @@
 #include "PingServer.h"	// ping server
 #include "../network/network.h" // network thread
 #include "../sphere/asyncdb.h"
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	#include "../sphere/linuxev.h"
 #endif
 
@@ -476,7 +476,7 @@ bool Main::shouldExit()
 Main g_Main;
 extern PingServer g_PingServer;
 extern CDataBaseAsyncHelper g_asyncHdb;
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 
@@ -588,7 +588,7 @@ void Sphere_ExitServer()
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.waitForClose();
 #endif
@@ -1014,7 +1014,7 @@ int _cdecl main( int argc, char * argv[] )
 		if ( IsSetEF( EF_UsePingServer ) )
 			g_PingServer.start();
 		
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 		if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 			g_NetworkEvent.start();
 #endif

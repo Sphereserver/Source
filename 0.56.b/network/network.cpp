@@ -2,7 +2,7 @@
 #include "send.h"
 #include "receive.h"
 
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 
@@ -119,8 +119,8 @@ void NetState::clear(void)
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
 		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Client disconnected [Total:%d] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
-
-#ifndef _WIN32
+		
+#if !defined(_WIN32) || defined(_LIBEV)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
 			g_NetworkEvent.unregisterClient(client);
 #endif
@@ -204,7 +204,7 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	CClient* client = new CClient(this);
 	m_client = client;
 	
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	if (g_Cfg.m_fUseAsyncNetwork != 0)
 	{
 		DEBUGNETWORK(("%x:Registering async client\n", id()));
@@ -1105,18 +1105,17 @@ int NetworkIn::checkForData(fd_set* storage)
 		{
 			if (state->isClosed() == false)
 			{
-				if (state->isWriteClosed() == false)
+				EXC_SET("check pending data");
+				if (state->hasPendingData())
 				{
 					DEBUGNETWORK(("%x:Flushing data for client.\n", state->id()));
 
 					EXC_SET("flush data");
 					g_NetworkOut.flush(state->getClient());
-
-					EXC_SET("check pending data");
-					if (state->hasPendingData())
-						continue;
+					continue;
 				}
 			
+				EXC_SET("mark closed");
 				state->markReadClosed();
 				if (g_NetworkOut.isActive() == false)
 					state->markWriteClosed();
@@ -1967,7 +1966,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 		// send the data
 		EXC_SET("sending");
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_LIBEV)
 		if (state->isAsyncMode())
 		{
 			ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));

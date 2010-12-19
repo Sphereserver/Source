@@ -1,5 +1,4 @@
-#ifndef _WIN32
-
+#if !defined(_WIN32) || defined(_LIBEV)
 #include "linuxev.h"
 #include "../graysvr/graysvr.h"
 #include "../network/network.h"
@@ -67,13 +66,13 @@ void LinuxEv::onStart()
 	
 void LinuxEv::tick()
 {	
-	ev_loop(m_eventLoop, 0);
+	ev_run(m_eventLoop, EVRUN_NOWAIT);
 }
 
 void LinuxEv::waitForClose()
 {
 	m_active = false;
-	ev_unloop(m_eventLoop, EVUNLOOP_ALL);
+	ev_break(m_eventLoop, EVBREAK_ALL);
 
 	AbstractSphereThread::waitForClose();
 }
@@ -88,8 +87,13 @@ void LinuxEv::registerClient(CClient * theClient, EventsID eventCheck)
 	NetState* state = theClient->GetNetState();
 	
 	memset(state->iocb(), 0, sizeof(struct ev_io));
-		
+
+#ifdef _WIN32
+	int fd = EV_WIN32_HANDLE_TO_FD(state->m_socket.GetSocket());
+	ev_io_init(state->iocb(), socketslave_cb, fd, (int)eventCheck);
+#else
 	ev_io_init(state->iocb(), socketslave_cb, state->m_socket.GetSocket(), (int)eventCheck);
+#endif
 	state->iocb()->data = theClient;
 	state->setSendingAsync(true);
 	
@@ -123,7 +127,12 @@ void LinuxEv::forceClientwrite(CClient * theClient)
 
 void LinuxEv::registerMainsocket()
 {
+#ifdef _WIN32
+	int fd = EV_WIN32_HANDLE_TO_FD(g_Serv.m_SocketMain.GetSocket());
+	ev_io_init(&m_watchMainsock, socketmain_cb, fd, EV_READ);
+#else
 	ev_io_init(&m_watchMainsock, socketmain_cb, g_Serv.m_SocketMain.GetSocket(), EV_READ);
+#endif
     ev_io_start(m_eventLoop, &m_watchMainsock);		
 }
 

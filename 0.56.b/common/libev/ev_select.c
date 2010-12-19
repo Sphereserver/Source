@@ -1,7 +1,7 @@
 /*
  * libev select fd activity backend
  *
- * Copyright (c) 2007,2008 Marc Alexander Lehmann <libev@schmorp.de>
+ * Copyright (c) 2007,2008,2009,2010 Marc Alexander Lehmann <libev@schmorp.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modifica-
@@ -79,6 +79,8 @@ select_modify (EV_P_ int fd, int oev, int nev)
     int handle = fd;
     #endif
 
+    assert (("libev: fd >= FD_SETSIZE passed to fd_set-based select backend", fd < FD_SETSIZE));
+
     /* FD_SET is broken on windows (it adds the fd to a set twice or more,
      * which eventually leads to overflows). Need to call it only on changes.
      */
@@ -138,8 +140,8 @@ select_poll (EV_P_ ev_tstamp timeout)
   int res;
   int fd_setsize;
 
-  tv.tv_sec  = (long)timeout;
-  tv.tv_usec = (long)((timeout - (ev_tstamp)tv.tv_sec) * 1e6);
+  EV_RELEASE_CB;
+  EV_TV_SET (tv, timeout);
 
 #if EV_SELECT_USE_FD_SET
   fd_setsize = sizeof (fd_set);
@@ -158,9 +160,13 @@ select_poll (EV_P_ ev_tstamp timeout)
    */
   memcpy (vec_eo, vec_wi, fd_setsize);
   res = select (vec_max * NFDBITS, (fd_set *)vec_ro, (fd_set *)vec_wo, (fd_set *)vec_eo, &tv);
+#elif EV_SELECT_USE_FD_SET
+  fd_setsize = anfdmax < FD_SETSIZE ? anfdmax : FD_SETSIZE;
+  res = select (fd_setsize, (fd_set *)vec_ro, (fd_set *)vec_wo, 0, &tv);
 #else
   res = select (vec_max * NFDBITS, (fd_set *)vec_ro, (fd_set *)vec_wo, 0, &tv);
 #endif
+  EV_ACQUIRE_CB;
 
   if (expect_false (res < 0))
     {
@@ -177,9 +183,9 @@ select_poll (EV_P_ ev_tstamp timeout)
       #endif
 
       #ifdef _WIN32
-      /* select on windows errornously returns EINVAL when no fd sets have been
+      /* select on windows erroneously returns EINVAL when no fd sets have been
        * provided (this is documented). what microsoft doesn't tell you that this bug
-       * exists even when the fd sets are provided, so we have to check for this bug
+       * exists even when the fd sets _are_ provided, so we have to check for this bug
        * here and emulate by sleeping manually.
        * we also get EINVAL when the timeout is invalid, but we ignore this case here
        * and assume that EINVAL always means: you have to wait manually.
@@ -196,7 +202,7 @@ select_poll (EV_P_ ev_tstamp timeout)
       else if (errno == ENOMEM && !syserr_cb)
         fd_enomem (EV_A);
       else if (errno != EINTR)
-        syserr ("(libev) select");
+        ev_syserr ("(libev) select");
 
       return;
     }
@@ -265,7 +271,6 @@ select_init (EV_P_ int flags)
   backend_poll   = select_poll;
 
 #if EV_SELECT_USE_FD_SET
-  vec_max = FD_SETSIZE / 32;
   vec_ri  = ev_malloc (sizeof (fd_set)); FD_ZERO ((fd_set *)vec_ri);
   vec_ro  = ev_malloc (sizeof (fd_set));
   vec_wi  = ev_malloc (sizeof (fd_set)); FD_ZERO ((fd_set *)vec_wi);
@@ -276,9 +281,12 @@ select_init (EV_P_ int flags)
 #else
   vec_max = 0;
   vec_ri  = 0; 
-  vec_ri  = 0;   
+  vec_ro  = 0;   
+  vec_wi  = 0; 
   vec_wo  = 0; 
-  vec_wo  = 0; 
+  #ifdef _WIN32
+  vec_eo  = 0;
+  #endif
 #endif
 
   return EVBACKEND_SELECT;
@@ -291,6 +299,9 @@ select_destroy (EV_P)
   ev_free (vec_ro);
   ev_free (vec_wi);
   ev_free (vec_wo);
+  #ifdef _WIN32
+  ev_free (vec_eo);
+  #endif
 }
 
 

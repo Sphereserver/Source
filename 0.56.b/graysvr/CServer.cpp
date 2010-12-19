@@ -21,7 +21,7 @@
 	#include "../common/crashdump/crashdump.h"
 #endif
 
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 
@@ -1706,7 +1706,7 @@ bool CServer::SocketsInit( CGSocket & socket )
 	}
 	socket.Listen();
 	
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 #ifdef LIBEV_REGISTERMAIN
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.registerMainsocket();
@@ -1756,7 +1756,7 @@ bool CServer::SocketsInit() // Initialize sockets
 void CServer::SocketsClose()
 {
 	ADDTOCALLSTACK("CServer::SocketsClose");
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 #ifdef LIBEV_REGISTERMAIN
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.unregisterMainsocket();

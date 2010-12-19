@@ -135,7 +135,7 @@ enum RESDISPLAY_VERSION
 #include "../sphere/mutex.h"
 #include "../sphere/ProfileData.h"
 #include "../sphere/threads.h"
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	#include "../sphere/linuxev.h"
 #endif
 #include "../common/CQueue.h"

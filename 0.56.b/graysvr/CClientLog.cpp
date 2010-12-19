@@ -13,7 +13,7 @@
 #pragma warning(default:4096)
 
 CHuffman CClient::m_Comp;
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 

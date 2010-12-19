@@ -1,7 +1,8 @@
- 
 #ifndef _INC_LINUXEV_H
 #define _INC_LINUXEV_H
+#if !defined(_WIN32) || defined(_LIBEV)
 
+	#include "../common/libev/wrapper_ev.h"
 	#include "../common/libev/ev.h"
 	#include "threads.h"
 	#include "mutex.h"
@@ -56,4 +57,5 @@
 		void unregisterMainsocket();
 	};
 
+#endif
 #endif

@@ -7,7 +7,7 @@
 #include "../network/network.h"
 #include "../network/send.h"
 
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 
