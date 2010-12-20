@@ -1914,6 +1914,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
+	int ret = 0;
 
 	EXC_TRY("proceedQueue");
 
@@ -1925,7 +1926,6 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		BYTE* sendBuffer = NULL;
 		int sendBufferLength = 0;
 
-		int ret = 0;
 		if (state->m_client == NULL)
 		{
 			DEBUGNETWORK(("%x:Sending packet to closed client?\n", state->id()));
@@ -2036,7 +2036,16 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		{
 			EXC_SET("send successful");
 
-			ASSERT(ret == sendBufferLength);
+			if (ret != sendBufferLength)
+			{
+				// if this condition is actually being hit then it indicates that
+				// we aren't actually sending the full packet to the client, in
+				// which case we need to investigate looping (or other means) to
+				// ensure all bytes are being sent
+				DEBUGNETWORK(("%x:Successful send reports only %d/%d bytes sent.\n", state->id(), ret, sendBufferLength));
+				ASSERT(ret == sendBufferLength);
+			}
+
 			CurrentProfileData.Count(PROFILE_DATA_TX, ret);
 		}
 
@@ -2049,8 +2058,8 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n",
-		state->id(), *packet->getData(), packet->getLength());
+	g_Log.EventDebug("id='%x', packet '0x%x', length '%d', ret '%d'\n",
+		state->id(), *packet->getData(), packet->getLength(), ret);
 	EXC_DEBUG_END;
 	return false;
 }
