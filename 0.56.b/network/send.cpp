@@ -502,7 +502,7 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 	if (source == NULL)
 		writeStringFixedASCII("System", 30);
 	else
-		writeStringFixedASCII(source->GetName(), 30, mode == TALKMODE_ITEM);
+		writeStringFixedASCII(source->GetName(), 30, true);
 
 	writeStringASCII(pszText);
 

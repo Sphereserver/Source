@@ -5012,3 +5012,6 @@ ALPHA additions:
     ARROWQUEST 1020,1000,1 // show an arrow pointing to 1020,1000, id=1
     ARROWQUEST 1000,1020,2 // show an arrow pointing to 1000,1020, id=2
     ARROWQUEST 0,0,1       // remove the arrow pointing to 1020,1000
+
+21-12-2010, MrSugarCube
+- Fixed #1869: Older clients freezing when an item or character with a long name speaks.
