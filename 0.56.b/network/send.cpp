@@ -4007,7 +4007,7 @@ PacketPropertyList::PacketPropertyList(const CClient* target, const PacketProper
 	m_version = other->getVersion();
 	m_entryCount = other->getEntryCount();
 
-	push(target);
+	push(target, false);
 }
 
 bool PacketPropertyList::onSend(const CClient* client)

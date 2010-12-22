@@ -5015,3 +5015,6 @@ ALPHA additions:
 
 21-12-2010, MrSugarCube
 - Fixed #1869: Older clients freezing when an item or character with a long name speaks.
+
+22-12-2010, MrSugarCube
+- Fixed #1848: Container contents slow to show when TooltipMode is set to 0.

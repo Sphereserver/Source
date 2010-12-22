@@ -1924,7 +1924,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 	if (packet->onSend(client))
 	{
 		BYTE* sendBuffer = NULL;
-		int sendBufferLength = 0;
+		DWORD sendBufferLength = 0;
 
 		if (state->m_client == NULL)
 		{
@@ -1966,6 +1966,8 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 		// send the data
 		EXC_SET("sending");
+		DWORD bytesSent = 0;
+
 #if defined(_WIN32) && !defined(_LIBEV)
 		if (state->isAsyncMode())
 		{
@@ -1974,7 +1976,6 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 			state->m_bufferWSA.len = sendBufferLength;
 			state->m_bufferWSA.buf = (CHAR*)sendBuffer;
 
-			DWORD bytesSent;
 			if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
 			{
 				ret = bytesSent;
@@ -1986,7 +1987,26 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		else
 #endif
 		{
-			ret = state->m_socket.Send(sendBuffer, sendBufferLength);
+			do
+			{
+				// send is not guaranteed to send all bytes at once, therefore we
+				// must loop this piece of code until we have sent the correct number
+				// of bytes
+				// note: in the future we could consider spreading this process over several ticks
+				// to avoid the possibility of a single socket hogging resources (presumably
+				// there's a reason why the operation decided to only send a partial packet). This
+				// could be accomplished by modifying sendPacketNow to append packet content to a
+				// simple byte array/queue, and then calling some form of 'processOutput' method
+				// each tick which simply dequeues some bytes and sends them (would also enable
+				// larger chunks of data to be sent at once, apparently it not recommended to be
+				// sending many small pieces of data).
+				ret = state->m_socket.Send(sendBuffer, sendBufferLength);
+				if (ret <= 0)
+					break;
+
+				bytesSent += ret;
+			}
+			while (bytesSent < sendBufferLength);
 		}
 
 		// check for error
@@ -2036,17 +2056,17 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		{
 			EXC_SET("send successful");
 
-			if (ret != sendBufferLength)
+			if (bytesSent != sendBufferLength)
 			{
 				// if this condition is actually being hit then it indicates that
 				// we aren't actually sending the full packet to the client, in
 				// which case we need to investigate looping (or other means) to
 				// ensure all bytes are being sent
-				DEBUGNETWORK(("%x:Successful send reports only %d/%d bytes sent.\n", state->id(), ret, sendBufferLength));
-				ASSERT(ret == sendBufferLength);
+				DEBUGNETWORK(("%x:Successful send reports only %d/%d bytes sent.\n", state->id(), bytesSent, sendBufferLength));
+				ASSERT(bytesSent == sendBufferLength);
 			}
 
-			CurrentProfileData.Count(PROFILE_DATA_TX, ret);
+			CurrentProfileData.Count(PROFILE_DATA_TX, bytesSent);
 		}
 
 		EXC_SET("sent trigger");
