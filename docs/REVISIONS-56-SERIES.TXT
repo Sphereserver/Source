@@ -5018,3 +5018,6 @@ ALPHA additions:
 
 22-12-2010, MrSugarCube
 - Fixed #1848: Container contents slow to show when TooltipMode is set to 0.
+
+23-12-2010, MrSugarCube
+- Fixed #1874: 7.0.0.0 - 7.0.8.2 clients freezing when using ARROWQUEST function.

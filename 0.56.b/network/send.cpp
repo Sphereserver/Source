@@ -3274,7 +3274,7 @@ PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y, int id) 
 	writeInt16(x);
 	writeInt16(y);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_SA) || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || target->GetNetState()->isClientSA())
 		writeInt32(id);
 	
 	trim();
