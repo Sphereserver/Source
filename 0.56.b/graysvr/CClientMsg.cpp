@@ -2767,7 +2767,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	switch (g_Cfg.m_iTooltipMode)
 	{
 		case TOOLTIPMODE_SENDVERSION:
-			if (bRequested == false)
+			if (bRequested == false && bShop == false)
 			{
 				// send property list version (client will send a request for the full tooltip if needed)
 				if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )

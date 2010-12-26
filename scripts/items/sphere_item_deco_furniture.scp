@@ -1152,11 +1152,11 @@ DUPEITEM=0b1a
 
 [ITEMDEF 0b1d]
 //candelabra
-DEFNAME=i_candleabra_lit
+DEFNAME=i_candelabra_lit
 TYPE=T_LIGHT_LIT
-TDATA3=i_candleabra
-TDATA4=i_candleabra
-RESOURCES=i_candleabra
+TDATA3=i_candelabra
+TDATA4=i_candelabra
+RESOURCES=i_candelabra
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candelabra
@@ -1256,11 +1256,11 @@ MOREZ=1
 
 [ITEMDEF 0b26]
 //candelabra lit
-DEFNAME=i_candleabra2_lit
+DEFNAME=i_candelabra2_lit
 TYPE=T_LIGHT_LIT
-TDATA3=i_candleabra2
-TDATA4=i_candleabra2
-RESOURCES=i_candleabra2
+TDATA3=i_candelabra2
+TDATA4=i_candelabra2
+RESOURCES=i_candelabra2
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candelabra Lit

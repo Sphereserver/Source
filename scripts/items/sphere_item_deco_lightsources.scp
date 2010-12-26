@@ -297,9 +297,9 @@ ON=@Create
 MOREZ=1
 
 [ITEMDEF 0a27]
-DEFNAME=i_candleabra
+DEFNAME=i_candelabra
 TYPE=T_LIGHT_OUT
-TDATA3=i_candleabra_lit
+TDATA3=i_candelabra_lit
 RESOURCES=3 i_ingot_copper, 3 I_CANDLE
 SKILLMAKE=TINKERING 50.0
 CATEGORY=Decoration - Lightsources
@@ -324,9 +324,9 @@ ON=@Create
 MOREZ=1
 
 [ITEMDEF 0a29]
-DEFNAME=i_candleabra2
+DEFNAME=i_candelabra2
 TYPE=T_LIGHT_OUT
-TDATA3=i_candleabra2_lit
+TDATA3=i_candelabra2_lit
 RESOURCES=5 i_ingot_iron, 1 I_BEEHIVE, 1 I_CLOTH
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles

@@ -5021,3 +5021,12 @@ ALPHA additions:
 
 23-12-2010, MrSugarCube
 - Fixed #1874: 7.0.0.0 - 7.0.8.2 clients freezing when using ARROWQUEST function.
+
+26-12-2010, ShiryuX
+- Fixed #1729: NPC now teaches you if there's a skill to decrease and room for the new skill.
+  In before, if you were near the skillcap, the npc just rejected your train request.
+- Fixed #1873: Shop list tooltips are now being fully sent to the players.
+
+26-12-2010, Coruja (script pack)
+- Updated: sphere_item_deco_lightsources.scp and sphere_item_deco_furniture.scp
+  (changed typo in candelabra's defnames, was using candleabra instead)

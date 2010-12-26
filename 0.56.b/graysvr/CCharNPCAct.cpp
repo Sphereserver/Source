@@ -445,8 +445,21 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	int iTrainCost = NPC_GetTrainMax( pCharSrc, Skill ) - iSkillSrcVal;
 
 	// Train npc skill cap
+	int iMaxDecrease = 0;
 	if ((pCharSrc->GetSkillTotal() + iTrainCost) > pCharSrc->Skill_GetMax( (SKILL_TYPE)MAX_SKILL ))
-		iTrainCost = 0;
+	{	
+		for (int i=SKILL_NONE+1; i<MAX_SKILL; i++ )
+		{
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+				continue;
+
+			if ( pCharSrc->Skill_GetLock((SKILL_TYPE)i) == SKILLLOCK_DOWN )
+				iMaxDecrease += pCharSrc->Skill_GetBase((SKILL_TYPE)i);
+		}
+		iMaxDecrease = minimum( iTrainCost, iMaxDecrease);
+	} else {
+		iMaxDecrease = iTrainCost;
+	}
 
 	LPCTSTR pszMsg;
 	if ( iSkillVal <= 0 )
@@ -457,13 +470,13 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	{
 		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_DUNNO_3 );
 	}
-	else if ( iTrainCost <= 0 )
+	else if ( iMaxDecrease <= 0 )
 	{
 		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_DUNNO_4 );
 	}
 	else
 	{
-		return( iTrainCost );
+		return( iMaxDecrease );
 	}
 
 	char	*z = Str_GetTemp();
@@ -539,9 +552,46 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 	GetPackSafe()->ContentAdd( pGold );	// take my cash.
 
 	// Give credit for training.
-	pCharSrc->Skill_SetBase( skill, pCharSrc->Skill_GetBase(skill) + iTrainCost );
+	NPC_TrainSkill( pCharSrc, skill, iTrainCost );
 	return( true );
 }
+
+bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
+{
+	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
+	int iTrain = toTrain;
+	if ((pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax( (SKILL_TYPE)MAX_SKILL ))
+	{	
+		for (int i=SKILL_NONE+1; i<MAX_SKILL; i++ )
+		{
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+				continue;
+
+			if ( toTrain < 1 )
+			{
+				pCharSrc->Skill_SetBase(skill, iTrain + pCharSrc->Skill_GetBase(skill));
+				break;
+			}
+
+			if ( pCharSrc->Skill_GetLock( (SKILL_TYPE) i ) == SKILLLOCK_DOWN )
+			{
+				if ( pCharSrc->Skill_GetBase((SKILL_TYPE)i) > toTrain )
+				{
+					pCharSrc->Skill_SetBase((SKILL_TYPE)i, pCharSrc->Skill_GetBase((SKILL_TYPE)i) - toTrain);
+					toTrain = 0;
+				} else {
+					toTrain -= pCharSrc->Skill_GetBase((SKILL_TYPE)i);
+					pCharSrc->Skill_SetBase( (SKILL_TYPE) i, 0);
+				}
+			}
+		}
+	} else {
+		pCharSrc->Skill_SetBase(skill, iTrain + pCharSrc->Skill_GetBase(skill));
+	}
+
+	return true;
+}
+
 
 bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 {
