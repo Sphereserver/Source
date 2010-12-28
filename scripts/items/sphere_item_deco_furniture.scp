@@ -62,9 +62,7 @@ RESOURCES=9 i_log
 [ITEMDEF 0a2b]
 // chair - dark stool
 DEFNAME=i_chair_stool
-DUPELIST=0b5e
 TYPE=T_CHAIR
-FLIP=1
 WEIGHT=3
 CATEGORY=Decoration - Furniture
 SUBSECTION=Chairs
@@ -1617,7 +1615,14 @@ DUPEITEM=0b5a
 
 [ITEMDEF 0b5e]
 // chair - light stool
-DUPEITEM=0a2b
+DEFNAME=i_chair_stool_light
+TYPE=t_chair
+WEIGHT=3
+CATEGORY=Decoration - Furniture
+SUBSECTION=Chairs
+DESCRIPTION=Foot Stool (Light)
+SKILLMAKE=CARPENTRY 11.0, t_carpentry
+RESOURCES=9 i_log
 
 [ITEMDEF 0b5f]
 // bench - rough board bench end - S

@@ -5030,3 +5030,9 @@ ALPHA additions:
 26-12-2010, Coruja (script pack)
 - Updated: sphere_item_deco_lightsources.scp and sphere_item_deco_furniture.scp
   (changed typo in candelabra's defnames, was using candleabra instead)
+
+28-12-2010, ShiryuX
+- Fixed #1879: 'nightsight' function now sends light level update instead of full client update.
+
+28-12-2010, Coruja (script pack)
+- Updated: sphere_item_deco_furniture.scp (fixed dupelist of items 0a2b and 0b5e)

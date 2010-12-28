@@ -2355,7 +2355,8 @@ do_default:
 					fNightsight = ! IsStatFlag(STATF_NightSight);
 				}
 				StatFlag_Mod( STATF_NightSight, fNightsight );
-				Update();
+				if ( IsClient() )
+					m_pClient->addLight();
 			}
 			break;
 		case CHC_NPC:
