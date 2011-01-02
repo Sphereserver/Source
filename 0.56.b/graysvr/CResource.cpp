@@ -212,6 +212,7 @@ CResource::CResource()
 	m_iNetMaxLengthPerTick = 12000;
 	m_iNetMaxQueueSize = 50;
 	m_fUsePacketPriorities = true;
+	m_fUseExtraBuffer = true;
 
 	m_iTooltipCache = 60 * TICK_PER_SEC;
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
@@ -516,6 +517,7 @@ enum RC_TYPE
 	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
 	RC_USEAUTHID,				// m_fUseAuthID
 	RC_USECRYPT,				// m_Usecrypt
+	RC_USEEXTRABUFFER,			// m_fUseExtraBuffer
 	RC_USEHTTP,					// m_fUseHTTP
 	RC_USEMAPDIFFS,				// m_fUseMapDiffs
 	RC_USENOCRYPT,				// m_Usenocrypt
@@ -720,6 +722,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork),		0 }},
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID),			0 }},	// we use authid like osi
 	{ "USECRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsecrypt),			0 }},	// we don't want crypt clients
+	{ "USEEXTRABUFFER",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseExtraBuffer),		0 }},
 	{ "USEHTTP",				{ ELEM_INT,		OFFSETOF(CResource,m_fUseHTTP),				0 }},
 	{ "USEMAPDIFFS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseMapDiffs),			0 }},
 	{ "USENOCRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsenocrypt),			0 }},	// we don't want no-crypt clients

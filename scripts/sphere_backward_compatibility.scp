@@ -12,9 +12,13 @@
 VERSION=0.56b
 
 [DEFNAME backward_compability_defs]
-loot_ORGE_LORD loot_OGRE_LORD
+loot_ORGE_LORD        loot_OGRE_LORD
 i_axe_war_VANQUISIHNG i_axe_war_VANQ
-i_reag_worm_heart i_reag_wyrm_heart
+i_reag_worm_heart     i_reag_wyrm_heart
+i_candleabra          i_candelabra
+i_candleabra_lit      i_candelabra_lit
+i_candleabra2         i_candelabra2
+i_candleabra2_lit     i_candelabra2_lit
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

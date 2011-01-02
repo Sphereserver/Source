@@ -873,6 +873,7 @@ public:
 	int			m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
 	int			m_iNetMaxQueueSize;			// max packets to hold per queue (comment out for unlimited)
 	bool		m_fUsePacketPriorities;		// true to prioritise sending packets
+	bool		m_fUseExtraBuffer;			// true to queue packet data in an extra buffer
 
 	int			m_iTooltipCache;			// time to cache tooltip for
 	int			m_iTooltipMode;				// tooltip mode (TOOLTIP_TYPE)

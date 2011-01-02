@@ -155,6 +155,7 @@ void NetState::clear(void)
 	}
 	m_asyncQueue.clean();
 
+	m_byteQueue.Empty();
 
 	if (m_currentTransaction != NULL)
 	{
@@ -1585,6 +1586,9 @@ void NetworkOut::tick(void)
 		EXC_SET("async");
 		if (state->isWriteClosed() == false)
 			packetsSent += proceedQueueAsync(client);
+
+		if (state->isWriteClosed() == false)
+			proceedQueueBytes(client);
 	}
 
 	// increase priority during 'active' periods
@@ -1701,6 +1705,9 @@ void NetworkOut::flush(CClient* client)
 
 		if (state->isWriteClosed() == false)
 			proceedQueueAsync(client);
+
+		if (state->isWriteClosed() == false)
+			proceedQueueBytes(client);
 
 		state->markFlush(false);
 	}
@@ -1857,6 +1864,23 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	return 0;
 }
 
+void NetworkOut::proceedQueueBytes(CClient* client)
+{
+	ADDTOCALLSTACK("NetworkOut::proceedQueueBytes");
+
+	NetState* state = client->GetNetState();
+	ASSERT(state != NULL);
+	
+	if (state->isWriteClosed() || state->m_byteQueue.GetDataQty() <= 0)
+		return;
+
+	int ret = sendBytesNow(client, state->m_byteQueue.RemoveDataLock(), state->m_byteQueue.GetDataQty());
+	if (ret > 0)
+		state->m_byteQueue.RemoveDataAmount(ret);
+	else if (ret < 0)
+		state->markWriteClosed();
+}
+
 void NetworkOut::onAsyncSendComplete(CClient* client)
 {
 	ADDTOCALLSTACK("NetworkOut::onAsyncSendComplete");
@@ -1867,7 +1891,9 @@ void NetworkOut::onAsyncSendComplete(CClient* client)
 	ASSERT(state != NULL);
 
 	state->setSendingAsync(false);
-	proceedQueueAsync(client);
+
+	if (proceedQueueAsync(client) != 0);
+		proceedQueueBytes(client);
 }
 
 bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
@@ -1914,7 +1940,6 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
-	int ret = 0;
 
 	EXC_TRY("proceedQueue");
 
@@ -1935,138 +1960,70 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		}
 		else
 		{
-			bool compressed = false;
-
-			// game packets required packet encrypting
 			if (client->GetConnectType() == CONNECT_GAME)
 			{
+				// game clients require encryption
 				EXC_SET("compress and encrypt");
 
 				// compress
-				ret = client->xCompress(m_encryptBuffer, packet->getData(), packet->getLength());
-				compressed = true;
+				int compressLength = client->xCompress(m_encryptBuffer, packet->getData(), packet->getLength());
 
 				// encrypt
 				if (client->m_Crypt.GetEncryptionType() == ENC_TFISH)
-					client->m_Crypt.Encrypt(m_encryptBuffer, m_encryptBuffer, ret);
-			}
+					client->m_Crypt.Encrypt(m_encryptBuffer, m_encryptBuffer, compressLength);
 
-			// select a buffer to send
-			if (compressed == true)
-			{
 				sendBuffer = m_encryptBuffer;
-				sendBufferLength = ret;
+				sendBufferLength = compressLength;
 			}
 			else
 			{
+				// other clients expect plain data
 				sendBuffer = packet->getData();
 				sendBufferLength = packet->getLength();
 			}
 		}
-
-		// send the data
-		EXC_SET("sending");
-		DWORD bytesSent = 0;
-
-#if defined(_WIN32) && !defined(_LIBEV)
-		if (state->isAsyncMode())
+		
+		if ( g_Cfg.m_fUseExtraBuffer )
 		{
-			ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
-			state->m_overlapped.hEvent = client;
-			state->m_bufferWSA.len = sendBufferLength;
-			state->m_bufferWSA.buf = (CHAR*)sendBuffer;
-
-			if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
-			{
-				ret = bytesSent;
-				state->setSendingAsync(true);
-			}
-			else
-				ret = 0;
+			// queue packet data
+			state->m_byteQueue.AddNewData(sendBuffer, sendBufferLength);
 		}
 		else
-#endif
 		{
+			// send packet data now
+			int totalSent = 0;
+
 			do
 			{
-				// send is not guaranteed to send all bytes at once, therefore we
-				// must loop this piece of code until we have sent the correct number
-				// of bytes
-				// note: in the future we could consider spreading this process over several ticks
-				// to avoid the possibility of a single socket hogging resources (presumably
-				// there's a reason why the operation decided to only send a partial packet). This
-				// could be accomplished by modifying sendPacketNow to append packet content to a
-				// simple byte array/queue, and then calling some form of 'processOutput' method
-				// each tick which simply dequeues some bytes and sends them (would also enable
-				// larger chunks of data to be sent at once, apparently it not recommended to be
-				// sending many small pieces of data).
-				ret = state->m_socket.Send(sendBuffer, sendBufferLength);
-				if (ret <= 0)
-					break;
+				// a single send attempt may not send the entire buffer, so we need to
+				// loop through this process until we have sent the expected number of bytes
+				int sent = sendBytesNow(client, sendBuffer + totalSent, sendBufferLength - totalSent);
+				if (sent > 0)
+				{
+					totalSent += sent;
+				}
+				else if (sent == 0 && totalSent == 0)
+				{
+					// if no bytes were sent then we can try to ignore the error
+					// by re-queueing the packet, but this is only viable if no
+					// data has been sent (if part of the packet has gone, we have
+					// no choice but to disconnect the client since we'll be oos)
 
-				bytesSent += ret;
+					// WARNING: scheduleOnce is intended to be used by the main
+					// thread, and is likely to cause stability issues when called
+					// from here!
+					DEBUGNETWORK(("%x:Send failure occurred with a non-critical error. Requeuing packet may affect stability.\n", state->id()));
+					scheduleOnce(packet, true);
+					return true;
+				}
+				else
+				{
+					// critical error occurred
+					delete packet;
+					return false;
+				}
 			}
-			while (bytesSent < sendBufferLength);
-		}
-
-		// check for error
-		if (ret <= 0)
-		{
-			EXC_SET("error parse");
-			int errCode = CGSocket::GetLastError(true);
-
-#ifdef _WIN32
-			if (state->isAsyncMode() && errCode == WSA_IO_PENDING)
-			{
-				EXC_SET("send pending");
-
-				// safe to ignore this
-				CurrentProfileData.Count(PROFILE_DATA_TX, sendBufferLength);
-			}
-			else if (state->isAsyncMode() == false && errCode == WSAEWOULDBLOCK)
-			{
-				EXC_SET("send failed - requeue packet");
-
-				// re-queue the packet and try again later
-				scheduleOnce(packet, false);
-				return true;
-			}
-			else if (errCode == WSAECONNRESET || errCode == WSAECONNABORTED)
-			{
-				EXC_SET("connection lost - delete packet");
-
-				delete packet;
-				return false;
-			}
-			else
-#endif
-			{
-				EXC_SET("connection lost - delete packet");
-
-				if (state->isClosing() == false)
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:TX Error %d\n", state->id(), errCode);
-
-#ifndef _WIN32
-				delete packet;
-				return false;
-#endif
-			}
-		}
-		else
-		{
-			EXC_SET("send successful");
-
-			if (bytesSent != sendBufferLength)
-			{
-				// if this condition is actually being hit then it indicates that
-				// we aren't actually sending the full packet to the client, in
-				// which case we need to investigate looping (or other means) to
-				// ensure all bytes are being sent
-				DEBUGNETWORK(("%x:Successful send reports only %d/%d bytes sent.\n", state->id(), bytesSent, sendBufferLength));
-				ASSERT(bytesSent == sendBufferLength);
-			}
-
-			CurrentProfileData.Count(PROFILE_DATA_TX, bytesSent);
+			while (totalSent < sendBufferLength);
 		}
 
 		EXC_SET("sent trigger");
@@ -2078,8 +2035,102 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%x', packet '0x%x', length '%d', ret '%d'\n",
-		state->id(), *packet->getData(), packet->getLength(), ret);
+	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n",
+		state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;
+}
+
+int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
+{
+	ADDTOCALLSTACK("NetworkOut::sendBytesNow");
+
+	NetState* state = client->GetNetState();
+	ASSERT(state != NULL);
+	int ret = 0;
+
+	EXC_TRY("sendBytesNow");
+
+	// send data
+	EXC_SET("sending");
+
+#if defined(_WIN32) && !defined(_LIBEV)
+	if (state->isAsyncMode())
+	{
+		// send via async winsock
+		ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
+		state->m_overlapped.hEvent = client;
+		state->m_bufferWSA.len = length;
+		state->m_bufferWSA.buf = (CHAR*)data;
+
+		DWORD bytesSent;
+		if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
+		{
+			ret = bytesSent;
+			state->setSendingAsync(true);
+		}
+		else
+			ret = 0;
+	}
+	else
+#endif
+	{
+		// send via standard api
+		ret = state->m_socket.Send(data, length);
+	}
+
+	// check for error
+	if (ret <= 0)
+	{
+		EXC_SET("error parse");
+		int errCode = CGSocket::GetLastError(true);
+
+#ifdef _WIN32
+		if (state->isAsyncMode() && errCode == WSA_IO_PENDING)
+		{
+			// safe to ignore this, data has actually been sent
+			ret = length;
+		}
+		else if (state->isAsyncMode() == false && errCode == WSAEWOULDBLOCK)
+#else
+		if (errCode == EAGAIN || errCode == EWOULDBLOCK)
+#endif
+		{
+			// send failed but it is safe to ignore and try again later
+			ret = 0;
+		}
+#ifdef _WIN32
+		else if (errCode == WSAECONNRESET || errCode == WSAECONNABORTED)
+#else
+		else if (errCode == ECONNRESET || errCode == ECONNABORTED)
+#endif
+		{
+			// connection has been lost, client should be cleared
+			ret = INT_MIN;
+		}
+		else
+		{
+			EXC_SET("unexpected connection error - delete packet");
+
+			if (state->isClosing() == false)
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:TX Error %d\n", state->id(), errCode);
+
+#ifndef _WIN32
+			return INT_MIN;
+#else
+			ret = 0;
+#endif
+		}
+	}
+
+	if (ret > 0)
+		CurrentProfileData.Count(PROFILE_DATA_TX, ret);
+
+	return ret;
+
+	EXC_CATCH;
+	EXC_DEBUG_START;
+	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n", state->id(), *data, length);
+	EXC_DEBUG_END;
+	return INT_MIN;
 }

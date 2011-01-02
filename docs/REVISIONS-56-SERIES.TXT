@@ -4989,8 +4989,8 @@ ALPHA additions:
 21-11-2010, MrSugarCube
 - Fixed: Unable to access basic properties for non-game clients through SERV.CLIENT.x.
 
-22-11-2010, Coruja (script pack)
-- Updated: sphere_map0.scp (renamed Trinsic Passage to Delucia Passage)
+22-11-2010, Coruja (Script pack)
+- Updated #1851: sphere_map0.scp (renamed Trinsic Passage to Delucia Passage)
 
 02-12-2010, MrSugarCube
 - Fixed #1861: Elven players turning into gargoyle ghosts when dead.
@@ -5017,6 +5017,7 @@ ALPHA additions:
 - Fixed #1869: Older clients freezing when an item or character with a long name speaks.
 
 22-12-2010, MrSugarCube
+- Fixed #1843: Connections sometimes remaining open long after the client has disconnected.
 - Fixed #1848: Container contents slow to show when TooltipMode is set to 0.
 
 23-12-2010, MrSugarCube
@@ -5027,12 +5028,22 @@ ALPHA additions:
   In before, if you were near the skillcap, the npc just rejected your train request.
 - Fixed #1873: Shop list tooltips are now being fully sent to the players.
 
-26-12-2010, Coruja (script pack)
-- Updated: sphere_item_deco_lightsources.scp and sphere_item_deco_furniture.scp
+26-12-2010, Coruja (Script pack)
+- Updated #1876: sphere_item_deco_lightsources.scp and sphere_item_deco_furniture.scp
   (changed typo in candelabra's defnames, was using candleabra instead)
 
 28-12-2010, ShiryuX
 - Fixed #1879: 'nightsight' function now sends light level update instead of full client update.
 
-28-12-2010, Coruja (script pack)
-- Updated: sphere_item_deco_furniture.scp (fixed dupelist of items 0a2b and 0b5e)
+28-12-2010, Coruja (Script pack)
+- Updated #1877: sphere_item_deco_furniture.scp (fixed dupelist of items 0a2b and 0b5e)
+
+02-01-2011, MrSugarCube
+- Added: UseExtraBuffer setting to sphere.ini to enable an additional data buffer for outgoing
+  network data.
+- Fixed: Linux build considering connections lost when a non-critical error occurs during
+  data sending.
+
+02-01-2011, MrSugarCube (Script pack)
+- Updated #1876: sphere_backward_compatibility.scp (Added backward compatibility defnames for
+  candelabras)
