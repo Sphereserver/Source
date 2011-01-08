@@ -5041,9 +5041,12 @@ ALPHA additions:
 02-01-2011, MrSugarCube
 - Added: UseExtraBuffer setting to sphere.ini to enable an additional data buffer for outgoing
   network data.
-- Fixed: Linux build considering connections lost when a non-critical error occurs during
+- Fixed #1858: Linux build considering connections lost when a non-critical error occurs during
   data sending.
 
 02-01-2011, MrSugarCube (Script pack)
 - Updated #1876: sphere_backward_compatibility.scp (Added backward compatibility defnames for
   candelabras)
+
+08-01-2011, MrSugarCube
+- Fixed: Possible delay between sending packets required to display buy/sell menus.

@@ -298,6 +298,10 @@ bool NetState::hasPendingData(void) const
 	if (isAsyncMode() && m_asyncQueue.empty() == false)
 		return true;
 
+	// check byte queue
+	if (m_byteQueue.GetDataQty() > 0)
+		return true;
+
 	// check current transaction
 	if (m_currentTransaction != NULL)
 		return true;
@@ -529,6 +533,9 @@ NetworkIn::~NetworkIn(void)
 		delete[] m_states;
 		m_states = NULL;
 	}
+
+	m_clients.DeleteAll();
+	m_ips.clear();
 }
 
 void NetworkIn::onStart(void)
@@ -1745,7 +1752,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isWriteClosed() || state->m_queue[priority].empty())
+	if (state->isWriteClosed() || (state->m_queue[priority].empty() && state->m_currentTransaction == NULL))
 		return 0;
 
 	long length = 0;
