@@ -735,7 +735,7 @@ void CItemContainer::OnWeightChange( int iChange )
 {
 	ADDTOCALLSTACK("CItemContainer::OnWeightChange");
 	CContainer::OnWeightChange( iChange );
-	//ResendTooltip();
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
 
 	if ( iChange == 0 )
 		return;	// no change

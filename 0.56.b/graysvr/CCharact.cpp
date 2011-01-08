@@ -3645,6 +3645,34 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	return iRet;
 }
 
+void CChar::OnTickStatusUpdate()
+{
+	ADDTOCALLSTACK("CChar::OnTickStatusUpdate");
+
+	if ( IsClient() )
+		GetClient()->UpdateStats();
+
+	// process m_fStatusUpdate flags
+	int iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
+	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) ) // update hits for all
+	{
+		if ( m_fStatusUpdate & SU_UPDATE_HITS )
+		{
+			UpdateHitsForOthers();
+			m_fStatusUpdate &= ~SU_UPDATE_HITS;
+		}
+		m_timeLastHitsUpdate = CServTime::GetCurrentTime();
+	}
+
+	if ( m_fStatusUpdate & SU_UPDATE_MODE )
+	{
+		UpdateMode();
+		m_fStatusUpdate &= ~SU_UPDATE_MODE;
+	}
+
+	CObjBase::OnTickStatusUpdate();
+}
+
 void CChar::OnTickFood()
 {
 	ADDTOCALLSTACK("CChar::OnTickFood");
@@ -3711,6 +3739,7 @@ bool CChar::OnTick()
 				continue;
 			}
 
+			pItem->OnTickStatusUpdate();
 			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
 				continue;
 			else if ( !OnTickEquip(pItem) )
@@ -3866,25 +3895,8 @@ bool CChar::OnTick()
 	}
 
 	EXC_SET("update stats");
-	if ( IsClient() )
-		GetClient()->UpdateStats();
+	OnTickStatusUpdate();
 
-	iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
-	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) ) // update hits for all
-	{
-		if ( m_fStatusUpdate & SU_UPDATE_HITS )
-		{
-			UpdateHitsForOthers();
-			m_fStatusUpdate &= ~SU_UPDATE_HITS;
-		}
-		m_timeLastHitsUpdate = CServTime::GetCurrentTime();
-	}
-
-	if ( m_fStatusUpdate & SU_UPDATE_MODE )
-	{
-		UpdateMode();
-		m_fStatusUpdate &= ~SU_UPDATE_MODE;
-	}
 	EXC_CATCH;
 
 #ifdef _DEBUG

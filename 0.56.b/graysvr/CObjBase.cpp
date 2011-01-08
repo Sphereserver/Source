@@ -67,6 +67,7 @@ CObjBase::CObjBase( bool fItem )
 	m_timeout.Init();
 
 	//	Init some global variables
+	m_fStatusUpdate = 0;
 	m_ModAr = 0;
 	m_PropertyList = NULL;
 	m_PropertyHash = 0;
@@ -196,24 +197,31 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 			}
 		}
 
-		return CObjBaseTemplate::SetName( s.GetKey());
+		if ( CObjBaseTemplate::SetName( s.GetKey() ) == false )
+			return false;
 	}
-
-	// NOTE: Name must be <= MAX_NAME_SIZE
-	TCHAR szTmp[ MAX_ITEM_NAME_SIZE + 1 ];
-	int len = strlen( pszName );
-	if ( len >= MAX_ITEM_NAME_SIZE )
+	else
 	{
-		strcpylen( szTmp, pszName, MAX_ITEM_NAME_SIZE );
-		pszName = szTmp;
+		// NOTE: Name must be <= MAX_NAME_SIZE
+		TCHAR szTmp[ MAX_ITEM_NAME_SIZE + 1 ];
+		int len = strlen( pszName );
+		if ( len >= MAX_ITEM_NAME_SIZE )
+		{
+			strcpylen( szTmp, pszName, MAX_ITEM_NAME_SIZE );
+			pszName = szTmp;
+		}
+
+		// Can't be a dupe name with type ?
+		LPCTSTR pszTypeName = Base_GetDef()->GetTypeName();
+		if ( ! strcmpi( pszTypeName, pszName ))
+			pszName = "";
+
+		if ( CObjBaseTemplate::SetName( pszName ) == false )
+			return false;
 	}
-
-	// Can't be a dupe name with type ?
-	LPCTSTR pszTypeName = Base_GetDef()->GetTypeName();
-	if ( ! strcmpi( pszTypeName, pszName ))
-		pszName = "";
-
-	return CObjBaseTemplate::SetName( pszName );
+	
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_NAME);
+	return true;
 }
 
 bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, WORD wCan )
@@ -2000,11 +2008,39 @@ DWORD CObjBase::UpdatePropertyRevision(DWORD hash)
 	return m_PropertyRevision;
 }
 
+void CObjBase::UpdatePropertyFlag(int mask)
+{
+	ADDTOCALLSTACK("CObjBase::UpdatePropertyFlag");
+	if ( g_Serv.IsLoading() )
+		return;
+	if ( mask != 0 && (g_Cfg.m_iAutoTooltipResend & mask) == 0 )
+		return;
+	
+	// contained items don't receive ticks and need to have their
+	// tooltip sent now
+	if ( IsItemInContainer() )
+		ResendTooltip();
+	else
+		m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
+}
+
+void CObjBase::OnTickStatusUpdate()
+{
+	ADDTOCALLSTACK("CObjBase::OnTickStatusUpdate");
+	// process m_fStatusUpdate flags
+
+	if ((m_fStatusUpdate & SU_UPDATE_TOOLTIP) != 0)
+	{
+		ResendTooltip();
+		m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
+	}
+}
+
 void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 {
 	ADDTOCALLSTACK("CObjBase::ResendTooltip");
-	// Remove this item from all clients.
-	// In a destructor this can do funny things.
+	// Send tooltip packet to all nearby clients
+	m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
 
 	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) == false )
 		return; // tooltips are disabled.

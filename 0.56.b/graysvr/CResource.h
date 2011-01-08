@@ -877,6 +877,14 @@ public:
 
 	int			m_iTooltipCache;			// time to cache tooltip for
 	int			m_iTooltipMode;				// tooltip mode (TOOLTIP_TYPE)
+#define AUTOTOOLTIP_FLAG_NAME          0x0001
+#define AUTOTOOLTIP_FLAG_AMOUNT        0x0002
+#define AUTOTOOLTIP_FLAG_WEIGHT        0x0004
+#define AUTOTOOLTIP_FLAG_DURABILITY    0x0008
+#define AUTOTOOLTIP_FLAG_POISON        0x0010
+#define AUTOTOOLTIP_FLAG_WANDCHARGES   0x0020
+#define AUTOTOOLTIP_FLAG_SPELLBOOK     0x0040
+	int			m_iAutoTooltipResend;		// automatically resend tooltip
 
 	int			m_iRegenRate[STAT_QTY];
 	int			m_iTimerCall;

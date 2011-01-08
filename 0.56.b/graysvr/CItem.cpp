@@ -1875,6 +1875,8 @@ void CItem::SetAmount( int amount )
 		ASSERT(pItemDef);
 		pParentCont->OnWeightChange(( amount - oldamount ) * pItemDef->GetWeight());
 	}
+	
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
 }
 
 void CItem::SetAmountUpdate( int amount )
@@ -2564,9 +2566,14 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			break;
 		case IC_HITPOINTS:
 			if ( !IsTypeArmorWeapon() )
+			{
 				DEBUG_ERR(("Item:Hitpoints assigned for non-weapon %s\n", GetResourceName()));
+			}
 			else
+			{
 				m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max = s.GetArgVal();
+				UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
+			}
 			return true;
 		case IC_ID:
 			return SetID((ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
@@ -3331,6 +3338,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 		}
 	}
 
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_SPELLBOOK);
 	return 0;
 }
 
@@ -4266,6 +4274,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			else
 			{
 				m_itWeapon.m_spellcharges++;
+				UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
 			}
 		}
 	}
@@ -4359,7 +4368,6 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		{
 			m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
 			SetName( pCharSrc->m_pArea->GetName() );
-			ResendTooltip();
 		}
 		break;
 
@@ -4564,6 +4572,8 @@ forcedamage:
 			pChar->m_defense = pChar->CalcArmorDefense();
 			pChar->UpdateStatsFlag();
 		}
+
+		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 
 		TCHAR *pszMsg = Str_GetTemp();
 		if ( pSrc )	// tell hitter they scored !

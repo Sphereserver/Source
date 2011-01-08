@@ -219,6 +219,12 @@ public:
 	//	Some global object variables
 	signed int m_ModAr;
 
+#define SU_UPDATE_HITS			0x01	// update hits to others
+#define SU_UPDATE_MODE			0x02	// update mode to all
+#define SU_UPDATE_TOOLTIP		0x04	// update tooltip to all
+	unsigned char m_fStatusUpdate;	// update flags for next tick
+	virtual void OnTickStatusUpdate();
+
 protected:
 	PacketPropertyList* m_PropertyList;	// currently cached property list packet
 	DWORD m_PropertyHash;				// latest property list hash
@@ -229,6 +235,7 @@ public:
 	void SetPropertyList(PacketPropertyList* propertyList);
 	void FreePropertyList(void);
 	DWORD UpdatePropertyRevision(DWORD hash);
+	void UpdatePropertyFlag(int mask);
 };
 
 enum STONEALIGN_TYPE // Types of Guild/Town stones
@@ -2376,10 +2383,7 @@ public:
 	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
 	CServTime m_timeCreate;		// When was i created ?
 
-#define SU_UPDATE_HITS			0x01	// update hits to others
-#define SU_UPDATE_MODE			0x02	// update mode to all
 	CServTime m_timeLastHitsUpdate;
-	unsigned char m_fStatusUpdate;
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
@@ -3413,6 +3417,7 @@ public:
 
 	bool OnTickEquip( CItem * pItem );
 	void OnTickFood();
+	void OnTickStatusUpdate();
 	bool OnTick();
 
 	static CChar * CreateBasic( CREID_TYPE baseID );

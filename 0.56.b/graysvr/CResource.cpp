@@ -216,6 +216,9 @@ CResource::CResource()
 
 	m_iTooltipCache = 60 * TICK_PER_SEC;
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
+	m_iAutoTooltipResend = AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|
+						   AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|
+						   AUTOTOOLTIP_FLAG_SPELLBOOK;
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
@@ -345,6 +348,7 @@ enum RC_TYPE
 	RC_AUTONEWBIEKEYS,		// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,		// m_iAutoPrivFlags
 	RC_AUTORESDISP,			// m_iAutoResDisp
+	RC_AUTOTOOLTIPRESEND,	// m_iAutoTooltipResend
 	RC_BACKUPLEVELS,		// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
 	RC_BANKMAXWEIGHT,
@@ -550,6 +554,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
+	{ "AUTOTOOLTIPRESEND",		{ ELEM_INT,		OFFSETOF(CResource,m_iAutoTooltipResend),	0 }},
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels),	0 }},
 	{ "BANKMAXITEMS",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankIMax),			0 }},
 	{ "BANKMAXWEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankWMax),			0 }},

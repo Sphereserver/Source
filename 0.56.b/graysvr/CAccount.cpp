@@ -580,7 +580,6 @@ CAccount::~CAccount()
 
 	g_Serv.StatDec( SERV_STAT_ACCOUNTS );
 
-	DEBUG_WARN(( "Account delete '%s'\n", GetName() ));
 	DeleteChars();
 	ClearPasswordTries(true);
 }

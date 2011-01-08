@@ -634,7 +634,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				SetHue( m_prev_Hue );
 			}
 			pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
-			ResendTooltip();
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_INCOGNITO);
 			}
@@ -905,7 +904,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				{
 					SetHue((HUE_UNDERWEAR|HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH-HUE_SKIN_LOW));
 				}
-				ResendTooltip();
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_INCOGNITO);
@@ -1489,6 +1487,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 			if ( ! fTest && pItem->m_itWeapon.m_spellcharges != 255 )
 			{
 				pItem->m_itWeapon.m_spellcharges --;
+				pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
 			}
 		}
 		else	// Scroll

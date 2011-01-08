@@ -2513,6 +2513,7 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 		case IT_WEAPON_SWORD:		// 13 =
 		case IT_WEAPON_FENCE:		// 14 = can't be used to chop trees. (make kindling)
 			pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
+			pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_POISON);
 			break;
 		default:
 			SysMessageDefault( DEFMSG_POISONING_WITEM );

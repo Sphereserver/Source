@@ -5049,4 +5049,9 @@ ALPHA additions:
   candelabras)
 
 08-01-2011, MrSugarCube
+- Added #1814: Support to automatically invalidate and resend tooltips when certain properties
+  change on items or characters, via new AUTOTOOLTIPRESEND setting. See Sphere.ini for available
+  flags that can be used to control which properties are monitored. Note that some scripts won't
+  trigger the tooltips to resend (for example the 0008 flag won't detect a script that sets MORE1
+  on armour, so a manual RESENDTOOLTIP would still be needed).
 - Fixed: Possible delay between sending packets required to display buy/sell menus.

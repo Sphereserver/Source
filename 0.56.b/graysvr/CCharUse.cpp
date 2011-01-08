@@ -990,7 +990,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	}
 	else
 	{
-		pItemArmor->ResendTooltip();
+		pItemArmor->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 	}
 
 	return( fSuccess );
