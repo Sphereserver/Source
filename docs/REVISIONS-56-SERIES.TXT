@@ -5049,11 +5049,11 @@ ALPHA additions:
   candelabras)
 
 08-01-2011, MrSugarCube
-- Added #1814,#1845: Support to automatically invalidate and resend tooltips when certain
-  properties change on items or characters, via new AUTOTOOLTIPRESEND setting. See Sphere.ini
-  for available flags that can be used to control which properties are monitored. Note that
-  some scripts won't trigger the tooltips to resend (for example the 0008 flag won't detect a
-  script that sets MORE1 on armour, so a manual RESENDTOOLTIP would still be needed).
+- Added #1845: Support to automatically invalidate and resend tooltips when certain properties
+  change on items or characters, via new AUTOTOOLTIPRESEND setting. See Sphere.ini for
+  available flags that can be used to control which properties are monitored. Note that some
+  scripts won't trigger the tooltips to resend (for example the 0008 flag won't detect a script
+  that sets MORE1 on armour, so a manual RESENDTOOLTIP would still be needed).
 - Fixed: Possible delay between sending packets required to display buy/sell menus.
 
 09-01-2011, ShiryuX
@@ -5065,3 +5065,10 @@ ALPHA additions:
 
 09-01-2011, ShiryuX (Script pack)
 - Updated: sphere_defs.scp (added tat_as_full definition)
+
+09-01-2011, MrSugarCube
+- Fixed #1886: Exception caused by an infinite loop when AutoTooltipResend detects a property
+  value being changed from within an @ClientTooltip trigger. Now, AutoTooltipResend won't
+  trigger another tooltip resend if a monitored property changes during the resend.
+- Fixed #1814: AutoResendTooltip setting not working when an item property is changed just
+  before it is placed in a container (e.g. when the item amount changes during stacking).

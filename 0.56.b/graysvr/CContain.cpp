@@ -931,6 +931,12 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 	pItem->SetContainedPoint( pt );
 	pItem->SetContainedGridIndex( gridIndex );
 
+	// if an item needs OnTickStatusUpdate called on the next tick, it needs
+	// to be added to a separate list since it won't receive ticks whilst in
+	// this container
+	if (pItem->m_fStatusUpdate != 0 && g_World.m_ObjStatusUpdates.FindPtr(pItem) < 0)
+		g_World.m_ObjStatusUpdates.Add(pItem);
+
 	switch ( GetType())
 	{
 	case IT_KEYRING: // empty key ring.

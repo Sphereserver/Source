@@ -186,6 +186,12 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 //////////////////////////////////////////////////////////////////
 // -CTimedFunctionHandler
 
+CTimedFunctionHandler::CTimedFunctionHandler()
+{
+	m_curTick = 0;
+	m_isBeingProcessed = false;
+}
+
 void CTimedFunctionHandler::OnTick()
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::OnTick");
@@ -2284,6 +2290,25 @@ void CWorld::OnTick()
 
 				EXC_CATCHSUB("Sector");
 			}
+		}
+
+		// process objects that need status updates
+		// these objects will normally be in containers which don't have any period OnTick method
+		// called (whereas other items can receive the OnTickStatusUpdate() call via their normal
+		// tick method).
+		// note: ideally, a better solution to accomplish this should be found if possible
+		if (m_ObjStatusUpdates.GetCount() > 0)
+		{
+			// loop backwards to avoid possible infinite loop if a status update is triggered
+			// as part of the status update (e.g. property changed under tooltip trigger)
+			for (int i = m_ObjStatusUpdates.GetCount() - 1; i >= 0; --i )
+			{
+				CObjBase* pObj = m_ObjStatusUpdates.GetAt(i);
+				if (pObj != NULL)
+					pObj->OnTickStatusUpdate();
+			}
+
+			m_ObjStatusUpdates.RemoveAll();
 		}
 
 		m_ObjDelete.DeleteAll();	// clean up our delete list.

@@ -299,6 +299,7 @@ class CTimedFunctionHandler
 
 	public:
 		static const char *m_sClassName;
+		CTimedFunctionHandler();
 
 	public:
 		void OnTick();
@@ -354,6 +355,7 @@ public:
 
 	// TimedFunction Container/Wrapper
 	CTimedFunctionHandler m_TimedFunctions;
+	CGPtrTypeArray<CObjBase*> m_ObjStatusUpdates; // objects that need OnTickStatusUpdate called
 
 private:
 	bool LoadFile( LPCTSTR pszName, bool fError = true );

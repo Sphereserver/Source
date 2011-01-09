@@ -2038,12 +2038,12 @@ void CObjBase::UpdatePropertyFlag(int mask)
 	if ( mask != 0 && (g_Cfg.m_iAutoTooltipResend & mask) == 0 )
 		return;
 	
-	// contained items don't receive ticks and need to have their
-	// tooltip sent now
-	if ( IsItemInContainer() )
-		ResendTooltip();
-	else
-		m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
+	// contained items don't receive ticks and need to be added to a
+	// list of items to be processed separately
+	if ( IsItemInContainer() && g_World.m_ObjStatusUpdates.FindPtr(this) < 0 )
+		g_World.m_ObjStatusUpdates.Add(this);
+
+	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
 }
 
 void CObjBase::OnTickStatusUpdate()
