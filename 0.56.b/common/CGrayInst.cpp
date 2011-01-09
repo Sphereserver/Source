@@ -16,7 +16,9 @@ bool CGrayInstall::FindInstall()
 	{
 		"Software\\Menasoft\\" GRAY_FILE,
 		"Software\\Origin Worlds Online\\Ultima Online\\1.0", 
+		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta", 
 		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0", 
+		"Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
 	};
 	
 	HKEY hKey;
@@ -44,6 +46,12 @@ bool CGrayInstall::FindInstall()
 		TCHAR * pSlash = strrchr( szValue, '\\' );	// get rid of the client.exe part of the name
 		if ( pSlash ) * pSlash = '\0';
 		m_sExePath = szValue;
+	}
+	else
+	{
+		lRet = RegQueryValueEx(hKey, "InstallDir", NULL, &dwType, (BYTE*)szValue, &lSize);
+		if ( lRet == ERROR_SUCCESS && dwType == REG_SZ )
+			m_sExePath = szValue;
 	}
 
 	// ??? Find CDROM install base as well, just in case.

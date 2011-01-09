@@ -2172,6 +2172,33 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 					csTriggerArgs.m_pO1 = pTriggerArgObj;
 				}
 			}
+			else if ( iTriggerArgType == 4 ) // FULL TRIGGER
+			{
+				TCHAR * Arg_ppCmd[5];
+				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_ppCmd, COUNTOF(Arg_ppCmd), ",");
+				
+				// ARGS
+				if ( iResultArgs == 5 )
+				{
+					csTriggerArgs.m_s1 = Arg_ppCmd[4];
+					csTriggerArgs.m_s1_raw = Arg_ppCmd[4];
+				}
+				// ARGNs
+				if ( iResultArgs >= 4 ) 
+					csTriggerArgs.m_iN3 = Exp_GetVal(Arg_ppCmd[3]); 
+				if ( iResultArgs >= 3 ) 
+					csTriggerArgs.m_iN2 = Exp_GetVal(Arg_ppCmd[2]);
+				if ( iResultArgs >= 2 ) 
+					csTriggerArgs.m_iN1 = Exp_GetVal(Arg_ppCmd[1]);
+				// ARGO
+				if ( iResultArgs >= 1 )
+				{
+					CGrayUID guTriggerArg(Exp_GetVal(Arg_ppCmd[0]));
+					CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
+					if ( pTriggerArgObj )
+						csTriggerArgs.m_pO1 = pTriggerArgObj;
+				}
+			}
 		}
 
 		trResult = OnTrigger(callTrigger, pSrc, &csTriggerArgs);

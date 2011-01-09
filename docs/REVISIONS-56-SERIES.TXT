@@ -5055,3 +5055,13 @@ ALPHA additions:
   some scripts won't trigger the tooltips to resend (for example the 0008 flag won't detect a
   script that sets MORE1 on armour, so a manual RESENDTOOLTIP would still be needed).
 - Fixed: Possible delay between sending packets required to display buy/sell menus.
+
+09-01-2011, ShiryuX
+- Added #1881: TAT_AS_FULL trigger type to TRIGGER function to set ARGO, ARGN and ARGS.
+  Example: TRIGGER @MyTest,<def.TAT_AS_FULL>,01,100,200,300,here,start,my,args
+           will call @MyTest with ARGO.UID=01, ARGN1=100, ARGN2=200, ARGN3=300
+           and ARGS=here,start,my,args (this supports ARGV[].)
+- Updated: Now sphere reads registry keys from lastest clients (no need to manually set them)
+
+09-01-2011, ShiryuX (Script pack)
+- Updated: sphere_defs.scp (added tat_as_full definition)
