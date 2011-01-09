@@ -2158,14 +2158,12 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 					csTriggerArgs.m_iN1 = Arg_piCmd[0];
 				}
 			}
-			
-			if ( iTriggerArgType == 2 ) // ARGS
+			else if ( iTriggerArgType == 2 ) // ARGS
 			{
 				csTriggerArgs.m_s1 = ppCmdTrigger[2];
 				csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
 			}
-			
-			if ( iTriggerArgType == 3 ) // ARGO
+			else if ( iTriggerArgType == 3 ) // ARGO
 			{
 				CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
 				CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
