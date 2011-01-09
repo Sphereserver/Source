@@ -1892,64 +1892,6 @@ void CItem::SetAmountUpdate( int amount )
 	Update();
 }
 
-inline bool CItem::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult)
-{
-	TCHAR * ppCmdTrigger[3];
-	int iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
-	
-	if ( iResultArgs > 0 )
-	{
-		LPCTSTR callTrigger = ppCmdTrigger[0];
-		int iTriggerArgType = 0;
-		CScriptTriggerArgs csTriggerArgs;
-
-		if ( iResultArgs == 3 )
-		{
-			iTriggerArgType = ATOI(ppCmdTrigger[1]);
-
-			if ( iTriggerArgType == 1 ) // 3 ARGNs
-			{
-				int Arg_piCmd[3];
-				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
-
-				if ( iResultArgs == 3 )
-				{
-					csTriggerArgs.m_iN3 = Arg_piCmd[2];
-				}
-
-				if ( iResultArgs >= 2 )
-				{
-					csTriggerArgs.m_iN2 = Arg_piCmd[1];
-				}
-
-				if ( iResultArgs >= 1 )
-				{
-					csTriggerArgs.m_iN1 = Arg_piCmd[0];
-				}
-			}
-			else if ( iTriggerArgType == 2 ) // ARGS
-			{
-				csTriggerArgs.m_s1 = ppCmdTrigger[2];
-				csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
-			}
-			else if ( iTriggerArgType == 3 ) // ARGO
-			{
-				CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
-				CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
-				if ( pTriggerArgObj )
-				{
-					csTriggerArgs.m_pO1 = pTriggerArgObj;
-				}
-			}
-		}
-
-		trResult = OnTrigger(callTrigger, pSrc, &csTriggerArgs);
-		return true;
-	}
-
-	return false;
-}
-
 void CItem::WriteUOX( CScript & s, int index )
 {
 	ADDTOCALLSTACK("CItem::WriteUOX");
@@ -2247,8 +2189,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	int index;
 	if ( !strnicmp( CItem::sm_szLoadKeys[IC_ADDSPELL], pszKey, 8 ) )
 		index	= IC_ADDSPELL;
-	else if ( !strnicmp( CItem::sm_szLoadKeys[IC_TRIGGER], pszKey, 7 ) )
-		index	= IC_TRIGGER;
 	else
 		index	= FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
 
@@ -2403,21 +2343,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_P:
 			fDoDefault = true;
 			break;
-		case IC_TRIGGER:
-			{
-				pszKey += 7;
-				GETNONWHITESPACE( pszKey );
-
-				if ( *pszKey )
-				{
-					TRIGRET_TYPE trReturn;
-					bool bTrigReturn = CallPersonalTrigger((TCHAR*)pszKey, pSrc, trReturn);
-					if ( bTrigReturn )
-						sVal.FormatVal(trReturn);
-
-					return bTrigReturn;
-				}
-			} return false;
 		case IC_TYPE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
@@ -2807,62 +2732,6 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			if ( ! pCharSrc )
 				return( false );
 			return pCharSrc->ItemEquip( this );
-		case CIV_TRIGGER:
-			{
-				if ( s.HasArgs() )
-				{
-					TCHAR * ppCmdTrigger[3];
-					int iResultArgs = Str_ParseCmds(s.GetArgRaw(), ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
-					if ( iResultArgs > 0 )
-					{
-						LPCTSTR callTrigger = ppCmdTrigger[0];
-						int iTriggerArgType = 0;
-						CScriptTriggerArgs csTriggerArgs;
-
-						if ( iResultArgs == 3 )
-						{
-							iTriggerArgType = ATOI(ppCmdTrigger[1]);
-
-							if ( iTriggerArgType == 1 ) // 3 ARGNs
-							{
-								int Arg_piCmd[3];
-								iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
-
-								if ( iResultArgs == 3 )
-								{
-									csTriggerArgs.m_iN3 = Arg_piCmd[2];
-								}
-
-								if ( iResultArgs >= 2 )
-								{
-									csTriggerArgs.m_iN2 = Arg_piCmd[1];
-								}
-
-								if ( iResultArgs >= 1 )
-								{
-									csTriggerArgs.m_iN1 = Arg_piCmd[0];
-								}
-							}
-							else if ( iTriggerArgType == 2 ) // ARGS
-							{
-								csTriggerArgs.m_s1 = ppCmdTrigger[2];
-								csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
-							}
-							else if ( iTriggerArgType == 3 ) // ARGO
-							{
-								CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
-								CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
-								if ( pTriggerArgObj )
-								{
-									csTriggerArgs.m_pO1 = pTriggerArgObj;
-								}
-							}
-						}
-
-						OnTrigger(callTrigger, pSrc, &csTriggerArgs);
-					}
-				}
-			} break;
 		case CIV_UNEQUIP:
 			if ( ! pCharSrc )
 				return( false );

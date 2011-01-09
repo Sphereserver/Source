@@ -962,6 +962,21 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_TIMERD:
 			sVal.FormatVal( GetTimerDAdjusted() );
 			break;
+		case OC_TRIGGER:
+			{
+				pszKey += 7;
+				GETNONWHITESPACE( pszKey );
+
+				if ( *pszKey )
+				{
+					TRIGRET_TYPE trReturn;
+					bool bTrigReturn = CallPersonalTrigger((TCHAR*)pszKey, pSrc, trReturn);
+					if ( bTrigReturn )
+						sVal.FormatVal(trReturn);
+
+					return bTrigReturn;
+				}
+			} return false;
 		case OC_TOPOBJ:
 			if ( pszKey[6] == '.' )
 			{
@@ -1598,7 +1613,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			}
 			break;
 
-	case OV_TIMERF:
+		case OV_TIMERF:
 			{
 				EXC_SET("TIMERF");
 				if ( !strnicmp( s.GetArgStr(), "CLEAR", 5 ) )
@@ -1630,7 +1645,14 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				}
 			}
 			break;
-
+		case OV_TRIGGER:
+			{
+				if ( s.HasArgs() )
+				{
+					TRIGRET_TYPE tResult;
+					CallPersonalTrigger(s.GetArgRaw(), pSrc, tResult);
+				}
+			} break;
 		case OV_DIALOG:
 		case OV_SDIALOG:
 			{
@@ -2101,3 +2123,62 @@ TRIGRET_TYPE CObjBase::Spell_OnTrigger( SPELL_TYPE spell, SPTRIG_TYPE stage, CCh
 	return TRIGRET_RET_DEFAULT;
 }
 
+inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult)
+{
+	TCHAR * ppCmdTrigger[3];
+	int iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
+	
+	if ( iResultArgs > 0 )
+	{
+		LPCTSTR callTrigger = ppCmdTrigger[0];
+		int iTriggerArgType = 0;
+		CScriptTriggerArgs csTriggerArgs;
+
+		if ( iResultArgs == 3 )
+		{
+			iTriggerArgType = ATOI(ppCmdTrigger[1]);
+
+			if ( iTriggerArgType & TAT_AS_ARGN ) // 3 ARGNs
+			{
+				int Arg_piCmd[3];
+				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
+
+				if ( iResultArgs == 3 )
+				{
+					csTriggerArgs.m_iN3 = Arg_piCmd[2];
+				}
+
+				if ( iResultArgs >= 2 )
+				{
+					csTriggerArgs.m_iN2 = Arg_piCmd[1];
+				}
+
+				if ( iResultArgs >= 1 )
+				{
+					csTriggerArgs.m_iN1 = Arg_piCmd[0];
+				}
+			}
+			
+			if ( iTriggerArgType & TAT_AS_ARGS ) // ARGS
+			{
+				csTriggerArgs.m_s1 = ppCmdTrigger[2];
+				csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
+			}
+			
+			if ( iTriggerArgType & TAT_AS_ARGO ) // ARGO
+			{
+				CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
+				CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
+				if ( pTriggerArgObj )
+				{
+					csTriggerArgs.m_pO1 = pTriggerArgObj;
+				}
+			}
+		}
+
+		trResult = OnTrigger(callTrigger, pSrc, &csTriggerArgs);
+		return true;
+	}
+
+	return false;
+}

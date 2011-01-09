@@ -54,6 +54,8 @@ class CObjBase : public CObjBaseTemplate, public CScriptObj
 private:
 	CServTime m_timeout;		// when does this rot away ? or other action. 0 = never, else system time
 	HUE_TYPE m_wHue;			// Hue or skin color. (CItems must be < 0x4ff or so)
+
+	inline bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 protected:
 	CResourceRef m_BaseRef;	// Pointer to the resource that describes this type.
 public:
@@ -978,7 +980,6 @@ public:
 
 private:
 	TRIGRET_TYPE OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
-	bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 
 public:
 	TRIGRET_TYPE OnTrigger( ITRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
@@ -2971,8 +2972,6 @@ public:
 
 //private:
 	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
-private:
-	bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 
 public:
 	// Load/Save----------------------------------
