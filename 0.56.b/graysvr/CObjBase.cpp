@@ -2138,7 +2138,7 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 		{
 			iTriggerArgType = ATOI(ppCmdTrigger[1]);
 
-			if ( iTriggerArgType & TAT_AS_ARGN ) // 3 ARGNs
+			if ( iTriggerArgType == 1 ) // 3 ARGNs
 			{
 				int Arg_piCmd[3];
 				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
@@ -2159,13 +2159,13 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 				}
 			}
 			
-			if ( iTriggerArgType & TAT_AS_ARGS ) // ARGS
+			if ( iTriggerArgType == 2 ) // ARGS
 			{
 				csTriggerArgs.m_s1 = ppCmdTrigger[2];
 				csTriggerArgs.m_s1_raw = ppCmdTrigger[2];
 			}
 			
-			if ( iTriggerArgType & TAT_AS_ARGO ) // ARGO
+			if ( iTriggerArgType == 3 ) // ARGO
 			{
 				CGrayUID guTriggerArg(Exp_GetVal(ppCmdTrigger[2]));
 				CObjBase * pTriggerArgObj = guTriggerArg.ObjFind();
