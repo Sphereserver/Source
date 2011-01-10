@@ -5061,7 +5061,7 @@ ALPHA additions:
   Example: TRIGGER @MyTest,<def.TAT_AS_FULL>,01,100,200,300,here,start,my,args
            will call @MyTest with ARGO.UID=01, ARGN1=100, ARGN2=200, ARGN3=300
            and ARGS=here,start,my,args (this supports ARGV[].)
-- Updated: Now sphere reads registry keys from lastest clients (no need to manually set them)
+- Modified: Now sphere reads registry keys from lastest clients (no need to manually set them)
 
 09-01-2011, ShiryuX (Script pack)
 - Updated: sphere_defs.scp (added tat_as_full definition)
@@ -5072,3 +5072,10 @@ ALPHA additions:
   trigger another tooltip resend if a monitored property changes during the resend.
 - Fixed #1814: AutoResendTooltip setting not working when an item property is changed just
   before it is placed in a container (e.g. when the item amount changes during stacking).
+
+10-01-2011, MrSugarCube
+- Added #1872: Support for setting SPEEDMODE to 4, as handled by newer clients. This can be
+  used to prevent a player from moving. Movement checks have been adjusted accordingly so
+  whilst older clients won't understand this speed mode, Sphere will still block their
+  movement attempts (with a slight 'rubber banding' effect as you'd normally get when freezing
+  a player by other means).

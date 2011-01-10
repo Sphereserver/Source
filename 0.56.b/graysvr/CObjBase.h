@@ -3285,7 +3285,7 @@ public:
 	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font= FONT_NORMAL, CLanguageID lang = 0 );
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
-	bool OnFreezeCheck(bool bTagCheck = false);
+	bool OnFreezeCheck();
 	void DropAll( CItemContainer * pCorpse = NULL, WORD wAttr = 0 );
 	void UnEquipAllItems( CItemContainer * pCorpse = NULL );
 	void Wake();

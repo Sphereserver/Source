@@ -2607,22 +2607,31 @@ bool CChar::Death()
 }
 
 
-bool CChar::OnFreezeCheck(bool bTagCheck)
+bool CChar::OnFreezeCheck()
 {
 	ADDTOCALLSTACK("CChar::OnFreezeCheck");
-	// Check why why are held in place.
+	// Check if and why are held in place.
 	// Can we break free ?
 	// RETURN: true = held in place.
 
+	// speed mode '4' prevents movement
+	if ( m_pPlayer != NULL && (m_pPlayer->m_speedMode & 0x04) != 0 )
+		return true;
+
 	// Do not allow move if TAG.NoMoveTill > SERV.Time,
 	// needed for script purposes.
-	if ( bTagCheck == true )
+	CVarDefCont* pKey = GetKey("NoMoveTill", false);
+	if ( pKey != NULL )
 	{
-		if ( GetKeyNum("NoMoveTill",true) > g_World.GetCurrentTime().GetTimeRaw() )
+		if ( pKey->GetValNum() > g_World.GetCurrentTime().GetTimeRaw() )
 			return true;
+
 		DeleteKey("NoMoveTill");
-		return false;
 	}
+
+	// finally, check for STATF_Freeze|STATF_Stone flags
+	if ( ! IsStatFlag( STATF_Freeze|STATF_Stone ) )
+		return false;
 
 	CItem * pFlag = LayerFind( LAYER_FLAG_Stuck );
 	if ( pFlag == NULL )	// stuck for some other reason i guess.
@@ -2634,7 +2643,7 @@ bool CChar::OnFreezeCheck(bool bTagCheck)
 	else if ( pFlag->IsDeleted() == true )
 	{
 		// not actually stuck!
-		return( false );
+		return false;
 	}
 	else
 	{
@@ -2646,16 +2655,15 @@ bool CChar::OnFreezeCheck(bool bTagCheck)
 		{
 			// Maybe we teleported away ?
 			pFlag->Delete();
-			return( false );
+			return false;
 		}
 
 		// Only allow me to try to damage it once per sec.
 		if ( ! pFlag->IsTimerSet())
-		{
-			return( Use_Obj( pWeb, false ));
-		}
+			return Use_Obj( pWeb, false );
 	}
-	return( ! IsPriv( PRIV_GM ));
+
+	return ! IsPriv( PRIV_GM );
 }
 
 void CChar::Flip()
@@ -2688,7 +2696,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		}
 	}
 
-	if (( IsStatFlag( STATF_Freeze | STATF_Stone ) && OnFreezeCheck()) || OnFreezeCheck(true) )
+	if ( OnFreezeCheck() )
 	{
 		// NPC's would call here.
 		return( NULL );	// can't move.

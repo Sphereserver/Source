@@ -725,7 +725,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		}
 	}
 
-	if (( m_pChar->IsStatFlag(STATF_Freeze|STATF_Stone) && m_pChar->OnFreezeCheck() ) || m_pChar->OnFreezeCheck(true) )
+	if ( m_pChar->OnFreezeCheck() )
 	{
 		return TRIGRET_RET_FALSE;
 	}
@@ -755,31 +755,26 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?)
 		{
 			// Client only allows 4 steps of walk ahead.
-			if ( g_Cfg.m_iWalkBuffer )
+			if ( g_Cfg.m_iWalkBuffer > 0 )
 			{
-				int		iTimeDiff	= ((CurrTime - m_timeWalkStep)/10);
-				int		iTimeMin;
-				if (m_pChar->m_pPlayer)
+				int iTimeDiff = ((CurrTime - m_timeWalkStep)/10);
+				int iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 70 : 140; // minimum time to move 8 steps
+
+				if (m_pChar->m_pPlayer != NULL && m_pChar->m_pPlayer->m_speedMode != 0)
 				{
-					switch (m_pChar->m_pPlayer->m_speedMode)
-					{
-						case 0: // Normal Speed
-							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 70 : 140; // it should check of walking (80 - 160)
-							break;
-						case 1: // Foot=Double Speed, Mount=Normal
-							iTimeMin = 70;
-							break;
-						case 2: // Foot=Always Walk, Mount=Always Walk (Half Speed)
-							iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 140 : 280;
-							break;
-						case 3: // Foot=Always Run, Mount=Always Walk
-						default:
-							iTimeMin = 140;
-							break;
-					}
+					// Speed Modes:
+					// 0 = Foot=Normal, Mount=Normal                         140 -  70
+					// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    =70
+					// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    =  x2
+					// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    =70x2 (1|2)
+					// 4 = No Movement                                       N/A - N/A    =(handled by OnFreezeCheck)
+
+					if (m_pChar->m_pPlayer->m_speedMode & 0x01) // = 70
+						iTimeMin = 70;
+
+					if (m_pChar->m_pPlayer->m_speedMode & 0x02) // = x2
+						iTimeMin *= 2;
 				}
-				else
-					iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering ) ? 70 : 140;
 
 				if ( iTimeDiff > iTimeMin )
 				{
