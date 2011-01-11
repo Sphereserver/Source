@@ -1596,6 +1596,7 @@ bool CWorld::LoadWorld() // Load world from script
 
 		// Reset everything that has been loaded
 		m_Stones.RemoveAll();
+		m_ObjStatusUpdates.RemoveAll();
 		m_Parties.DeleteAll();
 		m_GMPages.DeleteAll();
 
@@ -1922,6 +1923,7 @@ void CWorld::Close()
 		Save(true);
 
 	m_Stones.RemoveAll();
+	m_ObjStatusUpdates.RemoveAll();
 	m_Parties.DeleteAll();
 	m_GMPages.DeleteAll();
 
@@ -2299,6 +2301,8 @@ void CWorld::OnTick()
 		// note: ideally, a better solution to accomplish this should be found if possible
 		if (m_ObjStatusUpdates.GetCount() > 0)
 		{
+			EXC_TRYSUB("Tick");
+
 			// loop backwards to avoid possible infinite loop if a status update is triggered
 			// as part of the status update (e.g. property changed under tooltip trigger)
 			for (int i = m_ObjStatusUpdates.GetCount() - 1; i >= 0; --i )
@@ -2309,6 +2313,8 @@ void CWorld::OnTick()
 			}
 
 			m_ObjStatusUpdates.RemoveAll();
+
+			EXC_CATCHSUB("StatusUpdates");
 		}
 
 		m_ObjDelete.DeleteAll();	// clean up our delete list.

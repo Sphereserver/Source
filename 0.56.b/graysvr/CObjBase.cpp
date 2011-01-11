@@ -94,6 +94,7 @@ CObjBase::CObjBase( bool fItem )
 CObjBase::~CObjBase()
 {
 	FreePropertyList();
+	g_World.m_ObjStatusUpdates.RemovePtr(this);
 
 	sm_iCount --;
 	ASSERT( IsDisconnected());
