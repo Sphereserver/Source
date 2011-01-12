@@ -5079,3 +5079,7 @@ ALPHA additions:
   whilst older clients won't understand this speed mode, Sphere will still block their
   movement attempts (with a slight 'rubber banding' effect as you'd normally get when freezing
   a player by other means).
+
+11-01-2011, MrSugarCube
+- Fixed #1888: Exception caused by AutoTooltipResend attempting to send tooltips for deleted
+  items.
