@@ -4805,7 +4805,7 @@ ALPHA additions:
                 @ClientTooltip to fire
 
 02-07-2010, MrSugarCube
-- Fixed #1770: Possible exception on Linux builds when an NPC moves.
+- Fixed: Possible exception on Linux builds when an NPC moves.
 
 03-07-2010, MrSugarCube
 - Modified #1761: The fix for issue #1756 (sending packets for items inside unopened
@@ -4996,6 +4996,10 @@ ALPHA additions:
 - Fixed #1861: Elven players turning into gargoyle ghosts when dead.
 - Fixed: Mana Vampire spell always gives mana to the caster even when the spell is blocked in
   an @Effect trigger.
+
+03-12-2010, MrSugarCube
+- Fixed #1770: Exception when NPC_AI_PATH is enabled and an NPC cannot find a route to its
+  destination.
 
 10-12-2010, MrSugarCube
 - Fixed #1854: LogMask setting not have any effect on the messages being logged.
