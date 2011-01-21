@@ -5087,3 +5087,6 @@ ALPHA additions:
 11-01-2011, MrSugarCube
 - Fixed #1888: Exception caused by AutoTooltipResend attempting to send tooltips for deleted
   items.
+
+21-01-2011, MrSugarCube
+- Fixed #1894: Explode function placing a comma at the beginning of the result.

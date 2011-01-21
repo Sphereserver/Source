@@ -1143,7 +1143,7 @@ badcmd:
 					*p = 0;
 				}
 
-				const char *p = pszKey + strlen(separators);
+				const char *p = pszKey + strlen(separators) + 1;
 				sVal = "";
 				if (( p > pszKey ) && *p )		//	we have list of accessible separators 
 				{
