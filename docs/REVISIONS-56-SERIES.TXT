@@ -5090,3 +5090,7 @@ ALPHA additions:
 
 21-01-2011, MrSugarCube
 - Fixed #1894: Explode function placing a comma at the beginning of the result.
+
+21-01-2011, Coruja (Script pack)
+- Updated #1893: sphere_map2.scp (Renamed "Shrine of the Virtues" to "Gargoyle Shrine", and
+  "Gargoyle City" to "Vel Lor Reg").

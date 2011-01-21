@@ -74,6 +74,12 @@ P=984,1008,-37,2
 RECT=979,991,991,1013,2
 GROUP=Ilshenar Shrines
 
+[AREADEF a_shrine_gargoyle]
+NAME=Gargoyle Shrine
+P=1104,404,0,2
+RECT=1088,384,1127,425,2
+GROUP=Ilshenar Shrines
+
 ////////////  END SHRINE  /////////////
 
 [AREADEF a_terort_skitas]
@@ -83,8 +89,8 @@ RECT=528,376,624,464,2
 GROUP=Ilshenar Towns
 TAG.TITLE=the Area of
 
-[AREADEF a_gargoyle_city]
-NAME=Gargoyle City
+[AREADEF a_ver_lor_reg]
+NAME=Ver Lor Reg
 P=840,571,0,2
 RECT=824,552,856,728,2
 RECT=752,576,824,704,2
@@ -566,12 +572,6 @@ RECT=1048,616,1120,688,2
 RECT=1080,688,1104,712,2
 FLAGS=region_flag_nobuilding
 GROUP=Third Dawn
-
-[AREADEF a_shrine_virtues]
-NAME=Shrine of the Virtues
-P=1104,404,0,2
-RECT=1088,384,1127,425,2
-FLAGS=region_flag_safe|region_flag_no_pvp|region_flag_nobuilding
 
 [AREADEF a_pass_karnaugh]
 NAME=Pass of Karnaugh
