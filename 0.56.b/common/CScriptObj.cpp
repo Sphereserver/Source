@@ -578,13 +578,13 @@ bool CScriptObj::r_LoadVal( CScript & s )
 	if ( index == SSC_VAR )
 	{
 		bool fQuoted = false;
-		int	i	= g_Exp.m_VarGlobals.SetStr( pszKey+4, fQuoted, s.GetArgStr( &fQuoted ), false );
+		g_Exp.m_VarGlobals.SetStr( pszKey+4, fQuoted, s.GetArgStr( &fQuoted ), false );
 		return( true );
 	}
 	if ( index == SSC_VAR0 )
 	{
 		bool fQuoted = false;
-		int	i	= g_Exp.m_VarGlobals.SetStr( pszKey+5, fQuoted, s.GetArgStr( &fQuoted ), true );
+		g_Exp.m_VarGlobals.SetStr( pszKey+5, fQuoted, s.GetArgStr( &fQuoted ), true );
 		return( true );
 	}
 
@@ -645,8 +645,6 @@ static void StringFunction( int iFunc, LPCTSTR pszKey, CGString &sVal )
 		DEBUG_ERR(( "Bad string function usage. missing )\n" ));
 		return;
 	}
-
-	TCHAR * psArg1	= ppCmd[0];
 
 	switch ( iFunc )
 	{
@@ -1122,10 +1120,10 @@ badcmd:
 											Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
 											Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
 					
-						if ( iQty == -1 )
+						if ( iResult == -1 )
 							g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
 
-						exit(iQty);
+						exit(iResult);
 					}
 				}
 #endif

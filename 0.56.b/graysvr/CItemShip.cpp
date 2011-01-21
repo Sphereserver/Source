@@ -269,9 +269,6 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		return false;
 	}
 
-	const CItemBaseMulti * pMultiDef = Multi_GetDef();
-	ASSERT( pMultiDef);
-
 	int iTurn = dir - sm_Ship_FaceDir[ iFaceOffset ];
 
 	// ?? Are there blocking items in the way of the turn ?
@@ -1160,7 +1157,7 @@ CItem * CItemShip::GetShipPlank(int index)
 {
 	ADDTOCALLSTACK("CItemShip::GetShipPlank");
 	// Check the current list of planks is valid
-	for ( vector<CGrayUID>::iterator i = m_uidPlanks.begin(); i != m_uidPlanks.end(); ++i )
+	for ( std::vector<CGrayUID>::iterator i = m_uidPlanks.begin(); i != m_uidPlanks.end(); ++i )
 	{
 		CItem * pItem = (*i).ItemFind();
 		if ( pItem && Multi_IsPartOf( pItem ) )

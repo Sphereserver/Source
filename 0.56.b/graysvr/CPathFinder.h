@@ -89,10 +89,10 @@ public:
 protected:
 
 	CPathFinderPoint m_Points[PATH_SIZE][PATH_SIZE];
-	deque<CPathFinderPointRef> m_Opened;
-	deque<CPathFinderPointRef> m_Closed;
+	std::deque<CPathFinderPointRef> m_Opened;
+	std::deque<CPathFinderPointRef> m_Closed;
 
-	deque<CPointMap> m_LastPath;
+	std::deque<CPointMap> m_LastPath;
 
 	int m_RealX;
 	int m_RealY;
@@ -103,7 +103,7 @@ protected:
 protected:
 	void Clear();
 	unsigned long Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2);
-	void GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointRef>& ChildrenRefList );
+	void GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList );
 	void FillMap();	// prepares map with walkable statuses
 
 };

@@ -2464,17 +2464,15 @@ int CChar::Spell_CastStart()
 		if ( !pSpellDef )
 			return -1;
 
-		int		len = 0;
-		TCHAR	*pszTemp = Str_GetTemp();
-
-		//TEMPSTRING(pszTemp);
-
 		if ( pSpellDef->m_sRunes[0] == '.' )
 		{
 			Speak((pSpellDef->m_sRunes.GetPtr()) + 1);
 		}
 		else
 		{
+			int len = 0;
+			TCHAR *pszTemp = Str_GetTemp();
+
 			int i;
 			for ( i = 0; true; i++ )
 			{
@@ -2888,11 +2886,7 @@ reflectit:
 		break;
 
 	case SPELL_Sustenance:		// 105 // serves to fill you up. (Remember, healing rate depends on how well fed you are!)
-		{
-			CCharBase * pCharDef = Char_GetDef();
-			ASSERT(pCharDef);
-			Stat_SetVal( STAT_FOOD, Stat_GetAdjusted(STAT_FOOD) );
-		}
+		Stat_SetVal( STAT_FOOD, Stat_GetAdjusted(STAT_FOOD) );
 		break;
 	case SPELL_Gender_Swap:		// 110 // permanently changes your gender.
 		if ( IsHuman())

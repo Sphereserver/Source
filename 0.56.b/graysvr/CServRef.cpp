@@ -93,7 +93,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			struct rusage usage;
 			int res = getrusage(RUSAGE_SELF, &usage);
 
-			if ( usage.ru_idrss )
+			if ( res == 0 && usage.ru_idrss )
 				d = usage.ru_idrss;
 			else
 			{
@@ -283,7 +283,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_LANG:
 			{
 				TCHAR szLang[ 32 ];
-				int len = Str_GetBare( szLang, s.GetArgStr(), sizeof(szLang), "<>/\"\\" );
+				Str_GetBare( szLang, s.GetArgStr(), sizeof(szLang), "<>/\"\\" );
 				if ( g_Cfg.IsObscene(szLang))	// Is the name unacceptable?
 					return( false );
 				m_sLang = szLang;

@@ -105,7 +105,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 
 	// client will silently close all open dialogs and let the server think they're still open, so we need to update opened gump counts here
 	CDialogDef* pDlg = NULL;
-	for (CClient::OpenedGumpsMap_t::iterator it = pClientSrc->m_mapOpenedGumps.begin(); it != pClientSrc->m_mapOpenedGumps.end(); it++)
+	for (CClient::OpenedGumpsMap_t::iterator it = pClientSrc->m_mapOpenedGumps.begin(); it != pClientSrc->m_mapOpenedGumps.end(); ++it)
 	{
 		// the client leaves 'nodispose' dialogs open
 		pDlg = dynamic_cast<CDialogDef*>( g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, it->first)) );
@@ -137,7 +137,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	m_pArchitect = pClientSrc;
 	m_pArchitect->m_pHouseDesign = this;
 
-	PacketHouseBeginCustomise* cmd = new PacketHouseBeginCustomise(pClientSrc, this);
+	new PacketHouseBeginCustomise(pClientSrc, this);
 
 	// make sure they know the building exists
 	pClientSrc->addItem(this);
@@ -165,7 +165,7 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 		return;
 
 	// exit the 'architect' from customise mode
-	PacketHouseEndCustomise* cmd = new PacketHouseEndCustomise(m_pArchitect, this);
+	new PacketHouseEndCustomise(m_pArchitect, this);
 	m_pArchitect->m_pHouseDesign = NULL;
 
 	CClient * pClient = m_pArchitect;
@@ -286,7 +286,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	rectNew.SetRectEmpty();
 	rectNew.m_map = GetTopMap();
 
-	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); i++)
+	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); ++i)
 	{
 		rectNew.UnionPoint((*i)->m_item.m_dx, (*i)->m_item.m_dy);
 		if ( (*i)->m_item.m_visible )
@@ -311,7 +311,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		if ( pItem->IsType(IT_TELEPAD) )
 		{
 			// link telepads
-			for ( ComponentsContainer::iterator j = i+1; j != i; j++ )
+			for ( ComponentsContainer::iterator j = i+1; j != i; ++j )
 			{
 				if ( j == m_designMain.m_vectorComponents.end() )
 					j = m_designMain.m_vectorComponents.begin();
@@ -570,7 +570,7 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	bool bReplaceDirt = false;
 	for ( int i = 0; i < iCount; i++ )
 	{
-		for ( ComponentsContainer::iterator j = m_designWorking.m_vectorComponents.begin(); j != m_designWorking.m_vectorComponents.end(); j++ )
+		for ( ComponentsContainer::iterator j = m_designWorking.m_vectorComponents.begin(); j != m_designWorking.m_vectorComponents.end(); ++j )
 		{
 			if ( *j != pComponents[i] )
 				continue;
@@ -614,14 +614,17 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 
 	int iStairID = pStairComponent->m_isStair;
 
-	for ( ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); i++ )
+	for ( ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); )
 	{
-		if ( (*i)->m_isStair != iStairID )
-			continue;
-
-		i = m_designWorking.m_vectorComponents.erase(i);
-		m_designWorking.m_iRevision++;
-		i--;
+		if ( (*i)->m_isStair == iStairID )
+		{
+			i = m_designWorking.m_vectorComponents.erase(i);
+			m_designWorking.m_iRevision++;
+		}
+		else
+		{
+			++i;
+		}
 	}
 
 	return true;
@@ -650,7 +653,7 @@ void CItemMultiCustom::SendVersionTo(CClient * pClientSrc)
 		return;
 
 	// send multi version
-	PacketHouseDesignVersion* cmd = new PacketHouseDesignVersion(pClientSrc, this);
+	new PacketHouseDesignVersion(pClientSrc, this);
 }
 
 void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
@@ -702,7 +705,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 		CItemBase * pItemBase;
 
 		// find the highest plane/floor
-		for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); i++ )
+		for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); ++i )
 		{
 			if ( GetPlane(*i) <= iMaxPlane )
 				continue;
@@ -720,7 +723,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			int iMaxIndex = 0;
 
 			memset(wPlaneBuffer, 0, sizeof(wPlaneBuffer));
-			for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); i++ )
+			for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); ++i )
 			{
 				if ( GetPlane(*i) != iCurrentPlane )
 					continue;
@@ -773,7 +776,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			cmd->writePlaneData(iCurrentPlane, iItemCount, (BYTE*)wPlaneBuffer, iPlaneSize);
 		}
 
-		for ( ComponentsContainer::iterator i = vectorStairs.begin(); i != vectorStairs.end(); i++ )
+		for ( ComponentsContainer::iterator i = vectorStairs.begin(); i != vectorStairs.end(); ++i )
 		{
 			pComp = *i;
 			if ( !pComp->m_item.m_visible && pDesign != &m_designWorking )
@@ -889,7 +892,7 @@ int CItemMultiCustom::GetStairCount()
 	ADDTOCALLSTACK("CItemMultiCustom::GetStairCount");
 	// find and return the highest stair id
 	int iCount = 0;
-	for (ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); i++)
+	for (ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); ++i)
 	{
 		if ((*i)->m_isStair == 0)
 			continue;
@@ -907,7 +910,7 @@ int CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 		pDesign = &m_designMain;
 
 	int count = 0;
-	for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); i++)
+	for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); ++i)
 	{
 		if ((*i)->m_item.m_visible)
 			continue;
@@ -1039,7 +1042,7 @@ void CItemMultiCustom::CopyDesign(DesignDetails * designFrom, DesignDetails * de
 
 	// copy components
 	designTo->m_vectorComponents.clear();
-	for ( ComponentsContainer::iterator i = designFrom->m_vectorComponents.begin(); i != designFrom->m_vectorComponents.end(); i++)
+	for ( ComponentsContainer::iterator i = designFrom->m_vectorComponents.begin(); i != designFrom->m_vectorComponents.end(); ++i)
 	{
 		pComponent = new Component;
 		*pComponent = **i;
@@ -1244,7 +1247,7 @@ void CItemMultiCustom::r_Write( CScript & s )
 	CItemMulti::r_Write(s);
 
 	Component * comp;
-	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); i++ )
+	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); ++i )
 	{
 		comp = *i;
 		s.WriteKeyFormat("COMP", "%d,%d,%d,%d,%d", comp->m_item.GetDispID(), comp->m_item.m_dx, comp->m_item.m_dy, comp->m_item.m_dz, comp->m_isStair);
@@ -1558,7 +1561,7 @@ bool CItemMultiCustom::LoadValidItems()
 
 	TCHAR* pszRowFull = Str_GetTemp();
 	TCHAR* pszHeaderFull = Str_GetTemp();
-	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); itCsv++ )
+	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); ++itCsv )
 	{
 		strcat(pszHeaderFull, "\t");
 		strcat(pszHeaderFull, itCsv->first.c_str());

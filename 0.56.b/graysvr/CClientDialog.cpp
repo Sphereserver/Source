@@ -481,9 +481,15 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 CDialogDef::CDialogDef( RESOURCE_ID rid ) :
 	CResourceLink( rid )
 {
-		m_iControls		= 0;
-		m_iTexts		= 0;
-		m_pObj		= NULL;
+	m_iControls = 0;
+	m_iTexts = 0;
+	m_pObj = NULL;
+	m_x = 0;
+	m_y = 0;
+	m_iOriginX = 0;
+	m_iOriginY = 0;
+	m_iPage = 0;
+	m_bNoDispose = false;
 }
 
 
@@ -619,7 +625,7 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
 
 	ASSERT( pObj );
 
-	PacketGumpValueInput* cmd = new PacketGumpValueInput(this, fCancel, style, iMaxLength, pszText1, pszText2, pObj);
+	new PacketGumpValueInput(this, fCancel, style, iMaxLength, pszText1, pszText2, pObj);
 
 	// m_tmInpVal.m_UID = pObj->GetUID();
 	// m_tmInpVal.m_PrvGumpID = m_tmGumpDialog.m_ResourceID;
@@ -731,7 +737,7 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 	ADDTOCALLSTACK("CClient::Dialog_Close");
 	int gumpContext = rid & 0x00FFFFFF;
 
-	PacketGumpChange* cmd = new PacketGumpChange(this, gumpContext, buttonID);
+	new PacketGumpChange(this, gumpContext, buttonID);
 
 	if ( GetNetState()->isClientVersion(MINCLIVER_CLOSEDIALOG) )
 	{

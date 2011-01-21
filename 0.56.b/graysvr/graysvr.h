@@ -267,6 +267,7 @@ public:
 #endif
 		m_fLockOpen = false;
 		m_pScriptContext = NULL;
+		m_pObjectContext = NULL;
 		m_dwMsgMask = LOGL_ERROR |
 			LOGM_INIT | LOGM_CLIENTS_LOG | LOGM_GM_PAGE;
 		SetFilePath( GRAY_FILE "log.log" );	// default name to go to.

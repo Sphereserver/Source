@@ -792,7 +792,6 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 	Str_Parse(ppCmds[0], &(ppCmds[1]), "." );
 
 	CListDefCont* pListBase = GetKey(ppCmds[0]);
-	CListDefContElem* pListElem;
 	LPCTSTR pszArg = s.GetArgRaw();
 
 	if ( ppCmds[1] && (*(ppCmds[1])) ) // LIST.<list_name>.<something...>

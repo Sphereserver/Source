@@ -910,11 +910,11 @@ public:
 	CObjBaseTemplate * GetTopLevelObj() const
 	{
 		// recursively get the item that is at "top" level.
-		CObjBase	*pObj = GetContainer();
+		const CObjBase* pObj = GetContainer();
 		if ( !pObj )
 			return const_cast <CItem*>(this);
-		else if ( pObj == (CObjBase*)this )		// to avoid script errors setting same CONT
-			return (CObjBaseTemplate*)this;
+		else if ( pObj == this )		// to avoid script errors setting same CONT
+			return const_cast <CItem*>(this);
 		return pObj->GetTopLevelObj();
 	}
 
@@ -1480,7 +1480,7 @@ public:
 	};
 
 private:
-	typedef vector<Component*> ComponentsContainer;
+	typedef std::vector<Component*> ComponentsContainer;
 	struct DesignDetails
 	{
 		int m_iRevision;
@@ -1568,7 +1568,7 @@ private:
 	static LPCTSTR const sm_szVerbKeys[];
 
 	CGrayUID m_uidHold;
-	vector<CGrayUID> m_uidPlanks;
+	std::vector<CGrayUID> m_uidPlanks;
 
 	int Ship_GetFaceOffset() const
 	{
@@ -1649,8 +1649,8 @@ struct CMapPinRec // Pin on a map
 {
 	short m_x;
 	short m_y;
+
 public:
-	CMapPinRec() {}
 	CMapPinRec( short x, short y ) { m_x = x; m_y = y; }
 };
 
@@ -2324,7 +2324,7 @@ public:
 		DWORD	charUID;
 		DWORD	amountDone;
 	};
-	vector<LastAttackers>	m_lastAttackers;
+	std::vector<LastAttackers> m_lastAttackers;
 
 	static const char *m_sClassName;
 	CCharPlayer * m_pPlayer;	// May even be an off-line player !
@@ -2794,7 +2794,7 @@ public:
 	CObjBaseTemplate * GetTopLevelObj() const
 	{
 		// Get the object that has a location in the world. (Ground level)
-		return (CChar*)this;
+		return const_cast<CChar*>(this);
 	}
 
 	bool IsSwimming() const;

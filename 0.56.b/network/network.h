@@ -231,7 +231,7 @@ private:
 	Packet* m_handlers[NETWORK_PACKETCOUNT]; // standard packet handlers
 	Packet* m_extended[NETWORK_PACKETCOUNT]; // extended packeet handlers (0xbf)
 	Packet* m_encoded[NETWORK_PACKETCOUNT]; // encoded packet handlers (0xd7)
-	vector<HistoryIP> m_ips;
+	std::vector<HistoryIP> m_ips;
 
 	BYTE* m_buffer; // receive buffer
 	BYTE* m_decryptBuffer; // receive buffer for decryption

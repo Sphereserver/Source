@@ -51,7 +51,7 @@ LinuxEv::LinuxEv(void) : AbstractSphereThread("NetworkEvents", IThread::High), m
 	m_eventLoop = ev_loop_new(EV_BACKEND_LIST);
 	ev_set_io_collect_interval(m_eventLoop, 0.01);
 	
-	memset(&m_watchMainsock, 0, sizeof(struct ev_io));
+	memset(&m_watchMainsock, 0, sizeof(ev_io));
 }
 
 LinuxEv::~LinuxEv(void)
@@ -86,7 +86,7 @@ void LinuxEv::registerClient(CClient * theClient, EventsID eventCheck)
 {
 	NetState* state = theClient->GetNetState();
 	
-	memset(state->iocb(), 0, sizeof(struct ev_io));
+	memset(state->iocb(), 0, sizeof(ev_io));
 
 #ifdef _WIN32
 	int fd = EV_WIN32_HANDLE_TO_FD(state->m_socket.GetSocket());

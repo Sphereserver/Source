@@ -27,15 +27,14 @@ bool CSVFile::OpenBase(void * pExtra)
 	m_iCurrentRow = 0;
 
 	// remove all empty lines so that we just have data rows stored
-	for (std::vector<std::string>::iterator i = m_fileContent->begin(); i != m_fileContent->end(); i++ )
+	for (std::vector<std::string>::iterator i = m_fileContent->begin(); i != m_fileContent->end(); )
 	{
 		LPCTSTR pszLine = i->c_str();
 		GETNONWHITESPACE(pszLine);
-		if ( *pszLine != '\0' )
-			continue;
-
-		i = m_fileContent->erase(i);
-		i--;
+		if ( *pszLine == '\0' )
+			i = m_fileContent->erase(i);
+		else
+			++i;
 	}
 
 	// find the types and names of the columns

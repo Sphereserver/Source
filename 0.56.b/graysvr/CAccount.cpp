@@ -817,7 +817,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 		ttsData.m_Last = timeCurrent.GetTimeRaw();
 		ttsData.m_Delay = 0;
 
-		m_BlockIP[dwCurrentIP] = make_pair(ttsData, 0);
+		m_BlockIP[dwCurrentIP] = std::make_pair(ttsData, 0);
 	}
 
 	if ( m_BlockIP.size() > 100 )

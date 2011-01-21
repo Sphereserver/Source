@@ -1015,7 +1015,7 @@ bool CRegionWorld::r_LoadVal( CScript &s )
 {
 	ADDTOCALLSTACK("CRegionWorld::r_LoadVal");
 	EXC_TRY("LoadVal");
-	bool	fZero	= false;
+
 	// Load the values for the region from script.
 	switch ( FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{

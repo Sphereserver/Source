@@ -137,7 +137,7 @@ bool CClient::addLoginErr(BYTE code)
 			break;
 	}
 
-	PacketLoginError* cmd = new PacketLoginError(this, (PacketLoginError::Reason)code);
+	new PacketLoginError(this, (PacketLoginError::Reason)code);
 	GetNetState()->markReadClosed();
 	return( false );
 }
@@ -169,7 +169,7 @@ void CClient::addWebLaunch( LPCTSTR pPage )
 	if ( !pPage || !pPage[0] )
 		return;
 
-	PacketWebPage* cmd = new PacketWebPage(this, pPage);
+	new PacketWebPage(this, pPage);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -296,7 +296,7 @@ BYTE CClient::Login_ServerList( const char * pszAccount, const char * pszPasswor
 		return( lErr );
 	}
 
-	PacketServerList* cmd = new PacketServerList(this);
+	new PacketServerList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_SERVERS;
 	return( PacketLoginError::Success );

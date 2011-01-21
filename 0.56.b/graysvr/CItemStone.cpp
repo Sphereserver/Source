@@ -1090,7 +1090,6 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 			{
 				CStoneMember * pMember = GetMember(pCharSrc);
 #ifndef _NEWGUILDSYSTEM
-				CVarDefCont * pResult = NULL;
 
 				if ( pMember == NULL )
 				{

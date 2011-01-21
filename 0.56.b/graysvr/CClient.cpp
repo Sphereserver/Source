@@ -286,7 +286,7 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 			{
 				if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' ) return;
 
-				PacketTelnet* packet = new PacketTelnet(this, pszMsg);
+				new PacketTelnet(this, pszMsg);
 			}
 			return;
 		case CONNECT_CRYPT:
@@ -501,7 +501,7 @@ void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, b
 	{
 		SetTargMode(CLIMODE_TARG_OBJ_FUNC, "");
 
-		PacketAddTarget* cmd = new PacketAddTarget(this, fGround? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid);
+		new PacketAddTarget(this, fGround? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid);
 	}
 	addTargetFunction( pszFunction, fGround, false );
 }
@@ -923,10 +923,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					break;
 				}
 				TCHAR * ppArgs[7];
-				int ArgCount;
 				int iArgs[4];
 
-				if( (ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF( ppArgs ))) < 5) {
+				int ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+				if ( ArgCount < 5 )
+				{
 					DEBUG_ERR(("Too few addbuff arguments\n"));
 					break;
 				}
@@ -1133,7 +1134,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_CHARLIST:
 			{
 				// usually just a gm command
-				PacketChangeCharacter* cmd = new PacketChangeCharacter(this);
+				new PacketChangeCharacter(this);
 
 				CharDisconnect();	// since there is no undoing this in the client.
 				SetTargMode( CLIMODE_SETUP_CHARLIST );

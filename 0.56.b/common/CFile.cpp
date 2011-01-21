@@ -201,7 +201,8 @@ void CFileText::CloseBase()
 	{
 		fflush(m_pStream);
 	}
-	bool fSuccess = ( fclose( m_pStream ) == 0 );
+	
+	fclose(m_pStream);
 	m_pStream = NULL;
 }
 

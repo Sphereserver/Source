@@ -1177,9 +1177,9 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	}
 
 	// Create the bank box.
-	CItemContainer * pBankBox = GetBank( LAYER_BANKBOX );
+	GetBank( LAYER_BANKBOX );
 	// Create the pack.
-	CItemContainer * pPack = GetPackSafe();
+	GetPackSafe();
 
 	// Get special equip for the starting skills.
 	for ( i=0; i<4; i++ )
@@ -1729,11 +1729,10 @@ do_default:
 				else
 				{
 					WORD		wBlockFlags	= 0;
-					signed char z;
 					if ( IsSetEF( EF_WalkCheck ) )
-						z = g_World.GetHeightPoint_New( ptDst, wBlockFlags, true );
+						g_World.GetHeightPoint_New( ptDst, wBlockFlags, true );
 					else
-						z = g_World.GetHeightPoint( ptDst, wBlockFlags, true );
+						g_World.GetHeightPoint( ptDst, wBlockFlags, true );
 					sVal.FormatHex( wBlockFlags );
 				}
 			}
@@ -3250,7 +3249,6 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		DEFMSG_EXP_CHANGE_7,
 		DEFMSG_EXP_CHANGE_8
 	};
-	bool bShowMsg = false;
 
 	if ( delta || pCharDead )//	zero call will sync the exp level
 	{
@@ -3272,10 +3270,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			DEBUG_ERR(("%s %s experience change (was %d, delta %d, now %d)\n",
 				(m_pNPC ? "NPC" : "Player" ), GetName(), m_exp, delta, m_exp+delta));
 		}
-
-		if ( m_pClient )
-			bShowMsg = true;
-
+		
+		bool bShowMsg = (m_pClient != NULL);
 		if ( g_Cfg.m_iExperienceMode&EXP_MODE_TRIGGER_EXP )
 		{
 			CScriptTriggerArgs	args(delta, bShowMsg);

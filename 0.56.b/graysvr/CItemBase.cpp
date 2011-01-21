@@ -1409,7 +1409,6 @@ CItemBase * CItemBase::MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE idmas
 
 	// create the dupe stub.
 	CUOItemTypeRec2 tiledata;
-	t_height Height = 0;
 	CItemBaseDupe * pBaseDupe = NULL;
 
 	memset( &tiledata, 0, sizeof(tiledata));
@@ -1417,7 +1416,7 @@ CItemBase * CItemBase::MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE idmas
 	if ( CItemBase::GetItemData( id, &tiledata ) )
 	{
 		pBaseDupe->SetTFlags( tiledata.m_flags );
-		Height = CItemBase::GetItemHeightFlags( tiledata, pBaseDupe->m_Can );
+		t_height Height = CItemBase::GetItemHeightFlags( tiledata, pBaseDupe->m_Can );
 		//Height = ( pBaseDupe->GetTFlags() & 0x400 ) ? ( Height / 2 ) : ( Height ); //should not be done here
 		Height = IsID_Chair( id ) ? 0 : Height;
 		pBaseDupe->SetHeight( Height );

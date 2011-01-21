@@ -14,11 +14,11 @@
 		//		destination buffer
 
 		LPCVOID lpSource = NULL;
-		const va_list* Arguments = NULL;
+		va_list* Arguments = NULL;
 		DWORD nChars = ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			lpSource,
 			dwError, LANG_NEUTRAL, 
-			lpszError, nMaxError, NULL );
+			lpszError, nMaxError, Arguments );
 
 		if (nChars > 0)
 		{     // successful translation -- trim any trailing junk

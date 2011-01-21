@@ -198,7 +198,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 		EXC_SET("Item - addObjectRemove(uid)");
 		addObjectRemove(uid);
 		EXC_SET("Item - addItemDragCancel(0)");
-		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
+		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 
@@ -207,7 +207,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	if ( m_tNextPickup > m_tNextPickup.GetCurrentTime() )
 	{
 		EXC_SET("FastLoot - addItemDragCancel(0)");
-		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
+		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 	m_tNextPickup = m_tNextPickup.GetCurrentTime() + 3;
@@ -223,7 +223,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	if ( amount < 0 )
 	{
 		EXC_SET("ItemPickup - addItemDragCancel(0)");
-		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::CannotLift);
+		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 	else if ( amount > 1 )
@@ -275,7 +275,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 		GetTargMode() != CLIMODE_DRAG ||
 		pItem != m_pChar->LayerFind( LAYER_DRAGGING ))
 	{
-		PacketDragCancel* cmd = new PacketDragCancel(this, PacketDragCancel::Other);
+		new PacketDragCancel(this, PacketDragCancel::Other);
 		return;
 	}
 
@@ -531,8 +531,6 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 		return;
 	}
 
-	bool fContinue = false;
-
 	if ( m_pChar->Skill_Wait(skill) )
 		return;
 
@@ -744,8 +742,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptold = pt;
-	bool	fMove = true;
-	bool	fUpdate	= false;
+	bool fMove = true;
 
 	if ( dir == m_pChar->m_dirFace )
 	{
@@ -867,7 +864,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	}
 
 	// Ack the move. ( if this does not go back we get rubber banding )
-	PacketMovementAck* packet = new PacketMovementAck(this);
+	new PacketMovementAck(this);
 
 	if ( !fMove )
 		m_pChar->UpdateMode(this);			// Show others I have turned !!
@@ -1019,7 +1016,7 @@ void CClient::Event_Attack( CGrayUID uid )
 	if ( pChar == NULL )
 		return;
 
-	PacketAttack* cmd = new PacketAttack(this, (m_pChar->Fight_Attack(pChar) ? (DWORD)pChar->GetUID() : 0));
+	new PacketAttack(this, (m_pChar->Fight_Attack(pChar) ? (DWORD)pChar->GetUID() : 0));
 }
 
 // Client/Player buying items from the Vendor
@@ -1053,7 +1050,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD ite
 
 #define MAX_COST (INT_MAX / 2)
 	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
-	CItemContainer* pStock = pVendor->GetBank(LAYER_VENDOR_STOCK);
+	pVendor->GetBank(LAYER_VENDOR_STOCK);
 	CItemContainer* pPack = m_pChar->GetPackSafe();
 
 	CItemVendable* pItem;
@@ -1233,9 +1230,11 @@ do_consume:
 	//	Take the gold and add it to the vendor
 	if ( !fBoss )
 	{
-		int rc = ( g_Cfg.m_fPayFromPackOnly ) ?
-			m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal) :
+		if ( g_Cfg.m_fPayFromPackOnly )
+			m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal);
+		else
 			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal);
+
 		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += costtotal;
 	}
 
@@ -1407,7 +1406,7 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, 
 	}
 	else
 	{
-		PacketProfile* cmd = new PacketProfile(this, pChar);
+		new PacketProfile(this, pChar);
 	}
 }
 
@@ -1819,12 +1818,14 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 	{
 		// The characters in Unicode speech don't need to be filtered
 		strncpy( szText, pszText, MAX_TALK_BUFFER - 1 );
+		szText[MAX_TALK_BUFFER - 1] = '\0';
 		len = strlen( szText );
 	}
 	else
 	{
 		TCHAR szTextG[MAX_TALK_BUFFER];
 		strncpy( szTextG, pszText, MAX_TALK_BUFFER - 1 );
+		szTextG[MAX_TALK_BUFFER - 1] = '\0';
 		len = Str_GetBare( szText, szTextG, sizeof(szText)-1 );
 	}
 

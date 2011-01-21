@@ -1020,9 +1020,6 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	if ( ! iValue )
 		iValue = 1;
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-
 	int iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
 	if ( iSpace <= 0 )	// no room
 		return;
@@ -1219,9 +1216,6 @@ void CChar::Use_Drink( CItem * pItem )
 
 			if ( ! fValue )
 				fValue = 1;
-
-			CCharBase * pCharDef = Char_GetDef();
-			ASSERT(pCharDef);
 
 			int iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
 			if ( iSpace <= 0 )	// no room

@@ -91,8 +91,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 				pszKey += strlen(sm_szLoadKeys[index]); // 9;
 				if ( *pszKey == '.' )
 				{
-					bool	fQtyOnly	= false;
-					bool	fKeyOnly	= false;
 					SKIP_SEPARATORS( pszKey );
 
 					if ( !strnicmp( pszKey, "COUNT", 5 ))
@@ -101,7 +99,9 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 					}
 					else
 					{
-						int		index	= Exp_GetVal( pszKey );
+						bool fQtyOnly = false;
+						bool fKeyOnly = false;
+						int index = Exp_GetVal( pszKey );
 						SKIP_SEPARATORS( pszKey );
 
 						if ( !strnicmp( pszKey, "KEY", 3 ))

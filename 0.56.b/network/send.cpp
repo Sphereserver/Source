@@ -4074,6 +4074,7 @@ PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign* other) : PacketSen
 {
 	ADDTOCALLSTACK("PacketHouseDesign::PacketHouseDesign(2)");
 
+	m_house = other->m_house;
 	m_itemCount = other->m_itemCount;
 	m_dataSize = other->m_dataSize;
 	m_planeCount = other->m_planeCount;

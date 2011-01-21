@@ -285,7 +285,7 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 			return false; // this has the item count
 
 		int piCmd[4];		// Maximum parameters in one line
-		int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+		Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 
 		CItem * pItem = CItem::CreateTemplate( (ITEMID_TYPE) ATOI(s.GetKey()), NULL, m_pChar );
 		if ( pItem == NULL )
@@ -578,7 +578,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			strcpylen( szTmp, m_Targ_Text, sizeof(szTmp));
 
 			int piArgs[3];		// Maximum parameters in one line
-			int iArgQty = Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
+			Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
 
 			CPointMap ptNudge(piArgs[0],piArgs[1],piArgs[2] );
 
@@ -776,12 +776,10 @@ int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 
 	// How well fed ?
 	// Food count = 30 minute intervals.
-	LPCTSTR pszText;
-	int ifood = maximum(pChar->Stat_GetVal(STAT_FOOD), 7);
+	LPCTSTR pszText = pChar->IsStatFlag(STATF_Conjured) ?
+						g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_CONJURED) : 
+						pChar->Food_GetLevelMessage(pCharOwner ? true : false, true);
 
-	pszText = pChar->IsStatFlag(STATF_Conjured) ?
-		g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_CONJURED) : 
-		pChar->Food_GetLevelMessage(pCharOwner ? true : false, true);
 	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_FOOD), pszHe, pszText);
 	addObjMessage(pszTemp, pChar);
 
@@ -1339,8 +1337,6 @@ bool CClient::OnTarg_Skill( CObjBase * pObj )
 
 	if ( pObj == NULL )
 		return( false );
-
-	bool fContinue = false;
 
 	SetTargMode();	// just make sure last targ mode is gone.
 	m_Targ_UID = pObj->GetUID();	// keep for 'last target' info.
@@ -2333,9 +2329,10 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 			pItemTarg->m_itLoom.m_ClothQty = 0;
 			pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
 
+/*
 			CItemBase * pItemDef = pItemTarg->Item_GetDef(); 
 
-/*			if ( pItemDef->m_ttNormal.m_tData3 != 0 )
+			if ( pItemDef->m_ttNormal.m_tData3 != 0 )
 			{
 				for ( int clothcount=1; clothcount < pItemDef->m_ttNormal.m_tData3; clothcount++)
 				{
@@ -2600,7 +2597,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", (DWORD)pChar->GetUID());
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2,5) * TICK_PER_SEC));
 
-	PacketPartyInvite* cmd = new PacketPartyInvite(pChar->GetClient(), m_pChar);
+	new PacketPartyInvite(pChar->GetClient(), m_pChar);
 
 	// Now up to them to decide to accept.
 	return( true );

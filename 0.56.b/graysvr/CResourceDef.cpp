@@ -245,11 +245,11 @@ LPCTSTR const CSkillDef::sm_szLoadKeys[SKC_QTY+1] =
 CSkillDef::CSkillDef( SKILL_TYPE skill ) :
 	CResourceLink( RESOURCE_ID( RES_SKILL, skill ))
 {
-	if ( !CChar::IsSkillBase(skill) )
 	m_StatPercent	= 0;
 	m_GainRadius	= 0;
 	m_dwFlags		= 0;
 	m_dwGroup		= 0;
+	memset(m_Stat, 0, sizeof(m_Stat));
 	memset(m_StatBonus, 0, sizeof(m_StatBonus));
 	m_AdvRate.Init();
 }
@@ -597,7 +597,11 @@ CSpellDef::CSpellDef( SPELL_TYPE id ) :
 {
 	m_dwFlags = SPELLFLAG_DISABLED;
 	m_dwGroup	= 0;
+	m_sound = 0;
+	m_idSpell = ITEMID_NOTHING;
+	m_idScroll = ITEMID_NOTHING;
 	m_idEffect = ITEMID_NOTHING;
+	m_wManaUse = 0;
 	m_CastTime.Init();
 	m_Interrupt.Init();
 	m_Interrupt.m_aiValues.SetCount( 1 );
@@ -931,8 +935,6 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			pszKey	+= 9;
 			if ( *pszKey == '.' )
 			{
-				bool	fQtyOnly	= false;
-				bool	fKeyOnly	= false;
 				SKIP_SEPARATORS( pszKey );
 
 				if ( !strnicmp( pszKey, "COUNT", 5 ))
@@ -941,13 +943,15 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 				}
 				else
 				{
-					int		index	= Exp_GetVal( pszKey );
+					bool fQtyOnly = false;
+					bool fKeyOnly = false;
+					int index = Exp_GetVal( pszKey );
 					SKIP_SEPARATORS( pszKey );
 
 					if ( !strnicmp( pszKey, "KEY", 3 ))
-						fKeyOnly	= true;
+						fKeyOnly = true;
 					else if ( !strnicmp( pszKey, "VAL", 3 ))
-						fQtyOnly	= true;
+						fQtyOnly = true;
 
 					TCHAR *pszTmp = Str_GetTemp();
 					m_Members.WriteKeys( pszTmp, index, fQtyOnly, fKeyOnly );
@@ -1158,6 +1162,7 @@ CRegionResourceDef::CRegionResourceDef( RESOURCE_ID rid ) :
 	CResourceLink( rid )
 {
 	// set defaults first.
+	m_ReapItem = ITEMID_NOTHING;
 	m_iRegenerateTime = 0;	// TICK_PER_SEC once found how long to regen this type.
 }
 

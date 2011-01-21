@@ -17,6 +17,7 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	m_Anims = 0xFFFFFF;
   	m_MaxFood = 0;			// Default value
 	m_wBloodHue = 0;
+	m_wColor = 0;
 	m_Str = 0;
 	m_Dex = 0;
 	m_Int = 0;

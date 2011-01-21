@@ -270,7 +270,7 @@ void CTimedFunctionHandler::OnTick()
 			}
 			else
 			{
-				it++;
+				++it;
 			}
 		}
 	}
@@ -310,7 +310,7 @@ void CTimedFunctionHandler::Erase( CGrayUID uid )
 			}
 			else
 			{
-				it++;
+				++it;
 			}
 		}
 	}
@@ -427,7 +427,7 @@ void CTimedFunctionHandler::r_Write( CScript & s )
 	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
 	{
 		std::vector<TimedFunction *>::iterator it;
-		for( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); it++ )
+		for( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ++it )
 		{
 			TimedFunction* tf = *it;
 			if ( tf->uid.IsValidUID() )
@@ -1834,8 +1834,8 @@ bool CWorld::r_LoadVal( CScript &s )
 {
 	ADDTOCALLSTACK("CWorld::r_LoadVal");
 	EXC_TRY("LoadVal");
+
 	LPCTSTR	pszKey = s.GetKey();
-	LPCTSTR pszArgs = s.GetArgStr();
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
 		case WC_SAVECOUNT: // "SAVECOUNT"

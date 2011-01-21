@@ -37,16 +37,14 @@ bool PacketCreate::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCreate::onReceive");
 
-	DWORD pattern1 = readInt32();
-	DWORD pattern2 = readInt32();
-	BYTE kuoc = readByte();
+	skip(9); // 4=pattern1, 4=pattern2, 1=kuoc
 	TCHAR charname[MAX_NAME_SIZE];
 	readStringASCII(charname, MAX_NAME_SIZE);
-	skip(2);
+	skip(2); // 0x00
 	DWORD flags = readInt32();
-	skip(8);
+	skip(8); // unk
 	PROFESSION_TYPE prof = (PROFESSION_TYPE)readByte();
-	skip(15);
+	skip(15); // 0x00
 	BYTE sex = readByte();
 	BYTE strength = readByte();
 	BYTE dexterity = readByte();
@@ -62,11 +60,9 @@ bool PacketCreate::onReceive(NetState* net)
 	HUE_TYPE hairhue = (HUE_TYPE)readInt16();
 	ITEMID_TYPE beardid = (ITEMID_TYPE)readInt16();
 	HUE_TYPE beardhue = (HUE_TYPE)readInt16();
-	skip(1);
+	skip(1); // shard index
 	BYTE startloc = readByte();
-	skip(3);
-	BYTE slot = readByte();
-	DWORD ip = readInt32();
+	skip(8); // 4=slot, 4=ip
 	HUE_TYPE shirthue = (HUE_TYPE)readInt16();
 	HUE_TYPE pantshue = (HUE_TYPE)readInt16();
 
@@ -276,7 +272,7 @@ bool PacketSpeakReq::onReceive(NetState* net)
 	WORD packetLength = readInt16();
 	TALKMODE_TYPE mode = (TALKMODE_TYPE)readByte();
 	HUE_TYPE hue = (HUE_TYPE)readInt16();
-	FONT_TYPE font = (FONT_TYPE)readInt16();
+	skip(2); // font
 	TCHAR text[MAX_TALK_BUFFER];
 
 	packetLength = (WORD)(packetLength - getPosition());
@@ -1469,9 +1465,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCreateNew::onReceive");
 
-	skip(2);
-	DWORD pattern1 = readInt32();
-	DWORD pattern2 = readInt32();
+	skip(10); // 2=length, 4=pattern1, 4=pattern2
 	TCHAR charname[MAX_NAME_SIZE];
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(30);
@@ -1495,9 +1489,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 	skip(26);
 	HUE_TYPE hairhue = (HUE_TYPE)readInt16();
 	ITEMID_TYPE hairid = (ITEMID_TYPE)readInt16();
-	skip(11);
-	HUE_TYPE hue2 = (HUE_TYPE)readInt16();
-	skip(1);
+	skip(14); // unk
 	BYTE portrait = readByte();
 	skip(1);
 	HUE_TYPE beardhue = (HUE_TYPE)readInt16();
@@ -1788,7 +1780,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	if (seller == NULL)
 		return false;
 
-	WORD packetLength = readInt16();
+	skip(2); // length
 	CGrayUID vendorSerial(readInt32());
 	WORD itemCount = readInt16();
 
@@ -1940,9 +1932,9 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 
-	WORD packetLength = readInt16();
+	skip(2); // length
 	CGrayUID uid(readInt32());
-	WORD context = readInt16();
+	readInt16(); // context
 	BYTE action = readByte();
 	WORD textLength = readInt16();
 	TCHAR text[MAX_NAME_SIZE];
@@ -2087,7 +2079,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	WORD packetLength = readInt16();
+	skip(2); // length
 	CGrayUID serial(readInt32());
 	DWORD context = readInt32();
 	DWORD button = readInt32();
@@ -2761,8 +2753,8 @@ bool PacketClientInfo::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketClientInfo::onReceive");
 
-	BYTE a = readByte();
-	DWORD flags = readInt32();
+	skip(1); // 0x0A
+	skip(4); // flags
 	return true;
 }
 
@@ -3190,7 +3182,7 @@ bool PacketViewRange::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketViewRange::onReceive");
 
-	BYTE range = readByte();
+	skip(1); // range
 	return true;
 }
 
@@ -4130,7 +4122,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 
-	WORD packetLength = readInt16(); // packet length
+	skip(2); // packet length
 	BYTE versionMaj = readByte();
 	BYTE versionMin = readByte();
 	BYTE versionRev = readByte();

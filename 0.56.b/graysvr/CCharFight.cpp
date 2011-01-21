@@ -823,7 +823,7 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 		}
 	}
 
-	return Memory_UpdateFlags( pMemory );
+	return fMore && Memory_UpdateFlags( pMemory );
 }
 
 void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
@@ -2287,9 +2287,9 @@ effect_bounce:
 		return( 0 );
 
 	// Make blood depending on hit damage. assuming the creature has blood
-	ITEMID_TYPE id = ITEMID_NOTHING;
 	if ( pCharDef->m_wBloodHue != (HUE_TYPE)-1 )
 	{
+		ITEMID_TYPE id = ITEMID_NOTHING;
 		if ( iDmg > 10 )
 		{
 			id = (ITEMID_TYPE)( ITEMID_BLOOD1 + Calc_GetRandVal(ITEMID_BLOOD6-ITEMID_BLOOD1));
@@ -2688,7 +2688,6 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	}
 
 	WORD MemTypes;
-	CItemMemory * pTargMemory = NULL;
 	CItemMemory * pMemory = Memory_FindObj( pTarg );
 	if ( pMemory == NULL )
 	{

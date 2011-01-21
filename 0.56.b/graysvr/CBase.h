@@ -95,6 +95,7 @@ public:
 		m_range			= 1;
 		m_ResLevel		= RDS_T2A;
 		m_ResDispDnHue	= HUE_DEFAULT;
+		m_ResDispDnId = 0;
 		m_BaseResources.setNoMergeOnLoad();
 	}
 	virtual ~CBaseBaseDef()
@@ -702,7 +703,8 @@ public:
 	static const char *m_sClassName;
 	CItemBaseDupe( ITEMID_TYPE id, CItemBase * pMasterItem ) :
 		CResourceDef( RESOURCE_ID( RES_ITEMDEF, id )),
-		m_MasterItem( pMasterItem )
+		m_MasterItem( pMasterItem ),
+		m_dwFlags(0), m_Height(0), m_Can(0)
 	{
 		ASSERT(pMasterItem);
 		ASSERT( pMasterItem->GetResourceID().GetResIndex() != id );

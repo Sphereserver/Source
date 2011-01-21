@@ -210,11 +210,11 @@ bool CScriptCompiler::GetFilelist(char *dirName, char *extens, CGStringList &lis
 	ADDTOCALLSTACK("CScriptCompiler::GetFilelist");
 	char	zMask[COMPILER_MAXFILEPATH];
 	char	zFileName[COMPILER_MAXFILEPATH];
-	long	lFind;
 
 	strcpy(zMask, dirName);
 #ifdef _WIN32
 	strcat(zMask, "*.*");
+	long	lFind;
 #endif
 	FINDFIRST(zMask);
 	do
@@ -454,7 +454,7 @@ void *CScriptCompiler::CompileBufer(FILE *in, long &lCompiledSize)
 	char	*z = Str_GetTemp(), *z1 = Str_GetTemp();
 	char	*line, *p1;
 	TBinarySection	*section = (TBinarySection	*)rawDataCompiled;
-	int		linenum;
+	int		linenum = 0;
 
 	try
 	{
@@ -462,7 +462,7 @@ void *CScriptCompiler::CompileBufer(FILE *in, long &lCompiledSize)
 		bool	commented = false;		//	block is commented by / * * / comment?
 		bool	commentblock = false;	//	block is commented [COMMENT xxxx]
 		bool	ifdeffalse = false;		//	block is denied by #ifdef #endif block?
-		long	sectionID = -1;			//	block (section) internal id
+		//long	sectionID = -1;			//	block (section) internal id
 
 		while ( !feof(in) )
 		{
@@ -665,7 +665,7 @@ Preparse:
 					break;
 
 				commentblock = false;
-				sectionID = 0;
+				//sectionID = 0;
 
 				char	*p = &line[strlen(line) - 1];
 				SKIP_CHARR(p, ']');

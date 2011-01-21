@@ -582,7 +582,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 	case IDR_ABOUT_BOX:
 		{
 			CAboutDlg wndAbout;
-			int iRet = DialogBoxParam(
+			DialogBoxParam(
 				theApp.m_hInstance,  // handle to application instance
 				MAKEINTRESOURCE(IDR_ABOUT_BOX),   // identifies dialog box template
 				m_hWnd,      // handle to owner window
@@ -898,7 +898,7 @@ void NTWindow_Exit()
 	{
 		TCHAR *pszMsg = Str_GetTemp();
 		sprintf(pszMsg, "Server terminated by error %d!", g_Serv.m_iExitFlag);
-		int iRet = theApp.m_wndMain.MessageBox(pszMsg, theApp.m_pszAppName, MB_OK|MB_ICONEXCLAMATION );
+		theApp.m_wndMain.MessageBox(pszMsg, theApp.m_pszAppName, MB_OK|MB_ICONEXCLAMATION );
 		// just sit here for a bit til the user wants to close the window.
 		while ( NTWindow_OnTick(500) )
 		{

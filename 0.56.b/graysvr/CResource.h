@@ -1041,10 +1041,10 @@ public:
 
 	LPCTSTR GetRune( TCHAR ch ) const
 	{
-		ch = toupper(ch) - 'A';
-		if ( ! m_Runes.IsValidIndex(ch))
+		int index = toupper(ch) - 'A';
+		if ( ! m_Runes.IsValidIndex(index))
 			return "?";
-		return( m_Runes[ ch ]->GetPtr() );
+		return( m_Runes[index]->GetPtr() );
 	}
 	LPCTSTR GetNotoTitle( int iLevel, bool bFemale ) const;
 

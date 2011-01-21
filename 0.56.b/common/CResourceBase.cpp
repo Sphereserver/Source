@@ -487,10 +487,8 @@ bool	CResourceDef::MakeResourceName()
 
 	for ( int i = 0; i < iMax; i++ )
 	{
-		pszKey	= g_Exp.m_VarDefs.GetAt(i)->GetKey();
-		int			iLenKey	= strlen( pszKey );
-
 		// Is this a similar key?
+		pszKey	= g_Exp.m_VarDefs.GetAt(i)->GetKey();
 		if ( strnicmp( pbuf, pszKey, iLen ) )
 			continue;
 
@@ -577,8 +575,6 @@ bool	CRegionBase::MakeRegionName()
 		pszKey		= pRegion->GetResourceName();
 		if ( !pszKey )
 			continue;
-
-		int	iLenKey	= strlen( pszKey );
 
 		// Is this a similar key?
 		if ( strnicmp( pbuf, pszKey, iLen ) )
@@ -1047,8 +1043,8 @@ void CScriptObjectContext::Close()
 bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 {
 	ADDTOCALLSTACK("CResourceRefArray::r_LoadVal");
-	bool fRet = false;
 	EXC_TRY("LoadVal");
+	bool fRet = false;
 	// A bunch of CResourceLink (CResourceDef) pointers.
 	// Add or remove from the list.
 	// RETURN: false = it failed.

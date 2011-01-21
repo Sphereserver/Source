@@ -21,8 +21,8 @@ bool CGrayInstall::FindInstall()
 		"Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
 	};
 	
-	HKEY hKey;
-	LONG lRet;
+	HKEY hKey = NULL;
+	LONG lRet = 0;
 	for ( int i=0; i<COUNTOF(m_szKeys); i++ )
 	{
 		lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,

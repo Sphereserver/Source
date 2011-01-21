@@ -1582,7 +1582,6 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole * pSrc )
 			return( false );
 		case ICV_EMPTY:	// "EMPTY"
 			{
-				int		iType	= s.GetArgVal();;
 				DeleteAll();
 				return( true );
 			}

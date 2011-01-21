@@ -481,6 +481,10 @@ void NetworkIn::HistoryIP::setBlocked(bool isBlocked, int timeout)
 
 NetworkIn::NetworkIn(void) : AbstractSphereThread("NetworkIn", IThread::Highest)
 {
+	m_lastGivenSlot = 0;
+	memset(m_handlers, 0, sizeof(m_handlers));
+	memset(m_extended, 0, sizeof(m_extended));
+	memset(m_encoded, 0, sizeof(m_encoded));
 	m_buffer = NULL;
 	m_decryptBuffer = NULL;
 	m_states = NULL;
@@ -1295,9 +1299,9 @@ NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(CSocketAddressIP ip)
 {
 	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
 
-	vector<HistoryIP>::iterator it;
+	std::vector<HistoryIP>::iterator it;
 
-	for ( it = m_ips.begin(); it != m_ips.end(); it++ )
+	for ( it = m_ips.begin(); it != m_ips.end(); ++it )
 	{
 		if ( (*it).m_ip == ip )
 			return *it;
@@ -1349,16 +1353,14 @@ void NetworkIn::periodic(void)
 {
 	ADDTOCALLSTACK("NetworkIn::periodic");
 
-	long connecting = 0;
-	long connectingMax = g_Cfg.m_iConnectingMax;
-	long decaystart = 0;
-	long decayttl = 0;
-
 	EXC_TRY("periodic");
 	// check if max connecting limit is obeyed
+	long connectingMax = g_Cfg.m_iConnectingMax;
 	if (connectingMax > 0)
 	{
 		EXC_SET("limiting connecting clients");
+		long connecting = 0;
+
 		ClientIterator clients(this);
 		for (const CClient* client = clients.next(); client != NULL; client = clients.next())
 		{
@@ -1382,6 +1384,8 @@ void NetworkIn::periodic(void)
 	EXC_SET("ticking history");
 	for (int i = 0; i < m_ips.size(); i++)
 	{
+		long decaystart = 0;
+		long decayttl = 0;
 		HistoryIP* ip = &m_ips[i];
 		if (ip->m_blocked)
 		{
@@ -1400,7 +1404,7 @@ void NetworkIn::periodic(void)
 	}
 
 	// clear old ip history
-	for ( vector<HistoryIP>::iterator it = m_ips.begin(); it != m_ips.end(); it++ )
+	for ( std::vector<HistoryIP>::iterator it = m_ips.begin(); it != m_ips.end(); ++it )
 	{
 		if (it->m_ttl >= 0)
 			continue;
@@ -1899,7 +1903,7 @@ void NetworkOut::onAsyncSendComplete(CClient* client)
 
 	state->setSendingAsync(false);
 
-	if (proceedQueueAsync(client) != 0);
+	if (proceedQueueAsync(client) != 0)
 		proceedQueueBytes(client);
 }
 
@@ -2054,9 +2058,9 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
-	int ret = 0;
 
 	EXC_TRY("sendBytesNow");
+	int ret = 0;
 
 	// send data
 	EXC_SET("sending");

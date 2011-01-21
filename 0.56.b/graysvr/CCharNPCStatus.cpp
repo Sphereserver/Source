@@ -697,7 +697,6 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 		// base hostillity on karma diff.
 
 		int iKarmaTarg = pCharTarg->Stat_GetAdjusted(STAT_KARMA);
-		int iKarmaDiff = iKarma - iKarmaTarg;
 
 		if ( Noto_IsEvil())
 		{

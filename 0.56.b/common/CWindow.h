@@ -205,7 +205,9 @@ public:
 public:
 	CWinApp()
 	{
+		m_pszAppName = "";
 		m_hInstance = NULL;
+		m_lpCmdLine = NULL;
 		m_pMainWnd = NULL;
 	}
 

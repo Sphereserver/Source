@@ -588,7 +588,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 		sprintf(pszTemp, 
 			"HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
 
-		PacketWeb* cmd = new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
+		new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
 		return(0);
 	}
 
@@ -761,7 +761,7 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 	{
 		if ( !s.IsKeyHead("ON", 2) || ( s.GetArgVal() != dwButtonID ))
 			continue;
-		TRIGRET_TYPE iRet = OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, pClient, &resp);
+		OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, pClient, &resp);
 		return true;
 	}
 
@@ -776,7 +776,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 	// make sure this is a valid format for the request.
 
 	TCHAR szPageName[_MAX_PATH];
-	int lenPageName = Str_GetBare( szPageName, pszPage, sizeof(szPageName), "!\"#$%&()*,:;<=>?[]^{|}-+'`" );
+	Str_GetBare( szPageName, pszPage, sizeof(szPageName), "!\"#$%&()*,:;<=>?[]^{|}-+'`" );
 
 	int iError = 404;
 	CWebPageDef * pWebPage = g_Cfg.FindWebPage(szPageName);
@@ -857,7 +857,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 		sText.GetLength(),
 		(LPCTSTR) sText );
 
-	PacketWeb* cmd = new PacketWeb(pClient, (BYTE*)sMsgHead.GetPtr(), sMsgHead.GetLength());
+	new PacketWeb(pClient, (BYTE*)sMsgHead.GetPtr(), sMsgHead.GetLength());
 	return false;
 }
 

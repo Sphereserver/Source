@@ -2244,12 +2244,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 					ASSERT(pItemDef);
 
 					iVal = pItemDef->GetDispID();
-					if ( GetAmount() < 2 )
-						iVal = iVal;
-					else if ( GetAmount() < 6)
-						iVal = iVal + 1;
-					else
-						iVal = iVal + 2;
+					if ( GetAmount() >= 2 )
+					{
+						if ( GetAmount() < 6)
+							iVal = iVal + 1;
+						else
+							iVal = iVal + 2;
+					}
 				}
 				sVal.FormatVal( iVal );
 			}
@@ -2418,12 +2419,12 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				TCHAR *pszTemp = Str_GetTemp();
 				strcpy( pszTemp, s.GetArgStr() );
 				GETNONWHITESPACE( pszTemp );
-				int iArgs = 0;
+
 				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
 				{
 					pt.m_map = 0; pt.m_z = 0;
 					TCHAR * ppVal[2];
-					iArgs = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t" );
+					int iArgs = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t" );
 					if ( iArgs < 2 ) 
 					{
 						DEBUG_ERR(( "Bad CONTP usage (not enough parameters)\n" ));
@@ -3334,7 +3335,7 @@ bool CItem::Use_Door( bool fJustOpen )
 		return( false );
 
 	id = (ITEMID_TYPE) ( id - doordir );
-	IT_TYPE typelock = m_type;
+	// IT_TYPE typelock = m_type;
 
 	bool fClosing = ( doordir & DOOR_OPENED );	// currently open
 	if ( fJustOpen && fClosing )

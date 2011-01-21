@@ -1372,10 +1372,9 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 			// Check sub containers too
 			CChar * pCharTop = dynamic_cast<CChar *>(const_cast<CObjBaseTemplate *>(pObjTop));
-			bool bItemContIsInsideBankBox = false;
 			if ( pCharTop != NULL )
 			{
-				bItemContIsInsideBankBox = pCharTop->GetBank()->IsItemInside( pItemCont );
+				bool bItemContIsInsideBankBox = pCharTop->GetBank()->IsItemInside( pItemCont );
 				if ( bItemContIsInsideBankBox && ( pCharTop->GetBank()->m_itEqBankBox.m_pntOpen != GetTopPoint() ))
 					return -1;
 			}
@@ -3764,7 +3763,7 @@ bool CChar::OnTick()
 				++(refAttacker.elapsed);
 				if( refAttacker.elapsed > 300 ) // 5 minutes to remember
 				{
-					vector<LastAttackers>::iterator it = m_lastAttackers.begin();
+					std::vector<LastAttackers>::iterator it = m_lastAttackers.begin();
 					it += iAttacker;
 					m_lastAttackers.erase(it);
 					break;

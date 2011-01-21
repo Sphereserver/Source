@@ -237,7 +237,7 @@ public:
 	static const char *m_sClassName;
 	void OpenScript( const CScript * pScriptContext );
 	void Close();
-	CScriptFileContext()
+	CScriptFileContext() : m_pPrvScriptContext(NULL)
 	{
 		Init();
 	}
@@ -268,7 +268,7 @@ public:
 	static const char *m_sClassName;
 	void OpenObject( const CScriptObj * pObjectContext );
 	void Close();
-	CScriptObjectContext()
+	CScriptObjectContext() : m_pPrvObjectContext(NULL)
 	{
 		Init();
 	}

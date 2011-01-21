@@ -683,6 +683,8 @@ try_dec:
 					} break;
 
 					default:
+						iCount = 0;
+						iResult = 0;
 						break;
 				}
 

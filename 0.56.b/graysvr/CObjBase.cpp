@@ -368,7 +368,7 @@ void CObjBase::SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT
 	ADDTOCALLSTACK("CObjBase::SpeakUTF8");
 	// convert UTF8 to UNICODE.
 	NCHAR szBuffer[ MAX_TALK_BUFFER ];
-	int iLen = CvtSystemToNUNICODE( szBuffer, COUNTOF(szBuffer), pText, -1 );
+	CvtSystemToNUNICODE( szBuffer, COUNTOF(szBuffer), pText, -1 );
 	g_World.SpeakUNICODE( this, szBuffer, wHue, mode, font, lang );
 }
 
@@ -408,11 +408,12 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
 	//	deny spawning outside the house, etc
 	if ( IsChar() )
 	{
-		WORD		wBlockFlags	= 0;
-		((CChar*)this)->m_zClimbHeight = 0;
-		if ( ((CChar*)this)->CanMoveWalkTo(pt, false, true, dir) == NULL ) {
+		CChar* pCharThis = STATIC_CAST<CChar*>(this);
+		ASSERT(pCharThis != NULL);
+
+		pCharThis->m_zClimbHeight = 0;
+		if ( pCharThis->CanMoveWalkTo(pt, false, true, dir) == NULL )
 			return( false );
-		}
 	}
 
 	return MoveTo(pt);
@@ -2132,12 +2133,11 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 	if ( iResultArgs > 0 )
 	{
 		LPCTSTR callTrigger = ppCmdTrigger[0];
-		int iTriggerArgType = 0;
 		CScriptTriggerArgs csTriggerArgs;
 
 		if ( iResultArgs == 3 )
 		{
-			iTriggerArgType = ATOI(ppCmdTrigger[1]);
+			int iTriggerArgType = ATOI(ppCmdTrigger[1]);
 
 			if ( iTriggerArgType == 1 ) // 3 ARGNs
 			{

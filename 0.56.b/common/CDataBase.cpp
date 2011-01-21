@@ -8,6 +8,7 @@ CDataBase::CDataBase() : stlqueryLock(&m_resultMutex)
 {
 #ifndef _DBPLUGIN
 	_bConnected = false;
+	_myData = NULL;
 #else
 	ResizeFieldArraySize(0);
 	ResizeResultArraySize(0);

@@ -5,7 +5,7 @@ unsigned long CPathFinder::Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRe
 	return 10*(abs(Pt1.m_Point->m_x - Pt2.m_Point->m_x) + abs(Pt1.m_Point->m_y - Pt2.m_Point->m_y));
 }
 
-void CPathFinder::GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointRef>& ChildrenRefList )
+void CPathFinder::GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList )
 {
 	int RealX = 0, RealY = 0;
 	for ( int x = -1; x != 2; ++x)
@@ -43,7 +43,7 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, list<CPathFinderPointR
 	}
 }
 
-CPathFinderPoint::CPathFinderPoint() : m_Parent(0), FValue(0), GValue(0), HValue(0)
+CPathFinderPoint::CPathFinderPoint() : m_Parent(0), m_Walkable(false), FValue(0), GValue(0), HValue(0)
 {
 	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
 	m_x = 0;
@@ -51,7 +51,7 @@ CPathFinderPoint::CPathFinderPoint() : m_Parent(0), FValue(0), GValue(0), HValue
 	m_z = 0;
 }
 
-CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : m_Parent(0), FValue(0), GValue(0), HValue(0)
+CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : m_Parent(0), m_Walkable(false), FValue(0), GValue(0), HValue(0)
 {
 	ADDTOCALLSTACK("CPathFinderPoint::CPathFinderPoint");
 	m_x = pt.m_x;
@@ -133,9 +133,9 @@ int CPathFinder::FindPath() //A* algorithm
 
 	m_Opened.push_back( Start );
 
-	list<CPathFinderPointRef> Children;
+	std::list<CPathFinderPointRef> Children;
 	CPathFinderPointRef Child, Current;
-	deque<CPathFinderPointRef>::iterator InOpened, InClosed;
+	std::deque<CPathFinderPointRef>::iterator InOpened, InClosed;
 
 	while ( !m_Opened.empty() )
 	{
@@ -223,16 +223,15 @@ void CPathFinder::Clear()
 void CPathFinder::FillMap()
 {
 	ADDTOCALLSTACK("CPathFinder::FillMap");
-	int x, y;
 	CRegionBase	*pArea;
 	CPointMap	pt, ptChar;
 
 	EXC_TRY("FillMap");
 	pt = ptChar = m_pChar->GetTopPoint();
 
-	for ( x = 0 ; x != PATH_SIZE; ++x )
+	for ( int x = 0 ; x != PATH_SIZE; ++x )
 	{
-		for ( y = 0; y != PATH_SIZE; ++y )
+		for ( int y = 0; y != PATH_SIZE; ++y )
 		{
 			if (x == m_Target.m_x && y == m_Target.m_y)
 			{

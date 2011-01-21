@@ -24,6 +24,7 @@ CResource::CResource()
 	m_fSecure = true;
 	m_iFreezeRestartTime = 10;
 	m_bAgree = false;
+	m_fMd5Passwords = false;
 
 	//Magic
 	m_fReagentsRequired = true;
@@ -1631,7 +1632,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 	}
 
 	// prevent double mapping of KR dialog
-	for (it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); it++)
+	for (it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); ++it)
 	{
 		if (it->second != idKRDialog)
 			continue;
@@ -1649,7 +1650,7 @@ DWORD CResource::GetKRDialogMap(DWORD idKRDialog)
 	ADDTOCALLSTACK("CResource::GetKRDialogMap");
 	// Translates the given KR DialogID into the ResourceID of its scripted dialog.
 	// Returns 0 on failure
-	for (KRGumpsMap::iterator it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); it++)
+	for (KRGumpsMap::iterator it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); ++it)
 	{
 		if (it->second != idKRDialog)
 			continue;

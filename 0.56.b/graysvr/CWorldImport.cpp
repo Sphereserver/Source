@@ -54,6 +54,8 @@ public:
 	{
 		m_pCurSer = NULL;
 		m_pCurObj = NULL;
+		m_pszArg1 = NULL;
+		m_pszArg2 = NULL;
 	}
 	void CheckLast();
 	void ImportFix();
@@ -465,7 +467,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			else if ( s.IsKey("TYPE" ))
 			{
 				// ??? translate the type field.
-				int i = ATOI(pArg);
+				//int i = ATOI(pArg);
 
 			}
 		}
@@ -730,10 +732,10 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		dy -= pSrc->GetTopPoint().m_y;
 	}
 
-	int index = 0;
 	if ( ! strcmpi( pszFilename + iLen - 4, ".WSC" ))
 	{
 		// Export as UOX format. for world forge stuff.
+		int index = 0;
 		CWorldSearch AreaItems( pSrc->GetTopPoint(), iDist );
 		AreaItems.SetSearchSquare(true);
 		while(true)

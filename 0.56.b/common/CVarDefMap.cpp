@@ -56,7 +56,7 @@ CVarDefContNum::CVarDefContNum( LPCTSTR pszKey, int iVal ) : CVarDefCont( pszKey
 {
 }
 
-CVarDefContNum::CVarDefContNum( LPCTSTR pszKey ) : CVarDefCont( pszKey ) 
+CVarDefContNum::CVarDefContNum( LPCTSTR pszKey ) : CVarDefCont( pszKey ), m_iVal( 0 )
 {
 }
 

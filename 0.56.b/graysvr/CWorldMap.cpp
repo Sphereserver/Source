@@ -324,8 +324,6 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	iQty = pMapBlock->m_Statics.GetStaticQty();
 	if ( iQty )  // no static items here.
 	{
-		int x2 = pMapBlock->GetOffsetX(pt.m_x);
-		int y2 = pMapBlock->GetOffsetY(pt.m_y);
 		const CUOStaticItemRec * pStatic = NULL;
 
 		for ( int i=0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
@@ -509,7 +507,6 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 
 	// Check for appropriate terrain type
 	CRectMap rect;
-	CItemTypeDef	* pTypeDef	= NULL;
 	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
 		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
 		pt.m_map);
@@ -645,7 +642,6 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 
 						int x2 = ptTest.m_x - pItem->GetTopPoint().m_x;
 						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
-						int z2 = ptTest.m_z - pItem->GetTopPoint().m_z;
 
 						int iItemQty = pMulti->GetItemCount();
 						for (int i = 0; i < iItemQty; i++)
@@ -1044,7 +1040,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 							if (IsSetEF( EF_NewPositionChecks ))
 							{
 								pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
-								if ( pItemDef )
+								if ( pItemDef != NULL )
 								{
 									if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
 									{
@@ -1054,11 +1050,11 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 									else //non-parent item
 									{
 										pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pMultiItem->GetDispID());
-										if ( ! pDupeDef )
+										if ( pDupeDef == NULL )
 										{
 											g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
-											zHeight = pDupeDef->GetHeight();
-											wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); 
+											zHeight = pItemDef->GetHeight();
+											wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 										}
 										else
 										{

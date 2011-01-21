@@ -693,7 +693,7 @@ void Packet::readStringASCII(WCHAR* buffer, long length, bool includeNull)
 
 	char* bufferReal = new char[length + 1];
 	readStringASCII(bufferReal, length, includeNull);
-	long l = mbstowcs(buffer, bufferReal, length + 1);
+	mbstowcs(buffer, bufferReal, length + 1);
 	delete[] bufferReal;
 #else
 	
@@ -747,7 +747,7 @@ void Packet::readStringUNICODE(char* buffer, long bufferSize, long length, bool 
 
 	WCHAR* bufferReal = new WCHAR[length + 1];
 	readStringUNICODE(bufferReal, length, includeNull);
-	long l = wcstombs(buffer, bufferReal, bufferSize);
+	wcstombs(buffer, bufferReal, bufferSize);
 	delete[] bufferReal;
 #else
 
@@ -793,7 +793,7 @@ void Packet::readStringNUNICODE(char* buffer, long bufferSize, long length, bool
 
 	WCHAR* bufferReal = new WCHAR[length + 1];
 	readStringNUNICODE(bufferReal, length, includeNull);
-	long l = wcstombs(buffer, bufferReal, bufferSize);
+	wcstombs(buffer, bufferReal, bufferSize);
 	delete[] bufferReal;
 #else
 
@@ -828,7 +828,7 @@ long Packet::readStringNullASCII(WCHAR* buffer, long maxlength)
 #ifdef USE_UNICODE_LIB
 
 	char* bufferReal = new char[maxlength + 1];
-	long length = readStringNullASCII(bufferReal, maxlength);
+	readStringNullASCII(bufferReal, maxlength);
 	long l = mbstowcs(buffer, bufferReal, maxlength + 1);
 	delete[] bufferReal;
 #else
@@ -874,13 +874,13 @@ long Packet::readStringNullUNICODE(char* buffer, long bufferSize, long maxlength
 #ifdef USE_UNICODE_LIB
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
-	long length = readStringNullUNICODE(bufferReal, maxlength);
+	readStringNullUNICODE(bufferReal, maxlength);
 	long l = wcstombs(buffer, bufferReal, bufferSize);
 	delete[] bufferReal;
 #else
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
-	long length = readStringNullNUNICODE(bufferReal, maxlength);
+	readStringNullNUNICODE(bufferReal, maxlength);
 	long l = CvtNUNICODEToSystem(buffer, bufferSize, (NWORD*)bufferReal, maxlength + 1);
 	delete[] bufferReal;
 #endif
@@ -912,13 +912,13 @@ long Packet::readStringNullNUNICODE(char* buffer, long bufferSize, long maxlengt
 #ifdef USE_UNICODE_LIB
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
-	long length = readStringNullNUNICODE(bufferReal, maxlength);
+	readStringNullNUNICODE(bufferReal, maxlength);
 	long l = wcstombs(buffer, bufferReal, bufferSize);
 	delete[] bufferReal;
 #else
 
 	WCHAR* bufferReal = new WCHAR[maxlength + 1];
-	long length = readStringNullUNICODE(bufferReal, maxlength);
+	readStringNullUNICODE(bufferReal, maxlength);
 	long l = CvtNUNICODEToSystem(buffer, bufferSize, (NWORD*)bufferReal, maxlength + 1);
 	delete[] bufferReal;
 #endif
@@ -1208,7 +1208,7 @@ SimplePacketTransaction::~SimplePacketTransaction(void)
  ***************************************************************************/
 ExtendedPacketTransaction::~ExtendedPacketTransaction(void)
 {
-	for (std::list<PacketSend*>::iterator it = m_packets.begin(); it != m_packets.end(); it++)
+	for (std::list<PacketSend*>::iterator it = m_packets.begin(); it != m_packets.end(); ++it)
 		delete *it;
 
 	m_packets.clear();

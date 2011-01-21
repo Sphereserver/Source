@@ -134,6 +134,6 @@ extern int FindTableHeadSorted( LPCTSTR pFind, LPCTSTR const * ppTable, int iCou
 extern void CharToMultiByteNonNull( BYTE* , const char* , size_t);
 
 // extern TCHAR * Str_GetTemporary(int amount = 1);
-#define Str_GetTemp ((AbstractSphereThread *)ThreadHolder::current())->allocateBuffer
+#define Str_GetTemp STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->allocateBuffer
 
 #endif // _INC_CSTRING_H
