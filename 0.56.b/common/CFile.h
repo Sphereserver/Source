@@ -76,6 +76,7 @@ public:
 	// File Open/Close 
 	virtual bool Open( LPCTSTR pszName = NULL, UINT uMode = OF_READ | OF_SHARE_DENY_NONE, CFileException * e = NULL )
 	{
+		UNREFERENCED_PARAMETER(e);
 		ASSERT( m_hFile == NOFILE_HANDLE );
 		SetFilePath( pszName );
 
@@ -165,7 +166,7 @@ public:
 		if ( ! ReadFile( m_hFile, pData, dwLength, &dwRead, NULL ))
 		{
 			NotifyIOError("read");
-			return -1;
+			return 0;
 		}
 		return dwRead;
 	}

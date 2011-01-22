@@ -48,6 +48,7 @@ public:
 	// Find a point fast.
 	int CompareKey( long id, CPointSort* pBase, bool fNoSpaces ) const
 	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
 		ASSERT( pBase );
 		return( id - pBase->GetPointSortIndex());
 	}

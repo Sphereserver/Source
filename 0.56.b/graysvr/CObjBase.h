@@ -790,6 +790,8 @@ public:
 	virtual void OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	{
 		// This should never be called directly. Normal items cannot hear. IT_SHIP and IT_COMM_CRYSTAL
+		UNREFERENCED_PARAMETER(pszCmd);
+		UNREFERENCED_PARAMETER(pSrc);
 	}
 
 	CItemBase * Item_GetDef() const
@@ -1439,8 +1441,11 @@ protected:
 		return( STATIC_CAST <const CItemBaseMulti *>( Base_GetDef()));
 	}
 	bool Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, DWORD dwKeyCode );
-	virtual void OnComponentCreate( const CItem * pComponent ) { };
 	int Multi_GetMaxDist() const;
+	virtual void OnComponentCreate( const CItem * pComponent )
+	{
+		UNREFERENCED_PARAMETER(pComponent);
+	};
 
 
 public:
@@ -1614,6 +1619,7 @@ public:
 	CItemMemory( ITEMID_TYPE id, CItemBase * pItemDef ) :
 		CItem( ITEMID_MEMORY, pItemDef )
 	{
+		UNREFERENCED_PARAMETER(id);
 	}
 	
 	virtual ~CItemMemory()
@@ -2818,10 +2824,12 @@ public:
 	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
 	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, WORD wCan = CAN_C_WALK )
 	{
+		UNREFERENCED_PARAMETER(wCan);
 		return CObjBase::MoveNearObj( pObj, iSteps, GetMoveBlockFlags());
 	}
 	bool MoveNear( CPointMap pt, int iSteps = 0, WORD wCan = CAN_C_WALK )
 	{
+		UNREFERENCED_PARAMETER(wCan);
 		return CObjBase::MoveNear( pt, iSteps, GetMoveBlockFlags());
 	}
 

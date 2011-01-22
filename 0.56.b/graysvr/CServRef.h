@@ -93,6 +93,7 @@ public:
 
 	bool IsSame( const CServerDef * pServNew ) const
 	{
+		UNREFERENCED_PARAMETER(pServNew);
 		return true;
 	}
 

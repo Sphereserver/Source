@@ -40,7 +40,7 @@ CListDefContNum::CListDefContNum( LPCTSTR pszKey, int iVal ) : CListDefContElem(
 {
 }
 
-CListDefContNum::CListDefContNum( LPCTSTR pszKey ) : CListDefContElem( pszKey ) 
+CListDefContNum::CListDefContNum( LPCTSTR pszKey ) : CListDefContElem( pszKey ), m_iVal( 0 )
 {
 }
 

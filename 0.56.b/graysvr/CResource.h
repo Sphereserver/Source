@@ -581,6 +581,7 @@ class CSkillKeySortArray : public CGObSortArray< CValStr*, LPCTSTR >
 {
 	int CompareKey( LPCTSTR pszKey, CValStr * pVal, bool fNoSpaces ) const
 	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
 		ASSERT( pszKey );
 		ASSERT( pVal->m_pszName );
 		return( strcmpi( pszKey, pVal->m_pszName ));
@@ -593,6 +594,7 @@ struct CMultiDefArray : public CGObSortArray< CGrayMulti*, MULTI_TYPE >
 	// Sorted array
 	int CompareKey( MULTI_TYPE id, CGrayMulti* pBase, bool fNoSpaces ) const
 	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
 		ASSERT( pBase );
 		return( id - pBase->GetMultiID());
 	}

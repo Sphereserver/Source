@@ -730,7 +730,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 					{
 						LPCTSTR		pszArgs	= s.GetArgStr();
 						GETNONWHITESPACE(pszArgs);
-						fFullInterp = ( !*pszArgs ) ? true : s.GetArgVal();
+						fFullInterp = ( *pszArgs == '\0' ) ? true : s.GetArgVal();
 						continue;
 					}
 				case ITC_NEWBIESWAP:
@@ -931,6 +931,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	// Create a brand new Player char.
 	ASSERT(pClient);
+	UNREFERENCED_PARAMETER(prProf);
 
 	switch (rtRace)
 	{

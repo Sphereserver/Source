@@ -439,7 +439,7 @@ void CClient::addSeason(SEASON_TYPE season)
 	new PacketSeason(this, season, true);
 
 	// client resets light level on season change, so resend light here too
-	m_Env.m_Light = -1;
+	m_Env.m_Light = UCHAR_MAX;
 	addLight();
 }
 
@@ -2759,7 +2759,11 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	}
 
 	if (propertyList->isEmpty())
+	{
+		if (propertyList != pObj->GetPropertyList())
+			delete propertyList;
 		return;
+	}
 
 	switch (g_Cfg.m_iTooltipMode)
 	{
@@ -2780,7 +2784,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		case TOOLTIPMODE_SENDFULL:
 		default:
 			// send full property list
-			PacketPropertyList* packet = new PacketPropertyList(this, propertyList);
+			new PacketPropertyList(this, propertyList);
 			break;
 	}
 }

@@ -5094,3 +5094,6 @@ ALPHA additions:
 21-01-2011, Coruja (Script pack)
 - Updated #1893: sphere_map2.scp (Renamed "Shrine of the Virtues" to "Gargoyle Shrine", and
   "Gargoyle City" to "Vel Lor Reg").
+
+22-01-2011, MrSugarCube
+- Fixed #1868: Memory leak when TooltipCache setting is disabled (thanks Torfo).

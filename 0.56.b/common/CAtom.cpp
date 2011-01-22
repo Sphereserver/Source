@@ -10,6 +10,7 @@ struct CAtomManager : public CGObSortArray < CAtomDef *, LPCTSTR >
 	// Create an alpha sorted string lookup table.
 	int CompareKey( LPCTSTR pszKey, CAtomDef * pVal, bool fNoSpaces ) const
 	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
 		ASSERT(pszKey);
 		ASSERT(pVal);
 		return( strcmp( pszKey, * ( static_cast <CGString*>( pVal ))));

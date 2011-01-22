@@ -11,6 +11,7 @@
 	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
 #else
 	#define STANDARD_CPLUSPLUS_THIS(_x_) _x_
+	#pragma warning(disable:4505)
 #endif
 
 ///////////////////////////////////////////////////////////
@@ -293,6 +294,8 @@ void CGTypedArray<TYPE,ARG_TYPE>::ConstructElements(TYPE* pElements, int nCount 
 template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE,ARG_TYPE>::DestructElements(TYPE* pElements, int nCount )
 {
+	UNREFERENCED_PARAMETER(pElements);
+	UNREFERENCED_PARAMETER(nCount);
 	//memset((void*)pElements, 0, nCount * sizeof(*pElements));
 }
 
