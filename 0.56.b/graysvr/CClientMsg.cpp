@@ -2758,35 +2758,36 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		}
 	}
 
-	if (propertyList->isEmpty())
+	if (propertyList->isEmpty() == false)
 	{
-		if (propertyList != pObj->GetPropertyList())
-			delete propertyList;
-		return;
-	}
+		switch (g_Cfg.m_iTooltipMode)
+		{
+			case TOOLTIPMODE_SENDVERSION:
+				if (bRequested == false && bShop == false)
+				{
+					// send property list version (client will send a request for the full tooltip if needed)
+					if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )
+						new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
+					else
+						new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
 
-	switch (g_Cfg.m_iTooltipMode)
-	{
-		case TOOLTIPMODE_SENDVERSION:
-			if (bRequested == false && bShop == false)
-			{
-				// send property list version (client will send a request for the full tooltip if needed)
-				if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )
-					new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
-				else
-					new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+					break;
+				}
 
+				// fall through to send full list
+
+			case TOOLTIPMODE_SENDFULL:
+			default:
+				// send full property list
+				new PacketPropertyList(this, propertyList);
 				break;
-			}
-
-			// fall through to send full list
-
-		case TOOLTIPMODE_SENDFULL:
-		default:
-			// send full property list
-			new PacketPropertyList(this, propertyList);
-			break;
+		}
 	}
+	
+	// delete the original packet, as long as it doesn't belong
+	// to the object (i.e. wasn't cached)
+	if (propertyList != pObj->GetPropertyList())
+		delete propertyList;
 }
 
 void CClient::addShowDamage( int damage, DWORD uid_damage )
