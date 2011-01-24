@@ -191,10 +191,10 @@ TCHAR * CItemBase::GetNamePluralize( LPCTSTR pszNameBase, bool fPluralize )	// s
 {
 	ADDTOCALLSTACK("CItemBase::GetNamePluralize");
 	TCHAR * pszName = Str_GetTemp();
-	int j=0;
+	size_t j = 0;
 	bool fInside = false;
-	bool fPlural;
-	for ( int i=0; pszNameBase[i]; i++ )
+	bool fPlural = false;
+	for ( size_t i = 0; pszNameBase[i]; i++ )
 	{
 		if ( pszNameBase[i] == '%' )
 		{
@@ -260,7 +260,6 @@ bool CItemBase::IsTypeArmor( IT_TYPE type )  // static
 		default:
 			return( false );
 	}
-	return( false );
 }
 bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 {
@@ -278,7 +277,6 @@ bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 		default:
 			return( type >= IT_WEAPON_MACE_SMITH && type <= IT_WAND );
 	}
-	return( type >= IT_WEAPON_MACE_SMITH && type <= IT_WAND );
 }
 
 GUMP_TYPE CItemBase::IsTypeContainer() const
@@ -323,7 +321,6 @@ bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 		default:
 			return( false );
 	}
-	return( false );
 }
 
 bool CItemBase::IsTypeMulti( IT_TYPE type )	// static
@@ -339,7 +336,6 @@ bool CItemBase::IsTypeMulti( IT_TYPE type )	// static
 		default:
 			return( false );
 	}
-	return( false );
 }
 
 bool CItemBase::IsTypeEquippable() const
@@ -495,7 +491,8 @@ bool IsID_Chair( ITEMID_TYPE id ) // static
 	// Strangely there is not chair flag in the statics.mul file ??? !!!
 	// IT_CHAIR
 
-	switch ( id )
+	// todo: consider enum values for these chairs
+	switch ( (WORD) id )
 	{
 		case 0x0459: // 'marble bench'
 		case 0x045a: // 'marble bench'
@@ -589,8 +586,6 @@ bool IsID_Chair( ITEMID_TYPE id ) // static
 		default:
 			return( false );
 	}
-
-	return( false );
 }
 
 bool CItemBase::GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * pData ) // static
@@ -812,7 +807,7 @@ ITEMID_TYPE CItemBase::GetNextFlipID( ITEMID_TYPE id ) const
 	if ( m_flip_id.GetCount())
 	{
 		ITEMID_TYPE idprev = GetDispID();
-		for ( int i=0; true; i++ )
+		for ( int i = 0; ; i++ )
 		{
 			if ( i>=m_flip_id.GetCount())
 			{
@@ -1029,13 +1024,15 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_DUPELIST:
 			{
 				TCHAR *pszTemp = Str_GetTemp();
-				int iLen = 0;
+				size_t iLen = 0;
 				*pszTemp = '\0';
-				for ( int i=0; i<m_flip_id.GetCount(); i++ )
+				for ( int i = 0; i < m_flip_id.GetCount(); i++ )
 				{
-					if ( i ) iLen += strcpylen( pszTemp+iLen, "," );
+					if ( i > 0 )
+						iLen += strcpylen( pszTemp+iLen, "," );
+
 					iLen += sprintf( pszTemp+iLen, "0%x", m_flip_id[i] );
-					ASSERT(iLen<SCRIPT_MAX_LINE_LEN);
+					ASSERT(iLen < SCRIPT_MAX_LINE_LEN);
 				}
 				sVal = pszTemp;
 			}

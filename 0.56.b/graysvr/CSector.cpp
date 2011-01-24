@@ -942,7 +942,6 @@ void CSector::OnTick(int iPulseCount)
 	TIME_PROFILE_INIT;
 	if ( IsSetSpecific )
 		TIME_PROFILE_START;
-	CChar *pCharNext, *pChar;
 
 	EXC_TRY("Tick");
 	EXC_SET("light change");
@@ -1052,7 +1051,8 @@ void CSector::OnTick(int iPulseCount)
 	ProfileTask charactersTask(PROFILE_CHARS);
 
 	//pChar = STATIC_CAST <CChar*>( m_Chars_Active.GetHead());
-	pChar = dynamic_cast <CChar*>( m_Chars_Active.GetHead());
+	CChar * pCharNext = NULL;
+	CChar * pChar = dynamic_cast <CChar*>( m_Chars_Active.GetHead());
 	for ( ; pChar != NULL; pChar = pCharNext )
 	{
 		EXC_TRYSUB("TickChar");
@@ -1102,8 +1102,7 @@ void CSector::OnTick(int iPulseCount)
 
 	ProfileTask itemsTask(PROFILE_ITEMS);
 
-	CItem * pItemNext;
-	//CItem * pItem = STATIC_CAST <CItem*>( m_Items_Timer.GetHead());
+	CItem * pItemNext = NULL;
 	CItem * pItem = dynamic_cast <CItem*>( m_Items_Timer.GetHead());
 	for ( int x = 0; pItem != NULL; pItem = pItemNext, ++x )
 	{

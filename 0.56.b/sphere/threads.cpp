@@ -240,7 +240,7 @@ void AbstractThread::run()
 
 	int exceptions = 0;
 	bool lastWasException = false;
-	while( true )
+	for (;;)
 	{
 		bool gotException = false;
 
@@ -454,7 +454,7 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 {
 	long initialPosition = g_tmpTemporaryStringIndex;
 	long index;
-	while( true )
+	for (;;)
 	{
 		index = ++g_tmpTemporaryStringIndex;
 		if( g_tmpTemporaryStringIndex >= THREAD_STRING_STORAGE )

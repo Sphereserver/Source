@@ -226,7 +226,7 @@ void CChar::Use_MoonGate( CItem * pItem )
 	ADDTOCALLSTACK("CChar::Use_MoonGate");
 	ASSERT(pItem);
 
-	bool fQuiet = pItem->m_itTelepad.m_fQuiet;
+	bool fQuiet = ( pItem->m_itTelepad.m_fQuiet != 0);
 	CPointMap ptTeleport = pItem->m_itTelepad.m_pntMark;
 	if ( pItem->IsType(IT_MOONGATE))
 	{
@@ -234,7 +234,7 @@ void CChar::Use_MoonGate( CItem * pItem )
 		// What gate are we at ?
 		int iCount = g_Cfg.m_MoonGates.GetCount();
 		int i=0;
-		for ( ;true; i++ )
+		for ( ; ; i++ )
 		{
 			if ( i>=iCount)
 				return;
@@ -1556,7 +1556,7 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 
 	// Already a plant here ?
 	CWorldSearch AreaItems( pt );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
 		if (pItem == NULL)
@@ -1633,8 +1633,6 @@ putonground:
 	default:
 		return false;
 	}
-
-	return false;
 }
 
 bool CChar::Use_Item( CItem * pItem, bool fLink )

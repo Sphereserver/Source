@@ -67,13 +67,13 @@ extern LONGLONG llTimeProfileFrequency;
 
 #ifdef _WIN32
 	#define	TIME_PROFILE_INIT	\
-		LONGLONG llTicks, llTicksEnd
+		LONGLONG llTicks(0), llTicksEnd
 	#define	TIME_PROFILE_START	\
 		if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicks)) llTicks = GetTickCount()
 	#define TIME_PROFILE_END	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicksEnd)) llTicksEnd = GetTickCount()
 #else
 	#define	TIME_PROFILE_INIT	\
-		LONGLONG llTicks, llTicksEnd
+		LONGLONG llTicks(0), llTicksEnd
 	#define	TIME_PROFILE_START	\
 		llTicks = GetTickCount()
 	#define TIME_PROFILE_END	llTicksEnd = GetTickCount();

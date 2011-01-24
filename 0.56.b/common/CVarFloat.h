@@ -58,9 +58,9 @@ class CLocalObjMap
 public:
 	CLocalObjMap();
 	~CLocalObjMap();
-	CObjBase * Get( const short unsigned int Number );
-	bool Insert( const short unsigned int Number, CObjBase * pObj, bool ForceSet = false );
-	typedef std::map<short unsigned int, CObjBase*> ObjMap;
+	CObjBase * Get( unsigned short Number );
+	bool Insert( unsigned short Number, CObjBase * pObj, bool ForceSet = false );
+	typedef std::map<unsigned short, CObjBase*> ObjMap;
 private:
 	ObjMap m_ObjMap;
 };

@@ -3,9 +3,6 @@
 #include "../network/network.h"
 #include "../network/send.h"
 #include "../network/receive.h"
-#pragma warning(disable:4096)
-#include "../common/zlib/zlib.h"
-#pragma warning(default:4096)
 
 // endgroup, master, hue ????
 
@@ -717,14 +714,23 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 			continue;
 
 		iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
-		if ( iArgs == 0 )		continue;
-
-		if ( iArgs == 1 ?
-				piCmd[0] != dwButtonID
-			 :	( dwButtonID < piCmd[0]  || dwButtonID > piCmd[1] ) )
+		if ( iArgs == 0 )
 			continue;
 
-		pArgs->m_iN1	= dwButtonID;		
+		if ( iArgs == 1 )
+		{
+			// single button value
+			if ( (DWORD)piCmd[0] != dwButtonID )
+				continue;
+		}
+		else
+		{
+			// range of button values
+			if ( dwButtonID < (DWORD)piCmd[0] || dwButtonID > (DWORD)piCmd[1] )
+				continue;
+		}
+
+		pArgs->m_iN1	 = dwButtonID;		
 		return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, pArgs );
 	}
 

@@ -189,7 +189,6 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 					return( false );
 				return ServPage( pClient, s.GetArgStr(), NULL );
 			}
-			return( true );
 	
 		case WV_CLIENTLIST:
 			{
@@ -314,7 +313,7 @@ bool CWebPageDef::WebPageUpdate( bool fNow, LPCTSTR pszDstName, CTextConsole * p
 
 	while ( FileRead.ReadTextLine( false ))
 	{
-		TCHAR *pszTmp = Str_GetTemp();;
+		TCHAR *pszTmp = Str_GetTemp();
 		strcpy( pszTmp, FileRead.GetKey());
 
 		TCHAR * pszHead = strstr( pszTmp, "<script language=\"Sphere\">" );
@@ -513,6 +512,7 @@ LPCTSTR const CWebPageDef::sm_szTrigName[WTRIG_QTY+1] =	// static
 int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime * pdateIfModifiedSince )
 {
 	ADDTOCALLSTACK("CWebPageDef::ServPageRequest");
+	UNREFERENCED_PARAMETER(pszURLArgs);
 	// Got a web page request from the client.
 	// ARGS:
 	//  pszURLArgs = args on the URL line ex. http://www.hostname.com/dir?args
@@ -624,7 +624,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 	packet.setData((BYTE*)szTmp, iLen);
 	packet.send(pClient);
 
-	while( true )
+	for (;;)
 	{
 		iLen = FileRead.Read( szTmp, sizeof( szTmp ) );
 		if ( iLen <= 0 )
@@ -655,8 +655,8 @@ static int GetHexDigit( TCHAR ch )
 
 static int HtmlDeCode( TCHAR * pszDst, LPCTSTR pszSrc )
 {
-	int i=0;
-	while ( true )
+	int i = 0;
+	for (;;)
 	{
 		TCHAR ch = *pszSrc++;
 		if ( ch == '+' )
@@ -689,6 +689,7 @@ static int HtmlDeCode( TCHAR * pszDst, LPCTSTR pszSrc )
 bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * pContentData, int iContentLength )
 {
 	ADDTOCALLSTACK("CWebPageDef::ServPagePost");
+	UNREFERENCED_PARAMETER(pszURLArgs);
 	// RETURN: true = this was the page of interest.
 
 	ASSERT(pClient);
@@ -710,8 +711,8 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 	// C or CHK or CHECK = the check boxes
 
 	CDialogResponseArgs resp;
-	DWORD dwButtonID = -1;
-	for ( int i=0; i<iArgs; i++ )
+	DWORD dwButtonID = ULONG_MAX;
+	for ( int i = 0; i < iArgs; i++ )
 	{
 		TCHAR	*pszNum = ppArgs[i];
 		while ( IsAlpha(*pszNum) )
@@ -759,7 +760,7 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 	// Find the correct entry point.
 	while ( s.ReadKeyParse())
 	{
-		if ( !s.IsKeyHead("ON", 2) || ( s.GetArgVal() != dwButtonID ))
+		if ( !s.IsKeyHead("ON", 2) || ( (DWORD)s.GetArgVal() != dwButtonID ))
 			continue;
 		OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, pClient, &resp);
 		return true;

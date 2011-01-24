@@ -64,15 +64,14 @@ void CContainer::OnRemoveOb( CGObListRec* pObRec )	// Override this = called whe
 void CContainer::r_WriteContent( CScript & s ) const
 {
 	ADDTOCALLSTACK("CContainer::r_WriteContent");
-	const CGObList * pListThis = STATIC_CAST <const CGObList *>(this);
-	ASSERT(pListThis);
+	ASSERT(dynamic_cast<const CGObList *>(this) != NULL);
 
 	// Write out all the items in me.
 	CItem* pItemNext;
-	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItemNext)
+	for ( CItem* pItem = GetContentHead(); pItem != NULL; pItem = pItemNext)
 	{
 		pItemNext = pItem->GetNext();
-		ASSERT( pItem->GetParent() == pListThis );
+		ASSERT( pItem->GetParent() == this );
 		pItem->r_WriteSafe(s);
 	}
 }
@@ -644,7 +643,8 @@ void CItemContainer::Trade_Status( bool fCheck )
 
 	CItem * pItem;
 	CItem * pItemNext;
-	int i, iCont1, iCont2;
+	int iCont1, iCont2;
+	unsigned short i;
 
 	CScriptTriggerArgs Args1(pChar1);
 	pItem = pPartner->GetContentHead();
@@ -812,7 +812,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 			0 ));
 	}
 
-	for ( ; true; i++ )
+	for ( ; ; i++ )
 	{
 		if (i>=COUNTOF(sm_ContSize))
 		{
@@ -1007,7 +1007,7 @@ bool CItemContainer::IsItemInside(const CItem * pItem) const
 	// Checks if a particular item is in a container or one of
 	// it's subcontainers.
 
-	while (true)
+	for (;;)
 	{
 		if ( pItem == NULL )
 			return( false );

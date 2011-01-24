@@ -73,6 +73,11 @@ struct tm* CGTime::GetLocalTm(struct tm* ptm) const
 void invalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved)
 {
 	// bad format has been specified
+	UNREFERENCED_PARAMETER(expression);
+	UNREFERENCED_PARAMETER(function);
+	UNREFERENCED_PARAMETER(file);
+	UNREFERENCED_PARAMETER(line);
+	UNREFERENCED_PARAMETER(pReserved);
 	DEBUG_ERR(("Invalid time format specified.\n"));
 }
 #endif

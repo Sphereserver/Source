@@ -2373,11 +2373,11 @@ struct CUOHuesRec // (Hues.mul)
 	{
 		short sColor = m_color[31];
 		if ( rgb == 0 ) // R
-			return ((sColor & 0x7C00) >> 7);
+			return static_cast<BYTE>(((sColor & 0x7C00) >> 7));
 		else if ( rgb == 1 )
-			return ((sColor & 0x3E0) >> 2);
+			return static_cast<BYTE>(((sColor & 0x3E0) >> 2));
 		else if ( rgb == 3 )
-			return ((sColor & 0x1F) << 3);
+			return static_cast<BYTE>(((sColor & 0x1F) << 3));
 
 		return 0;
 	}

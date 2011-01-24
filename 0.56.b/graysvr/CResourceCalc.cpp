@@ -140,6 +140,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * pCharTarg, CItem * pWeapon )
 {
 	ADDTOCALLSTACK("CResource::Calc_CombatChanceToHit");
+	UNREFERENCED_PARAMETER(pWeapon);
 	// AGRS:
 	//  pChar = the attacker.
 	//  pWeapon = NULL = wrestling.
@@ -248,6 +249,7 @@ int CResource::Calc_FameKill( CChar * pKill )
 int CResource::Calc_FameScale( int iFame, int iFameChange )
 {
 	ADDTOCALLSTACK("CResource::Calc_FameScale");
+	UNREFERENCED_PARAMETER(iFame);
 	// Scale the fame based on the current level.
 	// Scale the fame gain at higher levels.
 	//if ( iFameChange > 0 && iFameChange < iFame/32 )

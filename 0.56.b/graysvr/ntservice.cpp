@@ -47,6 +47,7 @@ static LPTSTR GetLastErrorText(LPTSTR lpszBuf, DWORD dwSize)
 //	PURPOSE:  Allows any thread to log a message to the NT Event Log
 void CNTService::ReportEvent( WORD wType, DWORD dwEventID, LPCTSTR lpszMsg, LPCTSTR lpszArgs )
 {
+	UNREFERENCED_PARAMETER(dwEventID);
 	g_Log.Event(LOGM_INIT|(( wType == EVENTLOG_INFORMATION_TYPE ) ? LOGL_EVENT : LOGL_ERROR), "%s %s\n", lpszMsg, lpszArgs);
 }
 
@@ -458,6 +459,8 @@ void CNTService::CmdMainStart()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	UNREFERENCED_PARAMETER(hPrevInstance);
+
 	TCHAR	*argv[32];
 	argv[0] = NULL;
 	int argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv)-1, " \t") + 1;
@@ -521,7 +524,7 @@ do_not_nt_service:
 	g_Service.ReportEvent(EVENTLOG_INFORMATION_TYPE, 0, "Starting Service.");
 
 	g_Service.CmdMainStart();
-	g_Service.SetServiceStatus(SERVICE_STOPPED, -1, 0);
+	g_Service.SetServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
 	return -1;
 }
 

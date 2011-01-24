@@ -62,15 +62,15 @@ public:
 
 	struct TBinaryHeadRec	// head of the binary script
 	{
-		char	zPrefix[8];		// [  8] "BinSCP"
-		long	iVersion;		// [ 12] version number compiled that file
-		time_t	lTimestamp;		// [ 16] timestamp of the original script
-		long	lSize;			// [ 24] size of the original script
-		long	lCodeSize;		// [ 28] size of the code in unpacked type
-		long	lPackedSize;	// [ 32] size of the code in packed type
-		char	bPacked;		// [ 33] the code is packed?
-		char	bValid;			// [ 34] the code is valid? 0 if compilation is not finished
-		char	reserved[186];	// [256] reserved for the future contents
+		char	zPrefix[8];				// [  8] "BinSCP"
+		long	iVersion;				// [ 12] version number compiled that file
+		time_t	lTimestamp;				// [ 16] timestamp of the original script
+		long	lSize;					// [ 24] size of the original script
+		unsigned long	lCodeSize;		// [ 28] size of the code in unpacked type
+		unsigned long	lPackedSize;	// [ 32] size of the code in packed type
+		char	bPacked;				// [ 33] the code is packed?
+		char	bValid;					// [ 34] the code is valid? 0 if compilation is not finished
+		char	reserved[186];			// [256] reserved for the future contents
 	};
 	struct TBinarySection	// section in the binary script
 	{
@@ -111,7 +111,7 @@ protected:
 	bool IsAlreadyCompiled(char *sourceName, char *binaryName);
 	bool FillHeadRecord(char *sourceName, TBinaryHeadRec *rec = NULL, long *size = NULL, time_t *date = NULL);
 
-	void *CompileBufer(FILE *in, long &lCompiledSize);
+	void *CompileBuffer(FILE *in, unsigned long &lCompiledSize);
 
 protected:
 	CGStringList	m_lScripts;

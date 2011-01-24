@@ -27,7 +27,7 @@ CItemMulti::~CItemMulti()
 
 	CWorldSearch Area( m_pRegion->m_pt, Multi_GetMaxDist() );	// largest area.
 	Area.SetSearchSquare( true );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
@@ -125,7 +125,7 @@ void CItemMulti::MultiUnRealizeRegion()
 	// find all creatures in the region and remove this from them.
 	CWorldSearch Area( m_pRegion->m_pt, Multi_GetMaxDist() );
 	Area.SetSearchSquare(true);
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = Area.GetChar();
 		if ( pChar == NULL )
@@ -274,6 +274,7 @@ bool CItemMulti::Multi_IsPartOf( const CItem * pItem ) const
 CItem * CItemMulti::Multi_FindItemComponent( int iComp ) const
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_FindItemComponent");
+	UNREFERENCED_PARAMETER(iComp);
 	const CItemBaseMulti * pMultiDef = Multi_GetDef();
 	if ( pMultiDef == NULL )
 		return( NULL );
@@ -290,7 +291,7 @@ CItem * CItemMulti::Multi_FindItemType( IT_TYPE type ) const
 
 	CWorldSearch Area( GetTopPoint(), Multi_GetMaxDist() );
 	Area.SetSearchSquare(true);
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
@@ -430,7 +431,6 @@ bool CItemMulti::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		}
 	}
 
-	return false;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;

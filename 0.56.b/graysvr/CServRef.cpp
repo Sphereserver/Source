@@ -48,7 +48,7 @@ CServerDef::CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP ) :
 	m_timeCreate = CServTime::GetCurrentTime();
 
 	// Set default time zone from UTC
-	m_TimeZone = (int)_timezone / (60*60);	// Greenwich mean time.
+	m_TimeZone = (int)_timezone / (60 * 60);	// Greenwich mean time.
 	m_eAccApp = ACCAPP_Unspecified;
 }
 
@@ -67,13 +67,16 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			if ( !m_hmPsapiDll )			// try to load psapi.dll if not loaded yet
 			{
 				EXC_SET("load process info");
-				if ( !(m_hmPsapiDll = LoadLibrary("psapi.dll")) )
+				m_hmPsapiDll = LoadLibrary(TEXT("psapi.dll"));
+				if (m_hmPsapiDll == NULL)
 				{
 					m_bPmemory = false;
 					g_Log.EventError(("Unable to load process information PSAPI.DLL library. Memory information will be not available.\n"));
 				}
 				else
+				{
 					m_GetProcessMemoryInfo = (pGetProcessMemoryInfo)::GetProcAddress(m_hmPsapiDll,"GetProcessMemoryInfo");
+				}
 			}
 
 			if ( m_GetProcessMemoryInfo ) {
@@ -103,7 +106,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				sprintf(buf, "/proc/%d/status", getpid());
 				if ( inf.Open(buf, OF_READ|OF_TEXT) )
 				{
-					while ( true )
+					for (;;)
 					{
 						if ( !inf.ReadString(buf, SCRIPT_MAX_LINE_LEN) )
 							break;

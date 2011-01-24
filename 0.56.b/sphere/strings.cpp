@@ -24,6 +24,7 @@ AbstractString::~AbstractString()
 void AbstractString::ensureLength(int newLength)
 {
 	// child class implements this
+	UNREFERENCED_PARAMETER(newLength);
 }
 
 void AbstractString::destroy()
@@ -105,7 +106,7 @@ bool AbstractString::startsWith(const char *s)
 
 bool AbstractString::startsWithHead(const char *s)
 {
-	for( int i = 0; true; i++ )
+	for( int i = 0; ; i++ )
 	{
 		char ch1 = tolower(m_buf[0]);
 		char ch2 = tolower(s[0]);

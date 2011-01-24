@@ -154,7 +154,7 @@ void CSectorBase::CheckMapBlockCache()
 		return;
 	//DEBUG_ERR(("CacheHit\n"));
 	MapBlockCache::iterator it;
-	while( true )
+	for (;;)
 	{
 		EXC_TRY("CheckMapBlockCache_new");
 		it = find_if( m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime );

@@ -156,13 +156,16 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 
 bool CNTWindow::CAboutDlg::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 {
+	UNREFERENCED_PARAMETER(wNotifyCode);
+	UNREFERENCED_PARAMETER(hwndCtl);
+
 	// WM_COMMAND
 	switch ( wID )
 	{
-	case IDOK:
-	case IDCANCEL:
-		EndDialog( m_hWnd, wID );
-		break;
+		case IDOK:
+		case IDCANCEL:
+			EndDialog( m_hWnd, wID );
+			break;
 	}
 	return( TRUE );
 }
@@ -192,13 +195,16 @@ bool CNTWindow::COptionsDlg::OnInitDialog()
 
 bool CNTWindow::COptionsDlg::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl)
 {
+	UNREFERENCED_PARAMETER(wNotifyCode);
+	UNREFERENCED_PARAMETER(hwndCtl);
+
 	// WM_COMMAND
 	switch ( wID )
 	{
-	case IDOK:
-	case IDCANCEL:
-		DestroyWindow();
-		break;
+		case IDOK:
+		case IDCANCEL:
+			DestroyWindow();
+			break;
 	}
 	return( FALSE );
 }
@@ -274,13 +280,16 @@ bool CNTWindow::CStatusWnd::OnInitDialog()
 
 bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 {
+	UNREFERENCED_PARAMETER(wNotifyCode);
+	UNREFERENCED_PARAMETER(hwndCtl);
+
 	// WM_COMMAND
 	switch ( wID )
 	{
-	case IDOK:
-	case IDCANCEL:
-		DestroyWindow();
-		break;
+		case IDOK:
+		case IDCANCEL:
+			DestroyWindow();
+			break;
 	}
 	return( FALSE );
 }
@@ -347,7 +356,7 @@ void CNTWindow::List_Add( COLORREF color, LPCTSTR pszText )
 	cf.cbSize = sizeof(cf);
 	cf.dwMask = CFM_COLOR;
 	cf.crTextColor = color;
-	BOOL fRet = m_wndLog.SetSelectionCharFormat( cf );
+	m_wndLog.SetSelectionCharFormat( cf );
 
 	m_wndLog.ReplaceSel( pszText );
 
@@ -389,12 +398,13 @@ bool CNTWindow::RegisterClass(char *className)	// static
 		return( false );
 	}
 
-    HMODULE hMod = LoadLibrary("Riched20.dll"); // Load the RichEdit DLL to activate the class
+    LoadLibrary("Riched20.dll"); // Load the RichEdit DLL to activate the class
 	return true;
 }
 
 int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 {
+	UNREFERENCED_PARAMETER(lParam);
 	CWindow::OnCreate(hWnd);
 
 	m_wndLog.m_hWnd = ::CreateWindow( RICHEDIT_CLASS, NULL,
@@ -442,7 +452,7 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 		pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
 		pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
 		pnid.hIcon  = theApp.LoadIcon( IDR_MAINFRAME );
-		strcpylen(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip)-1);
+		strcpylen(pnid.szTip, theApp.m_pszAppName, COUNTOF(pnid.szTip)-1);
 		Shell_NotifyIcon(NIM_ADD, &pnid);
 	}
 
@@ -469,11 +479,14 @@ void CNTWindow::OnDestroy()
 
 void CNTWindow::OnSetFocus( HWND hWndLoss )
 {
+	UNREFERENCED_PARAMETER(hWndLoss);
 	m_wndInput.SetFocus();
 }
 
 LRESULT CNTWindow::OnUserTrayNotify( WPARAM wID, LPARAM lEvent )
 {
+	UNREFERENCED_PARAMETER(wID);
+
 	// WM_USER_TRAY_NOTIFY
 	switch ( lEvent )
 	{
@@ -530,9 +543,12 @@ void CNTWindow::OnSize( UINT nType, int cx, int cy )
 			if ( !hFont )
 				hFont = (HFONT)GetStockObject(SYSTEM_FONT);
 			ASSERT(hFont);
+
 			LOGFONT logfont;
 			int iRet = ::GetObject(hFont, sizeof(logfont),&logfont );
 			ASSERT(iRet==sizeof(logfont));
+			UNREFERENCED_PARAMETER(iRet);
+
 			m_iHeightInput = abs( logfont.lfHeight );
 			ASSERT(m_iHeightInput);
 		}
@@ -561,6 +577,8 @@ bool CNTWindow::OnClose()
 bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 {
 	// WM_COMMAND
+	UNREFERENCED_PARAMETER(wNotifyCode);
+	UNREFERENCED_PARAMETER(hwndCtl);
 
 	switch ( wID )
 	{
@@ -643,15 +661,18 @@ bool CNTWindow::OnSysCommand( UINT uCmdType, int xPos, int yPos )
 {
 	// WM_SYSCOMMAND
 	// return : 1 = i processed this.
+	UNREFERENCED_PARAMETER(xPos);
+	UNREFERENCED_PARAMETER(yPos);
+
 	switch ( uCmdType )
 	{
-	case SC_MINIMIZE:
-		if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-		{
-		    ShowWindow(SW_HIDE);
-			return( true );
-		}
-		break;
+		case SC_MINIMIZE:
+			if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
+			{
+				ShowWindow(SW_HIDE);
+				return( true );
+			}
+			break;
 	}
 	return( false );
 }
@@ -726,25 +747,27 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 				}
 			case WM_LBUTTONDBLCLK:
 				{
-					TCHAR *zTemp = Str_GetTemp();
+					TCHAR * zTemp = Str_GetTemp();
 					POINT pt;
 					pt.x = LOWORD(pMsg->lParam);
 					pt.y = HIWORD(pMsg->lParam);
 
-					WORD	line = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, 0, (long)(&pt)), 0);
+					DWORD line = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, 0, (long)(&pt)), 0);
 					*zTemp		= HIBYTE(4095);
 					*(zTemp+1)	= LOBYTE(4095);
 					zTemp[m_wndLog.SendMessage(EM_GETLINE, line, (long)zTemp)] = 0;
+					if ( *zTemp == '\0' )
+						break;
 
 					//	use dclick to open the corresponding script file
-					char *pos;
-					if ( *zTemp && ( pos = strstr(zTemp, ".scp") ))
+					TCHAR * pos = strstr(zTemp, ".scp");
+					if ( pos != NULL )
 					{
 						//	use two formats of file names:
 						//		Loading filepath/filename/name.scp
 						//		ERROR:(filename.scp,line)
-						char	*start = pos;
-						char	*end = pos + 4;
+						LPCTSTR start = pos;
+						TCHAR * end = pos + 4;
 
 						while ( start > zTemp )
 						{
@@ -757,17 +780,19 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 
 						if ( *start )
 						{
-							CResourceScript	*s;
 							int i = 0;
-							while ( s = g_Cfg.GetResourceFile(i++) )
+							CResourceScript	*s = g_Cfg.GetResourceFile(i++);
+							while ( s != NULL )
 							{
 								if ( strstr(s->GetFilePath(), start) )
 								{
 									ShellExecute(NULL, NULL, s->GetFilePath(), NULL, NULL, SW_SHOW);
 									return 1;
 								}
-
+								
+								s = g_Cfg.GetResourceFile(i++);
 							}
+
 							//	since special files are not in my list - operate it specialy
 							if ( strstr(GRAY_FILE "tables.scp", start) )
 							{
@@ -954,7 +979,7 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 		pnid.cbSize = sizeof(NOTIFYICONDATA);
 		pnid.hWnd   = theApp.m_wndMain.m_hWnd;
 		pnid.uFlags = NIF_TIP;
-		strcpylen(pnid.szTip, psTitle, sizeof(pnid.szTip)-1);
+		strcpylen(pnid.szTip, psTitle, COUNTOF(pnid.szTip)-1);
 		Shell_NotifyIcon(NIM_MODIFY, &pnid);
 	}
 }
@@ -1021,7 +1046,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 	}
 
 	// Give the windows message loops a tick.
-	while ( true )
+	for (;;)
 	{
 		EXC_TRY("Tick");
 
@@ -1094,7 +1119,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 
 					// the code will act incorrectly if using tab in the middle of the text
 					// since we are just unable to get our current position. really unable?
-					if ( selEnd == strlen(pszTemp) )		// so proceed only if working on last char
+					if ( static_cast<size_t>(selEnd) == strlen(pszTemp) )		// so proceed only if working on last char
 					{
 						TCHAR	*pszCurSel = Str_GetTemp();
 						int		inputLen(0);
@@ -1203,8 +1228,6 @@ bool NTWindow_OnTick( int iWaitmSec )
 		EXC_DEBUG_START;
 		EXC_DEBUG_END;
 	}
-
-	return true;
 }
 
 #endif // _WIN32

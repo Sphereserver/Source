@@ -100,7 +100,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 	case NV_PETSTABLE:
 		return( NPC_StablePetSelect( pCharSrc ));
 	case NV_RESTOCK:	// individual restock command.
-		return NPC_Vendor_Restock(true, s.GetArgVal());
+		return NPC_Vendor_Restock(true, s.GetArgVal() != 0);
 	case NV_RUN:
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirStr( s.GetArgRaw()));
@@ -448,7 +448,7 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	int iMaxDecrease = 0;
 	if ((pCharSrc->GetSkillTotal() + iTrainCost) > pCharSrc->Skill_GetMax( (SKILL_TYPE)MAX_SKILL ))
 	{	
-		for (int i=SKILL_NONE+1; i<MAX_SKILL; i++ )
+		for (int i= SKILL_NONE + 1; i < MAX_SKILL; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
 				continue;
@@ -457,7 +457,8 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 				iMaxDecrease += pCharSrc->Skill_GetBase((SKILL_TYPE)i);
 		}
 		iMaxDecrease = minimum( iTrainCost, iMaxDecrease);
-	} else {
+	} else
+	{
 		iMaxDecrease = iTrainCost;
 	}
 
@@ -622,7 +623,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 			continue;
 
 		LPCTSTR pSkillKey = g_Cfg.GetSkillKey( (SKILL_TYPE) i );
-		if ( ! FindStrWord( pszCmd, pSkillKey ))
+		if ( FindStrWord( pszCmd, pSkillKey ) <= 0)
 			continue;
 
 		// Can we train in this ?
@@ -895,7 +896,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 					//	Scan point for items that could be moved by me and move them to my position
 					CWorldSearch	AreaItems(point);
-					while ( true )
+					for (;;)
 					{
 						CItem	*pItem = AreaItems.GetItem();
 						if ( !pItem ) break;
@@ -1582,12 +1583,12 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	}
 
 	// Lower the number of chars we look at if complex.
-	if ( pSector->GetCharComplexity() > g_Cfg.m_iMaxCharComplexity / 2 )
+	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) )
 		iRange /= 4;
 
 	// Any interesting chars here ?
 	CWorldSearch Area(GetTopPoint(), iRange);
-	while ( true )
+	for (;;)
 	{
 		CChar	*pChar = Area.GetChar();
 		if ( !pChar )
@@ -1617,7 +1618,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	if ( fForceCheckItems )
 	{
 		CWorldSearch Area( GetTopPoint(), iRange );
-		while ( true )
+		for (;;)
 		{
 			CItem	*pItem = Area.GetItem();
 			if ( !pItem )
@@ -1725,7 +1726,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 
 		fFlee			= (Args.m_iN1 != 0);
 		maxDistance		= Args.m_iN2;
-		forceDistance	= Args.m_iN3;
+		forceDistance	= (Args.m_iN3 != 0);
 	}
 
 	EXC_SET("CanSee");
@@ -1898,7 +1899,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		i = Calc_GetRandVal( imaxspell );
 
 	int skill;
-	for ( ; 1; i++ )
+	for ( ; ; i++ )
 	{
 		if ( i > imaxspell )	// didn't find a spell.
 			return( false );
@@ -1940,7 +1941,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 					{
 						//	search for the neariest friend in combat
 						CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
-						while ( true )
+						for (;;)
 						{
 							pTarget = AreaChars.GetChar();
 							if ( !pTarget )
@@ -2607,7 +2608,7 @@ bool CChar::NPC_Act_Food()
 
 	//	Search for food nearby
 	CWorldSearch AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
 		if ( !pItem )
@@ -3428,7 +3429,7 @@ void CChar::NPC_Food()
 	//	Search for food nearby
 	EXC_SET("searching nearby");
 	CWorldSearch	AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-	while (true)
+	for (;;)
 	{
 		CItem	*pItem = AreaItems.GetItem();
 		if ( !pItem ) break;
@@ -3693,9 +3694,13 @@ void CChar::NPC_AI()
 				EXC_SET("stable man");
 
 				CWorldSearch Area(GetTopPoint(), GetVisualRange());
-				CChar	*pChar;
-				while (( pChar = Area.GetChar() ) && !bActed )
+
+				while (bActed == false)
 				{
+					CChar* pChar = Area.GetChar();
+					if ( pChar == NULL )
+						break;
+
 					if ( pChar == this )
 						continue;
 
@@ -3774,17 +3779,14 @@ void CChar::NPC_AI()
 			case NPCBRAIN_HEALER:
 			{
 				EXC_SET("healer");
-				if ( true )
-				{
-					//	healers searches for chars nearby to heal them. if can heal and have
-					//	bandages, go to him and apply bandages on him. these are converted to
-					//	bloody bandages
-					//	TODO:
-					//	healers searches for items nearby to gather bandages/bloody bandages,
-					//	water to clean the bandages
-					//	TODO:
-						bActed = true;
-				}
+				//	healers searches for chars nearby to heal them. if can heal and have
+				//	bandages, go to him and apply bandages on him. these are converted to
+				//	bloody bandages
+				//	TODO:
+				//	healers searches for items nearby to gather bandages/bloody bandages,
+				//	water to clean the bandages
+				//	TODO:
+				bActed = true;
 				break;
 			} // healer
 

@@ -231,7 +231,7 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 		CWorldSearch AreaItems( GetChar()->GetTopPoint(), UO_MAP_VIEW_RADAR );
 		AreaItems.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
 		AreaItems.SetSearchSquare(true);
-		while (true)
+		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )
@@ -245,7 +245,7 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 		CWorldSearch AreaChars( GetChar()->GetTopPoint(), UO_MAP_VIEW_SIZE );
 		AreaChars.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
 		AreaChars.SetSearchSquare(true);
-		while (true)
+		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
@@ -961,7 +961,7 @@ void CClient::addItemName( const CItem * pItem )
 	LPCTSTR pszNameFull = pItem->GetNameFull( fIdentified );
 
 	TCHAR szName[ MAX_ITEM_NAME_SIZE + 256 ];
-	int len = strcpylen( szName, pszNameFull, sizeof(szName) );
+	size_t len = strcpylen( szName, pszNameFull, COUNTOF(szName) );
 
 	const CContainer* pCont = dynamic_cast<const CContainer*>(pItem);
 	if ( pCont != NULL )
@@ -1635,7 +1635,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	while (true)
+	for (;;)
 	{
 		CItem *pItem = AreaItems.GetItem();
 		if ( !pItem )
@@ -1647,7 +1647,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
 				|| ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
-				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
+				if ( dSeeItems < (g_Cfg.m_iMaxItemComplexity*30) )
 				{
 					++dSeeItems;
 					addAOSTooltip(pItem);
@@ -1658,7 +1658,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 		}
 		else
 		{
-			if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
+			if ( dSeeItems < (g_Cfg.m_iMaxItemComplexity*30) )
 			{
 				++dSeeItems;
 				addAOSTooltip(pItem);
@@ -1673,7 +1673,7 @@ void CClient::addAOSPlayerSeeNoCrypt()
 	AreaChars.SetAllShow(fAllShow);
 	AreaChars.SetSearchSquare(true);
 	DWORD	dSeeChars(0);
-	while ( true )
+	for (;;)
 	{
 		CChar	*pChar = AreaChars.GetChar();
 		if ( !pChar )
@@ -1712,7 +1712,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	while (true)
+	for (;;)
 	{
 		CItem *pItem = AreaItems.GetItem();
 		if ( !pItem )
@@ -1757,7 +1757,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaChars.SetAllShow(fAllShow);
 	AreaChars.SetSearchSquare(true);
 	DWORD	dSeeChars(0);
-	while ( true )
+	for (;;)
 	{
 		CChar	*pChar = AreaChars.GetChar();
 		if ( !pChar )
@@ -2739,7 +2739,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		//
 		// we still want to generate a hash though, so we don't have to increment
 		// the revision number if the tooltip hasn't actually been changed
-		DWORD revision;
+		DWORD revision = 0;
 		if (pItem != NULL)
 			revision = pItem->UpdatePropertyRevision(hash);
 		else if (pChar != NULL)
@@ -3308,7 +3308,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 		// trying to log in as some sort of guest.
 		// Find or create a new guest account.
 		TCHAR *pszTemp = Str_GetTemp();
-		for ( int i=0; 1; i++ )
+		for ( int i = 0; ; i++ )
 		{
 			if ( i>=g_Cfg.m_iGuestsMax )
 			{

@@ -100,7 +100,7 @@ bool CClient::OnTarg_Obj_Info( CObjBase * pObj, const CPointMap & pt, ITEMID_TYP
 	else
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		int len = 0;
+		size_t len = 0;
 		if ( id )
 		{
 			len = sprintf( pszTemp, "[Static z=%d, 0%x=", pt.m_z, id );
@@ -257,6 +257,7 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_UnExtract");
+	UNREFERENCED_PARAMETER(pObj);
 	// CLIMODE_TARG_UNEXTRACT
 	// ??? Get rid of this in favor of a more .SCP file type approach.
 	// result of the MULTI command.
@@ -475,7 +476,7 @@ int CClient::Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest )
 
 	CWorldSearch AreaItem( ptCtr, maximum( rx, ry ));
 	AreaItem.SetSearchSquare( true );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItem.GetItem();
 		if ( pItem == NULL )
@@ -575,7 +576,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 	case CV_NUDGE:
 		{
 			TCHAR szTmp[512];
-			strcpylen( szTmp, m_Targ_Text, sizeof(szTmp));
+			strcpylen( szTmp, m_Targ_Text, COUNTOF(szTmp));
 
 			int piArgs[3];		// Maximum parameters in one line
 			Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
@@ -585,7 +586,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			CWorldSearch AreaItem( ptCtr, iRadius );
 			AreaItem.SetAllShow( IsPriv( PRIV_ALLSHOW ));
 			AreaItem.SetSearchSquare( true );
-			while (true)
+			for (;;)
 			{
 				CItem * pItem = AreaItem.GetItem();
 				if ( pItem == NULL )
@@ -601,7 +602,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			CWorldSearch AreaChar( ptCtr, iRadius );
 			AreaChar.SetAllShow( IsPriv( PRIV_ALLSHOW ));
 			AreaChar.SetSearchSquare( true );
-			while (true)
+			for (;;)
 			{
 				CChar* pChar = AreaChar.GetChar();
 				if ( pChar == NULL )
@@ -624,7 +625,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			CWorldSearch AreaItem( ptCtr, iRadius );
 			AreaItem.SetAllShow( IsPriv( PRIV_ALLSHOW ));
 			AreaItem.SetSearchSquare( true );
-			while (true)
+			for (;;)
 			{
 				CItem * pItem = AreaItem.GetItem();
 				if ( pItem == NULL )
@@ -653,7 +654,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			CWorldSearch AreaChar( ptCtr, iRadius );
 			AreaChar.SetAllShow( IsPriv( PRIV_ALLSHOW ));
 			AreaChar.SetSearchSquare( true );
-			while (true)
+			for (;;)
 			{
 				CChar* pChar = AreaChar.GetChar();
 				if ( pChar == NULL )
@@ -681,7 +682,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 	case CV_TILE:
 		{
 			TCHAR szTmp[256];
-			strcpylen( szTmp, m_Targ_Text, sizeof(szTmp));
+			strcpylen( szTmp, m_Targ_Text, COUNTOF(szTmp));
 
 			int piArgs[16];		// Maximum parameters in one line
 			int iArgQty = Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
@@ -717,6 +718,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 {
 	ADDTOCALLSTACK("CClient::OnSkill_AnimalLore");
+	UNREFERENCED_PARAMETER(iSkillLevel);
 	// SKILL_ANIMALLORE
 	// The creature is a "human" etc..
 	// How happy.
@@ -999,16 +1001,16 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_10 ),
 	};
 
-	TCHAR *pszTemp = Str_GetTemp();
-	int len = 0;
-	bool fWeapon;
-	int iHitsCur;
-	int iHitsMax;
-
 	if ( fTest )
 	{
 		return Calc_GetRandVal(60);
 	}
+
+	TCHAR *pszTemp = Str_GetTemp();
+	size_t len = 0;
+	bool fWeapon;
+	int iHitsCur;
+	int iHitsMax;
 
 	switch ( pItem->GetType() )
 	{
@@ -1321,8 +1323,6 @@ int CClient::OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iSkillLevel, bool
 		case SKILL_TASTEID:		return OnSkill_TasteID( uid, iSkillLevel, fTest );
 		default:				return -SKTRIG_QTY;
 	}
-
-	return( -SKTRIG_QTY );
 }
 
 ////////////////////////////////////////
@@ -1428,6 +1428,7 @@ bool CClient::OnTarg_Skill_Poison( CObjBase * pObj )
 bool CClient::OnTarg_Skill_Herd_Dest( CObjBase * pObj, const CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill_Herd_Dest");
+	UNREFERENCED_PARAMETER(pObj);
 	// CLIMODE_TARG_SKILL_HERD_DEST
 
 	m_pChar->m_Act_p = pt;
@@ -1539,7 +1540,7 @@ bool CClient::OnTarg_Pet_Command( CObjBase * pObj, const CPointMap & pt )
 		bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
 
 		CWorldSearch AreaChars( m_pChar->GetTopPoint(), UO_MAP_VIEW_SIGHT );
-		while (true)
+		for (;;)
 		{
 			CChar * pCharPet = AreaChars.GetChar();
 			if ( pCharPet == NULL )
@@ -1655,7 +1656,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 		{
 			ptn.m_x = x;
 			int y = rect.m_top;
-			for ( ; y<rect.m_bottom; ++y )
+			for ( ; y < rect.m_bottom; ++y )
 			{
 				ptn.m_y = y;
 
@@ -1699,7 +1700,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 
 		CWorldSearch Area( pt, UO_MAP_VIEW_SIZE );
 		Area.SetSearchSquare( true );
-		while (true)
+		for (;;)
 		{
 			CChar * pChar = Area.GetChar();
 			if ( pChar == NULL )
@@ -2309,8 +2310,8 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 
 		pItemTarg->m_itLoom.m_ClothID = pItemUse->GetDispID();
 
-		int iUsed;
-		int iNeed = COUNTOF( sm_Txt_LoomUse )-1;
+		int iUsed = 0;
+		int iNeed = COUNTOF( sm_Txt_LoomUse ) - 1;
 		int iHave = pItemTarg->m_itLoom.m_ClothQty;
 		if ( iHave < iNeed )
 		{
@@ -2318,14 +2319,14 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 			iUsed = pItemUse->ConsumeAmount( iNeed );
 		}
 
-		if ( iHave  + iUsed < COUNTOF( sm_Txt_LoomUse )-1 )
+		if ( (iHave  + iUsed) < (COUNTOF( sm_Txt_LoomUse ) - 1) )
 		{
 			pItemTarg->m_itLoom.m_ClothQty += iUsed;
 			SysMessage( sm_Txt_LoomUse[ pItemTarg->m_itLoom.m_ClothQty ] );
 		}
 		else
 		{
-			SysMessage( sm_Txt_LoomUse[ COUNTOF( sm_Txt_LoomUse )-1 ] );
+			SysMessage( sm_Txt_LoomUse[ COUNTOF( sm_Txt_LoomUse ) - 1 ] );
 			pItemTarg->m_itLoom.m_ClothQty = 0;
 			pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
 

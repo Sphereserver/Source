@@ -89,8 +89,8 @@ CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 	m_Target = ptTarget;
 
 	pt = m_pChar->GetTopPoint();
-	m_RealX = pt.m_x - PATH_SIZE/2;
-	m_RealY = pt.m_y - PATH_SIZE/2;
+	m_RealX = pt.m_x - (PATH_SIZE / 2);
+	m_RealY = pt.m_y - (PATH_SIZE / 2);
 	m_Target.m_x -= m_RealX;
 	m_Target.m_y -= m_RealY;
 

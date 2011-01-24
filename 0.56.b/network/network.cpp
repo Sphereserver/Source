@@ -663,7 +663,7 @@ void NetworkIn::onStart(void)
 	registerEncoded(EXTAOS_QuestButton, new PacketQuestButton());				// quest button press
 
 	m_states = new NetState*[g_Cfg.m_iClientsMax];
-	for (long l = 0; l < g_Cfg.m_iClientsMax; l++)
+	for (size_t l = 0; l < g_Cfg.m_iClientsMax; l++)
 		m_states[l] = new NetState(l);
 	m_stateCount = g_Cfg.m_iClientsMax;
 
@@ -1382,7 +1382,7 @@ void NetworkIn::periodic(void)
 
 	// tick the ip history, remove some from the list
 	EXC_SET("ticking history");
-	for (int i = 0; i < m_ips.size(); i++)
+	for (size_t i = 0; i < m_ips.size(); i++)
 	{
 		long decaystart = 0;
 		long decayttl = 0;
@@ -1665,7 +1665,7 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 	// limit by number of packets to be in queue
 	if (priority > PacketSend::PRI_IDLE)
 	{
-		long maxClientPackets = NETWORK_MAXQUEUESIZE;
+		size_t maxClientPackets = NETWORK_MAXQUEUESIZE;
 		if (maxClientPackets > 0)
 		{
 			if (state->m_queue[priority].size() >= maxClientPackets)
@@ -1934,6 +1934,8 @@ bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
 
 void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags)
 {
+	UNREFERENCED_PARAMETER(cbTransferred);
+	UNREFERENCED_PARAMETER(dwFlags);
 	if (dwError == WSAEFAULT)
 		return;
 
@@ -2002,7 +2004,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		else
 		{
 			// send packet data now
-			int totalSent = 0;
+			size_t totalSent = 0;
 
 			do
 			{

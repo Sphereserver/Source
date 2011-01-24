@@ -73,12 +73,12 @@ not_in_a_channel:
 	case 'b':	// b = client joining an existing channel
 	{
 		// Look for second double quote to separate channel from password
-		int i = 1;
-		for(; i < strlen(szMsg); i++)
+		size_t i = 1;
+		for(; szMsg[i] != '\0'; i++)
 			if (szMsg[i] == '"')
 				break;
-		szMsg[i] = 0;
-		char * pszPassword = szMsg + i + 1;
+		szMsg[i] = '\0';
+		TCHAR * pszPassword = szMsg + i + 1;
 		if (pszPassword[0] == ' ') // skip leading space if any
 			pszPassword++;
 		JoinChannel( pMe, szMsg + 1, pszPassword);
@@ -86,18 +86,20 @@ not_in_a_channel:
 	};
 	case 'c':	// c = client creating (and joining) new channel
 	{
-		char * pszPassword = NULL;
-		for (int i = 0; i < strlen(szMsg); i++)
+		TCHAR * pszPassword = NULL;
+		size_t iMsgLength = strlen(szMsg);
+		for (size_t i = 0; i < iMsgLength; i++)
 		{
 			if (szMsg[i] == '{') // OK, there's a password here
 			{
 				szMsg[i] = 0;
 				pszPassword = szMsg + i + 1;
-				for(i = 0; i < strlen(pszPassword); i++)
+				size_t iPasswordLength = strlen(pszPassword);
+				for (i = 0; i < iPasswordLength; i++)
 				{
 					if (pszPassword[i] == '}')
 					{
-						pszPassword[i] = 0;
+						pszPassword[i] = '\0';
 						break;
 					}
 				}
@@ -118,15 +120,16 @@ not_in_a_channel:
 	{
 		if (!pChannel)
 			goto not_in_a_channel;
-		char buffer[2048];
+		TCHAR buffer[2048];
 		strcpy(buffer, szMsg);
 		// Separate the recipient from the message (look for a space)
-		int i=0;
-		for (; i < strlen(buffer); i++)
+		size_t i = 0;
+		size_t bufferLength = strlen(buffer);
+		for (; i < bufferLength; i++)
 		{
 			if (buffer[i] == ' ')
 			{
-				buffer[i] = 0;
+				buffer[i] = '\0';
 				break;
 			}
 		}
@@ -315,12 +318,13 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 
 	ASSERT(pBy);
 
-	char buffer[2048];
-	char * pszCommand;
-	char * pszText;
+	TCHAR buffer[2048];
 	strcpy(buffer, szMsg);
-	pszCommand = buffer;
-	for (int i = 0; i < strlen(pszCommand); i++)
+
+	TCHAR * pszCommand = buffer;
+	TCHAR * pszText = NULL;
+	size_t iCommandLength = strlen(pszCommand);
+	for (size_t i = 0; i < iCommandLength; i++)
 	{
 		ASSERT( i<COUNTOF(buffer));
 		if (pszCommand[i] == ' ')
@@ -487,7 +491,7 @@ void CChat::SendDeleteChannel(CChatChannel * pChannel)
 	}
 }
 
-bool CChat::IsValidName( const char * pszName, bool fPlayer ) // static
+bool CChat::IsValidName( LPCTSTR pszName, bool fPlayer ) // static
 {
 	ADDTOCALLSTACK("CChat::IsValidName");
 	// Channels can have spaces, but not player names
@@ -495,7 +499,9 @@ bool CChat::IsValidName( const char * pszName, bool fPlayer ) // static
 		return false;
 	if (strcmp(pszName, "SYSTEM") == 0)
 		return false;
-	for (int i = 0; i < strlen(pszName); i++)
+
+	size_t length = strlen(pszName);
+	for (size_t i = 0; i < length; i++)
 	{
 		if ( pszName[i] == ' ' )
 		{
@@ -625,7 +631,7 @@ void CChat::CreateJoinChannel(CChatChanMember * pByMember, LPCTSTR pszName, LPCT
 	}
 }
 
-bool CChat::CreateChannel(const char * pszName, const char * pszPassword, CChatChanMember * pMember)
+bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember * pMember)
 {
 	ADDTOCALLSTACK("CChat::CreateChannel");
 	if (!m_fChatsOK)
@@ -643,7 +649,7 @@ bool CChat::CreateChannel(const char * pszName, const char * pszPassword, CChatC
 	return true;
 }
 
-bool CChat::JoinChannel(CChatChanMember * pMember, const char * pszChannel, const char * pszPassword)
+bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CChat::JoinChannel");
 	// Are we in a channel now?
@@ -703,7 +709,7 @@ bool CChat::JoinChannel(CChatChanMember * pMember, const char * pszChannel, cons
 ////////////////////////////////////////////////////////////////////////////
 // -CChatChannel
 
-void CChatChannel::WhoIs(const char * pszBy, const char * pszMember)
+void CChatChannel::WhoIs(LPCTSTR pszBy, LPCTSTR pszMember)
 {
 	ADDTOCALLSTACK("CChatChannel::WhoIs");
 	CChatChanMember * pBy = FindMember(pszBy);
@@ -723,7 +729,7 @@ void CChatChannel::WhoIs(const char * pszBy, const char * pszMember)
 	}
 }
 
-void CChatChannel::Emote(const char * pszBy, const char * pszMsg, CLanguageID lang )
+void CChatChannel::Emote(LPCTSTR pszBy, LPCTSTR pszMsg, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CChatChannel::Emote");
 	if (HasVoice(pszBy))
@@ -732,7 +738,7 @@ void CChatChannel::Emote(const char * pszBy, const char * pszMsg, CLanguageID la
 		FindMember(pszBy)->SendChatMsg(CHATMSG_RevokedSpeaking);
 }
 
-void CChatChannel::ToggleVoiceDefault(const char *  pszBy)
+void CChatChannel::ToggleVoiceDefault(LPCTSTR  pszBy)
 {
 	ADDTOCALLSTACK("CChatChannel::ToggleVoiceDefault");
 	if (!IsModerator(pszBy))
@@ -747,21 +753,21 @@ void CChatChannel::ToggleVoiceDefault(const char *  pszBy)
 	SetVoiceDefault(!GetVoiceDefault());
 }
 
-void CChatChannel::DisableVoiceDefault(const char *  pszBy)
+void CChatChannel::DisableVoiceDefault(LPCTSTR  pszBy)
 {
 	ADDTOCALLSTACK("CChatChannel::DisableVoiceDefault");
 	if (GetVoiceDefault())
 		ToggleVoiceDefault(pszBy);
 }
 
-void CChatChannel::EnableVoiceDefault(const char *  pszBy)
+void CChatChannel::EnableVoiceDefault(LPCTSTR  pszBy)
 {
 	ADDTOCALLSTACK("CChatChannel::EnableVoiceDefault");
 	if (!GetVoiceDefault())
 		ToggleVoiceDefault(pszBy);
 }
 
-void CChatChannel::SendPrivateMessage(CChatChanMember * pFrom, const char * pszTo, const char *  pszMsg)
+void CChatChannel::SendPrivateMessage(CChatChanMember * pFrom, LPCTSTR pszTo, LPCTSTR pszMsg)
 {
 	ADDTOCALLSTACK("CChatChannel::SendPrivateMessage");
 	CChatChanMember * pTo = FindMember(pszTo);
@@ -798,7 +804,7 @@ void CChatChannel::SendPrivateMessage(CChatChanMember * pFrom, const char * pszT
 		pTo->SendChatMsg(CHATMSG_PlayerPrivate, sName, pszMsg);
 }
 
-void CChatChannel::RenameChannel(CChatChanMember * pBy, const char * pszName)
+void CChatChannel::RenameChannel(CChatChanMember * pBy, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::RenameChannel");
 	// Ask the chat system if the new name is ok
@@ -865,7 +871,7 @@ void CChatChannel::RemoveMember(CChatChanMember * pMember)
 	pMember->SetChannel(NULL);
 }
 
-bool CChatChannel::IsModerator(const char * pszMember) const
+bool CChatChannel::IsModerator(LPCTSTR pszMember) const
 {
 	ADDTOCALLSTACK("CChatChannel::IsModerator");
 	for(int i = 0; i < m_Moderators.GetCount(); i++)
@@ -876,7 +882,7 @@ bool CChatChannel::IsModerator(const char * pszMember) const
 	return false;
 }
 
-bool CChatChannel::HasVoice(const char * pszMember) const
+bool CChatChannel::HasVoice(LPCTSTR pszMember) const
 {
 	ADDTOCALLSTACK("CChatChannel::HasVoice");
 	for(int i = 0; i < m_NoVoices.GetCount(); i++)
@@ -887,7 +893,7 @@ bool CChatChannel::HasVoice(const char * pszMember) const
 	return true;
 }
 
-void CChatChannel::SetModerator(const char * pszMember, bool fFlag)
+void CChatChannel::SetModerator(LPCTSTR pszMember, bool fFlag)
 {
 	ADDTOCALLSTACK("CChatChannel::SetModerator");
 	// See if they are already a moderator
@@ -984,7 +990,7 @@ void CChatChannel::SendMembers(CChatChanMember * pMember)
 void CChatChannel::SendThisMember(CChatChanMember * pMember, CChatChanMember * pToMember)
 {
 	ADDTOCALLSTACK("CChatChannel::SendThisMember");
-	char buffer[2048];
+	TCHAR buffer[2048];
 	sprintf(buffer, "%s%s",
 		(IsModerator(pMember->GetChatName()) == true) ? "1" :
 		(HasVoice(pMember->GetChatName()) == true) ? "0" : "2", pMember->GetChatName());
@@ -1006,7 +1012,7 @@ void CChatChannel::SendThisMember(CChatChanMember * pMember, CChatChanMember * p
 	}
 }
 
-void CChatChannel::SetVoice(const char * pszName, bool fFlag)
+void CChatChannel::SetVoice(LPCTSTR pszName, bool fFlag)
 {
 	ADDTOCALLSTACK("CChatChannel::SetVoice");
 	// See if they have no voice already
@@ -1030,7 +1036,7 @@ void CChatChannel::SetVoice(const char * pszName, bool fFlag)
 	}
 }
 
-void CChatChannel::MemberTalk(CChatChanMember * pByMember, const char * pszText, CLanguageID lang )
+void CChatChannel::MemberTalk(CChatChanMember * pByMember, LPCTSTR pszText, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CChatChannel::MemberTalk");
 	// Do I have a voice?
@@ -1042,7 +1048,7 @@ void CChatChannel::MemberTalk(CChatChanMember * pByMember, const char * pszText,
 	Broadcast(CHATMSG_PlayerTalk, pByMember->GetChatName(), pszText, lang );
 }
 
-void CChatChannel::ChangePassword(CChatChanMember * pByMember, const char * pszPassword)
+void CChatChannel::ChangePassword(CChatChanMember * pByMember, LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CChatChannel::ChangePassword");
 	if (!IsModerator(pByMember->GetChatName()))
@@ -1057,7 +1063,7 @@ void CChatChannel::ChangePassword(CChatChanMember * pByMember, const char * pszP
 	}
 }
 
-void CChatChannel::Broadcast(CHATMSG_TYPE iType, const char * pszName, const char * pszText, CLanguageID lang, bool fOverride )
+void CChatChannel::Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName, LPCTSTR pszText, CLanguageID lang, bool fOverride )
 {
 	ADDTOCALLSTACK("CChatChannel::Broadcast");
 	CGString sName;
@@ -1085,7 +1091,7 @@ void CChatChannel::Broadcast(CHATMSG_TYPE iType, const char * pszName, const cha
 	}
 }
 
-void CChatChannel::GrantVoice(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::GrantVoice(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::GrantVoice");
 	if (!IsModerator(pByMember->GetChatName()))
@@ -1107,7 +1113,7 @@ void CChatChannel::GrantVoice(CChatChanMember * pByMember, const char * pszName)
 	Broadcast(CHATMSG_PlayerNowSpeaking, pszName, "", "");
 }
 
-void CChatChannel::RevokeVoice(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::RevokeVoice(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::RevokeVoice");
 	if (!IsModerator(pByMember->GetChatName()))
@@ -1129,7 +1135,7 @@ void CChatChannel::RevokeVoice(CChatChanMember * pByMember, const char * pszName
 	Broadcast(CHATMSG_PlayerNoSpeaking, pszName, "", "");
 }
 
-void CChatChannel::ToggleVoice(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::ToggleVoice(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::ToggleVoice");
 	if (!HasVoice(pszName)) // (This also returns true if this person is not in the channel)
@@ -1138,7 +1144,7 @@ void CChatChannel::ToggleVoice(CChatChanMember * pByMember, const char * pszName
 		RevokeVoice(pByMember, pszName); // this checks and reports on membership
 }
 
-int CChatChannel::FindMemberIndex(const char * pszName) const
+int CChatChannel::FindMemberIndex(LPCTSTR pszName) const
 {
 	ADDTOCALLSTACK("CChatChannel::FindMemberIndex");
 	for(int i = 0; i < m_Members.GetCount(); i++)
@@ -1149,7 +1155,7 @@ int CChatChannel::FindMemberIndex(const char * pszName) const
 	return -1;
 }
 
-void CChatChannel::GrantModerator(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::GrantModerator(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::GrantModerator");
 	if (!IsModerator(pByMember->GetChatName()))
@@ -1171,7 +1177,7 @@ void CChatChannel::GrantModerator(CChatChanMember * pByMember, const char * pszN
 	pMember->SendChatMsg(CHATMSG_YouAreAModerator, pByMember->GetChatName());
 }
 
-void CChatChannel::RevokeModerator(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::RevokeModerator(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::RevokeModerator");
 	if (!IsModerator(pByMember->GetChatName()))
@@ -1193,7 +1199,7 @@ void CChatChannel::RevokeModerator(CChatChanMember * pByMember, const char * psz
 	pMember->SendChatMsg(CHATMSG_RemovedListModerators, pByMember->GetChatName());
 }
 
-void CChatChannel::ToggleModerator(CChatChanMember * pByMember, const char * pszName)
+void CChatChannel::ToggleModerator(CChatChanMember * pByMember, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChannel::ToggleModerator");
 	if (!IsModerator(pszName))
@@ -1254,7 +1260,7 @@ int CChatChanMember::FindIgnoringIndex(LPCTSTR pszName) const
 	return -1;
 }
 
-void CChatChanMember::Ignore(const char * pszName)
+void CChatChanMember::Ignore(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChanMember::Ignore");
 	if (!IsIgnoring(pszName))
@@ -1263,7 +1269,7 @@ void CChatChanMember::Ignore(const char * pszName)
 		SendChatMsg(CHATMSG_AlreadyIgnoringPlayer, pszName);
 }
 
-void CChatChanMember::DontIgnore(const char * pszName)
+void CChatChanMember::DontIgnore(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChanMember::DontIgnore");
 	if (IsIgnoring(pszName))
@@ -1272,7 +1278,7 @@ void CChatChanMember::DontIgnore(const char * pszName)
 		SendChatMsg(CHATMSG_NotIgnoring, pszName);
 }
 
-void CChatChanMember::ToggleIgnore(const char * pszName)
+void CChatChanMember::ToggleIgnore(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChanMember::ToggleIgnore");
 	int i = FindIgnoringIndex( pszName );
@@ -1308,7 +1314,7 @@ void CChatChanMember::ClearIgnoreList()
 	SendChatMsg(CHATMSG_NoLongerIgnoringAnyone);
 }
 
-void CChatChanMember::RenameChannel(const char * pszName)
+void CChatChanMember::RenameChannel(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChanMember::RenameChannel");
 	CChatChannel * pChannel = GetChannel();

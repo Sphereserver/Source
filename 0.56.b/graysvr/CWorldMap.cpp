@@ -44,7 +44,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	EXC_SET("find existant bit");
 	CItem * pResBit;
 	CWorldSearch Area(pt);
-	while ( true )
+	for (;;)
 	{
 		pResBit = Area.GetItem();
 		if ( !pResBit )
@@ -73,7 +73,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 
 	CWorldSearch AreaItems( pt );
 	AreaItems.SetAllShow(1);
-	while (true)
+	for (;;)
 	{
 		CItem *pItem = AreaItems.GetItem();
 		if ( !pItem )
@@ -177,14 +177,14 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	//for ( iQty = 0; iQty < 4; ++iQty )
 	//	ptElem[iQty].m_z = UO_SIZE_MIN_Z;
 	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = UO_SIZE_MIN_Z;
-	ptElem[4] = CPointMap(-1,-1,UO_SIZE_MIN_Z);
+	ptElem[4] = CPointMap(USHRT_MAX, USHRT_MAX, UO_SIZE_MIN_Z);
 
 	bool fElem[4] = { false, false, false, false };
 
 	// Check dynamics
 	CWorldSearch Area( pt, iDistance );
 	Area.SetAllShow( true );
-	while (true)
+	for (;;)
 	{
 		z = 0;
 		Height = 0;
@@ -432,7 +432,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	}
 
 	/*CPointMap a;
-	a.m_z = max(
+	a.m_z = maximum(
 	// priority dynamic->multi->static->terrain
 	int iRetElem;
 	if (( ptElem[0].m_z >= ptElem[1].m_z ) && ( fElem[0] ))
@@ -446,7 +446,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	else
 		iRetElem = 4;*/
 
-	     if ( 0 != iRetElem && ptElem[0].m_z > ptElem[iRetElem].m_z )
+	if ( 0 != iRetElem && ptElem[0].m_z > ptElem[iRetElem].m_z )
 			 iRetElem = 4;
 	else if ( 1 != iRetElem && ptElem[1].m_z > ptElem[iRetElem].m_z )
 		     iRetElem = 4;
@@ -484,7 +484,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 		
 	// Check dynamics first since they are the easiest.
 	CWorldSearch Area( pt, iDistance );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
@@ -778,7 +778,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	// Any dynamic items here ?
 	// NOTE: This could just be an item that an NPC could just move ?
 	CWorldSearch Area( pt );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
@@ -982,7 +982,10 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	pItemDef = NULL;
 	pDupeDef = NULL;
 	pItem = NULL;
-	wBlockThis = z = zHeight = x2 = y2 = iQty = i = ii = 0;
+	wBlockThis = 0;
+	z = 0;
+	zHeight = 0;
+	x2 = y2 = iQty = i = ii = 0;
 
 	// Any multi items here ?
 	// Check all of them
@@ -1087,13 +1090,16 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	pItemDef = NULL;
 	pDupeDef = NULL;
 	pItem = NULL;
-	wBlockThis = z = zHeight = x2 = y2 = iQty = i = ii = 0;
+	wBlockThis = 0;
+	x2 = y2 = iQty = i = ii = 0;
+	zHeight = 0;
+	z = 0;
 
 	// Any dynamic items here ?
 	// NOTE: This could just be an item that an NPC could just move ?
 	CWorldSearch Area( pt );
 
-	while ( true )
+	for (;;)
 	{
 		pItem = Area.GetItem();
 		if ( !pItem )

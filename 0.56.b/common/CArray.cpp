@@ -13,7 +13,7 @@ void CGObList::DeleteAll()
 {
 	ADDTOCALLSTACK("CGObList::DeleteAll");
 	// delete all entries.
-	while (true)	// iterate the list.
+	for (;;)	// iterate the list.
 	{
 		CGObListRec * pRec = GetHead();
 		if ( pRec == NULL )

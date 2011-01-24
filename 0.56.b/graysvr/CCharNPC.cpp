@@ -222,7 +222,7 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	// only players can have skill locks.
 
 	TCHAR szTmpKey[128];
-	strcpylen( szTmpKey, pszKey, sizeof(szTmpKey) );
+	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
 
 	TCHAR * ppArgs[3];
 	int i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
@@ -260,7 +260,7 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 	// only players can have skill locks.
 
 	TCHAR szTmpKey[128];
-	strcpylen( szTmpKey, pszKey, sizeof(szTmpKey) );
+	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
 
 	TCHAR * ppArgs[3];
 	int i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
@@ -300,8 +300,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	if ( !pChar || !GetAccount() )
 		return false;
 
-	if ( 0 ) ;
-	else if ( !strnicmp(pszKey, "SKILLCLASS.", 11) )
+	if ( !strnicmp(pszKey, "SKILLCLASS.", 11) )
 	{
 		return GetSkillClass()->r_WriteVal(pszKey + 11, sVal, pChar);
 	}
@@ -500,8 +499,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			m_wMurders = s.GetArgVal();
 			return true;
 		case CPC_KRTOOLBARSTATUS:
-			m_bKrToolbarEnabled = s.GetArgVal();
-			if ( pChar->GetClient() )
+			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );
+			if ( pChar->GetClient() != NULL )
 				pChar->GetClient()->addKRToolbar( m_bKrToolbarEnabled );
 			return true;
 		case CPC_LASTUSED:
@@ -576,6 +575,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s ) 
 {
 	ADDTOCALLSTACK("CCharPlayer::r_WriteChar");
+	UNREFERENCED_PARAMETER(pChar);
 	EXC_TRY("r_WriteChar");
 
 	s.WriteKey("ACCOUNT", GetAccount()->GetName());
@@ -618,7 +618,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving stats locks");
-	for ( int x=0;x<STAT_BASE_QTY;x++)	// Don't write all lock states!
+	for ( int x = 0; x < STAT_BASE_QTY; x++)	// Don't write all lock states!
 	{
 		if ( ! m_StatLock[x] )
 			continue;
@@ -628,7 +628,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving skill locks");
-	for ( int j=0;j<MAX_SKILL;j++)	// Don't write all lock states!
+	for ( int j = 0; j < MAX_SKILL; j++)	// Don't write all lock states!
 	{
 		if ( ! m_SkillLock[j] )
 			continue;
@@ -732,6 +732,7 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 
 CCharNPC::CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain )
 {
+	UNREFERENCED_PARAMETER(pChar);
 	m_Brain = NPCBrain;
 	m_Home_Dist_Wander = SHRT_MAX;	// as far as i want.
 	m_Act_Motivation = 0;
@@ -887,6 +888,8 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 
 void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
 {
+	UNREFERENCED_PARAMETER(pChar);
+
 	// This says we are an NPC.
 	s.WriteKeyVal("NPC", m_Brain );
 

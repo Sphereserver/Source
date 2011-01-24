@@ -137,7 +137,7 @@ static LPCTSTR const sm_szPunishMsg[] =
 		{
 			// Look for any creatures that might be following me near by.
 			CWorldSearch Area( GetTopPoint(), UO_MAP_VIEW_SIGHT );
-			while (true)
+			for (;;)
 			{
 				CChar * pChar = Area.GetChar();
 				if ( pChar == NULL )
@@ -491,7 +491,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 	SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX( pSpell->m_itSpell.m_spell );
 
-	int iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
+	short iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
 
 	switch ( spell )
 	{
@@ -726,7 +726,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpellDef || !spell )
 		return;
 
-	int iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
+	short iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
 
 	//Buffs related variables:
 	int iBuffPercent;
@@ -1203,7 +1203,7 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 		return;
 
 	CWorldSearch AreaChar( pntTarg, iDist );
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
@@ -1216,7 +1216,7 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 		pChar->OnSpellEffect( spelltype, this, iSkillLevel, NULL );
 	}
 	CWorldSearch AreaItem( pntTarg, iDist );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItem.GetItem();
 		if ( pItem == NULL )
@@ -1261,7 +1261,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 		// first checks center piece, then left direction (minX), and finally right direction (maxX)
 		// (structure of the loop looks a little odd but it should be more effective for wide fields (we don't really
 		// want to be testing the far left or right of the field when it has been blocked towards the center))
-		for (int ix = 0; true; ix <= 0? ix-- : ix++)
+		for (int ix = 0; ; ix <= 0? ix-- : ix++)
 		{
 			if (ix < minX)
 				ix = 1;	// start checking right extension
@@ -1319,7 +1319,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 
 			// Check for direct cast on a creature.
 			CWorldSearch AreaChar( ptg );
-			while (true)
+			for (;;)
 			{
 				CChar * pChar = AreaChar.GetChar();
 				if ( pChar == NULL )
@@ -1347,7 +1347,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 
 			// Check for direct cast on an item.
 			CWorldSearch AreaItem( ptg );
-			while (true)
+			for (;;)
 			{
 				CItem * pItem = AreaItem.GetItem();
 				if ( pItem == NULL )
@@ -1613,8 +1613,8 @@ bool CChar::Spell_TargCheck()
 	}
 
 	CObjBase * pObj = m_Act_Targ.ObjFind();
-	CObjBaseTemplate * pObjTop;
-	if ( pObj )
+	CObjBaseTemplate * pObjTop = NULL;
+	if ( pObj != NULL )
 	{
 		pObjTop = pObj->GetTopLevelObj();
 	}
@@ -1766,8 +1766,8 @@ bool CChar::Spell_CastDone()
 		iC1 = (CREID_TYPE)  (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
 
 		//Can't be < 0, so max it to 0
-		fieldWidth = max(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
-		fieldGauge = max(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
+		fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
+		fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
 
 		//DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
 		//DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
@@ -1911,7 +1911,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = CREID_BLADES;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
 	case SPELL_Dispel_Field:
@@ -1972,7 +1972,7 @@ bool CChar::Spell_CastDone()
 	case SPELL_Summon:
  		if ( iC1 )
 		  m_atMagery.m_SummonID = iC1;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
 		// 6th
@@ -2124,7 +2124,7 @@ bool CChar::Spell_CastDone()
 			iC1 = CREID_VORTEX;
 		m_atMagery.m_SummonID = iC1;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
 	case SPELL_Resurrection:
@@ -2139,7 +2139,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = CREID_AIR_ELEM;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 	case SPELL_Daemon:
  		if ( ! iC1 )
@@ -2147,7 +2147,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = ( Calc_GetRandVal( 2 )) ? CREID_DAEMON_SWORD : CREID_DAEMON;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 	case SPELL_Earth_Elem:
  		if ( ! iC1 )
@@ -2155,7 +2155,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = CREID_EARTH_ELEM;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 	case SPELL_Fire_Elem:
  		if ( ! iC1 )
@@ -2163,7 +2163,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = CREID_FIRE_ELEM;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 	case SPELL_Water_Elem:
  		if ( ! iC1 )
@@ -2171,7 +2171,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_SummonID = iC1;
 		//m_atMagery.m_SummonID = CREID_WATER_ELEM;
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
 		// Necro
@@ -2192,7 +2192,7 @@ bool CChar::Spell_CastDone()
 			break;
 		}
 		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet );
+		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
 	case SPELL_Animate_Dead:
@@ -2470,11 +2470,11 @@ int CChar::Spell_CastStart()
 		}
 		else
 		{
-			int len = 0;
+			size_t len = 0;
 			TCHAR *pszTemp = Str_GetTemp();
 
-			int i;
-			for ( i = 0; true; i++ )
+			size_t i;
+			for ( i = 0; ; i++ )
 			{
 				TCHAR ch = pSpellDef->m_sRunes[i];
 				if ( !ch )
@@ -2482,7 +2482,7 @@ int CChar::Spell_CastStart()
 				len += strcpylen(pszTemp+len, g_Cfg.GetRune(ch));
 				pszTemp[len++] = ' ';
 			}
-			if ( i )
+			if ( i > 0 )
 			{
 				pszTemp[len] = 0;
 				Speak(pszTemp, g_Cfg.m_iWordsOfPowerColor, TALKMODE_SAY, (enum FONT_TYPE)g_Cfg.m_iWordsOfPowerFont);

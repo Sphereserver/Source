@@ -41,7 +41,7 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 	}
 
 	DWORD val = 0;
-	while ( true )
+	for (;;)
 	{
 		TCHAR ch = toupper(*pszStr);
 		if ( IsDigit(ch) )
@@ -141,7 +141,7 @@ bool IsSimpleNumberString( LPCTSTR pszTest )
 	bool fHextDigitStart = false;
 	bool fWhiteSpace = false;
 
-	for ( ; true; pszTest++ )
+	for ( ; ; pszTest++ )
 	{
 		TCHAR ch = *pszTest;
 		if ( ! ch )
@@ -329,7 +329,7 @@ int CExpression::GetSingle( LPCTSTR & pszArgs )
 
 		LPCTSTR pStart = pszArgs;
 		DWORD val = 0;
-		while ( true )
+		for (;;)
 		{
 			TCHAR ch = *pszArgs;
 			if ( IsDigit( ch ))
@@ -359,7 +359,7 @@ int CExpression::GetSingle( LPCTSTR & pszArgs )
 		// A decminal number
 try_dec:
 		long iVal = 0;
-		for ( ;true; pszArgs++ )
+		for ( ; ; pszArgs++ )
 		{
 			if ( *pszArgs == '.' )
 				continue;	// just skip this.
@@ -434,13 +434,17 @@ try_dec:
 							iResult = RES_GET_INDEX( GetVal( pszArgs )); // RES_GET_INDEX
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 
 					} break;
 
 					case INTRINSIC_LOGARITHM:
 					{
 						iCount = 0;
+						iResult = 0;
 
 						if ( pszArgs && *pszArgs )
 						{
@@ -495,13 +499,17 @@ try_dec:
 							iResult = (int) exp((double)GetVal(pszArgs));
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 
 					} break;
 
 					case INTRINSIC_SQRT:
 					{
 						iCount = 0;
+						iResult = 0;
 
 						if ( pszArgs && *pszArgs )
 						{
@@ -528,7 +536,10 @@ try_dec:
 							iResult = (int) sin((double)GetVal(pszArgs));
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 
 					} break;
 
@@ -540,7 +551,10 @@ try_dec:
 							iResult = (int) cos((double)GetVal(pszArgs));
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 
 					} break;
 
@@ -552,7 +566,10 @@ try_dec:
 							iResult = (int) tan((double)GetVal(pszArgs));
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 
 					} break;
 
@@ -607,7 +624,10 @@ try_dec:
 							iResult = pszArgs[0];
 						}
 						else
+						{
 							iCount = 0;
+							iResult = 0;
+						}
 					} break;
 
 					case INTRINSIC_RAND:
@@ -915,7 +935,7 @@ int CExpression::GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty )
 	ASSERT(piVals);
 
 	int iQty = 0;
-	while (true)
+	for (;;)
 	{
 		if ( !pExpr[0] ) break;
 		if ( pExpr[0] == ';' )

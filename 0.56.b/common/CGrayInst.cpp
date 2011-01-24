@@ -366,7 +366,7 @@ void CGrayInstall::CloseFiles()
 bool CGrayInstall::ReadMulIndex(CGFile &file, DWORD id, CUOIndexRec &Index)
 {
 	ADDTOCALLSTACK("CGrayInstall::ReadMulIndex");
-	LONG lOffset = id * sizeof(CUOIndexRec);
+	DWORD lOffset = id * sizeof(CUOIndexRec);
 
 	if ( file.Seek(lOffset, SEEK_SET) != lOffset )
 		return false;

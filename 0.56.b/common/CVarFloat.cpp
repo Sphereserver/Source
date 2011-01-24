@@ -251,11 +251,12 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 		break;
 	}*/
 	bool IsNum = false;
-    for( char ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
+    for( TCHAR ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
     {
         if (( IsDigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
         {
-            IsNum = IsNum ? IsNum : IsDigit( ch );
+			if ( IsNum == false)
+				IsNum = (IsDigit(ch) != 0);
             continue;
         }
 
@@ -332,7 +333,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = RES_GET_INDEX( (int)MakeFloatMath( pArgs )); // RES_GET_INDEX
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 
 				} break;
 
@@ -346,6 +350,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						if ( dArgument <= 0 )
 						{
 							DEBUG_ERR(( "Float_MakeFloatMath: (x)Log(%d) is %s\n", dArgument, (!dArgument) ? "infinite" : "undefined" ));
+							dResult = 0;
 						}
 						else
 						{
@@ -370,6 +375,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 									{
 										DEBUG_ERR(( "Float_MakeFloatMath: (%d)Log(%d) is %s\n", dBase, dArgument, (!dBase) ? "infinite" : "undefined" ));
 										dCount = 0;
+										dResult = 0;
 									}
 									else
 									{
@@ -383,6 +389,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 							}							
 						}
 					}
+					else
+					{
+						dResult = 0;
+					}
 
 				} break;
 
@@ -394,7 +404,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = exp(MakeFloatMath(pArgs));
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 
 				} break;
 
@@ -414,7 +427,12 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						else
 						{
 							DEBUG_ERR(( "Float_MakeFloatMath: Sqrt of negative number (%d) is impossible\n", dTosquare ));
+							dResult = 0;
 						}
+					}
+					else
+					{
+						dResult = 0;
 					}
 
 				} break;
@@ -427,7 +445,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = sin(MakeFloatMath(pArgs));
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 
 				} break;
 
@@ -439,7 +460,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = cos(MakeFloatMath(pArgs));
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 
 				} break;
 
@@ -451,7 +475,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = tan(MakeFloatMath(pArgs));
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 
 				} break;
 
@@ -513,7 +540,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						dResult = pArgs[0];
 					}
 					else
+					{
 						dCount = 0;
+						dResult = 0;
+					}
 				} break;
 
 				case INTRINSIC_RAND:
@@ -605,12 +635,14 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 				} break;
 
 				default:
+					dCount = 0;
+					dResult = 0;
 					break;
 			}
 
 			pArgs = pArgsNext;
 
-			if ( ! dCount )
+			if ( dCount <= 0 )
 			{
 				DEBUG_ERR(( "Bad intrinsic function usage. missing )\n" ));
 				return 0;
@@ -715,7 +747,7 @@ int CVarFloat::GetRangeVals( LPCTSTR & pExpr, RealType * piVals, short int iMaxQ
 	ASSERT(piVals);
 
 	int iQty = 0;
-	while (true)
+	for (;;)
 	{
 		if ( !pExpr[0] ) break;
 		if ( pExpr[0] == ';' )
@@ -769,7 +801,7 @@ CLocalObjMap::~CLocalObjMap()
 	m_ObjMap.clear();
 };
 
-CObjBase * CLocalObjMap::Get( const short unsigned int Number )
+CObjBase * CLocalObjMap::Get( unsigned short Number )
 {
 	ADDTOCALLSTACK("CLocalObjMap::Get");
 	if ( !Number )
@@ -780,7 +812,7 @@ CObjBase * CLocalObjMap::Get( const short unsigned int Number )
 	return i->second;
 };
 
-bool CLocalObjMap::Insert( const short unsigned int Number, CObjBase * pObj, bool ForceSet )
+bool CLocalObjMap::Insert( unsigned short Number, CObjBase * pObj, bool ForceSet )
 {
 	ADDTOCALLSTACK("CLocalObjMap::Insert");
 	if ( !Number )

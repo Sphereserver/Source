@@ -576,12 +576,17 @@ LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY+1] =
 bool CDataBase::r_GetRef(LPCTSTR & pszKey, CScriptObj * & pRef)
 {
 	ADDTOCALLSTACK("CDataBase::r_GetRef");
+	UNREFERENCED_PARAMETER(pszKey);
+	UNREFERENCED_PARAMETER(pRef);
 	return false;
 }
 
 bool CDataBase::r_LoadVal(CScript & s)
 {
 	ADDTOCALLSTACK("CDataBase::r_LoadVal");
+	UNREFERENCED_PARAMETER(s);
+	return false;
+/*
 	LPCTSTR pszKey = s.GetKey();
 	EXC_TRY("LoadVal");
 
@@ -600,6 +605,7 @@ bool CDataBase::r_LoadVal(CScript & s)
 	EXC_ADD_SCRIPT;
 	EXC_DEBUG_END;
 	return false;
+*/
 }
 
 bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)

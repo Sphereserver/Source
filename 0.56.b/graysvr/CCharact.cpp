@@ -19,7 +19,7 @@ bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 	DWORD dwTotal = g_World.GetUIDCount();
 	DWORD dwCount = dwTotal-1;
 
-	int iArg;
+	int iArg = 0;
 	if ( iType )
 	{
 		if ( pszArgs[0] && iType == 1 )
@@ -50,7 +50,6 @@ bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 				{
 					if ( ! pObj->IsChar())
 						continue;
-					CChar * pChar = dynamic_cast <CChar*>(pObj);
 					if ( iArg-- > 0 )
 						continue;
 				}
@@ -2139,6 +2138,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 bool CChar::SetPoisonCure( int iSkill, bool fExtra )
 {
 	ADDTOCALLSTACK("CChar::SetPoisonCure");
+	UNREFERENCED_PARAMETER(iSkill);
 	// Leave the antidote in your body for a while.
 	// iSkill = 0-1000
 
@@ -2543,8 +2543,8 @@ bool CChar::Death()
 	Stat_SetVal(STAT_STR, 0);
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
-	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2));
-	if ( pCorpse )
+	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
+	if ( pCorpse != NULL )
 	{
    		CScriptTriggerArgs Args(pCorpse);
    		OnTrigger(CTRIG_DeathCorpse, this, &Args);
@@ -2731,8 +2731,8 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 
 	// ok to go here ? physical blocking objects ?
 	WORD wBlockFlags = 0;
-	t_height ClimbHeight;
-	CRegionBase * pArea;
+	t_height ClimbHeight = 0;
+	CRegionBase * pArea = NULL;
 
 	EXC_TRY("CanMoveWalkTo");
 
@@ -2751,11 +2751,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight);
 	}
 	else
-	#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
+	{
+#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
 		pArea = CheckValidMove(ptDst, &wBlockFlags, dir, bWalkCheck);
-	#else
+#else
 		pArea = CheckValidMove(ptDst, &wBlockFlags, dir);
-	#endif
+#endif
+	}
+
 #endif
 	if ( !pArea )
 	{
@@ -2772,7 +2775,8 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			{
 				CWorldSearch AreaChars(ptDst);
 				AreaChars.SetAllShow(true);
-				while ( true )
+
+				for (;;)
 				{
 					CChar *pChar = AreaChars.GetChar();
 					if ( !pChar )
@@ -2822,7 +2826,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	{
 		CWorldSearch AreaChars( ptDst );
 		AreaChars.SetAllShow( true );	// show logged out chars.
-		while (true)
+		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
@@ -2957,7 +2961,7 @@ void CChar::CheckRevealOnMove()
 
 		CScriptTriggerArgs Args(bReveal);	// ARGN1 - reveal?
 		OnTrigger(CTRIG_StepStealth, this, &Args);
-		bReveal = Args.m_iN1;
+		bReveal = ( Args.m_iN1 != 0);
 
 		if ( bReveal )
 			Reveal();
@@ -3043,7 +3047,7 @@ bool CChar::CheckLocation( bool fStanding )
 
 	bool	fStepCancel	= false;
 	CWorldSearch AreaItems( GetTopPoint());
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
 		if ( pItem == NULL )
@@ -3291,8 +3295,8 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			// Is it guarded / safe / non-pvp?
 			else if ( m_pArea && !IsStatFlag(STATF_DEAD) )
 			{
-				bool redNew = pNewArea->m_TagDefs.GetKeyNum("RED", true);
-				bool redOld = m_pArea->m_TagDefs.GetKeyNum("RED", true);
+				bool redNew = ( pNewArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
+				bool redOld = ( m_pArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
 
 				if ( pNewArea->IsGuarded() != m_pArea->IsGuarded() )
 				{

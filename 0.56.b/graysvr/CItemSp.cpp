@@ -85,8 +85,6 @@ CResourceDef * CItem::Spawn_FixDef()
 			return( Spawn_TryChar( id ));
 		}
 	}
-
-	return NULL;
 }
 
 int CItem::Spawn_GetName( TCHAR * pszOut ) const
@@ -140,7 +138,7 @@ void CItem::Spawn_GenerateItem( CResourceDef * pDef )
 		// If is equipped this will produce the item where you are standing.
 		CPointMap pt = GetTopLevelObj()->GetTopPoint();
 		CWorldSearch AreaItems( pt, iDistMax );
-		while (true)
+		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )
@@ -453,7 +451,7 @@ bool CItem::Plant_OnTick()
 
 		// put a fruit on the ground if not already here.
 		CWorldSearch AreaItems( GetTopPoint() );
-		while (true)
+		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )
@@ -776,7 +774,7 @@ CItemStone * CItemMemory::Guild_GetLink()
 bool CItemMemory::Guild_IsAbbrevOn() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_IsAbbrevOn");
-	return( m_itEqMemory.m_Action );
+	return( m_itEqMemory.m_Action != 0 );
 }
 
 void CItemMemory::Guild_SetAbbrev( bool fAbbrevShow )
@@ -949,11 +947,11 @@ bool CItemCommCrystal::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 	ADDTOCALLSTACK("CItemCommCrystal::r_WriteVal");
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-	case 0:
-		m_Speech.WriteResourceRefList( sVal );
-		break;
-	default:
-		return CItemVendable::r_WriteVal(pszKey,sVal,pSrc);
+		case 0:
+			m_Speech.WriteResourceRefList( sVal );
+			break;
+		default:
+			return CItemVendable::r_WriteVal(pszKey,sVal,pSrc);
 	}
 	return( true );
 }
@@ -963,12 +961,11 @@ bool CItemCommCrystal::r_LoadVal( CScript & s  )
 	ADDTOCALLSTACK("CItemCommCrystal::r_LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-	case 0:
-		return( m_Speech.r_LoadVal( s, RES_SPEECH ));
-	default:
-		return CItemVendable::r_LoadVal(s);
+		case 0:
+			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
+		default:
+			return CItemVendable::r_LoadVal(s);
 	}
-	return( true );
 }
 
 void CItemCommCrystal::DupeCopy( const CItem * pItem )

@@ -890,8 +890,6 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 		case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
 		default: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 	}
-
-	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 }
 
 void CChar::Skill_SetTimeout()
@@ -2082,7 +2080,7 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 	int iRadius = ( Skill_GetAdjusted(SKILL_DETECTINGHIDDEN) / 8 ) + 1;
 	CWorldSearch Area( GetTopPoint(), iRadius );
 	bool fFound = false;
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = Area.GetChar();
 		if ( pChar == NULL )
@@ -2198,7 +2196,7 @@ int CChar::Skill_Musicianship( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		// no instrument fail immediate
-		return Use_PlayMusic( m_Act_Targ.ItemFind(), Calc_GetRandVal(90));;
+		return Use_PlayMusic( m_Act_Targ.ItemFind(), Calc_GetRandVal(90));
 	}
 
 	return( 0 );
@@ -2239,7 +2237,7 @@ int CChar::Skill_Peacemaking( SKTRIG_TYPE stage )
 				int peace = Skill_GetAdjusted(SKILL_PEACEMAKING);
 				int iRadius = ( peace / 100 ) + 2;	// 2..12
 				CWorldSearch Area(GetTopPoint(), iRadius);
-				while ( true )
+				for (;;)
 				{
 					CChar *pChar = Area.GetChar();
 					if ( pChar == NULL )
@@ -3755,18 +3753,19 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	SoundChar( CRESND_GETHIT );
 
 	// a rock or a boulder ?
-	ITEMID_TYPE id = (ITEMID_TYPE) 0;
-	int iDamage;
-	CVarDefCont * pTagStorage = NULL; 
-    pTagStorage = GetKey("OVERRIDE.ROCK", true);
-    if ( pTagStorage )
+	ITEMID_TYPE id = ITEMID_NOTHING;
+	int iDamage = 0;
+
+	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK", true);
+    if ( pTagStorage != NULL )
 	{
 		if ( pTagStorage->GetValNum() )
 		{
 			id = (ITEMID_TYPE) pTagStorage->GetValNum();
 			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 		}
-	} else
+	}
+	else
 	{
 		if ( Calc_GetRandVal( 3 ) )
 		{
@@ -3779,7 +3778,8 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 			id = (ITEMID_TYPE)( ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
 		}
 	}
-	if ( id != (ITEMID_TYPE) 0 )
+
+	if ( id != ITEMID_NOTHING )
 	{
 		CItem *pRock = CItem::CreateScript(id, this);
 		if ( pRock )

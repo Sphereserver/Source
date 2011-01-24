@@ -128,17 +128,17 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	else if ( skill < MAX_SKILL_AOS )
 	{
 		iClientReq = MINCLIVER_AOS;
-		bEnabled = ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B );
+		bEnabled = ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B ) != 0;
 	}
 	else if ( skill < MAX_SKILL_SE )
 	{
 		iClientReq = MINCLIVER_SE;
-		bEnabled = ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM );
+		bEnabled = ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM ) != 0;
 	}
 	else
 	{
 		iClientReq = MINCLIVER_ML;
-		bEnabled = ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE );
+		bEnabled = ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE ) != 0;
 	}
 
 	// Check that the client has a valid client version
@@ -239,7 +239,7 @@ void CClient::CharDisconnect()
 	CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
 	m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
 	iLingerTime = Args.m_iN1;
-	fCanInstaLogOut = Args.m_iN2;
+	fCanInstaLogOut = (Args.m_iN2 != 0);
 
 	m_pChar->ClientDetach();	// we are not a client any more.
 
@@ -412,7 +412,7 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 	if ( m_pHouseDesign && pObj->IsItem() )
 	{
 		const CItem * pItem = STATIC_CAST<const CItem *>( pObj );
-		if (pItem != NULL && (pItem->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()))
+		if (pItem != NULL && ((DWORD)pItem->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()))
 			return( false );
 	}
 	return( m_pChar->CanSee( pObj ));
@@ -1071,7 +1071,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				{
 					if ( !g_MapList.m_maps[m] ) continue;
 
-					for ( DWORD d = 0; d < g_MapList.GetSectorQty(m); d++ )
+					for ( int d = 0; d < g_MapList.GetSectorQty(m); d++ )
 					{
 						CSector	*pSector = g_World.GetSector(m, d);
 						if ( !pSector ) continue;
@@ -1314,7 +1314,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			addReSync();
 			break;
 		case CV_SAVE:
-			g_World.Save(s.GetArgVal());
+			g_World.Save(s.GetArgVal() != 0);
 			break;
 		case CV_SCROLL:
 			// put a scroll up.

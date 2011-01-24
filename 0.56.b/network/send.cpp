@@ -105,7 +105,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 	ADDTOCALLSTACK("PacketCharacterStatus::PacketCharacterStatus");
 
 	const CChar* character = target->GetChar();
-	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && !other->Char_GetDef()->GetHireDayWage() );
+	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && other->Char_GetDef()->GetHireDayWage() == 0 );
 
 	initLength();
 
@@ -2552,7 +2552,7 @@ int PacketVendorSellList::searchContainer(CClient* target, const CItemContainer*
 	int count(0);
 	std::deque<CItemContainer*> otherBoxes;
 
-	while (true)
+	for (;;)
 	{
 		if (item != NULL)
 		{

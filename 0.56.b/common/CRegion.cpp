@@ -25,7 +25,7 @@ CTeleport::CTeleport( TCHAR * pszArgs )
 	Read( ppCmds[0] );
 	m_ptDst.Read( ppCmds[1] );
 	if ( ppCmds[3] )
-		bNpc = ATOI(ppCmds[3]);
+		bNpc = (ATOI(ppCmds[3]) != 0);
 	else
 		bNpc = false;
 }
@@ -253,7 +253,7 @@ bool CGRegion::IsEqualRegion( const CGRegion * pRegionTest ) const
 
 	for ( int j=0; j<iQty; j++ )
 	{
-		for ( int i=0; true; i++ )
+		for ( int i=0; ; i++ )
 		{
 			if ( i>=iQtyTest )
 				return( false );
@@ -296,7 +296,7 @@ void CRegionBase::UnRealizeRegion()
 	// remove myself from the world.
 	// used in the case of a ship where the region will move.
 
-	for ( int i=0; true; i++ )
+	for ( int i=0; ; i++ )
 	{
 		CSector * pSector = GetSector(i);
 		if ( pSector == NULL )
@@ -456,7 +456,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 		case RC_CLIENTS:
 			{
 				int i = 0, iClients = 0;
-				for ( ; true; i++ )
+				for ( ; ; i++ )
 				{
 					CSector	*pSector = GetSector(i);
 					if ( pSector == NULL ) break;
@@ -538,9 +538,12 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			break;
 		case RC_TYPEREGION:
 			{
-				CItem		*pItem = GetResourceID().ItemFind();
-				CItemBase	*pBase;
-				if ( pItem && ( pBase = pItem->Item_GetDef() ))
+				const CItemBase * pBase = NULL;
+				const CItem * pItem = GetResourceID().ItemFind();
+				if (pItem != NULL)
+					pBase = pItem->Item_GetDef();
+				
+				if (pBase != NULL)
 					sVal = pBase->GetResourceName();
 				else
 					sVal = "";
@@ -583,7 +586,7 @@ bool CRegionBase::r_LoadVal( CScript & s )
 			TogRegionFlags( REGION_FLAG_ANNOUNCE, ( ! s.HasArgs()) || s.GetArgVal());
 			break;
 		case RC_ARENA:
-			TogRegionFlags( REGION_FLAG_ARENA, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_ARENA, s.GetArgVal() != 0);
 			break;
 		case RC_BUILDABLE:
 			TogRegionFlags( REGION_FLAG_NOBUILDING, ! s.GetArgVal());
@@ -620,13 +623,13 @@ bool CRegionBase::r_LoadVal( CScript & s )
 			SetModified( REGMOD_NAME );
 			break;
 		case RC_NODECAY:
-			TogRegionFlags( REGION_FLAG_NODECAY, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_NODECAY, s.GetArgVal() != 0);
 			break;
 		case RC_NOBUILD:
-			TogRegionFlags( REGION_FLAG_NOBUILDING, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_NOBUILDING, s.GetArgVal() != 0);
 			break;
 		case RC_NOPVP:
-			TogRegionFlags( REGION_FLAG_NO_PVP, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_NO_PVP, s.GetArgVal() != 0);
 			break;
 		case RC_P:
 			m_pt.Read(s.GetArgStr());
@@ -647,10 +650,10 @@ bool CRegionBase::r_LoadVal( CScript & s )
 				return( AddRegionRect( rect ));
 			}
 		case RC_SAFE:
-			TogRegionFlags( REGION_FLAG_SAFE, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_SAFE, s.GetArgVal() != 0);
 			break;
 		case RC_UNDERGROUND:
-			TogRegionFlags( REGION_FLAG_UNDERGROUND, s.GetArgVal());
+			TogRegionFlags( REGION_FLAG_UNDERGROUND, s.GetArgVal() != 0);
 			break;
 		default:
 			return false;
@@ -847,7 +850,7 @@ bool CRegionBase::SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsol
 	// Send a command to all the CSectors in this region.
 
 	bool fRet = false;
-	for ( int i=0; true; i++ )
+	for ( int i=0; ; i++ )
 	{
 		CSector * pSector = GetSector(i);
 		if ( pSector == NULL )
@@ -959,8 +962,8 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 				if ( *pszKey == '.' )	// do we have an argument?
 				{
 					SKIP_SEPARATORS( pszKey );
-					int iQty = Exp_GetVal( pszKey ); 
-					if ( iQty < 0 || iQty >= m_TagDefs.GetCount() )
+					size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) ); 
+					if ( iQty >= m_TagDefs.GetCount() )
 						return( false );	// tryig to get non-existant tag
 						
 					CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );

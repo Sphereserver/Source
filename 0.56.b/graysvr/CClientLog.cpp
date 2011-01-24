@@ -40,7 +40,6 @@ bool CClient::IsConnecting() const
 		default:
 			return true;
 	}
-	return true;
 }
 
 
@@ -215,7 +214,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 	DEBUG_MSG(( "%x:Login_Relay to server %s with AuthId %d\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId ));
 
 	EXC_SET("server relay packet");
-	PacketServerRelay* cmd = new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
+	new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
 	
 	m_Targ_Mode = CLIMODE_SETUP_RELAY;
 	return( true );
@@ -269,14 +268,14 @@ BYTE CClient::Login_ServerList( const char * pszAccount, const char * pszPasswor
 	// If the messages are garbled make sure they are terminated to correct length.
 
 	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE+3];
-	int iLenAccount = Str_GetBare( szAccount, pszAccount, sizeof(szAccount)-1 );
+	size_t iLenAccount = Str_GetBare( szAccount, pszAccount, sizeof(szAccount)-1 );
 	if ( iLenAccount > MAX_ACCOUNT_NAME_SIZE )
 		return( PacketLoginError::BadAccount );
 	if ( iLenAccount != strlen(pszAccount))
 		return( PacketLoginError::BadAccount );
 
 	TCHAR szPassword[MAX_NAME_SIZE+3];
-	int iLenPassword = Str_GetBare( szPassword, pszPassword, sizeof( szPassword )-1 );
+	size_t iLenPassword = Str_GetBare( szPassword, pszPassword, sizeof( szPassword )-1 );
 	if ( iLenPassword > MAX_NAME_SIZE )
 		return( PacketLoginError::BadPassword );
 	if ( iLenPassword != strlen(pszPassword))
@@ -514,16 +513,16 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 	if ( !strpbrk( (char*)pRequest, " \t\012\015" ) )	// malformed request
 		return false;
 
-	TCHAR	*ppLines[16];
+	TCHAR * ppLines[16];
 	int iQtyLines = Str_ParseCmds((TCHAR*)pRequest, ppLines, COUNTOF(ppLines), "\r\n");
 	if (( iQtyLines < 1 ) || ( iQtyLines >= 15 ))	// too long request
 		return false;
 
 	// Look for what they want to do with the connection.
-	bool	fKeepAlive = false;
-	CGTime	dateIfModifiedSince;
-	TCHAR	*pszReferer = NULL;
-	int		iContentLength = 0;
+	bool fKeepAlive = false;
+	CGTime dateIfModifiedSince;
+	TCHAR * pszReferer = NULL;
+	size_t iContentLength = 0;
 	for ( int j = 1; j < iQtyLines; j++ )
 	{
 		TCHAR	*pszArgs = Str_TrimWhitespace(ppLines[j]);
@@ -542,7 +541,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 		{
 			pszArgs += 15;
 			GETNONWHITESPACE(pszArgs);
-			iContentLength = atol(pszArgs);
+			iContentLength = strtoul(pszArgs, NULL, 10);
 		}
 		else if ( ! strnicmp( pszArgs, "If-Modified-Since:", 18 ))
 		{
@@ -581,10 +580,10 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 	m_net->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
 
 	// disable NAGLE algorythm for data compression
-	nbool=true;
-	m_net->m_socket.SetSockOpt( TCP_NODELAY,&nbool,sizeof(BOOL),IPPROTO_TCP);
+	nbool = true;
+	m_net->m_socket.SetSockOpt( TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
 	
-	if ( !memcmp(ppLines[0], "POST", 4) )
+	if ( memcmp(ppLines[0], "POST", 4) == 0 )
 	{
 		if ( iContentLength > strlen(ppLines[iQtyLines-1]) )
 			return false;
@@ -667,7 +666,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 
 	if ( !xCanEncLogin() )
 	{
-		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE? PacketLoginError::EncNoCrypt:PacketLoginError::EncCrypt) );
+		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE? PacketLoginError::EncNoCrypt : PacketLoginError::EncCrypt) );
 		return( false );
 	}
 	else if ( m_Crypt.GetConnectType() == CONNECT_LOGIN && !xCanEncLogin(true) )

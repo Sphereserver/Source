@@ -33,6 +33,7 @@ public:
 	// Standard message handlers.
 	BOOL OnCreate( HWND hwnd, LPCREATESTRUCT lpCreateStruct = NULL  )
 	{
+		UNREFERENCED_PARAMETER(lpCreateStruct);
 		m_hWnd = hwnd;
 		return( TRUE );
 	}
@@ -42,6 +43,7 @@ public:
 	}
 	void OnDestroy( HWND hwnd )
 	{
+		UNREFERENCED_PARAMETER(hwnd);
 		m_hWnd = NULL;
 	}
 
@@ -174,6 +176,9 @@ public:
 public:
 	virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
 	{
+		UNREFERENCED_PARAMETER(message);
+		UNREFERENCED_PARAMETER(wParam);
+		UNREFERENCED_PARAMETER(lParam);
 		return FALSE;
 	}
 };
@@ -290,11 +295,13 @@ public:
 
 	void SetSel( DWORD dwSelection, BOOL bNoScroll = FALSE )
 	{
+		UNREFERENCED_PARAMETER(bNoScroll);
 		ASSERT(IsWindow());
 		SendMessage( EM_SETSEL, (WPARAM) dwSelection, (LPARAM) dwSelection );
 	}
 	void SetSel( int nStartChar, int nEndChar, BOOL bNoScroll = FALSE )
 	{
+		UNREFERENCED_PARAMETER(bNoScroll);
 		ASSERT(IsWindow());
 		SendMessage( EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
 	}
@@ -337,6 +344,7 @@ public:
 
 	void SetSel( int nStartChar, int nEndChar, BOOL bNoScroll = FALSE )
 	{
+		UNREFERENCED_PARAMETER(bNoScroll);
 		ASSERT(IsWindow());
 		CHARRANGE range;
 		range.cpMin = nStartChar;

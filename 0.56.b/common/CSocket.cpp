@@ -251,6 +251,7 @@ void CGSocket::Clear()
 int CGSocket::GetLastError(bool bUseErrno)
 {
 #ifdef _WIN32
+	UNREFERENCED_PARAMETER(bUseErrno);
 	return( WSAGetLastError() );
 #else
 	return( !bUseErrno ? h_errno : errno );	// WSAGetLastError()

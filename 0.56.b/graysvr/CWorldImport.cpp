@@ -30,6 +30,9 @@ public:
 	~CImportSer()
 	{
 	}
+private:
+	CImportSer(const CImportSer& copy);
+	CImportSer& operator=(const CImportSer& other);
 };
 
 struct CImportFile
@@ -57,6 +60,11 @@ public:
 		m_pszArg1 = NULL;
 		m_pszArg2 = NULL;
 	}
+private:
+	CImportFile(const CImportFile& copy);
+	CImportFile& operator=(const CImportFile& other);
+
+public:
 	void CheckLast();
 	void ImportFix();
 	bool ImportSCP( CScript & s, WORD wModeFlags );
@@ -129,7 +137,7 @@ void CImportFile::ImportFix()
 				ASSERT(pItemCheck);
 				pItemCheck->SetAttr(ATTR_MOVE_NEVER);
 				CWorldSearch AreaItems( m_pCurSer->m_pObj->GetTopPoint());
-				while (true)
+				for (;;)
 				{
 					CItem * pItem = AreaItems.GetItem();
 					if ( pItem == NULL )
@@ -167,7 +175,7 @@ void CImportFile::ImportFix()
 
 		// Find it's container.
 		CImportSer* pSerCont = STATIC_CAST <CImportSer*> ( m_ListSer.GetHead());
-		CObjBase * pObjCont;
+		CObjBase * pObjCont = NULL;
 		for ( ; pSerCont != NULL; pSerCont = STATIC_CAST <CImportSer*> ( pSerCont->GetNext()))
 		{
 			if ( pSerCont->m_pObj == NULL )
@@ -183,7 +191,7 @@ void CImportFile::ImportFix()
 				break;
 			}
 		}
-		if ( ! m_pCurSer->IsTopLevel())
+		if ( ! m_pCurSer->IsTopLevel() || pObjCont == NULL)
 		{
 			goto item_delete;
 		}
@@ -295,10 +303,10 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 	ADDTOCALLSTACK("CImportFile::ImportWSC");
 	// This file is a WSC or UOX world script file.
 
-	int mode = IMPFLAGS_NOTHING;
+	IMPFLAGS_TYPE mode = IMPFLAGS_NOTHING;
 	CGString sName;
-	CItem * pItem;
-	CChar * pChar;
+	CItem * pItem = NULL;
+	CChar * pChar = NULL;
 
 	while ( s.ReadTextLine(true))
 	{
@@ -371,6 +379,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			DEBUG_ERR(( "Import:No serial number\n" ));
 			break;
 		}
+
 		if ( mode == IMPFLAGS_ITEMS )	// CItem.
 		{
 			if ( s.IsKey("ID" ))
@@ -389,11 +398,22 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 				DEBUG_ERR(( "Import:Bad Item Key '%s'\n", s.GetKey()));
 				break;
 			}
-			if ( s.IsKey("CONT" ))
+			else if ( s.IsKey("CONT" ))
 			{
 				m_pCurSer->m_dwContSer = ATOI(pArg);
 			}
-			else if ( s.IsKey("X" ))
+			else if ( s.IsKey("LAYER" ))
+			{
+				m_pCurSer->m_layer = (LAYER_TYPE) ATOI(pArg);
+				continue;
+			}
+			else if (pItem == NULL)
+			{
+				DEBUG_ERR(( "Import:Found '%s' before ID.\n", s.GetKey()));
+				continue;
+			}
+
+			if ( s.IsKey("X" ))
 			{
 				CPointMap pt = pItem->GetUnkPoint();
 				pt.m_x = ATOI(pArg);
@@ -417,11 +437,6 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			else if ( s.IsKey("COLOR" ))
 			{
 				pItem->SetHue( ATOI(pArg));
-				continue;
-			}
-			else if ( s.IsKey("LAYER" ))
-			{
-				m_pCurSer->m_layer = (LAYER_TYPE) ATOI(pArg);
 				continue;
 			}
 			else if ( s.IsKey("AMOUNT" ))
@@ -468,9 +483,9 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			{
 				// ??? translate the type field.
 				//int i = ATOI(pArg);
-
 			}
 		}
+
 		if ( mode == IMPFLAGS_CHARS )
 		{
 			if ( s.IsKey("NAME" ))
@@ -488,6 +503,12 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 				DEBUG_ERR(( "Import:Bad Item Key '%s'\n", s.GetKey()));
 				break;
 			}
+			else if (pChar == NULL)
+			{
+				DEBUG_ERR(( "Import:Found '%s' before NAME.\n", s.GetKey()));
+				continue;
+			}
+
 			if ( s.IsKey("X" ))
 			{
 				CPointMap pt = pChar->GetUnkPoint();
@@ -738,7 +759,7 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		int index = 0;
 		CWorldSearch AreaItems( pSrc->GetTopPoint(), iDist );
 		AreaItems.SetSearchSquare(true);
-		while(true)
+		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )
@@ -754,7 +775,7 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		CWorldSearch AreaChars( pSrc->GetTopPoint(), iDist );
 		AreaChars.SetSearchSquare(true);
 		AreaChars.SetAllShow( pSrc->IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
-		while(true)
+		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
@@ -769,7 +790,7 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		CWorldSearch AreaItems( pSrc->GetTopPoint(), iDist );
 		AreaItems.SetSearchSquare(true);
 		AreaItems.SetAllShow( pSrc->IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
-		while(true)
+		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )

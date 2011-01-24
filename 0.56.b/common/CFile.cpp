@@ -209,6 +209,8 @@ void CFileText::CloseBase()
 bool CFileText::OpenBase( void FAR * pszExtra )
 {
 	ADDTOCALLSTACK("CFileText::OpenBase");
+	UNREFERENCED_PARAMETER(pszExtra);
+
 	// Open a file.
 	m_pStream = fopen( GetFilePath(), GetModeStr());
 	if ( m_pStream == NULL )
