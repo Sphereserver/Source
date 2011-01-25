@@ -55,6 +55,12 @@ public:
 	static const char *m_sClassName;
 	
 	static int Compress( BYTE * pOutput, const BYTE * pInput, int inplen );
+
+public:
+	CHuffman() { };
+private:
+	CHuffman(const CHuffman& copy);
+	CHuffman& operator=(const CHuffman& other);
 };
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -210,8 +216,8 @@ private:
 
 public:
 	TCHAR* WriteClientVer( TCHAR * pStr ) const;
-	bool SetClientVerEnum( int iVer, bool bSetEncrypt = true );
-	bool SetClientVerIndex( int iVer, bool bSetEncrypt = true );
+	bool SetClientVerEnum( DWORD iVer, bool bSetEncrypt = true );
+	bool SetClientVerIndex( size_t iVer, bool bSetEncrypt = true );
 	void SetClientVer( const CCrypt & crypt );
 	bool SetClientVer( LPCTSTR pszVersion );
 	static int GetVerFromString( LPCTSTR pszVersion );
@@ -247,6 +253,11 @@ public:
 // --------- Basic
 public:
 	CCrypt();
+private:
+	CCrypt(const CCrypt& copy);
+	CCrypt& operator=(const CCrypt& other);
+
+public:
 	bool Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr = false );
 	void InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay = true );
 	void Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen );

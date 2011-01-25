@@ -71,6 +71,9 @@ public:
 
 protected:
 	virtual bool shouldExit() = 0;
+
+public:
+	virtual ~IThread() { };
 };
 
 // Singleton utility class for working with threads. Holds all running threads inside
@@ -95,6 +98,9 @@ private:
 	static IThread *	m_threads[MAX_THREADS];
 	static int			m_threadCount;
 	static bool			m_inited;
+
+private:
+	ThreadHolder() { };
 };
 
 // Thread implementation. See IThread for list of available methods.
@@ -111,8 +117,13 @@ private:
 
 public:
 	AbstractThread(const char *name, Priority priority = IThread::Normal);
-	~AbstractThread();
+	virtual ~AbstractThread();
 
+private:
+	AbstractThread(const AbstractThread& copy);
+	AbstractThread& operator=(const AbstractThread& other);
+
+public:
 	virtual unsigned getId();
 	virtual const char *getName();
 
@@ -157,13 +168,18 @@ private:
 
 public:
 	AbstractSphereThread(const char *name, Priority priority = IThread::Normal);
+	virtual ~AbstractSphereThread() { };
 
+private:
+	AbstractSphereThread(const AbstractSphereThread& copy);
+	AbstractSphereThread& operator=(const AbstractSphereThread& other);
+
+public:
 	// allocates a char* with size of THREAD_MAX_LINE_LENGTH characters from the thread local storage
 	char *allocateBuffer();
 	TemporaryStringStorage *allocateStringBuffer();
 
 	// allocates a manageable String from the thread local storage
-	String allocateString();
 	void allocateString(TemporaryString &string);
 
 #ifdef THREAD_TRACK_CALLSTACK
@@ -213,7 +229,12 @@ private:
 public:
 	StackDebugInformation(const char *name);
 	~StackDebugInformation();
-	
+
+private:
+	StackDebugInformation(const StackDebugInformation& copy);
+	StackDebugInformation& operator=(const StackDebugInformation& other);
+
+public:
 	static void printStackTrace();
 };
 

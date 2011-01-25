@@ -55,6 +55,9 @@ struct CElementDef
 	// ELEM_MASK_WORD etc. = Extra masking info if needed. 
 	DWORD   m_extra;
 
+private:
+	CElementDef& operator=(const CElementDef& other);
+
 public:
 	// get structure value.
 	void * GetValPtr( const void * pBaseInst ) const
@@ -83,6 +86,9 @@ public:
 	CElementDef m_elem;
 public:
 	static const char *m_sClassName;
+private:
+	CAssocReg& operator=(const CAssocReg& other);
+public:
 	operator LPCTSTR() const
 	{
 		return( m_pszKey );
@@ -101,12 +107,16 @@ class CGStringListRec : public CGObListRec, public CGString
 	friend class CGStringList;
 public:
 	static const char *m_sClassName;
+	explicit CGStringListRec( LPCTSTR pszVal ) : CGString( pszVal )
+	{
+	}
+private:
+	CGStringListRec(const CGStringListRec& copy);
+	CGStringListRec& operator=(const CGStringListRec& other);
+public:
 	CGStringListRec * GetNext() const
 	{
 		return STATIC_CAST<CGStringListRec *>( CGObListRec::GetNext() );
-	}
-	CGStringListRec( LPCTSTR pszVal ) : CGString( pszVal )
-	{
 	}
 };
 
@@ -114,6 +124,12 @@ class CGStringList : public CGObList 	// obviously a list of strings.
 {
 public:
 	static const char *m_sClassName;
+	CGStringList() { };
+	virtual ~CGStringList() { };
+private:
+	CGStringList(const CGStringList& copy);
+	CGStringList& operator=(const CGStringList& other);
+public:
 	CGStringListRec * GetHead() const
 	{
 		return STATIC_CAST<CGStringListRec *>( CGObList::GetHead() );

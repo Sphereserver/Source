@@ -730,7 +730,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
-	bool fRun = ( rawdir & 0x80 ); // or flying ?
+	bool fRun = ( rawdir & 0x80 ) == 0x80; // or flying ?
 
 	m_pChar->StatFlag_Mod( STATF_Fly, fRun );
 
@@ -971,10 +971,10 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 		//	Call the filtering function
 		if ( m_pChar->r_Call(g_Cfg.m_sCommandTrigger, m_pChar, &Args, NULL, &tr) )
 			if ( tr == TRIGRET_RET_TRUE )
-				return Args.m_iN2;
+				return (Args.m_iN2 != 0);
 
-		m_bAllowCommand = Args.m_iN1;
-		m_bAllowSay = Args.m_iN2;
+		m_bAllowCommand = ( Args.m_iN1 != 0 );
+		m_bAllowSay = ( Args.m_iN2 != 0 );
 	}
 
 	if ( !m_bAllowCommand && !m_bAllowSay )
@@ -1055,12 +1055,11 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD ite
 
 	CItemVendable* pItem;
 	INT64 costtotal = 0;
-	int i;
 
 	//	Check if the vendor really has so much items
-	for (i = 0; i < itemCount; ++i)
+	for (size_t i = 0; i < itemCount; ++i)
 	{
-		if ( !items[i].m_serial )
+		if ( items[i].m_serial.IsValidUID() == false )
 			continue;
 
 		pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
@@ -1104,9 +1103,9 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD ite
 	}
 
 	//	Move the items bought into your pack.
-	for ( i = 0; i < itemCount; ++i )
+	for ( size_t i = 0; i < itemCount; ++i )
 	{
-		if ( !items[i].m_serial )
+		if ( items[i].m_serial.IsValidUID() == false )
 			break;
 
 		pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
@@ -1241,7 +1240,7 @@ do_consume:
 	//	Clear the vendor display.
 	addVendorClose(pVendor);
 
-	if ( i )	// if anything was sold, sound this
+	if ( costtotal > 0 )	// if anything was sold, sound this
 		addSound( 0x057 );
 }
 
@@ -1288,11 +1287,10 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD it
 	int iGold = 0;
 	bool fShortfall = false;
 
-	for (int i = 0; i < itemCount; i++)
+	for (size_t i = 0; i < itemCount; i++)
 	{
-
 		CItemVendable * pItem = dynamic_cast <CItemVendable *> (items[i].m_serial.ItemFind());
-		if ( !pItem || !pItem->IsValidSaleItem(true) )
+		if ( pItem == NULL || pItem->IsValidSaleItem(true) == false )
 		{
 			Event_VendorSell_Cheater( 0x3 );
 			return;
@@ -1379,6 +1377,7 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD it
 void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen )
 {
 	ADDTOCALLSTACK("CClient::Event_Profile");
+	UNREFERENCED_PARAMETER(iProfileLen);
 	// mode = 0 = Get profile, 1 = Set profile
 	if ( m_pChar == NULL )
 		return;
@@ -1415,6 +1414,7 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, 
 void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 {
 	ADDTOCALLSTACK("CClient::Event_MailMsg");
+	UNREFERENCED_PARAMETER(uid2);
 	// NOTE: How do i protect this from spamming others !!!
 	// Drag the mail bag to this clients char.
 	if ( m_pChar == NULL )
@@ -1463,7 +1463,7 @@ void CClient::Event_ToolTip( CGrayUID uid )
 	addToolTip(uid.ObjFind(), z);
 }
 
-void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip )
+void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip )
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
 	// result of addPrompt
@@ -1485,11 +1485,11 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD 
 	else
 	{
 		if ( bNoStrip )	// Str_GetBare will eat unicode characters
-			len = strcpylen( szText, pszText, sizeof(szText) );
+			len = strcpylen( szText, pszText, COUNTOF(szText) );
 		else if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
-			len = Str_GetBare( szText, pszText, sizeof(szText), "|~=[]{|}~" );
+			len = Str_GetBare( szText, pszText, COUNTOF(szText), "|~=[]{|}~" );
 		else
-			len = Str_GetBare( szText, pszText, sizeof(szText), "|~,=[]{|}~" );
+			len = Str_GetBare( szText, pszText, COUNTOF(szText), "|~,=[]{|}~" );
 	}
 
 	LPCTSTR pszReName = NULL;
@@ -1599,9 +1599,9 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD 
 	}
 
 	sMsg.Format("%s%s", pszPrefix, szText);
+#ifndef _NEWGUILDSYSTEM
 	switch (pItem->GetType())
 	{
-#ifndef _NEWGUILDSYSTEM
 		case IT_STONE_GUILD:
 		case IT_STONE_TOWN:
 			{
@@ -1610,13 +1610,15 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD 
 					return;
 			}
 			break;
-#endif
-
 		default:
 			pItem->SetName(sMsg);
 			sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
 			break;
 	}
+#else
+	pItem->SetName(sMsg);
+	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
+#endif
 
 	SysMessage(sMsg);
 }
@@ -1624,7 +1626,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD 
 
 
 
-void CClient::Event_Talk_Common(char *szText) // PC speech
+void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 {
 	ADDTOCALLSTACK("CClient::Event_Talk_Common");
 	// ??? Allow NPC's to talk to each other in the future.
@@ -1663,7 +1665,7 @@ void CClient::Event_Talk_Common(char *szText) // PC speech
 	// Guards are special
 	// They can't hear u if your dead.
 	bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
-	if ( ! fGhostSpeak && ( FindStrWord( szText, "GUARD" ) || FindStrWord( szText, "GUARDS" )))
+	if ( ! fGhostSpeak && ( FindStrWord( szText, "GUARD" ) > 0 || FindStrWord( szText, "GUARDS" ) > 0))
 	{
 		m_pChar->CallGuards(NULL);
 	}
@@ -1686,20 +1688,20 @@ void CClient::Event_Talk_Common(char *szText) // PC speech
 	// Find an NPC that may have heard us.
 	CChar * pCharAlt = NULL;
 	int iAltDist = UO_MAP_VIEW_SIGHT;
-	CChar * pChar;
-	int i=0;
+	CChar * pChar = NULL;
+	size_t i = 0;
 
 	CWorldSearch AreaChars( m_pChar->GetTopPoint(), UO_MAP_VIEW_SIGHT );
-	while (true)
+	for (;;)
 	{
 		pChar = AreaChars.GetChar();
-		if ( !pChar )
+		if ( pChar == NULL )
 			break;
 
 		if ( pChar->IsStatFlag(STATF_COMM_CRYSTAL))
 		{
 			CItem	*pItemNext, *pItem = pChar->GetContentHead();
-			for ( ; pItem ; pItem = pItemNext )
+			for ( ; pItem != NULL; pItem = pItemNext )
 			{
 				pItemNext = pItem->GetNext();
 				pItem->OnHear(szText, m_pChar);
@@ -1724,7 +1726,7 @@ void CClient::Event_Talk_Common(char *szText) // PC speech
 			i = pChar->NPC_OnHearName( szText );
 			fNamed = true;
 		}
-		if ( i )
+		if ( i > 0 )
 		{
 			while ( ISWHITESPACE( szText[i] ))
 				i++;
@@ -1767,7 +1769,7 @@ void CClient::Event_Talk_Common(char *szText) // PC speech
 		{
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
 			{
-				if ( FindStrWord( szText, "BANK" ))
+				if ( FindStrWord( szText, "BANK" ) > 0)
 					break;
 			}
 		}
@@ -1812,7 +1814,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 
 	// Rip out the unprintables first.
 	TCHAR szText[MAX_TALK_BUFFER];
-	int len;
+	size_t len;
 
 	if ( bNoStrip )
 	{
@@ -1838,7 +1840,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 	if ( !Event_Command(pszText,mode) )
 	{
 		bool	fCancelSpeech	= false;
-		char	z[MAX_TALK_BUFFER];
+		TCHAR	z[MAX_TALK_BUFFER];
 
 		if ( m_pChar->OnTriggerSpeech(false, (TCHAR *)pszText, m_pChar, mode, wHue) )
 			fCancelSpeech	= true;
@@ -1874,7 +1876,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 		if ( !fCancelSpeech && ( len <= 128 ) ) // From this point max 128 chars
 		{
 			m_pChar->SpeakUTF8(z, wHue, (TALKMODE_TYPE)mode, m_pChar->m_fonttype, GetAccount()->m_lang);
-			Event_Talk_Common((char *)z);
+			Event_Talk_Common(static_cast<TCHAR*>(z));
 		}
 	}
 }
@@ -1914,7 +1916,7 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 	if ( iLen <= 0 )
 		return;
 
-	LPCTSTR pszText = szText;
+	TCHAR* pszText = szText;
 	GETNONWHITESPACE(pszText);
 
 	if ( !Event_Command(pszText, mMode) )
@@ -1936,9 +1938,9 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 
 		if ( g_Cfg.m_fSuppressCapitals )
 		{
-			int chars = strlen(szText);
-			int capitals = 0;
-			int i = 0;
+			size_t chars = strlen(szText);
+			size_t capitals = 0;
+			size_t i = 0;
 			for ( i = 0; i < chars; i++ )
 				if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
 					capitals++;
@@ -1949,14 +1951,14 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 					if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
 						szText[i] += 0x20;
 
-				CvtSystemToNUNICODE(wszText, COUNTOF(wszText), szText, chars);
+				iTextLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, chars);
 			}
 		}
 
 		if ( !fCancelSpeech && ( iLen <= 128 ) ) // From this point max 128 chars
 		{
 			m_pChar->SpeakUTF8Ex(puText, wHue, mMode, font, pAccount->m_lang);
-			Event_Talk_Common((char *)pszText);
+			Event_Talk_Common(static_cast<TCHAR*>(pszText));
 		}
 	}
 }
@@ -2023,7 +2025,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 		SKIP_SEPARATORS(pszKey);
 		for ( int i=0; i<iQty; i++ )
 		{
-			if ( iNum == m_CheckArray[i] )
+			if ( (DWORD)iNum == m_CheckArray[i] )
 			{
 				sVal = "1";
 				return( true );
@@ -2202,7 +2204,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	if (m_pChar == NULL)
 		return;
 
-	if (context != GetTargMode())
+	if (context != (DWORD)GetTargMode())
 	{
 		// unexpected context
 		if (context != 0 && (pt.m_x != -1 || uid.GetPrivateUID() != 0))
@@ -2321,7 +2323,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers))
 		{
-			Args = 1;
+			Args.m_iN1 = 1;
 			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuRequest, this->GetChar(), &Args);
 			fPreparePacket = true; // There is no hardcoded stuff for items
 		}
@@ -2336,7 +2338,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers))
 		{
-			Args = 1;
+			Args.m_iN1 = 1;
 			int iRet = pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
 			if ( iRet  == TRIGRET_RET_TRUE )
 				fPreparePacket = true;
@@ -2398,7 +2400,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 
 		if (( Args.m_iN1 != 1 ) && ( !IsSetEF(EF_Minimize_Triggers)))
 		{
-			Args = 2;
+			Args.m_iN1 = 2;
 			pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
 		}
 	}
@@ -2434,7 +2436,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers) )
 		{
-			Args = EntryTag;
+			Args.m_iN1 = EntryTag;
 			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuSelect, this->GetChar(), &Args);
 		}
 		return; //There is no hardcoded stuff for items
@@ -2443,7 +2445,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	{
 		if ( !IsSetEF(EF_Minimize_Triggers))
 		{
-			Args = EntryTag;
+			Args.m_iN1 = EntryTag;
 			int iRet = uObj.CharFind()->OnTrigger(CTRIG_ContextMenuSelect, this->GetChar(), &Args);
 			if ( iRet == TRIGRET_RET_TRUE )
 				return;
@@ -2540,6 +2542,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 void CClient::Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CClient::Event_BugReport");
+	UNREFERENCED_PARAMETER(len);
 	if ( !m_pChar )
 		return;
 
@@ -2698,7 +2701,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 			if ( m_pChar && !m_pChar->IsStatFlag( STATF_DEAD ) )
 			{
 				CWorldSearch Area( m_pChar->GetTopPoint(), 3 );
-				while(true)
+				for (;;)
 				{
 					CItem * pItem = Area.GetItem();
 					if ( pItem == NULL )

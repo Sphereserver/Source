@@ -13,11 +13,14 @@ class CAtomDef : public CGString
 private:
 	int m_iUseCount;
 public:
-	CAtomDef( LPCTSTR pszStr ) :
+	explicit CAtomDef( LPCTSTR pszStr ) :
 		CGString( pszStr )
 	{
 		m_iUseCount = 1;	
 	}
+private:
+	CAtomDef(const CAtomDef& copy);
+	CAtomDef& operator=(const CAtomDef& other);
 };
 
 class CAtomRef
@@ -33,29 +36,31 @@ public:
 			return( NULL );
 		return( *m_pDef );
 	}
-	void SetStr( LPCTSTR pszText );
 
+	void SetStr( LPCTSTR pszText );
 	void Copy( const CAtomRef & atom );
+
+	CAtomRef()
+	{
+		m_pDef = NULL;
+	}
+	explicit CAtomRef( LPCTSTR pszName )
+	{
+		m_pDef = NULL;
+		SetStr(pszName);
+	}
+	~CAtomRef()
+	{
+		ClearRef();
+	}
 	CAtomRef & operator = ( const CAtomRef & atom )
 	{
 		// Copy operator is quick.
 		Copy( atom );
 		return( *this );
 	}
-
-	~CAtomRef()
-	{
-		ClearRef();
-	}
-	CAtomRef()
-	{
-		m_pDef = NULL;
-	}
-	CAtomRef( LPCTSTR pszName )
-	{
-		m_pDef = NULL;
-		SetStr(pszName);
-	}
+private:
+	CAtomRef(const CAtomRef& copy);
 };
 
 #endif // _INC_CATOM_H

@@ -25,6 +25,12 @@ private:
 public:
 	CSVFile();
 	~CSVFile();
+
+private:
+	CSVFile(const CSVFile& copy);
+	CSVFile& operator=(const CSVFile& other);
+
+public:
 	int GetColumnCount();
 	int ReadRowContent(char ** ppOutput, DWORD dwRowIndex = -1, int iMaxColumns = MAX_COLUMNS);
 	CSVRowData ReadRowContent(DWORD dwRowIndex = -1);

@@ -977,7 +977,7 @@ void CItemCommCrystal::DupeCopy( const CItem * pItem )
 	if ( pItemCrystal == NULL )
 		return;
 
-	m_Speech = pItemCrystal->m_Speech;
+	m_Speech.Copy(&pItemCrystal->m_Speech);
 }
 
 //////////////////////////////////////

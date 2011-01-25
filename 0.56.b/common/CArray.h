@@ -35,8 +35,12 @@ class CGObListRec	// generic list record.
 		CGObListRec * 	GetPrev() const { return m_pPrev; }
 	public:
 		CGObListRec();
-		inline void RemoveSelf();
 		virtual ~CGObListRec();
+	private:
+		CGObListRec(const CGObListRec& copy);
+		CGObListRec& operator=(const CGObListRec& other);
+	public:
+		inline void RemoveSelf();
 };
 
 class CGObList	// generic list of objects based on CGObListRec.
@@ -55,6 +59,12 @@ class CGObList	// generic list of objects based on CGObListRec.
 		virtual void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 	public:
 		static const char *m_sClassName;
+		CGObList();
+		virtual ~CGObList();
+	private:
+		CGObList(const CGObList& copy);
+		CGObList& operator=(const CGObList& other);
+	public:
 		CGObListRec * GetAt( int index ) const;
 		// pPrev = NULL = first
 		virtual void InsertAfter( CGObListRec * pNewRec, CGObListRec * pPrev = NULL );
@@ -66,8 +76,6 @@ class CGObList	// generic list of objects based on CGObListRec.
 		CGObListRec * GetTail() const;
 		int GetCount() const;
 		bool IsEmpty() const;
-		CGObList();
-		virtual ~CGObList();
 };
 
 ///////////////////////////////////////////////////////////
@@ -85,6 +93,11 @@ class CGTypedArray
 	public:
 		static const char *m_sClassName;
 		CGTypedArray();
+		virtual ~CGTypedArray();
+		const CGTypedArray<TYPE, ARG_TYPE> & operator=( const CGTypedArray<TYPE, ARG_TYPE> & array );
+	private:
+		CGTypedArray<TYPE, ARG_TYPE>(const CGTypedArray<TYPE, ARG_TYPE> & copy);
+	public:
 		TYPE * GetBasePtr() const;	// This is dangerous to use of course.
 		int GetCount() const;
 		int GetRealCount() const;
@@ -105,8 +118,6 @@ class CGTypedArray
 		virtual void ConstructElements(TYPE* pElements, int nCount );
 		virtual void DestructElements(TYPE* pElements, int nCount );
 		void Copy( const CGTypedArray<TYPE, ARG_TYPE> * pArray );
-		const CGTypedArray<TYPE, ARG_TYPE> & operator=( const CGTypedArray<TYPE, ARG_TYPE> & array );
-		~CGTypedArray();
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -122,6 +133,12 @@ class CGPtrTypeArray : public CGTypedArray<TYPE, TYPE>	// void*
 		int FindPtr( TYPE pData ) const;
 		bool RemovePtr( TYPE pData );
 		bool IsValidIndex( int i ) const;
+	public:
+		CGPtrTypeArray() { };
+		virtual ~CGPtrTypeArray() { };
+	private:
+		CGPtrTypeArray<TYPE>(const CGPtrTypeArray<TYPE> & copy);
+		CGPtrTypeArray<TYPE>& operator=(const CGPtrTypeArray<TYPE> & other);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +156,12 @@ class CGObArray : public CGPtrTypeArray<TYPE>
 		void Clean(bool bElements = false);
 		bool DeleteOb( TYPE pData );
 		void DeleteAt( int nIndex );
-		~CGObArray();
+	public:
+		CGObArray() { };
+		virtual ~CGObArray();
+	private:
+		CGObArray<TYPE>(const CGObArray<TYPE> & copy);
+		CGObArray<TYPE> & operator=(const CGObArray<TYPE> & other);
 };
 
 ////////////////////////////////////////////////////////////
@@ -148,12 +170,19 @@ class CGObArray : public CGPtrTypeArray<TYPE>
 template<class TYPE,class KEY_TYPE>
 struct CGObSortArray : public CGObArray<TYPE>
 {
-	int FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces = false ) const;
-	int FindKey( KEY_TYPE key ) const;
-	int AddPresorted( int index, int iCompareRes, TYPE pNew );
-	int AddSortKey( TYPE pNew, KEY_TYPE key );
-	virtual int CompareKey( KEY_TYPE, TYPE, bool fNoSpaces ) const = 0;
-	void DeleteKey( KEY_TYPE key );
+	public:
+		int FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces = false ) const;
+		int FindKey( KEY_TYPE key ) const;
+		int AddPresorted( int index, int iCompareRes, TYPE pNew );
+		int AddSortKey( TYPE pNew, KEY_TYPE key );
+		virtual int CompareKey( KEY_TYPE, TYPE, bool fNoSpaces ) const = 0;
+		void DeleteKey( KEY_TYPE key );
+	public:
+		CGObSortArray() { };
+		virtual ~CGObSortArray() { };
+	private:
+		CGObSortArray<TYPE, KEY_TYPE>(const CGObSortArray<TYPE, KEY_TYPE> & copy);
+		CGObSortArray<TYPE, KEY_TYPE> & operator=(const CGObSortArray<TYPE, KEY_TYPE> & other);
 };
 
 ///////////////////////////////////////////////////////////

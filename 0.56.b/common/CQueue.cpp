@@ -24,7 +24,7 @@ const BYTE * CQueueBytes::RemoveDataLock() const
 	return m_Mem.GetData();
 }
 
-void CQueueBytes::RemoveDataAmount( int iSize )
+void CQueueBytes::RemoveDataAmount( size_t iSize )
 {
 	ADDTOCALLSTACK("CQueueBytes::RemoveDataAmount");
 	// use up this read data. (from the start)
@@ -34,12 +34,12 @@ void CQueueBytes::RemoveDataAmount( int iSize )
 	memmove( m_Mem.GetData(), m_Mem.GetData()+iSize, m_iDataQty );
 }
 
-BYTE * CQueueBytes::AddNewDataLock( int iLen )
+BYTE * CQueueBytes::AddNewDataLock( size_t iLen )
 {
 	ADDTOCALLSTACK("CQueueBytes::AddNewDataLock");
 	// lock the queue to place this data in it.
 	ASSERT(iLen>=0);
-	int iLenNew = m_iDataQty + iLen;
+	size_t iLenNew = m_iDataQty + iLen;
 	if ( iLenNew > m_Mem.GetDataLength() )
 	{
 		// re-alloc a bigger buffer. as needed.
@@ -51,13 +51,13 @@ BYTE * CQueueBytes::AddNewDataLock( int iLen )
 	return( m_Mem.GetData() + m_iDataQty );
 }
 
-void CQueueBytes::AddNewDataFinish( int iLen )
+void CQueueBytes::AddNewDataFinish( size_t iLen )
 {
 	// The data is now ready.
 	m_iDataQty += iLen;
 }
 
-void CQueueBytes::AddNewData( const BYTE * pData, int iLen )
+void CQueueBytes::AddNewData( const BYTE * pData, size_t iLen )
 {
 	ADDTOCALLSTACK("CQueueBytes::AddNewData");
 	// Add new data to the end of the queue.

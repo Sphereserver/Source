@@ -575,7 +575,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 	linger llinger;
 	llinger.l_onoff = 1;
 	llinger.l_linger = 500;	// in mSec
-	m_net->m_socket.SetSockOpt(SO_LINGER, (char*)&llinger, sizeof(struct linger));
+	m_net->m_socket.SetSockOpt(SO_LINGER, (char*)&llinger, sizeof(linger));
 	BOOL nbool = true;
 	m_net->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
 

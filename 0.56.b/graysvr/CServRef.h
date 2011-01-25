@@ -63,6 +63,11 @@ public:
 public:
 	CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP );
 
+private:
+	CServerDef(const CServerDef& copy);
+	CServerDef& operator=(const CServerDef& other);
+
+public:
 	LPCTSTR GetStatus() const
 	{
 		return(m_sStatus);

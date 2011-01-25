@@ -10,13 +10,14 @@
  *
  *
  ***************************************************************************/
-PacketUnknown::PacketUnknown(long size) : Packet(size)
+PacketUnknown::PacketUnknown(size_t size) : Packet(size)
 {
 }
 
 bool PacketUnknown::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketUnknown::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	return true;
 }
@@ -29,7 +30,7 @@ bool PacketUnknown::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketCreate::PacketCreate(long size) : Packet(size)
+PacketCreate::PacketCreate(size_t size) : Packet(size)
 {
 }
 
@@ -193,7 +194,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
  *
  *
  ***************************************************************************/
-PacketMovementReq::PacketMovementReq(long size) : Packet(size)
+PacketMovementReq::PacketMovementReq(size_t size) : Packet(size)
 {
 }
 
@@ -202,14 +203,14 @@ bool PacketMovementReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketMovementReq::onReceive");
 
 	BYTE direction = readByte();
-	int sequence = readByte();
+	short sequence = readByte();
 	DWORD crypt = readInt32(); // fast walk key
 
 	doMovement(net, direction, sequence, crypt);
 	return true;
 }
 
-void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, DWORD crypt)
+void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt)
 {
 	ADDTOCALLSTACK("PacketMovementReq::doMovement");
 
@@ -236,7 +237,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
 
 	if (canMoveThere == TRIGRET_RET_FALSE)
 	{
-		new PacketMovementRej(client, sequence);
+		new PacketMovementRej(client, static_cast<BYTE>(sequence));
 		net->m_sequence = 0;
 	}
 	else if (canMoveThere == TRIGRET_RET_TRUE)
@@ -256,7 +257,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, int sequence, 
  *
  *
  ***************************************************************************/
-PacketSpeakReq::PacketSpeakReq() : Packet(-1)
+PacketSpeakReq::PacketSpeakReq() : Packet(0)
 {
 }
 
@@ -269,14 +270,20 @@ bool PacketSpeakReq::onReceive(NetState* net)
 	if (client->GetChar() == NULL)
 		return false;
 
-	WORD packetLength = readInt16();
+	size_t packetLength = readInt16();
 	TALKMODE_TYPE mode = (TALKMODE_TYPE)readByte();
 	HUE_TYPE hue = (HUE_TYPE)readInt16();
 	skip(2); // font
-	TCHAR text[MAX_TALK_BUFFER];
 
-	packetLength = (WORD)(packetLength - getPosition());
-	readStringASCII(text, minimum(MAX_TALK_BUFFER, packetLength));
+	if (packetLength < getPosition())
+		return false;
+
+	packetLength -= getPosition();
+	if (packetLength > MAX_TALK_BUFFER)
+		packetLength = MAX_TALK_BUFFER;
+
+	TCHAR text[MAX_TALK_BUFFER];
+	readStringASCII(text, minimum(COUNTOF(text), packetLength));
 
 	client->Event_Talk(text, hue, mode, false);
 	return true;
@@ -370,9 +377,10 @@ PacketItemDropReq::PacketItemDropReq() : Packet(14)
 {
 }
 
-long PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
+size_t PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 {
 	ADDTOCALLSTACK("PacketItemDropReq::getExpectedLength");
+	UNREFERENCED_PARAMETER(packet);
 
 	// different size depending on client
 	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA()))
@@ -440,7 +448,7 @@ bool PacketSingleClick::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketTextCommand::PacketTextCommand() : Packet(-1)
+PacketTextCommand::PacketTextCommand() : Packet(0)
 {
 }
 
@@ -551,12 +559,13 @@ PacketDeathStatus::PacketDeathStatus() : Packet(2)
 {
 }
 
-long PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
+size_t PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
 {
 	ADDTOCALLSTACK("PacketDeathStatus::getExpectedLength");
+	UNREFERENCED_PARAMETER(net);
 
 	// different size depending on client
-	int pos = packet->getPosition();
+	size_t pos = packet->getPosition();
 	packet->seek(1);
 	DEATH_MODE_TYPE mode = (DEATH_MODE_TYPE)readByte();
 	packet->seek(pos);
@@ -639,7 +648,7 @@ bool PacketCharStatusReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketSkillLockChange::PacketSkillLockChange() : Packet(-1)
+PacketSkillLockChange::PacketSkillLockChange() : Packet(0)
 {
 }
 
@@ -683,7 +692,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketVendorBuyReq::PacketVendorBuyReq() : Packet(-1)
+PacketVendorBuyReq::PacketVendorBuyReq() : Packet(0)
 {
 }
 
@@ -744,7 +753,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	// combine goods into one list
 	CItemVendable* item;
-	for (int i = 0; i < itemCount; i++)
+	for (size_t i = 0; i < itemCount; i++)
 	{
 		skip(1); // layer
 		CGrayUID serial(readInt32());
@@ -758,7 +767,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		}
 
 		// search for it in the list
-		int index;
+		size_t index;
 		for (index = 0; index < itemCount; index++)
 		{
 			if (serial == items[index].m_serial)
@@ -922,7 +931,7 @@ bool PacketCharPlay::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketBookPageEdit::PacketBookPageEdit() : Packet(-1)
+PacketBookPageEdit::PacketBookPageEdit() : Packet(0)
 {
 }
 
@@ -962,7 +971,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	skip(-4);
 
-	long len = 0;
+	size_t len = 0;
 	TCHAR* content = Str_GetTemp();
 
 	for (int i = 0; i < pageCount; i++)
@@ -1044,7 +1053,7 @@ bool PacketTarget::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketSecureTradeReq::PacketSecureTradeReq() : Packet(-1)
+PacketSecureTradeReq::PacketSecureTradeReq() : Packet(0)
 {
 }
 
@@ -1087,7 +1096,9 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 			long need2wait(0);
 			CVarDefCont* vardef = container->GetTagDefs()->GetKey("wait1sec");
-			if (vardef) need2wait = vardef->GetValNum();
+			if (vardef != NULL)
+				need2wait = vardef->GetValNum();
+
 			if (need2wait > 0)
 			{
 				long timerow = g_World.GetCurrentTime().GetTimeRaw();
@@ -1101,7 +1112,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 				}
 			}
 
-			container->Trade_Status(arg);
+			container->Trade_Status(arg != 0);
 			return true;
 		}
 
@@ -1120,7 +1131,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketBulletinBoardReq::PacketBulletinBoardReq() : Packet(-1)
+PacketBulletinBoardReq::PacketBulletinBoardReq() : Packet(0)
 {
 }
 
@@ -1388,8 +1399,6 @@ bool PacketMenuChoice::onReceive(NetState* net)
 			DEBUG_ERR(("%x:Unknown Targetting mode for menu %d\n", net->id(), context));
 			return true;
 	}
-
-	return true;
 }
 
 
@@ -1457,7 +1466,7 @@ bool PacketCharDelete::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketCreateNew::PacketCreateNew(void) : PacketCreate(-1)
+PacketCreateNew::PacketCreateNew(void) : PacketCreate(0)
 {
 }
 
@@ -1673,7 +1682,7 @@ bool PacketDyeObject::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketAllNamesReq::PacketAllNamesReq() : Packet(-1)
+PacketAllNamesReq::PacketAllNamesReq() : Packet(0)
 {
 }
 
@@ -1711,7 +1720,7 @@ bool PacketAllNamesReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketPromptResponse::PacketPromptResponse() : Packet(-1)
+PacketPromptResponse::PacketPromptResponse() : Packet(0)
 {
 }
 
@@ -1719,15 +1728,22 @@ bool PacketPromptResponse::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPromptResponse::onReceive");
 
-	WORD length = readInt16();
+	size_t packetLength = readInt16();
 	DWORD context1 = readInt32();
 	DWORD context2 = readInt32();
 	DWORD type = readInt32();
-	TCHAR* text = Str_GetTemp();
-	length -= getPosition();
-	readStringASCII(text, length, false);
 
-	net->getClient()->Event_PromptResp(text, length, context1, context2, type);
+	if (packetLength < getPosition())
+		return false;
+
+	packetLength -= getPosition();
+	if (packetLength > MAX_TALK_BUFFER)
+		packetLength = MAX_TALK_BUFFER;
+
+	TCHAR* text = Str_GetTemp();
+	readStringASCII(text, packetLength, false);
+
+	net->getClient()->Event_PromptResp(text, packetLength, context1, context2, type);
 	return true;
 }
 
@@ -1766,7 +1782,7 @@ bool PacketHelpPageReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketVendorSellReq::PacketVendorSellReq() : Packet(-1)
+PacketVendorSellReq::PacketVendorSellReq() : Packet(0)
 {
 }
 
@@ -1878,6 +1894,7 @@ PacketSystemInfo::PacketSystemInfo() : Packet(149)
 bool PacketSystemInfo::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketSystemInfo::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	skip(148);
 	return true;
@@ -1921,7 +1938,7 @@ bool PacketTipReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketGumpValueInputResponse::PacketGumpValueInputResponse() : Packet(-1)
+PacketGumpValueInputResponse::PacketGumpValueInputResponse() : Packet(0)
 {
 }
 
@@ -2001,7 +2018,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketSpeakReqUNICODE::PacketSpeakReqUNICODE() : Packet(-1)
+PacketSpeakReqUNICODE::PacketSpeakReqUNICODE() : Packet(0)
 {
 }
 
@@ -2014,12 +2031,15 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	if (client->GetChar() == NULL)
 		return false;
 
-	WORD packetLength = readInt16();
+	size_t packetLength = readInt16();
 	TALKMODE_TYPE mode = (TALKMODE_TYPE)readByte();
 	HUE_TYPE hue = (HUE_TYPE)readInt16();
 	FONT_TYPE font = (FONT_TYPE)readInt16();
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
+
+	if (packetLength < getPosition())
+		return false;
 
 	packetLength = (packetLength - getPosition()) / 2;
 	if (packetLength >= MAX_TALK_BUFFER)
@@ -2029,13 +2049,13 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	{
 		mode = (TALKMODE_TYPE)(mode & ~0xc0);
 
-		int count = (readInt16() & 0xFFF0) >> 4;
+		size_t count = (readInt16() & 0xFFF0) >> 4;
 		if (count < 0 || count > 50) // malformed check
 			return true;
 
 		skip(-2);
 		count = (count + 1) * 12;
-		int toskip = count / 8;
+		size_t toskip = count / 8;
 		if ((count % 8) > 0)
 			toskip++;
 
@@ -2065,7 +2085,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketGumpDialogRet::PacketGumpDialogRet() : Packet(-1)
+PacketGumpDialogRet::PacketGumpDialogRet() : Packet(0)
 {
 }
 
@@ -2136,16 +2156,15 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 
 	// package up the gump response info.
 	CDialogResponseArgs resp;
-	int i;
 
 	// store the returned checked boxes' ids for possible later use
-	for (i = 0; i < checkCount; i++)
+	for (size_t i = 0; i < checkCount; i++)
 		resp.m_CheckArray.Add(readInt32());
 
 
 	DWORD textCount = readInt32();
 	TCHAR* text = Str_GetTemp();
-	for (i = 0; i < textCount; i++)
+	for (size_t i = 0; i < textCount; i++)
 	{
 		WORD id = readInt16();
 		WORD length = readInt16();
@@ -2196,7 +2215,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketChatCommand::PacketChatCommand() : Packet(-1)
+PacketChatCommand::PacketChatCommand() : Packet(0)
 {
 }
 
@@ -2207,14 +2226,18 @@ bool PacketChatCommand::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 
-	WORD packetLength = readInt16();
+	size_t packetLength = readInt16();
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
-	NCHAR text[MAX_TALK_BUFFER];
-	int textLength = (packetLength - getPosition()) / 2;
-	if (textLength >= MAX_TALK_BUFFER)
-		textLength = MAX_TALK_BUFFER-1;
 
+	if (packetLength < getPosition())
+		return false;
+
+	size_t textLength = (packetLength - getPosition()) / 2;
+	if (textLength >= MAX_TALK_BUFFER)
+		textLength = MAX_TALK_BUFFER - 1;
+
+	NCHAR text[MAX_TALK_BUFFER];
 	readStringUNICODE((WCHAR*)text, textLength, false);
 
 	client->Event_ChatText(text, textLength, CLanguageID(language));
@@ -2280,7 +2303,7 @@ bool PacketToolTipReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketProfileReq::PacketProfileReq() : Packet(-1)
+PacketProfileReq::PacketProfileReq() : Packet(0)
 {
 }
 
@@ -2345,7 +2368,7 @@ bool PacketMailMessage::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketClientVersion::PacketClientVersion() : Packet(-1)
+PacketClientVersion::PacketClientVersion() : Packet(0)
 {
 }
 
@@ -2356,7 +2379,10 @@ bool PacketClientVersion::onReceive(NetState* net)
 	if (net->getReportedVersion() > 0)
 		return true;
 
-	WORD length = readInt16();
+	size_t length = readInt16();
+	if (length < getPosition())
+		return false;
+
 	length -= getPosition();
 	if (length > 20)
 		length = 20;
@@ -2382,7 +2408,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DEBUG_MSG(("Getting cliver 0x%x/0x%x\n", version, (version&0xFFFFF0)));
 		
-		if (g_Serv.m_ClientVersion.GetClientVer() && ((version&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
+		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}
@@ -2404,7 +2430,7 @@ bool PacketClientVersion::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketExtendedCommand::PacketExtendedCommand() : Packet(-1)
+PacketExtendedCommand::PacketExtendedCommand() : Packet(0)
 {
 }
 
@@ -2445,7 +2471,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketScreenSize::PacketScreenSize() : Packet(-1)
+PacketScreenSize::PacketScreenSize() : Packet(0)
 {
 }
 
@@ -2473,7 +2499,7 @@ bool PacketScreenSize::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketPartyMessage::PacketPartyMessage() : Packet(-1)
+PacketPartyMessage::PacketPartyMessage() : Packet(0)
 {
 }
 
@@ -2572,7 +2598,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketArrowClick::PacketArrowClick() : Packet(-1)
+PacketArrowClick::PacketArrowClick() : Packet(0)
 {
 }
 
@@ -2611,7 +2637,7 @@ bool PacketArrowClick::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketWrestleDisarm::PacketWrestleDisarm() : Packet(-1)
+PacketWrestleDisarm::PacketWrestleDisarm() : Packet(0)
 {
 }
 
@@ -2631,7 +2657,7 @@ bool PacketWrestleDisarm::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketWrestleStun::PacketWrestleStun() : Packet(-1)
+PacketWrestleStun::PacketWrestleStun() : Packet(0)
 {
 }
 
@@ -2651,7 +2677,7 @@ bool PacketWrestleStun::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketLanguage::PacketLanguage() : Packet(-1)
+PacketLanguage::PacketLanguage() : Packet(0)
 {
 }
 
@@ -2677,13 +2703,14 @@ bool PacketLanguage::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketStatusClose::PacketStatusClose() : Packet(-1)
+PacketStatusClose::PacketStatusClose() : Packet(0)
 {
 }
 
 bool PacketStatusClose::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketStatusClose::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	return true;
 }
@@ -2696,7 +2723,7 @@ bool PacketStatusClose::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketAnimationReq::PacketAnimationReq() : Packet(-1)
+PacketAnimationReq::PacketAnimationReq() : Packet(0)
 {
 }
 
@@ -2745,13 +2772,14 @@ bool PacketAnimationReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketClientInfo::PacketClientInfo() : Packet(-1)
+PacketClientInfo::PacketClientInfo() : Packet(0)
 {
 }
 
 bool PacketClientInfo::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketClientInfo::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	skip(1); // 0x0A
 	skip(4); // flags
@@ -2766,7 +2794,7 @@ bool PacketClientInfo::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketAosTooltipInfo::PacketAosTooltipInfo() : Packet(-1)
+PacketAosTooltipInfo::PacketAosTooltipInfo() : Packet(0)
 {
 }
 
@@ -2800,7 +2828,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketPopupReq::PacketPopupReq() : Packet(-1)
+PacketPopupReq::PacketPopupReq() : Packet(0)
 {
 }
 
@@ -2828,7 +2856,7 @@ bool PacketPopupReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketPopupSelect::PacketPopupSelect() : Packet(-1)
+PacketPopupSelect::PacketPopupSelect() : Packet(0)
 {
 }
 
@@ -2858,7 +2886,7 @@ bool PacketPopupSelect::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketChangeStatLock::PacketChangeStatLock() : Packet(-1)
+PacketChangeStatLock::PacketChangeStatLock() : Packet(0)
 {
 }
 
@@ -2912,7 +2940,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketSpellSelect::PacketSpellSelect() : Packet(-1)
+PacketSpellSelect::PacketSpellSelect() : Packet(0)
 {
 }
 
@@ -2962,7 +2990,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignReq::PacketHouseDesignReq() : Packet(-1)
+PacketHouseDesignReq::PacketHouseDesignReq() : Packet(0)
 {
 }
 
@@ -2993,13 +3021,14 @@ bool PacketHouseDesignReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketAntiCheat::PacketAntiCheat() : Packet(-1)
+PacketAntiCheat::PacketAntiCheat() : Packet(0)
 {
 }
 
 bool PacketAntiCheat::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketAntiCheat::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	return true;
 }
@@ -3012,7 +3041,7 @@ bool PacketAntiCheat::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketBandageMacro::PacketBandageMacro() : Packet(-1)
+PacketBandageMacro::PacketBandageMacro() : Packet(0)
 {
 }
 
@@ -3078,7 +3107,7 @@ bool PacketBandageMacro::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketGargoyleFly::PacketGargoyleFly() : Packet(-1)
+PacketGargoyleFly::PacketGargoyleFly() : Packet(0)
 {
 }
 
@@ -3144,7 +3173,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketPromptResponseUnicode::PacketPromptResponseUnicode() : Packet(-1)
+PacketPromptResponseUnicode::PacketPromptResponseUnicode() : Packet(0)
 {
 }
 
@@ -3152,14 +3181,18 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPromptResponseUnicode::onReceive");
 
-	WORD length = readInt16();
+	size_t length = readInt16();
 	DWORD context1 = readInt32();
 	DWORD context2 = readInt32();
 	DWORD type = readInt32();
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
-	TCHAR* text = Str_GetTemp();
+	
+	if (length < getPosition())
+		return false;
+
 	length = (length - getPosition()) / 2;
+	TCHAR* text = Str_GetTemp();
 	readStringUNICODE(text, THREAD_STRING_LENGTH, length+1);
 
 	net->getClient()->Event_PromptResp(text, length, context1, context2, type);
@@ -3181,6 +3214,7 @@ PacketViewRange::PacketViewRange() : Packet(2)
 bool PacketViewRange::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketViewRange::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	skip(1); // range
 	return true;
@@ -3214,7 +3248,7 @@ bool PacketLogout::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketBookHeaderEditNew::PacketBookHeaderEditNew() : Packet(-1)
+PacketBookHeaderEditNew::PacketBookHeaderEditNew() : Packet(0)
 {
 }
 
@@ -3249,7 +3283,7 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketAOSTooltipReq::PacketAOSTooltipReq() : Packet(-1)
+PacketAOSTooltipReq::PacketAOSTooltipReq() : Packet(0)
 {
 }
 
@@ -3291,7 +3325,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketEncodedCommand::PacketEncodedCommand() : Packet(-1)
+PacketEncodedCommand::PacketEncodedCommand() : Packet(0)
 {
 }
 
@@ -3338,7 +3372,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignBackup::PacketHouseDesignBackup() : Packet(-1)
+PacketHouseDesignBackup::PacketHouseDesignBackup() : Packet(0)
 {
 }
 
@@ -3365,7 +3399,7 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignRestore::PacketHouseDesignRestore() : Packet(-1)
+PacketHouseDesignRestore::PacketHouseDesignRestore() : Packet(0)
 {
 }
 
@@ -3392,7 +3426,7 @@ bool PacketHouseDesignRestore::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignCommit::PacketHouseDesignCommit() : Packet(-1)
+PacketHouseDesignCommit::PacketHouseDesignCommit() : Packet(0)
 {
 }
 
@@ -3419,7 +3453,7 @@ bool PacketHouseDesignCommit::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignDestroyItem::PacketHouseDesignDestroyItem() : Packet(-1)
+PacketHouseDesignDestroyItem::PacketHouseDesignDestroyItem() : Packet(0)
 {
 }
 
@@ -3455,7 +3489,7 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignPlaceItem::PacketHouseDesignPlaceItem() : Packet(-1)
+PacketHouseDesignPlaceItem::PacketHouseDesignPlaceItem() : Packet(0)
 {
 }
 
@@ -3489,7 +3523,7 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignExit::PacketHouseDesignExit() : Packet(-1)
+PacketHouseDesignExit::PacketHouseDesignExit() : Packet(0)
 {
 }
 
@@ -3516,7 +3550,7 @@ bool PacketHouseDesignExit::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignPlaceStair::PacketHouseDesignPlaceStair() : Packet(-1)
+PacketHouseDesignPlaceStair::PacketHouseDesignPlaceStair() : Packet(0)
 {
 }
 
@@ -3550,7 +3584,7 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignSync::PacketHouseDesignSync() : Packet(-1)
+PacketHouseDesignSync::PacketHouseDesignSync() : Packet(0)
 {
 }
 
@@ -3577,7 +3611,7 @@ bool PacketHouseDesignSync::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignClear::PacketHouseDesignClear() : Packet(-1)
+PacketHouseDesignClear::PacketHouseDesignClear() : Packet(0)
 {
 }
 
@@ -3604,7 +3638,7 @@ bool PacketHouseDesignClear::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignSwitch::PacketHouseDesignSwitch() : Packet(-1)
+PacketHouseDesignSwitch::PacketHouseDesignSwitch() : Packet(0)
 {
 }
 
@@ -3634,7 +3668,7 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignPlaceRoof::PacketHouseDesignPlaceRoof() : Packet(-1)
+PacketHouseDesignPlaceRoof::PacketHouseDesignPlaceRoof() : Packet(0)
 {
 }
 
@@ -3670,7 +3704,7 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignDestroyRoof::PacketHouseDesignDestroyRoof() : Packet(-1)
+PacketHouseDesignDestroyRoof::PacketHouseDesignDestroyRoof() : Packet(0)
 {
 }
 
@@ -3706,7 +3740,7 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketSpecialMove::PacketSpecialMove() : Packet(-1)
+PacketSpecialMove::PacketSpecialMove() : Packet(0)
 {
 }
 
@@ -3737,7 +3771,7 @@ bool PacketSpecialMove::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketHouseDesignRevert::PacketHouseDesignRevert() : Packet(-1)
+PacketHouseDesignRevert::PacketHouseDesignRevert() : Packet(0)
 {
 }
 
@@ -3764,13 +3798,14 @@ bool PacketHouseDesignRevert::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketEquipLastWeapon::PacketEquipLastWeapon() : Packet(-1)
+PacketEquipLastWeapon::PacketEquipLastWeapon() : Packet(0)
 {
 }
 
 bool PacketEquipLastWeapon::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketEquipLastWeapon::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	return true;
 }
@@ -3783,7 +3818,7 @@ bool PacketEquipLastWeapon::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketGuildButton::PacketGuildButton() : Packet(-1)
+PacketGuildButton::PacketGuildButton() : Packet(0)
 {
 }
 
@@ -3809,7 +3844,7 @@ bool PacketGuildButton::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketQuestButton::PacketQuestButton() : Packet(-1)
+PacketQuestButton::PacketQuestButton() : Packet(0)
 {
 }
 
@@ -3842,6 +3877,7 @@ PacketHardwareInfo::PacketHardwareInfo() : Packet(268)
 bool PacketHardwareInfo::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHardwareInfo::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	skip(1); // client type
 	skip(4); // instance id
@@ -3880,7 +3916,7 @@ bool PacketHardwareInfo::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketBugReport::PacketBugReport() : Packet(-1)
+PacketBugReport::PacketBugReport() : Packet(0)
 {
 }
 
@@ -3912,7 +3948,7 @@ bool PacketBugReport::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketClientType::PacketClientType() : Packet(-1)
+PacketClientType::PacketClientType() : Packet(0)
 {
 }
 
@@ -3946,6 +3982,7 @@ PacketRemoveUIHighlight::PacketRemoveUIHighlight() : Packet(13)
 bool PacketRemoveUIHighlight::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketRemoveUIHighlight::onReceive");
+	UNREFERENCED_PARAMETER(net);
 
 	skip(4); // serial
 	skip(2); // ui id
@@ -3995,7 +4032,7 @@ bool PacketUseHotbar::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketEquipItemMacro::PacketEquipItemMacro() : Packet(-1)
+PacketEquipItemMacro::PacketEquipItemMacro() : Packet(0)
 {
 }
 
@@ -4039,7 +4076,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketUnEquipItemMacro::PacketUnEquipItemMacro() : Packet(-1)
+PacketUnEquipItemMacro::PacketUnEquipItemMacro() : Packet(0)
 {
 }
 
@@ -4083,7 +4120,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(-1)
+PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(0)
 {
 }
 
@@ -4093,7 +4130,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 
 	skip(2);
 	skip(17);
-	int sequence = readByte();
+	short sequence = readByte();
 	BYTE direction = readByte();
 	DWORD mode = readInt32();
 	if (mode == 2)
@@ -4111,16 +4148,13 @@ bool PacketMovementReqNew::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketCrashReport::PacketCrashReport() : Packet(-1)
+PacketCrashReport::PacketCrashReport() : Packet(0)
 {
 }
 
 bool PacketCrashReport::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCrashReport::onReceive");
-
-	CClient* client = net->getClient();
-	ASSERT(client);
 
 	skip(2); // packet length
 	BYTE versionMaj = readByte();

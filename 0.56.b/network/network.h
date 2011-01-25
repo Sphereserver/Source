@@ -96,9 +96,14 @@ public:
 	short m_sequence; // movement sequence
 
 public:
-	NetState(long id);
+	explicit NetState(long id);
 	~NetState(void);
 
+private:
+	NetState(const NetState& copy);
+	NetState& operator=(const NetState& other);
+
+public:
 	long id(void) const { return m_id; }; // returns ID of the client
 	void setId(long id) { m_id = id; }; // changes ID of the client
 	void clear(void); // clears state
@@ -172,9 +177,14 @@ protected:
 	CClient* m_nextClient;
 
 public:
-	ClientIterator(const NetworkIn* network = NULL);
+	explicit ClientIterator(const NetworkIn* network = NULL);
 	~ClientIterator(void);
 
+private:
+	ClientIterator(const ClientIterator& copy);
+	ClientIterator& operator=(const ClientIterator& other);
+
+public:
 	CClient* next(bool includeClosing = false); // finds next client
 };
 
@@ -194,9 +204,14 @@ protected:
 	int m_max;
 
 public:
-	SafeClientIterator(const NetworkIn* network = NULL);
+	explicit SafeClientIterator(const NetworkIn* network = NULL);
 	~SafeClientIterator(void);
 
+private:
+	SafeClientIterator(const SafeClientIterator& copy);
+	SafeClientIterator& operator=(const SafeClientIterator& other);
+
+public:
 	CClient* next(bool includeClosing = false); // finds next client
 };
 
@@ -245,12 +260,17 @@ public:
 	static const char* m_sClassName;
 
 	NetworkIn(void);
-	~NetworkIn(void);
+	virtual ~NetworkIn(void);
 
+private:
+	NetworkIn(const NetworkIn& copy);
+	NetworkIn& operator=(const NetworkIn& other);
+
+public:
 	virtual void onStart(void);
 	virtual void tick(void);
 
-	HistoryIP &getHistoryForIP(CSocketAddressIP ip);
+	HistoryIP &getHistoryForIP(const CSocketAddressIP& ip);
 	HistoryIP &getHistoryForIP(const char* ip);
 
 	void registerPacket(int packetId, Packet* handler); // register packet handler
@@ -290,8 +310,13 @@ public:
 	static const char* m_sClassName;
 
 	NetworkOut(void);
-	~NetworkOut(void);
+	virtual ~NetworkOut(void);
 
+private:
+	NetworkOut(const NetworkOut& copy);
+	NetworkOut& operator=(const NetworkOut& other);
+
+public:
 	virtual void tick(void);
 
 	void schedule(const PacketSend* packet, bool appendTransaction); // schedule this packet to be sent

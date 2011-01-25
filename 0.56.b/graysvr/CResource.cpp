@@ -172,7 +172,7 @@ CResource::CResource()
 	m_iExperienceKoefPVP = 100;
 	m_iExperienceKoefPVM = 100;
 	m_bLevelSystem = false;
-	m_iLevelMode = 1;
+	m_iLevelMode = LEVEL_MODE_DOUBLE;
 	m_iLevelNextAt = 0;
 
 #ifndef _DBPLUGIN
@@ -645,7 +645,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAPCACHETIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iMapCacheTime),		0 }},
 	{ "MAXACCOUNTLOGINTRIES",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxAccountLoginTries),0 }},
 	{ "MAXBASESKILL",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxBaseSkill),		0 }},
-	{ "MAXCHARSPERACCOUNT",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharsPerAccount),	0 }},
+	{ "MAXCHARSPERACCOUNT",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iMaxCharsPerAccount),	0 }},
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity),	0 }},
 	{ "MAXFAME",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxFame),				0 }},
 	{ "MAXITEMCOMPLEXITY",		{ ELEM_INT,		OFFSETOF(CResource,m_iMaxItemComplexity),	0 }},
@@ -769,23 +769,26 @@ bool CResource::r_LoadVal( CScript &s )
 		}
 		else if ( s.IsKeyHead("MAP", 3) )		//	MAPx=settings
 		{
-			BYTE ok = 1;
+			bool ok = true;
 			std::string str = s.GetKey()+3;
-			for( int iLen = 0; str.size() > iLen; ++iLen )
+			for ( size_t i = 0; i < str.size(); ++i )
 			{
-				if( !IsDigit(str[iLen]) )
-				{
-					ok = 0;
-					break;
-				}
+				if ( IsDigit(str[i]) )
+					continue;
+
+				ok = false;
+				break;
 			}
+
 			if ( ok && str.size() > 0 )
+			{
 				return g_MapList.Load(ATOI(str.c_str()), s.GetArgRaw());
+			}
 			else
 			{
-				int nLength = static_cast<int>(str.size());
+				size_t length = str.size();
 
-				if ( nLength >= 2/*at least .X*/ && str[0] == '.' && isdigit(str[1]) )
+				if ( length >= 2/*at least .X*/ && str[0] == '.' && isdigit(str[1]) )
 				{
 					LPCTSTR pszStr = &(str[1]);
 					int nMapNumber = Exp_GetVal(pszStr);
@@ -844,7 +847,7 @@ bool CResource::r_LoadVal( CScript &s )
 	switch (i)
 	{
 		case RC_AGREE:
-			m_bAgree = s.GetArgVal();
+			m_bAgree = (s.GetArgVal() != 0);
 			break;
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
@@ -987,7 +990,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_sSCPBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
 		case RC_SECURE:
-			m_fSecure = s.GetArgVal();
+			m_fSecure = (s.GetArgVal() != 0);
 			if ( !g_Serv.IsLoading() )
 				g_Serv.SetSignals();
 			break;
@@ -1066,8 +1069,8 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	ADDTOCALLSTACK("CResource::r_WriteVal");
 	EXC_TRY("WriteVal");
 	// Just do stats values for now.
-	int i = FindTableHeadSorted( pszKey, (LPCTSTR const *) sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]) );
-	if ( i<0 )
+	int index = FindTableHeadSorted( pszKey, (LPCTSTR const *) sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]) );
+	if ( index < 0 )
 	{
 		if ( !strnicmp( pszKey, "REGEN", 5 ))
 		{
@@ -1194,7 +1197,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if (!strcmpi(pszCmd,"COUNT"))
 			{
-				for ( int i=0; i<g_World.m_Stones.GetCount(); i++ )
+				for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
 				{
 					pStone = g_World.m_Stones[i];
 					if ( pStone == NULL )
@@ -1214,7 +1217,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			SKIP_SEPARATORS(pszCmd);
 			sVal.FormatVal(0);
 
-			for ( int i=0; i<g_World.m_Stones.GetCount(); i++ )
+			for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
 			{
 				pStone = g_World.m_Stones[i];
 				if ( pStone == NULL )
@@ -1244,11 +1247,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		if ( !strnicmp( pszKey, "CLIENT.",7))
 		{
 			pszKey += 7;
-			int cli_num = Exp_GetVal(pszKey);
-			int i(0);
+			unsigned int cli_num = static_cast<unsigned int>(Exp_GetVal(pszKey));
+			unsigned int i = 0;
 			SKIP_SEPARATORS(pszKey);
 
-			if ((cli_num < 0) || (cli_num >= g_Serv.StatGet( SERV_STAT_CLIENTS )))
+			if (cli_num >= g_Serv.StatGet( SERV_STAT_CLIENTS ))
 				return false;
 
 			sVal.FormatVal(0);
@@ -1273,7 +1276,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		return( false );
 	}
 
-	switch (i)
+	switch (index)
 	{
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
@@ -1436,7 +1439,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( g_Cfg.m_iTooltipCache / (TICK_PER_SEC) );
 			break;
 		default:
-			return( sm_szLoadKeys[i].m_elem.GetValStr( this, sVal ));
+			return( sm_szLoadKeys[index].m_elem.GetValStr( this, sVal ));
 	}
 	return true;
 	EXC_CATCH;
@@ -2344,7 +2347,6 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			CPointMap pt = GetRegionPoint( pScript->GetArgStr() ); // Decode a teleport location number into X/Y/Z
 			return( pt.GetSector()->r_Load(*pScript));
 		}
-		return( true );
 	case RES_SPELL:
 		{
 			CSpellDef * pSpell;
@@ -2830,7 +2832,6 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			CGMPage * pGMPage = new CGMPage( pScript->GetArgStr());
 			return( pGMPage->r_Load( *pScript ));
 		}
-		return( true );
 	case RES_WC:
 	case RES_WORLDCHAR:	// saved in world file.
 		if ( ! rid.IsValidUID())
@@ -3090,7 +3091,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						return( ridinvalid );
 				}
 			}
-			else if ( fNewStyleDef && pVarNum->GetValNum() != rid.GetPrivateUID() )
+			else if ( fNewStyleDef && (DWORD)pVarNum->GetValNum() != rid.GetPrivateUID() )
 			{
 				DEBUG_ERR(( "WARNING: region redefines DEFNAME '%s' for another region!\n", pszName ));
 			}
@@ -3214,7 +3215,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	{
 		// find a new FREE entry starting here
 		rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
-		while(true)
+		for (;;)
 		{
 			if ( m_ResHash.FindKey( rid ) < 0 )
 				break;
@@ -3236,14 +3237,20 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		//If there is an iPage, its important information and we have to resort to using
 		//the stupid search method to find a free UID, for the moment. 		rid = RESOURCE_ID( restype, index, iPage );
 		assert ( iHashRange ); 		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
-		rid.SetPrivateUID((rid.GetPrivateUID()&~0x3ffff)|(lastUID[restype]&0x3ffff)); 		while(true) 
+		rid.SetPrivateUID((rid.GetPrivateUID()&~0x3ffff)|(lastUID[restype]&0x3ffff));
+		
+		for (;;)
 		{
 			if ( m_ResHash.FindKey( rid ) < 0 ) 
 			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
-			} 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
-		} 		if (lastUID[restype] != 0) 
+			}
+			
+			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+		}
+		
+		if (lastUID[restype] != 0) 
 		{
 			rid.SetPrivateUID(lastUID[restype]);
 		}
@@ -3252,16 +3259,22 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	{
 		rid = RESOURCE_ID( restype, index );
 		assert ( iHashRange ); 		// find a new FREE entry starting here
-		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange )); 		if (lastUID[restype] != 0) 
+		//rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
+		
+		if (lastUID[restype] != 0) 
 		{
 			rid.SetPrivateUID(lastUID[restype]);
-		} 		while(true)
+		}
+		
+		for (;;)
 		{
 			if ( m_ResHash.FindKey( rid ) < 0 ) 
 			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
-			} 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
+			}
+			
+			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
 		}
 	}
 #endif
@@ -3489,7 +3502,7 @@ void CResource::Unload( bool fResync )
 	{
 		// Unlock all the SCP and MUL files.
 		g_Install.CloseFiles();
-		for ( int j=0; true; j++ )
+		for ( int j = 0; ; j++ )
 		{
 			CResourceScript * pResFile = GetResourceFile(j);
 			if ( pResFile == NULL )
@@ -3569,7 +3582,7 @@ bool CResource::Load( bool fResync )
 	{
 		g_VerData.Load( g_Install.m_File[VERFILE_VERDATA] );
 	}
-	catch ( CGrayError &e )
+	catch ( const CGrayError& e )
 	{
       g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
 		g_Log.CatchEvent( &e, "g_VerData.Load" );
@@ -3610,7 +3623,7 @@ bool CResource::Load( bool fResync )
 	int count = m_ResourceFiles.GetCount();
 	g_Log.Event(LOGM_INIT, "Indexing %d scripts...\n", count);
 
-	for ( int j=0; true; j++ )
+	for ( int j = 0; ; j++ )
 	{
 		CResourceScript * pResFile = GetResourceFile(j);
 		if ( !pResFile )
@@ -3652,7 +3665,7 @@ bool CResource::Load( bool fResync )
 
 	// Make region DEFNAMEs
 	{
-		int			iMax	= g_Cfg.m_RegionDefs.GetCount();
+		int iMax = g_Cfg.m_RegionDefs.GetCount();
 		for ( int i = 0; i < iMax; i++ )
 		{
 			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
@@ -3770,7 +3783,7 @@ bool CResource::GenerateDefname(TCHAR *pObjectName, int iInputLength, LPCTSTR pP
 		int iEnd = iOut;
 		int iAttempts = 1;
 
-		while (true)
+		for (;;)
 		{
 			bool isValid = true;
 			if (g_Exp.m_VarDefs.GetKey((LPCTSTR&)pOutput) != NULL)

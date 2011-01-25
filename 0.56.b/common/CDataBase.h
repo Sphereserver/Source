@@ -34,6 +34,12 @@ public:
 	//	construction
 	CDataBase();
 	~CDataBase();
+
+private:
+	CDataBase(const CDataBase& copy);
+	CDataBase& operator=(const CDataBase& other);
+
+public:
 	bool Connect(const char *user, const char *password, const char *base = "", const char *host = "localhost");
 	bool Connect();
 	void Close();							//	close link with db

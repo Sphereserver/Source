@@ -25,6 +25,11 @@ public:
 		m_tail = m_list.end();
 	}
 
+private:
+	ThreadSafeQueue(const ThreadSafeQueue& copy);
+	ThreadSafeQueue& operator=(const ThreadSafeQueue& other);
+
+public:
 	// Append an element to the end of the queue (writer)
 	void push(const T& value)
 	{

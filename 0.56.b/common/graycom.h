@@ -31,7 +31,8 @@
 	#include <winsock2.h>
 	#include <windows.h>
 	#include <dos.h>
-	#include <limits.h>
+	#include <limits.h>	// INT_MAX, etc
+	#include <limits>	// std::numeric_limits
 	#include <conio.h>
 	#include <sys/timeb.h>
 
@@ -45,7 +46,8 @@
 
 	#include <sys/types.h>
 	#include <sys/timeb.h>
-	#include <limits.h>
+	#include <limits.h>	// INT_MAX, etc
+	#include <limits>	// std::numeric_limits
 
 	#define HANDLE			DWORD
 	#define _cdecl
@@ -83,7 +85,7 @@
 
 #ifdef _DEBUG
 	#ifndef ASSERT
-		extern void Assert_CheckFail( const char * pExp, const char *pFile, unsigned uLine );
+		extern void Assert_CheckFail( const char * pExp, const char *pFile, long lLine );
 		#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
 	#endif	// ASSERT
 
@@ -97,7 +99,7 @@
 		#ifndef _WIN32
 			// In linux, if we get an access violation, an exception isn't thrown.  Instead, we get
 			// a SIG_SEGV, and the process cores. The following code takes care of this for us.
-			extern void Assert_CheckFail( const char * pExp, const char *pFile, unsigned uLine );
+			extern void Assert_CheckFail( const char * pExp, const char *pFile, long lLine );
 			#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
 		#else
 			#define ASSERT(exp)

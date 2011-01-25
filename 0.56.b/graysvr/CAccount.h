@@ -68,8 +68,13 @@ public:
 
 public:
 	CAccount( LPCTSTR pszName, bool fGuest = false );
-	void	DeleteChars();
 	virtual ~CAccount();
+private:
+	CAccount(const CAccount& copy);
+	CAccount& operator=(const CAccount& other);
+
+public:
+	void	DeleteChars();
 
 	static bool NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp );
 	static PLEVEL_TYPE GetPrivLevelText( LPCTSTR pszFlags );

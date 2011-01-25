@@ -9,6 +9,13 @@ class CCharsDisconnectList : public CGObList
 {
 public:
 	static const char *m_sClassName;
+
+public:
+	CCharsDisconnectList() { };
+
+private:
+	CCharsDisconnectList(const CCharsDisconnectList& copy);
+	CCharsDisconnectList& operator=(const CCharsDisconnectList& other);
 };
 
 class CCharsActiveList : public CGObList
@@ -18,14 +25,22 @@ private:
 public:
 	static const char *m_sClassName;
 	CServTime m_timeLastClient;	// age the sector based on last client here.
+
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
+
 public:
 	int HasClients() const { return( m_iClients ); }
 	void ClientAttach();
 	void ClientDetach();
 	void AddCharToSector( CChar * pChar );
+
+public:
 	CCharsActiveList();
+
+private:
+	CCharsActiveList(const CCharsActiveList& copy);
+	CCharsActiveList& operator=(const CCharsActiveList& other);
 };
 
 class CItemsList : public CGObList
@@ -33,11 +48,20 @@ class CItemsList : public CGObList
 	// Top level list of items.
 public:
 	static bool sm_fNotAMove;	// hack flag to prevent items from bouncing around too much.
+
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
+
 public:
 	static const char *m_sClassName;
 	void AddItemToSector( CItem * pItem );
+
+public:
+	CItemsList() { };
+
+private:
+	CItemsList(const CItemsList& copy);
+	CItemsList& operator=(const CItemsList& other);
 };
 
 class CObPointSortArray : public CGObSortArray< CPointSort*, long >
@@ -52,6 +76,13 @@ public:
 		ASSERT( pBase );
 		return( id - pBase->GetPointSortIndex());
 	}
+
+public:
+	CObPointSortArray() { };
+
+private:
+	CObPointSortArray(const CObPointSortArray& copy);
+	CObPointSortArray& operator=(const CObPointSortArray& other);
 };
 
 class CSectorBase		// world sector
@@ -74,7 +105,13 @@ public:
 	CItemsList m_Items_Inert;				// CItem(s) in this CSector. (no timer required)
 public:
 	CSectorBase();
-	~CSectorBase();
+	virtual ~CSectorBase();
+
+private:
+	CSectorBase(const CSectorBase& copy);
+	CSectorBase& operator=(const CSectorBase& other);
+
+public:
 	void Init(int index, int newmap);
 
 	// Location map units.

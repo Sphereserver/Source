@@ -82,7 +82,7 @@ CResourceScript * CResourceBase::FindResourceFile( LPCTSTR pszPath )
 
 	LPCTSTR pszTitle = CScript::GetFilesTitle( pszPath );
 
-	for ( int i=0; true; i++ )
+	for ( int i = 0; ; i++ )
 	{
 		CResourceScript * pResFile = GetResourceFile(i);
 		if ( pResFile == NULL )
@@ -262,8 +262,8 @@ bool CResourceBase::OpenResourceFind( CScript &s, LPCTSTR pszFilename, bool bCri
 bool CResourceBase::LoadResourceSection( CScript * pScript )
 {
 	ADDTOCALLSTACK("CResourceBase::LoadResourceSection");
+	UNREFERENCED_PARAMETER(pScript);
 	// Just stub this out for others for now.
-	ASSERT(pScript);
 	return( false );
 }
 
@@ -398,7 +398,7 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 	CVarDefCont * pVarKey = g_Exp.m_VarDefs.GetKey( pszName );
 	if ( pVarKey )
 	{
-		if ( pVarKey->GetValNum() == GetResourceID().GetPrivateUID() )
+		if ( (DWORD)pVarKey->GetValNum() == GetResourceID().GetPrivateUID() )
 		{
 			return( true );
 		}
@@ -706,6 +706,7 @@ void CResourceScript::Close()
 bool CResourceLock::OpenBase( void * pExtra )
 {
 	ADDTOCALLSTACK("CResourceLock::OpenBase");
+	UNREFERENCED_PARAMETER(pExtra);
 	ASSERT(m_pLock);
 
 	if ( m_pLock->IsFileOpen())
@@ -963,7 +964,7 @@ bool CResourceLink::HasTrigger(int i) const
 		if ( i < 32 )
 		{
 			DWORD flag = 1 << i;
-			return (m_dwOnTriggers[j] & flag);
+			return ((m_dwOnTriggers[j] & flag) != 0);
 		}
 		i -= 32;
 	}
@@ -1134,8 +1135,8 @@ void CResourceRefArray::WriteResourceRefList( CGString & sVal ) const
 	ADDTOCALLSTACK("CResourceRefArray::WriteResourceRefList");
 	TemporaryString tsVal;
 	TCHAR * pszVal = (char*)tsVal;
-	int len = 0;
-	for ( int j=0;j<GetCount(); j++ )
+	size_t len = 0;
+	for ( int j = 0; j < GetCount(); j++ )
 	{
 		if ( j )
 		{
@@ -1199,10 +1200,10 @@ void CResourceRefArray::r_Write( CScript & s, LPCTSTR pszKey ) const
 //**********************************************
 // -CResourceQty
 
-int CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) const
+size_t CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteKey");
-	int i=0;
+	size_t i = 0;
 	if ( (GetResQty() || fQtyOnly) && !fKeyOnly )
 	{
 		i = sprintf( pszArgs, "%d ", GetResQty());
@@ -1212,7 +1213,7 @@ int CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) cons
 	return( i );
 }
 
-int CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
+size_t CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
 	if ( GetResType() == RES_ITEMDEF )
@@ -1223,11 +1224,10 @@ int CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 			return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
 	}
 	CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
-	if ( pResourceDef )
+	if ( pResourceDef != NULL )
 		return( strcpylen( pszArgs, pResourceDef->GetName()) );
 	else
 		return( strcpylen( pszArgs, g_Cfg.ResourceGetName( m_rid )) );
-	return 0;
 }
 
 bool CResourceQty::Load(LPCTSTR &pszCmds)
@@ -1286,6 +1286,16 @@ CResourceQtyArray::CResourceQtyArray(LPCTSTR pszCmds)
 {
 	m_mergeOnLoad = true;
 	Load(pszCmds);
+}
+	
+CResourceQtyArray& CResourceQtyArray::operator=(const CResourceQtyArray& other)
+{
+	if (this != &other)
+	{
+		m_mergeOnLoad = other.m_mergeOnLoad;
+		Copy(&other);
+	}
+	return *this;
 }
 
 void CResourceQtyArray::setNoMergeOnLoad()
@@ -1462,11 +1472,11 @@ bool CResourceQtyArray::operator == ( const CResourceQtyArray & array ) const
 	if ( GetCount() != array.GetCount())
 		return( false );
 
-	for ( int i=0; i<GetCount(); i++ )
+	for ( int i = 0; i < GetCount(); i++ )
 	{
-		for ( int j=0; true; j++ )
+		for ( int j = 0; ; j++ )
 		{
-			if ( j>=array.GetCount())
+			if ( j >= array.GetCount())
 				return( false );
 			if ( ! ( GetAt(i).GetResourceID() == array[j].GetResourceID() ))
 				continue;

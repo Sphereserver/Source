@@ -68,6 +68,11 @@ private:
 public:
 	cDatabaseLoader();
 	~cDatabaseLoader();
+private:
+	cDatabaseLoader(const cDatabaseLoader& copy);
+	cDatabaseLoader& operator=(const cDatabaseLoader& other);
+
+public:
 	bool IsReady();
 
 	bool DbIsRightVersion( void );

@@ -346,6 +346,7 @@ void CTimedFunctionHandler::Add( CGrayUID uid, int numSeconds, LPCTSTR funcname 
 int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *pszVal)
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Load");
+	UNREFERENCED_PARAMETER(fQuoted);
 	static char tempBuffer[1024];
 	static TimedFunction *tf = NULL;
 
@@ -380,7 +381,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 				int isNew = 0;
 				if ( tf == NULL )
 				{
-					tf=new TimedFunction;
+					tf = new TimedFunction;
 					tf->funcname[0] = 0;
 					isNew = 1;
 				}
@@ -472,7 +473,7 @@ bool CWorldSearch::GetNextSector()
 	if ( ! m_iDist )
 		return( false );
 
-	while (true)
+	for (;;)
 	{
 		m_pSector = m_rectSector.GetSector(m_iSectorCur++);
 		if ( m_pSector == NULL )
@@ -482,14 +483,12 @@ bool CWorldSearch::GetNextSector()
 		m_pObj = NULL;	// start at head of next Sector.
 		return( true );
 	}
-
-	return( false );	// done searching.
 }
 
 CItem * CWorldSearch::GetItem()
 {
 	ADDTOCALLSTACK("CWorldSearch::GetItem");
-	while (true)
+	for (;;)
 	{
 		if ( m_pObj == NULL )
 		{
@@ -548,7 +547,7 @@ jumpover:
 CChar * CWorldSearch::GetChar()
 {
 	ADDTOCALLSTACK("CWorldSearch::GetChar");
-	while (true)
+	for (;;)
 	{
 		if ( m_pObj == NULL )
 		{
@@ -613,7 +612,7 @@ CWorldThread::CWorldThread()
 	m_iUIDIndexLast = 1;
 
 	m_FreeUIDs = (DWORD*)calloc(FREE_UIDS_SIZE, sizeof(DWORD));
-	m_FreeOffset = -1;
+	m_FreeOffset = FREE_UIDS_SIZE;
 }
 
 CWorldThread::~CWorldThread()
@@ -628,12 +627,12 @@ void CWorldThread::CloseAllUIDs()
 	m_ObjNew.DeleteAll();
 	m_UIDs.RemoveAll();
 
-	if ( m_FreeUIDs )
+	if ( m_FreeUIDs != NULL )
 	{
 		free(m_FreeUIDs);
 		m_FreeUIDs = NULL;
 	}
-	m_FreeOffset = -1;
+	m_FreeOffset = FREE_UIDS_SIZE;
 }
 
 bool CWorldThread::IsSaving() const
@@ -674,7 +673,7 @@ DWORD CWorldThread::AllocUID( DWORD dwIndex, CObjBase * pObj )
 			goto setcount;
 		}
 
-		if (( m_FreeOffset >= 0 ) && ( m_FreeOffset < FREE_UIDS_SIZE ) && m_FreeUIDs )
+		if (( m_FreeOffset >= 0 ) && ( m_FreeOffset < FREE_UIDS_SIZE ) && m_FreeUIDs != NULL )
 		{
 			//	We do have a free uid's array. Use it if possible to determine the first free element
 			for ( ;  (m_FreeUIDs[m_FreeOffset]) && (m_FreeOffset < FREE_UIDS_SIZE); m_FreeOffset++ )
@@ -687,8 +686,8 @@ DWORD CWorldThread::AllocUID( DWORD dwIndex, CObjBase * pObj )
 				}
 			}
 		}
-		m_FreeOffset = -1;	// mark array invalid, since it does not contain any empty slots
-							// use default allocation for a while, till the next garbage collection
+		m_FreeOffset = FREE_UIDS_SIZE;	// mark array invalid, since it does not contain any empty slots
+										// use default allocation for a while, till the next garbage collection
 		DWORD dwCount = dwCountTotal - 1;
 		dwIndex = m_iUIDIndexLast;
 		while ( m_UIDs[dwIndex] != NULL )
@@ -728,38 +727,40 @@ successalloc:
 void CWorldThread::SaveThreadClose()
 {
 	ADDTOCALLSTACK("CWorldThread::SaveThreadClose");
-	for ( int i=1; i<GetUIDCount(); i++ )
+	for ( size_t i = 1; i < GetUIDCount(); i++ )
 	{
 		if ( m_UIDs[i] == UID_PLACE_HOLDER )
 			m_UIDs[i] = NULL;
 	}
+
 	m_FileData.Close();
 	m_FileWorld.Close();
 	m_FilePlayers.Close();
 	m_FileMultis.Close();
 }
 
-int CWorldThread::FixObjTry( CObjBase * pObj, int iUID )
+int CWorldThread::FixObjTry( CObjBase * pObj, DWORD dwUID )
 {
 	ADDTOCALLSTACK("CWorldThread::FixObjTry");
 	// RETURN: 0 = success.
 	if ( !pObj )
 		return 0x7102;
 
-	if ( iUID )
+	if ( dwUID != 0 )
 	{
-		if (( pObj->GetUID() & UID_O_INDEX_MASK ) != iUID )
+		if (( pObj->GetUID() & UID_O_INDEX_MASK ) != dwUID )
 		{
 			// Miss linked in the UID table !!! BAD
 			// Hopefully it was just not linked at all. else How the hell should i clean this up ???
-			DEBUG_ERR(( "UID 0%x, '%s', Mislinked\n", iUID, (LPCTSTR) pObj->GetName()));
+			DEBUG_ERR(( "UID 0%x, '%s', Mislinked\n", dwUID, (LPCTSTR) pObj->GetName()));
 			return 0x7101;
 		}
 	}
+
 	return pObj->FixWeirdness();
 }
 
-int CWorldThread::FixObj( CObjBase * pObj, int iUID )
+int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 {
 	ADDTOCALLSTACK("CWorldThread::FixObj");
 	// Attempt to fix problems with this item.
@@ -771,9 +772,9 @@ int CWorldThread::FixObj( CObjBase * pObj, int iUID )
 
 	try
 	{
-		iResultCode = FixObjTry(pObj,iUID);
+		iResultCode = FixObjTry(pObj, dwUID);
 	}
-	catch ( CGrayError &e )	// catch all
+	catch ( const CGrayError& e ) // catch all
 	{
 		g_Log.CatchEvent( &e, "FixObj" );
 		iResultCode = 0xFFFF;	// bad mem ?
@@ -784,20 +785,18 @@ int CWorldThread::FixObj( CObjBase * pObj, int iUID )
 		iResultCode = 0xFFFF;	// bad mem ?
 	}
 
-	if ( !iResultCode )
+	if ( iResultCode == 0 )
 		return 0;
 
 	try
 	{
-		iUID = pObj->GetUID();
+		dwUID = (DWORD)pObj->GetUID();
 
 		// is it a real error ?
 		if ( pObj->IsItem())
 		{
 			CItem * pItem = dynamic_cast <CItem*>(pObj);
-			if ( pItem
-				&& (   pItem->IsType(IT_EQ_MEMORY_OBJ)
-					|| pItem->IsType(IT_EQ_MEMORY_OBJ) ) ) // maybe change to horse memory type
+			if ( pItem != NULL && pItem->IsType(IT_EQ_MEMORY_OBJ) )
 			{
 				pObj->Delete();
 				return iResultCode;
@@ -805,7 +804,8 @@ int CWorldThread::FixObj( CObjBase * pObj, int iUID )
 		}
 
 		DEBUG_ERR(("UID=0%x, id=0%x '%s', Invalid code=%0x (%s)\n",
-			iUID, pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+			dwUID, pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+
 		if ( iResultCode == 0x1203 || iResultCode == 0x1103 )
 		{
 			CChar * pChar = dynamic_cast <CChar*>(pObj);
@@ -815,13 +815,13 @@ int CWorldThread::FixObj( CObjBase * pObj, int iUID )
 		else
 			pObj->Delete();
 	}
-	catch ( CGrayError &e )	// catch all
+	catch ( const CGrayError& e )	// catch all
 	{
-		g_Log.CatchEvent( &e, "UID=0%x, Asserted cleanup", iUID );
+		g_Log.CatchEvent( &e, "UID=0%x, Asserted cleanup", dwUID );
 	}
 	catch (...)	// catch all
 	{
-		g_Log.CatchEvent( NULL, "UID=0%x, Asserted cleanup", iUID );
+		g_Log.CatchEvent( NULL, "UID=0%x, Asserted cleanup", dwUID );
 	}
 	return( iResultCode );
 }
@@ -865,7 +865,7 @@ void CWorldThread::GarbageCollection_UIDs()
 	GarbageCollection_New();
 
 	int iCount = 0;
-	for ( int i = 1; i < GetUIDCount(); i++ )
+	for ( size_t i = 1; i < GetUIDCount(); i++ )
 	{
 		try
 		{
@@ -889,7 +889,7 @@ void CWorldThread::GarbageCollection_UIDs()
 			}
 			iCount ++;
 		}
-		catch ( CGrayError &e )
+		catch ( const CGrayError& e )
 		{
 			g_Log.CatchEvent(&e, "GarbageCollection_UIDs");
 		}
@@ -910,11 +910,11 @@ void CWorldThread::GarbageCollection_UIDs()
 		g_Log.Event(LOGL_EVENT, "GC: %d Objects accounted for\n", iCount);
 	}
 
-	if ( m_FreeUIDs )	// new UID engine - search for empty holes and store it in a huge array
-	{					// the size of the array should be enough even for huge shards
-						// to survive till next garbage collection
-		memset(m_FreeUIDs, 0, FREE_UIDS_SIZE*sizeof(DWORD));
-		m_FreeOffset = -1;
+	if ( m_FreeUIDs != NULL )	// new UID engine - search for empty holes and store it in a huge array
+	{							// the size of the array should be enough even for huge shards
+								// to survive till next garbage collection
+		memset(m_FreeUIDs, 0, FREE_UIDS_SIZE * sizeof(DWORD));
+		m_FreeOffset = 0;
 
 		for ( DWORD d = 1; d < GetUIDCount(); d++ )
 		{
@@ -1164,8 +1164,6 @@ bool CWorld::SaveStage() // Save world state in stages.
 			if ( !pRegion || !pRegion->HasResourceName() || !pRegion->m_iModified )
 				continue;
 
-			CRegionWorld *pRegionWorld = dynamic_cast <CRegionWorld*> (pRegion);
-
 			if ( IsSetEF(EF_Size_Optimise) )
 				m_FileData.WriteSection("WS %s", pRegion->GetResourceName());
 			else
@@ -1289,7 +1287,7 @@ bool CWorld::SaveForce() // Save world state
 			if ( !bSave && ( pCurBlock != msgs[5] ))
 				goto failedstage;
 		}
-		catch ( CGrayError &e )
+		catch ( const CGrayError& e )
 		{
 			g_Log.CatchEvent(&e, "Save FAILED for stage %u (%s).", m_iSaveStage, pCurBlock);
 			bSuccess = false;
@@ -1396,10 +1394,10 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 			if ( tr == TRIGRET_RET_TRUE ) 
 				return false;
 			
-		fForceImmediate = Args.m_iN1;
+		fForceImmediate = (Args.m_iN1 != 0);
 		bSaved = SaveTry(fForceImmediate);
 	}
-	catch ( CGrayError &e )
+	catch ( const CGrayError& e )
 	{
 		g_Log.CatchEvent( &e, "Save FAILED." );
 		Broadcast("Save FAILED. " GRAY_TITLE " is UNSTABLE!");
@@ -1452,7 +1450,7 @@ void CWorld::SaveStatics()
 		{
 			if ( !g_MapList.m_maps[m] ) continue;
 
-			for ( DWORD d = 0; d < g_MapList.GetSectorQty(m); d++ )
+			for ( int d = 0; d < g_MapList.GetSectorQty(m); d++ )
 			{
 				CItem	*pNext, *pItem;
 				CSector	*pSector = GetSector(m, d);
@@ -1489,7 +1487,7 @@ void CWorld::SaveStatics()
 		m_FileStatics.Close();
 		g_Log.Event(LOGM_SAVE, "Statics data saved (%s).\n", (LPCTSTR)m_FileStatics.GetFilePath());
 	}
-	catch (CGrayError &e)
+	catch (const CGrayError& e)
 	{
 		g_Log.CatchEvent(&e, "Statics Save FAILED.");
 	}
@@ -1535,7 +1533,7 @@ bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from scr
 		{
 			g_Cfg.LoadResourceSection(&s);
 		}
-		catch ( CGrayError &e )
+		catch ( const CGrayError& e )
 		{
 			g_Log.CatchEvent(&e, "Load Exception line %d " GRAY_TITLE " is UNSTABLE!\n", s.GetContext().m_iLineNum);
 		}
@@ -1580,7 +1578,7 @@ bool CWorld::LoadWorld() // Load world from script
 	sDataName.Format("%s" GRAY_FILE "data",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
 
 	int iPrevSaveCount = m_iSaveCountID;
-	while ( true )
+	for (;;)
 	{
 		LoadFile(sDataName, false);
 		LoadFile(sStaticsName, false);
@@ -1672,13 +1670,13 @@ bool CWorld::LoadAll() // Load world from script
 
 	// Set all the sector light levels now that we know the time.
 	// This should not look like part of the load. (CTRIG_EnvironChange triggers should run)
-	int iCount;
+	size_t iCount;
 	for ( int s = 0; s < m_SectorsQty; s++ )
 	{
 		EXC_TRYSUB("Load");
 		CSector *pSector = m_Sectors[s];
 
-		if ( pSector )
+		if ( pSector != NULL )
 		{
 			if ( !pSector->IsLightOverriden() )
 				pSector->SetLight(-1);

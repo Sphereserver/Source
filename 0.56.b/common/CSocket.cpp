@@ -20,7 +20,7 @@ CSocketAddressIP::CSocketAddressIP(const char *ip)
 	s_addr = inet_addr(ip);
 }
 
-bool CSocketAddressIP::operator==( CSocketAddressIP ip ) const
+bool CSocketAddressIP::operator==( const CSocketAddressIP & ip ) const
 {
 	return( IsSameIP( ip ) );
 }

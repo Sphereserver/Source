@@ -23,11 +23,18 @@ struct LexNoCaseLess {
 
 class CVarFloat
 {
+public:
+	typedef double RealType;
+	typedef std::map<CGString, RealType, LexNoCaseLess> MapType;
+
 public: //vars
 	CVarFloat();
 	~CVarFloat();
-	typedef double RealType;
-	typedef std::map<CGString, RealType, LexNoCaseLess> MapType;
+
+private:
+	CVarFloat(const CVarFloat& copy);
+	CVarFloat& operator=(const CVarFloat& other);
+
 private: //vars
 	MapType m_VarMap;
 
@@ -58,9 +65,15 @@ class CLocalObjMap
 public:
 	CLocalObjMap();
 	~CLocalObjMap();
+private:
+	CLocalObjMap(const CLocalObjMap& copy);
+	CLocalObjMap& operator=(const CLocalObjMap& other);
+
+public:
 	CObjBase * Get( unsigned short Number );
 	bool Insert( unsigned short Number, CObjBase * pObj, bool ForceSet = false );
 	typedef std::map<unsigned short, CObjBase*> ObjMap;
+
 private:
 	ObjMap m_ObjMap;
 };

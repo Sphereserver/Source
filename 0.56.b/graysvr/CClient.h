@@ -49,6 +49,11 @@ private:
 public:
 	CPartyDef( CChar * pCharInvite, CChar * pCharAccept );
 
+private:
+	CPartyDef(const CPartyDef& copy);
+	CPartyDef& operator=(const CPartyDef& other);
+
+public:
 	static bool AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bForced = false );
 	static bool DeclineEvent( CChar * pCharDecline, CGrayUID uidInviter );
 	static void SysMessageStatic( CChar * pChar, LPCTSTR pText );

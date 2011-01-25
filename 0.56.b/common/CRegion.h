@@ -38,6 +38,18 @@ protected:
 
 public:
 	static const char *m_sClassName;
+	CObjBaseTemplate()
+	{
+	}
+	virtual ~CObjBaseTemplate()
+	{
+	}
+
+private:
+	CObjBaseTemplate(const CObjBaseTemplate& copy);
+	CObjBaseTemplate& operator=(const CObjBaseTemplate& other);
+
+public:
 	CObjBaseTemplate * GetNext() const
 	{
 		return( STATIC_CAST <CObjBaseTemplate*> ( CGObListRec::GetNext()));
@@ -45,9 +57,6 @@ public:
 	CObjBaseTemplate * GetPrev() const
 	{
 		return( STATIC_CAST <CObjBaseTemplate*> ( CGObListRec::GetPrev()));
-	}
-	CObjBaseTemplate()
-	{
 	}
 
 	CGrayUID GetUID() const			{	return( m_UID ); }
@@ -238,9 +247,6 @@ public:
 		m_sName = pszName;
 		return true;
 	}
-	virtual ~CObjBaseTemplate()
-	{
-	}
 };
 
 inline DIR_TYPE GetDirTurn( DIR_TYPE dir, int offset )
@@ -366,7 +372,11 @@ public:
 	}
 	bool IsEqual( const CGRect & rect ) const
 	{
-		return( ! memcmp( &m_left, &(rect.m_left), sizeof(int)*5));
+		return m_left == rect.m_left &&
+			   m_top == rect.m_top &&
+			   m_right == rect.m_right &&
+			   m_bottom == rect.m_bottom &&
+			   m_map == rect.m_map;
 	}
 	virtual void NormalizeRect()
 	{
@@ -487,12 +497,24 @@ public:
 		return m_rectUnion.GetSector(i);
 	}
 
+public:
 	CGRegion();
+	virtual ~CGRegion() { };
+
+private:
+	CGRegion(const CGRegion& copy);
+	CGRegion& operator=(const CGRegion& other);
 };
 
 class CRegionLinks : public CGPtrTypeArray<CRegionBase*>
 {
 	//just named class for this, maybe something here later
+public:
+	CRegionLinks() { };
+
+private:
+	CRegionLinks(const CRegionLinks& copy);
+	CRegionLinks& operator=(const CRegionLinks& other);
 };
 
 class CRegionBase : public CResourceDef, public CGRegion
@@ -530,7 +552,7 @@ public:
 	static const char *m_sClassName;
 	CPointMap m_pt;			// safe point in the region. (for teleporting to)
 	int m_iLinkedSectors;	// just for statistics tracking. How many sectors are linked ?
-	int			m_iModified;
+	int m_iModified;
 
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
@@ -603,8 +625,13 @@ public:
 
 	bool	MakeRegionName();
 
-	CRegionBase( RESOURCE_ID rid, LPCTSTR pszName = NULL );
+public:
+	explicit CRegionBase( RESOURCE_ID rid, LPCTSTR pszName = NULL );
 	virtual ~CRegionBase();
+
+private:
+	CRegionBase(const CRegionBase& copy);
+	CRegionBase& operator=(const CRegionBase& other);
 };
 
 enum RTRIG_TYPE
@@ -652,8 +679,13 @@ public:
 	virtual void r_Write( CScript & s );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
-	CRegionWorld( RESOURCE_ID rid, LPCTSTR pszName = NULL );
+public:
+	explicit CRegionWorld( RESOURCE_ID rid, LPCTSTR pszName = NULL );
 	virtual ~CRegionWorld();
+
+private:
+	CRegionWorld(const CRegionWorld& copy);
+	CRegionWorld& operator=(const CRegionWorld& other);
 };
 
 class CTeleport : public CPointSort	// The static world teleporters. GRAYMAP.SCP
@@ -663,17 +695,26 @@ public:
 	static const char *m_sClassName;
 	bool bNpc;
 	CPointMap m_ptDst;
+
 public:
-	CTeleport( const CPointMap & pt ) : CPointSort(pt)
+	explicit CTeleport( const CPointMap & pt ) : CPointSort(pt)
 	{
 		ASSERT( pt.IsValidPoint());
 		m_ptDst = pt;
 		bNpc = false;
 	}
-	CTeleport( TCHAR * pszArgs );
+
+	explicit CTeleport( TCHAR * pszArgs );
+
 	virtual ~CTeleport()
 	{
 	}
+
+private:
+	CTeleport(const CTeleport& copy);
+	CTeleport& operator=(const CTeleport& other);
+
+public:
 	bool RealizeTeleport();
 };
 
@@ -684,11 +725,16 @@ public:
 	CGString m_sArea;	// Area/City Name = Britain or Occlo
 	CGString m_sName;	// Place name = Castle Britannia or Docks
 	CPointMap m_pt;
+
 public:
-	CStartLoc( LPCTSTR pszArea )
+	explicit CStartLoc( LPCTSTR pszArea )
 	{
 		m_sArea = pszArea;
 	}
+
+private:
+	CStartLoc(const CStartLoc& copy);
+	CStartLoc& operator=(const CStartLoc& other);
 };
 
 #endif // _INC_CREGION_H

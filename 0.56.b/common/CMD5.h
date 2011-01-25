@@ -19,10 +19,15 @@ private:
 	bool finalized;
 
 	void update();
+
 public:
 	CMD5();
 	~CMD5();
+private:
+	CMD5(const CMD5& copy);
+	CMD5& operator=(const CMD5& other);
 
+public:
 	void reset();
 	void update( unsigned char *data, unsigned int length );
 	void finalize();

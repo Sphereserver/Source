@@ -1281,7 +1281,7 @@ bool CItem::MoveTo( CPointMap pt ) // Put item on the ground here.
 	// Is this area too complex ?
 	if ( ! g_Serv.IsLoading())
 	{
-		int iCount = pSector->GetItemComplexity();
+		size_t iCount = pSector->GetItemComplexity();
 		if ( iCount > g_Cfg.m_iMaxSectorComplexity )
 		{
 			DEBUG_ERR(( "Warning: %d items at %s,too complex!\n", iCount, pt.WriteUsed()));
@@ -1310,13 +1310,13 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	}
 	else ptNewPlace  = pt;
 
-	int iItemCount = 0;
+	unsigned int iItemCount = 0;
 
 	// Look for pileable ? count how many items are here.
 	CItem * pItem = NULL;
 	CWorldSearch AreaItems(ptNewPlace);
-	DWORD	dMyZ = ptNewPlace.m_z;
-	while (true)
+	short iMyZ = ptNewPlace.m_z;
+	for (;;)
 	{
 		pItem = AreaItems.GetItem();
 		if ( pItem == NULL )
@@ -1330,15 +1330,18 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			// ITRIG_STACKON
 			if ( Stack( pItem ))
 			{
-				dMyZ = 100;
+				iMyZ = 100;
 				break;
 			}
 		}
 
-		if ( pItem->GetTopPoint().m_z > dMyZ ) dMyZ = pItem->GetTopPoint().m_z + 1;
+		if ( pItem->GetTopPoint().m_z > iMyZ )
+			iMyZ = pItem->GetTopPoint().m_z + 1;
 	}
+
 	// one floor. needs some configuration on that
-	if ( dMyZ - ptNewPlace.m_z < 12 ) ptNewPlace.m_z = dMyZ;
+	if ( (iMyZ - ptNewPlace.m_z) < 12 )
+		ptNewPlace.m_z = iMyZ;
 
 	// Set the decay timer for this if not in a house or such.
 	int iDecayTime = GetDecayTime();
@@ -1355,7 +1358,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
 	{
 		Speak("Too many items here!");
-		if ( iItemCount > g_Cfg.m_iMaxItemComplexity + g_Cfg.m_iMaxItemComplexity/2 )
+		if ( iItemCount > (g_Cfg.m_iMaxItemComplexity + (g_Cfg.m_iMaxItemComplexity / 2)) )
 		{
 			Speak("The ground collapses!");
 			Delete();
@@ -1484,7 +1487,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	// Should be LPCTSTR
 	// Get a full descriptive name. Prefixing and postfixing.
 
-	int len = 0;
+	size_t len = 0;
 	TCHAR * pTemp = Str_GetTemp();
 
 	LPCTSTR pszTitle = NULL;
@@ -1723,7 +1726,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	if ( IsAttr(ATTR_STOLEN))
 	{
 		// Who is it stolen from ?
-		CChar * pChar = m_uidLink.CharFind();
+		const CChar * pChar = m_uidLink.CharFind();
 		if ( pChar )
 		{
 			len += sprintf( pTemp+len, " (%s %s)", g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_STOLEN_FROM ), pChar->GetName());
@@ -1845,13 +1848,13 @@ bool CItem::SetDispID( ITEMID_TYPE id )
 	return( true );
 }
 
-void CItem::SetAmount( int amount )
+void CItem::SetAmount( unsigned int amount )
 {
 	ADDTOCALLSTACK("CItem::SetAmount");
 	// propagate the weight change.
 	// Setting to 0 might be legal if we are deleteing it ?
 
-	int oldamount = GetAmount();
+	unsigned int oldamount = GetAmount();
 	if ( oldamount == amount )
 		return;
 
@@ -1879,10 +1882,10 @@ void CItem::SetAmount( int amount )
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
 }
 
-void CItem::SetAmountUpdate( int amount )
+void CItem::SetAmountUpdate( unsigned int amount )
 {
 	ADDTOCALLSTACK("CItem::SetAmountUpdate");
-	int oldamount = GetAmount();
+	unsigned int oldamount = GetAmount();
 	SetAmount( amount );
 	if ( oldamount < 5 || amount < 5 )	// beyond this make no visual diff.
 	{
@@ -1963,8 +1966,6 @@ void CItem::r_WriteMore1( CGString & sVal )
 			sVal.FormatHex( m_itNormal.m_more1 );
 			return;
 	}
-
-	sVal.FormatHex( m_itNormal.m_more1 );
 }
 
 void CItem::r_WriteMore2( CGString & sVal )
@@ -2003,7 +2004,6 @@ void CItem::r_WriteMore2( CGString & sVal )
 			sVal.FormatHex( m_itNormal.m_more2 );
 			return;
 	}
-	sVal.FormatHex( m_itNormal.m_more2 );
 }
 
 void CItem::r_Write( CScript & s )
@@ -2462,25 +2462,25 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				m_itWeapon.m_dmgcold = s.GetArgVal();
 			else
 				DEBUG_ERR(("Dmgcold set on a non-weapon object\n"));
-			return true;;
+			return true;
 		case IC_DMGENERGY:
 			if ( IsTypeWeapon() )
 				m_itWeapon.m_dmgenergy = s.GetArgVal();
 			else
 				DEBUG_ERR(("Dmgenergy set on a non-weapon object\n"));
-			return true;;
+			return true;
 		case IC_DMGFIRE:
 			if ( IsTypeWeapon() )
 				m_itWeapon.m_dmgfire = s.GetArgVal();
 			else
 				DEBUG_ERR(("Dmgfire set on a non-weapon object\n"));
-			return true;;
+			return true;
 		case IC_DMGPOISON:
 			if ( IsTypeWeapon() )
 				m_itWeapon.m_dmgpoison = s.GetArgVal();
 			else
 				DEBUG_ERR(("Dmgpoison set on a non-weapon object\n"));
-			return true;;
+			return true;
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);
@@ -2721,7 +2721,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 				int iCount = s.GetArgVal();
 				if ( iCount <= 0 ) 
 					iCount = 1;
-				if ( !GetContainer() && ( iCount > g_Cfg.m_iMaxItemComplexity ))	// if top-level, obey the complexity
+				if ( !GetContainer() && ( (unsigned int)iCount > g_Cfg.m_iMaxItemComplexity ))	// if top-level, obey the complexity
 					iCount = g_Cfg.m_iMaxItemComplexity;
 				while ( iCount-- )
 				{
@@ -2740,9 +2740,9 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			pCharSrc->ItemBounce(this);
 			break;
 		case CIV_USE:
-			if ( ! pCharSrc )
+			if ( pCharSrc == NULL )
 				return( false );
-			pCharSrc->Use_Obj( this, s.HasArgs() ? s.GetArgVal() : true, true );
+			pCharSrc->Use_Obj( this, s.HasArgs() ? (s.GetArgVal() != 0) : true, true );
 			break;
 		default:
 			return false;
@@ -3127,11 +3127,11 @@ bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 	i -= (m_itSpellbook.m_baseid + 1);
 
 	if ( i < 32 )
-		return (m_itSpellbook.m_spells1 & (1 << i));
+		return ((m_itSpellbook.m_spells1 & (1 << i)) != 0);
 	else if ( i < 64 )
-		return (m_itSpellbook.m_spells2 & (1 << (i-32)));
+		return ((m_itSpellbook.m_spells2 & (1 << (i-32))) != 0);
 	else if ( i < 96 )
-		return (m_itSpellbook.m_spells2 & (1 << (i-64)));
+		return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);
 	else
 		return false;
 }
@@ -3291,7 +3291,7 @@ bool CItem::Use_Portculis()
 	MoveTo( pt );
 	Update();
 
-	SOUND_TYPE iSnd = NULL;
+	SOUND_TYPE iSnd = 0;
 	CVarDefCont * pTagStorage = NULL; 
 	pTagStorage = GetKey("OVERRIDE.PORTCULISSOUND", true);
 	if ( pTagStorage )
@@ -3609,8 +3609,6 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 		default:
 			return( SKILL_WRESTLING );
 	}
-
-	return( SKILL_WRESTLING );
 }
 
 LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
@@ -3622,21 +3620,22 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	CPointMap ptCoords = pUser->GetTopPoint();
 
 #define BASE_SIGHT 26 // 32 (UO_MAP_VIEW_RADAR) is the edge of the radar circle (for the most part)
-	float rWeather = (float) ptCoords.GetSector()->GetWeather();
-	float rLight = (float) ptCoords.GetSector()->GetLight();
+	WEATHER_TYPE wtWeather = ptCoords.GetSector()->GetWeather();
+	BYTE iLight = ptCoords.GetSector()->GetLight();
 	CGString sSearch;
 	TCHAR	*pResult = Str_GetTemp();
 
 	// Weather bonus
-	double rWeatherSight = rWeather == 0.0 ? (0.25 * BASE_SIGHT) : 0.0;
+	double rWeatherSight = wtWeather == WEATHER_RAIN ? (0.25 * BASE_SIGHT) : 0.0;
 	// Light level bonus
-	double rLightSight = (1.0 - (rLight / 25.0)) * BASE_SIGHT * 0.25;
+	double rLightSight = (1.0 - (static_cast<double>(iLight) / 25.0)) * BASE_SIGHT * 0.25;
 	int iVisibility = (int) (BASE_SIGHT + rWeatherSight + rLightSight);
 
 	// Check for the nearest land, only check every 4th square for speed
 	const CUOMapMeter * pMeter = g_World.GetMapMeter( ptCoords ); // Are we at sea?
-	if ( !pMeter )
+	if ( pMeter == NULL )
 		return pResult;
+
 	switch ( pMeter->m_wTerrainIndex )
 	{
 		case TERRAIN_WATER1:
@@ -3648,34 +3647,37 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		{
 			// Look for land if at sea
 			CPointMap ptLand;
-			for (int x = ptCoords.m_x - iVisibility; x <= ptCoords.m_x + iVisibility; x=x+2)
-				for (int y = ptCoords.m_y - iVisibility; y <= ptCoords.m_y + iVisibility; y=y+2)
+			for (int x = ptCoords.m_x - iVisibility; x <= (ptCoords.m_x + iVisibility); x += 2)
 			{
-				CPointMap ptCur(x,y,ptCoords.m_z);
-				pMeter = g_World.GetMapMeter( ptCur );
-				if ( !pMeter )
-					return pResult;
-				switch ( pMeter->m_wTerrainIndex )
+				for (int y = ptCoords.m_y - iVisibility; y <= (ptCoords.m_y + iVisibility); y += 2)
 				{
-				case TERRAIN_WATER1:
-				case TERRAIN_WATER2:
-				case TERRAIN_WATER3:
-				case TERRAIN_WATER4:
-				case TERRAIN_WATER5:
-				case TERRAIN_WATER6:
-					break;
-				default:
-					if (ptCoords.GetDist(ptCur) < ptCoords.GetDist(ptLand))
-						ptLand = ptCur;
+					CPointMap ptCur(x, y, ptCoords.m_z);
+					pMeter = g_World.GetMapMeter( ptCur );
+					if ( pMeter == NULL )
+						continue;
+
+					switch ( pMeter->m_wTerrainIndex )
+					{
+						case TERRAIN_WATER1:
+						case TERRAIN_WATER2:
+						case TERRAIN_WATER3:
+						case TERRAIN_WATER4:
+						case TERRAIN_WATER5:
+						case TERRAIN_WATER6:
+							break;
+						default:
+							if (ptCoords.GetDist(ptCur) < ptCoords.GetDist(ptLand))
+								ptLand = ptCur;
+							break;
+					}
 				}
-				break;
 			}
 
 			if ( ptLand.IsValidPoint())
 				sSearch.Format( "%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), (LPCTSTR) CPointBase::sm_szDirs[ ptCoords.GetDir(ptLand) ] );
-			else if (rLight > 3)
+			else if (iLight > 3)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_DARK);
-			else if (rWeather != 0)
+			else if (wtWeather == WEATHER_RAIN)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_WEATHER);
 			else
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_NO_LAND);
@@ -3694,7 +3696,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	int iItemSighted = 0;
 	int iBoatSighted = 0;
 	CWorldSearch ItemsArea( ptCoords, iVisibility );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = ItemsArea.GetItem();
 		if ( pItem == NULL )
@@ -3770,7 +3772,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	CChar * pCharSighted = NULL;
 	int iCharSighted = 0;
 	CWorldSearch AreaChar( ptCoords, iVisibility );
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
@@ -4004,6 +4006,7 @@ int CItem::Use_Trap()
 bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 {
 	ADDTOCALLSTACK("CItem::SetMagicLock");
+	UNREFERENCED_PARAMETER(iSkillLevel);
 	if ( pCharSrc == NULL )
 		return false;
 
@@ -4387,7 +4390,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		}
 
 		iDmg = Calc_GetRandVal( iDmg ) + 1;
-		if ( iDmg > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
+		if ( (unsigned int)iDmg > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
 		{
 			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
 			if ( Calc_GetRandVal( 2 ) || ( uType & DAMAGE_FIRE ))
@@ -4491,7 +4494,7 @@ bool CItem::OnExplosion()
 	CChar * pSrc = m_uidLink.CharFind();
 
 	CWorldSearch AreaChars( GetTopPoint(), m_itExplode.m_iDist );
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = AreaChars.GetChar();
 		if ( pChar == NULL )
@@ -4504,7 +4507,7 @@ bool CItem::OnExplosion()
 
 	// Damage objects near by.
 	CWorldSearch AreaItems( GetTopPoint(), m_itExplode.m_iDist );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
 		if ( pItem == NULL )
@@ -4843,7 +4846,7 @@ bool CItem::OnTick()
 #ifndef _WIN32
 	}
 #ifndef _DEBUG
-	catch ( CGrayError &e )
+	catch ( const CGrayError& e )
 	{
 		EXC_CATCH_EXCEPTION(&e);
 		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), (DWORD)GetUID());

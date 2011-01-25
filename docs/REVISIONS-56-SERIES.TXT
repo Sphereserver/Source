@@ -5097,3 +5097,11 @@ ALPHA additions:
 
 22-01-2011, MrSugarCube
 - Fixed #1868: Memory leak when TooltipCache setting is disabled (thanks Torfo).
+
+25-01-2011, MrSugarCube
+- Fixed: Wage amount not being passed through to the 'npc_pet_wage_cost' defmessage.
+- Fixed: Spyglasses not searching properly for the nearest land tile.
+- Fixed: Optimised UID allocation not working as expected or sometimes not functioning at all.
+- Fixed: SuppressCapitals replaces unicode speech with blank text.
+- Fixed: Possible exception when importing from a WSC file where item properties are listed
+  in an unexpected order.

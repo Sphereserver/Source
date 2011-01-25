@@ -277,7 +277,7 @@ bool CScriptCompiler::IsAlreadyCompiled(char *sourceName, char *binaryName)
 		if ( !f )
 			return false;
 		fread(&head, sizeof(head), 1, f);
-		head.zPrefix[8] = 0;	// to ensure bug-free on invalid file given
+		head.zPrefix[COUNTOF(head.zPrefix) - 1] = 0;	// to ensure bug-free on invalid file given
 		fclose(f);
 
 		//	file is either corrupt -or- not successfuly compiled

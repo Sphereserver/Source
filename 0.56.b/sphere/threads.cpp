@@ -258,7 +258,7 @@ void AbstractThread::run()
 			// be in tick() but we cannot guarantee it to be called there
 			CurrentProfileData.Start(PROFILE_IDLE);
 		}
-		catch( CException &e )
+		catch( const CException& e )
 		{
 			gotException = true;
 			g_Log.CatchEvent(&e, "%s::tick", getName());
@@ -481,15 +481,6 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 			throw CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}
-}
-
-String AbstractSphereThread::allocateString()
-{
-	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
-    
-	TemporaryStringStorage * store = allocateStringBuffer();
-	TemporaryString s(store->m_buffer, &store->m_state);
-	return s;
 }
 
 void AbstractSphereThread::allocateString(TemporaryString &string)

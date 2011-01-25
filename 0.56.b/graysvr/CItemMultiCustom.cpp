@@ -118,13 +118,13 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	// hide dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
 	Area.SetSearchSquare(true);
-	while ( true )
+	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
 			break;
 
-		if ( pItem->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID() )
+		if ( (DWORD)pItem->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID() )
 			continue;
 
 		pClientSrc->addObjectRemove(pItem);
@@ -270,13 +270,13 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
 	Area.SetSearchSquare(true);
 	CItem * pItem;
-	while ( true )
+	for (;;)
 	{
 		pItem = Area.GetItem();
 		if ( pItem == NULL )
 			break;
 
-		if ( pItem->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID() )
+		if ( (DWORD)pItem->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID() )
 			continue;
 
 		pItem->Delete();
@@ -419,11 +419,11 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 		}
 
 		Component * pPrevComponents[128];
-		int iCount = GetComponentsAt(x, y, z, pPrevComponents, &m_designWorking);
+		size_t iCount = GetComponentsAt(x, y, z, pPrevComponents, &m_designWorking);
 		if ( iCount > 0 )
 		{
 			// remove previous item(s) in this location
-			for (int i = 0; i < iCount; i++)
+			for (size_t i = 0; i < iCount; i++)
 			{
 				if ( bFloor != pPrevComponents[i]->m_isFloor )
 					continue;
@@ -563,12 +563,12 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	}
 
 	Component * pComponents[128];
-	int iCount = GetComponentsAt(x, y, z, pComponents, &m_designWorking);
+	size_t iCount = GetComponentsAt(x, y, z, pComponents, &m_designWorking);
 	if ( iCount <= 0 )
 		return;
 
 	bool bReplaceDirt = false;
-	for ( int i = 0; i < iCount; i++ )
+	for ( size_t i = 0; i < iCount; i++ )
 	{
 		for ( ComponentsContainer::iterator j = m_designWorking.m_vectorComponents.begin(); j != m_designWorking.m_vectorComponents.end(); ++j )
 		{
@@ -591,7 +591,7 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 		}
 	}
 	
-	if ( pClientSrc && bReplaceDirt )
+	if ( pClientSrc != NULL && bReplaceDirt )
 	{
 		// make sure that the location is within the proper boundaries
 		if ( rectDesign.IsInsideX(pt.m_x) && rectDesign.IsInsideX(pt.m_x-1) && rectDesign.IsInsideY(pt.m_y) && rectDesign.IsInsideY(pt.m_y-1) )
@@ -800,6 +800,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 void CItemMultiCustom::BackupStructure(CClient * pClientSrc)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::BackupStructure");
+	UNREFERENCED_PARAMETER(pClientSrc);
 	// create a backup of the working copy
 	if ( m_designWorking.m_iRevision == m_designBackup.m_iRevision )
 		return;
@@ -903,13 +904,13 @@ int CItemMultiCustom::GetStairCount()
 	return iCount;
 }
 
-int CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
+size_t CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetFixtureCount");
 	if ( pDesign == NULL )
 		pDesign = &m_designMain;
 
-	int count = 0;
+	size_t count = 0;
 	for ( ComponentsContainer::iterator i = pDesign->m_vectorComponents.begin(); i != pDesign->m_vectorComponents.end(); ++i)
 	{
 		if ((*i)->m_item.m_visible)
@@ -919,10 +920,9 @@ int CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 	}
 
 	return count;
-
 }
 
-int CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component ** pComponents, DesignDetails * pDesign)
+size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component ** pComponents, DesignDetails * pDesign)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentsAt");
 	// find a list of components that are located at the given
@@ -932,9 +932,9 @@ int CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component
 	if ( pDesign == NULL )
 		pDesign = &m_designMain;
 
-	int count = 0;
+	size_t count = 0;
 	Component * pComponent;
-	for ( int i = 0; i < pDesign->m_vectorComponents.size(); i++ )
+	for ( size_t i = 0; i < pDesign->m_vectorComponents.size(); i++ )
 	{
 		pComponent = pDesign->m_vectorComponents.at(i);
 
@@ -1306,8 +1306,8 @@ bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 			else if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);
-				int iQty = Exp_GetVal(pszKey);
-				if (( iQty < 0 ) || ( iQty >= m_designMain.m_vectorComponents.size() ))
+				size_t iQty = static_cast<size_t>( Exp_GetVal(pszKey) );
+				if ( iQty >= m_designMain.m_vectorComponents.size() )
 					return false;
 
 				SKIP_SEPARATORS(pszKey);

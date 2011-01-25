@@ -573,7 +573,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_MapEdit, new PacketMapEdit());							// edit map pins
 	registerPacket(XCMD_CharPlay, new PacketCharPlay());						// select character
 	registerPacket(XCMD_BookPage, new PacketBookPageEdit());					// edit book content
-	registerPacket(XCMD_Options, new PacketUnknown(-1));						// unused options packet
+	registerPacket(XCMD_Options, new PacketUnknown());						// unused options packet
 	registerPacket(XCMD_Target, new PacketTarget());							// target an object
 	registerPacket(XCMD_SecureTrade, new PacketSecureTradeReq());				// secure trade action
 	registerPacket(XCMD_BBoard, new PacketBulletinBoardReq());					// bulletin board action
@@ -607,7 +607,7 @@ void NetworkIn::onStart(void)
 	registerPacket(XCMD_ExtData, new PacketExtendedCommand());					//
 	registerPacket(XCMD_PromptUNICODE, new PacketPromptResponseUnicode());		// prompt response (unicode)
 	registerPacket(XCMD_ViewRange, new PacketViewRange());						//
-	registerPacket(XCMD_ConfigFile, new PacketUnknown(-1));						//
+	registerPacket(XCMD_ConfigFile, new PacketUnknown());						//
 	registerPacket(XCMD_LogoutStatus, new PacketLogout());						//
 	registerPacket(XCMD_AOSBookPage, new PacketBookHeaderEditNew());			// edit book
 	registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					// request tooltip data
@@ -966,14 +966,14 @@ void NetworkIn::tick(void)
 		else
 		{
 			// append to buffer
-			long pos = client->m_receiveBuffer->getPosition();
+			size_t pos = client->m_receiveBuffer->getPosition();
 			client->m_receiveBuffer->seek(client->m_receiveBuffer->getLength());
 			client->m_receiveBuffer->writeData(m_decryptBuffer, received);
 			client->m_receiveBuffer->seek(pos);
 		}
 
 		Packet* packet = client->m_receiveBuffer;
-		long len = packet->getLength() - packet->getPosition();
+		size_t len = packet->getLength() - packet->getPosition();
 
 		EXC_SET("record message");
 		xRecordPacket(client->m_client, packet, "client->server");
@@ -983,12 +983,12 @@ void NetworkIn::tick(void)
 
 		while (len > 0 && !client->isClosing())
 		{
-			long packetID = packet->getData()[packet->getPosition()];
+			BYTE packetID = packet->getData()[packet->getPosition()];
 			Packet* handler = m_handlers[packetID];
 
 			if (handler != NULL)
 			{
-				long packetLength = handler->checkLength(client, packet);
+				size_t packetLength = handler->checkLength(client, packet);
 //				DEBUGNETWORK(("Checking length: counted %d.\n", packetLength));
 
 				//	fall back and delete the packet
@@ -1011,7 +1011,7 @@ void NetworkIn::tick(void)
 
 				// copy data to handler
 				handler->seek();
-				for (int i = 0; i < packetLength; i++)
+				for (size_t j = 0; j < packetLength; j++)
 				{
 					BYTE next = packet->readByte();
 					handler->writeByte(next);
@@ -1295,7 +1295,7 @@ Packet* NetworkIn::getEncodedHandler(int packetId) const
 	return m_encoded[packetId];
 }
 
-NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(CSocketAddressIP ip)
+NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(const CSocketAddressIP& ip)
 {
 	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
 

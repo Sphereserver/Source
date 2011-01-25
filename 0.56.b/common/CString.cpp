@@ -60,13 +60,13 @@ int gReallocs = 0;
 // }
 // #endif
 
-int strcpylen( TCHAR * pDst, LPCTSTR pSrc )
+size_t strcpylen( TCHAR * pDst, LPCTSTR pSrc )
 {
 	strcpy( pDst, pSrc );
 	return( strlen( pDst ));
 }
 
-int strcpylen( TCHAR * pDst, LPCTSTR pSrc, int iMaxSize )
+size_t strcpylen( TCHAR * pDst, LPCTSTR pSrc, size_t iMaxSize )
 {
 	// it does NOT include the iMaxSize element! (just like memcpy)
 	// so iMaxSize=sizeof() is ok !
@@ -447,10 +447,10 @@ LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWord )
 	return "a ";
 }
 
-int Str_TrimEndWhitespace( TCHAR * pStr, int len )
+size_t Str_TrimEndWhitespace( TCHAR * pStr, size_t len )
 {
 	ASSERT( len >= 0 );
-	while ( len>0 )
+	while ( len > 0 )
 	{
 		len --;
 		if ( pStr[len] < 0 || ! ISWHITESPACE( pStr[len] ))
@@ -488,7 +488,7 @@ bool Str_Parse( TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep )
 	}
 
 	TCHAR ch;
-	for ( ;true; pLine++ )
+	for ( ; ; pLine++ )
 	{
 		ch = *pLine;
 		if ( ch == '\0' )	// no args i guess.
@@ -560,7 +560,7 @@ int Str_ParseCmds( TCHAR * pszCmdLine, int * piCmd, int iMax, LPCTSTR pszSep )
 
 static int Str_CmpHeadI( LPCTSTR pszFind, LPCTSTR pszTable )
 {
-	for ( int i=0; true; i++ )
+	for ( size_t i = 0; ; i++ )
 	{
 			//	we should always use same case as in other places. since strcmpi lowers,
 			//	we should lower here as well. fucking shit!
@@ -661,7 +661,7 @@ int FindTable( LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iElem
 	return( -1 );
 }
 
-int Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, int iMaxOutSize, LPCTSTR pszStrip )
+size_t Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR pszStrip )
 {
 	// That the client can deal with. Basic punctuation and alpha and numbers.
 	// RETURN: Output length.
@@ -671,23 +671,24 @@ int Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, int iMaxOutSize, LPCTSTR pszStr
 
 	//GETNONWHITESPACE( pszInp );	// kill leading white space.
 
-	int j=0;
-	for ( int i=0; true; i++ )
+	size_t j = 0;
+	for ( size_t i = 0; ; i++ )
 	{
 		TCHAR ch = pszInp[i];
 		if ( ch )
 		{
 			if ( ch < ' ' || ch >= 127 )
 				continue;	// Special format chars.
-			int k=0;
+
+			size_t k = 0;
 			while ( pszStrip[k] && pszStrip[k] != ch )
 				k++;
+
 			if ( pszStrip[k] )
 				continue;
+
 			if ( j >= iMaxOutSize-1 )
-			{
-				ch = 0;
-			}
+				ch = '\0';
 		}
 		pszOut[j++] = ch;
 		if ( ch == 0 )
@@ -742,25 +743,25 @@ int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset )
 
 	return -1;
 }
-bool Str_Check( const TCHAR * pszIn )
+bool Str_Check(LPCTSTR pszIn)
 {
-	if ( !pszIn ) 
+	if ( pszIn == NULL ) 
 		return true;
 
-	const char *p = pszIn;
-	while ( *p && ( *p != 0x0A ) && ( *p != 0x0D )) 
+	LPCTSTR p = pszIn;
+	while ( *p != '\0' && ( *p != 0x0A ) && ( *p != 0x0D )) 
 		p++;
 
-	return ( *p );
+	return ( *p != '\0' );
 }
 
-bool Str_CheckName(const TCHAR *pszIn )
+bool Str_CheckName(LPCTSTR pszIn )
 {
-	if ( !pszIn )
+	if ( pszIn == NULL )
 		return true;
 
-	const char *p = pszIn;
-	while ( *p &&
+	LPCTSTR p = pszIn;
+	while ( *p != '\0' &&
 		(
 		(( *p >= 'A' ) && ( *p <= 'Z' )) ||
 		(( *p >= 'a' ) && ( *p <= 'z' )) ||
@@ -769,7 +770,7 @@ bool Str_CheckName(const TCHAR *pszIn )
 		))
 		p++;
 
-	return ( *p );
+	return ( *p != '\0' );
 }
 
 TCHAR * Str_MakeFiltered( TCHAR * pStr )
@@ -907,7 +908,7 @@ MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText )
 					return MATCH_PATTERN;
 
 				bool fMemberMatch = false;       // have I matched the [..] construct?
-				while (true)
+				for (;;)
 				{
 					// if end of construct then fLoop is done
 					if (*pPattern == ']')

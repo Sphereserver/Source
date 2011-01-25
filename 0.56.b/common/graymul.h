@@ -2137,6 +2137,11 @@ protected:
 public:
 	CMapList();
 
+private:
+	CMapList(const CMapList& copy);
+	CMapList& operator=(const CMapList& other);
+
+public:
 	bool Load(int map, char *args);
 	bool Load(int map, int maxx, int maxy, int sectorsize, int realmapnum, int mapid);
 
@@ -2327,7 +2332,7 @@ struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
 
 struct CGrayItemInfo : public CUOItemTypeRec2
 {
-	CGrayItemInfo( ITEMID_TYPE id );
+	explicit CGrayItemInfo( ITEMID_TYPE id );
 };
 
 struct CUOMultiItemRec // (Multi.mul)

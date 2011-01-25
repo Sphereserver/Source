@@ -31,6 +31,11 @@ public:
 	static const char *m_sClassName;
 	CNTService();
 
+private:
+	CNTService(const CNTService& copy);
+	CNTService& operator=(const CNTService& other);
+
+public:
 	void ReportEvent( WORD wType, DWORD dwMsgID, LPCTSTR lpszMsg, LPCTSTR lpszArgs = NULL );
 	BOOL SetServiceStatus(DWORD, DWORD, DWORD);
 

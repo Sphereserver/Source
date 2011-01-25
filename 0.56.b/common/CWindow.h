@@ -16,6 +16,7 @@ class CWindow    // similar to Std MFC class CWnd
 public:
 	static const char *m_sClassName;
 	HWND m_hWnd;
+
 public:
 	operator HWND () const       // cast as a HWND
 	{
@@ -25,11 +26,16 @@ public:
 	{
 		m_hWnd = NULL;
 	}
-	~CWindow()
+	virtual ~CWindow()
 	{
 		DestroyWindow();
 	}
 
+private:
+	CWindow(const CWindow& copy);
+	CWindow& operator=(const CWindow& other);
+
+public:
 	// Standard message handlers.
 	BOOL OnCreate( HWND hwnd, LPCREATESTRUCT lpCreateStruct = NULL  )
 	{
@@ -173,6 +179,10 @@ class CDialogBase : public CWindow
 public:
 	static const char *m_sClassName;
 	static BOOL CALLBACK DialogProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
+
+public:
+	virtual ~CDialogBase() { };
+
 public:
 	virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
 	{
@@ -216,6 +226,15 @@ public:
 		m_pMainWnd = NULL;
 	}
 
+	virtual ~CWinApp()
+	{
+	}
+
+private:
+	CWinApp(const CWinApp& copy);
+	CWinApp& operator=(const CWinApp& other);
+
+public:
 	void InitInstance( LPCTSTR pszAppName, HINSTANCE hInstance, LPSTR lpszCmdLine )
 	{
 		m_pszAppName = pszAppName;	// assume this is a static data pointer valid forever.

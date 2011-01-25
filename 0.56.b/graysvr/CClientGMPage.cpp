@@ -81,7 +81,7 @@ void CClient::Cmd_GM_PageClear()
 	}
 }
 
-void CClient::Cmd_GM_PageMenu( int iEntryStart )
+void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 {
 	ADDTOCALLSTACK("CClient::Cmd_GM_PageMenu");
 	// Just put up the GM page menu.
@@ -93,8 +93,8 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 
 	item[0].m_sText = "GM Page Menu";
 
-	int entry=0;
-	int count=0;
+	DWORD entry = 0;
+	WORD count = 0;
 	CGMPage * pPage = STATIC_CAST <CGMPage*>( g_World.m_GMPages.GetHead());
 	for ( ; pPage!= NULL; pPage = pPage->GetNext(), entry++ )
 	{
@@ -129,7 +129,7 @@ void CClient::Cmd_GM_PageMenu( int iEntryStart )
 		m_tmMenu.m_Item[count] = entry;
 	}
 
-	if ( ! count )
+	if ( count <= 0 )
 	{
 		SysMessage( "No GM pages queued. Use .page ?" );
 		return;

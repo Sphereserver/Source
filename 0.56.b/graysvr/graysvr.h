@@ -148,7 +148,6 @@ enum RESDISPLAY_VERSION
 
 #include <vector>
 #include <string>
-using namespace std;
 
 class CClient;
 class CAccount;
@@ -168,7 +167,7 @@ class CDataBase;
 
 extern DIR_TYPE GetDirStr( LPCTSTR pszDir );
 extern LPCTSTR GetTimeMinDesc( int dwMinutes );
-extern int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord );
+extern size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord );
 
 extern struct CLog : public CFileText, public CEventLog
 {
@@ -258,8 +257,9 @@ public:
 	}
 
 	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );
-	void _cdecl CatchEvent( CGrayError * pErr, LPCTSTR pszCatchContext, ...  );
+	void _cdecl CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ...  );
 
+public:
 	CLog()
 	{
 #ifndef _WIN32
@@ -272,6 +272,10 @@ public:
 			LOGM_INIT | LOGM_CLIENTS_LOG | LOGM_GM_PAGE;
 		SetFilePath( GRAY_FILE "log.log" );	// default name to go to.
 	}
+
+private:
+	CLog(const CLog& copy);
+	CLog& operator=(const CLog& other);
 
 } g_Log;		// Log file
 
@@ -286,14 +290,22 @@ private:
 	CGString m_sAccount;	// The account that paged me.
 	CClient * m_pGMClient;	// assigned to a GM
 	CGString m_sReason;		// Players Description of reason for call.
+
 public:
 	static const char *m_sClassName;
 	// Queue a GM page. (based on account)
 	CServTime  m_timePage;	// Time of the last call.
 	CPointMap  m_ptOrigin;		// Origin Point of call.
+
 public:
 	CGMPage( LPCTSTR pszAccount );
 	~CGMPage();
+
+private:
+	CGMPage(const CGMPage& copy);
+	CGMPage& operator=(const CGMPage& other);
+
+public:
 	CAccountRef FindAccount() const;
 	LPCTSTR GetAccountStatus() const;
 	LPCTSTR GetName() const
@@ -361,8 +373,14 @@ public:
 		m_fReceiving = true;
 		m_fAllowWhoIs = true;
 	}
+
 	virtual ~CChatChanMember();
 
+private:
+	CChatChanMember(const CChatChanMember& copy);
+	CChatChanMember& operator=(const CChatChanMember& other);
+
+public:
 	CClient * GetClient();
 	const CClient * GetClient() const;
 
@@ -418,12 +436,18 @@ private:
 	int FindMemberIndex( LPCTSTR pszName ) const;
 
 public:
-	CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL)
+	explicit CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL)
 	{
 		m_sName = pszName;
 		m_sPassword = pszPassword;
 		m_fVoiceDefault = true;
 	};
+
+private:
+	CChatChannel(const CChatChannel& copy);
+	CChatChannel& operator=(const CChatChannel& other);
+
+public:
 	CChatChannel* GetNext() const
 	{
 		return( static_cast <CChatChannel *>( CGObListRec::GetNext()));
@@ -530,6 +554,11 @@ public:
 		m_fChatsOK = true;
 	}
 
+private:
+	CChat(const CChat& copy);
+	CChat& operator=(const CChat& other);
+
+public:
 	CChatChannel * GetFirstChannel() const
 	{
 		return STATIC_CAST <CChatChannel *>(m_Channels.GetHead());
@@ -561,12 +590,17 @@ public:
 	static const char *m_sClassName;
 	struct TResponseString
 	{
+	public:
 		const WORD m_ID;
 		CGString const m_sText;
 
-		TResponseString(WORD id, LPCTSTR pszText):m_ID(id),m_sText(pszText)
+		TResponseString(WORD id, LPCTSTR pszText) : m_ID(id), m_sText(pszText)
 		{
 		}
+
+	private:
+		TResponseString(const TResponseString& copy);
+		TResponseString& operator=(const TResponseString& other);
 	};
 
 	CGTypedArray<DWORD,DWORD>		m_CheckArray;
@@ -581,6 +615,13 @@ public:
 		return "ARGD";
 	}
 	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
+
+public:
+	CDialogResponseArgs() { };
+
+private:
+	CDialogResponseArgs(const CDialogResponseArgs& copy);
+	CDialogResponseArgs& operator=(const CDialogResponseArgs& other);
 };
 
 struct CMenuItem 	// describe a menu item.
@@ -610,7 +651,7 @@ public:
 	void SetInvalid()
 	{
 		// Force a resync of all this. we changed location by teleport etc.
-		m_Light = -1;	// set based on time later.
+		m_Light = UCHAR_MAX;	// set based on time later.
 		m_Season = SEASON_QTY;
 		m_Weather = WEATHER_DEFAULT;
 	}
@@ -708,7 +749,8 @@ public:
 	DWORD m_clilocid;
 	TCHAR m_args[SCRIPT_MAX_LINE_LEN];
 
-	CClientTooltip(DWORD clilocid, LPCTSTR args = NULL)
+public:
+	explicit CClientTooltip(DWORD clilocid, LPCTSTR args = NULL)
 	{
 		m_clilocid = clilocid;
 		if ( args )
@@ -717,6 +759,11 @@ public:
 			m_args[0] = '\0';
 	}
 
+private:
+	CClientTooltip(const CClientTooltip& copy);
+	CClientTooltip& operator=(const CClientTooltip& other);
+
+public:
 	void __cdecl FormatArgs(LPCTSTR format, ...)
 	{
 		va_list vargs;
@@ -984,7 +1031,7 @@ private:
 	// Commands from client
 	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
 	inline void Event_Item_Drop_Fail( CItem * pItem );
-	void Event_Talk_Common(char *szText ); // PC speech
+	void Event_Talk_Common(TCHAR * szText ); // PC speech
 	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
 
 public:
@@ -1004,7 +1051,7 @@ public:
 	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
 	void Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen );
-	void Event_PromptResp( LPCTSTR pszText, int len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
+	void Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
 	void Event_SetName( CGrayUID uid, const char * pszCharName );
 	void Event_SingleClick( CGrayUID uid );
 	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
@@ -1042,7 +1089,7 @@ public:
 	bool Cmd_CreateItem( ITEMID_TYPE id, bool fStatic = false );
 	bool Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell = SPELL_Summon, bool fPet = true );
 
-	void Cmd_GM_PageMenu( int iEntryStart = 0 );
+	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );
 	void Cmd_GM_PageSelect( int iSelect );
 	void Cmd_GM_Page( LPCTSTR pszreason); // Help button (Calls GM Call Menus up)
@@ -1063,8 +1110,14 @@ public:
 	long GetSocketID() const;								// get socket id
 
 public:
-	CClient(NetState* state);
+	explicit CClient(NetState* state);
 	~CClient();
+
+private:
+	CClient(const CClient& copy);
+	CClient& operator=(const CClient& other);
+
+public:
 	void CharDisconnect();
 
 	CClient* GetNext() const
@@ -1292,7 +1345,7 @@ public:
 	BYTE GetResDisp() const
 	{
 		if ( GetAccount() == NULL )
-			return( -1 );
+			return( UCHAR_MAX );
 		return( GetAccount()->GetResDisp() );
 	}
 	bool SetResDisp( BYTE res )
@@ -1458,6 +1511,11 @@ public:
 	CServer();
 	~CServer();
 
+private:
+	CServer(const CServer& copy);
+	CServer& operator=(const CServer& other);
+
+public:
 	bool IsValidBusy() const;
 	void SetServerMode( SERVMODE_TYPE mode );
 
@@ -1507,7 +1565,13 @@ class Main : public AbstractSphereThread
 {
 public:
 	Main();
+	virtual ~Main() { };
 
+private:
+	Main(const Main& copy);
+	Main& operator=(const Main& other);
+
+public:
 	// we increase the access level from protected to public in order to allow manual execution when
 	// configuration disables using threads
 	// TODO: in the future, such simulated functionality should lie in AbstractThread inself instead of hacks
@@ -1522,7 +1586,7 @@ protected:
 
 extern LPCTSTR g_szServerDescription;
 extern LPCTSTR const g_Stat_Name[STAT_QTY];
-extern	CGStringList	g_AutoComplete;
+extern CGStringList g_AutoComplete;
 
 extern int Sphere_InitServer( int argc, char *argv[] );
 extern int Sphere_OnTick();
@@ -1558,7 +1622,7 @@ inline CChar * CGrayUIDBase::CharFind() const
 //////////////////////////////////////////////////////////////////////////
 // Buff Icons
 
-inline int GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
+inline short GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
 {
 	short Percentage = ((Difference*100) / (Char->Stat_GetBase(Stat) == 0 ? 1 : Char->Stat_GetBase(Stat)));
 	if (Percentage < 0)
@@ -1569,7 +1633,9 @@ inline int GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Diffe
 		Percentage = 1;
 	return Percentage;
 }
-enum BUFF_ICONS {
+
+enum BUFF_ICONS
+{
 	BI_NODISMOUNT = 0x3E9,
 	BI_NOREARM = 0x3EA,
 	BI_NIGHTSIGHT = 0x3ED,
@@ -1626,22 +1692,22 @@ struct TScriptProfiler
 	LONGLONG	total;
 	struct TScriptProfilerFunction
 	{
-		char		name[128];	// name of the function
+		TCHAR		name[128];	// name of the function
 		DWORD		called;		// how many times called
 		LONGLONG	total;		// total executions time
-		DWORD		min;		// minimal executions time
-		DWORD		max;		// maximal executions time
-		DWORD		average;	// average executions time
+		LONGLONG	min;		// minimal executions time
+		LONGLONG	max;		// maximal executions time
+		LONGLONG	average;	// average executions time
 		TScriptProfilerFunction *next;
 	}		*FunctionsHead, *FunctionsTail;
 	struct TScriptProfilerTrigger
 	{
-		char		name[128];	// name of the trigger
+		TCHAR		name[128];	// name of the trigger
 		DWORD		called;		// how many times called
 		LONGLONG	total;		// total executions time
-		DWORD		min;		// minimal executions time
-		DWORD		max;		// maximal executions time
-		DWORD		average;	// average executions time
+		LONGLONG	min;		// minimal executions time
+		LONGLONG	max;		// maximal executions time
+		LONGLONG	average;	// average executions time
 		TScriptProfilerTrigger *next;
 	}		*TriggersHead, *TriggersTail;
 };
@@ -1653,7 +1719,7 @@ extern LONGLONG llTimeProfileFrequency;
 #ifdef _WIN32
 
 #define	TIME_PROFILE_INIT	\
-	LONGLONG llTicks, llTicksEnd
+	LONGLONG llTicks(0), llTicksEnd
 #define	TIME_PROFILE_START	\
 	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicks)) llTicks = GetTickCount()
 #define TIME_PROFILE_END	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicksEnd)) llTicksEnd = GetTickCount()
@@ -1661,7 +1727,7 @@ extern LONGLONG llTimeProfileFrequency;
 #else
 
 #define	TIME_PROFILE_INIT	\
-	LONGLONG llTicks, llTicksEnd
+	LONGLONG llTicks(0), llTicksEnd
 #define	TIME_PROFILE_START	\
 	llTicks = GetTickCount()
 #define TIME_PROFILE_END	llTicksEnd = GetTickCount();

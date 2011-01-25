@@ -25,20 +25,32 @@ public:
 	static CGTime GetCurrentTime();
 
 	CGTime()
-	{ m_time = 0; }
+	{
+		m_time = 0;
+	}
 	CGTime(time_t time)
-	{ m_time = time; }
+	{
+		m_time = time;
+	}
 	CGTime(const CGTime& timeSrc)
-	{ m_time = timeSrc.m_time; }
+	{
+		m_time = timeSrc.m_time;
+	}
 
 	CGTime( struct tm time );
-	CGTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec,
-		int nDST = -1);
+	CGTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec, int nDST = -1);
 
 	const CGTime& operator=(const CGTime& timeSrc)
-	{ m_time = timeSrc.m_time; return *this; }
+	{
+		m_time = timeSrc.m_time;
+		return *this;
+	}
+
 	const CGTime& operator=(time_t t)
-	{ m_time = t; return *this; }
+	{
+		m_time = t;
+		return *this;
+	}
 
 	bool operator<=( time_t t ) const
 	{
@@ -54,21 +66,33 @@ public:
 	}
 
 	time_t GetTime() const
-	{ return m_time; }
+	{
+		return m_time;
+	}
 
 	// Attributes
 	struct tm* GetLocalTm(struct tm* ptm = NULL) const;
 
 	int GetYear() const
-	{ return (GetLocalTm(NULL)->tm_year) + 1900; }
+	{
+		return (GetLocalTm(NULL)->tm_year) + 1900;
+	}
 	int GetMonth() const       // month of year (1 = Jan)
-	{ return GetLocalTm(NULL)->tm_mon + 1; }
+	{
+		return GetLocalTm(NULL)->tm_mon + 1;
+	}
 	int GetDay() const         // day of month
-	{ return GetLocalTm(NULL)->tm_mday; }
+	{
+		return GetLocalTm(NULL)->tm_mday;
+	}
 	int GetHour() const
-	{ return GetLocalTm(NULL)->tm_hour; }
+	{
+		return GetLocalTm(NULL)->tm_hour;
+	}
 	int GetMinute() const
-	{ return GetLocalTm(NULL)->tm_min; }
+	{
+		return GetLocalTm(NULL)->tm_min;
+	}
 
 	// Operations
 	LPCTSTR Format(LPCTSTR pszFormat) const;

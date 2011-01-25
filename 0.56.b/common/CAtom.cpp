@@ -7,6 +7,7 @@
 
 struct CAtomManager : public CGObSortArray < CAtomDef *, LPCTSTR >
 {
+public:
 	// Create an alpha sorted string lookup table.
 	int CompareKey( LPCTSTR pszKey, CAtomDef * pVal, bool fNoSpaces ) const
 	{
@@ -15,6 +16,12 @@ struct CAtomManager : public CGObSortArray < CAtomDef *, LPCTSTR >
 		ASSERT(pVal);
 		return( strcmp( pszKey, * ( static_cast <CGString*>( pVal ))));
 	}
+
+public:
+	CAtomManager() { };
+private:
+	CAtomManager(const CAtomManager& copy);
+	CAtomManager& operator=(const CAtomManager& other);
 };
 
 static CAtomManager g_AtomManager;

@@ -340,7 +340,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	ADDTOCALLSTACK("CChar::Noto_GetHue");
 	// What is this char to the viewer ?
 	// Represent as a text Hue.
-	CVarDefCont *	sVal = GetKey( "NAME.HUE", true );
+	CVarDefCont * sVal = GetKey( "NAME.HUE", true );
 	if ( sVal )
 		return  sVal->GetValNum();
 
@@ -354,8 +354,6 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_EVIL:			return g_Cfg.m_iColorNotoEvil;		// Red
 		default:				return g_Cfg.m_iColorNotoDefault;	// Grey
 	}
-
-	return g_Cfg.m_iColorNotoDefault;	// Grey
 }
 
 
@@ -602,7 +600,7 @@ void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
 	Noto_ChangeNewMsg( iPrvLevel );
 }
 
-extern int Calc_ExpGet_Exp(unsigned int);
+extern unsigned int Calc_ExpGet_Exp(unsigned int);
 
 void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 {
@@ -798,7 +796,7 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 	ASSERT(pMemory);
 
 	WORD wPrvMemTypes = pMemory->GetMemoryTypes();
-	bool fMore = pMemory->SetMemoryTypes( wPrvMemTypes &~ MemTypes );
+	bool fMore = ( pMemory->SetMemoryTypes( wPrvMemTypes &~ MemTypes ) != 0);
 
 	MemTypes &= wPrvMemTypes;	// Which actually got turned off ?
 
@@ -1095,7 +1093,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 
 	// Who notices ?
 	CWorldSearch AreaChars( GetTopPoint(), UO_MAP_VIEW_SIGHT );
-	while (true)
+	for (;;)
 	{
 		CChar * pChar = AreaChars.GetChar();
 		if ( pChar == NULL )
@@ -1575,6 +1573,7 @@ void CChar::CallGuards( CChar * pCriminal )
 void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 {
 	ADDTOCALLSTACK("CChar::OnHarmedBy");
+	UNREFERENCED_PARAMETER(iHarmQty);
 	// i notice a Crime or attack against me ..
 	// Actual harm has taken place.
 	// Attack back.
@@ -2180,7 +2179,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			if ( ! ( uType & DAMAGE_GENERAL ))
 			{
 				// Armour calculation for normal damage (a specific part of the body/armour is hit and damaged)
-				int iDef = Calc_GetRandVal( max(pCharDef->m_defense + m_ModAr, 0) );
+				int iDef = Calc_GetRandVal( maximum(pCharDef->m_defense + m_ModAr, 0) );
 				iDmg = OnTakeDamageHitPoint( iDmg, pSrc, uType );
 
 				if ( uType & DAMAGE_MAGIC )
@@ -2533,10 +2532,11 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				break;
 			default:
 				ASSERT(0);
+				ppMsg = NULL;
 				break;
 		}
 
-		if ( pSrc != this )
+		if ( pSrc != this && ppMsg != NULL )
 		{
 			if ( IsPriv(PRIV_DETAIL))
 			{
@@ -2955,7 +2955,7 @@ bool CChar::Fight_Clear(const CChar *pChar)
 	else if ( !m_pPlayer )
 		Fight_ClearAll();
 
-	return pChar;	// I did not know about this ?
+	return (pChar != NULL);	// I did not know about this ?
 }
 
 bool CChar::Fight_Attack( const CChar * pCharTarg )
@@ -3007,17 +3007,18 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 	if ( skillActive == skillWeapon && m_Act_Targ == pCharTarg->GetUID() )
 		return true;
 
-	const CSpellDef *	pSpellDef;
-	if ( IsSkillMagic(skillActive) && (pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell)) )
+	if ( IsSkillMagic(skillActive) )
 	{
 		int skill;
-		if (pSpellDef->GetPrimarySkill(&skill, NULL))
+		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
 		{
 			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase((SKILL_TYPE)skill) );
 			if ( Calc_GetRandVal( 1000 ) >= iInterrupt )
 				return true;
 		}
 	}
+
 	m_Act_Targ = pCharTarg->GetUID();
 	Skill_Start( skillWeapon );
 
@@ -3127,8 +3128,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_READY = can't take my swing right now. but i'm ready
 	//  WAR_SWING_SWINGING = taking my swing now.
 
-	SOUND_TYPE iSnd;
-
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3155,7 +3154,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	//	I am on ship. Should be able to combat only inside the ship to avoid free sea and
 	//	ground characters hunting
-	if ( !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) && m_pArea->IsFlag(REGION_FLAG_SHIP) )
+	if ( !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) && m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
 	{
 		if ( m_pArea != pCharTarg->m_pArea )
 		{
@@ -3435,6 +3434,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	CVarDefCont * pTagStorage = NULL; 
+	SOUND_TYPE iSnd = 0;
 
 	// Check if we hit something;
 	if ( !IsSetEF(EF_Minimize_Triggers) )
@@ -3564,9 +3564,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
 		{
 			// Poison delivered.
-			int iPoisonDeliver = Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill);
+			BYTE iPoisonDeliver = Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill);
 
-			pCharTarg->SetPoison( 10*iPoisonDeliver, iPoisonDeliver/5, this );
+			pCharTarg->SetPoison( 10 * iPoisonDeliver, iPoisonDeliver / 5, this );
 
 			// Diminish the poison on the weapon.
 			pWeapon->m_itWeapon.m_poison_skill -= iPoisonDeliver / 2;

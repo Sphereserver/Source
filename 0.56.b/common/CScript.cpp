@@ -79,7 +79,7 @@ long CScriptKey::GetArgRange()
 ///////////////////////////////////////////////////////////////
 // -CScriptKeyAlloc
 
-TCHAR * CScriptKeyAlloc::GetKeyBufferRaw( int iLen )
+TCHAR * CScriptKeyAlloc::GetKeyBufferRaw( size_t iLen )
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::GetKeyBufferRaw");
 	// iLen = length of the string we want to hold.
@@ -158,7 +158,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey, LPCTSTR pszVal )
 	return( true );
 }
 
-int CScriptKeyAlloc::ParseKeyEnd()
+size_t CScriptKeyAlloc::ParseKeyEnd()
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKeyEnd");
 	// Now parse the line for comments and trailing whitespace junk
@@ -166,8 +166,8 @@ int CScriptKeyAlloc::ParseKeyEnd()
 
 	ASSERT(m_pszKey);
 
-	int len = 0;
-	for ( ; len<SCRIPT_MAX_LINE_LEN; len++ )
+	size_t len = 0;
+	for ( ; len < SCRIPT_MAX_LINE_LEN; len++ )
 	{
 		TCHAR ch = m_pszKey[len];
 		if ( ch == '\0' )
@@ -318,7 +318,7 @@ bool CScript::FindTextHeader( LPCTSTR pszName ) // Find a section in the current
 	return( true );
 }
 
-LONG CScript::Seek( long offset, UINT origin )
+DWORD CScript::Seek( long offset, UINT origin )
 {
 	ADDTOCALLSTACK("CScript::Seek");
 	// Go to the start of a new section.
@@ -348,7 +348,7 @@ bool CScript::FindNextSection()
 			goto foundit;
 	}
 
-	while (true)
+	for (;;)
 	{
 		if ( !ReadTextLine(true) )
 		{
@@ -554,39 +554,43 @@ bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 		return false;
 	}
 
-	TCHAR		ch;
-	TCHAR *		pszSep;
+	TCHAR ch = '\0';
+	TCHAR * pszSep;
 	if ( pszVal == NULL || pszVal[0] == '\0' )
 	{
-		if ( !( pszSep = const_cast<TCHAR*>(strchr( pszKey, '\n' ))) )
-			pszSep = const_cast<TCHAR*>(strchr( pszKey, '\r' ));	// acts like const_cast
+		pszSep = const_cast<TCHAR*>(strchr( pszKey, '\n' ));
+		if ( pszSep == NULL )
+			pszSep = const_cast<TCHAR*>(strchr( pszKey, '\r' )); // acts like const_cast
 
-		if ( pszSep )
+		if ( pszSep != NULL )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating\n" );
-			ch		= *pszSep;
+			ch = *pszSep;
 			*pszSep	= '\0';
 		}
 
 		// Books are like this. No real keys.
 		Printf( "%s\n", pszKey );
 
-		if ( pszSep )
+		if ( pszSep != NULL )
 			*pszSep	= ch;
 	}
 	else
 	{
-		if ( !( pszSep = const_cast<TCHAR*>(strchr( pszVal, '\n' ))) )
-			pszSep = const_cast<TCHAR*>(strchr( pszVal, '\r' ));	// acts like const_cast
+		pszSep = const_cast<TCHAR*>(strchr( pszVal, '\n' ));
+		if ( pszSep == NULL )
+			pszSep = const_cast<TCHAR*>(strchr( pszVal, '\r' )); // acts like const_cast
 
-		if ( pszSep )
+		if ( pszSep != NULL )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating\n" );
-			ch		= *pszSep;
+			ch = *pszSep;
 			*pszSep	= '\0';
 		}
+
 		Printf( "%s=%s\n", pszKey, pszVal );
-		if ( pszSep )
+
+		if ( pszSep != NULL )
 			*pszSep	= ch;
 	}
 

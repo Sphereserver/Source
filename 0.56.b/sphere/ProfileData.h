@@ -49,6 +49,11 @@ protected:
 public:
 	ProfileData();
 
+private:
+	ProfileData(const ProfileData& copy);
+	ProfileData& operator=(const ProfileData& other);
+
+public:
 	bool IsActive() const { return( m_iActiveWindowSeconds > 0 ? true : false ); }
 	int GetActiveWindow() const { return m_iActiveWindowSeconds; }
 
@@ -63,7 +68,7 @@ public:
 	bool IsEnabled(PROFILE_TYPE id = PROFILE_QTY) const;
 };
 
-#define CurrentProfileData ((AbstractSphereThread *)ThreadHolder::current())->m_profile
+#define CurrentProfileData static_cast<AbstractSphereThread *>(ThreadHolder::current())->m_profile
 
 class AbstractSphereThread;
 
@@ -74,8 +79,12 @@ private:
 	PROFILE_TYPE m_previousTask;
 
 public:
-	ProfileTask(PROFILE_TYPE id);
+	explicit ProfileTask(PROFILE_TYPE id);
 	~ProfileTask(void);
+
+private:
+	ProfileTask(const ProfileTask& copy);
+	ProfileTask& operator=(const ProfileTask& other);
 };
 
 #endif // PROFILEDATA_H

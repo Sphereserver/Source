@@ -173,6 +173,13 @@ public:
 		#define DEBUG_MSG(_x_)
 		#define DEBUG_MYFLAG(_x_)
 	#endif
+
+public:
+	CEventLog() { };
+
+private:
+	CEventLog(const CEventLog& copy);
+	CEventLog& operator=(const CEventLog& other);
 } * g_pLog;
 
 // -----------------------------

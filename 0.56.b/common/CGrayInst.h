@@ -81,7 +81,16 @@ public:
 
 	bool ReadMulIndex(CGFile &file, DWORD id, CUOIndexRec &Index);
 	bool ReadMulData(CGFile &file, const CUOIndexRec &Index, void * pData);
+	
+public:
+	CGrayInstall()
+	{
+		memset(m_FileFormat, 0, sizeof(m_FileFormat));
+	};
 
+private:
+	CGrayInstall(const CGrayInstall& copy);
+	CGrayInstall& operator=(const CGrayInstall& other);
 } g_Install;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,13 +119,18 @@ public:
 	{
 		m_Data.Empty();
 	}
+	void Load( CGFile & file );
+	bool FindVerDataBlock( VERFILE_TYPE type, DWORD id, CUOIndexRec & Index ) const;
+	
+public:
+	CVerDataMul() { };
 	~CVerDataMul()
 	{
 		Unload();
 	}
-	void Load( CGFile & file );
-	bool FindVerDataBlock( VERFILE_TYPE type, DWORD id, CUOIndexRec & Index ) const;
-
+private:
+	CVerDataMul(const CVerDataMul& copy);
+	CVerDataMul& operator=(const CVerDataMul& other);
 } g_VerData;
 
 #endif	// _INC_CGRAYINST_H

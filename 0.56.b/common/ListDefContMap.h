@@ -15,9 +15,14 @@ private:
 public:
 	static const char *m_sClassName;
 
-	CListDefContElem(LPCTSTR pszKey);
-	~CListDefContElem(void);
+	explicit CListDefContElem(LPCTSTR pszKey);
+	virtual ~CListDefContElem(void);
 
+private:
+	CListDefContElem(const CListDefContElem& copy);
+	CListDefContElem& operator=(const CListDefContElem& other);
+
+public:
 	LPCTSTR GetKey() const;
 	void SetKey( LPCTSTR pszKey );
 
@@ -34,10 +39,15 @@ private:
 public:
 	static const char *m_sClassName;
 
-	CListDefContNum(LPCTSTR pszKey);
+	explicit CListDefContNum(LPCTSTR pszKey);
 	CListDefContNum(LPCTSTR pszKey, int iVal);
 	~CListDefContNum(void);
 
+private:
+	CListDefContNum(const CListDefContNum& copy);
+	CListDefContNum& operator=(const CListDefContNum& other);
+
+public:
 	int GetValNum() const;
 	void SetValNum( int iVal );
 	LPCTSTR GetValStr() const;
@@ -57,9 +67,14 @@ public:
 	static const char *m_sClassName;
 
 	CListDefContStr(LPCTSTR pszKey, LPCTSTR pszVal);
-	CListDefContStr(LPCTSTR pszKey);
+	explicit CListDefContStr(LPCTSTR pszKey);
 	~CListDefContStr(void);
 
+private:
+	CListDefContStr(const CListDefContStr& copy);
+	CListDefContStr& operator=(const CListDefContStr& other);
+
+public:
 	LPCTSTR GetValStr() const;
 	void SetValStr( LPCTSTR pszVal );
 	int GetValNum() const;
@@ -80,38 +95,43 @@ private:
 protected:
 	DefList	m_listElements;
 
-	inline CListDefContElem* ElementAt(int nIndex) const;
+	inline CListDefContElem* ElementAt(size_t nIndex) const;
 	inline void DeleteAtIterator(DefList::iterator it);
-	inline DefList::iterator _GetAt(int nIndex);
+	inline DefList::iterator _GetAt(size_t nIndex);
 
 public:
 	static const char *m_sClassName;
 
-	CListDefCont(LPCTSTR pszKey);
+	explicit CListDefCont(LPCTSTR pszKey);
 	~CListDefCont(void);
 
+private:
+	CListDefCont(const CListDefCont& copy);
+	CListDefCont& operator=(const CListDefCont& other);
+
+public:
 	LPCTSTR GetKey() const;
 	void SetKey( LPCTSTR pszKey );
 
-	CListDefContElem* GetAt(int nIndex) const;
-	bool SetNumAt(int nIndex, int iVal);
-	bool SetStrAt(int nIndex, LPCTSTR pszVal);
+	CListDefContElem* GetAt(size_t nIndex) const;
+	bool SetNumAt(size_t nIndex, int iVal);
+	bool SetStrAt(size_t nIndex, LPCTSTR pszVal);
 	int GetCount() const;
 
-	LPCTSTR GetValStr(int nIndex) const;
-	int GetValNum(int nIndex) const;
+	LPCTSTR GetValStr(size_t nIndex) const;
+	int GetValNum(size_t nIndex) const;
 
-	int FindValNum( int iVal, int nStartIndex = 0 ) const;
-	int FindValStr( LPCTSTR pVal, int nStartIndex = 0 ) const;
+	int FindValNum( int iVal, size_t nStartIndex = 0 ) const;
+	int FindValStr( LPCTSTR pVal, size_t nStartIndex = 0 ) const;
 
 	bool AddElementNum(int iVal);
 	bool AddElementStr(LPCTSTR pszKey);
 
-	bool RemoveElement(int nIndex);
+	bool RemoveElement(size_t nIndex);
 	void RemoveAll();
 
-	bool InsertElementNum(int nIndex, int iVal);
-	bool InsertElementStr(int nIndex, LPCTSTR pszKey);
+	bool InsertElementNum(size_t nIndex, int iVal);
+	bool InsertElementStr(size_t nIndex, LPCTSTR pszKey);
 
 	CListDefCont * CopySelf();
 	void PrintElements(CGString& strElements) const;
@@ -136,25 +156,28 @@ private:
 
 public:
 	static const char *m_sClassName;
+	CListDefMap & operator = ( const CListDefMap & array );
+	CListDefMap() { };
+	~CListDefMap();
+
+private:
+	CListDefMap(const CListDefMap& copy);
 
 private:
 	CListDefCont * GetAtKey( LPCTSTR at );
-	inline void DeleteAt( int at );
+	inline void DeleteAt( size_t at );
 	inline void DeleteAtKey( LPCTSTR at );
 	inline void DeleteAtIterator( DefSet::iterator it );
 
 public:
 	void Copy( const CListDefMap * pArray );
 	void Empty();
-	int GetCount() const;
-
-	CListDefMap & operator = ( const CListDefMap & array );
-	~CListDefMap();
+	size_t GetCount() const;
 
 	LPCTSTR FindValNum( int iVal ) const;
 	LPCTSTR FindValStr( LPCTSTR pVal ) const;
 
-	CListDefCont * GetAt( int at );
+	CListDefCont * GetAt( size_t at );
 	CListDefCont * GetKey( LPCTSTR pszKey ) const;
 
 	CListDefCont* AddList(LPCTSTR pszKey);

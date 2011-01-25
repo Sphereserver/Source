@@ -117,9 +117,13 @@ public:
 	int GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty );
 	int GetRange( LPCTSTR & pArgs );
 
+public:
 	CExpression();
 	~CExpression();
 
+private:
+	CExpression(const CExpression& copy);
+	CExpression& operator=(const CExpression& other);
 } g_Exp;
 
 extern bool IsSimpleNumberString( LPCTSTR pszTest );

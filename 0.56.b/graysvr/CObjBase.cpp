@@ -240,7 +240,7 @@ void CObjBase::r_WriteSafe( CScript & s )
 {
 	ADDTOCALLSTACK("CObjBase::r_WriteSafe");
 	// Write an object with some fault protection.
-	DWORD uid;
+	DWORD uid = 0;
 	try
 	{
 		uid = GetUID();
@@ -256,7 +256,7 @@ void CObjBase::r_WriteSafe( CScript & s )
 		}
 		r_Write(s);
 	}
-	catch ( CGrayError &e )
+	catch ( const CGrayError& e )
 	{
 		g_Log.CatchEvent(&e, "Write Object 0%x", uid);
 	}
@@ -568,13 +568,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	{
 		// RES_FUNCTION call
 		// Is it a function returning a value ? Parse args ?
-		if ( ( pszArgs = strchr( pszKey, ' ' ) ) )
+		pszArgs = strchr( pszKey, ' ' );
+		if ( pszArgs != NULL )
 		{
 			pszArgs++;
 			SKIP_SEPARATORS(pszArgs);
 		}
 
-		CScriptTriggerArgs Args( pszArgs ? pszArgs : "" );
+		CScriptTriggerArgs Args( pszArgs != NULL ? pszArgs : "" );
 		if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
 			return true;
 
@@ -674,13 +675,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 						else
 						{
 							CClient::OpenedGumpsMap_t * ourMap = &(pThisClient->m_mapOpenedGumps);
-							int iDialogIndex = Exp_GetVal( pszKey );
+							size_t iDialogIndex = static_cast<size_t>( Exp_GetVal(pszKey) );
 							SKIP_SEPARATORS(pszKey);
 
-							if (( iDialogIndex >= 0 ) && ( iDialogIndex <= ourMap->size()))
+							if ( iDialogIndex <= ourMap->size() )
 							{
 								CClient::OpenedGumpsMap_t::iterator itGumpFound = ourMap->begin();
-								while ( iDialogIndex-- ) { ++itGumpFound; }
+								while ( iDialogIndex-- )
+									++itGumpFound;
 
 								if ( !strnicmp(pszKey, "ID", 2) )
 								{
@@ -1023,8 +1025,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
  				if ( *pszKey == '.' )	// do we have an argument?
  				{
  					SKIP_SEPARATORS( pszKey );
- 					int iQty = Exp_GetVal( pszKey );
-					if ( iQty < 0 || iQty >= m_TagDefs.GetCount() )
+ 					size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
+					if ( iQty >= m_TagDefs.GetCount() )
  						return( false );	// tryig to get non-existant tag
 
  					CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
@@ -1296,11 +1298,11 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
 				pThis->Effect( (EFFECT_TYPE) piCmd[0], (ITEMID_TYPE) RES_GET_INDEX(piCmd[1]),
 					pCharSrc,
-					(iArgQty>=3)? piCmd[2] : 5,		// BYTE bSpeedSeconds = 5,
-					(iArgQty>=4)? piCmd[3] : 1,		// BYTE bLoop = 1,
-					(iArgQty>=5)? piCmd[4] : false,	// bool fExplode = false
-					(iArgQty>=6)? piCmd[5] : 0,		// hue
-					(iArgQty>=7)? piCmd[6] : 0		// render mode
+					(iArgQty >= 3)? piCmd[2] : 5,				// BYTE bSpeedSeconds = 5,
+					(iArgQty >= 4)? piCmd[3] : 1,				// BYTE bLoop = 1,
+					(iArgQty >= 5)? (piCmd[4] != 0) : false,	// bool fExplode = false
+					(iArgQty >= 6)? piCmd[5] : 0,				// hue
+					(iArgQty >= 7)? piCmd[6] : 0				// render mode
 					);
 			}
 			break;
@@ -1564,7 +1566,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				bool		fCrim		= false;
 				bool		fFunction	= false;
 				bool		fMulti		= false;
-				char		low = tolower(*pszKey);
+				TCHAR		low = tolower(*pszKey);
 
 				while (( low >= 'a' ) && ( low <= 'z' ))
 				{

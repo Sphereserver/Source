@@ -35,14 +35,13 @@ void CrashDump::Disable()
 {
 	m_bEnabled = false;
 
-	if (!m_tDumpFunction)
-	{
+	if (m_tDumpFunction != NULL)
 		m_tDumpFunction = NULL;
-	}
 
-	if (!m_hDll)
+	if (m_hDll != NULL)
 	{
 		FreeLibrary(m_hDll);
+		m_hDll = NULL;
 	}
 }
 

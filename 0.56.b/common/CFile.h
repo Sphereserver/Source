@@ -153,13 +153,13 @@ public:
 		return SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
 	}
 
-	virtual LONG Seek( LONG lOffset = 0, UINT iOrigin = SEEK_SET )
+	virtual DWORD Seek( LONG lOffset = 0, UINT iOrigin = SEEK_SET )
 	{
 		// true = success.
 		return SetFilePointer( m_hFile, lOffset, NULL, iOrigin );
 	}
 
-	virtual size_t Read( void * pData, size_t dwLength ) const
+	virtual DWORD Read( void * pData, DWORD dwLength ) const
 	{
 		// RETURN: length of the read data.
 		DWORD dwRead;
@@ -171,7 +171,7 @@ public:
 		return dwRead;
 	}
 
-	virtual bool Write( const void * pData, size_t dwLength ) const
+	virtual bool Write( const void * pData, DWORD dwLength ) const
 	{
 		DWORD dwWritten;
 		BOOL ret = ::WriteFile( m_hFile, pData, dwLength, &dwWritten, NULL );
@@ -196,24 +196,25 @@ public:
 	{
 		return( lseek( m_hFile, 0, SEEK_CUR ) );
 	}
-	virtual LONG Seek( LONG lOffset = 0, UINT iOrigin = SEEK_SET )
+	virtual DWORD Seek( LONG lOffset = 0, UINT iOrigin = SEEK_SET )
 	{
 		// true = success.
 		if ( m_hFile <= 0 )
 			return( -1 );
 		return( lseek( m_hFile, lOffset, iOrigin ));
 	}
-	virtual size_t Read( void * pData, size_t dwLength ) const
+	virtual DWORD Read( void * pData, DWORD dwLength ) const
 	{
 		// RETURN: length of the read data.
 		return( read( m_hFile, pData, (long) dwLength ));
 	}
-	virtual bool Write( const void * pData, size_t dwLength ) const
+	virtual bool Write( const void * pData, DWORD dwLength ) const
 	{
 		return( write( m_hFile, (const char *) pData, (long) dwLength ) == (long) dwLength );
 	}
 #endif
 
+public:
 	CFile()
 	{
 		m_hFile = NOFILE_HANDLE;
@@ -222,6 +223,10 @@ public:
 	{
 		Close();
 	}
+
+private:
+	CFile(const CFile& copy);
+	CFile& operator=(const CFile& other);
 };
 
 class CGFile : public CFile	// try to be compatible with MFC CFile class.
@@ -265,8 +270,9 @@ public:
 	}
 	virtual bool Open( LPCTSTR pszName = NULL, UINT uMode = OF_READ | OF_SHARE_DENY_NONE, void * pExtra = NULL );
 	virtual void Close();
-
+	
 	// File Access
+public:
 	CGFile()
 	{
 		m_uMode = 0;
@@ -275,6 +281,10 @@ public:
 	{
 		Close();
 	}
+
+private:
+	CGFile(const CGFile& copy);
+	CGFile& operator=(const CGFile& other);
 };
 
 class CFileText : public CGFile	// Try to be compatible with MFC CStdioFile
@@ -302,16 +312,23 @@ public:
 	{
 		Close();
 	}
-	virtual LONG Seek( LONG offset = 0, UINT origin = SEEK_SET )
+private:
+	CFileText(const CFileText& copy);
+	CFileText& operator=(const CFileText& other);
+public:
+	virtual DWORD Seek( LONG offset = 0, UINT origin = SEEK_SET )
 	{
 		// true = success
 		if ( ! IsFileOpen())
-			return( -1 );
+			return 0;
 		if ( offset < 0 )
-			return( -1 );
+			return 0;
 		if ( fseek( m_pStream, offset, origin ) != 0 )
-			return( -1 );
-		return ftell(m_pStream);
+			return 0;
+		long position = ftell(m_pStream);
+		if (position < 0)
+			return 0;
+		return position;
 	}
 	void Flush() const
 	{
@@ -327,7 +344,7 @@ public:
 			return (DWORD) -1;
 		return( ftell(m_pStream));
 	}
-	size_t Read( void * pBuffer, size_t sizemax ) const
+	DWORD Read( void * pBuffer, size_t sizemax ) const
 	{
 		// This can return: EOF(-1) constant.
 		// returns the number of full items actually read
@@ -344,7 +361,7 @@ public:
 			return( NULL );	// LINUX will ASSERT if we read past end.
 		return( fgets( pBuffer, sizemax, m_pStream ));
 	}
-	bool Write( const void * pData, size_t iLen )
+	bool Write( const void * pData, DWORD iLen )
 #ifndef _WIN32
 		const
 #endif
@@ -403,7 +420,5 @@ public:
 		return( iRet );
 	}
 };
-
-#define CFileBin CGFile
 
 #endif // _INC_CFILE_H

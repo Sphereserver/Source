@@ -215,9 +215,15 @@ public:
 		= 0;
 
 	virtual TRIGRET_TYPE Spell_OnTrigger( SPELL_TYPE spell, SPTRIG_TYPE stage, CChar * pSrc, CScriptTriggerArgs * pArgs );
-	CObjBase( bool fItem );
-	virtual ~CObjBase();
 
+public:
+	explicit CObjBase( bool fItem );
+	virtual ~CObjBase();
+private:
+	CObjBase(const CObjBase& copy);
+	CObjBase& operator=(const CObjBase& other);
+
+public:
 	//	Some global object variables
 	signed int m_ModAr;
 
@@ -781,11 +787,17 @@ public:
 
 protected:
 	CItem( ITEMID_TYPE id, CItemBase * pItemDef );	// only created via CreateBase()
+public:
+	virtual ~CItem();
+private:
+	CItem(const CItem& copy);
+	CItem& operator=(const CItem& other);
+
+protected:
 	bool SetBase( CItemBase * pItemDef );
 	virtual int FixWeirdness();
 
 public:
-	virtual ~CItem();
 	virtual bool OnTick();
 	virtual void OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	{
@@ -868,9 +880,9 @@ public:
 	{
 		m_amount = id;	// m_corpse_DispID
 	}
-	void  SetAmount( int amount );
-	void  SetAmountUpdate( int amount );
-	int	  GetAmount() const { return( m_amount ); }
+	void SetAmount( unsigned int amount );
+	void SetAmountUpdate( unsigned int amount );
+	WORD GetAmount() const { return( m_amount ); }
 
 	LPCTSTR GetName() const;	// allowed to be default name.
 	LPCTSTR GetNameFull( bool fIdentified ) const;
@@ -1015,7 +1027,6 @@ public:
 			default:
 				return( false );
 		}
-		return( false );
 	}
 	bool IsTypeBook() const
 	{
@@ -1027,7 +1038,6 @@ public:
 			default:
 				return( false );
 		}
-		return( false );
 	}
 	bool IsTypeSpellbook() const
 	{
@@ -1062,7 +1072,6 @@ public:
 			default:
 				return( false );
 		}
-		return( false );
 	}
 	bool IsTypeLockable() const
 	{
@@ -1078,7 +1087,6 @@ public:
 			default:
 				return( IsTypeLocked() );
 		}
-		return( IsTypeLocked() );
 	}
 	bool IsTypeSpellable() const
 	{
@@ -1092,7 +1100,6 @@ public:
 			default:
 				return( IsTypeArmorWeapon() );
 		}
-		return( IsTypeArmorWeapon());
 	}
 
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
@@ -1201,7 +1208,13 @@ private:
 public:
 	static const char *m_sClassName;
 	CItemVendable( ITEMID_TYPE id, CItemBase * pItemDef );
-	~CItemVendable();
+	virtual ~CItemVendable();
+
+private:
+	CItemVendable(const CItemVendable& copy);
+	CItemVendable& operator=(const CItemVendable& other);
+
+public:
 
 	WORD	GetQuality() const {return m_quality;}
 	void	SetQuality(WORD quality = 0)
@@ -1243,11 +1256,16 @@ public:
 	{
 		m_totalweight = 0;
 	}
-	~CContainer()
+	virtual ~CContainer()
 	{
 		DeleteAll(); // call this early so the virtuals will work.
 	}
 
+private:
+	CContainer(const CContainer& copy);
+	CContainer& operator=(const CContainer& other);
+
+public:
 	CItem * GetAt( int index ) const
 	{
 		return( dynamic_cast <CItem*>( CGObList::GetAt( index )));
@@ -1303,7 +1321,6 @@ public:
 		CItem::DeletePrepare();
 	}
 
-protected:
 public:
 	CItemContainer( ITEMID_TYPE id, CItemBase * pItemDef );
 	virtual ~CItemContainer()
@@ -1311,6 +1328,11 @@ public:
 		DeleteAll();	// get rid of my contents first to protect against weight calc errors.
 		DeletePrepare();
 	}
+
+private:
+	CItemContainer(const CItemContainer& copy);
+	CItemContainer& operator=(const CItemContainer& other);
+
 public:
 	bool IsWeighed() const
 	{
@@ -1386,6 +1408,11 @@ public:
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
 
+private:
+	CItemScript(const CItemScript& copy);
+	CItemScript& operator=(const CItemScript& other);
+
+public:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );	// some command on this object as a target
 	virtual void r_Write( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc = NULL );
@@ -1407,6 +1434,11 @@ public:
 	{
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
+
+private:
+	CItemCorpse(const CItemCorpse& copy);
+	CItemCorpse& operator=(const CItemCorpse& other);
+
 public:
 	CChar * IsCorpseSleeping() const;
 
@@ -1453,6 +1485,10 @@ public:
 	CItemMulti( ITEMID_TYPE id, CItemBase * pItemDef );
 	virtual ~CItemMulti();
 
+private:
+	CItemMulti(const CItemMulti& copy);
+	CItemMulti& operator=(const CItemMulti& other);
+
 public:
 	virtual bool OnTick();
 	virtual bool MoveTo( CPointMap pt ); // Put item on the ground here.
@@ -1490,7 +1526,7 @@ private:
 	{
 		int m_iRevision;
 		ComponentsContainer m_vectorComponents;
-		PacketHouseDesign* m_pData;;
+		PacketHouseDesign* m_pData;
 		int m_iDataRevision;
 	};
 	
@@ -1498,6 +1534,12 @@ private:
 	{
 	public:
 		void LoadFrom(DesignDetails * pDesign);
+
+	public:
+		CGrayMultiCustom() { };
+	private:
+		CGrayMultiCustom(const CGrayMultiCustom& copy);
+		CGrayMultiCustom& operator=(const CGrayMultiCustom& other);
 	};
 
 private:
@@ -1531,8 +1573,13 @@ private:
 public:
 	static const char *m_sClassName;
 	CItemMultiCustom( ITEMID_TYPE id, CItemBase * pItemDef );
-	~CItemMultiCustom();
+	virtual ~CItemMultiCustom();
 
+private:
+	CItemMultiCustom(const CItemMultiCustom& copy);
+	CItemMultiCustom& operator=(const CItemMultiCustom& other);
+
+public:
 	void BeginCustomize( CClient * pClientSrc );
 	void EndCustomize(bool bForce = false);
 	void SwitchToLevel( CClient * pClientSrc, int iLevel );
@@ -1552,8 +1599,8 @@ public:
 
 	const CGrayMultiCustom * GetMultiItemDefs();
 	const CGRect GetDesignArea();
-	int GetFixtureCount(DesignDetails * pDesign = NULL);
-	int GetComponentsAt(short dx, short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
+	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
+	size_t GetComponentsAt(short dx, short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
 	int GetRevision(const CClient * pClientSrc = NULL) const;
 	int GetLevelCount();
 	int GetStairCount();
@@ -1598,12 +1645,18 @@ private:
 public:
 	static const char *m_sClassName;
 	CItemShip( ITEMID_TYPE id, CItemBase * pItemDef );
-	
+	virtual ~CItemShip() { };
+
+private:
+	CItemShip(const CItemShip& copy);
+	CItemShip& operator=(const CItemShip& other);
+
+public:
 	virtual bool OnTick();
 	void Ship_Stop();
 	CItemContainer * GetShipHold();
-	int GetShipPlankCount();
-	CItem * GetShipPlank(int index);
+	size_t GetShipPlankCount();
+	CItem * GetShipPlank(size_t index);
 	CItemBaseMulti::ShipSpeed GetShipSpeed();
 };
 
@@ -1626,7 +1679,12 @@ public:
 	{
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
+
+private:
+	CItemMemory(const CItemMemory& copy);
+	CItemMemory& operator=(const CItemMemory& other);
 	
+public:
 	WORD SetMemoryTypes( WORD wType )	// For memory type objects.
 	{
 		SetHueAlt( wType );
@@ -1657,7 +1715,10 @@ struct CMapPinRec // Pin on a map
 	short m_y;
 
 public:
-	CMapPinRec( short x, short y ) { m_x = x; m_y = y; }
+	CMapPinRec( short x, short y )
+		: m_x(x), m_y(y)
+	{
+	}
 };
 
 class CItemMap : public CItemVendable
@@ -1684,6 +1745,11 @@ public:
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
 
+private:
+	CItemMap(const CItemMap& copy);
+	CItemMap& operator=(const CItemMap& other);
+
+public:
 	virtual bool IsSameType( const CObjBase * pObj ) const;
 	virtual void r_Write( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc = NULL );
@@ -1708,6 +1774,11 @@ public:
 		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
 	}
 
+private:
+	CItemCommCrystal(const CItemCommCrystal& copy);
+	CItemCommCrystal& operator=(const CItemCommCrystal& other);
+
+public:
 	virtual void OnMoveFrom();
 	virtual bool MoveTo( CPointMap pt );
 
@@ -1767,6 +1838,12 @@ public:
 	static const char *m_sClassName;
 	CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iType, LPCTSTR pTitle = "", CGrayUID loyaluidLink = 0, bool fArg1 = false, bool fArg2 = false, int nAccountGold = 0);
 	virtual ~CStoneMember();
+
+private:
+	CStoneMember(const CStoneMember& copy);
+	CStoneMember& operator=(const CStoneMember& other);
+
+public:
 	CStoneMember* GetNext() const;
 	CItemStone * GetParentStone() const;
 
@@ -1850,21 +1927,24 @@ private:
 	virtual bool MoveTo( CPointMap pt );
 
 	MEMORY_TYPE GetMemoryType() const;
-	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CItemStone * pOtherStone ) const;
-	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const;
 
 	LPCTSTR GetCharter(int iLine) const;
 	void SetCharter( int iLine, LPCTSTR pCharter );
 	LPCTSTR GetWebPageURL() const;
 	void SetWebPage( LPCTSTR pWebPage );
 
+#ifndef _NEWGUILDSYSTEM
+	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CItemStone * pOtherStone ) const;
+	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const;
+
 	// Client interaction.
 	int  addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, int iTexts );
 	void addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu );
 	void addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iStoneMenu );
 	void addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid );
-
-	void SetupMenu( CClient * pClient, bool fMasterFunc=false );
+	
+	void SetupMenu( CClient * pClient, bool fMasterFunc = false );
+#endif
 
 	void ElectMaster();
 public:
@@ -1888,6 +1968,11 @@ public:
 	CItemStone( ITEMID_TYPE id, CItemBase * pItemDef );
 	virtual ~CItemStone();
 
+private:
+	CItemStone(const CItemStone& copy);
+	CItemStone& operator=(const CItemStone& other);
+
+public:
 	virtual void r_Write( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & s, CTextConsole * pSrc );
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
@@ -1908,10 +1993,12 @@ public:
 	LPCTSTR GetAlignName() const;
 	LPCTSTR GetAbbrev() const;
 	void SetAbbrev( LPCTSTR pAbbrev );
-
+	
+#ifndef _NEWGUILDSYSTEM
 	bool OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg, CGrayUID context );
 	bool OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialogResponseArgs & resp );
 	void Use_Item( CClient * pClient );
+#endif
 };
 
 enum CIC_TYPE
@@ -1935,6 +2022,7 @@ public:
 	static const char *m_sClassName;
 	CGString m_sAuthor;					// Should just have author name !
 	static LPCTSTR const sm_szLoadKeys[CIC_QTY+1];
+
 public:
 	CItemMessage( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemVendable( id, pItemDef )
 	{
@@ -1945,6 +2033,11 @@ public:
 		UnLoadSystemPages();
 	}
 
+private:
+	CItemMessage(const CItemMessage& copy);
+	CItemMessage& operator=(const CItemMessage& other);
+
+public:
 	virtual void r_Write( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
 	virtual bool r_LoadVal( CScript & s );
@@ -2041,8 +2134,13 @@ public:
 		return( m_Brain == NPCBRAIN_HEALER || m_Brain == NPCBRAIN_STABLE || m_Brain == NPCBRAIN_VENDOR );
 	}
 
+public:
 	CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain );
 	~CCharNPC();
+
+private:
+	CCharNPC(const CCharNPC& copy);
+	CCharNPC& operator=(const CCharNPC& other);
 };
 
 #define IS_SKILL_BASE(sk) ((sk)> SKILL_NONE && (sk)< MAX_SKILL )
@@ -2098,8 +2196,13 @@ public:
 
 	CAccountRef GetAccount() const;
 
+public:
 	CCharPlayer( CChar * pChar, CAccount * pAccount );
 	~CCharPlayer();
+
+private:
+	CCharPlayer(const CCharPlayer& copy);
+	CCharPlayer& operator=(const CCharPlayer& other);
 };
 
 enum WAR_SWING_TYPE	// m_Act_War_Swing_State
@@ -2538,6 +2641,10 @@ public:
 	CChar( CREID_TYPE id );
 	virtual ~CChar(); // Delete character
 
+private:
+	CChar(const CChar& copy);
+	CChar& operator=(const CChar& other);
+
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
@@ -2591,7 +2698,8 @@ public:
 	void SetSight(BYTE newSight)
 	{
 		m_iVisualRange = newSight;
-		GetClient()->addVisualRange(m_iVisualRange);
+		if ( IsClient() )
+			GetClient()->addVisualRange(m_iVisualRange);
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
@@ -3410,7 +3518,7 @@ public:
 	void NPC_OnPetCommand( bool fSuccess, CChar * pMaster );
 	bool NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllpets );
 	bool NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const CPointMap & pt, LPCTSTR pszArgs );
-	int  NPC_OnHearName( LPCTSTR pszText ) const;
+	size_t  NPC_OnHearName( LPCTSTR pszText ) const;
 	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc );
 	bool NPC_OnItemGive( CChar * pCharSrc, CItem * pItem );
 	bool NPC_SetVendorPrice( CItem * pItem, int iPrice );
@@ -3459,7 +3567,6 @@ inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
 		default:
 			return false;
 	}
-	return false;
 }
 
 inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
@@ -3482,7 +3589,6 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 		default:
 			return false;
 	}
-	return false;
 }
 
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static

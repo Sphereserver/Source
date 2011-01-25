@@ -14,7 +14,7 @@ void CCrypt::ClearKeyTable(void)
 {
 	ADDTOCALLSTACK("CCrypt::ClearKeyTable");
 	
-	for ( int i = 0; i < client_keys.size(); i++ )
+	for ( size_t i = 0; i < client_keys.size(); i++ )
 	{
 		CCryptClientKey* key = client_keys.at(i);
 
@@ -355,7 +355,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	int iPoint = 0;
 	int iDigPoint = 0;
 
-	for ( int i=0; true; i++ )
+	for ( int i = 0; ; i++ )
 	{
 		TCHAR ch = pszVersion[i];
 		if ( iPoint < 3 )
@@ -476,11 +476,10 @@ TCHAR* CCrypt::WriteClientVer( TCHAR * pStr ) const
 	return( CCrypt::WriteClientVerString( GetClientVer(), pStr ) );
 }
 
-bool CCrypt::SetClientVerEnum( int iVer, bool bSetEncrypt )
+bool CCrypt::SetClientVerEnum( DWORD iVer, bool bSetEncrypt )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVerEnum");
-	int i = 0;
-	for ( ; i < client_keys.size(); i++ )
+	for (size_t i = 0; i < client_keys.size(); i++ )
 	{
 		CCryptClientKey * key = client_keys.at(i);
 
@@ -494,7 +493,7 @@ bool CCrypt::SetClientVerEnum( int iVer, bool bSetEncrypt )
 	return false;
 }
 
-bool CCrypt::SetClientVerIndex( int iVer, bool bSetEncrypt )
+bool CCrypt::SetClientVerIndex( size_t iVer, bool bSetEncrypt )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVerIndex");
 	if ( ( iVer < 0 ) || ( iVer >= client_keys.size() ) )
@@ -644,8 +643,8 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	SetClientVerIndex(0);
 	SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo);
 	
-	int i = 0; int iAccountNameLen = 0;
-	while ( true )
+	size_t i = 0, iAccountNameLen = 0;
+	for (;;)
 	{
 		if ( i >= client_keys.size() )
 		{
@@ -1073,8 +1072,8 @@ void CCrypt::InitTwoFish()
 	tf_key.key32[0] = tf_key.key32[1] = tf_key.key32[2] = tf_key.key32[3] = dwIP; //0x7f000001;
 	reKey( &tf_key );
 
-	for ( unsigned int i = 0; i < TFISH_RESET; i++ )
-		tf_cipherTable[i] = i;
+	for ( unsigned short i = 0; i < TFISH_RESET; i++ )
+		tf_cipherTable[i] = static_cast<BYTE>(i);
 
 	tf_position = 0;
 

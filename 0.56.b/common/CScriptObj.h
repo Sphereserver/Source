@@ -78,6 +78,14 @@
 			va_end( vargs );
 			return( iRet );
 		}
+
+	public:
+		CTextConsole() { };
+		virtual ~CTextConsole() { };
+
+	private:
+		CTextConsole(const CTextConsole& copy);
+		CTextConsole& operator=(const CTextConsole& other);
 	};
 
 	class CScriptObj
@@ -127,9 +135,13 @@
 		virtual bool r_LoadVal( CScript & s );
 		virtual bool r_Load( CScript & s );
 
-		virtual ~CScriptObj()
-		{
-		}
+	public:
+		CScriptObj() { };
+		virtual ~CScriptObj() { };
+
+	private:
+		CScriptObj(const CScriptObj& copy);
+		CScriptObj& operator=(const CScriptObj& other);
 	};
 
 	class CScriptTriggerArgs : public CScriptObj
@@ -155,7 +167,6 @@
 		CLocalObjMap				m_VarObjs;	// "REFx" = local object x
 
 	public:
-		void Init( LPCTSTR pszStr );
 
 		CScriptTriggerArgs() :
 			m_iN1(0),  m_iN2(0), m_iN3(0)
@@ -163,13 +174,14 @@
 			m_pO1 = NULL;
 		}
 
-		CScriptTriggerArgs( LPCTSTR pszStr );
+		explicit CScriptTriggerArgs( LPCTSTR pszStr );
 
-		CScriptTriggerArgs( CScriptObj * pObj ) :
+		explicit CScriptTriggerArgs( CScriptObj * pObj ) :
 			m_iN1(0),  m_iN2(0), m_iN3(0), m_pO1(pObj)
 		{
 		}
-		CScriptTriggerArgs( int iVal1 ) :
+
+		explicit CScriptTriggerArgs( int iVal1 ) :
 			m_iN1(iVal1),  m_iN2(0), m_iN3(0)
 		{
 			m_pO1 = NULL;
@@ -180,6 +192,20 @@
 			m_pO1 = NULL;
 		}
 
+		CScriptTriggerArgs( int iVal1, int iVal2, CScriptObj * pObj ) :
+			m_iN1(iVal1), m_iN2(iVal2), m_iN3(0), m_pO1(pObj)
+		{
+		}
+
+		virtual ~CScriptTriggerArgs()
+		{
+		};
+
+	private:
+		CScriptTriggerArgs(const CScriptTriggerArgs& copy);
+		CScriptTriggerArgs& operator=(const CScriptTriggerArgs& other);
+
+	public:
 		void getArgNs( int *iVar1 = NULL, int *iVar2 = NULL, int *iVar3 = NULL) //Puts the ARGN's into the specified variables
 		{
 			if (iVar1)
@@ -191,12 +217,8 @@
 			if (iVar3)
 				*iVar3 = this->m_iN3;
 		}
-
-		CScriptTriggerArgs( int iVal1, int iVal2, CScriptObj * pObj ) :
-			m_iN1(iVal1), m_iN2(iVal2), m_iN3(0), m_pO1(pObj)
-		{
-		}
-
+		
+		void Init( LPCTSTR pszStr );
 		bool r_Verb( CScript & s, CTextConsole * pSrc );
 		bool r_LoadVal( CScript & s );
 		bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
@@ -232,6 +254,10 @@
 				CFileObj();
 				~CFileObj();
 
+		private:
+				CFileObj(const CFileObj& copy);
+				CFileObj& operator=(const CFileObj& other);
+
 		public:
 				bool OnTick();
 				int FixWeirdness();
@@ -261,13 +287,17 @@
 			static LPCTSTR const sm_szVerbKeys[];
 
 		private:
-			CFileObj * GetObjectAt( int );
-			void ResizeContainer( int );
+			CFileObj * GetObjectAt( size_t iWhere );
+			void ResizeContainer( size_t iNewRange );
 
 		public:
 			static const char *m_sClassName;
 			CFileObjContainer();
 			~CFileObjContainer();
+
+		private:
+			CFileObjContainer(const CFileObjContainer& copy);
+			CFileObjContainer& operator=(const CFileObjContainer& other);
 
 		public:
 			int GetFilenumber(void);

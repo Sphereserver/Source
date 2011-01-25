@@ -4,7 +4,8 @@
 #include "CFile.h"
 #include <string>
 
-class CacheableScriptFile : public CFileText {
+class CacheableScriptFile : public CFileText
+{
 protected:
 	virtual bool OpenBase(void *pExtra);
 	virtual void CloseBase();
@@ -13,17 +14,21 @@ protected:
 public:
 	CacheableScriptFile();
 	~CacheableScriptFile();
+private:
+	CacheableScriptFile(const CacheableScriptFile& copy);
+	CacheableScriptFile& operator=(const CacheableScriptFile& other);
 
+public:
 	virtual bool IsFileOpen() const;
 	virtual bool IsEOF() const;
 	virtual TCHAR *ReadString(TCHAR *pBuffer, size_t sizemax);
-	virtual LONG Seek(LONG offset = 0, UINT origin = SEEK_SET);
+	virtual DWORD Seek(LONG offset = 0, UINT origin = SEEK_SET);
 	virtual DWORD GetPosition() const;
 
 private:
 	bool m_closed;
 	bool m_realFile;
-	int m_currentLine;
+	size_t m_currentLine;
 
 protected:
 	std::vector<std::string> * m_fileContent;

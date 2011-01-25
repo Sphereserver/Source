@@ -337,9 +337,6 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 	CGString sFrom;
 	CChatChannel * pChannel = pBy->GetChannel();
 
-	//static bool fFlipper = false;
-	//static int iCounter = 0;
-
 	switch ( FindTableSorted( pszCommand, sm_szCmd_Chat, COUNTOF(sm_szCmd_Chat)))
 	{
 		case 0: // "ALLKICK"
@@ -428,7 +425,7 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		{
 			TCHAR *pszMsg = Str_GetTemp();
 			sprintf(pszMsg, "Unknown command: '%s'", pszCommand);
-			CGString sFrom;
+
 			DecorateName(sFrom, NULL, true);
 			pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, pszMsg);
 			return;

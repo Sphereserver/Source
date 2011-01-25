@@ -2177,8 +2177,8 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	}
 
 	PacketVendorSellList cmd(pVendor);
-	int iCount = cmd.searchContainer(this, m_pChar->GetPackSafe(), pContainer1, pContainer2, iConvertFactor);
-	if (iCount <= 0)
+	size_t count = cmd.searchContainer(this, m_pChar->GetPackSafe(), pContainer1, pContainer2, iConvertFactor);
+	if (count <= 0)
 		return false;
 	
 	cmd.send(this);

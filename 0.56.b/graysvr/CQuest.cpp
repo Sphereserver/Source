@@ -124,7 +124,7 @@ int CPartyDef::AttachChar( CChar * pChar )
 	// RETURN:
 	//  index of the char in the group. -1 = not in group.
 	int i = m_Chars.AttachChar( pChar );
-	SetLootFlag( pChar, false );;
+	SetLootFlag( pChar, false );
 	return( i );
 }
 
@@ -173,7 +173,7 @@ bool CPartyDef::GetLootFlag( const CChar * pChar )
 	ASSERT( pChar );
 	if ( IsInParty(pChar) )
 	{
-		return pChar->GetKeyNum("PARTY_CANLOOTME", true);
+		return ( pChar->GetKeyNum("PARTY_CANLOOTME", true) != 0 );
 	}
 
 	return( false );
@@ -349,6 +349,7 @@ bool CPartyDef::SendRemoveList( CChar * pCharRemove, bool bFor )
 bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pText, int ilenmsg )
 {
 	ADDTOCALLSTACK("CPartyDef::MessageEvent");
+	UNREFERENCED_PARAMETER(ilenmsg);
 	if ( pText == NULL )
 		return( false );
 
@@ -831,8 +832,8 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
  			if ( *pszKey == '.' )	// do we have an argument?
  			{
  				SKIP_SEPARATORS( pszKey );
- 				int iQty = Exp_GetVal( pszKey );
-				if ( iQty < 0 || iQty >= m_TagDefs.GetCount() )
+ 				size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
+				if ( iQty >= m_TagDefs.GetCount() )
  					return( false );	// tryig to get non-existant tag
 
 				CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
@@ -1051,5 +1052,6 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 bool CPartyDef::r_Load( CScript & s )
 { 
 	ADDTOCALLSTACK("CPartyDef::r_Load");
+	UNREFERENCED_PARAMETER(s);
 	return( false ); 
 }

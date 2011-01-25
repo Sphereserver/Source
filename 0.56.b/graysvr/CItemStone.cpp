@@ -108,7 +108,13 @@ void CStoneMember::SetAccountGold( int iGold )
 	m_Member.m_iAccountGold = iGold;
 }
 
-bool CStoneMember::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef ) { return false; }
+bool CStoneMember::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
+{
+	UNREFERENCED_PARAMETER(pszKey);
+	UNREFERENCED_PARAMETER(pRef);
+	return false;
+}
+
 bool CStoneMember::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
 {
 	ADDTOCALLSTACK("CStoneMember::r_Verb");
@@ -128,26 +134,13 @@ bool CStoneMember::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 
 	if ( GetLinkUID().IsChar() )
 	{
-		switch ( index )
-		{
-			default:
-				{
-					CScriptObj *pRef = GetLinkUID().CharFind();
-					return pRef->r_Verb( s, pSrc );
-				}
-		}
-
+		CScriptObj *pRef = GetLinkUID().CharFind();
+		return pRef->r_Verb( s, pSrc );
 	}
 	else if ( GetLinkUID().IsItem() )
 	{
-		switch ( index )
-		{
-			default:
-				{
-					CScriptObj *pRef = GetLinkUID().ItemFind();
-					return pRef->r_Verb( s, pSrc );
-				}
-		}
+		CScriptObj *pRef = GetLinkUID().ItemFind();
+		return pRef->r_Verb( s, pSrc );
 	}
 
 	return true;
@@ -487,10 +480,8 @@ MEMORY_TYPE CItemStone::GetMemoryType() const
 	{
 		case IT_STONE_TOWN: return( MEMORY_TOWN );
 		case IT_STONE_GUILD: return( MEMORY_GUILD );
-		default: return( MEMORY_NONE );
+		default: return( MEMORY_NONE ); // Houses have no memories.
 	}
-	// Houses have no memories.
-	return( MEMORY_NONE );
 }
 
 LPCTSTR CItemStone::GetCharter(int iLine) const { ASSERT(iLine<COUNTOF(m_sCharter)); return(  m_sCharter[iLine] ); }
@@ -809,15 +800,15 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 			if (Arg_Qty < 1) // must at least provide the member uid
 				return false;
 
-			CStoneMember * pNew = new CStoneMember(
+			new CStoneMember(
 				this,
-				ahextoi(Arg_ppCmd[0]),												// Member's UID
-				Arg_Qty>2?(STONEPRIV_TYPE)ATOI(Arg_ppCmd[2]):STONEPRIV_CANDIDATE,	// Members priv level (use as a type)
-				Arg_Qty>1?Arg_ppCmd[1]:"",											// Title
-				ahextoi(Arg_ppCmd[3]),												// Member is loyal to this
-				Arg_Qty>4?ATOI( Arg_ppCmd[4] ):0,									// Paperdoll stone abbreviation (also if they declared war)
-				Arg_Qty>5?ATOI( Arg_ppCmd[5] ):0,									// If we declared war
-				Arg_Qty>6?ATOI( Arg_ppCmd[6] ):0);									// AccountGold
+				ahextoi(Arg_ppCmd[0]),													// Member's UID
+				Arg_Qty > 2 ? (STONEPRIV_TYPE)ATOI(Arg_ppCmd[2]) : STONEPRIV_CANDIDATE,	// Members priv level (use as a type)
+				Arg_Qty > 1 ? Arg_ppCmd[1] : "",										// Title
+				ahextoi(Arg_ppCmd[3]),													// Member is loyal to this
+				Arg_Qty > 4 ? (ATOI( Arg_ppCmd[4] ) != 0) : 0,							// Paperdoll stone abbreviation (also if they declared war)
+				Arg_Qty > 5 ? (ATOI( Arg_ppCmd[5] ) != 0) : 0,							// If we declared war
+				Arg_Qty > 6 ? ATOI( Arg_ppCmd[6] ) : 0);								// AccountGold
 			}
 			return true;
 		case STC_WEBPAGE: // "WEBPAGE"
@@ -1184,7 +1175,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		default:
 			return( CItem::r_WriteVal( pszKey, sVal, pSrc ));
 	}
-	return true;
+
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -1192,9 +1183,6 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 	EXC_DEBUG_END;
 	return false;
 }
-
-
-
 
 bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
 {
@@ -1212,7 +1200,9 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	}
 
 	CChar * pCharSrc = pSrc->GetChar();
-	CClient * pClient = pCharSrc? pCharSrc->GetClient() : NULL;
+#ifndef _NEWGUILDSYSTEM
+	CClient * pClient = pCharSrc != NULL? pCharSrc->GetClient() : NULL;
+#endif
 	CStoneMember * pMember = GetMember(pCharSrc);
 
 	switch ( index )
@@ -1421,7 +1411,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					if ( iArgQty == 2 )
 					{
 						CGrayUID pGuildUid = piCmd[0];
-						bool bWeDeclared = piCmd[1];
+						bool bWeDeclared = (piCmd[1] != 0);
 						CItem * pEnemyItem = pGuildUid.ItemFind();
 						if ( pEnemyItem && (pEnemyItem->IsType(IT_STONE_GUILD) || pEnemyItem->IsType(IT_STONE_TOWN)) )
 						{
@@ -2166,10 +2156,46 @@ void CItemStone::WeDeclarePeace(CGrayUID uid, bool fForcePeace)
 	pEnemyStone->TheyDeclarePeace( this, fForcePeace );
 }
 
+void CItemStone::SetTownName()
+{
+	ADDTOCALLSTACK("CItemStone::SetTownName");
+	// For town stones.
+	if ( ! IsTopLevel())
+		return;
+	CRegionBase * pArea = GetTopPoint().GetRegion(( IsType(IT_STONE_TOWN)) ? REGION_TYPE_AREA : REGION_TYPE_ROOM );
+	if ( pArea )
+	{
+		pArea->SetName( GetIndividualName());
+	}
+}
+
+bool CItemStone::MoveTo( CPointMap pt )
+{
+	ADDTOCALLSTACK("CItemStone::MoveTo");
+	// Put item on the ground here.
+	if ( IsType(IT_STONE_TOWN) )
+	{
+		SetTownName();
+	}
+	return CItem::MoveTo(pt);
+}
+
+bool CItemStone::SetName( LPCTSTR pszName )
+{
+	ADDTOCALLSTACK("CItemStone::SetName");
+	// If this is a town then set the whole regions name.
+	if ( !CItem::SetName(pszName) )
+		return false;
+	if ( IsTopLevel() && IsType(IT_STONE_TOWN) )
+		SetTownName();
+
+	return true;
+}
+
+#ifndef _NEWGUILDSYSTEM
 void CItemStone::SetupMenu( CClient * pClient, bool fMasterFunc )
 {
 	ADDTOCALLSTACK("CItemStone::SetupMenu");
-#ifndef _NEWGUILDSYSTEM
 	if ( pClient == NULL )
 		return;
 
@@ -2222,14 +2248,12 @@ void CItemStone::SetupMenu( CClient * pClient, bool fMasterFunc )
 	}
 
 	pClient->Menu_Setup( g_Cfg.ResourceGetIDType( RES_MENU, pszResourceName ), this );
-#endif
 }
 
 void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 {
 	ADDTOCALLSTACK("CItemStone::addStoneSetViewCharter");
 
-#ifndef _NEWGUILDSYSTEM
 	static LPCTSTR const sm_szDefControls[] =
 	{
 		"page 0",							// Default page
@@ -2309,7 +2333,6 @@ void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iSton
 	ASSERT( iControls <= COUNTOF(sControls));
 
 	pClient->addGumpDialog( CLIMODE_DIALOG_GUILD, sControls, iControls, sText, iTexts, 0x6e, 0x46 );
-#endif
 }
 
 bool CItemStone::IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const
@@ -2317,7 +2340,6 @@ bool CItemStone::IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMemb
 	ADDTOCALLSTACK("CItemStone::IsInMenu");
 	ASSERT( pMember );
 
-#ifndef _NEWGUILDSYSTEM
 	switch ( iStoneMenu )
 	{
 		case STONEDISP_ROSTER:
@@ -2352,7 +2374,6 @@ bool CItemStone::IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMemb
 		default:
 			return( false );
 	}
-#endif
 
 	return( true );
 }
@@ -2386,7 +2407,6 @@ int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText,
 	ADDTOCALLSTACK("CItemStone::addStoneListSetup");
 	// ARGS: psText = NULL if i just want to count.
 
-#ifndef _NEWGUILDSYSTEM
 	if ( iStoneMenu == STONEDISP_DECLAREWAR )
 	{
 		// This list is special.
@@ -2443,7 +2463,6 @@ int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText,
 		}
 		iTexts ++;
 	}
-#endif
 
 	return( iTexts );
 }
@@ -2452,7 +2471,6 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 {
 	ADDTOCALLSTACK("CItemStone::addStoneList");
 
-#ifndef _NEWGUILDSYSTEM
 	// Add a list of members of a type.
 	// Estimate the size first.
 	static LPCTSTR const sm_szDefControls[] =
@@ -2633,7 +2651,6 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	iTexts = addStoneListSetup( iStoneMenu, sText, iTexts );
 
 	pClient->addGumpDialog( CLIMODE_DIALOG_GUILD, sControls, iControls, sText, iTexts, 0x6e, 0x46 );
-#endif
 }
 
 void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
@@ -2641,7 +2658,6 @@ void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
 	ADDTOCALLSTACK("CItemStone::addStoneDialog");
 	ASSERT( pClient );
 
-#ifndef _NEWGUILDSYSTEM
 	// Use this for a stone dispatch routine....
 	switch (menuid)
 	{
@@ -2665,7 +2681,6 @@ void CItemStone::addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid )
 		default:
 			break;
 	}
-#endif
 }
 
 bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialogResponseArgs & resp )
@@ -2674,7 +2689,6 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 	// Button presses come here
 	ASSERT( pClient );
 
-#ifndef _NEWGUILDSYSTEM
 	switch ( type )
 	{
 		case STONEDISP_NONE: // They right clicked out, or hit the cancel button, no more stone functions
@@ -2831,43 +2845,6 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 			SetupMenu( pClient, false );
 			break;
 	}
-#endif
-
-	return true;
-}
-
-void CItemStone::SetTownName()
-{
-	ADDTOCALLSTACK("CItemStone::SetTownName");
-	// For town stones.
-	if ( ! IsTopLevel())
-		return;
-	CRegionBase * pArea = GetTopPoint().GetRegion(( IsType(IT_STONE_TOWN)) ? REGION_TYPE_AREA : REGION_TYPE_ROOM );
-	if ( pArea )
-	{
-		pArea->SetName( GetIndividualName());
-	}
-}
-
-bool CItemStone::MoveTo( CPointMap pt )
-{
-	ADDTOCALLSTACK("CItemStone::MoveTo");
-	// Put item on the ground here.
-	if ( IsType(IT_STONE_TOWN) )
-	{
-		SetTownName();
-	}
-	return CItem::MoveTo(pt);
-}
-
-bool CItemStone::SetName( LPCTSTR pszName )
-{
-	ADDTOCALLSTACK("CItemStone::SetName");
-	// If this is a town then set the whole regions name.
-	if ( !CItem::SetName(pszName) )
-		return false;
-	if ( IsTopLevel() && IsType(IT_STONE_TOWN) )
-		SetTownName();
 
 	return true;
 }
@@ -2877,7 +2854,6 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 	ADDTOCALLSTACK("CItemStone::OnPromptResp");
 	ASSERT( pClient );
 
-#ifndef _NEWGUILDSYSTEM
 	switch ( TargMode )
 	{
 		case CLIMODE_PROMPT_STONE_NAME:
@@ -2930,7 +2906,6 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 		default:
 			break;
 	}
-#endif
 
 	return( true );
 }
@@ -2938,12 +2913,12 @@ bool CItemStone::OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR
 void CItemStone::Use_Item( CClient * pClient )
 {
 	ADDTOCALLSTACK("CItemStone::Use_Item");
-#ifndef _NEWGUILDSYSTEM
 	if ( NoMembers() && IsType(IT_STONE_GUILD)) // Everyone resigned...new master
 	{
 		AddRecruit( pClient->GetChar(), STONEPRIV_MEMBER );
 	}
 	SetupMenu( pClient );
-#endif
 }
+
+#endif
 

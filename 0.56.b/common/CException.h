@@ -34,10 +34,13 @@ public:
 	CGrayError( LOGL_TYPE eSev, DWORD hErr, LPCTSTR pszDescription );
 	CGrayError( const CGrayError& e );	// copy contstructor needed.
 	virtual ~CGrayError();
+public:
+	CGrayError& operator=(const CGrayError& other);
+public:
 #ifdef _WIN32
 	static int GetSystemErrorMessage( DWORD dwError, LPTSTR lpszError, UINT nMaxError );
 #endif
-	bool GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext = NULL );
+	virtual bool GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext = NULL ) const;
 };
 
 class CGrayAssert : public CGrayError
@@ -45,17 +48,20 @@ class CGrayAssert : public CGrayError
 protected:
 	LPCTSTR const m_pExp;
 	LPCTSTR const m_pFile;
-	const unsigned m_uLine;
+	const long m_lLine;
 public:
 	/*
 	LPCTSTR const GetAssertFile();
 	const unsigned GetAssertLine();
 	*/
 	static const char *m_sClassName;
-	CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pExp, LPCTSTR pFile, unsigned uLine);
+	CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pExp, LPCTSTR pFile, long lLine);
 	virtual ~CGrayAssert();
+private:
+	CGrayAssert& operator=(const CGrayAssert& other);
 
-	virtual bool GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext);
+public:
+	virtual bool GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext = NULL ) const;
 };
 
 #ifdef _WIN32
@@ -68,8 +74,11 @@ public:
 
 		CGrayException(unsigned int uCode, DWORD dwAddress);
 		virtual ~CGrayException();
+	private:
+		CGrayException& operator=(const CGrayException& other);
 
-		virtual BOOL GetErrorMessage(LPTSTR lpszError, UINT nMaxError,	UINT * pnHelpContext);
+	public:
+		virtual bool GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pnHelpContext = NULL ) const;
 	};
 #endif
 
@@ -110,7 +119,7 @@ public:
 	#endif
 
 	#define EXC_CATCH	}	\
-		catch ( CGrayError &e )	{ EXC_CATCH_EXCEPTION(&e); } \
+		catch ( const CGrayError& e )	{ EXC_CATCH_EXCEPTION(&e); } \
 		catch (...) { EXC_CATCH_EXCEPTION(NULL); }
 
 	#define EXC_DEBUG_START if ( bCATCHExcept ) { try {
@@ -151,7 +160,7 @@ public:
 	#endif
 
 	#define EXC_CATCHSUB(a)	}	\
-		catch ( CGrayError &e )	\
+		catch ( const CGrayError& e )	\
 						{ \
 						EXC_CATCH_SUB(&e, a); \
 						} \

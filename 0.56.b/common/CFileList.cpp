@@ -54,9 +54,9 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 	ADDTOCALLSTACK("CFileList::ReadDir");
 	// NOTE: It seems NOT to like the trailing \ alone
 	TCHAR szFileDir[_MAX_PATH];
-	int len = strcpylen(szFileDir, pszFileDir);
+	size_t len = strcpylen(szFileDir, pszFileDir);
 #ifdef _WIN32
-	if ( len )
+	if ( len > 0 )
 	{
 		len--;
 		if ( szFileDir[len] == '\\' || szFileDir[len] == '/' )
@@ -72,7 +72,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 #else
 	char szFilename[_MAX_PATH];
 	// Need to strip out the *.scp part
-	for ( int i = len; i > 0; i-- )
+	for ( size_t i = len; i > 0; i-- )
 	{
 		if ( szFileDir[i] == '/' )
 		{
@@ -110,7 +110,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 		sprintf(szFilename, "%s%s", szFileDir, fileinfo->d_name);
 		len = strlen(szFilename);
 		if ( len > 4 && !strcmpi(&szFilename[len - 4], ".scp") )
-		AddHead(fileinfo->d_name);
+			AddHead(fileinfo->d_name);
 #endif
 	}
 #if defined(_WIN32)

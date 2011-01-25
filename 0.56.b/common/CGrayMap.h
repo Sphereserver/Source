@@ -11,13 +11,22 @@ private:
 	CServTime m_timeRef;		// When in world.GetTime() was this last referenced.
 public:
 	static const char *m_sClassName;
-	void InitCacheTime()
-	{
-		m_timeRef.Init();
-	}
 	CGrayCachedMulItem()
 	{
 		InitCacheTime();
+	}
+	virtual ~CGrayCachedMulItem()
+	{
+	}
+
+private:
+	CGrayCachedMulItem(const CGrayCachedMulItem& copy);
+	CGrayCachedMulItem& operator=(const CGrayCachedMulItem& other);
+
+public:
+	void InitCacheTime()
+	{
+		m_timeRef.Init();
 	}
 	bool IsTimeValid() const
 	{
@@ -52,8 +61,15 @@ public:
 	}
 	~CGrayStaticsBlock()
 	{
-		if ( m_pStatics ) delete [] m_pStatics;
+		if ( m_pStatics != NULL )
+			delete[] m_pStatics;
 	}
+
+private:
+	CGrayStaticsBlock(const CGrayStaticsBlock& copy);
+	CGrayStaticsBlock& operator=(const CGrayStaticsBlock& other);
+
+public:
 	int GetStaticQty() const
 	{
 		return( m_iStatics );
@@ -100,6 +116,12 @@ struct CGrayMapBlockState
 public:
 	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight = PLAYER_HEIGHT, t_height zHeight = PLAYER_HEIGHT );
 	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight, signed char zClimb, t_height zHeight = PLAYER_HEIGHT );
+
+private:
+	CGrayMapBlockState(const CGrayMapBlockState& copy);
+	CGrayMapBlockState& operator=(const CGrayMapBlockState& other);
+
+public:
 	bool IsUsableZ( signed char zBottom, t_height zHeightEstimate ) const
 	{
 		if ( zBottom > m_Top.m_z )	// above something that is already over my head.
@@ -136,20 +158,34 @@ struct CMapDiffBlock
 
 	~CMapDiffBlock()
 	{
-		if ( m_pStaticsBlock )	delete[] m_pStaticsBlock;
-		if ( m_pTerrainBlock )	delete m_pTerrainBlock;
+		if ( m_pStaticsBlock != NULL )
+			delete[] m_pStaticsBlock;
+		if ( m_pTerrainBlock != NULL )
+			delete m_pTerrainBlock;
 		m_pStaticsBlock = NULL;
 		m_pTerrainBlock = NULL;
 	};
+
+private:
+	CMapDiffBlock(const CMapDiffBlock& copy);
+	CMapDiffBlock& operator=(const CMapDiffBlock& other);
 };
 
 class CMapDiffBlockArray : public CGObSortArray< CMapDiffBlock*, DWORD >
 {
+public:
 	int CompareKey( DWORD id, CMapDiffBlock* pBase, bool fNoSpaces ) const
 	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
 		ASSERT( pBase );
 		return ( id - pBase->m_BlockId );
 	}
+
+public:
+	CMapDiffBlockArray() { };
+private:
+	CMapDiffBlockArray(const CMapDiffBlockArray& copy);
+	CMapDiffBlockArray& operator=(const CMapDiffBlockArray& other);
 };
 
 class CMapDiffCollection
@@ -166,6 +202,11 @@ public:
 	CMapDiffCollection();
 	~CMapDiffCollection();
 
+private:
+	CMapDiffCollection(const CMapDiffCollection& copy);
+	CMapDiffCollection& operator=(const CMapDiffCollection& other);
+
+public:
 	void Init();
 	CMapDiffBlock * GetAtBlock( int bx, int by, int map );
 	CMapDiffBlock * GetAtBlock( DWORD dwBlockId, int map );
@@ -191,7 +232,7 @@ private:
 	void LoadDiffs(DWORD dwBlockIndex, int map);
 
 public:
-	CGrayMapBlock( const CPointMap & pt ) :
+	explicit CGrayMapBlock( const CPointMap & pt ) :
 		CPointSort( pt )	// The upper left corner.
 	{
 		sm_iCount++;
@@ -212,6 +253,11 @@ public:
 		sm_iCount--;
 	}
 
+private:
+	CGrayMapBlock(const CGrayMapBlock& copy);
+	CGrayMapBlock& operator=(const CGrayMapBlock& other);
+
+public:
 	int GetOffsetX( int x ) const
 	{
 		// Allow this to go out of bounds.
@@ -260,16 +306,27 @@ private:
 	}
 public:
 	static const char *m_sClassName;
-	int Load( MULTI_TYPE id );
 	CGrayMulti()
 	{
 		Init();
 	}
-	CGrayMulti( MULTI_TYPE id )
+	explicit CGrayMulti( MULTI_TYPE id )
 	{
 		Init();
 		Load( id );
 	}
+	virtual ~CGrayMulti()
+	{
+		Release();
+	}
+
+private:
+	CGrayMulti(const CGrayMulti& copy);
+	CGrayMulti& operator=(const CGrayMulti& other);
+
+public:
+	int Load( MULTI_TYPE id );
+
 	MULTI_TYPE GetMultiID() const
 	{
 		return( m_id );
@@ -282,10 +339,6 @@ public:
 	{
 		ASSERT( i<m_iItemQty );
 		return( m_pItems+i);
-	}
-	virtual ~CGrayMulti()
-	{
-		Release();
 	}
 };
 

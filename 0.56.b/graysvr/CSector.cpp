@@ -1144,7 +1144,7 @@ void CSector::OnTick(int iPulseCount)
 #else
 		}
 #ifndef _DEBUG
-		catch ( CGrayError &e )
+		catch ( const CGrayError& e )
 		{
 			CPointMap pt = GetBasePoint();
 			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());

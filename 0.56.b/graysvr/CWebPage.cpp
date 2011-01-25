@@ -37,6 +37,7 @@ class CFileConsole : public CTextConsole
 public:
 	static const char *m_sClassName;
 	CFileText m_FileOut;
+
 public:
 	virtual PLEVEL_TYPE GetPrivLevel() const
 	{
@@ -52,6 +53,13 @@ public:
 			return;
 		(const_cast <CFileConsole*>(this))->m_FileOut.WriteString(pszMessage);
 	}
+
+public:
+	CFileConsole() { };
+
+private:
+	CFileConsole(const CFileConsole& copy);
+	CFileConsole& operator=(const CFileConsole& other);
 };
 
 //********************************************************

@@ -66,10 +66,10 @@ commandtoolong:
 	}
 	else if ( nChar == 9 )			// TAB (auto-completion)
 	{
-		LPCTSTR	p;
-		LPCTSTR tmp;
-		int		inputLen;
-		bool	matched(false);
+		LPCTSTR p = NULL;
+		LPCTSTR tmp = NULL;
+		int inputLen = 0;
+		bool matched(false);
 
 		//	extract up to start of the word
 		p = sText.GetPtr() + sText.GetLength();
@@ -114,9 +114,12 @@ commandtoolong:
 
 		if ( matched )
 		{
-			if ( fEcho ) SysMessage(tmp);
+			if ( fEcho )
+				SysMessage(tmp);
+
 			sText += tmp;
-			if ( sText.GetLength() > SCRIPT_MAX_LINE_LEN ) goto commandtoolong;
+			if ( sText.GetLength() > SCRIPT_MAX_LINE_LEN )
+				goto commandtoolong;
 		}
 		return 1;
 	}
@@ -461,17 +464,18 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CServer::OnConsoleCmd");
 	// RETURN: false = unsuccessful command.
-	int		len = sText.GetLength();
+	int	len = sText.GetLength();
 
 	// We can't have a command with no length
 	if ( len <= 0 )
 		return true;
 
 	// Convert first character to lowercase
-	char	low = tolower(sText[0]);
+	TCHAR low = tolower(sText[0]);
 	bool fRet = true;
 
-	if ((( len > 2 ) || (( len == 2 ) && ( sText[1] != '#' ))) && ( sText[0] != 'd' )) goto longcommand;
+	if ((( len > 2 ) || (( len == 2 ) && ( sText[1] != '#' ))) && ( sText[0] != 'd' ))
+		goto longcommand;
 
 	switch ( low )
 	{
@@ -575,14 +579,14 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 
 						for ( pFun = g_profiler.FunctionsHead; pFun != NULL; pFun = pFun->next )
 						{
-							pFun->average = pFun->called = pFun->max = pFun->min = pFun->total = 0;
+							pFun->average = pFun->max = pFun->min = pFun->total = pFun->called = 0;
 						}
 						for ( pTrig = g_profiler.TriggersHead; pTrig != NULL; pTrig = pTrig->next )
 						{
-							pTrig->average = pTrig->called = pTrig->max = pTrig->min = pTrig->total = 0;
+							pTrig->average = pTrig->max = pTrig->min = pTrig->total = pTrig->called = 0;
 						}
 
-						g_profiler.called = g_profiler.total = 0;
+						g_profiler.total = g_profiler.called = 0;
 						pSrc->SysMessage("Scripts profiler info cleared\n");
 					}
 				}
@@ -875,21 +879,20 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 	if ( !pSrc )
 		return;
 
-	bool bOk = bDump;
-	CFileText * ftDump;
+	CFileText * ftDump = NULL;
 
 	if ( bDump )
 	{
 		ftDump = new CFileText();
 		if ( ! ftDump->Open("profiler_dump.txt", OF_CREATE|OF_TEXT) )
 		{
-			bOk = false;
 			delete ftDump;
+			ftDump = NULL;
 		}
 	}
 
 	pSrc->SysMessagef("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
-	if ( bOk )
+	if (ftDump != NULL)
 		ftDump->Printf("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
 
 	for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
@@ -903,7 +906,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			continue;
 
 		pSrc->SysMessagef("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
-		if (bOk)
+		if (ftDump != NULL)
 			ftDump->Printf("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
 
 		for (int i = 0; i < PROFILE_QTY; i++)
@@ -912,23 +915,25 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 				continue;
 
 			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
-			if ( bOk )
+			if (ftDump != NULL)
 				ftDump->Printf( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
 		}
 	}
 
 	if ( IsSetEF(EF_Script_Profiler) )
 	{
-		if ( g_profiler.initstate != 0xf1 ) pSrc->SysMessagef("Scripts profiler is not initialized\n");
-		else if ( !g_profiler.called ) pSrc->SysMessagef("Script profiler is not yet informational\n");
+		if ( g_profiler.initstate != 0xf1 )
+			pSrc->SysMessagef("Scripts profiler is not initialized\n");
+		else if ( !g_profiler.called )
+			pSrc->SysMessagef("Script profiler is not yet informational\n");
 		else
 		{
-			LONGLONG	average = g_profiler.total / g_profiler.called;
-			TScriptProfiler::TScriptProfilerFunction	*pFun;
-			TScriptProfiler::TScriptProfilerTrigger		*pTrig;
-			DWORD	divby(1);
+			LONGLONG average = g_profiler.total / g_profiler.called;
+			TScriptProfiler::TScriptProfilerFunction * pFun;
+			TScriptProfiler::TScriptProfilerTrigger * pTrig;
+			LONGLONG divby(1);
 
-			divby = llTimeProfileFrequency/1000;
+			divby = llTimeProfileFrequency / 1000;
 
 			pSrc->SysMessagef( "Scripts: called %d times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
@@ -937,7 +942,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 					(int)(average/divby),
 					(int)(((average*10000)/(divby))%10000)
 			);
-			if ( bOk )
+			if (ftDump != NULL)
 				ftDump->Printf("Scripts: called %d times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
 					(int)(g_profiler.total/divby),
@@ -962,7 +967,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 						(int)(pFun->total/divby),
 						(int)(((pFun->total*10000)/(divby))%10000)
 					);
-					if ( bOk )
+					if (ftDump != NULL)
 						ftDump->Printf("FUNCTION '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pFun->name,
 							pFun->called,
@@ -993,7 +998,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 						(int)(pTrig->total/divby),
 						(int)(((pTrig->total*10000)/(divby))%10000)
 					);
-					if ( bOk )
+					if (ftDump != NULL)
 						ftDump->Printf("TRIGGER '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pTrig->name,
 							pTrig->called,
@@ -1012,9 +1017,12 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			pSrc->SysMessage("Report complete!\n");
 		}
 	}
-	else pSrc->SysMessage("Script profiler is turned OFF\n");
+	else
+	{
+		pSrc->SysMessage("Script profiler is turned OFF\n");
+	}
 
-	if ( bOk && ftDump )
+	if ( ftDump != NULL )
 	{
 		ftDump->Close();
 		delete ftDump;
@@ -1311,8 +1319,8 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 					break;
 				// IMPFLAGS_ITEMS
 				if ( ! g_World.Export( Arg_ppCmd[0], pSrc->GetChar(),
-					(Arg_Qty>=2)? ATOI(Arg_ppCmd[1]) : IMPFLAGS_ITEMS,
-					(Arg_Qty>=3)? ATOI(Arg_ppCmd[2]) : SHRT_MAX ))
+					(Arg_Qty >= 2)? ATOI(Arg_ppCmd[1]) : IMPFLAGS_ITEMS,
+					(Arg_Qty >= 3)? ATOI(Arg_ppCmd[2]) : SHRT_MAX ))
 				{
 					pSrc->SysMessage( "Export failed\n" );
 				}
@@ -1431,14 +1439,14 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				break;
 			}
 		case SV_SAVE: // "SAVE" x
-			g_World.Save(s.GetArgVal());
+			g_World.Save(s.GetArgVal() != 0);
 			break;
 		case SV_SAVESTATICS:
 			g_World.SaveStatics();
 			break;
 		case SV_SECURE: // "SECURE"
 			pszMsg = Str_GetTemp();
-			g_Cfg.m_fSecure = s.GetArgFlag( g_Cfg.m_fSecure, true );
+			g_Cfg.m_fSecure = s.GetArgFlag( g_Cfg.m_fSecure, true ) != 0;
 			SetSignals();
 			sprintf(pszMsg, "Secure mode %s.\n", g_Cfg.m_fSecure ? "re-enabled" : "disabled" );
 			break;
@@ -1576,8 +1584,8 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					CFileText File;
 					if ( ! File.Open( "defs.txt", OF_WRITE|OF_TEXT ))
 						return( false );
-					int i = 0;
-					for ( ; i < g_Exp.m_VarDefs.GetCount(); i++ )
+
+					for ( size_t i = 0; i < g_Exp.m_VarDefs.GetCount(); i++ )
 					{
 						if ( !( i%0x1ff ))
 							PrintPercent( i, g_Exp.m_VarDefs.GetCount());

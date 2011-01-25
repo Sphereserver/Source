@@ -512,7 +512,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					{
 						TCHAR * tLastError = Str_GetTemp();
 						dResult = Str_RegExMatch( ppCmd[0], ppCmd[1], tLastError );
-						if ( dResult == -1 )
+						if ( dResult < 0 )
 						{
 							DEBUG_ERR(( "STRREGEX bad function usage. Error: %s\n", tLastError ));
 						}
@@ -555,7 +555,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					{
 						cparg1 = ppCmd[0];
 						RealType val1 = MakeFloatMath( cparg1 );
-						if ( dCount == 2 )
+						if ( dCount >= 2 )
 						{
 							cparg2 = ppCmd[1];
 							RealType val2 = MakeFloatMath( cparg2 );

@@ -1587,10 +1587,10 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 		iRange /= 4;
 
 	// Any interesting chars here ?
-	CWorldSearch Area(GetTopPoint(), iRange);
+	CWorldSearch AreaChars(GetTopPoint(), iRange);
 	for (;;)
 	{
-		CChar	*pChar = Area.GetChar();
+		CChar	*pChar = AreaChars.GetChar();
 		if ( !pChar )
 			break;
 		if ( pChar == this )	// just myself.
@@ -1617,10 +1617,10 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 
 	if ( fForceCheckItems )
 	{
-		CWorldSearch Area( GetTopPoint(), iRange );
+		CWorldSearch AreaItems( GetTopPoint(), iRange );
 		for (;;)
 		{
-			CItem	*pItem = Area.GetItem();
+			CItem	*pItem = AreaItems.GetItem();
 			if ( !pItem )
 				break;
 
@@ -1798,18 +1798,21 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 
 	// determine how far we can shoot with this bow
 	CItem *pWeapon = m_uidWeapon.ItemFind();
-	CItemBase *pWeaponDef = pWeapon? pWeapon->Item_GetDef() : NULL;
-	if ( pWeaponDef )
+	if ( pWeapon != NULL )
 	{
-		iMinDist = pWeaponDef->RangeH();
-		iMaxDist = pWeaponDef->RangeL();
-	}
+		CItemBase *pWeaponDef = pWeapon->Item_GetDef();
+		if ( pWeaponDef != NULL )
+		{
+			iMinDist = pWeaponDef->RangeH();
+			iMaxDist = pWeaponDef->RangeL();
+		}
 
-	if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
-	{
-	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
-		if ( pWeaponRange )
-			iMaxDist = pWeaponRange->GetValNum();
+		if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
+		{
+			CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
+			if ( pWeaponRange )
+				iMaxDist = pWeaponRange->GetValNum();
+		}
 	}
 
 	// if range is not set on the weapon, default to ini settings

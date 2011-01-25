@@ -28,10 +28,16 @@ public:
 	int GValue;
 	int HValue;
 
+public:
 	CPathFinderPoint();
-	CPathFinderPoint(const CPointMap& pt);
+	explicit CPathFinderPoint(const CPointMap& pt);
 	CPathFinderPoint(const CPointMap& pt, CPointMap& parent);
 
+private:
+	CPathFinderPoint(const CPathFinderPoint& copy);
+	CPathFinderPoint& operator=(const CPathFinderPoint& other);
+
+public:
 	const CPathFinderPoint* GetParent() const;
 	CPathFinderPoint* GetPoint();
 	void SetParent(CPathFinderPointRef& pt);
@@ -43,27 +49,33 @@ class CPathFinderPointRef
 {
 public:
 	CPathFinderPoint* m_Point;
-	bool operator < (const CPathFinderPointRef& Pt) const
-	{
-		return m_Point->FValue < Pt.m_Point->FValue;
-	}
-	CPathFinderPointRef(CPathFinderPoint& Pt)
-	{
-		m_Point = &Pt;
-	}
+
+public:
 	CPathFinderPointRef() : m_Point(0)
 	{
 	}
+
+	explicit CPathFinderPointRef(CPathFinderPoint& Pt)
+	{
+		m_Point = &Pt;
+	}
+
+public:
 	CPathFinderPointRef& operator = ( const CPathFinderPointRef& Pt )
 	{
 		m_Point = Pt.m_Point;
 		return *this;
 	}
+
+	bool operator < (const CPathFinderPointRef& Pt) const
+	{
+		return m_Point->FValue < Pt.m_Point->FValue;
+	}
+
 	bool operator == ( const CPathFinderPointRef& Pt )
 	{
 		return Pt.m_Point == m_Point;
 	}
-
 };
 
 class CPathFinder
@@ -81,13 +93,17 @@ public:
 	CPathFinder(CChar *pChar, CPointMap ptTarget);
 	~CPathFinder();
 
+private:
+	CPathFinder(const CPathFinder& copy);
+	CPathFinder& operator=(const CPathFinder& other);
+
+public:
 	int FindPath();
 	CPointMap ReadStep(size_t Step = 0);
 	size_t LastPathSize();
 	void ClearLastPath();
 
 protected:
-
 	CPathFinderPoint m_Points[PATH_SIZE][PATH_SIZE];
 	std::deque<CPathFinderPointRef> m_Opened;
 	std::deque<CPathFinderPointRef> m_Closed;
@@ -105,7 +121,6 @@ protected:
 	unsigned long Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2);
 	void GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList );
 	void FillMap();	// prepares map with walkable statuses
-
 };
 
 

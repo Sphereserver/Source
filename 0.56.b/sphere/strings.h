@@ -7,8 +7,13 @@ class AbstractString
 {
 public:
 	AbstractString();
-	~AbstractString();
+	virtual ~AbstractString();
 
+private:
+	AbstractString(const AbstractString& copy);
+	AbstractString& operator=(const AbstractString& other);
+
+public:
 	// information
 	int length();
 	int realLength();
@@ -58,6 +63,11 @@ class String : public AbstractString
 {
 public:
 	String();
+	virtual ~String() { };
+
+private:
+	String(const String& copy);
+	String& operator=(const String& other);
 
 protected:
 	void ensureLength(int newLength);
@@ -67,9 +77,8 @@ protected:
 #define MAX_TEMP_LINES_NO_CONTEXT	512
 
 // Temporary string implementation. Works with thread-safe string
-// There are 2 ways to create such string:
-// 1. TemporaryString str;
-// 2. String str = some_thread_variable->allocateString();
+// To create such string:
+// TemporaryString str;
 // it could be also created via new TemporaryString but whats the point if we still use memory allocation? :)
 class TemporaryString : public String
 {
@@ -78,6 +87,11 @@ public:
 	TemporaryString(char *buffer, char *state);
 	~TemporaryString();
 
+private:
+	TemporaryString(const TemporaryString& copy);
+	TemporaryString& operator=(const TemporaryString& other);
+
+public:
 	// should not really be used, made for use of AbstractSphereThread *only*
 	void init(char *buffer, char *state);
 
@@ -86,13 +100,13 @@ protected:
 	void destroy();
 
 private:
-	bool	m_useHeap;					// a mark whatever we are in heap (String) or stack (ThreadLocal) mode
-	char	*m_state;					// a pointer to thread local state of the line we occupy
+	bool m_useHeap;					// a mark whatever we are in heap (String) or stack (ThreadLocal) mode
+	char *m_state;					// a pointer to thread local state of the line we occupy
 
 	// static buffer to allow similar operations for non-threaded environment
 	// NOTE: this buffer have no protection against overrun, so beware
-	static	int m_tempPosition;
-	static	char m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
+	static int m_tempPosition;
+	static char m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
 };
 
 #endif

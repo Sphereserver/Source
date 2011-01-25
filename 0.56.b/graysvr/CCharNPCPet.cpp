@@ -150,7 +150,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 				CItemContainer * pBank = GetBank();
 				if ( pBank )
 				{
-					int iWage = pCharDef->GetHireDayWage();
+					unsigned int iWage = pCharDef->GetHireDayWage();
 					TCHAR *pszMsg = Str_GetTemp();
 					if ( pBank->m_itEqBankBox.m_Check_Amount > iWage )
 					{
@@ -251,7 +251,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			if ( NPC_CanSpeak() )
 			{
 				CItemContainer * pBank = GetBank();
-				int iWage = pCharDef->GetHireDayWage();
+				unsigned int iWage = pCharDef->GetHireDayWage();
 				TCHAR *pszMsg = Str_GetTemp();
 				if ( NPC_IsVendor() )
 				{
@@ -571,12 +571,12 @@ bool CChar::NPC_CheckHirelingStatus()
 	CCharBase * pCharDef = Char_GetDef();
 	int iFoodConsumeRate = g_Cfg.m_iRegenRate[STAT_FOOD];
 
-	int iWage = pCharDef->GetHireDayWage();
+	unsigned int iWage = pCharDef->GetHireDayWage();
 	if ( ! iWage || ! iFoodConsumeRate )
 		return( true );
 
 	// I am hired for money not for food.
-	int iPeriodWage = IMULDIV( iWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength );
+	unsigned int iPeriodWage = IMULDIV( iWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength );
 	if ( iPeriodWage <= 0 )
 		iPeriodWage = 1;
 
@@ -587,7 +587,9 @@ bool CChar::NPC_CheckHirelingStatus()
 	}
 	else
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WAGE_COST ), iWage );
+		TCHAR* pszMsg = Str_GetTemp();
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WAGE_COST ), iWage);
+		Speak(pszMsg);
 
 		CChar * pOwner = NPC_PetGetOwner();
 		if ( pOwner )
@@ -617,7 +619,7 @@ void CChar::NPC_OnHirePayMore( CItem * pGold, bool fHire )
 	// similar to PC_STATUS
 
 	CCharBase * pCharDef = Char_GetDef();
-	int iWage = pCharDef->GetHireDayWage();
+	unsigned int iWage = pCharDef->GetHireDayWage();
 	CItemContainer	*pBank = GetBank();
 	if ( !iWage || !pBank )
 		return;
@@ -656,8 +658,8 @@ bool CChar::NPC_OnHirePay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGol
 	}
 	else
 	{
-		int iWage = pCharDef->GetHireDayWage();
-		if ( ! iWage )
+		unsigned int iWage = pCharDef->GetHireDayWage();
+		if ( iWage <= 0 )
 		{
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_FOR_HIRE ) );
 			return false;
@@ -694,7 +696,7 @@ bool CChar::NPC_OnHireHear( CChar * pCharSrc )
 		return false;
 
 	CCharBase * pCharDef = Char_GetDef();
-	int iWage = pCharDef->GetHireDayWage();
+	unsigned int iWage = pCharDef->GetHireDayWage();
 	if ( ! iWage )
 	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_FOR_HIRE ) );

@@ -52,7 +52,7 @@ bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 	else
 	{
 		pAccount = new CAccount(szName);
-		ASSERT(pAccount);
+		ASSERT(pAccount != NULL);
 	}
 	pAccount->r_Load(s);
 
@@ -304,7 +304,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 	int		iCountOrig	= Account_GetCount();
 	int		iCountCheck	= iCountOrig;
 	int		iCount		= 0;
-	for ( int i=0; true; i++ )
+	for ( int i = 0; ; i++ )
 	{
 		if ( Account_GetCount() < iCountCheck )
 		{
@@ -480,11 +480,11 @@ bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 	ADDTOCALLSTACK("CAccount::NameStrip");
 	// allow just basic chars. No spaces, only numbers, letters and underbar. -+. and single quotes ?
 
-	int iLen = Str_GetBare(pszNameOut, pszNameInp, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+	size_t iLen = Str_GetBare(pszNameOut, pszNameInp, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
 
 	if ( iLen <= 0 )
 		return false;
-	if ( strchr(pszNameOut,0x0A) || strchr(pszNameOut,0x0C) || strchr(pszNameOut,0x0D) )
+	if ( strchr(pszNameOut, 0x0A) || strchr(pszNameOut, 0x0C) || strchr(pszNameOut, 0x0D) )
 		return false;
 	if ( !strcmpi(pszNameOut, "EOF") || !strcmpi(pszNameOut, "ACCOUNT") )
 		return false;
@@ -916,9 +916,9 @@ bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 		return true;
 	}
 		
-	short int iSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER,strlen(pszPassword))+1;
+	size_t iSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER, strlen(pszPassword)) + 1;
 	char * pszPassw = new char[iSize];
-	strcpylen(pszPassw,pszPassword,iSize);
+	strcpylen(pszPassw, pszPassword, iSize);
 
 	if ( useMD5 )
 	{

@@ -14,7 +14,7 @@
 class PacketUnknown : public Packet
 {
 public:
-	PacketUnknown(long size = -1);
+	PacketUnknown(size_t size = 0);
 	virtual bool onReceive(NetState* net);
 };
 
@@ -28,7 +28,7 @@ public:
 class PacketCreate : public Packet
 {
 public:
-	PacketCreate(long size = 104);
+	PacketCreate(size_t size = 104);
 	virtual bool onReceive(NetState* net);
 
 protected:
@@ -45,11 +45,11 @@ protected:
 class PacketMovementReq : public Packet
 {
 public:
-	PacketMovementReq(long size = 7);
+	PacketMovementReq(size_t size = 7);
 	virtual bool onReceive(NetState* net);
 
 protected:
-	void doMovement(NetState* net, BYTE direction, int sequence, DWORD crypt);
+	void doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt);
 };
 
 /***************************************************************************
@@ -119,7 +119,7 @@ class PacketItemDropReq : public Packet
 {
 public:
 	PacketItemDropReq();
-	virtual long getExpectedLength(NetState* client, Packet* packet);
+	virtual size_t getExpectedLength(NetState* client, Packet* packet);
 	virtual bool onReceive(NetState* net);
 };
 
@@ -190,7 +190,7 @@ class PacketDeathStatus : public Packet
 {
 public:
 	PacketDeathStatus();
-	virtual long getExpectedLength(NetState* client, Packet* packet);
+	virtual size_t getExpectedLength(NetState* client, Packet* packet);
 	virtual bool onReceive(NetState* net);
 };
 

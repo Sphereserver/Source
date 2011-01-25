@@ -13,6 +13,11 @@ public:
 	SimpleMutex();
 	~SimpleMutex();
 
+private:
+	SimpleMutex(const SimpleMutex& copy);
+	SimpleMutex& operator=(const SimpleMutex& other);
+
+public:
 	void lock();
 	bool tryLock();
 	void unlock();
@@ -24,14 +29,20 @@ private:
 	pthread_mutex_t m_criticalSection;
 	pthread_mutexattr_t m_criticalSectionAttr;
 #endif
+
 };
 
 class SimpleThreadLock
 {
 public:
-	SimpleThreadLock(SimpleMutex &mutex);
+	explicit SimpleThreadLock(SimpleMutex &mutex);
 	~SimpleThreadLock();
 
+private:
+	SimpleThreadLock(const SimpleThreadLock& copy);
+	SimpleThreadLock& operator=(const SimpleThreadLock& other);
+
+public:
 	operator bool() const;
 
 private:
@@ -43,9 +54,14 @@ class ManualThreadLock
 {
 public:
 	ManualThreadLock();
-	ManualThreadLock(SimpleMutex * mutex);
+	explicit ManualThreadLock(SimpleMutex * mutex);
 	~ManualThreadLock();
 
+private:
+	ManualThreadLock(const ManualThreadLock& copy);
+	ManualThreadLock& operator=(const ManualThreadLock& other);
+
+public:
 	void setMutex(SimpleMutex * mutex);
 
 	operator bool() const;

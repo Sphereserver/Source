@@ -730,7 +730,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 					{
 						LPCTSTR		pszArgs	= s.GetArgStr();
 						GETNONWHITESPACE(pszArgs);
-						fFullInterp = ( *pszArgs == '\0' ) ? true : s.GetArgVal();
+						fFullInterp = ( *pszArgs == '\0' ) ? true : ( s.GetArgVal() != 0);
 						continue;
 					}
 				case ITC_NEWBIESWAP:
@@ -1183,9 +1183,9 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	GetPackSafe();
 
 	// Get special equip for the starting skills.
-	for ( i=0; i<4; i++ )
+	for ( i = 0; i < 4; i++ )
 	{
-		int iSkill;
+		int iSkill = INT_MAX;
 		switch ( i )
 		{
 			case 0:
@@ -1203,10 +1203,11 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		}
 
 		CResourceLock s;
-			if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+		if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
 			if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
 				continue;
-			ReadScript(s);
+
+		ReadScript(s);
 	}
 
 	CItem	*pLayer = LayerFind(LAYER_SHIRT);
@@ -1422,13 +1423,13 @@ do_default:
 				if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
 				{
 					pszKey++;
-					int attackerIndex = -1;
+					size_t attackerIndex = m_lastAttackers.size();
 					if( !strnicmp(pszKey, "MAX", 3) )
 					{
 						pszKey += 3;
 						int iMaxDmg = -1, iCurDmg = 0;
 
-						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
+						for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
 							iCurDmg = m_lastAttackers.at(iAttacker).amountDone;
 							if ( iCurDmg > iMaxDmg )
@@ -1441,15 +1442,15 @@ do_default:
 					else if( !strnicmp(pszKey, "LAST", 4) )
 					{
 						pszKey += 4;
-						int iLastTime = INT_MAX, iCurTime = 0;
+						DWORD dwLastTime = INT_MAX, dwCurTime = 0;
 
-						for ( int iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
+						for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 						{
-							iCurTime = m_lastAttackers.at(iAttacker).elapsed;
-							if ( iCurTime <= iLastTime )
+							dwCurTime = m_lastAttackers.at(iAttacker).elapsed;
+							if ( dwCurTime <= dwLastTime )
 							{
-								iLastTime = iCurTime;
-								attackerIndex = iAttacker;
+								dwLastTime = dwCurTime;
+								attackerIndex = dwCurTime;
 							}
 						}
 					}
@@ -1459,7 +1460,7 @@ do_default:
 					}
 
 					SKIP_SEPARATORS(pszKey);
-					if( ( attackerIndex >= 0 ) && ( attackerIndex < m_lastAttackers.size() ) )
+					if ( attackerIndex < m_lastAttackers.size() )
 					{
 						LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
 
@@ -1726,7 +1727,7 @@ do_default:
 				ptDst.Move( GetDirStr( pszKey ) );
 				CRegionBase * pArea = ptDst.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA );
 				if ( !pArea )
-					sVal.FormatHex( -1 );
+					sVal.FormatHex( ULONG_MAX );
 				else
 				{
 					WORD		wBlockFlags	= 0;
@@ -2274,7 +2275,7 @@ do_default:
 				bool fNightsight;
 				if ( s.HasArgs())
 				{
-					fNightsight = s.GetArgVal();
+					fNightsight = ( s.GetArgVal() != 0 );
 				}
 				else
 				{
@@ -2582,7 +2583,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				bool fMode;
 				if ( s.HasArgs())
 				{
-					fMode = s.GetArgVal();
+					fMode = ( s.GetArgVal() != 0 );
 				}
 				else
 				{
@@ -2624,7 +2625,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				int Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
 
 				return UpdateAnimate( (ANIM_TYPE) Arg_piCmd[0], false,
-					( Arg_Qty > 1 )	? Arg_piCmd[1] : false,
+					( Arg_Qty > 1 )	? (Arg_piCmd[1] != 0) : false,
 					( Arg_Qty > 2 )	? Arg_piCmd[2] : 1 );
 			}
 			break;
@@ -3023,7 +3024,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			}
 			return( true );
 		case CHV_SLEEP:
-			SleepStart( s.GetArgVal());
+			SleepStart( s.GetArgVal() != 0 );
 			break;
 		case CHV_SUICIDE:
 			Memory_ClearTypes( MEMORY_FIGHT ); // Clear the list of people who get credit for your death
@@ -3194,10 +3195,10 @@ lbl_cchar_ontriggerspeech:
 	return false;
 }
 
-int Calc_ExpGet_Exp(unsigned int level)
+unsigned int Calc_ExpGet_Exp(unsigned int level)
 {
-	int exp = 0;
-	for ( int lev = 1; lev <= level; lev++ )
+	unsigned int exp = 0;
+	for ( unsigned int lev = 1; lev <= level; lev++ )
 	{
 		switch ( g_Cfg.m_iLevelMode )
 		{
@@ -3213,27 +3214,30 @@ int Calc_ExpGet_Exp(unsigned int level)
 	return exp;
 }
 
-int Calc_ExpGet_Level(unsigned int exp)
+unsigned int Calc_ExpGet_Level(unsigned int exp)
 {
-	for ( int lev = 0; ; lev++ )
+	unsigned int level = 0; // current level
+	unsigned int req = g_Cfg.m_iLevelNextAt; // required xp for next level
+
+	while (exp >= req)
 	{
-		unsigned int e = 0;
+		// reduce xp and raise level
+		exp -= req;
+		level++;
+
+		// calculate requirement for next level
 		switch ( g_Cfg.m_iLevelMode )
 		{
 			case LEVEL_MODE_LINEAR:
-				e = g_Cfg.m_iLevelNextAt;
 				break;
 			case LEVEL_MODE_DOUBLE:
 			default:
-				e = (g_Cfg.m_iLevelNextAt * (lev + 1));
+				req += g_Cfg.m_iLevelNextAt;
 				break;
 		}
-
-		if ( exp < e )
-			return lev;
-		exp -= e;
 	}
-	return 0;
+
+	return level;
 }
 
 void CChar::ChangeExperience(int delta, CChar *pCharDead)
@@ -3260,7 +3264,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 								// limiting delta to current level? check if delta goes out of level
 			if ( g_Cfg.m_bLevelSystem && g_Cfg.m_iExperienceMode&EXP_MODE_DOWN_NOLEVEL )
 			{
-				int exp = Calc_ExpGet_Exp(m_level);
+				unsigned int exp = Calc_ExpGet_Exp(m_level);
 				if ( m_exp + delta < exp )
 					delta = m_exp - exp;
 			}
@@ -3280,7 +3284,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			if ( OnTrigger(CTRIG_ExpChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
 			delta = args.m_iN1;
-			bShowMsg = args.m_iN2;
+			bShowMsg = ( args.m_iN2 != 0 );
 		}
 		m_exp += delta;
 
@@ -3313,11 +3317,11 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 
 	if ( g_Cfg.m_bLevelSystem )
 	{
-		int level = Calc_ExpGet_Level(m_exp);
+		unsigned int level = Calc_ExpGet_Level(m_exp);
 
 		if ( level != m_level )
 		{
-			int delta = level - m_level;
+			delta = level - m_level;
 
 			if ( g_Cfg.m_iExperienceMode&EXP_MODE_TRIGGER_LEVEL )
 			{

@@ -168,7 +168,6 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	t_height Height = 0;
 	BYTE z = 0;
 	CPointMap ptTest;
-	int iQty;
 
 	int iRetElem = 4;
 
@@ -321,12 +320,12 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
 	ASSERT( pMapBlock );
 
-	iQty = pMapBlock->m_Statics.GetStaticQty();
+	int iQty = pMapBlock->m_Statics.GetStaticQty();
 	if ( iQty )  // no static items here.
 	{
 		const CUOStaticItemRec * pStatic = NULL;
 
-		for ( int i=0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
+		for ( int i = 0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
 		{
 			pStatic = pMapBlock->m_Statics.GetStatic( i );
 
@@ -553,7 +552,6 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	const CGrayMapBlock * pMapBlock = NULL;
 	const CUOStaticItemRec * pStatic = NULL;
 	const CItemBase * pItemDef = NULL;
-	int iQty = 0;
 
 	for (int x = rect.m_left; x < rect.m_right; x += UO_BLOCK_SIZE, pMapBlock = NULL )
 	{
@@ -565,9 +563,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 			if ( !pMapBlock )
 				continue;
 			
-			iQty = 0;
-			iQty = pMapBlock->m_Statics.GetStaticQty();
-
+			int iQty = pMapBlock->m_Statics.GetStaticQty();
 			if ( !iQty )
 				continue;
 
@@ -644,9 +640,9 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
 
 						int iItemQty = pMulti->GetItemCount();
-						for (int i = 0; i < iItemQty; i++)
+						for (int j = 0; j < iItemQty; j++)
 						{
-							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(i);
+							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(j);
 							ASSERT(pMultiItem);
 
 							if ( !pMultiItem->m_visible )
@@ -707,7 +703,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 		{
 			int x2=pMapBlock->GetOffsetX(pt.m_x);
 			int y2=pMapBlock->GetOffsetY(pt.m_y);
-			for ( int i=0; i<iQty; i++ )
+			for ( int i = 0; i < iQty; i++ )
 			{
 				if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 					continue;
@@ -750,9 +746,9 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 						int y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
 						int iQty = pMulti->GetItemCount();
-						for ( int i=0; i < iQty; i++ )
+						for ( int j = 0; j < iQty; j++ )
 						{
-							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(i);
+							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(j);
 							ASSERT(pMultiItem);
 
 							if ( ! pMultiItem->m_visible )

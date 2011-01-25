@@ -24,6 +24,11 @@ class CrashDump
 		static bool IsEnabled();
 		static void Enable();
 		static void Disable();
+
+	private:
+		CrashDump(void);
+		CrashDump(const CrashDump& copy);
+		CrashDump& operator=(const CrashDump& other);
 };
 
 #endif

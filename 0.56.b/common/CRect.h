@@ -108,7 +108,10 @@ public:
 struct CPointMap : public CPointBase
 {
 	// A point in the world (or in a container) (initialized)
-	CPointMap() { InitPoint(); }
+	CPointMap()
+	{
+		InitPoint();
+	}
 	CPointMap( WORD x, WORD y, signed char z = 0, unsigned char map = 0 )
 	{
 		m_x = x;
@@ -133,7 +136,10 @@ struct CPointMap : public CPointBase
 
 struct CPointSort : public CPointMap
 {
-	CPointSort() { InitPoint(); }
+	CPointSort()
+	{
+		InitPoint();
+	}
 	CPointSort( WORD x, WORD y, signed char z = 0, unsigned char map = 0 )
 	{
 		m_x = x;

@@ -32,8 +32,11 @@
 	}
 #endif
 
-bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext )
+bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext ) const
 {
+	UNREFERENCED_PARAMETER(nMaxError);
+	UNREFERENCED_PARAMETER(pnHelpContext);
+
 #ifdef _WIN32
 	// Compatible with CException and CFileException
 	if ( m_hError )
@@ -60,18 +63,19 @@ bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelp
 }
 
 CGrayError::CGrayError( const CGrayError &e ) :
-m_eSeverity( e.m_eSeverity ),
-m_hError( e.m_hError ),
-m_pszDescription( e.m_pszDescription )
+	m_eSeverity( e.m_eSeverity ),
+	m_hError( e.m_hError ),
+	m_pszDescription( e.m_pszDescription )
 {
 }
 
 CGrayError::CGrayError( LOGL_TYPE eSev, DWORD hErr, LPCTSTR pszDescription ) :
-m_eSeverity( eSev ),
-m_hError( hErr ),
-m_pszDescription( pszDescription )
+	m_eSeverity( eSev ),
+	m_hError( hErr ),
+	m_pszDescription( pszDescription )
 {
 }
+
 CGrayError::~CGrayError() 
 {
 }
@@ -80,8 +84,8 @@ CGrayError::~CGrayError()
 // --------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------
 
-CGrayAssert::CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pExp, LPCTSTR pFile, unsigned uLine) :
-CGrayError(eSeverity, 0, "Assert"), m_pExp(pExp), m_pFile(pFile), m_uLine(uLine)
+CGrayAssert::CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pExp, LPCTSTR pFile, long lLine) :
+	CGrayError(eSeverity, 0, "Assert"), m_pExp(pExp), m_pFile(pFile), m_lLine(lLine)
 {
 }
 
@@ -89,9 +93,11 @@ CGrayAssert::~CGrayAssert()
 {
 }
 
-bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext)
+bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext) const
 {
-	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %d", m_eSeverity, m_pExp, m_pFile, m_uLine);
+	UNREFERENCED_PARAMETER(nMaxError);
+	UNREFERENCED_PARAMETER(pnHelpContext);
+	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %d", m_eSeverity, m_pExp, m_pFile, m_lLine);
 	return true;
 }
 
@@ -114,7 +120,7 @@ const unsigned CGrayAssert::GetAssertLine()
 #ifdef _WIN32
 
 CGrayException::CGrayException(unsigned int uCode, DWORD dwAddress) :
-m_dwAddress(dwAddress), CGrayError(LOGL_CRIT, uCode, "Exception")
+	m_dwAddress(dwAddress), CGrayError(LOGL_CRIT, uCode, "Exception")
 {
 }
 
@@ -122,9 +128,12 @@ CGrayException::~CGrayException()
 {
 }
 
-BOOL CGrayException::GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pnHelpContext)
+bool CGrayException::GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pnHelpContext) const
 {
-	const char *zMsg;
+	UNREFERENCED_PARAMETER(nMaxError);
+	UNREFERENCED_PARAMETER(pnHelpContext);
+
+	LPCTSTR zMsg;
 	switch ( m_hError )
 	{
 		case STATUS_BREAKPOINT:				zMsg = "Breakpoint";				break;
@@ -147,9 +156,9 @@ BOOL CGrayException::GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pn
 // --------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------
 
-void Assert_CheckFail( LPCTSTR pExp, LPCTSTR pFile, unsigned uLine )
+void Assert_CheckFail( LPCTSTR pExp, LPCTSTR pFile, long lLine )
 {
-	throw CGrayAssert(LOGL_CRIT, pExp, pFile, uLine);
+	throw CGrayAssert(LOGL_CRIT, pExp, pFile, lLine);
 }
 
 #if defined(_WIN32) && !defined(_DEBUG)
@@ -262,5 +271,7 @@ void SetUnixSignals( bool bSet )
 	signal( SIGSEGV,	bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGFPE,		bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGPIPE,	bSet ? SIG_IGN : SIG_DFL );
+#else
+	UNREFERENCED_PARAMETER(bSet);
 #endif
 }

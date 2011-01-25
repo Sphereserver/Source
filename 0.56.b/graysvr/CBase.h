@@ -84,7 +84,7 @@ public:
 #define CAN_C_DCIGNOREDIST	0x8000	// when dclicking sth., ignore distance checks
 
 public:
-	CBaseBaseDef( RESOURCE_ID id ) :
+	explicit CBaseBaseDef( RESOURCE_ID id ) :
 		CResourceLink( id )
 	{
 		m_dwDispIndex		= 0;	// Assume nothing til told differently.
@@ -101,6 +101,12 @@ public:
 	virtual ~CBaseBaseDef()
 	{
 	}
+	
+private:
+	CBaseBaseDef(const CBaseBaseDef& copy);
+	CBaseBaseDef& operator=(const CBaseBaseDef& other);
+
+public:
 	LPCTSTR GetTypeName() const
 	{
 		return( m_sName );
@@ -687,8 +693,13 @@ public:
 	void CopyBasic( const CItemBase * pBase );
 	void CopyTransfer( CItemBase * pBase );
 
-	CItemBase( ITEMID_TYPE id );
+public:
+	explicit CItemBase( ITEMID_TYPE id );
 	virtual ~CItemBase();
+	
+private:
+	CItemBase(const CItemBase& copy);
+	CItemBase& operator=(const CItemBase& other);
 };
 
 class CItemBaseDupe : public CResourceDef
@@ -712,6 +723,11 @@ public:
 	virtual	~CItemBaseDupe()
 	{
 	}
+private:
+	CItemBaseDupe(const CItemBaseDupe& copy);
+	CItemBaseDupe& operator=(const CItemBaseDupe& other);
+
+public:
 	CItemBase * GetItemDef() const
 	{
 		CResourceLink * pLink = m_MasterItem;
@@ -772,11 +788,16 @@ public:
 	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
 
 public:
-	CItemBaseMulti( CItemBase* pBase );
+	explicit CItemBaseMulti( CItemBase* pBase );
 	virtual ~CItemBaseMulti()
 	{
 	}
 
+private:
+	CItemBaseMulti(const CItemBaseMulti& copy);
+	CItemBaseMulti& operator=(const CItemBaseMulti& other);
+
+public:
 	int GetMaxDist() const;
 
 	bool AddComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz );
@@ -822,7 +843,7 @@ public:
 
 	// NPC info ----------------------------------------------------
 private:
-	int m_iHireDayWage;		// if applicable. (NPC)
+	unsigned int m_iHireDayWage;		// if applicable. (NPC)
 public:
 	//SHELTER=FORESTS (P), MOUNTAINS (P)
 	//AVERSIONS=TRAPS, CIVILIZATION
@@ -839,6 +860,14 @@ private:
 	void CopyBasic( const CCharBase * pCharDef );
 
 public:
+	explicit CCharBase( CREID_TYPE id );
+	~CCharBase() {}
+
+private:
+	CCharBase(const CCharBase& copy);
+	CCharBase& operator=(const CCharBase& other);
+
+public:
 	virtual void UnLink()
 	{
 		// We are being reloaded .
@@ -847,9 +876,6 @@ public:
 		m_Desires.RemoveAll();
 		CBaseBaseDef::UnLink();
 	}
-
-	CCharBase( CREID_TYPE id );
-	~CCharBase() {}
 
 	CREID_TYPE GetID() const
 	{
@@ -861,7 +887,7 @@ public:
 	}
 	bool SetDispID( CREID_TYPE id );
 
-	int GetHireDayWage() const { return( m_iHireDayWage ); }
+	unsigned int GetHireDayWage() const { return( m_iHireDayWage ); }
 
 	static CCharBase * FindCharBase( CREID_TYPE id );
 	static bool IsValidDispID( CREID_TYPE id );

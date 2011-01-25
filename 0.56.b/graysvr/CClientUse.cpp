@@ -245,12 +245,14 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_STONE_GUILD:
 		case IT_STONE_TOWN:
 			// Guild and town stones.
+#ifndef _NEWGUILDSYSTEM
 			{
 				CItemStone * pStone = dynamic_cast<CItemStone*>(pItem);
 				if ( pStone == NULL )
 					break;
 				pStone->Use_Item( this );
 			}
+#endif
 			return true;
 
 		case IT_POTION:
@@ -718,7 +720,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	if ( iSelect == 0 )
 	{
 		// menu cancelled
-		return( Cmd_Skill_Menu_Build( rid, iSelect, NULL, 0, fShowMenu, fLimitReached ));
+		return( Cmd_Skill_Menu_Build( rid, iSelect, NULL, 0, fShowMenu, fLimitReached ) != 0);
 	}
 
 	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];
@@ -731,14 +733,14 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 
 	if ( iSelect > 0 )	// seems our resources disappeared.
 	{
-		if ( ! iShowCount )
+		if ( iShowCount <= 0 )
 		{
 			SysMessageDefault( DEFMSG_CANT_MAKE );
 		}
-		return( iShowCount ? true : false );
+		return( iShowCount > 0 ? true : false );
 	}
 
-	if ( ! iShowCount )
+	if ( iShowCount <= 0 )
 	{
 		SysMessageDefault( DEFMSG_CANT_MAKE_RES );
 		return( false );
@@ -1176,7 +1178,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		m_tmMenu.m_Item[0] = track_sel;
 
 		CWorldSearch AreaChars( m_pChar->GetTopPoint(), m_pChar->Skill_GetBase(SKILL_TRACKING)/20 + 10 );
-		while (true)
+		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
@@ -1346,6 +1348,7 @@ bool CClient::Cmd_Skill_Alchemy( CItem * pReag )
 bool CClient::Cmd_Skill_Cartography( int iLevel )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Cartography");
+	UNREFERENCED_PARAMETER(iLevel);
 	// select the map type.
 
 	ASSERT(m_pChar);

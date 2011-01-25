@@ -5,7 +5,7 @@ CacheableScriptFile::CacheableScriptFile()
 {
 	m_closed = true;
 	m_realFile = false;
-	m_currentLine = -1;
+	m_currentLine = 0;
 	m_fileContent = NULL;
 }
 
@@ -42,7 +42,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
 		nStrLen = strlen(buf);
 
-		if ( bFirstLine && nStrLen >= 3 && buf[0] == (char)0xEF && buf[1] == (char)0xBB && buf[2] == (char)0xBF )
+		if ( bFirstLine && nStrLen >= 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF )
 			bUTF = true;
 
 		std::string strLine((bUTF ? &buf[3]:buf), nStrLen - (bUTF ? 3:0));
@@ -81,7 +81,7 @@ void CacheableScriptFile::CloseBase()
 		}
 
 		m_fileContent = NULL;
-		m_currentLine = -1;
+		m_currentLine = 0;
 		m_closed = true;
 	}
 }
@@ -105,7 +105,7 @@ bool CacheableScriptFile::IsEOF() const
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
-	return (( m_currentLine == -1 ) || ( m_currentLine == m_fileContent->size() ));
+	return ( m_fileContent == NULL || m_currentLine == m_fileContent->size() );
 }
 
 TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax) 
@@ -118,10 +118,10 @@ TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax)
 	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
 	*pBuffer = NULL;
 
-	if(( m_currentLine != -1 ) && ( m_currentLine != m_fileContent->size() ))
+	if ( m_fileContent != NULL && m_currentLine < m_fileContent->size() )
 	{
 		strcpy(pBuffer, (m_fileContent->at(m_currentLine)).c_str() );
-		m_currentLine += 1;
+		m_currentLine++;
 	}
 	else 
 	{
@@ -131,7 +131,7 @@ TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax)
 	return pBuffer;
 }
 
-LONG CacheableScriptFile::Seek(LONG offset, UINT origin) 
+DWORD CacheableScriptFile::Seek(LONG offset, UINT origin) 
 {
 	if( useDefaultFile() ) 
 	{
@@ -139,7 +139,7 @@ LONG CacheableScriptFile::Seek(LONG offset, UINT origin)
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::Seek");
-	int linenum = offset;
+	size_t linenum = offset;
 
 	if( origin != SEEK_SET ) 
 	{
@@ -152,7 +152,7 @@ LONG CacheableScriptFile::Seek(LONG offset, UINT origin)
 		return linenum;
 	}
 
-	return -1;
+	return 0;
 }
 
 DWORD CacheableScriptFile::GetPosition() const 

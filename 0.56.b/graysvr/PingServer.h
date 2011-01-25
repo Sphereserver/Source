@@ -16,8 +16,13 @@ private:
 
 public:
 	PingServer(void);
-	~PingServer(void);
+	virtual ~PingServer(void);
 
+private:
+	PingServer(const PingServer& copy);
+	PingServer& operator=(const PingServer& other);
+
+public:
 	virtual void onStart();
 	virtual void tick();
 	virtual void waitForClose();

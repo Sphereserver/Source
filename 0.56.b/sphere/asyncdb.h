@@ -21,7 +21,11 @@
 	public:
 		CDataBaseAsyncHelper(void);
 		~CDataBaseAsyncHelper(void);
+	private:
+		CDataBaseAsyncHelper(const CDataBaseAsyncHelper& copy);
+		CDataBaseAsyncHelper& operator=(const CDataBaseAsyncHelper& other);
 
+	public:
 		virtual void onStart();
 		virtual void tick();
 		virtual void waitForClose();

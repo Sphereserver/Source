@@ -13,8 +13,13 @@ public:
 	static const char *m_sClassName;
 
 	CVarDefCont( LPCTSTR pszKey );
-	~CVarDefCont();
+	virtual ~CVarDefCont();
 
+private:
+	CVarDefCont(const CVarDefCont& copy);
+	CVarDefCont& operator=(const CVarDefCont& other);
+
+public:
 	LPCTSTR GetKey() const;
 	void SetKey( LPCTSTR pszKey );
 
@@ -35,6 +40,11 @@ public:
 	CVarDefContNum( LPCTSTR pszKey );
 	~CVarDefContNum();
 
+private:
+	CVarDefContNum(const CVarDefContNum& copy);
+	CVarDefContNum& operator=(const CVarDefContNum& other);
+
+public:
 	int GetValNum() const;
 	void SetValNum( int iVal );
 	LPCTSTR GetValStr() const;
@@ -54,9 +64,14 @@ public:
 	static const char *m_sClassName;
 
 	CVarDefContStr( LPCTSTR pszKey, LPCTSTR pszVal );
-	CVarDefContStr( LPCTSTR pszKey );
+	explicit CVarDefContStr( LPCTSTR pszKey );
 	~CVarDefContStr();
 
+private:
+	CVarDefContStr(const CVarDefContStr& copy);
+	CVarDefContStr& operator=(const CVarDefContStr& other);
+
+public:
 	LPCTSTR GetValStr() const;
 	void SetValStr( LPCTSTR pszVal );
 	int GetValNum() const;
@@ -87,6 +102,11 @@ private:
 			CVarDefContTest( LPCTSTR pszKey );
 			~CVarDefContTest();
 
+		private:
+			CVarDefContTest(const CVarDefContTest& copy);
+			CVarDefContTest& operator=(const CVarDefContTest& other);
+
+		public:
 			LPCTSTR GetValStr() const;
 			int GetValNum() const;
 			virtual CVarDefCont * CopySelf() const;
@@ -100,7 +120,7 @@ public:
 
 private:
 	CVarDefCont * GetAtKey( LPCTSTR at );
-	void DeleteAt( int at );
+	void DeleteAt( size_t at );
 	void DeleteAtKey( LPCTSTR at );
 	void DeleteAtIterator( DefSet::iterator it );
 
@@ -110,11 +130,17 @@ private:
 public:
 	void Copy( const CVarDefMap * pArray );
 	void Empty();
-	int GetCount() const;
+	size_t GetCount() const;
 
-	CVarDefMap & operator = ( const CVarDefMap & array );
+public:
+	CVarDefMap() { };
 	~CVarDefMap();
+	CVarDefMap & operator = ( const CVarDefMap & array );
 
+private:
+	CVarDefMap(const CVarDefMap& copy);
+
+public:
 	LPCTSTR FindValNum( int iVal ) const;
 	LPCTSTR FindValStr( LPCTSTR pVal ) const;
 
@@ -123,7 +149,7 @@ public:
 	int SetStrNew( LPCTSTR pszKey, LPCTSTR pszVal );
 	int SetStr( LPCTSTR pszKey, bool fQuoted, LPCTSTR pszVal, bool fZero = false );
 
-	CVarDefCont * GetAt( int at );
+	CVarDefCont * GetAt( size_t at );
 	CVarDefCont * GetKey( LPCTSTR pszKey ) const;
 	int GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const;
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false ) const;

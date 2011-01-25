@@ -697,13 +697,13 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		// ??? Building stats should consume food !!
 
 		difficulty = IMULDIV( iStatVal, 1000, iStatTarg );
-		int iChance = g_Cfg.m_StatAdv[i].GetChancePercent( difficulty );
+		iChance = g_Cfg.m_StatAdv[i].GetChancePercent( difficulty );
 
 		// adjust the chance by the percent of this that the skill uses.
 		if (pSkillDef->m_StatPercent)
 			iChance = ( iChance * pSkillDef->m_StatBonus[i] * pSkillDef->m_StatPercent ) / 10000;
 
-		int iRoll = Calc_GetRandVal(1000);
+		iRoll = Calc_GetRandVal(1000);
 
 #ifdef _DEBUG
 		if ( IsPriv( PRIV_DETAIL ) &&
@@ -741,7 +741,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		int iStatSumMax = iStatSumAvg + iStatSumAvg/4;
 		int iChanceForLoss = Calc_GetSCurve( iStatSumMax - iStatSum, ( iStatSumMax - iStatSumAvg ) / 4 );
-		int iRoll = Calc_GetRandVal(1000);
+		iRoll = Calc_GetRandVal(1000);
 
 #ifdef _DEBUG
 		if ( IsPriv( PRIV_DETAIL ) &&

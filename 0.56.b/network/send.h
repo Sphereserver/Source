@@ -15,7 +15,7 @@
 class PacketGeneric : public PacketSend
 {
 public:
-	PacketGeneric(const CClient* target, BYTE *data, long length);
+	PacketGeneric(const CClient* target, BYTE *data, size_t length);
 };
 
 /***************************************************************************
@@ -121,7 +121,7 @@ private:
 	CGrayUID m_item;
 
 protected:
-	PacketItemWorld(BYTE id, long size, CGrayUID uid);
+	PacketItemWorld(BYTE id, size_t size, CGrayUID uid);
 
 public:
 	PacketItemWorld(const CClient* target, CItem* item);
@@ -653,7 +653,7 @@ class PacketVendorBuyList : public PacketSend
 {
 public:
 	PacketVendorBuyList(void);
-	int fillContainer(const CItemContainer* container, int convertFactor, int maxItems = 115);
+	int fillContainer(const CItemContainer* container, int convertFactor, size_t maxItems = 115);
 };
 
 /***************************************************************************
@@ -943,7 +943,7 @@ class PacketVendorSellList : public PacketSend
 {
 public:
 	PacketVendorSellList(const CChar* vendor);
-	int searchContainer(CClient* target, const CItemContainer* container, CItemContainer* stock1, CItemContainer* stock2, int convertFactor, int maxItems = 115);
+	size_t searchContainer(CClient* target, const CItemContainer* container, CItemContainer* stock1, CItemContainer* stock2, int convertFactor, size_t maxItems = 115);
 };
 
 /***************************************************************************
@@ -1197,7 +1197,7 @@ public:
 class PacketExtended : public PacketSend
 {
 public:
-	PacketExtended(EXTDATA_TYPE type, long len = 0, Priority priority = PRI_NORMAL);
+	PacketExtended(EXTDATA_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
 };
 
 /***************************************************************************
@@ -1236,7 +1236,7 @@ public:
 class PacketParty : public PacketExtended
 {
 public:
-	PacketParty(PARTYMSG_TYPE type, long len = 0, Priority priority = PRI_NORMAL);
+	PacketParty(PARTYMSG_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
 };
 
 /***************************************************************************

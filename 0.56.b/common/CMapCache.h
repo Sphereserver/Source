@@ -20,6 +20,11 @@ public:
 	CMapCache();
 	~CMapCache();
 
+private:
+	CMapCache(const CMapCache& copy);
+	CMapCache& operator=(const CMapCache& other);
+
+public:
 	bool Init(int maxX, int maxY, int map = 0, int mapDefaultHeight = 0);
 
 	bool Get(int x, int y, TMapCachePoint &point);

@@ -110,16 +110,16 @@ extern MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText );
 
 extern int Str_RegExMatch( LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError );
 
-extern int strcpylen( TCHAR * pDst, LPCTSTR pSrc );
-extern int strcpylen( TCHAR * pDst, LPCTSTR pSrc, int imaxlen );
+extern size_t strcpylen( TCHAR * pDst, LPCTSTR pSrc );
+extern size_t strcpylen( TCHAR * pDst, LPCTSTR pSrc, size_t imaxlen );
 
 extern LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWords );
-extern int Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, int iMaxSize, LPCTSTR pszStrip = NULL );
-extern bool Str_Check( const TCHAR * pszIn );
-extern bool Str_CheckName(const TCHAR *pszIn);
+extern size_t Str_GetBare( TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxSize, LPCTSTR pszStrip = NULL );
+extern bool Str_Check( LPCTSTR pszIn );
+extern bool Str_CheckName(LPCTSTR pszIn);
 extern TCHAR * Str_MakeFiltered( TCHAR * pStr );
 extern void Str_MakeUnFiltered( TCHAR * pStrOut, LPCTSTR pStrIn, int iSizeMax );
-extern int Str_TrimEndWhitespace( TCHAR * pStr, int len );
+extern size_t Str_TrimEndWhitespace( TCHAR * pStr, size_t len );
 extern TCHAR * Str_TrimWhitespace( TCHAR * pStr );
 extern int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset = 0 );
 extern bool Str_Parse( TCHAR * pLine, TCHAR ** ppArg = NULL, LPCTSTR pSep = NULL );

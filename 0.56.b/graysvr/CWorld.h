@@ -39,6 +39,12 @@ public:
 	{
 		ASSERT( ! HasClients());
 	}
+
+private:
+	CSector(const CSector& copy);
+	CSector& operator=(const CSector& other);
+
+public:
 	void OnTick( int iPulse );
 
 	// Time
@@ -96,7 +102,7 @@ public:
 
 	// Items in the sector
 
-	int GetItemComplexity() const
+	size_t GetItemComplexity() const
 	{
 		return m_Items_Timer.GetCount() + m_Items_Inert.GetCount();
 	}
@@ -135,7 +141,7 @@ public:
 		// assume the char is active (not disconnected)
 		return( pChar->GetParent() == &m_Chars_Disconnect );
 	}
-	int GetCharComplexity() const
+	size_t GetCharComplexity() const
 	{
 		return( m_Chars_Active.GetCount());
 	}
@@ -239,8 +245,8 @@ public:
 	void FreeUID(DWORD dwIndex);
 	DWORD AllocUID( DWORD dwIndex, CObjBase * pObj );
 
-	int FixObjTry( CObjBase * pObj, int iUID = 0 );
-	int  FixObj( CObjBase * pObj, int iUID = 0 );
+	int FixObjTry( CObjBase * pObj, DWORD dwUID = 0 );
+	int FixObj( CObjBase * pObj, DWORD dwUID = 0 );
 
 	void SaveThreadClose();
 	void GarbageCollection_UIDs();
@@ -248,8 +254,13 @@ public:
 
 	void CloseAllUIDs();
 
+public:
 	CWorldThread();
-	~CWorldThread();
+	virtual ~CWorldThread();
+
+private:
+	CWorldThread(const CWorldThread& copy);
+	CWorldThread& operator=(const CWorldThread& other);
 };
 
 class CWorldClock
@@ -270,6 +281,12 @@ public:
 	{
 		Init();
 	}
+
+private:
+	CWorldClock(const CWorldClock& copy);
+	CWorldClock& operator=(const CWorldClock& other);
+
+public:
 	void Init();
 	void InitTime( long lTimeBase );
 	bool Advance();
@@ -300,6 +317,10 @@ class CTimedFunctionHandler
 	public:
 		static const char *m_sClassName;
 		CTimedFunctionHandler();
+
+	private:
+		CTimedFunctionHandler(const CTimedFunctionHandler& copy);
+		CTimedFunctionHandler& operator=(const CTimedFunctionHandler& other);
 
 	public:
 		void OnTick();
@@ -369,6 +390,12 @@ private:
 public:
 	CWorld();
 	~CWorld();
+
+private:
+	CWorld(const CWorld& copy);
+	CWorld& operator=(const CWorld& other);
+
+public:
 	void Init();
 
 	CSector *GetSector( int map, int i );	// gets sector # from one map
@@ -480,7 +507,12 @@ private:
 	bool GetNextSector();
 public:
 	static const char *m_sClassName;
-	CWorldSearch( const CPointMap & pt, int iDist = 0 );
+	explicit CWorldSearch( const CPointMap & pt, int iDist = 0 );
+private:
+	CWorldSearch(const CWorldSearch& copy);
+	CWorldSearch& operator=(const CWorldSearch& other);
+
+public:
 	void SetAllShow( bool fView ) { m_fAllShow = fView; }
 	void SetSearchSquare( bool fSquareSearch ) { m_fSearchSquare = fSquareSearch; }
 	CChar * GetChar();

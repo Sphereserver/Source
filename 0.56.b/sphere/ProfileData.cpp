@@ -164,7 +164,7 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 
 	if ( id >= PROFILE_TIME_QTY )
 	{
-		sprintf(pszTmp, "%i (avg: %i) bytes", (int) m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
+		sprintf(pszTmp, "%i (avg: %i) bytes", (int) m_PreviousTimes[id].m_Time, (int)m_AverageTimes[id].m_Time);
 	}
 	else
 	{

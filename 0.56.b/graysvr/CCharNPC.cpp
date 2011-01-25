@@ -158,6 +158,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 	m_speedMode = 0;
 	m_pflag = 0;
 	m_bKrToolbarEnabled = false;
+	m_timeLastUsed.Init();
 
 	memset(m_SkillLock, 0, sizeof(m_SkillLock));
 	memset(m_StatLock, 0, sizeof(m_StatLock));

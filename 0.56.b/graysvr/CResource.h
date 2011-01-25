@@ -183,6 +183,8 @@ public:
 	int GetRandomLinear( int iPercent ) const;
 	bool Load( TCHAR * pszDef );
 	const TCHAR * Write() const;
+
+public:
 	CValueRangeDef()
 	{
 		Init();
@@ -196,6 +198,7 @@ struct CValueCurveDef
 	// May be a list of probabilties from 0 skill to 100.0% skill.
 public:
 	CGTypedArray<int,int> m_aiValues;		// 0 to 100.0 skill levels
+
 public:
 	void Init()
 	{
@@ -207,6 +210,13 @@ public:
 	int GetChancePercent( int iSkillPercent ) const;
 	int GetRandom() const;
 	int GetRandomLinear( int iPercent ) const;
+
+public:
+	CValueCurveDef() { };
+
+private:
+	CValueCurveDef(const CValueCurveDef& copy);
+	CValueCurveDef& operator=(const CValueCurveDef& other);
 };
 
 class CCharRefArray
@@ -214,6 +224,7 @@ class CCharRefArray
 private:
 	// List of Players and NPC's involved in the quest/party/account etc..
 	CGTypedArray< CGrayUID, CGrayUID> m_uidCharArray;
+
 public:
 	static const char *m_sClassName;
 	int FindChar( const CChar * pChar ) const;
@@ -239,6 +250,13 @@ public:
 		return m_uidCharArray.IsValidIndex( i );
 	}
 	void WritePartyChars( CScript & s );
+
+public:
+	CCharRefArray() { };
+
+private:
+	CCharRefArray(const CCharRefArray& copy);
+	CCharRefArray& operator=(const CCharRefArray& other);
 };
 
 class CRegionResourceDef : public CResourceLink
@@ -258,8 +276,14 @@ public:
 	int m_iRegenerateTime;			// TICK_PER_SEC once found how long to regen this type.
 
 public:
-	CRegionResourceDef( RESOURCE_ID rid );
+	explicit CRegionResourceDef( RESOURCE_ID rid );
 	virtual ~CRegionResourceDef();
+
+private:
+	CRegionResourceDef(const CRegionResourceDef& copy);
+	CRegionResourceDef& operator=(const CRegionResourceDef& other);
+
+public:
 	bool r_LoadVal( CScript & s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc = NULL );
 	TRIGRET_TYPE OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
@@ -332,10 +356,13 @@ public:
 
 	static bool ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateLastMod );
 
-	CWebPageDef( RESOURCE_ID id );
-	virtual ~CWebPageDef()
-	{
-	}
+public:
+	explicit CWebPageDef( RESOURCE_ID id );
+	virtual ~CWebPageDef() { };
+
+private:
+	CWebPageDef(const CWebPageDef& copy);
+	CWebPageDef& operator=(const CWebPageDef& other);
 };
 
 enum SPTRIG_TYPE
@@ -405,15 +432,22 @@ public:
 	{
 		return(( m_dwFlags & wFlags ) ? true : false );
 	}
-	CSpellDef( SPELL_TYPE id );
+
+public:
+	explicit CSpellDef( SPELL_TYPE id );
 	virtual ~CSpellDef()
 	{
 	}
+
+private:
+	CSpellDef(const CSpellDef& copy);
+	CSpellDef& operator=(const CSpellDef& other);
+
+public:
 	LPCTSTR GetName() const { return( m_sName ); }
 	bool r_LoadVal( CScript & s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 
-	
 	bool GetPrimarySkill( int * iSkill = NULL, int * iQty = NULL ) const;
 };
 
@@ -428,7 +462,7 @@ private:
 	int CalcTotalWeight();
 public:
 	static const char *m_sClassName;
-	CRandGroupDef( RESOURCE_ID rid ) :
+	explicit CRandGroupDef( RESOURCE_ID rid ) :
 		CResourceLink( rid )
 	{
 		m_iTotalWeight = 0;
@@ -436,6 +470,12 @@ public:
 	virtual ~CRandGroupDef()
 	{
 	}
+
+private:
+	CRandGroupDef(const CRandGroupDef& copy);
+	CRandGroupDef& operator=(const CRandGroupDef& other);
+
+public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString &sVal, CTextConsole * pSrc = NULL );
 	int GetRandMemberIndex( CChar * pCharSrc = NULL, bool bTrigger = true ) const;
@@ -482,7 +522,7 @@ public:
 private:
 	void Init();
 public:
-	CSkillClassDef( RESOURCE_ID rid ) :
+	explicit CSkillClassDef( RESOURCE_ID rid ) :
 		CResourceLink( rid )
 	{
 		// If there was none defined in scripts.
@@ -492,6 +532,11 @@ public:
 	{
 	}
 
+private:
+	CSkillClassDef(const CSkillClassDef& copy);
+	CSkillClassDef& operator=(const CSkillClassDef& other);
+
+public:
 	LPCTSTR GetName() const { return( m_sName ); }
 
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
@@ -517,7 +562,7 @@ enum SKTRIG_TYPE
 };
 
 
-enum	SKF_TYPE
+enum SKF_TYPE
 {
 	SKF_SCRIPTED		= 0x0001,		// fully scripted, no hardcoded behaviour
 	SKF_FIGHT			= 0x0002,		// considered a fight skill, maintains fight active
@@ -559,14 +604,16 @@ public:
 	DWORD			m_dwFlags;
 	DWORD			m_dwGroup;
 	
-
-
 	// Delay before skill complete. modified by skill level of course !
 public:
-	CSkillDef( SKILL_TYPE iSkill );
-	virtual ~CSkillDef()
-	{
-	}
+	explicit CSkillDef( SKILL_TYPE iSkill );
+	virtual ~CSkillDef() { };
+
+private:
+	CSkillDef(const CSkillDef& copy);
+	CSkillDef& operator=(const CSkillDef& other);
+
+public:
 	LPCTSTR GetKey() const
 	{
 		return( m_sKey );
@@ -579,6 +626,7 @@ public:
 
 class CSkillKeySortArray : public CGObSortArray< CValStr*, LPCTSTR >
 {
+public:
 	int CompareKey( LPCTSTR pszKey, CValStr * pVal, bool fNoSpaces ) const
 	{
 		UNREFERENCED_PARAMETER(fNoSpaces);
@@ -586,6 +634,13 @@ class CSkillKeySortArray : public CGObSortArray< CValStr*, LPCTSTR >
 		ASSERT( pVal->m_pszName );
 		return( strcmpi( pszKey, pVal->m_pszName ));
 	}
+
+public:
+	CSkillKeySortArray() { };
+
+private:
+	CSkillKeySortArray(const CSkillKeySortArray& copy);
+	CSkillKeySortArray& operator=(const CSkillKeySortArray& other);
 };
 
 struct CMultiDefArray : public CGObSortArray< CGrayMulti*, MULTI_TYPE >
@@ -647,18 +702,18 @@ public:
 
 	// Account
 	int  m_iDeadSocketTime;
-	int	 m_iArriveDepartMsg;    // General switch to turn on/off arrival/depart messages.
-	int  m_iClientsMax;		// Maximum (FD_SETSIZE) open connections to server
-	int  m_iClientsMaxIP;		// Maximum (FD_SETSIZE) open connections to server per IP
-	int  m_iConnectingMax;		// max clients connecting
+	int	 m_iArriveDepartMsg;		// General switch to turn on/off arrival/depart messages.
+	unsigned int  m_iClientsMax;	// Maximum (FD_SETSIZE) open connections to server
+	int  m_iClientsMaxIP;			// Maximum (FD_SETSIZE) open connections to server per IP
+	int  m_iConnectingMax;			// max clients connecting
 	int  m_iConnectingMaxIP;		// max clients connecting
 
-	int  m_iGuestsMax;		// Allow guests who have no accounts ?
-	int  m_iClientLingerTime;	// How long logged out clients linger in seconds.
-	int  m_iMinCharDeleteTime;	// How old must a char be ? (minutes)
-	int  m_iMaxCharsPerAccount;	// Maximum characters allowed on an account.
-	bool m_fLocalIPAdmin;		// The local ip is the admin ?
-	bool m_fMd5Passwords;		// Should MD5 hashed passwords be used?
+	int  m_iGuestsMax;				// Allow guests who have no accounts ?
+	int  m_iClientLingerTime;		// How long logged out clients linger in seconds.
+	int  m_iMinCharDeleteTime;		// How old must a char be ? (minutes)
+	BYTE  m_iMaxCharsPerAccount;	// Maximum characters allowed on an account.
+	bool m_fLocalIPAdmin;			// The local ip is the admin ?
+	bool m_fMd5Passwords;			// Should MD5 hashed passwords be used?
 
 	// Magic
 	bool m_fReagentsRequired;
@@ -685,20 +740,20 @@ public:
 	bool m_fNoWeather;			// Turn off all weather.
 	bool m_fCharTags;			// Put [NPC] tags over chars.
 	bool m_fFlipDroppedItems;	// Flip dropped items.
-	bool m_fCanUndressPets;	// Can players undress their pets?
-	bool m_fMonsterFight;	// Will creatures fight amoung themselves.
-	bool m_fMonsterFear;	// will they run away if hurt ?
-	int	 m_iBankIMax;	// Maximum number of items allowed in bank.
-	int  m_iBankWMax;	// Maximum weight in WEIGHT_UNITS stones allowed in bank.
+	bool m_fCanUndressPets;		// Can players undress their pets?
+	bool m_fMonsterFight;		// Will creatures fight amoung themselves.
+	bool m_fMonsterFear;		// will they run away if hurt ?
+	int	 m_iBankIMax;			// Maximum number of items allowed in bank.
+	int  m_iBankWMax;			// Maximum weight in WEIGHT_UNITS stones allowed in bank.
 	int  m_iVendorMaxSell;		// Max things a vendor will sell in one shot.
-	int  m_iMaxCharComplexity;		// How many chars per sector.
-	int  m_iMaxItemComplexity;		// How many items per meter.
-	int  m_iMaxSectorComplexity;	// How many items per sector.
+	unsigned int  m_iMaxCharComplexity;		// How many chars per sector.
+	unsigned int  m_iMaxItemComplexity;		// How many items per meter.
+	unsigned int  m_iMaxSectorComplexity;	// How many items per sector.
 	bool m_fGenericSounds;		// Do players receive generic (not them-devoted) sounds
 	bool m_fAutoNewbieKeys;		// Are house and boat keys newbied automatically?
 	int  m_iStamRunningPenalty;		// Weight penalty for running (+N% of max carry weight)
 	int  m_iStaminaLossAtWeight;	// %Weight at which characters begin to lose stamina
-	int  m_iHitpointPercentOnRez;// How many hitpoints do they get when they are rez'd?
+	int  m_iHitpointPercentOnRez;	// How many hitpoints do they get when they are rez'd?
 	int  m_iHitsHungerLoss;		// How many % of HP will loose char on starving
 	int  m_iMaxBaseSkill;		// Maximum value for base skills at char creation
 	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
@@ -829,7 +884,7 @@ public:
 #define LEVEL_MODE_LINEAR		0
 #define	LEVEL_MODE_DOUBLE		1
 	int		m_iLevelMode;
-	int		m_iLevelNextAt;
+	unsigned int m_iLevelNextAt;
 
 	int		m_iAutoResDisp;
 	int		m_iAutoPrivFlags;
@@ -872,7 +927,7 @@ public:
 	int			m_iNetMaxPings;				// max pings before blocking an ip
 	int			m_iNetHistoryTTL;			// time to remember an ip
 	int			m_iNetMaxPacketsPerTick;	// max packets to send per tick (per queue)
-	int			m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
+	unsigned int m_iNetMaxLengthPerTick;		// max packet length to send per tick (per queue) (also max length of individual packets)
 	int			m_iNetMaxQueueSize;			// max packets to hold per queue (comment out for unlimited)
 	bool		m_fUsePacketPriorities;		// true to prioritise sending packets
 	bool		m_fUseExtraBuffer;			// true to queue packet data in an extra buffer
@@ -942,7 +997,12 @@ private:
 public:
 	CResource();
 	~CResource();
+	
+private:
+	CResource(const CResource& copy);
+	CResource& operator=(const CResource& other);
 
+public:
 	bool r_LoadVal( CScript &s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
@@ -1094,16 +1154,19 @@ class CDialogDef : public CResourceLink
 
 public:
 	static const char *m_sClassName;
-	bool		GumpSetup( int iPage, CClient * pClientSrc, CObjBase * pObj, LPCTSTR Arguments = "" );
-	int			GumpAddText( LPCTSTR pszText );		// add text to the text section, return insertion index
-	bool		r_Verb( CScript &s, CTextConsole * pSrc );
-	bool		r_LoadVal( CScript & s );
-	bool		r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
+	bool GumpSetup( int iPage, CClient * pClientSrc, CObjBase * pObj, LPCTSTR Arguments = "" );
+	int GumpAddText( LPCTSTR pszText );		// add text to the text section, return insertion index
+	bool r_Verb( CScript &s, CTextConsole * pSrc );
+	bool r_LoadVal( CScript & s );
+	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
 
-	CDialogDef( RESOURCE_ID rid );
-	virtual ~CDialogDef()
-	{
-	}
+public:
+	explicit CDialogDef( RESOURCE_ID rid );
+	virtual ~CDialogDef() { };
+
+private:
+	CDialogDef(const CDialogDef& copy);
+	CDialogDef& operator=(const CDialogDef& other);
 
 public:	
 	// temporary placeholders - valid only during dialog setup
@@ -1124,25 +1187,28 @@ public:
 
 
 
-
 class CItemTypeDef : public CResourceLink
 {
 public:
 	static const char *m_sClassName;
-	CItemTypeDef( RESOURCE_ID rid ) : CResourceLink( rid )
+	explicit CItemTypeDef( RESOURCE_ID rid ) : CResourceLink( rid )
 	{	
 	}
 
-	bool		r_LoadVal( CScript & s );
+private:
+	CItemTypeDef(const CItemTypeDef& copy);
+	CItemTypeDef& operator=(const CItemTypeDef& other);
 
-	int			GetItemType();
+public:
+	bool r_LoadVal( CScript & s );
+	int GetItemType();
 };
 
-#define IsSetEF(ef)		(g_Cfg.m_iExperimental & ef)
-#define IsSetOF(of)		(g_Cfg.m_iOptionFlags & of)
-#define IsSetSpecific	((g_Cfg.m_iExperimental & EF_Specific) && (g_Cfg.m_iOptionFlags & OF_Specific))
 
-#define IsSetCombatFlags(of)		(g_Cfg.m_iCombatFlags & of)
-#define IsSetMagicFlags(of)		(g_Cfg.m_iMagicFlags & of)
+#define IsSetEF(ef)				((g_Cfg.m_iExperimental & ef) != 0)
+#define IsSetOF(of)				((g_Cfg.m_iOptionFlags & of) != 0)
+#define IsSetSpecific			((g_Cfg.m_iExperimental & EF_Specific) != 0 && (g_Cfg.m_iOptionFlags & OF_Specific) != 0)
+#define IsSetCombatFlags(of)	((g_Cfg.m_iCombatFlags & of) != 0)
+#define IsSetMagicFlags(of)		((g_Cfg.m_iMagicFlags & of) != 0)
 
 #endif	// _INC_CRESOURCE_H

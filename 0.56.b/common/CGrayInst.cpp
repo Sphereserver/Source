@@ -305,7 +305,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 	g_MapList.Init();
 
 	char *z = Str_GetTemp(), *z1 = Str_GetTemp();
-	for ( int j = 0; j < 7; j++ )
+	for ( unsigned char j = 0; j < 7; j++ )
 	{
 		bool bSup = false;
 
@@ -315,7 +315,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		if ( j == 5 ) // ML
 			bSup = ( g_MapList.GetX(0) == 7168 );
 		else if ( j > 5 ) // SA+
-			bSup = ( g_MapList.m_maps[j-1] );
+			bSup = ( g_MapList.m_maps[j - 1] );
 		else
 			bSup = ( g_MapList.m_maps[j] );
 

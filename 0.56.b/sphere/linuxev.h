@@ -36,8 +36,13 @@
 	
 	public:
 		LinuxEv(void);
-		~LinuxEv(void);
+		virtual ~LinuxEv(void);
+
+	private:
+		LinuxEv(const LinuxEv& copy);
+		LinuxEv& operator=(const LinuxEv& other);
 	
+	public:
 		virtual void onStart();
 		virtual void tick();
 		virtual void waitForClose();

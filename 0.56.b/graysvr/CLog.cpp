@@ -221,7 +221,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 
 CGTime CLog::sm_prevCatchTick;
 
-void _cdecl CLog::CatchEvent( CGrayError * pErr, LPCTSTR pszCatchContext, ... )
+void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ... )
 {
 	CGTime timeCurrent = CGTime::GetCurrentTime();
 	if ( sm_prevCatchTick.GetTime() == timeCurrent.GetTime() )	// prevent message floods.
@@ -232,10 +232,10 @@ void _cdecl CLog::CatchEvent( CGrayError * pErr, LPCTSTR pszCatchContext, ... )
 		TCHAR szMsg[512];
 		LOGL_TYPE eSeverity;
 		int iLen = 0;
-		if ( pErr )
+		if ( pErr != NULL )
 		{
 			eSeverity = pErr->m_eSeverity;
-			CGrayAssert * pAssertErr = dynamic_cast<CGrayAssert*>(pErr);
+			const CGrayAssert * pAssertErr = dynamic_cast<const CGrayAssert*>(pErr);
 			if ( pAssertErr )
 				pAssertErr->GetErrorMessage(szMsg, sizeof(szMsg), 0);
 			else

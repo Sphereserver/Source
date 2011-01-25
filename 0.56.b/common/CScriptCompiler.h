@@ -97,9 +97,15 @@ public:
 	};
 	// next goes the llen + rlen bytes,
 
+public:
 	CScriptCompiler();
 	~CScriptCompiler();
 
+private:
+	CScriptCompiler(const CScriptCompiler& copy);
+	CScriptCompiler& operator=(const CScriptCompiler& other);
+
+public:
 	void Init();								// initializes context (list of files)
 
 	bool CompileAll();							// compiles all files

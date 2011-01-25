@@ -604,7 +604,7 @@ bool CItemBase::GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * pData ) // static
 		CGrayItemInfo info( id );
 		*pData = *( static_cast <CUOItemTypeRec2 *>( & info ));
 	}
-	catch ( CGrayError &e )
+	catch ( const CGrayError& e )
 	{
 		g_Log.CatchEvent( &e, "GetItemData" );
 	}
@@ -1443,7 +1443,7 @@ CItemBase * CItemBaseMulti::MakeMultiRegion( CItemBase * pBase, CScript & s ) //
 	CItemBaseMulti * pMultiBase = dynamic_cast <CItemBaseMulti *>(pBase);
 	if ( pMultiBase == NULL )
 	{
-		if ( pBase->GetRefInstances())
+		if ( pBase->GetRefInstances() > 0 )
 		{
 			DEBUG_ERR(( "MULTIREGION defined for IN USE NON-MULTI type 0%x\n", pBase->GetID()));
 			return pBase;

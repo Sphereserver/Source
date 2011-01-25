@@ -410,23 +410,23 @@ LPCTSTR GetTimeMinDesc( int minutes )
 	return pTime;
 }
 
-int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
+size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 {
 	// Find the pszKeyWord in the pTextSearch string.
 	// Make sure we look for starts of words.
 
-	int j=0;
-	for ( int i=0; 1; i++ )
+	size_t j = 0;
+	for ( size_t i = 0; ; i++ )
 	{
 		if ( pszKeyWord[j] == '\0' )
 		{
-			if ( pTextSearch[i]=='\0' || ISWHITESPACE(pTextSearch[i]))
+			if ( pTextSearch[i]== '\0' || ISWHITESPACE(pTextSearch[i]))
 				return( i );
 			return( 0 );
 		}
 		if ( pTextSearch[i] == '\0' )
 			return( 0 );
-		if ( !j && i )
+		if ( j == 0 && i > 0 )
 		{
 			if ( IsAlpha( pTextSearch[i-1] ))	// not start of word ?
 				continue;
@@ -434,7 +434,7 @@ int FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 		if ( toupper( pTextSearch[i] ) == toupper( pszKeyWord[j] ))
 			j++;
 		else
-			j=0;
+			j = 0;
 	}
 }
 
@@ -494,7 +494,8 @@ int Sphere_InitServer( int argc, char *argv[] )
 	ASSERT(sizeof(DWORD) == 4 );
 	ASSERT(sizeof(NWORD) == 2 );
 	ASSERT(sizeof(NDWORD) == 4 );
-	ASSERT(sizeof(CUOItemTypeRec) == 37 );	// byte pack working ?
+	ASSERT(sizeof(CUOItemTypeRec) == 37 ); // byte pack working ?
+	ASSERT((std::numeric_limits<size_t>::min)() >= 0); // ensure unsigned
 
 #ifdef _WIN32
 	if ( !QueryPerformanceFrequency((LARGE_INTEGER *)&llTimeProfileFrequency))
@@ -747,18 +748,18 @@ void dword_q_sort(DWORD numbers[], DWORD left, DWORD right)
 
 void defragSphere(char *path)
 {
-	CFileText	inf;
-	CGFile		ouf;
-	char	z[256], z1[256], buf[1024];
-	int		i;
-	DWORD	uid(0);
-	char	*p, *p1;
-	DWORD	dBytesRead;
-	DWORD	dTotalMb;
-	DWORD	mb10(10*1024*1024);
-	DWORD	mb5(5*1024*1024);
-	bool	bSpecial;
-	DWORD	dTotalUIDs;
+	CFileText inf;
+	CGFile ouf;
+	char z[256], z1[256], buf[1024];
+	size_t i;
+	DWORD uid(0);
+	char *p(NULL), *p1(NULL);
+	DWORD dBytesRead;
+	DWORD dTotalMb;
+	DWORD mb10(10*1024*1024);
+	DWORD mb5(5*1024*1024);
+	bool bSpecial;
+	DWORD dTotalUIDs;
 
 	char	c,c1,c2;
 	DWORD	d;
@@ -802,7 +803,8 @@ void defragSphere(char *path)
 			{
 				p = buf + 7;
 				p1 = p;
-				while ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' )) p1++;
+				while ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' ))
+					p1++;
 				*p1 = 0;
 
 				//	prepare new uid
@@ -855,12 +857,12 @@ void defragSphere(char *path)
 				g_Log.Event(LOGM_INIT, "Total processed %u Mb\n", dTotalMb);
 			}
 			p = buf;
-			if ( 0 ) ;
+
 			//	Note 28-Jun-2004
 			//	mounts seems having ACTARG1 > 0x30000000. The actual UID is ACTARG1-0x30000000. The
 			//	new also should be new+0x30000000. need investigation if this can help making mounts
 			//	not to disappear after the defrag
-			else if (( buf[0] == 'A' ) && ( strstr(buf, "ACTARG1=0") == buf ))		// ACTARG1=
+			if (( buf[0] == 'A' ) && ( strstr(buf, "ACTARG1=0") == buf ))		// ACTARG1=
 				p += 8;
 			else if (( buf[0] == 'C' ) && ( strstr(buf, "CONT=0") == buf ))			// CONT=
 				p += 5;
@@ -938,7 +940,7 @@ void defragSphere(char *path)
 				{
 					DWORD	dStep = dTotalUIDs/2;
 					d = dStep;
-					while ( true )
+					for (;;)
 					{
 						dStep /= 2;
 

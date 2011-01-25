@@ -21,19 +21,22 @@ struct CScriptLineContext
 public:
 	long m_lOffset;
 	int m_iLineNum;		// for debug purposes if there is an error.
+
 public:
 	void Init()
 	{
 		m_lOffset = -1;
 		m_iLineNum = -1;
 	}
-	CScriptLineContext()
-	{
-		Init();
-	}
 	bool IsValid() const
 	{
 		return( m_lOffset >= 0 );
+	}
+
+public:
+	CScriptLineContext()
+	{
+		Init();
 	}
 };
 
@@ -90,16 +93,24 @@ public:
 	long GetArgRange();
 	DWORD GetArgFlag( DWORD dwStart, DWORD dwMask );
 
-	CScriptKey() :
-		m_pszKey( NULL ),
-		m_pszArg( NULL )
+public:
+	CScriptKey() : m_pszKey(NULL), m_pszArg(NULL)
 	{
 	}
+
 	CScriptKey( TCHAR * pszKey, TCHAR * pszArg ) :
 		m_pszKey( pszKey ),
 		m_pszArg( pszArg )
 	{
 	}
+
+	virtual ~CScriptKey()
+	{
+	}
+
+private:
+	CScriptKey(const CScriptKey& copy);
+	CScriptKey& operator=(const CScriptKey& other);
 };
 
 class CScriptKeyAlloc : public CScriptKey
@@ -109,10 +120,10 @@ protected:
 	CMemLenBlock m_Mem;	// the buffer to hold data read.
 
 protected:
-	TCHAR * GetKeyBufferRaw( int iSize );
+	TCHAR * GetKeyBufferRaw( size_t iSize );
 
 	bool ParseKey( LPCTSTR pszKey, LPCTSTR pszArgs );
-	int ParseKeyEnd();
+	size_t ParseKeyEnd();
 
 public:
 	static const char *m_sClassName;
@@ -125,12 +136,13 @@ public:
 	bool ParseKey( LPCTSTR pszKey );
 	void ParseKeyLate();
 
-	CScriptKeyAlloc()
-	{
-	}
-	virtual ~CScriptKeyAlloc()
-	{
-	}
+public:
+	CScriptKeyAlloc() { }
+	virtual ~CScriptKeyAlloc() { }
+
+private:
+	CScriptKeyAlloc(const CScriptKeyAlloc& copy);
+	CScriptKeyAlloc& operator=(const CScriptKeyAlloc& other);
 };
 
 #ifdef _NOSCRIPTCACHE
@@ -151,7 +163,7 @@ public:
 protected:
 	void InitBase();
 
-	virtual LONG Seek( long offset = 0, UINT origin = SEEK_SET );
+	virtual DWORD Seek( long offset = 0, UINT origin = SEEK_SET );
 
 public:
 	// text only functions:
@@ -169,7 +181,7 @@ public:
 	bool SeekContext( CScriptLineContext LineContext )
 	{
 		m_iLineNum = LineContext.m_iLineNum;
-		return( Seek( LineContext.m_lOffset, SEEK_SET ) == LineContext.m_lOffset );
+		return( Seek( LineContext.m_lOffset, SEEK_SET ) == (DWORD)LineContext.m_lOffset );
 	}
 	CScriptLineContext GetContext() const
 	{

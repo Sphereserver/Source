@@ -170,7 +170,7 @@ void String::destroy()
 {
 	if( m_realLength && ( m_buf != NULL ))
 	{
-		delete []m_buf;
+		delete[] m_buf;
 		m_buf = NULL;
 		m_realLength = 0;
 		m_length = 0;

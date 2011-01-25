@@ -866,7 +866,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 			return theApp.m_wndMain.OnUserTrayNotify( wParam, lParam );
 		}
 	}
-	catch (CGrayError &e)
+	catch (const CGrayError& e)
 	{
 		g_Log.CatchEvent(&e, "Window");
 	}

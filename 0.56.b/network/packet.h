@@ -21,33 +21,36 @@ class SimplePacketTransaction;
 class Packet
 {
 protected:
-	BYTE* m_buffer;		// raw data
-	long m_bufferSize;	// size of raw data
+	BYTE* m_buffer;				// raw data
+	size_t m_bufferSize;		// size of raw data
 
-	long m_length;		// length of packet
-	long m_position;	// current position in packet
-
-	long m_expectedLength; // expected length of this packet
+	size_t m_length;			// length of packet
+	size_t m_position;			// current position in packet
+	size_t m_expectedLength;	// expected length of this packet (0 = dynamic)
 
 public:
-	Packet(long size = -1);
+	explicit Packet(size_t size = 0);
 	Packet(const Packet& other);
-	Packet(const BYTE* data, long size);
+	Packet(const BYTE* data, size_t size);
 	virtual ~Packet(void);
 
+private:
+	Packet& operator=(const Packet& other);
+
+public:
 	bool isValid(void) const;
-	long getLength(void) const;
-	long getPosition(void) const;
+	size_t getLength(void) const;
+	size_t getPosition(void) const;
 	BYTE* getData(void) const;
 	void dump(AbstractString& output) const;
 
-	void expand(long size = 0); // expand packet (resize whilst maintaining position)
-	void resize(long newsize); // resize packet
-	void seek(long pos = 0); // seek to position
+	void expand(size_t size = 0); // expand packet (resize whilst maintaining position)
+	void resize(size_t newsize); // resize packet
+	void seek(size_t pos = 0); // seek to position
 	void skip(long count = 1); // skip count bytes
 
-	BYTE &operator[](long index);
-	const BYTE &operator[](long index) const;
+	BYTE &operator[](size_t index);
+	const BYTE &operator[](size_t index) const;
 
 	// write
 	void writeBool(const bool value); // write boolean (1 byte)
@@ -60,19 +63,19 @@ public:
 	void writeInt64(const DWORD hi, const DWORD lo); // write 64-bit integer (8 bytes)
 	void writeStringASCII(const char* value, bool terminate = true); // write ascii string until null terminator found
 	void writeStringASCII(const WCHAR* value, bool terminate = true); // write ascii string until null terminator found
-	void writeStringFixedASCII(const char* value, long size, bool terminate = false); // write fixed-length ascii string
-	void writeStringFixedASCII(const WCHAR* value, long size, bool terminate = false); // write fixed-length ascii string
+	void writeStringFixedASCII(const char* value, size_t size, bool terminate = false); // write fixed-length ascii string
+	void writeStringFixedASCII(const WCHAR* value, size_t size, bool terminate = false); // write fixed-length ascii string
 	void writeStringUNICODE(const char* value, bool terminate = true); // write unicode string until null terminator found
 	void writeStringUNICODE(const WCHAR* value, bool terminate = true); // write unicode string until null terminator found
-	void writeStringFixedUNICODE(const char* value, long size, bool terminate = false); // write fixed-length unicode string
-	void writeStringFixedUNICODE(const WCHAR* value, long size, bool terminate = false); // write fixed-length unicode string
+	void writeStringFixedUNICODE(const char* value, size_t size, bool terminate = false); // write fixed-length unicode string
+	void writeStringFixedUNICODE(const WCHAR* value, size_t size, bool terminate = false); // write fixed-length unicode string
 	void writeStringNUNICODE(const char* value, bool terminate = true); // write unicode string until null terminator found, network order
 	void writeStringNUNICODE(const WCHAR* value, bool terminate = true); // write unicode string until null terminator found, network order
-	void writeStringFixedNUNICODE(const char* value, long size, bool terminate = false); // write fixed-length unicode string, network order
-	void writeStringFixedNUNICODE(const WCHAR* value, long size, bool terminate = false); // write fixed-length unicode string, network order
+	void writeStringFixedNUNICODE(const char* value, size_t size, bool terminate = false); // write fixed-length unicode string, network order
+	void writeStringFixedNUNICODE(const WCHAR* value, size_t size, bool terminate = false); // write fixed-length unicode string, network order
 	void writeData(const BYTE* buffer, long size); // write block of data
 	void fill(void); // zeroes remaining buffer
-	long sync(void);
+	size_t sync(void);
 	void trim(void); // trim packet length down to current position
 
 	// read
@@ -83,21 +86,21 @@ public:
 	BYTE readByte(void); // read 8-bit integer (1 byte)
 	WORD readInt16(void); // read 16-bit integer (2 bytes)
 	DWORD readInt32(void); // read 32-bit integer (4 bytes)
-	void readStringASCII(char* buffer, long length, bool includeNull = true); // read fixed-length ascii string
-	void readStringASCII(WCHAR* buffer, long length, bool includeNull = true); // read fixed-length ascii string
-	void readStringUNICODE(char* buffer, long bufferSize, long length, bool includeNull = true); // read fixed length unicode string
-	void readStringUNICODE(WCHAR* buffer, long length, bool includeNull = true); // read fixed length unicode string
-	void readStringNUNICODE(char* buffer, long bufferSize, long length, bool includeNull = true); // read fixed length unicode string, network order
-	void readStringNUNICODE(WCHAR* buffer, long length, bool includeNull = true); // read fixed length unicode string, network order
-	long readStringNullASCII(char* buffer, long maxlength); // read ascii string until null terminator found
-	long readStringNullASCII(WCHAR* buffer, long maxlength); // read ascii string until null terminator found
-	long readStringNullUNICODE(char* buffer, long bufferSize, long maxlength); // read unicode-string until null terminator found
-	long readStringNullUNICODE(WCHAR* buffer, long maxlength); // read unicode-string until null terminator found
-	long readStringNullNUNICODE(char* buffer, long bufferSize, long maxlength); // read unicode-string until null terminator found, network order
-	long readStringNullNUNICODE(WCHAR* buffer, long maxlength); // read unicode-string until null terminator found, network order
+	void readStringASCII(char* buffer, size_t length, bool includeNull = true); // read fixed-length ascii string
+	void readStringASCII(WCHAR* buffer, size_t length, bool includeNull = true); // read fixed-length ascii string
+	void readStringUNICODE(char* buffer, size_t bufferSize, size_t length, bool includeNull = true); // read fixed length unicode string
+	void readStringUNICODE(WCHAR* buffer, size_t length, bool includeNull = true); // read fixed length unicode string
+	void readStringNUNICODE(char* buffer, size_t bufferSize, size_t length, bool includeNull = true); // read fixed length unicode string, network order
+	void readStringNUNICODE(WCHAR* buffer, size_t length, bool includeNull = true); // read fixed length unicode string, network order
+	size_t readStringNullASCII(char* buffer, size_t maxlength); // read ascii string until null terminator found
+	size_t readStringNullASCII(WCHAR* buffer, size_t maxlength); // read ascii string until null terminator found
+	size_t readStringNullUNICODE(char* buffer, size_t bufferSize, size_t maxlength); // read unicode-string until null terminator found
+	size_t readStringNullUNICODE(WCHAR* buffer, size_t maxlength); // read unicode-string until null terminator found
+	size_t readStringNullNUNICODE(char* buffer, size_t bufferSize, size_t maxlength); // read unicode-string until null terminator found, network order
+	size_t readStringNullNUNICODE(WCHAR* buffer, size_t maxlength); // read unicode-string until null terminator found, network order
 
-	long checkLength(NetState* client, Packet* packet);
-	virtual long getExpectedLength(NetState* client, Packet* packet);
+	size_t checkLength(NetState* client, Packet* packet);
+	virtual size_t getExpectedLength(NetState* client, Packet* packet);
 	virtual bool onReceive(NetState* client);
 
 protected:
@@ -129,12 +132,17 @@ public:
 protected:
 	long m_priority; // packet priority
 	NetState* m_target; // selected network target for this packet
-	long m_lengthPosition; // position of length-byte
+	size_t m_lengthPosition; // position of length-byte
 
 public:
-	PacketSend(BYTE id, long len = 0, Priority priority = PRI_NORMAL);
+	explicit PacketSend(BYTE id, size_t len = 0, Priority priority = PRI_NORMAL);
 	PacketSend(const PacketSend* other);
+	virtual ~PacketSend() { };
 
+private:
+	PacketSend& operator=(const PacketSend& other);
+
+public:
 	void initLength(void); // write empty length and ensure that it is remembered
 
 	void target(const CClient* client); // sets person to send packet to
@@ -170,6 +178,10 @@ class PacketTransaction
 protected:
 	PacketTransaction(void) { };
 
+private:
+	PacketTransaction(const PacketTransaction& copy);
+	PacketTransaction& operator=(const PacketTransaction& other);
+
 public:
 	virtual ~PacketTransaction(void) { };
 
@@ -196,9 +208,14 @@ private:
 	PacketSend* m_packet;
 
 public:
-	SimplePacketTransaction(PacketSend* packet) : m_packet(packet) { };
+	explicit SimplePacketTransaction(PacketSend* packet) : m_packet(packet) { };
 	~SimplePacketTransaction(void);
 
+private:
+	SimplePacketTransaction(const SimplePacketTransaction& copy);
+	SimplePacketTransaction& operator=(const SimplePacketTransaction& other);
+
+public:
 	NetState* getTarget(void) const { return m_packet->getTarget(); }
 	long getPriority(void) const { return m_packet->getPriority(); }
 	void setPriority(long priority) { m_packet->m_priority = priority; }
@@ -227,6 +244,11 @@ public:
 	ExtendedPacketTransaction(NetState* target, long priority) : m_target(target), m_priority(priority) { };
 	~ExtendedPacketTransaction(void);
 
+private:
+	ExtendedPacketTransaction(const ExtendedPacketTransaction& copy);
+	ExtendedPacketTransaction& operator=(const ExtendedPacketTransaction& other);
+
+public:
 	NetState* getTarget(void) const	{ return m_target; }
 	long getPriority(void) const { return m_priority; }
 	void setPriority(long priority) { m_priority = priority; }
@@ -254,6 +276,10 @@ private:
 public:
 	OpenPacketTransaction(const CClient* client, long priority);
 	~OpenPacketTransaction(void);
+
+private:
+	OpenPacketTransaction(const OpenPacketTransaction& copy);
+	OpenPacketTransaction& operator=(const OpenPacketTransaction& other);
 };
 
 

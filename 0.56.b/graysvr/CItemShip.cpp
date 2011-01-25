@@ -254,7 +254,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	}
 
 	int i = 0;
-	for ( ; true; ++i )
+	for ( ; ; ++i )
 	{
 		if ( i >= COUNTOF(sm_Ship_FaceDir))
 			return( false );
@@ -920,7 +920,7 @@ dodirmovechange:
 			}
 			else
 			{
-				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_DENY );;
+				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_DENY );
 			}
 			break;
 		}
@@ -969,9 +969,9 @@ void CItemShip::r_Write( CScript & s )
 	CItemMulti::r_Write(s);
 	if ( m_uidHold )
 		s.WriteKeyHex("HATCH", m_uidHold );
-	if ( GetShipPlankCount() )
+	if ( GetShipPlankCount() > 0 )
 	{
-		for ( int i = 0; i < m_uidPlanks.size(); i++ )
+		for ( size_t i = 0; i < m_uidPlanks.size(); i++ )
 			s.WriteKeyHex("PLANK", m_uidPlanks.at(i));
 	}
 }
@@ -1117,7 +1117,7 @@ int CItemShip::FixWeirdness()
 	GetShipHold();
 
 	// CItemShip::GetShipPlank() updates/corrects the list of planks
-	GetShipPlank(-1);
+	GetShipPlank(0);
 	return iResultCode;
 }
 
@@ -1144,16 +1144,16 @@ CItemContainer * CItemShip::GetShipHold()
 	return pItemHold;
 }
 
-int CItemShip::GetShipPlankCount()
+size_t CItemShip::GetShipPlankCount()
 {
 	ADDTOCALLSTACK("CItemShip::GetShipPlankCount");
 	// CItemShip::GetShipPlank() updates the list of planks, so
 	// calling this first will get an accurate result
-	GetShipPlank(-1);
+	GetShipPlank(0);
 	return m_uidPlanks.size();
 }
 
-CItem * CItemShip::GetShipPlank(int index)
+CItem * CItemShip::GetShipPlank(size_t index)
 {
 	ADDTOCALLSTACK("CItemShip::GetShipPlank");
 	// Check the current list of planks is valid
@@ -1173,7 +1173,7 @@ CItem * CItemShip::GetShipPlank(int index)
 	if ( m_uidPlanks.empty() )
 	{
 		CWorldSearch Area( GetTopPoint(), Multi_GetMaxDist() );
-		while (true)
+		for (;;)
 		{
 			CItem * pItem = Area.GetItem();
 			if ( pItem == NULL )
@@ -1190,7 +1190,7 @@ CItem * CItemShip::GetShipPlank(int index)
 		}
 	}
 
-	if (( index < 0 ) || ( index >= m_uidPlanks.size() ))
+	if (index >= m_uidPlanks.size())
 		return NULL;
 
 	CGrayUID uid = m_uidPlanks.at(index);

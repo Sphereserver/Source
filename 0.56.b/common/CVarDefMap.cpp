@@ -257,14 +257,15 @@ LPCTSTR CVarDefMap::FindValNum( int iVal ) const
 	return( NULL );
 }
 
-CVarDefCont * CVarDefMap::GetAt( int at )
+CVarDefCont * CVarDefMap::GetAt( size_t at )
 {
 	ADDTOCALLSTACK("CVarDefMap::GetAt");
 	if ( at > m_Container.size() )
 		return( NULL );
 
 	DefSet::iterator i = m_Container.begin();
-	while ( at-- ) { ++i; }
+	while ( at-- )
+		++i;
 
 	if ( i != m_Container.end() )
 		return( (*i) );
@@ -285,14 +286,15 @@ CVarDefCont * CVarDefMap::GetAtKey( LPCTSTR at )
 		return( NULL );
 }
 
-void CVarDefMap::DeleteAt( int at )
+void CVarDefMap::DeleteAt( size_t at )
 {
 	ADDTOCALLSTACK("CVarDefMap::DeleteAt");
 	if ( at > m_Container.size() )
 		return;
 
 	DefSet::iterator i = m_Container.begin();
-	while ( at-- ) { ++i; }
+	while ( at-- ) 
+		++i;
 
 	DeleteAtIterator(i);
 }
@@ -393,7 +395,7 @@ void CVarDefMap::Copy( const CVarDefMap * pArray )
 	}
 }
 
-int CVarDefMap::GetCount() const
+size_t CVarDefMap::GetCount() const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetCount");
 	return m_Container.size();

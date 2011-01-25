@@ -39,10 +39,12 @@ struct CSocketAddressIP : public in_addr
 	// INADDR_BROADCAST        (u_long)0xffffffff
 	// INADDR_NONE             0xffffffff
 
+public:
 	CSocketAddressIP();
-	CSocketAddressIP( DWORD dwIP );
-	CSocketAddressIP( const char *ip );
+	explicit CSocketAddressIP( DWORD dwIP );
+	explicit CSocketAddressIP( const char *ip );
 
+public:
 	DWORD GetAddrIP() const;
 	void SetAddrIP( DWORD dwIP );
 	LPCTSTR GetAddrStr() const;
@@ -56,7 +58,7 @@ struct CSocketAddressIP : public in_addr
 	bool SetHostStruct( const struct hostent * pHost );
 
 	bool SetHostStr( LPCTSTR pszHostName );
-	bool operator==( CSocketAddressIP ip ) const;
+	bool operator==( const CSocketAddressIP & ip ) const;
 };
 
 struct CSocketAddress : public CSocketAddressIP
@@ -71,7 +73,7 @@ public:
 	CSocketAddress( in_addr dwIP, WORD uPort );
 	CSocketAddress( CSocketAddressIP ip, WORD uPort );
 	CSocketAddress( DWORD dwIP, WORD uPort );
-	CSocketAddress( const sockaddr_in & SockAddrIn );
+	explicit CSocketAddress( const sockaddr_in & SockAddrIn );
 	
 	bool operator==( const CSocketAddress & SockAddr ) const;
 	CSocketAddress & operator = ( const struct sockaddr_in & SockAddrIn );
@@ -100,9 +102,14 @@ public:
 	static const char *m_sClassName;
 
 	CGSocket();
-	CGSocket( SOCKET socket );
+	explicit CGSocket( SOCKET socket );
 	~CGSocket();
 
+private:
+	CGSocket(const CGSocket& copy);
+	CGSocket& operator=(const CGSocket& other);
+
+public:
 	static int GetLastError(bool bUseErrno = false);
 	bool IsOpen() const;
 

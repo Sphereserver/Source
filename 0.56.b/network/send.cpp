@@ -11,7 +11,7 @@
  *
  *
  ***************************************************************************/
-PacketGeneric::PacketGeneric(const CClient* target, BYTE *data, long length) : PacketSend(0, length, PRI_NORMAL)
+PacketGeneric::PacketGeneric(const CClient* target, BYTE *data, size_t length) : PacketSend(0, length, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGeneric::PacketGeneric");
 
@@ -34,12 +34,12 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(
 
 	seek();
 
-	for (long l = 0; message[l] != '\0'; l++)
+	for (size_t i = 0; message[i] != '\0'; i++)
 	{
-		if (message[l] == '\n')
+		if (message[i] == '\n')
 			writeCharASCII('\r');
 
-		writeCharASCII(message[l]);
+		writeCharASCII(message[i]);
 	}
 
 	trim();
@@ -286,7 +286,7 @@ bool PacketHealthBarUpdate::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketItemWorld::PacketItemWorld(BYTE id, long size, CGrayUID uid) : PacketSend(id, size, PRI_NORMAL), m_item(uid)
+PacketItemWorld::PacketItemWorld(BYTE id, size_t size, CGrayUID uid) : PacketSend(id, size, PRI_NORMAL), m_item(uid)
 {
 }
 
@@ -1082,7 +1082,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	}
 
 	// write item count
-	long l = getPosition();
+	size_t l = getPosition();
 	seek(3);
 	writeInt16(m_count);
 	seek(l);
@@ -1119,7 +1119,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	}
 
 	// write item count
-	long l = getPosition();
+	size_t l = getPosition();
 	seek(3);
 	writeInt16(m_count);
 	seek(l);
@@ -1161,7 +1161,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 	}
 
 	// write item count
-	long l = getPosition();
+	size_t l = getPosition();
 	seek(3);
 	writeInt16(m_count);
 	seek(l);
@@ -1379,8 +1379,8 @@ void PacketBookPageContent::addPage(const CItem* book, int page)
 	writeInt16(page);
 
 	// skip line count for now
-	long linesPos = getPosition();
-	int lines = 0;
+	size_t linesPos = getPosition();
+	size_t lines = 0;
 	writeInt16(0);
 
 	if (book->IsBookSystem())
@@ -1425,7 +1425,7 @@ void PacketBookPageContent::addPage(const CItem* book, int page)
 		}
 	}
 
-	long endPos = getPosition();
+	size_t endPos = getPosition();
 
 	// seek back to write line count
 	seek(linesPos);
@@ -1824,7 +1824,7 @@ PacketVendorBuyList::PacketVendorBuyList(void) : PacketSend(XCMD_VendOpenBuy, 8,
 {
 }
 
-int PacketVendorBuyList::fillContainer(const CItemContainer* container, int convertFactor, int maxItems)
+int PacketVendorBuyList::fillContainer(const CItemContainer* container, int convertFactor, size_t maxItems)
 {
 	ADDTOCALLSTACK("PacketVendorBuyList::fillContainer");
 
@@ -1833,9 +1833,9 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 
 	writeInt32(container->GetUID());
 
-	long countpos = getPosition();
+	size_t countpos = getPosition();
 	skip(1);
-	int count(0);
+	size_t count(0);
 
 	for (CItem* item = container->GetContentHead(); item != NULL && count < maxItems; item = item->GetNext())
 	{
@@ -1862,8 +1862,9 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 		writeInt32(price);
 
 		LPCTSTR name = venditem->GetName();
-		int len = strlen(name) + 1;
-		if (len > 255) len = 255;
+		size_t len = strlen(name) + 1;
+		if (len > 255)
+			len = 255;
 
 		writeByte(len);
 		writeStringFixedASCII(name, len);
@@ -1872,7 +1873,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 	}
 
 	// seek back to write count
-	long endpos = getPosition();
+	size_t endpos = getPosition();
 	seek(countpos);
 	writeByte(count);
 	seek(endpos);
@@ -2070,7 +2071,7 @@ PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_
 
 	initLength();
 
-	long countPos = getPosition();
+	size_t countPos = getPosition();
 	skip(1);
 
 	writeByte(0);
@@ -2129,7 +2130,7 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CCha
 
 	initLength();
 
-	long countPos = getPosition();
+	size_t countPos = getPosition();
 	skip(1);
 
 	int count = target->Setup_FillCharList(this, lastCharacter);
@@ -2536,27 +2537,27 @@ PacketVendorSellList::PacketVendorSellList(const CChar* vendor) : PacketSend(XCM
 	writeInt32(vendor->GetUID());
 }
 
-int PacketVendorSellList::searchContainer(CClient* target, const CItemContainer* container, CItemContainer* stock1, CItemContainer* stock2, int convertFactor, int maxItems)
+size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContainer* container, CItemContainer* stock1, CItemContainer* stock2, int convertFactor, size_t maxItems)
 {
 	ADDTOCALLSTACK("PacketVendorSellList::searchContainer");
 
 	seek(7); // just to be sure
 
-	long countpos = getPosition();
+	size_t countpos = getPosition();
 	skip(2);
 
 	CItem* item = container->GetContentHead();
 	if (item == NULL)
 		return 0;
 
-	int count(0);
-	std::deque<CItemContainer*> otherBoxes;
+	size_t count(0);
+	std::deque<const CItemContainer*> otherBoxes;
 
 	for (;;)
 	{
 		if (item != NULL)
 		{
-			CItemContainer* container = dynamic_cast<CItemContainer*>(item);
+			container = dynamic_cast<CItemContainer*>(item);
 			if (container != NULL && container->GetCount() > 0)
 			{
 				if (container->IsSearchable())
@@ -2609,7 +2610,7 @@ int PacketVendorSellList::searchContainer(CClient* target, const CItemContainer*
 	}
 
 	// seek back to write count
-	long endpos = getPosition();
+	size_t endpos = getPosition();
 	seek(countpos);
 	writeInt16(count);
 	seek(endpos);
@@ -2714,7 +2715,7 @@ PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCRO
 	writeByte(type);
 	writeInt32(context);
 
-	long lengthPosition(getPosition());
+	size_t lengthPosition(getPosition());
 	skip(2);
 
 	if (header)
@@ -2731,8 +2732,8 @@ PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCRO
 		writeCharASCII(0x0D);
 	}
 
-	long endPosition(getPosition());
-	long length = getPosition() - lengthPosition;
+	size_t endPosition(getPosition());
+	size_t length = getPosition() - lengthPosition;
 	seek(lengthPosition);
 	writeInt16(length);
 	seek(endPosition);
@@ -2760,7 +2761,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 	initLength();
 	writeByte(0xFF);
 
-	long countPosition(getPosition());
+	size_t countPosition(getPosition());
 	skip(2);
 	int count(0);
 
@@ -2778,7 +2779,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 	}
 #undef MAX_SERVERS_LIST
 
-	long endPosition(getPosition());
+	size_t endPosition(getPosition());
 	seek(countPosition);
 	writeInt16(count);
 	seek(endPosition);
@@ -2836,7 +2837,7 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 
 	initLength();
 
-	long countPos = getPosition();
+	size_t countPos = getPosition();
 	skip(1);
 
 	int count = target->Setup_FillCharList(this, lastCharacter);
@@ -3073,7 +3074,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, int con
 
 	{
 		// compress and write texts
-		long textsPosition(getPosition());
+		size_t textsPosition(getPosition());
 
 		for (int i = 0; i < textCount; i++)
 		{
@@ -3081,7 +3082,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, int con
 			writeStringFixedNUNICODE((LPCTSTR)texts[i], texts[i].GetLength());
 		}
 
-		long textsLength = getPosition() - textsPosition;
+		size_t textsLength = getPosition() - textsPosition;
 		
 		z_uLong compressLength = z_compressBound(textsLength);
 		BYTE* compressBuffer = new BYTE[compressLength];
@@ -3117,7 +3118,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
 	seek(19);
 
 	// skip controls length until they're written
-	long controlLengthPosition(getPosition());
+	size_t controlLengthPosition(getPosition());
 	skip(2);
 
 	// write controls
@@ -3129,7 +3130,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
 	}
 
 	// write controls length
-	long endPosition(getPosition());
+	size_t endPosition(getPosition());
 	seek(controlLengthPosition);
 	writeInt16((WORD)(endPosition - controlLengthPosition - 2));
 	seek(endPosition);
@@ -3307,7 +3308,7 @@ PacketSeason::PacketSeason(const CClient* target, SEASON_TYPE season, bool playM
  *
  *
  ***************************************************************************/
-PacketExtended::PacketExtended(EXTDATA_TYPE type, long len, Priority priority) : PacketSend(XCMD_ExtData, len, priority)
+PacketExtended::PacketExtended(EXTDATA_TYPE type, size_t len, Priority priority) : PacketSend(XCMD_ExtData, len, priority)
 {
 	ADDTOCALLSTACK("PacketExtended::PacketExtended");
 
@@ -3360,7 +3361,7 @@ PacketGumpChange::PacketGumpChange(const CClient* target, DWORD context, int but
  *
  *
  ***************************************************************************/
-PacketParty::PacketParty(PARTYMSG_TYPE type, long len, Priority priority) : PacketExtended(EXTDATA_Party_Msg, len, priority)
+PacketParty::PacketParty(PARTYMSG_TYPE type, size_t len, Priority priority) : PacketExtended(EXTDATA_Party_Msg, len, priority)
 {
 	ADDTOCALLSTACK("PacketParty::PacketParty");
 
@@ -3559,7 +3560,7 @@ void PacketDisplayPopup::finalise(void)
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::finalise");
 
-	long endPosition(getPosition());
+	size_t endPosition(getPosition());
 
 	seek(11);
 	writeByte(m_popupCount);
@@ -4198,7 +4199,7 @@ void PacketHouseDesign::finalise(void)
 
 	flushStairData();
 
-	long endPosition(getPosition());
+	size_t endPosition(getPosition());
 
 	seek(13);
 	writeInt16(m_itemCount);

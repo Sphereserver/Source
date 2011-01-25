@@ -101,7 +101,6 @@ CREID_TYPE CChar::NPC_GetAllyGroupType(CREID_TYPE idTest)	// static
 		default:
 			return( idTest );
 	}
-	return( idTest );
 }
 
 #ifndef _ALPHASPHERE
@@ -226,7 +225,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 
 #endif
 
-int CChar::NPC_OnHearName( LPCTSTR pszText ) const
+size_t CChar::NPC_OnHearName( LPCTSTR pszText ) const
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHearName");
 	// Did I just hear my name in this text ?
@@ -236,7 +235,7 @@ int CChar::NPC_OnHearName( LPCTSTR pszText ) const
 
 	LPCTSTR pszName = GetName();
 
-	int i = FindStrWord( pszText, pszName );
+	size_t i = FindStrWord( pszText, pszName );
 	if ( i )
 		return( i );
 
@@ -259,13 +258,13 @@ int CChar::NPC_OnHearName( LPCTSTR pszText ) const
 
 	// Named the chars type ? (must come first !)
 	pszName = pCharDef->GetTradeName();
-	for ( i=0; pszText[i] != '\0'; i++ )
+	for ( i = 0; pszText[i] != '\0'; i++ )
 	{
 		if ( pszName[i] == '\0' )
 		{
 			// found name.
 			while ( ISWHITESPACE( pszText[i] ))
-				i ++;
+				i++;
 			return( i );	// Char name found
 		}
 		if ( toupper( pszName[i] ) != toupper( pszText[i] ))	// not the name.
@@ -283,7 +282,7 @@ bool CChar::NPC_CanSpeak() const
 		return true;
 
 	CCharBase	*pCharDef = Char_GetDef();
-	return pCharDef ? pCharDef->m_Speech.GetCount() : false;
+	return pCharDef != NULL ? pCharDef->m_Speech.GetCount() > 0 : false;
 }
 
 bool CChar::NPC_FightMayCast() const
@@ -425,7 +424,7 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 
 	// Is there a nasty object here that will hurt us ?
 	CWorldSearch AreaItems( pt );
-	while (true)
+	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
 		if ( pItem == NULL )
@@ -492,6 +491,7 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 CItemVendable * CChar::NPC_FindVendableItem( CItemVendable * pVendItem, CItemContainer * pContBuy, CItemContainer * pContStock ) // static
 {
 	ADDTOCALLSTACK("CChar::NPC_FindVendableItem");
+	UNREFERENCED_PARAMETER(pContStock);
 	// Does the NPC want to buy this item
 	if ( !pVendItem || !pContBuy || !pVendItem->IsValidSaleItem(false) )
 		return NULL;
