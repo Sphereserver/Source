@@ -190,7 +190,7 @@ flags:
 	@echo "Compiler Flags: $(SCC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): svn flags gray
-	@$(SCC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o
+	@$(SCC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
