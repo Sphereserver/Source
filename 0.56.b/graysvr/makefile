@@ -6,7 +6,7 @@ MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 #OPT	= -O2 $(OPTDEFAULT)
-#WARN	= -Wall -W
+#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas
 WARN	= -w
 
 #DEBUG	= -ggdb2
@@ -14,12 +14,12 @@ DEBUG	= -s
 INCLUDE	= -I../common -I/usr/include/mysql
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -lrt
+LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -lrt -ldl
 DEFNIX  = -D_LINUX
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD
 EXTRADEFS = -D_NEWGUILDSYSTEM
-#DEBUGDEFS = -D_DEBUG
+#DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
 SVNDEFS = -D_SUBVERSION
 DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS)
 
@@ -90,14 +90,16 @@ SRC	:= 	CAccount.cpp \
 		CWorldMap.cpp \
 		graysvr.cpp \
 		PingServer.cpp \
-		../common/mtrand/mtrand.cpp \
 		../common/twofish/twofish2.cpp \
 		../common/libev/wrapper_ev.c \
 		../common/zlib/adler32.c \
 		../common/zlib/compress.c \
 		../common/zlib/crc32.c \
 		../common/zlib/deflate.c \
-		../common/zlib/gzio.c \
+		../common/zlib/gzclose.c \
+		../common/zlib/gzlib.c \
+		../common/zlib/gzread.c \
+		../common/zlib/gzwrite.c \
 		../common/zlib/infback.c \
 		../common/zlib/inffast.c \
 		../common/zlib/inflate.c \
@@ -109,6 +111,7 @@ SRC	:= 	CAccount.cpp \
 		../common/CAtom.cpp \
 		../common/CAssoc.cpp \
 		../common/CDataBase.cpp \
+		../common/CDatabaseLoader.cpp \
 		../common/CEncrypt.cpp \
 		../common/CExpression.cpp \
 		../common/CException.cpp \
@@ -144,6 +147,7 @@ SRC	:= 	CAccount.cpp \
 		../network/packet.cpp \
 		../network/send.cpp \
 		../network/receive.cpp
+
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 
