@@ -1184,7 +1184,7 @@ void CSector::OnTick(int iPulseCount)
 		LONGLONG hi = TIME_PROFILE_GET_HI;
 		if ( hi > 1L )
 		{
-			DEBUG_ERR(("CSector::OnTick(%d) [ticking sector] took %d.%d to run\n", GetIndex(), hi, TIME_PROFILE_GET_LO));
+			DEBUG_ERR(("CSector::OnTick(%d) [ticking sector] took %lld.%lld to run\n", GetIndex(), static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
 		}
 	}
 }

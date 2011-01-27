@@ -174,7 +174,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_EQ_VENDOR_BOX:
 			if ( !fScript )
 			g_Log.Event( LOGL_WARN|LOGM_CHEAT,
-				"%x:Cheater '%s' is using 3rd party tools to open bank box\n",
+				"%lx:Cheater '%s' is using 3rd party tools to open bank box\n",
 				GetSocketID(), (LPCTSTR) GetAccount()->GetName());
 			return false;
 

@@ -1021,7 +1021,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 #ifdef THREAD_TRACK_CALLSTACK
 							StackDebugInformation::printStackTrace();
 #endif
-							g_Log.EventDebug("%x:EF_FixCanSeeInClosedConts prevents %s, (0%x, '%s') from seeing item uid=0%x (%s, '%s') in container uid=0%x (%s, '%s')\n",
+							g_Log.EventDebug("%lx:EF_FixCanSeeInClosedConts prevents %s, (0%lx, '%s') from seeing item uid=0%lx (%s, '%s') in container uid=0%lx (%s, '%s')\n",
 								pClient->GetSocketID(), pClient->GetAccount()->GetName(), (DWORD)GetUID(), GetName(false),
 								(DWORD)pItem->GetUID(), pItem->GetResourceName(), pItem->GetName(),
 								(DWORD)pObjCont->GetUID(), pObjCont->GetResourceName(), pObjCont->GetName());
@@ -1511,7 +1511,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							WARNLOS(("pStatic %0x %d,%d,%d - %d\n",pStatic->GetDispID(),pStatic->m_x,pStatic->m_y,pStatic->m_z,Height));
 							min_z = pStatic->m_z;
 							max_z = minimum(Height + min_z, UO_SIZE_Z);
-							WARNLOS(("wTFlags(0%x)\n",wTFlags));
+							WARNLOS(("wTFlags(0%lx)\n",wTFlags));
 
 							WARNLOS(("pStatic %0x Z check: %d,%d (Now: %d) (Dest: %d).\n",pStatic->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
 							if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
@@ -1601,7 +1601,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height));
 							min_z = pItem->GetUnkPoint().m_z;
 							max_z = minimum(Height + min_z, UO_SIZE_Z);
-							WARNLOS(("wTFlags(0%x)\n",wTFlags));
+							WARNLOS(("wTFlags(0%lx)\n",wTFlags));
 
 							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
 							if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
@@ -1717,7 +1717,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height));
 									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;
 									max_z = minimum(Height + min_z, UO_SIZE_Z);
-									WARNLOS(("wTFlags(0%x)\n",wTFlags));
+									WARNLOS(("wTFlags(0%lx)\n",wTFlags));
 
 									if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
 									{
@@ -2289,7 +2289,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	{
 		// Only report the missing region if the destination is within the map boundaries.
 		if ( ptDest.IsValidPoint() )
-			g_Log.Event( LOGL_WARN, "MOVE: UID(0%x) is moving into a non-defined region (Point: %d,%d,%d,%d)\n", (DWORD)GetUID(), ptDest.m_x, ptDest.m_y, ptDest.m_z, ptDest.m_map );
+			g_Log.Event( LOGL_WARN, "MOVE: UID(0%lx) is moving into a non-defined region (Point: %d,%d,%d,%d)\n", (DWORD)GetUID(), ptDest.m_x, ptDest.m_y, ptDest.m_z, ptDest.m_map );
 		return( NULL );
 	}
 
@@ -2465,7 +2465,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 
 	if ( ! ptDest.IsValidPoint() )
 	{
-		DEBUG_ERR(("Character 0%x on %d,%d,%d wants to move into an invalid location %d,%d,%d.\n",GetUID().GetObjUID(),GetTopPoint().m_x,GetTopPoint().m_y,GetTopPoint().m_z,ptDest.m_x,ptDest.m_y,ptDest.m_z));
+		DEBUG_ERR(("Character 0%lx on %d,%d,%d wants to move into an invalid location %d,%d,%d.\n",GetUID().GetObjUID(),GetTopPoint().m_x,GetTopPoint().m_y,GetTopPoint().m_z,ptDest.m_x,ptDest.m_y,ptDest.m_z));
 		return NULL;
 	}
 	g_World.GetHeightPoint_New( ptDest, block, true );
@@ -2478,7 +2478,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 		//WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) - m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%x) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )));
 		//if ( block.m_Top.m_z < ptDest.m_z - m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ) )
-		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) - m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%x) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
+		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) - m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
 		if ( block.m_Top.m_z < ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
@@ -2486,7 +2486,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	//DEBUG_ERR(("wBlockFlags (0%x)\n",wBlockFlags));
 	if (( wCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
 	{
-		WARNWALK(("BOTTOMitemID (0%x) TOPitemID (0%x)\n",(block.m_Bottom.m_dwTile - TERRAIN_QTY),(block.m_Top.m_dwTile - TERRAIN_QTY)));
+		WARNWALK(("BOTTOMitemID (0%lx) TOPitemID (0%lx)\n",(block.m_Bottom.m_dwTile - TERRAIN_QTY),(block.m_Top.m_dwTile - TERRAIN_QTY)));
 		CCharBase* pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 

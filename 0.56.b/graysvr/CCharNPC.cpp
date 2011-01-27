@@ -116,7 +116,14 @@ bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
 	}
 	if ( m_pPlayer != NULL )
 	{
-		DEBUG_ERR(( "SetNPCBrain to Player '%s'\n", m_pPlayer->GetAccount() ));
+		if ( m_pPlayer->GetAccount() != NULL )
+		{
+			DEBUG_ERR(( "SetNPCBrain to Player Account '%s'\n", m_pPlayer->GetAccount()->GetName() ));
+		}
+		else
+		{
+			DEBUG_ERR(( "SetNPCBrain to Player Name '%s'\n", GetName()));
+		}
 		return false;
 	}
 	if ( m_pNPC == NULL )
@@ -882,7 +889,7 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	EXC_ADD_KEYRET(pChar->GetUID());
+	EXC_ADD_KEYRET(pChar);
 	EXC_DEBUG_END;
 	return false;
 }

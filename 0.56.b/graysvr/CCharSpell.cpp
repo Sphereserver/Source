@@ -1608,7 +1608,7 @@ bool CChar::Spell_TargCheck()
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( pSpellDef == NULL )
 	{
-		DEBUG_ERR(( "Bad Spell %d, uid 0%0x\n", m_atMagery.m_Spell, (DWORD) GetUID()));
+		DEBUG_ERR(( "Bad Spell %d, uid 0%0lx\n", m_atMagery.m_Spell, (DWORD) GetUID()));
 		return( false );
 	}
 

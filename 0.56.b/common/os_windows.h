@@ -40,7 +40,11 @@ extern void NTWindow_SetWindowTitle( LPCTSTR pText = NULL );
 #define	FILE_SETNOCACHE(_x_)	setvbuf(_x_, NULL, _IONBF, 0)
 #define FILE_FLUSH(_x_)
 
+//	thread-specific definitions
 #include "CTime.h"
 #define THREAD_ENTRY_RET void
+
+// printf format identifiers
+#define FMTSIZE_T "Iu" // windows uses %Iu to format size_t
 
 #endif

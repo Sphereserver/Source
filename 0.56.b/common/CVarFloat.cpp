@@ -349,7 +349,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						RealType dArgument = MakeFloatMath(pArgs);
 						if ( dArgument <= 0 )
 						{
-							DEBUG_ERR(( "Float_MakeFloatMath: (x)Log(%d) is %s\n", dArgument, (!dArgument) ? "infinite" : "undefined" ));
+							DEBUG_ERR(( "Float_MakeFloatMath: (x)Log(%f) is %s\n", dArgument, (!dArgument) ? "infinite" : "undefined" ));
 							dResult = 0;
 						}
 						else
@@ -373,7 +373,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 									RealType dBase = MakeFloatMath(pArgs);
 									if ( dBase <= 0 )
 									{
-										DEBUG_ERR(( "Float_MakeFloatMath: (%d)Log(%d) is %s\n", dBase, dArgument, (!dBase) ? "infinite" : "undefined" ));
+										DEBUG_ERR(( "Float_MakeFloatMath: (%f)Log(%f) is %s\n", dBase, dArgument, (!dBase) ? "infinite" : "undefined" ));
 										dCount = 0;
 										dResult = 0;
 									}
@@ -426,7 +426,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						}
 						else
 						{
-							DEBUG_ERR(( "Float_MakeFloatMath: Sqrt of negative number (%d) is impossible\n", dTosquare ));
+							DEBUG_ERR(( "Float_MakeFloatMath: Sqrt of negative number (%f) is impossible\n", dTosquare ));
 							dResult = 0;
 						}
 					}

@@ -1890,8 +1890,8 @@ CItem * CChar::Horse_GetMountItem() const
 					const_cast<CGrayUIDBase&>(m_atRidden.m_FigurineUID) = pItemMount->GetUID();
 					pItem = pItemMount;
 
-					DEBUG_ERR(("UID=0%x, id=0%x '%s', Fixed mount item UID=0%x, id=0%x '%s'\n",
-						(int)GetUID(), GetBaseID(), GetName(), (int)(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
+					DEBUG_ERR(("UID=0%lx, id=0%x '%s', Fixed mount item UID=0%lx, id=0%x '%s'\n",
+						(DWORD)GetUID(), GetBaseID(), GetName(), (DWORD)(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
 				}
 			}
 		}
@@ -2078,7 +2078,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 
 				if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
 				{
-					DEBUG_ERR(( "Character %s (0%x) riding dead horse (0%x) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
+					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
 					this->Horse_UnMount();
 
 					if ( pHorse != NULL )
@@ -2513,7 +2513,7 @@ bool CChar::Death()
 
 	iKillStrLen += sprintf( pszKillStr+iKillStrLen, ( iKillers ) ? ".\n" : "accident.\n" );
 	if ( m_pPlayer )
-		g_Log.Event(LOGL_EVENT|LOGM_KILLS, pszKillStr);
+		g_Log.Event(LOGL_EVENT|LOGM_KILLS, "%s", pszKillStr);
 
 	if ( m_pParty )
 		m_pParty->SysMessageAll( pszKillStr );
@@ -3912,14 +3912,14 @@ bool CChar::OnTick()
 
 #ifdef _DEBUG
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' npc '%d' player '%d' [0%lx]\n",
+	g_Log.EventDebug("'%s' npc '%d' player '%d' client '%d' [0%lx]\n",
 		GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), (DWORD)GetUID());
 	EXC_DEBUG_END;
 #endif
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;
-		DEBUG_ERR(("CChar::OnTick(%x) took %d.%d to run\n", (DWORD)GetUID(), TIME_PROFILE_GET_HI, TIME_PROFILE_GET_LO));
+		DEBUG_ERR(("CChar::OnTick(%lx) took %lld.%lld to run\n", (DWORD)GetUID(), static_cast<INT64>(TIME_PROFILE_GET_HI), static_cast<INT64>(TIME_PROFILE_GET_LO)));
 	}
 	return true;
 }

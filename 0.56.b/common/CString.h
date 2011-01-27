@@ -41,7 +41,7 @@ class CGString
 		LPCTSTR GetPtr() const;
 
 		void FormatV( LPCTSTR pStr, va_list args );
-		void _cdecl Format( LPCTSTR pStr, ... );
+		void _cdecl Format( LPCTSTR pStr, ... ) __printfargs(2,3);
 		void FormatVal( long iVal );
 		void FormatUVal( unsigned long iVal );
 		void FormatHex( DWORD dwVal );

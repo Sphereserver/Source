@@ -187,7 +187,7 @@ public:
 	{
 		LPVOID lpMsgBuf;
 		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, (LPTSTR) &lpMsgBuf, 0, NULL );
-		DEBUG_ERR(( "File I/O \"%s\" failed on file \"%s\" (%d): %s\n", szMessage, GetFilePath(), GetLastError(), lpMsgBuf ));
+		DEBUG_ERR(( "File I/O \"%s\" failed on file \"%s\" (%ld): %s\n", szMessage, GetFilePath(), GetLastError(), lpMsgBuf ));
 
 		LocalFree( lpMsgBuf );
 	}
@@ -410,12 +410,12 @@ public:
 		size_t lenret = vfprintf( m_pStream, pFormat, args );
 		return( lenret );
 	}
-	size_t _cdecl Printf( LPCTSTR pFormat, ... )
+	size_t _cdecl Printf( LPCTSTR pFormat, ... ) __printfargs(2,3)
 	{
 		ASSERT(pFormat);
 		va_list vargs;
 		va_start( vargs, pFormat );
-		int iRet = VPrintf( pFormat, vargs );
+		size_t iRet = VPrintf( pFormat, vargs );
 		va_end( vargs );
 		return( iRet );
 	}

@@ -43,7 +43,7 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 
 #ifdef _DEBUG
 	// write to console
-	g_Log.EventDebug("%x:%s %s\n", client->GetSocketID(), heading, (LPCTSTR)dump);
+	g_Log.EventDebug("%lx:%s %s\n", client->GetSocketID(), heading, (LPCTSTR)dump);
 #endif
 
 	// build file name
@@ -105,7 +105,7 @@ NetState::~NetState(void)
 
 void NetState::clear(void)
 {
-	DEBUGNETWORK(("%x:Clearing client state.\n", id()));
+	DEBUGNETWORK(("%lx:Clearing client state.\n", id()));
 
 	m_isReadClosed = true;
 	m_isWriteClosed = true;
@@ -117,7 +117,7 @@ void NetState::clear(void)
 		m_client = NULL;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Client disconnected [Total:%d] ('%s')\n",
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%lu] ('%s')\n",
 			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
 		
 #if !defined(_WIN32) || defined(_LIBEV)
@@ -191,7 +191,7 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 {
 	clear();
 
-	DEBUGNETWORK(("%x:Initialising client\n", id()));
+	DEBUGNETWORK(("%lx:Initialising client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	m_socket.SetNonBlocking();
@@ -208,17 +208,17 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 #if !defined(_WIN32) || defined(_LIBEV)
 	if (g_Cfg.m_fUseAsyncNetwork != 0)
 	{
-		DEBUGNETWORK(("%x:Registering async client\n", id()));
+		DEBUGNETWORK(("%lx:Registering async client\n", id()));
 		g_NetworkEvent.registerClient(client, LinuxEv::Write);
 	}
 #endif
 	
-	DEBUGNETWORK(("%x:Opening network state\n", id()));
+	DEBUGNETWORK(("%lx:Opening network state\n", id()));
 	m_isWriteClosed = false;
 	m_isReadClosed = false;
 	m_isInUse = true;
 
-	DEBUGNETWORK(("%x:Determining async mode\n", id()));
+	DEBUGNETWORK(("%lx:Determining async mode\n", id()));
 	detectAsyncMode();
 }
 
@@ -232,13 +232,13 @@ bool NetState::isInUse(const CClient* client) const volatile
 
 void NetState::markReadClosed(void) volatile
 {
-	DEBUGNETWORK(("%x:Client being closed by read-thread\n", m_id));
+	DEBUGNETWORK(("%lx:Client being closed by read-thread\n", m_id));
 	m_isReadClosed = true;
 }
 
 void NetState::markWriteClosed(void) volatile
 {
-	DEBUGNETWORK(("%x:Client being closed by write-thread\n", m_id));
+	DEBUGNETWORK(("%lx:Client being closed by write-thread\n", m_id));
 	m_isWriteClosed = true;
 }
 
@@ -274,7 +274,7 @@ void NetState::detectAsyncMode(void)
 		setAsyncMode(false);
 
 	if (wasAsync != isAsyncMode())
-		DEBUGNETWORK(("%x:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));
+		DEBUGNETWORK(("%lx:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));
 }
 
 bool NetState::hasPendingData(void) const
@@ -326,12 +326,14 @@ bool NetState::canReceive(PacketSend* packet) const
 void NetState::beginTransaction(long priority)
 {
 	if (m_pendingTransaction != NULL)
-		DEBUGNETWORK(("%x:New network transaction started whilst a previous is still open.\n", id()));
+	{
+		DEBUGNETWORK(("%lx:New network transaction started whilst a previous is still open.\n", id()));
+	}
 
 	// ensure previous transaction is committed
 	endTransaction();
 
-	//DEBUGNETWORK(("%x:Starting a new packet transaction.\n", id()));
+	//DEBUGNETWORK(("%lx:Starting a new packet transaction.\n", id()));
 
 	m_pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : (long)PacketSend::PRI_NORMAL);
 }
@@ -341,7 +343,7 @@ void NetState::endTransaction(void)
 	if (m_pendingTransaction == NULL)
 		return;
 
-	//DEBUGNETWORK(("%x:Scheduling packet transaction to be sent.\n", id()));
+	//DEBUGNETWORK(("%lx:Scheduling packet transaction to be sent.\n", id()));
 
 	g_NetworkOut.scheduleOnce(m_pendingTransaction);
 	m_pendingTransaction = NULL;
@@ -725,7 +727,7 @@ void NetworkIn::tick(void)
 				int iLastEventDiff = -g_World.GetTimeDiff( client->m_client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Frozen client connection disconnected.\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", client->m_id);
 					client->markReadClosed();
 				}
 			}
@@ -779,7 +781,7 @@ void NetworkIn::tick(void)
 					int iSeedLen(0);
 					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
 					{
-						DEBUGNETWORK(("%x:Receiving new client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", client->id()));
 
 						CEvent* pEvent = (CEvent*)buffer;
 
@@ -796,7 +798,7 @@ void NetworkIn::tick(void)
 							client->m_newseed = true;
 						}
 
-						DEBUG_WARN(("%x:New Login Handshake Detected. Client Version: %d.%d.%d.%d\n", client->id(),
+						DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(),
 									 (DWORD)pEvent->NewSeed.m_Version_Maj, 
 									 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
 									 (DWORD)pEvent->NewSeed.m_Version_Pat));
@@ -807,17 +809,17 @@ void NetworkIn::tick(void)
 					else
 					{
 						// assume it's a normal client log in
-						DEBUGNETWORK(("%x:Receiving old client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%lx:Receiving old client login handshake.\n", client->id()));
 
 						seed = ( buffer[0] << 24 ) | ( buffer[1] << 16 ) | ( buffer[2] << 8 ) | buffer[3];
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%x:Client connected with a seed of 0x%x (new handshake=%d, seed length=%d, received=%d, version=0x%x).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%d, received=%d, version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
 					if ( !seed )
 					{
-						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "Invalid client '%x' detected, disconnecting.\n", client->id());
+						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", client->id());
 						client->markReadClosed();
 						continue;
 					}
@@ -946,7 +948,7 @@ void NetworkIn::tick(void)
 					break;
 					
 				default:
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%x:Junk messages with no crypt\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Junk messages with no crypt\n", client->m_id);
 					client->markReadClosed();
 					continue;
 			}
@@ -989,12 +991,12 @@ void NetworkIn::tick(void)
 			if (handler != NULL)
 			{
 				size_t packetLength = handler->checkLength(client, packet);
-//				DEBUGNETWORK(("Checking length: counted %d.\n", packetLength));
+//				DEBUGNETWORK(("Checking length: counted %lu.\n", packetLength));
 
 				//	fall back and delete the packet
 				if (packetLength <= 0)
 				{
-					DEBUGNETWORK(("%x:Game packet (0x%x) does not match the expected length, waiting for more data...\n", client->id(), packetID));
+					DEBUGNETWORK(("%lx:Game packet (0x%x) does not match the expected length, waiting for more data...\n", client->id(), packetID));
 					break;
 				}
 
@@ -1036,7 +1038,7 @@ void NetworkIn::tick(void)
 				// unknown packet.. we could skip 1 byte at a time but this can produce
 				// strange behaviours (it's unlikely that only 1 byte is incorrect), so
 				// it's best to discard everything we have
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Unknown game packet (0x%x) received.\n", client->id(), packetID);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received.\n", client->id(), packetID);
 				packet->skip(len);
 				len = 0;
 			}
@@ -1047,12 +1049,12 @@ void NetworkIn::tick(void)
 		TemporaryString dump;
 		packet->dump(dump);
 
-		g_Log.EventDebug("%x:Parsing %s", client->id(), (LPCTSTR)dump);
+		g_Log.EventDebug("%lx:Parsing %s", client->id(), (LPCTSTR)dump);
 
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
 			client->m_client->addKick(&g_Serv, false);
 		}
 
@@ -1120,7 +1122,7 @@ int NetworkIn::checkForData(fd_set* storage)
 				EXC_SET("check pending data");
 				if (state->hasPendingData())
 				{
-					DEBUGNETWORK(("%x:Flushing data for client.\n", state->id()));
+					DEBUGNETWORK(("%lx:Flushing data for client.\n", state->id()));
 
 					EXC_SET("flush data");
 					g_NetworkOut.flush(state->getClient());
@@ -1137,7 +1139,7 @@ int NetworkIn::checkForData(fd_set* storage)
 			if (state->isClosed() && state->isSendingAsync() == false)
 			{
 				EXC_SET("clear socket");
-				DEBUGNETWORK(("%x:Client is being cleared since marked to close.\n", state->id()));
+				DEBUGNETWORK(("%lx:Client is being cleared since marked to close.\n", state->id()));
 				state->clear();
 			}
 
@@ -1195,7 +1197,7 @@ void NetworkIn::acceptConnection(void)
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
 
-		DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%d, pings=%d, connecting=%d, connected=%d]\n", 
+		DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%ld, pings=%ld, connecting=%ld, connected=%ld]\n", 
 			ip->m_ip.GetAddrStr(), ip->m_blocked, ip->m_ttl, ip->m_pings, ip->m_connecting, ip->m_connected));
 
 		//	ip is blocked
@@ -1207,7 +1209,7 @@ void NetworkIn::acceptConnection(void)
 			)
 		{
 			EXC_SET("rejecting");
-			DEBUGNETWORK(("Closing incoming connection [max ip=%d, clients max ip=%d).\n", maxIp, climaxIp));
+			DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld).\n", maxIp, climaxIp));
 
 			CLOSESOCKET(h);
 
@@ -1235,18 +1237,18 @@ void NetworkIn::acceptConnection(void)
 			}
 			else
 			{
-				DEBUGNETWORK(("%x:Allocated slot for client (%ld).\n", slot, (long)h));
+				DEBUGNETWORK(("%lx:Allocated slot for client (%ld).\n", slot, (long)h));
 
 				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
 
-				DEBUGNETWORK(("%x:State initialised, registering client instance.\n", slot));
+				DEBUGNETWORK(("%lx:State initialised, registering client instance.\n", slot));
 
 				EXC_SET("recording client");
 				if (m_states[slot]->m_client != NULL)
 					m_clients.InsertHead(m_states[slot]->getClient());
 
-				DEBUGNETWORK(("%x:Client successfully initialised.\n", slot));
+				DEBUGNETWORK(("%lx:Client successfully initialised.\n", slot));
 			}
 		}
 	}
@@ -1368,14 +1370,14 @@ void NetworkIn::periodic(void)
 			{
 				if (++connecting > connectingMax)
 				{
-					DEBUGNETWORK(("%x:Closing client since '%d' connecting overlaps '%d'\n", client->m_net->id(), connecting, connectingMax));
+					DEBUGNETWORK(("%lx:Closing client since '%ld' connecting overlaps '%ld'\n", client->m_net->id(), connecting, connectingMax));
 
 					client->m_net->markReadClosed();
 				}
 			}
 			if (connecting > connectingMax)
 			{
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%d clients in connect mode (max %d), closing %d\n", connecting, connectingMax, connecting - connectingMax);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%ld clients in connect mode (max %ld), closing %ld\n", connecting, connectingMax, connecting - connectingMax);
 			}
 		}
 	}
@@ -1487,7 +1489,7 @@ void NetworkIn::defragSlots(long fromSlot)
 
 		if (nextUsedSlot != l)
 		{
-			DEBUGNETWORK(("Moving client '%x' to slot '%x'.\n", nextUsedSlot, l));
+			DEBUGNETWORK(("Moving client '%lx' to slot '%lx'.\n", nextUsedSlot, l));
 
 			// swap states
 			NetState* usedSlot = m_states[nextUsedSlot];
@@ -1820,7 +1822,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
-		g_Log.EventDebug("id='%x', pri='%d', packet '%d' of '%d' to send, length '%d' of '%d'\n",
+		g_Log.EventDebug("id='%lx', pri='%ld', packet '%d' of '%ld' to send, length '%ld' of '%ld'\n",
 			state->id(), priority, i, maxClientPackets, length, maxClientLength);
 		EXC_DEBUG_END;
 	}
@@ -1966,7 +1968,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 		if (state->m_client == NULL)
 		{
-			DEBUGNETWORK(("%x:Sending packet to closed client?\n", state->id()));
+			DEBUGNETWORK(("%lx:Sending packet to closed client?\n", state->id()));
 
 			sendBuffer = packet->getData();
 			sendBufferLength = packet->getLength();
@@ -2025,7 +2027,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 					// WARNING: scheduleOnce is intended to be used by the main
 					// thread, and is likely to cause stability issues when called
 					// from here!
-					DEBUGNETWORK(("%x:Send failure occurred with a non-critical error. Requeuing packet may affect stability.\n", state->id()));
+					DEBUGNETWORK(("%lx:Send failure occurred with a non-critical error. Requeuing packet may affect stability.\n", state->id()));
 					scheduleOnce(packet, true);
 					return true;
 				}
@@ -2048,7 +2050,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n",
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n",
 		state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;
@@ -2126,7 +2128,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 			EXC_SET("unexpected connection error - delete packet");
 
 			if (state->isClosing() == false)
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:TX Error %d\n", state->id(), errCode);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:TX Error %d\n", state->id(), errCode);
 
 #ifndef _WIN32
 			return INT_MIN;
@@ -2143,7 +2145,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%x', packet '0x%x', length '%d'\n", state->id(), *data, length);
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%lu'\n", state->id(), *data, length);
 	EXC_DEBUG_END;
 	return INT_MIN;
 }

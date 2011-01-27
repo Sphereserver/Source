@@ -6,20 +6,18 @@
 #include <cmath>
 #include "../graysvr/graysvr.h"
 
-TCHAR CExpression::sm_szMessages[DEFMSG_QTY+1][128] =
+TCHAR CExpression::sm_szMessages[DEFMSG_QTY][128] =
 {
 	#define MSG(a,b,c) c,
 	#include "../tables/defmessages.tbl"
 	#undef MSG
-	NULL,
 };
 
-LPCTSTR const CExpression::sm_szMsgNames[DEFMSG_QTY+1] =
+LPCTSTR const CExpression::sm_szMsgNames[DEFMSG_QTY] =
 {
 	#define MSG(a,b,c) b,
 	#include "../tables/defmessages.tbl"
 	#undef MSG
-	NULL,
 };
 
 DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer

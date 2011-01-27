@@ -69,7 +69,7 @@ bool CItemMulti::MultiRealizeRegion()
 	const CItemBaseMulti * pMultiDef = Multi_GetDef();
 	if ( pMultiDef == NULL )
 	{
-		DEBUG_ERR(( "Bad Multi type 0%x, uid=0%x\n", GetID(), (DWORD) GetUID()));
+		DEBUG_ERR(( "Bad Multi type 0%x, uid=0%lx\n", GetID(), (DWORD) GetUID()));
 		return false;
 	}
 
@@ -474,7 +474,7 @@ bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 			else if ( !strnicmp(pszKey, "DY", 2) ) sVal.FormatVal(item.m_dy);
 			else if ( !strnicmp(pszKey, "DZ", 2) ) sVal.FormatVal(item.m_dz);
 			else if ( !strnicmp(pszKey, "D", 1) ) sVal.Format("%i,%i,%i", item.m_dx, item.m_dy, item.m_dz);
-			else sVal.Format("%i,%i,%i,%i", item.m_id, item.m_dx, item.m_dy, item.m_dz);
+			else sVal.Format("%u,%i,%i,%i", item.m_id, item.m_dx, item.m_dy, item.m_dz);
 		}
 		else return false;
 		return true;

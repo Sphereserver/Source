@@ -873,7 +873,7 @@ t_height CChar::GetHeight() const
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
-	sprintf(heightDef, "height_%d", pCharDef->GetDispID());
+	sprintf(heightDef, "height_%u", pCharDef->GetDispID());
 	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
 	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
@@ -2535,7 +2535,7 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(( "Char 0%x Invalid, id='%s', code=0%x\n", (DWORD) GetUID(), (LPCTSTR) GetResourceName(), iResultCode ));
+		DEBUG_ERR(( "Char 0%lx Invalid, id='%s', code=0%x\n", (DWORD) GetUID(), (LPCTSTR) GetResourceName(), iResultCode ));
 		Delete();
 	}
 
@@ -3272,7 +3272,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 
 		if ( g_Cfg.m_wDebugFlags&DEBUGF_EXP )
 		{
-			DEBUG_ERR(("%s %s experience change (was %d, delta %d, now %d)\n",
+			DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n",
 				(m_pNPC ? "NPC" : "Player" ), GetName(), m_exp, delta, m_exp+delta));
 		}
 		
@@ -3334,7 +3334,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			level = m_level + delta;
 			if ( g_Cfg.m_wDebugFlags&DEBUGF_LEVEL )
 			{
-				DEBUG_ERR(("%s %s level change (was %d, delta %d, now %d)\n",
+				DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n",
 					(m_pNPC ? "NPC" : "Player" ), GetName(), m_level, delta, level));
 			}
 			m_level = level;

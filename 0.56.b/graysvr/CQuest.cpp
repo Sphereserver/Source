@@ -114,7 +114,7 @@ CPartyDef::CPartyDef( CChar * pChar1, CChar *pChar2 )
 	AttachChar(pChar1);
 	AttachChar(pChar2);
 	SendAddList( NULL );	// send full list to all.
-	m_sName.Format("Party_0%x", (DWORD)pChar1->GetUID());
+	m_sName.Format("Party_0%lx", (DWORD)pChar1->GetUID());
 }
 
 // ---------------------------------------------------------
@@ -384,7 +384,7 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pT
 
 	if ( g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ))
 	{
-		g_Log.Event( LOGM_PLAYER_SPEAK, "%x:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all" );
+		g_Log.Event( LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all" );
 	}
 
 	PacketPartyChat cmd(pFrom, pText);

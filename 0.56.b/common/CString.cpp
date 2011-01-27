@@ -236,17 +236,17 @@ void _cdecl CGString::Format( LPCTSTR pStr, ... )
 
 void CGString::FormatVal( long iVal )
 {
-	Format("%d", iVal);
+	Format("%ld", iVal);
 }
 
 void CGString::FormatUVal( unsigned long iVal )
 {
-	Format("%u", iVal);
+	Format("%lu", iVal);
 }
 
 void CGString::FormatHex( DWORD dwVal )
 {
-	Format("0%x", dwVal);
+	Format("0%lx", dwVal);
 }
 int CGString::Compare( LPCTSTR pStr ) const
 {

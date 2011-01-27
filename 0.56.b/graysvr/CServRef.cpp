@@ -138,7 +138,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stat '%d', val '%d'\n", i, d);
+	g_Log.EventDebug("stat '%d', val '%lu'\n", i, d);
 	EXC_DEBUG_END;
 	return 0;
 }
@@ -466,7 +466,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		}
 	}
 	return true;
-	EXC_CATCH("ServerDef");
+	EXC_CATCH;
 
 	EXC_DEBUG_START;
 	EXC_ADD_KEYRET(pSrc);

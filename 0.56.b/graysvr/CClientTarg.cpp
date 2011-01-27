@@ -31,7 +31,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 	if ( pObj->IsItem() )
 	{
 		CItem *pItem = STATIC_CAST <CItem*> (pObj);
-		if ( pItem->GetAmount() > 1 ) sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%i] to '%s'", (LPCTSTR) GetName(), (DWORD) pObj->GetUID(), (LPCTSTR) pObj->GetName(), pItem->GetAmount(), (LPCTSTR) m_Targ_Text);
+		if ( pItem->GetAmount() > 1 ) sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%u] to '%s'", (LPCTSTR) GetName(), (DWORD) pObj->GetUID(), (LPCTSTR) pObj->GetName(), pItem->GetAmount(), (LPCTSTR) m_Targ_Text);
 		else sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", (LPCTSTR) GetName(), (DWORD) pObj->GetUID(), (LPCTSTR) pObj->GetName(), (LPCTSTR) m_Targ_Text);
 	}
 	else sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", (LPCTSTR) GetName(), (DWORD) pObj->GetUID(), (LPCTSTR) pObj->GetName(), (LPCTSTR) m_Targ_Text);
@@ -452,7 +452,7 @@ int CClient::Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest )
 				if ( pScript )
 				{
 					// This static is at the coordinates in question.
-					pScript->Printf( "%i %i %i %i 0\n",
+					pScript->Printf( "%u %i %i %i 0\n",
 						pStatic->GetDispID(), mx - ptCtr.m_x, my - ptCtr.m_y, pStatic->m_z - zlowest);
 				}
 				else
@@ -489,7 +489,7 @@ int CClient::Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest )
 		if ( pScript )
 		{
 			// This static is at the coordinates in question.
-			pScript->Printf( "%i %i %i %i 0\n",
+			pScript->Printf( "%u %i %i %i 0\n",
 				pItem->GetDispID(), pt.m_x - ptCtr.m_x, pt.m_y - ptCtr.m_y, pt.m_z - zlowest );
 		}
 		else
@@ -832,7 +832,7 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 	CItemVendable * pItemVend = dynamic_cast <CItemVendable *>(pItem);
 	if ( pItemVend == NULL )
 	{
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_NOVAL ));
+		SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_NOVAL ));
 	}
 	else
 	{
@@ -973,6 +973,7 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		return( -SKTRIG_QTY );
 	}
 
+	/* todo: why aren't these being used? remove?
 	static LPCTSTR const sm_szAttackMessages[] =
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_1 ),
@@ -1000,6 +1001,7 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_9 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_10 ),
 	};
+	*/
 
 	if ( fTest )
 	{

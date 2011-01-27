@@ -213,9 +213,9 @@ public:
 	bool ReadKeyParse();
 
 	// Write stuff out to a script file.
-	bool _cdecl WriteSection( LPCTSTR pszSection, ... );
+	bool _cdecl WriteSection( LPCTSTR pszSection, ... ) __printfargs(2,3);
 	bool WriteKey( LPCTSTR pszKey, LPCTSTR pszVal );
-	void _cdecl WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszFormat, ... );
+	void _cdecl WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszFormat, ... ) __printfargs(3,4);
 
 	void WriteKeyVal( LPCTSTR pszKey, int dwVal )
 	{
@@ -223,7 +223,7 @@ public:
 	}
 	void WriteKeyHex( LPCTSTR pszKey, DWORD dwVal )
 	{
-		WriteKeyFormat( pszKey, "0%x", dwVal );
+		WriteKeyFormat( pszKey, "0%lx", dwVal );
 	}
 
 	CScript();

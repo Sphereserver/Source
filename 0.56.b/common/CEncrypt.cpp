@@ -564,9 +564,9 @@ bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr )
 
 #ifdef DEBUG_CRYPT_MSGS
 #ifndef _WIN32
-		fprintf(stderr, "Called Init Seed(0x%x)\n", dwIP);
+		fprintf(stderr, "Called Init Seed(0x%lx)\n", dwIP);
 #else
-		DEBUG_ERR(("Called Init Seed(0x%x)\n", dwIP));
+		DEBUG_ERR(("Called Init Seed(0x%lx)\n", dwIP));
 #endif
 #endif
 	
@@ -650,7 +650,7 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 		{
 			// Unknown client !!! Set as unencrypted and let Sphere do the rest.
 #ifdef DEBUG_CRYPT_MSGS
-			DEBUG_ERR(("Unknown client,i = %d\n", i ));
+			DEBUG_ERR(("Unknown client,i = %lu\n", i ));
 #endif
 			SetClientVerIndex(0);
 			SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo); // Hi - Lo
@@ -666,9 +666,9 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 
 #ifdef DEBUG_CRYPT_MSGS
 #ifndef _WIN32
-		fprintf(stderr, "LoginCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
+		fprintf(stderr, "LoginCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
 #else
-		DEBUG_ERR(("LoginCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
+		DEBUG_ERR(("LoginCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
 		bool isValid = ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 );
@@ -745,9 +745,9 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 		
 #ifdef DEBUG_CRYPT_MSGS
 #ifndef _WIN32
-		fprintf(stderr, "GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
+		fprintf(stderr, "GameCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
 #else
-		DEBUG_ERR(("GameCrypt %d (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
+		DEBUG_ERR(("GameCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
 		

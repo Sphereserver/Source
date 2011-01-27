@@ -348,7 +348,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 			sVal = "";
 			return true;
 		}
-		sVal.Format(m_v.GetAt(iNum));
+		sVal = m_v.GetAt(iNum);
 		return true;
 	}
 
@@ -1552,7 +1552,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("responce '%s' source addr '0%lx' flags '%d' args '%lx'\n", pszResponse, pSrc, iFlags, pArgs);
+	g_Log.EventDebug("responce '%s' source addr '0%p' flags '%d' args '%p'\n", pszResponse, pSrc, iFlags, pArgs);
 	EXC_DEBUG_END;
 	return i;
 }
@@ -2125,7 +2125,7 @@ jump_in:
 						}
 						else
 						{
-							DEBUG_ERR(( "FORCHAR[layer/memorytype] called on char 0%x (%s) without arguments.\n", (DWORD)pCharThis->GetUID(), pCharThis->GetName() ));
+							DEBUG_ERR(( "FORCHAR[layer/memorytype] called on char 0%lx (%s) without arguments.\n", (DWORD)pCharThis->GetUID(), pCharThis->GetName() ));
 							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
@@ -2166,13 +2166,13 @@ jump_in:
 								}
 								else
 								{
-									DEBUG_ERR(( "FORCONT called on invalid uid/invalid container (UID: 0%x).\n", pCurUid.GetObjUID() ));
+									DEBUG_ERR(( "FORCONT called on invalid uid/invalid container (UID: 0%lx).\n", pCurUid.GetObjUID() ));
 									iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 								}
 							}
 							else
 							{
-								DEBUG_ERR(( "FORCONT called with invalid arguments (UID: 0%x, LEVEL: %s).\n", pCurUid.GetObjUID(), (ppArgs[1] && *ppArgs[1]) ? ppArgs[1] : "255" ));
+								DEBUG_ERR(( "FORCONT called with invalid arguments (UID: 0%lx, LEVEL: %s).\n", pCurUid.GetObjUID(), (ppArgs[1] && *ppArgs[1]) ? ppArgs[1] : "255" ));
 								iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 							}
 						}
@@ -2215,19 +2215,19 @@ jump_in:
 								}
 								else
 								{
-									DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+									DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
 									iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 								}
 							}
 							else
 							{
-								DEBUG_ERR(( "FORCONT[id/type] called on container 0%x with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+								DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
 								iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 							}
 						}
 						else
 						{
-							DEBUG_ERR(( "FORCONT[id/type] called on container 0%x without arguments.\n", (DWORD)pObjCont->GetUID() ));
+							DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx without arguments.\n", (DWORD)pObjCont->GetUID() ));
 							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
@@ -2426,8 +2426,8 @@ jump_in:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("key '%s' runtype '%d' pargs '%lx' ret '%s' [0%lx]\n",
-		s.GetKey(), trigrun, pArgs, pResult == NULL? "" : (LPCTSTR)(*pResult), pSrc);
+	g_Log.EventDebug("key '%s' runtype '%d' pargs '%p' ret '%s' [%p]\n",
+		s.GetKey(), trigrun, pArgs, pResult == NULL? "" : pResult->GetPtr(), pSrc);
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;
 }
@@ -2632,7 +2632,7 @@ bool CFileObj::r_LoadVal( CScript & s )
 				}
 				else if ( bChr )
 				{
-					ppArgs->Format( "%c", s.GetArgVal() );
+					ppArgs->Format( "%c", static_cast<TCHAR>(s.GetArgVal()) );
 				}
 				else
 					ppArgs->Copy( s.GetArgStr() );
@@ -2792,7 +2792,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( ( ( sWrite->GetPosition() + iRead ) > sWrite->GetLength() ) || ( sWrite->IsEOF() ) )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\". Too near to EOF.\n", iRead, (LPCTSTR)sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %" FMTSIZE_T " byte from \"%s\". Too near to EOF.\n", iRead, (LPCTSTR)sWrite->GetFilePath());
 					return( false );
 				}
 
@@ -2800,7 +2800,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				if ( iRead != sWrite->Read(ppArg, iRead) )
 				{
-					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %d byte from \"%s\".\n", iRead, (LPCTSTR)sWrite->GetFilePath());
+					g_Log.Event(LOGL_ERROR, "FILE: Failed reading %" FMTSIZE_T " byte from \"%s\".\n", iRead, (LPCTSTR)sWrite->GetFilePath());
 					return( false );
 				}
 

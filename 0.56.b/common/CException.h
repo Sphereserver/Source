@@ -90,9 +90,9 @@ public:
 #ifdef EXCEPTIONS_DEBUG
 
 	#define EXC_TRY(a) \
-		const char *inLocalBlock = ""; \
-		const char *inLocalArgs = a; \
-		int inLocalBlockCnt(0); \
+		LPCTSTR inLocalBlock = ""; \
+		LPCTSTR inLocalArgs = a; \
+		unsigned int inLocalBlockCnt(0); \
 		bool bCATCHExcept = false; \
 		try \
 		{
@@ -103,19 +103,19 @@ public:
 		#define EXC_CATCH_EXCEPTION(a) \
 			bCATCHExcept = true; \
 			StackDebugInformation::printStackTrace(); \
-			if ( inLocalBlock ) \
-				g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
+			if ( inLocalBlock != NULL && inLocalBlockCnt > 0 ) \
+				g_Log.CatchEvent(a, "%s::%s() #%u \"%s\"", m_sClassName, inLocalArgs, \
 															inLocalBlockCnt, inLocalBlock); \
 			else \
-				g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+				g_Log.CatchEvent(a, "%s::%s()", m_sClassName, inLocalArgs)
 	#else
 		#define EXC_CATCH_EXCEPTION(a) \
 			bCATCHExcept = true; \
-			if ( inLocalBlock ) \
-				g_Log.CatchEvent(a, "%s::%s() #%d \"%s\"", m_sClassName, inLocalArgs, \
+			if ( inLocalBlock != NULL && inLocalBlockCnt > 0 ) \
+				g_Log.CatchEvent(a, "%s::%s() #%u \"%s\"", m_sClassName, inLocalArgs, \
 															inLocalBlockCnt, inLocalBlock); \
 			else \
-				g_Log.CatchEvent(a, "%s::%s() - %s", m_sClassName, inLocalArgs)
+				g_Log.CatchEvent(a, "%s::%s()", m_sClassName, inLocalArgs)
 	#endif
 
 	#define EXC_CATCH	}	\
@@ -129,9 +129,9 @@ public:
 	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); }}
 
 	#define EXC_TRYSUB(a) \
-		const char *inLocalSubBlock = ""; \
-		const char *inLocalSubArgs = a; \
-		int inLocalSubBlockCnt(0); \
+		LPCTSTR inLocalSubBlock = ""; \
+		LPCTSTR inLocalSubArgs = a; \
+		unsigned int inLocalSubBlockCnt(0); \
 		bool bCATCHExceptSub = false; \
 		try \
 		{
@@ -142,20 +142,20 @@ public:
 		#define EXC_CATCH_SUB(a,b) \
 			bCATCHExceptSub = true; \
 			StackDebugInformation::printStackTrace(); \
-			if ( inLocalSubBlock ) \
-				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
+			if ( inLocalSubBlock != NULL && inLocalSubBlockCnt > 0 ) \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%u \"%s\"", m_sClassName, b, inLocalSubArgs, \
 															inLocalSubBlockCnt, inLocalSubBlock); \
 			else \
-				g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s()", m_sClassName, b, inLocalSubArgs)
 			//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
 	#else
 		#define EXC_CATCH_SUB(a,b) \
 			bCATCHExceptSub = true; \
-			if ( inLocalSubBlock ) \
-				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%d \"%s\"", m_sClassName, b, inLocalSubArgs, \
+			if ( inLocalSubBlock != NULL && inLocalSubBlockCnt > 0 ) \
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s() #%u \"%s\"", m_sClassName, b, inLocalSubArgs, \
 															inLocalSubBlockCnt, inLocalSubBlock); \
 			else \
-				g_Log.CatchEvent(a, "SUB: %s::%s::%s() - %s", m_sClassName, b, inLocalSubArgs)
+				g_Log.CatchEvent(a, "SUB: %s::%s::%s()", m_sClassName, b, inLocalSubArgs)
 			//g_Log.CatchEvent(a, "%s::%s", b, inLocalSubBlock)
 	#endif
 
@@ -176,8 +176,8 @@ public:
 	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); }}
 
 	#define EXC_ADD_SCRIPT		g_Log.EventDebug("command '%s' args '%s'\n", s.GetKey(), s.GetArgRaw());
-	#define EXC_ADD_SCRIPTSRC	g_Log.EventDebug("command '%s' args '%s' [0%lx]\n", s.GetKey(), s.GetArgRaw(), pSrc);
-	#define EXC_ADD_KEYRET(src)	g_Log.EventDebug("command '%s' ret '%s' [0%lx]\n", pszKey, (LPCTSTR)sVal, (DWORD)src);
+	#define EXC_ADD_SCRIPTSRC	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	#define EXC_ADD_KEYRET(src)	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, src);
 
 #else
 

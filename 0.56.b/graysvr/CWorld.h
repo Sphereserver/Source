@@ -472,7 +472,8 @@ public:
 	void Speak( const CObjBaseTemplate * pSrc, LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD );
 	void SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
-	void __cdecl Broadcast( LPCTSTR pMsg, ...);
+	void Broadcast( LPCTSTR pMsg );
+	void __cdecl Broadcastf( LPCTSTR pMsg, ...) __printfargs(2,3);
 	void Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD wFlags = DAMAGE_GENERAL | DAMAGE_HIT_BLUNT );
 
 	bool Export( LPCTSTR pszFilename, const CChar* pSrc, WORD iModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, int dx = 0, int dy = 0 );

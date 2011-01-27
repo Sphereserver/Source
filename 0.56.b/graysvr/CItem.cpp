@@ -351,7 +351,7 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 		// Is the item movable ?
 		if ( ! pItem->IsMovableType() && pCont && pCont->IsItem())
 		{
-			DEBUG_ERR(( "Script Error: 0%x item is not movable type, cont=0%x\n", id, (DWORD)(pCont->GetUID()) ));
+			DEBUG_ERR(( "Script Error: 0%x item is not movable type, cont=0%lx\n", id, (DWORD)(pCont->GetUID()) ));
 			pItem->Delete();
 			return( NULL );
 		}
@@ -1284,7 +1284,7 @@ bool CItem::MoveTo( CPointMap pt ) // Put item on the ground here.
 		size_t iCount = pSector->GetItemComplexity();
 		if ( iCount > g_Cfg.m_iMaxSectorComplexity )
 		{
-			DEBUG_ERR(( "Warning: %d items at %s,too complex!\n", iCount, pt.WriteUsed()));
+			DEBUG_ERR(( "Warning: %" FMTSIZE_T " items at %s,too complex!\n", iCount, pt.WriteUsed()));
 		}
 	}
 
@@ -1506,7 +1506,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	}
 	else
 	{
-		pszTitle = "%i ";
+		pszTitle = "%u ";
 		len += sprintf( pTemp+len, pszTitle, GetAmount());
 	}
 
@@ -1805,7 +1805,7 @@ bool CItem::SetBaseID( ITEMID_TYPE id )
 	CItemBase * pItemDef = CItemBase::FindItemBase( id );
 	if ( pItemDef == NULL )
 	{
-		DEBUG_ERR(( "SetBaseID 0%x invalid item uid=0%x\n",
+		DEBUG_ERR(( "SetBaseID 0%x invalid item uid=0%lx\n",
 		id, (DWORD) GetUID()));
 		return false;
 	}
@@ -1900,7 +1900,7 @@ void CItem::WriteUOX( CScript & s, int index )
 	ADDTOCALLSTACK("CItem::WriteUOX");
 	s.Printf( "SECTION WORLDITEM %d\n", index );
 	s.Printf( "{\n" );
-	s.Printf( "SERIAL %d\n", (DWORD) GetUID());
+	s.Printf( "SERIAL %lu\n", (DWORD) GetUID());
 	s.Printf( "NAME %s\n", GetName());
 	s.Printf( "ID %d\n", GetDispID());
 	s.Printf( "X %d\n", GetTopPoint().m_x );
@@ -2647,7 +2647,7 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(( "Item 0%x Invalid, id=%s, code=0%x\n",
+		DEBUG_ERR(( "Item 0%lx Invalid, id=%s, code=0%x\n",
 		(DWORD) GetUID(), GetResourceName(), iResultCode ));
 		Delete();
 		return( true );
@@ -2857,11 +2857,11 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		{
 			if ( pChar )
 			{
-				DEBUG_ERR(( "0%x '%s' has unhandled [TYPEDEF %d] for 0%x '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
+				DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
 			}
 			else
 			{
-				DEBUG_ERR(( "0%x '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
+				DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
 			}
 			m_type = Item_GetDef()->GetType();
 			return( TRIGRET_RET_DEFAULT );

@@ -656,7 +656,7 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 		static int sm_iReentrant = 0;
 		if (sm_iReentrant > 32)
 		{
-			DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring hostility level towards %s uid=0%x\n", pCharOwn->GetName(), pCharOwn->GetUID().GetPrivateUID()));
+			DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring hostility level towards %s uid=0%lx\n", pCharOwn->GetName(), pCharOwn->GetUID().GetPrivateUID()));
 			return 0;
 		}
 

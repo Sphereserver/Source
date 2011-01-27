@@ -191,7 +191,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 		pt.m_map = pObj->GetTopPoint().m_map;
 		if ( ! pt.IsValidPoint())  // boat goes out of bounds !
 		{
-			DEBUG_ERR(( "Ship uid=0%x out of bounds\n", (DWORD) GetUID()));
+			DEBUG_ERR(( "Ship uid=0%lx out of bounds\n", (DWORD) GetUID()));
 			continue;
 		}
 

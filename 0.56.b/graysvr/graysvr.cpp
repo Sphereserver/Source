@@ -181,7 +181,7 @@ bool CMapList::DetectMapSize(int map)
 			break;
 
 		default:
-			DEBUG_ERR(("Unknown map index %d with file size of %u bytes. Please specify the correct size manually.\n", index, g_Install.m_Maps[index].GetLength()));
+			DEBUG_ERR(("Unknown map index %d with file size of %lu bytes. Please specify the correct size manually.\n", index, g_Install.m_Maps[index].GetLength()));
 			break;
 	}
 
@@ -495,7 +495,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	ASSERT(sizeof(NWORD) == 2 );
 	ASSERT(sizeof(NDWORD) == 4 );
 	ASSERT(sizeof(CUOItemTypeRec) == 37 ); // byte pack working ?
-	ASSERT((std::numeric_limits<size_t>::min)() >= 0); // ensure unsigned
+	ASSERT((std::numeric_limits<size_t>::min)() == 0); // ensure unsigned
 
 #ifdef _WIN32
 	if ( !QueryPerformanceFrequency((LARGE_INTEGER *)&llTimeProfileFrequency))
@@ -531,25 +531,29 @@ int Sphere_InitServer( int argc, char *argv[] )
 		CFileText	dict;
 		if ( dict.Open(GRAY_FILE ".dic", OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
-			TCHAR	*pszTemp = Str_GetTemp();
-			int		i(0);
+			TCHAR * pszTemp = Str_GetTemp();
+			size_t count = 0;
 			while ( !dict.IsEOF() )
 			{
 				dict.ReadString(pszTemp, SCRIPT_MAX_LINE_LEN-1);
 				if ( *pszTemp )
 				{
-					char *c = strchr(pszTemp, '\r');
-					if ( c ) *c = 0;
+					TCHAR *c = strchr(pszTemp, '\r');
+					if ( c != NULL )
+						*c = '\0';
+
 					c = strchr(pszTemp, '\n');
-					if ( c ) *c = 0;
-					if ( *pszTemp )
+					if ( c != NULL )
+						*c = '\0';
+
+					if ( *pszTemp != '\0' )
 					{
-						i++;
+						count++;
 						g_AutoComplete.AddTail(pszTemp);
 					}
 				}
 			}
-			g_Log.Event(LOGM_INIT, "Auto-complete dictionary loaded (contains %i words).\n", i);
+			g_Log.Event(LOGM_INIT, "Auto-complete dictionary loaded (contains %" FMTSIZE_T " words).\n", count);
 			dict.Close();
 		}
 	}
@@ -559,8 +563,8 @@ int Sphere_InitServer( int argc, char *argv[] )
 	g_Cfg.PrintEFOFFlags();
 
 	EXC_SET("finilizing");
-	g_Log.Event(LOGM_INIT, g_Serv.GetStatusString(0x24));
-	g_Log.Event(LOGM_INIT, "Startup complete. items=%d, chars=%d\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS));
+	g_Log.Event(LOGM_INIT, "%s", g_Serv.GetStatusString(0x24));
+	g_Log.Event(LOGM_INIT, "Startup complete. items=%lu, chars=%lu\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS));
 
 #ifdef _WIN32
 	g_Log.Event(LOGM_INIT, "Press '?' for console commands\n");
@@ -573,7 +577,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("cmdline argc=%d starting with %x (argv1='%s')\n", argc, argv, ( argc > 2 ) ? argv[1] : "");
+	g_Log.EventDebug("cmdline argc=%d starting with %p (argv1='%s')\n", argc, argv, ( argc > 2 ) ? argv[1] : "");
 	EXC_DEBUG_END;
 	return -10;
 }
@@ -797,7 +801,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb10;
 				dTotalMb += 10;
-				g_Log.Event(LOGM_INIT, "Total read %u Mb\n", dTotalMb);
+				g_Log.Event(LOGM_INIT, "Total read %lu Mb\n", dTotalMb);
 			}
 			if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=") == buf ))
 			{
@@ -817,7 +821,7 @@ void defragSphere(char *path)
 		inf.Close();
 	}
 	dTotalUIDs = uid;
-	g_Log.Event(LOGM_INIT, "Totally having %u unique objects (UIDs), latest: 0%x\n", uid, uids[uid-1]);
+	g_Log.Event(LOGM_INIT, "Totally having %lu unique objects (UIDs), latest: 0%lx\n", uid, uids[uid-1]);
 
 	g_Log.Event(LOGM_INIT, "Quick-Sorting the UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs-1);
@@ -854,7 +858,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb5;
 				dTotalMb += 5;
-				g_Log.Event(LOGM_INIT, "Total processed %u Mb\n", dTotalMb);
+				g_Log.Event(LOGM_INIT, "Total processed %lu Mb\n", dTotalMb);
 			}
 			p = buf;
 
@@ -981,7 +985,7 @@ void defragSphere(char *path)
 				{
 					*p = 0;
 					strcpy(z, p1);
-					sprintf(z1, "0%x", uid);
+					sprintf(z1, "0%lx", uid);
 					strcat(buf, z1);
 					strcat(buf, z);
 				}

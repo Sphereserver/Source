@@ -945,14 +945,14 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 	case IT_EQ_VENDOR_BOX:
 		if ( ! IsItemEquipped())	// vendor boxes should ALWAYS be equipped !
 		{
-			DEBUG_ERR(("Un-equipped vendor box uid=0%x is bad\n", (DWORD) GetUID()));
+			DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", (DWORD) GetUID()));
 			break;
 		}
 		{
 			CItemVendable * pItemVend = dynamic_cast <CItemVendable *>(pItem);
 			if ( pItemVend == NULL )
 			{
-				g_Log.Event( LOGL_WARN, "Vendor non-vendable item: %s uid=0%x, vendor: %s uid=0%x\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
+				g_Log.Event( LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
 				pItem->Delete();
 				break;
 			}
@@ -965,7 +965,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 		// Can only place IT_GAME_PIECE inside here
 		if ( pItem->IsType( IT_GAME_PIECE ))
 			break;
-		g_Log.Event( LOGL_WARN, "Game board contains invalid item: %s uid=0%x, board: %s uid=0%x\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
+		g_Log.Event( LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 		pItem->Delete();
 		break;
 	default:
@@ -1660,7 +1660,7 @@ CChar * CItemCorpse::IsCorpseSleeping() const
 	// CItemCorpse
 	if ( !IsType(IT_CORPSE) )
 	{
-		DEBUG_ERR(("Corpse (0%x) doesn't have type T_CORPSE!(it has %d)\n",(DWORD)GetUID(),this->GetType()));
+		DEBUG_ERR(("Corpse (0%lx) doesn't have type T_CORPSE!(it has %d)\n",(DWORD)GetUID(),this->GetType()));
 		return NULL;
 	}
 

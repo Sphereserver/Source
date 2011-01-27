@@ -1181,7 +1181,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 				if ( !pRes )
 					sVal.FormatVal( m_type );
 				else
-					sVal.Format( pRes->GetResourceName() );
+					sVal = pRes->GetResourceName();
 				
 			}
 			break;
@@ -1622,12 +1622,12 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 			SKIP_SEPARATORS( pszKey );
 			const CUOMultiItemRec2* item = pMulti->GetItem(index);
 
-			if ( *pszKey == '\0' )						sVal.Format("%i,%i,%i,%i", item->m_wTileID, item->m_dx, item->m_dy, item->m_dz);
+			if ( *pszKey == '\0' )						sVal.Format("%u,%i,%i,%i", item->m_wTileID, item->m_dx, item->m_dy, item->m_dz);
 			else if ( !strnicmp(pszKey, "ID", 2) )		sVal.FormatVal(item->m_wTileID);
 			else if ( !strnicmp(pszKey, "DX", 2) )		sVal.FormatVal(item->m_dx);
 			else if ( !strnicmp(pszKey, "DY", 2) )		sVal.FormatVal(item->m_dy);
 			else if ( !strnicmp(pszKey, "DZ", 2) )		sVal.FormatVal(item->m_dz);
-			else if ( !strnicmp(pszKey, "D", 1) )		sVal.Format("%i,%i,%i", item->m_dx, item->m_dy, item->m_dz);
+			else if ( !strnicmp(pszKey, "D", 1) )		sVal.Format("%u,%i,%i", item->m_dx, item->m_dy, item->m_dz);
 			else if ( !strnicmp(pszKey, "VISIBLE", 7) )	sVal.FormatVal(item->m_visible);
 			else return false;
 		}
@@ -1655,7 +1655,7 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 				else if ( !strnicmp(pszKey, "DY", 2) ) sVal.FormatVal(item.m_dy);
 				else if ( !strnicmp(pszKey, "DZ", 2) ) sVal.FormatVal(item.m_dz);
 				else if ( !strnicmp(pszKey, "D", 1) ) sVal.Format("%i,%i,%i", item.m_dx, item.m_dy, item.m_dz);
-				else sVal.Format("%i,%i,%i,%i", item.m_id, item.m_dx, item.m_dy, item.m_dz);
+				else sVal.Format("%u,%i,%i,%i", item.m_id, item.m_dx, item.m_dy, item.m_dz);
 			}
 			else
 				return false;

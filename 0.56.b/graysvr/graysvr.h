@@ -257,7 +257,7 @@ public:
 	}
 
 	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );
-	void _cdecl CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ...  );
+	void _cdecl CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ...  ) __printfargs(3,4);
 
 public:
 	CLog()
@@ -764,7 +764,7 @@ private:
 	CClientTooltip& operator=(const CClientTooltip& other);
 
 public:
-	void __cdecl FormatArgs(LPCTSTR format, ...)
+	void __cdecl FormatArgs(LPCTSTR format, ...) __printfargs(2,3)
 	{
 		va_list vargs;
 		va_start( vargs, format );

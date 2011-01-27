@@ -124,7 +124,7 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 	long ver = mysql_get_client_version();
 	if ( ver < MIN_MYSQL_VERSION_ALLOW )
 	{
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Your MySQL client library is too old (version %d). Minimal allowed version is %d. MySQL support disabled.\n", ver, MIN_MYSQL_VERSION_ALLOW);
+		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Your MySQL client library is too old (version %ld). Minimal allowed version is %d. MySQL support disabled.\n", ver, MIN_MYSQL_VERSION_ALLOW);
 		g_Cfg.m_bMySql = false;
 		return false;
 	}
@@ -696,7 +696,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' [%x]\n", pszKey, pSrc);
+	g_Log.EventDebug("command '%s' [%p]\n", pszKey, pSrc);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -747,7 +747,7 @@ bool CDataBase::r_Verb(CScript & s, CTextConsole * pSrc)
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%x]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
 	EXC_DEBUG_END;
 	return false;
 }

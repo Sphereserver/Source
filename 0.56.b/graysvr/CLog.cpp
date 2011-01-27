@@ -70,7 +70,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 			Close();	// LINUX should alrady be closed.
 
 			OpenLog( NULL );
-			Printf( datetime.Format(NULL));
+			Printf( "%s", datetime.Format(NULL));
 		}
 		else
 		{

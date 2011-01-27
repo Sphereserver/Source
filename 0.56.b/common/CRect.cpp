@@ -671,8 +671,11 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 				{
 					case PT_TYPE:
 						{
-							CItemTypeDef *	pTypeDef	= g_World.GetTerrainItemTypeDef( pMeter->m_wTerrainIndex );
-							sVal.Format( pTypeDef ? pTypeDef->GetResourceName() : "" );
+							CItemTypeDef * pTypeDef = g_World.GetTerrainItemTypeDef( pMeter->m_wTerrainIndex );
+							if ( pTypeDef != NULL )
+								sVal = pTypeDef->GetResourceName();
+							else
+								sVal = "";
 						} return true;	
 					case PT_TERRAIN:
 						{

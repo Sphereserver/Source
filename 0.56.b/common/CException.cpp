@@ -47,18 +47,18 @@ bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelp
 		if ( nChars )
 		{
 			if ( m_hError & 0x80000000 )
-				sprintf( lpszError, "Error Pri=%d, Code=0x%x(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
+				sprintf( lpszError, "Error Pri=%d, Code=0x%lx(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
 			else
-				sprintf( lpszError, "Error Pri=%d, Code=%d(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
+				sprintf( lpszError, "Error Pri=%d, Code=%lu(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription );
 			return( true );
 		}
 	}
 #endif
 
 	if ( m_hError & 0x80000000 )
-		sprintf( lpszError, "Error Pri=%d, Code=0x%x, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
+		sprintf( lpszError, "Error Pri=%d, Code=0x%lx, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
 	else
-		sprintf( lpszError, "Error Pri=%d, Code=%d, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
+		sprintf( lpszError, "Error Pri=%d, Code=%lu, Desc='%s'", m_eSeverity, m_hError, m_pszDescription );
 	return( true );
 }
 
@@ -97,7 +97,7 @@ bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelp
 {
 	UNREFERENCED_PARAMETER(nMaxError);
 	UNREFERENCED_PARAMETER(pnHelpContext);
-	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %d", m_eSeverity, m_pExp, m_pFile, m_lLine);
+	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %ld", m_eSeverity, m_pExp, m_pFile, m_lLine);
 	return true;
 }
 
@@ -142,11 +142,11 @@ bool CGrayException::GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pn
 		case STATUS_INTEGER_DIVIDE_BY_ZERO:	zMsg = "Integer: Divide by Zero";	break;
 		case STATUS_STACK_OVERFLOW:			zMsg = "Stack Overflow";			break;
 		default:
-			sprintf(lpszError, "code=0x%x, (0x%x)", m_hError, m_dwAddress);
+			sprintf(lpszError, "code=0x%lx, (0x%lx)", m_hError, m_dwAddress);
 			return true;
 	}
 
-	sprintf(lpszError, "\"%s\" (0x%x)", zMsg, m_dwAddress);
+	sprintf(lpszError, "\"%s\" (0x%lx)", zMsg, m_dwAddress);
 	return true;
 }
 

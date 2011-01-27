@@ -283,7 +283,7 @@ LPCTSTR CResourceBase::ResourceGetName( RESOURCE_ID_BASE rid ) const
 	ASSERT(pszTmp);
 	if ( ! rid.IsValidUID())
 	{
-		sprintf( pszTmp, "%d", rid.GetPrivateUID() );
+		sprintf( pszTmp, "%lu", rid.GetPrivateUID() );
 	}
 	else
 	{
@@ -405,11 +405,11 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 
 		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex())
 		{
-			DEBUG_WARN(( "The DEFNAME=%s has a strange type mismatch? 0%x!=0%x\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID() ));
+			DEBUG_WARN(( "The DEFNAME=%s has a strange type mismatch? 0%x!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID() ));
 		}
 		else
 		{
-			DEBUG_WARN(( "The DEFNAME=%s already exists! 0%x!=0%x\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex() ));
+			DEBUG_WARN(( "The DEFNAME=%s already exists! 0%x!=0%lx\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex() ));
 		}
 
 		iVarNum = g_Exp.m_VarDefs.SetNum( pszName, GetResourceID().GetPrivateUID() );
@@ -991,7 +991,7 @@ bool CResourceLink::ResourceLock( CResourceLock &s )
 
 	// ret = -2 or -3
 	LPCTSTR pszName = GetResourceName();
-	DEBUG_ERR(("ResourceLock '%s':%d id=%s FAILED\n", (LPCTSTR)s.GetFilePath(), m_Context.m_lOffset, pszName));
+	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", (LPCTSTR)s.GetFilePath(), m_Context.m_lOffset, pszName));
 
 	return false;
 }

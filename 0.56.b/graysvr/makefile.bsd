@@ -6,15 +6,18 @@ MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 #OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 OPT	= -O2 $(OPTDEFAULT)
-#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas
+#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas -Wno-invalid-offsetof
 WARN	= -w
-
 #DEBUG	= -ggdb2
 DEBUG	= -s
-INCLUDE	= -I../common -I/usr/local/include/mysql
+
+# DB includes + libs
+DBINCL	= -I/usr/local/include/mysql
+DBLIBS	= -L/usr/local/lib/mysql -lmysqlclient
 
 # FreeBSD
-LIBS	= -dynamic -L/usr/lib -lpthread -L/usr/local/lib/mysql -lmysqlclient -lrt -ldl
+INCLUDE	= -I../common $(DBINCL)
+LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFBSD	= -D_BSD
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD
@@ -189,7 +192,7 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 flags:  
 	@echo "Compiler Flags: $(SCC) -c $(O_FLAGS) $(C_FLAGS)"
 
-$(EXE): svn flags gray
+$(EXE): flags gray
 	@$(SCC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o
 
 version.h:	VERSION

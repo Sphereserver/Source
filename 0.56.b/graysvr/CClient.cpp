@@ -54,7 +54,7 @@ CClient::CClient(NetState* state)
 
 	m_Env.SetInvalid();
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%x:Client connected [Total:%d] ('%s' %d/%d)\n",
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n",
 		GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history->m_connecting, history->m_connected);
 
 	m_zLastMessage[0] = 0;
@@ -496,7 +496,7 @@ void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, b
 	GETNONWHITESPACE(pszFunction);
 	SKIP_SEPARATORS(pszFunction);
 
-	m_Targ_Text.Format( pszFunction );
+	m_Targ_Text = pszFunction;
 	if ( CItemBase::IsID_Multi( itemid ))	// a multi we get from Multi.mul
 	{
 		SetTargMode(CLIMODE_TARG_OBJ_FUNC, "");
@@ -514,7 +514,7 @@ void CClient::addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fC
 	GETNONWHITESPACE(pszFunction);
 	SKIP_SEPARATORS(pszFunction);
 
-	m_Targ_Text.Format( pszFunction );
+	m_Targ_Text = pszFunction;
 	addTarget( CLIMODE_TARG_OBJ_FUNC, "", fAllowGround, fCheckCrime );
 }
 
@@ -523,7 +523,7 @@ void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessa
 	ADDTOCALLSTACK("CClient::addPromptConsoleFunction");
 	// Target a verb at some object .
 	ASSERT(pszFunction);
-	m_Prompt_Text.Format( pszFunction );
+	m_Prompt_Text = pszFunction;
 	addPromptConsole( CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode );
 }
 
@@ -706,14 +706,14 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 					SKIP_SEPARATORS(pszKey);
 
 					if ( !strnicmp("X", pszKey, 1) )
-						sVal.Format( "%d", m_ScreenSize.x );
+						sVal.Format( "%lu", m_ScreenSize.x );
 					else if ( !strnicmp("Y", pszKey, 1) )
-						sVal.Format( "%d", m_ScreenSize.y );
+						sVal.Format( "%lu", m_ScreenSize.y );
 					else
 						return( false );
 				}
 				else
-					sVal.Format( "%d,%d", m_ScreenSize.x, m_ScreenSize.y );
+					sVal.Format( "%lu,%lu", m_ScreenSize.x, m_ScreenSize.y );
 			} break;
 		case CC_TARG:
 			sVal.FormatVal( m_Targ_UID );
@@ -990,7 +990,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					g_Log.EventDebug("SCRIPT: addcliloc(%d,'%s')\n", clilocid, (LPCTSTR)LocArgs);
+					g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", clilocid, (LPCTSTR)LocArgs);
 				this->m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
 			}
 			break;

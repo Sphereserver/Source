@@ -42,7 +42,11 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
 		nStrLen = strlen(buf);
 
-		if ( bFirstLine && nStrLen >= 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF )
+		// first line may contain utf marker
+		if ( bFirstLine && nStrLen >= 3 &&
+			static_cast<unsigned char>(buf[0]) == 0xEF &&
+			static_cast<unsigned char>(buf[1]) == 0xBB &&
+			static_cast<unsigned char>(buf[2]) == 0xBF )
 			bUTF = true;
 
 		std::string strLine((bUTF ? &buf[3]:buf), nStrLen - (bUTF ? 3:0));

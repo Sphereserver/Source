@@ -94,6 +94,9 @@
 #define Sleep(mSec)	usleep(mSec*1000)	// arg is microseconds = 1/1000000
 #define SleepEx(mSec, unused)		usleep(mSec*1000)	// arg is microseconds = 1/1000000
 
+// printf format identifiers
+#define FMTSIZE_T "zu" // linux uses %zu to format size_t
+
 inline void _strupr( TCHAR * pszStr )
 {
 	// No portable UNIX/LINUX equiv to this.

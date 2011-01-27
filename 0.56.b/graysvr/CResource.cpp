@@ -564,7 +564,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CLIENTLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientLingerTime),	0 }},
 	{ "CLIENTMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMax),			0 }},
 	{ "CLIENTMAXIP",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMaxIP),		0 }},
-	{ "CLIENTS", {ELEM_VOID, 0, 0} },	// duplicate
+	{ "CLIENTS",				{ ELEM_VOID,	0,											0 }},	// duplicate
 	{ "COLORNOTOCRIMINAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoCriminal),	0 }},
 	{ "COLORNOTODEFAULT",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoDefault),	0 }},
 	{ "COLORNOTOEVIL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoEvil),		0 }},
@@ -623,12 +623,12 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "GUARDLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iGuardLingerTime),		0 }},
 	{ "GUARDSINSTANTKILL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fGuardsInstantKill),	0 }},
 	{ "GUESTSMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iGuestsMax),			0 }},
-	{ "GUILDS",		{ELEM_VOID, 0, 0} },
-	{ "HEARALL",	{ELEM_VOID, 0, 0}	},
+	{ "GUILDS",					{ ELEM_VOID,	0,											0 }},
+	{ "HEARALL",				{ ELEM_VOID,	0,											0 }},
 	{ "HELPINGCRIMINALSISACRIME",{ ELEM_BOOL,	OFFSETOF(CResource,m_fHelpingCriminalsIsACrime),	0 }},
-	{ "HITPOINTPERCENTONREZ",	{ ELEM_INT,		OFFSETOF(CResource,m_iHitpointPercentOnRez),		0 }},
-	{ "HITSHUNGERLOSS",			{ ELEM_INT,		OFFSETOF(CResource,m_iHitsHungerLoss),				0 }},
-	{ "HITSUPDATERATE" },
+	{ "HITPOINTPERCENTONREZ",	{ ELEM_INT,		OFFSETOF(CResource,m_iHitpointPercentOnRez),0 }},
+	{ "HITSHUNGERLOSS",			{ ELEM_INT,		OFFSETOF(CResource,m_iHitsHungerLoss),		0 }},
+	{ "HITSUPDATERATE",			{ ELEM_VOID,	0,											0 }},
 	{ "INITHIDDENSKILLS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fInitHiddenSkills),	0 }},
 	{ "LEVELMODE",				{ ELEM_INT,		OFFSETOF(CResource,m_iLevelMode),			0 }},
 	{ "LEVELNEXTAT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLevelNextAt),			0 }},
@@ -636,8 +636,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "LIGHTDAY",				{ ELEM_INT,		OFFSETOF(CResource,m_iLightDay),			0 }},
 	{ "LIGHTNIGHT",				{ ELEM_INT,		OFFSETOF(CResource,m_iLightNight),			0 }},
 	{ "LOCALIPADMIN",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fLocalIPAdmin),		0 }}, // The local ip is assumed to be the admin.
-	{ "LOG",		{ELEM_VOID, 0, 0} },
-	{ "LOGMASK" },		// GetLogMask
+	{ "LOG",					{ ELEM_VOID,	0,											0 }},
+	{ "LOGMASK",				{ ELEM_VOID,	0,											0 }}, // GetLogMask
 	{ "LOOTINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fLootingIsACrime),		0 }},
 	{ "LOSTNPCTELEPORT",		{ ELEM_INT,		OFFSETOF(CResource,m_iLostNPCTeleport),		0 }},
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags),			0 }},
@@ -665,7 +665,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MONSTERFIGHT",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFight),		0 }},
 	{ "MOUNTHEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMountHeight),			0 }},
 	{ "MOVERATE",				{ ELEM_INT,		OFFSETOF(CResource,m_iMoveRate),			0 }},
-	{ "MULFILES",	{ELEM_VOID, 0, 0} },
+	{ "MULFILES",				{ ELEM_VOID,	0,											0 }},
 	{ "MURDERDECAYTIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMurderDecayTime),		0 }},
 	{ "MURDERMINCOUNT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMurderMinCount),		0 }}, // amount of murders before we get title.
 #ifndef _DBPLUGIN
@@ -692,11 +692,11 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety),	0 }},
 	{ "PLAYEREVIL",				{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil),			0 }},
 	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral),		0 }},
-	{ "PROFILE",	{ELEM_VOID, 0, 0} },
+	{ "PROFILE",				{ ELEM_VOID,	0,											0 }},
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail),		0 }},
 	{ "REAGENTSREQUIRED",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentsRequired),	0 }},
-	{ "RTICKS",		{ELEM_VOID, 0, 0} },
-	{ "RTIME",		{ELEM_VOID, 0, 0} },
+	{ "RTICKS",					{ ELEM_VOID,	0,											0 }},
+	{ "RTIME",					{ ELEM_VOID,	0,											0 }},
 	{ "RUNNINGPENALTY",			{ ELEM_INT,		OFFSETOF(CResource,m_iStamRunningPenalty),	0 }},
 	{ "SAVEBACKGROUND",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackgroundTime),	0 }},
 	{ "SAVEPERIOD",				{ ELEM_INT,		OFFSETOF(CResource,m_iSavePeriod),			0 }},
@@ -722,7 +722,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TELEPORTSOUNDSTAFF",		{ ELEM_INT,		OFFSETOF(CResource,m_iSpell_Teleport_Sound_Staff),		0 }},
 	{ "TELNETLOG",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fTelnetLog),			0 }},
 	{ "TIMERCALL",				{ ELEM_INT,		OFFSETOF(CResource,m_iTimerCall),			0 }},
-	{ "TIMEUP",		{ELEM_VOID, 0, 0} },
+	{ "TIMEUP",					{ ELEM_VOID,	0,											0 }},
 	{ "TOOLTIPCACHE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipCache),		0 }},
 	{ "TOOLTIPMODE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipMode),			0 }},
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork),		0 }},
@@ -734,7 +734,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "USENOCRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsenocrypt),			0 }},	// we don't want no-crypt clients
 	{ "USEPACKETPRIORITY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsePacketPriorities),	0 }},
 	{ "VENDORMAXSELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iVendorMaxSell),		0 }},
-	{ "VERSION",	{ELEM_VOID, 0, 0} },
+	{ "VERSION",				{ ELEM_VOID,	0,											0 }},
 	{ "WALKBUFFER",				{ ELEM_INT,		OFFSETOF(CResource,m_iWalkBuffer),			0 }},
 	{ "WALKREGEN",				{ ELEM_INT,		OFFSETOF(CResource,m_iWalkRegen),			0 }},
 	{ "WOOLGROWTHTIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iWoolGrowthTime),		0 }},
@@ -745,7 +745,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "WORLDSAVE",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sWorldBaseDir),		0 }},
 	{ "WRAPX",					{ ELEM_INT,		OFFSETOF(CResource,m_iWrapX),				0 }},
 	{ "ZEROPOINT",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sZeroPoint),			0 }},
-	{ NULL },
+	{ NULL,						{ ELEM_VOID,	0,											0 }}
 };
 
 bool CResource::r_LoadVal( CScript &s )
@@ -1631,7 +1631,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if ( it->second == idKRDialog )	// already mapped to this kr dialog
 			return true;
 
-		g_Log.Event( LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%d'.\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+		g_Log.Event( LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%lu'.\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
 	}
 
 	// prevent double mapping of KR dialog
@@ -1640,7 +1640,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if (it->second != idKRDialog)
 			continue;
 
-		DEBUG_ERR(("KR Dialog '%d' is already mapped to dialog '%s'.\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		DEBUG_ERR(("KR Dialog '%lu' is already mapped to dialog '%s'.\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
 		return false;
 	}
 
@@ -3490,7 +3490,7 @@ bool CResource::LoadCryptIni( void )
 	m_scpCryptIni.Close();
 	m_scpCryptIni.CloseForce();
 
-	g_Log.Event( LOGM_INIT, "Loaded %d client encryption keys.\n", CCrypt::client_keys.size() );
+	g_Log.Event( LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys.\n", CCrypt::client_keys.size() );
 
 	return( true );
 }
@@ -3723,9 +3723,9 @@ bool CResource::Load( bool fResync )
 LPCTSTR CResource::GetDefaultMsg(long lKeyNum)
 {
 	ADDTOCALLSTACK("CResource::GetDefaultMsg");
-	if (( lKeyNum < 0 ) || ( lKeyNum > DEFMSG_QTY ))
+	if (( lKeyNum < 0 ) || ( lKeyNum >= DEFMSG_QTY ))
 	{
-		g_Log.EventError("Defmessage %d out of range [0..%d]\n", lKeyNum, DEFMSG_QTY-1);
+		g_Log.EventError("Defmessage %ld out of range [0..%d]\n", lKeyNum, DEFMSG_QTY-1);
 		return "";
 	}
 	return g_Exp.sm_szMessages[lKeyNum];

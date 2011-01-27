@@ -331,7 +331,7 @@ bool CRegionBase::RealizeRegion()
 			//	Yes, this sector overlapped, so add it to the sector list
 			if ( !pSector->LinkRegion(this) )
 			{
-				g_Log.EventError("Linking sector #%d for map %d for region %s failed (fatal for this region).\n", l, m_pt.m_map, GetName());
+				g_Log.EventError("Linking sector #%ld for map %d for region %s failed (fatal for this region).\n", l, m_pt.m_map, GetName());
 				return false;
 			}
 			m_iLinkedSectors++;
@@ -565,7 +565,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, (LPCTSTR)sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, pSrc);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -839,7 +839,7 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%x]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1009,7 +1009,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%x]\n", pszKey, (LPCTSTR)sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, pSrc);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1147,7 +1147,7 @@ bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%x]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
 	EXC_DEBUG_END;
 	return false;
 }

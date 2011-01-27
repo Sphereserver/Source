@@ -84,8 +84,8 @@ public:
 	CGString		m_sTmp;
 
 								//	defined default messages
-	static TCHAR sm_szMessages[DEFMSG_QTY+1][128];			// like: "You put %s to %s"
-	static LPCTSTR const sm_szMsgNames[DEFMSG_QTY+1];		// like: "put_it"
+	static TCHAR sm_szMessages[DEFMSG_QTY][128];			// like: "You put %s to %s"
+	static LPCTSTR const sm_szMsgNames[DEFMSG_QTY];		// like: "put_it"
 
 public:
 	// Strict G++ Prototyping produces an error when not casting char*& to const char*&

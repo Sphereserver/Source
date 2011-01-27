@@ -258,11 +258,11 @@ void CObjBase::r_WriteSafe( CScript & s )
 	}
 	catch ( const CGrayError& e )
 	{
-		g_Log.CatchEvent(&e, "Write Object 0%x", uid);
+		g_Log.CatchEvent(&e, "Write Object 0%lx", uid);
 	}
 	catch (...)	// catch all
 	{
-		g_Log.CatchEvent(NULL, "Write Object 0%x", uid);
+		g_Log.CatchEvent(NULL, "Write Object 0%lx", uid);
 	}
 }
 
@@ -1748,7 +1748,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_WARN(("pszVerb %s",pszVerb));
 				if ( !r_Verb(script, pSrc) )
 				{
-					DEBUG_ERR(( "Can't try %s object %s (0%x)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
 					return( false );
 				}
 			}
@@ -1782,9 +1782,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( pNewSrc == NULL )
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%x): invalid src uid 0%x\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), NewSrc.GetObjUID()));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), NewSrc.GetObjUID()));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%x)\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
 
 					return false;
 				}
@@ -1792,9 +1792,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if (!r_Verb(script, pNewSrc))
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%x) with src %s (0%x)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), (LPCTSTR)pNewSrc->GetName(), NewSrc.GetObjUID()));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), (LPCTSTR)pNewSrc->GetName(), NewSrc.GetObjUID()));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%x)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
 
 					return false;
 				}

@@ -564,8 +564,8 @@ void CItemStone::r_Write( CScript & s )
 		if (pMember->GetLinkUID().IsValidUID()) // To protect against characters that were deleted!
 		{
 			s.WriteKeyFormat( "MEMBER",
-				"0%x,%s,%i,0%x,%i,%i,%i",
-				pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0),
+				"0%lx,%s,%i,0%lx,%i,%i,%i",
+				(DWORD) pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0),
 				(LPCTSTR) pMember->GetTitle(),
 				pMember->GetPriv(),
 				(DWORD) pMember->GetLoyalToUID(),
@@ -762,14 +762,14 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 					CChar * pChar = pNewMasterUid.CharFind();
 					if ( !pChar )
 					{
-						DEBUG_ERR(( "MASTERUID called on non char 0%x uid.\n", (DWORD)pNewMasterUid ));
+						DEBUG_ERR(( "MASTERUID called on non char 0%lx uid.\n", (DWORD)pNewMasterUid ));
 						return( false );
 					}
 
 					CStoneMember * pNewMaster = GetMember( pChar );
 					if ( !pNewMaster )
 					{
-						DEBUG_ERR(( "MASTERUID called on char 0%x (%s) that is not a valid member of stone with 0x%x uid.\n", (DWORD)pNewMasterUid, pChar->GetName(), (DWORD)GetUID() ));
+						DEBUG_ERR(( "MASTERUID called on char 0%lx (%s) that is not a valid member of stone with 0x%lx uid.\n", (DWORD)pNewMasterUid, pChar->GetName(), (DWORD)GetUID() ));
 						return( false );
 					}
 
@@ -1901,7 +1901,7 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 	}
 
 	// just delete this member. (it is mislinked)
-	DEBUG_ERR(( "Stone UID=0%x has mislinked member uid=0%x\n", 
+	DEBUG_ERR(( "Stone UID=0%lx has mislinked member uid=0%lx\n", 
 		(DWORD) GetUID(), (DWORD) pMember->GetLinkUID()));
 	return( false );
 }

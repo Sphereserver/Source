@@ -173,8 +173,8 @@ void CSectorBase::CheckMapBlockCache()
 		EXC_CATCH;
 		EXC_DEBUG_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.EventDebug("m_MapBlockCache.erase(%d)\n", it->first); 
-		g_Log.EventDebug("check time %d, index %d/%d\n", m_iMapBlockCacheTime, it->first, m_MapBlockCache.size());
+		g_Log.EventDebug("m_MapBlockCache.erase(%ld)\n", it->first); 
+		g_Log.EventDebug("check time %d, index %ld/%" FMTSIZE_T "\n", m_iMapBlockCacheTime, it->first, m_MapBlockCache.size());
 		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUG_END;
 	}

@@ -255,9 +255,7 @@ void CServer::Shutdown( int iMinutes ) // If shutdown is initialized
 		m_timeShutdown = CServTime::GetCurrentTime() + ( iMinutes * 60 * TICK_PER_SEC );
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN ), iMinutes);
-	g_World.Broadcast(pszTemp);
+	g_World.Broadcastf(g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN ), iMinutes);
 }
 
 void CServer::SysMessage( LPCTSTR pszMsg ) const
@@ -364,7 +362,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 		case 0x22: // '"'
 			{
 			// shown in the INFO page in game.
-			sprintf( pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%i, Items=%i, Chars=%i, Mem=%iK\n",
+			sprintf( pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%i, Items=%li, Chars=%li, Mem=%liK\n",
 				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM) );
 			}
 			break;
@@ -374,7 +372,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			break;
 		case 0x25: // '%'
 			// ConnectUO Status string
-			sprintf( pTemp, GRAY_TITLE " Items=%i, Mobiles=%i, Clients=%i, Mem=%i", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM) );
+			sprintf( pTemp, GRAY_TITLE " Items=%li, Mobiles=%li, Clients=%i, Mem=%li", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM) );
 			break;
 	}
 
@@ -413,7 +411,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 			if ( pClient->IsPriv(PRIV_GM) || pClient->GetPrivLevel() >= PLEVEL_Counsel )
 				chRank = pChar->IsStatFlag(STATF_Insubstantial) ? '*' : '+';
 
-			sprintf(pszMsg, "%s%x:Acc%c'%s', (%s) Char='%s',(%s)\n",
+			sprintf(pszMsg, "%s%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
 				pszMsg,
 				pClient->GetSocketID(),
 				chRank,
@@ -436,7 +434,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 				default: pszState = "NOT LOGGED IN"; break;
 			}
 
-			sprintf(pszMsg, "%s%x:Acc='%s', (%s) %s\n",
+			sprintf(pszMsg, "%s%lx:Acc='%s', (%s) %s\n",
 				pszMsg,
 				pClient->GetSocketID(),
 				pClient->GetAccount() ? (LPCTSTR) pClient->GetAccount()->GetName() : "<NA>",
@@ -485,7 +483,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"# = Immediate Save world (## to save both world and statics)\n"
 				"A = Accounts file update\n"
 				"B message = Broadcast a message\n"
-				"C = Clients List (%d)\n"
+				"C = Clients List (%lu)\n"
 				"D = Dump data to external file (DA to dump areas)\n"
 				"E = Clear internal variables (like script profile)\n"
 				"G = Garbage collection\n"
@@ -905,9 +903,9 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 		if (profile->IsEnabled() == false)
 			continue;
 
-		pSrc->SysMessagef("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+		pSrc->SysMessagef("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
 		if (ftDump != NULL)
-			ftDump->Printf("Thread %d, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+			ftDump->Printf("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
@@ -935,7 +933,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 
 			divby = llTimeProfileFrequency / 1000;
 
-			pSrc->SysMessagef( "Scripts: called %d times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
+			pSrc->SysMessagef( "Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
 					(int)(g_profiler.total/divby),
 					(int)(((g_profiler.total*10000)/(divby))%10000),
@@ -943,7 +941,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 					(int)(((average*10000)/(divby))%10000)
 			);
 			if (ftDump != NULL)
-				ftDump->Printf("Scripts: called %d times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
+				ftDump->Printf("Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
 					(int)(g_profiler.total/divby),
 					(int)(((g_profiler.total*10000)/(divby))%10000),
@@ -955,7 +953,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			{
 				if ( pFun->average > average )
 				{
-					pSrc->SysMessagef( "FUNCTION '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+					pSrc->SysMessagef( "FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 						pFun->name,
 						pFun->called,
 						(int)(pFun->average/divby),
@@ -968,7 +966,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 						(int)(((pFun->total*10000)/(divby))%10000)
 					);
 					if (ftDump != NULL)
-						ftDump->Printf("FUNCTION '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+						ftDump->Printf("FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pFun->name,
 							pFun->called,
 							(int)(pFun->average/divby),
@@ -986,7 +984,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			{
 				if ( pTrig->average > average )
 				{
-					pSrc->SysMessagef( "TRIGGER '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+					pSrc->SysMessagef( "TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 						pTrig->name,
 						pTrig->called,
 						(int)(pTrig->average/divby),
@@ -999,7 +997,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 						(int)(((pTrig->total*10000)/(divby))%10000)
 					);
 					if (ftDump != NULL)
-						ftDump->Printf("TRIGGER '%s' called %d times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+						ftDump->Printf("TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pTrig->name,
 							pTrig->called,
 							(int)(pTrig->average/divby),
@@ -1846,7 +1844,7 @@ void CServer::OnTick()
 		LONGLONG	hi = TIME_PROFILE_GET_HI;
 		if ( hi > 5L )
 		{
-			DEBUG_ERR(("CServer::OnTick() [socket operations] took %d.%d to run\n", hi, TIME_PROFILE_GET_LO));
+			DEBUG_ERR(("CServer::OnTick() [socket operations] took %lld.%lld to run\n", static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
 		}
 	}
 	EXC_CATCH;
@@ -1902,16 +1900,14 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 
 #ifdef _NIGHTLYBUILD
-	LPCTSTR pszWarning = " --- WARNING ---\r\n\r\n"
-		"This is a nightly build of SphereServer. This build is to be used\r\n"
-		"for testing and/or bug reporting ONLY. DO NOT run this build on a\r\n"
-		"live shard unless you know what you are doing!\r\n"
-		"Nightly builds are automatically made every night from source and\r\n"
-		"might contain errors, might be unstable or even destroy your\r\n"
-		"shard as they are mostly untested!\r\n"
-		" ---------------------------------\r\n\r\n";
-
-	g_Log.EventWarn(pszWarning);
+	g_Log.EventWarn(" --- WARNING ---\r\n\r\n"
+					"This is a nightly build of SphereServer. This build is to be used\r\n"
+					"for testing and/or bug reporting ONLY. DO NOT run this build on a\r\n"
+					"live shard unless you know what you are doing!\r\n"
+					"Nightly builds are automatically made every night from source and\r\n"
+					"might contain errors, might be unstable or even destroy your\r\n"
+					"shard as they are mostly untested!\r\n"
+					" ---------------------------------\r\n\r\n");
 
 	if (!g_Cfg.m_bAgree)
 	{

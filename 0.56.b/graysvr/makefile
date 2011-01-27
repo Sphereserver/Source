@@ -6,15 +6,18 @@ MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 #OPT	= -O2 $(OPTDEFAULT)
-#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas
+#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas -Wno-invalid-offsetof
 WARN	= -w
-
 #DEBUG	= -ggdb2
 DEBUG	= -s
-INCLUDE	= -I../common -I/usr/include/mysql
+
+# DB includes + libs
+DBINCL	= -I/usr/include/mysql
+DBLIBS	= -lmysqlclient
 
 # Linux
-LIBS	= -dynamic -L/usr/lib -lpthread -lmysqlclient -lrt -ldl
+INCLUDE	= -I../common $(DBINCL)
+LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFNIX  = -D_LINUX
 
 NIGHTLYDEFS = -D_NIGHTLYBUILD

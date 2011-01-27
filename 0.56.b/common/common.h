@@ -30,6 +30,18 @@
 	#include "os_unix.h"
 #endif
 
+// use to indicate that a function uses printf-style arguments, allowing GCC
+// to validate the format string and arguments:
+// a = 1-based index of format string
+// b = 1-based index of arguments
+// (note: add 1 to index for non-static class methods because 'this' argument
+// is inserted in position 1)
+#ifdef __GNUC__
+	#define __printfargs(a,b) __attribute__ ((format(printf, a, b)))
+#else
+	#define __printfargs(a,b)
+#endif
+
 #define IsDigit(c) isdigit((unsigned char)c)
 #define IsSpace(c) isspace((unsigned char)c)
 #define IsAlpha(c) isalpha((unsigned char)c)
@@ -115,7 +127,7 @@ protected:
 	virtual int VEvent(DWORD wMask, LPCTSTR pszFormat, va_list args);
 
 public:
-	int _cdecl Event( DWORD wMask, LPCTSTR pszFormat, ... )
+	int _cdecl Event( DWORD wMask, LPCTSTR pszFormat, ... ) __printfargs(3,4)
 	{
 		va_list vargs;
 		va_start( vargs, pszFormat );
@@ -124,7 +136,7 @@ public:
 		return( iret );
 	}
 
-	int _cdecl EventDebug(LPCTSTR pszFormat, ...)
+	int _cdecl EventDebug(LPCTSTR pszFormat, ...) __printfargs(2,3)
 	{
 		va_list vargs;
 		va_start(vargs, pszFormat);
@@ -133,7 +145,7 @@ public:
 		return iret;
 	}
 
-	int _cdecl EventError(LPCTSTR pszFormat, ...)
+	int _cdecl EventError(LPCTSTR pszFormat, ...) __printfargs(2,3)
 	{
 		va_list vargs;
 		va_start(vargs, pszFormat);
@@ -142,7 +154,7 @@ public:
 		return iret;
 	}
 
-	int _cdecl EventWarn(LPCTSTR pszFormat, ...)
+	int _cdecl EventWarn(LPCTSTR pszFormat, ...) __printfargs(2,3)
 	{
 		va_list vargs;
 		va_start(vargs, pszFormat);
@@ -152,7 +164,7 @@ public:
 	}
 
 #ifdef _DEBUG
-	int _cdecl EventEvent( LPCTSTR pszFormat, ... )
+	int _cdecl EventEvent( LPCTSTR pszFormat, ... ) __printfargs(2,3)
 	{
 		va_list vargs;
 		va_start( vargs, pszFormat );

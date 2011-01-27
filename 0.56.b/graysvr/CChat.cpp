@@ -28,8 +28,7 @@ void CChat::EventMsg( CClient * pClient, const NCHAR * pszText, int len, CLangua
 	if (pMe->IsChatActive() == false)
 	{
 		// simulate the chat button being clicked
-		NCHAR name[MAX_NAME_SIZE+1] = { '\0' };
-		pClient->Event_ChatButton(name);
+		pClient->Event_ChatButton(NULL);
 
 		// if chat isn't active now then cancel processing the event
 		if (pMe->IsChatActive() == false)

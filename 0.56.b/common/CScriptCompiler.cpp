@@ -388,7 +388,7 @@ notfound:
 
 	if ( head.lSize >= COMPILER_MAX_BUFER )
 	{
-		g_Log.EventError("Script '%s' too large (%d KBytes). Maximal allowed script could be %d KBytes.\n",
+		g_Log.EventError("Script '%s' too large (%ld KBytes). Maximal allowed script could be %ld KBytes.\n",
 			scriptName, (head.lSize/1024), (COMPILER_MAX_BUFER/1024));
 		fclose(in);
 		fclose(out);
@@ -1035,7 +1035,7 @@ bool CScriptCompiler::Execute(char *scriptName)
 		if ( rawData )
 			delete []rawData;
 
-		g_Log.EventError("Memory allocation error %d + %d bytes for script '%s'\n", head.lPackedSize, head.lCodeSize, scriptName);
+		g_Log.EventError("Memory allocation error %lu + %lu bytes for script '%s'\n", head.lPackedSize, head.lCodeSize, scriptName);
 		fclose(script);
 		return false;
 	}
@@ -1053,7 +1053,7 @@ bool CScriptCompiler::Execute(char *scriptName)
 		int error = z_uncompress((BYTE *)dataToExecute, &uncompressedSize, (BYTE *)rawDataPacked, head.lPackedSize);
 		if (( head.lCodeSize != uncompressedSize ) || ( error != Z_OK ))
 		{
-			g_Log.EventError("Unable to uncompress %d bytes of compressed data to %d bytes buffer for script '%s'\n", head.lPackedSize, head.lCodeSize, scriptName);
+			g_Log.EventError("Unable to uncompress %lu bytes of compressed data to %lu bytes buffer for script '%s'\n", head.lPackedSize, head.lCodeSize, scriptName);
 
 			delete[] dataToExecute;
 

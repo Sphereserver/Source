@@ -260,7 +260,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 		case STAT_FAME:
 			if ( iVal < 0 )
 			{
-				DEBUG_ERR(( "ID=0%x,UID=0%x Fame set out of range %d\n", GetBaseID(), (DWORD) GetUID(), iVal ));
+				DEBUG_ERR(( "ID=0%x,UID=0%lx Fame set out of range %d\n", GetBaseID(), (DWORD) GetUID(), iVal ));
 				iVal = 0;
 			}
 			break;
@@ -4223,7 +4223,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 	{
 		if ( skill != SKILL_NONE && !IsSkillBase(skill) && !IsSkillNPC(skill) )
 		{
-			DEBUG_ERR(("UID:0%x Bad Skill %d for '%s'\n", (DWORD)GetUID(), skill, GetName()));
+			DEBUG_ERR(("UID:0%lx Bad Skill %d for '%s'\n", (DWORD)GetUID(), skill, GetName()));
 			return false;
 		}
 		m_Act_SkillCurrent = skill;

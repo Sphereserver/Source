@@ -194,7 +194,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		return iNotoFlag;
 
 	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
-	sprintf(getNoto, "OVERRIDE.NOTO.0%x", (DWORD) pCharViewer->GetUID() );
+	sprintf(getNoto, "OVERRIDE.NOTO.0%lx", (DWORD) pCharViewer->GetUID() );
 	iNotoFlag = (NOTO_TYPE)m_TagDefs.GetKeyNum(getNoto);
 	
 	if ( iNotoFlag != NOTO_INVALID )
@@ -240,7 +240,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 				}
 				else
 				{
-					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s uid=0%x\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
+					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s uid=0%lx\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
 					// too many owners, return the notoriety for however far we got down the chain
 				}
 			}
@@ -2412,7 +2412,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			iDmg += (iDmg * iHitPrefBonus) / 100;
 		} else {
 			iDmg -= (iDmg * iHitPrefPenalty) / 100;
-			pSrc->SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_TARGET_MISSED ));
+			pSrc->SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_TARGET_MISSED ));
 			while ( iHitArea<ARMOR_QTY-1 )
 			{
 				iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;

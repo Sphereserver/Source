@@ -135,7 +135,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	{
 		// logging in as a new player whilst already online !
 		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ALREADYONLINE));
-		DEBUG_ERR(("%x:Setup_CreateDialog acct='%s' already online!\n", net->id(), account->GetName()));
+		DEBUG_ERR(("%lx:Setup_CreateDialog acct='%s' already online!\n", net->id(), account->GetName()));
 		return false;
 	}
 
@@ -166,7 +166,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
-	g_Log.Event( LOGM_CLIENTS_LOG, "%x:Setup_CreateDialog acct='%s', char='%s'\n",
+	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n",
 		net->id(), (LPCTSTR)account->GetName(), (LPCTSTR)pChar->GetName());
 
 	TRIGRET_TYPE tr;
@@ -1167,7 +1167,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			// request for message header and/or body
 			if (getLength() != 0x0c)
 			{
-				DEBUG_ERR(( "%x:BBoard feed back message bad length %d\n", net->id(), getLength()));
+				DEBUG_ERR(( "%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
 			}
 			if (client->addBBoardMessage(board, action, messageSerial) == false)
@@ -1206,7 +1206,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
 			if (newMessage == NULL)
 			{
-				DEBUG_ERR(("%x:BBoard can't create message item\n", net->id()));
+				DEBUG_ERR(("%lx:BBoard can't create message item\n", net->id()));
 				return true;
 			}
 
@@ -1252,7 +1252,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		}
 
 		default:
-			DEBUG_ERR(( "%x:BBoard unknown flag %d\n", net->id(), action));
+			DEBUG_ERR(( "%lx:BBoard unknown flag %d\n", net->id(), action));
 			return true;
 	}
 
@@ -1396,7 +1396,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 			return true;
 
 		default:
-			DEBUG_ERR(("%x:Unknown Targetting mode for menu %d\n", net->id(), context));
+			DEBUG_ERR(("%lx:Unknown Targetting mode for menu %d\n", net->id(), context));
 			return true;
 	}
 }
@@ -2001,7 +2001,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 			object->Update();
 		}
 
-		g_Log.Event( LOGM_GM_CMDS, "%x:'%s' tweak uid=0%x (%s) to '%s %s'=%d\n",
+		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n",
 			net->id(), (LPCTSTR)client->GetName(),
 			(DWORD)object->GetUID(), (LPCTSTR)object->GetName(),
 			(LPCTSTR)client->m_Targ_Text, (LPCTSTR)text, ret);
@@ -2136,14 +2136,14 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	{
 		const CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
 		if (resource == NULL)
-			g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)serial, button);
+			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
 		else
 		{
 			const CDialogDef* dialog = dynamic_cast<const CDialogDef*>(resource);
 			if (dialog == NULL)
-				g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, "undef", (DWORD)serial, button);
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
 			else
-				g_Log.Event(LOGL_EVENT, "Gump: %d (%s), Uid: 0x%x, Button: %d.\n", context, (LPCTSTR)dialog->GetName(), (DWORD)serial, button);
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, (LPCTSTR)dialog->GetName(), (DWORD)serial, button);
 		}
 	}
 #endif
@@ -2406,7 +2406,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 		net->m_reportedVersion = version;
 		net->detectAsyncMode();
 
-		DEBUG_MSG(("Getting cliver 0x%x/0x%x\n", version, (version&0xFFFFF0)));
+		DEBUG_MSG(("Getting cliver 0x%lx/0x%lx\n", version, (version&0xFFFFF0)));
 		
 		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
 		{
@@ -2414,7 +2414,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 		}
 		else if ((net->getCryptVersion() < MINCLIVER_TOOLTIP) && (version >= MINCLIVER_TOOLTIP) && (client->GetResDisp() >= RDS_AOS) && (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))) //workaround for a "bug", which sends all items in LOS before processing this packet
 		{
-			DEBUG_MSG(("m_Crypt.GetClientVer()(%x) != m_reportedCliver(%x) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
+			DEBUG_MSG(("m_Crypt.GetClientVer()(%lx) != m_reportedCliver(%lx) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
 			client->addAOSPlayerSeeNoCrypt();
 		}
 	}
@@ -2485,7 +2485,7 @@ bool PacketScreenSize::onReceive(NetState* net)
 	DWORD x = readInt32();
 	DWORD y = readInt32();
 	
-	DEBUG_MSG(("0x%x - 0x%x (%d-%d)\n", x, y, x, y));
+	DEBUG_MSG(("0x%lx - 0x%lx (%ld-%ld)\n", x, y, x, y));
 
 	client->SetScreenSize(x, y);
 	return true;
@@ -4177,7 +4177,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	skip(1); // zero
 	DWORD errorOffset = readInt32();
 
-	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%x:Client crashed at %d,%d,%d,%d: 0x%08X %s @ 0x%08X (%s, %d.%d.%d.%d)\n", net->id(),
+	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Client crashed at %d,%d,%d,%d: 0x%08lX %s @ 0x%08lX (%s, %d.%d.%d.%d)\n", net->id(),
 					x, y, z, map,
 					errorCode, description, errorOffset, executable,
 					versionMaj, versionMin, versionRev, versionPat);

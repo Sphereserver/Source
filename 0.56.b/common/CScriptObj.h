@@ -70,7 +70,7 @@
 			SysMessage( pszTemp );
 			return( ilen );
 		}
-		int _cdecl SysMessagef( LPCTSTR pszFormat, ... ) const
+		int _cdecl SysMessagef( LPCTSTR pszFormat, ... ) const __printfargs(2,3)
 		{
 			va_list vargs;
 			va_start( vargs, pszFormat );

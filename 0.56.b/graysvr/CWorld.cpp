@@ -434,7 +434,7 @@ void CTimedFunctionHandler::r_Write( CScript & s )
 			if ( tf->uid.IsValidUID() )
 			{
 				s.WriteKeyFormat( "TimerFCall", "%s", tf->funcname );
-				s.WriteKeyFormat( "TimerFNumbers", "%i,%i,%i", tick, tf->uid.GetObjUID(), tf->elapsed );
+				s.WriteKeyFormat( "TimerFNumbers", "%i,%lu,%i", tick, tf->uid.GetObjUID(), tf->elapsed );
 			}
 		}
 	}
@@ -752,7 +752,7 @@ int CWorldThread::FixObjTry( CObjBase * pObj, DWORD dwUID )
 		{
 			// Miss linked in the UID table !!! BAD
 			// Hopefully it was just not linked at all. else How the hell should i clean this up ???
-			DEBUG_ERR(( "UID 0%x, '%s', Mislinked\n", dwUID, (LPCTSTR) pObj->GetName()));
+			DEBUG_ERR(( "UID 0%lx, '%s', Mislinked\n", dwUID, (LPCTSTR) pObj->GetName()));
 			return 0x7101;
 		}
 	}
@@ -803,7 +803,7 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 			}
 		}
 
-		DEBUG_ERR(("UID=0%x, id=0%x '%s', Invalid code=%0x (%s)\n",
+		DEBUG_ERR(("UID=0%lx, id=0%x '%s', Invalid code=%0x (%s)\n",
 			dwUID, pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
 
 		if ( iResultCode == 0x1203 || iResultCode == 0x1103 )
@@ -817,11 +817,11 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 	}
 	catch ( const CGrayError& e )	// catch all
 	{
-		g_Log.CatchEvent( &e, "UID=0%x, Asserted cleanup", dwUID );
+		g_Log.CatchEvent( &e, "UID=0%lx, Asserted cleanup", dwUID );
 	}
 	catch (...)	// catch all
 	{
-		g_Log.CatchEvent( NULL, "UID=0%x, Asserted cleanup", dwUID );
+		g_Log.CatchEvent( NULL, "UID=0%lx, Asserted cleanup", dwUID );
 	}
 	return( iResultCode );
 }
@@ -978,7 +978,7 @@ bool CWorldClock::Advance()
 	{
 		// This is normal. for daylight savings etc.
 
-		DEBUG_ERR(("WARNING:system clock 0%xh overflow - recycle\n", Clock_Sys));
+		DEBUG_ERR(("WARNING:system clock 0%lxh overflow - recycle\n", Clock_Sys));
 		m_Clock_PrevSys = Clock_Sys;
 		// just wait til next cycle and we should be ok
 		return false;
@@ -993,7 +993,7 @@ bool CWorldClock::Advance()
 	if ( Clock_New < m_timeClock )	// should not happen! (overflow)
 	{
 		//	Either TIME changed, or system lost hour as a daylight save. Not harmless
-		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%x to 0%x\n", m_timeClock, Clock_New);
+		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%lx to 0%lx\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
 		m_timeClock = Clock_New;	// this may cause may strange things.
 		return false;
 	}
@@ -1208,7 +1208,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 		TIME_PROFILE_END;
 
 		TCHAR * time = Str_GetTemp();
-		sprintf(time, "%d.%04d", (int)(TIME_PROFILE_GET_HI/1000), (int)(TIME_PROFILE_GET_LO));
+		sprintf(time, "%lld.%04lld", static_cast<INT64>(TIME_PROFILE_GET_HI/1000), static_cast<INT64>(TIME_PROFILE_GET_LO));
 
 		g_Log.Event(LOGM_SAVE, "World save completed, took %s seconds\n", time);
 
@@ -1235,7 +1235,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%d' time '%d'\n", m_iSaveStage, m_SectorsQty, m_timeSave);
+	g_Log.EventDebug("stage '%d' qty '%d' time '%ld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save
@@ -2159,15 +2159,21 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 	}
 }
 
-void __cdecl CWorld::Broadcast(LPCTSTR pMsg, ...) // System broadcast in bold text
+void CWorld::Broadcast(LPCTSTR pMsg) // System broadcast in bold text
 {
 	ADDTOCALLSTACK("CWorld::Broadcast");
+	Speak( NULL, pMsg, HUE_TEXT_DEF, TALKMODE_BROADCAST, FONT_BOLD );
+}
+
+void __cdecl CWorld::Broadcastf(LPCTSTR pMsg, ...) // System broadcast in bold text
+{
+	ADDTOCALLSTACK("CWorld::Broadcastf");
 	TemporaryString sTemp;
 	va_list vargs;
 	va_start(vargs, pMsg);
 	_vsnprintf(sTemp, sTemp.realLength(), pMsg, vargs);
 	va_end(vargs);
-	Speak( NULL, sTemp, HUE_TEXT_DEF, TALKMODE_BROADCAST, FONT_BOLD );
+	Broadcast(sTemp);
 }
 
 void CWorld::Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD wFlags )
@@ -2356,7 +2362,7 @@ void CWorld::OnTick()
 		LONGLONG hi = TIME_PROFILE_GET_HI;
 		if ( hi > 50L )
 		{
-			DEBUG_ERR(("CWorld::OnTick() [ticking sectors] took %d.%d to run\n", hi, TIME_PROFILE_GET_LO));
+			DEBUG_ERR(("CWorld::OnTick() [ticking sectors] took %lld.%lld to run\n", static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
 		}
 	}
 }
