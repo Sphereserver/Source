@@ -61,7 +61,7 @@ private:
 	SQLHANDLE m_connection;	// database connection
 	SQLHANDLE m_statement;	// current statement
 
-	SQLSMALLINT m_lastError;				// error code from latest operation
+	SQLINTEGER m_lastError;				// error code from latest operation
 	char m_lastErrorText[MAX_DATA_LENGTH];	// error text from latest operation
 	bool m_lastErrorWasConnection;	// indicates last operation produced a connection error
 	bool m_lastErrorWasDriver;		// indicates last operation produced a driver error

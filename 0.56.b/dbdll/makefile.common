@@ -4,7 +4,7 @@ PLAT = Linux
 MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT = -O2 $(OPTDEFAULT) -fPIC -shared
-WARN = -Wall -Wno-unknown-pragmas
+WARN = -Wall -Wextra -Wno-unknown-pragmas
 
 DEBUG = -ggdb2
 #DEBUG = -s

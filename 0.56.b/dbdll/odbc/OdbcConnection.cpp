@@ -135,6 +135,9 @@ bool OdbcConnection::ServerDisconnect()
 
 bool OdbcConnection::ServerConnect(const char * user, const char * password, const char * database, const char * hostip, int hostport)
 {
+	UNREFERENCED_PARAMETER(hostport);
+	UNREFERENCED_PARAMETER(hostip);
+
 	InitOdbcData();
 
 	// SQLConnect expects non-const pointers which we can't/shouldn't cast away, so
@@ -187,7 +190,7 @@ void OdbcConnection::SetLastError(SQLSMALLINT handleType, SQLHANDLE handle, SQLR
 		std::string errorText;
 		errorText.reserve(MAX_DATA_LENGTH);
 
-		while (true)
+		for (;;)
 		{
 			SQLRETURN result = SQLGetDiagRec(handleType, handle, ++i, state, &native, text, sizeof(text) / sizeof(text[0]), &textLength);
 			if (SQL_SUCCEEDED(result) == false)
@@ -320,7 +323,7 @@ int OdbcConnection::LastQueryFetchFields(fieldarray_t * fields)
 		SQLSMALLINT numField = 0;
 		SQLNumResultCols(m_statement, &numField);
 
-		for ( int i = 0; i < numField; i++ )
+		for ( SQLSMALLINT i = 0; i < numField; i++ )
 		{
 			SQLDescribeCol(m_statement, i + 1, reinterpret_cast<SQLCHAR*>(fields[i].name), (MAX_FIELD_NAME - 1), NULL, NULL, NULL, NULL, NULL);
 		}
@@ -351,7 +354,7 @@ int OdbcConnection::LastQueryFetchRow(resultarray_t * results)
 		SQLSMALLINT num_fields = 0;
 		SQLNumResultCols(m_statement, &num_fields);
 
-		for ( int i = 0; i < num_fields; i++ )
+		for ( SQLSMALLINT i = 0; i < num_fields; i++ )
 		{
 			SQLINTEGER indicator;
 

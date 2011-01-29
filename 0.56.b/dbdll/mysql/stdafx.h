@@ -38,10 +38,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#ifndef UNREFERENCED_PARAMETER
-	#define UNREFERENCED_PARAMETER(P)	(P)
-#endif
-
 #ifdef _WIN32
 	#include <windows.h>
 	#include <winsock.h>
@@ -60,6 +56,10 @@
 	#define SOCKET_ERROR    (-1)
 	#define SOCKET			int
 	#define TCP_NODELAY		0x0001
+#endif
+
+#ifndef UNREFERENCED_PARAMETER
+	#define UNREFERENCED_PARAMETER(P)	(void)(P)
 #endif
 
 #include <mysql.h>
