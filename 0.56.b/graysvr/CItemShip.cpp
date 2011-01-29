@@ -93,7 +93,7 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 
 #define MAX_MULTI_LIST_OBJS 128
 
-int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
+size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 {
 	ADDTOCALLSTACK("CItemShip::Ship_ListObjs");
 	// List all the objects in the structure.
@@ -104,12 +104,12 @@ int CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
-	int	iShipHeight	= Item_GetDef()->GetHeight();
+	t_height iShipHeight = Item_GetDef()->GetHeight();
 	if ( iShipHeight < 3 )
 		iShipHeight	= 3;
 
 	// always list myself first. All other items must see my new region !
-	int iCount = 0;
+	size_t iCount = 0;
 	ppObjList[iCount++] = this;
 
 	CWorldSearch AreaChar( GetTopPoint(), iMaxDist );
@@ -178,9 +178,9 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 
 	// Move the ship and everything on the deck
 	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
-	int iCount = Ship_ListObjs( ppObjs );
+	size_t iCount = Ship_ListObjs( ppObjs );
 
-	for ( int i=0; i <iCount; i++ )
+	for ( size_t i = 0; i < iCount; i++ )
 	{
 		CObjBase * pObj = ppObjs[i];
 		ASSERT(pObj);
@@ -253,17 +253,17 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		return false;
 	}
 
-	int i = 0;
-	for ( ; ; ++i )
+	unsigned int iDirection = 0;
+	for ( ; ; ++iDirection )
 	{
-		if ( i >= COUNTOF(sm_Ship_FaceDir))
+		if ( iDirection >= COUNTOF(sm_Ship_FaceDir))
 			return( false );
-		if ( dir == sm_Ship_FaceDir[i] )
+		if ( dir == sm_Ship_FaceDir[iDirection] )
 			break;
 	}
 
 	int iFaceOffset = Ship_GetFaceOffset();
-	ITEMID_TYPE idnew = (ITEMID_TYPE) ( GetID() - iFaceOffset + i );
+	ITEMID_TYPE idnew = (ITEMID_TYPE) ( GetID() - iFaceOffset + iDirection );
 	const CItemBaseMulti * pMultiNew = Multi_GetDef( idnew );
 	if ( pMultiNew == NULL ) {
 		return false;
@@ -282,7 +282,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
 	DIR_TYPE dirTmp;
-	for( i = -3; i < 3; ++i ) {
+	for( int i = -3; i < 3; ++i )
+	{
 		if (i == 0) // We don't need to check forwards
 			continue;
 
@@ -292,7 +293,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 		// If the ship already overlaps a point then we must
 		// already be allowed there.
-		if( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ) {
+		if( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) )
+		{
 			CItem *pTiller = Multi_GetSign();
 			ASSERT(pTiller);
 			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
@@ -302,14 +304,17 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 	// Reorient everything on the deck
 	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
-	int iCount = Ship_ListObjs( ppObjs );
-	for( i = 0; i < iCount; ++i ) {
+	size_t iCount = Ship_ListObjs( ppObjs );
+	for( size_t i = 0; i < iCount; ++i )
+	{
 		CObjBase *pObj = ppObjs[i];
 
-		if( pObj->IsItem() ) {
+		if( pObj->IsItem() )
+		{
 			CItem * pItem = STATIC_CAST<CItem*>(pObj);
 			//	change to new view of this ship
-			if ( pItem == this ) {
+			if ( pItem == this )
+			{
 				m_pRegion->UnRealizeRegion();
 				pItem->SetID(idnew);
 				// Adjust the region to be the new shape/area.
@@ -317,7 +322,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				pItem->Update();
 				//	create all needed components
 				DWORD privateUID = Multi_GetSign()->m_itKey.m_lockUID.GetPrivateUID();
-				for( int j = 0; j < pMultiNew->m_Components.GetCount(); j++ ) {
+				for( int j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
+				{
 					Multi_CreateComponent((ITEMID_TYPE)pMultiNew->m_Components[j].m_id,
 						pMultiNew->m_Components[j].m_dx,
 						pMultiNew->m_Components[j].m_dy,
@@ -326,11 +332,13 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				}
 				continue;
 			}
-			else if ( Multi_IsPartOf(pItem) ) {
+			else if ( Multi_IsPartOf(pItem) )
+			{
 				//	this will be deleted later
 			}
 		}
-		else if( pObj->IsChar() ) {
+		else if( pObj->IsChar() )
+		{
 			CChar *pChar = STATIC_CAST<CChar*>(pObj);
 			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
 			pChar->RemoveFromView();
@@ -367,7 +375,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	}
 
 	//	delete old components
-	for ( int j = iCount-1; j > 0; j-- )
+	for ( size_t j = iCount - 1; j > 0; j-- )
 	{
 		if ( !ppObjs[j]->IsItem() )
 			continue;

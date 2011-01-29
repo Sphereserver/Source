@@ -14,7 +14,7 @@ NetworkOut g_NetworkOut;
 //
 #if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
 
-void xRecordPacketData(const CClient* client, const BYTE* data, int length, LPCTSTR heading)
+void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading)
 {
 #ifdef _DUMPSUPPORT
 	if (client->GetAccount() != NULL && strnicmp(client->GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( client->GetAccount()->GetName())))
@@ -736,14 +736,12 @@ void NetworkIn::tick(void)
 
 		// receive data
 		EXC_SET("messages - receive");
-		int received = client->m_socket.Receive(buffer, NETWORK_BUFFERSIZE, 0);
-		if (received <= 0)
+		size_t received = client->m_socket.Receive(buffer, NETWORK_BUFFERSIZE, 0);
+		if (received <= 0 || received > NETWORK_BUFFERSIZE)
 		{
 			client->markReadClosed();
 			continue;
 		}
-
-		ASSERT(received <= NETWORK_BUFFERSIZE);
 
 		EXC_SET("start client profile");
 		CurrentProfileData.Count(PROFILE_DATA_RX, received);
@@ -815,7 +813,7 @@ void NetworkIn::tick(void)
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%d, received=%d, version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%d, received=%" FMTSIZE_T ", version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
 					if ( !seed )
 					{
@@ -898,7 +896,7 @@ void NetworkIn::tick(void)
 							EXC_SET("encryption reply");
 
 							// receiving response to 0xe3 packet
-							int iEncKrLen = evt.EncryptionReply.m_len;
+							size_t iEncKrLen = evt.EncryptionReply.m_len;
 							if (received < iEncKrLen)
 								break;
 							else if (received == iEncKrLen)
@@ -1981,7 +1979,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 				EXC_SET("compress and encrypt");
 
 				// compress
-				int compressLength = client->xCompress(m_encryptBuffer, packet->getData(), packet->getLength());
+				size_t compressLength = client->xCompress(m_encryptBuffer, packet->getData(), packet->getLength());
 
 				// encrypt
 				if (client->m_Crypt.GetEncryptionType() == ENC_TFISH)

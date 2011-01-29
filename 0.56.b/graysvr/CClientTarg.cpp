@@ -1072,11 +1072,11 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 	// Poisoned ?
 	if ( fWeapon && pItem->m_itWeapon.m_poison_skill )
 	{
-		int iLevel = IMULDIV( pItem->m_itWeapon.m_poison_skill, COUNTOF(sm_szPoisonMessages), 100 );
+		unsigned int iLevel = IMULDIV( pItem->m_itWeapon.m_poison_skill, COUNTOF(sm_szPoisonMessages), 100 );
 		if ( iLevel < 0 )
 			iLevel = 0;
 		if ( iLevel >= COUNTOF(sm_szPoisonMessages))
-			iLevel = COUNTOF(sm_szPoisonMessages)-1;
+			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
 		len += sprintf( pszTemp+len, " %s", sm_szPoisonMessages[iLevel] );
 	}
 
@@ -1256,7 +1256,7 @@ int CClient::OnSkill_TasteID( CGrayUID uid, int iSkillLevel, bool fTest )
 		return( -SKTRIG_QTY );
 	}
 
-	int iPoisonLevel = 0;
+	unsigned int iPoisonLevel = 0;
 	switch ( pItem->GetType())
 	{
 		case IT_POTION:
@@ -1269,14 +1269,14 @@ int CClient::OnSkill_TasteID( CGrayUID uid, int iSkillLevel, bool fTest )
 		case IT_FOOD:
 		case IT_FOOD_RAW:
 		case IT_MEAT_RAW:
-			iPoisonLevel = pItem->m_itFood.m_poison_skill*10;
+			iPoisonLevel = pItem->m_itFood.m_poison_skill * 10;
 			break;
 		case IT_WEAPON_MACE_SHARP:
 		case IT_WEAPON_SWORD:		// 13 =
 		case IT_WEAPON_FENCE:		// 14 = can't be used to chop trees. (make kindling)
 		case IT_WEAPON_AXE:
 			// pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
-			iPoisonLevel = pItem->m_itWeapon.m_poison_skill*10;
+			iPoisonLevel = pItem->m_itWeapon.m_poison_skill * 10;
 			break;
 		default:
 			if ( ! fTest )
@@ -1293,11 +1293,11 @@ int CClient::OnSkill_TasteID( CGrayUID uid, int iSkillLevel, bool fTest )
 
 	if ( iPoisonLevel )
 	{
-		int iLevel = IMULDIV( iPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000 );
+		unsigned int iLevel = IMULDIV( iPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000 );
 		if ( iLevel < 0 )
 			iLevel = 0;
 		if ( iLevel >= COUNTOF(sm_szPoisonMessages))
-			iLevel = COUNTOF(sm_szPoisonMessages)-1;
+			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
 		SysMessage( sm_szPoisonMessages[iLevel] );
 	}
 	else

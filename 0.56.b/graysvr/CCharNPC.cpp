@@ -252,13 +252,13 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 
 SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
 {
-	ASSERT( skill < COUNTOF(m_SkillLock));
+	ASSERT( (WORD)skill < COUNTOF(m_SkillLock));
 	return((SKILLLOCK_TYPE) m_SkillLock[skill] );
 }
 
 void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
 {
-	ASSERT( skill < COUNTOF(m_SkillLock));
+	ASSERT( (WORD)skill < COUNTOF(m_SkillLock));
 	m_SkillLock[skill] = state;
 }
 
@@ -290,13 +290,13 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 
 SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
 {
-	ASSERT( stat < COUNTOF(m_StatLock));
+	ASSERT( (WORD)stat < COUNTOF(m_StatLock));
 	return((SKILLLOCK_TYPE) m_StatLock[stat] );
 }
 
 void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
 {
-	ASSERT( stat < COUNTOF(m_StatLock));
+	ASSERT( (WORD)stat < COUNTOF(m_StatLock));
 	m_StatLock[stat] = state;
 }
 

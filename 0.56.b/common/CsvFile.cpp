@@ -11,10 +11,10 @@ CSVFile::CSVFile()
 
 CSVFile::~CSVFile()
 {
-	for (int i = 0; m_pszColumnTypes[i] != NULL; i++)
+	for (size_t i = 0; m_pszColumnTypes[i] != NULL; i++)
 		delete[] m_pszColumnTypes[i];
 
-	for (int i = 0; m_pszColumnNames[i] != NULL; i++)
+	for (size_t i = 0; m_pszColumnNames[i] != NULL; i++)
 		delete[] m_pszColumnNames[i];
 }
 
@@ -59,7 +59,7 @@ bool CSVFile::OpenBase(void * pExtra)
 	}
 
 	// copy the names
-	for (int i = 0; i < m_iColumnCount; i++)
+	for (size_t i = 0; i < m_iColumnCount; i++)
 	{
 		m_pszColumnTypes[i] = new TCHAR[128];
 		strcpy(m_pszColumnTypes[i], ppColumnTypes[i]);
@@ -73,45 +73,47 @@ bool CSVFile::OpenBase(void * pExtra)
 	return true;
 }
 
-int CSVFile::GetColumnCount()
-{
-	return m_iColumnCount;
-}
-
-int CSVFile::ReadRowContent(char ** ppOutput, DWORD dwRowIndex, int iMaxColumns)
+size_t CSVFile::ReadRowContent(TCHAR ** ppOutput, size_t rowIndex, int columns)
 {
 	ADDTOCALLSTACK("CSVFile::ReadRowContent");
-	if ( dwRowIndex == -1 )
-		dwRowIndex = m_iCurrentRow++;
-
-	if ( GetPosition() != dwRowIndex )
-		Seek(dwRowIndex, SEEK_SET);
+	ASSERT(columns > 0 && columns <= MAX_COLUMNS);
+	if ( GetPosition() != rowIndex )
+		Seek(rowIndex, SEEK_SET);
 
 	TCHAR * pszLine = Str_GetTemp();
 	if ( ReadString(pszLine, THREAD_STRING_LENGTH) == NULL )
-		return -1;
+		return 0;
 
-	int iCount = Str_ParseCmds(pszLine, ppOutput, iMaxColumns, "\t");
-
-	if ( m_iColumnCount > 0 && m_iColumnCount != iCount )
-		return -1;
-
-	return iCount;
+	return Str_ParseCmds(pszLine, ppOutput, columns, "\t");
 }
 
-CSVRowData CSVFile::ReadRowContent(DWORD dwRowIndex)
+size_t CSVFile::ReadNextRowContent(TCHAR ** ppOutput)
+{
+	ADDTOCALLSTACK("CSVFile::ReadNextRowContent");
+	++m_iCurrentRow;
+	return ReadRowContent(ppOutput, m_iCurrentRow);
+}
+
+bool CSVFile::ReadRowContent(size_t rowIndex, CSVRowData& target)
 {
 	ADDTOCALLSTACK("CSVFile::ReadRowContent");
+	// get row data
 	TCHAR * ppRowContent[MAX_COLUMNS];
-	int iQty = ReadRowContent(ppRowContent, dwRowIndex);
-	
-	CSVRowData csvRowData;
+	size_t columns = ReadRowContent(ppRowContent, rowIndex);
+	if ( columns != m_iColumnCount )
+		return false;
 
-	if ( iQty != m_iColumnCount )
-		return csvRowData;
+	// copy to target
+	target.clear();
+	for (size_t i = 0; i < columns; i++)
+		target[m_pszColumnNames[i]] = ppRowContent[i];
 
-	for (int i = 0; i < iQty; i++)
-		csvRowData[m_pszColumnNames[i]] = ppRowContent[i];
+	return ! target.empty();
+}
 
-	return csvRowData;
+bool CSVFile::ReadNextRowContent(CSVRowData& target)
+{
+	ADDTOCALLSTACK("CSVFile::ReadNextRowContent");
+	++m_iCurrentRow;
+	return ReadRowContent(m_iCurrentRow, target);
 }

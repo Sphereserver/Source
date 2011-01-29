@@ -73,7 +73,7 @@ public:
 	void writeStringNUNICODE(const WCHAR* value, bool terminate = true); // write unicode string until null terminator found, network order
 	void writeStringFixedNUNICODE(const char* value, size_t size, bool terminate = false); // write fixed-length unicode string, network order
 	void writeStringFixedNUNICODE(const WCHAR* value, size_t size, bool terminate = false); // write fixed-length unicode string, network order
-	void writeData(const BYTE* buffer, long size); // write block of data
+	void writeData(const BYTE* buffer, size_t size); // write block of data
 	void fill(void); // zeroes remaining buffer
 	size_t sync(void);
 	void trim(void); // trim packet length down to current position

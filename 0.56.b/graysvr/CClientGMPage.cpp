@@ -214,7 +214,7 @@ void CClient::Cmd_GM_PageCmd( LPCTSTR pszCmd )
 
 	if ( pszCmd == NULL || pszCmd[0] == '?' )
 	{
-		for ( int i=0; i<COUNTOF(sm_pszGMPageVerbsHelp); i++ )
+		for ( size_t i = 0; i < COUNTOF(sm_pszGMPageVerbsHelp); i++ )
 		{
 			SysMessage( sm_pszGMPageVerbsHelp[i] );
 		}
@@ -337,7 +337,7 @@ void CClient::Cmd_GM_PageCmd( LPCTSTR pszCmd )
 	}
 }
 
-void CClient::Cmd_GM_PageSelect( int iSelect )
+void CClient::Cmd_GM_PageSelect( size_t iSelect )
 {
 	ADDTOCALLSTACK("CClient::Cmd_GM_PageSelect");
 	// 0 = cancel.

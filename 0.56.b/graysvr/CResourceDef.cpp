@@ -432,7 +432,7 @@ void CSkillClassDef::Init()
 	ADDTOCALLSTACK("CSkillClassDef::Init");
 	m_SkillSumMax = 10*1000;
 	m_StatSumMax = 300;
-	int i;
+	size_t i;
 	for ( i=0; i<COUNTOF(m_SkillLevelMax); i++ )
 	{
 		m_SkillLevelMax[i] = 1000;
@@ -463,14 +463,14 @@ bool CSkillClassDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 			int i = g_Cfg.FindSkillKey( pszKey);
 			if ( i != SKILL_NONE )
 			{
-				ASSERT( i<COUNTOF(m_SkillLevelMax));
+				ASSERT( (WORD)i < COUNTOF(m_SkillLevelMax));
 				sVal.FormatVal( m_SkillLevelMax[i] );
 				break;
 			}
 			i = g_Cfg.FindStatKey( pszKey);
 			if ( i >= 0 )
 			{
-				ASSERT( i<COUNTOF(m_StatMax));
+				ASSERT( (WORD)i < COUNTOF(m_StatMax));
 				sVal.FormatVal( m_StatMax[i] );
 				break;
 			}
@@ -509,14 +509,14 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 			int i = g_Cfg.FindSkillKey( s.GetKey());
 			if ( i != SKILL_NONE )
 			{
-				ASSERT( i<COUNTOF(m_SkillLevelMax));
+				ASSERT( (WORD)i < COUNTOF(m_SkillLevelMax));
 				m_SkillLevelMax[i] = s.GetArgVal();
 				break;
 			}
 			i = g_Cfg.FindStatKey( s.GetKey());
 			if ( i >= 0 )
 			{
-				ASSERT( i<COUNTOF(m_StatMax));
+				ASSERT( (WORD)i < COUNTOF(m_StatMax));
 				m_StatMax[i] = s.GetArgVal();
 				break;
 			}

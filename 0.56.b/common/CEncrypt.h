@@ -54,7 +54,7 @@ private:
 public:
 	static const char *m_sClassName;
 	
-	static int Compress( BYTE * pOutput, const BYTE * pInput, int inplen );
+	static size_t Compress( BYTE * pOutput, const BYTE * pInput, size_t inplen );
 
 public:
 	CHuffman() { };
@@ -124,7 +124,7 @@ protected:
 	int tf_position;
 private:
 	void InitTwoFish();
-	void DecryptTwoFish( BYTE * pOutput, const BYTE * pInput, int iLen );
+	void DecryptTwoFish( BYTE * pOutput, const BYTE * pInput, size_t iLen );
 	// --------------- EOF TwoFish ----------------------------
 	
 	
@@ -143,14 +143,14 @@ protected:
 public:
 	int	m_gameTable;
 	int	m_gameBlockPos;		// 0-7
-	int	m_gameStreamPos;	// use this to track the 21K move to the new Blowfish m_gameTable.
+	size_t	m_gameStreamPos;	// use this to track the 21K move to the new Blowfish m_gameTable.
 private:
 	CCrypt::CCryptKey m_Key;
 private:
 	void InitSeed( int iTable );
 	static void InitTables();
 	static void PrepareKey( CCrypt::CCryptKey & key, int iTable );
-	void DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, int iLen );
+	void DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, size_t iLen );
 	BYTE DecryptBFByte( BYTE bEnc );
 	void InitBlowFish();
 	// -------------- EOF BlowFish -----------------------
@@ -162,13 +162,13 @@ protected:
 	unsigned int md5_position;
 	BYTE md5_digest[16];
 protected:
-	void EncryptMD5( BYTE * pOutput, const BYTE * pInput, int iLen );
+	void EncryptMD5( BYTE * pOutput, const BYTE * pInput, size_t iLen );
 	void InitMD5(BYTE * ucInitialize);
 	// ------------------ EOF MD5 ----------------------------
 
 private:
 	// ------------- Old Encryption ----------------------
-	void DecryptOld( BYTE * pOutput, const BYTE * pInput, int iLen  );
+	void DecryptOld( BYTE * pOutput, const BYTE * pInput, size_t iLen  );
 	// ------------- EOF Old Encryption ------------------
 
 private:
@@ -258,14 +258,14 @@ private:
 	CCrypt& operator=(const CCrypt& other);
 
 public:
-	bool Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr = false );
+	bool Init( DWORD dwIP, BYTE * pEvent, size_t iLen, bool isclientKr = false );
 	void InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay = true );
-	void Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen );
-	void Encrypt( BYTE * pOutput, const BYTE * pInput, int iLen );
+	void Decrypt( BYTE * pOutput, const BYTE * pInput, size_t iLen );
+	void Encrypt( BYTE * pOutput, const BYTE * pInput, size_t iLen );
 protected:
-	void LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen );
-	void GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen );
-	void RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, int iLen );
+	void LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen );
+	void GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen );
+	void RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, size_t iLen );
 };
 
 #endif

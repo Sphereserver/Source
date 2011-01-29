@@ -35,7 +35,7 @@
 
 #ifndef HFILE_ERROR
 #define HFILE_ERROR	-1
-#define HFILE unsigned int
+#define HFILE int
 #endif // HFILE_ERROR
 
 #ifdef _WIN32

@@ -1524,12 +1524,8 @@ bool CItemMultiCustom::LoadValidItems()
 		if ( !g_Install.m_CsvFiles[iFileIndex].IsFileOpen() && !g_Install.OpenFile(g_Install.m_CsvFiles[iFileIndex], sm_szItemFiles[i][0], OF_READ|OF_SHARE_DENY_WRITE ) )
 			continue;
 
-		do
+		while (g_Install.m_CsvFiles[iFileIndex].ReadNextRowContent(csvDataRow))
 		{
-			csvDataRow = g_Install.m_CsvFiles[iFileIndex].ReadRowContent();
-			if ( csvDataRow.empty() )
-				continue;
-
 			for (int ii = 1; sm_szItemFiles[i][ii] != NULL; ii++)
 			{
 				ITEMID_TYPE itemid = (ITEMID_TYPE)ATOI(csvDataRow[sm_szItemFiles[i][ii]].c_str());
@@ -1545,7 +1541,7 @@ bool CItemMultiCustom::LoadValidItems()
 
 				sm_mapValidItems[itemid] = ATOI(csvDataRow["FeatureMask"].c_str());
 			}
-		} while ( !csvDataRow.empty() );
+		}
 
 		g_Install.m_CsvFiles[iFileIndex].Close();
 	}

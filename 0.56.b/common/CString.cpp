@@ -438,7 +438,7 @@ LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWord )
 	{
 		static const TCHAR sm_Vowels[] = { 'A', 'E', 'I', 'O', 'U' };
 		TCHAR chName = toupper(pszWord[0]);
-		for ( int x = 0; x < sizeof(sm_Vowels); x++ )
+		for ( size_t x = 0; x < COUNTOF(sm_Vowels); x++ )
 		{
 			if ( chName == sm_Vowels[x] )
 				return "an ";

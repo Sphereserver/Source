@@ -597,7 +597,7 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 			return;
 
 		case SKILL_TRACKING:
-			Cmd_Skill_Tracking( -1, false );
+			Cmd_Skill_Tracking(UINT_MAX, false);
 			break;
 
 		case SKILL_CARTOGRAPHY:
@@ -647,30 +647,30 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 		return( true );
 
 	// If the LIFO stack has not been sent, send them out now
-	if ( m_Walk_CodeQty < 0 )
+	if ( m_Walk_CodeQty == UINT_MAX )
 	{
-		addWalkCode(EXTDATA_WalkCode_Prime,COUNTOF(m_Walk_LIFO));
+		addWalkCode(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
 	}
 
 	// Keep track of echo'd 0's and invalid non 0's
 	// (you can get 1 to 4 of these legitimately when you first start walking)
-	ASSERT( m_Walk_CodeQty >= 0 );
+	ASSERT( m_Walk_CodeQty != UINT_MAX );
 
-	for ( int i=0; i<m_Walk_CodeQty; i++ )
+	for ( unsigned int i = 0; i < m_Walk_CodeQty; i++ )
 	{
 		if ( m_Walk_LIFO[i] == dwEcho )	// found a good code.
 		{
 			// Move next to the head.
 			i++;
-			memmove( m_Walk_LIFO, m_Walk_LIFO+i, (m_Walk_CodeQty-i)*sizeof(DWORD));
+			memmove( m_Walk_LIFO, m_Walk_LIFO + i, (m_Walk_CodeQty-i)*sizeof(DWORD));
 			m_Walk_CodeQty -= i;
-			// Set this to negative so we know later if we've gotten at least 1 valid echo
-			m_Walk_InvalidEchos = -1;
+			// Set this to uint_max so we know later if we've gotten at least 1 valid echo
+			m_Walk_InvalidEchos = UINT_MAX;
 			return( true );
 		}
 	}
 
-	if ( m_Walk_InvalidEchos < 0 )
+	if ( m_Walk_InvalidEchos == UINT_MAX )
 	{
 		// If we're here, we got at least one valid echo....therefore
 		// we should never get another one
@@ -1655,7 +1655,7 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 
 	if ( ! strnicmp( szText, "I must consider my sins", 23 ))
 	{
-		int i = m_pChar->m_pPlayer->m_wMurders;
+		unsigned int i = m_pChar->m_pPlayer->m_wMurders;
 		if ( i >= COUNTOF(sm_szTextMurderer))
 			i = COUNTOF(sm_szTextMurderer)-1;
 		SysMessage( sm_szTextMurderer[i] );
@@ -2744,12 +2744,12 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 
 // ---------------------------------------------------------------------
 
-bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
+bool CClient::xPacketFilter( const CEvent * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
 	
 	EXC_TRY("packet filter");
-	if ( iLen && g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
+	if ( iLen > 0 && g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
 	{
 		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
 		enum TRIGRET_TYPE trigReturn;
@@ -2759,7 +2759,7 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 		Args.m_pO1 = this; // Yay for ARGO.SENDPACKET
 		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
-		int bytes = iLen;
+		size_t bytes = iLen;
 		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
 		char *zBuf = Str_GetTemp();
 
@@ -2777,9 +2777,9 @@ bool CClient::xPacketFilter( const CEvent * pEvent, int iLen )
 		}
 
 		//	Fill locals [0..X] to the first X bytes of the packet
-		for ( int i = 0; i < bytes; ++i )
+		for ( size_t i = 0; i < bytes; ++i )
 		{
-			sprintf(idx, "%d", i);
+			sprintf(idx, "%" FMTSIZE_T, i);
 			Args.m_VarsLocal.SetNum(idx, (int)pEvent->m_Raw[i]);
 		}
 

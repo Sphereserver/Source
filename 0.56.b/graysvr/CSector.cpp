@@ -561,7 +561,7 @@ static const BYTE sm_TrammelPhaseBrightness[] =
 	TRAMMEL_FULL_BRIGHTNESS / 2, 	// Quarter Moon
 	TRAMMEL_FULL_BRIGHTNESS / 4,	// Crescent Moon
 };
-			ASSERT( iTrammelPhase < COUNTOF(sm_TrammelPhaseBrightness));
+			ASSERT( (unsigned int)iTrammelPhase < COUNTOF(sm_TrammelPhaseBrightness));
 			iTargLight -= sm_TrammelPhaseBrightness[iTrammelPhase];
 		}
 
@@ -580,7 +580,7 @@ static const BYTE sm_FeluccaPhaseBrightness[] =
 	FELUCCA_FULL_BRIGHTNESS / 2, 	// Quarter Moon
 	FELUCCA_FULL_BRIGHTNESS / 4,	// Crescent Moon
 };
-			ASSERT( iFeluccaPhase < COUNTOF(sm_FeluccaPhaseBrightness));
+			ASSERT( (unsigned int)iFeluccaPhase < COUNTOF(sm_FeluccaPhaseBrightness));
 			iTargLight -= sm_FeluccaPhaseBrightness[iFeluccaPhase];
 		}
 	}

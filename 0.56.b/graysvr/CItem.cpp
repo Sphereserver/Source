@@ -4569,13 +4569,13 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 						break;
 				}
 
-				if ( dwArg == GetID())
+				if ( static_cast<ITEMID_TYPE>(dwArg) == GetID())
 					return( false );
 			}
 			return( true );
 
 		case RES_ITEMDEF:
-			if ( dwArg == GetID())
+			if ( static_cast<ITEMID_TYPE>(dwArg) == GetID())
 				return( false );
 
 			if ( GetID() == index )

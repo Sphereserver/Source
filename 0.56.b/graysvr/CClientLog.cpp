@@ -20,7 +20,7 @@ CHuffman CClient::m_Comp;
 /////////////////////////////////////////////////////////////////
 // -CClient stuff.
 
-int CClient::xCompress( BYTE * pOutput, const BYTE * pInput, int iLen ) // static
+size_t CClient::xCompress( BYTE * pOutput, const BYTE * pInput, size_t iLen ) // static
 {
 	ADDTOCALLSTACK("CClient::xCompress");
 	// The game server will compress the outgoing data to the clients.
@@ -226,7 +226,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 	return( false );
 }
 
-bool CClient::Login_Relay( int iRelay ) // Relay player to a selected IP
+bool CClient::Login_Relay( unsigned int iRelay ) // Relay player to a selected IP
 {
 	ADDTOCALLSTACK("CClient::Login_Relay");
 	// Client wants to be relayed to another server. XCMD_ServerSelect
@@ -252,7 +252,7 @@ bool CClient::Login_Relay( int iRelay ) // Relay player to a selected IP
 		pServ = g_Cfg.Server_GetDef(iRelay);
 		if ( pServ == NULL )
 		{
-			DEBUG_ERR(( "%lx:Login_Relay BAD index! %d\n", GetSocketID(), iRelay ));
+			DEBUG_ERR(( "%lx:Login_Relay BAD index! %u\n", GetSocketID(), iRelay ));
 			return( false );
 		}
 	}
@@ -322,7 +322,7 @@ bool CClient::OnRxConsoleLoginComplete()
 	return( true );
 }
 
-bool CClient::OnRxConsole( const BYTE * pData, int iLen )
+bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::OnRxConsole");
 	// A special console version of the client. (Not game protocol)
@@ -347,7 +347,10 @@ bool CClient::OnRxConsole( const BYTE * pData, int iLen )
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() > sizeof(m_zLogin)-1 ) SysMessage("Login?:\n");
+					if ( m_Targ_Text.GetLength() > (sizeof(m_zLogin) - 1) )
+					{
+						SysMessage("Login?:\n");
+					}
 					else
 					{
 						strcpy(m_zLogin, m_Targ_Text);
@@ -392,7 +395,7 @@ bool CClient::OnRxConsole( const BYTE * pData, int iLen )
 	return true;
 }
 
-bool CClient::OnRxPing( const BYTE * pData, int iLen )
+bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::OnRxPing");
 	// packet iLen < 5
@@ -495,11 +498,11 @@ bool CClient::OnRxPing( const BYTE * pData, int iLen )
 		}
 	}
 
-	g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %d)\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
+	g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %" FMTSIZE_T ")\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
 	return false;
 }
 
-bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
+bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::OnRxWebPageRequest");
 	// Seems to be a web browser pointing at us ? typical stuff :
@@ -635,7 +638,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, int iLen )
 	return false;
 }
 
-bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
+bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::xProcessClientSetup");
 	// If this is a login then try to process the data and figure out what client it is.
@@ -653,9 +656,9 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, int iLen )
 
 	if ( !m_Crypt.Init( m_net->m_seed, bincopy.m_Raw, iLen, GetNetState()->isClientKR() ) )
 	{
-		DEBUG_MSG(( "%lx:Odd login message length %d?\n", GetSocketID(), iLen ));
+		DEBUG_MSG(( "%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen ));
 #ifdef _DEBUG
-	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
+		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
 		addLoginErr( PacketLoginError::BadEncLength );
 		return( false );

@@ -398,7 +398,7 @@ LPCTSTR CStoneMember::GetPrivName() const
 		case STONEPRIV_ENEMY: return "the enemy of";
 		default: return "unknown";
 	}
-	return( "unknown" );
+
 #else
 	STONEPRIV_TYPE iPriv = GetPriv();
 
@@ -484,15 +484,47 @@ MEMORY_TYPE CItemStone::GetMemoryType() const
 	}
 }
 
-LPCTSTR CItemStone::GetCharter(int iLine) const { ASSERT(iLine<COUNTOF(m_sCharter)); return(  m_sCharter[iLine] ); }
-void CItemStone::SetCharter( int iLine, LPCTSTR pCharter ) { ASSERT(iLine<COUNTOF(m_sCharter)); m_sCharter[iLine] = pCharter; }
-LPCTSTR CItemStone::GetWebPageURL() const { return( m_sWebPageURL ); }
-void CItemStone::SetWebPage( LPCTSTR pWebPage ) { m_sWebPageURL = pWebPage; }
+LPCTSTR CItemStone::GetCharter(unsigned int iLine) const
+{
+	ASSERT(iLine<COUNTOF(m_sCharter));
+	return(  m_sCharter[iLine] );
+}
 
-STONEALIGN_TYPE CItemStone::GetAlignType() const { return m_itStone.m_iAlign; }
-void CItemStone::SetAlignType(STONEALIGN_TYPE iAlign) { m_itStone.m_iAlign = iAlign; }
-LPCTSTR CItemStone::GetAbbrev() const { return( m_sAbbrev ); }
-void CItemStone::SetAbbrev( LPCTSTR pAbbrev ) { m_sAbbrev = pAbbrev; }
+void CItemStone::SetCharter( unsigned int iLine, LPCTSTR pCharter )
+{
+	ASSERT(iLine<COUNTOF(m_sCharter));
+	m_sCharter[iLine] = pCharter;
+}
+
+LPCTSTR CItemStone::GetWebPageURL() const
+{
+	return( m_sWebPageURL );
+}
+
+void CItemStone::SetWebPage( LPCTSTR pWebPage )
+{
+	m_sWebPageURL = pWebPage;
+}
+
+STONEALIGN_TYPE CItemStone::GetAlignType() const
+{
+	return m_itStone.m_iAlign;
+}
+
+void CItemStone::SetAlignType(STONEALIGN_TYPE iAlign)
+{
+	m_itStone.m_iAlign = iAlign;
+}
+
+LPCTSTR CItemStone::GetAbbrev() const
+{
+	return( m_sAbbrev );
+}
+
+void CItemStone::SetAbbrev( LPCTSTR pAbbrev )
+{
+	m_sAbbrev = pAbbrev;
+}
 
 LPCTSTR CItemStone::GetTypeName() const
 {
@@ -508,7 +540,7 @@ LPCTSTR CItemStone::GetTypeName() const
 		default:
 			return "Unk";
 	}
-	return "Unk";
+
 #else
 	CVarDefCont * pResult = NULL;
 	
@@ -542,11 +574,11 @@ void CItemStone::r_Write( CScript & s )
 	}
 
 	TemporaryString pszTemp;
-	for ( int i = 0; i<COUNTOF(m_sCharter); i++ )
+	for ( unsigned int i = 0; i < COUNTOF(m_sCharter); i++ )
 	{
 		if ( ! m_sCharter[i].IsEmpty())
 		{
-			sprintf(pszTemp, "CHARTER%i", i);
+			sprintf(pszTemp, "CHARTER%u", i);
 			s.WriteKey(pszTemp, m_sCharter[i] );
 		}
 	}
@@ -818,7 +850,7 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 
 	if ( s.IsKeyHead( sm_szLoadKeys[STC_CHARTER], 7 ))
 	{
-		int i = ATOI(s.GetKey()+7);
+		unsigned int i = ATOI(s.GetKey() + 7);
 		if ( i >= COUNTOF(m_sCharter))
 			return( false );
 		m_sCharter[i] = s.GetArgStr();
@@ -1021,7 +1053,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 	else if ( !strnicmp(sm_szLoadKeys[STC_CHARTER], pszKey, 7) )
 	{
 		LPCTSTR pszCmd = pszKey + 7;
-		int i = ATOI(pszCmd);
+		unsigned int i = ATOI(pszCmd);
 		if ( i >= COUNTOF(m_sCharter))
 			sVal = "";
 		else
@@ -2277,7 +2309,7 @@ void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iSton
 	};
 
 	CGString sControls[COUNTOF(sm_szDefControls)+10+COUNTOF(m_sCharter)];
-	int iControls = 0;
+	size_t iControls = 0;
 	while ( iControls < COUNTOF(sm_szDefControls))
 	{
 		// Fix the button ID so we can trap it later
@@ -2288,22 +2320,22 @@ void CItemStone::addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iSton
 	bool fView = (iStoneMenu == STONEDISP_VIEWCHARTER);
 
 	CGString sText[10+COUNTOF(m_sCharter)];
-	int iTexts=0;
+	size_t iTexts = 0;
 	sText[iTexts++] = GetName();
 	sText[iTexts++].Format( "%s %s Charter", (fView) ? "View": "Set", (LPCTSTR) GetTypeName());
 	sText[iTexts++] = "and Web Link";
 	sText[iTexts++] = "Charter";
 
-	for ( int iLoop = 0; iLoop < COUNTOF(m_sCharter); iLoop++)
+	for ( unsigned int iLoop = 0; iLoop < COUNTOF(m_sCharter); iLoop++)
 	{
 		if ( fView )
 		{
-			sControls[iControls++].Format( "text 50 %i 0 %i", 155 + (iLoop*22), iLoop + 4);
+			sControls[iControls++].Format( "text 50 %u 0 %u", 155 + (iLoop*22), iLoop + 4);
 		}
 		else
 		{
-			sControls[iControls++].Format( "gumppic 40 %i 1143", 152 + (iLoop*22));
-			sControls[iControls++].Format( "textentry 50 %i 250 32 0 %i %i", 155 + (iLoop*22), iLoop + 1000, iLoop + 4 );
+			sControls[iControls++].Format( "gumppic 40 %u 1143", 152 + (iLoop*22));
+			sControls[iControls++].Format( "textentry 50 %u 250 32 0 %u %u", 155 + (iLoop*22), iLoop + 1000, iLoop + 4 );
 		}
 		if ( fView && iLoop == 0 && m_sCharter[0].IsEmpty())
 		{
@@ -2402,7 +2434,7 @@ bool CItemStone::IsInMenu( STONEDISP_TYPE iStoneMenu, const CItemStone * pOtherS
 	return( true );
 }
 
-int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, int iTexts )
+size_t CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, size_t iTexts )
 {
 	ADDTOCALLSTACK("CItemStone::addStoneListSetup");
 	// ARGS: psText = NULL if i just want to count.
@@ -2410,7 +2442,7 @@ int CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText,
 	if ( iStoneMenu == STONEDISP_DECLAREWAR )
 	{
 		// This list is special.
-		for ( int i=0; i<g_World.m_Stones.GetCount(); i++ )
+		for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
 		{
 			CItemStone * pOtherStone = g_World.m_Stones[i];
 			if ( ! IsInMenu( STONEDISP_DECLAREWAR, pOtherStone ))
@@ -2485,9 +2517,9 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	};
 
 	CGString sControls[512];
-	int iControls = 0;
+	size_t iControls = 0;
 
-	int iControlLimit = COUNTOF(sm_szDefControls);
+	size_t iControlLimit = COUNTOF(sm_szDefControls);
 	switch ( iStoneMenu )
 	{
 		case STONEDISP_FEALTY:
@@ -2524,8 +2556,8 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	};
 
 	CGString sText[512];
-	int iTexts=1;
-	for ( ; iTexts<COUNTOF(sm_szDefText) - 1; iTexts++ )
+	size_t iTexts = 1;
+	for ( ; iTexts < COUNTOF(sm_szDefText) - 1; iTexts++ )
 	{
 		ASSERT( iTexts < COUNTOF(sText));
 		sText[iTexts] = sm_szDefText[iTexts];
@@ -2596,16 +2628,16 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 	iTexts++;
 
 	// First count the appropriate members
-	int iMemberCount = addStoneListSetup( iStoneMenu, NULL, 0 );
+	size_t iMemberCount = addStoneListSetup( iStoneMenu, NULL, 0 );
 
-	if ( iMemberCount+iTexts > COUNTOF(sText))
+	if ( (iMemberCount + iTexts) > COUNTOF(sText))
 	{
 		DEBUG_ERR(( "Too Many Guilds !!!\n" ));
 		iMemberCount = COUNTOF(sText) - iTexts - 1;
 	}
 
-	int iPages = 0;
-	for ( int iLoop = 0; iLoop < iMemberCount; iLoop++)
+	size_t iPages = 0;
+	for ( size_t iLoop = 0; iLoop < iMemberCount; iLoop++)
 	{
 		if (iLoop % 10 == 0)
 		{
@@ -2613,12 +2645,12 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 			sControls[iControls++].Format("page %i", iPages);
 			if (iPages > 1)
 			{
-				sControls[iControls++].Format("button 15 320 5223 5223 0 %i", iPages - 1);
+				sControls[iControls++].Format("button 15 320 5223 5223 0 %" FMTSIZE_T, iPages - 1);
 				sControls[iControls++] = "text 40 317 0 1";
 			}
-			if ( iMemberCount > iPages * 10)
+			if ( iMemberCount > (iPages * 10))
 			{
-				sControls[iControls++].Format("button 366 320 5224 5224 0 %i", iPages + 1);
+				sControls[iControls++].Format("button 366 320 5224 5224 0 %" FMTSIZE_T, iPages + 1);
 				sControls[iControls++] = "text 288 317 0 2";
 			}
 		}
@@ -2703,7 +2735,7 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 			{
 				for (int i = 0; i < resp.m_TextArray.GetCount(); i++)
 				{
-					int id = resp.m_TextArray[i]->m_ID - 1000;
+					unsigned int id = resp.m_TextArray[i]->m_ID - 1000;
 					switch ( id )
 					{
 						case 0:	// Charter[0]

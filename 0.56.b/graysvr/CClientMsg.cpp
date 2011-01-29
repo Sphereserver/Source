@@ -2319,7 +2319,7 @@ void CClient::addGumpTextDisp( const CObjBase * pObj, GUMP_TYPE gump, LPCTSTR ps
 	new PacketSignGump(this, pObj, gump, pszName, pszText);
 }
 
-void CClient::addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, int count, CObjBase * pObj )
+void CClient::addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t count, CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::addItemMenu");
 	// We must set GetTargMode() to show what mode we are in for menu select.
@@ -2339,7 +2339,7 @@ void CClient::addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, int count,
 }
 
 
-bool CClient::addWalkCode( EXTDATA_TYPE iType, int iCodes )
+bool CClient::addWalkCode( EXTDATA_TYPE iType, size_t iCodes )
 {
 	ADDTOCALLSTACK("CClient::addWalkCode");
 	// Fill up the walk code buffer.
@@ -2356,7 +2356,7 @@ bool CClient::addWalkCode( EXTDATA_TYPE iType, int iCodes )
 
 	if ( iType == EXTDATA_WalkCode_Add )
 	{
-		if ( m_Walk_InvalidEchos >= 0 )
+		if ( m_Walk_InvalidEchos != UINT_MAX )
 			return false;					// they are stuck til they give a valid echo!
 		// On a timer tick call this.
 		if ( m_Walk_CodeQty >= COUNTOF(m_Walk_LIFO))	// They are appearently not moving fast.
@@ -2365,15 +2365,15 @@ bool CClient::addWalkCode( EXTDATA_TYPE iType, int iCodes )
 	else
 	{
 		// Fill the buffer at start.
-		ASSERT( m_Walk_CodeQty < 0 );
+		ASSERT( m_Walk_CodeQty == UINT_MAX );
 		m_Walk_CodeQty = 0;
 	}
 
 	ASSERT( iCodes <= COUNTOF(m_Walk_LIFO));
 
 	// make a new code and send it out
-	int i;
-	for (i = 0; i < iCodes && m_Walk_CodeQty < COUNTOF(m_Walk_LIFO); m_Walk_CodeQty++, i++)
+	size_t i = 0;
+	for ( ; i < iCodes && m_Walk_CodeQty < COUNTOF(m_Walk_LIFO); m_Walk_CodeQty++, i++ )
 		m_Walk_LIFO[m_Walk_CodeQty] = 0x88ca0000 + Calc_GetRandVal(0xffff);
 
 	new PacketFastWalk(this, m_Walk_LIFO, m_Walk_CodeQty, i);
@@ -3023,16 +3023,16 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
+BYTE CClient::Setup_Play( unsigned int iSlot ) // After hitting "Play Character" button
 {
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Mode == CLIMODE_SETUP_CHARLIST
 
-	DEBUG_MSG(( "%lx:Setup_Play slot %d\n", GetSocketID(), iSlot ));
+	DEBUG_MSG(( "%lx:Setup_Play slot %u\n", GetSocketID(), iSlot ));
 
 	if ( ! GetAccount())
 		return( PacketLoginError::Invalid );
-	if ( iSlot < 0 || iSlot >= COUNTOF(m_tmSetupCharList))
+	if ( iSlot >= COUNTOF(m_tmSetupCharList))
 		return( PacketLoginError::BadCharacter );
 
 	CChar * pChar = m_tmSetupCharList[ iSlot ].CharFind();
@@ -3050,12 +3050,12 @@ BYTE CClient::Setup_Play( int iSlot ) // After hitting "Play Character" button
 	return Setup_Start( pChar );
 }
 
-BYTE CClient::Setup_Delete( int iSlot ) // Deletion of character
+BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 {
 	ADDTOCALLSTACK("CClient::Setup_Delete");
 	ASSERT( GetAccount() );
-	DEBUG_MSG(( "%lx:Setup_Delete slot=%d\n", GetSocketID(), iSlot ));
-	if ( iSlot < 0 || iSlot >= COUNTOF(m_tmSetupCharList))
+	DEBUG_MSG(( "%lx:Setup_Delete slot=%u\n", GetSocketID(), iSlot ));
+	if ( iSlot >= COUNTOF(m_tmSetupCharList))
 		return PacketDeleteError::NotExist;
 
 	CChar * pChar = m_tmSetupCharList[iSlot].CharFind();

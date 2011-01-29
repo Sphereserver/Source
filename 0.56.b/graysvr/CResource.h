@@ -1173,8 +1173,8 @@ public:
 	CObjBase *	m_pObj;
 	CGString	m_sControls[1024];
 	CGString	m_sText[512];
-	int			m_iTexts;
-	int			m_iControls;
+	size_t		m_iTexts;
+	size_t		m_iControls;
 	int			m_x;
 	int			m_y;
 

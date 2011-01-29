@@ -615,7 +615,7 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	if ( iSelect > 0 )
 	{
 		// We selected an item.
-		if ( iSelect >= COUNTOF(m_tmMenu.m_Item))
+		if ( static_cast<unsigned int>(iSelect) >= COUNTOF(m_tmMenu.m_Item))
 			return;
 
 		if ( m_Targ_Text.IsEmpty())
@@ -632,7 +632,7 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];	// Most as we want to display at one time.
 	item[0].m_sText.Format( "Contents of %s", (LPCTSTR) pObj->GetName());
 
-	int count = 0;
+	size_t count = 0;
 	CItem * pItemNext;
 	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
@@ -720,11 +720,11 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	if ( iSelect == 0 )
 	{
 		// menu cancelled
-		return( Cmd_Skill_Menu_Build( rid, iSelect, NULL, 0, fShowMenu, fLimitReached ) != 0);
+		return( Cmd_Skill_Menu_Build( rid, iSelect, NULL, 0, fShowMenu, fLimitReached ) > 0);
 	}
 
 	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];
-	int iShowCount = Cmd_Skill_Menu_Build( rid, iSelect, item, COUNTOF(item), fShowMenu, fLimitReached);
+	size_t iShowCount = Cmd_Skill_Menu_Build( rid, iSelect, item, COUNTOF(item), fShowMenu, fLimitReached);
 
 	if ( iSelect < -1 )		// just a test.
 	{
@@ -769,7 +769,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 	return( true );
 }
 
-int CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, int iMaxSize, bool &fShowMenu, bool &fLimitReached )
+size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu_Build");
 	// Build the skill menu for the curent active skill.
@@ -834,7 +834,7 @@ int CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem*
 
 	bool fSkip = false;	// skip this if we lack resources or skill.
 	int iOnCount = 0;
-	int iShowCount = 0;
+	size_t iShowCount = 0;
 	CScriptTriggerArgs Args;
 
 	while ( s.ReadKeyParse())
@@ -1100,13 +1100,13 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	return( true );
 }
 
-bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
+bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Tracking");
 	// look around for stuff.
 
 	ASSERT(m_pChar);
-	if ( track_sel < 0 )
+	if ( track_sel == UINT_MAX )
 	{
 		// Initial pre-track setup.
 		if ( m_pChar->m_pArea->IsFlag( REGION_FLAG_SHIP ) &&
@@ -1143,9 +1143,9 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		return( true );
 	}
 
-	if ( track_sel ) // Not Cancelled
+	if ( track_sel > 0 ) // Not Cancelled
 	{
-		ASSERT( ((WORD)track_sel) < COUNTOF( m_tmMenu.m_Item ));
+		ASSERT( track_sel < COUNTOF( m_tmMenu.m_Item ));
 		if ( fExec )
 		{
 			// Tracking menu got us here. Start tracking the selected creature.
@@ -1172,7 +1172,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		NPCBRAIN_TYPE track_type = sm_Track_Brain[ track_sel ];
 
 		CMenuItem item[ minimum( MAX_MENU_ITEMS, COUNTOF( m_tmMenu.m_Item )) ];
-		int count = 0;
+		size_t count = 0;
 
 		item[0].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_SKILLMENU_TEXT_TRACKING );
 		m_tmMenu.m_Item[0] = track_sel;
@@ -1217,7 +1217,7 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 				break;
 		}
 
-		if ( count )
+		if ( count > 0 )
 		{
 			// Some credit for trying.
 			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandVal( 30 ));
@@ -1244,6 +1244,9 @@ bool CClient::Cmd_Skill_Tracking( int track_sel, bool fExec )
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_5 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_6 )
 	};
+
+	if (track_sel >= COUNTOF(sm_Track_FailMsg))
+		track_sel = COUNTOF(sm_Track_FailMsg) - 1;
 
 	SysMessage( sm_Track_FailMsg[track_sel] );
 	return( false );

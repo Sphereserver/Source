@@ -416,7 +416,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 
 		case VACS_HELP:
 			{
-				for ( int i=0; i<COUNTOF(sm_pszCmds); i++ )
+				for ( size_t i = 0; i < COUNTOF(sm_pszCmds); i++ )
 					pSrc->SysMessage( sm_pszCmds[i] );
 			}
 			return true;

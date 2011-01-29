@@ -181,7 +181,7 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 	{
 		m_pNPC->m_timeRestock.Init();
 
-		for ( int i = 0; i < COUNTOF(sm_VendorLayers); ++i )
+		for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 		{
 			CItemContainer *pCont = GetBank(sm_VendorLayers[i]);
 			if ( !pCont )

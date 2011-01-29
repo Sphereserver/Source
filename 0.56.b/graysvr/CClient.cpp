@@ -50,7 +50,7 @@ CClient::CClient(NetState* state)
 
 	memset( m_Walk_LIFO, 0, sizeof( m_Walk_LIFO ));	// Initialize the fast walk killer stuff
 	m_Walk_InvalidEchos = 0;
-	m_Walk_CodeQty = -1;	// how many valid codes in here ?
+	m_Walk_CodeQty = UINT_MAX;	// how many valid codes in here ?
 
 	m_Env.SetInvalid();
 

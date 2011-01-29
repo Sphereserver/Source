@@ -6,7 +6,7 @@ MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 #OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 OPT	= -O2 $(OPTDEFAULT)
-#WARN	= -Wall -W -Wno-sign-compare -Wno-unused-parameter -Wno-unknown-pragmas -Wno-invalid-offsetof
+#WARN	= -Wall -W -Wno-unknown-pragmas -Wno-invalid-offsetof
 WARN	= -w
 #DEBUG	= -ggdb2
 DEBUG	= -s

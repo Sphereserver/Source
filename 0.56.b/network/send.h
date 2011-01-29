@@ -42,8 +42,8 @@ public:
 class PacketWeb : public PacketSend
 {
 public:
-	PacketWeb(const CClient* target = NULL, BYTE* data = NULL, int length = 0);
-	void setData(BYTE* data, int length);
+	PacketWeb(const CClient* target = NULL, BYTE* data = NULL, size_t length = 0);
+	void setData(BYTE* data, size_t length);
 };
 
 /***************************************************************************
@@ -710,7 +710,7 @@ public:
 class PacketDisplayMenu : public PacketSend
 {
 public:
-	PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, const CObjBase* object);
+	PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, size_t count, const CObjBase* object);
 };
 
 /***************************************************************************
@@ -1210,7 +1210,7 @@ public:
 class PacketFastWalk : public PacketExtended
 {
 public:
-	PacketFastWalk(const CClient* target, DWORD* codes, int count, int sendCount);
+	PacketFastWalk(const CClient* target, DWORD* codes, size_t count, size_t sendCount);
 };
 
 /***************************************************************************
@@ -1764,7 +1764,7 @@ public:
 class PacketMoveShip : public PacketSend
 {
 public:
-	PacketMoveShip(const CItemShip* ship, CObjBase** objects, int objectCount, DIR_TYPE direction, BYTE speed);
+	PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed);
 };
 
 #endif

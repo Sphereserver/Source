@@ -782,7 +782,8 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 	int	max	= Stat_GetMax(STAT_FOOD);
 	if ( max == 0)
 		return g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_UNAFFECTED);
-	int index = IMULDIV(Stat_GetVal(STAT_FOOD), 8, max);
+
+	size_t index = IMULDIV(Stat_GetVal(STAT_FOOD), 8, max);
 
 	if ( fPet )
 	{
@@ -809,8 +810,8 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_8),
 		};
 
-		if ( index >= COUNTOF(sm_szPetHunger)-1 )
-			index = COUNTOF(sm_szPetHunger)-1;
+		if ( index >= (COUNTOF(sm_szPetHunger) - 1) )
+			index = COUNTOF(sm_szPetHunger) - 1;
 
 		return ( fHappy ? sm_szPetHappy[index] : sm_szPetHunger[index] );
 	}
@@ -827,8 +828,8 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_8),
 	};
 
-	if ( index >= COUNTOF(sm_szFoodLevel)-1 )
-		index = COUNTOF(sm_szFoodLevel)-1;
+	if ( index >= (COUNTOF(sm_szFoodLevel) - 1) )
+		index = COUNTOF(sm_szFoodLevel) - 1;
 
 	return sm_szFoodLevel[index];
 }

@@ -202,6 +202,7 @@ void SetExceptionTranslator()
 #ifndef _WIN32
 	void _cdecl Signal_Hangup( int sig = 0 ) // If shutdown is initialized
 	{
+		UNREFERENCED_PARAMETER(sig);
 		if ( !g_Serv.m_fResyncPause )
 			g_World.Save(true);
 

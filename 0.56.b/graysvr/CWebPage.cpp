@@ -607,7 +607,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	// Send the header first.
 	TCHAR szTmp[8*1024];
-	int iLen = sprintf( szTmp,
+	size_t iLen = sprintf( szTmp,
 		"HTTP/1.1 200 OK\r\n"	// 100 Continue
 		"Date: %s\r\n"
 		"Server: " GRAY_TITLE " V " GRAY_VERSION "\r\n"
@@ -618,11 +618,11 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 		);
 
 	if ( m_type == WEBPAGE_TEMPLATE )
-		iLen += sprintf(szTmp+iLen, "Expires: 0\r\n");
+		iLen += sprintf(szTmp + iLen, "Expires: 0\r\n");
 	else
-		iLen += sprintf(szTmp+iLen, "Last-Modified: %s\r\n",  CGTime(dateChange).FormatGmt(NULL));
+		iLen += sprintf(szTmp + iLen, "Last-Modified: %s\r\n",  CGTime(dateChange).FormatGmt(NULL));
 
-	iLen += sprintf( szTmp+iLen,
+	iLen += sprintf( szTmp + iLen,
 		"Content-Length: %lu\r\n"
 		"\r\n",
 		dwSize

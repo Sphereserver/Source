@@ -800,7 +800,7 @@ private:
 	// Client last know state stuff.
 	CSectorEnviron m_Env;		// Last Environment Info Sent. so i don't have to keep resending if it's the same.
 
-	char m_fUpdateStats;	// update our own status (weight change) when done with the cycle.
+	unsigned char m_fUpdateStats;	// update our own status (weight change) when done with the cycle.
 
 	// Walk limiting code
 	int	m_iWalkTimeAvg;
@@ -808,9 +808,9 @@ private:
 	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
 
 	// Stupid Walk limiting code. (Not working really)
-	DWORD	m_Walk_LIFO[16];	// Client > 1.26 must match these .
-	int	m_Walk_InvalidEchos;
-	int	m_Walk_CodeQty;
+	DWORD m_Walk_LIFO[16];	// Client > 1.26 must match these .
+	unsigned int m_Walk_InvalidEchos;
+	unsigned int m_Walk_CodeQty;
 
 	// Screensize
 	struct __screensize
@@ -981,10 +981,10 @@ private:
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 
 	bool OnRxConsoleLoginComplete();
-	bool OnRxConsole( const BYTE * pData, int len );
-	bool OnRxPing( const BYTE * pData, int len );
+	bool OnRxConsole( const BYTE * pData, size_t len );
+	bool OnRxPing( const BYTE * pData, size_t len );
 	bool OnRxWebPageRequest( CWebPageDef * pPage, LPCTSTR pszMatch );
-	bool OnRxWebPageRequest( BYTE * pRequest, int len );
+	bool OnRxWebPageRequest( BYTE * pRequest, size_t len );
 
 	BYTE LogIn( CAccountRef pAccount, CGString & sMsg );
 	BYTE LogIn( LPCTSTR pszName, LPCTSTR pPassword, CGString & sMsg );
@@ -1070,13 +1070,13 @@ public:
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
 	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
 
-	bool Login_Relay( int iServer ); // Relay player to a certain IP
+	bool Login_Relay( unsigned int iServer ); // Relay player to a certain IP
 	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
 
-	BYTE Setup_Delete( int iSlot ); // Deletion of character
+	BYTE Setup_Delete( unsigned int iSlot ); // Deletion of character
 	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
 	BYTE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest ); // Gameserver login and character listing
-	BYTE Setup_Play( int iSlot ); // After hitting "Play Character" button
+	BYTE Setup_Play( unsigned int iSlot ); // After hitting "Play Character" button
 	BYTE Setup_Start( CChar * pChar ); // Send character startup stuff to player
 	
 
@@ -1084,20 +1084,20 @@ public:
 private:
 	void Cmd_GM_PageInfo();
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
-	int Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, int iMaxSize, bool &fShowMenu, bool &fLimitReached );
+	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
 	bool Cmd_CreateItem( ITEMID_TYPE id, bool fStatic = false );
 	bool Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell = SPELL_Summon, bool fPet = true );
 
 	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );
-	void Cmd_GM_PageSelect( int iSelect );
+	void Cmd_GM_PageSelect( size_t iSelect );
 	void Cmd_GM_Page( LPCTSTR pszreason); // Help button (Calls GM Call Menus up)
 
 	bool Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect = -1 );
 	bool Cmd_Skill_Smith( CItem * pIngots );
 	bool Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc );
-	bool Cmd_Skill_Tracking( int track_type = -1, bool fExec = false ); // Fill menu with specified creature types
+	bool Cmd_Skill_Tracking( unsigned int track_type = UINT_MAX, bool fExec = false ); // Fill menu with specified creature types
 	bool Cmd_Skill_Inscription();
 	bool Cmd_Skill_Alchemy( CItem * pItem );
 	bool Cmd_Skill_Cartography( int iLevel );
@@ -1130,10 +1130,10 @@ public:
 	virtual bool r_LoadVal( CScript & s );
 
 	// Low level message traffic.
-	static int xCompress( BYTE * pOutput, const BYTE * pInput, int inplen );
+	static size_t xCompress( BYTE * pOutput, const BYTE * pInput, size_t inplen );
 
-	bool xProcessClientSetup( CEvent * pEvent, int iLen );
-	bool xPacketFilter(const CEvent * pEvent, int iLen = 0);
+	bool xProcessClientSetup( CEvent * pEvent, size_t iLen );
+	bool xPacketFilter(const CEvent * pEvent, size_t iLen = 0);
 	bool xCanEncLogin(bool bCheckCliver = false);	// Login crypt check
 	// Low level push world data to the client.
 
@@ -1258,15 +1258,15 @@ public:
 	void addGumpInpVal( bool fcancel, INPVAL_STYLE style,
 		DWORD dwmask, LPCTSTR ptext1, LPCTSTR ptext2, CObjBase * pObj );
 
-	void addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, int count, CObjBase * pObj = NULL );
-	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, int iControls, const CGString * psText, int iTexts, int x, int y, CObjBase * pObj = NULL, DWORD rid = 0 );
+	void addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t count, CObjBase * pObj = NULL );
+	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj = NULL, DWORD rid = 0 );
 
 	bool addGumpDialogProps( CGrayUID uid );
 
 	void addRedrawAll();
 	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
 
-	bool addWalkCode( EXTDATA_TYPE iType, int iQty );
+	bool addWalkCode( EXTDATA_TYPE iType, size_t iQty );
 
 	void addCharPaperdoll( CChar * pChar );
 

@@ -153,7 +153,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 	{
 		case GUMPCTL_PAGE:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
 
 			GET_ABSOLUTE( page );
@@ -175,7 +175,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		case GUMPCTL_BUTTON:			// 7 = X,Y,Down gump,Up gump,pressable(1/0),page,id
 		case GUMPCTL_BUTTONTILEART:		// 11 = X,Y,Down gump,Up gump,pressable(1/0),page,id,tileart,hue,X,Y
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -263,9 +263,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_DTEXT:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -281,9 +281,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_DCROPPEDTEXT:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				return false;
 			
 			GET_RELATIVE( x, m_iOriginX );
@@ -301,9 +301,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_DHTMLGUMP:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -321,9 +321,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_DTEXTENTRY:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -341,9 +341,9 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_DTEXTENTRYLIMITED:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -362,7 +362,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_CHECKBOX:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -379,7 +379,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_RADIO:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -396,7 +396,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		}
 		case GUMPCTL_CHECKERTRANS:
 		{
-			if ( m_iControls >= COUNTOF(m_sControls)-1 )
+			if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 				return false;
 
 			GET_RELATIVE( x, m_iOriginX );
@@ -460,7 +460,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			break;
 	}
 
-	if ( m_iControls >= COUNTOF(m_sControls)-1 )
+	if ( m_iControls >= (COUNTOF(m_sControls) - 1) )
 		return false;
 
 	m_sControls[m_iControls].Format("%s %s", pszKey, pszArgs);
@@ -530,7 +530,7 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	{
 		while ( s.ReadKey())
 		{
-			if ( m_iTexts >= COUNTOF(m_sText)-1 )
+			if ( m_iTexts >= (COUNTOF(m_sText) - 1) )
 				break;
 			m_pObj->ParseText( s.GetKeyBuffer(), pClient->GetChar() );
 			m_sText[m_iTexts] = s.GetKey();
@@ -633,7 +633,7 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
 }
 
 
-void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, int iControls, const CGString * psText, int iTexts, int x, int y, CObjBase * pObj, DWORD rid )
+void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj, DWORD rid )
 {
 	ADDTOCALLSTACK("CClient::addGumpDialog");
 	// Add a generic GUMP menu.
@@ -932,7 +932,7 @@ void CClient::Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj )
 	item[0].m_sText = s.GetKey();
 	// item[0].m_id = rid.m_internalrid;	// general context id
 
-	int i=0;
+	size_t i = 0;
 	while (s.ReadKeyParse())
 	{
 		if ( ! s.IsKey( "ON" ))
@@ -940,9 +940,7 @@ void CClient::Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj )
 
 		i++;
 		if ( ! item[i].ParseLine( s.GetArgRaw(), pObj, m_pChar ))
-		{
-			i--;			
-		}
+			i--;
 
 		if ( i >= (COUNTOF( item ) - 1))
 			break;

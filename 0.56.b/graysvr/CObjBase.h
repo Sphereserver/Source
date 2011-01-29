@@ -1626,7 +1626,7 @@ private:
 	{
 		return( GetID() & 3 );
 	}
-	int  Ship_ListObjs( CObjBase ** ppObjList );
+	size_t  Ship_ListObjs( CObjBase ** ppObjList );
 	bool Ship_CanMoveTo( const CPointMap & pt ) const;
 	bool Ship_SetMoveDir( DIR_TYPE dir );
 	bool Ship_MoveDelta( CPointBase pdelta );
@@ -1928,8 +1928,8 @@ private:
 
 	MEMORY_TYPE GetMemoryType() const;
 
-	LPCTSTR GetCharter(int iLine) const;
-	void SetCharter( int iLine, LPCTSTR pCharter );
+	LPCTSTR GetCharter(unsigned int iLine) const;
+	void SetCharter( unsigned int iLine, LPCTSTR pCharter );
 	LPCTSTR GetWebPageURL() const;
 	void SetWebPage( LPCTSTR pWebPage );
 
@@ -1938,7 +1938,7 @@ private:
 	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const;
 
 	// Client interaction.
-	int  addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, int iTexts );
+	size_t  addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, size_t iTexts );
 	void addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu );
 	void addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iStoneMenu );
 	void addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid );

@@ -557,7 +557,7 @@ CCrypt::CCrypt()
 	SetClientVerEnum(0);
 }
 
-bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, int iLen, bool isclientKr )
+bool CCrypt::Init( DWORD dwIP, BYTE * pEvent, size_t iLen, bool isclientKr )
 {
 	ADDTOCALLSTACK("CCrypt::Init");
 	bool bReturn = true;
@@ -627,7 +627,7 @@ void CCrypt::InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay)
 	}
 }
 
-void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
+void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::LoginCryptStart");
 	BYTE m_Raw[ MAX_BUFFER ];
@@ -720,7 +720,7 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	m_fInit = true;
 }
 
-void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
+void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::GameCryptStart");
 	BYTE m_Raw[ MAX_BUFFER ];
@@ -776,7 +776,7 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, int iLen )
 	m_fInit = true;
 }
 
-void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, int iLen )
+void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, size_t iLen )
 {
 	/**
 	 * When the client switches between login and game server without opening a new connection, the first game packet
@@ -852,7 +852,7 @@ void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, int iLen 
 	DecryptOld( pOutput, pOutput, iLen );
 }
 
-void CCrypt::Encrypt( BYTE * pOutput, const BYTE * pInput, int iLen )
+void CCrypt::Encrypt( BYTE * pOutput, const BYTE * pInput, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::Encrypt");
 	if ( ! iLen )
@@ -873,7 +873,7 @@ void CCrypt::Encrypt( BYTE * pOutput, const BYTE * pInput, int iLen )
 }
 
 
-void CCrypt::Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen  )
+void CCrypt::Decrypt( BYTE * pOutput, const BYTE * pInput, size_t iLen  )
 {
 	ADDTOCALLSTACK("CCrypt::Decrypt");
 	if ( ! iLen )
@@ -917,22 +917,22 @@ void CCrypt::Decrypt( BYTE * pOutput, const BYTE * pInput, int iLen  )
 }
 
 
-void CCrypt::EncryptMD5( BYTE * pOutput, const BYTE * pInput, int iLen )
+void CCrypt::EncryptMD5( BYTE * pOutput, const BYTE * pInput, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::EncryptMD5");
-	for (int i = 0; i < iLen; i++)
+	for (size_t i = 0; i < iLen; i++)
 	{
 		pOutput[i] = pInput[i] ^ md5_digest[md5_position++];
 		md5_position &= MD5_RESET;
 	}
 }
 
-void CCrypt::DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, int iLen )
+void CCrypt::DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::DecryptBlowFish");
 	while ( (m_gameStreamPos + iLen) > CRYPT_GAMETABLE_TRIGGER) 
 	{
-		int lenOld = CRYPT_GAMETABLE_TRIGGER - m_gameStreamPos;
+		size_t lenOld = CRYPT_GAMETABLE_TRIGGER - m_gameStreamPos;
 
 		DecryptBlowFish(pOutput, pInput, lenOld);
 
@@ -944,7 +944,7 @@ void CCrypt::DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, int iLen )
 		iLen -= lenOld;
 	}
 
-	for ( int i=0; i<iLen; i++ )
+	for ( size_t i = 0; i < iLen; i++ )
 	{
 		pOutput[i] = DecryptBFByte( pInput[i] );
 	}
@@ -952,12 +952,12 @@ void CCrypt::DecryptBlowFish( BYTE * pOutput, const BYTE * pInput, int iLen )
 	m_gameStreamPos += iLen;
 }
 
-void CCrypt::DecryptTwoFish( BYTE * pOutput, const BYTE * pInput, int iLen )
+void CCrypt::DecryptTwoFish( BYTE * pOutput, const BYTE * pInput, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::DecryptTwoFish");
 	BYTE tmpBuff[TFISH_RESET];
 	
-	for ( int i = 0; i < iLen; i++ )
+	for ( size_t i = 0; i < iLen; i++ )
 	{
 		if ( tf_position >= TFISH_RESET )
 		{
@@ -984,12 +984,12 @@ BYTE CCrypt::DecryptBFByte( BYTE bEnc )
 	return result;
 }
 
-void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, int iLen  )
+void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, size_t iLen  )
 {	
 	ADDTOCALLSTACK("CCrypt::DecryptOld");
 	if ( GetClientVer() >= 0x125370 )
 	{
-		for ( int i=0; i<iLen; i++ )
+		for ( size_t i = 0; i < iLen; i++ )
 		{
 			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
 			DWORD MaskLo = m_CryptMaskLo;
@@ -1003,7 +1003,7 @@ void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, int iLen  )
 
 	if ( GetClientVer() == 0x125360 )
 	{
-		for ( int i=0; i<iLen; i++ )
+		for ( size_t i = 0; i < iLen; i++ )
 		{
 			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
 			DWORD MaskLo = m_CryptMaskLo;
@@ -1024,7 +1024,7 @@ void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, int iLen  )
 		
 	if ( GetClientVer() ) // GRAY_CLIENT_VER <= 0x125350
 	{
-		for ( int i=0; i<iLen; i++ )
+		for ( size_t i = 0; i < iLen; i++ )
 		{
 			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
 			DWORD MaskLo = m_CryptMaskLo;
@@ -1203,16 +1203,16 @@ const WORD CHuffman::sm_xCompress_Base[COMPRESS_TREE_SIZE] =	// static
 	0x00d4 // terminator
 } ;
 
-int CHuffman::Compress( BYTE * pOutput, const BYTE * pInput, int inplen ) // static
+size_t CHuffman::Compress( BYTE * pOutput, const BYTE * pInput, size_t inplen ) // static
 {
 	ADDTOCALLSTACK("CHuffman::Compress");
-	int iLen=0;
-	int bitidx=0;	// Offset in output byte (xOutVal)
-	BYTE xOutVal=0;	// Don't bother to init this. It will just roll off all junk anyhow.
+	size_t iLen = 0;
+	int bitidx = 0;	// Offset in output byte (xOutVal)
+	BYTE xOutVal = 0;	// Don't bother to init this. It will just roll off all junk anyhow.
 
-	for ( int i=0; i <= inplen; i++ )
+	for ( size_t i = 0; i <= inplen; i++ )
 	{
-		WORD value = sm_xCompress_Base[ ( i == inplen ) ? (COMPRESS_TREE_SIZE-1) : pInput[i] ];
+		WORD value = sm_xCompress_Base[ ( i == inplen ) ? (COMPRESS_TREE_SIZE - 1) : pInput[i] ];
 		int nBits = value & 0xF;
 		value >>= 4;
 		while ( nBits-- )
@@ -1228,7 +1228,7 @@ int CHuffman::Compress( BYTE * pOutput, const BYTE * pInput, int inplen ) // sta
 	}
 	if (bitidx)	// flush odd bits.
 	{
-		pOutput[iLen++] = xOutVal << (8-bitidx);
+		pOutput[iLen++] = xOutVal << (8 - bitidx);
 	}
 
 	return( iLen );

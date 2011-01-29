@@ -93,14 +93,6 @@ void Packet::expand(size_t size)
 
 void Packet::resize(size_t newsize)
 {
-	if ( newsize == -1 )			// special case, we running out of space while writing
-	{								// auto-expand silently
-		size_t oldPosition = m_position;
-		resize(m_bufferSize + PACKET_BUFFERGROWTH);
-		m_position = oldPosition;
-		return;
-	}
-
 	ASSERT(newsize > 0);
 	if ( newsize > m_bufferSize )		// increase buffer, copying the contents
 	{
@@ -199,7 +191,7 @@ void Packet::writeByte(const BYTE value)
 	m_buffer[m_position++] = value;
 }
 
-void Packet::writeData(const BYTE* buffer, long size)
+void Packet::writeData(const BYTE* buffer, size_t size)
 {
 	if ((m_position + (sizeof(BYTE) * size)) > m_bufferSize)
 		expand((sizeof(BYTE) * size));

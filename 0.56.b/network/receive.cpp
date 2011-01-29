@@ -911,7 +911,7 @@ bool PacketCharPlay::onReceive(NetState* net)
 	skip(4); // 0xedededed
 	skip(MAX_NAME_SIZE); // char name
 	skip(MAX_NAME_SIZE); // char pass
-	int slot = readInt32();
+	unsigned int slot = readInt32();
 	skip(4); // ip
 
 	CClient* client = net->getClient();
@@ -1447,7 +1447,7 @@ bool PacketCharDelete::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketCharDelete::onReceive");
 
 	skip(MAX_NAME_SIZE); // charpass
-	int slot = readInt32();
+	unsigned int slot = readInt32();
 	skip(4); // client ip
 
 	CClient* client = net->getClient();
@@ -1873,7 +1873,7 @@ bool PacketServerSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketServerSelect::onReceive");
 
-	int server = readInt16();
+	unsigned int server = readInt16();
 
 	net->getClient()->Login_Relay(server);
 	return true;
@@ -2754,7 +2754,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 
 	ANIM_TYPE anim = (ANIM_TYPE)readInt32();
 	bool ok = false;
-	for (int i = 0; ok == false && i < COUNTOF(validAnimations); i++)
+	for (size_t i = 0; ok == false && i < COUNTOF(validAnimations); i++)
 		ok = (anim == validAnimations[i]);
 
 	if (ok == false)
@@ -3265,10 +3265,10 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	TCHAR title[2 * MAX_NAME_SIZE];
 	TCHAR author[MAX_NAME_SIZE];
 
-	int titleLength = readInt16();
+	size_t titleLength = readInt16();
 	readStringASCII(title, minimum(titleLength, COUNTOF(title)));
 
-	int authorLength = readInt16();
+	size_t authorLength = readInt16();
 	readStringASCII(author, minimum(authorLength, COUNTOF(author)));
 
 	net->getClient()->Event_Book_Title(bookSerial, title, author);

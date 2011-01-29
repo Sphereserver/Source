@@ -54,7 +54,7 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(
  *
  *
  ***************************************************************************/
-PacketWeb::PacketWeb(const CClient* target, BYTE* data, int length) : PacketSend(0, 0, PRI_NORMAL)
+PacketWeb::PacketWeb(const CClient* target, BYTE* data, size_t length) : PacketSend(0, 0, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWeb::PacketWeb");
 
@@ -65,7 +65,7 @@ PacketWeb::PacketWeb(const CClient* target, BYTE* data, int length) : PacketSend
 		push(target);
 }
 
-void PacketWeb::setData(BYTE* data, int length)
+void PacketWeb::setData(BYTE* data, size_t length)
 {
 	seek();
 	writeData(data, length);
@@ -2029,7 +2029,7 @@ bool PacketCharacter::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, int count, const CObjBase* object) : PacketSend(XCMD_MenuItems, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, const CMenuItem* items, size_t count, const CObjBase* object) : PacketSend(XCMD_MenuItems, 11, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayMenu::PacketDisplayMenu");
 
@@ -2043,7 +2043,7 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 	writeStringFixedASCII((LPCTSTR)items[0].m_sText, len);
 
 	writeByte(count);
-	for (int i = 1; i <= count; i++)
+	for (size_t i = 1; i <= count; i++)
 	{
 		writeInt16(items[i].m_id);
 		writeInt16(items[i].m_color);
@@ -3325,11 +3325,11 @@ PacketExtended::PacketExtended(EXTDATA_TYPE type, size_t len, Priority priority)
  *
  *
  ***************************************************************************/
-PacketFastWalk::PacketFastWalk(const CClient* target, DWORD* codes, int count, int sendCount) : PacketExtended(EXTDATA_WalkCode_Prime, 29, PRI_NORMAL)
+PacketFastWalk::PacketFastWalk(const CClient* target, DWORD* codes, size_t count, size_t sendCount) : PacketExtended(EXTDATA_WalkCode_Prime, 29, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketFastWalk::PacketFastWalk");
 
-	for (int i = count - sendCount; i < count; i++)
+	for (size_t i = count - sendCount; i < count; i++)
 		writeInt32(codes[i]);
 
 	push(target);
@@ -4449,7 +4449,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
  *
  *
  ***************************************************************************/
-PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, int objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
+PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
 	
@@ -4467,7 +4467,7 @@ PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, int ob
 	// assume that first object is the ship itself
 	writeInt16(objectCount - 1);
 
-	for (int i = 1; i < objectCount; i++)
+	for (size_t i = 1; i < objectCount; i++)
 	{
 		const CObjBase* object = objects[i];
 		const CPointMap& objectLocation = object->GetTopPoint();

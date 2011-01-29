@@ -59,10 +59,10 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 	// Some items (like hair) have no names !
 	// Get rid of the strange leading spaces in some of the names.
 	TCHAR szName[ sizeof(tiledata.m_name)+1 ];
-	int j=0;
-	for ( int i=0; i<sizeof(tiledata.m_name) && tiledata.m_name[i]; i++ )
+	size_t j = 0;
+	for ( size_t i = 0; i < sizeof(tiledata.m_name) && tiledata.m_name[i]; i++ )
 	{
-		if ( j==0 && ISWHITESPACE(tiledata.m_name[i]))
+		if ( j == 0 && ISWHITESPACE(tiledata.m_name[i]))
 			continue;
 		szName[j++] = tiledata.m_name[i];
 	}
@@ -429,7 +429,7 @@ int CItemBase::IsID_Door( ITEMID_TYPE id ) // static
 		return( 2 );
 	}
 
-	for ( int i=0;i<COUNTOF(sm_Item_DoorBase);i++)
+	for ( size_t i = 0; i < COUNTOF(sm_Item_DoorBase); i++)
 	{
 		int did = id - sm_Item_DoorBase[i];
 		if ( did >= 0 && did <= 15 )

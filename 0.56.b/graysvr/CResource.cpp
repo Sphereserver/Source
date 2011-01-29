@@ -229,15 +229,18 @@ CResource::CResource()
 
 CResource::~CResource()
 {
-	for ( int i=0; i<COUNTOF(m_ResHash.m_Array); i++ )
-	for ( int j=0; j<m_ResHash.m_Array[i].GetCount(); j++ )
+	for ( size_t i = 0; i < COUNTOF(m_ResHash.m_Array); i++ )
 	{
-		CResourceDef* pResDef = m_ResHash.m_Array[i][j];
-		if ( pResDef )
+		for ( int j = 0; j < m_ResHash.m_Array[i].GetCount(); j++ )
 		{
-			pResDef->UnLink();
+			CResourceDef* pResDef = m_ResHash.m_Array[i][j];
+			if ( pResDef != NULL )
+			{
+				pResDef->UnLink();
+			}
 		}
 	}
+
 	Unload(false);
 }
 
@@ -1847,7 +1850,7 @@ CRegionBase * CResource::GetRegion( LPCTSTR pKey ) const
 	// get a region from a name or areadef.
 
 	GETNONWHITESPACE( pKey );
-	for ( int i=0; i<COUNTOF(m_ResHash.m_Array); i++ )
+	for ( size_t i = 0; i < COUNTOF(m_ResHash.m_Array); i++ )
 	{
 		for ( int j=0; j<m_ResHash.m_Array[i].GetCount(); j++ )
 		{
@@ -2318,7 +2321,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_PLEVEL:
 		{
 			int index = rid.GetResIndex();
-			if ( index >= COUNTOF(m_PrivCommands) )
+			if ( index < 0 || static_cast<unsigned int>(index) >= COUNTOF(m_PrivCommands) )
 				return false;
 			while ( pScript->ReadKey() )
 			{

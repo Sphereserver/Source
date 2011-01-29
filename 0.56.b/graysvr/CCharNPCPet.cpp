@@ -495,7 +495,7 @@ void CChar::NPC_PetClearOwners()
 			pBoss->AddGoldToPack( pBankV->m_itEqBankBox.m_Check_Amount, pBankB );
 			pBankV->m_itEqBankBox.m_Check_Amount = 0;
 
-			for ( int i = 0; i < COUNTOF(sm_VendorLayers); i++ )
+			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); i++ )
 			{
 				CItemContainer * pCont = GetBank( sm_VendorLayers[i] );
 				if ( !pCont )

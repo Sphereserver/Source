@@ -77,7 +77,7 @@ void CGrayInstall::DetectMulVersions()
 	ADDTOCALLSTACK("CGrayInstall::DetectMulVersions");
 
 	// assume all formats are original to start with
-	for (int i = 0; i < COUNTOF(m_FileFormat); i++)
+	for (size_t i = 0; i < COUNTOF(m_FileFormat); i++)
 		m_FileFormat[i] = VERFORMAT_ORIGINAL;
 
 	// check for High Seas tiledata format

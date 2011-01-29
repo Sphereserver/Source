@@ -796,7 +796,6 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 
 	CItemBase * pItemDef = Item_GetDef();
 	GUMP_TYPE gump = pItemDef->IsTypeContainer();
-	int i=0;
 
 	// check for custom values in TDATA3/TDATA4
 	if ( pItemDef->m_ttContainer.m_dwMaxXY )
@@ -812,11 +811,12 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 			0 ));
 	}
 
+	unsigned int i = 0;
 	for ( ; ; i++ )
 	{
-		if (i>=COUNTOF(sm_ContSize))
+		if (i >= COUNTOF(sm_ContSize))
 		{
-			i=0;	// set to default
+			i = 0;	// set to default
 			DEBUG_WARN(("Unknown container gump id %d for 0%x\n", gump, GetDispID()));
 			break;
 		}
@@ -1090,7 +1090,7 @@ void CItemContainer::SetKeyRing()
 		ITEMID_KEY_RING5,
 	};
 
-	int iQty = GetCount();
+	size_t iQty = GetCount();
 	if ( iQty >= COUNTOF(sm_Item_Keyrings))
 		iQty = COUNTOF(sm_Item_Keyrings)-1;
 
@@ -1468,7 +1468,7 @@ void CItemContainer::Game_Create()
 	// Chess GameType
 	if ( m_itGameBoard.m_GameType == 0 )
 	{
-		for ( int i=0; i<COUNTOF(sm_Item_ChessPieces); i++ )
+		for ( size_t i = 0; i < COUNTOF(sm_Item_ChessPieces); i++ )
 		{
 			// Add all it's pieces. (if not already added)
 			CItem * pPiece = CItem::CreateBase( sm_Item_ChessPieces[i] );
