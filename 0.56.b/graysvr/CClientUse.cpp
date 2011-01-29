@@ -390,12 +390,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_BANDAGE:		// SKILL_HEALING, or SKILL_VETERINARY
 			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BANDAGE_PROMT ), false, false );
 			return true;
-		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-		case IT_WEAPON_SWORD:		// 23 =
-		case IT_WEAPON_FENCE:		// 24 = can't be used to chop trees.
-		case IT_WEAPON_AXE:
-			// set resource to trees
-			m_pChar->m_atResource.m_ridType	= RESOURCE_ID( RES_TYPEDEF, IT_TREE );
 
 		case IT_BANDAGE_BLOOD:	// Clean the bandages.
 		case IT_COTTON:			// use on a spinning wheel.
@@ -403,9 +397,22 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_YARN:			// Use this on a loom.
 		case IT_THREAD: 		// Use this on a loom.
 		case IT_COMM_CRYSTAL:
-		case IT_SCISSORS:
-		case IT_LOCKPICK:		// Use on a locked thing.
+			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_TARGET_PROMT ), false, false );
+			return true;
+
 		case IT_CARPENTRY_CHOP:
+		case IT_LOCKPICK:		// Use on a locked thing.
+		case IT_SCISSORS:
+			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_TARGET_PROMT ), false, true );
+			return true;
+
+		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+		case IT_WEAPON_SWORD:		// 23 =
+		case IT_WEAPON_FENCE:		// 24 = can't be used to chop trees.
+		case IT_WEAPON_AXE:
+			// set resource to trees
+			m_pChar->m_atResource.m_ridType	= RESOURCE_ID( RES_TYPEDEF, IT_TREE );
+
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_WEAPON_PROMT ), false, true );

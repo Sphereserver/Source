@@ -5105,3 +5105,8 @@ ALPHA additions:
 - Fixed: SuppressCapitals replaces unicode speech with blank text.
 - Fixed: Possible exception when importing from a WSC file where item properties are listed
   in an unexpected order.
+
+29-01-2011, MrSugarCube
+- Fixed #1901: Some targeting items (bloody bandages, carpentry tools, cotton, lockpicks,
+  thread, yarn, wool) using 'itemuse_weapon_promt' defmessage as their prompt instead of
+  'target_promt'.
