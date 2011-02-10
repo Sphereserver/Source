@@ -105,11 +105,6 @@ void ThreadHolder::pop(IThread *thread)
 	throw CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
 }
 
-int ThreadHolder::getActiveThreads()
-{
-	return m_threadCount;
-}
-
 IThread * ThreadHolder::getThreadAt(int at)
 {
 	if (( at < 0 ) || ( at > getActiveThreads() ))
@@ -172,16 +167,6 @@ AbstractThread::~AbstractThread()
 		// No pthread equivalent
 #endif
 	}
-}
-
-unsigned AbstractThread::getId()
-{
-	return m_id;
-}
-
-const char *AbstractThread::getName()
-{
-	return m_name;
 }
 
 void AbstractThread::start()
@@ -321,7 +306,7 @@ SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread)
 	return 0;
 }
 
-bool AbstractThread::isActive()
+bool AbstractThread::isActive() const
 {
 #ifdef _WIN32
 	return m_handle != NULL;
@@ -335,7 +320,7 @@ void AbstractThread::waitForClose()
 	terminate();
 }
 
-bool AbstractThread::isCurrentThread()
+bool AbstractThread::isCurrentThread() const
 {
 #ifdef _WIN32
 	return (getId() == ::GetCurrentThreadId());
@@ -406,11 +391,6 @@ void AbstractThread::setPriority(IThread::Priority pri)
 		default:
 			throw CException(LOGL_FATAL, 0, "Unable to determine thread priority");
 	}
-}
-
-IThread::Priority AbstractThread::getPriority()
-{
-	return m_priority;
 }
 
 bool AbstractThread::shouldExit()

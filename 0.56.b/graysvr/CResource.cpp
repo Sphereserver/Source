@@ -206,6 +206,10 @@ CResource::CResource()
 
 	m_iPetsInheritNotoriety = 0;
 
+#ifdef _MTNETWORK
+	m_iNetworkThreads = 1;
+	m_iNetworkThreadPriority = IThread::Highest;
+#endif
 	m_fUseAsyncNetwork = 1;
 	m_iNetMaxPings = 15;
 	m_iNetHistoryTTL = 300;
@@ -473,6 +477,10 @@ enum RC_TYPE
 	RC_MYSQLUSER,				//	m_sMySqlUser
 #endif
 	RC_NETTTL,					// m_iNetHistoryTTL
+#ifdef _MTNETWORK
+	RC_NETWORKTHREADPRIORITY,	// m_iNetworkThreadPriority
+	RC_NETWORKTHREADS,			// m_iNetworkThreads
+#endif
 	RC_NORESROBE,
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
@@ -679,6 +687,10 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MYSQLUSER",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlUser),			0 }},
 #endif
 	{ "NETTTL",					{ ELEM_INT,		OFFSETOF(CResource,m_iNetHistoryTTL),		0 }},
+#ifdef _MTNETWORK
+	{ "NETWORKTHREADPRIORITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreadPriority), 0 }},
+	{ "NETWORKTHREADS",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreads),		0 }},
+#endif
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe),			0 }},
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather),			0 }},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
@@ -1034,6 +1046,27 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_TOOLTIPCACHE:
 			g_Cfg.m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
 			break;
+			
+#ifdef _MTNETWORK
+		case RC_NETWORKTHREADS:
+			if (g_Serv.IsLoading())
+				g_Cfg.m_iNetworkThreads = s.GetArgVal();
+			else
+				g_Log.EventError("The value of NetworkThreads cannot be modified after the server has started\n");
+			break;
+
+		case RC_NETWORKTHREADPRIORITY:
+			{
+				int priority = s.GetArgVal();
+				if (priority < IThread::Idle)
+					priority = IThread::Idle;
+				else if (priority > IThread::RealTime)
+					priority = IThread::RealTime;
+
+				m_iNetworkThreadPriority = priority;
+			}
+			break;
+#endif
 
 		default:
 			return( sm_szLoadKeys[i].m_elem.SetValStr( this, s.GetArgRaw()));
@@ -2203,8 +2236,12 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			while ( pScript->ReadKeyParse())
 			{
 				strcpy(ipBuffer, pScript->GetKey());
-				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(ipBuffer);
-				hist->setBlocked(true);
+#ifndef _MTNETWORK
+				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(ipBuffer);
+#else
+				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ipBuffer);
+#endif
+				history.setBlocked(true);
 			}
 		}
 		return( true );
@@ -3447,7 +3484,9 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
+#ifndef _MTNETWORK
 		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
+#endif
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
 		if ( zExperimentalFlags[0] )

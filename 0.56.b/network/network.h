@@ -9,13 +9,18 @@
 #define NETWORK_PACKETCOUNT 0x100	// number of unique packets
 #define NETWORK_BUFFERSIZE 0xF000	// size of receive buffer
 #define NETWORK_SEEDLEN_OLD (sizeof( DWORD ))
-#define NETWORK_SEEDLEN_NEW (1 + sizeof( DWORD )*5)
+#define NETWORK_SEEDLEN_NEW (1 + (sizeof( DWORD ) * 5))
 
 #define NETWORK_MAXPACKETS		g_Cfg.m_iNetMaxPacketsPerTick	// max packets to send per tick (per queue)
 #define NETWORK_MAXPACKETLEN	g_Cfg.m_iNetMaxLengthPerTick	// max packet length to send per tick (per queue)
 #define NETWORK_MAXQUEUESIZE	g_Cfg.m_iNetMaxQueueSize		// max packets to hold per queue (comment out for unlimited)
 #define NETHISTORY_TTL			g_Cfg.m_iNetHistoryTTL			// time to remember an ip
 #define NETHISTORY_MAXPINGS		g_Cfg.m_iNetMaxPings			// max 'pings' before blocking an ip
+
+#ifdef _MTNETWORK
+	//#define MTNETWORK_INPUT		// handle input in multithreaded mode
+	#define MTNETWORK_OUTPUT	// handle output in multithreaded mode
+#endif
 
 #define NETWORK_DISCONNECTPRI	PacketSend::PRI_HIGHEST			// packet priorty to continue sending before closing sockets
 
@@ -30,8 +35,15 @@
 #endif
 
 class CClient;
-class NetworkIn;
 struct CSocketAddress;
+#ifndef _MTNETWORK
+class NetworkIn;
+#else
+class NetworkManager;
+class NetworkThread;
+class NetworkInput;
+class NetworkOutput;
+#endif
 
 #if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
 	void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading);
@@ -107,6 +119,7 @@ public:
 	long id(void) const { return m_id; }; // returns ID of the client
 	void setId(long id) { m_id = id; }; // changes ID of the client
 	void clear(void); // clears state
+	void clearQueues(void); // clears outgoing data queues
 
 	void init(SOCKET socket, CSocketAddress addr); // initialized socket
 	bool isInUse(const CClient* client = NULL) const volatile; // does this socket still belong to this/a client?
@@ -152,8 +165,22 @@ public:
 	void beginTransaction(long priority); // begin a transaction for grouping packets
 	void endTransaction(void); // end transaction
 	
+#ifndef _MTNETWORK
 	friend class NetworkIn;
 	friend class NetworkOut;
+#else
+	friend class NetworkManager;
+	friend class NetworkThread;
+	friend class NetworkInput;
+	friend class NetworkOutput;
+
+private:
+	NetworkThread* m_parent;
+
+public:
+	void setParentThread(NetworkThread* parent) { m_parent = parent; }
+	NetworkThread* getParentThread(void) const { return m_parent; }
+#endif
 	friend class CClient;
 	friend class ClientIterator;
 	friend class SafeClientIterator;
@@ -163,6 +190,7 @@ public:
 };
 
 
+#ifndef _MTNETWORK
 /***************************************************************************
  *
  *
@@ -344,5 +372,392 @@ public:
 
 extern NetworkIn g_NetworkIn;
 extern NetworkOut g_NetworkOut;
+#else
+
+class NetworkManager;
+class NetworkThread;
+class NetworkInput;
+class NetworkOutput;
+class ClientIterator;
+class SafeClientIterator;
+struct HistoryIP;
+
+typedef std::deque<NetworkThread*> NetworkThreadList;
+typedef std::deque<NetState*> NetworkStateList;
+typedef std::deque<HistoryIP> IPHistoryList;
+	
+/***************************************************************************
+ *
+ *
+ *	struct HistoryIP			Simple interface for IP history maintainence
+ *
+ *
+ ***************************************************************************/
+struct HistoryIP
+{
+	CSocketAddressIP m_ip;
+	long m_pings;
+	long m_connecting;
+	long m_connected;
+	bool m_blocked;
+	long m_ttl;
+	CServTime m_blockExpire;
+
+	void update(void);
+	bool checkPing(void); // IP is blocked -or- too many pings to it?
+	void setBlocked(bool isBlocked, int timeout = -1);
+};
+	
+/***************************************************************************
+ *
+ *
+ *	class IPHistoryManager		Holds IP records (bans, pings, etc)
+ *
+ *
+ ***************************************************************************/
+class IPHistoryManager
+{
+private:
+	IPHistoryList m_ips;		// list of known ips
+	CServTime m_lastDecayTime;	// last decay time
+
+public:
+	IPHistoryManager(void);
+	~IPHistoryManager(void);
+
+private:
+	IPHistoryManager(const IPHistoryManager& copy);
+	IPHistoryManager& operator=(const IPHistoryManager& other);
+		
+public:
+	void tick(void);	// period events
+
+	HistoryIP& getHistoryForIP(const CSocketAddressIP& ip);	// get history for an ip
+	HistoryIP& getHistoryForIP(const char* ip);				// get history for an ip
+};
+	
+/***************************************************************************
+ *
+ *
+ *	class NetworkInput					Handles network input from clients
+ *
+ *
+ ***************************************************************************/
+class NetworkInput
+{
+private:
+	NetworkThread* m_thread;	// owning network thread
+	BYTE* m_receiveBuffer;		// buffer for received data
+	BYTE* m_decryptBuffer;		// buffer for decrypted data
+
+public:
+	static const char* m_sClassName;
+	NetworkInput(void);
+	~NetworkInput(void);
+
+private:
+	NetworkInput(const NetworkInput& copy);
+	NetworkInput& operator=(const NetworkInput& other);
+
+public:
+	void setOwner(NetworkThread* thread) { m_thread = thread; } // set owner thread
+	bool processInput(void);									// process input from clients, returns true if work was done
+
+private:
+	bool checkForData(fd_set& fds);														// check for states which have pending data to read
+	size_t processData(NetState* state, BYTE* buffer, size_t bufferSize);				// process received data
+	size_t processUnknownClientData(NetState* state, BYTE* buffer, size_t bufferSize);	// process data from an unknown client type
+	size_t processOtherClientData(NetState* state, BYTE* buffer, size_t bufferSize);	// process data from a non-game client
+	size_t processGameClientData(NetState* state, BYTE* buffer, size_t bufferSize);		// process data from a game client
+};
+	
+/***************************************************************************
+ *
+ *
+ *	class NetworkOutput					Handles network output to clients
+ *
+ *
+ ***************************************************************************/
+class NetworkOutput
+{
+private:
+	static inline size_t _failed_result(void) { return (std::numeric_limits<size_t>::max)(); }
+
+private:
+	NetworkThread* m_thread;	// owning network thread
+	BYTE* m_encryptBuffer;		// buffer for encrpyted data
+
+public:
+	static const char* m_sClassName;
+	NetworkOutput(void);
+	~NetworkOutput(void);
+
+private:
+	NetworkOutput(const NetworkOutput& copy);
+	NetworkOutput& operator=(const NetworkOutput& other);
+
+public:
+	void setOwner(NetworkThread* thread) { m_thread = thread; }			// set owner thread
+	bool processOutput(void);											// process output to clients, returns true if data was sent
+	void onAsyncSendComplete(NetState* state);							// notify that async operation completed
+
+	void queuePacket(PacketSend* packet, bool appendTransaction);		// queue a packet for sending
+	void queuePacketTransaction(PacketTransaction* transaction);		// queue a packet transaction for sending
+
+private:
+	void checkFlushRequests(void);										// check for clients who need data flushing
+	size_t flush(NetState* state);										// process all queues for a client
+	size_t processPacketQueue(NetState* state, unsigned int priority);	// process a client's packet queue
+	size_t processAsyncQueue(NetState* state);							// process a client's async queue
+	bool processByteQueue(NetState* state);								// process a client's byte queue
+
+	bool sendPacket(NetState* state, PacketSend* packet);				// send packet to client (can be queued for async operation)
+	bool sendPacketData(NetState* state, PacketSend* packet);			// send packet data to client
+	size_t sendData(NetState* state, const BYTE* data, size_t length);	// send raw data to client
+};
+	
+/***************************************************************************
+ *
+ *
+ *	class PacketManager             Holds lists of packet handlers
+ *
+ *
+ ***************************************************************************/
+class PacketManager
+{
+private:
+	Packet* m_handlers[NETWORK_PACKETCOUNT];	// standard packet handlers
+	Packet* m_extended[NETWORK_PACKETCOUNT];	// extended packeet handlers (0xbf)
+	Packet* m_encoded[NETWORK_PACKETCOUNT];		// encoded packet handlers (0xd7)
+
+public:
+	static const char* m_sClassName;
+	PacketManager(void);
+	virtual ~PacketManager(void);
+
+private:
+	PacketManager(const PacketManager& copy);
+	PacketManager& operator=(const PacketManager& other);
+
+public:
+	void registerPacket(unsigned int id, Packet* handler);		// register packet handler
+	void registerExtended(unsigned int id, Packet* handler);	// register extended packet handler
+	void registerEncoded(unsigned int id, Packet* handler);		// register encoded packet handler
+
+	void unregisterPacket(unsigned int id);		// remove packet handler
+	void unregisterExtended(unsigned int id);	// remove extended packet handler
+	void unregisterEncoded(unsigned int id);	// remove encoded packet handler
+
+	Packet* getHandler(unsigned int id) const;			// get handler for standard packet
+	Packet* getExtendedHandler(unsigned int id) const;	// get handler for extended packet
+	Packet* getEncodedHandler(unsigned int id) const;	// get handler for encoded packet
+};
+
+/***************************************************************************
+ *
+ *
+ *	class NetworkManager            Network manager, handles incoming connections and
+ *                                  spawns child threads to process i/o
+ *
+ *
+ ***************************************************************************/
+class NetworkManager
+{
+private:
+	NetState** m_states;			// client state pool
+	size_t m_stateCount;			// client state count
+	size_t m_lastGivenSlot;			// last slot index assigned
+	bool m_isThreaded;
+
+	CGObList m_clients;				// current list of clients (CClient)
+	NetworkThreadList m_threads;	// list of network threads
+	IPHistoryManager m_ips;			// ip history
+	PacketManager m_packets;		// packet handlers
+
+public:
+	static const char* m_sClassName;
+	NetworkManager(void);
+	~NetworkManager(void);
+
+private:
+	NetworkManager(const NetworkManager& copy);
+	NetworkManager& operator=(const NetworkManager& other);
+
+public:
+	void start(void);
+	void stop(void);
+	void tick(void);
+
+	bool checkNewConnection(void);				// check if a new connection is waiting to be accepted
+	void acceptNewConnection(void);				// accept a new connection
+
+	void processAllInput(void);					// process network input (NOT THREADSAFE)
+	void processAllOutput(void);				// process network output (NOT THREADSAFE)
+	void flushAllClients(void);					// force each thread to flush output
+
+public:
+	const PacketManager& getPacketManager(void) const { return m_packets; }		// get packet manager
+	IPHistoryManager& getIPHistoryManager(void) { return m_ips; }	// get ip history manager
+	bool isThreaded(void) const { return m_isThreaded; } // are threads active
+	inline bool isInputThreaded(void) const // is network input handled by thread
+	{
+#ifdef MTNETWORK_INPUT
+		return m_isThreaded;
+#else
+		return false; // threaded input not supported
+#endif
+	}
+
+	inline bool isOutputThreaded(void) const // is network output handled by thread
+	{
+#ifdef MTNETWORK_OUTPUT
+		return m_isThreaded;
+#else
+		return false; // threaded output not supported
+#endif
+	}
+
+private:
+	void createNetworkThreads(size_t count);	// create n threads to handle client i/o
+	NetworkThread* selectBestThread(void);		// select the most suitable thread for handling a new client
+	void assignNetworkState(NetState* state);	// assign a state to a thread
+	NetState* findFreeSlot(size_t start = (std::numeric_limits<size_t>::max)());	// find an unused slot for new client
+		
+	friend class ClientIterator;
+	friend class NetworkThreadStateIterator;
+	friend class NetworkThread;
+	friend class NetworkInput;
+	friend class NetworkOutput;
+};
+
+/***************************************************************************
+ *
+ *
+ *	class NetworkThread             Handles i/o for a set of clients, owned
+ *                                  by a single NetworkManager instance
+ *
+ *
+ ***************************************************************************/
+class NetworkThread : public AbstractSphereThread
+{
+private:
+	NetworkManager& m_manager;					// parent network manager
+	size_t m_id;								// network thread #
+
+	NetworkStateList m_states;					// states controlled by this thread
+	ThreadSafeQueue<NetState*> m_assignQueue;	// queue of states waiting to be taken by this thread
+
+	NetworkInput m_input;		// handles data input
+	NetworkOutput m_output;		// handles data output
+
+public:
+	size_t id(void) const { return m_id; }							// network thread #
+	size_t getClientCount(void) const { return m_states.size(); }	// current number of clients controlled by thread
+
+public:
+	static const char* m_sClassName;
+	NetworkThread(NetworkManager& manager, size_t id);
+	virtual ~NetworkThread(void);
+
+private:
+	NetworkThread(const NetworkThread& copy);
+	NetworkThread& operator=(const NetworkThread& other);
+
+public:
+	void assignNetworkState(NetState* state);	// assign a network state to this thread
+
+public:
+	void onAsyncSendComplete(NetState* state)
+	{
+		// notify that async operation completed
+		m_output.onAsyncSendComplete(state);
+	}
+
+	void queuePacket(PacketSend* packet, bool appendTransaction)
+	{
+		// queue a packet for sending
+		m_output.queuePacket(packet, appendTransaction);
+	}
+
+	void queuePacketTransaction(PacketTransaction* transaction)
+	{
+		// queue a packet transaction for sending
+		m_output.queuePacketTransaction(transaction);
+	}
+
+public:
+	virtual void onStart(void);
+	virtual void tick(void);
+
+	void processInput(void);	// process network input
+	void processOutput(void);	// process network output
+	void flushAllClients(void); // flush all output
+
+private:
+	void checkNewStates(void);				// check for states that have been assigned but not moved to our list
+	void dropInvalidStates(void);			// check for states that don't belong to use anymore
+
+public:
+	friend class NetworkInput;
+	friend class NetworkOutput;
+	friend class NetworkThreadStateIterator;
+};
+
+/***************************************************************************
+ *
+ *
+ *	class ClientIterator		Works as client iterator getting the clients
+ *
+ *
+ ***************************************************************************/
+class ClientIterator
+{
+protected:
+	const NetworkManager* m_network;	// network manager to iterate
+	CClient* m_nextClient;				// next client to check
+
+public:
+	explicit ClientIterator(const NetworkManager* network = NULL);
+	~ClientIterator(void);
+
+private:
+	ClientIterator(const ClientIterator& copy);
+	ClientIterator& operator=(const ClientIterator& other);
+
+public:
+	CClient* next(bool includeClosing = false); // finds next client
+};
+
+/***************************************************************************
+ *
+ *
+ *	class NetworkThreadStateIterator		Works as network state iterator getting the states
+ *											for a thread, safely.
+ *
+ *
+ ***************************************************************************/
+class NetworkThreadStateIterator
+{
+protected:
+	const NetworkThread* m_thread;	// network thread to iterate
+	size_t m_nextIndex;				// next index to check
+	bool m_safeAccess;				// whether to use safe access
+
+public:
+	explicit NetworkThreadStateIterator(const NetworkThread* thread);
+	~NetworkThreadStateIterator(void);
+
+private:
+	NetworkThreadStateIterator(const NetworkThreadStateIterator& copy);
+	NetworkThreadStateIterator& operator=(const NetworkThreadStateIterator& other);
+
+public:
+	NetState* next(void); // find next state
+};
+
+// todo: eliminate globals!
+extern NetworkManager g_NetworkManager;
+
+#endif
 
 #endif

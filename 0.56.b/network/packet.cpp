@@ -1062,7 +1062,7 @@ size_t Packet::checkLength(NetState* client, Packet* packet)
 			return 0;
 	}
 
-	if (packet->getLength() < packetLength)
+	if ((packet->getLength() - packet->getPosition()) < packetLength)
 		return 0;
 
 	return packetLength;
@@ -1150,7 +1150,11 @@ void PacketSend::send(const CClient *client, bool appendTransaction)
 	if (sync() > NETWORK_MAXPACKETLEN)
 		return;
 
+#ifndef _MTNETWORK
 	g_NetworkOut.schedule(this, appendTransaction);
+#else
+	m_target->getParentThread()->queuePacket(this->clone(), appendTransaction);
+#endif
 }
 
 void PacketSend::push(const CClient *client, bool appendTransaction)
@@ -1177,7 +1181,11 @@ void PacketSend::push(const CClient *client, bool appendTransaction)
 		return;
 	}
 
+#ifndef _MTNETWORK
 	g_NetworkOut.scheduleOnce(this, appendTransaction);
+#else
+	m_target->getParentThread()->queuePacket(this, appendTransaction);
+#endif
 }
 
 void PacketSend::target(const CClient* client)

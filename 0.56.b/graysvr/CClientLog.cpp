@@ -43,14 +43,18 @@ bool CClient::IsConnecting() const
 }
 
 
-void	CClient::SetConnectType( CONNECT_TYPE iType )
+void CClient::SetConnectType( CONNECT_TYPE iType )
 {
 	ADDTOCALLSTACK("CClient::SetConnectType");
-	m_iConnectType	= iType;
+	m_iConnectType = iType;
 	if ( iType == CONNECT_GAME )
 	{
-		NetworkIn::HistoryIP *hist = &g_NetworkIn.getHistoryForIP(GetPeer());
-		hist->m_connecting--;
+#ifndef _MTNETWORK
+		NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(GetPeer());
+#else
+		HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
+#endif
+		history.m_connecting--;
 	}
 }
 
@@ -239,7 +243,8 @@ bool CClient::Login_Relay( unsigned int iRelay ) // Relay player to a selected I
 	}
 
 	// >= 1.26.00 clients list Gives us a 1 based index for some reason.
-	iRelay --;
+	if ( iRelay > 0 )
+		iRelay --;
 
 	CServerRef pServ;
 	if ( iRelay <= 0 )
@@ -331,7 +336,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 
 	if ( IsSetEF( EF_AllowTelnetPacketFilter ) )
 	{
-		bool fFiltered = xPacketFilter( (const CEvent *)pData, iLen );
+		bool fFiltered = xPacketFilter(pData, iLen);
 		if ( fFiltered )
 			return fFiltered;
 	}

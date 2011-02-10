@@ -70,7 +70,9 @@ enum EF_TYPE
 	EF_NPCAct_Triggers				= 0x0010000,
 	EF_FixCanSeeInClosedConts		= 0x0020000,
 	EF_Unused0400000				= 0x0400000,
+#ifndef _MTNETWORK
 	EF_NetworkOutThread				= 0x0800000,
+#endif
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };
 
@@ -923,6 +925,10 @@ public:
 #endif
 
 	// network settings
+#ifdef _MTNETWORK
+	unsigned int m_iNetworkThreads;			// number of network threads to create
+	unsigned int m_iNetworkThreadPriority;	// priority of network threads
+#endif
 	int			m_fUseAsyncNetwork;			// 0=normal send, 1=async send, 2=async send for 4.0.0+ only
 	int			m_iNetMaxPings;				// max pings before blocking an ip
 	int			m_iNetHistoryTTL;			// time to remember an ip

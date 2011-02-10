@@ -157,7 +157,11 @@ public:
 	virtual void onSent(CClient* client);
 	virtual bool canSendTo(const NetState* client) const;
 
+#ifndef _MTNETWORK
 	friend class NetworkOut;
+#else
+	friend class NetworkOutput;
+#endif
 	friend class SimplePacketTransaction;
 
 protected:

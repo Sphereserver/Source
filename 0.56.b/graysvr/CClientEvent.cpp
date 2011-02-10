@@ -2744,14 +2744,14 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 
 // ---------------------------------------------------------------------
 
-bool CClient::xPacketFilter( const CEvent * pEvent, size_t iLen )
+bool CClient::xPacketFilter( const BYTE * pData, size_t iLen )
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
 	
 	EXC_TRY("packet filter");
-	if ( iLen > 0 && g_Serv.m_PacketFilter[pEvent->Default.m_Cmd][0] )
+	if ( iLen > 0 && g_Serv.m_PacketFilter[pData[0]][0] )
 	{
-		CScriptTriggerArgs Args(pEvent->Default.m_Cmd);
+		CScriptTriggerArgs Args(pData[0]);
 		enum TRIGRET_TYPE trigReturn;
 		char idx[5];
 
@@ -2764,7 +2764,7 @@ bool CClient::xPacketFilter( const CEvent * pEvent, size_t iLen )
 		char *zBuf = Str_GetTemp();
 
 		Args.m_VarsLocal.SetNum("NUM", bytes);
-		memcpy(zBuf, &(pEvent->m_Raw[0]), bytestr);
+		memcpy(zBuf, &(pData[0]), bytestr);
 		zBuf[bytestr] = 0;
 		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
 		if ( m_pAccount )
@@ -2780,11 +2780,11 @@ bool CClient::xPacketFilter( const CEvent * pEvent, size_t iLen )
 		for ( size_t i = 0; i < bytes; ++i )
 		{
 			sprintf(idx, "%" FMTSIZE_T, i);
-			Args.m_VarsLocal.SetNum(idx, (int)pEvent->m_Raw[i]);
+			Args.m_VarsLocal.SetNum(idx, (int)pData[i]);
 		}
 
 		//	Call the filtering function
-		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pEvent->Default.m_Cmd], &g_Serv, &Args, NULL, &trigReturn) )
+		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pData[0]], &g_Serv, &Args, NULL, &trigReturn) )
 			if ( trigReturn == TRIGRET_RET_TRUE )
 				return true;	// do not cry about errors
 	}

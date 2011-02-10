@@ -1278,15 +1278,19 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 				if (ppArgs[1])
 					iTimeDecay = Exp_GetVal(ppArgs[1]);
-
-				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(ppArgs[0]);
+				
+#ifndef _MTNETWORK
+				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(ppArgs[0]);
+#else
+				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
+#endif
 
 				if (iTimeDecay >= 0)
 					pSrc->SysMessagef("IP blocked for %d seconds\n", iTimeDecay);
 				else
-					pSrc->SysMessagef("IP%s blocked\n", hist->m_blocked ? " already" : "");
+					pSrc->SysMessagef("IP%s blocked\n", history.m_blocked ? " already" : "");
 
-				hist->setBlocked(true, iTimeDecay);
+				history.setBlocked(true, iTimeDecay);
 			}
 			break;
 
@@ -1477,9 +1481,13 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 		case SV_UNBLOCKIP:	// "UNBLOCKIP"
 			if (pSrc->GetPrivLevel() >= PLEVEL_Admin)
 			{
-				NetworkIn::HistoryIP* hist = &g_NetworkIn.getHistoryForIP(s.GetArgRaw());
-				pSrc->SysMessagef("IP%s unblocked\n", hist->m_blocked ? "" : " already");
-				hist->setBlocked(false);
+#ifndef _MTNETWORK
+				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(s.GetArgRaw());
+#else
+				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
+#endif
+				pSrc->SysMessagef("IP%s unblocked\n", history.m_blocked ? "" : " already");
+				history.setBlocked(false);
 			}
 			break;
 

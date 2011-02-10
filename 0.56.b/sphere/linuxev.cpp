@@ -16,7 +16,11 @@ static void socketmain_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 			// warning: accepting a new connection here can result in a threading issue,
 			// where the main thread can clear the connection before it has been fully
 			// initialised
+#ifndef _MTNETWORK
 			g_NetworkIn.acceptConnection();
+#else
+			g_NetworkManager.acceptNewConnection();
+#endif
 		}
 	}
 	

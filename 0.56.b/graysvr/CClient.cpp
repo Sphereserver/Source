@@ -21,9 +21,13 @@ CClient::CClient(NetState* state)
 	SetConnectType( CONNECT_UNK );	// don't know what sort of connect this is yet.
 
 	// update ip history
-	NetworkIn::HistoryIP* history = &g_NetworkIn.getHistoryForIP(GetPeer());
-	history->m_connecting++;
-	history->m_connected++;
+#ifndef _MTNETWORK
+	NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(GetPeer());
+#else
+	HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
+#endif
+	history.m_connecting++;
+	history.m_connected++;
 
 	m_Crypt.SetClientVer( g_Serv.m_ClientVersion );
 	m_pAccount = NULL;
@@ -55,7 +59,7 @@ CClient::CClient(NetState* state)
 	m_Env.SetInvalid();
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n",
-		GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history->m_connecting, history->m_connected);
+		GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
 
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
@@ -74,10 +78,14 @@ CClient::~CClient()
 	bool bWasChar;
 
 	// update ip history
-	NetworkIn::HistoryIP* history = &g_NetworkIn.getHistoryForIP(GetPeer());
+#ifndef _MTNETWORK
+	NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(GetPeer());
+#else
+	HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
+#endif
 	if ( GetConnectType() != CONNECT_GAME )
-		history->m_connecting--;
-	history->m_connected--;
+		history.m_connecting--;
+	history.m_connected--;
 
 	bWasChar = ( m_pChar != NULL );
 	CharDisconnect();	// am i a char in game ?
@@ -1308,7 +1316,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			addTarget( CLIMODE_TARG_REPAIR, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_ITEM_REPAIR ) );
 			break;
 		case CV_FLUSH:
+#ifndef _MTNETWORK
 			g_NetworkOut.flush(this);
+#else
+			GetNetState()->markFlush(true);
+#endif
 			break;
 		case CV_RESEND:
 			addReSync();

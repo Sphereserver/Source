@@ -566,7 +566,7 @@ size_t PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
 
 	// different size depending on client
 	size_t pos = packet->getPosition();
-	packet->seek(1);
+	packet->skip(1);
 	DEATH_MODE_TYPE mode = (DEATH_MODE_TYPE)readByte();
 	packet->seek(pos);
 
@@ -2447,7 +2447,11 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 	EXTDATA_TYPE type = (EXTDATA_TYPE)readInt16();
 	seek();
 
+#ifndef _MTNETWORK
 	Packet* handler = g_NetworkIn.getExtendedHandler(type);
+#else
+	Packet* handler = g_NetworkManager.getPacketManager().getExtendedHandler(type);
+#endif
 	if (handler == NULL)
 		return false;
 
@@ -3347,8 +3351,13 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 
 	EXTAOS_TYPE type = (EXTAOS_TYPE)readInt16();
 	seek();
+	
 
+#ifndef _MTNETWORK
 	Packet* handler = g_NetworkIn.getEncodedHandler(type);
+#else
+	Packet* handler = g_NetworkManager.getPacketManager().getEncodedHandler(type);
+#endif
 	if (handler == NULL)
 		return false;
 

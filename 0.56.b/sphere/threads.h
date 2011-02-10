@@ -56,10 +56,10 @@ public:
 		RealTime	// tick almost instantly
 	};
 
-	virtual unsigned getId() = 0;
-	virtual const char *getName() = 0;
+	virtual unsigned int getId() const = 0;
+	virtual const char *getName() const = 0;
 
-	virtual bool isActive() = 0;
+	virtual bool isActive() const = 0;
 	virtual bool checkStuck() = 0;
 
 	virtual void start() = 0;
@@ -67,7 +67,7 @@ public:
 	virtual void waitForClose() = 0;
 
 	virtual void setPriority(Priority) = 0;
-	virtual Priority getPriority() = 0;
+	virtual Priority getPriority() const = 0;
 
 protected:
 	virtual bool shouldExit() = 0;
@@ -87,7 +87,7 @@ public:
 	// removes a thread from the list. Sould NOT be called, internal usage
 	static void pop(IThread *thread);
 	// returns number of running threads. Sould NOT be called, unit tests usage
-	static int getActiveThreads();
+	static int getActiveThreads() { return m_threadCount; }
 	// returns thread at i pos
 	static IThread * getThreadAt(int at);
 
@@ -124,11 +124,11 @@ private:
 	AbstractThread& operator=(const AbstractThread& other);
 
 public:
-	virtual unsigned getId();
-	virtual const char *getName();
+	virtual unsigned int getId() const { return m_id; }
+	virtual const char *getName() const { return m_name; }
 
-	virtual bool isActive();
-	virtual bool isCurrentThread();
+	virtual bool isActive() const;
+	virtual bool isCurrentThread() const;
 	virtual bool checkStuck();
 
 	virtual void start();
@@ -136,7 +136,7 @@ public:
 	virtual void waitForClose();
 
 	virtual void setPriority(Priority pri = IThread::Normal);
-	virtual Priority getPriority();
+	virtual Priority getPriority() const { return m_priority; }
 
 protected:
 	virtual void tick() = 0;

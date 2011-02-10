@@ -272,7 +272,11 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar*
 bool PacketHealthBarUpdate::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -423,7 +427,11 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 bool PacketItemWorld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemWorld::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -695,7 +703,11 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 bool PacketContainerOpen::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketContainerOpen::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_container.ObjFind());
@@ -790,7 +802,11 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 bool PacketItemContainer::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContainer::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -1175,7 +1191,11 @@ bool PacketItemContents::onSend(const CClient* client)
 
 	if (m_count <= 0)
 		return false;
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_container.ItemFind());
@@ -2015,7 +2035,11 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 bool PacketCharacter::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCharacter::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -2256,7 +2280,11 @@ bool PacketCorpseEquipment::onSend(const CClient* client)
 
 	if (m_count <= 0)
 		return false;
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	return client->CanSee(m_corpse.ItemFind());
@@ -3485,7 +3513,11 @@ PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target
 bool PacketPropertyListVersionOld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyListVersionOld::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -4014,7 +4046,11 @@ PacketPropertyList::PacketPropertyList(const CClient* target, const PacketProper
 bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -4233,7 +4269,11 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 bool PacketPropertyListVersion::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
 		return true;
 
 	const CChar* character = client->GetChar();

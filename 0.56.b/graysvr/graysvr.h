@@ -781,6 +781,14 @@ class Packet;
 class PacketServerRelay;
 struct VendorItem;
 class PacketDisplayPopup;
+#ifndef _MTNETWORK
+class NetworkIn;
+#else
+class NetworkManager;
+class NetworkThread;
+class NetworkInput;
+class NetworkOutput;
+#endif
 
 class CClient : public CGObListRec, public CScriptObj, public CChatChanMember, public CTextConsole
 {
@@ -1133,7 +1141,7 @@ public:
 	static size_t xCompress( BYTE * pOutput, const BYTE * pInput, size_t inplen );
 
 	bool xProcessClientSetup( CEvent * pEvent, size_t iLen );
-	bool xPacketFilter(const CEvent * pEvent, size_t iLen = 0);
+	bool xPacketFilter(const BYTE * pEvent, size_t iLen = 0);
 	bool xCanEncLogin(bool bCheckCliver = false);	// Login crypt check
 	// Low level push world data to the client.
 
@@ -1448,8 +1456,13 @@ public:
 
 	CItemMultiCustom * m_pHouseDesign; // The building this client is designing
 
+#ifndef _MTNETWORK
 	friend class NetworkIn;
 	friend class NetworkOut;
+#else
+	friend class NetworkInput;
+	friend class NetworkOutput;
+#endif
 	friend class PacketCreate;
 	friend class PacketServerRelay;
 };

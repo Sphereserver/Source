@@ -589,7 +589,11 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
+#ifndef _MTNETWORK
 	g_NetworkOut.waitForClose();
+#else
+	g_NetworkManager.stop();
+#endif
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
@@ -621,17 +625,29 @@ int Sphere_OnTick()
 
 	// process incoming data
 	EXC_SET("network-in");
+#ifndef _MTNETWORK
 	g_NetworkIn.tick();
+#else
+	g_NetworkManager.processAllInput();
+#endif
 
 	EXC_SET("server");
 	g_Serv.OnTick();
 
 	// push outgoing data
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive() == false)
 	{
 		EXC_SET("network-out");
 		g_NetworkOut.tick();
 	}
+#else
+	EXC_SET("network-tick");
+	g_NetworkManager.tick();
+
+	EXC_SET("network-out");
+	g_NetworkManager.processAllOutput();
+#endif
 
 	EXC_CATCH;
 
@@ -1025,9 +1041,13 @@ int _cdecl main( int argc, char * argv[] )
 			g_NetworkEvent.start();
 #endif
 
+#ifndef _MTNETWORK
 		g_NetworkIn.onStart();
 		if (IsSetEF( EF_NetworkOutThread ))
 			g_NetworkOut.start();
+#else
+		g_NetworkManager.start();
+#endif
 			
 		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
 

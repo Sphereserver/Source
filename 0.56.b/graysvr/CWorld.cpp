@@ -1246,8 +1246,13 @@ bool CWorld::SaveForce() // Save world state
 {
 	ADDTOCALLSTACK("CWorld::SaveForce");
 	Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVE ) );
+#ifndef _MTNETWORK
 	if (g_NetworkOut.isActive() == false)
 		g_NetworkOut.flushAll();
+#else
+	if (g_NetworkManager.isOutputThreaded() == false)
+		g_NetworkManager.flushAllClients();
+#endif
 
 	g_Serv.SetServerMode( SERVMODE_Saving );	// Forced save freezes the system.
 	bool	bSave = true;
@@ -1442,8 +1447,13 @@ void CWorld::SaveStatics()
 		r_Write(m_FileStatics);
 
 		Broadcast( g_Cfg.GetDefaultMsg(DEFMSG_SERVER_WORLDSTATICSAVE) );
+#ifndef _MTNETWORK
 		if (g_NetworkOut.isActive() == false)
 			g_NetworkOut.flushAll();
+#else
+		if (g_NetworkManager.isOutputThreaded() == false)
+			g_NetworkManager.flushAllClients();
+#endif
 
 		//	loop through all sectors and save static items
 		for ( int m = 0; m < 256; m++ )
