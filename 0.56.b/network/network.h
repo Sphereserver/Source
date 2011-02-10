@@ -44,6 +44,8 @@ class NetworkThread;
 class NetworkInput;
 class NetworkOutput;
 #endif
+struct HistoryIP;
+typedef std::deque<HistoryIP> IPHistoryList;
 
 #if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
 	void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading);
@@ -190,7 +192,98 @@ public:
 };
 
 
-#ifndef _MTNETWORK
+/***************************************************************************
+ *
+ *
+ *	struct HistoryIP			Simple interface for IP history maintainence
+ *
+ *
+ ***************************************************************************/
+struct HistoryIP
+{
+	CSocketAddressIP m_ip;
+	long m_pings;
+	long m_connecting;
+	long m_connected;
+	bool m_blocked;
+	long m_ttl;
+	CServTime m_blockExpire;
+
+	void update(void);
+	bool checkPing(void); // IP is blocked -or- too many pings to it?
+	void setBlocked(bool isBlocked, int timeout = -1);
+};
+
+
+/***************************************************************************
+ *
+ *
+ *	class IPHistoryManager		Holds IP records (bans, pings, etc)
+ *
+ *
+ ***************************************************************************/
+class IPHistoryManager
+{
+private:
+	IPHistoryList m_ips;		// list of known ips
+	CServTime m_lastDecayTime;	// last decay time
+
+public:
+	IPHistoryManager(void);
+	~IPHistoryManager(void);
+
+private:
+	IPHistoryManager(const IPHistoryManager& copy);
+	IPHistoryManager& operator=(const IPHistoryManager& other);
+		
+public:
+	void tick(void);	// period events
+
+	HistoryIP& getHistoryForIP(const CSocketAddressIP& ip);	// get history for an ip
+	HistoryIP& getHistoryForIP(const char* ip);				// get history for an ip
+};
+
+
+/***************************************************************************
+ *
+ *
+ *	class PacketManager             Holds lists of packet handlers
+ *
+ *
+ ***************************************************************************/
+class PacketManager
+{
+private:
+	Packet* m_handlers[NETWORK_PACKETCOUNT];	// standard packet handlers
+	Packet* m_extended[NETWORK_PACKETCOUNT];	// extended packeet handlers (0xbf)
+	Packet* m_encoded[NETWORK_PACKETCOUNT];		// encoded packet handlers (0xd7)
+
+public:
+	static const char* m_sClassName;
+	PacketManager(void);
+	virtual ~PacketManager(void);
+
+private:
+	PacketManager(const PacketManager& copy);
+	PacketManager& operator=(const PacketManager& other);
+
+public:
+	void registerStandardPackets(void);	// register standard packet handlers
+
+	void registerPacket(unsigned int id, Packet* handler);		// register packet handler
+	void registerExtended(unsigned int id, Packet* handler);	// register extended packet handler
+	void registerEncoded(unsigned int id, Packet* handler);		// register encoded packet handler
+
+	void unregisterPacket(unsigned int id);		// remove packet handler
+	void unregisterExtended(unsigned int id);	// remove extended packet handler
+	void unregisterEncoded(unsigned int id);	// remove encoded packet handler
+
+	Packet* getHandler(unsigned int id) const;			// get handler for packet
+	Packet* getExtendedHandler(unsigned int id) const;	// get handler for extended packet
+	Packet* getEncodedHandler(unsigned int id) const;	// get handler for encoded packet
+};
+
+
 /***************************************************************************
  *
  *
@@ -201,11 +294,19 @@ public:
 class ClientIterator
 {
 protected:
-	const NetworkIn* m_network;
+#ifndef _MTNETWORK
+	const NetworkIn* m_network;			// network to iterate
+#else
+	const NetworkManager* m_network;	// network manager to iterate
+#endif
 	CClient* m_nextClient;
 
 public:
+#ifndef _MTNETWORK
 	explicit ClientIterator(const NetworkIn* network = NULL);
+#else
+	explicit ClientIterator(const NetworkManager* network = NULL);
+#endif
 	~ClientIterator(void);
 
 private:
@@ -216,7 +317,7 @@ public:
 	CClient* next(bool includeClosing = false); // finds next client
 };
 
-
+#ifndef _MTNETWORK
 /***************************************************************************
  *
  *
@@ -253,36 +354,18 @@ public:
  ***************************************************************************/
 class NetworkIn : public AbstractSphereThread
 {
-public:
-	struct HistoryIP
-	{
-		CSocketAddressIP m_ip;
-		long m_pings;
-		long m_connecting;
-		long m_connected;
-		bool m_blocked;
-		long m_ttl;
-		CServTime m_blockExpire;
-
-		void update(void);
-		bool checkPing(void); // IP is blocked -or- too many pings to it?
-		void setBlocked(bool isBlocked, int timeout = -1);
-	};
-
 private:
-	long m_lastGivenSlot; // last slot taken by client
-	Packet* m_handlers[NETWORK_PACKETCOUNT]; // standard packet handlers
-	Packet* m_extended[NETWORK_PACKETCOUNT]; // extended packeet handlers (0xbf)
-	Packet* m_encoded[NETWORK_PACKETCOUNT]; // encoded packet handlers (0xd7)
-	std::vector<HistoryIP> m_ips;
+	long m_lastGivenSlot;		// last slot taken by client
+	PacketManager m_packets;	// packet handlers
+	IPHistoryManager m_ips;		// ip history
 
-	BYTE* m_buffer; // receive buffer
-	BYTE* m_decryptBuffer; // receive buffer for decryption
+	BYTE* m_buffer;			// receive buffer
+	BYTE* m_decryptBuffer;	// receive buffer for decryption
 
 protected:
-	NetState** m_states; // client state pool
-	long m_stateCount; // client state count
-	CGObList m_clients; // current list of clients (CClient)
+	NetState** m_states;	// client state pool
+	long m_stateCount;		// client state count
+	CGObList m_clients;		// current list of clients (CClient)
 
 public:
 	static const char* m_sClassName;
@@ -297,17 +380,9 @@ private:
 public:
 	virtual void onStart(void);
 	virtual void tick(void);
-
-	HistoryIP &getHistoryForIP(const CSocketAddressIP& ip);
-	HistoryIP &getHistoryForIP(const char* ip);
-
-	void registerPacket(int packetId, Packet* handler); // register packet handler
-	void registerExtended(int packetId, Packet* handler); // register extended packet handler
-	void registerEncoded(int packetId, Packet* handler); // register encoded packet handler
-
-	Packet* getHandler(int packetId) const; // get handler for standard packet
-	Packet* getExtendedHandler(int packetId) const; // get handler for extended packet
-	Packet* getEncodedHandler(int packetId) const; // get handler for encoded packet
+	
+	const PacketManager& getPacketManager(void) const { return m_packets; }	// get packet manager
+	IPHistoryManager& getIPHistoryManager(void) { return m_ips; }			// get ip history manager
 
 	void acceptConnection(void); // accepts a new connection
 
@@ -378,63 +453,9 @@ class NetworkManager;
 class NetworkThread;
 class NetworkInput;
 class NetworkOutput;
-class ClientIterator;
-class SafeClientIterator;
-struct HistoryIP;
 
 typedef std::deque<NetworkThread*> NetworkThreadList;
 typedef std::deque<NetState*> NetworkStateList;
-typedef std::deque<HistoryIP> IPHistoryList;
-	
-/***************************************************************************
- *
- *
- *	struct HistoryIP			Simple interface for IP history maintainence
- *
- *
- ***************************************************************************/
-struct HistoryIP
-{
-	CSocketAddressIP m_ip;
-	long m_pings;
-	long m_connecting;
-	long m_connected;
-	bool m_blocked;
-	long m_ttl;
-	CServTime m_blockExpire;
-
-	void update(void);
-	bool checkPing(void); // IP is blocked -or- too many pings to it?
-	void setBlocked(bool isBlocked, int timeout = -1);
-};
-	
-/***************************************************************************
- *
- *
- *	class IPHistoryManager		Holds IP records (bans, pings, etc)
- *
- *
- ***************************************************************************/
-class IPHistoryManager
-{
-private:
-	IPHistoryList m_ips;		// list of known ips
-	CServTime m_lastDecayTime;	// last decay time
-
-public:
-	IPHistoryManager(void);
-	~IPHistoryManager(void);
-
-private:
-	IPHistoryManager(const IPHistoryManager& copy);
-	IPHistoryManager& operator=(const IPHistoryManager& other);
-		
-public:
-	void tick(void);	// period events
-
-	HistoryIP& getHistoryForIP(const CSocketAddressIP& ip);	// get history for an ip
-	HistoryIP& getHistoryForIP(const char* ip);				// get history for an ip
-};
 	
 /***************************************************************************
  *
@@ -470,6 +491,7 @@ private:
 	size_t processOtherClientData(NetState* state, BYTE* buffer, size_t bufferSize);	// process data from a non-game client
 	size_t processGameClientData(NetState* state, BYTE* buffer, size_t bufferSize);		// process data from a game client
 };
+
 	
 /***************************************************************************
  *
@@ -515,43 +537,7 @@ private:
 	bool sendPacketData(NetState* state, PacketSend* packet);			// send packet data to client
 	size_t sendData(NetState* state, const BYTE* data, size_t length);	// send raw data to client
 };
-	
-/***************************************************************************
- *
- *
- *	class PacketManager             Holds lists of packet handlers
- *
- *
- ***************************************************************************/
-class PacketManager
-{
-private:
-	Packet* m_handlers[NETWORK_PACKETCOUNT];	// standard packet handlers
-	Packet* m_extended[NETWORK_PACKETCOUNT];	// extended packeet handlers (0xbf)
-	Packet* m_encoded[NETWORK_PACKETCOUNT];		// encoded packet handlers (0xd7)
 
-public:
-	static const char* m_sClassName;
-	PacketManager(void);
-	virtual ~PacketManager(void);
-
-private:
-	PacketManager(const PacketManager& copy);
-	PacketManager& operator=(const PacketManager& other);
-
-public:
-	void registerPacket(unsigned int id, Packet* handler);		// register packet handler
-	void registerExtended(unsigned int id, Packet* handler);	// register extended packet handler
-	void registerEncoded(unsigned int id, Packet* handler);		// register encoded packet handler
-
-	void unregisterPacket(unsigned int id);		// remove packet handler
-	void unregisterExtended(unsigned int id);	// remove extended packet handler
-	void unregisterEncoded(unsigned int id);	// remove encoded packet handler
-
-	Packet* getHandler(unsigned int id) const;			// get handler for standard packet
-	Packet* getExtendedHandler(unsigned int id) const;	// get handler for extended packet
-	Packet* getEncodedHandler(unsigned int id) const;	// get handler for encoded packet
-};
 
 /***************************************************************************
  *
@@ -630,6 +616,7 @@ private:
 	friend class NetworkOutput;
 };
 
+
 /***************************************************************************
  *
  *
@@ -703,30 +690,6 @@ public:
 	friend class NetworkThreadStateIterator;
 };
 
-/***************************************************************************
- *
- *
- *	class ClientIterator		Works as client iterator getting the clients
- *
- *
- ***************************************************************************/
-class ClientIterator
-{
-protected:
-	const NetworkManager* m_network;	// network manager to iterate
-	CClient* m_nextClient;				// next client to check
-
-public:
-	explicit ClientIterator(const NetworkManager* network = NULL);
-	~ClientIterator(void);
-
-private:
-	ClientIterator(const ClientIterator& copy);
-	ClientIterator& operator=(const ClientIterator& other);
-
-public:
-	CClient* next(bool includeClosing = false); // finds next client
-};
 
 /***************************************************************************
  *

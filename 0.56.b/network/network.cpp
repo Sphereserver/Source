@@ -379,113 +379,31 @@ void NetState::endTransaction(void)
 }
 
 
-#ifndef _MTNETWORK
 /***************************************************************************
  *
  *
- *	class ClientIterator		Works as client iterator getting the clients
+ *	struct HistoryIP			Simple interface for IP history maintainence
  *
  *
  ***************************************************************************/
-
-ClientIterator::ClientIterator(const NetworkIn* network)
+void HistoryIP::update(void)
 {
-	m_network = (network == NULL? &g_NetworkIn : network);
-	m_nextClient = STATIC_CAST <CClient*> (m_network->m_clients.GetHead());
-}
-
-ClientIterator::~ClientIterator(void)
-{
-	m_network = NULL;
-	m_nextClient = NULL;
-}
-
-CClient* ClientIterator::next(bool includeClosing)
-{
-	for (CClient* current = m_nextClient; current != NULL; current = current->GetNext())
-	{
-		// skip clients without a state, or whose state is invalid/closed
-		if (current->GetNetState() == NULL || current->GetNetState()->isInUse(current) == false || current->GetNetState()->isClosed())
-			continue;
-
-		// skip clients whose connection is being closed
-		if (includeClosing == false && current->GetNetState()->isClosing())
-			continue;
-
-		m_nextClient = current->GetNext();
-		return current;
-	}
-
-	return NULL;
-}
-
-
-/***************************************************************************
- *
- *
- *	class SafeClientIterator		Works as client iterator getting the clients in a thread-safe way
- *
- *
- ***************************************************************************/
-
-SafeClientIterator::SafeClientIterator(const NetworkIn* network)
-{
-	m_network = (network == NULL? &g_NetworkIn : network);
-	m_id = -1;
-	m_max = m_network->m_stateCount;
-}
-
-SafeClientIterator::~SafeClientIterator(void)
-{
-	m_network = NULL;
-}
-
-CClient* SafeClientIterator::next(bool includeClosing)
-{
-	// this method should be thread-safe, but does not loop through clients in the order that they have
-	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
-	// newest client to oldest and be thread-safe)
-	while (++m_id < m_max)
-	{
-		const NetState* state = m_network->m_states[m_id];
-
-		// skip states which do not have a valid client, or are closed
-		if (state->isInUse(state->getClient()) == false || state->isClosed())
-			continue;
-
-		// skip states which are being closed
-		if (includeClosing == false && state->isClosing())
-			continue;
-
-		return state->getClient();
-	}
-
-	return NULL;
-}
-
-
-/***************************************************************************
- *
- *
- *	class NetworkIn::HistoryIP	Simple interface for IP history maintainese
- *
- *
- ***************************************************************************/
-
-void NetworkIn::HistoryIP::update(void)
-{
+	// reset ttl
 	m_ttl = NETHISTORY_TTL;
 }
 
-bool NetworkIn::HistoryIP::checkPing(void)
+bool HistoryIP::checkPing(void)
 {
+	// ip is pinging, check if blocked
 	update();
 
 	return ( m_blocked || ( m_pings++ >= NETHISTORY_MAXPINGS ));
 }
 
-void NetworkIn::HistoryIP::setBlocked(bool isBlocked, int timeout)
+void HistoryIP::setBlocked(bool isBlocked, int timeout)
 {
+	// block ip
+	ADDTOCALLSTACK("HistoryIP:setBlocked");
 	if (isBlocked == true)
 	{
 		CScriptTriggerArgs args(m_ip.GetAddrStr());
@@ -501,90 +419,129 @@ void NetworkIn::HistoryIP::setBlocked(bool isBlocked, int timeout)
 	else
 		m_blockExpire.Init();
 }
+	
+/***************************************************************************
+ *
+ *
+ *	class IPHistoryManager		Holds IP records (bans, pings, etc)
+ *
+ *
+ ***************************************************************************/
+IPHistoryManager::IPHistoryManager(void)
+{
+	m_lastDecayTime.Init();
+}
+
+IPHistoryManager::~IPHistoryManager(void)
+{
+	m_ips.clear();
+}
+
+void IPHistoryManager::tick(void)
+{
+	// periodic events
+	ADDTOCALLSTACK("IPHistoryManager::tick");
+
+	// check if ttl should decay (only do this once every second)
+	bool decayTTL = ( !m_lastDecayTime.IsTimeValid() || (-g_World.GetTimeDiff(m_lastDecayTime)) >= TICK_PER_SEC );
+	if (decayTTL)
+		m_lastDecayTime = CServTime::GetCurrentTime();
+
+	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
+	{
+		if (it->m_blocked)
+		{
+			// blocked ips don't decay, but check if the ban has expired
+			if (it->m_blockExpire.IsTimeValid() && CServTime::GetCurrentTime() > it->m_blockExpire)
+				it->setBlocked(false);
+		}
+		else if (decayTTL && (it->m_connecting > 0 || it->m_connected > 0)) // don't decay history for connected clients
+		{
+			// decay ttl
+			if (it->m_ttl >= 0)
+				--it->m_ttl;
+
+			// decay pings
+			if (it->m_pings > 0 && it->m_ttl < (NETHISTORY_TTL / 2))
+				--it->m_pings;
+		}
+	}
+
+	// clear old ip history
+	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
+	{
+		if (it->m_ttl >= 0)
+			continue;
+
+		m_ips.erase(it);
+		break;
+	}
+}
+
+HistoryIP& IPHistoryManager::getHistoryForIP(const CSocketAddressIP& ip)
+{
+	// get history for an ip
+	ADDTOCALLSTACK("IPHistoryManager::getHistoryForIP");
+
+	// find existing entry
+	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
+	{
+		if ((*it).m_ip == ip)
+			return *it;
+	}
+
+	// create a new entry
+	HistoryIP hist;
+	memset(&hist, 0, sizeof(hist));
+	hist.m_ip = ip;
+	hist.update();
+
+	m_ips.push_back(hist);
+	return getHistoryForIP(ip);
+}
+
+HistoryIP& IPHistoryManager::getHistoryForIP(const char* ip)
+{
+	// get history for an ip
+	ADDTOCALLSTACK("IPHistoryManager::getHistoryForIP");
+
+	CSocketAddressIP me(ip);
+	return getHistoryForIP(me);
+}
 
 
 /***************************************************************************
  *
  *
- *	class NetworkIn::HistoryIP	Simple interface for IP history maintainese
+ *	class PacketManager             Holds lists of packet handlers
  *
  *
  ***************************************************************************/
-
-NetworkIn::NetworkIn(void) : AbstractSphereThread("NetworkIn", IThread::Highest)
+PacketManager::PacketManager(void)
 {
-	m_lastGivenSlot = 0;
 	memset(m_handlers, 0, sizeof(m_handlers));
 	memset(m_extended, 0, sizeof(m_extended));
 	memset(m_encoded, 0, sizeof(m_encoded));
-	m_buffer = NULL;
-	m_decryptBuffer = NULL;
-	m_states = NULL;
-	m_stateCount = 0;
 }
 
-NetworkIn::~NetworkIn(void)
+PacketManager::~PacketManager(void)
 {
-	if (m_buffer != NULL)
-	{
-		delete[] m_buffer;
-		m_buffer = NULL;
-	}
+	// delete standard packet handlers
+	for (size_t i = 0; i < COUNTOF(m_handlers); ++i)
+		unregisterPacket(i);
 
-	if (m_decryptBuffer != NULL)
-	{
-		delete[] m_decryptBuffer;
-		m_decryptBuffer = NULL;
-	}
+	// delete extended packet handlers
+	for (size_t i = 0; i < COUNTOF(m_extended); ++i)
+		unregisterExtended(i);
 
-	for (long l = 0; l < NETWORK_PACKETCOUNT; l++)
-	{
-		if (m_handlers[l] != NULL)
-		{
-			delete m_handlers[l];
-			m_handlers[l] = NULL;
-		}
-
-		if (m_extended[l] != NULL)
-		{
-			delete m_extended[l];
-			m_extended[l] = NULL;
-		}
-
-		if (m_encoded[l] != NULL)
-		{
-			delete m_encoded[l];
-			m_encoded[l] = NULL;
-		}
-	}
-
-	if (m_states != NULL)
-	{
-		for (long l = 0; l < m_stateCount; l++)
-		{
-			delete m_states[l];
-			m_states[l] = NULL;
-		}
-
-		delete[] m_states;
-		m_states = NULL;
-	}
-
-	m_clients.DeleteAll();
-	m_ips.clear();
+	// delete encoded packet handlers
+	for (size_t i = 0; i < COUNTOF(m_encoded); ++i)
+		unregisterEncoded(i);
 }
 
-void NetworkIn::onStart(void)
+void PacketManager::registerStandardPackets(void)
 {
-	m_lastGivenSlot = -1;
-	memset(m_handlers, 0, sizeof(m_handlers));
-	memset(m_extended, 0, sizeof(m_extended));
-	memset(m_encoded, 0, sizeof(m_encoded));
-
-	m_buffer = new BYTE[NETWORK_BUFFERSIZE];
-	m_decryptBuffer = new BYTE[NETWORK_BUFFERSIZE];
-
-	DEBUGNETWORK(("Registering packets...\n"));
+	ADDTOCALLSTACK("PacketManager::registerStandardPackets");
 
 	// standard packets
 	registerPacket(XCMD_Create, new PacketCreate());							// create character
@@ -693,7 +650,248 @@ void NetworkIn::onStart(void)
 	registerEncoded(EXTAOS_EquipLastWeapon, new PacketEquipLastWeapon());		//
 	registerEncoded(EXTAOS_GuildButton, new PacketGuildButton());				// guild button press
 	registerEncoded(EXTAOS_QuestButton, new PacketQuestButton());				// quest button press
+}
 
+void PacketManager::registerPacket(unsigned int id, Packet* handler)
+{
+	// assign standard packet handler
+	ADDTOCALLSTACK("PacketManager::registerPacket");
+	ASSERT(id < COUNTOF(m_handlers));
+	unregisterPacket(id);
+	m_handlers[id] = handler;
+}
+
+void PacketManager::registerExtended(unsigned int id, Packet* handler)
+{
+	// assign extended packet handler
+	ADDTOCALLSTACK("PacketManager::registerExtended");
+	ASSERT(id < COUNTOF(m_extended));
+	unregisterExtended(id);
+	m_extended[id] = handler;
+}
+
+void PacketManager::registerEncoded(unsigned int id, Packet* handler)
+{
+	// assign encoded packet handler
+	ADDTOCALLSTACK("PacketManager::registerEncoded");
+	ASSERT(id < COUNTOF(m_encoded));
+	unregisterEncoded(id);
+	m_encoded[id] = handler;
+}
+
+void PacketManager::unregisterPacket(unsigned int id)
+{
+	// delete standard packet handler
+	ADDTOCALLSTACK("PacketManager::unregisterPacket");
+	ASSERT(id < COUNTOF(m_handlers));
+	if (m_handlers[id] == NULL)
+		return;
+
+	delete m_handlers[id];
+	m_handlers[id] = NULL;	
+}
+
+void PacketManager::unregisterExtended(unsigned int id)
+{
+	// delete extended packet handler
+	ADDTOCALLSTACK("PacketManager::unregisterExtended");
+	ASSERT(id < COUNTOF(m_extended));
+	if (m_extended[id] == NULL)
+		return;
+
+	delete m_extended[id];
+	m_extended[id] = NULL;	
+}
+
+void PacketManager::unregisterEncoded(unsigned int id)
+{
+	// delete encoded packet handler
+	ADDTOCALLSTACK("PacketManager::unregisterEncoded");
+	ASSERT(id < COUNTOF(m_encoded));
+	if (m_encoded[id] == NULL)
+		return;
+
+	delete m_encoded[id];
+	m_encoded[id] = NULL;	
+}
+
+Packet* PacketManager::getHandler(unsigned int id) const
+{
+	// get standard packet handler
+	if (id >= COUNTOF(m_handlers))
+		return NULL;
+
+	return m_handlers[id];
+}
+
+Packet* PacketManager::getExtendedHandler(unsigned int id) const
+{
+	// get extended packet handler
+	if (id >= COUNTOF(m_extended))
+		return NULL;
+
+	return m_extended[id];
+}
+
+Packet* PacketManager::getEncodedHandler(unsigned int id) const
+{
+	// get encoded packet handler
+	if (id >= COUNTOF(m_encoded))
+		return NULL;
+
+	return m_encoded[id];
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	class ClientIterator		Works as client iterator getting the clients
+ *
+ *
+ ***************************************************************************/
+
+#ifndef _MTNETWORK
+ClientIterator::ClientIterator(const NetworkIn* network)
+{
+	m_network = (network == NULL? &g_NetworkIn : network);
+	m_nextClient = STATIC_CAST <CClient*> (m_network->m_clients.GetHead());
+}
+#else
+ClientIterator::ClientIterator(const NetworkManager* network)
+{
+	m_network = (network == NULL? &g_NetworkManager : network);
+	m_nextClient = static_cast<CClient*> (m_network->m_clients.GetHead());
+}
+#endif
+
+ClientIterator::~ClientIterator(void)
+{
+	m_network = NULL;
+	m_nextClient = NULL;
+}
+
+CClient* ClientIterator::next(bool includeClosing)
+{
+	for (CClient* current = m_nextClient; current != NULL; current = current->GetNext())
+	{
+		// skip clients without a state, or whose state is invalid/closed
+		if (current->GetNetState() == NULL || current->GetNetState()->isInUse(current) == false || current->GetNetState()->isClosed())
+			continue;
+
+		// skip clients whose connection is being closed
+		if (includeClosing == false && current->GetNetState()->isClosing())
+			continue;
+
+		m_nextClient = current->GetNext();
+		return current;
+	}
+
+	return NULL;
+}
+
+
+#ifndef _MTNETWORK
+/***************************************************************************
+ *
+ *
+ *	class SafeClientIterator		Works as client iterator getting the clients in a thread-safe way
+ *
+ *
+ ***************************************************************************/
+
+SafeClientIterator::SafeClientIterator(const NetworkIn* network)
+{
+	m_network = (network == NULL? &g_NetworkIn : network);
+	m_id = -1;
+	m_max = m_network->m_stateCount;
+}
+
+SafeClientIterator::~SafeClientIterator(void)
+{
+	m_network = NULL;
+}
+
+CClient* SafeClientIterator::next(bool includeClosing)
+{
+	// this method should be thread-safe, but does not loop through clients in the order that they have
+	// connected -- ideally CGObList (or a similar container for clients) should be traversed from
+	// newest client to oldest and be thread-safe)
+	while (++m_id < m_max)
+	{
+		const NetState* state = m_network->m_states[m_id];
+
+		// skip states which do not have a valid client, or are closed
+		if (state->isInUse(state->getClient()) == false || state->isClosed())
+			continue;
+
+		// skip states which are being closed
+		if (includeClosing == false && state->isClosing())
+			continue;
+
+		return state->getClient();
+	}
+
+	return NULL;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	class NetworkIn::HistoryIP	Simple interface for IP history maintainese
+ *
+ *
+ ***************************************************************************/
+
+NetworkIn::NetworkIn(void) : AbstractSphereThread("NetworkIn", IThread::Highest)
+{
+	m_lastGivenSlot = 0;
+	m_buffer = NULL;
+	m_decryptBuffer = NULL;
+	m_states = NULL;
+	m_stateCount = 0;
+}
+
+NetworkIn::~NetworkIn(void)
+{
+	if (m_buffer != NULL)
+	{
+		delete[] m_buffer;
+		m_buffer = NULL;
+	}
+
+	if (m_decryptBuffer != NULL)
+	{
+		delete[] m_decryptBuffer;
+		m_decryptBuffer = NULL;
+	}
+
+	if (m_states != NULL)
+	{
+		for (long l = 0; l < m_stateCount; l++)
+		{
+			delete m_states[l];
+			m_states[l] = NULL;
+		}
+
+		delete[] m_states;
+		m_states = NULL;
+	}
+
+	m_clients.DeleteAll();
+}
+
+void NetworkIn::onStart(void)
+{
+	m_lastGivenSlot = -1;
+	m_buffer = new BYTE[NETWORK_BUFFERSIZE];
+	m_decryptBuffer = new BYTE[NETWORK_BUFFERSIZE];
+
+	DEBUGNETWORK(("Registering packets...\n"));
+	m_packets.registerStandardPackets();
+
+	// create states
 	m_states = new NetState*[g_Cfg.m_iClientsMax];
 	for (size_t l = 0; l < g_Cfg.m_iClientsMax; l++)
 		m_states[l] = new NetState(l);
@@ -1014,7 +1212,7 @@ void NetworkIn::tick(void)
 		while (len > 0 && !client->isClosing())
 		{
 			BYTE packetID = packet->getData()[packet->getPosition()];
-			Packet* handler = m_handlers[packetID];
+			Packet* handler = m_packets.getHandler(packetID);
 
 			if (handler != NULL)
 			{
@@ -1221,19 +1419,19 @@ void NetworkIn::acceptConnection(void)
 		EXC_SET("ip history");
 		
 		DEBUGNETWORK(("Retrieving IP history for '%s'.\n", client_addr.GetAddrStr()));
-		HistoryIP* ip = &getHistoryForIP(client_addr);
+		HistoryIP& ip = m_ips.getHistoryForIP(client_addr);
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
 
 		DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%ld, pings=%ld, connecting=%ld, connected=%ld]\n", 
-			ip->m_ip.GetAddrStr(), ip->m_blocked, ip->m_ttl, ip->m_pings, ip->m_connecting, ip->m_connected));
+			ip.m_ip.GetAddrStr(), ip.m_blocked, ip.m_ttl, ip.m_pings, ip.m_connecting, ip.m_connected));
 
 		//	ip is blocked
-		if ( ip->checkPing() ||
+		if ( ip.checkPing() ||
 			// or too much connect tries from this ip
-			( maxIp && ( ip->m_connecting > maxIp )) ||
+			( maxIp && ( ip.m_connecting > maxIp )) ||
 			// or too much clients from this ip
-			( climaxIp && ( ip->m_connected > climaxIp ))
+			( climaxIp && ( ip.m_connected > climaxIp ))
 			)
 		{
 			EXC_SET("rejecting");
@@ -1241,11 +1439,11 @@ void NetworkIn::acceptConnection(void)
 
 			CLOSESOCKET(h);
 
-			if (ip->m_blocked)
+			if (ip.m_blocked)
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
-			else if ( maxIp && ip->m_connecting > maxIp )
+			else if ( maxIp && ip.m_connecting > maxIp )
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
-			else if ( climaxIp && ip->m_connected > climaxIp )
+			else if ( climaxIp && ip.m_connected > climaxIp )
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 			else
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
@@ -1281,78 +1479,6 @@ void NetworkIn::acceptConnection(void)
 		}
 	}
 	EXC_CATCH;
-}
-
-void NetworkIn::registerPacket(int packetId, Packet* handler)
-{
-	if (packetId >= 0 && packetId < NETWORK_PACKETCOUNT)
-		m_handlers[packetId] = handler;
-}
-
-void NetworkIn::registerExtended(int packetId, Packet* handler)
-{
-	if (packetId >= 0 && packetId < NETWORK_PACKETCOUNT)
-		m_extended[packetId] = handler;
-}
-
-void NetworkIn::registerEncoded(int packetId, Packet* handler)
-{
-	if (packetId >= 0 && packetId < NETWORK_PACKETCOUNT)
-		m_encoded[packetId] = handler;
-}
-
-Packet* NetworkIn::getHandler(int packetId) const
-{
-	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
-		return NULL;
-
-	return m_handlers[packetId];
-}
-
-Packet* NetworkIn::getExtendedHandler(int packetId) const
-{
-	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
-		return NULL;
-
-	return m_extended[packetId];
-}
-
-Packet* NetworkIn::getEncodedHandler(int packetId) const
-{
-	if (packetId < 0 || packetId >= NETWORK_PACKETCOUNT)
-		return NULL;
-
-	return m_encoded[packetId];
-}
-
-NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(const CSocketAddressIP& ip)
-{
-	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
-
-	std::vector<HistoryIP>::iterator it;
-
-	for ( it = m_ips.begin(); it != m_ips.end(); ++it )
-	{
-		if ( (*it).m_ip == ip )
-			return *it;
-	}
-
-	HistoryIP hist;
-	memset(&hist, 0, sizeof(hist));
-	hist.m_ip = ip;
-	hist.update();
-
-	m_ips.push_back(hist);
-	return getHistoryForIP(ip);
-}
-
-NetworkIn::HistoryIP &NetworkIn::getHistoryForIP(const char* ip)
-{
-	ADDTOCALLSTACK("NetworkIn::getHistoryForIP");
-
-	CSocketAddressIP	me(ip);
-
-	return getHistoryForIP(me);
 }
 
 long NetworkIn::getStateSlot(long startFrom)
@@ -1412,36 +1538,7 @@ void NetworkIn::periodic(void)
 
 	// tick the ip history, remove some from the list
 	EXC_SET("ticking history");
-	for (size_t i = 0; i < m_ips.size(); i++)
-	{
-		long decaystart = 0;
-		long decayttl = 0;
-		HistoryIP* ip = &m_ips[i];
-		if (ip->m_blocked)
-		{
-			// blocked IPs don't decay, but check if the ban has expired
-			if (ip->m_blockExpire.IsTimeValid() && CServTime::GetCurrentTime() > ip->m_blockExpire)
-				ip->setBlocked(false);
-		}
-		else
-		{
-			ip->m_ttl--;
-
-			// decay pings history with time
-			if (ip->m_pings > decaystart && ip->m_ttl < decayttl)
-				ip->m_pings--;
-		}
-	}
-
-	// clear old ip history
-	for ( std::vector<HistoryIP>::iterator it = m_ips.begin(); it != m_ips.end(); ++it )
-	{
-		if (it->m_ttl >= 0)
-			continue;
-
-		m_ips.erase(it);
-		break;
-	}
+	m_ips.tick();
 
 	// resize m_states to account for m_iClientsMax changes
 	long max = g_Cfg.m_iClientsMax;
@@ -2245,258 +2342,6 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 
 #endif
 
-
-/***************************************************************************
- *
- *
- *	struct HistoryIP			Simple interface for IP history maintainence
- *
- *
- ***************************************************************************/
-void HistoryIP::update(void)
-{
-	// reset ttl
-	m_ttl = NETHISTORY_TTL;
-}
-
-bool HistoryIP::checkPing(void)
-{
-	// ip is pinging, check if blocked
-	update();
-
-	return ( m_blocked || ( m_pings++ >= NETHISTORY_MAXPINGS ));
-}
-
-void HistoryIP::setBlocked(bool isBlocked, int timeout)
-{
-	// block ip
-	ADDTOCALLSTACK("HistoryIP:setBlocked");
-	if (isBlocked == true)
-	{
-		CScriptTriggerArgs args(m_ip.GetAddrStr());
-		args.m_iN1 = timeout;
-		g_Serv.r_Call("f_onserver_blockip", &g_Serv, &args);
-		timeout = args.m_iN1;
-	}
-
-	m_blocked = isBlocked;
-
-	if (isBlocked && timeout >= 0)
-		m_blockExpire = CServTime::GetCurrentTime() + timeout;
-	else
-		m_blockExpire.Init();
-}
-
-	
-/***************************************************************************
- *
- *
- *	class IPHistoryManager		Holds IP records (bans, pings, etc)
- *
- *
- ***************************************************************************/
-IPHistoryManager::IPHistoryManager(void)
-{
-	m_lastDecayTime.Init();
-}
-
-IPHistoryManager::~IPHistoryManager(void)
-{
-	m_ips.clear();
-}
-
-void IPHistoryManager::tick(void)
-{
-	// periodic events
-	ADDTOCALLSTACK("IPHistoryManager::tick");
-
-	// check if ttl should decay (only do this once every second)
-	bool decayTTL = ( !m_lastDecayTime.IsTimeValid() || (-g_World.GetTimeDiff(m_lastDecayTime)) >= TICK_PER_SEC );
-	if (decayTTL)
-		m_lastDecayTime = CServTime::GetCurrentTime();
-
-	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
-	{
-		if (it->m_blocked)
-		{
-			// blocked ips don't decay, but check if the ban has expired
-			if (it->m_blockExpire.IsTimeValid() && CServTime::GetCurrentTime() > it->m_blockExpire)
-				it->setBlocked(false);
-		}
-		else if (decayTTL && (it->m_connecting > 0 || it->m_connected > 0)) // don't decay history for connected clients
-		{
-			// decay ttl
-			if (it->m_ttl >= 0)
-				--it->m_ttl;
-
-			// decay pings
-			if (it->m_pings > 0 && it->m_ttl < (NETHISTORY_TTL / 2))
-				--it->m_pings;
-		}
-	}
-
-	// clear old ip history
-	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
-	{
-		if (it->m_ttl >= 0)
-			continue;
-
-		m_ips.erase(it);
-		break;
-	}
-}
-
-HistoryIP& IPHistoryManager::getHistoryForIP(const CSocketAddressIP& ip)
-{
-	// get history for an ip
-	ADDTOCALLSTACK("IPHistoryManager::getHistoryForIP");
-
-	// find existing entry
-	for (IPHistoryList::iterator it = m_ips.begin(); it != m_ips.end(); ++it)
-	{
-		if ((*it).m_ip == ip)
-			return *it;
-	}
-
-	// create a new entry
-	HistoryIP hist;
-	memset(&hist, 0, sizeof(hist));
-	hist.m_ip = ip;
-	hist.update();
-
-	m_ips.push_back(hist);
-	return getHistoryForIP(ip);
-}
-
-HistoryIP& IPHistoryManager::getHistoryForIP(const char* ip)
-{
-	// get history for an ip
-	ADDTOCALLSTACK("IPHistoryManager::getHistoryForIP");
-
-	CSocketAddressIP me(ip);
-	return getHistoryForIP(me);
-}
-
-
-/***************************************************************************
- *
- *
- *	class PacketManager             Holds lists of packet handlers
- *
- *
- ***************************************************************************/
-PacketManager::PacketManager(void)
-{
-	memset(m_handlers, 0, sizeof(m_handlers));
-	memset(m_extended, 0, sizeof(m_extended));
-	memset(m_encoded, 0, sizeof(m_encoded));
-}
-
-PacketManager::~PacketManager(void)
-{
-	// delete standard packet handlers
-	for (size_t i = 0; i < COUNTOF(m_handlers); ++i)
-		unregisterPacket(i);
-
-	// delete extended packet handlers
-	for (size_t i = 0; i < COUNTOF(m_extended); ++i)
-		unregisterExtended(i);
-
-	// delete encoded packet handlers
-	for (size_t i = 0; i < COUNTOF(m_encoded); ++i)
-		unregisterEncoded(i);
-}
-
-void PacketManager::registerPacket(unsigned int id, Packet* handler)
-{
-	// assign standard packet handler
-	ADDTOCALLSTACK("PacketManager::registerPacket");
-	ASSERT(id < COUNTOF(m_handlers));
-	unregisterPacket(id);
-	m_handlers[id] = handler;
-}
-
-void PacketManager::registerExtended(unsigned int id, Packet* handler)
-{
-	// assign extended packet handler
-	ADDTOCALLSTACK("PacketManager::registerExtended");
-	ASSERT(id < COUNTOF(m_extended));
-	unregisterExtended(id);
-	m_extended[id] = handler;
-}
-
-void PacketManager::registerEncoded(unsigned int id, Packet* handler)
-{
-	// assign encoded packet handler
-	ADDTOCALLSTACK("PacketManager::registerEncoded");
-	ASSERT(id < COUNTOF(m_encoded));
-	unregisterEncoded(id);
-	m_encoded[id] = handler;
-}
-
-void PacketManager::unregisterPacket(unsigned int id)
-{
-	// delete standard packet handler
-	ADDTOCALLSTACK("PacketManager::unregisterPacket");
-	ASSERT(id < COUNTOF(m_handlers));
-	if (m_handlers[id] == NULL)
-		return;
-
-	delete m_handlers[id];
-	m_handlers[id] = NULL;	
-}
-
-void PacketManager::unregisterExtended(unsigned int id)
-{
-	// delete extended packet handler
-	ADDTOCALLSTACK("PacketManager::unregisterExtended");
-	ASSERT(id < COUNTOF(m_extended));
-	if (m_extended[id] == NULL)
-		return;
-
-	delete m_extended[id];
-	m_extended[id] = NULL;	
-}
-
-void PacketManager::unregisterEncoded(unsigned int id)
-{
-	// delete encoded packet handler
-	ADDTOCALLSTACK("PacketManager::unregisterEncoded");
-	ASSERT(id < COUNTOF(m_encoded));
-	if (m_encoded[id] == NULL)
-		return;
-
-	delete m_encoded[id];
-	m_encoded[id] = NULL;	
-}
-
-Packet* PacketManager::getHandler(unsigned int id) const
-{
-	// get standard packet handler
-	if (id >= COUNTOF(m_handlers))
-		return NULL;
-
-	return m_handlers[id];
-}
-
-Packet* PacketManager::getExtendedHandler(unsigned int id) const
-{
-	// get extended packet handler
-	if (id >= COUNTOF(m_extended))
-		return NULL;
-
-	return m_extended[id];
-}
-
-Packet* PacketManager::getEncodedHandler(unsigned int id) const
-{
-	// get encoded packet handler
-	if (id >= COUNTOF(m_encoded))
-		return NULL;
-
-	return m_encoded[id];
-}
-
 /***************************************************************************
  *
  *
@@ -2719,115 +2564,8 @@ NetState* NetworkManager::findFreeSlot(size_t start)
 void NetworkManager::start(void)
 {
 	DEBUGNETWORK(("Registering packets...\n"));
+	m_packets.registerStandardPackets();
 
-	// standard packets
-	m_packets.registerPacket(XCMD_Create, new PacketCreate());								// create character
-	m_packets.registerPacket(XCMD_Walk, new PacketMovementReq());							// movement request
-	m_packets.registerPacket(XCMD_Talk, new PacketSpeakReq());								// speak
-	m_packets.registerPacket(XCMD_Attack, new PacketAttackReq());							// begin attack
-	m_packets.registerPacket(XCMD_DClick, new PacketDoubleClick());							// double click object
-	m_packets.registerPacket(XCMD_ItemPickupReq, new PacketItemPickupReq());				// pick up item
-	m_packets.registerPacket(XCMD_ItemDropReq, new PacketItemDropReq());					// drop item
-	m_packets.registerPacket(XCMD_Click, new PacketSingleClick());							// single click object
-	m_packets.registerPacket(XCMD_ExtCmd, new PacketTextCommand());							// extended text command
-	m_packets.registerPacket(XCMD_ItemEquipReq, new PacketItemEquipReq());					// equip item
-	m_packets.registerPacket(XCMD_WalkAck, new PacketResynchronize());						//
-	m_packets.registerPacket(XCMD_DeathMenu, new PacketDeathStatus());						//
-	m_packets.registerPacket(XCMD_CharStatReq, new PacketCharStatusReq());					// status request
-	m_packets.registerPacket(XCMD_Skill, new PacketSkillLockChange());						// change skill lock
-	m_packets.registerPacket(XCMD_VendorBuy, new PacketVendorBuyReq());						// buy items from vendor
-	m_packets.registerPacket(XCMD_MapEdit, new PacketMapEdit());							// edit map pins
-	m_packets.registerPacket(XCMD_CharPlay, new PacketCharPlay());							// select character
-	m_packets.registerPacket(XCMD_BookPage, new PacketBookPageEdit());						// edit book content
-	m_packets.registerPacket(XCMD_Options, new PacketUnknown());							// unused options packet
-	m_packets.registerPacket(XCMD_Target, new PacketTarget());								// target an object
-	m_packets.registerPacket(XCMD_SecureTrade, new PacketSecureTradeReq());					// secure trade action
-	m_packets.registerPacket(XCMD_BBoard, new PacketBulletinBoardReq());					// bulletin board action
-	m_packets.registerPacket(XCMD_War, new PacketWarModeReq());								// toggle war mode
-	m_packets.registerPacket(XCMD_Ping, new PacketPingReq());								// ping request
-	m_packets.registerPacket(XCMD_CharName, new PacketCharRename());						// change character name
-	m_packets.registerPacket(XCMD_MenuChoice, new PacketMenuChoice());						// select menu item
-	m_packets.registerPacket(XCMD_ServersReq, new PacketServersReq());						// request server list
-	m_packets.registerPacket(XCMD_CharDelete, new PacketCharDelete());						// delete character
-	m_packets.registerPacket(XCMD_CreateNew, new PacketCreateNew());						// create character
-	m_packets.registerPacket(XCMD_CharListReq, new PacketCharListReq());					// request character list
-	m_packets.registerPacket(XCMD_BookOpen, new PacketBookHeaderEdit());					// edit book
-	m_packets.registerPacket(XCMD_DyeVat, new PacketDyeObject());							// colour selection dialog
-	m_packets.registerPacket(XCMD_AllNames3D, new PacketAllNamesReq());						// all names macro (ctrl+shift)
-	m_packets.registerPacket(XCMD_Prompt, new PacketPromptResponse());						// prompt response
-	m_packets.registerPacket(XCMD_HelpPage, new PacketHelpPageReq());						// GM help page request
-	m_packets.registerPacket(XCMD_VendorSell, new PacketVendorSellReq());					// sell items to vendor
-	m_packets.registerPacket(XCMD_ServerSelect, new PacketServerSelect());					// select server
-	m_packets.registerPacket(XCMD_Spy, new PacketSystemInfo());								//
-	m_packets.registerPacket(XCMD_Scroll, new PacketUnknown(5));							// scroll closed
-	m_packets.registerPacket(XCMD_TipReq, new PacketTipReq());								// request tip of the day
-	m_packets.registerPacket(XCMD_GumpInpValRet, new PacketGumpValueInputResponse());		// text input dialog
-	m_packets.registerPacket(XCMD_TalkUNICODE, new PacketSpeakReqUNICODE());				// speech (unicode)
-	m_packets.registerPacket(XCMD_GumpDialogRet, new PacketGumpDialogRet());				// dialog response (button press)
-	m_packets.registerPacket(XCMD_ChatText, new PacketChatCommand());						// chat command
-	m_packets.registerPacket(XCMD_Chat, new PacketChatButton());							// chat button
-	m_packets.registerPacket(XCMD_ToolTipReq, new PacketToolTipReq());						// popup help request
-	m_packets.registerPacket(XCMD_CharProfile, new PacketProfileReq());						// profile read/write request
-	m_packets.registerPacket(XCMD_MailMsg, new PacketMailMessage());						//
-	m_packets.registerPacket(XCMD_ClientVersion, new PacketClientVersion());				// client version
-	m_packets.registerPacket(XCMD_ExtData, new PacketExtendedCommand());					//
-	m_packets.registerPacket(XCMD_PromptUNICODE, new PacketPromptResponseUnicode());		// prompt response (unicode)
-	m_packets.registerPacket(XCMD_ViewRange, new PacketViewRange());						//
-	m_packets.registerPacket(XCMD_ConfigFile, new PacketUnknown());							//
-	m_packets.registerPacket(XCMD_LogoutStatus, new PacketLogout());						//
-	m_packets.registerPacket(XCMD_AOSBookPage, new PacketBookHeaderEditNew());				// edit book
-	m_packets.registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					// request tooltip data
-	m_packets.registerPacket(XCMD_ExtAosData, new PacketEncodedCommand());					//
-	m_packets.registerPacket(XCMD_Spy2, new PacketHardwareInfo());							// client hardware info
-	m_packets.registerPacket(XCMD_BugReport, new PacketBugReport());						// bug report
-	m_packets.registerPacket(XCMD_KRClientType, new PacketClientType());					// report client type (2d/kr/sa)
-	m_packets.registerPacket(XCMD_HighlightUIRemove, new PacketRemoveUIHighlight());		//
-	m_packets.registerPacket(XCMD_UseHotbar, new PacketUseHotbar());						//
-	m_packets.registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());				//
-	m_packets.registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());			//
-	m_packets.registerPacket(XCMD_WalkNew, new PacketMovementReqNew());						// movement request (SA)
-	m_packets.registerPacket(XCMD_WalkUnknown, new PacketUnknown(9));						//
-	m_packets.registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
-
-	// extended packets (0xBF)
-	m_packets.registerExtended(EXTDATA_ScreenSize, new PacketScreenSize());					// client screen size
-	m_packets.registerExtended(EXTDATA_Party_Msg, new PacketPartyMessage());				// party command
-	m_packets.registerExtended(EXTDATA_Arrow_Click, new PacketArrowClick());				// click quest arrow
-	m_packets.registerExtended(EXTDATA_Wrestle_DisArm, new PacketWrestleDisarm());			// wrestling disarm macro
-	m_packets.registerExtended(EXTDATA_Wrestle_Stun, new PacketWrestleStun());				// wrestling stun macro
-	m_packets.registerExtended(EXTDATA_Lang, new PacketLanguage());							// client language
-	m_packets.registerExtended(EXTDATA_StatusClose, new PacketStatusClose());				// status window closed
-	m_packets.registerExtended(EXTDATA_Yawn, new PacketAnimationReq());						// play animation
-	m_packets.registerExtended(EXTDATA_Unk15, new PacketClientInfo());						// client information
-	m_packets.registerExtended(EXTDATA_OldAOSTooltipInfo, new PacketAosTooltipInfo());		//
-	m_packets.registerExtended(EXTDATA_Popup_Request, new PacketPopupReq());				// request popup menu
-	m_packets.registerExtended(EXTDATA_Popup_Select, new PacketPopupSelect());				// select popup option
-	m_packets.registerExtended(EXTDATA_Stats_Change, new PacketChangeStatLock());			// change stat lock
-	m_packets.registerExtended(EXTDATA_NewSpellSelect, new PacketSpellSelect());			//
-	m_packets.registerExtended(EXTDATA_HouseDesignDet, new PacketHouseDesignReq());			// house design request
-	m_packets.registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown
-	m_packets.registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());				//
-	m_packets.registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				// gargoyle flying action
-
-	// encoded packets (0xD7)
-	m_packets.registerEncoded(EXTAOS_HcBackup, new PacketHouseDesignBackup());				// house design - backup
-	m_packets.registerEncoded(EXTAOS_HcRestore, new PacketHouseDesignRestore());			// house design - restore
-	m_packets.registerEncoded(EXTAOS_HcCommit, new PacketHouseDesignCommit());				// house design - commit
-	m_packets.registerEncoded(EXTAOS_HcDestroyItem, new PacketHouseDesignDestroyItem());	// house design - remove item
-	m_packets.registerEncoded(EXTAOS_HcPlaceItem, new PacketHouseDesignPlaceItem());		// house design - place item
-	m_packets.registerEncoded(EXTAOS_HcExit, new PacketHouseDesignExit());					// house design - exit designer
-	m_packets.registerEncoded(EXTAOS_HcPlaceStair, new PacketHouseDesignPlaceStair());		// house design - place stairs
-	m_packets.registerEncoded(EXTAOS_HcSynch, new PacketHouseDesignSync());					// house design - synchronise
-	m_packets.registerEncoded(EXTAOS_HcClear, new PacketHouseDesignClear());				// house design - clear
-	m_packets.registerEncoded(EXTAOS_HcSwitch, new PacketHouseDesignSwitch());				// house design - change floor
-	m_packets.registerEncoded(EXTAOS_HcPlaceRoof, new PacketHouseDesignPlaceRoof());		// house design - place roof
-	m_packets.registerEncoded(EXTAOS_HcDestroyRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
-	m_packets.registerEncoded(EXTAOS_SpecialMove, new PacketSpecialMove());					//
-	m_packets.registerEncoded(EXTAOS_HcRevert, new PacketHouseDesignRevert());				// house design - revert
-	m_packets.registerEncoded(EXTAOS_EquipLastWeapon, new PacketEquipLastWeapon());			//
-	m_packets.registerEncoded(EXTAOS_GuildButton, new PacketGuildButton());					// guild button press
-	m_packets.registerEncoded(EXTAOS_QuestButton, new PacketQuestButton());					// quest button press
-		
 	// create network states
 	ASSERT(m_states == NULL);
 	ASSERT(m_stateCount == 0);
@@ -4172,45 +3910,6 @@ void NetworkOutput::queuePacketTransaction(PacketTransaction* transaction)
 	}
 
 	state->m_queue[priority].push(transaction);
-}
-
-
-/***************************************************************************
- *
- *
- *	class ClientIterator		Works as client iterator getting the clients
- *
- *
- ***************************************************************************/
-ClientIterator::ClientIterator(const NetworkManager* network)
-{
-	m_network = (network == NULL? &g_NetworkManager : network);
-	m_nextClient = static_cast<CClient*> (m_network->m_clients.GetHead());
-}
-
-ClientIterator::~ClientIterator(void)
-{
-	m_network = NULL;
-	m_nextClient = NULL;
-}
-
-CClient* ClientIterator::next(bool includeClosing)
-{
-	for (CClient* current = m_nextClient; current != NULL; current = current->GetNext())
-	{
-		// skip clients without a state, or whose state is invalid/closed
-		if (current->GetNetState() == NULL || current->GetNetState()->isInUse(current) == false || current->GetNetState()->isClosed())
-			continue;
-
-		// skip clients whose connection is being closed
-		if (includeClosing == false && current->GetNetState()->isClosing())
-			continue;
-
-		m_nextClient = current->GetNext();
-		return current;
-	}
-
-	return NULL;
 }
 
 

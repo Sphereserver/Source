@@ -1280,7 +1280,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 					iTimeDecay = Exp_GetVal(ppArgs[1]);
 				
 #ifndef _MTNETWORK
-				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(ppArgs[0]);
+				HistoryIP& history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
 #else
 				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
 #endif
@@ -1482,7 +1482,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if (pSrc->GetPrivLevel() >= PLEVEL_Admin)
 			{
 #ifndef _MTNETWORK
-				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(s.GetArgRaw());
+				HistoryIP& history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
 #else
 				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
 #endif

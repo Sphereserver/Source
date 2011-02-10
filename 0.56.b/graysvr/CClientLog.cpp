@@ -50,7 +50,7 @@ void CClient::SetConnectType( CONNECT_TYPE iType )
 	if ( iType == CONNECT_GAME )
 	{
 #ifndef _MTNETWORK
-		NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(GetPeer());
+		HistoryIP& history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
 #else
 		HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
 #endif

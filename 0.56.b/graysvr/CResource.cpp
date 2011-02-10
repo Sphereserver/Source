@@ -2237,7 +2237,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			{
 				strcpy(ipBuffer, pScript->GetKey());
 #ifndef _MTNETWORK
-				NetworkIn::HistoryIP& history = g_NetworkIn.getHistoryForIP(ipBuffer);
+				HistoryIP& history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ipBuffer);
 #else
 				HistoryIP& history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ipBuffer);
 #endif
