@@ -5110,3 +5110,6 @@ ALPHA additions:
 - Fixed #1901: Some targeting items (bloody bandages, carpentry tools, cotton, lockpicks,
   thread, yarn, wool) using 'itemuse_weapon_promt' defmessage as their prompt instead of
   'target_promt'.
+
+11-02-2011, MrSugarCube
+- Fixed #1909: Exception when using the "d ui" command against older tiledata sizes.

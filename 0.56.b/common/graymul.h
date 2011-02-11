@@ -2333,6 +2333,8 @@ struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
 struct CGrayItemInfo : public CUOItemTypeRec2
 {
 	explicit CGrayItemInfo( ITEMID_TYPE id );
+
+	static ITEMID_TYPE GetMaxTileDataItem();
 };
 
 struct CUOMultiItemRec // (Multi.mul)

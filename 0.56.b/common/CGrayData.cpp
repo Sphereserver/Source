@@ -218,6 +218,45 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 	}
 }
 
+ITEMID_TYPE CGrayItemInfo::GetMaxTileDataItem()
+{
+	ADDTOCALLSTACK("CGrayItemInfo::GetMaxTileDataItem");
+
+	CGFile* pTileData = g_Install.GetMulFile(VERFILE_TILEDATA);
+	ASSERT(pTileData != NULL);
+
+	DWORD dwLength = pTileData->GetLength();	// length of file
+	DWORD dwEntrySize = 0;						// size of tiledata entry
+	DWORD dwOffset = 0;							// offset to tiledata items
+
+	VERFILE_FORMAT format = g_Install.GetMulFormat(VERFILE_TILEDATA);
+	switch (format)
+	{
+		case VERFORMAT_HIGHSEAS: // high seas format (CUOItemTypeRec2)
+			dwEntrySize = sizeof(CUOItemTypeRec2);
+			dwOffset = UOTILE_TERRAIN_SIZE2 + 4;
+			break;
+
+		case VERFORMAT_ORIGINAL: // original format (CUOItemTypeRec)
+		default:
+			dwEntrySize = sizeof(CUOItemTypeRec);
+			dwOffset = UOTILE_TERRAIN_SIZE + 4;
+			break;
+	}
+
+	ASSERT(dwEntrySize > 0);
+	ASSERT(dwOffset < dwLength);
+
+	// items are sorted in blocks of 32 with 4 byte padding between, so determine how
+	// many blocks will fit in the file to find how many items there could be
+	dwLength -= dwOffset;
+	DWORD dwBlocks = (dwLength / ((UOTILE_BLOCK_QTY * dwEntrySize) + 4)) + 1;
+	return static_cast<ITEMID_TYPE>(dwBlocks * UOTILE_BLOCK_QTY);
+}
+
+//*********************************************8
+// -CGrayTerrainInfo
+
 CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 {
 	ASSERT( id < TERRAIN_QTY );
@@ -278,6 +317,9 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 		}
 	}
 }
+
+//*********************************************8
+// -CGrayMulti
 
 int CGrayMulti::Load( MULTI_TYPE id )
 {
