@@ -2322,7 +2322,7 @@ inline void AddSocketToSet(fd_set& fds, SOCKET socket, int& count)
 const char * GenerateNetworkThreadName(size_t id)
 {
 	char * name = new char[25];
-	sprintf_s(name, 25, "NetworkThread #%" FMTSIZE_T, id);
+	sprintf(name, "NetworkThread #%" FMTSIZE_T, id);
 	return name;
 }
 
@@ -2583,7 +2583,7 @@ void NetworkManager::start(void)
 		m_states[l] = new NetState(l);
 	m_stateCount = g_Cfg.m_iClientsMax;
 
-	DEBUGNETWORK(("Created %ld network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
+	DEBUGNETWORK(("Created %" FMTSIZE_T " network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
 
 	// create network threads
 	createNetworkThreads(g_Cfg.m_iNetworkThreads);
@@ -3174,7 +3174,7 @@ size_t NetworkInput::processOtherClientData(NetState* state, BYTE* buffer, size_
 			CEvent evt;
 			memcpy(&evt, buffer, bufferSize);
 
-			if (buffer[0] = XCMD_EncryptionReply && state->isClientKR())
+			if (buffer[0] == XCMD_EncryptionReply && state->isClientKR())
 			{
 				EXC_SET("encryption reply");
 
@@ -3226,8 +3226,8 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 	if (state->m_seeded == false)
 	{
 		// check for HTTP connection
-		if (bufferSize >= 5 && memcmp(buffer, "GET /", 5) == 0 ||
-			bufferSize >= 6 && memcmp(buffer, "POST /", 6) == 0)
+		if ((bufferSize >= 5 && memcmp(buffer, "GET /", 5) == 0) ||
+			(bufferSize >= 6 && memcmp(buffer, "POST /", 6) == 0))
 		{
 			EXC_SET("http request");
 			if (g_Cfg.m_fUseHTTP != 2)
@@ -3858,14 +3858,19 @@ void NetworkOutput::onAsyncSendComplete(NetState* state)
 	// notify that async operation completed
 	ADDTOCALLSTACK("NetworkOutput::onAsyncSendComplete");
 	ASSERT(state != NULL);
-#ifdef MTNETWORK_OUTPUT
-	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
-#endif
-
 	state->setSendingAsync(false);
 		
-	if (processAsyncQueue(state) > 0)
-		processByteQueue(state);
+#ifdef MTNETWORK_OUTPUT
+	// we could process another batch of async data right now, but only if we
+	// are in the output thread
+	// - WinSock calls this from the same thread
+	// - LinuxEv calls this from a completely different thread
+	if (m_thread->isActive() && m_thread->isCurrentThread())
+	{
+		if (processAsyncQueue(state) > 0)
+			processByteQueue(state);
+	}
+#endif
 }
 
 void NetworkOutput::queuePacket(PacketSend* packet, bool appendTransaction)

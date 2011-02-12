@@ -122,9 +122,6 @@ void Packet::seek(size_t pos)
 
 void Packet::skip(long count)
 {
-	ASSERT((m_position + count) >= 0);
-	//ASSERT((m_position + count) <= m_length); // valid during packet writing
-
 	// ensure we can't go lower than 0
 	if (count < 0 && static_cast<size_t>(abs(count)) > m_position)
 		m_position = 0;
