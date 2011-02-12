@@ -15,6 +15,7 @@
 	
 	class CGSocket;
 	class CClient;
+	class NetState;
 		
 	class LinuxEv : public AbstractSphereThread
 	{
@@ -49,14 +50,14 @@
 		virtual bool shouldExit();
 		
 	private:
-		void forceClientevent(CClient *, EventsID);
+		void forceClientevent(NetState *, EventsID);
 		
 	public:
-		void forceClientread(CClient *);
-		void forceClientwrite(CClient *);
+		void forceClientread(NetState *);
+		void forceClientwrite(NetState *);
 		// --------------------------------------	
-		void registerClient(CClient *, EventsID);
-		void unregisterClient(CClient *);
+		void registerClient(NetState *, EventsID);
+		void unregisterClient(NetState *);
 		// --------------------------------------
 		void registerMainsocket();
 		void unregisterMainsocket();

@@ -5113,3 +5113,7 @@ ALPHA additions:
 
 11-02-2011, MrSugarCube
 - Fixed #1909: Exception when using the "d ui" command against older tiledata sizes.
+
+12-02-2011, MrSugarCube
+- Fixed #1911: Ping history not decaying over time, causing an IP to be permanently blocked
+  when it exceeds the MAXPINGS setting.

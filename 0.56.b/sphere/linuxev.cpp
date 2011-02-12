@@ -30,21 +30,25 @@ static void socketmain_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 static void socketslave_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 {
 	ev_io_stop(loop, w);
-	CClient * theClient = reinterpret_cast<CClient *>( w->data );
+	NetState* state = reinterpret_cast<NetState *>( w->data );
 	
 	if ( !g_Serv.IsLoading() )
 	{
 		if ( revents & EV_READ )
 		{	
-			// g_NetworkOut.onAsyncSendComplete(theClient);
+			// g_NetworkOut.onAsyncSendComplete(state);
 		}		
 		else if ( revents & EV_WRITE )
-		{	
-			g_NetworkOut.onAsyncSendComplete(theClient);
+		{
+#ifndef _MTNETWORK
+			g_NetworkOut.onAsyncSendComplete(state);
+#else
+			state->getParentThread()->onAsyncSendComplete(state);
+#endif
 		}
 	}
 	
-	if ( theClient->GetNetState()->isSendingAsync() )
+	if ( state->isSendingAsync() )
 	{
 		ev_io_start(loop, w);
 	}
@@ -86,9 +90,10 @@ bool LinuxEv::shouldExit()
 	return !m_active;
 }
 
-void LinuxEv::registerClient(CClient * theClient, EventsID eventCheck)
+void LinuxEv::registerClient(NetState * state, EventsID eventCheck)
 {
-	NetState* state = theClient->GetNetState();
+	ADDTOCALLSTACK("LinuxEv::registerClient");
+	ASSERT(state != NULL);
 	
 	memset(state->iocb(), 0, sizeof(ev_io));
 
@@ -98,35 +103,39 @@ void LinuxEv::registerClient(CClient * theClient, EventsID eventCheck)
 #else
 	ev_io_init(state->iocb(), socketslave_cb, state->m_socket.GetSocket(), (int)eventCheck);
 #endif
-	state->iocb()->data = theClient;
+	state->iocb()->data = state;
 	state->setSendingAsync(true);
 	
     ev_io_start(m_eventLoop, state->iocb());	
 }
 
-void LinuxEv::unregisterClient(CClient * theClient)
+void LinuxEv::unregisterClient(NetState * state)
 {
-	NetState* state = theClient->GetNetState();
+	ADDTOCALLSTACK("LinuxEv::unregisterClient");
+	ASSERT(state != NULL);
 
 	state->setSendingAsync(false);
 	
 	ev_io_stop(m_eventLoop, state->iocb());
 }
 
-void LinuxEv::forceClientevent(CClient * theClient, EventsID eventForce)
+void LinuxEv::forceClientevent(NetState * state, EventsID eventForce)
 {
-	NetState* state = theClient->GetNetState();
+	ADDTOCALLSTACK("LinuxEv::forceClientevent");
+	ASSERT(state != NULL);
 	ev_invoke(m_eventLoop, state->iocb(), (int)eventForce);
 }
 
-void LinuxEv::forceClientread(CClient * theClient)
+void LinuxEv::forceClientread(NetState * state)
 {
-	forceClientevent(theClient, LinuxEv::Read);
+	ADDTOCALLSTACK("LinuxEv::forceClientread");
+	forceClientevent(state, LinuxEv::Read);
 }
 
-void LinuxEv::forceClientwrite(CClient * theClient)
+void LinuxEv::forceClientwrite(NetState * state)
 {
-	forceClientevent(theClient, LinuxEv::Write);
+	ADDTOCALLSTACK("LinuxEv::forceClientwrite");
+	forceClientevent(state, LinuxEv::Write);
 }
 
 void LinuxEv::registerMainsocket()

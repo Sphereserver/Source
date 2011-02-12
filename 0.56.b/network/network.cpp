@@ -135,7 +135,7 @@ void NetState::clear(void)
 		
 #if !defined(_WIN32) || defined(_LIBEV)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
-			g_NetworkEvent.unregisterClient(client);
+			g_NetworkEvent.unregisterClient(this);
 #endif
 
 		//	record the client reference to the garbage collection to be deleted on it's time
@@ -234,7 +234,7 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	if (g_Cfg.m_fUseAsyncNetwork != 0)
 	{
 		DEBUGNETWORK(("%lx:Registering async client\n", id()));
-		g_NetworkEvent.registerClient(client, LinuxEv::Write);
+		g_NetworkEvent.registerClient(this, LinuxEv::Write);
 	}
 #endif
 	
@@ -390,6 +390,7 @@ void HistoryIP::update(void)
 {
 	// reset ttl
 	m_ttl = NETHISTORY_TTL;
+	m_pingDecay = maximum(30, NETHISTORY_TTL / 5);
 }
 
 bool HistoryIP::checkPing(void)
@@ -455,15 +456,21 @@ void IPHistoryManager::tick(void)
 			if (it->m_blockExpire.IsTimeValid() && CServTime::GetCurrentTime() > it->m_blockExpire)
 				it->setBlocked(false);
 		}
-		else if (decayTTL && (it->m_connecting > 0 || it->m_connected > 0)) // don't decay history for connected clients
+		else if (decayTTL)
 		{
-			// decay ttl
-			if (it->m_ttl >= 0)
-				--it->m_ttl;
+			if (it->m_connected == 0 && it->m_connecting == 0)
+			{
+				// start to forget about clients who aren't connected
+				if (it->m_ttl >= 0)
+					--it->m_ttl;
+			}
 
-			// decay pings
-			if (it->m_pings > 0 && it->m_ttl < (NETHISTORY_TTL / 2))
+			 // wait a 5th of TTL between each ping decay, but do not wait less than 30 seconds
+			if (it->m_pings > 0 && --it->m_pingDecay < 0)
+			{
 				--it->m_pings;
+				it->m_pingDecay = maximum(30, NETHISTORY_TTL / 5);
+			}
 		}
 	}
 
@@ -1445,6 +1452,8 @@ void NetworkIn::acceptConnection(void)
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 			else if ( climaxIp && ip.m_connected > climaxIp )
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 			else
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
 		}
@@ -2028,19 +2037,17 @@ void NetworkOut::proceedQueueBytes(CClient* client)
 	}
 }
 
-void NetworkOut::onAsyncSendComplete(CClient* client)
+void NetworkOut::onAsyncSendComplete(NetState* state)
 {
 	ADDTOCALLSTACK("NetworkOut::onAsyncSendComplete");
 
 	//DEBUGNETWORK(("AsyncSendComplete\n"));
-	ASSERT(client != NULL);
-	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
 	state->setSendingAsync(false);
 
-	if (proceedQueueAsync(client) != 0)
-		proceedQueueBytes(client);
+	if (proceedQueueAsync(client->getClient()) != 0)
+		proceedQueueBytes(client->getClient());
 }
 
 bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
@@ -2493,6 +2500,8 @@ void NetworkManager::acceptNewConnection(void)
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 		else if ( climaxIp && ip.m_connected > climaxIp )
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+		else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached)\n", (LPCTSTR)client_addr.GetAddrStr());
 		else
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
 

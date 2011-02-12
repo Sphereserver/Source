@@ -208,6 +208,7 @@ struct HistoryIP
 	bool m_blocked;
 	long m_ttl;
 	CServTime m_blockExpire;
+	long m_pingDecay;
 
 	void update(void);
 	bool checkPing(void); // IP is blocked -or- too many pings to it?
@@ -439,7 +440,7 @@ protected:
 	int sendBytesNow(CClient* client, const BYTE* data, DWORD length); // send bytes to a client (returns number of bytes sent, < 0 for failure)
 
 public:
-	void onAsyncSendComplete(CClient* client); // handle completion of async send
+	void onAsyncSendComplete(NetState* state); // handle completion of async send
 
 	friend class SimplePacketTransaction;
 	friend class ExtendedPacketTransaction;
