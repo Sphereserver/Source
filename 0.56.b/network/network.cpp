@@ -2046,8 +2046,8 @@ void NetworkOut::onAsyncSendComplete(NetState* state)
 
 	state->setSendingAsync(false);
 
-	if (proceedQueueAsync(client->getClient()) != 0)
-		proceedQueueBytes(client->getClient());
+	if (proceedQueueAsync(state->getClient()) != 0)
+		proceedQueueBytes(state->getClient());
 }
 
 bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
@@ -2083,9 +2083,9 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 		return;
 
 	//DEBUGNETWORK(("AsyncSend completed.\n"));
-	CClient* client = reinterpret_cast<CClient *>(lpOverlapped->hEvent);
-	if (client != NULL)
-		g_NetworkOut.onAsyncSendComplete(client);
+	NetState* state = reinterpret_cast<NetState *>(lpOverlapped->hEvent);
+	if (state != NULL)
+		g_NetworkOut.onAsyncSendComplete(state);
 }
 
 #endif
@@ -2215,7 +2215,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 	{
 		// send via async winsock
 		ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
-		state->m_overlapped.hEvent = client;
+		state->m_overlapped.hEvent = state;
 		state->m_bufferWSA.len = length;
 		state->m_bufferWSA.buf = (CHAR*)data;
 
