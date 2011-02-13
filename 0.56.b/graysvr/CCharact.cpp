@@ -1067,7 +1067,7 @@ void CChar::UpdateVisualRange()
 		GetClient()->addVisualRange( m_iVisualRange );
 }
 
-void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
+void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool fFull )
 {
 	ADDTOCALLSTACK("CChar::UpdateMove");
 	// Who now sees this char ?
@@ -1089,7 +1089,7 @@ void CChar::UpdateMove( CPointMap pold, CClient * pExcludeClient, bool fFull )
 		{
 			EXC_SET("ADD map");
 			// What do i now see ?
-			pClient->addMap( (CPointMap*)(pold.IsValidPoint() ? &pold : NULL), true );
+			pClient->addMap( (pold.IsValidPoint() ? &pold : NULL), true );
 			EXC_SET("AddPlayerView");
 			pClient->addPlayerView( pold );
 			continue;

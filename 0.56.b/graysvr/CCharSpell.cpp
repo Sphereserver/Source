@@ -130,8 +130,8 @@ static LPCTSTR const sm_szPunishMsg[] =
 			iSound = g_Cfg.m_iSpell_Teleport_Sound_NPC;
 		}
 	}
-
-	if ( GetTopPoint().IsValidPoint())	// Guards might have justbeen created.
+	
+	if ( GetTopPoint().IsValidPoint() )	// Guards might have just been created
 	{
 		if ( fTakePets )
 		{
@@ -158,29 +158,35 @@ static LPCTSTR const sm_szPunishMsg[] =
 				}
 			}
 		}
-
-		if ( iEffect )	// departing side effect.
-		{
-			CItem * pItem = CItem::CreateBase( iEffect );
-			ASSERT(pItem);
-			pItem->SetType( IT_NORMAL );
-			pItem->SetAttr( ATTR_MOVE_NEVER );
-			pItem->MoveToDecay( GetTopPoint(), 2 * TICK_PER_SEC );
-		}
 	}
 
 	CPointMap ptOld = GetTopPoint();
 
 	m_fClimbUpdated = false; // update climb height here
+
+	// move character
 	MoveToChar( ptNew );
+
+	// departing effect
+	if ( ptOld.IsValidPoint() && iEffect != ITEMID_NOTHING )
+	{
+		CItem * pItem = CItem::CreateBase( iEffect );
+		ASSERT(pItem);
+		pItem->SetType( IT_NORMAL );
+		pItem->SetAttr( ATTR_MOVE_NEVER );
+		pItem->MoveToDecay( ptOld, 2 * TICK_PER_SEC );
+	}
+
+	// update other characters
 	UpdateMove( ptOld, NULL, true );
 
-
-	if ( iEffect )
+	// entering effect
+	if ( iEffect != ITEMID_NOTHING )
 	{
 		Sound( iSound );	// 0x01fe
 		Effect( EFFECT_OBJ, iEffect, this, 9, 20 );
 	}
+
 	return( true );
 }
 

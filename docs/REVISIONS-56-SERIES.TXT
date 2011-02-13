@@ -5117,3 +5117,7 @@ ALPHA additions:
 12-02-2011, MrSugarCube
 - Fixed #1911: Ping history not decaying over time, causing an IP to be permanently blocked
   when it exceeds the MAXPINGS setting.
+
+13-02-2011, MrSugarCube
+- Modified #1912: Teleporting clients no longer receive unnecessary item packet for the smoke
+  effect they leave behind.
