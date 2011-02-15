@@ -288,7 +288,7 @@ void AbstractThread::run()
 			return;
 		}
 
-		SleepEx(m_tickPeriod, TRUE);
+		m_sleepEvent.wait(m_tickPeriod);
 	}
 }
 
@@ -318,6 +318,11 @@ bool AbstractThread::isActive() const
 void AbstractThread::waitForClose()
 {
 	terminate();
+}
+
+void AbstractThread::awaken()
+{
+	m_sleepEvent.signal();
 }
 
 bool AbstractThread::isCurrentThread() const
@@ -387,6 +392,9 @@ void AbstractThread::setPriority(IThread::Priority pri)
 			break;
 		case IThread::RealTime:
 			m_tickPeriod = 0;
+			break;
+		case IThread::Disabled:
+			m_tickPeriod = AutoResetEvent::_infinite;
 			break;
 		default:
 			throw CException(LOGL_FATAL, 0, "Unable to determine thread priority");

@@ -524,8 +524,8 @@ public:
 	bool processOutput(void);											// process output to clients, returns true if data was sent
 	void onAsyncSendComplete(NetState* state);							// notify that async operation completed
 
-	void queuePacket(PacketSend* packet, bool appendTransaction);		// queue a packet for sending
-	void queuePacketTransaction(PacketTransaction* transaction);		// queue a packet transaction for sending
+	static void QueuePacket(PacketSend* packet, bool appendTransaction);	// queue a packet for sending
+	static void QueuePacketTransaction(PacketTransaction* transaction);		// queue a packet transaction for sending
 
 private:
 	void checkFlushRequests(void);										// check for clients who need data flushing
@@ -664,13 +664,13 @@ public:
 	void queuePacket(PacketSend* packet, bool appendTransaction)
 	{
 		// queue a packet for sending
-		m_output.queuePacket(packet, appendTransaction);
+		NetworkOutput::QueuePacket(packet, appendTransaction);
 	}
 
 	void queuePacketTransaction(PacketTransaction* transaction)
 	{
 		// queue a packet transaction for sending
-		m_output.queuePacketTransaction(transaction);
+		NetworkOutput::QueuePacketTransaction(transaction);
 	}
 
 public:

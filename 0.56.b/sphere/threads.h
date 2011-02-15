@@ -7,6 +7,7 @@
 #define THREAD_STRING_LENGTH	4096
 
 #include "../common/common.h"
+#include "../sphere/mutex.h"
 #include "../sphere/strings.h"
 #include "../sphere/ProfileData.h"
 
@@ -48,12 +49,13 @@ class IThread
 public:
 	enum Priority
 	{
-		Idle,		// tick 1000ms
-		Low,		// tick 200ms
-		Normal,		// tick 100ms
-		High,		// tick 50ms
-		Highest,	// tick 5ms
-		RealTime	// tick almost instantly
+		Idle,			// tick 1000ms
+		Low,			// tick 200ms
+		Normal,			// tick 100ms
+		High,			// tick 50ms
+		Highest,		// tick 5ms
+		RealTime,		// tick almost instantly
+		Disabled = 0xFF	// tick never
 	};
 
 	virtual unsigned int getId() const = 0;
@@ -107,13 +109,14 @@ private:
 class AbstractThread : public IThread
 {
 private:
-	unsigned	m_id;
+	unsigned int m_id;
 	const char *m_name;
-	static int	m_threadsAvailable;
-	spherethread_t	m_handle;
-	unsigned	m_hangCheck;
+	static int m_threadsAvailable;
+	spherethread_t m_handle;
+	unsigned int m_hangCheck;
 	Priority m_priority;
-	long m_tickPeriod;
+	unsigned long m_tickPeriod;
+	AutoResetEvent m_sleepEvent;
 
 public:
 	AbstractThread(const char *name, Priority priority = IThread::Normal);
@@ -124,19 +127,21 @@ private:
 	AbstractThread& operator=(const AbstractThread& other);
 
 public:
-	virtual unsigned int getId() const { return m_id; }
-	virtual const char *getName() const { return m_name; }
+	unsigned int getId() const { return m_id; }
+	const char *getName() const { return m_name; }
 
-	virtual bool isActive() const;
-	virtual bool isCurrentThread() const;
-	virtual bool checkStuck();
+	bool isActive() const;
+	bool isCurrentThread() const;
+	bool checkStuck();
 
 	virtual void start();
 	virtual void terminate();
 	virtual void waitForClose();
+	virtual void awaken();
 
-	virtual void setPriority(Priority pri = IThread::Normal);
-	virtual Priority getPriority() const { return m_priority; }
+	void setPriority(Priority pri);
+	Priority getPriority() const { return m_priority; }
+
 
 protected:
 	virtual void tick() = 0;

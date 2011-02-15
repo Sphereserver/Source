@@ -259,6 +259,10 @@ void NetState::markReadClosed(void) volatile
 {
 	DEBUGNETWORK(("%lx:Client being closed by read-thread\n", m_id));
 	m_isReadClosed = true;
+#ifdef _MTNETWORK
+	if (m_parent != NULL && m_parent->getPriority() == IThread::Disabled)
+		m_parent->awaken();
+#endif
 }
 
 void NetState::markWriteClosed(void) volatile
@@ -2630,7 +2634,17 @@ void NetworkManager::tick(void)
 
 		EXC_SET("check closing");
 		if (state->isClosing() == false)
+		{
+#ifdef _MTNETWORK
+			// if data is queued whilst the thread is in the middle of processing then the signal
+			// sent from NetworkOutput::QueuePacketTransaction can be ignored
+			// the safest solution to this is to send additional signals from here
+			NetworkThread* thread = state->getParentThread();
+			if (thread != NULL && state->hasPendingData() && thread->getPriority() == IThread::Disabled)
+				thread->awaken();
+#endif
 			continue;
+		}
 
 		// the state is closing, see if it can be cleared
 		if (state->isClosed() == false)
@@ -2727,7 +2741,8 @@ void NetworkManager::flushAllClients(void)
  *
  ***************************************************************************/
 NetworkThread::NetworkThread(NetworkManager& manager, size_t id)
-	: AbstractSphereThread(GenerateNetworkThreadName(id)), m_manager(manager), m_id(id)
+	: AbstractSphereThread(GenerateNetworkThreadName(id), IThread::Disabled),
+	m_manager(manager), m_id(id)
 {
 }
 
@@ -2741,6 +2756,8 @@ void NetworkThread::assignNetworkState(NetState* state)
 {
 	ADDTOCALLSTACK("NetworkThread::assignNetworkState");
 	m_assignQueue.push(state);
+	if (getPriority() == IThread::Disabled)
+		awaken();
 }
 
 void NetworkThread::checkNewStates(void)
@@ -2813,14 +2830,11 @@ void NetworkThread::tick(void)
 
 	if (m_states.empty())
 	{
-		// we haven't been assigned any clients, so go idle
-		// for now
-		setPriority(IThread::Low);
+		// we haven't been assigned any clients, so go idle for now
+		if (getPriority() != IThread::Disabled)
+			setPriority(IThread::Low);
 		return;
 	}
-
-	// we're active, take priority
-	setPriority(static_cast<IThread::Priority>(g_Cfg.m_iNetworkThreadPriority));
 
 #ifdef MTNETWORK_INPUT
 	processInput();
@@ -2828,6 +2842,9 @@ void NetworkThread::tick(void)
 #ifdef MTNETWORK_OUTPUT
 	processOutput();
 #endif
+
+	// we're active, take priority
+	setPriority(static_cast<IThread::Priority>(g_Cfg.m_iNetworkThreadPriority));
 }
 
 void NetworkThread::processInput(void)
@@ -3429,6 +3446,13 @@ bool NetworkOutput::processOutput()
 			packetsSent++;
 	}
 
+	if (packetsSent > 0)
+	{
+		// notify thread there could be more to process
+		if (m_thread->getPriority() == IThread::Disabled)
+			m_thread->awaken();
+	}
+
 	return packetsSent > 0;
 	EXC_CATCH;
 	EXC_DEBUG_START;
@@ -3873,11 +3897,10 @@ void NetworkOutput::onAsyncSendComplete(NetState* state)
 #endif
 }
 
-void NetworkOutput::queuePacket(PacketSend* packet, bool appendTransaction)
+void NetworkOutput::QueuePacket(PacketSend* packet, bool appendTransaction)
 {
 	// queue a packet for sending
-	ADDTOCALLSTACK("NetworkOutput::queuePacketOnce");
-	ASSERT(m_thread != NULL);
+	ADDTOCALLSTACK("NetworkOutput::QueuePacket");
 	ASSERT(packet != NULL);
 
 	// don't bother queuing packets for invalid sockets
@@ -3891,14 +3914,13 @@ void NetworkOutput::queuePacket(PacketSend* packet, bool appendTransaction)
 	if (state->m_pendingTransaction != NULL && appendTransaction)
 		state->m_pendingTransaction->push_back(packet);
 	else
-		queuePacketTransaction(new SimplePacketTransaction(packet));
+		QueuePacketTransaction(new SimplePacketTransaction(packet));
 }
 
-void NetworkOutput::queuePacketTransaction(PacketTransaction* transaction)
+void NetworkOutput::QueuePacketTransaction(PacketTransaction* transaction)
 {
 	// queue a packet transaction for sending
-	ADDTOCALLSTACK("NetworkOutput::queuePacketTransaction");
-	ASSERT(m_thread != NULL);
+	ADDTOCALLSTACK("NetworkOutput::QueuePacketTransaction");
 	ASSERT(transaction != NULL);
 
 	// don't bother queuing packets for invalid sockets
@@ -3924,6 +3946,11 @@ void NetworkOutput::queuePacketTransaction(PacketTransaction* transaction)
 	}
 
 	state->m_queue[priority].push(transaction);
+
+	// notify thread
+	NetworkThread* thread = state->getParentThread();
+	if (thread != NULL && thread->getPriority() == IThread::Disabled)
+		thread->awaken();
 }
 
 

@@ -208,7 +208,7 @@ CResource::CResource()
 
 #ifdef _MTNETWORK
 	m_iNetworkThreads = 1;
-	m_iNetworkThreadPriority = IThread::Highest;
+	m_iNetworkThreadPriority = IThread::Disabled;
 #endif
 	m_fUseAsyncNetwork = 1;
 	m_iNetMaxPings = 15;
@@ -1061,7 +1061,7 @@ bool CResource::r_LoadVal( CScript &s )
 				if (priority < IThread::Idle)
 					priority = IThread::Idle;
 				else if (priority > IThread::RealTime)
-					priority = IThread::RealTime;
+					priority = IThread::Disabled;
 
 				m_iNetworkThreadPriority = priority;
 			}

@@ -74,4 +74,36 @@ private:
 	bool m_locked;
 };
 
+class AutoResetEvent
+{
+public:
+#ifdef _WIN32
+	static const unsigned long _infinite = INFINITE;
+#else
+	static const unsigned long _infinite = 0xffffffff;
+#endif
+
+public:
+	AutoResetEvent();
+	~AutoResetEvent();
+
+private:
+	AutoResetEvent(const AutoResetEvent& copy);
+	AutoResetEvent& operator=(const AutoResetEvent& other);
+
+public:
+	void wait(unsigned long timeout = _infinite);
+	void signal();
+
+private:
+#ifdef _WIN32
+	HANDLE m_handle;
+#else
+	pthread_mutex_t m_criticalSection;
+	pthread_mutexattr_t m_criticalSectionAttr;
+	pthread_condattr_t m_conditionAttr;
+	pthread_cond_t m_condition;
+#endif
+};
+
 #endif
