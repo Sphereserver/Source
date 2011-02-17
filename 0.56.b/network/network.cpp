@@ -394,7 +394,6 @@ void HistoryIP::update(void)
 {
 	// reset ttl
 	m_ttl = NETHISTORY_TTL;
-	m_pingDecay = maximum(30, NETHISTORY_TTL / 5);
 }
 
 bool HistoryIP::checkPing(void)
@@ -473,7 +472,7 @@ void IPHistoryManager::tick(void)
 			if (it->m_pings > 0 && --it->m_pingDecay < 0)
 			{
 				--it->m_pings;
-				it->m_pingDecay = maximum(30, NETHISTORY_TTL / 5);
+				it->m_pingDecay = NETHISTORY_PINGDECAY;
 			}
 		}
 	}
@@ -505,6 +504,7 @@ HistoryIP& IPHistoryManager::getHistoryForIP(const CSocketAddressIP& ip)
 	HistoryIP hist;
 	memset(&hist, 0, sizeof(hist));
 	hist.m_ip = ip;
+	hist.m_pingDecay = NETHISTORY_PINGDECAY;
 	hist.update();
 
 	m_ips.push_back(hist);
@@ -1453,11 +1453,11 @@ void NetworkIn::acceptConnection(void)
 			if (ip.m_blocked)
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
 			else if ( maxIp && ip.m_connecting > maxIp )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
 			else if ( climaxIp && ip.m_connected > climaxIp )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached l%d/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
 			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS);
 			else
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
 		}
@@ -2501,11 +2501,11 @@ void NetworkManager::acceptNewConnection(void)
 		if (ip.m_blocked)
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
 		else if ( maxIp && ip.m_connecting > maxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
 		else if ( climaxIp && ip.m_connected > climaxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
 		else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS );
 		else
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
 

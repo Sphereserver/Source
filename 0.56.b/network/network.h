@@ -16,6 +16,7 @@
 #define NETWORK_MAXQUEUESIZE	g_Cfg.m_iNetMaxQueueSize		// max packets to hold per queue (comment out for unlimited)
 #define NETHISTORY_TTL			g_Cfg.m_iNetHistoryTTL			// time to remember an ip
 #define NETHISTORY_MAXPINGS		g_Cfg.m_iNetMaxPings			// max 'pings' before blocking an ip
+#define NETHISTORY_PINGDECAY	60								// time to decay 1 'ping'
 
 #ifdef _MTNETWORK
 	//#define MTNETWORK_INPUT		// handle input in multithreaded mode
