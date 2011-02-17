@@ -142,12 +142,12 @@ public:
 		return( (HICON)(DWORD) SendMessage( WM_SETICON, (WPARAM)fType, (LPARAM) hIcon ));
 	}
 
-	UINT SetTimer( UINT uTimerID, UINT uWaitmSec )
+	UINT SetTimer( UINT_PTR uTimerID, UINT_PTR uWaitmSec )
 	{
 		ASSERT(m_hWnd);
 		return( ::SetTimer( m_hWnd, uTimerID, uWaitmSec, NULL ));
 	}
-	BOOL KillTimer( UINT uTimerID )
+	BOOL KillTimer( UINT_PTR uTimerID )
 	{
 		ASSERT(m_hWnd);
 		return( ::KillTimer( m_hWnd, uTimerID ));
@@ -157,12 +157,12 @@ public:
 		// ASSERT( m_hWnd ); ok for this to be NULL !
 		return( ::MessageBox( m_hWnd, lpszText, lpszTitle, fuStyle ));
 	}
-	LONG SetWindowLong( int nIndex, LONG dwNewLong )
+	LONG SetWindowLongPtr( int nIndex, LONG dwNewLong )
 	{
 		ASSERT(m_hWnd);
 		return( ::SetWindowLong( m_hWnd, nIndex, dwNewLong ));
 	}
-	LONG GetWindowLong( int nIndex ) const
+	LONG GetWindowLongPtr( int nIndex ) const
 	{
 		ASSERT(m_hWnd);
 		return( ::GetWindowLong( m_hWnd, nIndex ));
@@ -178,7 +178,7 @@ class CDialogBase : public CWindow
 {
 public:
 	static const char *m_sClassName;
-	static BOOL CALLBACK DialogProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
+	static INT_PTR CALLBACK DialogProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
 public:
 	virtual ~CDialogBase() { };

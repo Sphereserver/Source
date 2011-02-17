@@ -48,7 +48,7 @@ BEGIN
             VALUE "FileDescription", "SphereServer by Menasoft"
             VALUE "FileVersion", "SphereServer 0.56b Prerelease"
             VALUE "InternalName", "SphereSvr"
-            VALUE "LegalCopyright", "Copyright 1998-2006 by Menasoft"
+            VALUE "LegalCopyright", "Copyright 1998-2011 by Menasoft"
             VALUE "OriginalFilename", "SphereSvr.exe"
             VALUE "ProductName", "SphereServer"
             VALUE "ProductVersion", "0.56b"
@@ -120,14 +120,14 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
     LTEXT           "Sphere Server Version",IDC_ABOUT_VERSION,40,14,156,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,247,7,50,14,WS_GROUP
-    LTEXT           "Copyright (C) 1998-2008 Menasoft ",IDC_STATIC,40,23,119,8
+    LTEXT           "Copyright (C) 1998-2011 Menasoft ",IDC_STATIC,40,23,119,8
     LTEXT           "www.menasoft.com",IDC_ABOUT_MENASOFT_LINK,39,42,103,8,SS_NOTIFY,WS_EX_ACCEPTFILES
     LTEXT           "www.sphereserver.net",IDC_ABOUT_SPHERE_LINK,178,43,75,8,SS_NOTIFY,WS_EX_ACCEPTFILES
     LTEXT           "This program makes use of:",IDC_STATIC,38,63,91,9
     LTEXT           "______________________",IDC_STATIC,40,51,91,8
-    LTEXT           "Mersenne Twister random number generator\nCopyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura\nCopyright (C) 2000 - 2003, Richard J. Wagner",IDC_STATIC,50,73,214,24
+    LTEXT           "Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura\nCopyright (C) 2000 - 2009, Richard J. Wagner",IDC_STATIC,50,73,214,24
     LTEXT           "DEELX Regular Expression Engine (v1.2)\nCopyright 2006 (c) RegExLab.com",IDC_STATIC,49,105,139,21
-    LTEXT           "Zlib data compression library (v1.2.3)\nCopyright (C) 1995-2004 Jean-loup Gailly and Mark Adler",IDC_STATIC,49,131,181,19
+    LTEXT           "Zlib data compression library (v1.2.5)\nCopyright (C) 1995-2010 Jean-loup Gailly and Mark Adler",IDC_STATIC,49,131,181,19
 END
 
 
