@@ -259,10 +259,12 @@ void CObjBase::r_WriteSafe( CScript & s )
 	catch ( const CGrayError& e )
 	{
 		g_Log.CatchEvent(&e, "Write Object 0%lx", uid);
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)	// catch all
 	{
 		g_Log.CatchEvent(NULL, "Write Object 0%lx", uid);
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 }
 

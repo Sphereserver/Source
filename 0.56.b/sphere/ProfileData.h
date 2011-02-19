@@ -19,6 +19,9 @@ enum PROFILE_TYPE
 	// Qty of bytes. Not Time.
 	PROFILE_DATA_TX = PROFILE_TIME_QTY, // network bytes sent
 	PROFILE_DATA_RX,					// network bytes received
+	PROFILE_DATA_QTY,
+
+	PROFILE_STAT_FAULTS = PROFILE_DATA_QTY,	// exceptions raised
 
 	PROFILE_QTY,
 };

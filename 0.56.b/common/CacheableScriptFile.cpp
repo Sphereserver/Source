@@ -33,7 +33,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
 	TemporaryString buf;
-	int nStrLen;
+	size_t nStrLen;
 	bool bUTF = false, bFirstLine = true;
 	
 	while( !feof(m_pStream) ) 

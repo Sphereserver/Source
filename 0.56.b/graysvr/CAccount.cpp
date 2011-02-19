@@ -957,17 +957,17 @@ void CAccount::SetNewPassword( LPCTSTR pszPassword )
 	ADDTOCALLSTACK("CAccount::SetNewPassword");
 	if ( !pszPassword || !pszPassword[0] )		// no password given, auto-generate password
 	{
-		static char const passwdChars[] = "ABCDEFGHJKLMNPQRTUVWXYZ2346789";
-		int	len = strlen(passwdChars);
-		int charsCnt = Calc_GetRandVal(4) + 6;	// 6 - 10 chars
-		if ( charsCnt > MAX_ACCOUNT_PASSWORD_ENTER-1 )
-			charsCnt = MAX_ACCOUNT_PASSWORD_ENTER-1;
-		char	szTmp[MAX_ACCOUNT_PASSWORD_ENTER + 1];
+		static TCHAR const passwdChars[] = "ABCDEFGHJKLMNPQRTUVWXYZ2346789";
+		size_t len = strlen(passwdChars);
+		size_t charsCnt = Calc_GetRandVal(4) + 6;	// 6 - 10 chars
+		if ( charsCnt > (MAX_ACCOUNT_PASSWORD_ENTER - 1) )
+			charsCnt = MAX_ACCOUNT_PASSWORD_ENTER - 1;
 
-		for ( int i = 0; i < charsCnt; i++ )
+		TCHAR szTmp[MAX_ACCOUNT_PASSWORD_ENTER + 1];
+		for ( size_t i = 0; i < charsCnt; ++i )
 			szTmp[i] = passwdChars[Calc_GetRandVal(len)];
 
-		szTmp[charsCnt] = 0;
+		szTmp[charsCnt] = '\0';
 		m_sNewPassword = szTmp;
 		return;
 	}

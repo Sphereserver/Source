@@ -5121,3 +5121,6 @@ ALPHA additions:
 13-02-2011, MrSugarCube
 - Modified #1912: Teleporting clients no longer receive unnecessary item packet for the smoke
   effect they leave behind.
+
+19-02-2011, MrSugarCube
+- Modified: Profiling statistics now include number of faults that occurred in each thread.

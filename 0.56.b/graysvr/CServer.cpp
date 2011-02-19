@@ -899,8 +899,8 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 		if (thrCurrent == NULL)
 			continue;
 
-		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
-		if (profile->IsEnabled() == false)
+		const ProfileData& profile = STATIC_CAST<AbstractSphereThread*>(thrCurrent)->m_profile;
+		if (profile.IsEnabled() == false)
 			continue;
 
 		pSrc->SysMessagef("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
@@ -909,12 +909,12 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile->IsEnabled((PROFILE_TYPE) i) == false)
+			if (profile.IsEnabled((PROFILE_TYPE) i) == false)
 				continue;
 
-			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
+			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile.GetName((PROFILE_TYPE) i), (LPCTSTR) profile.GetDescription((PROFILE_TYPE) i ) );
 			if (ftDump != NULL)
-				ftDump->Printf( "%-10s = %s\n", (LPCTSTR) profile->GetName((PROFILE_TYPE) i), (LPCTSTR) profile->GetDescription((PROFILE_TYPE) i ) );
+				ftDump->Printf( "%-10s = %s\n", (LPCTSTR) profile.GetName((PROFILE_TYPE) i), (LPCTSTR) profile.GetDescription((PROFILE_TYPE) i ) );
 		}
 	}
 

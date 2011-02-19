@@ -212,6 +212,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 	{
 		// Not much we can do about this
 		iRet = 0;
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 
 	m_mutex.unlock();
@@ -264,6 +265,7 @@ void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, 
 	{
 		// Not much we can do about this.
 		pErr = NULL;
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	sm_prevCatchTick = timeCurrent;
 }

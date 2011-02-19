@@ -247,11 +247,13 @@ void AbstractThread::run()
 		{
 			gotException = true;
 			g_Log.CatchEvent(&e, "%s::tick", getName());
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 		catch( ... )
 		{
 			gotException = true;
 			g_Log.CatchEvent(NULL, "%s::tick", getName());
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 
 		if( gotException )
@@ -416,6 +418,11 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	m_stackPos = 0;
 	memset(m_stackInfo, 0, sizeof(m_stackInfo));
 #endif
+
+	// profiles that apply to every thread
+	m_profile.EnableProfile(PROFILE_IDLE);
+	m_profile.EnableProfile(PROFILE_OVERHEAD);
+	m_profile.EnableProfile(PROFILE_STAT_FAULTS);
 }
 
 // IMHO we need a lock on allocateBuffer and allocateStringBuffer
@@ -541,7 +548,7 @@ void DummySphereThread::tick()
 */
 StackDebugInformation::StackDebugInformation(const char *name)
 {
-	m_context = (AbstractSphereThread *)ThreadHolder::current();
+	m_context = STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current());
 	if (m_context != NULL)
 		m_context->pushStackCall(name);
 }
@@ -554,7 +561,7 @@ StackDebugInformation::~StackDebugInformation()
 
 void StackDebugInformation::printStackTrace()
 {
-	((AbstractSphereThread *)ThreadHolder::current())->printStackTrace();
+	STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->printStackTrace();
 }
 
 #endif

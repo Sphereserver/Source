@@ -856,6 +856,7 @@ commentThisSection:
 	{
 		fclose(in);
 		g_Log.EventError("Unknown exception caught compiling line #%d.\n", linenum);
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return NULL;
 	}
 	fclose(in);
@@ -981,6 +982,7 @@ int CScriptLine::LoadLine(char *line, char **left, char **right, OPERATION_TYPE 
 	}
 	catch (...)
 	{
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return -1;
 	}
 lastcheck:

@@ -119,14 +119,14 @@ public:
 	#endif
 
 	#define EXC_CATCH	}	\
-		catch ( const CGrayError& e )	{ EXC_CATCH_EXCEPTION(&e); } \
-		catch (...) { EXC_CATCH_EXCEPTION(NULL); }
+		catch ( const CGrayError& e )	{ EXC_CATCH_EXCEPTION(&e); CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); } \
+		catch (...) { EXC_CATCH_EXCEPTION(NULL); CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); }
 
 	#define EXC_DEBUG_START if ( bCATCHExcept ) { try {
 
 	#define EXC_DEBUG_END \
 		/*StackDebugInformation::printStackTrace();*/ \
-	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); }}
+	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); }}
 
 	#define EXC_TRYSUB(a) \
 		LPCTSTR inLocalSubBlock = ""; \
@@ -163,17 +163,19 @@ public:
 		catch ( const CGrayError& e )	\
 						{ \
 						EXC_CATCH_SUB(&e, a); \
+						CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); \
 						} \
 						catch (...) \
 						{ \
 						EXC_CATCH_SUB(NULL, a); \
+						CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); \
 						}
 
 	#define EXC_DEBUGSUB_START if ( bCATCHExceptSub ) { try {
 	
 	#define EXC_DEBUGSUB_END \
 		/*StackDebugInformation::printStackTrace();*/ \
-	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); }}
+	} catch ( ... ) { g_Log.EventError("Exception adding debug message on the exception.\n"); CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1); }}
 
 	#define EXC_ADD_SCRIPT		g_Log.EventDebug("command '%s' args '%s'\n", s.GetKey(), s.GetArgRaw());
 	#define EXC_ADD_SCRIPTSRC	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);

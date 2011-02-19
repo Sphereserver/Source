@@ -3626,14 +3626,16 @@ bool CResource::Load( bool fResync )
 	}
 	catch ( const CGrayError& e )
 	{
-      g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
 		g_Log.CatchEvent( &e, "g_VerData.Load" );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 	catch(...)
 	{
-      g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
 		g_Log.CatchEvent( NULL, "g_VerData.Load" );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 

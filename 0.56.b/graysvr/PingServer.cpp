@@ -5,8 +5,6 @@ PingServer g_PingServer;
 // run the thread in RealTime as we need pings to be responded to ASAP
 PingServer::PingServer() : AbstractSphereThread("PingServer", IThread::RealTime)
 {
-	m_profile.EnableProfile(PROFILE_IDLE);
-	m_profile.EnableProfile(PROFILE_OVERHEAD);
 	m_profile.EnableProfile(PROFILE_NETWORK_RX);
 	m_profile.EnableProfile(PROFILE_NETWORK_TX);
 	m_profile.EnableProfile(PROFILE_DATA_TX);

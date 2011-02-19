@@ -607,10 +607,13 @@ bool CItemBase::GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * pData ) // static
 	catch ( const CGrayError& e )
 	{
 		g_Log.CatchEvent( &e, "GetItemData" );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
+		return( false );
 	}
 	catch (...)
 	{
 		g_Log.CatchEvent(NULL, "GetItemData" );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 

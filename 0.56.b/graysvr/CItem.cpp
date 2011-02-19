@@ -4850,11 +4850,13 @@ bool CItem::OnTick()
 	{
 		EXC_CATCH_EXCEPTION(&e);
 		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), (DWORD)GetUID());
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
 		EXC_CATCH_EXCEPTION(NULL);
 		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), (DWORD)GetUID());
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 #endif
 #else

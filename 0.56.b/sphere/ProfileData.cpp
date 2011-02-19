@@ -54,9 +54,9 @@ void ProfileData::Start(PROFILE_TYPE id)
 	EnableProfile(id);
 
 	// Stop prev task.
-	if ( m_TimeTotal >= llTimeProfileFrequency * m_iActiveWindowSeconds )
+	if ( m_TimeTotal >= (llTimeProfileFrequency * m_iActiveWindowSeconds) )
 	{
-		for ( int i = 0; i < PROFILE_QTY; i++ )
+		for ( int i = 0; i < PROFILE_DATA_QTY; i++ )
 		{
 			if ( m_iAverageCount < 4 )
 			{
@@ -70,6 +70,12 @@ void ProfileData::Start(PROFILE_TYPE id)
 				m_AverageTimes[i].m_Time	= (((m_AverageTimes[i].m_Time * 90) + (m_PreviousTimes[i].m_Time * 10)) / 100);
 				m_AverageTimes[i].m_iCount	= (((m_AverageTimes[i].m_iCount * 95) + (m_PreviousTimes[i].m_iCount * 10)) / 100);
 			}
+		}
+
+		for ( int i = PROFILE_DATA_QTY; i < PROFILE_QTY; ++i )
+		{
+			m_AverageTimes[i].m_Time	+= m_CurrentTimes[i].m_Time;
+			m_AverageTimes[i].m_iCount	+= m_CurrentTimes[i].m_iCount;
 		}
 
 		++m_iAverageCount;
@@ -151,6 +157,7 @@ LPCTSTR ProfileData::GetName(PROFILE_TYPE id) const
 		"SCRIPTS",
 		"DATA_TX",
 		"DATA_RX",
+		"FAULTS",
 	};
 
 	return (( id >= 0 ) && ( id < PROFILE_QTY )) ? sm_pszProfileName[id] : "";
@@ -162,7 +169,11 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 	TCHAR	*pszTmp = Str_GetTemp();
 	int		iCount	= m_PreviousTimes[id].m_iCount;
 
-	if ( id >= PROFILE_TIME_QTY )
+	if ( id >= PROFILE_DATA_QTY )
+	{
+		sprintf(pszTmp, "%i (total: %i) instances", (int) m_PreviousTimes[id].m_Time, (int)m_AverageTimes[id].m_Time);
+	}
+	else if ( id >= PROFILE_TIME_QTY )
 	{
 		sprintf(pszTmp, "%i (avg: %i) bytes", (int) m_PreviousTimes[id].m_Time, (int)m_AverageTimes[id].m_Time);
 	}
@@ -186,7 +197,7 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 //
 ProfileTask::ProfileTask(PROFILE_TYPE id) : m_context(NULL), m_previousTask(PROFILE_OVERHEAD)
 {
-	m_context = (AbstractSphereThread *)ThreadHolder::current();
+	m_context = STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current());
 	if (m_context != NULL)
 	{
 		m_previousTask = m_context->m_profile.GetCurrentTask();

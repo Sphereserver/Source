@@ -253,18 +253,18 @@ void CNTWindow::CStatusWnd::FillStats()
 		if (thrCurrent == NULL)
 			continue;
 
-		ProfileData* profile = &((AbstractSphereThread*)thrCurrent)->m_profile;
-		if (profile->IsEnabled() == false)
+		const ProfileData& profile = STATIC_CAST<AbstractSphereThread*>(thrCurrent)->m_profile;
+		if (profile.IsEnabled() == false)
 			continue;
 
 		capture.SysMessagef("Thread %u - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile->IsEnabled((PROFILE_TYPE) i) == false)
+			if (profile.IsEnabled((PROFILE_TYPE) i) == false)
 				continue;
 
-			capture.SysMessagef("'%-10s' = %s\n", profile->GetName((PROFILE_TYPE) i), profile->GetDescription((PROFILE_TYPE) i ));
+			capture.SysMessagef("'%-10s' = %s\n", profile.GetName((PROFILE_TYPE) i), profile.GetDescription((PROFILE_TYPE) i ));
 		}
 	}
 }
@@ -869,10 +869,12 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 	catch (const CGrayError& e)
 	{
 		g_Log.CatchEvent(&e, "Window");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)	// catch all
 	{
 		g_Log.CatchEvent(NULL, "Window");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	return ::DefWindowProc(hWnd, message, wParam, lParam);
 }

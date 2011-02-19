@@ -778,11 +778,13 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 	{
 		g_Log.CatchEvent( &e, "FixObj" );
 		iResultCode = 0xFFFF;	// bad mem ?
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)	// catch all
 	{
 		g_Log.CatchEvent(NULL, "FixObj" );
 		iResultCode = 0xFFFF;	// bad mem ?
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 
 	if ( iResultCode == 0 )
@@ -818,10 +820,12 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 	catch ( const CGrayError& e )	// catch all
 	{
 		g_Log.CatchEvent( &e, "UID=0%lx, Asserted cleanup", dwUID );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)	// catch all
 	{
 		g_Log.CatchEvent( NULL, "UID=0%lx, Asserted cleanup", dwUID );
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	return( iResultCode );
 }
@@ -892,10 +896,12 @@ void CWorldThread::GarbageCollection_UIDs()
 		catch ( const CGrayError& e )
 		{
 			g_Log.CatchEvent(&e, "GarbageCollection_UIDs");
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 		catch(...)
 		{
 			g_Log.CatchEvent(NULL, "GarbageCollection_UIDs");
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 	}
 
@@ -1296,9 +1302,11 @@ bool CWorld::SaveForce() // Save world state
 		{
 			g_Log.CatchEvent(&e, "Save FAILED for stage %u (%s).", m_iSaveStage, pCurBlock);
 			bSuccess = false;
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 		catch (...)
 		{
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 			goto failedstage;
 		}
 		continue;
@@ -1410,6 +1418,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		m_FileWorld.Close();	// close if not already closed.
 		m_FilePlayers.Close();	// close if not already closed.
 		m_FileMultis.Close();	// close if not already closed.
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)	// catch all
 	{
@@ -1419,6 +1428,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		m_FileWorld.Close();	// close if not already closed.
 		m_FilePlayers.Close();	// close if not already closed.
 		m_FileMultis.Close();	// close if not already closed.
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 
 	CScriptTriggerArgs Args(fForceImmediate, m_iSaveStage);
@@ -1500,10 +1510,12 @@ void CWorld::SaveStatics()
 	catch (const CGrayError& e)
 	{
 		g_Log.CatchEvent(&e, "Statics Save FAILED.");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
 		g_Log.CatchEvent(NULL, "Statics Save FAILED.");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 }
 
@@ -1546,10 +1558,12 @@ bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from scr
 		catch ( const CGrayError& e )
 		{
 			g_Log.CatchEvent(&e, "Load Exception line %d " GRAY_TITLE " is UNSTABLE!\n", s.GetContext().m_iLineNum);
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 		catch (...)
 		{
 			g_Log.CatchEvent(NULL, "Load Exception line %d " GRAY_TITLE " is UNSTABLE!\n", s.GetContext().m_iLineNum);
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 	}
 

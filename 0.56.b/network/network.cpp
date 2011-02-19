@@ -1650,8 +1650,6 @@ void NetworkIn::defragSlots(long fromSlot)
 
 NetworkOut::NetworkOut(void) : AbstractSphereThread("NetworkOut", IThread::RealTime)
 {
-	m_profile.EnableProfile(PROFILE_IDLE);
-	m_profile.EnableProfile(PROFILE_OVERHEAD);
 	m_profile.EnableProfile(PROFILE_NETWORK_TX);
 	m_profile.EnableProfile(PROFILE_DATA_TX);
 
@@ -2809,8 +2807,6 @@ void NetworkThread::onStart(void)
 {
 	m_input.setOwner(this);
 	m_output.setOwner(this);
-	m_profile.EnableProfile(PROFILE_IDLE);
-	m_profile.EnableProfile(PROFILE_OVERHEAD);
 #ifdef MTNETWORK_INPUT
 	m_profile.EnableProfile(PROFILE_NETWORK_RX);
 	m_profile.EnableProfile(PROFILE_DATA_RX);

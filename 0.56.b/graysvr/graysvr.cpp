@@ -444,8 +444,6 @@ size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 Main::Main()
 	: AbstractSphereThread("Main", IThread::RealTime)
 {
-	m_profile.EnableProfile(PROFILE_IDLE);
-	m_profile.EnableProfile(PROFILE_OVERHEAD);
 	m_profile.EnableProfile(PROFILE_NETWORK_RX);
 	m_profile.EnableProfile(PROFILE_CLIENTS);
 	//m_profile.EnableProfile(PROFILE_NETWORK_TX);
@@ -454,8 +452,17 @@ Main::Main()
 	m_profile.EnableProfile(PROFILE_MAP);
 	m_profile.EnableProfile(PROFILE_NPC_AI);
 	m_profile.EnableProfile(PROFILE_SCRIPTS);
+#ifndef _MTNETWORK
 	//m_profile.EnableProfile(PROFILE_DATA_TX);
 	m_profile.EnableProfile(PROFILE_DATA_RX);
+#else
+#ifndef MTNETWORK_INPUT
+	m_profile.EnableProfile(PROFILE_DATA_RX);
+#endif
+#ifndef MTNETWORK_OUTPUT
+	m_profile.EnableProfile(PROFILE_DATA_TX);
+#endif
+#endif
 }
 
 void Main::onStart()

@@ -1150,6 +1150,7 @@ void CSector::OnTick(int iPulseCount)
 			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			EXC_CATCH_SUB(&e, "Sector");
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 		catch (...)
 		{
@@ -1157,6 +1158,7 @@ void CSector::OnTick(int iPulseCount)
 			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());\
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			EXC_CATCH_SUB(NULL, "Sector");
+			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
 #endif
 #endif
