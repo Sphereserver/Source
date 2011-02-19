@@ -12,11 +12,9 @@
 #include "../sphere/ProfileData.h"
 
 
-// keep track of callstack on windows release builds
-#ifdef _WIN32
-#	ifndef _DEBUG
-#		define THREAD_TRACK_CALLSTACK
-#	endif
+// keep track of callstack on release builds
+#ifndef _DEBUG
+#	define THREAD_TRACK_CALLSTACK
 #endif
 
 /**
@@ -168,7 +166,8 @@ private:
 	};
 
 	STACK_INFO_REC m_stackInfo[0x1000];
-	long m_stackPos;
+	size_t m_stackPos;
+	bool m_freezeCallStack;
 #endif
 
 public:
@@ -188,17 +187,28 @@ public:
 	void allocateString(TemporaryString &string);
 
 #ifdef THREAD_TRACK_CALLSTACK
+	inline void freezeCallStack(bool freeze)
+	{
+		m_freezeCallStack = freeze;
+	}
+
 	inline void pushStackCall(const char *name)
 	{
-		m_stackInfo[m_stackPos].functionName = name;
-		m_stackInfo[m_stackPos].startTime = ::GetTickCount();
-		m_stackPos++;
-		m_stackInfo[m_stackPos].startTime = 0;
+		if (m_freezeCallStack == false)
+		{
+			m_stackInfo[m_stackPos].functionName = name;
+			m_stackInfo[m_stackPos].startTime = ::GetTickCount();
+			m_stackPos++;
+			m_stackInfo[m_stackPos].startTime = 0;
+		}
 	}
 
 	inline void popStackCall(void)
 	{
-		m_stackPos--;
+		if (m_freezeCallStack == false)
+		{
+			m_stackPos--;
+		}
 	}
 
 	void printStackTrace(void);
@@ -244,8 +254,12 @@ public:
 };
 
 #define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+#define PAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(true)
+#define UNPAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(false)
 #else
 #define ADDTOCALLSTACK(_function_)
+#define PAUSECALLSTACK
+#define UNPAUSECALLSTACK
 #endif // THREAD_TRACK_CALLSTACK
 
 #endif

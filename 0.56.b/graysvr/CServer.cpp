@@ -680,6 +680,37 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				}
 			} break;
 #ifdef _TESTEXCEPTION
+		case '$':	// call stack integrity
+			{
+				{ // test without PAUSECALLSTACK
+					EXC_TRY("Test1");
+					ADDTOCALLSTACK("CServer::TestException1");
+					throw CGrayError( LOGM_DEBUG, 0, "Test Exception #1");
+					}
+					catch (const CGrayError& e)
+					{
+						// the following call will destroy the stack trace on linux due to
+						// a call to CGFile::Close fromn CLog::EventStr.
+						g_Log.Event( LOGM_DEBUG, "Caught exception\n" );
+						EXC_CATCH_EXCEPTION(&e);
+					}
+				}
+
+				{ // test with PAUSECALLSTACK
+					EXC_TRY("Test2");
+					ADDTOCALLSTACK("CServer::TestException2");
+					throw CGrayError( LOGM_DEBUG, 0, "Test Exception #2");
+					}
+					catch (const CGrayError& e)
+					{
+						PAUSECALLSTACK;
+						// with pausecallstack, the following call won't be recorded
+						g_Log.Event( LOGM_DEBUG, "Caught exception\n" );
+						UNPAUSECALLSTACK;
+						EXC_CATCH_EXCEPTION(&e);
+					}
+				}
+			} break;
 		case '%':	// throw simple exception
 			{
 				throw 0;

@@ -244,6 +244,7 @@ void SetExceptionTranslator()
 
 	void _cdecl Signal_Illegal_Instruction( int sig = 0 )
 	{
+		PAUSECALLSTACK;
 		sigset_t set;
 
 		g_Log.Event( LOGL_FATAL, "%s\n", strsignal(sig) );
@@ -256,6 +257,7 @@ void SetExceptionTranslator()
 			sigprocmask(SIG_UNBLOCK, &set, NULL);
 		}
 
+		UNPAUSECALLSTACK;
 		throw CGrayError( LOGL_FATAL, sig, strsignal(sig) );
 	}
 #endif

@@ -417,6 +417,7 @@ AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 #ifdef THREAD_TRACK_CALLSTACK
 	m_stackPos = 0;
 	memset(m_stackInfo, 0, sizeof(m_stackInfo));
+	m_freezeCallStack = false;
 #endif
 
 	// profiles that apply to every thread
@@ -498,12 +499,15 @@ bool AbstractSphereThread::shouldExit()
 #ifdef THREAD_TRACK_CALLSTACK
 void AbstractSphereThread::printStackTrace()
 {
+	// don't allow call stack to be modified whilst we're printing it
+	freezeCallStack(true);
+
 	LONGLONG startTime = m_stackInfo[0].startTime;
 	long timedelta;
 	unsigned int threadId = getId();
 
 	g_Log.EventDebug("__ thread (%u) __ |  # | _____ function _____________ | ticks passed from previous function start ______\n", threadId);
-	for( int i = 0; i < 0x1000; i++ )
+	for( size_t i = 0; i < 0x1000; i++ )
 	{
 		if( m_stackInfo[i].startTime == 0 )
 			break;
@@ -511,11 +515,13 @@ void AbstractSphereThread::printStackTrace()
 		timedelta = (long)(m_stackInfo[i].startTime - startTime);
 		g_Log.EventDebug(">>         %u     | %2d | %28s | +%ld %s\n",
 			threadId, i, m_stackInfo[i].functionName, timedelta,
-				( i == m_stackPos-1 ) ?
+				( i == (m_stackPos - 1) ) ?
 				"<-- exception catch point (below is guessed and could be incorrect!)" :
 				"");
 		startTime = m_stackInfo[i].startTime;
 	}
+
+	freezeCallStack(false);
 }
 #endif
 
