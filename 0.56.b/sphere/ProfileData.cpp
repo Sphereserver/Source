@@ -60,7 +60,8 @@ void ProfileData::Start(PROFILE_TYPE id)
 		{
 			if ( m_iAverageCount < 4 )
 			{
-				memcpy( m_AverageTimes, m_CurrentTimes, sizeof( m_AverageTimes ));
+				m_AverageTimes[i].m_Time = m_CurrentTimes[i].m_Time;
+				m_AverageTimes[i].m_iCount = m_CurrentTimes[i].m_iCount;
 			}
 			else
 			{
