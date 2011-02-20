@@ -242,15 +242,28 @@ private:
 	AbstractSphereThread* m_context;
 
 public:
-	StackDebugInformation(const char *name);
-	~StackDebugInformation();
+	inline StackDebugInformation(const char *name)
+	{
+		m_context = static_cast<AbstractSphereThread *>(ThreadHolder::current());
+		if (m_context != NULL)
+			m_context->pushStackCall(name);
+	}
+
+	inline ~StackDebugInformation()
+	{
+		if (m_context != NULL)
+			m_context->popStackCall();
+	}
 
 private:
 	StackDebugInformation(const StackDebugInformation& copy);
 	StackDebugInformation& operator=(const StackDebugInformation& other);
 
 public:
-	static void printStackTrace();
+	inline static void printStackTrace()
+	{
+		static_cast<AbstractSphereThread *>(ThreadHolder::current())->printStackTrace();
+	}
 };
 
 #define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);

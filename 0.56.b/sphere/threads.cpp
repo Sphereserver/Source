@@ -547,27 +547,3 @@ DummySphereThread *DummySphereThread::getInstance()
 void DummySphereThread::tick()
 {
 }
-
-#ifdef THREAD_TRACK_CALLSTACK
-/*
- * StackDebugInformation
-*/
-StackDebugInformation::StackDebugInformation(const char *name)
-{
-	m_context = STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current());
-	if (m_context != NULL)
-		m_context->pushStackCall(name);
-}
-
-StackDebugInformation::~StackDebugInformation()
-{
-	if (m_context != NULL)
-		m_context->popStackCall();
-}
-
-void StackDebugInformation::printStackTrace()
-{
-	STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->printStackTrace();
-}
-
-#endif
