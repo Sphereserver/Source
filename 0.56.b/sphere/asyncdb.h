@@ -16,7 +16,6 @@
 		SimpleMutex m_queryMutex;
 		ManualThreadLock stlqueryLock;
 		QueueQuery_t m_queriesTodo;
-		bool m_active;
 
 	public:
 		CDataBaseAsyncHelper(void);
@@ -29,7 +28,6 @@
 		virtual void onStart();
 		virtual void tick();
 		virtual void waitForClose();
-		virtual bool shouldExit();
 
 	public:
 		void addQuery(bool, LPCTSTR, LPCTSTR);

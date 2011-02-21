@@ -33,7 +33,6 @@
 	private:
 		struct ev_loop * m_eventLoop;
 		struct ev_io m_watchMainsock;
-		bool m_active;
 	
 	public:
 		LinuxEv(void);
@@ -47,7 +46,6 @@
 		virtual void onStart();
 		virtual void tick();
 		virtual void waitForClose();
-		virtual bool shouldExit();
 		
 	private:
 		void forceClientevent(NetState *, EventsID);

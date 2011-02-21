@@ -10,6 +10,9 @@
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
 
+// number of milliseconds to wait for a thread to close
+#define THREADJOIN_TIMEOUT	60000
+
 // Normal Buffer
 SimpleMutex g_tmpStringMutex;
 volatile long g_tmpStringIndex = 0;
@@ -151,12 +154,13 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 	m_name = name;
 	m_handle = NULL;
 	m_hangCheck = 0;
+	m_terminateRequested = true;
 	setPriority(priority);
 }
 
 AbstractThread::~AbstractThread()
 {
-	terminate();
+	terminate(false);
 	AbstractThread::m_threadsAvailable--;
 	if( AbstractThread::m_threadsAvailable == 0 )
 	{
@@ -174,47 +178,63 @@ void AbstractThread::start()
 #ifdef _WIN32
 	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, &m_id);
 #else
-	if ( pthread_create( &m_handle, NULL, &runner, this ) )
+	pthread_attr_t threadAttr;
+	pthread_attr_init(&threadAttr);
+	pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_DETACHED);
+	int result = pthread_create( &m_handle, &threadAttr, &runner, this );
+	pthread_attr_destroy(&threadAttr);
+
+	if (result != 0)
 	{
-		m_handle = (spherethread_t) NULL;
+		m_handle = NULL;
 		throw CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
 	}
-	else
-		m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
+	
+	m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
 #endif
+	
+	m_terminateEvent.reset();
 	ThreadHolder::push(this);
 }
 
-void AbstractThread::terminate()
+void AbstractThread::terminate(bool ended)
 {
 	if( isActive() )
 	{
-#ifdef _WIN32
-		if ( isCurrentThread() )
+		bool wasCurrentThread = isCurrentThread();
+		if (ended == false)
 		{
-			_endthreadex(0);
-		}
-		else
-		{
-			TerminateThread(m_handle, 0);
-		}
-		CloseHandle(m_handle);
-#else
-		pthread_detach(m_handle); // required for thread memory to be freed after exit
+			g_Log.Event(LOGL_WARN, "Forcing thread '%s' to terminate...\n", getName());
 
-		if ( isCurrentThread() )
-		{
-			pthread_exit(0);
-		}
-		else
-		{
-			pthread_cancel(m_handle); // IBM say it so
-		}
+			// if the thread is current then terminating here will prevent cleanup from occurring
+			if (wasCurrentThread == false)
+			{
+#ifdef _WIN32
+				TerminateThread(m_handle, 0);
+				CloseHandle(m_handle);
+#else
+				pthread_cancel(m_handle); // IBM say it so
 #endif
+			}
+		}
+
 		// Common things
 		ThreadHolder::pop(this);
 		m_id = 0;
 		m_handle = NULL;
+
+		// let everyone know we have been terminated
+		m_terminateEvent.set();
+
+		// current thread can be terminated now
+		if (ended == false && wasCurrentThread)
+		{
+#ifdef _WIN32
+			_endthreadex(0);
+#else
+			pthread_exit(0);
+#endif
+		}
 	}
 }
 
@@ -225,6 +245,8 @@ void AbstractThread::run()
 
 	int exceptions = 0;
 	bool lastWasException = false;
+	m_terminateRequested = false;
+
 	for (;;)
 	{
 		bool gotException = false;
@@ -285,10 +307,7 @@ void AbstractThread::run()
 		}
 
 		if( shouldExit() )
-		{
-			terminate();
-			return;
-		}
+			break;
 
 		m_sleepEvent.wait(m_tickPeriod);
 	}
@@ -296,15 +315,13 @@ void AbstractThread::run()
 
 SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread)
 {
-	AbstractThread *caller = (AbstractThread*)callerThread;
+	AbstractThread * caller = reinterpret_cast<AbstractThread*>(callerThread);
+	if (caller != NULL)
+	{
+		caller->run();
+		caller->terminate(true);
+	}
 
-	caller->run();
-
-#ifdef _WIN32
-	_endthreadex(0);
-#else
-	pthread_exit(0);
-#endif
 	return 0;
 }
 
@@ -319,7 +336,21 @@ bool AbstractThread::isActive() const
 
 void AbstractThread::waitForClose()
 {
-	terminate();
+	if (isActive())
+	{
+		if (isCurrentThread() == false)
+		{
+			// flag that we want the thread to terminate
+			m_terminateRequested = true;
+			awaken();
+
+			// give the thread a chance to close on its own, and then
+			// terminate anyway
+			m_terminateEvent.wait(THREADJOIN_TIMEOUT);
+		}
+
+		terminate(false);
+	}
 }
 
 void AbstractThread::awaken()
@@ -356,7 +387,7 @@ bool AbstractThread::checkStuck()
 		{
 			//	TODO:
 			//g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", m_name);
-			terminate();
+			terminate(false);
 			start();
 			return true;
 		}
@@ -405,7 +436,7 @@ void AbstractThread::setPriority(IThread::Priority pri)
 
 bool AbstractThread::shouldExit()
 {
-	return false;
+	return m_terminateRequested;
 }
 
 /*
@@ -489,11 +520,10 @@ void AbstractSphereThread::allocateString(TemporaryString &string)
 
 bool AbstractSphereThread::shouldExit()
 {
-	if( g_Serv.m_iModeCode == SERVMODE_Exiting )
-	{
+	if ( g_Serv.m_iModeCode == SERVMODE_Exiting )
 		return true;
-	}
-	return false;
+
+	return AbstractThread::shouldExit();
 }
 
 #ifdef THREAD_TRACK_CALLSTACK

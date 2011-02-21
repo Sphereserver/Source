@@ -211,3 +211,87 @@ void AutoResetEvent::signal()
 	pthread_mutex_unlock(&m_criticalSection);
 #endif
 }
+
+// ****************************
+//		ManualResetEvent
+// ****************************
+
+ManualResetEvent::ManualResetEvent()
+{
+#ifdef _WIN32
+	m_handle = CreateEvent(NULL, TRUE, FALSE, NULL);
+#else
+	m_value = false;
+	pthread_mutexattr_init(&m_criticalSectionAttr);
+	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
+	pthread_mutex_init(&m_criticalSection, &m_criticalSectionAttr);
+
+	pthread_condattr_init(&m_conditionAttr);
+	pthread_cond_init(&m_condition, &m_conditionAttr);
+#endif
+}
+
+ManualResetEvent::~ManualResetEvent()
+{
+#ifdef _WIN32
+	CloseHandle(m_handle);
+#else
+	pthread_condattr_destroy(&m_conditionAttr);
+	pthread_cond_destroy(&m_condition);
+	pthread_mutexattr_destroy(&m_criticalSectionAttr);
+	pthread_mutex_destroy(&m_criticalSection);
+#endif
+}
+
+void ManualResetEvent::wait(unsigned long timeout)
+{
+#ifdef _WIN32
+	WaitForSingleObjectEx(m_handle, timeout, FALSE);
+#else
+	pthread_mutex_lock(&m_criticalSection);
+
+	// pthread_cond_timedwait expects the timeout to be the actual time, calculate once here
+	// rather every time inside the loop
+	timespec time;
+	if (timeout != _infinite)
+	{
+		clock_gettime(CLOCK_REALTIME, &time);
+		time.tv_sec += timeout / 1000;
+		time.tv_nsec += (timeout % 1000) * 1000000L;
+	}
+
+	// it's possible for pthread_cond_wait/timedwait to exit before the timeout and
+	// without a signal
+	int result = 0;
+	while (result == 0 && m_value == false)
+	{
+		if (timeout == _infinite)
+			result = pthread_cond_wait(&m_condition, &m_criticalSection);
+		else
+			result = pthread_cond_timedwait(&m_condition, &m_criticalSection, &time);
+	}
+
+	pthread_mutex_unlock(&m_criticalSection);
+#endif
+}
+
+void ManualResetEvent::set()
+{
+#ifdef _WIN32
+	SetEvent(m_handle);
+#else
+	pthread_mutex_lock(&m_criticalSection);
+	m_value = true;
+	pthread_cond_signal(&m_condition);
+	pthread_mutex_unlock(&m_criticalSection);
+#endif
+}
+
+void ManualResetEvent::reset()
+{
+#ifdef _WIN32
+	ResetEvent(m_handle);
+#else
+	m_value = false;
+#endif
+}

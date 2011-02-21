@@ -63,7 +63,7 @@ public:
 	virtual bool checkStuck() = 0;
 
 	virtual void start() = 0;
-	virtual void terminate() = 0;
+	virtual void terminate(bool ended) = 0;
 	virtual void waitForClose() = 0;
 
 	virtual void setPriority(Priority) = 0;
@@ -116,6 +116,9 @@ private:
 	unsigned long m_tickPeriod;
 	AutoResetEvent m_sleepEvent;
 
+	bool m_terminateRequested;
+	ManualResetEvent m_terminateEvent;
+
 public:
 	AbstractThread(const char *name, Priority priority = IThread::Normal);
 	virtual ~AbstractThread();
@@ -133,7 +136,7 @@ public:
 	bool checkStuck();
 
 	virtual void start();
-	virtual void terminate();
+	virtual void terminate(bool ended);
 	virtual void waitForClose();
 	virtual void awaken();
 

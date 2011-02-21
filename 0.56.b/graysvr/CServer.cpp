@@ -682,6 +682,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 #ifdef _TESTEXCEPTION
 		case '$':	// call stack integrity
 			{
+#ifdef EXCEPTIONS_DEBUG
 				{ // test without PAUSECALLSTACK
 					EXC_TRY("Test1");
 					ADDTOCALLSTACK("CServer::TestException1");
@@ -710,6 +711,9 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 						EXC_CATCH_EXCEPTION(&e);
 					}
 				}
+#else
+				throw CGrayError(LOGL_CRIT, E_FAIL, "This test requires exception debugging enabled");
+#endif
 			} break;
 		case '%':	// throw simple exception
 			{

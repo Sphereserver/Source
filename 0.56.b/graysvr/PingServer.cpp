@@ -11,7 +11,6 @@ PingServer::PingServer() : AbstractSphereThread("PingServer", IThread::RealTime)
 	m_profile.EnableProfile(PROFILE_DATA_RX);
 
 	m_socket.Close();
-	m_active = false;
 }
 
 PingServer::~PingServer()
@@ -20,9 +19,6 @@ PingServer::~PingServer()
 
 void PingServer::onStart()
 {
-	if ( m_active )
-		return;
-
 	if ( m_socket.IsOpen() )
 	{
 		// socket already created? lets close it
@@ -30,28 +26,24 @@ void PingServer::onStart()
 	}
 
 	if ( ! m_socket.Create(PF_INET, SOCK_DGRAM, CGSocket::GetProtocolIdByName("udp")) )
+	{
+		m_socket.Close();
 		return;
+	}
 
 	CSocketAddress saToBind;
 	saToBind.SetHostStr("0.0.0.0");
 	saToBind.SetPort(PINGSERVER_PORT);
 
 	if ( m_socket.Bind(saToBind) < 0 )
+	{
+		m_socket.Close();
 		return;
-
-	// mark the server as active
-	m_active = true;
+	}
 }
 
 void PingServer::tick()
 {
-	if ( !m_active )
-	{
-		// if we're inactive we should try to start up again
-		onStart();
-		return;
-	}
-
 	// prepare to receive data from somewhere
 	char buffer[PINGSERVER_BUFFER];
 	sockaddr_in addr;
@@ -75,16 +67,15 @@ void PingServer::tick()
 	CurrentProfileData.Count(PROFILE_DATA_TX, sent);
 }
 
+bool PingServer::shouldExit()
+{
+	if (m_socket.IsOpen() == false)
+		return true;
+	return AbstractSphereThread::shouldExit();
+}
+
 void PingServer::waitForClose()
 {
 	m_socket.Close();
-
-	// note: closing the socket can give the recvfrom in tick() to return gracefully and
-	// avoid an exception, but we need to also wait a bit to make this possible
-	// (a better approach in the future could be avoid having waitForClose forcing threads
-	// to end with terminate() and instead let them complete naturally by setting a flag
-	// somewhere)
-	Sleep(100);
-
 	AbstractSphereThread::waitForClose();
 }

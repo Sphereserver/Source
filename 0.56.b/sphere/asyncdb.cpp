@@ -3,7 +3,7 @@
 
 CDataBaseAsyncHelper g_asyncHdb;
 
-CDataBaseAsyncHelper::CDataBaseAsyncHelper(void) : AbstractSphereThread("AsyncDatabaseHelper", IThread::Low), m_active(false)
+CDataBaseAsyncHelper::CDataBaseAsyncHelper(void) : AbstractSphereThread("AsyncDatabaseHelper", IThread::Low)
 {
 }
 
@@ -13,13 +13,12 @@ CDataBaseAsyncHelper::~CDataBaseAsyncHelper(void)
 
 void CDataBaseAsyncHelper::onStart()
 {
-	m_active = true;
 	stlqueryLock.setMutex(&m_queryMutex);
 }
 
 void CDataBaseAsyncHelper::tick()
 {
-	if ( m_active && !m_queriesTodo.empty() )
+	if ( !m_queriesTodo.empty() )
 	{
 		stlqueryLock.doLock();
 
@@ -49,15 +48,9 @@ void CDataBaseAsyncHelper::waitForClose()
 		SimpleThreadLock stlThelock(m_queryMutex);
 
 		m_queriesTodo.clear();
-		m_active = false;
 	}
 
 	AbstractSphereThread::waitForClose();
-}
-
-bool CDataBaseAsyncHelper::shouldExit()
-{
-	return !m_active;
 }
 
 void CDataBaseAsyncHelper::addQuery(bool isQuery, LPCTSTR sFunction, LPCTSTR sQuery)

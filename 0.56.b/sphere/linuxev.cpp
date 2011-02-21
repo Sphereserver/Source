@@ -56,7 +56,7 @@ static void socketslave_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 	}
 }
 
-LinuxEv::LinuxEv(void) : AbstractSphereThread("NetworkEvents", IThread::High), m_active(true)
+LinuxEv::LinuxEv(void) : AbstractSphereThread("NetworkEvents", IThread::High)
 {
 	m_eventLoop = ev_loop_new(EV_BACKEND_LIST);
 	ev_set_io_collect_interval(m_eventLoop, 0.01);
@@ -81,15 +81,9 @@ void LinuxEv::tick()
 
 void LinuxEv::waitForClose()
 {
-	m_active = false;
 	ev_break(m_eventLoop, EVBREAK_ALL);
 
 	AbstractSphereThread::waitForClose();
-}
-
-bool LinuxEv::shouldExit()
-{
-	return !m_active;
 }
 
 void LinuxEv::registerClient(NetState * state, EventsID eventCheck)

@@ -12,7 +12,6 @@ class PingServer : public AbstractSphereThread
 {
 private:
 	CGSocket m_socket;
-	bool m_active;
 
 public:
 	PingServer(void);
@@ -25,6 +24,7 @@ private:
 public:
 	virtual void onStart();
 	virtual void tick();
+	virtual bool shouldExit();
 	virtual void waitForClose();
 };
 

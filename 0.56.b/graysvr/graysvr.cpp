@@ -477,7 +477,9 @@ void Main::tick()
 
 bool Main::shouldExit()
 {
-	return g_Serv.m_iExitFlag != 0;
+	if (g_Serv.m_iExitFlag != 0)
+		return true;
+	return AbstractSphereThread::shouldExit();
 }
 
 Main g_Main;
@@ -681,11 +683,19 @@ static void Sphere_MainMonitorLoop()
 		}
 
 		EXC_SET("Sleep");
+		// only sleep 1 second at a time, to avoid getting stuck here when closing
+		// down with large m_iFreezeRestartTime values set
+		for (int i = 0; i < g_Cfg.m_iFreezeRestartTime; ++i)
+		{
+			if ( g_Serv.m_iExitFlag )
+				break;
+
 #ifdef _WIN32
-		NTWindow_OnTick(g_Cfg.m_iFreezeRestartTime * 1000);
+			NTWindow_OnTick(1000);
 #else
-		Sleep(g_Cfg.m_iFreezeRestartTime * 1000);
+			Sleep(1000);
 #endif
+		}
 
 		EXC_SET("Checks");
 		// Don't look for freezing when doing certain things.

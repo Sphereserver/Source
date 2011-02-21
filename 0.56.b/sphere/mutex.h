@@ -106,4 +106,38 @@ private:
 #endif
 };
 
+class ManualResetEvent
+{
+public:
+#ifdef _WIN32
+	static const unsigned long _infinite = INFINITE;
+#else
+	static const unsigned long _infinite = 0xffffffff;
+#endif
+
+public:
+	ManualResetEvent();
+	~ManualResetEvent();
+
+private:
+	ManualResetEvent(const ManualResetEvent& copy);
+	ManualResetEvent& operator=(const ManualResetEvent& other);
+
+public:
+	void wait(unsigned long timeout = _infinite);
+	void reset();
+	void set();
+
+private:
+#ifdef _WIN32
+	HANDLE m_handle;
+#else
+	bool m_value;
+	pthread_mutex_t m_criticalSection;
+	pthread_mutexattr_t m_criticalSectionAttr;
+	pthread_condattr_t m_conditionAttr;
+	pthread_cond_t m_condition;
+#endif
+};
+
 #endif
