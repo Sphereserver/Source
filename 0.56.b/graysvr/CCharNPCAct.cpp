@@ -335,9 +335,12 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 				if ( NPC_Act_Talk() )
 				{
 					CChar * pCharOld = m_Act_Targ.CharFind();
-					char	*z = Str_GetTemp();
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), (LPCTSTR) pCharOld->GetName(), pSrc->GetName());
-					Speak(z);
+					if (pCharOld != NULL)
+					{
+						TCHAR * z = Str_GetTemp();
+						sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), pCharOld->GetName(), pSrc->GetName());
+						Speak(z);
+					}
 				}
 			}
 			break;
@@ -362,9 +365,9 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	// Do the scripts want me to take some action based on this speech.
 	SKILL_TYPE skill = m_Act_SkillCurrent;
 
-	TALKMODE_TYPE	mode	= TALKMODE_SAY;
+	TALKMODE_TYPE mode = TALKMODE_SAY;
 	int i;
-	for ( i=0; i<m_pNPC->m_Speech.GetCount(); i++ )
+	for ( i = 0; i < m_pNPC->m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = m_pNPC->m_Speech[i];
 		if ( !pLink )
@@ -384,7 +387,8 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
-	for ( i=0; i<pCharDef->m_Speech.GetCount(); i++ )
+	ASSERT(pCharDef != NULL);
+	for ( i = 0; i < pCharDef->m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = pCharDef->m_Speech[i];
 		if ( !pLink )

@@ -819,8 +819,7 @@ int CItemMemory::Guild_SetTitle( LPCTSTR pszTitle )
 LPCTSTR CItemMemory::Guild_GetTitle() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetTitle");
-	CObjBase *pObj = (CObjBase*)this;
-	return (LPCTSTR)pObj->GetTagDefs()->GetKeyStr("Title", false);
+	return m_TagDefs.GetKeyStr("Title", false);
 }
 
 int CItemMemory::FixWeirdness()
