@@ -11,6 +11,8252 @@
 //
 VERSION=0.56b
 
+[ITEMDEF 05780]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu
+TYPE=t_normal
+
+[ITEMDEF 05781]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_2
+TYPE=t_normal
+
+[ITEMDEF 05782]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_3
+TYPE=t_normal
+
+[ITEMDEF 05783]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_4
+TYPE=t_normal
+
+[ITEMDEF 05784]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_5
+TYPE=t_normal
+
+[ITEMDEF 05785]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_6
+TYPE=t_normal
+
+[ITEMDEF 05786]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_7
+TYPE=t_normal
+
+[ITEMDEF 05787]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_8
+TYPE=t_normal
+
+[ITEMDEF 05788]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_9
+TYPE=t_normal
+
+[ITEMDEF 05789]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_10
+TYPE=t_normal
+
+[ITEMDEF 0578a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_11
+TYPE=t_normal
+
+[ITEMDEF 0578b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_12
+TYPE=t_normal
+
+[ITEMDEF 0578c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_13
+TYPE=t_normal
+
+[ITEMDEF 0578d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_14
+TYPE=t_normal
+
+[ITEMDEF 0578e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_15
+TYPE=t_normal
+
+[ITEMDEF 0578f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_16
+TYPE=t_normal
+
+[ITEMDEF 05790]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_17
+TYPE=t_normal
+
+[ITEMDEF 05791]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_18
+TYPE=t_normal
+
+[ITEMDEF 05792]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_19
+TYPE=t_normal
+
+[ITEMDEF 05793]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_20
+TYPE=t_normal
+
+[ITEMDEF 05794]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_21
+TYPE=t_normal
+
+[ITEMDEF 05795]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_22
+TYPE=t_normal
+
+[ITEMDEF 05796]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_23
+TYPE=t_normal
+
+[ITEMDEF 05797]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_24
+TYPE=t_normal
+
+[ITEMDEF 05798]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_25
+TYPE=t_normal
+
+[ITEMDEF 05799]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_26
+TYPE=t_normal
+
+[ITEMDEF 0579a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_27
+TYPE=t_normal
+
+[ITEMDEF 0579b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_28
+TYPE=t_normal
+
+[ITEMDEF 0579c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_29
+TYPE=t_normal
+
+[ITEMDEF 0579d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_30
+TYPE=t_normal
+
+[ITEMDEF 0579e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_31
+TYPE=t_normal
+
+[ITEMDEF 0579f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_32
+TYPE=t_normal
+
+[ITEMDEF 057a0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_33
+TYPE=t_normal
+
+[ITEMDEF 057a1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_34
+TYPE=t_normal
+
+[ITEMDEF 057a2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_35
+TYPE=t_normal
+
+[ITEMDEF 057a3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_36
+TYPE=t_normal
+
+[ITEMDEF 057a4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_37
+TYPE=t_normal
+
+[ITEMDEF 057a5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_38
+TYPE=t_normal
+
+[ITEMDEF 057a6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_39
+TYPE=t_normal
+
+[ITEMDEF 057a7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_40
+TYPE=t_normal
+
+[ITEMDEF 057a8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_41
+TYPE=t_normal
+
+[ITEMDEF 057a9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_42
+TYPE=t_normal
+
+[ITEMDEF 057aa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_43
+TYPE=t_normal
+
+[ITEMDEF 057ab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_44
+TYPE=t_normal
+
+[ITEMDEF 057ac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_45
+TYPE=t_normal
+
+[ITEMDEF 057ad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_46
+TYPE=t_normal
+
+[ITEMDEF 057ae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_47
+TYPE=t_normal
+
+[ITEMDEF 057af]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_48
+TYPE=t_normal
+
+[ITEMDEF 057b0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_49
+TYPE=t_normal
+
+[ITEMDEF 057b1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_50
+TYPE=t_normal
+
+[ITEMDEF 057b2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_51
+TYPE=t_normal
+
+[ITEMDEF 057b3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_52
+TYPE=t_normal
+
+[ITEMDEF 057b4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_53
+TYPE=t_normal
+
+[ITEMDEF 057b5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_54
+TYPE=t_normal
+
+[ITEMDEF 057b6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_55
+TYPE=t_normal
+
+[ITEMDEF 057b7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_56
+TYPE=t_normal
+
+[ITEMDEF 057b8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_57
+TYPE=t_normal
+
+[ITEMDEF 057b9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_58
+TYPE=t_normal
+
+[ITEMDEF 057ba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_59
+TYPE=t_normal
+
+[ITEMDEF 057bb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_60
+TYPE=t_normal
+
+[ITEMDEF 057bc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_61
+TYPE=t_normal
+
+[ITEMDEF 057bd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_62
+TYPE=t_normal
+
+[ITEMDEF 057be]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_63
+TYPE=t_normal
+
+[ITEMDEF 057bf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_64
+TYPE=t_normal
+
+[ITEMDEF 057c0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_65
+TYPE=t_normal
+
+[ITEMDEF 057c1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_66
+TYPE=t_normal
+
+[ITEMDEF 057c2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_67
+TYPE=t_normal
+
+[ITEMDEF 057c3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_68
+TYPE=t_normal
+
+[ITEMDEF 057c4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_69
+TYPE=t_normal
+
+[ITEMDEF 057c5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_70
+TYPE=t_normal
+
+[ITEMDEF 057c6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_71
+TYPE=t_normal
+
+[ITEMDEF 057c7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_72
+TYPE=t_normal
+
+[ITEMDEF 057c8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_73
+TYPE=t_normal
+
+[ITEMDEF 057c9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_74
+TYPE=t_normal
+
+[ITEMDEF 057ca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_75
+TYPE=t_normal
+
+[ITEMDEF 057cb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_76
+TYPE=t_normal
+
+[ITEMDEF 057cc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_77
+TYPE=t_normal
+
+[ITEMDEF 057cd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_78
+TYPE=t_normal
+
+[ITEMDEF 057ce]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_79
+TYPE=t_normal
+
+[ITEMDEF 057cf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_80
+TYPE=t_normal
+
+[ITEMDEF 057d0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_81
+TYPE=t_normal
+
+[ITEMDEF 057d1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_82
+TYPE=t_normal
+
+[ITEMDEF 057d2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_83
+TYPE=t_normal
+
+[ITEMDEF 057d3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_84
+TYPE=t_normal
+
+[ITEMDEF 057d4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_85
+TYPE=t_normal
+
+[ITEMDEF 057d5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_86
+TYPE=t_normal
+
+[ITEMDEF 057d6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_87
+TYPE=t_normal
+
+[ITEMDEF 057d7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_88
+TYPE=t_normal
+
+[ITEMDEF 057d8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_89
+TYPE=t_normal
+
+[ITEMDEF 057d9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_90
+TYPE=t_normal
+
+[ITEMDEF 057da]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_91
+TYPE=t_normal
+
+[ITEMDEF 057db]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_92
+TYPE=t_normal
+
+[ITEMDEF 057dc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_93
+TYPE=t_normal
+
+[ITEMDEF 057dd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_94
+TYPE=t_normal
+
+[ITEMDEF 057de]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_95
+TYPE=t_normal
+
+[ITEMDEF 057df]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_96
+TYPE=t_normal
+
+[ITEMDEF 057e0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_97
+TYPE=t_normal
+
+[ITEMDEF 057e1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_98
+TYPE=t_normal
+
+[ITEMDEF 057e2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_99
+TYPE=t_normal
+
+[ITEMDEF 057e3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_100
+TYPE=t_normal
+
+[ITEMDEF 057e4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_101
+TYPE=t_normal
+
+[ITEMDEF 057e5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_102
+TYPE=t_normal
+
+[ITEMDEF 057e6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_103
+TYPE=t_normal
+
+[ITEMDEF 057e7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_104
+TYPE=t_normal
+
+[ITEMDEF 057e8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_105
+TYPE=t_normal
+
+[ITEMDEF 057e9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_106
+TYPE=t_normal
+
+[ITEMDEF 057ea]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_107
+TYPE=t_normal
+
+[ITEMDEF 057eb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_108
+TYPE=t_normal
+
+[ITEMDEF 057ec]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_109
+TYPE=t_normal
+
+[ITEMDEF 057ed]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_110
+TYPE=t_normal
+
+[ITEMDEF 057ee]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_111
+TYPE=t_normal
+
+[ITEMDEF 057ef]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_112
+TYPE=t_normal
+
+[ITEMDEF 057f0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_113
+TYPE=t_normal
+
+[ITEMDEF 057f1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_114
+TYPE=t_normal
+
+[ITEMDEF 057f2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_115
+TYPE=t_normal
+
+[ITEMDEF 057f3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_116
+TYPE=t_normal
+
+[ITEMDEF 057f4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_117
+TYPE=t_normal
+
+[ITEMDEF 057f5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_118
+TYPE=t_normal
+
+[ITEMDEF 057f6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_119
+TYPE=t_normal
+
+[ITEMDEF 057f7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_120
+TYPE=t_normal
+
+[ITEMDEF 057f8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_121
+TYPE=t_normal
+
+[ITEMDEF 057f9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_122
+TYPE=t_normal
+
+[ITEMDEF 057fa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_123
+TYPE=t_normal
+
+[ITEMDEF 057fb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_124
+TYPE=t_normal
+
+[ITEMDEF 057fc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_125
+TYPE=t_normal
+
+[ITEMDEF 057fd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_126
+TYPE=t_normal
+
+[ITEMDEF 057fe]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_127
+TYPE=t_normal
+
+[ITEMDEF 057ff]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_128
+TYPE=t_normal
+
+[ITEMDEF 05800]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_129
+TYPE=t_normal
+
+[ITEMDEF 05801]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_130
+TYPE=t_normal
+
+[ITEMDEF 05802]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_131
+TYPE=t_normal
+
+[ITEMDEF 05803]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_132
+TYPE=t_normal
+
+[ITEMDEF 05804]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_133
+TYPE=t_normal
+
+[ITEMDEF 05805]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_134
+TYPE=t_normal
+
+[ITEMDEF 05806]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_135
+TYPE=t_normal
+
+[ITEMDEF 05807]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_136
+TYPE=t_normal
+
+[ITEMDEF 05808]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_137
+TYPE=t_normal
+
+[ITEMDEF 05809]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_138
+TYPE=t_normal
+
+[ITEMDEF 0580a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_139
+TYPE=t_normal
+
+[ITEMDEF 0580b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_140
+TYPE=t_normal
+
+[ITEMDEF 0580c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_141
+TYPE=t_normal
+
+[ITEMDEF 0580d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_142
+TYPE=t_normal
+
+[ITEMDEF 0580e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_143
+TYPE=t_normal
+
+[ITEMDEF 0580f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_144
+TYPE=t_normal
+
+[ITEMDEF 05810]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_145
+TYPE=t_normal
+
+[ITEMDEF 05811]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_146
+TYPE=t_normal
+
+[ITEMDEF 05812]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_147
+TYPE=t_normal
+
+[ITEMDEF 05813]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_148
+TYPE=t_normal
+
+[ITEMDEF 05814]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_149
+TYPE=t_normal
+
+[ITEMDEF 05815]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_150
+TYPE=t_normal
+
+[ITEMDEF 05816]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_151
+TYPE=t_normal
+
+[ITEMDEF 05817]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_152
+TYPE=t_normal
+
+[ITEMDEF 05818]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_153
+TYPE=t_normal
+
+[ITEMDEF 05819]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_154
+TYPE=t_normal
+
+[ITEMDEF 0581a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_155
+TYPE=t_normal
+
+[ITEMDEF 0581b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_156
+TYPE=t_normal
+
+[ITEMDEF 0581c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_157
+TYPE=t_normal
+
+[ITEMDEF 0581d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_158
+TYPE=t_normal
+
+[ITEMDEF 0581e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_159
+TYPE=t_normal
+
+[ITEMDEF 0581f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_160
+TYPE=t_normal
+
+[ITEMDEF 05820]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_161
+TYPE=t_normal
+
+[ITEMDEF 05821]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_162
+TYPE=t_normal
+
+[ITEMDEF 05822]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_163
+TYPE=t_normal
+
+[ITEMDEF 05823]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_164
+TYPE=t_normal
+
+[ITEMDEF 05824]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_165
+TYPE=t_normal
+
+[ITEMDEF 05825]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_166
+TYPE=t_normal
+
+[ITEMDEF 05826]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_167
+TYPE=t_normal
+
+[ITEMDEF 05827]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_168
+TYPE=t_normal
+
+[ITEMDEF 05828]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_169
+TYPE=t_normal
+
+[ITEMDEF 05829]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_170
+TYPE=t_normal
+
+[ITEMDEF 0582a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_171
+TYPE=t_normal
+
+[ITEMDEF 0582b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_172
+TYPE=t_normal
+
+[ITEMDEF 0582c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_173
+TYPE=t_normal
+
+[ITEMDEF 0582d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_174
+TYPE=t_normal
+
+[ITEMDEF 0582e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_175
+TYPE=t_normal
+
+[ITEMDEF 0582f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_176
+TYPE=t_normal
+
+[ITEMDEF 05830]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_177
+TYPE=t_normal
+
+[ITEMDEF 05831]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_178
+TYPE=t_normal
+
+[ITEMDEF 05832]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_179
+TYPE=t_normal
+
+[ITEMDEF 05833]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_180
+TYPE=t_normal
+
+[ITEMDEF 05834]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_181
+TYPE=t_normal
+
+[ITEMDEF 05835]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_182
+TYPE=t_normal
+
+[ITEMDEF 05836]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_183
+TYPE=t_normal
+
+[ITEMDEF 05837]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_184
+TYPE=t_normal
+
+[ITEMDEF 05838]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_185
+TYPE=t_normal
+
+[ITEMDEF 05839]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_186
+TYPE=t_normal
+
+[ITEMDEF 0583a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_187
+TYPE=t_normal
+
+[ITEMDEF 0583b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_188
+TYPE=t_normal
+
+[ITEMDEF 0583c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_189
+TYPE=t_normal
+
+[ITEMDEF 0583d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_190
+TYPE=t_normal
+
+[ITEMDEF 0583e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_191
+TYPE=t_normal
+
+[ITEMDEF 0583f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_192
+TYPE=t_normal
+
+[ITEMDEF 05840]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_193
+TYPE=t_normal
+
+[ITEMDEF 05841]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_194
+TYPE=t_normal
+
+[ITEMDEF 05842]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_195
+TYPE=t_normal
+
+[ITEMDEF 05843]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_196
+TYPE=t_normal
+
+[ITEMDEF 05844]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_197
+TYPE=t_normal
+
+[ITEMDEF 05845]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_198
+TYPE=t_normal
+
+[ITEMDEF 05846]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_199
+TYPE=t_normal
+
+[ITEMDEF 05847]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_200
+TYPE=t_normal
+
+[ITEMDEF 05848]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_201
+TYPE=t_normal
+
+[ITEMDEF 05849]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_202
+TYPE=t_normal
+
+[ITEMDEF 0584a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_203
+TYPE=t_normal
+
+[ITEMDEF 0584b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_204
+TYPE=t_normal
+
+[ITEMDEF 0584c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_205
+TYPE=t_normal
+
+[ITEMDEF 0584d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_206
+TYPE=t_normal
+
+[ITEMDEF 0584e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_207
+TYPE=t_normal
+
+[ITEMDEF 0584f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_208
+TYPE=t_normal
+
+[ITEMDEF 05850]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_209
+TYPE=t_normal
+
+[ITEMDEF 05851]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_210
+TYPE=t_normal
+
+[ITEMDEF 05852]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_211
+TYPE=t_normal
+
+[ITEMDEF 05853]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_212
+TYPE=t_normal
+
+[ITEMDEF 05854]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_213
+TYPE=t_normal
+
+[ITEMDEF 05855]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_214
+TYPE=t_normal
+
+[ITEMDEF 05856]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_215
+TYPE=t_normal
+
+[ITEMDEF 05857]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_216
+TYPE=t_normal
+
+[ITEMDEF 05858]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_217
+TYPE=t_normal
+
+[ITEMDEF 05859]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_218
+TYPE=t_normal
+
+[ITEMDEF 0585a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_219
+TYPE=t_normal
+
+[ITEMDEF 0585b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_220
+TYPE=t_normal
+
+[ITEMDEF 0585c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_221
+TYPE=t_normal
+
+[ITEMDEF 0585d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_222
+TYPE=t_normal
+
+[ITEMDEF 0585e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_223
+TYPE=t_normal
+
+[ITEMDEF 0585f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_224
+TYPE=t_normal
+
+[ITEMDEF 05860]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_225
+TYPE=t_normal
+
+[ITEMDEF 05861]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_226
+TYPE=t_normal
+
+[ITEMDEF 05862]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_227
+TYPE=t_normal
+
+[ITEMDEF 05863]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_228
+TYPE=t_normal
+
+[ITEMDEF 05864]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_229
+TYPE=t_normal
+
+[ITEMDEF 05865]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_230
+TYPE=t_normal
+
+[ITEMDEF 05866]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_231
+TYPE=t_normal
+
+[ITEMDEF 05867]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_232
+TYPE=t_normal
+
+[ITEMDEF 05868]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_233
+TYPE=t_normal
+
+[ITEMDEF 05869]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_234
+TYPE=t_normal
+
+[ITEMDEF 0586a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_235
+TYPE=t_normal
+
+[ITEMDEF 0586b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_236
+TYPE=t_normal
+
+[ITEMDEF 0586c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_237
+TYPE=t_normal
+
+[ITEMDEF 0586d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_238
+TYPE=t_normal
+
+[ITEMDEF 0586e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_239
+TYPE=t_normal
+
+[ITEMDEF 0586f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_240
+TYPE=t_normal
+
+[ITEMDEF 05870]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_241
+TYPE=t_normal
+
+[ITEMDEF 05871]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_242
+TYPE=t_normal
+
+[ITEMDEF 05872]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_243
+TYPE=t_normal
+
+[ITEMDEF 05873]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_244
+TYPE=t_normal
+
+[ITEMDEF 05874]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_245
+TYPE=t_normal
+
+[ITEMDEF 05875]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_246
+TYPE=t_normal
+
+[ITEMDEF 05876]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_247
+TYPE=t_normal
+
+[ITEMDEF 05877]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_248
+TYPE=t_normal
+
+[ITEMDEF 05878]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_249
+TYPE=t_normal
+
+[ITEMDEF 05879]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_250
+TYPE=t_normal
+
+[ITEMDEF 0587a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_251
+TYPE=t_normal
+
+[ITEMDEF 0587b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_252
+TYPE=t_normal
+
+[ITEMDEF 0587c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_253
+TYPE=t_normal
+
+[ITEMDEF 0587d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_254
+TYPE=t_normal
+
+[ITEMDEF 0587e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_255
+TYPE=t_normal
+
+[ITEMDEF 0587f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_256
+TYPE=t_normal
+
+[ITEMDEF 05880]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_257
+TYPE=t_normal
+
+[ITEMDEF 05881]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_258
+TYPE=t_normal
+
+[ITEMDEF 05882]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_259
+TYPE=t_normal
+
+[ITEMDEF 05883]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_260
+TYPE=t_normal
+
+[ITEMDEF 05884]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_261
+TYPE=t_normal
+
+[ITEMDEF 05885]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_262
+TYPE=t_normal
+
+[ITEMDEF 05886]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_263
+TYPE=t_normal
+
+[ITEMDEF 05887]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_264
+TYPE=t_normal
+
+[ITEMDEF 05888]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_265
+TYPE=t_normal
+
+[ITEMDEF 05889]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_266
+TYPE=t_normal
+
+[ITEMDEF 0588a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_267
+TYPE=t_normal
+
+[ITEMDEF 0588b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_268
+TYPE=t_normal
+
+[ITEMDEF 0588c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_269
+TYPE=t_normal
+
+[ITEMDEF 0588d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_270
+TYPE=t_normal
+
+[ITEMDEF 0588e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_271
+TYPE=t_normal
+
+[ITEMDEF 0588f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_272
+TYPE=t_normal
+
+[ITEMDEF 05890]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_273
+TYPE=t_normal
+
+[ITEMDEF 05891]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_274
+TYPE=t_normal
+
+[ITEMDEF 05892]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_275
+TYPE=t_normal
+
+[ITEMDEF 05893]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_276
+TYPE=t_normal
+
+[ITEMDEF 05894]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_277
+TYPE=t_normal
+
+[ITEMDEF 05895]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_278
+TYPE=t_normal
+
+[ITEMDEF 05896]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_279
+TYPE=t_normal
+
+[ITEMDEF 05897]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_280
+TYPE=t_normal
+
+[ITEMDEF 05898]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_281
+TYPE=t_normal
+
+[ITEMDEF 05899]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_282
+TYPE=t_normal
+
+[ITEMDEF 0589a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_283
+TYPE=t_normal
+
+[ITEMDEF 0589b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_284
+TYPE=t_normal
+
+[ITEMDEF 0589c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_285
+TYPE=t_normal
+
+[ITEMDEF 0589d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_286
+TYPE=t_normal
+
+[ITEMDEF 0589e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_287
+TYPE=t_normal
+
+[ITEMDEF 0589f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_288
+TYPE=t_normal
+
+[ITEMDEF 058a0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_289
+TYPE=t_normal
+
+[ITEMDEF 058a1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_290
+TYPE=t_normal
+
+[ITEMDEF 058a2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_291
+TYPE=t_normal
+
+[ITEMDEF 058a3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_292
+TYPE=t_normal
+
+[ITEMDEF 058a4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_293
+TYPE=t_normal
+
+[ITEMDEF 058a5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_294
+TYPE=t_normal
+
+[ITEMDEF 058a6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_295
+TYPE=t_normal
+
+[ITEMDEF 058a7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_296
+TYPE=t_normal
+
+[ITEMDEF 058a8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_297
+TYPE=t_normal
+
+[ITEMDEF 058a9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_298
+TYPE=t_normal
+
+[ITEMDEF 058aa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_299
+TYPE=t_normal
+
+[ITEMDEF 058ab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_300
+TYPE=t_normal
+
+[ITEMDEF 058ac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_301
+TYPE=t_normal
+
+[ITEMDEF 058ad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_302
+TYPE=t_normal
+
+[ITEMDEF 058ae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_303
+TYPE=t_normal
+
+[ITEMDEF 058af]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_304
+TYPE=t_normal
+
+[ITEMDEF 058b0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_305
+TYPE=t_normal
+
+[ITEMDEF 058b1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_306
+TYPE=t_normal
+
+[ITEMDEF 058b2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_307
+TYPE=t_normal
+
+[ITEMDEF 058b3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_308
+TYPE=t_normal
+
+[ITEMDEF 058b4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_309
+TYPE=t_normal
+
+[ITEMDEF 058b5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_310
+TYPE=t_normal
+
+[ITEMDEF 058b6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_311
+TYPE=t_normal
+
+[ITEMDEF 058b7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_312
+TYPE=t_normal
+
+[ITEMDEF 058b8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_313
+TYPE=t_normal
+
+[ITEMDEF 058b9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_314
+TYPE=t_normal
+
+[ITEMDEF 058ba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_315
+TYPE=t_normal
+
+[ITEMDEF 058bb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_316
+TYPE=t_normal
+
+[ITEMDEF 058bc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_317
+TYPE=t_normal
+
+[ITEMDEF 058bd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_318
+TYPE=t_normal
+
+[ITEMDEF 058be]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_319
+TYPE=t_normal
+
+[ITEMDEF 058bf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_320
+TYPE=t_normal
+
+[ITEMDEF 058c0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_321
+TYPE=t_normal
+
+[ITEMDEF 058c1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_322
+TYPE=t_normal
+
+[ITEMDEF 058c2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_323
+TYPE=t_normal
+
+[ITEMDEF 058c3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_324
+TYPE=t_normal
+
+[ITEMDEF 058c4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_325
+TYPE=t_normal
+
+[ITEMDEF 058c5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_326
+TYPE=t_normal
+
+[ITEMDEF 058c6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_327
+TYPE=t_normal
+
+[ITEMDEF 058c7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_328
+TYPE=t_normal
+
+[ITEMDEF 058c8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_329
+TYPE=t_normal
+
+[ITEMDEF 058c9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_330
+TYPE=t_normal
+
+[ITEMDEF 058ca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_331
+TYPE=t_normal
+
+[ITEMDEF 058cb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_332
+TYPE=t_normal
+
+[ITEMDEF 058cc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_333
+TYPE=t_normal
+
+[ITEMDEF 058cd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_334
+TYPE=t_normal
+
+[ITEMDEF 058ce]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_335
+TYPE=t_normal
+
+[ITEMDEF 058cf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_336
+TYPE=t_normal
+
+[ITEMDEF 058d0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_337
+TYPE=t_normal
+
+[ITEMDEF 058d1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_338
+TYPE=t_normal
+
+[ITEMDEF 058d2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_339
+TYPE=t_normal
+
+[ITEMDEF 058d3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_340
+TYPE=t_normal
+
+[ITEMDEF 058d4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_341
+TYPE=t_normal
+
+[ITEMDEF 058d5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_342
+TYPE=t_normal
+
+[ITEMDEF 058d6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_343
+TYPE=t_normal
+
+[ITEMDEF 058d7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_344
+TYPE=t_normal
+
+[ITEMDEF 058d8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_345
+TYPE=t_normal
+
+[ITEMDEF 058d9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_346
+TYPE=t_normal
+
+[ITEMDEF 058da]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_347
+TYPE=t_normal
+
+[ITEMDEF 058db]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_348
+TYPE=t_normal
+
+[ITEMDEF 058dc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_349
+TYPE=t_normal
+
+[ITEMDEF 058dd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_350
+TYPE=t_normal
+
+[ITEMDEF 058de]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_351
+TYPE=t_normal
+
+[ITEMDEF 058df]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_352
+TYPE=t_normal
+
+[ITEMDEF 058e0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_353
+TYPE=t_normal
+
+[ITEMDEF 058e1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_354
+TYPE=t_normal
+
+[ITEMDEF 058e2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_355
+TYPE=t_normal
+
+[ITEMDEF 058e3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_356
+TYPE=t_normal
+
+[ITEMDEF 058e4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_357
+TYPE=t_normal
+
+[ITEMDEF 058e5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_358
+TYPE=t_normal
+
+[ITEMDEF 058e6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_359
+TYPE=t_normal
+
+[ITEMDEF 058e7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_360
+TYPE=t_normal
+
+[ITEMDEF 058e8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_361
+TYPE=t_normal
+
+[ITEMDEF 058e9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_362
+TYPE=t_normal
+
+[ITEMDEF 058ea]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_363
+TYPE=t_normal
+
+[ITEMDEF 058eb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_364
+TYPE=t_normal
+
+[ITEMDEF 058ec]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_365
+TYPE=t_normal
+
+[ITEMDEF 058ed]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_366
+TYPE=t_normal
+
+[ITEMDEF 058ee]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_367
+TYPE=t_normal
+
+[ITEMDEF 058ef]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_368
+TYPE=t_normal
+
+[ITEMDEF 058f0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_369
+TYPE=t_normal
+
+[ITEMDEF 058f1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_370
+TYPE=t_normal
+
+[ITEMDEF 058f2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_371
+TYPE=t_normal
+
+[ITEMDEF 058f3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_372
+TYPE=t_normal
+
+[ITEMDEF 058f4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_373
+TYPE=t_normal
+
+[ITEMDEF 058f5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_374
+TYPE=t_normal
+
+[ITEMDEF 058f6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_375
+TYPE=t_normal
+
+[ITEMDEF 058f7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_376
+TYPE=t_normal
+
+[ITEMDEF 058f8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_377
+TYPE=t_normal
+
+[ITEMDEF 058f9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_378
+TYPE=t_normal
+
+[ITEMDEF 058fa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_379
+TYPE=t_normal
+
+[ITEMDEF 058fb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_380
+TYPE=t_normal
+
+[ITEMDEF 058fc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_381
+TYPE=t_normal
+
+[ITEMDEF 058fd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_382
+TYPE=t_normal
+
+[ITEMDEF 058fe]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_383
+TYPE=t_normal
+
+[ITEMDEF 058ff]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_384
+TYPE=t_normal
+
+[ITEMDEF 05900]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_385
+TYPE=t_normal
+
+[ITEMDEF 05901]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_386
+TYPE=t_normal
+
+[ITEMDEF 05902]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_387
+TYPE=t_normal
+
+[ITEMDEF 05903]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_388
+TYPE=t_normal
+
+[ITEMDEF 05904]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_389
+TYPE=t_normal
+
+[ITEMDEF 05905]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_390
+TYPE=t_normal
+
+[ITEMDEF 05906]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_391
+TYPE=t_normal
+
+[ITEMDEF 05907]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_392
+TYPE=t_normal
+
+[ITEMDEF 05908]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_393
+TYPE=t_normal
+
+[ITEMDEF 05909]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_394
+TYPE=t_normal
+
+[ITEMDEF 0590a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_395
+TYPE=t_normal
+
+[ITEMDEF 0590b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_396
+TYPE=t_normal
+
+[ITEMDEF 0590c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_397
+TYPE=t_normal
+
+[ITEMDEF 0590d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_398
+TYPE=t_normal
+
+[ITEMDEF 0590e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_399
+TYPE=t_normal
+
+[ITEMDEF 0590f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_400
+TYPE=t_normal
+
+[ITEMDEF 05910]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_401
+TYPE=t_normal
+
+[ITEMDEF 05911]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_402
+TYPE=t_normal
+
+[ITEMDEF 05912]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_403
+TYPE=t_normal
+
+[ITEMDEF 05913]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_404
+TYPE=t_normal
+
+[ITEMDEF 05914]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_405
+TYPE=t_normal
+
+[ITEMDEF 05916]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_406
+TYPE=t_normal
+
+[ITEMDEF 05917]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_407
+TYPE=t_normal
+
+[ITEMDEF 05918]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_408
+TYPE=t_normal
+
+[ITEMDEF 05919]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_409
+TYPE=t_normal
+
+[ITEMDEF 0591a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_410
+TYPE=t_normal
+
+[ITEMDEF 0591b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_411
+TYPE=t_normal
+
+[ITEMDEF 0591c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_412
+TYPE=t_normal
+
+[ITEMDEF 0591d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_413
+TYPE=t_normal
+
+[ITEMDEF 0591e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_414
+TYPE=t_normal
+
+[ITEMDEF 0591f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_415
+TYPE=t_normal
+
+[ITEMDEF 05920]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_416
+TYPE=t_normal
+
+[ITEMDEF 05921]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_417
+TYPE=t_normal
+
+[ITEMDEF 05922]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_418
+TYPE=t_normal
+
+[ITEMDEF 05923]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_419
+TYPE=t_normal
+
+[ITEMDEF 05924]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_420
+TYPE=t_normal
+
+[ITEMDEF 05925]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_421
+TYPE=t_normal
+
+[ITEMDEF 05926]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_422
+TYPE=t_normal
+
+[ITEMDEF 05927]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_423
+TYPE=t_normal
+
+[ITEMDEF 05928]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_424
+TYPE=t_normal
+
+[ITEMDEF 05929]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_425
+TYPE=t_normal
+
+[ITEMDEF 0592a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_426
+TYPE=t_normal
+
+[ITEMDEF 0592b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_427
+TYPE=t_normal
+
+[ITEMDEF 0592c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_428
+TYPE=t_normal
+
+[ITEMDEF 0592d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_429
+TYPE=t_normal
+
+[ITEMDEF 0592e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_430
+TYPE=t_normal
+
+[ITEMDEF 0592f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_431
+TYPE=t_normal
+
+[ITEMDEF 05930]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_432
+TYPE=t_normal
+
+[ITEMDEF 05931]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_433
+TYPE=t_normal
+
+[ITEMDEF 05932]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_434
+TYPE=t_normal
+
+[ITEMDEF 05933]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_435
+TYPE=t_normal
+
+[ITEMDEF 05934]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_436
+TYPE=t_normal
+
+[ITEMDEF 05935]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_437
+TYPE=t_normal
+
+[ITEMDEF 05936]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_438
+TYPE=t_normal
+
+[ITEMDEF 05937]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_439
+TYPE=t_normal
+
+[ITEMDEF 05938]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_440
+TYPE=t_normal
+
+[ITEMDEF 05939]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_441
+TYPE=t_normal
+
+[ITEMDEF 0593a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_442
+TYPE=t_normal
+
+[ITEMDEF 0593b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_443
+TYPE=t_normal
+
+[ITEMDEF 0593c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_444
+TYPE=t_normal
+
+[ITEMDEF 0593d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_445
+TYPE=t_normal
+
+[ITEMDEF 0593e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_446
+TYPE=t_normal
+
+[ITEMDEF 0593f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_447
+TYPE=t_normal
+
+[ITEMDEF 05940]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_448
+TYPE=t_normal
+
+[ITEMDEF 05941]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_449
+TYPE=t_normal
+
+[ITEMDEF 05942]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_450
+TYPE=t_normal
+
+[ITEMDEF 05943]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_451
+TYPE=t_normal
+
+[ITEMDEF 05944]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_452
+TYPE=t_normal
+
+[ITEMDEF 05945]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_453
+TYPE=t_normal
+
+[ITEMDEF 05946]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_454
+TYPE=t_normal
+
+[ITEMDEF 05947]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_455
+TYPE=t_normal
+
+[ITEMDEF 05948]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_456
+TYPE=t_normal
+
+[ITEMDEF 05949]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_457
+TYPE=t_normal
+
+[ITEMDEF 0594a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_458
+TYPE=t_normal
+
+[ITEMDEF 0594b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_459
+TYPE=t_normal
+
+[ITEMDEF 0594c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_460
+TYPE=t_normal
+
+[ITEMDEF 0594d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_461
+TYPE=t_normal
+
+[ITEMDEF 0594e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_462
+TYPE=t_normal
+
+[ITEMDEF 0594f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_463
+TYPE=t_normal
+
+[ITEMDEF 05950]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_464
+TYPE=t_normal
+
+[ITEMDEF 05951]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_465
+TYPE=t_normal
+
+[ITEMDEF 05952]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_466
+TYPE=t_normal
+
+[ITEMDEF 05953]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_467
+TYPE=t_normal
+
+[ITEMDEF 05954]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_468
+TYPE=t_normal
+
+[ITEMDEF 05955]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_469
+TYPE=t_normal
+
+[ITEMDEF 05956]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_470
+TYPE=t_normal
+
+[ITEMDEF 05957]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_471
+TYPE=t_normal
+
+[ITEMDEF 05958]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_472
+TYPE=t_normal
+
+[ITEMDEF 05959]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_473
+TYPE=t_normal
+
+[ITEMDEF 0595a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_474
+TYPE=t_normal
+
+[ITEMDEF 0595b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_475
+TYPE=t_normal
+
+[ITEMDEF 0595c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_476
+TYPE=t_normal
+
+[ITEMDEF 0595d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_477
+TYPE=t_normal
+
+[ITEMDEF 0595e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_478
+TYPE=t_normal
+
+[ITEMDEF 0595f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_479
+TYPE=t_normal
+
+[ITEMDEF 05960]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_480
+TYPE=t_normal
+
+[ITEMDEF 05961]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_481
+TYPE=t_normal
+
+[ITEMDEF 05962]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_482
+TYPE=t_normal
+
+[ITEMDEF 05963]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_483
+TYPE=t_normal
+
+[ITEMDEF 05964]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_484
+TYPE=t_normal
+
+[ITEMDEF 05965]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_485
+TYPE=t_normal
+
+[ITEMDEF 05966]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_486
+TYPE=t_normal
+
+[ITEMDEF 05967]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_487
+TYPE=t_normal
+
+[ITEMDEF 05968]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_488
+TYPE=t_normal
+
+[ITEMDEF 05969]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_489
+TYPE=t_normal
+
+[ITEMDEF 0596a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_490
+TYPE=t_normal
+
+[ITEMDEF 0596b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_491
+TYPE=t_normal
+
+[ITEMDEF 0596c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_492
+TYPE=t_normal
+
+[ITEMDEF 0596d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_493
+TYPE=t_normal
+
+[ITEMDEF 0596e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_494
+TYPE=t_normal
+
+[ITEMDEF 0596f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_495
+TYPE=t_normal
+
+[ITEMDEF 05970]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_496
+TYPE=t_normal
+
+[ITEMDEF 05971]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_497
+TYPE=t_normal
+
+[ITEMDEF 05972]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_498
+TYPE=t_normal
+
+[ITEMDEF 05973]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_499
+TYPE=t_normal
+
+[ITEMDEF 05974]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_500
+TYPE=t_normal
+
+[ITEMDEF 05975]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_501
+TYPE=t_normal
+
+[ITEMDEF 05976]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_502
+TYPE=t_normal
+
+[ITEMDEF 05977]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_503
+TYPE=t_normal
+
+[ITEMDEF 05978]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_504
+TYPE=t_normal
+
+[ITEMDEF 05979]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_505
+TYPE=t_normal
+
+[ITEMDEF 0597a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_506
+TYPE=t_normal
+
+[ITEMDEF 0597b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_507
+TYPE=t_normal
+
+[ITEMDEF 0597c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_508
+TYPE=t_normal
+
+[ITEMDEF 0597d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_509
+TYPE=t_normal
+
+[ITEMDEF 0597e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_510
+TYPE=t_normal
+
+[ITEMDEF 0597f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_511
+TYPE=t_normal
+
+[ITEMDEF 05980]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_512
+TYPE=t_normal
+
+[ITEMDEF 05981]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_513
+TYPE=t_normal
+
+[ITEMDEF 05982]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_514
+TYPE=t_normal
+
+[ITEMDEF 05983]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_515
+TYPE=t_normal
+
+[ITEMDEF 05984]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_516
+TYPE=t_normal
+
+[ITEMDEF 05985]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_517
+TYPE=t_normal
+
+[ITEMDEF 05986]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_518
+TYPE=t_normal
+
+[ITEMDEF 05987]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_519
+TYPE=t_normal
+
+[ITEMDEF 05988]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_520
+TYPE=t_normal
+
+[ITEMDEF 05989]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_521
+TYPE=t_normal
+
+[ITEMDEF 0598a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_522
+TYPE=t_normal
+
+[ITEMDEF 0598b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_523
+TYPE=t_normal
+
+[ITEMDEF 0598c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_524
+TYPE=t_normal
+
+[ITEMDEF 0598d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_525
+TYPE=t_normal
+
+[ITEMDEF 0598e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_526
+TYPE=t_normal
+
+[ITEMDEF 0598f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_527
+TYPE=t_normal
+
+[ITEMDEF 05990]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_528
+TYPE=t_normal
+
+[ITEMDEF 05991]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_529
+TYPE=t_normal
+
+[ITEMDEF 05992]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_530
+TYPE=t_normal
+
+[ITEMDEF 05993]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_531
+TYPE=t_normal
+
+[ITEMDEF 05994]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_532
+TYPE=t_normal
+
+[ITEMDEF 05995]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_533
+TYPE=t_normal
+
+[ITEMDEF 05996]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_534
+TYPE=t_normal
+
+[ITEMDEF 05997]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_535
+TYPE=t_normal
+
+[ITEMDEF 05998]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_536
+TYPE=t_normal
+
+[ITEMDEF 05999]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_537
+TYPE=t_normal
+
+[ITEMDEF 0599a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_538
+TYPE=t_normal
+
+[ITEMDEF 0599b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_539
+TYPE=t_normal
+
+[ITEMDEF 0599c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_540
+TYPE=t_normal
+
+[ITEMDEF 0599d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_541
+TYPE=t_normal
+
+[ITEMDEF 0599e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_542
+TYPE=t_normal
+
+[ITEMDEF 0599f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_543
+TYPE=t_normal
+
+[ITEMDEF 059a0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_544
+TYPE=t_normal
+
+[ITEMDEF 059a1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_545
+TYPE=t_normal
+
+[ITEMDEF 059a2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_546
+TYPE=t_normal
+
+[ITEMDEF 059a3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_547
+TYPE=t_normal
+
+[ITEMDEF 059a4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_548
+TYPE=t_normal
+
+[ITEMDEF 059a5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_549
+TYPE=t_normal
+
+[ITEMDEF 059a6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_550
+TYPE=t_normal
+
+[ITEMDEF 059a7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_551
+TYPE=t_normal
+
+[ITEMDEF 059a8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_552
+TYPE=t_normal
+
+[ITEMDEF 059a9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_553
+TYPE=t_normal
+
+[ITEMDEF 059aa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_554
+TYPE=t_normal
+
+[ITEMDEF 059ab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_555
+TYPE=t_normal
+
+[ITEMDEF 059ac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_556
+TYPE=t_normal
+
+[ITEMDEF 059ad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_557
+TYPE=t_normal
+
+[ITEMDEF 059ae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_558
+TYPE=t_normal
+
+[ITEMDEF 059af]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_559
+TYPE=t_normal
+
+[ITEMDEF 059b0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_560
+TYPE=t_normal
+
+[ITEMDEF 059b1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_561
+TYPE=t_normal
+
+[ITEMDEF 059b2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_562
+TYPE=t_normal
+
+[ITEMDEF 059b3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_563
+TYPE=t_normal
+
+[ITEMDEF 059b4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_564
+TYPE=t_normal
+
+[ITEMDEF 059b5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_565
+TYPE=t_normal
+
+[ITEMDEF 059b6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_566
+TYPE=t_normal
+
+[ITEMDEF 059b7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_567
+TYPE=t_normal
+
+[ITEMDEF 059b8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_568
+TYPE=t_normal
+
+[ITEMDEF 059b9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_569
+TYPE=t_normal
+
+[ITEMDEF 059ba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_570
+TYPE=t_normal
+
+[ITEMDEF 059bb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_571
+TYPE=t_normal
+
+[ITEMDEF 059bc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_572
+TYPE=t_normal
+
+[ITEMDEF 059bd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_573
+TYPE=t_normal
+
+[ITEMDEF 059be]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_574
+TYPE=t_normal
+
+[ITEMDEF 059bf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_575
+TYPE=t_normal
+
+[ITEMDEF 059c0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_576
+TYPE=t_normal
+
+[ITEMDEF 059c1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_577
+TYPE=t_normal
+
+[ITEMDEF 059c2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_578
+TYPE=t_normal
+
+[ITEMDEF 059c3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_579
+TYPE=t_normal
+
+[ITEMDEF 059c4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_580
+TYPE=t_normal
+
+[ITEMDEF 059c5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_581
+TYPE=t_normal
+
+[ITEMDEF 059c6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_582
+TYPE=t_normal
+
+[ITEMDEF 059c7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_583
+TYPE=t_normal
+
+[ITEMDEF 059c8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_584
+TYPE=t_normal
+
+[ITEMDEF 059c9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_585
+TYPE=t_normal
+
+[ITEMDEF 059ca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_586
+TYPE=t_normal
+
+[ITEMDEF 059cb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_587
+TYPE=t_normal
+
+[ITEMDEF 059cc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_588
+TYPE=t_normal
+
+[ITEMDEF 059cd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_589
+TYPE=t_normal
+
+[ITEMDEF 059ce]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_590
+TYPE=t_normal
+
+[ITEMDEF 059cf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_591
+TYPE=t_normal
+
+[ITEMDEF 059d0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_592
+TYPE=t_normal
+
+[ITEMDEF 059d1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_593
+TYPE=t_normal
+
+[ITEMDEF 059d2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_594
+TYPE=t_normal
+
+[ITEMDEF 059d3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_595
+TYPE=t_normal
+
+[ITEMDEF 059d4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_596
+TYPE=t_normal
+
+[ITEMDEF 059d5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_597
+TYPE=t_normal
+
+[ITEMDEF 059d6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_598
+TYPE=t_normal
+
+[ITEMDEF 059d7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_599
+TYPE=t_normal
+
+[ITEMDEF 05ada]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_600
+TYPE=t_normal
+
+[ITEMDEF 05adb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_601
+TYPE=t_normal
+
+[ITEMDEF 05adc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_602
+TYPE=t_normal
+
+[ITEMDEF 05add]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_603
+TYPE=t_normal
+
+[ITEMDEF 05ade]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_604
+TYPE=t_normal
+
+[ITEMDEF 05adf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_605
+TYPE=t_normal
+
+[ITEMDEF 05ae0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_606
+TYPE=t_normal
+
+[ITEMDEF 05ae1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_607
+TYPE=t_normal
+
+[ITEMDEF 05ae2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_608
+TYPE=t_normal
+
+[ITEMDEF 05ae3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_609
+TYPE=t_normal
+
+[ITEMDEF 05ae4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_610
+TYPE=t_normal
+
+[ITEMDEF 05ae5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_611
+TYPE=t_normal
+
+[ITEMDEF 05ae6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_612
+TYPE=t_normal
+
+[ITEMDEF 05b02]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_613
+TYPE=t_normal
+
+[ITEMDEF 05b03]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_614
+TYPE=t_normal
+
+[ITEMDEF 05b04]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_615
+TYPE=t_normal
+
+[ITEMDEF 05b1e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_616
+TYPE=t_normal
+
+[ITEMDEF 05b1f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_617
+TYPE=t_normal
+
+[ITEMDEF 05b20]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_618
+TYPE=t_normal
+
+[ITEMDEF 05b21]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_619
+TYPE=t_normal
+
+[ITEMDEF 05b22]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_620
+TYPE=t_normal
+
+[ITEMDEF 05b23]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_621
+TYPE=t_normal
+
+[ITEMDEF 05b24]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_622
+TYPE=t_normal
+
+[ITEMDEF 05b25]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_623
+TYPE=t_normal
+
+[ITEMDEF 05b26]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_624
+TYPE=t_normal
+
+[ITEMDEF 05b27]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_625
+TYPE=t_normal
+
+[ITEMDEF 05b28]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_626
+TYPE=t_normal
+
+[ITEMDEF 05b29]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_627
+TYPE=t_normal
+
+[ITEMDEF 05b2a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_628
+TYPE=t_normal
+
+[ITEMDEF 05b2b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_629
+TYPE=t_normal
+
+[ITEMDEF 05b2c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_630
+TYPE=t_normal
+
+[ITEMDEF 05b2d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_631
+TYPE=t_normal
+
+[ITEMDEF 05b2e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_632
+TYPE=t_normal
+
+[ITEMDEF 05b2f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_633
+TYPE=t_normal
+
+[ITEMDEF 05b30]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_634
+TYPE=t_normal
+
+[ITEMDEF 05b31]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_635
+TYPE=t_normal
+
+[ITEMDEF 05b32]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_636
+TYPE=t_normal
+
+[ITEMDEF 05b33]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_637
+TYPE=t_normal
+
+[ITEMDEF 05b34]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_638
+TYPE=t_normal
+
+[ITEMDEF 05b35]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_639
+TYPE=t_normal
+
+[ITEMDEF 05b36]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_640
+TYPE=t_normal
+
+[ITEMDEF 05b37]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_641
+TYPE=t_normal
+
+[ITEMDEF 05b38]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_642
+TYPE=t_normal
+
+[ITEMDEF 05b39]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_643
+TYPE=t_normal
+
+[ITEMDEF 05b3a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_644
+TYPE=t_normal
+
+[ITEMDEF 05b3b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_645
+TYPE=t_normal
+
+[ITEMDEF 05b3c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_646
+TYPE=t_normal
+
+[ITEMDEF 05b3d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_647
+TYPE=t_normal
+
+[ITEMDEF 05b3e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_648
+TYPE=t_normal
+
+[ITEMDEF 05b3f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_649
+TYPE=t_normal
+
+[ITEMDEF 05b40]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_650
+TYPE=t_normal
+
+[ITEMDEF 05b41]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_651
+TYPE=t_normal
+
+[ITEMDEF 05b42]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_652
+TYPE=t_normal
+
+[ITEMDEF 05b43]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_653
+TYPE=t_normal
+
+[ITEMDEF 05b44]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_654
+TYPE=t_normal
+
+[ITEMDEF 05b45]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_655
+TYPE=t_normal
+
+[ITEMDEF 05b46]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_656
+TYPE=t_normal
+
+[ITEMDEF 05b47]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_657
+TYPE=t_normal
+
+[ITEMDEF 05b48]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_658
+TYPE=t_normal
+
+[ITEMDEF 05b49]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_659
+TYPE=t_normal
+
+[ITEMDEF 05b4a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_660
+TYPE=t_normal
+
+[ITEMDEF 05b4b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_661
+TYPE=t_normal
+
+[ITEMDEF 05b4c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_662
+TYPE=t_normal
+
+[ITEMDEF 05b4d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_663
+TYPE=t_normal
+
+[ITEMDEF 05b4e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_664
+TYPE=t_normal
+
+[ITEMDEF 05b4f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_665
+TYPE=t_normal
+
+[ITEMDEF 05b50]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_666
+TYPE=t_normal
+
+[ITEMDEF 05b51]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_667
+TYPE=t_normal
+
+[ITEMDEF 05b52]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_668
+TYPE=t_normal
+
+[ITEMDEF 05b53]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_669
+TYPE=t_normal
+
+[ITEMDEF 05b54]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_670
+TYPE=t_normal
+
+[ITEMDEF 05b55]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_671
+TYPE=t_normal
+
+[ITEMDEF 05b56]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_672
+TYPE=t_normal
+
+[ITEMDEF 05b57]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_673
+TYPE=t_normal
+
+[ITEMDEF 05b58]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_674
+TYPE=t_normal
+
+[ITEMDEF 05b59]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_675
+TYPE=t_normal
+
+[ITEMDEF 05b5a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_676
+TYPE=t_normal
+
+[ITEMDEF 05b5b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_677
+TYPE=t_normal
+
+[ITEMDEF 05b5c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_678
+TYPE=t_normal
+
+[ITEMDEF 05b5d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_679
+TYPE=t_normal
+
+[ITEMDEF 05b5e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_680
+TYPE=t_normal
+
+[ITEMDEF 05b5f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_681
+TYPE=t_normal
+
+[ITEMDEF 05b60]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_682
+TYPE=t_normal
+
+[ITEMDEF 05b61]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_683
+TYPE=t_normal
+
+[ITEMDEF 05b62]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_684
+TYPE=t_normal
+
+[ITEMDEF 05b63]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_685
+TYPE=t_normal
+
+[ITEMDEF 05b64]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_686
+TYPE=t_normal
+
+[ITEMDEF 05b65]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_687
+TYPE=t_normal
+
+[ITEMDEF 05b66]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_688
+TYPE=t_normal
+
+[ITEMDEF 05b67]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_689
+TYPE=t_normal
+
+[ITEMDEF 05b68]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_690
+TYPE=t_normal
+
+[ITEMDEF 05b69]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_691
+TYPE=t_normal
+
+[ITEMDEF 05b6a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_692
+TYPE=t_normal
+
+[ITEMDEF 05b6b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_693
+TYPE=t_normal
+
+[ITEMDEF 05b6c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_694
+TYPE=t_normal
+
+[ITEMDEF 05b6d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_695
+TYPE=t_normal
+
+[ITEMDEF 05b6e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_696
+TYPE=t_normal
+
+[ITEMDEF 05b6f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_697
+TYPE=t_normal
+
+[ITEMDEF 05b70]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_698
+TYPE=t_normal
+
+[ITEMDEF 05b71]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_699
+TYPE=t_normal
+
+[ITEMDEF 05b72]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_700
+TYPE=t_normal
+
+[ITEMDEF 05b73]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_701
+TYPE=t_normal
+
+[ITEMDEF 05b74]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_702
+TYPE=t_normal
+
+[ITEMDEF 05b75]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_703
+TYPE=t_normal
+
+[ITEMDEF 05b76]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_704
+TYPE=t_normal
+
+[ITEMDEF 05b77]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_705
+TYPE=t_normal
+
+[ITEMDEF 05b78]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_706
+TYPE=t_normal
+
+[ITEMDEF 05b79]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_707
+TYPE=t_normal
+
+[ITEMDEF 05b7a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_708
+TYPE=t_normal
+
+[ITEMDEF 05b7b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_709
+TYPE=t_normal
+
+[ITEMDEF 05b7c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_710
+TYPE=t_normal
+
+[ITEMDEF 05b7d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_711
+TYPE=t_normal
+
+[ITEMDEF 05b7e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_712
+TYPE=t_normal
+
+[ITEMDEF 05b7f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_713
+TYPE=t_normal
+
+[ITEMDEF 05b80]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_714
+TYPE=t_normal
+
+[ITEMDEF 05b81]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_715
+TYPE=t_normal
+
+[ITEMDEF 05b82]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_716
+TYPE=t_normal
+
+[ITEMDEF 05b83]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_717
+TYPE=t_normal
+
+[ITEMDEF 05b84]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_718
+TYPE=t_normal
+
+[ITEMDEF 05b85]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_719
+TYPE=t_normal
+
+[ITEMDEF 05b86]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_720
+TYPE=t_normal
+
+[ITEMDEF 05b87]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_721
+TYPE=t_normal
+
+[ITEMDEF 05b88]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_722
+TYPE=t_normal
+
+[ITEMDEF 05b89]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_723
+TYPE=t_normal
+
+[ITEMDEF 05b8a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_724
+TYPE=t_normal
+
+[ITEMDEF 05b8b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_725
+TYPE=t_normal
+
+[ITEMDEF 05b8c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_726
+TYPE=t_normal
+
+[ITEMDEF 05b8d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_727
+TYPE=t_normal
+
+[ITEMDEF 05b8e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_728
+TYPE=t_normal
+
+[ITEMDEF 05b8f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_729
+TYPE=t_normal
+
+[ITEMDEF 05b90]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_730
+TYPE=t_normal
+
+[ITEMDEF 05b91]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_731
+TYPE=t_normal
+
+[ITEMDEF 05b92]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_732
+TYPE=t_normal
+
+[ITEMDEF 05b93]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_733
+TYPE=t_normal
+
+[ITEMDEF 05b94]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_734
+TYPE=t_normal
+
+[ITEMDEF 05b95]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_735
+TYPE=t_normal
+
+[ITEMDEF 05b96]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_736
+TYPE=t_normal
+
+[ITEMDEF 05b97]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_737
+TYPE=t_normal
+
+[ITEMDEF 05b98]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_738
+TYPE=t_normal
+
+[ITEMDEF 05b99]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_739
+TYPE=t_normal
+
+[ITEMDEF 05b9a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_740
+TYPE=t_normal
+
+[ITEMDEF 05b9b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_741
+TYPE=t_normal
+
+[ITEMDEF 05b9c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_742
+TYPE=t_normal
+
+[ITEMDEF 05b9d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_743
+TYPE=t_normal
+
+[ITEMDEF 05b9e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_744
+TYPE=t_normal
+
+[ITEMDEF 05b9f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_745
+TYPE=t_normal
+
+[ITEMDEF 05ba0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_746
+TYPE=t_normal
+
+[ITEMDEF 05ba1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_747
+TYPE=t_normal
+
+[ITEMDEF 05ba2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_748
+TYPE=t_normal
+
+[ITEMDEF 05ba3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_749
+TYPE=t_normal
+
+[ITEMDEF 05ba4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_750
+TYPE=t_normal
+
+[ITEMDEF 05ba5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_751
+TYPE=t_normal
+
+[ITEMDEF 05ba6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_752
+TYPE=t_normal
+
+[ITEMDEF 05ba7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_753
+TYPE=t_normal
+
+[ITEMDEF 05ba8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_754
+TYPE=t_normal
+
+[ITEMDEF 05ba9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_755
+TYPE=t_normal
+
+[ITEMDEF 05baa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_756
+TYPE=t_normal
+
+[ITEMDEF 05bab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_757
+TYPE=t_normal
+
+[ITEMDEF 05bac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_758
+TYPE=t_normal
+
+[ITEMDEF 05bad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_759
+TYPE=t_normal
+
+[ITEMDEF 05bae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_760
+TYPE=t_normal
+
+[ITEMDEF 05baf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_761
+TYPE=t_normal
+
+[ITEMDEF 05bb0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_762
+TYPE=t_normal
+
+[ITEMDEF 05bb1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_763
+TYPE=t_normal
+
+[ITEMDEF 05bb2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_764
+TYPE=t_normal
+
+[ITEMDEF 05bb3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_765
+TYPE=t_normal
+
+[ITEMDEF 05bb4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_766
+TYPE=t_normal
+
+[ITEMDEF 05bb6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_767
+TYPE=t_normal
+
+[ITEMDEF 05bb7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_768
+TYPE=t_normal
+
+[ITEMDEF 05bb8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_769
+TYPE=t_normal
+
+[ITEMDEF 05bb9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_770
+TYPE=t_normal
+
+[ITEMDEF 05bba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_771
+TYPE=t_normal
+
+[ITEMDEF 05bbb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_772
+TYPE=t_normal
+
+[ITEMDEF 05bbc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_773
+TYPE=t_normal
+
+[ITEMDEF 05bbd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_774
+TYPE=t_normal
+
+[ITEMDEF 05bbe]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_775
+TYPE=t_normal
+
+[ITEMDEF 05bbf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_776
+TYPE=t_normal
+
+[ITEMDEF 05bc0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_777
+TYPE=t_normal
+
+[ITEMDEF 05bc1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_778
+TYPE=t_normal
+
+[ITEMDEF 05bc2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_779
+TYPE=t_normal
+
+[ITEMDEF 05bc3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_780
+TYPE=t_normal
+
+[ITEMDEF 05bc4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_781
+TYPE=t_normal
+
+[ITEMDEF 05bc5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_782
+TYPE=t_normal
+
+[ITEMDEF 05bc6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_783
+TYPE=t_normal
+
+[ITEMDEF 05bc7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_784
+TYPE=t_normal
+
+[ITEMDEF 05bc8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_785
+TYPE=t_normal
+
+[ITEMDEF 05bc9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_786
+TYPE=t_normal
+
+[ITEMDEF 05bca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_787
+TYPE=t_normal
+
+[ITEMDEF 05bcb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_788
+TYPE=t_normal
+
+[ITEMDEF 05ce2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails
+TYPE=t_normal
+
+[ITEMDEF 05ce3]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_2
+TYPE=t_normal
+
+[ITEMDEF 05ce4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_3
+TYPE=t_normal
+
+[ITEMDEF 05cfe]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_4
+TYPE=t_normal
+
+[ITEMDEF 05cff]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_5
+TYPE=t_normal
+
+[ITEMDEF 05d00]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_6
+TYPE=t_normal
+
+[ITEMDEF 05d01]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_7
+TYPE=t_normal
+
+[ITEMDEF 05d02]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_8
+TYPE=t_normal
+
+[ITEMDEF 05d03]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_9
+TYPE=t_normal
+
+[ITEMDEF 05d04]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_10
+TYPE=t_normal
+
+[ITEMDEF 05d05]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_11
+TYPE=t_normal
+
+[ITEMDEF 05d06]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_12
+TYPE=t_normal
+
+[ITEMDEF 05d07]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_13
+TYPE=t_normal
+
+[ITEMDEF 05d08]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_14
+TYPE=t_normal
+
+[ITEMDEF 05d09]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_15
+TYPE=t_normal
+
+[ITEMDEF 05d0a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_16
+TYPE=t_normal
+
+[ITEMDEF 05d0b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_17
+TYPE=t_normal
+
+[ITEMDEF 05d0c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_18
+TYPE=t_normal
+
+[ITEMDEF 05d0d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_19
+TYPE=t_normal
+
+[ITEMDEF 05d0e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_20
+TYPE=t_normal
+
+[ITEMDEF 05d0f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_21
+TYPE=t_normal
+
+[ITEMDEF 05d10]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_22
+TYPE=t_normal
+
+[ITEMDEF 05d11]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_23
+TYPE=t_normal
+
+[ITEMDEF 05d12]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_24
+TYPE=t_normal
+
+[ITEMDEF 05d13]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_25
+TYPE=t_normal
+
+[ITEMDEF 05d14]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_26
+TYPE=t_normal
+
+[ITEMDEF 05d15]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_27
+TYPE=t_normal
+
+[ITEMDEF 05d16]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_28
+TYPE=t_normal
+
+[ITEMDEF 05d17]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_29
+TYPE=t_normal
+
+[ITEMDEF 05d18]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_30
+TYPE=t_normal
+
+[ITEMDEF 05d19]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_31
+TYPE=t_normal
+
+[ITEMDEF 05d1a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_32
+TYPE=t_normal
+
+[ITEMDEF 05d1b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_33
+TYPE=t_normal
+
+[ITEMDEF 05d1c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_34
+TYPE=t_normal
+
+[ITEMDEF 05d1d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_35
+TYPE=t_normal
+
+[ITEMDEF 05d1e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_36
+TYPE=t_normal
+
+[ITEMDEF 05d20]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_37
+TYPE=t_normal
+
+[ITEMDEF 05d21]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_38
+TYPE=t_normal
+
+[ITEMDEF 05d22]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_39
+TYPE=t_normal
+
+[ITEMDEF 05d23]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_40
+TYPE=t_normal
+
+[ITEMDEF 05d24]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_41
+TYPE=t_normal
+
+[ITEMDEF 05d25]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_42
+TYPE=t_normal
+
+[ITEMDEF 05d26]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_43
+TYPE=t_normal
+
+[ITEMDEF 05d27]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_44
+TYPE=t_normal
+
+[ITEMDEF 05d28]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_45
+TYPE=t_normal
+
+[ITEMDEF 05e70]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_789
+TYPE=t_normal
+
+[ITEMDEF 05e71]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_790
+TYPE=t_normal
+
+[ITEMDEF 05e72]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_791
+TYPE=t_normal
+
+[ITEMDEF 05e73]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_792
+TYPE=t_normal
+
+[ITEMDEF 05e74]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_793
+TYPE=t_normal
+
+[ITEMDEF 05e75]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_794
+TYPE=t_normal
+
+[ITEMDEF 05e76]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_795
+TYPE=t_normal
+
+[ITEMDEF 05e77]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_796
+TYPE=t_normal
+
+[ITEMDEF 05e78]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_797
+TYPE=t_normal
+
+[ITEMDEF 05e79]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_798
+TYPE=t_normal
+
+[ITEMDEF 05e7a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_799
+TYPE=t_normal
+
+[ITEMDEF 05e7b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_800
+TYPE=t_normal
+
+[ITEMDEF 05e7c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_801
+TYPE=t_normal
+
+[ITEMDEF 05e7d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_802
+TYPE=t_normal
+
+[ITEMDEF 05e7e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_803
+TYPE=t_normal
+
+[ITEMDEF 05e7f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_804
+TYPE=t_normal
+
+[ITEMDEF 05e80]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_805
+TYPE=t_normal
+
+[ITEMDEF 05e81]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_806
+TYPE=t_normal
+
+[ITEMDEF 05e82]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_807
+TYPE=t_normal
+
+[ITEMDEF 05e83]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_808
+TYPE=t_normal
+
+[ITEMDEF 05e84]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_809
+TYPE=t_normal
+
+[ITEMDEF 05e85]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_810
+TYPE=t_normal
+
+[ITEMDEF 05e86]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_811
+TYPE=t_normal
+
+[ITEMDEF 05e87]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_812
+TYPE=t_normal
+
+[ITEMDEF 05f8a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_813
+TYPE=t_normal
+
+[ITEMDEF 05f8b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_814
+TYPE=t_normal
+
+[ITEMDEF 05f8c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_815
+TYPE=t_normal
+
+[ITEMDEF 05fa8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_816
+TYPE=t_normal
+
+[ITEMDEF 05fa9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_817
+TYPE=t_normal
+
+[ITEMDEF 05faa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_818
+TYPE=t_normal
+
+[ITEMDEF 05fab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_819
+TYPE=t_normal
+
+[ITEMDEF 05fac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_820
+TYPE=t_normal
+
+[ITEMDEF 05fad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_821
+TYPE=t_normal
+
+[ITEMDEF 05fae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_822
+TYPE=t_normal
+
+[ITEMDEF 05faf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_823
+TYPE=t_normal
+
+[ITEMDEF 05fb0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_824
+TYPE=t_normal
+
+[ITEMDEF 05fb1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_825
+TYPE=t_normal
+
+[ITEMDEF 05fb2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_826
+TYPE=t_normal
+
+[ITEMDEF 05fb3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_827
+TYPE=t_normal
+
+[ITEMDEF 0604f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_828
+TYPE=t_normal
+
+[ITEMDEF 06050]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_829
+TYPE=t_normal
+
+[ITEMDEF 06051]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_830
+TYPE=t_normal
+
+[ITEMDEF 06052]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_831
+TYPE=t_normal
+
+[ITEMDEF 06053]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_832
+TYPE=t_normal
+
+[ITEMDEF 06054]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_833
+TYPE=t_normal
+
+[ITEMDEF 06055]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_834
+TYPE=t_normal
+
+[ITEMDEF 06056]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_835
+TYPE=t_normal
+
+[ITEMDEF 06057]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_836
+TYPE=t_normal
+
+[ITEMDEF 06058]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_837
+TYPE=t_normal
+
+[ITEMDEF 06059]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_838
+TYPE=t_normal
+
+[ITEMDEF 0605a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_839
+TYPE=t_normal
+
+[ITEMDEF 0605b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_840
+TYPE=t_normal
+
+[ITEMDEF 0605c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_841
+TYPE=t_normal
+
+[ITEMDEF 0605d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_842
+TYPE=t_normal
+
+[ITEMDEF 0605e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_843
+TYPE=t_normal
+
+[ITEMDEF 0605f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_844
+TYPE=t_normal
+
+[ITEMDEF 06060]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_845
+TYPE=t_normal
+
+[ITEMDEF 06061]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_846
+TYPE=t_normal
+
+[ITEMDEF 06062]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_847
+TYPE=t_normal
+
+[ITEMDEF 06063]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_848
+TYPE=t_normal
+
+[ITEMDEF 06064]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_849
+TYPE=t_normal
+
+[ITEMDEF 06065]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_850
+TYPE=t_normal
+
+[ITEMDEF 06066]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_851
+TYPE=t_normal
+
+[ITEMDEF 06067]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_852
+TYPE=t_normal
+
+[ITEMDEF 06068]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_853
+TYPE=t_normal
+
+[ITEMDEF 06069]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_854
+TYPE=t_normal
+
+[ITEMDEF 0606a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_855
+TYPE=t_normal
+
+[ITEMDEF 0606b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_856
+TYPE=t_normal
+
+[ITEMDEF 0606c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_857
+TYPE=t_normal
+
+[ITEMDEF 0606d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_858
+TYPE=t_normal
+
+[ITEMDEF 0606e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_859
+TYPE=t_normal
+
+[ITEMDEF 0606f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_860
+TYPE=t_normal
+
+[ITEMDEF 06070]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_861
+TYPE=t_normal
+
+[ITEMDEF 06071]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_862
+TYPE=t_normal
+
+[ITEMDEF 06072]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_863
+TYPE=t_normal
+
+[ITEMDEF 06073]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_864
+TYPE=t_normal
+
+[ITEMDEF 06074]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_865
+TYPE=t_normal
+
+[ITEMDEF 06075]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_866
+TYPE=t_normal
+
+[ITEMDEF 06076]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_867
+TYPE=t_normal
+
+[ITEMDEF 06077]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_868
+TYPE=t_normal
+
+[ITEMDEF 06078]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_869
+TYPE=t_normal
+
+[ITEMDEF 06079]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_870
+TYPE=t_normal
+
+[ITEMDEF 0607a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_871
+TYPE=t_normal
+
+[ITEMDEF 0607b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_872
+TYPE=t_normal
+
+[ITEMDEF 0607c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_873
+TYPE=t_normal
+
+[ITEMDEF 0607d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_874
+TYPE=t_normal
+
+[ITEMDEF 0607e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_875
+TYPE=t_normal
+
+[ITEMDEF 0607f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_876
+TYPE=t_normal
+
+[ITEMDEF 06080]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_877
+TYPE=t_normal
+
+[ITEMDEF 06081]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_878
+TYPE=t_normal
+
+[ITEMDEF 06082]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_879
+TYPE=t_normal
+
+[ITEMDEF 06083]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_880
+TYPE=t_normal
+
+[ITEMDEF 06084]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_881
+TYPE=t_normal
+
+[ITEMDEF 06085]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_882
+TYPE=t_normal
+
+[ITEMDEF 06086]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_883
+TYPE=t_normal
+
+[ITEMDEF 06087]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_884
+TYPE=t_normal
+
+[ITEMDEF 06088]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_885
+TYPE=t_normal
+
+[ITEMDEF 06089]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_886
+TYPE=t_normal
+
+[ITEMDEF 0608a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_887
+TYPE=t_normal
+
+[ITEMDEF 0608b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_888
+TYPE=t_normal
+
+[ITEMDEF 0608c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_889
+TYPE=t_normal
+
+[ITEMDEF 0608d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_890
+TYPE=t_normal
+
+[ITEMDEF 0608e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_891
+TYPE=t_normal
+
+[ITEMDEF 0608f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_892
+TYPE=t_normal
+
+[ITEMDEF 06090]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_893
+TYPE=t_normal
+
+[ITEMDEF 06091]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_894
+TYPE=t_normal
+
+[ITEMDEF 06092]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_895
+TYPE=t_normal
+
+[ITEMDEF 06093]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_896
+TYPE=t_normal
+
+[ITEMDEF 06094]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_897
+TYPE=t_normal
+
+[ITEMDEF 06095]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_898
+TYPE=t_normal
+
+[ITEMDEF 06096]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_899
+TYPE=t_normal
+
+[ITEMDEF 06097]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_900
+TYPE=t_normal
+
+[ITEMDEF 06098]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_901
+TYPE=t_normal
+
+[ITEMDEF 06099]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_902
+TYPE=t_normal
+
+[ITEMDEF 0609a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_903
+TYPE=t_normal
+
+[ITEMDEF 0609b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_904
+TYPE=t_normal
+
+[ITEMDEF 0609c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_905
+TYPE=t_normal
+
+[ITEMDEF 0609d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_906
+TYPE=t_normal
+
+[ITEMDEF 0609e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_907
+TYPE=t_normal
+
+[ITEMDEF 0609f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_908
+TYPE=t_normal
+
+[ITEMDEF 060a0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_909
+TYPE=t_normal
+
+[ITEMDEF 060a1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_910
+TYPE=t_normal
+
+[ITEMDEF 060a2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_911
+TYPE=t_normal
+
+[ITEMDEF 060a3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_912
+TYPE=t_normal
+
+[ITEMDEF 060a4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_913
+TYPE=t_normal
+
+[ITEMDEF 060a5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_914
+TYPE=t_normal
+
+[ITEMDEF 060a6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_915
+TYPE=t_normal
+
+[ITEMDEF 060a7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_916
+TYPE=t_normal
+
+[ITEMDEF 060a8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_917
+TYPE=t_normal
+
+[ITEMDEF 060a9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_918
+TYPE=t_normal
+
+[ITEMDEF 060aa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_919
+TYPE=t_normal
+
+[ITEMDEF 060ab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_920
+TYPE=t_normal
+
+[ITEMDEF 060ac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_921
+TYPE=t_normal
+
+[ITEMDEF 060ad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_922
+TYPE=t_normal
+
+[ITEMDEF 060ae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_923
+TYPE=t_normal
+
+[ITEMDEF 060af]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_924
+TYPE=t_normal
+
+[ITEMDEF 060b0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_925
+TYPE=t_normal
+
+[ITEMDEF 060b1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_926
+TYPE=t_normal
+
+[ITEMDEF 060b2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_927
+TYPE=t_normal
+
+[ITEMDEF 060b3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_928
+TYPE=t_normal
+
+[ITEMDEF 060b4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_929
+TYPE=t_normal
+
+[ITEMDEF 060b5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_930
+TYPE=t_normal
+
+[ITEMDEF 060b6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_931
+TYPE=t_normal
+
+[ITEMDEF 060b7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_932
+TYPE=t_normal
+
+[ITEMDEF 060b8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_933
+TYPE=t_normal
+
+[ITEMDEF 060b9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_934
+TYPE=t_normal
+
+[ITEMDEF 060ba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_935
+TYPE=t_normal
+
+[ITEMDEF 060bb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_936
+TYPE=t_normal
+
+[ITEMDEF 060bc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_937
+TYPE=t_normal
+
+[ITEMDEF 060bd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_938
+TYPE=t_normal
+
+[ITEMDEF 060be]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_939
+TYPE=t_normal
+
+[ITEMDEF 060bf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_940
+TYPE=t_normal
+
+[ITEMDEF 060c0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_941
+TYPE=t_normal
+
+[ITEMDEF 060c1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_942
+TYPE=t_normal
+
+[ITEMDEF 060c2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_943
+TYPE=t_normal
+
+[ITEMDEF 060c3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_944
+TYPE=t_normal
+
+[ITEMDEF 060c4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_945
+TYPE=t_normal
+
+[ITEMDEF 060c5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_946
+TYPE=t_normal
+
+[ITEMDEF 060c6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_947
+TYPE=t_normal
+
+[ITEMDEF 060c7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_948
+TYPE=t_normal
+
+[ITEMDEF 060c8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_949
+TYPE=t_normal
+
+[ITEMDEF 060c9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_950
+TYPE=t_normal
+
+[ITEMDEF 060ca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_951
+TYPE=t_normal
+
+[ITEMDEF 060cb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_952
+TYPE=t_normal
+
+[ITEMDEF 060cc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_953
+TYPE=t_normal
+
+[ITEMDEF 060cd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_954
+TYPE=t_normal
+
+[ITEMDEF 060ce]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_955
+TYPE=t_normal
+
+[ITEMDEF 060cf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_956
+TYPE=t_normal
+
+[ITEMDEF 060d0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_957
+TYPE=t_normal
+
+[ITEMDEF 060d1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_958
+TYPE=t_normal
+
+[ITEMDEF 060d2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_959
+TYPE=t_normal
+
+[ITEMDEF 060d3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_960
+TYPE=t_normal
+
+[ITEMDEF 060d4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_961
+TYPE=t_normal
+
+[ITEMDEF 060d5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_962
+TYPE=t_normal
+
+[ITEMDEF 060d6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_963
+TYPE=t_normal
+
+[ITEMDEF 060d7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_964
+TYPE=t_normal
+
+[ITEMDEF 060d8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_965
+TYPE=t_normal
+
+[ITEMDEF 060d9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_966
+TYPE=t_normal
+
+[ITEMDEF 060da]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_967
+TYPE=t_normal
+
+[ITEMDEF 060db]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_968
+TYPE=t_normal
+
+[ITEMDEF 060dc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_969
+TYPE=t_normal
+
+[ITEMDEF 060dd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_970
+TYPE=t_normal
+
+[ITEMDEF 060de]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_971
+TYPE=t_normal
+
+[ITEMDEF 060df]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_972
+TYPE=t_normal
+
+[ITEMDEF 060e0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_973
+TYPE=t_normal
+
+[ITEMDEF 060e1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_974
+TYPE=t_normal
+
+[ITEMDEF 060e2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_975
+TYPE=t_normal
+
+[ITEMDEF 060e3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_976
+TYPE=t_normal
+
+[ITEMDEF 060e4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_977
+TYPE=t_normal
+
+[ITEMDEF 060e5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_978
+TYPE=t_normal
+
+[ITEMDEF 060e6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_979
+TYPE=t_normal
+
+[ITEMDEF 060e7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_980
+TYPE=t_normal
+
+[ITEMDEF 060e8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_981
+TYPE=t_normal
+
+[ITEMDEF 060e9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_982
+TYPE=t_normal
+
+[ITEMDEF 060ea]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_983
+TYPE=t_normal
+
+[ITEMDEF 060eb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_984
+TYPE=t_normal
+
+[ITEMDEF 060ec]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_985
+TYPE=t_normal
+
+[ITEMDEF 060ed]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_986
+TYPE=t_normal
+
+[ITEMDEF 060ee]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_987
+TYPE=t_normal
+
+[ITEMDEF 060ef]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_988
+TYPE=t_normal
+
+[ITEMDEF 060f0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_989
+TYPE=t_normal
+
+[ITEMDEF 060f1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_990
+TYPE=t_normal
+
+[ITEMDEF 060f2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_991
+TYPE=t_normal
+
+[ITEMDEF 060f3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_992
+TYPE=t_normal
+
+[ITEMDEF 060f4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_993
+TYPE=t_normal
+
+[ITEMDEF 060f5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_994
+TYPE=t_normal
+
+[ITEMDEF 060f6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_995
+TYPE=t_normal
+
+[ITEMDEF 060f7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_996
+TYPE=t_normal
+
+[ITEMDEF 060f8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_997
+TYPE=t_normal
+
+[ITEMDEF 060f9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_998
+TYPE=t_normal
+
+[ITEMDEF 060fa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_999
+TYPE=t_normal
+
+[ITEMDEF 060fb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1000
+TYPE=t_normal
+
+[ITEMDEF 060fc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1001
+TYPE=t_normal
+
+[ITEMDEF 060fd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1002
+TYPE=t_normal
+
+[ITEMDEF 060fe]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1003
+TYPE=t_normal
+
+[ITEMDEF 060ff]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1004
+TYPE=t_normal
+
+[ITEMDEF 06100]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1005
+TYPE=t_normal
+
+[ITEMDEF 06101]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1006
+TYPE=t_normal
+
+[ITEMDEF 06102]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1007
+TYPE=t_normal
+
+[ITEMDEF 06103]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1008
+TYPE=t_normal
+
+[ITEMDEF 06104]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1009
+TYPE=t_normal
+
+[ITEMDEF 06105]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1010
+TYPE=t_normal
+
+[ITEMDEF 06106]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1011
+TYPE=t_normal
+
+[ITEMDEF 06107]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1012
+TYPE=t_normal
+
+[ITEMDEF 06108]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1013
+TYPE=t_normal
+
+[ITEMDEF 06109]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1014
+TYPE=t_normal
+
+[ITEMDEF 0610a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1015
+TYPE=t_normal
+
+[ITEMDEF 0610b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1016
+TYPE=t_normal
+
+[ITEMDEF 0610c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1017
+TYPE=t_normal
+
+[ITEMDEF 0610d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1018
+TYPE=t_normal
+
+[ITEMDEF 0610e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1019
+TYPE=t_normal
+
+[ITEMDEF 0610f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1020
+TYPE=t_normal
+
+[ITEMDEF 06110]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1021
+TYPE=t_normal
+
+[ITEMDEF 06111]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1022
+TYPE=t_normal
+
+[ITEMDEF 06112]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1023
+TYPE=t_normal
+
+[ITEMDEF 06113]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1024
+TYPE=t_normal
+
+[ITEMDEF 06114]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1025
+TYPE=t_normal
+
+[ITEMDEF 06115]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1026
+TYPE=t_normal
+
+[ITEMDEF 06116]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1027
+TYPE=t_normal
+
+[ITEMDEF 06117]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1028
+TYPE=t_normal
+
+[ITEMDEF 06118]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1029
+TYPE=t_normal
+
+[ITEMDEF 06119]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1030
+TYPE=t_normal
+
+[ITEMDEF 0611a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1031
+TYPE=t_normal
+
+[ITEMDEF 0611b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1032
+TYPE=t_normal
+
+[ITEMDEF 0611c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1033
+TYPE=t_normal
+
+[ITEMDEF 0611d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1034
+TYPE=t_normal
+
+[ITEMDEF 0611e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1035
+TYPE=t_normal
+
+[ITEMDEF 0611f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1036
+TYPE=t_normal
+
+[ITEMDEF 06120]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1037
+TYPE=t_normal
+
+[ITEMDEF 06121]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1038
+TYPE=t_normal
+
+[ITEMDEF 06122]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1039
+TYPE=t_normal
+
+[ITEMDEF 06123]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1040
+TYPE=t_normal
+
+[ITEMDEF 06124]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1041
+TYPE=t_normal
+
+[ITEMDEF 06125]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1042
+TYPE=t_normal
+
+[ITEMDEF 06126]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1043
+TYPE=t_normal
+
+[ITEMDEF 06127]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1044
+TYPE=t_normal
+
+[ITEMDEF 06128]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1045
+TYPE=t_normal
+
+[ITEMDEF 06129]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1046
+TYPE=t_normal
+
+[ITEMDEF 0612a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1047
+TYPE=t_normal
+
+[ITEMDEF 0612b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1048
+TYPE=t_normal
+
+[ITEMDEF 0612c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1049
+TYPE=t_normal
+
+[ITEMDEF 0612d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1050
+TYPE=t_normal
+
+[ITEMDEF 0612e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1051
+TYPE=t_normal
+
+[ITEMDEF 0612f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1052
+TYPE=t_normal
+
+[ITEMDEF 06130]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1053
+TYPE=t_normal
+
+[ITEMDEF 06131]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1054
+TYPE=t_normal
+
+[ITEMDEF 06132]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1055
+TYPE=t_normal
+
+[ITEMDEF 06133]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1056
+TYPE=t_normal
+
+[ITEMDEF 06134]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1057
+TYPE=t_normal
+
+[ITEMDEF 06135]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1058
+TYPE=t_normal
+
+[ITEMDEF 06136]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1059
+TYPE=t_normal
+
+[ITEMDEF 06137]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1060
+TYPE=t_normal
+
+[ITEMDEF 06138]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1061
+TYPE=t_normal
+
+[ITEMDEF 06139]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1062
+TYPE=t_normal
+
+[ITEMDEF 0613a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1063
+TYPE=t_normal
+
+[ITEMDEF 0613b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1064
+TYPE=t_normal
+
+[ITEMDEF 0613c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1065
+TYPE=t_normal
+
+[ITEMDEF 0613d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1066
+TYPE=t_normal
+
+[ITEMDEF 0613e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1067
+TYPE=t_normal
+
+[ITEMDEF 0613f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1068
+TYPE=t_normal
+
+[ITEMDEF 06140]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1069
+TYPE=t_normal
+
+[ITEMDEF 06141]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1070
+TYPE=t_normal
+
+[ITEMDEF 06142]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1071
+TYPE=t_normal
+
+[ITEMDEF 06143]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1072
+TYPE=t_normal
+
+[ITEMDEF 06144]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1073
+TYPE=t_normal
+
+[ITEMDEF 06145]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1074
+TYPE=t_normal
+
+[ITEMDEF 06146]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1075
+TYPE=t_normal
+
+[ITEMDEF 06147]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1076
+TYPE=t_normal
+
+[ITEMDEF 06148]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1077
+TYPE=t_normal
+
+[ITEMDEF 06149]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1078
+TYPE=t_normal
+
+[ITEMDEF 0614a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1079
+TYPE=t_normal
+
+[ITEMDEF 0614b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1080
+TYPE=t_normal
+
+[ITEMDEF 0614c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1081
+TYPE=t_normal
+
+[ITEMDEF 0614d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1082
+TYPE=t_normal
+
+[ITEMDEF 0614e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1083
+TYPE=t_normal
+
+[ITEMDEF 0614f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1084
+TYPE=t_normal
+
+[ITEMDEF 06150]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1085
+TYPE=t_normal
+
+[ITEMDEF 06151]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1086
+TYPE=t_normal
+
+[ITEMDEF 06152]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1087
+TYPE=t_normal
+
+[ITEMDEF 06153]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1088
+TYPE=t_normal
+
+[ITEMDEF 06154]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1089
+TYPE=t_normal
+
+[ITEMDEF 06155]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1090
+TYPE=t_normal
+
+[ITEMDEF 06156]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1091
+TYPE=t_normal
+
+[ITEMDEF 06157]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1092
+TYPE=t_normal
+
+[ITEMDEF 06158]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1093
+TYPE=t_normal
+
+[ITEMDEF 06159]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1094
+TYPE=t_normal
+
+[ITEMDEF 0615a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1095
+TYPE=t_normal
+
+[ITEMDEF 0615b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1096
+TYPE=t_normal
+
+[ITEMDEF 0615c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1097
+TYPE=t_normal
+
+[ITEMDEF 0615d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1098
+TYPE=t_normal
+
+[ITEMDEF 0615e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1099
+TYPE=t_normal
+
+[ITEMDEF 0615f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1100
+TYPE=t_normal
+
+[ITEMDEF 06160]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1101
+TYPE=t_normal
+
+[ITEMDEF 06161]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1102
+TYPE=t_normal
+
+[ITEMDEF 06162]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1103
+TYPE=t_normal
+
+[ITEMDEF 06163]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1104
+TYPE=t_normal
+
+[ITEMDEF 06164]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1105
+TYPE=t_normal
+
+[ITEMDEF 06165]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1106
+TYPE=t_normal
+
+[ITEMDEF 06166]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1107
+TYPE=t_normal
+
+[ITEMDEF 06167]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1108
+TYPE=t_normal
+
+[ITEMDEF 06168]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1109
+TYPE=t_normal
+
+[ITEMDEF 06169]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1110
+TYPE=t_normal
+
+[ITEMDEF 0616a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1111
+TYPE=t_normal
+
+[ITEMDEF 0616b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1112
+TYPE=t_normal
+
+[ITEMDEF 0616c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1113
+TYPE=t_normal
+
+[ITEMDEF 0616d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1114
+TYPE=t_normal
+
+[ITEMDEF 0616e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1115
+TYPE=t_normal
+
+[ITEMDEF 0616f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1116
+TYPE=t_normal
+
+[ITEMDEF 06170]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1117
+TYPE=t_normal
+
+[ITEMDEF 06171]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1118
+TYPE=t_normal
+
+[ITEMDEF 06172]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1119
+TYPE=t_normal
+
+[ITEMDEF 06173]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1120
+TYPE=t_normal
+
+[ITEMDEF 06174]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1121
+TYPE=t_normal
+
+[ITEMDEF 06175]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1122
+TYPE=t_normal
+
+[ITEMDEF 06176]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1123
+TYPE=t_normal
+
+[ITEMDEF 06177]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1124
+TYPE=t_normal
+
+[ITEMDEF 06178]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1125
+TYPE=t_normal
+
+[ITEMDEF 06179]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1126
+TYPE=t_normal
+
+[ITEMDEF 0617a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1127
+TYPE=t_normal
+
+[ITEMDEF 0617b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1128
+TYPE=t_normal
+
+[ITEMDEF 0617c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1129
+TYPE=t_normal
+
+[ITEMDEF 0617d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1130
+TYPE=t_normal
+
+[ITEMDEF 0617e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1131
+TYPE=t_normal
+
+[ITEMDEF 0617f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1132
+TYPE=t_normal
+
+[ITEMDEF 06180]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1133
+TYPE=t_normal
+
+[ITEMDEF 06181]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1134
+TYPE=t_normal
+
+[ITEMDEF 06182]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1135
+TYPE=t_normal
+
+[ITEMDEF 06183]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1136
+TYPE=t_normal
+
+[ITEMDEF 06184]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1137
+TYPE=t_normal
+
+[ITEMDEF 06185]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1138
+TYPE=t_normal
+
+[ITEMDEF 06186]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1139
+TYPE=t_normal
+
+[ITEMDEF 06187]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1140
+TYPE=t_normal
+
+[ITEMDEF 06188]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1141
+TYPE=t_normal
+
+[ITEMDEF 06189]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1142
+TYPE=t_normal
+
+[ITEMDEF 0618a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1143
+TYPE=t_normal
+
+[ITEMDEF 0618b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1144
+TYPE=t_normal
+
+[ITEMDEF 0618c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1145
+TYPE=t_normal
+
+[ITEMDEF 0618d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1146
+TYPE=t_normal
+
+[ITEMDEF 0618e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1147
+TYPE=t_normal
+
+[ITEMDEF 0618f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1148
+TYPE=t_normal
+
+[ITEMDEF 06190]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1149
+TYPE=t_normal
+
+[ITEMDEF 06191]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1150
+TYPE=t_normal
+
+[ITEMDEF 06192]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1151
+TYPE=t_normal
+
+[ITEMDEF 06193]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1152
+TYPE=t_normal
+
+[ITEMDEF 06194]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1153
+TYPE=t_normal
+
+[ITEMDEF 06195]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1154
+TYPE=t_normal
+
+[ITEMDEF 06196]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1155
+TYPE=t_normal
+
+[ITEMDEF 06197]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1156
+TYPE=t_normal
+
+[ITEMDEF 06198]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1157
+TYPE=t_normal
+
+[ITEMDEF 06199]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1158
+TYPE=t_normal
+
+[ITEMDEF 0619a]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1159
+TYPE=t_normal
+
+[ITEMDEF 0619b]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1160
+TYPE=t_normal
+
+[ITEMDEF 0619c]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1161
+TYPE=t_normal
+
+[ITEMDEF 0619d]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1162
+TYPE=t_normal
+
+[ITEMDEF 0619e]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1163
+TYPE=t_normal
+
+[ITEMDEF 0619f]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1164
+TYPE=t_normal
+
+[ITEMDEF 061a0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1165
+TYPE=t_normal
+
+[ITEMDEF 061a1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1166
+TYPE=t_normal
+
+[ITEMDEF 061a2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1167
+TYPE=t_normal
+
+[ITEMDEF 061a3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1168
+TYPE=t_normal
+
+[ITEMDEF 061a4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1169
+TYPE=t_normal
+
+[ITEMDEF 061a5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1170
+TYPE=t_normal
+
+[ITEMDEF 061a6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1171
+TYPE=t_normal
+
+[ITEMDEF 061a7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1172
+TYPE=t_normal
+
+[ITEMDEF 061a8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1173
+TYPE=t_normal
+
+[ITEMDEF 061a9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1174
+TYPE=t_normal
+
+[ITEMDEF 061aa]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1175
+TYPE=t_normal
+
+[ITEMDEF 061ab]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1176
+TYPE=t_normal
+
+[ITEMDEF 061ac]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1177
+TYPE=t_normal
+
+[ITEMDEF 061ad]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1178
+TYPE=t_normal
+
+[ITEMDEF 061ae]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1179
+TYPE=t_normal
+
+[ITEMDEF 061af]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1180
+TYPE=t_normal
+
+[ITEMDEF 061b0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1181
+TYPE=t_normal
+
+[ITEMDEF 061b1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1182
+TYPE=t_normal
+
+[ITEMDEF 061b2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1183
+TYPE=t_normal
+
+[ITEMDEF 061b3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1184
+TYPE=t_normal
+
+[ITEMDEF 061b4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1185
+TYPE=t_normal
+
+[ITEMDEF 061b5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1186
+TYPE=t_normal
+
+[ITEMDEF 061b6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1187
+TYPE=t_normal
+
+[ITEMDEF 061b7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1188
+TYPE=t_normal
+
+[ITEMDEF 061b8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1189
+TYPE=t_normal
+
+[ITEMDEF 061b9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1190
+TYPE=t_normal
+
+[ITEMDEF 061ba]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1191
+TYPE=t_normal
+
+[ITEMDEF 061bb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1192
+TYPE=t_normal
+
+[ITEMDEF 061bc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1193
+TYPE=t_normal
+
+[ITEMDEF 061bd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1194
+TYPE=t_normal
+
+[ITEMDEF 061be]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1195
+TYPE=t_normal
+
+[ITEMDEF 061bf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1196
+TYPE=t_normal
+
+[ITEMDEF 061c0]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1197
+TYPE=t_normal
+
+[ITEMDEF 061c1]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1198
+TYPE=t_normal
+
+[ITEMDEF 061c2]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1199
+TYPE=t_normal
+
+[ITEMDEF 061c3]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1200
+TYPE=t_normal
+
+[ITEMDEF 061c4]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1201
+TYPE=t_normal
+
+[ITEMDEF 061c5]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1202
+TYPE=t_normal
+
+[ITEMDEF 061c6]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1203
+TYPE=t_normal
+
+[ITEMDEF 061c7]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1204
+TYPE=t_normal
+
+[ITEMDEF 061c8]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1205
+TYPE=t_normal
+
+[ITEMDEF 061c9]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1206
+TYPE=t_normal
+
+[ITEMDEF 061ca]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1207
+TYPE=t_normal
+
+[ITEMDEF 061cb]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1208
+TYPE=t_normal
+
+[ITEMDEF 061cc]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1209
+TYPE=t_normal
+
+[ITEMDEF 061cd]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1210
+TYPE=t_normal
+
+[ITEMDEF 061ce]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1211
+TYPE=t_normal
+
+[ITEMDEF 061cf]
+// BritanianShip MainHu
+DEFNAME=i_britanianship_mainhu_1212
+TYPE=t_normal
+
+[ITEMDEF 061d0]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon
+TYPE=t_normal
+
+[ITEMDEF 061d1]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder
+TYPE=t_normal
+
+[ITEMDEF 061d2]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd
+TYPE=t_normal
+
+[ITEMDEF 061d3]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_2
+TYPE=t_normal
+
+[ITEMDEF 061d4]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_3
+TYPE=t_normal
+
+[ITEMDEF 061d5]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_2
+TYPE=t_normal
+
+[ITEMDEF 061d6]
+// BritanianShip Wheel 
+DEFNAME=i_britanianship_wheel
+TYPE=t_normal
+
+[ITEMDEF 061d7]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_4
+TYPE=t_normal
+
+[ITEMDEF 061d8]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_5
+TYPE=t_normal
+
+[ITEMDEF 061d9]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_6
+TYPE=t_normal
+
+[ITEMDEF 061e2]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_2
+TYPE=t_normal
+
+[ITEMDEF 061e3]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_3
+TYPE=t_normal
+
+[ITEMDEF 061e4]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_4
+TYPE=t_normal
+
+[ITEMDEF 061e5]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_5
+TYPE=t_normal
+
+[ITEMDEF 061e6]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_6
+TYPE=t_normal
+
+[ITEMDEF 061e7]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_7
+TYPE=t_normal
+
+[ITEMDEF 061e8]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_8
+TYPE=t_normal
+
+[ITEMDEF 061e9]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_9
+TYPE=t_normal
+
+[ITEMDEF 061ea]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_10
+TYPE=t_normal
+
+[ITEMDEF 061eb]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_11
+TYPE=t_normal
+
+[ITEMDEF 061ec]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_12
+TYPE=t_normal
+
+[ITEMDEF 061ed]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_13
+TYPE=t_normal
+
+[ITEMDEF 061ee]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_14
+TYPE=t_normal
+
+[ITEMDEF 061ef]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_15
+TYPE=t_normal
+
+[ITEMDEF 061f0]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_7
+TYPE=t_normal
+
+[ITEMDEF 061f1]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_8
+TYPE=t_normal
+
+[ITEMDEF 061f2]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_9
+TYPE=t_normal
+
+[ITEMDEF 061f3]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_10
+TYPE=t_normal
+
+[ITEMDEF 061f4]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_11
+TYPE=t_container
+
+[ITEMDEF 061f5]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_12
+TYPE=t_normal
+
+[ITEMDEF 061f6]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_13
+TYPE=t_normal
+
+[ITEMDEF 061f7]
+// BritanianShip Storag
+DEFNAME=i_britanianship_storag
+TYPE=t_normal
+
+[ITEMDEF 061f8]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_14
+TYPE=t_normal
+
+[ITEMDEF 061f9]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_15
+TYPE=t_normal
+
+[ITEMDEF 061fa]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_16
+TYPE=t_normal
+
+[ITEMDEF 061fb]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_17
+TYPE=t_normal
+
+[ITEMDEF 061fc]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_18
+TYPE=t_normal
+
+[ITEMDEF 061fd]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_19
+TYPE=t_normal
+
+[ITEMDEF 061fe]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_20
+TYPE=t_normal
+
+[ITEMDEF 061ff]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_21
+TYPE=t_normal
+
+[ITEMDEF 06200]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_22
+TYPE=t_normal
+
+[ITEMDEF 06201]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_3
+TYPE=t_normal
+
+[ITEMDEF 06202]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_23
+TYPE=t_normal
+
+[ITEMDEF 06203]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_4
+TYPE=t_normal
+
+[ITEMDEF 06204]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_16
+TYPE=t_normal
+
+[ITEMDEF 06205]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_17
+TYPE=t_normal
+
+[ITEMDEF 06206]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_18
+TYPE=t_normal
+
+[ITEMDEF 06207]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_5
+TYPE=t_normal
+
+[ITEMDEF 06208]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_24
+TYPE=t_normal
+
+[ITEMDEF 06209]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_25
+TYPE=t_normal
+
+[ITEMDEF 0620a]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_26
+TYPE=t_normal
+
+[ITEMDEF 0620b]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_6
+TYPE=t_normal
+
+[ITEMDEF 0620c]
+// BritanianShip Wheel 
+DEFNAME=i_britanianship_wheel_2
+TYPE=t_normal
+
+[ITEMDEF 0620d]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_27
+TYPE=t_normal
+
+[ITEMDEF 0620e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_28
+TYPE=t_normal
+
+[ITEMDEF 0620f]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_29
+TYPE=t_normal
+
+[ITEMDEF 06218]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_19
+TYPE=t_normal
+
+[ITEMDEF 06219]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_20
+TYPE=t_normal
+
+[ITEMDEF 0621a]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_21
+TYPE=t_normal
+
+[ITEMDEF 0621b]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_22
+TYPE=t_normal
+
+[ITEMDEF 0621c]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_23
+TYPE=t_normal
+
+[ITEMDEF 0621d]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_30
+TYPE=t_normal
+
+[ITEMDEF 0621e]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_24
+TYPE=t_normal
+
+[ITEMDEF 0621f]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_25
+TYPE=t_normal
+
+[ITEMDEF 06220]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_26
+TYPE=t_normal
+
+[ITEMDEF 06221]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_27
+TYPE=t_normal
+
+[ITEMDEF 06222]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_28
+TYPE=t_normal
+
+[ITEMDEF 06223]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_29
+TYPE=t_normal
+
+[ITEMDEF 06224]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_30
+TYPE=t_normal
+
+[ITEMDEF 06225]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_31
+TYPE=t_normal
+
+[ITEMDEF 06226]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_31
+TYPE=t_normal
+
+[ITEMDEF 06227]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_32
+TYPE=t_normal
+
+[ITEMDEF 06228]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_33
+TYPE=t_normal
+
+[ITEMDEF 06229]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_34
+TYPE=t_normal
+
+[ITEMDEF 0622a]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_35
+TYPE=t_container
+
+[ITEMDEF 0622b]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_36
+TYPE=t_normal
+
+[ITEMDEF 0622c]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_37
+TYPE=t_normal
+
+[ITEMDEF 0622d]
+// BritanianShip Storag
+DEFNAME=i_britanianship_storag_2
+TYPE=t_normal
+
+[ITEMDEF 0622e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_38
+TYPE=t_normal
+
+[ITEMDEF 0622f]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_39
+TYPE=t_normal
+
+[ITEMDEF 06230]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_40
+TYPE=t_normal
+
+[ITEMDEF 06231]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_41
+TYPE=t_normal
+
+[ITEMDEF 06232]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_42
+TYPE=t_normal
+
+[ITEMDEF 06233]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_43
+TYPE=t_normal
+
+[ITEMDEF 06234]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_44
+TYPE=t_normal
+
+[ITEMDEF 06235]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_45
+TYPE=t_normal
+
+[ITEMDEF 06236]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_46
+TYPE=t_normal
+
+[ITEMDEF 06237]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_7
+TYPE=t_normal
+
+[ITEMDEF 06238]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_47
+TYPE=t_normal
+
+[ITEMDEF 06239]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_8
+TYPE=t_normal
+
+[ITEMDEF 0623a]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_32
+TYPE=t_normal
+
+[ITEMDEF 0623b]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_33
+TYPE=t_normal
+
+[ITEMDEF 0623c]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_34
+TYPE=t_normal
+
+[ITEMDEF 0623d]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_9
+TYPE=t_normal
+
+[ITEMDEF 0623e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_48
+TYPE=t_normal
+
+[ITEMDEF 0623f]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_49
+TYPE=t_normal
+
+[ITEMDEF 06240]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_50
+TYPE=t_normal
+
+[ITEMDEF 06241]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_10
+TYPE=t_normal
+
+[ITEMDEF 06242]
+// BritanianShip Wheel 
+DEFNAME=i_britanianship_wheel_3
+TYPE=t_normal
+
+[ITEMDEF 06243]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_51
+TYPE=t_normal
+
+[ITEMDEF 06244]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_52
+TYPE=t_normal
+
+[ITEMDEF 06245]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_53
+TYPE=t_normal
+
+[ITEMDEF 0624e]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_35
+TYPE=t_normal
+
+[ITEMDEF 0624f]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_36
+TYPE=t_normal
+
+[ITEMDEF 06250]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_37
+TYPE=t_normal
+
+[ITEMDEF 06251]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_38
+TYPE=t_normal
+
+[ITEMDEF 06252]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_54
+TYPE=t_normal
+
+[ITEMDEF 06253]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_39
+TYPE=t_normal
+
+[ITEMDEF 06254]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_40
+TYPE=t_normal
+
+[ITEMDEF 06255]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_41
+TYPE=t_normal
+
+[ITEMDEF 06256]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_42
+TYPE=t_normal
+
+[ITEMDEF 06257]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_43
+TYPE=t_normal
+
+[ITEMDEF 06258]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_44
+TYPE=t_normal
+
+[ITEMDEF 06259]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_45
+TYPE=t_normal
+
+[ITEMDEF 0625a]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_46
+TYPE=t_normal
+
+[ITEMDEF 0625b]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_47
+TYPE=t_normal
+
+[ITEMDEF 0625c]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_55
+TYPE=t_normal
+
+[ITEMDEF 0625d]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_56
+TYPE=t_normal
+
+[ITEMDEF 0625e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_57
+TYPE=t_normal
+
+[ITEMDEF 0625f]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_58
+TYPE=t_normal
+
+[ITEMDEF 06260]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_59
+TYPE=t_container
+
+[ITEMDEF 06261]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_60
+TYPE=t_normal
+
+[ITEMDEF 06262]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_61
+TYPE=t_normal
+
+[ITEMDEF 06263]
+// BritanianShip Storag
+DEFNAME=i_britanianship_storag_3
+TYPE=t_normal
+
+[ITEMDEF 06264]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_62
+TYPE=t_normal
+
+[ITEMDEF 06265]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_63
+TYPE=t_normal
+
+[ITEMDEF 06266]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_64
+TYPE=t_normal
+
+[ITEMDEF 06267]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_65
+TYPE=t_normal
+
+[ITEMDEF 06268]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_66
+TYPE=t_normal
+
+[ITEMDEF 06269]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_67
+TYPE=t_normal
+
+[ITEMDEF 0626a]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_68
+TYPE=t_normal
+
+[ITEMDEF 0626b]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_69
+TYPE=t_normal
+
+[ITEMDEF 0626c]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_70
+TYPE=t_normal
+
+[ITEMDEF 0626d]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_11
+TYPE=t_normal
+
+[ITEMDEF 0626e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_71
+TYPE=t_normal
+
+[ITEMDEF 0626f]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_12
+TYPE=t_normal
+
+[ITEMDEF 06270]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_48
+TYPE=t_normal
+
+[ITEMDEF 06271]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_49
+TYPE=t_normal
+
+[ITEMDEF 06272]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_50
+TYPE=t_normal
+
+[ITEMDEF 06273]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_13
+TYPE=t_normal
+
+[ITEMDEF 06274]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_72
+TYPE=t_normal
+
+[ITEMDEF 06275]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_73
+TYPE=t_normal
+
+[ITEMDEF 06276]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_74
+TYPE=t_normal
+
+[ITEMDEF 06277]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_14
+TYPE=t_normal
+
+[ITEMDEF 06278]
+// BritanianShip Wheel 
+DEFNAME=i_britanianship_wheel_4
+TYPE=t_normal
+
+[ITEMDEF 06279]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_75
+TYPE=t_normal
+
+[ITEMDEF 0627a]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_76
+TYPE=t_normal
+
+[ITEMDEF 0627b]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_77
+TYPE=t_normal
+
+[ITEMDEF 06284]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_51
+TYPE=t_normal
+
+[ITEMDEF 06285]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_52
+TYPE=t_normal
+
+[ITEMDEF 06286]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_53
+TYPE=t_normal
+
+[ITEMDEF 06287]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_54
+TYPE=t_normal
+
+[ITEMDEF 06288]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_55
+TYPE=t_normal
+
+[ITEMDEF 06289]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_56
+TYPE=t_normal
+
+[ITEMDEF 0628a]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_57
+TYPE=t_normal
+
+[ITEMDEF 0628b]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_58
+TYPE=t_normal
+
+[ITEMDEF 0628c]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_59
+TYPE=t_normal
+
+[ITEMDEF 0628d]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_60
+TYPE=t_normal
+
+[ITEMDEF 0628e]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_61
+TYPE=t_normal
+
+[ITEMDEF 0628f]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_62
+TYPE=t_normal
+
+[ITEMDEF 06290]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_63
+TYPE=t_normal
+
+[ITEMDEF 06291]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_64
+TYPE=t_normal
+
+[ITEMDEF 06292]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_78
+TYPE=t_normal
+
+[ITEMDEF 06293]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_79
+TYPE=t_normal
+
+[ITEMDEF 06294]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_80
+TYPE=t_normal
+
+[ITEMDEF 06295]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_81
+TYPE=t_normal
+
+[ITEMDEF 06296]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_82
+TYPE=t_container
+
+[ITEMDEF 06297]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_83
+TYPE=t_normal
+
+[ITEMDEF 06298]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_84
+TYPE=t_normal
+
+[ITEMDEF 06299]
+// BritanianShip Storag
+DEFNAME=i_britanianship_storag_4
+TYPE=t_normal
+
+[ITEMDEF 0629a]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_85
+TYPE=t_normal
+
+[ITEMDEF 0629b]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_86
+TYPE=t_normal
+
+[ITEMDEF 0629c]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_87
+TYPE=t_normal
+
+[ITEMDEF 0629d]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_88
+TYPE=t_normal
+
+[ITEMDEF 0629e]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_89
+TYPE=t_normal
+
+[ITEMDEF 0629f]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_90
+TYPE=t_normal
+
+[ITEMDEF 062a0]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_91
+TYPE=t_normal
+
+[ITEMDEF 062a1]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_92
+TYPE=t_normal
+
+[ITEMDEF 062a2]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_93
+TYPE=t_normal
+
+[ITEMDEF 062a3]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_15
+TYPE=t_normal
+
+[ITEMDEF 062a4]
+// BritanianShip PropsD
+DEFNAME=i_britanianship_propsd_94
+TYPE=t_normal
+
+[ITEMDEF 062a5]
+// BritanianShip Ladder
+DEFNAME=i_britanianship_ladder_16
+TYPE=t_normal
+
+[ITEMDEF 062a6]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_65
+TYPE=t_normal
+
+[ITEMDEF 062a7]
+// BritanianShip Weapon
+DEFNAME=i_britanianship_weapon_66
+TYPE=t_normal
+
+[ITEMDEF 062a8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_46
+TYPE=t_normal
+
+[ITEMDEF 062a9]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_47
+TYPE=t_normal
+
+[ITEMDEF 062aa]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_48
+TYPE=t_normal
+
+[ITEMDEF 062ab]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_49
+TYPE=t_normal
+
+[ITEMDEF 062ac]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_50
+TYPE=t_normal
+
+[ITEMDEF 062ad]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_51
+TYPE=t_normal
+
+[ITEMDEF 062ae]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_52
+TYPE=t_normal
+
+[ITEMDEF 062af]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_53
+TYPE=t_normal
+
+[ITEMDEF 062b0]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_54
+TYPE=t_normal
+
+[ITEMDEF 062b1]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_55
+TYPE=t_normal
+
+[ITEMDEF 062b2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_56
+TYPE=t_normal
+
+[ITEMDEF 062b4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_57
+TYPE=t_normal
+
+[ITEMDEF 062b5]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_58
+TYPE=t_normal
+
+[ITEMDEF 062b6]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_59
+TYPE=t_normal
+
+[ITEMDEF 062b7]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_60
+TYPE=t_normal
+
+[ITEMDEF 062b8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_61
+TYPE=t_normal
+
+[ITEMDEF 062b9]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_62
+TYPE=t_normal
+
+[ITEMDEF 062ba]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_63
+TYPE=t_normal
+
+[ITEMDEF 062bb]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_64
+TYPE=t_normal
+
+[ITEMDEF 062bc]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_65
+TYPE=t_normal
+
+[ITEMDEF 062be]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_66
+TYPE=t_normal
+
+[ITEMDEF 062bf]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_67
+TYPE=t_normal
+
+[ITEMDEF 062c0]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_68
+TYPE=t_normal
+
+[ITEMDEF 062c1]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_69
+TYPE=t_normal
+
+[ITEMDEF 062c2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_70
+TYPE=t_normal
+
+[ITEMDEF 062c3]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_71
+TYPE=t_normal
+
+[ITEMDEF 062c4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_72
+TYPE=t_normal
+
+[ITEMDEF 062c5]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_73
+TYPE=t_normal
+
+[ITEMDEF 062c6]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_74
+TYPE=t_normal
+
+[ITEMDEF 062c7]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_75
+TYPE=t_normal
+
+[ITEMDEF 062c8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_76
+TYPE=t_normal
+
+[ITEMDEF 062c9]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_77
+TYPE=t_normal
+
+[ITEMDEF 062ca]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_78
+TYPE=t_normal
+
+[ITEMDEF 062cb]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_79
+TYPE=t_normal
+
+[ITEMDEF 062cc]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_80
+TYPE=t_normal
+
+[ITEMDEF 062cd]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_81
+TYPE=t_normal
+
+[ITEMDEF 062ce]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_82
+TYPE=t_normal
+
+[ITEMDEF 062cf]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_83
+TYPE=t_normal
+
+[ITEMDEF 062d0]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_84
+TYPE=t_normal
+
+[ITEMDEF 062d1]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_85
+TYPE=t_normal
+
+[ITEMDEF 062d2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_86
+TYPE=t_normal
+
+[ITEMDEF 062d3]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_87
+TYPE=t_normal
+
+[ITEMDEF 062d4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_88
+TYPE=t_normal
+
+[ITEMDEF 062d5]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_89
+TYPE=t_normal
+
+[ITEMDEF 062d6]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_90
+TYPE=t_normal
+
+[ITEMDEF 062d7]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_91
+TYPE=t_normal
+
+[ITEMDEF 062d8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_92
+TYPE=t_normal
+
+[ITEMDEF 062d9]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_93
+TYPE=t_normal
+
+[ITEMDEF 062da]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_94
+TYPE=t_normal
+
+[ITEMDEF 062db]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_95
+TYPE=t_normal
+
+[ITEMDEF 062dc]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_96
+TYPE=t_normal
+
+[ITEMDEF 062dd]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_97
+TYPE=t_normal
+
+[ITEMDEF 062de]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_98
+TYPE=t_normal
+
+[ITEMDEF 062df]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_99
+TYPE=t_normal
+
+[ITEMDEF 062e0]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_100
+TYPE=t_normal
+
+[ITEMDEF 062e1]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_101
+TYPE=t_normal
+
+[ITEMDEF 062e2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_102
+TYPE=t_normal
+
+[ITEMDEF 062e3]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_103
+TYPE=t_normal
+
+[ITEMDEF 062e4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_104
+TYPE=t_normal
+
+[ITEMDEF 062e5]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_105
+TYPE=t_normal
+
+[ITEMDEF 062e6]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_106
+TYPE=t_normal
+
+[ITEMDEF 062e7]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_107
+TYPE=t_normal
+
+[ITEMDEF 062e8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_108
+TYPE=t_normal
+
+[ITEMDEF 062ea]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_109
+TYPE=t_normal
+
+[ITEMDEF 062eb]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_110
+TYPE=t_normal
+
+[ITEMDEF 062ec]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_111
+TYPE=t_normal
+
+[ITEMDEF 062ed]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_112
+TYPE=t_normal
+
+[ITEMDEF 062ee]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_113
+TYPE=t_normal
+
+[ITEMDEF 062ef]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_114
+TYPE=t_normal
+
+[ITEMDEF 062f0]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_115
+TYPE=t_normal
+
+[ITEMDEF 062f1]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_116
+TYPE=t_normal
+
+[ITEMDEF 062f2]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_117
+TYPE=t_normal
+
+[ITEMDEF 062f4]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_118
+TYPE=t_normal
+
+[ITEMDEF 062f5]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_119
+TYPE=t_normal
+
+[ITEMDEF 062f6]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_120
+TYPE=t_normal
+
+[ITEMDEF 062f7]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_121
+TYPE=t_normal
+
+[ITEMDEF 062f8]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_122
+TYPE=t_normal
+
+[ITEMDEF 062f9]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_123
+TYPE=t_normal
+
+[ITEMDEF 062fa]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_124
+TYPE=t_normal
+
+[ITEMDEF 062fb]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_125
+TYPE=t_normal
+
+[ITEMDEF 062fc]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_126
+TYPE=t_normal
+
+[ITEMDEF 062fd]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_127
+TYPE=t_normal
+
+[ITEMDEF 062fe]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_128
+TYPE=t_normal
+
+[ITEMDEF 062ff]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_129
+TYPE=t_normal
+
+[ITEMDEF 06300]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_130
+TYPE=t_normal
+
+[ITEMDEF 06301]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_131
+TYPE=t_normal
+
+[ITEMDEF 06302]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_132
+TYPE=t_normal
+
+[ITEMDEF 06303]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_133
+TYPE=t_normal
+
+[ITEMDEF 06304]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_134
+TYPE=t_normal
+
+[ITEMDEF 06305]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_135
+TYPE=t_normal
+
+[ITEMDEF 06306]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_136
+TYPE=t_normal
+
+[ITEMDEF 06307]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_137
+TYPE=t_normal
+
+[ITEMDEF 06308]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_138
+TYPE=t_normal
+
+[ITEMDEF 06309]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_139
+TYPE=t_normal
+
+[ITEMDEF 0630a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_140
+TYPE=t_normal
+
+[ITEMDEF 0630b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_141
+TYPE=t_normal
+
+[ITEMDEF 0630c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_142
+TYPE=t_normal
+
+[ITEMDEF 0630d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_143
+TYPE=t_normal
+
+[ITEMDEF 0630e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_144
+TYPE=t_normal
+
+[ITEMDEF 0630f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_145
+TYPE=t_normal
+
+[ITEMDEF 06310]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_146
+TYPE=t_normal
+
+[ITEMDEF 06311]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_147
+TYPE=t_normal
+
+[ITEMDEF 06312]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_148
+TYPE=t_normal
+
+[ITEMDEF 06313]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_149
+TYPE=t_normal
+
+[ITEMDEF 06314]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_150
+TYPE=t_normal
+
+[ITEMDEF 06315]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_151
+TYPE=t_normal
+
+[ITEMDEF 06316]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_152
+TYPE=t_normal
+
+[ITEMDEF 06317]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_153
+TYPE=t_normal
+
+[ITEMDEF 06318]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_154
+TYPE=t_normal
+
+[ITEMDEF 06319]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_155
+TYPE=t_normal
+
+[ITEMDEF 0631a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_156
+TYPE=t_normal
+
+[ITEMDEF 0631b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_157
+TYPE=t_normal
+
+[ITEMDEF 0631c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_158
+TYPE=t_normal
+
+[ITEMDEF 0631d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_159
+TYPE=t_normal
+
+[ITEMDEF 0631e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_160
+TYPE=t_normal
+
+[ITEMDEF 06320]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_161
+TYPE=t_normal
+
+[ITEMDEF 06321]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_162
+TYPE=t_normal
+
+[ITEMDEF 06322]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_163
+TYPE=t_normal
+
+[ITEMDEF 06323]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_164
+TYPE=t_normal
+
+[ITEMDEF 06324]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_165
+TYPE=t_normal
+
+[ITEMDEF 06325]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_166
+TYPE=t_normal
+
+[ITEMDEF 06326]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_167
+TYPE=t_normal
+
+[ITEMDEF 06327]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_168
+TYPE=t_normal
+
+[ITEMDEF 06328]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_169
+TYPE=t_normal
+
+[ITEMDEF 0632a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_170
+TYPE=t_normal
+
+[ITEMDEF 0632b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_171
+TYPE=t_normal
+
+[ITEMDEF 0632c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_172
+TYPE=t_normal
+
+[ITEMDEF 0632d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_173
+TYPE=t_normal
+
+[ITEMDEF 0632e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_174
+TYPE=t_normal
+
+[ITEMDEF 0632f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_175
+TYPE=t_normal
+
+[ITEMDEF 06330]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_176
+TYPE=t_normal
+
+[ITEMDEF 06331]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_177
+TYPE=t_normal
+
+[ITEMDEF 06332]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_178
+TYPE=t_normal
+
+[ITEMDEF 06333]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_179
+TYPE=t_normal
+
+[ITEMDEF 06334]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_180
+TYPE=t_normal
+
+[ITEMDEF 06335]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_181
+TYPE=t_normal
+
+[ITEMDEF 06336]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_182
+TYPE=t_normal
+
+[ITEMDEF 06337]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_183
+TYPE=t_normal
+
+[ITEMDEF 06338]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_184
+TYPE=t_normal
+
+[ITEMDEF 06339]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_185
+TYPE=t_normal
+
+[ITEMDEF 0633a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_186
+TYPE=t_normal
+
+[ITEMDEF 0633b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_187
+TYPE=t_normal
+
+[ITEMDEF 0633c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_188
+TYPE=t_normal
+
+[ITEMDEF 0633d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_189
+TYPE=t_normal
+
+[ITEMDEF 0633e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_190
+TYPE=t_normal
+
+[ITEMDEF 0633f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_191
+TYPE=t_normal
+
+[ITEMDEF 06340]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_192
+TYPE=t_normal
+
+[ITEMDEF 06341]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_193
+TYPE=t_normal
+
+[ITEMDEF 06342]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_194
+TYPE=t_normal
+
+[ITEMDEF 06343]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_195
+TYPE=t_normal
+
+[ITEMDEF 06344]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_196
+TYPE=t_normal
+
+[ITEMDEF 06345]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_197
+TYPE=t_normal
+
+[ITEMDEF 06346]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_198
+TYPE=t_normal
+
+[ITEMDEF 06347]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_199
+TYPE=t_normal
+
+[ITEMDEF 06348]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_200
+TYPE=t_normal
+
+[ITEMDEF 06349]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_201
+TYPE=t_normal
+
+[ITEMDEF 0634a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_202
+TYPE=t_normal
+
+[ITEMDEF 0634b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_203
+TYPE=t_normal
+
+[ITEMDEF 0634c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_204
+TYPE=t_normal
+
+[ITEMDEF 0634d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_205
+TYPE=t_normal
+
+[ITEMDEF 0634e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_206
+TYPE=t_normal
+
+[ITEMDEF 0634f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_207
+TYPE=t_normal
+
+[ITEMDEF 06350]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_208
+TYPE=t_normal
+
+[ITEMDEF 06351]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_209
+TYPE=t_normal
+
+[ITEMDEF 06352]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_210
+TYPE=t_normal
+
+[ITEMDEF 06353]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_211
+TYPE=t_normal
+
+[ITEMDEF 06354]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_212
+TYPE=t_normal
+
+[ITEMDEF 06356]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_213
+TYPE=t_normal
+
+[ITEMDEF 06357]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_214
+TYPE=t_normal
+
+[ITEMDEF 06358]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_215
+TYPE=t_normal
+
+[ITEMDEF 06359]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_216
+TYPE=t_normal
+
+[ITEMDEF 0635a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_217
+TYPE=t_normal
+
+[ITEMDEF 0635b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_218
+TYPE=t_normal
+
+[ITEMDEF 0635c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_219
+TYPE=t_normal
+
+[ITEMDEF 0635d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_220
+TYPE=t_normal
+
+[ITEMDEF 0635e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_221
+TYPE=t_normal
+
+[ITEMDEF 06360]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_222
+TYPE=t_normal
+
+[ITEMDEF 06361]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_223
+TYPE=t_normal
+
+[ITEMDEF 06362]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_224
+TYPE=t_normal
+
+[ITEMDEF 06363]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_225
+TYPE=t_normal
+
+[ITEMDEF 06364]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_226
+TYPE=t_normal
+
+[ITEMDEF 06365]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_227
+TYPE=t_normal
+
+[ITEMDEF 06366]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_228
+TYPE=t_normal
+
+[ITEMDEF 06367]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_229
+TYPE=t_normal
+
+[ITEMDEF 06368]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_230
+TYPE=t_normal
+
+[ITEMDEF 06369]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_231
+TYPE=t_normal
+
+[ITEMDEF 0636a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_232
+TYPE=t_normal
+
+[ITEMDEF 0636b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_233
+TYPE=t_normal
+
+[ITEMDEF 0636c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_234
+TYPE=t_normal
+
+[ITEMDEF 0636d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_235
+TYPE=t_normal
+
+[ITEMDEF 0636e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_236
+TYPE=t_normal
+
+[ITEMDEF 0636f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_237
+TYPE=t_normal
+
+[ITEMDEF 06370]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_238
+TYPE=t_normal
+
+[ITEMDEF 06371]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_239
+TYPE=t_normal
+
+[ITEMDEF 06372]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_240
+TYPE=t_normal
+
+[ITEMDEF 06373]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_241
+TYPE=t_normal
+
+[ITEMDEF 06374]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_242
+TYPE=t_normal
+
+[ITEMDEF 06375]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_243
+TYPE=t_normal
+
+[ITEMDEF 06376]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_244
+TYPE=t_normal
+
+[ITEMDEF 06377]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_245
+TYPE=t_normal
+
+[ITEMDEF 06378]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_246
+TYPE=t_normal
+
+[ITEMDEF 06379]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_247
+TYPE=t_normal
+
+[ITEMDEF 0637a]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_248
+TYPE=t_normal
+
+[ITEMDEF 0637b]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_249
+TYPE=t_normal
+
+[ITEMDEF 0637c]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_250
+TYPE=t_normal
+
+[ITEMDEF 0637d]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_251
+TYPE=t_normal
+
+[ITEMDEF 0637e]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_252
+TYPE=t_normal
+
+[ITEMDEF 0637f]
+// BritanianShip Sails 
+DEFNAME=i_britanianship_sails_253
+TYPE=t_normal
+
+//Separate?
 [ITEMDEF 059d8]
 // BrittanianMainHull S
 DEFNAME=i_brittanianmainhull_s
