@@ -762,5 +762,144 @@ TYPE=T_GAME_PIECE
 [ITEMDEF 03f8f]
 //
 
+[ITEMDEF 075bf]
+// NoName // orc
+DEFNAME=i_noname
+TYPE=t_normal
+
+[ITEMDEF 077b3]
+// NoName // orc
+DEFNAME=i_noname_2
+TYPE=t_normal
+
+[ITEMDEF 079a7]
+// NoName // orc
+DEFNAME=i_noname_3
+TYPE=t_normal
+
+[ITEMDEF 07b98]
+// NoName // orc
+DEFNAME=i_noname_4
+TYPE=t_normal
+
+[ITEMDEF 07c95]
+// NoName //Orc
+DEFNAME=i_noname_5
+TYPE=t_normal
+
+[ITEMDEF 07d5c]
+// NoName //Orc
+DEFNAME=i_noname_6
+TYPE=t_normal
+
+[ITEMDEF 07e24]
+// NoName //Orc
+DEFNAME=i_noname_7
+TYPE=t_normal
+
+[ITEMDEF 07eea]
+// NoName //Orc
+DEFNAME=i_noname_8
+TYPE=t_normal
+
+[ITEMDEF 07f79]
+// NoName //Orc
+DEFNAME=i_noname_9
+TYPE=t_normal
+
+[ITEMDEF 07fb2]
+// NoName //Orc
+DEFNAME=i_noname_10
+TYPE=t_normal
+
+[ITEMDEF 08041]
+// NoName //Orc
+DEFNAME=i_noname_11
+TYPE=t_normal
+
+[ITEMDEF 08065]
+// NoName //Orc
+DEFNAME=i_noname_12
+TYPE=t_normal
+
+[ITEMDEF 0807a]
+// NoName //Orc
+DEFNAME=i_noname_13
+TYPE=t_normal
+
+[ITEMDEF 08109]
+// NoName //Orc
+DEFNAME=i_noname_14
+TYPE=t_normal
+
+[ITEMDEF 08143]
+// NoName //Orc
+DEFNAME=i_noname_15
+TYPE=t_normal
+
+[ITEMDEF 081d1]
+// NoName //Orc
+DEFNAME=i_noname_16
+TYPE=t_normal
+
+[ITEMDEF 081f5]
+// NoName //Orc
+DEFNAME=i_noname_17
+TYPE=t_normal
+
+[ITEMDEF 0820c]
+// NoName //Orc
+DEFNAME=i_noname_18
+TYPE=t_normal
+
+[ITEMDEF 087e0]
+// NoName //Garg
+DEFNAME=i_noname_19
+TYPE=t_normal
+
+[ITEMDEF 090bb]
+// NoName //Garg
+DEFNAME=i_noname_20
+TYPE=t_normal
+
+[ITEMDEF 09250]
+// NoName //tok
+DEFNAME=i_noname_21
+TYPE=t_normal
+
+[ITEMDEF 09272]
+// NoName //tok
+DEFNAME=i_noname_22
+TYPE=t_normal
+
+[ITEMDEF 092a0]
+// NoName //tok
+DEFNAME=i_noname_23
+TYPE=t_normal
+
+[ITEMDEF 092fc]
+// NoName //tok
+DEFNAME=i_noname_24
+TYPE=t_normal
+
+[ITEMDEF 095f6]
+// NoName //tok
+DEFNAME=i_noname_26
+TYPE=t_normal
+
+[ITEMDEF 095f7]
+// NoName //tok
+DEFNAME=i_noname_27
+TYPE=t_normal
+
+[ITEMDEF 0989e]
+// NoName //tok
+DEFNAME=i_noname_28
+TYPE=t_normal
+
+[ITEMDEF 098d0]
+// NoName //tok
+DEFNAME=i_noname_29
+TYPE=t_normal
 
 [EOF]

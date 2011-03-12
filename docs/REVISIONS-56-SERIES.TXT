@@ -5128,3 +5128,11 @@ ALPHA additions:
 22-02-2011, MrSugarCube
 - Fixed #1821: Exception when talking to an NPC who is having a conversation with another
   player.
+
+12-03-2011, Khaos (Script pack)
+- Added: Script support of all the new High Seas ship multis (sphere_item_multi_houses_ships.scp)
+  and parts (sphere_item_ship_parts_britannian.scp, sphere_item_ship_parts_gargish.scp,
+  sphere_item_ship_parts_orcish.scp, sphere_item_ship_parts_tokuno.scp).
+- Updated: Updated some of the axis cats in the sphere_item_multi_houses_ships.scp file.
+- Updated:sphere_item_unsorted.scp with noname tiles that were with the ships. Possible
+  ship component pieces.
