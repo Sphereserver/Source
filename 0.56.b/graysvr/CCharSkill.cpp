@@ -332,22 +332,22 @@ SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest
 	if ( iRank < 0 || iRank >= MAX_SKILL )
 		iRank = 0;
 
-	DWORD * pdwSkills = new DWORD [iRank+1];
+	DWORD * pdwSkills = new DWORD [iRank + 1];
 	ASSERT(pdwSkills);
-	memset( pdwSkills, 0, (iRank+1) * sizeof(DWORD));
+	memset( pdwSkills, 0, (iRank + 1) * sizeof(DWORD));
 
 	DWORD dwSkillTmp;
-	for ( int i=0;i<MAX_SKILL;i++)
+	for ( int i = 0; i < MAX_SKILL; i++)
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
 			continue;
 
 		dwSkillTmp = MAKEDWORD( i, Skill_GetBase( (SKILL_TYPE)i ));
-		for ( int j=0; j<=iRank; j++ )
+		for ( size_t j = 0; j <= iRank; j++ )
 		{
 			if ( HIWORD(dwSkillTmp) >= HIWORD(pdwSkills[j]) )
 			{
-				memmove( pdwSkills+j+1, pdwSkills+j, iRank-j );
+				memmove( &pdwSkills[j + 1], &pdwSkills[j], (iRank - j) * sizeof(DWORD) );
 				pdwSkills[j] = dwSkillTmp;
 				break;
 			}

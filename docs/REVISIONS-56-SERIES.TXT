@@ -5122,6 +5122,9 @@ ALPHA additions:
 - Modified #1912: Teleporting clients no longer receive unnecessary item packet for the smoke
   effect they leave behind.
 
+17-02-2011, MrSugarCube
+- Fixed: Client connections being blocked for connecting too often, even though they aren't.
+
 19-02-2011, MrSugarCube
 - Modified: Profiling statistics now include number of faults that occurred in each thread.
 
@@ -5137,3 +5140,6 @@ ALPHA additions:
 - Updated:sphere_item_unsorted.scp with noname tiles that were with the ships. Possible
   ship component pieces.
 - Updated: sphere_item_ship_parts_britannian.scp; added more parts.
+
+13-03-2011, MrSugarCube
+- Fixed #1925: SKILLBEST.n not working correctly.
