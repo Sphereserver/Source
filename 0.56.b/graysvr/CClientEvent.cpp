@@ -1466,6 +1466,9 @@ void CClient::Event_ToolTip( CGrayUID uid )
 void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip )
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
+	if (m_pChar == NULL)
+		return;
+
 	// result of addPrompt
 	TCHAR szText[MAX_TALK_BUFFER];
 

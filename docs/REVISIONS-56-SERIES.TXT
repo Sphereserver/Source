@@ -5143,3 +5143,5 @@ ALPHA additions:
 
 13-03-2011, MrSugarCube
 - Fixed #1925: SKILLBEST.n not working correctly.
+- Fixed #1922: Exception caused by Sphere trying to send character position to a client
+  before a character has been selected.

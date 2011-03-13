@@ -541,6 +541,8 @@ bool PacketResynchronize::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
+	if (client->GetChar() == NULL)
+		return false;
 
 	net->m_sequence = 0;
 	client->addReSync();
@@ -628,6 +630,8 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 
 	CClient* client = net->getClient();
 	ASSERT(client);
+	if (client->GetChar() == NULL)
+		return false;
 
 	if ( requestType == 4 )
 	{

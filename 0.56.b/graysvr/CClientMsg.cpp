@@ -1801,6 +1801,8 @@ void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
 void CClient::addReSync(bool bForceMap)
 {
 	ADDTOCALLSTACK("CClient::addReSync");
+	if ( m_pChar == NULL )
+		return;
 	// Reloads the client with all it needs.
 	CPointMap ptold;	// invalid value.
 	addMap(NULL, !bForceMap);
@@ -1815,6 +1817,9 @@ void CClient::addReSync(bool bForceMap)
 void CClient::addMap( const CPointMap * pOldP, bool playerStart)
 {
 	ADDTOCALLSTACK("CClient::addMap");
+	if ( m_pChar == NULL )
+		return;
+
 	CPointMap pt = m_pChar->GetTopPoint();
 
 	if ( !playerStart && pOldP && pOldP->m_map == pt.m_map )
