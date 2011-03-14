@@ -5145,3 +5145,19 @@ ALPHA additions:
 - Fixed #1925: SKILLBEST.n not working correctly.
 - Fixed #1922: Exception caused by Sphere trying to send character position to a client
   before a character has been selected.
+
+13-03-2011, Coruja (Script pack)
+- Updated #1893: sphere_map2.scp (Add gaurded and global flags to Ver Lor
+  Reg).
+
+13-03-2011, Khaos
+- Fixed: Advanced Line of Sight. Couldn't shoot or cast with any intervening
+  water files.
+- Added #1916: sphere.ini now contains "DefaultCommandLevel". It takes a level
+  of 0 - 7 (# corresponds to plevel). Default is 7. Whatever you set the value
+  to will be the min plevel for a char to use all commands not in a [plevel xxx].
+
+13-03-2011, Khaos (Script pack)
+- Updated: sphere_defs.scp (added los_nc_water to los flags section. If you use
+  with CANSEELOSFLAG, it will stop LOS across water (i.e. Firing from a ship to
+  another ship)).

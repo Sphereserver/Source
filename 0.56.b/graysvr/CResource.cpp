@@ -184,6 +184,8 @@ CResource::CResource()
 
 	m_cCommandPrefix = '.';
 
+	m_iDefaultCommandLevel = 7;	//PLevel 7 default for command levels.
+
 	m_iRegenRate[STAT_STR] = 6*TICK_PER_SEC;		// Seconds to heal ONE hp (before stam/food adjust)
 	m_iRegenRate[STAT_INT] = 5*TICK_PER_SEC;		// Seconds to heal ONE mn
 	m_iRegenRate[STAT_DEX] = 3*TICK_PER_SEC;		// Seconds to heal ONE stm
@@ -393,6 +395,7 @@ enum RC_TYPE
 	RC_DEADSOCKETTIME,
 	RC_DEBUGFLAGS,
 	RC_DECAYTIMER,
+	RC_DEFAULTCOMMANDLEVEL,	//m_iDefaultCommandLevel
 	RC_DISTANCETALK,
 	RC_DISTANCEWHISPER,
 	RC_DISTANCEYELL,
@@ -603,6 +606,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DEADSOCKETTIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iDeadSocketTime),		0 }},
 	{ "DEBUGFLAGS",				{ ELEM_WORD,	OFFSETOF(CResource,m_wDebugFlags),			0 }},
 	{ "DECAYTIMER",				{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_Item),			0 }},
+	{ "DEFAULTCOMMANDLEVEL",	{ ELEM_INT,		OFFSETOF(CResource,m_iDefaultCommandLevel),	0 }},
 	{ "DISTANCETALK",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceTalk ),		0 }},
 	{ "DISTANCEWHISPER",		{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceWhisper ),	0 }},
 	{ "DISTANCEYELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceYell ),		0 }},
@@ -1751,7 +1755,7 @@ PLEVEL_TYPE CResource::GetPrivCommandLevel( LPCTSTR pszCmd ) const
 
 	// A GM will default to use all commands.
 	// xcept those that are specifically named that i can't use.
-	return PLEVEL_GM;	// default level.
+	return ( (PLEVEL_TYPE)m_iDefaultCommandLevel );	// default level.
 }
 
 bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTextConsole * pSrc ) const

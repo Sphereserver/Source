@@ -98,7 +98,7 @@ RECT=856,576,896,704,2
 RECT=904,624,928,656,2
 GROUP=Ilshenar Towns
 TAG.TITLE=the city of
-FLAGS=region_flag_nobuilding
+FLAGS=region_flag_nobuilding|region_flag_global|region_flag_guarded
 
 [AREADEF a_pormir_harm]
 NAME=Pormir Harm

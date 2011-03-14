@@ -1439,7 +1439,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 							break;
 						}
 						CGrayTerrainInfo land( terrainid );
-						if (( land.m_flags & UFLAG1_WATER ) && (!( flags & LOS_FISHING )))
+						if (( land.m_flags & UFLAG1_WATER ) && ( flags & LOS_NC_WATER ))
 							bNullTerrain = true;
 					}
 				}

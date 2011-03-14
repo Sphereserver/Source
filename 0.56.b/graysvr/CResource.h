@@ -893,6 +893,8 @@ public:
 
 	char	m_cCommandPrefix;
 
+	int		m_iDefaultCommandLevel;
+
 	//	color noto flag
 	int		m_iColorNotoCriminal;
 	int		m_iColorNotoDefault;

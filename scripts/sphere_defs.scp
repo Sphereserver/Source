@@ -1251,17 +1251,18 @@ empty_cliloc		1042971
 
 [DEFNAME los_flags]
 los_nb_local_terrain	00001	// Terrain inside a region I am standing in does not block LOS
-los_nb_local_static		00002	// Static items inside a region I am standing in do not block LOS
+los_nb_local_static	00002	// Static items inside a region I am standing in do not block LOS
 los_nb_local_dynamic	00004	// Dynamic items inside a region I am standing in do not block LOS
-los_nb_local_multi		00008	// Multi items inside a region I am standing in do not block LOS
-los_nb_terrain				00010	// Terrain does not block LOS at all
-los_nb_static					00020	// Static items do not block LOS at all
-los_nb_dynamic				00040	// Dynamic items do not block LOS at all
-los_nb_multi					00080	// Multi items do not block LOS at all
-los_nb_windows				00100	// Windows do not block LOS (e.g. Archery + Magery)
-los_no_other_region		00200	// Do not allow LOS path checking to go out of your region
-los_nc_multi					00400	// Do not allow LOS path checking to go through (no cross) a multi region (except the one you are standing in)
-los_fishing						00800	// Do not allow LOS path checking to go through objects or terrain which do not represent water
+los_nb_local_multi	00008	// Multi items inside a region I am standing in do not block LOS
+los_nb_terrain		00010	// Terrain does not block LOS at all
+los_nb_static		00020	// Static items do not block LOS at all
+los_nb_dynamic		00040	// Dynamic items do not block LOS at all
+los_nb_multi		00080	// Multi items do not block LOS at all
+los_nb_windows		00100	// Windows do not block LOS (e.g. Archery + Magery)
+los_no_other_region	00200	// Do not allow LOS path checking to go out of your region
+los_nc_multi		00400	// Do not allow LOS path checking to go through (no cross) a multi region (except the one you are standing in)
+los_fishing		00800	// Do not allow LOS path checking to go through objects or terrain which do not represent water
+los_nc_water		01000	// Do not allow LOS path checking to go through water.
 
 [DEFNAME buff_icons]
 bufficon_dismountprevention 	1001

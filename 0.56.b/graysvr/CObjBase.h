@@ -2839,6 +2839,7 @@ public:
 	#define LOS_NO_OTHER_REGION		0x00200 // Do not allow LOS path checking to go out of your region
 	#define LOS_NC_MULTI			0x00400 // Do not allow LOS path checking to go through (no cross) a multi region (except the one you are standing in)
 	#define LOS_FISHING				0x00800 // Do not allow LOS path checking to go through objects or terrain which do not represent water
+	#define LOS_NC_WATER			0x01000	// Water does not block LOS at all.
 
 
 
