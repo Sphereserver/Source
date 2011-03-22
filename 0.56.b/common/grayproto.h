@@ -981,7 +981,7 @@ enum NOTO_TYPE
 
 // client versions (packets)
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet
-#define MINCLIVER_CUSTOMMULTI		0x400000	// minimum client to recieve custom multi packets
+#define MINCLIVER_CUSTOMMULTI		0x400000	// minimum client to receive custom multi packets
 #define MINCLIVER_DAMAGE			0x400000	// minimum client to receive 0xBF.0x22 packet
 #define MINCLIVER_SPELLBOOK			0x400000	// minimum client to receive 0xBF.0x1B packet
 #define MINCLIVER_TOOLTIP			0x400000	// minimum client to receive tooltip packets
@@ -998,7 +998,8 @@ enum NOTO_TYPE
 #define MINCLIVER_STATUS_V4			0x400010	// minimum client to receive v3 of 0x11 packet
 #define MINCLIVER_STATUS_V5			0x500000	// minimum client to receive v4 of 0x11 packet
 #define MINCLIVER_STATUS_V6			0x600018	// minimum client to receive v5 of 0x11 packet
-
+#define MINCLIVER_EXTRAFEATURES		0x600143	// minimum client to receive 4-byte feature mask
+#define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {

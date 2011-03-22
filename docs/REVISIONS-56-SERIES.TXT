@@ -5147,7 +5147,7 @@ ALPHA additions:
   before a character has been selected.
 
 13-03-2011, Coruja (Script pack)
-- Updated #1893: sphere_map2.scp (Add gaurded and global flags to Ver Lor
+- Updated #1893: sphere_map2.scp (Add guarded and global flags to Ver Lor
   Reg).
 
 13-03-2011, Khaos
@@ -5161,3 +5161,6 @@ ALPHA additions:
 - Updated: sphere_defs.scp (added los_nc_water to los flags section. If you use
   with CANSEELOSFLAG, it will stop LOS across water (i.e. Firing from a ship to
   another ship)).
+
+21-03-2011, MrSugarCube
+- Added: Support for packet changes found in client 7.0.9.0.

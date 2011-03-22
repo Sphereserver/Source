@@ -2863,6 +2863,11 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 {
 	ADDTOCALLSTACK("PacketCharacterList::PacketCharacterList");
 
+	const CAccountRef account = target->GetAccount();
+	ASSERT(account != NULL);
+	DWORD tmVer = account->m_TagDefs.GetKeyNum("clientversion");
+	DWORD tmVerReported = account->m_TagDefs.GetKeyNum("reportedcliver");
+
 	initLength();
 
 	size_t countPos = getPosition();
@@ -2877,16 +2882,42 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 	
 	int startCount = g_Cfg.m_StartDefs.GetCount();
 	writeByte(startCount);
+	
+	// since 7.0.13.0, start locations have extra information
+	bool includeExtraStartInfo = (tmVer >= MINCLIVER_EXTRASTARTINFO || tmVerReported >= MINCLIVER_EXTRASTARTINFO);
 
-	for (int i = 0; i < startCount; i++)
+	if (includeExtraStartInfo)
 	{
-		writeByte(i + 1);
-		writeStringFixedASCII((LPCTSTR)g_Cfg.m_StartDefs[i]->m_sArea, MAX_NAME_SIZE + 1);
-		writeStringFixedASCII((LPCTSTR)g_Cfg.m_StartDefs[i]->m_sName, MAX_NAME_SIZE + 1);
+		// newer clients receive additional start info
+		for (int i = 0; i < startCount; i++)
+		{
+			const CStartLoc* start = g_Cfg.m_StartDefs[i];
+
+			writeByte(i + 1);
+			writeStringFixedASCII((LPCTSTR)start->m_sArea, MAX_NAME_SIZE + 2);
+			writeStringFixedASCII((LPCTSTR)start->m_sName, MAX_NAME_SIZE + 2);
+			writeInt32(start->m_pt.m_x);
+			writeInt32(start->m_pt.m_y);
+			writeInt32(start->m_pt.m_z);
+			writeInt32(start->m_pt.m_map);
+			writeInt32(1149559); // todo: add support for 'description' cliloc
+			writeInt32(0);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < startCount; i++)
+		{
+			writeByte(i + 1);
+			writeStringFixedASCII((LPCTSTR)g_Cfg.m_StartDefs[i]->m_sArea, MAX_NAME_SIZE + 1);
+			writeStringFixedASCII((LPCTSTR)g_Cfg.m_StartDefs[i]->m_sName, MAX_NAME_SIZE + 1);
+		}
 	}
 
-	const CAccountRef account = target->GetAccount();
 	writeInt32(g_Cfg.GetPacketFlag(true, (RESDISPLAY_VERSION)account->GetResDisp(), maximum(account->GetMaxChars(), account->m_Chars.GetCharCount())));
+	
+	if (includeExtraStartInfo)
+		writeInt16(0);
 
 	push(target);
 }
@@ -3274,11 +3305,12 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
 	ADDTOCALLSTACK("PacketEnableFeatures::PacketEnableFeatures");
 
 	const CAccountRef account = target->GetAccount();
+	ASSERT(account != NULL);
 	DWORD tmVer = account->m_TagDefs.GetKeyNum("clientversion");
 	DWORD tmVerReported = account->m_TagDefs.GetKeyNum("reportedcliver");
 	
 	// since 6.0.14.2, feature flags are 4 bytes instead of 2.
-	if (tmVer >= 0x0600143 || tmVerReported >= 0x0600143)
+	if (tmVer >= MINCLIVER_EXTRAFEATURES || tmVerReported >= MINCLIVER_EXTRAFEATURES)
 		writeInt32(flags);
 	else
 		writeInt16((WORD)flags);
