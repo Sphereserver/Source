@@ -82,6 +82,38 @@ void invalidParameterHandler(const wchar_t* expression, const wchar_t* function,
 }
 #endif
 
+void FormatDateTime(TCHAR * pszTemp, LPCTSTR pszFormat, const struct tm * ptmTemp)
+{
+	ASSERT(pszTemp != NULL);
+	ASSERT(pszFormat != NULL);
+	ASSERT(ptmTemp != NULL);
+
+#ifdef _WIN32
+	// on windows we need to set the invalid parameter handler, or else the program will terminate when a bad format is encountered
+	_invalid_parameter_handler oldHandler, newHandler;
+	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
+	oldHandler = _set_invalid_parameter_handler(newHandler);
+
+	try
+	{
+#endif
+
+	if (strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp) == 0)
+		pszTemp[0] = '\0';
+
+#ifdef _WIN32
+	}
+	catch (...)
+	{
+		// since VS2010, it seems an exception gets thrown for invalid format strings too
+		pszTemp[0] = '\0';
+	}
+
+	// restore previous parameter handler
+	_set_invalid_parameter_handler(oldHandler);
+#endif
+}
+
 LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 {
 	TCHAR * pszTemp = Str_GetTemp();
@@ -98,23 +130,8 @@ LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 		return( pszTemp );
 	}
 
-#ifdef _WIN32
-	// set invalid parameter handler, or else the program will terminate when a bad format is encountered
-	_invalid_parameter_handler oldHandler, newHandler;
-	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
-	oldHandler = _set_invalid_parameter_handler(newHandler);
-#endif
-
-	if (!strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp))
-	{
-		pszTemp[0] = '\0';
-	}
-
-#ifdef _WIN32
-	// restore previous parameter handler
-	_set_invalid_parameter_handler(oldHandler);
-#endif
-	return( pszTemp );
+	FormatDateTime(pszTemp, pszFormat, ptmTemp);
+	return pszTemp;
 }
 
 LPCTSTR CGTime::FormatGmt(LPCTSTR pszFormat) const
@@ -132,22 +149,7 @@ LPCTSTR CGTime::FormatGmt(LPCTSTR pszFormat) const
 		return( pszTemp );
 	}
 
-#ifdef _WIN32
-	// set invalid parameter handler, or else the program will terminate when a bad format is encountered
-	_invalid_parameter_handler oldHandler, newHandler;
-	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
-	oldHandler = _set_invalid_parameter_handler(newHandler);
-#endif
-
-	if (!strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp))
-	{
-		pszTemp[0] = '\0';
-	}
-
-#ifdef _WIN32
-	// restore previous parameter handler
-	_set_invalid_parameter_handler(oldHandler);
-#endif
+	FormatDateTime(pszTemp, pszFormat, ptmTemp);
 	return pszTemp;
 }
 

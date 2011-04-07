@@ -5164,3 +5164,7 @@ ALPHA additions:
 
 21-03-2011, MrSugarCube
 - Added: Support for packet changes found in client 7.0.9.0.
+
+07-04-2011, MrSugarCube
+- Fixed: Exception on Windows build when an invalid format string is passed
+  to RTIME.FORMAT.
