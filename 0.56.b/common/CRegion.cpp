@@ -703,8 +703,8 @@ void CRegionBase::r_WriteBase( CScript &s )
 	if ( GetName() && GetName()[0] )
 		s.WriteKey("NAME", GetName() );
 
-	if ( m_sGroup[0] )
-		s.WriteKey("GROUP", m_sGroup );
+	if ( ! m_sGroup.IsEmpty() )
+		s.WriteKey("GROUP", (LPCTSTR) m_sGroup );
 
 	CRegionBase::r_WriteBody( s, "" );
 
@@ -714,7 +714,7 @@ void CRegionBase::r_WriteBase( CScript &s )
 		s.WriteKeyVal("MAP", m_pt.m_map);
 
 	int iQty = GetRegionRectCount();
-	for ( int i=0; i<iQty; i++ )
+	for ( int i = 0; i < iQty; i++ )
 	{
 		s.WriteKey("RECT", GetRegionRect(i).Write() );
 	}

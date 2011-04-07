@@ -5166,5 +5166,6 @@ ALPHA additions:
 - Added: Support for packet changes found in client 7.0.9.0.
 
 07-04-2011, MrSugarCube
-- Fixed: Exception on Windows build when an invalid format string is passed
+- Fixed #1935: Exception when using "d a" command on Linux build.
+- Fixed #1940: Exception on Windows build when an invalid format string is passed
   to RTIME.FORMAT.
