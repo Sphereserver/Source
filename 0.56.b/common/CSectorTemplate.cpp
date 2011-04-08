@@ -117,18 +117,6 @@ void CSectorBase::Init(int index, int newmap)
 	}
 }
 
-int CSectorBase::GetIndex() const
-{
-	ADDTOCALLSTACK("CSectorBase::GetIndex");
-	return m_index;
-}
-
-int CSectorBase::GetMap() const
-{
-	ADDTOCALLSTACK("CSectorBase::GetMap");
-	return m_map;
-}
-
 bool CSectorBase::CheckMapBlockTime( const MapBlockCache::value_type& Elem ) //static
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");

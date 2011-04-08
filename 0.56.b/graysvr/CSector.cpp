@@ -855,7 +855,7 @@ bool CSector::MoveCharToSector( CChar * pChar )
 
 inline bool CSector::IsSectorSleeping() const
 {
-	ADDTOCALLSTACK("CSector::IsSectorSleeping");
+	ADDTOCALLSTACK_INTENSIVE("CSector::IsSectorSleeping");
 	long iAge = - g_World.GetTimeDiff( GetLastClientTime());
 	return( iAge > 10*60*TICK_PER_SEC );
 }
@@ -937,7 +937,7 @@ void CSector::Restock()
 
 void CSector::OnTick(int iPulseCount)
 {
-	ADDTOCALLSTACK("CSector::OnTick");
+	ADDTOCALLSTACK_INTENSIVE("CSector::OnTick");
 	// CWorld gives OnTick() to all CSectors.
 	TIME_PROFILE_INIT;
 	if ( IsSetSpecific )

@@ -115,8 +115,8 @@ public:
 	void Init(int index, int newmap);
 
 	// Location map units.
-	int GetIndex() const;
-	int GetMap() const;
+	int GetIndex() const { return m_index; }
+	int GetMap() const { return m_map; }
 	CPointMap GetBasePoint() const;
 	CRectMap GetRect() const;
 	bool IsInDungeon() const;

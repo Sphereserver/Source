@@ -2289,7 +2289,7 @@ int CWorld::GetMoonPhase (bool bMoonIndex) const
 
 void CWorld::OnTick()
 {
-	ADDTOCALLSTACK("CWorld::OnTick");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::OnTick");
 	// Do this once per tick.
 	// 256 real secs = 1 GRAYhour. 19 light levels. check every 10 minutes or so.
 
@@ -2396,7 +2396,7 @@ void CWorld::OnTick()
 
 CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 {
-	ADDTOCALLSTACK("CWorld::GetSector");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetSector");
 
 	// if the map is not supported, return empty sector
 	if (( map < 0 ) || ( map >= 256 ) || !g_MapList.m_maps[map] )
