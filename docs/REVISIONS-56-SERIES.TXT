@@ -5169,3 +5169,7 @@ ALPHA additions:
 - Fixed #1935: Exception when using "d a" command on Linux build.
 - Fixed #1940: Exception on Windows build when an invalid format string is passed
   to RTIME.FORMAT.
+
+09-04-2011, MrSugarCube
+- Modified #1941: Custom houses (t_multi_custom) display as worldgem pieces in
+  debug mode.

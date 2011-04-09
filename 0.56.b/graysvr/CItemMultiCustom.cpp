@@ -649,7 +649,7 @@ void CItemMultiCustom::SendVersionTo(CClient * pClientSrc)
 	ADDTOCALLSTACK("CItemMultiCustom::SendVersionTo");
 	// send the revision number of this building to the given
 	// client
-	if ( pClientSrc == NULL )
+	if ( pClientSrc == NULL || pClientSrc->IsPriv(PRIV_DEBUG) )
 		return;
 
 	// send multi version
@@ -661,7 +661,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	ADDTOCALLSTACK("CItemMultiCustom::SendStructureTo");
 	// send the design details of this building to the given
 	// client
-	if ( pClientSrc == NULL || !pClientSrc->GetChar() )
+	if ( pClientSrc == NULL || !pClientSrc->GetChar() || pClientSrc->IsPriv(PRIV_DEBUG) )
 		return;
 
 	if ( PacketHouseDesign::CanSendTo(pClientSrc->GetNetState()) == false )
