@@ -17,17 +17,17 @@ CMD5::~CMD5()
 void CMD5::reset()
 {
 	// Reset our finalizd state.
-	finalized = false;
+	m_finalized = false;
 
 	// Initialize our initial state.
-	buffer[0] = 0x67452301;
-	buffer[1] = 0xefcdab89;
-	buffer[2] = 0x98badcfe;
-	buffer[3] = 0x10325476;
+	m_buffer[0] = 0x67452301;
+	m_buffer[1] = 0xefcdab89;
+	m_buffer[2] = 0x98badcfe;
+	m_buffer[3] = 0x10325476;
 
 	// Reset the Bit Counter.
-	bits[0] = 0;
-	bits[1] = 0;
+	m_bits[0] = 0;
+	m_bits[1] = 0;
 }
 
 inline void byteReverse( unsigned char *buffer, unsigned int longs )
@@ -35,9 +35,9 @@ inline void byteReverse( unsigned char *buffer, unsigned int longs )
     unsigned int temp;
     do
 	{
-	temp = (unsigned int)( (unsigned int)buffer[3] << 8 | buffer[2] ) << 16 | ( (unsigned int)buffer[1] << 8 | buffer[0] );
-	*(unsigned int*)buffer = temp;
-	buffer += 4;
+		temp = (unsigned int)( (unsigned int)buffer[3] << 8 | buffer[2] ) << 16 | ( (unsigned int)buffer[1] << 8 | buffer[0] );
+		reinterpret_cast<unsigned int *>(buffer)[0] = temp;
+		buffer += 4;
     }
 	while( --longs );
 }
@@ -52,12 +52,12 @@ inline void byteReverse( unsigned char *buffer, unsigned int longs )
 void CMD5::update()
 {
     register unsigned int a, b, c, d;
-	unsigned int *ptrInput = (unsigned int*)input;
+	unsigned int *ptrInput = reinterpret_cast<unsigned int *>( m_input );
 
-    a = buffer[0];
-    b = buffer[1];
-    c = buffer[2];
-    d = buffer[3];
+    a = m_buffer[0];
+    b = m_buffer[1];
+    c = m_buffer[2];
+    d = m_buffer[3];
 
     MD5STEP(F1, a, b, c, d, ptrInput[0] + 0xd76aa478, 7);
     MD5STEP(F1, d, a, b, c, ptrInput[1] + 0xe8c7b756, 12);
@@ -127,27 +127,27 @@ void CMD5::update()
     MD5STEP(F4, c, d, a, b, ptrInput[2] + 0x2ad7d2bb, 15);
     MD5STEP(F4, b, c, d, a, ptrInput[9] + 0xeb86d391, 21);
 
-    buffer[0] += a;
-    buffer[1] += b;
-    buffer[2] += c;
-    buffer[3] += d;
+    m_buffer[0] += a;
+    m_buffer[1] += b;
+    m_buffer[2] += c;
+    m_buffer[3] += d;
 }
 
-void CMD5::update( unsigned char *data, unsigned int length )
+void CMD5::update( const unsigned char *data, unsigned int length )
 {
-	if( finalized )
+	if( m_finalized )
 		return;
 		// throw std::exception( "CMD5::update() although finalized flag is set." );
 
-	unsigned int temp = bits[0];
+	unsigned int temp = m_bits[0];
 
 	// First Part overlapped?
-	if( ( bits[0] = temp + ( length << 3 ) ) < temp )
+	if( (( m_bits[0] = temp + ( length << 3 ) )) < temp )
 	{
-		++bits[1];
+		++m_bits[1];
 	}
 
-	bits[1] += length >> 29;
+	m_bits[1] += length >> 29;
 
 	// Calculate Bitcount
 	temp = ( temp >> 3 ) & 0x3F;
@@ -155,7 +155,7 @@ void CMD5::update( unsigned char *data, unsigned int length )
 	// We still have data waiting
 	if( temp )
 	{
-		unsigned char *ptrInput = (unsigned char*)input + temp;
+		unsigned char *ptrInput = &m_input[temp];
 
 		// How much is left
 		temp = 64 - temp;
@@ -171,7 +171,7 @@ void CMD5::update( unsigned char *data, unsigned int length )
 
 		// We have enough data to clear our temporary buffer
 		memcpy( ptrInput, data, temp );		
-		byteReverse( input, 16 );
+		byteReverse( m_input, 16 );
 		update();
 
 		data += temp;
@@ -181,26 +181,26 @@ void CMD5::update( unsigned char *data, unsigned int length )
 	// Process the data in 64 byte chunks or save it for further processing
     while( length >= 64 )
 	{
-		memcpy( input, data, 64 );
-		byteReverse( input, 16 );
+		memcpy( m_input, data, 64 );
+		byteReverse( m_input, 16 );
 		update();
-		length -= 64;
 		data += 64;
+		length -= 64;
 	}
 
-	memcpy( input, data, length );
+	memcpy( m_input, data, length );
 }
 
 void CMD5::finalize()
 {
-	if( finalized )
+	if( m_finalized )
 		return;
 		//throw std::exception( "CMD5::finalize() although finalized flag is set." );
 
 	// Pad if neccesary to a 448 bit boundary and add the 64 bit of our bitcount
-	unsigned int count = ( bits[0] >> 3 ) & 0x3F;
+	unsigned int count = ( m_bits[0] >> 3 ) & 0x3F;
 
-	unsigned char *ptrInput = (unsigned char*)input + count;
+	unsigned char *ptrInput = &m_input[count];
 	
 	// Set the first byte of the padding to 0x80
 	*ptrInput++ = 0x80;
@@ -212,12 +212,12 @@ void CMD5::finalize()
 	if( count < 8 )
 	{
 		memset( ptrInput, 0, count );
-		byteReverse( input, 16 );
+		byteReverse( m_input, 16 );
 		update();
 
 		// Fill the next block with zeros and leave free space for
 		// our bitcount
-		memset( ptrInput, 0, 56 );
+		memset( m_input, 0, 56 );
 	}
 	// We have enough space left for our bitcount
 	else
@@ -226,27 +226,27 @@ void CMD5::finalize()
 	}
 
 	// Reverse the first 14 dwords
-	byteReverse( input, 14 );
+	byteReverse( m_input, 14 );
 
 	// Append Length and update
-	((unsigned int*)input)[14] = bits[0];
-	((unsigned int*)input)[15] = bits[1];
+	reinterpret_cast<unsigned int *>(m_input)[14] = m_bits[0];
+	reinterpret_cast<unsigned int *>(m_input)[15] = m_bits[1];
 
 	update();
 
 	// Reverse our Digest
-	byteReverse( (unsigned char*)buffer, 4 );
+	byteReverse( (unsigned char*)m_buffer, 4 );
 
-	finalized = true;
+	m_finalized = true;
 }
 
 void CMD5::numericDigest( unsigned char *digest )
 {
-	if( !finalized )
+	if( !m_finalized )
 		return;
 		// throw std::exception( "Call to CMD5::digest() without finalized flag being set." );
 
-	unsigned char *buffer = (unsigned char*)this->buffer;
+	unsigned char * buffer = reinterpret_cast<unsigned char *>( m_buffer );
 
 	// 16 byte a 2 characters
 	for ( unsigned int i = 0; i < 16; ++i )
@@ -257,13 +257,13 @@ void CMD5::numericDigest( unsigned char *digest )
 
 void CMD5::digest( char *digest )
 {
-	if( !finalized )
+	if( !m_finalized )
 		return;
 		// throw std::exception( "Call to CMD5::digest() without finalized flag being set." );
 
 	digest[0] = 0;
 
-	unsigned char *buffer = (unsigned char*)this->buffer;
+	unsigned char * buffer = reinterpret_cast<unsigned char *>( m_buffer );
 
 	// 16 byte a 2 characters
     for( unsigned int i = 0; i < 16; ++i )

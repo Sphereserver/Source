@@ -13,10 +13,10 @@
 class CMD5
 {
 private:
-	unsigned int buffer[4];
-	unsigned int bits[2];
-	unsigned char input[64];
-	bool finalized;
+	unsigned int m_buffer[4];
+	unsigned int m_bits[2];
+	unsigned char m_input[64];
+	bool m_finalized;
 
 	void update();
 
@@ -29,18 +29,18 @@ private:
 
 public:
 	void reset();
-	void update( unsigned char *data, unsigned int length );
+	void update( const unsigned char * data, unsigned int length );
 	void finalize();
 
 	// Digest has to be 33 bytes long
-	void digest( char *digest );
+	void digest( char * digest );
 	// Get digest in a "numeric" form to be usable
-	void numericDigest( unsigned char *digest );
+	void numericDigest( unsigned char * digest );
 	
-	inline static void fastDigest( char *digest, const char *message )
+	inline static void fastDigest( char * digest, const char * message )
 	{
 		CMD5 ctx;
-		ctx.update( (unsigned char*)message, strlen( message ) );
+		ctx.update( reinterpret_cast<const unsigned char *>(message), strlen( message ) );
 		ctx.finalize();
 		ctx.digest( digest );
 	}

@@ -118,6 +118,7 @@ NetState::~NetState(void)
 
 void NetState::clear(void)
 {
+	ADDTOCALLSTACK("NetState::clear");
 	DEBUGNETWORK(("%lx:Clearing client state.\n", id()));
 
 	m_isReadClosed = true;
@@ -154,7 +155,7 @@ void NetState::clear(void)
 	// empty queues
 	clearQueues();
 
-	// clean jun queue entries
+	// clean junk queue entries
 	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
 		m_queue[i].clean();
 	m_asyncQueue.clean();
@@ -191,6 +192,8 @@ void NetState::clear(void)
 
 void NetState::clearQueues(void)
 {
+	ADDTOCALLSTACK("NetState::clearQueues");
+
 	// clear packet queues
 	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
 	{
@@ -214,6 +217,8 @@ void NetState::clearQueues(void)
 
 void NetState::init(SOCKET socket, CSocketAddress addr)
 {
+	ADDTOCALLSTACK("NetState::init");
+
 	clear();
 
 	DEBUGNETWORK(("%lx:Initialising client\n", id()));
@@ -257,6 +262,10 @@ bool NetState::isInUse(const CClient* client) const volatile
 
 void NetState::markReadClosed(void) volatile
 {
+#ifdef _MTNETWORK
+	ADDTOCALLSTACK("NetState::markReadClosed");
+#endif
+
 	DEBUGNETWORK(("%lx:Client being closed by read-thread\n", m_id));
 	m_isReadClosed = true;
 #ifdef _MTNETWORK
@@ -278,6 +287,7 @@ void NetState::markFlush(bool needsFlush) volatile
 
 void NetState::detectAsyncMode(void)
 {
+	ADDTOCALLSTACK("NetState::detectAsyncMode");
 	bool wasAsync = isAsyncMode();
 
 	// is async mode enabled?
@@ -308,6 +318,7 @@ void NetState::detectAsyncMode(void)
 
 bool NetState::hasPendingData(void) const
 {
+	ADDTOCALLSTACK("NetState::hasPendingData");
 	// check if state is even valid
 	if (isInUse() == false || m_socket.IsOpen() == false)
 		return false;
@@ -354,6 +365,7 @@ bool NetState::canReceive(PacketSend* packet) const
 
 void NetState::beginTransaction(long priority)
 {
+	ADDTOCALLSTACK("NetState::beginTransaction");
 	if (m_pendingTransaction != NULL)
 	{
 		DEBUGNETWORK(("%lx:New network transaction started whilst a previous is still open.\n", id()));
@@ -369,6 +381,7 @@ void NetState::beginTransaction(long priority)
 
 void NetState::endTransaction(void)
 {
+	ADDTOCALLSTACK("NetState::endTransaction");
 	if (m_pendingTransaction == NULL)
 		return;
 

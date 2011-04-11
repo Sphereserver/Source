@@ -5173,3 +5173,6 @@ ALPHA additions:
 09-04-2011, MrSugarCube
 - Modified #1941: Custom houses (t_multi_custom) display as worldgem pieces in
   debug mode.
+
+11-04-2011, MrSugarCube
+- Fixed #1942: Exception when using MD5HASH with certain lengths of text.
