@@ -5163,7 +5163,7 @@ ALPHA additions:
   another ship)).
 
 21-03-2011, MrSugarCube
-- Added: Support for packet changes found in client 7.0.9.0.
+- Added: Support for packet changes found in client 7.0.13.0.
 
 07-04-2011, MrSugarCube
 - Fixed #1935: Exception when using "d a" command on Linux build.

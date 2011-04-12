@@ -41,11 +41,11 @@ static void socketslave_cb(struct ev_loop *loop, struct ev_io *w, int revents)
 		else if ( revents & EV_WRITE )
 		{
 #ifndef _MTNETWORK
-			g_NetworkOut.onAsyncSendComplete(state);
+			g_NetworkOut.onAsyncSendComplete(state, true);
 #else
 			NetworkThread* thread = state->getParentThread();
 			if (thread != NULL)
-				thread->onAsyncSendComplete(state);
+				thread->onAsyncSendComplete(state, true);
 #endif
 		}
 	}

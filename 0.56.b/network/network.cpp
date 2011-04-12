@@ -2052,7 +2052,7 @@ void NetworkOut::proceedQueueBytes(CClient* client)
 	}
 }
 
-void NetworkOut::onAsyncSendComplete(NetState* state)
+void NetworkOut::onAsyncSendComplete(NetState* state, bool success)
 {
 	ADDTOCALLSTACK("NetworkOut::onAsyncSendComplete");
 
@@ -2060,6 +2060,8 @@ void NetworkOut::onAsyncSendComplete(NetState* state)
 	ASSERT(state != NULL);
 
 	state->setSendingAsync(false);
+	if (success == false)
+		return;
 
 	if (proceedQueueAsync(state->getClient()) != 0)
 		proceedQueueBytes(state->getClient());
@@ -2092,15 +2094,26 @@ bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
 
 void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags)
 {
-	UNREFERENCED_PARAMETER(cbTransferred);
 	UNREFERENCED_PARAMETER(dwFlags);
-	if (dwError == WSAEFAULT)
-		return;
+	ADDTOCALLSTACK("SendCompleted");
 
-	//DEBUGNETWORK(("AsyncSend completed.\n"));
 	NetState* state = reinterpret_cast<NetState *>(lpOverlapped->hEvent);
-	if (state != NULL)
-		g_NetworkOut.onAsyncSendComplete(state);
+	if (state == NULL)
+	{
+		DEBUGNETWORK(("Async i/o operation completed without client context.\n"));
+		return;
+	}
+
+	if (dwError != 0)
+	{
+		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent.\n", state->id(), dwError, cbTransferred));
+	}
+	//else
+	//{
+	//	DEBUGNETWORK(("%lx:Async i/o operation completed successfully, %ld bytes sent.\n", state->id(), cbTransferred));
+	//}
+
+	g_NetworkOut.onAsyncSendComplete(state, dwError == 0 && cbTransferred > 0);
 }
 
 #endif
@@ -2352,14 +2365,33 @@ const char * GenerateNetworkThreadName(size_t id)
  ***************************************************************************/
 void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags)
 {
-	UNREFERENCED_PARAMETER(cbTransferred);
 	UNREFERENCED_PARAMETER(dwFlags);
-	if (dwError == WSAEFAULT)
-		return;
+	ADDTOCALLSTACK("SendCompleted");
 
 	NetState* state = reinterpret_cast<NetState*>(lpOverlapped->hEvent);
-	if (state != NULL && state->getParentThread() != NULL)
-		state->getParentThread()->onAsyncSendComplete(state);
+	if (state == NULL)
+	{
+		DEBUGNETWORK(("Async i/o operation completed without client context.\n"));
+		return;
+	}
+
+	NetworkThread* thread = state->getParentThread();
+	if (thread == NULL)
+	{
+		DEBUGNETWORK(("%lx:Async i/o operation completed.\n", state->id()));
+		return;
+	}
+
+	if (dwError != 0)
+	{
+		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent.\n", state->id(), dwError, cbTransferred));
+	}
+	//else
+	//{
+	//	DEBUGNETWORK(("%lx:Async i/o operation completed successfully, %ld bytes sent.\n", state->id(), cbTransferred));
+	//}
+
+	thread->onAsyncSendComplete(state, dwError == 0 && cbTransferred > 0);
 }
 
 #endif
@@ -3886,12 +3918,14 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 	return _failed_result();
 }
 
-void NetworkOutput::onAsyncSendComplete(NetState* state)
+void NetworkOutput::onAsyncSendComplete(NetState* state, bool success)
 {
 	// notify that async operation completed
 	ADDTOCALLSTACK("NetworkOutput::onAsyncSendComplete");
 	ASSERT(state != NULL);
 	state->setSendingAsync(false);
+	if (success == false)
+		return;
 		
 #ifdef MTNETWORK_OUTPUT
 	// we could process another batch of async data right now, but only if we

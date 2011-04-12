@@ -441,7 +441,7 @@ protected:
 	int sendBytesNow(CClient* client, const BYTE* data, DWORD length); // send bytes to a client (returns number of bytes sent, < 0 for failure)
 
 public:
-	void onAsyncSendComplete(NetState* state); // handle completion of async send
+	void onAsyncSendComplete(NetState* state, bool success); // handle completion of async send
 
 	friend class SimplePacketTransaction;
 	friend class ExtendedPacketTransaction;
@@ -523,7 +523,7 @@ private:
 public:
 	void setOwner(NetworkThread* thread) { m_thread = thread; }			// set owner thread
 	bool processOutput(void);											// process output to clients, returns true if data was sent
-	void onAsyncSendComplete(NetState* state);							// notify that async operation completed
+	void onAsyncSendComplete(NetState* state, bool success);							// notify that async operation completed
 
 	static void QueuePacket(PacketSend* packet, bool appendTransaction);	// queue a packet for sending
 	static void QueuePacketTransaction(PacketTransaction* transaction);		// queue a packet transaction for sending
@@ -656,10 +656,10 @@ public:
 	void assignNetworkState(NetState* state);	// assign a network state to this thread
 
 public:
-	void onAsyncSendComplete(NetState* state)
+	void onAsyncSendComplete(NetState* state, bool success)
 	{
 		// notify that async operation completed
-		m_output.onAsyncSendComplete(state);
+		m_output.onAsyncSendComplete(state, success);
 	}
 
 	void queuePacket(PacketSend* packet, bool appendTransaction)
