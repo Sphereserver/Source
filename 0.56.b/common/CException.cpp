@@ -248,6 +248,9 @@ void SetExceptionTranslator()
 		sigset_t set;
 
 		g_Log.Event( LOGL_FATAL, "%s\n", strsignal(sig) );
+#ifdef THREAD_TRACK_CALLSTACK
+		StackDebugInformation::printStackTrace();
+#endif
 
 		if ( sig )
 		{
