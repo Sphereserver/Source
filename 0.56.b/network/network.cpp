@@ -1028,7 +1028,7 @@ void NetworkIn::tick(void)
 
 					EXC_SET("game client seed");
 					DWORD seed(0);
-					int iSeedLen(0);
+					size_t iSeedLen(0);
 					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
 					{
 						DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", client->id()));
@@ -1048,13 +1048,20 @@ void NetworkIn::tick(void)
 							client->m_newseed = true;
 						}
 
-						DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(),
-									 (DWORD)pEvent->NewSeed.m_Version_Maj, 
-									 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
-									 (DWORD)pEvent->NewSeed.m_Version_Pat));
+						if (received >= iSeedLen)
+						{
+							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(),
+										 (DWORD)pEvent->NewSeed.m_Version_Maj, 
+										 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
+										 (DWORD)pEvent->NewSeed.m_Version_Pat));
 
-						client->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
-						seed = (DWORD) pEvent->NewSeed.m_Seed;
+							client->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
+							seed = (DWORD) pEvent->NewSeed.m_Seed;
+						}
+						else
+						{
+							DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", client->id(), received));
+						}
 					}
 					else
 					{
@@ -1065,9 +1072,9 @@ void NetworkIn::tick(void)
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%d, received=%" FMTSIZE_T ", version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
-					if ( !seed )
+					if ( !seed || iSeedLen > received )
 					{
 						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", client->id());
 						client->markReadClosed();
@@ -3319,7 +3326,7 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 		// it is a game client seed
 		EXC_SET("game client seed");
 		DWORD seed = 0;
-		size_t iSeedLength = 0;
+		size_t seedLength = 0;
 		if (state->m_newseed || (buffer[0] == XCMD_NewSeed && bufferSize >= NETWORK_SEEDLEN_NEW))
 		{
 			DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", state->id()));
@@ -3329,21 +3336,28 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 			{
 				// we already received the 0xEF on its own, so move the pointer back
 				// 1 byte to align it
-				iSeedLength = NETWORK_SEEDLEN_NEW - 1;
+				seedLength = NETWORK_SEEDLEN_NEW - 1;
 				pEvent = reinterpret_cast<CEvent*>(buffer - 1);
 			}
 			else
 			{
-				iSeedLength = NETWORK_SEEDLEN_NEW;
+				seedLength = NETWORK_SEEDLEN_NEW;
 				state->m_newseed = true;
 			}
+
+			if (bufferSize >= seedLength)
+			{
+				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(),
+							(DWORD)pEvent->NewSeed.m_Version_Maj, (DWORD)pEvent->NewSeed.m_Version_Min,
+							(DWORD)pEvent->NewSeed.m_Version_Rev, (DWORD)pEvent->NewSeed.m_Version_Pat));
 					
-			DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(),
-						(DWORD)pEvent->NewSeed.m_Version_Maj, (DWORD)pEvent->NewSeed.m_Version_Min,
-						(DWORD)pEvent->NewSeed.m_Version_Rev, (DWORD)pEvent->NewSeed.m_Version_Pat));
-					
-			state->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
-			seed = (DWORD) pEvent->NewSeed.m_Seed;
+				state->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
+				seed = (DWORD) pEvent->NewSeed.m_Seed;
+			}
+			else
+			{
+				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), bufferSize));
+			}
 		}
 		else
 		{
@@ -3351,13 +3365,13 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 			DEBUGNETWORK(("%lx:Receiving old client login handshake.\n", state->id()));
 
 			seed = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
-			iSeedLength = NETWORK_SEEDLEN_OLD;
+			seedLength = NETWORK_SEEDLEN_OLD;
 		}
 
 		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=0x%lx).\n",
-			state->id(), seed, state->m_newseed? 1 : 0, iSeedLength, bufferSize, state->m_reportedVersion));
+			state->id(), seed, state->m_newseed? 1 : 0, seedLength, bufferSize, state->m_reportedVersion));
 
-		if (seed == 0)
+		if (seed == 0 || seedLength > bufferSize)
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", state->id());
 			return 0;
@@ -3366,7 +3380,7 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 		state->m_seeded = true;
 		state->m_seed = seed;
 			
-		if (iSeedLength == bufferSize && state->m_seed == 0xFFFFFFFF)
+		if (seedLength == bufferSize && state->m_seed == 0xFFFFFFFF)
 		{
 			// UO:KR Client opens connection with 255.255.255.255 and waits for the
 			// server to send a packet before continuing
@@ -3378,7 +3392,7 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 			new PacketKREncryption(client);
 		}
 
-		return iSeedLength;
+		return seedLength;
 	}
 
 	if (bufferSize < 5)

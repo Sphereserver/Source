@@ -5176,3 +5176,6 @@ ALPHA additions:
 
 11-04-2011, MrSugarCube
 - Fixed #1942: Exception when using MD5HASH with certain lengths of text.
+
+23-04-2011, MrSugarCube
+- Fixed #1919: Exception when a client sends an incomplete handshake packet.
