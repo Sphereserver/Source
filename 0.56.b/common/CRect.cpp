@@ -786,6 +786,7 @@ int CPointBase::StepLinePath( const CPointBase & ptSrc, int iSteps )
 
 TCHAR * CPointBase::WriteUsed( TCHAR * pszBuffer ) const
 {
+	ADDTOCALLSTACK_INTENSIVE("CPointBase::WriteUsed");
 	if ( m_map )
 	{
 		sprintf(pszBuffer, "%d,%d,%d,%d", m_x, m_y, m_z, m_map);
@@ -803,7 +804,6 @@ TCHAR * CPointBase::WriteUsed( TCHAR * pszBuffer ) const
 
 LPCTSTR CPointBase::WriteUsed() const
 {
-	ADDTOCALLSTACK("CPointBase::WriteUsed");
 	return( WriteUsed( Str_GetTemp()));
 }
 

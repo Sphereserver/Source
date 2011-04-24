@@ -659,7 +659,7 @@ bool CVarDefMap::r_LoadVal( CScript & s )
 
 void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyExclude )
 {
-	ADDTOCALLSTACK("CVarDefMap::r_WritePrefix");
+	ADDTOCALLSTACK_INTENSIVE("CVarDefMap::r_WritePrefix");
 	TemporaryString z;
 	LPCTSTR		pszVal;
 	bool bHasPrefix = (pszPrefix && *pszPrefix);

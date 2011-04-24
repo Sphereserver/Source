@@ -248,7 +248,6 @@ CREID_TYPE CItemBase::FindCharTrack( ITEMID_TYPE trackID )	// static
 
 bool CItemBase::IsTypeArmor( IT_TYPE type )  // static
 {
-	ADDTOCALLSTACK("CItemBase::IsTypeArmor");
 	switch( type )
 	{
 		case IT_CLOTHING:
@@ -263,7 +262,6 @@ bool CItemBase::IsTypeArmor( IT_TYPE type )  // static
 }
 bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 {
-	ADDTOCALLSTACK("CItemBase::IsTypeWeapon");
 	// NOTE: a wand can be a weapon.
 	switch( type )
 	{
@@ -305,7 +303,6 @@ GUMP_TYPE CItemBase::IsTypeContainer() const
 
 bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 {
-	ADDTOCALLSTACK("CItemBase::IsTypeSpellbook");
 	switch( type )
 	{
 		case IT_SPELLBOOK:
@@ -325,7 +322,6 @@ bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 
 bool CItemBase::IsTypeMulti( IT_TYPE type )	// static
 {
-	ADDTOCALLSTACK("CItemBase::IsTypeMulti");
 	switch( type )
 	{
 		case IT_MULTI:
@@ -386,7 +382,6 @@ bool CItemBase::IsTypeEquippable() const
 
 bool CItemBase::IsID_Multi( ITEMID_TYPE id ) // static
 {
-	ADDTOCALLSTACK("CItemBase::IsID_Multi");
 	// NOTE: Ships are also multi's
 	return( id >= ITEMID_MULTI && id < ITEMID_MULTI_MAX );
 }

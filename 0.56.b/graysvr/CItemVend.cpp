@@ -95,7 +95,7 @@ bool CItemVendable::r_LoadVal(CScript &s)
 
 void CItemVendable::r_Write(CScript &s)
 {
-	ADDTOCALLSTACK("CItemVendable::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemVendable::r_Write");
 	CItem::r_Write(s);
 	if ( GetQuality() != 0 )
 	{

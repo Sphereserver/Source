@@ -228,7 +228,7 @@ bool CSector::r_Verb( CScript & s, CTextConsole * pSrc )
 
 void CSector::r_Write()
 {
-	ADDTOCALLSTACK("CSector::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CSector::r_Write");
 	if ( m_fSaveParity == g_World.m_fSaveParity )
 		return;	// already saved.
 	CPointMap pt = GetBasePoint();

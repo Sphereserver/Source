@@ -973,7 +973,7 @@ dodirmovechange:
 
 void CItemShip::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemShip::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemShip::r_Write");
 	CItemMulti::r_Write(s);
 	if ( m_uidHold )
 		s.WriteKeyHex("HATCH", m_uidHold );

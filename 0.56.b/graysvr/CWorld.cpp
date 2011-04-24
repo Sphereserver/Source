@@ -741,7 +741,7 @@ void CWorldThread::SaveThreadClose()
 
 int CWorldThread::FixObjTry( CObjBase * pObj, DWORD dwUID )
 {
-	ADDTOCALLSTACK("CWorldThread::FixObjTry");
+	ADDTOCALLSTACK_INTENSIVE("CWorldThread::FixObjTry");
 	// RETURN: 0 = success.
 	if ( !pObj )
 		return 0x7102;

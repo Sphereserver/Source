@@ -556,7 +556,7 @@ bool CItem::IsMovable() const
 
 int CItem::IsWeird() const
 {
-	ADDTOCALLSTACK("CItem::IsWeird");
+	ADDTOCALLSTACK_INTENSIVE("CItem::IsWeird");
 	// Does item i have a "link to reality"?
 	// (Is the container it is in still there)
 	// RETURN: 0 = success ok
@@ -1917,7 +1917,7 @@ void CItem::WriteUOX( CScript & s, int index )
 
 void CItem::r_WriteMore1( CGString & sVal )
 {
-	ADDTOCALLSTACK("CItem::r_WriteMore1");
+	ADDTOCALLSTACK_INTENSIVE("CItem::r_WriteMore1");
 	// do special processing to represent this.
 	switch ( GetType())
 	{
@@ -1970,7 +1970,7 @@ void CItem::r_WriteMore1( CGString & sVal )
 
 void CItem::r_WriteMore2( CGString & sVal )
 {
-	ADDTOCALLSTACK("CItem::r_WriteMore2");
+	ADDTOCALLSTACK_INTENSIVE("CItem::r_WriteMore2");
 	// do special processing to represent this.
 	switch ( GetType())
 	{
@@ -2008,7 +2008,7 @@ void CItem::r_WriteMore2( CGString & sVal )
 
 void CItem::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItem::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItem::r_Write");
 	CItemBase	*pItemDef = Item_GetDef();
 	if ( !pItemDef )
 		return;

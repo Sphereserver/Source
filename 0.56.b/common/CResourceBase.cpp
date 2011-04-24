@@ -1190,7 +1190,7 @@ int CResourceRefArray::FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) cons
 
 void CResourceRefArray::r_Write( CScript & s, LPCTSTR pszKey ) const
 {
-	ADDTOCALLSTACK("CResourceRefArray::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CResourceRefArray::r_Write");
 	for ( int j=0;j<GetCount(); j++ )
 	{
 		s.WriteKey( pszKey, GetResourceName( j ));

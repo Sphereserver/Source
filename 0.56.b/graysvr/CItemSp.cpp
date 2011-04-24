@@ -583,7 +583,7 @@ bool CItemMap::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 void CItemMap::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemMap::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemMap::r_Write");
 	CItemVendable::r_Write( s );
 	for ( int i=0; i<m_Pins.GetCount(); i++ )
 	{
@@ -607,7 +607,7 @@ void CItemMap::DupeCopy( const CItem * pItem )
 
 void CItemMessage::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemMessage::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemMessage::r_Write");
 	CItemVendable::r_Write( s );
 
 	s.WriteKey( "AUTHOR", m_sAuthor );
@@ -936,7 +936,7 @@ void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )
 
 void CItemCommCrystal::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemCommCrystal::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemCommCrystal::r_Write");
 	CItemVendable::r_Write(s);
 	m_Speech.r_Write( s, "SPEECH" );
 }
@@ -994,7 +994,7 @@ LPCTSTR const CItemScript::sm_szVerbKeys[] =
 
 void CItemScript::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemScript::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemScript::r_Write");
 	CItemVendable::r_Write(s);
 }
 

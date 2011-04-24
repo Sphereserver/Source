@@ -580,7 +580,7 @@ bool CItemContainer::NotifyDelete()
 
 void CItemContainer::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemContainer::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemContainer::r_Write");
 	CItemVendable::r_Write(s);
 	r_WriteContent(s);
 }

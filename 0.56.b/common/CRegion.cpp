@@ -722,7 +722,7 @@ void CRegionBase::r_WriteBase( CScript &s )
 
 void CRegionBase::r_Write( CScript &s )
 {
-	ADDTOCALLSTACK("CRegionBase::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CRegionBase::r_Write");
 	s.WriteSection( "ROOMDEF %s", GetResourceName() );
 	r_WriteBase( s );
 }
@@ -1103,7 +1103,7 @@ void CRegionWorld::r_WriteBody( CScript &s, LPCTSTR pszPrefix )
 
 void CRegionWorld::r_Write( CScript &s )
 {
-	ADDTOCALLSTACK("CRegionWorld::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CRegionWorld::r_Write");
 	s.WriteSection( "AREADEF %s", GetResourceName());
 	r_WriteBase( s );
 	r_WriteBody2( s, "" );

@@ -412,7 +412,7 @@ void CChar::Delete()
 
 int CChar::IsWeird() const
 {
-	ADDTOCALLSTACK("CChar::IsWeird");
+	ADDTOCALLSTACK_INTENSIVE("CChar::IsWeird");
 	// RETURN: invalid code.
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
@@ -2388,7 +2388,7 @@ do_default:
 
 void CChar::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CChar::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CChar::r_Write");
 	EXC_TRY("r_Write");
 
 	if ( IsSetEF(EF_Size_Optimise) ) s.WriteSection("WC %s", GetResourceName());

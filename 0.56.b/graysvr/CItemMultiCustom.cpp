@@ -1243,7 +1243,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 void CItemMultiCustom::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemMultiCustom::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemMultiCustom::r_Write");
 	CItemMulti::r_Write(s);
 
 	Component * comp;

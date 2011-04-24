@@ -441,7 +441,7 @@ bool CItemMulti::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 
 void CItemMulti::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CItemMulti::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CItemMulti::r_Write");
 	CItem::r_Write(s);
 	if ( m_pRegion )
 	{

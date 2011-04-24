@@ -16,7 +16,7 @@ bool CObjBaseTemplate::IsDeleted() const
 
 int CObjBaseTemplate::IsWeird() const
 {
-	ADDTOCALLSTACK("CObjBaseTemplate::IsWeird");
+	ADDTOCALLSTACK_INTENSIVE("CObjBaseTemplate::IsWeird");
 	if ( !GetParent() )
 		return 0x3101;
 
@@ -112,7 +112,7 @@ bool CObjBase::IsContainer() const
 
 int CObjBase::IsWeird() const
 {
-	ADDTOCALLSTACK("CObjBase::IsWeird");
+	ADDTOCALLSTACK_INTENSIVE("CObjBase::IsWeird");
 	int iResultCode = CObjBaseTemplate::IsWeird();
 	if ( iResultCode )
 	{
@@ -1181,7 +1181,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 
 void CObjBase::r_Write( CScript & s )
 {
-	ADDTOCALLSTACK("CObjBase::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CObjBase::r_Write");
 	s.WriteKeyHex( "SERIAL", GetUID());
 	if ( IsIndividualName() )
 		s.WriteKey( "NAME", GetIndividualName());

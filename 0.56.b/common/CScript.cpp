@@ -532,7 +532,7 @@ void CScript::Close()
 
 bool _cdecl CScript::WriteSection( LPCTSTR pszSection, ... )
 {
-	ADDTOCALLSTACK("CScript::WriteSection");
+	ADDTOCALLSTACK_INTENSIVE("CScript::WriteSection");
 	// Write out the section header.
 	va_list vargs;
 	va_start( vargs, pszSection );
@@ -548,7 +548,7 @@ bool _cdecl CScript::WriteSection( LPCTSTR pszSection, ... )
 
 bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 {
-	ADDTOCALLSTACK("CScript::WriteKey");
+	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKey");
 	if ( pszKey == NULL || pszKey[0] == '\0' )
 	{
 		return false;
@@ -610,7 +610,7 @@ bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
 
 void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
 {
-	ADDTOCALLSTACK("CScript::WriteKeyFormat");
+	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKeyFormat");
 	TemporaryString pszTemp;
 	va_list vargs;
 	va_start( vargs, pszVal );

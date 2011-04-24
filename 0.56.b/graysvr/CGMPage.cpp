@@ -55,7 +55,7 @@ void CGMPage::SetGMHandler(CClient* pClient)
 
 void CGMPage::r_Write( CScript & s ) const
 {
-	ADDTOCALLSTACK("CGMPage::r_Write");
+	ADDTOCALLSTACK_INTENSIVE("CGMPage::r_Write");
 	s.WriteSection( "GMPAGE %s", GetName());
 	s.WriteKey( "REASON", GetReason());
 	s.WriteKeyHex( "TIME", GetAge());
