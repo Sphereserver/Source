@@ -7,6 +7,7 @@
 #ifndef _WIN32
 #include <sys/prctl.h>
 #endif
+#include <algorithm>
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
