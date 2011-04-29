@@ -648,11 +648,12 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 		case 't':
 			{
 				pSrc->SysMessagef("Current active threads: %d.\n", ThreadHolder::getActiveThreads());
-				for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
+				size_t iThreadCount = ThreadHolder::getActiveThreads();
+				for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads )
 				{
 					IThread * thrCurrent = ThreadHolder::getThreadAt(iThreads);
 					if ( thrCurrent != NULL )
-						pSrc->SysMessagef("%d - Id: %d, Priority: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), 
+						pSrc->SysMessagef("%" FMTSIZE_T " - Id: %u, Priority: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), 
 											thrCurrent->getPriority(), thrCurrent->getName() );
 				}
 			} break;
@@ -928,7 +929,8 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 	if (ftDump != NULL)
 		ftDump->Printf("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
 
-	for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
+	size_t iThreadCount = ThreadHolder::getActiveThreads();
+	for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads)
 	{
 		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
 		if (thrCurrent == NULL)

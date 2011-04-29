@@ -10,6 +10,7 @@
 #include "../sphere/mutex.h"
 #include "../sphere/strings.h"
 #include "../sphere/ProfileData.h"
+#include <list>
 
 
 // keep track of callstack on release builds
@@ -23,12 +24,6 @@
  * Also useful to override onStart() in order to initialise class data variables for ticking
  *   which is triggered whenever the thread is starting/restarting
 **/
-
-// the maximal number of supported threads. not should be adjusted even as we think that we
-// will have 3-4 threads.
-// NOTE: Lies here since trying to avoid any problems with lists, etc with
-// threads, using as much of static single non-heap data as possible
-#define MAX_THREADS	30
 
 // Types definition for different platforms
 #ifdef _WIN32
@@ -76,6 +71,10 @@ public:
 	virtual ~IThread() { };
 };
 
+typedef std::list<IThread *> spherethreadlist_t;
+template<class T>
+class TlsValue;
+
 // Singleton utility class for working with threads. Holds all running threads inside
 class ThreadHolder
 {
@@ -87,17 +86,21 @@ public:
 	// removes a thread from the list. Sould NOT be called, internal usage
 	static void pop(IThread *thread);
 	// returns number of running threads. Sould NOT be called, unit tests usage
-	static int getActiveThreads() { return m_threadCount; }
+	static size_t getActiveThreads() { return m_threadCount; }
 	// returns thread at i pos
-	static IThread * getThreadAt(int at);
+	static IThread * getThreadAt(size_t at);
 
 private:
 	static void init();
 
 private:
-	static IThread *	m_threads[MAX_THREADS];
-	static int			m_threadCount;
-	static bool			m_inited;
+	static spherethreadlist_t m_threads;
+	static size_t m_threadCount;
+	static bool m_inited;
+	static SimpleMutex m_mutex;
+
+public:
+	static TlsValue<IThread *> m_currentThread;
 
 private:
 	ThreadHolder() { };
@@ -236,6 +239,92 @@ protected:
 	DummySphereThread();
 	virtual void tick();
 };
+
+// stores a value unique to each thread, intended to hold
+// a pointer (e.g. the current IThread instance)
+template<class T>
+class TlsValue
+{
+private:
+#ifdef _WIN32
+	DWORD _key;
+#else
+	pthread_key_t _key;
+#endif
+	bool _ready;
+
+public:
+	TlsValue();
+	~TlsValue();
+
+private:
+	TlsValue(const TlsValue& copy);
+	TlsValue& operator=(const TlsValue& other);
+
+public:
+	// allows assignment to set the current value
+	TlsValue& operator=(const T& value)
+	{
+		set(value);
+		return *this;
+	}
+	
+	// allows a cast to get current value
+	operator T() const { return get(); }
+
+public:
+	void set(const T value); // set the value for the current thread
+	T get() const; // get the value for the current thread
+};
+
+template<class T>
+TlsValue<T>::TlsValue()
+{
+	// allocate thread storage
+#ifdef _WIN32
+	_key = TlsAlloc();
+	_ready = (_key != TLS_OUT_OF_INDEXES);
+#else
+	_ready = (pthread_key_create(&_key, NULL) == 0);
+#endif
+}
+	
+template<class T>
+TlsValue<T>::~TlsValue()
+{
+	// free the thread storage
+	if (_ready)
+#ifdef _WIN32
+		TlsFree(_key);
+#else
+		pthread_key_delete(_key);
+#endif
+	_ready = false;
+}
+
+template<class T>
+void TlsValue<T>::set(const T value)
+{
+	ASSERT(_ready);
+#ifdef _WIN32
+	TlsSetValue(_key, value);
+#else
+	pthread_setspecific(_key, value);
+#endif
+}
+
+template<class T>
+T TlsValue<T>::get() const
+{
+	if (_ready == false)
+		return NULL;
+#ifdef _WIN32
+	return reinterpret_cast<T>(TlsGetValue(_key));
+#else
+	return reinterpret_cast<T>(pthread_getspecific(_key));
+#endif
+}
+
 
 // used to hold debug information for stack
 #ifdef THREAD_TRACK_CALLSTACK

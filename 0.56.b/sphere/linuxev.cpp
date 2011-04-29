@@ -1,6 +1,6 @@
 #if !defined(_WIN32) || defined(_LIBEV)
-#include "linuxev.h"
 #include "../graysvr/graysvr.h"
+#include "linuxev.h"
 #include "../network/network.h"
 
 LinuxEv g_NetworkEvent;
@@ -72,6 +72,7 @@ LinuxEv::~LinuxEv(void)
 void LinuxEv::onStart()
 {
 	// g_Log.Event(LOGM_CLIENTS_LOG, "Event start backend 0x%x\n", ev_backend(m_eventLoop));
+	AbstractSphereThread::onStart();
 }
 	
 void LinuxEv::tick()

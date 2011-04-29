@@ -247,7 +247,8 @@ void CNTWindow::CStatusWnd::FillStats()
 
 	CNTWindow::CListTextConsole capture( m_wndListStats.m_hWnd );
 
-	for ( int iThreads = 0; iThreads < ThreadHolder::getActiveThreads(); ++iThreads)
+	size_t iThreadCount = ThreadHolder::getActiveThreads();
+	for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads)
 	{
 		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
 		if (thrCurrent == NULL)

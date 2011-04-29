@@ -467,6 +467,7 @@ Main::Main()
 
 void Main::onStart()
 {
+	AbstractSphereThread::onStart();
 	SetExceptionTranslator();
 }
 

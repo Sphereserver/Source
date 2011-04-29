@@ -1,3 +1,4 @@
+#include "../common/graycom.h"
 #include "PingServer.h"
 
 PingServer g_PingServer;
@@ -19,6 +20,7 @@ PingServer::~PingServer()
 
 void PingServer::onStart()
 {
+	AbstractSphereThread::onStart();
 	if ( m_socket.IsOpen() )
 	{
 		// socket already created? lets close it

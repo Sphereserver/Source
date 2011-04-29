@@ -836,7 +836,7 @@ void CAccount::ClearPasswordTries(bool bAll)
 	}
 	else
 	{
-		long timeCurrent = CServTime::CServTime().GetTimeRaw();
+		long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 
 		for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 		{

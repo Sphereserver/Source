@@ -1,11 +1,12 @@
 // this thing is somehow required to be able to initialise OLE
 #define _WIN32_DCOM
 
-#include "../common/common.h"
-#include "../common/CException.h"
+#include "../common/graycom.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-#include "mutex.h"
+#ifndef _WIN32
+#include <sys/prctl.h>
+#endif
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
@@ -30,12 +31,12 @@ struct TemporaryStringStorage
 
 /**
  * ThreadHolder
- * NOTE: due to it is difficult to create a good sync on this level, instead of storying a list of threads
- * we store an array and mark records being removed, which is absolutely thread-safe
 **/
-IThread *ThreadHolder::m_threads[MAX_THREADS];
-int ThreadHolder::m_threadCount = 0;
+spherethreadlist_t ThreadHolder::m_threads;
+size_t ThreadHolder::m_threadCount = 0;
 bool ThreadHolder::m_inited = false;
+SimpleMutex ThreadHolder::m_mutex;
+TlsValue<IThread *> ThreadHolder::m_currentThread;
 
 extern CLog g_Log;
 
@@ -48,83 +49,62 @@ IThread *ThreadHolder::current()
 	unsigned id = (unsigned)pthread_self();
 #endif
 
+	IThread * thread = m_currentThread;
+	if (thread == NULL)
+		return DummySphereThread::getInstance();
 
-	for( int i = 0; i < MAX_THREADS; i++ )
-	{
-		if( m_threads[i] != NULL )
-		{
-			if( m_threads[i]->getId() == id )
-			{
-				return m_threads[i];
-			}
-		}
-	}
-
-	return DummySphereThread::getInstance();
+	ASSERT(thread->getId() == id);
+	return thread;
 }
 
 void ThreadHolder::push(IThread *thread)
 {
 	init();
-	if( m_threadCount >= MAX_THREADS-1 )
-	{
-		throw CException(LOGL_FATAL, 0, "Too many opened threads");
-	}
 
-	for( int i = 0; i < MAX_THREADS; i++ )
-	{
-		if( m_threads[i] == NULL )
-		{
-			m_threads[i] = thread;
-			m_threadCount++;
-			return;
-		}
-	}
-
-	throw CException(LOGL_FATAL, 0, "Unable to find an empty slot for thread");
+	SimpleThreadLock lock(m_mutex);
+	m_threads.push_back(thread);
+	m_threadCount++;
 }
 
 void ThreadHolder::pop(IThread *thread)
 {
 	init();
 	if( m_threadCount <= 0 )
-	{
 		throw CException(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
-	}
 
-	for( int i = 0; i < MAX_THREADS; i++ )
+	SimpleThreadLock lock(m_mutex);
+	spherethreadlist_t::iterator it = std::find(m_threads.begin(), m_threads.end(), thread);
+	if (it != m_threads.end())
 	{
-		if( m_threads[i] != NULL )
-		{
-			if( m_threads[i]->getId() == thread->getId() )
-			{
-				m_threads[i] = NULL;
-				m_threadCount--;
-				return;
-			}
-		}
+		m_threadCount--;
+		m_threads.erase(it);
+		return;
 	}
 
 	throw CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
 }
 
-IThread * ThreadHolder::getThreadAt(int at)
+IThread * ThreadHolder::getThreadAt(size_t at)
 {
 	if (( at < 0 ) || ( at > getActiveThreads() ))
 		return NULL;
+	
+	SimpleThreadLock lock(m_mutex);
+	for ( spherethreadlist_t::const_iterator it = m_threads.begin(); it != m_threads.end(); ++it )
+	{
+		if ( at == 0 )
+			return *it;
 
-	return m_threads[at];
+		at--;
+	}
+
+	return NULL;
 }
 
 void ThreadHolder::init()
 {
 	if( !m_inited )
 	{
-		for( int i = 0; i < MAX_THREADS; i++ )
-		{
-			m_threads[i] = NULL;
-		}
-
 		memset(g_tmpStrings, 0, sizeof(g_tmpStrings));
 		memset(g_tmpTemporaryStringStorage, 0, sizeof(g_tmpTemporaryStringStorage));
 
@@ -176,7 +156,7 @@ AbstractThread::~AbstractThread()
 void AbstractThread::start()
 {
 #ifdef _WIN32
-	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, &m_id);
+	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, NULL);
 #else
 	pthread_attr_t threadAttr;
 	pthread_attr_init(&threadAttr);
@@ -189,8 +169,6 @@ void AbstractThread::start()
 		m_handle = NULL;
 		throw CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
 	}
-	
-	m_id = (unsigned) m_handle; //pthread_self() and m_handle should be the same
 #endif
 	
 	m_terminateEvent.reset();
@@ -396,9 +374,58 @@ bool AbstractThread::checkStuck()
 	return false;
 }
 
+#ifdef _WIN32
+#pragma pack(push, 8)
+typedef struct tagTHREADNAME_INFO
+{
+	DWORD dwType;
+	LPCTSTR szName;
+	DWORD dwThreadID;
+	DWORD dwFlags;
+} THREADNAME_INFO;
+#pragma pack(pop)
+
+const DWORD MS_VC_EXCEPTION = 0x406D1388;
+#endif
+
 void AbstractThread::onStart()
 {
-	//	empty. override if need in subclass
+	// start-up actions for each thread
+	// when implemented in derived classes this method must always be called too, preferably before
+	// the custom implementation
+
+	// we set the id here to ensure it is available before the first tick, otherwise there's
+	// a small delay when setting it from AbstractThread::start and it's possible for the id
+	// to not be set fast enough (particular when using pthreads)
+#ifdef _WIN32
+	m_id = ::GetCurrentThreadId();
+#else
+	m_id = pthread_self();
+#endif
+	ThreadHolder::m_currentThread = this;
+
+	// register the thread name
+#ifdef _WIN32
+	THREADNAME_INFO info;
+	info.dwType = 0x1000;
+	info.szName = getName();
+	info.dwThreadID = -1;
+	info.dwFlags = 0;
+
+	__try
+	{
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), reinterpret_cast<ULONG_PTR*>(&info));
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+	}
+
+#else
+	// thread name must be 16 bytes, zero-padded if shorter
+	char name[16] = { '\0' };
+	strcpylen(name, m_name, COUNTOF(name));
+	prctl(PR_SET_NAME, name, 0, 0, 0);
+#endif
 }
 
 void AbstractThread::setPriority(IThread::Priority pri)

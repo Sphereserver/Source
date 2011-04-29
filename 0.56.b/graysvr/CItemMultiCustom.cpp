@@ -1055,7 +1055,7 @@ void CItemMultiCustom::CopyDesign(DesignDetails * designFrom, DesignDetails * de
 
 	// copy saved packet
 	if ( designTo->m_pData != NULL )
-		delete[] designTo->m_pData;
+		delete designTo->m_pData;
 
 	if ( designFrom->m_pData != NULL )
 	{

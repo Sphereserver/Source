@@ -1,4 +1,4 @@
-
+#include "../common/graycom.h"
 #include "asyncdb.h"
 
 CDataBaseAsyncHelper g_asyncHdb;
@@ -13,6 +13,7 @@ CDataBaseAsyncHelper::~CDataBaseAsyncHelper(void)
 
 void CDataBaseAsyncHelper::onStart()
 {
+	AbstractSphereThread::onStart();
 	stlqueryLock.setMutex(&m_queryMutex);
 }
 

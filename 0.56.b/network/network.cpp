@@ -908,6 +908,7 @@ NetworkIn::~NetworkIn(void)
 
 void NetworkIn::onStart(void)
 {
+	AbstractSphereThread::onStart();
 	m_lastGivenSlot = -1;
 	m_buffer = new BYTE[NETWORK_BUFFERSIZE];
 	m_decryptBuffer = new BYTE[NETWORK_BUFFERSIZE];
@@ -2438,9 +2439,9 @@ void NetworkManager::createNetworkThreads(size_t count)
 	if (count < 1)
 		count = 1;
 
-	// todo: maximum? (MAX_THREADS = 30, may need increasing)
-	// reduced further to give room for other threads (specifically main and async db threads)
-	size_t maxThreads = ((MAX_THREADS - ThreadHolder::getActiveThreads() - 10));
+	// limit the number of threads to avoid stupid values, the maximum is calculated
+	// to allow a maximum of 32 clients per thread at full load
+	size_t maxThreads = maximum((FD_SETSIZE / 32), 1);
 	if (count > maxThreads)
 	{
 		count = maxThreads;
@@ -2857,6 +2858,7 @@ void NetworkThread::dropInvalidStates(void)
 
 void NetworkThread::onStart(void)
 {
+	AbstractSphereThread::onStart();
 	m_input.setOwner(this);
 	m_output.setOwner(this);
 #ifdef MTNETWORK_INPUT
