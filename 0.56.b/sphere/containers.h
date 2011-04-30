@@ -51,7 +51,7 @@ public:
 			return 0;
 
 		int toSkip = 1;
-		for (const_iterator it = m_list.begin(); it != m_head && it != m_list.end(); it++)
+		for (const_iterator it = m_list.begin(); it != m_head && it != m_list.end(); ++it)
 		{
 			if (it == m_list.end())
 				break;
@@ -66,7 +66,7 @@ public:
 	bool empty(void) const
 	{
 		iterator next = m_head;
-		next++;
+		++next;
 
 		return (next == m_tail);
 	}
@@ -78,7 +78,7 @@ public:
 			throw CException(LOGL_ERROR, 0, "No elements to read from queue.");
 
 		iterator next = m_head;
-		next++;
+		++next;
 
 		if (next != m_tail)
 			m_head = next;
@@ -90,7 +90,7 @@ public:
 		if (empty() == false)
 		{
 			iterator next = m_head;
-			next++;
+			++next;
 
 			if (next != m_tail)
 				return *next;
