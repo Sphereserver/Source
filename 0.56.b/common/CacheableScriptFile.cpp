@@ -120,7 +120,7 @@ TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax)
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
-	*pBuffer = NULL;
+	*pBuffer = '\0';
 
 	if ( m_fileContent != NULL && m_currentLine < m_fileContent->size() )
 	{

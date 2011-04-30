@@ -133,7 +133,7 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 {
 	ADDTOCALLSTACK("CChar::Jail");
 
-	CScriptTriggerArgs Args( fSet? 1 : 0, iCell, NULL);
+	CScriptTriggerArgs Args( fSet? 1 : 0, iCell, 0);
 
 	if ( fSet )	// set the jailed flag.
 	{

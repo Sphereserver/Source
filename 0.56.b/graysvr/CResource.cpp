@@ -987,9 +987,10 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_PROFILE:
 			{
 				int seconds = s.GetArgVal();
-				for (int i = 0; i < ThreadHolder::getActiveThreads(); i++)
+				size_t threadCount = ThreadHolder::getActiveThreads();
+				for (size_t i = 0; i < threadCount; i++)
 				{
-					AbstractSphereThread* thread = (AbstractSphereThread*)ThreadHolder::getThreadAt(i);
+					AbstractSphereThread* thread = STATIC_CAST<AbstractSphereThread*>(ThreadHolder::getThreadAt(i));
 					if (thread != NULL)
 						thread->m_profile.SetActive(seconds);
 				}

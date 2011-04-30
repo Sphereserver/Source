@@ -2064,7 +2064,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 	u_damFlag = uType;
 
-	CScriptTriggerArgs Args( i_damTemp, u_damFlag, NULL );
+	CScriptTriggerArgs Args( i_damTemp, u_damFlag, 0 );
 	if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 		return( 0 );
 	i_damTemp	= Args.m_iN1;

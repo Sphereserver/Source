@@ -1,15 +1,15 @@
 #include "../graysvr/graysvr.h"
 
-static int GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
+static size_t GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
 {
 	// Copy the identifier (valid char set) out to this buffer.
-	int i=0;
+	size_t i = 0;
 	for ( ;pszArgs[i]; i++ )
 	{
 		if ( ! _ISCSYM(pszArgs[i]))
 			break;
-		if ( i>=EXPRESSION_MAX_KEY_LEN )
-			return( NULL );
+		if ( i >= EXPRESSION_MAX_KEY_LEN )
+			return 0;
 		szTag[i] = pszArgs[i];
 	}
 
@@ -578,7 +578,7 @@ CVarDefCont * CVarDefMap::GetParseKey( LPCTSTR & pszArgs ) const
 	// The name can only be valid.
 
 	TCHAR szTag[ EXPRESSION_MAX_KEY_LEN ];
-	int i = GetIdentifierString( szTag, pszArgs );
+	size_t i = GetIdentifierString( szTag, pszArgs );
 	CVarDefCont * pVar = GetKey(szTag);
 	if ( pVar )
 	{

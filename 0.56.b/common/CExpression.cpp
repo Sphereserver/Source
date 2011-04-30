@@ -186,16 +186,16 @@ bool IsSimpleNumberString( LPCTSTR pszTest )
 	}
 }
 
-static int GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
+static size_t GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
 {
 	// Copy the identifier (valid char set) out to this buffer.
-	int i=0;
-	for ( ;pszArgs[i]; i++ )
+	size_t i = 0;
+	for ( ; pszArgs[i]; i++ )
 	{
 		if ( ! _ISCSYM(pszArgs[i]))
 			break;
-		if ( i>=EXPRESSION_MAX_KEY_LEN )
-			return( NULL );
+		if ( i >= EXPRESSION_MAX_KEY_LEN )
+			return 0;
 		szTag[i] = pszArgs[i];
 	}
 
@@ -730,7 +730,7 @@ try_dec:
 
 	// hard end ! Error of some sort.
 	TCHAR szTag[ EXPRESSION_MAX_KEY_LEN ];
-	int i = GetIdentifierString( szTag, pszArgs );
+	size_t i = GetIdentifierString( szTag, pszArgs );
 	pszArgs += i;	// skip it.
 
 	DEBUG_ERR(( "Undefined symbol '%s'\n", szTag ));

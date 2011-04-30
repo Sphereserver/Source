@@ -2932,7 +2932,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	//Resend buff icons
 	resendBuffs();
 
-	CScriptTriggerArgs	Args( fNoMessages, fQuickLogIn, NULL );
+	CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, 0 );
 
 	if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
 	{

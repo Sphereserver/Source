@@ -44,17 +44,16 @@ extern CLog g_Log;
 IThread *ThreadHolder::current()
 {
 	init();
-#ifdef _WIN32
-	unsigned id = ::GetCurrentThreadId();
-#else
-	unsigned id = (unsigned)pthread_self();
-#endif
 
 	IThread * thread = m_currentThread;
 	if (thread == NULL)
 		return DummySphereThread::getInstance();
 
-	ASSERT(thread->getId() == id);
+#ifdef _WIN32
+	ASSERT(thread->getId() == ::GetCurrentThreadId());
+#else
+	ASSERT(thread->getId() == (unsigned)pthread_self());
+#endif
 	return thread;
 }
 
@@ -87,7 +86,7 @@ void ThreadHolder::pop(IThread *thread)
 
 IThread * ThreadHolder::getThreadAt(size_t at)
 {
-	if (( at < 0 ) || ( at > getActiveThreads() ))
+	if ( at > getActiveThreads() )
 		return NULL;
 	
 	SimpleThreadLock lock(m_mutex);
@@ -133,7 +132,7 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 	}
 	m_id = 0;
 	m_name = name;
-	m_handle = NULL;
+	m_handle = 0;
 	m_hangCheck = 0;
 	m_terminateRequested = true;
 	setPriority(priority);
@@ -167,7 +166,7 @@ void AbstractThread::start()
 
 	if (result != 0)
 	{
-		m_handle = NULL;
+		m_handle = 0;
 		throw CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
 	}
 #endif
@@ -200,7 +199,7 @@ void AbstractThread::terminate(bool ended)
 		// Common things
 		ThreadHolder::pop(this);
 		m_id = 0;
-		m_handle = NULL;
+		m_handle = 0;
 
 		// let everyone know we have been terminated
 		m_terminateEvent.set();
@@ -306,11 +305,7 @@ SPHERE_THREADENTRY_RETNTYPE AbstractThread::runner(void *callerThread)
 
 bool AbstractThread::isActive() const
 {
-#ifdef _WIN32
-	return m_handle != NULL;
-#else
 	return m_handle != 0;
-#endif
 }
 
 void AbstractThread::waitForClose()
@@ -410,7 +405,7 @@ void AbstractThread::onStart()
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
 	info.szName = getName();
-	info.dwThreadID = -1;
+	info.dwThreadID = static_cast<DWORD>(-1);
 	info.dwFlags = 0;
 
 	__try

@@ -877,13 +877,13 @@ int CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
 {
 	ADDTOCALLSTACK("CPointBase::GetRegions");
 	if ( !IsValidPoint() )
-		return NULL;
+		return 0;
 
 	CSector *pSector = GetSector();
 	if ( pSector )
 		return pSector->GetRegions(*this, dwType, rlinks);
 
-	return NULL;
+	return 0;
 }
 
 //*************************************************************************
