@@ -992,7 +992,7 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			CGrayUID toSysmessage;
 			LPCTSTR pszArg = s.GetArgStr();
 			TCHAR *pUid = Str_GetTemp();
-			int x(0);
+			size_t x = 0;
 
 			if ( *pszArg == '@' )
 			{

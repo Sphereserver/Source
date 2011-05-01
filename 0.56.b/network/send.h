@@ -1102,11 +1102,11 @@ class PacketGumpDialog : public PacketSend
 {
 public:
 	PacketGumpDialog(int x, int y, CObjBase* object, DWORD context);
-	void writeControls(const CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount);
+	void writeControls(const CClient* target, const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount);
 
 protected:
-	void writeCompressedControls(const CGString* controls, int controlCount, const CGString* texts, int textCount);
-	void writeStandardControls(const CGString* controls, int controlCount, const CGString* texts, int textCount);
+	void writeCompressedControls(const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount);
+	void writeStandardControls(const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount);
 };
 
 /***************************************************************************

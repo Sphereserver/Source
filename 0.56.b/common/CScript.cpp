@@ -116,7 +116,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey )
 	TCHAR * pBuffer = GetKeyBufferRaw( strlen( pszKey ));
 	ASSERT(pBuffer);
 
-	int iLen = m_Mem.GetDataLength()-1;
+	size_t iLen = m_Mem.GetDataLength() - 1;
 	strncpy( pBuffer, pszKey, iLen );
 	pBuffer[iLen] = '\0';
 
@@ -129,7 +129,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey, LPCTSTR pszVal )
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKey");
 	ASSERT(pszKey);
 
-	int lenkey = strlen( pszKey );
+	size_t lenkey = strlen( pszKey );
 	if ( ! lenkey )
 	{
 		return ParseKey(pszVal);
@@ -137,7 +137,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey, LPCTSTR pszVal )
 
 	ASSERT( lenkey < SCRIPT_MAX_LINE_LEN-2 );
 
-	int lenval = 0;
+	size_t lenval = 0;
 	if ( pszVal )
 	{
 		lenval = strlen( pszVal );
@@ -151,7 +151,7 @@ bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey, LPCTSTR pszVal )
 	if ( pszVal )
 	{
 		m_pszArg ++;
-		lenval = m_Mem.GetDataLength()-2;
+		lenval = m_Mem.GetDataLength() - 2;
 		strcpylen( m_pszArg, pszVal, ( lenval - lenkey ) + 1 );	// strcpylen
 	}
 
@@ -172,7 +172,7 @@ size_t CScriptKeyAlloc::ParseKeyEnd()
 		TCHAR ch = m_pszKey[len];
 		if ( ch == '\0' )
 			break;
-		if ( ch == '/' && m_pszKey[len+1] == '/' )
+		if ( ch == '/' && m_pszKey[len + 1] == '/' )
 		{
 			// Remove comment at end of line.
 			break;
@@ -362,8 +362,8 @@ bool CScript::FindNextSection()
 foundit:
 	// Parse up the section name.
 	m_pszKey++;
-	int len = strlen( m_pszKey );
-	for ( int i=0; i<len; i++ )
+	size_t len = strlen( m_pszKey );
+	for ( size_t i = 0; i < len; i++ )
 	{
 		if ( m_pszKey[i] == ']' )
 		{

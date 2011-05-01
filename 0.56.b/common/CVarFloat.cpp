@@ -310,10 +310,10 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	INTRINSIC_TYPE iIntrinsic = (INTRINSIC_TYPE) FindTableHeadSorted( pArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions)-1 );
 	if ( iIntrinsic >= 0 )
 	{
-		int iLen = strlen(sm_IntrinsicFunctions[iIntrinsic]);
+		size_t iLen = strlen(sm_IntrinsicFunctions[iIntrinsic]);
 		if ( pArgs[iLen] == '(' )
 		{
-			pArgs += (iLen+1);
+			pArgs += (iLen + 1);
 			TCHAR * pArgsNext;
 			Str_Parse( const_cast<TCHAR*>(pArgs), &(pArgsNext), ")" );
 

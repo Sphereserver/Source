@@ -203,21 +203,22 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 	}
 	else
 	{
+		LPCTSTR pszTmp = pszName;
+
 		// NOTE: Name must be <= MAX_NAME_SIZE
 		TCHAR szTmp[ MAX_ITEM_NAME_SIZE + 1 ];
-		int len = strlen( pszName );
-		if ( len >= MAX_ITEM_NAME_SIZE )
+		if ( strlen( pszName ) >= MAX_ITEM_NAME_SIZE )
 		{
 			strcpylen( szTmp, pszName, MAX_ITEM_NAME_SIZE );
-			pszName = szTmp;
+			pszTmp = szTmp;
 		}
 
 		// Can't be a dupe name with type ?
 		LPCTSTR pszTypeName = Base_GetDef()->GetTypeName();
-		if ( ! strcmpi( pszTypeName, pszName ))
-			pszName = "";
+		if ( ! strcmpi( pszTypeName, pszTmp ))
+			pszTmp = "";
 
-		if ( CObjBaseTemplate::SetName( pszName ) == false )
+		if ( CObjBaseTemplate::SetName( pszTmp ) == false )
 			return false;
 	}
 	

@@ -1734,7 +1734,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 	if (action == BBOARDF_REQ_HEAD)
 		writeInt32(0);
 
-	int lenstr(0);
+	size_t lenstr = 0;
 	TCHAR* tempstr = Str_GetTemp();
 
 	// author name. if it has one.
@@ -2306,11 +2306,9 @@ PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GU
 	writeInt32(object->GetUID());
 	writeInt16(gump);
 
-	int len;
-	
 	if (unknown != NULL)
 	{
-		len = strlen(unknown) + 1;
+		size_t len = strlen(unknown) + 1;
 		writeInt16(len);
 		writeStringFixedASCII(unknown, len);
 	}
@@ -2321,7 +2319,7 @@ PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GU
 
 	if (text != NULL)
 	{
-		len = strlen(text) + 1;
+		size_t len = strlen(text) + 1;
 		writeInt16(len);
 		writeStringFixedASCII(text, len);
 	}
@@ -3074,7 +3072,7 @@ PacketGumpDialog::PacketGumpDialog(int x, int y, CObjBase* object, DWORD context
 	writeInt32(y);
 }
 
-void PacketGumpDialog::writeControls(const CClient* target, const CGString* controls, int controlCount, const CGString* texts, int textCount)
+void PacketGumpDialog::writeControls(const CClient* target, const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount)
 {	
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
@@ -3085,7 +3083,7 @@ void PacketGumpDialog::writeControls(const CClient* target, const CGString* cont
 		writeStandardControls(controls, controlCount, texts, textCount);
 }
 
-void PacketGumpDialog::writeCompressedControls(const CGString* controls, int controlCount, const CGString* texts, int textCount)
+void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount)
 {
 	ADDTOCALLSTACK("PacketGumpDialog::writeCompressedControls");
 
@@ -3097,13 +3095,13 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, int con
 	{
 		// compress and write controls
 		int controlLength = 1;
-		for (int i = 0; i < controlCount; i++)
+		for (size_t i = 0; i < controlCount; i++)
 			controlLength += controls[i].GetLength() + 2;
 
 		char* toCompress = new char[controlLength];
 
 		int controlLengthActual = 0;
-		for (int i = 0; i < controlCount; i++)
+		for (size_t i = 0; i < controlCount; i++)
 			controlLengthActual += sprintf(&toCompress[controlLengthActual], "{%s}", (LPCTSTR)controls[i]);
 		controlLengthActual++;
 
@@ -3135,7 +3133,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, int con
 		// compress and write texts
 		size_t textsPosition(getPosition());
 
-		for (int i = 0; i < textCount; i++)
+		for (size_t i = 0; i < textCount; i++)
 		{
 			writeInt16(texts[i].GetLength());
 			writeStringFixedNUNICODE((LPCTSTR)texts[i], texts[i].GetLength());
@@ -3167,7 +3165,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, int con
 	}
 }
 
-void PacketGumpDialog::writeStandardControls(const CGString* controls, int controlCount, const CGString* texts, int textCount)
+void PacketGumpDialog::writeStandardControls(const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount)
 {
 	ADDTOCALLSTACK("PacketGumpDialog::writeStandardControls");
 
@@ -3181,7 +3179,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
 	skip(2);
 
 	// write controls
-	for (int i = 0; i < controlCount; i++)
+	for (size_t i = 0; i < controlCount; i++)
 	{
 		writeCharASCII('{');
 		writeStringASCII((LPCTSTR)controls[i], false);
@@ -3196,7 +3194,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, int contr
 
 	// write texts
 	writeInt16(textCount);
-	for (int i = 0; i < textCount; i++)
+	for (size_t i = 0; i < textCount; i++)
 	{
 		writeInt16(texts[i].GetLength());
 		writeStringFixedNUNICODE((LPCTSTR)texts[i], texts[i].GetLength());
@@ -4053,7 +4051,7 @@ PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, co
 	for (int x = 0; x < data->GetCount(); x++)
 	{
 		const CClientTooltip* tipEntry = data->GetAt(x);
-		int tipLength = strlen(tipEntry->m_args);
+		size_t tipLength = strlen(tipEntry->m_args);
 		
 		writeInt32(tipEntry->m_clilocid);
 		writeInt16(tipLength * sizeof(WCHAR));

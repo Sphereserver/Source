@@ -12,13 +12,14 @@
 LPCTSTR CValStr::FindName( int iVal ) const
 {
 	ADDTOCALLSTACK("CValStr::FindName");
-	int i=0;
+	size_t i = 0;
+	ASSERT(this[i].m_pszName != NULL);
 	for ( ; this[i].m_pszName; i++ )
 	{
-		if ( iVal < this[i+1].m_iVal )
+		if ( iVal < this[i + 1].m_iVal )
 			return( this[i].m_pszName );
 	}
-	return( this[i-1].m_pszName );
+	return( this[i - 1].m_pszName );
 }
 
 //***************************************************************************

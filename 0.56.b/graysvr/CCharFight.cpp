@@ -711,17 +711,17 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 				if ( change )
 				{
 					//	bonuses of different experiences
-					if ( m_exp*4 < pKill->m_exp )		// 200%		[exp = 1/4 of killed]
+					if ( (m_exp * 4) < pKill->m_exp )		// 200%		[exp = 1/4 of killed]
 						change *= 2;
-					else if ( m_exp*2 < pKill->m_exp )	// 150%		[exp = 1/2 of killed]
-						change = (change * 3)/2;
-					else if ( m_exp <= pKill->m_exp )	// 100%		[exp <= killed]
+					else if ( (m_exp * 2) < pKill->m_exp )	// 150%		[exp = 1/2 of killed]
+						change = (change * 3) / 2;
+					else if ( m_exp <= pKill->m_exp )		// 100%		[exp <= killed]
 						;
-					else if ( m_exp < pKill->m_exp*2 )	//  50%		[exp < 2 * killed]
+					else if ( m_exp < (pKill->m_exp * 2) )	//  50%		[exp < 2 * killed]
 						change /= 2;
-					else if ( m_exp < pKill->m_exp*3 )	//  25%		[exp < 3 * killed]
+					else if ( m_exp < (pKill->m_exp * 3) )	//  25%		[exp < 3 * killed]
 						change /= 4;
-					else								//  10%		[exp >= 3 * killed]
+					else									//  10%		[exp >= 3 * killed]
 						change /= 10;
 				}
 
@@ -2581,7 +2581,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 		const CArmorLayerType * pArmorLayer = &sm_ArmorLayers[iHitArea];
 
-		for ( int i=0; pArmorLayer->m_pLayers[i] != LAYER_NONE; i++ ) // layers covering the armor zone.
+		for ( size_t i = 0; pArmorLayer->m_pLayers[i] != LAYER_NONE; i++ ) // layers covering the armor zone.
 		{
 			if ( pArmorLayer->m_pLayers[i] == layer )
 			{

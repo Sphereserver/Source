@@ -3877,7 +3877,11 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 #endif
 	{
 		// send via standard api
-		result = state->m_socket.Send(data, length);
+		int sent = state->m_socket.Send(data, length);
+		if (sent > 0)
+			result = static_cast<size_t>(sent);
+		else
+			result = 0;
 	}
 
 	// check for error
@@ -3923,7 +3927,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 		}
 	}
 
-	if (result > 0)
+	if (result > 0 && result != _failed_result())
 		CurrentProfileData.Count(PROFILE_DATA_TX, result);
 
 	return result;

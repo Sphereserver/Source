@@ -3123,9 +3123,7 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 	}
 
 	CGString sMsg;
-	BYTE lErr = PacketLoginError::Other;
-
-	lErr = LogIn( pszAccName, pszPassword, sMsg );
+	BYTE lErr = LogIn( pszAccName, pszPassword, sMsg );
 
 	if ( lErr != PacketLoginError::Success )
 	{
@@ -3276,9 +3274,9 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 		return( PacketLoginError::Success );
 
 	TCHAR szTmp[ MAX_NAME_SIZE ];
-	int iLen1 = strlen( pszAccName );
-	int iLen2 = strlen( pszPassword );
-	int iLen3 = Str_GetBare( szTmp, pszAccName, MAX_NAME_SIZE );
+	size_t iLen1 = strlen( pszAccName );
+	size_t iLen2 = strlen( pszPassword );
+	size_t iLen3 = Str_GetBare( szTmp, pszAccName, MAX_NAME_SIZE );
 	if ( iLen1 == 0 ||
 		iLen1 != iLen3 ||
 		iLen1 > MAX_NAME_SIZE )	// a corrupt message.

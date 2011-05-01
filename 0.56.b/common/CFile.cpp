@@ -80,8 +80,8 @@ LPCTSTR CGFile::GetFilesTitle( LPCTSTR pszPath )	// static
 	ADDTOCALLSTACK("CGFile::GetFilesTitle");
 	// Just use COMMDLG.H GetFileTitleA(LPCSTR, LPSTR, WORD) instead ?
 	// strrchr
-	int len = strlen(pszPath);
-	while ( len>0 )
+	size_t len = strlen(pszPath);
+	while ( len > 0 )
 	{
 		len--;
 		if ( pszPath[len] == '\\' || pszPath[len] == '/' )
@@ -97,9 +97,9 @@ LPCTSTR CGFile::GetFilesExt( LPCTSTR pszName )	// static
 {
 	ADDTOCALLSTACK("CGFile::GetFilesExt");
 	// get the EXTension including the .
-	int lenall = strlen( pszName );
-	int len = lenall;
-	while ( len>0 )
+	size_t lenall = strlen( pszName );
+	size_t len = lenall;
+	while ( len > 0 )
 	{
 		len--;
 		if ( pszName[len] == '\\' || pszName[len] == '/' )

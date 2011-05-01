@@ -1200,7 +1200,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 				delete board->GetAt(board->GetCount() - 1);
 			}
 
-			int lenstr = readByte();
+			size_t lenstr = readByte();
 			TCHAR* str = Str_GetTemp();
 			readStringASCII(str, lenstr, false);
 			if (Str_Check(str))

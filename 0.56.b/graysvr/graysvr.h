@@ -954,37 +954,6 @@ private:
 	CCrypt m_Crypt;			// Client source communications are always encrypted.
 	static CHuffman m_Comp;
 
-	class CTooltipData
-	{
-		private:
-			long time;
-			int len;
-			DWORD objUid;
-			BYTE * tooltipData;
-
-		public:
-			CTooltipData(const void * bData, int length, DWORD oUid, long lTime)
-			{
-				time = lTime;
-				len = length;
-				objUid = oUid;
-				tooltipData = new BYTE[length];
-				memcpy(tooltipData, bData, length);
-			}
-
-			~CTooltipData()
-			{
-				delete[] tooltipData;
-			}
-
-			long GetTime() { return time; }
-			int GetLength() { return len; }
-			BYTE * GetData() { return tooltipData; }
-			DWORD GetObjUid() { return objUid; }
-			CObjBase * GetObject() { return CGrayUID(objUid).ObjFind(); }
-			bool IsObjectValid() { return (CGrayUID(objUid).ObjFind() != NULL); }
-	};
-
 private:
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 

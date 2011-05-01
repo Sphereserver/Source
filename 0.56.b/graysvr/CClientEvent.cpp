@@ -2756,15 +2756,15 @@ bool CClient::xPacketFilter( const BYTE * pData, size_t iLen )
 	{
 		CScriptTriggerArgs Args(pData[0]);
 		enum TRIGRET_TYPE trigReturn;
-		char idx[5];
+		TCHAR idx[5];
 
 		Args.m_s1 = GetPeerStr();
 		Args.m_pO1 = this; // Yay for ARGO.SENDPACKET
 		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
 		size_t bytes = iLen;
-		int bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
-		char *zBuf = Str_GetTemp();
+		size_t bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
+		TCHAR *zBuf = Str_GetTemp();
 
 		Args.m_VarsLocal.SetNum("NUM", bytes);
 		memcpy(zBuf, &(pData[0]), bytestr);

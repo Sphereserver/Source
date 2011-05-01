@@ -1090,11 +1090,11 @@ const CSkillDef * CResource::SkillLookup( LPCTSTR pszKey )
 {
 	ADDTOCALLSTACK("CResource::SkillLookup");
 
-	int		iLen	= strlen( pszKey );
-    const CSkillDef *		pDef;
+	size_t iLen = strlen( pszKey );
+    const CSkillDef * pDef;
 	for ( int i = 0; i < m_SkillIndexDefs.GetCount(); ++i )
 	{
-		pDef	= STATIC_CAST <const CSkillDef*>(m_SkillIndexDefs[i]);
+		pDef = STATIC_CAST<const CSkillDef *>(m_SkillIndexDefs[i]);
 		if ( pDef->m_sName.IsEmpty() ?
 				!strnicmp( pszKey, pDef->GetKey(), iLen )
 			:	!strnicmp( pszKey, pDef->m_sName, iLen ) )
@@ -1812,15 +1812,14 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 
 	// Is this command avail for your priv level (or lower) ?
 	PLEVEL_TYPE ilevel;
-	char *myCmd = Str_GetTemp();
+	TCHAR *myCmd = Str_GetTemp();
 
-	int pOs; //position of space :)
-	pOs = strcspn(pszCmd," ");
+	size_t pOs = strcspn(pszCmd," "); //position of space :)
 	strncpy ( myCmd, pszCmd, pOs );
 	myCmd[pOs] = '\0';
 
-	char * pOd; //position of dot :)
-	while ( (pOd = strchr(myCmd,'.')) != NULL )
+	TCHAR * pOd; //position of dot :)
+	while ( (pOd = strchr(myCmd, '.')) != NULL )
 	{
 		ilevel = GetPrivCommandLevel( myCmd );
 		if ( ilevel > pSrc->GetPrivLevel())
@@ -3780,7 +3779,7 @@ LPCTSTR CResource::GetDefaultMsg(long lKeyNum)
 	return g_Exp.sm_szMessages[lKeyNum];
 }
 
-bool CResource::GenerateDefname(TCHAR *pObjectName, int iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict, CVarDefMap* vDefnames)
+bool CResource::GenerateDefname(TCHAR *pObjectName, size_t iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict, CVarDefMap* vDefnames)
 {
 	ADDTOCALLSTACK("CResource::GenerateDefname");
 	if ( !pOutput )
@@ -3792,44 +3791,45 @@ bool CResource::GenerateDefname(TCHAR *pObjectName, int iInputLength, LPCTSTR pP
 		return false;
 	}
 
-	int i;
-	int iOut = 0;
+	size_t iOut = 0;
 
 	if (pPrefix)
 	{
 		// write prefix
-		for (i = 0; pPrefix[i] != '\0'; i++)
+		for (size_t i = 0; pPrefix[i] != '\0'; i++)
 			pOutput[iOut++] = pPrefix[i];
 	}
 
 	// write object name
-	for (i = 0; i < iInputLength; i++)
+	for (size_t i = 0; i < iInputLength; i++)
 	{
 		if (pObjectName[i] == '\0')
 			break;
 
 		if ( ISWHITESPACE(pObjectName[i]) )
 		{
-			if (pOutput[iOut-1] != '_') // avoid double '_'
+			if (iOut > 0 && pOutput[iOut - 1] != '_') // avoid double '_'
 				pOutput[iOut++] = '_';
 		}
 		else if ( _ISCSYMF(pObjectName[i]) )
 		{
-			if (pObjectName[i] != '_' || pOutput[iOut-1] != '_') // avoid double '_'
+			if (pObjectName[i] != '_' || (iOut > 0 && pOutput[iOut - 1] != '_')) // avoid double '_'
 				pOutput[iOut++] = tolower(pObjectName[i]);
 		}
 	}
 
 	// remove trailing _
-	while (pOutput[iOut-1] == '_')
+	while (iOut > 0 && pOutput[iOut - 1] == '_')
 		iOut--;
 
 	pOutput[iOut] = '\0';
+	if (iOut == 0)
+		return false;
 
 	if (bCheckConflict == true)
 	{
 		// check for conflicts
-		int iEnd = iOut;
+		size_t iEnd = iOut;
 		int iAttempts = 1;
 
 		for (;;)

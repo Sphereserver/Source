@@ -651,7 +651,7 @@ bool CWorld::Import( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	// NOTE: We need to set the IsLoading() for this ???
 
 	// ??? What if i want to just import into the local area ?
-	int iLen = strlen( pszFilename );
+	size_t iLen = strlen( pszFilename );
 	if ( iLen <= 4 )
 		return( false );
 	CScript s;
@@ -675,7 +675,7 @@ bool CWorld::Import( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	fImport.m_pszArg1 = pszArg1;
 	fImport.m_pszArg2 = pszArg2;
 
-	if ( ! strcmpi( pszFilename + iLen - 4, ".WSC" ))
+	if ( ! strcmpi( pszFilename + (iLen - 4), ".WSC" ))
 	{
 		if ( ! fImport.ImportWSC(s, wModeFlags ))
 			return( false );
@@ -739,7 +739,7 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	if ( pSrc == NULL )
 		return( false );
 
-	int iLen = strlen( pszFilename );
+	size_t iLen = strlen( pszFilename );
 	if ( iLen <= 4 )
 		return( false );
 
@@ -753,7 +753,7 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		dy -= pSrc->GetTopPoint().m_y;
 	}
 
-	if ( ! strcmpi( pszFilename + iLen - 4, ".WSC" ))
+	if ( ! strcmpi( pszFilename + (iLen - 4), ".WSC" ))
 	{
 		// Export as UOX format. for world forge stuff.
 		int index = 0;

@@ -741,7 +741,7 @@ public:
 	void AddSortString( LPCTSTR pszText )
 	{
 		ASSERT(pszText);
-		int len = strlen( pszText );
+		size_t len = strlen( pszText );
 		TCHAR * pNew = new TCHAR [ len + 1 ];
 		strcpy( pNew, pszText );
 		AddSortKey( pNew, pNew );
@@ -771,10 +771,10 @@ public:
 			const char * p = strchr( pszID, ' ' );
 			if (p != NULL)
 			{
-				int		iLen	= p - pszID;
+				size_t iLen = p - pszID;
 				// return( strnicmp( pszID, pObj->GetName(), iLen ) );
 
-				int objStrLen = strlen( objStr );
+				size_t objStrLen = strlen( objStr );
 				int retval = strnicmp( pszID, objStr, iLen );
 				if ( retval == 0 )
 				{

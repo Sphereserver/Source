@@ -1371,13 +1371,11 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 
 	CObjBase * pOldCont = this->GetContainer();
 
-	TRIGRET_TYPE ttResult = TRIGRET_RET_DEFAULT;
-
 	CScriptTriggerArgs args;
 	args.m_s1 = ptNewPlace.WriteUsed();
 	args.m_s1_raw = args.m_s1;
 	args.m_iN1 = iDecayTime;
-	ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
+	TRIGRET_TYPE ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
 
 	iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
 

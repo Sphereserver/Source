@@ -281,7 +281,7 @@ bool CScriptCompiler::IsAlreadyCompiled(char *sourceName, char *binaryName)
 		fclose(f);
 
 		//	file is either corrupt -or- not successfuly compiled
-		if ( strcmp(head.zPrefix, COMPILER_BINARY_MARK) || !head.bValid )
+		if ( strcmp(head.zPrefix, COMPILER_BINARY_MARK) != 0 || !head.bValid )
 			return false;
 
 		//	file is modifyed?

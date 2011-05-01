@@ -649,7 +649,7 @@ void CChar::CreateNewCharCheck()
 			{
 				CCharBase *pCharDef = Char_GetDef();
 
-				int mult = (Stat_GetMax(STAT_STR) + Stat_GetMax(STAT_DEX)/2 + Stat_GetMax(STAT_INT))/3;
+				int mult = (Stat_GetMax(STAT_STR) + (Stat_GetMax(STAT_DEX) / 2) + Stat_GetMax(STAT_INT)) / 3;
 				m_exp = maximum(
 						Skill_GetBase(SKILL_ARCHERY),
 						maximum(Skill_GetBase(SKILL_SWORDSMANSHIP),
@@ -657,16 +657,16 @@ void CChar::CreateNewCharCheck()
 						maximum(Skill_GetBase(SKILL_FENCING),
 						Skill_GetBase(SKILL_WRESTLING))))
 					) +
-					Skill_GetBase(SKILL_TACTICS)/4 +
-					Skill_GetBase(SKILL_PARRYING)/4 +
-					Skill_GetBase(SKILL_MAGERY)/3 +
-					Skill_GetBase(SKILL_PROVOCATION)/4 +
-					Skill_GetBase(SKILL_PEACEMAKING)/4 +
-					Skill_GetBase(SKILL_TAMING)/4 +
-					pCharDef->m_defense * 3 +
-					pCharDef->m_attackBase * 6
+					(Skill_GetBase(SKILL_TACTICS)     / 4) +
+					(Skill_GetBase(SKILL_PARRYING)    / 4) +
+					(Skill_GetBase(SKILL_MAGERY)      / 3) +
+					(Skill_GetBase(SKILL_PROVOCATION) / 4) +
+					(Skill_GetBase(SKILL_PEACEMAKING) / 4) +
+					(Skill_GetBase(SKILL_TAMING)      / 4) +
+					(pCharDef->m_defense    * 3) +
+					(pCharDef->m_attackBase * 6)
 					;
-				m_exp = (m_exp * mult)/100;
+				m_exp = (m_exp * mult) / 100;
 			}
 
 			if ( !m_level && g_Cfg.m_bLevelSystem && ( m_exp > g_Cfg.m_iLevelNextAt ))

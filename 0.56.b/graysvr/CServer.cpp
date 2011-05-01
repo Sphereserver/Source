@@ -68,7 +68,7 @@ commandtoolong:
 	{
 		LPCTSTR p = NULL;
 		LPCTSTR tmp = NULL;
-		int inputLen = 0;
+		size_t inputLen = 0;
 		bool matched(false);
 
 		//	extract up to start of the word
@@ -1071,9 +1071,10 @@ bool CServer::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	ADDTOCALLSTACK("CServer::r_GetRef");
 	if ( IsDigit( pszKey[0] ))
 	{
-		int i=1;
+		size_t i = 1;
 		while ( IsDigit( pszKey[i] ))
 			i++;
+
 		if ( pszKey[i] == '.' )
 		{
 			int index = ATOI( pszKey );	// must use this to stop at .
@@ -1792,7 +1793,7 @@ bool CServer::SocketsInit() // Initialize sockets
 	g_Log.Event( LOGM_INIT, "Server started on '%s' port %d.\n", szName, m_ip.GetPort());
 	if ( !iRet && pHost && pHost->h_addr )
 	{
-		for ( int i=0; pHost->h_addr_list[i] != NULL; i++ )
+		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; i++ )
 		{
 			CSocketAddressIP ip;
 			ip.SetAddrIP(*((DWORD*)(pHost->h_addr_list[i]))); // 0.1.2.3

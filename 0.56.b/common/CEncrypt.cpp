@@ -355,7 +355,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	int iPoint = 0;
 	int iDigPoint = 0;
 
-	for ( int i = 0; ; i++ )
+	for ( size_t i = 0; ; i++ )
 	{
 		TCHAR ch = pszVersion[i];
 		if ( iPoint < 3 )
@@ -422,10 +422,10 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		}
 		else if ( IsDigit(ch) )
 		{
-			if ( !IsDigit(pszVersion[i+1]))
+			if ( !IsDigit(pszVersion[i + 1]))
 				iVer += ( ch - '0' ) + 1;
 			else
-				iVer += ((( ch - '0' ) * 10) + (pszVersion[i+1] - '0') + 1) & 0x0F;
+				iVer += ((( ch - '0' ) * 10) + (pszVersion[i + 1] - '0') + 1) & 0x0F;
 		}
 		break;
 	}

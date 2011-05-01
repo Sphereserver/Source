@@ -101,12 +101,12 @@ LPCTSTR const CDialogDef::sm_szLoadKeys[GUMPCTL_QTY+1] =
 };
 
 
-int	CDialogDef::GumpAddText( LPCTSTR pszText )
+size_t CDialogDef::GumpAddText( LPCTSTR pszText )
 {
 	ADDTOCALLSTACK("CDialogDef::GumpAddText");
 	m_sText[m_iTexts] = pszText;
 	m_iTexts++;
-	return (m_iTexts-1);
+	return (m_iTexts - 1);
 }
 
 #define SKIP_ALL( args )		SKIP_SEPARATORS( args ); GETNONWHITESPACE( args );
@@ -274,8 +274,8 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			SKIP_ALL( pszArgs )
 			if ( *pszArgs == '.' )			pszArgs++;
 
-			int	iText	= GumpAddText( *pszArgs ? pszArgs : "" );
-			m_sControls[m_iControls].Format( "text %d %d %d %d", x, y, hue, iText );
+			size_t iText = GumpAddText( *pszArgs ? pszArgs : "" );
+			m_sControls[m_iControls].Format( "text %d %d %d %" FMTSIZE_T, x, y, hue, iText );
 			m_iControls++;
 			return true;
 		}
@@ -294,8 +294,8 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			SKIP_ALL( pszArgs )
 			if ( *pszArgs == '.' )			pszArgs++;
 
-			int	iText	= GumpAddText( *pszArgs ? pszArgs : "" );
-			m_sControls[m_iControls].Format( "croppedtext %d %d %d %d %d %d", x, y, w, h, hue, iText );
+			size_t iText = GumpAddText( *pszArgs ? pszArgs : "" );
+			m_sControls[m_iControls].Format( "croppedtext %d %d %d %d %d %" FMTSIZE_T, x, y, w, h, hue, iText );
 			m_iControls++;
 			return true;
 		}
@@ -314,8 +314,8 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			GET_ABSOLUTE( options );
 			SKIP_ALL( pszArgs )
 
-			int	iText	= GumpAddText( *pszArgs ? pszArgs : "" );
-			m_sControls[m_iControls].Format( "htmlgump %d %d %d %d %d %d %d", x, y, w, h, iText, bck, options );
+			size_t iText = GumpAddText( *pszArgs ? pszArgs : "" );
+			m_sControls[m_iControls].Format( "htmlgump %d %d %d %d %" FMTSIZE_T " %d %d", x, y, w, h, iText, bck, options );
 			m_iControls++;
 			return true;
 		}
@@ -334,8 +334,8 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			GET_ABSOLUTE( id );
 			SKIP_ALL( pszArgs )
 
-			int	iText	= GumpAddText( *pszArgs ? pszArgs : "" );
-			m_sControls[m_iControls].Format( "textentry %d %d %d %d %d %d %d", x, y, w, h, hue, id, iText );
+			size_t iText = GumpAddText( *pszArgs ? pszArgs : "" );
+			m_sControls[m_iControls].Format( "textentry %d %d %d %d %d %d %" FMTSIZE_T, x, y, w, h, hue, id, iText );
 			m_iControls++;
 			return true;
 		}
@@ -355,8 +355,8 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			GET_ABSOLUTE( charLimit );
 			SKIP_ALL( pszArgs )
 
-			int	iText	= GumpAddText( *pszArgs ? pszArgs : "" );
-			m_sControls[m_iControls].Format( "textentrylimited %d %d %d %d %d %d %d %d", x, y, w, h, hue, id, iText, charLimit );
+			size_t iText = GumpAddText( *pszArgs ? pszArgs : "" );
+			m_sControls[m_iControls].Format( "textentrylimited %d %d %d %d %d %d %" FMTSIZE_T " %d", x, y, w, h, hue, id, iText, charLimit );
 			m_iControls++;
 			return true;
 		}
@@ -850,7 +850,7 @@ bool CMenuItem::ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole 
 	}
 
 	// The item id (if we want to have an item type menu) or 0
-	if ( strcmp( pszArgStart, "0" ) )
+	if ( strcmp( pszArgStart, "0" ) != 0 )
 	{
 		CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, pszArgStart ) );
 		if ( pItemBase != NULL )

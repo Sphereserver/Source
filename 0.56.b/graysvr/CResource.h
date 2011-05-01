@@ -1150,7 +1150,7 @@ typedef std::map<DWORD,DWORD> KRGumpsMap;
 	DWORD GetKRDialogMap(DWORD idKRDialog);
 	DWORD GetKRDialog(DWORD rid);
 
-	bool GenerateDefname(TCHAR *pObjectName, int iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict = true, CVarDefMap* vDefnames = NULL);
+	bool GenerateDefname(TCHAR *pObjectName, size_t iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict = true, CVarDefMap* vDefnames = NULL);
 	bool DumpUnscriptedItems(CTextConsole * pSrc, LPCTSTR pszFilename);
 } g_Cfg;
 
@@ -1163,7 +1163,7 @@ class CDialogDef : public CResourceLink
 public:
 	static const char *m_sClassName;
 	bool GumpSetup( int iPage, CClient * pClientSrc, CObjBase * pObj, LPCTSTR Arguments = "" );
-	int GumpAddText( LPCTSTR pszText );		// add text to the text section, return insertion index
+	size_t GumpAddText( LPCTSTR pszText );		// add text to the text section, return insertion index
 	bool r_Verb( CScript &s, CTextConsole * pSrc );
 	bool r_LoadVal( CScript & s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );

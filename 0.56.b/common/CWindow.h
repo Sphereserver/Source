@@ -142,7 +142,7 @@ public:
 		return( (HICON)(DWORD) SendMessage( WM_SETICON, (WPARAM)fType, (LPARAM) hIcon ));
 	}
 
-	UINT SetTimer( UINT_PTR uTimerID, UINT_PTR uWaitmSec )
+	UINT_PTR SetTimer( UINT_PTR uTimerID, UINT uWaitmSec )
 	{
 		ASSERT(m_hWnd);
 		return( ::SetTimer( m_hWnd, uTimerID, uWaitmSec, NULL ));
@@ -157,15 +157,15 @@ public:
 		// ASSERT( m_hWnd ); ok for this to be NULL !
 		return( ::MessageBox( m_hWnd, lpszText, lpszTitle, fuStyle ));
 	}
-	LONG SetWindowLongPtr( int nIndex, LONG dwNewLong )
+	LONG_PTR SetWindowLongPtr( int nIndex, LONG_PTR dwNewLong )
 	{
 		ASSERT(m_hWnd);
-		return( ::SetWindowLong( m_hWnd, nIndex, dwNewLong ));
+		return( ::SetWindowLongPtr( m_hWnd, nIndex, dwNewLong ));
 	}
-	LONG GetWindowLongPtr( int nIndex ) const
+	LONG_PTR GetWindowLongPtr( int nIndex ) const
 	{
 		ASSERT(m_hWnd);
-		return( ::GetWindowLong( m_hWnd, nIndex ));
+		return( ::GetWindowLongPtr( m_hWnd, nIndex ));
 	}
 
 	int SetDlgItemText( int ID, LPCSTR lpszText ) const

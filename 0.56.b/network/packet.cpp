@@ -958,25 +958,25 @@ void Packet::dump(AbstractString& output) const
 	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
 	output.append("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
 
-	int byteIndex = 0;
-	int whole = m_length >> 4;
-	int rem = m_length & 0x0f;
-	int idx = 0;
+	unsigned int byteIndex = 0;
+	size_t whole = m_length >> 4;
+	size_t rem = m_length & 0x0f;
+	size_t idx = 0;
 
 	TCHAR bytes[50];
 	TCHAR chars[17];
 
-	for (int i = 0; i < whole; i++, byteIndex += 16 )
+	for (size_t i = 0; i < whole; i++, byteIndex += 16 )
 	{
 		memset(bytes, 0, sizeof(bytes));
 		memset(chars, 0, sizeof(chars));
 
-		for (int j = 0; j < 16; j++)
+		for (size_t j = 0; j < 16; j++)
 		{
 			BYTE c = m_buffer[idx++];
 			PROTECT_BYTE(c);
 
-			sprintf(z, "%02x", (int)c);
+			sprintf(z, "%02x", static_cast<int>(c));
 			strcat(bytes, z);
 			strcat(bytes, (j == 7) ? "  " : " ");
 
@@ -1003,14 +1003,14 @@ void Packet::dump(AbstractString& output) const
 		memset(bytes, 0, sizeof(bytes));
 		memset(chars, 0, sizeof(chars));
 
-		for (int j = 0; j < 16; j++)
+		for (size_t j = 0; j < 16; j++)
 		{
 			if (j < rem)
 			{
 				BYTE c = m_buffer[idx++];
 				PROTECT_BYTE(c);
 
-				sprintf(z, "%02x", (int)c);
+				sprintf(z, "%02x", static_cast<int>(c));
 				strcat(bytes, z);
 				strcat(bytes, (j == 7) ? "  " : " ");
 

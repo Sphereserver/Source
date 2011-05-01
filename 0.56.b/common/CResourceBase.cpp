@@ -379,9 +379,9 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 	ASSERT(pszName);
 
 	// This is the global def for this item.
-	for ( int i=0; pszName[i]; i++ )
+	for ( size_t i = 0; pszName[i]; i++ )
 	{
-		if ( i>=EXPRESSION_MAX_KEY_LEN )
+		if ( i >= EXPRESSION_MAX_KEY_LEN )
 		{
 			DEBUG_ERR(( "Too long DEFNAME=%s\n", pszName ));
 			return( false );
@@ -452,17 +452,17 @@ bool	CResourceDef::MakeResourceName()
 	ADDTOCALLSTACK("CResourceDef::MakeResourceName");
 	if ( m_pDefName )
 		return true;
-	LPCTSTR		pszName		= GetName();
+	LPCTSTR pszName = GetName();
 
 	GETNONWHITESPACE( pszName );
-	TCHAR	*pbuf = Str_GetTemp();
-	TCHAR	ch;
-	TCHAR *	pszDef;
+	TCHAR * pbuf = Str_GetTemp();
+	TCHAR ch;
+	TCHAR * pszDef;
 
 	strcpy(pbuf, "a_");
 
-	LPCTSTR		pszKey		= NULL;	// auxiliary, the key of a similar CVarDef, if any found
-	pszDef	= pbuf + 2;
+	LPCTSTR pszKey = NULL;	// auxiliary, the key of a similar CVarDef, if any found
+	pszDef = pbuf + 2;
 
 	for ( ; *pszName; pszName++ )
 	{
@@ -481,11 +481,11 @@ bool	CResourceDef::MakeResourceName()
 	*(++pszDef)	= '\0';
 
 	
-	int			iMax	= g_Exp.m_VarDefs.GetCount();
-	int			iVar	= 1;
-	int			iLen	= strlen( pbuf );
+	size_t iMax = g_Exp.m_VarDefs.GetCount();
+	int iVar = 1;
+	size_t iLen = strlen( pbuf );
 
-	for ( int i = 0; i < iMax; i++ )
+	for ( size_t i = 0; i < iMax; i++ )
 	{
 		// Is this a similar key?
 		pszKey	= g_Exp.m_VarDefs.GetAt(i)->GetKey();
@@ -493,16 +493,16 @@ bool	CResourceDef::MakeResourceName()
 			continue;
 
 		// skip underscores
-		pszKey	= pszKey+iLen;
+		pszKey = pszKey + iLen;
 		while ( *pszKey	== '_' )
 			pszKey++;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
 		if ( IsStrNumericDec( pszKey ) )
 		{
-			int iVarThis	= ATOI( pszKey );
+			int iVarThis = ATOI( pszKey );
 			if ( iVarThis >= iVar )
-				iVar	= iVarThis+1;
+				iVar = iVarThis + 1;
 		}
 		else
 			iVar++;
@@ -523,13 +523,13 @@ bool	CRegionBase::MakeRegionName()
 	if ( m_pDefName )
 		return true;
 
-	TCHAR		ch;
-	LPCTSTR		pszKey		= NULL;	// auxiliary, the key of a similar CVarDef, if any found
-	TCHAR		*pbuf = Str_GetTemp();
-	TCHAR *		pszDef				= pbuf + 2;
+	TCHAR ch;
+	LPCTSTR pszKey = NULL;	// auxiliary, the key of a similar CVarDef, if any found
+	TCHAR * pbuf = Str_GetTemp();
+	TCHAR * pszDef = pbuf + 2;
 	strcpy(pbuf, "a_");
 
-	LPCTSTR		pszName		= GetName();
+	LPCTSTR pszName = GetName();
 	GETNONWHITESPACE( pszName );
 
 	if ( !strnicmp( "the ", pszName, 4 ) )
@@ -563,16 +563,16 @@ bool	CRegionBase::MakeRegionName()
 	*(++pszDef)	= '\0';
 
 	
-	int			iMax	= g_Cfg.m_RegionDefs.GetCount();
-	int			iVar	= 1;
-	int			iLen	= strlen( pbuf );
+	int iMax = g_Cfg.m_RegionDefs.GetCount();
+	int iVar = 1;
+	size_t iLen = strlen( pbuf );
 
 	for ( int i = 0; i < iMax; i++ )
 	{
 		CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 		if ( !pRegion )
 			continue;
-		pszKey		= pRegion->GetResourceName();
+		pszKey = pRegion->GetResourceName();
 		if ( !pszKey )
 			continue;
 
@@ -581,16 +581,16 @@ bool	CRegionBase::MakeRegionName()
 			continue;
 
 		// skip underscores
-		pszKey	= pszKey+iLen;
+		pszKey = pszKey + iLen;
 		while ( *pszKey	== '_' )
 			pszKey++;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
 		if ( IsStrNumericDec( pszKey ) )
 		{
-			int iVarThis	= ATOI( pszKey );
+			int iVarThis = ATOI( pszKey );
 			if ( iVarThis >= iVar )
-				iVar	= iVarThis+1;
+				iVar = iVarThis + 1;
 		}
 		else
 			iVar++;

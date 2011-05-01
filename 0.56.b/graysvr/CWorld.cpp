@@ -2124,8 +2124,8 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 			{
 				if ( wTextGhost[0] == '\0' )	// Garble ghost.
 				{
-					int i;
-					for ( i=0; pwText[i] && i < MAX_TALK_BUFFER; i++ )
+					size_t i;
+					for ( i = 0; pwText[i] && i < MAX_TALK_BUFFER; i++ )
 					{
 						if ( pwText[i] != ' ' && pwText[i] != '\t' )
 							wTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
@@ -2173,7 +2173,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, "<%s [%lx]>", (LPCTSTR) pSrc->GetName(), (DWORD) pSrc->GetUID());
 				int iLen = CvtSystemToNUNICODE( wTextUID, COUNTOF(wTextUID), pszMsg, -1 );
-				for ( int i=0; pwText[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
+				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
 				{
 					wTextUID[iLen] = pwText[i];
 				}

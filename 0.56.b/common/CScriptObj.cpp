@@ -2844,7 +2844,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				sWrite->Seek(ulSeek);
 
-				if ( int iLinelen = strlen(ppArg) )
+				if ( size_t iLinelen = strlen(ppArg) )
 				{
 					while ( iLinelen > 0 )
 					{
