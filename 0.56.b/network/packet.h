@@ -39,10 +39,12 @@ private:
 
 public:
 	bool isValid(void) const;
-	size_t getLength(void) const;
-	size_t getPosition(void) const;
-	BYTE* getData(void) const;
-	void dump(AbstractString& output) const;
+	size_t getLength(void) const; // get total packet length
+	size_t getPosition(void) const; // get current position
+	BYTE* getData(void) const; // get packet data
+	BYTE* getRemainingData(void) const; // get packet data from current position
+	size_t getRemainingLength(void) const; // get length of data from current position
+	void dump(AbstractString& output) const; // write packet data to string
 
 	void expand(size_t size = 0); // expand packet (resize whilst maintaining position)
 	void resize(size_t newsize); // resize packet

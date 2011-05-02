@@ -61,6 +61,18 @@ BYTE* Packet::getData(void) const
 	return m_buffer;
 }
 
+BYTE* Packet::getRemainingData(void) const
+{
+	if (m_position >= m_length)
+		return NULL;
+	return &(m_buffer[m_position]);
+}
+
+size_t Packet::getRemainingLength(void) const
+{
+	return m_length - m_position;
+}
+
 void Packet::clear(void)
 {
 	if (m_buffer != NULL)
@@ -1059,7 +1071,7 @@ size_t Packet::checkLength(NetState* client, Packet* packet)
 			return 0;
 	}
 
-	if ((packet->getLength() - packet->getPosition()) < packetLength)
+	if ((packet->getRemainingLength()) < packetLength)
 		return 0;
 
 	return packetLength;

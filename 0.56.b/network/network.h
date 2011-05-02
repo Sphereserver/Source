@@ -19,7 +19,7 @@
 #define NETHISTORY_PINGDECAY	60								// time to decay 1 'ping'
 
 #ifdef _MTNETWORK
-	//#define MTNETWORK_INPUT		// handle input in multithreaded mode
+	#define MTNETWORK_INPUT		// handle input in multithreaded mode
 	#define MTNETWORK_OUTPUT	// handle output in multithreaded mode
 #endif
 
@@ -70,6 +70,9 @@ protected:
 	CGSocket m_socket; // socket
 	CClient* m_client; // client
 	CSocketAddress m_peerAddress; // client address
+#ifdef _MTNETWORK
+	NetworkThread* m_parent;
+#endif
 
 	volatile bool m_isInUse; // is currently in use
 	volatile bool m_isReadClosed; // is closed by read thread
@@ -91,18 +94,30 @@ protected:
 	WSAOVERLAPPED m_overlapped; // Winsock Overlapped structure
 #endif
 
-	typedef ThreadSafeQueue<PacketSend*> PacketQueue;
+	typedef ThreadSafeQueue<Packet*> PacketQueue;
+	typedef ThreadSafeQueue<PacketSend*> PacketSendQueue;
 	typedef ThreadSafeQueue<PacketTransaction*> PacketTransactionQueue;
 
-	PacketTransactionQueue m_queue[PacketSend::PRI_QTY]; // outgoing packets queue
-	PacketQueue m_asyncQueue; // outgoing async packet queue
-	CQueueBytes m_byteQueue; // outgoing bytes queue
+	struct
+	{
+		PacketTransactionQueue queue[PacketSend::PRI_QTY];	// packet queue
+		PacketSendQueue asyncQueue; // async packet queue
+		CQueueBytes bytes; // byte queue
 
-	PacketTransaction* m_currentTransaction; // transaction currently being processed
-	ExtendedPacketTransaction* m_pendingTransaction; // transaction being built
+		PacketTransaction* currentTransaction; // transaction currently being processed
+		ExtendedPacketTransaction* pendingTransaction; // transaction being built
+	} m_outgoing; // outgoing data
+
+	struct
+	{
+		Packet* buffer; // received data
+#ifdef _MTNETWORK
+		PacketQueue rawPackets; // raw data packets
+		Packet* rawBuffer; // received data
+#endif
+	} m_incoming; // incoming data
 
 	int m_packetExceptions; // number of packet exceptions
-	Packet* m_receiveBuffer; // buffer for received data
 
 public:
 	GAMECLIENT_TYPE m_clientType; // type of client
@@ -176,9 +191,6 @@ public:
 	friend class NetworkThread;
 	friend class NetworkInput;
 	friend class NetworkOutput;
-
-private:
-	NetworkThread* m_parent;
 
 public:
 	void setParentThread(NetworkThread* parent) { m_parent = parent; }
@@ -487,11 +499,14 @@ public:
 	bool processInput(void);									// process input from clients, returns true if work was done
 
 private:
-	bool checkForData(fd_set& fds);														// check for states which have pending data to read
-	size_t processData(NetState* state, BYTE* buffer, size_t bufferSize);				// process received data
-	size_t processUnknownClientData(NetState* state, BYTE* buffer, size_t bufferSize);	// process data from an unknown client type
-	size_t processOtherClientData(NetState* state, BYTE* buffer, size_t bufferSize);	// process data from a non-game client
-	size_t processGameClientData(NetState* state, BYTE* buffer, size_t bufferSize);		// process data from a game client
+	bool checkForData(fd_set& fds);		// check for states which have pending data to read
+	void receiveData();					// receive raw data for all sockets
+	void processData();					// process received data for all sockets
+
+	bool processData(NetState* state, Packet* buffer);				// process received data
+	bool processUnknownClientData(NetState* state, Packet* buffer);	// process data from an unknown client type
+	bool processOtherClientData(NetState* state, Packet* buffer);		// process data from a non-game client
+	bool processGameClientData(NetState* state, Packet* buffer);		// process data from a game client
 };
 
 	

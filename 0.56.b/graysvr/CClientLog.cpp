@@ -514,15 +514,17 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 	if ( GetConnectType() != CONNECT_HTTP )
 		return false;
 
-	pRequest[iLen] = 0;
-	if ( strlen((char*)pRequest) > 1024 )			// too long request
+	// ensure request is null-terminated (if the request is well-formed, we are overwriting a trailing \n here)
+	pRequest[iLen - 1] = '\0';
+
+	if ( strlen(reinterpret_cast<char *>(pRequest)) > 1024 )			// too long request
 		return false;
 
-	if ( !strpbrk( (char*)pRequest, " \t\012\015" ) )	// malformed request
+	if ( !strpbrk( reinterpret_cast<char *>(pRequest), " \t\012\015" ) )	// malformed request
 		return false;
 
 	TCHAR * ppLines[16];
-	int iQtyLines = Str_ParseCmds((TCHAR*)pRequest, ppLines, COUNTOF(ppLines), "\r\n");
+	int iQtyLines = Str_ParseCmds(reinterpret_cast<char *>(pRequest), ppLines, COUNTOF(ppLines), "\r\n");
 	if (( iQtyLines < 1 ) || ( iQtyLines >= 15 ))	// too long request
 		return false;
 

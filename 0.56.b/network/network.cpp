@@ -97,10 +97,13 @@ NetState::NetState(long id)
 	m_client = NULL;
 	m_needsFlush = false;
 	m_useAsync = false;
-	m_currentTransaction = NULL;
-	m_pendingTransaction = NULL;
+	m_outgoing.currentTransaction = NULL;
+	m_outgoing.pendingTransaction = NULL;
+	m_incoming.buffer = NULL;
+#ifdef _MTNETWORK
+	m_incoming.rawBuffer = NULL;
+#endif
 	m_packetExceptions = 0;
-	m_receiveBuffer = NULL;
 	m_clientType = CLIENTTYPE_2D;
 	m_clientVersion = 0;
 	m_reportedVersion = 0;
@@ -157,26 +160,37 @@ void NetState::clear(void)
 
 	// clean junk queue entries
 	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
-		m_queue[i].clean();
-	m_asyncQueue.clean();
+		m_outgoing.queue[i].clean();
+	m_outgoing.asyncQueue.clean();
+#ifdef _MTNETWORK
+	m_incoming.rawPackets.clean();
+#endif
 
-	if (m_currentTransaction != NULL)
+	if (m_outgoing.currentTransaction != NULL)
 	{
-		delete m_currentTransaction;
-		m_currentTransaction = NULL;
+		delete m_outgoing.currentTransaction;
+		m_outgoing.currentTransaction = NULL;
 	}
 
-	if (m_pendingTransaction != NULL)
+	if (m_outgoing.pendingTransaction != NULL)
 	{
-		delete m_pendingTransaction;
-		m_pendingTransaction = NULL;
+		delete m_outgoing.pendingTransaction;
+		m_outgoing.pendingTransaction = NULL;
 	}
 
-	if (m_receiveBuffer != NULL)
+	if (m_incoming.buffer != NULL)
 	{
-		delete m_receiveBuffer;
-		m_receiveBuffer = NULL;
+		delete m_incoming.buffer;
+		m_incoming.buffer = NULL;
 	}
+	
+#ifdef _MTNETWORK
+	if (m_incoming.rawBuffer != NULL)
+	{
+		delete m_incoming.rawBuffer;
+		m_incoming.rawBuffer = NULL;
+	}
+#endif
 
 	m_sequence = 0;
 	m_seeded = false;
@@ -197,22 +211,31 @@ void NetState::clearQueues(void)
 	// clear packet queues
 	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
 	{
-		while (m_queue[i].empty() == false)
+		while (m_outgoing.queue[i].empty() == false)
 		{
-			delete m_queue[i].front();
-			m_queue[i].pop();
+			delete m_outgoing.queue[i].front();
+			m_outgoing.queue[i].pop();
 		}
 	}
 
 	// clear async queue
-	while (m_asyncQueue.empty() == false)
+	while (m_outgoing.asyncQueue.empty() == false)
 	{
-		delete m_asyncQueue.front();
-		m_asyncQueue.pop();
+		delete m_outgoing.asyncQueue.front();
+		m_outgoing.asyncQueue.pop();
 	}
 
 	// clear byte queue
-	m_byteQueue.Empty();
+	m_outgoing.bytes.Empty();
+	
+#ifdef _MTNETWORK
+	// clear received queue
+	while (m_incoming.rawPackets.empty() == false)
+	{
+		delete m_incoming.rawPackets.front();
+		m_incoming.rawPackets.pop();
+	}
+#endif
 }
 
 void NetState::init(SOCKET socket, CSocketAddress addr)
@@ -330,20 +353,20 @@ bool NetState::hasPendingData(void) const
 	// check packet queues (only count high priority+ for closed states)
 	for (int i = (isClosing() ? NETWORK_DISCONNECTPRI : PacketSend::PRI_IDLE); i < PacketSend::PRI_QTY; i++)
 	{
-		if (m_queue[i].empty() == false)
+		if (m_outgoing.queue[i].empty() == false)
 			return true;
 	}
 
 	// check async data
-	if (isAsyncMode() && m_asyncQueue.empty() == false)
+	if (isAsyncMode() && m_outgoing.asyncQueue.empty() == false)
 		return true;
 
 	// check byte queue
-	if (m_byteQueue.GetDataQty() > 0)
+	if (m_outgoing.bytes.GetDataQty() > 0)
 		return true;
 
 	// check current transaction
-	if (m_currentTransaction != NULL)
+	if (m_outgoing.currentTransaction != NULL)
 		return true;
 
 	return false;
@@ -366,7 +389,7 @@ bool NetState::canReceive(PacketSend* packet) const
 void NetState::beginTransaction(long priority)
 {
 	ADDTOCALLSTACK("NetState::beginTransaction");
-	if (m_pendingTransaction != NULL)
+	if (m_outgoing.pendingTransaction != NULL)
 	{
 		DEBUGNETWORK(("%lx:New network transaction started whilst a previous is still open.\n", id()));
 	}
@@ -376,23 +399,23 @@ void NetState::beginTransaction(long priority)
 
 	//DEBUGNETWORK(("%lx:Starting a new packet transaction.\n", id()));
 
-	m_pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : (long)PacketSend::PRI_NORMAL);
+	m_outgoing.pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : (long)PacketSend::PRI_NORMAL);
 }
 
 void NetState::endTransaction(void)
 {
 	ADDTOCALLSTACK("NetState::endTransaction");
-	if (m_pendingTransaction == NULL)
+	if (m_outgoing.pendingTransaction == NULL)
 		return;
 
 	//DEBUGNETWORK(("%lx:Scheduling packet transaction to be sent.\n", id()));
 
 #ifndef _MTNETWORK
-	g_NetworkOut.scheduleOnce(m_pendingTransaction);
+	g_NetworkOut.scheduleOnce(m_outgoing.pendingTransaction);
 #else
-	m_parent->queuePacketTransaction(m_pendingTransaction);
+	m_parent->queuePacketTransaction(m_outgoing.pendingTransaction);
 #endif
-	m_pendingTransaction = NULL;
+	m_outgoing.pendingTransaction = NULL;
 }
 
 
@@ -1218,22 +1241,22 @@ void NetworkIn::tick(void)
 		EXC_SET("decrypt messages");
 		client->m_client->m_Crypt.Decrypt(m_decryptBuffer, buffer, received);
 		
-		if (client->m_receiveBuffer == NULL)
+		if (client->m_incoming.buffer == NULL)
 		{
 			// create new buffer
-			client->m_receiveBuffer = new Packet(m_decryptBuffer, received);
+			client->m_incoming.buffer = new Packet(m_decryptBuffer, received);
 		}
 		else
 		{
 			// append to buffer
-			size_t pos = client->m_receiveBuffer->getPosition();
-			client->m_receiveBuffer->seek(client->m_receiveBuffer->getLength());
-			client->m_receiveBuffer->writeData(m_decryptBuffer, received);
-			client->m_receiveBuffer->seek(pos);
+			size_t pos = client->m_incoming.buffer->getPosition();
+			client->m_incoming.buffer->seek(client->m_incoming.buffer->getLength());
+			client->m_incoming.buffer->writeData(m_decryptBuffer, received);
+			client->m_incoming.buffer->seek(pos);
 		}
 
-		Packet* packet = client->m_receiveBuffer;
-		size_t len = packet->getLength() - packet->getPosition();
+		Packet* packet = client->m_incoming.buffer;
+		size_t len = packet->getRemainingLength();
 
 		EXC_SET("record message");
 		xRecordPacket(client->m_client, packet, "client->server");
@@ -1243,7 +1266,7 @@ void NetworkIn::tick(void)
 
 		while (len > 0 && !client->isClosing())
 		{
-			BYTE packetID = packet->getData()[packet->getPosition()];
+			BYTE packetID = packet->getRemainingData()[0];
 			Packet* handler = m_packets.getHandler(packetID);
 
 			if (handler != NULL)
@@ -1262,7 +1285,7 @@ void NetworkIn::tick(void)
 
 				//	Packet filtering - check if any function triggering is installed
 				//		allow skipping the packet which we do not wish to get
-				if (client->m_client->xPacketFilter(packet->getData() + packet->getPosition(), packetLength))
+				if (client->m_client->xPacketFilter(packet->getRemainingData(), packetLength))
 				{
 					packet->skip(len);
 					len = 0;
@@ -1285,7 +1308,7 @@ void NetworkIn::tick(void)
 			{
 				//	Packet filtering - check if any function triggering is installed
 				//		allow skipping the packet which we do not wish to get
-				if (client->m_client->xPacketFilter(packet->getData() + packet->getPosition(), packet->getLength() - packet->getPosition()))
+				if (client->m_client->xPacketFilter(packet->getRemainingData(), packet->getRemainingLength()))
 				{
 					// packet has been handled by filter but we don't know how big the packet
 					// actually is.. we can only assume the entire buffer is used.
@@ -1321,7 +1344,7 @@ void NetworkIn::tick(void)
 		// delete the buffer once it has been exhausted
 		if (len <= 0)
 		{
-			client->m_receiveBuffer = NULL;
+			client->m_incoming.buffer = NULL;
 			delete packet;
 		}
 	}
@@ -1370,7 +1393,7 @@ int NetworkIn::checkForData(fd_set* storage)
 
 		EXC_SET("cleaning queues");
 		for (int i = 0; i < PacketSend::PRI_QTY; i++)
-			state->m_queue[i].clean();
+			state->m_outgoing.queue[i].clean();
 
 		EXC_SET("check closing");
 		if (state->isClosing())
@@ -1796,8 +1819,8 @@ void NetworkOut::scheduleOnce(PacketSend* packet, bool appendTransaction)
 		return;
 	}
 
-	if (state->m_pendingTransaction != NULL && appendTransaction)
-		state->m_pendingTransaction->push_back(packet);
+	if (state->m_outgoing.pendingTransaction != NULL && appendTransaction)
+		state->m_outgoing.pendingTransaction->push_back(packet);
 	else
 		scheduleOnce(new SimplePacketTransaction(packet));
 }
@@ -1827,9 +1850,9 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 		size_t maxClientPackets = NETWORK_MAXQUEUESIZE;
 		if (maxClientPackets > 0)
 		{
-			if (state->m_queue[priority].size() >= maxClientPackets)
+			if (state->m_outgoing.queue[priority].size() >= maxClientPackets)
 			{
-//				DEBUGNETWORK(("%x:Packet decreased priority due to overal amount %d overlapping %d.\n", state->id(), state->m_queue[priority].size(), maxClientPackets));
+//				DEBUGNETWORK(("%x:Packet decreased priority due to overal amount %d overlapping %d.\n", state->id(), state->m_outgoing.queue[priority].size(), maxClientPackets));
 
 				transaction->setPriority(priority-1);
 				scheduleOnce(transaction);
@@ -1839,7 +1862,7 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 	}
 #endif
 
-	state->m_queue[priority].push(transaction);
+	state->m_outgoing.queue[priority].push(transaction);
 }
 
 void NetworkOut::flushAll(void)
@@ -1915,7 +1938,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 
-	if (state->isWriteClosed() || (state->m_queue[priority].empty() && state->m_currentTransaction == NULL))
+	if (state->isWriteClosed() || (state->m_outgoing.queue[priority].empty() && state->m_outgoing.currentTransaction == NULL))
 		return 0;
 
 	long length = 0;
@@ -1925,16 +1948,16 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	for (i = 0; i < maxClientPackets; i++)
 	{
 		// select next transaction
-		while (state->m_currentTransaction == NULL)
+		while (state->m_outgoing.currentTransaction == NULL)
 		{
-			if (state->m_queue[priority].empty())
+			if (state->m_outgoing.queue[priority].empty())
 				break;
 
-			state->m_currentTransaction = state->m_queue[priority].front();
-			state->m_queue[priority].pop();
+			state->m_outgoing.currentTransaction = state->m_outgoing.queue[priority].front();
+			state->m_outgoing.queue[priority].pop();
 		}
 
-		PacketTransaction* transaction = state->m_currentTransaction;
+		PacketTransaction* transaction = state->m_outgoing.currentTransaction;
 		if (transaction == NULL)
 			break;
 
@@ -1945,7 +1968,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 		if (transaction->empty())
 		{
 			// no more packets left in the transacton, clear it so we can move on to the next one
-			state->m_currentTransaction = NULL;
+			state->m_outgoing.currentTransaction = NULL;
 			delete transaction;
 		}
 
@@ -1997,17 +2020,17 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 	if (state->isWriteClosed() || state->isAsyncMode() == false)
 		return 0;
 
-	state->m_asyncQueue.clean();
-	if (state->m_asyncQueue.empty() || state->isSendingAsync())
+	state->m_outgoing.asyncQueue.clean();
+	if (state->m_outgoing.asyncQueue.empty() || state->isSendingAsync())
 		return 0;
 
 	// get next packet
 	PacketSend* packet = NULL;
 	
-	while (state->m_asyncQueue.empty() == false)
+	while (state->m_outgoing.asyncQueue.empty() == false)
 	{
-		packet = state->m_asyncQueue.front();
-		state->m_asyncQueue.pop();
+		packet = state->m_outgoing.asyncQueue.front();
+		state->m_outgoing.asyncQueue.pop();
 
 		if (state->canReceive(packet) == false || packet->onSend(client) == false)
 		{
@@ -2045,13 +2068,13 @@ void NetworkOut::proceedQueueBytes(CClient* client)
 	NetState* state = client->GetNetState();
 	ASSERT(state != NULL);
 	
-	if (state->isWriteClosed() || state->m_byteQueue.GetDataQty() <= 0)
+	if (state->isWriteClosed() || state->m_outgoing.bytes.GetDataQty() <= 0)
 		return;
 
-	int ret = sendBytesNow(client, state->m_byteQueue.RemoveDataLock(), state->m_byteQueue.GetDataQty());
+	int ret = sendBytesNow(client, state->m_outgoing.bytes.RemoveDataLock(), state->m_outgoing.bytes.GetDataQty());
 	if (ret > 0)
 	{
-		state->m_byteQueue.RemoveDataAmount(ret);
+		state->m_outgoing.bytes.RemoveDataAmount(ret);
 	}
 	else if (ret < 0)
 	{
@@ -2091,7 +2114,7 @@ bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
 
 	if (state->isAsyncMode())
 	{
-		state->m_asyncQueue.push(packet);
+		state->m_outgoing.asyncQueue.push(packet);
 		return true;
 	}
 
@@ -2178,7 +2201,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		if ( g_Cfg.m_fUseExtraBuffer )
 		{
 			// queue packet data
-			state->m_byteQueue.AddNewData(sendBuffer, sendBufferLength);
+			state->m_outgoing.bytes.AddNewData(sendBuffer, sendBufferLength);
 		}
 		else
 		{
@@ -2681,7 +2704,8 @@ void NetworkManager::tick(void)
 		// clean packet queue entries
 		EXC_SET("cleaning queues");
 		for (int priority = 0; priority < PacketSend::PRI_QTY; ++priority)
-			state->m_queue[priority].clean();
+			state->m_outgoing.queue[priority].clean();
+		state->m_outgoing.asyncQueue.clean();
 
 		EXC_SET("check closing");
 		if (state->isClosing() == false)
@@ -2750,12 +2774,9 @@ void NetworkManager::processAllInput(void)
 	if (checkNewConnection())
 		acceptNewConnection();
 
-	if (isInputThreaded() == false)
-	{
-		// force each thread to process input (NOT THREADSAFE)
-		for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
-			(*it)->processInput();
-	}
+	// force each thread to process input (NOT THREADSAFE)
+	for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
+		(*it)->processInput();
 }
 
 void NetworkManager::processAllOutput(void)
@@ -2900,9 +2921,6 @@ void NetworkThread::tick(void)
 void NetworkThread::processInput(void)
 {
 	ADDTOCALLSTACK("NetworkThread::processInput");
-#ifdef MTNETWORK_INPUT
-	ASSERT(!isActive() || isCurrentThread());
-#endif
 	m_input.processInput();
 }
 
@@ -2941,42 +2959,61 @@ bool NetworkInput::processInput()
 {
 	ADDTOCALLSTACK("NetworkInput::processInput");
 	ASSERT(m_thread != NULL);
+
+#ifndef MTNETWORK_INPUT
+	receiveData();
+	processData();
+#else
+	// when called from within the thread's context, we just receive data
+	if (!m_thread->isActive() || m_thread->isCurrentThread())
+		receiveData();
+
+	// when called from outside the thread's context, we process data
+	if (!m_thread->isActive() || !m_thread->isCurrentThread())
+	{
+		// if the thread does not receive ticks, we must perform a quick select to see if we should
+		// wake up the thread
+		if (m_thread->isActive() && m_thread->getPriority() == IThread::Disabled)
+		{
+			fd_set fds;
+			if (checkForData(fds))
+				m_thread->awaken();
+		}
+
+		processData();
+	}
+#endif
+	return true;
+}
+
+void NetworkInput::receiveData()
+{
+	ADDTOCALLSTACK("NetworkInput::receiveData");
+	ASSERT(m_thread != NULL);
 #ifdef MTNETWORK_INPUT
 	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 #endif
-
-	EXC_TRY("NetworkInput");
+	EXC_TRY("ReceiveData");
 
 	// check for incoming data
 	EXC_SET("select");
 	fd_set fds;
 	if (checkForData(fds) == false)
-		return false;
+		return;
 
-	// check which states have data
 	EXC_SET("messages");
 	NetworkThreadStateIterator states(m_thread);
 	while (NetState* state = states.next())
 	{
+		EXC_SET("check socket");
+		if (state->isReadClosed())
+			continue;
+
 		EXC_SET("start network profile");
 		ProfileTask networkTask(PROFILE_NETWORK_RX);
-
-		const CClient* client = state->getClient();
-		ASSERT(client != NULL);
-
-		EXC_SET("check message");
 		if ( ! FD_ISSET(state->m_socket.GetSocket(), &fds))
 		{
-			// check for timeout
-			EXC_SET("check frozen");
-			int iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
-			if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
-			{
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", state->id());
-				state->markReadClosed();
-			}
-
-			EXC_SET("next state");
+			state->m_incoming.rawPackets.clean();
 			continue;
 		}
 			
@@ -2992,40 +3029,128 @@ bool NetworkInput::processInput()
 
 		EXC_SET("start client profile");
 		CurrentProfileData.Count(PROFILE_DATA_RX, received);
-		ProfileTask clientTask(PROFILE_CLIENTS);
 
-		EXC_SET("messages - process");
-		// todo: to allow MTNETWORK_INPUT to work, this loop needs to be in the main thread, if
-		//       we could at least ensure that Packet::checkLength is thread-safe then we could
-		//       reduce main thread work even further by storing entire packets in a buffer
-		//       (e.g. ThreadSafeQueue<Packet> m_receivedPackets) rather than queuing batches of
-		//       BYTE*s that the main thread has to piece together
+		EXC_SET("messages - parse");
+
+		// our objective here is to take the received data and separate it into packets to
+		// be stored in NetState::m_incoming.rawPackets
 		BYTE* buffer = m_receiveBuffer;
 		while (received > 0)
 		{
-			// process next block of data
-			size_t processed = processData(state, buffer, received);
-			if (processed <= 0)
+			// currently we just take the data and push it into a queue for the main thread
+			// to parse into actual packets
+			// todo: if possible, it would be useful to be able to perform that separation here,
+			// but this is made difficult due to the variety of client types and encryptions that
+			// may be connecting
+			size_t length = received;
+
+			Packet* packet = new Packet(buffer, length);
+			state->m_incoming.rawPackets.push(packet);
+			buffer += length;
+			received -= length;
+		}
+	}
+
+	EXC_CATCH;
+}
+
+void NetworkInput::processData()
+{
+	ADDTOCALLSTACK("NetworkInput::processData");
+	ASSERT(m_thread != NULL);
+#ifdef MTNETWORK_INPUT
+	ASSERT(!m_thread->isActive() || !m_thread->isCurrentThread());
+#endif
+	EXC_TRY("ProcessData");
+
+	// check which states have data
+	EXC_SET("messages");
+	NetworkThreadStateIterator states(m_thread);
+	while (NetState* state = states.next())
+	{
+		EXC_SET("check socket");
+		if (state->isReadClosed())
+			continue;
+
+		EXC_SET("start network profile");
+		ProfileTask networkTask(PROFILE_NETWORK_RX);
+
+		const CClient* client = state->getClient();
+		ASSERT(client != NULL);
+
+		EXC_SET("check message");
+		if (state->m_incoming.rawPackets.empty())
+		{
+			// check for timeout
+			EXC_SET("check frozen");
+			int iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
+			if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 			{
-				// nobody wants this data which is a bit odd and normally
-				// means invalid data was received, so we'll close the
-				// connection here
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", state->id());
+				state->markReadClosed();
+			}
+
+			EXC_SET("next state");
+			continue;
+		}
+
+		EXC_SET("messages - process");
+		// we've already received some raw data, we just need to add it to any existing data we have
+		while (state->m_incoming.rawPackets.empty() == false)
+		{
+			Packet* packet = state->m_incoming.rawPackets.front();
+			state->m_incoming.rawPackets.pop();
+			ASSERT(packet != NULL);
+
+			EXC_SET("packet - queue data");
+			if (state->m_incoming.rawBuffer == NULL)
+			{
+				// create new buffer
+				state->m_incoming.rawBuffer = new Packet(packet->getData(), packet->getLength());
+			}
+			else
+			{
+				// append to buffer
+				size_t pos = state->m_incoming.rawBuffer->getPosition();
+				state->m_incoming.rawBuffer->seek(state->m_incoming.rawBuffer->getLength());
+				state->m_incoming.rawBuffer->writeData(packet->getData(), packet->getLength());
+				state->m_incoming.rawBuffer->seek(pos);
+			}
+
+			delete packet;
+		}
+
+		EXC_SET("start client profile");
+		ProfileTask clientTask(PROFILE_CLIENTS);
+
+		EXC_SET("packets - process");
+		Packet* buffer = state->m_incoming.rawBuffer;
+		if (buffer != NULL)
+		{
+			// we have a buffer of raw bytes, we need to go through them all and process as much as we can
+			while (state->isReadClosed() == false && buffer->getRemainingLength() > 0)
+			{
+				if (processData(state, buffer))
+					continue;
+
+				// processData didn't want to use any data, which means we probably
+				// received some invalid data or that the packet was malformed
+				// best course of action right now is to close the connection
 				state->markReadClosed();
 				break;
 			}
 
-			// skip past processed data
-			ASSERT(processed <= received);
-			buffer += processed;
-			received -= processed;
+			if (buffer->getRemainingLength() <= 0)
+			{
+				EXC_SET("packets - clear buffer");
+				delete buffer;
+				state->m_incoming.rawBuffer = NULL;
+			}
 		}
-
 		EXC_SET("next state");
 	}
 
-	return true;
 	EXC_CATCH;
-	return false;
 }
 
 bool NetworkInput::checkForData(fd_set& fds)
@@ -3042,12 +3167,8 @@ bool NetworkInput::checkForData(fd_set& fds)
 	while (NetState* state = states.next())
 	{
 		EXC_SET("check socket");
-		if (state->isInUse() == false)
+		if (state->isReadClosed())
 			continue;
-
-		EXC_SET("cleaning queues");
-		for (unsigned int i = 0; i < PacketSend::PRI_QTY; ++i)
-			state->m_queue[i].clean();
 
 		EXC_SET("check closing");
 		if (state->isClosing() || state->m_socket.IsOpen() == false)
@@ -3070,51 +3191,53 @@ bool NetworkInput::checkForData(fd_set& fds)
 	return false;
 }
 
-size_t NetworkInput::processData(NetState* state, BYTE* buffer, size_t bufferSize)
+bool NetworkInput::processData(NetState* state, Packet* buffer)
 {
 	ADDTOCALLSTACK("NetworkInput::processData");
-
+	ASSERT(state != NULL);
+	ASSERT(buffer != NULL);
 	CClient* client = state->getClient();
 	ASSERT(client != NULL);
 
 	if (client->GetConnectType() == CONNECT_UNK)
-		return processUnknownClientData(state, buffer, bufferSize);
+		return processUnknownClientData(state, buffer);
 		
 	client->m_timeLastEvent = CServTime::GetCurrentTime();
 
 	if ( client->m_Crypt.IsInit() == false )
-		return processOtherClientData(state, buffer, bufferSize);
+		return processOtherClientData(state, buffer);
 
-	return processGameClientData(state, buffer, bufferSize);
+	return processGameClientData(state, buffer);
 }
 
-size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t bufferSize)
+bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 {
 	ADDTOCALLSTACK("NetworkInput::processGameClientData");
 	EXC_TRY("ProcessGameData");
-
+	ASSERT(state != NULL);
+	ASSERT(buffer != NULL);
 	CClient* client = state->getClient();
 	ASSERT(client != NULL);
 
 	EXC_SET("decrypt message");
-	client->m_Crypt.Decrypt(m_decryptBuffer, buffer, bufferSize);
+	client->m_Crypt.Decrypt(m_decryptBuffer, buffer->getRemainingData(), buffer->getRemainingLength());
 
-	if (state->m_receiveBuffer == NULL)
+	if (state->m_incoming.buffer == NULL)
 	{
 		// create new buffer
-		state->m_receiveBuffer = new Packet(m_decryptBuffer, bufferSize);
+		state->m_incoming.buffer = new Packet(m_decryptBuffer, buffer->getRemainingLength());
 	}
 	else
 	{
 		// append to buffer
-		size_t pos = state->m_receiveBuffer->getPosition();
-		state->m_receiveBuffer->seek(state->m_receiveBuffer->getLength());
-		state->m_receiveBuffer->writeData(m_decryptBuffer, bufferSize);
-		state->m_receiveBuffer->seek(pos);
+		size_t pos = state->m_incoming.buffer->getPosition();
+		state->m_incoming.buffer->seek(state->m_incoming.buffer->getLength());
+		state->m_incoming.buffer->writeData(m_decryptBuffer, buffer->getRemainingLength());
+		state->m_incoming.buffer->seek(pos);
 	}
 
-	Packet* packet = state->m_receiveBuffer;
-	size_t remainingLength = packet->getLength() - packet->getPosition();
+	Packet* packet = state->m_incoming.buffer;
+	size_t remainingLength = packet->getRemainingLength();
 
 	EXC_SET("record message");
 	xRecordPacket(client, packet, "client->server");
@@ -3124,7 +3247,7 @@ size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t
 
 	while (remainingLength > 0 && state->isClosing() == false)
 	{
-		BYTE packetId = packet->getData()[packet->getPosition()];
+		BYTE packetId = packet->getRemainingData()[0];
 		Packet* handler = m_thread->m_manager.getPacketManager().getHandler(packetId);
 
 		if (handler != NULL)
@@ -3140,7 +3263,7 @@ size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t
 
 			// Packet filtering - check if any function trigger is installed
 			//  allow skipping the packet which we do not wish to get
-			if (client->xPacketFilter(packet->getData() + packet->getPosition(), packetLength))
+			if (client->xPacketFilter(packet->getRemainingData(), packetLength))
 			{
 				packet->skip(packetLength);
 				remainingLength -= packetLength;
@@ -3149,7 +3272,7 @@ size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t
 
 			// copy data to handler
 			handler->seek();
-			handler->writeData(packet->getData() + packet->getPosition(), packetLength);
+			handler->writeData(packet->getRemainingData(), packetLength);
 			packet->skip(packetLength);
 
 			// move to position 1 (no need for id) and fire onReceive()
@@ -3161,7 +3284,7 @@ size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t
 		{
 			// Packet filtering - check if any function trigger is installed
 			//  allow skipping the packet which we do not wish to get
-			if (client->xPacketFilter(packet->getData() + packet->getPosition(), remainingLength))
+			if (client->xPacketFilter(packet->getRemainingData(), remainingLength))
 			{
 				// todo: adjust packet filter to specify size!
 				// packet has been handled by filter but we don't know how big the packet
@@ -3202,163 +3325,166 @@ size_t NetworkInput::processGameClientData(NetState* state, BYTE* buffer, size_t
 	// delete the buffer once it has been exhausted
 	if (remainingLength <= 0)
 	{
-		state->m_receiveBuffer = NULL;
+		state->m_incoming.buffer = NULL;
 		delete packet;
 	}
 
-	return bufferSize;
+	buffer->seek(buffer->getLength());
+	return true;
 
 	EXC_CATCH;
-	return 0;
+	return false;
 }
 
-size_t NetworkInput::processOtherClientData(NetState* state, BYTE* buffer, size_t bufferSize)
+bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 {
-		// process data from a non-game client
+	// process data from a non-game client
 	ADDTOCALLSTACK("NetworkInput::processOtherClientData");
 	EXC_TRY("ProcessOtherClientData");
-
+	ASSERT(state != NULL);
+	ASSERT(buffer != NULL);
 	CClient* client = state->getClient();
 	ASSERT(client != NULL);
-		
+
 	switch (client->GetConnectType())
 	{
 		case CONNECT_CRYPT:
-			if (bufferSize < 5)
+			if (buffer->getRemainingLength() < 5)
 			{
 				// not enough data to be a real client
 				EXC_SET("ping #3");
 				client->SetConnectType(CONNECT_UNK);
-				if (client->OnRxPing(buffer, bufferSize) == false)
-					return 0;
+				if (client->OnRxPing(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+					return false;
 				break;
 			}
 
 			// first real data from client which we can use to log in
 			EXC_SET("encryption setup");
-			ASSERT(bufferSize <= sizeof(CEvent));
+			ASSERT(buffer->getRemainingLength() <= sizeof(CEvent));
 
 			CEvent evt;
-			memcpy(&evt, buffer, bufferSize);
+			memcpy(&evt, buffer->getRemainingData(), buffer->getRemainingLength());
 
-			if (buffer[0] == XCMD_EncryptionReply && state->isClientKR())
+			if (evt.Default.m_Cmd == XCMD_EncryptionReply && state->isClientKR())
 			{
 				EXC_SET("encryption reply");
 
 				// receiving response to 0xE3 packet
 				size_t iEncKrLen = evt.EncryptionReply.m_len;
-				if (bufferSize < iEncKrLen)
-					return 0; // need more data
-				else if (bufferSize == iEncKrLen)
-					return bufferSize;
+				if (buffer->getRemainingLength() < iEncKrLen)
+					return false; // need more data
 
-				client->xProcessClientSetup(reinterpret_cast<CEvent*>(evt.m_Raw + iEncKrLen), bufferSize - iEncKrLen);
-				break;
+				buffer->skip(iEncKrLen);
+				return true;
 			}
 
-			client->xProcessClientSetup(&evt, bufferSize);
+			client->xProcessClientSetup(&evt, buffer->getRemainingLength());
 			break;
 
 		case CONNECT_HTTP:
 			EXC_SET("http message");
-			if (client->OnRxWebPageRequest(buffer, bufferSize) == false)
-				return 0;
+			if (client->OnRxWebPageRequest(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+				return false;
 			break;
 
 		case CONNECT_TELNET:
 			EXC_SET("telnet message");
-			if (client->OnRxConsole(buffer, bufferSize) == false)
-				return 0;
+			if (client->OnRxConsole(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+				return false;
 			break;
 
 		default:
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Junk messages with no crypt\n", state->id());
-			return 0;
+			return false;
 	}
 
-	return bufferSize;
+	buffer->seek(buffer->getLength());
+	return true;
 	EXC_CATCH;
-	return 0;
+	return false;
 }
 
-size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, size_t bufferSize)
+bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 {
 	// process data from an unknown client type
 	ADDTOCALLSTACK("NetworkInput::processUnknownClientData");
 	EXC_TRY("ProcessNewClient");
-
+	ASSERT(state != NULL);
+	ASSERT(buffer != NULL);
 	CClient* client = state->getClient();
 	ASSERT(client != NULL);
 
 	if (state->m_seeded == false)
 	{
 		// check for HTTP connection
-		if ((bufferSize >= 5 && memcmp(buffer, "GET /", 5) == 0) ||
-			(bufferSize >= 6 && memcmp(buffer, "POST /", 6) == 0))
+		if ((buffer->getRemainingLength() >= 5 && memcmp(buffer->getRemainingData(), "GET /", 5) == 0) ||
+			(buffer->getRemainingLength() >= 6 && memcmp(buffer->getRemainingData(), "POST /", 6) == 0))
 		{
 			EXC_SET("http request");
 			if (g_Cfg.m_fUseHTTP != 2)
-				return 0;
+				return false;
 
 			client->SetConnectType(CONNECT_HTTP);
-			if (client->OnRxWebPageRequest(buffer, bufferSize) == false)
-				return 0;
+			if (client->OnRxWebPageRequest(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+				return false;
 
-			return bufferSize;
+			buffer->seek(buffer->getLength());
+			return true;
 		}
 
 		// check for new seed (sometimes it's received on its own)
-		else if (bufferSize == 1 && buffer[0] == XCMD_NewSeed)
+		else if (buffer->getRemainingLength() == 1 && buffer->getRemainingData()[0] == XCMD_NewSeed)
 		{
 			state->m_newseed = true;
-			return 1;
+			buffer->skip(1);
+			return true;
 		}
 
 		// check for ping data
-		else if (bufferSize < 4)
+		else if (buffer->getRemainingLength() < 4)
 		{
 			EXC_SET("ping #1");
-			if (client->OnRxPing(buffer, bufferSize) == false)
+			if (client->OnRxPing(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
 				state->markReadClosed();
-
-			return bufferSize;
+			
+			buffer->seek(buffer->getLength());
+			return true;
 		}
 
 		// at least 4 bytes and not a web request, so must assume
 		// it is a game client seed
 		EXC_SET("game client seed");
 		DWORD seed = 0;
-		size_t seedLength = 0;
-		if (state->m_newseed || (buffer[0] == XCMD_NewSeed && bufferSize >= NETWORK_SEEDLEN_NEW))
+
+		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " ([0]=0x%x)\n", state->id(), buffer->getRemainingLength(), static_cast<int>(buffer->getRemainingData()[0])));
+		if (state->m_newseed || (buffer->getRemainingData()[0] == XCMD_NewSeed && buffer->getRemainingLength() >= NETWORK_SEEDLEN_NEW))
 		{
 			DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", state->id()));
 
-			CEvent* pEvent = reinterpret_cast<CEvent*>(buffer);
-			if (state->m_newseed)
+			if (state->m_newseed == false)
 			{
-				// we already received the 0xEF on its own, so move the pointer back
-				// 1 byte to align it
-				seedLength = NETWORK_SEEDLEN_NEW - 1;
-				pEvent = reinterpret_cast<CEvent*>(buffer - 1);
-			}
-			else
-			{
-				seedLength = NETWORK_SEEDLEN_NEW;
+				// we don't need the command byte
 				state->m_newseed = true;
+				buffer->skip(1);
 			}
-
-			if (bufferSize >= seedLength)
+			
+			if (buffer->getRemainingLength() >= (NETWORK_SEEDLEN_NEW - 1))
 			{
+				seed = buffer->readInt32();
+				DWORD versionMajor = buffer->readInt32();
+				DWORD versionMinor = buffer->readInt32();
+				DWORD versionRevision = buffer->readInt32();
+				DWORD versionPatch = buffer->readInt32();
+
 				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(),
-							(DWORD)pEvent->NewSeed.m_Version_Maj, (DWORD)pEvent->NewSeed.m_Version_Min,
-							(DWORD)pEvent->NewSeed.m_Version_Rev, (DWORD)pEvent->NewSeed.m_Version_Pat));
+							versionMajor, versionMinor, versionRevision, versionPatch));
 					
-				state->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
-				seed = (DWORD) pEvent->NewSeed.m_Seed;
+				state->m_reportedVersion = CCrypt::GetVerFromVersion(versionMajor, versionMinor, versionRevision, versionPatch);
 			}
 			else
 			{
-				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), bufferSize));
+				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), buffer->getRemainingLength()));
 			}
 		}
 		else
@@ -3366,23 +3492,22 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 			// assume it's a normal client login
 			DEBUGNETWORK(("%lx:Receiving old client login handshake.\n", state->id()));
 
-			seed = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
-			seedLength = NETWORK_SEEDLEN_OLD;
+			seed = buffer->readInt32();
 		}
 
-		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=0x%lx).\n",
-			state->id(), seed, state->m_newseed? 1 : 0, seedLength, bufferSize, state->m_reportedVersion));
+		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=0x%lx).\n",
+			state->id(), seed, state->m_newseed? 1 : 0, state->m_reportedVersion));
 
-		if (seed == 0 || seedLength > bufferSize)
+		if (seed == 0)
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", state->id());
-			return 0;
+			return false;
 		}
 
 		state->m_seeded = true;
 		state->m_seed = seed;
 			
-		if (seedLength == bufferSize && state->m_seed == 0xFFFFFFFF)
+		if (buffer->getRemainingLength() <= 0 && state->m_seed == 0xFFFFFFFF)
 		{
 			// UO:KR Client opens connection with 255.255.255.255 and waits for the
 			// server to send a packet before continuing
@@ -3394,29 +3519,31 @@ size_t NetworkInput::processUnknownClientData(NetState* state, BYTE* buffer, siz
 			new PacketKREncryption(client);
 		}
 
-		return seedLength;
+		return true;
 	}
 
-	if (bufferSize < 5)
+	if (buffer->getRemainingLength() < 5)
 	{
 		// client has a seed assigned but hasn't send enough data to be anything useful,
 		// some programs (ConnectUO) send a fake seed when really they're just sending
 		// ping data
 		EXC_SET("ping #2");
-		if (client->OnRxPing(buffer, bufferSize) == false)
-			return 0;
+		if (client->OnRxPing(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+			return false;
 
-		return bufferSize;
+		buffer->seek(buffer->getLength());
+		return true;
 	}
 
 	// process login packet for client
 	EXC_SET("messages  - setup");
 	client->SetConnectType(CONNECT_CRYPT);
-	client->xProcessClientSetup(reinterpret_cast<CEvent*>(buffer), bufferSize);
-	return bufferSize;
+	client->xProcessClientSetup(reinterpret_cast<CEvent*>(buffer->getRemainingData()), buffer->getRemainingLength());
+	buffer->seek(buffer->getLength());
+	return true;
 
 	EXC_CATCH;
-	return 0;
+	return false;
 }
 	
 	
@@ -3575,7 +3702,7 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 #endif
 
 	if (state->isWriteClosed() ||
-		(state->m_queue[priority].empty() && state->m_currentTransaction == NULL))
+		(state->m_outgoing.queue[priority].empty() && state->m_outgoing.currentTransaction == NULL))
 		return 0;
 
 	CClient* client = state->getClient();
@@ -3591,16 +3718,16 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 	while (packetsProcessed < maxPacketsToProcess && lengthProcessed < maxLengthToProcess)
 	{
 		// select next transaction
-		while (state->m_currentTransaction == NULL)
+		while (state->m_outgoing.currentTransaction == NULL)
 		{
-			if (state->m_queue[priority].empty())
+			if (state->m_outgoing.queue[priority].empty())
 				break;
 				
-			state->m_currentTransaction = state->m_queue[priority].front();
-			state->m_queue[priority].pop();
+			state->m_outgoing.currentTransaction = state->m_outgoing.queue[priority].front();
+			state->m_outgoing.queue[priority].pop();
 		}
 
-		PacketTransaction* transaction = state->m_currentTransaction;
+		PacketTransaction* transaction = state->m_outgoing.currentTransaction;
 		if (transaction == NULL)
 			break;
 
@@ -3612,7 +3739,7 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 		// on to the next transaction later
 		if (transaction->empty())
 		{
-			state->m_currentTransaction = NULL;
+			state->m_outgoing.currentTransaction = NULL;
 			delete transaction;
 		}
 
@@ -3668,8 +3795,7 @@ size_t NetworkOutput::processAsyncQueue(NetState* state)
 	if (state->isWriteClosed() || state->isAsyncMode() == false)
 		return 0;
 
-	state->m_asyncQueue.clean();
-	if (state->m_asyncQueue.empty() || state->isSendingAsync())
+	if (state->m_outgoing.asyncQueue.empty() || state->isSendingAsync())
 		return 0;
 
 	const CClient* client = state->getClient();
@@ -3677,10 +3803,10 @@ size_t NetworkOutput::processAsyncQueue(NetState* state)
 
 	// select the next packet to send
 	PacketSend* packet = NULL;
-	while (state->m_asyncQueue.empty() == false)
+	while (state->m_outgoing.asyncQueue.empty() == false)
 	{
-		packet = state->m_asyncQueue.front();
-		state->m_asyncQueue.pop();
+		packet = state->m_outgoing.asyncQueue.front();
+		state->m_outgoing.asyncQueue.pop();
 
 		// check if the client is allowed this
 		if (state->canReceive(packet) && packet->onSend(client))
@@ -3716,10 +3842,10 @@ bool NetworkOutput::processByteQueue(NetState* state)
 	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 #endif
 
-	if (state->isWriteClosed() || state->m_byteQueue.GetDataQty() <= 0)
+	if (state->isWriteClosed() || state->m_outgoing.bytes.GetDataQty() <= 0)
 		return false;
 
-	size_t result = sendData(state, state->m_byteQueue.RemoveDataLock(), state->m_byteQueue.GetDataQty());
+	size_t result = sendData(state, state->m_outgoing.bytes.RemoveDataLock(), state->m_outgoing.bytes.GetDataQty());
 	if (result == _failed_result())
 	{
 		// error occurred
@@ -3729,7 +3855,7 @@ bool NetworkOutput::processByteQueue(NetState* state)
 	}
 		
 	if (result > 0)
-		state->m_byteQueue.RemoveDataAmount(result);
+		state->m_outgoing.bytes.RemoveDataAmount(result);
 
 	return true;
 }
@@ -3753,7 +3879,7 @@ bool NetworkOutput::sendPacket(NetState* state, PacketSend* packet)
 
 	if (state->isAsyncMode())
 	{
-		state->m_asyncQueue.push(packet);
+		state->m_outgoing.asyncQueue.push(packet);
 		return true;
 	}
 
@@ -3811,7 +3937,7 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 
 	// queue packet data
 	EXC_SET("queue data");
-	state->m_byteQueue.AddNewData(sendBuffer, sendBufferLength);
+	state->m_outgoing.bytes.AddNewData(sendBuffer, sendBufferLength);
 
 	// if buffering is disabled then process the queue straight away
 	// we need to do this rather than sending the packet data directly, otherwise if
@@ -3974,8 +4100,8 @@ void NetworkOutput::QueuePacket(PacketSend* packet, bool appendTransaction)
 		return;
 	}
 
-	if (state->m_pendingTransaction != NULL && appendTransaction)
-		state->m_pendingTransaction->push_back(packet);
+	if (state->m_outgoing.pendingTransaction != NULL && appendTransaction)
+		state->m_outgoing.pendingTransaction->push_back(packet);
 	else
 		QueuePacketTransaction(new SimplePacketTransaction(packet));
 }
@@ -4001,14 +4127,14 @@ void NetworkOutput::QueuePacketTransaction(PacketTransaction* transaction)
 	size_t maxQueueSize = NETWORK_MAXQUEUESIZE;
 	if (maxQueueSize > 0)
 	{
-		while (priority > PacketSend::PRI_IDLE && state->m_queue[priority].size() >= maxQueueSize)
+		while (priority > PacketSend::PRI_IDLE && state->m_outgoing.queue[priority].size() >= maxQueueSize)
 		{
 			priority--;
 			transaction->setPriority(priority);
 		}
 	}
 
-	state->m_queue[priority].push(transaction);
+	state->m_outgoing.queue[priority].push(transaction);
 
 	// notify thread
 	NetworkThread* thread = state->getParentThread();
