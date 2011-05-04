@@ -1456,7 +1456,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 		{
 			if (!(( flags & LOS_NB_LOCAL_STATIC ) && ( pSrcRegion == pNowRegion )))
 			{
-				for ( int s = 0; s < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, pItemDef = NULL, ++s )
+				for ( size_t s = 0; s < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, pItemDef = NULL, ++s )
 				{
 					pStatic = pBlock->m_Statics.GetStatic(s);
 					if (pStatic->m_x+pBlock->m_x != ptNow.m_x || pStatic->m_y+pBlock->m_y != ptNow.m_y)
@@ -1644,17 +1644,12 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						if ( !pItem )
 							continue;
 
-						CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-						if ( pItemMulti == NULL )	// multi.mul multi
-							pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID() );
-						else						// customised multi
-							pMulti = pItemMulti->GetMultiItemDefs();
-						
+						pMulti = g_Cfg.GetMultiItemDefs(pItem);
 						if ( !pMulti )
 							continue;
 
-						int iQty = pMulti->GetItemCount();
-						for ( int iii = 0; iii < iQty; pItemDef = NULL, pMultiItem = NULL, ++iii )
+						size_t iQty = pMulti->GetItemCount();
+						for ( size_t iii = 0; iii < iQty; pItemDef = NULL, pMultiItem = NULL, ++iii )
 						{
 							pMultiItem = pMulti->GetItem(iii);
 		
@@ -1944,8 +1939,8 @@ IT_TYPE CChar::CanTouchStatic( CPointMap & pt, ITEMID_TYPE id, CItem * pItem )
 	int x2=pMapBlock->GetOffsetX(pt.m_x);
 	int y2=pMapBlock->GetOffsetY(pt.m_y);
 
-	int iQty = pMapBlock->m_Statics.GetStaticQty();
-	for ( int i=0; i < iQty; ++i )
+	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		if ( ! pMapBlock->m_Statics.IsStaticPoint(i,x2,y2))
 			continue;

@@ -4522,7 +4522,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
 PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
-	
+	ASSERT(objectCount > 0);
 	const CPointMap& shipLocation = ship->GetTopPoint();
 
 	initLength();

@@ -868,7 +868,7 @@ void CWorldThread::GarbageCollection_UIDs()
 
 	GarbageCollection_New();
 
-	int iCount = 0;
+	size_t iCount = 0;
 	for ( size_t i = 1; i < GetUIDCount(); i++ )
 	{
 		try
@@ -887,7 +887,7 @@ void CWorldThread::GarbageCollection_UIDs()
 				continue;
 			}
 
-			if (! (iCount & 0x1FF ))
+			if ((iCount & 0x1FF ) == 0)
 			{
 				g_Serv.PrintPercent(iCount, GetUIDCount());
 			}
@@ -909,11 +909,11 @@ void CWorldThread::GarbageCollection_UIDs()
 
 	if ( iCount != CObjBase::sm_iCount )	// All objects must be accounted for.
 	{
-		g_Log.Event(LOGL_ERROR, "GC: Object memory leak %d!=%d\n", iCount, CObjBase::sm_iCount);
+		g_Log.Event(LOGL_ERROR, "GC: Object memory leak %" FMTSIZE_T "!=%" FMTSIZE_T "\n", iCount, CObjBase::sm_iCount);
 	}
 	else
 	{
-		g_Log.Event(LOGL_EVENT, "GC: %d Objects accounted for\n", iCount);
+		g_Log.Event(LOGL_EVENT, "GC: %" FMTSIZE_T " Objects accounted for\n", iCount);
 	}
 
 	if ( m_FreeUIDs != NULL )	// new UID engine - search for empty holes and store it in a huge array

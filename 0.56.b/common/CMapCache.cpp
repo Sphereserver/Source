@@ -16,7 +16,7 @@ CMapCache::~CMapCache()
 	}
 }
 
-bool CMapCache::Init(int maxX, int maxY, int map, int mapDefaultHeight)
+bool CMapCache::Init(int maxX, int maxY, int map, signed char mapDefaultHeight)
 {
 	ADDTOCALLSTACK("CMapCache::Init");
 	char	*z = Str_GetTemp();
@@ -62,19 +62,19 @@ bool CMapCache::Init(int maxX, int maxY, int map, int mapDefaultHeight)
 				point.m_tileBlock = 0;
 
 				const CGrayMapBlock	*pMapBlock = g_World.GetMapBlock(pt);
-				int	iQty = pMapBlock->m_Statics.GetStaticQty();
+				size_t	iQty = pMapBlock->m_Statics.GetStaticQty();
 
-				if ( iQty )
+				if ( iQty > 0 )
 				{
 					int x2 = pMapBlock->GetOffsetX(pt.m_x);
 					int y2 = pMapBlock->GetOffsetY(pt.m_y);
 
-					for ( int k = 0; k < iQty; k++ )
+					for ( size_t k = 0; k < iQty; k++ )
 					{
-						if ( !pMapBlock->m_Statics.IsStaticPoint(i, x2, y2) )
+						if ( !pMapBlock->m_Statics.IsStaticPoint(k, x2, y2) )
 							continue;
 
-						const CUOStaticItemRec *pStatic = pMapBlock->m_Statics.GetStatic(i);
+						const CUOStaticItemRec *pStatic = pMapBlock->m_Statics.GetStatic(k);
 						WORD wBlockThis = 0;
 						CItemBase::GetItemHeight(pStatic->GetDispID(), wBlockThis);
 

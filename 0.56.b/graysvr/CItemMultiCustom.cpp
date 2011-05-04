@@ -480,8 +480,8 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, 
 	if ( iStairID == -1 )
 		iStairID = GetStairCount() + 1;
 
-	int iQty = pMulti->GetItemCount();
-	for ( int i = 0; i < iQty; i++ )
+	size_t iQty = pMulti->GetItemCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(i);
 		if ( pMultiItem == NULL )
@@ -847,8 +847,8 @@ void CItemMultiCustom::ResetStructure( CClient * pClientSrc )
 	const CGrayMulti * pMulti =  g_Cfg.GetMultiItemDefs(GetID());
 	if ( pMulti != NULL )
 	{
-		int iQty = pMulti->GetItemCount();
-		for (int i = 0; i < iQty; i++)
+		size_t iQty = pMulti->GetItemCount();
+		for (size_t i = 0; i < iQty; i++)
 		{
 			const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(i);
 			if ( pMultiItem == NULL )
@@ -997,8 +997,8 @@ const CGRect CItemMultiCustom::GetDesignArea()
 		{
 			// the client uses the multi items to determine the area
 			// that's editable
-			int iQty = pMulti->GetItemCount();
-			for ( int i = 0; i < iQty; i++ )
+			size_t iQty = pMulti->GetItemCount();
+			for ( size_t i = 0; i < iQty; i++ )
 			{
 				const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(i);
 				if ( pMultiItem == NULL )
@@ -1577,6 +1577,6 @@ void CItemMultiCustom::CGrayMultiCustom::LoadFrom( CItemMultiCustom::DesignDetai
 	m_iItemQty = pDesign->m_vectorComponents.size();
 
 	m_pItems = new CUOMultiItemRec2[m_iItemQty];
-	for ( int i = 0; i < m_iItemQty; i++ )
+	for ( size_t i = 0; i < m_iItemQty; i++ )
 		memcpy(&m_pItems[i], &pDesign->m_vectorComponents.at(i)->m_item, sizeof(CUOMultiItemRec2));
 }

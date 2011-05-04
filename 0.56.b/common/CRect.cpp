@@ -245,8 +245,8 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 
 		if ( *pszKey == '\0' )
 		{
-			int		iStaticQty	= 0;
-			for ( int i = 0; i <  pBlock->m_Statics.GetStaticQty(); i++ )
+			int iStaticQty = 0;
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); i++ )
 			{
 				const CUOStaticItemRec * pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map );
@@ -291,7 +291,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 				sVal.FormatVal( 0 );
 				return false;
 			}
-			for ( int i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -303,7 +303,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 		else
 		{
-			for ( int i = 0; i <  pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
+			for ( size_t i = 0; i <  pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -378,17 +378,12 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				const CPointMap ptMulti = pItem->GetTopPoint();
-				CItemMultiCustom* pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-				if (pItemMulti == NULL)	// multi.mul multi
-					pMulti = g_Cfg.GetMultiItemDefs(pItem->GetDispID());
-				else					// customised multi
-					pMulti = pItemMulti->GetMultiItemDefs();
-
+				pMulti = g_Cfg.GetMultiItemDefs(pItem);
 				if (pMulti == NULL)
 					continue;
 
-				int iQty = pMulti->GetItemCount();
-				for (int ii = 0; ii < iQty; ii++)
+				size_t iQty = pMulti->GetItemCount();
+				for (size_t ii = 0; ii < iQty; ii++)
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)
@@ -449,17 +444,12 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				const CPointMap ptMulti = pItem->GetTopPoint();
-				CItemMultiCustom* pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-				if (pItemMulti == NULL)	// multi.mul multi
-					pMulti = g_Cfg.GetMultiItemDefs(pItem->GetDispID());
-				else					// customised multi
-					pMulti = pItemMulti->GetMultiItemDefs();
-
+				pMulti = g_Cfg.GetMultiItemDefs(pItem);
 				if (pMulti == NULL)
 					continue;
 
-				int iQty = pMulti->GetItemCount();
-				for (int ii = 0; ii < iQty; pMultiItem = NULL, ii++)
+				size_t iQty = pMulti->GetItemCount();
+				for (size_t ii = 0; ii < iQty; pMultiItem = NULL, ii++)
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)
@@ -493,17 +483,12 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				const CPointMap ptMulti = pItem->GetTopPoint();
-				CItemMultiCustom* pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-				if (pItemMulti == NULL)	// multi.mul multi
-					pMulti = g_Cfg.GetMultiItemDefs(pItem->GetDispID());
-				else					// customised multi
-					pMulti = pItemMulti->GetMultiItemDefs();
-
+				pMulti = g_Cfg.GetMultiItemDefs(pItem);
 				if (pMulti == NULL)
 					continue;
 
-				int iQty = pMulti->GetItemCount();
-				for (int ii = 0; ii < iQty; pMultiItem = NULL, ii++)
+				size_t iQty = pMulti->GetItemCount();
+				for (size_t ii = 0; ii < iQty; pMultiItem = NULL, ii++)
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)

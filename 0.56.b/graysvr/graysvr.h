@@ -1604,9 +1604,9 @@ inline CChar * CGrayUIDBase::CharFind() const
 //////////////////////////////////////////////////////////////////////////
 // Buff Icons
 
-inline short GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
+inline int GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
 {
-	short Percentage = ((Difference*100) / (Char->Stat_GetBase(Stat) == 0 ? 1 : Char->Stat_GetBase(Stat)));
+	int Percentage = ((Difference*100) / (Char->Stat_GetBase(Stat) == 0 ? 1 : Char->Stat_GetBase(Stat)));
 	if (Percentage < 0)
 		Percentage = -(Percentage);
 	if (Percentage > 0x3E7)

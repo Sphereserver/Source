@@ -321,7 +321,7 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 //*********************************************8
 // -CGrayMulti
 
-int CGrayMulti::Load( MULTI_TYPE id )
+size_t CGrayMulti::Load( MULTI_TYPE id )
 {
 	ADDTOCALLSTACK("CGrayMulti::Load");
 	// Just load the whole thing.
@@ -364,7 +364,7 @@ int CGrayMulti::Load( MULTI_TYPE id )
 			}
 
 			// copy to new format
-			for (int i = 0; i < m_iItemQty; i++)
+			for (size_t i = 0; i < m_iItemQty; i++)
 			{
 				m_pItems[i].m_wTileID = pItems[i].m_wTileID;
 				m_pItems[i].m_dx = pItems[i].m_dx;

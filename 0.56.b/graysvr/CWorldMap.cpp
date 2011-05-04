@@ -247,15 +247,11 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			pItem = pRegion->GetResourceID().ItemFind();
 			if ( !pItem )
 				continue;
-			CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-			if ( pItemMulti == NULL )
-				pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID() );
-			else
-				pMulti = pItemMulti->GetMultiItemDefs();
+			pMulti = g_Cfg.GetMultiItemDefs(pItem);
 			if ( !pMulti )
 				continue;
-			int iQty = pMulti->GetItemCount();
-			for ( int ab = 0; ab < iQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++ab )
+			size_t iQty = pMulti->GetItemCount();
+			for ( size_t ab = 0; ab < iQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++ab )
 			{
 				pMultiItem = pMulti->GetItem(ab);
 				
@@ -320,12 +316,12 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
 	ASSERT( pMapBlock );
 
-	int iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty )  // no static items here.
+	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
+	if ( iQty > 0 )  // no static items here.
 	{
 		const CUOStaticItemRec * pStatic = NULL;
 
-		for ( int i = 0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
+		for ( size_t i = 0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
 		{
 			pStatic = pMapBlock->m_Statics.GetStatic( i );
 
@@ -563,14 +559,14 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 			if ( !pMapBlock )
 				continue;
 			
-			int iQty = pMapBlock->m_Statics.GetStaticQty();
-			if ( !iQty )
+			size_t iQty = pMapBlock->m_Statics.GetStaticQty();
+			if ( iQty <= 0 )
 				continue;
 
 			pStatic = NULL; 
 			pItemDef = NULL;
 
-			for ( int i=0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
+			for ( size_t i = 0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
 			{
 				pStatic = pMapBlock->m_Statics.GetStatic( i );
 				if ( bLimitZ && ( pStatic->m_z != ptTest.m_z ) )
@@ -626,21 +622,15 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 						if (pItem == NULL)
 							continue;
 
-						const CGrayMulti* pMulti;
-						CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-						if ( pItemMulti == NULL )
-							pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
-						else
-							pMulti = pItemMulti->GetMultiItemDefs();
-
+						const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs(pItem);
 						if (pMulti == NULL)
 							continue;
 
 						int x2 = ptTest.m_x - pItem->GetTopPoint().m_x;
 						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
 
-						int iItemQty = pMulti->GetItemCount();
-						for (int j = 0; j < iItemQty; j++)
+						size_t iItemQty = pMulti->GetItemCount();
+						for (size_t j = 0; j < iItemQty; j++)
 						{
 							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(j);
 							ASSERT(pMultiItem);
@@ -698,12 +688,12 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	}
 
 	{
-		int iQty = pMapBlock->m_Statics.GetStaticQty();
-		if ( iQty )  // no static items here.
+		size_t iQty = pMapBlock->m_Statics.GetStaticQty();
+		if ( iQty > 0 )  // no static items here.
 		{
-			int x2=pMapBlock->GetOffsetX(pt.m_x);
-			int y2=pMapBlock->GetOffsetY(pt.m_y);
-			for ( int i = 0; i < iQty; i++ )
+			int x2 = pMapBlock->GetOffsetX(pt.m_x);
+			int y2 = pMapBlock->GetOffsetY(pt.m_y);
+			for ( size_t i = 0; i < iQty; i++ )
 			{
 				if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 					continue;
@@ -733,20 +723,14 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				CItem * pItem = pRegion->GetResourceID().ItemFind();
 				if ( pItem != NULL )
 				{
-					const CGrayMulti * pMulti;
-					CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-					if ( pItemMulti == NULL )
-						pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
-					else
-						pMulti = pItemMulti->GetMultiItemDefs();
-
+					const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs(pItem);
 					if ( pMulti )
 					{
 						int x2 = pt.m_x - pItem->GetTopPoint().m_x;
 						int y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
-						int iQty = pMulti->GetItemCount();
-						for ( int j = 0; j < iQty; j++ )
+						size_t iQty = pMulti->GetItemCount();
+						for ( size_t j = 0; j < iQty; j++ )
 						{
 							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(j);
 							ASSERT(pMultiItem);
@@ -897,7 +881,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	WORD wBlockThis = 0;
 	signed char z = 0;
 	t_height zHeight = 0;
-	int x2, y2, i, ii, iQty = 0;
+	int x2 = 0, y2 = 0;
 
 	// Height of statics at/above given coordinates
 	// do gravity here for the z.
@@ -905,22 +889,22 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	if ( !pMapBlock)
 		return;
 
-	iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty )  // no static items here.
+	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
+	if ( iQty > 0 )  // no static items here.
 	{
 		x2 = pMapBlock->GetOffsetX(pt.m_x);
 		y2 = pMapBlock->GetOffsetY(pt.m_y);
 		const CUOStaticItemRec * pStatic = NULL;
-		for ( i = 0; i < iQty; ++i, z = 0, zHeight = 0, pStatic = NULL, pDupeDef = NULL )
+		for ( size_t i = 0; i < iQty; ++i, z = 0, zHeight = 0, pStatic = NULL, pDupeDef = NULL )
 		{
-			if ( !pMapBlock )
+			if ( pMapBlock == NULL )
 				break;
 
 			if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 				continue;
 
 			pStatic = pMapBlock->m_Statics.GetStatic( i );
-			if ( ! pStatic )
+			if ( pStatic == NULL )
 				continue;
 
 			z = pStatic->m_z;
@@ -981,7 +965,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	wBlockThis = 0;
 	z = 0;
 	zHeight = 0;
-	x2 = y2 = iQty = i = ii = 0;
+	x2 = y2 = iQty = 0;
 
 	// Any multi items here ?
 	// Check all of them
@@ -999,7 +983,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 			y2 = 0;
 			//  ------------ For variables --------------------
 
-			for ( i = 0; i < iQtyr; ++i, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
+			for ( int i = 0; i < iQtyr; ++i, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
 			{
 				pRegion = rlinks.GetAt(i);
 				if ( pRegion )
@@ -1007,19 +991,14 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 
 				if ( pItem != NULL )
 				{
-					CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-					if ( pItemMulti == NULL )
-						pMulti = g_Cfg.GetMultiItemDefs( pItem->GetDispID());
-					else
-						pMulti = pItemMulti->GetMultiItemDefs();
-
+					pMulti = g_Cfg.GetMultiItemDefs(pItem);
 					if ( pMulti )
 					{
 						x2 = pt.m_x - pItem->GetTopPoint().m_x;
 						y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
 						iQty = pMulti->GetItemCount();
-						for ( ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
+						for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
 						{
 							pMultiItem = pMulti->GetItem(ii);
 
@@ -1087,7 +1066,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	pDupeDef = NULL;
 	pItem = NULL;
 	wBlockThis = 0;
-	x2 = y2 = iQty = i = ii = 0;
+	x2 = y2 = iQty = 0;
 	zHeight = 0;
 	z = 0;
 

@@ -92,7 +92,8 @@ public:
 		SetContainerFlags( UID_O_EQUIPPED );
 		m_pt.m_x = 0;	// these don't apply.
 		m_pt.m_y = 0;
-		m_pt.m_z = layer; // layer equipped.
+		// future: strongly typed enums will remove the need for this cast
+		m_pt.m_z = static_cast<signed char>(layer); // layer equipped.
 		m_pt.m_map = 0;
 	}
 

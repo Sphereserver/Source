@@ -434,15 +434,15 @@ int CClient::Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest )
 		{
 			CPointMap ptCur( mx, my, 0, rect.m_map );
 			const CGrayMapBlock * pBlock = g_World.GetMapBlock( ptCur );
-			if ( !pBlock )
+			if ( pBlock == NULL )
 				continue;
-			int iQty = pBlock->m_Statics.GetStaticQty();
-			if ( ! iQty )  // no static items here.
+			size_t iQty = pBlock->m_Statics.GetStaticQty();
+			if ( iQty <= 0 )  // no static items here.
 				continue;
 
-			int x2=pBlock->GetOffsetX(mx);
-			int y2=pBlock->GetOffsetY(my);
-			for ( int i=0; i<iQty; i++ )
+			int x2 = pBlock->GetOffsetX(mx);
+			int y2 = pBlock->GetOffsetY(my);
+			for ( size_t i = 0; i < iQty; i++ )
 			{
 				if ( ! pBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 					continue;

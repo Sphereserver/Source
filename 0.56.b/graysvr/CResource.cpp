@@ -1717,9 +1717,20 @@ DWORD CResource::GetKRDialog(DWORD rid)
 	return 0;
 }
 
+const CGrayMulti * CResource::GetMultiItemDefs( CItem * pItem )
+{
+	ADDTOCALLSTACK("CResource::GetMultiItemDefs(CItem*)");
+	ASSERT(pItem != NULL);
+	CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
+	if ( pItemMulti == NULL )	// multi.mul multi
+		return GetMultiItemDefs( pItem->GetDispID() );
+	else						// customised multi
+		return pItemMulti->GetMultiItemDefs();
+}
+
 const CGrayMulti * CResource::GetMultiItemDefs( ITEMID_TYPE itemid )
 {
-	ADDTOCALLSTACK("CResource::GetMultiItemDefs");
+	ADDTOCALLSTACK("CResource::GetMultiItemDefs(ITEMID_TYPE)");
 	if ( ! CItemBase::IsID_Multi(itemid))
 		return( NULL );
 

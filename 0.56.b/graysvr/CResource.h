@@ -1118,6 +1118,7 @@ public:
 	}
 	LPCTSTR GetNotoTitle( int iLevel, bool bFemale ) const;
 
+	const CGrayMulti * GetMultiItemDefs( CItem * pItem );
 	const CGrayMulti * GetMultiItemDefs( ITEMID_TYPE itemid );
 
 	bool IsConsoleCmd( TCHAR ch ) const;

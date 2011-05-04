@@ -25,7 +25,7 @@ private:
 	CMapCache& operator=(const CMapCache& other);
 
 public:
-	bool Init(int maxX, int maxY, int map = 0, int mapDefaultHeight = 0);
+	bool Init(int maxX, int maxY, int map = 0, signed char mapDefaultHeight = 0);
 
 	bool Get(int x, int y, TMapCachePoint &point);
 	bool Set(int x, int y, TMapCachePoint &point);

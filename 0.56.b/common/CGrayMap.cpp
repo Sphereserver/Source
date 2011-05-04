@@ -334,24 +334,25 @@ void CGrayStaticsBlock::LoadStatics( DWORD ulBlockIndex, int map )
 	}
 }
 
-void CGrayStaticsBlock::LoadStatics( int iCount, CUOStaticItemRec * pStatics )
+void CGrayStaticsBlock::LoadStatics( size_t iCount, CUOStaticItemRec * pStatics )
 {
 	ADDTOCALLSTACK("CGrayStaticsBlock::LoadStatics2");
 	// Load statics information directly (normally from difs)
 	m_iStatics = iCount;
-	if ( m_iStatics )
+	if ( m_iStatics > 0 )
 	{
 		m_pStatics = new CUOStaticItemRec[m_iStatics];
 		memcpy(m_pStatics, pStatics, sizeof(CUOStaticItemRec) * m_iStatics);
 	}
 	else
 	{
-		if ( m_pStatics )	delete[] m_pStatics;
+		if ( m_pStatics != NULL )
+			delete[] m_pStatics;
 		m_pStatics = NULL;
 	}
 }
 
-bool CGrayStaticsBlock::IsStaticPoint( int i, int xo, int yo ) const
+bool CGrayStaticsBlock::IsStaticPoint( size_t i, int xo, int yo ) const
 {
 	ADDTOCALLSTACK("CGrayStaticsBlock::IsStaticPoint");
 	ASSERT( xo >= 0 && xo < UO_BLOCK_SIZE );
@@ -363,7 +364,7 @@ bool CGrayStaticsBlock::IsStaticPoint( int i, int xo, int yo ) const
 //////////////////////////////////////////////////////////////////
 // -CGrayMapBlock
 
-int CGrayMapBlock::sm_iCount = 0;
+size_t CGrayMapBlock::sm_iCount = 0;
 
 void CGrayMapBlock::Load( int bx, int by )
 {

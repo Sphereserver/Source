@@ -63,7 +63,7 @@ public:
 	CVarDefMap m_TagDefs;		// attach extra tags here.
 
 	CResourceRefArray m_OEvents;
-	static int sm_iCount;	// how many total objects in the world ?
+	static size_t sm_iCount;	// how many total objects in the world ?
 	CVarDefMap * GetTagDefs()
 	{
 		return( &m_TagDefs );
@@ -819,7 +819,8 @@ public:
 	}
 	WORD GetBaseID() const
 	{
-		return( GetID());
+		// future: strongly typed enums will remove the need for this cast
+		return( static_cast<WORD>(GetID()));
 	}
 	bool SetBaseID( ITEMID_TYPE id );
 	bool SetID( ITEMID_TYPE id );
@@ -878,7 +879,8 @@ public:
 	}
 	void  SetCorpseType( CREID_TYPE id )
 	{
-		m_amount = id;	// m_corpse_DispID
+		// future: strongly typed enums will remove the need for this cast
+		m_amount = static_cast<WORD>(id);	// m_corpse_DispID
 	}
 	void SetAmount( unsigned int amount );
 	void SetAmountUpdate( unsigned int amount );
@@ -2733,7 +2735,8 @@ public:
 	}
 	WORD GetBaseID() const
 	{
-		return( GetID());
+		// future: strongly typed enums will remove the need for this cast
+		return( static_cast<WORD>(GetID()));
 	}
 	CREID_TYPE GetDispID() const
 	{
@@ -3009,7 +3012,8 @@ public:
 	BYTE GetModeFlag( bool fTrueSight = false, const CClient* pViewer = NULL ) const;
 	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
-		BYTE dir = m_dirFace;
+		// future: strongly typed enums will remove the need for this cast
+		BYTE dir = static_cast<BYTE>(m_dirFace);
 		ASSERT( dir<DIR_QTY );
 
 		if ( fSquelchForwardStep )

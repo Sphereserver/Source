@@ -47,11 +47,11 @@ public:
 class CGrayStaticsBlock
 {
 private:
-	int m_iStatics;
+	size_t m_iStatics;
 	CUOStaticItemRec * m_pStatics;	// dyn alloc array block.
 public:
 	void LoadStatics(DWORD dwBlockIndex, int map);
-	void LoadStatics(int iCount, CUOStaticItemRec * pStatics);
+	void LoadStatics(size_t iCount, CUOStaticItemRec * pStatics);
 public:
 	static const char *m_sClassName;
 	CGrayStaticsBlock()
@@ -70,16 +70,16 @@ private:
 	CGrayStaticsBlock& operator=(const CGrayStaticsBlock& other);
 
 public:
-	int GetStaticQty() const
+	size_t GetStaticQty() const
 	{
 		return( m_iStatics );
 	}
-	const CUOStaticItemRec * GetStatic( int i ) const
+	const CUOStaticItemRec * GetStatic( size_t i ) const
 	{
 		ASSERT( i < m_iStatics );
 		return( &m_pStatics[i] );
 	}
-	bool IsStaticPoint( int i, int xo, int yo ) const;
+	bool IsStaticPoint( size_t i, int xo, int yo ) const;
 };
 
 struct CGrayMapBlocker
@@ -219,7 +219,7 @@ protected:
 	int		m_map;
 
 private:
-	static int sm_iCount;	// count number of loaded blocks.
+	static size_t sm_iCount;	// count number of loaded blocks.
 
 	CUOMapBlock m_Terrain;
 
@@ -288,7 +288,7 @@ private:
 	MULTI_TYPE m_id;
 protected:
 	CUOMultiItemRec2 * m_pItems;
-	int m_iItemQty;
+	size_t m_iItemQty;
 private:
 	void Init()
 	{
@@ -298,7 +298,7 @@ private:
 	}
 	void Release()
 	{
-		if ( m_pItems )
+		if ( m_pItems != NULL )
 		{
 			delete [] m_pItems;
 			Init();
@@ -325,20 +325,20 @@ private:
 	CGrayMulti& operator=(const CGrayMulti& other);
 
 public:
-	int Load( MULTI_TYPE id );
+	size_t Load( MULTI_TYPE id );
 
 	MULTI_TYPE GetMultiID() const
 	{
 		return( m_id );
 	}
-	int GetItemCount() const
+	size_t GetItemCount() const
 	{
 		return( m_iItemQty );
 	}
-	const CUOMultiItemRec2 * GetItem( int i ) const
+	const CUOMultiItemRec2 * GetItem( size_t i ) const
 	{
 		ASSERT( i<m_iItemQty );
-		return( m_pItems+i);
+		return( &(m_pItems[i]) );
 	}
 };
 

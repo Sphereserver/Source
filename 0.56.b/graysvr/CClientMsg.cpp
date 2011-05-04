@@ -41,7 +41,7 @@ void CClient::resendBuffs()
 	CItem* pSpell = 0;
 	TCHAR NumBuff[3][4];
 	LPCTSTR pNumBuff[3] = {(LPCTSTR)NumBuff[0], (LPCTSTR)NumBuff[1], (LPCTSTR)NumBuff[2]};
-	short iBuffPercent = 0;
+	int iBuffPercent = 0;
 	int iStatEffect = 0;
 
 	for ( int i = 0; i != Cont->GetCount(); ++i )
