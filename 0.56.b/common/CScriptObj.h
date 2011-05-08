@@ -63,20 +63,18 @@
 		virtual CChar * GetChar() const;	// are we also a CChar ? dynamic_cast ?
 
 		virtual void SysMessage( LPCTSTR pszMessage ) const = 0;	// Feed back message.
-		int VSysMessage( LPCTSTR pszFormat, va_list args ) const
+		void VSysMessage( LPCTSTR pszFormat, va_list args ) const
 		{
 			TemporaryString pszTemp;
-			size_t ilen = _vsnprintf( pszTemp, pszTemp.realLength(), pszFormat, args );
+			_vsnprintf( pszTemp, pszTemp.realLength(), pszFormat, args );
 			SysMessage( pszTemp );
-			return( ilen );
 		}
-		int _cdecl SysMessagef( LPCTSTR pszFormat, ... ) const __printfargs(2,3)
+		void _cdecl SysMessagef( LPCTSTR pszFormat, ... ) const __printfargs(2,3)
 		{
 			va_list vargs;
 			va_start( vargs, pszFormat );
-			int iRet = VSysMessage( pszFormat, vargs );
+			VSysMessage( pszFormat, vargs );
 			va_end( vargs );
-			return( iRet );
 		}
 
 	public:

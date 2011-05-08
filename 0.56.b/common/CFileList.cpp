@@ -22,7 +22,7 @@ bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD 
 	// WIN32
 	struct _finddata_t fileinfo;
 	fileinfo.attrib = _A_NORMAL;
-	long lFind = _findfirst( pszFilePath, &fileinfo );
+	intptr_t lFind = _findfirst( pszFilePath, &fileinfo );
 
 	if ( lFind == -1 )
 #else
@@ -66,7 +66,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 
 #ifdef _WIN32
 	struct _finddata_t fileinfo;
-	long lFind = _findfirst(szFileDir, &fileinfo);
+	intptr_t lFind = _findfirst(szFileDir, &fileinfo);
 
 	if ( lFind == -1 )
 #else

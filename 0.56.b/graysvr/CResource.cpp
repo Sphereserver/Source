@@ -1574,12 +1574,12 @@ bool CResource::IsValidEmailAddressFormat( LPCTSTR pszEmail ) // static
 	// what are the invalid email name chars ?
 	// Valid characters are, numbers, letters, underscore "_", dash "-" and the dot ".").
 
-	int len1 = strlen( pszEmail );
+	size_t len1 = strlen( pszEmail );
 	if ( len1 <= 0 || len1 > 128 )
 		return( false );
 
 	TCHAR szEmailStrip[256];
-	int len2 = Str_GetBare( szEmailStrip, pszEmail,
+	size_t len2 = Str_GetBare( szEmailStrip, pszEmail,
 		sizeof(szEmailStrip),
 		" !\"#%&()*,/:;<=>?[\\]^{|}'`+" );
 	if ( len2 != len1 )

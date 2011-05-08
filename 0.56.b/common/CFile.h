@@ -377,7 +377,7 @@ public:
 			bNoBuffer = true;
 		}
 #endif
-		int iStatus = fwrite( pData, iLen, 1, m_pStream );
+		size_t iStatus = fwrite( pData, iLen, 1, m_pStream );
 #ifndef _WIN32	// However, in unix, it works
 		fflush( m_pStream );
 #endif

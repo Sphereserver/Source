@@ -2082,14 +2082,29 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_tDamCold = 0;
 		i_tDamFire = 0;
 
-		if ( uType & DAMAGE_HIT_BLUNT ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_HIT_PIERCE ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_HIT_SLASH ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_POISON ) { i_tDamCount += 1; i_tDamPois +=1; }
-		if ( uType & DAMAGE_ELECTRIC ) { i_tDamCount += 1; i_tDamElec +=1; }
-		if ( uType & DAMAGE_COLD ) { i_tDamCount += 1; i_tDamCold +=1; }
-		if ( uType & DAMAGE_FIRE ) { i_tDamCount += 1; i_tDamFire +=1; }
-		if ( uType & !(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+		if ( uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
+			i_tDamCount += 1;
+		if ( uType & DAMAGE_POISON )
+		{
+			i_tDamCount += 1;
+			i_tDamPois +=1;
+		}
+		if ( uType & DAMAGE_ELECTRIC )
+		{
+			i_tDamCount += 1;
+			i_tDamElec +=1;
+		}
+		if ( uType & DAMAGE_COLD )
+		{
+			i_tDamCount += 1;
+			i_tDamCold +=1;
+		}
+		if ( uType & DAMAGE_FIRE )
+		{
+			i_tDamCount += 1;
+			i_tDamFire +=1;
+		}
+		if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
 		{
 			i_tDamCount += 1;
 		}
@@ -2259,20 +2274,21 @@ effect_bounce:
 		return( 0 );
 
 	//	record to last attackers
-	int iAttacker;
-	for ( iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker )
+	bool bAttackerExists = false;
+	for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 	{
-		LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
+		LastAttackers & refAttacker = *it;
 		if ( refAttacker.charUID == pSrc->GetUID().GetPrivateUID() )
 		{
 			refAttacker.elapsed = 0;
 			refAttacker.amountDone += maximum( 0, iDmg );
+			bAttackerExists = true;
 			break;
 		}
 	}
 
 	// Attacker not found
-	if ( iAttacker < 0 )
+	if (bAttackerExists == false)
 	{
 		LastAttackers attacker;
 		attacker.amountDone = maximum( 0, iDmg );

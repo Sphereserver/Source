@@ -318,23 +318,23 @@ public:
 		ASSERT(IsWindow());
 		SendMessage( EM_SETSEL, (WPARAM) dwSelection, (LPARAM) dwSelection );
 	}
-	void SetSel( int nStartChar, int nEndChar, BOOL bNoScroll = FALSE )
+	void SetSel( size_t nStartChar, size_t nEndChar, BOOL bNoScroll = FALSE )
 	{
 		UNREFERENCED_PARAMETER(bNoScroll);
 		ASSERT(IsWindow());
 		SendMessage( EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
 	}
-	DWORD GetSel() const
+	size_t GetSel() const
 	{
 		ASSERT(IsWindow());
-		return((DWORD) SendMessage( EM_GETSEL ));
+		return static_cast<size_t>(SendMessage( EM_GETSEL ));
 	}
-	void GetSel(int& nStartChar, int& nEndChar) const
+	void GetSel(size_t& nStartChar, size_t& nEndChar) const
 	{
 		ASSERT(IsWindow());
-		DWORD dwSel = GetSel();
-		nStartChar = LOWORD(dwSel);
-		nEndChar = HIWORD(dwSel);
+		size_t nSelection = GetSel();
+		nStartChar = LOWORD(nSelection);
+		nEndChar = HIWORD(nSelection);
 	}
 
 	void ReplaceSel( LPCTSTR lpszNewText, BOOL bCanUndo = FALSE )

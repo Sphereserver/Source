@@ -1156,15 +1156,12 @@ bool CWorld::SaveStage() // Save world state in stages.
 		g_World.m_TimedFunctions.r_Write(m_FileData);
 
 		m_FileData.WriteSection("GLOBALS");
-		int	i, iQty;
-		
-		iQty = g_Exp.m_VarGlobals.GetCount();
 		g_Exp.m_VarGlobals.r_WritePrefix(m_FileData, NULL);
 
 		g_Exp.m_ListGlobals.r_WriteSave(m_FileData);
 
-		iQty = g_Cfg.m_RegionDefs.GetCount();
-		for ( i = 0; i < iQty; i++ )
+		int iQty = g_Cfg.m_RegionDefs.GetCount();
+		for ( int i = 0; i < iQty; i++ )
 		{
 			CRegionBase *pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 			if ( !pRegion || !pRegion->HasResourceName() || !pRegion->m_iModified )

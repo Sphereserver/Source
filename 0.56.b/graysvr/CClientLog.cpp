@@ -291,10 +291,7 @@ BYTE CClient::Login_ServerList( const char * pszAccount, const char * pszPasswor
 	// if ( LogIn( pszAccount, pszPassword ) )
 	//   return( PacketLoginError::BadPass );
 	CGString sMsg;
-	BYTE lErr = PacketLoginError::Other;
-
-	lErr = LogIn( pszAccount, pszPassword, sMsg );
-	
+	BYTE lErr = LogIn( pszAccount, pszPassword, sMsg );
 	if ( lErr != PacketLoginError::Success )
 	{
 		return( lErr );

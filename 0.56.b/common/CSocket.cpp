@@ -312,7 +312,7 @@ int CGSocket::Connect( const CSocketAddress & SockAddr )
 	return( Connect( &SockAddrIn ));
 }
 
-int CGSocket::Connect( const struct in_addr ip, WORD wPort )
+int CGSocket::Connect( const struct in_addr & ip, WORD wPort )
 {
 	CSocketAddress SockAddr( ip.s_addr, wPort );
 	return( Connect( SockAddr ));

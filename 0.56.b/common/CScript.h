@@ -56,7 +56,7 @@ public:
 		ASSERT(m_pszKey);
 		return( ! strcmpi( m_pszKey, pszName ));
 	}
-	bool IsKeyHead( LPCTSTR pszName, int len ) const
+	bool IsKeyHead( LPCTSTR pszName, size_t len ) const
 	{
 		ASSERT(m_pszKey);
 		return( ! strnicmp( m_pszKey, pszName, len ));

@@ -151,8 +151,8 @@ void CServerDef::SetName( LPCTSTR pszName )
 
 	// No HTML tags using <> either.
 	TCHAR szName[ 2*MAX_SERVER_NAME_SIZE ];
-	int len = Str_GetBare( szName, pszName, sizeof(szName), "<>/\"\\" );
-	if ( ! len )
+	size_t len = Str_GetBare( szName, pszName, sizeof(szName), "<>/\"\\" );
+	if ( len <= 0 )
 		return;
 
 	// allow just basic chars. No spaces, only numbers, letters and underbar.

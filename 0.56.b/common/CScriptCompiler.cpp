@@ -19,7 +19,7 @@
 	#define GETFILETIME fileinfo.time_write
 	#define CLOSEFIND(a) _findclose(a)
 	#define IFGETFILESTAT(name) \
-		long lFind = _findfirst(name, &fileinfo); \
+		intptr_t lFind = _findfirst(name, &fileinfo); \
 		if ( lFind != -1 )
 	#define  WHILEFINDNEXT \
 		while ( !_findnext(lFind, &fileinfo) )
@@ -524,27 +524,27 @@ Preparse:
 			if ( p1 > line )
 			{
 				SKIP_WHITESPACER(p1);
-				*(p1+1) = 0;
+				*(p1+1) = '\0';
 
 #if COMPILER_SPLIT_LINES != 0
 				//	search for \ tag in the end of the line. if exists, the line is splitted to
 				//	several lines, so join them all.
 				if ( *p1 == '\\' )
 				{
-					*p1 = 0;
+					*p1 = '\0';
 					p1--;
 
-					*z1 = 0;
+					*z1 = '\0';
 					fgets(z1, SCRIPT_MAX_LINE_LEN, in);
 
 					//	check the resulting length
-					int curlen = strlen(line);
-					int addlen = strlen(z1);
-					if ( addlen + curlen > COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN )
+					size_t curlen = strlen(line);
+					size_t addlen = strlen(z1);
+					if ( (addlen + curlen) > (COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN) )
 					{
-						g_Log.EventError("Resulting line too large %d chars from %d allowed. The least of line #%d truncated.\n",
-							curlen+addlen, COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN, linenum);
-						z1[maximum(0, (COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN) - curlen - 2)] = 0;
+						g_Log.EventError("Resulting line too large %" FMTSIZE_T " chars from %" FMTSIZE_T " allowed. The least of line #%" FMTSIZE_T " truncated.\n",
+							curlen + addlen, static_cast<size_t>(COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN), linenum);
+						z1[maximum(0, (static_cast<size_t>(COMPILER_MAXLINESINSIDE * SCRIPT_MAX_LINE_LEN) - curlen) - 2)] = '\0';
 					}
 
 					strcat(line, z1);

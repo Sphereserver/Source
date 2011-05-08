@@ -965,7 +965,8 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	wBlockThis = 0;
 	z = 0;
 	zHeight = 0;
-	x2 = y2 = iQty = 0;
+	x2 = y2 = 0;
+	iQty = 0;
 
 	// Any multi items here ?
 	// Check all of them

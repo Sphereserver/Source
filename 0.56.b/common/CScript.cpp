@@ -301,7 +301,7 @@ bool CScript::FindTextHeader( LPCTSTR pszName ) // Find a section in the current
 
 	SeekToBegin();
 
-	int len = strlen( pszName );
+	size_t len = strlen( pszName );
 	ASSERT(len);
 	do
 	{

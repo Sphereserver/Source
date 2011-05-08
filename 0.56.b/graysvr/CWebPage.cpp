@@ -436,7 +436,7 @@ bool CWebPageDef::SetSourceFile( LPCTSTR pszName, CClient * pClient )
 
 	// attempt to set this to a source file.
 	// test if it exists.
-	int iLen = strlen( pszName );
+	size_t iLen = strlen( pszName );
 	if ( iLen <= 3 )
 		return( false );
 

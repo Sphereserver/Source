@@ -123,7 +123,7 @@ public:
 	int Listen( int iMaxBacklogConnections = SOMAXCONN );
 	int Connect( struct sockaddr_in * pSockAddrIn );
 	int Connect( const CSocketAddress & SockAddr );
-	int Connect( const struct in_addr ip, WORD wPort );
+	int Connect( const struct in_addr & ip, WORD wPort );
 	int Connect( LPCTSTR pszHostName, WORD wPort );
 	SOCKET Accept( struct sockaddr_in * pSockAddrIn ) const;
 	SOCKET Accept( CSocketAddress & SockAddr ) const;

@@ -2015,13 +2015,13 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun( CScript &s, TRIGRUN_TYPE trigrun, CTextCo
 	// CScriptFileContext set g_Log.m_pObjectContext is the current context (we assume)
 	// DEBUGCHECK( this == g_Log.m_pObjectContext );
 
-	//	Script execution is always not threaded action
-	EXC_TRY("TriggerRun");
-
 	//	all scripts should have args for locals to work.
 	CScriptTriggerArgs argsEmpty;
 	if ( !pArgs )
 		pArgs = &argsEmpty;
+
+	//	Script execution is always not threaded action
+	EXC_TRY("TriggerRun");
 
 	bool fSectionFalse = (trigrun == TRIGRUN_SECTION_FALSE || trigrun == TRIGRUN_SINGLE_FALSE);
 	if ( trigrun == TRIGRUN_SECTION_EXEC || trigrun == TRIGRUN_SINGLE_EXEC )	// header was already read in.

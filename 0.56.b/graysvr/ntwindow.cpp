@@ -27,7 +27,7 @@ public:
 	{
 	private:
 		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl );
+		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
 	public:
 		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
 	};
@@ -36,7 +36,7 @@ public:
 	{
 	private:
 		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl );
+		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
 	public:
 		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
 	};
@@ -83,7 +83,7 @@ public:
 		CListbox m_wndListStats;
 	private:
 		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl );
+		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
 	public:
 		void FillClients();
 		void FillStats();
@@ -104,8 +104,8 @@ public:
 
 private:
 	int OnCreate( HWND hWnd, LPCREATESTRUCT lParam );
-	bool OnSysCommand( UINT uCmdType, int xPos, int yPos );
-	void OnSize( UINT nType, int cx, int cy );
+	bool OnSysCommand( WPARAM uCmdType, int xPos, int yPos );
+	void OnSize( WPARAM nType, int cx, int cy );
 	void OnDestroy();
 	void OnSetFocus( HWND hWndLoss );
 	bool OnClose();
@@ -115,7 +115,7 @@ private:
 	void	SetLogFont( const char * pszFont );
 
 public:
-	bool OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl );
+	bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
 
 	static bool RegisterClass(char *className);
 	static LRESULT WINAPI WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
@@ -154,7 +154,7 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 	return false;
 }
 
-bool CNTWindow::CAboutDlg::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
+bool CNTWindow::CAboutDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 {
 	UNREFERENCED_PARAMETER(wNotifyCode);
 	UNREFERENCED_PARAMETER(hwndCtl);
@@ -193,7 +193,7 @@ bool CNTWindow::COptionsDlg::OnInitDialog()
 	return( false );
 }
 
-bool CNTWindow::COptionsDlg::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl)
+bool CNTWindow::COptionsDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl)
 {
 	UNREFERENCED_PARAMETER(wNotifyCode);
 	UNREFERENCED_PARAMETER(hwndCtl);
@@ -279,7 +279,7 @@ bool CNTWindow::CStatusWnd::OnInitDialog()
 	return( false );
 }
 
-bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
+bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 {
 	UNREFERENCED_PARAMETER(wNotifyCode);
 	UNREFERENCED_PARAMETER(hwndCtl);
@@ -409,7 +409,7 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 	CWindow::OnCreate(hWnd);
 
 	m_wndLog.m_hWnd = ::CreateWindow( RICHEDIT_CLASS, NULL,
-		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | // ES_OEMCONVERT |
+		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | /* ES_OEMCONVERT | */
 		WS_CHILD|WS_VISIBLE|WS_VSCROLL,
 		0, 0, 10, 10,
 		m_hWnd,
@@ -534,7 +534,7 @@ void CNTWindow::OnUserPostMessage( COLORREF color, CGString * psMsg )
 	}
 }
 
-void CNTWindow::OnSize( UINT nType, int cx, int cy )
+void CNTWindow::OnSize( WPARAM nType, int cx, int cy )
 {
 	if ( nType != SIZE_MINIMIZED && nType != SIZE_MAXHIDE && m_wndLog.m_hWnd )
 	{
@@ -575,7 +575,7 @@ bool CNTWindow::OnClose()
 	return( true );	// ok to close.
 }
 
-bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
+bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 {
 	// WM_COMMAND
 	UNREFERENCED_PARAMETER(wNotifyCode);
@@ -593,7 +593,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 				MAKEINTRESOURCE(IDM_STATUS),
 				HWND_DESKTOP,
 				CDialogBase::DialogProc,
-				(DWORD) static_cast <CDialogBase*>(&theApp.m_wndStatus) );
+				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndStatus)) );
 		}
 		theApp.m_wndStatus.ShowWindow(SW_NORMAL);
 		theApp.m_wndStatus.SetForegroundWindow();
@@ -606,7 +606,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 				MAKEINTRESOURCE(IDR_ABOUT_BOX),   // identifies dialog box template
 				m_hWnd,      // handle to owner window
 				CDialogBase::DialogProc,
-				(DWORD) static_cast <CDialogBase*>(&wndAbout) );  // pointer to dialog box procedure
+				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&wndAbout)) );  // pointer to dialog box procedure
 		}
 		break;
 
@@ -658,7 +658,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, int wID, HWND hwndCtl )
 	return( true );
 }
 
-bool CNTWindow::OnSysCommand( UINT uCmdType, int xPos, int yPos )
+bool CNTWindow::OnSysCommand( WPARAM uCmdType, int xPos, int yPos )
 {
 	// WM_SYSCOMMAND
 	// return : 1 = i processed this.
@@ -753,10 +753,12 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 					pt.x = LOWORD(pMsg->lParam);
 					pt.y = HIWORD(pMsg->lParam);
 
-					DWORD line = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, 0, (long)(&pt)), 0);
-					*zTemp		= HIBYTE(4095);
-					*(zTemp+1)	= LOBYTE(4095);
-					zTemp[m_wndLog.SendMessage(EM_GETLINE, line, (long)zTemp)] = 0;
+					// get selected line
+					LRESULT line = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, 0, reinterpret_cast<LPARAM>(&pt)), 0);
+
+					// get the line text
+					reinterpret_cast<WORD*>(zTemp)[0] = SCRIPT_MAX_LINE_LEN - 1; // first WORD is used to indicate the max buffer length
+					zTemp[m_wndLog.SendMessage(EM_GETLINE, line, reinterpret_cast<LPARAM>(zTemp))] = '\0';
 					if ( *zTemp == '\0' )
 						break;
 
@@ -777,7 +779,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							start--;
 						}
 						start++;
-						*end = 0;
+						*end = '\0';
 
 						if ( *start )
 						{
@@ -835,7 +837,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 		case WM_CREATE:
 			return( theApp.m_wndMain.OnCreate( hWnd, (LPCREATESTRUCT) lParam ));
 		case WM_SYSCOMMAND:
-			if ( theApp.m_wndMain.OnSysCommand( wParam&~0x0f, LOWORD(lParam), HIWORD(lParam)))
+			if ( theApp.m_wndMain.OnSysCommand( wParam &~ 0x0f, LOWORD(lParam), HIWORD(lParam)))
 				return( 0 );
 			break;
 		case WM_COMMAND:
@@ -1111,10 +1113,10 @@ bool NTWindow_OnTick( int iWaitmSec )
 				}
 				else if ( msg.wParam == VK_TAB )	// TAB (auto-complete)
 				{
-					TCHAR	*pszTemp = Str_GetTemp();
-					int		selStart, selEnd;
-					TCHAR	*p;
-					CEdit	*inp = &theApp.m_wndMain.m_wndInput;
+					TCHAR * pszTemp = Str_GetTemp();
+					size_t selStart, selEnd;
+					TCHAR * p = NULL;
+					CEdit * inp = &theApp.m_wndMain.m_wndInput;
 
 					//	get current selection (to be replaced), suppose it being our "completed" word
 					inp->GetSel(selStart, selEnd);
@@ -1122,20 +1124,20 @@ bool NTWindow_OnTick( int iWaitmSec )
 
 					// the code will act incorrectly if using tab in the middle of the text
 					// since we are just unable to get our current position. really unable?
-					if ( static_cast<size_t>(selEnd) == strlen(pszTemp) )		// so proceed only if working on last char
+					if ( selEnd == strlen(pszTemp) )		// so proceed only if working on last char
 					{
-						TCHAR	*pszCurSel = Str_GetTemp();
-						int		inputLen(0);
+						TCHAR * pszCurSel = Str_GetTemp();
+						size_t inputLen = 0;
 
 						// there IS a selection, so extract it
 						if ( selStart != selEnd )
 						{
-							strncpy(pszCurSel, pszTemp+selStart, selEnd-selStart);
-							pszCurSel[selEnd-selStart] = 0;
+							strncpy(pszCurSel, pszTemp + selStart, selEnd - selStart);
+							pszCurSel[selEnd - selStart] = '\0';
 						}
 						else
 						{
-							*pszCurSel = 0;
+							*pszCurSel = '\0';
 						}
 
 						// detect part of the text we are entered so far
@@ -1147,7 +1149,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 						p++;
 
 						// remove the selected part of the message
-						pszTemp[selStart] = 0;
+						pszTemp[selStart] = '\0';
 						inputLen = strlen(p);
 
 						// search in the auto-complete list for starting on P, and save coords of 1st and Last matched
@@ -1188,11 +1190,11 @@ bool NTWindow_OnTick( int iWaitmSec )
 							}
 							else											// need to find for the next record
 							{
-								int curselLen = strlen(pszCurSel);
+								size_t curselLen = strlen(pszCurSel);
 								for ( curmatch = firstmatch; curmatch != lastmatch->GetNext(); curmatch = curmatch->GetNext() )
 								{
 									// found the first next one
-									if ( strnicmp(curmatch->GetPtr()+inputLen, pszCurSel, curselLen) > 0 )
+									if ( strnicmp(curmatch->GetPtr() + inputLen, pszCurSel, curselLen) > 0 )
 									{
 										break;
 									}

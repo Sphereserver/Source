@@ -411,10 +411,10 @@ try_dec:
 		INTRINSIC_TYPE iIntrinsic = (INTRINSIC_TYPE) FindTableHeadSorted( pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions)-1 );
 		if ( iIntrinsic >= 0 )
 		{
-			int iLen = strlen(sm_IntrinsicFunctions[iIntrinsic]);
+			size_t iLen = strlen(sm_IntrinsicFunctions[iIntrinsic]);
 			if ( pszArgs[iLen] == '(' )
 			{
-				pszArgs += (iLen+1);
+				pszArgs += (iLen + 1);
 				TCHAR * pszArgsNext;
 				Str_Parse( const_cast<TCHAR*>(pszArgs), &(pszArgsNext), ")" );
 	

@@ -304,7 +304,7 @@ int CServer::PrintPercent( long iCount, long iTotal )
     int iPercent = MulDiv( iCount, 100, iTotal );
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%d%%", iPercent);
-	int len = strlen(pszTemp);
+	size_t len = strlen(pszTemp);
 
 	PrintTelnet(pszTemp);
 
@@ -313,12 +313,13 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	{
 		SysMessage(pszTemp);
 #endif
-		while ( len-- )	// backspace it
+		while ( len > 0) // backspace it
 		{
 			PrintTelnet("\x08");
 #ifndef _WIN32
  			SysMessage("\x08");
 #endif
+			len--;
 		}
 #ifndef _WIN32
 	}
@@ -801,7 +802,7 @@ longcommand:
 
 						_strlwr(z);
 
-						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
+						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5) != 0) || !strncmp(z, "defname", 7) ||
 							!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
 							!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
 							!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
@@ -855,14 +856,14 @@ longcommand:
 
 						_strlwr(z);
 
-						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5)) || !strncmp(z, "defname", 7) ||
+						if ( (( z[0] == '[' ) && strncmp(z, "[eof]", 5) != 0) || !strncmp(z, "defname", 7) ||
 							!strncmp(z, "name", 4) || !strncmp(z, "type", 4) || !strncmp(z, "id", 2) ||
 							!strncmp(z, "weight", 6) || !strncmp(z, "value", 5) || !strncmp(z, "dam", 3) ||
 							!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
-							!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "id", 2) ||
-							!strncmp(z, "can", 3) || !strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) ||
-							!strncmp(z, "description", 11) || !strncmp(z, "category", 8) || !strncmp(z, "p=", 5) ||
-							!strncmp(z, "resources", 9) || !strncmp(z, "group", 5) || !strncmp(z, "rect=", 5) )
+							!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "can", 3) ||
+							!strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) || !strncmp(z, "description", 11) ||
+							!strncmp(z, "category", 8) || !strncmp(z, "p=", 5) || !strncmp(z, "resources", 9) ||
+							!strncmp(z, "group", 5) || !strncmp(z, "rect=", 5) )
 						{
 							fputs(y, f1);
 						}
