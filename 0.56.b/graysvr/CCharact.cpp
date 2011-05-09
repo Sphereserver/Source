@@ -3761,14 +3761,11 @@ bool CChar::OnTick()
 		EXC_SET("last attackers");
 		if ( m_lastAttackers.size() )
 		{
-			for ( int iAttacker = m_lastAttackers.size() - 1; iAttacker >= 0; --iAttacker )
+			for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 			{
-				LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
-				++(refAttacker.elapsed);
-				if( refAttacker.elapsed > 300 ) // 5 minutes to remember
+				LastAttackers & refAttacker = *it;
+				if ( ++(refAttacker.elapsed) > 300 ) // 5 minutes to remember
 				{
-					std::vector<LastAttackers>::iterator it = m_lastAttackers.begin();
-					it += iAttacker;
 					m_lastAttackers.erase(it);
 					break;
 				}

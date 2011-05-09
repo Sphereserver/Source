@@ -630,9 +630,11 @@ void CCrypt::InitFast( DWORD dwIP, CONNECT_TYPE ctInit, bool fRelay)
 void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::LoginCryptStart");
+	ASSERT(pEvent != NULL);
 	BYTE m_Raw[ MAX_BUFFER ];
 	TCHAR pszAccountNameCheck[ MAX_ACCOUNT_NAME_SIZE ];
 
+	ASSERT( iLen <= sizeof(m_Raw) );
 	memcpy( m_Raw, pEvent, iLen );	
 	m_seed = dwIP;
 	SetConnectType( CONNECT_LOGIN );
@@ -723,7 +725,10 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 {
 	ADDTOCALLSTACK("CCrypt::GameCryptStart");
+	ASSERT( pEvent != NULL );
+
 	BYTE m_Raw[ MAX_BUFFER ];
+	ASSERT( iLen <= sizeof(m_Raw) );
 	memcpy( m_Raw, pEvent, iLen );
 	
 	m_seed = dwIP;

@@ -141,7 +141,7 @@ void CClient::resendBuffs()
 	}
 
 }
-void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, int iArgCount)
+void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, size_t iArgCount)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) )

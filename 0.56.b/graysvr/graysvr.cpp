@@ -786,6 +786,8 @@ void dword_q_sort(DWORD numbers[], DWORD left, DWORD right)
 
 void defragSphere(char *path)
 {
+	ASSERT(path != NULL);
+
 	CFileText inf;
 	CGFile ouf;
 	char z[256], z1[256], buf[1024];

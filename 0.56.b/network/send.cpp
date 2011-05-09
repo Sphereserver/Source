@@ -4325,7 +4325,7 @@ bool PacketPropertyListVersion::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, size_t argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBuff::PacketBuff");
 
@@ -4353,7 +4353,7 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD cli
 
 	writeInt16(9);
 
-	for (int i = 0; i < argCount; i++)
+	for (size_t i = 0; i < argCount; i++)
 	{
 		if (i > 0)
 			writeCharUNICODE('\t');

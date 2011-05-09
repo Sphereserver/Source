@@ -2668,6 +2668,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CFileObj::r_WriteVal");
 	EXC_TRY("WriteVal");
+	ASSERT(pszKey != NULL);
 
 	if ( !strnicmp("MODE.",pszKey,5) )
 	{
@@ -2866,7 +2867,7 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				pszKey += strlen(sm_szLoadKeys[index]);
 				GETNONWHITESPACE( pszKey );
 
-				if ( pszKey && !strlen(pszKey) )
+				if ( strlen(pszKey) == 0 )
 					return( false );
 
 				if (!strcmpi("BEGIN",pszKey))

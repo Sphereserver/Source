@@ -70,7 +70,7 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_AddMod");
-	ASSERT(((WORD)i)<STAT_QTY );
+	ASSERT(i >= 0 && i < STAT_QTY);
 	m_Stat[i].m_mod	+= iVal;
 	UpdateStatsFlag();
 }
@@ -79,7 +79,7 @@ void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
-	ASSERT(((WORD)i)<STAT_QTY );
+	ASSERT(i >= 0 && i < STAT_QTY);
 	m_Stat[i].m_mod = iVal;
 	UpdateStatsFlag();
 }
@@ -87,7 +87,7 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 short CChar::Stat_GetMod( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMod");
-	ASSERT(((WORD)i)<STAT_QTY );
+	ASSERT(i >= 0 && i < STAT_QTY);
 	return m_Stat[i].m_mod;
 }
 
@@ -99,7 +99,7 @@ void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
 		Stat_SetBase(i, iVal);
 		return;
 	}
-	ASSERT(((WORD)i) < (STAT_QTY) );	// allow for food
+	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	m_Stat[i].m_val = iVal;
 }
 
@@ -108,7 +108,7 @@ int CChar::Stat_GetVal( STAT_TYPE i ) const
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
 	if ( i > STAT_BASE_QTY )
 		return Stat_GetBase(i);
-	ASSERT(((WORD)i) < (STAT_QTY) );	// allow for food
+	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	return m_Stat[i].m_val;
 }
 
@@ -116,7 +116,7 @@ int CChar::Stat_GetVal( STAT_TYPE i ) const
 void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
-	ASSERT(((WORD)i) < (STAT_QTY) );	// allow for food
+	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 
 	if ( g_Cfg.m_iStatFlag && (
 		( g_Cfg.m_iStatFlag&STAT_FLAG_DENYMAX ) ||
@@ -150,7 +150,7 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
 	int	val;
-	ASSERT(((WORD)i) < (STAT_QTY) );	// allow for food
+	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	if ( m_Stat[i].m_max < 1 )
 	{
 		val	= Stat_GetAdjusted(i);
@@ -181,7 +181,7 @@ int CChar::Stat_GetSum() const
 short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetAdjusted");
-	short	val = Stat_GetBase(i) + Stat_GetMod(i);
+	short val = Stat_GetBase(i) + Stat_GetMod(i);
 	if ( i == STAT_FAME )
 	{
 		if ( val < 0 )
@@ -203,7 +203,7 @@ short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 short CChar::Stat_GetBase( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
-	ASSERT(((WORD)i)<STAT_QTY );
+	ASSERT(i >= 0 && i < STAT_QTY);
 	if ( i == STAT_FOOD )
 	{
 		CCharBase* pCharDef = Char_GetDef();
@@ -226,7 +226,7 @@ void CChar::Stat_AddBase( STAT_TYPE i, short iVal )
 void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
-	ASSERT(((WORD)i)<STAT_QTY );
+	ASSERT(i >= 0 && i < STAT_QTY);
 
 	switch ( i )
 	{
@@ -264,8 +264,10 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 				iVal = 0;
 			}
 			break;
-		default:
+		case STAT_FOOD:
 			break;
+		default:
+			throw CGrayError(LOGL_CRIT, 0, "Stat_SetBase: index out of range");
 	}
 	
 	m_Stat[i].m_base = iVal;
@@ -287,7 +289,7 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 			pTagStorage = GetKey("OVERRIDE.STATSUM", true);
 			return pTagStorage ? ((short)pTagStorage->GetValNum()) : pSkillClass->m_StatSumMax;
 		}
-		ASSERT( i<STAT_BASE_QTY );
+		ASSERT( i>=0 && i<STAT_BASE_QTY );
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", (int)i);
 		int iStatMax;
@@ -1519,6 +1521,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 		else
 			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
 
+		ASSERT(dir >= 0 && dir < COUNTOF(CPointBase::sm_szDirs));
 		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", (LPCTSTR)CPointBase::sm_szDirs[dir]);
 		ObjMessage(pszMsg, this);
 	}

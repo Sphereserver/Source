@@ -5179,3 +5179,6 @@ ALPHA additions:
 
 23-04-2011, MrSugarCube
 - Fixed #1919: Exception when a client sends an incomplete handshake packet.
+
+10-05-2011, MrSugarCube
+- Fixed: Exception when trying to set REGENx and 'x' is an invalid stat id.

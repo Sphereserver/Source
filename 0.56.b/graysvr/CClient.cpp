@@ -940,9 +940,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					break;
 				}
 
-				for (int idx = 0; idx != 4; ++idx) {
+				for (unsigned int idx = 0; idx != 4; ++idx) {
 					if (!IsStrNumeric(ppArgs[idx]) || IsStrEmpty(ppArgs[idx])) {
-						DEBUG_ERR(("Invalid addbuff argument number %i\n",idx+1));
+						DEBUG_ERR(("Invalid addbuff argument number %u\n",idx+1));
 						return true;
 					}
 					iArgs[idx] = g_Exp.GetVal(ppArgs[idx]);
@@ -961,8 +961,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				Args[1] = ppArgs[5];
 				Args[2] = ppArgs[6];
 
-				int ArgsCount = 0;
-				for (int i = 0; Args[i] != NULL && i < 3; i++)
+				size_t ArgsCount = 0;
+				for (int i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
 					ArgsCount++;
 
 				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], (LPCTSTR*)Args, ArgsCount);

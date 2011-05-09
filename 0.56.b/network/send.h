@@ -1667,7 +1667,7 @@ public:
 class PacketBuff : public PacketSend
 {
 public:
-	PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, int argCount); // add buff
+	PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, size_t argCount); // add buff
 	PacketBuff(const CClient* target, const WORD iconId); // remove buff
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }

@@ -319,6 +319,9 @@ void CTimedFunctionHandler::Erase( CGrayUID uid )
 void CTimedFunctionHandler::Add( CGrayUID uid, int numSeconds, LPCTSTR funcname )
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Add");
+	ASSERT(funcname != NULL);
+	ASSERT(strlen(funcname) < 1024);
+
 	int tick = m_curTick;
 	TimedFunction *tf;
 	if ( m_tFrecycled.size() > 0 )

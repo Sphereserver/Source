@@ -208,6 +208,7 @@ CScriptCompiler::~CScriptCompiler()
 bool CScriptCompiler::GetFilelist(char *dirName, char *extens, CGStringList &list)
 {
 	ADDTOCALLSTACK("CScriptCompiler::GetFilelist");
+	ASSERT(dirName != NULL);
 	char	zMask[COMPILER_MAXFILEPATH];
 	char	zFileName[COMPILER_MAXFILEPATH];
 
@@ -333,6 +334,7 @@ bool CScriptCompiler::CompileAll()
 bool CScriptCompiler::CompileFile(char *scriptName)
 {
 	ADDTOCALLSTACK("CScriptCompiler::CompileFile");
+	ASSERT(scriptName != NULL);
 	char	zScriptFile[COMPILER_MAXFILEPATH];
 	char	zBinaryFile[COMPILER_MAXFILEPATH];
 	int		i;
@@ -998,6 +1000,8 @@ lastcheck:
 bool CScriptCompiler::Execute(char *scriptName)
 {
 	ADDTOCALLSTACK("CScriptCompiler::Execute");
+	ASSERT(scriptName != NULL);
+
 	TBinaryHeadRec	head;
 	char zFileName[COMPILER_MAXFILEPATH];
 	FILE	*script;

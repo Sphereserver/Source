@@ -1954,17 +1954,34 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	} 
 	else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 	{
-		if ( uType & DAMAGE_HIT_BLUNT ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_HIT_PIERCE ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_HIT_SLASH ) { i_tDamCount += 1; }
-		if ( uType & DAMAGE_POISON ) { i_tDamCount += 1; i_tDamPois +=1; }
-		if ( uType & DAMAGE_ELECTRIC ) { i_tDamCount += 1; i_tDamElec +=1; }
-		if ( uType & DAMAGE_COLD ) { i_tDamCount += 1; i_tDamCold +=1; }
-		if ( uType & DAMAGE_FIRE ) { i_tDamCount += 1; i_tDamFire +=1; }
-		if ( uType & !(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+		if ( uType & DAMAGE_HIT_BLUNT )
+			i_tDamCount += 1;
+		if ( uType & DAMAGE_HIT_PIERCE )
+			i_tDamCount += 1;
+		if ( uType & DAMAGE_HIT_SLASH )
+			i_tDamCount += 1;
+		if ( uType & DAMAGE_POISON )
 		{
 			i_tDamCount += 1;
+			i_tDamPois +=1;
 		}
+		if ( uType & DAMAGE_ELECTRIC )
+		{
+			i_tDamCount += 1;
+			i_tDamElec +=1;
+		}
+		if ( uType & DAMAGE_COLD )
+		{ 
+			i_tDamCount += 1;
+			i_tDamCold +=1;
+		}
+		if ( uType & DAMAGE_FIRE )
+		{
+			i_tDamCount += 1;
+			i_tDamFire +=1;
+		}
+		if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+			i_tDamCount += 1;
 		
 		i_tDamPois *= iDmg / i_tDamCount; 
 		i_tDamElec *= iDmg / i_tDamCount; 

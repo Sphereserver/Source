@@ -778,13 +778,10 @@ bool CResource::r_LoadVal( CScript &s )
 		if ( s.IsKeyHead( "REGEN", 5 ))			//	REGENx=<stat regeneration rate>
 		{
 			int index = ATOI(s.GetKey()+5);
-			if (( index >= 0 ) || ( index < STAT_QTY ))
-			{
-				g_Cfg.m_iRegenRate[index] = (s.GetArgVal() * TICK_PER_SEC);
-				return true;
-			}
-			else
+			if (index < 0 || index >= STAT_QTY)
 				return false;
+			g_Cfg.m_iRegenRate[index] = (s.GetArgVal() * TICK_PER_SEC);
+			return true;
 		}
 		else if ( s.IsKeyHead("MAP", 3) )		//	MAPx=settings
 		{

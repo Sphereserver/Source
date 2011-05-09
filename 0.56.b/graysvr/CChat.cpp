@@ -315,9 +315,11 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		"WHEREIS",
 	};
 
-	ASSERT(pBy);
+	ASSERT(pBy != NULL);
+	ASSERT(szMsg != NULL);
 
 	TCHAR buffer[2048];
+	ASSERT(strlen(szMsg) < COUNTOF(buffer));
 	strcpy(buffer, szMsg);
 
 	TCHAR * pszCommand = buffer;

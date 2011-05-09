@@ -97,9 +97,11 @@ CResourceScript * CResourceBase::FindResourceFile( LPCTSTR pszPath )
 CResourceScript * CResourceBase::AddResourceFile( LPCTSTR pszName )
 {
 	ADDTOCALLSTACK("CResourceBase::AddResourceFile");
+	ASSERT(pszName != NULL);
 	// Is this really just a dir name ?
 
 	TCHAR szName[_MAX_PATH];
+	ASSERT(strlen(pszName) < COUNTOF(szName));
 	strcpy(szName, pszName);
 
 	TCHAR szTitle[_MAX_PATH];

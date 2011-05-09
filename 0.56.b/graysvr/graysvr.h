@@ -1151,7 +1151,7 @@ public:
 	void addItem_InContainer( const CItem * pItem );
 	void addItem( CItem * pItem );
 
-	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs = 0, int iArgCount = 0);
+	void addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs = 0, size_t iArgCount = 0);
 	void removeBuff (const WORD IconId);
 	void resendBuffs();
 

@@ -110,6 +110,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 			// Add the "MORE" option if there is more than 1 more.
 			if ( pPage->GetNext() != NULL )
 			{
+				ASSERT(count >= 0 && count < COUNTOF(item));
 				item[count].m_id = count-1;
 				item[count].m_sText.Format( "MORE" );
 				item[count].m_color = 0;
@@ -120,6 +121,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 
 		CClient * pClient = pPage->FindAccount()->FindClient();	// logged in ?
 
+		ASSERT(count >= 0 && count < COUNTOF(item));
 		item[count].m_id = count-1;
 		item[count].m_color = 0;
 		item[count].m_sText.Format( "%s %s %s",
