@@ -933,7 +933,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				TCHAR * ppArgs[7];
 				int iArgs[4];
 
-				int ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+				size_t ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 				if ( ArgCount < 5 )
 				{
 					DEBUG_ERR(("Too few addbuff arguments\n"));
@@ -986,11 +986,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			// Add cliloc in @ClientTooltip trigger
 			{
 				TCHAR * ppLocArgs[256];
-				int qty = Str_ParseCmds(s.GetArgRaw(), ppLocArgs, COUNTOF(ppLocArgs), ",");
+				size_t qty = Str_ParseCmds(s.GetArgRaw(), ppLocArgs, COUNTOF(ppLocArgs), ",");
 				DWORD clilocid = Exp_GetVal(ppLocArgs[0]);
 
 				CGString LocArgs;
-				for ( int y = 1 ; y < qty; y++ )
+				for ( size_t y = 1 ; y < qty; y++ )
 				{
 					if ( LocArgs.GetLength() )
 						LocArgs += "\t";
@@ -1276,7 +1276,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_MIDILIST:
 			{
 				int piMidi[64];
-				int iQty = Str_ParseCmds( s.GetArgStr(), piMidi, COUNTOF(piMidi));
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), piMidi, COUNTOF(piMidi));
 				if ( iQty > 0 )
 				{
 					addMusic( piMidi[ Calc_GetRandVal( iQty ) ] );
@@ -1364,7 +1364,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SYSMESSAGEUA:
 			{
 				TCHAR * pszArgs[5];
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, 5 );
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, COUNTOF(pszArgs) );
 				if ( iArgQty > 4 )
 				{
 					// Font and mode are actually ignored here, but they never made a difference
@@ -1380,7 +1380,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SYSMESSAGELOC:
 			{
 				TCHAR * ppArgs[256];
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
 				if ( iArgQty > 1 )
 				{
 					int hue = -1;
@@ -1391,7 +1391,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					if ( hue == -1 )	hue = HUE_TEXT_DEF;
 
 					CGString CArgs;
-					for ( int i = 2; i < iArgQty; i++ )
+					for ( size_t i = 2; i < iArgQty; i++ )
 					{
 						if ( CArgs.GetLength() )
 							CArgs += "\t";
@@ -1406,7 +1406,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SYSMESSAGELOCEX:
 			{
 				TCHAR * ppArgs[256];
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), "," );
 				if ( iArgQty > 2 )
 				{
 					int hue = -1;
@@ -1420,7 +1420,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					if ( hue == -1 )	hue = HUE_TEXT_DEF;
 
 					CGString CArgs;
-					for ( int i = 4; i < iArgQty; i++ )
+					for ( size_t i = 4; i < iArgQty; i++ )
 					{
 						if ( CArgs.GetLength() )
 							CArgs += "\t";

@@ -466,7 +466,7 @@ LPCTSTR CSector::GetLocalGameTime() const
 	return( GetTimeMinDesc( GetLocalTime()));
 }
 
-bool CSector::IsMoonVisible(int iPhase, int iLocalTime) const
+bool CSector::IsMoonVisible(unsigned int iPhase, int iLocalTime) const
 {
 	ADDTOCALLSTACK("CSector::IsMoonVisible");
 	// When is moon rise and moon set ?
@@ -545,7 +545,7 @@ BYTE CSector::GetLightCalc( bool fQuickSet ) const
 	{
 		// Factor in the effects of the moons
 		// Trammel
-		int iTrammelPhase = g_World.GetMoonPhase( false );
+		unsigned int iTrammelPhase = g_World.GetMoonPhase( false );
 		// Check to see if Trammel is up here...
 
 		if ( IsMoonVisible( iTrammelPhase, localtime ))
@@ -561,12 +561,12 @@ static const BYTE sm_TrammelPhaseBrightness[] =
 	TRAMMEL_FULL_BRIGHTNESS / 2, 	// Quarter Moon
 	TRAMMEL_FULL_BRIGHTNESS / 4,	// Crescent Moon
 };
-			ASSERT( (unsigned int)iTrammelPhase < COUNTOF(sm_TrammelPhaseBrightness));
+			ASSERT( iTrammelPhase < COUNTOF(sm_TrammelPhaseBrightness));
 			iTargLight -= sm_TrammelPhaseBrightness[iTrammelPhase];
 		}
 
 		// Felucca
-		int iFeluccaPhase = g_World.GetMoonPhase( true );
+		unsigned int iFeluccaPhase = g_World.GetMoonPhase( true );
 		if ( IsMoonVisible( iFeluccaPhase, localtime ))
 		{
 static const BYTE sm_FeluccaPhaseBrightness[] =
@@ -580,7 +580,7 @@ static const BYTE sm_FeluccaPhaseBrightness[] =
 	FELUCCA_FULL_BRIGHTNESS / 2, 	// Quarter Moon
 	FELUCCA_FULL_BRIGHTNESS / 4,	// Crescent Moon
 };
-			ASSERT( (unsigned int)iFeluccaPhase < COUNTOF(sm_FeluccaPhaseBrightness));
+			ASSERT( iFeluccaPhase < COUNTOF(sm_FeluccaPhaseBrightness));
 			iTargLight -= sm_FeluccaPhaseBrightness[iFeluccaPhase];
 		}
 	}

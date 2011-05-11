@@ -709,8 +709,8 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 
 	// Parse the data.
 	pContentData[iContentLength] = 0;
-	TCHAR	*ppArgs[64];
-	int iArgs = Str_ParseCmds(pContentData, ppArgs, COUNTOF(ppArgs), "&");
+	TCHAR * ppArgs[64];
+	size_t iArgs = Str_ParseCmds(pContentData, ppArgs, COUNTOF(ppArgs), "&");
 	if (( iArgs <= 0 ) || ( iArgs >= 63 ))
 		return false;
 
@@ -720,9 +720,9 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 
 	CDialogResponseArgs resp;
 	DWORD dwButtonID = ULONG_MAX;
-	for ( int i = 0; i < iArgs; i++ )
+	for ( size_t i = 0; i < iArgs; i++ )
 	{
-		TCHAR	*pszNum = ppArgs[i];
+		TCHAR * pszNum = ppArgs[i];
 		while ( IsAlpha(*pszNum) )
 			pszNum++;
 

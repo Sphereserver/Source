@@ -73,7 +73,7 @@ bool CSVFile::OpenBase(void * pExtra)
 	return true;
 }
 
-size_t CSVFile::ReadRowContent(TCHAR ** ppOutput, size_t rowIndex, int columns)
+size_t CSVFile::ReadRowContent(TCHAR ** ppOutput, size_t rowIndex, size_t columns)
 {
 	ADDTOCALLSTACK("CSVFile::ReadRowContent");
 	ASSERT(columns > 0 && columns <= MAX_COLUMNS);

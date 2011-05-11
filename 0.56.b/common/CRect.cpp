@@ -800,7 +800,7 @@ int CPointBase::Read( TCHAR * pszVal )
 	m_z = 0;
 	m_map = 0;
 	TCHAR * ppVal[4];
-	int iArgs = Str_ParseCmds( pszVal, ppVal, COUNTOF( ppVal ), " ,\t" );
+	size_t iArgs = Str_ParseCmds( pszVal, ppVal, COUNTOF( ppVal ), " ,\t" );
 	switch ( iArgs )
 	{
 		default:
@@ -881,7 +881,7 @@ int CGRect::Read( LPCTSTR pszVal )
 	TCHAR *pszTemp = Str_GetTemp();
 	strcpy( pszTemp, pszVal );
 	TCHAR * ppVal[5];
-	int i = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t");
+	size_t i = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t");
 	switch (i)
 	{
 		case 5:

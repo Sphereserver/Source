@@ -30,7 +30,7 @@ private:
 	WEATHER_TYPE GetWeatherCalc() const;
 	BYTE GetLightCalc( bool fQuickSet ) const;
 	void SetLightNow( bool fFlash = false );
-	bool IsMoonVisible( int iPhase, int iLocalTime ) const;
+	bool IsMoonVisible( unsigned int iPhase, int iLocalTime ) const;
 	void SetDefaultWeatherChance();
 
 public:
@@ -417,7 +417,7 @@ public:
 #define FELUCCA_SYNODIC_PERIOD 840 // in game world minutes
 #define TRAMMEL_FULL_BRIGHTNESS 2 // light units LIGHT_BRIGHT
 #define FELUCCA_FULL_BRIGHTNESS 6 // light units LIGHT_BRIGHT
-	int GetMoonPhase( bool bMoonIndex = false ) const;
+	unsigned int GetMoonPhase( bool bMoonIndex = false ) const;
 	CServTime GetNextNewMoon( bool bMoonIndex ) const;
 
 	DWORD GetGameWorldTime( CServTime basetime ) const;

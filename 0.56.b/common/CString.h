@@ -123,8 +123,8 @@ extern size_t Str_TrimEndWhitespace( TCHAR * pStr, size_t len );
 extern TCHAR * Str_TrimWhitespace( TCHAR * pStr );
 extern int Str_IndexOf( TCHAR * pStr1, TCHAR * pStr2, int offset = 0 );
 extern bool Str_Parse( TCHAR * pLine, TCHAR ** ppArg = NULL, LPCTSTR pSep = NULL );
-extern int Str_ParseCmds( TCHAR * pCmdLine, TCHAR ** ppCmd, int iMax, LPCTSTR pSep = NULL );
-extern int Str_ParseCmds( TCHAR * pCmdLine, int * piCmd, int iMax, LPCTSTR pSep = NULL );
+extern size_t Str_ParseCmds( TCHAR * pCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR pSep = NULL );
+extern size_t Str_ParseCmds( TCHAR * pCmdLine, int * piCmd, size_t iMax, LPCTSTR pSep = NULL );
 
 extern int FindTable( LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));
 extern int FindTableSorted( LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));

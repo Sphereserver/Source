@@ -828,7 +828,7 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 		case STC_MEMBER: // "MEMBER"
 			{
 			TCHAR *Arg_ppCmd[8];		// Maximum parameters in one line
-			int Arg_Qty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ), "," );
+			size_t Arg_Qty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ), "," );
 			if (Arg_Qty < 1) // must at least provide the member uid
 				return false;
 
@@ -1439,7 +1439,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				if ( s.HasArgs() )
 				{
 					int piCmd[2];
-					int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+					size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 					if ( iArgQty == 2 )
 					{
 						CGrayUID pGuildUid = piCmd[0];

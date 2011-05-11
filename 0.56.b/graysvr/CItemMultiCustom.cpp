@@ -1132,7 +1132,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 		case IMCV_ADDITEM:
 		{
 			TCHAR * ppArgs[4];
-			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iQty != 4 )
 				return false;
 
@@ -1146,7 +1146,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 		case IMCV_ADDMULTI:
 		{
 			TCHAR * ppArgs[4];
-			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iQty != 4 )
 				return false;
 
@@ -1194,7 +1194,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 		case IMCV_REMOVEITEM:
 		{
 			TCHAR * ppArgs[4];
-			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iQty != 4 )
 				return false;
 
@@ -1378,7 +1378,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 		if ( s.IsKey("COMP") )
 		{
 			TCHAR * ppArgs[5];
-			int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iQty != 5 )
 				return false;
 

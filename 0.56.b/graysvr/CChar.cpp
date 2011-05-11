@@ -1506,14 +1506,13 @@ do_default:
 				TCHAR * pszFameAt0 = new TCHAR[pFameAt0->GetLength() + 1];
 				strcpylen(pszFameAt0, pFameAt0->GetPtr());
 
-				int i = Str_ParseCmds( pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
 				int iFame = Stat_GetAdjusted(STAT_FAME);
-				for ( ; i >= 0 ; --i )
+				size_t i = Str_ParseCmds( pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
+				for (;;)
 				{
 					if ( !IsStrNumeric( ppLevel_sep[i] ) )
 					{
 						DEBUG_ERR(("'%s' is not a valid fame value.\n", ppLevel_sep[i]));
-						continue;
 					}
 					else if ( iFame >= ATOI(ppLevel_sep[ i ]) )
 					{
@@ -1521,6 +1520,11 @@ do_default:
 						delete[] pszFameAt0;
 						return( true );
 					}
+
+					if ( i == 0 )
+						break;
+
+					i--;
 				}
 
 				sVal = 0;
@@ -1580,15 +1584,14 @@ do_default:
 				TCHAR * pszKarmaAt0 = new TCHAR[pKarmaAt0->GetLength() + 1];
 				strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
 
-				int i = Str_ParseCmds( pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
 				int iKarma = Stat_GetAdjusted(STAT_KARMA);
 
-				for ( ; i >= 0 ; --i )
+				size_t i = Str_ParseCmds( pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
+				for (;;)
 				{
 					if ( ppLevel_sep[i][0] != '-' && !IsStrNumeric( ppLevel_sep[i] ) )
 					{
 						DEBUG_ERR(("'%s' is not a valid karma value.\n", ppLevel_sep[i]));
-						continue;
 					}
 					else if ( iKarma >= ATOI(ppLevel_sep[ i ]) )
 					{
@@ -1596,6 +1599,10 @@ do_default:
 						delete[] pszKarmaAt0;
 						return( true );
 					}
+
+					if ( i == 0 )
+						break;
+					i--;
 				}
 
 				sVal = 0;
@@ -1618,10 +1625,10 @@ do_default:
 				GETNONWHITESPACE(pszKey);
 
 				TCHAR * ppArgs[2];
-				int iQty = Str_ParseCmds( (TCHAR*)pszKey, ppArgs, COUNTOF( ppArgs ));
+				size_t iQty = Str_ParseCmds( (TCHAR*)pszKey, ppArgs, COUNTOF( ppArgs ));
 
 				// Check that we have at least the first argument
-				if ( !iQty )
+				if ( iQty <= 0 )
 					return false;
 
 				// Lookup the spell ID to ensure it's valid
@@ -1658,7 +1665,7 @@ do_default:
 				if ( *pszKey )
 				{
 					TCHAR * ppArgs[2];
-					int iQty = Str_ParseCmds( (TCHAR*)pszKey, ppArgs, COUNTOF( ppArgs ));
+					size_t iQty = Str_ParseCmds( (TCHAR*)pszKey, ppArgs, COUNTOF( ppArgs ));
 					if ( iQty == 2 )
 					{
 						SKILL_TYPE iSkill = g_Cfg.FindSkillKey( ppArgs[0] );
@@ -2256,7 +2263,7 @@ do_default:
 		case CHC_MEMORY:
 			{
 				int piCmd[2];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 				if ( iArgQty < 2 )
 					return( false );
 
@@ -2622,7 +2629,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// ANIM, ANIM_TYPE action, bool fBackward = false, BYTE iFrameDelay = 1
 			{
 				int Arg_piCmd[3];		// Maximum parameters in one line
-				int Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
+				size_t Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
 
 				return UpdateAnimate( (ANIM_TYPE) Arg_piCmd[0], false,
 					( Arg_Qty > 1 )	? (Arg_piCmd[1] != 0) : false,
@@ -2633,7 +2640,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				CChar *		pSrc	= pCharSrc;
 				int piCmd[1];
-				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) )
+				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID	uid	= piCmd[0];
 					pSrc	= uid.CharFind();
@@ -2727,7 +2734,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				CObjBase	*pTarget = pCharSrc;
 				int		piCmd[1];
-				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) )
+				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID uid = piCmd[0];
 					pTarget = uid.ObjFind();
@@ -2827,7 +2834,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
 			int iTmp = 1;
-			int iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
+			size_t iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
 				if ( IsDigit( ttVal[1][0] ) )
@@ -2996,7 +3003,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				CObjBase	*pTarget = pCharSrc;
 				int		piCmd[1];
-				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) )
+				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID uid = piCmd[0];
 					pTarget = uid.ObjFind();
@@ -3013,7 +3020,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				if ( s.HasArgs() )
 				{
 					TCHAR * ppArgs[2];
-					if ( Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF( ppArgs )) )
+					if ( Str_ParseCmds( s.GetArgRaw(), ppArgs, COUNTOF( ppArgs )) > 0 )
 					{
 						SKILL_TYPE iSkill = g_Cfg.FindSkillKey( ppArgs[0] );
 						if ( iSkill == SKILL_NONE )

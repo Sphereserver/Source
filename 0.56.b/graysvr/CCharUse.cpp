@@ -233,10 +233,10 @@ void CChar::Use_MoonGate( CItem * pItem )
 		// RES_MOONGATES
 		// What gate are we at ?
 		int iCount = g_Cfg.m_MoonGates.GetCount();
-		int i=0;
+		int i = 0;
 		for ( ; ; i++ )
 		{
-			if ( i>=iCount)
+			if ( i >= iCount)
 				return;
 			int iDist = GetTopPoint().GetDist( g_Cfg.m_MoonGates[i] );
 			if ( iDist <= UO_MAP_VIEW_SIZE )
@@ -244,12 +244,16 @@ void CChar::Use_MoonGate( CItem * pItem )
 		}
 
 		// Set it's current destination based on the moon phases.
-		int iPhaseJump = ( g_World.GetMoonPhase( false ) - g_World.GetMoonPhase( true )) % iCount;
-		// The % operator actually can produce negative numbers...Check that.
-		if (iPhaseJump < 0)
-			iPhaseJump += iCount;
+		// ensure iTrammelPhrase isn't smaller than iFeluccaPhase, to avoid uint underflow in next calculation
+		unsigned int iTrammelPhase = g_World.GetMoonPhase( false ) % iCount;
+		unsigned int iFeluccaPhase = g_World.GetMoonPhase( true ) % iCount;
+		if (iTrammelPhase < iFeluccaPhase)
+			iTrammelPhase += iCount;
 
-		ptTeleport = g_Cfg.m_MoonGates[ (i+ iPhaseJump) % iCount ];
+		int iMoongateIndex = (i + (iTrammelPhase - iFeluccaPhase)) % iCount;
+		ASSERT(iMoongateIndex >= 0 && iMoongateIndex < iCount);
+
+		ptTeleport = g_Cfg.m_MoonGates[iMoongateIndex];
 	}
 
 	if ( ! m_pPlayer )

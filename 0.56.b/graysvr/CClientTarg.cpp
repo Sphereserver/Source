@@ -685,10 +685,10 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			strcpylen( szTmp, m_Targ_Text, COUNTOF(szTmp));
 
 			int piArgs[16];		// Maximum parameters in one line
-			int iArgQty = Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
+			size_t iArgQty = Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
 
 			signed char z = piArgs[0];	// z height is the first arg.
-			int iArg = 0;
+			size_t iArg = 0;
 			for ( int mx = rect.m_left; mx <= rect.m_right; mx++)
 			{
 				for(int my = rect.m_top; my <= rect.m_bottom; my++)

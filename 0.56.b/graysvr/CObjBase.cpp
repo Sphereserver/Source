@@ -29,9 +29,8 @@ int CObjBaseTemplate::IsWeird() const
 bool GetDeltaStr( CPointMap & pt, TCHAR * pszDir )
 {
 	TCHAR * ppCmd[3];
-	int iQty = Str_ParseCmds( pszDir, ppCmd, COUNTOF(ppCmd));
-
-	if (iQty == 0)
+	size_t iQty = Str_ParseCmds( pszDir, ppCmd, COUNTOF(ppCmd));
+	if (iQty <= 0)
 		return( false );
 
 	TCHAR chDir = toupper( ppCmd[0][0] );
@@ -1251,7 +1250,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("DAMAGE");
 				int piCmd[3];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 1 )
 					return( false );
 				if ( iArgQty > 2 )	// Give it a new source char UID
@@ -1283,7 +1282,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("EFFECT");
 				int piCmd[7];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 2 )
 					return( false );
 				CObjBase *	pThis	= this;
@@ -1326,7 +1325,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return( false );
 
 				TCHAR *Arg_ppCmd[2];		// Maximum parameters in one line
-				int iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
 
 				CGString sOrgValue;
 				if ( ! r_WriteVal( Arg_ppCmd[0], sOrgValue, pSrc ))
@@ -1369,7 +1368,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				TCHAR * pszArgs[5];
 				NCHAR ncBuffer[ MAX_TALK_BUFFER ];
 
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, 5 );
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, COUNTOF(pszArgs) );
 				if ( iArgQty < 5 )
 					break;
 
@@ -1399,16 +1398,16 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				CObjBase *	pObjNear;
 				int piCmd[4];
 
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
-				if ( iArgQty == 0 )
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+				if ( iArgQty <= 0 )
 					return false;
 				if ( iArgQty < 3 )
-					piCmd[2]	= 1;
+					piCmd[2] = 1;
 				if ( iArgQty < 2 )
-					piCmd[1]	= 1;
+					piCmd[1] = 1;
 
-				CGrayUID	uid	= piCmd[0];
-				pObjNear	= uid.ObjFind();
+				CGrayUID uid = piCmd[0];
+				pObjNear = uid.ObjFind();
 				if ( !pObjNear )
 					return false;
 				MoveNearObj( pObjNear, piCmd[1] );
@@ -1448,7 +1447,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 				TCHAR * pszArgs[2];
 
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, 2 );
+				int iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, COUNTOF(pszArgs) );
 				if ( iArgQty == 0 )
 					break;
 					
@@ -1474,7 +1473,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				EXC_SET("RESENDTOOLTIP");
 			
 				int piCmd[2];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 
 				bool bSendFull = false;
 				bool bUseCache = false;
@@ -1503,7 +1502,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("SAYUA");
 				TCHAR * pszArgs[5];
-				int iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, 5 );
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, COUNTOF(pszArgs) );
 				if ( iArgQty < 5 )
 					break;
 
@@ -1519,7 +1518,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("SOUND");
 				int piCmd[2];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				Sound( piCmd[0], ( iArgQty > 1 ) ? piCmd[1] : 1 );
 			}
 			break;
@@ -1527,14 +1526,14 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("SPELLEFFECT");
 				int piCmd[4];
-				int iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
-				CItem		* pItemSrc	= NULL;
+				size_t iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
+				CItem * pItemSrc = NULL;
 				switch( iArgs )
 				{
 				case 4:
 					{
-						CGrayUID	uid	= (DWORD) piCmd[3];
-						pItemSrc	= uid.ItemFind();
+						CGrayUID uid = (DWORD) piCmd[3];
+						pItemSrc = uid.ItemFind();
 					}
 				case 3:
 					if ( piCmd[2] == -1 )
@@ -1543,8 +1542,8 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 					else
 					{
-						CGrayUID	uid	= (DWORD) piCmd[2];
-						pCharSrc	= uid.CharFind();
+						CGrayUID uid = (DWORD) piCmd[2];
+						pCharSrc = uid.CharFind();
 					}
 					break;
 				default:
@@ -1595,7 +1594,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						if ( IsStrEmpty(s.GetArgStr()) )
 							break;
 						char * ppArg[2];
-						Str_ParseCmds( s.GetArgStr(), ppArg, 2, "," );
+						Str_ParseCmds( s.GetArgStr(), ppArg, COUNTOF(ppArg), "," );
 						if ( !IsStrNumeric( ppArg[1] ))
 							DEBUG_ERR(("Invalid argument in Target Multi\n"));
 						ITEMID_TYPE itemid = (ITEMID_TYPE) Exp_GetVal(ppArg[1]);
@@ -1668,8 +1667,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return( false );
 
 				TCHAR *	Arg_ppCmd[3];		// Maximum parameters in one line
-				int iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
-
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
 				if ( iQty < 1 )
 					return( false );
 
@@ -1703,8 +1701,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return( false );
 
 				TCHAR *	Arg_ppCmd[2];		// Maximum parameters in one line
-				int iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
-
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
 				if ( iQty < 1 )
 					return false;
 
@@ -2133,7 +2130,7 @@ TRIGRET_TYPE CObjBase::Spell_OnTrigger( SPELL_TYPE spell, SPTRIG_TYPE stage, CCh
 inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult)
 {
 	TCHAR * ppCmdTrigger[3];
-	int iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
+	size_t iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
 	
 	if ( iResultArgs > 0 )
 	{

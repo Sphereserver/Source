@@ -1220,11 +1220,11 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_DUPELIST:
 			{
 				TCHAR * ppArgs[512];
-				int iArgQty = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 				if ( iArgQty <= 0 )
 					return( false );
 				m_flip_id.Empty();
-				for ( int i=0; i<iArgQty; i++ )
+				for ( size_t i = 0; i < iArgQty; i++ )
 				{
 					ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ppArgs[i] );
 					if ( ! IsValidDispID( id ))
@@ -1496,7 +1496,7 @@ void CItemBaseMulti::SetMultiRegion( TCHAR * pArgs )
 	ADDTOCALLSTACK("CItemBaseMulti::SetMultiRegion");
 	// inclusive region.
 	int piArgs[5];
-	int iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
+	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return;
 	m_Components.Empty();	// might be after a resync
@@ -1507,7 +1507,7 @@ bool CItemBaseMulti::AddComponent( TCHAR * pArgs )
 {
 	ADDTOCALLSTACK("CItemBaseMulti::AddComponent");
 	int piArgs[4];
-	int iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
+	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return false;
 	return AddComponent( (ITEMID_TYPE) RES_GET_INDEX( piArgs[0] ), piArgs[1], piArgs[2], piArgs[3] );
@@ -1572,7 +1572,7 @@ bool CItemBaseMulti::r_LoadVal( CScript &s )
 
 		// SHIPSPEED x[,y]
 		int ppArgs[2];
-		int iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
+		size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 		if (iQty < 1)
 			return false;
 

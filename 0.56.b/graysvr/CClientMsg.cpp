@@ -667,11 +667,11 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		case 3:	// Extended localized message (with affixed ASCII text)
 		{
             TCHAR * ppArgs[256];
-			int iQty = Str_ParseCmds( (TCHAR *)m_BarkBuffer.GetPtr(), ppArgs, COUNTOF(ppArgs), "," );
+			size_t iQty = Str_ParseCmds( (TCHAR *)m_BarkBuffer.GetPtr(), ppArgs, COUNTOF(ppArgs), "," );
 			int iClilocId = Exp_GetVal( ppArgs[0] );
 			int iAffixType = Exp_GetVal( ppArgs[1] );
 			CGString CArgs;
-			for ( int i = 3; i < iQty; i++ )
+			for ( size_t i = 3; i < iQty; i++ )
 			{
 				if ( CArgs.GetLength() )
 					CArgs += "\t";
@@ -685,10 +685,10 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		case 2:	// Localized
 		{
             TCHAR * ppArgs[256];
-			int iQty = Str_ParseCmds( (TCHAR *)m_BarkBuffer.GetPtr(), ppArgs, COUNTOF(ppArgs), "," );
+			size_t iQty = Str_ParseCmds( (TCHAR *)m_BarkBuffer.GetPtr(), ppArgs, COUNTOF(ppArgs), "," );
 			int iClilocId = Exp_GetVal( ppArgs[0] );
 			CGString CArgs;
-			for ( int i = 1; i < iQty; i++ )
+			for ( size_t i = 1; i < iQty; i++ )
 			{
 				if ( CArgs.GetLength() )
 					CArgs += "\t";

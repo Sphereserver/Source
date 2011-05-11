@@ -1142,8 +1142,8 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			TCHAR * pszArgsNext;
 			Str_Parse( const_cast<TCHAR*>(pszKey), &(pszArgsNext), ")" );
 
-			CPointMap	pt;
-			int			iArgs = 0;
+			CPointMap pt;
+			size_t iArgs = 0;
 
 			if ( IsDigit( pszKey[0] ) || pszKey[0] == '-' )
 			{
@@ -1394,7 +1394,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						int piVal[6];
 
 						// year, month, day, hour, minute, second
-						int iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
 						if ( iQty != 6 )
 							return false;
 
@@ -1411,7 +1411,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						TCHAR *ppVal[2];
 
 						// timestamp, formatstr
-						int iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), ppVal, COUNTOF(ppVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), ppVal, COUNTOF(ppVal));
 						if ( iQty < 1 )
 							return false;
 
@@ -2316,14 +2316,14 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		return( true );
 	case RES_NOTOTITLES:
 		{
-			int i = 0;
-			int piNotoLevels[64], iQty;
-
 			if (pScript->ReadKey() == false)
 			{
 				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels.\n");
 				return true;
 			}
+
+			int piNotoLevels[64];
+			size_t i = 0, iQty = 0;
 
 			// read karma levels
 			iQty = Str_ParseCmds(pScript->GetKeyBuffer(), piNotoLevels, COUNTOF(piNotoLevels));
@@ -2349,7 +2349,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			i = 0;
 			while ( pScript->ReadKey())
 			{
-				LPCSTR pName = pScript->GetKeyBuffer();
+				LPCTSTR pName = pScript->GetKeyBuffer();
 				if ( *pName == '<' )
 					pName = "";
 

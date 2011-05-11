@@ -233,7 +233,7 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
 
 	TCHAR * ppArgs[3];
-	int i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
+	size_t i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
 	if ( i <= 1 )
 		return( SKILL_NONE );
 
@@ -271,7 +271,7 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
 
 	TCHAR * ppArgs[3];
-	int i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
+	size_t i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
 	if ( i <= 1 )
 		return( STAT_NONE );
 

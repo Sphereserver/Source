@@ -68,13 +68,13 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 	ADDTOCALLSTACK("CValueCurveDef::Load");
 	// ADV_RATE = Chance at 0, to 100.0
 	int Arg_piCmd[101];
-	int iQty = Str_ParseCmds( pszDef, Arg_piCmd, COUNTOF(Arg_piCmd));
+	size_t iQty = Str_ParseCmds( pszDef, Arg_piCmd, COUNTOF(Arg_piCmd));
 	m_aiValues.SetCount( iQty );
 	if ( iQty == 0 )
 	{
 		return( false );
 	}
-	for ( int i=0; i<iQty; i++ )
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		m_aiValues[i] = Arg_piCmd[i];
 	}
@@ -856,7 +856,7 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 		case RGC_ID:	// "ID"
 			{
 				TCHAR	*ppCmd[2];
-				int iArgs = Str_ParseCmds(s.GetArgStr(), ppCmd, COUNTOF(ppCmd));
+				size_t iArgs = Str_ParseCmds(s.GetArgStr(), ppCmd, COUNTOF(ppCmd));
 				CResourceQty rec;
 
 				rec.SetResourceID(

@@ -420,7 +420,7 @@ try_dec:
 	
 				TCHAR * ppCmd[5];
 				int iResult;
-				int iCount;
+				size_t iCount;
 	
 				switch ( iIntrinsic )
 				{
@@ -631,7 +631,7 @@ try_dec:
 					case INTRINSIC_RAND:
 					{
 						iCount = Str_ParseCmds( const_cast<TCHAR*>(pszArgs), ppCmd, 2, "," );
-						if ( !iCount )
+						if ( iCount <= 0 )
 							iResult = 0;
 						else
 						{

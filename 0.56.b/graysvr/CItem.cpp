@@ -2368,12 +2368,12 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_ADDCIRCLE:
 			{
 				TCHAR	*ppVal[2];
-				int		amount = Str_ParseCmds(s.GetArgStr(), ppVal, COUNTOF(ppVal), " ,\t");
-				int		includeLower = 0;
-				int		addCircle = 0;
+				size_t amount = Str_ParseCmds(s.GetArgStr(), ppVal, COUNTOF(ppVal), " ,\t");
+				bool includeLower = 0;
+				int addCircle = 0;
 
-				if ( !amount ) return false;
-				if ( amount > 1 ) includeLower = ATOI(ppVal[1]);
+				if ( amount <= 0 ) return false;
+				if ( amount > 1 ) includeLower = (ATOI(ppVal[1]) != 0);
 
 				for ( addCircle = ATOI(ppVal[0]); addCircle; addCircle-- )
 				{
@@ -2381,7 +2381,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 					{
 						AddSpellbookSpell((SPELL_TYPE)RES_GET_INDEX(((addCircle-1) * 8) + i), false);
 					}
-					if ( !includeLower ) break;
+
+					if ( includeLower == false )
+						break;
 				}
 				return true;
 			}
@@ -2422,7 +2424,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				{
 					pt.m_map = 0; pt.m_z = 0;
 					TCHAR * ppVal[2];
-					int iArgs = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t" );
+					size_t iArgs = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t" );
 					if ( iArgs < 2 ) 
 					{
 						DEBUG_ERR(( "Bad CONTP usage (not enough parameters)\n" ));
@@ -2555,7 +2557,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				TCHAR *pszTemp = Str_GetTemp();
 				strcpy( pszTemp, s.GetArgStr() );
 				GETNONWHITESPACE( pszTemp );
-				int iArgs = 0;
+				size_t iArgs = 0;
 				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
 				{
 					pt.m_map = 0; pt.m_z = 0;

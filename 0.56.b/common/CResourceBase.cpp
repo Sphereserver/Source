@@ -1057,9 +1057,9 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 	TCHAR * pszCmd = s.GetArgStr();
 
 	TCHAR * ppBlocks[128];	// max is arbitrary
-	int iArgCount = Str_ParseCmds( pszCmd, ppBlocks, COUNTOF(ppBlocks));
+	size_t iArgCount = Str_ParseCmds( pszCmd, ppBlocks, COUNTOF(ppBlocks));
 
-	for ( int i=0; i<iArgCount; i++ )
+	for ( size_t i = 0; i < iArgCount; i++ )
 	{
 		pszCmd = ppBlocks[i];
 

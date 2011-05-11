@@ -707,13 +707,12 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 	// m_tmInpVal.m_UID		= pObj ? pObj->GetUID() : (CGrayUID) 0;
 
 	int piCmd[3];
-	int iArgs;
 	while ( s.ReadKeyParse())
 	{
 		if ( ! s.IsKeyHead( "ON", 2 ))
 			continue;
 
-		iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+		size_t iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 		if ( iArgs == 0 )
 			continue;
 

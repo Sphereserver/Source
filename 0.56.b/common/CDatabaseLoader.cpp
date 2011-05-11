@@ -200,7 +200,7 @@ bool cDatabaseLoader::DbConnect( const char * user, const char * password, const
 	TCHAR	*Arg_ppCmd[5];
 
 	sprintf(buf, "%s,%s,%s,%s,%d", user, password, dbname, hostip, hostport);
-	int iQty = Str_ParseCmds(buf, Arg_ppCmd, COUNTOF(Arg_ppCmd), ",");
+	size_t iQty = Str_ParseCmds(buf, Arg_ppCmd, COUNTOF(Arg_ppCmd), ",");
 
 	return pfConnect(Arg_ppCmd, iQty);
 }

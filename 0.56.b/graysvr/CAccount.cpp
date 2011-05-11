@@ -376,7 +376,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 		return( false );
 
 	TCHAR * ppCmd[5];
-	int iQty = Str_ParseCmds( pszArgs, ppCmd, COUNTOF( ppCmd ));
+	size_t iQty = Str_ParseCmds( pszArgs, ppCmd, COUNTOF( ppCmd ));
 
 	VACS_TYPE index;
 	if ( iQty <= 0 ||

@@ -639,8 +639,8 @@ static void StringFunction( int iFunc, LPCTSTR pszKey, CGString &sVal )
 		++pszKey;
 
 	TCHAR * ppCmd[4];
-	int iCount = Str_ParseCmds( const_cast<TCHAR *>(pszKey), ppCmd, COUNTOF(ppCmd), ",)" );
-	if ( ! iCount )
+	size_t iCount = Str_ParseCmds( const_cast<TCHAR *>(pszKey), ppCmd, COUNTOF(ppCmd), ",)" );
+	if ( iCount <= 0 )
 	{
 		DEBUG_ERR(( "Bad string function usage. missing )\n" ));
 		return;
@@ -991,23 +991,23 @@ badcmd:
 		case SSC_StrSub:
 			{
 				TCHAR * ppArgs[3];
-				int iQty = Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF(ppArgs));
+				size_t iQty = Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF(ppArgs));
 				if ( iQty < 3 )
 					return false;
 
-				int	iPos	= Exp_GetVal( ppArgs[0] );
-				int	iCnt	= Exp_GetVal( ppArgs[1] );
+				int	iPos = Exp_GetVal( ppArgs[0] );
+				int	iCnt = Exp_GetVal( ppArgs[1] );
 				if ( iCnt < 0 )
 					return false;
 
-				int	iLen	= strlen( ppArgs[2] );
+				int	iLen = strlen( ppArgs[2] );
 				if ( iPos < 0 ) iPos += iLen;
 				if ( iPos > iLen || iPos < 0 ) iPos = 0;
 
 				if ( iPos + iCnt > iLen || iCnt == 0 )
 					iCnt = iLen - iPos;
 
-				TCHAR	*buf = Str_GetTemp();
+				TCHAR *buf = Str_GetTemp();
 				strncpy( buf, ppArgs[2] + iPos, iCnt );
 				buf[iCnt] = '\0';
 
@@ -1080,7 +1080,7 @@ badcmd:
 				TCHAR	*buf = Str_GetTemp();
 				TCHAR	*Arg_ppCmd[10];		// limit to 9 arguments
 				strcpy(buf, pszKey);
-				int iQty = Str_ParseCmds(buf, Arg_ppCmd, COUNTOF(Arg_ppCmd));
+				size_t iQty = Str_ParseCmds(buf, Arg_ppCmd, COUNTOF(Arg_ppCmd));
 				if ( iQty < 1 )
 					return false;
 
@@ -1095,12 +1095,11 @@ badcmd:
 #else
 				if ( bWait )
 				{
-					iQty = 0;
-					iQty = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
+					int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
 								Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
 								Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
 
-					if ( iQty == -1 )
+					if ( iResult == -1 )
 					{
 						g_Log.EventError("SYSCMD failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
 						return( false );
@@ -1151,12 +1150,15 @@ badcmd:
 					TCHAR *ppCmd[255];
 					TCHAR * z = Str_GetTemp();
 					strcpy(z, p);
-					int count = Str_ParseCmds(z, ppCmd, COUNTOF(ppCmd), separators); 
-					for ( int i = 0; i < count; ++i )
+					size_t count = Str_ParseCmds(z, ppCmd, COUNTOF(ppCmd), separators); 
+					if (count > 0)
 					{
-						sVal.Add(ppCmd[i]);
-						if ( i < count-1 )
+						sVal.Add(ppCmd[0]);
+						for (size_t i = 1; i < count; ++i)
+						{
 							sVal.Add(',');
+							sVal.Add(ppCmd[i]);
+						}
 					}
 				}
 				return true;
@@ -1325,8 +1327,8 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case SSV_NEWITEM:	// just add an item but don't put it anyplace yet..
 			{
 				TCHAR	*ppCmd[4];
-				int iQty = Str_ParseCmds(s.GetArgRaw(), ppCmd, COUNTOF(ppCmd), ",");
-				if ( !iQty )
+				size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppCmd, COUNTOF(ppCmd), ",");
+				if ( iQty <= 0 )
 					return false;
 
 				CItem *pItem = CItem::CreateHeader(ppCmd[0], NULL, false, pSrc->GetChar());
@@ -1610,7 +1612,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 		int			iMax			= 0;
 		int			i;
 		TCHAR *		ppArgs[3];
-		int			iQty			= Str_ParseCmds( s.GetArgStr(), ppArgs, 3, ", " );
+		size_t		iQty			= Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs), ", " );
 		CGString	sLoopVar	= "_FOR";
 		
 		switch( iQty )
@@ -2144,7 +2146,7 @@ jump_in:
 						TCHAR * tempPoint;
 						TemporaryString porigValue;
 						
-						int iArgQty = Str_ParseCmds( (TCHAR*) s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), " \t," );
+						size_t iArgQty = Str_ParseCmds( (TCHAR*) s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), " \t," );
 						
 						if ( iArgQty >= 1 )
 						{

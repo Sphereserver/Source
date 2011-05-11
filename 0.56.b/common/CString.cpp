@@ -522,9 +522,9 @@ bool Str_Parse( TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep )
 	return true;
 }
 
-int Str_ParseCmds( TCHAR * pszCmdLine, TCHAR ** ppCmd, int iMax, LPCTSTR pszSep )
+size_t Str_ParseCmds( TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR pszSep )
 {
-	int iQty = 0;
+	size_t iQty = 0;
 	if ( pszCmdLine != NULL && pszCmdLine[0] != '\0' )
 	{
 		ppCmd[0] = pszCmdLine;
@@ -535,23 +535,24 @@ int Str_ParseCmds( TCHAR * pszCmdLine, TCHAR ** ppCmd, int iMax, LPCTSTR pszSep 
 				break;
 		}
 	}
-	for ( int j=iQty; j<iMax; j++ )
+	for ( size_t j = iQty; j < iMax; j++ )
 		ppCmd[j] = NULL;	// terminate if possible.
 	return( iQty );
 }
 
-int Str_ParseCmds( TCHAR * pszCmdLine, int * piCmd, int iMax, LPCTSTR pszSep )
+size_t Str_ParseCmds( TCHAR * pszCmdLine, int * piCmd, size_t iMax, LPCTSTR pszSep )
 {
 	TCHAR * ppTmp[256];
 	if ( iMax > COUNTOF(ppTmp))
 		iMax = COUNTOF(ppTmp);
-	int iQty = Str_ParseCmds( pszCmdLine, ppTmp, iMax, pszSep );
-	int i;
-	for ( i=0; i<iQty; i++ )
+
+	size_t iQty = Str_ParseCmds( pszCmdLine, ppTmp, iMax, pszSep );
+	size_t i;
+	for ( i = 0; i < iQty; i++ )
 	{
 		piCmd[i] = Exp_GetVal(ppTmp[i]);
 	}
-	for ( ;i<iMax;i++)
+	for ( ; i < iMax; i++)
 	{
 		piCmd[i] = 0;
 	}

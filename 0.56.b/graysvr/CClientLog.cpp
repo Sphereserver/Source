@@ -521,7 +521,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 		return false;
 
 	TCHAR * ppLines[16];
-	int iQtyLines = Str_ParseCmds(reinterpret_cast<char *>(pRequest), ppLines, COUNTOF(ppLines), "\r\n");
+	size_t iQtyLines = Str_ParseCmds(reinterpret_cast<char *>(pRequest), ppLines, COUNTOF(ppLines), "\r\n");
 	if (( iQtyLines < 1 ) || ( iQtyLines >= 15 ))	// too long request
 		return false;
 
@@ -530,7 +530,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 	CGTime dateIfModifiedSince;
 	TCHAR * pszReferer = NULL;
 	size_t iContentLength = 0;
-	for ( int j = 1; j < iQtyLines; j++ )
+	for ( size_t j = 1; j < iQtyLines; j++ )
 	{
 		TCHAR	*pszArgs = Str_TrimWhitespace(ppLines[j]);
 		if ( !strnicmp(pszArgs, "Connection:", 11 ) )
@@ -559,7 +559,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 	}
 
 	TCHAR	*ppRequest[4];
-	int iQtyArgs = Str_ParseCmds((TCHAR*)ppLines[0], ppRequest, COUNTOF(ppRequest), " ");
+	size_t iQtyArgs = Str_ParseCmds((TCHAR*)ppLines[0], ppRequest, COUNTOF(ppRequest), " ");
 	if (( iQtyArgs < 2 ) || ( strlen(ppRequest[1]) >= _MAX_PATH ))
 		return false;
 

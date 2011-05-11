@@ -60,10 +60,10 @@ bool CMapList::Load(int map, char *args)
 	}
 	else if ( !m_mapsinitalized[map] )	// disable double intialization
 	{
-		TCHAR	*ppCmd[5];	// maxx,maxy,sectorsize,mapnum[like 0 for map0/statics0/staidx0],mapid
-		int		iCount = Str_ParseCmds(args, ppCmd, COUNTOF(ppCmd), ",");
+		TCHAR * ppCmd[5];	// maxx,maxy,sectorsize,mapnum[like 0 for map0/statics0/staidx0],mapid
+		size_t iCount = Str_ParseCmds(args, ppCmd, COUNTOF(ppCmd), ",");
 
-		if ( !iCount )	// simple MAPX= same as disabling the map
+		if ( iCount <= 0 )	// simple MAPX= same as disabling the map
 		{
 			m_maps[map] = false;
 		}

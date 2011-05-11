@@ -1355,8 +1355,8 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if ( s.HasArgs())
 			{
 				TCHAR * Arg_ppCmd[5];
-				int Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
-				if ( !Arg_Qty )
+				size_t Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
+				if ( Arg_Qty <= 0 )
 					break;
 				// IMPFLAGS_ITEMS
 				if ( ! g_World.Export( Arg_ppCmd[0], pSrc->GetChar(),
@@ -1402,8 +1402,8 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if (s.HasArgs())
 			{
 				TCHAR * Arg_ppCmd[5];
-				int Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
-				if ( ! Arg_Qty )
+				size_t Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
+				if ( Arg_Qty <= 0 )
 				{
 					break;
 				}
@@ -1454,8 +1454,8 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if (s.HasArgs())
 			{
 				TCHAR * Arg_ppCmd[4];
-				int Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
-				if ( ! Arg_Qty )
+				size_t Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_ppCmd, COUNTOF( Arg_ppCmd ));
+				if ( Arg_Qty <= 0 )
 				{
 					break;
 				}

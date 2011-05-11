@@ -16,7 +16,7 @@ CTeleport::CTeleport( TCHAR * pszArgs )
 	// Assume valid iArgs >= 5
 
 	TCHAR * ppCmds[4];
-	int iArgs = Str_ParseCmds( pszArgs, ppCmds, COUNTOF( ppCmds ), "=" );
+	size_t iArgs = Str_ParseCmds( pszArgs, ppCmds, COUNTOF( ppCmds ), "=" );
 	if ( iArgs < 2 )
 	{
 		DEBUG_ERR(( "Bad CTeleport Def\n" ));

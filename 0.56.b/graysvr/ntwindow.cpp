@@ -67,8 +67,8 @@ public:
 				return;
 
 			TCHAR * ppMessages[255];
-			int iQty = Str_ParseCmds( const_cast<TCHAR*>(pszMessage), ppMessages, COUNTOF(ppMessages), "\n" );
-			for ( int i = 0; i < iQty; i++ )
+			size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pszMessage), ppMessages, COUNTOF(ppMessages), "\n" );
+			for ( size_t i = 0; i < iQty; ++i )
 			{
 				if ( *ppMessages[i] )
 					m_wndList.AddString( ppMessages[i] );
@@ -892,7 +892,7 @@ bool NTWindow_Init(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow)
 	char	className[32] = GRAY_TITLE "Svr";
 	TCHAR	*argv[32];
 	argv[0] = NULL;
-	int argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv)-1, " \t") + 1;
+	size_t argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv)-1, " \t") + 1;
 	if (( argc > 1 ) && _IS_SWITCH(*argv[1]) )
 	{
 		if ( argv[1][1] == 'c' )

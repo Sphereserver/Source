@@ -35,7 +35,7 @@ public:
 	size_t GetCurrentRow() const { return m_iCurrentRow; }
 
 public:
-	size_t ReadRowContent(TCHAR ** ppOutput, size_t row, int columns = MAX_COLUMNS);
+	size_t ReadRowContent(TCHAR ** ppOutput, size_t row, size_t columns = MAX_COLUMNS);
 	bool ReadRowContent(size_t row, CSVRowData& target);
 
 	size_t ReadNextRowContent(TCHAR ** ppOutput);

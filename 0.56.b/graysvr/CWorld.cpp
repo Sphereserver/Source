@@ -373,7 +373,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 	{
 		TCHAR * ppVal[4];
 		strcpy( tempBuffer, pszVal );	//because pszVal is constant and Str_ParseCmds wants a non-constant string
-		int iArgs = Str_ParseCmds( tempBuffer, ppVal, COUNTOF( ppVal ), " ,\t" );
+		size_t iArgs = Str_ParseCmds( tempBuffer, ppVal, COUNTOF( ppVal ), " ,\t" );
 		if ( iArgs == 3 )
 		{
 			if ( IsDigit( ppVal[0][0] ) && IsDigit( ppVal[1][0] ) && IsDigit( ppVal[2][0] ) )
@@ -2258,7 +2258,7 @@ CServTime CWorld::GetNextNewMoon( bool bMoonIndex ) const
 	return(time);
 }
 
-int CWorld::GetMoonPhase (bool bMoonIndex) const
+unsigned int CWorld::GetMoonPhase (bool bMoonIndex) const
 {
 	ADDTOCALLSTACK("CWorld::GetMoonPhase ");
 	// bMoonIndex is FALSE if we are looking for the phase of Trammel,
