@@ -18,7 +18,7 @@ protected:
 	DWORD m_dwDispIndex;	// The base artwork id. (may be the same as GetResourceID() in base set.) but can also be "flipped"
 	CGString m_sName;		// default type name. (ei, "human" vs specific "Dennis")
 private:
-	t_height	m_Height;
+	height_t	m_Height;
 	// -------------- ResLevel -------------
 	BYTE	m_ResLevel;
 	HUE_TYPE 	m_ResDispDnHue;
@@ -153,11 +153,11 @@ public:
 		return ((m_range>>8) & 0xff);
 	}
 
-	t_height GetHeight() const
+	height_t GetHeight() const
 	{
 		return( m_Height );
 	}
-	void SetHeight( t_height Height )
+	void SetHeight( height_t Height )
 	{
 		m_Height = Height;
 	}
@@ -589,7 +589,7 @@ private:
 protected:
 	static void ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew );
 public:
-	static t_height GetItemHeightFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis );
+	static height_t GetItemHeightFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis );
 	static void GetItemSpecificFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
 	static bool IsTypeArmor( IT_TYPE type );
 	static bool IsTypeWeapon( IT_TYPE type );
@@ -610,7 +610,7 @@ public:
 
 	static TCHAR * GetNamePluralize( LPCTSTR pszNameBase, bool fPluralize );
 	static bool GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * ptile );
-	static t_height GetItemHeight( ITEMID_TYPE id, WORD & MoveFlags );
+	static height_t GetItemHeight( ITEMID_TYPE id, WORD & MoveFlags );
 
 	static CREID_TYPE FindCharTrack( ITEMID_TYPE trackID );
 
@@ -708,7 +708,7 @@ class CItemBaseDupe : public CResourceDef
 private:
 	CResourceRef m_MasterItem;	// What is the "master" item ?
 	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec/CUOItemTypeRec2
-	t_height	m_Height;
+	height_t	m_Height;
 public:
 	WORD	m_Can;
 	static const char *m_sClassName;
@@ -746,7 +746,7 @@ public:
 	{
 		return( m_dwFlags );
 	}
-	t_height GetHeight() const
+	height_t GetHeight() const
 	{
 		return( m_Height );
 	}
@@ -754,7 +754,7 @@ public:
 	{
 		m_dwFlags = Flags;
 	}
-	void SetHeight( t_height Height)
+	void SetHeight( height_t Height)
 	{
 		m_Height = Height;
 	}

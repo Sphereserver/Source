@@ -456,7 +456,6 @@ void CNTService::CmdMainStart()
 //	FUNCTION: main()
 //
 /////////////////////////////////////////////////////////////////////////////////////
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);

@@ -2731,7 +2731,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 
 	// ok to go here ? physical blocking objects ?
 	WORD wBlockFlags = 0;
-	t_height ClimbHeight = 0;
+	height_t ClimbHeight = 0;
 	CRegionBase * pArea = NULL;
 
 	EXC_TRY("CanMoveWalkTo");

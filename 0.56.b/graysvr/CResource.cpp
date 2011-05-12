@@ -1870,7 +1870,7 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		strcpy( pszTemp, pCmd );
-		int iCount = pt.Read( pszTemp );
+		size_t iCount = pt.Read( pszTemp );
 		if ( iCount >= 2 )
 		{
 			return( pt );
@@ -2305,7 +2305,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			int i = 0;
 			while ( pScript->ReadKey())
 			{
-				LPCSTR pName = pScript->GetKeyBuffer();
+				LPCTSTR pName = pScript->GetKeyBuffer();
 				if ( *pName == '<' )
 					pName = "";
 				

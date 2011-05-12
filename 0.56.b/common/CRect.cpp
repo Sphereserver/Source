@@ -792,7 +792,7 @@ LPCTSTR CPointBase::WriteUsed() const
 	return( WriteUsed( Str_GetTemp()));
 }
 
-int CPointBase::Read( TCHAR * pszVal )
+size_t CPointBase::Read( TCHAR * pszVal )
 {
 	ADDTOCALLSTACK("CPointBase::Read");
 	// parse reading the point
@@ -874,7 +874,7 @@ int CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
 //*************************************************************************
 // -CGRect
 
-int CGRect::Read( LPCTSTR pszVal )
+size_t CGRect::Read( LPCTSTR pszVal )
 {
 	ADDTOCALLSTACK("CGRect::Read");
 	// parse reading the rectangle

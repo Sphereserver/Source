@@ -884,7 +884,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 
 //************************************
 
-bool NTWindow_Init(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow)
+bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
 	theApp.InitInstance(GRAY_TITLE "Server V" GRAY_VERSION, hInstance, lpCmdLine);
 

@@ -165,7 +165,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	CItemBase * pItemDef = NULL;
 	CItem * pItem = NULL;
 	CItemBaseDupe * pDupeDef = NULL;
-	t_height Height = 0;
+	height_t Height = 0;
 	BYTE z = 0;
 	CPointMap ptTest;
 
@@ -705,7 +705,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				// This static is at the coordinates in question.
 				// enough room for me to stand here ?
 				wBlockThis = 0;
-				t_height zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
+				height_t zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
 				block.CheckTile( wBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
 			}
 		}
@@ -745,7 +745,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 								continue;
 
 							wBlockThis = 0;
-							t_height zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), wBlockThis );
+							height_t zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), wBlockThis );
 							block.CheckTile( wBlockThis, zitem, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
 						}
 					}
@@ -880,7 +880,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	CItem * pItem = NULL;
 	WORD wBlockThis = 0;
 	signed char z = 0;
-	t_height zHeight = 0;
+	height_t zHeight = 0;
 	int x2 = 0, y2 = 0;
 
 	// Height of statics at/above given coordinates

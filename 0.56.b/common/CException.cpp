@@ -32,7 +32,7 @@
 	}
 #endif
 
-bool CGrayError::GetErrorMessage( LPSTR lpszError, UINT nMaxError,	UINT * pnHelpContext ) const
+bool CGrayError::GetErrorMessage( LPTSTR lpszError, UINT nMaxError,	UINT * pnHelpContext ) const
 {
 	UNREFERENCED_PARAMETER(nMaxError);
 	UNREFERENCED_PARAMETER(pnHelpContext);
@@ -93,7 +93,7 @@ CGrayAssert::~CGrayAssert()
 {
 }
 
-bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelpContext) const
+bool CGrayAssert::GetErrorMessage(LPTSTR lpszError, UINT nMaxError, UINT * pnHelpContext) const
 {
 	UNREFERENCED_PARAMETER(nMaxError);
 	UNREFERENCED_PARAMETER(pnHelpContext);
@@ -103,7 +103,7 @@ bool CGrayAssert::GetErrorMessage(LPSTR lpszError, UINT nMaxError, UINT * pnHelp
 
 /*LPCTSTR const CGrayAssert::GetAssertFile()
 {
-	LPSTR pTmp = Str_GetTemp();
+	LPTSTR pTmp = Str_GetTemp();
 	strcpylen( pTmp, m_pFile, strlen( m_pFile ) ); //make a copy, don't send the original
 	return pTmp;
 }

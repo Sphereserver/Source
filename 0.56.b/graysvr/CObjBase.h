@@ -2453,7 +2453,7 @@ public:
 	CGrayUID m_uidWeapon;		// current Wielded weapon.	(could just get rid of this ?)
 	WORD m_defense;			// calculated armor worn (NOT intrinsic armor)
 
-	t_height m_height;		//Height set in-game or under some trigger (height=) - for both items and chars
+	height_t m_height;		//Height set in-game or under some trigger (height=) - for both items and chars
 
 	signed int m_ModMaxWeight;
 	unsigned int m_exp;			//	character experience
@@ -2465,7 +2465,7 @@ public:
 	short int m_ResEnergy;
 	//DIR_TYPE m_dirClimb;	// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
-	t_height m_zClimbHeight;	// The height at the end of the climbable.
+	height_t m_zClimbHeight;	// The height at the end of the climbable.
 
 	// Saved stuff.
 	DIR_TYPE m_dirFace;	// facing this dir.
@@ -2819,8 +2819,8 @@ public:
 	}
 
 	bool SetName( LPCTSTR pName );
-	t_height GetHeightMount( bool fEyeSubstract = false ) const;
-	t_height GetHeight() const;
+	height_t GetHeightMount( bool fEyeSubstract = false ) const;
+	height_t GetHeight() const;
 
 	bool CanSeeTrue( const CChar * pChar = NULL ) const;
 	bool CanSeeInContainer( const CItemContainer * pContItem ) const;
@@ -2899,7 +2899,7 @@ private:
 #else
 	CRegionBase * CheckValidMove( CPointBase & pt, WORD * pwBlockFlags, DIR_TYPE dir = DIR_QTY ) const;
 #endif
-	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, t_height * ClimbHeight, bool fPathFinding = false ) const;
+	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
 	void FixClimbHeight();
 	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject );
 	bool IsVerticalSpace( CPointMap ptDest, bool fForceMount = false );

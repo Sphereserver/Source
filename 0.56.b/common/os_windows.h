@@ -28,7 +28,7 @@
 	#define STDFUNC_UNLINK _unlink
 #endif
 
-extern bool NTWindow_Init( HINSTANCE hInstance, LPSTR lpCmdLinel, int nCmdShow );
+extern bool NTWindow_Init( HINSTANCE hInstance, LPTSTR lpCmdLinel, int nCmdShow );
 extern void NTWindow_Exit();
 extern bool NTWindow_OnTick( int iWaitmSec );
 extern bool NTWindow_PostMsg( LPCTSTR pszMsg );

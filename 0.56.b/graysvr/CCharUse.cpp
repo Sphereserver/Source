@@ -562,7 +562,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	if ( pVarAmmoType )
 	{
 		t_Str = pVarAmmoType->GetValStr();
-		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCSTR&) t_Str );
+		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
 		AmmoID = (ITEMID_TYPE) rid.GetResIndex();
 	}
 	else
@@ -647,7 +647,7 @@ badalign:
 	if ( pVarAnim )
 	{
 		t_Str = pVarAnim->GetValStr();
-		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCSTR&) t_Str );
+		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
 		AmmoAnim = (ITEMID_TYPE) rid.GetResIndex();
 	}
 	else

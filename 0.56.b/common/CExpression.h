@@ -90,22 +90,22 @@ public:
 public:
 	// Strict G++ Prototyping produces an error when not casting char*& to const char*&
 	// So this is a rather lazy workaround
-	inline int GetSingle( LPSTR &pArgs )
+	inline int GetSingle( LPTSTR &pArgs )
 	{
 		return GetSingle( (LPCTSTR&)pArgs );
 	}
 
-	inline int GetRange( LPSTR &pArgs )
+	inline int GetRange( LPTSTR &pArgs )
 	{
 		return GetRange( (LPCTSTR&)pArgs );
 	}
 
-	inline int GetRangeVals( LPSTR &pExpr, int * piVals, int iMaxQty )
+	inline int GetRangeVals( LPTSTR &pExpr, int * piVals, int iMaxQty )
 	{
 		return GetRangeVals( (LPCTSTR&)pExpr, piVals, iMaxQty );
 	}
 
-	inline int GetVal( LPSTR &pArgs )
+	inline int GetVal( LPTSTR &pArgs )
 	{
 		return GetVal( (LPCTSTR&)pArgs );
 	}

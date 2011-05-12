@@ -1338,7 +1338,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	CItemBaseDupe * pDupeDef			= NULL;
 
 	DWORD wTFlags = 0;
-	t_height Height = 0;
+	height_t Height = 0;
 	WORD terrainid = 0;
 	bool bPath = true;
 	bool bNullTerrain = false;
@@ -2403,7 +2403,7 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	return true;
 }
 
-CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, t_height * pClimbHeight, bool fPathFinding ) const
+CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * pClimbHeight, bool fPathFinding ) const
 {
 	ADDTOCALLSTACK("CChar::CheckValidMove_New");
 	// Is it ok to move here ? is it blocked ?

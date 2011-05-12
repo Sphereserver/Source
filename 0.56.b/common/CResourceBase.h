@@ -186,7 +186,7 @@ public:
 		m_iQty = wQty;
 	}
 
-	inline bool Load( LPSTR & arg )
+	inline bool Load( LPTSTR & arg )
 	{
 		return Load( (LPCTSTR&)arg );
 	}
@@ -765,7 +765,7 @@ public:
 		ASSERT( pszID );
 		ASSERT( pObj );
 
-		LPCSTR objStr = pObj->GetName();
+		LPCTSTR objStr = pObj->GetName();
 		if ( fNoSpaces )
 		{
 			const char * p = strchr( pszID, ' ' );

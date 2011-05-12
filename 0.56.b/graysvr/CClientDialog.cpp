@@ -133,7 +133,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 	ADDTOCALLSTACK("CDialogDef::r_Verb");
 	EXC_TRY("Verb");
 	// The first part of the key is GUMPCTL_TYPE
-	LPCSTR		pszKey = s.GetKey();
+	LPCTSTR pszKey = s.GetKey();
 
 	int index = FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 	if ( index < 0 )
@@ -147,7 +147,7 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 		return m_pObj->r_Verb(s, pSrc);
 	}
 	
-	LPCSTR	pszArgs	= s.GetArgStr();
+	LPCTSTR pszArgs	= s.GetArgStr();
 
 	switch( index )
 	{

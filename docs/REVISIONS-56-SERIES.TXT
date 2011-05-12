@@ -5182,3 +5182,6 @@ ALPHA additions:
 
 10-05-2011, MrSugarCube
 - Fixed: Exception when trying to set REGENx and 'x' is an invalid stat id.
+
+12-05-2011, MrSugarCube (Script pack)
+- Updated: sphere_map_points4.scp (Corrected z-level of the moongate locations)

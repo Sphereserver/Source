@@ -79,8 +79,8 @@
 #define TCHAR char
 #define LPCSTR const char *
 #define LPCTSTR const char *
-#define LPTSTR const char *
 #define LPSTR char *
+#define LPTSTR char *
 #define MulDiv	IMULDIV
 
 // unix flushing works perfectly, so we do not need disabling bufer

@@ -105,24 +105,24 @@ struct CGrayMapBlockState
 	const signed char m_z;	// the z we start at. (stay at if we are flying)
 	const int m_iHeight;		// The height we need to stand here.
 	const signed char m_zClimb; // We can climb at this height
-	const t_height m_zHeight; //our height
+	const height_t m_zHeight; //our height
 	
-	t_height m_zClimbHeight;	// return item climb height here
+	height_t m_zClimbHeight;	// return item climb height here
 
 	CGrayMapBlocker m_Top;		// What would be over my head.
 	CGrayMapBlocker m_Bottom;	// What i would be standing on.
 	CGrayMapBlocker m_Lowest;	// the lowest item we have found.	
 
 public:
-	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight = PLAYER_HEIGHT, t_height zHeight = PLAYER_HEIGHT );
-	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight, signed char zClimb, t_height zHeight = PLAYER_HEIGHT );
+	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight = PLAYER_HEIGHT, height_t zHeight = PLAYER_HEIGHT );
+	CGrayMapBlockState( DWORD dwBlockFlags, signed char m_z, int iHeight, signed char zClimb, height_t zHeight = PLAYER_HEIGHT );
 
 private:
 	CGrayMapBlockState(const CGrayMapBlockState& copy);
 	CGrayMapBlockState& operator=(const CGrayMapBlockState& other);
 
 public:
-	bool IsUsableZ( signed char zBottom, t_height zHeightEstimate ) const
+	bool IsUsableZ( signed char zBottom, height_t zHeightEstimate ) const
 	{
 		if ( zBottom > m_Top.m_z )	// above something that is already over my head.
 			return( false );
@@ -131,8 +131,8 @@ public:
 			return( false );
 		return( true );	
 	}
-	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, DWORD wID );
-	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, t_height zheight, DWORD wID );
+	bool CheckTile( DWORD dwItemBlockFlags, signed char zBottom, height_t zheight, DWORD wID );
+	bool CheckTile_Item( DWORD dwItemBlockFlags, signed char zBottom, height_t zheight, DWORD wID );
 	inline void SetTop( DWORD &dwItemBlockFlags, signed char &z, DWORD &dwID );
 	bool CheckTile_Terrain( DWORD dwItemBlockFlags, signed char z, DWORD dwID );
 	static LPCTSTR GetTileName( DWORD dwID );

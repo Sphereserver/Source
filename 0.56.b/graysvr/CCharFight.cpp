@@ -3314,7 +3314,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pValue )
 		{
 			t_Str = pValue->GetValStr();
-			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF,  (LPCSTR&) t_Str );
+			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
 			AmmoID = (ITEMID_TYPE) rid.GetResIndex();
 		} else
 		{
@@ -3362,7 +3362,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pAnim )
 		{
 			t_Str = pAnim->GetValStr();
-			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF,  (LPCSTR&) t_Str );
+			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
 			AmmoAnim = (ITEMID_TYPE) rid.GetResIndex();
 		} else
 		{

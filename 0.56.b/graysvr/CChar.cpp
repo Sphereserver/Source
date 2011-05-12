@@ -838,10 +838,10 @@ bool CChar::SetName( LPCTSTR pszName )
 	return SetNamePool( pszName );
 }
 
-t_height CChar::GetHeightMount( bool fEyeSubstract ) const
+height_t CChar::GetHeightMount( bool fEyeSubstract ) const
 {
 	ADDTOCALLSTACK("CChar::GetHeightMount");
-	t_height height = GetHeight();
+	height_t height = GetHeight();
 	if ( IsStatFlag(STATF_OnHorse|STATF_Hovering) )
 		height += 4;
 	if ( fEyeSubstract )
@@ -850,14 +850,14 @@ t_height CChar::GetHeightMount( bool fEyeSubstract ) const
 	return ( height ); //if mounted +4, if not -1 (let's say it's eyes' height)
 }
 
-t_height CChar::GetHeight() const
+height_t CChar::GetHeight() const
 {
 	ADDTOCALLSTACK("CChar::GetHeight");
 	//DEBUG_ERR(("m_height %d\n",m_height));
 	if ( m_height ) //set by a dynamic variable (On=@Create  Height=10)
 		return m_height;
 
-	t_height tmpHeight;
+	height_t tmpHeight;
 
 	CCharBase * pCharDef = Char_GetDef();
 	tmpHeight = pCharDef->GetHeight();

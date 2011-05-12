@@ -75,7 +75,7 @@ public:
 
 	void Set( const CPointBase & pt );
 	void Set( WORD x, WORD y, signed char z = 0, unsigned char map = 0 );
-	int Read( TCHAR * pVal );
+	size_t Read( TCHAR * pVal );
 
 	TCHAR * WriteUsed( TCHAR * pszBuffer ) const;
 	LPCTSTR WriteUsed() const;

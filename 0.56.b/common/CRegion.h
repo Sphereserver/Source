@@ -419,7 +419,7 @@ public:
 			m_bottom = cy;
 	}
 
-	int Read( LPCTSTR pVal );
+	size_t Read( LPCTSTR pVal );
 	TCHAR * Write( TCHAR * pBuffer ) const
 	{
 		sprintf(pBuffer, "%d,%d,%d,%d,%d", m_left, m_top, m_right, m_bottom, m_map);

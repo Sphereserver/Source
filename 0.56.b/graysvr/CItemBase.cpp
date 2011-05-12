@@ -663,7 +663,7 @@ inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec2 & tiledata, W
 	}
 }
 
-inline t_height CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata, WORD & wBlockThis ) // static
+inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata, WORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeightFlags");
 	// Chairs are marked as blocking for some reason ?
@@ -718,7 +718,7 @@ inline t_height CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata,
 	return( tiledata.m_height );
 }
 
-t_height CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
+height_t CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeight");
 	// Get just the height and the blocking flags for the item by id.
@@ -1411,7 +1411,7 @@ CItemBase * CItemBase::MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE idmas
 	if ( CItemBase::GetItemData( id, &tiledata ) )
 	{
 		pBaseDupe->SetTFlags( tiledata.m_flags );
-		t_height Height = CItemBase::GetItemHeightFlags( tiledata, pBaseDupe->m_Can );
+		height_t Height = CItemBase::GetItemHeightFlags( tiledata, pBaseDupe->m_Can );
 		//Height = ( pBaseDupe->GetTFlags() & 0x400 ) ? ( Height / 2 ) : ( Height ); //should not be done here
 		Height = IsID_Chair( id ) ? 0 : Height;
 		pBaseDupe->SetHeight( Height );

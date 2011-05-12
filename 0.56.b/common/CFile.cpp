@@ -78,7 +78,7 @@ CGString CGFile::GetMergedFileName( LPCTSTR pszBase, LPCTSTR pszName ) // static
 LPCTSTR CGFile::GetFilesTitle( LPCTSTR pszPath )	// static
 {
 	ADDTOCALLSTACK("CGFile::GetFilesTitle");
-	// Just use COMMDLG.H GetFileTitleA(LPCSTR, LPSTR, WORD) instead ?
+	// Just use COMMDLG.H GetFileTitle(LPCTSTR, LPTSTR, WORD) instead ?
 	// strrchr
 	size_t len = strlen(pszPath);
 	while ( len > 0 )

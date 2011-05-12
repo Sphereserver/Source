@@ -14,7 +14,7 @@
 #define CAN_I_DOOR		UFLAG4_DOOR
 #endif
 
-CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, t_height zHeight ) :
+CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, height_t zHeight ) :
 	m_dwBlockFlags(dwBlockFlags),	m_z(z), m_iHeight(iHeight), m_zClimb(0), m_zHeight(zHeight)
 {
 	// m_z = PLAYER_HEIGHT
@@ -33,7 +33,7 @@ CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int i
 	m_zClimbHeight = 0;
 }
 
-CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, signed char zClimb, t_height zHeight ) :
+CGrayMapBlockState::CGrayMapBlockState( DWORD dwBlockFlags, signed char z, int iHeight, signed char zClimb, height_t zHeight ) :
 	m_dwBlockFlags(dwBlockFlags),	m_z(z), m_iHeight(iHeight), m_zClimb(zClimb), m_zHeight(zHeight)
 {
 	m_Top.m_dwBlockFlags = 0;
@@ -73,7 +73,7 @@ LPCTSTR CGrayMapBlockState::GetTileName( DWORD dwID )	// static
 	return( pStr );
 }
 
-bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, DWORD dwID )
+bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, height_t zHeight, DWORD dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile");
 	// RETURN:
@@ -150,7 +150,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	return true;
 }
 
-bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, t_height zHeight, DWORD dwID )
+bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBottom, height_t zHeight, DWORD dwID )
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile_Item");
 	// RETURN:

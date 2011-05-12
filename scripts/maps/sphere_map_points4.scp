@@ -13,9 +13,9 @@
 VERSION=0.56b
 
 [MoonGates]
-1169,998,0,4=mg_isamu_jima
-802,1204,0,4=mg_makoto_jima
-270,628,0,4=mg_homare_jima
+1169,998,42,4=mg_isamu_jima
+802,1204,25,4=mg_makoto_jima
+270,628,15,4=mg_homare_jima
 
 [Teleporters]
 257,783,63,4=3,127,-1,3=tp_yomotsu_mines_entrance1

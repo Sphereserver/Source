@@ -104,7 +104,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
-	t_height iShipHeight = Item_GetDef()->GetHeight();
+	height_t iShipHeight = Item_GetDef()->GetHeight();
 	if ( iShipHeight < 3 )
 		iShipHeight	= 3;
 

@@ -563,7 +563,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CObjBase::r_WriteVal");
 	EXC_TRY("WriteVal");
-	LPCSTR	pszArgs	= NULL;
+	LPCTSTR pszArgs	= NULL;
 
 	int index = FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
 	if ( index < 0 )
@@ -1925,7 +1925,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 					else if ( pItem )
 					{
-						t_height zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
+						height_t zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
 						CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
 						g_World.GetHeightPoint_New( GetTopPoint(), block, true );
 						SetTopZ(block.m_Bottom.m_z);
