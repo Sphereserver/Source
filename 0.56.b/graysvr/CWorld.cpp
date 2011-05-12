@@ -157,6 +157,10 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 		case 0x3201:
 			pStr = "Object not correctly loaded by server (UID conflict)";
 			break;
+
+		case 0x3202:
+			pStr = "Object not placed in the world";
+			break;
 			
 		case 0x2222:	
 		case 0x4222:
@@ -181,6 +185,14 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 	}
 	
 	return pStr;
+}
+
+void ReportGarbageCollection(CObjBase * pObj, int iResultCode)
+{
+	ASSERT(pObj != NULL);
+
+	DEBUG_ERR(("UID=0%lx, id=0%x '%s', Invalid code=%0x (%s)\n",
+		(DWORD)pObj->GetUID(), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
 }
 
 //////////////////////////////////////////////////////////////////
@@ -808,8 +820,7 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 			}
 		}
 
-		DEBUG_ERR(("UID=0%lx, id=0%x '%s', Invalid code=%0x (%s)\n",
-			dwUID, pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+		ReportGarbageCollection(pObj, iResultCode);
 
 		if ( iResultCode == 0x1203 || iResultCode == 0x1103 )
 		{
@@ -841,6 +852,16 @@ void CWorldThread::GarbageCollection_New()
 	if ( m_ObjNew.GetCount())
 	{
 		g_Log.Event( LOGL_ERROR, "GC: %d unplaced object deleted\n", m_ObjNew.GetCount());
+
+		for (int i = 0; i < m_ObjNew.GetCount(); ++i)
+		{
+			CObjBase * pObj = dynamic_cast<CObjBase*>(m_ObjNew.GetAt(i));
+			if (pObj == NULL)
+				continue;
+
+			ReportGarbageCollection(pObj, 0x3202);
+		}
+
 		m_ObjNew.DeleteAll();
 	}
 	m_ObjDelete.DeleteAll();	// clean up our delete list.
