@@ -962,7 +962,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				Args[2] = ppArgs[6];
 
 				size_t ArgsCount = 0;
-				for (int i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
+				for (size_t i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
 					ArgsCount++;
 
 				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], (LPCTSTR*)Args, ArgsCount);
