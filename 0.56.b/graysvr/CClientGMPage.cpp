@@ -46,7 +46,7 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 		SysMessageDefault( DEFMSG_GMPAGE_NOTIFIED );
 	}
 
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_QNUM ), g_World.m_GMPages.GetCount());
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_QNUM ), static_cast<int>(g_World.m_GMPages.GetCount()));
 	SysMessage(pszMsg);
 
 	// Already have a message in the queue ?
@@ -110,7 +110,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 			// Add the "MORE" option if there is more than 1 more.
 			if ( pPage->GetNext() != NULL )
 			{
-				ASSERT(count >= 0 && count < COUNTOF(item));
+				ASSERT(count < COUNTOF(item));
 				item[count].m_id = count-1;
 				item[count].m_sText.Format( "MORE" );
 				item[count].m_color = 0;
@@ -121,7 +121,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 
 		CClient * pClient = pPage->FindAccount()->FindClient();	// logged in ?
 
-		ASSERT(count >= 0 && count < COUNTOF(item));
+		ASSERT(count < COUNTOF(item));
 		item[count].m_id = count-1;
 		item[count].m_color = 0;
 		item[count].m_sText.Format( "%s %s %s",

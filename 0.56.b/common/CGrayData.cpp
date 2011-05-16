@@ -7,21 +7,21 @@
 //////////////////////////////////////////////////////////////////////
 // -CVerDataMul
 
-int CVerDataMul::QCompare( int left, DWORD dwRefIndex ) const
+int CVerDataMul::QCompare( size_t left, DWORD dwRefIndex ) const
 {
 	DWORD dwIndex2 = GetEntry(left)->GetIndex();
 	return( dwIndex2 - dwRefIndex );
 }
 
-void CVerDataMul::QSort( int left, int right )
+void CVerDataMul::QSort( size_t left, size_t right )
 {
 	ADDTOCALLSTACK("CVerDataMul::QSort");
-	static int iReentrant=0;
+	static int iReentrant = 0;
 	ASSERT( left <= right );
-	int j = left;
-	int i = right;
+	size_t j = left;
+	size_t i = right;
 
-	DWORD dwRefIndex = GetEntry( (left+right) / 2 )->GetIndex();
+	DWORD dwRefIndex = GetEntry( (left + right) / 2 )->GetIndex();
 
 	do
 	{
@@ -44,8 +44,10 @@ void CVerDataMul::QSort( int left, int right )
 	} while (j <= i);
 
 	iReentrant++;
-	if (left < i)  QSort(left,i);
-	if (j < right) QSort(j,right);
+	if (left < i)
+		QSort(left, i);
+	if (j < right)
+		QSort(j, right);
 	iReentrant--;
 }
 
@@ -78,18 +80,18 @@ void CVerDataMul::Load( CGFile & file )
 		throw CGrayError( LOGL_CRIT, CGFile::GetLastError(), "VerData: Read");
 	}
 
-	if ( ! dwQty )
+	if ( dwQty <= 0 )
 		return;
 
 	// Now sort it for fast searching.
 	// Make sure it is sorted.
-	QSort( 0, dwQty-1 );
+	QSort( 0, dwQty - 1 );
 
 #ifdef _DEBUG
-	for ( DWORD i=0; i<dwQty-1; i++ )
+	for ( DWORD i = 0; i < (dwQty - 1); i++ )
 	{
 		DWORD dwIndex1 = GetEntry(i)->GetIndex();
-		DWORD dwIndex2 = GetEntry(i+1)->GetIndex();
+		DWORD dwIndex2 = GetEntry(i + 1)->GetIndex();
 		if ( dwIndex1 > dwIndex2 )
 		{
 			DEBUG_ERR(( "VerData Array is NOT sorted !\n" ));

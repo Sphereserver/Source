@@ -756,13 +756,13 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			if ( pszKey[7] != '.' )
 				return( false );
 			pszKey += 8;
-			sVal = ( m_OEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
+			sVal = m_OEvents.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
 			return true;
 		case OC_ISTEVENT:
 			if ( pszKey[8] != '.' )
 				return( false );
 			pszKey += 8;
-			sVal = ( Base_GetDef()->m_TEvents.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
+			sVal = Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
 			return true;
 		case OC_ISITEM:
 			sVal.FormatVal( IsItem());
@@ -2044,7 +2044,7 @@ void CObjBase::UpdatePropertyFlag(int mask)
 	
 	// contained items don't receive ticks and need to be added to a
 	// list of items to be processed separately
-	if ( IsItemInContainer() && g_World.m_ObjStatusUpdates.FindPtr(this) < 0 )
+	if ( IsItemInContainer() && g_World.m_ObjStatusUpdates.ContainsPtr(this) == false )
 		g_World.m_ObjStatusUpdates.Add(this);
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;

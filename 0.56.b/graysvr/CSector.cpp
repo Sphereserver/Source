@@ -322,14 +322,15 @@ bool CSector::v_AllChars( CScript & s, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CSector::v_AllChars");
 	CScript	script(s.GetArgStr());
-	CChar	*pChar = NULL;
+	CChar * pChar = NULL;
 	bool fRet = false;
 	
 	// Loop through all the characters in m_Chars_Active.
 	// We should start at the end incase some are removed during the loop.
-	for (int i = (m_Chars_Active.GetCount() - 1); i >= 0; i--)
+	size_t i = m_Chars_Active.GetCount();
+	while ( i > 0 )
 	{
-		pChar = STATIC_CAST <CChar*>(m_Chars_Active.GetAt(i));
+		pChar = STATIC_CAST <CChar*>(m_Chars_Active.GetAt(--i));
 
 		// Check that a character was returned and keep looking if not.
 		if (pChar == NULL)
@@ -345,14 +346,15 @@ bool CSector::v_AllCharsIdle( CScript & s, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CSector::v_AllCharsIdle");
 	CScript	script(s.GetArgStr());
-	CChar	*pChar = NULL;
+	CChar * pChar = NULL;
 	bool fRet = false;
 	
 	// Loop through all the characters in m_Chars_Disconnect.
 	// We should start at the end incase some are removed during the loop.
-	for (int i = (m_Chars_Disconnect.GetCount() - 1); i >= 0; i--)
+	size_t i = m_Chars_Disconnect.GetCount();
+	while ( i > 0 )
 	{
-		pChar = STATIC_CAST <CChar*>(m_Chars_Disconnect.GetAt(i));
+		pChar = STATIC_CAST <CChar*>(m_Chars_Disconnect.GetAt(--i));
 
 		// Check that a character was returned and keep looking if not.
 		if (pChar == NULL)
@@ -368,16 +370,16 @@ bool CSector::v_AllItems( CScript & s, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CSector::v_AllItems");
 	CScript	script(s.GetArgStr());
-	CItem	*pItem = NULL;
+	CItem * pItem = NULL;
 	bool fRet = false;
 
 	// Loop through all the items in m_Items_Timer.
 	// We should start at the end incase items are removed during the loop.
-	int i=0;
-	for (i = (m_Items_Timer.GetCount() - 1); i >= 0; i--)
+	size_t i = m_Items_Timer.GetCount();
+	while ( i > 0 )
 	{
 		// Get the next item
-		pItem = STATIC_CAST <CItem*>(m_Items_Timer.GetAt(i));
+		pItem = STATIC_CAST <CItem*>(m_Items_Timer.GetAt(--i));
 
 		// Check that an item was returned and keep looking if not.
 		if (pItem == NULL)
@@ -389,10 +391,11 @@ bool CSector::v_AllItems( CScript & s, CTextConsole * pSrc )
 	
 	// Loop through all the items in m_Items_Inert.
 	// We should start at the end incase items are removed during the loop.
-	for (i = (m_Items_Inert.GetCount() - 1); i >= 0; i--)
+	i = m_Items_Inert.GetCount();
+	while ( i > 0 )
 	{
 		// Get the next item.
-		pItem = STATIC_CAST <CItem*>(m_Items_Inert.GetAt(i));
+		pItem = STATIC_CAST <CItem*>(m_Items_Inert.GetAt(--i));
 
 		// Check that an item was returned and keep looking if not.
 		if (pItem == NULL)
@@ -408,14 +411,15 @@ bool CSector::v_AllClients( CScript & s, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CSector::v_AllClients");
 	CScript script(s.GetArgStr());
-	CChar * pChar = STATIC_CAST <CChar*>( m_Chars_Active.GetHead());
+	CChar * pChar = NULL;
 	bool fRet = false;
 
 	// Loop through all the characters in m_Chars_Active.
 	// We should start at the end incase some are removed during the loop.
-	for (int i = (m_Chars_Active.GetCount() - 1); i >= 0; i--)
+	size_t i = m_Chars_Active.GetCount();
+	while ( i > 0 )
 	{
-		pChar = STATIC_CAST <CChar*>(m_Chars_Active.GetAt(i));
+		pChar = STATIC_CAST <CChar*>(m_Chars_Active.GetAt(--i));
 
 		// Check that a character was returned and keep looking if not.
 		if (pChar == NULL)
@@ -436,8 +440,8 @@ int CSector::GetLocalTime() const
 {
 	ADDTOCALLSTACK("CSector::GetLocalTime");
 	//	Get local time of the day (in minutes)
-	CPointMap	pt = GetBasePoint();
-	int			iLocalTime = g_World.GetGameWorldTime();
+	CPointMap pt = GetBasePoint();
+	int iLocalTime = g_World.GetGameWorldTime();
 
 	if ( !g_Cfg.m_bAllowLightOverride )
 	{
@@ -968,9 +972,9 @@ void CSector::OnTick(int iPulseCount)
 	}
 
 	EXC_SET("sector sleeping?");
-	int	clients = m_Chars_Active.HasClients();
+	size_t clients = m_Chars_Active.HasClients();
 
-	if ( !clients )	// having no clients inside
+	if ( clients <= 0 ) // having no clients inside
 	{
 		// Put the sector to sleep if no clients been here in a while.
 		fSleeping = IsSectorSleeping();
@@ -1005,7 +1009,7 @@ void CSector::OnTick(int iPulseCount)
 		}
 
 		// Random area noises. Only do if clients about.
-		if ( clients )
+		if ( clients > 0 )
 		{
 			iRegionPeriodic = 2;
 

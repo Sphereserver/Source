@@ -214,8 +214,8 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 	// ??? SetTimeout( GetDecayTime()); house decay ?
 
 	bool fNeedKey = false;
-	int iQty = pMultiDef->m_Components.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = pMultiDef->m_Components.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		fNeedKey |= Multi_CreateComponent( (ITEMID_TYPE) pMultiDef->m_Components[i].m_id,
 			pMultiDef->m_Components[i].m_dx,
@@ -357,7 +357,7 @@ void CItemMulti::OnHearRegion( LPCTSTR pszCmd, CChar * pSrc )
 		return;
 	TALKMODE_TYPE		mode	= TALKMODE_SAY;
 
-	for ( int i=0; i<pMultiDef->m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < pMultiDef->m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = pMultiDef->m_Speech[i];
 		ASSERT(pLink);
@@ -457,15 +457,19 @@ bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		pszKey += 4;
 
 		// no component uid
-		if ( !*pszKey )	sVal.FormatVal(pMultiDef->m_Components.GetCount());
+		if ( *pszKey == '\0' )
+		{
+			sVal.FormatVal(pMultiDef->m_Components.GetCount());
+		}
 		else if ( *pszKey == '.' )
 		{
 			CItemBaseMulti::CMultiComponentItem	item;
 
 			SKIP_SEPARATORS(pszKey);
-			int iQty = Exp_GetVal(pszKey);
+			size_t iQty = Exp_GetVal(pszKey);
+			if ( pMultiDef->m_Components.IsValidIndex(iQty) == false )
+				return false;
 
-			if (( iQty < 0 ) || ( iQty >= pMultiDef->m_Components.GetCount())) return false;
 			SKIP_SEPARATORS(pszKey);
 			item = pMultiDef->m_Components.GetAt(iQty);
 

@@ -282,7 +282,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
 	DIR_TYPE dirTmp;
-	for( int i = -3; i < 3; ++i )
+	for ( int i = -3; i < 3; ++i )
 	{
 		if (i == 0) // We don't need to check forwards
 			continue;
@@ -305,7 +305,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	// Reorient everything on the deck
 	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
 	size_t iCount = Ship_ListObjs( ppObjs );
-	for( size_t i = 0; i < iCount; ++i )
+	for ( size_t i = 0; i < iCount; ++i )
 	{
 		CObjBase *pObj = ppObjs[i];
 
@@ -322,7 +322,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				pItem->Update();
 				//	create all needed components
 				DWORD privateUID = Multi_GetSign()->m_itKey.m_lockUID.GetPrivateUID();
-				for( int j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
+				for ( size_t j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
 				{
 					Multi_CreateComponent((ITEMID_TYPE)pMultiNew->m_Components[j].m_id,
 						pMultiNew->m_Components[j].m_dx,

@@ -386,7 +386,7 @@ void CVarDefMap::Copy( const CVarDefMap * pArray )
 
 	Empty();
 
-	if ( !pArray->GetCount() )
+	if ( pArray->GetCount() <= 0 )
 		return;
 
 	for ( DefSet::const_iterator i = pArray->m_Container.begin(); i != pArray->m_Container.end(); ++i )

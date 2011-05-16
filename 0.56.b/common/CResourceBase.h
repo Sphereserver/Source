@@ -212,14 +212,23 @@ private:
 	CResourceQtyArray(const CResourceQtyArray& copy);
 
 public:
-	int Load( LPCTSTR pszCmds );
-	void WriteKeys( TCHAR * pszArgs, int index = 0, bool fQtyOnly = false, bool fKeyOnly = false ) const;
-	void WriteNames( TCHAR * pszArgs, int index = 0 ) const;
+	size_t Load( LPCTSTR pszCmds );
+	void WriteKeys( TCHAR * pszArgs, size_t index = 0, bool fQtyOnly = false, bool fKeyOnly = false ) const;
+	void WriteNames( TCHAR * pszArgs, size_t index = 0 ) const;
 
-	int FindResourceID( RESOURCE_ID_BASE rid ) const;
-	int FindResourceType( RES_TYPE type ) const;
-	int FindResourceMatch( CObjBase * pObj ) const;
+	size_t FindResourceID( RESOURCE_ID_BASE rid ) const;
+	size_t FindResourceType( RES_TYPE type ) const;
+	size_t FindResourceMatch( CObjBase * pObj ) const;
 	bool IsResourceMatchAll( CChar * pChar ) const;
+
+	inline bool ContainsResourceID( RESOURCE_ID_BASE & rid ) const
+	{
+		return FindResourceID(rid) != BadIndex();
+	}
+	inline bool ContainsResourceMatch( CObjBase * pObj ) const
+	{
+		return FindResourceMatch(pObj) != BadIndex();
+	}
 
 	void setNoMergeOnLoad();
 
@@ -620,7 +629,7 @@ class CResourceRefArray : public CGPtrTypeArray<CResourceRef>
 	// Define a list of pointer references to resource. (Not owned by the list)
 	// An indexed list of CResourceLink s.
 private:
-	LPCTSTR GetResourceName( int iIndex ) const
+	LPCTSTR GetResourceName( size_t iIndex ) const
 	{
 		// look up the name of the fragment given it's index.
 		CResourceLink * pResourceLink = GetAt( iIndex );
@@ -635,13 +644,22 @@ private:
 	CResourceRefArray& operator=(const CResourceRefArray& other);
 
 public:
-	int FindResourceType( RES_TYPE type ) const;
-	int FindResourceID( RESOURCE_ID_BASE rid ) const;
-	int FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) const;
+	size_t FindResourceType( RES_TYPE type ) const;
+	size_t FindResourceID( RESOURCE_ID_BASE rid ) const;
+	size_t FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) const;
 
 	void WriteResourceRefList( CGString & sVal ) const;
 	bool r_LoadVal( CScript & s, RES_TYPE restype );
 	void r_Write( CScript & s, LPCTSTR pszKey ) const;
+
+	inline bool ContainsResourceID( RESOURCE_ID_BASE & rid ) const
+	{
+		return FindResourceID(rid) != BadIndex();
+	}
+	inline bool ContainsResourceName( RES_TYPE restype, LPCTSTR & pszKey ) const
+	{
+		return FindResourceName(restype, pszKey) != BadIndex();
+	}
 };
 
 //*********************************************************
@@ -687,19 +705,23 @@ private:
 		return( rid.GetResIndex() & 0x0F );
 	}
 public:
-	int FindKey( RESOURCE_ID_BASE rid ) const
+	inline size_t BadIndex() const
+	{
+		return( m_Array[0].BadIndex() );
+	}
+	size_t FindKey( RESOURCE_ID_BASE rid ) const
 	{
 		return( m_Array[ GetHashArray( rid ) ].FindKey(rid));
 	}
-	CResourceDef* GetAt( RESOURCE_ID_BASE rid, int index ) const
+	CResourceDef* GetAt( RESOURCE_ID_BASE rid, size_t index ) const
 	{
 		return( m_Array[ GetHashArray( rid ) ].GetAt(index));
 	}
-	int AddSortKey( RESOURCE_ID_BASE rid, CResourceDef* pNew )
+	size_t AddSortKey( RESOURCE_ID_BASE rid, CResourceDef* pNew )
 	{
 		return( m_Array[ GetHashArray( rid ) ].AddSortKey( pNew, rid ));
 	}
-	void SetAt( RESOURCE_ID_BASE rid, int index, CResourceDef* pNew )
+	void SetAt( RESOURCE_ID_BASE rid, size_t index, CResourceDef* pNew )
 	{
 		m_Array[ GetHashArray( rid ) ].SetAt( index, pNew );
 	}
@@ -715,10 +737,10 @@ private:
 	CStringSortArray(const CStringSortArray& copy);
 	CStringSortArray& operator=(const CStringSortArray& other);
 public:
-	virtual void DestructElements( TCHAR** pElements, int nCount )
+	virtual void DestructElements( TCHAR** pElements, size_t nCount )
 	{
 		// delete the objects that we own.
-		for ( int i = 0; i < nCount; i++ )
+		for ( size_t i = 0; i < nCount; i++ )
 		{
 			if ( pElements[i] != NULL )
 			{
@@ -832,7 +854,7 @@ public:
 		return "CFG";
 	}
 
-	CResourceScript* GetResourceFile( int i )
+	CResourceScript* GetResourceFile( size_t i )
 	{
 		if ( ! m_ResourceFiles.IsValidIndex(i))
 		{

@@ -478,9 +478,9 @@ public:
 		m_rectUnion.SetRectEmpty();
 		m_Rects.Empty();
 	}
-	int GetRegionRectCount() const;
-	CGRect & GetRegionRect(int i);
-	const CGRect & GetRegionRect(int i) const;
+	size_t GetRegionRectCount() const;
+	CGRect & GetRegionRect(size_t i);
+	const CGRect & GetRegionRect(size_t i) const;
 	virtual bool AddRegionRect( const CGRect & rect );
 
 	CPointBase GetRegionCorner( DIR_TYPE dir = DIR_QTY ) const;

@@ -331,7 +331,7 @@ SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest
 	ADDTOCALLSTACK("CChar::Skill_GetBest");
 	// Get the top n best skills.
 
-	if ( iRank < 0 || iRank >= MAX_SKILL )
+	if ( iRank < 0 || iRank >= g_Cfg.m_iMaxSkill )
 		iRank = 0;
 
 	DWORD * pdwSkills = new DWORD [iRank + 1];
@@ -339,9 +339,9 @@ SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest
 	memset( pdwSkills, 0, (iRank + 1) * sizeof(DWORD));
 
 	DWORD dwSkillTmp;
-	for ( int i = 0; i < MAX_SKILL; i++)
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE)i ) )
 			continue;
 
 		dwSkillTmp = MAKEDWORD( i, Skill_GetBase( (SKILL_TYPE)i ));
@@ -357,7 +357,7 @@ SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest
 	}
 
 	dwSkillTmp = pdwSkills[ iRank ];
-	delete [] pdwSkills;
+	delete[] pdwSkills;
 	return( (SKILL_TYPE) LOWORD( dwSkillTmp ));
 }
 
@@ -432,7 +432,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 		const CSkillClassDef* pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
 
-		if ( skill == MAX_SKILL )
+		if ( skill == SKILL_MAX )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
 			return pTagStorage ? pTagStorage->GetValNum() : pSkillClass->m_SkillSumMax;
@@ -458,10 +458,10 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 	}
 	else
 	{
-		if ( skill == MAX_SKILL )
+		if ( skill == SKILL_MAX )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-			return pTagStorage ? pTagStorage->GetValNum() : (500 * MAX_SKILL);
+			return pTagStorage ? pTagStorage->GetValNum() : (500 * g_Cfg.m_iMaxSkill);
 		}
 
 		int iSkillMax = 1000;
@@ -478,7 +478,7 @@ int CChar::Skill_GetSum() const
 	ADDTOCALLSTACK("CChar::Skill_GetSum");
 	int iSkillSum = 0;
 
-	for ( int i = 0; i < MAX_SKILL; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		iSkillSum += Skill_GetBase((SKILL_TYPE)i);
 	}
@@ -495,9 +495,9 @@ void CChar::Skill_Decay()
 	int iSkillLevel = 0;
 
 	// look for a skill to deduct from
-	for (int i = 0; i < MAX_SKILL; ++i)
+	for (size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i)
 	{
-		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) == false )
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex((SKILL_TYPE)i) == false )
 			continue;
 
 		// check that the skill is set to decrease and that it is not already at 0
@@ -582,9 +582,9 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	if ( m_pPlayer )
 	{
 		int iSkillSum = 0;
-		int iSkillSumMax = Skill_GetMax( (SKILL_TYPE) MAX_SKILL );
+		int iSkillSumMax = Skill_GetMax(SKILL_MAX);
 
-		for ( int i=0; i<MAX_SKILL; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
 			iSkillSum += Skill_GetBase((SKILL_TYPE)i);
 		}
@@ -1148,8 +1148,8 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	CItem * pItemTarg = uidTarg.ItemFind();
 	if ( pItemTarg && stage == SKTRIG_SELECT )
 	{
-		if ( pItemDef->m_SkillMake.FindResourceMatch( pItemTarg ) < 0 &&
-			pItemDef->m_BaseResources.FindResourceMatch( pItemTarg ) < 0 )
+		if ( pItemDef->m_SkillMake.ContainsResourceMatch( pItemTarg ) == false &&
+			pItemDef->m_BaseResources.ContainsResourceMatch( pItemTarg ) == false )
 		{
 			// Not intersect with the specified item
 			return( false );
@@ -1177,11 +1177,11 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	{
 		// If fail only consume part of them.
 		int iConsumePercent = -1;
-		int i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
-		if ( i >= 0 )
+		size_t i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
+		if ( i != pItemDef->m_SkillMake.BadIndex() )
 		{
-			CSkillDef * pSkillDef = g_Cfg.GetSkillDef( (SKILL_TYPE)pItemDef->m_SkillMake[i].GetResIndex() );
-			if ( ( pSkillDef != NULL ) && pSkillDef->m_Effect.m_aiValues.GetCount() )
+			const CSkillDef * pSkillDef = g_Cfg.GetSkillDef( (SKILL_TYPE)pItemDef->m_SkillMake[i].GetResIndex() );
+			if ( pSkillDef != NULL && pSkillDef->m_Effect.m_aiValues.GetCount() > 0 )
 			{
 				iConsumePercent = pSkillDef->m_Effect.GetRandom();
 			}
@@ -1205,9 +1205,8 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	{
 		// Start the skill.
 		// Find the primary skill required.
-
-		int i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
-		if ( i < 0 )
+		size_t i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
+		if ( i == pItemDef->m_SkillMake.BadIndex() )
 			return( false );
 
 		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
@@ -1392,7 +1391,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	{
 		// Smelting something like armor etc.
 		// find the ingot type resources.
-		for ( int i=0; i<pOreDef->m_BaseResources.GetCount(); i++ )
+		for ( size_t i = 0; i < pOreDef->m_BaseResources.GetCount(); i++ )
 		{
 			RESOURCE_ID rid = pOreDef->m_BaseResources[i].GetResourceID();
 			if ( rid.GetResType() != RES_ITEMDEF )

@@ -42,8 +42,8 @@ private:
 	bool SendMemberMsg( CChar * pCharDest, PacketSend * pPacket );
 	void SendAll( PacketSend * pPacket );
 	// List manipulation
-	int AttachChar( CChar * pChar );
-	int DetachChar( CChar * pChar );
+	size_t AttachChar( CChar * pChar );
+	size_t DetachChar( CChar * pChar );
 	bool FixWeirdness( CChar * pChar ); // true = weirdness found
 
 public:
@@ -60,22 +60,20 @@ public:
 
 	bool IsPartyFull() const
 	{
-		return( m_Chars.GetCharCount() >= MAX_CHAR_IN_PARTY );
+		return (m_Chars.GetCharCount() >= MAX_CHAR_IN_PARTY);
 	}
 	bool IsInParty( const CChar * pChar ) const
 	{
-		int i = m_Chars.FindChar( pChar );
-		return( i >= 0 );
+		return m_Chars.IsCharIn( pChar );
 	}
 	bool IsPartyMaster( const CChar * pChar ) const
 	{
-		int i = m_Chars.FindChar( pChar );
-		return( i == 0 );
+		return (m_Chars.FindChar( pChar ) == 0);
 	}
 
 	CGrayUID GetMaster() 
 	{ 
-		return( m_Chars.GetChar(0) ); 
+		return m_Chars.GetChar(0); 
 	}
 
 	

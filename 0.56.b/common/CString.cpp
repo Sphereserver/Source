@@ -88,7 +88,7 @@ void CGString::Empty(bool bTotal)
 #ifdef DEBUG_STRINGS
 			gMemAmount -= m_iMaxLength;
 #endif
-			delete []m_pchData;
+			delete[] m_pchData;
 			m_pchData = NULL;
 			m_iMaxLength = 0;
 		}
@@ -115,7 +115,7 @@ int CGString::SetLength( int iNewLength )
 		strncpy(pNewData, m_pchData, iMinLength);
 		pNewData[m_iLength] = 0;
 
-		if ( m_pchData ) delete []m_pchData;
+		if ( m_pchData ) delete[] m_pchData;
 		m_pchData = pNewData;
 	}
 	m_iLength = iNewLength;
@@ -320,7 +320,7 @@ int CGString::indexOf(CGString str, int offset)
 				}
 				if (found)
 				{
-					delete [] str_value;
+					delete[] str_value;
 					return i;
 				}
 			}
@@ -397,7 +397,7 @@ int CGString::lastIndexOf(CGString str, int from)
 				}
 				if (found)
 				{
-					delete [] str_value;
+					delete[] str_value;
 					return i;
 				}
 			}

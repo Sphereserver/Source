@@ -433,7 +433,7 @@ UINT CDataBase::getLastId()
 
 bool CDataBase::addQuery(bool isQuery, LPCTSTR theFunction, LPCTSTR theQuery)
 {
-	if ( g_Cfg.m_Functions.FindKey( theFunction ) == -1 )
+	if ( g_Cfg.m_Functions.ContainsKey( theFunction ) == false )
 	{
 		DEBUG_ERR(("Invalid callback function (%s) for AEXECUTE/AQUERY.\n", theFunction));
 		return false;

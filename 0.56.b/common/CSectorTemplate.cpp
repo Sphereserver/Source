@@ -241,8 +241,8 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 	// REGION_TYPE_ROOM => RES_ROOM = NPC House areas only = CRegionBase.
 	// REGION_TYPE_MULTI => RES_WORLDITEM = UID linked types in general = CRegionWorld
 
-	int iQty = m_RegionLinks.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_RegionLinks.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CRegionBase * pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
@@ -274,11 +274,11 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 }
 
 // Balkon: get regions list (to cicle through intercepted house regions)
-int CSectorBase::GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const
+size_t CSectorBase::GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegions");
-	int iQty = m_RegionLinks.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_RegionLinks.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CRegionBase * pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
@@ -326,9 +326,9 @@ bool CSectorBase::LinkRegion( CRegionBase * pRegionNew )
 	//  according to the old rules.
 	ASSERT(pRegionNew);
 	ASSERT( pRegionNew->IsOverlapped( GetRect()));
-	int iQty = m_RegionLinks.GetCount();
+	size_t iQty = m_RegionLinks.GetCount();
 
-	for ( int i=0; i<iQty; i++ )
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CRegionBase * pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
@@ -370,8 +370,8 @@ CTeleport * CSectorBase::GetTeleport2d( const CPointMap & pt ) const
 	ADDTOCALLSTACK("CSectorBase::GetTeleport2d");
 	// Any teleports here at this point ?
 
-	int i = m_Teleports.FindKey( pt.GetPointSortIndex());
-	if ( i < 0 )
+	size_t i = m_Teleports.FindKey( pt.GetPointSortIndex());
+	if ( i == m_Teleports.BadIndex() )
 		return( NULL );
 	return STATIC_CAST <CTeleport *>( m_Teleports[i]);
 }
@@ -402,8 +402,8 @@ bool CSectorBase::AddTeleport( CTeleport * pTeleport )
 	// NOTE: can't be 2 teleports from the same place !
 	// ASSERT( Teleport is actually in this sector !
 
-	int i = m_Teleports.FindKey( pTeleport->GetPointSortIndex());
-	if ( i >= 0 )
+	size_t i = m_Teleports.FindKey( pTeleport->GetPointSortIndex());
+	if ( i != m_Teleports.BadIndex() )
 	{
 		DEBUG_ERR(( "Conflicting teleport %s!\n", pTeleport->WriteUsed() ));
 		return( false );

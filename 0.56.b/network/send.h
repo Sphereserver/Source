@@ -506,11 +506,11 @@ public:
 class PacketBookPageContent : public PacketSend
 {
 protected:
-	int m_pages;
+	size_t m_pages;
 
 public:
-	PacketBookPageContent(const CClient* target, const CItem* book, int startpage, int pagecount = 1);
-	void addPage(const CItem* book, int page);
+	PacketBookPageContent(const CClient* target, const CItem* book, size_t startpage, size_t pagecount = 1);
+	void addPage(const CItem* book, size_t page);
 };
 
 /***************************************************************************

@@ -451,9 +451,9 @@ CMapDiffCollection::CMapDiffCollection()
 CMapDiffCollection::~CMapDiffCollection()
 {
 	// Remove all of the loaded dif data
-	for ( int m = 0; m < 256; m++ )
+	for ( unsigned int m = 0; m < 256; m++ )
 	{
-		while ( m_pMapDiffBlocks[m].GetCount() )
+		while ( m_pMapDiffBlocks[m].GetCount() > 0 )
 		{
 			m_pMapDiffBlocks[m].RemoveAt(0);
 		}
@@ -627,8 +627,8 @@ CMapDiffBlock * CMapDiffCollection::GetAtBlock(DWORD dwBlockId, int map)
 		return NULL;
 
 	// Locate the requested block
-	int index = m_pMapDiffBlocks[map].FindKey( dwBlockId );
-	if ( index < 0 )
+	size_t index = m_pMapDiffBlocks[map].FindKey( dwBlockId );
+	if ( index == m_pMapDiffBlocks[map].BadIndex() )
 		return NULL;
 
 	return m_pMapDiffBlocks[map].GetAt( index );

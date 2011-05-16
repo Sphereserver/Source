@@ -783,7 +783,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 
 						if ( *start )
 						{
-							int i = 0;
+							size_t i = 0;
 							CResourceScript	*s = g_Cfg.GetResourceFile(i++);
 							while ( s != NULL )
 							{

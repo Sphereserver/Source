@@ -44,7 +44,7 @@ void CClient::resendBuffs()
 	int iBuffPercent = 0;
 	int iStatEffect = 0;
 
-	for ( int i = 0; i != Cont->GetCount(); ++i )
+	for ( size_t i = 0; i < Cont->GetCount(); ++i )
 	{
 		pSpell = Cont->GetAt(i);
 		if ( !pSpell )
@@ -75,7 +75,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Curse:
 		{
-			for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -100,7 +100,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Bless:
 		{
-			for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 			{
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -967,7 +967,7 @@ void CClient::addItemName( const CItem * pItem )
 	if ( pCont != NULL )
 	{
 		// ??? Corpses show hair as an item !!
-		len += sprintf( szName+len, " (%d items)", pCont->GetCount());
+		len += sprintf( szName+len, " (%" FMTSIZE_T " items)", pCont->GetCount());
 	}
 
 	// obviously damaged ?
@@ -1277,7 +1277,7 @@ bool CClient::addBookOpen( CItem * pBook )
 	if (pBook == NULL)
 		return false;
 
-	int iPagesNow = 0;
+	size_t iPagesNow = 0;
 	bool bNewPacket = PacketDisplayBookNew::CanSendTo(GetNetState());
 
 	if (pBook->IsBookSystem() == false)
@@ -1297,13 +1297,13 @@ bool CClient::addBookOpen( CItem * pBook )
 		new PacketDisplayBook(this, pBook);
 
 	// We could just send all the pages now if we want.
-	if (iPagesNow)
+	if (iPagesNow > 0)
 		addBookPage(pBook, 1, iPagesNow);
 
 	return( true );
 }
 
-void CClient::addBookPage( const CItem * pBook, int iPage, int iCount )
+void CClient::addBookPage( const CItem * pBook, size_t iPage, size_t iCount )
 {
 	ADDTOCALLSTACK("CClient::addBookPage");
 	// ARGS:
@@ -1323,7 +1323,7 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 	CAccount * pAccount = GetAccount();
 	ASSERT( pAccount );
 
-	int count = 0;
+	size_t count = 0;
 
 	if ( pCharFirst && pAccount->IsMyAccountChar( pCharFirst ))
 	{
@@ -1336,13 +1336,13 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 	}
 
 	
-	int iMax = minimum(maximum(pAccount->m_Chars.GetCharCount(), pAccount->GetMaxChars()), MAX_CHARS_PER_ACCT);
+	size_t iMax = minimum(maximum(pAccount->m_Chars.GetCharCount(), pAccount->GetMaxChars()), MAX_CHARS_PER_ACCT);
 
-	int iQty = pAccount->m_Chars.GetCharCount();
+	size_t iQty = pAccount->m_Chars.GetCharCount();
 	if (iQty > iMax)
 		iQty = iMax;
 
-	for (int i = 0; i < iQty; i++)
+	for (size_t i = 0; i < iQty; i++)
 	{
 		CGrayUID uid(pAccount->m_Chars.GetChar(i));
 		CChar* pChar = uid.CharFind();
@@ -1363,7 +1363,7 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 
 	// always show max count for some stupid reason. (client bug)
 	// pad out the rest of the chars.
-	int iClientMin = 5;
+	size_t iClientMin = 5;
 	if (GetNetState()->isClientVersion(MINCLIVER_PADCHARLIST) || !GetNetState()->getCryptVersion())
 		iClientMin = maximum(iQty, 5);
 
@@ -1604,7 +1604,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	if (pChar == NULL)
 		pChar = m_pChar;
 
-	bool bAllSkills = (skill >= MAX_SKILL);
+	bool bAllSkills = (skill >= SKILL_MAX);
 	if (bAllSkills == false && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) == false)
 		return;
 
@@ -2245,7 +2245,7 @@ blank_map:
 
 	// Now show all the pins
 	PacketMapPlot plot(pMap, MAP_ADD, false);
-	for ( int i=0; i < pMap->m_Pins.GetCount(); i++ )
+	for ( size_t i = 0; i < pMap->m_Pins.GetCount(); i++ )
 	{
 		plot.setPin(pMap->m_Pins[i].m_x, pMap->m_Pins[i].m_y);
 		plot.send(this);
@@ -2450,7 +2450,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
-			this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+			m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
 			t->FormatArgs(" \t%s\t ", pObj->GetName());
 		}
 		else // we have FEATURE_AOS_UPDATE_B enabled
@@ -2467,7 +2467,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 			{
 				if ( pItem )
 				{
-					this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
 					t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 				}
 				else if ( pChar )
@@ -2497,7 +2497,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						strcpy( lpSuffix, " " );
 
 					// The name
-					this->m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
 					t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
 					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
@@ -2560,7 +2560,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 							{
 								const CContainer * pContainer = dynamic_cast <const CContainer *> ( pItem );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1050044 ) );
-								t->FormatArgs( "%d\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+								t->FormatArgs( "%" FMTSIZE_T "\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
 							}
 							break;
 
@@ -2726,7 +2726,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		// build a hash value from the tooltip entries
 		DWORD hash = 0;
 		DWORD argumentHash = 0;
-		for (int i = 0; i < m_TooltipData.GetCount(); i++)
+		for (size_t i = 0; i < m_TooltipData.GetCount(); i++)
 		{
 			CClientTooltip* tipEntry = m_TooltipData.GetAt(i);
 			argumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
@@ -2975,9 +2975,9 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	if ( GetAccount()->m_TagDefs.GetKey("LastLogged") )
 		GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 
-	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() )
+	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() > 0 )
 	{
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES), g_World.m_GMPages.GetCount(), g_Cfg.m_cCommandPrefix);
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
 		addSysMessage(z);
 	}
 	if ( IsPriv(PRIV_JAILED) )

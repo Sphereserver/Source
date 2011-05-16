@@ -67,7 +67,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	// RES_REGIONRESOURCE from RES_REGIONTYPE linked to RES_AREA
 
 	EXC_SET("get region");
-	CRegionWorld* pRegion = dynamic_cast <CRegionWorld*>( pt.GetRegion( REGION_TYPE_AREA ));
+	CRegionWorld* pRegion = dynamic_cast<CRegionWorld*>( pt.GetRegion( REGION_TYPE_AREA ));
 	if ( !pRegion )
 		return NULL;
 
@@ -83,10 +83,10 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	}
 
 	// just use the background (default) region for this
-	if ( !pRegion->m_Events.GetCount() )
+	if ( pRegion->m_Events.GetCount() <= 0 )
 	{
 		CPointMap ptZero(0,0,0,pt.m_map);
-		pRegion = dynamic_cast <CRegionWorld*>(ptZero.GetRegion(REGION_TYPE_AREA));
+		pRegion = dynamic_cast<CRegionWorld*>(ptZero.GetRegion(REGION_TYPE_AREA));
 	}
 
 	// Find RES_REGIONTYPE
@@ -97,16 +97,16 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 
 	// Find RES_REGIONRESOURCE
 	EXC_SET("get random group element");
-	int	id	= pResGroup->GetRandMemberIndex(pCharSrc);
-	CRegionResourceDef *	pOreDef;
-	if ( id == -1 )
+	size_t id = pResGroup->GetRandMemberIndex(pCharSrc);
+	CRegionResourceDef * pOreDef;
+	if ( id == pResGroup->BadMemberIndex() )
 	{
 		pOreDef	= dynamic_cast <CRegionResourceDef *> (g_Cfg.ResourceGetDefByName(RES_REGIONRESOURCE, "mr_nothing"));
 	}
 	else
 	{
 		RESOURCE_ID rid	= pResGroup->GetMemberID( id );
-		pOreDef		= dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( rid ));
+		pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( rid ));
 	}
 
 	if ( !pOreDef )
@@ -169,7 +169,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	BYTE z = 0;
 	CPointMap ptTest;
 
-	int iRetElem = 4;
+	unsigned int iRetElem = 4;
 
 	CPointMap ptElem[5];
 	memset(ptElem, 0, sizeof(ptElem));
@@ -238,22 +238,22 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	const CUOMultiItemRec2 * pMultiItem = NULL;		// Multi item iterator
 	CRegionBase * pRegion				= NULL;
 	CRegionLinks rlinks;
-	int iQtyr = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
-	if ( iQtyr )
+	size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+	if ( iRegionQty > 0 )
 	{
-		for ( int aa = 0; aa < iQtyr; pMulti = NULL, ++aa)
+		for ( size_t iRegion = 0; iRegion < iRegionQty; pMulti = NULL, ++iRegion)
 		{
-			pRegion = rlinks.GetAt(aa);
+			pRegion = rlinks.GetAt(iRegion);
 			pItem = pRegion->GetResourceID().ItemFind();
 			if ( !pItem )
 				continue;
 			pMulti = g_Cfg.GetMultiItemDefs(pItem);
 			if ( !pMulti )
 				continue;
-			size_t iQty = pMulti->GetItemCount();
-			for ( size_t ab = 0; ab < iQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++ab )
+			size_t iMultiQty = pMulti->GetItemCount();
+			for ( size_t iMulti = 0; iMulti < iMultiQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++iMulti )
 			{
-				pMultiItem = pMulti->GetItem(ab);
+				pMultiItem = pMulti->GetItem(iMulti);
 				
 				if ( !pMultiItem )
 					break;
@@ -316,12 +316,12 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
 	ASSERT( pMapBlock );
 
-	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty > 0 )  // no static items here.
+	size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
+	if ( iStaticQty > 0 )  // no static items here.
 	{
 		const CUOStaticItemRec * pStatic = NULL;
 
-		for ( size_t i = 0; i < iQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
+		for ( size_t i = 0; i < iStaticQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
 		{
 			pStatic = pMapBlock->m_Statics.GetStatic( i );
 
@@ -441,6 +441,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	else
 		iRetElem = 4;*/
 
+	ASSERT(iRetElem < COUNTOF(ptElem));
 	if ( 0 != iRetElem && ptElem[0].m_z > ptElem[iRetElem].m_z )
 			 iRetElem = 4;
 	else if ( 1 != iRetElem && ptElem[1].m_z > ptElem[iRetElem].m_z )
@@ -613,11 +614,12 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 				CPointMap ptTest(x, y, pt.m_z, pt.m_map);
 
 				CRegionLinks rlinks;
-				if ( int iQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks) )
+				size_t iRegionQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks);
+				if ( iRegionQty > 0 )
 				{
-					for (int i = 0; i < iQty; i++)
+					for (size_t iRegion = 0; iRegion < iRegionQty; iRegion++)
 					{
-						CRegionBase* pRegion = rlinks.GetAt(i);
+						CRegionBase* pRegion = rlinks.GetAt(iRegion);
 						CItem* pItem = pRegion->GetResourceID().ItemFind();
 						if (pItem == NULL)
 							continue;
@@ -630,9 +632,9 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
 
 						size_t iItemQty = pMulti->GetItemCount();
-						for (size_t j = 0; j < iItemQty; j++)
+						for (size_t iItem = 0; iItem < iItemQty; iItem++)
 						{
-							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(j);
+							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(iItem);
 							ASSERT(pMultiItem);
 
 							if ( !pMultiItem->m_visible )
@@ -688,12 +690,12 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	}
 
 	{
-		size_t iQty = pMapBlock->m_Statics.GetStaticQty();
-		if ( iQty > 0 )  // no static items here.
+		size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
+		if ( iStaticQty > 0 )  // no static items here.
 		{
 			int x2 = pMapBlock->GetOffsetX(pt.m_x);
 			int y2 = pMapBlock->GetOffsetY(pt.m_y);
-			for ( size_t i = 0; i < iQty; i++ )
+			for ( size_t i = 0; i < iStaticQty; i++ )
 			{
 				if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 					continue;
@@ -715,9 +717,10 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	if ( fHouseCheck )
 	{
 		CRegionLinks rlinks;
-		if ( int iQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks ) )
+		size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+		if ( iRegionQty > 0 )
 		{
-			for ( int i = 0; i < iQty; i++)
+			for ( size_t i = 0; i < iRegionQty; i++)
 			{
 				CRegionBase * pRegion = rlinks.GetAt(i);
 				CItem * pItem = pRegion->GetResourceID().ItemFind();
@@ -729,8 +732,8 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 						int x2 = pt.m_x - pItem->GetTopPoint().m_x;
 						int y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
-						size_t iQty = pMulti->GetItemCount();
-						for ( size_t j = 0; j < iQty; j++ )
+						size_t iMultiQty = pMulti->GetItemCount();
+						for ( size_t j = 0; j < iMultiQty; j++ )
 						{
 							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(j);
 							ASSERT(pMultiItem);
@@ -973,8 +976,8 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	if ( fHouseCheck )
 	{
 		CRegionLinks rlinks;
-		int iQtyr = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
-		if ( iQtyr )
+		size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+		if ( iRegionQty > 0 )
 		{
 			//  ------------ For variables --------------------
 			CRegionBase * pRegion = NULL;
@@ -984,10 +987,10 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 			y2 = 0;
 			//  ------------ For variables --------------------
 
-			for ( int i = 0; i < iQtyr; ++i, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
+			for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
 			{
-				pRegion = rlinks.GetAt(i);
-				if ( pRegion )
+				pRegion = rlinks.GetAt(iRegion);
+				if ( pRegion != NULL )
 					pItem = pRegion->GetResourceID().ItemFind();
 
 				if ( pItem != NULL )
@@ -1204,44 +1207,44 @@ signed char CWorld::GetHeightPoint_New( const CPointBase & pt, WORD & wBlockFlag
 }
 
 
-CItemTypeDef *	CWorld::GetTerrainItemTypeDef( DWORD dwTerrainIndex )
+CItemTypeDef * CWorld::GetTerrainItemTypeDef( DWORD dwTerrainIndex )
 {
 	ADDTOCALLSTACK("CWorld::GetTerrainItemTypeDef");
-	CResourceDef *	pRes	= NULL;
+	CResourceDef *	pRes = NULL;
 
 	if ( g_World.m_TileTypes.IsValidIndex( dwTerrainIndex ) )
 	{
-		pRes	= g_World.m_TileTypes[dwTerrainIndex];
+		pRes = g_World.m_TileTypes[dwTerrainIndex];
 	}
 		
 	if ( !pRes )
 	{
 		RESOURCE_ID	rid( RES_TYPEDEF, 0 );
-		pRes	= g_Cfg.ResourceGetDef( rid );
+		pRes = g_Cfg.ResourceGetDef( rid );
 	}
 	ASSERT( pRes );
 
-	CItemTypeDef *	pItemTypeDef	= dynamic_cast <CItemTypeDef*> (pRes);
+	CItemTypeDef * pItemTypeDef = dynamic_cast <CItemTypeDef*> (pRes);
 	ASSERT( pItemTypeDef );
 
 	return( pItemTypeDef );
 }
 
 
-IT_TYPE		CWorld::GetTerrainItemType( DWORD dwTerrainIndex )
+IT_TYPE CWorld::GetTerrainItemType( DWORD dwTerrainIndex )
 {
 	ADDTOCALLSTACK("CWorld::GetTerrainItemType");
-	CResourceDef *	pRes	= NULL;
+	CResourceDef * pRes = NULL;
 
 	if ( g_World.m_TileTypes.IsValidIndex( dwTerrainIndex ) )
 	{
-		pRes	= g_World.m_TileTypes[dwTerrainIndex];
+		pRes = g_World.m_TileTypes[dwTerrainIndex];
 	}
 		
 	if ( !pRes )
 		return IT_NORMAL;
 
-	CItemTypeDef	*pItemTypeDef	= dynamic_cast <CItemTypeDef*> (pRes);
+	CItemTypeDef * pItemTypeDef = dynamic_cast <CItemTypeDef*> (pRes);
 	if ( !pItemTypeDef )
 		return IT_NORMAL;
 

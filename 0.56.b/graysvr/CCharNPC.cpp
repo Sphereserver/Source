@@ -202,8 +202,8 @@ bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
 		return true;
 
 	// Remove any previous skillclass from the Events block.
-	int i = pChar->m_OEvents.FindResourceType(RES_SKILLCLASS);
-	if ( i >= 0 )
+	size_t i = pChar->m_OEvents.FindResourceType(RES_SKILLCLASS);
+	if ( i != pChar->m_OEvents.BadIndex() )
 		pChar->m_OEvents.RemoveAt(i);
 
 	m_SkillClass.SetRef(pLink);
@@ -245,7 +245,7 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	{
 		i = g_Cfg.FindSkillKey( ppArgs[1] );
 	}
-	if ( i >= MAX_SKILL )
+	if ( i >= g_Cfg.m_iMaxSkill )
 		return( SKILL_NONE );
 	return( (SKILL_TYPE) i );
 }
@@ -356,7 +356,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			if ( pszKey[9] != '.' )
 				return( false );
 			pszKey += 10;
-			sVal = ( m_Speech.FindResourceName(RES_SPEECH, pszKey) >= 0 ) ? "1" : "0";
+			sVal = m_Speech.ContainsResourceName(RES_SPEECH, pszKey) ? "1" : "0";
 			return( true );
 		case CPC_LASTUSED:
 			sVal.FormatVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
@@ -434,8 +434,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		if ( *pszKey == '.' )						//	GMPAGE.*
 		{
 			SKIP_SEPARATORS(pszKey);
-			int index = Exp_GetVal(pszKey);
-			if (( index < 0 ) || ( index >= g_World.m_GMPages.GetCount() ))
+			size_t index = Exp_GetVal(pszKey);
+			if ( index >= g_World.m_GMPages.GetCount() )
 				return false;
 
 			CGMPage* pPage = STATIC_CAST <CGMPage*> (g_World.m_GMPages.GetAt(index));
@@ -448,7 +448,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				CChar *ppChar = pChar;
 
 				if ( *pszArgs )
-					ppChar = STATIC_CAST <CChar*> (g_World.FindUID(s.GetArgVal()));
+					ppChar = dynamic_cast<CChar*>(g_World.FindUID(s.GetArgVal()));
 
 				if ( ppChar == NULL )
 					return false;
@@ -610,7 +610,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 
 	EXC_SET("saving dynamic speech");
-	if ( m_Speech.GetCount() )
+	if ( m_Speech.GetCount() > 0 )
 	{
 		CGString sVal;
 		m_Speech.WriteResourceRefList( sVal );
@@ -636,12 +636,13 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving skill locks");
-	for ( int j = 0; j < MAX_SKILL; j++)	// Don't write all lock states!
+	for ( size_t j = 0; j < g_Cfg.m_iMaxSkill; j++)	// Don't write all lock states!
 	{
+		ASSERT(j < COUNTOF(m_SkillLock));
 		if ( ! m_SkillLock[j] )
 			continue;
 		TCHAR szTemp[128];
-		sprintf( szTemp, "SkillLock[%d]", j );	// smaller storage space.
+		sprintf( szTemp, "SkillLock[%" FMTSIZE_T "]", j );	// smaller storage space.
 		s.WriteKeyVal( szTemp, m_SkillLock[j] );
 	}
 	EXC_CATCH;

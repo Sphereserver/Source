@@ -300,7 +300,7 @@ private:
 	{
 		if ( m_pItems != NULL )
 		{
-			delete [] m_pItems;
+			delete[] m_pItems;
 			Init();
 		}
 	}

@@ -103,15 +103,14 @@ public:
 	static const char *m_sClassName;
 	CGTypedArray < CUOVersionBlock, CUOVersionBlock& > m_Data;
 private:
-	static int QCompare( void * pLeft, void * pRight );
-	int QCompare( int left, DWORD dwRefIndex ) const;
-	void QSort( int left, int right );
+	int QCompare( size_t left, DWORD dwRefIndex ) const;
+	void QSort( size_t left, size_t right );
 public:
-	DWORD GetCount() const
+	size_t GetCount() const
 	{
 		return( m_Data.GetCount());
 	}
-	const CUOVersionBlock * GetEntry( DWORD i ) const
+	const CUOVersionBlock * GetEntry( size_t i ) const
 	{
 		return( &m_Data.ElementAt(i));
 	}

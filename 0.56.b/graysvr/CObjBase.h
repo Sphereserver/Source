@@ -1268,7 +1268,7 @@ private:
 	CContainer& operator=(const CContainer& other);
 
 public:
-	CItem * GetAt( int index ) const
+	CItem * GetAt( size_t index ) const
 	{
 		return( dynamic_cast <CItem*>( CGObList::GetAt( index )));
 	}
@@ -1300,7 +1300,7 @@ public:
 	int ContentConsume( RESOURCE_ID_BASE rid, int iQty = 1, bool fTest = false, DWORD dwArg = 0 );
 
 	int ResourceConsume( const CResourceQtyArray * pResources, int iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
-	int ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
+	size_t ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
 
 	virtual void OnWeightChange( int iChange );
 	virtual void ContentAdd( CItem * pItem ) = 0;
@@ -2045,19 +2045,19 @@ public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
-	int GetPageCount() const
+	size_t GetPageCount() const
 	{
-		return( m_sBodyLines.GetCount());
+		return m_sBodyLines.GetCount();
 	}
-	LPCTSTR GetPageText( int iPage ) const
+	LPCTSTR GetPageText( size_t iPage ) const
 	{
-		if ( iPage < 0 || iPage >= GetPageCount())
-			return( NULL );
+		if ( m_sBodyLines.IsValidIndex(iPage) == false )
+			return NULL;
 		if ( m_sBodyLines[iPage] == NULL )
-			return( NULL );
-		return( * m_sBodyLines[iPage] );
+			return NULL;
+		return m_sBodyLines[iPage]->GetPtr();
 	}
-	void SetPageText( int iPage, LPCTSTR pszText )
+	void SetPageText( size_t iPage, LPCTSTR pszText )
 	{
 		if ( pszText == NULL )
 			return;
@@ -2145,7 +2145,7 @@ private:
 	CCharNPC& operator=(const CCharNPC& other);
 };
 
-#define IS_SKILL_BASE(sk) ((sk)> SKILL_NONE && (sk)< MAX_SKILL )
+#define IS_SKILL_BASE(sk) ((sk) > SKILL_NONE && (sk) < SKILL_MAX )
 
 struct CCharPlayer
 {

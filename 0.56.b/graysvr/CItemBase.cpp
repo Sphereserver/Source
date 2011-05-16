@@ -11,13 +11,12 @@
 CItemBase::CItemBase( ITEMID_TYPE id ) :
 	CBaseBaseDef( RESOURCE_ID( RES_ITEMDEF, id ))
 {
-	m_weight	= 0;
-	m_speed		= 0;
-	m_iSkill		= -1;
-
-	m_range		= 1;
-	m_type		= IT_NORMAL;
-	m_layer		= LAYER_NONE;
+	m_weight = 0;
+	m_speed = 0;
+	m_iSkill = SKILL_NONE;
+	m_range = 1;
+	m_type = IT_NORMAL;
+	m_layer = LAYER_NONE;
 
 	// Just applies to equippable weapons/armor.
 	m_ttNormal.m_tData1 = 0;
@@ -725,8 +724,8 @@ height_t CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
 	// used for walk block checking.
 
 	RESOURCE_ID rid = RESOURCE_ID( RES_ITEMDEF, id );
-	int index = g_Cfg.m_ResHash.FindKey(rid);
-	if ( index >= 0 )	// already loaded ?
+	size_t index = g_Cfg.m_ResHash.FindKey(rid);
+	if ( index != g_Cfg.m_ResHash.BadIndex() ) // already loaded ?
 	{
 		CResourceDef * pBaseStub = g_Cfg.m_ResHash.GetAt( rid, index );
 		ASSERT(pBaseStub);
@@ -802,15 +801,11 @@ IT_TYPE CItemBase::GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata 
 ITEMID_TYPE CItemBase::GetNextFlipID( ITEMID_TYPE id ) const
 {
 	ADDTOCALLSTACK("CItemBase::GetNextFlipID");
-	if ( m_flip_id.GetCount())
+	if ( m_flip_id.GetCount() > 0 )
 	{
 		ITEMID_TYPE idprev = GetDispID();
-		for ( int i = 0; ; i++ )
+		for ( size_t i = 0; i < m_flip_id.GetCount(); i++ )
 		{
-			if ( i>=m_flip_id.GetCount())
-			{
-				break;
-			}
 			ITEMID_TYPE idnext = m_flip_id[i];
 			if ( idprev == id )
 				return( idnext );
@@ -834,7 +829,7 @@ bool CItemBase::IsSameDispID( ITEMID_TYPE id ) const
 	if ( id == GetDispID())
 		return( true );
 
-	for ( int i=0; i<m_flip_id.GetCount(); i ++ )
+	for ( size_t i = 0; i < m_flip_id.GetCount(); i ++ )
 	{
 		if ( m_flip_id[i] == id )
 			return( true );
@@ -871,8 +866,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 	int lValue = 0;
 
 	// add value based on the base resources making this up.
-	int i;
-	for ( i=0; i<m_BaseResources.GetCount(); i++ )
+	for ( size_t i = 0; i < m_BaseResources.GetCount(); i++ )
 	{
 		RESOURCE_ID rid = m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
@@ -886,7 +880,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 	}
 
 	// add some value based on the skill required to create it.
-	for ( i=0; i<m_SkillMake.GetCount(); i++ )
+	for ( size_t i = 0; i < m_SkillMake.GetCount(); i++ )
 	{
 		RESOURCE_ID rid = m_SkillMake[i].GetResourceID();
 		if ( rid.GetResType() != RES_SKILL )
@@ -1024,7 +1018,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 				TCHAR *pszTemp = Str_GetTemp();
 				size_t iLen = 0;
 				*pszTemp = '\0';
-				for ( int i = 0; i < m_flip_id.GetCount(); i++ )
+				for ( size_t i = 0; i < m_flip_id.GetCount(); i++ )
 				{
 					if ( i > 0 )
 						iLen += strcpylen( pszTemp+iLen, "," );
@@ -1053,7 +1047,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_SKILL:		// Skill to use.
 			{
 				//sVal.FormatVal( m_iSkill );
-				if ( m_iSkill >= 0 && m_iSkill < MAX_SKILL )
+				if ( m_iSkill > SKILL_NONE && m_iSkill < SKILL_MAX )
 				{
 					sVal.FormatVal( (SKILL_TYPE) m_iSkill );
 					break;
@@ -1369,8 +1363,8 @@ void CItemBase::ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew ) // stat
 	ASSERT(pOld);
 	ASSERT(pOld->GetRefInstances() == 0);
 	RESOURCE_ID rid = pOld->GetResourceID();
-	int index = g_Cfg.m_ResHash.FindKey(rid);
-	ASSERT( index >= 0 );
+	size_t index = g_Cfg.m_ResHash.FindKey(rid);
+	ASSERT( index != g_Cfg.m_ResHash.BadIndex() );
 	g_Cfg.m_ResHash.SetAt( rid, index, pNew );
 }
 
@@ -1609,13 +1603,14 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 			return false;
 
 		if (*pszKey == '\0')
+		{
 			sVal.FormatVal(pMulti->GetItemCount());
+		}
 		else if (*pszKey == '.')
 		{
 			SKIP_SEPARATORS( pszKey );
-			int index = Exp_GetVal( pszKey );
-
-			if ((index < 0) || (index >= pMulti->GetItemCount()))
+			size_t index = Exp_GetVal( pszKey );
+			if (index >= pMulti->GetItemCount())
 				return false;
 			SKIP_SEPARATORS( pszKey );
 			const CUOMultiItemRec2* item = pMulti->GetItem(index);
@@ -1637,14 +1632,17 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 	case MLC_COMPONENT:
 		{
 			pszKey += 9;
-			if ( !*pszKey ) sVal.FormatVal( m_Components.GetCount() );
+			if ( *pszKey == '\0' )
+			{
+				sVal.FormatVal( m_Components.GetCount() );
+			}
 			else if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS( pszKey );
-				int index = Exp_GetVal( pszKey );
-
-				if ((index < 0) || (index >= m_Components.GetCount()))
+				size_t index = Exp_GetVal( pszKey );
+				if ( m_Components.IsValidIndex(index) == false )
 					return false;
+
 				SKIP_SEPARATORS( pszKey );
 				CMultiComponentItem item = m_Components.GetAt( index );
 
@@ -1716,8 +1714,8 @@ CItemBase * CItemBase::FindItemBase( ITEMID_TYPE id ) // static
 	}
 
 	RESOURCE_ID rid = RESOURCE_ID( RES_ITEMDEF, id );
-	int index = g_Cfg.m_ResHash.FindKey(rid);
-	if ( index < 0 )
+	size_t index = g_Cfg.m_ResHash.FindKey(rid);
+	if ( index == g_Cfg.m_ResHash.BadIndex() )
 	{
 		return( NULL );
 	}
@@ -1805,8 +1803,8 @@ CItemBaseDupe * CItemBaseDupe::GetDupeRef( ITEMID_TYPE id ) // static
 		return( NULL );
 
 	RESOURCE_ID rid = RESOURCE_ID( RES_ITEMDEF, id );
-	int index = g_Cfg.m_ResHash.FindKey(rid);
-	if ( index < 0 )
+	size_t index = g_Cfg.m_ResHash.FindKey(rid);
+	if ( index == g_Cfg.m_ResHash.BadIndex() )
 		return( NULL );
 
 	CResourceDef * pBaseStub = g_Cfg.m_ResHash.GetAt( rid, index );

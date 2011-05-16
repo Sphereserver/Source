@@ -925,7 +925,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		character = target->GetChar();
 
 	bool includeCaps = target->GetNetState()->isClientVersion(MINCLIVER_SKILLCAPS);
-	if (skill >= MAX_SKILL)
+	if (skill >= SKILL_MAX)
 	{
 		// all skills
 		if (includeCaps)
@@ -933,12 +933,12 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		else
 			writeByte(0x00);
 
-		for (int i = 0; i < MAX_SKILL; i++)
+		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
 		{
-			if (g_Cfg.m_SkillIndexDefs.IsValidIndex(i) == false)
+			if (g_Cfg.m_SkillIndexDefs.IsValidIndex((SKILL_TYPE)i) == false)
 				continue;
 
-			writeInt16(i+1);
+			writeInt16((SKILL_TYPE)(i + 1));
 			writeInt16(character->Skill_GetAdjusted((SKILL_TYPE)i));
 			writeInt16(character->Skill_GetBase((SKILL_TYPE)i));
 			writeByte(character->Skill_GetLock((SKILL_TYPE)i));
@@ -1373,7 +1373,7 @@ PacketWeather::PacketWeather(const CClient* target, WEATHER_TYPE weather, int se
  *
  *
  ***************************************************************************/
-PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem* book, int startpage, int pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem* book, size_t startpage, size_t pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::PacketBookPageContent");
 
@@ -1383,16 +1383,13 @@ PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem*
 	writeInt32(book->GetUID());
 	writeInt16(0);
 
-	if (pagecount < 0)
-		pagecount = 1;
-
-	for (int i = 0; i < pagecount; i++)
+	for (size_t i = 0; i < pagecount; i++)
 		addPage(book, startpage + i);
 
 	push(target);
 };
 
-void PacketBookPageContent::addPage(const CItem* book, int page)
+void PacketBookPageContent::addPage(const CItem* book, size_t page)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::addPage");
 
@@ -1776,10 +1773,10 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 		// requesst for full message body
 		writeInt32(0);
 
-		int lines = message->GetPageCount();
+		size_t lines = message->GetPageCount();
 		writeInt16(lines);
 
-		for (int i = 0; i < lines; i++)
+		for (size_t i = 0; i < lines; i++)
 		{
 			LPCTSTR text = message->GetPageText(i);
 			if (text == NULL)
@@ -2099,7 +2096,7 @@ PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_
 	skip(1);
 
 	writeByte(0);
-	int count = target->Setup_FillCharList(this, target->GetChar());
+	size_t count = target->Setup_FillCharList(this, target->GetChar());
 
 	seek(countPos);
 	writeByte(count);
@@ -2157,7 +2154,7 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CCha
 	size_t countPos = getPosition();
 	skip(1);
 
-	int count = target->Setup_FillCharList(this, lastCharacter);
+	size_t count = target->Setup_FillCharList(this, lastCharacter);
 
 	seek(countPos);
 	writeByte(count);
@@ -2795,7 +2792,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 
 	//	too many servers in list can crash the client
 #define	MAX_SERVERS_LIST	32
-	for (int i = 0; count < MAX_SERVERS_LIST; i++)
+	for (size_t i = 0; count < MAX_SERVERS_LIST; i++)
 	{
 		CServerRef server = g_Cfg.Server_GetDef(i);
 		if (server == NULL)
@@ -2871,7 +2868,7 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 	size_t countPos = getPosition();
 	skip(1);
 
-	int count = target->Setup_FillCharList(this, lastCharacter);
+	size_t count = target->Setup_FillCharList(this, lastCharacter);
 
 	seek(countPos);
 	writeByte(count);
@@ -3438,11 +3435,11 @@ PacketPartyList::PacketPartyList(const CCharRefArray* members) : PacketParty(PAR
 {
 	ADDTOCALLSTACK("PacketPartyList::PacketPartyList");
 
-	int iQty = members->GetCharCount();
+	size_t iQty = members->GetCharCount();
 
 	writeByte(iQty);
 
-	for (int i = 0; i < iQty; i++)
+	for (size_t i = 0; i < iQty; i++)
 		writeInt32(members->GetChar(i));
 }
 
@@ -3460,12 +3457,12 @@ PacketPartyRemoveMember::PacketPartyRemoveMember(const CChar* member, const CCha
 
 	ASSERT(member != NULL);
 
-	int iQty = members == NULL? 0 : members->GetCharCount();
+	size_t iQty = members == NULL? 0 : members->GetCharCount();
 
 	writeByte(iQty);
 	writeInt32(member->GetUID());
 
-	for (int i = 0; i < iQty; i++)
+	for (size_t i = 0; i < iQty; i++)
 		writeInt32(members->GetChar(i));
 }
 
@@ -4048,7 +4045,7 @@ PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, co
 	writeInt16(0);
 	writeInt32(version);
 	
-	for (int x = 0; x < data->GetCount(); x++)
+	for (size_t x = 0; x < data->GetCount(); x++)
 	{
 		const CClientTooltip* tipEntry = data->GetAt(x);
 		size_t tipLength = strlen(tipEntry->m_args);

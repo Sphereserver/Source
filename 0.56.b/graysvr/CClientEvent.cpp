@@ -1042,7 +1042,7 @@ void CClient::Event_VendorBuy_Cheater( int iCode )
 	SysMessage("You cannot buy that.");
 }
 
-void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD itemCount)
+void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t itemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy");
 	if (m_pChar == NULL || pVendor == NULL || items == NULL || itemCount <= 0)
@@ -1263,7 +1263,7 @@ void CClient::Event_VendorSell_Cheater( int iCode )
 	SysMessage("You cannot sell that.");
 }
 
-void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD itemCount)
+void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell");
 	// Player Selling items to the vendor.
@@ -2006,7 +2006,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 		pszKey += 6;
 		SKIP_SEPARATORS(pszKey);
 
-		int iQty = m_CheckArray.GetCount();
+		size_t iQty = m_CheckArray.GetCount();
 		if ( pszKey[0] == '\0' )
 		{
 			sVal.FormatVal(iQty);
@@ -2016,7 +2016,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 		{
 			pszKey += 2;
 
-			if ( iQty && m_CheckArray[0] )
+			if ( iQty > 0 && m_CheckArray[0] )
 				sVal.FormatVal( m_CheckArray[0] );
 			else
 				sVal.FormatVal( -1 );
@@ -2026,7 +2026,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 
 		int iNum = Exp_GetSingle( pszKey );
 		SKIP_SEPARATORS(pszKey);
-		for ( int i=0; i<iQty; i++ )
+		for ( size_t i = 0; i < iQty; i++ )
 		{
 			if ( (DWORD)iNum == m_CheckArray[i] )
 			{
@@ -2042,7 +2042,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 		pszKey += 6;
 		SKIP_SEPARATORS(pszKey);
 
-		int iQty = m_TextArray.GetCount();
+		size_t iQty = m_TextArray.GetCount();
 		if ( pszKey[0] == '\0' )
 		{
 			sVal.FormatVal(iQty);
@@ -2052,7 +2052,7 @@ bool CDialogResponseArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConso
 		int iNum = Exp_GetSingle( pszKey );
 		SKIP_SEPARATORS(pszKey);
 
-		for ( int i=0; i<m_TextArray.GetCount(); i++ )
+		for ( size_t i = 0; i < iQty; i++ )
 		{
 			if ( iNum == m_TextArray[i]->m_ID )
 			{

@@ -468,18 +468,18 @@ void CChar::UnEquipAllItems( CItemContainer * pDest )
 	// Pets can be told to "Drop All"
 	// drop item that is up in the air as well.
 
-	if ( ! GetCount())
+	if ( GetCount() <= 0 )
 		return;
 	CItemContainer * pPack = NULL;
 
 	CItem* pItemNext;
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItemNext )
+	CItem* pItem = GetContentHead();
+	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
 		LAYER_TYPE layer = pItem->GetEquipLayer();
-			switch ( layer )
-			{
+		switch ( layer )
+		{
 			case LAYER_NONE:
 				pItem->Delete();	// Get rid of any trades.
 				continue;
@@ -2362,12 +2362,12 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	if ( !pCorpse )
 		return false;
 
-	if ( pCorpse->GetCount())
+	if ( pCorpse->GetCount() > 0 )
 	{
 		CItemContainer * pPack = GetPackSafe();
 
 		CItem* pItemNext;
-		for ( CItem * pItem = pCorpse->GetContentHead(); pItem!=NULL; pItem=pItemNext )
+		for ( CItem * pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
 			pItemNext = pItem->GetNext();
 			if ( pItem->IsType( IT_HAIR ) ||
@@ -3151,7 +3151,7 @@ bool CChar::CheckLocation( bool fStanding )
 						{
 							CItemCorpse	*pCorpse = dynamic_cast <CItemCorpse*>(this);
 
-							if ( pCorpse && pCorpse->GetCount() )
+							if ( pCorpse != NULL && pCorpse->GetCount() > 0 )
 							{
 								CItem *pItem = pCorpse->GetAt( Calc_GetRandVal(pCorpse->GetCount()) );
 								bool bLoot = false;
@@ -3180,7 +3180,7 @@ bool CChar::CheckLocation( bool fStanding )
 									else if ( pItem->IsType(IT_CONTAINER) )
 									{
 										CItemContainer *pItemCont = dynamic_cast <CItemContainer*>(pItem);
-										if ( pItemCont->GetCount() )
+										if ( pItemCont->GetCount() > 0 )
 											bLoot = true;
 									}
 									else
@@ -3532,7 +3532,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_TRY("Trigger");
 	// 1) Triggers installed on characters, sensitive to actions on all chars
 	CChar * pChar = pSrc->GetChar();
-	if ( pChar && this != pChar )
+	if ( pChar != NULL && this != pChar )
 	{
 		EXC_SET("chardef");
 		// Is there an [EVENT] block call here?
@@ -3557,12 +3557,11 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	// Go thru the event blocks for the NPC/PC to do events.
 	//
 	EXC_SET("events");
-	int i;
-	int origEvents = m_OEvents.GetCount();
-	int curEvents = origEvents;
-	for ( i=0; i < curEvents; ++i )			//	EVENTS (could be modifyed ingame!)
+	size_t origEvents = m_OEvents.GetCount();
+	size_t curEvents = origEvents;
+	for ( size_t i = 0; i < curEvents; ++i ) // EVENTS (could be modifyed ingame!)
 	{
-		CResourceLink	*pLink = m_OEvents[i];
+		CResourceLink * pLink = m_OEvents[i];
 		if ( !pLink || !pLink->HasTrigger(iAction) )
 			continue;
 		CResourceLock s;
@@ -3581,13 +3580,13 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		}
 	}
 
-	if ( m_pNPC )
+	if ( m_pNPC != NULL )
 	{
 		// 3) TEVENTS
-		EXC_SET("NPC triggers");								//	TEVENTS (constant events of NPCs)
-		for ( i=0; i < pCharDef->m_TEvents.GetCount(); ++i )
+		EXC_SET("NPC triggers"); // TEVENTS (constant events of NPCs)
+		for ( size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i )
 		{
-			CResourceLink	*pLink = pCharDef->m_TEvents[i];
+			CResourceLink * pLink = pCharDef->m_TEvents[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )
 				continue;
 			CResourceLock s;
@@ -3599,8 +3598,8 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		}
 
 		// 4) EVENTSPET triggers
-		EXC_SET("NPC triggers - EVENTSPET");
-		for ( i=0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )//	EVENTSPET (constant events of NPCs set from sphere.ini)
+		EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
+		for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
 		{
 			CResourceLink	*pLink = g_Cfg.m_pEventsPetLink[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )
@@ -3615,7 +3614,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	// 5) CHARDEF triggers
-	if ( !m_pPlayer )			//	CHARDEF triggers (based on body type)
+	if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
 	{
 		EXC_SET("chardef triggers");
 		if ( pCharDef->HasTrigger(iAction) )
@@ -3631,11 +3630,11 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	// 6) EVENTSPLAYER triggers
-	if ( m_pPlayer )
+	if ( m_pPlayer != NULL )
 	{
 		//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)
 		EXC_SET("chardef triggers - EVENTSPLAYER");
-		for ( i=0; i < g_Cfg.m_pEventsPlayerLink.GetCount(); ++i )
+		for ( size_t i = 0; i < g_Cfg.m_pEventsPlayerLink.GetCount(); ++i )
 		{
 			CResourceLink	*pLink = g_Cfg.m_pEventsPlayerLink[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )

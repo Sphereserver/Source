@@ -232,7 +232,7 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 	}
 
 	CItem* pItem = pBank->GetContentHead();
-	for ( ; pItem!=NULL ; pItem = pItem->GetNext())
+	for ( ; pItem != NULL ; pItem = pItem->GetNext())
 	{
 		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
 			iCount++;
@@ -366,8 +366,7 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	SKILL_TYPE skill = m_Act_SkillCurrent;
 
 	TALKMODE_TYPE mode = TALKMODE_SAY;
-	int i;
-	for ( i = 0; i < m_pNPC->m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < m_pNPC->m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = m_pNPC->m_Speech[i];
 		if ( !pLink )
@@ -388,7 +387,7 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 
 	CCharBase * pCharDef = Char_GetDef();
 	ASSERT(pCharDef != NULL);
-	for ( i = 0; i < pCharDef->m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < pCharDef->m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = pCharDef->m_Speech[i];
 		if ( !pLink )
@@ -450,18 +449,19 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	// Train npc skill cap
 	int iMaxDecrease = 0;
-	if ((pCharSrc->GetSkillTotal() + iTrainCost) > pCharSrc->Skill_GetMax( (SKILL_TYPE)MAX_SKILL ))
+	if ((pCharSrc->GetSkillTotal() + iTrainCost) > pCharSrc->Skill_GetMax(SKILL_MAX))
 	{	
-		for (int i= SKILL_NONE + 1; i < MAX_SKILL; i++ )
+		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE)i ) )
 				continue;
 
 			if ( pCharSrc->Skill_GetLock((SKILL_TYPE)i) == SKILLLOCK_DOWN )
 				iMaxDecrease += pCharSrc->Skill_GetBase((SKILL_TYPE)i);
 		}
 		iMaxDecrease = minimum( iTrainCost, iMaxDecrease);
-	} else
+	}
+	else
 	{
 		iMaxDecrease = iTrainCost;
 	}
@@ -565,11 +565,11 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
 	int iTrain = toTrain;
-	if ((pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax( (SKILL_TYPE)MAX_SKILL ))
+	if ((pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(SKILL_MAX))
 	{	
-		for (int i=SKILL_NONE+1; i<MAX_SKILL; i++ )
+		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
 				continue;
 
 			if ( toTrain < 1 )
@@ -590,7 +590,9 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 				}
 			}
 		}
-	} else {
+	}
+	else
+	{
 		pCharSrc->Skill_SetBase(skill, iTrain + pCharSrc->Skill_GetBase(skill));
 	}
 
@@ -620,10 +622,10 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
 
-	int i=SKILL_NONE+1;
-	for ( ; i<MAX_SKILL; i++ )
+	size_t i = SKILL_NONE + 1;
+	for ( ; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
 			continue;
 
 		LPCTSTR pSkillKey = g_Cfg.GetSkillKey( (SKILL_TYPE) i );
@@ -652,10 +654,10 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 
 	LPCTSTR pPrvSkill = NULL;
 
-	int iCount = 0;
-	for ( i = (SKILL_NONE+1); i < MAX_SKILL; i++ )
+	size_t iCount = 0;
+	for ( i = (SKILL_NONE + 1); i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
 			continue;
 
 		int iDiff = NPC_GetTrainMax( pCharSrc, (SKILL_TYPE)i ) - pCharSrc->Skill_GetBase( (SKILL_TYPE) i);
@@ -844,13 +846,13 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 				EXC_TRYSUB("Array Shift");
 				//	also shift the steps array
-				for ( int j = 0; j < MAX_NPC_PATH_STORAGE_SIZE-1; ++j )
+				for ( int j = 0; j < (MAX_NPC_PATH_STORAGE_SIZE - 1); ++j )
 				{
 					m_pNPC->m_nextX[j] = m_pNPC->m_nextX[j+1];
 					m_pNPC->m_nextY[j] = m_pNPC->m_nextY[j+1];
 				}
-				m_pNPC->m_nextX[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
-				m_pNPC->m_nextY[MAX_NPC_PATH_STORAGE_SIZE-1] = 0;
+				m_pNPC->m_nextX[MAX_NPC_PATH_STORAGE_SIZE - 1] = 0;
+				m_pNPC->m_nextY[MAX_NPC_PATH_STORAGE_SIZE - 1] = 0;
 				EXC_CATCHSUB("NPCAI");
 			}
 		}
@@ -2735,7 +2737,7 @@ bool CChar::NPC_Act_Food()
 		CCharBase			*pCharDef = Char_GetDef();
 		RESOURCE_ID_BASE	rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
 
-		if ( pCharDef->m_FoodType.FindResourceID(rid) >= 0 )	//	do I accept grass as food?
+		if ( pCharDef->m_FoodType.ContainsResourceID(rid) ) // do I accept grass as food?
 		{
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
@@ -3520,7 +3522,7 @@ void CChar::NPC_Food()
 		RESOURCE_ID_BASE	rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
 
 		EXC_SET("searching grass");
-		if ( pCharDef->m_FoodType.FindResourceID(rid) >= 0 )	//	do I accept grass as a food?
+		if ( pCharDef->m_FoodType.ContainsResourceID(rid) ) // do I accept grass as a food?
 		{
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )

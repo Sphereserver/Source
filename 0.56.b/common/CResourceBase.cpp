@@ -82,7 +82,7 @@ CResourceScript * CResourceBase::FindResourceFile( LPCTSTR pszPath )
 
 	LPCTSTR pszTitle = CScript::GetFilesTitle( pszPath );
 
-	for ( int i = 0; ; i++ )
+	for ( size_t i = 0; ; i++ )
 	{
 		CResourceScript * pResFile = GetResourceFile(i);
 		if ( pResFile == NULL )
@@ -349,8 +349,8 @@ CResourceDef * CResourceBase::ResourceGetDef( RESOURCE_ID_BASE rid ) const
 	ADDTOCALLSTACK("CResourceBase::ResourceGetDef");
 	if ( ! rid.IsValidUID())
 		return( NULL );
-	int	index = m_ResHash.FindKey( rid );
-	if ( index < 0 )
+	size_t index = m_ResHash.FindKey( rid );
+	if ( index == m_ResHash.BadIndex() )
 		return( NULL );
 	return( m_ResHash.GetAt( rid, index ));
 }
@@ -565,11 +565,11 @@ bool	CRegionBase::MakeRegionName()
 	*(++pszDef)	= '\0';
 
 	
-	int iMax = g_Cfg.m_RegionDefs.GetCount();
+	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
 	int iVar = 1;
 	size_t iLen = strlen( pbuf );
 
-	for ( int i = 0; i < iMax; i++ )
+	for ( size_t i = 0; i < iMax; i++ )
 	{
 		CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 		if ( !pRegion )
@@ -1100,21 +1100,21 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 
 			// Is it already in the list ?
 			fRet = true;
-			if ( FindPtr(pResourceLink) >= 0 )
+			if ( ContainsPtr(pResourceLink) )
 			{
 				continue;
 			}
-			if ( g_Cfg.m_pEventsPetLink.FindPtr(pResourceLink) >= 0 )
-			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
-				continue;
-			}
-			else if ( g_Cfg.m_pEventsPlayerLink.FindPtr(pResourceLink) >= 0 )
+			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
 			{
 				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
-			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink.FindPtr(pResourceLink) >= 0 )
+			else if ( g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) )
+			{
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				continue;
+			}
+			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
 			{
 				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
@@ -1136,64 +1136,63 @@ void CResourceRefArray::WriteResourceRefList( CGString & sVal ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::WriteResourceRefList");
 	TemporaryString tsVal;
-	TCHAR * pszVal = (char*)tsVal;
+	TCHAR * pszVal = (TCHAR*)tsVal;
 	size_t len = 0;
-	for ( int j = 0; j < GetCount(); j++ )
+	for ( size_t j = 0; j < GetCount(); j++ )
 	{
-		if ( j )
-		{
-			pszVal[ len ++ ] = ',';
-		}
-		len += strcpylen( pszVal+len, GetResourceName( j ));
+		if ( j > 0 )
+			pszVal[len++] = ',';
+
+		len += strcpylen( pszVal + len, GetResourceName( j ));
 		if ( len >= SCRIPT_MAX_LINE_LEN-1 )
 			break;
 	}
-	pszVal[ len ] = '\0';
+	pszVal[len] = '\0';
 	sVal = pszVal;
 }
 
-int CResourceRefArray::FindResourceType( RES_TYPE restype ) const
+size_t CResourceRefArray::FindResourceType( RES_TYPE restype ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceType");
 	// Is this resource already in the list ?
-	int iQty = GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = GetCount();
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetRef()->GetResourceID();
 		if ( ridtest.GetResType() == restype )
 			return( i );
 	}
-	return( -1 );
+	return BadIndex();
 }
 
-int CResourceRefArray::FindResourceID( RESOURCE_ID_BASE rid ) const
+size_t CResourceRefArray::FindResourceID( RESOURCE_ID_BASE rid ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceID");
 	// Is this resource already in the list ?
-	int iQty = GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetRef()->GetResourceID();
 		if ( ridtest == rid )
-			return( i );
+			return i;
 	}
-	return( -1 );
+	return BadIndex();
 }
 
-int CResourceRefArray::FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) const
+size_t CResourceRefArray::FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceName");
 	// Is this resource already in the list ?
 	CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDefByName( restype, pszKey ));
-	if ( !pResourceLink )
-		return -1;
+	if ( pResourceLink == NULL )
+		return BadIndex();
 	return FindPtr(pResourceLink);
 }
 
 void CResourceRefArray::r_Write( CScript & s, LPCTSTR pszKey ) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CResourceRefArray::r_Write");
-	for ( int j=0;j<GetCount(); j++ )
+	for ( size_t j = 0; j < GetCount(); j++ )
 	{
 		s.WriteKey( pszKey, GetResourceName( j ));
 	}
@@ -1306,46 +1305,46 @@ void CResourceQtyArray::setNoMergeOnLoad()
 	m_mergeOnLoad = false;
 }
 
-int CResourceQtyArray::FindResourceType( RES_TYPE type ) const
+size_t CResourceQtyArray::FindResourceType( RES_TYPE type ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceType");
 	// is this RES_TYPE in the array ?
-	// -1 = fail
-	for ( int i=0; i<GetCount(); i++ )
+	// BadIndex = fail
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( type == ridtest.GetResType() )
-			return( i );
+			return i;
 	}
-	return( -1 );
+	return BadIndex();
 }
 
-int CResourceQtyArray::FindResourceID( RESOURCE_ID_BASE rid ) const
+size_t CResourceQtyArray::FindResourceID( RESOURCE_ID_BASE rid ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceID");
 	// is this RESOURCE_ID in the array ?
-	// -1 = fail
-	for ( int i=0; i<GetCount(); i++ )
+	// BadIndex = fail
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( rid == ridtest )
-			return( i );
+			return i;
 	}
-	return( -1 );
+	return BadIndex();
 }
 
-int CResourceQtyArray::FindResourceMatch( CObjBase * pObj ) const
+size_t CResourceQtyArray::FindResourceMatch( CObjBase * pObj ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceMatch");
 	// Is there a more vague match in the array ?
 	// Use to find intersection with this pOBj raw material and BaseResource creation elements.
-	for ( int i=0; i<GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( pObj->IsResourceMatch( ridtest, 0 ))
-			return( i );
+			return i;
 	}
-	return( -1 );
+	return BadIndex();
 }
 
 bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
@@ -1354,8 +1353,9 @@ bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
 	// Check all required skills and non-consumable items.
 	// RETURN:
 	//  false = failed.
+	ASSERT(pChar != NULL);
 
-	for ( int i=0; i<GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 
@@ -1366,7 +1366,7 @@ bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
 	return( true );
 }
 
-int CResourceQtyArray::Load(LPCTSTR pszCmds)
+size_t CResourceQtyArray::Load(LPCTSTR pszCmds)
 {
 	ADDTOCALLSTACK("CResourceQtyArray::Load");
 	//	clear-before-load in order not to mess with the previous data
@@ -1376,7 +1376,7 @@ int CResourceQtyArray::Load(LPCTSTR pszCmds)
 	}
 
 	// 0 = clear the list.
-	int iValid = 0;
+	size_t iValid = 0;
 	ASSERT(pszCmds);
 	while ( *pszCmds )
 	{
@@ -1395,10 +1395,10 @@ int CResourceQtyArray::Load(LPCTSTR pszCmds)
 			if ( res.GetResourceID().IsValidUID())
 			{
 				// Replace any previous refs to this same entry ?
-				int i = FindResourceID( res.GetResourceID() );
-				if ( i >= 0 )
+				size_t i = FindResourceID( res.GetResourceID() );
+				if ( i != BadIndex() )
 				{
-					SetAt(i,res); 
+					SetAt(i, res); 
 				}
 				else
 				{
@@ -1419,16 +1419,16 @@ int CResourceQtyArray::Load(LPCTSTR pszCmds)
 	return( iValid );
 }
 
-void CResourceQtyArray::WriteKeys( TCHAR * pszArgs, int index, bool fQtyOnly, bool fKeyOnly ) const
+void CResourceQtyArray::WriteKeys( TCHAR * pszArgs, size_t index, bool fQtyOnly, bool fKeyOnly ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::WriteKeys");
-	int		max	= GetCount();
+	size_t max = GetCount();
 	if ( index > 0 && index < max )
-		max		= index;
+		max = index;
 
-	for ( int i = (index > 0 ? index-1 : 0); i < max; i++ )
+	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; i++ )
 	{
-		if ( i && !index )
+		if ( i > 0 && index == 0 )
 		{
 			pszArgs += sprintf( pszArgs, "," );
 		}
@@ -1438,21 +1438,21 @@ void CResourceQtyArray::WriteKeys( TCHAR * pszArgs, int index, bool fQtyOnly, bo
 }
 
 
-void CResourceQtyArray::WriteNames( TCHAR * pszArgs, int index ) const
+void CResourceQtyArray::WriteNames( TCHAR * pszArgs, size_t index ) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::WriteNames");
-	int		max	= GetCount();
+	size_t max = GetCount();
 	if ( index > 0 && index < max )
-		max		= index;
+		max = index;
 
-	int iQty;
-	for ( int i = (index > 0 ? index-1 : 0); i < max; i++ )
+	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; i++ )
 	{
-		if ( i && !index )
+		if ( i > 0 && index == 0 )
 		{
 			pszArgs += sprintf( pszArgs, ", " );
 		}
-		iQty = GetAt(i).GetResQty();
+
+		int iQty = GetAt(i).GetResQty();
 		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
@@ -1463,6 +1463,7 @@ void CResourceQtyArray::WriteNames( TCHAR * pszArgs, int index ) const
 			else
 				pszArgs += sprintf( pszArgs, "%d ", iQty);
 		}
+
 		pszArgs += GetAt(i).WriteNameSingle( pszArgs, iQty );
 	}
 	*pszArgs = '\0';
@@ -1474,9 +1475,9 @@ bool CResourceQtyArray::operator == ( const CResourceQtyArray & array ) const
 	if ( GetCount() != array.GetCount())
 		return( false );
 
-	for ( int i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
-		for ( int j = 0; ; j++ )
+		for ( size_t j = 0; ; j++ )
 		{
 			if ( j >= array.GetCount())
 				return( false );

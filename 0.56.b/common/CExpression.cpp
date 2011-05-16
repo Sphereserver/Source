@@ -90,7 +90,7 @@ bool IsStrEmpty( LPCTSTR pszTest )
 	{
 		if ( !IsSpace(*pszTest) ) return false;
 	}
-	while( *(++pszTest) );
+	while ( *(++pszTest) );
 	return true;
 }
 

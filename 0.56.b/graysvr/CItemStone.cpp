@@ -1845,7 +1845,7 @@ void CItemStone::ElectMaster()
 bool CItemStone::IsUniqueName( LPCTSTR pName ) // static
 {
 	ADDTOCALLSTACK("CItemStone::IsUniqueName");
-	for ( int i=0; i<g_World.m_Stones.GetCount(); i++ )
+	for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 	{
 		if ( ! strcmpi( pName, g_World.m_Stones[i]->GetName()))
 			return false;
@@ -2442,7 +2442,7 @@ size_t CItemStone::addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psTe
 	if ( iStoneMenu == STONEDISP_DECLAREWAR )
 	{
 		// This list is special.
-		for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
+		for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 		{
 			CItemStone * pOtherStone = g_World.m_Stones[i];
 			if ( ! IsInMenu( STONEDISP_DECLAREWAR, pOtherStone ))
@@ -2733,7 +2733,7 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 
 		case STONEDISP_SETCHARTER:
 			{
-				for (int i = 0; i < resp.m_TextArray.GetCount(); i++)
+				for (size_t i = 0; i < resp.m_TextArray.GetCount(); i++)
 				{
 					unsigned int id = resp.m_TextArray[i]->m_ID - 1000;
 					switch ( id )
@@ -2782,11 +2782,11 @@ bool CItemStone::OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialog
 	CStoneMember * pMember = NULL;
 	bool fFound = false;
 	int iLoop = 0;
-	int iStoneIndex = 0;
+	size_t iStoneIndex = 0;
 
 	if ( type == STONEDISP_DECLAREWAR )
 	{
-		for ( ; iStoneIndex<g_World.m_Stones.GetCount(); iStoneIndex ++ )
+		for ( ; iStoneIndex < g_World.m_Stones.GetCount(); iStoneIndex ++ )
 		{
 			CItemStone * pOtherStone = g_World.m_Stones[iStoneIndex];
 			if ( ! IsInMenu( STONEDISP_DECLAREWAR, pOtherStone ))

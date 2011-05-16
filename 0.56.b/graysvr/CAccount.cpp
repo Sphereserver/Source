@@ -137,7 +137,7 @@ bool CAccounts::Account_SaveAll()
 		"\\\\ Any file changes must be made to " GRAY_FILE "accu" GRAY_SCRIPT ". This is read in at save time.\n",
 		g_Serv.GetName());
 
-	for ( int i=0; i < m_Accounts.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
 	{
 		CAccountRef pAccount = Account_Get(i);
 		if ( pAccount )
@@ -157,12 +157,11 @@ CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
 	// IS this new chat name already used ?
-	for ( int i=0; i < m_Accounts.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
 	{
 		CAccountRef pAccount = Account_Get(i);
-		if ( pAccount )
-			if ( !pAccount->m_sChatName.CompareNoCase(pszChatName) )
-				return pAccount;
+		if ( pAccount != NULL && pAccount->m_sChatName.CompareNoCase(pszChatName) == 0 )
+			return pAccount;
 	}
 	return NULL;
 }
@@ -175,8 +174,8 @@ CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 	if ( !CAccount::NameStrip(szName, pszName) )
 		return( NULL );
 
-	int i = m_Accounts.FindKey(szName);
-	if ( i >= 0 )
+	size_t i = m_Accounts.FindKey(szName);
+	if ( i != m_Accounts.BadIndex() )
 		return Account_Get(i);
 
 	return NULL;
@@ -228,7 +227,7 @@ void CAccounts::Account_Add( CAccount * pAccount )
 	m_Accounts.AddSortKey(pAccount,pAccount->GetName());
 }
 
-CAccountRef CAccounts::Account_Get( int index )
+CAccountRef CAccounts::Account_Get( size_t index )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
 	if ( ! m_Accounts.IsValidIndex(index))
@@ -301,10 +300,10 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 	CGTime datetime = CGTime::GetCurrentTime();
 	int iDaysCur = datetime.GetDaysTotal();
 
-	int		iCountOrig	= Account_GetCount();
-	int		iCountCheck	= iCountOrig;
-	int		iCount		= 0;
-	for ( int i = 0; ; i++ )
+	size_t iCountOrig = Account_GetCount();
+	size_t iCountCheck = iCountOrig;
+	size_t iCount = 0;
+	for ( size_t i = 0; ; i++ )
 	{
 		if ( Account_GetCount() < iCountCheck )
 		{
@@ -312,7 +311,8 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 			i--;
 		}
 		CAccountRef pAccount = Account_Get(i);
-		if ( !pAccount ) break;
+		if ( pAccount == NULL )
+			break;
 
 		int iDaysAcc = pAccount->m_dateLastConnect.GetDaysTotal();
 		if ( ! iDaysAcc )
@@ -321,7 +321,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 			iDaysAcc = pAccount->m_dateFirstConnect.GetDaysTotal();
 		}
 
-		if ( iDaysCur - iDaysAcc < iDaysTest ) continue;
+		if ( (iDaysCur - iDaysAcc) < iDaysTest ) continue;
 		if ( dwMask && !pAccount->IsPriv(dwMask) ) continue;
 
 		iCount ++;
@@ -347,18 +347,18 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 		}
 	}
 
-	pSrc->SysMessagef( "Matched %d of %d accounts unused for %d days\n",
+	pSrc->SysMessagef( "Matched %" FMTSIZE_T " of %" FMTSIZE_T " accounts unused for %d days\n",
 		iCount, iCountOrig, iDaysTest );
 
 	if ( pszVerb && ! strcmpi(pszVerb, "DELETE") )
 	{
-		int	iDeleted = iCountOrig - Account_GetCount();
+		size_t iDeleted = iCountOrig - Account_GetCount();
 
 		if ( iDeleted < iCount )
-			pSrc->SysMessagef("%d deleted, %d cleared of characters (must try to delete again)\n",
+			pSrc->SysMessagef("%" FMTSIZE_T " deleted, %" FMTSIZE_T " cleared of characters (must try to delete again)\n",
 				iDeleted, iCount - iDeleted );
 		else if ( iDeleted > 0 )
-			pSrc->SysMessagef("All %d unused accounts deleted.\n", iDeleted);
+			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted.\n", iDeleted);
 		else
 			pSrc->SysMessagef("No accounts deleted.\n");
 	}
@@ -621,7 +621,7 @@ bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 	return(	pChar->m_pPlayer->GetAccount() == this );
 }
 
-int CAccount::DetachChar( CChar * pChar )
+size_t CAccount::DetachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::DetachChar");
 	// unlink the CChar from this CAccount.
@@ -636,7 +636,7 @@ int CAccount::DetachChar( CChar * pChar )
 	return( m_Chars.DetachChar( pChar ));
 }
 
-int CAccount::AttachChar( CChar * pChar )
+size_t CAccount::AttachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::AttachChar");
 	// link the char to this account.
@@ -644,13 +644,13 @@ int CAccount::AttachChar( CChar * pChar )
 	ASSERT( IsMyAccountChar( pChar ));
 
 	// is it already linked ?
-	int i = m_Chars.AttachChar( pChar );
-	if ( i >= 0 )
+	size_t i = m_Chars.AttachChar( pChar );
+	if ( i != m_Chars.BadIndex() )
 	{
-		int iQty = m_Chars.GetCharCount();
+		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
 		{
-			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %d characters\n", (LPCTSTR) GetName(), iQty );
+			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", (LPCTSTR) GetName(), iQty );
 		}
 	}
 
@@ -1046,8 +1046,8 @@ bool CAccount::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	{
 		// How many chars.
 		pszKey += 5;
-		int i=Exp_GetVal(pszKey);
-		if ( i>=0 && i<m_Chars.GetCharCount())
+		size_t i = Exp_GetVal(pszKey);
+		if ( m_Chars.IsValidIndex(i) )
 		{
 			pRef = m_Chars.GetChar(i).CharFind();
 		}

@@ -130,7 +130,7 @@ CResource::CResource()
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
 	m_iOptionFlags		= 0;
 
-	m_iMaxSkill		= SKILL_SCRIPTED;
+	m_iMaxSkill			= SKILL_SCRIPTED;
 	m_iWalkBuffer		= 50;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
@@ -237,7 +237,7 @@ CResource::~CResource()
 {
 	for ( size_t i = 0; i < COUNTOF(m_ResHash.m_Array); i++ )
 	{
-		for ( int j = 0; j < m_ResHash.m_Array[i].GetCount(); j++ )
+		for ( size_t j = 0; j < m_ResHash.m_Array[i].GetCount(); j++ )
 		{
 			CResourceDef* pResDef = m_ResHash.m_Array[i][j];
 			if ( pResDef != NULL )
@@ -315,11 +315,11 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	else if ( iResType == RES_SPELL && *pszKey == '-' )
 	{
 		pszKey++;
-		int		iOrder	= Exp_GetVal( pszKey );
+		size_t iOrder = Exp_GetVal( pszKey );
 		if ( !m_SpellDefs_Sorted.IsValidIndex( iOrder ) )
-			pRef	= NULL;
+			pRef = NULL;
 		else
-			pRef	= m_SpellDefs_Sorted[iOrder];
+			pRef = m_SpellDefs_Sorted[iOrder];
 	}
 	else
 	{
@@ -1089,7 +1089,7 @@ const CSkillDef * CResource::SkillLookup( LPCTSTR pszKey )
 
 	size_t iLen = strlen( pszKey );
     const CSkillDef * pDef;
-	for ( int i = 0; i < m_SkillIndexDefs.GetCount(); ++i )
+	for ( size_t i = 0; i < m_SkillIndexDefs.GetCount(); ++i )
 	{
 		pDef = STATIC_CAST<const CSkillDef *>(m_SkillIndexDefs[i]);
 		if ( pDef->m_sName.IsEmpty() ?
@@ -1226,16 +1226,16 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			return true;
 		}
 
-		if ( ( !strnicmp( pszKey, "GUILDSTONES.",12) ) || ( !strnicmp( pszKey, "TOWNSTONES.",11) ) )
+		if ( ( !strnicmp( pszKey, "GUILDSTONES.", 12) ) || ( !strnicmp( pszKey, "TOWNSTONES.", 11) ) )
 		{
 			bool bGuild = !strnicmp( pszKey, "GUILDSTONES.",12);
 			LPCTSTR pszCmd = pszKey + 11 + ( (bGuild) ? 1 : 0 );
 			CItemStone * pStone = NULL;
-			int x(0);
+			size_t x = 0;
 
 			if (!strcmpi(pszCmd,"COUNT"))
 			{
-				for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
+				for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 				{
 					pStone = g_World.m_Stones[i];
 					if ( pStone == NULL )
@@ -1251,11 +1251,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				return( true );
 			}
 
-			int iNumber = Exp_GetVal(pszCmd);
+			size_t iNumber = Exp_GetVal(pszCmd);
 			SKIP_SEPARATORS(pszCmd);
 			sVal.FormatVal(0);
 
-			for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
+			for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 			{
 				pStone = g_World.m_Stones[i];
 				if ( pStone == NULL )
@@ -1265,7 +1265,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				{
 					if ( iNumber == x )
 					{
-						return( pStone->r_WriteVal(pszCmd,sVal,pSrc) );
+						return( pStone->r_WriteVal(pszCmd, sVal, pSrc) );
 					}
 					x++;
 				}
@@ -1273,7 +1273,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				{
 					if ( iNumber == x )
 					{
-						return( pStone->r_WriteVal(pszCmd,sVal,pSrc) );
+						return( pStone->r_WriteVal(pszCmd, sVal, pSrc) );
 					}
 					x++;
 				}
@@ -1513,7 +1513,7 @@ SKILL_TYPE CResource::FindSkillKey( LPCTSTR pszKey ) const
 		return( skill );
 	}
 
-	const CSkillDef* pSkillDef = FindSkillDef( pszKey );
+	const CSkillDef * pSkillDef = FindSkillDef( pszKey );
 	if ( pSkillDef == NULL )
 		return( SKILL_NONE );
 	return( (SKILL_TYPE)( pSkillDef->GetResourceID().GetResIndex()));
@@ -1593,7 +1593,7 @@ bool CResource::IsValidEmailAddressFormat( LPCTSTR pszEmail ) // static
 	return( true );
 }
 
-CServerRef CResource::Server_GetDef( int index )
+CServerRef CResource::Server_GetDef( size_t index )
 {
 	ADDTOCALLSTACK("CResource::Server_GetDef");
 	if ( ! m_Servers.IsValidIndex(index))
@@ -1606,7 +1606,7 @@ CWebPageDef * CResource::FindWebPage( LPCTSTR pszPath ) const
 	ADDTOCALLSTACK("CResource::FindWebPage");
 	if ( pszPath == NULL )
 	{
-		if ( ! m_WebPages.GetCount())
+		if ( m_WebPages.GetCount() <= 0 )
 			return( NULL );
 		// Take this as the default page.
 		return( STATIC_CAST <CWebPageDef*>( m_WebPages[0] ));
@@ -1617,13 +1617,13 @@ CWebPageDef * CResource::FindWebPage( LPCTSTR pszPath ) const
 	if ( pszTitle == NULL || pszTitle[0] == '\0' )
 	{
 		// This is just the root index.
-		if ( ! m_WebPages.GetCount())
+		if ( m_WebPages.GetCount() <= 0 )
 			return( NULL );
 		// Take this as the default page.
 		return( STATIC_CAST <CWebPageDef*>( m_WebPages[0] ));
 	}
 
-	for ( int i=0; i<m_WebPages.GetCount(); i++ )
+	for ( size_t i = 0; i < m_WebPages.GetCount(); i++ )
 	{
 		if ( m_WebPages[i] == NULL )	// not sure why this would happen
 			continue;
@@ -1642,7 +1642,7 @@ bool CResource::IsObscene( LPCTSTR pszText ) const
 	// does this text contain obscene content?
 	// NOTE: allow partial match syntax *fuck* or ass (alone)
 
-	for ( int i=0; i<m_Obscene.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Obscene.GetCount(); i++ )
 	{
 		TCHAR* match = new TCHAR[ strlen(m_Obscene[i])+3 ];
 		sprintf(match,"%s%s%s","*",m_Obscene[i],"*");
@@ -1732,8 +1732,8 @@ const CGrayMulti * CResource::GetMultiItemDefs( ITEMID_TYPE itemid )
 		return( NULL );
 
 	MULTI_TYPE id = itemid - ITEMID_MULTI;
-	int index = m_MultiDefs.FindKey( id );
-	if ( index < 0 )
+	size_t index = m_MultiDefs.FindKey( id );
+	if ( index == m_MultiDefs.BadIndex() )
 	{
 		index = m_MultiDefs.AddSortKey( new CGrayMulti( id ), id );
 	}
@@ -1750,21 +1750,22 @@ PLEVEL_TYPE CResource::GetPrivCommandLevel( LPCTSTR pszCmd ) const
 {
 	ADDTOCALLSTACK("CResource::GetPrivCommandLevel");
 	// What is this commands plevel ?
-	// NOTE: This doe snot attempt to parse anything.
-	int ilevel = PLEVEL_QTY-1;
+	// NOTE: This does not attempt to parse anything.
 
 	// Is this command avail for your priv level (or lower) ?
-	for ( ; ilevel >= 0; ilevel-- )
+	unsigned int ilevel = PLEVEL_QTY;
+	while ( ilevel > 0 )
 	{
+		--ilevel;
 		LPCTSTR const * pszTable = m_PrivCommands[ilevel].GetBasePtr();
-		int iCount = m_PrivCommands[ilevel].GetCount();
+		size_t iCount = m_PrivCommands[ilevel].GetCount();
 		if ( FindTableHeadSorted( pszCmd, pszTable, iCount ) >= 0 )
-			return( (PLEVEL_TYPE)ilevel );
+			return( static_cast<PLEVEL_TYPE>(ilevel) );
 	}
 
 	// A GM will default to use all commands.
 	// xcept those that are specifically named that i can't use.
-	return ( (PLEVEL_TYPE)m_iDefaultCommandLevel );	// default level.
+	return ( static_cast<PLEVEL_TYPE>(m_iDefaultCommandLevel) ); // default level.
 }
 
 bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTextConsole * pSrc ) const
@@ -1854,7 +1855,7 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	GETNONWHITESPACE( pCmd );
 	if ( pCmd[0] == '-' && !strchr( pCmd, ',' ) )	// Get location from start list.
 	{
-		int i = ( - ATOI(pCmd)) - 1;
+		size_t i = ( - ATOI(pCmd)) - 1;
 		if ( ! m_StartDefs.IsValidIndex( i ))
 		{
 			if ( m_StartDefs.GetCount() <= 0 )
@@ -1897,9 +1898,9 @@ CRegionBase * CResource::GetRegion( LPCTSTR pKey ) const
 	GETNONWHITESPACE( pKey );
 	for ( size_t i = 0; i < COUNTOF(m_ResHash.m_Array); i++ )
 	{
-		for ( int j=0; j<m_ResHash.m_Array[i].GetCount(); j++ )
+		for ( size_t j = 0; j < m_ResHash.m_Array[i].GetCount(); j++ )
 		{
-			CResourceDef* pResDef = m_ResHash.m_Array[i][j];
+			CResourceDef * pResDef = m_ResHash.m_Array[i][j];
 			ASSERT(pResDef);
 
 			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (pResDef);
@@ -1918,31 +1919,32 @@ CRegionBase * CResource::GetRegion( LPCTSTR pKey ) const
 	return( NULL );
 }
 
-void	CResource::LoadSortSpells()
+void CResource::LoadSortSpells()
 {
-	int iQtySpells = m_SpellDefs.GetCount();
+	size_t iQtySpells = m_SpellDefs.GetCount();
 	if ( iQtySpells <= 0 )
 		return;
 
 	m_SpellDefs_Sorted.RemoveAll();
 	m_SpellDefs_Sorted.Add( m_SpellDefs[0] );		// the null spell
 
-	for ( int i = 1; i < iQtySpells; i++ )
+	for ( size_t i = 1; i < iQtySpells; i++ )
 	{
 		if ( !m_SpellDefs.IsValidIndex( i ) )
 			continue;
 
-		int	iVal	= 0;
+		int	iVal = 0;
 		m_SpellDefs[i]->GetPrimarySkill( NULL, &iVal );
 
-		int		iQty	= m_SpellDefs_Sorted.GetCount();
-		int		k;
-		for ( k = 1; k < iQty; k++ )
+		size_t iQty = m_SpellDefs_Sorted.GetCount();
+		size_t k = 1;
+		while ( k < iQty )
 		{
-			int	iVal2	= 0;
+			int	iVal2 = 0;
 			m_SpellDefs_Sorted[k]->GetPrimarySkill( NULL, &iVal2 );
 			if ( iVal2 > iVal )
 				break;
+			++k;
 		}
 		m_SpellDefs_Sorted.InsertAt( k, m_SpellDefs[i] );
 	}
@@ -2159,11 +2161,11 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 	if (( restype == RES_WORLDSCRIPT ) || ( restype == RES_WS ))
 	{
-		LPCTSTR	pszDef			= pScript->GetArgStr();
-		CVarDefCont * pVarBase	= g_Exp.m_VarDefs.GetKey( pszDef );
-		CVarDefCont * pVarNum	= NULL;
+		LPCTSTR	pszDef = pScript->GetArgStr();
+		CVarDefCont * pVarBase = g_Exp.m_VarDefs.GetKey( pszDef );
+		CVarDefCont * pVarNum = NULL;
 		if ( pVarBase )
-			pVarNum				= dynamic_cast <CVarDefContNum*>( pVarBase );
+			pVarNum = dynamic_cast <CVarDefContNum*>( pVarBase );
 		if ( !pVarNum )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef );
@@ -2173,13 +2175,12 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		rid.SetPrivateUID( pVarNum->GetValNum() );
 		restype	= rid.GetResType();
 
-		int		index	= m_ResHash.FindKey( rid );
+		CResourceDef *	pRes = NULL;
+		size_t index = m_ResHash.FindKey( rid );
+		if ( index != m_ResHash.BadIndex() )
+			pRes = dynamic_cast <CResourceDef*> (m_ResHash.GetAt( rid, index ) );
 
-
-		CResourceDef *	pRes	= NULL;
-		if ( index >= 0 )
-			pRes	= dynamic_cast <CResourceDef*> (m_ResHash.GetAt( rid, index ) );
-		if ( !pRes )
+		if ( pRes == NULL )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef );
 			return false;
@@ -2270,10 +2271,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			if ( fNewStyleDef )
 			{
 				//	search for this.
-				long	l;
+				size_t l;
 				for ( l = 0; l < DEFMSG_QTY; l++ )
 				{
-					if ( !strcmpi(pszKey, (const char *)g_Exp.sm_szMsgNames[l]) )
+					if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[l]) )
 					{
 						strcpy(g_Exp.sm_szMessages[l], pScript->GetArgStr());
 						break;
@@ -2283,12 +2284,15 @@ bool CResource::LoadResourceSection( CScript * pScript )
 					g_Log.Event(LOGM_INIT|LOGL_ERROR, "Setting not used message override named '%s'\n", pszKey);
 				continue;
 			}
-			else g_Exp.m_VarDefs.SetStr(pszKey, false, pScript->GetArgStr());
+			else
+			{
+				g_Exp.m_VarDefs.SetStr(pszKey, false, pScript->GetArgStr());
+			}
 		}
 		return( true );
 	case RES_FAME:
 		{
-			int i = 0;
+			size_t i = 0;
 			while ( pScript->ReadKey())
 			{
 				LPCTSTR pName = pScript->GetKeyBuffer();
@@ -2302,7 +2306,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		return( true );
 	case RES_KARMA:
 		{
-			int i = 0;
+			size_t i = 0;
 			while ( pScript->ReadKey())
 			{
 				LPCTSTR pName = pScript->GetKeyBuffer();
@@ -2358,7 +2362,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 
 			if (m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)))
-				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %d titles in NOTOTITLES section but found %d.\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
+				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T ".\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 		}
 		return( true );
 	case RES_OBSCENE:
@@ -2435,8 +2439,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				if ( rid.GetResIndex() >= g_Cfg.m_iMaxSkill )
-					g_Cfg.m_iMaxSkill	= rid.GetResIndex() +1 ;
+				if ( rid.GetResIndex() >= SKILL_MAX )
+					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
 
 				// Just replace any previous CSkillDef
 				pSkill = new CSkillDef( (SKILL_TYPE) rid.GetResIndex());
@@ -2465,14 +2469,14 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
-			CItemTypeDef	* pTypeDef	= dynamic_cast <CItemTypeDef*>(pPrvDef);
+			CItemTypeDef * pTypeDef	= dynamic_cast <CItemTypeDef*>(pPrvDef);
 			ASSERT( pTypeDef );
 			pNewLink = pTypeDef;
 			ASSERT(pNewLink);
 
 			// clear old tile links to this type
-			int iQty	= g_World.m_TileTypes.GetCount();
-			for ( int i = 0; i < iQty; i++ )
+			size_t iQty = g_World.m_TileTypes.GetCount();
+			for ( size_t i = 0; i < iQty; i++ )
 			{
 				if ( g_World.m_TileTypes.GetAt(i) == pTypeDef )
 					g_World.m_TileTypes.SetAt( i, NULL );
@@ -2725,8 +2729,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				// Does the name already exist ?
 				bool fAddNew = false;
 				CServerRef pServ;
-				int i = m_Servers.FindKey( pScript->GetKey());
-				if ( i < 0 )
+				size_t i = m_Servers.FindKey( pScript->GetKey());
+				if ( i == m_Servers.BadIndex() )
 				{
 					pServ = new CServerDef( pScript->GetKey(), CSocketAddressIP( SOCKET_LOCAL_ADDRESS ));
 					fAddNew = true;
@@ -2735,6 +2739,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				{
 					pServ = Server_GetDef(i);
 				}
+				ASSERT(pServ != NULL);
 				if ( pScript->ReadKey())
 				{
 					pServ->m_ip.SetHostPortStr( pScript->GetKey());
@@ -3089,9 +3094,9 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			if ( g_Serv.m_iModeCode != SERVMODE_ResyncLoad )	// this really is ok.
 			{
 				// Warn of  duplicates.
-				index = m_ResHash.FindKey( rid );
-				if ( index >= 0 )	// i found it. So i have to find something else.
-					ASSERT(m_ResHash.GetAt(rid, index));
+				size_t duplicateIndex = m_ResHash.FindKey( rid );
+				if ( duplicateIndex != m_ResHash.BadIndex() )	// i found it. So i have to find something else.
+					ASSERT(m_ResHash.GetAt(rid, duplicateIndex));
 			}
 #endif
 			return( rid );
@@ -3269,7 +3274,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		rid.SetPrivateUID( rid.GetPrivateUID() + Calc_GetRandVal( iHashRange ));
 		for (;;)
 		{
-			if ( m_ResHash.FindKey( rid ) < 0 )
+			if ( m_ResHash.FindKey(rid) == m_ResHash.BadIndex())
 				break;
 			rid.SetPrivateUID( rid.GetPrivateUID()+1 );
 		}
@@ -3293,7 +3298,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		
 		for (;;)
 		{
-			if ( m_ResHash.FindKey( rid ) < 0 ) 
+			if ( m_ResHash.FindKey(rid) == m_ResHash.BadIndex())
 			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
@@ -3320,7 +3325,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 		
 		for (;;)
 		{
-			if ( m_ResHash.FindKey( rid ) < 0 ) 
+			if ( m_ResHash.FindKey( rid ) == m_ResHash.BadIndex() ) 
 			{
 				lastUID[restype] = rid.GetPrivateUID()+1;
 				break;
@@ -3353,12 +3358,12 @@ CResourceDef * CResource::ResourceGetDef( RESOURCE_ID_BASE rid ) const
 	if ( ! rid.IsValidUID())
 		return( NULL );
 
-	int index = rid.GetResIndex();
+	size_t index = rid.GetResIndex();
 	switch ( rid.GetResType() )
 	{
 		case RES_WEBPAGE:
 			index = m_WebPages.FindKey( rid );
-			if ( index < 0 )
+			if ( ! m_WebPages.IsValidIndex(index))
 				return( NULL );
 			return( m_WebPages.GetAt( index ));
 
@@ -3416,7 +3421,7 @@ void CResource::OnTick( bool fNow )
 	if ( this->m_fUseHTTP )
 	{
 		// Update WEBPAGES resources
-		for ( int i = 0; i < m_WebPages.GetCount(); i++ )
+		for ( size_t i = 0; i < m_WebPages.GetCount(); i++ )
 		{
 			EXC_TRY("WebTick");
 			if ( !m_WebPages[i] )
@@ -3431,7 +3436,7 @@ void CResource::OnTick( bool fNow )
 
 			EXC_DEBUG_START;
 			CWebPageDef * pWeb = STATIC_CAST <CWebPageDef *>(m_WebPages[i]);
-			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%d'/'%d'\n",
+			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%" FMTSIZE_T "'/'%" FMTSIZE_T "'\n",
 				pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "",
 				(int)fNow, i, m_WebPages.GetCount());
 			EXC_DEBUG_END;
@@ -3453,8 +3458,8 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 	if ( g_Serv.IsLoading() ) return;
 	if ( bOF )
 	{
-		char	zOptionFlags[512];
-		zOptionFlags[0] = 0;
+		TCHAR zOptionFlags[512];
+		zOptionFlags[0] = '\0';
 
 		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
 		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
@@ -3471,7 +3476,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetOF(OF_DClickNoTurn) ) catresname(zOptionFlags, "DClickNoTurn");
 #endif
 
-		if ( zOptionFlags[0] )
+		if ( zOptionFlags[0] != '\0' )
 		{
 			if ( pSrc ) pSrc->SysMessagef("Option flags: %s\n", zOptionFlags);
 			else g_Log.Event(LOGM_INIT, "Option flags: %s\n", zOptionFlags);
@@ -3479,8 +3484,8 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 	}
 	if ( bEF )
 	{
-		char	zExperimentalFlags[512];
-		zExperimentalFlags[0] = 0;
+		TCHAR zExperimentalFlags[512];
+		zExperimentalFlags[0] = '\0';
 
 		if ( IsSetEF(EF_DiagonalWalkCheck) ) catresname(zExperimentalFlags, "DiagonalWalkCheck");
 		if ( IsSetEF(EF_New_Triggers) ) catresname(zExperimentalFlags, "NewTriggersEnable");
@@ -3501,7 +3506,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 #endif
 		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
-		if ( zExperimentalFlags[0] )
+		if ( zExperimentalFlags[0] != '\0' )
 		{
 			if ( pSrc ) pSrc->SysMessagef("Experimental flags: %s\n", zExperimentalFlags);
 			else g_Log.Event(LOGM_INIT, "Experimental flags: %s\n", zExperimentalFlags);
@@ -3556,7 +3561,7 @@ void CResource::Unload( bool fResync )
 	{
 		// Unlock all the SCP and MUL files.
 		g_Install.CloseFiles();
-		for ( int j = 0; ; j++ )
+		for ( size_t j = 0; ; j++ )
 		{
 			CResourceScript * pResFile = GetResourceFile(j);
 			if ( pResFile == NULL )
@@ -3676,10 +3681,10 @@ bool CResource::Load( bool fResync )
 	// open and index all my script files i'm going to use.
 	AddResourceDir( m_sSCPBaseDir );		// if we want to get *.SCP files from elsewhere.
 
-	int count = m_ResourceFiles.GetCount();
-	g_Log.Event(LOGM_INIT, "Indexing %d scripts...\n", count);
+	size_t count = m_ResourceFiles.GetCount();
+	g_Log.Event(LOGM_INIT, "Indexing %" FMTSIZE_T " scripts...\n", count);
 
-	for ( int j = 0; ; j++ )
+	for ( size_t j = 0; ; j++ )
 	{
 		CResourceScript * pResFile = GetResourceFile(j);
 		if ( !pResFile )
@@ -3693,7 +3698,7 @@ bool CResource::Load( bool fResync )
 #ifdef _WIN32
 		NTWindow_OnTick(0);
 #endif
-		g_Serv.PrintPercent(j+1, count);
+		g_Serv.PrintPercent(j + 1, count);
 	}
 
 	// Make sure we have the basics.
@@ -3713,7 +3718,7 @@ bool CResource::Load( bool fResync )
 	}
 	g_Log.Event(LOGM_INIT, "Done loading scripts.\n");
 
-	if ( !m_StartDefs.GetCount() )
+	if ( m_StartDefs.GetCount() <= 0 )
 	{
 		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again.\n");
 		return false;
@@ -3721,8 +3726,8 @@ bool CResource::Load( bool fResync )
 
 	// Make region DEFNAMEs
 	{
-		int iMax = g_Cfg.m_RegionDefs.GetCount();
-		for ( int i = 0; i < iMax; i++ )
+		size_t iMax = g_Cfg.m_RegionDefs.GetCount();
+		for ( size_t i = 0; i < iMax; i++ )
 		{
 			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 			if ( !pRegion )
@@ -3903,7 +3908,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 			g_Serv.PrintPercent(i, idMaxItem);
 
 		RESOURCE_ID rid = RESOURCE_ID(RES_ITEMDEF, i);
-		if (g_Cfg.m_ResHash.FindKey(rid) >= 0)
+		if (g_Cfg.m_ResHash.FindKey(rid) != g_Cfg.m_ResHash.BadIndex())
 			continue;
 
 		// check item in tiledata
@@ -3959,28 +3964,29 @@ bool CItemTypeDef::r_LoadVal( CScript & s )
 
 	if ( !strnicmp( pszKey, "TERRAIN", 7 ) )
 	{
-		int		iLo;
-		int		iHi;
-		iLo	= Exp_GetVal( pszArgs );
+		size_t iLo = Exp_GetVal( pszArgs );
 		GETNONWHITESPACE( pszArgs );
+
 		if ( *pszArgs == ',' )
 		{
 			pszArgs++;
 			GETNONWHITESPACE( pszArgs );
 		}
-		if ( !*pszArgs )
+
+		size_t iHi;
+		if ( *pszArgs == '\0' )
 			iHi	= iLo;
 		else
 			iHi	= Exp_GetVal( pszArgs );
 
 		if ( iLo > iHi )		// swap
 		{
-			int	iTmp	= iHi;
+			size_t iTmp = iHi;
 			iHi	= iLo;
 			iLo	= iTmp;
 		}
 
-		for ( int i = iLo; i <= iHi; i++ )
+		for ( size_t i = iLo; i <= iHi; i++ )
 		{
 			g_World.m_TileTypes.SetAtGrow( i, this );
 		}

@@ -316,7 +316,7 @@ bool CScriptCompiler::CompileAll()
 	char	*p1;
 	bool	rc = true;
 
-	for ( int i = 0; i < m_lScripts.GetCount(); i++ )
+	for ( size_t i = 0; i < m_lScripts.GetCount(); i++ )
 	{
 		strcpy(fileName, ((CGString*)m_lScripts.GetAt(i))->GetPtr());
 		*strchr(fileName, '.') = 0;		// cut extension
@@ -337,7 +337,7 @@ bool CScriptCompiler::CompileFile(char *scriptName)
 	ASSERT(scriptName != NULL);
 	char	zScriptFile[COMPILER_MAXFILEPATH];
 	char	zBinaryFile[COMPILER_MAXFILEPATH];
-	int		i;
+	size_t	i;
 
 	strcpy(zScriptFile, scriptName);
 	strcat(zScriptFile, COMPILER_SOURCE_EXT);
@@ -1037,9 +1037,9 @@ bool CScriptCompiler::Execute(char *scriptName)
 	if (( head.bPacked && !rawDataPacked ) || !rawData )
 	{
 		if ( rawDataPacked )
-			delete []rawDataPacked;
+			delete[] rawDataPacked;
 		if ( rawData )
-			delete []rawData;
+			delete[] rawData;
 
 		g_Log.EventError("Memory allocation error %lu + %lu bytes for script '%s'\n", head.lPackedSize, head.lCodeSize, scriptName);
 		fclose(script);
@@ -1064,9 +1064,9 @@ bool CScriptCompiler::Execute(char *scriptName)
 			delete[] dataToExecute;
 
 			fclose(script);
-			delete []rawData;
+			delete[] rawData;
 			if ( rawDataPacked != rawData )
-				delete []rawDataPacked;
+				delete[] rawDataPacked;
 			return false;
 		}
 	}
@@ -1082,8 +1082,8 @@ bool CScriptCompiler::Execute(char *scriptName)
 	delete[] dataToExecute;
 
 	fclose(script);
-	delete []rawData;
+	delete[] rawData;
 	if ( rawDataPacked != rawData )
-		delete []rawDataPacked;
+		delete[] rawDataPacked;
 	return true;
 }

@@ -49,15 +49,14 @@ const TCHAR * CValueCurveDef::Write() const
 {
 	ADDTOCALLSTACK("CValueCurveDef::Write");
 	TCHAR * pszOut = Str_GetTemp();
-	int j=0;
-	int iQty = m_aiValues.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t j = 0;
+	size_t iQty = m_aiValues.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
-		j += sprintf( pszOut+j, "%d", m_aiValues[i] );
-		if ( i<iQty-1 )
-		{
+		if ( i > 0 )
 			pszOut[j++] = ',';
-		}
+
+		j += sprintf( pszOut + j, "%d", m_aiValues[i] );
 	}
 	pszOut[j] = '\0';
 	return pszOut;
@@ -92,10 +91,10 @@ int CValueCurveDef::GetLinear( int iSkillPercent ) const
 	// RETURN:
 	//  raw chance value.
 
-	int iSegSize;
-	int iLoIdx;
+	size_t iSegSize;
+	size_t iLoIdx;
 
-	int iQty = m_aiValues.GetCount();
+	size_t iQty = m_aiValues.GetCount();
 	switch (iQty)
 	{
 	case 0:
@@ -123,17 +122,15 @@ int CValueCurveDef::GetLinear( int iSkillPercent ) const
 		// More
 		iLoIdx = IMULDIV( iSkillPercent, iQty, 1000 );
 		iQty--;
-		if ( iLoIdx < 0 )
-			iLoIdx = 0;
 		if ( iLoIdx >= iQty )
-			iLoIdx = iQty-1;
+			iLoIdx = iQty - 1;
 		iSegSize = 1000 / iQty;
 		iSkillPercent -= ( iLoIdx * iSegSize );
 		break;
 	}
 
 	int iLoVal = m_aiValues[iLoIdx];
-	int iHiVal = m_aiValues[iLoIdx+1];
+	int iHiVal = m_aiValues[iLoIdx + 1];
 	int iChance = iLoVal + IMULDIV( iHiVal - iLoVal, iSkillPercent, iSegSize );
 
 	if ( iChance <= 0 )
@@ -596,7 +593,7 @@ CSpellDef::CSpellDef( SPELL_TYPE id ) :
 	CResourceLink( RESOURCE_ID( RES_SPELL, id ))
 {
 	m_dwFlags = SPELLFLAG_DISABLED;
-	m_dwGroup	= 0;
+	m_dwGroup = 0;
 	m_sound = 0;
 	m_idSpell = ITEMID_NOTHING;
 	m_idScroll = ITEMID_NOTHING;
@@ -605,7 +602,7 @@ CSpellDef::CSpellDef( SPELL_TYPE id ) :
 	m_CastTime.Init();
 	m_Interrupt.Init();
 	m_Interrupt.m_aiValues.SetCount( 1 );
-	m_Interrupt.m_aiValues[0]	= 1000;
+	m_Interrupt.m_aiValues[0] = 1000;
 }
 
 
@@ -796,16 +793,17 @@ bool CSpellDef::r_LoadVal( CScript &s )
 
 
 
-bool	CSpellDef::GetPrimarySkill( int * iSkill, int * iQty ) const
+bool CSpellDef::GetPrimarySkill( int * piSkill, int * piQty ) const
 {
 	ADDTOCALLSTACK("CSpellDef::GetPrimarySkill");
-	int i = m_SkillReq.FindResourceType( RES_SKILL );
-	if ( i < 0 )
+	size_t i = m_SkillReq.FindResourceType( RES_SKILL );
+	if ( i == m_SkillReq.BadIndex() )
 		return NULL;
-	if ( iQty )
-		*iQty	= m_SkillReq[i].GetResQty();
-	if ( iSkill )
-		*iSkill	= m_SkillReq[i].GetResIndex();
+
+	if ( piQty != NULL )
+		*piQty = m_SkillReq[i].GetResQty();
+	if ( piSkill != NULL )
+		*piSkill = m_SkillReq[i].GetResIndex();
 	return (g_Cfg.GetSkillDef( (SKILL_TYPE) m_SkillReq[i].GetResIndex() ) != NULL);
 }
 
@@ -836,8 +834,8 @@ int CRandGroupDef::CalcTotalWeight()
 {
 	ADDTOCALLSTACK("CRandGroupDef::CalcTotalWeight");
 	int iTotal = 0;
-	int iQty = m_Members.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_Members.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		iTotal += m_Members[i].GetResQty();
 	}
@@ -873,10 +871,10 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 			break;
 
 		case RGC_WEIGHT: // Modify the weight of the last item.
-			if ( m_Members.GetCount() )
+			if ( m_Members.GetCount() > 0 )
 			{
 				int iWeight = s.GetArgVal();
-				m_Members[m_Members.GetCount()-1].SetResQty(iWeight);
+				m_Members[m_Members.GetCount() - 1].SetResQty(iWeight);
 				CalcTotalWeight();
 			}
 			break;
@@ -982,38 +980,39 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 	return false;
 }
 
-int CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) const
+size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) const
 {
 	ADDTOCALLSTACK("CRandGroupDef::GetRandMemberIndex");
 	int rid;
-	int iCount = m_Members.GetCount();
-	
-	if ( ! iCount )
-		return( -1 );
+	size_t iCount = m_Members.GetCount();
+	if ( iCount <= 0 )
+		return m_Members.BadIndex();
 
-	int iWeight	= 0;
-	int	i;
-	if ( !pCharSrc )
+	int iWeight = 0;
+	size_t i;
+	if ( pCharSrc == NULL )
 	{
 		iWeight	= Calc_GetRandVal( m_iTotalWeight ) + 1;
 
-		for ( i = 0; iWeight > 0 && i<iCount; i++ )
+		for ( i = 0; iWeight > 0 && i < iCount; i++ )
 		{
 			iWeight -= m_Members[i].GetResQty();
 		}
-		if ( (i == iCount) && iWeight > 0 )
-			return -1;
-		return( i - 1);
+		if ( i >= iCount && iWeight > 0 )
+			return m_Members.BadIndex();
+
+		ASSERT(i > 0);
+		return( i - 1 );
 	}
 
-	CGPtrTypeArray <int>	members;
+	CGPtrTypeArray<size_t> members;
 
 	// calculate weight only of items pCharSrc can get
-	int		iTotalWeight	= 0;
+	int iTotalWeight = 0;
 	for ( i = 0; i < iCount; i++ )
 	{
-		CRegionResourceDef *	pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( m_Members[i].GetResourceID() ) );
-		rid		= pOreDef->m_ReapItem;
+		CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( m_Members[i].GetResourceID() ) );
+		rid = pOreDef->m_ReapItem;
 		if ( rid != 0 )
 		{
 			// CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) rid );
@@ -1023,19 +1022,20 @@ int CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) const
 			if ( bTrigger && pOreDef->OnTrigger( "@ResourceTest", pCharSrc, NULL ) == TRIGRET_RET_TRUE )
 				continue;
 		}
-		members.Add( i );
-		iTotalWeight	+= m_Members[i].GetResQty();
+		members.Add(i);
+		iTotalWeight += m_Members[i].GetResQty();
 	}
-	iWeight	= Calc_GetRandVal( iTotalWeight ) + 1;
-	iCount	= members.GetCount();
+	iWeight = Calc_GetRandVal( iTotalWeight ) + 1;
+	iCount = members.GetCount();
 
-	for ( i = 0; iWeight > 0 && i<iCount; i++ )
+	for ( i = 0; iWeight > 0 && i < iCount; i++ )
 	{
-		iWeight -= m_Members[ members[i] ].GetResQty();
+		iWeight -= m_Members[members[i]].GetResQty();
 	}
-	if ( (i == iCount) && iWeight > 0 )
-		return -1;
-	return( members[ i - 1 ]);
+	if ( i >= iCount && iWeight > 0 )
+		return m_Members.BadIndex();
+	ASSERT(i > 0);
+	return members[i - 1];
 }
 
 //*******************************************

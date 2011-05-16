@@ -278,11 +278,11 @@ bool CChar::NPC_CanSpeak() const
 {
 	ADDTOCALLSTACK("CChar::NPC_CanSpeak");
 	//	players and chars with speech can
-	if ( !m_pNPC || m_pNPC->m_Speech.GetCount() )
+	if ( m_pNPC == NULL || m_pNPC->m_Speech.GetCount() > 0 )
 		return true;
 
-	CCharBase	*pCharDef = Char_GetDef();
-	return pCharDef != NULL ? pCharDef->m_Speech.GetCount() > 0 : false;
+	CCharBase * pCharDef = Char_GetDef();
+	return( pCharDef != NULL && pCharDef->m_Speech.GetCount() > 0 );
 }
 
 bool CChar::NPC_FightMayCast() const
@@ -552,8 +552,9 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
-	int iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
-	if ( iRet >= 0 )
+	ASSERT(pCharDef != NULL);
+	size_t iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
+	if ( iRet != pCharDef->m_Desires.BadIndex() )
 	{
 		return( pCharDef->m_Desires[iRet].GetResQty() );
 	}

@@ -108,7 +108,7 @@ void CCharBase::SetFoodType( LPCTSTR pszFood )
 
   	// Try to determine the real value
 	m_MaxFood = 0;
-	for ( int i=0; i<m_FoodType.GetCount(); i++ )
+	for ( size_t i = 0; i < m_FoodType.GetCount(); i++ )
 	{
 		if ( m_MaxFood < m_FoodType[i].GetResQty())
 			m_MaxFood = m_FoodType[i].GetResQty();
@@ -332,8 +332,8 @@ CCharBase * CCharBase::FindCharBase( CREID_TYPE baseID ) // static
 	ADDTOCALLSTACK("CCharBase::FindCharBase");
 	// find it (or near it) if already loaded.
 	RESOURCE_ID rid = RESOURCE_ID( RES_CHARDEF, baseID );
-	int index = g_Cfg.m_ResHash.FindKey(rid);
-	if ( index < 0 )
+	size_t index = g_Cfg.m_ResHash.FindKey(rid);
+	if ( index == g_Cfg.m_ResHash.BadIndex() )
 		return NULL;
 
 	CResourceLink * pBaseLink = STATIC_CAST <CResourceLink *> ( g_Cfg.m_ResHash.GetAt(rid,index));

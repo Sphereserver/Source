@@ -50,7 +50,7 @@ class CGObList	// generic list of objects based on CGObListRec.
 	private:
 		CGObListRec * m_pHead;
 		CGObListRec * m_pTail;	// Do we really care about tail ? (as it applies to lists anyhow)
-		int m_iCount;
+		size_t m_iCount;
 	private:
 		void RemoveAtSpecial( CGObListRec * pObRec );
 	protected:
@@ -65,7 +65,7 @@ class CGObList	// generic list of objects based on CGObListRec.
 		CGObList(const CGObList& copy);
 		CGObList& operator=(const CGObList& other);
 	public:
-		CGObListRec * GetAt( int index ) const;
+		CGObListRec * GetAt( size_t index ) const;
 		// pPrev = NULL = first
 		virtual void InsertAfter( CGObListRec * pNewRec, CGObListRec * pPrev = NULL );
 		void InsertHead( CGObListRec * pNewRec );
@@ -74,7 +74,7 @@ class CGObList	// generic list of objects based on CGObListRec.
 		void Empty();
 		CGObListRec * GetHead() const;
 		CGObListRec * GetTail() const;
-		int GetCount() const;
+		size_t GetCount() const;
 		bool IsEmpty() const;
 };
 
@@ -87,8 +87,8 @@ class CGTypedArray
 	// NOTE: This will not call true constructors or destructors !
 	private:
 		TYPE* m_pData;			// the actual array of data
-		int m_nCount;			// # of elements currently in the list
-		int m_nRealCount;		//	real number of allocated elements
+		size_t m_nCount;			// # of elements currently in the list
+		size_t m_nRealCount;		//	real number of allocated elements
 
 	public:
 		static const char *m_sClassName;
@@ -99,25 +99,27 @@ class CGTypedArray
 		CGTypedArray<TYPE, ARG_TYPE>(const CGTypedArray<TYPE, ARG_TYPE> & copy);
 	public:
 		TYPE * GetBasePtr() const;	// This is dangerous to use of course.
-		int GetCount() const;
-		int GetRealCount() const;
-		bool IsValidIndex( int i ) const;
-		void SetCount( int nNewCount );
+		size_t GetCount() const;
+		size_t GetRealCount() const;
+		bool IsValidIndex( size_t i ) const;
+		void SetCount( size_t nNewCount );
 		void RemoveAll();
 		void Empty();
-		void SetAt( int nIndex, ARG_TYPE newElement );
-		void SetAtGrow( int nIndex, ARG_TYPE newElement);
-		void InsertAt( int nIndex, ARG_TYPE newElement );
-		int Add( ARG_TYPE newElement );
-		void RemoveAt( int nIndex );
-		TYPE GetAt( int nIndex) const;
-		TYPE operator[](int nIndex) const;
-		TYPE& ElementAt( int nIndex );
-		TYPE& operator[](int nIndex);
-		const TYPE& ElementAt( int nIndex ) const;
-		virtual void ConstructElements(TYPE* pElements, int nCount );
-		virtual void DestructElements(TYPE* pElements, int nCount );
+		void SetAt( size_t nIndex, ARG_TYPE newElement );
+		void SetAtGrow( size_t nIndex, ARG_TYPE newElement);
+		void InsertAt( size_t nIndex, ARG_TYPE newElement );
+		size_t Add( ARG_TYPE newElement );
+		void RemoveAt( size_t nIndex );
+		TYPE GetAt( size_t nIndex) const;
+		TYPE operator[](size_t nIndex) const;
+		TYPE& ElementAt( size_t nIndex );
+		TYPE& operator[](size_t nIndex);
+		const TYPE& ElementAt( size_t nIndex ) const;
+		virtual void ConstructElements(TYPE* pElements, size_t nCount );
+		virtual void DestructElements(TYPE* pElements, size_t nCount );
 		void Copy( const CGTypedArray<TYPE, ARG_TYPE> * pArray );
+	public:
+		inline size_t BadIndex() const { return (std::numeric_limits<size_t>::max)(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -127,12 +129,13 @@ template<class TYPE>
 class CGPtrTypeArray : public CGTypedArray<TYPE, TYPE>	// void*
 {
 	protected:
-		virtual void DestructElements( TYPE* pElements, int nCount );
+		virtual void DestructElements( TYPE* pElements, size_t nCount );
 	public:
 		static const char *m_sClassName;
-		int FindPtr( TYPE pData ) const;
+		size_t FindPtr( TYPE pData ) const;
+		bool ContainsPtr( TYPE pData ) const;
 		bool RemovePtr( TYPE pData );
-		bool IsValidIndex( int i ) const;
+		bool IsValidIndex( size_t i ) const;
 	public:
 		CGPtrTypeArray() { };
 		virtual ~CGPtrTypeArray() { };
@@ -150,12 +153,12 @@ class CGObArray : public CGPtrTypeArray<TYPE>
 	// The point of this type is that the array now OWNS the element.
 	// It will get deleted when the array is deleted.
 	protected:
-		virtual void DestructElements( TYPE* pElements, int nCount );
+		virtual void DestructElements( TYPE* pElements, size_t nCount );
 	public:
 		static const char *m_sClassName;
 		void Clean(bool bElements = false);
 		bool DeleteOb( TYPE pData );
-		void DeleteAt( int nIndex );
+		void DeleteAt( size_t nIndex );
 	public:
 		CGObArray() { };
 		virtual ~CGObArray();
@@ -171,10 +174,11 @@ template<class TYPE,class KEY_TYPE>
 struct CGObSortArray : public CGObArray<TYPE>
 {
 	public:
-		int FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces = false ) const;
-		int FindKey( KEY_TYPE key ) const;
-		int AddPresorted( int index, int iCompareRes, TYPE pNew );
-		int AddSortKey( TYPE pNew, KEY_TYPE key );
+		size_t FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces = false ) const;
+		size_t FindKey( KEY_TYPE key ) const;
+		bool ContainsKey( KEY_TYPE key ) const;
+		size_t AddPresorted( size_t index, int iCompareRes, TYPE pNew );
+		size_t AddSortKey( TYPE pNew, KEY_TYPE key );
 		virtual int CompareKey( KEY_TYPE, TYPE, bool fNoSpaces ) const = 0;
 		void DeleteKey( KEY_TYPE key );
 	public:
@@ -203,22 +207,22 @@ TYPE * CGTypedArray<TYPE,ARG_TYPE>::GetBasePtr() const	// This is dangerous to u
 }
 
 template<class TYPE, class ARG_TYPE>
-int CGTypedArray<TYPE,ARG_TYPE>::GetRealCount() const
+size_t CGTypedArray<TYPE,ARG_TYPE>::GetRealCount() const
 {
 	return m_nRealCount;
 }
 
 
 template<class TYPE, class ARG_TYPE>
-int CGTypedArray<TYPE,ARG_TYPE>::GetCount() const
+size_t CGTypedArray<TYPE,ARG_TYPE>::GetCount() const
 {
 	return m_nCount;
 }
 
 template<class TYPE, class ARG_TYPE>
-bool CGTypedArray<TYPE,ARG_TYPE>::IsValidIndex( int i ) const
+bool CGTypedArray<TYPE,ARG_TYPE>::IsValidIndex( size_t i ) const
 {
-	return ( i>=0 && i<m_nCount );
+	return ( i < m_nCount );
 }
 
 template<class TYPE, class ARG_TYPE>
@@ -234,7 +238,7 @@ void CGTypedArray<TYPE,ARG_TYPE>::Empty()
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::SetAt( int nIndex, ARG_TYPE newElement )
+void CGTypedArray<TYPE,ARG_TYPE>::SetAt( size_t nIndex, ARG_TYPE newElement )
 {
 	ASSERT(IsValidIndex(nIndex));
 
@@ -243,85 +247,86 @@ void CGTypedArray<TYPE,ARG_TYPE>::SetAt( int nIndex, ARG_TYPE newElement )
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::SetAtGrow( int nIndex, ARG_TYPE newElement)
+void CGTypedArray<TYPE,ARG_TYPE>::SetAtGrow( size_t nIndex, ARG_TYPE newElement)
 {
-	ASSERT(nIndex >= 0);
+	ASSERT(nIndex != STANDARD_CPLUSPLUS_THIS(BadIndex()));
 
 	if ( nIndex >= m_nCount )
-		SetCount(nIndex+1);
+		SetCount(nIndex + 1);
 	SetAt(nIndex, newElement);
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::InsertAt( int nIndex, ARG_TYPE newElement )
+void CGTypedArray<TYPE,ARG_TYPE>::InsertAt( size_t nIndex, ARG_TYPE newElement )
 {	// Bump the existing entry here forward.
-	ASSERT(nIndex >= 0);
+	ASSERT(nIndex != STANDARD_CPLUSPLUS_THIS(BadIndex()));
 
-	SetCount( (nIndex >= m_nCount) ? (nIndex+1) : (m_nCount+1) );
-	memmove( &m_pData[nIndex+1], &m_pData[nIndex], sizeof(TYPE)*(m_nCount-nIndex-1));
+	SetCount( (nIndex >= m_nCount) ? (nIndex + 1) : (m_nCount + 1) );
+	memmove( &m_pData[nIndex + 1], &m_pData[nIndex], sizeof(TYPE) * (m_nCount - nIndex - 1));
 	m_pData[nIndex] = newElement;
 }
 
 template<class TYPE, class ARG_TYPE>
-int CGTypedArray<TYPE,ARG_TYPE>::Add( ARG_TYPE newElement )
+size_t CGTypedArray<TYPE,ARG_TYPE>::Add( ARG_TYPE newElement )
 {
 	// Add to the end.
 	SetAtGrow(GetCount(), newElement);
-	return (m_nCount-1);
+	return (m_nCount - 1);
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::RemoveAt( int nIndex )
+void CGTypedArray<TYPE,ARG_TYPE>::RemoveAt( size_t nIndex )
 {
 	if ( !IsValidIndex(nIndex) )
 		return;
 
 	DestructElements(&m_pData[nIndex], 1);
-	memmove(&m_pData[nIndex], &m_pData[nIndex+1], sizeof(TYPE)*(m_nCount-nIndex-1));
-	SetCount(m_nCount-1);
+	memmove(&m_pData[nIndex], &m_pData[nIndex + 1], sizeof(TYPE) * (m_nCount - nIndex - 1));
+	SetCount(m_nCount - 1);
 }
 
 template<class TYPE, class ARG_TYPE>
-TYPE CGTypedArray<TYPE,ARG_TYPE>::GetAt( int nIndex) const
+TYPE CGTypedArray<TYPE,ARG_TYPE>::GetAt( size_t nIndex) const
 {
+	ASSERT(IsValidIndex(nIndex));
 	return m_pData[nIndex];
 }
 
 template<class TYPE, class ARG_TYPE>
-TYPE CGTypedArray<TYPE,ARG_TYPE>::operator[](int nIndex) const
+TYPE CGTypedArray<TYPE,ARG_TYPE>::operator[](size_t nIndex) const
 {
 	return GetAt(nIndex);
 }
 
 template<class TYPE, class ARG_TYPE>
-TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( int nIndex )
+TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( size_t nIndex )
 {
 	ASSERT(IsValidIndex(nIndex));
 	return m_pData[nIndex];
 }
 
 template<class TYPE, class ARG_TYPE>
-TYPE& CGTypedArray<TYPE,ARG_TYPE>::operator[](int nIndex)
+TYPE& CGTypedArray<TYPE,ARG_TYPE>::operator[](size_t nIndex)
 {
 	return ElementAt(nIndex);
 }
 
 template<class TYPE, class ARG_TYPE>
-const TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( int nIndex ) const
+const TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( size_t nIndex ) const
 {
 	ASSERT(IsValidIndex(nIndex));
 	return m_pData[nIndex];
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::ConstructElements(TYPE* pElements, int nCount )
+void CGTypedArray<TYPE,ARG_TYPE>::ConstructElements(TYPE* pElements, size_t nCount )
 {
 	// first do bit-wise zero initialization
 	memset((void*)pElements, 0, nCount * sizeof(TYPE));
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE,ARG_TYPE>::DestructElements(TYPE* pElements, int nCount )
+void CGTypedArray<TYPE,ARG_TYPE>::DestructElements(TYPE* pElements, size_t nCount )
 {
 	UNREFERENCED_PARAMETER(pElements);
 	UNREFERENCED_PARAMETER(nCount);
@@ -353,18 +358,16 @@ CGTypedArray<TYPE,ARG_TYPE>::~CGTypedArray()
 }
 
 template<class TYPE, class ARG_TYPE>
-void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
+void CGTypedArray<TYPE, ARG_TYPE>::SetCount( size_t nNewCount )
 {
-	if ( nNewCount < 0 )
-		return;
-
+	ASSERT(nNewCount != STANDARD_CPLUSPLUS_THIS(BadIndex())); // to hopefully catch integer underflows (-1)
 	if (nNewCount == 0)
 	{
 		// shrink to nothing
-		if (m_nCount)
+		if (m_nCount > 0)
 		{
 			DestructElements( m_pData, m_nCount );
-			delete [] (BYTE*) m_pData;
+			delete[] (BYTE*) m_pData;
 			m_nCount = m_nRealCount = 0;	// that's probably wrong.. but SetCount(0) should be never called
 			m_pData = NULL;					// before Clean(true) in CGObArray
 		}
@@ -378,7 +381,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
 		{
 			// copy the old stuff to the new array.
 			memcpy( pNewData, m_pData, sizeof(TYPE)*m_nCount );
-			delete [] (BYTE*) m_pData;	// don't call any destructors.
+			delete[] (BYTE*) m_pData;	// don't call any destructors.
 		}
 
 		// Just construct or init the new stuff.
@@ -398,7 +401,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
 	{
 		if ( m_nRealCount )
 		{
-			delete [] (BYTE*) m_pData;
+			delete[] (BYTE*) m_pData;
 			m_nCount = m_nRealCount = 0;
 			m_pData = NULL;
 		}
@@ -409,12 +412,12 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
 	if (( nNewCount > m_nRealCount ) || ( nNewCount < m_nRealCount-10 ))
 	{
 		m_nRealCount = nNewCount + 5;	// auto-allocate space for 5 extra elements
-		TYPE	*pNewData = (TYPE*) new BYTE[m_nRealCount * sizeof(TYPE)];
+		TYPE * pNewData = (TYPE*) new BYTE[m_nRealCount * sizeof(TYPE)];
 
 		// i have already data inside, so move to the new place
 		if ( m_nCount )
-			memcpy(pNewData, m_pData, sizeof(TYPE)*m_nCount);
-		delete [] (BYTE*) m_pData;
+			memcpy(pNewData, m_pData, sizeof(TYPE) * m_nCount);
+		delete[] (BYTE*) m_pData;
 		m_pData = pNewData;
 	}
 
@@ -432,40 +435,50 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( int nNewCount )
 // CGPtrTypeArray
 
 template<class TYPE>
-void CGPtrTypeArray<TYPE>::DestructElements( TYPE* pElements, int nCount )
+void CGPtrTypeArray<TYPE>::DestructElements( TYPE* pElements, size_t nCount )
 {
 	memset(pElements, 0, nCount * sizeof(*pElements));
 }
 
 template<class TYPE>
-int CGPtrTypeArray<TYPE>::FindPtr( TYPE pData ) const
+size_t CGPtrTypeArray<TYPE>::FindPtr( TYPE pData ) const
 {
 	if ( !pData )
-		return -1;
+		return STANDARD_CPLUSPLUS_THIS(BadIndex());
 
-	for ( int nIndex=0; nIndex < STANDARD_CPLUSPLUS_THIS(GetCount()); nIndex++ )
+	for ( size_t nIndex = 0; nIndex < STANDARD_CPLUSPLUS_THIS(GetCount()); nIndex++ )
 	{
 		if ( STANDARD_CPLUSPLUS_THIS(GetAt(nIndex)) == pData )
 			return nIndex;
 	}
-	return -1;
+
+	return STANDARD_CPLUSPLUS_THIS(BadIndex());
+}
+
+template<class TYPE>
+bool CGPtrTypeArray<TYPE>::ContainsPtr( TYPE pData ) const
+{
+	size_t nIndex = FindPtr(pData);
+	ASSERT(nIndex == STANDARD_CPLUSPLUS_THIS(BadIndex()) || IsValidIndex(nIndex));
+	return nIndex != STANDARD_CPLUSPLUS_THIS(BadIndex());
 }
 
 template<class TYPE>
 bool CGPtrTypeArray<TYPE>::RemovePtr( TYPE pData )
 {
-	int nIndex = FindPtr( pData );
-	if ( nIndex < 0 )
+	size_t nIndex = FindPtr( pData );
+	if ( nIndex == STANDARD_CPLUSPLUS_THIS(BadIndex()) )
 		return false;
-	
+
+	ASSERT( IsValidIndex(nIndex) );
 	STANDARD_CPLUSPLUS_THIS(RemoveAt(nIndex));
 	return true;
 }
 
 template<class TYPE>
-bool CGPtrTypeArray<TYPE>::IsValidIndex( int i ) const
+bool CGPtrTypeArray<TYPE>::IsValidIndex( size_t i ) const
 {
-	if (( i < 0 ) || ( i >= STANDARD_CPLUSPLUS_THIS(GetCount()) ))
+	if ( i >= STANDARD_CPLUSPLUS_THIS(GetCount()) )
 		return false;
 	return ( STANDARD_CPLUSPLUS_THIS(GetAt(i)) != NULL );
 }
@@ -474,21 +487,21 @@ bool CGPtrTypeArray<TYPE>::IsValidIndex( int i ) const
 // CGObArray
 
 template<class TYPE>
-void CGObArray<TYPE>::DestructElements( TYPE* pElements, int nCount )
+void CGObArray<TYPE>::DestructElements( TYPE* pElements, size_t nCount )
 {
 	// delete the objects that we own.
-	for ( int i=0; i<nCount; i++ )
+	for ( size_t i = 0; i < nCount; i++ )
 	{
 		if ( pElements[i] != NULL )
 			delete pElements[i];
 	}
-	CGPtrTypeArray<TYPE>::DestructElements(pElements,nCount);
+	CGPtrTypeArray<TYPE>::DestructElements(pElements, nCount);
 }
 
 template<class TYPE>
 void CGObArray<TYPE>::Clean(bool bElements)
 {
-	if ( bElements && STANDARD_CPLUSPLUS_THIS(GetRealCount()) )
+	if ( bElements && STANDARD_CPLUSPLUS_THIS(GetRealCount()) > 0 )
 		DestructElements( STANDARD_CPLUSPLUS_THIS(GetBasePtr()), STANDARD_CPLUSPLUS_THIS(GetRealCount()) );
 	
 	STANDARD_CPLUSPLUS_THIS(Empty());
@@ -501,7 +514,7 @@ bool CGObArray<TYPE>::DeleteOb( TYPE pData )
 }
 
 template<class TYPE>
-void CGObArray<TYPE>::DeleteAt( int nIndex )
+void CGObArray<TYPE>::DeleteAt( size_t nIndex )
 {
 	STANDARD_CPLUSPLUS_THIS(RemoveAt(nIndex));
 }
@@ -517,16 +530,22 @@ CGObArray<TYPE>::~CGObArray()
 // CGObSortArray = A sorted array of objects.
 
 template<class TYPE,class KEY_TYPE>
-int CGObSortArray<TYPE,KEY_TYPE>::FindKey( KEY_TYPE key ) const
+size_t CGObSortArray<TYPE,KEY_TYPE>::FindKey( KEY_TYPE key ) const
 {
 	// Find exact key
 	int iCompareRes;
-	int index = FindKeyNear(key, iCompareRes, false);
-	return (iCompareRes ? -1 : index);
+	size_t index = FindKeyNear(key, iCompareRes, false);
+	return (iCompareRes != 0 ? STANDARD_CPLUSPLUS_THIS(BadIndex()) : index);
 }
 
 template<class TYPE,class KEY_TYPE>
-int CGObSortArray<TYPE,KEY_TYPE>::AddPresorted( int index, int iCompareRes, TYPE pNew )
+bool CGObSortArray<TYPE,KEY_TYPE>::ContainsKey( KEY_TYPE key ) const
+{
+	return FindKey(key) != STANDARD_CPLUSPLUS_THIS(BadIndex());
+}
+
+template<class TYPE,class KEY_TYPE>
+size_t CGObSortArray<TYPE,KEY_TYPE>::AddPresorted( size_t index, int iCompareRes, TYPE pNew )
 {
 	if ( iCompareRes > 0 )
 		index++;
@@ -542,9 +561,8 @@ void CGObSortArray<TYPE,KEY_TYPE>::DeleteKey( KEY_TYPE key )
 }
 
 template<class TYPE, class KEY_TYPE>
-int CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces ) const
+size_t CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces ) const
 {
-	int i = 0;
 
 	// Do a binary search for the key.
 	// RETURN: index
@@ -553,40 +571,45 @@ int CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear( KEY_TYPE key, int & iCompareRes,
 	//		-1 = key should be less than index.
 	//		+1 = key should be greater than index
 	//
-
-	int iHigh = STANDARD_CPLUSPLUS_THIS(GetCount()) - 1;
-	if ( iHigh < 0 )
+	if ( STANDARD_CPLUSPLUS_THIS(GetCount()) <= 0 )
 	{
 		iCompareRes = -1;
-		return( 0 );
+		return 0;
 	}
 
-	int iLow = 0;
+	size_t iHigh = STANDARD_CPLUSPLUS_THIS(GetCount()) - 1;
+	size_t iLow = 0;
+	size_t i = 0;
+
 	while ( iLow <= iHigh )
 	{
-		i = (iHigh+iLow)/2;
+		i = (iHigh + iLow) / 2;
 		iCompareRes = CompareKey( key, STANDARD_CPLUSPLUS_THIS(GetAt(i)), fNoSpaces );
 		if ( iCompareRes == 0 )
 			break;
 		if ( iCompareRes > 0 )
 		{
-			iLow = i+1;
+			iLow = i + 1;
+		}
+		else if ( i == 0 )
+		{
+			break;
 		}
 		else
 		{
-			iHigh = i-1;
+			iHigh = i - 1;
 		}
 	}
 	return i;
 }
 
 template<class TYPE, class KEY_TYPE>
-int CGObSortArray<TYPE, KEY_TYPE>::AddSortKey( TYPE pNew, KEY_TYPE key )
+size_t CGObSortArray<TYPE, KEY_TYPE>::AddSortKey( TYPE pNew, KEY_TYPE key )
 {
 	// Insertion sort.
 	int iCompareRes;
-	int index = FindKeyNear(key, iCompareRes);
-	if ( !iCompareRes )
+	size_t index = FindKeyNear(key, iCompareRes);
+	if ( iCompareRes == 0 )
 	{
 		// duplicate should not happen ?!? DestructElements is called automatically for previous.
 		SetAt(index, pNew);

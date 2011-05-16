@@ -622,16 +622,16 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	if ( iSelect > 0 )
 	{
 		// We selected an item.
-		if ( static_cast<unsigned int>(iSelect) >= COUNTOF(m_tmMenu.m_Item))
+		if ( static_cast<size_t>(iSelect) >= COUNTOF(m_tmMenu.m_Item))
 			return;
 
 		if ( m_Targ_Text.IsEmpty())
 		{
-			addGumpDialogProps( m_tmMenu.m_Item[iSelect] );
+			addGumpDialogProps( m_tmMenu.m_Item[static_cast<size_t>(iSelect)] );
 		}
 		else
 		{
-			OnTarg_Obj_Set( CGrayUID( m_tmMenu.m_Item[iSelect] ).ObjFind() );
+			OnTarg_Obj_Set( CGrayUID( m_tmMenu.m_Item[static_cast<size_t>(iSelect)] ).ObjFind() );
 		}
 		return;
 	}

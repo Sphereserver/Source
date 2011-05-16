@@ -193,7 +193,7 @@ void String::ensureLength(int newLength)
 		if( m_buf != NULL )
 		{
 			strncpy(newBuf, m_buf, m_length);
-			delete []m_buf;
+			delete[] m_buf;
 		}
 		newBuf[m_length] = 0;
 		m_buf = newBuf;

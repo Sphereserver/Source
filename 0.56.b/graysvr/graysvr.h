@@ -360,7 +360,7 @@ private:
 	bool IsReceivingAllowed() const { return m_fReceiving; }
 	LPCTSTR GetChatName() const;
 
-	int FindIgnoringIndex( LPCTSTR pszName) const;
+	size_t FindIgnoringIndex( LPCTSTR pszName) const;
 
 protected:
 	void SetChatActive();
@@ -411,7 +411,7 @@ public:
 	void ClearIgnoreList();
 	bool IsIgnoring(LPCTSTR pszName) const
 	{
-		return( FindIgnoringIndex( pszName ) >= 0 );
+		return( FindIgnoringIndex( pszName ) != m_IgnoredMembers.BadIndex() );
 	}
 };
 
@@ -433,7 +433,7 @@ private:
 	void SetModerator(LPCTSTR pszName, bool fFlag = true);
 	void SetVoice(LPCTSTR pszName, bool fFlag = true);
 	void RenameChannel(CChatChanMember * pBy, LPCTSTR pszName);
-	int FindMemberIndex( LPCTSTR pszName ) const;
+	size_t FindMemberIndex( LPCTSTR pszName ) const;
 
 public:
 	explicit CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL)
@@ -491,18 +491,18 @@ public:
 	void RemoveMember(CChatChanMember * pMember);
 	CChatChanMember * FindMember(LPCTSTR pszName) const
 	{
-		int i = FindMemberIndex( pszName );
-		return(( i >= 0 ) ? m_Members[i] : NULL );
+		size_t i = FindMemberIndex( pszName );
+		if ( i == m_Members.BadIndex() )
+			return NULL;
+		return m_Members[i];
 	}
 	bool RemoveMember(LPCTSTR pszName)
 	{
-		int i = FindMemberIndex( pszName );
-		if ( i >= 0 )
-		{
-			RemoveMember(m_Members[i]);
-			return true;
-		}
-		return false;
+		CChatChanMember * pMember = FindMember(pszName);
+		if ( pMember == NULL )
+			return false;
+		RemoveMember(pMember);
+		return true;
 	}
 	void SetName(LPCTSTR pszName)
 	{
@@ -1037,9 +1037,9 @@ public:
 	void Event_Tips( WORD i ); // Tip of the day window
 	void Event_ToolTip( CGrayUID uid );
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
-	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, DWORD itemCount);
+	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t itemCount);
 	void Event_VendorBuy_Cheater( int iCode = 0 );
-	void Event_VendorSell(CChar* pVendor, const VendorItem* items, DWORD itemCount);
+	void Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount);
 	void Event_VendorSell_Cheater( int iCode = 0 );
 	TRIGRET_TYPE Event_Walking( BYTE rawdir ); // Player moves
 	bool Event_WalkingCheck(DWORD dwEcho);
@@ -1217,7 +1217,7 @@ public:
 	void addSpellbookOpen( CItem * pBook, WORD offset = 1 );
 	void addCustomSpellbookOpen( CItem * pBook, DWORD gumpID );
 	bool addBookOpen( CItem * pBook );
-	void addBookPage( const CItem * pBook, int iPage, int iCount = -1 );
+	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
 	void addCharStatWindow( CGrayUID uid, bool fRequested = false ); // Opens the status window
 	void addHitsUpdate( CGrayUID uid );
 	void addManaUpdate( CGrayUID uid );

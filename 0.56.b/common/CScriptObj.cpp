@@ -279,16 +279,16 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 	else if ( !strnicmp(pszKey, "ARGV", 4) )
 	{
 		EXC_SET("argv");
-		pszKey+=4;
+		pszKey += 4;
 		SKIP_SEPARATORS(pszKey);
 		
-		int iQty = m_v.GetCount();
-		if ( iQty == 0 )
+		size_t iQty = m_v.GetCount();
+		if ( iQty <= 0 )
 		{
 			// PARSE IT HERE
-			TCHAR *		pszArg		= (char*)m_s1_raw.GetPtr();
-			TCHAR *		s			= pszArg;
-			bool		fQuotes		= false;
+			TCHAR * pszArg = const_cast<TCHAR *>(m_s1_raw.GetPtr());
+			TCHAR * s = pszArg;
+			bool fQuotes = false;
 			while ( *s )
 			{
 				// ignore leading spaces
@@ -341,7 +341,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 			return( true );
 		}
 
-		int iNum = Exp_GetSingle(pszKey);
+		size_t iNum = static_cast<size_t>(Exp_GetSingle(pszKey));
 		SKIP_SEPARATORS(pszKey);
 		if ( !m_v.IsValidIndex(iNum) )
 		{
@@ -472,15 +472,15 @@ bool CScriptObj::r_Call( LPCTSTR pszFunction, CTextConsole * pSrc, CScriptTrigge
 {
 	ADDTOCALLSTACK("CScriptObj::r_Call");
 	GETNONWHITESPACE( pszFunction );
-	int	index;
+	size_t index;
 	{
 		int	iCompareRes	= -1;
 		index = g_Cfg.m_Functions.FindKeyNear( pszFunction, iCompareRes, true );
-		if ( iCompareRes )
-			index	= -1;
+		if ( iCompareRes != 0 )
+			index = g_Cfg.m_Functions.BadIndex();
 	}
 
-	if ( index < 0 )
+	if ( index == g_Cfg.m_Functions.BadIndex() )
 		return false;
 
 	CResourceNamed * pFunction = STATIC_CAST <CResourceNamed *>( g_Cfg.m_Functions[index] );

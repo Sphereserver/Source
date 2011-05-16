@@ -157,7 +157,7 @@ bool CClient::IsSkillVisible(SKILL_TYPE skill)
 	if ( !bEnabled )
 		return false;
 
-	int iMaxSkill = MAX_SKILL;	// The highest skill id viewable by the client (+1)
+	SKILL_TYPE iMaxSkill = SKILL_MAX; // The highest skill id viewable by the client (+1)
 
 	switch ( GetResDisp() )
 	{
@@ -876,7 +876,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	LPCTSTR pszKey = s.GetKey();
 
 	// Old ver
-	if ( s.IsKeyHead( "SET", 3 ) && ( g_Cfg.m_Functions.FindKey( pszKey ) == -1 ) )
+	if ( s.IsKeyHead( "SET", 3 ) && ( g_Cfg.m_Functions.ContainsKey( pszKey ) == false ) )
 	{
 		PLEVEL_TYPE ilevel = g_Cfg.GetPrivCommandLevel( "SET" );
 		if ( ilevel > GetPrivLevel() )
@@ -887,7 +887,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		return( true );
 	}
 
-	if ( toupper( pszKey[0] ) == 'X' && ( g_Cfg.m_Functions.FindKey( pszKey ) == -1 ) )
+	if ( toupper( pszKey[0] ) == 'X' && ( g_Cfg.m_Functions.ContainsKey( pszKey ) == false ) )
 	{
 		PLEVEL_TYPE ilevel = g_Cfg.GetPrivCommandLevel( "SET" );
 		if ( ilevel > GetPrivLevel() )
@@ -1345,7 +1345,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			return( false );
 		case CV_SHOWSKILLS:
-			addSkillWindow((SKILL_TYPE)MAX_SKILL); // Reload the real skills
+			addSkillWindow(SKILL_MAX); // Reload the real skills
 			break;
 		case CV_SKILLMENU:				// Just put up another menu.
 			Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()));

@@ -675,7 +675,7 @@ bool CClient::addGumpDialogProps( CGrayUID uid )
 	m_Prop_UID = m_Targ_UID = uid;
 	if ( uid.IsChar())
 	{
-		addSkillWindow((SKILL_TYPE)MAX_SKILL, true);
+		addSkillWindow(SKILL_MAX, true);
 	}
 
 	TCHAR *pszMsg = Str_GetTemp();

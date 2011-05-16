@@ -22,7 +22,7 @@
 
 		if (nChars > 0)
 		{     // successful translation -- trim any trailing junk
-			int index = nChars - 1;      // index of last character
+			DWORD index = nChars - 1;      // index of last character
 			while ((index >= 0) && ((lpszError[index] == '\n') || (lpszError[index] == '\r')))
 				lpszError[index--] = '\0';
 			nChars = index + 1;

@@ -73,7 +73,7 @@ not_in_a_channel:
 	{
 		// Look for second double quote to separate channel from password
 		size_t i = 1;
-		for(; szMsg[i] != '\0'; i++)
+		for (; szMsg[i] != '\0'; i++)
 			if (szMsg[i] == '"')
 				break;
 		szMsg[i] = '\0';
@@ -579,9 +579,9 @@ void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
 		sTempName.Empty();
 
 		// append (n) to the name to make it unique
-		for (int attempts = 2; attempts <= g_Accounts.Account_GetCount(); attempts++)
+		for (unsigned int attempts = 2; attempts <= g_Accounts.Account_GetCount(); attempts++)
 		{
-			sTempName.Format("%s (%d)", pszName, attempts);
+			sTempName.Format("%s (%u)", pszName, attempts);
 			if (g_Accounts.Account_FindChat((LPCTSTR)sTempName) == NULL)
 				break;
 
@@ -832,7 +832,7 @@ void CChatChannel::RenameChannel(CChatChanMember * pBy, LPCTSTR pszName)
 void CChatChannel::KickAll(CChatChanMember * pMemberException)
 {
 	ADDTOCALLSTACK("CChatChannel::KickAll");
-	for (int i = 0; i < m_Members.GetCount(); i++)
+	for (size_t i = 0; i < m_Members.GetCount(); i++)
 	{
 		if ( m_Members[i] == pMemberException) // If it's not me, then kick them
 			continue;
@@ -843,26 +843,26 @@ void CChatChannel::KickAll(CChatChanMember * pMemberException)
 void CChatChannel::RemoveMember(CChatChanMember * pMember)
 {
 	ADDTOCALLSTACK("CChatChannel::RemoveMember");
-	for ( int i = 0; i < m_Members.GetCount(); i++)
+	for ( size_t i = 0; i < m_Members.GetCount(); )
 	{
 		// Tell the other clients in this channel (if any) you are leaving (including yourself)
 		CClient * pClient = m_Members[i]->GetClient();
 
-		if ( !pClient )		//	auto-remove offline clients
+		if ( pClient == NULL )		//	auto-remove offline clients
 		{
 			m_Members[i]->SetChannel(NULL);
 			m_Members.RemoveAt(i);
-			i--;
+			continue;
 		}
-		else
+
+		pClient->addChatSystemMessage(CHATMSG_RemoveMember, pMember->GetChatName());
+		if (m_Members[i] == pMember)	// disjoin
 		{
-			pClient->addChatSystemMessage(CHATMSG_RemoveMember, pMember->GetChatName());
-			if (m_Members[i] == pMember)	// disjoin
-			{
-				m_Members.RemoveAt(i);
-				break;
-			}
+			m_Members.RemoveAt(i);
+			break;
 		}
+
+		i++;
 	}
 
 	// Update our persona
@@ -872,7 +872,7 @@ void CChatChannel::RemoveMember(CChatChanMember * pMember)
 bool CChatChannel::IsModerator(LPCTSTR pszMember) const
 {
 	ADDTOCALLSTACK("CChatChannel::IsModerator");
-	for(int i = 0; i < m_Moderators.GetCount(); i++)
+	for (size_t i = 0; i < m_Moderators.GetCount(); i++)
 	{
 		if (m_Moderators[i]->Compare(pszMember) == 0)
 			return true;
@@ -883,7 +883,7 @@ bool CChatChannel::IsModerator(LPCTSTR pszMember) const
 bool CChatChannel::HasVoice(LPCTSTR pszMember) const
 {
 	ADDTOCALLSTACK("CChatChannel::HasVoice");
-	for(int i = 0; i < m_NoVoices.GetCount(); i++)
+	for (size_t i = 0; i < m_NoVoices.GetCount(); i++)
 	{
 		if (m_NoVoices[i]->Compare(pszMember) == 0)
 			return false;
@@ -895,19 +895,13 @@ void CChatChannel::SetModerator(LPCTSTR pszMember, bool fFlag)
 {
 	ADDTOCALLSTACK("CChatChannel::SetModerator");
 	// See if they are already a moderator
-	for(int i = 0; i < m_Moderators.GetCount(); i++)
+	for (size_t i = 0; i < m_Moderators.GetCount(); i++)
 	{
 		if (m_Moderators[i]->Compare(pszMember) == 0)
 		{
 			if (fFlag == false)
-			{
 				m_Moderators.DeleteAt(i);
-				return;
-			}
-			else
-			{
-				return;
-			}
+			return;
 		}
 	}
 	if (fFlag)
@@ -977,7 +971,7 @@ bool CChatChannel::AddMember(CChatChanMember * pMember)
 void CChatChannel::SendMembers(CChatChanMember * pMember)
 {
 	ADDTOCALLSTACK("CChatChannel::SendMembers");
-	for (int i = 0; i < m_Members.GetCount(); i++)
+	for (size_t i = 0; i < m_Members.GetCount(); i++)
 	{
 		CGString sName;
 		g_Serv.m_Chats.DecorateName(sName, m_Members[i]);
@@ -995,7 +989,7 @@ void CChatChannel::SendThisMember(CChatChanMember * pMember, CChatChanMember * p
 	// If no particular member is specified in pToMember, then send it out to all members
 	if (pToMember == NULL)
 	{
-		for (int i = 0; i < m_Members.GetCount(); i++)
+		for (size_t i = 0; i < m_Members.GetCount(); i++)
 		{
 			// Don't send out members if they are ignored by someone
 			if (!m_Members[i]->IsIgnoring(pMember->GetChatName()))
@@ -1014,17 +1008,13 @@ void CChatChannel::SetVoice(LPCTSTR pszName, bool fFlag)
 {
 	ADDTOCALLSTACK("CChatChannel::SetVoice");
 	// See if they have no voice already
-	for(int i = 0; i < m_NoVoices.GetCount(); i++)
+	for (size_t i = 0; i < m_NoVoices.GetCount(); i++)
 	{
 		if (m_NoVoices[i]->Compare(pszName) == 0)
 		{
 			if (fFlag == true)
-			{
 				m_NoVoices.DeleteAt(i);
-				return;
-			}
-			else
-				return;
+			return;
 		}
 	}
 	if (fFlag == false)
@@ -1072,7 +1062,7 @@ void CChatChannel::Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName, LPCTSTR pszTex
 	else
 		sName = pszName;
 
-	for (int i = 0; i < m_Members.GetCount(); i++)
+	for (size_t i = 0; i < m_Members.GetCount(); i++)
 	{
 		// Check to see if the recipient is ignoring messages from the sender
 		// Just pass over it if it's a regular talk message
@@ -1142,15 +1132,15 @@ void CChatChannel::ToggleVoice(CChatChanMember * pByMember, LPCTSTR pszName)
 		RevokeVoice(pByMember, pszName); // this checks and reports on membership
 }
 
-int CChatChannel::FindMemberIndex(LPCTSTR pszName) const
+size_t CChatChannel::FindMemberIndex(LPCTSTR pszName) const
 {
 	ADDTOCALLSTACK("CChatChannel::FindMemberIndex");
-	for(int i = 0; i < m_Members.GetCount(); i++)
+	for (size_t i = 0; i < m_Members.GetCount(); i++)
 	{
 		if ( strcmp( m_Members[i]->GetChatName(), pszName) == 0)
 			return i;
 	}
-	return -1;
+	return m_Members.BadIndex();
 }
 
 void CChatChannel::GrantModerator(CChatChanMember * pByMember, LPCTSTR pszName)
@@ -1247,15 +1237,15 @@ void CChatChanMember::SetChatInactive()
 	m_fChatActive = false;
 }
 
-int CChatChanMember::FindIgnoringIndex(LPCTSTR pszName) const
+size_t CChatChanMember::FindIgnoringIndex(LPCTSTR pszName) const
 {
 	ADDTOCALLSTACK("CChatChanMember::FindIgnoringIndex");
-	for ( int i = 0; i < m_IgnoredMembers.GetCount(); i++)
+	for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); i++)
 	{
 		if (m_IgnoredMembers[i]->Compare(pszName) == 0)
 			return i;
 	}
-	return -1;
+	return m_IgnoredMembers.BadIndex();
 }
 
 void CChatChanMember::Ignore(LPCTSTR pszName)
@@ -1279,9 +1269,10 @@ void CChatChanMember::DontIgnore(LPCTSTR pszName)
 void CChatChanMember::ToggleIgnore(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CChatChanMember::ToggleIgnore");
-	int i = FindIgnoringIndex( pszName );
-	if ( i>=0 )
+	size_t i = FindIgnoringIndex( pszName );
+	if ( i != m_IgnoredMembers.BadIndex() )
 	{
+		ASSERT( m_IgnoredMembers.IsValidIndex(i) );
 		m_IgnoredMembers.DeleteAt(i);
 
 		SendChatMsg(CHATMSG_NoLongerIgnoring, pszName);
@@ -1305,7 +1296,7 @@ void CChatChanMember::ToggleIgnore(LPCTSTR pszName)
 void CChatChanMember::ClearIgnoreList()
 {
 	ADDTOCALLSTACK("CChatChanMember::ClearIgnoreList");
-	for(int i = 0; i < m_IgnoredMembers.GetCount(); i++)
+	for (size_t i = 0; i < m_IgnoredMembers.GetCount(); i++)
 	{
 		m_IgnoredMembers.DeleteAt(i);
 	}

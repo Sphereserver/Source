@@ -222,7 +222,7 @@ void CTimedFunctionHandler::OnTick()
 
 	if ( m_timedFunctions[tick].size() > 0 )
 	{
-		for( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
+		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
 		{
 			TimedFunction* tf = *it;
 			tf->elapsed -= 1;
@@ -303,7 +303,7 @@ void CTimedFunctionHandler::Erase( CGrayUID uid )
 	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
 	{
 		std::vector<TimedFunction *>::iterator it;
-		for( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
+		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
 		{
 			TimedFunction* tf = *it;
 			if ( tf->uid == uid) 
@@ -443,7 +443,7 @@ void CTimedFunctionHandler::r_Write( CScript & s )
 	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
 	{
 		std::vector<TimedFunction *>::iterator it;
-		for( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ++it )
+		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ++it )
 		{
 			TimedFunction* tf = *it;
 			if ( tf->uid.IsValidUID() )
@@ -688,10 +688,10 @@ DWORD CWorldThread::AllocUID( DWORD dwIndex, CObjBase * pObj )
 			goto setcount;
 		}
 
-		if (( m_FreeOffset >= 0 ) && ( m_FreeOffset < FREE_UIDS_SIZE ) && m_FreeUIDs != NULL )
+		if ( m_FreeOffset < FREE_UIDS_SIZE && m_FreeUIDs != NULL )
 		{
 			//	We do have a free uid's array. Use it if possible to determine the first free element
-			for ( ;  (m_FreeUIDs[m_FreeOffset]) && (m_FreeOffset < FREE_UIDS_SIZE); m_FreeOffset++ )
+			for ( ; m_FreeOffset < FREE_UIDS_SIZE && m_FreeUIDs[m_FreeOffset] != 0; m_FreeOffset++ )
 			{
 				//	yes, that's a free slot
 				if ( !m_UIDs[m_FreeUIDs[m_FreeOffset]] )
@@ -849,11 +849,11 @@ void CWorldThread::GarbageCollection_New()
 	ADDTOCALLSTACK("CWorldThread::GarbageCollection_New");
 	EXC_TRY("GarbageCollection_New");
 	// Clean up new objects that are never placed.
-	if ( m_ObjNew.GetCount())
+	if ( m_ObjNew.GetCount() > 0 )
 	{
-		g_Log.Event( LOGL_ERROR, "GC: %d unplaced object deleted\n", m_ObjNew.GetCount());
+		g_Log.Event( LOGL_ERROR, "GC: %" FMTSIZE_T " unplaced object deleted\n", m_ObjNew.GetCount());
 
-		for (int i = 0; i < m_ObjNew.GetCount(); ++i)
+		for (size_t i = 0; i < m_ObjNew.GetCount(); ++i)
 		{
 			CObjBase * pObj = dynamic_cast<CObjBase*>(m_ObjNew.GetAt(i));
 			if (pObj == NULL)
@@ -868,7 +868,7 @@ void CWorldThread::GarbageCollection_New()
 
 	// Make sure all GM pages have accounts.
 	CGMPage * pPage = STATIC_CAST <CGMPage*>(g_World.m_GMPages.GetHead());
-	while ( pPage!= NULL )
+	while ( pPage != NULL )
 	{
 		CGMPage * pPageNext = pPage->GetNext();
 		if ( ! pPage->FindAccount()) // Open script file
@@ -1184,8 +1184,8 @@ bool CWorld::SaveStage() // Save world state in stages.
 
 		g_Exp.m_ListGlobals.r_WriteSave(m_FileData);
 
-		int iQty = g_Cfg.m_RegionDefs.GetCount();
-		for ( int i = 0; i < iQty; i++ )
+		size_t iQty = g_Cfg.m_RegionDefs.GetCount();
+		for ( size_t i = 0; i < iQty; i++ )
 		{
 			CRegionBase *pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 			if ( !pRegion || !pRegion->HasResourceName() || !pRegion->m_iModified )
@@ -1821,8 +1821,8 @@ bool CWorld::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		else if ( *pszKey == '.' )						//	SERV.GMPAGE.*
 		{
 			SKIP_SEPARATORS(pszKey);
-			int index = Exp_GetVal(pszKey);
-			if (( index < 0 ) || ( index >= m_GMPages.GetCount() ))
+			size_t index = Exp_GetVal(pszKey);
+			if ( index >= m_GMPages.GetCount() )
 				return false;
 
 			SKIP_SEPARATORS(pszKey);
@@ -1934,13 +1934,13 @@ void CWorld::Restock()
 
 	for ( size_t i = 0; i < COUNTOF(g_Cfg.m_ResHash.m_Array); ++i )
 	{
-		for ( int j = 0; j < g_Cfg.m_ResHash.m_Array[i].GetCount(); ++j )
+		for ( size_t j = 0; j < g_Cfg.m_ResHash.m_Array[i].GetCount(); ++j )
 		{
-			CResourceDef* pResDef = g_Cfg.m_ResHash.m_Array[i][j];
-			if ( !pResDef || ( pResDef->GetResType() != RES_ITEMDEF ))
+			CResourceDef * pResDef = g_Cfg.m_ResHash.m_Array[i][j];
+			if ( pResDef == NULL || ( pResDef->GetResType() != RES_ITEMDEF ))
 				continue;
 
-			CItemBase *pBase = dynamic_cast <CItemBase *>(pResDef);
+			CItemBase * pBase = dynamic_cast<CItemBase *>(pResDef);
 			if ( pBase != NULL )
 				pBase->Restock();
 		}
@@ -2169,14 +2169,14 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 					int iLen = CvtSystemToNUNICODE( wTextName, COUNTOF(wTextName), sTextName, -1 );
 					if ( wTextGhost[0] != '\0' )
 					{
-						for ( int i=0; wTextGhost[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
+						for ( size_t i = 0; wTextGhost[i] != '\0' && iLen < MAX_TALK_BUFFER; i++, iLen++ )
 						{
 							wTextName[iLen] = wTextGhost[i];
 						}
 					}
 					else
 					{
-						for ( int i=0; pwText[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
+						for ( size_t i = 0; pwText[i] != 0 && iLen < MAX_TALK_BUFFER; i++, iLen++ )
 						{
 							wTextName[iLen] = pwText[i];
 						}
@@ -2357,9 +2357,10 @@ void CWorld::OnTick()
 
 			// loop backwards to avoid possible infinite loop if a status update is triggered
 			// as part of the status update (e.g. property changed under tooltip trigger)
-			for (int i = m_ObjStatusUpdates.GetCount() - 1; i >= 0; --i )
+			size_t i = m_ObjStatusUpdates.GetCount();
+			while ( i > 0 )
 			{
-				CObjBase* pObj = m_ObjStatusUpdates.GetAt(i);
+				CObjBase * pObj = m_ObjStatusUpdates.GetAt(--i);
 				if (pObj != NULL)
 					pObj->OnTickStatusUpdate();
 			}

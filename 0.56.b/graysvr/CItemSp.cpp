@@ -193,8 +193,8 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	{
 		const CRandGroupDef * pSpawnGroup = STATIC_CAST <const CRandGroupDef *>(pDef);
 		ASSERT(pSpawnGroup);
-		int i = pSpawnGroup->GetRandMemberIndex();
-		if ( i >= 0 )
+		size_t i = pSpawnGroup->GetRandMemberIndex();
+		if ( i != pSpawnGroup->BadMemberIndex() )
 		{
 			rid = pSpawnGroup->GetMemberID(i);
 		}
@@ -520,7 +520,7 @@ bool CItemMap::IsSameType(const CObjBase *pObj) const
 			return false;
 
 		// check individual pins are in the same place
-		for (int i = 0; i < m_Pins.GetCount(); i++)
+		for (size_t i = 0; i < m_Pins.GetCount(); i++)
 		{
 			if ( m_Pins[i].m_x != pItemMap->m_Pins[i].m_x )
 				return false;
@@ -565,8 +565,8 @@ bool CItemMap::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	if ( ! strnicmp( pszKey, "PIN.", 4 ))
 	{
 		pszKey += 4;
-		int i = Exp_GetVal(pszKey) - 1;
-		if ( i >= 0 && i < m_Pins.GetCount())
+		size_t i = Exp_GetVal(pszKey) - 1;
+		if ( m_Pins.IsValidIndex(i) )
 		{
 			sVal.Format( "%i,%i", m_Pins[i].m_x, m_Pins[i].m_y );
 			return( true );
@@ -585,7 +585,7 @@ void CItemMap::r_Write( CScript & s )
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemMap::r_Write");
 	CItemVendable::r_Write( s );
-	for ( int i=0; i<m_Pins.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Pins.GetCount(); i++ )
 	{
 		s.WriteKeyFormat( "PIN", "%i,%i", m_Pins[i].m_x, m_Pins[i].m_y );
 	}
@@ -614,11 +614,11 @@ void CItemMessage::r_Write( CScript & s )
 
 	TemporaryString pszTemp;
 	// Store the message body lines. MAX_BOOK_PAGES
-	for ( int i = 0; i < GetPageCount(); ++i )
+	for ( size_t i = 0; i < GetPageCount(); ++i )
 	{
-		sprintf(pszTemp, "BODY.%d", i);
+		sprintf(pszTemp, "BODY.%" FMTSIZE_T, i);
 		LPCTSTR pszText = GetPageText(i);
-		s.WriteKey(pszTemp, ( pszText ) ?  pszText : "" );
+		s.WriteKey(pszTemp, pszText != NULL ? pszText : "" );
 	}
 }
 
@@ -674,8 +674,8 @@ bool CItemMessage::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pS
 	if ( ! strnicmp( pszKey, "BODY", 4 ))
 	{
 		pszKey += 4;
-		int iPage = Exp_GetVal(pszKey);
-		if ( iPage < 0 || iPage >= m_sBodyLines.GetCount())
+		size_t iPage = Exp_GetVal(pszKey);
+		if ( m_sBodyLines.IsValidIndex(iPage) == false )
 			return( false );
 		sVal = *m_sBodyLines[iPage];
 		return( true );
@@ -718,21 +718,25 @@ bool CItemMessage::r_Verb( CScript & s, CTextConsole * pSrc )
 	if ( s.IsKey( sm_szVerbKeys[0] ))
 	{
 		// 1 based pages.
-		int iPage = ( s.GetArgStr()[0] && toupper( s.GetArgStr()[0] ) != 'A' ) ? s.GetArgVal() : 0;
-		if ( ! iPage )
+		size_t iPage = ( s.GetArgStr()[0] && toupper( s.GetArgStr()[0] ) != 'A' ) ? s.GetArgVal() : 0;
+		if ( iPage <= 0 )
 		{
 			m_sBodyLines.RemoveAll();
 			return( true );
 		}
 		else if ( iPage <= m_sBodyLines.GetCount())
 		{
-			m_sBodyLines.RemoveAt( iPage-1 );
+			m_sBodyLines.RemoveAt( iPage - 1 );
 			return( true );
 		}
 	}
 	if ( s.IsKeyHead( "PAGE", 4 ))
 	{
-		SetPageText( ATOI( s.GetKey() + 4 )-1, s.GetArgStr());
+		size_t iPage =  ATOI( s.GetKey() + 4 );
+		if ( iPage <= 0 )
+			return( false );
+
+		SetPageText( iPage - 1, s.GetArgStr());
 		return( true );
 	}
 	return CItemVendable::r_Verb(s, pSrc);
@@ -754,7 +758,7 @@ void CItemMessage::DupeCopy( const CItem * pItem )
 		return;
 
 	m_sAuthor = pMsgItem->m_sAuthor;
-	for ( int i=0; i<pMsgItem->GetPageCount(); i++ )
+	for ( size_t i = 0; i < pMsgItem->GetPageCount(); i++ )
 	{
 		SetPageText( i, pMsgItem->GetPageText(i));
 	}
@@ -899,9 +903,9 @@ void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	ADDTOCALLSTACK("CItemCommCrystal::OnHear");
 	// IT_COMM_CRYSTAL
 	// STATF_COMM_CRYSTAL = if i am on a person.
-	TALKMODE_TYPE		mode	= TALKMODE_SAY;
+	TALKMODE_TYPE mode = TALKMODE_SAY;
 
-	for ( int i=0; i<m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Speech.GetCount(); i++ )
 	{
 		CResourceLink * pLink = m_Speech[i];
 		ASSERT(pLink);
@@ -928,7 +932,7 @@ void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )
 			pItem->Speak( pszCmd );
 		}
 	}
-	else if ( ! m_Speech.GetCount())
+	else if ( m_Speech.GetCount() <= 0 )
 	{
 		Speak( pszCmd );
 	}

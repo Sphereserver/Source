@@ -402,12 +402,12 @@ int CChar::Noto_GetLevel() const
 	// Paperdoll title for character
 	// This is so we can inform user of change in title !
 
-	int i=0;
+	size_t i = 0;
 	int iKarma = Stat_GetAdjusted(STAT_KARMA);
 	for ( ; i < g_Cfg.m_NotoKarmaLevels.GetCount() && iKarma < g_Cfg.m_NotoKarmaLevels.GetAt(i); i++ )
 		;
 
-	int j =0;
+	size_t j = 0;
 	int iFame = Stat_GetAdjusted(STAT_FAME);
 	for ( ; j < g_Cfg.m_NotoFameLevels.GetCount() && iFame > g_Cfg.m_NotoFameLevels.GetAt(j); j++ )
 		;

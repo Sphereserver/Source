@@ -36,7 +36,7 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	size_t nStrLen;
 	bool bUTF = false, bFirstLine = true;
 	
-	while( !feof(m_pStream) ) 
+	while ( !feof(m_pStream) ) 
 	{
 		buf.setAt(0, '\0');
 		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);

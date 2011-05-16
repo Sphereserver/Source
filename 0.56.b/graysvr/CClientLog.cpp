@@ -349,7 +349,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() > (sizeof(m_zLogin) - 1) )
+					if ( m_Targ_Text.GetLength() > (COUNTOF(m_zLogin) - 1) )
 					{
 						SysMessage("Login?:\n");
 					}

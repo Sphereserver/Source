@@ -702,7 +702,7 @@ bool CWorld::DumpAreas( CTextConsole * pSrc, LPCTSTR pszFilename )
 	if ( pSrc == NULL )
 		return( false );
 
-	if ( !*pszFilename )
+	if ( pszFilename == NULL || *pszFilename == '\0' )
 		pszFilename	= "map_all.scp";
 	else if ( strlen( pszFilename ) <= 4 )
 		return( false );
@@ -711,12 +711,10 @@ bool CWorld::DumpAreas( CTextConsole * pSrc, LPCTSTR pszFilename )
 	if ( ! s.Open( pszFilename, OF_WRITE|OF_TEXT|OF_DEFAULTMODE ))
 		return( false );
 
-	int	i		= 0;
-	int	iMax	= g_Cfg.m_RegionDefs.GetCount();
-
-	for ( i = 0; i < iMax; i++ )
+	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
+	for ( size_t i = 0; i < iMax; i++ )
 	{
-		CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
+		CRegionBase * pRegion = g_Cfg.m_RegionDefs.GetAt(i);
 		if ( !pRegion  )
 			continue;
 		pRegion->r_Write( s );

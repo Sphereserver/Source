@@ -94,7 +94,7 @@ public:
 #define REGION_TYPE_ROOM  2
 #define REGION_TYPE_MULTI 4
 	CRegionBase * GetRegion( DWORD dwType ) const;
-	int GetRegions( DWORD dwType, CRegionLinks & rlinks ) const;
+	size_t GetRegions( DWORD dwType, CRegionLinks & rlinks ) const;
 
 	long GetPointSortIndex() const
 	{

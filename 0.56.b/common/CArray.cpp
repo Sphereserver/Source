@@ -93,7 +93,7 @@ void CGObList::InsertAfter( CGObListRec * pNewRec, CGObListRec * pPrev )
 	m_iCount ++;
 }
 
-CGObListRec * CGObList::GetAt( int index ) const
+CGObListRec * CGObList::GetAt( size_t index ) const
 {
 	ADDTOCALLSTACK("CGObList::GetAt");
 	CGObListRec * pRec = GetHead();
@@ -158,7 +158,7 @@ CGObListRec * CGObList::GetTail() const
 	return m_pTail;
 }
 
-int CGObList::GetCount() const
+size_t CGObList::GetCount() const
 {
 	ADDTOCALLSTACK("CGObList::GetCount");
 	return m_iCount;

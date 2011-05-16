@@ -149,11 +149,11 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	}
 
 	// make sure they don't already have too many characters
-	int iMaxChars = account->GetMaxChars();
-	int iQtyChars = account->m_Chars.GetCharCount();
+	BYTE iMaxChars = account->GetMaxChars();
+	size_t iQtyChars = account->m_Chars.GetCharCount();
 	if (iQtyChars >= iMaxChars)
 	{
-		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MAXCHARS), iQtyChars);
+		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MAXCHARS), static_cast<int>(iQtyChars));
 		if (client->GetPrivLevel() < PLEVEL_Seer)
 		{
 			client->addLoginErr(PacketLoginError::TooManyChars);
@@ -740,7 +740,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	VendorItem items[MAX_ITEMS_CONT];
 	memset(items, 0, sizeof(items));
-	DWORD itemCount = minimum((packetLength - 8) / 7, MAX_ITEMS_CONT);
+	size_t itemCount = minimum((packetLength - 8) / 7, MAX_ITEMS_CONT);
 
 	// check buying speed
 	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
@@ -1003,6 +1003,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 			lineCount--;
 		}
 
+		ASSERT(len > 0);
 		content[--len] = '\0';
 		if (Str_Check(content))
 			break;
@@ -1802,7 +1803,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 
 	skip(2); // length
 	CGrayUID vendorSerial(readInt32());
-	WORD itemCount = readInt16();
+	size_t itemCount = readInt16();
 
 	CChar* vendor = vendorSerial.CharFind();
 	if (vendor == NULL || vendor->m_pNPC == NULL || (!vendor->NPC_IsVendor() && vendor->m_pNPC->m_Brain != NPCBRAIN_VENDOR_OFFDUTY))
@@ -1851,7 +1852,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	VendorItem items[MAX_ITEMS_CONT];
 	memset(items, 0, sizeof(items));
 
-	for (int i = 0; i < itemCount; i++)
+	for (size_t i = 0; i < itemCount; i++)
 	{
 		items[i].m_serial = CGrayUID(readInt32());
 		items[i].m_amount = readInt16();

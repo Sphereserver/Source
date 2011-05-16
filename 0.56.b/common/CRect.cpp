@@ -240,7 +240,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 	if ( !strnicmp( pszKey, "STATICS", 7 ) )
 	{
 		pszKey	+= 7;
-		const CGrayMapBlock * pBlock	= g_World.GetMapBlock( *(this) );
+		const CGrayMapBlock * pBlock = g_World.GetMapBlock( *(this) );
 		if ( !pBlock ) return false;
 
 		if ( *pszKey == '\0' )
@@ -261,37 +261,35 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 
 		SKIP_SEPARATORS( pszKey );
 
-		const CUOStaticItemRec * pStatic	= NULL;
-
-
-		int		iStatic	= 0;
-		int		type	= 0;
+		const CUOStaticItemRec * pStatic = NULL;
+		int iStatic = 0;
+		int type = 0;
 		
 		if ( !strnicmp( pszKey, "FINDID", 6 ) )
 		{
-			pszKey	+= 6;
+			pszKey += 6;
 			SKIP_SEPARATORS( pszKey );
-			iStatic	= Exp_GetVal( pszKey );
-			type	= RES_GET_TYPE( iStatic );
+			iStatic = Exp_GetVal( pszKey );
+			type = RES_GET_TYPE( iStatic );
 			if ( type == 0 )
-				type	= RES_ITEMDEF;
+				type = RES_ITEMDEF;
 			SKIP_SEPARATORS( pszKey );
 		}
 		else
 		{
-			iStatic	= Exp_GetVal( pszKey );
-			type	= RES_GET_TYPE( iStatic );
+			iStatic = Exp_GetVal( pszKey );
+			type = RES_GET_TYPE( iStatic );
 		}
 		
 		if ( type == RES_ITEMDEF )
 		{
-			CItemBase * pItemDef	= CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iStatic) );
+			CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iStatic) );
 			if ( !pItemDef )
 			{
 				sVal.FormatVal( 0 );
 				return false;
 			}
-			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, i++ )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -303,7 +301,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 		else
 		{
-			for ( size_t i = 0; i <  pBlock->m_Statics.GetStaticQty(); pStatic	= NULL, i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, i++ )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -362,12 +360,12 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		CItem* pItem = NULL;
 		const CGrayMulti* pMulti = NULL;
 		const CUOMultiItemRec2* pMultiItem = NULL;
-		int iMultiQty = GetRegions(REGION_TYPE_MULTI, rlinks);
+		size_t iMultiQty = GetRegions(REGION_TYPE_MULTI, rlinks);
 
 		if ( *pszKey == '\0' )
 		{
 			int iComponentQty = 0;
-			for (int i = 0; i < iMultiQty; i++)
+			for (size_t i = 0; i < iMultiQty; i++)
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -410,30 +408,30 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		
 		if ( strnicmp( pszKey, "FINDID", 6 ) == 0 )
 		{
-			pszKey	+= 6;
+			pszKey += 6;
 			SKIP_SEPARATORS( pszKey );
-			iComponent	= Exp_GetVal( pszKey );
-			type	= RES_GET_TYPE( iComponent );
+			iComponent = Exp_GetVal( pszKey );
+			type = RES_GET_TYPE( iComponent );
 			if ( type == 0 )
-				type	= RES_ITEMDEF;
+				type = RES_ITEMDEF;
 			SKIP_SEPARATORS( pszKey );
 		}
 		else
 		{
-			iComponent	= Exp_GetVal( pszKey );
-			type	= RES_GET_TYPE( iComponent );
+			iComponent = Exp_GetVal( pszKey );
+			type = RES_GET_TYPE( iComponent );
 		}
 		
 		if ( type == RES_ITEMDEF )
 		{
-			CItemBase * pItemDef	= CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iComponent) );
+			CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iComponent) );
 			if ( pItemDef == NULL )
 			{
 				sVal.FormatVal( 0 );
 				return false;
 			}
 			
-			for (int i = 0; i < iMultiQty; i++)
+			for (size_t i = 0; i < iMultiQty; i++)
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -472,7 +470,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 		else
 		{
-			for (int i = 0; i < iMultiQty; i++)
+			for (size_t i = 0; i < iMultiQty; i++)
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -557,7 +555,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		return pItemDef->r_WriteVal( pszKey, sVal, &g_Serv );
 	}
 	
-	int		index = FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
+	int index = FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
 	if ( index < 0 )
 		return false;
 
@@ -858,7 +856,7 @@ CRegionBase * CPointBase::GetRegion( DWORD dwType ) const
 	return NULL;
 }
 
-int CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
+size_t CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
 {
 	ADDTOCALLSTACK("CPointBase::GetRegions");
 	if ( !IsValidPoint() )

@@ -15,14 +15,14 @@ class CServerDef;
 
 typedef CServerDef * CServerRef;
 
-#define MAX_SKILL	(g_Cfg.m_iMaxSkill)
-#define MAX_SKILL_SA	58	// The number of skills viewable by SA clients
-#define MAX_SKILL_KR	55	// The number of skills viewable by KR clients
-#define MAX_SKILL_ML	55	// The number of skills viewable by ML clients
-#define MAX_SKILL_SE	54	// The number of skills viewable by SE clients
-#define MAX_SKILL_AOS	52	// The number of skills viewable by AOS clients
-#define MAX_SKILL_LBR	49	// The number of skills viewable by LBR clients
-#define MAX_SKILL_T2A	49	// The number of skills viewable by T2A clients
+#define SKILL_MAX		(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill))
+#define MAX_SKILL_SA	(static_cast<SKILL_TYPE>(58))	// The number of skills viewable by SA clients
+#define MAX_SKILL_KR	(static_cast<SKILL_TYPE>(55))	// The number of skills viewable by KR clients
+#define MAX_SKILL_ML	(static_cast<SKILL_TYPE>(55))	// The number of skills viewable by ML clients
+#define MAX_SKILL_SE	(static_cast<SKILL_TYPE>(54))	// The number of skills viewable by SE clients
+#define MAX_SKILL_AOS	(static_cast<SKILL_TYPE>(52))	// The number of skills viewable by AOS clients
+#define MAX_SKILL_LBR	(static_cast<SKILL_TYPE>(49))	// The number of skills viewable by LBR clients
+#define MAX_SKILL_T2A	(static_cast<SKILL_TYPE>(49))	// The number of skills viewable by T2A clients
 
 // option flags
 enum OF_TYPE
@@ -229,27 +229,31 @@ private:
 
 public:
 	static const char *m_sClassName;
-	int FindChar( const CChar * pChar ) const;
+	size_t FindChar( const CChar * pChar ) const;
 	bool IsCharIn( const CChar * pChar ) const
 	{
-		return( FindChar( pChar ) >= 0 );
+		return( FindChar( pChar ) != m_uidCharArray.BadIndex() );
 	}
-	int AttachChar( const CChar * pChar );
-	int InsertChar( const CChar * pChar, int i );
-	void DetachChar( int i );
-	int DetachChar( const CChar * pChar );
+	size_t AttachChar( const CChar * pChar );
+	size_t InsertChar( const CChar * pChar, size_t i );
+	void DetachChar( size_t i );
+	size_t DetachChar( const CChar * pChar );
 	void DeleteChars();
-	int GetCharCount() const
+	size_t GetCharCount() const
 	{
 		return( m_uidCharArray.GetCount());
 	}
-	CGrayUID GetChar( int i ) const
+	CGrayUID GetChar( size_t i ) const
 	{
 		return( m_uidCharArray[i] );
 	}
-	bool IsValidIndex( int i )
+	bool IsValidIndex( size_t i ) const
 	{
 		return m_uidCharArray.IsValidIndex( i );
+	}
+	inline size_t BadIndex() const
+	{
+		return m_uidCharArray.BadIndex();
 	}
 	void WritePartyChars( CScript & s );
 
@@ -450,7 +454,7 @@ public:
 	bool r_LoadVal( CScript & s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 
-	bool GetPrimarySkill( int * iSkill = NULL, int * iQty = NULL ) const;
+	bool GetPrimarySkill( int * piSkill = NULL, int * piQty = NULL ) const;
 };
 
 class CRandGroupDef	: public CResourceLink // A spawn group.
@@ -480,14 +484,18 @@ private:
 public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString &sVal, CTextConsole * pSrc = NULL );
-	int GetRandMemberIndex( CChar * pCharSrc = NULL, bool bTrigger = true ) const;
-	CResourceQty GetMember( int i ) const
+	size_t GetRandMemberIndex( CChar * pCharSrc = NULL, bool bTrigger = true ) const;
+	CResourceQty GetMember( size_t i ) const
 	{
-		return( m_Members[i] );
+		return m_Members[i];
 	}
-	RESOURCE_ID GetMemberID( int i ) const
+	RESOURCE_ID GetMemberID( size_t i ) const
 	{
-		return( m_Members[i].GetResourceID() );
+		return m_Members[i].GetResourceID();
+	}
+	size_t BadMemberIndex() const
+	{
+		return m_Members.BadIndex();
 	}
 };
 
@@ -802,7 +810,8 @@ public:
 	int		m_iDistanceWhisper;
 	int		m_iDistanceTalk;
 
-	int		m_iMaxSkill;
+	unsigned int m_iMaxSkill;
+
 	CGString	m_sSpeechSelf;
 	CGString	m_sSpeechPet;
 	CGString	m_sSpeechOther;
@@ -1044,33 +1053,36 @@ public:
 
 	CWebPageDef * FindWebPage( LPCTSTR pszPath ) const;
 
-	CServerRef Server_GetDef( int index );
+	CServerRef Server_GetDef( size_t index );
 
-	const CSpellDef* GetSpellDef( SPELL_TYPE index ) const
+	const CSpellDef * GetSpellDef( SPELL_TYPE index ) const
 	{
-		if ( ! index || ! m_SpellDefs.IsValidIndex(index))
-			return( NULL );
-		return( m_SpellDefs[index] );
+		// future: underlying type for SPELL_TYPE to avoid casts
+		if (index == SPELL_NONE || m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+			return NULL;
+		return m_SpellDefs[static_cast<size_t>(index)];
 	}
 
-	CSpellDef* GetSpellDef( SPELL_TYPE index ) 
+	CSpellDef * GetSpellDef( SPELL_TYPE index ) 
 	{
-		if ( ! index || ! m_SpellDefs.IsValidIndex(index))
-			return( NULL );
-		return( m_SpellDefs[index] );
+		// future: underlying type for SPELL_TYPE to avoid casts
+		if (index == SPELL_NONE || m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+			return NULL;
+		return m_SpellDefs[static_cast<size_t>(index)];
 	}
 
 	LPCTSTR GetSkillKey( SKILL_TYPE index ) const
 	{
-		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+		// future: underlying type for SPELL_TYPE to avoid casts
+		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false)
 			return NULL;
-		return( m_SkillIndexDefs[index]->GetKey());
+		return( m_SkillIndexDefs[static_cast<size_t>(index)]->GetKey());
 	}
 
 	bool IsSkillFlag( SKILL_TYPE index, SKF_TYPE skf ) const
 	{
-		const CSkillDef *	pSkillDef	= GetSkillDef( index );
-		return ( pSkillDef && (pSkillDef->m_dwFlags & skf) );
+		const CSkillDef * pSkillDef = GetSkillDef( index );
+		return ( pSkillDef != NULL && (pSkillDef->m_dwFlags & skf) );
 	}
 
 	bool IsSkillRanged( SKILL_TYPE index ) const
@@ -1083,24 +1095,24 @@ public:
 
 	const CSkillDef* GetSkillDef( SKILL_TYPE index ) const
 	{
-		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false)
 			return NULL;
-		return( m_SkillIndexDefs[index] );
+		return( m_SkillIndexDefs[static_cast<size_t>(index)] );
 	}
 	
 	CSkillDef* GetSkillDef( SKILL_TYPE index )
 	{
-		if ( ! m_SkillIndexDefs.IsValidIndex(index) )
+		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false )
 			return NULL;
-		return( m_SkillIndexDefs[index] );
+		return( m_SkillIndexDefs[static_cast<size_t>(index)] );
 	}
 
 	const CSkillDef* FindSkillDef( LPCTSTR pszKey ) const
 	{
 		// Find the skill name in the alpha sorted list.
 		// RETURN: SKILL_NONE = error.
-		int i = m_SkillNameDefs.FindKey( pszKey );
-		if ( i < 0 )
+		size_t i = m_SkillNameDefs.FindKey( pszKey );
+		if ( i == m_SkillNameDefs.BadIndex() )
 			return( NULL );
 		return( STATIC_CAST <const CSkillDef*>(m_SkillNameDefs[i]));
 	}
@@ -1111,7 +1123,7 @@ public:
 
 	LPCTSTR GetRune( TCHAR ch ) const
 	{
-		int index = toupper(ch) - 'A';
+		size_t index = toupper(ch) - 'A';
 		if ( ! m_Runes.IsValidIndex(index))
 			return "?";
 		return( m_Runes[index]->GetPtr() );

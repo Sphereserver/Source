@@ -170,8 +170,8 @@ public:
 	void OnLogin( CClient * pClient );
 	void OnLogout(CClient *pClient, bool bWasChar = false);
 
-	int DetachChar( CChar * pChar );
-	int AttachChar( CChar * pChar );
+	size_t DetachChar( CChar * pChar );
+	size_t AttachChar( CChar * pChar );
 
 	CClient * FindClient( const CClient * pExclude = NULL ) const;
 };
@@ -201,11 +201,11 @@ public:
 	bool Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges );
 	bool Account_LoadAll( bool fChanges = true, bool fClearChanges = false );
 	bool Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc );
-	int Account_GetCount() const
+	size_t Account_GetCount() const
 	{
 		return( m_Accounts.GetCount());
 	}
-	CAccountRef Account_Get( int index );
+	CAccountRef Account_Get( size_t index );
 	CAccountRef Account_Find( LPCTSTR pszName );
 	CAccountRef Account_FindCreate( LPCTSTR pszName, bool fCreate = false );
 	CAccountRef Account_FindChat( LPCTSTR pszName );

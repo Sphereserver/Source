@@ -201,7 +201,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 				CItemContainer * pPack = GetPack();
 				if ( pPack )
 				{
-					if ( pPack->GetCount())
+					if ( pPack->GetCount() > 0 )
 					{
 						pPack->ContentsDump( GetTopPoint(), ATTR_OWNED );
 						break;
@@ -263,13 +263,13 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 					{
 						sprintf(pszTemp1, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_1 ), pBank->m_itEqBankBox.m_Check_Amount);
 						sprintf(pszTemp2, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_2 ), pBank->m_itEqBankBox.m_Check_Amount / iWage);
-						sprintf(pszTemp3, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_3 ), pCont->GetCount());
+						sprintf(pszTemp3, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_3 ), static_cast<int>(pCont->GetCount()) );
 					}
 					else
 					{
 						sprintf(pszTemp1, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_1 ), pBank->m_itEqBankBox.m_Check_Amount );
 						sprintf(pszTemp2, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_4 ), pBank->m_itEqBankBox.m_Check_Restock, pBank->GetTimerAdjusted() / 60);
-						sprintf(pszTemp3, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_3 ), pCont->GetCount() );
+						sprintf(pszTemp3, g_Cfg.GetDefaultMsg( DEFMSG_NPC_VENDOR_STAT_GOLD_3 ), static_cast<int>(pCont->GetCount()) );
 					}
 					sprintf(pszMsg, "%s %s %s", pszTemp1, pszTemp2, pszTemp3);
 				}

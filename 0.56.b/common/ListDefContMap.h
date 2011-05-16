@@ -116,7 +116,7 @@ public:
 	CListDefContElem* GetAt(size_t nIndex) const;
 	bool SetNumAt(size_t nIndex, int iVal);
 	bool SetStrAt(size_t nIndex, LPCTSTR pszVal);
-	int GetCount() const;
+	size_t GetCount() const;
 
 	LPCTSTR GetValStr(size_t nIndex) const;
 	int GetValNum(size_t nIndex) const;

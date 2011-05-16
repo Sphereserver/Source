@@ -10,37 +10,36 @@
 //*****************************************************************
 // -CCharRefArray
 
-int CCharRefArray::FindChar( const CChar * pChar ) const
+size_t CCharRefArray::FindChar( const CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CCharRefArray::FindChar");
 	if ( pChar == NULL )
-	{
-		return( -1 );
-	}
+		return m_uidCharArray.BadIndex();
+
 	CGrayUID uid( pChar->GetUID());
-	int iQty = m_uidCharArray.GetCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_uidCharArray.GetCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		if ( uid == m_uidCharArray[i] )
-			return( i );
+			return i;
 	}
-	return( -1 );
+	return m_uidCharArray.BadIndex();
 }
 
-int CCharRefArray::AttachChar( const CChar * pChar )
+size_t CCharRefArray::AttachChar( const CChar * pChar )
 {
 	ADDTOCALLSTACK("CCharRefArray::AttachChar");
-	int i = FindChar( pChar );
-	if ( i >= 0 )
+	size_t i = FindChar( pChar );
+	if ( i != m_uidCharArray.BadIndex() )
 		return( i );
 	return m_uidCharArray.Add( pChar->GetUID() );
 }
 
-int CCharRefArray::InsertChar( const CChar * pChar, int i )
+size_t CCharRefArray::InsertChar( const CChar * pChar, size_t i )
 {
 	ADDTOCALLSTACK("CCharRefArray::InsertChar");
-	int currentIndex = FindChar( pChar );
-	if ( currentIndex >= 0 )
+	size_t currentIndex = FindChar( pChar );
+	if ( currentIndex != m_uidCharArray.BadIndex() )
 	{
 		// already there
 		if ( currentIndex == i )
@@ -51,7 +50,7 @@ int CCharRefArray::InsertChar( const CChar * pChar, int i )
 	}
 
 	// prevent from being inserted too high
-	if ( i < 0 || i > GetCharCount() )
+	if ( IsValidIndex(i) == false )
 		i = GetCharCount();
 
 	// insert
@@ -59,33 +58,30 @@ int CCharRefArray::InsertChar( const CChar * pChar, int i )
 	return i;
 }
 
-void CCharRefArray::DetachChar( int i )
+void CCharRefArray::DetachChar( size_t i )
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
 	m_uidCharArray.RemoveAt(i);
 }
 
-int CCharRefArray::DetachChar( const CChar * pChar )
+size_t CCharRefArray::DetachChar( const CChar * pChar )
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
-	int i = FindChar( pChar );
-	if ( i < 0 )
-		return( -1 );
-	DetachChar( i );
+	size_t i = FindChar( pChar );
+	if ( i != m_uidCharArray.BadIndex() )
+		DetachChar( i );
 	return( i );
 }
 
 void CCharRefArray::DeleteChars()
 {
 	ADDTOCALLSTACK("CCharRefArray::DeleteChars");
-	int iQty = m_uidCharArray.GetCount();
-	for ( int k=iQty-1; k >= 0; --k )
+	size_t iQty = m_uidCharArray.GetCount();
+	while (iQty > 0)
 	{
-		CChar * pChar = m_uidCharArray[k].CharFind();
-		if ( pChar )
-		{
-			delete pChar;	//
-		}
+		CChar * pChar = m_uidCharArray[--iQty].CharFind();
+		if ( pChar != NULL )
+			delete pChar;
 	}
 	m_uidCharArray.RemoveAll();
 }
@@ -94,8 +90,8 @@ void CCharRefArray::DeleteChars()
 void CCharRefArray::WritePartyChars( CScript & s )
 {
 	ADDTOCALLSTACK("CCharRefArray::WritePartyChars");
-	int iQty = m_uidCharArray.GetCount();
-	for ( int j=0; j<iQty; j++ )	// write out links to all my chars
+	size_t iQty = m_uidCharArray.GetCount();
+	for ( size_t j = 0; j < iQty; j++ ) // write out links to all my chars
 	{
 		s.WriteKeyHex( "CHARUID", m_uidCharArray[j] );
 	}
@@ -118,29 +114,29 @@ CPartyDef::CPartyDef( CChar * pChar1, CChar *pChar2 )
 }
 
 // ---------------------------------------------------------
-int CPartyDef::AttachChar( CChar * pChar )
+size_t CPartyDef::AttachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::AttachChar");
 	// RETURN:
-	//  index of the char in the group. -1 = not in group.
-	int i = m_Chars.AttachChar( pChar );
+	//  index of the char in the group. BadIndex = not in group.
+	size_t i = m_Chars.AttachChar( pChar );
 	SetLootFlag( pChar, false );
-	return( i );
+	return i;
 }
 
-int CPartyDef::DetachChar( CChar * pChar )
+size_t CPartyDef::DetachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::DetachChar");
 	// RETURN:
-	//  index of the char in the group. -1 = not in group.
-	int i = m_Chars.DetachChar( pChar );
-	if ( i != -1 )
+	//  index of the char in the group. BadIndex = not in group.
+	size_t i = m_Chars.DetachChar( pChar );
+	if ( i != m_Chars.BadIndex() )
 	{
 		pChar->DeleteKey("PARTY_CANLOOTME");
 		pChar->DeleteKey("PARTY_LASTINVITE");
 		pChar->DeleteKey("PARTY_LASTINVITETIME");
 	}
-	return( i );
+	return i;
 }
 
 bool CPartyDef::SetMaster( CChar * pNewMaster )
@@ -150,7 +146,7 @@ bool CPartyDef::SetMaster( CChar * pNewMaster )
 	else if ( ! IsInParty( pNewMaster ) || IsPartyMaster( pNewMaster ) )
 		return( false );
 
-	int i = m_Chars.InsertChar( pNewMaster, 0 );
+	size_t i = m_Chars.InsertChar( pNewMaster, 0 );
 	SendAddList(NULL);
 
 	return( i == 0 );
@@ -189,7 +185,7 @@ bool CPartyDef::FixWeirdness( CChar * pChar )
 
 	if ( pChar->m_pParty != this )
 	{
-		return( DetachChar( pChar ) >= 0 );	// this is bad!
+		return( DetachChar( pChar ) != m_Chars.BadIndex() ); // this is bad!
 	}
 	else if ( ! m_Chars.IsCharIn( pChar ))
 	{
@@ -204,13 +200,11 @@ bool CPartyDef::FixWeirdness( CChar * pChar )
 void CPartyDef::AddStatsUpdate( CChar * pChar, PacketSend * pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::AddStatsUpdate");
-	int iQty;
-	iQty = m_Chars.GetCharCount();
-
-	if ( !iQty )
+	size_t iQty = m_Chars.GetCharCount();
+	if ( iQty <= 0 )
 		return;
 
-	for ( int i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CChar * pCharNow = m_Chars.GetChar(i).CharFind();
 		if ( pCharNow && pCharNow != pChar )
@@ -241,8 +235,8 @@ void CPartyDef::SysMessageAll( LPCTSTR pText )
 {
 	ADDTOCALLSTACK("CPartyDef::SysMessageAll");
 	// SysMessage to all members of the party.
-	int iQty = m_Chars.GetCharCount();
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_Chars.GetCharCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CChar * pChar = m_Chars.GetChar(i).CharFind();
 		SysMessageChar( pChar, pText );
@@ -263,7 +257,7 @@ bool CPartyDef::SendMemberMsg( CChar * pCharDest, PacketSend * pPacket )
 	// Weirdness check.
 	if ( pCharDest->m_pParty != this )
 	{
-		if ( DetachChar( pCharDest ) >= 0 )	// this is bad!
+		if ( DetachChar( pCharDest ) != m_Chars.BadIndex() ) // this is bad!
 			return( false );
 		return( true );
 	}
@@ -291,8 +285,8 @@ void CPartyDef::SendAll( PacketSend * pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAll");
 	// Send this to all members of the party.
-	int iQty = m_Chars.GetCharCount();
-	for ( int i = 0; i < iQty; i++ )
+	size_t iQty = m_Chars.GetCharCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CChar * pChar = m_Chars.GetChar(i).CharFind();
 		ASSERT(pChar);
@@ -431,7 +425,7 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	//
 	// NOTE: remove of the master will cause the party to disband.
 
-	if ( ! m_Chars.GetCharCount())
+	if ( m_Chars.GetCharCount() <= 0 )
 	{
 		return( false );
 	}
@@ -494,7 +488,7 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 {
 	ADDTOCALLSTACK("CPartyDef::Disband");
 	// Make sure i am the master.
-	if ( ! m_Chars.GetCharCount())
+	if ( m_Chars.GetCharCount() <= 0 )
 	{
 		return( false );
 	}
@@ -506,9 +500,9 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 
 	SysMessageAll(g_Cfg.GetDefaultMsg( DEFMSG_PARTY_DISBANDED ));
 
-	int iQty = m_Chars.GetCharCount();
-	ASSERT(iQty);
-	for ( int i=0; i<iQty; i++ )
+	size_t iQty = m_Chars.GetCharCount();
+	ASSERT(iQty > 0);
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CChar * pChar = m_Chars.GetChar(i).CharFind();
 		if ( pChar == NULL )
@@ -695,14 +689,12 @@ bool CPartyDef::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	{
 		pszKey += 7;
 
-		int nNumber = Exp_GetVal(pszKey);
+		size_t nNumber = Exp_GetVal(pszKey);
 		SKIP_SEPARATORS(pszKey);
-
-		if ( nNumber < 0 || nNumber >= m_Chars.GetCharCount() )
+		if (m_Chars.IsValidIndex(nNumber) == false)
 			return( false );
 
 		CChar * pMember = m_Chars.GetChar(nNumber).CharFind();
-
 		if ( pMember != NULL ) 
 		{ 
 			pRef = pMember; 
@@ -946,8 +938,8 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			if ( *pszArg == '@' )
 			{
 				pszArg++;
-				int nMember = Exp_GetVal(pszArg);
-				if ( nMember < 0 || nMember >= m_Chars.GetCharCount() )
+				size_t nMember = Exp_GetVal(pszArg);
+				if ( m_Chars.IsValidIndex(nMember) == false )
 					return( false );
 
 				toRemove = m_Chars.GetChar(nMember);
@@ -970,8 +962,8 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			if ( *pszArg == '@' )
 			{
 				pszArg++;
-				int nMember = Exp_GetVal(pszArg);
-				if (nMember < 1 || nMember >= m_Chars.GetCharCount() )
+				size_t nMember = Exp_GetVal(pszArg);
+				if (nMember == 0 || m_Chars.IsValidIndex(nMember) == false)
 					return( false );
 
 				newMaster = m_Chars.GetChar(nMember);
@@ -1003,8 +995,8 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 					while ( *pszArg != ' ' ) { pszArg++; x++; }
 					strcpylen(pUid, __pszArg, ++x);
 
-					int nMember = Exp_GetVal(pUid);
-					if ( nMember < 0 || nMember >= m_Chars.GetCharCount() )
+					size_t nMember = Exp_GetVal(pUid);
+					if ( m_Chars.IsValidIndex(nMember) == false )
 						return( false );
 
 					toSysmessage = m_Chars.GetChar(nMember);

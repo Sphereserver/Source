@@ -356,7 +356,7 @@ void CContainer::ContentsTransfer( CItemContainer * pCont, bool fNoNewbie )
 	}
 }
 
-int CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
+size_t CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsumePart");
 	// Consume just some of the resources.
@@ -364,19 +364,19 @@ int CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, int i
 	//	pResources = the resources i need to make 1 replication of this end product.
 	//  iDamagePercent = 0-100
 	// RETURN:
-	//  -1 = all needed items where present.
+	//  BadIndex = all needed items where present.
 	// index of the item we did not have.
 
 	if ( iDamagePercent <= 0 )
-		return( -1 );
+		return pResources->BadIndex();
 
-	int iMissing = -1;
+	size_t iMissing = pResources->BadIndex();
 
-	int iQtyRes = pResources->GetCount();
-	for ( int i=0; i<iQtyRes; i++ )
+	size_t iQtyRes = pResources->GetCount();
+	for ( size_t i = 0; i < iQtyRes; i++ )
 	{
 		int iResQty = pResources->GetAt(i).GetResQty();
-		if (iResQty<=0)	// not sure why this would be true
+		if (iResQty <= 0) // not sure why this would be true
 			continue;
 
 		int iQtyTotal = ( iResQty * iReplicationQty );
@@ -416,10 +416,10 @@ int CContainer::ResourceConsume( const CResourceQtyArray * pResources, int iRepl
 	}
 
 	int iQtyMin = INT_MAX;
-	for ( int i=0; i<pResources->GetCount(); i++ )
+	for ( size_t i = 0; i < pResources->GetCount(); i++ )
 	{
 		int iResQty = pResources->GetAt(i).GetResQty();
-		if (iResQty<=0)	// not sure why this would be true
+		if (iResQty <= 0) // not sure why this would be true
 			continue;
 
 		int iQtyTotal = ( iResQty * iReplicationQty );
@@ -934,7 +934,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 	// if an item needs OnTickStatusUpdate called on the next tick, it needs
 	// to be added to a separate list since it won't receive ticks whilst in
 	// this container
-	if (pItem->m_fStatusUpdate != 0 && g_World.m_ObjStatusUpdates.FindPtr(pItem) < 0)
+	if (pItem->m_fStatusUpdate != 0 && g_World.m_ObjStatusUpdates.ContainsPtr(pItem) == false)
 		g_World.m_ObjStatusUpdates.Add(pItem);
 
 	switch ( GetType())
@@ -1117,13 +1117,13 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 		return( false );
 	}
 
-	int tContMaxI = MAX_ITEMS_CONT;
+	size_t tContMaxI = MAX_ITEMS_CONT;
 	CVarDefCont * pTagTmp = GetKey("OVERRIDE.MAXITEMS", false);
 	if ( pTagTmp )
 	{
 		tContMaxI = pTagTmp->GetValNum();
 	}
-	if ( GetCount() >= tContMaxI - 1 )
+	if ( GetCount() >= (tContMaxI - 1) )
 	{
 		pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL );
 		return( false );
@@ -1236,7 +1236,7 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 			}
 
 			// Check that this vendor box hasn't already reached its content limit
-			if ( GetCount() >= MAX_ITEMS_VENDOR-1 )
+			if ( GetCount() >= (MAX_ITEMS_VENDOR - 1) )
 			{
 				pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL );
 				return ( false );
@@ -1355,7 +1355,7 @@ void CItemContainer::Game_Create()
 	ADDTOCALLSTACK("CItemContainer::Game_Create");
 	ASSERT( IsType(IT_GAME_BOARD) );
 	
-	if ( GetCount() )
+	if ( GetCount() > 0 )
 		return;	// already here.
 
 	static const ITEMID_TYPE sm_Item_ChessPieces[] =
@@ -1572,10 +1572,10 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole * pSrc )
 			if ( s.HasArgs())
 			{
 				// 1 based pages.
-				int index = s.GetArgVal();
-				if ( index <= GetCount())
+				size_t index = s.GetArgVal();
+				if ( index > 0 && index <= GetCount())
 				{
-					delete GetAt( index-1 );
+					delete GetAt( index - 1 );
 					return( true );
 				}
 			}

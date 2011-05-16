@@ -229,9 +229,9 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 
 				IT_TYPE	needtype = ( iHeadKey == WV_GUILDLIST ) ? IT_STONE_GUILD : IT_STONE_TOWN;
 
-				for ( int i = 0; i < g_World.m_Stones.GetCount(); i++ )
+				for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 				{
-					CItemStone	*pStone = g_World.m_Stones[i];
+					CItemStone * pStone = g_World.m_Stones[i];
 					if ( !pStone || !pStone->IsType(needtype) )
 						continue;
 	

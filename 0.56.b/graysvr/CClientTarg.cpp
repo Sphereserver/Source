@@ -691,7 +691,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			size_t iArg = 0;
 			for ( int mx = rect.m_left; mx <= rect.m_right; mx++)
 			{
-				for(int my = rect.m_top; my <= rect.m_bottom; my++)
+				for (int my = rect.m_top; my <= rect.m_bottom; my++)
 				{
 					if ( ++iArg >= iArgQty )
 						iArg = 1;
@@ -845,7 +845,7 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 	CItemBase * pItemDef = pItem->Item_GetDef();
 	ASSERT(pItemDef);
 
-	if ( iSkillLevel > 40 && pItemDef->m_BaseResources.GetCount())
+	if ( iSkillLevel > 40 && pItemDef->m_BaseResources.GetCount() > 0)
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		strcpy(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_MADEOF ));
@@ -1073,8 +1073,6 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( fWeapon && pItem->m_itWeapon.m_poison_skill )
 	{
 		unsigned int iLevel = IMULDIV( pItem->m_itWeapon.m_poison_skill, COUNTOF(sm_szPoisonMessages), 100 );
-		if ( iLevel < 0 )
-			iLevel = 0;
 		if ( iLevel >= COUNTOF(sm_szPoisonMessages))
 			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
 		len += sprintf( pszTemp+len, " %s", sm_szPoisonMessages[iLevel] );
@@ -1294,8 +1292,6 @@ int CClient::OnSkill_TasteID( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( iPoisonLevel )
 	{
 		unsigned int iLevel = IMULDIV( iPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000 );
-		if ( iLevel < 0 )
-			iLevel = 0;
 		if ( iLevel >= COUNTOF(sm_szPoisonMessages))
 			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
 		SysMessage( sm_szPoisonMessages[iLevel] );

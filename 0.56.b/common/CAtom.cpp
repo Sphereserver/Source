@@ -63,8 +63,8 @@ void CAtomRef::SetStr( LPCTSTR pszText )
 
 	// Find it in the atom table first.
 	int iCompareRes;
-	int index = g_AtomManager.FindKeyNear( pszText, iCompareRes );
-	if ( !iCompareRes )
+	size_t index = g_AtomManager.FindKeyNear( pszText, iCompareRes );
+	if ( iCompareRes == 0 )
 	{
 		// already here just increment useage.
 		m_pDef = g_AtomManager.GetAt( index );

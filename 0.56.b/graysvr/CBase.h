@@ -416,7 +416,7 @@ private:
 	BYTE	m_speed;		// weight in WEIGHT_UNITS (USHRT_MAX=not movable) defaults from the .MUL file.
 public:
 	static const char *m_sClassName;
-	int		m_iSkill;
+	SKILL_TYPE m_iSkill;
 	// Not applicable to all.
 	CResourceQtyArray m_SkillMake;	// what skills to create this ? (and non-consumed items)
 

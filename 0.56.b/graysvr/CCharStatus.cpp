@@ -40,23 +40,23 @@ bool CChar::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwAmount, DWORD dwArgRe
 	case RES_SPEECH:	// do i have this speech ?
 		if ( m_pNPC != NULL )
 		{
-			if ( m_pNPC->m_Speech.FindResourceID( rid ) >= 0 )
+			if ( m_pNPC->m_Speech.ContainsResourceID( rid ) )
 				return( true );
 			CCharBase * pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
-			if ( pCharDef->m_Speech.FindResourceID( rid ) >= 0 )
+			if ( pCharDef->m_Speech.ContainsResourceID( rid ) )
 				return( true );
 		}
 		break;
 	case RES_EVENTS:	// do i have these events ?
 		{
-			if ( m_OEvents.FindResourceID( rid ) >= 0 )
+			if ( m_OEvents.ContainsResourceID( rid ) )
 				return( true );
 			if ( m_pNPC != NULL )
 			{
 				CCharBase * pCharDef = Char_GetDef();
 				ASSERT(pCharDef);
-				if ( pCharDef->m_TEvents.FindResourceID( rid ) >= 0 )
+				if ( pCharDef->m_TEvents.ContainsResourceID( rid ) )
 					return( true );
 			}
 		}
@@ -850,8 +850,8 @@ int CChar::Food_CanEat( CObjBase * pObj ) const
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 
-	int iRet = pCharDef->m_FoodType.FindResourceMatch( pObj );
-	if ( iRet >= 0 )
+	size_t iRet = pCharDef->m_FoodType.FindResourceMatch( pObj );
+	if ( iRet != pCharDef->m_FoodType.BadIndex() )
 	{
 		return( pCharDef->m_FoodType[iRet].GetResQty()); // how bad do i want it ?
 	}
@@ -1632,10 +1632,10 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 		{
 			if (!(( flags & LOS_NB_LOCAL_MULTI ) && ( pSrcRegion == pNowRegion )))
 			{
-				int iQtyr = ptNow.GetRegions( REGION_TYPE_MULTI, rlinks );
-				if ( iQtyr )
+				size_t iQtyr = ptNow.GetRegions( REGION_TYPE_MULTI, rlinks );
+				if ( iQtyr > 0 )
 				{
-					for ( int ii = 0; ii < iQtyr; pMulti = NULL, ++ii, pItem = NULL, pRegion = NULL )
+					for ( size_t ii = 0; ii < iQtyr; pMulti = NULL, ++ii, pItem = NULL, pRegion = NULL )
 					{
 						pRegion = rlinks.GetAt(ii);
 						if ( pRegion )

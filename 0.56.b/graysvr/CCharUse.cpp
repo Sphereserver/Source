@@ -114,8 +114,8 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 	pCorpse->m_itCorpse.m_timeDeath.Init();	// been carved.
 
 	LPCTSTR pszMsg = NULL;
-	int iItems = 0;
-	for ( int i=0; i < pCorpseDef->m_BaseResources.GetCount(); i++ )
+	size_t iItems = 0;
+	for ( size_t i = 0; i < pCorpseDef->m_BaseResources.GetCount(); i++ )
 	{
 		int iQty = pCorpseDef->m_BaseResources[i].GetResQty();
 		RESOURCE_ID rid = pCorpseDef->m_BaseResources[i].GetResourceID();
@@ -192,7 +192,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		iItems++;
 	}
 
-	if ( ! iItems )
+	if ( iItems <= 0 )
 	{
 		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_2 );
 	}
@@ -232,8 +232,8 @@ void CChar::Use_MoonGate( CItem * pItem )
 	{
 		// RES_MOONGATES
 		// What gate are we at ?
-		int iCount = g_Cfg.m_MoonGates.GetCount();
-		int i = 0;
+		size_t iCount = g_Cfg.m_MoonGates.GetCount();
+		size_t i = 0;
 		for ( ; ; i++ )
 		{
 			if ( i >= iCount)
@@ -250,8 +250,8 @@ void CChar::Use_MoonGate( CItem * pItem )
 		if (iTrammelPhase < iFeluccaPhase)
 			iTrammelPhase += iCount;
 
-		int iMoongateIndex = (i + (iTrammelPhase - iFeluccaPhase)) % iCount;
-		ASSERT(iMoongateIndex >= 0 && iMoongateIndex < iCount);
+		size_t iMoongateIndex = (i + (iTrammelPhase - iFeluccaPhase)) % iCount;
+		ASSERT(g_Cfg.m_MoonGates.IsValidIndex(iMoongateIndex));
 
 		ptTeleport = g_Cfg.m_MoonGates[iMoongateIndex];
 	}
@@ -907,8 +907,8 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	int iDamageHits = pItemArmor->m_itArmor.m_Hits_Max - pItemArmor->m_itArmor.m_Hits_Cur;
 	int iDamagePercent = IMULDIV( 100, iDamageHits, iTotalHits );
 
-	int iMissing = ResourceConsumePart( &(pItemDef->m_BaseResources), 1, iDamagePercent/2, true );
-	if ( iMissing >= 0 )
+	size_t iMissing = ResourceConsumePart( &(pItemDef->m_BaseResources), 1, iDamagePercent/2, true );
+	if ( iMissing != pItemDef->m_BaseResources.BadIndex() )
 	{
 		// Need this to repair.
 		CResourceDef * pCompDef = g_Cfg.ResourceGetDef( pItemDef->m_BaseResources.GetAt(iMissing).GetResourceID() );
@@ -924,8 +924,8 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	// higher the percentage damage the closer to the skills to make it.
 	//
 
-	int iRes = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
-	if ( iRes < 0 ) // no skill ?
+	size_t iRes = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
+	if ( iRes == pItemDef->m_SkillMake.BadIndex() ) // no skill ?
 	{
 		return( false );
 	}

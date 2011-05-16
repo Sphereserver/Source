@@ -823,7 +823,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_CURSE);
-					for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+					for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -875,7 +875,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_BLESS);
-					for( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+					for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
 					{
 						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
 						ITOA(iBuffPercent, NumBuff[idx], 10);
@@ -1566,8 +1566,8 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 		if ( pPack )
 		{
 			const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
-			int iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
-			if ( iMissing >= 0 )
+			size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
+			if ( iMissing != pRegs->BadIndex() )
 			{
 				if ( fFailMsg )
 				{

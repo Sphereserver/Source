@@ -145,7 +145,7 @@ public:
 	{
 		return( m_Chars_Active.GetCount());
 	}
-	int HasClients() const
+	size_t HasClients() const
 	{
 		return( m_Chars_Active.HasClients());
 	}

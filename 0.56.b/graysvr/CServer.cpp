@@ -390,6 +390,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 	if ( !pConsole )
 		return;
 
+	// todo: check for buffer overflow on pszMsg
 	CChar * pCharCmd = pConsole->GetChar();
 
 	TCHAR *pszMsg = Str_GetTemp();
@@ -749,7 +750,7 @@ longcommand:
 		
 		if ( !strnicmp(pszText, "strip", 5) || !strnicmp(pszText, "tngstrip", 8))
 		{
-			int				i = 0;
+			size_t			i = 0;
 			CResourceScript	*script;
 			FILE			*f, *f1;
 			char			*z = Str_GetTemp();
@@ -1078,7 +1079,7 @@ bool CServer::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 		if ( pszKey[i] == '.' )
 		{
-			int index = ATOI( pszKey );	// must use this to stop at .
+			size_t index = ATOI( pszKey );	// must use this to stop at .
 			pRef = g_Cfg.Server_GetDef(index);
 			pszKey += i + 1;
 			return( true );
@@ -1115,13 +1116,13 @@ bool CServer::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		CAccountRef pAccount = NULL;
 		
 		// extract account name/index to a temporary buffer
-		char *pszTemp = Str_GetTemp();
-		char *pszTempStart = pszTemp;
+		TCHAR * pszTemp = Str_GetTemp();
+		TCHAR * pszTempStart = pszTemp;
 
 		strcpy(pszTemp, pszKey);
-		char *split = strchr(pszTemp, '.');
-		if ( split )
-			*split = 0;
+		TCHAR * split = strchr(pszTemp, '.');
+		if ( split != NULL )
+			*split = '\0';
 
 		// adjust pszKey to point to end of account name/index
 		pszKey += strlen(pszTemp);
@@ -1129,13 +1130,13 @@ bool CServer::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		//	try to fetch using indexes
 		if (( *pszTemp >= '0' ) && ( *pszTemp <= '9' ))
 		{
-			int num = Exp_GetVal(pszTemp);
-			if ((*pszTemp == '\0') && ( num >= 0 ) && ( num < g_Accounts.Account_GetCount() ))
+			size_t num = Exp_GetVal(pszTemp);
+			if (*pszTemp == '\0' && num < g_Accounts.Account_GetCount())
 				pAccount = g_Accounts.Account_Get(num);
 		}
 
 		//	indexes failed, try to fetch using names
-		if ( !pAccount )
+		if ( pAccount == NULL )
 		{
 			pszTemp = pszTempStart;
 			pAccount = g_Accounts.Account_Find(pszTemp);
@@ -1632,7 +1633,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 
 					for ( size_t i = 0; i < g_Exp.m_VarDefs.GetCount(); i++ )
 					{
-						if ( !( i%0x1ff ))
+						if ( ( i % 0x1ff ) == 0 )
 							PrintPercent( i, g_Exp.m_VarDefs.GetCount());
 
 						CVarDefCont * pCont = g_Exp.m_VarDefs.GetAt(i);

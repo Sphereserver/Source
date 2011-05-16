@@ -519,9 +519,9 @@ void CListDefCont::DumpElements( CTextConsole * pSrc, LPCTSTR pszPrefix /* = NUL
 	pSrc->SysMessagef("%s%s=%s\n", (LPCTSTR) pszPrefix, (LPCTSTR) m_Key.GetPtr(), (LPCTSTR) strResult);
 }
 
-int CListDefCont::GetCount() const
+size_t CListDefCont::GetCount() const
 {
-	return static_cast<int>(m_listElements.size());
+	return m_listElements.size();
 }
 
 void CListDefCont::r_WriteSave( CScript& s )
@@ -702,7 +702,7 @@ void CListDefMap::Copy( const CListDefMap * pArray )
 
 	Empty();
 
-	if ( !pArray->GetCount() )
+	if ( pArray->GetCount() <= 0 )
 		return;
 
 	for ( DefSet::const_iterator i = pArray->m_Container.begin(); i != pArray->m_Container.end(); ++i )
@@ -845,7 +845,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 		}
 		else if ( pListBase )
 		{
-			int nIndex = Exp_GetVal(ppCmds[1]);
+			size_t nIndex = Exp_GetVal(ppCmds[1]);
 
 			if ( ppCmds[2] && *(ppCmds[2]) )
 			{
@@ -965,7 +965,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 	}
 	else if ( strcmpi(ppCmds[1], "count") == 0 )
 	{
-		strVal.Format("%d", pListBase->GetCount());
+		strVal.Format("%" FMTSIZE_T, pListBase->GetCount());
 
 		return true;
 	}

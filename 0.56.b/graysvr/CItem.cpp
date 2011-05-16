@@ -1678,7 +1678,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			{
 				const CItemStone * pStone = dynamic_cast <const CItemStone*>(this);
 				ASSERT(pStone);
-				len += sprintf( pTemp+len, " (pop:%d)", pStone->GetCount());
+				len += sprintf( pTemp+len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
 			}
 			break;
 
@@ -2774,7 +2774,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	ASSERT( iAction < ITRIG_QTY );
-	TRIGRET_TYPE		iRet = TRIGRET_RET_DEFAULT;
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	// Is there trigger code in the script file ?
 	// RETURN:
@@ -2782,16 +2782,13 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	//   true = don't allow this.  (halt further processing)
 	EXC_TRY("Trigger");
 
-	CItemBase	*pItemDef = Item_GetDef();
+	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
-
-	CResourceLink	*pResourceLink;
-	int				i;
 
 	// 1) Triggers installed on character, sensitive to actions on all items
 	EXC_SET("chardef");
 	CChar * pChar = pSrc->GetChar();
-	if ( pChar )
+	if ( pChar != NULL )
 	{
 		// Is there an [EVENT] block call here?
 		if ( iAction > XTRIG_UNKNOWN )
@@ -2808,11 +2805,11 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 
 	//	2) EVENTS
 	EXC_SET("events");
-	int origEvents = m_OEvents.GetCount();
-	int curEvents = origEvents;
-	for ( i=0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
+	size_t origEvents = m_OEvents.GetCount();
+	size_t curEvents = origEvents;
+	for ( size_t i = 0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
 	{
-		CResourceLink	*pLink = m_OEvents[i];
+		CResourceLink * pLink = m_OEvents[i];
 		if ( !pLink || !pLink->HasTrigger(iAction) )
 			continue;
 		CResourceLock s;
@@ -2833,7 +2830,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 
 	// 3) TEVENTS on the item
 	EXC_SET("tevents");
-	for ( i=0; i < pItemDef->m_TEvents.GetCount(); ++i )
+	for ( size_t i = 0; i < pItemDef->m_TEvents.GetCount(); ++i )
 	{
 		CResourceLink * pLink = pItemDef->m_TEvents[i];
 		ASSERT(pLink);
@@ -2852,7 +2849,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	EXC_SET("typedef");
 	{
 		// It has an assigned trigger type.
-		pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDef( RESOURCE_ID( RES_TYPEDEF, GetType() )));
+		CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDef( RESOURCE_ID( RES_TYPEDEF, GetType() )));
 		if ( pResourceLink == NULL )
 		{
 			if ( pChar )
@@ -2884,7 +2881,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 
 	// Look up the trigger in the RES_ITEMDEF. (default)
 	EXC_SET("itemdef");
-	pResourceLink = Base_GetDef();
+	CBaseBaseDef * pResourceLink = Base_GetDef();
 	ASSERT(pResourceLink);
 	if ( pResourceLink->HasTrigger( iAction ))
 	{
@@ -3024,7 +3021,7 @@ void CItem::ConvertBolttoCloth()
 
 	//we need to check all cloth_bolt items
 	bool correctID = false;
-	for(int i=(int)ITEMID_CLOTH_BOLT1; i<=(int)ITEMID_CLOTH_BOLT8; i++)
+	for (int i=(int)ITEMID_CLOTH_BOLT1; i<=(int)ITEMID_CLOTH_BOLT8; i++)
 		if ( IsSameDispID( (ITEMID_TYPE)i ))
 			correctID=true;
 
@@ -3038,7 +3035,7 @@ void CItem::ConvertBolttoCloth()
 
 	if ( pDefCloth )
 	{
-		for ( int i=0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
+		for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
 		{
 			RESOURCE_ID rid = pDefCloth->m_BaseResources[i].GetResourceID();
 			if ( rid.GetResType() != RES_ITEMDEF )
@@ -3053,10 +3050,8 @@ void CItem::ConvertBolttoCloth()
 				iOutAmount += pDefCloth->m_BaseResources[i].GetResQty();
 				SetName(pBaseDef->GetName());
 				continue;
-			}		
-
+			}
 		}
-
 	}
 
 
@@ -3103,7 +3098,7 @@ SPELL_TYPE CItem::GetScrollSpell() const
 {
 	ADDTOCALLSTACK("CItem::GetScrollSpell");
 	// Given a scroll type. what spell is this ?
-	for (int i = SPELL_Clumsy; i < g_Cfg.m_SpellDefs.GetCount(); i++)
+	for (size_t i = SPELL_Clumsy; i < g_Cfg.m_SpellDefs.GetCount(); i++)
 	{
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( (SPELL_TYPE) i );
 		if ( pSpellDef == NULL || pSpellDef->m_idScroll == ITEMID_NOTHING )
@@ -3584,11 +3579,11 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	int iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1;
 	if ( iSkillOverride == -1)
 		iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1;
-	if ( iSkillOverride >= 0 && iSkillOverride < MAX_SKILL )
+	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_MAX )
 		return (SKILL_TYPE)iSkillOverride;
 
-	if ( pItemDef->m_iSkill >= 0 && pItemDef->m_iSkill < MAX_SKILL )
-		return (SKILL_TYPE)pItemDef->m_iSkill;
+	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < SKILL_MAX )
+		return pItemDef->m_iSkill;
 
 	switch ( pItemDef->GetType() )
 	{

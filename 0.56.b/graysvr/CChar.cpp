@@ -246,7 +246,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	g_World.m_uidLastNewChar = GetUID();	// for script access.
 
-	int i=0;
+	size_t i = 0;
 	for ( ; i < STAT_QTY; i++ )
 	{
 		Stat_SetBase((STAT_TYPE)i, 0);
@@ -257,7 +257,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	}
 	Stat_SetVal( STAT_FOOD, Stat_GetMax(STAT_FOOD) );
 
-	for ( i = 0; i < MAX_SKILL; i++ )
+	for ( i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		m_Skill[i] = 0;
 	}
@@ -580,7 +580,7 @@ int CChar::FixWeirdness()
 		//		m_iOverSkillMultiply disables this check if set to < 1
 		if (( GetPrivLevel() <= PLEVEL_Player ) && ( g_Cfg.m_iOverSkillMultiply > 0 ))
 		{
-			for ( int i=0; i<MAX_SKILL; i++ )
+			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			{
 				int iSkillMax = Skill_GetMax( (SKILL_TYPE)i );
 				int iSkillVal = Skill_GetBase( (SKILL_TYPE)i );
@@ -613,9 +613,9 @@ int CChar::FixWeirdness()
 		}
 
 		// An NPC. Don't keep track of unused skills.
-		for ( int i=0; i<MAX_SKILL; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( m_Skill[i] && m_Skill[i] <= 10 )
+			if ( m_Skill[i] > 0 && m_Skill[i] <= 10 )
 				Skill_SetBase( (SKILL_TYPE)i, 0 );
 		}
 	}
@@ -1005,7 +1005,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 
 	if ( ! g_Cfg.m_StartDefs.IsValidIndex( iStartLoc ))
 	{
-		if ( g_Cfg.m_StartDefs.GetCount())
+		if ( g_Cfg.m_StartDefs.GetCount() > 0 )
 			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
 		else
 			m_ptHome.InitPoint();
@@ -1017,7 +1017,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 
 	if ( ! m_ptHome.IsValidPoint())
 	{
-		if ( g_Cfg.m_StartDefs.GetCount())
+		if ( g_Cfg.m_StartDefs.GetCount() > 0 )
 		{
 			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
 		}
@@ -1027,10 +1027,9 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	SetUnkPoint( m_ptHome );	// Don't actually put me in the world yet.
 
 	// randomize the skills first.
-	int i = 0;
-	for ( ; i < MAX_SKILL; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE)i ) )
 			continue;
 
 		if (( !g_Cfg.m_fInitHiddenSkills ) && !pClient->IsSkillVisible( (SKILL_TYPE)i ))
@@ -1052,15 +1051,15 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	iSkillVal1 = minimum(iSkillVal1, 50);
 	iSkillVal2 = minimum(iSkillVal2, 50);
 	iSkillVal3 = minimum(iSkillVal3, 50);
-	if ( iSkillVal1 + iSkillVal2 + iSkillVal3 > 101 )
+	if ( (iSkillVal1 + iSkillVal2 + iSkillVal3) > 101 )
 		iSkillVal3 = 1;
 
 	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1))
-		Skill_SetBase(skSkill1, iSkillVal1*10);
+		Skill_SetBase(skSkill1, iSkillVal1 * 10);
 	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2))
-		Skill_SetBase(skSkill2, iSkillVal2*10);
+		Skill_SetBase(skSkill2, iSkillVal2 * 10);
 	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3))
-		Skill_SetBase(skSkill3, iSkillVal3*10);
+		Skill_SetBase(skSkill3, iSkillVal3 * 10);
 
 	// Set title
 	m_sTitle.Empty();
@@ -1183,7 +1182,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	GetPackSafe();
 
 	// Get special equip for the starting skills.
-	for ( i = 0; i < 4; i++ )
+	for ( unsigned int i = 0; i < 4; i++ )
 	{
 		int iSkill = INT_MAX;
 		switch ( i )
@@ -1493,7 +1492,7 @@ do_default:
 				if ( pszKey[4] != '.' )
 					goto do_default;
 
-				if ( !g_Cfg.m_Fame.GetCount() )
+				if ( g_Cfg.m_Fame.GetCount() <= 0 )
 				{
 					DEBUG_ERR(("FAME ranges have not been defined.\n"));
 					sVal.FormatVal( 0 );
@@ -1571,7 +1570,7 @@ do_default:
 				if ( pszKey[5] != '.' )
 					goto do_default;
 
-				if ( !g_Cfg.m_Karma.GetCount() )
+				if ( g_Cfg.m_Karma.GetCount() <= 0 )
 				{
 					DEBUG_ERR(("KARMA ranges have not been defined.\n"));
 					sVal.FormatVal( 0 );
@@ -1684,7 +1683,7 @@ do_default:
 				if ( *pszKey )
 				{
 					CResourceQtyArray Resources;
-					if ( Resources.Load(pszKey) && SkillResourceTest( &Resources ) )
+					if ( Resources.Load(pszKey) > 0 && SkillResourceTest( &Resources ) )
 					{
 						sVal.FormatVal(1);
 						return true;
@@ -2218,7 +2217,7 @@ do_default:
 					else if( ((DWORD)newGold) > currentGold )
 					{
 						DWORD amount = ((DWORD)newGold) - currentGold;
-						while( amount > 0 )
+						while ( amount > 0 )
 						{
 							CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
 							gold->SetAmount( amount > 65000 ? 65000 : amount);
@@ -2473,9 +2472,9 @@ void CChar::r_Write( CScript & s )
 		s.WriteKey( "HOME", m_ptHome.WriteUsed());
 	}
 
-	TCHAR	szTmp[100];
-	int j=0;
-	for ( j=0;j<STAT_QTY;j++)
+	TCHAR szTmp[100];
+	size_t j = 0;
+	for ( j = 0; j <STAT_QTY; j++)
 	{
 		// this is VERY important, saving the MOD first
 		if ( Stat_GetMod( (STAT_TYPE) j ) )
@@ -2490,12 +2489,9 @@ void CChar::r_Write( CScript & s )
 		}
 	}
 
-	for ( j=0;j<MAX_SKILL;j++)
+	for ( j = 0; j < g_Cfg.m_iMaxSkill; j++)
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(j) )
-			continue;
-
-		if ( ! m_Skill[j] )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) j) || m_Skill[j] == 0 )
 			continue;
 		s.WriteKeyVal( g_Cfg.GetSkillDef( (SKILL_TYPE) j )->GetKey(), Skill_GetBase( (SKILL_TYPE) j ));
 	}
@@ -2616,9 +2612,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_ALLSKILLS:
 			{
 				int iVal = s.GetArgVal();
-				for ( int i=0; i<MAX_SKILL; i++ )
+				for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 				{
-					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
+					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE)i) )
 						continue;
 
 					Skill_SetBase( (SKILL_TYPE)i, iVal );
@@ -3179,9 +3175,9 @@ lbl_cchar_ontriggerspeech:
 	if ( !m_pPlayer )
 		return false;
 
-	if ( m_pPlayer->m_Speech.GetCount() )
+	if ( m_pPlayer->m_Speech.GetCount() > 0 )
 	{
-		for ( int i = 0; i < m_pPlayer->m_Speech.GetCount(); i++ )
+		for ( size_t i = 0; i < m_pPlayer->m_Speech.GetCount(); i++ )
 		{
 			CResourceLink * pLinkDSpeech = m_pPlayer->m_Speech[i];
 			if ( !pLinkDSpeech )
@@ -3361,9 +3357,9 @@ int CChar::GetSkillTotal(int what, bool how)
 	int iTotal = 0;
 	int	iBase;
 
-	for ( int i=0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		iBase	= Skill_GetBase((SKILL_TYPE) i);
+		iBase = Skill_GetBase((SKILL_TYPE) i);
 		if ( how )
 		{
 			if ( what < 0 )

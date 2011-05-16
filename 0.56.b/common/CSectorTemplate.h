@@ -21,7 +21,7 @@ private:
 class CCharsActiveList : public CGObList
 {
 private:
-	int	   m_iClients;			// How many clients in this sector now?
+	size_t m_iClients; // How many clients in this sector now?
 public:
 	static const char *m_sClassName;
 	CServTime m_timeLastClient;	// age the sector based on last client here.
@@ -30,7 +30,7 @@ protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 
 public:
-	int HasClients() const { return( m_iClients ); }
+	size_t HasClients() const { return( m_iClients ); }
 	void ClientAttach();
 	void ClientDetach();
 	void AddCharToSector( CChar * pChar );
@@ -129,7 +129,7 @@ public:
 
 	// CRegionBase
 	CRegionBase * GetRegion( const CPointBase & pt, DWORD dwType ) const;
-	int GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const;
+	size_t GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const;
 
 	bool UnLinkRegion( CRegionBase * pRegionOld );
 	bool LinkRegion( CRegionBase * pRegionNew );

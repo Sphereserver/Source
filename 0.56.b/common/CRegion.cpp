@@ -60,32 +60,35 @@ bool CGRegion::RealizeRegion()
 	return( true );
 }
 
-int CGRegion::GetRegionRectCount() const
+size_t CGRegion::GetRegionRectCount() const
 {
 	ADDTOCALLSTACK("CGRegion::GetRegionRectCount");
 	// How many rectangles in this region ?
-	int iQty = m_Rects.GetCount();
-	if ( ! iQty )
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 )
 	{
-		if ( ! IsRegionEmpty()) return 1;
+		if ( ! IsRegionEmpty())
+			return 1;
 	}
 	return( iQty );
 }
 
-CGRect & CGRegion::GetRegionRect(int i)
+CGRect & CGRegion::GetRegionRect(size_t i)
 {
 	ADDTOCALLSTACK("CGRegion::GetRegionRect");
 	// Get a particular rectangle.
-	int iQty = m_Rects.GetCount();
-	if ( !iQty ) return m_rectUnion;
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 )
+		return m_rectUnion;
 	return( m_Rects.ElementAt(i));
 }
 
-const CGRect & CGRegion::GetRegionRect(int i) const
+const CGRect & CGRegion::GetRegionRect(size_t i) const
 {
 	ADDTOCALLSTACK("CGRegion::GetRegionRect");
-	int iQty = m_Rects.GetCount();
-	if ( !iQty ) return m_rectUnion;
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 )
+		return m_rectUnion;
 	return( m_Rects.ElementAt(i));
 }
 
@@ -101,12 +104,15 @@ bool CGRegion::IsInside2d( const CPointBase & pt ) const
 	ADDTOCALLSTACK("CGRegion::IsInside2d");
 	if ( ! m_rectUnion.IsInside2d( pt ))
 		return( false );
-	int iQty;
-	if ( (iQty = m_Rects.GetCount()) > 0 )
+
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty > 0 )
 	{
-		for ( int i=0; i<iQty; i++ )
+		for ( size_t i = 0; i < iQty; i++ )
+		{
 			if ( m_Rects[i].IsInside2d( pt ))
 				return( true );
+		}
 		return( false );
 	}
 	return true;
@@ -118,8 +124,8 @@ bool CGRegion::AddRegionRect( const CGRect & rect )
 	if ( rect.IsRectEmpty() )
 		return false;
 
-	int iQty = m_Rects.GetCount();
-	if ( ! iQty && IsRegionEmpty())
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 && IsRegionEmpty())
 	{
 		m_rectUnion = rect;
 	}
@@ -132,13 +138,13 @@ bool CGRegion::AddRegionRect( const CGRect & rect )
 		}
 
 		// Make sure it is not inside or equal to a previous rect !
-		for ( int j=0; j<iQty; j++ )
+		for ( size_t j = 0; j < iQty; j++ )
 		{
 			if ( rect.IsInside( m_Rects[j] ))
 				return( true );
 		}
 
-		if ( ! iQty )
+		if ( iQty <= 0 )
 		{
 			if ( rect.IsInside( m_rectUnion ))
 				return( true );
@@ -158,9 +164,10 @@ bool CGRegion::IsOverlapped( const CGRect & rect ) const
 	if ( !m_rectUnion.IsOverlapped(rect) )
 		return false;
 
-	int iQty = m_Rects.GetCount();
-	if ( !iQty ) return true;
-	for ( int i = 0; i < iQty; i++ )
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 )
+		return true;
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		if ( rect.IsOverlapped(m_Rects[i]))
 			return true;
@@ -176,13 +183,11 @@ bool CGRegion::IsInside( const CGRect & rect ) const
 	if ( ! m_rectUnion.IsInside( rect ))
 		return( false );
 
-	int iQty = m_Rects.GetCount();
-	if ( iQty == 0 )
-	{
+	size_t iQty = m_Rects.GetCount();
+	if ( iQty <= 0 )
 		return( true );
-	}
 
-	for ( int i=0; i<iQty; i++ )
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		if ( m_Rects[i].IsInside( rect ))
 			return( true );
@@ -200,8 +205,8 @@ bool CGRegion::IsInside( const CGRegion * pRegionTest ) const
 	if ( ! m_rectUnion.IsInside( pRegionTest->m_rectUnion ))
 		return( false );
 
-	int iQtyTest = pRegionTest->m_Rects.GetCount();
-	for ( int j=0; j<iQtyTest; j++ )
+	size_t iQtyTest = pRegionTest->m_Rects.GetCount();
+	for ( size_t j = 0; j < iQtyTest; j++ )
 	{
 		if ( ! IsInside( pRegionTest->m_Rects[j] ))
 			return( false );
@@ -216,8 +221,8 @@ bool CGRegion::IsOverlapped( const CGRegion * pRegionTest ) const
 	// Does the region overlap this rectangle.
 	if ( ! m_rectUnion.IsOverlapped( pRegionTest->m_rectUnion ))
 		return( false );
-	int iQty = m_Rects.GetCount();
-	int iQtyTest = pRegionTest->m_Rects.GetCount();
+	size_t iQty = m_Rects.GetCount();
+	size_t iQtyTest = pRegionTest->m_Rects.GetCount();
 	if ( iQty == 0 )
 	{
 		if ( iQtyTest == 0 )
@@ -228,9 +233,9 @@ bool CGRegion::IsOverlapped( const CGRegion * pRegionTest ) const
 	{
 		return( IsOverlapped(pRegionTest->m_rectUnion));
 	}
-	for ( int j=0; j<iQty; j++ )
+	for ( size_t j = 0; j < iQty; j++ )
 	{
-		for ( int i=0; i<iQtyTest; i++ )
+		for ( size_t i = 0; i < iQtyTest; i++ )
 		{
 			if ( m_Rects[j].IsOverlapped( pRegionTest->m_Rects[i] ))
 				return( true );
@@ -246,16 +251,16 @@ bool CGRegion::IsEqualRegion( const CGRegion * pRegionTest ) const
 	if ( ! m_rectUnion.IsEqual( pRegionTest->m_rectUnion ))
 		return( false );
 
-	int iQty = m_Rects.GetCount();
-	int iQtyTest = pRegionTest->m_Rects.GetCount();
+	size_t iQty = m_Rects.GetCount();
+	size_t iQtyTest = pRegionTest->m_Rects.GetCount();
 	if ( iQty != iQtyTest )
 		return( false );
 
-	for ( int j=0; j<iQty; j++ )
+	for ( size_t j = 0; j < iQty; j++ )
 	{
-		for ( int i=0; ; i++ )
+		for ( size_t i = 0; ; i++ )
 		{
-			if ( i>=iQtyTest )
+			if ( i >= iQtyTest )
 				return( false );
 			if ( m_Rects[j].IsEqual( pRegionTest->m_Rects[i] ))
 				break;
@@ -455,7 +460,8 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			break;
 		case RC_CLIENTS:
 			{
-				int i = 0, iClients = 0;
+				int i = 0;
+				size_t iClients = 0;
 				for ( ; ; i++ )
 				{
 					CSector	*pSector = GetSector(i);
@@ -509,18 +515,18 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			break;
 		case RC_RECT:
 			{
-				int iQty = m_Rects.GetCount();
-				pszKey	+= 4;
-				if ( !*pszKey )
+				size_t iQty = m_Rects.GetCount();
+				pszKey += 4;
+				if ( *pszKey == '\0' )
 				{
 					sVal.FormatVal( iQty );
 					return true;
 				}
 				SKIP_SEPARATORS( pszKey );
-				int	iRect	= Exp_GetVal( pszKey );
+				size_t iRect = Exp_GetVal( pszKey );
 				if ( iRect <= 0 )
 				{
-					sVal	= m_rectUnion.Write();
+					sVal = m_rectUnion.Write();
 					return true;
 				}
 	
@@ -530,7 +536,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 					sVal.FormatVal( 0 );
 					return true;
 				}
-				sVal	= m_Rects[iRect].Write();
+				sVal = m_Rects[iRect].Write();
 				return( true );
 			}
 		case RC_SAFE:
@@ -713,8 +719,8 @@ void CRegionBase::r_WriteBase( CScript &s )
 	else if ( m_pt.m_map )
 		s.WriteKeyVal("MAP", m_pt.m_map);
 
-	int iQty = GetRegionRectCount();
-	for ( int i = 0; i < iQty; i++ )
+	size_t iQty = GetRegionRectCount();
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		s.WriteKey("RECT", GetRegionRect(i).Write() );
 	}
@@ -932,7 +938,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			if ( pszKey[7] != '.' )
 				return( false );
 			pszKey += 8;
-			sVal = ( m_Events.FindResourceName(RES_EVENTS, pszKey) >= 0 ) ? "1" : "0";
+			sVal = m_Events.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
 			return( true );
 		case RWC_REGION:
 			{
@@ -1080,7 +1086,7 @@ void CRegionWorld::r_WriteBody2( CScript &s, LPCTSTR pszPrefix )
 	ADDTOCALLSTACK("CRegionWorld::r_WriteBody2");
 	TemporaryString z;
 
-	if ( m_Events.GetCount())
+	if ( m_Events.GetCount() > 0 )
 	{
 		CGString sVal;
 		m_Events.WriteResourceRefList( sVal );
@@ -1169,11 +1175,9 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 
 	TRIGRET_TYPE iRet;
 
-	int i;
-	int iQty = m_Events.GetCount();
-	for ( i = 0; i < iQty; ++i )
+	for ( size_t i = 0; i < m_Events.GetCount(); ++i )
 	{
-		CResourceLink	*pLink = m_Events[i];
+		CResourceLink * pLink = m_Events[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
 			continue;
 		CResourceLock s;
@@ -1186,9 +1190,9 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 	}
 
 	//	EVENTSREGION triggers (constant events of regions set from sphere.ini)
-	for ( i = 0; i < g_Cfg.m_pEventsRegionLink.GetCount(); ++i )
+	for ( size_t i = 0; i < g_Cfg.m_pEventsRegionLink.GetCount(); ++i )
 	{
-		CResourceLink	*pLink = g_Cfg.m_pEventsRegionLink[i];
+		CResourceLink * pLink = g_Cfg.m_pEventsRegionLink[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
 			continue;
 		CResourceLock s;
@@ -1208,8 +1212,7 @@ const CRandGroupDef * CRegionWorld::FindNaturalResource(int type) const
 	// Find the natural resources assinged to this region.
 	// ARGS: type = IT_TYPE
 
-	int iQty = m_Events.GetCount();
-	for ( int i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < m_Events.GetCount(); i++ )
 	{
 		CResourceLink * pLink = m_Events[i];
 		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ))
