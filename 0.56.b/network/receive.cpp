@@ -2055,7 +2055,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		mode = (TALKMODE_TYPE)(mode & ~0xc0);
 
 		size_t count = (readInt16() & 0xFFF0) >> 4;
-		if (count < 0 || count > 50) // malformed check
+		if (count > 50) // malformed check
 			return true;
 
 		skip(-2);

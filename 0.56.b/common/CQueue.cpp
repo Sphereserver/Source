@@ -38,7 +38,7 @@ BYTE * CQueueBytes::AddNewDataLock( size_t iLen )
 {
 	ADDTOCALLSTACK("CQueueBytes::AddNewDataLock");
 	// lock the queue to place this data in it.
-	ASSERT(iLen>=0);
+
 	size_t iLenNew = m_iDataQty + iLen;
 	if ( iLenNew > m_Mem.GetDataLength() )
 	{

@@ -83,9 +83,6 @@ TCHAR * CScriptKeyAlloc::GetKeyBufferRaw( size_t iLen )
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::GetKeyBufferRaw");
 	// iLen = length of the string we want to hold.
-
-	ASSERT( iLen >= 0 );
-
 	if ( iLen > SCRIPT_MAX_LINE_LEN )
 		iLen = SCRIPT_MAX_LINE_LEN;
 	iLen ++;	// add null.

@@ -449,7 +449,6 @@ LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWord )
 
 size_t Str_TrimEndWhitespace( TCHAR * pStr, size_t len )
 {
-	ASSERT( len >= 0 );
 	while ( len > 0 )
 	{
 		len --;

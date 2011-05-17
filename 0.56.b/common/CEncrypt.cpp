@@ -496,7 +496,7 @@ bool CCrypt::SetClientVerEnum( DWORD iVer, bool bSetEncrypt )
 bool CCrypt::SetClientVerIndex( size_t iVer, bool bSetEncrypt )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVerIndex");
-	if ( ( iVer < 0 ) || ( iVer >= client_keys.size() ) )
+	if ( iVer >= client_keys.size() )
 		return false;
 
 	CCryptClientKey * key = client_keys.at(iVer);

@@ -127,7 +127,6 @@ void Packet::resize(size_t newsize)
 
 void Packet::seek(size_t pos)
 {
-	ASSERT(pos >= 0);
 	ASSERT(pos <= m_length);
 	m_position = pos;
 }

@@ -409,7 +409,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 			if ( pClient->IsPriv(PRIV_GM) || pClient->GetPrivLevel() >= PLEVEL_Counsel )
 				chRank = pChar->IsStatFlag(STATF_Insubstantial) ? '*' : '+';
 
-			sprintf(tmpMsg, "%s%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
+			sprintf(tmpMsg, "%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
 				pClient->GetSocketID(),
 				chRank,
 				(LPCTSTR) pClient->GetAccount()->GetName(),
