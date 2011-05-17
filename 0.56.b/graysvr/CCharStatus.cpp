@@ -905,7 +905,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	return( pTemp );
 }
 
-bool CChar::CanDisturb( CChar * pChar ) const
+bool CChar::CanDisturb( const CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CChar::CanDisturb");
 	// I can see/disturb only players with priv same/less than me.

@@ -387,34 +387,29 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 	ADDTOCALLSTACK("CServer::ListClients");
 	// Mask which clients we want ?
 	// Give a format of what info we want to SHOW ?
-	if ( !pConsole )
+	if ( pConsole == NULL )
 		return;
 
-	// todo: check for buffer overflow on pszMsg
-	CChar * pCharCmd = pConsole->GetChar();
+	const CChar * pCharCmd = pConsole->GetChar();
+	TCHAR * pszMsg = Str_GetTemp();
+	TCHAR * tmpMsg = Str_GetTemp();
+	size_t numClients = 0;
 
-	TCHAR *pszMsg = Str_GetTemp();
-	TCHAR *tmpMsg = Str_GetTemp();
-	int numClients = 0;
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for (const CClient * pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		numClients++;
-		CChar * pChar = pClient->GetChar();
-		if ( pChar )
+		const CChar * pChar = pClient->GetChar();
+		if ( pChar != NULL )
 		{
-			if ( pCharCmd &&
-				! pCharCmd->CanDisturb( pChar ))
-			{
+			if ( pCharCmd != NULL && pCharCmd->CanDisturb( pChar ) == false )
 				continue;
-			}
 
 			TCHAR chRank = '=';
 			if ( pClient->IsPriv(PRIV_GM) || pClient->GetPrivLevel() >= PLEVEL_Counsel )
 				chRank = pChar->IsStatFlag(STATF_Insubstantial) ? '*' : '+';
 
-			sprintf(pszMsg, "%s%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
-				pszMsg,
+			sprintf(tmpMsg, "%s%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
 				pClient->GetSocketID(),
 				chRank,
 				(LPCTSTR) pClient->GetAccount()->GetName(),
@@ -425,36 +420,39 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 		else
 		{
 			if ( pConsole->GetPrivLevel() < pClient->GetPrivLevel())
-			{
 				continue;
-			}
+
 			LPCTSTR pszState;
 			switch ( pClient->GetConnectType() )
 			{
-				case CONNECT_TELNET:	pszState = "TelNet"; break;
-				case CONNECT_HTTP:		pszState = "Web"; break;
-				default: pszState = "NOT LOGGED IN"; break;
+				case CONNECT_TELNET:
+					pszState = "TelNet";
+					break;
+				case CONNECT_HTTP:
+					pszState = "Web";
+					break;
+				default:
+					pszState = "NOT LOGGED IN";
+					break;
 			}
 
-			sprintf(pszMsg, "%s%lx:Acc='%s', (%s) %s\n",
-				pszMsg,
+			sprintf(tmpMsg, "%lx:Acc='%s', (%s) %s\n",
 				pClient->GetSocketID(),
-				pClient->GetAccount() ? (LPCTSTR) pClient->GetAccount()->GetName() : "<NA>",
+				pClient->GetAccount() != NULL ? (LPCTSTR) pClient->GetAccount()->GetName() : "<NA>",
 				pClient->GetPeerStr(),
 				(LPCTSTR) pszState );
 		}
+
+		ASSERT((strlen(pszMsg) + strlen(tmpMsg)) < SCRIPT_MAX_LINE_LEN);
+		strcat(pszMsg, tmpMsg);
 	}
 
-	if (numClients == 0)
-	{
+	if (numClients <= 0)
 		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_NO_CLIENT ) );
-	} else if (numClients == 1)
-	{
+	else if (numClients == 1)
 		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_ONE_CLIENT ));
-	} else
-	{
-		sprintf(tmpMsg, "%s %d\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_MANY_CLIENTS ), numClients);
-	}
+	else
+		sprintf(tmpMsg, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_MANY_CLIENTS ), numClients);
 
 	pConsole->SysMessage(tmpMsg);
 	pConsole->SysMessage(pszMsg);

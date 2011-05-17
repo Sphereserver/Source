@@ -2964,7 +2964,7 @@ public:
 	}
 
 	bool SetPrivLevel( CTextConsole * pSrc, LPCTSTR pszFlags );
-	bool CanDisturb( CChar * pChar ) const;
+	bool CanDisturb( const CChar * pChar ) const;
 	void SetDisconnected();
 	bool SetPlayerAccount( CAccount * pAccount );
 	bool SetPlayerAccount( LPCTSTR pszAccount );
