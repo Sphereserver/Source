@@ -138,17 +138,20 @@
 #define FEATURE_AOS_POPUP		0x04	// PopUp Menus
 #define FEATURE_AOS_DAMAGE		0x08
 
-#define FEATURE_SE_UPDATE		0x01	// 0x08 in 0xA9
-#define FEATURE_SE_NINJASAM		0x02	// 0x040 in feature
+#define FEATURE_SE_UPDATE		0x01	// 0x00008 in 0xA9
+#define FEATURE_SE_NINJASAM		0x02	// 0x00040 in feature
 
-#define FEATURE_ML_UPDATE		0x01 	// 0x100 on charlist and 0x0080 for feature to activate
-#define FEATURE_ML_NINTHAGE		0x02	// 0x200 feature (unlock house designer items)
+#define FEATURE_ML_UPDATE		0x01 	// 0x00100 on charlist and 0x0080 for feature to activate
+#define FEATURE_ML_NINTHAGE		0x02	// 0x00200 feature (unlock house designer items)
 
-#define FEATURE_KR_UPDATE		0x01	// 0x200 in 0xA9 (KR crapness)
-#define FEATURE_KR_CLIENTTYPE	0x02	// 0x400 in 0xA9 (enables 0xE1 packet)
+#define FEATURE_KR_UPDATE		0x01	// 0x00200 in 0xA9 (KR crapness)
+#define FEATURE_KR_CLIENTTYPE	0x02	// 0x00400 in 0xA9 (enables 0xE1 packet)
 
 #define FEATURE_SA_UPDATE		0x01	// 0x10000 feature (unlock gargoyle character, housing items)
-#define FEATURE_SA_MOVEMENT		0x02	// 0x4000 on charlist (new movement packets)
+#define FEATURE_SA_MOVEMENT		0x02	// 0x04000 on charlist (new movement packets)
+
+#define FEATURE_EXTRA_GOTHIC	0x01	// 0x40000 feature (unlock gothic house designer items)
+#define FEATURE_EXTRA_RUSTIC	0x02	// 0x80000 feature (unlock rustic house designer items)
 
 #include "common.h"
 #include "CException.h"

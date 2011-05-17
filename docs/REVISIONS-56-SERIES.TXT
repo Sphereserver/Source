@@ -5189,3 +5189,7 @@ ALPHA additions:
 
 12-05-2011, MrSugarCube (Script pack)
 - Updated: sphere_map_points4.scp (Corrected z-level of the moongate locations)
+
+17-05-2011, MrSugarCube
+- Added: FeatureExtra setting to sphere.ini with flags to enable new gothic
+  and rustic themed items in the house designer.

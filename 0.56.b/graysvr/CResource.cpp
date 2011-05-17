@@ -157,6 +157,7 @@ CResource::CResource()
 	m_iFeatureML		= 0;
 	m_iFeatureKR		= 0;
 	m_iFeatureSA		= 0;
+	m_iFeatureExtra		= 0;
 
 	m_iStatFlag = 0;
 
@@ -413,6 +414,7 @@ enum RC_TYPE
 	RC_EXPERIENCESYSTEM,	// m_bExperienceSystem
 	RC_EXPERIMENTAL,		// m_iExperimental
 	RC_FEATURESAOS,
+	RC_FEATURESEXTRA,
 	RC_FEATURESKR,
 	RC_FEATURESLBR,
 	RC_FEATURESML,
@@ -624,6 +626,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "EXPERIENCESYSTEM",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bExperienceSystem),	0 }},
 	{ "EXPERIMENTAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iExperimental),		0 }},
 	{ "FEATUREAOS",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureAOS),			0 }},
+	{ "FEATUREEXTRA",			{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureExtra),		0 }},
 	{ "FEATUREKR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureKR),			0 }},
 	{ "FEATURELBR",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureLBR),			0 }},
 	{ "FEATUREML",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureML),			0 }},
@@ -1980,33 +1983,33 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		bResOk = ( res >= RDS_AOS );
 		if ( bResOk )
 		{
-			retValue |= ( (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) ) ? 0x020 : 0x00;
-			retValue |= ( this->m_iFeatureAOS & FEATURE_AOS_POPUP ) ? 0x008 : 0x00;
+			retValue |= ( (m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) ) ? 0x020 : 0x00;
+			retValue |= ( m_iFeatureAOS & FEATURE_AOS_POPUP ) ? 0x008 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SE );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureSE & FEATURE_SE_UPDATE ) ? 0x080 : 0x00;
+			retValue |= ( m_iFeatureSE & FEATURE_SE_UPDATE ) ? 0x080 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_ML );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x0100 : 0x00;
+			retValue |= ( m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x0100 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_KR );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureKR & FEATURE_KR_UPDATE ) ? 0x200 : 0x00;
-			retValue |= ( this->m_iFeatureKR & FEATURE_KR_CLIENTTYPE ) ? 0x400 : 0x00;
+			retValue |= ( m_iFeatureKR & FEATURE_KR_UPDATE ) ? 0x200 : 0x00;
+			retValue |= ( m_iFeatureKR & FEATURE_KR_CLIENTTYPE ) ? 0x400 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SA );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureSA & FEATURE_SA_MOVEMENT ) ? 0x4000 : 0x00;
+			retValue |= ( m_iFeatureSA & FEATURE_SA_MOVEMENT ) ? 0x4000 : 0x00;
 		}
 		
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
@@ -2039,6 +2042,9 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x04000
 		//		0x08000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
 		//		0x10000	Gargoyles, SA housing
+		//		0x20000	
+		//		0x40000	Gothic pack (house designer items)
+		//		0x80000	Rustic pack (house designer items)
 		//	Thus	0		neither T2A NOR LBR, equal to not sending it at all,
 		//			1		is T2A, chatbutton,
 		//			2		is LBR without chatbutton,
@@ -2052,41 +2058,44 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		bResOk = ( res >= RDS_T2A );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureT2A & FEATURE_T2A_UPDATE ) ? CLI_FEAT_T2A_FULL : 0x00;
-			retValue |= ( this->m_iFeatureT2A & FEATURE_T2A_CHAT ) ? CLI_FEAT_T2A_CHAT : 0x00;
+			retValue |= ( m_iFeatureT2A & FEATURE_T2A_UPDATE ) ? CLI_FEAT_T2A_FULL : 0x00;
+			retValue |= ( m_iFeatureT2A & FEATURE_T2A_CHAT ) ? CLI_FEAT_T2A_CHAT : 0x00;
 		}
 
 		bResOk = ( res >= RDS_LBR );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureLBR & FEATURE_LBR_UPDATE ) ? CLI_FEAT_LBR_FULL : 0x00;
-			retValue |= ( this->m_iFeatureLBR & FEATURE_LBR_SOUND  ) ? CLI_FEAT_LBR_SOUND : 0x00;
+			retValue |= ( m_iFeatureLBR & FEATURE_LBR_UPDATE ) ? CLI_FEAT_LBR_FULL : 0x00;
+			retValue |= ( m_iFeatureLBR & FEATURE_LBR_SOUND  ) ? CLI_FEAT_LBR_SOUND : 0x00;
 		}
 
 		bResOk = ( res >= RDS_AOS );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureAOS & FEATURE_AOS_UPDATE_A ) ? 0x08010 : 0x00;
+			retValue |= ( m_iFeatureAOS & FEATURE_AOS_UPDATE_A ) ? 0x08010 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SE );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureSE & FEATURE_SE_NINJASAM ) ? 0x040 : 0x00;
+			retValue |= ( m_iFeatureSE & FEATURE_SE_NINJASAM ) ? 0x040 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_ML );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
-			retValue |= ( this->m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
+			retValue |= ( m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
+			retValue |= ( m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SA );
 		if ( bResOk )
 		{
-			retValue |= ( this->m_iFeatureSA & FEATURE_SA_UPDATE ) ? 0x10000 : 0x00;
+			retValue |= ( m_iFeatureSA & FEATURE_SA_UPDATE ) ? 0x10000 : 0x00;
 		}
+
+		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_GOTHIC ) ? 0x40000 : 0x00;
+		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_RUSTIC ) ? 0x80000 : 0x00;
 		
 		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
