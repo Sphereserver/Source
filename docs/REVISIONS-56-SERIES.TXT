@@ -5197,3 +5197,4 @@ ALPHA additions:
 18-05-2011, MrSugarCube
 - Fixed #1958: Unable to pass variables as arguments to FORCHARLAYER and
   FORCHARMEMORYTYPE loops.
+- Fixed #1959: Possible exception when Sphere tries to load verdata.mul file.

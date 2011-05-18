@@ -25,8 +25,10 @@ void CVerDataMul::QSort( size_t left, size_t right )
 
 	do
 	{
-		while ( QCompare( j, dwRefIndex ) < 0 ) j++;
-		while ( QCompare( i, dwRefIndex ) > 0 ) i--;
+		while ( j < m_Data.GetCount() && QCompare( j, dwRefIndex ) < 0 )
+			j++;
+		while ( i > 0 && QCompare( i, dwRefIndex ) > 0 )
+			i--;
 
 		if ( i >= j )
 		{
@@ -37,8 +39,11 @@ void CVerDataMul::QSort( size_t left, size_t right )
 				m_Data.SetAt( i, block );
 				m_Data.SetAt( j, Tmp );
 			}
-			i--;
-			j++;
+
+			if ( i > 0 )
+				i--;
+			if ( j < m_Data.GetCount() )
+				j++;
 		}
 
 	} while (j <= i);
@@ -88,7 +93,7 @@ void CVerDataMul::Load( CGFile & file )
 	QSort( 0, dwQty - 1 );
 
 #ifdef _DEBUG
-	for ( DWORD i = 0; i < (dwQty - 1); i++ )
+	for ( size_t i = 0; i < (dwQty - 1); i++ )
 	{
 		DWORD dwIndex1 = GetEntry(i)->GetIndex();
 		DWORD dwIndex2 = GetEntry(i + 1)->GetIndex();
