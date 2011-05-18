@@ -5193,3 +5193,7 @@ ALPHA additions:
 17-05-2011, MrSugarCube
 - Added: FeatureExtra setting to sphere.ini with flags to enable new gothic
   and rustic themed items in the house designer.
+
+18-05-2011, MrSugarCube
+- Fixed #1958: Unable to pass variables as arguments to FORCHARLAYER and
+  FORCHARMEMORYTYPE loops.

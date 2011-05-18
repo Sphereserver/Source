@@ -2131,6 +2131,7 @@ jump_in:
 					{
 						if ( s.HasArgs() )
 						{
+							ParseText(s.GetArgRaw(), pSrc, 0, pArgs);
 							if ( iCmd == SK_FORCHARLAYER )
 								iRet = pCharThis->OnCharTrigForLayerLoop( s, pSrc, pArgs, pResult, (LAYER_TYPE) s.GetArgVal() );
 							else
