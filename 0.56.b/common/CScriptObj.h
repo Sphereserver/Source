@@ -117,7 +117,7 @@
 		virtual LPCTSTR GetName() const = 0;	// ( every object must have at least a type name )
 
 		// Flags = 1 = html
-		int ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags = 0, CScriptTriggerArgs * pArgs = NULL );
+		size_t ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags = 0, CScriptTriggerArgs * pArgs = NULL );
 
 		virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 		virtual bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );

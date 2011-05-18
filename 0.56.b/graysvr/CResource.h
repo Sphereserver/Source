@@ -1124,7 +1124,7 @@ public:
 
 	LPCTSTR GetRune( TCHAR ch ) const
 	{
-		size_t index = toupper(ch) - 'A';
+		size_t index = static_cast<size_t>(toupper(ch) - 'A');
 		if ( ! m_Runes.IsValidIndex(index))
 			return "?";
 		return( m_Runes[index]->GetPtr() );

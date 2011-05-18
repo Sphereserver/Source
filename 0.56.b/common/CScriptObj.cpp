@@ -1190,14 +1190,15 @@ badcmd:
 
 		case SSC_StrRegexNew:
 			{
-				int	iLenString = Exp_GetVal( pszKey );
+				size_t iLenString = Exp_GetVal( pszKey );
 				TCHAR * sToMatch = Str_GetTemp();
-				if ( iLenString )
+				if ( iLenString > 0 )
 				{
 					SKIP_ARGSEP(pszKey);
-					strcpylen(sToMatch,pszKey,iLenString+1);
+					strcpylen(sToMatch, pszKey, iLenString + 1);
 					pszKey += iLenString;
 				}
+
 				SKIP_ARGSEP(pszKey);
 				TCHAR * tLastError = Str_GetTemp();
 				int iDataResult = Str_RegExMatch( pszKey, sToMatch, tLastError );
@@ -1442,7 +1443,7 @@ bool CScriptObj::r_Load( CScript & s )
 	return( true );
 }
 
-int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags, CScriptTriggerArgs * pArgs )
+size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags, CScriptTriggerArgs * pArgs )
 {
 	ADDTOCALLSTACK("CScriptObj::ParseText");
 	// Take in a line of text that may have fields that can be replaced with operators here.
@@ -1454,28 +1455,28 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 	//  New length of the string.
 	//
 	// Parsing flags
-	LPCTSTR			pszKey; // temporary, set below
-	bool			fRes;
+	LPCTSTR pszKey; // temporary, set below
+	bool fRes;
 
 	static int sm_iReentrant = 0;
 	static bool sm_fBrackets = false;	// allowed to span multi lines.
-	if ( ! (iFlags&2))
+	if ((iFlags & 2) == 0)
 	{
 		sm_fBrackets = false;
 	}
 
-	int iBegin = 0;
+	size_t iBegin = 0;
 	TCHAR chBegin = '<';
 	TCHAR chEnd = '>';
 
-	bool fHTML = (iFlags&1);
+	bool fHTML = (iFlags & 1) != 0;
 	if ( fHTML )
 	{
 		chBegin = '%';
 		chEnd = '%';
 	}
 
-	int i = 0;
+	size_t i = 0;
 	EXC_TRY("ParseText");
 	for ( i = 0; pszResponse[i]; ++i )
 	{
@@ -1485,7 +1486,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 		{
 			if ( ch == chBegin )	// found the start !
 			{
-				 if ( !( isalnum( pszResponse[i+1] ) || pszResponse[i+1] == '<' ) )		// ignore this.
+				 if ( !( isalnum( pszResponse[i + 1] ) || pszResponse[i + 1] == '<' ) ) // ignore this.
 					continue;
 				iBegin = i;
 				sm_fBrackets = true;
@@ -1495,7 +1496,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 
 		if ( ch == '<' )	// recursive brackets
 		{			
-			if ( !( isalnum( pszResponse[i+1] ) || pszResponse[i+1] == '<' ) )		// ignore this.
+			if ( !( isalnum( pszResponse[i + 1] ) || pszResponse[i + 1] == '<' ) ) // ignore this.
 				continue;
 			
 			if (sm_iReentrant > 32 )
@@ -1505,7 +1506,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 			}
 			++sm_iReentrant;
 			sm_fBrackets = false;
-			int ilen = ParseText( pszResponse+i, pSrc, 2, pArgs );
+			size_t ilen = ParseText( pszResponse + i, pSrc, 2, pArgs );
 			sm_fBrackets = true;
 			--sm_iReentrant;
 			i += ilen;
@@ -1518,7 +1519,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 			pszResponse[i] = '\0';
 
 			CGString sVal;
-			pszKey		= (LPCTSTR) pszResponse+iBegin+1;
+			pszKey = (LPCTSTR) pszResponse + iBegin + 1;
 
 			EXC_SET("writeval");
 			fRes = r_WriteVal( pszKey, sVal, pSrc );
@@ -1526,7 +1527,7 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 			{
 				EXC_SET("writeval");
 				if ( pArgs != NULL && pArgs->r_WriteVal( pszKey, sVal, pSrc ) )
-					fRes	= true;
+					fRes = true;
 			}
 
 			if ( fRes == false )
@@ -1542,19 +1543,29 @@ int CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFlags,
 			}
 
 			int len = sVal.GetLength();
-			EXC_SET("mem shifting");
-			memmove( pszResponse+iBegin+len, pszResponse+i+1, strlen( pszResponse+i+1 ) + 1 );
-			memcpy( pszResponse+iBegin, (LPCTSTR) sVal, len );
-			i = iBegin+len-1;
 
-			if ( iFlags&2 )	// just do this one then bail out.
-				return( i );
+			EXC_SET("mem shifting");
+#if defined(_DEBUG) || !defined(_WIN32)
+			size_t estimatedLength = (strlen(pszResponse + i + 1) + iBegin + len);
+			ASSERT(estimatedLength < SCRIPT_MAX_LINE_LEN);
+#endif
+
+			memmove( pszResponse + iBegin + len, pszResponse + i + 1, strlen( pszResponse + i + 1 ) + 1 );
+			memcpy( pszResponse + iBegin, (LPCTSTR) sVal, len );
+			i = iBegin + len - 1;
+			
+#if defined(_DEBUG) || !defined(_WIN32)
+			ASSERT(strlen(pszResponse) == estimatedLength);
+#endif
+
+			if ((iFlags & 2) != 0) // just do this one then bail out.
+				return i;
 		}
 	}
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("responce '%s' source addr '0%p' flags '%d' args '%p'\n", pszResponse, pSrc, iFlags, pArgs);
+	g_Log.EventDebug("response '%s' source addr '0%p' flags '%d' args '%p'\n", pszResponse, pSrc, iFlags, pArgs);
 	EXC_DEBUG_END;
 	return i;
 }
@@ -2209,7 +2220,7 @@ jump_in:
 							if ( Str_ParseCmds( (TCHAR*) pszKey, ppArgs, COUNTOF(ppArgs), " \t," ) >= 1 )
 							{
 								strcpy(ppParsed, ppArgs[0]);
-								if ( ParseText( ppParsed, pSrc, 0, pArgs ) )
+								if ( ParseText( ppParsed, pSrc, 0, pArgs ) > 0 )
 								{
 									CScriptLineContext StartContext = s.GetContext();
 									CScriptLineContext EndContext = StartContext;
