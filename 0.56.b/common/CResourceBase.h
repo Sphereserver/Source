@@ -73,7 +73,7 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with !
 	RES_WORLDSCRIPT,	// Something to load into a script.
 	RES_WORLDVARS,
 	RES_WS,				// =WORLDSCRIPT
-	RES_QTY,			// Don't care
+	RES_QTY				// Don't care
 };
 
 #define RES_DIALOG_TEXT				1	// sub page for the section.

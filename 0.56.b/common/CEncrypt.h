@@ -28,7 +28,7 @@ enum CONNECT_TYPE	// What type of client connection is this ?
 	CONNECT_GAME,		// game client protocol
 	CONNECT_HTTP,		// We are serving web pages to this.
 	CONNECT_TELNET,		// we are in telnet console mode.
-	CONNECT_QTY,
+	CONNECT_QTY
 };
 
 enum ENCRYPTION_TYPE
@@ -37,7 +37,7 @@ enum ENCRYPTION_TYPE
 	ENC_BFISH,
 	ENC_BTFISH,
 	ENC_TFISH,
-	ENC_QTY,
+	ENC_QTY
 };
 
 // ---------------------------------------------------------------------------------------------------------------

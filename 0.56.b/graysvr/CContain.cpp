@@ -508,7 +508,7 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString & sVal, CTextConso
 		"count",
 		"fcount",
 		"rescount",
-		"restest",
+		"restest"
 	};
 
 	int i = FindTableHeadSorted(pszKey, sm_szParams, COUNTOF(sm_szParams));
@@ -1087,7 +1087,7 @@ void CItemContainer::SetKeyRing()
 		ITEMID_KEY_RING1,
 		ITEMID_KEY_RING3,
 		ITEMID_KEY_RING3,
-		ITEMID_KEY_RING5,
+		ITEMID_KEY_RING5
 	};
 
 	size_t iQty = GetCount();
@@ -1394,7 +1394,7 @@ void CItemContainer::Game_Create()
 		ITEMID_GAME2_KING,
 		ITEMID_GAME2_BISHOP,
 		ITEMID_GAME2_KNIGHT,
-		ITEMID_GAME2_ROOK,		// 218, 183
+		ITEMID_GAME2_ROOK		// 218, 183
 	};
 
 	CPointMap pt;
@@ -1405,7 +1405,7 @@ void CItemContainer::Game_Create()
 		5,
 		40,
 		160,
-		184,
+		184
 	};
 
 	// Checkers has 3 rows of 4 pieces on each side
@@ -1416,7 +1416,7 @@ void CItemContainer::Game_Create()
 		80,
 		155,
 		180,
-		205,
+		205
 	};
 
 	// Backgammon has an odd setup
@@ -1549,7 +1549,7 @@ enum ICV_TYPE
 	ICV_EMPTY,
 	ICV_FIXWEIGHT,
 	ICV_OPEN,
-	ICV_QTY,
+	ICV_QTY
 };
 
 LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY+1] =
@@ -1558,7 +1558,7 @@ LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY+1] =
 	"EMPTY",
 	"FIXWEIGHT",
 	"OPEN",
-	NULL,
+	NULL
 };
 
 bool CItemContainer::r_Verb( CScript &s, CTextConsole * pSrc )

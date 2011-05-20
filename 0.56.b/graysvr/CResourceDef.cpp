@@ -78,7 +78,7 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 		m_aiValues[i] = Arg_piCmd[i];
 	}
 	return( true );
-};
+}
 
 int CValueCurveDef::GetLinear( int iSkillPercent ) const
 {
@@ -188,7 +188,7 @@ LPCTSTR const CSkillDef::sm_szTrigName[SKTRIG_QTY+1] =
 	"@TargetCancel",
 	"@UseQuick",
 	"@Wait",
-	NULL,	
+	NULL
 };
 
 enum SKC_TYPE
@@ -212,7 +212,7 @@ enum SKC_TYPE
 	SKC_STAT_STR,
 	SKC_TITLE,
 	SKC_VALUES,
-	SKC_QTY,
+	SKC_QTY
 };
 
 LPCTSTR const CSkillDef::sm_szLoadKeys[SKC_QTY+1] =
@@ -236,7 +236,7 @@ LPCTSTR const CSkillDef::sm_szLoadKeys[SKC_QTY+1] =
 	"STAT_STR",
 	"TITLE",
 	"VALUES",
-	NULL,
+	NULL
 };
 
 CSkillDef::CSkillDef( SKILL_TYPE skill ) :
@@ -412,7 +412,7 @@ enum SCC_TYPE
 	SCC_NAME,
 	SCC_SKILLSUM,
 	SCC_STATSUM,
-	SCC_QTY,
+	SCC_QTY
 };
 
 LPCTSTR const CSkillClassDef::sm_szLoadKeys[SCC_QTY+1] =
@@ -421,7 +421,7 @@ LPCTSTR const CSkillClassDef::sm_szLoadKeys[SCC_QTY+1] =
 	"NAME",
 	"SKILLSUM",
 	"STATSUM",
-	NULL,
+	NULL
 };
 
 void CSkillClassDef::Init()
@@ -542,7 +542,7 @@ LPCTSTR const CSpellDef::sm_szTrigName[SPTRIG_QTY+1] =
 	"@START",
 	"@SUCCESS",
 	"@TARGETCANCEL",
-	NULL,	
+	NULL
 };
 
 enum SPC_TYPE
@@ -564,7 +564,7 @@ enum SPC_TYPE
 	SPC_SCROLL_ITEM,
 	SPC_SKILLREQ,
 	SPC_SOUND,
-	SPC_QTY,
+	SPC_QTY
 };
 
 LPCTSTR const CSpellDef::sm_szLoadKeys[SPC_QTY+1] =
@@ -586,7 +586,7 @@ LPCTSTR const CSpellDef::sm_szLoadKeys[SPC_QTY+1] =
 	"SCROLL_ITEM",
 	"SKILLREQ",
 	"SOUND",
-	NULL,
+	NULL
 };
 
 CSpellDef::CSpellDef( SPELL_TYPE id ) :
@@ -817,7 +817,7 @@ enum RGC_TYPE
 	RGC_ID,
 	RGC_RESOURCES,
 	RGC_WEIGHT,
-	RGC_QTY,
+	RGC_QTY
 };
 
 LPCTSTR const CRandGroupDef::sm_szLoadKeys[RGC_QTY+1] =
@@ -827,7 +827,7 @@ LPCTSTR const CRandGroupDef::sm_szLoadKeys[RGC_QTY+1] =
 	"ID",
 	"RESOURCES",
 	"WEIGHT",
-	NULL,
+	NULL
 };
 
 int CRandGroupDef::CalcTotalWeight()
@@ -1049,7 +1049,7 @@ enum RMC_TYPE
 	RMC_REAPAMOUNT,
 	RMC_REGEN,
 	RMC_SKILL,
-	RMC_QTY,
+	RMC_QTY
 };
 
 LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
@@ -1060,7 +1060,7 @@ LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
 	"REAPAMOUNT",
 	"REGEN",
 	"SKILL",
-	NULL,
+	NULL
 };
 
 

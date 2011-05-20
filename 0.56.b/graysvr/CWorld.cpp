@@ -17,7 +17,7 @@ static const SOUND_TYPE sm_Sounds_Ghost[] =
 	SOUND_GHOST_2,
 	SOUND_GHOST_3,
 	SOUND_GHOST_4,
-	SOUND_GHOST_5,
+	SOUND_GHOST_5
 };
 
 LPCTSTR GetReasonForGarbageCode(int iCode = -1)
@@ -1292,7 +1292,7 @@ bool CWorld::SaveForce() // Save world state
 		"global variables, regions, gmpages",
 		"servers",
 		"accounts",
-		"",
+		""
 	};
 	const char *pCurBlock = msgs[0];
 
@@ -1790,7 +1790,7 @@ enum WC_TYPE
 	WC_TIME,
 	WC_TITLE,
 	WC_VERSION,
-	WC_QTY,
+	WC_QTY
 };
 
 LPCTSTR const CWorld::sm_szLoadKeys[WC_QTY+1] =	// static
@@ -1799,7 +1799,7 @@ LPCTSTR const CWorld::sm_szLoadKeys[WC_QTY+1] =	// static
 	"TIME",
 	"TITLE",
 	"VERSION",
-	NULL,
+	NULL
 };
 
 bool CWorld::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )

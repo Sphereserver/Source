@@ -1863,7 +1863,10 @@ void CItem::SetAmount( unsigned int amount )
 	{
 		static const ITEMID_TYPE sm_Item_Ore[] =
 		{
-			ITEMID_ORE_1, ITEMID_ORE_1, ITEMID_ORE_2, ITEMID_ORE_3
+			ITEMID_ORE_1,
+			ITEMID_ORE_1,
+			ITEMID_ORE_2,
+			ITEMID_ORE_3
 		};
 		SetDispID( ( GetAmount() >= COUNTOF(sm_Item_Ore)) ? ITEMID_ORE_4 : sm_Item_Ore[GetAmount()] );
 	}
@@ -2123,7 +2126,7 @@ enum ICR_TYPE
 	ICR_CONT,
 	ICR_LINK,
 	ICR_REGION,
-	ICR_QTY,
+	ICR_QTY
 };
 
 LPCTSTR const CItem::sm_szRefKeys[ICR_QTY+1] =
@@ -2131,7 +2134,7 @@ LPCTSTR const CItem::sm_szRefKeys[ICR_QTY+1] =
 	"CONT",
 	"LINK",
 	"REGION",
-	NULL,
+	NULL
 };
 
 bool CItem::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -2168,7 +2171,7 @@ enum IC_TYPE
 	#define ADD(a,b) IC_##a,
 	#include "../tables/CItem_props.tbl"
 	#undef ADD
-	IC_QTY,
+	IC_QTY
 };
 
 LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
@@ -2176,7 +2179,7 @@ LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CItem_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 
@@ -2661,7 +2664,7 @@ enum CIV_TYPE
 	#define ADD(a,b) CIV_##a,
 	#include "../tables/CItem_functions.tbl"
 	#undef ADD
-	CIV_QTY,
+	CIV_QTY
 };
 
 LPCTSTR const CItem::sm_szVerbKeys[CIV_QTY+1] =
@@ -2669,7 +2672,7 @@ LPCTSTR const CItem::sm_szVerbKeys[CIV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CItem_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script

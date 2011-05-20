@@ -1171,7 +1171,7 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 			NPCBRAIN_MONSTER,
 			NPCBRAIN_HUMAN,
 			NPCBRAIN_NONE,	// players
-			NPCBRAIN_QTY,	// anything.
+			NPCBRAIN_QTY	// anything.
 		};
 
 		if ( track_sel >= COUNTOF(sm_Track_Brain))

@@ -11,7 +11,7 @@ enum CV_TYPE
 	#define ADD(a,b) CV_##a,
 	#include "../tables/CClient_functions.tbl"
 	#undef ADD
-	CV_QTY,
+	CV_QTY
 };
 
 enum CC_TYPE
@@ -19,7 +19,7 @@ enum CC_TYPE
 	#define ADD(a,b) CC_##a,
 	#include "../tables/CClient_props.tbl"
 	#undef ADD
-	CC_QTY,
+	CC_QTY
 };
 
 class CPartyDef : public CGObListRec, public CScriptObj

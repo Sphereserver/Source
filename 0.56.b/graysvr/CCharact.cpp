@@ -1327,9 +1327,9 @@ void CChar::SoundChar( CRESND_TYPE type )
 		{
 			static const SOUND_TYPE sm_Snd_Hit[] =
 			{
-				0x135, //= hit01 = (slap)
-				0x137, //= hit03 = (hit sand)
-				0x13b, //= hit07 = (hit slap)
+				0x135,	//= hit01 = (slap)
+				0x137,	//= hit03 = (hit sand)
+				0x13b	//= hit07 = (hit slap)
 			};
 			id = sm_Snd_Hit[ Calc_GetRandVal( COUNTOF( sm_Snd_Hit )) ];
 		}

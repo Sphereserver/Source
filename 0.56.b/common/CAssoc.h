@@ -39,7 +39,7 @@ enum ELEM_TYPE	// define types of structure/record elements.
 	ELEM_DWORD,		// 4 bytes.
 	ELEM_MASK_DWORD,	// bits in a DWORD
 
-	ELEM_QTY,
+	ELEM_QTY
 };
 
 #ifndef OFFSETOF			// stddef.h ?

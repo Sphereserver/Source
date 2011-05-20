@@ -6,18 +6,18 @@ typedef double RealType;
 
 CVarFloat::CVarFloat()
 {
-};
+}
 
 CVarFloat::~CVarFloat()
 {
 	m_VarMap.clear();
-};
+}
 
 inline bool CVarFloat::Set( const char* VarName, const char* VarValue )
 {
 	ADDTOCALLSTACK("CVarFloat::Set");
 	return Insert(VarName, VarValue, true);
-};
+}
 
 bool CVarFloat::Insert( const char* VarName, const char* VarValue, bool ForceSet) 
 {
@@ -33,7 +33,7 @@ bool CVarFloat::Insert( const char* VarName, const char* VarValue, bool ForceSet
 	RealType Real = strtod(VarValue,&pEnd);
 	m_VarMap[CGString(VarName)] = Real;
 	return true;
-};
+}
 
 RealType CVarFloat::GetVal( const char* VarName ) 
 {
@@ -47,7 +47,7 @@ RealType CVarFloat::GetVal( const char* VarName )
 		return 0.0;
 	}
 	return i->second;
-};
+}
 
 CGString CVarFloat::Get( const char* VarName ) 
 {
@@ -63,7 +63,7 @@ CGString CVarFloat::Get( const char* VarName )
 	sprintf(szReal, "%f", Real);
 
 	return CGString(szReal);
-};
+}
 
 short int Reentrant_Count = 0;
 
@@ -97,7 +97,7 @@ RealType CVarFloat::MakeFloatMath( LPCTSTR & Expr )
 	RealType dVal = GetValMath(GetSingle(Expr), Expr);
 	--Reentrant_Count;
 	return dVal;
-};
+}
 
 RealType CVarFloat::GetValMath( RealType dVal, LPCTSTR & pExpr )
 {
@@ -229,7 +229,7 @@ RealType CVarFloat::GetValMath( RealType dVal, LPCTSTR & pExpr )
 			break;
 	}
 	return dVal;
-};
+}
 
 RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 {
@@ -659,7 +659,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 	if ( g_Exp.m_VarDefs.GetParseVal( pArgs, &lVal ) )
 		return( lVal );
 	return 0;
-};
+}
 
 RealType CVarFloat::GetRandVal( RealType dQty )
 {
@@ -671,7 +671,7 @@ RealType CVarFloat::GetRandVal( RealType dQty )
 		return( IMULDIV( g_World.m_Rand.randDblExc(), dQty, INT_MAX) );
 	}
 	return g_World.m_Rand.randDblExc(dQty);
-};
+}
 
 RealType CVarFloat::GetRandVal2( RealType dMin, RealType dMax )
 {
@@ -684,7 +684,7 @@ RealType CVarFloat::GetRandVal2( RealType dMin, RealType dMax )
 	}
 	//DEBUG_ERR(("GetRandVal2\n"));
 	return ( dMin + g_World.m_Rand.randDblExc(dMax) ); //These weird numbers are taken from mtrand.cpp (cause calling that function from here spits out some weird external errors)
-};
+}
 
 //Does not work as it should, would be too slow, and nobody needs that
 /*RealType CVarFloat::GetRange( LPCTSTR & pExpr )
@@ -735,7 +735,7 @@ RealType CVarFloat::GetRandVal2( RealType dMin, RealType dMax )
 	}
 
 	return( dVals[i-1] );
-};
+}
 
 int CVarFloat::GetRangeVals( LPCTSTR & pExpr, RealType * piVals, short int iMaxQty )
 {
@@ -794,12 +794,12 @@ int CVarFloat::GetRangeVals( LPCTSTR & pExpr, RealType * piVals, short int iMaxQ
 
 CLocalObjMap::CLocalObjMap()
 {
-};
+}
 
 CLocalObjMap::~CLocalObjMap()
 {
 	m_ObjMap.clear();
-};
+}
 
 CObjBase * CLocalObjMap::Get( unsigned short Number )
 {
@@ -810,7 +810,7 @@ CObjBase * CLocalObjMap::Get( unsigned short Number )
 	if ( i == m_ObjMap.end() )
 		return NULL;
 	return i->second;
-};
+}
 
 bool CLocalObjMap::Insert( unsigned short Number, CObjBase * pObj, bool ForceSet )
 {
@@ -822,4 +822,4 @@ bool CLocalObjMap::Insert( unsigned short Number, CObjBase * pObj, bool ForceSet
 		return false;
 	m_ObjMap[Number] = pObj;
 	return true;
-};
+}

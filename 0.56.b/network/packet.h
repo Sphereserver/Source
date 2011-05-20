@@ -128,7 +128,7 @@ public:
 		PRI_NORMAL,
 		PRI_HIGH,
 		PRI_HIGHEST,
-		PRI_QTY,
+		PRI_QTY
 	};
 
 protected:

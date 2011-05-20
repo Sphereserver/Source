@@ -312,7 +312,7 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		"KILLCHATS",
 		"NOCHATS",
 		"SYSMSG",
-		"WHEREIS",
+		"WHEREIS"
 	};
 
 	ASSERT(pBy != NULL);
@@ -442,7 +442,7 @@ void CChat::KillChannels()
 	for ( ; pChannel != NULL; pChannel = pChannel->GetNext())
 		pChannel->KickAll();
 	m_Channels.Empty();
-};
+}
 
 void CChat::WhereIs(CChatChanMember * pBy, LPCTSTR pszName ) const
 {

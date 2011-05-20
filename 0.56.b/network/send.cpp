@@ -566,7 +566,7 @@ PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(X
 	writeByte(pt.m_z);
 
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -590,7 +590,7 @@ PacketMovementRej::PacketMovementRej(const CClient* target, BYTE sequence) : Pac
 	writeByte(character->GetDirFlag());
 	writeByte(pt.m_z);
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -1324,7 +1324,7 @@ PacketGameTime::PacketGameTime(const CClient* target, int hours, int minutes, in
 	writeByte(minutes);
 	writeByte(seconds);
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -1363,7 +1363,7 @@ PacketWeather::PacketWeather(const CClient* target, WEATHER_TYPE weather, int se
 	
 	writeByte(temperature);
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -1387,7 +1387,7 @@ PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem*
 		addPage(book, startpage + i);
 
 	push(target);
-};
+}
 
 void PacketBookPageContent::addPage(const CItem* book, size_t page)
 {
@@ -1482,7 +1482,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	writeInt16(0);
 
 	push(target);
-};
+}
 
 PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 30, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
@@ -1511,7 +1511,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 
 	trim();
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -1527,7 +1527,7 @@ PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSe
 
 	writeInt16(musicID);
 	push(target);
-};
+}
 
 
 /***************************************************************************
@@ -1549,7 +1549,7 @@ PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat
 	writeBool(backward);
 	writeBool(repeat != 1);
 	writeByte(delay);
-};
+}
 
 
 /***************************************************************************

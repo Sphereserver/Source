@@ -23,7 +23,7 @@ enum DEFMSG_TYPE
 	#define MSG(a,b,c) DEFMSG_##a,
 	#include "../tables/defmessages.tbl"
 	#undef MSG
-	DEFMSG_QTY,
+	DEFMSG_QTY
 };
 
 enum INTRINSIC_TYPE
@@ -47,7 +47,7 @@ enum INTRINSIC_TYPE
 	INTRINSIC_STRMATCH,
 	INTRINSIC_STRREGEX,
 	INTRINSIC_TAN,
-	INTRINSIC_QTY,
+	INTRINSIC_QTY
 };
 
 static LPCTSTR const sm_IntrinsicFunctions[INTRINSIC_QTY+1] =
@@ -71,7 +71,7 @@ static LPCTSTR const sm_IntrinsicFunctions[INTRINSIC_QTY+1] =
 	"STRMATCH",	// STRMATCH(str,*?pattern)
 	"STRREGEX",
 	"TAN",		// tan()
-	NULL,
+	NULL
 };
 
 extern class CExpression

@@ -69,7 +69,7 @@ enum GC_TYPE
 	GC_REASON,
 	GC_STATUS,
 	GC_TIME,
-	GC_QTY,
+	GC_QTY
 };
 
 LPCTSTR const CGMPage::sm_szLoadKeys[GC_QTY+1] =
@@ -79,7 +79,7 @@ LPCTSTR const CGMPage::sm_szLoadKeys[GC_QTY+1] =
 	"REASON",
 	"STATUS",
 	"TIME",
-	NULL,
+	NULL
 };
 
 bool CGMPage::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )

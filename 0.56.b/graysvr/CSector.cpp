@@ -35,7 +35,7 @@ enum SC_TYPE
 	SC_RAINCHANCE,
 	SC_SEASON,
 	SC_WEATHER,
-	SC_QTY,
+	SC_QTY
 };
 
 LPCTSTR const CSector::sm_szLoadKeys[SC_QTY+1] =
@@ -52,7 +52,7 @@ LPCTSTR const CSector::sm_szLoadKeys[SC_QTY+1] =
 	"RAINCHANCE",
 	"SEASON",
 	"WEATHER",
-	NULL,
+	NULL
 };
 
 bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
@@ -65,7 +65,7 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		{ "HIGH", INT_MIN },	// speech can be very complex if low char count
 		{ "MEDIUM", 5 },
 		{ "LOW", 10 },
-		{ NULL, INT_MAX },
+		{ NULL, INT_MAX }
 	};
 
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
@@ -160,7 +160,7 @@ enum SEV_TYPE
 	#define ADD(a,b) SEV_##a,
 	#include "../tables/CSector_functions.tbl"
 	#undef ADD
-	SEV_QTY,
+	SEV_QTY
 };
 
 LPCTSTR const CSector::sm_szVerbKeys[SEV_QTY+1] =
@@ -168,7 +168,7 @@ LPCTSTR const CSector::sm_szVerbKeys[SEV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CSector_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CSector::r_Verb( CScript & s, CTextConsole * pSrc )
@@ -563,7 +563,7 @@ static const BYTE sm_TrammelPhaseBrightness[] =
 	TRAMMEL_FULL_BRIGHTNESS,		// Full Moon
 	( TRAMMEL_FULL_BRIGHTNESS * 3) / 4, // Gibbous Moon
 	TRAMMEL_FULL_BRIGHTNESS / 2, 	// Quarter Moon
-	TRAMMEL_FULL_BRIGHTNESS / 4,	// Crescent Moon
+	TRAMMEL_FULL_BRIGHTNESS / 4		// Crescent Moon
 };
 			ASSERT( iTrammelPhase < COUNTOF(sm_TrammelPhaseBrightness));
 			iTargLight -= sm_TrammelPhaseBrightness[iTrammelPhase];
@@ -582,7 +582,7 @@ static const BYTE sm_FeluccaPhaseBrightness[] =
 	FELUCCA_FULL_BRIGHTNESS,		// Full Moon
 	( FELUCCA_FULL_BRIGHTNESS * 3) / 4, // Gibbous Moon
 	FELUCCA_FULL_BRIGHTNESS / 2, 	// Quarter Moon
-	FELUCCA_FULL_BRIGHTNESS / 4,	// Crescent Moon
+	FELUCCA_FULL_BRIGHTNESS / 4		// Crescent Moon
 };
 			ASSERT( iFeluccaPhase < COUNTOF(sm_FeluccaPhaseBrightness));
 			iTargLight -= sm_FeluccaPhaseBrightness[iFeluccaPhase];

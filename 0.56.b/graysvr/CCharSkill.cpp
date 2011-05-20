@@ -46,9 +46,9 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 				static const WORD sm_Webs[] =
 				{
 					ITEMID_WEB1_1,
-					ITEMID_WEB1_1+1,
-					ITEMID_WEB1_1+2,
-					ITEMID_WEB1_4,
+					ITEMID_WEB1_1 + 1,
+					ITEMID_WEB1_1 + 2,
+					ITEMID_WEB1_4
 				};
 				CItem * pItem = CItem::CreateScript( (ITEMID_TYPE) sm_Webs[ Calc_GetRandVal( COUNTOF(sm_Webs))], this );
 				pItem->SetType(IT_WEB);
@@ -2672,7 +2672,7 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_1 ),
 			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_2 ),
 			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_3 ),
-			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_4 ),
+			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_4 )
 		};
 
 		if ( IsPriv( PRIV_GM ))

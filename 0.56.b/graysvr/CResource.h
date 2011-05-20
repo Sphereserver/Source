@@ -73,7 +73,7 @@ enum EF_TYPE
 #ifndef _MTNETWORK
 	EF_NetworkOutThread				= 0x0800000,
 #endif
-    EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
+    EF_Specific						= 0x1000000	// Specific behaviour, not completly tested
 };
 
 enum MAGICFLAGS_TYPE
@@ -85,7 +85,7 @@ enum MAGICFLAGS_TYPE
 	MAGICF_STACKSTATS        = 0x0000010,	// allow multiple stat spells at once
 	MAGICF_FREEZEONCAST      = 0x0000020,	// disallow movement whilst casting
 	MAGICF_SUMMONWALKCHECK   = 0x0000040,	// disallow summoning creatures to places they can't normally step
-	MAGICF_NOFIELDSOVERWALLS = 0x0000080,	// prevent fields from being formed over blocking objects.
+	MAGICF_NOFIELDSOVERWALLS = 0x0000080	// prevent fields from being formed over blocking objects.
 };
 
 enum COMBATFLAGS_TYPE
@@ -100,14 +100,14 @@ enum COMBATFLAGS_TYPE
 	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
 	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
-	COMBAT_STACKARMOR		= 0x0001000,	// If a region is covered by more than one armor part, all AR will count
-	COMBAT_TARGETTEDHIT		= 0x0002000,	// Allows setting of preferred hit area by TAG.HITPREFERENCE
+	COMBAT_STACKARMOR		= 0x0001000,		// If a region is covered by more than one armor part, all AR will count
+	COMBAT_TARGETTEDHIT		= 0x0002000			// Allows setting of preferred hit area by TAG.HITPREFERENCE
 };
 
 enum TOOLTIPMODE_TYPE
 {
 	TOOLTIPMODE_SENDFULL	= 0x00,	// always send full tooltip packet
-	TOOLTIPMODE_SENDVERSION	= 0x01,	// send version packet and wait for client to request full tooltip
+	TOOLTIPMODE_SENDVERSION	= 0x01	// send version packet and wait for client to request full tooltip
 };
 
 enum BODYPART_TYPE
@@ -135,7 +135,7 @@ enum BODYPART_TYPE
 	BODYPART_PSEUDOPOD,	// Slime
 	BODYPART_ABDOMEN,		// Spider or insect. asusme throax and chest are the same.
 
-	BODYPART_QTY,
+	BODYPART_QTY
 };
 
 #define DAMAGE_GOD			0x0001	// Nothing can block this.
@@ -302,14 +302,14 @@ enum WEBPAGE_TYPE
 	WEBPAGE_BMP,
 	WEBPAGE_GIF,
 	WEBPAGE_JPG,
-	WEBPAGE_QTY,
+	WEBPAGE_QTY
 };
 
 enum WTRIG_TYPE
 {
 	// XTRIG_UNKNOWN	= some named trigger not on this list.
 	WTRIG_Load=1,
-	WTRIG_QTY,
+	WTRIG_QTY
 };
 
 class CWebPageDef : public CResourceLink
@@ -379,7 +379,7 @@ enum SPTRIG_TYPE
 	SPTRIG_START,
 	SPTRIG_SUCCESS,
 	SPTRIG_TARGETCANCEL,
-	SPTRIG_QTY,
+	SPTRIG_QTY
 };
 
 class CSpellDef : public CResourceLink	// 1 based spells. See SPELL_*
@@ -511,7 +511,7 @@ enum STAT_TYPE	// Character stats
 	// Notoriety.
 	STAT_KARMA = 4,		// g_Cfg.m_iMinKarma to g_Cfg.m_iMaxKarma - also used as the food consumption main timer.
 	STAT_FAME,			// 0 to g_Cfg.m_iMaxFame
-	STAT_QTY,
+	STAT_QTY
 };
 
 class CSkillClassDef : public CResourceLink // For skill def table
@@ -568,7 +568,7 @@ enum SKTRIG_TYPE
 	SKTRIG_TARGETCANCEL,// called when a target cursor is cancelled
 	SKTRIG_USEQUICK,	// called when a 'quick' usage of the skill is made
 	SKTRIG_WAIT,		// called when a test is made to see if the character must wait before starting
-	SKTRIG_QTY,
+	SKTRIG_QTY
 };
 
 

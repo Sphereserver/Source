@@ -50,7 +50,7 @@ enum PT_TYPE
 	PT_X,
 	PT_Y,
 	PT_Z,
-	PT_QTY,
+	PT_QTY
 };
 
 
@@ -67,7 +67,7 @@ LPCTSTR const CPointBase::sm_szLoadKeys[PT_QTY+1] =
 	"X",
 	"Y",
 	"Z",
-	NULL,
+	NULL
 };
 
 void CPointBase::InitPoint()

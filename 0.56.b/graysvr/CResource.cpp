@@ -555,7 +555,7 @@ enum RC_TYPE
 	RC_WORLDSAVE,
 	RC_WRAPX,
 	RC_ZEROPOINT,				// m_sZeroPoint
-	RC_QTY,
+	RC_QTY
 };
 
 const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =

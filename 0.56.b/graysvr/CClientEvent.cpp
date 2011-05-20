@@ -1033,7 +1033,7 @@ void CClient::Event_VendorBuy_Cheater( int iCode )
 		"Vendor is off-duty",
 		"Bad item UID",
 		"Requested items out of stock",
-		"Total cost is too great",
+		"Total cost is too great"
 	};
 
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(),
@@ -1254,7 +1254,7 @@ void CClient::Event_VendorSell_Cheater( int iCode )
 		"Other",
 		"Bad vendor UID",
 		"Vendor is off-duty",
-		"Bad item UID",
+		"Bad item UID"
 	};
 
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal sell packet (%s)\n", GetSocketID(),
@@ -1653,7 +1653,7 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_1 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_2 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_4 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_4 )
 	};
 
 	if ( ! strnicmp( szText, "I must consider my sins", 23 ))

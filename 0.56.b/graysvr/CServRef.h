@@ -13,7 +13,7 @@ enum SERV_STAT_TYPE
 	SERV_STAT_ITEMS,
 	SERV_STAT_ACCOUNTS,
 	SERV_STAT_QTY,
-	SERV_STAT_MEM = SERV_STAT_QTY,	// virtual
+	SERV_STAT_MEM = SERV_STAT_QTY	// virtual
 };
 
 enum ACCAPP_TYPE	// types of new account applications.
@@ -27,7 +27,7 @@ enum ACCAPP_TYPE	// types of new account applications.
 	ACCAPP_Unspecified,	// Not specified.
 	ACCAPP_Unused7,
 	ACCAPP_Unused8,
-	ACCAPP_QTY,
+	ACCAPP_QTY
 };
 
 class CServerDef : public CScriptObj

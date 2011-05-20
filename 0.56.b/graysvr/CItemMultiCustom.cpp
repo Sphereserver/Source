@@ -1081,7 +1081,7 @@ enum
 	IMCV_RESET,
 	IMCV_RESYNC,
 	IMCV_REVERT,
-	IMCV_QTY,
+	IMCV_QTY
 };
 
 LPCTSTR const CItemMultiCustom::sm_szVerbKeys[IMCV_QTY+1] =
@@ -1096,7 +1096,7 @@ LPCTSTR const CItemMultiCustom::sm_szVerbKeys[IMCV_QTY+1] =
 	"RESET",
 	"RESYNC",
 	"REVERT",
-	NULL,
+	NULL
 };
 
 bool CItemMultiCustom::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -1265,7 +1265,7 @@ enum IMCC_TYPE
 	IMCC_EDITAREA,
 	IMCC_FIXTURES,
 	IMCC_REVISION,
-	IMCC_QTY,
+	IMCC_QTY
 };
 
 LPCTSTR const CItemMultiCustom::sm_szLoadKeys[IMCC_QTY+1] = // static
@@ -1276,7 +1276,7 @@ LPCTSTR const CItemMultiCustom::sm_szLoadKeys[IMCC_QTY+1] = // static
 	"EDITAREA",
 	"FIXTURES",
 	"REVISION",
-	NULL,
+	NULL
 };
 
 bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )

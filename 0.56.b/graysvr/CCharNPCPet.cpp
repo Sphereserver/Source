@@ -55,7 +55,7 @@ enum PC_TYPE
 	PC_STOCK,
 	PC_STOP,
 	PC_TRANSFER,
-	PC_QTY,
+	PC_QTY
 };
 
 bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
@@ -94,7 +94,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 		"STAY",
 		"STOCK",
 		"STOP",
-		"TRANSFER",
+		"TRANSFER"
 	};
 
 	// Kill me?

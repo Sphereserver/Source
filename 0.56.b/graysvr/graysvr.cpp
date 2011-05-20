@@ -364,7 +364,7 @@ LPCTSTR GetTimeMinDesc( int minutes )
 		"nine",
 		"ten",
 		"eleven",
-		"noon",
+		"noon"
 	};
 */
 	LPCTSTR sm_ClockHour[] =
@@ -587,7 +587,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("cmdline argc=%d starting with %p (argv1='%s')\n", argc, argv, ( argc > 2 ) ? argv[1] : "");
+	g_Log.EventDebug("cmdline argc=%d starting with %p (argv1='%s')\n", argc, static_cast<void *>(argv), ( argc > 2 ) ? argv[1] : "");
 	EXC_DEBUG_END;
 	return -10;
 }

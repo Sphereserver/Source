@@ -174,7 +174,7 @@ enum GPV_TYPE
 	GPV_U,
 	GPV_UNDO,
 	GPV_WIPE,
-	GPV_QTY,
+	GPV_QTY
 };
 
 static LPCTSTR const sm_pszGMPageVerbs[GPV_QTY] =
@@ -192,7 +192,7 @@ static LPCTSTR const sm_pszGMPageVerbs[GPV_QTY] =
 	"ORIGIN",
 	"U",
 	"UNDO",
-	"WIPE",
+	"WIPE"
 };
 
 void CClient::Cmd_GM_PageCmd( LPCTSTR pszCmd )

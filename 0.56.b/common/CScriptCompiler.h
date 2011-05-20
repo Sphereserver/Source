@@ -57,7 +57,7 @@ public:
 		//...space up to 30 other operators. we need to standartize this buffer for
 		// at least some backwards binary compatibility. Do we really need this?
 		OP_QTY,
-		OP_COMMANDLINE = 30,	// this is a command line like [DEFNAME xxx] ID=0124
+		OP_COMMANDLINE = 30		// this is a command line like [DEFNAME xxx] ID=0124
 	};
 
 	struct TBinaryHeadRec	// head of the binary script

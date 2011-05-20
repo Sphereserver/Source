@@ -276,7 +276,7 @@ enum VACS_TYPE
 	VACS_JAILED,
 	VACS_UNUSED,
 	VACS_UPDATE,
-	VACS_QTY,
+	VACS_QTY
 };
 
 LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs.
@@ -400,7 +400,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 		"/ACCOUNT name JAIL 0/1\n",
 		"/ACCOUNT name DELETE = delete all chars and the account\n",
 		"/ACCOUNT name PLEVEL x = set account priv level\n",
-		"/ACCOUNT name EXPORT filename\n",
+		"/ACCOUNT name EXPORT filename\n"
 	};
 
 	switch (index)
@@ -506,7 +506,7 @@ static LPCTSTR const sm_szPrivLevels[ PLEVEL_QTY+1 ] =
 	"Dev",			// 5 = Not bothererd by GM's
 	"Admin",		// 6 = Can switch in and out of gm mode. assign GM's
 	"Owner",		// 7 = Highest allowed level.
-	NULL,
+	NULL
 };
 
 PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
@@ -1005,7 +1005,7 @@ enum AC_TYPE
 	AC_TAG0,
 	AC_TAGCOUNT,
 	AC_TOTALCONNECTTIME,
-	AC_QTY,
+	AC_QTY
 };
 
 LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY+1] = // static
@@ -1400,7 +1400,7 @@ enum AV_TYPE
 	AV_BLOCK,
 	AV_DELETE,
 	AV_KICK,
-	AV_TAGLIST,
+	AV_TAGLIST
 };
 
 LPCTSTR const CAccount::sm_szVerbKeys[] =

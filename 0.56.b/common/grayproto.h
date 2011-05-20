@@ -304,7 +304,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MapDisplayNew	= 0xf5,
 	XCMD_MoveShip		= 0xf6,
 
-	XCMD_QTY		= 0xf7,
+	XCMD_QTY		= 0xf7
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -321,7 +321,7 @@ enum PARTYMSG_TYPE
 	PARTYMSG_NotoInvited = 7,	// (to client) I've been invited to join another party.
 	PARTYMSG_Accept = 8,	// (from client) first
 	PARTYMSG_Decline,
-	PARTYMSG_QTY,
+	PARTYMSG_QTY
 };
 
 enum EXTDATA_TYPE
@@ -377,7 +377,7 @@ enum EXTDATA_TYPE
 	//
 	//
 	EXTDATA_GargoyleFly		= 0x32, // client message
-	EXTDATA_QTY,
+	EXTDATA_QTY
 };
 
 enum EXTAOS_TYPE
@@ -433,7 +433,7 @@ enum EXTAOS_TYPE
 	//
 	EXTAOS_QuestButton = 0x32,	// Quest Button
 
-	EXTAOS_QTY,
+	EXTAOS_QTY
 };
 
 #define MAX_TALK_BUFFER		1024	// how many chars can anyone speak all at once?
@@ -807,7 +807,7 @@ enum SECURE_TRADE_TYPE
 	// SecureTrade Action types.
 	SECURE_TRADE_OPEN = 0,
 	SECURE_TRADE_CLOSE = 1,
-	SECURE_TRADE_CHANGE = 2,
+	SECURE_TRADE_CHANGE = 2
 };
 
 enum SEASON_TYPE
@@ -819,7 +819,7 @@ enum SEASON_TYPE
 	SEASON_Winter,		// 3
 	SEASON_Desolate,	// 4 = (Felucca) undead
 	SEASON_Nice,		// 5 = (Trammal) summer ?
-	SEASON_QTY,
+	SEASON_QTY
 };
 
 enum BBOARDF_TYPE	// Bulletin Board Flags. m_flag
@@ -830,7 +830,7 @@ enum BBOARDF_TYPE	// Bulletin Board Flags. m_flag
 	BBOARDF_REQ_FULL,	// 3=request for full msg.
 	BBOARDF_REQ_HEAD,	// 4=request for just head.
 	BBOARDF_NEW_MSG,	// 5=new message, 
-	BBOARDF_DELETE,		// 6=Delete
+	BBOARDF_DELETE		// 6=Delete
 };
 
 enum EXTCMD_TYPE
@@ -843,7 +843,7 @@ enum EXTCMD_TYPE
 	EXTCMD_CAST_BOOK		= 39,	// cast spell from book. "spell number"
 	EXTCMD_DOOR_AUTO		= 88,	// open door macro = Attempt to open a door around us.
 	EXTCMD_UNKGODCMD		= 107,  // Unknow god command
-	EXTCMD_INVOKE_VIRTUE	= 244,	// invoke virtue
+	EXTCMD_INVOKE_VIRTUE	= 244	// invoke virtue
 };
 
 enum CHATMSG_TYPE	// Chat system messages.
@@ -901,14 +901,14 @@ enum CHATMSG_TYPE	// Chat system messages.
 	CHATMSG_RemoveMember =		0x03ef,	// Message to remove a player from clients channel member list
 	CHATMSG_ClearMemberList =	0x03f0,	// This message clears the list of channel participants (for when leaving a channel)
 	CHATMSG_UpdateChannelBar =	0x03f1,	// This message changes the name in the channel name bar
-	CHATMSG_QTY,						// Error (but does 0x03f1 anyways)
+	CHATMSG_QTY							// Error (but does 0x03f1 anyways)
 };
 
 enum INPVAL_STYLE	// for the various styles for InpVal box.
 {
-	INPVAL_STYLE_NOEDIT	= 0,		// No textbox, just a message
-	INPVAL_STYLE_TEXTEDIT	= 1,		// Alphanumeric
-	INPVAL_STYLE_NUMEDIT	= 2,		// Numeric
+	INPVAL_STYLE_NOEDIT		= 0,	// No textbox, just a message
+	INPVAL_STYLE_TEXTEDIT	= 1,	// Alphanumeric
+	INPVAL_STYLE_NUMEDIT	= 2		// Numeric
 };
 
 enum MAPCMD_TYPE
@@ -921,7 +921,7 @@ enum MAPCMD_TYPE
 	MAP_UNSENT = 5,
 	MAP_CLEAR = 5,
 	MAP_TOGGLE = 6,
-	MAP_SENT = 7,
+	MAP_SENT = 7
 };
 
 enum WEATHER_TYPE
@@ -931,34 +931,34 @@ enum WEATHER_TYPE
 	WEATHER_RAIN = 0,
 	WEATHER_STORM,
 	WEATHER_SNOW,
-	WEATHER_CLOUDY,	// not client supported ? (Storm brewing)
+	WEATHER_CLOUDY	// not client supported ? (Storm brewing)
 };
 
 enum SCROLL_TYPE	// Client messages for scrolls types.
 {
 	SCROLL_TYPE_TIPS = 0,	// type = 0 = TIPS
 	SCROLL_TYPE_NOTICE = 1,
-	SCROLL_TYPE_UPDATES = 2,// type = 2 = UPDATES
+	SCROLL_TYPE_UPDATES = 2	// type = 2 = UPDATES
 };
 
 enum EFFECT_TYPE
 {
 	EFFECT_BOLT = 0,	// a targetted bolt
 	EFFECT_LIGHTNING,	// lightning bolt.
-	EFFECT_XYZ,	// Stay at current xyz ??? not sure about this.
-	EFFECT_OBJ,	// effect at single Object.
+	EFFECT_XYZ,			// Stay at current xyz ??? not sure about this.
+	EFFECT_OBJ			// effect at single Object.
 };
 
 enum NOTO_TYPE
 {
 	NOTO_INVALID = 0,	// 0= not a valid color!!
-	NOTO_GOOD,		// 1= good(blue),
-	NOTO_GUILD_SAME,// 2= same guild,
-	NOTO_NEUTRAL,	// 3= Neutral,
-	NOTO_CRIMINAL,	// 4= criminal
-	NOTO_GUILD_WAR,	// 5= Waring guilds,
-	NOTO_EVIL,		// 6= evil(red),
-	NOTO_INVUL,		// 7= invulnerable
+	NOTO_GOOD,			// 1= good(blue),
+	NOTO_GUILD_SAME,	// 2= same guild,
+	NOTO_NEUTRAL,		// 3= Neutral,
+	NOTO_CRIMINAL,		// 4= criminal
+	NOTO_GUILD_WAR,		// 5= Waring guilds,
+	NOTO_EVIL,			// 6= evil(red),
+	NOTO_INVUL			// 7= invulnerable
 };
 
 // client versions (expansions)
@@ -1016,21 +1016,21 @@ enum TALKMODE_TYPE	// Modes we can talk/bark in.
 	TALKMODE_SPELL,			// 10 = used by spells
 	TALKMODE_GUILD = 0xd,	// 13 = guild speech
 	TALKMODE_ALLIANCE,		// 14 = alliance speech
-	TALKMODE_BROADCAST = 0xFF,
+	TALKMODE_BROADCAST = 0xFF
 };
 
 enum SKILLLOCK_TYPE
 {
 	SKILLLOCK_UP = 0,
 	SKILLLOCK_DOWN,
-	SKILLLOCK_LOCK,
+	SKILLLOCK_LOCK
 };
 
 enum DEATH_MODE_TYPE	// DeathMenu
 {
 	DEATH_MODE_MANIFEST = 0,
 	DEATH_MODE_RES_IMMEDIATE,
-	DEATH_MODE_PLAY_GHOST,
+	DEATH_MODE_PLAY_GHOST
 };
 
 enum DELETE_ERR_TYPE
@@ -1039,7 +1039,7 @@ enum DELETE_ERR_TYPE
 	DELETE_ERR_NOT_EXIST,	// 1 That character does not exist.
 	DELETE_ERR_IN_USE,	// 2 That character is being played right now.
 	DELETE_ERR_NOT_OLD_ENOUGH, // 3 That character is not old enough to delete. The character must be 7 days old before it can be deleted.
-	DELETE_SUCCESS = 255,
+	DELETE_SUCCESS = 255
 };
 /*
 enum LOGIN_ERR_TYPE	// error codes sent to client.
@@ -1069,7 +1069,7 @@ enum LOGIN_ERR_TYPE	// error codes sent to client.
 	LOGIN_ERR_MAXPASSTRIES,		// max password tries reached
 
 	// this 'error' code indicates there was no error
-	LOGIN_SUCCESS	= 255,
+	LOGIN_SUCCESS	= 255
 };
 */
 enum BUGREPORT_TYPE	// bug report codes
@@ -1088,7 +1088,7 @@ enum BUGREPORT_TYPE	// bug report codes
 	BUGREPORT_HOUSING		= 0x0C,
 	BUGREPORT_LOST_ITEM		= 0x0D,
 	BUGREPORT_EXPLOIT		= 0x0E,
-	BUGREPORT_OTHER			= 0x0F,
+	BUGREPORT_OTHER			= 0x0F
 };
 
 enum PROFESSION_TYPE	// profession ids
@@ -1100,7 +1100,7 @@ enum PROFESSION_TYPE	// profession ids
 	PROFESSION_NECROMANCER	= 0x04,
 	PROFESSION_PALADIN		= 0x05,
 	PROFESSION_SAMURAI		= 0x06,
-	PROFESSION_NINJA		= 0x07,
+	PROFESSION_NINJA		= 0x07
 };
 
 enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, other values are for convenience

@@ -109,7 +109,7 @@ enum LOGL_TYPE
 	// subject matter. (severity level is first 4 bits, LOGL_EVENT)
 	LOGM_INIT = 0x00100,		// start up messages.
 	LOGM_NOCONTEXT = 0x20000,	// do not include context information
-	LOGM_DEBUG = 0x40000,		// debug kind of message with DEBUG: prefix
+	LOGM_DEBUG = 0x40000		// debug kind of message with DEBUG: prefix
 };
 
 extern class CEventLog

@@ -104,7 +104,7 @@ enum MATCH_TYPE			// match result defines
 	MATCH_ABORT,		// premature end of text string
 	MATCH_RANGE,		// match failure on [..] construct
 	MATCH_LITERAL,		// match failure on literal match
-	MATCH_PATTERN,		// bad pattern
+	MATCH_PATTERN		// bad pattern
 };
 extern MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText );
 

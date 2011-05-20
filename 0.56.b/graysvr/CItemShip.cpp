@@ -241,7 +241,7 @@ static const DIR_TYPE sm_Ship_FaceDir[] =
 	DIR_N,
 	DIR_E,
 	DIR_S,
-	DIR_W,
+	DIR_W
 };
 
 bool CItemShip::Ship_Face( DIR_TYPE dir )
@@ -614,7 +614,7 @@ enum
 	SHV_SHIPTURNLEFT,
 	SHV_SHIPTURNRIGHT,
 	SHV_SHIPUP,
-	SHV_QTY,
+	SHV_QTY
 };
 
 LPCTSTR const CItemShip::sm_szVerbKeys[SHV_QTY+1] =
@@ -639,7 +639,7 @@ LPCTSTR const CItemShip::sm_szVerbKeys[SHV_QTY+1] =
 	"SHIPTURNLEFT",
 	"SHIPTURNRIGHT",
 	"SHIPUP",		// up one space.
-	NULL,
+	NULL
 };
 
 bool CItemShip::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -990,7 +990,7 @@ enum IMCS_TYPE
 	IMCS_PLANKS,
 	IMCS_SHIPSPEED,
 	IMCS_TILLER,
-	IMCS_QTY,
+	IMCS_QTY
 };
 
 LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY+1] = // static
@@ -999,7 +999,7 @@ LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY+1] = // static
 	"PLANKS",
 	"SHIPSPEED",
 	"TILLER",
-	NULL,
+	NULL
 };
 
 bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )

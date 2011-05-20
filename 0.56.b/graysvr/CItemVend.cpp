@@ -38,14 +38,14 @@ enum IVC_TYPE
 {
 	IVC_PRICE,
 	IVC_QUALITY,
-	IVC_QTY,
+	IVC_QTY
 };
 
 LPCTSTR const CItemVendable::sm_szLoadKeys[IVC_QTY+1] =
 {
 	"PRICE",
 	"QUALITY",
-	NULL,
+	NULL
 };
 
 bool CItemVendable::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)

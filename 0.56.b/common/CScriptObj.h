@@ -21,7 +21,7 @@
 		TRIGRUN_SECTION_FALSE,	// Just ignore this whole section.
 		TRIGRUN_SINGLE_EXEC,	// Execute just this line or blocked segment. (first line already read!)
 		TRIGRUN_SINGLE_TRUE,	// Execute just this line or blocked segment.
-		TRIGRUN_SINGLE_FALSE,	// ignore just this line or blocked segment.
+		TRIGRUN_SINGLE_FALSE	// ignore just this line or blocked segment.
 	};
 
 	enum TRIGRET_TYPE	// trigger script returns.
@@ -33,7 +33,7 @@
 		TRIGRET_ELSE,
 		TRIGRET_ELSEIF,
 		TRIGRET_RET_HALFBAKED,
-		TRIGRET_QTY,
+		TRIGRET_QTY
 	};
 
 	enum PLEVEL_TYPE		// Priv levels.
@@ -46,7 +46,7 @@
 		PLEVEL_Dev,				// 5 = Not bothererd by GM's
 		PLEVEL_Admin,			// 6 = Can switch in and out of gm mode. assign GM's
 		PLEVEL_Owner,			// 7 = Highest allowed level.
-		PLEVEL_QTY,
+		PLEVEL_QTY
 	};
 
 	class CTextConsole

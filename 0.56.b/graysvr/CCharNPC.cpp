@@ -13,7 +13,7 @@ enum CNC_TYPE
 	#define ADD(a,b) CNC_##a,
 	#include "../tables/CCharNpc_props.tbl"
 	#undef ADD
-	CNC_QTY,
+	CNC_QTY
 };
 
 LPCTSTR const CCharNPC::sm_szLoadKeys[CNC_QTY+1] =
@@ -21,7 +21,7 @@ LPCTSTR const CCharNPC::sm_szLoadKeys[CNC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CCharNpc_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 void CChar::ClearNPC()
@@ -146,7 +146,7 @@ enum CPC_TYPE	// Player char.
 	#define ADD(a,b) CPC_##a,
 	#include "../tables/CCharPlayer_props.tbl"
 	#undef ADD
-	CPC_QTY,
+	CPC_QTY
 };
 
 LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
@@ -154,7 +154,7 @@ LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CCharPlayer_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
@@ -656,7 +656,7 @@ enum CPV_TYPE	// Player char.
 	#define ADD(a,b) CPV_##a,
 	#include "../tables/CCharPlayer_functions.tbl"
 	#undef ADD
-	CPV_QTY,
+	CPV_QTY
 };
 
 LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
@@ -664,7 +664,7 @@ LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CCharPlayer_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command from script

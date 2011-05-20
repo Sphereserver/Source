@@ -500,7 +500,7 @@ enum OBR_TYPE
 	OBR_SECTOR,
 	OBR_TOPOBJ,
 	OBR_TYPEDEF,
-	OBR_QTY,
+	OBR_QTY
 };
 
 LPCTSTR const CObjBase::sm_szRefKeys[OBR_QTY+1] =
@@ -509,7 +509,7 @@ LPCTSTR const CObjBase::sm_szRefKeys[OBR_QTY+1] =
 	"SECTOR",
 	"TOPOBJ",
 	"TYPEDEF",
-	NULL,
+	NULL
 };
 
 bool CObjBase::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -548,7 +548,7 @@ enum OBC_TYPE
 	#define ADD(a,b) OC_##a,
 	#include "../tables/CObjBase_props.tbl"
 	#undef ADD
-	OC_QTY,
+	OC_QTY
 };
 
 LPCTSTR const CObjBase::sm_szLoadKeys[OC_QTY+1] =
@@ -556,7 +556,7 @@ LPCTSTR const CObjBase::sm_szLoadKeys[OC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CObjBase_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
@@ -1201,7 +1201,7 @@ enum OV_TYPE
 	#define ADD(a,b) OV_##a,
 	#include "../tables/CObjBase_functions.tbl"
 	#undef ADD
-	OV_QTY,
+	OV_QTY
 };
 
 LPCTSTR const CObjBase::sm_szVerbKeys[OV_QTY+1] =
@@ -1209,7 +1209,7 @@ LPCTSTR const CObjBase::sm_szVerbKeys[OV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CObjBase_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script

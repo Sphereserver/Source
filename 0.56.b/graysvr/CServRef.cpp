@@ -201,7 +201,7 @@ enum SC_TYPE
 	SC_URL,			// m_sURL
 	SC_URLLINK,
 	SC_VERSION,
-	SC_QTY,
+	SC_QTY
 };
 
 LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
@@ -228,7 +228,7 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"URL",			// m_sURL
 	"URLLINK",
 	"VERSION",
-	NULL,
+	NULL
 };
 
 static LPCTSTR const sm_AccAppTable[ ACCAPP_QTY ] =
@@ -241,7 +241,7 @@ static LPCTSTR const sm_AccAppTable[ ACCAPP_QTY ] =
 	"Unused",
 	"Unspecified",	// Not specified.
 	"Unused",
-	"Unused",
+	"Unused"
 };
 
 bool CServerDef::r_LoadVal( CScript & s )

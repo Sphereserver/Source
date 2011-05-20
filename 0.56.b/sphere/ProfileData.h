@@ -23,7 +23,7 @@ enum PROFILE_TYPE
 
 	PROFILE_STAT_FAULTS = PROFILE_DATA_QTY,	// exceptions raised
 
-	PROFILE_QTY,
+	PROFILE_QTY
 };
 
 class ProfileData

@@ -16,7 +16,7 @@ enum WV_TYPE
 	WV_GUILDLIST,
 	WV_TOWNLIST,
 	WV_WEBPAGE,
-	WV_QTY,
+	WV_QTY
 };
 
 LPCTSTR const CWebPageDef::sm_szVerbKeys[WV_QTY+1] =
@@ -26,7 +26,7 @@ LPCTSTR const CWebPageDef::sm_szVerbKeys[WV_QTY+1] =
 	"GUILDLIST",	// make a table of the guilds.
 	"TOWNLIST",		// make a table of the towns.
 	"WEBPAGE",		// feed a web page to the source caller
-	NULL,
+	NULL
 };
 
 //********************************************************
@@ -96,7 +96,7 @@ enum WC_TYPE
 	WC_WEBPAGELOG,
 	WC_WEBPAGESRC,
 	WC_WEBPAGEUPDATE,
-	WC_QTY,
+	WC_QTY
 };
 
 LPCTSTR const CWebPageDef::sm_szLoadKeys[WC_QTY+1] =
@@ -106,7 +106,7 @@ LPCTSTR const CWebPageDef::sm_szLoadKeys[WC_QTY+1] =
 	"WEBPAGELOG",			// daily log a copy of this page.
 	"WEBPAGESRC",			// the source name of the web page.
 	"WEBPAGEUPDATE",		// how often to generate a page ? (seconds)
-	NULL,
+	NULL
 };
 
 bool CWebPageDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
@@ -431,7 +431,7 @@ bool CWebPageDef::SetSourceFile( LPCTSTR pszName, CClient * pClient )
 		WEBPAGE_JPG,
 		WEBPAGE_JPG,
 		WEBPAGE_TEXT,
-		WEBPAGE_TEXT,
+		WEBPAGE_TEXT
 	};
 
 	// attempt to set this to a source file.

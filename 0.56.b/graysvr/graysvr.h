@@ -122,7 +122,7 @@ enum RESDISPLAY_VERSION
 	RDS_ML,
 	RDS_KR,
 	RDS_SA,
-	RDS_QTY,
+	RDS_QTY
 };
 
 #include "../common/graycom.h"
@@ -738,7 +738,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting 
 	CLIMODE_TARG_STONE_RECRUITFULL,	// Recruit/make a member and set abbrev show
 	CLIMODE_TARG_PARTY_ADD,
 
-	CLIMODE_TARG_QTY,
+	CLIMODE_TARG_QTY
 };
 
 // Storage for Tooltip data while in trigger on an item
@@ -1453,7 +1453,7 @@ enum SERVMODE_TYPE
 
 	SERVMODE_Loading,		// Initial load.
 	SERVMODE_ResyncLoad,	// Loading after resync
-	SERVMODE_Exiting,		// Closing down
+	SERVMODE_Exiting		// Closing down
 };
 
 extern class CServer : public CServerDef, public CTextConsole

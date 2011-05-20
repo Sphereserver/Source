@@ -643,7 +643,7 @@ enum RTRIG_TYPE
 	RTRIG_EXIT,
 	RTRIG_REGPERIODIC,	// regional periodic. Happens if just 1 or many clients)
 	RTRIG_STEP,
-	RTRIG_QTY,
+	RTRIG_QTY
 };
 
 class CRandGroupDef;

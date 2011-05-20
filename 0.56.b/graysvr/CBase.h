@@ -398,7 +398,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_BARD,	// 193 = Bard spellbook (should have MOREZ=700 by default)
 
 	IT_QTY,
-	IT_TRIGGER = 1000,	// custom triggers starts from here
+	IT_TRIGGER = 1000	// custom triggers starts from here
 };
 
 class CItemBase : public CBaseBaseDef

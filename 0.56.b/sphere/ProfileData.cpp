@@ -158,7 +158,7 @@ LPCTSTR ProfileData::GetName(PROFILE_TYPE id) const
 		"SCRIPTS",
 		"DATA_TX",
 		"DATA_RX",
-		"FAULTS",
+		"FAULTS"
 	};
 
 	return (( id >= 0 ) && ( id < PROFILE_QTY )) ? sm_pszProfileName[id] : "";

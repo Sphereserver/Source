@@ -403,7 +403,7 @@ enum RC_TYPE
 	RC_TYPEREGION,
 	RC_UID,
 	RC_UNDERGROUND,
-	RC_QTY,
+	RC_QTY
 };
 
 LPCTSTR const CRegionBase::sm_szLoadKeys[RC_QTY+1] =	// static (Sorted)
@@ -434,7 +434,7 @@ LPCTSTR const CRegionBase::sm_szLoadKeys[RC_QTY+1] =	// static (Sorted)
 	"TYPE",
 	"UID",
 	"UNDERGROUND",
-	NULL,
+	NULL
 };
 
 bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
@@ -571,7 +571,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }
@@ -790,13 +790,13 @@ bool CRegionBase::CheckAntiMagic( SPELL_TYPE spell ) const
 enum RV_TYPE
 {
 	RV_ALLCLIENTS,
-	RV_QTY,
+	RV_QTY
 };
 
 LPCTSTR const CRegionBase::sm_szVerbKeys[RV_QTY+1] =
 {
 	"ALLCLIENTS",
-	NULL,
+	NULL
 };
 
 //	actualy part of CSector, here we need SEV_QTY to know that the command is part of the sector
@@ -805,7 +805,7 @@ enum SEV_TYPE
 	#define ADD(a,b) SEV_##a,
 	#include "../tables/CSector_functions.tbl"
 	#undef ADD
-	SEV_QTY,
+	SEV_QTY
 };
 
 bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
@@ -845,7 +845,7 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }
@@ -894,7 +894,7 @@ enum RWC_TYPE
 	RWC_TAG0,
 	RWC_TAGAT,
 	RWC_TAGCOUNT,
-	RWC_QTY,
+	RWC_QTY
 };
 
 LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
@@ -908,7 +908,7 @@ LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
 	"TAG0",
 	"TAGAT",
 	"TAGCOUNT",
-	NULL,
+	NULL
 };
 
 bool CRegionWorld::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -1015,7 +1015,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, pSrc);
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1118,13 +1118,13 @@ void CRegionWorld::r_Write( CScript &s )
 enum RWV_TYPE
 {
 	RWV_TAGLIST,
-	RWV_QTY,
+	RWV_QTY
 };
 
 LPCTSTR const CRegionWorld::sm_szVerbKeys[] =
 {
 	"TAGLIST",
-	NULL,
+	NULL
 };
 
 bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
@@ -1153,7 +1153,7 @@ bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }

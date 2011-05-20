@@ -28,7 +28,7 @@ enum NV_TYPE
 	NV_SHRINK,
 	NV_TRAIN,
 	NV_WALK,
-	NV_QTY,
+	NV_QTY
 };
 
 LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY+1] =
@@ -47,7 +47,7 @@ LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY+1] =
 	"SHRINK",
 	"TRAIN",
 	"WALK",
-	NULL,
+	NULL
 };
 
 bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command from script
@@ -744,7 +744,7 @@ bool CChar::NPC_Act_Begging( CChar * pChar )
 		DEFMSG_NPC_BEGGAR_BEG_3,
 		DEFMSG_NPC_BEGGAR_BEG_4,
 		DEFMSG_NPC_BEGGAR_BEG_5,
-		DEFMSG_NPC_BEGGAR_BEG_6,
+		DEFMSG_NPC_BEGGAR_BEG_6
 	};
 
 	UpdateDir( pChar );	// face PC
@@ -774,7 +774,7 @@ void CChar::NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark )
 		DEFMSG_NPC_GENERIC_SNOOPED_1,
 		DEFMSG_NPC_GENERIC_SNOOPED_2,
 		DEFMSG_NPC_GENERIC_SNOOPED_3,
-		DEFMSG_NPC_GENERIC_SNOOPED_4,
+		DEFMSG_NPC_GENERIC_SNOOPED_4
 	};
 
 	if ( pCharMark != this )	// not me so who cares.
@@ -1062,7 +1062,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 		DEFMSG_NPC_GUARD_THREAT_2,
 		DEFMSG_NPC_GUARD_THREAT_3,
 		DEFMSG_NPC_GUARD_THREAT_4,
-		DEFMSG_NPC_GUARD_THREAT_5,
+		DEFMSG_NPC_GUARD_THREAT_5
 	};
 
 	if ( ! pChar->m_pArea->IsGuarded())
@@ -1084,7 +1084,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 		DEFMSG_NPC_GUARD_STRIKE_2,
 		DEFMSG_NPC_GUARD_STRIKE_3,
 		DEFMSG_NPC_GUARD_STRIKE_4,
-		DEFMSG_NPC_GUARD_STRIKE_5,
+		DEFMSG_NPC_GUARD_STRIKE_5
 	};
 
 	if ( GetTopDist3D(pChar) > 1 )
@@ -1199,19 +1199,19 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_1 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_3 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_3 )
 	};
 	static LPCTSTR const sm_szHealerRefuseCriminals[] =
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_1 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_3 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_3 )
 	};
 	static LPCTSTR const sm_szHealerRefuseGoods[] =
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_1 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_3 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_3 )
 	};
 	static LPCTSTR const sm_szHealer[] =
 	{
@@ -1219,7 +1219,7 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_2 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_3 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_4 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_5 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_5 )
 	};
 
 	if ( ! pChar->IsStatFlag( STATF_DEAD ))
@@ -2249,7 +2249,7 @@ bool CChar::NPC_Act_Talk()
 			static LPCTSTR const sm_szText[] =
 			{
 				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_1 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 ),
+				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 )
 			};
 			TCHAR *pszMsg = Str_GetTemp();
 			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], (LPCTSTR) pChar->GetName() );

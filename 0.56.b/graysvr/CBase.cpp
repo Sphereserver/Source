@@ -15,7 +15,7 @@ enum OBC_TYPE
 	#define ADD(a,b) OBC_##a,
 	#include "../tables/CBaseBaseDef_props.tbl"
 	#undef ADD
-	OBC_QTY,
+	OBC_QTY
 };
 
 LPCTSTR const CBaseBaseDef::sm_szLoadKeys[OBC_QTY+1] =
@@ -23,7 +23,7 @@ LPCTSTR const CBaseBaseDef::sm_szLoadKeys[OBC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CBaseBaseDef_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )

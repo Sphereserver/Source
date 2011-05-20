@@ -120,7 +120,7 @@ enum CBC_TYPE
 	#define ADD(a,b) CBC_##a,
 	#include "../tables/CCharBase_props.tbl"
 	#undef ADD
-	CBC_QTY,
+	CBC_QTY
 };
 
 LPCTSTR const CCharBase::sm_szLoadKeys[CBC_QTY+1] =
@@ -128,7 +128,7 @@ LPCTSTR const CCharBase::sm_szLoadKeys[CBC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CCharBase_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )

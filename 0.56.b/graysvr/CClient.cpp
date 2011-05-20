@@ -545,7 +545,7 @@ enum CLIR_TYPE
 	CLIR_TARG,
 	CLIR_TARGPROP,
 	CLIR_TARGPRV,
-	CLIR_QTY,
+	CLIR_QTY
 };
 
 LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY+1] =
@@ -557,7 +557,7 @@ LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY+1] =
 	"TARG",
 	"TARGPROP",
 	"TARGPRV",
-	NULL,
+	NULL
 };
 
 bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )

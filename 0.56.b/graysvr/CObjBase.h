@@ -26,7 +26,7 @@ enum MEMORY_TYPE
 	MEMORY_UNUSED		= 0x1000,	// UNUSED!!!! I am following this Object (never time out)
 	MEMORY_WAR_TARG		= 0x2000,	// This is one of my current war targets.
 	MEMORY_FRIEND		= 0x4000,	// They can command me but not release me. (not primary blame)
-	MEMORY_UNUSED2		= 0x8000,	// UNUSED!!!! Gump record memory (More1 = Context, More2 = Uid)
+	MEMORY_UNUSED2		= 0x8000	// UNUSED!!!! Gump record memory (More1 = Context, More2 = Uid)
 };
 
 enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.
@@ -37,7 +37,7 @@ enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.
 	NPC_MEM_ACT_SPEAK_HIRE,		// I am speaking about being hired. Waiting for money
 	NPC_MEM_ACT_FIRSTSPEAK,		// I attempted (or could have) to speak to player. but have had no response.
 	NPC_MEM_ACT_TAMED,		// I was tamed by this person previously.
-	NPC_MEM_ACT_IGNORE,		// I looted or looked at and discarded this item (ignore it)
+	NPC_MEM_ACT_IGNORE		// I looted or looked at and discarded this item (ignore it)
 };
 
 class PacketSend;
@@ -250,7 +250,7 @@ enum STONEALIGN_TYPE // Types of Guild/Town stones
 {
 	STONEALIGN_STANDARD = 0,
 	STONEALIGN_ORDER,
-	STONEALIGN_CHAOS,
+	STONEALIGN_CHAOS
 };
 
 enum ITRIG_TYPE
@@ -290,7 +290,7 @@ enum ITRIG_TYPE
 	ITRIG_TIMER,		// My timer has expired.
 	ITRIG_ToolTip,
 	ITRIG_UNEQUIP,
-	ITRIG_QTY,
+	ITRIG_QTY
 };
 
 enum ITC_TYPE	// Item Template commands
@@ -302,7 +302,7 @@ enum ITC_TYPE	// Item Template commands
 	ITC_ITEMNEWBIE,
 	ITC_NEWBIESWAP,
 	ITC_SELL,
-	ITC_QTY,
+	ITC_QTY
 };
 
 class CItem : public CObjBase
@@ -1731,7 +1731,7 @@ public:
 	enum
     {
         MAX_PINS = 128,
-		DEFAULT_SIZE = 200,
+		DEFAULT_SIZE = 200
     };
 
 	bool m_fPlotMode;	// should really be per-client based but oh well.
@@ -1798,7 +1798,7 @@ enum STONEPRIV_TYPE // Priv level for this char
 	STONEPRIV_MASTER,
 	STONEPRIV_UNUSED,
 	STONEPRIV_ACCEPTED,	// The candidate has been accepted. But they have not dclicked on the stone yet.
-	STONEPRIV_ENEMY = 100,	// this is an enemy town/guild.
+	STONEPRIV_ENEMY = 100	// this is an enemy town/guild.
 };
 
 class CStoneMember : public CGObListRec, public CScriptObj	// Members for various stones, and links to stones at war with
@@ -1903,7 +1903,7 @@ enum STONEDISP_TYPE	// Hard coded Menus
 	STONEDISP_DECLAREPEACE,
 	STONEDISP_GRANTTITLE,
 	STONEDISP_VIEWBANISHED,
-	STONEDISP_BANISHMEMBER,
+	STONEDISP_BANISHMEMBER
 };
 
 class CItemStone : public CItem, public CGObList
@@ -2009,7 +2009,7 @@ enum CIC_TYPE
 	CIC_BODY,
 	CIC_PAGES,
 	CIC_TITLE,
-	CIC_QTY,
+	CIC_QTY
 };
 
 class CItemMessage : public CItemVendable	// A message for a bboard or book text.
@@ -2093,7 +2093,7 @@ enum NPCBRAIN_TYPE	// General AI type.
 	NPCBRAIN_UNDEAD,	// 12 = disapears in the light.
 	NPCBRAIN_DRAGON,	// 13 = we can breath fire. may be tamable ? hirable ?
 	NPCBRAIN_VENDOR_OFFDUTY,	// 14 = "Sorry i'm not working right now. come back when my shop is open.
-	NPCBRAIN_QTY,
+	NPCBRAIN_QTY
 };
 
 //	number of steps to remember for pathfinding
@@ -2212,7 +2212,7 @@ enum WAR_SWING_TYPE	// m_Act_War_Swing_State
 	WAR_SWING_INVALID = -1,
 	WAR_SWING_EQUIPPING = 0,	// we are recoiling our weapon.
 	WAR_SWING_READY,			// we can swing at any time.
-	WAR_SWING_SWINGING,			// we are swinging our weapon.
+	WAR_SWING_SWINGING			// we are swinging our weapon.
 };
 
 enum CTRIG_TYPE
@@ -2377,7 +2377,7 @@ enum CTRIG_TYPE
 	CTRIG_UserVirtueInvoke,
 	CTRIG_UserWarmode,
 
-	CTRIG_QTY,				// 130
+	CTRIG_QTY				// 130
 };
 
 class CPartyDef;

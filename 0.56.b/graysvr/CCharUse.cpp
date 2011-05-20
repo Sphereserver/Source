@@ -8,7 +8,9 @@
 
 static const WORD sm_Item_Blood[] =
 {
-	0x1cf1, ITEMID_BLOOD1, ITEMID_BLOOD6,
+	0x1cf1,
+	ITEMID_BLOOD1,
+	ITEMID_BLOOD6
 };
 
 bool CChar::Use_MultiLockDown( CItem * pItemTarg )

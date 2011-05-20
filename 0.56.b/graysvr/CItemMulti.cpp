@@ -374,13 +374,13 @@ void CItemMulti::OnHearRegion( LPCTSTR pszCmd, CChar * pSrc )
 enum
 {
 	SHV_MULTICREATE,
-	SHV_QTY,
+	SHV_QTY
 };
 
 LPCTSTR const CItemMulti::sm_szVerbKeys[SHV_QTY+1] =
 {
 	"MULTICREATE",
-	NULL,
+	NULL
 };
 
 bool CItemMulti::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )

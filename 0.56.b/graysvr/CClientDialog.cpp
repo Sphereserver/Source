@@ -49,7 +49,7 @@ enum GUMPCTL_TYPE	// controls we can put in a gump.
 	GUMPCTL_XMFHTMLGUMPCOLOR,	// NEW: x,y,w,h ???
 	GUMPCTL_XMFHTMLTOK,			// new... syntax???
 
-	GUMPCTL_QTY,
+	GUMPCTL_QTY
 };
 
 
@@ -97,7 +97,7 @@ LPCTSTR const CDialogDef::sm_szLoadKeys[GUMPCTL_QTY+1] =
 	"xmfhtmlgumpcolor",
 	"xmfhtmltok",
 
-	NULL,
+	NULL
 };
 
 

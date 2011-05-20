@@ -7,7 +7,6 @@
 
 #ifndef _WIN32
 #include <errno.h>	// errno
-extern int errno;
 #endif
 
 bool CFile::SetFilePath( LPCTSTR pszName )

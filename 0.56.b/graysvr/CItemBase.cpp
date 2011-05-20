@@ -409,7 +409,7 @@ int CItemBase::IsID_Door( ITEMID_TYPE id ) // static
 		ITEMID_DOOR_WOODENGATE_1,
 		ITEMID_DOOR_IRONGATE_2,
 		ITEMID_DOOR_WOODENGATE_2,
-		ITEMID_DOOR_BAR_METAL,
+		ITEMID_DOOR_BAR_METAL
 	};
 
 	if ( id == 0x190e )
@@ -965,7 +965,7 @@ enum IBC_TYPE
 	IBC_TYPE,
 	IBC_VALUE,
 	IBC_WEIGHT,
-	IBC_QTY,
+	IBC_QTY
 };
 
 LPCTSTR const CItemBase::sm_szLoadKeys[IBC_QTY+1] =
@@ -998,7 +998,7 @@ LPCTSTR const CItemBase::sm_szLoadKeys[IBC_QTY+1] =
 	"TYPE",
 	"VALUE",
 	"WEIGHT",
-	NULL,
+	NULL
 };
 
 bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pChar )
@@ -1531,7 +1531,7 @@ enum MLC_TYPE
 	MLC_REGIONFLAGS,
 	MLC_SHIPSPEED,
 	MLC_TSPEECH,
-	MLC_QTY,
+	MLC_QTY
 };
 
 LPCTSTR const CItemBaseMulti::sm_szLoadKeys[] =
@@ -1542,7 +1542,7 @@ LPCTSTR const CItemBaseMulti::sm_szLoadKeys[] =
 	"REGIONFLAGS",
 	"SHIPSPEED",
 	"TSPEECH",
-	NULL,
+	NULL
 };
 
 bool CItemBaseMulti::r_LoadVal( CScript &s )

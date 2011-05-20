@@ -192,12 +192,12 @@ public:
 enum IMPFLAGS_TYPE	// IMPORT and EXPORT flags.
 {
 	IMPFLAGS_NOTHING = 0,
-	IMPFLAGS_ITEMS = 0x01,	// 0x01 = items,
-	IMPFLAGS_CHARS = 0x02,  // 0x02 = characters
-	IMPFLAGS_BOTH  = 0x03,	// 0x03 = both
+	IMPFLAGS_ITEMS = 0x01,		// 0x01 = items,
+	IMPFLAGS_CHARS = 0x02,		// 0x02 = characters
+	IMPFLAGS_BOTH  = 0x03,		// 0x03 = both
 	IMPFLAGS_PLAYERS = 0x04,
-	IMPFLAGS_RELATIVE = 0x10, // 0x10 = distance relative. dx, dy to you
-	IMPFLAGS_ACCOUNT = 0x20,  // 0x20 = recover just this account/char	(and all it is carrying)
+	IMPFLAGS_RELATIVE = 0x10,	// 0x10 = distance relative. dx, dy to you
+	IMPFLAGS_ACCOUNT = 0x20		// 0x20 = recover just this account/char	(and all it is carrying)
 };
 
 #define FREE_UIDS_SIZE	500000	//	the list of free empty slots in the uids list should contain these elements

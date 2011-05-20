@@ -38,23 +38,23 @@ typedef WORD HUE_TYPE;		// Index into the hues.mul table.
 
 enum HUE_CODE
 {
-	HUE_DEFAULT		= 0x0000,
+	HUE_DEFAULT			= 0x0000,
 
 	HUE_BLUE_LOW		= 0x0002,	// lowest dyeable color.
 	HUE_BLUE_NAVY		= 0x0003,
 	HUE_RED_DARK		= 0x0020,
-	HUE_RED			= 0x0022,
-	HUE_ORANGE		= 0x002b,
-	HUE_YELLOW		= 0x0035,
-	HUE_GREEN_LIGHT	= 0x0040,
+	HUE_RED				= 0x0022,
+	HUE_ORANGE			= 0x002b,
+	HUE_YELLOW			= 0x0035,
+	HUE_GREEN_LIGHT		= 0x0040,
 
 	HUE_BLUE_DARK		= 0x0061,
 	HUE_BLUE			= 0x0062,
-	HUE_BLUE_LIGHT	= 0x0063,
+	HUE_BLUE_LIGHT		= 0x0063,
 
 	HUE_GRAY_DARK		= 0x0386,	// gray range.
 	HUE_GRAY			= 0x0387,
-	HUE_GRAY_LIGHT	= 0x0388,
+	HUE_GRAY_LIGHT		= 0x0388,
 
 	HUE_TEXT_DEF		= 0x03b2,	// light gray color.
 	HUE_TEXT_ITEM		= 0x0430,	// light gray (matches '0' speech hue on 2D client)
@@ -73,13 +73,13 @@ enum HUE_CODE
 	HUE_GARGSKIN_LOW	= 0x06DB,	// lowest gargoyle skin color
 	HUE_GARGSKIN_HIGH	= 0x06F3,	// highest
 
-	HUE_MASK_LO		= 0x07FF,	// mask for items. (not really a valid thing to do i know)
+	HUE_MASK_LO			= 0x07FF,	// mask for items. (not really a valid thing to do i know)
 
-	HUE_QTY			= 3000,	// 0x0bb8 Number of valid colors in hue table.
-	HUE_MASK_HI		= 0x0FFF,
+	HUE_QTY				= 3000,	// 0x0bb8 Number of valid colors in hue table.
+	HUE_MASK_HI			= 0x0FFF,
 
-	HUE_TRANSLUCENT	= 0x4000,	// almost invis. may crash if not equipped ?
-	HUE_UNDERWEAR		= 0x8000,	// Only can be used on humans.
+	HUE_TRANSLUCENT		= 0x4000,	// almost invis. may crash if not equipped ?
+	HUE_UNDERWEAR		= 0x8000	// Only can be used on humans.
 };
 
 typedef WORD SOUND_TYPE;	// Sound ID
@@ -98,8 +98,8 @@ enum SOUND_CODE
 	SOUND_HOOF_BRIDGE_2 = 0x124,
 	SOUND_HOOF_DIRT_1	= 0x125,
 	SOUND_HOOF_DIRT_2	= 0x126,
-	SOUND_HOOF_QUIET_1 = 0x129, // quiet
-	SOUND_HOOF_QUIET_2 = 0x12a, // quiet, horse run on grass.
+	SOUND_HOOF_QUIET_1	= 0x129, // quiet
+	SOUND_HOOF_QUIET_2	= 0x12a, // quiet, horse run on grass.
 
 	SOUND_FEET_STONE_1	= 0x12b,	// on stone (default)
 	SOUND_FEET_STONE_2	= 0x12c,
@@ -110,7 +110,7 @@ enum SOUND_CODE
 
 	SOUND_HIT_10		= 0x013e,
 
-	SOUND_GHOST_1	= 382,
+	SOUND_GHOST_1		= 382,
 	SOUND_GHOST_2,
 	SOUND_GHOST_3,
 	SOUND_GHOST_4,
@@ -121,7 +121,7 @@ enum SOUND_CODE
 
 	SOUND_SNIP			= 0x248,
 
-	SOUND_QTY			= 0x300,
+	SOUND_QTY			= 0x300
 };
 
 typedef WORD MIDI_TYPE;	// Music id
@@ -1254,7 +1254,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 
 	// Put named items here.
 	ITEMID_SCRIPT2		= ITEMID_QTY,	// Safe area for server admins.
-	ITEMID_TEMPLATE		= ITEMID_SCRIPT2 + 0x9FFF,	// container item templates are beyond here.
+	ITEMID_TEMPLATE		= ITEMID_SCRIPT2 + 0x9FFF	// container item templates are beyond here.
 };
 
 // Door ID Attribute flags.
@@ -1428,7 +1428,7 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	NPCID_SCRIPT2 = 0x4000,	// Safe area for server specific NPC defintions.
 	NPCID_Qty = 0x8000,		// Spawn types start here.
 
-	SPAWNTYPE_START  = 0x8001,
+	SPAWNTYPE_START  = 0x8001
 };
 
 enum ANIM_TYPE	// not all creatures animate the same for some reason.
@@ -1534,7 +1534,7 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 
 	ANIM_QTY_ANI = 13,
 
-	ANIM_QTY = 0x23,
+	ANIM_QTY = 0x23
 };
 
 enum CRESND_TYPE	// Creature sound offset types.
@@ -1543,7 +1543,7 @@ enum CRESND_TYPE	// Creature sound offset types.
 	CRESND_RAND2,		// "no" response
 	CRESND_HIT,
 	CRESND_GETHIT,
-	CRESND_DIE,
+	CRESND_DIE
 };
 
 enum FONT_TYPE
@@ -1558,7 +1558,7 @@ enum FONT_TYPE
 	FONT_COLOR,		// 7 - Colorful Font (Buggy?) = small Gray (hazy)
 	FONT_RUNE,		// 8 - Rune font (Only use capital letters with this!)
 	FONT_SM_LITE,	// 9 - Small Light Letters = small roman gray font.
-	FONT_QTY,
+	FONT_QTY
 };
 
 enum AFFIX_TYPE
@@ -1582,7 +1582,7 @@ enum DIR_TYPE	// Walking directions. m_dir
 	DIR_NW,
 	DIR_QTY,		// Also means "Center"
 
-	DIR_ANIM_QTY = 5,	// Seems we only need 5 pics for an anim, assume ALL bi-symetrical creatures
+	DIR_ANIM_QTY = 5	// Seems we only need 5 pics for an anim, assume ALL bi-symetrical creatures
 };
 
 enum SKILL_TYPE	// List of skill numbers (things that can be done at a given time)
@@ -1697,7 +1697,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	NPCACT_TRAINING,		// 114 = using a training dummy etc.
 	NPCACT_Napping,			// 115 = just snoozong a little bit, but not sleeping.
 	NPCACT_FOOD,			// 116 = Searching for food
-	NPCACT_QTY,
+	NPCACT_QTY
 };
 
 enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
@@ -1768,7 +1768,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 
 	LAYER_AUCTION,				// Auction layer
 	
-	LAYER_QTY,
+	LAYER_QTY
 };
 
 enum SPELL_TYPE	// List of spell numbers in spell book.
@@ -1901,7 +1901,7 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Beserk,			// May hit all around you.
 
 	// AOS Stuff
-	SPELL_Qty,
+	SPELL_Qty
 };
 
 enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_LIGHT) take.
@@ -1909,7 +1909,7 @@ enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_
 	LIGHT_LARGE = 1,
 	// ... etc
 	// Colored light is in here some place as well.
-	LIGHT_QTY = 56,	// This makes it go black.
+	LIGHT_QTY = 56	// This makes it go black.
 };
 
 enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
@@ -1951,7 +1951,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 
 	GUMP_QTY			= 0xfffe,
 
-	GUMP_OPEN_SPELLBOOK = 0xFFFF,
+	GUMP_OPEN_SPELLBOOK = 0xFFFF
 };
 
 typedef WORD		TERRAIN_TYPE;
@@ -1969,7 +1969,7 @@ enum
 
 	TERRAIN_NULL	= 0x0244,	// impassible interdungeon
 
-	TERRAIN_QTY     = 0x4000,	// Terrain tile qyt
+	TERRAIN_QTY     = 0x4000	// Terrain tile qyt
 };
 
 /////////////////////////////////////////////////////////////////
@@ -2014,7 +2014,7 @@ enum VERFILE_TYPE		// skew list. (verdata.mul)
 	VERFILE_TILEDATA	= 0x1E, // "tiledata.mul" = Data about tiles in ART. name and flags, etc
 	VERFILE_ANIMDATA	= 0x1F, // "animdata.mul" = ? no idea, might be item animation ?.
 	VERFILE_HUES		= 0x20, // ? "hues.mul"
-	VERFILE_QTY,				// NOTE: 021 is used for something ?!
+	VERFILE_QTY					// NOTE: 021 is used for something ?!
 };
 
 enum VERFILE_FORMAT	// mul formats

@@ -1192,7 +1192,7 @@ enum SV_TYPE
 	SV_SHUTDOWN,
 	SV_UNBLOCKIP,
 	SV_VARLIST,
-	SV_QTY,
+	SV_QTY
 };
 
 LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
@@ -1225,7 +1225,7 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"SHUTDOWN",
 	"UNBLOCKIP",
 	"VARLIST",
-	NULL,
+	NULL
 };
 
 bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )

@@ -100,7 +100,7 @@ enum SC_SECTIONS0_TYPE
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTION0
 	#define	SECTION0(a,b)
-	SC_SECTION0_QTY,
+	SC_SECTION0_QTY
 };
 
 LPCTSTR const CScriptCompiler::sm_szSections0[SC_SECTION0_QTY+1] =
@@ -111,7 +111,7 @@ LPCTSTR const CScriptCompiler::sm_szSections0[SC_SECTION0_QTY+1] =
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTION0
 	#define	SECTION0(a,b)
-	NULL,
+	NULL
 };
 
 //	sm_szSectionsArgsOnly
@@ -124,7 +124,7 @@ enum SC_SECTIONSA_TYPE
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONA
 	#define	SECTIONA(a,b)
-	SC_SECTIONA_QTY,
+	SC_SECTIONA_QTY
 };
 
 LPCTSTR const CScriptCompiler::sm_szSectionsArgsOnly[SC_SECTIONA_QTY+1] =
@@ -135,7 +135,7 @@ LPCTSTR const CScriptCompiler::sm_szSectionsArgsOnly[SC_SECTIONA_QTY+1] =
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONA
 	#define	SECTIONA(a,b)
-	NULL,
+	NULL
 };
 
 //	sm_szSectionsNormal
@@ -148,7 +148,7 @@ enum SC_SECTIONSN_TYPE
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONN
 	#define	SECTIONN(a,b)
-	SC_SECTIONN_QTY,
+	SC_SECTIONN_QTY
 };
 
 LPCTSTR const CScriptCompiler::sm_szSectionsNormal[SC_SECTIONN_QTY+1] =
@@ -159,7 +159,7 @@ LPCTSTR const CScriptCompiler::sm_szSectionsNormal[SC_SECTIONN_QTY+1] =
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONN
 	#define	SECTIONN(a,b)
-	NULL,
+	NULL
 };
 
 //	sm_szSectionsNormalArgs
@@ -172,7 +172,7 @@ enum SC_SECTIONSNA_TYPE
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONNA
 	#define	SECTIONNA(a,b)
-	SC_SECTIONNA_QTY,
+	SC_SECTIONNA_QTY
 };
 
 LPCTSTR const CScriptCompiler::sm_szSectionsNormalArgs[SC_SECTIONNA_QTY+1] =
@@ -183,7 +183,7 @@ LPCTSTR const CScriptCompiler::sm_szSectionsNormalArgs[SC_SECTIONNA_QTY+1] =
 	#include "../tables/CScriptCompiler.tbl"
 	#undef SECTIONNA
 	#define	SECTIONNA(a,b)
-	NULL,
+	NULL
 };
 
 

@@ -643,7 +643,7 @@ enum PDV_TYPE
 	#define ADD(a,b) PDV_##a,
 	#include "../tables/CQuest_functions.tbl"
 	#undef ADD
-	PDV_QTY,
+	PDV_QTY
 };
 
 LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
@@ -651,7 +651,7 @@ LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CQuest_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 enum PDC_TYPE
@@ -659,7 +659,7 @@ enum PDC_TYPE
 	#define ADD(a,b) PDC_##a,
 	#include "../tables/CQuest_props.tbl"
 	#undef ADD
-	PDC_QTY,
+	PDC_QTY
 };
 
 LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
@@ -667,7 +667,7 @@ LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CQuest_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CPartyDef::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef ) 

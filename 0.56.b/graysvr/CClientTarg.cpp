@@ -890,7 +890,7 @@ int CClient::OnSkill_EvalInt( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_INT_7 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_INT_8 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_INT_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_INT_10 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_INT_10 )
 	};
 
 	int iIntVal = pChar->Stat_GetAdjusted(STAT_INT);
@@ -909,7 +909,7 @@ int CClient::OnSkill_EvalInt( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAG_3 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAG_4 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAG_5 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAG_6 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAG_6 )
 	};
 
 	static LPCTSTR const sm_szManaDesc[] =
@@ -919,7 +919,7 @@ int CClient::OnSkill_EvalInt( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAN_3 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAN_4 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAN_5 ),	// 100 %
-		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAN_6 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_MAN_6 )
 	};
 
 	if ( iSkillLevel > 400 )	// magery skill and mana level ?
@@ -959,7 +959,7 @@ static LPCTSTR const sm_szPoisonMessages[] =
 	g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_PSN_7 ),
 	g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_PSN_8 ),
 	g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_PSN_9 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_PSN_10 ),
+	g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_PSN_10 )
 };
 
 int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
@@ -985,7 +985,7 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_7 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_8 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_10 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_10 )
 	};
 	
 	static LPCTSTR const sm_szDefenseMessages[] =
@@ -999,7 +999,7 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_7 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_8 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_10 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_10 )
 	};
 	*/
 
@@ -1114,7 +1114,7 @@ int CClient::OnSkill_Anatomy( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_STR_7 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_STR_8 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_STR_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_STR_10 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_STR_10 )
 	};
 	static LPCTSTR const sm_szDexEval[] =
 	{
@@ -1127,7 +1127,7 @@ int CClient::OnSkill_Anatomy( CGrayUID uid, int iSkillLevel, bool fTest )
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_DEX_7 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_DEX_8 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_DEX_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_DEX_10 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_DEX_10 )
 	};
 
 	int iStrVal = pChar->Stat_GetAdjusted(STAT_STR);
@@ -2285,7 +2285,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_2 ),
 	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_3 ),
 	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_4 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_5 ),
+	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_5 )
 };
 
 		// pItemTarg->SetAnim( (ITEMID_TYPE)( pItemTarg->GetID() + 1 ), 2*TICK_PER_SEC );

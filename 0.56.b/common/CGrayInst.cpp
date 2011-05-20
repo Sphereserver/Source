@@ -18,12 +18,12 @@ bool CGrayInstall::FindInstall()
 		"Software\\Origin Worlds Online\\Ultima Online\\1.0", 
 		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta", 
 		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0", 
-		"Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
+		"Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic"
 	};
 	
 	HKEY hKey = NULL;
-	LONG lRet = 0;
-	for ( int i=0; i<COUNTOF(m_szKeys); i++ )
+	LSTATUS lRet = 0;
+	for ( size_t i = 0; i < COUNTOF(m_szKeys); i++ )
 	{
 		lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
 			m_szKeys[i], // address of name of subkey to query
@@ -150,7 +150,7 @@ LPCTSTR CGrayInstall::GetBaseFileName( VERFILE_TYPE i ) // static
 		NULL,
 		"tiledata.mul", // Data about tiles in ART. name and flags, etc
 		"animdata.mul", //
-		"hues.mul",		// the 16 bit color pallete we use for everything.
+		"hues.mul"		// the 16 bit color pallete we use for everything.
 	};
 
 	return ( i<0 || i>=VERFILE_QTY ) ? NULL : sm_szFileNames[i];

@@ -1237,7 +1237,7 @@ enum CHR_TYPE
 	CHR_REGION,
 	CHR_SPAWNITEM,
 	CHR_WEAPON,
-	CHR_QTY,
+	CHR_QTY
 };
 
 LPCTSTR const CChar::sm_szRefKeys[CHR_QTY+1] =
@@ -1251,7 +1251,7 @@ LPCTSTR const CChar::sm_szRefKeys[CHR_QTY+1] =
 	"REGION",
 	"SPAWNITEM",
 	"WEAPON",
-	NULL,
+	NULL
 };
 
 bool CChar::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -1319,7 +1319,7 @@ enum CHC_TYPE
 	#define ADD(a,b) CHC_##a,
 	#include "../tables/CChar_props.tbl"
 	#undef ADD
-	CHC_QTY,
+	CHC_QTY
 };
 
 LPCTSTR const CChar::sm_szLoadKeys[CHC_QTY+1] =
@@ -1327,7 +1327,7 @@ LPCTSTR const CChar::sm_szLoadKeys[CHC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CChar_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CChar::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
@@ -2550,7 +2550,7 @@ enum CHV_TYPE
 	#define ADD(a,b) CHV_##a,
 	#include "../tables/CChar_functions.tbl"
 	#undef ADD
-	CHV_QTY,
+	CHV_QTY
 };
 
 LPCTSTR const CChar::sm_szVerbKeys[CHV_QTY+1] =
@@ -2558,7 +2558,7 @@ LPCTSTR const CChar::sm_szVerbKeys[CHV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CChar_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from script

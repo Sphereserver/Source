@@ -796,7 +796,7 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_5),
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_6),
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_7),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_8),
+			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_8)
 		};
 		static LPCTSTR const sm_szPetHappy[] =
 		{
@@ -807,7 +807,7 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_5),
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_6),
 			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_7),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_8),
+			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_8)
 		};
 
 		if ( index >= (COUNTOF(sm_szPetHunger) - 1) )
@@ -825,7 +825,7 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_5),
 		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_6),
 		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_7),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_8),
+		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_8)
 	};
 
 	if ( index >= (COUNTOF(sm_szFoodLevel) - 1) )
@@ -876,7 +876,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 990 },
 		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), 1090 },
 		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), 1190 },
-		{ NULL, INT_MAX },
+		{ NULL, INT_MAX }
 	};
 
 	if ( ! m_sTitle.IsEmpty())

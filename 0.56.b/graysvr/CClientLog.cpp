@@ -96,7 +96,7 @@ bool CClient::addLoginErr(BYTE code)
 		"This IP is blocked",
 		"The maximum number of clients has been reached. See the CLIENTMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of guests has been reached. See the GUESTSMAX setting in " GRAY_FILE ".ini",
-		"The maximum number of password tries has been reached",
+		"The maximum number of password tries has been reached"
 	};
 
 	if (code >= COUNTOF(sm_Login_ErrMsg))

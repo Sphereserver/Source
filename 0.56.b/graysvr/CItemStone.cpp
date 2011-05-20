@@ -13,7 +13,7 @@ enum STMM_TYPE
 #define ADD(a,b) STMM_##a,
 #include "../tables/CStoneMember_props.tbl"
 #undef ADD
-	STMM_QTY,
+	STMM_QTY
 };
 
 LPCTSTR const CStoneMember::sm_szLoadKeys[STMM_QTY+1] =
@@ -21,7 +21,7 @@ LPCTSTR const CStoneMember::sm_szLoadKeys[STMM_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CStoneMember_props.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 enum STMMV_TYPE
@@ -29,7 +29,7 @@ enum STMMV_TYPE
 #define ADD(a,b) STMMV_##a,
 #include "../tables/CStoneMember_functions.tbl"
 #undef ADD
-	STMMV_QTY,
+	STMMV_QTY
 };
 
 LPCTSTR const CStoneMember::sm_szVerbKeys[STMMV_QTY+1] =
@@ -37,7 +37,7 @@ LPCTSTR const CStoneMember::sm_szVerbKeys[STMMV_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CStoneMember_functions.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 CStoneMember* CStoneMember::GetNext() const
@@ -616,7 +616,7 @@ LPCTSTR CItemStone::GetAlignName() const
 	{
 		"standard",	// STONEALIGN_STANDARD
 		"Order",	// STONEALIGN_ORDER
-		"Chaos",	// STONEALIGN_CHAOS
+		"Chaos"		// STONEALIGN_CHAOS
 	};
 	int iAlign = GetAlignType();
 	if ( iAlign >= COUNTOF( sm_AlignName ))
@@ -649,7 +649,7 @@ enum STC_TYPE
 #define ADD(a,b) STC_##a,
 #include "../tables/CItemStone_props.tbl"
 #undef ADD
-	STC_QTY,
+	STC_QTY
 };
 
 LPCTSTR const CItemStone::sm_szLoadKeys[STC_QTY+1] =
@@ -657,7 +657,7 @@ LPCTSTR const CItemStone::sm_szLoadKeys[STC_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CItemStone_props.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 enum ISV_TYPE
@@ -665,7 +665,7 @@ enum ISV_TYPE
 #define ADD(a,b) ISV_##a,
 #include "../tables/CItemStone_functions.tbl"
 #undef ADD
-	ISV_QTY,
+	ISV_QTY
 };
 
 LPCTSTR const CItemStone::sm_szVerbKeys[ISV_QTY+1] =
@@ -673,7 +673,7 @@ LPCTSTR const CItemStone::sm_szVerbKeys[ISV_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CItemStone_functions.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 bool CItemStone::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
@@ -2513,7 +2513,7 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 		"text 15 10 0 0",
 		"button 13 290 5050 5051 1 0 %i",
 		"text 45 292 0 3",
-		"button 307 290 5200 5201 1 0 0",
+		"button 307 290 5200 5201 1 0 0"
 	};
 
 	CGString sControls[512];
@@ -2552,7 +2552,7 @@ void CItemStone::addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu )
 		"%s %s",
 		"Previous page",
 		"Next page",
-		"%s",
+		"%s"
 	};
 
 	CGString sText[512];

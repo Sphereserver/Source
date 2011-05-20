@@ -6,7 +6,7 @@
 #include "../graysvr/CPathFinder.h"
 #include "../graysvr/CClient.h"
 
-#define ADD(a,b) const char * a::m_sClassName = b;
+#define ADD(a,b) const char * a::m_sClassName = b
 
 ADD(CAccount, "CAccount");
 ADD(CAccounts, "CAccounts");

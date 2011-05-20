@@ -542,7 +542,7 @@ enum DBO_TYPE
 	DBO_CONNECTED,
 	DBO_ESCAPEDATA,
 	DBO_ROW,
-	DBO_QTY,
+	DBO_QTY
 };
 
 LPCTSTR const CDataBase::sm_szLoadKeys[DBO_QTY+1] =
@@ -552,7 +552,7 @@ LPCTSTR const CDataBase::sm_szLoadKeys[DBO_QTY+1] =
 	"CONNECTED",
 	"ESCAPEDATA",
 	"ROW",
-	NULL,
+	NULL
 };
 
 enum DBOV_TYPE
@@ -561,7 +561,7 @@ enum DBOV_TYPE
 	DBOV_CONNECT,
 	DBOV_EXECUTE,
 	DBOV_QUERY,
-	DBOV_QTY,
+	DBOV_QTY
 };
 
 LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY+1] =
@@ -570,7 +570,7 @@ LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY+1] =
 	"CONNECT",
 	"EXECUTE",
 	"QUERY",
-	NULL,
+	NULL
 };
 
 bool CDataBase::r_GetRef(LPCTSTR & pszKey, CScriptObj * & pRef)
@@ -696,7 +696,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' [%p]\n", pszKey, pSrc);
+	g_Log.EventDebug("command '%s' [%p]\n", pszKey, static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }
@@ -747,7 +747,7 @@ bool CDataBase::r_Verb(CScript & s, CTextConsole * pSrc)
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), pSrc);
+	g_Log.EventDebug("command '%s' args '%s' [%p]\n", s.GetKey(), s.GetArgRaw(), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }

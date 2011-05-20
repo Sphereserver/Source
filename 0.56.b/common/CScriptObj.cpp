@@ -7,7 +7,6 @@
 	#include <process.h>
 #else
 	#include <errno.h>	// errno
-	extern int errno;
 #endif
 
 #include "../graysvr/graysvr.h"
@@ -117,7 +116,7 @@ enum AGC_TYPE
 	AGC_LVAR,
 	AGC_TRY,
 	AGC_TRYSRV,
-	AGC_QTY,
+	AGC_QTY
 };
 
 LPCTSTR const CScriptTriggerArgs::sm_szLoadKeys[AGC_QTY+1] =
@@ -132,7 +131,7 @@ LPCTSTR const CScriptTriggerArgs::sm_szLoadKeys[AGC_QTY+1] =
 	"LOCAL",
 	"TRY",
 	"TRYSRV",
-	NULL,
+	NULL
 };
 
 
@@ -457,7 +456,7 @@ enum SSC_TYPE
 	#define ADD(a,b) SSC_##a,
 	#include "../tables/CScriptObj_functions.tbl"
 	#undef ADD
-	SSC_QTY,
+	SSC_QTY
 };
 
 LPCTSTR const CScriptObj::sm_szLoadKeys[SSC_QTY+1] =
@@ -465,7 +464,7 @@ LPCTSTR const CScriptObj::sm_szLoadKeys[SSC_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CScriptObj_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CScriptObj::r_Call( LPCTSTR pszFunction, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * psVal, TRIGRET_TYPE * piRet )
@@ -1231,7 +1230,7 @@ enum SSV_TYPE
 	SSV_NEWNPC,
 	SSV_OBJ,
 	SSV_SHOW,
-	SSV_QTY,
+	SSV_QTY
 };
 
 LPCTSTR const CScriptObj::sm_szVerbKeys[SSV_QTY+1] =
@@ -1242,7 +1241,7 @@ LPCTSTR const CScriptObj::sm_szVerbKeys[SSV_QTY+1] =
 	"NEWNPC",
 	"OBJ",
 	"SHOW",
-	NULL,
+	NULL
 };
 
 
@@ -1565,7 +1564,7 @@ size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFla
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("response '%s' source addr '0%p' flags '%d' args '%p'\n", pszResponse, pSrc, iFlags, pArgs);
+	g_Log.EventDebug("response '%s' source addr '0%p' flags '%d' args '%p'\n", pszResponse, static_cast<void *>(pSrc), iFlags, static_cast<void *>(pArgs));
 	EXC_DEBUG_END;
 	return i;
 }
@@ -1975,7 +1974,7 @@ enum SK_TYPE
 	SK_IF,
 	SK_RETURN,
 	SK_WHILE,
-	SK_QTY,
+	SK_QTY
 };
 
 
@@ -2010,7 +2009,7 @@ LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY+1] =
 	"IF",
 	"RETURN",
 	"WHILE",
-	NULL,
+	NULL
 };
 
 
@@ -2441,7 +2440,7 @@ jump_in:
 
 	EXC_DEBUG_START;
 	g_Log.EventDebug("key '%s' runtype '%d' pargs '%p' ret '%s' [%p]\n",
-		s.GetKey(), trigrun, pArgs, pResult == NULL? "" : pResult->GetPtr(), pSrc);
+		s.GetKey(), trigrun, static_cast<void *>(pArgs), pResult == NULL? "" : pResult->GetPtr(), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return TRIGRET_RET_DEFAULT;
 }
@@ -2474,7 +2473,7 @@ enum FO_TYPE
 	#define ADD(a,b) FO_##a,
 	#include "../tables/CFile_props.tbl"
 	#undef ADD
-	FO_QTY,
+	FO_QTY
 };
 
 LPCTSTR const CFileObj::sm_szLoadKeys[FO_QTY+1] =
@@ -2482,7 +2481,7 @@ LPCTSTR const CFileObj::sm_szLoadKeys[FO_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CFile_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 enum FOV_TYPE
@@ -2490,7 +2489,7 @@ enum FOV_TYPE
 	#define ADD(a,b) FOV_##a,
 	#include "../tables/CFile_functions.tbl"
 	#undef ADD
-	FOV_QTY,
+	FOV_QTY
 };
 
 LPCTSTR const CFileObj::sm_szVerbKeys[FOV_QTY+1] =
@@ -2498,7 +2497,7 @@ LPCTSTR const CFileObj::sm_szVerbKeys[FOV_QTY+1] =
 	#define ADD(a,b) b,
 	#include "../tables/CFile_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 CFileObj::CFileObj()
@@ -2995,7 +2994,7 @@ enum CFO_TYPE
 #define ADD(a,b) CFO_##a,
 #include "../tables/CFileObjContainer_props.tbl"
 #undef ADD
-	CFO_QTY,
+	CFO_QTY
 };
 
 LPCTSTR const CFileObjContainer::sm_szLoadKeys[CFO_QTY+1] =
@@ -3003,7 +3002,7 @@ LPCTSTR const CFileObjContainer::sm_szLoadKeys[CFO_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CFileObjContainer_props.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 enum CFOV_TYPE
@@ -3011,7 +3010,7 @@ enum CFOV_TYPE
 #define ADD(a,b) CFOV_##a,
 #include "../tables/CFileObjContainer_functions.tbl"
 #undef ADD
-	CFOV_QTY,
+	CFOV_QTY
 };
 
 LPCTSTR const CFileObjContainer::sm_szVerbKeys[CFOV_QTY+1] =
@@ -3019,7 +3018,7 @@ LPCTSTR const CFileObjContainer::sm_szVerbKeys[CFOV_QTY+1] =
 #define ADD(a,b) b,
 #include "../tables/CFileObjContainer_functions.tbl"
 #undef ADD
-	NULL,
+	NULL
 };
 
 CFileObj * CFileObjContainer::GetObjectAt( size_t iWhere )

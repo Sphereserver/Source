@@ -60,7 +60,7 @@ bool CChar::Spell_Teleport( CPointBase ptNew,
 static LPCTSTR const sm_szPunishMsg[] =
 {
 	g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_1 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_2 ),
+	g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_2 )
 };
 			SysMessage( sm_szPunishMsg[ Calc_GetRandVal( COUNTOF( sm_szPunishMsg )) ]);
 
@@ -1014,7 +1014,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		g_Cfg.GetDefaultMsg( DEFMSG_SPELL_POISON_1 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_SPELL_POISON_2 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_SPELL_POISON_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_SPELL_POISON_4 ),
+		g_Cfg.GetDefaultMsg( DEFMSG_SPELL_POISON_4 )
 	};
 	static const int sm_iPoisonMax[] = { 2, 4, 6, 8 };
 
@@ -2261,7 +2261,7 @@ bool CChar::Spell_CastDone()
 				ITEMID_BONE_ARMOR,
 				ITEMID_BONE_GLOVES,
 				ITEMID_BONE_HELM,
-				ITEMID_BONE_LEGS,
+				ITEMID_BONE_LEGS
 			};
 
 			int iGet = 0;
