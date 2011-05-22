@@ -4,7 +4,7 @@
 #include "../common/graycom.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(_BSD)
 #include <sys/prctl.h>
 #endif
 #include <algorithm>
@@ -402,6 +402,7 @@ void AbstractThread::onStart()
 
 	// register the thread name
 #ifdef _WIN32
+	// Windows uses THREADNAME_INFO structure to set thread name
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
 	info.szName = getName();
@@ -415,8 +416,8 @@ void AbstractThread::onStart()
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 	}
-
-#else
+#elif !defined(_BSD)
+	// Unix uses prctl to set thread name
 	// thread name must be 16 bytes, zero-padded if shorter
 	char name[16] = { '\0' };
 	strcpylen(name, m_name, COUNTOF(name));
