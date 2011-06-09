@@ -132,9 +132,9 @@ bool CAccounts::Account_SaveAll()
 	if ( !CWorld::OpenScriptBackup(s, pszBaseDir, "accu", g_World.m_iSaveCountID) )
 		return false;
 
-	s.Printf("\\\\ " GRAY_TITLE " %s accounts file\n"
-		"\\\\ NOTE: This file cannot be edited while the server is running.\n"
-		"\\\\ Any file changes must be made to " GRAY_FILE "accu" GRAY_SCRIPT ". This is read in at save time.\n",
+	s.Printf("// " GRAY_TITLE " %s accounts file\n"
+		"// NOTE: This file cannot be edited while the server is running.\n"
+		"// Any file changes must be made to " GRAY_FILE "accu" GRAY_SCRIPT ". This is read in at save time.\n",
 		g_Serv.GetName());
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
