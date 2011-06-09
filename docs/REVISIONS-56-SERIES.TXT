@@ -5204,3 +5204,7 @@ ALPHA additions:
 - Fixed: Backspace key not working in the Linux build's console.
 - Modified: Console output on Linux build will automatically have colour enabled
   for certain terminal types that support colour codes.
+
+09-06-2011, babidi (Script pack)
+- Updated: sphere_map_points0.scp (Fixed start locations all using coordinates
+  for Britain)
