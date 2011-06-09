@@ -94,6 +94,7 @@ SRC	:= 	CAccount.cpp \
 		CWorldMap.cpp \
 		graysvr.cpp \
 		PingServer.cpp \
+		UnixTerminal.cpp \
 		../common/twofish/twofish2.cpp \
 		../common/libev/wrapper_ev.c \
 		../common/zlib/adler32.c \

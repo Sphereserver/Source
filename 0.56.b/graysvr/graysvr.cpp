@@ -9,6 +9,7 @@
 #include "../sphere/asyncdb.h"
 #if !defined(_WIN32) || defined(_LIBEV)
 	#include "../sphere/linuxev.h"
+	#include "UnixTerminal.h"
 #endif
 
 #if !defined(pid_t)
@@ -18,11 +19,6 @@
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
 	#include <process.h>	// getpid()
-#else
-	#include <sys/time.h>
-	#include <stdio.h>
-	#include <unistd.h>
-	#include <termios.h>
 #endif
 
 CMapList::CMapList()
@@ -717,43 +713,6 @@ static void Sphere_MainMonitorLoop()
 }
 
 //******************************************************
-
-#if !defined( _WIN32 )
-
-// This is used to restore the original flags on exit
-void resetNonBlockingIo()
-{
-	termios term_caps;
-
-	if ( tcgetattr(STDIN_FILENO, &term_caps) < 0 ) return;
-
-	term_caps.c_lflag |= ICANON;
-
-	if( tcsetattr(STDIN_FILENO, TCSANOW, &term_caps) < 0 ) return;
-}
-
-void setNonBlockingIo()
-{
-	termios term_caps;
-
-	if( tcgetattr( STDIN_FILENO, &term_caps ) < 0 )
-	{
-		printf( "ERROR: Could not get the termcap settings for this terminal.\n" );
-		return;
-	}
-
-	term_caps.c_lflag &= ~ICANON;
-
-	if( tcsetattr( STDIN_FILENO, TCSANOW, &term_caps ) < 0 )
-	{
-		printf( "ERROR: Could not set the termcap settings for this terminal.\n" );
-		return;
-	}
-	setbuf(stdin, NULL);
-	atexit(resetNonBlockingIo);
-}
-#endif
-
 void dword_q_sort(DWORD numbers[], DWORD left, DWORD right)
 {
 	DWORD	pivot, l_hold, r_hold;
@@ -1044,7 +1003,7 @@ int _cdecl main( int argc, char * argv[] )
 {
 #ifndef _WIN32
 	// Initialize nonblocking IO and disable readline on linux
-	setNonBlockingIo();
+	g_UnixTerminal.prepare();
 #endif
 
 	g_Serv.m_iExitFlag = Sphere_InitServer( argc, argv );

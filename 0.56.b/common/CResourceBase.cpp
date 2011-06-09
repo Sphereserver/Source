@@ -197,7 +197,7 @@ void CResourceBase::LoadResourcesOpen( CScript * pScript )
 
 	if ( ! iSections )
 	{
-		DEBUG_WARN(( "No resource sections in '%s'\n", pScript->GetFilePath()));
+		DEBUG_WARN(( "No resource sections in '%s'\n", (LPCTSTR)pScript->GetFilePath()));
 	}
 }
 
@@ -285,7 +285,7 @@ LPCTSTR CResourceBase::ResourceGetName( RESOURCE_ID_BASE rid ) const
 	ASSERT(pszTmp);
 	if ( ! rid.IsValidUID())
 	{
-		sprintf( pszTmp, "%lu", rid.GetPrivateUID() );
+		sprintf( pszTmp, "%ld", static_cast<long>(rid.GetPrivateUID()) );
 	}
 	else
 	{

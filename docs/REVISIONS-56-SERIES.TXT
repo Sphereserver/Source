@@ -5198,3 +5198,9 @@ ALPHA additions:
 - Fixed #1958: Unable to pass variables as arguments to FORCHARLAYER and
   FORCHARMEMORYTYPE loops.
 - Fixed #1959: Possible exception when Sphere tries to load verdata.mul file.
+
+09-06-2011, MrSugarCube
+- Fixed #1969: Timer being set to abnormally high values when attempting skills.
+- Fixed: Backspace key not working in the Linux build's console.
+- Modified: Console output on Linux build will automatically have colour enabled
+  for certain terminal types that support colour codes.

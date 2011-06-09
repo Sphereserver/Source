@@ -15,6 +15,8 @@
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
+#else
+	#include "UnixTerminal.h"
 #endif
 
 #if defined(_WIN32) && !defined(_DEBUG)
@@ -267,7 +269,7 @@ void CServer::SysMessage( LPCTSTR pszMsg ) const
 #ifdef _WIN32
 	NTWindow_PostMsg(pszMsg);
 #else
-	fputs(pszMsg, stdout);
+	g_UnixTerminal.print(pszMsg);
 #endif
 }
 
@@ -309,7 +311,7 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	PrintTelnet(pszTemp);
 
 #ifndef _WIN32
-	if( g_Log.m_fColoredConsole )
+	if ( g_UnixTerminal.isColorEnabled() )
 	{
 		SysMessage(pszTemp);
 #endif
@@ -1612,7 +1614,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 				continue;
 #else
 			case 'C':
-				g_Log.m_fColoredConsole = true;
+				g_UnixTerminal.setColorEnabled(true);
 				continue;
 #endif
 			case 'P':
@@ -1827,20 +1829,9 @@ void CServer::OnTick()
 		TIME_PROFILE_START;
 
 #ifndef _WIN32
-	// Do a select operation on the stdin handle and check
-	// if there is any input waiting.
-	EXC_SET("unix");
-	fd_set consoleFds;
-	FD_ZERO(&consoleFds);
-	FD_SET(STDIN_FILENO, &consoleFds);
-
-	timeval tvTimeout;
-	tvTimeout.tv_sec = 0;
-	tvTimeout.tv_usec = 1;
-
-	if( select(1, &consoleFds, 0, 0, &tvTimeout) )
+	if (g_UnixTerminal.isReady())
 	{
-		int c = fgetc(stdin);
+		TCHAR c = g_UnixTerminal.read();
 		if ( OnConsoleKey(m_sConsoleText, c, false) == 2 )
 			m_fConsoleTextReadyFlag = true;
 	}

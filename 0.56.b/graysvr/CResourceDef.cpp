@@ -131,7 +131,7 @@ int CValueCurveDef::GetLinear( int iSkillPercent ) const
 
 	int iLoVal = m_aiValues[iLoIdx];
 	int iHiVal = m_aiValues[iLoIdx + 1];
-	int iChance = iLoVal + IMULDIV( iHiVal - iLoVal, iSkillPercent, iSegSize );
+	int iChance = iLoVal + IMULDIV( iHiVal - iLoVal, static_cast<int>(iSkillPercent), static_cast<int>(iSegSize) );
 
 	if ( iChance <= 0 )
 		return 0; // less than no chance ?

@@ -3,6 +3,7 @@
 // Copyright Menace Software (www.menasoft.com).
 //
 #include "graysvr.h"	// predef header.
+#include "UnixTerminal.h"
 
 ///////////////////////////////////////////////////////////////
 // -CLog
@@ -123,10 +124,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 127,127,0 ));
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[0;33m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_YELLOW);
 #endif
 
 			g_Serv.PrintStr( szTime );
@@ -134,10 +132,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor(0);
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[0m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
 #endif
 		}
 
@@ -146,10 +141,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 255,0,0 ));
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[0;31m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_RED);
 #endif
 
 			g_Serv.PrintStr( pszLabel );
@@ -157,10 +149,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 255,255,255 ));
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[0m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
 #endif
 		}
 
@@ -169,10 +158,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor( RGB( 0,127,255 ));
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[1;36m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_CYAN);
 #endif
 
 			g_Serv.PrintStr( szScriptContext );
@@ -180,10 +166,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 #ifdef _WIN32
 			NTWindow_PostMsgColor(0);
 #else
-			if( m_fColoredConsole )
-			{
-				g_Serv.PrintStr("\e[0m");
-			}
+			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
 #endif
 		}
 		g_Serv.PrintStr( pszMsg );

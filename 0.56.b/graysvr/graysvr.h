@@ -196,9 +196,6 @@ private:
 	static CGTime sm_prevCatchTick;	// don't flood with these.
 public:
 	bool m_fLockOpen;
-#ifndef _WIN32
-	bool m_fColoredConsole;
-#endif
 	SimpleMutex m_mutex;
 
 public:
@@ -262,9 +259,6 @@ public:
 public:
 	CLog()
 	{
-#ifndef _WIN32
-		m_fColoredConsole = false;
-#endif
 		m_fLockOpen = false;
 		m_pScriptContext = NULL;
 		m_pObjectContext = NULL;
@@ -1720,3 +1714,4 @@ extern LONGLONG llTimeProfileFrequency;
 #define	TIME_PROFILE_GET_LO	((((llTicksEnd - llTicks)*10000)/(llTimeProfileFrequency/1000))%10000)
 
 #endif
+
