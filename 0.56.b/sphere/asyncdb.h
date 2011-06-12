@@ -14,7 +14,6 @@
 
 	private:
 		SimpleMutex m_queryMutex;
-		ManualThreadLock stlqueryLock;
 		QueueQuery_t m_queriesTodo;
 
 	public:
@@ -30,7 +29,7 @@
 		virtual void waitForClose();
 
 	public:
-		void addQuery(bool, LPCTSTR, LPCTSTR);
+		void addQuery(bool isQuery, LPCTSTR sFunction, LPCTSTR sQuery);
 	};
 
 #endif

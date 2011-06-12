@@ -5210,3 +5210,6 @@ ALPHA additions:
 - Updated: sphere_map_points0.scp (Fixed start locations all using coordinates
   for Britain)
 
+12-06-2011, MrSugarCube
+- Fixed #1955: Exception when DB.QUERY/EXECUTE is used whilst a previous
+  DB.AQUERY/AEXECUTE operation is still running in the background.

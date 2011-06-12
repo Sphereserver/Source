@@ -4,7 +4,7 @@
 
 extern CDataBaseAsyncHelper g_asyncHdb;
 
-CDataBase::CDataBase() : stlqueryLock(&m_resultMutex)
+CDataBase::CDataBase()
 {
 #ifndef _DBPLUGIN
 	_bConnected = false;
@@ -17,13 +17,10 @@ CDataBase::CDataBase() : stlqueryLock(&m_resultMutex)
 
 CDataBase::~CDataBase()
 {
-#ifndef _DBPLUGIN
 	if ( isConnected() )
 		Close();
-#else
-	if ( isConnected() )
-		cDatabaseLoader::GetCurrentInstance()->DbClose();
 
+#ifdef _DBPLUGIN
 	ResizeFieldArraySize(0);
 	ResizeResultArraySize(0);
 #endif
@@ -118,6 +115,8 @@ void CDataBase::ResizeResultArraySize(int howmuch, bool bForceResize)
 bool CDataBase::Connect(const char *user, const char *password, const char *base, const char *host)
 {
 	ADDTOCALLSTACK("CDataBase::Connect");
+	SimpleThreadLock lock(m_connectionMutex);
+
 #ifndef _DBPLUGIN
 	_bConnected = false;
 
@@ -150,6 +149,7 @@ bool CDataBase::Connect(const char *user, const char *password, const char *base
 		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL connect fail: %s\n", error);
 		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Visit this link for more information: http://dev.mysql.com/doc/mysql/search.php?q=%s\n", error);
 		mysql_close(_myData);
+		_myData = NULL;
 		return false;
 	}
 
@@ -213,8 +213,10 @@ bool CDataBase::isConnected()
 void CDataBase::Close()
 {
 	ADDTOCALLSTACK("CDataBase::Close");
+	SimpleThreadLock lock(m_connectionMutex);
 #ifndef _DBPLUGIN
 	mysql_close(_myData);
+	_myData = NULL;
 	_bConnected = false;
 #else
 	cDatabaseLoader::GetCurrentInstance()->DbClose();
@@ -227,22 +229,37 @@ bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 	mapQueryResult.Empty();
 	mapQueryResult.SetNumNew("NUMROWS", 0);
 
-#ifndef _DBPLUGIN
 	if ( !isConnected() )
 		return false;
 
-	int			result;
-	MYSQL_RES	*m_res;
+	int result;
+#ifndef _DBPLUGIN
 
-	result = mysql_query(_myData, query);
-	if ( !result )
+	MYSQL_RES * m_res = NULL;
+	const char * myErr = NULL;
+
 	{
-		m_res = mysql_store_result(_myData);
-		if ( !m_res )
-			return false;
+		// connection can only handle one query at a time, so we need to lock until we
+		// finish the query -and- retrieve the results
+		SimpleThreadLock lock(m_connectionMutex);
+		result = mysql_query(_myData, query);
 
-		MYSQL_FIELD *fields = mysql_fetch_fields(m_res);
-		int			num_fields = mysql_num_fields(m_res);
+		if ( result == 0 )
+		{
+			m_res = mysql_store_result(_myData);
+			if ( m_res == NULL )
+				return false;
+		}
+		else
+		{
+			myErr = mysql_error(_myData);
+		}
+	}
+
+	if ( m_res != NULL )
+	{
+		MYSQL_FIELD * fields = mysql_fetch_fields(m_res);
+		int num_fields = mysql_num_fields(m_res);
 
 		mapQueryResult.SetNum("NUMROWS", mysql_num_rows(m_res));
 		mapQueryResult.SetNum("NUMCOLS", num_fields);
@@ -275,7 +292,6 @@ bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 	}
 	else
 	{
-		const char *myErr = mysql_error(_myData);
 		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR,
 			"MySQL query \"%s\" failed due to \"%s\"\n",
 			query, ( *myErr ? myErr : "unknown reason"));
@@ -287,11 +303,12 @@ bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 #else
 	cDatabaseLoader * pCurrent = cDatabaseLoader::GetCurrentInstance();
 
-	if ( !isConnected() )
-		return false;
+	{
+		SimpleThreadLock lock(m_connectionMutex);
+		result = pCurrent->DbQuery(query);
+	}
 
-	int iResult = pCurrent->DbQuery(query);
-	if ( !iResult )
+	if ( result == 0 )
 	{
 		int	num_fields = pCurrent->DbNumFields();
 		if ( num_fields > 0 )
@@ -336,13 +353,13 @@ bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
 		}
 	}
 
-	if ( iResult < 0 ) // It's an error
+	if ( result < 0 ) // It's an error
 	{
-		const char *myErr = pCurrent->DbGetLastErrorString();
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Database query \"%s\" failed due to \"%s\"\n", query, ( myErr && *myErr ? myErr : "unknown reason"));
+		const char * error = pCurrent->DbGetLastErrorString();
+		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Database query \"%s\" failed due to \"%s\"\n", query, ( error && *error ? error : "unknown reason"));
 
-		if ( iResult == DBPLUGIN_SERVER_LOST_ERROR )
-			pCurrent->DbClose();
+		if ( result == DBPLUGIN_SERVER_LOST_ERROR )
+			Close();
 	}
 #endif
 
@@ -365,26 +382,33 @@ bool __cdecl CDataBase::queryf(CVarDefMap & mapQueryResult, char *fmt, ...)
 bool CDataBase::exec(const char *query)
 {
 	ADDTOCALLSTACK("CDataBase::exec");
-#ifndef _DBPLUGIN
 	if ( !isConnected() )
 		return false;
 
-	int result = mysql_query(_myData, query);
-	if (result == 0)
-	{
-		// even though we don't want (or expect) any result data, we must retrieve
-		// is anyway otherwise we will lose our connection to the server
-		MYSQL_RES* res = mysql_store_result(_myData);
-		if (res != NULL)
-			mysql_free_result(res);
+	int result = 0;
 
-		return true;
-	}
-	else
+#ifndef _DBPLUGIN
+
 	{
-		const char *myErr = mysql_error(_myData);
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL query \"%s\" failed due to \"%s\"\n",
-			query, ( *myErr ? myErr : "unknown reason"));
+		// connection can only handle one query at a time, so we need to lock until we finish
+		SimpleThreadLock lock(m_connectionMutex);
+		result = mysql_query(_myData, query);
+		if (result == 0)
+		{
+			// even though we don't want (or expect) any result data, we must retrieve
+			// is anyway otherwise we will lose our connection to the server
+			MYSQL_RES* res = mysql_store_result(_myData);
+			if (res != NULL)
+				mysql_free_result(res);
+
+			return true;
+		}
+		else
+		{
+			const char *myErr = mysql_error(_myData);
+			g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL query \"%s\" failed due to \"%s\"\n",
+				query, ( *myErr ? myErr : "unknown reason"));
+		}
 	}
 	
 	if (( result == CR_SERVER_GONE_ERROR ) || ( result == CR_SERVER_LOST ))
@@ -393,18 +417,18 @@ bool CDataBase::exec(const char *query)
 #else
 	cDatabaseLoader * pCurrent = cDatabaseLoader::GetCurrentInstance();
 
-	if ( !isConnected() )
-		return false;
-
-	int iResult = pCurrent->DbExecute(query);
-	if ( iResult == 0 )
-		return true;
+	{
+		SimpleThreadLock lock(m_connectionMutex);
+		result = pCurrent->DbExecute(query);
+		if ( result == 0 )
+			return true;
 	
-	const char *myErr = pCurrent->DbGetLastErrorString();
-	g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Database query \"%s\" failed due to \"%s\"\n", query, ( myErr && *myErr ? myErr : "unknown reason"));
+		const char * error = pCurrent->DbGetLastErrorString();
+		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Database query \"%s\" failed due to \"%s\"\n", query, ( error && *error ? error : "unknown reason"));
+	}
 
-	if ( iResult == DBPLUGIN_SERVER_LOST_ERROR )
-		pCurrent->DbClose();
+	if ( result == DBPLUGIN_SERVER_LOST_ERROR )
+		Close();
 #endif
 
 	return false;
@@ -423,14 +447,6 @@ bool __cdecl CDataBase::execf(char *fmt, ...)
 	return this->exec(buf);
 }
 
-#ifndef _DBPLUGIN
-UINT CDataBase::getLastId()
-{
-	ADDTOCALLSTACK("CDataBase::getLastId");
-	return mysql_insert_id(_myData);
-}
-#endif
-
 bool CDataBase::addQuery(bool isQuery, LPCTSTR theFunction, LPCTSTR theQuery)
 {
 	if ( g_Cfg.m_Functions.ContainsKey( theFunction ) == false )
@@ -448,11 +464,11 @@ bool CDataBase::addQuery(bool isQuery, LPCTSTR theFunction, LPCTSTR theQuery)
 	}
 }
 
-void CDataBase::addQueryResult(CGString theFunction, CScriptTriggerArgs * theResult)
+void CDataBase::addQueryResult(CGString & theFunction, CScriptTriggerArgs * theResult)
 {
 	SimpleThreadLock stlThelock(m_resultMutex);
 
-	m_QueryArgs.push(FunctionArgsPair_t(theFunction,theResult));
+	m_QueryArgs.push(FunctionArgsPair_t(theFunction, theResult));
 }
 
 bool CDataBase::OnTick()
@@ -473,13 +489,10 @@ bool CDataBase::OnTick()
 	if ( ++tickcnt >= 1000 )
 	{
 		tickcnt = 0;
-#ifdef _DBPLUGIN
-		cDatabaseLoader * pCurrent = cDatabaseLoader::GetCurrentInstance();
-#endif
 
 		if ( isConnected() )	//	currently connected - just check that the link is alive
 		{
-
+			SimpleThreadLock lock(m_connectionMutex);
 #ifndef _DBPLUGIN
 			if ( mysql_ping(_myData) )
 			{
@@ -495,11 +508,12 @@ bool CDataBase::OnTick()
 			// We shrink mem if connected.
 			ResizeFieldArraySize(g_Cfg.m_iDbQueryBuffer, true);
 			ResizeResultArraySize(g_Cfg.m_iDbQueryBuffer, true);
-
+			
+			cDatabaseLoader * pCurrent = cDatabaseLoader::GetCurrentInstance();
 			if ( pCurrent->DbPing() )
 			{
 				g_Log.EventError("Database server link has been lost. Trying to reattach to it.\n");
-				pCurrent->DbClose();
+				Close();
 
 				if ( !Connect() )
 				{
@@ -512,18 +526,19 @@ bool CDataBase::OnTick()
 
 	if ( !m_QueryArgs.empty() && !(tickcnt % TICK_PER_SEC) )
 	{
-		stlqueryLock.doLock();
-
-		FunctionArgsPair_t currentPair = m_QueryArgs.front();
-		m_QueryArgs.pop();
-
-		stlqueryLock.doUnlock();
-
+		FunctionArgsPair_t currentPair;
+		{
+			SimpleThreadLock lock(m_resultMutex);
+			currentPair = m_QueryArgs.front();
+			m_QueryArgs.pop();
+		}
+		
 		if ( !g_Serv.r_Call(currentPair.first, &g_Serv, currentPair.second) )
 		{
 			// error
 		}
-
+		
+		ASSERT(currentPair.second != NULL);
 		delete currentPair.second;
 	}
 
@@ -665,7 +680,8 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pszKey && *pszKey )
 			{
 				TCHAR * escapedString = Str_GetTemp();
-
+				
+				SimpleThreadLock lock(m_connectionMutex);
 #ifndef _DBPLUGIN
 				if ( isConnected() && mysql_real_escape_string(_myData, escapedString, pszKey, strlen(pszKey)) )
 				{

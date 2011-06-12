@@ -14,19 +14,18 @@ CDataBaseAsyncHelper::~CDataBaseAsyncHelper(void)
 void CDataBaseAsyncHelper::onStart()
 {
 	AbstractSphereThread::onStart();
-	stlqueryLock.setMutex(&m_queryMutex);
 }
 
 void CDataBaseAsyncHelper::tick()
 {
 	if ( !m_queriesTodo.empty() )
 	{
-		stlqueryLock.doLock();
-
-		QueryBlob_t currentPair = m_queriesTodo.front();
-		m_queriesTodo.pop_front();
-
-		stlqueryLock.doUnlock();
+		QueryBlob_t currentPair;
+		{
+			SimpleThreadLock lock(m_queryMutex);
+			currentPair = m_queriesTodo.front();
+			m_queriesTodo.pop_front();
+		}
 
 		FunctionQueryPair_t currentFunctionPair = currentPair.second;
 
