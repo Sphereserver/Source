@@ -5217,6 +5217,7 @@ ALPHA additions:
 18-06-2011, MrSugarCube
 - Fixed #1980: Unable to handle @Rename trigger at character creation using EventsPlayer.
 - Fixed #1977: New player characters starting at the wrong location.
+- Fixed: Possible exception when a character doesn't have enough strength to equip an item.
 
 18-06-2011, babidi (Script pack)
 - Updated #1975: sphere_map0.scp, sphere_map0_ml.scp, sphere_map1.scp, sphere_map2.scp,
@@ -5224,3 +5225,6 @@ ALPHA additions:
 
 18-06-2011, Coruja (Script pack)
 - Updated #1966: sphere_map2.scp (Added region flags to a_lbr)
+
+18-06-2011, MrSugarCube (Script pack)
+- Updated #1983: spherechar_sa.scp (Fixed female gargoyles not having MT_FEMALE set)

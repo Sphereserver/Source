@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, August 14 2009
+// FILE LAST UPDATED: Saturday, June 18 2011
 VERSION=0.56b
 
 [CHARDEF 666]
@@ -48,7 +48,7 @@ ICON=i_pet_woman
 RESLEVEL=5
 RESDISPDNHUE=0410
 RESDISPDNID=c_woman
-CAN=mt_equip|mt_walk|mt_run|mt_usehands
+CAN=mt_equip|mt_walk|mt_run|mt_usehands|mt_female
 RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
 FOODTYPE=15 t_food, t_fruit
 DESIRES=i_gold,e_notoriety
@@ -110,7 +110,7 @@ ICON=i_pet_woman
 RESLEVEL=7
 RESDISPDNHUE=0410
 RESDISPDNID=c_ghost_woman
-CAN=mt_equip|mt_walk|mt_run|mt_usehands
+CAN=mt_equip|mt_walk|mt_run|mt_usehands|mt_female
 RESOURCES=i_flesh_head,i_flesh_torso,i_flesh_right_arm,i_flesh_left_arm,i_flesh_left_leg,i_flesh_right_leg,i_blood_2
 FOODTYPE=15 t_food, t_fruit
 DESIRES=i_gold,e_notoriety

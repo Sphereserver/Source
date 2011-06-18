@@ -244,7 +244,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 				if ( m_pPlayer )	// message only players
 				{
 					SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), (LPCTSTR) pItem->GetName());
-					if ( pCharMsg != this )
+					if ( pCharMsg != NULL && pCharMsg != this )
 					{
 						pCharMsg->SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), (LPCTSTR) pItem->GetName());
 					}
@@ -390,7 +390,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 
 	if ( fCantEquip )// some creatures can equip certain special items ??? (orc lord?)
 	{
-		if ( pCharMsg)
+		if ( pCharMsg != NULL )
 			pCharMsg->SysMessagef("%s", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_CANNOT));
 		return LAYER_NONE;	// can't equip stuff.
 	}
