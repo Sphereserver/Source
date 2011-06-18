@@ -18,6 +18,7 @@ NAME=Ilshenar
 P=930,641,-80,2
 RECT=0,0,2299,1599,2
 GROUP=ALLMAP
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 TAG.TITLE=the realm of
 EVENTS=r_default_rock,r_default_water,r_default_tree,r_default_grass
 

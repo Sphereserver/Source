@@ -5207,7 +5207,7 @@ ALPHA additions:
   for certain terminal types that support colour codes.
 
 09-06-2011, babidi (Script pack)
-- Updated: sphere_map_points0.scp (Fixed start locations all using coordinates
+- Updated #1970: sphere_map_points0.scp (Fixed start locations all using coordinates
   for Britain)
 
 12-06-2011, MrSugarCube
@@ -5215,5 +5215,8 @@ ALPHA additions:
   DB.AQUERY/AEXECUTE operation is still running in the background.
 
 18-06-2011, babidi (Script pack)
-- Updated: sphere_map0.scp, sphere_map0_ml.scp, sphere_map1.scp, sphere_map2.scp,
+- Updated #1975: sphere_map0.scp, sphere_map0_ml.scp, sphere_map1.scp, sphere_map2.scp,
   sphere_map4.scp (Updated region flags to use defnames)
+
+18-06-2011, Coruja (Script pack)
+- Updated #1966: sphere_map2.scp (Added region flags to a_lbr)
