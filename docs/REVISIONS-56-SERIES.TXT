@@ -5215,6 +5215,7 @@ ALPHA additions:
   DB.AQUERY/AEXECUTE operation is still running in the background.
 
 18-06-2011, MrSugarCube
+- Fixed #1980: Unable to handle @Rename trigger at character creation using EventsPlayer.
 - Fixed #1977: New player characters starting at the wrong location.
 
 18-06-2011, babidi (Script pack)

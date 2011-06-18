@@ -933,6 +933,10 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	ASSERT(pClient);
 	UNREFERENCED_PARAMETER(prProf);
 
+	CAccount * pAccount = pClient->GetAccount();
+	if (pAccount != NULL)
+		SetPlayerAccount(pAccount);
+
 	switch (rtRace)
 	{
 		case RACETYPE_ELF:
