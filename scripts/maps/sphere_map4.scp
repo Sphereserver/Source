@@ -7,7 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 08-Feb-2005
+// FILE LAST UPDATED: June 18, 2011
+// - Changed region flags by babidi with defnames region_flags for clearer read and editing (14-Jun-2011)
+
 VERSION=0.56b
 
 [AREADEF a_se]	// Samurai Empire (SE, map4,statics4,staidx4), map #4
@@ -26,7 +28,7 @@ RECT=656,1192,816,1320,4
 [ROOMDEF a_zento_inn]
 NAME=Zento Inn
 GROUP=Tokuno Islands
-FLAGS=0880
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=686,1211,30,4
 RECT=674,1203,699,1219,4
 

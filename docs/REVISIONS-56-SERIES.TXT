@@ -5213,3 +5213,7 @@ ALPHA additions:
 12-06-2011, MrSugarCube
 - Fixed #1955: Exception when DB.QUERY/EXECUTE is used whilst a previous
   DB.AQUERY/AEXECUTE operation is still running in the background.
+
+18-06-2011, babidi (Script pack)
+- Updated: sphere_map0.scp, sphere_map0_ml.scp, sphere_map1.scp, sphere_map2.scp,
+  sphere_map4.scp (Updated region flags to use defnames)

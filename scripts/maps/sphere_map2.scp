@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2009
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,8 +7,10 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, December 13, 2009
-// Made by Admin Peter (OnlineUO), modified for 56b by Furio
+// FILE LAST UPDATED: June 18, 2011
+// - Made by Admin Peter (OnlineUO), modified for 56b by Furio
+// - Changed region flags by babidi with defnames region_flags for clearer read and editing (14-Jun-2011)
+
 VERSION=0.56b
 
 [AREADEF a_lbr]
@@ -98,7 +100,7 @@ RECT=856,576,896,704,2
 RECT=904,624,928,656,2
 GROUP=Ilshenar Towns
 TAG.TITLE=the city of
-FLAGS=region_flag_nobuilding|region_flag_global|region_flag_guarded
+FLAGS=region_flag_nobuilding|region_flag_globalname|region_flag_guarded
 
 [AREADEF a_pormir_harm]
 NAME=Pormir Harm
@@ -630,7 +632,7 @@ GROUP=Ilshenar Dungeon
 NAME=Desert Outpost
 P=1620,596,0,2
 RECT=1496,512,1744,680,2
-FLAGS=080
+FLAGS=region_flag_nobuilding
 GROUP=Ilshenar Unknown
 
 [AREADEF a_Twisted_Weald]
