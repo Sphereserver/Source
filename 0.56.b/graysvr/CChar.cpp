@@ -1003,6 +1003,10 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	SetHue( (wSkinHue|HUE_UNDERWEAR) );
 	m_fonttype = FONT_NORMAL;
 
+	// start location id is 1-based, so decrement to get an index
+	if ( iStartLoc > 0 )
+		--iStartLoc;
+
 	if ( ! g_Cfg.m_StartDefs.IsValidIndex( iStartLoc ))
 	{
 		if ( g_Cfg.m_StartDefs.GetCount() > 0 )
