@@ -2991,10 +2991,8 @@ bool CChar::CheckLocation( bool fStanding )
 		if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_IMMOBILE ) )
 		{
 			Skill_Fail(false);
-			return true;
 		}
-
-		if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT ) )
+		else if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT ) )
 		{
 			// Are we using a skill that is effected by motion ?
 			m_atFight.m_fMoved	= 1;
@@ -3045,7 +3043,7 @@ bool CChar::CheckLocation( bool fStanding )
 				return( false );
 	}
 
-	bool	fStepCancel	= false;
+	bool fStepCancel = false;
 	CWorldSearch AreaItems( GetTopPoint());
 	for (;;)
 	{
@@ -3055,9 +3053,9 @@ bool CChar::CheckLocation( bool fStanding )
 
 		int zdiff = pItem->GetTopZ() - GetTopZ();
 
-		int	height	= pItem->Item_GetDef()->GetHeight();
+		int	height = pItem->Item_GetDef()->GetHeight();
 		if ( height < 3 )
-			height	= 3;
+			height = 3;
 
 		if ( zdiff > height || zdiff < -3 )
 			continue;
@@ -3210,7 +3208,7 @@ bool CChar::CheckLocation( bool fStanding )
 		return false;
 
 	// Check the map teleporters in this CSector. (if any)
-	CPointMap pt = GetTopPoint();
+	const CPointMap & pt = GetTopPoint();
 	CSector *pSector = pt.GetSector();
 	if ( !pSector )
 		return false;
@@ -3227,14 +3225,14 @@ bool CChar::CheckLocation( bool fStanding )
 			if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
 			{
 				// Guards won't gate into unguarded areas.
-				CRegionWorld * pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+				const CRegionWorld * pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 				if ( !pArea || ! pArea->IsGuarded())
 					return false;
 			}
 			else if ( Noto_IsCriminal() )
 			{
 				// wont teleport to guarded areas.
-				CRegionWorld *pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+				const CRegionWorld *pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 				if ( !pArea || pArea->IsGuarded())
 					return false;
 			}

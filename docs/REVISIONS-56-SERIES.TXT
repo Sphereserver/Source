@@ -3164,7 +3164,7 @@ this all in desperation)
 22-02-2007, MrSugarCube
 - Fixed #1078: Exception when walking in the top left corner of maps.
 - Added #1079: ARGO in f_onchar_create, f_onchar_delete and f_onaccount_login 
-  is now the the client that is performing the action (note that at the time 
+  is now the client that is performing the action (note that at the time 
   these functions are called, there is no character attached to the client so 
   character properties are not accessible).
 
@@ -5231,3 +5231,5 @@ ALPHA additions:
 
 19-06-2011, MrSugarCube
 - Fixed #1976: Aggressor memories being removed when leaving war mode.
+- Fixed #1965: SKF_IMMOBILE causing clients to become unable to move if skill is used too
+  often.
