@@ -5228,3 +5228,6 @@ ALPHA additions:
 
 18-06-2011, MrSugarCube (Script pack)
 - Updated #1983: spherechar_sa.scp (Fixed female gargoyles not having MT_FEMALE set)
+
+19-06-2011, MrSugarCube
+- Fixed #1976: Aggressor memories being removed when leaving war mode.

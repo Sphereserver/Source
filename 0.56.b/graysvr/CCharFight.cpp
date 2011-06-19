@@ -2902,18 +2902,18 @@ void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
 	// clear all my active targets. Toggle out of war mode.
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItem->GetNext())
+	CItem * pItem = GetContentHead();
+	for ( ; pItem != NULL; pItem = pItem->GetNext())
 	{
 		if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
 			continue;
-		Memory_ClearTypes( STATIC_CAST <CItemMemory *>(pItem), MEMORY_WAR_TARG|MEMORY_IAGGRESSOR );
+		Memory_ClearTypes( STATIC_CAST <CItemMemory *>(pItem), MEMORY_WAR_TARG );
 	}
 
 	// Our target is gone.
 	StatFlag_Clear( STATF_War );
 
-	if ( this->Fight_IsActive() )
+	if ( Fight_IsActive() )
 	{
 		Skill_Start( SKILL_NONE );
 		m_Act_Targ.InitUID();
