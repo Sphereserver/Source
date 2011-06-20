@@ -5233,3 +5233,7 @@ ALPHA additions:
 - Fixed #1976: Aggressor memories being removed when leaving war mode.
 - Fixed #1965: SKF_IMMOBILE causing clients to become unable to move if skill is used too
   often.
+
+20-06-2011, MrSugarCube
+- Fixed #1956: Region's @Enter trigger firing when a creature is summoned, before the
+  creature's @Create trigger fires.

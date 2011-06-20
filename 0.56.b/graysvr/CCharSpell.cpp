@@ -239,8 +239,8 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		// Time based on magery. Add the flag first so it does not get loot.
 		// conjured creates have no loot. (Mark this early)
 		pChar->StatFlag_Set( STATF_Conjured );
-		pChar->MoveToChar( pntTarg );
 		pChar->NPC_LoadScript(false);
+		pChar->MoveToChar( pntTarg );
 		if ( g_Cfg.m_iMountHeight )
 		{
 			if ( ! pChar->IsVerticalSpace( GetTopPoint(), false ) )
