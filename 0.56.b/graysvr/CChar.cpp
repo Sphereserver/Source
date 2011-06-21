@@ -2090,8 +2090,8 @@ do_default:
 			i = g_Cfg.FindStatKey( pszKey );
 			if ( i >= 0 )
 			{
-				// if ( g_Serv.IsLoading() || (m_Stat[i].m_base == 0) )
-				//	m_Stat[i].m_base	= s.GetArgVal();
+				// if ( g_Serv.IsLoading() || Stat_GetBase( (STAT_TYPE) i ) == 0 )
+				//	Stat_SetBase( (STAT_TYPE) i, s.GetArgVal() );
 				// else
 
 				int iVal = s.GetArgVal() - Stat_GetMod((STAT_TYPE) i);
@@ -2499,7 +2499,7 @@ void CChar::r_Write( CScript & s )
 
 	for ( j = 0; j < g_Cfg.m_iMaxSkill; j++)
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) j) || m_Skill[j] == 0 )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) j) || Skill_GetBase( (SKILL_TYPE) j ) == 0 )
 			continue;
 		s.WriteKeyVal( g_Cfg.GetSkillDef( (SKILL_TYPE) j )->GetKey(), Skill_GetBase( (SKILL_TYPE) j ));
 	}

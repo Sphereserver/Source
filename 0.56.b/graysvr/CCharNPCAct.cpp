@@ -3045,7 +3045,7 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 				// ??? May know it is poisoned ?
 				if ( pItem->m_itFood.m_poison_skill )
 				{
-					if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (m_Skill[SKILL_TASTEID] / 10) )
+					if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (Skill_GetBase(SKILL_TASTEID) / 10) )
 					{
 						if ( NPC_CanSpeak() )
 						{

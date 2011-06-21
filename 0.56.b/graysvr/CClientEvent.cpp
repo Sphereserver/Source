@@ -551,14 +551,17 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 
 	if ( g_Cfg.IsSkillFlag( skill, SKF_SCRIPTED ) )
 	{
-		if ( !g_Cfg.GetSkillDef(skill)->m_sTargetPrompt.IsEmpty() )
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+		if (pSkillDef != NULL && pSkillDef->m_sTargetPrompt.IsEmpty() == false)
 		{
 			m_tmSkillTarg.m_Skill = skill;	// targetting what skill ?
-			addTarget( CLIMODE_TARG_SKILL, g_Cfg.GetSkillDef(skill)->m_sTargetPrompt, false, fCheckCrime );
+			addTarget( CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, fCheckCrime );
 			return;
 		}
 		else
+		{
 			m_pChar->Skill_Start( skill );
+		}
 	}
 	else switch ( skill )
 	{
@@ -614,17 +617,19 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 			SysMessage( "There is no such skill. Please tell support you saw this message.");
 			break;
 	}
+
 	if ( fDoTargeting )
 	{
 		// Go into targtting mode.
-		if ( g_Cfg.GetSkillDef(skill)->m_sTargetPrompt.IsEmpty() )
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+		if (pSkillDef == NULL || pSkillDef->m_sTargetPrompt.IsEmpty())
 		{
 			DEBUG_ERR(( "%lx: Event_Skill_Use bad skill %d\n", GetSocketID(), skill ));
 			return;
 		}
 
 		m_tmSkillTarg.m_Skill = skill;	// targetting what skill ?
-		addTarget( CLIMODE_TARG_SKILL, g_Cfg.GetSkillDef(skill)->m_sTargetPrompt, false, fCheckCrime );
+		addTarget( CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, fCheckCrime );
 		return;
 	}
 }

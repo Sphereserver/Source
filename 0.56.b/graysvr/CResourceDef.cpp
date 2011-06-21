@@ -348,10 +348,10 @@ bool CSkillDef::r_LoadVal( CScript &s )
 		m_Delay.Load( s.GetArgStr());
 		break;
 	case SKC_FLAGS:
-		m_dwFlags	= s.GetArgVal();
+		m_dwFlags = s.GetArgVal();
 		break;
 	case SKC_GROUP:
-		m_dwGroup	= s.GetArgVal();
+		m_dwGroup = s.GetArgVal();
 		break;
 	case SKC_EFFECT:
 		m_Effect.Load( s.GetArgStr());
@@ -369,13 +369,13 @@ bool CSkillDef::r_LoadVal( CScript &s )
 		m_StatPercent = s.GetArgVal();
 		break;
 	case SKC_STAT_DEX: // "STAT_DEX"
-		m_Stat[STAT_DEX]	=  s.GetArgVal();
+		m_Stat[STAT_DEX] = s.GetArgVal();
 		break;
 	case SKC_STAT_INT: // "STAT_INT"
-		m_Stat[STAT_INT]	=  s.GetArgVal();
+		m_Stat[STAT_INT] = s.GetArgVal();
 		break;
 	case SKC_STAT_STR: // "STAT_STR"
-		m_Stat[STAT_STR]	=  s.GetArgVal();
+		m_Stat[STAT_STR] = s.GetArgVal();
 		break;
 	case SKC_TITLE: // "TITLE"
 		m_sTitle = s.GetArgStr();
@@ -386,8 +386,6 @@ bool CSkillDef::r_LoadVal( CScript &s )
 	case SKC_GAINRADIUS: // "GAINRADIUS"
 		m_GainRadius = s.GetArgVal();
 		break;
-	
-	
 	
 	default:
 		return( CResourceDef::r_LoadVal( s ));
@@ -430,11 +428,11 @@ void CSkillClassDef::Init()
 	m_SkillSumMax = 10*1000;
 	m_StatSumMax = 300;
 	size_t i;
-	for ( i=0; i<COUNTOF(m_SkillLevelMax); i++ )
+	for ( i = 0; i < COUNTOF(m_SkillLevelMax); i++ )
 	{
 		m_SkillLevelMax[i] = 1000;
 	}
-	for ( i=0; i<COUNTOF(m_StatMax); i++ )
+	for ( i = 0; i < COUNTOF(m_StatMax); i++ )
 	{
 		m_StatMax[i] = 100;
 	}

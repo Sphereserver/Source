@@ -2076,7 +2076,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 				if ( pHorse == NULL )
 					return( false );
 
-				if ( ( pHorse->m_Stat[STAT_STR].m_val <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
+				if ( ( pHorse->Stat_GetVal(STAT_STR) <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
 				{
 					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
 					this->Horse_UnMount();

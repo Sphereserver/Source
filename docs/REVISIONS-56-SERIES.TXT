@@ -5237,3 +5237,7 @@ ALPHA additions:
 20-06-2011, MrSugarCube
 - Fixed #1956: Region's @Enter trigger firing when a creature is summoned, before the
   creature's @Create trigger fires.
+
+21-06-2011, MrSugarCube
+- Fixed #1986: Exception when evaluating intelligence skill is used and either one of the
+  magery or necromancy SKILL sections don't exist.

@@ -2068,11 +2068,11 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	{
 		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
 		{
-			damModLJ = pSrc->m_Skill[SKILL_LUMBERJACKING] / 20;
-			if (pSrc->m_Skill[SKILL_LUMBERJACKING] > 1000)
+			damModLJ = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 20;
+			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) > 1000)
 				damModLJ += (damModLJ / 10);
 		}
-		damMod += ( (pSrc->m_Skill[SKILL_TACTICS] / 16) + (pSrc->m_Skill[SKILL_ANATOMY] / 20) + damModLJ + ((int) pSrc->m_Stat[STAT_STR].m_base / 3) );
+		damMod += ( (pSrc->Skill_GetBase(SKILL_TACTICS) / 16) + (pSrc->Skill_GetBase(SKILL_ANATOMY) / 20) + damModLJ + ((int) pSrc->Stat_GetBase(STAT_STR) / 3) );
 		if ( damMod > 100)
 			damMod=100;
 	}
@@ -2417,7 +2417,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	BODYPART_TYPE iHitArea=ARMOR_HEAD;
 
 	int iHitPref = 0;
-	int iHitPrefChance = pSrc->m_Skill[SKILL_TACTICS];
+	int iHitPrefChance = pSrc->Skill_GetBase(SKILL_TACTICS);
 	int iHitPrefPenalty = 30;	// means: percent
 	int iHitPrefBonus = 30;		// means: percent
 

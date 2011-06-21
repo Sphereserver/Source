@@ -396,13 +396,16 @@ unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 
 	ASSERT( IsSkillBase( skill ));
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef( skill );
-	ASSERT(pSkillDef);
-	int iPureBonus =
-		( pSkillDef->m_StatBonus[STAT_STR] * maximum(0,Stat_GetAdjusted( STAT_STR )) ) +
-		( pSkillDef->m_StatBonus[STAT_INT] * maximum(0,Stat_GetAdjusted( STAT_INT )) ) +
-		( pSkillDef->m_StatBonus[STAT_DEX] * maximum(0,Stat_GetAdjusted( STAT_DEX )) );
+	int iAdjSkill = 0;
 
-	int iAdjSkill = IMULDIV( pSkillDef->m_StatPercent, iPureBonus, 10000 );
+	if (pSkillDef != NULL)
+	{
+		int iPureBonus = ( pSkillDef->m_StatBonus[STAT_STR] * maximum(0,Stat_GetAdjusted( STAT_STR )) ) +
+						 ( pSkillDef->m_StatBonus[STAT_INT] * maximum(0,Stat_GetAdjusted( STAT_INT )) ) +
+						 ( pSkillDef->m_StatBonus[STAT_DEX] * maximum(0,Stat_GetAdjusted( STAT_DEX )) );
+
+		iAdjSkill = IMULDIV( pSkillDef->m_StatPercent, iPureBonus, 10000 );
+	}
 
 	return( Skill_GetBase( (SKILL_TYPE) skill ) + iAdjSkill );
 }
@@ -558,6 +561,10 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	if ( m_pArea && m_pArea->IsFlag( REGION_FLAG_SAFE ))	// skills don't advance in safe areas.
 		return;
 
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+	if (pSkillDef == NULL)
+		return;
+
 	difficulty *= 10;
 
 	int iSkillLevel = Skill_GetBase( skill );
@@ -592,9 +599,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if ( iSkillSum >= iSkillSumMax )
 			difficulty = 0;
 	}
-
-	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
-	ASSERT(pSkillDef);
 
 	int iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
@@ -899,8 +903,13 @@ void CChar::Skill_SetTimeout()
 	ADDTOCALLSTACK("CChar::Skill_SetTimeout");
 	SKILL_TYPE skill = Skill_GetActive();
 	ASSERT( IsSkillBase(skill));
+
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+	if (pSkillDef == NULL)
+		return;
+
 	int iSkillLevel = Skill_GetBase(skill);
-	int iDelay = g_Cfg.GetSkillDef(skill)->m_Delay.GetLinear( iSkillLevel );
+	int iDelay = pSkillDef->m_Delay.GetLinear( iSkillLevel );
 	SetTimeout(iDelay);
 }
 
@@ -3028,19 +3037,19 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	if ( pBandage == NULL )
 	{
 		SysMessageDefault( DEFMSG_HEALING_NOAIDS );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 	if ( ! pBandage->IsType(IT_BANDAGE))
 	{
 		SysMessageDefault( DEFMSG_HEALING_WITEM );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	CObjBase * pObj = m_Act_Targ.ObjFind();
 	if ( ! CanTouch(pObj))
 	{
 		SysMessageDefault( DEFMSG_HEALING_REACH );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	CItemCorpse * pCorpse;	// resurrect by corpse.
@@ -3052,7 +3061,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		if ( pCorpse == NULL )
 		{
 			SysMessageDefault( DEFMSG_HEALING_NONCHAR );
-			return( -SKTRIG_QTY );
+			return -SKTRIG_QTY;
 		}
 
 		pChar = pCorpse->m_uidLink.CharFind();
@@ -3066,7 +3075,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	if ( pChar == NULL )
 	{
 		SysMessageDefault( DEFMSG_HEALING_BEYOND );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	if ( GetDist(pObj) > 2 )
@@ -3077,7 +3086,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 			pChar->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_ATTEMPT ),
 				(LPCTSTR) GetName(), (LPCTSTR) ( pCorpse ? ( pCorpse->GetName()) : g_Cfg.GetDefaultMsg( DEFMSG_HEALING_WHO ) ));
 		}
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	if ( pCorpse )
@@ -3085,12 +3094,12 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		if ( ! pCorpse->IsTopLevel())
 		{
 			SysMessageDefault( DEFMSG_HEALING_CORPSEG );
-			return( -SKTRIG_QTY );
+			return -SKTRIG_QTY;
 		}
 		CRegionBase * pRegion = pCorpse->GetTopPoint().GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI);
 		if ( pRegion == NULL )
 		{
-			return( -SKTRIG_QTY );
+			return -SKTRIG_QTY;
 		}
 		if ( pRegion->IsFlag( REGION_ANTIMAGIC_ALL | REGION_ANTIMAGIC_RECALL_IN | REGION_ANTIMAGIC_TELEPORT ))
 		{
@@ -3100,13 +3109,13 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 				pChar->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_ATTEMPT ),
 					(LPCTSTR) GetName(), (LPCTSTR) pCorpse->GetName() );
 			}
-			return( -SKTRIG_QTY );
+			return -SKTRIG_QTY;
 		}
 	}
 	else if ( pChar->IsStatFlag(STATF_DEAD))
 	{
 		SysMessageDefault( DEFMSG_HEALING_GHOST );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	if ( ! pChar->IsStatFlag( STATF_Poisoned|STATF_DEAD )
@@ -3120,7 +3129,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		{
 			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_NONEED ), (LPCTSTR) pChar->GetName());
 		}
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
 	if ( stage == SKTRIG_FAIL )
@@ -3135,7 +3144,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		}
 
 		// Harm the creature ?
-		return( -SKTRIG_FAIL );
+		return -SKTRIG_FAIL;
 	}
 
 	if ( stage == SKTRIG_START )
@@ -3160,7 +3169,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 			// level of the poison ?
 			return( 50 + Calc_GetRandVal(50));
 		}
-		return( Calc_GetRandVal(80));
+		return Calc_GetRandVal(80);
 	}
 
 	ASSERT( stage == SKTRIG_SUCCESS );
@@ -3170,8 +3179,10 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	CItem * pBloodyBandage = CItem::CreateScript(Calc_GetRandVal(2) ? ITEMID_BANDAGES_BLOODY1 : ITEMID_BANDAGES_BLOODY2, this );
 	ItemBounce(pBloodyBandage);
 
-	const CSkillDef* pSkillDef = g_Cfg.GetSkillDef(Skill_GetActive());
-	ASSERT(pSkillDef);
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(Skill_GetActive());
+	if (pSkillDef == NULL)
+		return -SKTRIG_QTY;
+
 	int iSkillLevel = Skill_GetAdjusted( Skill_GetActive());
 
 	if ( pCorpse )
@@ -3182,19 +3193,19 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	if ( pChar->IsStatFlag( STATF_Poisoned ))
 	{
 		if ( ! SetPoisonCure( iSkillLevel, true ))
-			return( -1 );
+			return -SKTRIG_ABORT;
 
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_1 ), (LPCTSTR) (pChar == this) ? g_Cfg.GetDefaultMsg(DEFMSG_HEALING_YOURSELF) : ( pChar->GetName()));
 		if ( pChar != this )
 		{
 			pChar->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_2 ), (LPCTSTR) GetName());
 		}
-		return( 0 );
+		return 0;
 	}
 
 	// LAYER_FLAG_Bandage
 	pChar->UpdateStatVal( STAT_STR, pSkillDef->m_Effect.GetLinear(iSkillLevel));
-	return( 0 );
+	return 0;
 }
 
 int CChar::Skill_RemoveTrap( SKTRIG_TYPE stage )
@@ -4081,8 +4092,7 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
 		CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
-		ASSERT(pSkillDef);
-		if ( pSkillDef->HasTrigger( stage ) )
+		if ( pSkillDef != NULL && pSkillDef->HasTrigger( stage ) )
 		{
 			// RES_SKILL
 			CResourceLock s;
@@ -4282,12 +4292,14 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		if ( IsSkillBase(skill) )
 		{
 			const CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
-			ASSERT(pSkillDef);
-			int iWaitTime = pSkillDef->m_Delay.GetLinear( Skill_GetBase(skill) );
-			if ( iWaitTime )
+			if (pSkillDef != NULL)
 			{
-				// How long before complete skill.
-				SetTimeout( iWaitTime );
+				int iWaitTime = pSkillDef->m_Delay.GetLinear( Skill_GetBase(skill) );
+				if ( iWaitTime != 0 )
+				{
+					// How long before complete skill.
+					SetTimeout( iWaitTime );
+				}
 			}
 		}
 

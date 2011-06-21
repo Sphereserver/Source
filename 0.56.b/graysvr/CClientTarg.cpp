@@ -1343,13 +1343,16 @@ bool CClient::OnTarg_Skill( CObjBase * pObj )
 	if ( g_Cfg.IsSkillFlag( m_tmSkillTarg.m_Skill, SKF_SCRIPTED ) )
 	{
 		// is this scripted skill a targeted skill ?
-		if ( !g_Cfg.GetSkillDef( m_tmSkillTarg.m_Skill )->m_sTargetPrompt.IsEmpty() )
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(m_tmSkillTarg.m_Skill);
+		if (pSkillDef != NULL && pSkillDef->m_sTargetPrompt.IsEmpty() == false)
 		{
 			m_pChar->m_Act_Targ = m_Targ_UID;
 			return m_pChar->Skill_Start( m_tmSkillTarg.m_Skill );
 		}
 		else
+		{
 			return true;
+		}
 	}
 
 	// targetting what skill ?
