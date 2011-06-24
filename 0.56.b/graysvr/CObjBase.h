@@ -3351,7 +3351,7 @@ public:
 	bool Fight_Attack( const CChar * pCharTarg );
 	bool Fight_Clear( const CChar * pCharTarg );
 	void Fight_ClearAll();
-	CChar * Fight_FindBestTarget();
+	CChar * Fight_FindBestTarget() const;
 	bool Fight_AttackNext();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );

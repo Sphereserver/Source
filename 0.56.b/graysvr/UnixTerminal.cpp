@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <termcap.h>
 #endif
 
 UnixTerminal g_UnixTerminal;

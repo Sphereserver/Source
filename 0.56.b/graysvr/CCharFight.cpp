@@ -2922,7 +2922,7 @@ void CChar::Fight_ClearAll()
 	UpdateModeFlag();
 }
 
-CChar * CChar::Fight_FindBestTarget()
+CChar * CChar::Fight_FindBestTarget() const
 {
 	ADDTOCALLSTACK("CChar::Fight_FindBestTarget");
 	// If i am an NPC with no more targets then drop out of war mode.
@@ -2934,13 +2934,13 @@ CChar * CChar::Fight_FindBestTarget()
 	CChar * pChar = NULL;
 	CChar * pClosest = NULL;
 
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItem->GetNext())
+	const CItem * pItem = GetContentHead();
+	for ( ; pItem != NULL; pItem = pItem->GetNext())
 	{
 		if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
 			continue;
 		// check that the item is actually a memory item
-		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
+		const CItemMemory * pMemory = dynamic_cast <const CItemMemory *>(pItem);
 		if ( pMemory == NULL )
 			continue;
 
@@ -3012,10 +3012,11 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		return( false );
 	}
 
-
 	if (m_Act_Targ != pCharTarg->GetUID())
-		if (OnTrigger(CTRIG_Attack, (CTextConsole *)pCharTarg) == TRIGRET_RET_TRUE)
+	{
+		if (OnTrigger(CTRIG_Attack, const_cast<CChar *>(pCharTarg)) == TRIGRET_RET_TRUE)
 			return false;
+	}
 
 	if ( GetPrivLevel() <= PLEVEL_Guest &&
 		pCharTarg->m_pPlayer &&
@@ -3034,8 +3035,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 
 
 	// Skill interruption ?
-	SKILL_TYPE	skillWeapon	= Fight_GetWeaponSkill();
-	SKILL_TYPE	skillActive	= Skill_GetActive();
+	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
+	SKILL_TYPE skillActive = Skill_GetActive();
 
 	if ( skillActive == skillWeapon && m_Act_Targ == pCharTarg->GetUID() )
 		return true;
