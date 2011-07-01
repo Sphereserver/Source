@@ -1626,7 +1626,7 @@ bool CChar::Spell_TargCheck()
 	}
 
 	// NOTE: Targeting a field spell directly on a char should not be allowed ?
-	if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD))
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) && !pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) )
 	{
 		if ( m_Act_Targ.IsValidUID() && m_Act_Targ.IsChar())
 		{

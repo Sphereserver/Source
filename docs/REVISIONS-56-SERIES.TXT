@@ -5241,3 +5241,7 @@ ALPHA additions:
 21-06-2011, MrSugarCube
 - Fixed #1986: Exception when evaluating intelligence skill is used and either one of the
   magery or necromancy SKILL sections don't exist.
+
+01-07-2011, ShiryuX
+- Fixed #1981: Now you will be able to cast spells with 'spellflag_field' flag on chars 
+  if 'spellflag_targ_char' is enabled.
