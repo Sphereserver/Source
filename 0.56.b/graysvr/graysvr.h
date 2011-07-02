@@ -17,6 +17,11 @@
 	#endif
 #endif
 
+#if defined(_WIN32) && !defined(_MTNETWORK)
+	// _MTNETWORK enabled via makefile for other systems
+	#define _MTNETWORK
+#endif
+
 //#define DEBUGWALKSTUFF 1
 //#ifdef _DEBUG
 #ifdef DEBUGWALKSTUFF
