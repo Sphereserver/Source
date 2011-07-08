@@ -5254,3 +5254,6 @@ ALPHA additions:
   can be used to control the priority of the networking threads (the default value of 255
   should be the best option to use).
   The EF_NetworkOutThread experimental flag has been removed.
+
+08-07-2011, MrSugarCube
+- Fixed #1991: Custom packet handling functions causing clients to freeze.

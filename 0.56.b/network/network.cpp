@@ -3247,6 +3247,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 
 	while (remainingLength > 0 && state->isClosing() == false)
 	{
+		ASSERT(remainingLength == packet->getRemainingLength());
 		BYTE packetId = packet->getRemainingData()[0];
 		Packet* handler = m_thread->m_manager.getPacketManager().getHandler(packetId);
 
@@ -3266,8 +3267,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 			if (client->xPacketFilter(packet->getRemainingData(), packetLength))
 			{
 				packet->skip(packetLength);
-				remainingLength -= packetLength;
-				break;
+				continue;
 			}
 
 			// copy data to handler
