@@ -37,9 +37,17 @@ PacketCreate::PacketCreate(size_t size) : Packet(size)
 bool PacketCreate::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCreate::onReceive");
+	return PacketCreate::onReceive(net, false);
+}
+
+bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
+{
+	ADDTOCALLSTACK("PacketCreate::onReceive[1]");
+	TCHAR charname[MAX_NAME_SIZE];
+	SKILL_TYPE skill1 = SKILL_NONE, skill2 = SKILL_NONE, skill3 = SKILL_NONE, skill4 = SKILL_NONE;
+	BYTE skillval1 = 0, skillval2 = 0, skillval3 = 0, skillval4 = 0;
 
 	skip(9); // 4=pattern1, 4=pattern2, 1=kuoc
-	TCHAR charname[MAX_NAME_SIZE];
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(2); // 0x00
 	DWORD flags = readInt32();
@@ -50,12 +58,17 @@ bool PacketCreate::onReceive(NetState* net)
 	BYTE strength = readByte();
 	BYTE dexterity = readByte();
 	BYTE intelligence = readByte();
-	SKILL_TYPE skill1 = (SKILL_TYPE)readByte();
-	BYTE skillval1 = readByte();
-	SKILL_TYPE skill2 = (SKILL_TYPE)readByte();
-	BYTE skillval2 = readByte();
-	SKILL_TYPE skill3 = (SKILL_TYPE)readByte();
-	BYTE skillval3 = readByte();
+	skill1 = (SKILL_TYPE)readByte();
+	skillval1 = readByte();
+	skill2 = (SKILL_TYPE)readByte();
+	skillval2 = readByte();
+	skill3 = (SKILL_TYPE)readByte();
+	skillval3 = readByte();
+	if (hasExtraSkill)
+	{
+		skill4 = (SKILL_TYPE)readByte();
+		skillval4 = readByte();
+	}
 	HUE_TYPE hue = (HUE_TYPE)readInt16();
 	ITEMID_TYPE hairid = (ITEMID_TYPE)readInt16();
 	HUE_TYPE hairhue = (HUE_TYPE)readInt16();
@@ -117,7 +130,7 @@ bool PacketCreate::onReceive(NetState* net)
 	
 	return doCreate(net, charname, isFemale, rtRace,
 		strength, dexterity, intelligence, prof,
-		skill1, skillval1, skill2, skillval2, skill3, skillval3, (SKILL_TYPE)0, 0,
+		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
 		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
 		startloc, 0, flags);
 }
@@ -1467,17 +1480,17 @@ bool PacketCharDelete::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0x8D : PacketCreateNew		create new character request (KR)
+ *	Packet 0x8D : PacketCreateKR		create new character request (KR)
  *
  *
  ***************************************************************************/
-PacketCreateNew::PacketCreateNew(void) : PacketCreate(0)
+PacketCreateKR::PacketCreateKR(void) : PacketCreate(0)
 {
 }
 
-bool PacketCreateNew::onReceive(NetState* net)
+bool PacketCreateKR::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketCreateNew::onReceive");
+	ADDTOCALLSTACK("PacketCreateKR::onReceive");
 
 	skip(10); // 2=length, 4=pattern1, 4=pattern2
 	TCHAR charname[MAX_NAME_SIZE];
@@ -4196,5 +4209,25 @@ bool PacketCrashReport::onReceive(NetState* net)
 					errorCode, description, errorOffset, executable,
 					versionMaj, versionMin, versionRev, versionPat);
 	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF8 : PacketCreateHS					create new character request (HS)
+ *
+ *
+ ***************************************************************************/
+PacketCreateHS::PacketCreateHS() : PacketCreate(106)
+{
+}
+
+bool PacketCreateHS::onReceive(NetState* net)
+{
+	ADDTOCALLSTACK("PacketCreateHS::onReceive");
+
+	// standard character creation packet.. with 4 skills
+	return PacketCreate::onReceive(net, true);
 }
 

@@ -212,7 +212,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_CorpEquip		= 0x89,
 	XCMD_GumpTextDisp	= 0x8b,
 	XCMD_Relay			= 0x8c,
-	XCMD_CreateNew		= 0x8d,
+	XCMD_CreateKR		= 0x8d,
 	//	0x90
 	XCMD_MapDisplay		= 0x90,
 	XCMD_CharListReq	= 0x91,
@@ -304,7 +304,8 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MapDisplayNew	= 0xf5,
 	XCMD_MoveShip		= 0xf6,
 
-	XCMD_QTY		= 0xf7
+	XCMD_CreateHS		= 0xf8,
+	XCMD_QTY		= 0xf9
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -1771,7 +1772,7 @@ struct CEvent	// event buffer from client to server..
 			CExtAosData m_u;
 		} ExtAosData;
 
-		struct // XCMD_CreateNew, size = ? // create a new char (uokr)
+		struct // XCMD_CreateKR, size = ? // create a new char (uokr)
 		{
 			BYTE m_Cmd;						// 0 = 0x8D
 			NWORD m_len;					// 1 - 2 = length
@@ -1809,7 +1810,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_unk6;	// 141
 			NWORD m_beardHue;				// 142 - 143 = beard hue
 			NWORD m_beardId;				// 144 - 145 = beard id
-		} CreateNew;
+		} CreateKR;
 
 		struct // XCMD_BugReport
 		{
@@ -1924,6 +1925,84 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_addressCount;		// 305 = address count
 			NDWORD m_address[1];		// 306-.. = address
 		} CrashReport;
+
+		/*
+			BYTE m_Cmd;		// 0=0
+			NDWORD m_pattern1; // 0xedededed
+			NDWORD m_pattern2; // 0xffffffff
+			BYTE m_kuoc; // KUOC Signal (0x00 normally. 0xff for Krrios' client)
+
+			char m_charname[MAX_NAME_SIZE];		// 10
+			//char m_charpass[MAX_NAME_SIZE];		// Not used anymore
+			
+			BYTE m_unk8[2];
+			NDWORD m_flags;
+			BYTE m_unk10[8];
+			BYTE m_prof;
+			BYTE m_unk11[15];
+
+			BYTE m_sex;		// 70, 0 = male
+			BYTE m_str;		// 71
+			BYTE m_dex;		// 72
+			BYTE m_int;		// 73
+
+			BYTE m_skill1;
+			BYTE m_val1;
+			BYTE m_skill2;
+			BYTE m_val2;
+			BYTE m_skill3;
+			BYTE m_val3;
+
+			NWORD m_wSkinHue;	// 0x50 // HUE_TYPE
+			NWORD m_hairid;
+			NWORD m_hairHue;
+			NWORD m_beardid;
+			NWORD m_beardHue;	// 0x58
+			BYTE m_unk2;
+			BYTE m_startloc;
+			BYTE m_unk3;
+			BYTE m_unk4;
+			BYTE m_unk5;
+			BYTE m_slot;
+			BYTE m_clientip[4];
+			NWORD m_shirtHue;
+			NWORD m_pantsHue;*/
+		struct // XCMD_CreateHS, size = 106 // create a new char (uohs)
+		{
+			BYTE m_Cmd;						// 0 = 0xF8
+			NDWORD m_pattern1;				// 1 - 4 = 0xedededed
+			NDWORD m_pattern2;				// 5 - 8 = 0xffffffff
+			BYTE m_kuoc;					// 9 = 0x0 (0xFF = Krrios)
+			char m_charname[MAX_NAME_SIZE];	// 10 - 39 = ascii name
+			BYTE m_unk1[2];					// 40 - 41 = 0x00
+			NDWORD m_flags;					// 42 - 45 = flags
+			BYTE m_unk2[8];					// 46 - 53 = unknown
+			BYTE m_prof;					// 54 = profession
+			BYTE m_unk3[15];				// 55 - 69 = unknown
+			BYTE m_sex;						// 70 = race+sex
+			BYTE m_str;						// 71 = str
+			BYTE m_dex;						// 72 = dex
+			BYTE m_int;						// 73 = int
+			BYTE m_skill1;					// 74 = skill id 1
+			BYTE m_val1;					// 75 = skill value 1
+			BYTE m_skill2;					// 76 = skill id 2
+			BYTE m_val2;					// 77 = skill value 2
+			BYTE m_skill3;					// 78 = skill id 3
+			BYTE m_val3;					// 79 = skill value 3
+			BYTE m_skill4;					// 80 = skill id 4
+			BYTE m_val4;					// 81 = skill value 4
+			NWORD m_wSkinHue;				// 82 - 83 = skin hue
+			NWORD m_hairid;					// 84 - 85 = hair id
+			NWORD m_hairHue;				// 86 - 87 = hair hue
+			NWORD m_beardid;				// 88 - 89 = beard id
+			NWORD m_beardHue;				// 90 - 91 = beard hue
+			BYTE m_server;					// 92 = server index
+			BYTE m_startloc;				// 93 = start location
+			NDWORD m_slot;					// 94 - 97 = character slot
+			NDWORD m_clientip;				// 98 - 101 = client ip
+			NWORD m_shirtHue;				// 102 - 103 = shirt hue
+			NWORD m_pantsHue;				// 104 - 105 = pants hue
+		} CreateHS;
 	};
 } PACK_NEEDED;
 

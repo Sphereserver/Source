@@ -619,7 +619,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_MenuChoice, new PacketMenuChoice());					// select menu item
 	registerPacket(XCMD_ServersReq, new PacketServersReq());					// request server list
 	registerPacket(XCMD_CharDelete, new PacketCharDelete());					// delete character
-	registerPacket(XCMD_CreateNew, new PacketCreateNew());						// create character
+	registerPacket(XCMD_CreateKR, new PacketCreateKR());						// create character (KR/SA)
 	registerPacket(XCMD_CharListReq, new PacketCharListReq());					// request character list
 	registerPacket(XCMD_BookOpen, new PacketBookHeaderEdit());					// edit book
 	registerPacket(XCMD_DyeVat, new PacketDyeObject());							// colour selection dialog
@@ -658,6 +658,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
 	registerPacket(XCMD_WalkUnknown, new PacketUnknown(9));						//
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
+	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
 
 	// extended packets (0xBF)
 	registerExtended(EXTDATA_ScreenSize, new PacketScreenSize());				// client screen size

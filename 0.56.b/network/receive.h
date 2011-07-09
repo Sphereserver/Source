@@ -32,6 +32,7 @@ public:
 	virtual bool onReceive(NetState* net);
 
 protected:
+	bool onReceive(NetState* net, bool hasExtraSkill);
 	bool doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags);
 };
 
@@ -414,14 +415,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x8D : PacketCreateNew					create new character request (KR)
+ *	Packet 0x8D : PacketCreateKR					create new character request (KR/SA)
  *
  *
  ***************************************************************************/
-class PacketCreateNew : public PacketCreate
+class PacketCreateKR : public PacketCreate
 {
 public:
-	PacketCreateNew(void);
+	PacketCreateKR(void);
 	virtual bool onReceive(NetState* net);
 };
 
@@ -1406,3 +1407,17 @@ public:
 };
 
 #endif
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF8 : PacketCreateHS					create new character request (HS)
+ *
+ *
+ ***************************************************************************/
+class PacketCreateHS : public PacketCreate
+{
+public:
+	PacketCreateHS(void);
+	virtual bool onReceive(NetState* net);
+};
