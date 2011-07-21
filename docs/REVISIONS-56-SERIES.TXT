@@ -5257,3 +5257,6 @@ ALPHA additions:
 
 08-07-2011, MrSugarCube
 - Fixed #1991: Custom packet handling functions causing clients to freeze.
+
+21-07-2011, ShiryuX
+- Added #1963: OF_DClickNoTurn, if enabled players won't turn when dclick or target an item.

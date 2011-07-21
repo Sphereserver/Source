@@ -1797,14 +1797,17 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		m_Targ_UID.ClearUID();
 		if ( pt.IsCharValid())
 		{
-			m_pChar->UpdateDir(pt);
+			if ( !IsSetOF(OF_DClickNoTurn) )
+				m_pChar->UpdateDir(pt);
 		}
 		trigtype = ITRIG_TARGON_GROUND;
 	}
 	else
 	{
 		m_Targ_UID = pObjTarg->GetUID();
-		m_pChar->UpdateDir(pObjTarg);
+		if ( !IsSetOF(OF_DClickNoTurn) )
+			m_pChar->UpdateDir(pObjTarg);
+
 		if ( pObjTarg->IsChar() )
 		{
 			trigtype = ITRIG_TARGON_CHAR;

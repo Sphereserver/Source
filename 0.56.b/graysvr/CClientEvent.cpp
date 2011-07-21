@@ -2097,18 +2097,12 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 	}
 
 	// Face the object we are using/activating.
-#ifdef _ALPHASPHERE
 	if ( !IsSetOF(OF_DClickNoTurn) )
 	{
 		SetTargMode();
 		m_Targ_UID = uid;
 		m_pChar->UpdateDir( pObj );
 	}
-#else
-	SetTargMode();
-	m_Targ_UID = uid;
-	m_pChar->UpdateDir( pObj );
-#endif
 
 	if ( pObj->IsItem())
 	{

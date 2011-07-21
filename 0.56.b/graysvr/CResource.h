@@ -43,9 +43,7 @@ enum OF_TYPE
 	OF_NoPrefix				= 0x0004000,
 	OF_DyeType				= 0x0008000,
 	OF_DrinkIsFood			= 0x0010000,
-#ifdef _ALPHASPHERE
 	OF_DClickNoTurn			= 0x0020000,
-#endif
 	OF_Specific				= 0x1000000
 };
 
@@ -868,15 +866,15 @@ public:
 #define STAT_FLAG_DENYMAXN	0x04	//		.. for npcs
 	int		m_iStatFlag;
 
-#define NPC_AI_PATH		0x0001		//	NPC pathfinding
-#define	NPC_AI_FOOD		0x0002		//	NPC food search (objects + grass)
-#define	NPC_AI_EXTRA	0x0004		//	NPC magics, combat, etc
-#define NPC_AI_ALWAYSINT 0x0008		//	NPC pathfinding does not check int, always smart
-#define NPC_AI_INTFOOD	0x00010		//  NPC food search (more intelligent and trusworthy)
-//#define NPC_AI_MAGICS	0x00020
-#define NPC_AI_COMBAT	0x00040
+#define NPC_AI_PATH				0x00001		//	NPC pathfinding
+#define	NPC_AI_FOOD				0x00002		//	NPC food search (objects + grass)
+#define	NPC_AI_EXTRA			0x00004		//	NPC magics, combat, etc
+#define NPC_AI_ALWAYSINT		0x00008		//	NPC pathfinding does not check int, always smart
+#define NPC_AI_INTFOOD			0x00010		//  NPC food search (more intelligent and trusworthy)
+//#define NPC_AI_MAGICS			0x00020
+#define NPC_AI_COMBAT			0x00040
 #define NPC_AI_VEND_TIME		0x00080
-#define NPC_AI_LOOTING	0x00100
+#define NPC_AI_LOOTING			0x00100
 #define	NPC_AI_MOVEOBSTACLES	0x00200
 	int		m_iNpcAi;
 
