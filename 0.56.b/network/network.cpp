@@ -2733,7 +2733,9 @@ void NetworkManager::tick(void)
 				if (state->needsFlush() == false)
 				{
 					DEBUGNETWORK(("%lx:Flushing data for client.\n", state->id()));
-					state->markFlush(true);
+					NetworkThread * thread = state->getParentThread();
+					if (thread != NULL)
+						thread->flush(state);
 				}
 				continue;
 			}
@@ -2797,12 +2799,21 @@ void NetworkManager::flushAllClients(void)
 {
 	// flush data for every client
 	ADDTOCALLSTACK("NetworkManager::flushAllClients");
-	for (size_t i = 0; i < m_stateCount; ++i)
-	{
-		NetState* state = m_states[i];
-		if (state->isInUse() && state->isClosed() == false)
-			state->markFlush(true);
-	}
+
+	for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
+		(*it)->flushAllClients();
+}
+
+size_t NetworkManager::flush(NetState * state)
+{
+	// flush data for a single client
+	ADDTOCALLSTACK("NetworkManager::flush");
+	ASSERT(state != NULL);
+	NetworkThread * thread = state->getParentThread();
+	if (thread != NULL)
+		return thread->flush(state);
+
+	return 0;
 }
 
 /***************************************************************************
@@ -2919,21 +2930,13 @@ void NetworkThread::tick(void)
 	setPriority(static_cast<IThread::Priority>(g_Cfg.m_iNetworkThreadPriority));
 }
 
-void NetworkThread::processInput(void)
+void NetworkThread::flushAllClients(void)
 {
-	ADDTOCALLSTACK("NetworkThread::processInput");
-	m_input.processInput();
+	ADDTOCALLSTACK("NetworkThread::flushAllClients");
+	NetworkThreadStateIterator states(this);
+	while (NetState* state = states.next())
+		m_output.flush(state);
 }
-
-void NetworkThread::processOutput(void)
-{
-	ADDTOCALLSTACK("NetworkThread::processOutput");
-#ifdef MTNETWORK_OUTPUT
-	ASSERT(!isActive() || isCurrentThread());
-#endif
-	m_output.processOutput();
-}
-	
 
 /***************************************************************************
  *
@@ -3671,10 +3674,24 @@ void NetworkOutput::checkFlushRequests(void)
 size_t NetworkOutput::flush(NetState* state)
 {
 	// process all queues for a client
-	ADDTOCALLSTACK("NetworkOutput::processAllQueues");
+	ADDTOCALLSTACK("NetworkOutput::flush");
 	ASSERT(state != NULL);
-	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 
+	if (state->isInUse() == false || state->isClosed())
+		return 0;
+
+	if (m_thread->isActive() && m_thread->isCurrentThread() == false)
+	{
+		// when this isn't the active thread, all we can do is raise a request to flush this
+		// client later
+		state->markFlush(true);
+		if (m_thread->getPriority() == IThread::Disabled)
+			m_thread->awaken();
+
+		return 0;
+	}
+	
+	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 	size_t packetsSent = 0;
 	for (int priority = PacketSend::PRI_HIGHEST; priority >= 0; --priority)
 	{

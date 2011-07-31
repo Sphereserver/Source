@@ -538,14 +538,14 @@ private:
 public:
 	void setOwner(NetworkThread* thread) { m_thread = thread; }			// set owner thread
 	bool processOutput(void);											// process output to clients, returns true if data was sent
-	void onAsyncSendComplete(NetState* state, bool success);							// notify that async operation completed
+	size_t flush(NetState* state);										// process all queues for a client
+	void onAsyncSendComplete(NetState* state, bool success);			// notify that async operation completed
 
 	static void QueuePacket(PacketSend* packet, bool appendTransaction);	// queue a packet for sending
 	static void QueuePacketTransaction(PacketTransaction* transaction);		// queue a packet transaction for sending
 
 private:
 	void checkFlushRequests(void);										// check for clients who need data flushing
-	size_t flush(NetState* state);										// process all queues for a client
 	size_t processPacketQueue(NetState* state, unsigned int priority);	// process a client's packet queue
 	size_t processAsyncQueue(NetState* state);							// process a client's async queue
 	bool processByteQueue(NetState* state);								// process a client's byte queue
@@ -596,6 +596,7 @@ public:
 
 	void processAllInput(void);					// process network input (NOT THREADSAFE)
 	void processAllOutput(void);				// process network output (NOT THREADSAFE)
+	size_t flush(NetState * state);				// process all output for a client
 	void flushAllClients(void);					// force each thread to flush output
 
 public:
@@ -689,17 +690,33 @@ public:
 		NetworkOutput::QueuePacketTransaction(transaction);
 	}
 
+	void processInput(void)
+	{
+		// process network input
+		m_input.processInput();
+	}
+
+	void processOutput(void)
+	{
+		// process network output
+		m_output.processOutput();
+	}
+
+	size_t flush(NetState * state)
+	{
+		// flush all output for a client
+		return m_output.flush(state);
+	}
+
 public:
 	virtual void onStart(void);
 	virtual void tick(void);
 
-	void processInput(void);	// process network input
-	void processOutput(void);	// process network output
-	void flushAllClients(void); // flush all output
+	void flushAllClients(void);			// flush all output
 
 private:
-	void checkNewStates(void);				// check for states that have been assigned but not moved to our list
-	void dropInvalidStates(void);			// check for states that don't belong to use anymore
+	void checkNewStates(void);			// check for states that have been assigned but not moved to our list
+	void dropInvalidStates(void);		// check for states that don't belong to use anymore
 
 public:
 	friend class NetworkInput;

@@ -1319,7 +1319,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 #ifndef _MTNETWORK
 			g_NetworkOut.flush(this);
 #else
-			GetNetState()->markFlush(true);
+			g_NetworkManager.flush(GetNetState());
 #endif
 			break;
 		case CV_RESEND:
