@@ -407,6 +407,9 @@ void CChar::Delete()
 		pClient->GetNetState()->markReadClosed();
 	}
 
+	// Detach from account now
+	ClearPlayer();
+
 	CObjBase::Delete();
 }
 

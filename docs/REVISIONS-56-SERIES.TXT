@@ -5260,3 +5260,7 @@ ALPHA additions:
 
 21-07-2011, ShiryuX
 - Added #1963: OF_DClickNoTurn, if enabled players won't turn when dclick or target an item.
+
+31-07-2011, MrSugarCube
+- Fixed #1998: @Destroy not firing on player characters or their items, when deleted via the
+  character selection screen or their account is deleted.

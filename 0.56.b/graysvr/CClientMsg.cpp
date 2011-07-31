@@ -3083,7 +3083,7 @@ BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 	}
 
 	//	Do the scripts allow to delete the char?
-	enum TRIGRET_TYPE	tr;
+	enum TRIGRET_TYPE tr;
 	CScriptTriggerArgs Args;
 	Args.m_pO1 = this;
 	pChar->r_Call("f_onchar_delete", pChar, &Args, NULL, &tr);
@@ -3092,10 +3092,9 @@ BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 		return PacketDeleteError::NotOldEnough;
 	}
 
-	// pChar->Delete();
-	delete pChar;
-	// refill the list.
+	pChar->Delete();
 
+	// refill the list.
 	new PacketCharacterListUpdate(this, GetAccount()->m_uidLastChar.CharFind());
 
 	return PacketDeleteError::Success;

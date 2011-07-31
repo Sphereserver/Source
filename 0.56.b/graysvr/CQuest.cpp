@@ -81,7 +81,7 @@ void CCharRefArray::DeleteChars()
 	{
 		CChar * pChar = m_uidCharArray[--iQty].CharFind();
 		if ( pChar != NULL )
-			delete pChar;
+			pChar->Delete();
 	}
 	m_uidCharArray.RemoveAll();
 }

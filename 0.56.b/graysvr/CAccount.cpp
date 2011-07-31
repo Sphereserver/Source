@@ -209,6 +209,8 @@ CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 bool CAccounts::Account_Delete( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Delete");
+	ASSERT(pAccount != NULL);
+
 	CScriptTriggerArgs Args;
 	Args.Init(pAccount->GetName());
 	enum TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
@@ -224,6 +226,7 @@ bool CAccounts::Account_Delete( CAccount * pAccount )
 void CAccounts::Account_Add( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Add");
+	ASSERT(pAccount != NULL);
 	m_Accounts.AddSortKey(pAccount,pAccount->GetName());
 }
 
@@ -569,7 +572,18 @@ void CAccount::DeleteChars()
 	// Now track down all my disconnected chars !
 	if ( ! g_Serv.IsLoading())
 	{
-		m_Chars.DeleteChars();
+		size_t i = m_Chars.GetCharCount();
+		while (i > 0)
+		{
+			CChar * pChar = m_Chars.GetChar(--i).CharFind();
+			if (pChar != NULL)
+			{
+				pChar->Delete();
+				pChar->ClearPlayer();
+			}
+
+			m_Chars.DetachChar(i);
+		}
 	}
 }
 
