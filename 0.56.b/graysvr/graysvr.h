@@ -1662,7 +1662,12 @@ enum BUFF_ICONS
 	BI_AGILITY,
 	BI_CUNNING,
 	BI_STRENGTH,
-	BI_BLESS
+	BI_BLESS,
+	BI_SLEEP,
+	BI_STONEFORM,
+	BI_SPELLPLAGUE,
+	BI_GARGOYLEBERSERK,
+	BI_GARGOYLEFLY = 0x41E
 };
 // ---------------------------------------------------------------------------------------------
 

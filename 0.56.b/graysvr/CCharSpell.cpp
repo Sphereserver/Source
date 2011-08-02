@@ -1785,9 +1785,33 @@ bool CChar::Spell_CastDone()
 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) )
 	{
- 		if ( pObj )
+		if ( pSpellDef->IsSpellType( SPELLFLAG_SUMMON ) )
 		{
-			pObj->OnSpellEffect( spell, this, iSkillLevel, dynamic_cast <CItem*>( pObjSrc ));
+			if ( iC1 )
+			{
+				m_atMagery.m_SummonID = iC1;
+				m_atMagery.m_fSummonPet = true;
+				Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+			}
+		} 
+		else if ( pSpellDef->IsSpellType( SPELLFLAG_FIELD ) )
+		{
+			if ( iT1 && iT2 )
+			{
+				if ( !fieldWidth )
+					fieldWidth = 7;
+				if ( !fieldGauge )
+					fieldGauge = 1;
+
+				Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
+			}
+		}
+		else
+		{
+			if ( pObj )
+			{
+				pObj->OnSpellEffect( spell, this, iSkillLevel, dynamic_cast <CItem*>( pObjSrc ));
+			}
 		}
 	}
 	else

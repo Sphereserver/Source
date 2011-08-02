@@ -1311,6 +1311,11 @@ bufficon_agility 							1045
 bufficon_cunning 							1046
 bufficon_strength 						1047
 bufficon_bless 								1048
+bufficon_sleep							1049
+bufficon_stoneform						1050
+bufficon_spellplague					1051
+bufficon_gargoyleberserk				1052
+bufficon_gargoylefly					1054
 
 [DEFNAME buff_clilocs]
 buffcliloc_empty 1070722
