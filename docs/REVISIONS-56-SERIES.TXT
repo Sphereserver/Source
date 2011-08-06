@@ -5272,5 +5272,9 @@ ALPHA additions:
   LOCAL.CREATEOBJECT2, LOCAL.FIELDWIDTH and LOCAL.FIELDGAUGE for spells with SPELLFLAG_FIELD
   or with SPELLFLAG_SUMMON. If width/gauge is not set, default is 7/1.
   For more information, check the revisions.
+
 02-08-2011, ShiryuX (script pack)
 - Added: A few more buff icons in the buff_icons defname.
+
+05-08-2011, ShiryuX
+- Fixed #2008: RANGEH now displays the longest range and RANGEL the shortest (High/Low)

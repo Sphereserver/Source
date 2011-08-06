@@ -80,10 +80,10 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
 			else sVal.Format( "%d,%d", RangeH(), RangeL() );
 			break;
-		case OBC_RANGEH:
+		case OBC_RANGEL: // internally: rangel seems to be Range Highest value
 			sVal.FormatHex( RangeH() );
 			break;
-		case OBC_RANGEL:
+		case OBC_RANGEH: // but rangeh seems to be the Range Lowest value.
 			sVal.FormatHex( RangeL() );
 			break;
 		case OBC_RESOURCES:		// Print the resources
