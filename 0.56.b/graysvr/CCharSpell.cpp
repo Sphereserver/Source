@@ -1726,6 +1726,7 @@ bool CChar::Spell_CastDone()
 
 	unsigned int fieldWidth = 0;
 	unsigned int fieldGauge = 0;
+	unsigned int areaRadius = 0;
 
 	SPELL_TYPE spell = m_atMagery.m_Spell;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
@@ -1761,6 +1762,7 @@ bool CChar::Spell_CastDone()
 
 		Args.m_VarsLocal.SetNum("fieldWidth",0);
 		Args.m_VarsLocal.SetNum("fieldGauge",0);
+		Args.m_VarsLocal.SetNum("areaRadius",0);
 
 		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
@@ -1774,18 +1776,18 @@ bool CChar::Spell_CastDone()
 		//Can't be < 0, so max it to 0
 		fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
 		fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
-
-		//DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
-		//DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
+		areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
+		// DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
+		// DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
 	}
 
 	// Consume the reagents/mana/scroll/charge
 	if ( ! Spell_CanCast( spell, false, pObjSrc, true ) )
 		return( false );
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) )
+	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) )
 	{
-		if ( pSpellDef->IsSpellType( SPELLFLAG_SUMMON ) )
+		if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 		{
 			if ( iC1 )
 			{
@@ -1794,7 +1796,7 @@ bool CChar::Spell_CastDone()
 				Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 			}
 		} 
-		else if ( pSpellDef->IsSpellType( SPELLFLAG_FIELD ) )
+		else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 		{
 			if ( iT1 && iT2 )
 			{
@@ -1805,6 +1807,13 @@ bool CChar::Spell_CastDone()
 
 				Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 			}
+		}
+		else if ( pSpellDef->IsSpellType( SPELLFLAG_AREA ) )
+		{
+			if ( !areaRadius )
+				areaRadius = 4;
+
+			Spell_Area( m_Act_p, areaRadius, iSkillLevel);
 		}
 		else
 		{
@@ -1817,7 +1826,9 @@ bool CChar::Spell_CastDone()
 	else
 	switch ( spell )
 	{
-		// 1st
+	
+	// Magery
+	// 1st Circle
 	case SPELL_Create_Food:
 		if ( !pObj )
 		{
@@ -1842,7 +1853,7 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 
-		// 2nd
+	// 2nd Circle
 	case SPELL_Agility:
 	case SPELL_Cunning:
 	case SPELL_Cure:
@@ -1860,7 +1871,7 @@ bool CChar::Spell_CastDone()
 		// A container is diff from door or stationary object
 		break;
 
-		// 3rd
+	// 3rd Circle
 	case SPELL_Bless:
 
 	case SPELL_Poison:
@@ -1900,13 +1911,16 @@ bool CChar::Spell_CastDone()
 
 		break;
 
-		// 4th
+	// 4th Circle
 	case SPELL_Arch_Cure:
 	case SPELL_Arch_Prot:
 	{
-		Spell_Area( m_Act_p, 5, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 5;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
 	}
+
 	case SPELL_Great_Heal:
 	case SPELL_Curse:
 	case SPELL_Lightning:
@@ -1933,13 +1947,12 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 
-		// 5th
+	// 5th Circle
 
 	case SPELL_Blade_Spirit:
 		if ( ! iC1 )
 			iC1 = CREID_BLADES;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = CREID_BLADES;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2001,11 +2014,11 @@ bool CChar::Spell_CastDone()
 
 	case SPELL_Summon:
  		if ( iC1 )
-		  m_atMagery.m_SummonID = iC1;
+			m_atMagery.m_SummonID = iC1;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
 
-		// 6th
+	// 6th Circle
 
 	case SPELL_Invis:
 
@@ -2019,7 +2032,9 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Explosion:
-		Spell_Area( m_Act_p, 2, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 2;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
 
 	case SPELL_Mark:
@@ -2028,8 +2043,11 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Mass_Curse:
-		Spell_Area( m_Act_p, 5, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 5;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
+
 	case SPELL_Paralyze_Field:
 
 		if ( ! iT1 )
@@ -2044,15 +2062,20 @@ bool CChar::Spell_CastDone()
 
 		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
+
 	case SPELL_Reveal:
-		Spell_Area( m_Act_p, UO_MAP_VIEW_SIGHT, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = UO_MAP_VIEW_SIGHT;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
 
-		// 7th
-
+	// 7th Circle
 	case SPELL_Chain_Lightning:
-		Spell_Area( m_Act_p, 5, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 5;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
+
 	case SPELL_Energy_Field:
 
 		if ( ! iT1 )
@@ -2124,12 +2147,16 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Mass_Dispel:
-		Spell_Area( m_Act_p, 15, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 15;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
 
 	case SPELL_Meteor_Swarm:
 		// Multi explosion ??? 0x36b0
-		Spell_Area( m_Act_p, 4, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = 4;
+		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
 		break;
 
 	case SPELL_Polymorph:
@@ -2143,10 +2170,11 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 
-		// 8th
-
+	// 8th Circle
 	case SPELL_Earthquake:
-		Spell_Area( GetTopPoint(), UO_MAP_VIEW_SIGHT, iSkillLevel );
+		if ( !areaRadius )
+			areaRadius = UO_MAP_VIEW_SIGHT;
+		Spell_Area( GetTopPoint(), areaRadius, iSkillLevel );
 		break;
 
 	case SPELL_Vortex:
@@ -2158,7 +2186,6 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Resurrection:
-	case SPELL_Light:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
 		break;
@@ -2167,7 +2194,6 @@ bool CChar::Spell_CastDone()
  		if ( ! iC1 )
 			iC1 = CREID_AIR_ELEM;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = CREID_AIR_ELEM;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2175,7 +2201,6 @@ bool CChar::Spell_CastDone()
  		if ( ! iC1 )
 			iC1 = ( Calc_GetRandVal( 2 )) ? CREID_DAEMON_SWORD : CREID_DAEMON;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = ( Calc_GetRandVal( 2 )) ? CREID_DAEMON_SWORD : CREID_DAEMON;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2183,7 +2208,6 @@ bool CChar::Spell_CastDone()
  		if ( ! iC1 )
 			iC1 = CREID_EARTH_ELEM;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = CREID_EARTH_ELEM;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2191,7 +2215,6 @@ bool CChar::Spell_CastDone()
  		if ( ! iC1 )
 			iC1 = CREID_FIRE_ELEM;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = CREID_FIRE_ELEM;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2199,7 +2222,6 @@ bool CChar::Spell_CastDone()
  		if ( ! iC1 )
 			iC1 = CREID_WATER_ELEM;
 		m_atMagery.m_SummonID = iC1;
-		//m_atMagery.m_SummonID = CREID_WATER_ELEM;
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
@@ -2305,6 +2327,11 @@ bool CChar::Spell_CastDone()
 		}
 		break;
 
+	case SPELL_Light:
+		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
+			return( false );
+		break;
+
 	case SPELL_Fire_Bolt:
 		Spell_Bolt( pObj, ITEMID_FX_FIRE_BOLT, iSkillLevel );
 		break;
@@ -2317,17 +2344,17 @@ bool CChar::Spell_CastDone()
 	case SPELL_Shrink:
 	case SPELL_Mana:
 	case SPELL_Refresh:
-	case SPELL_Restore:		// increases both your hit points and your stamina.
-	case SPELL_Sustenance:		//  // serves to fill you up. (Remember, healing rate depends on how well fed you are!)
-	case SPELL_Gender_Swap:		//  // permanently changes your gender.
-	case SPELL_Chameleon:		//  // makes your skin match the colors of whatever is behind you.
-	case SPELL_BeastForm:		//  // polymorphs you into an animal for a while.
-	case SPELL_Monster_Form:	//  // polymorphs you into a monster for a while.
-	case SPELL_Trance:			//  // temporarily increases your meditation skill.
-	case SPELL_Particle_Form:	//  // turns you into an immobile, but untargetable particle system for a while.
-	case SPELL_Shield:			//  // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-	case SPELL_Steelskin:		//  // turns your skin into steel, giving a boost to your AR.
-	case SPELL_Stoneskin:		//  // turns your skin into stone, giving a boost to your AR.
+	case SPELL_Restore:			// increases both your hit points and your stamina.
+	case SPELL_Sustenance:		// serves to fill you up. (Remember, healing rate depends on how well fed you are!)
+	case SPELL_Gender_Swap:		// permanently changes your gender.
+	case SPELL_Chameleon:		// makes your skin match the colors of whatever is behind you.
+	case SPELL_BeastForm:		// polymorphs you into an animal for a while.
+	case SPELL_Monster_Form:	// polymorphs you into a monster for a while.
+	case SPELL_Trance:			// temporarily increases your meditation skill.
+	case SPELL_Particle_Form:	// turns you into an immobile, but untargetable particle system for a while.
+	case SPELL_Shield:			// erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
+	case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
+	case SPELL_Stoneskin:		// turns your skin into stone, giving a boost to your AR.
 	default:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );

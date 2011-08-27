@@ -167,6 +167,10 @@ CResource::CResource()
 	m_iAutoResDisp = RDS_T2A;
 	m_iAutoPrivFlags = PRIV_DETAIL;
 
+	// Third Party Tools
+	m_fCUOStatus = true;
+	m_fUOGStatus = true;
+
 	//	Experience
 	m_bExperienceSystem = false;
 	m_iExperienceMode = 0;
@@ -385,6 +389,7 @@ enum RC_TYPE
 	RC_CORPSENPCDECAY,
 	RC_CORPSEPLAYERDECAY,
 	RC_CRIMINALTIMER,		// m_iCriminalTimer
+	RC_CUOSTATUS,			// m_fCUOStatus
 #ifdef _DBPLUGIN
 	RC_DBDATABASE,			//	m_sDbDatabase
 	RC_DBDLL,				//	m_sDbDll
@@ -535,6 +540,7 @@ enum RC_TYPE
 	RC_TIMEUP,
 	RC_TOOLTIPCACHE,			// m_iTooltipCache
 	RC_TOOLTIPMODE,				// m_iTooltipMode
+	RC_UOGSTATUS,				// m_fUOGStatus
 	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
 	RC_USEAUTHID,				// m_fUseAuthID
 	RC_USECRYPT,				// m_Usecrypt
@@ -597,6 +603,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CORPSENPCDECAY",			{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpseNPC),		0 }},
 	{ "CORPSEPLAYERDECAY",		{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpsePlayer),	0 }},
 	{ "CRIMINALTIMER",			{ ELEM_INT,		OFFSETOF(CResource,m_iCriminalTimer),		0 }},
+	{ "CUOSTATUS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCUOStatus),			0 }},
 #ifdef _DBPLUGIN
 	{ "DBDATABASE",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDatabase),			0 }},
 	{ "DBDLL",					{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDll),				0 }},
@@ -747,6 +754,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TIMEUP",					{ ELEM_VOID,	0,											0 }},
 	{ "TOOLTIPCACHE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipCache),		0 }},
 	{ "TOOLTIPMODE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipMode),			0 }},
+	{ "UOGSTATUS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUOGStatus),			0 }},
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork),		0 }},
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID),			0 }},	// we use authid like osi
 	{ "USECRYPT",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUsecrypt),			0 }},	// we don't want crypt clients

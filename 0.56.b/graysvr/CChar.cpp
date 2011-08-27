@@ -1464,6 +1464,11 @@ do_default:
 							}
 						}
 					}
+					else if( !strnicmp(pszKey, "CLEAR", 5) )
+					{
+						pszKey += 5;
+						m_lastAttackers.clear();
+					}
 					else
 					{
 						attackerIndex = Exp_GetVal(pszKey);

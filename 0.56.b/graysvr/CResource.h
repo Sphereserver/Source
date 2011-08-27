@@ -83,7 +83,8 @@ enum MAGICFLAGS_TYPE
 	MAGICF_STACKSTATS        = 0x0000010,	// allow multiple stat spells at once
 	MAGICF_FREEZEONCAST      = 0x0000020,	// disallow movement whilst casting
 	MAGICF_SUMMONWALKCHECK   = 0x0000040,	// disallow summoning creatures to places they can't normally step
-	MAGICF_NOFIELDSOVERWALLS = 0x0000080	// prevent fields from being formed over blocking objects.
+	MAGICF_NOFIELDSOVERWALLS = 0x0000080,	// prevent fields from being formed over blocking objects.
+	MAGICF_NOANIM			 = 0x0000100	// auto spellflag_no_anim on all spells
 };
 
 enum COMBATFLAGS_TYPE
@@ -387,29 +388,31 @@ private:
 	DWORD	m_dwFlags;
 	DWORD	m_dwGroup;
 
-#define SPELLFLAG_DIR_ANIM			0x000001 // Evoke type cast or directed. (animation)
-#define SPELLFLAG_TARG_ITEM			0x000002 // Need to target an object
-#define SPELLFLAG_TARG_CHAR			0x000004 // Needs to target a living thing
+#define SPELLFLAG_DIR_ANIM			0x0000001 // Evoke type cast or directed. (animation)
+#define SPELLFLAG_TARG_ITEM			0x0000002 // Need to target an object
+#define SPELLFLAG_TARG_CHAR			0x0000004 // Needs to target a living thing
 #define SPELLFLAG_TARG_OBJ			(SPELLFLAG_TARG_ITEM|SPELLFLAG_TARG_CHAR)
+#define SPELLFLAG_TARG_XYZ			0x0000008 // Can just target a location.
 
-#define SPELLFLAG_TARG_XYZ			0x000008 // Can just target a location.
-#define SPELLFLAG_HARM				0x000010 // The spell is in some way harmfull.
-#define SPELLFLAG_FX_BOLT			0x000020 // Effect is a bolt to the target.
-#define SPELLFLAG_FX_TARG			0x000040 // Effect is at the target.
-#define SPELLFLAG_FIELD				0x000080 // create a field of stuff. (fire,poison,wall)
-#define SPELLFLAG_SUMMON			0x000100 // summon a creature.
-#define SPELLFLAG_GOOD				0x000200 // The spell is a good spell. u intend to help to receiver.
-#define SPELLFLAG_RESIST			0x000400 // Allowed to resist this.	
-#define SPELLFLAG_TARG_NOSELF		0x000800
-#define SPELLFLAG_DISABLED			0x008000
-#define SPELLFLAG_SCRIPTED			0x010000
-#define	SPELLFLAG_PLAYERONLY		0x020000 // casted by players only
-#define	SPELLFLAG_NOUNPARALYZE		0x040000 // casted by players only
-#define SPELLFLAG_NO_CASTANIM		0x080000 // play no anim while casting (also override SPELLFLAG_DIR_ANIM)
-#define SPELLFLAG_TARG_NO_PLAYER	0x100000 // if a char may be targetted, it may not be a player
-#define SPELLFLAG_TARG_NO_NPC		0x200000 // if a char may be targetted, it may not be an NPC
-#define SPELLFLAG_NOPRECAST			0x400000 // disable precasting for this spell
-#define SPELLFLAG_NOFREEZEONCAST	0x800000 // disable freeze on cast for this spell
+#define SPELLFLAG_HARM				0x0000010 // The spell is in some way harmfull.
+#define SPELLFLAG_FX_BOLT			0x0000020 // Effect is a bolt to the target.
+#define SPELLFLAG_FX_TARG			0x0000040 // Effect is at the target.
+#define SPELLFLAG_FIELD				0x0000080 // create a field of stuff. (fire,poison,wall)
+#define SPELLFLAG_SUMMON			0x0000100 // summon a creature.
+#define SPELLFLAG_GOOD				0x0000200 // The spell is a good spell. u intend to help to receiver.
+#define SPELLFLAG_RESIST			0x0000400 // Allowed to resist this.	
+#define SPELLFLAG_TARG_NOSELF		0x0000800
+#define SPELLFLAG_DISABLED			0x0008000
+#define SPELLFLAG_SCRIPTED			0x0010000
+#define	SPELLFLAG_PLAYERONLY		0x0020000 // casted by players only
+#define	SPELLFLAG_NOUNPARALYZE		0x0040000 // casted by players only
+#define SPELLFLAG_NO_CASTANIM		0x0080000 // play no anim while casting (also override SPELLFLAG_DIR_ANIM)
+#define SPELLFLAG_TARG_NO_PLAYER	0x0100000 // if a char may be targetted, it may not be a player
+#define SPELLFLAG_TARG_NO_NPC		0x0200000 // if a char may be targetted, it may not be an NPC
+#define SPELLFLAG_NOPRECAST			0x0400000 // disable precasting for this spell
+#define SPELLFLAG_NOFREEZEONCAST	0x0800000 // disable freeze on cast for this spell
+#define SPELLFLAG_AREA				0x1000000 // area effect (uses local.arearadius)
+
 	CGString m_sName;	// spell name
 
 public:
@@ -828,7 +831,10 @@ public:
 	CGString	m_sEventsRegion;
 	CResourceRefArray m_pEventsRegionLink;
 
+	// Third Party Tools
 	CGString	m_sStripPath;
+	bool	m_fCUOStatus;
+	bool	m_fUOGStatus;
 
 	int		m_iWalkBuffer;
 	int		m_iWalkRegen;
@@ -1230,5 +1236,6 @@ public:
 #define IsSetSpecific			((g_Cfg.m_iExperimental & EF_Specific) != 0 && (g_Cfg.m_iOptionFlags & OF_Specific) != 0)
 #define IsSetCombatFlags(of)	((g_Cfg.m_iCombatFlags & of) != 0)
 #define IsSetMagicFlags(of)		((g_Cfg.m_iMagicFlags & of) != 0)
+#define IsSetGameFlags(of)		((g_Cfg.m_iGameplayFlags & of ) != 0)
 
 #endif	// _INC_CRESOURCE_H

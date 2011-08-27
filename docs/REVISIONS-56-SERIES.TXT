@@ -5278,3 +5278,20 @@ ALPHA additions:
 
 05-08-2011, ShiryuX
 - Fixed #2008: RANGEH now displays the longest range and RANGEL the shortest (High/Low)
+
+27-08-2011, ShiryuX
+- Added: SPELLFLAG_AREA to create custom area spells (you must use SPELLFLAG_SCRIPTED).
+- Added: LOCAL.AREARADIUS, which let you change the radius of the hardcoded area spells
+         and let you set the radius of scripted skills (if not set, default is 4).
+	 Example:
+	 [SPELL s_new_spell]
+	 FLAGS=SPELLFLAG_SCRIPTED|SPELLFLAG_AREA|SPELLFLAG_TARG_XYZ
+	 ....
+	 ON=@SUCCESS
+	 LOCAL.AREARADIUS = 5
+- Added: CUOSTATUS and UOGSTATUS, which enable/disable the response to UOGateway/ConnectUO
+         Default for both is: 1 (see sphere.ini also)
+- Added: Function 'attacker.clear' to clear the attackers. Use it with caution.
+
+27-08-2011, ShiryuX
+- Updated: sphere_defs.scp (added new spellflag definition)

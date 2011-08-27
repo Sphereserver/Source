@@ -468,6 +468,9 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			if ( pData[3] != 0xFF )
 				break;
 
+			if ( g_Cfg.m_fCUOStatus == false )
+				break;
+
 			// enter 'remote admin mode'
 			SetConnectType( CONNECT_TELNET );
 
@@ -485,6 +488,9 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 		case 0x22:
 		{
 			if ( iLen > 1 )
+				break;
+
+			if ( g_Cfg.m_fUOGStatus == false )
 				break;
 
 			// enter 'remote admin mode'
