@@ -469,7 +469,10 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 				break;
 
 			if ( g_Cfg.m_fCUOStatus == false )
-				break;
+			{
+				g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:CUO Status request from %s has been rejected.\n", GetSocketID(), GetPeerStr());
+				return false;
+			}
 
 			// enter 'remote admin mode'
 			SetConnectType( CONNECT_TELNET );
@@ -491,7 +494,10 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 				break;
 
 			if ( g_Cfg.m_fUOGStatus == false )
-				break;
+			{
+				g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:UOG Status request from %s has been rejected.\n", GetSocketID(), GetPeerStr());
+				return false;
+			}
 
 			// enter 'remote admin mode'
 			SetConnectType( CONNECT_TELNET );
