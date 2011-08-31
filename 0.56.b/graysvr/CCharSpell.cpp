@@ -1769,8 +1769,8 @@ bool CChar::Spell_CastDone()
 		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
 		iSkillLevel		= Args.m_iN2;
-		iT1 = (ITEMID_TYPE) (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
-		iT2 = (ITEMID_TYPE) (Args.m_VarsLocal.GetKeyNum("CreateObject2",true) & 0xFFFF);
+		iT1 = (ITEMID_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true));
+		iT2 = (ITEMID_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true));
 		iC1 = (CREID_TYPE)  (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
 
 		//Can't be < 0, so max it to 0
@@ -1928,7 +1928,7 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 	case SPELL_Fire_Field:
-
+	{
 		if ( ! iT1 )
 			iT1 = ITEMID_FX_FIRE_F_EW;
 		if ( ! iT2 )
@@ -1941,7 +1941,7 @@ bool CChar::Spell_CastDone()
 
 		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
 		break;
-
+	}
 	case SPELL_Recall:
 		if ( ! Spell_Recall( dynamic_cast <CItem*> (pObj), false ))
 			return( false );
