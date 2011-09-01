@@ -161,7 +161,10 @@ void CClient::addSysMessage(LPCTSTR pszMsg) // System message (In lower left cor
 			strcpy(m_zLastMessage, pszMsg);
 	}
 
-	addBarkParse(pszMsg, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_NORMAL);
+	HUE_TYPE pHue = (HUE_TYPE)g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR");
+	FONT_TYPE pFont = (FONT_TYPE)g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT");
+
+	addBarkParse(pszMsg, NULL, (pHue ? pHue : HUE_TEXT_DEF), TALKMODE_SYSTEM, (pFont ? pFont : FONT_NORMAL));
 }
 
 

@@ -762,8 +762,19 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 		if ( strlen(pMsg) < SCRIPT_MAX_LINE_LEN )
 			strcpy(m_zLastObjMessage, pMsg);
 	}
-
-	addBarkParse(pMsg, pSrc, wHue, ( pSrc == m_pChar ) ? TALKMODE_OBJ : TALKMODE_ITEM, FONT_NORMAL);
+	
+	if ( pSrc == m_pChar )
+	{
+		HUE_TYPE pHue = (HUE_TYPE)g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR");
+		FONT_TYPE pFont = (FONT_TYPE)g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT");
+		addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue ), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
+	} 
+	else
+	{
+		HUE_TYPE pHue = (HUE_TYPE)g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR");
+		FONT_TYPE pFont = (FONT_TYPE)g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT");
+		addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
+	}
 }
 
 void CClient::addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render )

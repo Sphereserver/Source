@@ -5290,7 +5290,7 @@ ALPHA additions:
 	 ON=@SUCCESS
 	 LOCAL.AREARADIUS = 5
 - Added #2020: CUOSTATUS and UOGSTATUS, which enable/disable the response to UOGateway/ConnectUO
-         Default for both is: 1 (see sphere.ini also)
+               Default for both is: 1 (see sphere.ini also)
 - Added: Function 'attacker.clear' to clear the attackers. Use it with caution.
 
 27-08-2011, ShiryuX
@@ -5298,3 +5298,11 @@ ALPHA additions:
 
 31-08-2011, ShiryuX
 - Fixed #2023: Now you can use custom items on LOCAL.CREATEOBJECT1/2 with SPELLFLAG_FIELD.
+
+01-09-2011, ShiryuX
+- Added #2021: Settings to edit default color and font for SysMessage/Message/Click.
+  Don't forget to update your scripts. Settings are included in sphere_msgs.scp
+
+01-09-2011, ShiryuX (script pack)
+- Modified: sphere_msgs.scp (added SMSG_DEF_COLOR, SMSG_DEF_FONT, MSG_DEF_COLOR, MSG_DEF_FONT
+            IMSG_DEF_COLOR and IMSG_DEF_FONT settings)

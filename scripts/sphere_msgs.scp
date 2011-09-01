@@ -19,6 +19,19 @@
 // THIS IS THE SPHERE_MSGS.SCP FOR SPHERE 56B. IF YOU ARE USING SPHERE 57 YOU
 // SHOULD REPLACE THIS WITH THE SPHERE_MSGS.SCP LOCATED IN THE SCRIPT57 FOLDER.
 
+[DEFNAME messages_settings]
+// Default color & font for SysMessage
+SMSG_DEF_COLOR	946
+SMSG_DEF_FONT	3
+
+// Default color & font for Message/Say
+MSG_DEF_COLOR	0
+MSG_DEF_FONT	3
+
+// Default color & font for Messages when player click an item
+IMSG_DEF_COLOR	0
+IMSG_DEF_FONT	3
+
 [DEFMESSAGE messages]
 //alchemy_dunno		"You have no clue how to make this potion."
 //alchemy_lack		"Hmmm, you lack %s for this potion."
