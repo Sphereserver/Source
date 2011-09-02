@@ -5306,3 +5306,13 @@ ALPHA additions:
 01-09-2011, ShiryuX (script pack)
 - Modified: sphere_msgs.scp (added SMSG_DEF_COLOR, SMSG_DEF_FONT, MSG_DEF_COLOR, MSG_DEF_FONT
             IMSG_DEF_COLOR and IMSG_DEF_FONT settings)
+
+02-09-2011, ShiryuX
+- Modified: SPELLFLAG_FX_BOLT to work with SPELLFLAG_SCRIPTED.  It will fire a bolt from 
+            caster to target. If SPELLFLAG_GOOD is used the effect won't explode.
+            ID of the effect is 'EFFECT_ID' spell's property.
+- Fixed #2025: Removed any kind of internal effect for spells with SPELLFLAG_SCRIPTED.
+  Since it's supposed to have a scripted effect!
+
+02-09-2011, ShiryuX (script pack)
+- Fixed #2006: sphere_spells.scp (commented out RUNES for Mysticism spells & changed Discordance)

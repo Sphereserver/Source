@@ -1190,7 +1190,12 @@ void CChar::Spell_Bolt( CObjBase * pObjTarg, ITEMID_TYPE idBolt, int iSkillLevel
 
 	if ( pObjTarg == NULL )
 		return;
-	pObjTarg->Effect( EFFECT_BOLT, idBolt, this, 5, 1, true );
+
+	bool fExplode = true;
+	if ( g_Cfg.GetSpellDef(m_atMagery.m_Spell)->IsSpellType(SPELLFLAG_GOOD) )
+		fExplode = false;
+
+	pObjTarg->Effect( EFFECT_BOLT, idBolt, this, 5, 1, fExplode );
 	// Take damage !
 	pObjTarg->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
 }
@@ -1766,9 +1771,12 @@ bool CChar::Spell_CastDone()
 
 		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
+
 		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
+
 		iSkillLevel		= Args.m_iN2;
+		
 		iT1 = (ITEMID_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true));
 		iT2 = (ITEMID_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true));
 		iC1 = (CREID_TYPE)  (Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
@@ -1777,6 +1785,7 @@ bool CChar::Spell_CastDone()
 		fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
 		fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
 		areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
+
 		// DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
 		// DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
 	}
@@ -1814,6 +1823,10 @@ bool CChar::Spell_CastDone()
 				areaRadius = 4;
 
 			Spell_Area( m_Act_p, areaRadius, iSkillLevel);
+		}
+		else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+		{
+			Spell_Bolt( pObj, pSpellDef->m_idEffect, iSkillLevel );
 		}
 		else
 		{
@@ -2613,8 +2626,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return( false );
 
 	// Most spells don't work on ghosts.
-	if (   IsStatFlag( STATF_DEAD )
-		&& !( spell == SPELL_Resurrection ) ) // || pSpellDef->IsSpellType( SPELLFLAG_TARG_DEAD ) ) )
+	if ( IsStatFlag(STATF_DEAD) && !(spell == SPELL_Resurrection) ) // || pSpellDef->IsSpellType( SPELLFLAG_TARG_DEAD ) ) )
 		return false;
 
 	bool fResistAttempt = true;
@@ -2695,23 +2707,15 @@ reflectit:
 			return false;
 	}
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_FX_TARG ) &&
-		pSpellDef->m_idEffect )
+	if ( pSpellDef->IsSpellType( SPELLFLAG_FX_TARG ) &&	pSpellDef->m_idEffect )
 	{
 		Effect( EFFECT_OBJ, pSpellDef->m_idEffect, this, 0, 15 ); // 9, 14
 	}
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) )
-	{
-		int		iDuration	= GetSpellDuration( spell, iSkillLevel, iEffectMult );
-		if ( iDuration )
-			Spell_Effect_Create( spell, LAYER_NONE, iSkillLevel, iDuration, pCharSrc );
-		else
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_GENERAL | (( pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) ) ? DAMAGE_NOUNPARALYZE : 0 ) );
-	}
-	else switch ( spell )
+	if ( !pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) )
+	switch ( spell )
 	{
 
 	case SPELL_Ale:		// 90 = drunkeness ?
