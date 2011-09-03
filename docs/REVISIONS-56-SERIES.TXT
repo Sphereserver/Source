@@ -5319,3 +5319,6 @@ ALPHA additions:
 
 03-09-2011, ShiryuX
 - Fixed: LOGARITHM(), TAN, SIN and COS function were returning wrong values.
+
+03-09-2011, Coruja (script pack)
+- Fixed #2028: sphere_item_misc_se.scp (wrong DUPELIST for 02417)
