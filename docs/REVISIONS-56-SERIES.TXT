@@ -5316,3 +5316,6 @@ ALPHA additions:
 
 02-09-2011, ShiryuX (script pack)
 - Fixed #2006: sphere_spells.scp (commented out RUNES for Mysticism spells & changed Discordance)
+
+03-09-2011, ShiryuX
+- Fixed: LOGARITHM(), TAN, SIN and COS function were returning wrong values.

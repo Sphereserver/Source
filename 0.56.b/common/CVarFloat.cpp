@@ -342,58 +342,46 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 
 				case INTRINSIC_LOGARITHM:
 				{
-					iCount = 0;
-
-					if ( pArgs && *pArgs )
+					iCount = Str_ParseCmds( const_cast<TCHAR*>(pArgs), ppCmd, 3, "," );
+					if ( iCount < 1 )
 					{
-						RealType dArgument = MakeFloatMath(pArgs);
-						if ( dArgument <= 0 )
-						{
-							DEBUG_ERR(( "Float_MakeFloatMath: (x)Log(%f) is %s\n", dArgument, (!dArgument) ? "infinite" : "undefined" ));
-							dResult = 0;
-						}
-						else
-						{
-							iCount = 1;
+						dResult = 0;
+						break;
+					} 
 
-							if ( strchr(pArgs, ',') )
-							{
-								iCount++;
-								SKIP_ARGSEP(pArgs);
-								if ( !strcmpi(pArgs, "e") )
-								{
-									dResult = log(dArgument);
-								}
-								else if ( !strcmpi(pArgs, "pi") )
-								{
-									dResult = log(dArgument)/log(M_PI);
-								}
-								else
-								{
-									RealType dBase = MakeFloatMath(pArgs);
-									if ( dBase <= 0 )
-									{
-										DEBUG_ERR(( "Float_MakeFloatMath: (%f)Log(%f) is %s\n", dBase, dArgument, (!dBase) ? "infinite" : "undefined" ));
-										iCount = 0;
-										dResult = 0;
-									}
-									else
-									{
-										dResult = (log(dArgument)/log(dBase));
-									}
-								}
-							}
-							else
-							{
-								dResult = log10(dArgument);
-							}							
-						}
+					LPCTSTR tCmd = (LPCTSTR)ppCmd[0];
+					RealType dArgument = MakeFloatMath( tCmd );
+
+					if ( iCount < 2 )
+					{
+						dResult = log10(dArgument);
 					}
 					else
 					{
-						dResult = 0;
+						if ( !strcmpi(ppCmd[1], "e") )
+						{
+							dResult = log(dArgument);
+						}
+						else if ( !strcmpi(ppCmd[1], "pi") )
+						{
+							dResult = log(dArgument)/log(M_PI);
+						}
+						else
+						{
+							tCmd = (LPCTSTR)ppCmd[1];
+							RealType dBase = MakeFloatMath( tCmd );
+							if ( dBase <= 0 )
+							{
+								DEBUG_ERR(( "Float_MakeFloatMath: (%f)Log(%f) is %s\n", dBase, dArgument, (!dBase) ? "infinite" : "undefined" ));
+								iCount = 0;
+								dResult = 0;
+							}
+							else
+							{
+								dResult = (log(dArgument)/log(dBase));
+							}
+						}
 					}
-
 				} break;
 
 				case INTRINSIC_NAPIERPOW:
@@ -442,7 +430,8 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					if ( pArgs && *pArgs )
 					{
 						iCount = 1;
-						dResult = sin(MakeFloatMath(pArgs));
+						RealType dArgument = MakeFloatMath(pArgs);
+						dResult = sin(dArgument * M_PI / 180);
 					}
 					else
 					{
@@ -457,7 +446,8 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					if ( pArgs && *pArgs )
 					{
 						iCount = 1;
-						dResult = cos(MakeFloatMath(pArgs));
+						RealType dArgument = MakeFloatMath(pArgs);
+						dResult = cos(dArgument * M_PI / 180);
 					}
 					else
 					{
@@ -472,7 +462,8 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					if ( pArgs && *pArgs )
 					{
 						iCount = 1;
-						dResult = tan(MakeFloatMath(pArgs));
+						RealType dArgument = MakeFloatMath(pArgs);
+						dResult = tan(dArgument * M_PI / 180);
 					}
 					else
 					{

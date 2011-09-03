@@ -3801,11 +3801,11 @@ bool CChar::OnTick()
 
 			int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
 
-			//	no food - slow regen
-			if (( i != STAT_FOOD ) && Stat_GetMax(STAT_FOOD) && !Stat_GetVal(STAT_FOOD) )
+			//	No Food - Slow Regen
+			if ( (i != STAT_FOOD) && Stat_GetMax(STAT_FOOD) && !Stat_GetVal(STAT_FOOD) )
 				iRate *= 2;
 
-			// regen OVERRIDE
+			// Regen OVERRIDE
 			int mod = 1;
 			if ( i < STAT_FOOD )
 			{
@@ -3816,7 +3816,7 @@ bool CChar::OnTick()
 				mod += GetKeyNum(sRegen, true);
 			}
 
-			//	metabolism bonus
+			// Metabolism Bonus
 			if ( i == STAT_STR )
 			{
 				int iRateModifier = 1 + (Stat_GetVal(STAT_DEX)/8);
