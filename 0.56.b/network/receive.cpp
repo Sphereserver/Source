@@ -3165,11 +3165,13 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 			{
 				// stop hovering
 				character->StatFlag_Clear(STATF_Hovering);
+				client->removeBuff(BI_GARGOYLEFLY);
 			}
 			else
 			{
 				// begin hovering
 				character->StatFlag_Set(STATF_Hovering);
+				client->addBuff(BI_GARGOYLEFLY,1112193,1112567,0);
 
 				// float player up to the hover Z
 				CPointMap ptHover = g_World.FindItemTypeNearby(character->GetTopPoint(), IT_HOVEROVER, 0, false, false);

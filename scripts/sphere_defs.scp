@@ -598,7 +598,6 @@ spellflag_noprecast             00400000	// disables effects of MAGICF_PRECAST w
 spellflag_nofreezeoncast        00800000	// disables effects of MAGICF_FREEZEONCAST with a spell (only valid if MAGICF_FREEZEONCAST actived in Sphere.ini)
 spellflag_area                  01000000	// area effect (uses local.arearadius)
 
-
 [DEFNAME mem_flags]
 memory_sawcrime	    00001	// i saw them commit a crime or i was attacked criminally. i can call the guards on them.
 memory_ipet		    00002	// i am a pet. (this link is my master) (never time out)
@@ -1363,6 +1362,8 @@ buffcliloc_nightsight_1 1075643
 buffcliloc_nightsight_2 1075644
 buffcliloc_hidden_1 1075655
 buffcliloc_hidden_2 1075656
+buffcliloc_gargoylefly_1 1112193
+buffcliloc_gargoylefly_2 1112567
 
 [DEFNAME charheight]
 height_0ae	35	//DEFNAME=c_abyss_lord
