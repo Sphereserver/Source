@@ -5271,15 +5271,16 @@ ALPHA additions:
 - Modified #2011: Enabled spells with SPELLFLAG_SCRIPTED to use LOCAL.CREATEOBJECT1,
   LOCAL.CREATEOBJECT2, LOCAL.FIELDWIDTH and LOCAL.FIELDGAUGE for spells with SPELLFLAG_FIELD
   or with SPELLFLAG_SUMMON. If width/gauge is not set, default is 7/1.
-  For more information, check the revisions.
 
-02-08-2011, ShiryuX (script pack)
-- Added: A few more buff icons in the buff_icons defname.
+02-08-2011, ShiryuX (Script pack)
+- Updated: sphere_defs.scp (A few more buff icons in the buff_icons defname)
 
 05-08-2011, ShiryuX
 - Fixed #2008: RANGEH now displays the longest range and RANGEL the shortest (High/Low)
 
 27-08-2011, ShiryuX
+- Added #2020: CUOSTATUS and UOGSTATUS, which enable/disable the response to UOGateway/ConnectUO
+               Default for both is: 1 (see sphere.ini also)
 - Added: SPELLFLAG_AREA to create custom area spells (you must use SPELLFLAG_SCRIPTED).
 - Added: LOCAL.AREARADIUS, which let you change the radius of the hardcoded area spells
          and let you set the radius of scripted skills (if not set, default is 4).
@@ -5289,11 +5290,9 @@ ALPHA additions:
 	 ....
 	 ON=@SUCCESS
 	 LOCAL.AREARADIUS = 5
-- Added #2020: CUOSTATUS and UOGSTATUS, which enable/disable the response to UOGateway/ConnectUO
-               Default for both is: 1 (see sphere.ini also)
 - Added: Function 'attacker.clear' to clear the attackers. Use it with caution.
 
-27-08-2011, ShiryuX
+27-08-2011, ShiryuX (Script pack)
 - Updated: sphere_defs.scp (added new spellflag definition)
 
 31-08-2011, ShiryuX
@@ -5303,27 +5302,27 @@ ALPHA additions:
 - Added #2021: Settings to edit default color and font for SysMessage/Message/Click.
   Don't forget to update your scripts. Settings are included in sphere_msgs.scp
 
-01-09-2011, ShiryuX (script pack)
-- Modified: sphere_msgs.scp (added SMSG_DEF_COLOR, SMSG_DEF_FONT, MSG_DEF_COLOR, MSG_DEF_FONT
+01-09-2011, ShiryuX (Script pack)
+- Updated: sphere_msgs.scp (added SMSG_DEF_COLOR, SMSG_DEF_FONT, MSG_DEF_COLOR, MSG_DEF_FONT
             IMSG_DEF_COLOR and IMSG_DEF_FONT settings)
 
 02-09-2011, ShiryuX
+- Fixed #2025: Removed any kind of internal effect for spells with SPELLFLAG_SCRIPTED.
+  Since it's supposed to have a scripted effect!
 - Modified: SPELLFLAG_FX_BOLT to work with SPELLFLAG_SCRIPTED.  It will fire a bolt from 
             caster to target. If SPELLFLAG_GOOD is used the effect won't explode.
             ID of the effect is 'EFFECT_ID' spell's property.
-- Fixed #2025: Removed any kind of internal effect for spells with SPELLFLAG_SCRIPTED.
-  Since it's supposed to have a scripted effect!
 
-02-09-2011, ShiryuX (script pack)
+02-09-2011, ShiryuX (Script pack)
 - Fixed #2006: sphere_spells.scp (commented out RUNES for Mysticism spells & changed Discordance)
 
 03-09-2011, ShiryuX
+- Fixed #2027: Wrong internal clilocs for Cunning and Agility Buffs.
 - Added: Buff for Gargoyle Fly ability.
 - Fixed: LOGARITHM(), TAN, SIN and COS function were returning wrong values.
-- Fixed #2027: Wrong internal clilocs for Cunning and Agility Buffs.
 
-03-09-2011, ShiryuX (script pack)
+03-09-2011, ShiryuX (Script pack)
 - Modified: sphere_defs.scp (added buff clilocs for gargoyle fly)
 
-03-09-2011, Coruja (script pack)
-- Fixed #2028: sphere_item_misc_se.scp (wrong DUPELIST for 02417)
+03-09-2011, Coruja (Script pack)
+- Updated #2028: sphere_item_misc_se.scp (wrong DUPELIST for 02417)

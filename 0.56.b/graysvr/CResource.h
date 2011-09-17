@@ -1236,6 +1236,5 @@ public:
 #define IsSetSpecific			((g_Cfg.m_iExperimental & EF_Specific) != 0 && (g_Cfg.m_iOptionFlags & OF_Specific) != 0)
 #define IsSetCombatFlags(of)	((g_Cfg.m_iCombatFlags & of) != 0)
 #define IsSetMagicFlags(of)		((g_Cfg.m_iMagicFlags & of) != 0)
-#define IsSetGameFlags(of)		((g_Cfg.m_iGameplayFlags & of ) != 0)
 
 #endif	// _INC_CRESOURCE_H
