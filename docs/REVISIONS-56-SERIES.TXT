@@ -5326,3 +5326,6 @@ ALPHA additions:
 
 03-09-2011, Coruja (Script pack)
 - Updated #2028: sphere_item_misc_se.scp (wrong DUPELIST for 02417)
+
+13-03-2012, Coruja (Script pack)
+- Fixed #2056: sphere_map0.scp (fixed despise and covetous levels)

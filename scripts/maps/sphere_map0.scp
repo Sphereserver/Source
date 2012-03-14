@@ -3233,9 +3233,17 @@ FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5243,1004,0,0
 RECT=5121,771,5366,1025,0
 
-[AREADEF a_despise_entryway_1]
+[AREADEF a_despise_level_1_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Despise Entryway
+NAME=Despise Level 1
+GROUP=Despise
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+P=5501,570,59,0
+RECT=5378,517,5515,637,0
+
+[AREADEF a_despise_level_2_1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Despise Level 2
 GROUP=Despise
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5583,632,30,0
@@ -3246,24 +3254,16 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Despise Level 3
 GROUP=Despise
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5405,860,45,0
-RECT=5381,774,5627,1020,0
-
-[AREADEF a_despise_level_2_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Despise Level 2
-GROUP=Despise
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5518,673,20,0
 RECT=5378,644,5530,767,0
 
-[AREADEF a_despise_level_1_1]
+[AREADEF a_despise_level_4_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Despise Level 1
+NAME=Despise Level 4
 GROUP=Despise
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5501,570,59,0
-RECT=5378,517,5515,637,0
+P=5405,860,45,0
+RECT=5381,774,5627,1020,0
 
 [AREADEF a_deceit_level_4_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -3297,29 +3297,14 @@ FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5187,635,0,0
 RECT=5135,526,5235,642,0
 
-[AREADEF a_covetous_torture_room_1]
+[AREADEF a_covetous_level_1_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous Torture Room
-GROUP=Covetous
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_ANTIMAGIC_RECALL_IN
-P=5539,1808,0,0
-RECT=5498,1797,5565,1821,0
-
-[AREADEF a_covetous_lake_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous Lake
+NAME=Covetous Level 1
 GROUP=Covetous
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5467,1809,0,0
-RECT=5400,1794,5489,1834,0
-
-[AREADEF a_covetous_level_3_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous Level 3
-GROUP=Covetous
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5579,1925,0,0
-RECT=5532,1821,5630,1930,0
+P=5456,1862,0,0
+RECT=5380,1848,5421,1963,0
+RECT=5421,1848,5510,1943,0
 
 [AREADEF a_covetous_level_2_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -3330,14 +3315,29 @@ P=5613,1998,0,0
 RECT=5425,1948,5624,2044,0
 RECT=5384,1964,5425,2030,0
 
-[AREADEF a_covetous_level_1_1]
+[AREADEF a_covetous_level_3_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous Level 1
+NAME=Covetous Level 3
 GROUP=Covetous
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5456,1862,0,0
-RECT=5380,1848,5421,1963,0
-RECT=5421,1848,5510,1943,0
+P=5579,1925,0,0
+RECT=5532,1821,5630,1930,0
+
+[AREADEF a_covetous_level_4_1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Covetous Level 4
+GROUP=Covetous
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_ANTIMAGIC_RECALL_IN
+P=5539,1808,0,0
+RECT=5498,1797,5565,1821,0
+
+[AREADEF a_covetous_level_5_1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Covetous Level 5
+GROUP=Covetous
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+P=5467,1809,0,0
+RECT=5400,1794,5489,1834,0
 
 [ROOMDEF a_wind_inn_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
