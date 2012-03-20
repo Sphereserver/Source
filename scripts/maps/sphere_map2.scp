@@ -632,9 +632,24 @@ GROUP=Ilshenar Dungeon
 [AREADEF a_desert_outpost]
 NAME=Desert Outpost
 P=1620,596,0,2
-RECT=1496,512,1744,680,2
-FLAGS=region_flag_nobuilding
-GROUP=Ilshenar Unknown
+RECT=1487,587,1550,690,2
+RECT=1750,506,1550,690,2
+FLAGS=080
+GROUP=Ilshenar
+
+[AREADEF a_ancient_citadel]
+NAME=Ancient Citadel
+P=1518,568,-14,2
+RECT=1488,502,1547,578,2
+FLAGS=080
+GROUP=Ilshenar
+
+[AREADEF a_meer_catacombs]
+NAME=Meer Catacombs
+P=1788,75,-28,2
+RECT=1750,38,1824,96,2
+FLAGS=080
+GROUP=Ilshenar Dungeon 
 
 [AREADEF a_Twisted_Weald]
 NAME=Twisted Weald

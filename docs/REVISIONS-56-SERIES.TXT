@@ -5329,3 +5329,6 @@ ALPHA additions:
 
 13-03-2012, Coruja (Script pack)
 - Fixed #2056: sphere_map0.scp (fixed despise and covetous levels)
+
+20-03-2012, Coruja (Script pack)
+- Fixed #2057: sphere_map2.scp (fixed ilshenar regions)
