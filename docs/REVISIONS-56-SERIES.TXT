@@ -5328,7 +5328,15 @@ ALPHA additions:
 - Updated #2028: sphere_item_misc_se.scp (wrong DUPELIST for 02417)
 
 13-03-2012, Coruja (Script pack)
-- Fixed #2056: sphere_map0.scp (fixed despise and covetous levels)
+- Updated #2056: sphere_map0.scp (fixed despise and covetous levels)
 
 20-03-2012, Coruja (Script pack)
-- Fixed #2057: sphere_map2.scp (fixed ilshenar regions)
+- Updated #2057: sphere_map2.scp (fixed ilshenar regions)
+
+23-03-2012, ShiryuX
+- Added: 'AttackerTimeout' modifies how long a NPC can remember a player since his last attack, 
+         that a NPC forgets his attacker. You can play with this and attacker.#.ELAPSED.
+         See sphere.ini. Default value is 300 (5 minutes).
+- Fixed #2034: Disabled timeout check for TELNET connections.
+- Fixed #2050: Now if you set BankMaxWeight/Items to something less than 0 
+               will avoid the weight/item amount check.

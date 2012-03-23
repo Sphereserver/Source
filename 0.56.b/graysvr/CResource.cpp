@@ -134,6 +134,7 @@ CResource::CResource()
 	m_iWalkBuffer		= 50;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
+	m_iAttackerTimeout	= 300;
 
 	m_iCommandLog		= 0;
 	m_fTelnetLog		= false;
@@ -360,6 +361,7 @@ enum RC_TYPE
 	RC_ARCHERYMAXDIST,		// m_iArcheryMaxDist
 	RC_ARCHERYMINDIST,		// m_iArcheryMinDist
 	RC_ARRIVEDEPARTMSG,
+	RC_ATTACKERTIMEOUT,		// m_iAttackerTimeout
 	RC_AUTONEWBIEKEYS,		// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,		// m_iAutoPrivFlags
 	RC_AUTORESDISP,			// m_iAutoResDisp
@@ -574,6 +576,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ARCHERYMAXDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMaxDist),		0 }},
 	{ "ARCHERYMINDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMinDist),		0 }},
 	{ "ARRIVEDEPARTMSG",		{ ELEM_INT,		OFFSETOF(CResource,m_iArriveDepartMsg),		0 }},
+	{ "ATTACKERTIMEOUT",		{ ELEM_INT,		OFFSETOF(CResource,m_iAttackerTimeout),		0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},

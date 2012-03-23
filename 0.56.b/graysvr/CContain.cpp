@@ -1154,43 +1154,44 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 			{
 				// Check if the bankbox will allow this item to be dropped into it.
 				// Too many items or too much weight?
+				
 				int iBankIMax = g_Cfg.m_iBankIMax;
-				int iBankWMax = g_Cfg.m_iBankWMax;
-
 				CVarDefCont * pTagTemp = GetKey("OVERRIDE.MAXITEMS", false);
 				if ( pTagTemp )
-				{
 					iBankIMax = pTagTemp->GetValNum();
+
+				if ( iBankIMax >= 0 )
+				{
+					// Check if the item dropped in the bank is a container. If it is
+					// we need to calculate the number of items in that too.
+					int iItemsInContainer = 0;
+					const CItemContainer * pContItem = dynamic_cast <const CItemContainer *>( pItem );
+
+					if ( pContItem )
+						iItemsInContainer = pContItem->ContentCountAll();
+	
+					// Check the total number of items in the bankbox and the ev.
+					// container put into it.
+					if (( ContentCountAll() + iItemsInContainer ) > iBankIMax )
+					{
+						pCharMsg->SysMessageDefault( DEFMSG_BVBOX_FULL_ITEMS );
+						return( false );
+					}
 				}
 
+				int iBankWMax = g_Cfg.m_iBankWMax;
 				pTagTemp = GetKey("OVERRIDE.MAXWEIGHT", false);
 				if ( pTagTemp )
-				{
 					iBankWMax = pTagTemp->GetValNum() * WEIGHT_UNITS;
-				}
-		
-				// Check if the item dropped in the bank is a container. If it is
-				// we need to calculate the number of items in that too.
-				int iItemsInContainer = 0;
-				const CItemContainer * pContItem = dynamic_cast <const CItemContainer *>( pItem );
-				if ( pContItem )
+
+				if ( iBankWMax >= 0 )
 				{
-					iItemsInContainer = pContItem->ContentCountAll();
-				}
-		
-				// Check the total number of items in the bankbox and the ev.
-				// container put into it.
-				if (( ContentCountAll() + iItemsInContainer ) > iBankIMax )
-				{
-					pCharMsg->SysMessageDefault( DEFMSG_BVBOX_FULL_ITEMS );
-					return( false );
-				}
-		
-				// Check the weightlimit on bankboxes.
-				if (( GetWeight() + pItem->GetWeight()) > iBankWMax )
-				{
-					pCharMsg->SysMessageDefault( DEFMSG_BVBOX_FULL_WEIGHT );
-					return( false );
+					// Check the weightlimit on bankboxes.
+					if (( GetWeight() + pItem->GetWeight()) > iBankWMax )
+					{
+						pCharMsg->SysMessageDefault( DEFMSG_BVBOX_FULL_WEIGHT );
+						return( false );
+					}
 				}
 			}
 			break;

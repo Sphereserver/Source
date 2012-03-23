@@ -412,6 +412,7 @@ private:
 #define SPELLFLAG_NOPRECAST			0x0400000 // disable precasting for this spell
 #define SPELLFLAG_NOFREEZEONCAST	0x0800000 // disable freeze on cast for this spell
 #define SPELLFLAG_AREA				0x1000000 // area effect (uses local.arearadius)
+#define SPELLFLAG_POLY				0x2000000
 
 	CGString m_sName;	// spell name
 
@@ -806,6 +807,7 @@ public:
 	int		m_iExperimental;
 	int		m_iOptionFlags;
 	int		m_iWoolGrowthTime;	// how long till wool grows back on sheared sheep, in minutes
+	int		m_iAttackerTimeout;	// Timeout for attacker.*
 
 	int		m_iDistanceYell;
 	int		m_iDistanceWhisper;
@@ -877,7 +879,7 @@ public:
 #define	NPC_AI_EXTRA			0x00004		//	NPC magics, combat, etc
 #define NPC_AI_ALWAYSINT		0x00008		//	NPC pathfinding does not check int, always smart
 #define NPC_AI_INTFOOD			0x00010		//  NPC food search (more intelligent and trusworthy)
-//#define NPC_AI_MAGICS			0x00020
+#define NPC_AI_MAGICS			0x00020
 #define NPC_AI_COMBAT			0x00040
 #define NPC_AI_VEND_TIME		0x00080
 #define NPC_AI_LOOTING			0x00100
