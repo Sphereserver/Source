@@ -3083,16 +3083,19 @@ void NetworkInput::processData()
 		ASSERT(client != NULL);
 
 		EXC_SET("check message");
-		if (state->m_incoming.rawPackets.empty() && client->GetConnectType() != CONNECT_TELNET)
+		if (state->m_incoming.rawPackets.empty())
 		{
-			// check for timeout
-			EXC_SET("check frozen");
-			int iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
-			if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
+			if (client->GetConnectType() != CONNECT_TELNET)
+			{
+				// check for timeout
+				EXC_SET("check frozen");
+				int iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
+				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
 					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", state->id());
 					state->markReadClosed();
 				}
+			}
 
 			EXC_SET("next state");
 			continue;

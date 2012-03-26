@@ -461,12 +461,14 @@ void CChar::DropAll( CItemContainer * pCorpse, WORD wAttr )
 	UnEquipAllItems( pCorpse );
 }
 
-void CChar::UnEquipAllItems( CItemContainer * pDest )
+void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 {
 	ADDTOCALLSTACK("CChar::UnEquipAllItems");
 	// We morphed, sleeping, died or became a GM.
 	// Pets can be told to "Drop All"
 	// drop item that is up in the air as well.
+	// pDest       = Container to place items in
+	// bLeaveHands = true to leave items in hands; otherwise, false
 
 	if ( GetCount() <= 0 )
 		return;
@@ -478,6 +480,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest )
 	{
 		pItemNext = pItem->GetNext();
 		LAYER_TYPE layer = pItem->GetEquipLayer();
+
 		switch ( layer )
 		{
 			case LAYER_NONE:
@@ -511,6 +514,11 @@ void CChar::UnEquipAllItems( CItemContainer * pDest )
 				continue;
 			case LAYER_DRAGGING:
 				layer = LAYER_NONE;
+				break;
+			case LAYER_HAND1:
+			case LAYER_HAND2:
+				if (bLeaveHands)
+					continue;
 				break;
 			default:
 				// can't transfer this to corpse.

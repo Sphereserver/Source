@@ -3408,7 +3408,7 @@ public:
 
 	bool OnFreezeCheck();
 	void DropAll( CItemContainer * pCorpse = NULL, WORD wAttr = 0 );
-	void UnEquipAllItems( CItemContainer * pCorpse = NULL );
+	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
 	void Wake();
 	void SleepStart( bool fFrontFall );
 

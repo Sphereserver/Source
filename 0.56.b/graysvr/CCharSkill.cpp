@@ -3195,7 +3195,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		if ( ! SetPoisonCure( iSkillLevel, true ))
 			return -SKTRIG_ABORT;
 
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_1 ), (LPCTSTR) (pChar == this) ? g_Cfg.GetDefaultMsg(DEFMSG_HEALING_YOURSELF) : ( pChar->GetName()));
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_1 ), (pChar == this) ? g_Cfg.GetDefaultMsg(DEFMSG_HEALING_YOURSELF) : ( pChar->GetName()));
 		if ( pChar != this )
 		{
 			pChar->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_2 ), (LPCTSTR) GetName());

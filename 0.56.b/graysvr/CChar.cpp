@@ -920,12 +920,26 @@ void CChar::SetID( CREID_TYPE id )
 		m_prev_id = GetID();
 	}
 
-	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
-	{
-		// Transfom to non-human (if they ever where human)
-		// can't ride a horse in this form.
+	// our new body may not be capable of riding a horse
+	if (IsMountCapable() == false)
 		Horse_UnMount();
-		UnEquipAllItems(); 		// unequip all items.
+
+	// our new body may not be capable of equipping items
+	if (pCharDef->Can(CAN_C_EQUIP) == false)
+	{
+		// we can't equip anything, except maybe in our hands
+		UnEquipAllItems(NULL, pCharDef->Can(CAN_C_USEHANDS));
+	}
+	else if (pCharDef->Can(CAN_C_USEHANDS) == false)
+	{
+		// we can't use our hands, so just unequip those
+		CItem * pHand = LayerFind(LAYER_HAND1);
+		if (pHand != NULL)
+			GetPackSafe()->ContentAdd(pHand);
+
+		pHand = LayerFind(LAYER_HAND2);
+		if (pHand != NULL)
+			GetPackSafe()->ContentAdd(pHand);
 	}
 }
 
