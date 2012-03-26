@@ -6636,4 +6636,32 @@ GROUP=ALLMAP
 P=758,1403,0,0
 RECT=740,1406,778,1400,0
 
+// New locations
+
+[AREADEF a_dungeon_solen]
+NAME=Solen hive
+FLAGS=region_antimagic_recall_in|region_antimagic_gate|region_flag_nobuilding|region_flag_underground
+RECT=5640,1777,5935,2039,0
+P=5803,1920,0,0
+GROUP=Other Dungeons
+
+[ROOMDEF a_moonglow_teleport_room]
+NAME=The Moonglow Teleport Room
+FLAGS=region_flag_nobuilding|region_flag_underground
+RECT=4445,1518,4490,1574,0
+P=4467,1544,0,0
+GROUP=Moonglow
+
+[AREADEF a_minax_stronghold]
+NAME=Minax Stronghold
+FLAGS=region_flag_nobuilding
+RECT=1105,2575,1175,2620,0
+P=1140,2595,0,0
+
+[AREADEF a_sea_market]
+NAME=Sea Market
+FLAGS=region_antimagic_recall_in|region_antimagic_gate|region_flag_guarded
+RECT=4500,2250,4600,2450,0
+P=4551,2313,-2,0
+
 [EOF]

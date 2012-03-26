@@ -5340,3 +5340,6 @@ ALPHA additions:
 - Fixed #2034: Disabled timeout check for TELNET connections.
 - Fixed #2050: Now if you set BankMaxWeight/Items to something less than 0 
                will avoid the weight/item amount check.
+
+26-03-2010, RanXerox
+- Updated #2036: sphere_map0.scp, sphere_map3.scp sphere_map4.scp (added some missing locations)

@@ -38,4 +38,27 @@ GROUP=Tokuno Islands
 P=977,223,23,4
 RECT=969,194,992,224,4
 
+[AREADEF a_bushido_dojo]
+NAME=Bushido Dojo
+GROUP=Tokuno Islands
+P=320,408,32,4
+RECT=312,380,328,391,4
+RECT=303,391,336,424,4
+RECT=311,424,329,440,4
+FLAGS=region_flag_nobuilding|region_flag_underground
+
+[AREADEF a_tokuno_castle]
+NAME=Tokuno Castle
+GROUP=Tokuno Islands
+P=1235,771,3,4
+RECT=1223,753,1248,776,4
+FLAGS=region_flag_nobuilding|region_flag_underground
+
+[AREADEF a_citadel_entrance]
+NAME=Citadel Entrance
+GROUP=Tokuno Islands
+P=1346,765,20,4
+RECT=1344,760,1349,766,4
+FLAGS=region_flag_nobuilding|region_flag_underground
+
 [EOF]

@@ -139,4 +139,17 @@ RECT=360,960,460,1175,3
 FLAGS=region_flag_nobuilding
 GROUP=Tokuno Islands 
 
+[AREADEF a_malas_gypsy_camp_n1]
+NAME=Malas Gypsy Camp
+P=1402,417,-90,3
+RECT=1387,408,1408,1423,3
+GROUP=Malas Gypsy Camp
+
+[AREADEF a_citadel]
+NAME=The Citadel
+P=98,1890,0,3
+Rect=55,1840,200,1990,3
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
+GROUP=Malas
+
 [EOF]
