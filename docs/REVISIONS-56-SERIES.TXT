@@ -5344,8 +5344,12 @@ ALPHA additions:
 26-03-2012, RanXerox
 - Updated #2036: sphere_map0.scp, sphere_map3.scp sphere_map4.scp (added some missing locations)
 
-26-09-2012, MrSugarCube
+26-03-2012, MrSugarCube
 - Modified #2040: MT_EQUIP, MT_USEHANDS and MT_MOUNT flags are respected when a character's body
   changes. Characters won't be dismount or have their items unequipped if the new body has the
   relevant flags.
 
+27-03-2012, MrSugarCube
+- Added: Support for reading map data from mapXLegacyMUL.uop files found in client 7.0.24.0
+  onwards. Sphere looks for the old mapX.mul file(s) first and will continue to use these if
+  both file formats exist alongside each other.

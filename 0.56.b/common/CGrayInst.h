@@ -34,6 +34,7 @@ public:
 	CGFile	m_Stadif[256];		// stadifX.mul
 	CGFile	m_Stadifi[256];		// stadifiX.mul
 	CGFile	m_Stadifl[256];		// stadiflX.mul
+	bool m_IsMapUopFormat[256]; // true for maps that are uop format
 
 	CSVFile m_CsvFiles[8];		// doors.txt, stairs.txt (x2), roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
 
@@ -86,6 +87,7 @@ public:
 	CGrayInstall()
 	{
 		memset(m_FileFormat, 0, sizeof(m_FileFormat));
+		memset(m_IsMapUopFormat, 0, sizeof(m_IsMapUopFormat));
 	};
 
 private:

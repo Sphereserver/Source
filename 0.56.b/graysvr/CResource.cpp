@@ -3649,8 +3649,8 @@ bool CResource::Load( bool fResync )
 		);
 	if ( i != VERFILE_QTY )
 	{
-      g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
-		g_Log.Event( LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", (LPCTSTR) g_Install.GetBaseFileName(i));
+		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+		g_Log.Event( LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
 		return( false );
 	}
 
@@ -3679,7 +3679,7 @@ bool CResource::Load( bool fResync )
 	{
 		if ( ! OpenResourceFind( m_scpTables, GRAY_FILE "tables" ))
 		{
-         		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+			g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
 			g_Log.Event( LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n" );
 			return false;
 		}

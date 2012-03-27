@@ -414,16 +414,47 @@ void CGrayMapBlock::Load( int bx, int by )
 	// Only load terrain if it wasn't patched
 	if ( ! bPatchedTerrain )
 	{
-		CGFile * pFile;
+		int mapNumber = g_MapList.m_mapnum[m_map];
+		CGFile * pFile = &(g_Install.m_Maps[mapNumber]);
+		ASSERT(pFile != NULL);
+		ASSERT(pFile->IsFileOpen());
+		
+		// determine the location in the file where the data needs to be read from
 		CUOIndexRec index;
 		index.SetupIndex( ulBlockIndex * sizeof(CUOMapBlock), sizeof(CUOMapBlock));
-		pFile = &(g_Install.m_Maps[g_MapList.m_mapnum[m_map]]);
 
-		if ( pFile->Seek( index.GetFileOffset(), SEEK_SET ) != index.GetFileOffset() )
+		unsigned long fileOffset = index.GetFileOffset();
+		if (g_Install.m_IsMapUopFormat[mapNumber])
 		{
-			memset( &m_Terrain, 0, sizeof( m_Terrain ));
+			// when the map is in a UOP container we need to modify the file offset to account for the block header
+			// data. the uop file format splits the map data into smaller 'blocks', each of which has its on header (as
+			// well as an overall file header)
+			//
+			// we must therefore determine which block of data contains the map information we need, and then add
+			// the extra number of bytes to our file offset
+			const unsigned long fileHeaderLength = 40; // length of overall file header
+			const unsigned long blockHeaderLength = 12; // length of the block header
+			const unsigned long firstDataEntryOffset = 3412; // offset of first actual data byte within a block
+			const unsigned long firstBlockDataEntryOffset = fileHeaderLength + blockHeaderLength + firstDataEntryOffset; // offset of first actual data byte for the first entry in the file
+			const unsigned long mapBlockLength = 802816; // maximum size of a block
+
+			// note: to avoid writing code that parse the UOP format properly we are calculating a new offset based on the
+			// sizes of the blocks as-of client 7.0.24.0. the nature of the UOP format allows the block lengths to differ
+			// and for the data to be compressed, so we should watch out for this in the future (and if this happens we'll
+			// have to handle UOP data properly)
+
+			unsigned long block = fileOffset / mapBlockLength;
+			fileOffset += firstBlockDataEntryOffset + ((firstDataEntryOffset) * (block / 100)) + (blockHeaderLength * block);
+		}
+
+		// seek to position in file
+		if ( pFile->Seek( fileOffset, SEEK_SET ) != fileOffset )
+		{
+			memset( &m_Terrain, 0, sizeof(m_Terrain));
 			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Seek Ver");
 		}
+
+		// read terrain data
 		if ( pFile->Read( &m_Terrain, sizeof(CUOMapBlock)) <= 0 )
 		{
 			memset( &m_Terrain, 0, sizeof( m_Terrain ));

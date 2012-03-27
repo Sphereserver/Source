@@ -189,122 +189,151 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		if ( ! ( dwMask & ( 1 << i )) ) continue;
 		if ( GetBaseFileName( (VERFILE_TYPE)i ) == NULL ) continue;
 
-		if ( !OpenFile( (VERFILE_TYPE)i ))
+		bool bFileLoaded = true;
+		switch (i)
 		{
-			//	make some MULs optional
-			switch ( i )
-			{
-				case VERFILE_MAP:						//	map #0 is permanent and should exist!
-				case VERFILE_STATICS:
-				case VERFILE_STAIDX:
-					memset(g_MapList.m_maps, false, sizeof(g_MapList.m_maps));
-					break;
-				case VERFILE_VERDATA:
-					continue;
-			}
-			break;
-		}
-		else if ( i == VERFILE_MAP )
-		{
-			char z[256];
-
-			//	check for map files of custom maps
-			for ( int m = 0; m < 256; m++ )
-			{
-				if ( g_MapList.m_maps[m] )
+			default:
+				if ( !OpenFile( (VERFILE_TYPE)i ))
 				{
-					int	index = g_MapList.m_mapnum[m];
-					if ( index == -1 )
+					//	make some MULs optional
+					switch ( i )
 					{
-						g_MapList.m_maps[m] = false;
-						continue;
-					}
+						case VERFILE_VERDATA:
+							break;
 
-					if ( !m_Maps[index].IsFileOpen() )
-					{
-						sprintf(z, "map%d.mul", index);
-						OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-					}
-					if ( !m_Staidx[index].IsFileOpen() )
-					{
-						sprintf(z, "staidx%d.mul", index);
-						OpenFile(m_Staidx[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-					}
-					if ( !m_Statics[index].IsFileOpen() )
-					{
-						sprintf(z, "statics%d.mul", index);
-						OpenFile(m_Statics[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-					}
-					if ( g_Cfg.m_fUseMapDiffs )
-					{
-						if ( !m_Mapdif[index].IsFileOpen() )
-						{
-							sprintf(z, "mapdif%d.mul", index);
-							OpenFile(m_Mapdif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-						}
-						if ( !m_Mapdifl[index].IsFileOpen() )
-						{
-							sprintf(z, "mapdifl%d.mul", index);
-							OpenFile(m_Mapdifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-						}
-						if ( !m_Stadif[index].IsFileOpen() )
-						{
-							sprintf(z, "stadif%d.mul", index);
-							OpenFile(m_Stadif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-						}
-						if ( !m_Stadifi[index].IsFileOpen() )
-						{
-							sprintf(z, "stadifi%d.mul", index);
-							OpenFile(m_Stadifi[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-						}
-						if ( !m_Stadifl[index].IsFileOpen() )
-						{
-							sprintf(z, "stadifl%d.mul", index);
-							OpenFile(m_Stadifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
-						}
-					}
-
-					//	if any of the map files are not available, mark map as unavailable
-					//	mapdif and stadif files are not required.
-					if ( !m_Maps[index].IsFileOpen() ||
-						 !m_Staidx[index].IsFileOpen() ||
-						 !m_Statics[index].IsFileOpen() )
-					{
-						if ( m_Maps[index].IsFileOpen() )		m_Maps[index].Close();
-						if ( m_Staidx[index].IsFileOpen() )		m_Staidx[index].Close();
-						if ( m_Statics[index].IsFileOpen() )	m_Statics[index].Close();
-						
-						if (index == 1 && m_Maps[0].IsFileOpen())
-							g_MapList.m_mapnum[m] = 0;
-						else
-							g_MapList.m_mapid[m] = false;
-					}
-
-					//	mapdif and mapdifl are not required, but if one exists so should
-					//	the other
-					if ( m_Mapdif[index].IsFileOpen() != m_Mapdifl[index].IsFileOpen() )
-					{
-						if ( m_Mapdif[index].IsFileOpen() )		m_Mapdif[index].Close();
-						if ( m_Mapdifl[index].IsFileOpen() )	m_Mapdifl[index].Close();
-					}
-
-					//	if one of the stadif files exissts, so should the others
-					if ( m_Stadif[index].IsFileOpen() != m_Stadifi[index].IsFileOpen() ||
-						 m_Stadif[index].IsFileOpen() != m_Stadifl[index].IsFileOpen() )
-					{
-						if ( m_Stadif[index].IsFileOpen() )		m_Stadif[index].Close();
-						if ( m_Stadifi[index].IsFileOpen() )	m_Stadifi[index].Close();
-						if ( m_Stadifl[index].IsFileOpen() )	m_Stadifl[index].Close();
+						default:
+							bFileLoaded = false;
+							break;
 					}
 				}
-			}
+				break;
+
+			case VERFILE_MAP:
+				// map file is handled differently
+				TCHAR z[256];
+
+				//	check for map files of custom maps
+				for ( int m = 0; m < 256; m++ )
+				{
+					if ( g_MapList.m_maps[m] )
+					{
+						int	index = g_MapList.m_mapnum[m];
+						if ( index == -1 )
+						{
+							g_MapList.m_maps[m] = false;
+							continue;
+						}
+
+						if ( !m_Maps[index].IsFileOpen() )
+						{
+							sprintf(z, "map%d.mul", index);
+							OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+
+							if (m_Maps[index].IsFileOpen())
+							{
+								m_IsMapUopFormat[index] = false;
+							}
+							else
+							{
+								sprintf(z, "map%dLegacyMUL.uop", index);
+								OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+
+								// neither file exists, map0 is required
+								if (m_Maps[index].IsFileOpen() == false && index == 0)
+								{
+									bFileLoaded = false;
+									break;
+								}
+
+								m_IsMapUopFormat[index] = true;
+							}
+						}
+						if ( !m_Staidx[index].IsFileOpen() )
+						{
+							sprintf(z, "staidx%d.mul", index);
+							OpenFile(m_Staidx[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+						}
+						if ( !m_Statics[index].IsFileOpen() )
+						{
+							sprintf(z, "statics%d.mul", index);
+							OpenFile(m_Statics[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+						}
+						if ( g_Cfg.m_fUseMapDiffs )
+						{
+							if ( !m_Mapdif[index].IsFileOpen() )
+							{
+								sprintf(z, "mapdif%d.mul", index);
+								OpenFile(m_Mapdif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							}
+							if ( !m_Mapdifl[index].IsFileOpen() )
+							{
+								sprintf(z, "mapdifl%d.mul", index);
+								OpenFile(m_Mapdifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							}
+							if ( !m_Stadif[index].IsFileOpen() )
+							{
+								sprintf(z, "stadif%d.mul", index);
+								OpenFile(m_Stadif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							}
+							if ( !m_Stadifi[index].IsFileOpen() )
+							{
+								sprintf(z, "stadifi%d.mul", index);
+								OpenFile(m_Stadifi[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							}
+							if ( !m_Stadifl[index].IsFileOpen() )
+							{
+								sprintf(z, "stadifl%d.mul", index);
+								OpenFile(m_Stadifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							}
+						}
+
+						//	if any of the map files are not available, mark map as unavailable
+						//	mapdif and stadif files are not required.
+						if ( !m_Maps[index].IsFileOpen() ||
+							 !m_Staidx[index].IsFileOpen() ||
+							 !m_Statics[index].IsFileOpen() )
+						{
+							if ( m_Maps[index].IsFileOpen() )		m_Maps[index].Close();
+							if ( m_Staidx[index].IsFileOpen() )		m_Staidx[index].Close();
+							if ( m_Statics[index].IsFileOpen() )	m_Statics[index].Close();
+						
+							if (index == 1 && m_Maps[0].IsFileOpen())
+								g_MapList.m_mapnum[m] = 0;
+							else
+								g_MapList.m_mapid[m] = false;
+						}
+
+						//	mapdif and mapdifl are not required, but if one exists so should
+						//	the other
+						if ( m_Mapdif[index].IsFileOpen() != m_Mapdifl[index].IsFileOpen() )
+						{
+							if ( m_Mapdif[index].IsFileOpen() )		m_Mapdif[index].Close();
+							if ( m_Mapdifl[index].IsFileOpen() )	m_Mapdifl[index].Close();
+						}
+
+						//	if one of the stadif files exissts, so should the others
+						if ( m_Stadif[index].IsFileOpen() != m_Stadifi[index].IsFileOpen() ||
+							 m_Stadif[index].IsFileOpen() != m_Stadifl[index].IsFileOpen() )
+						{
+							if ( m_Stadif[index].IsFileOpen() )		m_Stadif[index].Close();
+							if ( m_Stadifi[index].IsFileOpen() )	m_Stadifi[index].Close();
+							if ( m_Stadifl[index].IsFileOpen() )	m_Stadifl[index].Close();
+						}
+					}
+				}
+				break;
 		}
+
+		// stop if we hit a failure
+		if (bFileLoaded == false)
+			break;
 	}
 
 	DetectMulVersions();
 	g_MapList.Init();
 
-	char *z = Str_GetTemp(), *z1 = Str_GetTemp();
+	TCHAR * z = Str_GetTemp();
+	TCHAR * z1 = Str_GetTemp();
 	for ( unsigned char j = 0; j < 7; j++ )
 	{
 		bool bSup = false;
