@@ -5353,3 +5353,6 @@ ALPHA additions:
 - Added: Support for reading map data from mapXLegacyMUL.uop files found in client 7.0.24.0
   onwards. Sphere looks for the old mapX.mul file(s) first and will continue to use these if
   both file formats exist alongside each other.
+
+31-03-2012, ShiryuX
+- Fixed: Players trying to move during a resync pause caused exceptions on console.
