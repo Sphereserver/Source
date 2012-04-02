@@ -5355,4 +5355,4 @@ ALPHA additions:
   both file formats exist alongside each other.
 
 31-03-2012, ShiryuX
-- Fixed: Players trying to move during a resync pause caused exceptions on console.
+- Fixed #2052: Players trying to move during a resync pause caused exceptions on console.

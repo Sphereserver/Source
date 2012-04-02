@@ -2621,9 +2621,6 @@ bool CChar::OnFreezeCheck()
 	// Can we break free ?
 	// RETURN: true = held in place.
 
-	if ( g_Serv.m_fResyncPause == true )
-		return true;
-
 	// speed mode '4' prevents movement
 	if ( m_pPlayer != NULL && (m_pPlayer->m_speedMode & 0x04) != 0 )
 		return true;

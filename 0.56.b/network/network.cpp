@@ -3097,8 +3097,11 @@ void NetworkInput::processData()
 				}
 			}
 
-			EXC_SET("next state");
-			continue;
+			if (state->m_incoming.rawBuffer == NULL)
+			{
+				EXC_SET("next state");
+				continue;
+			}
 		}
 
 		EXC_SET("messages - process");
@@ -3127,31 +3130,34 @@ void NetworkInput::processData()
 			delete packet;
 		}
 
-		EXC_SET("start client profile");
-		ProfileTask clientTask(PROFILE_CLIENTS);
-
-		EXC_SET("packets - process");
-		Packet* buffer = state->m_incoming.rawBuffer;
-		if (buffer != NULL)
+		if (g_Serv.IsLoading() == false)
 		{
-			// we have a buffer of raw bytes, we need to go through them all and process as much as we can
-			while (state->isReadClosed() == false && buffer->getRemainingLength() > 0)
-			{
-				if (processData(state, buffer))
-					continue;
+			EXC_SET("start client profile");
+			ProfileTask clientTask(PROFILE_CLIENTS);
 
-				// processData didn't want to use any data, which means we probably
-				// received some invalid data or that the packet was malformed
-				// best course of action right now is to close the connection
-				state->markReadClosed();
-				break;
-			}
-
-			if (buffer->getRemainingLength() <= 0)
+			EXC_SET("packets - process");
+			Packet* buffer = state->m_incoming.rawBuffer;
+			if (buffer != NULL)
 			{
-				EXC_SET("packets - clear buffer");
-				delete buffer;
-				state->m_incoming.rawBuffer = NULL;
+				// we have a buffer of raw bytes, we need to go through them all and process as much as we can
+				while (state->isReadClosed() == false && buffer->getRemainingLength() > 0)
+				{
+					if (processData(state, buffer))
+						continue;
+
+					// processData didn't want to use any data, which means we probably
+					// received some invalid data or that the packet was malformed
+					// best course of action right now is to close the connection
+					state->markReadClosed();
+					break;
+				}
+
+				if (buffer->getRemainingLength() <= 0)
+				{
+					EXC_SET("packets - clear buffer");
+					delete buffer;
+					state->m_incoming.rawBuffer = NULL;
+				}
 			}
 		}
 		EXC_SET("next state");

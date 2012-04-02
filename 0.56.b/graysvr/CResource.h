@@ -807,7 +807,7 @@ public:
 	int		m_iExperimental;
 	int		m_iOptionFlags;
 	int		m_iWoolGrowthTime;	// how long till wool grows back on sheared sheep, in minutes
-	int		m_iAttackerTimeout;	// Timeout for attacker.*
+	unsigned int m_iAttackerTimeout;	// Timeout for attacker.*
 
 	int		m_iDistanceYell;
 	int		m_iDistanceWhisper;
