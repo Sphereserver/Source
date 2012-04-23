@@ -62,19 +62,25 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 	switch ( FindTableSorted( s.GetKey(), CCharNPC::sm_szVerbKeys, COUNTOF(CCharNPC::sm_szVerbKeys)-1 ))
 	{
 	case NV_BUY:
+	{
 		// Open up the buy dialog.
-		if ( !pCharSrc || !pCharSrc->IsClient())
+		if ( pCharSrc == NULL || !pCharSrc->IsClient())
 			return false;
+
 		if ( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY )
 		{
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
 			return true;
 		}
-		if ( !pCharSrc->GetClient()->addShopMenuBuy(this) )
+
+		CClient * pClientSrc = pCharSrc->GetClient();
+		ASSERT(pClientSrc != NULL);
+		if ( !pClientSrc->addShopMenuBuy(this) )
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NO_GOODS));
 		else
-			pCharSrc->GetClient()->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+			pClientSrc->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
 		break;
+	}
 	case NV_BYE:
 		Skill_Start( SKILL_NONE );
 		m_Act_Targ.InitUID();
@@ -85,6 +91,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		m_atFlee.m_iStepsMax = s.GetArgVal();	// how long should it take to get there.
 		if ( ! m_atFlee.m_iStepsMax )
 			m_atFlee.m_iStepsMax = 20;
+
 		m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
 		Skill_Start( NPCACT_FLEE );
 		break;
@@ -107,19 +114,25 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		NPC_WalkToPoint( true );
 		break;
 	case NV_SELL:
+	{
 		// Open up the sell dialog.
-		if ( !pCharSrc || !pCharSrc->IsClient() )
+		if ( pCharSrc == NULL || !pCharSrc->IsClient() )
 			return false;
+
 		if ( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY )
 		{
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
 			return true;
 		}
-		if ( ! pCharSrc->GetClient()->addShopMenuSell( this ))
+		
+		CClient * pClientSrc = pCharSrc->GetClient();
+		ASSERT(pClientSrc != NULL);
+		if ( ! pClientSrc->addShopMenuSell( this ))
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOTHING_BUY));
 		else
-			pCharSrc->GetClient()->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+			pClientSrc->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
 		break;
+	}
 	case NV_SHRINK:
 		// we must own it.
 		if ( ! NPC_IsOwnedBy( pCharSrc ))

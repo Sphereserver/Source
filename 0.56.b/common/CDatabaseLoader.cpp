@@ -36,10 +36,10 @@ cDatabaseLoader::cDatabaseLoader()
 	if ( !g_Cfg.m_sDbDll.IsEmpty() )
 	{
 #ifdef _WIN32
-		char DbDll[4096];
+		TCHAR DbDll[4096];
 
 		::GetCurrentDirectory(4096, DbDll);
-		if(DbDll != NULL)
+		if(DbDll[0] != '\0')
 		{
 			strcat(DbDll, "\\");
 			strcat(DbDll, g_Cfg.m_sDbDll.GetPtr());

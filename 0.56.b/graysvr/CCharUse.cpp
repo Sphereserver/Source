@@ -665,7 +665,7 @@ badalign:
 	if ( pVarAnimRender )
 		AmmoRender = pVarAnimRender->GetValNum();
 	else
-		AmmoRender = false;
+		AmmoRender = 0;
 	
 	// show firing effect
 	pButte->Effect( EFFECT_BOLT, AmmoAnim, this, 16, 0, false, AmmoHue, AmmoRender );
@@ -1249,8 +1249,8 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
-	if ( !pItem )
-		return false;
+	if ( pItem == NULL )
+		return NULL;
 
 	if ( pItem->m_uidLink.IsValidUID() &&
 		pItem->m_uidLink.IsChar() &&

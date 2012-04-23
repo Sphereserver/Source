@@ -1988,7 +1988,7 @@ void CWorld::Close()
 		m_SectorsQty = 0;
 	}
 
-	memset(g_MapList.m_maps, false, sizeof(g_MapList.m_maps));
+	memset(g_MapList.m_maps, 0, sizeof(g_MapList.m_maps));
 
 	if ( g_MapList.m_pMapDiffCollection != NULL )
 	{

@@ -246,7 +246,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	if ( m_designWorking.m_iRevision == m_designMain.m_iRevision )
 		return;
 
-	if ( pClientSrc && pClientSrc->GetChar() )
+	if ( pClientSrc != NULL && pClientSrc->GetChar() != NULL )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = m_designMain.m_vectorComponents.size();
@@ -328,7 +328,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	}
 
 	rectNew.OffsetRect(GetTopPoint().m_x, GetTopPoint().m_y);
-	if ( m_pRegion && !m_pRegion->IsInside(rectNew) )
+	if ( m_pRegion != NULL && !m_pRegion->IsInside(rectNew) )
 	{
 		// items outside the region won't be noticed in los/movement checks,
 		// so the region boundaries need to be stretched to fit all the components
@@ -345,7 +345,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	m_designMain.m_iRevision++;
 	m_designWorking.m_iRevision = m_designMain.m_iRevision;
 
-	if ( m_pGrayMulti )
+	if ( m_pGrayMulti != NULL )
 	{
 		// multi object needs to be recreated
 		delete m_pGrayMulti;
@@ -360,13 +360,18 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddItem");
 	// add an item to the building design at the given location
-	if ( pClientSrc && !pClientSrc->GetChar() )
-		return;
+	const CChar * pCharSrc = NULL;
+	if (pClientSrc != NULL)
+	{
+		pCharSrc = pClientSrc->GetChar();
+		if (pCharSrc == NULL)
+			return;
+	}
 
 	CItemBase * pItemBase = CItemBase::FindItemBase(id);
 	if ( pItemBase == NULL )
 	{
-		g_Log.EventWarn("Unscripted item 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Unscripted item 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
@@ -380,7 +385,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 	{
 		if ( !IsValidItem(id, pClientSrc, false) )
 		{
-			g_Log.EventWarn("Invalid item 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+			g_Log.EventWarn("Invalid item 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 			SendStructureTo(pClientSrc);
 			return;
 		}
@@ -389,7 +394,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 		pt.m_x += x;
 		pt.m_y += y;
 
-		if ( pClientSrc )
+		if ( pClientSrc != NULL )
 		{
 			// if a client is placing the item, make sure that
 			// it is within the design area
@@ -398,7 +403,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 			{
 				if ( !rectDesign.IsInsideX( pt.m_x ) || !rectDesign.IsInsideY( pt.m_y - 1 ) )
 				{
-					g_Log.EventWarn("Item 0%x being added to building 0%lx outside of boundaries by 0%lx (%s).\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0), pt.WriteUsed());
+					g_Log.EventWarn("Item 0%x being added to building 0%lx outside of boundaries by 0%lx (%s).\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0, pt.WriteUsed());
 					SendStructureTo(pClientSrc);
 					return;
 				}
@@ -412,8 +417,8 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 		if ( z == -128 )
 		{
 			// determine z level based on player's position
-			if ( pClientSrc )
-				z = GetPlaneZ(GetPlane(pClientSrc->GetChar()->GetTopZ() - GetTopZ()));
+			if ( pCharSrc != NULL )
+				z = GetPlaneZ(GetPlane(pCharSrc->GetTopZ() - GetTopZ()));
 			else
 				z = 0;
 		}
@@ -451,28 +456,33 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, 
 	ADDTOCALLSTACK("CItemMultiCustom::AddStairs");
 	// add a staircase to the building, the given ID must
 	// be the ID of a multi to extract the items from
-	if ( pClientSrc && !pClientSrc->GetChar() )
-		return;
+	const CChar * pCharSrc = NULL;
+	if (pClientSrc != NULL)
+	{
+		pCharSrc = pClientSrc->GetChar();
+		if (pCharSrc == NULL)
+			return;
+	}
 
     const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs(id);
 	if ( pMulti == NULL )
 	{
-		g_Log.EventWarn("Unscripted multi 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Unscripted multi 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
 	
 	if ( !IsValidItem(id, pClientSrc, true) )
 	{
-		g_Log.EventWarn("Invalid multi 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Invalid multi 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
 
 	if ( z == -128 )
 	{
-		if ( pClientSrc )
-			z = GetPlaneZ(GetPlane(pClientSrc->GetChar()->GetTopZ() - GetTopZ()));
+		if ( pCharSrc != NULL )
+			z = GetPlaneZ(GetPlane(pCharSrc->GetTopZ() - GetTopZ()));
 		else
 			z = 0;
 	}
@@ -498,33 +508,39 @@ void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddRoof");
 	// add a roof piece to the building
-	if ( pClientSrc && !pClientSrc->GetChar() )
-		return;
+	const CChar * pCharSrc = NULL;
+	if (pClientSrc != NULL)
+	{
+		pCharSrc = pClientSrc->GetChar();
+		if (pCharSrc == NULL)
+			return;
+	}
 
 	CItemBase * pItemBase = CItemBase::FindItemBase(id);
 	if ( pItemBase == NULL )
 	{
-		g_Log.EventWarn("Unscripted roof tile 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Unscripted roof tile 0%x being added to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
 
 	if ( (pItemBase->GetTFlags() & UFLAG4_ROOF) == 0 )
 	{
-		g_Log.EventWarn("Non-roof tile 0%x being added as a roof to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Non-roof tile 0%x being added as a roof to building 0%lx by 0%lx.\n", id, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
 
 	if ( z < -3 || z > 12 || (z % 3 != 0) )
 	{
-		g_Log.EventWarn("Roof tile 0%x being added at invalid height %d to building 0%lx by 0%lx.\n", id, z, (DWORD)GetUID(), (pClientSrc? (DWORD)pClientSrc->GetChar()->GetUID():0));
+		g_Log.EventWarn("Roof tile 0%x being added at invalid height %d to building 0%lx by 0%lx.\n", id, z, (DWORD)GetUID(), pCharSrc != NULL? (DWORD)pCharSrc->GetUID() : 0);
 		SendStructureTo(pClientSrc);
 		return;
 	}
 
-	if ( pClientSrc )
-		z += pClientSrc->GetChar()->GetTopZ();
+	if ( pCharSrc != NULL )
+		z += pCharSrc->GetTopZ();
+
 	AddItem(pClientSrc, id, x, y, z);
 }
 
@@ -538,7 +554,7 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 	pt.m_x += x;
 	pt.m_y += y;
 
-	if ( pClientSrc )
+	if ( pClientSrc != NULL )
 	{
 		bool allowRemove = true;
 		switch ( GetPlane(z) )
@@ -578,7 +594,7 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 			if ( id != ITEMID_NOTHING && ((*j)->m_item.GetDispID() != id) )
 				break;
 
-			if ( pClientSrc && RemoveStairs(*j) )
+			if ( pClientSrc != NULL && RemoveStairs(*j) )
 				break;
 
 			// floor tiles the ground floor are replaced with dirt tiles
@@ -661,7 +677,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	ADDTOCALLSTACK("CItemMultiCustom::SendStructureTo");
 	// send the design details of this building to the given
 	// client
-	if ( pClientSrc == NULL || !pClientSrc->GetChar() || pClientSrc->IsPriv(PRIV_DEBUG) )
+	if ( pClientSrc == NULL || pClientSrc->GetChar() == NULL || pClientSrc->IsPriv(PRIV_DEBUG) )
 		return;
 
 	if ( PacketHouseDesign::CanSendTo(pClientSrc->GetNetState()) == false )
@@ -818,7 +834,7 @@ void CItemMultiCustom::RestoreStructure(CClient * pClientSrc)
 
 	CopyDesign(&m_designBackup, &m_designWorking);
 	
-	if ( pClientSrc )
+	if ( pClientSrc != NULL )
 		pClientSrc->addItem(this);
 }
 
@@ -832,7 +848,7 @@ void CItemMultiCustom::RevertChanges( CClient * pClientSrc )
 
 	CopyDesign(&m_designRevert, &m_designWorking);
 
-	if ( pClientSrc )
+	if ( pClientSrc != NULL )
 		pClientSrc->addItem(this);
 }
 
@@ -861,7 +877,7 @@ void CItemMultiCustom::ResetStructure( CClient * pClientSrc )
 		}
 	}
 
-	if ( pClientSrc )
+	if ( pClientSrc != NULL )
 		pClientSrc->addItem(this);
 }
 
@@ -870,7 +886,7 @@ int CItemMultiCustom::GetRevision(const CClient * pClientSrc) const
 	ADDTOCALLSTACK("CItemMultiCustom::GetRevision");
 	// return the revision number, making sure to return
 	// the working revision if the client is the designer
-	if ( pClientSrc && pClientSrc == m_pArchitect )
+	if ( pClientSrc != NULL && pClientSrc == m_pArchitect )
 		return m_designWorking.m_iRevision;	// working
 
 	return m_designMain.m_iRevision;

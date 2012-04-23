@@ -491,7 +491,7 @@ bool	CResourceDef::MakeResourceName()
 	{
 		// Is this a similar key?
 		pszKey	= g_Exp.m_VarDefs.GetAt(i)->GetKey();
-		if ( strnicmp( pbuf, pszKey, iLen ) )
+		if ( strnicmp( pbuf, pszKey, iLen ) != 0 )
 			continue;
 
 		// skip underscores
@@ -579,7 +579,7 @@ bool	CRegionBase::MakeRegionName()
 			continue;
 
 		// Is this a similar key?
-		if ( strnicmp( pbuf, pszKey, iLen ) )
+		if ( strnicmp( pbuf, pszKey, iLen ) != 0 )
 			continue;
 
 		// skip underscores

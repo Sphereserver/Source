@@ -608,7 +608,7 @@ int CItem::FixWeirdness()
 {
 	ADDTOCALLSTACK("CItem::FixWeirdness");
 	// Check for weirdness and fix it if possible.
-	// RETURN: false = i can't fix this.
+	// RETURN: 0 = i can't fix this.
 
 	if ( IsType(IT_EQ_MEMORY_OBJ) && ! IsValidUID())
 	{
@@ -644,7 +644,7 @@ int CItem::FixWeirdness()
 		{
 			if ( m_type == IT_EQ_MEMORY_OBJ )
 			{
-				return( false );	// get rid of it.	(this is not an ERROR per se)
+				return 0; // get rid of it.	(this is not an ERROR per se)
 			}
 			if ( IsAttr(ATTR_STOLEN))
 			{
@@ -935,8 +935,8 @@ int CItem::FixWeirdness()
 			case LAYER_VENDOR_STOCK:
 			case LAYER_VENDOR_EXTRA:
 			case LAYER_VENDOR_BUYS:
-				if ( pChar->m_pPlayer )	// players never need carry these,
-					return( false );
+				if ( pChar->m_pPlayer != NULL )	// players never need carry these,
+					return 0;
 				SetAttr(ATTR_MOVE_NEVER);
 				break;
 	

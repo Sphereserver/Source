@@ -356,7 +356,7 @@ bool CChar::Spell_Recall( CItem * pRune, bool fGate )
 		pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);	// why is this movable ?
 		pGate->m_itTelepad.m_pntMark = pRune->m_itRune.m_pntMark;
 		// pGate->m_light_pattern = LIGHT_LARGE;
-		pGate->SetHue(( pArea != NULL && pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED );
+		pGate->SetHue(pArea->IsGuarded() ? HUE_DEFAULT : HUE_RED );
 		int iDuration = pSpellDef->m_Duration.GetLinear( 0 );
 		pGate->MoveToDecay( GetTopPoint(), iDuration );
 		pGate->m_uidLink = this->GetUID();
@@ -2481,10 +2481,10 @@ int CChar::Spell_CastStart()
 		fWOP = false;
 	}
 
-	int			iDifficulty;
-	int			iSkill;
+	int iDifficulty;
+	int iSkill;
 	if ( !pSpellDef->GetPrimarySkill( &iSkill, &iDifficulty ) )
-		return false;
+		return -1;
 	iDifficulty	/= 10;	// adjust to 0-100
 
 	CGrayUID uid( m_Act_TargPrv );

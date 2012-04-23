@@ -104,8 +104,12 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 {
 	ADDTOCALLSTACK("PacketCharacterStatus::PacketCharacterStatus");
 
+	const NetState * state = target->GetNetState();
 	const CChar* character = target->GetChar();
-	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && other->Char_GetDef()->GetHireDayWage() == 0 );
+	const CCharBase * otherDefinition = other->Char_GetDef();
+	ASSERT(otherDefinition != NULL);
+
+	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && otherDefinition->GetHireDayWage() == 0 );
 
 	initLength();
 
@@ -119,13 +123,13 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeBool(canRename);
 
 		int version(0);
-		if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V2))
+		if (state->isClientLessVersion(MINCLIVER_STATUS_V2))
 			version = 1;
-		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V3))
+		else if (state->isClientLessVersion(MINCLIVER_STATUS_V3))
 			version = 2;
-		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V4))
+		else if (state->isClientLessVersion(MINCLIVER_STATUS_V4))
 			version = 3;
-		else if (target->GetNetState()->isClientLessVersion(MINCLIVER_STATUS_V5))
+		else if (state->isClientLessVersion(MINCLIVER_STATUS_V5))
 			version = 4;
 		else
 			version = 5;
@@ -141,7 +145,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		writeByte(version);
 
-		writeBool(other->Char_GetDef()->IsFemale());
+		writeBool(otherDefinition->IsFemale());
 		writeInt16(strength);
 		writeInt16(dexterity);
 		writeInt16(intelligence);
@@ -155,7 +159,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		else
 			writeInt32(other->GetPackSafe()->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
-		writeInt16(other->m_defense + other->Char_GetDef()->m_defense);
+		writeInt16(other->m_defense + otherDefinition->m_defense);
 		writeInt16(other->GetTotalWeight() / WEIGHT_UNITS);
 
 		if (version >= 5) // ML attributes
@@ -226,7 +230,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			}
 			else
 			{
-				writeInt16(other->Char_GetDef()->m_attackBase);
+				writeInt16(otherDefinition->m_attackBase);
 				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
 			}
 
@@ -1006,7 +1010,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	skip(2);
 
 	bool isLayerSent[LAYER_HORSE];
-	memset(isLayerSent, false, sizeof(isLayerSent));
+	memset(isLayerSent, 0, sizeof(isLayerSent));
 
 	m_count = 0;
 	ITEMID_TYPE id;
@@ -1985,8 +1989,8 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 
 	if (character->IsStatFlag(STATF_Sleeping) == false)
 	{
-		bool isLayerSent[LAYER_HORSE+1];
-		memset(isLayerSent, false, sizeof(isLayerSent));
+		bool isLayerSent[LAYER_HORSE + 1];
+		memset(isLayerSent, 0, sizeof(isLayerSent));
 
 		for (const CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
 		{
@@ -2226,7 +2230,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	const CChar* viewer = target->GetChar();
 
 	bool isLayerSent[LAYER_HORSE];
-	memset(isLayerSent, false, sizeof(isLayerSent));
+	memset(isLayerSent, 0, sizeof(isLayerSent));
 
 	initLength();
 	writeInt32(corpse->GetUID());

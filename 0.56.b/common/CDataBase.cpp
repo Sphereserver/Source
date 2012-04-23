@@ -649,7 +649,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				GETNONWHITESPACE(pszKey);
 				sVal.FormatVal(0);
 
-				if ( pszKey && *pszKey )
+				if ( pszKey[0] != '\0' )
 				{
 					TCHAR * ppArgs[2];
 					if ( Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF( ppArgs )) != 2) 
@@ -677,7 +677,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			GETNONWHITESPACE(pszKey);
 			sVal = "";
 
-			if ( pszKey && *pszKey )
+			if ( pszKey[0] != '\0' )
 			{
 				TCHAR * escapedString = Str_GetTemp();
 				

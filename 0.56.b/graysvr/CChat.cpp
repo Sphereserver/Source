@@ -337,21 +337,25 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 
 	CGString sFrom;
 	CChatChannel * pChannel = pBy->GetChannel();
+	CClient * pByClient = pBy->GetClient();
+	ASSERT(pByClient != NULL);
 
 	switch ( FindTableSorted( pszCommand, sm_szCmd_Chat, COUNTOF(sm_szCmd_Chat)))
 	{
 		case 0: // "ALLKICK"
 		{
-			if (!pChannel)
+			if (pChannel == NULL)
 			{
 				pBy->SendChatMsg(CHATMSG_MustBeInAConference);
 				return;
 			}
+
 			if (!pChannel->IsModerator(pBy->GetChatName()))
 			{
 				pBy->SendChatMsg(CHATMSG_MustHaveOps);
 				return;
 			}
+
 			pChannel->KickAll(pBy);
 			DecorateName(sFrom, NULL, true);
 			pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "All members have been kicked!", "");
@@ -359,27 +363,30 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		}
 		case 1: // "BC"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 			{
 	need_gm_privs:
 				DecorateName(sFrom, NULL, true);
 				pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, "You need to have GM privs to use this command.");
 				return;
 			}
+
 			Broadcast(pBy, pszText);
 			return;
 		}
 		case 2: // "BCALL"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 				goto need_gm_privs;
+
 			Broadcast(pBy, pszText, "", true);
 			return;
 		}
 		case 3: // "CHATSOK"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 				goto need_gm_privs;
+
 			if (!m_fChatsOK)
 			{
 				m_fChatsOK = true;
@@ -394,15 +401,17 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		}
 		case 5: // "KILLCHATS"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 				goto need_gm_privs;
+
 			KillChannels();
 			return;
 		}
 		case 6: // "NOCHATS"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 				goto need_gm_privs;
+
 			if (m_fChatsOK)
 			{
 				Broadcast(NULL, "Conference creation is now disabled.");
@@ -412,8 +421,9 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 		}
 		case 7: // "SYSMSG"
 		{
-			if ( ! pBy->GetClient()->IsPriv( PRIV_GM ))
+			if ( ! pByClient->IsPriv( PRIV_GM ))
 				goto need_gm_privs;
+
 			Broadcast(NULL, pszText, "", true);
 			return;
 		}
@@ -650,9 +660,13 @@ bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember 
 bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CChat::JoinChannel");
+	ASSERT(pMember != NULL);
+	CClient * pMemberClient = pMember->GetClient();
+	ASSERT(pMemberClient != NULL);
+
 	// Are we in a channel now?
 	CChatChannel * pCurrentChannel = pMember->GetChannel();
-	if (pCurrentChannel)
+	if (pCurrentChannel != NULL)
 	{
 		// Is it the same channel as the one I'm already in?
 		if (strcmp(pszChannel, pCurrentChannel->GetName()) == 0)
@@ -662,21 +676,24 @@ bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR p
 			return false;
 		}
 	}
+
 	CChatChannel * pNewChannel = FindChannel(pszChannel);
-	if (!pNewChannel)
+	if (pNewChannel == NULL)
 	{
-		pMember->GetClient()->addChatSystemMessage(CHATMSG_NoConference, pszChannel );
+		pMemberClient->addChatSystemMessage(CHATMSG_NoConference, pszChannel );
 		return false;
 	}
+
 	// If there's a password, is it the correct one?
 	if (strcmp(pNewChannel->GetPassword(), pszPassword) != 0)
 	{
-		pMember->GetClient()->addChatSystemMessage(CHATMSG_IncorrectPassword);
+		pMemberClient->addChatSystemMessage(CHATMSG_IncorrectPassword);
 		return false;
 	}
+
 	// Leave the old channel 1st
 	// Remove from old channel (if any)
-	if (pCurrentChannel)
+	if (pCurrentChannel != NULL)
 	{
 		// Remove myself from the channels list of members
 		pCurrentChannel->RemoveMember(pMember);
@@ -689,16 +706,20 @@ bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR p
 		}
 
 		// Since we left, clear all members from our client that might be in our list from the channel we just left
-		pMember->GetClient()->addChatSystemMessage(CHATMSG_ClearMemberList);
+		pMemberClient->addChatSystemMessage(CHATMSG_ClearMemberList);
 	}
+
 	// Now join a new channel
 	// Add all the members of the channel to the clients list of channel participants
 	pNewChannel->SendMembers(pMember);
+
 	// Add ourself to the channels list of members
-	if (!(pNewChannel->AddMember(pMember)))
+	if (!pNewChannel->AddMember(pMember))
 		return false;
+
 	// Set the channel name title bar
-	pMember->GetClient()->addChatSystemMessage(CHATMSG_UpdateChannelBar, pszChannel);
+	pMemberClient->addChatSystemMessage(CHATMSG_UpdateChannelBar, pszChannel);
+
 	// Now send out my name to all clients in this channel
 	pNewChannel->SendThisMember(pMember);
 	return true;

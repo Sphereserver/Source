@@ -217,11 +217,13 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 	size_t iQty = pMultiDef->m_Components.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		fNeedKey |= Multi_CreateComponent( (ITEMID_TYPE) pMultiDef->m_Components[i].m_id,
-			pMultiDef->m_Components[i].m_dx,
-			pMultiDef->m_Components[i].m_dy,
-			pMultiDef->m_Components[i].m_dz,
-			dwKeyCode );
+		const CItemBaseMulti::CMultiComponentItem & component = pMultiDef->m_Components.ElementAt(i);
+
+		fNeedKey |= Multi_CreateComponent((ITEMID_TYPE)component.m_id,
+										  component.m_dx,
+										  component.m_dy,
+										  component.m_dz,
+										  dwKeyCode );
 	}
 
 	CItem * pKey = NULL;

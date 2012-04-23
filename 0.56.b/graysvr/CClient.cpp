@@ -405,8 +405,7 @@ void CClient::Announce( bool fArrive ) const
 		}
 	}
 
-	if ( m_pChar )
-		m_pAccount->m_uidLastChar = m_pChar->GetUID();
+	m_pAccount->m_uidLastChar = m_pChar->GetUID();
 }
 
 ////////////////////////////////////////////////////
@@ -699,10 +698,10 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				GETNONWHITESPACE( pszKey );
 
 				int iCliVer = (GetNetState()->getReportedVersion() & 0xFFFFFF0);
-				if ( pszKey && strlen(pszKey) )
+				if ( pszKey[0] != '\0' )
 					iCliVer = GetNetState()->getReportedVersion();
 
-				TCHAR szVersion[ 128 ];
+				TCHAR szVersion[128];
 				sVal = CCrypt::WriteClientVerString( iCliVer, szVersion );
 			}
 			break;

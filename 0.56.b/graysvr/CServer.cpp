@@ -106,7 +106,7 @@ commandtoolong:
 			matched = true;
 			for ( curmatch = firstmatch->GetNext(); curmatch != lastmatch->GetNext(); curmatch = curmatch->GetNext() )
 			{
-				if ( strnicmp(curmatch->GetPtr(), p, inputLen) )	// mismatched
+				if (strnicmp(curmatch->GetPtr(), p, inputLen) != 0)	// mismatched
 				{
 					matched = false;
 					break;

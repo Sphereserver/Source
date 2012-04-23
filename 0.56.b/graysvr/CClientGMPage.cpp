@@ -21,42 +21,45 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 		return;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_REC ),
-		(LPCTSTR) m_pChar->GetName(), (DWORD) m_pChar->GetUID(), m_pChar->GetTopPoint().m_x,m_pChar->GetTopPoint().m_y,m_pChar->GetTopPoint().m_z,m_pChar->GetTopPoint().m_map, (LPCTSTR) pszReason );
-	g_Log.Event( LOGM_GM_PAGE, "%s\n", (LPCTSTR)pszMsg);
+	const CPointMap & ptPlayerLocation = m_pChar->GetTopPoint();
 
-	bool fFound=false;
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_REC ),
+		    m_pChar->GetName(), (DWORD) m_pChar->GetUID(),
+		    ptPlayerLocation.m_x, ptPlayerLocation.m_y, ptPlayerLocation.m_z, ptPlayerLocation.m_map,
+			pszReason);
+
+	g_Log.Event( LOGM_GM_PAGE, "%s\n", pszMsg);
+
+	bool fFound = false;
 	
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient->GetChar() && pClient->IsPriv( PRIV_GM_PAGE )) // found GM
 		{
-			fFound=true;
+			fFound = true;
 			pClient->SysMessage(pszMsg);
 		}
 	}
-	if ( ! fFound)
-	{
+
+	if (fFound == false)
 		SysMessageDefault( DEFMSG_GMPAGE_QUED );
-	}
 	else
-	{
 		SysMessageDefault( DEFMSG_GMPAGE_NOTIFIED );
-	}
 
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_QNUM ), static_cast<int>(g_World.m_GMPages.GetCount()));
 	SysMessage(pszMsg);
 
 	// Already have a message in the queue ?
 	// Find an existing GM page for this account.
-	CGMPage * pPage = STATIC_CAST <CGMPage*>( g_World.m_GMPages.GetHead());
-	for ( ; pPage!= NULL; pPage = pPage->GetNext())
+	CGMPage * pPage = STATIC_CAST <CGMPage*>(g_World.m_GMPages.GetHead());
+	for ( ; pPage != NULL; pPage = pPage->GetNext())
 	{
-		if ( ! strcmpi( pPage->GetName(), GetAccount()->GetName()))
+		if (strcmpi( pPage->GetName(), GetAccount()->GetName()) == 0)
 			break;
 	}
+
 	if ( pPage != NULL )
 	{
 		SysMessageDefault( DEFMSG_GMPAGE_UPDATE );
@@ -69,7 +72,8 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 		pPage = new CGMPage( GetAccount()->GetName());
 		pPage->SetReason( pszReason );	// Description of reason for call.
 	}
-	pPage->m_ptOrigin = m_pChar->GetTopPoint();		// Origin Point of call.
+
+	pPage->m_ptOrigin = ptPlayerLocation; // Origin Point of call.
 }
 
 void CClient::Cmd_GM_PageClear()

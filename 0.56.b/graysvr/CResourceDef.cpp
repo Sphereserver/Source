@@ -901,7 +901,7 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			pszKey += 15;
 			GETNONWHITESPACE( pszKey );
 
-			if ( !( pszKey && strlen(pszKey) ))
+			if ( pszKey[0] == '\0' )
 			{
 				sVal.FormatVal( GetRandMemberIndex(NULL, false) );
 			}

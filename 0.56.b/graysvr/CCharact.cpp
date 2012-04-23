@@ -2086,12 +2086,9 @@ bool CChar::OnTickEquip( CItem * pItem )
 
 				if ( ( pHorse->Stat_GetVal(STAT_STR) <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
 				{
-					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", this->GetName(), (DWORD)this->GetUID(), (DWORD)pHorse->GetUID() ));
-					this->Horse_UnMount();
-
-					if ( pHorse != NULL )
-						pHorse->Delete();
-
+					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", GetName(), (DWORD)GetUID(), (DWORD)pHorse->GetUID() ));
+					Horse_UnMount();
+					pHorse->Delete();
 					return( false );
 				}
 

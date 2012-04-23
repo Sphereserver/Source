@@ -1859,12 +1859,12 @@ bool CScriptObj::OnTriggerFind( CScript & s, LPCTSTR pszTrigName )
 	while ( s.ReadKey(false) )
 	{
 		// Is it a trigger ?
-		if ( strnicmp(s.GetKey(), "ON", 2) )
+		if (strnicmp(s.GetKey(), "ON", 2) != 0)
 			continue;
 
 		// Is it the right trigger ?
 		s.ParseKeyLate();
-		if ( !strcmpi(s.GetArgRaw(), pszTrigName) )
+		if (strcmpi(s.GetArgRaw(), pszTrigName) == 0)
 			return true;
 	}
 	return false;
@@ -2830,16 +2830,16 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				GETNONWHITESPACE( pszKey );
 
 				TCHAR * ppArg = this->GetReadBuffer();
-				int iLines = 0;
+				ASSERT(ppArg != NULL);
 
-				iLines = Exp_GetVal(pszKey);
+				int iLines = Exp_GetVal(pszKey);
 				if ( iLines < 0 )
 					return( false );
 
 				unsigned long ulSeek = sWrite->GetPosition();
 				sWrite->SeekToBegin();
 
-				if ( !iLines )
+				if ( iLines == 0 )
 				{
 					while ( ! sWrite->IsEOF() )
 						sWrite->ReadString( ppArg, SCRIPT_MAX_LINE_LEN );	
@@ -2872,22 +2872,22 @@ bool CFileObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					}
 				}
 
-				sVal.Format( "%s", (ppArg != NULL && strlen(ppArg) > 0) ? ppArg : "" );
+				sVal.Format( "%s", ppArg );
 			} break;
 
 		case FO_SEEK:
 			{
 				pszKey += strlen(sm_szLoadKeys[index]);
-				GETNONWHITESPACE( pszKey );
+				GETNONWHITESPACE(pszKey);
 
-				if ( strlen(pszKey) == 0 )
+				if (pszKey[0] == '\0')
 					return( false );
 
-				if (!strcmpi("BEGIN",pszKey))
+				if (strcmpi("BEGIN", pszKey) == 0)
 				{
 					sVal.FormatVal( sWrite->Seek(0, SEEK_SET) );
 				}
-				else if (!strcmpi("END",pszKey))
+				else if (strcmpi("END", pszKey) == 0)
 				{
 					sVal.FormatVal( sWrite->Seek(0, SEEK_END) );
 				}

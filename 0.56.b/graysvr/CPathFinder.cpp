@@ -109,12 +109,12 @@ CPathFinder::~CPathFinder()
 int CPathFinder::FindPath() //A* algorithm
 {
 	ADDTOCALLSTACK("CPathFinder::FindPath");
-
+	ASSERT(m_pChar != NULL);
 
 	int X = m_pChar->GetTopPoint().m_x - m_RealX;
 	int Y = m_pChar->GetTopPoint().m_y - m_RealY;
 
-	if ( X < 0 || Y < 0 || X > 23 || Y > 23 || (m_pChar == 0) )
+	if ( X < 0 || Y < 0 || X > 23 || Y > 23 )
 	{
 		//Too far away
 		Clear();

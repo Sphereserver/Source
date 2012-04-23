@@ -2495,12 +2495,18 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					TCHAR * lpSuffix = Str_GetTemp();
 					strcpy(lpSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
 
-					CStoneMember * pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
-					if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
+					const CStoneMember * pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
+					if ( pGuildMember != NULL &&
+						(pChar->IsStatFlag(STATF_Incognito) == false || GetPrivLevel() > pChar->GetPrivLevel()) )
 					{
-						if ( pGuildMember && pGuildMember->IsAbbrevOn() && pGuildMember->GetParentStone()->GetAbbrev()[0] )
+						const CItemStone * pParentStone = pGuildMember->GetParentStone();
+						ASSERT(pParentStone != NULL);
+
+						if ( pGuildMember->IsAbbrevOn() && pParentStone->GetAbbrev()[0] )
 						{
-							sprintf( lpSuffix, "%s [%s]", lpSuffix, pGuildMember->GetParentStone()->GetAbbrev() );
+							strcat(lpSuffix, " [");
+							strcat(lpSuffix, pParentStone->GetAbbrev());
+							strcat(lpSuffix, "]");
 						}
 					}
 

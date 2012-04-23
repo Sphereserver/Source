@@ -2148,7 +2148,7 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	if ( ! CanUse( pItem, true ))
 	{
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_CARTOGRAPHY_CANT ), (LPCTSTR) pItem->GetName() );
-		return( false );
+		return( -SKTRIG_QTY );
 	}
 
 	m_Act_Targ = pItem->GetUID();
@@ -3715,9 +3715,10 @@ int CChar::Skill_Act_Looting( SKTRIG_TYPE stage )
 		{
 			CScriptTriggerArgs Args( m_Act_Targ.ItemFind());
 			if ( OnTrigger( CTRIG_NPCSeeWantItem, this, &Args ) == TRIGRET_RET_TRUE )
-				return( false );
+				return( -SKTRIG_QTY );
 		}
-		SetTimeout( 1*TICK_PER_SEC );
+
+		SetTimeout( 1 * TICK_PER_SEC );
 		return 0;
 	}
 

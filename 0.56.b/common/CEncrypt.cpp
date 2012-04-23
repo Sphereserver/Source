@@ -349,7 +349,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	// Since 5.0.6.5 we also have a new formatting for client versions to consider.
 	
 	if ( pszVersion == NULL || *pszVersion == '\0' )
-		return false;
+		return 0;
 
 	int iVer = 0;
 	int iPoint = 0;

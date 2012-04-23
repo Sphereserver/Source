@@ -187,7 +187,7 @@ public:
 	{
 		LPVOID lpMsgBuf;
 		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, (LPTSTR) &lpMsgBuf, 0, NULL );
-		DEBUG_ERR(( "File I/O \"%s\" failed on file \"%s\" (%ld): %s\n", szMessage, GetFilePath(), GetLastError(), lpMsgBuf ));
+		DEBUG_ERR(( "File I/O \"%s\" failed on file \"%s\" (%ld): %s\n", szMessage, GetFilePath(), GetLastError(), static_cast<LPTSTR>(lpMsgBuf) ));
 
 		LocalFree( lpMsgBuf );
 	}

@@ -785,12 +785,12 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			pszKey += 13;
 			GETNONWHITESPACE(pszKey);
 
-			if ( pszKey && *pszKey )
+			if ( pszKey[0] != '\0' )
 			{
 				CGrayUID charToCheck( (DWORD) Exp_GetVal(pszKey) );
 				CChar * pCharToCheck = charToCheck.CharFind();
 
-				sVal.FormatVal( pCharToCheck && (pCharToCheck->m_pParty == this) );
+				sVal.FormatVal( pCharToCheck != NULL && pCharToCheck->m_pParty == this );
 			}
 			else
 				return( false );

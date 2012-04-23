@@ -324,11 +324,13 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				DWORD privateUID = Multi_GetSign()->m_itKey.m_lockUID.GetPrivateUID();
 				for ( size_t j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
 				{
-					Multi_CreateComponent((ITEMID_TYPE)pMultiNew->m_Components[j].m_id,
-						pMultiNew->m_Components[j].m_dx,
-						pMultiNew->m_Components[j].m_dy,
-						pMultiNew->m_Components[j].m_dz,
-						privateUID);
+					const CItemBaseMulti::CMultiComponentItem & component = pMultiNew->m_Components.ElementAt(j);
+
+					Multi_CreateComponent((ITEMID_TYPE)component.m_id,
+										  component.m_dx,
+										  component.m_dy,
+										  component.m_dz,
+										  privateUID);
 				}
 				continue;
 			}

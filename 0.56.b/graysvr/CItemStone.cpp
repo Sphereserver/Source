@@ -1250,7 +1250,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			{
 				if ( s.HasArgs() )
 				{
-					char * pszArgs = s.GetArgRaw();
+					TCHAR * pszArgs = s.GetArgRaw();
 					int iFlags = Exp_GetVal(pszArgs);
 					SKIP_ARGSEP(pszArgs);
 
@@ -1261,7 +1261,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					}
 					else
 					{
-						if ( pszArgs && *pszArgs )
+						if ( pszArgs[0] != '\0' )
 						{
 							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
 							CScript scriptVerb( pszArgs );
@@ -1302,7 +1302,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			{
 				if ( s.HasArgs() )
 				{
-					char * pszArgs = s.GetArgRaw();
+					TCHAR * pszArgs = s.GetArgRaw();
 					int iFlags = Exp_GetVal(pszArgs);
 					SKIP_ARGSEP(pszArgs);
 
@@ -1313,7 +1313,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					}
 					else
 					{
-						if ( pszArgs && *pszArgs )
+						if ( pszArgs[0] != '\0' )
 						{
 							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
 							CScript scriptVerb( pszArgs );

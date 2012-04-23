@@ -889,7 +889,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	// Height of statics at/above given coordinates
 	// do gravity here for the z.
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	if ( !pMapBlock)
+	if (pMapBlock == NULL)
 		return;
 
 	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
@@ -900,9 +900,6 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 		const CUOStaticItemRec * pStatic = NULL;
 		for ( size_t i = 0; i < iQty; ++i, z = 0, zHeight = 0, pStatic = NULL, pDupeDef = NULL )
 		{
-			if ( pMapBlock == NULL )
-				break;
-
 			if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 				continue;
 

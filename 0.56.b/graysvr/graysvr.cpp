@@ -23,7 +23,7 @@
 
 CMapList::CMapList()
 {
-	memset(m_mapsinitalized, false, sizeof(m_mapsinitalized));
+	memset(m_mapsinitalized, 0, sizeof(m_mapsinitalized));
 	memset(m_sizex, 0, sizeof(m_sizex));
 	memset(m_sizey, 0, sizeof(m_sizey));
 	memset(m_maps, true, sizeof(m_maps));
@@ -240,8 +240,8 @@ bool WritePidFile(int iMode = 0)
 
 int CEventLog::VEvent( DWORD wMask, LPCTSTR pszFormat, va_list args )
 {
-	if ( !pszFormat || !*pszFormat )
-		return false;
+	if ( pszFormat == NULL || pszFormat[0] == '\0' )
+		return 0;
 
 	TemporaryString pszTemp;
 	size_t len = _vsnprintf(pszTemp, (SCRIPT_MAX_LINE_LEN - 1), pszFormat, args);

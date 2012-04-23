@@ -300,7 +300,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 							if (index == 1 && m_Maps[0].IsFileOpen())
 								g_MapList.m_mapnum[m] = 0;
 							else
-								g_MapList.m_mapid[m] = false;
+								g_MapList.m_mapid[m] = 0;
 						}
 
 						//	mapdif and mapdifl are not required, but if one exists so should

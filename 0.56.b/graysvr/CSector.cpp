@@ -1108,7 +1108,7 @@ void CSector::OnTick(int iPulseCount)
 
 	CItem * pItemNext = NULL;
 	CItem * pItem = dynamic_cast <CItem*>( m_Items_Timer.GetHead());
-	for ( int x = 0; pItem != NULL; pItem = pItemNext, ++x )
+	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		EXC_TRYSUB("TickItem");
 		pItemNext = pItem->GetNext();

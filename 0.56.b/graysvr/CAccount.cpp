@@ -922,17 +922,18 @@ bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 	if ( Str_Check( pszPassword ) )	// Prevents exploits
 		return false;
 
+	size_t enteredPasswordLength = strlen(pszPassword);
 	if ( isMD5Hash && useMD5 ) // If it is a hash, check length and set it directly
 	{
-		if ( strlen(pszPassword) == 32 )
+		if ( enteredPasswordLength == 32 )
 			m_sCurPassword = pszPassword;
 
 		return true;
 	}
-		
-	size_t iSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER, strlen(pszPassword)) + 1;
-	char * pszPassw = new char[iSize];
-	strcpylen(pszPassw, pszPassword, iSize);
+	
+	size_t actualPasswordBufferSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER, enteredPasswordLength) + 1;
+	char * actualPassword = new char[actualPasswordBufferSize];
+	strcpylen(actualPassword, pszPassword, actualPasswordBufferSize);
 
 	if ( useMD5 )
 	{
@@ -941,7 +942,7 @@ bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 		// Auto-Hash if not loading or reloading
 		if( !g_Accounts.m_fLoading )
 		{
-			CMD5::fastDigest( digest, pszPassw );
+			CMD5::fastDigest( digest, actualPassword );
 			m_sCurPassword = digest;
 		}
 
@@ -949,20 +950,26 @@ bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 		// and shorter or longer than 32 characters
 		else
 		{
-			if( strlen( pszPassword ) == 32 )
+			if( enteredPasswordLength == 32 )
+			{
+				// password is already in hashed form
 				m_sCurPassword = pszPassword;
+			}
 			else
 			{
 				// Autoconverted a Password on Load. Print
 				g_Log.Event( LOGM_INIT|LOGL_EVENT, "MD5: Converted password for '%s'.\n", GetName() );
-				CMD5::fastDigest( digest, pszPassw );
+				CMD5::fastDigest( digest, actualPassword );
 				m_sCurPassword = digest;
 			}
 		}
 	}
 	else
-		m_sCurPassword = pszPassw;
-	delete[] pszPassw;
+	{
+		m_sCurPassword = actualPassword;
+	}
+
+	delete[] actualPassword;
 	return true;
 }
 

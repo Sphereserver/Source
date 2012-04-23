@@ -700,7 +700,9 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 	{
 		case CPV_KICK: // "KICK" = kick and block the account
 			return (IsClient() && GetClient()->addKick(pSrc));
+
 		case CPV_PASSWORD:	// "PASSWORD"
+		{
 			// Set/Clear the password
 			if ( pSrc != this )
 			{
@@ -710,24 +712,30 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 					return false;
 				}
 			}
+
+			CAccount * pAccount = m_pPlayer->GetAccount();
+			ASSERT(pAccount != NULL);
+
 			if ( !s.HasArgs() )
 			{
-				m_pPlayer->GetAccount()->ClearPassword();
+				pAccount->ClearPassword();
 				SysMessage("Password has been cleared.");
 				SysMessage("Log out, then back in to set the new password.");
-				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared", (LPCTSTR) m_pPlayer->GetAccount()->GetName());
+				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared", pAccount->GetName());
 			}
 			else
 			{
-				if ( m_pPlayer->GetAccount()->SetPassword(s.GetArgStr()) )
+				if ( pAccount->SetPassword(s.GetArgStr()) )
 				{
 					SysMessage("Password has been set.");
-					g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password set to '%s'\n", (LPCTSTR) m_pPlayer->GetAccount()->GetName(), (LPCTSTR) s.GetArgStr());
+					g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password set to '%s'\n", pAccount->GetName(), s.GetArgStr());
 					return true;
 				}
+
 				SysMessage("Invalid password.");
 			}
 			break;
+		}
 
 		default:
 			return false;

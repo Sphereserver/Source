@@ -2359,10 +2359,7 @@ effect_bounce:
 		// We will die from this...make sure the killer is set correctly...if we don't do this, the person we are currently
 		// attacking will get credit for killing us.
 		// Killed by a guard looks here !
-		if ( pSrc )
-		{
-			m_Act_Targ = pSrc->GetUID();
-		}
+		m_Act_Targ = pSrc->GetUID();
 		return( -1 );	// INT_MAX ?
 	}
 
@@ -3383,7 +3380,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			AmmoRender = pRender->GetValNum();
 		} else
 		{
-			AmmoRender = false;
+			AmmoRender = 0;
 		}
 
 		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 5, 16, false, AmmoHue, AmmoRender );
