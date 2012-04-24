@@ -5356,3 +5356,7 @@ ALPHA additions:
 
 31-03-2012, ShiryuX
 - Fixed #2052: Players trying to move during a resync pause caused exceptions on console.
+
+24-04-2012, MrSugarCube
+- Fixed: Unable to double click console in Windows to open scripts when forward slashes are used
+  in script paths.

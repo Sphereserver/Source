@@ -763,7 +763,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 						break;
 
 					//	use dclick to open the corresponding script file
-					TCHAR * pos = strstr(zTemp, ".scp");
+					TCHAR * pos = strstr(zTemp, GRAY_SCRIPT);
 					if ( pos != NULL )
 					{
 						//	use two formats of file names:
@@ -781,29 +781,52 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 						start++;
 						*end = '\0';
 
-						if ( *start )
+						if ( *start != '\0' )
 						{
+							LPCTSTR filePath = NULL;
+
+							// search script files for a matching name
 							size_t i = 0;
-							CResourceScript	*s = g_Cfg.GetResourceFile(i++);
-							while ( s != NULL )
+							for (const CResourceScript * s = g_Cfg.GetResourceFile(i++); s != NULL; s = g_Cfg.GetResourceFile(i++))
 							{
-								if ( strstr(s->GetFilePath(), start) )
-								{
-									ShellExecute(NULL, NULL, s->GetFilePath(), NULL, NULL, SW_SHOW);
-									return 1;
-								}
-								
-								s = g_Cfg.GetResourceFile(i++);
+								if ( strstr(s->GetFilePath(), start) == NULL )
+									continue;
+
+								filePath = s->GetFilePath();
+								break;
 							}
 
-							//	since special files are not in my list - operate it specialy
-							if ( strstr(GRAY_FILE "tables.scp", start) )
+							// since certain files aren't listed, handle these separately
+							if (filePath == NULL)
 							{
-								TCHAR	*z = Str_GetTemp();
-								strcpy(z, g_Cfg.m_sSCPBaseDir);
-								strcat(z, start);
-								ShellExecute(NULL, NULL, z, NULL, NULL, SW_SHOW);
-								return 1;
+								if ( strstr(GRAY_FILE "tables" GRAY_SCRIPT, start) )
+								{
+									TCHAR * z = Str_GetTemp();
+									strcpy(z, g_Cfg.m_sSCPBaseDir);
+									strcat(z, start);
+									filePath = z;
+								}
+							}
+
+							if (filePath != NULL)
+							{
+								// ShellExecute fails when a relative path is passed to it that uses forward slashes as a path
+								// separator.. to workaround this we can use GetFullPathName (which accepts forward slashes) to
+								// resolve the relative path to an absolute path
+								TCHAR * z = Str_GetTemp();
+								if (GetFullPathName(filePath, THREAD_STRING_LENGTH, z, NULL) > 0)
+								{
+									INT_PTR r = reinterpret_cast<INT_PTR>(ShellExecute(NULL, NULL, z, NULL, NULL, SW_SHOW));
+									if (r > 32)
+										return 1;
+								}
+
+								// failure occurred
+								int errorCode = CGFile::GetLastError();
+								if (CGrayError::GetSystemErrorMessage(errorCode, z, THREAD_STRING_LENGTH) > 0)
+									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%d (%s).\n", filePath, errorCode, z);
+								else
+									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%d.\n", filePath, errorCode);
 							}
 						}
 					}

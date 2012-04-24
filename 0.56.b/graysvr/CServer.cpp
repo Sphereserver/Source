@@ -770,7 +770,7 @@ longcommand:
 			if ( !strnicmp(pszText, "strip tng", 9) || !strnicmp(pszText, "tngstrip", 8))
 			{
 				strcpy(z, dirname);
-				strcat(z, "sphere_strip_tng.scp");
+				strcat(z, "sphere_strip_tng" GRAY_SCRIPT);
 				pSrc->SysMessagef("StripFile is %s.\n", z);
 			
 				f1 = fopen(z, "w");
@@ -824,7 +824,7 @@ longcommand:
 			else if ( !strnicmp(pszText, "strip axis", 10) || !strnicmp(pszText, "strip", 5) )
 			{
 				strcpy(z, dirname);
-				strcat(z, "sphere_strip_axis.scp");
+				strcat(z, "sphere_strip_axis" GRAY_SCRIPT);
 				pSrc->SysMessagef("StripFile is %s.\n", z);
 			
 				f1 = fopen(z, "w");

@@ -778,9 +778,9 @@ void defragSphere(char *path)
 	for ( i = 0; i < 3; i++ )
 	{
 		strcpy(z, path);
-		if ( i == 0 ) strcat(z, GRAY_FILE "statics.scp");
-		else if ( i == 1 ) strcat(z, GRAY_FILE "world.scp");
-		else strcat(z, GRAY_FILE "chars.scp");
+		if ( i == 0 ) strcat(z, GRAY_FILE "statics" GRAY_SCRIPT);
+		else if ( i == 1 ) strcat(z, GRAY_FILE "world" GRAY_SCRIPT);
+		else strcat(z, GRAY_FILE "chars" GRAY_SCRIPT);
 
 		g_Log.Event(LOGM_INIT, "Reading current UIDs: %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -826,10 +826,10 @@ void defragSphere(char *path)
 	{
 		strcpy(z, path);
 		if ( !i ) strcat(z, GRAY_FILE "accu.scp");
-		else if ( i == 1 ) strcat(z, GRAY_FILE "chars.scp");
-		else if ( i == 2 ) strcat(z, GRAY_FILE "data.scp");
-		else if ( i == 3 ) strcat(z, GRAY_FILE "world.scp");
-		else if ( i == 4 ) strcat(z, GRAY_FILE "statics.scp");
+		else if ( i == 1 ) strcat(z, GRAY_FILE "chars" GRAY_SCRIPT);
+		else if ( i == 2 ) strcat(z, GRAY_FILE "data" GRAY_SCRIPT);
+		else if ( i == 3 ) strcat(z, GRAY_FILE "world" GRAY_SCRIPT);
+		else if ( i == 4 ) strcat(z, GRAY_FILE "statics" GRAY_SCRIPT);
 		g_Log.Event(LOGM_INIT, "Updating UID-s in %s to %s.new\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
