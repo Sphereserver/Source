@@ -618,10 +618,10 @@ void CItemContainer::Trade_Status( bool fCheck )
 	if ( pChar2 == NULL )
 		return;
 
-	m_itEqTradeWindow.m_fCheck = fCheck;
+	m_itEqTradeWindow.m_fCheck = fCheck? 1 : 0;
 	if ( ! fCheck )
 	{
-		pPartner->m_itEqTradeWindow.m_fCheck = false;
+		pPartner->m_itEqTradeWindow.m_fCheck = 0;
 	}
 
 	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
@@ -638,7 +638,7 @@ void CItemContainer::Trade_Status( bool fCheck )
 	}
 
 	// if both checked then done.
-	if ( ! pPartner->m_itEqTradeWindow.m_fCheck || ! m_itEqTradeWindow.m_fCheck )
+	if ( pPartner->m_itEqTradeWindow.m_fCheck == 0 || m_itEqTradeWindow.m_fCheck == 0 )
 		return;
 
 	CItem * pItem;

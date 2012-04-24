@@ -57,7 +57,7 @@ void CItemShip::Ship_Stop()
 {
 	ADDTOCALLSTACK("CItemShip::Ship_Stop");
 	// Make sure we have stopped.
-	m_itShip.m_fSail = false;
+	m_itShip.m_fSail = 0;
 	SetTimeout( -1 );
 }
 
@@ -66,7 +66,7 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 	ADDTOCALLSTACK("CItemShip::Ship_SetMoveDir");
 	// Set the direction we will move next time we get a tick.
 	int iSpeed = 1;
-	if ( m_itShip.m_DirMove == dir && m_itShip.m_fSail )
+	if ( m_itShip.m_DirMove == dir && m_itShip.m_fSail != 0 )
 	{
 		if ( m_itShip.m_DirFace == m_itShip.m_DirMove &&
 			m_itShip.m_fSail == 1 )
@@ -568,7 +568,7 @@ bool CItemShip::Ship_OnMoveTick()
 	// We just got a move tick.
 	// RETURN: false = delete the boat.
 
-	if ( ! m_itShip.m_fSail )	// decay the ship instead ???
+	if ( m_itShip.m_fSail == 0 )	// decay the ship instead ???
 		return( true );
 
 	// Calculate the leading point.
@@ -714,7 +714,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 		{
 			// "Furl sail"
 			// "Stop" Stops current ship movement.
-			if ( ! m_itShip.m_fSail )
+			if ( m_itShip.m_fSail == 0 )
 				return( false );
 			Ship_Stop();
 			break;
@@ -757,7 +757,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 			// "Turn Left",
 			DirMoveChange = -2;
 doturn:
-			if ( m_itShip.m_fAnchored )
+			if ( m_itShip.m_fAnchored != 0 )
 			{
 anchored:
 				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_DOWN );
@@ -783,7 +783,7 @@ anchored:
 			// "Drift Left",
 			DirMoveChange = -2;
 dodirmovechange:
-			if ( m_itShip.m_fAnchored )
+			if ( m_itShip.m_fAnchored != 0 )
 				goto anchored;
 			if ( ! Ship_SetMoveDir( GetDirTurn( DirFace, DirMoveChange )))
 				return( false );
@@ -846,23 +846,23 @@ dodirmovechange:
 
 		case SHV_SHIPANCHORRAISE: // "Raise Anchor",
 		{
-			if ( ! m_itShip.m_fAnchored )
+			if ( m_itShip.m_fAnchored == 0 )
 			{
 				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_ALL_UP );
 				break;
 			}
-			m_itShip.m_fAnchored = false;
+			m_itShip.m_fAnchored = 0;
 			break;
 		}
 
 		case SHV_SHIPANCHORDROP: // "Drop Anchor",
 		{
-			if ( m_itShip.m_fAnchored )
+			if ( m_itShip.m_fAnchored != 0 )
 			{
 				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_ALL_DOWN );
 				break;
 			}
-			m_itShip.m_fAnchored = true;
+			m_itShip.m_fAnchored = 1;
 			Ship_Stop();
 			break;
 		}

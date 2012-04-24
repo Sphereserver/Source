@@ -3899,7 +3899,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 	if ( pSrc == NULL )
 		return false;
 
-	if ( pszFileName == NULL || pszFilename[0] == '\0' )
+	if ( pszFilename == NULL || pszFilename[0] == '\0' )
 		pszFilename	= "unscripted_items" GRAY_SCRIPT;
 	else if ( strlen( pszFilename ) <= 4 )
 		return false;

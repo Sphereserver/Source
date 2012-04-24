@@ -1566,7 +1566,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			else
 			{
 				// Don't put "magic" in front of "magic key"
-				if ( strnicmp( pszName, "MAGIC", 5 ))
+				if ( strnicmp( pszName, "MAGIC", 5 ) != 0 )
 				{
 					if ( ! pszTitle )
 					{

@@ -1433,10 +1433,10 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	ASSERT(pCont2);
 	pCont2->SetType( IT_EQ_TRADE_WINDOW );
 
-	pCont1->m_itEqTradeWindow.m_fCheck = false;
+	pCont1->m_itEqTradeWindow.m_fCheck = 0;
 	pCont1->m_uidLink = pCont2->GetUID();
 
-	pCont2->m_itEqTradeWindow.m_fCheck = false;
+	pCont2->m_itEqTradeWindow.m_fCheck = 0;
 	pCont2->m_uidLink = pCont1->GetUID();
 
 	m_pChar->LayerAdd( pCont1, LAYER_SPECIAL );
