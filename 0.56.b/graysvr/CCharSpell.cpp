@@ -27,9 +27,7 @@ void CChar::Spell_Dispel( int iLevel )
 	}
 }
 
-bool CChar::Spell_Teleport( CPointBase ptNew,
-	bool fTakePets, bool fCheckAntiMagic,
-	ITEMID_TYPE iEffect, SOUND_TYPE iSound )
+bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMagic,	ITEMID_TYPE iEffect, SOUND_TYPE iSound )
 {
 	ADDTOCALLSTACK("CChar::Spell_Teleport");
 	// Teleport you to this place.
@@ -480,6 +478,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	Update();
 	return( true );
 }
+
 void CChar::Spell_Effect_Remove(CItem * pSpell)
 {
 	ADDTOCALLSTACK("CChar::Spell_Effect_Remove");
@@ -1164,7 +1163,44 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	if ( iDuration <= 0 )	// use default script duration.
 	{
 		if (pSpellDef != NULL) // may not be a valid spell
-			iDuration = pSpellDef->m_Duration.GetLinear( iSkillLevel );
+		{
+			CChar * pCharSrc = dynamic_cast<CChar*>(pSrc);
+			if ( !IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
+			else
+			{
+				switch ( spell )
+				{
+				case SPELL_Clumsy: 
+				case SPELL_Feeblemind:
+				case SPELL_Weaken:
+				case SPELL_Agility:
+				case SPELL_Cunning:
+				case SPELL_Strength:
+				case SPELL_Bless:		
+					iDuration = ((pCharSrc->Skill_GetBase(SKILL_EVALINT) / 50) + 1) * 6; 
+					break;
+
+				case SPELL_Invis:		
+					iDuration = (int)1.2 * (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 100); 
+					break;
+
+				case SPELL_Paralyze:	
+					{
+						iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 100) - (this->Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+						if ( this->m_pNPC )
+							iDuration *= 3;
+					} 
+					break;
+
+				case SPELL_Curse:		
+				default: 
+					iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel); break;
+					break;
+				}
+			}
+		}
+
 		if ( iDuration <= 0 )
 			iDuration = 1;
 	}
@@ -1826,7 +1862,14 @@ bool CChar::Spell_CastDone()
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
 		{
-			Spell_Bolt( pObj, pSpellDef->m_idEffect, iSkillLevel );
+			if ( !iT1 )
+				iT1 = pSpellDef->m_idEffect;
+
+			Spell_Bolt( pObj, iT1, iSkillLevel );
+		}
+		else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
+		{
+			return(false);
 		}
 		else
 		{
@@ -1836,6 +1879,88 @@ bool CChar::Spell_CastDone()
 			}
 		}
 	}
+	else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+	{
+		if ( !iT1 )
+			iT1 = pSpellDef->m_idEffect;
+
+		Spell_Bolt( pObj, iT1, iSkillLevel );
+	}
+	else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
+	{
+		if ( !iT1 || !iT2 )
+		{
+			switch ( spell )
+			{
+			case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;		iT2 = ITEMID_STONE_WALL;		break;
+			case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 		iT2 = ITEMID_FX_FIRE_F_NS;		break;
+			case SPELL_Poison_Field:	iT1 = (ITEMID_TYPE) 0x3915;		iT2 = ITEMID_FX_POISON_F_NS;	break;
+			case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;		iT2 = ITEMID_FX_PARA_F_NS;		break;
+			case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;	iT2 = ITEMID_FX_ENERGY_F_NS;	break;
+			default: break;
+			}
+		}	
+
+		if ( !fieldWidth )
+			fieldWidth = 7;
+		if ( !fieldGauge )
+			fieldGauge = 1;
+
+		Spell_Field(m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel);
+	}
+	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
+	{
+		if ( !areaRadius )
+		{
+			switch ( spell )
+			{
+			case SPELL_Arch_Cure:		areaRadius = 5;					break;
+			case SPELL_Arch_Prot:		areaRadius = 5;					break;
+			case SPELL_Explosion:		areaRadius = 2;					break;
+			case SPELL_Mass_Curse:		areaRadius = 5;					break;
+			case SPELL_Reveal:			areaRadius = UO_MAP_VIEW_SIGHT;	break;
+			case SPELL_Chain_Lightning: areaRadius = 5;					break;
+			case SPELL_Mass_Dispel:		areaRadius = 15;				break;
+			case SPELL_Meteor_Swarm:	areaRadius = 4;					break;
+			case SPELL_Earthquake:		areaRadius = UO_MAP_VIEW_SIGHT;	break; // GetTopPoint()
+			default: areaRadius = 4; break;
+			}
+		}
+
+		Spell_Area(pObj->GetTopPoint(), areaRadius, iSkillLevel);
+	}
+	else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
+	{
+		if ( !iC1 )
+		{
+			if ( !m_atMagery.m_SummonID )
+			{
+				switch ( spell )
+				{
+					case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
+					case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
+					case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
+					case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
+					case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
+					case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
+					case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
+					default: break;
+				}
+			}
+		}
+		else
+			m_atMagery.m_SummonID = iC1;
+
+		Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+	}
+	/*else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
+	{
+		if ( iC1 )
+			m_atMagery.m_SummonID = iC1;
+
+		if ( ! Spell_SimpleEffect( pObj, pObjSrc, (SPELL_TYPE)SPELL_Polymorph, iSkillLevel ) )
+			return( false );
+	}*/
 	else
 	switch ( spell )
 	{
@@ -1851,18 +1976,13 @@ bool CChar::Spell_CastDone()
 		}
 		break;
 
-	case SPELL_Magic_Arrow:
-		Spell_Bolt( pObj, ITEMID_FX_MAGIC_ARROW, iSkillLevel );
-		break;
-
 	case SPELL_Heal:
 	case SPELL_Night_Sight:
 	case SPELL_Reactive_Armor:
-
 	case SPELL_Clumsy:
 	case SPELL_Feeblemind:
 	case SPELL_Weaken:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
+		if ( !Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel) )
 			return( false );
 		break;
 
@@ -1872,7 +1992,6 @@ bool CChar::Spell_CastDone()
 	case SPELL_Cure:
 	case SPELL_Protection:
 	case SPELL_Strength:
-
 	case SPELL_Harm:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
@@ -1880,104 +1999,45 @@ bool CChar::Spell_CastDone()
 
 	case SPELL_Magic_Trap:
 	case SPELL_Magic_Untrap:
-		// Create the trap object and link it to the target. ???
-		// A container is diff from door or stationary object
+		/* Create the trap object and link it to the target. 
+		   A container is diff from door or stationary object */
 		break;
 
 	// 3rd Circle
 	case SPELL_Bless:
-
 	case SPELL_Poison:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
-	case SPELL_Fireball:
-		Spell_Bolt( pObj, ITEMID_FX_FIRE_BALL, iSkillLevel );
-		break;
-
 	case SPELL_Magic_Lock:
 	case SPELL_Unlock:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
 		break;
 
-	case SPELL_Telekin:
-		// Act as dclick on the object.
+	case SPELL_Telekin:	// Act as DClick on the object.
 		Use_Obj( pObj, false );
 		break;
+
 	case SPELL_Teleport:
 		Spell_Teleport( m_Act_p );
 		break;
-	case SPELL_Wall_of_Stone:
-
-		if ( ! iT1 )
-			iT1 = ITEMID_STONE_WALL;
-		if ( ! iT2 )
-			iT2 = ITEMID_STONE_WALL;
-
-		if ( !fieldWidth )
-			fieldWidth = 7;
-		if ( !fieldGauge )
-			fieldGauge = 1;
-
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
-
-		break;
 
 	// 4th Circle
-	case SPELL_Arch_Cure:
-	case SPELL_Arch_Prot:
-	{
-		if ( !areaRadius )
-			areaRadius = 5;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-	}
-
 	case SPELL_Great_Heal:
 	case SPELL_Curse:
 	case SPELL_Lightning:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
+		if ( !Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel) )
+			return(false);
 		break;
-	case SPELL_Fire_Field:
-	{
-		if ( ! iT1 )
-			iT1 = ITEMID_FX_FIRE_F_EW;
-		if ( ! iT2 )
-			iT2 = ITEMID_FX_FIRE_F_NS;
 
-		if ( !fieldWidth )
-			fieldWidth = 7;
-		if ( !fieldGauge )
-			fieldGauge = 1;
-
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
-		break;
-	}
 	case SPELL_Recall:
-		if ( ! Spell_Recall( dynamic_cast <CItem*> (pObj), false ))
-			return( false );
+		if ( !Spell_Recall(dynamic_cast <CItem*> (pObj), false) )
+			return(false);
 		break;
 
 	// 5th Circle
-
-	case SPELL_Blade_Spirit:
-		if ( ! iC1 )
-			iC1 = CREID_BLADES;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-
 	case SPELL_Dispel_Field:
 		{
 			CItem * pItem = dynamic_cast <CItem*> (pObj);
-			if ( pItem == NULL ||
-				pItem->IsAttr( ATTR_MOVE_NEVER ) ||
-				( ! pItem->IsType(IT_CAMPFIRE) &&
-				! pItem->IsType(IT_SPELL) &&
-				! pItem->IsType(IT_FIRE)))
+			if ( pItem == NULL || pItem->IsAttr(ATTR_MOVE_NEVER) || (!pItem->IsType(IT_CAMPFIRE) && !pItem->IsType(IT_SPELL) && !pItem->IsType(IT_FIRE)) )
 			{
 				SysMessageDefault( DEFMSG_SPELL_DISPELLF_WT );
 				return( false );
@@ -2003,128 +2063,56 @@ bool CChar::Spell_CastDone()
 		break;
 
 	case SPELL_Magic_Reflect:
-
 	case SPELL_Paralyze:
 	case SPELL_Incognito:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
-
-	case SPELL_Poison_Field:
-
-		if ( ! iT1 )
-			iT1 = (ITEMID_TYPE) 0x3915;
-		if ( ! iT2 )
-			iT2 = ITEMID_FX_POISON_F_NS;
-
-		if ( !fieldWidth )
-			fieldWidth = 7;
-		if ( !fieldGauge )
-			fieldGauge = 1;
-
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
+		if ( !Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel) )
+			return(false);
 		break;
 
 	case SPELL_Summon:
- 		if ( iC1 )
-			m_atMagery.m_SummonID = iC1;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
+		{
+			if ( iC1 )
+				m_atMagery.m_SummonID = iC1;
+
+			Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+			break;
+		}
 
 	// 6th Circle
-
 	case SPELL_Invis:
-
 	case SPELL_Dispel:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
-
-	case SPELL_Energy_Bolt:
-		Spell_Bolt( pObj, ITEMID_FX_ENERGY_BOLT, iSkillLevel );
-		break;
-
-	case SPELL_Explosion:
-		if ( !areaRadius )
-			areaRadius = 2;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-
 	case SPELL_Mark:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
-
-	case SPELL_Mass_Curse:
-		if ( !areaRadius )
-			areaRadius = 5;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-
-	case SPELL_Paralyze_Field:
-
-		if ( ! iT1 )
-			iT1 = ITEMID_FX_PARA_F_EW;
-		if ( ! iT2 )
-			iT2 = ITEMID_FX_PARA_F_NS;
-
-		if ( !fieldWidth )
-			fieldWidth = 7;
-		if ( !fieldGauge )
-			fieldGauge = 1;
-
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
-		break;
-
-	case SPELL_Reveal:
-		if ( !areaRadius )
-			areaRadius = UO_MAP_VIEW_SIGHT;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
+		if ( !Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel) )
+			return(false);
 		break;
 
 	// 7th Circle
-	case SPELL_Chain_Lightning:
-		if ( !areaRadius )
-			areaRadius = 5;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-
-	case SPELL_Energy_Field:
-
-		if ( ! iT1 )
-			iT1 = ITEMID_FX_ENERGY_F_EW;
-		if ( ! iT2 )
-			iT2 = ITEMID_FX_ENERGY_F_NS;
-
-		if ( !fieldWidth )
-			fieldWidth = 7;
-		if ( !fieldGauge )
-			fieldGauge = 1;
-
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel );
-		break;
-
 	case SPELL_Flame_Strike:
-		// Display spell.
-		if ( pObj == NULL )
 		{
-			CItem * pItem = CItem::CreateBase( ITEMID_FX_FLAMESTRIKE );
-			ASSERT(pItem);
-			pItem->SetType( IT_SPELL );
-			pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
-			pItem->MoveToDecay( m_Act_p, 2*TICK_PER_SEC );
-		}
-		else
-		{
-			pObj->Effect( EFFECT_OBJ, ITEMID_FX_FLAMESTRIKE, pObj, 6, 15 );
-			// Burn person at location.
-			if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-				return( false );
-		}
+			// Display spell.
+			if ( !iT1 )
+				iT1 = ITEMID_FX_FLAMESTRIKE;
+
+			if ( pObj == NULL )
+			{
+				CItem * pItem = CItem::CreateBase( iT1 );
+				ASSERT(pItem);
+				pItem->SetType( IT_SPELL );
+				pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
+				pItem->MoveToDecay( m_Act_p, 2*TICK_PER_SEC );
+			}
+			else
+			{
+				// Burn person at location.
+				pObj->Effect( EFFECT_OBJ, iT1, pObj, 6, 15 );
+				if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
+					return( false );
+			}
 		break;
+		}
 
 	case SPELL_Gate_Travel:
-		if ( ! Spell_Recall( dynamic_cast <CItem*> (pObj), true ))
+		if ( !Spell_Recall(dynamic_cast <CItem*> (pObj), true) )
 			return( false );
 		break;
 
@@ -2159,19 +2147,6 @@ bool CChar::Spell_CastDone()
 			return( false );
 		break;
 
-	case SPELL_Mass_Dispel:
-		if ( !areaRadius )
-			areaRadius = 15;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-
-	case SPELL_Meteor_Swarm:
-		// Multi explosion ??? 0x36b0
-		if ( !areaRadius )
-			areaRadius = 4;
-		Spell_Area( m_Act_p, areaRadius, iSkillLevel );
-		break;
-
 	case SPELL_Polymorph:
 		// This has a menu select for client.
 		if ( GetPrivLevel() < PLEVEL_Seer )
@@ -2184,62 +2159,15 @@ bool CChar::Spell_CastDone()
 		break;
 
 	// 8th Circle
-	case SPELL_Earthquake:
-		if ( !areaRadius )
-			areaRadius = UO_MAP_VIEW_SIGHT;
-		Spell_Area( GetTopPoint(), areaRadius, iSkillLevel );
-		break;
-
-	case SPELL_Vortex:
- 		if ( ! iC1 )
-			iC1 = CREID_VORTEX;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-
 	case SPELL_Resurrection:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
 		break;
 
-	case SPELL_Air_Elem:
- 		if ( ! iC1 )
-			iC1 = CREID_AIR_ELEM;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-	case SPELL_Daemon:
- 		if ( ! iC1 )
-			iC1 = ( Calc_GetRandVal( 2 )) ? CREID_DAEMON_SWORD : CREID_DAEMON;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-	case SPELL_Earth_Elem:
- 		if ( ! iC1 )
-			iC1 = CREID_EARTH_ELEM;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-	case SPELL_Fire_Elem:
- 		if ( ! iC1 )
-			iC1 = CREID_FIRE_ELEM;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-	case SPELL_Water_Elem:
- 		if ( ! iC1 )
-			iC1 = CREID_WATER_ELEM;
-		m_atMagery.m_SummonID = iC1;
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
 
-		// Necro
+	// Necromancy
+	// These're the old spells from Sphere.
+	// IDs from 65 to 69.
 	case SPELL_Summon_Undead:
 		switch (Calc_GetRandVal(15))
 		{
@@ -2349,9 +2277,13 @@ bool CChar::Spell_CastDone()
 		Spell_Bolt( pObj, ITEMID_FX_FIRE_BOLT, iSkillLevel );
 		break;
 
+
+	// Used as potions, the first two are alcohol
 	case SPELL_Ale:		// 90 = drunkeness ?
 	case SPELL_Wine:	// 91 = mild drunkeness ?
 	case SPELL_Liquor:	// 92 = extreme drunkeness ?
+
+	// Now these are the real potions :)
 	case SPELL_Hallucination:
 	case SPELL_Stone:
 	case SPELL_Shrink:
@@ -2371,7 +2303,6 @@ bool CChar::Spell_CastDone()
 	default:
 		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
-
 		// No effect on creatures it seems.
 		break;
 	}
@@ -2397,19 +2328,17 @@ bool CChar::Spell_CastDone()
 		}
 	}
 
-	// Make noise.
-	if ( ! IsStatFlag( STATF_Insubstantial ))
-	{
+	// If we are visible, play sound.
+	if ( !IsStatFlag( STATF_Insubstantial) )
 		Sound( pSpellDef->m_sound );
-	}
-
+	
 	// At this point we should gain skill if precasting is enabled
-	if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+	if ( IsClient() && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
 		iDifficulty /= 10;
-		Skill_Experience( (SKILL_TYPE)iSkill, iDifficulty );
+		Skill_Experience((SKILL_TYPE)iSkill, iDifficulty);
 	}
-	return( true );
+	return(true);
 }
 
 void CChar::Spell_CastFail()
@@ -2455,45 +2384,46 @@ int CChar::Spell_CastStart()
 	if ( pSpellDef == NULL )
 		return( -1 );
 
-	if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && ! pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
+	if ( IsClient() && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
 		m_Act_p = GetTopPoint();
 		m_Act_Targ = GetClient()->m_Targ_UID;
 		m_Act_TargPrv = GetClient()->m_Targ_PrvUID;
 
-		if ( ! Spell_CanCast(m_atMagery.m_Spell, true, m_Act_TargPrv.ObjFind(), true))
-			return( -1 );
+		if ( !Spell_CanCast(m_atMagery.m_Spell, true, m_Act_TargPrv.ObjFind(), true) )
+			return(-1);
 	}
 	else
 	{
-		if ( ! Spell_TargCheck())
-			return( -1 );
+		if ( !Spell_TargCheck() )
+			return(-1);
 	}
 
 	// Animate casting.
-	if (!pSpellDef->IsSpellType( SPELLFLAG_NO_CASTANIM ))
-		UpdateAnimate(( pSpellDef->IsSpellType( SPELLFLAG_DIR_ANIM )) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
+		UpdateAnimate( (pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM)) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
 
 	bool fWOP = ( GetPrivLevel() >= PLEVEL_Counsel ) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
-
-	if ( ! NPC_CanSpeak() || IsStatFlag( STATF_Insubstantial ))
-	{
+	if ( !NPC_CanSpeak() || IsStatFlag(STATF_Insubstantial) )
 		fWOP = false;
-	}
 
 	int iDifficulty;
 	int iSkill;
 	if ( !pSpellDef->GetPrimarySkill( &iSkill, &iDifficulty ) )
 		return -1;
-	iDifficulty	/= 10;	// adjust to 0-100
 
-	CGrayUID uid( m_Act_TargPrv );
+	// Adjust to 0 - 100
+	iDifficulty	/= 10;
+
+	CGrayUID uid(m_Act_TargPrv);
 	CItem * pItem = uid.ItemFind();
+	bool fAllowEquip = false;
 	if ( pItem != NULL )
 	{
 		if ( pItem->IsType(IT_WAND))
 		{
 			// Wand use no words of power. and require no magery.
+			fAllowEquip = true;
 			fWOP = false;
 			iDifficulty = 1;
 		}
@@ -2504,29 +2434,29 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	if ( ! g_Cfg.m_fEquippedCast && fWOP )
+	// Attempt to Unequip stuff before casting.
+	// Except not wands and spell books !
+	if ( !g_Cfg.m_fEquippedCast && fAllowEquip )
 	{
-		// Attempt to Unequip stuff before casting.
-		// Except not wands and spell books !
-		if ( ! Spell_Unequip( LAYER_HAND1 ))
+		if ( !Spell_Unequip(LAYER_HAND1) )
 			return( -1 );
-		if ( ! Spell_Unequip( LAYER_HAND2 ))
+		if ( !Spell_Unequip(LAYER_HAND2) )
 			return( -1 );
 	}
 
 	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase((SKILL_TYPE)iSkill));
 
 	CScriptTriggerArgs Args((int)m_atMagery.m_Spell, iDifficulty, pItem);
-	Args.m_iN3		= iWaitTime;
+	Args.m_iN3 = iWaitTime;
 
 	if ( OnTrigger(CTRIG_SpellCast, this, &Args) == TRIGRET_RET_TRUE )
 		return -1;
 	if ( Spell_OnTrigger((SPELL_TYPE)Args.m_iN1, SPTRIG_START, this, &Args) == TRIGRET_RET_TRUE )
 		return -1;
 
-	m_atMagery.m_Spell		= (SPELL_TYPE) Args.m_iN1;
-	iDifficulty				= Args.m_iN2;
-	iWaitTime				= Args.m_iN3;
+	m_atMagery.m_Spell	= (SPELL_TYPE) Args.m_iN1;
+	iDifficulty			= Args.m_iN2;
+	iWaitTime			= Args.m_iN3;
 
 	if ( fWOP )
 	{
@@ -2576,97 +2506,104 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	// RETURN:
 	//  false = the spell did not work. (should we get credit ?)
 
-	int		iEffectMult	= 1000;
+	int	iEffectMult	= 1000;
+	DAMAGE_TYPE iD1 = 0;
 
 	if ( this == NULL )
-		return( false );
-	ASSERT( ! IsItem());
+		return(false);
 
-	if ( iSkillLevel <= 0 )	// spell died (fizzled?).
-		return( false );
+	ASSERT(!IsItem());
+	// Spell died or fizzled.
+	if ( iSkillLevel <= 0 )
+		return(false);
+
+	// Bug with gaining reflection skill by affecting by some spells while dead
 	if ( IsStatFlag(STATF_DEAD) )
 	{
-		//	bug with gaining reflection skill by affecting by some spells while dead
-		if ( spell != SPELL_Resurrection )
+		if ( spell != SPELL_Resurrection || !g_Cfg.GetSpellDef(spell)->IsSpellType(SPELLFLAG_TARG_DEAD) )
 			return false;
 	}
 
-
 	CScriptTriggerArgs Args( (int) spell, iSkillLevel, pSourceItem );
-	Args.m_iN3		= iEffectMult;
-	TRIGRET_TYPE	iRet	= OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
-	spell			= (SPELL_TYPE) Args.m_iN1;
+	Args.m_VarsLocal.SetNum("DamageType",0);
+	Args.m_iN3					= iEffectMult;
+	TRIGRET_TYPE iRet			= OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
+	spell						= (SPELL_TYPE) Args.m_iN1;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+	iD1							= (DAMAGE_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType",true));
 
 	switch ( iRet )
 	{
-		case TRIGRET_RET_TRUE:	return( false );
-		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		case TRIGRET_RET_TRUE:	return(false);
+		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 		default:				break;
 	}
 
 	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
-		iRet			= Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
-	}
-	spell			= (SPELL_TYPE) Args.m_iN1;
-	iSkillLevel		= Args.m_iN2;
-    iEffectMult		= Args.m_iN3;
-	pSpellDef		= g_Cfg.GetSpellDef(spell);
+		iRet	= Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
+
+	spell		= (SPELL_TYPE) Args.m_iN1;
+	iSkillLevel	= Args.m_iN2;
+    iEffectMult	= Args.m_iN3;
+	pSpellDef	= g_Cfg.GetSpellDef(spell);
+	iD1			= (DAMAGE_TYPE) RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType",true));
 
 	switch ( iRet )
 	{
-		case TRIGRET_RET_TRUE:	return( false );
-		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) ) return true;
+		case TRIGRET_RET_TRUE:	return(false);
+		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 		default:				break;
 	}
-
 
 	if ( pSpellDef == NULL )
 		return( false );
 
 	// Most spells don't work on ghosts.
-	if ( IsStatFlag(STATF_DEAD) && !(spell == SPELL_Resurrection) ) // || pSpellDef->IsSpellType( SPELLFLAG_TARG_DEAD ) ) )
+	if ( IsStatFlag(STATF_DEAD) && (!(spell == SPELL_Resurrection) || pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD)) )
 		return false;
 
+	// Just strengthen the effect.
 	bool fResistAttempt = true;
-	switch ( spell )	// just strengthen the effect.
+	switch ( spell )
 	{
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
-			if ( IsStatFlag(STATF_Poisoned))
-			{
+			// No further effect. Don't count resist effect.
+			if ( IsStatFlag(STATF_Poisoned) )
 				fResistAttempt = false;
-			}	// no further effect. don't count resist effect.
 			break;
+
 		case SPELL_Paralyze_Field:
 		case SPELL_Paralyze:
-			if ( IsStatFlag(STATF_Freeze))
-				return false;	// no further effect.
+			// No further effect.
+			if ( IsStatFlag(STATF_Freeze) )
+				return false;
 			break;
+
 		default:
 			break;
 	}
 
-	bool fPotion = ( pSourceItem != NULL && pSourceItem->IsType( IT_POTION ));
+	bool fPotion = ( pSourceItem != NULL && pSourceItem->IsType(IT_POTION) );
 	if ( fPotion )
 		fResistAttempt = false;
+
 	if ( pCharSrc == this )
 		fResistAttempt = false;
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
+	if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 	{
 		// Can't harm yourself directly ?
-		if ( !IsSetMagicFlags( MAGICF_CANHARMSELF ) && (pCharSrc == this) )
+		if ( !IsSetMagicFlags(MAGICF_CANHARMSELF) && (pCharSrc == this) )
 			return( false );
 
-		if ( IsStatFlag( STATF_INVUL ))
+		if ( IsStatFlag(STATF_INVUL) )
 		{
 			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
 			return false;
 		}
 
-		if ( ! fPotion && fResistAttempt )
+		if ( !fPotion && fResistAttempt )
 		{
 			if ( pCharSrc != NULL && GetPrivLevel() > PLEVEL_Guest )
 			{
@@ -2680,42 +2617,79 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			// Check resistance to magic ?
 			if ( pSpellDef->IsSpellType( SPELLFLAG_RESIST ))
 			{
-			if ( Skill_UseQuick( SKILL_MAGICRESISTANCE, iSkillLevel ))
-			{
-				SysMessage( "You feel yourself resisting magic" );
-
-				// iSkillLevel
-				iSkillLevel /= 2;	// ??? reduce effect of spell.
-			}
-
-			// Check magic reflect.
-			if ( IsStatFlag( STATF_Reflection ))	// reflected.
-			{
-				StatFlag_Clear( STATF_Reflection );
-reflectit:
-				Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
-				if ( pCharSrc != NULL )
+				if ( Skill_UseQuick( SKILL_MAGICRESISTANCE, iSkillLevel ))
 				{
-					pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel/2, pSourceItem );
+					SysMessage( "You feel yourself resisting magic" );
+					iSkillLevel /= 2;
 				}
-				return false;
+
+				// Check magic reflect.
+				if ( IsStatFlag(STATF_Reflection) )	// reflected.
+				{
+					StatFlag_Clear( STATF_Reflection );
+reflectit:
+					Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
+					if ( pCharSrc != NULL )
+						pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel/2, pSourceItem );
+					return false;
+				}
 			}
 		}
-		}
 
-		if ( ! OnAttackedBy( pCharSrc, 1, false, !(pSpellDef->IsSpellType(SPELLFLAG_FIELD)) ))
+		if ( !OnAttackedBy(pCharSrc, 1, false, !(pSpellDef->IsSpellType(SPELLFLAG_FIELD))) )
 			return false;
 	}
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_FX_TARG ) &&	pSpellDef->m_idEffect )
-	{
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && pSpellDef->m_idEffect )
 		Effect( EFFECT_OBJ, pSpellDef->m_idEffect, this, 0, 15 ); // 9, 14
-	}
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 
-	if ( pSpellDef->IsSpellType( SPELLFLAG_SCRIPTED ) == false )
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) )
 	{
+		if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
+		{
+			if ( !iD1 )
+			{
+				switch ( spell )
+				{
+					case SPELL_Harm:			iD1 = DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
+					case SPELL_Mind_Blast:		iD1 = DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
+					case SPELL_Explosion:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+					case SPELL_Energy_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_PIERCE | DAMAGE_NOREVEAL;					break;
+					case SPELL_Magic_Arrow:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_PIERCE | DAMAGE_NOREVEAL;					break;
+					case SPELL_Fireball:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Fire_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Fire_Field:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
+					case SPELL_Flame_Strike:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
+					case SPELL_Meteor_Swarm:	iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Earthquake:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+					case SPELL_Lightning:		iD1 = DAMAGE_MAGIC | DAMAGE_ELECTRIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+					case SPELL_Chain_Lightning:	iD1 = DAMAGE_MAGIC | DAMAGE_ELECTRIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+					default:					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;						break;
+				}
+			}
+
+			/*	Eval. Int. Bonus: ((EvalInt * 3) / 100) + 1
+				Intelligence Bonus: (INT / 10) (Drop decimals from result)
+				GM Inscription Bonus: 10% Damage Bonus
+				Spell Damage Increase: Int. Bonus + Inscr. Bonus + Spell Damage Increase Items*
+				Total Damage: (Base Damage * Eval. Int. Bonus) * ((Spell Damage Increase / 100) + 1) (Drop decimals from result)
+
+				Mind Blast damage: Base Damage + ((Magery + Intelligence) / 5) (Drop decimals from result) 
+			if ( !IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				OnTakeDamage(GetSpellEffect(spell, iSkillLevel, iEffectMult), pCharSrc, iD1);
+			else
+			{
+				int iEvalIntBonus = ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 100 + 1;
+				int iBonus = pCharSrc->Stat_GetBase(STAT_INT) / 10;
+				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) == 100.0 )
+					iBonus += 10;
+				int iSpellDamageInc = iIntBonus + 
+				int iTotalBonus = (GetSpellEffect(spell, iSkillLevel, iEffectMult) * iEvalIntBonus) * (
+			}*/
+		}
+
 		switch ( spell )
 		{
 
@@ -2762,16 +2736,15 @@ reflectit:
 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
-			if ( ! fPotion )
-			{
-				Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 0, 15 );
-			}
+			if ( !fPotion )
+				Effect(EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 0, 15);
 			SetPoison( iSkillLevel, iSkillLevel/50, pCharSrc );
 			break;
 
 		case SPELL_Cure:
 			SetPoisonCure( iSkillLevel, iSkillLevel > 900 );
 			break;
+
 		case SPELL_Arch_Cure:
 			SetPoisonCure( iSkillLevel, true );
 			break;
@@ -2823,38 +2796,14 @@ reflectit:
 			UpdateStatVal( STAT_INT, -iSkillLevel );
 			break;
 
-		case SPELL_Harm:
-		case SPELL_Mind_Blast:
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
-			break;
-		case SPELL_Explosion:
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
-			break;
-		case SPELL_Energy_Bolt:
-		case SPELL_Magic_Arrow:
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_HIT_PIERCE | DAMAGE_NOREVEAL );
-			break;
-		case SPELL_Fireball:
-		case SPELL_Fire_Bolt:
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL );
-			break;
-		case SPELL_Fire_Field:
-		case SPELL_Flame_Strike:
-			// Burn whoever is there.
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
-			break;
 		case SPELL_Meteor_Swarm:
 			Effect( EFFECT_OBJ, ITEMID_FX_EXPLODE_3, this, 9, 6 );
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL );
 			break;
-		case SPELL_Earthquake:
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
-			break;
+	
 		case SPELL_Lightning:
 		case SPELL_Chain_Lightning:
 			GetTopSector()->LightFlash();
 			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
-			OnTakeDamage( GetSpellEffect( spell, iSkillLevel, iEffectMult ), pCharSrc, DAMAGE_MAGIC | DAMAGE_ELECTRIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
 			break;
 
 		case SPELL_Resurrection:
@@ -3010,8 +2959,6 @@ int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 	long	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
 	return (iEffect * iEffectMult ) / 1000;
 }
-
-
 
 int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 {

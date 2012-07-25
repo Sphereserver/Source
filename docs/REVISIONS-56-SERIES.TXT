@@ -5342,7 +5342,7 @@ ALPHA additions:
                will avoid the weight/item amount check.
 
 26-03-2012, RanXerox
-- Updated #2036: sphere_map0.scp, sphere_map3.scp sphere_map4.scp (added some missing locations)
+- Updated #2036: sphere_map0.scp, sphere_map3.scp, sphere_map4.scp (added some missing locations)
 
 26-03-2012, MrSugarCube
 - Modified #2040: MT_EQUIP, MT_USEHANDS and MT_MOUNT flags are respected when a character's body
@@ -5360,3 +5360,23 @@ ALPHA additions:
 24-04-2012, MrSugarCube
 - Fixed: Unable to double click console in Windows to open scripts when forward slashes are used
   in script paths.
+
+25-07-2012, ShiryuX
+- Added: SPELLFLAG_TARG_DEAD so you can create spells for dead people.
+- Added: SPELLFLAG_DAMAGE for damage spells, along with HARM effect.
+         You can override the Damage Type under @(Spell)Effect with LOCAL.DamageType.
+- Added: MAGICF_NOANIM so you can disable animation/direction update of the character in every spell.
+- Modified: SPELLFLAG_SCRIPTED changes behavoir and allows to mixed with other flags.
+- Modified: SPELLFLAG_FX_BOLT will totally work now. EFFECT_ID can be overrided with LOCAL.CreateObject1.
+- Modified: SPELLFLAG_AREA can be used and altered. If no specified radius, default is 4.
+            The effect of course, if it's a custom spell, must be scripted.
+- Modified: Spell Summon Creature can be overrided with LOCAL.CreateObject1.
+- Modified: Limit for ANIM function, so you can play the new Gargoyle Anims now.
+- Fixed: Can modify Flamestrike EFFECT_ID now.
+- Fixed: WOPPlayer to 0 overrided the EquippedCast check and players could cast while equipped.
+
+25-07-2012, ShiryuX
+- Updated: sphere_spells.scp, sphere_defs.scp with the new spells changes
+
+25-07-2012, Coruja (script pack)
+- Updated #2069: sphere_map_points3.scp (added missing teleports in Doom)

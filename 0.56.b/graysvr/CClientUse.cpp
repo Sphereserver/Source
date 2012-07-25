@@ -986,36 +986,36 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Magery");
-	// start casting a spell. prompt for target.
-	// pSrc = you the char.
-	// pSrc = magic object is source ?
-	// static const TCHAR sm_Txt_Summon[] = "Where would you like to summon the creature ?";
+	/* Start casting a spell. Prompt for target.
+	     pSrc = you the char.
+	     pSrc = magic object is source ?
+	   static const TCHAR sm_Txt_Summon[] = "Where would you like to summon the creature ?"; */
 	ASSERT(m_pChar);
 
 	const CSpellDef * pSpellDef;
 
-	if ( IsSetMagicFlags( MAGICF_PRECAST ) && iSpell == m_tmSkillMagery.m_Spell )
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && iSpell == m_tmSkillMagery.m_Spell )
 	{
 		pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
-		if (pSpellDef != NULL && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+		if ( pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			iSpell = m_tmSkillMagery.m_Spell;
 	}
 	else
-		pSpellDef = g_Cfg.GetSpellDef( iSpell );
+		pSpellDef = g_Cfg.GetSpellDef(iSpell);
 
-	// Do we have the regs ? etc.
-	if ( ! m_pChar->Spell_CanCast( iSpell, true, pSrc, true ))
+	// Do we have the regs? Etc.
+	if ( !m_pChar->Spell_CanCast(iSpell, true, pSrc, true) )
 		return false;
 
 	ASSERT(pSpellDef);
 
 	SetTargMode();
 	m_tmSkillMagery.m_Spell		= iSpell;				// m_atMagery.m_Spell
-	m_Targ_UID					= m_pChar->GetUID();	// default target.
-	m_Targ_PrvUID				= pSrc->GetUID();		// source of the spell.
+	m_Targ_UID					= m_pChar->GetUID();	// Default target.
+	m_Targ_PrvUID				= pSrc->GetUID();		// Source of the spell.
 
-	// cast self
-	if ( !pSpellDef->IsSpellType( SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ ) )
+	// Cast self
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 	{
 		m_pChar->m_Act_p			= m_pChar->GetTopPoint();
 		m_pChar->m_atMagery.m_Spell = iSpell;
@@ -1023,21 +1023,33 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		m_pChar->m_Act_TargPrv		= m_Targ_PrvUID;
 		m_Targ_p					= m_pChar->GetTopPoint();
 
-		if ( !IsSetMagicFlags( MAGICF_PRECAST ) || pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ))
+		if ( iSpell == SPELL_Polymorph )
+		{
+				CScriptTriggerArgs args("sm_polymorph");
+				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) 
+					return true;
+
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
+		}
+
+		// If NO PreCast -> Skill_Start()
+		if ( !IsSetMagicFlags(MAGICF_PRECAST) || pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 		{
 			int skill;
-			if (!pSpellDef->GetPrimarySkill(&skill, NULL))
+			if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
 				return false;
 
-			return( m_pChar->Skill_Start( (SKILL_TYPE)skill ) );
+			return( m_pChar->Skill_Start((SKILL_TYPE)skill) );
 		}
 		else
 		{
+			// But if we use PreCast use Spell_CastDone()
 			m_pChar->Spell_CastDone();
 			return true;
 		}
 	}
 
+	// We need a target!
 	LPCTSTR pPrompt = g_Cfg.GetDefaultMsg( DEFMSG_SELECT_MAGIC_TARGET );
 	switch ( iSpell )
 	{
@@ -1059,18 +1071,6 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		case SPELL_Gate_Travel:	// gate travel
 			// pPrompt = "Select rune to gate from.";
 			break;
-		case SPELL_Polymorph:
-			// polymorph creature menu.
-			{
-				if ( IsPriv(PRIV_GM))
-				{
-					// pPrompt = "Select creature to polymorph.";
-					break;
-				}
-				CScriptTriggerArgs args("sm_polymorph");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
-				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
-			}
 		case SPELL_Resurrection:
 			// pPrompt = "Select ghost to resurrect.";
 			break;
@@ -1100,10 +1100,12 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 
 	if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
 		pPrompt	= pSpellDef->m_sTargetPrompt;
+	
 	addTarget( CLIMODE_TARG_SKILL_MAGERY, pPrompt,
 		pSpellDef->IsSpellType( SPELLFLAG_TARG_XYZ ),
 		pSpellDef->IsSpellType( SPELLFLAG_HARM ),
 		g_Cfg.m_iSpellTimeout * TICK_PER_SEC);
+
 	return( true );
 }
 

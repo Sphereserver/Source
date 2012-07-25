@@ -84,7 +84,8 @@ enum MAGICFLAGS_TYPE
 	MAGICF_FREEZEONCAST      = 0x0000020,	// disallow movement whilst casting
 	MAGICF_SUMMONWALKCHECK   = 0x0000040,	// disallow summoning creatures to places they can't normally step
 	MAGICF_NOFIELDSOVERWALLS = 0x0000080,	// prevent fields from being formed over blocking objects.
-	MAGICF_NOANIM			 = 0x0000100	// auto spellflag_no_anim on all spells
+	MAGICF_NOANIM			 = 0x0000100,	// auto spellflag_no_anim on all spells
+	MAGICF_OSIFORMULAS		 = 0x0000200	// calculated damage and duration based on OSI formulas
 };
 
 enum COMBATFLAGS_TYPE
@@ -413,6 +414,8 @@ private:
 #define SPELLFLAG_NOFREEZEONCAST	0x0800000 // disable freeze on cast for this spell
 #define SPELLFLAG_AREA				0x1000000 // area effect (uses local.arearadius)
 #define SPELLFLAG_POLY				0x2000000
+#define SPELLFLAG_TARG_DEAD			0x4000000 // allowed to targ dead chars
+#define SPELLFLAG_DAMAGE			0x8000000 // damage intended
 
 	CGString m_sName;	// spell name
 
