@@ -123,15 +123,15 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 			}
 		}
 
-		CClient * pClient = pPage->FindAccount()->FindClient();	// logged in ?
+		const CClient * pClient = pPage->FindAccount()->FindClient(); // logged in ?
 
 		ASSERT(count < COUNTOF(item));
 		item[count].m_id = count-1;
 		item[count].m_color = 0;
 		item[count].m_sText.Format( "%s %s %s",
-			(LPCTSTR) pPage->GetName(),
-			(pClient==NULL) ? "OFF":"ON ",
-			(LPCTSTR) pPage->GetReason());
+			static_cast<LPCTSTR>(pPage->GetName()),
+			pClient == NULL? "OFF" : "ON ",
+			static_cast<LPCTSTR>(pPage->GetReason()));
 		m_tmMenu.m_Item[count] = entry;
 	}
 
@@ -156,9 +156,9 @@ void CClient::Cmd_GM_PageInfo()
 		"Current GM .PAGE Account=%s (%s) "
 		"Reason='%s' "
 		"Time=%i",
-		(LPCTSTR)m_pGMPage->GetName(),
-		(LPCTSTR)m_pGMPage->GetAccountStatus(),
-		(LPCTSTR)m_pGMPage->GetReason(),
+		static_cast<LPCTSTR>(m_pGMPage->GetName()),
+		static_cast<LPCTSTR>(m_pGMPage->GetAccountStatus()),
+		static_cast<LPCTSTR>(m_pGMPage->GetReason()),
 		m_pGMPage->GetAge());
 }
 

@@ -364,7 +364,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						}
 						else if ( !strcmpi(ppCmd[1], "pi") )
 						{
-							dResult = log(dArgument)/log(M_PI);
+							dResult = log(dArgument) / log(M_PI);
 						}
 						else
 						{

@@ -118,8 +118,8 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 	{
 		if ( !pObj->IsChar() )
 		{
-			pItem = (CItem *) pObj;
-			if ( ( pObj->GetBaseID() != 0xFAB ) && (!pItem->IsType(IT_DYE_VAT) || !IsSetOF(OF_DyeType)) )
+			pItem = dynamic_cast<CItem *>(pObj);
+			if (pItem == NULL || (( pObj->GetBaseID() != 0xFAB ) && (!pItem->IsType(IT_DYE_VAT) || !IsSetOF(OF_DyeType))))
 				return;
 
 			if ( wHue < HUE_BLUE_LOW )
@@ -739,7 +739,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 	m_pChar->StatFlag_Mod( STATF_Fly, fRun );
 
-	DIR_TYPE dir = (DIR_TYPE)( rawdir & 0x0F );
+	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
 	{
 		return TRIGRET_RET_FALSE;
@@ -1004,7 +1004,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), (LPCTSTR) GetName(), (LPCTSTR) pszCommand, m_bAllowCommand);
+		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pszCommand), m_bAllowCommand);
 
 	return !m_bAllowSay;
 }
@@ -1443,8 +1443,8 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 		return;
 	}
 	// Might be an NPC ?
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAILBAG_DROP_2 ), (LPCTSTR) m_pChar->GetName());
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAILBAG_DROP_2 ), static_cast<LPCTSTR>(m_pChar->GetName()));
 	pChar->SysMessage(pszMsg);
 }
 
@@ -1620,12 +1620,12 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 			break;
 		default:
 			pItem->SetName(sMsg);
-			sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
+			sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
 			break;
 	}
 #else
 	pItem->SetName(sMsg);
-	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, (LPCTSTR) pItem->GetName());
+	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
 #endif
 
 	SysMessage(sMsg);
@@ -1850,7 +1850,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 		bool	fCancelSpeech	= false;
 		TCHAR	z[MAX_TALK_BUFFER];
 
-		if ( m_pChar->OnTriggerSpeech(false, (TCHAR *)pszText, m_pChar, mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
 			fCancelSpeech	= true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
@@ -1883,7 +1883,7 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 
 		if ( !fCancelSpeech && ( len <= 128 ) ) // From this point max 128 chars
 		{
-			m_pChar->SpeakUTF8(z, wHue, (TALKMODE_TYPE)mode, m_pChar->m_fonttype, GetAccount()->m_lang);
+			m_pChar->SpeakUTF8(z, wHue, static_cast<TALKMODE_TYPE>(mode), m_pChar->m_fonttype, GetAccount()->m_lang);
 			Event_Talk_Common(static_cast<TCHAR*>(z));
 		}
 	}
@@ -1931,7 +1931,7 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 	{
 		bool	fCancelSpeech	= false;
 
-		if ( m_pChar->OnTriggerSpeech( false, (TCHAR *)pszText, m_pChar, mMode, wHue) )
+		if ( m_pChar->OnTriggerSpeech( false, pszText, m_pChar, mMode, wHue) )
 			fCancelSpeech	= true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
@@ -2502,11 +2502,11 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 			if ( m_pChar == pChar )
 				Event_DoubleClick(m_pChar->GetUID(), true, false);
 			else
-				m_pChar->Use_Obj((CObjBase *)pChar, false, false);
+				m_pChar->Use_Obj(pChar, false, false);
 			break;
 
 		case POPUP_BACKPACK:
-			m_pChar->Use_Obj( (CObjBase *)m_pChar->LayerFind( LAYER_PACK ), false, false );
+			m_pChar->Use_Obj(m_pChar->LayerFind( LAYER_PACK ), false, false );
 			break;
 
 		case POPUP_BANKBOX:
@@ -2572,7 +2572,7 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 	{
 		case 0x01: // Spell call
 		{
-			Cmd_Skill_Magery((SPELL_TYPE)dwArg, m_pChar);
+			Cmd_Skill_Magery(static_cast<SPELL_TYPE>(dwArg), m_pChar);
 		} break;
 
 		case 0x02: // Weapon ability
@@ -2582,7 +2582,7 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 
 		case 0x03: // Skill
 		{
-			Event_Skill_Use((SKILL_TYPE)dwArg);
+			Event_Skill_Use(static_cast<SKILL_TYPE>(dwArg));
 		} break;
 
 		case 0x04: // Item
@@ -2692,7 +2692,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 					m_pChar->m_atMagery.m_Spell = spell;	// m_atMagery.m_Spell
 					m_Targ_UID = m_pChar->GetUID();	// default target.
 					m_Targ_PrvUID = m_pChar->GetUID();
-					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 				}
 				else
 					Cmd_Skill_Magery(spell, m_pChar );
@@ -2782,7 +2782,7 @@ bool CClient::xPacketFilter( const BYTE * pData, size_t iLen )
 		for ( size_t i = 0; i < bytes; ++i )
 		{
 			sprintf(idx, "%" FMTSIZE_T, i);
-			Args.m_VarsLocal.SetNum(idx, (int)pData[i]);
+			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 		}
 
 		//	Call the filtering function

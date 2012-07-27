@@ -146,19 +146,19 @@ void cDatabaseLoader::CloseDllHandle()
 bool cDatabaseLoader::FillFunctionsHandle()
 {
 	ADDTOCALLSTACK("cDatabaseLoader::FillFunctionsHandle");
-	pfRightVersion = (dfRightVer_t) SetFunctionHandle("db_isrightversion");
-	pfPing = (dfPing_t) SetFunctionHandle("db_ping");
-	pfConnect = (dfConnect_t) SetFunctionHandle("db_connect");
-	pfClose = (dfClose_t) SetFunctionHandle("db_close");
-	pfIsConnected = (dfConnected_t) SetFunctionHandle("db_isconnected");
-	pfLastError = (dfLastError_t) SetFunctionHandle("db_getlasterror");
-	pfLastCharError = (dfLastCharError_t) SetFunctionHandle("db_getlaststringerror");
-	pfExecute = (dfExec_t) SetFunctionHandle("db_execute");
-	pfQuery = (dfQuery_t) SetFunctionHandle("db_query");
-	pfFieldNum = (dfFieldNum_t) SetFunctionHandle("db_numfields");
-	pfFieldArray = (dfFieldArray_t) SetFunctionHandle("db_fetchfields");
-	pfFetchRow = (dfFetchRow_t) SetFunctionHandle("db_fetchrow");
-	pfEscapeString = (dfEscapeString_t) SetFunctionHandle("db_escapestring");
+	pfRightVersion = static_cast<dfRightVer_t>(SetFunctionHandle("db_isrightversion"));
+	pfPing = static_cast<dfPing_t>(SetFunctionHandle("db_ping"));
+	pfConnect = static_cast<dfConnect_t>(SetFunctionHandle("db_connect"));
+	pfClose = static_cast<dfClose_t>(SetFunctionHandle("db_close"));
+	pfIsConnected = static_cast<dfConnected_t>(SetFunctionHandle("db_isconnected"));
+	pfLastError = static_cast<dfLastError_t>(SetFunctionHandle("db_getlasterror"));
+	pfLastCharError = static_cast<dfLastCharError_t>(SetFunctionHandle("db_getlaststringerror"));
+	pfExecute = static_cast<dfExec_t>(SetFunctionHandle("db_execute"));
+	pfQuery = static_cast<dfQuery_t>(SetFunctionHandle("db_query"));
+	pfFieldNum = static_cast<dfFieldNum_t>(SetFunctionHandle("db_numfields"));
+	pfFieldArray = static_cast<dfFieldArray_t>(SetFunctionHandle("db_fetchfields"));
+	pfFetchRow = static_cast<dfFetchRow_t>(SetFunctionHandle("db_fetchrow"));
+	pfEscapeString = static_cast<dfEscapeString_t>(SetFunctionHandle("db_escapestring"));
 
 	// check all functions exist
 	return( pfRightVersion != NULL && pfPing != NULL &&

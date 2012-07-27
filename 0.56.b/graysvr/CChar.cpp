@@ -2506,7 +2506,7 @@ void CChar::r_Write( CScript & s )
 			sprintf( szTmp, "MOD%s",  g_Stat_Name[j] );
 			s.WriteKeyVal( szTmp, Stat_GetMod(static_cast<STAT_TYPE>(j)) );
 		}
-		if ( Stat_GetBase( (STAT_TYPE) j ) )
+		if ( Stat_GetBase(static_cast<STAT_TYPE>(j)) )
 		{
 			sprintf( szTmp, "O%s",  g_Stat_Name[j] );
 			s.WriteKeyVal( szTmp, Stat_GetBase(static_cast<STAT_TYPE>(j)) );

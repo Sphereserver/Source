@@ -371,9 +371,9 @@ void CClient::Announce( bool fArrive ) const
 			{
 				const CRegionBase * pRegion = m_pChar->GetTopPoint().GetRegion( REGION_TYPE_AREA );
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_1 ),
-					(LPCTSTR) m_pChar->GetName(),
-					(fArrive)? g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_2 ) : g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_3 ),
-					pRegion ? (LPCTSTR) pRegion->GetName() : (LPCTSTR) g_Serv.GetName());
+					static_cast<LPCTSTR>(m_pChar->GetName()),
+					fArrive? g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_2 ) : g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_3 ),
+					pRegion != NULL? static_cast<LPCTSTR>(pRegion->GetName()) : static_cast<LPCTSTR>(g_Serv.GetName()));
 			}
 			pClient->SysMessage(pszMsg);
 		}
@@ -490,8 +490,8 @@ void CClient::addTargetVerb( LPCTSTR pszCmd, LPCTSTR pszArg )
 		return;
 
 	m_Targ_Text.Format( "%s%s%s", pszCmd, ( pszArg[0] && pszCmd[0] ) ? " " : "", pszArg );
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, "Select object to set/command '%s'", (LPCTSTR) m_Targ_Text);
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, "Select object to set/command '%s'", static_cast<LPCTSTR>(m_Targ_Text));
 	addTarget(CLIMODE_TARG_OBJ_SET, pszMsg);
 }
 
@@ -906,15 +906,15 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				// FindItemName ???
 				TCHAR * pszArgs = s.GetArgStr();
-				RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCTSTR&)pszArgs );
+				RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs)));
 
 				if ( rid.GetResType() == RES_CHARDEF )
 				{
 					m_Targ_PrvUID.InitUID();
-					return Cmd_CreateChar( (CREID_TYPE) rid.GetResIndex(), SPELL_Summon, false );
+					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()), SPELL_Summon, false );
 				}
 
-				ITEMID_TYPE id = (ITEMID_TYPE) rid.GetResIndex();
+				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 				return Cmd_CreateItem( id );
 			}
 			else
@@ -964,7 +964,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				for (size_t i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
 					ArgsCount++;
 
-				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], (LPCTSTR*)Args, ArgsCount);
+				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], const_cast<LPCTSTR *>(reinterpret_cast<LPTSTR *>(Args)), ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:
@@ -997,7 +997,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", clilocid, (LPCTSTR)LocArgs);
+					g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", clilocid, static_cast<LPCTSTR>(LocArgs));
 				this->m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
 			}
 			break;
@@ -1111,14 +1111,16 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			break;
 		case CV_BANKSELF: // open my own bank
-			addBankOpen( m_pChar, (LAYER_TYPE) s.GetArgVal());
+			addBankOpen( m_pChar, static_cast<LAYER_TYPE>(s.GetArgVal()));
 			break;
 		case CV_CAST:
 			{
-				SPELL_TYPE spell = (SPELL_TYPE)g_Cfg.ResourceGetIndexType(RES_SPELL, s.GetArgStr());
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+				SPELL_TYPE spell = static_cast<SPELL_TYPE>(g_Cfg.ResourceGetIndexType(RES_SPELL, s.GetArgStr()));
+				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return true;
+
+				CObjBase * pObjSrc = dynamic_cast<CObjBase *>(pSrc);
 
 				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 				{
@@ -1128,13 +1130,21 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 					m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
 					m_pChar->m_atMagery.m_Spell = spell;
-					m_Targ_UID = dynamic_cast <CObjBase *>(pSrc)->GetUID();	// default target.
-					m_Targ_PrvUID = dynamic_cast <CObjBase *>(pSrc)->GetUID();
-					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					if (pObjSrc != NULL)
+					{
+						m_Targ_UID = pObjSrc->GetUID();	// default target.
+						m_Targ_PrvUID = pObjSrc->GetUID();
+					}
+					else
+					{
+						m_Targ_UID.ClearUID();
+						m_Targ_PrvUID.ClearUID();
+					}
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 					break;
 				}
 				else
-					Cmd_Skill_Magery(spell, dynamic_cast <CObjBase *>(pSrc));
+					Cmd_Skill_Magery(spell, pObjSrc);
 			}
 			break;
 
@@ -1150,7 +1160,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 		case CV_CTAGLIST:
 			if ( ! strcmpi( s.GetArgStr(), "log" ))
-				pSrc = (CTextConsole *)&g_Serv;
+				pSrc = &g_Serv;
 			m_TagDefs.DumpKeys(pSrc, "CTAG.");
 			break;
 
@@ -1354,7 +1364,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_SUMMON:	// from the spell skill script.
 			// m_Targ_PrvUID should already be set.
-			return Cmd_CreateChar( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()), SPELL_Summon, true );
+			return Cmd_CreateChar(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())), SPELL_Summon, true );
 		case CV_SMSG:
 		case CV_SYSMESSAGE:
 			SysMessage( s.GetArgStr() );
@@ -1371,7 +1381,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			 		NCHAR szBuffer[ MAX_TALK_BUFFER ];
 					CvtSystemToNUNICODE( szBuffer, COUNTOF(szBuffer), pszArgs[4], -1 );
 
-					addBarkUNICODE( szBuffer, NULL, (HUE_TYPE)Exp_GetVal(pszArgs[0]), TALKMODE_SYSTEM, (FONT_TYPE)0x03, pszArgs[3] );
+					addBarkUNICODE( szBuffer, NULL, static_cast<HUE_TYPE>(Exp_GetVal(pszArgs[0])), TALKMODE_SYSTEM, FONT_NORMAL, pszArgs[3] );
 				}
 			}
 			break;
@@ -1397,7 +1407,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 						CArgs += ( !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i] );
 					}
 
-					addBarkLocalized( iClilocId, NULL, (HUE_TYPE)hue, TALKMODE_SYSTEM, FONT_NORMAL, (TCHAR*)CArgs.GetPtr() );
+					addBarkLocalized(iClilocId, NULL, static_cast<HUE_TYPE>(hue), TALKMODE_SYSTEM, FONT_NORMAL, CArgs.GetPtr());
 				}
 			}
 			break;
@@ -1426,7 +1436,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 						CArgs += ( !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i] );
 					}
 
-					addBarkLocalizedEx( iClilocId, NULL, (HUE_TYPE)hue, TALKMODE_SYSTEM, FONT_NORMAL, (AFFIX_TYPE)affix, ppArgs[3], (TCHAR*)CArgs.GetPtr() );
+					addBarkLocalizedEx( iClilocId, NULL, static_cast<HUE_TYPE>(hue), TALKMODE_SYSTEM, FONT_NORMAL, static_cast<AFFIX_TYPE>(affix), ppArgs[3], CArgs.GetPtr() );
 				}
 			}
 			break;
@@ -1436,6 +1446,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if (pSpellDef == NULL)
 					return true;
 
+				CObjBase * pObjSrc = dynamic_cast<CObjBase *>(pSrc);
+
 				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
 				{
 					int skill;
@@ -1444,13 +1456,21 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 					m_tmSkillMagery.m_Spell = SPELL_Teleport;
 					m_pChar->m_atMagery.m_Spell = SPELL_Teleport;
-					m_Targ_UID = dynamic_cast <CObjBase *>(pSrc)->GetUID();	// default target.
-					m_Targ_PrvUID = dynamic_cast <CObjBase *>(pSrc)->GetUID();
-					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					if (pObjSrc != NULL)
+					{
+						m_Targ_UID = pObjSrc->GetUID();	// default target.
+						m_Targ_PrvUID = pObjSrc->GetUID();
+					}
+					else
+					{
+						m_Targ_UID.ClearUID();
+						m_Targ_PrvUID.ClearUID();
+					}
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 					break;
 				}
 				else
-					Cmd_Skill_Magery( SPELL_Teleport, dynamic_cast <CObjBase *>(pSrc));
+					Cmd_Skill_Magery( SPELL_Teleport, pObjSrc);
 			}
 			break;
 		case CV_TILE:

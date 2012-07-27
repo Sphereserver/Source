@@ -65,8 +65,8 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 
 int power(int base, int level)
 {
-	double rc = pow((double)base,(double)level);
-	return (int)rc;
+	double rc = pow(static_cast<double>(base), static_cast<double>(level));
+	return static_cast<int>(rc);
 }
 
 inline bool IsCharNumeric( char & Test )
@@ -460,11 +460,11 @@ try_dec:
 									iCount++; SKIP_ARGSEP(pszArgs);
 									if ( !strcmpi(pszArgs, "e") )
 									{
-										iResult = (int) log((double)iArgument);
+										iResult = static_cast<int>(log(static_cast<double>(iArgument)));
 									}
 									else if ( !strcmpi(pszArgs, "pi") )
 									{
-										iResult = (int) (log((double)iArgument)/log(M_PI));
+										iResult = static_cast<int>(log(static_cast<double>(iArgument)) / log(M_PI));
 									}
 									else
 									{
@@ -476,13 +476,13 @@ try_dec:
 										}
 										else
 										{
-											iResult = (int) (log((double)iArgument)/log((double)iBase));
+											iResult = static_cast<int>(log(static_cast<double>(iArgument)) / log(static_cast<double>(iBase)));
 										}
 									}
 								}
 								else
 								{
-									iResult = (int) log10((double)iArgument);
+									iResult = static_cast<int>(log10(static_cast<double>(iArgument)));
 								}							
 							}
 						}
@@ -494,7 +494,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = (int) exp((double)GetVal(pszArgs));
+							iResult = static_cast<int>(exp(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -516,7 +516,7 @@ try_dec:
 							if (iTosquare >= 0)
 							{
 								iCount++;
-								iResult = (int) sqrt((double)iTosquare);
+								iResult = static_cast<int>(sqrt(static_cast<double>(iTosquare)));
 							}
 							else
 							{
@@ -531,7 +531,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = (int) sin((double)GetVal(pszArgs));
+							iResult = static_cast<int>(sin(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -546,7 +546,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = (int) cos((double)GetVal(pszArgs));
+							iResult = static_cast<int>(cos(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -561,7 +561,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = (int) tan((double)GetVal(pszArgs));
+							iResult = static_cast<int>(tan(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{

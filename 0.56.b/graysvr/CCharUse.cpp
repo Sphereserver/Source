@@ -84,11 +84,11 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		pCorpse->ContentsDump( pnt );
 	}
 
-	CREID_TYPE CorpseID = (CREID_TYPE) pCorpse->m_itCorpse.m_BaseID;
+	CREID_TYPE CorpseID = static_cast<CREID_TYPE>(pCorpse->m_itCorpse.m_BaseID);
 	const CCharBase * pCorpseDef = CCharBase::FindCharBase( CorpseID );
 	if ( pCorpseDef != NULL )
 	{
-		if ( pCorpseDef->m_wBloodHue != (HUE_TYPE)-1 )
+		if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
 			int iBloodLeft = pCorpse->m_TagDefs.GetKeyNum("BLOOD", true);
 			if ( iBloodLeft )
@@ -126,7 +126,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 			continue;
 		}
 
-		ITEMID_TYPE id = (ITEMID_TYPE) rid.GetResIndex();
+		ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		if ( id == ITEMID_NOTHING )
 			break;
 
@@ -160,7 +160,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			case IT_BLOOD:
-				if ( pCorpseDef->m_wBloodHue != (HUE_TYPE)-1 )
+				if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 				{
 					pPart->SetHue( pCorpseDef->m_wBloodHue );
 				}
@@ -183,8 +183,8 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		{
 			if ( pChar )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_CORPSE_NAME ), (LPCTSTR) pPart->GetName(), (LPCTSTR) pChar->GetName());
+				TCHAR * pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_CORPSE_NAME ), static_cast<LPCTSTR>(pPart->GetName()), static_cast<LPCTSTR>(pChar->GetName()));
 				pPart->SetName(pszMsg);
 				pPart->m_uidLink = pChar->GetUID();
 			}
@@ -203,7 +203,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		SysMessage( pszMsg );
 	}
 
-	if ( pCorpseDef->m_wBloodHue != (HUE_TYPE)-1 )
+	if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
 		int iBloodLeft = pCorpse->m_TagDefs.GetKeyNum("BLOOD", true);
 		if ( iBloodLeft )
@@ -425,9 +425,9 @@ baddumy:
 	}
 	else
 	{
-		pItem->SetAnim( (ITEMID_TYPE) ( pItem->GetID() + 1 ), 3*TICK_PER_SEC );
-		pItem->Sound( 0x033 );
-		Skill_UseQuick( skill, Calc_GetRandVal(40)) ;
+		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 3 * TICK_PER_SEC);
+		pItem->Sound(0x033);
+		Skill_UseQuick(skill, Calc_GetRandVal(40));
 	}
 	return( true );
 }
@@ -519,7 +519,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		{
 			TCHAR *pszMsg = Str_GetTemp();
 			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_REM ),
-				(LPCTSTR) pAmmoDef->GetName(),
+				static_cast<LPCTSTR>(pAmmoDef->GetName()),
 				(pButte->m_itArcheryButte.m_AmmoCount == 1 ) ? "" : g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_REMS ) );
 			Emote(pszMsg);
 
@@ -564,13 +564,13 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	if ( pVarAmmoType )
 	{
 		t_Str = pVarAmmoType->GetValStr();
-		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
-		AmmoID = (ITEMID_TYPE) rid.GetResIndex();
+		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str));
+		AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	}
 	else
 	{
 		rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-		AmmoID = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex();
+		AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex());
 	}
 
 	// If there is a different ammo type on the butte currently,
@@ -649,12 +649,12 @@ badalign:
 	if ( pVarAnim )
 	{
 		t_Str = pVarAnim->GetValStr();
-		rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
-		AmmoAnim = (ITEMID_TYPE) rid.GetResIndex();
+		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+		AmmoAnim = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	}
 	else
 	{
-		AmmoAnim = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex();
+		AmmoAnim = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
 	}
 
 	if ( pVarAnimColor )
@@ -697,8 +697,8 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 		// Small chance of destroying the ammo
 		if ( pAmmoDef != NULL && !Calc_GetRandVal(10))
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_DEST ), (LPCTSTR) pAmmoDef->GetName() );
+			TCHAR * pszMsg = Str_GetTemp();
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_DEST ), static_cast<LPCTSTR>(pAmmoDef->GetName()));
 			Emote(pszMsg, NULL, true );
 			return true;
 		}
@@ -710,8 +710,8 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 		// Very small chance of destroying another arrow
 		if ( pAmmoDef != NULL && !Calc_GetRandVal(50) && pButte->m_itArcheryButte.m_AmmoCount )
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_SPLIT ), (LPCTSTR) pAmmoDef->GetName());
+			TCHAR * pszMsg = Str_GetTemp();
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_ARCHB_SPLIT ), static_cast<LPCTSTR>(pAmmoDef->GetName()));
 			Emote(pszMsg, NULL, true);
 			return true;
 		}
@@ -811,7 +811,7 @@ bool CChar::Use_Item_Web( CItem * pItemWeb )
 			pFlag->Delete();
 			return( false );
 		}
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SWEB_STUCK ), (LPCTSTR) pItemWeb->GetName());
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SWEB_STUCK ), static_cast<LPCTSTR>(pItemWeb->GetName()));
 	}
 
 	pFlag->SetTimeout( TICK_PER_SEC );	// Don't check it too often.
@@ -913,8 +913,8 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	if ( iMissing != pItemDef->m_BaseResources.BadIndex() )
 	{
 		// Need this to repair.
-		CResourceDef * pCompDef = g_Cfg.ResourceGetDef( pItemDef->m_BaseResources.GetAt(iMissing).GetResourceID() );
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_LACK_1 ), pCompDef ? (LPCTSTR) pCompDef->GetName() : g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_LACK_2 ) );
+		const CResourceDef * pCompDef = g_Cfg.ResourceGetDef( pItemDef->m_BaseResources.GetAt(iMissing).GetResourceID() );
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_LACK_1 ), pCompDef ? static_cast<LPCTSTR>(pCompDef->GetName()) : g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_LACK_2 ) );
 		return( false );
 	}
 
@@ -945,7 +945,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 
 	// apply arms lore skillgain now
 	Skill_Experience( SKILL_ARMSLORE, iArmsLoreDiff );
-	bool fSuccess = Skill_UseQuick( (SKILL_TYPE) RetMainSkill.GetResIndex(), iDifficulty );
+	bool fSuccess = Skill_UseQuick(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), iDifficulty );
 	if ( fSuccess )
 	{
 		pItemArmor->m_itArmor.m_Hits_Cur = iTotalHits;
@@ -986,8 +986,8 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 		pszText = g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_5 );
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_MSG ), pszText, (LPCTSTR) pItemArmor->GetName());
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_MSG ), pszText, static_cast<LPCTSTR>(pItemArmor->GetName()));
 	Emote(pszMsg);
 
 	if ( pItemArmor->m_itArmor.m_Hits_Cur <= 0 )
@@ -1016,9 +1016,10 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	int iValue;
 	if ( pFood->m_itFood.m_foodval != 0)
 	{
-		iValue = (int) pFood->m_itFood.m_foodval;
+		iValue = static_cast<int>(pFood->m_itFood.m_foodval);
 		//DEBUG_WARN(("retrieved food value %s from MOREM = %d\n", pFood->GetResourceName(), iValue )); 
-	} else
+	}
+	else
 	{
         iValue = pFood->Item_GetDef()->GetVolume(); // some food should have more value than other !
 	}
@@ -1212,9 +1213,10 @@ void CChar::Use_Drink( CItem * pItem )
 			int fValue;
 			if ( pItem->m_itDrink.m_foodval != 0)
 			{
-				fValue = (int) pItem->m_itDrink.m_foodval;
+				fValue = static_cast<int>(pItem->m_itDrink.m_foodval);
 				//DEBUG_WARN(("retrieved food value %s from MOREM = %d\n", pItem->GetResourceName(), fValue )); 
-			} else
+			}
+			else
 			{
 				fValue = pItem->Item_GetDef()->GetVolume(); 
 			}
@@ -1701,7 +1703,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	case IT_BELLOWS:
 		// This is supposed to make the nearby fire pit hotter.
 		pItem->Sound( 0x02b );
-		pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
+		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
 		return true;
 
 	case IT_KINDLING:
@@ -1711,7 +1713,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 		// Just make them spin.
 		if ( !fLink )
 		{
-			pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
+			pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
 			SysMessageDefault( DEFMSG_ITEMUSE_SPINWHEEL );
 			return true;
 		}
@@ -1996,8 +1998,8 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 			}
 			else
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEXTANT ), (LPCTSTR) m_pArea->GetName(), (LPCTSTR) pItem->Use_Sextant(GetTopPoint()));
+				TCHAR * pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEXTANT ), static_cast<LPCTSTR>(m_pArea->GetName()), static_cast<LPCTSTR>(pItem->Use_Sextant(GetTopPoint())));
 				ObjMessage(pszMsg, this);
 			}
 			return true;
@@ -2069,7 +2071,7 @@ bool CChar::ItemEquipArmor( bool fForce )
 		// Block those layers that are already used.
 		for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
 		{
-			pBestArmor[i] = LayerFind((LAYER_TYPE)i);
+			pBestArmor[i] = LayerFind(static_cast<LAYER_TYPE>(i));
 			if ( pBestArmor[i] != NULL )
 				iBestScore[i] = INT_MAX;
 		}

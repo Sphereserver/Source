@@ -72,7 +72,7 @@ void CVerDataMul::Load( CGFile & file )
 
 	file.SeekToBegin();
 	DWORD dwQty;
-	if ( file.Read( (void *) &dwQty, sizeof(dwQty)) <= 0 )
+	if ( file.Read(static_cast<void *>(&dwQty), sizeof(dwQty)) <= 0 )
 	{
 		throw CGrayError( LOGL_CRIT, CGFile::GetLastError(), "VerData: Read Qty");
 	}
@@ -80,7 +80,7 @@ void CVerDataMul::Load( CGFile & file )
 	Unload();
 	m_Data.SetCount( dwQty );
 
-	if ( file.Read( (void *) m_Data.GetBasePtr(), dwQty * sizeof( CUOVersionBlock )) <= 0 )
+	if ( file.Read(static_cast<void *>(m_Data.GetBasePtr()), dwQty * sizeof( CUOVersionBlock )) <= 0 )
 	{
 		throw CGrayError( LOGL_CRIT, CGFile::GetLastError(), "VerData: Read");
 	}
@@ -122,7 +122,7 @@ bool CVerDataMul::FindVerDataBlock( VERFILE_TYPE type, DWORD id, CUOIndexRec & I
 	}
 
 	DWORD dwIndex = VERDATA_MAKE_INDEX(type,id);
-	const CUOVersionBlock *pArray = (const CUOVersionBlock *) m_Data.GetBasePtr();
+	const CUOVersionBlock * pArray = m_Data.GetBasePtr();
 	int iLow = 0;
 	while ( iLow <= iHigh )
 	{
@@ -167,11 +167,11 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 	DWORD offset;
 	CUOIndexRec Index;
 	VERFILE_FORMAT format;
-	if ( g_VerData.FindVerDataBlock( VERFILE_TILEDATA, (id+TERRAIN_QTY)/UOTILE_BLOCK_QTY, Index ))
+	if ( g_VerData.FindVerDataBlock( VERFILE_TILEDATA, (id + TERRAIN_QTY) / UOTILE_BLOCK_QTY, Index ))
 	{
 		filedata = VERFILE_VERDATA;
 		format = VERFORMAT_ORIGINAL;
-		offset = Index.GetFileOffset() + 4 + (sizeof(CUOItemTypeRec)*(id%UOTILE_BLOCK_QTY));
+		offset = Index.GetFileOffset() + 4 + (sizeof(CUOItemTypeRec) * (id % UOTILE_BLOCK_QTY));
 		ASSERT( Index.GetBlockLength() >= sizeof( CUOItemTypeRec ));
 	}
 	else

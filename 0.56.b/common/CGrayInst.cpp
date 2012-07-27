@@ -171,7 +171,7 @@ bool CGrayInstall::OpenFile( VERFILE_TYPE i )
 			return true;
 	}
 
-	LPCTSTR pszTitle = GetBaseFileName((VERFILE_TYPE)i);
+	LPCTSTR pszTitle = GetBaseFileName(static_cast<VERFILE_TYPE>(i));
 	if ( !pszTitle ) return false;
 
 	return OpenFile(m_File[i], pszTitle, OF_READ|OF_SHARE_DENY_WRITE);
@@ -187,13 +187,13 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 	for ( i = 0; i < VERFILE_QTY; i++ )
 	{
 		if ( ! ( dwMask & ( 1 << i )) ) continue;
-		if ( GetBaseFileName( (VERFILE_TYPE)i ) == NULL ) continue;
+		if ( GetBaseFileName(static_cast<VERFILE_TYPE>(i)) == NULL ) continue;
 
 		bool bFileLoaded = true;
 		switch (i)
 		{
 			default:
-				if ( !OpenFile( (VERFILE_TYPE)i ))
+				if ( !OpenFile(static_cast<VERFILE_TYPE>(i)))
 				{
 					//	make some MULs optional
 					switch ( i )
@@ -366,7 +366,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 	}
 	g_Log.Event(LOGM_INIT, "Expansion maps supported: %s\n", z);
 
-	return (VERFILE_TYPE)i;
+	return static_cast<VERFILE_TYPE>(i);
 }
 
 void CGrayInstall::CloseFiles()
@@ -400,7 +400,7 @@ bool CGrayInstall::ReadMulIndex(CGFile &file, DWORD id, CUOIndexRec &Index)
 	if ( file.Seek(lOffset, SEEK_SET) != lOffset )
 		return false;
 
-	if ( file.Read((void *)&Index, sizeof(CUOIndexRec)) != sizeof(CUOIndexRec) )
+	if ( file.Read(static_cast<void *>(&Index), sizeof(CUOIndexRec)) != sizeof(CUOIndexRec) )
 		return false;
 
 	return Index.HasData();

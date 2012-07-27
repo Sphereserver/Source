@@ -466,11 +466,11 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	{	
 		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE)i ) )
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
 
-			if ( pCharSrc->Skill_GetLock((SKILL_TYPE)i) == SKILLLOCK_DOWN )
-				iMaxDecrease += pCharSrc->Skill_GetBase((SKILL_TYPE)i);
+			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
+				iMaxDecrease += pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		}
 		iMaxDecrease = minimum( iTrainCost, iMaxDecrease);
 	}
@@ -506,7 +506,7 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
-	SKILL_TYPE skill = (SKILL_TYPE)( pMemory->m_itEqMemory.m_Skill );
+	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pMemory->m_itEqMemory.m_Skill);
 	if ( !IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 	{
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_FORGOT));
@@ -582,7 +582,7 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 	{	
 		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
 
 			if ( toTrain < 1 )
@@ -591,15 +591,17 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 				break;
 			}
 
-			if ( pCharSrc->Skill_GetLock( (SKILL_TYPE) i ) == SKILLLOCK_DOWN )
+			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
 			{
-				if ( pCharSrc->Skill_GetBase((SKILL_TYPE)i) > toTrain )
+				if ( pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) > toTrain )
 				{
-					pCharSrc->Skill_SetBase((SKILL_TYPE)i, pCharSrc->Skill_GetBase((SKILL_TYPE)i) - toTrain);
+					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) - toTrain);
 					toTrain = 0;
-				} else {
-					toTrain -= pCharSrc->Skill_GetBase((SKILL_TYPE)i);
-					pCharSrc->Skill_SetBase( (SKILL_TYPE) i, 0);
+				}
+				else
+				{
+					toTrain -= pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
 				}
 			}
 		}
@@ -638,19 +640,19 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	size_t i = SKILL_NONE + 1;
 	for ( ; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		LPCTSTR pSkillKey = g_Cfg.GetSkillKey( (SKILL_TYPE) i );
+		LPCTSTR pSkillKey = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
 		if ( FindStrWord( pszCmd, pSkillKey ) <= 0)
 			continue;
 
 		// Can we train in this ?
-		int iTrainCost = NPC_OnTrainCheck( pCharSrc, (SKILL_TYPE) i );
+		int iTrainCost = NPC_OnTrainCheck( pCharSrc, static_cast<SKILL_TYPE>(i));
 		if ( iTrainCost <= 0 )
 			return true;
 
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), iTrainCost, (LPCTSTR)pSkillKey);
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), iTrainCost, static_cast<LPCTSTR>(pSkillKey));
 		Speak(pszMsg);
 		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
 		if ( pMemory )
@@ -670,10 +672,10 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	size_t iCount = 0;
 	for ( i = (SKILL_NONE + 1); i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex( (SKILL_TYPE) i ) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		int iDiff = NPC_GetTrainMax( pCharSrc, (SKILL_TYPE)i ) - pCharSrc->Skill_GetBase( (SKILL_TYPE) i);
+		int iDiff = NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		if ( iDiff <= 0 )
 			continue;
 
@@ -691,7 +693,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 			strcat( pszMsg, pPrvSkill );
 		}
 
-		pPrvSkill = g_Cfg.GetSkillKey( (SKILL_TYPE) i );
+		pPrvSkill = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
 		iCount++;
 	}
 
@@ -1085,7 +1087,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 			return( false );
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), (LPCTSTR) pChar->GetName());
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), static_cast<LPCTSTR>(pChar->GetName()));
 		Speak(pszMsg);
 		UpdateDir(pChar);
 		return false;
@@ -1592,7 +1594,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 		{
 			// I should move. Someone lit a fire under me.
 			m_Act_p = GetTopPoint();
-			m_Act_p.Move( (DIR_TYPE) Calc_GetRandVal( DIR_QTY ));
+			m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal( DIR_QTY )));
 			NPC_WalkToPoint( true );
 			return( true );
 		}
@@ -1926,7 +1928,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		if ( i > imaxspell )	// didn't find a spell.
 			return( false );
 
-		SPELL_TYPE spell = (SPELL_TYPE) i;
+		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 		if ( pSpellDef == NULL )
 			continue;
@@ -2085,7 +2087,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	m_Act_p = pMageryTarget->GetTopPoint();
 
 	// Calculate the difficulty
-	return( Skill_Start( (SKILL_TYPE)skill ));
+	return Skill_Start(static_cast<SKILL_TYPE>(skill));
 }
 
 void CChar::NPC_Act_Fight()
@@ -2185,16 +2187,14 @@ void CChar::NPC_Act_Fight()
 		}
 #else */
 		// any special ammunition defined?
-		CVarDefCont * pTagStorage = NULL; 
-		pTagStorage = GetKey("OVERRIDE.ROCK", true);
-		ITEMID_TYPE id;
-		id = (ITEMID_TYPE) 0;
+		const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK", true);
+		ITEMID_TYPE id = ITEMID_NOTHING;
 
 		if ( pTagStorage )
 		{
 			if ( pTagStorage->GetValNum() )
 			{
-				id = (ITEMID_TYPE) pTagStorage->GetValNum();
+				id = static_cast<ITEMID_TYPE>(pTagStorage->GetValNum());
 			}
 		} else
 		{
@@ -2203,10 +2203,10 @@ void CChar::NPC_Act_Fight()
 			{
 				// in theory, I can throw. Do I have ammunition?
 				if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
-					id = (ITEMID_TYPE) 1;
+					id = ITEMID_NODRAW;
 			}
 		}
-		if ( id != (ITEMID_TYPE) 0 )
+		if ( id != ITEMID_NOTHING )
 		{
 			UpdateDir( pChar );
 			Skill_Start( NPCACT_THROWING );
@@ -2265,7 +2265,7 @@ bool CChar::NPC_Act_Talk()
 				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 )
 			};
 			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], (LPCTSTR) pChar->GetName() );
+			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], static_cast<LPCTSTR>(pChar->GetName()));
 			Speak(pszMsg);
 		}
 		return( false );
@@ -2309,8 +2309,7 @@ void CChar::NPC_Act_GoHome()
 		}
 		else
 		{
-			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", (DWORD) GetUID(), (LPCTSTR) GetName(), (LPCTSTR) GetTopPoint().WriteUsed());
-
+			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(GetTopPoint().WriteUsed()));
 
 			// If we arent conjured and still got no valid home
 			// then set our status to conjured and take our life.
@@ -3737,13 +3736,13 @@ void CChar::NPC_AI()
 						if (( iDist < 3 ) && !Calc_GetRandVal(50))
 						{
 							RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "RANDOM_VEGGIE");
-							CItem	*pItem = CItem::CreateScript((ITEMID_TYPE)food.GetResIndex());
+							CItem * pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(food.GetResIndex()));
 							if ( pItem )
 							{
 								UpdateDir(pChar);
 								pItem->SetAmount(Calc_GetRandVal2(3, 10));
 								pChar->ItemBounce(pItem);
-								char	*z = Str_GetTemp();
+								TCHAR * z = Str_GetTemp();
 								sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_STABLEMASTER_FOOD), pItem->GetName(), pChar->GetName());
 								Speak(z);
 								bActed = true;

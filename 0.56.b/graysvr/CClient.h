@@ -100,7 +100,7 @@ public:
 	
 	// -------------------------------
 
-	LPCTSTR GetName() const { return (LPCTSTR)m_sName; }
+	LPCTSTR GetName() const { return static_cast<LPCTSTR>(m_sName); }
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script

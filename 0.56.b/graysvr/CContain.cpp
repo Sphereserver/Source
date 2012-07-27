@@ -429,7 +429,7 @@ int CContainer::ResourceConsume( const CResourceQtyArray * pResources, int iRepl
 			CChar *	pChar	= dynamic_cast <CChar *> (this);
 			if ( !pChar )
 				continue;
-			if ( pChar->Skill_GetBase( (SKILL_TYPE) rid.GetResIndex() ) < iResQty )
+			if ( pChar->Skill_GetBase(static_cast<SKILL_TYPE>(rid.GetResIndex())) < iResQty )
 				return 0;
 			continue;
 		}
@@ -952,7 +952,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 			CItemVendable * pItemVend = dynamic_cast <CItemVendable *>(pItem);
 			if ( pItemVend == NULL )
 			{
-				g_Log.Event( LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
+				g_Log.Event( LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", static_cast<LPCTSTR>(pItem->GetResourceName()), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
 				pItem->Delete();
 				break;
 			}
@@ -965,7 +965,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 		// Can only place IT_GAME_PIECE inside here
 		if ( pItem->IsType( IT_GAME_PIECE ))
 			break;
-		g_Log.Event( LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", (LPCTSTR) pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
+		g_Log.Event( LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", static_cast<LPCTSTR>(pItem->GetResourceName()), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 		pItem->Delete();
 		break;
 	default:
@@ -1337,11 +1337,11 @@ void CItemContainer::OnOpenEvent( CChar * pCharOpener, const CObjBaseTemplate * 
 		TCHAR *pszMsg = Str_GetTemp();
 		if ( pCharTop == pCharOpener )
 		{
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_BVBOX_OPEN_SELF ), iStones, (LPCTSTR) GetName());
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_BVBOX_OPEN_SELF ), iStones, static_cast<LPCTSTR>(GetName()));
 		}
 		else
 		{
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_BVBOX_OPEN_OTHER ), pCharTop->GetPronoun(), iStones, (LPCTSTR) pCharTop->GetPossessPronoun(), (LPCTSTR) GetName());
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_BVBOX_OPEN_OTHER ), pCharTop->GetPronoun(), iStones, static_cast<LPCTSTR>(pCharTop->GetPossessPronoun()), static_cast<LPCTSTR>(GetName()));
 		}
 		pCharOpener->SysMessage(pszMsg);
 

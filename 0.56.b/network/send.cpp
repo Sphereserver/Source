@@ -942,7 +942,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 			if (g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) == false)
 				continue;
 
-			writeInt16((SKILL_TYPE)(i + 1));
+			writeInt16(static_cast<SKILL_TYPE>(i + 1));
 			writeInt16(character->Skill_GetAdjusted(static_cast<SKILL_TYPE>(i)));
 			writeInt16(character->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
 			writeByte(character->Skill_GetLock(static_cast<SKILL_TYPE>(i)));
@@ -3838,7 +3838,7 @@ PacketSpeedMode::PacketSpeedMode(const CClient* target, BYTE mode) : PacketExten
  *
  *
  ***************************************************************************/
-PacketMessageLocalised::PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, TCHAR* args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
+PacketMessageLocalised::PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalised::PacketMessageLocalised");
 
@@ -3899,7 +3899,7 @@ PacketVisualRange::PacketVisualRange(const CClient* target, BYTE range) : Packet
  *
  *
  ***************************************************************************/
-PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, TCHAR* affix, TCHAR* args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
+PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, LPCTSTR affix, LPCTSTR args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalisedEx::PacketMessageLocalisedEx");
 

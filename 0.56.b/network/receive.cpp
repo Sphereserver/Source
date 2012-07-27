@@ -284,8 +284,8 @@ bool PacketSpeakReq::onReceive(NetState* net)
 		return false;
 
 	size_t packetLength = readInt16();
-	TALKMODE_TYPE mode = (TALKMODE_TYPE)readByte();
-	HUE_TYPE hue = (HUE_TYPE)readInt16();
+	TALKMODE_TYPE mode = static_cast<TALKMODE_TYPE>(readByte());
+	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 	skip(2); // font
 
 	if (packetLength < getPosition())
@@ -2568,7 +2568,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 
 			CGrayUID serial(readInt32());
 			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
-			int length = readStringNullUNICODE((WCHAR*)text, MAX_TALK_BUFFER);
+			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(serial, character->GetUID(), text, length);
 		} break;
 

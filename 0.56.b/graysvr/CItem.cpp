@@ -137,7 +137,7 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 	if ( pItemDef == NULL )
 	{
 		idErrorMsg = id;
-		id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, "DEFAULTITEM" );
+		id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, "DEFAULTITEM" ));
 		if ( id <= 0 )
 		{
 			id = ITEMID_GOLD_C1;
@@ -303,7 +303,7 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 	// Just read info on a single item carryed by a CChar.
 	// ITEM=#id,#amount,R#chance
 
-	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCTSTR&)pArg );
+	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pArg)) );
 	if ( ! rid.IsValidUID())
 		return( NULL );
 	if ( rid.GetResType() != RES_ITEMDEF && rid.GetResType() != RES_TEMPLATE )
@@ -330,13 +330,13 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 	if ( amount == 0 )
 		return( NULL );
 
-	ITEMID_TYPE id = (ITEMID_TYPE) rid.GetResIndex();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 
 	if ( fDupeCheck && rid.GetResType() == RES_ITEMDEF && pCont )
 	{
 		// Check if they already have the item ? In the case of a regen.
 		// This is just to keep NEWBIE items from being duped.
-		CContainer * pContBase = dynamic_cast <CContainer *> ( pCont );
+		const CContainer * pContBase = dynamic_cast <CContainer *> ( pCont );
 		ASSERT(pContBase);
 		if ( pContBase->ContentFind( rid ))
 		{
@@ -653,7 +653,7 @@ int CItem::FixWeirdness()
 			}
 			else
 			{
-				DEBUG_ERR(( "'%s' Bad Link to 0%lx\n", (LPCTSTR) GetName(), (DWORD) m_uidLink ));
+				DEBUG_ERR(( "'%s' Bad Link to 0%lx\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_uidLink)));
 				m_uidLink.InitUID();
 				iResultCode = 0x2205;
 				return( iResultCode );	// get rid of it.
@@ -863,7 +863,7 @@ int CItem::FixWeirdness()
 			// blank unlinked keys.
 			if ( m_itKey.m_lockUID && ! IsValidUID())
 			{
-				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, ´blanked out\n", (LPCTSTR) GetName(), (DWORD) m_itKey.m_lockUID ));
+				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, ´blanked out\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;
@@ -1454,8 +1454,8 @@ LPCTSTR CItem::GetName() const
 			{
 				if ( RES_GET_INDEX(m_itPotion.m_Type) != SPELL_Explosion )
 				{
-					const CSpellDef * pSpell	= g_Cfg.GetSpellDef( (SPELL_TYPE) m_itSpell.m_spell );
-					if ( pSpell )
+					const CSpellDef * pSpell = g_Cfg.GetSpellDef(static_cast<SPELL_TYPE>(m_itSpell.m_spell));
+					if (pSpell != NULL)
 						pszNameBase	= pSpell->GetName();
 				}
 			}
@@ -2200,7 +2200,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_ADDSPELL:
 			pszKey	+= 8;
 			SKIP_SEPARATORS( pszKey );
-			sVal.FormatVal( IsSpellInBook( (SPELL_TYPE) g_Cfg.ResourceGetIndexType( RES_SPELL, pszKey ) ));
+			sVal.FormatVal( IsSpellInBook(static_cast<SPELL_TYPE>(g_Cfg.ResourceGetIndexType( RES_SPELL, pszKey ))));
 			break;
 		case IC_AMOUNT:
 			sVal.FormatVal( GetAmount());
@@ -2270,8 +2270,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case IC_HEIGHT:
 			{
-				CItemBase * pItemDef = CItemBase::FindItemBase((ITEMID_TYPE) GetDispID() );
-				CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) GetDispID() );
+				const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(GetDispID()));
+				const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
 				sVal.FormatVal( pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight() );
 			}
 			break;
@@ -2403,7 +2403,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_CONT:	// needs special processing.
 			{
-				bool normcont = LoadSetContainer(s.GetArgVal(), (LAYER_TYPE) GetUnkZ());
+				bool normcont = LoadSetContainer(s.GetArgVal(), static_cast<LAYER_TYPE>(GetUnkZ()));
 				if ( !normcont && ( g_Serv.m_iModeCode == SERVMODE_Loading ))
 				{
 					//	since the item is no longer in container, it should be deleted
@@ -2459,7 +2459,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 		case IC_DISPID:
 		case IC_DISPIDDEC:
-			return SetDispID((ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
+			return SetDispID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
 		case IC_DMGCOLD:
 			if ( IsTypeWeapon() )
 				m_itWeapon.m_dmgcold = s.GetArgVal();
@@ -2505,7 +2505,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 			return true;
 		case IC_ID:
-			return SetID((ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
+			return SetID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
 		case IC_LAYER:
 			// used only during load.
 			if ( ! IsDisconnected() && ! IsItemInContainer() && ! IsItemEquipped())
@@ -2519,7 +2519,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 
 		case IC_FRUIT:	// m_more2
-			m_itCrop.m_ReapFruitID = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+			m_itCrop.m_ReapFruitID = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 			return true;
 		case IC_MAXHITS:
 			m_itNormal.m_more1 = MAKEDWORD(LOWORD(m_itNormal.m_more1), s.GetArgVal());
@@ -2621,7 +2621,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 			return true;
 		case IC_TYPE:
-			SetType( (IT_TYPE) g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr()));
+			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
 			return true;
 		default:
 			return( CObjBase::r_LoadVal( s ));
@@ -2724,7 +2724,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 				int iCount = s.GetArgVal();
 				if ( iCount <= 0 ) 
 					iCount = 1;
-				if ( !GetContainer() && ( (unsigned int)iCount > g_Cfg.m_iMaxItemComplexity ))	// if top-level, obey the complexity
+				if ( !GetContainer() && ( static_cast<unsigned int>(iCount) > g_Cfg.m_iMaxItemComplexity ))	// if top-level, obey the complexity
 					iCount = g_Cfg.m_iMaxItemComplexity;
 				while ( iCount-- )
 				{
@@ -2798,7 +2798,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger( (CTRIG_TYPE)( (CTRIG_itemAfterClick-1)+iAction ),  pSrc, pArgs );
+			iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>((CTRIG_itemAfterClick - 1) + iAction ),  pSrc, pArgs );
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.
@@ -3024,9 +3024,9 @@ void CItem::ConvertBolttoCloth()
 
 	//we need to check all cloth_bolt items
 	bool correctID = false;
-	for (int i=(int)ITEMID_CLOTH_BOLT1; i<=(int)ITEMID_CLOTH_BOLT8; i++)
-		if ( IsSameDispID( (ITEMID_TYPE)i ))
-			correctID=true;
+	for (int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); i++)
+		if ( IsSameDispID(static_cast<ITEMID_TYPE>(i) ))
+			correctID = true;
 
 	if ( !correctID )
 		return;
@@ -3044,7 +3044,7 @@ void CItem::ConvertBolttoCloth()
 			if ( rid.GetResType() != RES_ITEMDEF )
 				continue;
 
-			const CItemBase * pBaseDef = CItemBase::FindItemBase( (ITEMID_TYPE) rid.GetResIndex());
+			const CItemBase * pBaseDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
 			if ( pBaseDef == NULL )
 				continue;
 
@@ -3103,11 +3103,11 @@ SPELL_TYPE CItem::GetScrollSpell() const
 	// Given a scroll type. what spell is this ?
 	for (size_t i = SPELL_Clumsy; i < g_Cfg.m_SpellDefs.GetCount(); i++)
 	{
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( (SPELL_TYPE) i );
+		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(static_cast<SPELL_TYPE>(i));
 		if ( pSpellDef == NULL || pSpellDef->m_idScroll == ITEMID_NOTHING )
 			continue;
 		if ( GetID() == pSpellDef->m_idScroll )
-			return((SPELL_TYPE) i );
+			return static_cast<SPELL_TYPE>(i);
 	}
 	return( SPELL_NONE );
 }
@@ -3146,7 +3146,7 @@ int CItem::GetSpellcountInBook() const
 	int count = 0;
 	for ( int i = SPELL_Clumsy; i < SPELL_BOOK_QTY; i++ )
 	{
-		if ( IsSpellInBook( (SPELL_TYPE) i ))
+		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)))
 		{
 			count++;
 		}
@@ -3246,14 +3246,14 @@ void CItem::Flip()
 		ITEMID_TYPE id = GetDispID();
 		int doordir = CItemBase::IsID_Door( id )-1;
 		int iNewID = (id - doordir) + (( doordir &~DOOR_OPENED ) + 2 ) % 16; // next closed door type.
-		SetDispID((ITEMID_TYPE) iNewID );
+		SetDispID(static_cast<ITEMID_TYPE>(iNewID));
 		Update();
 		return;
 	}
 
 	if ( IsType( IT_CORPSE ))
 	{
-		m_itCorpse.m_facing_dir = GetDirTurn((DIR_TYPE) m_itCorpse.m_facing_dir, 1 );
+		m_itCorpse.m_facing_dir = GetDirTurn(static_cast<DIR_TYPE>(m_itCorpse.m_facing_dir), 1 );
 		Update();
 		return;
 	}
@@ -3332,7 +3332,7 @@ bool CItem::Use_Door( bool fJustOpen )
 	if ( doordir < 0 || ! IsTopLevel())
 		return( false );
 
-	id = (ITEMID_TYPE) ( id - doordir );
+	id = static_cast<ITEMID_TYPE>(id - doordir);
 	// IT_TYPE typelock = m_type;
 
 	bool fClosing = ( doordir & DOOR_OPENED );	// currently open
@@ -3416,7 +3416,7 @@ bool CItem::Use_Door( bool fJustOpen )
 			break;
 	}
 
-	SetDispID((ITEMID_TYPE) ( id + doordir ));
+	SetDispID(static_cast<ITEMID_TYPE>(id + doordir));
 	// SetType( typelock );	// preserve the fact that it was locked.
 	MoveTo(pt);
 
@@ -3583,7 +3583,7 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	if ( iSkillOverride == -1)
 		iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1;
 	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_MAX )
-		return (SKILL_TYPE)iSkillOverride;
+		return static_cast<SKILL_TYPE>(iSkillOverride);
 
 	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < SKILL_MAX )
 		return pItemDef->m_iSkill;
@@ -3672,7 +3672,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			}
 
 			if ( ptLand.IsValidPoint())
-				sSearch.Format( "%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), (LPCTSTR) CPointBase::sm_szDirs[ ptCoords.GetDir(ptLand) ] );
+				sSearch.Format( "%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ ptCoords.GetDir(ptLand) ]) );
 			else if (iLight > 3)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_DARK);
 			else if (wtWeather == WEATHER_RAIN)
@@ -3739,9 +3739,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	{
 		DIR_TYPE dir = ptCoords.GetDir(pBoatSighted->GetTopPoint());
 		if (iBoatSighted == 1)
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), (LPCTSTR) pBoatSighted->GetName(), CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), static_cast<LPCTSTR>(pBoatSighted->GetName()), CPointBase::sm_szDirs[dir] );
 		else
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), (LPCTSTR) CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
 		strcat( pResult, sSearch);
 	}
 
@@ -3752,9 +3752,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		if (iItemSighted == 1)
 		{
 			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]) );
 			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), static_cast<LPCTSTR>(pItemSighted->GetNameFull(false)), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]) );
 		}
 		else
 		{

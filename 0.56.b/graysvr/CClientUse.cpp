@@ -125,14 +125,14 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	}
 
 	SetTargMode();
-	m_Targ_UID = pItem->GetUID();	// probably already set anyhow.
-	m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify.
+	m_Targ_UID = pItem->GetUID(); // probably already set anyhow.
+	m_tmUseItem.m_pParent = pItem->GetParent(); // Cheat Verify.
 	// Use types of items. (specific to client)
 	switch ( pItem->GetType() )
 	{
 		case IT_TRACKER:
 			{
-				DIR_TYPE dir = (DIR_TYPE) ( DIR_QTY + 1 );	// invalid value.
+				DIR_TYPE dir = static_cast<DIR_TYPE>(DIR_QTY + 1); // invalid value.
 				if ( ! m_pChar->Skill_Tracking( pItem->m_uidLink, dir ))
 				{
 					if ( pItem->m_uidLink.IsValidUID())
@@ -175,7 +175,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			if ( !fScript )
 			g_Log.Event( LOGL_WARN|LOGM_CHEAT,
 				"%lx:Cheater '%s' is using 3rd party tools to open bank box\n",
-				GetSocketID(), (LPCTSTR) GetAccount()->GetName());
+				GetSocketID(), static_cast<LPCTSTR>(GetAccount()->GetName()));
 			return false;
 
 		case IT_CONTAINER_LOCKED:
@@ -346,7 +346,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 					m_pChar->m_atMagery.m_Spell = spell;
 					m_Targ_UID = pItem->GetUID();	// default target.
 					m_Targ_PrvUID = pItem->GetUID();
-					m_pChar->Skill_Start( (SKILL_TYPE)skill );
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 					return true;
 				}
 				return Cmd_Skill_Magery( spell, pItem );
@@ -450,7 +450,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_CANNON_BALL:
 			{
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CBALL_PROMT ), (LPCTSTR) pItem->GetName());
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CBALL_PROMT ), static_cast<LPCTSTR>(pItem->GetName()));
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
 			}
 			return true;
@@ -485,7 +485,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_PITCHER_EMPTY:
 			{ // not a crime.
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_PITCHER_TARG ), (LPCTSTR) pItem->GetName());
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_PITCHER_TARG ), static_cast<LPCTSTR>(pItem->GetName()));
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true);
 			}
 			return true;
@@ -493,7 +493,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_WEAPON_MACE_PICK:
 			{	// Mine at the location. (possible crime?)
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), (LPCTSTR) pItem->GetName());
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), static_cast<LPCTSTR>(pItem->GetName()));
 				m_pChar->m_atResource.m_ridType	= RESOURCE_ID(RES_TYPEDEF, IT_ROCK);
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true, true);
 			}
@@ -579,7 +579,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SEWING_KIT:	// IT_SEWING_KIT Sew with materials we have on hand.
 			{
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEWKIT_PROMT ), (LPCTSTR) pItem->GetName());
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEWKIT_PROMT ), static_cast<LPCTSTR>(pItem->GetName()));
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
 			}
 			return true;
@@ -637,7 +637,7 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	}
 	
 	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];	// Most as we want to display at one time.
-	item[0].m_sText.Format( "Contents of %s", (LPCTSTR) pObj->GetName());
+	item[0].m_sText.Format( "Contents of %s", static_cast<LPCTSTR>(pObj->GetName()));
 
 	size_t count = 0;
 	CItem * pItemNext;
@@ -969,8 +969,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 			{
 				// test if i can make this item using m_Targ_UID.
 				// There should ALWAYS be a valid id here.
-				if ( ! m_pChar->Skill_MakeItem( (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()),
-					m_Targ_UID, SKTRIG_SELECT ))
+				if ( ! m_pChar->Skill_MakeItem(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())), m_Targ_UID, SKTRIG_SELECT ))
 				{
 					iShowCount--;
 					fSkip = true;
@@ -1039,7 +1038,7 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 			if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
 				return false;
 
-			return( m_pChar->Skill_Start((SKILL_TYPE)skill) );
+			return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 		}
 		else
 		{

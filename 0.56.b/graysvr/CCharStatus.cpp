@@ -24,7 +24,7 @@ bool CChar::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwAmount, DWORD dwArgRe
 	case RES_SKILL:
 		// Do i have this skill level at least ?
 		// A min skill is required.
-		if ( Skill_GetBase((SKILL_TYPE) rid.GetResIndex()) < dwAmount )
+		if ( Skill_GetBase(static_cast<SKILL_TYPE>(rid.GetResIndex())) < dwAmount )
 			return( false );
 		return( true );
 
@@ -243,10 +243,10 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 			{
 				if ( m_pPlayer )	// message only players
 				{
-					SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), (LPCTSTR) pItem->GetName());
+					SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), static_cast<LPCTSTR>(pItem->GetName()));
 					if ( pCharMsg != NULL && pCharMsg != this )
 					{
-						pCharMsg->SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), (LPCTSTR) pItem->GetName());
+						pCharMsg->SysMessagef( "%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), static_cast<LPCTSTR>(pItem->GetName()));
 					}
 				}
 				return LAYER_NONE;	// can't equip stuff.
@@ -1144,11 +1144,11 @@ blocked:
 		WORD wBlockFlags;
 		if ( dir % 2 )		// test only diagonal dirs
 		{
-			CPointMap	ptTest;
-			DIR_TYPE	dirTest1	= (DIR_TYPE) (dir-1);	// get 1st ortogonal
-			DIR_TYPE	dirTest2	= (DIR_TYPE) (dir+1);	// get 2nd ortogonal
+			CPointMap ptTest;
+			DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir-1); // get 1st ortogonal
+			DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir+1); // get 2nd ortogonal
 			if ( dirTest2 == DIR_QTY )		// roll over
-				dirTest2	= (DIR_TYPE) 0;
+				dirTest2 = DIR_N;
 
 			bool fBlocked = false;
 			ptTest = ptSrc;
@@ -1260,13 +1260,13 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	dy = ptDst.m_y - ptSrc.m_y;
 	dz = ptDst.m_z - ptSrc.m_z;
 	
-	dist2d = sqrt((double)(dx*dx + dy*dy));
+	dist2d = sqrt(static_cast<double>(dx*dx + dy*dy));
 	if (dz)
-		dist3d = sqrt((double)(dist2d*dist2d + dz*dz));
+		dist3d = sqrt(static_cast<double>(dist2d*dist2d + dz*dz));
 	else
 		dist3d = dist2d;
 	
-	if ( APPROX(dist2d) > ((double)iMaxDist) )
+	if ( APPROX(dist2d) > static_cast<double>(iMaxDist) )
 	{
 		WARNLOS(("( APPROX(dist2d)(%d) > ((double)iMaxDist)(%d) ) --> NOLOS\n",APPROX(dist2d),((double)iMaxDist)));
 		return( CanSeeLOS_New_Failed( pptBlock, ptNow ));
@@ -1486,7 +1486,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
 						{
 							WARNLOS(("Not a parent item (STATIC)\n"));
-							pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pStatic->GetDispID() );
+							pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
 							if ( ! pDupeDef )
 							{
 								g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),ptNow.m_x,ptNow.m_y,pStatic->m_z);
@@ -1576,7 +1576,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						if ( pItemDef->GetID() != pItem->GetDispID() ) //not a parent item
 						{
 							WARNLOS(("Not a parent item (DYNAMIC)\n"));
-							pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pItem->GetDispID() );
+							pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
 							if ( ! pDupeDef )
 							{
 								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),ptNow.m_x,ptNow.m_y,pItem->GetUnkZ());
@@ -1687,7 +1687,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								if ( pItemDef->GetID() != pMultiItem->GetDispID() ) //not a parent item
 								{
 									WARNLOS(("Not a parent item (MULTI)\n"));
-									pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pMultiItem->GetDispID() );
+									pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
 									if ( ! pDupeDef )
 									{
 										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),ptNow.m_x,ptNow.m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
@@ -2072,7 +2072,7 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 		{
 			pItem->SetAttr(ATTR_IDENTIFIED);
 			if ( fMsg )
-				SysMessagef("%s %s", (LPCTSTR) pItem->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_CURSED));
+				SysMessagef("%s %s", static_cast<LPCTSTR>(pItem->GetName()), g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_CURSED));
 
 			return false;
 		}
@@ -2263,18 +2263,18 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	if ( IsSetEF( EF_DiagonalWalkCheck ) && GetTopPoint().IsValidPoint() && (dir % 2) )
 #endif
 	{
-		CPointMap	ptTest;
-		DIR_TYPE	dirTest1	= (DIR_TYPE) (dir-1);	// get 1st ortogonal
-		DIR_TYPE	dirTest2	= (DIR_TYPE) (dir+1);	// get 2nd ortogonal
+		CPointMap ptTest;
+		DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
+		DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
 		if ( dirTest2 == DIR_QTY )		// roll over
-			dirTest2	= (DIR_TYPE) 0;
+			dirTest2 = DIR_N;
 
-		ptTest		= GetTopPoint();
+		ptTest = GetTopPoint();
 		ptTest.Move( dirTest1 );
 		if ( !CheckValidMove( ptTest, pwBlockFlags ) )
 				return NULL;
 
-		ptTest		= GetTopPoint();
+		ptTest = GetTopPoint();
 		ptTest.Move( dirTest2 );
 		if ( !CheckValidMove( ptTest, pwBlockFlags ) )
 				return NULL;
@@ -2416,18 +2416,18 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	//	test diagonal dirs by two others *only* when already having a normal location
 	if ( IsSetEF( EF_DiagonalWalkCheck ) && GetTopPoint().IsValidPoint() && !fPathFinding && (dir % 2) )
 	{
-		CPointMap	ptTest;
-		DIR_TYPE	dirTest1	= (DIR_TYPE) (dir-1);	// get 1st ortogonal
-		DIR_TYPE	dirTest2	= (DIR_TYPE) (dir+1);	// get 2nd ortogonal
+		CPointMap ptTest;
+		DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
+		DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
 		if ( dirTest2 == DIR_QTY )		// roll over
-			dirTest2	= (DIR_TYPE) 0;
+			dirTest2 = DIR_N;
 
-		ptTest		= GetTopPoint();
+		ptTest = GetTopPoint();
 		ptTest.Move( dirTest1 );
 		if ( !CheckValidMove_New( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
 				return NULL;
 
-		ptTest		= GetTopPoint();
+		ptTest = GetTopPoint();
 		ptTest.Move( dirTest2 );
 		if ( !CheckValidMove_New( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
 				return NULL;

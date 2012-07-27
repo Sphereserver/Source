@@ -102,7 +102,7 @@ bool CClient::addLoginErr(BYTE code)
 	if (code >= COUNTOF(sm_Login_ErrMsg))
 		code = PacketLoginError::Other;
 	
-	DEBUG_ERR(( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[((int)code)] ));
+	DEBUG_ERR(( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)] ));
 
 	// translate the code into a code the client will understand
 	switch (code)
@@ -140,7 +140,7 @@ bool CClient::addLoginErr(BYTE code)
 			break;
 	}
 
-	new PacketLoginError(this, (PacketLoginError::Reason)code);
+	new PacketLoginError(this, static_cast<PacketLoginError::Reason>(code));
 	GetNetState()->markReadClosed();
 	return( false );
 }
@@ -161,8 +161,8 @@ void CClient::addSysMessage(LPCTSTR pszMsg) // System message (In lower left cor
 			strcpy(m_zLastMessage, pszMsg);
 	}
 
-	HUE_TYPE pHue = (HUE_TYPE)g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR");
-	FONT_TYPE pFont = (FONT_TYPE)g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT");
+	HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR"));
+	FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT"));
 
 	addBarkParse(pszMsg, NULL, (pHue ? pHue : HUE_TEXT_DEF), TALKMODE_SYSTEM, (pFont ? pFont : FONT_NORMAL));
 }
@@ -213,7 +213,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 		sCustomerID.Add(GetAccount()->GetName());
 
 		dwCustomerId = z_crc32(0L, Z_NULL, 0);
-		dwCustomerId = z_crc32(dwCustomerId, (const z_Bytef *)sCustomerID.GetPtr(), sCustomerID.GetLength());
+		dwCustomerId = z_crc32(dwCustomerId, reinterpret_cast<const z_Bytef *>(sCustomerID.GetPtr()), sCustomerID.GetLength());
 
 		GetAccount()->m_TagDefs.SetNum("customerid", dwCustomerId);
 	}
@@ -393,7 +393,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 				iRet = g_Serv.OnConsoleCmd( m_Targ_Text, this );
 
 				if (g_Cfg.m_fTelnetLog && GetPrivLevel() >= g_Cfg.m_iCommandLog)
-					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), (LPCTSTR)GetName(), (LPCTSTR)m_Targ_Text, iRet);
+					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(m_Targ_Text), iRet);
 			}
 		}
 	}
@@ -427,7 +427,7 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			// enter into remote admin mode. (look for password).
 			SetConnectType( CONNECT_TELNET );
 			m_zLogin[0] = 0;
-			SysMessagef( "%s %s Admin Telnet\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), (LPCTSTR) g_Serv.GetName());
+			SysMessagef( "%s %s Admin Telnet\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), static_cast<LPCTSTR>(g_Serv.GetName()));
 
 			if ( g_Cfg.m_fLocalIPAdmin )
 			{
@@ -573,8 +573,8 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 		}
 	}
 
-	TCHAR	*ppRequest[4];
-	size_t iQtyArgs = Str_ParseCmds((TCHAR*)ppLines[0], ppRequest, COUNTOF(ppRequest), " ");
+	TCHAR * ppRequest[4];
+	size_t iQtyArgs = Str_ParseCmds(ppLines[0], ppRequest, COUNTOF(ppRequest), " ");
 	if (( iQtyArgs < 2 ) || ( strlen(ppRequest[1]) >= _MAX_PATH ))
 		return false;
 
@@ -597,7 +597,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 	linger llinger;
 	llinger.l_onoff = 1;
 	llinger.l_linger = 500;	// in mSec
-	m_net->m_socket.SetSockOpt(SO_LINGER, (char*)&llinger, sizeof(linger));
+	m_net->m_socket.SetSockOpt(SO_LINGER, reinterpret_cast<char *>(&llinger), sizeof(linger));
 	BOOL nbool = true;
 	m_net->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
 
@@ -617,7 +617,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 		// Content-Length: 29
 		// T1=stuff1&B1=Submit&T2=stuff2
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Post '%s'\n", GetSocketID(), (LPCTSTR)ppRequest[1]);
+		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Post '%s'\n", GetSocketID(), static_cast<LPCTSTR>(ppRequest[1]));
 
 		CWebPageDef	*pWebPage = g_Cfg.FindWebPage(ppRequest[1]);
 		if ( !pWebPage )
@@ -644,7 +644,7 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 		if ( !Str_GetBare( szPageName, Str_TrimWhitespace(ppRequest[1]), sizeof(szPageName), "!\"#$%&()*,:;<=>?[]^{|}-+'`" ) )
 			return false;
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Request '%s', alive=%d\n", GetSocketID(), (LPCTSTR)szPageName, fKeepAlive);
+		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Request '%s', alive=%d\n", GetSocketID(), static_cast<LPCTSTR>(szPageName), fKeepAlive);
 		if ( CWebPageDef::ServPage(this, szPageName, &dateIfModifiedSince) )
 		{
 			if ( fKeepAlive )

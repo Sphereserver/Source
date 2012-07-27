@@ -307,7 +307,7 @@ void Packet::writeStringASCII(const WCHAR* value, bool terminate)
 		reinterpret_cast<WCHAR *>(buffer)[i] = '\0';
 	}
 
-	CvtNUNICODEToSystem(buffer, THREAD_STRING_LENGTH, (NWORD*)buffer, THREAD_STRING_LENGTH);
+	CvtNUNICODEToSystem(buffer, THREAD_STRING_LENGTH, reinterpret_cast<NWORD *>(buffer), THREAD_STRING_LENGTH);
 
 	writeStringASCII(buffer, terminate);
 #endif
@@ -350,7 +350,7 @@ void Packet::writeStringFixedASCII(const WCHAR* value, size_t size, bool termina
 		reinterpret_cast<WCHAR *>(buffer)[i] = '\0';
 	}
 	
-	CvtNUNICODEToSystem(buffer, THREAD_STRING_LENGTH, (NWORD*)buffer, THREAD_STRING_LENGTH);
+	CvtNUNICODEToSystem(buffer, THREAD_STRING_LENGTH, reinterpret_cast<NWORD *>(buffer), THREAD_STRING_LENGTH);
 
 	writeStringFixedASCII(buffer, size, terminate);
 #endif
