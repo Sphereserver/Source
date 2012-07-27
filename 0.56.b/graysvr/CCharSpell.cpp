@@ -2670,24 +2670,7 @@ reflectit:
 				}
 			}
 
-			/*	Eval. Int. Bonus: ((EvalInt * 3) / 100) + 1
-				Intelligence Bonus: (INT / 10) (Drop decimals from result)
-				GM Inscription Bonus: 10% Damage Bonus
-				Spell Damage Increase: Int. Bonus + Inscr. Bonus + Spell Damage Increase Items*
-				Total Damage: (Base Damage * Eval. Int. Bonus) * ((Spell Damage Increase / 100) + 1) (Drop decimals from result)
-
-				Mind Blast damage: Base Damage + ((Magery + Intelligence) / 5) (Drop decimals from result) 
-			if ( !IsSetMagicFlags(MAGICF_OSIFORMULAS) )
-				OnTakeDamage(GetSpellEffect(spell, iSkillLevel, iEffectMult), pCharSrc, iD1);
-			else
-			{
-				int iEvalIntBonus = ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 100 + 1;
-				int iBonus = pCharSrc->Stat_GetBase(STAT_INT) / 10;
-				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) == 100.0 )
-					iBonus += 10;
-				int iSpellDamageInc = iIntBonus + 
-				int iTotalBonus = (GetSpellEffect(spell, iSkillLevel, iEffectMult) * iEvalIntBonus) * (
-			}*/
+			OnTakeDamage(GetSpellEffect(spell, iSkillLevel, iEffectMult), pCharSrc, iD1);
 		}
 
 		switch ( spell )
