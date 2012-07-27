@@ -318,7 +318,7 @@ DIR_TYPE GetDirStr( LPCTSTR pszDir )
 			return DIR_S;
 		default:
 			if (( iDir >= '0' ) && ( iDir <= '7' ))
-				return (DIR_TYPE)(iDir - '0');
+				return static_cast<DIR_TYPE>(iDir - '0');
 	}
 	return DIR_QTY;
 }
@@ -505,7 +505,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	ASSERT((std::numeric_limits<size_t>::min)() == 0); // ensure unsigned
 
 #ifdef _WIN32
-	if ( !QueryPerformanceFrequency((LARGE_INTEGER *)&llTimeProfileFrequency))
+	if ( !QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(&llTimeProfileFrequency)))
 		llTimeProfileFrequency = 1000;
 
 	EXC_SET("setting exception catcher");

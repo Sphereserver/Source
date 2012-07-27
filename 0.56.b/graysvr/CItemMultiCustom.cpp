@@ -1491,7 +1491,7 @@ bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool b
 		return false;
 
 	// check that the client's enabled features contains the item's featuremask
-	int iFeatureFlag = g_Cfg.GetPacketFlag(false, (RESDISPLAY_VERSION)pClientSrc->GetResDisp());
+	int iFeatureFlag = g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pClientSrc->GetResDisp()));
 	if ((iFeatureFlag & it->second) != it->second)
 		return false;
 
@@ -1550,7 +1550,7 @@ bool CItemMultiCustom::LoadValidItems()
 
 				if ( bMultiFile )
 				{
-					itemid = (ITEMID_TYPE)(itemid + ITEMID_MULTI);
+					itemid = static_cast<ITEMID_TYPE>(itemid + ITEMID_MULTI);
 					if ( itemid <= ITEMID_MULTI || itemid > ITEMID_MULTI_MAX )
 						continue;
 				}

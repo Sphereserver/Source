@@ -156,7 +156,7 @@ AbstractThread::~AbstractThread()
 void AbstractThread::start()
 {
 #ifdef _WIN32
-	m_handle = (spherethread_t) _beginthreadex(NULL, 0, &runner, this, 0, NULL);
+	m_handle = reinterpret_cast<spherethread_t>(_beginthreadex(NULL, 0, &runner, this, 0, NULL));
 #else
 	pthread_attr_t threadAttr;
 	pthread_attr_init(&threadAttr);
@@ -566,7 +566,7 @@ void AbstractSphereThread::printStackTrace()
 		if( m_stackInfo[i].startTime == 0 )
 			break;
 
-		timedelta = (long)(m_stackInfo[i].startTime - startTime);
+		timedelta = static_cast<long>(m_stackInfo[i].startTime - startTime);
 		g_Log.EventDebug(">>         %u     | %2d | %28s | +%ld %s\n",
 			threadId, i, m_stackInfo[i].functionName, timedelta,
 				( i == (m_stackPos - 1) ) ?

@@ -85,7 +85,7 @@ public:
 
 	LAYER_TYPE GetEquipLayer() const
 	{
-		return( (LAYER_TYPE) m_pt.m_z );
+		return static_cast<LAYER_TYPE>(m_pt.m_z);
 	}
 	void SetEquipLayer( LAYER_TYPE layer )
 	{
@@ -258,7 +258,7 @@ inline DIR_TYPE GetDirTurn( DIR_TYPE dir, int offset )
 	ASSERT((offset + DIR_QTY + dir) >= 0);
 	offset += DIR_QTY + dir;
 	offset %= DIR_QTY;
-	return( (DIR_TYPE) (offset));
+	return static_cast<DIR_TYPE>(offset);
 }
 
 struct CGRect			// Basic rectangle. (May not be on the map)

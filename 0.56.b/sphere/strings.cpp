@@ -155,7 +155,7 @@ AbstractString::operator char*()
 
 AbstractString::operator const char*&() const
 {
-	return (const char *&)m_buf;
+	return const_cast<const char *&>(m_buf);
 }
 
 /*

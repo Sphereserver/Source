@@ -186,7 +186,7 @@ public:
 	void NotifyIOError( LPCTSTR szMessage ) const
 	{
 		LPVOID lpMsgBuf;
-		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, (LPTSTR) &lpMsgBuf, 0, NULL );
+		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, NULL );
 		DEBUG_ERR(( "File I/O \"%s\" failed on file \"%s\" (%ld): %s\n", szMessage, GetFilePath(), GetLastError(), static_cast<LPTSTR>(lpMsgBuf) ));
 
 		LocalFree( lpMsgBuf );
@@ -341,7 +341,7 @@ public:
 	{
 		// RETURN: -1 = error.
 		if ( ! IsFileOpen())
-			return (DWORD) -1;
+			return static_cast<DWORD>(-1);
 		return( ftell(m_pStream));
 	}
 	DWORD Read( void * pBuffer, size_t sizemax ) const
@@ -405,7 +405,7 @@ public:
 	{
 		ASSERT(pFormat);
 		if ( ! IsFileOpen())
-			return( (size_t) -1 );
+			return static_cast<size_t>(-1);
 
 		size_t lenret = vfprintf( m_pStream, pFormat, args );
 		return( lenret );

@@ -59,7 +59,7 @@ bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 					if ( ! pObj->IsItem())
 						continue;
 					CItem * pItem = dynamic_cast <CItem*>(pObj);
-					if ( ! pItem->IsType( (IT_TYPE) iArg ))
+					if ( ! pItem->IsType(static_cast<IT_TYPE>(iArg)))
 						continue;
 				}
 				break;
@@ -734,11 +734,11 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 				// add some style to the attacks.
 				if ( layer == LAYER_HAND2 )
 				{
-					action = (ANIM_TYPE)( ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
 				}
 				else
 				{
-					action = (ANIM_TYPE)( ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
 				}
 			}
 		}
@@ -1712,8 +1712,8 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 	Sound( sm_EatSounds[ Calc_GetRandVal( COUNTOF(sm_EatSounds)) ] );
 	UpdateAnimate( ANIM_EAT );
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_EATSOME), (LPCTSTR)pszName);
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_EATSOME), static_cast<LPCTSTR>(pszName));
 	Emote(pszMsg);
 }
 
@@ -1938,7 +1938,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 	ITEMID_TYPE id;
 	TCHAR * sMountDefname = Str_GetTemp();
 	sprintf(sMountDefname, "mount_0x%x", pHorse->GetDispID());
-	id = (ITEMID_TYPE)g_Exp.m_VarDefs.GetKeyNum(sMountDefname);
+	id = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(sMountDefname));
 	if ( id <= ITEMID_NOTHING )
 		return false;
 
@@ -2297,7 +2297,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		}
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_CORPSE_OF ), (LPCTSTR) GetName());
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_CORPSE_OF ), static_cast<LPCTSTR>(GetName()));
 		pCorpse->SetName(pszMsg);
 		pCorpse->SetHue( GetHue());
 		pCorpse->SetCorpseType( GetDispID() );
@@ -2333,7 +2333,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	DIR_TYPE dir = m_dirFace;
 	if ( fFrontFall )
 	{
-		dir = (DIR_TYPE) ( dir | 0x80 );
+		dir = static_cast<DIR_TYPE>( dir | 0x80 );
 		if ( pCorpse )
 			pCorpse->m_itCorpse.m_facing_dir = dir;
 	}
@@ -2399,7 +2399,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 
 	// Corpse is now gone. 	// 0x80 = on face.
 	Update();
-	UpdateDir( (DIR_TYPE)( pCorpse->m_itCorpse.m_facing_dir &~ 0x80 ));
+	UpdateDir(static_cast<DIR_TYPE>( pCorpse->m_itCorpse.m_facing_dir &~ 0x80 ));
 	UpdateAnimate( ( pCorpse->m_itCorpse.m_facing_dir & 0x80 ) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2 );
 
 	pCorpse->Delete();
@@ -2538,7 +2538,7 @@ bool CChar::Death()
 		//	experience could go down
 		if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN ))
 		{
-			ChangeExperience(-((int)m_exp/10));
+			ChangeExperience(-(static_cast<int>(m_exp)/10));
 		}
 	}
 
@@ -2582,7 +2582,7 @@ bool CChar::Death()
 
 		ASSERT(pszGhostName != NULL);
 
-		SetID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName ));
+		SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )));
 		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ));
 		Update();		// show everyone I am now a ghost.
 
@@ -2906,7 +2906,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			}
 			else
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), (LPCTSTR)pChar->GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), static_cast<LPCTSTR>(pChar->GetName()));
 			}
 
 			if ( iRet != TRIGRET_RET_FALSE )
@@ -3065,7 +3065,7 @@ bool CChar::CheckLocation( bool fStanding )
 		if ( zdiff > height || zdiff < -3 )
 			continue;
 
-		CScriptTriggerArgs Args( (int) fStanding );
+		CScriptTriggerArgs Args( fStanding? 1 : 0 );
 		if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
 		{
 			fStepCancel	= true;
@@ -3291,8 +3291,8 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
 			{
 				CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("ANNOUNCEMENT"));
-				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_ENTER ), ( pVarStr ) ? (LPCTSTR) pVarStr->GetValStr() :
-					(LPCTSTR) pNewArea->GetName());
+				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_ENTER ),
+					( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : static_cast<LPCTSTR>(pNewArea->GetName()));
 			}
 
 			// Is it guarded / safe / non-pvp?
@@ -3307,13 +3307,13 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 					{
 						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
 						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_1 ),
-							( pVarStr ) ? (LPCTSTR)pVarStr->GetValStr() : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
+							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
 					}
 					else							// have left the protection
 					{
 						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
 						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_2 ),
-							( pVarStr ) ? (LPCTSTR)pVarStr->GetValStr() : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
+							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
 					}
 				}
 				if ( redNew != redOld )
@@ -3548,7 +3548,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger( (CTRIG_TYPE)iCharAction, pSrc, pArgs );
+			iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>(iCharAction), pSrc, pArgs );
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.
@@ -3798,7 +3798,7 @@ bool CChar::OnTick()
 			return true;
 		}
 
-		for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = (STAT_TYPE)(i+1) )
+		for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 		{
 			EXC_SET(g_Stat_Name[i]);
 			m_Stat[i].m_regen += iTimeDiff;
@@ -3814,9 +3814,9 @@ bool CChar::OnTick()
 			if ( i < STAT_FOOD )
 			{
 				char sRegen[21];
-				sprintf(sRegen, "OVERRIDE.REGEN_%d", (int)i);
+				sprintf(sRegen, "OVERRIDE.REGEN_%d", static_cast<int>(i));
 				iRate -= ( GetKeyNum(sRegen, true) * 10 );
-				sprintf(sRegen, "OVERRIDE.REGENVAL_%d", (int)i);
+				sprintf(sRegen, "OVERRIDE.REGENVAL_%d", static_cast<int>(i));
 				mod += GetKeyNum(sRegen, true);
 			}
 

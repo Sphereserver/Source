@@ -399,7 +399,7 @@ void NetState::beginTransaction(long priority)
 
 	//DEBUGNETWORK(("%lx:Starting a new packet transaction.\n", id()));
 
-	m_outgoing.pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : (long)PacketSend::PRI_NORMAL);
+	m_outgoing.pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : static_cast<long>(PacketSend::PRI_NORMAL));
 }
 
 void NetState::endTransaction(void)
@@ -2574,15 +2574,15 @@ void NetworkManager::acceptNewConnection(void)
 		CLOSESOCKET(h);
 
 		if (ip.m_blocked)
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 		else if ( maxIp && ip.m_connecting > maxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
 		else if ( climaxIp && ip.m_connected > climaxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
 		else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS) );
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS) );
 		else
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 
 		return;
 	}
@@ -2597,11 +2597,11 @@ void NetworkManager::acceptNewConnection(void)
 		DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already connected.\n"));
 		CLOSESOCKET(h);
 
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAX reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAX reached)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 		return;
 	}
 
-	DEBUGNETWORK(("%lx:Allocated slot for client (%lu).\n", state->id(), (unsigned long)h));
+	DEBUGNETWORK(("%lx:Allocated slot for client (%lu).\n", state->id(), static_cast<unsigned long>(h)));
 
 	// assign slot
 	EXC_SET("assigning slot");
@@ -3321,7 +3321,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 	TemporaryString dump;
 	packet->dump(dump);
 
-	g_Log.EventDebug("%lx:Parsing %s", state->id(), (LPCTSTR)dump);
+	g_Log.EventDebug("%lx:Parsing %s", state->id(), static_cast<LPCTSTR>(dump));
 
 	state->m_packetExceptions++;
 	if (state->m_packetExceptions > 10)
@@ -4013,7 +4013,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 		ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
 		state->m_overlapped.hEvent = state;
 		state->m_bufferWSA.len = length;
-		state->m_bufferWSA.buf = (CHAR*)data;
+		state->m_bufferWSA.buf = reinterpret_cast<CHAR *>(const_cast<BYTE *>(data));
 
 		DWORD bytesSent;
 		if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)

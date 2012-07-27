@@ -20,7 +20,7 @@ void CrashDump::Enable()
 		return;
 	}
 
-	m_tDumpFunction = (MINIDUMPWRITEDUMP)GetProcAddress(m_hDll, "MiniDumpWriteDump");
+	m_tDumpFunction = reinterpret_cast<MINIDUMPWRITEDUMP>(GetProcAddress(m_hDll, "MiniDumpWriteDump"));
 	if (!m_tDumpFunction)
 	{
 		m_bEnabled = false;

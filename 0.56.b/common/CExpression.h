@@ -92,22 +92,22 @@ public:
 	// So this is a rather lazy workaround
 	inline int GetSingle( LPTSTR &pArgs )
 	{
-		return GetSingle( (LPCTSTR&)pArgs );
+		return GetSingle(const_cast<LPCTSTR &>(pArgs));
 	}
 
 	inline int GetRange( LPTSTR &pArgs )
 	{
-		return GetRange( (LPCTSTR&)pArgs );
+		return GetRange(const_cast<LPCTSTR &>(pArgs));
 	}
 
 	inline int GetRangeVals( LPTSTR &pExpr, int * piVals, int iMaxQty )
 	{
-		return GetRangeVals( (LPCTSTR&)pExpr, piVals, iMaxQty );
+		return GetRangeVals(const_cast<LPCTSTR &>(pExpr), piVals, iMaxQty );
 	}
 
 	inline int GetVal( LPTSTR &pArgs )
 	{
-		return GetVal( (LPCTSTR&)pArgs );
+		return GetVal(const_cast<LPCTSTR &>(pArgs));
 	}
 
 	// Evaluate using the stuff we know.

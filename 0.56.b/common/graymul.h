@@ -2043,7 +2043,7 @@ public:
 	}
 	VERFILE_TYPE GetFileIndex() const
 	{
-		return( (VERFILE_TYPE) m_file );
+		return( static_cast<VERFILE_TYPE>(m_file) );
 	}
 	DWORD GetBlockIndex() const
 	{
@@ -2235,7 +2235,7 @@ struct CUOStaticItemRec	// 7 byte block = static items on the map (statics0.mul)
 
 	ITEMID_TYPE GetDispID() const
 	{
-		return((ITEMID_TYPE) m_wTileID );
+		return static_cast<ITEMID_TYPE>(m_wTileID);
 	}
 
 } PACK_NEEDED;
@@ -2349,7 +2349,7 @@ struct CUOMultiItemRec // (Multi.mul)
 
 	ITEMID_TYPE GetDispID() const
 	{
-		return((ITEMID_TYPE) m_wTileID );
+		return static_cast<ITEMID_TYPE>(m_wTileID);
 	}
 
 } PACK_NEEDED;
@@ -2367,7 +2367,7 @@ struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
 
 	ITEMID_TYPE GetDispID() const
 	{
-		return((ITEMID_TYPE) m_wTileID );
+		return static_cast<ITEMID_TYPE>(m_wTileID);
 	}
 } PACK_NEEDED;
 

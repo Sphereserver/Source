@@ -247,13 +247,13 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	}
 	if ( i >= g_Cfg.m_iMaxSkill )
 		return( SKILL_NONE );
-	return( (SKILL_TYPE) i );
+	return static_cast<SKILL_TYPE>(i);
 }
 
 SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
 {
 	ASSERT( skill >= 0 && static_cast<size_t>(skill) < COUNTOF(m_SkillLock));
-	return((SKILLLOCK_TYPE) m_SkillLock[skill] );
+	return static_cast<SKILLLOCK_TYPE>(m_SkillLock[skill]);
 }
 
 void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
@@ -285,13 +285,13 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 	}
 	if ( i >= STAT_BASE_QTY )
 		return( STAT_NONE );
-	return( (STAT_TYPE) i );
+	return static_cast<STAT_TYPE>(i);
 }
 
 SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
 {
 	ASSERT( stat >= 0 && static_cast<size_t>(stat) < COUNTOF(m_StatLock));
-	return((SKILLLOCK_TYPE) m_StatLock[stat] );
+	return static_cast<SKILLLOCK_TYPE>(m_StatLock[stat]);
 }
 
 void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
@@ -541,7 +541,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				int bState = s.GetArgVal();
 				if ( bState < SKILLLOCK_UP || bState > SKILLLOCK_LOCK )
 					return false;
-				Skill_SetLock(skill, (SKILLLOCK_TYPE)bState);
+				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(bState));
 			} return true;
 		case CPC_SPEEDMODE:
 			{
@@ -556,7 +556,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				int bState = s.GetArgVal();
 				if ( bState < SKILLLOCK_UP || bState > SKILLLOCK_LOCK )
 					return false;
-				Stat_SetLock(stat, (SKILLLOCK_TYPE)bState);
+				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(bState));
 			} return true;
 		case CPC_TITHING:
 			{
@@ -689,7 +689,7 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
                 if ( pMyGuild )
                 {
                         CScript sToParse(pszKey, s.GetArgRaw());
-                        return pMyGuild->r_Verb(sToParse, (CTextConsole*)pSrc);
+                        return pMyGuild->r_Verb(sToParse, pSrc);
                 }
 			}
 			return false;
@@ -780,7 +780,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		m_Act_Motivation = s.GetArgVal();
 		break;
 	case CNC_NPC:
-		m_Brain = (NPCBRAIN_TYPE) s.GetArgVal();
+		m_Brain = static_cast<NPCBRAIN_TYPE>(s.GetArgVal());
 		break;
 	case CNC_HOMEDIST:
 		if ( ! pChar->m_ptHome.IsValidPoint())

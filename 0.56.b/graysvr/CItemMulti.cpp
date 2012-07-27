@@ -108,7 +108,7 @@ bool CItemMulti::MultiRealizeRegion()
 	m_pRegion->SetRegionFlags( dwFlags );
 
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s (%s)", (LPCTSTR) pRegionBack->GetName(), (LPCTSTR) GetName());
+	sprintf(pszTemp, "%s (%s)", static_cast<LPCTSTR>(pRegionBack->GetName()), static_cast<LPCTSTR>(GetName()));
 	m_pRegion->SetName(pszTemp);
 
 	return m_pRegion->RealizeRegion();
@@ -219,7 +219,7 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 	{
 		const CItemBaseMulti::CMultiComponentItem & component = pMultiDef->m_Components.ElementAt(i);
 
-		fNeedKey |= Multi_CreateComponent((ITEMID_TYPE)component.m_id,
+		fNeedKey |= Multi_CreateComponent(static_cast<ITEMID_TYPE>(component.m_id),
 										  component.m_dx,
 										  component.m_dy,
 										  component.m_dz,

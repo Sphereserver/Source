@@ -54,7 +54,7 @@ void PingServer::tick()
 	ProfileTask receiveTask(PROFILE_NETWORK_RX);
 	
 	// receive data from someone
-	int length = recvfrom(m_socket.GetSocket(), buffer, sizeof(buffer), 0, (sockaddr *)&addr, &addr_len);
+	int length = recvfrom(m_socket.GetSocket(), buffer, sizeof(buffer), 0, reinterpret_cast<sockaddr *>(&addr), &addr_len);
 	if ( length <= 0 )
 		return;
 
@@ -62,7 +62,7 @@ void PingServer::tick()
 	ProfileTask sendTask(PROFILE_NETWORK_TX);
 
 	// return the data to them
-	int sent = sendto(m_socket.GetSocket(), buffer, length, 0, (sockaddr *)&addr, addr_len);
+	int sent = sendto(m_socket.GetSocket(), buffer, length, 0, reinterpret_cast<sockaddr *>(&addr), addr_len);
 	if ( sent <= 0 )
 		return;
 

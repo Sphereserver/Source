@@ -67,7 +67,7 @@ void CChar::Guild_Resign( MEMORY_TYPE MemType )
 		{
 			CItemStone * pMyStone = pMember->GetParentStone();
 			ASSERT(pMyStone);
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_GUILDRESIGN ), (LPCTSTR) pMyStone->GetTypeName() );
+			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_GUILDRESIGN ), static_cast<LPCTSTR>(pMyStone->GetTypeName()) );
 		}
 	}
 
@@ -189,13 +189,13 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	// This allows the noto attack check in the client.
 	// NOTO_GOOD = it is criminal to attack me.
 	
-	NOTO_TYPE iNotoFlag = (NOTO_TYPE)m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true);
+	NOTO_TYPE iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
 
 	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
 	sprintf(getNoto, "OVERRIDE.NOTO.0%lx", (DWORD) pCharViewer->GetUID() );
-	iNotoFlag = (NOTO_TYPE)m_TagDefs.GetKeyNum(getNoto);
+	iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum(getNoto));
 	
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
@@ -495,7 +495,7 @@ void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 	if ( iPrvLevel != Noto_GetLevel())
 	{
 		// reached a new title level ?
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_NOTO_GETTITLE ), (LPCTSTR) Noto_GetTitle());
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_NOTO_GETTITLE ), static_cast<LPCTSTR>(Noto_GetTitle()));
 	}
 }
 
@@ -1134,9 +1134,9 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			else
 			{
 				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_YOUNOTICE_2),
-					(LPCTSTR) GetName(), pAction, fYour ? g_Cfg.GetDefaultMsg( DEFMSG_YOUNOTICE_YOUR ) : (LPCTSTR) pCharMark->GetName(),
+					static_cast<LPCTSTR>(GetName()), pAction, fYour ? g_Cfg.GetDefaultMsg( DEFMSG_YOUNOTICE_YOUR ) : static_cast<LPCTSTR>(pCharMark->GetName()),
 					fYour ? "" : g_Cfg.GetDefaultMsg( DEFMSG_YOUNOTICE_S ),
-					(LPCTSTR) pItem->GetName());
+					static_cast<LPCTSTR>(pItem->GetName()));
 			}
 			pChar->ObjMessage(z, this);
 		}
@@ -1554,7 +1554,7 @@ void CChar::CallGuards( CChar * pCriminal )
 		if ( !rid.IsValidUID() )
 			return;
 
-		pGuard = CChar::CreateNPC((CREID_TYPE)rid.GetResIndex());
+		pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
 		if ( !pGuard )
 			return;
 
@@ -2072,7 +2072,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) > 1000)
 				damModLJ += (damModLJ / 10);
 		}
-		damMod += ( (pSrc->Skill_GetBase(SKILL_TACTICS) / 16) + (pSrc->Skill_GetBase(SKILL_ANATOMY) / 20) + damModLJ + ((int) pSrc->Stat_GetBase(STAT_STR) / 3) );
+		damMod += ( (pSrc->Skill_GetBase(SKILL_TACTICS) / 16) + (pSrc->Skill_GetBase(SKILL_ANATOMY) / 20) + damModLJ + (static_cast<int>(pSrc->Stat_GetBase(STAT_STR)) / 3) );
 		if ( damMod > 100)
 			damMod=100;
 	}
@@ -2319,12 +2319,12 @@ effect_bounce:
 		return( 0 );
 
 	// Make blood depending on hit damage. assuming the creature has blood
-	if ( pCharDef->m_wBloodHue != (HUE_TYPE)-1 )
+	if ( pCharDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
 		ITEMID_TYPE id = ITEMID_NOTHING;
 		if ( iDmg > 10 )
 		{
-			id = (ITEMID_TYPE)( ITEMID_BLOOD1 + Calc_GetRandVal(ITEMID_BLOOD6-ITEMID_BLOOD1));
+			id = static_cast<ITEMID_TYPE>(ITEMID_BLOOD1 + Calc_GetRandVal(ITEMID_BLOOD6-ITEMID_BLOOD1));
 		}
 		else if ( Calc_GetRandVal( iDmg ) > 5 )
 		{
@@ -2438,7 +2438,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( Calc_GetRandVal( 1100 ) < iHitPrefChance ) {
 			while (iHitPref > ARMOR_QTY)	// gt8 - 8 to get a valid bodypart number +1
 				iHitPref -= ARMOR_QTY;
-			iHitArea = (BODYPART_TYPE) (iHitPref - 1);	// 1->0, 2->1, ... 8->7
+			iHitArea = static_cast<BODYPART_TYPE>(iHitPref - 1);	// 1->0, 2->1, ... 8->7
 			iDmg += (iDmg * iHitPrefBonus) / 100;
 		} else {
 			iDmg -= (iDmg * iHitPrefPenalty) / 100;
@@ -2448,16 +2448,16 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
 				if ( iHitRoll < 0 )
 					break;
-				iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
+				iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
 			}
 		}
 	} else {
-		while ( iHitArea<ARMOR_QTY-1 )
+		while ( iHitArea < (ARMOR_QTY - 1) )
 		{
 			iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
 			if ( iHitRoll < 0 )
 				break;
-			iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
+			iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
 		}
 	}
 
@@ -2570,11 +2570,11 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		{
 			if ( IsPriv(PRIV_DETAIL))
 			{
-				SysMessagef( ppMsg[0], ( pSrc == NULL ) ? "It" : (LPCTSTR) pSrc->GetName());
+				SysMessagef( ppMsg[0], ( pSrc == NULL ) ? "It" : static_cast<LPCTSTR>(pSrc->GetName()));
 			}
 			if ( pSrc != NULL && pSrc->IsPriv(PRIV_DETAIL))
 			{
-				pSrc->SysMessagef( ppMsg[1], (LPCTSTR) GetName());
+				pSrc->SysMessagef( ppMsg[1], static_cast<LPCTSTR>(GetName()));
 			}
 		}
 	}
@@ -2590,7 +2590,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 		if ( pArmor->IsType( IT_SPELL ) && pArmor->m_itSpell.m_spell )
 		{
-			SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX(pArmor->m_itSpell.m_spell);
+			SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pArmor->m_itSpell.m_spell));
 			switch ( spell )
 			{
 				case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
@@ -2662,7 +2662,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 
 	SysMessagef( fCowardice ?
 		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
-		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_2 ), (LPCTSTR) pTarg->GetName());
+		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_2 ), static_cast<LPCTSTR>(pTarg->GetName()));
 
 	// Lose some fame.
 	if ( fCowardice )
@@ -3044,7 +3044,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
 		{
-			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase((SKILL_TYPE)skill) );
+			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase(static_cast<SKILL_TYPE>(skill)) );
 			if ( Calc_GetRandVal( 1000 ) >= iInterrupt )
 				return true;
 		}
@@ -3312,12 +3312,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pValue )
 		{
 			t_Str = pValue->GetValStr();
-			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
-			AmmoID = (ITEMID_TYPE) rid.GetResIndex();
+			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+			AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		} else
 		{
 			rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-			AmmoID = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex();
+			AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex());
 		}
 
 		if ( AmmoID )
@@ -3360,11 +3360,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pAnim )
 		{
 			t_Str = pAnim->GetValStr();
-			rid = (RESOURCE_ID_BASE) g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str );
-			AmmoAnim = (ITEMID_TYPE) rid.GetResIndex();
+			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+			AmmoAnim = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		} else
 		{
-			AmmoAnim = (ITEMID_TYPE) pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex();
+			AmmoAnim = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
 		}
 
 		if ( pColor )
@@ -3522,11 +3522,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( IsPriv(PRIV_DETAIL))
 		{
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSS ), (LPCTSTR) pCharTarg->GetName());
+			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSS ), static_cast<LPCTSTR>(pCharTarg->GetName()));
 		}
 		if ( pCharTarg->IsPriv(PRIV_DETAIL))
 		{
-			pCharTarg->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSO ), (LPCTSTR) GetName());
+			pCharTarg->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSO ), static_cast<LPCTSTR>(GetName()));
 		}
 
 		return( WAR_SWING_EQUIPPING );	// Made our full swing. (tho we missed)

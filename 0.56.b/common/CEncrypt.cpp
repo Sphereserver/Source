@@ -39,7 +39,7 @@ void CCrypt::LoadKeyTable(CScript & s)
 		c->m_client = ahextoi( s.GetKey() );
 		c->m_key_1 = s.GetArgVal();
 		c->m_key_2 = s.GetArgVal();
-		c->m_EncType = (ENCRYPTION_TYPE) s.GetArgVal();
+		c->m_EncType = static_cast<ENCRYPTION_TYPE>(s.GetArgVal());
 		
 		client_keys.push_back(c);
 	}
@@ -738,7 +738,7 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 
 	for ( int i = ENC_NONE; i < ENC_QTY; i++ )
 	{
-		SetEncryptionType( (ENCRYPTION_TYPE)i );
+		SetEncryptionType(static_cast<ENCRYPTION_TYPE>(i));
 
 		if ( GetEncryptionType() == ENC_TFISH || GetEncryptionType() == ENC_BTFISH )
 			InitTwoFish();
@@ -829,7 +829,7 @@ void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, size_t iL
 	{
 		for (int i = ENC_NONE; i < ENC_QTY; i++)
 		{
-			SetEncryptionType((ENCRYPTION_TYPE)i);
+			SetEncryptionType(static_cast<ENCRYPTION_TYPE>(i));
 
 			InitBlowFish();
 			InitTwoFish();

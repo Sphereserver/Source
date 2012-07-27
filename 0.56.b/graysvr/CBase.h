@@ -628,7 +628,7 @@ public:
 	LAYER_TYPE GetEquipLayer() const
 	{
 		// Is this item really equippable ?
-		return( (LAYER_TYPE) m_layer );
+		return static_cast<LAYER_TYPE>(m_layer);
 	}
 	bool IsTypeEquippable() const;
 	GUMP_TYPE IsTypeContainer() const;
@@ -638,11 +638,11 @@ public:
 
 	ITEMID_TYPE GetID() const
 	{
-		return((ITEMID_TYPE) GetResourceID().GetResIndex());
+		return static_cast<ITEMID_TYPE>(GetResourceID().GetResIndex());
 	}
 	ITEMID_TYPE GetDispID() const
 	{
-		return((ITEMID_TYPE) m_dwDispIndex );
+		return static_cast<ITEMID_TYPE>(m_dwDispIndex);
 	}
 	DWORD GetTFlags() const
 	{
@@ -879,11 +879,11 @@ public:
 
 	CREID_TYPE GetID() const
 	{
-		return((CREID_TYPE) GetResourceID().GetResIndex());
+		return static_cast<CREID_TYPE>(GetResourceID().GetResIndex());
 	}
 	CREID_TYPE GetDispID() const
 	{
-		return((CREID_TYPE) m_dwDispIndex );
+		return static_cast<CREID_TYPE>(m_dwDispIndex);
 	}
 	bool SetDispID( CREID_TYPE id );
 

@@ -95,7 +95,7 @@ public:
 	RES_TYPE GetResType() const
 	{
 		DWORD dwVal = RES_GET_TYPE(m_dwInternalVal);
-		return( (RES_TYPE) dwVal );
+		return static_cast<RES_TYPE>(dwVal);
 	}
 #define RES_GET_INDEX(dw)	((dw)&RES_INDEX_MASK)
 	int GetResIndex() const
@@ -188,7 +188,7 @@ public:
 
 	inline bool Load( LPTSTR & arg )
 	{
-		return Load( (LPCTSTR&)arg );
+		return Load( const_cast<LPCTSTR&>(arg) );
 	}
 
 	bool Load( LPCTSTR & pszCmds );

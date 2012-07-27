@@ -65,7 +65,7 @@ void CDataBase::ResizeFieldArraySize(int howmuch, bool bForceResize)
 		return;
 	}
 
-	m_faContainer.faData = (fieldarray_t *)realloc(m_faContainer.faData, howmuch * sizeof(fieldarray_t));
+	m_faContainer.faData = reinterpret_cast<fieldarray_t *>(realloc(m_faContainer.faData, howmuch * sizeof(fieldarray_t)));
 	m_faContainer.faDataSize = m_faContainer.faDataActualSize = howmuch;
 }
 
@@ -107,7 +107,7 @@ void CDataBase::ResizeResultArraySize(int howmuch, bool bForceResize)
 		return;
 	}
 
-	m_raContainer.raData = (resultarray_t *)realloc(m_raContainer.raData, howmuch * sizeof(resultarray_t));
+	m_raContainer.raData = reinterpret_cast<resultarray_t *>(realloc(m_raContainer.raData, howmuch * sizeof(resultarray_t)));
 	m_raContainer.raDataSize = m_raContainer.raDataActualSize = howmuch;
 }
 #endif
@@ -652,7 +652,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( pszKey[0] != '\0' )
 				{
 					TCHAR * ppArgs[2];
-					if ( Str_ParseCmds( (TCHAR *)pszKey, ppArgs, COUNTOF( ppArgs )) != 2) 
+					if ( Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF( ppArgs )) != 2) 
 					{
 						DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));
 					}

@@ -52,33 +52,33 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	skip(2); // 0x00
 	DWORD flags = readInt32();
 	skip(8); // unk
-	PROFESSION_TYPE prof = (PROFESSION_TYPE)readByte();
+	PROFESSION_TYPE prof = static_cast<PROFESSION_TYPE>(readByte());
 	skip(15); // 0x00
 	BYTE sex = readByte();
 	BYTE strength = readByte();
 	BYTE dexterity = readByte();
 	BYTE intelligence = readByte();
-	skill1 = (SKILL_TYPE)readByte();
+	skill1 = static_cast<SKILL_TYPE>(readByte());
 	skillval1 = readByte();
-	skill2 = (SKILL_TYPE)readByte();
+	skill2 = static_cast<SKILL_TYPE>(readByte());
 	skillval2 = readByte();
-	skill3 = (SKILL_TYPE)readByte();
+	skill3 = static_cast<SKILL_TYPE>(readByte());
 	skillval3 = readByte();
 	if (hasExtraSkill)
 	{
-		skill4 = (SKILL_TYPE)readByte();
+		skill4 = static_cast<SKILL_TYPE>(readByte());
 		skillval4 = readByte();
 	}
-	HUE_TYPE hue = (HUE_TYPE)readInt16();
-	ITEMID_TYPE hairid = (ITEMID_TYPE)readInt16();
-	HUE_TYPE hairhue = (HUE_TYPE)readInt16();
-	ITEMID_TYPE beardid = (ITEMID_TYPE)readInt16();
-	HUE_TYPE beardhue = (HUE_TYPE)readInt16();
+	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
+	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
+	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());
+	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
+	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
 	skip(1); // shard index
 	BYTE startloc = readByte();
 	skip(8); // 4=slot, 4=ip
-	HUE_TYPE shirthue = (HUE_TYPE)readInt16();
-	HUE_TYPE pantshue = (HUE_TYPE)readInt16();
+	HUE_TYPE shirthue = static_cast<HUE_TYPE>(readInt16());
+	HUE_TYPE pantshue = static_cast<HUE_TYPE>(readInt16());
 
 	bool isFemale = (sex % 2) != 0; // Even=Male, Odd=Female (rule applies to all clients)
 	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
@@ -180,7 +180,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
 	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n",
-		net->id(), (LPCTSTR)account->GetName(), (LPCTSTR)pChar->GetName());
+		net->id(), static_cast<LPCTSTR>(account->GetName()), static_cast<LPCTSTR>(pChar->GetName()));
 
 	TRIGRET_TYPE tr;
 	CScriptTriggerArgs createArgs;
@@ -476,7 +476,7 @@ bool PacketTextCommand::onReceive(NetState* net)
 	if (packetLength < 5)
 		return false;
 
-	EXTCMD_TYPE type = (EXTCMD_TYPE)readByte();
+	EXTCMD_TYPE type = static_cast<EXTCMD_TYPE>(readByte());
 	TCHAR name[MAX_TALK_BUFFER];
 	readStringNullASCII(name, MAX_TALK_BUFFER-1);
 
@@ -504,7 +504,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	ASSERT(client);
 
 	CGrayUID itemSerial(readInt32());
-	LAYER_TYPE itemLayer = (LAYER_TYPE)readByte();
+	LAYER_TYPE itemLayer = static_cast<LAYER_TYPE>(readByte());
 	CGrayUID targetSerial(readInt32());
 
 	CChar* source = client->GetChar();
@@ -582,7 +582,7 @@ size_t PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
 	// different size depending on client
 	size_t pos = packet->getPosition();
 	packet->skip(1);
-	DEATH_MODE_TYPE mode = (DEATH_MODE_TYPE)readByte();
+	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
 	packet->seek(pos);
 
 	if (mode != DEATH_MODE_MANIFEST)
@@ -602,7 +602,7 @@ bool PacketDeathStatus::onReceive(NetState* net)
 	if (ghost == NULL)
 		return false;
 
-	DEATH_MODE_TYPE mode = (DEATH_MODE_TYPE)readByte();
+	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
 	if (mode != DEATH_MODE_MANIFEST)
 	{
 		// Play as a ghost.
@@ -687,8 +687,8 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 	while (len > 0)
 	{
 		// set next lock
-		SKILL_TYPE index = (SKILL_TYPE)readInt16();
-		SKILLLOCK_TYPE state = (SKILLLOCK_TYPE)readByte();
+		SKILL_TYPE index = static_cast<SKILL_TYPE>(readInt16());
+		SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
 		len -= 3;
 		
 		if (index <= SKILL_NONE || index >= SKILL_QTY ||
@@ -827,7 +827,7 @@ bool PacketMapEdit::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketMapEdit::onReceive");
 
 	CGrayUID mapSerial(readInt32());
-	MAPCMD_TYPE action = (MAPCMD_TYPE)readByte();
+	MAPCMD_TYPE action = static_cast<MAPCMD_TYPE>(readByte());
 	BYTE pin = readByte();
 	WORD x = readInt16();
 	WORD y = readInt16();
@@ -1057,7 +1057,7 @@ bool PacketTarget::onReceive(NetState* net)
 	WORD y = readInt16();
 	skip(1);
 	BYTE z = readByte();
-	ITEMID_TYPE id = (ITEMID_TYPE)readInt16();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt16());
 
 	client->Event_Target(context, targetSerial, CPointMap(x, y, z, character->GetTopMap()), flags, id);
 	return true;
@@ -1086,7 +1086,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 		return false;
 
 	skip(2); // length
-	SECURE_TRADE_TYPE action = (SECURE_TRADE_TYPE)readByte();
+	SECURE_TRADE_TYPE action = static_cast<SECURE_TRADE_TYPE>(readByte());
 	CGrayUID containerSerial(readInt32());
 	DWORD arg = readInt32();
 
@@ -1164,7 +1164,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		return false;
 
 	skip(2);
-	BBOARDF_TYPE action = (BBOARDF_TYPE)readByte();
+	BBOARDF_TYPE action = static_cast<BBOARDF_TYPE>(readByte());
 	CGrayUID boardSerial(readInt32());
 	CGrayUID messageSerial(readInt32());
 
@@ -1496,31 +1496,31 @@ bool PacketCreateKR::onReceive(NetState* net)
 	TCHAR charname[MAX_NAME_SIZE];
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(30);
-	BYTE profession = readByte();
+	PROFESSION_TYPE profession = static_cast<PROFESSION_TYPE>(readByte());
 	skip(1);
 	BYTE sex = readByte();
-	BYTE race = readByte();
+	RACE_TYPE race = static_cast<RACE_TYPE>(readByte());
 	BYTE strength = readByte();
 	BYTE dexterity = readByte();
 	BYTE intelligence = readByte();
-	HUE_TYPE hue = (HUE_TYPE)readInt16();
+	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 	skip(8);
-	SKILL_TYPE skill1 = (SKILL_TYPE)readByte();
+	SKILL_TYPE skill1 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval1 = readByte();
-	SKILL_TYPE skill2 = (SKILL_TYPE)readByte();
+	SKILL_TYPE skill2 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval2 = readByte();
-	SKILL_TYPE skill4 = (SKILL_TYPE)readByte();
+	SKILL_TYPE skill4 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval4 = readByte();
-	SKILL_TYPE skill3 = (SKILL_TYPE)readByte();
+	SKILL_TYPE skill3 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval3 = readByte();
 	skip(26);
-	HUE_TYPE hairhue = (HUE_TYPE)readInt16();
-	ITEMID_TYPE hairid = (ITEMID_TYPE)readInt16();
+	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());
+	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
 	skip(14); // unk
 	BYTE portrait = readByte();
 	skip(1);
-	HUE_TYPE beardhue = (HUE_TYPE)readInt16();
-	ITEMID_TYPE beardid = (ITEMID_TYPE)readInt16();
+	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
+	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
 	
 	// The new creation packet does not contain skills and values if
 	// a profession is selected, so here we must translate the selected
@@ -1604,8 +1604,8 @@ bool PacketCreateKR::onReceive(NetState* net)
 			break;
 	}
 
-	return doCreate(net, charname, sex > 0, (RACE_TYPE)race,
-		strength, dexterity, intelligence, (PROFESSION_TYPE)profession,
+	return doCreate(net, charname, sex > 0, race,
+		strength, dexterity, intelligence, profession,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
 		hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT,
 		0, portrait, 0xFFFFFFFF);
@@ -1686,7 +1686,7 @@ bool PacketDyeObject::onReceive(NetState* net)
 
 	CGrayUID serial(readInt32());
 	skip(2); // item id
-	HUE_TYPE hue = (HUE_TYPE)readInt16();
+	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 
 	net->getClient()->Event_Item_Dye(serial, hue);
 	return true;
@@ -2006,13 +2006,13 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 		bool ret = object->r_Verb(script, client->GetChar());
 		if (ret == false)
 		{
-			client->SysMessagef("Invalid set: %s = %s", (LPCTSTR)client->m_Targ_Text, (LPCTSTR)text);
+			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 		}
 		else
 		{
 			if (client->IsPriv(PRIV_DETAIL))
 			{
-				client->SysMessagef("Set: %s = %s", (LPCTSTR)client->m_Targ_Text, (LPCTSTR)text);
+				client->SysMessagef("Set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 			}
 
 			object->RemoveFromView(); // weird client thing
@@ -2020,9 +2020,9 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 		}
 
 		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n",
-			net->id(), (LPCTSTR)client->GetName(),
-			(DWORD)object->GetUID(), (LPCTSTR)object->GetName(),
-			(LPCTSTR)client->m_Targ_Text, (LPCTSTR)text, ret);
+			net->id(), static_cast<LPCTSTR>(client->GetName()),
+			static_cast<DWORD>(object->GetUID()), static_cast<LPCTSTR>(object->GetName()),
+			static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
 	}
 
 	return true;
@@ -2050,9 +2050,9 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		return false;
 
 	size_t packetLength = readInt16();
-	TALKMODE_TYPE mode = (TALKMODE_TYPE)readByte();
-	HUE_TYPE hue = (HUE_TYPE)readInt16();
-	FONT_TYPE font = (FONT_TYPE)readInt16();
+	TALKMODE_TYPE mode = static_cast<TALKMODE_TYPE>(readByte());
+	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
+	FONT_TYPE font = static_cast<FONT_TYPE>(readInt16());
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 
@@ -2065,7 +2065,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 
 	if (mode & 0xc0) // text contains keywords
 	{
-		mode = (TALKMODE_TYPE)(mode & ~0xc0);
+		mode = static_cast<TALKMODE_TYPE>(mode & ~0xc0);
 
 		size_t count = (readInt16() & 0xFFF0) >> 4;
 		if (count > 50) // malformed check
@@ -2088,7 +2088,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	else
 	{
 		NCHAR text[MAX_TALK_BUFFER];
-		readStringUNICODE((WCHAR*)text, packetLength, false);
+		readStringUNICODE(reinterpret_cast<WCHAR *>(text), packetLength, false);
 		client->Event_TalkUNICODE(text, packetLength, hue, mode, font, language);
 	}
 
@@ -2144,7 +2144,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 			CScriptTriggerArgs Args(viewed);
 			Args.m_iN1 = button;
 
-			character->OnTrigger(CTRIG_UserVirtue, (CTextConsole*)character, &Args);
+			character->OnTrigger(CTRIG_UserVirtue, static_cast<CTextConsole *>(character), &Args);
 		}
 
 		return true;
@@ -2167,7 +2167,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 #endif
 
 	// sanity check
-	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(((int)(context)));
+	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(static_cast<int>(context));
 	if (itGumpFound == client->m_mapOpenedGumps.end() || (*itGumpFound).second <= 0)
 		return true;
 	(*itGumpFound).second--;
@@ -2256,7 +2256,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 		textLength = MAX_TALK_BUFFER - 1;
 
 	NCHAR text[MAX_TALK_BUFFER];
-	readStringUNICODE((WCHAR*)text, textLength, false);
+	readStringUNICODE(reinterpret_cast<WCHAR *>(text), textLength, false);
 
 	client->Event_ChatText(text, textLength, CLanguageID(language));
 	return true;
@@ -2283,7 +2283,7 @@ bool PacketChatButton::onReceive(NetState* net)
 
 	skip(1); // 0x00
 	NCHAR name[MAX_NAME_SIZE+1];
-	readStringUNICODE((WCHAR*)name, COUNTOF(name));
+	readStringUNICODE(reinterpret_cast<WCHAR *>(name), COUNTOF(name));
 
 	client->Event_ChatButton(name);
 	return true;
@@ -2462,7 +2462,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	EXTDATA_TYPE type = (EXTDATA_TYPE)readInt16();
+	EXTDATA_TYPE type = static_cast<EXTDATA_TYPE>(readInt16());
 	seek();
 
 #ifndef _MTNETWORK
@@ -2535,7 +2535,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	PARTYMSG_TYPE code = (PARTYMSG_TYPE)readByte();
+	PARTYMSG_TYPE code = static_cast<PARTYMSG_TYPE>(readByte());
 	switch (code)
 	{
 		case PARTYMSG_Add:
@@ -2567,7 +2567,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 
 			CGrayUID serial(readInt32());
-			NWORD* text = (NWORD*)Str_GetTemp();
+			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
 			int length = readStringNullUNICODE((WCHAR*)text, MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(serial, character->GetUID(), text, length);
 		} break;
@@ -2578,8 +2578,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			if (character->m_pParty == NULL)
 				return false;
 
-			NWORD* text = (NWORD*)Str_GetTemp();
-			int length = readStringNullUNICODE((WCHAR*)text, MAX_TALK_BUFFER);
+			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
+			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(CGrayUID(0), character->GetUID(), text, length);
 		} break;
 
@@ -2774,7 +2774,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 		128
 	};
 
-	ANIM_TYPE anim = (ANIM_TYPE)readInt32();
+	ANIM_TYPE anim = static_cast<ANIM_TYPE>(readInt32());
 	bool ok = false;
 	for (size_t i = 0; ok == false && i < COUNTOF(validAnimations); i++)
 		ok = (anim == validAnimations[i]);
@@ -2923,7 +2923,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 		return false;
 
 	BYTE code = readByte();
-	SKILLLOCK_TYPE state = (SKILLLOCK_TYPE)readByte();
+	SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
 
 	if (code >= STAT_BASE_QTY)
 		return false;
@@ -2977,7 +2977,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
 		return false;
 
 	skip(2); // unknown
-	SPELL_TYPE spell = (SPELL_TYPE)readInt16();
+	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
 
 	if (IsSetMagicFlags(MAGICF_PRECAST))
 	{
@@ -2995,7 +2995,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
 			character->m_atMagery.m_Spell = spell;
 			client->m_Targ_UID = character->GetUID();
 			client->m_Targ_PrvUID = character->GetUID();
-			character->Skill_Start((SKILL_TYPE)skill);
+			character->Skill_Start(static_cast<SKILL_TYPE>(skill));
 			return true;
 		}
 	}
@@ -3369,7 +3369,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	if (character->GetUID() != serial)
 		return false;
 
-	EXTAOS_TYPE type = (EXTAOS_TYPE)readInt16();
+	EXTAOS_TYPE type = static_cast<EXTAOS_TYPE>(readInt16());
 	seek();
 	
 
@@ -3498,7 +3498,7 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	ITEMID_TYPE id = (ITEMID_TYPE)readInt32();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
 	WORD x = readInt32();
 	skip(1); // 0x00
@@ -3534,7 +3534,7 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	ITEMID_TYPE id = (ITEMID_TYPE)readInt32();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
 	WORD x = readInt32();
 	skip(1); // 0x00
@@ -3595,7 +3595,7 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	ITEMID_TYPE id = (ITEMID_TYPE)(readInt32() + ITEMID_MULTI);
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32() + ITEMID_MULTI);
 	skip(1); // 0x00
 	WORD x = readInt32();
 	skip(1); // 0x00
@@ -3713,7 +3713,7 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	ITEMID_TYPE id = (ITEMID_TYPE)readInt32();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
 	WORD x = readInt32();
 	skip(1); // 0x00
@@ -3749,7 +3749,7 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	ITEMID_TYPE id = (ITEMID_TYPE)readInt32();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
 	WORD x = readInt32();
 	skip(1); // 0x00
@@ -3960,7 +3960,7 @@ bool PacketBugReport::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 
-	BUGREPORT_TYPE type = (BUGREPORT_TYPE)readInt16();
+	BUGREPORT_TYPE type = static_cast<BUGREPORT_TYPE>(readInt16());
 
 	TCHAR text[MAX_TALK_BUFFER];
 	int textLength = readStringNullNUNICODE(text, MAX_TALK_BUFFER, MAX_TALK_BUFFER-1);
@@ -3990,7 +3990,7 @@ bool PacketClientType::onReceive(NetState* net)
 		return false;
 
 	skip(2); // ..count?
-	GAMECLIENT_TYPE type = (GAMECLIENT_TYPE)readInt32();
+	GAMECLIENT_TYPE type = static_cast<GAMECLIENT_TYPE>(readInt32());
 
 	net->m_clientType = type;
 	return true;
@@ -4126,7 +4126,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 	CItem* item;
 	for (int i = 0; i < layerCount; i++)
 	{
-		layer = (LAYER_TYPE)readInt16();
+		layer = static_cast<LAYER_TYPE>(readInt16());
 
 		item = character->LayerFind(layer);
 		if (item == NULL)

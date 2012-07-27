@@ -67,7 +67,7 @@ LPCTSTR CGrayMapBlockState::GetTileName( DWORD dwID )	// static
 	else
 	{
 		dwID -= TERRAIN_QTY;
-		CGrayItemInfo item( (ITEMID_TYPE) dwID );
+		CGrayItemInfo item(static_cast<ITEMID_TYPE>(dwID));
 		strcpy( pStr, item.m_name );
 	}
 	return( pStr );

@@ -218,7 +218,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 				}
 				else
 				{
-					m_range	= (WORD) piVal[0];
+					m_range	= static_cast<WORD>(piVal[0]);
 				}
 			}
 			return( true );
@@ -228,7 +228,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_RESLEVEL:
 			return( SetResLevel(s.GetArgVal()) );
 		case OBC_RESDISPDNHUE:
-			SetResDispDnHue( (HUE_TYPE) s.GetArgVal() );
+			SetResDispDnHue(static_cast<HUE_TYPE>(s.GetArgVal()));
 			return( true );
 		case OBC_TEVENTS:
 			return( m_TEvents.r_LoadVal( s, RES_EVENTS ));

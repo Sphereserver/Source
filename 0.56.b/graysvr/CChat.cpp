@@ -468,7 +468,7 @@ void CChat::WhereIs(CChatChanMember * pBy, LPCTSTR pszName ) const
 		if (! pClient->IsChatActive() || !pClient->GetChannel())
 			sprintf(pszMsg, "%s is not currently in a conference.", pszName);
 		else
-			sprintf(pszMsg, "%s is in conference '%s'.", (LPCTSTR) pszName, (LPCTSTR) pClient->GetChannel()->GetName());
+			sprintf(pszMsg, "%s is in conference '%s'.", static_cast<LPCTSTR>(pszName), static_cast<LPCTSTR>(pClient->GetChannel()->GetName()));
 		CGString sFrom;
 		DecorateName(sFrom, NULL, true);
 		pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, pszMsg);
@@ -564,7 +564,7 @@ void CChat::DecorateName(CGString &sName, const CChatChanMember * pMember, bool 
 	if (!pMember || !pChannel)
 		sName.Format("%i%s", iResult, "SYSTEM");
 	else
-		sName.Format("%i%s", iResult, (LPCTSTR) pMember->GetChatName());
+		sName.Format("%i%s", iResult, static_cast<LPCTSTR>(pMember->GetChatName()));
 }
 
 void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
@@ -592,7 +592,7 @@ void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
 		for (unsigned int attempts = 2; attempts <= g_Accounts.Account_GetCount(); attempts++)
 		{
 			sTempName.Format("%s (%u)", pszName, attempts);
-			if (g_Accounts.Account_FindChat((LPCTSTR)sTempName) == NULL)
+			if (g_Accounts.Account_FindChat(static_cast<LPCTSTR>(sTempName)) == NULL)
 				break;
 
 			sTempName.Empty();

@@ -220,7 +220,7 @@ int CvtSystemToNUNICODE( NCHAR * pOut, int iSizeOutChars, LPCTSTR pInp, int iSiz
 			0,         // character-type options
 			pInp, // address of string to map
 			iSizeInBytes,      // number of bytes in string
-			(LPWSTR) pOut,  // address of wide-character buffer
+			reinterpret_cast<LPWSTR>(pOut),  // address of wide-character buffer
 			iSizeOutChars        // size of buffer
 			);
 		if ( iOutTmp <= 0 )
@@ -237,7 +237,7 @@ int CvtSystemToNUNICODE( NCHAR * pOut, int iSizeOutChars, LPCTSTR pInp, int iSiz
 		// flip all the words to network order .
 		for ( ; iOut<iOutTmp; iOut++ )
 		{
-			pOut[iOut] = *((WCHAR*)&(pOut[iOut]));
+			pOut[iOut] = *(reinterpret_cast<WCHAR *>(&(pOut[iOut])));
 		}
 	}
 	else

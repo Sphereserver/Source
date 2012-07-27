@@ -54,10 +54,10 @@ bool CElementDef::SetValStr( void * pBase, LPCTSTR pszVal ) const
 		case ELEM_VOID:
 			return false;
 		case ELEM_STRING:
-			strcpylen( (TCHAR*) pValPtr, pszVal, GetValLength()-1 );
+			strcpylen(static_cast<TCHAR *>(pValPtr), pszVal, GetValLength() - 1);
 			return( true );
 		case ELEM_CSTRING:
-			*((CGString*)pValPtr) = pszVal;
+			*static_cast<CGString *>(pValPtr) = pszVal;
 			return true;
 		case ELEM_BOOL:
 		case ELEM_BYTE:
@@ -91,10 +91,10 @@ bool CElementDef::GetValStr( const void * pBase, CGString & sVal ) const
 		case ELEM_VOID:
 			return false;
 		case ELEM_STRING:
-			sVal = (TCHAR*) pValPtr;
+			sVal = static_cast<TCHAR *>(pValPtr);
 			return( true );
 		case ELEM_CSTRING:
-			sVal = *((CGString*)pValPtr);
+			sVal = *static_cast<CGString *>(pValPtr);
 			return true;
 		case ELEM_BOOL:
 		case ELEM_BYTE:

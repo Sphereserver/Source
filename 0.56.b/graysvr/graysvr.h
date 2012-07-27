@@ -242,7 +242,7 @@ public:
 	}
 	LOGL_TYPE GetLogLevel() const
 	{
-		return((LOGL_TYPE)( m_dwMsgMask & 0x0f ));
+		return static_cast<LOGL_TYPE>(m_dwMsgMask & 0x0f);
 	}
 	void SetLogLevel( LOGL_TYPE level )
 	{
@@ -255,7 +255,7 @@ public:
 	}
 	bool IsLogged( DWORD wMask ) const
 	{
-		return( IsLoggedMask(wMask) || IsLoggedLevel((LOGL_TYPE)wMask) );
+		return IsLoggedMask(wMask) || IsLoggedLevel(static_cast<LOGL_TYPE>(wMask));
 	}
 
 	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );

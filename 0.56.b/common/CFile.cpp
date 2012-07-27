@@ -71,7 +71,7 @@ CGString CGFile::GetMergedFileName( LPCTSTR pszBase, LPCTSTR pszName ) // static
 	{
 		strcat( szFilePath, pszName );
 	}
-	return( (CGString) szFilePath );
+	return static_cast<CGString>(szFilePath);
 }
 
 LPCTSTR CGFile::GetFilesTitle( LPCTSTR pszPath )	// static
@@ -124,7 +124,7 @@ bool CGFile::OpenBase( void * pExtra )
 	ADDTOCALLSTACK("CGFile::OpenBase");
 	UNREFERENCED_PARAMETER(pExtra);
 
-	return( ((CFile*)this)->Open(GetFilePath(), GetMode()) );
+	return static_cast<CFile *>(this)->Open(GetFilePath(), GetMode());
 }
 
 void CGFile::CloseBase()

@@ -875,7 +875,7 @@ public:
 
 	CREID_TYPE GetCorpseType() const
 	{
-		return( (CREID_TYPE) GetAmount());	// What does the corpse look like ?
+		return static_cast<CREID_TYPE>(GetAmount());	// What does the corpse look like ?
 	}
 	void  SetCorpseType( CREID_TYPE id )
 	{
@@ -2695,7 +2695,7 @@ public:
 	}
 	int GetSight() const
 	{
-		return( (int)m_iVisualRange );
+		return static_cast<int>(m_iVisualRange);
 	}
 	void SetSight(BYTE newSight)
 	{

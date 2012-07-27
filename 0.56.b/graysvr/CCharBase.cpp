@@ -258,7 +258,7 @@ bool CCharBase::r_LoadVal( CScript & s )
 			break;
 		case CBC_ICON:
 			{
-				ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 				if ( id < 0 || id >= ITEMID_MULTI )
 				{
 					return( false );
@@ -268,7 +268,7 @@ bool CCharBase::r_LoadVal( CScript & s )
 			break;
 		case CBC_ID:
 			{
-				return SetDispID( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()));
+				return SetDispID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())));
 			}
 		case CBC_INT:
 			m_Int = s.GetArgVal();
@@ -316,7 +316,7 @@ bool CCharBase::r_Load( CScript & s )
 
 	if ( !IsValidDispID(GetDispID()) )
 	{
- 		g_Log.Event(LOGL_WARN, "Char script '%s' has bad DISPID 0%x. Defaulting to 0%x.\n", GetResourceName(), GetDispID(), (int)CREID_MAN);
+ 		g_Log.Event(LOGL_WARN, "Char script '%s' has bad DISPID 0%x. Defaulting to 0%x.\n", GetResourceName(), GetDispID(), static_cast<int>(CREID_MAN));
 		m_dwDispIndex = CREID_MAN;
 	}
 	if ( m_Can == CAN_C_INDOORS )

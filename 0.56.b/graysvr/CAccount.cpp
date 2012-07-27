@@ -85,7 +85,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 
 											//	auto-creating account files
 			if ( !Account_SaveAll() )
-				g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", (LPCTSTR)s.GetFilePath());
+				g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
 			else
 				return true;
 		}
@@ -241,7 +241,7 @@ CAccountRef CAccounts::Account_Get( size_t index )
 bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5 )
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
-	if ( (pszName == NULL) || !strlen(pszName) )
+	if (pszName == NULL || pszName[0] == '\0')
 	{
 		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Username is required to add an account.\n" );
 		return false;
@@ -250,7 +250,7 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	CAccountRef pAccount = Account_Find( pszName );
 	if ( pAccount != NULL )
 	{
-		pSrc->SysMessagef( "Account '%s' already exists\n", (LPCTSTR) pszName );
+		pSrc->SysMessagef( "Account '%s' already exists\n", pszName );
 		return false;
 	}
 	
@@ -341,7 +341,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 		{
 			iCount--;
 			pSrc->SysMessagef( "Can't Delete PrivLevel %d Account '%s' this way.\n",
-				pAccount->GetPrivLevel(), (LPCTSTR) pAccount->GetName() );
+				pAccount->GetPrivLevel(), static_cast<LPCTSTR>(pAccount->GetName()) );
 		}
 		else
 		{
@@ -517,18 +517,16 @@ PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
 	ADDTOCALLSTACK("CAccount::GetPrivLevelText");
 	int level = FindTable( pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels)-1 );
 	if ( level >= 0 )
-	{
-		return( (PLEVEL_TYPE) level );
-	}
+		return static_cast<PLEVEL_TYPE>(level);
 
 	if ( ! strnicmp( pszFlags, "CO", 2 ))
 		return PLEVEL_Counsel;
 
 	level = Exp_GetVal( pszFlags );
 	if ( level < 0 || level > PLEVEL_QTY )
-		return( PLEVEL_Player );
+		return PLEVEL_Player;
 
-	return( (PLEVEL_TYPE) level );
+	return static_cast<PLEVEL_TYPE>(level);
 }
 
 CAccount::CAccount( LPCTSTR pszName, bool fGuest )
@@ -664,7 +662,7 @@ size_t CAccount::AttachChar( CChar * pChar )
 		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
 		{
-			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", (LPCTSTR) GetName(), iQty );
+			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", static_cast<LPCTSTR>(GetName()), iQty );
 		}
 	}
 
@@ -724,7 +722,7 @@ void CAccount::OnLogin( CClient * pClient )
 		// link the admin client.
 		g_Serv.m_iAdminClients++;
 	}
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), (LPCTSTR) GetName());
+	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), static_cast<LPCTSTR>(GetName()));
 }
 
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
@@ -761,12 +759,12 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	if ( fBlock )
 	{
 		SetPrivFlags( PRIV_BLOCKED );
-		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_ACC_BLOCK), (LPCTSTR) GetName() );
+		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_ACC_BLOCK), static_cast<LPCTSTR>(GetName()) );
 	}
 
 	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
 
-	char *z = Str_GetTemp();
+	TCHAR * z = Str_GetTemp();
 	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_ACC_KICK), GetName(), pszAction, pSrc->GetName());
 	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, "%s\n", z);
 	
@@ -1219,12 +1217,12 @@ bool CAccount::r_LoadVal( CScript & s )
 				CChar * pChar = uid.CharFind();
 				if (pChar == NULL)
 				{
-					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", (DWORD) uid, (LPCTSTR) GetName()));
+					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(GetName())));
 					return( false );
 				}
 				if ( ! IsMyAccountChar( pChar ))
 				{
-					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", (DWORD) uid, (LPCTSTR) pChar->GetName(), (LPCTSTR) GetName()));
+					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName())));
 					return( false );
 				}
 				AttachChar(pChar);
@@ -1338,7 +1336,7 @@ void CAccount::r_Write(CScript &s)
 	if ( GetPrivLevel() >= PLEVEL_QTY )
 		return;
 
-	s.WriteSection("%s", (LPCTSTR)m_sName);
+	s.WriteSection("%s", static_cast<LPCTSTR>(m_sName));
 
 	if ( GetPrivLevel() != PLEVEL_Player )
 	{
@@ -1406,7 +1404,7 @@ void CAccount::r_Write(CScript &s)
 	}
 	if ( ! m_sChatName.IsEmpty())
 	{
-		s.WriteKey( "CHATNAME", (LPCTSTR) m_sChatName );
+		s.WriteKey( "CHATNAME", static_cast<LPCTSTR>(m_sChatName));
 	}
 	if ( m_lang.IsDef())
 	{

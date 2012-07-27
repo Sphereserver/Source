@@ -131,7 +131,7 @@ public:
 	{
 		// Get the buffer the key is in. 
 		ASSERT(m_Mem.GetData());
-		return((TCHAR *) m_Mem.GetData());
+		return reinterpret_cast<TCHAR *>(m_Mem.GetData());
 	}
 	bool ParseKey( LPCTSTR pszKey );
 	void ParseKeyLate();
@@ -181,7 +181,7 @@ public:
 	bool SeekContext( CScriptLineContext LineContext )
 	{
 		m_iLineNum = LineContext.m_iLineNum;
-		return( Seek( LineContext.m_lOffset, SEEK_SET ) == (DWORD)LineContext.m_lOffset );
+		return Seek( LineContext.m_lOffset, SEEK_SET ) == static_cast<DWORD>(LineContext.m_lOffset);
 	}
 	CScriptLineContext GetContext() const
 	{
