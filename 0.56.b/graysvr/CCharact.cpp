@@ -3104,7 +3104,7 @@ bool CChar::CheckLocation( bool fStanding )
 				return( false );
 			case IT_SPELL:
 				{
-					SPELL_TYPE Spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itSpell.m_spell);
+					SPELL_TYPE Spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
 					OnSpellEffect( Spell, pItem->m_uidLink.CharFind(), pItem->m_itSpell.m_spelllevel, pItem );
 					const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(Spell);
 					if ( pSpellDef )

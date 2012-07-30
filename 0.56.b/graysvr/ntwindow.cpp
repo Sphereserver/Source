@@ -262,10 +262,10 @@ void CNTWindow::CStatusWnd::FillStats()
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile.IsEnabled((PROFILE_TYPE) i) == false)
+			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
 				continue;
 
-			capture.SysMessagef("'%-10s' = %s\n", profile.GetName((PROFILE_TYPE) i), profile.GetDescription((PROFILE_TYPE) i ));
+			capture.SysMessagef("'%-10s' = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)));
 		}
 	}
 }

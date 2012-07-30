@@ -35,7 +35,7 @@ inline void byteReverse( unsigned char *buffer, unsigned int longs )
     unsigned int temp;
     do
 	{
-		temp = (unsigned int)( (unsigned int)buffer[3] << 8 | buffer[2] ) << 16 | ( (unsigned int)buffer[1] << 8 | buffer[0] );
+		temp = static_cast<unsigned int>( static_cast<unsigned int>(buffer[3]) << 8 | buffer[2] ) << 16 | ( static_cast<unsigned int>(buffer[1]) << 8 | buffer[0] );
 		reinterpret_cast<unsigned int *>(buffer)[0] = temp;
 		buffer += 4;
     }
@@ -235,7 +235,7 @@ void CMD5::finalize()
 	update();
 
 	// Reverse our Digest
-	byteReverse( (unsigned char*)m_buffer, 4 );
+	byteReverse( reinterpret_cast<unsigned char *>(m_buffer), 4 );
 
 	m_finalized = true;
 }

@@ -330,7 +330,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					if ( pArgs && *pArgs )
 					{
 						iCount = 1;
-						dResult = RES_GET_INDEX( (int)MakeFloatMath( pArgs )); // RES_GET_INDEX
+						dResult = RES_GET_INDEX(static_cast<int>(MakeFloatMath(pArgs))); // RES_GET_INDEX
 					}
 					else
 					{
@@ -349,7 +349,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						break;
 					} 
 
-					LPCTSTR tCmd = (LPCTSTR)ppCmd[0];
+					LPCTSTR tCmd = ppCmd[0];
 					RealType dArgument = MakeFloatMath( tCmd );
 
 					if ( iCount < 2 )
@@ -368,7 +368,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 						}
 						else
 						{
-							tCmd = (LPCTSTR)ppCmd[1];
+							tCmd = ppCmd[1];
 							RealType dBase = MakeFloatMath( tCmd );
 							if ( dBase <= 0 )
 							{
@@ -481,7 +481,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					else
 					{
 						cparg1 = ppCmd[2];
-						dResult = (int)Str_IndexOf(ppCmd[0],ppCmd[1],(iCount==3)?(int)MakeFloatMath(cparg1):0);
+						dResult = Str_IndexOf(ppCmd[0], ppCmd[1], (iCount == 3)? static_cast<int>(MakeFloatMath(cparg1)) : 0);
 					}
 				} break;
 
@@ -519,7 +519,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 					{
 						cparg1 = ppCmd[0];
 						cparg2 = ppCmd[1];
-						dResult = (int) Calc_GetBellCurve( (int)MakeFloatMath( cparg1 ), (int)MakeFloatMath( cparg2 ));
+						dResult = Calc_GetBellCurve(static_cast<int>(MakeFloatMath(cparg1)), static_cast<int>(MakeFloatMath(cparg2)));
 					}
 				} break;
 

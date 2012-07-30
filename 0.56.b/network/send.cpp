@@ -54,7 +54,7 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(
  *
  *
  ***************************************************************************/
-PacketWeb::PacketWeb(const CClient* target, BYTE* data, size_t length) : PacketSend(0, 0, PRI_NORMAL)
+PacketWeb::PacketWeb(const CClient * target, const BYTE * data, size_t length) : PacketSend(0, 0, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWeb::PacketWeb");
 
@@ -65,7 +65,7 @@ PacketWeb::PacketWeb(const CClient* target, BYTE* data, size_t length) : PacketS
 		push(target);
 }
 
-void PacketWeb::setData(BYTE* data, size_t length)
+void PacketWeb::setData(const BYTE * data, size_t length)
 {
 	seek();
 	writeData(data, length);

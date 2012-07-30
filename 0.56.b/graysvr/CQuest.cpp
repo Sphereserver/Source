@@ -476,8 +476,8 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	{
 		SendRemoveList( pCharRemove, false );
 		// Tell the others he is gone
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_LEAVE_1 ), (LPCTSTR) pCharRemove->GetName(), (LPCTSTR) pszForceMsg);
+		TCHAR * pszMsg = Str_GetTemp();
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_LEAVE_1 ), static_cast<LPCTSTR>(pCharRemove->GetName()), static_cast<LPCTSTR>(pszForceMsg));
 		SysMessageAll(pszMsg);
 	}
 
@@ -542,10 +542,10 @@ bool CPartyDef::DeclineEvent( CChar * pCharDecline, CGrayUID uidInviter )	// sta
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
 
 	TCHAR * sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), (LPCTSTR) pCharInviter->GetName() );
+	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), static_cast<LPCTSTR>(pCharInviter->GetName()));
 	CPartyDef::SysMessageStatic( pCharDecline, sTemp );
 	sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), (LPCTSTR) pCharDecline->GetName() );
+	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), static_cast<LPCTSTR>(pCharDecline->GetName()));
 	CPartyDef::SysMessageStatic( pCharInviter, sTemp );
 
 	return( true );
@@ -606,8 +606,8 @@ bool CPartyDef::AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bFor
 			return false;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_JOINED ), (LPCTSTR) pCharAccept->GetName());
+	TCHAR * pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_JOINED ), static_cast<LPCTSTR>(pCharAccept->GetName()));
 
 	if ( pParty == NULL )
 	{
@@ -787,7 +787,7 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if ( pszKey[0] != '\0' )
 			{
-				CGrayUID charToCheck( (DWORD) Exp_GetVal(pszKey) );
+				CGrayUID charToCheck(static_cast<DWORD>(Exp_GetVal(pszKey)));
 				CChar * pCharToCheck = charToCheck.CharFind();
 
 				sVal.FormatVal( pCharToCheck != NULL && pCharToCheck->m_pParty == this );
@@ -820,31 +820,31 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 		case PDC_TAGAT:
 		{
- 			pszKey += 5;	// eat the 'TAGAT'
- 			if ( *pszKey == '.' )	// do we have an argument?
+ 			pszKey += 5; // eat the 'TAGAT'
+ 			if ( *pszKey == '.' ) // do we have an argument?
  			{
  				SKIP_SEPARATORS( pszKey );
  				size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
 				if ( iQty >= m_TagDefs.GetCount() )
- 					return( false );	// tryig to get non-existant tag
+ 					return( false ); // trying to get non-existant tag
 
 				CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
  				
  				if ( !pTagAt )
- 					return( false );	// tryig to get non-existant tag
+ 					return( false ); // trying to get non-existant tag
 
  				SKIP_SEPARATORS( pszKey );
  				if ( ! *pszKey )
  				{
- 					sVal.Format( "%s=%s", (LPCTSTR) pTagAt->GetKey(), (LPCTSTR) pTagAt->GetValStr() );
+ 					sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
  					return( true );
  				}
- 				else if ( !strnicmp( pszKey, "KEY", 3 ))	// key?
+ 				else if ( !strnicmp( pszKey, "KEY", 3 )) // key?
  				{
- 					sVal = (LPCTSTR) pTagAt->GetKey();
+ 					sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
  					return( true );
  				}
- 				else if ( !strnicmp( pszKey, "VAL", 3 ))	// val?
+ 				else if ( !strnicmp( pszKey, "VAL", 3 )) // val?
  				{
  					sVal = pTagAt->GetValStr();
  					return( true );
@@ -1008,7 +1008,7 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 				while ( *pszArg != ' ' ) { pszArg++; x++; }
 				strcpylen(pUid, __pszArg, ++x);
 
-				toSysmessage = (DWORD) Exp_GetVal(pUid);
+				toSysmessage = static_cast<DWORD>(Exp_GetVal(pUid));
 			}
 
 			SKIP_SEPARATORS( pszArg );

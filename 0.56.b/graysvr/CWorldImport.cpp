@@ -247,14 +247,14 @@ bool CImportFile::ImportSCP( CScript & s, WORD wModeFlags )
 			ImportFix();
 			if ( wModeFlags & IMPFLAGS_CHARS )
 			{
-				m_pCurObj = CChar::CreateBasic( (CREID_TYPE) g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()));
+				m_pCurObj = CChar::CreateBasic(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr())));
 			}
 		}
 		else if ( s.IsSectionType( "WORLDITEM" ) || s.IsSectionType("WI"))
 		{
 			if ( wModeFlags & IMPFLAGS_ITEMS )
 			{
-				m_pCurObj = CItem::CreateTemplate( (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
+				m_pCurObj = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, s.GetArgStr())));
 			}
 		}
 		else
@@ -286,7 +286,7 @@ bool CImportFile::ImportSCP( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey( "LAYER" ))
 			{
-				m_pCurSer->m_layer = (LAYER_TYPE) s.GetArgVal();
+				m_pCurSer->m_layer = static_cast<LAYER_TYPE>(s.GetArgVal());
 			}
 			else
 			{
@@ -386,7 +386,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			{
 				if ( m_pCurObj != NULL )
 					return( false );
-				pItem = CItem::CreateTemplate( (ITEMID_TYPE) ATOI( pArg ));
+				pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(ATOI(pArg)));
 				pItem->SetName( sName );
 				m_pCurObj = pItem;
 				m_pCurSer->m_pObj = pItem;
@@ -404,7 +404,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("LAYER" ))
 			{
-				m_pCurSer->m_layer = (LAYER_TYPE) ATOI(pArg);
+				m_pCurSer->m_layer = static_cast<LAYER_TYPE>(ATOI(pArg));
 				continue;
 			}
 			else if (pItem == NULL)
@@ -532,7 +532,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("BODY" ))
 			{
-				pChar->SetID( (CREID_TYPE) ATOI(pArg));
+				pChar->SetID(static_cast<CREID_TYPE>(ATOI(pArg)));
 				continue;
 			}
 			else if ( s.IsKey("SKIN" ))
@@ -542,14 +542,14 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("DIR" ))
 			{
-				pChar->m_dirFace = (DIR_TYPE) ATOI(pArg);
+				pChar->m_dirFace = static_cast<DIR_TYPE>(ATOI(pArg));
 				if ( pChar->m_dirFace < 0 || pChar->m_dirFace >= DIR_QTY )
 					pChar->m_dirFace = DIR_SE;
 				continue;
 			}
 			else if ( s.IsKey("XBODY" ))
 			{
-				pChar->m_prev_id = (CREID_TYPE) ATOI(pArg);
+				pChar->m_prev_id = static_cast<CREID_TYPE>(ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("XSKIN" ))
@@ -559,7 +559,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("FONT" ))
 			{
-				pChar->m_fonttype = (FONT_TYPE) ATOI(pArg);
+				pChar->m_fonttype = static_cast<FONT_TYPE>(ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("KARMA" ))
@@ -603,7 +603,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKeyHead( "SKILL", 5 ))
 			{
-				SKILL_TYPE skill = (SKILL_TYPE) ATOI( &(s.GetKey()[5]));
+				SKILL_TYPE skill = static_cast<SKILL_TYPE>(ATOI( &(s.GetKey()[5])));
 				if ( pChar->IsSkillBase(skill) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 				{
 					pChar->Skill_SetBase( skill, ATOI(pArg));

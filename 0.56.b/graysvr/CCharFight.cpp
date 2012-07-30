@@ -1724,7 +1724,7 @@ int CChar::CalcArmorDefense() const
 		// IsTypeSpellable() ? ! IT_WAND
 		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
 		{
-			SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itSpell.m_spell);
+			SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
 			switch (spell)
 			{
 				case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.

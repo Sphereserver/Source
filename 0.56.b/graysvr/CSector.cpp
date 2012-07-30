@@ -110,10 +110,10 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal(GetItemComplexity());
 			return true;
 		case SC_SEASON:
-			sVal.FormatVal((int)GetSeason());
+			sVal.FormatVal(static_cast<int>(GetSeason()));
 			return true;
 		case SC_WEATHER:
-			sVal.FormatVal((int)GetWeather());
+			sVal.FormatVal(static_cast<int>(GetWeather()));
 			return true;
 	}
 	EXC_CATCH;
@@ -141,10 +141,10 @@ bool CSector::r_LoadVal( CScript &s )
 			SetWeatherChance( true, s.HasArgs() ? s.GetArgVal() : -1 );
 			return( true );
 		case SC_SEASON:
-			SetSeason(s.HasArgs() ? (SEASON_TYPE) s.GetArgVal() : SEASON_Summer);
+			SetSeason(s.HasArgs() ? static_cast<SEASON_TYPE>(s.GetArgVal()) : SEASON_Summer);
 			return (true);
 		case SC_WEATHER:
-			SetWeather(s.HasArgs() ? (WEATHER_TYPE) s.GetArgVal() : WEATHER_DRY);
+			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_DRY);
 			return( true );
 	}
 	EXC_CATCH;
@@ -199,7 +199,7 @@ bool CSector::r_Verb( CScript & s, CTextConsole * pSrc )
 				SetLight( (s.HasArgs()) ? s.GetArgVal() : -1 );
 			break;
 		case SEV_RAIN:
-			SetWeather( (s.HasArgs()) ? ((WEATHER_TYPE) s.GetArgVal()) : WEATHER_RAIN );
+			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_RAIN);
 			break;
 		case SEV_RESPAWN:
 			( toupper( s.GetArgRaw()[0] ) == 'A' ) ? g_World.RespawnDeadNPCs() : RespawnDeadNPCs();
@@ -209,7 +209,7 @@ bool CSector::r_Verb( CScript & s, CTextConsole * pSrc )
 			( toupper( s.GetArgRaw()[0] ) == 'A' ) ? g_World.Restock() : Restock();
 			break;
 		case SEV_SEASON:
-			SetSeason( (SEASON_TYPE) s.GetArgVal() );
+			SetSeason(static_cast<SEASON_TYPE>(s.GetArgVal()));
 			break;
 		case SEV_SNOW:
 			SetWeather( WEATHER_SNOW );
@@ -1096,7 +1096,7 @@ void CSector::OnTick(int iPulseCount)
 
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.EventDebug("char 0%lx '%s'\n", (DWORD)pChar->GetUID(), pChar->GetName());
+		g_Log.EventDebug("char 0%lx '%s'\n", static_cast<DWORD>(pChar->GetUID()), pChar->GetName());
 		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUGSUB_END;
 	}
@@ -1141,7 +1141,7 @@ void CSector::OnTick(int iPulseCount)
 
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.EventError("item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
+		g_Log.EventError("item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
 		g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		
 		EXC_DEBUGSUB_END;
@@ -1152,7 +1152,7 @@ void CSector::OnTick(int iPulseCount)
 		{
 			PAUSECALLSTACK;
 			CPointMap pt = GetBasePoint();
-			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());
+			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			UNPAUSECALLSTACK;
 			EXC_CATCH_SUB(&e, "Sector");
@@ -1161,7 +1161,7 @@ void CSector::OnTick(int iPulseCount)
 		catch (...)
 		{
 			CPointMap pt = GetBasePoint();
-			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", (DWORD)pItem->GetUID(), pItem->GetName(), pItem->GetTimerAdjusted(), (int)pItem->GetType());\
+			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));\
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			EXC_CATCH_SUB(NULL, "Sector");
 			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);

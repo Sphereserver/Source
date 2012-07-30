@@ -139,8 +139,8 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("point '%d,%d,%d,%d' type '%d' [0%lx]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, (int)Type, 
-		pCharSrc ? (DWORD)pCharSrc->GetUID() : 0);
+	g_Log.EventDebug("point '%d,%d,%d,%d' type '%d' [0%lx]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<int>(Type), 
+		pCharSrc ? static_cast<DWORD>(pCharSrc->GetUID()) : 0);
 	EXC_DEBUG_END;
 	return NULL;
 }
@@ -201,7 +201,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 		Height = pItemDef->GetHeight();
 		if ( pItemDef->GetID() != pItem->GetDispID() ) //not a parent item
 		{
-			pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pItem->GetDispID() );
+			pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
 			if ( ! pDupeDef )
 			{
 				g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
@@ -272,7 +272,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				Height = pItemDef->GetHeight();
 				if ( pItemDef->GetID() != pMultiItem->GetDispID() ) //not a parent item
 				{
-					pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pMultiItem->GetDispID() );
+					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
 					if ( ! pDupeDef )
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
@@ -335,7 +335,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 			Height = pItemDef->GetHeight();
 			if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
 			{
-				pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pStatic->GetDispID() );
+				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
 				if ( ! pDupeDef )
 				{
 					g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
@@ -929,7 +929,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 					}
 					else //non-parent item
 					{
-						pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pStatic->GetDispID());
+						pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
 						if ( ! pDupeDef )
 						{
 							g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
@@ -1028,7 +1028,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 									}
 									else //non-parent item
 									{
-										pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pMultiItem->GetDispID());
+										pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
 										if ( pDupeDef == NULL )
 										{
 											g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
@@ -1099,7 +1099,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 				}
 				else //non-parent item
 				{
-					pDupeDef = CItemBaseDupe::GetDupeRef((ITEMID_TYPE) pItem->GetDispID());
+					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
 					if ( ! pDupeDef )
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
@@ -1241,9 +1241,9 @@ IT_TYPE CWorld::GetTerrainItemType( DWORD dwTerrainIndex )
 	if ( !pRes )
 		return IT_NORMAL;
 
-	CItemTypeDef * pItemTypeDef = dynamic_cast <CItemTypeDef*> (pRes);
+	const CItemTypeDef * pItemTypeDef = dynamic_cast<CItemTypeDef *>(pRes);
 	if ( !pItemTypeDef )
 		return IT_NORMAL;
 
-	return (IT_TYPE) pItemTypeDef->GetItemType();
+	return static_cast<IT_TYPE>(pItemTypeDef->GetItemType());
 }

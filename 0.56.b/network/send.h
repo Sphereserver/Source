@@ -42,8 +42,8 @@ public:
 class PacketWeb : public PacketSend
 {
 public:
-	PacketWeb(const CClient* target = NULL, BYTE* data = NULL, size_t length = 0);
-	void setData(BYTE* data, size_t length);
+	PacketWeb(const CClient * target = NULL, const BYTE * data = NULL, size_t length = 0);
+	void setData(const BYTE * data, size_t length);
 };
 
 /***************************************************************************

@@ -571,7 +571,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, static_cast<void *>(pSrc));
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, static_cast<LPCTSTR>(sVal), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }
@@ -707,10 +707,10 @@ void CRegionBase::r_WriteBase( CScript &s )
 {
 	ADDTOCALLSTACK("CRegionBase::r_WriteBase");
 	if ( GetName() && GetName()[0] )
-		s.WriteKey("NAME", GetName() );
+		s.WriteKey("NAME", GetName());
 
 	if ( ! m_sGroup.IsEmpty() )
-		s.WriteKey("GROUP", (LPCTSTR) m_sGroup );
+		s.WriteKey("GROUP", static_cast<LPCTSTR>(m_sGroup));
 
 	CRegionBase::r_WriteBody( s, "" );
 
@@ -964,30 +964,30 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			}
 		case RWC_TAGAT:
 			{
-				pszKey += 5;	// eat the 'TAGAT'
-				if ( *pszKey == '.' )	// do we have an argument?
+				pszKey += 5; // eat the 'TAGAT'
+				if ( *pszKey == '.' ) // do we have an argument?
 				{
 					SKIP_SEPARATORS( pszKey );
 					size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) ); 
 					if ( iQty >= m_TagDefs.GetCount() )
-						return( false );	// tryig to get non-existant tag
+						return( false ); // trying to get non-existant tag
 						
 					CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
 					if ( !pTagAt )
-						return( false );	// tryig to get non-existant tag
+						return( false ); // trying to get non-existant tag
 						
 					SKIP_SEPARATORS( pszKey );
 					if ( ! *pszKey )
 					{
-						sVal.Format( "%s=%s", (LPCTSTR) pTagAt->GetKey(), (LPCTSTR) pTagAt->GetValStr() );
+						sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
 						return( true );
 					}
-					else if ( !strnicmp( pszKey, "KEY", 3 ))	// key?
+					else if ( !strnicmp( pszKey, "KEY", 3 )) // key?
 					{
-						sVal = (LPCTSTR) pTagAt->GetKey();
+						sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
 						return( true );
 					}
-					else if ( !strnicmp( pszKey, "VAL", 3 ))	// val?
+					else if ( !strnicmp( pszKey, "VAL", 3 )) // val?
 					{
 						sVal = pTagAt->GetValStr();
 						return( true );
@@ -998,7 +998,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			} 
 			break;
 		case RWC_TAG0:
-			fZero	= true;
+			fZero = true;
 			pszKey++;
 		case RWC_TAG:	// "TAG" = get/set a local tag.
 			{	
@@ -1015,7 +1015,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, (LPCTSTR)sVal, static_cast<void *>(pSrc));
+	g_Log.EventDebug("command '%s' ret '%s' [%p]\n", pszKey, static_cast<LPCTSTR>(sVal), static_cast<void *>(pSrc));
 	EXC_DEBUG_END;
 	return false;
 }

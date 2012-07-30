@@ -1153,7 +1153,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 				return false;
 
 			AddItem(NULL,
-					(ITEMID_TYPE)Exp_GetVal(ppArgs[0]),
+					static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0])),
 					Exp_GetVal(ppArgs[1]),
 					Exp_GetVal(ppArgs[2]),
 					Exp_GetVal(ppArgs[3]));
@@ -1166,7 +1166,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 			if ( iQty != 4 )
 				return false;
 
-			ITEMID_TYPE id = (ITEMID_TYPE)Exp_GetVal(ppArgs[0]);
+			ITEMID_TYPE id = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0]));
 			if ( id <= 0 )
 				return false;
 
@@ -1215,7 +1215,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 				return false;
 
 			RemoveItem(NULL,
-					(ITEMID_TYPE)Exp_GetVal(ppArgs[0]),
+					static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0])),
 					Exp_GetVal(ppArgs[1]),
 					Exp_GetVal(ppArgs[2]),
 					Exp_GetVal(ppArgs[3]));
@@ -1399,7 +1399,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 				return false;
 
 			AddItem(NULL,
-					(ITEMID_TYPE)ATOI(ppArgs[0]),
+					static_cast<ITEMID_TYPE>(ATOI(ppArgs[0])),
 					ATOI(ppArgs[1]),
 					ATOI(ppArgs[2]),
 					ATOI(ppArgs[3]),
@@ -1544,7 +1544,7 @@ bool CItemMultiCustom::LoadValidItems()
 		{
 			for (int ii = 1; sm_szItemFiles[i][ii] != NULL; ii++)
 			{
-				ITEMID_TYPE itemid = (ITEMID_TYPE)ATOI(csvDataRow[sm_szItemFiles[i][ii]].c_str());
+				ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(ATOI(csvDataRow[sm_szItemFiles[i][ii]].c_str()));
 				if ( itemid <= 0 || itemid >= ITEMID_MULTI )
 					continue;
 

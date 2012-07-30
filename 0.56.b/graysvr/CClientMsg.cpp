@@ -51,7 +51,7 @@ void CClient::resendBuffs()
 			continue;
 		if ( !(pSpell->IsType(IT_SPELL)) )
 			continue;
-		iStatEffect = g_Cfg.GetSpellEffect( (SPELL_TYPE)RES_GET_INDEX(pSpell->m_itSpell.m_spell), pSpell->m_itSpell.m_spelllevel );
+		iStatEffect = g_Cfg.GetSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell)), pSpell->m_itSpell.m_spelllevel);
 		switch( pSpell->m_itSpell.m_spell )
 		{
 		case SPELL_Night_Sight:
@@ -1513,7 +1513,7 @@ void CClient::addTargetDeed( const CItem * pDeed )
 	// Place an item from a deed. preview all the stuff
 
 	ASSERT( m_Targ_UID == pDeed->GetUID());
-	ITEMID_TYPE iddef = (ITEMID_TYPE) RES_GET_INDEX( pDeed->m_itDeed.m_Type );
+	ITEMID_TYPE iddef = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pDeed->m_itDeed.m_Type));
 	m_tmUseItem.m_pParent = pDeed->GetParent();	// Cheat Verify.
 	addTargetItems( CLIMODE_TARG_USE_ITEM, iddef );
 }

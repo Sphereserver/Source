@@ -1265,14 +1265,14 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	ASSERT(pResBit);
 
 	// Find the ore type located here based on color.
-	const CRegionResourceDef * pOreDef = dynamic_cast <const CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
+	const CRegionResourceDef * pOreDef = dynamic_cast<const CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
 	if ( pOreDef == NULL )
 	{
 		return( NULL );
 	}
 
 	// Skill effects how much of the ore i can get all at once.
-	ITEMID_TYPE id = (ITEMID_TYPE) RES_GET_INDEX( pOreDef->m_ReapItem );
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pOreDef->m_ReapItem));
 	if ( id == ITEMID_NOTHING )
 	{
 		// I intended for there to be nothing here.
@@ -1392,7 +1392,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 
 	if ( pOreDef->IsType( IT_ORE ))
 	{
-		ITEMID_TYPE idIngot = (ITEMID_TYPE) RES_GET_INDEX( pOreDef->m_ttOre.m_IngotID );
+		ITEMID_TYPE idIngot = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pOreDef->m_ttOre.m_IngotID));
 		pIngotDef = CItemBase::FindItemBase(idIngot);
 		iIngotQty = 1;	// ingots per ore.
 	}

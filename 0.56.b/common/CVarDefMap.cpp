@@ -277,7 +277,7 @@ CVarDefCont * CVarDefMap::GetAtKey( LPCTSTR at )
 {
 	ADDTOCALLSTACK("CVarDefMap::GetAtKey");
 	CVarDefContTest * pVarBase = new CVarDefContTest(at);
-	DefSet::iterator i = m_Container.find((CVarDefCont*)pVarBase);
+	DefSet::iterator i = m_Container.find(pVarBase);
 	delete pVarBase;
 
 	if ( i != m_Container.end() )
@@ -303,7 +303,7 @@ void CVarDefMap::DeleteAtKey( LPCTSTR at )
 {
 	ADDTOCALLSTACK("CVarDefMap::DeleteAtKey");
 	CVarDefContStr * pVarBased = new CVarDefContStr(at);
-	DefSet::iterator i = m_Container.find((CVarDefCont*)pVarBased);
+	DefSet::iterator i = m_Container.find(pVarBased);
 	delete pVarBased;
 
 	DeleteAtIterator(i);
@@ -437,7 +437,7 @@ int CVarDefMap::SetNum( LPCTSTR pszName, int iVal, bool fZero )
 	}
 
 	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);
-	DefSet::iterator iResult = m_Container.find((CVarDefCont*)pVarSearch);
+	DefSet::iterator iResult = m_Container.find(pVarSearch);
 	delete pVarSearch;
 
 	CVarDefCont * pVarBase = NULL;
@@ -507,7 +507,7 @@ int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZer
 	}
 
 	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);
-	DefSet::iterator iResult = m_Container.find((CVarDefCont*)pVarSearch);
+	DefSet::iterator iResult = m_Container.find(pVarSearch);
 	delete pVarSearch;
 
 	CVarDefCont * pVarBase = NULL;
@@ -543,7 +543,7 @@ CVarDefCont * CVarDefMap::GetKey( LPCTSTR pszKey ) const
 	if ( pszKey )
 	{
 		CVarDefContTest * pVarBase = new CVarDefContTest(pszKey);
-		DefSet::const_iterator i = m_Container.find((CVarDefCont*)pVarBase);
+		DefSet::const_iterator i = m_Container.find(pVarBase);
 		delete pVarBase;
 		
 		if ( i != m_Container.end() )
@@ -610,7 +610,7 @@ void CVarDefMap::DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix )
 	for ( DefSet::const_iterator i = m_Container.begin(); i != m_Container.end(); ++i )
 	{
 		const CVarDefCont * pVar = (*i);
-		pSrc->SysMessagef( "%s%s=%s\n", (LPCTSTR) pszPrefix, (LPCTSTR) pVar->GetKey(), (LPCTSTR) pVar->GetValStr());
+		pSrc->SysMessagef("%s%s=%s\n", static_cast<LPCTSTR>(pszPrefix), static_cast<LPCTSTR>(pVar->GetKey()), static_cast<LPCTSTR>(pVar->GetValStr()));
 	}
 }
 

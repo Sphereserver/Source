@@ -162,7 +162,7 @@ void CResourceBase::AddResourceDir( LPCTSTR pszDirName )
 		iRet = filelist.ReadDir( sFilePath, true );
 		if ( iRet < 0 )
 		{
-			DEBUG_ERR(( "DirList=%d for '%s'\n", iRet, (LPCTSTR) pszDirName ));
+			DEBUG_ERR(( "DirList=%d for '%s'\n", iRet, static_cast<LPCTSTR>(pszDirName) ));
 			return;
 		}
 	}
@@ -210,11 +210,11 @@ bool CResourceBase::LoadResources( CResourceScript * pScript )
 
 	if ( ! pScript->Open())
 	{
-		g_Log.Event( LOGL_CRIT|LOGM_INIT, "[RESOURCES] '%s' not found...\n", (LPCTSTR) pScript->GetFilePath());
+		g_Log.Event(LOGL_CRIT|LOGM_INIT, "[RESOURCES] '%s' not found...\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
 		return( false );
 	}
 
-	g_Log.Event(LOGM_INIT, "Loading %s\n", (LPCTSTR) pScript->GetFilePath());
+	g_Log.Event(LOGM_INIT, "Loading %s\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
 
 	LoadResourcesOpen( pScript );
 	pScript->Close();
@@ -617,7 +617,7 @@ bool CResourceScript::CheckForChange()
 
 	if ( ! CFileList::ReadFileInfo( GetFilePath(), dateChange, dwSize ))
 	{
-		DEBUG_ERR(( "Can't get stats info for file '%s'\n", (LPCTSTR) GetFilePath() ));
+		DEBUG_ERR(( "Can't get stats info for file '%s'\n", static_cast<LPCTSTR>(GetFilePath()) ));
 		return false;
 	}
 
@@ -628,7 +628,7 @@ bool CResourceScript::CheckForChange()
 	{
 		if ( m_dwSize != dwSize || m_dateChange != dateChange )
 		{
-			g_Log.Event( LOGL_WARN, "Resource '%s' changed, resync.\n", (LPCTSTR) GetFilePath());
+			g_Log.Event(LOGL_WARN, "Resource '%s' changed, resync.\n", static_cast<LPCTSTR>(GetFilePath()));
 			fChange = true;
 		}
 	}
@@ -993,7 +993,7 @@ bool CResourceLink::ResourceLock( CResourceLock &s )
 
 	// ret = -2 or -3
 	LPCTSTR pszName = GetResourceName();
-	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", (LPCTSTR)s.GetFilePath(), m_Context.m_lOffset, pszName));
+	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, pszName));
 
 	return false;
 }
@@ -1136,7 +1136,7 @@ void CResourceRefArray::WriteResourceRefList( CGString & sVal ) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::WriteResourceRefList");
 	TemporaryString tsVal;
-	TCHAR * pszVal = (TCHAR*)tsVal;
+	TCHAR * pszVal = static_cast<TCHAR *>(tsVal);
 	size_t len = 0;
 	for ( size_t j = 0; j < GetCount(); j++ )
 	{
@@ -1219,12 +1219,12 @@ size_t CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
 	if ( GetResType() == RES_ITEMDEF )
 	{
-		CItemBase * pItemBase = CItemBase::FindItemBase( (ITEMID_TYPE)m_rid.GetResIndex() );
+		const CItemBase * pItemBase = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(m_rid.GetResIndex()));
 		//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));
 		if ( pItemBase )
 			return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
 	}
-	CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
+	const CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
 	if ( pResourceDef != NULL )
 		return( strcpylen( pszArgs, pResourceDef->GetName()) );
 	else

@@ -732,7 +732,7 @@ successalloc:
 	{
 		//NOTE: We cannot use Delete() in here because the UID will
 		//	still be assigned til the async cleanup time. Delete() will not work here!
-		DEBUG_ERR(( "UID conflict delete 0%lx, '%s'\n", dwIndex, (LPCTSTR) pObjPrv->GetName()));
+		DEBUG_ERR(( "UID conflict delete 0%lx, '%s'\n", dwIndex, static_cast<LPCTSTR>(pObjPrv->GetName())));
 		delete pObjPrv;
 	}
 	m_UIDs[dwIndex] = pObj;
@@ -767,7 +767,7 @@ int CWorldThread::FixObjTry( CObjBase * pObj, DWORD dwUID )
 		{
 			// Miss linked in the UID table !!! BAD
 			// Hopefully it was just not linked at all. else How the hell should i clean this up ???
-			DEBUG_ERR(( "UID 0%lx, '%s', Mislinked\n", dwUID, (LPCTSTR) pObj->GetName()));
+			DEBUG_ERR(( "UID 0%lx, '%s', Mislinked\n", dwUID, static_cast<LPCTSTR>(pObj->GetName())));
 			return 0x7101;
 		}
 	}
@@ -873,7 +873,7 @@ void CWorldThread::GarbageCollection_New()
 		CGMPage * pPageNext = pPage->GetNext();
 		if ( ! pPage->FindAccount()) // Open script file
 		{
-			DEBUG_ERR(( "GC: GM Page has invalid account '%s'\n", (LPCTSTR) pPage->GetName()));
+			DEBUG_ERR(( "GC: GM Page has invalid account '%s'\n", static_cast<LPCTSTR>(pPage->GetName())));
 			delete pPage;
 		}
 		pPage = pPageNext;
@@ -1089,7 +1089,7 @@ void CWorld::Init()
 	}
 	ASSERT(m_SectorsQty);
 
-	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", (LPCTSTR)z);
+	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", static_cast<LPCTSTR>(z));
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -1140,12 +1140,12 @@ bool CWorld::OpenScriptBackup( CScript & s, LPCTSTR pszBaseDir, LPCTSTR pszBaseN
 	if ( rename( sSaveName, sArchive ))
 	{
 		// May not exist if this is the first time.
-		g_Log.Event( LOGM_SAVE|LOGL_WARN, "Rename %s to '%s' FAILED code %d?\n", (LPCTSTR) sSaveName, (const TCHAR*) sArchive, CGFile::GetLastError() );
+		g_Log.Event(LOGM_SAVE|LOGL_WARN, "Rename %s to '%s' FAILED code %d?\n", static_cast<LPCTSTR>(sSaveName), static_cast<LPCTSTR>(sArchive), CGFile::GetLastError() );
 	}
 
 	if ( ! s.Open( sSaveName, OF_WRITE|OF_TEXT|OF_DEFAULTMODE ))
 	{
-		g_Log.Event( LOGM_SAVE|LOGL_CRIT, "Save '%s' FAILED\n", (LPCTSTR) sSaveName );
+		g_Log.Event(LOGM_SAVE|LOGL_CRIT, "Save '%s' FAILED\n", static_cast<LPCTSTR>(sSaveName));
 		return( false );
 	}
 
@@ -1225,10 +1225,10 @@ bool CWorld::SaveStage() // Save world state in stages.
 		m_iSaveCountID++;	// Save only counts if we get to the end winout trapping.
 		m_timeSave = GetCurrentTime() + g_Cfg.m_iSavePeriod;	// next save time.
 
-		g_Log.Event(LOGM_SAVE, "World data saved   (%s).\n", (LPCTSTR) m_FileWorld.GetFilePath());
-		g_Log.Event(LOGM_SAVE, "Player data saved  (%s).\n", (LPCTSTR) m_FilePlayers.GetFilePath());
-		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s).\n", (LPCTSTR) m_FileMultis.GetFilePath());
-		g_Log.Event(LOGM_SAVE, "Context data saved (%s).\n", (LPCTSTR) m_FileData.GetFilePath());
+		g_Log.Event(LOGM_SAVE, "World data saved   (%s).\n", static_cast<LPCTSTR>(m_FileWorld.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Player data saved  (%s).\n", static_cast<LPCTSTR>(m_FilePlayers.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s).\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Context data saved (%s).\n", static_cast<LPCTSTR>(m_FileData.GetFilePath()));
 
 		LONGLONG	llTicksEnd;
 		LONGLONG	llTicks = m_savetimer;
@@ -1410,7 +1410,7 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("immidiate '%d'\n", (int)fForceImmediate);
+	g_Log.EventDebug("immidiate '%d'\n", fForceImmediate? 1 : 0);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1526,7 +1526,7 @@ void CWorld::SaveStatics()
 
 		m_FileStatics.WriteSection( "EOF" );
 		m_FileStatics.Close();
-		g_Log.Event(LOGM_SAVE, "Statics data saved (%s).\n", (LPCTSTR)m_FileStatics.GetFilePath());
+		g_Log.Event(LOGM_SAVE, "Statics data saved (%s).\n", static_cast<LPCTSTR>(m_FileStatics.GetFilePath()));
 	}
 	catch (const CGrayError& e)
 	{
@@ -1548,13 +1548,13 @@ bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from scr
 	if ( ! s.Open( pszLoadName, OF_READ|OF_TEXT|OF_DEFAULTMODE ) )
 	{
 		if ( fError )
-			g_Log.Event( LOGM_INIT|LOGL_ERROR,	"Can't Load %s\n", (LPCTSTR) pszLoadName );
+			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Can't Load %s\n", static_cast<LPCTSTR>(pszLoadName));
 		else
-			g_Log.Event( LOGM_INIT|LOGL_WARN,	"Can't Load %s\n", (LPCTSTR) pszLoadName );
+			g_Log.Event(LOGM_INIT|LOGL_WARN, "Can't Load %s\n", static_cast<LPCTSTR>(pszLoadName));
 		return( false );
 	}
 
-	g_Log.Event(LOGM_INIT, "Loading %s...\n", (LPCTSTR) pszLoadName );
+	g_Log.Event(LOGM_INIT, "Loading %s...\n", static_cast<LPCTSTR>(pszLoadName));
 
 	// Find the size of the file.
 	DWORD lLoadSize = s.GetLength();
@@ -1595,7 +1595,7 @@ bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from scr
 		return( true );
 	}
 
-	g_Log.Event( LOGM_INIT|LOGL_CRIT, "No [EOF] marker. '%s' is corrupt!\n", (LPCTSTR) s.GetFilePath());
+	g_Log.Event( LOGM_INIT|LOGL_CRIT, "No [EOF] marker. '%s' is corrupt!\n", static_cast<LPCTSTR>(s.GetFilePath()));
 	return( false );
 }
 
@@ -1608,19 +1608,19 @@ bool CWorld::LoadWorld() // Load world from script
 	// NOTE: WE MUST Sync these files ! CHAR and WORLD !!!
 
 	CGString sStaticsName;
-	sStaticsName.Format("%s" GRAY_FILE "statics", (LPCTSTR)g_Cfg.m_sWorldBaseDir);
+	sStaticsName.Format("%s" GRAY_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
 	CGString sWorldName;
-	sWorldName.Format("%s" GRAY_FILE "world",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
+	sWorldName.Format("%s" GRAY_FILE "world", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
 	CGString sMultisName;
-	sMultisName.Format("%s" GRAY_FILE "multis", (LPCTSTR)g_Cfg.m_sWorldBaseDir);
+	sMultisName.Format("%s" GRAY_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
 	CGString sCharsName;
-	sCharsName.Format("%s" GRAY_FILE "chars",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
+	sCharsName.Format("%s" GRAY_FILE "chars", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
 	CGString sDataName;
-	sDataName.Format("%s" GRAY_FILE "data",	(LPCTSTR) g_Cfg.m_sWorldBaseDir);
+	sDataName.Format("%s" GRAY_FILE "data",	static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
 	int iPrevSaveCount = m_iSaveCountID;
 	for (;;)
@@ -2045,8 +2045,7 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 		if ( ! pClient->CanHear( pSrc, mode ))
 			continue;
 
-		//LPCTSTR myName = "";
-		char *myName = Str_GetTemp();
+		TCHAR * myName = Str_GetTemp();
 
 		LPCTSTR pszSpeak = pszText;
 		pChar = pClient->GetChar();
@@ -2165,7 +2164,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 				if ( wTextName[0] == '\0' )
 				{
 					CGString sTextName;
-					sTextName.Format("<%s>", (LPCTSTR) pSrc->GetName());
+					sTextName.Format("<%s>", static_cast<LPCTSTR>(pSrc->GetName()));
 					int iLen = CvtSystemToNUNICODE( wTextName, COUNTOF(wTextName), sTextName, -1 );
 					if ( wTextGhost[0] != '\0' )
 					{
@@ -2191,8 +2190,8 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 		{
 			if ( wTextUID[0] == '\0' )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "<%s [%lx]>", (LPCTSTR) pSrc->GetName(), (DWORD) pSrc->GetUID());
+				TCHAR * pszMsg = Str_GetTemp();
+				sprintf(pszMsg, "<%s [%lx]>", static_cast<LPCTSTR>(pSrc->GetName()), static_cast<DWORD>(pSrc->GetUID()));
 				int iLen = CvtSystemToNUNICODE( wTextUID, COUNTOF(wTextUID), pszMsg, -1 );
 				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
 				{
@@ -2270,8 +2269,7 @@ CServTime CWorld::GetNextNewMoon( bool bMoonIndex ) const
 	DWORD iNextMonth = GetGameWorldTime() + iSynodic;
 
 	// Get the game time when this cycle will start
-	DWORD iNewStart = (DWORD) (iNextMonth -
-		(double) (iNextMonth % iSynodic));
+	DWORD iNewStart = static_cast<DWORD>(iNextMonth - static_cast<double>(iNextMonth % iSynodic));
 
 	// Convert to TICK_PER_SEC ticks
 	CServTime time;

@@ -331,7 +331,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_WAND:
 		case IT_SCROLL:	// activate the scroll.
 			{
-				SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX(pItem->m_itWeapon.m_spell);
+				SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itWeapon.m_spell));
 				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return false;

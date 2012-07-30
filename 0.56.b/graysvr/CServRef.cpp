@@ -75,7 +75,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				}
 				else
 				{
-					m_GetProcessMemoryInfo = (pGetProcessMemoryInfo)::GetProcAddress(m_hmPsapiDll,"GetProcessMemoryInfo");
+					m_GetProcessMemoryInfo = reinterpret_cast<pGetProcessMemoryInfo>(::GetProcAddress(m_hmPsapiDll,"GetProcessMemoryInfo"));
 				}
 			}
 
@@ -100,8 +100,8 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				d = usage.ru_idrss;
 			else
 			{
-				CFileText	inf;
-				TCHAR		*buf = Str_GetTemp(), *head;
+				CFileText inf;
+				TCHAR * buf = Str_GetTemp(), * head;
 
 				sprintf(buf, "/proc/%d/status", getpid());
 				if ( inf.Open(buf, OF_READ|OF_TEXT) )
@@ -255,12 +255,12 @@ bool CServerDef::r_LoadVal( CScript & s )
 			// Treat it as a value or a string.
 			if ( IsDigit( s.GetArgStr()[0] ))
 			{
-				m_eAccApp = (ACCAPP_TYPE) s.GetArgVal();
+				m_eAccApp = static_cast<ACCAPP_TYPE>(s.GetArgVal());
 			}
 			else
 			{
 				// Treat it as a string. "Manual","Automatic","Guest"
-				m_eAccApp = (ACCAPP_TYPE)FindTable(s.GetArgStr(), sm_AccAppTable, COUNTOF(sm_AccAppTable));
+				m_eAccApp = static_cast<ACCAPP_TYPE>(FindTable(s.GetArgStr(), sm_AccAppTable, COUNTOF(sm_AccAppTable)));
 			}
 			if ( m_eAccApp < 0 || m_eAccApp >= ACCAPP_QTY )
 				m_eAccApp = ACCAPP_Unspecified;
@@ -447,7 +447,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			sVal = GetName();
 			break;
 		}
-		sVal.Format( "<a href=\"http://%s\">%s</a>", (LPCTSTR) m_sURL, (LPCTSTR) GetName() );
+		sVal.Format("<a href=\"http://%s\">%s</a>", static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(GetName()));
 		break;
 	case SC_VERSION:
 		sVal = GRAY_VERSION;

@@ -259,7 +259,7 @@ bool CScript::Open( LPCTSTR pszFilename, UINT wFlags )
 	{
 		if ( ! ( wFlags & OF_NONCRIT ))
 		{
-			g_Log.Event( LOGL_WARN, "'%s' not found...\n", (LPCTSTR) GetFilePath() );
+			g_Log.Event(LOGL_WARN, "'%s' not found...\n", static_cast<LPCTSTR>(GetFilePath()));
 		}
 		return( false );
 	}
@@ -396,7 +396,7 @@ bool CScript::FindSection( LPCTSTR pszName, UINT uModeFlags )
 	}
 
 	TemporaryString pszSec;
-	sprintf((char*)pszSec, "[%s]", pszName);
+	sprintf(static_cast<TCHAR *>(pszSec), "[%s]", pszName);
 	if ( FindTextHeader(pszSec))
 	{
 		// Success
@@ -408,7 +408,7 @@ bool CScript::FindSection( LPCTSTR pszName, UINT uModeFlags )
 
 	if ( ! ( uModeFlags & OF_NONCRIT ))
 	{
-		g_Log.Event( LOGL_WARN, "Did not find '%s' section '%s'\n", (LPCTSTR) GetFileTitle(), (LPCTSTR) pszName );
+		g_Log.Event(LOGL_WARN, "Did not find '%s' section '%s'\n", static_cast<LPCTSTR>(GetFileTitle()), static_cast<LPCTSTR>(pszName));
 	}
 	return( false );
 }
@@ -455,7 +455,7 @@ bool CScript::ReadKeyParse() // Read line from script
 
 	EXC_SET("parse");
 	LPCTSTR	pszArgs	= m_pszArg;
-	pszArgs+=2;
+	pszArgs += 2;
 	GETNONWHITESPACE( pszArgs );
 	TemporaryString buf;
 
@@ -472,25 +472,25 @@ bool CScript::ReadKeyParse() // Read line from script
 				*pQuote	= '\0';
 			}
 		}
-		sprintf( (char*)buf, "<%s>%s", m_pszKey, pszArgs );
+		sprintf(buf, "<%s>%s", m_pszKey, pszArgs);
 	}
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '+' )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf( (char*)buf, "<eval (<%s> +1)>", m_pszKey );
+		sprintf(buf, "<eval (<%s> +1)>", m_pszKey);
 	}
 	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '-' )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf( (char*)buf, "<eval (<%s> -1)>", m_pszKey );
+		sprintf(buf, "<eval (<%s> -1)>", m_pszKey);
 	}
 	else
 	{
-		sprintf( (char*)buf, "<%s (<%s> %c (%s))>", sm_szEvalTypes[iKeyIndex], m_pszKey, *m_pszArg, pszArgs );
+		sprintf(buf, "<%s (<%s> %c (%s))>", sm_szEvalTypes[iKeyIndex], m_pszKey, *m_pszArg, pszArgs);
 	}
-	strcpy( m_pszArg, buf );
+	strcpy(m_pszArg, buf);
 
 	return true;
 	EXC_CATCH;
@@ -611,7 +611,7 @@ void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
 	TemporaryString pszTemp;
 	va_list vargs;
 	va_start( vargs, pszVal );
-	_vsnprintf((char*)pszTemp, pszTemp.realLength(), pszVal, vargs);
+	_vsnprintf(pszTemp, pszTemp.realLength(), pszVal, vargs);
 	WriteKey(pszKey, pszTemp);
 	va_end( vargs );
 }

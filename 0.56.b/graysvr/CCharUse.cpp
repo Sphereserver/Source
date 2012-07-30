@@ -1148,8 +1148,8 @@ void CChar::Use_Drink( CItem * pItem )
 
 	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
 
-	CItemBase * pItemDef = pItem->Item_GetDef();
-	ITEMID_TYPE idbottle = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttDrink.m_idEmpty );
+	const CItemBase * pItemDef = pItem->Item_GetDef();
+	ITEMID_TYPE idbottle = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttDrink.m_idEmpty));
 
 	if ( pItem->IsType(IT_BOOZE))
 	{
@@ -1195,7 +1195,7 @@ void CChar::Use_Drink( CItem * pItem )
 		// Convey the effect of the potion.
 		int iSkillQuality = pItem->m_itPotion.m_skillquality;
 
-		OnSpellEffect( (SPELL_TYPE)RES_GET_INDEX(pItem->m_itPotion.m_Type), this, iSkillQuality, pItem );
+		OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itPotion.m_Type)), this, iSkillQuality, pItem );
 
 		// Give me the marker that i've used a potion.
 		Spell_Effect_Create( SPELL_NONE, LAYER_FLAG_PotionUsed, iSkillQuality, 15*TICK_PER_SEC, this );
@@ -1554,8 +1554,8 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 		return( false );
 	}
 
-	CItemBase * pItemDef = pSeed->Item_GetDef();
-	ITEMID_TYPE idReset = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttFruit.m_idReset );
+	const CItemBase * pItemDef = pSeed->Item_GetDef();
+	ITEMID_TYPE idReset = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttFruit.m_idReset));
 	if ( idReset == 0 )
 	{
 		SysMessageDefault( DEFMSG_SEED_NOGOOD );
@@ -1746,7 +1746,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 			return false;
 
 	case IT_LOOM:
-		//pItem->SetAnim( (ITEMID_TYPE)( pItem->GetID() + 1 ), 2*TICK_PER_SEC );
+		//pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
 		if ( !fLink )
 		{
 			SysMessageDefault( DEFMSG_ITEMUSE_LOOM );

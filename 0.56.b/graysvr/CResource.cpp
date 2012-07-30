@@ -292,7 +292,7 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	*pszSep = '.';
 
 	// Now get the index.
-	pszKey = pszSep+1;
+	pszKey = pszSep + 1;
 	if ( pszKey[0] == '\0' )
 		return( false );
 
@@ -308,15 +308,15 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	}
 	else if ( iResType == RES_CHARDEF )
 	{
-		//pRef = CCharBase::FindCharBase((CREID_TYPE)Exp_GetVal(pszKey));
-		pRef = CCharBase::FindCharBase((CREID_TYPE)g_Cfg.ResourceGetIndexType(RES_CHARDEF, pszKey));
+		//pRef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(Exp_GetVal(pszKey)));
+		pRef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, pszKey)));
 	}
 	else if ( iResType == RES_ITEMDEF )
 	{
 		if (fNewStyleDef && IsDigit(pszKey[0]))
-			pRef = CItemBase::FindItemBase((ITEMID_TYPE)(Exp_GetVal(pszKey) + ITEMID_MULTI));
+			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(Exp_GetVal(pszKey) + ITEMID_MULTI));
 		else
-			pRef = CItemBase::FindItemBase((ITEMID_TYPE)g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey));
+			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey)));
 	}
 	else if ( iResType == RES_SPELL && *pszKey == '-' )
 	{
@@ -329,7 +329,7 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	}
 	else
 	{
-		RESOURCE_ID	rid	= ResourceGetID( (RES_TYPE) iResType, pszKey );
+		RESOURCE_ID	rid	= ResourceGetID(static_cast<RES_TYPE>(iResType), pszKey);
 
 		// check the found resource type matches what we searched for
 		if ( rid.GetResType() == iResType )
@@ -786,7 +786,7 @@ bool CResource::r_LoadVal( CScript &s )
 	ADDTOCALLSTACK("CResource::r_LoadVal");
 	EXC_TRY("LoadVal");
 
-	int i = FindTableHeadSorted( s.GetKey(), (LPCTSTR const *) sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]));
+	int i = FindTableHeadSorted( s.GetKey(), reinterpret_cast<LPCTSTR const *>(sm_szLoadKeys), COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]));
 	if ( i < 0 )
 	{
 		if ( s.IsKeyHead( "REGEN", 5 ))			//	REGENx=<stat regeneration rate>
@@ -837,7 +837,7 @@ bool CResource::r_LoadVal( CScript &s )
 								CScript scp(pszStr);
 
 								for ( int nIndex = 0; nIndex < nSectors; ++nIndex )
-									g_World.GetSector(nMapNumber, nIndex)->r_Verb(scp, (CTextConsole *)&g_Serv);
+									g_World.GetSector(nMapNumber, nIndex)->r_Verb(scp, &g_Serv);
 							}
 
 							return true;
@@ -1121,7 +1121,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	ADDTOCALLSTACK("CResource::r_WriteVal");
 	EXC_TRY("WriteVal");
 	// Just do stats values for now.
-	int index = FindTableHeadSorted( pszKey, (LPCTSTR const *) sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]) );
+	int index = FindTableHeadSorted( pszKey, reinterpret_cast<LPCTSTR const *>(sm_szLoadKeys), COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]) );
 	if ( index < 0 )
 	{
 		if ( !strnicmp( pszKey, "REGEN", 5 ))
@@ -1518,7 +1518,7 @@ SKILL_TYPE CResource::FindSkillKey( LPCTSTR pszKey ) const
 
 	if ( IsDigit( pszKey[0] ))
 	{
-		SKILL_TYPE skill = (SKILL_TYPE) Exp_GetVal(pszKey);
+		SKILL_TYPE skill = static_cast<SKILL_TYPE>(Exp_GetVal(pszKey));
 		if ( (!CChar::IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill)) &&
 			! CChar::IsSkillNPC(skill))
 		{
@@ -1530,7 +1530,7 @@ SKILL_TYPE CResource::FindSkillKey( LPCTSTR pszKey ) const
 	const CSkillDef * pSkillDef = FindSkillDef( pszKey );
 	if ( pSkillDef == NULL )
 		return( SKILL_NONE );
-	return( (SKILL_TYPE)( pSkillDef->GetResourceID().GetResIndex()));
+	return static_cast<SKILL_TYPE>(pSkillDef->GetResourceID().GetResIndex());
 }
 
 STAT_TYPE CResource::FindStatKey( LPCTSTR pszKey ) // static
@@ -2212,7 +2212,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 	if ( restype < 0 )
 	{
-		g_Log.Event( LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", (LPCTSTR) pScript->GetKey(), (LPCTSTR) pScript->GetFileTitle());
+		g_Log.Event( LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", static_cast<LPCTSTR>(pScript->GetKey()), static_cast<LPCTSTR>(pScript->GetFileTitle()));
 		return false;
 	}
 	else
@@ -2225,7 +2225,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 	if ( !rid.IsValidUID() )
 	{
-		DEBUG_ERR(( "Invalid %s block index '%s'\n", pszSection, (LPCTSTR) pScript->GetArgStr()));
+		DEBUG_ERR(( "Invalid %s block index '%s'\n", pszSection, static_cast<LPCTSTR>(pScript->GetArgStr())));
 		return( false );
 	}
 
@@ -2429,11 +2429,11 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			pPrvDef = ResourceGetDef( rid );
 			if ( pPrvDef )
 			{
-				pSpell = dynamic_cast <CSpellDef*>(pPrvDef);
+				pSpell = dynamic_cast<CSpellDef*>(pPrvDef);
 			}
 			else
 			{
-				pSpell = new CSpellDef( (SPELL_TYPE) rid.GetResIndex() );
+				pSpell = new CSpellDef(static_cast<SPELL_TYPE>(rid.GetResIndex()));
 			}
 			ASSERT(pSpell);
 			pNewLink = pSpell;
@@ -2463,7 +2463,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
 
 				// Just replace any previous CSkillDef
-				pSkill = new CSkillDef( (SKILL_TYPE) rid.GetResIndex());
+				pSkill = new CSkillDef(static_cast<SKILL_TYPE>(rid.GetResIndex()));
 			}
 
 			ASSERT(pSkill);
@@ -2913,18 +2913,18 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_WORLDCHAR:	// saved in world file.
 		if ( ! rid.IsValidUID())
 		{
-			g_Log.Event( LOGL_ERROR|LOGM_INIT, "Undefined char type '%s'\n", (LPCTSTR) pScript->GetArgStr() );
+			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Undefined char type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
 			return( false );
 		}
-		return( CChar::CreateBasic((CREID_TYPE)rid.GetResIndex())->r_Load(*pScript));
+		return( CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()))->r_Load(*pScript));
 	case RES_WI:
 	case RES_WORLDITEM:	// saved in world file.
 		if ( ! rid.IsValidUID())
 		{
-			g_Log.Event( LOGL_ERROR|LOGM_INIT, "Undefined item type '%s'\n", (LPCTSTR) pScript->GetArgStr() );
+			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Undefined item type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
 			return( false );
 		}
-		return( CItem::CreateBase((ITEMID_TYPE)rid.GetResIndex())->r_Load(*pScript));
+		return( CItem::CreateBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()))->r_Load(*pScript));
 
 	default:
 		break;
@@ -3141,12 +3141,12 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 					case RES_WORLDITEM:
 					case RES_WORLDSCRIPT:
 					{
-						CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr*>( pVarBase );
+						const CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr*>( pVarBase );
 						if ( pVarStr != NULL )
 							return( ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef) );
 					}
 					default:
-						DEBUG_ERR(( "Re-Using name '%s' to define block\n", (LPCTSTR) pszName ));
+						DEBUG_ERR(( "Re-Using name '%s' to define block\n", static_cast<LPCTSTR>(pszName) ));
 						return( ridinvalid );
 				}
 			}
@@ -3164,11 +3164,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						// These are not truly defining a new DEFNAME
 						break;
 					default:
-						DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", (LPCTSTR) pszName, (LPCTSTR) GetResourceBlockName(rid.GetResType()), (LPCTSTR) GetResourceBlockName(restype) ));
+						DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", static_cast<LPCTSTR>(pszName), static_cast<LPCTSTR>(GetResourceBlockName(rid.GetResType())), static_cast<LPCTSTR>(GetResourceBlockName(restype)) ));
 						return( ridinvalid );
 				}
 			}
-			else if ( fNewStyleDef && (DWORD)pVarNum->GetValNum() != rid.GetPrivateUID() )
+			else if ( fNewStyleDef && static_cast<DWORD>(pVarNum->GetValNum()) != rid.GetPrivateUID() )
 			{
 				DEBUG_ERR(( "WARNING: region redefines DEFNAME '%s' for another region!\n", pszName ));
 			}
@@ -3180,11 +3180,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				{
 					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 					{
-						g_pLog->EventWarn( "Redef resource '%s'\n", (LPCTSTR) pszName );
+						g_pLog->EventWarn("Redef resource '%s'\n", static_cast<LPCTSTR>(pszName));
 					}
 					else
 					{
-						DEBUG_WARN(( "Redef resource '%s'\n", (LPCTSTR) pszName ));
+						DEBUG_WARN(( "Redef resource '%s'\n", static_cast<LPCTSTR>(pszName) ));
 					}
 				}
 			}
@@ -3458,7 +3458,7 @@ void CResource::OnTick( bool fNow )
 			CWebPageDef * pWeb = STATIC_CAST <CWebPageDef *>(m_WebPages[i]);
 			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%" FMTSIZE_T "'/'%" FMTSIZE_T "'\n",
 				pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "",
-				(int)fNow, i, m_WebPages.GetCount());
+				fNow? 1 : 0, i, m_WebPages.GetCount());
 			EXC_DEBUG_END;
 		}
 	}
@@ -3866,12 +3866,12 @@ bool CResource::GenerateDefname(TCHAR *pObjectName, size_t iInputLength, LPCTSTR
 		for (;;)
 		{
 			bool isValid = true;
-			if (g_Exp.m_VarDefs.GetKey((LPCTSTR&)pOutput) != NULL)
+			if (g_Exp.m_VarDefs.GetKey(pOutput) != NULL)
 			{
 				// check loaded defnames
 				isValid = false;
 			}
-			else if (vDefnames && vDefnames->GetKey((LPCTSTR&)pOutput) != NULL)
+			else if (vDefnames && vDefnames->GetKey(pOutput) != NULL)
 			{
 				isValid = false;
 			}
@@ -3911,7 +3911,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 
 	TCHAR sItemName[21];
 	TemporaryString sDefnameBuffer;
-	TCHAR* pDefnameBuffer = (TCHAR*)sDefnameBuffer;
+	TCHAR * pDefnameBuffer = static_cast<TCHAR *>(sDefnameBuffer);
 	CVarDefMap defnames;
 
 	s.Printf("// Unscripted items, generated by " GRAY_TITLE " at %s\n", CGTime::GetCurrentTime().Format(NULL));
@@ -3931,7 +3931,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 
 		// check item in tiledata
 		CUOItemTypeRec2 tiledata;
-		if (CItemBase::GetItemData((ITEMID_TYPE)i, &tiledata) == false)
+		if (CItemBase::GetItemData(static_cast<ITEMID_TYPE>(i), &tiledata) == false)
 			continue;
 
 		// ensure there is actually some data here, treat "MissingName" as blank since some tiledata.muls
@@ -3955,7 +3955,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 			s.Printf("// (unnamed object)\n");
 		}
 
-		s.WriteKey("TYPE", ResourceGetName(RESOURCE_ID(RES_TYPEDEF, CItemBase::GetTypeBase((ITEMID_TYPE)i, tiledata))));
+		s.WriteKey("TYPE", ResourceGetName(RESOURCE_ID(RES_TYPEDEF, CItemBase::GetTypeBase(static_cast<ITEMID_TYPE>(i), tiledata))));
 	}
 
 	s.WriteSection("EOF");
@@ -3967,7 +3967,7 @@ bool CResource::DumpUnscriptedItems( CTextConsole * pSrc, LPCTSTR pszFilename )
 	return true;
 }
 
-int CItemTypeDef::GetItemType()
+int CItemTypeDef::GetItemType() const
 {
 	ADDTOCALLSTACK("CItemTypeDef::GetItemType");
 	return GETINTRESOURCE(GetResourceID());

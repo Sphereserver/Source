@@ -311,14 +311,14 @@ void CScriptCompiler::Init()
 bool CScriptCompiler::CompileAll()
 {
 	ADDTOCALLSTACK("CScriptCompiler::CompileAll");
-	char	fileName[COMPILER_MAXFILEPATH];
-	char	*p = fileName;
-	char	*p1;
-	bool	rc = true;
+	char fileName[COMPILER_MAXFILEPATH];
+	char * p = fileName;
+	char * p1;
+	bool rc = true;
 
 	for ( size_t i = 0; i < m_lScripts.GetCount(); i++ )
 	{
-		strcpy(fileName, ((CGString*)m_lScripts.GetAt(i))->GetPtr());
+		strcpy(fileName, reinterpret_cast<CGString *>(m_lScripts.GetAt(i))->GetPtr());
 		*strchr(fileName, '.') = 0;		// cut extension
 		while ( (p = strchr(p, '/')) != NULL )	// cut off path
 		{
@@ -335,17 +335,17 @@ bool CScriptCompiler::CompileFile(char *scriptName)
 {
 	ADDTOCALLSTACK("CScriptCompiler::CompileFile");
 	ASSERT(scriptName != NULL);
-	char	zScriptFile[COMPILER_MAXFILEPATH];
-	char	zBinaryFile[COMPILER_MAXFILEPATH];
-	size_t	i;
+	char zScriptFile[COMPILER_MAXFILEPATH];
+	char zBinaryFile[COMPILER_MAXFILEPATH];
+	size_t i;
 
 	strcpy(zScriptFile, scriptName);
 	strcat(zScriptFile, COMPILER_SOURCE_EXT);
 	for ( i = 0; i < m_lScripts.GetCount(); i++ )
 	{
-		if ( strstr(((CGString*)m_lScripts.GetAt(i))->GetPtr(), zScriptFile) )
+		if ( strstr(reinterpret_cast<CGString *>(m_lScripts.GetAt(i))->GetPtr(), zScriptFile) )
 		{
-			strcpy(zScriptFile, ((CGString*)m_lScripts.GetAt(i))->GetPtr());
+			strcpy(zScriptFile, reinterpret_cast<CGString *>(m_lScripts.GetAt(i))->GetPtr());
 			break;
 		}
 	}
@@ -360,7 +360,7 @@ bool CScriptCompiler::CompileFile(char *scriptName)
 	if ( IsAlreadyCompiled(zScriptFile, zBinaryFile) )
 		return true;
 
-	FILE	*in, *out;
+	FILE * in, * out;
 	TBinaryHeadRec	head;
 
 	in = fopen(zScriptFile, "r");
@@ -399,7 +399,7 @@ notfound:
 
 	fwrite(&head, sizeof(head), 1, out);
 
-	char *bufer = (char *)CompileBuffer(in, head.lCodeSize);
+	char * bufer = static_cast<char *>(CompileBuffer(in, head.lCodeSize));
 
 	//	getting NULL means that we have already reported some error
 	//	in CompileBufer func, no need to do it twice
@@ -417,7 +417,7 @@ notfound:
 		z_uLong mBuferCLen = z_compressBound( head.lCodeSize );
 		BYTE * mCBufer = new BYTE[mBuferCLen];
 
-		int error = z_compress2(mCBufer, &mBuferCLen, (BYTE *)bufer, head.lCodeSize, Z_BEST_COMPRESSION);
+		int error = z_compress2(mCBufer, &mBuferCLen, reinterpret_cast<BYTE *>(bufer), head.lCodeSize, Z_BEST_COMPRESSION);
 
 		if ( error != Z_OK )
 		{
@@ -457,18 +457,18 @@ void *CScriptCompiler::CompileBuffer(FILE *in, unsigned long &lCompiledSize)
 	ADDTOCALLSTACK("CScriptCompiler::CompileBuffer");
 	lCompiledSize = 0;
 
-	char	*z = Str_GetTemp(), *z1 = Str_GetTemp();
-	char	*line, *p1;
-	TBinarySection	*section = (TBinarySection	*)rawDataCompiled;
-	int		linenum = 0;
+	TCHAR * z = Str_GetTemp(), * z1 = Str_GetTemp();
+	char * line, * p1;
+	TBinarySection * section = reinterpret_cast<TBinarySection *>(rawDataCompiled);
+	int linenum = 0;
 
 	try
 	{
-		CVarDefMap	defines;		//	list of all #define KEY VAL values
-		bool	commented = false;		//	block is commented by / * * / comment?
-		bool	commentblock = false;	//	block is commented [COMMENT xxxx]
-		bool	ifdeffalse = false;		//	block is denied by #ifdef #endif block?
-		//long	sectionID = -1;			//	block (section) internal id
+		CVarDefMap defines; // list of all #define KEY VAL values
+		bool commented = false; // block is commented by / * * / comment?
+		bool commentblock = false; // block is commented [COMMENT xxxx]
+		bool ifdeffalse = false; // block is denied by #ifdef #endif block?
+		//long sectionID = -1; // block (section) internal id
 
 		while ( !feof(in) )
 		{

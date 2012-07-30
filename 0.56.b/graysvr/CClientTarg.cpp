@@ -291,7 +291,7 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 		int piCmd[4];		// Maximum parameters in one line
 		Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 
-		CItem * pItem = CItem::CreateTemplate( (ITEMID_TYPE) ATOI(s.GetKey()), NULL, m_pChar );
+		CItem * pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(ATOI(s.GetKey())), NULL, m_pChar);
 		if ( pItem == NULL )
 			return( false );
 
@@ -698,7 +698,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 				{
 					if ( ++iArg >= iArgQty )
 						iArg = 1;
-					CItem * pItem = CItem::CreateTemplate( (ITEMID_TYPE) RES_GET_INDEX(piArgs[iArg]), NULL, m_pChar );
+					CItem * pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[iArg])), NULL, m_pChar);
 					ASSERT(pItem);
 					pItem->SetAttr( ATTR_MOVE_NEVER );
 					CPointMap ptCur( mx, my, z, pt.m_map);
@@ -1622,7 +1622,7 @@ bool CClient::OnTarg_Use_Deed( CItem * pDeed, const CPointMap & pt )
 	if ( ! m_pChar->CanUse(pDeed, true ))
 		return( false );
 
-	const CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX( pDeed->m_itDeed.m_Type ));
+	const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(pDeed->m_itDeed.m_Type)));
 
 	if ( ! OnTarg_Use_Multi( pItemDef, pt, pDeed->m_Attr, pDeed->GetHue() ))
 		return( false );
@@ -2295,7 +2295,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_5 )
 };
 
-		// pItemTarg->SetAnim( (ITEMID_TYPE)( pItemTarg->GetID() + 1 ), 2*TICK_PER_SEC );
+		// pItemTarg->SetAnim(static_cast<ITEMID_TYPE>(pItemTarg->GetID() + 1), 2 * TICK_PER_SEC );
 
 		// Use more1 to record the type of resource last used on this object
 		// Use more2 to record the number of resources used so far

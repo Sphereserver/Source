@@ -91,7 +91,7 @@ void FormatDateTime(TCHAR * pszTemp, LPCTSTR pszFormat, const struct tm * ptmTem
 #ifdef _WIN32
 	// on windows we need to set the invalid parameter handler, or else the program will terminate when a bad format is encountered
 	_invalid_parameter_handler oldHandler, newHandler;
-	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
+	newHandler = static_cast<_invalid_parameter_handler>(invalidParameterHandler);
 	oldHandler = _set_invalid_parameter_handler(newHandler);
 
 	try

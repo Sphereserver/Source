@@ -1633,7 +1633,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 
 	if ( fIdentified && IsAttr(ATTR_MAGIC) && IsTypeArmorWeapon())	// wand is also a weapon.
 	{
-		SPELL_TYPE spell = (SPELL_TYPE) RES_GET_INDEX( m_itWeapon.m_spell );
+		SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(m_itWeapon.m_spell));
 		if ( spell )
 		{
 			const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
@@ -1653,7 +1653,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_LOOM:
 			if ( m_itLoom.m_ClothQty )
 			{
-				ITEMID_TYPE AmmoID = (ITEMID_TYPE) RES_GET_INDEX( m_itLoom.m_ClothID );
+				ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itLoom.m_ClothID));
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
 				{
@@ -1665,7 +1665,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_ARCHERY_BUTTE:
 			if ( m_itArcheryButte.m_AmmoCount )
 			{
-				ITEMID_TYPE AmmoID = (ITEMID_TYPE) RES_GET_INDEX( m_itArcheryButte.m_AmmoType );
+				ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itArcheryButte.m_AmmoType));
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
 				{
@@ -1692,11 +1692,11 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_BONE:
 			if ( fIdentified )
 			{
-				CREID_TYPE id = (CREID_TYPE) RES_GET_INDEX( m_itSkin.m_creid );
+				CREID_TYPE id = static_cast<CREID_TYPE>(RES_GET_INDEX(m_itSkin.m_creid));
 				if ( id)
 				{
-					CCharBase * pCharDef = CCharBase::FindCharBase( id );
-					if ( pCharDef)
+					const CCharBase * pCharDef = CCharBase::FindCharBase( id );
+					if (pCharDef != NULL)
 					{
 						len += sprintf( pTemp+len, " (%s)", pCharDef->GetTradeName());
 					}
@@ -1838,10 +1838,10 @@ bool CItem::SetDispID( ITEMID_TYPE id )
 	}
 	else
 	{
-		CItemBase * pItemDef = Item_GetDef();
+		const CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
 		m_dwDispIndex = pItemDef->GetDispID();
-		ASSERT( CItemBase::IsValidDispID((ITEMID_TYPE)m_dwDispIndex));
+		ASSERT( CItemBase::IsValidDispID(static_cast<ITEMID_TYPE>(m_dwDispIndex)));
 	}
 	return( true );
 }
@@ -2382,7 +2382,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				{
 					for ( int i = 1; i < 9; i++ )
 					{
-						AddSpellbookSpell((SPELL_TYPE)RES_GET_INDEX(((addCircle-1) * 8) + i), false);
+						AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(((addCircle - 1) * 8) + i)), false);
 					}
 
 					if ( includeLower == false )
@@ -2392,7 +2392,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 		case IC_ADDSPELL:
 			// Add this spell to the i_spellbook.
-			if ( AddSpellbookSpell( (SPELL_TYPE) RES_GET_INDEX( s.GetArgVal()), false ))
+			if ( AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(s.GetArgVal())), false ))
 				return( false );
 			return( true );
 		case IC_AMOUNT:
@@ -3761,7 +3761,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
 				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR_MANY), CPointBase::sm_szDirs[ dir ] );
 			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), (LPCTSTR) pItemSighted->GetNameFull(false), (LPCTSTR) CPointBase::sm_szDirs[ dir ] );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), static_cast<LPCTSTR>(pItemSighted->GetNameFull(false)), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]));
 		}
 		strcat( pResult, sSearch);
 	}
@@ -3817,7 +3817,7 @@ bool CItem::Use_Light()
 	if ( IsType(IT_LIGHT_OUT) && IsItemInContainer())
 		return( false );
 
-	ITEMID_TYPE id = (ITEMID_TYPE) Light_GetOverride();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(Light_GetOverride());
 	if ( id == ITEMID_NOTHING )
 		return( false );
 
@@ -3956,7 +3956,7 @@ void CItem::SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec )
 		id = m_itTrap.m_AnimID;
 		if ( ! id )
 		{
-			id = (ITEMID_TYPE)( GetDispID() + 1 );
+			id = static_cast<ITEMID_TYPE>( GetDispID() + 1 );
 		}
 	}
 	if ( ! iTimeSec )
@@ -4089,9 +4089,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)
 	//
 
-	CScriptTriggerArgs Args( (int) spell, iSkillLevel, pSourceItem );
-	TRIGRET_TYPE iRet	= OnTrigger( ITRIG_SPELLEFFECT, pCharSrc, &Args );
-	spell		= (SPELL_TYPE) Args.m_iN1;
+	CScriptTriggerArgs Args( static_cast<int>(spell), iSkillLevel, pSourceItem );
+	TRIGRET_TYPE iRet = OnTrigger( ITRIG_SPELLEFFECT, pCharSrc, &Args );
+	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 
 	switch ( iRet )
@@ -4103,10 +4103,10 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	
 	if ( !IsSetEF(EF_Minimize_Triggers) )
 	{
-		iRet	= Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc, &Args );
+		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc, &Args );
 	}
-	spell		= (SPELL_TYPE) Args.m_iN1;
-	iSkillLevel	= Args.m_iN2;
+	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+	iSkillLevel = Args.m_iN2;
 	pSpellDef = g_Cfg.GetSpellDef( spell );
 
 	switch ( iRet )
@@ -4332,7 +4332,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( iDmg <= 0 )
 		return( 0 );
 
-	CScriptTriggerArgs Args( iDmg, (int) uType );
+	CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));
 	if ( OnTrigger( ITRIG_DAMAGE, pSrc, &Args ) == TRIGRET_RET_TRUE )
 	{
 		return( 0 );
@@ -4388,7 +4388,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		}
 
 		iDmg = Calc_GetRandVal( iDmg ) + 1;
-		if ( (unsigned int)iDmg > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
+		if ( static_cast<unsigned int>(iDmg) > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
 		{
 			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
 			if ( Calc_GetRandVal( 2 ) || ( uType & DAMAGE_FIRE ))
@@ -4450,9 +4450,9 @@ forcedamage:
 		if ( pSrc )	// tell hitter they scored !
 		{
 			if ( pChar && pChar != pSrc )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE1 ), (LPCTSTR) pChar->GetName(), (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE1 ), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
 			else
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE2 ), (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE2 ), static_cast<LPCTSTR>(GetName()));
 			pSrc->SysMessage(pszMsg);
 		}
 		if ( pChar && pChar != pSrc )
@@ -4463,10 +4463,10 @@ forcedamage:
 			{
 				int iPercent = Armor_GetRepairPercent();
 				if ( pChar->Skill_GetAdjusted( SKILL_ARMSLORE ) / 10 > iPercent )
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE3 ), (LPCTSTR) GetName(), (LPCTSTR) Armor_GetRepairDesc());
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE3 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(Armor_GetRepairDesc()));
 			}
 			if ( !*pszMsg )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE4 ), (LPCTSTR) GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE4 ), static_cast<LPCTSTR>(GetName()));
 			pChar->SysMessage(pszMsg);
 		}
 		return( 2 );
@@ -4545,7 +4545,7 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 	switch ( restype )
 	{
 		case RES_TYPEDEF:
-			if ( ! IsType( (IT_TYPE) index ))
+			if ( ! IsType(static_cast<IT_TYPE>(index)))
 				return( false );
 
 			if ( dwArg )
@@ -4666,7 +4666,7 @@ bool CItem::OnTick()
 					// Torches should just go away but lanterns etc should not.
 					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
 					CItemBase * pItemDef = Item_GetDef();
-					ITEMID_TYPE id = (ITEMID_TYPE) pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex();
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex());
 					if ( ! id )	// burn out and be gone.
 					{
 						return( false );

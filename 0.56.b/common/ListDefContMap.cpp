@@ -516,7 +516,7 @@ void CListDefCont::DumpElements( CTextConsole * pSrc, LPCTSTR pszPrefix /* = NUL
 	CGString strResult;
 
 	PrintElements(strResult);
-	pSrc->SysMessagef("%s%s=%s\n", (LPCTSTR) pszPrefix, (LPCTSTR) m_Key.GetPtr(), (LPCTSTR) strResult);
+	pSrc->SysMessagef("%s%s=%s\n", static_cast<LPCTSTR>(pszPrefix), static_cast<LPCTSTR>(m_Key.GetPtr()), static_cast<LPCTSTR>(strResult));
 }
 
 size_t CListDefCont::GetCount() const
@@ -727,7 +727,7 @@ CListDefCont* CListDefMap::GetKey( LPCTSTR pszKey ) const
 	if ( pszKey && *pszKey )
 	{
 		CListDefCont *pListBase = new CListDefCont(pszKey);
-		DefSet::const_iterator i = m_Container.find((CListDefCont*)pListBase);
+		DefSet::const_iterator i = m_Container.find(pListBase);
 		delete pListBase;
 
 		if ( i != m_Container.end() )

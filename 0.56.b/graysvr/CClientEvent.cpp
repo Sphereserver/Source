@@ -2677,7 +2677,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
 			if (m_pChar != NULL)
 			{
-				SPELL_TYPE spell = (SPELL_TYPE) ATOI(ppArgs[0]);
+				SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
 				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
 				if (pSpellDef == NULL)
 					return;

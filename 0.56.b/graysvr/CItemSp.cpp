@@ -47,7 +47,7 @@ CResourceDef * CItem::Spawn_FixDef()
 	// No type info here !?
 	if ( IsType(IT_SPAWN_ITEM))
 	{
-		ITEMID_TYPE id = (ITEMID_TYPE) rid.GetResIndex();
+		ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		if ( id < ITEMID_TEMPLATE )
 		{
 			return( Spawn_TryItem( id ) );
@@ -67,7 +67,7 @@ CResourceDef * CItem::Spawn_FixDef()
 	}
 	else
 	{
-		CREID_TYPE id = (CREID_TYPE) rid.GetResIndex();
+		CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 		if ( id < SPAWNTYPE_START )
 		{
 			return( Spawn_TryChar( id ));
@@ -123,7 +123,7 @@ void CItem::Spawn_GenerateItem( CResourceDef * pDef )
 	// This could be in a container.
 
 	RESOURCE_ID_BASE rid = pDef->GetResourceID();
-	ITEMID_TYPE id = (ITEMID_TYPE) rid.GetResIndex();
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	int iDistMax = m_itSpawnItem.m_DistMax;
 	int iAmountPile = m_itSpawnItem.m_pile;
 
@@ -203,7 +203,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	if (( rid.GetResType() != RES_CHARDEF ) && ( rid.GetResType() != RES_UNKNOWN ))
 		return;
 
-	CREID_TYPE id = (CREID_TYPE) rid.GetResIndex();
+	CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 
 	bool isBadPlaceToSpawn = false;
 	CChar * pChar = CChar::CreateNPC(id);
@@ -341,7 +341,7 @@ CCharBase * CItem::Spawn_SetTrackID()
 
 	if ( rid.GetResType() == RES_CHARDEF )
 	{
-		CREID_TYPE id = (CREID_TYPE) rid.GetResIndex();
+		CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 		pCharDef = CCharBase::FindCharBase( id );
 	}
 	if ( pCharDef )
@@ -377,8 +377,8 @@ bool CItem::Plant_Use( CChar * pChar )
 	if ( ! pChar->CanSeeItem(this))	// might be invis underground.
 		return( false );
 
-	CItemBase * pItemDef = Item_GetDef();
-	ITEMID_TYPE iFruitID = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttCrops.m_idFruit );	// if it's reapable at this stage.
+	const CItemBase * pItemDef = Item_GetDef();
+	ITEMID_TYPE iFruitID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttCrops.m_idFruit)); // if it's reapable at this stage.
 	if ( iFruitID <= 0 )
 	{
 		// not ripe. (but we could just eat it if we are herbivorous ?)
@@ -387,7 +387,7 @@ bool CItem::Plant_Use( CChar * pChar )
 	}
 	if ( m_itCrop.m_ReapFruitID )
 	{
-		iFruitID = (ITEMID_TYPE) RES_GET_INDEX( m_itCrop.m_ReapFruitID );
+		iFruitID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itCrop.m_ReapFruitID));
 	}
 
 	if ( iFruitID > 0 )
@@ -433,16 +433,16 @@ bool CItem::Plant_OnTick()
 		return true;
 	}
 
-	CItemBase * pItemDef = Item_GetDef();
+	const CItemBase * pItemDef = Item_GetDef();
 	ITEMID_TYPE iGrowID = pItemDef->m_ttCrops.m_idGrow;
 
 	if ( iGrowID == -1 )
 	{
 		// Some plants generate a fruit on the ground when ripe.
-		ITEMID_TYPE iFruitID = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttCrops.m_idGrow );
+		ITEMID_TYPE iFruitID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttCrops.m_idGrow));
 		if ( m_itCrop.m_ReapFruitID )
 		{
-			iFruitID = (ITEMID_TYPE) RES_GET_INDEX( m_itCrop.m_ReapFruitID );
+			iFruitID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itCrop.m_ReapFruitID));
 		}
 		if ( ! iFruitID )
 		{
@@ -471,7 +471,7 @@ bool CItem::Plant_OnTick()
 
 	if ( iGrowID > 0 )
 	{
-		SetID( (ITEMID_TYPE) RES_GET_INDEX( iGrowID ));
+		SetID(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iGrowID)));
 		Update();
 		return true;
 	}
@@ -494,8 +494,8 @@ void CItem::Plant_CropReset()
 		return;
 	}
 
-	CItemBase * pItemDef = Item_GetDef();
-	ITEMID_TYPE iResetID = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttCrops.m_idReset );
+	const CItemBase * pItemDef = Item_GetDef();
+	ITEMID_TYPE iResetID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttCrops.m_idReset));
 	if ( iResetID != ITEMID_NOTHING )
 	{
 		SetID(iResetID);
@@ -809,8 +809,8 @@ int CItemMemory::Guild_SetLoyalTo( CGrayUID uid )
 CGrayUID CItemMemory::Guild_GetLoyalTo() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetLoyalTo");
-	CObjBase *pObj = (CObjBase*)this;
-	CGrayUID iUid((DWORD)pObj->GetTagDefs()->GetKeyNum("LoyalTo", true));
+	CItemMemory * pObj = const_cast<CItemMemory *>(this);
+	CGrayUID iUid(static_cast<DWORD>(pObj->GetTagDefs()->GetKeyNum("LoyalTo", true)));
 	return iUid;
 }
 
@@ -853,9 +853,8 @@ int CItemMemory::FixWeirdness()
 	// If it is my guild make sure i am linked to it correctly !
 	if ( IsMemoryTypes(MEMORY_GUILD|MEMORY_TOWN))
 	{
-		CItemStone * pStone = pChar->Guild_Find((MEMORY_TYPE) GetMemoryTypes());
-		if ( pStone == NULL ||
-			pStone->GetUID() != m_uidLink )
+		const CItemStone * pStone = pChar->Guild_Find(static_cast<MEMORY_TYPE>(GetMemoryTypes()));
+		if ( pStone == NULL || pStone->GetUID() != m_uidLink )
 		{
 			iResultCode = 0x4224;
 			return( iResultCode );	// get rid of it.

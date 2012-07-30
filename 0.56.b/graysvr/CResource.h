@@ -1232,7 +1232,7 @@ private:
 
 public:
 	bool r_LoadVal( CScript & s );
-	int GetItemType();
+	int GetItemType() const;
 };
 
 

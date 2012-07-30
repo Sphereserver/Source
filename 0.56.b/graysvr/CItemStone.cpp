@@ -176,7 +176,7 @@ bool CStoneMember::r_LoadVal( CScript & s ) // Load an item Script
 				break;
 
 			case STMM_PRIV:
-				SetPriv((STONEPRIV_TYPE)s.GetArgVal());
+				SetPriv(static_cast<STONEPRIV_TYPE>(s.GetArgVal()));
 				break;
 
 			case STMM_TITLE:
@@ -403,7 +403,7 @@ LPCTSTR CStoneMember::GetPrivName() const
 	STONEPRIV_TYPE iPriv = GetPriv();
 
 	TemporaryString sDefname;
-	sprintf(sDefname, "STONECONFIG_PRIVNAME_PRIVID-%d", (int)iPriv);
+	sprintf(sDefname, "STONECONFIG_PRIVNAME_PRIVID-%d", static_cast<int>(iPriv));
 	
 	CVarDefCont * pResult = g_Exp.m_VarDefs.GetKey(sDefname);
 	if (pResult)
@@ -598,9 +598,9 @@ void CItemStone::r_Write( CScript & s )
 			s.WriteKeyFormat( "MEMBER",
 				"0%lx,%s,%i,0%lx,%i,%i,%i",
 				(DWORD) pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0),
-				(LPCTSTR) pMember->GetTitle(),
+				static_cast<LPCTSTR>(pMember->GetTitle()),
 				pMember->GetPriv(),
-				(DWORD) pMember->GetLoyalToUID(),
+				static_cast<DWORD>(pMember->GetLoyalToUID()),
 				pMember->m_UnDef.m_Val1,
 				pMember->m_UnDef.m_Val2,
 				pMember->GetAccountGold());
@@ -710,7 +710,7 @@ bool CItemStone::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		if ( !pszKey[0] )
 			return false;
 
-		CGrayUID pMemberUid = (DWORD) Exp_GetVal(pszKey);
+		CGrayUID pMemberUid = static_cast<DWORD>(Exp_GetVal(pszKey));
 		SKIP_SEPARATORS(pszKey);
 
 		CChar * pMemberChar = pMemberUid.CharFind();
@@ -755,7 +755,7 @@ bool CItemStone::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		if ( !pszKey[0] )
 			return false;
 
-		CGrayUID pGuildUid = (DWORD) Exp_GetVal(pszKey);
+		CGrayUID pGuildUid = static_cast<DWORD>(Exp_GetVal(pszKey));
 		SKIP_SEPARATORS(pszKey);
 
 		CItem * pMemberGuild = pGuildUid.ItemFind();
@@ -784,7 +784,7 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 			m_sAbbrev = s.GetArgStr();
 			return true;
 		case STC_ALIGN: // "ALIGN"
-			SetAlignType( (STONEALIGN_TYPE) s.GetArgVal());
+			SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
 			return true;
 		case STC_MasterUid:
 			{
@@ -835,7 +835,7 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 			new CStoneMember(
 				this,
 				ahextoi(Arg_ppCmd[0]),													// Member's UID
-				Arg_Qty > 2 ? (STONEPRIV_TYPE)ATOI(Arg_ppCmd[2]) : STONEPRIV_CANDIDATE,	// Members priv level (use as a type)
+				Arg_Qty > 2 ? static_cast<STONEPRIV_TYPE>(ATOI(Arg_ppCmd[2])) : STONEPRIV_CANDIDATE,	// Members priv level (use as a type)
 				Arg_Qty > 1 ? Arg_ppCmd[1] : "",										// Title
 				ahextoi(Arg_ppCmd[3]),													// Member is loyal to this
 				Arg_Qty > 4 ? (ATOI( Arg_ppCmd[4] ) != 0) : 0,							// Paperdoll stone abbreviation (also if they declared war)
@@ -886,7 +886,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 			if ( *pszCmd )
 			{
 				SKIP_ARGSEP(pszCmd);
-				STONEPRIV_TYPE iPriv = (STONEPRIV_TYPE)Exp_GetVal(pszCmd);
+				STONEPRIV_TYPE iPriv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszCmd));
 
 				for (; pMember != NULL; pMember = pMember->GetNext())
 				{
@@ -945,7 +945,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		if ( !pszCmd[0] )
 			return true;
 
-		CGrayUID pMemberUid = (DWORD) Exp_GetVal(pszCmd);
+		CGrayUID pMemberUid = static_cast<DWORD>(Exp_GetVal(pszCmd));
 		SKIP_SEPARATORS(pszCmd);
 
 		CChar * pMemberChar = pMemberUid.CharFind();
@@ -1035,7 +1035,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		if ( !pszCmd[0] )
 			return true;
 
-		CGrayUID pGuildUid = (DWORD) Exp_GetVal(pszCmd);
+		CGrayUID pGuildUid = static_cast<DWORD>(Exp_GetVal(pszCmd));
 		SKIP_SEPARATORS(pszCmd);
 
 		CItem * pMemberGuild = pGuildUid.ItemFind();
@@ -1327,7 +1327,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
-								else if ( pMember->GetPriv() == (STONEPRIV_TYPE)iFlags )
+								else if ( pMember->GetPriv() == static_cast<STONEPRIV_TYPE>(iFlags) )
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
@@ -1363,9 +1363,9 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case ISV_CHANGEALIGN:
 			if ( s.HasArgs())
 			{
-				SetAlignType( (STONEALIGN_TYPE) s.GetArgVal());
+				SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "%s is now a %s %s\n", (LPCTSTR) GetName(), (LPCTSTR) GetAlignName(), (LPCTSTR) GetTypeName());
+				sprintf(pszMsg, "%s is now a %s %s\n", static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(GetAlignName()), static_cast<LPCTSTR>(GetTypeName()));
 				Speak(pszMsg);
 			}
 #ifndef _NEWGUILDSYSTEM
@@ -1546,7 +1546,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				if ( pClient == NULL )
 					return( false );
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "What would you like to rename the %s to?", (LPCTSTR) GetTypeName());
+				sprintf(pszMsg, "What would you like to rename the %s to?", static_cast<LPCTSTR>(GetTypeName()));
 				pClient->addPromptConsole(CLIMODE_PROMPT_STONE_NAME, pszMsg, GetUID());
 			}
 			break;
@@ -1692,11 +1692,11 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 	}
 #endif
 
-	char	*z = Str_GetTemp();
-	CItemStone * pStone = pChar->Guild_Find( GetMemoryType());
+	TCHAR * z = Str_GetTemp();
+	const CItemStone * pStone = pChar->Guild_Find( GetMemoryType());
 	if ( pStone && pStone != this )
 	{
-		sprintf(z, "%s appears to belong to %s. Must resign previous %s", (LPCTSTR) pChar->GetName(), (LPCTSTR) pStone->GetName(), (LPCTSTR) GetTypeName());
+		sprintf(z, "%s appears to belong to %s. Must resign previous %s", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pStone->GetName()), static_cast<LPCTSTR>(GetTypeName()));
 		Speak(z);
 		return NULL;
 	}
@@ -1713,7 +1713,7 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 		// I'm already a member of some sort.
 		if ( pMember->GetPriv() == iPriv || iPriv == STONEPRIV_CANDIDATE )
 		{
-			sprintf(z, "%s is already %s %s.", (LPCTSTR) pChar->GetName(), (LPCTSTR) pMember->GetPrivName(), (LPCTSTR) GetName());
+			sprintf(z, "%s is already %s %s.", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pMember->GetPrivName()), static_cast<LPCTSTR>(GetName()));
 			Speak(z);
 			return NULL;
 		}
@@ -1737,7 +1737,7 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 		ElectMaster();	// just in case this is the first.
 	}
 
-	sprintf(z, "%s is now %s %s", (LPCTSTR)pChar->GetName(), (LPCTSTR)pMember->GetPrivName(), (LPCTSTR)GetName());
+	sprintf(z, "%s is now %s %s", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pMember->GetPrivName()), static_cast<LPCTSTR>(GetName()));
 	Speak(z);
 	return pMember;
 }
@@ -1982,10 +1982,10 @@ bool CItemStone::IsAlliedWith( const CItemStone * pStone) const
 #ifdef _NEWGUILDSYSTEM
 
 	CScriptTriggerArgs Args;
-	Args.m_pO1 = (CItem *) pStone;
+	Args.m_pO1 = const_cast<CItemStone *>(pStone);
 	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 
-	if ( ((CItem *)this)->r_Call("f_stonesys_internal_isalliedwith", &g_Serv, &Args, NULL, &tr) )
+	if ( const_cast<CItemStone *>(this)->r_Call("f_stonesys_internal_isalliedwith", &g_Serv, &Args, NULL, &tr) )
 	{
 		if ( tr == TRIGRET_RET_FALSE )
 		{
@@ -2013,10 +2013,10 @@ bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
 #ifdef _NEWGUILDSYSTEM
 
 	CScriptTriggerArgs Args;
-	Args.m_pO1 = (CItem *) pEnemyStone;
+	Args.m_pO1 = const_cast<CItemStone *>(pEnemyStone);
 	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 
-	if ( ((CItem *)this)->r_Call("f_stonesys_internal_isatwarwith", &g_Serv, &Args, NULL, &tr) )
+	if ( const_cast<CItemStone *>(this)->r_Call("f_stonesys_internal_isatwarwith", &g_Serv, &Args, NULL, &tr) )
 	{
 		if ( tr == TRIGRET_RET_FALSE )
 		{

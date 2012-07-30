@@ -334,25 +334,25 @@ void CObjBase::Emote( LPCTSTR pText, CClient * pClientExclude, bool fForcePosses
 
 		if ( pObjTop != this )
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_1 ), (LPCTSTR) pObjTop->GetName(), (LPCTSTR) GetName(), (LPCTSTR) pText);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_2 ), (LPCTSTR) GetName(), (LPCTSTR) pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_1 ), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_2 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 		}
 		else if ( fForcePossessive )
 		{
 			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_3 ), (LPCTSTR) GetName(), (LPCTSTR) pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_3 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 			sprintf(pszYou, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_4 ), pText);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_5 ), (LPCTSTR) GetName(), (LPCTSTR) pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_5 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 			sprintf(pszYou, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_6 ), pText);
 		}
 	}
 	else
 	{
 		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_7 ), (LPCTSTR) GetName(), (LPCTSTR) pText);
+		sprintf(pszThem, g_Cfg.GetDefaultMsg( DEFMSG_EMOTE_7 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 		strcpy(pszYou, pszThem);
 	}
 
@@ -386,7 +386,7 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
-	DIR_TYPE dir = (DIR_TYPE) Calc_GetRandVal( DIR_QTY );
+	DIR_TYPE dir = static_cast<DIR_TYPE>(Calc_GetRandVal( DIR_QTY ));
 	for (; iSteps > 0 ; --iSteps )
 	{
 		// Move to the right or left?
@@ -490,7 +490,7 @@ TRIGRET_TYPE CObjBase::OnHearTrigger( CResourceLock & s, LPCTSTR pszCmd, CChar *
 		fMatch = false;
 	}
 
-	mode	= (TALKMODE_TYPE) Args.m_iN1;
+	mode = static_cast<TALKMODE_TYPE>(Args.m_iN1);
 	return( TRIGRET_ENDIF );	// continue looking.
 }
 
@@ -807,7 +807,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 					if ( fP )
 					{
-						CPointMap pt = ( index == OC_ISNEARTYPETOP ) ? ( g_World.FindTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.FindItemTypeNearby(GetTopPoint(), (IT_TYPE) iType, iDistance, bCheckMulti ) );
+						CPointMap pt = ( index == OC_ISNEARTYPETOP ) ? ( g_World.FindTypeNear_Top(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance ) ) : ( g_World.FindItemTypeNearby(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance, bCheckMulti ) );
 
 						if ( !pt.IsValidPoint() )
 							sVal.FormatVal( 0 );
@@ -815,7 +815,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 							sVal = pt.WriteUsed();
 					}
 					else
-						sVal.FormatVal( ( index == OC_ISNEARTYPETOP ) ? ( g_World.IsTypeNear_Top(GetTopPoint(), (IT_TYPE) iType, iDistance ) ) : ( g_World.IsItemTypeNear(GetTopPoint(), (IT_TYPE) iType, iDistance, bCheckMulti ) ) );
+						sVal.FormatVal( ( index == OC_ISNEARTYPETOP ) ? ( g_World.IsTypeNear_Top(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance ) ) : ( g_World.IsItemTypeNear(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance, bCheckMulti ) ) );
 				}
 				return true;
 			}
@@ -877,16 +877,16 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			CItem * pItem = NULL;
 			if ( *pszKey )
 			{
-				char * pszArgs = Str_GetTemp();
+				TCHAR * pszArgs = Str_GetTemp();
 				strcpylen( pszArgs, pszKey, strlen( pszKey ) + 1 );
 
 				CGrayUID uid = Exp_GetVal( pszKey );
 				pItem = dynamic_cast<CItem*> (uid.ObjFind());
-				if ( pItem == NULL )
+				if (pItem == NULL)
 				{
-					ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCTSTR&)pszArgs ).GetResIndex();
-					CItemBase * pItemDef = CItemBase::FindItemBase( id );
-					if ( pItemDef )
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs))).GetResIndex());
+					const CItemBase * pItemDef = CItemBase::FindItemBase( id );
+					if ( pItemDef != NULL )
 					{
 						sVal.FormatVal( CItemBase::IsTypeArmor( pItemDef->GetType() ) );
 						break;
@@ -907,16 +907,16 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			CItem * pItem = NULL;
 			if ( *pszKey )
 			{
-				char * pszArgs = Str_GetTemp();
+				TCHAR * pszArgs = Str_GetTemp();
 				strcpylen( pszArgs, pszKey, strlen( pszKey ) + 1 );
 
 				CGrayUID uid = Exp_GetVal( pszKey );
 				pItem = dynamic_cast<CItem*> (uid.ObjFind());
 				if ( pItem == NULL )
 				{
-					ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetID( RES_ITEMDEF, (LPCTSTR&)pszArgs ).GetResIndex();
-					CItemBase * pItemDef = CItemBase::FindItemBase( id );
-					if ( pItemDef )
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs))).GetResIndex());
+					const CItemBase * pItemDef = CItemBase::FindItemBase( id );
+					if (pItemDef != NULL)
 					{
 						sVal.FormatVal( CItemBase::IsTypeWeapon( pItemDef->GetType() ) );
 						break;
@@ -976,7 +976,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				if ( *pszKey )
 				{
 					TRIGRET_TYPE trReturn;
-					bool bTrigReturn = CallPersonalTrigger((TCHAR*)pszKey, pSrc, trReturn);
+					bool bTrigReturn = CallPersonalTrigger(const_cast<TCHAR *>(pszKey), pSrc, trReturn);
 					if ( bTrigReturn )
 						sVal.FormatVal(trReturn);
 
@@ -1029,24 +1029,24 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
  					SKIP_SEPARATORS( pszKey );
  					size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
 					if ( iQty >= m_TagDefs.GetCount() )
- 						return( false );	// tryig to get non-existant tag
+ 						return( false ); // trying to get non-existant tag
 
- 					CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
+ 					const CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
  					if ( !pTagAt )
- 						return( false );	// tryig to get non-existant tag
+ 						return( false ); // trying to get non-existant tag
 
  					SKIP_SEPARATORS( pszKey );
  					if ( ! *pszKey )
  					{
- 						sVal.Format( "%s=%s", (LPCTSTR) pTagAt->GetKey(), (LPCTSTR) pTagAt->GetValStr() );
+ 						sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
  						return( true );
  					}
- 					else if ( !strnicmp( pszKey, "KEY", 3 ))	// key?
+ 					else if ( !strnicmp( pszKey, "KEY", 3 )) // key?
  					{
- 						sVal = (LPCTSTR) pTagAt->GetKey();
+ 						sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
  						return( true );
  					}
- 					else if ( !strnicmp( pszKey, "VAL", 3 ))	// val?
+ 					else if ( !strnicmp( pszKey, "VAL", 3 )) // val?
  					{
  						sVal = pTagAt->GetValStr();
  						return( true );
@@ -1119,7 +1119,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				break;
 			}
 			RemoveFromView();
-			m_wHue = (HUE_TYPE) s.GetArgVal();
+			m_wHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			Update();
 			break;
 		case OC_EVENTS:
@@ -1298,7 +1298,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 				}
 				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
-				pThis->Effect( (EFFECT_TYPE) piCmd[0], (ITEMID_TYPE) RES_GET_INDEX(piCmd[1]),
+				pThis->Effect( static_cast<EFFECT_TYPE>(piCmd[0]), static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),
 					pCharSrc,
 					(iArgQty >= 3)? piCmd[2] : 5,				// BYTE bSpeedSeconds = 5,
 					(iArgQty >= 4)? piCmd[3] : 1,				// BYTE bLoop = 1,
@@ -1336,7 +1336,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				int iMaxLength = iQty > 1 ? ATOI(Arg_ppCmd[1]) : 1;
 
 				CGString sPrompt;
-				sPrompt.Format( "%s (# = default)", (LPCTSTR) Arg_ppCmd[0] );
+				sPrompt.Format("%s (# = default)", static_cast<LPCTSTR>(Arg_ppCmd[0]));
 				pClientSrc->addGumpInpVal( true, INPVAL_STYLE_TEXTEDIT,
 					iMaxLength,	sPrompt, sOrgValue, this );
 			}
@@ -1374,9 +1374,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 				CvtSystemToNUNICODE( ncBuffer, COUNTOF( ncBuffer ), pszArgs[4], -1 );
 				pClientSrc->addBarkUNICODE( ncBuffer, this,
-					(HUE_TYPE) ( pszArgs[0][0] ? Exp_GetVal(pszArgs[0]) : HUE_TEXT_DEF ),
-					(TALKMODE_TYPE) ( pszArgs[1][0] ? Exp_GetVal(pszArgs[1]) : TALKMODE_SAY ),
-					(FONT_TYPE) ( pszArgs[2][0] ? Exp_GetVal(pszArgs[2]) : FONT_NORMAL ),
+					static_cast<HUE_TYPE>( pszArgs[0][0] ? Exp_GetVal(pszArgs[0]) : HUE_TEXT_DEF ),
+					static_cast<TALKMODE_TYPE>( pszArgs[1][0] ? Exp_GetVal(pszArgs[1]) : TALKMODE_SAY ),
+					static_cast<FONT_TYPE>( pszArgs[2][0] ? Exp_GetVal(pszArgs[2]) : FONT_NORMAL ),
 					CLanguageID(pszArgs[3]));
 				break;
 			}
@@ -1507,9 +1507,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					break;
 
 				SpeakUTF8( pszArgs[4],
-					(HUE_TYPE) ( pszArgs[0][0] ? Exp_GetVal(pszArgs[0]) : HUE_TEXT_DEF ),
-					(TALKMODE_TYPE) ( pszArgs[1][0] ? Exp_GetVal(pszArgs[1]) : TALKMODE_SAY ),
-					(FONT_TYPE) ( pszArgs[2][0] ? Exp_GetVal(pszArgs[2]) : FONT_NORMAL ),
+					static_cast<HUE_TYPE>( pszArgs[0][0] ? Exp_GetVal(pszArgs[0]) : HUE_TEXT_DEF ),
+					static_cast<TALKMODE_TYPE>( pszArgs[1][0] ? Exp_GetVal(pszArgs[1]) : TALKMODE_SAY ),
+					static_cast<FONT_TYPE>( pszArgs[2][0] ? Exp_GetVal(pszArgs[2]) : FONT_NORMAL ),
 					CLanguageID(pszArgs[3]));
 			}
 			break;
@@ -1549,13 +1549,13 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				default:
 					break;
 				}
-				OnSpellEffect( (SPELL_TYPE) RES_GET_INDEX( piCmd[0] ), pCharSrc, piCmd[1], pItemSrc );
+				OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(piCmd[0])), pCharSrc, piCmd[1], pItemSrc);
 			}
 			break;
 		case OV_TAGLIST:
 			EXC_SET("TAGLIST");
 			if ( ! strcmpi( s.GetArgStr(), "log" ))
-				pSrc = (CTextConsole *)&g_Serv;
+				pSrc = &g_Serv;
 			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			break;
 		case OV_TARGET:
@@ -1597,7 +1597,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						Str_ParseCmds( s.GetArgStr(), ppArg, COUNTOF(ppArg), "," );
 						if ( !IsStrNumeric( ppArg[1] ))
 							DEBUG_ERR(("Invalid argument in Target Multi\n"));
-						ITEMID_TYPE itemid = (ITEMID_TYPE) Exp_GetVal(ppArg[1]);
+						ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArg[1]));
 						pClientSrc->addTargetFunctionMulti( ppArg[0], itemid, fGround );
 					}
 					else
@@ -1610,7 +1610,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						if ( !IsStrNumeric( s.GetArgStr() ))
 							DEBUG_ERR(("Invalid argument in Target Multi\n"));
 						LPCTSTR arg = s.GetArgStr();
-						ITEMID_TYPE itemid = (ITEMID_TYPE) Exp_GetVal(arg);
+						ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(arg));
 						pClientSrc->addTargetItems( CLIMODE_TARG_USE_ITEM, itemid, fGround );
 					}
 					else
@@ -1719,13 +1719,13 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 				if ( iMinPriv >= PLEVEL_QTY )
 				{
-					pSrc->SysMessagef("The %s property can't be changed.", (LPCTSTR) s.GetArgStr());
+					pSrc->SysMessagef("The %s property can't be changed.", static_cast<LPCTSTR>(s.GetArgStr()));
 					return false;
 				}
 
 				if ( pSrc->GetPrivLevel() < iMinPriv )
 				{
-					pSrc->SysMessagef( "You lack the privilege to change the %s property.", (LPCTSTR) s.GetArgStr());
+					pSrc->SysMessagef( "You lack the privilege to change the %s property.", static_cast<LPCTSTR>(s.GetArgStr()));
 					return false;
 				}
 
@@ -1734,7 +1734,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				{
 					if ( pCharSrc == NULL || !pCharSrc->CanTouch(this) )
 					{
-						pSrc->SysMessagef("Can't touch %s object %s", (LPCTSTR)s.GetArgStr(), (LPCTSTR)GetName());
+						pSrc->SysMessagef("Can't touch %s object %s", static_cast<LPCTSTR>(s.GetArgStr()), static_cast<LPCTSTR>(GetName()));
 						return false;
 					}
 				}
@@ -1748,7 +1748,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_WARN(("pszVerb %s",pszVerb));
 				if ( !r_Verb(script, pSrc) )
 				{
-					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID())));
 					return( false );
 				}
 			}
@@ -1782,9 +1782,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( pNewSrc == NULL )
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), NewSrc.GetObjUID()));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", (LPCTSTR)pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}
@@ -1792,9 +1792,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if (!r_Verb(script, pNewSrc))
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID(), (LPCTSTR)pNewSrc->GetName(), NewSrc.GetObjUID()));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(pNewSrc->GetName()), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", (LPCTSTR) pszVerb, (LPCTSTR) GetName(), (DWORD)GetUID()));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}

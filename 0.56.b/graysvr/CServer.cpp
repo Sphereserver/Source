@@ -348,8 +348,8 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 	// 0 or 0x21 = main status.
 
 	TCHAR * pTemp = Str_GetTemp();
-	int		iClients	= StatGet(SERV_STAT_CLIENTS);
-	int		iHours		= GetAgeHours()/24;
+	int iClients = StatGet(SERV_STAT_CLIENTS);
+	int iHours = GetAgeHours()/24;
 
 	switch ( iIndex )
 	{
@@ -357,25 +357,25 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			// typical (first time) poll response.
 			{
 				TCHAR szVersion[128];
-				sprintf( pTemp, GRAY_TITLE ", Name=%s, Port=%d, Ver=" GRAY_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
-					GetName(), m_ip.GetPort(), m_TimeZone, (LPCTSTR) m_sEMail, (LPCTSTR) m_sURL, (LPCTSTR) m_sLang,
-					m_ClientVersion.WriteClientVer(szVersion) );
+				sprintf(pTemp, GRAY_TITLE ", Name=%s, Port=%d, Ver=" GRAY_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
+					GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang),
+					m_ClientVersion.WriteClientVer(szVersion));
 			}
 			break;
 		case 0x22: // '"'
 			{
 			// shown in the INFO page in game.
-			sprintf( pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%i, Items=%li, Chars=%li, Mem=%liK\n",
-				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM) );
+			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%i, Items=%li, Chars=%li, Mem=%liK\n",
+				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			}
 			break;
 		case 0x24: // '$'
 			// show at startup.
-			sprintf( pTemp, "Admin=%s, URL=%s, Lang=%s, TZ=%d\n", (LPCTSTR) m_sEMail, (LPCTSTR) m_sURL, (LPCTSTR) m_sLang, m_TimeZone );
+			sprintf(pTemp, "Admin=%s, URL=%s, Lang=%s, TZ=%d\n", static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_TimeZone);
 			break;
 		case 0x25: // '%'
 			// ConnectUO Status string
-			sprintf( pTemp, GRAY_TITLE " Items=%li, Mobiles=%li, Clients=%i, Mem=%li", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM) );
+			sprintf(pTemp, GRAY_TITLE " Items=%li, Mobiles=%li, Clients=%i, Mem=%li", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
 			break;
 	}
 
@@ -414,10 +414,10 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 			sprintf(tmpMsg, "%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
 				pClient->GetSocketID(),
 				chRank,
-				(LPCTSTR) pClient->GetAccount()->GetName(),
+				static_cast<LPCTSTR>(pClient->GetAccount()->GetName()),
 				pClient->GetPeerStr(),
-				(LPCTSTR) pChar->GetName(),
-				(LPCTSTR) pChar->GetTopPoint().WriteUsed());
+				static_cast<LPCTSTR>(pChar->GetName()),
+				static_cast<LPCTSTR>(pChar->GetTopPoint().WriteUsed()));
 		}
 		else
 		{
@@ -440,9 +440,9 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 
 			sprintf(tmpMsg, "%lx:Acc='%s', (%s) %s\n",
 				pClient->GetSocketID(),
-				pClient->GetAccount() != NULL ? (LPCTSTR) pClient->GetAccount()->GetName() : "<NA>",
+				pClient->GetAccount() != NULL ? static_cast<LPCTSTR>(pClient->GetAccount()->GetName()) : "<NA>",
 				pClient->GetPeerStr(),
-				(LPCTSTR) pszState );
+				static_cast<LPCTSTR>(pszState));
 		}
 
 		ASSERT((strlen(pszMsg) + strlen(tmpMsg)) < SCRIPT_MAX_LINE_LEN);
@@ -526,7 +526,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 'd': // dump
 			{
-				LPCTSTR		pszKey	= sText;			pszKey++;
+				LPCTSTR pszKey = sText + 1;
 				GETNONWHITESPACE( pszKey );
 				switch ( tolower(*pszKey) )
 				{
@@ -893,7 +893,7 @@ longcommand:
 	}
 	else
 	{
-		pSrc->SysMessagef("unknown command '%s'\n", (LPCTSTR)sText);
+		pSrc->SysMessagef("unknown command '%s'\n", static_cast<LPCTSTR>(sText));
 		fRet = false;
 	}
 
@@ -948,12 +948,12 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{
-			if (profile.IsEnabled((PROFILE_TYPE) i) == false)
+			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
 				continue;
 
-			pSrc->SysMessagef( "%-10s = %s\n", (LPCTSTR) profile.GetName((PROFILE_TYPE) i), (LPCTSTR) profile.GetDescription((PROFILE_TYPE) i ) );
+			pSrc->SysMessagef( "%-10s = %s\n", static_cast<LPCTSTR>(profile.GetName(static_cast<PROFILE_TYPE>(i))), static_cast<LPCTSTR>(profile.GetDescription(static_cast<PROFILE_TYPE>(i))) );
 			if (ftDump != NULL)
-				ftDump->Printf( "%-10s = %s\n", (LPCTSTR) profile.GetName((PROFILE_TYPE) i), (LPCTSTR) profile.GetDescription((PROFILE_TYPE) i ) );
+				ftDump->Printf( "%-10s = %s\n", static_cast<LPCTSTR>(profile.GetName(static_cast<PROFILE_TYPE>(i))), static_cast<LPCTSTR>(profile.GetDescription(static_cast<PROFILE_TYPE>(i))) );
 		}
 	}
 
@@ -974,18 +974,18 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 
 			pSrc->SysMessagef( "Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
-					(int)(g_profiler.total/divby),
-					(int)(((g_profiler.total*10000)/(divby))%10000),
-					(int)(average/divby),
-					(int)(((average*10000)/(divby))%10000)
+					static_cast<int>(g_profiler.total / divby),
+					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
+					static_cast<int>(average / divby),
+					static_cast<int>(((average * 10000) / (divby)) % 10000)
 			);
 			if (ftDump != NULL)
 				ftDump->Printf("Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
-					(int)(g_profiler.total/divby),
-					(int)(((g_profiler.total*10000)/(divby))%10000),
-					(int)(average/divby),
-					(int)(((average*10000)/(divby))%10000)
+					static_cast<int>(g_profiler.total / divby),
+					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
+					static_cast<int>(average / divby),
+					static_cast<int>(((average * 10000) / (divby)) % 10000)
 				);
 
 			for ( pFun = g_profiler.FunctionsHead; pFun != NULL; pFun = pFun->next )
@@ -995,27 +995,27 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 					pSrc->SysMessagef( "FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 						pFun->name,
 						pFun->called,
-						(int)(pFun->average/divby),
-						(int)(((pFun->average*10000)/(divby))%10000),
-						(int)(pFun->min/divby),
-						(int)(((pFun->min*10000)/(divby))%10000),
-						(int)(pFun->max/divby),
-						(int)(((pFun->max*10000)/(divby))%10000),
-						(int)(pFun->total/divby),
-						(int)(((pFun->total*10000)/(divby))%10000)
+						static_cast<int>(pFun->average / divby),
+						static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
+						static_cast<int>(pFun->min / divby),
+						static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+						static_cast<int>(pFun->max / divby),
+						static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
+						static_cast<int>(pFun->total / divby),
+						static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
 					);
 					if (ftDump != NULL)
 						ftDump->Printf("FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pFun->name,
 							pFun->called,
-							(int)(pFun->average/divby),
-							(int)(((pFun->average*10000)/(divby))%10000),
-							(int)(pFun->min/divby),
-							(int)(((pFun->min*10000)/(divby))%10000),
-							(int)(pFun->max/divby),
-							(int)(((pFun->max*10000)/(divby))%10000),
-							(int)(pFun->total/divby),
-							(int)(((pFun->total*10000)/(divby))%10000)
+							static_cast<int>(pFun->average / divby),
+							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->min / divby),
+							static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->max / divby),
+							static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->total / divby),
+							static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
 						);
 				}
 			}
@@ -1026,27 +1026,27 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 					pSrc->SysMessagef( "TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 						pTrig->name,
 						pTrig->called,
-						(int)(pTrig->average/divby),
-						(int)(((pTrig->average*10000)/(divby))%10000),
-						(int)(pTrig->min/divby),
-						(int)(((pTrig->min*10000)/(divby))%10000),
-						(int)(pTrig->max/divby),
-						(int)(((pTrig->max*10000)/(divby))%10000),
-						(int)(pTrig->total/divby),
-						(int)(((pTrig->total*10000)/(divby))%10000)
+						static_cast<int>(pTrig->average / divby),
+						static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
+						static_cast<int>(pTrig->min / divby),
+						static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+						static_cast<int>(pTrig->max / divby),
+						static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
+						static_cast<int>(pTrig->total / divby),
+						static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
 					);
 					if (ftDump != NULL)
 						ftDump->Printf("TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
 							pTrig->name,
 							pTrig->called,
-							(int)(pTrig->average/divby),
-							(int)(((pTrig->average*10000)/(divby))%10000),
-							(int)(pTrig->min/divby),
-							(int)(((pTrig->min*10000)/(divby))%10000),
-							(int)(pTrig->max/divby),
-							(int)(((pTrig->max*10000)/(divby))%10000),
-							(int)(pTrig->total/divby),
-							(int)(((pTrig->total*10000)/(divby))%10000)
+							static_cast<int>(pTrig->average / divby),
+							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->min / divby),
+							static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->max / divby),
+							static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->total / divby),
+							static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
 						);
 				}
 			}
@@ -1501,7 +1501,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 					return( false );
 				}
 
-				if ( !SetProcessWorkingSetSize(GetCurrentProcess(),(SIZE_T)-1,(SIZE_T)-1) )
+				if ( !SetProcessWorkingSetSize(GetCurrentProcess(), static_cast<SIZE_T>(-1), static_cast<SIZE_T>(-1)) )
 				{
 					g_Log.EventError( "Error during process shrink.\n" );
 					return false;
@@ -1533,12 +1533,12 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 		case SV_VARLIST:
 			if ( ! strcmpi( s.GetArgStr(), "log" ))
-				pSrc = (CTextConsole *)&g_Serv;
+				pSrc = &g_Serv;
 			g_Exp.m_VarGlobals.DumpKeys(pSrc, "VAR.");
 			break;
 		case SV_PRINTLISTS:
 			if ( ! strcmpi( s.GetArgStr(), "log" ))
-				pSrc = (CTextConsole *)&g_Serv;
+				pSrc = &g_Serv;
 			g_Exp.m_ListGlobals.DumpKeys(pSrc, "LIST.");
 			break;
 		case SV_CLEARLISTS:
@@ -1671,7 +1671,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 				} return false;
 
 			default:
-				g_Log.Event( LOGM_INIT|LOGL_CRIT, "Don't recognize command line data '%s'\n", (LPCTSTR)( argv[argn] ));
+				g_Log.Event(LOGM_INIT|LOGL_CRIT, "Don't recognize command line data '%s'\n", static_cast<LPCTSTR>(argv[argn]));
 				break;
 		}
 	}
@@ -1737,7 +1737,7 @@ bool CServer::SocketsInit( CGSocket & socket )
 	linger lval;
 	lval.l_onoff = 0;
 	lval.l_linger = 10;
-	socket.SetSockOpt(SO_LINGER, (const char*) &lval, sizeof(lval));
+	socket.SetSockOpt(SO_LINGER, reinterpret_cast<const char *>(&lval), sizeof(lval));
 	socket.SetNonBlocking();
 
 #ifndef _WIN32
@@ -1801,7 +1801,7 @@ bool CServer::SocketsInit() // Initialize sockets
 			ip.SetAddrIP(*((DWORD*)(pHost->h_addr_list[i]))); // 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring IP '%s'.\n", (LPCTSTR)ip.GetAddrStr());
+			g_Log.Event(LOGM_INIT, "Monitoring IP '%s'.\n", static_cast<LPCTSTR>(ip.GetAddrStr()));
 		}
 	}
 	return true;
@@ -1964,7 +1964,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	if ( m_ClientVersion.GetClientVer() )
 	{
 		TCHAR szVersion[128];
-		g_Log.Event( LOGM_INIT, "ClientVersion=%s\n", (LPCTSTR) m_ClientVersion.WriteClientVer(szVersion));
+		g_Log.Event(LOGM_INIT, "ClientVersion=%s\n", static_cast<LPCTSTR>(m_ClientVersion.WriteClientVer(szVersion)));
 		if ( !m_ClientVersion.IsValid() )
 		{
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Bad Client Version '%s'\n", szVersion);
@@ -1975,7 +1975,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("finilizing");
 #ifdef _WIN32
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", (LPCTSTR) GetName());
+	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", static_cast<LPCTSTR>(GetName()));
 	SetConsoleTitle(pszTemp);
 #endif
 

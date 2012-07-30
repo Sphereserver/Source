@@ -17,7 +17,7 @@ bool CItem::Ship_Plank( bool fOpen )
 	// This item is the ships plank.
 
 	CItemBase * pItemDef = Item_GetDef();
-	ITEMID_TYPE idState = (ITEMID_TYPE) RES_GET_INDEX( pItemDef->m_ttShipPlank.m_idState );
+	ITEMID_TYPE idState = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttShipPlank.m_idState));
 	if ( !idState )
 		return( false );
 
@@ -44,7 +44,7 @@ bool CItem::Ship_Plank( bool fOpen )
 	{
 		// Restore the type of the ship side
 		if ( m_itShipPlank.m_itSideType == IT_SHIP_SIDE || m_itShipPlank.m_itSideType == IT_SHIP_SIDE_LOCKED )
-			SetType( (IT_TYPE)m_itShipPlank.m_itSideType );
+			SetType(static_cast<IT_TYPE>(m_itShipPlank.m_itSideType));
 
 		m_itShipPlank.m_itSideType = IT_NORMAL;
 	}
@@ -263,7 +263,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	}
 
 	int iFaceOffset = Ship_GetFaceOffset();
-	ITEMID_TYPE idnew = (ITEMID_TYPE) ( GetID() - iFaceOffset + iDirection );
+	ITEMID_TYPE idnew = static_cast<ITEMID_TYPE>( GetID() - iFaceOffset + iDirection );
 	const CItemBaseMulti * pMultiNew = Multi_GetDef( idnew );
 	if ( pMultiNew == NULL ) {
 		return false;
@@ -287,7 +287,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		if (i == 0) // We don't need to check forwards
 			continue;
 
-		dirTmp = GetDirTurn((DIR_TYPE)this->m_itShip.m_DirFace, i);
+		dirTmp = GetDirTurn(static_cast<DIR_TYPE>(m_itShip.m_DirFace), i);
 		ptTmp = rect.GetRectCorner(dirTmp);
 		ptTmp.m_z = GetTopZ();
 
@@ -326,7 +326,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				{
 					const CItemBaseMulti::CMultiComponentItem & component = pMultiNew->m_Components.ElementAt(j);
 
-					Multi_CreateComponent((ITEMID_TYPE)component.m_id,
+					Multi_CreateComponent(static_cast<ITEMID_TYPE>(component.m_id),
 										  component.m_dx,
 										  component.m_dy,
 										  component.m_dz,
@@ -572,7 +572,7 @@ bool CItemShip::Ship_OnMoveTick()
 		return( true );
 
 	// Calculate the leading point.
-	DIR_TYPE dir = (DIR_TYPE) m_itShip.m_DirMove;
+	DIR_TYPE dir = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
 	CItemBaseMulti::ShipSpeed shSpeed = GetShipSpeed();
 
 	if ( ! Ship_Move( dir, shSpeed.tiles ))
@@ -735,7 +735,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 			if ( ! s.HasArgs())
 				return( false );
 			m_itShip.m_DirMove = GetDirStr( s.GetArgStr());
-			return Ship_Move( (DIR_TYPE) m_itShip.m_DirMove, GetShipSpeed().tiles );
+			return Ship_Move(static_cast<DIR_TYPE>(m_itShip.m_DirMove), GetShipSpeed().tiles );
 		}
 
 		case SHV_SHIPGATE:
@@ -764,7 +764,7 @@ anchored:
 				break;
 			}
 			m_itShip.m_DirMove = GetDirTurn( DirFace, DirMoveChange );
-			if (! Ship_Face( (DIR_TYPE) m_itShip.m_DirMove ) )
+			if (! Ship_Face(static_cast<DIR_TYPE>(m_itShip.m_DirMove)) )
 				return false;
 			break;
 		}

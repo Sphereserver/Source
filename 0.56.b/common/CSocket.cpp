@@ -169,7 +169,7 @@ void CSocketAddress::SetPort( WORD wPort )
 
 void CSocketAddress::SetPortStr( LPCTSTR pszPort )
 {
-	m_port = (WORD)ATOI(pszPort);
+	m_port = static_cast<WORD>(ATOI(pszPort));
 }
 
 bool CSocketAddress::SetPortExtStr( TCHAR * pszIP )
@@ -282,7 +282,7 @@ bool CGSocket::Create( int iAf, int iType, int iProtocol )
 
 int CGSocket::Bind( struct sockaddr_in * pSockAddrIn )
 {
-	return( bind( m_hSocket, (struct sockaddr *) pSockAddrIn, sizeof(*pSockAddrIn)));
+	return bind( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), sizeof(*pSockAddrIn));
 }
 
 int CGSocket::Bind( const CSocketAddress & SockAddr )
@@ -303,7 +303,7 @@ int CGSocket::Listen( int iMaxBacklogConnections )
 int CGSocket::Connect( struct sockaddr_in * pSockAddrIn )
 {
 	// RETURN: 0 = success, else SOCKET_ERROR
-	return( connect( m_hSocket, (struct sockaddr*) pSockAddrIn, sizeof(*pSockAddrIn)));
+	return connect( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), sizeof(*pSockAddrIn));
 }
 
 int CGSocket::Connect( const CSocketAddress & SockAddr )
@@ -328,8 +328,8 @@ int CGSocket::Connect( LPCTSTR pszHostName, WORD wPort )
 
 SOCKET CGSocket::Accept( struct sockaddr_in * pSockAddrIn ) const
 {
-	int len = sizeof( struct sockaddr_in );
-	return( accept( m_hSocket, (struct sockaddr*) pSockAddrIn, (socklen_t*)&len ));
+	int len = sizeof(struct sockaddr_in);
+	return accept( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len));
 }
 
 SOCKET CGSocket::Accept( CSocketAddress & SockAddr ) const
@@ -344,14 +344,14 @@ SOCKET CGSocket::Accept( CSocketAddress & SockAddr ) const
 int CGSocket::Send( const void * pData, int len ) const
 {
 	// RETURN: length sent
-	return( send( m_hSocket, (char*) pData, len, 0 ));
+	return( send( m_hSocket, static_cast<const char *>(pData), len, 0 ));
 }
 
 int CGSocket::Receive( void * pData, int len, int flags )
 {
 	// RETURN: length, <= 0 is closed or error.
 	// flags = MSG_PEEK or MSG_OOB
-	return( recv( m_hSocket, (char*) pData, len, flags ));
+	return( recv( m_hSocket, static_cast<char *>(pData), len, flags ));
 }
 
 int CGSocket::GetSockName( struct sockaddr_in * pSockAddrIn ) const
@@ -359,7 +359,7 @@ int CGSocket::GetSockName( struct sockaddr_in * pSockAddrIn ) const
 	// Get the address of the near end. (us)
 	// RETURN: 0 = success
 	int len = sizeof( *pSockAddrIn );
-	return( getsockname( m_hSocket, (struct sockaddr *) pSockAddrIn, (socklen_t*)&len ));
+	return( getsockname( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len) ));
 }
 
 CSocketAddress CGSocket::GetSockName() const
@@ -381,7 +381,7 @@ int CGSocket::GetPeerName( struct sockaddr_in * pSockAddrIn ) const
 	// Get the address of the far end.
 	// RETURN: 0 = success
 	int len = sizeof( *pSockAddrIn );
-	return( getpeername( m_hSocket, (struct sockaddr *) pSockAddrIn, (socklen_t*)&len ));
+	return( getpeername( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len) ));
 }
 
 CSocketAddress CGSocket::GetPeerName( ) const
@@ -398,15 +398,15 @@ CSocketAddress CGSocket::GetPeerName( ) const
 	}
 }
 
-int CGSocket::SetSockOpt( int nOptionName, const void* optval, int optlen, int nLevel ) const
+int CGSocket::SetSockOpt( int nOptionName, const void * optval, int optlen, int nLevel ) const
 {
 	// level = SOL_SOCKET and IPPROTO_TCP.
-	return( setsockopt( m_hSocket, nLevel, nOptionName, (const char FAR *) optval, optlen ));
+	return( setsockopt( m_hSocket, nLevel, nOptionName, reinterpret_cast<const char FAR *>(optval), optlen ));
 }
 
-int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLevel ) const
+int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLevel ) const
 {
-	return( getsockopt( m_hSocket, nLevel, nOptionName, (char FAR *) optval, (socklen_t*)poptlen ));
+	return( getsockopt( m_hSocket, nLevel, nOptionName, reinterpret_cast<char FAR *>(optval), static_cast<socklen_t *>(poptlen)));
 }
 
 #ifdef _WIN32
@@ -424,7 +424,7 @@ int CGSocket::GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLev
 	void CGSocket::ClearAsync()
 	{
      	// TO BE CALLED IN CClient destructor !!!
-		CancelIo((HANDLE)m_hSocket);
+		CancelIo(reinterpret_cast<HANDLE>(m_hSocket));
 		SleepEx(1, TRUE);
 	}
 

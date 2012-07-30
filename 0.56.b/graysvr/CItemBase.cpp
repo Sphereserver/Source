@@ -242,7 +242,7 @@ CREID_TYPE CItemBase::FindCharTrack( ITEMID_TYPE trackID )	// static
 		return( CREID_INVALID );
 	}
 
-	return( (CREID_TYPE) pItemDef->m_ttFigurine.m_charid.GetResIndex());
+	return static_cast<CREID_TYPE>(pItemDef->m_ttFigurine.m_charid.GetResIndex());
 }
 
 bool CItemBase::IsTypeArmor( IT_TYPE type )  // static
@@ -369,7 +369,7 @@ bool CItemBase::IsTypeEquippable() const
 		case IT_EQ_TRADE_WINDOW:
 		case IT_EQ_MEMORY_OBJ:
 		case IT_EQ_SCRIPT:
-			if ( IsVisibleLayer( (LAYER_TYPE) m_layer ))
+			if ( IsVisibleLayer( static_cast<LAYER_TYPE>(m_layer)))
 				return( false );
 			return( true );
 		default:
@@ -486,7 +486,7 @@ bool IsID_Chair( ITEMID_TYPE id ) // static
 	// IT_CHAIR
 
 	// todo: consider enum values for these chairs
-	switch ( (WORD) id )
+	switch (static_cast<WORD>(id))
 	{
 		case 0x0459: // 'marble bench'
 		case 0x045a: // 'marble bench'
@@ -872,7 +872,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 		if ( rid.GetResType() != RES_ITEMDEF )
 			continue;
 
-		CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) rid.GetResIndex() );
+		CItemBase * pItemDef = CItemBase::FindItemBase( static_cast<ITEMID_TYPE>(rid.GetResIndex()) );
 		if ( pItemDef == NULL )
 			continue;
 
@@ -885,7 +885,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 		RESOURCE_ID rid = m_SkillMake[i].GetResourceID();
 		if ( rid.GetResType() != RES_SKILL )
 			continue;
-		const CSkillDef* pSkillDef = g_Cfg.GetSkillDef( (SKILL_TYPE) rid.GetResIndex() );
+		const CSkillDef* pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(rid.GetResIndex()));
 		if ( pSkillDef == NULL )
 			continue;
 
@@ -1046,10 +1046,9 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			break;
 		case IBC_SKILL:		// Skill to use.
 			{
-				//sVal.FormatVal( m_iSkill );
 				if ( m_iSkill > SKILL_NONE && m_iSkill < SKILL_MAX )
 				{
-					sVal.FormatVal( (SKILL_TYPE) m_iSkill );
+					sVal.FormatVal(m_iSkill);
 					break;
 				}
 
@@ -1078,7 +1077,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 						skill = SKILL_NONE;
 						break;
 				}
-				sVal.FormatVal( (SKILL_TYPE) skill );
+				sVal.FormatVal(skill);
 				break;
 			}
 		case IBC_LAYER:
@@ -1220,7 +1219,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 				m_flip_id.Empty();
 				for ( size_t i = 0; i < iArgQty; i++ )
 				{
-					ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ppArgs[i] );
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ppArgs[i] ));
 					if ( ! IsValidDispID( id ))
 						continue;
 					if ( IsSameDispID(id))
@@ -1249,7 +1248,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 					return( false );
 				}
 
-				ITEMID_TYPE id = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 				if ( ! IsValidDispID(id))
 				{
 					DEBUG_ERR(( "Setting invalid id=%s for base type %s\n", s.GetArgStr(), GetResourceName()));
@@ -1269,7 +1268,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			break;
 
 		case IBC_LAYER:
-			m_layer = (LAYER_TYPE) s.GetArgVal();
+			m_layer = static_cast<LAYER_TYPE>(s.GetArgVal());
 			break;
 		case IBC_PILE:
 			break;
@@ -1324,7 +1323,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			}
 			break;
 		case IBC_TYPE:
-			m_type = (IT_TYPE) g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr());
+			m_type = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr()));
 			if ( m_type == IT_CONTAINER_LOCKED )
 			{
 				// At this level it just means to add a key for it.
@@ -1504,7 +1503,7 @@ bool CItemBaseMulti::AddComponent( TCHAR * pArgs )
 	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return false;
-	return AddComponent( (ITEMID_TYPE) RES_GET_INDEX( piArgs[0] ), piArgs[1], piArgs[2], piArgs[3] );
+	return AddComponent(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[0])), piArgs[1], piArgs[2], piArgs[3] );
 }
 
 int CItemBaseMulti::GetMaxDist() const
@@ -1760,7 +1759,7 @@ CItemBase * CItemBase::FindItemBase( ITEMID_TYPE id ) // static
 	{
 		if ( s.IsKey( "DUPEITEM" ))
 		{
-			return( MakeDupeReplacement( pBase, (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
+			return( MakeDupeReplacement( pBase, static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()))));
 		}
 		if ( s.IsKey( "MULTIREGION" ))
 		{

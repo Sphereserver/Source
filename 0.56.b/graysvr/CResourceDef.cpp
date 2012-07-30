@@ -738,7 +738,7 @@ bool CSpellDef::r_LoadVal( CScript &s )
 			m_Effect.Load( s.GetArgRaw());
 			break;
 		case SPC_EFFECT_ID:
-			m_idEffect = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+			m_idEffect = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 			break;
 		case SPC_FLAGS:
 			m_dwFlags = s.GetArgVal();
@@ -762,20 +762,20 @@ bool CSpellDef::r_LoadVal( CScript &s )
 			m_Reags.Load( s.GetArgStr());
 			break;
 		case SPC_RUNE_ITEM:
-			m_idSpell = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+			m_idSpell = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 			break;
 		case SPC_RUNES:
 			// This may only be basic chars !
 			m_sRunes = s.GetArgStr();
 			break;
 		case SPC_SCROLL_ITEM:
-			m_idScroll = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+			m_idScroll = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 			break;
 		case SPC_SKILLREQ:
 			m_SkillReq.Load( s.GetArgStr());
 			break;
 		case SPC_SOUND:
-			m_sound = (SOUND_TYPE) s.GetArgVal();
+			m_sound = static_cast<SOUND_TYPE>(s.GetArgVal());
 			break;
 		default:
 			return( CResourceDef::r_LoadVal( s ) );
@@ -802,7 +802,7 @@ bool CSpellDef::GetPrimarySkill( int * piSkill, int * piQty ) const
 		*piQty = m_SkillReq[i].GetResQty();
 	if ( piSkill != NULL )
 		*piSkill = m_SkillReq[i].GetResIndex();
-	return (g_Cfg.GetSkillDef( (SKILL_TYPE) m_SkillReq[i].GetResIndex() ) != NULL);
+	return (g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(m_SkillReq[i].GetResIndex())) != NULL);
 }
 
 //*******************************************
@@ -856,8 +856,8 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 				CResourceQty rec;
 
 				rec.SetResourceID(
-					g_Cfg.ResourceGetID(RES_CHARDEF, (LPCTSTR&)ppCmd[0]),
-					( iArgs > 1 && ppCmd[1][0] ) ? Exp_GetVal((LPCTSTR&)ppCmd[1]) : 1 );
+					g_Cfg.ResourceGetID(RES_CHARDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(ppCmd[0]))),
+					( iArgs > 1 && ppCmd[1][0] ) ? Exp_GetVal(ppCmd[1]) : 1 );
 				m_iTotalWeight += rec.GetResQty();
 				m_Members.Add(rec);
 			}
@@ -907,7 +907,7 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			}
 			else
 			{
-				CGrayUID uidTofind = (DWORD) Exp_GetVal(pszKey);
+				CGrayUID uidTofind = static_cast<DWORD>(Exp_GetVal(pszKey));
 				CChar * pSend = uidTofind.CharFind();
 
 				if ( pSend )
@@ -1013,8 +1013,7 @@ size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) cons
 		rid = pOreDef->m_ReapItem;
 		if ( rid != 0 )
 		{
-			// CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) rid );
-			if ( !pCharSrc->Skill_MakeItem( (ITEMID_TYPE) rid, UID_CLEAR, SKTRIG_SELECT ) )
+			if ( !pCharSrc->Skill_MakeItem(static_cast<ITEMID_TYPE>(rid), UID_CLEAR, SKTRIG_SELECT ) )
 				continue;
 			
 			if ( bTrigger && pOreDef->OnTrigger( "@ResourceTest", pCharSrc, NULL ) == TRIGRET_RET_TRUE )
@@ -1092,7 +1091,7 @@ bool CRegionResourceDef::r_LoadVal( CScript & s )
 		case RMC_DEFNAME: // "DEFNAME",
 			return SetResourceName( s.GetArgStr());
 		case RMC_REAP: // "REAP",
-			m_ReapItem = (ITEMID_TYPE) g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr());
+			m_ReapItem = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
 			break;
 		case RMC_REAPAMOUNT:
 			m_ReapAmount.Load( s.GetArgRaw() );

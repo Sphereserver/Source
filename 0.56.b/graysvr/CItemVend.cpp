@@ -183,7 +183,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 			if ( IsType( IT_DEED ))
 			{
 				// Deeds just represent the item they are deeding.
-				pItemDef = CItemBase::FindItemBase((ITEMID_TYPE) RES_GET_INDEX(m_itDeed.m_Type));
+				pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itDeed.m_Type)));
 				if ( pItemDef == NULL )
 					return( 1 );
 			}

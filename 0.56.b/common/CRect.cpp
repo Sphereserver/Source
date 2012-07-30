@@ -98,9 +98,9 @@ int CPointBase::GetDistBase( const CPointBase & pt ) const // Distance between p
 	int dx = m_x - pt.m_x;
 	int dy = m_y - pt.m_y;
 
-	double dist = sqrt((double)(dx*dx+dy*dy));
+	double dist = sqrt(static_cast<double>((dx * dx) + (dy * dy)));
 
-	return( (int) (( (dist - floor(dist)) > 0.5 ) ? (ceil(dist)) : (floor(dist))) );
+	return static_cast<int>(( (dist - floor(dist)) > 0.5 ) ? (ceil(dist)) : (floor(dist)));
 	// Return the real distance return((int) sqrt(dx*dx+dy*dy+dz*dz));
 }
 
@@ -149,9 +149,9 @@ int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between poi
 	// Get the deltas and correct the Z for height first
 	int dz = GetDistZAdj(pt); // Take player height into consideration
 			
-	double realdist = sqrt((double)(dist*dist+dz*dz));
+	double realdist = sqrt(static_cast<double>((dist * dist) + (dz * dz)));
 	
-	return( (int) (( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist))) );
+	return static_cast<int>(( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist)));
 }
 
 bool CPointBase::IsValidZ() const
@@ -283,7 +283,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		
 		if ( type == RES_ITEMDEF )
 		{
-			CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iStatic) );
+			const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iStatic)));
 			if ( !pItemDef )
 			{
 				sVal.FormatVal( 0 );
@@ -424,7 +424,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		
 		if ( type == RES_ITEMDEF )
 		{
-			CItemBase * pItemDef = CItemBase::FindItemBase( (ITEMID_TYPE) RES_GET_INDEX(iComponent) );
+			const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iComponent)));
 			if ( pItemDef == NULL )
 			{
 				sVal.FormatVal( 0 );
@@ -590,7 +590,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 
 			if ( *pszKey ) iDistance = Exp_GetVal(pszKey);
 			if ( *pszKey ) bCheckMulti = Exp_GetVal(pszKey) != 0;
-			sVal.FormatVal( g_World.IsItemTypeNear(*this, (IT_TYPE) iType, iDistance, bCheckMulti));
+			sVal.FormatVal( g_World.IsItemTypeNear(*this, static_cast<IT_TYPE>(iType), iDistance, bCheckMulti));
 			break;
 		}
 		case PT_REGION:
