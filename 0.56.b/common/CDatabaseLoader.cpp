@@ -146,19 +146,19 @@ void cDatabaseLoader::CloseDllHandle()
 bool cDatabaseLoader::FillFunctionsHandle()
 {
 	ADDTOCALLSTACK("cDatabaseLoader::FillFunctionsHandle");
-	pfRightVersion = static_cast<dfRightVer_t>(SetFunctionHandle("db_isrightversion"));
-	pfPing = static_cast<dfPing_t>(SetFunctionHandle("db_ping"));
-	pfConnect = static_cast<dfConnect_t>(SetFunctionHandle("db_connect"));
-	pfClose = static_cast<dfClose_t>(SetFunctionHandle("db_close"));
-	pfIsConnected = static_cast<dfConnected_t>(SetFunctionHandle("db_isconnected"));
-	pfLastError = static_cast<dfLastError_t>(SetFunctionHandle("db_getlasterror"));
-	pfLastCharError = static_cast<dfLastCharError_t>(SetFunctionHandle("db_getlaststringerror"));
-	pfExecute = static_cast<dfExec_t>(SetFunctionHandle("db_execute"));
-	pfQuery = static_cast<dfQuery_t>(SetFunctionHandle("db_query"));
-	pfFieldNum = static_cast<dfFieldNum_t>(SetFunctionHandle("db_numfields"));
-	pfFieldArray = static_cast<dfFieldArray_t>(SetFunctionHandle("db_fetchfields"));
-	pfFetchRow = static_cast<dfFetchRow_t>(SetFunctionHandle("db_fetchrow"));
-	pfEscapeString = static_cast<dfEscapeString_t>(SetFunctionHandle("db_escapestring"));
+	pfRightVersion = reinterpret_cast<dfRightVer_t>(SetFunctionHandle("db_isrightversion"));
+	pfPing = reinterpret_cast<dfPing_t>(SetFunctionHandle("db_ping"));
+	pfConnect = reinterpret_cast<dfConnect_t>(SetFunctionHandle("db_connect"));
+	pfClose = reinterpret_cast<dfClose_t>(SetFunctionHandle("db_close"));
+	pfIsConnected = reinterpret_cast<dfConnected_t>(SetFunctionHandle("db_isconnected"));
+	pfLastError = reinterpret_cast<dfLastError_t>(SetFunctionHandle("db_getlasterror"));
+	pfLastCharError = reinterpret_cast<dfLastCharError_t>(SetFunctionHandle("db_getlaststringerror"));
+	pfExecute = reinterpret_cast<dfExec_t>(SetFunctionHandle("db_execute"));
+	pfQuery = reinterpret_cast<dfQuery_t>(SetFunctionHandle("db_query"));
+	pfFieldNum = reinterpret_cast<dfFieldNum_t>(SetFunctionHandle("db_numfields"));
+	pfFieldArray = reinterpret_cast<dfFieldArray_t>(SetFunctionHandle("db_fetchfields"));
+	pfFetchRow = reinterpret_cast<dfFetchRow_t>(SetFunctionHandle("db_fetchrow"));
+	pfEscapeString = reinterpret_cast<dfEscapeString_t>(SetFunctionHandle("db_escapestring"));
 
 	// check all functions exist
 	return( pfRightVersion != NULL && pfPing != NULL &&

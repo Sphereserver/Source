@@ -329,7 +329,7 @@ int CGSocket::Connect( LPCTSTR pszHostName, WORD wPort )
 SOCKET CGSocket::Accept( struct sockaddr_in * pSockAddrIn ) const
 {
 	int len = sizeof(struct sockaddr_in);
-	return accept( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len));
+	return accept( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), reinterpret_cast<socklen_t *>(&len));
 }
 
 SOCKET CGSocket::Accept( CSocketAddress & SockAddr ) const
@@ -359,7 +359,7 @@ int CGSocket::GetSockName( struct sockaddr_in * pSockAddrIn ) const
 	// Get the address of the near end. (us)
 	// RETURN: 0 = success
 	int len = sizeof( *pSockAddrIn );
-	return( getsockname( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len) ));
+	return( getsockname( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), reinterpret_cast<socklen_t *>(&len) ));
 }
 
 CSocketAddress CGSocket::GetSockName() const
@@ -381,7 +381,7 @@ int CGSocket::GetPeerName( struct sockaddr_in * pSockAddrIn ) const
 	// Get the address of the far end.
 	// RETURN: 0 = success
 	int len = sizeof( *pSockAddrIn );
-	return( getpeername( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), static_cast<socklen_t *>(&len) ));
+	return( getpeername( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), reinterpret_cast<socklen_t *>(&len) ));
 }
 
 CSocketAddress CGSocket::GetPeerName( ) const
@@ -406,7 +406,7 @@ int CGSocket::SetSockOpt( int nOptionName, const void * optval, int optlen, int 
 
 int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLevel ) const
 {
-	return( getsockopt( m_hSocket, nLevel, nOptionName, reinterpret_cast<char FAR *>(optval), static_cast<socklen_t *>(poptlen)));
+	return( getsockopt( m_hSocket, nLevel, nOptionName, reinterpret_cast<char FAR *>(optval), reinterpret_cast<socklen_t *>(poptlen)));
 }
 
 #ifdef _WIN32
