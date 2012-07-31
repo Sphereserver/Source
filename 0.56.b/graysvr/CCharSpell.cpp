@@ -2519,7 +2519,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	// Bug with gaining reflection skill by affecting by some spells while dead
 	if ( IsStatFlag(STATF_DEAD) )
 	{
-		if ( (spell != SPELL_Resurrection) && (!g_Cfg.GetSpellDef(spell)->IsSpellType(SPELLFLAG_TARG_DEAD)) )
+		if ((spell != SPELL_Resurrection) && (!g_Cfg.GetSpellDef(spell)->IsSpellType(SPELLFLAG_TARG_DEAD)))
 			return false;
 	}
 
