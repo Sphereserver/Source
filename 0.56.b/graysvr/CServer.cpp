@@ -348,8 +348,8 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 	// 0 or 0x21 = main status.
 
 	TCHAR * pTemp = Str_GetTemp();
-	int iClients = StatGet(SERV_STAT_CLIENTS);
-	int iHours = GetAgeHours()/24;
+	DWORD iClients = StatGet(SERV_STAT_CLIENTS);
+	int iHours = GetAgeHours() / 24;
 
 	switch ( iIndex )
 	{
@@ -365,7 +365,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 		case 0x22: // '"'
 			{
 			// shown in the INFO page in game.
-			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%i, Items=%li, Chars=%li, Mem=%liK\n",
+			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
 				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			}
 			break;
@@ -375,7 +375,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			break;
 		case 0x25: // '%'
 			// ConnectUO Status string
-			sprintf(pTemp, GRAY_TITLE " Items=%li, Mobiles=%li, Clients=%i, Mem=%li", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
+			sprintf(pTemp, GRAY_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%lu", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
 			break;
 	}
 

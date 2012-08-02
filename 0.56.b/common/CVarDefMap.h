@@ -119,7 +119,7 @@ public:
 	static const char *m_sClassName;
 
 private:
-	CVarDefCont * GetAtKey( LPCTSTR at );
+	CVarDefCont * GetAtKey( LPCTSTR at ) const;
 	void DeleteAt( size_t at );
 	void DeleteAtKey( LPCTSTR at );
 	void DeleteAtIterator( DefSet::iterator it );
@@ -149,14 +149,14 @@ public:
 	int SetStrNew( LPCTSTR pszKey, LPCTSTR pszVal );
 	int SetStr( LPCTSTR pszKey, bool fQuoted, LPCTSTR pszVal, bool fZero = false );
 
-	CVarDefCont * GetAt( size_t at );
+	CVarDefCont * GetAt( size_t at ) const;
 	CVarDefCont * GetKey( LPCTSTR pszKey ) const;
 	int GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const;
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false ) const;
 	CVarDefCont * GetParseKey( LPCTSTR & pArgs ) const;
 	bool GetParseVal( LPCTSTR & pArgs, long * plVal ) const;
 
-	void DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix = NULL );
+	void DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix = NULL ) const;
 	void ClearKeys(LPCTSTR mask = NULL);
 	void DeleteKey( LPCTSTR key );
 

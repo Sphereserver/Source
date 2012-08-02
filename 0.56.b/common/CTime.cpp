@@ -70,7 +70,7 @@ struct tm* CGTime::GetLocalTm(struct tm* ptm) const
 #endif
 
 #ifdef _WIN32
-void invalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved)
+void __cdecl invalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved)
 {
 	// bad format has been specified
 	UNREFERENCED_PARAMETER(expression);
@@ -91,7 +91,7 @@ void FormatDateTime(TCHAR * pszTemp, LPCTSTR pszFormat, const struct tm * ptmTem
 #ifdef _WIN32
 	// on windows we need to set the invalid parameter handler, or else the program will terminate when a bad format is encountered
 	_invalid_parameter_handler oldHandler, newHandler;
-	newHandler = (_invalid_parameter_handler)invalidParameterHandler;
+	newHandler = static_cast<_invalid_parameter_handler>(invalidParameterHandler);
 	oldHandler = _set_invalid_parameter_handler(newHandler);
 
 	try

@@ -870,13 +870,13 @@ height_t CChar::GetHeight() const
 
 	char * heightDef = Str_GetTemp();
 
-	sprintf(heightDef, "height_0%x", pCharDef->GetDispID());
+	sprintf(heightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
 	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
 	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
-	sprintf(heightDef, "height_%u", pCharDef->GetDispID());
+	sprintf(heightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
 	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
 	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)

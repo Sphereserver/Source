@@ -3835,13 +3835,13 @@ size_t NetworkOutput::processAsyncQueue(NetState* state)
 		packet = state->m_outgoing.asyncQueue.front();
 		state->m_outgoing.asyncQueue.pop();
 
-		// check if the client is allowed this
-		if (state->canReceive(packet) && packet->onSend(client))
-			break;
-			
-		// destroy the packet, we aren't going to use it
 		if (packet != NULL)
 		{
+			// check if the client is allowed this
+			if (state->canReceive(packet) && packet->onSend(client))
+				break;
+
+			// destroy the packet, we aren't going to use it
 			delete packet;
 			packet = NULL;
 		}

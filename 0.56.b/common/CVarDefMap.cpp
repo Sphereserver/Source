@@ -257,7 +257,7 @@ LPCTSTR CVarDefMap::FindValNum( int iVal ) const
 	return( NULL );
 }
 
-CVarDefCont * CVarDefMap::GetAt( size_t at )
+CVarDefCont * CVarDefMap::GetAt( size_t at ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetAt");
 	if ( at > m_Container.size() )
@@ -273,7 +273,7 @@ CVarDefCont * CVarDefMap::GetAt( size_t at )
 		return( NULL );
 }
 
-CVarDefCont * CVarDefMap::GetAtKey( LPCTSTR at )
+CVarDefCont * CVarDefMap::GetAtKey( LPCTSTR at ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetAtKey");
 	CVarDefContTest * pVarBase = new CVarDefContTest(at);
@@ -599,7 +599,7 @@ bool CVarDefMap::GetParseVal( LPCTSTR & pszArgs, long * plVal ) const
 	return( true );
 }
 
-void CVarDefMap::DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix )
+void CVarDefMap::DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::DumpKeys");
 	// List out all the keys.
