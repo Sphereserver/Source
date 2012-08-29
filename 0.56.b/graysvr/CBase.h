@@ -912,7 +912,7 @@ inline bool CCharBase::IsValidDispID( CREID_TYPE id ) //  static
 
 inline bool CCharBase::IsHumanID( CREID_TYPE id ) // static
 {
-	return( id == CREID_MAN || id == CREID_WOMAN || id == CREID_EQUIP_GM_ROBE || id == CREID_ELFMAN || id == CREID_ELFWOMAN );
+	return( id == CREID_MAN || id == CREID_WOMAN || id == CREID_EQUIP_GM_ROBE || id == CREID_ELFMAN || id == CREID_ELFWOMAN || id == CREID_GARGMAN || id == CREID_GARGWOMAN );
 }
 
 #endif

@@ -811,7 +811,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 					break;
 			}
 		}
-		else if ( GetDispID() < CREID_MAN )
+		else if ( IsHuman())  //( GetDispID() < CREID_MAN ) Possible fix for anims not being displayed above 400
 		{
 			// Animals have certain anims. Monsters have others.
 
