@@ -1857,7 +1857,10 @@ bool CChar::Spell_CastDone()
 			if ( !areaRadius )
 				areaRadius = 4;
 
-			Spell_Area( m_Act_p, areaRadius, iSkillLevel);
+			if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+				Spell_Area(GetTopPoint(), areaRadius, iSkillLevel);
+			else
+				Spell_Area( m_Act_p, areaRadius, iSkillLevel);
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
 		{
@@ -1926,13 +1929,23 @@ bool CChar::Spell_CastDone()
 			}
 		}
 
-		Spell_Area(pObj->GetTopPoint(), areaRadius, iSkillLevel);
+		if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			Spell_Area(GetTopPoint(), areaRadius, iSkillLevel);
+		else
+			Spell_Area( m_Act_p, areaRadius, iSkillLevel);
+
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 	{
-		if ( !iC1 )
+		if ( spell == SPELL_Summon )
 		{
-			if ( !m_atMagery.m_SummonID )
+			if ( iC1 )
+				m_atMagery.m_SummonID = iC1;
+			Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+		}
+		else 
+		{
+			if ( !iC1 )
 			{
 				switch ( spell )
 				{
@@ -1943,14 +1956,25 @@ bool CChar::Spell_CastDone()
 					case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
 					case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
 					case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
+					case SPELL_Summon_Undead:
+						switch (Calc_GetRandVal(15))
+						{
+							case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
+							case 3:
+							case 5:
+							case 7:
+							case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
+							default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
+						}
 					default: break;
 				}
 			}
-		}
-		else
-			m_atMagery.m_SummonID = iC1;
+			else
+				m_atMagery.m_SummonID = iC1;
 
-		Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+			m_atMagery.m_fSummonPet = true;
+			Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+		}
 	}
 	/*else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
 	{
@@ -2068,14 +2092,14 @@ bool CChar::Spell_CastDone()
 			return(false);
 		break;
 
-	case SPELL_Summon:
+	/*case SPELL_Summon: //not needed with SPELLFLAG_SUMMON
 		{
 			if ( iC1 )
 				m_atMagery.m_SummonID = iC1;
 
 			Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 			break;
-		}
+		}*/
 
 	// 6th Circle
 	case SPELL_Invis:
@@ -2167,7 +2191,7 @@ bool CChar::Spell_CastDone()
 	// Necromancy
 	// These're the old spells from Sphere.
 	// IDs from 65 to 69.
-	case SPELL_Summon_Undead:
+/*	case SPELL_Summon_Undead: //not needed with SPELLFLAG_SUMMON
 		switch (Calc_GetRandVal(15))
 		{
 		case 1:
@@ -2186,7 +2210,7 @@ bool CChar::Spell_CastDone()
 		m_atMagery.m_fSummonPet = true;
 		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
 		break;
-
+*/
 	case SPELL_Animate_Dead:
 		{
 			CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*> (pObj);

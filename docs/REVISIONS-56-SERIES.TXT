@@ -5380,3 +5380,15 @@ ALPHA additions:
 
 25-07-2012, Coruja (script pack)
 - Updated #2069: sphere_map_points3.scp (added missing teleports in Doom)
+
+31-07-2012, Ben
+-Fixed: RESURRECT not working.
+
+30-08-2012, Ben
+-Fixed: Animation above 400 not showing all frames.
+
+04-09-2012, Ben
+-Fixed: sphere_spells.scp missing SPELLFLAG_AREA.
+-Fixed: Sommon spells not making creatures your pet.
+-Fixed: area spells requiring spellflag_scripted to work
+-Updated: sphereCrypt.ini with keys up to 7.00.270
