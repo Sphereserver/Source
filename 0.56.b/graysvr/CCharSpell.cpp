@@ -696,7 +696,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 			if ( m_pPlayer )	// summoned players ? thats odd.
 				return;
-			Delete();
+			if ( !IsStatFlag(STATF_DEAD) ) // Fix for double @Destroy trigger
+				Delete();
 			return;
 			break;
 

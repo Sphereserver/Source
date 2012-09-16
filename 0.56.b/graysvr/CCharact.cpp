@@ -2526,7 +2526,7 @@ bool CChar::Death()
 	NPC_PetClearOwners();	// Forgot who owns me. dismount my master if ridden.
 	Reveal();
 	SoundChar( CRESND_DIE );
-	Spell_Dispel(100);		// Get rid of all spell effects.
+	//Spell_Dispel(100);		// Get rid of all spell effects.
 
 	// Only players should loose stats upon death.
 	if ( m_pPlayer )
@@ -2546,6 +2546,8 @@ bool CChar::Death()
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
 	Stat_SetVal(STAT_STR, 0);
+
+	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
