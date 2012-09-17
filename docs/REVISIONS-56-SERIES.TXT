@@ -5392,3 +5392,13 @@ ALPHA additions:
 -Fixed: Sommon spells not making creatures your pet.
 -Fixed: area spells requiring spellflag_scripted to work
 -Updated: sphereCrypt.ini with keys up to 7.00.270
+
+16-09-2012, Ben
+- Fixed #2094: double @Destroy trigger on summoned char.
+
+17-09-2012, Terrikate
+- Fixed #1831: Trigger @PERSONALSPACE did not fire on NPCs
+- Fixed #1651: LastLogged message always sent current time
+- Modified #1749: Error messages 'Bad Login' become warnings to facilitate analysis of the logs
+- Fixed #1944: Some combination of stairs and delete function can remove the dirt on floor of the house
+- Modified: Resync forced to create or delete items in custom houses to update correctly on all clients

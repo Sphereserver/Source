@@ -3069,6 +3069,11 @@ BYTE CClient::Setup_Play( unsigned int iSlot ) // After hitting "Play Character"
 		return(PacketLoginError::CharIdle);
 	}
 
+	// LastLogged update
+	CGTime datetime = CGTime::GetCurrentTime();
+	GetAccount()->m_TagDefs.SetStr("LastLogged", false, GetAccount()->m_dateLastConnect.Format(NULL));
+	GetAccount()->m_dateLastConnect = datetime;
+
 	return Setup_Start( pChar );
 }
 

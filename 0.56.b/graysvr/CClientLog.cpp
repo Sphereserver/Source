@@ -102,7 +102,7 @@ bool CClient::addLoginErr(BYTE code)
 	if (code >= COUNTOF(sm_Login_ErrMsg))
 		code = PacketLoginError::Other;
 	
-	DEBUG_ERR(( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)] ));
+	g_Log.EventWarn( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)] );
 
 	// translate the code into a code the client will understand
 	switch (code)

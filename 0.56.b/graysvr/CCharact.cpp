@@ -2858,9 +2858,9 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 
 			if( m_pNPC )
 			{
-				// NPCs can't bump through other characters, but can walk over someone hidden
+				// NPCs can't bump through other characters, but can walk over someone hidden or NPCs
 				// in other cases people with 2uo can easily gain skill disallowing npc to move
-				if( pChar->IsStatFlag(STATF_Hidden) ) ;
+				if( pChar->IsStatFlag(STATF_Hidden) || !pChar->IsClient() ) ;
 				else
 				{
 					return NULL;

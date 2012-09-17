@@ -714,8 +714,8 @@ void CAccount::OnLogin( CClient * pClient )
 	}
 
 	m_Last_IP = pClient->GetPeer();
-	m_TagDefs.SetStr("LastLogged", false, m_dateLastConnect.Format(NULL));
-	m_dateLastConnect = datetime;
+	//m_TagDefs.SetStr("LastLogged", false, m_dateLastConnect.Format(NULL));
+	//m_dateLastConnect = datetime;
 
 	if ( pClient->GetConnectType() == CONNECT_TELNET )
 	{

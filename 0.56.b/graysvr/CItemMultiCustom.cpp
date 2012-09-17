@@ -502,6 +502,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, 
 
 		AddItem(NULL, pMultiItem->GetDispID(), x + pMultiItem->m_dx, y + pMultiItem->m_dy, z + pMultiItem->m_dz, iStairID);
 	}
+	SendStructureTo(pClientSrc);
 }
 
 void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z)
@@ -613,6 +614,7 @@ void CItemMultiCustom::RemoveItem(CClient * pClientSrc, ITEMID_TYPE id, short x,
 		if ( rectDesign.IsInsideX(pt.m_x) && rectDesign.IsInsideX(pt.m_x-1) && rectDesign.IsInsideY(pt.m_y) && rectDesign.IsInsideY(pt.m_y-1) )
 			AddItem(NULL, ITEMID_DIRT_TILE, x, y, 7);
 	}
+	SendStructureTo(pClientSrc);
 }
 
 bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
@@ -634,8 +636,19 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 	{
 		if ( (*i)->m_isStair == iStairID )
 		{
+			bool bReplaceDirt = false;
+			if ( (*i)->m_isFloor && (GetPlane(*i) == 1) && (GetPlaneZ(GetPlane(*i)) == (*i)->m_item.m_dz) )
+				bReplaceDirt = true;
+
+			int x=(*i)->m_item.m_dx;
+			int y=(*i)->m_item.m_dy;
+			int z=(*i)->m_item.m_dz;
+
 			i = m_designWorking.m_vectorComponents.erase(i);
 			m_designWorking.m_iRevision++;
+
+			if (bReplaceDirt)
+				AddItem(NULL, ITEMID_DIRT_TILE, x, y, z);
 		}
 		else
 		{
