@@ -2290,28 +2290,30 @@ effect_bounce:
 	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
 		return( 0 );
 
-	//	record to last attackers
-	bool bAttackerExists = false;
-	for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
+	if ( pSrc && pSrc != this ) // record to last attackers
 	{
-		LastAttackers & refAttacker = *it;
-		if ( refAttacker.charUID == pSrc->GetUID().GetPrivateUID() )
+		bool bAttackerExists = false;
+		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 		{
-			refAttacker.elapsed = 0;
-			refAttacker.amountDone += maximum( 0, iDmg );
-			bAttackerExists = true;
-			break;
+			LastAttackers & refAttacker = *it;
+			if ( refAttacker.charUID == pSrc->GetUID().GetPrivateUID() )
+			{
+				refAttacker.elapsed = 0;
+				refAttacker.amountDone += maximum( 0, iDmg );
+				bAttackerExists = true;
+				break;
+			}
 		}
-	}
 
-	// Attacker not found
-	if (bAttackerExists == false)
-	{
-		LastAttackers attacker;
-		attacker.amountDone = maximum( 0, iDmg );
-		attacker.charUID = pSrc->GetUID().GetPrivateUID();
-		attacker.elapsed = 0;
-		m_lastAttackers.push_back(attacker);
+		// Attacker not found
+		if (bAttackerExists == false)
+		{
+			LastAttackers attacker;
+			attacker.amountDone = maximum( 0, iDmg );
+			attacker.charUID = pSrc->GetUID().GetPrivateUID();
+			attacker.elapsed = 0;
+			m_lastAttackers.push_back(attacker);
+		}
 	}
 
 	// Did it hurt ?

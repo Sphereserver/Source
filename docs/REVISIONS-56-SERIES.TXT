@@ -5402,3 +5402,7 @@ ALPHA additions:
 - Modified #1749: Error messages 'Bad Login' become warnings to facilitate analysis of the logs
 - Fixed #1944: Some combination of stairs and delete function can remove the dirt on floor of the house
 - Modified: Resync forced to create or delete items in custom houses to update correctly on all clients
+
+20-09-2012, Terrikate
+- Added #1542: Implemented CTAGCOUNT like TAGCOUNT for clients
+- Fixed #1590: Attacker list contains self uid

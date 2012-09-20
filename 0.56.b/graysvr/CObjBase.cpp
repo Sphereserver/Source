@@ -657,6 +657,13 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					return false;
 				return GetTopLevelObj()->GetTopSector()->r_WriteVal( pszKey, sVal, pSrc );
 			}
+		case OC_CTAGCOUNT:
+			{
+				CChar * pChar = dynamic_cast<CChar*>(this);
+				if ( !pChar ) sVal.FormatVal( 0 );
+				else sVal.FormatVal( pChar->IsClient() ? (pChar->GetClient()->m_TagDefs.GetCount()) : 0 );
+			}
+			break;
 		case OC_DIALOGLIST:
 			{
 				pszKey += 10;
