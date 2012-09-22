@@ -3657,10 +3657,10 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	{
 		return 0;
 	}
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE ) //why is this here twice???
 	{
 		return 0;
-	}
+	}*/
 
 	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pChar == NULL )
@@ -3695,6 +3695,13 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 		Sound( 0x227 );
 	}
 	int iDamage = Stat_GetVal(STAT_DEX)/3 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+	//Override damage amount?
+	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.BREATH.DAM", true);
+	if ( pTagStorage )
+	{
+		if ( pTagStorage->GetValNum() )
+			iDamage = pTagStorage->GetValNum();
+	}
 	g_World.Explode( this, m_Act_p, 3, iDamage, DAMAGE_FIRE | DAMAGE_GENERAL );
 	return( 0 );
 }
@@ -3770,26 +3777,36 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	ITEMID_TYPE id = ITEMID_NOTHING;
 	int iDamage = 0;
 
-	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK", true);
-    if ( pTagStorage != NULL )
+	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK.DAM", true);
+	if ( pTagStorage )
+	{
+		if ( pTagStorage->GetValNum() )
+			iDamage = pTagStorage->GetValNum();
+	}
+
+	pTagStorage = GetKey("OVERRIDE.ROCK", true);
+    if ( pTagStorage )
 	{
 		if ( pTagStorage->GetValNum() )
 		{
 			id = static_cast<ITEMID_TYPE>(pTagStorage->GetValNum());
-			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
+			if (!iDamage)
+				iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 		}
 	}
 	else
 	{
 		if ( Calc_GetRandVal( 3 ) )
 		{
-			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 			id = static_cast<ITEMID_TYPE>(ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI-ITEMID_ROCK_B_LO));
+			if (!iDamage)
+				iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 		}
 		else
 		{
-			iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 			id = static_cast<ITEMID_TYPE>(ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI-ITEMID_ROCK_2_LO));
+			if (!iDamage)
+				iDamage = 2 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 		}
 	}
 

@@ -5382,16 +5382,16 @@ ALPHA additions:
 - Updated #2069: sphere_map_points3.scp (added missing teleports in Doom)
 
 31-07-2012, Ben
--Fixed: RESURRECT not working.
+- Fixed #2085: RESURRECT not working.
 
 30-08-2012, Ben
--Fixed: Animation above 400 not showing all frames.
+- Fixed #2093: Animation above 400 not showing all frames.
 
 04-09-2012, Ben
--Fixed: sphere_spells.scp missing SPELLFLAG_AREA.
--Fixed: Sommon spells not making creatures your pet.
--Fixed: area spells requiring spellflag_scripted to work
--Updated: sphereCrypt.ini with keys up to 7.00.270
+- Updated: sphere_spells.scp with missing SPELLFLAG_AREA.
+- Fixed #2096: Sommon spells not making creatures your pet.
+- Fixed #2097: area spells requiring spellflag_scripted to work
+- Updated: sphereCrypt.ini with keys up to 7.00.270
 
 16-09-2012, Ben
 - Fixed #2094: double @Destroy trigger on summoned char.
@@ -5406,3 +5406,10 @@ ALPHA additions:
 20-09-2012, Terrikate
 - Added #1542: Implemented CTAGCOUNT like TAGCOUNT for clients
 - Fixed #1590: Attacker list contains self uid
+
+22-09-2012, Ben
+- Fixed #2086: added SERV.MYSQLPASSWORD to plevel 7 group in spheretables.scp
+- Added: TAG.OVERRIDE.ROCK.DAM to override the damage done by rock throwing
+		 Note: TAG.OVERRIDE.ROCK was already implemented with the ability to change rock to other items.
+			   It can also add the throwing ability to other NPCs that have the tag. (never reported in changelog)
+- Added: TAG.OVERRIDE.BREATH.DAM to override Damage done from fire breathing.
