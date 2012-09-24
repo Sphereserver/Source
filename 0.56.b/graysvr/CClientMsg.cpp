@@ -291,7 +291,7 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	// send item tooltip
 	addAOSTooltip(pItem);
 
-	if (pItem->IsType(IT_MULTI_CUSTOM))
+	if ( (pItem->IsType(IT_MULTI_CUSTOM)) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE) )
 	{
 		// send house design version
 		CItemMultiCustom * pItemMulti = dynamic_cast <CItemMultiCustom*> (pItem);

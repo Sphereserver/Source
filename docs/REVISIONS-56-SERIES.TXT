@@ -5413,3 +5413,6 @@ ALPHA additions:
 		 Note: TAG.OVERRIDE.ROCK was already implemented with the ability to change rock to other items.
 			   It can also add the throwing ability to other NPCs that have the tag. (never reported in changelog)
 - Added: TAG.OVERRIDE.BREATH.DAM to override Damage done from fire breathing.
+
+24-09-2012, Terrikate
+- Fixed #2078: t_multi_custom causes memory leak in client
