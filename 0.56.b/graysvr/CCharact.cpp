@@ -1741,9 +1741,9 @@ bool CChar::Reveal( DWORD dwFlags )
 	}
 	bool fInvis = false;
 	if (( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible  ))
-	{
+	{ 
 		fInvis = true;
-		SetHue( m_prev_Hue );
+		//SetHue( m_prev_Hue ); <- don't want to reset to oskin!
 	}
 
 	StatFlag_Clear(dwFlags);

@@ -5416,3 +5416,7 @@ ALPHA additions:
 
 24-09-2012, Terrikate
 - Fixed #2078: t_multi_custom causes memory leak in client
+
+06-10-2012, Ben
+- Fixed #2101: Added a value to i_staff_black in default pack to prevent possible crash in vendor menu.
+- Fixed #2088: Char hue returning to OSKIN on reveal from invis spell.
