@@ -1474,7 +1474,7 @@ do_default:
 							if ( dwCurTime <= dwLastTime )
 							{
 								dwLastTime = dwCurTime;
-								attackerIndex = dwCurTime;
+								attackerIndex = iAttacker;
 							}
 						}
 					}

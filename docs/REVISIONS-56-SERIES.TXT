@@ -5420,3 +5420,7 @@ ALPHA additions:
 06-10-2012, Ben
 - Fixed #2101: Added a value to i_staff_black in default pack to prevent possible crash in vendor menu.
 - Fixed #2088: Char hue returning to OSKIN on reveal from invis spell.
+
+12-10-2012, Terrikate
+- Fixed: ATTACKER.n.ELAPSED: not increased the timer correctly, always returned 0
+- Fixed: ATTACKER.LAST: returned one of the attackers randomly, no the last

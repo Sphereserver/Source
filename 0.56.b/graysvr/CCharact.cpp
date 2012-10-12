@@ -3763,12 +3763,12 @@ bool CChar::OnTick()
 		}
 
 		EXC_SET("last attackers");
-		if ( m_lastAttackers.size() && (g_Cfg.m_iAttackerTimeout > 0) )
+		if ( m_lastAttackers.size() )
 		{
 			for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 			{
 				LastAttackers & refAttacker = *it;
-				if ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout )
+				if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0 ) )
 				{
 					m_lastAttackers.erase(it);
 					break;
