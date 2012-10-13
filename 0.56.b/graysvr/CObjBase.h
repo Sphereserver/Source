@@ -2314,10 +2314,10 @@ enum CTRIG_TYPE
 	CTRIG_NPCSeeNewPlayer,		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
 	CTRIG_NPCSeeWantItem,		// (NPC only) i see something good.
 	CTRIG_NPCSpecialAction,
-
-#ifdef _ALPHASPHERE	
+	
+	CTRIG_PartyDisband,			//I just disbanded my party
 	CTRIG_PartyInvite,			//SRC invited me to join a party, so I may chose
-#endif
+	CTRIG_PartyRemove,			//I have ben removed from the party by SRC
 
 	CTRIG_PersonalSpace,	//+i just got stepped on.
 	CTRIG_PetDesert,

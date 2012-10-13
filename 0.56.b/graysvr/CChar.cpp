@@ -109,9 +109,9 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCSeeWantItem",		// (NPC only) i see something good.
 	"@NPCSpecialAction",
 
-#ifdef _ALPHASPHERE
+	"@PartyDisband",		//I just disbanded my party
 	"@PartyInvite",			//SRC invited me to join a party, so I may chose
-#endif
+	"@PartyRemove",			//I have ben removed from the party by SRC
 
 	"@PersonalSpace",	//+i just got stepped on.
 	"@PetDesert",		// I just went wild again

@@ -453,6 +453,13 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 		return( Disband( uidMaster ));
 	}
 
+	CChar * pSrc = uidCommand.CharFind();
+	if ( pSrc != NULL )
+	{
+		CScriptTriggerArgs args;
+		pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
+	}
+
 	LPCTSTR pszForceMsg = ( (DWORD) uidCommand != (DWORD) uidRemove ) ? g_Cfg.GetDefaultMsg( DEFMSG_PARTY_PART_1 ) : g_Cfg.GetDefaultMsg( DEFMSG_PARTY_PART_2 );
 
 	{
@@ -498,6 +505,13 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 		return( false );
 	}
 
+	CChar * pMaster = GetMaster().CharFind();
+	if ( pMaster != NULL )
+	{
+		CScriptTriggerArgs args;
+		pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args);
+	}
+
 	SysMessageAll(g_Cfg.GetDefaultMsg( DEFMSG_PARTY_DISBANDED ));
 
 	size_t iQty = m_Chars.GetCharCount();
@@ -507,6 +521,15 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 		CChar * pChar = m_Chars.GetChar(i).CharFind();
 		if ( pChar == NULL )
 			continue;
+
+		CChar * pSrc = uidMaster.CharFind();
+		if ( pSrc != NULL )
+		{
+			CScriptTriggerArgs args;
+			args.m_iN1 = 1;
+			pChar->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
+		}
+
 		SendRemoveList( pChar, true );
 		pChar->m_pParty = NULL;
 	}

@@ -5424,3 +5424,9 @@ ALPHA additions:
 12-10-2012, Terrikate
 - Fixed: ATTACKER.n.ELAPSED: not increased the timer correctly, always returned 0
 - Fixed: ATTACKER.LAST: returned one of the attackers randomly, no the last
+
+12-10-2012, Ben
+-Added: Party triggers.
+        @PartyInvite(def=recipient, src=sender, return 1=stop default)
+		@PartyRemove(def=char getting kicked, src= the one kicking, no return, ARGN=1 if triggered by disband)
+		@PartyDisband(def=master, src=master, no return)
