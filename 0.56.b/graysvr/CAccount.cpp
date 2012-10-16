@@ -262,6 +262,15 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 		return false;
 	}
 
+	CScriptTriggerArgs Args;
+	Args.Init(pszName);
+	enum TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
+	g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tr);
+	if ( tr == TRIGRET_RET_TRUE )
+	{
+		return false;
+	}
+
 	pAccount = new CAccount(szName);
 	ASSERT(pAccount);
 	pAccount->m_dateFirstConnect = pAccount->m_dateLastConnect = CGTime::GetCurrentTime();

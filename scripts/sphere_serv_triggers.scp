@@ -15,6 +15,7 @@ VERSION=0.56b
 //
 
 [PLEVEL 7]
+f_onaccount_create
 f_onaccount_login
 f_onaccount_delete
 f_onchar_create
@@ -26,6 +27,13 @@ f_onserver_save_fail
 f_onserver_save_finished
 f_onserver_exit
 f_onserver_blockip
+
+// This function is called before the account is created.
+// ARGS --> username of the account being created.
+// RETURN
+//	  0 --> normal action (create)
+//	  1 --> account not created
+[FUNCTION f_onaccount_create]
 
 // This function is called after client entered the password.
 // ARGS --> username of the client logging in

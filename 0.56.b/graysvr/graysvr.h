@@ -1137,7 +1137,7 @@ public:
 		m_fUpdateStats |= SF_UPDATE_STAM;
 	}
 	void UpdateStats();
-	bool addDeleteErr(BYTE code);
+	bool addDeleteErr(BYTE code, unsigned int iSlot);
 	void addSeason(SEASON_TYPE season);
 	void addTime( bool bCurrent = false );
 	void addObjectRemoveCantSee( CGrayUID uid, LPCTSTR pszName = NULL );

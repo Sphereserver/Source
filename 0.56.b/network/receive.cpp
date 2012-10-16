@@ -1472,7 +1472,7 @@ bool PacketCharDelete::onReceive(NetState* net)
 	ASSERT(client);
 
 	BYTE err = client->Setup_Delete(slot);
-	client->addDeleteErr(err);
+	client->addDeleteErr(err,slot);
 	return true;
 }
 

@@ -168,14 +168,14 @@ void CClient::removeBuff (const WORD IconId)
 }
 
 
-bool CClient::addDeleteErr(BYTE code)
+bool CClient::addDeleteErr(BYTE code, unsigned int iSlot)
 {
 	ADDTOCALLSTACK("CClient::addDeleteErr");
 	// code
 	if (code == PacketDeleteError::Success)
 		return true;
-
-	DEBUG_ERR(( "%lx:Bad Char Delete Attempted %d\n", GetSocketID(), code ));
+	CChar * pChar = m_tmSetupCharList[iSlot].CharFind();
+	g_Log.EventWarn("%lx:Bad Char Delete Attempted %d (acct='%s', char='%s', ip='%s')\n", GetSocketID(), code, GetAccount()->GetName(), ((pChar != NULL) ? pChar->GetName() : ""), GetPeerStr());
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(code));
 	return( false );
 }

@@ -1994,6 +1994,9 @@ bool CChar::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 	if ( IsSetOF( OF_NoHouseMuteSpeech ) )
 		return( true );
 
+	if ( IsPriv(PRIV_GM) ) // always
+		return( true );
+
 	if ( fThrough )	// a yell goes through walls..
 		return( true );
 
@@ -2004,6 +2007,8 @@ bool CChar::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 		const CChar* pCharSrc = dynamic_cast <const CChar*> (pSrc);
 		ASSERT(pCharSrc);
 		pSrcRegion = pCharSrc->GetRegion();
+		if ( pCharSrc->IsPriv(PRIV_GM) ) // always
+			return( true );
 	}
 	else
 	{
@@ -2014,9 +2019,17 @@ bool CChar::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 		return( true );
 	if ( pSrcRegion == NULL || m_pArea == NULL ) // should not happen really.
 		return( false );
-	if ( pSrcRegion->GetResourceID().IsItem() && ! pSrcRegion->IsFlag(REGION_FLAG_SHIP))
+
+	bool fCanSpeech = false;
+
+	CVarDefCont * pValue = ( pSrcRegion->GetResourceID().IsItem() ? pSrcRegion->GetResourceID().ItemFind()->GetKey("NOMUTESPEECH", false) : NULL );
+	if ( pValue && pValue->GetValNum() > 0 ) fCanSpeech = true;
+	if ( pSrcRegion->GetResourceID().IsItem() && !pSrcRegion->IsFlag(REGION_FLAG_SHIP) && !fCanSpeech )
 		return( false );
-	if ( m_pArea->GetResourceID().IsItem() && ! m_pArea->IsFlag(REGION_FLAG_SHIP))
+
+	pValue = ( m_pArea->GetResourceID().IsItem() ? m_pArea->GetResourceID().ItemFind()->GetKey("NOMUTESPEECH", false) : NULL );
+	if ( pValue && pValue->GetValNum() > 0 ) fCanSpeech = true;
+	if ( m_pArea->GetResourceID().IsItem() && !m_pArea->IsFlag(REGION_FLAG_SHIP) && !fCanSpeech )
 		return( false );
 
 	return( true );

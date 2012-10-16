@@ -5430,3 +5430,9 @@ ALPHA additions:
         @PartyInvite(def=recipient, src=sender, return 1=stop default)
 		@PartyRemove(def=char getting kicked, src= the one kicking, no return, ARGN=1 if triggered by disband)
 		@PartyDisband(def=master, src=master, no return)
+
+17-10-2012, Terrikate
+- Added #1987: more information when fails to delete a character (account, character name and ip). Now will be a message of type LOG_WARNING rather than LOG_ERROR
+- Added #1854: TAG.NOMUTESPEECH=1 to unmute specific areas created by items. Only makes sense to use it if the optional flag OF_NoHouseMuteSpeech is disabled
+- Modified: function CChar::CanHear for characters with PRIV_GM can listen without restriction. Can read all the people around and vice versa, regardless of the area where are
+- Added #1816: f_onaccount_create function to be called when create an account by script or console		
