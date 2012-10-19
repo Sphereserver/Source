@@ -1538,7 +1538,7 @@ PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSe
  *
  *
  *	Packet 0x6E : PacketAction				plays an animation (LOW)
- *
+ *  Packet 0xE2 : PacketActionBasic			plays an animation (client > 7.0.0.0) (LOW)
  *
  ***************************************************************************/
 PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
@@ -1555,6 +1555,15 @@ PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat
 	writeByte(delay);
 }
 
+PacketActionBasic::PacketActionBasic(const CChar* character, ANIM_TYPE action, int subaction, int variation) : PacketSend(XCMD_NewAnimUpdate, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketActionBasic::PacketActionBasic");
+
+	writeInt32(character->GetUID());
+	writeInt16(action);
+	writeInt16(subaction);
+	writeInt16(variation);
+}
 
 /***************************************************************************
  *

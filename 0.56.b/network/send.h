@@ -559,6 +559,7 @@ public:
  *
  *
  *	Packet 0x6E : PacketAction				plays an animation (LOW)
+ *	Packet 0xE2 : PacketActionBasic			plays an animation (client > 7.0.0.0) (LOW)
  *
  *
  ***************************************************************************/
@@ -566,6 +567,12 @@ class PacketAction : public PacketSend
 {
 public:
 	PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay);
+};
+
+class PacketActionBasic : public PacketSend
+{
+public:
+	PacketActionBasic(const CChar* character, ANIM_TYPE action, int subaction, int variation);
 };
 
 /***************************************************************************
