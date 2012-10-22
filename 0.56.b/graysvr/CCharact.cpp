@@ -1173,12 +1173,11 @@ void CChar::Update( const CClient * pClientExclude ) // If character status has 
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
-			continue;
-		if ( pClient == m_pClient )
 		{
 			pClient->addReSync();
+			continue;
 		}
-		else if ( pClient->CanSee( this ))
+		if ( pClient != m_pClient && pClient->CanSee( this ) )
 		{
 			pClient->addChar( this );
 		}
@@ -1739,23 +1738,23 @@ bool CChar::Reveal( DWORD dwFlags )
 		// Try to wake me up.
 		Wake();
 	}
-	bool fInvis = false;
+	/*bool fInvis = false;
 	if (( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible  ))
 	{ 
 		fInvis = true;
 		//SetHue( m_prev_Hue ); <- don't want to reset to oskin!
-	}
+	}*/
 
 	StatFlag_Clear(dwFlags);
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
 		return false;
 
-	if ( fInvis )
+	/*if ( fInvis )
 	{
 		RemoveFromView();
 		Update();
 	}
-	else
+	else*/
 		UpdateMode(NULL, true);
 
 	if ( IsClient() )
