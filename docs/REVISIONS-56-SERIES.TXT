@@ -5387,8 +5387,10 @@ ALPHA additions:
 30-08-2012, Ben
 - Fixed #2093: Animation above 400 not showing all frames.
 
-04-09-2012, Ben
+04-09-2012, Ben (script pack)
 - Updated: sphere_spells.scp with missing SPELLFLAG_AREA.
+
+04-09-2012, Ben
 - Fixed #2096: Sommon spells not making creatures your pet.
 - Fixed #2097: area spells requiring spellflag_scripted to work
 - Updated: sphereCrypt.ini with keys up to 7.00.270
@@ -5399,8 +5401,8 @@ ALPHA additions:
 17-09-2012, Terrikate
 - Fixed #1831: Trigger @PERSONALSPACE did not fire on NPCs
 - Fixed #1651: LastLogged message always sent current time
-- Modified #1749: Error messages 'Bad Login' become warnings to facilitate analysis of the logs
 - Fixed #1944: Some combination of stairs and delete function can remove the dirt on floor of the house
+- Modified #1749: Error messages 'Bad Login' become warnings to facilitate analysis of the logs
 - Modified: Resync forced to create or delete items in custom houses to update correctly on all clients
 
 20-09-2012, Terrikate
@@ -5408,11 +5410,13 @@ ALPHA additions:
 - Fixed #1590: Attacker list contains self uid
 
 22-09-2012, Ben
-- Fixed #2086: added SERV.MYSQLPASSWORD to plevel 7 group in spheretables.scp
 - Added: TAG.OVERRIDE.ROCK.DAM to override the damage done by rock throwing
-		 Note: TAG.OVERRIDE.ROCK was already implemented with the ability to change rock to other items.
-			   It can also add the throwing ability to other NPCs that have the tag. (never reported in changelog)
+	 Note: TAG.OVERRIDE.ROCK was already implemented with the ability to change rock to other items.
+	 It can also add the throwing ability to other NPCs that have the tag. (never reported in changelog)
 - Added: TAG.OVERRIDE.BREATH.DAM to override Damage done from fire breathing.
+
+22-09-2012, Ben (Script pack)
+- Fixed #2086: added SERV.MYSQLPASSWORD to plevel 7 group in spheretables.scp
 
 24-09-2012, Terrikate
 - Fixed #2078: t_multi_custom causes memory leak in client
@@ -5428,18 +5432,19 @@ ALPHA additions:
 12-10-2012, Ben
 -Added: Party triggers.
         @PartyInvite(def=recipient, src=sender, return 1=stop default)
-		@PartyRemove(def=char getting kicked, src= the one kicking, no return, ARGN=1 if triggered by disband)
-		@PartyDisband(def=master, src=master, no return)
+	@PartyRemove(def=char getting kicked, src= the one kicking, no return, ARGN=1 if triggered by disband)
+	@PartyDisband(def=master, src=master, no return)
 
 17-10-2012, Terrikate
-- Added #1987: more information when fails to delete a character. (account, character name and ip)
-			   Now will be a message of type LOG_WARNING rather than LOG_ERROR
+- Added #1987: More information when fails to delete a character. (account, character name and ip)
+	       Now will be a message of type LOG_WARNING rather than LOG_ERROR
 - Added #1854: TAG.NOMUTESPEECH=1 to unmute specific areas created by items. 
-			   Only makes sense to use it if the optional flag OF_NoHouseMuteSpeech is disabled
-- Modified: function CChar::CanHear for characters with PRIV_GM can listen without restriction. 
-			Can read all the people around and vice versa, regardless of the area where are
+	       Only makes sense to use it if the optional flag OF_NoHouseMuteSpeech is disabled
 - Added #1816: f_onaccount_create function to be called when create an account by script or console
-- Update #1816: sphere_serv_triggers.scp (added function f_onaccount_create) (Script pack)
+- Modified: GMs can now listen to every player without any restriction. 
+
+17-10-2012, Terrikate (Script pack)
+- Updated #1816: sphere_serv_triggers.scp (added function f_onaccount_create)
 
 22-10-2012, Terrikate
 - Fixed #2104: functions UPDATE and REVEAL forced an update unnecessary of the client
