@@ -139,7 +139,8 @@ bool CMapList::DetectMapSize(int map)
 		case 0: // map0.mul
 		case 1: // map1.mul
 			if (g_Install.m_Maps[index].GetLength() == 89915392 || // ML-sized
-				g_Install.m_Maps[index].GetLength() == 89923808)   // (UOP packed)
+				!strcmpi(g_Install.m_Maps[index].GetFileExt(), ".uop")) // UOP are all ML-sized
+				//g_Install.m_Maps[index].GetLength() == 89923808)   // (UOP packed)
 			{
 				if (m_sizex[map] <= 0)		m_sizex[map] = 7168;
 				if (m_sizey[map] <= 0)		m_sizey[map] = 4096;

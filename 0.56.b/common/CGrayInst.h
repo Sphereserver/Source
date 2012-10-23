@@ -14,6 +14,16 @@
 
 ////////////////////////////////////////////////////////
 
+class MapAddress
+{
+public:
+	unsigned long dwFirstBlock;
+	unsigned long dwLastBlock;
+	__int64 qwAdress;
+};
+
+unsigned long long HashFileName(CGString csFile);
+
 extern struct CGrayInstall
 {
 	// "Software\\Origin Worlds Online\\Ultima Online\\1.0"
@@ -35,6 +45,7 @@ public:
 	CGFile	m_Stadifi[256];		// stadifiX.mul
 	CGFile	m_Stadifl[256];		// stadiflX.mul
 	bool m_IsMapUopFormat[256]; // true for maps that are uop format
+	MapAddress m_UopMapAddress[256][256]; //For uop parsing. Note: might need to be ajusted later if format changes.
 
 	CSVFile m_CsvFiles[8];		// doors.txt, stairs.txt (x2), roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
 

@@ -5442,5 +5442,8 @@ ALPHA additions:
 - Update #1816: sphere_serv_triggers.scp (added function f_onaccount_create) (Script pack)
 
 22-10-2012, Terrikate
-
 - Fixed #2104: functions UPDATE and REVEAL forced an update unnecessary of the client
+
+22-10-2012, Ben
+- Fixed: .UOP file support. It should now be able to handle future updates.
+- Updated: ML map size detection to allow for new .uop file format.

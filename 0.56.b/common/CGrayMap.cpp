@@ -426,7 +426,18 @@ void CGrayMapBlock::Load( int bx, int by )
 		unsigned long fileOffset = index.GetFileOffset();
 		if (g_Install.m_IsMapUopFormat[mapNumber])
 		{
-			// when the map is in a UOP container we need to modify the file offset to account for the block header
+			for ( int i = 0; i < 256; i++ )
+			{
+				MapAddress pMapAddress = g_Install.m_UopMapAddress[mapNumber][i];
+				if (( ulBlockIndex <= pMapAddress.dwLastBlock ) && ( ulBlockIndex >= pMapAddress.dwFirstBlock ))
+				{
+					fileOffset = pMapAddress.qwAdress + ((ulBlockIndex - pMapAddress.dwFirstBlock)*196);
+					break;
+				}
+			}
+
+
+		/*	// when the map is in a UOP container we need to modify the file offset to account for the block header
 			// data. the uop file format splits the map data into smaller 'blocks', each of which has its on header (as
 			// well as an overall file header)
 			//
@@ -444,7 +455,7 @@ void CGrayMapBlock::Load( int bx, int by )
 			// have to handle UOP data properly)
 
 			unsigned long block = fileOffset / mapBlockLength;
-			fileOffset += firstBlockDataEntryOffset + ((firstDataEntryOffset) * (block / 100)) + (blockHeaderLength * block);
+			fileOffset += firstBlockDataEntryOffset + ((firstDataEntryOffset) * (block / 100)) + (blockHeaderLength * block);*/
 		}
 
 		// seek to position in file

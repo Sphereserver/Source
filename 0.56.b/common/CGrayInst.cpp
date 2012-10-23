@@ -246,7 +246,63 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 								}
 
 								m_IsMapUopFormat[index] = true;
-							}
+
+								//Should parse uop file here for faster reference later.
+
+								unsigned long dwHashLo, dwHashHi, dwCompressedSize, dwHeaderLenght, dwFilesInBlock, dwTotalFiles, dwLoop;
+								unsigned long long qwUOPPtr;
+
+								m_Maps[index].Seek( sizeof(DWORD)*3, SEEK_SET );
+								m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+								m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+								qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+								m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
+								m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
+								m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+								dwLoop = dwTotalFiles;
+
+								while (qwUOPPtr > 0)
+								{
+									m_Maps[index].Read( &dwFilesInBlock, sizeof(DWORD));
+									m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+									m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+									qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+
+									while ((dwFilesInBlock > 0)&&(dwTotalFiles > 0))
+									{
+										dwTotalFiles--;
+										dwFilesInBlock--;
+
+										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+										m_Maps[index].Read( &dwHeaderLenght, sizeof(DWORD));
+										m_Maps[index].Read( &dwCompressedSize, sizeof(DWORD));
+
+										MapAddress pMapAddress;
+										pMapAddress.qwAdress = (((__int64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
+
+										m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
+										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+										unsigned long long qwHash = ((__int64)dwHashHi << 32) + dwHashLo;
+										m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
+					
+										for (int x = 0; x < dwLoop; x++)
+										{
+											sprintf(z, "build/map%dlegacymul/%.8d.dat", index, x);
+											if (HashFileName(z) == qwHash)
+											{
+												pMapAddress.dwFirstBlock = x*4096;
+												pMapAddress.dwLastBlock = (x*4096)+(dwCompressedSize / 196)-1;
+												m_UopMapAddress[index][x] = pMapAddress;
+												break;
+											}
+										}
+									}
+
+									m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+								}
+							}//End of UOP Map parsing
 						}
 						if ( !m_Staidx[index].IsFileOpen() )
 						{
@@ -440,4 +496,80 @@ bool CGrayInstall::ReadMulData(VERFILE_TYPE filedata, const CUOIndexRec & Index,
 	if ( Index.IsVerData() ) filedata = VERFILE_VERDATA;
 
 	return ReadMulData(m_File[filedata], Index, pData);
+}
+
+
+//UOP Filename Hash function
+unsigned long long HashFileName(CGString csFile)
+{
+	UINT eax, ecx, edx, ebx, esi, edi;
+
+	eax = ecx = edx = ebx = esi = edi = 0;
+	ebx = edi = esi = (__int32) csFile.GetLength() + 0xDEADBEEF;
+
+	int i = 0;
+
+	for ( i = 0; i + 12 < csFile.GetLength(); i += 12 )
+	{
+		edi = (__int32) ( ( csFile[ i + 7 ] << 24 ) | ( csFile[ i + 6 ] << 16 ) | ( csFile[ i + 5 ] << 8 ) | csFile[ i + 4 ] ) + edi;
+		esi = (__int32) ( ( csFile[ i + 11 ] << 24 ) | ( csFile[ i + 10 ] << 16 ) | ( csFile[ i + 9 ] << 8 ) | csFile[ i + 8 ] ) + esi;
+		edx = (__int32) ( ( csFile[ i + 3 ] << 24 ) | ( csFile[ i + 2 ] << 16 ) | ( csFile[ i + 1 ] << 8 ) | csFile[ i ] ) - esi;
+
+		edx = ( edx + ebx ) ^ ( esi >> 28 ) ^ ( esi << 4 );
+		esi += edi;
+		edi = ( edi - edx ) ^ ( edx >> 26 ) ^ ( edx << 6 );
+		edx += esi;
+		esi = ( esi - edi ) ^ ( edi >> 24 ) ^ ( edi << 8 );
+		edi += edx;
+		ebx = ( edx - esi ) ^ ( esi >> 16 ) ^ ( esi << 16 );
+		esi += edi;
+		edi = ( edi - ebx ) ^ ( ebx >> 13 ) ^ ( ebx << 19 );
+		ebx += esi;
+		esi = ( esi - edi ) ^ ( edi >> 28 ) ^ ( edi << 4 );
+		edi += ebx;
+	}
+
+	if ( csFile.GetLength() - i > 0 )
+	{
+		switch ( csFile.GetLength() - i )
+		{
+			case 12:
+				esi += (__int32) csFile[ i + 11 ] << 24;
+			case 11:
+				esi += (__int32) csFile[ i + 10 ] << 16;
+			case 10:
+				esi += (__int32) csFile[ i + 9 ] << 8;
+			case 9:
+				esi += (__int32) csFile[ i + 8 ];
+			case 8:
+				edi += (__int32) csFile[ i + 7 ] << 24;
+			case 7:
+				edi += (__int32) csFile[ i + 6 ] << 16;
+			case 6:
+				edi += (__int32) csFile[ i + 5 ] << 8;
+			case 5:
+				edi += (__int32) csFile[ i + 4 ];
+			case 4:
+				ebx += (__int32) csFile[ i + 3 ] << 24;
+			case 3:
+				ebx += (__int32) csFile[ i + 2 ] << 16;
+			case 2:
+				ebx += (__int32) csFile[ i + 1 ] << 8;
+			case 1:		
+				ebx += (__int32) csFile[ i ];
+				break;			
+		}
+
+		esi = ( esi ^ edi ) - ( ( edi >> 18 ) ^ ( edi << 14 ) );
+		ecx = ( esi ^ ebx ) - ( ( esi >> 21 ) ^ ( esi << 11 ) );
+		edi = ( edi ^ ecx ) - ( ( ecx >> 7 ) ^ ( ecx << 25 ) );
+		esi = ( esi ^ edi ) - ( ( edi >> 16 ) ^ ( edi << 16 ) );
+		edx = ( esi ^ ecx ) - ( ( esi >> 28 ) ^ ( esi << 4 ) );
+		edi = ( edi ^ edx ) - ( ( edx >> 18 ) ^ ( edx << 14 ) );
+		eax = ( esi ^ edi ) - ( ( edi >> 8 ) ^ ( edi << 24 ) );
+
+		return ( (__int64) edi << 32 ) | eax;
+	}
+
+	return ( (__int64) esi << 32 ) | eax;
 }
