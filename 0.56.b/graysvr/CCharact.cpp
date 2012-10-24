@@ -1173,11 +1173,12 @@ void CChar::Update( const CClient * pClientExclude ) // If character status has 
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
+			continue;
+		if ( pClient == m_pClient ) 
 		{
 			pClient->addReSync();
-			continue;
-		}
-		if ( pClient != m_pClient && pClient->CanSee( this ) )
+		}	
+		else if ( pClient->CanSee( this ) )
 		{
 			pClient->addChar( this );
 		}
