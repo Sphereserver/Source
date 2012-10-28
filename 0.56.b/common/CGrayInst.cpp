@@ -238,71 +238,71 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 								sprintf(z, "map%dLegacyMUL.uop", index);
 								OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 
-								// neither file exists, map0 is required
-								if (m_Maps[index].IsFileOpen() == false && index == 0)
+								//Should parse uop file here for faster reference later.
+								if (m_Maps[index].IsFileOpen())
+								{
+									m_IsMapUopFormat[index] = true;
+
+									unsigned long dwHashLo, dwHashHi, dwCompressedSize, dwHeaderLenght, dwFilesInBlock, dwTotalFiles, dwLoop;
+									unsigned long long qwUOPPtr;
+
+									m_Maps[index].Seek( sizeof(DWORD)*3, SEEK_SET );
+									m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+									m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+									qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+									m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
+									m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
+									m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+									dwLoop = dwTotalFiles;
+
+									while (qwUOPPtr > 0)
+									{
+										m_Maps[index].Read( &dwFilesInBlock, sizeof(DWORD));
+										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+										qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+
+										while ((dwFilesInBlock > 0)&&(dwTotalFiles > 0))
+										{
+											dwTotalFiles--;
+											dwFilesInBlock--;
+
+											m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+											m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+											m_Maps[index].Read( &dwHeaderLenght, sizeof(DWORD));
+											m_Maps[index].Read( &dwCompressedSize, sizeof(DWORD));
+
+											MapAddress pMapAddress;
+											pMapAddress.qwAdress = (((__int64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
+
+											m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
+											m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
+											m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
+											unsigned long long qwHash = ((__int64)dwHashHi << 32) + dwHashLo;
+											m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
+					
+											for (int x = 0; x < dwLoop; x++)
+											{
+												sprintf(z, "build/map%dlegacymul/%.8d.dat", index, x);
+												if (HashFileName(z) == qwHash)
+												{
+													pMapAddress.dwFirstBlock = x*4096;
+													pMapAddress.dwLastBlock = (x*4096)+(dwCompressedSize / 196)-1;
+													m_UopMapAddress[index][x] = pMapAddress;
+													break;
+												}
+											}
+										}
+
+										m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+									}
+								}//End of UOP Map parsing
+								else if (index == 0) // neither file exists, map0 is required
 								{
 									bFileLoaded = false;
 									break;
 								}
-
-								m_IsMapUopFormat[index] = true;
-
-								//Should parse uop file here for faster reference later.
-
-								unsigned long dwHashLo, dwHashHi, dwCompressedSize, dwHeaderLenght, dwFilesInBlock, dwTotalFiles, dwLoop;
-								unsigned long long qwUOPPtr;
-
-								m_Maps[index].Seek( sizeof(DWORD)*3, SEEK_SET );
-								m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-								m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-								qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
-								m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
-								m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
-								m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
-								dwLoop = dwTotalFiles;
-
-								while (qwUOPPtr > 0)
-								{
-									m_Maps[index].Read( &dwFilesInBlock, sizeof(DWORD));
-									m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-									m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-									qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
-
-									while ((dwFilesInBlock > 0)&&(dwTotalFiles > 0))
-									{
-										dwTotalFiles--;
-										dwFilesInBlock--;
-
-										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-										m_Maps[index].Read( &dwHeaderLenght, sizeof(DWORD));
-										m_Maps[index].Read( &dwCompressedSize, sizeof(DWORD));
-
-										MapAddress pMapAddress;
-										pMapAddress.qwAdress = (((__int64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
-
-										m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
-										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-										unsigned long long qwHash = ((__int64)dwHashHi << 32) + dwHashLo;
-										m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
-					
-										for (int x = 0; x < dwLoop; x++)
-										{
-											sprintf(z, "build/map%dlegacymul/%.8d.dat", index, x);
-											if (HashFileName(z) == qwHash)
-											{
-												pMapAddress.dwFirstBlock = x*4096;
-												pMapAddress.dwLastBlock = (x*4096)+(dwCompressedSize / 196)-1;
-												m_UopMapAddress[index][x] = pMapAddress;
-												break;
-											}
-										}
-									}
-
-									m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
-								}
-							}//End of UOP Map parsing
+							}
 						}
 						if ( !m_Staidx[index].IsFileOpen() )
 						{
