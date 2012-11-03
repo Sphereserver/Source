@@ -17,6 +17,7 @@
 // sure TYPEDEFs don't remain associated with TERRAIN ids after you remove them 
 // from a script in a resync.
 //****************************************************************************
+// t_jungle & t_forest added by Mordaunt 11/3/12
 
 VERSION=0.56b
 
@@ -87,6 +88,44 @@ TERRAIN = 03ef0
 [TYPEDEF t_sand]
 TERRAIN = 016 03e
 TERRAIN = 044 04b
+
+[TYPEDEF t_jungle]
+TERRAIN = 0ac 0bf
+TERRAIN = 0ec
+TERRAIN = 0fc 0103
+TERRAIN = 0108 010b
+TERRAIN = 01f1 01f3
+TERRAIN = 026e 0271
+TERRAIN = 0276 027d
+TERRAIN = 0286 0289
+TERRAIN = 0292 0295
+TERRAIN = 0581 058a
+TERRAIN = 058d 0590
+TERRAIN = 059f 05a5
+TERRAIN = 05b3 05b9
+TERRAIN = 05f5 05f8
+TERRAIN = 0605 0610
+TERRAIN = 0615 0617
+TERRAIN = 0727 072a
+TERRAIN = 0733 073a
+
+[TYPEDEF t_forest]
+TERRAIN = 0c4 0d7
+TERRAIN = 0ed 0f3
+TERRAIN = 0f8 0fb
+TERRAIN = 015d 0168
+TERRAIN = 0324 032a
+TERRAIN = 054f 0552
+TERRAIN = 05f1 05f4
+TERRAIN = 05f9 0603
+TERRAIN = 0611 0614
+TERRAIN = 0653 0655
+TERRAIN = 065b 0662
+TERRAIN = 066b 066e
+TERRAIN = 06af 06b4
+TERRAIN = 06bb 06be
+TERRAIN = 0709 070c
+TERRAIN = 0715 071c
 
 [TYPEDEF 2010]
 
