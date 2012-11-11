@@ -448,6 +448,8 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 
 						// Remove previous identical spells
 						pItemPrev->Delete();
+						//Just break here since we make it impossible to have more then 1 anyways
+						break;
 					}
 					break;
 				}

@@ -5458,3 +5458,6 @@ ALPHA additions:
 
 03-11-2012, Mordant (Script Pack)
 - Added: t_forest and t_jungle TERRAIN types in sphere_types.scp
+
+11-11-2012, Ben
+- Fixed #2106: MAGICF_STACKSTATS causing crash.
