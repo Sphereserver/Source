@@ -5461,3 +5461,7 @@ ALPHA additions:
 
 11-11-2012, Ben
 - Fixed #2106: MAGICF_STACKSTATS causing crash.
+
+23-11-2012, Ben
+-Fixed #2115: Cutting custom hides producing default leather. 
+		Now TDATA1 of type t_hide can hold ID or DEFNAME of custom cut leather (or any item).

@@ -2253,7 +2253,9 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 				case IT_HIDE:
 					// IT_LEATHER
 					// Cut up the hides and create strips of leather
-					iOutID = ITEMID_LEATHER_1;
+					iOutID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemTarg->Item_GetDef()->m_ttNormal.m_tData1));
+					if (!pItemTarg->Item_GetDef()->m_ttNormal.m_tData1)
+						iOutID = ITEMID_LEATHER_1;
 					iOutQty = pItemTarg->GetAmount();
 					break;
 				default:
