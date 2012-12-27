@@ -249,7 +249,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 									m_Maps[index].Seek( sizeof(DWORD)*3, SEEK_SET );
 									m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
 									m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-									qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+									qwUOPPtr = ((INT64)dwHashHi << 32) + dwHashLo;
 									m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
 									m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
 									m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
@@ -260,7 +260,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 										m_Maps[index].Read( &dwFilesInBlock, sizeof(DWORD));
 										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
 										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-										qwUOPPtr = ((__int64)dwHashHi << 32) + dwHashLo;
+										qwUOPPtr = ((INT64)dwHashHi << 32) + dwHashLo;
 
 										while ((dwFilesInBlock > 0)&&(dwTotalFiles > 0))
 										{
@@ -273,12 +273,12 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 											m_Maps[index].Read( &dwCompressedSize, sizeof(DWORD));
 
 											MapAddress pMapAddress;
-											pMapAddress.qwAdress = (((__int64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
+											pMapAddress.qwAdress = (((INT64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
 
 											m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
 											m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
 											m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-											unsigned long long qwHash = ((__int64)dwHashHi << 32) + dwHashLo;
+											unsigned long long qwHash = ((INT64)dwHashHi << 32) + dwHashLo;
 											m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
 					
 											for (int x = 0; x < dwLoop; x++)
@@ -568,8 +568,8 @@ unsigned long long HashFileName(CGString csFile)
 		edi = ( edi ^ edx ) - ( ( edx >> 18 ) ^ ( edx << 14 ) );
 		eax = ( esi ^ edi ) - ( ( edi >> 8 ) ^ ( edi << 24 ) );
 
-		return ( (__int64) edi << 32 ) | eax;
+		return ( (INT64) edi << 32 ) | eax;
 	}
 
-	return ( (__int64) esi << 32 ) | eax;
+	return ( (INT64) esi << 32 ) | eax;
 }

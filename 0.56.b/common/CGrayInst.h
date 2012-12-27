@@ -19,7 +19,7 @@ class MapAddress
 public:
 	unsigned long dwFirstBlock;
 	unsigned long dwLastBlock;
-	__int64 qwAdress;
+	INT64 qwAdress;
 };
 
 unsigned long long HashFileName(CGString csFile);
