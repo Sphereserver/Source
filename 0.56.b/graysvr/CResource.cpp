@@ -64,6 +64,7 @@ CResource::CResource()
 	m_fLocalIPAdmin = true;
 
 	// Save
+	m_iSaveNPCSkills = 10;
 	m_iSaveBackupLevels = 3;
 	m_iSaveBackgroundTime = 5*60*TICK_PER_SEC;	// Use the new background save.
 	m_fSaveGarbageCollect = false;	// Always force a full garbage collection.
@@ -497,6 +498,7 @@ enum RC_TYPE
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
+	RC_NPCSKILLSAVE,			// m_iSaveNPCSkills
 	RC_NPCTRAINMAX,				// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
 #ifdef _ALPHASPHERE
@@ -712,6 +714,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather),			0 }},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle),		0 }},
+	{ "NPCSKILLSAVE",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveNPCSkills),	0 }},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax),		0 }},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent),	0 }},
 #ifdef _ALPHASPHERE

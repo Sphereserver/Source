@@ -710,6 +710,7 @@ public:
 	int  m_iDecay_CorpseNPC;	// Time for a NPC corpse to decay.
 
 	// Save
+	int  m_iSaveNPCSkills;		// Only save NPC skills above this
 	int  m_iSavePeriod;			// Minutes between saves.
 	int  m_iSaveBackupLevels;	// How many backup levels.
 	int  m_iSaveBackgroundTime;	// Speed of the background save in minutes.

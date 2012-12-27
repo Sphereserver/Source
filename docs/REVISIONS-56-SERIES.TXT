@@ -5465,3 +5465,7 @@ ALPHA additions:
 23-11-2012, Ben
 -Fixed #2115: Cutting custom hides producing default leather. 
 		Now TDATA1 of type t_hide can hold ID or DEFNAME of custom cut leather (or any item).
+
+27-12-2012, Ben
+-Fixed #2112: Added ini setting NPCSkillSave with a default value of 10 to keep normal behaviour.
+			Any NPC skills below this value will not be saved and will be reseted to 0.

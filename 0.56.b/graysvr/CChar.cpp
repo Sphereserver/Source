@@ -618,7 +618,7 @@ int CChar::FixWeirdness()
 		// An NPC. Don't keep track of unused skills.
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
-			if ( m_Skill[i] > 0 && m_Skill[i] <= 10 )
+			if ( m_Skill[i] > 0 && m_Skill[i] < g_Cfg.m_iSaveNPCSkills )
 				Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
 		}
 	}
