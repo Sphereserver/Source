@@ -2092,7 +2092,20 @@ bool CChar::OnTickEquip( CItem * pItem )
 					return( false );
 				}
 
-				pItem->SetTimeout( 10 * TICK_PER_SEC );
+				int iTicks = 10 * TICK_PER_SEC;
+				for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
+				{
+					int iRegen = g_Cfg.m_iRegenRate[i];
+					if ( i < STAT_FOOD )
+					{
+						char sRegen[21];
+						sprintf(sRegen, "OVERRIDE.REGEN_%d", static_cast<int>(i));
+						iRegen -= ( pHorse->GetKeyNum(sRegen, true) * 10 );
+					}
+					iTicks = minimum(iTicks,iRegen);
+				}
+
+				pItem->SetTimeout( iTicks );
 
 				if ( pHorse->Fight_IsActive() )
 					pHorse->Fight_ClearAll();
@@ -3819,7 +3832,7 @@ bool CChar::OnTick()
 				sprintf(sRegen, "OVERRIDE.REGEN_%d", static_cast<int>(i));
 				iRate -= ( GetKeyNum(sRegen, true) * 10 );
 				sprintf(sRegen, "OVERRIDE.REGENVAL_%d", static_cast<int>(i));
-				mod += GetKeyNum(sRegen, true);
+				mod = maximum(mod,GetKeyNum(sRegen, true));
 			}
 
 			// Metabolism Bonus

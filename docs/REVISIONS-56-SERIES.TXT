@@ -5469,3 +5469,7 @@ ALPHA additions:
 27-12-2012, Ben
 -Fixed #2112: Added ini setting NPCSkillSave with a default value of 10 to keep normal behaviour.
 			Any NPC skills below this value will not be saved and will be reseted to 0.
+
+4-1-2013, Ben
+-Changed: OVERRIDE.REGENVAL so that it is the tagvalue or 1 instead of 1+tagvalue.
+-Fixed 2123: REGEN VAL not being accurate on mounted horses.
