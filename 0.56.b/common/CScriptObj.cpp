@@ -1068,7 +1068,37 @@ badcmd:
 				sVal	= buf;
 			}
 			return true;
+		case SSC_ASCPAD:
+			{
+				TCHAR * ppArgs[2];
+				size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+				if ( iQty < 2 )
+					return false;
 
+				int	iPad = Exp_GetVal( ppArgs[0] );
+				if ( iPad < 0 )
+					return false;
+
+				TCHAR	*buf = Str_GetTemp();
+				REMOVE_QUOTES( ppArgs[1] );
+				sVal.FormatHex( *ppArgs[1] );
+				strcpy( buf, sVal );
+				while ( --iPad )
+				{
+					if ( *ppArgs[1] == '"' ) continue;
+					if ( *(ppArgs[1]) )
+					{
+						++ppArgs[1];
+						sVal.FormatHex( *ppArgs[1] );
+					}
+					else
+						sVal.FormatHex( '\0' );
+
+					strcat( buf, " " );
+					strcat( buf, sVal );
+				}
+				sVal	= buf;
+			}
 		case SSC_SYSCMD:
 		case SSC_SYSSPAWN:
 			{
