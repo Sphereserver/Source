@@ -5473,3 +5473,7 @@ ALPHA additions:
 4-1-2013, Ben
 -Changed: OVERRIDE.REGENVAL so that it is the tagvalue or 1 instead of 1+tagvalue.
 -Fixed 2123: REGEN VAL not being accurate on mounted horses.
+
+18-1-2013, Ben
+-Added: <ASCPAD size,text> Does the same as <ASC text>, but padds with 0s untill size is reached. 
+		Will also truncate the text if longer then size 
