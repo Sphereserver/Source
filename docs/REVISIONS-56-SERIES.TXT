@@ -5476,4 +5476,8 @@ ALPHA additions:
 
 18-1-2013, Ben
 -Added: <ASCPAD size,text> Does the same as <ASC text>, but padds with 0s untill size is reached. 
-		Will also truncate the text if longer then size 
+		Will also truncate the text if longer then size.
+
+02-02-2013, Ben
+-Fixed #2128: IMSG_DEF_COLOR overriding Chars noto colors.
+-Fixed #2131: Too many packets sent from multis.

@@ -763,17 +763,19 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 			strcpy(m_zLastObjMessage, pMsg);
 	}
 	
-	if ( pSrc == m_pChar )
+	if ( pSrc == m_pChar ) // Shouldn't this be ( pSrc->IsChar() )?
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-		addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue ), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
+		//addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue ), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
 	} 
 	else
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-		addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
+		//(pMsg, pSrc, ( pHue ? pHue : wHue), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
 	}
 }
 
@@ -1734,9 +1736,10 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		if (fOsiSight)
 		{
 			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
-				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 			{
-				if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_SIZE )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )) || ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR ) && ( pItem->IsTypeMulti() ))
+					|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
 				{
 					if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 					{
@@ -1750,7 +1753,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 		}
 		else
 		{
-			if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist ) && ( pItem->IsTypeMulti() )))
+			if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR ) && ( pItem->IsTypeMulti() )))
 			{
 				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
 				{
