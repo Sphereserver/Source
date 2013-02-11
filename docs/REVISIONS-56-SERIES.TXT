@@ -5481,3 +5481,6 @@ ALPHA additions:
 02-02-2013, Ben
 -Fixed #2128: IMSG_DEF_COLOR overriding Chars noto colors.
 -Fixed #2131: Too many packets sent from multis.
+
+10-02-2013, Ben
+-Fixed: EQUIPPEDCAST in sphere.ini not working properly.

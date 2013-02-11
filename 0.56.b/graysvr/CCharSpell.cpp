@@ -2460,7 +2460,7 @@ int CChar::Spell_CastStart()
 
 	// Attempt to Unequip stuff before casting.
 	// Except not wands and spell books !
-	if ( !g_Cfg.m_fEquippedCast && fAllowEquip )
+	if ( !g_Cfg.m_fEquippedCast && !fAllowEquip )
 	{
 		if ( !Spell_Unequip(LAYER_HAND1) )
 			return( -1 );
