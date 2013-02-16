@@ -297,6 +297,13 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 				new PacketTelnet(this, pszMsg);
 			}
 			return;
+		case CONNECT_UOG:
+			{
+				if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' ) return;
+
+				new PacketTelnet(this, pszMsg, true);
+			}
+			return;
 		case CONNECT_CRYPT:
 		case CONNECT_LOGIN:
 		case CONNECT_GAME:

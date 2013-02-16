@@ -3500,6 +3500,13 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), buffer->getRemainingLength()));
 			}
 		}
+		else if(buffer->getRemainingData()[0] == XCMD_UOGRequest && buffer->getRemainingLength() == 8)
+		{
+			DEBUGNETWORK(("%lx:Receiving new UOG status request.\n", state->id()));
+			buffer->skip(7);
+			buffer->getRemainingData()[0] = 0x7F;
+			return true;
+		}
 		else
 		{
 			// assume it's a normal client login

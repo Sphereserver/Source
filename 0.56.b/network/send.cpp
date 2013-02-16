@@ -28,7 +28,7 @@ PacketGeneric::PacketGeneric(const CClient* target, BYTE *data, size_t length) :
  *
  *
  ***************************************************************************/
-PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(0, 0, PRI_HIGHEST)
+PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message, bool bNullTerminated) : PacketSend(0, 0, PRI_HIGHEST)
 {
 	ADDTOCALLSTACK("PacketTelnet::PacketTelnet");
 
@@ -41,6 +41,8 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message) : PacketSend(
 
 		writeCharASCII(message[i]);
 	}
+	if (bNullTerminated)
+		writeCharASCII('\0');
 
 	trim();
 	push(target);

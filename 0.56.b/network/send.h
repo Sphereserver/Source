@@ -29,7 +29,7 @@ class PacketTelnet : public PacketSend
 {
 public:
 
-	PacketTelnet(const CClient* target, LPCTSTR message);
+	PacketTelnet(const CClient* target, LPCTSTR message, bool bNullTerminated = false);
 };
 
 /***************************************************************************

@@ -491,6 +491,7 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 
 		// UOGateway Status
 		case 0xFF:
+		case 0x7F:
 		case 0x22:
 		{
 			if ( iLen > 1 )
@@ -503,9 +504,12 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			}
 
 			// enter 'remote admin mode'
-			SetConnectType( CONNECT_TELNET );
+			//SetConnectType( CONNECT_TELNET );
 
 			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:UOG Status request from %s\n", GetSocketID(), GetPeerStr());
+
+			if (pData[0] == 0x7F)
+				SetConnectType( CONNECT_UOG );
 
 			SysMessage( g_Serv.GetStatusString( 0x22 ) );
 

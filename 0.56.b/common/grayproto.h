@@ -201,6 +201,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Char			= 0x78,
 	XCMD_MenuItems		= 0x7c,
 	XCMD_MenuChoice		= 0x7d,
+	XCMD_UOGRequest		= 0x7F,
 	//	0x80
 	XCMD_ServersReq		= 0x80,
 	XCMD_CharList3		= 0x81,

@@ -5490,3 +5490,7 @@ ALPHA additions:
 
 16-02-2013, shaklaban
 Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncNetwork=0).
+
+16-02-2013, Ben
+-Fixed: small typo in sphere.ini
+-Added: Support for new UOGateway status request.
