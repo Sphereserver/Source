@@ -504,7 +504,7 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			}
 
 			// enter 'remote admin mode'
-			//SetConnectType( CONNECT_TELNET );
+			SetConnectType( CONNECT_TELNET );
 
 			g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:UOG Status request from %s\n", GetSocketID(), GetPeerStr());
 
