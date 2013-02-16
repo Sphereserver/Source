@@ -5484,3 +5484,9 @@ ALPHA additions:
 
 10-02-2013, Ben
 -Fixed: EQUIPPEDCAST in sphere.ini not working properly.
+
+13-02-2013, shaklaban
+-Fixed #2134: COMPONENTS of the point not working, if MAP not 0.
+
+16-02-2013, shaklaban
+Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncNetwork=0).
