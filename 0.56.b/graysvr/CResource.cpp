@@ -202,6 +202,7 @@ CResource::CResource()
 
 	m_iTimerCall = 0;
 	m_bAllowLightOverride = true;
+	m_bAllowNewbTransfer = false;
 	m_sZeroPoint= "1323,1624,0";
 	m_bAllowBuySellAgent = false;
 
@@ -341,7 +342,7 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 	if ( pszSep != NULL )
 	{
-		*pszSep = '.';
+		*pszSep = oldChar; //*pszSep = '.';
 		pszKey = pszSep+1;
 	}
 	else
@@ -359,6 +360,7 @@ enum RC_TYPE
 	RC_AGREE,
 	RC_ALLOWBUYSELLAGENT,	// m_bAllowBuySellAgent
 	RC_ALLOWLIGHTOVERRIDE,	// m_bAllowLightOverride
+	RC_ALLOWNEWBTRANSFER,	// m_bAllowNewbTransfer
 	RC_ARCHERYMAXDIST,		// m_iArcheryMaxDist
 	RC_ARCHERYMINDIST,		// m_iArcheryMinDist
 	RC_ARRIVEDEPARTMSG,
@@ -575,6 +577,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "AGREE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bAgree),				0 }},
 	{ "ALLOWBUYSELLAGENT",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowBuySellAgent),	0 }},
 	{ "ALLOWLIGHTOVERRIDE",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowLightOverride),	0 }},
+	{ "ALLOWNEWBTRANSFER",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowNewbTransfer),	0 }},
 	{ "ARCHERYMAXDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMaxDist),		0 }},
 	{ "ARCHERYMINDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMinDist),		0 }},
 	{ "ARRIVEDEPARTMSG",		{ ELEM_INT,		OFFSETOF(CResource,m_iArriveDepartMsg),		0 }},
@@ -842,6 +845,28 @@ bool CResource::r_LoadVal( CScript &s )
 								for ( int nIndex = 0; nIndex < nSectors; ++nIndex )
 									g_World.GetSector(nMapNumber, nIndex)->r_Verb(scp, &g_Serv);
 							}
+
+							return true;
+						}
+						else if ( !strnicmp( pszStr, "SECTOR.",7) )
+						{
+							pszStr = pszStr + 7;
+							int iSecNumber = Exp_GetVal(pszStr);
+							int nSectors = g_MapList.GetSectorQty(nMapNumber);
+							SKIP_SEPARATORS(pszStr);
+
+							if ((iSecNumber > 0) && (iSecNumber <=  nSectors))
+							{
+								pszStr = s.GetArgRaw();
+
+								if ( pszStr && *pszStr )
+								{
+									CScript scp(pszStr);
+									g_World.GetSector(nMapNumber, iSecNumber-1)->r_Verb(scp, &g_Serv);
+								}
+							}
+							else
+								g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, nMapNumber);
 
 							return true;
 						}
@@ -1150,10 +1175,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			return true;
 		}
 
-		// NOTE: When using SERV.xxxx CResource::r_GetRef is called, it transform MAP( in
-		// MAP. dunno why (need to test to see what it breakes). So for a temp fix also MAP.
-		// is caught.
-		if ( !strnicmp(pszKey, "MAP(", 4) || !strnicmp(pszKey, "MAP.", 4) )
+		if ( !strnicmp(pszKey, "MAP(", 4) )
 		{
 			pszKey += 4;
 			TCHAR * pszArgsNext;
@@ -1205,6 +1227,37 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			SKIP_SEPARATORS(pszKey);
 			return pt.r_WriteVal(pszKey, sVal);
 		}
+
+		if ( !strnicmp( pszKey, "MAP", 3 ))
+		{
+			pszKey = pszKey + 3;
+			int iMapNumber = Exp_GetVal(pszKey);
+			SKIP_SEPARATORS(pszKey);
+			sVal.FormatVal(0);
+
+			if ( g_MapList.IsMapSupported(iMapNumber) )
+			{
+				if ( !strnicmp( pszKey, "SECTOR", 6 ))
+				{ 
+					pszKey = pszKey + 6;
+					int iSecNumber = Exp_GetVal(pszKey);
+					SKIP_SEPARATORS(pszKey);
+					int nSectors = g_MapList.GetSectorQty(iMapNumber);
+
+					if ((iSecNumber > 0) && (iSecNumber <=  nSectors))
+						return( g_World.GetSector(iMapNumber, iSecNumber-1)->r_WriteVal(pszKey, sVal, pSrc) );
+					else
+					{
+						g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, iMapNumber);
+						return false;
+					}
+					g_Log.EventError("Unsupported command %d\n", iMapNumber);
+					return false;
+				}
+			}
+			g_Log.EventError("Unsupported Map %d\n", iMapNumber);
+			return false;
+		}  
 
 		if ( !strnicmp( pszKey, "MAPLIST.",8) )
 		{

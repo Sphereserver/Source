@@ -3642,7 +3642,12 @@ void CChar::NPC_AI()
 			Emote(g_Cfg.GetDefaultMsg(DEFMSG_NPC_ANIMAL_POOP));
 			CItem	*pDung = CItem::CreateBase( Calc_GetRandVal(2) ? ITEMID_Dung1 : ITEMID_Dung2 );
 			if ( pDung )
+			{
 				pDung->MoveToDecay(pt, Calc_GetRandVal2(10,30)*TICK_PER_SEC);
+				TCHAR * pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ANIMAL_DUNG ), GetName());
+				pDung->SetName(pszMsg);
+			}
 			return;
 		}
 	}

@@ -5494,3 +5494,8 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 16-02-2013, Ben
 -Fixed: small typo in sphere.ini
 -Added: Support for new UOGateway status request.
+
+20-02-2013, Ben
+-Added: sphere.ini option ALLOWNEWBTRANSFER. When set to 1, will allow newbi items to stay newbied after tranfer to an NPC.
+-Fixed #2139: All dung being named Horse Dung. Now it's   "animal name" dung
+-Added: Read/Write (SERV.MAP.map_num.SECTOR.sec_num function) to have access to individual sectors.

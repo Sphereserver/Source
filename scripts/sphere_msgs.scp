@@ -69,6 +69,7 @@ IMSG_DEF_FONT	3
 //animallore_master		"%s is loyal to %s"
 //animallore_master_you		"you"
 //animallore_result		"%s is a %s"
+//animal_dung			"%s dung"
 //armslore_dam		"Attack [%i]."
 //armslore_dam_1		"That doesn't look dangerous at all."
 //armslore_dam_10		"That weapon is extremely deadly."

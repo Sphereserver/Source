@@ -862,7 +862,7 @@ public:
 	bool IsMovable() const;
 	int GetVisualRange() const	// virtual
 	{
-		if ( GetDispID() >= ITEMID_MULTI )
+		if ( GetDispID() >= ITEMID_MULTI ) // ( IsTypeMulti() ) why not this?
 			return( UO_MAP_VIEW_RADAR );
 		return( UO_MAP_VIEW_SIZE );
 	}
@@ -1475,7 +1475,11 @@ protected:
 		return( STATIC_CAST <const CItemBaseMulti *>( Base_GetDef()));
 	}
 	bool Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, DWORD dwKeyCode );
+
+public:
 	int Multi_GetMaxDist() const;
+
+protected:
 	virtual void OnComponentCreate( const CItem * pComponent )
 	{
 		UNREFERENCED_PARAMETER(pComponent);

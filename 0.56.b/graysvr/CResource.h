@@ -977,6 +977,8 @@ public:
 	CGString	m_sZeroPoint;
 	bool		m_bAllowBuySellAgent;
 
+	bool		m_bAllowNewbTransfer;
+
 	bool		m_NPCNoFameTitle;
 
 	bool		m_bAgree;
