@@ -1226,38 +1226,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			SKIP_SEPARATORS(pszKey);
 			return pt.r_WriteVal(pszKey, sVal);
-		}
-
-		if ( !strnicmp( pszKey, "MAP", 3 ))
-		{
-			pszKey = pszKey + 3;
-			int iMapNumber = Exp_GetVal(pszKey);
-			SKIP_SEPARATORS(pszKey);
-			sVal.FormatVal(0);
-
-			if ( g_MapList.IsMapSupported(iMapNumber) )
-			{
-				if ( !strnicmp( pszKey, "SECTOR", 6 ))
-				{ 
-					pszKey = pszKey + 6;
-					int iSecNumber = Exp_GetVal(pszKey);
-					SKIP_SEPARATORS(pszKey);
-					int nSectors = g_MapList.GetSectorQty(iMapNumber);
-
-					if ((iSecNumber > 0) && (iSecNumber <=  nSectors))
-						return( g_World.GetSector(iMapNumber, iSecNumber-1)->r_WriteVal(pszKey, sVal, pSrc) );
-					else
-					{
-						g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, iMapNumber);
-						return false;
-					}
-					g_Log.EventError("Unsupported command %d\n", iMapNumber);
-					return false;
-				}
-			}
-			g_Log.EventError("Unsupported Map %d\n", iMapNumber);
-			return false;
-		}  
+		} 
 
 		if ( !strnicmp( pszKey, "MAPLIST.",8) )
 		{
@@ -1295,6 +1264,37 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			return true;
 		}
+
+		if ( !strnicmp( pszKey, "MAP", 3 ))
+		{
+			pszKey = pszKey + 3;
+			int iMapNumber = Exp_GetVal(pszKey);
+			SKIP_SEPARATORS(pszKey);
+			sVal.FormatVal(0);
+
+			if ( g_MapList.IsMapSupported(iMapNumber) )
+			{
+				if ( !strnicmp( pszKey, "SECTOR", 6 ))
+				{ 
+					pszKey = pszKey + 6;
+					int iSecNumber = Exp_GetVal(pszKey);
+					SKIP_SEPARATORS(pszKey);
+					int nSectors = g_MapList.GetSectorQty(iMapNumber);
+
+					if ((iSecNumber > 0) && (iSecNumber <=  nSectors))
+						return( g_World.GetSector(iMapNumber, iSecNumber-1)->r_WriteVal(pszKey, sVal, pSrc) );
+					else
+					{
+						g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, iMapNumber);
+						return false;
+					}
+					g_Log.EventError("Unsupported command %d\n", iMapNumber);
+					return false;
+				}
+			}
+			g_Log.EventError("Unsupported Map %d\n", iMapNumber);
+			return false;
+		} 
 
 		if ( ( !strnicmp( pszKey, "GUILDSTONES.", 12) ) || ( !strnicmp( pszKey, "TOWNSTONES.", 11) ) )
 		{
