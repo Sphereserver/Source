@@ -759,7 +759,9 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			LPCTSTR arg = pszKey + 1;
 			if ( r_WriteVal(arg, sVal, pSrc) )
 			{
-				sVal.FormatVal(ahextoi(sVal));
+				if ( *sVal != '-' )
+					sVal.FormatVal(ahextoi(sVal));
+
 				return true;
 			}
 		}

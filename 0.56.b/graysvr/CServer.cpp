@@ -1167,9 +1167,11 @@ bool CServer::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 enum SV_TYPE
 {
 	SV_ACCOUNT,
+	SV_ACCOUNTS, //read only
 	SV_ALLCLIENTS,
 	SV_B,
 	SV_BLOCKIP,
+	SV_CHARS, //read only
 	SV_CLEARLISTS,
 	SV_CONSOLE,
 #ifdef _TEST_EXCEPTION
@@ -1180,6 +1182,7 @@ enum SV_TYPE
 	SV_HEARALL,
 	SV_IMPORT,
 	SV_INFORMATION,
+	SV_ITEMS, //read only
 	SV_LOAD,
 	SV_LOG,
 	SV_PRINTLISTS,
@@ -1188,10 +1191,12 @@ enum SV_TYPE
 	SV_RESTORE,
 	SV_RESYNC,
 	SV_SAVE,
+	SV_SAVECOUNT, //read only
 	SV_SAVESTATICS,
 	SV_SECURE,
 	SV_SHRINKMEM,
 	SV_SHUTDOWN,
+	SV_TIME, // read only
 	SV_UNBLOCKIP,
 	SV_VARLIST,
 	SV_QTY
@@ -1200,9 +1205,11 @@ enum SV_TYPE
 LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 {
 	"ACCOUNT",
+	"ACCOUNTS", // read only
 	"ALLCLIENTS",
 	"B",
 	"BLOCKIP",
+	"CHARS", // read only
 	"CLEARLISTS",
 	"CONSOLE",
 #ifdef _TEST_EXCEPTION
@@ -1213,6 +1220,7 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"HEARALL",
 	"IMPORT",
 	"INFORMATION",
+	"ITEMS", // read only
 	"LOAD",
 	"LOG",
 	"PRINTLISTS",
@@ -1221,10 +1229,12 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"RESTORE",
 	"RESYNC",
 	"SAVE",
+	"SAVECOUNT", // read only
 	"SAVESTATICS",
 	"SECURE",
 	"SHRINKMEM",
 	"SHUTDOWN",
+	"TIME", // read only
 	"UNBLOCKIP",
 	"VARLIST",
 	NULL
@@ -1286,6 +1296,12 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 	switch (index)
 	{
+		case SV_ACCOUNTS:
+		case SV_CHARS:
+		case SV_ITEMS:
+		case SV_SAVECOUNT:
+		case SV_TIME:
+			return false;
 		case SV_ACCOUNT: // "ACCOUNT"
 			return g_Accounts.Account_OnCmd(s.GetArgRaw(), pSrc);
 

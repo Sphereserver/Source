@@ -5499,3 +5499,7 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 -Added: sphere.ini option ALLOWNEWBTRANSFER. When set to 1, will allow newbi items to stay newbied after tranfer to an NPC.
 -Fixed #2139: All dung being named Horse Dung. Now it's   "animal name" dung
 -Added: Read/Write (SERV.MAP.map_num.SECTOR.sec_num function) to have access to individual sectors.
+
+23-02-2013, Ben
+-Fixed #2133: <Dsomeval> returning 0 if <someval> is negative.
+-Fixed #2120: Some server properties are no longer writable (ACCOUNTS, CHARS, ITEMS, SAVECOUNT, TIME)
