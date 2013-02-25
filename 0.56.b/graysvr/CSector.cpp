@@ -453,7 +453,8 @@ int CSector::GetLocalTime() const
 		int iSectorTimeDiff = (24*60) / g_MapList.GetSectorCols(pt.m_map);
 
 		// Calculate the # of columns between here and Castle Britannia ( x = 1400 )
-		int iSectorOffset = ( pt.m_x / g_MapList.GetX(pt.m_map) ) - ( (24*60) / g_MapList.GetSectorSize(pt.m_map));
+		//int iSectorOffset = ( pt.m_x / g_MapList.GetX(pt.m_map) ) - ( (24*60) / g_MapList.GetSectorSize(pt.m_map));
+		int iSectorOffset = ( pt.m_x / g_MapList.GetSectorSize(pt.m_map));
 
 		// Calculate the time offset from global time
 		int iTimeOffset = iSectorOffset * iSectorTimeDiff;

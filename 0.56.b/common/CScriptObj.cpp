@@ -932,7 +932,7 @@ badcmd:
 				Str_Parse( ppCmds[1], &(ppCmds[2]), ":" );
 				sVal = ppCmds[ Exp_GetVal( ppCmds[0] ) ? 1 : 2 ];
 				if ( sVal.IsEmpty())
-					sVal = " ";
+					sVal = "";
 			}
 			return( true );
 		case SSC_ISBIT:

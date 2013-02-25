@@ -3668,7 +3668,7 @@ void CChar::NPC_AI()
 				EXC_SET("vendor");
 
 				//	shops are closing at night
-				if ( pSector->IsDark() && g_Cfg.m_iNpcAi&NPC_AI_VEND_TIME )
+				if ( pSector->IsNight() && g_Cfg.m_iNpcAi&NPC_AI_VEND_TIME )
 				{
 					bool canGoOffDuty = true;
 					CWorldSearch Area(GetTopPoint(), GetVisualRange());
@@ -3696,7 +3696,7 @@ void CChar::NPC_AI()
 				EXC_SET("vendor off-duty");
 
 				//	shops are re-opened in daylight
-				if ( !pSector->IsDark() )
+				if ( !pSector->IsNight() )
 				{
 					//	TODO: when it will be possible to record a number of commands, vendor should
 					//	go unlock the door if nearby

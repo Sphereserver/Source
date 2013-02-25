@@ -94,6 +94,11 @@ public:
 	{
 		return( GetLight() > 6 );
 	}
+	bool IsNight() const
+	{
+		int iMinutes = GetLocalTime();
+		return( iMinutes < 7*60 || iMinutes > (9+12)*60 );
+	}
 	void LightFlash()
 	{
 		SetLightNow( true );
