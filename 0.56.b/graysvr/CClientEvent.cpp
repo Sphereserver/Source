@@ -325,7 +325,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 				pItem->ClrAttr(ATTR_OWNED);
 
 					// newbie items lose newbie status when transfered to NPC
-					if ( g_Cfg.m_bAllowNewbTransfer )
+					if ( !g_Cfg.m_bAllowNewbTransfer )
 						pItem->ClrAttr(ATTR_NEWBIE);
 			}
 			if ( pChar->GetBank()->IsItemInside( pContItem ))
