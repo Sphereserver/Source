@@ -5509,3 +5509,6 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 -Fixed #1544: qval returning " " instead of "" (now returns true empty string)
 -Fixed: Timezones not being calculated properly when ALLOWLIGHTOVERRIDE is on.
 -Fixed #2140: Vendors are now closing shop when ISNIGHTTIME and not ISDARK.
+
+02-03-2013, Ben
+-Fixed: ascpad throwing out an error for no reason.

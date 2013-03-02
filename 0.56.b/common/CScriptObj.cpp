@@ -1080,7 +1080,6 @@ badcmd:
 				int	iPad = Exp_GetVal( ppArgs[0] );
 				if ( iPad < 0 )
 					return false;
-
 				TCHAR	*buf = Str_GetTemp();
 				REMOVE_QUOTES( ppArgs[1] );
 				sVal.FormatHex( *ppArgs[1] );
@@ -1101,6 +1100,7 @@ badcmd:
 				}
 				sVal	= buf;
 			}
+			return true;
 		case SSC_SYSCMD:
 		case SSC_SYSSPAWN:
 			{
