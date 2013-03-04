@@ -150,7 +150,7 @@ DWORD CacheableScriptFile::Seek(LONG offset, UINT origin)
 		linenum = 0;	//	do not support not SEEK_SET rotation
 	}
 	
-	if ( linenum < m_fileContent->size() )
+	if ( linenum <= m_fileContent->size() )
 	{
 		m_currentLine = linenum;
 		return linenum;
