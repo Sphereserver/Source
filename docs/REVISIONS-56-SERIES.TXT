@@ -5515,3 +5515,6 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 
 03-03-2013, Ben
 -Fixed #2043: For loops last loop executed two times.
+
+04-03-2013, Ben
+-Fixed: COMBAT_OSIDAMAGEMOD not applying the proper bonus calculations

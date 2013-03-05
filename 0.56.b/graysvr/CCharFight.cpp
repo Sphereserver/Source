@@ -2062,22 +2062,43 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 
 	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
-	int damMod = 0;
-	int damModLJ = 0;
 	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
 	{
+		int damMod = 0;
+		int damModTemp = 0;
+		//Lumberjack Bonus
 		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
 		{
-			damModLJ = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 20;
+			damModTemp = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 50;
 			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) > 1000)
-				damModLJ += (damModLJ / 10);
+				damModTemp += 10;
 		}
-		damMod += ( (pSrc->Skill_GetBase(SKILL_TACTICS) / 16) + (pSrc->Skill_GetBase(SKILL_ANATOMY) / 20) + damModLJ + (static_cast<int>(pSrc->Stat_GetBase(STAT_STR)) / 3) );
-		if ( damMod > 100)
-			damMod=100;
+		damMod += damModTemp;//30 max
+
+		//Tactics Bonus
+		damModTemp = pSrc->Skill_GetBase(SKILL_TACTICS) / 16;
+		if (pSrc->Skill_GetBase(SKILL_TACTICS) > 1000)
+			damModTemp += 6;
+		damMod += damModTemp;//68 Max
+
+		//Anatomy Bonus
+		damModTemp = pSrc->Skill_GetBase(SKILL_ANATOMY) / 20;
+		if (pSrc->Skill_GetBase(SKILL_ANATOMY) > 1000)
+			damModTemp += 5;
+		damMod += damModTemp;//55 Max
+
+		//Strenght Bonus
+		damModTemp = pSrc->Stat_GetBase(STAT_STR) / 3;
+		if (pSrc->Stat_GetBase(STAT_STR) > 100)
+			damModTemp += 5;
+		damMod += damModTemp;//38 Max
+
+		//No cap for OSI...   100% cap on Damage Increase Items only
+		//if ( damMod > 100)
+		//	damMod=100;
+		iDmg += iDmg * (damMod / 100);
 	}
 
-	iDmg += iDmg * damMod / 100;
 	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 	u_damFlag = uType;
 
