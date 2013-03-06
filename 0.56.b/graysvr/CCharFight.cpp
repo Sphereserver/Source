@@ -2070,28 +2070,28 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
 		{
 			damModTemp = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) > 1000)
+			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
 				damModTemp += 10;
 		}
-		damMod += damModTemp;//30 max
+		damMod += damModTemp;
 
 		//Tactics Bonus
 		damModTemp = pSrc->Skill_GetBase(SKILL_TACTICS) / 16;
-		if (pSrc->Skill_GetBase(SKILL_TACTICS) > 1000)
+		if (pSrc->Skill_GetBase(SKILL_TACTICS) >= 1000)
 			damModTemp += 6;
-		damMod += damModTemp;//68 Max
+		damMod += damModTemp;
 
 		//Anatomy Bonus
 		damModTemp = pSrc->Skill_GetBase(SKILL_ANATOMY) / 20;
-		if (pSrc->Skill_GetBase(SKILL_ANATOMY) > 1000)
+		if (pSrc->Skill_GetBase(SKILL_ANATOMY) >= 1000)
 			damModTemp += 5;
-		damMod += damModTemp;//55 Max
+		damMod += damModTemp;
 
 		//Strenght Bonus
-		damModTemp = pSrc->Stat_GetBase(STAT_STR) / 3;
-		if (pSrc->Stat_GetBase(STAT_STR) > 100)
+		damModTemp = pSrc->Stat_GetAdjusted(STAT_STR) / 3;
+		if (pSrc->Stat_GetAdjusted(STAT_STR) >= 100)
 			damModTemp += 5;
-		damMod += damModTemp;//38 Max
+		damMod += damModTemp;
 
 		//No cap for OSI...   100% cap on Damage Increase Items only
 		//if ( damMod > 100)
@@ -2867,15 +2867,16 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRa
 	}
 
 	int iDmg = 1;
-	int iDmgAdj;
-	if ( !g_Cfg.IsSkillRanged(skill) )
-		iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_STR) : Calc_GetRandVal( Stat_GetAdjusted(STAT_STR));
-	else
-		iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_DEX) : Calc_GetRandVal( Stat_GetAdjusted(STAT_DEX));
-	iDmg += iDmgAdj / 10;
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
+	if (!IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+	{
+		int iDmgAdj;
+		if ( !g_Cfg.IsSkillRanged(skill) )
+			iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_STR) : Calc_GetRandVal( Stat_GetAdjusted(STAT_STR));
+		else
+			iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_DEX) : Calc_GetRandVal( Stat_GetAdjusted(STAT_DEX));
+		iDmg += iDmgAdj / 10;
+	}
 
 	if ( pWeapon != NULL )
 	{
@@ -2885,6 +2886,9 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRa
 	{
 		// Pure wrestling damage.
 		// Base type attack for our body. claws/etc
+		CCharBase * pCharDef = Char_GetDef();
+		ASSERT(pCharDef);
+
 		iDmg += pCharDef->m_attackBase;
 		if ( bNoRandom )
 			iDmg += pCharDef->m_attackRange;

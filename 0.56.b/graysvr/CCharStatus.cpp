@@ -1015,7 +1015,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 				// have opened it first
 				if ( IsClient() && pObjCont->IsItem() && pObjCont->GetTopLevelObj() != this )
 				{
-					const CClient* pClient = GetClient();
+					CClient* pClient = GetClient();
 					if (pClient != NULL && pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == pClient->m_openedContainers.end())
 					{
 #ifdef _DEBUG
@@ -1030,7 +1030,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 								(DWORD)pObjCont->GetUID(), pObjCont->GetResourceName(), pObjCont->GetName());
 						}
 #endif
-
+						pClient->addObjectRemove( pItem );
 						return( false );
 					}
 				}

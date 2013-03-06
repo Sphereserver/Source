@@ -5518,3 +5518,7 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 
 04-03-2013, Ben
 -Fixed: COMBAT_OSIDAMAGEMOD not applying the proper bonus calculations
+
+06-03-2013, Ben
+-Fixed #2127: EF_FixCanSeeInClosedConts not updating unequiped items.
+-Fixed: More COMBAT_OSIDAMAGEMOD calculation errors
