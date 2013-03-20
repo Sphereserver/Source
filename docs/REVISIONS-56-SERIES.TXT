@@ -5522,3 +5522,6 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 06-03-2013, Ben
 -Fixed #2127: EF_FixCanSeeInClosedConts not updating unequiped items.
 -Fixed: More COMBAT_OSIDAMAGEMOD calculation errors
+
+20-03-2013, Shaklaban
+-Added: TAG.OVERRIDE.SPEED for weapons.

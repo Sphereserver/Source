@@ -98,7 +98,25 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		CItemBase * pItemDef = dynamic_cast <CItemBase *> (pWeapon->Base_GetDef());
 		if ( pItemDef )
 		{
-			BYTE speed = pItemDef->GetSpeed();
+			byte speed;
+			CVarDefCont * pTagStorage = NULL; 
+			pTagStorage = pWeapon->GetKey("OVERRIDE.SPEED", true);
+			if ( pTagStorage )
+			{
+				if ( pTagStorage->GetValNum())
+				{
+					speed = pTagStorage->GetValNum();
+				}
+				else
+				{
+					speed = pItemDef->GetSpeed();
+				}
+			}
+			else
+			{
+				speed = pItemDef->GetSpeed();
+			}
+
 			if ( speed )
 			{
 				int iWaitTime = (TICK_PER_SEC * g_Cfg.m_iSpeedScaleFactor) / (maximum( (pChar->Stat_GetAdjusted(STAT_DEX) + 100), 1 ) * speed);
