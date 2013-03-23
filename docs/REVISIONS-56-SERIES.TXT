@@ -5524,4 +5524,7 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 -Fixed: More COMBAT_OSIDAMAGEMOD calculation errors
 
 20-03-2013, Shaklaban
--Added: TAG.OVERRIDE.SPEED for weapons.
+-Added #2105: TAG.OVERRIDE.SPEED for weapons.
+
+23-03-2013, Shaklaban
+-Added #2146: SECTOR.NUMBER for accessing index of the sector.

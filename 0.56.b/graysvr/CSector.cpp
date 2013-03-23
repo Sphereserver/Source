@@ -32,6 +32,7 @@ enum SC_TYPE
 	SC_LIGHT,
 	SC_LOCALTIME,
 	SC_LOCALTOD,
+	SC_NUMBER,
 	SC_RAINCHANCE,
 	SC_SEASON,
 	SC_WEATHER,
@@ -49,6 +50,7 @@ LPCTSTR const CSector::sm_szLoadKeys[SC_QTY+1] =
 	"LIGHT",
 	"LOCALTIME",
 	"LOCALTOD",
+	"NUMBER",
 	"RAINCHANCE",
 	"SEASON",
 	"WEATHER",
@@ -93,6 +95,9 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			return( true );
 		case SC_LOCALTOD:
 			sVal.FormatVal( GetLocalTime());
+			return( true );
+		case SC_NUMBER:
+			sVal.FormatVal(m_index);
 			return( true );
 		case SC_ISDARK:
 			sVal.FormatVal( IsDark() );
