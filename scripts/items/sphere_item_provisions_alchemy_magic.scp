@@ -459,7 +459,7 @@ ON=@Create
 
 [ITEMDEF 01f32]
 DEFNAME=i_scroll_magic_arrow
-RESOURCES=i_scroll_blank, i_reag_black_pearl, i_reag_nightshade
+RESOURCES=i_scroll_blank, i_reag_sulfur_ash
 SKILLMAKE=INSCRIPTION 10.0, MAGERY 5.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -475,7 +475,7 @@ ON=@Create
 
 [ITEMDEF 01f33]
 DEFNAME=i_scroll_night_sight
-RESOURCES=i_scroll_blank, i_reag_nightshade, i_reag_sulfur_ash
+RESOURCES=i_scroll_blank, i_reag_sulfur_ash
 SKILLMAKE=INSCRIPTION 10.0, MAGERY 5.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -491,7 +491,7 @@ ON=@Create
 
 [ITEMDEF 01f34]
 DEFNAME=i_scroll_weaken
-RESOURCES=i_scroll_blank, i_reag_garlic, i_reag_nightshade
+RESOURCES=i_scroll_blank, i_reag_garlic, i_reag_sulfur_ash, i_reag_spider_silk
 SKILLMAKE=INSCRIPTION 10.0, MAGERY 5.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -651,7 +651,7 @@ ON=@Create
 
 [ITEMDEF 01f3e]
 DEFNAME=i_scroll_fireball
-RESOURCES=i_scroll_blank, i_reag_black_pearl, i_reag_sulfur_ash
+RESOURCES=i_scroll_blank, i_reag_black_pearl
 SKILLMAKE=INSCRIPTION 30.0, MAGERY 20.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -667,7 +667,7 @@ ON=@Create
 
 [ITEMDEF 01f3f]
 DEFNAME=i_scroll_magic_lock
-RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_garlic, i_reag_ginseng, i_reag_mandrake_root, i_reag_nightshade, i_reag_spider_silk, i_reag_sulfur_ash
+RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_garlic, i_reag_sulfur_ash
 SKILLMAKE=INSCRIPTION 30.0, MAGERY 20.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -843,7 +843,7 @@ ON=@Create
 
 [ITEMDEF 01f4a]
 DEFNAME=i_scroll_lightning
-RESOURCES=i_scroll_blank, i_reag_black_pearl, i_reag_mandrake_root, i_reag_sulfur_ash
+RESOURCES=i_scroll_blank, i_reag_mandrake_root, i_reag_sulfur_ash
 SKILLMAKE=INSCRIPTION 40.0, MAGERY 30.0
 TYPE=T_SCROLL
 WEIGHT=1
@@ -1052,7 +1052,7 @@ ON=@Create
 
 [ITEMDEF 01f57]
 DEFNAME=i_scroll_explosion
-RESOURCES=i_scroll_blank, i_reag_black_pearl, i_reag_mandrake_root, i_reag_sulfur_ash
+RESOURCES=i_scroll_blank, i_reag_blood_moss, i_reag_mandrake_root
 SKILLMAKE=INSCRIPTION 60.0, MAGERY 50.0
 TYPE=T_SCROLL
 VALUE={60 64}
@@ -2023,3 +2023,5 @@ TYPE=T_SPELLICON
 CATEGORY=Spell Icons
 SUBSECTION=Eighth Circle
 DESCRIPTION=@
+
+[EOF]
