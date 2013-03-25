@@ -98,7 +98,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		CItemBase * pItemDef = dynamic_cast <CItemBase *> (pWeapon->Base_GetDef());
 		if ( pItemDef )
 		{
-			byte speed;
+			BYTE speed;
 			CVarDefCont * pTagStorage = NULL; 
 			pTagStorage = pWeapon->GetKey("OVERRIDE.SPEED", true);
 			if ( pTagStorage )
