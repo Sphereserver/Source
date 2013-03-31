@@ -141,7 +141,6 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 	EXC_TRY("Verb");
 	int	index = -1;
 	LPCTSTR pszKey = s.GetKey();
-	LPCTSTR pszArgs = s.GetArgStr();
 
 	if ( !strnicmp( "FLOAT.", pszKey, 6 ) )
 	{
@@ -223,7 +222,7 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 		case AGC_TRY:
 		case AGC_TRYSRV:
 			{
-				CScript try_script( pszArgs );
+				CScript try_script( s.GetArgStr() );
 				if ( r_Verb( try_script, pSrc ) )
 					return true;
 			}

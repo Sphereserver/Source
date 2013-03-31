@@ -887,6 +887,19 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 					return pListBase->SetStrAt(nIndex, pszArg);
 			}
 		}
+		else
+		{
+			if ( ppCmds[2] && *(ppCmds[2]) )
+			{
+				if ( strcmpi(ppCmds[2], "insert") == 0 && pszArg && *pszArg )
+				{
+					if ( IsSimpleNumberString(pszArg) )
+						return pListBase->AddElementNum(Exp_GetVal(pszArg));
+					else
+						return pListBase->AddElementStr(pszArg);
+				}
+			}
+		}
 	}
 	else if ( pszArg && *pszArg )
 	{
