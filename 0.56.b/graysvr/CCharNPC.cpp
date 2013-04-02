@@ -426,7 +426,6 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 	EXC_TRY("LoadVal");
 	
 	LPCTSTR pszKey = s.GetKey();
-	LPCTSTR pszArgs = s.GetArgStr();
 
 	if ( !strnicmp(pszKey, "GMPAGE", 6) )		//	GM pages
 	{
@@ -446,7 +445,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			if ( !strcmpi(pszKey, "HANDLE") )
 			{
 				CChar *ppChar = pChar;
-
+				LPCTSTR pszArgs = s.GetArgStr(); //Moved here because of error with quoted strings!?!?
 				if ( *pszArgs )
 					ppChar = dynamic_cast<CChar*>(g_World.FindUID(s.GetArgVal()));
 
