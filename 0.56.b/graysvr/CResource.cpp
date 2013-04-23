@@ -83,6 +83,7 @@ CResource::CResource()
 	m_iSnoopCriminal	= 500;
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
+	m_fDeadCannotSeeLiving = 0;
 #ifdef _ALPHASPHERE
 	m_iTrainSkillCost	= 1;
 #endif
@@ -403,6 +404,7 @@ enum RC_TYPE
 	RC_DBQUERYBUFFER,		//	m_iDbQueryBuffer
 	RC_DBUSER,				//	m_sDbUser
 #endif
+	RC_DEADCANNOTSEELIVING,
 	RC_DEADSOCKETTIME,
 	RC_DEBUGFLAGS,
 	RC_DECAYTIMER,
@@ -620,6 +622,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DBQUERYBUFFER",			{ ELEM_INT,		OFFSETOF(CResource,m_iDbQueryBuffer),		0 }},
 	{ "DBUSER",					{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbUser),				0 }},
 #endif
+	{ "DEADCANNOTSEELIVING",    { ELEM_INT,    OFFSETOF(CResource,m_fDeadCannotSeeLiving), 0 }},
 	{ "DEADSOCKETTIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iDeadSocketTime),		0 }},
 	{ "DEBUGFLAGS",				{ ELEM_WORD,	OFFSETOF(CResource,m_wDebugFlags),			0 }},
 	{ "DECAYTIMER",				{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_Item),			0 }},

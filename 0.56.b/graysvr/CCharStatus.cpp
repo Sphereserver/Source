@@ -927,6 +927,23 @@ bool CChar::CanSeeTrue( const CChar * pChar ) const
 	return( pChar->GetPrivLevel() < GetPrivLevel());
 }
 
+bool CChar::CanSeeAsDead( const CChar * pChar) const
+{
+	ADDTOCALLSTACK("CChar::CanSeeAsDead");
+	int iDeadCannotSee = g_Cfg.m_fDeadCannotSeeLiving;
+	if ((iDeadCannotSee) && (IsStatFlag(STATF_DEAD)) && (!pChar->IsStatFlag(STATF_DEAD)) && (!IsPriv(PRIV_GM)))
+	{
+		if (pChar->m_pPlayer)
+		{
+			if (iDeadCannotSee == 2)
+				return false;
+		}
+		else if ((pChar->NPC_PetGetOwner() != this) && (pChar->m_pNPC->m_Brain != NPCBRAIN_HEALER))
+			return false;
+	}
+	return true;
+}
+
 bool CChar::CanSeeInContainer( const CItemContainer * pContItem ) const
 {
 	ADDTOCALLSTACK("CChar::CanSeeInContainer");
@@ -1015,7 +1032,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 				// have opened it first
 				if ( IsClient() && pObjCont->IsItem() && pObjCont->GetTopLevelObj() != this )
 				{
-					CClient* pClient = GetClient();
+					const CClient* pClient = GetClient();
 					if (pClient != NULL && pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == pClient->m_openedContainers.end())
 					{
 #ifdef _DEBUG
@@ -1030,7 +1047,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 								(DWORD)pObjCont->GetUID(), pObjCont->GetResourceName(), pObjCont->GetName());
 						}
 #endif
-						pClient->addObjectRemove( pItem );
+
 						return( false );
 					}
 				}
@@ -1042,6 +1059,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 	else
 	{
 		const CChar * pChar = STATIC_CAST <const CChar*>(pObj);
+
 		if ( !pChar )
 			return false;
 		else if ( pChar == this )
@@ -1083,8 +1101,13 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 				if ( GetPrivLevel() < pChar->GetPrivLevel())
 					return( false );
 			}
+		}	
 
+		if (!CanSeeAsDead(pChar))
+		{
+			return(false);
 		}
+
 		if ( pChar->IsDisconnected() )
 		{
 			if ( pChar->IsStatFlag(STATF_Ridden) )

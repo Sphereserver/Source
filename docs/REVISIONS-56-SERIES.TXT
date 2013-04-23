@@ -5533,3 +5533,12 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 -Fixed: LIST.xxx.num.INSERT returning an error when the list doesn't exist. It will now create it and place the item at index 0.
 -Added: LOCAL.PASSWORD to f_onaccount_create as a readable variable only for now.
 -Fixed: Quoted numbers inside a variable will now be properly saved as a string, and returned as a string.
+
+23-04-2013, Shaklaban
+-Added: DeadCannotSeeLiving option for sphere ini.
+		DeadCannotSeeLiving=1: Dead players cannot see npcs (except healers and their own pets).
+		DeadCannotSeeLiving=2: Dead players cannot see players and npcs.
+		DeadCannotSeeLiving=0: Old behaviour.
+		
+		
+		

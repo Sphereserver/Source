@@ -2827,6 +2827,7 @@ public:
 	height_t GetHeight() const;
 
 	bool CanSeeTrue( const CChar * pChar = NULL ) const;
+	bool CanSeeAsDead( const CChar * pChar = NULL ) const;
 	bool CanSeeInContainer( const CItemContainer * pContItem ) const;
 	bool CanSee( const CObjBaseTemplate * pObj ) const;
 	inline bool CanSeeLOS_New_Failed( CPointMap * pptBlock, CPointMap &ptNow ) const;

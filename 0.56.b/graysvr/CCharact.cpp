@@ -2600,6 +2600,24 @@ bool CChar::Death()
 		SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )));
 		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ));
 		Update();		// show everyone I am now a ghost.
+		
+		
+		//remove the characters which i cant see as dead from the screen
+		int iDeadCannotSee = g_Cfg.m_fDeadCannotSeeLiving;
+		if (iDeadCannotSee)
+		{
+			CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
+			AreaChars.SetSearchSquare(true);
+			DWORD	dSeeChars(0);
+			for (;;)
+			{
+				CChar	*pChar = AreaChars.GetChar();
+				if ( !pChar )
+					break;
+				if (!CanSeeAsDead(pChar))
+					GetClient()->addObjectRemove(pChar);						
+			}
+		}
 
 		// Manifest the ghost War mode for ghosts.
 		if ( ! IsStatFlag(STATF_War) )
