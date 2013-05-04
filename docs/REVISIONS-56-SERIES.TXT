@@ -5540,5 +5540,8 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 		DeadCannotSeeLiving=2: Dead players cannot see players and npcs.
 		DeadCannotSeeLiving=0: Old behaviour.
 		
+04-05-2013, Shaklaban
+-Fixed: Begging animation cannot disabled with return 1 @prestart.		
+		
 		
 		

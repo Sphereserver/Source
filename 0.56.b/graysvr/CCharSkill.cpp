@@ -3262,6 +3262,7 @@ int CChar::Skill_Begging( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
+		UpdateAnimate( ANIM_BOW );
 		SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_BEGGING_START ), static_cast<LPCTSTR>(pChar->GetName()));
 		return( pChar->Stat_GetAdjusted(STAT_INT));
 	}

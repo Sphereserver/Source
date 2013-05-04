@@ -1363,8 +1363,6 @@ bool CClient::OnTarg_Skill( CObjBase * pObj )
 	{
 		// Delayed response type skills.
 	case SKILL_BEGGING:
-		m_pChar->UpdateAnimate( ANIM_BOW );
-
 	case SKILL_STEALING:
 	case SKILL_TAMING:
 	case SKILL_ENTICEMENT:
