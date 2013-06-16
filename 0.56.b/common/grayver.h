@@ -5,3 +5,8 @@
 #else
 # define GRAY_VERSION GRAY_VER_STR
 #endif
+#ifdef _PRERELEASE
+# define GRAY_VERSION GRAY_VER_STR "-Pre-Release"
+#else
+# define GRAY_VERSION GRAY_VER_STR
+#endif
