@@ -5541,7 +5541,10 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 		DeadCannotSeeLiving=0: Old behaviour.
 		
 04-05-2013, Shaklaban
--Fixed: Begging animation cannot disabled with return 1 @prestart.		
+-Fixed: Begging animation cannot disabled with return 1 @prestart.
+
+12-07-2013, Coruja (Script pack)
+- Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
 		
 		
 		

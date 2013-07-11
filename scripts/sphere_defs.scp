@@ -761,6 +761,27 @@ midi_nujelm             45
 midi_dungeon2           46
 midi_cove               47
 midi_moonglow           48
+// SE
+midi_zento				49
+midi_tokunodungeon		50
+midi_taiko				51
+// ML
+midi_dread_horn_area	52
+midi_elf_city_1			53
+midi_grizzle_dungeon	54
+midi_melisandes_lair	55
+midi_paroxysmus_lair	56
+// HS
+midi_gwennoconversation	57
+midi_goodendgame		58
+midi_goodvsevil			59
+midi_greatearthserpents	60
+midi_humanoids			61
+midi_minocnegative		62
+midi_paws				63
+midi_selimsbar			64
+midi_serpentislecombat	65
+midi_valoriaships		66
 
 [DEFNAME needstofix]
 // need to be defined. needs and aversions
