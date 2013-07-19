@@ -159,7 +159,7 @@
 - Added new scripts and scripts fixes by Tattooed Corpse.
 
 ---- 0.56b --------------------------------------------------------------------
----- * not released yet
+---- Pre-released 16-06-2013
 
 09-12-04, Vjaka
 - Added map caching supporting all maps. Due to this, sectors are no longer
@@ -5542,6 +5542,8 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 		
 04-05-2013, Shaklaban
 -Fixed: Begging animation cannot disabled with return 1 @prestart.
+
+---- 0.56c Nightly --------------------------------------------------------------------
 
 12-07-2013, Coruja (Script pack)
 - Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
