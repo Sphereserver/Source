@@ -3077,8 +3077,16 @@ bool CChar::CheckLocation( bool fStanding )
 
 		// This could get REALLY EXPENSIVE !
 		if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+		{
 			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
 				return( false );
+			CRegionBase * pRoom = GetTopPoint().GetRegion( REGION_TYPE_ROOM );
+			if ( pRoom )
+			{
+				if ( pRoom->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
+				return( false );
+			}
+		}
 	}
 
 	bool fStepCancel = false;
@@ -3392,6 +3400,67 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 	return true;
 }
 
+bool CChar::MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject)
+{
+	ADDTOCALLSTACK("CChar::MoveToRoom");
+	// Moving to a new room.
+	// RETURN:
+	// false = do not allow in this room.
+
+	if ( m_pRoom == pNewRoom )
+		return true;
+
+	if ( ! g_Serv.IsLoading())
+	{
+		if ( fAllowReject && IsPriv( PRIV_GM ))
+		{
+			fAllowReject = false;
+		}
+
+		// Leaving room trigger. (may not be allowed to leave ?)
+		if ( m_pRoom )
+		{
+			if ( m_pRoom->OnRegionTrigger( this, RTRIG_EXIT ) == TRIGRET_RET_TRUE )
+			{
+				if (fAllowReject )
+					return false;
+			}
+
+			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			{
+				CScriptTriggerArgs Args(m_pRoom);
+				if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
+				{
+					if (fAllowReject )
+						return false;
+				}
+			}
+		}
+
+		// Entering room trigger
+		if ( pNewRoom )
+		{
+			if ( pNewRoom->OnRegionTrigger( this, RTRIG_ENTER ) == TRIGRET_RET_TRUE )
+			{
+				if (fAllowReject )
+					return false;
+			}
+			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			{
+				CScriptTriggerArgs Args(pNewRoom);
+				if ( OnTrigger(CTRIG_RegionEnter, this, & Args) == TRIGRET_RET_TRUE )
+				{
+					if (fAllowReject )
+						return false;
+				}
+			}
+		}
+	}
+
+	m_pRoom = pNewRoom;
+	return true;
+}
+
 bool CChar::MoveToChar( CPointMap pt )
 {
 	ADDTOCALLSTACK("CChar::MoveToChar");
@@ -3419,7 +3488,11 @@ bool CChar::MoveToChar( CPointMap pt )
 
 	// Did we step into a new region ?
 	CRegionWorld * pAreaNew = dynamic_cast <CRegionWorld *>( pt.GetRegion( REGION_TYPE_MULTI|REGION_TYPE_AREA ));
-	if ( ! MoveToRegion( pAreaNew, true ))
+	if ( ! MoveToRegion( pAreaNew, true))
+		return false;
+
+	CRegionBase * pRoomNew = pt.GetRegion( REGION_TYPE_ROOM);
+	if ( ! MoveToRoom( pRoomNew, true))
 		return false;
 
 	bool fSectorChange	= pt.GetSector()->MoveCharToSector(this);

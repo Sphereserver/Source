@@ -2446,6 +2446,7 @@ public:
 	CCharNPC * m_pNPC;			// we can be both a player and an NPC if "controlled" ?
 	CPartyDef * m_pParty;		// What party am i in ?
 	CRegionWorld * m_pArea; // What region are we in now. (for guarded message)
+	CRegionBase * m_pRoom; // What room we are in now.
 
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
@@ -2906,7 +2907,8 @@ private:
 #endif
 	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
 	void FixClimbHeight();
-	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject );
+	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject);
+	bool MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject);
 	bool IsVerticalSpace( CPointMap ptDest, bool fForceMount = false );
 
 public:
@@ -2924,7 +2926,7 @@ public:
 
 	bool MoveToRegionReTest( DWORD dwType )
 	{
-		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false ));
+		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false));
 	}
 	bool MoveToChar( CPointMap pt );
 	bool MoveTo( CPointMap pt )

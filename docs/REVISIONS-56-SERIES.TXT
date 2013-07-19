@@ -5546,5 +5546,5 @@ Modified: sphere.ini modified to stable settings (NetworkThreads=0 and UseAsyncN
 12-07-2013, Coruja (Script pack)
 - Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
 		
-		
-		
+19-07-2013, Ben
+-Added: Triggers @Enter, @Exit, and @Step to ROOMDEFs

@@ -518,6 +518,17 @@ private:
 	CRegionLinks& operator=(const CRegionLinks& other);
 };
 
+enum RTRIG_TYPE
+{
+	// XTRIG_UNKNOWN	= some named trigger not on this list.
+	RTRIG_CLIPERIODIC=1,		// happens to each client.
+	RTRIG_ENTER,
+	RTRIG_EXIT,
+	RTRIG_REGPERIODIC,	// regional periodic. Happens if just 1 or many clients)
+	RTRIG_STEP,
+	RTRIG_QTY
+};
+
 class CRegionBase : public CResourceDef, public CGRegion
 {
 	// region of the world of arbitrary size and location.
@@ -556,7 +567,12 @@ public:
 	int m_iModified;
 
 	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szTrigName[RTRIG_QTY];
 	static LPCTSTR const sm_szVerbKeys[];
+
+	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
+
+	TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
 
 private:
 	bool SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsole * pSrc ); // distribute to the CSectors
@@ -635,17 +651,6 @@ private:
 	CRegionBase& operator=(const CRegionBase& other);
 };
 
-enum RTRIG_TYPE
-{
-	// XTRIG_UNKNOWN	= some named trigger not on this list.
-	RTRIG_CLIPERIODIC=1,		// happens to each client.
-	RTRIG_ENTER,
-	RTRIG_EXIT,
-	RTRIG_REGPERIODIC,	// regional periodic. Happens if just 1 or many clients)
-	RTRIG_STEP,
-	RTRIG_QTY
-};
-
 class CRandGroupDef;
 
 class CRegionWorld : public CRegionBase
@@ -655,11 +660,11 @@ class CRegionWorld : public CRegionBase
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szTrigName[RTRIG_QTY];
+//	static LPCTSTR const sm_szTrigName[RTRIG_QTY];
 	static LPCTSTR const sm_szVerbKeys[];
 public:
 
-	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
+//	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
 	CVarDefMap				m_TagDefs;		// attach extra tags here.
 
 	// Standard extra tags:
@@ -667,7 +672,7 @@ public:
 	// "TAG.ANNOUNCEMENT"
 
 public:
-	TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
+	//TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
 	const CRandGroupDef * FindNaturalResource( int /* IT_TYPE */ type ) const;
 
 public:

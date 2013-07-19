@@ -206,6 +206,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_pClient = NULL;	// is the char a logged in player ?
 	m_pPlayer = NULL;	// May even be an off-line player !
 	m_pNPC	  = NULL;
+	m_pRoom = NULL;
 	m_StatFlag = 0;
 
 	if ( g_World.m_fSaveParity )

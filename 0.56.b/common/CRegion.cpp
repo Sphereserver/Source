@@ -382,6 +382,8 @@ enum RC_TYPE
 	RC_BUILDABLE,
 	RC_CLIENTS,
 	RC_COLDCHANCE,
+	RC_EVENTS,
+	RC_ISEVENT,
 	RC_FLAGS,
 	RC_GATE,
 	RC_GROUP,
@@ -413,6 +415,8 @@ LPCTSTR const CRegionBase::sm_szLoadKeys[RC_QTY+1] =	// static (Sorted)
 	"BUILDABLE",
 	"CLIENTS",
 	"COLDCHANCE",
+	"EVENTS",
+	"ISEVENT",
 	"FLAGS",
 	"GATE",
 	"GROUP",
@@ -471,6 +475,15 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 				sVal.FormatVal(iClients);
 				break;
 			}
+		case RC_EVENTS:
+			m_Events.WriteResourceRefList( sVal );
+			break;
+		case RC_ISEVENT:
+			if ( pszKey[7] != '.' )
+				return( false );
+			pszKey += 8;
+			sVal = m_Events.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
+			return( true );
 		case RC_FLAGS:
 			sVal.FormatHex( GetRegionFlags() );
 			break;
@@ -600,6 +613,9 @@ bool CRegionBase::r_LoadVal( CScript & s )
 		case RC_COLDCHANCE:
 			SendSectorsVerb( s.GetKey(), s.GetArgStr(), &g_Serv );
 			break;
+		case RC_EVENTS:
+			SetModified( REGMOD_EVENTS );
+			return( m_Events.r_LoadVal( s, RES_REGIONTYPE ));
 		case RC_FLAGS:
 			m_dwFlags = ( s.GetArgVal() &~REGION_FLAG_SHIP ) | ( m_dwFlags & REGION_FLAG_SHIP );
 			SetModified( REGMOD_FLAGS );
@@ -683,6 +699,14 @@ void CRegionBase::r_WriteBody( CScript & s, LPCTSTR pszPrefix )
 		sprintf(z, "%sFLAGS", pszPrefix);
 		s.WriteKeyHex(z, GetRegionFlags());
 	}
+
+	if ( m_Events.GetCount() > 0 )
+	{
+		CGString sVal;
+		m_Events.WriteResourceRefList( sVal );
+		sprintf(z, "%sEVENTS", pszPrefix);
+		s.WriteKey(z, sVal);
+	}
 }
 
 
@@ -698,6 +722,13 @@ void CRegionBase::r_WriteModified( CScript &s )
 	if ( m_iModified & REGMOD_FLAGS )
 	{
 		s.WriteKeyHex("FLAGS", GetRegionFlags() );
+	}
+
+	if ( m_iModified & REGMOD_EVENTS )
+	{
+		CGString sVal;
+		m_Events.WriteResourceRefList( sVal );
+		s.WriteKey( "EVENTS", sVal );
 	}
 }
 
@@ -871,6 +902,54 @@ bool CRegionBase::SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsol
 	return( fRet );
 }
 
+LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY] =	// static
+{
+	"@AAAUNUSED",
+	"@CLIPERIODIC",
+	"@ENTER",
+	"@EXIT",
+	"@REGPERIODIC",
+	"@STEP",
+};
+
+TRIGRET_TYPE CRegionBase::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAction )
+{
+	ADDTOCALLSTACK("CRegionBase::OnRegionTrigger");
+	// RETURN: true = halt prodcessing (don't allow in this region
+
+	TRIGRET_TYPE iRet;
+
+	for ( size_t i = 0; i < m_Events.GetCount(); ++i )
+	{
+		CResourceLink * pLink = m_Events[i];
+		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
+			continue;
+		CResourceLock s;
+		if ( pLink->ResourceLock(s) )
+		{
+			iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
+			if ( iRet == TRIGRET_RET_TRUE )
+				return iRet;
+		}
+	}
+
+	//	EVENTSREGION triggers (constant events of regions set from sphere.ini)
+	for ( size_t i = 0; i < g_Cfg.m_pEventsRegionLink.GetCount(); ++i )
+	{
+		CResourceLink * pLink = g_Cfg.m_pEventsRegionLink[i];
+		if ( !pLink || ( pLink->GetResType() != RES_REGIONTYPE ) || !pLink->HasTrigger(iAction) )
+			continue;
+		CResourceLock s;
+		if ( !pLink->ResourceLock(s) )
+			continue;
+		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
+		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+			return iRet;
+	}
+
+	return TRIGRET_RET_DEFAULT;
+}
+
 //*************************************************************************
 // -CRegionWorld
 
@@ -886,8 +965,8 @@ CRegionWorld::~CRegionWorld()
 enum RWC_TYPE
 {
 	RWC_DEFNAME,
-	RWC_EVENTS,
-	RWC_ISEVENT,
+	//RWC_EVENTS,
+	//RWC_ISEVENT,
 	RWC_REGION,
 	RWC_RESOURCES,
 	RWC_TAG,
@@ -900,8 +979,8 @@ enum RWC_TYPE
 LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
 {
 	"DEFNAME",
-	"EVENTS",
-	"ISEVENT",
+	//"EVENTS",
+	//"ISEVENT",
 	"REGION",
 	"RESOURCES",
 	"TAG",
@@ -931,7 +1010,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			sVal.FormatVal( m_TagDefs.GetCount() );
 			break;
 		case RWC_RESOURCES:
-		case RWC_EVENTS:
+/*		case RWC_EVENTS:
 			m_Events.WriteResourceRefList( sVal );
 			break;
 		case RWC_ISEVENT:
@@ -939,7 +1018,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 				return( false );
 			pszKey += 8;
 			sVal = m_Events.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
-			return( true );
+			return( true );*/
 		case RWC_REGION:
 			{
 				// Check that the syntax is correct.
@@ -1031,10 +1110,10 @@ bool CRegionWorld::r_LoadVal( CScript &s )
 		case RWC_DEFNAME: // "DEFNAME" = for the speech system.
 			return SetResourceName( s.GetArgStr());
 		case RWC_RESOURCES:
-		case RWC_EVENTS:
+/*		case RWC_EVENTS:
 			SetModified( REGMOD_EVENTS );
 			return( m_Events.r_LoadVal( s, RES_REGIONTYPE ));
-		case RWC_TAG0:
+		case RWC_TAG0:*/
 			{
 				SetModified( REGMOD_TAGS );
 				bool fQuoted = false;
@@ -1067,12 +1146,12 @@ void CRegionWorld::r_WriteModified( CScript &s )
 	ADDTOCALLSTACK("CRegionWorld::r_WriteModified");
 	CRegionBase::r_WriteModified( s );
 
-	if ( m_iModified & REGMOD_EVENTS )
+/*	if ( m_iModified & REGMOD_EVENTS )
 	{
 		CGString sVal;
 		m_Events.WriteResourceRefList( sVal );
 		s.WriteKey( "EVENTS", sVal );
-	}
+	}*/
 
 	if ( m_iModified & REGMOD_TAGS )
 	{
@@ -1086,13 +1165,13 @@ void CRegionWorld::r_WriteBody2( CScript &s, LPCTSTR pszPrefix )
 	ADDTOCALLSTACK("CRegionWorld::r_WriteBody2");
 	TemporaryString z;
 
-	if ( m_Events.GetCount() > 0 )
+/*	if ( m_Events.GetCount() > 0 )
 	{
 		CGString sVal;
 		m_Events.WriteResourceRefList( sVal );
 		sprintf(z, "%sEVENTS", pszPrefix);
 		s.WriteKey(z, sVal);
-	}
+	}*/
 
 	// Write out any extra TAGS here.
 	sprintf(z, "%sTAG", pszPrefix);
@@ -1158,7 +1237,8 @@ bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 	return false;
 }
 
-LPCTSTR const CRegionWorld::sm_szTrigName[RTRIG_QTY] =	// static
+
+/*LPCTSTR const CRegionWorld::sm_szTrigName[RTRIG_QTY] =	// static
 {
 	"@AAAUNUSED",
 	"@CLIPERIODIC",
@@ -1204,7 +1284,7 @@ TRIGRET_TYPE CRegionWorld::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAct
 	}
 
 	return TRIGRET_RET_DEFAULT;
-}
+}*/
 
 const CRandGroupDef * CRegionWorld::FindNaturalResource(int type) const
 {
