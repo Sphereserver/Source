@@ -571,6 +571,7 @@ public:
 	static LPCTSTR const sm_szVerbKeys[];
 
 	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
+	CVarDefMap				m_TagDefs;		// attach extra tags here.
 
 	TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
 
@@ -655,24 +656,14 @@ class CRandGroupDef;
 
 class CRegionWorld : public CRegionBase
 {
-	// A region with extra tags and properties.
+	// A region with extra properties.
 	// [AREA] = RES_AREA
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szLoadKeys[];
-//	static LPCTSTR const sm_szTrigName[RTRIG_QTY];
 	static LPCTSTR const sm_szVerbKeys[];
-public:
-
-//	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
-	CVarDefMap				m_TagDefs;		// attach extra tags here.
-
-	// Standard extra tags:
-	// "TAG.GUARDOWNER" = should have the word "the" in it if needs it.
-	// "TAG.ANNOUNCEMENT"
 
 public:
-	//TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
 	const CRandGroupDef * FindNaturalResource( int /* IT_TYPE */ type ) const;
 
 public:
@@ -681,7 +672,6 @@ public:
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
 	virtual void r_WriteBody( CScript &s, LPCTSTR pszPrefix );
 	virtual void r_WriteModified( CScript &s );
-	void r_WriteBody2( CScript &s, LPCTSTR pszPrefix );
 	virtual void r_Write( CScript & s );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 

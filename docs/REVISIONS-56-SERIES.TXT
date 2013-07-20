@@ -8,5 +8,9 @@
 (Script pack)
 -Updated #2173: some components in sphere_item_multis_houses_ships.scp
 -Removed: region_flag_globalname in sphere_def.scp since it's no longer in use
--Removed: region_flag_globalname from sphere_map0.scp and spheremap2.scp
+-Removed: region_flag_globalname from sphere_map0.scp and sphere_map2.scp
 -Added: REGION_FLAG_ANNOUNCE to regions that have a TAG.ANNOUNCEMNT in sphere_map0.scp
+
+20-07-2013, Ben
+-Added: Tags functions to ROOMDEF. (TAG, TAG0, TAGAT, TAGCOUNT, TAGLIST, CLEARTAGS)
+-Fixed: Setting region/room tags in game (ex: .region.tag.test 1) not setting properly.
