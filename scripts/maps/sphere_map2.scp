@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: June 18, 2011
+// FILE LAST UPDATED: Friday, July 19 2013
 // - Made by Admin Peter (OnlineUO), modified for 56b by Furio
 // - Changed region flags by babidi with defnames region_flags for clearer read and editing (14-Jun-2011)
 
@@ -101,7 +101,7 @@ RECT=856,576,896,704,2
 RECT=904,624,928,656,2
 GROUP=Ilshenar Towns
 TAG.TITLE=the city of
-FLAGS=region_flag_nobuilding|region_flag_globalname|region_flag_guarded
+FLAGS=region_flag_nobuilding|region_flag_guarded
 
 [AREADEF a_pormir_harm]
 NAME=Pormir Harm

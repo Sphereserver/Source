@@ -563,9 +563,9 @@ region_antimagic_teleport	00010	// can't teleport into here.
 region_antimagic_damage		00020	// just no bad magic here
 region_flag_ship			00040	// this is a ship region. ship commands
 region_flag_nobuilding		00080	// no building in this area
-region_flag_globalname		00100	// make sure the name is avail globally.
+//region_flag_globalname	00100	// No longer in use
 region_flag_announce		00200	// announce to all who enter.
-region_flag_insta_logout		00400	// instant log out is allowed here. (hotel)
+region_flag_insta_logout	00400	// instant log out is allowed here. (hotel)
 region_flag_underground		00800	// dungeon type area. (no weather)
 region_flag_nodecay			01000	// things on the ground don't decay here.
 region_flag_safe			02000	// this region is safe from all harm.

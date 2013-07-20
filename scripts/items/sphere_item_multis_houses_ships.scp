@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, December 6 2009
+// FILE LAST UPDATED: Friday, July 19 2013
 //
 VERSION=0.56b
 // NEEDS: _multis.scp - use EXTRACT to get multis' for other multi part items:
@@ -2750,6 +2750,12 @@ COMPONENT=i_door_metal, 0, 5, 7
 COMPONENT=0677, 1, 15, 7	// Front door 2.
 COMPONENT=i_door_metal, 0, 15, 7	// Front door 1.
 COMPONENT=i_sign_brass_2, 4, 16, 5	// Place the sign.
+COMPONENT=0677, 1, 11, 6
+COMPONENT=i_door_metal, 0, 11, 6
+COMPONENT=0677, 0, -11, 6
+COMPONENT=i_door_metal, -1, -11, 6
+
+
 
 [MULTIDEF 07f]
 //Name=Castle
@@ -2830,8 +2836,8 @@ MULTIREGION=-3,-6,4,7
 COMPONENT=06e5, 1, 4, 8
 COMPONENT=06e5, 1, 0, 29
 COMPONENT=i_sign_brass_2, 4, 7, 9
-COMPONENT=08a4, 3, -3, 8   //temp wood ladder, rope not working
-COMPONENT=08a2, 3, -4, 20  //temp wood ladder, rope not working
+//COMPONENT=08a4, 3, -3, 8   //temp wood ladder, rope not working
+//COMPONENT=08a2, 3, -4, 20  //temp wood ladder, rope not working
 
 [MULTIDEF 09c]
 DEFNAME=i_multi_house_patio_sand
