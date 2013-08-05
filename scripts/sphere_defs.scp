@@ -484,75 +484,75 @@ snd_kirin 965
 snd_hiryu 1277
 
 // sounds - spells
-snd_spell_lightning                  41
-snd_spell_chain_lightning            41
-snd_spell_fireball                   351
-snd_spell_fire_bolt                  351
-snd_spell_meteor_swarm               352
-snd_spell_fire_field                 477
-snd_spell_clumsy                     479
-snd_spell_cure                       480
-snd_spell_curse                      481
-snd_spell_create_food                482
-snd_spell_night_sight                483
-snd_spell_light                      483
-snd_spell_feeblemind                 484
-snd_spell_magic_arrow                485
-snd_spell_weaken                     486
-snd_spell_agility                    487
-snd_spell_archcure                   488
-snd_spell_magic_reflection           488
-snd_spell_animate_dead               488
-snd_spell_bless                      490
-snd_spell_cunning                    491
-snd_spell_incognito                  492
-snd_spell_protection                 493
-snd_spell_strength                   494
-snd_spell_magic_trap                 495
-snd_spell_magic_untrap               496
-snd_spell_harm                       497
-snd_spell_heal                       498
-snd_spell_reactive_armor             498
-snd_spell_magic_lock                 500
-snd_spell_telekinesis                501
-snd_spell_wall_of_stone              502
-snd_spell_archprotection             503
-snd_spell_mana_drain                 504
-snd_spell_mana_vampire               505
-snd_spell_mark                       506
-snd_spell_mass_curse                 507
-snd_spell_recall                     508
-snd_spell_reveal                     509
-snd_spell_teleport                   510
-snd_spell_unlock                     511
-snd_spell_dispel                     513
-snd_spell_greater_heal               514
-snd_spell_invisibility               515
-snd_spell_paralyze                   516
-snd_spell_poison                     517
-snd_spell_explosion                  519
-snd_spell_flamestrike                520
-snd_spell_mass_dispel                521
-snd_spell_energy_bolt                522
-snd_spell_energy_field               523
-snd_spell_earthquake                 525
-snd_spell_gate_travel                526
-snd_spell_polymorph                  527
-snd_spell_dispel_field               528
-snd_spell_paralyze_field             529
-snd_spell_blade_spirits              530
-snd_spell_energy_vortex              530
-snd_spell_mind_blast                 531
-snd_spell_resurrection               532
-snd_spell_summon_creature            533
-snd_spell_summon_daemon              534
-snd_spell_summon_elem_air            535
-snd_spell_summon_elem_earth          535
-snd_spell_summon_elem_fire           535
-snd_spell_summon_elem_water          535
-snd_spell_poison_field               550
-snd_spell_bone_armor                 577
-snd_spell_summon_undead              586
+snd_spell_lightning			41
+snd_spell_chain_lightning	41
+snd_spell_harm				252 //Fixed: 497 -> 252
+snd_spell_fireball			350 //Fixed: 351 -> 350
+snd_spell_fire_bolt			351
+snd_spell_meteor_swarm		352
+snd_spell_clumsy			479
+snd_spell_cure				480
+snd_spell_archcure			480 //Fixed: 488 -> 480
+snd_spell_curse				481
+snd_spell_create_food		482
+snd_spell_night_sight		483
+snd_spell_light				483
+snd_spell_feeblemind		484
+snd_spell_magic_arrow		485
+snd_spell_weaken			486
+snd_spell_agility			487
+snd_spell_animate_dead		488
+snd_spell_magic_reflection	489 //Fixed: 488 -> 489
+snd_spell_bless				490
+snd_spell_cunning			491
+snd_spell_protection		493
+snd_spell_reactive_armor	493 //Fixed: 498 -> 493
+snd_spell_strength			494
+snd_spell_magic_trap		495
+snd_spell_magic_untrap		496
+snd_spell_heal				498
+snd_spell_telekinesis		501
+snd_spell_wall_of_stone		502
+snd_spell_archprotection	503
+snd_spell_mana_drain		504
+snd_spell_mana_vampire		505
+snd_spell_mark				506
+snd_spell_magic_lock		506 //Fixed: 500 -> 506
+snd_spell_mass_curse		507
+snd_spell_recall			508
+snd_spell_reveal			509
+snd_spell_teleport			510
+snd_spell_unlock			511
+snd_spell_dispel_field		513 //Fixed: 528 -> 513
+snd_spell_dispel			513
+snd_spell_mass_dispel		513 //Fixed: 521 -> 513
+snd_spell_greater_heal		514
+snd_spell_paralyze			516
+snd_spell_poison			517
+snd_spell_flamestrike		520
+snd_spell_energy_bolt		522
+snd_spell_energy_field		523
+snd_spell_paralyze_field	523 //Fixed: 529 -> 523
+snd_spell_poison_field		523 //Fixed: 550 -> 523
+snd_spell_fire_field		524 //Fixed: 477 -> 524
+snd_spell_gate_travel		526
+snd_spell_polymorph			527
+snd_spell_blade_spirits		530
+snd_spell_energy_vortex		530
+snd_spell_mind_blast		531
+snd_spell_resurrection		532
+snd_spell_summon_creature	533
+snd_spell_summon_daemon		534
+snd_spell_summon_elem_air	535
+snd_spell_summon_elem_earth 535
+snd_spell_summon_elem_fire	535
+snd_spell_summon_elem_water 535
+snd_spell_earthquake		544 //Fixed: 525 -> 544
+snd_spell_bone_armor		577
+snd_spell_summon_undead		586
+snd_spell_explosion			775 //Fixed: 519 -> 775
+snd_spell_incognito			957 //Fixed: 492 -> 957
+snd_spell_invisibility		964 //Fixed: 515 -> 964
 
 [DEFNAME region_flags]
 region_antimagic_all		00001	// all magic banned here.

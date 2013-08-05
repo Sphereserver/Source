@@ -171,7 +171,7 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 	if ( IsStatFlag(STATF_Pet) || !NPC_IsVendor() )
 		return false;
 
-	bool bRestockNow = bForce;
+	bool bRestockNow = true;
 
 	if ( !bForce && m_pNPC->m_timeRestock.IsTimeValid() )
 	{
@@ -184,9 +184,14 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 			CVarDefCont *vardef = region->m_TagDefs.GetKey("RestockVendors");
 			if( vardef != NULL )
 				restockIn = vardef->GetValNum();
+			if ( region->m_TagDefs.GetKey("NoRestock") != NULL )
+				bRestockNow = false;
 		}
-
-		bRestockNow = ( CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > restockIn );
+		if ( m_TagDefs.GetKey("NoRestock") != NULL )
+			bRestockNow = false;
+		
+		if (bRestockNow)
+			bRestockNow = ( CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > restockIn );
 	}
 
 	// At restock the containers are actually emptied

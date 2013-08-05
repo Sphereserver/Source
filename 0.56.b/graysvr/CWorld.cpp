@@ -328,6 +328,55 @@ void CTimedFunctionHandler::Erase( CGrayUID uid )
 	}
 }
 
+int CTimedFunctionHandler::IsTimer( CGrayUID uid, LPCTSTR funcname )
+{
+	ADDTOCALLSTACK("CTimedFunctionHandler::IsTimer");
+	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
+	{
+		std::vector<TimedFunction *>::iterator it;
+		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
+		{
+			TimedFunction* tf = *it;
+			if (( tf->uid == uid) && (strcmpi( tf->funcname, funcname)))
+				return tf->elapsed;
+
+			++it;
+		}
+	}
+	return 0;
+}
+
+void CTimedFunctionHandler::Stop( CGrayUID uid, LPCTSTR funcname )
+{
+	ADDTOCALLSTACK("CTimedFunctionHandler::Stop");
+	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
+	{
+		std::vector<TimedFunction *>::iterator it;
+		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
+		{
+			TimedFunction* tf = *it;
+			if (( tf->uid == uid) && (strcmpi( tf->funcname, funcname)))
+			{
+				m_tFrecycled.push_back( tf );
+				//vector::erase crashes if the iterator is pointing at the only thing left in the list. So, we check if size is 1 and do pop_back instead if that's the case. -SL
+				if ( m_timedFunctions[tick].size()==1 )
+				{
+					m_timedFunctions[tick].pop_back();
+					break;
+				}
+				else
+				{
+					it = m_timedFunctions[tick].erase( it );
+				}
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+}
+
 void CTimedFunctionHandler::Add( CGrayUID uid, int numSeconds, LPCTSTR funcname )
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Add");

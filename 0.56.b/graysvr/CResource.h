@@ -50,7 +50,7 @@ enum OF_TYPE
 enum EF_TYPE
 {
 	EF_DiagonalWalkCheck			= 0x0000001,
-	EF_Unused02						= 0x0000002,
+	EF_FixKillTrigger				= 0x0000002,
 	EF_Unused04						= 0x0000004,
 	EF_New_Triggers					= 0x0000008,
 	EF_Unused010					= 0x0000010,

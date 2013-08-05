@@ -14,3 +14,15 @@
 20-07-2013, Ben
 -Added: Tags functions to ROOMDEF. (TAG, TAG0, TAGAT, TAGCOUNT, TAGLIST, CLEARTAGS)
 -Fixed: Setting region/room tags in game (ex: .region.tag.test 1) not setting properly.
+
+05-08-2013, Ben
+-Added #2175: local.CreateObject1 <itemdef> to create food spell. If set, it will produce this item when the spell if done.
+-Modified #2181:(script pack) Incorrect DUPELIST on i_keg_wood
+-Added #2148: tag.NoRestock on vendors and regions. Setting either one to 1 will stop routine restocking of vendors
+-Fixed: Error in ISTEVENT.
+-Added #2177: - <ISTIMERF.functionname> to check if a timerf exists. Returns the time left in sec if it exists or 0 if not.
+			  - TIMERF STOP,functionname to stop a specific timerf.
+-Removed #2180:(script pack) i_orb and i_minion_leather from spherechar_lbr.scp
+-Added #2183: EF_FixKillTrigger 0x02 to possibly fix Exp system and @Kill trigger
+-Fixed #2159: Items with ATTR attr_newbie should not be stuck on NPCs with ALLOWNEWBTRANSFER on.
+-Fixed #2172: (script pack) Magery spell sound def adjusted.

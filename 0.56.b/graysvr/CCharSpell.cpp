@@ -1822,8 +1822,6 @@ bool CChar::Spell_CastDone()
 		fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
 		areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
 
-		// DEBUG_ERR(( "1: iT1=%d, iT2=%d, iC1=%d\n", iT2, iT2, iC1 ));
-		// DEBUG_ERR(( "2: iT1=%s, iT2=%s, iC1=%s\n", Args.m_VarsLocal.GetKeyStr("CreateObject1",true), Args.m_VarsLocal.GetKeyStr("CreateObject2",true), Args.m_VarsLocal.GetKeyStr("CreateObject1") ));
 	}
 
 	// Consume the reagents/mana/scroll/charge
@@ -1995,7 +1993,7 @@ bool CChar::Spell_CastDone()
 		if ( !pObj )
 		{
 			RESOURCE_ID food = g_Cfg.ResourceGetIDType( RES_ITEMDEF, "DEFFOOD" );
-			CItem * pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(food.GetResIndex()), this );
+			CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this );
 			pItem->MoveToCheck( m_Act_p, this );
 		}
 		break;

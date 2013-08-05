@@ -768,7 +768,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_ISTEVENT:
 			if ( pszKey[8] != '.' )
 				return( false );
-			pszKey += 8;
+			pszKey += 9;
 			sVal = Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
 			return true;
 		case OC_ISITEM:
@@ -906,6 +906,16 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			sVal.FormatVal( (( pItem ) ? ( pItem->IsTypeArmor() ) : ( 0 )) );
 			break;
 			}
+		case OC_ISTIMERF:
+			{
+				if ( pszKey[8] != '.' )
+					return( false );
+				pszKey += 9;
+				//sVal.FormatVal( (g_World.m_TimedFunctions.IsTimer(GetUID(),pszKey)) ? 1 : 0 );
+				sVal.FormatVal( g_World.m_TimedFunctions.IsTimer(GetUID(),pszKey) );
+				return( true );
+			}
+			break;
 		case OC_ISWEAPON:
 			{
 			pszKey += 8;
@@ -1632,6 +1642,10 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( !strnicmp( s.GetArgStr(), "CLEAR", 5 ) )
 				{
 					g_World.m_TimedFunctions.Erase(GetUID());
+				}
+				else if ( !strnicmp( s.GetArgStr(), "STOP", 4 ) )
+				{
+					g_World.m_TimedFunctions.Stop(GetUID(),s.GetArgStr()+5);
 				}
 				else
 				{

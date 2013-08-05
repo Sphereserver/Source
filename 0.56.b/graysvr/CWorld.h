@@ -334,6 +334,8 @@ class CTimedFunctionHandler
 		int Load( const char *pszName, bool fQuoted, const char *pszVal );
 		void Add( CGrayUID uid, int numSeconds, LPCTSTR funcname );
 		void Erase( CGrayUID uid );
+		void Stop( CGrayUID uid, LPCTSTR funcname );
+		int IsTimer( CGrayUID uid, LPCTSTR funcname );
 };
 
 extern class CWorld : public CScriptObj, public CWorldThread
