@@ -2132,7 +2132,11 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 			else if ( pObjTop->IsChar() && pObjTop != this )
 			{
 				if (( pItem->IsAttr(ATTR_NEWBIE) ) && ( g_Cfg.m_bAllowNewbTransfer ))
-					return true;
+				{
+					CChar * pPet = dynamic_cast <CChar*>( pItem->GetTopLevelObj());
+					if (pPet->NPC_PetGetOwner() == this)
+						return true;
+				}
 				if ( !pItem->IsItemEquipped() || pItem->GetEquipLayer() != LAYER_DRAGGING )
 					return false;
 			}
