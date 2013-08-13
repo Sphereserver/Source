@@ -26,3 +26,6 @@
 -Added #2183: EF_FixKillTrigger 0x02 to possibly fix Exp system and @Kill trigger
 -Fixed #2159: Items with ATTR attr_newbie should not be stuck on NPCs with ALLOWNEWBTRANSFER on.
 -Fixed #2172: (script pack) Magery spell sound def adjusted.
+
+13-08-2013, Ben
+-Fixed #2189: Changed ATTACKER.CLEAR from readable to writable.

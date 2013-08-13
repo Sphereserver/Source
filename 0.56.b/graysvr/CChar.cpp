@@ -1479,11 +1479,12 @@ do_default:
 							}
 						}
 					}
-					else if( !strnicmp(pszKey, "CLEAR", 5) )
+					//This should be a writable variable
+					/*else if( !strnicmp(pszKey, "CLEAR", 5) )
 					{
 						pszKey += 5;
 						m_lastAttackers.clear();
-					}
+					}*/
 					else
 					{
 						attackerIndex = Exp_GetVal(pszKey);
@@ -2085,7 +2086,8 @@ bool CChar::r_LoadVal( CScript & s )
 {
 	ADDTOCALLSTACK("CChar::r_LoadVal");
 	EXC_TRY("LoadVal");
-	CHC_TYPE iKeyNum = (CHC_TYPE) FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
+	LPCTSTR	pszKey	=  s.GetKey();
+	CHC_TYPE iKeyNum = (CHC_TYPE) FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
 	if ( iKeyNum < 0 )
 	{
 do_default:
@@ -2101,7 +2103,6 @@ do_default:
 		}
 
 		{
-			LPCTSTR		pszKey	=  s.GetKey();
 			int i = g_Cfg.FindSkillKey( pszKey );
 			if ( i != SKILL_NONE )
 			{
@@ -2185,6 +2186,23 @@ do_default:
 			break;
 		case CHC_ACTION:
 			return Skill_Start( g_Cfg.FindSkillKey( s.GetArgStr()));
+		case CHC_ATTACKER:
+			{
+				if ( strlen( pszKey ) > 8 )
+				{
+					pszKey += 8;
+					if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
+					{
+						pszKey++;
+						if( !strnicmp(pszKey, "CLEAR", 5) )
+						{
+							m_lastAttackers.clear();
+							return true;
+						}
+					}
+				}
+				return false;
+			}
 		case CHC_BODY:
 			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())));
 			break;
