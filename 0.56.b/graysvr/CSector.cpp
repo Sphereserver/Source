@@ -635,7 +635,7 @@ void CSector::SetLightNow( bool fFlash )
 		}
 
 		// don't fire trigger when server is loading or light is flashing
-		if ( ! g_Serv.IsLoading() && fFlash == false )
+		if (( ! g_Serv.IsLoading() && fFlash == false ) && ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) ))
 		{
 			pChar->OnTrigger( CTRIG_EnvironChange, pChar );
 		}
@@ -722,10 +722,10 @@ void CSector::SetWeather( WEATHER_TYPE w )
 	for ( ; pChar != NULL; pChar = pChar->GetNext())
 	{
 		if ( pChar->IsClient())
-		{
 			pChar->GetClient()->addWeather( w );
-		}
-		pChar->OnTrigger( CTRIG_EnvironChange, pChar );
+
+		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
+			pChar->OnTrigger( CTRIG_EnvironChange, pChar );
 	}
 }
 
@@ -744,7 +744,9 @@ void CSector::SetSeason( SEASON_TYPE season )
 	{
 		if ( pChar->IsClient() )
 			pChar->GetClient()->addSeason(season);
-		pChar->OnTrigger(CTRIG_EnvironChange, pChar);
+
+		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
+			pChar->OnTrigger(CTRIG_EnvironChange, pChar);
 	}
 }
 
@@ -1068,7 +1070,7 @@ void CSector::OnTick(int iPulseCount)
 		EXC_TRYSUB("TickChar");
 
 		pCharNext = pChar->GetNext();
-		if ( fEnvironChange )
+		if (( fEnvironChange ) && ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) ))
 			pChar->OnTrigger(CTRIG_EnvironChange, pChar);
 
 		if ( pChar->IsClient())
@@ -1084,14 +1086,15 @@ void CSector::OnTick(int iPulseCount)
 			if ( fWeatherChange )
 				pClient->addWeather(GetWeather());
 
-			if ( !IsSetEF(EF_Minimize_Triggers) && ( iRegionPeriodic && pChar->m_pArea ))
+			if ( iRegionPeriodic && pChar->m_pArea )
 			{
-				if ( iRegionPeriodic == 2 )
+				if (( iRegionPeriodic == 2 )&&( IsTrigUsed(TRIGGER_REGPERIODIC) ))
 				{
 					pChar->m_pArea->OnRegionTrigger( pChar, RTRIG_REGPERIODIC );
 					iRegionPeriodic--;
 				}
-				pChar->m_pArea->OnRegionTrigger( pChar, RTRIG_CLIPERIODIC );
+				if ( IsTrigUsed(TRIGGER_CLIPERIODIC) )
+					pChar->m_pArea->OnRegionTrigger( pChar, RTRIG_CLIPERIODIC );
 			}
 		}
 		// Can only die on your own tick.

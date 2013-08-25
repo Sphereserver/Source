@@ -304,7 +304,7 @@ void CContainer::ContentAttrMod( WORD wAttr, bool fSet )
 void CContainer::ContentNotifyDelete()
 {
 	ADDTOCALLSTACK("CContainer::ContentNotifyDelete");
-	if ( IsSetEF(EF_Minimize_Triggers) ) // no point entering this loop if the trigger is disabled
+	if ( IsTrigUsed(TRIGGER_DESTROY) ) // no point entering this loop if the trigger is disabled
 		return;
 
 	// trigger @Destroy on contained items
@@ -668,12 +668,14 @@ void CItemContainer::Trade_Status( bool fCheck )
 
 	Args2.m_iN1 = iCont2 = --i;
 	pItemNext = NULL;
-	//DEBUG_ERR(("Args2.m_iN1(%d) = iCont2(%d) = i(%d)\n",Args2.m_iN1, iCont2, i));
 
-	Args1.m_iN2 = iCont2;
-	Args2.m_iN2 = iCont1;
-	if (( pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE ) || ( pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE ))
-		Delete(); //Return 1 in one of the triggers
+	if (( IsTrigUsed(TRIGGER_TRADEACCEPTED) ) || ( IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) ))
+	{
+		Args1.m_iN2 = iCont2;
+		Args2.m_iN2 = iCont1;
+		if (( pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE ) || ( pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE ))
+			Delete(); //Return 1 in one of the triggers
+	}
 
 	pItem = GetContentHead();
 	for ( ; pItem != NULL; pItem = pItemNext)

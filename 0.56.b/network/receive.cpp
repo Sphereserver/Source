@@ -2131,16 +2131,16 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	// virtue button -- Handling this here because the packet is a little different
 	if ((context == CLIMODE_DIALOG_VIRTUE) && (character == object))
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers))
+		CChar* viewed = character;
+		if (button == 1 && checkCount > 0)
 		{
-			CChar* viewed = character;
-			if (button == 1 && checkCount > 0)
-			{
-				viewed = CGrayUID(readInt32()).CharFind();
-				if (viewed == NULL)
-					viewed = character;
-			}
+			viewed = CGrayUID(readInt32()).CharFind();
+			if (viewed == NULL)
+				viewed = character;
+		}
 
+		if ( IsTrigUsed(TRIGGER_USERVIRTUE) )
+		{
 			CScriptTriggerArgs Args(viewed);
 			Args.m_iN1 = button;
 
@@ -2638,7 +2638,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 
 	client->SysMessageDefault(DEFMSG_FOLLOW_ARROW);
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERQUESTARROWCLICK) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = (rightClick == true? 1 : 0);
@@ -3786,9 +3786,12 @@ bool PacketSpecialMove::onReceive(NetState* net)
 	skip(1);
 	DWORD ability = readInt32();
 
-	CScriptTriggerArgs args;
-	args.m_iN1 = ability;
-	character->OnTrigger(CTRIG_UserSpecialMove, character, &args);
+	if ( IsTrigUsed(TRIGGER_USERSPECIALMOVE) )
+	{
+		CScriptTriggerArgs args;
+		args.m_iN1 = ability;
+		character->OnTrigger(CTRIG_UserSpecialMove, character, &args);
+	}
 	return true;
 }
 
@@ -3861,7 +3864,8 @@ bool PacketGuildButton::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	character->OnTrigger(CTRIG_UserGuildButton, character, NULL);
+	if ( IsTrigUsed(TRIGGER_USERGUILDBUTTON) )
+		character->OnTrigger(CTRIG_UserGuildButton, character, NULL);
 	return true;
 }
 
@@ -3887,7 +3891,8 @@ bool PacketQuestButton::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	character->OnTrigger(CTRIG_UserQuestButton, character, NULL);
+	if ( IsTrigUsed(TRIGGER_USERQUESTBUTTON) )
+		character->OnTrigger(CTRIG_UserQuestButton, character, NULL);
 	return true;
 }
 

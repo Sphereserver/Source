@@ -496,6 +496,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"R = Resync Pause\n"
 				"S = Secure mode toggle (%s)\n"
 				"T = List of active Threads\n"
+				"U = List used triggers\n"
 				"X = immediate exit of the server (X# to save world and statics before exit)\n"
 				,
 				StatGet(SERV_STAT_CLIENTS),
@@ -659,6 +660,9 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 											thrCurrent->getPriority(), thrCurrent->getName() );
 				}
 			} break;
+		case 'u':
+			TriglistPrint();
+			break;
 		case 'x':
 			{
 				if (( len > 1 ) && ( sText[1] == '#' ))	//	X# - exit with save. Such exit is not protected by secure mode
@@ -1973,6 +1977,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	SetSignals();
 
 	EXC_SET("loading scripts");
+	TriglistInit();
 	if ( !g_Cfg.Load(false) )
 		return( false );
 

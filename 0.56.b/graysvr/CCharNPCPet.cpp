@@ -174,7 +174,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 		case PC_RELEASE:
 			Skill_Start( SKILL_NONE );
 #ifdef _ALPHASPHERE_PETS
-			if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+			if (IsSetEF(EF_PetSlots))
 			{
 				pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
 				iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
@@ -379,7 +379,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			if ( pCharTarg->IsClient() )
 			{
 	#ifdef _ALPHASPHERE_PETS
-				if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+				if (IsSetEF(EF_PetSlots))
 				{
 
 					CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
@@ -787,9 +787,10 @@ void CChar::NPC_PetDesert()
 			pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
 		}
 
-		if ( !IsSetEF(EF_Minimize_Triggers) )
+		if ( IsTrigUsed(TRIGGER_PETDESERT) )
 		{
-			if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE ) return;
+			if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE )
+				return;
 		}
 
 		NPC_PetClearOwners();

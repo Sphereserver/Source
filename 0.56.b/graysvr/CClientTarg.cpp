@@ -1493,8 +1493,12 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 
 	if ( m_tmSkillMagery.m_Spell == SPELL_Polymorph )
 	{
-		CScriptTriggerArgs args("sm_polymorph");
-		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+		if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+		{
+			CScriptTriggerArgs args("sm_polymorph");
+			if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+				return true;
+		}
 		return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ));
 	}
 
@@ -1817,10 +1821,11 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		}
 	}
 
-	CScriptTriggerArgs	Args( id, 0, pObjTarg );
-	if ( pItemUse->OnTrigger( trigtype, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+	if (( IsTrigUsed(CItem::sm_szTrigName[trigtype]) ) || ( IsTrigUsed(CChar::sm_szTrigName[(CTRIG_itemAfterClick - 1) + trigtype]) )) //ITRIG_TARGON_GROUND, ITRIG_TARGON_CHAR, ITRIG_TARGON_ITEM
 	{
-		return true;
+		CScriptTriggerArgs	Args( id, 0, pObjTarg );
+		if ( pItemUse->OnTrigger( trigtype, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+			return true;
 	}
 
 	// NOTE: We have NOT checked to see if the targetted object is within reasonable distance.
@@ -2028,16 +2033,24 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			}
 			if ( pItemUse->IsType(IT_CARPENTRY_CHOP) )
 			{
-				CScriptTriggerArgs args("sm_carpentry");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_carpentry");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_carpentry" ));
 			}
 			if ( pItemUse->IsSameDispID( ITEMID_DAGGER ))
 			{
 				// set the target item
 				m_Targ_UID = pItemTarg->GetUID();
-				CScriptTriggerArgs args("sm_bowcraft");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_bowcraft");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_bowcraft" ) );
 			}
 			SysMessageDefault( DEFMSG_ITEMUSE_LOG_USE );
@@ -2481,16 +2494,24 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 			case IT_LEATHER:
 			case IT_HIDE:
 			{
-				CScriptTriggerArgs args("sm_tailor_leather");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_tailor_leather");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tailor_leather" ) );
 			}
 			case IT_CLOTH:
 			case IT_CLOTH_BOLT:
 			{
 				pItemTarg->ConvertBolttoCloth();
-				CScriptTriggerArgs args("sm_tailor_cloth");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_tailor_cloth");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tailor_cloth" ) );
 			}
 			default:
@@ -2582,16 +2603,12 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 		return( false );
 	}
 
-#ifdef _ALPHASPHERE
-	/*
-	@partyinvite
-	SRC=m_pChar
-	Def=pChar
-	*/
-	CScriptTriggerArgs args;
-	if ( pChar->OnTrigger(CTRIG_PartyInvite, m_pChar, &args) == TRIGRET_RET_TRUE )
-		return( false );
-#endif
+	if ( IsTrigUsed(TRIGGER_PARTYINVITE) )
+	{
+		CScriptTriggerArgs args;
+		if ( pChar->OnTrigger(CTRIG_PartyInvite, m_pChar, &args) == TRIGRET_RET_TRUE )
+			return( false );
+	}
 
 	TCHAR * sTemp = Str_GetTemp();
 	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE ), static_cast<LPCTSTR>(pChar->GetName()));

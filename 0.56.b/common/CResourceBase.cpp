@@ -851,6 +851,10 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 			ppTable = CWebPageDef::sm_szTrigName;
 			iQty = WTRIG_QTY;
 			break;
+		case RES_REGIONRESOURCE:
+			ppTable = CRegionResourceDef::sm_szTrigName;
+			iQty = RRTRIG_QTY;
+			break;
 		default:
 			break;
 	}
@@ -875,10 +879,14 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 				{
 					iTrigger = XTRIG_UNKNOWN;
 				}
-				else if ( HasTrigger(iTrigger))
+				else 
 				{
-					DEBUG_ERR(( "Duplicate trigger '%s' in '%s'\n", ppTable[iTrigger], GetResourceName()));
-					continue;
+					TriglistAdd(m_pScript->GetArgRaw());
+					if ( HasTrigger(iTrigger))
+					{
+						DEBUG_ERR(( "Duplicate trigger '%s' in '%s'\n", ppTable[iTrigger], GetResourceName()));
+						continue;
+					}
 				}
 			}
 			else

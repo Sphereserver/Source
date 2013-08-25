@@ -1015,9 +1015,11 @@ size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) cons
 		{
 			if ( !pCharSrc->Skill_MakeItem(static_cast<ITEMID_TYPE>(rid), UID_CLEAR, SKTRIG_SELECT ) )
 				continue;
-			
-			if ( bTrigger && pOreDef->OnTrigger( "@ResourceTest", pCharSrc, NULL ) == TRIGRET_RET_TRUE )
-				continue;
+			if ( IsTrigUsed(TRIGGER_RESOURCETEST) )
+			{
+				if ( bTrigger && pOreDef->OnTrigger( "@ResourceTest", pCharSrc, NULL ) == TRIGRET_RET_TRUE )
+					continue;
+			}
 		}
 		members.Add(i);
 		iTotalWeight += m_Members[i].GetResQty();
@@ -1058,6 +1060,13 @@ LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
 	"REGEN",
 	"SKILL",
 	NULL
+};
+
+LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY] =	// static
+{
+	"@AAAUNUSED",
+	"@ResourceTest",
+	"@ResourceFound",
 };
 
 

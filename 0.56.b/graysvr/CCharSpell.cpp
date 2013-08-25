@@ -250,7 +250,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		}
 
 #ifdef _ALPHASPHERE_PETS
-		if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+		if (IsSetEF(EF_PetSlots))
 		{
 			// if we cannot control the creature it will not be tame - what might be somewhat risky :)
 			CVarDefCont * pTagStorage = pChar->GetKey("FOLLOWERSLOTS", true);
@@ -298,7 +298,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 bool CChar::Spell_Recall( CItem * pRune, bool fGate )
 {
 	ADDTOCALLSTACK("CChar::Spell_Recall");
-	if (pRune) {
+	if ((pRune) && (( IsTrigUsed(TRIGGER_SPELLEFFECT) ) || ( IsTrigUsed(TRIGGER_ITEMSPELL) ))) {
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = fGate ? SPELL_Gate_Travel : SPELL_Recall;
 
@@ -1452,54 +1452,44 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 
 	int wManaUse = pSpellDef->m_wManaUse;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
-		CScriptTriggerArgs Args( spell, wManaUse, pSrc );
-		if ( fTest )
-			Args.m_iN3 |= 0x0001;
-		if ( fFailMsg )
-			Args.m_iN3 |= 0x0002;
 
+	CScriptTriggerArgs Args( spell, wManaUse, pSrc );
+	if ( fTest )
+		Args.m_iN3 |= 0x0001;
+	if ( fFailMsg )
+		Args.m_iN3 |= 0x0002;
+
+	if ( IsTrigUsed(TRIGGER_SELECT) )
+	{
 		TRIGRET_TYPE iRet = Spell_OnTrigger( spell, SPTRIG_SELECT, this, &Args );
 		if ( iRet == TRIGRET_RET_TRUE )
-		{
-			//DEBUG_ERR(( "@SELECT returned TRUE (%d)" , iRet ));
 			return false;
-		}
+
 		if ( iRet == TRIGRET_RET_FALSE )
-		{
-			//DEBUG_ERR(( "@SELECT returned FALSE (%d)" , iRet ));
 			return true;
-		}
+
 		if ( iRet == TRIGRET_RET_HALFBAKED )		// just for compatibility with @SPELLSELECT
-		{
-			//DEBUG_ERR(( "@SELECT returned TRIGRET_RET_HALFBAKED (%d)" , iRet ));
 			return true;
-		}
-
-		iRet = OnTrigger(CTRIG_SpellSelect, this, &Args );
-		if ( iRet == TRIGRET_RET_TRUE )
-		{
-			//DEBUG_ERR(( "@SPELLSELECT returned TRUE (%d)" , iRet ));
-			return false;
-		}
-		if ( iRet == TRIGRET_RET_HALFBAKED )
-		{
-			//DEBUG_ERR(( "@SPELLSELECT returned TRIGRET_RET_HALFBAKED (%d)" , iRet ));
-			return true;
-		}
-
-		//DEBUG_ERR(( "@SPELLSELECT returned SOMETHING (%d)" , iRet ));
-
-		if ( spell != Args.m_iN1 )
-		{
-			pSpellDef = g_Cfg.GetSpellDef(spell);
-			if ( pSpellDef == NULL )
-				return( false );
-			spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-		}
-		wManaUse = Args.m_iN2;
 	}
+
+	if ( IsTrigUsed(TRIGGER_SPELLSELECT) )
+	{
+		TRIGRET_TYPE iRet = OnTrigger(CTRIG_SpellSelect, this, &Args );
+		if ( iRet == TRIGRET_RET_TRUE )
+			return false;
+
+		if ( iRet == TRIGRET_RET_HALFBAKED )
+			return true;
+	}
+
+	if ( spell != Args.m_iN1 )
+	{
+		pSpellDef = g_Cfg.GetSpellDef(spell);
+		if ( pSpellDef == NULL )
+			return( false );
+		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+	}
+	wManaUse = Args.m_iN2;
 
 	// The magic item must be on your person to use.
 	if ( pSrc != this )
@@ -1795,34 +1785,36 @@ bool CChar::Spell_CastDone()
 		iSkillLevel = Skill_GetAdjusted(static_cast<SKILL_TYPE>(iSkill));
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	CScriptTriggerArgs	Args( spell, iSkillLevel, pObjSrc );
+	Args.m_VarsLocal.SetNum("CreateObject1",0);
+	Args.m_VarsLocal.SetNum("CreateObject2",0);
+
+	Args.m_VarsLocal.SetNum("fieldWidth",0);
+	Args.m_VarsLocal.SetNum("fieldGauge",0);
+	Args.m_VarsLocal.SetNum("areaRadius",0);
+
+	if ( IsTrigUsed(TRIGGER_SPELLSUCCESS) )
 	{
-		CScriptTriggerArgs	Args( spell, iSkillLevel, pObjSrc );
-		Args.m_VarsLocal.SetNum("CreateObject1",0);
-		Args.m_VarsLocal.SetNum("CreateObject2",0);
-
-		Args.m_VarsLocal.SetNum("fieldWidth",0);
-		Args.m_VarsLocal.SetNum("fieldGauge",0);
-		Args.m_VarsLocal.SetNum("areaRadius",0);
-
 		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
+	}
 
+	if ( IsTrigUsed(TRIGGER_SUCCESS) )
+	{
 		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
 			return false;
-
-		iSkillLevel		= Args.m_iN2;
-		
-		iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true)));
-		iT2 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true)));
-		iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
-
-		//Can't be < 0, so max it to 0
-		fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
-		fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
-		areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
-
 	}
+
+	iSkillLevel		= Args.m_iN2;
+		
+	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true)));
+	iT2 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true)));
+	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
+
+	//Can't be < 0, so max it to 0
+	fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
+	fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
+	areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
 
 	// Consume the reagents/mana/scroll/charge
 	if ( ! Spell_CanCast( spell, false, pObjSrc, true ) )
@@ -2366,14 +2358,21 @@ bool CChar::Spell_CastDone()
 void CChar::Spell_CastFail()
 {
 	ADDTOCALLSTACK("CChar::Spell_CastFail");
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+
+	CScriptTriggerArgs	Args( m_atMagery.m_Spell, 0, m_Act_TargPrv.ObjFind() );
+
+	if ( IsTrigUsed(TRIGGER_SPELLFAIL) )
 	{
-		CScriptTriggerArgs	Args( m_atMagery.m_Spell, 0, m_Act_TargPrv.ObjFind() );
 		if ( OnTrigger( CTRIG_SpellFail, this, &Args ) == TRIGRET_RET_TRUE )
 			return;
+	}
+
+	if ( IsTrigUsed(TRIGGER_FAIL) )
+	{
 		if ( Spell_OnTrigger( m_atMagery.m_Spell, SPTRIG_FAIL, this, &Args ) == TRIGRET_RET_TRUE )
 			return;
 	}
+
 
 	Effect( EFFECT_OBJ, ITEMID_FX_SPELL_FAIL, this, 1, 30 );
 	Sound( SOUND_SPELL_FIZZLE );
@@ -2471,10 +2470,17 @@ int CChar::Spell_CastStart()
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
 	Args.m_iN3 = iWaitTime;
 
-	if ( OnTrigger(CTRIG_SpellCast, this, &Args) == TRIGRET_RET_TRUE )
-		return -1;
-	if ( Spell_OnTrigger(static_cast<SPELL_TYPE>(Args.m_iN1), SPTRIG_START, this, &Args) == TRIGRET_RET_TRUE )
-		return -1;
+	if ( IsTrigUsed(TRIGGER_SPELLCAST) )
+	{
+		if ( OnTrigger(CTRIG_SpellCast, this, &Args) == TRIGRET_RET_TRUE )
+			return -1;
+	}
+
+	if ( IsTrigUsed(TRIGGER_START) )
+	{
+		if ( Spell_OnTrigger(static_cast<SPELL_TYPE>(Args.m_iN1), SPTRIG_START, this, &Args) == TRIGRET_RET_TRUE )
+			return -1;
+	}
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = Args.m_iN2;
@@ -2546,35 +2552,43 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return false;
 	}
 
+	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
 	Args.m_VarsLocal.SetNum("DamageType",0);
 	Args.m_iN3 = iEffectMult;
-	TRIGRET_TYPE iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
-	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	switch ( iRet )
+	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
-		case TRIGRET_RET_TRUE:	return(false);
-		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
-		default:				break;
+		TRIGRET_TYPE iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
+		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+		pSpellDef = g_Cfg.GetSpellDef(spell);
+		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
+
+		switch ( iRet )
+		{
+			case TRIGRET_RET_TRUE:	return(false);
+			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			default:				break;
+		}
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
-
-	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-	iSkillLevel = Args.m_iN2;
-    iEffectMult = Args.m_iN3;
-	pSpellDef = g_Cfg.GetSpellDef(spell);
-	iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
-
-	switch ( iRet )
+	if ( IsTrigUsed(TRIGGER_EFFECT) )
 	{
-		case TRIGRET_RET_TRUE:	return(false);
-		case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
-		default:				break;
+		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
+		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+		iSkillLevel = Args.m_iN2;
+		iEffectMult = Args.m_iN3;
+		pSpellDef = g_Cfg.GetSpellDef(spell);
+		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
+
+		switch ( iRet )
+		{
+			case TRIGRET_RET_TRUE:	return(false);
+			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			default:				break;
+		}
 	}
 
 	if ( pSpellDef == NULL )

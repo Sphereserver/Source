@@ -3552,6 +3552,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetOF(OF_DyeType) ) catresname(zOptionFlags, "DyeType");
 		if ( IsSetOF(OF_DrinkIsFood) ) catresname(zOptionFlags, "DrinkIsFood");
 		if ( IsSetOF(OF_DClickNoTurn) ) catresname(zOptionFlags, "DClickNoTurn");
+		if ( IsSetOF(OF_Specific) ) catresname(zOptionFlags, "Specific");
 
 		if ( zOptionFlags[0] != '\0' )
 		{
@@ -3565,7 +3566,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		zExperimentalFlags[0] = '\0';
 
 		if ( IsSetEF(EF_DiagonalWalkCheck) ) catresname(zExperimentalFlags, "DiagonalWalkCheck");
-		if ( IsSetEF(EF_New_Triggers) ) catresname(zExperimentalFlags, "NewTriggersEnable");
+		if ( IsSetEF(EF_FixKillTrigger) ) catresname(zExperimentalFlags, "FixKillTrigger");
 		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
 		if ( IsSetEF(EF_NewPositionChecks) ) catresname(zExperimentalFlags, "NewPositionChecks");
@@ -3573,11 +3574,10 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
 		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
 		if ( IsSetEF(EF_Size_Optimise) ) catresname(zExperimentalFlags, "SizeOptimize");
-		if ( IsSetEF(EF_Minimize_Triggers) ) catresname(zExperimentalFlags, "MinimizeTriggers");
 		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
 		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
-		if ( IsSetEF(EF_NPCAct_Triggers) ) catresname(zExperimentalFlags, "NPCActTriggers");
+		if ( IsSetEF(EF_FixCanSeeInClosedConts) ) catresname(zExperimentalFlags, "FixCanSeeInClosedConts");
 #ifndef _MTNETWORK
 		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
 #endif
@@ -3793,7 +3793,15 @@ bool CResource::Load( bool fResync )
 		ASSERT(pSkillClass);
 		m_ResHash.AddSortKey( RESOURCE_ID( RES_SKILLCLASS, 0 ), pSkillClass );
 	}
-	g_Log.Event(LOGM_INIT, "Done loading scripts.\n");
+
+	if ( !fResync )
+	{
+		long total, used;
+		Triglist(total, used);
+		g_Serv.SysMessagef("Done loading scripts (%d of %d triggers used).\n", used, total);
+	}
+	else
+		g_Log.Event(LOGM_INIT, "Done loading scripts.\n");
 
 	if ( m_StartDefs.GetCount() <= 0 )
 	{

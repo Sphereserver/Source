@@ -137,8 +137,11 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 
 	if ( fSet )	// set the jailed flag.
 	{
-		if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
-			return;
+		if ( IsTrigUsed(TRIGGER_JAILED) )
+		{
+			if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
+				return;
+		}
 
 		if ( m_pPlayer )	// allow setting of this to offline chars.
 		{
@@ -166,8 +169,11 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 	}
 	else	// forgive.
 	{
-		if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
-			return;
+		if ( IsTrigUsed(TRIGGER_JAILED) )
+		{
+			if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
+				return;
+		}
 
 		if ( IsClient())
 		{
@@ -343,9 +349,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		return;
 
 	LAYER_TYPE layer = pItem->GetEquipLayer();
-	if ( layer != LAYER_DRAGGING && ! g_Serv.IsLoading())
+	if (( IsTrigUsed(TRIGGER_UNEQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMUNEQUIP) ))
 	{
-		pItem->OnTrigger( ITRIG_UNEQUIP, this );
+		if ( layer != LAYER_DRAGGING && ! g_Serv.IsLoading())
+			pItem->OnTrigger( ITRIG_UNEQUIP, this );
 	}
 
 	CContainer::OnRemoveOb( pObRec );
@@ -1503,10 +1510,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	if ( trigger != ITRIG_UNEQUIP )	// unequip is done later.
 	{
-		CScriptTriggerArgs Args( amount );
-		if ( pItem->OnTrigger( trigger, this, &Args ) == TRIGRET_RET_TRUE )
-			return( -1 );
-		if ( trigger == ITRIG_PICKUP_PACK )
+		if (( IsTrigUsed(CItem::sm_szTrigName[trigger]) ) || ( IsTrigUsed(sm_szTrigName[(CTRIG_itemAfterClick - 1) + trigger]) )) //ITRIG_PICKUP_GROUND, ITRIG_PICKUP_PACK
+		{
+			CScriptTriggerArgs Args( amount );
+			if ( pItem->OnTrigger( trigger, this, &Args ) == TRIGRET_RET_TRUE )
+				return( -1 );
+		}
+		if (( trigger == ITRIG_PICKUP_PACK ) && (( IsTrigUsed(TRIGGER_PICKUP_SELF) ) || ( IsTrigUsed(TRIGGER_ITEMPICKUP_SELF) )))
 		{
 			CItem * pContItem = dynamic_cast <CItem*> ( pItem->GetContainer() );
 			if ( pContItem )
@@ -1528,9 +1538,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			// create left over item.
 			CItem * pItemNew = pItem->UnStackSplit(amount, this);
 			pItemNew->SetTimeout( pItem->GetTimerDAdjusted() ); //since this was commented in DupeCopy
-			CScriptTriggerArgs Args2(pItemNew);
-			if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
-				return -1;
+
+			if (( IsTrigUsed(TRIGGER_PICKUP_STACK) ) || ( IsTrigUsed(TRIGGER_ITEMPICKUP_STACK) ))
+			{
+				CScriptTriggerArgs Args2(pItemNew);
+				if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
+					return -1;
+			}
 
 		}
 	}
@@ -1648,9 +1662,10 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg )
 			return true;
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+
+	if (( IsTrigUsed(TRIGGER_EQUIPTEST) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIPTEST) ))
 	{
-		int iRet = pItem->OnTrigger(ITRIG_EQUIPTEST, this);
+		TRIGRET_TYPE iRet = pItem->OnTrigger(ITRIG_EQUIPTEST, this);
 
 		if ( pItem->IsDeleted() )
 			return false;
@@ -1686,9 +1701,10 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg )
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
 		return false;
 
-	if ( pItem->OnTrigger(ITRIG_EQUIP, this) == TRIGRET_RET_TRUE )
+	if (( IsTrigUsed(TRIGGER_EQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIP) ))
 	{
-		return false;
+		if ( pItem->OnTrigger(ITRIG_EQUIP, this) == TRIGRET_RET_TRUE )
+			return false;
 	}
 
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
@@ -1963,9 +1979,12 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		}
 	}
 
-	CScriptTriggerArgs Args(pHorse);
-   	if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
-		return false;
+	if ( IsTrigUsed(TRIGGER_MOUNT) )
+	{
+		CScriptTriggerArgs Args(pHorse);
+   		if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
+			return false;
+	}
 
 	Horse_UnMount();	// unmount if already on a horse.
 
@@ -1996,7 +2015,7 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 	}
 
 	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
-	if (pPet != NULL && pPet->IsDisconnected() && !pPet->IsDeleted()) // valid horse for trigger
+	if ((pPet != NULL && pPet->IsDisconnected() && !pPet->IsDeleted()) && ( IsTrigUsed(TRIGGER_DISMOUNT) )) // valid horse for trigger
 	{
 		CScriptTriggerArgs Args(pPet);
    		if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
@@ -2129,12 +2148,14 @@ bool CChar::OnTickEquip( CItem * pItem )
 				CScriptTriggerArgs	args;
 				args.m_iN1 = m_pPlayer->m_wMurders-1;
 				args.m_iN2 = g_Cfg.m_iMurderDecayTime;
-				if ( !IsSetEF(EF_Minimize_Triggers) )
+
+				if ( IsTrigUsed(TRIGGER_MURDERDECAY) )
 				{
 					OnTrigger(CTRIG_MurderDecay, this, &args);
 					if ( args.m_iN1 < 0 ) args.m_iN1 = 0;
 					if ( args.m_iN2 < 1 ) args.m_iN2 = g_Cfg.m_iMurderDecayTime;
 				}
+
 				m_pPlayer->m_wMurders = args.m_iN1;
 				if ( m_pPlayer->m_wMurders == 0 ) return( false );
 				pItem->SetTimeout(args.m_iN2);	// update it's decay time.
@@ -2435,8 +2456,11 @@ bool CChar::Death()
 			StatFlag_Set(STATF_Conjured);
 	}
 
-	if ( OnTrigger(CTRIG_Death, this) == TRIGRET_RET_TRUE )
-		return true;
+	if ( IsTrigUsed(TRIGGER_DEATH) )
+	{
+		if ( OnTrigger(CTRIG_Death, this) == TRIGRET_RET_TRUE )
+			return true;
+	}
 
 	// I am dead and we need to give credit for the kill to my attacker(s).
 	TCHAR * pszKillStr = Str_GetTemp();
@@ -2512,8 +2536,14 @@ bool CChar::Death()
 	for ( std::map<DWORD,bool>::iterator itCurrentKiller = mapKillers.begin(); itCurrentKiller != mapKillers.end(); ++itCurrentKiller)
 	{
 		pKiller = CGrayUID((*itCurrentKiller).first).CharFind();
-		if ( pKiller && ( pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) != TRIGRET_RET_TRUE ) )
+		if ( pKiller )
 		{
+			if ( IsTrigUsed(TRIGGER_KILL) )
+			{
+				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) != TRIGRET_RET_TRUE )
+					continue;
+			}
+
 			pKiller->Noto_Kill(this, (*itCurrentKiller).second, killedBy-1);
 
 			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
@@ -2567,7 +2597,7 @@ bool CChar::Death()
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
-	if ( pCorpse != NULL )
+	if (( pCorpse != NULL ) && ( IsTrigUsed(TRIGGER_DEATHCORPSE) ))
 	{
    		CScriptTriggerArgs Args(pCorpse);
    		OnTrigger(CTRIG_DeathCorpse, this, &Args);
@@ -2905,7 +2935,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_PERSONALSPACE) )
 			{
 				CScriptTriggerArgs Args(iStamReq);
 				iRet = pChar->OnTrigger(CTRIG_PersonalSpace, this, &Args);
@@ -2999,10 +3029,12 @@ void CChar::CheckRevealOnMove()
 		if ( IsStatFlag(STATF_Fly|STATF_Sleeping|STATF_Hovering) || !IsStatFlag(STATF_Hidden) ||
 			!Skill_UseQuick(SKILL_STEALTH, Calc_GetRandVal(105)) )
 			bReveal = true;
-
-		CScriptTriggerArgs Args(bReveal);	// ARGN1 - reveal?
-		OnTrigger(CTRIG_StepStealth, this, &Args);
-		bReveal = ( Args.m_iN1 != 0);
+		if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
+		{
+			CScriptTriggerArgs Args(bReveal);	// ARGN1 - reveal?
+			OnTrigger(CTRIG_StepStealth, this, &Args);
+			bReveal = ( Args.m_iN1 != 0);
+		}
 
 		if ( bReveal )
 			Reveal();
@@ -3079,10 +3111,11 @@ bool CChar::CheckLocation( bool fStanding )
 		}
 
 		// This could get REALLY EXPENSIVE !
-		if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+		if ( IsTrigUsed(TRIGGER_STEP) )
 		{
 			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
 				return( false );
+
 			CRegionBase * pRoom = GetTopPoint().GetRegion( REGION_TYPE_ROOM );
 			if ( pRoom )
 			{
@@ -3108,12 +3141,14 @@ bool CChar::CheckLocation( bool fStanding )
 
 		if ( zdiff > height || zdiff < -3 )
 			continue;
-
-		CScriptTriggerArgs Args( fStanding? 1 : 0 );
-		if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
+		if (( IsTrigUsed(TRIGGER_STEP) ) || ( IsTrigUsed(TRIGGER_ITEMSTEP) ))
 		{
-			fStepCancel	= true;
-			continue;
+			CScriptTriggerArgs Args( fStanding? 1 : 0 );
+			if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
+			{
+				fStepCancel	= true;
+				continue;
+			}
 		}
 
 		switch ( pItem->GetType() )
@@ -3313,13 +3348,16 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 		// Leaving region trigger. (may not be allowed to leave ?)
 		if ( m_pArea )
 		{
-			if ( m_pArea->OnRegionTrigger( this, RTRIG_EXIT ) == TRIGRET_RET_TRUE )
+			if ( IsTrigUsed(TRIGGER_EXIT) )
 			{
-				if ( pNewArea && fAllowReject )
-					return false;
+				if ( m_pArea->OnRegionTrigger( this, RTRIG_EXIT ) == TRIGRET_RET_TRUE )
+				{
+					if ( pNewArea && fAllowReject )
+						return false;
+				}
 			}
 
-			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_REGIONLEAVE) )
 			{
 				CScriptTriggerArgs Args(m_pArea);
 				if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
@@ -3382,12 +3420,15 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 		// Entering region trigger.
 		if ( pNewArea )
 		{
-			if ( pNewArea->OnRegionTrigger( this, RTRIG_ENTER ) == TRIGRET_RET_TRUE )
+			if ( IsTrigUsed(TRIGGER_ENTER) )
 			{
-				if ( m_pArea && fAllowReject )
-					return false;
+				if ( pNewArea->OnRegionTrigger( this, RTRIG_ENTER ) == TRIGRET_RET_TRUE )
+				{
+					if ( m_pArea && fAllowReject )
+						return false;
+				}
 			}
-			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_REGIONENTER) )
 			{
 				CScriptTriggerArgs Args(pNewArea);
 				if ( OnTrigger(CTRIG_RegionEnter, this, & Args) == TRIGRET_RET_TRUE )
@@ -3423,13 +3464,16 @@ bool CChar::MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject)
 		// Leaving room trigger. (may not be allowed to leave ?)
 		if ( m_pRoom )
 		{
-			if ( m_pRoom->OnRegionTrigger( this, RTRIG_EXIT ) == TRIGRET_RET_TRUE )
+			if ( IsTrigUsed(TRIGGER_EXIT) )
 			{
-				if (fAllowReject )
-					return false;
+				if ( m_pRoom->OnRegionTrigger( this, RTRIG_EXIT ) == TRIGRET_RET_TRUE )
+				{
+					if (fAllowReject )
+						return false;
+				}
 			}
 
-			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_REGIONLEAVE) )
 			{
 				CScriptTriggerArgs Args(m_pRoom);
 				if ( OnTrigger(CTRIG_RegionLeave, this, & Args) == TRIGRET_RET_TRUE )
@@ -3443,12 +3487,15 @@ bool CChar::MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject)
 		// Entering room trigger
 		if ( pNewRoom )
 		{
-			if ( pNewRoom->OnRegionTrigger( this, RTRIG_ENTER ) == TRIGRET_RET_TRUE )
+			if ( IsTrigUsed(TRIGGER_ENTER) )
 			{
-				if (fAllowReject )
-					return false;
+				if ( pNewRoom->OnRegionTrigger( this, RTRIG_ENTER ) == TRIGRET_RET_TRUE )
+				{
+					if (fAllowReject )
+						return false;
+				}
 			}
-			if ( IsSetEF(EF_New_Triggers) && !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_REGIONENTER) )
 			{
 				CScriptTriggerArgs Args(pNewRoom);
 				if ( OnTrigger(CTRIG_RegionEnter, this, & Args) == TRIGRET_RET_TRUE )
@@ -3512,8 +3559,11 @@ bool CChar::MoveToChar( CPointMap pt )
 		if ( fMapChange )
 			GetClient()->addReSync(true);			// a must-have for map change
 
-		CScriptTriggerArgs	Args( prevPt.m_x, prevPt.m_y, prevPt.m_z << 16 | prevPt.m_map );
-		OnTrigger(CTRIG_EnvironChange, this, &Args);
+		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
+		{
+			CScriptTriggerArgs	Args( prevPt.m_x, prevPt.m_y, prevPt.m_z << 16 | prevPt.m_map );
+			OnTrigger(CTRIG_EnvironChange, this, &Args);
+		}
 	}
 
 	if ( !m_fClimbUpdated )
@@ -3640,27 +3690,32 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+	TemporaryString sCharTrigName;
+	sprintf(sCharTrigName, "@char%s", pszTrigName+1);
 
 	EXC_TRY("Trigger");
-	// 1) Triggers installed on characters, sensitive to actions on all chars
-	CChar * pChar = pSrc->GetChar();
-	if ( pChar != NULL && this != pChar )
-	{
-		EXC_SET("chardef");
-		// Is there an [EVENT] block call here?
-		TemporaryString sCharTrigName;
-		sprintf(sCharTrigName, "@char%s", pszTrigName+1);
-		int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-		//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
 
-		if ( iCharAction > XTRIG_UNKNOWN && iCharAction < CTRIG_Click )
+	// 1) Triggers installed on characters, sensitive to actions on all chars
+	if ( IsTrigUsed(sCharTrigName) )
+	{
+		CChar * pChar = pSrc->GetChar();
+		if ( pChar != NULL && this != pChar )
 		{
-			CGrayUID uidOldAct = pChar->m_Act_Targ;
-			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>(iCharAction), pSrc, pArgs );
-			pChar->m_Act_Targ = uidOldAct;
-			if ( iRet == TRIGRET_RET_TRUE )
-				return iRet;	// Block further action.
+			EXC_SET("chardef");
+			// Is there an [EVENT] block call here?
+
+			int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+			//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
+
+			if ( iCharAction > XTRIG_UNKNOWN && iCharAction < CTRIG_Click )
+			{
+				CGrayUID uidOldAct = pChar->m_Act_Targ;
+				pChar->m_Act_Targ = GetUID();
+				iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>(iCharAction), pSrc, pArgs );
+				pChar->m_Act_Targ = uidOldAct;
+				if ( iRet == TRIGRET_RET_TRUE )
+					return iRet;	// Block further action.
+			}
 		}
 	}
 
@@ -3668,95 +3723,98 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	//
 	// Go thru the event blocks for the NPC/PC to do events.
 	//
-	EXC_SET("events");
-	size_t origEvents = m_OEvents.GetCount();
-	size_t curEvents = origEvents;
-	for ( size_t i = 0; i < curEvents; ++i ) // EVENTS (could be modifyed ingame!)
+	if ( IsTrigUsed(pszTrigName) )
 	{
-		CResourceLink * pLink = m_OEvents[i];
-		if ( !pLink || !pLink->HasTrigger(iAction) )
-			continue;
-		CResourceLock s;
-		if ( !pLink->ResourceLock(s) )
-			continue;
-
-		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-			return iRet;
-
-		curEvents = m_OEvents.GetCount();
-		if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
+		EXC_SET("events");
+		size_t origEvents = m_OEvents.GetCount();
+		size_t curEvents = origEvents;
+		for ( size_t i = 0; i < curEvents; ++i ) // EVENTS (could be modifyed ingame!)
 		{
-			--i;
-			origEvents = curEvents;
-		}
-	}
-
-	if ( m_pNPC != NULL )
-	{
-		// 3) TEVENTS
-		EXC_SET("NPC triggers"); // TEVENTS (constant events of NPCs)
-		for ( size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i )
-		{
-			CResourceLink * pLink = pCharDef->m_TEvents[i];
+			CResourceLink * pLink = m_OEvents[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )
 				continue;
 			CResourceLock s;
 			if ( !pLink->ResourceLock(s) )
 				continue;
+
 			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 				return iRet;
-		}
 
-		// 4) EVENTSPET triggers
-		EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
-		for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
-		{
-			CResourceLink	*pLink = g_Cfg.m_pEventsPetLink[i];
-			if ( !pLink || !pLink->HasTrigger(iAction) )
-				continue;
-			CResourceLock s;
-			if ( !pLink->ResourceLock(s) )
-				continue;
-			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return iRet;
-		}
-	}
-
-	// 5) CHARDEF triggers
-	if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
-	{
-		EXC_SET("chardef triggers");
-		if ( pCharDef->HasTrigger(iAction) )
-		{
-			CResourceLock s;
-			if ( pCharDef->ResourceLock(s) )
+			curEvents = m_OEvents.GetCount();
+			if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
 			{
+				--i;
+				origEvents = curEvents;
+			}
+		}
+
+		if ( m_pNPC != NULL )
+		{
+			// 3) TEVENTS
+			EXC_SET("NPC triggers"); // TEVENTS (constant events of NPCs)
+			for ( size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i )
+			{
+				CResourceLink * pLink = pCharDef->m_TEvents[i];
+				if ( !pLink || !pLink->HasTrigger(iAction) )
+					continue;
+				CResourceLock s;
+				if ( !pLink->ResourceLock(s) )
+					continue;
 				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-				if (( iRet != TRIGRET_RET_FALSE ) && ( iRet != TRIGRET_RET_DEFAULT ))
+				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+					return iRet;
+			}
+
+			// 4) EVENTSPET triggers
+			EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
+			for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
+			{
+				CResourceLink	*pLink = g_Cfg.m_pEventsPetLink[i];
+				if ( !pLink || !pLink->HasTrigger(iAction) )
+					continue;
+				CResourceLock s;
+				if ( !pLink->ResourceLock(s) )
+					continue;
+				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 					return iRet;
 			}
 		}
-	}
 
-	// 6) EVENTSPLAYER triggers
-	if ( m_pPlayer != NULL )
-	{
-		//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)
-		EXC_SET("chardef triggers - EVENTSPLAYER");
-		for ( size_t i = 0; i < g_Cfg.m_pEventsPlayerLink.GetCount(); ++i )
+		// 5) CHARDEF triggers
+		if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
 		{
-			CResourceLink	*pLink = g_Cfg.m_pEventsPlayerLink[i];
-			if ( !pLink || !pLink->HasTrigger(iAction) )
-				continue;
-			CResourceLock s;
-			if ( !pLink->ResourceLock(s) )
-				continue;
-			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return iRet;
+			EXC_SET("chardef triggers");
+			if ( pCharDef->HasTrigger(iAction) )
+			{
+				CResourceLock s;
+				if ( pCharDef->ResourceLock(s) )
+				{
+					iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+					if (( iRet != TRIGRET_RET_FALSE ) && ( iRet != TRIGRET_RET_DEFAULT ))
+						return iRet;
+				}
+			}
+		}
+
+		// 6) EVENTSPLAYER triggers
+		if ( m_pPlayer != NULL )
+		{
+			//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)
+			EXC_SET("chardef triggers - EVENTSPLAYER");
+			for ( size_t i = 0; i < g_Cfg.m_pEventsPlayerLink.GetCount(); ++i )
+			{
+				CResourceLink	*pLink = g_Cfg.m_pEventsPlayerLink[i];
+				if ( !pLink || !pLink->HasTrigger(iAction) )
+					continue;
+				CResourceLock s;
+				if ( !pLink->ResourceLock(s) )
+					continue;
+				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+					return iRet;
+			}
 		}
 	}
 	EXC_CATCH;
@@ -3809,7 +3867,7 @@ void CChar::OnTickFood()
    	if ( Stat_GetVal(STAT_FOOD) > 0 ) lFood--;
 	else lFood++;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_HUNGER) )
 	{
 		CScriptTriggerArgs Args(lFood);	// ARGN1 - new food level
 		if ( OnTrigger(CTRIG_Hunger, this, &Args) == TRIGRET_RET_TRUE )

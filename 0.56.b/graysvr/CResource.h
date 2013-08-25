@@ -52,7 +52,7 @@ enum EF_TYPE
 	EF_DiagonalWalkCheck			= 0x0000001,
 	EF_FixKillTrigger				= 0x0000002,
 	EF_Unused04						= 0x0000004,
-	EF_New_Triggers					= 0x0000008,
+	EF_Unused08						= 0x0000008,
 	EF_Unused010					= 0x0000010,
 	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
@@ -61,11 +61,11 @@ enum EF_TYPE
 	EF_AllowTelnetPacketFilter		= 0x0000200,
 	EF_Script_Profiler				= 0x0000400,
 	EF_Size_Optimise				= 0x0000800,
-	EF_Minimize_Triggers			= 0x0001000,
+	EF_Unused01000					= 0x0001000,
 	EF_DamageTools					= 0x0002000,
 	EF_PetSlots						= 0x0004000,
 	EF_UsePingServer				= 0x0008000,
-	EF_NPCAct_Triggers				= 0x0010000,
+	EF_Unused0100000				= 0x0010000,
 	EF_FixCanSeeInClosedConts		= 0x0020000,
 	EF_Unused0400000				= 0x0400000,
 #ifndef _MTNETWORK
@@ -265,6 +265,14 @@ private:
 	CCharRefArray& operator=(const CCharRefArray& other);
 };
 
+enum RRTRIG_TYPE
+{
+	// XTRIG_UNKNOWN	= some named trigger not on this list.
+	RRTRIG_RESOURCETEST=1,
+	RRTRIG_RESOURCEFOUND,
+	RRTRIG_QTY
+};
+
 class CRegionResourceDef : public CResourceLink
 {
 	// RES_REGIONRESOURCE
@@ -272,6 +280,7 @@ class CRegionResourceDef : public CResourceLink
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szTrigName[RRTRIG_QTY];
 
 	// What item do we get when we try to mine this.
 	ITEMID_TYPE m_ReapItem;	// ITEMID_ORE_1 most likely
@@ -568,7 +577,7 @@ enum SKTRIG_TYPE
 	SKTRIG_PRESTART,	// called before any hardcoded messages
 	SKTRIG_SELECT,		// just selecting params for the skill
 	SKTRIG_START,		// params for skill are done. (stroke)
-	SKTRIG_STROKE,
+	SKTRIG_STROKE,		// Not really a trigger! Just a stage.
 	SKTRIG_SUCCESS,		// we passed the skill check
 	SKTRIG_TARGETCANCEL,// called when a target cursor is cancelled
 	SKTRIG_USEQUICK,	// called when a 'quick' usage of the skill is made
@@ -898,8 +907,6 @@ public:
 #define	EXP_MODE_ALLOW_DOWN		0x0004
 #define	EXP_MODE_DOWN_NOLEVEL	0x0008
 #define	EXP_MODE_AUTOSET_EXP	0x0010
-#define EXP_MODE_TRIGGER_EXP	0x0020
-#define EXP_MODE_TRIGGER_LEVEL	0x0040
 	int		m_iExperienceMode;
 	int		m_iExperienceKoefPVM;
 	int		m_iExperienceKoefPVP;

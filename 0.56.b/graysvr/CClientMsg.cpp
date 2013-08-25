@@ -1056,7 +1056,7 @@ void CClient::addItemName( const CItem * pItem )
 	if ( IsPriv(PRIV_DEBUG) )
 		len += sprintf(szName+len, " [0%lx]", (DWORD) pItem->GetUID());
 
-	if ( IsSetEF(EF_New_Triggers) )
+	if (( IsTrigUsed(TRIGGER_AFTERCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMAFTERCLICK) ))
 	{
 		CScriptTriggerArgs Args( this );
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
@@ -1171,7 +1171,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 		strcat( pszTemp, "]" );
 	}
 
-	if ( IsSetEF(EF_New_Triggers) )
+	if ( IsTrigUsed(TRIGGER_AFTERCLICK) )
 	{
 		CScriptTriggerArgs Args( this );
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszTemp);
@@ -1403,7 +1403,7 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 		case CLIMODE_TARG_USE_ITEM:
 		{
 			CItem * pItemUse = m_Targ_UID.ItemFind();
-			if ( pItemUse != NULL && !IsSetEF(EF_Minimize_Triggers) )
+			if ( pItemUse != NULL && (( IsTrigUsed(TRIGGER_TARGON_CANCEL) ) || ( IsTrigUsed(TRIGGER_ITEMTARGON_CANCEL) ) ))
 			{
 				if ( pItemUse->OnTrigger( ITRIG_TARGON_CANCEL, m_pChar ) == TRIGRET_RET_TRUE )
 					bSuppressCancelMessage = true;
@@ -1413,13 +1413,24 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 		case CLIMODE_TARG_SKILL_MAGERY:
 		{
 			const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
-			if (m_pChar != NULL && pSpellDef != NULL && !IsSetEF(EF_Minimize_Triggers))
+			if (m_pChar != NULL && pSpellDef != NULL)
 			{
 				CScriptTriggerArgs Args(m_tmSkillMagery.m_Spell, 0, m_Targ_PrvUID.ObjFind());
-				if ( m_pChar->OnTrigger( CTRIG_SpellTargetCancel, this, &Args ) == TRIGRET_RET_TRUE )
-					bSuppressCancelMessage = true;
-				else if ( m_pChar->Spell_OnTrigger( m_tmSkillMagery.m_Spell, SPTRIG_TARGETCANCEL, m_pChar, &Args ) == TRIGRET_RET_TRUE )
-					bSuppressCancelMessage = true;
+
+				if ( IsTrigUsed(TRIGGER_SPELLTARGETCANCEL) )
+				{
+					if ( m_pChar->OnTrigger( CTRIG_SpellTargetCancel, this, &Args ) == TRIGRET_RET_TRUE )
+					{
+						bSuppressCancelMessage = true;
+						break;
+					}
+				}
+
+				if ( IsTrigUsed(TRIGGER_TARGETCANCEL) )
+				{
+					if ( m_pChar->Spell_OnTrigger( m_tmSkillMagery.m_Spell, SPTRIG_TARGETCANCEL, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+						bSuppressCancelMessage = true;
+				}
 			}
 		} break;
 
@@ -1449,8 +1460,19 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 
 			if (action != SKILL_NONE && m_pChar != NULL)
 			{
-				if ( m_pChar->Skill_OnTrigger(action, SKTRIG_TARGETCANCEL) == TRIGRET_RET_TRUE )
-					bSuppressCancelMessage = true;
+				if ( IsTrigUsed(TRIGGER_SKILLTARGETCANCEL) )
+				{
+					if ( m_pChar->Skill_OnCharTrigger(action, CTRIG_SkillTargetCancel) == TRIGRET_RET_TRUE )
+					{
+						bSuppressCancelMessage = true;
+						break;
+					}
+				}
+				if ( IsTrigUsed(TRIGGER_TARGETCANCEL) )
+				{
+					if ( m_pChar->Skill_OnTrigger(action, SKTRIG_TARGETCANCEL) == TRIGRET_RET_TRUE )
+						bSuppressCancelMessage = true;
+				}
 			}
 		} break;
 
@@ -1621,7 +1643,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	if (bAllSkills == false && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) == false)
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERSKILLS) )
 	{
 		CScriptTriggerArgs Args(bAllSkills? -1 : skill, bFromInfo);
 		if (m_pChar->OnTrigger(CTRIG_UserSkills, pChar, &Args) == TRIGRET_RET_TRUE)
@@ -1908,7 +1930,7 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 	if ( !pChar )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERSTATS) )
 	{
 		CScriptTriggerArgs	Args(0, 0, uid.ObjFind());
 		Args.m_iN3	= fRequested;
@@ -1999,7 +2021,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	if ( !m_pChar )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_SPELLBOOK) )
 	{
 		CScriptTriggerArgs	Args( 0, 0, pBook );
 		if ( m_pChar->OnTrigger( CTRIG_SpellBook, m_pChar, &Args ) == TRIGRET_RET_TRUE )
@@ -2470,12 +2492,13 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		else // we have FEATURE_AOS_UPDATE_B enabled
 		{
 			TRIGRET_TYPE iRet = TRIGRET_RET_FALSE;
-			CScriptTriggerArgs args(const_cast<CObjBase *>(pObj));
-			args.m_iN1 = bRequested;
-			if ( pItem )
-				iRet = pItem->OnTrigger(ITRIG_CLIENTTOOLTIP, this->GetChar(), &args);
-			else if ( pChar )
-				iRet = pChar->OnTrigger(CTRIG_ClientTooltip, this->GetChar(), &args);
+
+			if (( IsTrigUsed(TRIGGER_CLIENTTOOLTIP) ) || (( IsTrigUsed(TRIGGER_ITEMCLIENTTOOLTIP) ) && ( pItem )) || (( IsTrigUsed(TRIGGER_CHARCLIENTTOOLTIP) ) && ( pChar )))
+			{
+				CScriptTriggerArgs args(const_cast<CObjBase *>(pObj));
+				args.m_iN1 = bRequested;
+				iRet = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", this->GetChar(), &args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
+			}
 
 			if ( iRet != TRIGRET_RET_TRUE )
 			{
@@ -2952,19 +2975,20 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	//Resend buff icons
 	resendBuffs();
 
-	CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, 0 );
-
-	if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
+	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		m_pChar->ClientDetach();
-		pChar->SetDisconnected();
-		return PacketLoginError::Blocked;
+		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, 0 );
+		if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
+		{
+			m_pChar->ClientDetach();
+			pChar->SetDisconnected();
+			return PacketLoginError::Blocked;
+		}
+		fNoMessages	= (Args.m_iN1 != 0);
+		fQuickLogIn	= (Args.m_iN2 != 0);
 	}
 
 	pChar->SetKeyNum("LastHit", 0);
-
-	fNoMessages	= (Args.m_iN1 != 0);
-	fQuickLogIn	= (Args.m_iN2 != 0);
 
 	if ( !fQuickLogIn )
 	{

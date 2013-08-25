@@ -531,7 +531,7 @@ void CChar::Skill_Decay()
 	{
 		iSkillLevel--;
 
-		if ( !IsSetEF(EF_Minimize_Triggers) )
+		if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
 		{
 			CScriptTriggerArgs args;
 			args.m_iN1 = static_cast<int>(skillDeduct);
@@ -623,13 +623,18 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	}
 	int iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
-		CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
+	CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
+	if ( IsTrigUsed(TRIGGER_SKILLGAIN) )
+	{	
+		if ( Skill_OnCharTrigger( skill, CTRIG_SkillGain, &pArgs ) == TRIGRET_RET_TRUE )
+			return;
+	}
+	if ( IsTrigUsed(TRIGGER_GAIN) )
+	{	
 		if ( Skill_OnTrigger( skill, SKTRIG_GAIN, &pArgs ) == TRIGRET_RET_TRUE )
 			return;
-		pArgs.getArgNs(0,&iChance,&iSkillMax);
 	}
+	pArgs.getArgNs(0,&iChance,&iSkillMax);
 
 	if ( iChance <= 0 )
 		return; // less than no chance ?
@@ -659,7 +664,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			if ( iRoll <= iChance )
 			{
 				iSkillLevel++;
-				if ( !IsSetEF(EF_Minimize_Triggers) )
+				if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
 				{
 					CScriptTriggerArgs args;
 					args.m_iN1 = static_cast<int>(skill);
@@ -723,7 +728,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		if ( iRoll <= iChance )
 		{
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 			{
 				CScriptTriggerArgs args;
 				args.m_iN1 = i;
@@ -777,11 +782,14 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
 			if ( iStatVal > 10 )
 			{
-				CScriptTriggerArgs args;
-				args.m_iN1 = imin;
-				args.m_iN2 = iStatVal-1;
-				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-					return;
+				if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+				{
+					CScriptTriggerArgs args;
+					args.m_iN1 = imin;
+					args.m_iN2 = iStatVal-1;
+					if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+						return;
+				}
 				Stat_SetBase(static_cast<STAT_TYPE>(imin), iStatVal - 1);
 			}
 		}
@@ -817,11 +825,22 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain )
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
 	int result = Skill_CheckSuccess( skill, difficulty );
+	CScriptTriggerArgs pArgs( 0 , difficulty, result);
+	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
 
-	if ( ! IsSetEF( EF_Minimize_Triggers ) )
+	if ( IsTrigUsed(TRIGGER_SKILLUSEQUICK) )
 	{
-		CScriptTriggerArgs pArgs( 0 , difficulty, result);
-		TRIGRET_TYPE ret = Skill_OnTrigger( skill, SKTRIG_USEQUICK, &pArgs );
+		ret = Skill_OnCharTrigger( skill, CTRIG_SkillUseQuick, &pArgs );
+		pArgs.getArgNs(0,&difficulty,&result);
+
+		if ( ret == TRIGRET_RET_TRUE )
+			return( true );
+		else if ( ret == TRIGRET_RET_FALSE )
+			return( false );
+	}
+	if ( IsTrigUsed(TRIGGER_USEQUICK) )
+	{
+		ret = Skill_OnTrigger( skill, SKTRIG_USEQUICK, &pArgs );
 		pArgs.getArgNs(0,&difficulty,&result);
 
 		if ( ret == TRIGRET_RET_TRUE )
@@ -1068,8 +1087,12 @@ bool CChar::Skill_MakeItem_Success()
 	// Item goes into ACT of player
 	CGrayUID uidOldAct = m_Act_Targ;
 	m_Act_Targ = pItem->GetUID();
-	CScriptTriggerArgs Args( iSkillLevel, quality, uidOldAct.ObjFind() );
-	TRIGRET_TYPE iRet = OnTrigger( CTRIG_SkillMakeItem, this, &Args );
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+	if ( IsTrigUsed(TRIGGER_SKILLMAKEITEM) )
+	{
+		CScriptTriggerArgs Args( iSkillLevel, quality, uidOldAct.ObjFind() );
+		iRet = OnTrigger( CTRIG_SkillMakeItem, this, &Args );
+	}
 	m_Act_Targ = uidOldAct;		// restore
 
 	CObjBase * pItemCont = pItem->GetContainer();
@@ -3719,7 +3742,7 @@ int CChar::Skill_Act_Looting( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_START )
 	{
-		if ( m_atLooting.m_iDistCurrent == 0 )
+		if (( m_atLooting.m_iDistCurrent == 0 ) && ( IsTrigUsed(TRIGGER_NPCSEEWANTITEM) ))
 		{
 			CScriptTriggerArgs Args( m_Act_Targ.ItemFind());
 			if ( OnTrigger( CTRIG_NPCSeeWantItem, this, &Args ) == TRIGRET_RET_TRUE )
@@ -4040,16 +4063,30 @@ void CChar::Skill_Fail( bool fCancel )
 		m_Act_Difficulty = - m_Act_Difficulty;
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( !fCancel )
 	{
-		if ( !fCancel )
+		if ( IsTrigUsed(TRIGGER_SKILLFAIL) )
+		{
+			if ( Skill_OnCharTrigger( skill, CTRIG_SkillFail ) == TRIGRET_RET_TRUE )
+				fCancel	= true;
+		}
+		if (( IsTrigUsed(TRIGGER_FAIL) ) && ( !fCancel ))
 		{
 			if ( Skill_OnTrigger( skill, SKTRIG_FAIL ) == TRIGRET_RET_TRUE )
-			{
 				fCancel	= true;
+		}
+	}
+	else
+	{
+		if ( IsTrigUsed(TRIGGER_SKILLABORT) )
+		{
+			if ( Skill_OnCharTrigger( skill, CTRIG_SkillAbort ) == TRIGRET_RET_TRUE )
+			{
+				Skill_Cleanup();
+				return;
 			}
 		}
-		else
+		if ( IsTrigUsed(TRIGGER_ABORT) )
 		{
 			if ( Skill_OnTrigger( skill, SKTRIG_ABORT ) == TRIGRET_RET_TRUE )
 			{
@@ -4075,56 +4112,49 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage)
 	return Skill_OnTrigger(skill,stage,&pArgs);
 }
 
+TRIGRET_TYPE	CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE  stage) 
+{
+	CScriptTriggerArgs pArgs;
+	return Skill_OnCharTrigger(skill,stage,&pArgs);
+}
+
+
 TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs ) 
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
 	if ( !IsSkillBase(skill) )
 		return TRIGRET_RET_DEFAULT;
 
-	CTRIG_TYPE		ctrig;
-	switch( stage )
-	{
-		case SKTRIG_FAIL:			ctrig	= CTRIG_SkillFail;			break;
-		case SKTRIG_GAIN:			ctrig	= CTRIG_SkillGain;			break;
-		case SKTRIG_PRESTART:		ctrig	= CTRIG_SkillPreStart;		break;
-		case SKTRIG_START:			ctrig	= CTRIG_SkillStart;			break;
-		case SKTRIG_SELECT:			ctrig	= CTRIG_SkillSelect;		break;
-		case SKTRIG_SUCCESS:		ctrig	= CTRIG_SkillSuccess;		break;
-		case SKTRIG_STROKE:			ctrig	= CTRIG_SkillStroke;		break;
-		case SKTRIG_ABORT:			ctrig	= CTRIG_SkillAbort;			break;
-		case SKTRIG_USEQUICK:		ctrig	= CTRIG_SkillUseQuick;		break;
-		case SKTRIG_WAIT:			ctrig	= CTRIG_SkillWait;			break;
-		case SKTRIG_TARGETCANCEL:	ctrig	= CTRIG_SkillTargetCancel;	break;
-		default:
-			return TRIGRET_RET_TRUE;
-	}
-
 	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL ) )
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-	
-	TRIGRET_TYPE iRet = OnTrigger( ctrig, this, pArgs );
-	if ( iRet == TRIGRET_RET_TRUE )
-		return iRet;
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
+	if ( pSkillDef != NULL && pSkillDef->HasTrigger( stage ) )
 	{
-		CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
-		if ( pSkillDef != NULL && pSkillDef->HasTrigger( stage ) )
-		{
-			// RES_SKILL
-			CResourceLock s;
-			if ( pSkillDef->ResourceLock( s ))
-			{
-				iRet = CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs );
-				if ( iRet == TRIGRET_RET_TRUE )
-					return iRet;
-			}
-		}
+		// RES_SKILL
+		CResourceLock s;
+		if ( pSkillDef->ResourceLock( s ))
+			iRet = CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs );
 	}
 
 	return iRet;
+}
+
+TRIGRET_TYPE	CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs * pArgs ) 
+{
+	ADDTOCALLSTACK("CChar::Skill_OnCharTrigger");
+	if ( !IsSkillBase(skill) )
+		return TRIGRET_RET_DEFAULT;
+
+	if ( ! (ctrig == CTRIG_SkillSelect || ctrig == CTRIG_SkillGain || ctrig == CTRIG_SkillUseQuick || ctrig == CTRIG_SkillWait || ctrig == CTRIG_SkillTargetCancel ) )
+		m_Act_SkillCurrent = skill;
+
+	pArgs->m_iN1 = skill;
+
+	return OnTrigger( ctrig, this, pArgs );
 }
 
 
@@ -4160,7 +4190,15 @@ int CChar::Skill_Done()
 		return -SKTRIG_FAIL;
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
+	{
+		if ( Skill_OnCharTrigger( skill, CTRIG_SkillSuccess ) == TRIGRET_RET_TRUE )
+		{
+			Skill_Cleanup();
+			return -SKTRIG_ABORT;
+		}
+	}
+	if ( IsTrigUsed(TRIGGER_SUCCESS) )
 	{
 		if ( Skill_OnTrigger( skill, SKTRIG_SUCCESS ) == TRIGRET_RET_TRUE )
 		{
@@ -4187,10 +4225,23 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	// Some sort of push button skill.
 	// We want to do some new skill. Can we ?
 	// If this is the same skill then tell them to wait.
+	CScriptTriggerArgs pArgs(skilltry, Skill_GetActive());
 
-	if ( ! IsSetEF(EF_Minimize_Triggers))
+	if ( IsTrigUsed(TRIGGER_SKILLWAIT) )
 	{
-		CScriptTriggerArgs pArgs(skilltry, Skill_GetActive());
+		switch ( Skill_OnCharTrigger( skilltry, CTRIG_SkillWait, &pArgs ))
+		{
+			case TRIGRET_RET_TRUE:
+				return true;
+			case TRIGRET_RET_FALSE:
+				Skill_Fail( true );
+				return false;
+			default:
+				break;
+		}
+	}
+	if ( IsTrigUsed(TRIGGER_WAIT) )
+	{
 		switch ( Skill_OnTrigger( skilltry, SKTRIG_WAIT, &pArgs ))
 		{
 			case TRIGRET_RET_TRUE:
@@ -4273,10 +4324,21 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		// Some skill can start right away. Need no targetting.
 		// 0-100 scale of Difficulty
-		if ( Skill_OnTrigger( skill, SKTRIG_PRESTART ) == TRIGRET_RET_TRUE )
+		if ( IsTrigUsed(TRIGGER_SKILLPRESTART) )
 		{
-			Skill_Cleanup();
-			return false;
+			if ( Skill_OnCharTrigger( skill, CTRIG_SkillPreStart ) == TRIGRET_RET_TRUE )
+			{
+				Skill_Cleanup();
+				return false;
+			}
+		}
+		if ( IsTrigUsed(TRIGGER_PRESTART) )
+		{
+			if ( Skill_OnTrigger( skill, SKTRIG_PRESTART ) == TRIGRET_RET_TRUE )
+			{
+				Skill_Cleanup();
+				return false;
+			}
 		}
 		m_Act_Difficulty = Skill_Stage(SKTRIG_START);
 
@@ -4293,10 +4355,22 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		}
 
-		if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+		if ( IsTrigUsed(TRIGGER_SKILLSTART) )
 		{
-			Skill_Cleanup();
-			return false;
+			if (( Skill_OnCharTrigger( skill, CTRIG_SkillStart, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+			{
+				Skill_Cleanup();
+				return false;
+			}
+		}
+
+		if ( IsTrigUsed(TRIGGER_START) )
+		{
+			if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+			{
+				Skill_Cleanup();
+				return false;
+			}
 		}
 
 		if ( bCraftSkill == true )

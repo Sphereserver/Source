@@ -244,10 +244,13 @@ void CClient::CharDisconnect()
 	if ( m_pHouseDesign )
 		m_pHouseDesign->EndCustomize(true);
 
-	CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
-	m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
-	iLingerTime = Args.m_iN1;
-	fCanInstaLogOut = (Args.m_iN2 != 0);
+	if ( IsTrigUsed(TRIGGER_LOGOUT) )
+	{
+		CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
+		m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
+		iLingerTime = Args.m_iN1;
+		fCanInstaLogOut = (Args.m_iN2 != 0);
+	}
 
 	m_pChar->ClientDetach();	// we are not a client any more.
 

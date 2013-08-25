@@ -534,11 +534,8 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 		CResourceLock s;
 		if ( ResourceLock(s))
 		{
-			TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript( s, sm_szTrigName[WTRIG_Load], pClient, NULL );
-			if ( iRet == TRIGRET_RET_TRUE )
-			{
+			if (CScriptObj::OnTriggerScript( s, sm_szTrigName[WTRIG_Load], pClient, NULL ) == TRIGRET_RET_TRUE)
 				return( 0 );	// Block further action.
-			}
 		}
 	}
 

@@ -104,9 +104,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 	CItemBase * pItemDef = pItem->Item_GetDef();
 
-	if ( pItem->OnTrigger( ITRIG_DCLICK, m_pChar ) == TRIGRET_RET_TRUE )
+	if (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMDCLICK) ))
 	{
-		return true;
+		if ( pItem->OnTrigger( ITRIG_DCLICK, m_pChar ) == TRIGRET_RET_TRUE )
+			return true;
 	}
 
 	if ( pItemDef->IsTypeEquippable() && ! pItem->IsItemEquipped() && pItemDef->GetEquipLayer() )
@@ -158,8 +159,12 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SHAFT:
 		case IT_FEATHER:
 			{
-				CScriptTriggerArgs args("sm_bolts");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_bolts");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_bolts" ) );
 			}
 		case IT_FISH_POLE:	// Just be near water ?
@@ -363,8 +368,12 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_CARPENTRY:
 			// Carpentry type tool
 			{
-				CScriptTriggerArgs args("sm_carpentry");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_carpentry");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_carpentry" ) );
 			}
 			// Solve for the combination of this item with another.
@@ -433,8 +442,12 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_MAP_BLANK:
 			if ( ! pItem->m_itMap.m_right && ! pItem->m_itMap.m_bottom )
 			{
-				CScriptTriggerArgs args("sm_cartography");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_cartography");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
 			}
 			else if ( ! IsPriv(PRIV_GM) && pItem->GetTopLevelObj() != m_pChar )	// must be on your person.
@@ -572,8 +585,12 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 		case IT_TINKER_TOOLS:	// Tinker tools.
 			{
-				CScriptTriggerArgs args("sm_tinker");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_tinker");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tinker" ) );
 			}
 		case IT_SEWING_KIT:	// IT_SEWING_KIT Sew with materials we have on hand.
@@ -1024,11 +1041,13 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 
 		if ( iSpell == SPELL_Polymorph )
 		{
+			if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+			{
 				CScriptTriggerArgs args("sm_polymorph");
 				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) 
 					return true;
-
-				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
+			}
+			return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ) );
 		}
 
 		// If NO PreCast -> Skill_Start()
@@ -1060,8 +1079,12 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 			break;
 		case SPELL_Summon:
 			{
-				CScriptTriggerArgs args("sm_summon");
-				if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_summon");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_summon" ) );
 			}
 		case SPELL_Mark:
@@ -1294,8 +1317,12 @@ bool CClient::Cmd_Skill_Smith( CItem * pIngots )
 
 	// Select the blacksmith item type.
 	// repair items or make type of items.
-	CScriptTriggerArgs args("sm_blacksmith");
-	if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+	{
+		CScriptTriggerArgs args("sm_blacksmith");
+		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+			return true;
+	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_blacksmith" ) );
 }
 
@@ -1317,8 +1344,12 @@ bool CClient::Cmd_Skill_Inscription()
 		return( false );
 	}
 
-	CScriptTriggerArgs args("sm_inscription");
-	if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+	{
+		CScriptTriggerArgs args("sm_inscription");
+		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+			return true;
+	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_inscription" ) );
 }
 
@@ -1351,8 +1382,12 @@ bool CClient::Cmd_Skill_Alchemy( CItem * pReag )
 	m_Targ_UID = pReag->GetUID();
 
 	// Put up a menu to decide formula ?
-	CScriptTriggerArgs args("sm_alchemy");
-	if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+	{
+		CScriptTriggerArgs args("sm_alchemy");
+		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+			return true;
+	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_alchemy" ) );
 }
 
@@ -1372,8 +1407,12 @@ bool CClient::Cmd_Skill_Cartography( int iLevel )
 		return( false );
 	}
 
-	CScriptTriggerArgs args("sm_cartography");
-	if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE ) return true;
+	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+	{
+		CScriptTriggerArgs args("sm_cartography");
+		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+			return true;
+	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
 }
 
@@ -1383,7 +1422,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	// Begin secure trading with a char. (Make the initial offer)
 	ASSERT(m_pChar);
 
-	if ( pChar )
+	if (( pChar ) && (( IsTrigUsed(TRIGGER_DROPON_CHAR) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_CHAR) )))
 	{
 		CScriptTriggerArgs Args( pChar );
 		if ( pItem->OnTrigger( ITRIG_DROPON_CHAR, m_pChar, &Args ) == TRIGRET_RET_TRUE )

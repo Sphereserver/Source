@@ -1310,7 +1310,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 
 
 #ifdef _ALPHASPHERE_PETS
-	if (!IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_PetSlots))
+	if (IsSetEF(EF_PetSlots))
 	{
 		// first check if it's a ridden creature (don't mess with m_curFollower then)
 		CItem * pCheckItem = this->LayerFind( LAYER_HORSE );
@@ -1656,7 +1656,8 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 
 	if ( pItem == NULL )
 		return( false );
-	if (( m_pNPC != NULL ) && ( m_pPlayer == NULL )) //for players, dclick was called before this function
+
+	if ((( m_pNPC != NULL ) && ( m_pPlayer == NULL )) && (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMDCLICK) ))) //for players, dclick was called before this function
 	{		
 		if ( pItem->OnTrigger( ITRIG_DCLICK, this ) == TRIGRET_RET_TRUE )
 			return false;

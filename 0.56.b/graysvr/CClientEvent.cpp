@@ -37,8 +37,11 @@ void CClient::Event_ChatButton(const NCHAR * pszName) // Client's chat button wa
 	if (m_pChar == NULL)
 		return;
 
-	if (m_pChar->OnTrigger(CTRIG_UserChatButton, m_pChar) == TRIGRET_RET_TRUE)
-		return;
+	if ( IsTrigUsed(TRIGGER_USERCHATBUTTON) )
+	{
+		if (m_pChar->OnTrigger(CTRIG_UserChatButton, m_pChar) == TRIGRET_RET_TRUE)
+			return;
+	}
 
 	ASSERT(GetAccount());
 
@@ -356,18 +359,21 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 		}
 
 		CObjBase *pOldCont = pItem->GetContainer();
-		CScriptTriggerArgs Args( pObjOn );
-		if ( pItem->OnTrigger( ITRIG_DROPON_ITEM, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+		if (( IsTrigUsed(TRIGGER_DROPON_ITEM) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_ITEM) ))
 		{
-			Event_Item_Drop_Fail( pItem );
-			return;
+			CScriptTriggerArgs Args( pObjOn );
+			if ( pItem->OnTrigger( ITRIG_DROPON_ITEM, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+			{
+				Event_Item_Drop_Fail( pItem );
+				return;
+			}
 		}
 
 		if ( pOldCont != pItem->GetContainer() )
 			return;
 
 		CItem * pItemOn = dynamic_cast <CItem*> ( pObjOn );
-		if ( pItemOn )
+		if (( pItemOn ) && (( IsTrigUsed(TRIGGER_DROPON_SELF) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_SELF) )))
 		{
 			CScriptTriggerArgs Args( pItem );
 			if ( pItemOn->OnTrigger( ITRIG_DROPON_SELF, m_pChar, &Args ) == TRIGRET_RET_TRUE )
@@ -537,7 +543,16 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 	if ( m_pChar->Skill_Wait(skill) )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_SKILLSELECT) )
+	{
+		if ( m_pChar->Skill_OnCharTrigger( skill, CTRIG_SkillSelect ) == TRIGRET_RET_TRUE )
+		{
+			m_pChar->Skill_Fail( true );	// clean up current skill.
+			return;
+		}
+	}
+
+	if ( IsTrigUsed(TRIGGER_SELECT) )
 	{
 		if ( m_pChar->Skill_OnTrigger( skill, SKTRIG_SELECT ) == TRIGRET_RET_TRUE )
 		{
@@ -812,7 +827,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 					DEBUG_WARN(("%s (%lx): Fast Walk ?\n", GetName(), GetSocketID()));
 
 					TRIGRET_TYPE iAction = TRIGRET_RET_DEFAULT;
-					if ( !IsSetEF(EF_Minimize_Triggers) )
+					if ( IsTrigUsed(TRIGGER_USEREXWALKLIMIT) )
 					{
 						iAction = m_pChar->OnTrigger( CTRIG_UserExWalkLimit, m_pChar, NULL );
 					}
@@ -897,7 +912,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 
 	bool fCleanSkill = true;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERWARMODE) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = m_pChar->IsStatFlag(STATF_War) ? 1 : 0;
@@ -1122,7 +1137,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		if ( pItem == NULL )
 			continue;
 
-		if ( IsSetEF(EF_New_Triggers) )
+		if (( IsTrigUsed(TRIGGER_BUY) ) || ( IsTrigUsed(TRIGGER_ITEMBUY) ))
 		{
 			CScriptTriggerArgs Args( amount, items[i].m_amount * items[i].m_price, pVendor );
 			Args.m_VarsLocal.SetNum( "TOTALCOST", costtotal);
@@ -1308,7 +1323,7 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 		if ( pItem->GetTopLevelObj() != m_pChar )
 			continue;
 
-		if ( IsSetEF(EF_New_Triggers) )
+		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
 		{
 			CScriptTriggerArgs Args( pItem->GetAmount(), 0, pVendor );
 			if ( pItem->OnTrigger( ITRIG_Sell, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
@@ -1394,8 +1409,11 @@ void CClient::Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, 
 	if ( !pChar || !pChar->m_pPlayer )
 		return;
 
-	if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
-		return;
+	if ( IsTrigUsed(TRIGGER_PROFILE) )
+	{
+		if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
+			return;
+	}
 
 	if ( fWriteMode )
 	{
@@ -1435,7 +1453,7 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 		return;
 	}
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERMAILBAG) )
 	{
 		if (pChar->OnTrigger(CTRIG_UserMailBag, m_pChar, NULL) == TRIGRET_RET_TRUE)
 			return;
@@ -1460,7 +1478,7 @@ void CClient::Event_ToolTip( CGrayUID uid )
 	if ( pObj == NULL )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if (( IsTrigUsed(TRIGGER_TOOLTIP) ) || (( IsTrigUsed(TRIGGER_ITEMTOOLTIP) )&&(pObj->IsItem())))
 	{
 		if ( pObj->OnTrigger("@ToolTip", this) == TRIGRET_RET_TRUE )	// CTRIG_ToolTip, ITRIG_ToolTip
 			return;
@@ -1995,11 +2013,14 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 	if ( g_Cfg.IsObscene(pszCharName))
 		return;
 
-	CScriptTriggerArgs args;
-	args.m_pO1 = pChar;
-	args.m_s1 = pszCharName;
-	if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
-		return;
+	if ( IsTrigUsed(TRIGGER_RENAME) )
+	{
+		CScriptTriggerArgs args;
+		args.m_pO1 = pChar;
+		args.m_s1 = pszCharName;
+		if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+			return;
+	}
 
 	pChar->SetName(pszCharName);
 }
@@ -2114,8 +2135,11 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 
 	CChar * pChar = dynamic_cast <CChar*>(pObj);
 
-	if ( pChar->OnTrigger( CTRIG_DClick, m_pChar ) == TRIGRET_RET_TRUE )
-		return true;
+	if (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_CHARDCLICK) ))
+	{
+		if ( pChar->OnTrigger( CTRIG_DClick, m_pChar ) == TRIGRET_RET_TRUE )
+			return true;
+	}
 
 	if ( ! fMacro )
 	{
@@ -2178,9 +2202,12 @@ void CClient::Event_SingleClick( CGrayUID uid )
 		return;
 	}
 
-	CScriptTriggerArgs Args( this );
-	if ( pObj->OnTrigger( "@Click", m_pChar, &Args ) == TRIGRET_RET_TRUE )	// CTRIG_Click, ITRIG_Click
-		return;
+	if (( IsTrigUsed(TRIGGER_CLICK) ) || (( IsTrigUsed(TRIGGER_ITEMCLICK) ) && ( pObj->IsItem())) || (( IsTrigUsed(TRIGGER_CHARCLICK) ) && ( pObj->IsChar())))
+	{
+		CScriptTriggerArgs Args( this );
+		if ( pObj->OnTrigger( "@Click", m_pChar, &Args ) == TRIGRET_RET_TRUE )	// CTRIG_Click, ITRIG_Click
+			return;
+	}
 
 	if ( pObj->IsItem())
 	{
@@ -2326,7 +2353,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 
 	if ( uObj.IsItem() )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers))
+		if (( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ) || ( IsTrigUsed(TRIGGER_ITEMCONTEXTMENUREQUEST) ))
 		{
 			Args.m_iN1 = 1;
 			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuRequest, this->GetChar(), &Args);
@@ -2341,7 +2368,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	}
 	else if ( uObj.IsChar() )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers))
+		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) )
 		{
 			Args.m_iN1 = 1;
 			int iRet = pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
@@ -2403,7 +2430,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			}
 		}
 
-		if (( Args.m_iN1 != 1 ) && ( !IsSetEF(EF_Minimize_Triggers)))
+		if (( Args.m_iN1 != 1 ) && ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ))
 		{
 			Args.m_iN1 = 2;
 			pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
@@ -2439,7 +2466,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 	if ( uObj.IsItem() )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers) )
+		if (( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) ) || ( IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) ))
 		{
 			Args.m_iN1 = EntryTag;
 			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuSelect, this->GetChar(), &Args);
@@ -2448,7 +2475,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	}
 	else if ( uObj.IsChar() )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers))
+		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) )
 		{
 			Args.m_iN1 = EntryTag;
 			int iRet = uObj.CharFind()->OnTrigger(CTRIG_ContextMenuSelect, this->GetChar(), &Args);
@@ -2551,11 +2578,14 @@ void CClient::Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE ty
 	if ( !m_pChar )
 		return;
 
-	CScriptTriggerArgs Args(type);
-	Args.m_s1 = pszText;
-	Args.m_VarsLocal.SetStr("LANG", false, lang.GetStr());
+	if ( IsTrigUsed(TRIGGER_USERBUGREPORT) )
+	{
+		CScriptTriggerArgs Args(type);
+		Args.m_s1 = pszText;
+		Args.m_VarsLocal.SetStr("LANG", false, lang.GetStr());
 
-	m_pChar->OnTrigger(CTRIG_UserBugReport, m_pChar, &Args);
+		m_pChar->OnTrigger(CTRIG_UserBugReport, m_pChar, &Args);
+	}
 }
 
 void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
@@ -2564,7 +2594,7 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 	if ( !m_pChar )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_USERKRTOOLBAR) )
 	{
 		CScriptTriggerArgs Args( bType, dwArg );
 		if ( m_pChar->OnTrigger( CTRIG_UserKRToolbar, m_pChar, &Args ) == TRIGRET_RET_TRUE )
@@ -2609,7 +2639,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 
 	if ( m_pChar )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers) )
+		if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
 		{
 			CScriptTriggerArgs	Args( pszName );
 			Args.m_iN1	= type;
@@ -2731,12 +2761,11 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 			break;
 
 		case EXTCMD_INVOKE_VIRTUE:
-			if (m_pChar != NULL)
+			if ((m_pChar != NULL) && ( IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) ))
 			{
 				int iVirtueID = ppArgs[0][0] - '0';	// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
 				CScriptTriggerArgs Args(m_pChar);
 				Args.m_iN1 = iVirtueID;
-
 				m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
 			}
 			break;

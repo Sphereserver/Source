@@ -511,7 +511,7 @@ void CChar::Noto_Fame( int iFameChange )
 
 	iFameChange = g_Cfg.Calc_FameScale( iFame, iFameChange );
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_FAMECHANGE) )
 	{
 		CScriptTriggerArgs Args(iFameChange);	// ARGN1 - Fame change modifier
 		TRIGRET_TYPE retType = OnTrigger(CTRIG_FameChange, this, &Args);
@@ -554,7 +554,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 
 	iKarmaChange = g_Cfg.Calc_KarmaScale( iKarma, iKarmaChange );
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_KARMACHANGE) )
 	{
 		CScriptTriggerArgs Args(iKarmaChange);	// ARGN1 - Karma change modifier
 		TRIGRET_TYPE retType = OnTrigger(CTRIG_KarmaChange, this, &Args);
@@ -652,11 +652,13 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 			CScriptTriggerArgs args;
 			args.m_iN1 = m_pPlayer->m_wMurders+1;
 			args.m_iN2 = true;
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+
+			if ( IsTrigUsed(TRIGGER_MURDERMARK) )
 			{
 				OnTrigger(CTRIG_MurderMark, this, &args);
 				if ( args.m_iN1 < 0 ) args.m_iN1 = 0;
 			}
+
 			m_pPlayer->m_wMurders = args.m_iN1;
 			if ( args.m_iN2 ) Noto_Criminal();
 			Noto_Murder();
@@ -1012,7 +1014,7 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	if ( pCriminal == this )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
 	{
 		if ( ( pCriminal->OnTrigger( CTRIG_Criminal, this, NULL /*&Args*/ ) ) == TRIGRET_RET_TRUE )
 			return;
@@ -1105,23 +1107,23 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 
 		bool fYour = ( pCharMark == pChar );
 
-		CScriptTriggerArgs Args( pAction );
-		Args.m_iN1	= SkillToSee;
-		Args.m_iN2	= pItem ? (DWORD) pItem->GetUID() : 0;
-		Args.m_pO1	= pCharMark;
-		int iRet	= TRIGRET_RET_DEFAULT;
-
-		if ( !IsSetEF(EF_Minimize_Triggers) )
+		if ( IsTrigUsed(TRIGGER_SEECRIME) )
 		{
+			CScriptTriggerArgs Args( pAction );
+			Args.m_iN1	= SkillToSee;
+			Args.m_iN2	= pItem ? (DWORD) pItem->GetUID() : 0;
+			Args.m_pO1	= pCharMark;
+			int iRet	= TRIGRET_RET_DEFAULT;
+
 			iRet = pChar->OnTrigger( CTRIG_SeeCrime, this, &Args );
-		}
 
-		if ( iRet == TRIGRET_RET_TRUE )
-			continue;
-		else if ( iRet == TRIGRET_RET_DEFAULT )
-		{
-			if ( ! g_Cfg.Calc_CrimeSeen( this, pChar, SkillToSee, fYour ))
+			if ( iRet == TRIGRET_RET_TRUE )
 				continue;
+			else if ( iRet == TRIGRET_RET_DEFAULT )
+			{
+				if ( ! g_Cfg.Calc_CrimeSeen( this, pChar, SkillToSee, fYour ))
+					continue;
+			}
 		}
 
 		char *z = Str_GetTemp();
@@ -1533,7 +1535,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	CVarDefCont * pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
 	RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
 
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
 	{
 		CScriptTriggerArgs args( pGuard );
 		args.m_iN1 = rid.GetResIndex();
@@ -2102,11 +2104,14 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 	u_damFlag = uType;
 
-	CScriptTriggerArgs Args( i_damTemp, u_damFlag, 0 );
-	if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
-		return( 0 );
-	i_damTemp	= Args.m_iN1;
-	u_damFlag	= Args.m_iN2;
+	if ( IsTrigUsed(TRIGGER_GETHIT) )
+	{
+		CScriptTriggerArgs Args( i_damTemp, u_damFlag, 0 );
+		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
+			return( 0 );
+		i_damTemp	= Args.m_iN1;
+		u_damFlag	= Args.m_iN2;
+	}
 	if ( (i_damTemp != iDmg) || (u_damFlag != uType) )
 	{
 		iDmg = i_damTemp;
@@ -3036,7 +3041,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		return( false );
 	}
 
-	if (m_Act_Targ != pCharTarg->GetUID())
+	if ((m_Act_Targ != pCharTarg->GetUID()) && (( IsTrigUsed(TRIGGER_ATTACK) ) || ( IsTrigUsed(TRIGGER_CHARATTACK) )))
 	{
 		if (OnTrigger(CTRIG_Attack, const_cast<CChar *>(pCharTarg)) == TRIGRET_RET_TRUE)
 			return false;
@@ -3362,7 +3367,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// just start the bow animation.
 			int iTime = Fight_GetWeaponSwingTimer();
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
@@ -3448,7 +3453,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			// We are swinging.
 			int iTime = Fight_GetWeaponSwingTimer();
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args( iTime, 0, pWeapon );
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
@@ -3495,7 +3500,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	SOUND_TYPE iSnd = 0;
 
 	// Check if we hit something;
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_HITMISS) )
 	{
 		if ( m_Act_Difficulty < 0 )
 		{
@@ -3583,15 +3588,29 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
 		}
 	}
-	
-	if ( Skill_OnTrigger( skill, SKTRIG_SUCCESS ) == TRIGRET_RET_TRUE )
+
+	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
 	{
-		Skill_Cleanup();
-		return( WAR_SWING_EQUIPPING );	// ok, so no hit - skill failed. Pah!
+		if ( Skill_OnCharTrigger( skill, CTRIG_SkillSuccess ) == TRIGRET_RET_TRUE )
+		{
+			Skill_Cleanup();
+			return( WAR_SWING_EQUIPPING );	// ok, so no hit - skill failed. Pah!
+		}
+	}
+	if ( IsTrigUsed(TRIGGER_SUCCESS) )
+	{
+		if ( Skill_OnTrigger( skill, SKTRIG_SUCCESS ) == TRIGRET_RET_TRUE )
+		{
+			Skill_Cleanup();
+			return( WAR_SWING_EQUIPPING );	// ok, so no hit - skill failed. Pah!
+		}
 	}
 
-	if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
-		return( WAR_SWING_EQUIPPING );
+	if ( IsTrigUsed(TRIGGER_HIT) )
+	{
+		if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
+			return( WAR_SWING_EQUIPPING );
+	}
 #ifdef _ALPHASPHERE
 	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif

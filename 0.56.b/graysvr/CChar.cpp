@@ -66,7 +66,6 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemDropOn_Self",		// An item has been dropped on
 	"@itemEQUIP",			// I have equipped an item
 	"@itemEQUIPTEST",
-	"@itemFIRE",
 	"@itemPICKUP_GROUND",
 	"@itemPICKUP_PACK",		// picked up from inside some container.
 	"@itemPICKUP_SELF",		// picked up from this container
@@ -98,7 +97,6 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCActFollow",			// (NPC only) following someone right now
 	"@NPCAction",
 	"@NPCHearGreeting",		// (NPC only) i have been spoken to for the first time. (no memory of previous hearing)
-	"@NPCHearNeed",			// (NPC only) i heard someone mention something i need. (11)
 	"@NPCHearUnknown",		//+(NPC only) I heard something i don't understand.
 	"@NPCLookAtChar",		// (NPC only) look at a character
 	"@NPCLookAtItem",		// (NPC only) look at a character
@@ -131,6 +129,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SkillFail",
 	"@SkillGain",
 	"@SkillMakeItem",
+	"@SkillMenu",
 	"@SkillPreStart",
 	"@SkillSelect",
 	"@SkillStart",
@@ -148,7 +147,6 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@SpellSuccess",	// The spell succeeded
 	"@SpellTargetCancel",	// cancelled spell target
 	"@StatChange",
-	"@Step",			// Very expensive!
 	"@StepStealth",		//+Made a step in stealth mode
 	"@ToolTip",			// someone did tool tips on me.
 	"@TradeAccepted",	// Everything went well, and we are about to exchange trade items
@@ -382,7 +380,7 @@ void CChar::SetDisconnected()
 
 bool CChar::NotifyDelete()
 {
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_DESTROY) )
 	{
 		//We can forbid the deletion in here with no pain
 		if (CChar::OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE)
@@ -823,7 +821,7 @@ void CChar::NPC_LoadScript( bool fRestock )
 	CCharBase * pCharDef = Char_GetDef();
 	ReadScriptTrig(pCharDef, CTRIG_Create);
 
-	if ( fRestock )
+	if (( fRestock ) && ( IsTrigUsed(TRIGGER_NPCRESTOCK) ))
 		ReadScriptTrig(pCharDef, CTRIG_NPCRestock);
 
 	CreateNewCharCheck();
@@ -983,7 +981,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	if ( !strlen(zCharName) )
 		bNameIsAccepted = false;
 
-	if ( bNameIsAccepted )
+	if (( bNameIsAccepted ) && ( IsTrigUsed(TRIGGER_RENAME) ))
 	{
 		CScriptTriggerArgs args;
 		args.m_s1 = zCharName;
@@ -3323,7 +3321,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		}
 		
 		bool bShowMsg = (m_pClient != NULL);
-		if ( g_Cfg.m_iExperienceMode&EXP_MODE_TRIGGER_EXP )
+
+		if ( IsTrigUsed(TRIGGER_EXPCHANGE) )
 		{
 			CScriptTriggerArgs	args(delta, bShowMsg);
 			args.m_pO1 = pCharDead;
@@ -3369,7 +3368,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		{
 			delta = level - m_level;
 
-			if ( g_Cfg.m_iExperienceMode&EXP_MODE_TRIGGER_LEVEL )
+			if ( IsTrigUsed(TRIGGER_EXPLEVELCHANGE) )
 			{
 				CScriptTriggerArgs	args(delta);
 				if ( OnTrigger(CTRIG_ExpLevelChange, this, &args) == TRIGRET_RET_TRUE )

@@ -126,13 +126,22 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime * TICK_PER_SEC);	// Delete myself in this amount of time.
 
 	EXC_SET("resourcefound");
-	CScriptTriggerArgs	Args(0, 0, pResBit);
-	if ( ( pCharSrc != NULL && pCharSrc->OnTrigger(CTRIG_RegionResourceFound, pCharSrc, &Args) == TRIGRET_RET_TRUE ) || 
-		 pOreDef->OnTrigger("@ResourceFound", pCharSrc, &Args) == TRIGRET_RET_TRUE )
+
+	if ( pCharSrc != NULL)
 	{
-		if ( pResBit->IsDisconnected() )
-			return NULL;
-		pResBit->SetAmount(0);
+		CScriptTriggerArgs	Args(0, 0, pResBit);
+		TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
+		if ( IsTrigUsed(TRIGGER_REGIONRESOURCEFOUND) )
+			tRet = pCharSrc->OnTrigger(CTRIG_RegionResourceFound, pCharSrc, &Args);
+		if ( IsTrigUsed(TRIGGER_RESOURCEFOUND) )
+			tRet = pOreDef->OnTrigger("@ResourceFound", pCharSrc, &Args);
+
+		if (tRet = TRIGRET_RET_TRUE)
+		{
+			if ( pResBit->IsDisconnected() )
+				return NULL;
+			pResBit->SetAmount(0);
+		}
 	}
 	return pResBit;
 

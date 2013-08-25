@@ -34,7 +34,6 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@DropOn_Self",			// An item has been dropped here
 	"@EQUIP",		// I have been unequipped
     "@EQUIPTEST",
-	"@FIRE",
 	"@PICKUP_GROUND",	// I was picked up off the ground.
 	"@PICKUP_PACK",	// picked up from inside some container.
 	"@PICKUP_SELF", // picked up from here
@@ -82,7 +81,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 bool CItem::NotifyDelete()
 {
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if (( IsTrigUsed(TRIGGER_DESTROY) ) || ( IsTrigUsed(TRIGGER_ITEMDESTROY) ))
 	{
 		if (CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE)
 			return false;
@@ -287,7 +286,7 @@ CItem * CItem::CreateScript( ITEMID_TYPE id, CChar * pSrc ) // static
 		}
 	}
 
-	if ( pSrc && pSrc->IsClient() )
+	if (( pSrc && pSrc->IsClient() ) && ( IsTrigUsed(TRIGGER_ITEMCREATE) ))
 	{
 		CScriptTriggerArgs	args;
 		args.m_pO1 = pItem;
@@ -1367,17 +1366,19 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		return false;
 	}
 
-	// iItemCount - ITRIG_DROPON_ITEM
-
 	CObjBase * pOldCont = this->GetContainer();
+	TRIGRET_TYPE ttResult = TRIGRET_RET_DEFAULT;
 
-	CScriptTriggerArgs args;
-	args.m_s1 = ptNewPlace.WriteUsed();
-	args.m_s1_raw = args.m_s1;
-	args.m_iN1 = iDecayTime;
-	TRIGRET_TYPE ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
+	if (( IsTrigUsed(TRIGGER_DROPON_GROUND) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) ))
+	{
+		CScriptTriggerArgs args;
+		args.m_s1 = ptNewPlace.WriteUsed();
+		args.m_s1_raw = args.m_s1;
+		args.m_iN1 = iDecayTime;
+		ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
 
-	iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
+		iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
+	}
 
 	if (( IsDeleted() ) || ( pOldCont != this->GetContainer()))
 		return false;
@@ -2787,113 +2788,120 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
+	CChar * pChar = pSrc->GetChar();
 
 	// 1) Triggers installed on character, sensitive to actions on all items
-	EXC_SET("chardef");
-	CChar * pChar = pSrc->GetChar();
-	if ( pChar != NULL )
+	if ( IsTrigUsed(CChar::sm_szTrigName[(CTRIG_itemAfterClick - 1) + iAction]) )
 	{
-		// Is there an [EVENT] block call here?
-		if ( iAction > XTRIG_UNKNOWN )
+		EXC_SET("chardef");
+		if ( pChar != NULL )
 		{
-			CGrayUID uidOldAct = pChar->m_Act_Targ;
-			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>((CTRIG_itemAfterClick - 1) + iAction ),  pSrc, pArgs );
-			pChar->m_Act_Targ = uidOldAct;
-			if ( iRet == TRIGRET_RET_TRUE )
-				return iRet;	// Block further action.
-		}
-	}
-
-
-	//	2) EVENTS
-	EXC_SET("events");
-	size_t origEvents = m_OEvents.GetCount();
-	size_t curEvents = origEvents;
-	for ( size_t i = 0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
-	{
-		CResourceLink * pLink = m_OEvents[i];
-		if ( !pLink || !pLink->HasTrigger(iAction) )
-			continue;
-		CResourceLock s;
-		if ( !pLink->ResourceLock(s) )
-			continue;
-
-		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-			return iRet;
-
-		curEvents = m_OEvents.GetCount();
-		if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
-		{
-			--i;
-			origEvents = curEvents;
-		}
-	}
-
-	// 3) TEVENTS on the item
-	EXC_SET("tevents");
-	for ( size_t i = 0; i < pItemDef->m_TEvents.GetCount(); ++i )
-	{
-		CResourceLink * pLink = pItemDef->m_TEvents[i];
-		ASSERT(pLink);
-		if ( !pLink->HasTrigger(iAction) )
-			continue;
-		CResourceLock s;
-		if ( !pLink->ResourceLock(s) )
-			continue;
-		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-			return iRet;
-	}
-
-
-	// 4) TYPEDEF
-	EXC_SET("typedef");
-	{
-		// It has an assigned trigger type.
-		CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDef( RESOURCE_ID( RES_TYPEDEF, GetType() )));
-		if ( pResourceLink == NULL )
-		{
-			if ( pChar )
+			// Is there an [EVENT] block call here?
+			if ( iAction > XTRIG_UNKNOWN )
 			{
-				DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
+				CGrayUID uidOldAct = pChar->m_Act_Targ;
+				pChar->m_Act_Targ = GetUID();
+				iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>((CTRIG_itemAfterClick - 1) + iAction ),  pSrc, pArgs );
+				pChar->m_Act_Targ = uidOldAct;
+				if ( iRet == TRIGRET_RET_TRUE )
+					return iRet;	// Block further action.
 			}
-			else
+		}
+	}
+
+	if ( IsTrigUsed(pszTrigName) )
+	{
+
+		//	2) EVENTS
+		EXC_SET("events");
+		size_t origEvents = m_OEvents.GetCount();
+		size_t curEvents = origEvents;
+		for ( size_t i = 0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
+		{
+			CResourceLink * pLink = m_OEvents[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
+
+			curEvents = m_OEvents.GetCount();
+			if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
 			{
-				DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
+				--i;
+				origEvents = curEvents;
 			}
-			m_type = Item_GetDef()->GetType();
-			return( TRIGRET_RET_DEFAULT );
 		}
 
+		// 3) TEVENTS on the item
+		EXC_SET("tevents");
+		for ( size_t i = 0; i < pItemDef->m_TEvents.GetCount(); ++i )
+		{
+			CResourceLink * pLink = pItemDef->m_TEvents[i];
+			ASSERT(pLink);
+			if ( !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
+		}
+
+
+		// 4) TYPEDEF
+		EXC_SET("typedef");
+		{
+			// It has an assigned trigger type.
+			CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDef( RESOURCE_ID( RES_TYPEDEF, GetType() )));
+			if ( pResourceLink == NULL )
+			{
+				if ( pChar )
+				{
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
+				}
+				else
+				{
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
+				}
+				m_type = Item_GetDef()->GetType();
+				return( TRIGRET_RET_DEFAULT );
+			}
+
+			if ( pResourceLink->HasTrigger( iAction ))
+			{
+				CResourceLock s;
+				if ( pResourceLink->ResourceLock(s))
+				{
+					iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
+					if ( iRet == TRIGRET_RET_TRUE )
+					{
+						return( iRet );	// Block further action.
+					}
+				}
+			}
+		}
+
+
+		// Look up the trigger in the RES_ITEMDEF. (default)
+		EXC_SET("itemdef");
+		CBaseBaseDef * pResourceLink = Base_GetDef();
+		ASSERT(pResourceLink);
 		if ( pResourceLink->HasTrigger( iAction ))
 		{
 			CResourceLock s;
 			if ( pResourceLink->ResourceLock(s))
 			{
 				iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
-				if ( iRet == TRIGRET_RET_TRUE )
-				{
-					return( iRet );	// Block further action.
-				}
 			}
 		}
 	}
 
-
-	// Look up the trigger in the RES_ITEMDEF. (default)
-	EXC_SET("itemdef");
-	CBaseBaseDef * pResourceLink = Base_GetDef();
-	ASSERT(pResourceLink);
-	if ( pResourceLink->HasTrigger( iAction ))
-	{
-		CResourceLock s;
-		if ( pResourceLink->ResourceLock(s))
-		{
-			iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
-		}
-	}
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -4090,8 +4098,14 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	//
 
 	CScriptTriggerArgs Args( static_cast<int>(spell), iSkillLevel, pSourceItem );
-	TRIGRET_TYPE iRet = OnTrigger( ITRIG_SPELLEFFECT, pCharSrc, &Args );
-	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+
+	if (( IsTrigUsed(TRIGGER_SPELLEFFECT) ) || ( IsTrigUsed(TRIGGER_ITEMSPELL) ))
+	{
+		iRet = OnTrigger( ITRIG_SPELLEFFECT, pCharSrc, &Args );
+		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+	}
+
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 
 	switch ( iRet )
@@ -4101,10 +4115,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		default:					break;
 	}
 	
-	if ( !IsSetEF(EF_Minimize_Triggers) )
-	{
+	if ( IsTrigUsed(TRIGGER_EFFECT) )
 		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc, &Args );
-	}
+
 	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iSkillLevel = Args.m_iN2;
 	pSpellDef = g_Cfg.GetSpellDef( spell );
@@ -4332,10 +4345,11 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( iDmg <= 0 )
 		return( 0 );
 
-	CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));
-	if ( OnTrigger( ITRIG_DAMAGE, pSrc, &Args ) == TRIGRET_RET_TRUE )
+	if (( IsTrigUsed(TRIGGER_DAMAGE) ) || ( IsTrigUsed(TRIGGER_ITEMDAMAGE) ))
 	{
-		return( 0 );
+		CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));
+		if ( OnTrigger( ITRIG_DAMAGE, pSrc, &Args ) == TRIGRET_RET_TRUE )
+			return( 0 );
 	}
 
 	switch ( GetType())
@@ -4638,9 +4652,14 @@ bool CItem::OnTick()
 
 	EXC_SET("timer trigger");
 	SetTimeout(-1);
-	TRIGRET_TYPE iRet = OnTrigger( ITRIG_TIMER, &g_Serv );
-	if ( iRet == TRIGRET_RET_TRUE )
-		return true;
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+
+	if (( IsTrigUsed(TRIGGER_TIMER) ) || ( IsTrigUsed(TRIGGER_ITEMTIMER) ))
+	{
+		iRet = OnTrigger( ITRIG_TIMER, &g_Serv );
+		if( iRet == TRIGRET_RET_TRUE )
+			return true;
+	}
 
 	EXC_SET("GetType");
 	IT_TYPE type = m_type;

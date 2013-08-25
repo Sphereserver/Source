@@ -215,8 +215,11 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 		// waiting to be filled
 		if ( !m_pNPC->m_timeRestock.IsTimeValid() )
 		{
-			CCharBase *pCharDef = Char_GetDef();
-			ReadScriptTrig(pCharDef, CTRIG_NPCRestock, true);
+			if ( IsTrigUsed(TRIGGER_NPCRESTOCK) )
+			{
+				CCharBase *pCharDef = Char_GetDef();
+				ReadScriptTrig(pCharDef, CTRIG_NPCRestock, true);
+			}
 
 			//	we need restock vendor money as well
 			GetBank()->Restock();
@@ -371,8 +374,11 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	if ( pMemory == NULL )
 	{
 		// This or CTRIG_SeeNewPlayer will be our first contact with people.
-		if ( OnTrigger( CTRIG_NPCHearGreeting, pSrc ) == TRIGRET_RET_TRUE )
-			return;
+		if ( IsTrigUsed(TRIGGER_NPCHEARGREETING) )
+		{
+			if ( OnTrigger( CTRIG_NPCHearGreeting, pSrc ) == TRIGRET_RET_TRUE )
+				return;
+		}
 
 		// record that we attempted to speak to them.
 		pMemory = Memory_AddObjTypes(pSrc, MEMORY_SPEAK);
@@ -432,8 +438,11 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 	}
 
 	// can't figure you out.
-	if ( OnTrigger( CTRIG_NPCHearUnknown, pSrc ) == TRIGRET_RET_TRUE )
-		return;
+	if ( IsTrigUsed(TRIGGER_NPCHEARUNKNOWN) )
+	{
+		if ( OnTrigger( CTRIG_NPCHearUnknown, pSrc ) == TRIGRET_RET_TRUE )
+			return;
+	}
 
 	if ( Skill_GetActive() == NPCACT_TALK || Skill_GetActive() == NPCACT_TALK_FOLLOW )
 	{
@@ -1323,30 +1332,18 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 
 	int iWantThisItem = NPC_WantThisItem(pItem);
 
-	if ( IsSetEF( EF_New_Triggers ) )
+	if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) )
 	{
-		if ( !pItem->IsAttr( ATTR_MOVE_NEVER ) )
+		if (( !pItem->IsAttr( ATTR_MOVE_NEVER ) ) && ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) ))
 		{
 
 			CScriptTriggerArgs	Args( iDist, iWantThisItem, pItem );
 			switch( OnTrigger( CTRIG_NPCLookAtItem, this, &Args ) )
 			{
-#ifdef _NAZDEBUG
-				case  TRIGRET_RET_TRUE:	
-					g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned TRUE\n", GetName() );
-					return false;
-				case  TRIGRET_RET_FALSE:	
-					g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned FALSE\n", GetName() );
-					return true;
-#else
 				case  TRIGRET_RET_TRUE:		return true;
 				case  TRIGRET_RET_FALSE:	return false;
-#endif
 				default:					break;
 			}
-#ifdef _NAZDEBUG
-			g_Log.EventError("CChar::NPC_LookAtItem: CTRIG_NPCLookAtItem on '%s' returned DEFAULT\n", GetName() );
-#endif
 			iWantThisItem = Args.m_iN2;
 		}
 	}
@@ -1449,7 +1446,7 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 	if ( !m_pNPC || !pChar || ( pChar == this ) || !CanSeeLOS(pChar,LOS_NB_WINDOWS) )//Flag - we can attack through a window
 		return false;
 
-	if ( IsSetEF( EF_New_Triggers ) )
+	if ( IsTrigUsed(TRIGGER_NPCLOOKATCHAR) )
 	{
 		switch ( OnTrigger(CTRIG_NPCLookAtChar, pChar) )
 		{
@@ -1478,13 +1475,16 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 			pChar->m_pPlayer &&
 			! Memory_FindObjTypes( pChar, MEMORY_SPEAK ))
 		{
-			if ( OnTrigger( CTRIG_NPCSeeNewPlayer, pChar ) != TRIGRET_RET_TRUE )
+			if ( IsTrigUsed(TRIGGER_NPCSEENEWPLAYER) )
 			{
-				// record that we attempted to speak to them.
-				CItemMemory * pMemory = Memory_AddObjTypes( pChar, MEMORY_SPEAK );
-				if ( pMemory )
-					pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
-				// m_Act_Hear_Unknown = 0;
+				if ( OnTrigger( CTRIG_NPCSeeNewPlayer, pChar ) != TRIGRET_RET_TRUE )
+				{
+					// record that we attempted to speak to them.
+					CItemMemory * pMemory = Memory_AddObjTypes( pChar, MEMORY_SPEAK );
+					if ( pMemory )
+						pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
+					// m_Act_Hear_Unknown = 0;
+				}
 			}
 		}
 	}
@@ -1740,7 +1740,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	}
 
 	EXC_SET("Trigger");
-	if ( IsSetEF( EF_New_Triggers ) )
+	if ( IsTrigUsed(TRIGGER_NPCACTFOLLOW) )
 	{
 		CScriptTriggerArgs Args( fFlee, maxDistance, forceDistance );
 		switch ( OnTrigger( CTRIG_NPCActFollow, pChar, &Args ) )
@@ -2133,7 +2133,7 @@ void CChar::NPC_Act_Fight()
 	int iMotivation = NPC_GetAttackMotivation( pChar );
 
 	bool		fSkipHardcoded	= false;
-	if ( IsSetEF( EF_New_Triggers ) )
+	if ( IsTrigUsed(TRIGGER_NPCACTFIGHT) )
 	{
 		CScriptTriggerArgs Args( iDist, iMotivation );
 		switch ( OnTrigger( CTRIG_NPCActFight, pChar, &Args ) )
@@ -2340,7 +2340,7 @@ void CChar::NPC_Act_GoHome()
 		int	iDistance	= m_ptHome.GetDist( GetTopPoint() );
 		if ( (iDistance > g_Cfg.m_iLostNPCTeleport) && (iDistance > m_pNPC->m_Home_Dist_Wander) )
 		{
-			if ( !IsSetEF(EF_Minimize_Triggers) )
+			if ( IsTrigUsed(TRIGGER_NPCLOSTTELEPORT) )
 			{
 				CScriptTriggerArgs Args(iDistance);	// ARGN1 - distance
 				if ( OnTrigger(CTRIG_NPCLostTeleport, this, &Args) != TRIGRET_RET_TRUE )
@@ -2823,12 +2823,10 @@ void CChar::NPC_Act_Idle()
 	// Specific creature random actions.
 	if ( Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX) && !Calc_GetRandVal(3) )
 	{
-		if ( !IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_NPCAct_Triggers))
+		if ( IsTrigUsed(TRIGGER_NPCSPECIALACTION) )
 		{
 			if ( OnTrigger( CTRIG_NPCSpecialAction, this ) == TRIGRET_RET_TRUE )
-			{
 				return;
-			}
 		}
 
 		switch ( GetDispID())
@@ -2903,7 +2901,7 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		return false;
 
 	CScriptTriggerArgs Args(pItem);
-	if ( !IsSetEF(EF_Minimize_Triggers) )
+	if ( IsTrigUsed(TRIGGER_RECEIVEITEM) )
 	{
 		if ( OnTrigger(CTRIG_ReceiveItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 			return false;
@@ -3000,19 +2998,20 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	CItemContainer * pPack = NULL;
 	if ( !NPC_WantThisItem(pItem) )
 	{
-		if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
+		if ( IsTrigUsed(TRIGGER_NPCREFUSEITEM) )
 		{
-			if ( pCharSrc->IsClient() )
-				pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
-			return false;
-		} 
-		else 
-		{
-			if ( pPack == NULL )
-				pPack = GetPackSafe();
-			pPack->ContentAdd( pItem );
-			return true;
+			if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
+			{
+				if ( pCharSrc->IsClient() )
+					pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
+				return false;
+			} 
 		}
+
+		if ( pPack == NULL )
+			pPack = GetPackSafe();
+		pPack->ContentAdd( pItem );
+		return true;
 	}
 
 	//	gold goes to the bankbox or as a financial support to the NPC
@@ -3112,11 +3111,14 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			break;
 	}
 
-	if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
+	if ( IsTrigUsed(TRIGGER_NPCACCEPTITEM) )
 	{
-		pCharSrc->ItemBounce( pItem );
-		pItem->Update();
-		return false;
+		if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
+		{
+			pCharSrc->ItemBounce( pItem );
+			pItem->Update();
+			return false;
+		}
 	}
 
 	if ( pPack == NULL )
@@ -3624,12 +3626,10 @@ void CChar::NPC_AI()
 	if ( !pSector )
 		return;
 
-	if ( !IsSetEF(EF_Minimize_Triggers) && IsSetEF(EF_NPCAct_Triggers))
+	if ( IsTrigUsed(TRIGGER_NPCACTION) )
 	{
 		if ( OnTrigger( CTRIG_NPCAction, this ) == TRIGRET_RET_TRUE )
-		{
 			return;
-		}
 	}
 
 	//	some very very basic actions which does not need any INT/DEX for self

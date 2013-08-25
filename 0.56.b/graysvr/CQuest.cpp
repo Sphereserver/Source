@@ -454,7 +454,7 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	}
 
 	CChar * pSrc = uidCommand.CharFind();
-	if ( pSrc != NULL )
+	if (( pSrc != NULL ) && ( IsTrigUsed(TRIGGER_PARTYREMOVE) ))
 	{
 		CScriptTriggerArgs args;
 		pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
@@ -506,7 +506,7 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 	}
 
 	CChar * pMaster = GetMaster().CharFind();
-	if ( pMaster != NULL )
+	if (( pMaster != NULL ) && ( IsTrigUsed(TRIGGER_PARTYDISBAND) ))
 	{
 		CScriptTriggerArgs args;
 		pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args);
@@ -523,7 +523,7 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 			continue;
 
 		CChar * pSrc = uidMaster.CharFind();
-		if ( pSrc != NULL )
+		if (( pSrc != NULL ) && ( IsTrigUsed(TRIGGER_PARTYREMOVE) ))
 		{
 			CScriptTriggerArgs args;
 			args.m_iN1 = 1;

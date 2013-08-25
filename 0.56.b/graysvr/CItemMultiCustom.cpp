@@ -174,12 +174,15 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 	CChar * pChar = pClient->GetChar();
 	if ( pChar != NULL )
 	{
-		CScriptTriggerArgs Args(this);
-		Args.m_iN1 = bForced;
-		if ( pChar->OnTrigger(CTRIG_HouseDesignExit, pChar, &Args) == TRIGRET_RET_TRUE && !bForced)
+		if ( IsTrigUsed(TRIGGER_HOUSEDESIGNEXIT) )
 		{
-			BeginCustomize(pClient);
-			return;
+			CScriptTriggerArgs Args(this);
+			Args.m_iN1 = bForced;
+			if ( pChar->OnTrigger(CTRIG_HouseDesignExit, pChar, &Args) == TRIGRET_RET_TRUE && !bForced)
+			{
+				BeginCustomize(pClient);
+				return;
+			}
 		}
 		
 		// make sure scripts don't try and force the client back into design mode when
@@ -246,7 +249,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	if ( m_designWorking.m_iRevision == m_designMain.m_iRevision )
 		return;
 
-	if ( pClientSrc != NULL && pClientSrc->GetChar() != NULL )
+	if (( pClientSrc != NULL && pClientSrc->GetChar() != NULL ) && ( IsTrigUsed(TRIGGER_HOUSEDESIGNCOMMIT) ))
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = m_designMain.m_vectorComponents.size();

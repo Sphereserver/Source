@@ -275,7 +275,6 @@ enum ITRIG_TYPE
 	ITRIG_DROPON_SELF,		// An item has been dropped upon me
 	ITRIG_EQUIP,		// I have been equipped.
 	ITRIG_EQUIPTEST,
-	ITRIG_FIRE,			// If I'm a bow or xbow I want to spit out a projectile
 	ITRIG_PICKUP_GROUND,
 	ITRIG_PICKUP_PACK,	// picked up from inside some container.
 	ITRIG_PICKUP_SELF,	// picked up from this container
@@ -2276,7 +2275,6 @@ enum CTRIG_TYPE
 	CTRIG_itemDROPON_SELF,		// I have been dropped on this item
 	CTRIG_itemEQUIP,		// I have equipped an item
 	CTRIG_itemEQUIPTEST,
-	CTRIG_itemFIRE,			// my weapon spits out a projectile the next moment
 	CTRIG_itemPICKUP_GROUND,
 	CTRIG_itemPICKUP_PACK,	// picked up from inside some container.
 	CTRIG_itemPICKUP_SELF,	// picked up from this (ACT) container.
@@ -2308,7 +2306,6 @@ enum CTRIG_TYPE
 	CTRIG_NPCActFollow,		// (NPC only) decided to follow someone
 	CTRIG_NPCAction,
 	CTRIG_NPCHearGreeting,		// (NPC only) i have been spoken to for the first time. (no memory of previous hearing)
-	CTRIG_NPCHearNeed,			// (NPC only) i heard someone mention something i need. (11)
 	CTRIG_NPCHearUnknown,		//+(NPC only) I heard something i don't understand.
 	CTRIG_NPCLookAtChar,		//
 	CTRIG_NPCLookAtItem,		//
@@ -2342,6 +2339,7 @@ enum CTRIG_TYPE
 	CTRIG_SkillFail,			// SKTRIG_FAIL
 	CTRIG_SkillGain,			// SKTRIG_GAIN
 	CTRIG_SkillMakeItem,
+	CTRIG_SkillMemu,
 	CTRIG_SkillPreStart,		// SKTRIG_PRESTART
 	CTRIG_SkillSelect,			// SKTRIG_SELECT
 	CTRIG_SkillStart,			// SKTRIG_START
@@ -2359,7 +2357,6 @@ enum CTRIG_TYPE
 	CTRIG_SpellSuccess,		// The spell succeeded
 	CTRIG_SpellTargetCancel,	//  cancelled spell target
 	CTRIG_StatChange,
-	CTRIG_Step,				// I took a step.
 	CTRIG_StepStealth,		//+Made a step while being in stealth mode
 	CTRIG_ToolTip,			// someone did tool tips on me.
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
@@ -3190,6 +3187,9 @@ public:
 	int Skill_Stage( SKTRIG_TYPE stage );
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
+
+	TRIGRET_TYPE	Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig);
+	TRIGRET_TYPE	Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
