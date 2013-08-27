@@ -365,19 +365,19 @@ Exp
 <EXP>
 Level
 <LEVEL>
-mAR
+modAR
 <MODAR>
-mSTR
+modSTR
 <MODSTR>
-mINT
+modINT
 <MODINT>
-mDEX
+modDEX
 <MODDEX>
-mHits
+maxHits
 <MAXHITS>
-mMana
+maxMana
 <MAXMANA>
-mStam
+maxStam
 <MAXSTAM>
 
 [DIALOG d_CHARPROP2 BUTTON]

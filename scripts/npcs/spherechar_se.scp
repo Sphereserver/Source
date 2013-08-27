@@ -14,7 +14,7 @@ VERSION=0.56b
 [chardef 244]
 defname=c_rune_beetle
 name=Rune Beetle
-SOUND=snd_rune_beetle
+SOUND=snd_monster_rune_beetle
 ICON=i_pet_runebeetle
 RESDISPDNID=c_man
 RESLEVEL=3
@@ -59,7 +59,7 @@ ON=@NpcRestock
 [chardef 245]
 defname=c_Yomotsu_Warrior
 name=Yomotsu Warrior
-SOUND=snd_yomotsu
+SOUND=snd_monster_yomotsu
 ICON=i_pet_yomotsu_warrior
 RESDISPDNID=c_man
 RESLEVEL=3
@@ -100,7 +100,7 @@ ON=@NpcRestock
 [chardef 253]
 defname=c_Yomotsu_Priest
 name=Yomotsu Priest
-SOUND=snd_yomotsu
+SOUND=snd_monster_yomotsu
 ICON=i_pet_yomotsu_priest
 DAM=8,16
 ARMOR=18
@@ -143,7 +143,7 @@ ON=@NpcRestock
 [chardef 255]
 defname=c_Yomotsu_Elder
 name=Yomotsu Elder
-SOUND=snd_yomotsu
+SOUND=snd_monster_yomotsu
 ICON=i_pet_yomotsu_elder
 DAM=10,25
 ARMOR=22
@@ -187,7 +187,7 @@ ON=@NpcRestock
 [chardef 240]
 defname=c_kappa
 name=Kappa
-SOUND=snd_kappa
+SOUND=snd_monster_kappa
 ICON=i_pet_kappa
 DAM=5,15
 RESDISPDNID=c_man
@@ -295,7 +295,7 @@ ON=@Create
 Name=Crane
 DEFNAME=c_crane
 DAM=2,8
-SOUND=snd_crane
+SOUND=snd_animal_crane
 ARMOR=8
 CAN=MT_WALK|MT_RUN
 ICON=i_pet_crane
@@ -347,7 +347,7 @@ Karma=-3000
 
 [CHARDEF 248]
 Name=Gaman
-DEFNAME=c_gaman
+DEFNAME=c_monster_gaman
 ARMOR=20
 ICON=i_pet_gaman
 SOUND=snd_gaman
@@ -376,7 +376,7 @@ Name=Yamandon
 DEFNAME=c_yamandon
 ICON=i_pet_yamandon
 ARMOR=18
-SOUND=snd_yomotsu
+SOUND=snd_monster_yomotsu
 CAN=MT_WALK|MT_RUN
 DAM=14,40
 RESDISPDNID=c_man
@@ -400,7 +400,7 @@ Karma=-5000
 
 [CHARDEF 250]
 Name=Tsuki Wolf
-DEFNAME=c_tsuki_wolf
+DEFNAME=c_monster_tsuki_wolf
 ARMOR=35
 CAN=MT_WALK|MT_RUN
 SOUND=snd_tsuki_wolf
@@ -428,7 +428,7 @@ Karma=-5000
 [CHARDEF 251]
 Name=Revenant Lion
 DEFNAME=c_revenant_lion
-SOUND=snd_rav_lion
+SOUND=snd_monster_rev_lion
 RESDISPDNID=c_dog
 RESLEVEL=3
 RESDISPDNHUE=33
@@ -438,7 +438,7 @@ DAM=11,20
 ICON=i_pet_ravlion
 CATEGORY=New Monsters
 SUBSECTION=SE
-DESCRIPTION=Ravenant Lion
+DESCRIPTION=Revenant Lion
 on=@create
 NPC=BRAIN_MONSTER
 Str={175 220}
@@ -566,7 +566,7 @@ Karma=-3400
 Name=Oni
 DEFNAME=c_oni
 RESDISPDNID=c_man
-SOUND=snd_oni
+SOUND=snd_monster_oni
 RESLEVEL=3
 RESDISPDNHUE=55
 DAM=15,36

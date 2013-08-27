@@ -36,7 +36,7 @@
 -Removed: EF_New_Triggers, EF_Minimize_Triggers, and EF_NPCAct_Triggers since Auto trigger detection is enabled.
 -Removed: @NPCHearNeed trigger in sphere_events_human.scp since this trigger doesn't exist!
 
-27-08-2013, RanX
+27-08-2013, RanXerox
 -Correction to i_keg_wood_2 (it is not a container)
 -Corrected spelling mistakes ("entrance" not "entrace") in sphere_map2.scp
 -Added Armored Boura to mount defs in sphere_defs.scp
@@ -48,3 +48,8 @@
 -Moved numerous ITEMDEFs from one file to another
 -Added numerous new ITEMDEFs
 -Added more sphereCrypt.ini entries
+-Differentiate mod* and max* in the info dialog
+-Added placeholders for new spells
+-Magery Spell flags made consistent
+-Magery spell resources modified to match the spellbook in modern clients
+-Numerous additions to creature height table in sphere.defs

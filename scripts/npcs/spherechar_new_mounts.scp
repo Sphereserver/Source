@@ -20,7 +20,7 @@ NAME=Kirin
 [CHARDEF 084]
 DEFNAME=c_kirin
 NAME=Kirin
-SOUND=snd_kirin
+SOUND=snd_animal_kirin
 ICON=i_pet_kirin
 DAM=10,30
 ARMOR=35
@@ -143,7 +143,7 @@ NAME=Giant Beetle
 DEFNAME=c_giant_beetle
 NAME=Giant Beetle
 CAN=MT_WALK|MT_RUN
-SOUND=snd_rune_beetle
+SOUND=snd_monster_rune_beetle
 ICON=i_pet_giantbeetle
 DAM=5,10
 ARMOR=30

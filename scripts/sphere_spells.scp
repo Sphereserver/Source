@@ -1,17 +1,27 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 11-Jan-2006
-
+// FILE LAST UPDATED: Tuesday, August 27, 2013
+//
 VERSION=0.56b
 
-[Spell 0]	// No effect.
+[COMMENT sphere_spells]
+- Potions are just spells that have an effect attached at the potion layer.
+- All spells and potion effects can be added to equipped items.
+- Until monster AI is improved, all "good" spells have had the spellflag_playeronly added
+
+///////////////////
+// Magery Spells //
+///////////////////
+
+[Spell 0]
+// No effect...
 DEFNAME=s_Water
 NAME=Water
 SOUND=0
@@ -38,7 +48,7 @@ CAST_TIME=1.0
 RESOURCES=i_reag_blood_moss,i_reag_nightshade
 RUNE_ITEM=i_rune_CLUMSY
 SCROLL_ITEM=i_scroll_CLUMSY
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG | SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=3,15
 DURATION=2*60.0,3*60.0
@@ -55,7 +65,7 @@ CAST_TIME=1.0
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root
 RUNE_ITEM=i_rune_CREATE_FOOD
 SCROLL_ITEM=i_scroll_CREATE_FOOD
-FLAGS=SPELLFLAG_TARG_XYZ
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -72,7 +82,7 @@ CAST_TIME=1.0
 RESOURCES=i_reag_ginseng,i_reag_nightshade
 RUNE_ITEM=i_rune_FEEBLEMIND
 SCROLL_ITEM=i_scroll_FEEBLEMIND
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=5,10
 DURATION=2*60.0,3*60.0
@@ -89,7 +99,7 @@ CAST_TIME=1.0
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_spider_silk
 RUNE_ITEM=i_rune_HEAL
 SCROLL_ITEM=i_scroll_HEAL
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG | SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=5,20
 DURATION=0.0
@@ -106,7 +116,7 @@ RUNES=IPY
 RESOURCES=i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MAGIC_ARROW
 SCROLL_ITEM=i_scroll_MAGIC_ARROW
-FLAGS=SPELLFLAG_DIR_ANIM|SPELLFLAG_TARG_CHAR|SPELLFLAG_FX_BOLT|SPELLFLAG_HARM|SPELLFLAG_DAMAGE|SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_targ_char|spellflag_harm|spellflag_damage|spellflag_fx_bolt|spellflag_targ_noself
 EFFECT_ID=i_fx_fireball_small
 EFFECT=5,15
 DURATION=0.0
@@ -120,10 +130,10 @@ NAME=Night Sight
 SOUND=snd_SPELL_NIGHT_SIGHT
 RUNES=IL
 CAST_TIME=1.0
-RESOURCES=i_reag_sulfur_ash
+RESOURCES=i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_NIGHT_SIGHT
 SCROLL_ITEM=i_scroll_NIGHT_SIGHT
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=0
 DURATION=3*60.0,10*60.0
@@ -140,7 +150,7 @@ CAST_TIME=1.0
 RESOURCES=i_reag_garlic,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_REACTIVE_ARMOR
 SCROLL_ITEM=i_scroll_REACTIVE_ARMOR
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good//|spellflag_playeronly
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=10.0,60.0
 DURATION=3*60.0,5*60.0
@@ -154,10 +164,10 @@ NAME=Weaken
 SOUND=snd_SPELL_WEAKEN
 RUNES=DM
 CAST_TIME=1.0
-RESOURCES=i_reag_garlic,i_reag_sulfur_ash,i_reag_spider_silk
+RESOURCES=i_reag_garlic,i_reag_nightshade
 RUNE_ITEM=i_rune_WEAKEN
 SCROLL_ITEM=i_scroll_WEAKEN
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=5,30
 DURATION=2*60.0,3*60.0
@@ -175,7 +185,7 @@ CAST_TIME=20
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_AGILITY
 SCROLL_ITEM=i_scroll_AGILITY
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,20
 DURATION=2*60.0,3*60.0
@@ -193,7 +203,7 @@ CAST_TIME=20
 RESOURCES=i_reag_mandrake_root,i_reag_nightshade
 RUNE_ITEM=i_rune_CUNNING
 SCROLL_ITEM=i_scroll_CUNNING
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,20
 DURATION=2*60.0,3*60.0
@@ -210,7 +220,7 @@ CAST_TIME=20
 RESOURCES=i_reag_garlic,i_reag_ginseng
 RUNE_ITEM=i_rune_CURE
 SCROLL_ITEM=i_scroll_CURE
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=0
 DURATION=0.0
@@ -227,7 +237,7 @@ CAST_TIME=20
 RESOURCES=i_reag_nightshade,i_reag_spider_silk
 RUNE_ITEM=i_rune_HARM
 SCROLL_ITEM=i_scroll_HARM
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_DIR_ANIM|SPELLFLAG_HARM|SPELLFLAG_FX_TARG|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_targ_char|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_targ_noself
 EFFECT_ID=i_fx_curse
 EFFECT=5,16
 DURATION=0.0
@@ -244,7 +254,7 @@ CAST_TIME=20
 RESOURCES=i_reag_garlic,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MAGIC_TRAP
 SCROLL_ITEM=i_scroll_MAGIC_TRAP
-FLAGS=SPELLFLAG_TARG_ITEM
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -261,7 +271,7 @@ CAST_TIME=20
 RESOURCES=i_reag_blood_moss,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MAGIC_UNTRAP
 SCROLL_ITEM=i_scroll_MAGIC_UNTRAP
-FLAGS=SPELLFLAG_TARG_ITEM
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -278,7 +288,7 @@ CAST_TIME=20
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_PROTECTION
 SCROLL_ITEM=i_scroll_PROTECTION
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,35
 DURATION=3*60.0,5*60.0
@@ -295,7 +305,7 @@ CAST_TIME=20
 RESOURCES=i_reag_mandrake_root,i_reag_nightshade
 RUNE_ITEM=i_rune_STRENGTH
 SCROLL_ITEM=i_scroll_STRENGTH
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,15
 DURATION=2*60.0,3*60.0
@@ -312,7 +322,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_garlic,i_reag_mandrake_root
 RUNE_ITEM=i_rune_BLESS
 SCROLL_ITEM=i_scroll_BLESS
-FLAGS=SPELLFLAG_TARG_OBJ | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,20
 DURATION=2*60.0,3*60.0
@@ -329,7 +339,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_black_pearl
 RUNE_ITEM=i_rune_FIREBALL
 SCROLL_ITEM=i_scroll_FIREBALL
-FLAGS=SPELLFLAG_DIR_ANIM|SPELLFLAG_TARG_OBJ|SPELLFLAG_FX_BOLT|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_damage|spellflag_fx_bolt|spellflag_targ_noself
 EFFECT_ID=i_fx_fireball
 EFFECT=8,16
 DURATION=0.0
@@ -346,7 +356,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_blood_moss,i_reag_garlic,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MAGIC_LOCK
 SCROLL_ITEM=i_scroll_MAGIC_LOCK
-FLAGS=SPELLFLAG_TARG_ITEM
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -364,7 +374,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_nightshade
 RUNE_ITEM=i_rune_POISON
 SCROLL_ITEM=i_scroll_POISON
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself
 EFFECT_ID=i_fx_curse
 EFFECT=0	// 100,750
 DURATION=1.0,15.0
@@ -381,7 +391,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_telekinesis
 SCROLL_ITEM=i_scroll_telekinesis
-FLAGS=SPELLFLAG_TARG_OBJ
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -398,7 +408,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_TELEPORT
 SCROLL_ITEM=i_scroll_TELEPORT
-FLAGS=SPELLFLAG_TARG_XYZ
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -415,7 +425,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_blood_moss,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_UNLOCK
 SCROLL_ITEM=i_scroll_UNLOCK
-FLAGS=SPELLFLAG_TARG_ITEM
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -432,7 +442,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_blood_moss,i_reag_garlic
 RUNE_ITEM=i_rune_WALL_OF_STONE
 SCROLL_ITEM=i_scroll_WALL_OF_STONE
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_FIELD
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_field|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,4*60.0
@@ -449,7 +459,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root
 RUNE_ITEM=i_rune_ARCHCURE
 SCROLL_ITEM=i_scroll_ARCHCURE
-FLAGS=SPELLFLAG_FX_TARG|SPELLFLAG_GOOD|SPELLFLAG_AREA
+FLAGS=spellflag_fx_targ|spellflag_good|spellflag_playeronly|spellflag_area
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=0
 DURATION=0.0
@@ -466,7 +476,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_ARCHPROTECTION
 SCROLL_ITEM=i_scroll_ARCHPROTECTION
-FLAGS=SPELLFLAG_FX_TARG| SPELLFLAG_GOOD|SPELLFLAG_AREA
+FLAGS=spellflag_fx_targ|spellflag_good|spellflag_playeronly|spellflag_area
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=5,15
 DURATION=30.0,1000.0
@@ -483,7 +493,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_garlic,i_reag_nightshade,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_CURSE
 SCROLL_ITEM=i_scroll_CURSE
-FLAGS=SPELLFLAG_TARG_OBJ | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=5,15
 DURATION=10.0,60.0
@@ -500,7 +510,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_black_pearl,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_FIRE_FIELD
 SCROLL_ITEM=i_scroll_FIRE_FIELD
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_FIELD|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_field|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=2,12
 DURATION=2*60.0,4*60.0
@@ -517,7 +527,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_GREATER_HEAL
 SCROLL_ITEM=i_scroll_GREATER_HEAL
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_HEAL_EFFECT
 EFFECT=10,50
 DURATION=0.0
@@ -534,7 +544,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_LIGHTNING
 SCROLL_ITEM=i_scroll_LIGHTNING
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_fx_targ|spellflag_harm|spellflag_damage|spellflag_targ_noself
 EFFECT_ID=0
 EFFECT=10,20
 DURATION=0.0
@@ -551,7 +561,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_MANA_DRAIN
 SCROLL_ITEM=i_scroll_MANA_DRAIN
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_DIR_ANIM | SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=0
 DURATION=0.0
@@ -568,7 +578,7 @@ CAST_TIME=3.0
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_RECALL
 SCROLL_ITEM=i_scroll_RECALL
-FLAGS=SPELLFLAG_TARG_OBJ
+FLAGS=spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -586,7 +596,7 @@ CAST_TIME=20.0
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_nightshade
 RUNE_ITEM=i_rune_BLADE_SPIRITS
 SCROLL_ITEM=i_scroll_BLADE_SPIRITS
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_HARM | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -603,7 +613,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_garlic,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_DISPEL_FIELD
 SCROLL_ITEM=i_scroll_DISPEL_FIELD
-FLAGS=SPELLFLAG_TARG_OBJ
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -621,7 +631,7 @@ CAST_TIME=40
 RESOURCES=i_reag_blood_moss,i_reag_garlic,i_reag_nightshade
 RUNE_ITEM=i_rune_INCOGNITO
 SCROLL_ITEM=i_scroll_INCOGNITO
-FLAGS=0
+FLAGS=spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=5*60.0,8*60.0
@@ -639,7 +649,7 @@ CAST_TIME=40
 RESOURCES=i_reag_garlic,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_MAGIC_REFLECTION
 SCROLL_ITEM=i_scroll_MAGIC_REFLECTION
-FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=i_fx_BLESS_EFFECT
 EFFECT=0
 DURATION=4*60.0,8*60.0
@@ -656,7 +666,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_nightshade,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MIND_BLAST
 SCROLL_ITEM=i_scroll_MIND_BLAST
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_DIR_ANIM|SPELLFLAG_HARM|SPELLFLAG_FX_TARG|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=5,20
 DURATION=0.0
@@ -674,7 +684,7 @@ CAST_TIME=40
 RESOURCES=i_reag_garlic,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_PARALYZE
 SCROLL_ITEM=i_scroll_PARALYZE
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_DIR_ANIM| SPELLFLAG_HARM| SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=0
 DURATION=60.0,3*60.0
@@ -691,7 +701,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_nightshade,i_reag_spider_silk
 RUNE_ITEM=i_rune_POISON_FIELD
 SCROLL_ITEM=i_scroll_POISON_FIELD
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_FIELD|SPELLFLAG_FX_TARG|SPELLFLAG_HARM|SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_field|spellflag_playeronly
 EFFECT_ID=i_fx_curse
 EFFECT=5,50 // 50,500
 DURATION=2*60.0,4*60.0
@@ -709,7 +719,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_SUMMON_CREATURE
 SCROLL_ITEM=i_scroll_SUMMON_CREATURE
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=3*60.0,5*60.0
@@ -726,7 +736,7 @@ CAST_TIME=40
 RESOURCES=i_reag_garlic,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_DISPEL
 SCROLL_ITEM=i_scroll_DISPEL
-FLAGS=SPELLFLAG_TARG_CHAR |SPELLFLAG_DIR_ANIM
+FLAGS=spellflag_dir_anim|spellflag_targ_char
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -743,7 +753,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_nightshade
 RUNE_ITEM=i_rune_ENERGY_BOLT
 SCROLL_ITEM=i_scroll_ENERGY_BOLT
-FLAGS=SPELLFLAG_DIR_ANIM|SPELLFLAG_TARG_CHAR|SPELLFLAG_FX_BOLT|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_damage|spellflag_fx_bolt|spellflag_targ_noself
 EFFECT_ID=i_fx_ebolt
 EFFECT=10,45
 DURATION=0.0
@@ -760,7 +770,7 @@ CAST_TIME=100
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_EXPLOSION
 SCROLL_ITEM=i_scroll_EXPLOSION
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_DIR_ANIM|SPELLFLAG_HARM|SPELLFLAG_FX_TARG|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE|SPELLFLAG_AREA
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_targ_noself
 EFFECT_ID=i_fx_explode
 EFFECT=15,35
 DURATION=0.0
@@ -778,7 +788,7 @@ CAST_TIME=40
 RESOURCES=i_reag_blood_moss,i_reag_nightshade
 RUNE_ITEM=i_rune_INVISIBILITY
 SCROLL_ITEM=i_scroll_INVISIBILITY
-FLAGS=SPELLFLAG_TARG_CHAR| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_good|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=3*60.0,5*60.0
@@ -798,7 +808,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root
 RUNE_ITEM=i_rune_MARK
 SCROLL_ITEM=i_scroll_MARK
-FLAGS=SPELLFLAG_TARG_ITEM
+FLAGS=spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=1,10
 DURATION=0.0
@@ -815,7 +825,7 @@ CAST_TIME=40
 RESOURCES=i_reag_garlic,i_reag_mandrake_root,i_reag_nightshade,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MASS_CURSE
 SCROLL_ITEM=i_scroll_MASS_CURSE
-FLAGS=SPELLFLAG_HARM | SPELLFLAG_FX_TARG| SPELLFLAG_RESIST|SPELLFLAG_AREA
+FLAGS=spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_playeronly|spellflag_area|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=5,30
 DURATION=0.0
@@ -832,7 +842,7 @@ CAST_TIME=40
 RESOURCES=i_reag_black_pearl,i_reag_ginseng,i_reag_spider_silk
 RUNE_ITEM=i_rune_PARALYZE_FIELD
 SCROLL_ITEM=i_scroll_PARALYZE_FIELD
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_FIELD|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_NOUNPARALYZE
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_field|spellflag_playeronly|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -849,7 +859,7 @@ CAST_TIME=40
 RESOURCES=i_reag_blood_moss,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_REVEAL
 SCROLL_ITEM=i_scroll_REVEAL
-FLAGS=SPELLFLAG_AREA
+FLAGS=spellflag_resist|spellflag_area
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -866,7 +876,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_CHAIN_LIGHTNING
 SCROLL_ITEM=i_scroll_CHAIN_LIGHTNING
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE|SPELLFLAG_AREA
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_area|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=10,20
 DURATION=0.0
@@ -883,7 +893,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_ENERGY_FIELD
 SCROLL_ITEM=i_scroll_ENERGY_FIELD
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_HARM | SPELLFLAG_FIELD
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_field|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -900,7 +910,7 @@ CAST_TIME=70
 RESOURCES=i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_FLAMESTRIKE
 SCROLL_ITEM=i_scroll_FLAMESTRIKE
-FLAGS=SPELLFLAG_TARG_OBJ|SPELLFLAG_HARM|SPELLFLAG_FX_TARG|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE
+FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_harm|spellflag_damage|spellflag_fx_targ|spellflag_targ_noself
 EFFECT_ID=03709
 EFFECT=25,50
 DURATION=0.0
@@ -918,7 +928,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_GATE_TRAVEL
 SCROLL_ITEM=i_scroll_GATE_TRAVEL
-FLAGS=SPELLFLAG_TARG_OBJ
+FLAGS=spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=i_moongate_blue
 EFFECT=0
 DURATION=60.0
@@ -935,7 +945,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_MANA_VAMPIRE
 SCROLL_ITEM=i_scroll_MANA_VAMPIRE
-FLAGS=SPELLFLAG_TARG_CHAR|SPELLFLAG_DIR_ANIM| SPELLFLAG_HARM| SPELLFLAG_FX_TARG| SPELLFLAG_RESIST
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=0
 DURATION=0.0
@@ -952,7 +962,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_garlic,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_MASS_DISPEL
 SCROLL_ITEM=i_scroll_MASS_DISPEL
-FLAGS=SPELLFLAG_AREA
+FLAGS=spellflag_fx_targ|spellflag_area
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -970,7 +980,7 @@ CAST_TIME=50
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_METEOR_swarm
 SCROLL_ITEM=i_scroll_METEOR_swarm
-FLAGS=SPELLFLAG_TARG_XYZ|SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE|SPELLFLAG_AREA
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_damage|spellflag_area|spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=35,50
 DURATION=0.0
@@ -987,7 +997,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_POLYMORPH
 SCROLL_ITEM=i_scroll_POLYMORPH
-FLAGS=SPELLFLAG_RESIST|SPELLFLAG_TARG_CHAR
+FLAGS=spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=5*60.0,8*60.0
@@ -1005,7 +1015,7 @@ CAST_TIME=100
 RESOURCES=i_reag_blood_moss,i_reag_ginseng,i_reag_mandrake_root,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_EARTHQUAKE
 SCROLL_ITEM=i_scroll_EARTHQUAKE
-FLAGS=SPELLFLAG_HARM|SPELLFLAG_RESIST|SPELLFLAG_DAMAGE|SPELLFLAG_AREA
+FLAGS=spellflag_harm|spellflag_resist|spellflag_damage|spellflag_area|spellflag_fx_targ|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=30,45
 DURATION=30.0
@@ -1023,7 +1033,7 @@ CAST_TIME=50
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root,i_reag_nightshade
 RUNE_ITEM=i_rune_ENERGY_VORTEX
 SCROLL_ITEM=i_scroll_ENERGY_VORTEX
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_HARM | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_harm|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1040,7 +1050,7 @@ CAST_TIME=50
 RESOURCES=i_reag_blood_moss,i_reag_garlic,i_reag_ginseng
 RUNE_ITEM=i_rune_RESURRECTION
 SCROLL_ITEM=i_scroll_RESURRECTION
-FLAGS=SPELLFLAG_TARG_CHAR| SPELLFLAG_GOOD
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0
@@ -1057,7 +1067,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_SUMMON_elem_air
 SCROLL_ITEM=i_scroll_SUMMON_elem_air
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1074,7 +1084,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_SUMMON_DAEMON
 SCROLL_ITEM=i_scroll_SUMMON_DAEMON
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1091,7 +1101,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_SUMMON_elem_earth
 SCROLL_ITEM=i_scroll_SUMMON_elem_earth
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1108,7 +1118,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_SUMMON_elem_fire
 SCROLL_ITEM=i_scroll_SUMMON_elem_fire
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1125,13 +1135,18 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_SUMMON_elem_water
 SCROLL_ITEM=i_scroll_SUMMON_elem_water
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
 MANAUSE=50
 SKILLREQ=MAGERY 80.0
 INTERRUPT=100.0,100.0
+
+
+///////////////////
+// Sphere Spells //
+///////////////////
 
 [Spell 65]
 DEFNAME=s_summon_undead
@@ -1142,7 +1157,7 @@ CAST_TIME=200
 RESOURCES=i_reag_blood_moss
 RUNE_ITEM=i_RUNE_ALCHEM_1
 SCROLL_ITEM=i_scroll_X_GREEN2
-FLAGS=SPELLFLAG_TARG_XYZ | SPELLFLAG_SUMMON
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon
 EFFECT_ID=0
 EFFECT=0
 DURATION=2*60.0,3*60.0
@@ -1186,6 +1201,7 @@ SKILLREQ=MAGERY 30.0, NECROMANCY 40.0
 INTERRUPT=100.0,100.0
 
 [Spell 68]
+//Adds a light halo around the character
 DEFNAME=s_light
 NAME=Light
 SOUND=snd_SPELL_LIGHT
@@ -1235,9 +1251,6 @@ DURATION=2*60.0,4*60.0
 MANAUSE=15
 SKILLREQ=MAGERY 30.0, NECROMANCY 40.0
 INTERRUPT=100.0,100.0
-
-// Potions are just spells that have and effect attached at the potion layer.
-// All spells and potion effects can be added to equipped items.
 
 [Spell 71]
 DEFNAME=s_Stone
@@ -1321,7 +1334,7 @@ FLAGS=SPELLFLAG_HARM| SPELLFLAG_RESIST| SPELLFLAG_PLAYERONLY
 RUNE_ITEM=i_RUNE_ALCHEM_3
 
 [Spell 82]
-//
+// Temporarily increases your meditation skill.
 DEFNAME=s_Trance
 NAME=Trance
 FLAGS=SPELLFLAG_PLAYERONLY
@@ -1355,6 +1368,7 @@ EFFECT=4,40
 DURATION=2*60.0,4*60.0
 
 [Spell 86]
+// This potion turns your skin into stone, giving a boost to your AR.
 DEFNAME=s_Stoneskin
 NAME=Stone Skin
 FLAGS=SPELLFLAG_TARG_CHAR | SPELLFLAG_FX_TARG| SPELLFLAG_GOOD | SPELLFLAG_PLAYERONLY
@@ -1381,9 +1395,1099 @@ MANAUSE=200
 SKILLREQ=MAGERY 200.0
 EFFECT=1,15
 
+///////////////////////
+// Necromancy Spells //
+///////////////////////
+
+[SPELL 101]
+DEFNAME=s_animate_dead_aos
+NAME=Animate Dead
+SOUND=snd_spell_animate_dead
+RUNES=.Uus Corp
+CAST_TIME=4.0
+RESOURCES=i_reag_blood_vial,i_reag_volcanic_ash
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_animate_dead
+FLAGS=spellflag_targ_item|spellflag_good|spellflag_summon|spellflag_fx_targ|spellflag_playeronly|spellflag_targ_no_player|spellflag_targ_no_npc
+EFFECT_ID=i_fx_sparkle
+EFFECT=0
+DURATION=0
+MANAUSE=23
+SKILLREQ=NECROMANCY 40.0
+INTERRUPT=100.0,40.0
+PROMPT_MSG=@color_text,,2 1061083//"Animate what corpse?"
+
+[SPELL 102]
+DEFNAME=s_blood_oath
+NAME=Blood Oath
+SOUND=snd_spell_curse
+RUNES=.In Jux Mani Xen
+CAST_TIME=1.5
+RESOURCES=i_reag_blood_vial
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_blood_oath
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
+EFFECT_ID=i_fx_curse
+EFFECT=0
+DURATION=0
+MANAUSE=13
+SKILLREQ=NECROMANCY 20.0
+INTERRUPT=100.0,20.0
+PROMPT_MSG=Target a creature to put this curse on.
+
+[SPELL 103]
+DEFNAME=s_corpse_skin
+NAME=Corpse Skin
+SOUND=snd_spell_curse
+RUNES=.In Aglo Corp Yelm
+CAST_TIME=2.0
+RESOURCES=i_reag_batwing,i_reag_volcanic_ash
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_corpse_skin
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_nounparalyze
+EFFECT_ID=i_fx_sparkle
+EFFECT=10,15
+DURATION=0
+MANAUSE=11
+SKILLREQ=NECROMANCY 20.0
+INTERRUPT=100.0,20.0
+PROMPT_MSG=Target a creature to put this curse on.
+
+[SPELL 104]
+DEFNAME=s_curse_weapon
+NAME=Curse Weapon
+SOUND=snd_spell_curse
+RUNES=.An Sanct Gra Char
+CAST_TIME=1.0
+RESOURCES=i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_curse_weapon
+FLAGS=spellflag_good
+EFFECT_ID=i_fx_sparkle
+EFFECT=10,15
+DURATION=0
+MANAUSE=7
+SKILLREQ=NECROMANCY 0.1
+INTERRUPT=100.0,0.0
+
+[SPELL 105]
+DEFNAME=s_evil_omen
+NAME=Evil Omen
+SOUND=snd_spell_curse
+RUNES=.Pas Tym An Sanct
+CAST_TIME=1.0
+RESOURCES=i_reag_batwing,i_reag_serpent_scale
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_evil_omen
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
+EFFECT_ID=i_fx_curse
+EFFECT=10,15
+DURATION=0
+MANAUSE=11
+SKILLREQ=NECROMANCY 20.0
+INTERRUPT=60.0,20.0
+PROMPT_MSG=Target a creature to put this curse on.
+
+[SPELL 106]
+DEFNAME=s_horrific_beast
+NAME=Horrific Beast
+SOUND=snd_spell_bless
+RUNES=.Rel Xen Vas Bal
+CAST_TIME=4.0
+RESOURCES=i_reag_batwing,i_reag_blood_vial
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_horrific_beast
+FLAGS=spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_smoke
+EFFECT=5,15
+DURATION=0
+MANAUSE=11
+SKILLREQ=NECROMANCY 40.0
+INTERRUPT=100.0,40.0
+
+[SPELL 107]
+DEFNAME=s_liche_form
+NAME=Liche Form
+SOUND=snd_spell_bless
+RUNES=.Rel Xen Corp Ort
+CAST_TIME=4.0
+RESOURCES=i_reag_serpent_scale,i_reag_blood_vial,i_reag_volcanic_ash
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_liche_form
+FLAGS=spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_smoke
+EFFECT=5,15
+DURATION=0
+MANAUSE=23
+SKILLREQ=NECROMANCY 70.0
+INTERRUPT=100.0,70.0
+
+[SPELL 108]
+DEFNAME=s_mind_rot
+NAME=Mind Rot
+SOUND=snd_spell_feeblemind
+RUNES=.Wis An Ben
+CAST_TIME=1.5
+RESOURCES=i_reag_batwing,i_reag_blood_vial,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_mind_rot
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
+EFFECT_ID=i_fx_curse
+EFFECT=5,15
+DURATION=0
+MANAUSE=17
+SKILLREQ=NECROMANCY 30.0
+INTERRUPT=100.0,30.0
+PROMPT_MSG=Target a creature to put this curse on.
+
+[SPELL 109]
+DEFNAME=s_pain_spike
+NAME=Pain Spike
+SOUND=snd_spell_curse
+RUNES=.@color_text In Sar
+CAST_TIME=2.0
+RESOURCES=i_reag_volcanic_ash,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_pain_spike
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself
+EFFECT_ID=i_fx_curse
+EFFECT=0
+DURATION=0
+MANAUSE=5
+SKILLREQ=NECROMANCY 20.0
+INTERRUPT=100.0,20.0
+
+[SPELL 110]
+DEFNAME=s_poison_strike
+NAME=Poison Strike
+SOUND=snd_spell_poison
+RUNES=.In Vas Nox
+CAST_TIME=2.0
+RESOURCES=i_reag_serpent_scale
+//RUNE_ITEM=i_rune_poison_strike
+SCROLL_ITEM=i_scroll_poison_strike
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_resist|spellflag_targ_noself|spellflag_playeronly|spellflag_nounparalyze
+EFFECT_ID=//FIXME
+EFFECT=0
+DURATION=0
+MANAUSE=17
+SKILLREQ=NECROMANCY 50.0
+INTERRUPT=100.0,50.0
+PROMPT_MSG=Who will you poison strike?
+
+[SPELL 111]
+DEFNAME=s_strangle
+NAME=Strangle
+SOUND=snd_spell_curse
+RUNES=.In Bal Nox
+CAST_TIME=2.5
+RESOURCES=i_reag_serpent_scale,i_reag_blood_vial
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_strangle
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
+EFFECT_ID=i_fx_curse
+EFFECT=0
+DURATION=0
+MANAUSE=29
+SKILLREQ=NECROMANCY 65.0
+INTERRUPT=100.0,65.0
+
+[SPELL 112]
+DEFNAME=s_summon_familiar
+NAME=Summon Familiar
+SOUND=snd_spell_summon_creature
+RUNES=.Kal Xen Bal
+CAST_TIME=4.0
+RESOURCES=i_reag_batwing,i_reag_volcanic_ash,i_reag_blood_vial
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_summon_familiar
+FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon|spellflag_playeronly
+//EFFECT_ID=//FIXME
+EFFECT=0
+DURATION=120.0,240.0
+MANAUSE=17
+SKILLREQ=NECROMANCY 30.0
+INTERRUPT=100.0,70.0
+
+[SPELL 113]
+DEFNAME=s_vampiric_embrace
+NAME=Vampiric Embrace
+SOUND=snd_spell_bless
+RUNES=.Rel Xen An Sanct
+CAST_TIME=4.0
+RESOURCES=i_reag_batwing,i_reag_serpent_scale,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_vampiric_embrace
+FLAGS=spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_smoke
+EFFECT=5,15
+DURATION=0
+MANAUSE=23
+SKILLREQ=NECROMANCY 99.0
+INTERRUPT=100.0,100.0
+
+[SPELL 114]
+DEFNAME=s_vengeful_spirit
+NAME=Vengeful Spirit
+SOUND=snd_monster_ghost1
+RUNES=.Kal Xen Bal Beh
+CAST_TIME=8.0
+RESOURCES=i_reag_batwing,i_reag_volcanic_ash,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_vengeful_spirit
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_targ_noself
+EFFECT_ID=i_fx_smoke
+//EFFECT=
+DURATION=10.0,20.0
+MANAUSE=41
+SKILLREQ=NECROMANCY 80.0
+INTERRUPT=100.0,80.0
+
+[SPELL 115]
+DEFNAME=s_wither
+NAME=Wither
+SOUND=snd_wind2
+RUNES=.Kal Vas An Flam
+CAST_TIME=1.5
+RESOURCES=i_reag_serpent_scale,i_reag_volcanic_ash,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_wither
+FLAGS=spellflag_dir_anim|spellflag_harm|spellflag_fx_targ
+EFFECT_ID=//FIXME
+//EFFECT=
+//DURATION=
+MANAUSE=23
+SKILLREQ=NECROMANCY 60.0
+INTERRUPT=100.0,60.0
+
+[SPELL 116]
+DEFNAME=s_wraith_form
+NAME=Wraith Form
+SOUND=snd_spell_bless
+RUNES=.Rel Xen Um
+CAST_TIME=4.0
+RESOURCES=i_reag_serpent_scale,i_reag_pig_iron
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_wraith_form
+FLAGS=spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_smoke
+EFFECT=5,15
+DURATION=0
+MANAUSE=17
+SKILLREQ=NECROMANCY 20.0
+INTERRUPT=100.0,20.0
+
+[SPELL 117]
+DEFNAME=s_exorcism
+NAME=Exorcism
+SOUND=
+RUNES=.Ort Corp Grav
+CAST_TIME=2.0
+RESOURCES=i_reag_serpent_scale,i_reag_volcanic_ash
+RUNE_ITEM=
+SCROLL_ITEM=i_scroll_exorcism
+FLAGS=
+EFFECT_ID=0
+EFFECT=0
+DURATION=0
+MANAUSE=40
+SKILLREQ=Necromancy 80.0
+INTERRUPT=100.0,1.0
+
+/////////////////////
+// Chivalry Spells //
+/////////////////////
+
+[Spell 201]
+DEFNAME=s_cleanse_by_fire
+NAME=Cleanse by Fire
+SOUND=0
+RUNES=.@,,2 1060718
+CAST_TIME=1.0
+RESOURCES=
+//RUNE_ITEM=
+SCROLL_ITEM=i_scroll_cleanse_by_fire
+FLAGS=spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_bless_effect
+EFFECT=10
+DURATION=0
+MANAUSE=10
+SKILLREQ=CHIVALRY 5.0
+INTERRUPT=100.0,55.0
+PROMPT_MSG=Who shall you cure?
+
+[Spell 202]
+DEFNAME=s_close_wounds
+NAME=Close Wounds
+SOUND=0202
+RUNES=.@,,2 1060719
+CAST_TIME=1.5
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
+EFFECT_ID=i_fx_heal_effect
+EFFECT=10
+DURATION=0
+MANAUSE=10
+SKILLREQ=SKILL_CHIVALRY 0.1
+INTERRUPT=0.0,0.0
+PROMPT_MSG=Who shall you heal?
+
+[Spell 203]
+DEFNAME=s_Consecrate_Weapon
+NAME=Consecrate Weapon
+SOUND=
+RUNES=.@,,2 1060720
+CAST_TIME=0.1
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=10
+DURATION=0.0
+MANAUSE=10
+SKILLREQ=SKILL_CHIVALRY 15.0
+INTERRUPT=0.0,0.0
+[Spell 204]
+DEFNAME=s_Dispel_Evil
+NAME=Dispel Evil
+SOUND=snd_spell_dispel
+RUNES=.@,,2 1060721
+CAST_TIME=0.3
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=10
+DURATION=0.0
+MANAUSE=10
+SKILLREQ=SKILL_CHIVALRY 35.0
+INTERRUPT=0.0,0.0
+
+[Spell 205]
+DEFNAME=s_Divine_Fury
+NAME=Divine Fury
+SOUND=020F
+RUNES=.@,,2 1060722
+CAST_TIME=1.0
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=0376A
+EFFECT=10
+DURATION=0.0
+MANAUSE=15
+SKILLREQ=SKILL_CHIVALRY 25.0
+INTERRUPT=0.0,0.0
+
+[Spell 206]
+DEFNAME=s_Enemy_of_One
+NAME=Enemy of One
+SOUND=0f5
+RUNES=.@,,2 1060723
+CAST_TIME=0.5
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=0376A
+EFFECT=10
+DURATION=0.0
+MANAUSE=20
+SKILLREQ=CHIVALRY 45.0
+INTERRUPT=0.0,0.0
+
+[Spell 207]
+DEFNAME=s_Holy_Light
+NAME=Holy Light
+SOUND=snd_spell_light
+RUNES=.@,,2 1060724
+CAST_TIME=1.8
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=10
+DURATION=0.0
+MANAUSE=10
+SKILLREQ=CHIVALRY 55.0
+INTERRUPT=0.0,0.0
+
+[Spell 208]
+DEFNAME=s_Noble_Sacrifice
+NAME=Noble Sacrifice
+SOUND=
+RUNES=.@,,2 1060725
+CAST_TIME=1.5
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=30
+DURATION=0.0
+MANAUSE=20
+SKILLREQ=SKILL_CHIVALRY 65.0
+INTERRUPT=0.0,0.0
+
+[Spell 209]
+DEFNAME=s_Remove_Curse
+NAME=Remove Curse
+SOUND=
+RUNES=.@,,2 1060726
+CAST_TIME=1.5
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_targ_char|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=10
+DURATION=0.0
+MANAUSE=20
+SKILLREQ=SKILL_CHIVALRY 5.0
+INTERRUPT=0.0,0.0
+
+[Spell 210]
+DEFNAME=s_Sacred_Journey
+NAME=Sacred Journey
+SOUND=
+RUNES=.@,,2 1060727
+CAST_TIME=1.5
+RESOURCES=
+//RUNE_ITEM=0
+//SCROLL_ITEM=0
+FLAGS=spellflag_playeronly|spellflag_targ_item|spellflag_nofreezeoncast
+EFFECT_ID=
+EFFECT=15
+DURATION=0.0
+MANAUSE=10
+SKILLREQ=SKILL_CHIVALRY 15.0
+INTERRUPT=0.0,0.0
+
+////////////////////
+// Bushido Spells //
+////////////////////
+//"
+// A character with Bushido as well as the Parrying skill will be able to
+// block with a sword, though their defense chance with an actual Shield is
+// lowered as they progress as a Samurai. Bushido also offers the only method
+// in the game to entirely avoid direct spell damage: The Evasion ability.
 //
-// Mysticism Spells
+// A Samurai with 50 Bushido or above may activate the Perfection system
+// by honoring a target creature. This grants a damage bonus dependant on
+// consecutive hits.
 //
+// At 90 skill, it becomes possible to use Bushido in place of Animal Taming
+// for the purpose of controlling and riding Lesser Hiryus.
+//
+// This skill also counts towards your ability to perform Special Moves and
+// gives a damage bonus to the Whirlwind special move.
+//"
+
+[SPELL 401]
+//"
+// Once enabled, the next blow the caster lands must be a killing blow.
+//
+// If successful, the caster gets a 10 second Swing Speed Increase of 0.25s
+// and 8 to 10 Hit Points are restored (adjusted upwards per level of
+// Perfection.)
+//
+// An unsuccessful use yields a 6 second loss of all Magic Resistance and
+// all other Resistances are reduced by 40.
+//
+// Duration: Killing blow must land within 6-10 seconds.
+//"
+DEFNAME=s_honorable_execution
+NAME=Honorable Execution
+SOUND=snd_bushido_honorable_execution
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_honorable_execution
+SCROLL_ITEM=0
+FLAGS=spellflag_scripted
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=0
+SKILLREQ=Bushido 25.0
+INTERRUPT=0.0,0.0
+
+[SPELL 402]
+//"
+// A defensive stance that allows Stamina and Hit Points gain with each
+// successful parry.  Each such parry will heal 1 to (Bushido / 12) hit
+// points, and refresh stamina for 1 to (Bushido / 5).
+//
+// Also increases stamina and Hit Point Regeneration rate for 4 seconds
+// upon activation.  The increased rate is halted if hit during the 4
+// second duration.  Max HP healed = ((Bushido*Bushido)/576)+15
+//
+// Duration: 4 seconds
+//"
+DEFNAME=s_confidence
+NAME=Confidence
+SOUND=snd_bushido_confidence
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_confidence
+SCROLL_ITEM=0
+FLAGS=spellflag_scripted
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=Bushido 25.0
+INTERRUPT=0.0,0.0
+
+[SPELL 403]
+//"
+// Increases your chance to parry, also grants the ability to parry direct
+// damage attacks from other sources, such as spells and Dragons Breath.
+// Evasion can only be used once every 20 seconds. The chance to block is
+// based on Bushido, Anatomy, and Tactics. The duration of Evasion is also
+// influenced by these skills.
+//
+// Duration: 3 to 6 seconds with a 2 second bonus if your Bushido is above
+// 100.0 and both Tactics and Anatomy are 100.0 or better.
+//"
+DEFNAME=s_evasion
+NAME=Evasion
+SOUND=snd_bushido_evasion
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_evasion
+SCROLL_ITEM=0
+FLAGS=spellflag_disabled
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=Bushido 60.0
+INTERRUPT=0.0,0.0
+
+[SPELL 404]
+//"
+// Places you in a defensive stance that allows you to automatically counter
+// attack the next time you successfully parry, without interrupting your
+// normal swing timer. The Counter Attack takes normal hit and miss ratios
+// into account, and therefore can miss.
+//
+// Duration: Until next successful parry
+//"
+DEFNAME=s_counter_attack
+NAME=Counter Attack
+SOUND=0
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_counter_attack
+SCROLL_ITEM=0
+FLAGS=spellflag_disabled
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=5
+SKILLREQ=Bushido 40.0
+INTERRUPT=0.0,0.0
+
+[SPELL 405]
+//"
+// Allows a single attack with a 50% Hit Chance Increase. The HCI cap of 45%
+// applies. However, if under the effects of a Hit Lower Attack, the full
+// 50% bonus is enjoyed. (The bonus can overcome the effects of Hit Lower
+// Attack.) Also, some hits under the effect of a Lighting Strike will be
+// deemed Critical Hits and will do extra damage. 
+//
+// Duration: Instant
+//"
+DEFNAME=s_lightning_strike
+NAME=Lightning Strike
+SOUND=snd_bushido_lightning_strike
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_lightning_strike
+SCROLL_ITEM=0
+FLAGS=spellflag_disabled
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=Bushido 50.0
+INTERRUPT=0.0,0.0
+
+[SPELL 406]
+//"
+// Works only on multiple targets. A successful hit on an opponent results in
+// another hit attempt on a different, adjacent opponent. Normal hit and miss
+// ratios apply. A damage bonus of 100% is applied to the second target, if
+// the first target is killed.
+//
+// Duration: Instant
+//"
+DEFNAME=s_momentum_strike
+NAME=Momentum Strike
+SOUND=snd_bushido_momentum_strike
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_momentum_strike
+SCROLL_ITEM=0
+FLAGS=spellflag_disabled
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=BUSHIDO 70.0
+INTERRUPT=0.0,0.0
+
+
+/////////////////////
+// Ninjitsu Spells //
+/////////////////////
+
+[SPELL 501]
+DEFNAME=s_focus_attack
+NAME=Focus Attack
+SOUND=snd_ninjitsu_focus_attack
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_focus_attack
+SCROLL_ITEM=
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=NINJITSU 30.0
+INTERRUPT=0.0,0.0
+
+[SPELL 502]
+DEFNAME=s_death_strike
+NAME=Death Strike
+SOUND=//Scripted because it is different for males and females
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_death_strike
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=30
+SKILLREQ=NINJITSU 85.0
+INTERRUPT=0.0,0.0
+ON=@Success
+   IF (<SRC.ISFEMALE>)
+      SRC.SOUND snd_ninjitsu_deathstrike_f
+   ELSE
+      SRC.SOUND snd_ninjitsu_deathstrike_m
+   ENDIF
+
+[SPELL 503]
+DEFNAME=s_animal_form
+NAME=Animal Form
+SOUND=0
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_animal_form
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=NINJITSU 0.0
+INTERRUPT=0.0,0.0
+
+[SPELL 504]
+DEFNAME=s_ki_attack
+NAME=Ki Attack
+SOUND=snd_ninjitsu_ki_attack
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_ki_attack
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=
+SKILLREQ=NINJITSU 0.0
+INTERRUPT=0.0,0.0
+
+[SPELL 505]
+DEFNAME=s_surprise_attack
+NAME=Surprise Attack
+SOUND=//Scripted because its different depending on gender
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_suprise_attack
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=20
+SKILLREQ=NINJITSU 60.0
+INTERRUPT=0.0,0.0
+ON=@Success
+   IF (<SRC.ISFEMALE>)
+      SRC.SOUND snd_ninjitsu_suprise_attack_f
+   ELSE
+      SRC.SOUND snd_ninjitsu_suprise_attack_m
+   ENDIF
+
+[SPELL 506]
+DEFNAME=s_backstab
+NAME=Backstab
+SOUND=0
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_backstab
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=30
+SKILLREQ=NINJITSU 40.0
+INTERRUPT=0.0,0.0
+
+[SPELL 507]
+DEFNAME=s_shadowjump
+NAME=Shadowjump
+SOUND=snd_ninjitsu_shadowjump
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_shadowjump
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=15
+SKILLREQ=NINJITSU 50.0
+INTERRUPT=0.0,0.0
+
+[SPELL 508]
+DEFNAME=s_mirror_image
+NAME=Mirror Image
+SOUND=snd_ninjitsu_mirror_image
+RUNES=
+CAST_TIME=
+RESOURCES=
+RUNE_ITEM=i_rune_mirror_image
+SCROLL_ITEM=0
+FLAGS=
+EFFECT_ID=
+EFFECT=
+DURATION=
+MANAUSE=10
+SKILLREQ=NINJITSU 20.0
+INTERRUPT=0.0,0.0
+
+/////////////////////////
+// Spellweaving Spells //
+/////////////////////////
+
+[SPELL 601]
+DEFNAME=s_arcane_circle
+NAME=Arcane Circle
+SOUND=snd_spellweave_arcane_circle
+RUNES=//Myrshalee
+CAST_TIME=0.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_arcane_circle
+FLAGS=spellflag_good
+EFFECT_ID=03779
+EFFECT=0
+DURATION=0.0
+MANAUSE=24
+SKILLREQ=SPELLWEAVING 0.1
+INTERRUPT=100.0,100.0
+
+[SPELL 602]
+DEFNAME=s_gift_of_renewal
+NAME=Gift of Renewal
+SOUND=snd_spellweave_gift_of_renewal
+RUNES=//Olorisstra
+CAST_TIME=3.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_gift_of_renewal
+FLAGS=spellflag_good|spellflag_targ_char
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=24
+SKILLREQ=SPELLWEAVING 0.1
+INTERRUPT=100.0,100.0
+
+[SPELL 603]
+DEFNAME=s_immolating_weapon
+NAME=Immolating Weapon
+SOUND=snd_spellweave_immolating_weapon
+RUNES=//Thalshara
+CAST_TIME=1.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_immolating_weapon
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=26
+SKILLREQ=SPELLWEAVING 0.1
+INTERRUPT=100.0,100.0
+
+[SPELL 604]
+DEFNAME=s_attune_weapon
+NAME=Attune Weapon
+SOUND=snd_spellweave_attune_weapon
+RUNES=//Haeldril
+CAST_TIME=1.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_attunement
+FLAGS=spellflag_targ_char
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=26
+SKILLREQ=SPELLWEAVING 0.1
+INTERRUPT=100.0,100.0
+
+[SPELL 605]
+DEFNAME=s_thunderstorm
+NAME=Thunderstorm
+SOUND=snd_spellweave_thunderstorm
+RUNES=//Erelonia
+CAST_TIME=1.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_thunderstorm
+FLAGS=spellflag_targ_xyz|spellflag_harm
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=32
+SKILLREQ=SPELLWEAVING 10.1
+INTERRUPT=100.0,100.0
+
+[SPELL 606]
+DEFNAME=s_nature_fury
+NAME=Nature's Fury
+SOUND=snd_spellweave_natures_fury
+RUNES=//Rauvvrae
+CAST_TIME=1.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_nature_fury
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=24
+SKILLREQ=SPELLWEAVING 0.1
+INTERRUPT=100.0,100.0
+//snd_spellweave_natures_fury_attack
+//snd_spellweave_natures_fury_idle
+
+[SPELL 607]
+DEFNAME=s_summon_fey
+NAME=Summon Fey
+SOUND=0
+RUNES=//Alalithra
+CAST_TIME=2.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_summon_fey
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=31
+SKILLREQ=SPELLWEAVING 24.1
+INTERRUPT=100.0,100.0
+
+[SPELL 608]
+DEFNAME=s_summon_fiend
+NAME=Summon Fiend
+SOUND=0
+RUNES=//Nylisstra
+CAST_TIME=2.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_summon_fiend
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=31
+SKILLREQ=SPELLWEAVING 24.1
+INTERRUPT=100.0,100.0
+
+[SPELL 609]
+DEFNAME=s_reaper_form
+NAME=Reaper Form
+SOUND=0
+RUNES=//Tarisstree
+CAST_TIME=2.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_reaper_form
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=24
+SKILLREQ=SPELLWEAVING 34.1
+INTERRUPT=100.0,100.0
+
+[SPELL 610]
+DEFNAME=s_wildfire
+NAME=Wildfire
+SOUND=snd_spellweave_wildfire
+RUNES=//Haelyn
+CAST_TIME=2.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_wildfire
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=34
+SKILLREQ=SPELLWEAVING 38.1
+INTERRUPT=100.0,100.0
+
+[SPELL 611]
+DEFNAME=s_essence_of_wind
+NAME=Essence of Wind
+SOUND=snd_spellweave_essence_of_wind
+RUNES=//Anathrae
+CAST_TIME=3.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_essence_of_wind
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=40
+SKILLREQ=SPELLWEAVING 52.1
+INTERRUPT=100.0,100.0
+//snd_spellweave_essence_of_wind_cold
+
+[SPELL 612]
+DEFNAME=s_dryad_allure
+NAME=Dryad Allure
+SOUND=snd_spellweave_dryad_allure
+RUNES=//Rathril
+CAST_TIME=3.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_dryad_allure
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=40
+SKILLREQ=SPELLWEAVING 52.1
+INTERRUPT=100.0,100.0
+//snd_spellweave_dryad_allure_fail
+
+[SPELL 613]
+DEFNAME=s_ethereal_voyage
+NAME=Ethereal Voyage
+SOUND=snd_spellweave_ethereal_voyage
+RUNES=//Orlavdra
+CAST_TIME=3.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_ethereal_voyage
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=60
+SKILLREQ=SPELLWEAVING 66.1
+INTERRUPT=100.0,100.0
+
+[SPELL 614]
+DEFNAME=s_word_of_death
+NAME=Word of Death
+SOUND=0
+RUNES=//Nyraxle
+CAST_TIME=3.5
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_word_of_death
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=60
+SKILLREQ=SPELLWEAVING 66.1
+INTERRUPT=100.0,100.0
+
+[SPELL 615]
+DEFNAME=s_gift_of_life
+NAME=Gift of Life
+SOUND=0
+RUNES=//Illorae
+CAST_TIME=4.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_gift_of_life
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=70
+SKILLREQ=SPELLWEAVING 80.1
+INTERRUPT=100.0,100.0
+
+[SPELL 616]
+DEFNAME=s_arcane_empowerment
+NAME=Arcane Empowerment
+SOUND=snd_spellweave_arcane_empowerment
+RUNES=//Aslavdra
+CAST_TIME=4.0
+RESOURCES=
+RUNE_ITEM=0
+SCROLL_ITEM=i_scroll_arcane_empowerment
+FLAGS=0
+EFFECT_ID=0
+EFFECT=0
+DURATION=0.0
+MANAUSE=70
+SKILLREQ=SPELLWEAVING 80.1
+INTERRUPT=100.0,100.0
+//snd_spellweave_arcane_empowerment_end
+
+
+//////////////////////
+// Mysticism Spells //
+//////////////////////
+
 [Spell 678]
 // deals damage to target
 DEFNAME=s_Nether_Bolt
@@ -1656,9 +2760,10 @@ MANAUSE=50
 SKILLREQ=MYSTICISM 83.0
 INTERRUPT=100.0,100.0
 
-//
-// Bard spells - Basic definitions, no further info
-//
+/////////////////
+// Bard spells //
+/////////////////
+
 [SPELL 701]
 DEFNAME=s_inspire
 NAME=Inspire

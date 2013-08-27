@@ -26,6 +26,18 @@ i_scroll_blood_oat           i_scroll_blood_oath
 i_scroll_lich_transformation i_scroll_liche_form
 i_scroll_pain_strike         i_scroll_pain_spike
 i_scroll_strangulation       i_scroll_strangle
+snd_rune_beetle   snd_monster_rune_beetle
+snd_yomotsu       snd_monster_yomotsu
+snd_kappa         snd_monster_kappa
+snd_crane         snd_animal_crane
+snd_gaman         snd_monster_gaman
+snd_tsuki_wolf    snd_monster_tsuki_wolf
+snd_rav_lion      snd_monster_rav_lion
+snd_oni           snd_monster_oni
+snd_pixie         snd_monster_pixie
+snd_centaur       snd_monster_centaur
+snd_kirin         snd_animal_kirin
+snd_hiryu         snd_animal_hiryu
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

@@ -726,7 +726,7 @@ ON=@NpcRestock
 [chardef 128]
 defname=c_pixie
 name=Pixie
-SOUND=snd_pixie
+SOUND=snd_monster_pixie
 ICON=i_pet_pixie
 DAM=11,17
 ARMOR=90
@@ -1180,7 +1180,7 @@ ON=@GetHit
 [chardef 176]
 defname=c_forest_queen
 name=Forest Queen
-SOUND=snd_pixie
+SOUND=snd_monster_pixie
 ICON=i_pet_pixie
 ARMOR=10
 DAM=10,25
@@ -1216,7 +1216,7 @@ ON=@NpcRestock
 [chardef 175]
 defname=c_Ethereal_Warrior
 name=Ethereal Warrior
-SOUND=snd_pixie
+SOUND=snd_monster_pixie
 ICON=i_pet_forestlord
 ARMOR=80
 DAM=47,74
@@ -1461,7 +1461,7 @@ ON=@NpcRestock
 [chardef 101]
 defname=c_centaur
 name=Centaur
-SOUND=snd_centaur
+SOUND=snd_monster_centaur
 ICON=i_pet_centaur
 DAM=47,53
 ARMOR=50
