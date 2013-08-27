@@ -7,11 +7,12 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 25, 2007
+// FILE LAST UPDATED: Wednesday, April 17, 2013
 //
 // By Rattlehead + Elric
 //
 VERSION=0.56b
+
 
 [itemdef 02409]
 TYPE=t_normal
@@ -815,35 +816,6 @@ DUPEITEM=026b1
 [itemdef 026b6]
 DUPEITEM=026b1
 
-[itemdef 0224e]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Trophies
-DESCRIPTION=@
-DUPELIST=0224f
-
-[itemdef 0224f]
-DUPEITEM=0224e
-
-[itemdef 02250]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Trophies
-DESCRIPTION=@
-
-[itemdef 02234]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Trophies
-DESCRIPTION=@
-DUPELIST=02235
-
-[itemdef 02235]
-DUPEITEM=02234
-
 [itemdef 0241c]
 TYPE=t_normal
 RESOURCES=100 i_log
@@ -1009,20 +981,6 @@ TYPE=t_normal
 RESOURCES=100 i_log
 CATEGORY=Decoration - Weapons & Shields
 SUBSECTION=Miscellaneous
-DESCRIPTION=@
-
-[itemdef 02259]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Miscellaneous
-SUBSECTION=BOD
-DESCRIPTION=@
-
-[itemdef 02258]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Miscellaneous
-SUBSECTION=BOD
 DESCRIPTION=@
 
 [eof]

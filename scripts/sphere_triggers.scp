@@ -48,7 +48,7 @@ ON=@STEP
 	IF !(<MORE1>)
 		EFFECT=3,i_fx_explode	// explosion
 		SOUND=snd_SPELL_EXPLOSION
-		SRC.DAMAGE={5 20}	// damage the person who stepped here.
+		SRC.DAMAGE={5 20}	<DEF.dam_fire>// damage the person who stepped here.
 		MORE1=1
 		TIMER=30	// reset in 30 seconds.
 	ELSE

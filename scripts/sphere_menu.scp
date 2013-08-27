@@ -57,20 +57,22 @@ GMPAGE Other
 Are you sure you want to be teleported to the Depths of Development? You will be stuck there until a GM teleports you back to the world.
 ON=0 YES, down we go!
 //GOPLACE a_helpdesk
-src.newitem i_teleport_delay
-src.act.equip
+SERV.NEWITEM i_teleport_delay
+NEW.EQUIP
 
 ON=0 NO, I'd rather stay here.
 SYSMESSAGE Help request aborted.
 
 [ITEMDEF i_teleport_delay]
 // Create an object that just is an equipped timer.
-// src.newitem i_teleport_delay
-// src.act.equip		// We must equip this on the char we want to effect.
-// src.act.timer 100	// if we want to change the time
+// SERV.NEWITEM i_teleport_delay
+// NEW.EQUIP		// We must equip this on the char we want to effect.
+// NEW.TIMER 100	// if we want to change the time
 NAME=Delay Teleport
 ID=i_handr_1
 TYPE=T_EQ_SCRIPT
+WEIGHT=0
+LAYER=layer_special
 
 ON=@Create
 	ATTR=attr_invis|attr_decay

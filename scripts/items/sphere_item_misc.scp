@@ -7,12 +7,12 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 15, 2003
+// FILE LAST UPDATED: Wednesday, April 17, 2013
 //
 VERSION=0.56b
 
+
 [ITEMDEF 017cf]
-//teleporter
 DEFNAME=i_teleporter
 RESOURCES=60 I_BOARD, 1 I_NAILS
 WEIGHT=60
@@ -835,6 +835,26 @@ DUPEITEM=01c14
 [ITEMDEF 01c16]
 //Candle of Love
 DUPEITEM=01c14
+
+[ITEMDEF 0379e]
+DEFNAME=i_fx_glow_arrow
+TYPE=t_spell
+CATEGORY=Miscellaneous
+SUBSECTION=Weirdness
+DESCRIPTION=Glowing Arrow
+
+[ITEMDEF 0379f]
+DEFNAME=i_fx_ebolt
+TYPE=t_spell
+CATEGORY=Miscellaneous
+SUBSECTION=Weirdness
+DESCRIPTION=Small Bolt
+
+[ITEMDEF 03ee8]
+DEFNAME=i_fx_yellow_dot
+CATEGORY=Miscellaneous
+SUBSECTION=Weirdness
+DESCRIPTION=Strange Yellow Dot
 
 [ITEMDEF I_WINDOW]
 ID=I_TARGET

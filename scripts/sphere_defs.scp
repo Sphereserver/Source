@@ -59,6 +59,8 @@ mount_0x11c	03e92   // Armored Steed (Mondains Steed)
 mount_0x115	03e91   // Cu Sidhe
 mount_0x114	03e90   // Reptalon
 mount_0xd5	03ec5	// Polar Bear (veteran's award)
+// SA
+mount_0x1b0 03ec6 // Armored Boura
 
 [DEFNAME hues]	// these are hues from hues.mul.
 color_none		0
@@ -76,7 +78,9 @@ color_rock          1154
 color_spectral      17969
 
 [DEFNAME hues_range]	// these are ranges of hues from hues.mul.
+colors_stone         {2498 1 2500 1 {2671 2706} 1}
 colors_skin			{1002 1057}
+colors_skin_gargoyle {1755 1779}
 colors_all          { {443 443} 2 {902 902} 1 {907 907} 1 {928 928} 1 {946 947} 1 {1201 1247} 6 {1301 1347} 6 {1401 1447} 6 {1501 1547} 6 {1601 1654} 6 {1701 1747} 6 {1801 1887} 6 }
 colors_white        {2301 2301}
 colors_black        {2305 2305}
@@ -137,8 +141,14 @@ random_gold_pile       { poor_gold_pile 1 meager_gold_pile 1 average_gold_pile 1
 
 [DEFNAME items_hair]
 random_female_hair      { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_pageboy 1 i_hair_buns 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
+random_female_elf_hair  { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_flower 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_braid 1 i_hair_elven_long4 1 }
 random_male_hair        { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_mohawk 1 i_hair_pageboy 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
+random_male_elf_hair    { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_mullet 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_spike 1 }
 random_facial_hair      { i_beard_long 1 i_beard_short 1 i_beard_goatee 1 i_beard_mustache 1 i_beard_short_med 1 i_beard_long_med 1 i_beard_vandyke 1 }
+
+random_gargoyle_male_horns        { i_horn_gargoyle_male_1 1 i_horn_gargoyle_male_2 1 i_horn_gargoyle_male_3 1 i_horn_gargoyle_male_4 1 i_horn_gargoyle_male_5 1 i_horn_gargoyle_male_6 1 i_horn_gargoyle_male_7 1 i_horn_gargoyle_male_8 1 }
+random_gargoyle_male_facialhorns  { i_horn_gargoyle_facial_1 1 i_horn_gargoyle_facial_2 1 i_horn_gargoyle_facial_3 1 i_horn_gargoyle_facial_4 1 }
+random_gargoyle_female_horns      { i_horn_gargoyle_female_1 1 i_horn_gargoyle_female_2 1 i_horn_gargoyle_female_3 1 i_horn_gargoyle_female_4 1 i_horn_gargoyle_female_5 1 i_horn_gargoyle_female_6 1 i_horn_gargoyle_female_7 1 i_horn_gargoyle_female_8 1 }
 
 [DEFNAME items_clothing]
 random_hats            { i_floppy_hat 1 i_wide_brim_hat 1 i_cap 1 i_tall_straw_hat 1 i_straw_hat 1 i_wizards_hat 1 i_bonnet 1 i_feathered_hat 1 i_bandana 1 i_skull_cap 1 }
@@ -187,6 +197,8 @@ random_reagent         { i_reag_black_pearl 1 i_reag_blood_moss 1 i_reag_garlic 
 
 [DEFNAME items_misc]
 random_instrument      { i_drum 1 i_tambourine 1 i_lyre 1 i_lute 1 }
+random_instrument_human   { i_drum 1 i_tambourine 1 i_tambourine_tas 1 i_harp_large 1 i_lyre 1 i_lute 1 i_flute_bamboo 1 }
+random_instrument_gargish { i_aud_char 1 i_harp_gargoyle 1 i_lute_gargoyle 1 i_musical_instrument 1 i_drum_gargoyle 1 i_flute_gargoyle 1 }
 
 [DEFNAME items_jewels]
 random_necklace        { i_necklace_silver_beads 1 i_necklace_gold_beads 1 i_necklace_gold 1 i_necklace_silver 1 }
@@ -310,48 +322,61 @@ skeletons              { c_skeleton 1 c_skeleton_w_sword 1 c_skeleton_w_axe 1}
 trolls                 { c_troll 1 c_troll_w_axe 1 c_troll_w_mace 1 }
 
 [DEFNAME sounds]
-// sounds - monsters
-snd_animals_aligatr1     90
+snd_wind1                 21
+snd_wind2                 22
+snd_crickets              23
+snd_craft_anvil           42
+
+snd_animals_aligatr1      90
+snd_animals_aligatr2      91
+snd_animals_aligatr3      92
+snd_animals_aligatr4      93
+snd_animals_aligatr5      94
 snd_animals_bear1         95
 snd_animals_bull1         100
-snd_animals_cat1         105
-snd_animals_chicken1       110
+snd_animals_cat1          105
+snd_animals_chicken1      110
 snd_animals_cougar1       115
-snd_animals_cow1         120
+snd_animals_cow1          120
 snd_animals_crow1         125
 snd_animals_deer3         130
 snd_animals_deer4         131
 snd_animals_deer5         132
-snd_animals_dog1         133
-snd_animals_dolphin1     138
-snd_animals_eagle1       143
-snd_animals_frstbrd1     148
+snd_animals_dog1          133
+snd_animals_dolphin1      138
+snd_animals_eagle1        143
+snd_animals_frstbrd1      148
 snd_animals_goat1         153
-snd_animals_gorilla1     158
-snd_animals_grizzly1     163
-snd_animals_horse1       168
-snd_animals_jungbrd1       173
+snd_animals_gorilla1      158
+snd_animals_grizzly1      163
+snd_animals_horse1        168
+snd_animals_jungbrd1      173
 snd_animals_lion1         178
-snd_animals_llama3       183
-snd_animals_llama4       184
-snd_animals_llama5       185
-snd_animals_panther1     186
+snd_animals_llama3        183
+snd_animals_llama4        184
+snd_animals_llama5        185
+snd_animals_panther1      186
 snd_animals_parrot1       191
-snd_animals_pig1         196
+snd_animals_pig1          196
+snd_animals_pig2          197
 snd_animals_rabbit3       201
 snd_animals_rabbit4       202
 snd_animals_rabbit5       203
-snd_animals_rat1         204
-snd_animals_raven1       209
-snd_animals_sheep1       214
-snd_animals_snake1       219
+snd_animals_rat1          204
+snd_animals_raven1        209
+snd_animals_sheep1        214
+snd_animals_snake1        219
 snd_animals_walrus1       224
 snd_animals_wolf1         229
+snd_special_spelleffect1  254
 snd_elementl_airelem1     263
-snd_elementl_airelem5	 267
-snd_elementl_erthel1     268
+snd_elementl_airelem2     264
+snd_elementl_airelem3     265
+snd_elementl_airelem4     266
+snd_elementl_airelem5     267
+snd_elementl_erthel1      268
 snd_elementl_firelem1     273
-snd_elementl_watrel1     278
+snd_elementl_watrel1      278
 
 snd_hits_hit01           309
 snd_hits_hit02           310
@@ -379,7 +404,7 @@ snd_hits_hit22           330
 snd_human_foomph01       331
 snd_human_foomph06       332
 snd_human_foomph07       333
-snd_human_foomph08        334
+snd_human_foomph08       334
 snd_human_foomph09       335
 snd_human_f_die_01       336
 snd_human_f_die_02       337
@@ -395,62 +420,62 @@ snd_human_m_die_01       346
 snd_human_m_die_02       347
 snd_human_m_die_03       348
 snd_human_m_die_04       349
-snd_monster_corpsr1       353
-snd_monster_corpsr3       354
-snd_monster_corpsr4       355
-snd_monster_corpsr5       356
-snd_monster_daemon1       357
-snd_monster_dragon1       362
+snd_monster_corpsr1      353
+snd_monster_corpsr3      354
+snd_monster_corpsr4      355
+snd_monster_corpsr5      356
+snd_monster_daemon1      357
+snd_monster_dragon1      362
 snd_monster_ettin1       367
-snd_monster_gargyl1       372
+snd_monster_gargyl1      372
 snd_monster_gazer1       377
 snd_monster_ghost1       382
-snd_monster_gispidr1      387
-snd_monster_grat1         392
-snd_monster_gscorp1       397
+snd_monster_gispidr1     387
+snd_monster_grat1        392
+snd_monster_gscorp1      397
 snd_monster_harpy1       402
-snd_monster_headls1       407
+snd_monster_headls1      407
 snd_monster_liche1       412
-snd_monster_lzrdmn1       417
-snd_monster_mngbat1       422
-snd_monster_ogre1         427
+snd_monster_lzrdmn1      417
+snd_monster_mngbat1      422
+snd_monster_ogre1        427
 snd_monster_orc1         432
-snd_monster_ratman1       437
-snd_monster_reaper1       442
+snd_monster_ratman1      437
+snd_monster_reaper1      442
 snd_monster_seaserp1     447
 snd_monster_seaserp3     448
 snd_monster_seaserp4     449
 snd_monster_seaserp5     450
-snd_monster_skletn1       451
+snd_monster_skletn1      451
 snd_monster_slime1       456
 snd_monster_troll1       461
-snd_monster_wisp1         466
-snd_monster_zombie1       471
-snd_weapons_axe01         562
-snd_weapons_blunt01       563
+snd_monster_wisp1        466
+snd_monster_zombie1      471
+snd_weapons_axe01        562
+snd_weapons_blunt01      563
 snd_weapons_crossbow     564
 snd_weapons_gilotin1     565
 snd_weapons_hvyswrd1     566
 snd_weapons_hvyswrd4     567
-snd_weapons_swish01       568
-snd_weapons_swish02       569
-snd_weapons_swish03       570
+snd_weapons_swish01      568
+snd_weapons_swish02      569
+snd_weapons_swish03      570
 snd_weapons_sword1       571
 snd_weapons_sword7       572
-snd_z_end_carpntry         573
-snd_z_end_dye              574
-snd_z_end_fshsplsh         575
-snd_z_end_liquid           576
-snd_z_end_lockpick         577
-snd_z_end_mortar           578
-snd_z_end_mystery1         579
-snd_z_end_mystery2         580
-snd_z_end_mystery3         581
-snd_z_end_poison           582
-snd_z_end_powder           583
-snd_z_end_scissors         584
-snd_z_end_scribe           585
-snd_z_end_spirtspk         586
+snd_z_end_carpntry       573
+snd_z_end_dye            574
+snd_z_end_fshsplsh       575
+snd_z_end_liquid         576
+snd_z_end_lockpick       577
+snd_z_end_mortar         578
+snd_z_end_mystery1       579
+snd_z_end_mystery2       580
+snd_z_end_mystery3       581
+snd_z_end_poison         582
+snd_z_end_powder         583
+snd_z_end_scissors       584
+snd_z_end_scribe         585
+snd_z_end_spirtspk       586
 snd_monster_tera_warrior1     589
 snd_monster_tera_drone1       594
 snd_monster_tera_matriarch1   599
@@ -464,6 +489,128 @@ snd_monster_ophidian_warrior1 634
 snd_monster_ophidian_mage1    639
 snd_monster_ophidian_queen1   644
 snd_monster_lavalizard1       649
+
+snd_special_agility    654
+snd_special_air1       655
+snd_special_air2       656
+snd_special_air3       657
+snd_special_air4       658
+snd_special_air5       659
+snd_monster_lizard1    660
+snd_monster_lizard2    661
+snd_monster_lizard3    662
+snd_monster_lizard4    663
+snd_monster_lizard5    664
+snd_special_archcure   665
+snd_monster_centaur    679
+snd_monster_centaur2   680
+
+snd_exodus1       769
+snd_exodus2       770
+snd_dragon_serpentine1 649
+snd_elec_1        756
+snd_elec_1a       757
+snd_elec_2        477
+snd_fire_1        837
+snd_fire_1a       838
+snd_monster_efreet1       880
+
+snd_monster_insect1        959
+snd_monster_insect2        960
+snd_monster_insect3        961
+snd_monster_insect4        962
+snd_monster_insect5        963
+snd_animal_kirin           965
+snd_animal_kirin2          966
+snd_monster_longhorn1      1016
+snd_monster_longhorn2      1017
+snd_monster_longhorn3      1018
+snd_monster_longhorn4      1019
+snd_monster_longhorn5      1020
+snd_monster_pixie          1139
+snd_monster_pixie2         1140
+snd_animal_seahorse        1144
+snd_monster_shadowlord     1149
+snd_monster_skeldragon     1160
+snd_succubus1              1200
+snd_succubus2              1201
+snd_succubus3              1202
+snd_succubus4              1203
+snd_succubus5              1204
+snd_animal_unicorn1        1212
+snd_animal_crane           1240
+snd_animal_crane1          1241
+snd_monster_oni            1250
+snd_monster_oni2           1251
+snd_monster_rune_beetle    1255
+snd_monster_rune_beetle2   1256
+snd_monster_yomotsu        1261
+snd_monster_yamandon       1262
+snd_death_beetle1          1264
+snd_death_beetle2          1265
+snd_death_beetle3          1266
+snd_death_beetle4          1267
+snd_death_beetle5          1268
+snd_monster_gaman          1271
+snd_monster_gaman2         1272
+snd_animal_hiryu2          1276
+snd_animal_hiryu           1277
+snd_special_origami1       1280
+snd_special_origami2       1281
+snd_special_origami3       1282
+snd_special_windchimes1    1285
+snd_special_windchimes2    1286
+snd_special_windchimes3    1287
+snd_monster_kappa          1290
+snd_monster_kappa1         1291
+snd_monster_rev_lion       1303
+snd_monster_rev_lion2      1304
+snd_monster_tsuki_wolf     1324
+snd_monster_tsuki_wolf2    1343
+snd_monster_bake_kitsune   1345
+snd_monster_changling      1386
+snd_monster_corporealbrume 1386
+snd_monster_fetidessence   1388
+snd_monster_hydra          1389
+snd_monster_paroxysmus     1394
+snd_animal_cusidhe         1397
+snd_monster_dryad          1405
+snd_monster_intgrizzle1    1410
+snd_monster_satyr1         1416
+snd_monster_shimmering1    1428
+snd_monster_minotaur1      1433
+snd_monster_troglodyte     1440
+
+snd_monster_abyssal_infernal 1493
+snd_monster_acid_slug        1497
+snd_monster_bloodworm        1501
+snd_monster_boura            1505
+snd_monster_chicken_lizard   1509
+snd_monster_dragon_faerie    1513
+snd_monster_dragon_wolf      1517
+snd_monster_dream_wraith     1521
+snd_monster_gargoyle_female  1525
+snd_monster_gargoyle_male    1529
+snd_monster_goblin           1534
+snd_monster_tarantula        1538
+snd_monster_homunculous      1542
+snd_monster_kepetch          1543
+snd_monster_elem_lava        1547
+snd_monster_maddening_horror 1551
+snd_monster_medusa           1555
+snd_monster_mimic            1559
+snd_monster_navreynighteyes  1563
+snd_monster_primeval_liche   1567
+snd_monster_raptor           1571
+snd_monster_rising_colossus  1575
+snd_monster_rotworm          1579
+snd_monster_skree            1583
+snd_monster_slasherofveils   1587
+snd_monster_slith            1591
+snd_monster_stoneform        1595
+snd_monster_stygian_dragon   1599
+snd_monster_spider_trapdoor  1603
+snd_monster_gargoyle_undead  1607
 
 snd_rune_beetle 1255
 snd_yomotsu 1261
@@ -553,6 +700,91 @@ snd_spell_summon_undead		586
 snd_spell_explosion			775 //Fixed: 519 -> 775
 snd_spell_incognito			957 //Fixed: 492 -> 957
 snd_spell_invisibility		964 //Fixed: 515 -> 964
+
+snd_ninjitsu_deathstrike_f          1293
+snd_ninjitsu_deathstrike_m          1294
+snd_ninjitsu_focus_attack           1295
+snd_ninjitsu_ki_attack              1296
+snd_ninjitsu_mirror_image           1297
+snd_ninjitsu_shadowjump             1298
+snd_ninjitsu_suprise_attack_f       1299
+snd_ninjitsu_suprise_attack_m       1300
+//snd_ninjitsu_animal_form
+//snd_ninjitsu_backstab
+
+snd_bushido_confidence             1306
+snd_bushido_evasion                1307
+snd_bushido_honorable_execution    1308
+snd_bushido_lightning_strike       1309
+snd_bushido_momentum_strike        1310
+//snd_bushido_counter_attack
+
+//snd_combat_armor_ignore
+//snd_combat_bleed_attack
+//snd_combat_concussion_blow
+//snd_combat_crushing_blow
+//snd_combat_disarm
+//snd_combat_dismount
+//snd_combat_doublestrike
+//snd_combat_infecting
+//snd_combat_mortal_strike
+//snd_combat_moving_shot
+//snd_combat_paralyzing_blow
+//snd_combat_shadow_strike
+//snd_combat_riding_swipe
+//snd_combat_nerve_strike
+//snd_combat_talon_strike
+//snd_combat_armor_pierce
+snd_combat_whirlwind_attack       1311
+snd_combat_block                  1312
+snd_combat_defense_mastery        1313
+snd_combat_doubleshot             1314
+snd_combat_doubleshot_2           1315
+snd_combat_dual_wield             1316
+snd_combat_feint                  1317
+snd_combat_frenzied_whirlwind     1318
+snd_combat_bladeweave             1468
+snd_combat_forcearrow             1469
+snd_combat_force_of_nature        1470
+snd_combat_lightning_arrow        1471
+//snd_combat_psychic_attack
+//snd_combat_serpent_arrow
+
+snd_combat_fukiya                1327
+snd_combat_shuriken_hit          1328
+snd_combat_shuriken_miss         1329
+snd_combat_smokebomb             1330
+
+snd_aquarium_deadfish            1442
+snd_aquarium_rewards             1443
+snd_aquarium_use                 1444
+
+snd_collection_negative          1445
+snd_collection_positive          1446
+snd_collection_reward            1447
+
+snd_spellweave_arcane_circle          1472
+snd_spellweave_arcane_empowerment     1473
+snd_spellweave_arcane_empowerment_end 1474
+snd_spellweave_attune_weapon          1475
+snd_spellweave_dryad_allure           1476
+snd_spellweave_dryad_allure_fail      1477
+snd_spellweave_essence_of_wind        1478
+snd_spellweave_essence_of_wind_cold   1479
+snd_spellweave_ethereal_voyage        1480
+snd_spellweave_gift_of_renewal        1481
+snd_spellweave_immolating_weapon      1482
+snd_spellweave_natures_fury           1483
+snd_spellweave_natures_fury_attack    1484
+snd_spellweave_natures_fury_idle      1485
+snd_spellweave_thunderstorm           1486
+snd_spellweave_wildfire               1487
+//snd_spellweave_summon_fey
+//snd_spellweave_summon_fiend
+//snd_spellweave_reaper_form
+//snd_spellweave_word_of_death
+//snd_spellweave_gift_of_life
+
 
 [DEFNAME region_flags]
 region_antimagic_all		00001	// all magic banned here.
@@ -658,7 +890,7 @@ statf_onhorse           080000000	// mounted on horseback.
 attr_identified	00001	// this is the identified name. ???
 attr_decay		00002	// timer currently set to decay.
 attr_newbie		00004	// not lost on death or sellable ?
-attr_move_always	00008	// always movable (else default as stored in client) (even if mul says not movalble) never decays !
+attr_move_always	00008	// always movable (else default as stored in client) (even if mul says not movable) never decays !
 attr_move_never	00010	// never movable (else default as stored in client) never decays !
 attr_magic		00020	// don't set this while worn! this item is magic as apposed to marked or markable.
 attr_owned		00040	// this is owned by the town. you need to steal it. never decays !
@@ -1001,7 +1233,7 @@ t_spellbook_ninjitsu    188	// SE Ninjitsu spellbook (should have MOREZ=500 by d
 t_spellbook_arcanist    189	// ML Spellweaver spellbook (should have MOREZ=600 by default)
 t_multi_custom          190	// Customisable multi
 t_spellbook_mystic      191	// SA Mysticism spellbook (should have MOREZ=677 by default)
-t_hoverover             192	// Hover-over item (CAN_C_HOVER can hover over blocking items)
+t_hoverover             192	// Hover-over item (CAN_I_HOVER can hover over blocking items)
 t_spellbook_bard        193	// SA Bard spellbook (should have MOREZ=700 by default)
 
 [DEFNAME layers]

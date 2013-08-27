@@ -6,85 +6,604 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 25, 2007
+// FILE LAST UPDATED: Wednesday, April 17, 2013
 //
 VERSION=0.56b
 
-[ITEMDEF 02252]
-defname=i_spellbook_paladin
-type=t_spellbook_pala
-name=Paladin Spellbook
-weight=1
-resources=80 i_parchment,1 i_hide, 1 i_cloth
-layer=1
 
-ON=@Create
-	ATTR=attr_magic|attr_newbie
-	CATEGORY=Provisions - Alchemy & Magic
-	SUBSECTION=Paladin
-	DESCRIPTION=Paladin Spellbook
 
 [ITEMDEF 0238c]
-defname=i_spellbook_bushido
-type=t_spellbook_bushido
-name=Book of Bushido
-weight=1
-resources=80 i_parchment,1 i_hide, 1 i_cloth
-layer=1
-
+DEFNAME=i_spellbook_bushido
+TYPE=t_spellbook_bushido
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Bushido Spellbook
 ON=@Create
-	ATTR=attr_magic|attr_newbie
-	CATEGORY=Provisions - Alchemy & Magic
-	SUBSECTION=Bushido
-	DESCRIPTION=Bushido Spellbook
-	
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0400
+   MORE1=03f
+
 [ITEMDEF 023a0]
-defname=i_spellbook_ninjitsu
-type=t_spellbook_ninjitsu
-name=Book of Ninjitsu
-weight=1
-resources=80 i_parchment,1 i_hide, 1 i_cloth
-layer=1
-
+DEFNAME=i_spellbook_ninjitsu
+TYPE=t_spellbook_ninjitsu
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Ninjitsu Spellbook
 ON=@Create
-	ATTR=attr_magic|attr_newbie
-	CATEGORY=Provisions - Alchemy & Magic
-	SUBSECTION=Ninjitsu
-	DESCRIPTION=Ninjitsu Spellbook
-	
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0500
+   MORE1=0ff
+
 [ITEMDEF 02d50]
-defname=i_spellbook_arcanist
-type=t_spellbook_arcanist
-name=Book of Arcanist
-weight=1
-resources=80 i_parchment,1 i_hide, 1 i_cloth
-layer=1
-
+DEFNAME=i_spellbook_spellweaving
+NAME=spell weaving book
+TYPE=t_spellbook_arcanist
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Spell Weaving Book
 ON=@Create
-	ATTR=attr_magic|attr_newbie
-	CATEGORY=Provisions - Alchemy & Magic
-	SUBSECTION=Arcanist
-	DESCRIPTION=Arcanist Spellbook
-	
-[ITEMDEF 02251]
-DEFNAME=i_daemon_skull
-NAME=Daemon Skull
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0600
+   //MORE1=0ffff
+
+
+[ITEMDEF 02203]
+DEFNAME=i_skull_large
+NAME=large skull
+TYPE=t_bone
+VALUE=10
+WEIGHT=10.0
+CATEGORY=Decoration - Dungeons and The Dead
+SUBSECTION=Bones
+DESCRIPTION=Skull (large)
+
+[ITEMDEF 02204]
+DEFNAME=i_skull_pole
+NAME=skull pole
+TYPE=t_bone
+WEIGHT=45.0
+RESOURCES=15 i_bone_skull
+CATEGORY=Decoration - Dungeons and The Dead
+SUBSECTION=Bones
+DESCRIPTION=Skull Pole
+
+[ITEMDEF 02205]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02205
+
+[ITEMDEF 02206]
+DEFNAME=i_crystal_1
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 1 (large)
+DUPELIST=02207,02208,02209,0220a,0220b,0220c,0220d,0220e
+
+[ITEMDEF 02207]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 02208]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 02209]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220a]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220b]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220c]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220d]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220e]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 0220f
+
+[ITEMDEF 02210]
+DEFNAME=i_crystal_2
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=02211,02212,02213,02214,02215,02216,02217,02218
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 2 (large)
+
+[ITEMDEF 02211]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02212]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02213]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02214]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02215]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02216]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02217]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02218]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02219]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02219
+
+[ITEMDEF 0221a]
+DEFNAME=i_crystal_3
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=0221b,0221c,0221d,0221e,0221f,02220,02221,02222
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 3 (large)
+
+[ITEMDEF 0221b]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221c]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221d]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221e]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221f]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02220]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02221]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02222]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02223]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02223
+
+[ITEMDEF 02224]
+DEFNAME=i_crystal_4
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=02225,02226,02227,02228,02229,0222a,0222b,0222c
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 4 (large)
+
+[ITEMDEF 02225]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02226]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02227]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02228]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02229]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222a]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222b]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222c]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222d]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 0222d
+
+[ITEMDEF 0222e]
+DEFNAME=i_giant_mushroom
+NAME=giant mushroom
 TYPE=t_normal
-VALUE=5000
+CATEGORY=Vegetation
+SUBSECTION=Mushrooms
+DESCRIPTION=Giant Mushroom
+DUPELIST=0222f,02230,2231
+
+[ITEMDEF 0222f]
+//giant mushroom
+DUPEITEM=0222e
+
+[ITEMDEF 02230]
+//giant mushroom
+DUPEITEM=0222e
 
 [ITEMDEF 02231]
-DEFNAME=i_giant_mush
-NAME=Giant Mushroom
-TYPE=t_normal
+//giant mushroom
+DUPEITEM=0222e
 
 [ITEMDEF 02232]
 DEFNAME=i_ant_hill
-NAME=Ant Hill
+NAME=ant hill
 TYPE=t_normal
+CATEGORY=Ground Tiles
+SUBSECTION=Hills
+DESCRIPTION=Ant Hill
+
+[ITEMDEF 02233]
+DEFNAME=i_gopher_mound
+NAME=gopher mound
+TYPE=t_normal
+CATEGORY=Ground Tiles
+SUBSECTION=Hills
+DESCRIPTION=Gopher Mound
+
+[ITEMDEF 02234]
+DEFNAME=i_trophy_dragonhead
+NAME=dragon trophy
+FLIP=1
+VALUE=48
+WEIGHT=11.1
+RESOURCES=2 i_board,5 i_fur_light,1 i_nails,1 i_wool
+SKILLMAKE=Carpentry 72.0,Tailoring 60.0,t_carpentry,t_sewing_kit
+CATEGORY=Decoration - Miscellaneous
+SUBSECTION=Trophies
+DESCRIPTION=Dragon
+DUPELIST=02235
+
+[ITEMDEF 02235]
+//trophy dragonhead
+DUPEITEM=02234
+
+[ITEMDEF 02236]
+DEFNAME=i_lance_light
+NAME=light lance
+FLIP=1
+VALUE=77
+WEIGHT=18.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 48.0
+CATEGORY=Decoration - Wall Hangings
+SUBSECTION=Lance
+DESCRIPTION=Light Lance
+DUPELIST=02238
+
+[ITEMDEF 02237]
+DEFNAME=i_lance_heavy
+NAME=heavy lance
+FLIP=1
+VALUE=77
+WEIGHT=18.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 48.0
+CATEGORY=Decoration - Wall Hangings
+SUBSECTION=Lance
+DESCRIPTION=Heavy Lance
+DUPELIST=02238
+
+[ITEMDEF 02238]
+//light lance
+DUPEITEM=02236
+
+[ITEMDEF 02239]
+//heavy lance
+DUPEITEM=02237
+
+[ITEMDEF 0223a]
+DEFNAME=i_crystals_broken
+NAME=broken crystals
+TYPE=t_normal
+VALUE=2
+WEIGHT=1.0
+CATEGORY=Resources
+SUBSECTION=Mineral
+DESCRIPTION=Crystalline Fragments
+DUPELIST=0223b,0223c,0223d,0223e,0223f,02240,02241,02242,02243,02244,02245,02246,02247,02248,02249
+ON=@Create
+   DORAND 7
+      NAME=crystalline fragments
+      NAME=broken crystals
+      NAME=shattered crystals
+      NAME=scattered crystals
+      NAME=crushed crystals
+      NAME=jagged crystals
+      NAME=crystal pieces 
+   ENDDO
+
+[ITEMDEF 0223b]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 0223c]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 0223d]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 0223e]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 0223f]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02240]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02241]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02242]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02243]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02244]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02245]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02246]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02247]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02248]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 02249]
+//broken crystals
+DUPEITEM=0223a
+
+[ITEMDEF 0224a]
+DEFNAME=i_tree_willow2_trunk
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Willow Tree 2 (trunk)
+
+[ITEMDEF 0224b]
+DEFNAME=i_tree_willow3_trunk
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Willow Tree 3 (trunk)
+
+[ITEMDEF 0224c]
+DEFNAME=i_tree_oak3_trunk
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Tree 3 (trunk)
+
+[ITEMDEF 0224d]
+DEFNAME=i_tree_oak4_trunk
+TYPE=t_tree
+CATEGORY=Vegetation
+SUBSECTION=Trees
+DESCRIPTION=Oak Tree 4 (trunk)
+
+[ITEMDEF 0224e]
+DEFNAME=i_skull_demon
+NAME=demon skull
+TYPE=t_bone
+FLIP=1
+WEIGHT=10.0
+CATEGORY=Decoration - Dungeons and The Dead
+SUBSECTION=Bones
+DESCRIPTION=Skull (demon 1)
+DUPELIST=0224f
+
+[ITEMDEF 0224f]
+//Skull (demon 1)
+DUPEITEM=0224e
+
+[ITEMDEF 02250]
+DEFNAME=i_skull_demon_2
+NAME=demon skull
+TYPE=t_bone
+FLIP=1
+WEIGHT=10.0
+CATEGORY=Decoration - Dungeons and The Dead
+SUBSECTION=Bones
+DESCRIPTION=Skull (demon 2)
+DUPELIST=02251
+
+[ITEMDEF 02251]
+//Skull (demon 2)
+DUPEITEM=02250
+
+[ITEMDEF 02252]
+DEFNAME=i_spellbook_chivalry
+TYPE=t_spellbook_pala
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 50.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Chivalry Spellbook
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0200
+   MORE1=03ff
+
+
+[ITEMDEF 02254]
+DEFNAME=i_spellbook_arms
+TYPE=t_normal
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 50.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Weapon Book
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   //MOREZ=?
+
+[ITEMDEF 02255]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Ghost Missile 02255
+
+[ITEMDEF 02256]
+DEFNAME=i_bagball_small
+TYPE=t_normal
+VALUE=5
+WEIGHT=0.5
+RESOURCES=1 i_hides_cut
+CATEGORY=Games
+SUBSECTION=Ball
+DESCRIPTION=Bagball
+
+[ITEMDEF 02257]
+DEFNAME=i_bagball_large
+TYPE=t_normal
+VALUE=10
+WEIGHT=1.0
+RESOURCES=2 i_hides_cut
+CATEGORY=Games
+SUBSECTION=Ball
+DESCRIPTION=Bagball (large)
+
+[ITEMDEF 02258]
+DEFNAME=i_bulk_order_deed
+TYPE=t_normal
+WEIGHT=1.0
+RESOURCES=1 i_parchment
+CATEGORY=Items by Professions
+SUBSECTION=Scribe
+DESCRIPTION=Bulk Order Deed
+
+[ITEMDEF 02259]
+DEFNAME=i_bulk_order_book
+TYPE=t_normal
+WEIGHT=4.0
+RESOURCES=10 i_bulk_order_deed
+SKILLMAKE=Inscription 65.0,1 i_pen_and_ink
+CATEGORY=Items by Professions
+SUBSECTION=Scribe
+DESCRIPTION=Bulk Order Book
+
+[ITEMDEF 0225a]
+DEFNAME=i_spellbook_bard
+TYPE=t_spellbook_bard
+NAME=Bardic Spellbook
+LAYER=layer_hand1
+FLIP=1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 50.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Bardic Spellbook
+DUPELIST=0225b
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   MOREZ=700
+
+[ITEMDEF 0225b]
+//bard spellbook
+DUPEITEM=0225a
+
 
 [ITEMDEF i_gem_arcane]
 ID=i_worldgem_lg
-TYPE=T_EQ_SCRIPT
+TYPE=t_eq_script
 VALUE=5000
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Special Jewels
@@ -223,17 +742,13 @@ SKILLMAKE=TAILORING 45.4, t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Cloak
-
 ON=@CREATE
 	HITPOINTS={50 100}
 	MORE2=24
-
 ON=@EQUIP
 	f_arcane_equip
-
 ON=@UNEQUIP
 	f_arcane_unequip 026ad
-
 ON=@CLIENTTOOLTIP
 	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
 
@@ -250,17 +765,13 @@ SKILLMAKE=TAILORING 59.0, t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Robe
-
 ON=@CREATE
 	HITPOINTS={50 100}
 	MORE2=24
-
 ON=@EQUIP
 	f_arcane_equip
-
 ON=@UNEQUIP
 	f_arcane_unequip 026ae
-
 ON=@CLIENTTOOLTIP
 	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
 
@@ -277,17 +788,13 @@ SKILLMAKE=TAILORING 25.0, t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Thigh Boots
-
 ON=@CREATE
 	HITPOINTS={50 100}
 	MORE2=24
-
 ON=@EQUIP
 	f_arcane_equip
-
 ON=@UNEQUIP
 	f_arcane_unequip 026af
-
 ON=@CLIENTTOOLTIP
 	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
 
@@ -305,22 +812,15 @@ SKILLMAKE=TAILORING 56.8, t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Magic
 DESCRIPTION=Arcane Leather Gloves
-
 ON=@CREATE
 	HITPOINTS={50 100}
 	MORE2=24
-
 ON=@EQUIP
 	f_arcane_equip
-
 ON=@UNEQUIP
 	f_arcane_unequip 026b0
-
 ON=@CLIENTTOOLTIP
 	SRC.ADDCLILOC 1060728,<EVAL <MORE2>>,24
 
-[ITEMDEF 02206]
-DEFNAME=i_crystal_1
-NAME=Crystal
-TYPE=t_wall
-CAN=CAN_I_BLOCK
+
+[EOF]

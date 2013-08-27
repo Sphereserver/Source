@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, May 3, 2006
+// FILE LAST UPDATED: August 27, 2013
 //
 VERSION=0.56b
 
@@ -1661,8 +1661,6 @@ DESCRIPTION=Donuts
 [ITEMDEF 01ad6]
 //keg
 DEFNAME=i_KEG_WOOD_2
-TYPE=t_container
-TDATA2=03e
 FLIP=1
 RESOURCES=1 i_BARREL_TAP, 1 i_BARREL
 WEIGHT=12

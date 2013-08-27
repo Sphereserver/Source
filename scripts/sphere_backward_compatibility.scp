@@ -7,9 +7,10 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, January 19, 2008
-
+// FILE LAST UPDATED: Wednesday, April 17, 2013
+//
 VERSION=0.56b
+
 
 [DEFNAME backward_compability_defs]
 loot_ORGE_LORD        loot_OGRE_LORD
@@ -19,23 +20,29 @@ i_candleabra          i_candelabra
 i_candleabra_lit      i_candelabra_lit
 i_candleabra2         i_candelabra2
 i_candleabra2_lit     i_candelabra2_lit
+i_spellbook_paladin          i_spellbook_chivalry
+i_spellbook_arcanist         i_spellbook_spellweaving
+i_scroll_blood_oat           i_scroll_blood_oath
+i_scroll_lich_transformation i_scroll_liche_form
+i_scroll_pain_strike         i_scroll_pain_spike
+i_scroll_strangulation       i_scroll_strangle
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)
-	ADD <ARGS>|08c000000
+   ADD <ARGS>|08c000000
 ELSE
-	ADD <ARGS>
+   ADD <ARGS>
 ENDIF
 
 [FUNCTION tweak]
 INFO
 
-[function brain] //by Darkandus
-if !(<ARGN>)
-	return <NPC>
-else
-	NPC=<ARGN>
-endif
+[FUNCTION brain] //by Darkandus
+IF !(<ARGN>)
+   RETURN <NPC>
+ELSE
+   NPC=<ARGN>
+ENDIF
 
 [FUNCTION m]
 MOVE <ARGS>
@@ -48,20 +55,20 @@ INVIS <ARGS>
 
 [FUNCTION static] //by Thomas20198701
 IF !(<ARGN>)
-	IF (<ISEMPTY <DEF.<ARGS>>>)
-		SYSMESSAGE Not a valid command or format.
-		RETURN 0
-	endif
-endif
+   IF (<ISEMPTY <DEF.<ARGS>>>)
+      SYSMESSAGE Not a valid command or format.
+      RETURN 0
+   ENDIF
+ENDIF
 IF !(<ISEMPTY <ARGS>>)
-	IF !(<SERV.ITEMDEF.<ARGS>>)
-		SYSMESSAGE Not a valid command or format.
-		RETURN 0
-	endif
-	TARGETFG static_ <ARGS>
-	SYSMESSAGE Where would you like to place the <SERV.ITEMDEF.<ARGS>.NAME>?
-	RETURN 1
-endif
+   IF !(<SERV.ITEMDEF.<ARGS>>)
+      SYSMESSAGE Not a valid command or format.
+      RETURN 0
+   ENDIF
+   TARGETFG static_ <ARGS>
+   SYSMESSAGE Where would you like to place the <SERV.ITEMDEF.<ARGS>.NAME>?
+   RETURN 1
+ENDIF
 SYSMESSAGE Not a valid command or format.
 RETURN 0
 
@@ -77,10 +84,10 @@ SOUND <ARGS>
 
 [FUNCTION music]
 IF (<ISCHAR>)
-	IF (<ISPLAYER>)
-		MIDILIST <ARGS>
-	endif
-endif
+   IF (<ISPLAYER>)
+      MIDILIST <ARGS>
+   ENDIF
+ENDIF
 
 [FUNCTION cliver]
 RETURN <CLIENTVERSION>
@@ -92,41 +99,38 @@ RETURN <CLIENTVERSION>
 SRC.SYSMESSAGE  Follow: on - Use war mode to stop following
 SERV.NEWITEM i_eq_followSrc
 IF ( !<ARGN> )
-	NEW.LINK=<UID>
+   NEW.LINK=<UID>
 ELSE
-	NEW.LINK=<ARGN>
-endif
+   NEW.LINK=<ARGN>
+ENDIF
 NEW.TIMER=2
 SRC.EQUIP <NEW.UID>
 
 [ITEMDEF i_eq_followSrc]
 ID=i_handr_1
-NAME="Follower"
-TYPE=T_eq_script
+NAME=Follower
+TYPE=t_eq_script
 LAYER=layer_special
 WEIGHT=0
-
-ON=@targon_Char
-	link=<argo>
-
-ON=@targon_Item
-	link=<argo>
-
-ON=@timer
-	if (!(<link.uid>) || !(<topobj.ischar>))
-		remove
-		return 0
-	endif
-	if (<topobj.flags> & statf_war)
-		topobj.sysmessage Follow:off
-		remove
-		return 0
-	endif
-	topobj.face <link.uid>
-	topobj.p <link.topobj.p>
-	topobj.update
-	timer 2
-	return 1
+ON=@TargOn_Char
+   LINK=<ARGO>
+ON=@TargOn_Item
+   LINK=<ARGO>
+ON=@Timer
+   IF (!(<LINK.UID>) || !(<TOPOBJ.ISCHAR>))
+      REMOVE
+      RETURN 0
+   ENDIF
+   IF (<TOPOBJ.FLAGS> & STATF_WAR)
+      TOPOBJ.SYSMESSAGE Follow:off
+      REMOVE
+      RETURN 0
+   ENDIF
+   TOPOBJ.FACE <LINK.UID>
+   TOPOBJ.P <LINK.TOPOBJ.P>
+   TOPOBJ.UPDATE
+   TIMER 2
+   RETURN 1
 
 [ITEMDEF i_gate_wood_2]
 DUPEITEM=i_fence_wood_3
@@ -145,23 +149,23 @@ DUPEITEM=i_fence_wood_3
 LOCAL.SPELL = <EVAL <ARGV[0]> &~ 0ff000000>
 LOCAL.SKILL = <EVAL (<STREAT <SERV.SPELL.<LOCAL.SPELL>.SKILLREQ>>) &~ 0ff000000>
 IF !(<LOCAL.SKILL>)
-	LOCAL.SKILL = 25
+   LOCAL.SKILL = 25
 ENDIF
 
 // Set spell target
 IF (<ARGV> > 2)
-	ACT = 0
-	ACTP = <ARGV[1]>, <ARGV[2]>, <ARGV[3]>, <ARGV[4]>
+   ACT = 0
+   ACTP = <ARGV[1]>, <ARGV[2]>, <ARGV[3]>, <ARGV[4]>
 ELSE
-	REF1 = <ARGV[1]>
-	IF !(<REF1.UID>)
-		REF1 = <ACT.UID>
-		IF !(<REF1.UID>)
-			REF1 = <UID>
-		ENDIF
-	ENDIF
-	ACT = <REF1.UID>
-	ACTP = <REF1.P>
+   REF1 = <ARGV[1]>
+   IF !(<REF1.UID>)
+      REF1 = <ACT.UID>
+      IF !(<REF1.UID>)
+         REF1 = <UID>
+      ENDIF
+   ENDIF
+   ACT = <REF1.UID>
+   ACTP = <REF1.P>
 ENDIF
 
 // Set character action

@@ -7,35 +7,10 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Monday, April 15, 2013
 //
 VERSION=0.56b
 
-[ITEMDEF 0dda]
-//red moongate animated (full)
-DEFNAME=i_moongate_red
-RESOURCES=i_scroll_gate_travel
-TYPE=t_telepad
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Moongates
-DESCRIPTION=Red Moongate (Animated)
-DUPELIST=0ddb,0ddc,0ddd,0dde
-
-[ITEMDEF 0ddb]
-//red moongate frame of animation
-DUPEITEM=0dda
-
-[ITEMDEF 0ddc]
-//red moongate fast animated
-DUPEITEM=0dda
-
-[ITEMDEF 0ddd]
-//red moongate
-DUPEITEM=0dda
-
-[ITEMDEF 0dde]
-//red moongate
-DUPEITEM=0dda
 
 [ITEMDEF 0e34]
 DEFNAME=i_scroll_blank
@@ -293,31 +268,6 @@ WEIGHT=1
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Magical Items
 DESCRIPTION=Empty Alchemist Bottle
-
-[ITEMDEF 0f6c]
-//blue moongate
-DEFNAME=i_moongate_blue
-TYPE=t_telepad
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Moongates
-DESCRIPTION=Blue Moongate
-DUPELIST=0f6d,0f6e,0f6f,0f70
-
-[ITEMDEF 0f6d]
-//blue moongate
-DUPEITEM=0f6c
-
-[ITEMDEF 0f6e]
-//blue moongate
-DUPEITEM=0f6c
-
-[ITEMDEF 0f6f]
-//blue moongate
-DUPEITEM=0f6c
-
-[ITEMDEF 0f70]
-//blue moongate
-DUPEITEM=0f6c
 
 [ITEMDEF 01f14]
 //recall rune

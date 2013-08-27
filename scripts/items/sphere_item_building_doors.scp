@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Wednesday, April 17, 2013
 //
 VERSION=0.56b
 
@@ -761,6 +761,40 @@ DESCRIPTION=@ (w / nw)
 DUPEITEM=01fee
 DESCRIPTION=@
 
+
+[ITEMDEF 0241f]
+TYPE=t_door_open
+RESOURCES=40 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Dark Wooden Door
+DESCRIPTION=Dark Wooden Door
+DUPELIST=02421,02423
+
+[ITEMDEF 02420]
+DEFNAME=i_door_wooden_dark
+TYPE=t_door
+RESOURCES=40 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Dark Wooden Door
+DESCRIPTION=@ (w / nw)
+DUPELIST=02422,02424
+
+[ITEMDEF 02421]
+//dark wooden door
+DUPEITEM=0241f
+DESCRIPTION=@
+
+[ITEMDEF 02422]
+DUPEITEM=02420
+DESCRIPTION=@ (n / se)
+
+[ITEMDEF 02423]
+DUPEITEM=0241f
+DESCRIPTION=@
+
+[ITEMDEF 02424]
+DUPEITEM=02420
+DESCRIPTION=@ (n / ne)
 
 
 [eof]

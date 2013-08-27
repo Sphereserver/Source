@@ -7,9 +7,10 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Wednesday, April 17, 2013
 //
 VERSION=0.56b
+
 
 [ITEMDEF 09b4]
 DEFNAME=i_eggshells
@@ -1389,17 +1390,6 @@ CATEGORY=Ground Tiles
 SUBSECTION=Water
 DESCRIPTION=@
 DUPELIST=01798,01799,0179a,0179b,0179c,0179d,0179e,0179f,017a0,017a1,017a2,017a3,017a4,017a5,017a6,017a7,017a8,017a9,017aa,017ab,017ac,017ad,017ae,017af,017b0,017b1,017b2
-
-[ITEMDEF 019ab]
-//fire
-DEFNAME=i_fire
-TYPE=t_fire
-VALUE=1
-WEIGHT=1
-CATEGORY=Ground Tiles
-SUBSECTION=Fire
-DESCRIPTION=@
-DUPELIST=019ac,019ad,019ae,019af,019b0,019b1,019b2,019b3,019b4,019b5,019b6
 
 [ITEMDEF 01ae0]
 DEFNAME=i_bone_skull

@@ -19,12 +19,25 @@ DEX=10000,4000,600
 
 
 [COMMENT SKILL x]
-ADV_RATE=10.0,200.0,800.0	// 10.0 successes at 0% to gain .1, 800.0 successes at 100% to gain .1 skill, 200.0 successes at 50% to gain .1, 
-VALUES=0,100			// The amount of value an item created with the skill gets at skill levels.
-EFFECT=0,100			// Healing: Effect of bandages; Crafting Skills: Percentage of resources lost on failure.
-STAT_STR=80			// You will tend toward these stat vals if you use this skill a lot.
-BONUS_STATS=10			// What percent of the skill success is based on stat levels. = 10%
-BONUS_STR=80			// % of each stat toward success at skill
+ADV_RATE=10.0,200.0,800.0
+// 10.0 successes at 0% to gain .1,
+// 800.0 successes at 100% to gain .1,
+// 200.0 successes at 50% to gain .1
+GAINRADIUS=100.0
+// Skillgain will only be calculated if the current skill is less than the
+// actual difficulty + GAINRADIUS.  Used to prohibit skillgain by
+// performing way too easy tasks.  Set to 100.0 for original behaviour.
+VALUES=0,100
+// The amount of value an item created with the skill gets at skill levels.
+EFFECT=0,100
+// Healing: Effect of bandages
+// Crafting Skills: Percentage of resources lost on failure.
+STAT_STR=80
+// You will tend toward these stat vals if you use this skill a lot.
+BONUS_STATS=10
+// What percent of the skill success is based on stat levels. = 10%.
+BONUS_STR=80
+// % of each stat toward success at skill.
 
 [SKILL 0]
 DEFNAME=SKILL_ALCHEMY
@@ -1121,7 +1134,7 @@ ADV_RATE=2.5,50.0,200.0
 [SKILL 56]
 DEFNAME=SKILL_IMBUING
 KEY=Imbuing
-TITLE=Imbuer
+TITLE=Artificer
 DELAY=3.0
 STAT_STR=15
 STAT_INT=100

@@ -7,10 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Monday, April 15, 2013
 //
 VERSION=0.56b
-
 
 
 [ITEMDEF 0eca]
@@ -195,42 +194,6 @@ DESCRIPTION=Spider Web 02 (N)
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Graves & Gravestones
 DESCRIPTION=Grave
-
-[ITEMDEF 0f53]
-//fireball
-TYPE=t_fire
-CATEGORY=Decoration - Dungeons and The Dead
-SUBSECTION=Fireballs
-DESCRIPTION=Fireball
-DUPELIST=0f54,0f55,0f56,0f57,0f58,0f59,0f5a
-
-[ITEMDEF 0f54]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f55]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f56]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f57]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f58]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f59]
-//fireball
-DUPEITEM=0f53
-
-[ITEMDEF 0f5a]
-//fireball
-DUPEITEM=0f53
 
 [ITEMDEF 0fe6]
 DEFNAME=i_pentagram

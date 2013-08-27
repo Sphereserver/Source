@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Monday, April 15, 2013
 //
 VERSION=0.56b
 
@@ -847,58 +847,6 @@ DUPEITEM=0150E
 CATEGORY=Decoration - Shrines
 SUBSECTION=Sacrifice
 DESCRIPTION=Sacrifice (04/04) (N)
-
-[ITEMDEF 01153]
-DEFNAME=i_magical_sparkles
-TYPE=T_SPELL
-RESOURCES=2 T_REAGENT
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Magical Sparkles
-DESCRIPTION=@
-DUPELIST=01154,01155,01156,01157,01159,0115a,0115b,0115c,0115d,0115e
-
-[ITEMDEF 01154]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 01155]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 01156]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 01157]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 01158]
-//
-
-[ITEMDEF 01159]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 0115a]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 0115b]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 0115c]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 0115d]
-//magical sparkles
-DUPEITEM=01153
-
-[ITEMDEF 0115e]
-//magical sparkles
-DUPEITEM=01153
 
 [ITEMDEF 011c6]
 DEFNAME=i_POT_SMALL_FLOWER
