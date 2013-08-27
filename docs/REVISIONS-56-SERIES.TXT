@@ -53,3 +53,4 @@
 -Magery Spell flags made consistent
 -Magery spell resources modified to match the spellbook in modern clients
 -Numerous additions to creature height table in sphere.defs
+-Replaced hardcoded magic resistance string

@@ -856,6 +856,7 @@ IMSG_DEF_FONT	3
 //repair_reach		"Can't repair this where it is !"
 //repair_unk		"You have trouble figuring out the item."
 //repair_worn		"Can't repair an item being worn !"
+//resistmagic     "You feel yourself resisting magic."
 //server_resync_failed		"Resync FAILED!"
 //server_resync_start		"Server is being PAUSED for Resync"
 //server_resync_success		"Resync complete!"

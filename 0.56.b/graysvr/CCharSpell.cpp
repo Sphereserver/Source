@@ -2655,7 +2655,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			{
 				if ( Skill_UseQuick( SKILL_MAGICRESISTANCE, iSkillLevel ))
 				{
-					SysMessage( "You feel yourself resisting magic" );
+					SysMessageDefault( DEFMSG_RESISTMAGIC );
 					iSkillLevel /= 2;
 				}
 
