@@ -7,7 +7,7 @@ struct T_TRIGGERS
 	long	m_used;
 };
 
-vector<T_TRIGGERS> g_triggers;
+std::vector<T_TRIGGERS> g_triggers;
 
 bool IsTrigUsed(E_TRIGGERS id)
 {
@@ -16,7 +16,7 @@ bool IsTrigUsed(E_TRIGGERS id)
 
 bool IsTrigUsed(const char *name)
 {
-	vector<T_TRIGGERS>::iterator it;
+	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		if ( !strcmpi(it->m_name, name) )
@@ -37,7 +37,7 @@ void TriglistInit()
 
 void TriglistClear()
 {
-	vector<T_TRIGGERS>::iterator it;
+	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		(*it).m_used = 0;
@@ -52,7 +52,7 @@ void TriglistAdd(E_TRIGGERS id)
 
 void TriglistAdd(const char *name)
 {
-	vector<T_TRIGGERS>::iterator it;
+	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		if ( !strcmpi(it->m_name, name) )
@@ -66,7 +66,7 @@ void TriglistAdd(const char *name)
 void Triglist(long &total, long &used)
 {
 	total = used = 0;
-	vector<T_TRIGGERS>::iterator it;
+	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		total++;
@@ -77,7 +77,7 @@ void Triglist(long &total, long &used)
 
 void TriglistPrint()
 {
-	vector<T_TRIGGERS>::iterator it;
+	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		if ( it->m_used )

@@ -23,7 +23,7 @@
 #include <deque>
 #include <vector>
 #include <stack>
-using namespace std;
+//using namespace std;
 
 #ifdef _WIN32
 	#include "os_windows.h"
