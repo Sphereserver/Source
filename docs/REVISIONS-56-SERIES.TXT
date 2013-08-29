@@ -54,3 +54,10 @@
 -Magery spell resources modified to match the spellbook in modern clients
 -Numerous additions to creature height table in sphere.defs
 -Replaced hardcoded magic resistance string
+
+28-08-2013, RanXerox
+-Added more ITEMDEFs
+-Fixed DUPELIST entries
+-Changed some Axis categories, subsections and descriptions
+-Moved ITEMDEFs from one file to another
+-Major changes to doors script file in preparation for making new doors work

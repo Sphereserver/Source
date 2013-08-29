@@ -7,17 +7,16 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, November 24, 2003
+// FILE LAST UPDATED: Wednesday, August 28, 2013
 //
 VERSION=0.56b
 
 
-
 [ITEMDEF 0134f]
 DEFNAME=i_boulder
-TYPE=T_AROCK
+TYPE=t_arock
 WEIGHT=100
-CATEGORY=Boulders and Rocks
+CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Boulders
 DESCRIPTION=Boulder
 DUPELIST=01350,01351,01352,01353,01354,01355,01356,01357,01358,01359,0135a,0135b,0135c,0135d,0135e,0135f,01360,01361,01362
@@ -104,7 +103,7 @@ DEFNAME=i_rock_plain
 VALUE=1
 WEIGHT=50
 TYPE=t_arock
-CATEGORY=Boulders and Rocks
+CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
 DESCRIPTION=Rock
 DUPELIST=01364,01365,01366,01367,01368,01369,0136a,0136b,0136c,0136d
@@ -157,7 +156,7 @@ DUPEITEM=01363
 //rock
 TYPE=T_AROCK
 WEIGHT=350
-CATEGORY=Boulders and Rocks
+CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
 DESCRIPTION=@
 DUPELIST=01772,01773,01774,01775,01776,01777,01778,01779,0177a,0177b,0177c
@@ -205,6 +204,374 @@ DUPEITEM=01771
 [ITEMDEF 0177c]
 //rock
 DUPEITEM=01771
+
+[ITEMDEF 02206]
+DEFNAME=i_crystal_1
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 1 (large)
+DUPELIST=02207,02208,02209,0220a,0220b,0220c,0220d,0220e
+
+[ITEMDEF 02207]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 02208]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 02209]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220a]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220b]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220c]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220d]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220e]
+//crystal 1
+DUPEITEM=02206
+
+[ITEMDEF 0220f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 0220f
+
+[ITEMDEF 02210]
+DEFNAME=i_crystal_2
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=02211,02212,02213,02214,02215,02216,02217,02218
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 2 (large)
+
+[ITEMDEF 02211]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02212]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02213]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02214]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02215]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02216]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02217]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02218]
+//crystal 2
+DUPEITEM=02210
+
+[ITEMDEF 02219]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02219
+
+[ITEMDEF 0221a]
+DEFNAME=i_crystal_3
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=0221b,0221c,0221d,0221e,0221f,02220,02221,02222
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 3 (large)
+
+[ITEMDEF 0221b]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221c]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221d]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221e]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 0221f]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02220]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02221]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02222]
+//crystal 3
+DUPEITEM=0221a
+
+[ITEMDEF 02223]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02223
+
+[ITEMDEF 02224]
+DEFNAME=i_crystal_4
+NAME=crystal
+TYPE=t_wall
+CAN=can_i_block
+DUPELIST=02225,02226,02227,02228,02229,0222a,0222b,0222c
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Crystal 4 (large)
+
+[ITEMDEF 02225]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02226]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02227]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02228]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 02229]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222a]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222b]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222c]
+//crystal 4
+DUPEITEM=02224
+
+[ITEMDEF 0222d]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 0222d
+
+[ITEMDEF 02fdc]
+DEFNAME=i_crystal5
+NAME=crystal
+TYPE=t_normal
+VALUE=120
+WEIGHT=10.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Green Crystal 5
+
+[ITEMDEF 02fdd]
+DEFNAME=i_crystal6
+NAME=crystal
+TYPE=t_normal
+VALUE=120
+WEIGHT=10.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Green Crystal 6
+
+[ITEMDEF 02fe6]
+DEFNAME=i_crystal7
+NAME=crystal
+TYPE=t_normal
+VALUE=120
+WEIGHT=10.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Purple Crystal 5
+
+[ITEMDEF 02fe7]
+DEFNAME=i_crystal8
+NAME=crystal
+TYPE=t_normal
+VALUE=120
+WEIGHT=10.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Crystals
+DESCRIPTION=Purple Crystal 6
+
+
+[ITEMDEF 0364e]
+DEFNAME=i_rock_obsidian
+NAME=obsidian rock
+TYPE=t_arock
+VALUE=100
+WEIGHT=
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Rocks
+DESCRIPTION=Obsidian Rock
+
+[ITEMDEF 0364f]
+DEFNAME=i_shard_obsidian
+NAME=obsidian shard
+TYPE=t_arock
+VALUE=100
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Rocks
+DESCRIPTION=Obsidian Shard
+
+[ITEMDEF 03650]
+DEFNAME=i_shadow_pillar
+NAME=shadow pillar
+TYPE=t_arock
+VALUE=100
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Rocks
+DESCRIPTION=Shadow Pillar
+
+[ITEMDEF 04b48]
+DEFNAME=i_geode_shard
+NAME=geode shard
+FLIP=1
+VALUE=500
+WEIGHT=0.1
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Geode
+DESCRIPTION=Geode Shard
+DUPELIST=04b4c
+
+[ITEMDEF 04b49]
+DEFNAME=i_geode
+NAME=geode
+TYPE=t_geode
+FLIP=1
+VALUE=1800
+WEIGHT=1.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Geode
+DESCRIPTION=Geode 1
+DUPELIST=04b4d
+ON=@Create
+   f_creategeode
+
+[FUNCTION f_creategeode]
+   NAME=Quartz Geode
+   COLOR=<R2501,2644>
+   IF (<R100>==1)
+      DORAND 10
+         BEGIN
+          NAME=Calcite Geode
+          NAME=Agate Geode
+          NAME=Smithsonite Geode
+          NAME=Amethyst Geode
+          NAME=Chalcedony Geode
+          NAME=Sphalerite Geode
+          NAME=Millerite Geode
+          NAME=Barite Geode
+          NAME=Dolomite Geode
+          NAME=Limonite Geode
+         END
+         COLOR=<R2651,2662>
+      ENDDO
+   ENDIF
+
+[TYPEDEF t_geode]
+ON=@Damage
+   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   FOR 4
+      SERV.NEWITEM=i_geode_shard
+      NEW.COLOR=<COLOR>
+      NEW.CONT=<SRC>
+   ENDFOR
+   REMOVE
+
+[ITEMDEF 04b4a]
+DEFNAME=i_geode_2
+NAME=geode
+TYPE=t_geode
+FLIP=1
+VALUE=1800
+WEIGHT=1.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Geode
+DESCRIPTION=Geode 2
+DUPELIST=04b4e
+ON=@Create
+   f_creategeode
+
+[ITEMDEF 04b4b]
+DEFNAME=i_cracked_lavarock
+NAME=cracked lavarock
+TYPE=t_cracked_lavarock
+FLIP=1
+VALUE=5
+WEIGHT=1.0
+CATEGORY=Boulders, Rocks, and Crystals
+SUBSECTION=Geode
+DESCRIPTION=Cracked Lavarock
+DUPELIST=04b4f
+
+[TYPEDEF t_cracked_lavarock]
+ON=@Damage
+   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   SERV.NEWITEM={ i_geode 1 i_geode_2 1 }
+   NEW.CONT=<SRC>
+   REMOVE
+
+[ITEMDEF 04b4c]
+//Geode Shard
+DUPEITEM=04b48
+
+[ITEMDEF 04b4d]
+//Geode 1
+DUPEITEM=04b49
+
+[ITEMDEF 04b4e]
+//Geode 2
+DUPEITEM=04b4a
+
+[ITEMDEF 04b4f]
+//Cracked Lavarock
+DUPEITEM=04b4b
 
 
 [eof]

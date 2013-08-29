@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Wednesday, August 28, 2013
 //
 VERSION=0.56b
 
@@ -48,91 +48,6 @@ DUPEITEM=0821
 //iron fence
 DUPEITEM=0821
 
-[ITEMDEF 0824]
-DEFNAME=i_gate_iron
-RESOURCES=25 i_ingot_iron
-TYPE=T_DOOR
-CATEGORY=Buildings - Doors
-SUBSECTION=Iron Gate
-DESCRIPTION=@ (n / sw)
-DUPELIST=0825,0826,0827,0828,0829,082a,082b,082c,082d,082e,082f,0830,0831,0832,0833
-
-[ITEMDEF 0825]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 0826]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (n / se)
-
-[ITEMDEF 0827]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 0828]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (n / nw)
-
-[ITEMDEF 0829]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 082a]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (n / ne)
-
-[ITEMDEF 082b]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 082c]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (w / se)
-
-[ITEMDEF 082d]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 082e]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (w / ne)
-
-[ITEMDEF 082f]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 0830]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (w / sw)
-
-[ITEMDEF 0831]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-[ITEMDEF 0832]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@ (w / nw)
-
-[ITEMDEF 0833]
-//iron gate
-DUPEITEM=0824
-DESCRIPTION=@
-
-
 
 [ITEMDEF 0835]
 //wooden fence
@@ -150,90 +65,6 @@ DUPEITEM=03b3
 //wooden post
 DUPEITEM=03b3
 
-[ITEMDEF 0839]
-DEFNAME=i_gate_wood
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
-CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Gate
-DESCRIPTION=@ (n / sw)
-DUPELIST=083a,083b,083c,083d,083e,083f,0840,0841,0842,0843,0844,0845,0846,0847,0848
-
-[ITEMDEF 083a]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 083b]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (n / se)
-
-[ITEMDEF 083c]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 083d]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (n / nw)
-
-[ITEMDEF 083e]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 083f]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (n / ne)
-
-[ITEMDEF 0840]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 0841]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (w / se)
-
-[ITEMDEF 0842]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 0843]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (w / ne)
-
-[ITEMDEF 0844]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 0845]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (w / sw)
-
-[ITEMDEF 0846]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
-[ITEMDEF 0847]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@ (w / nw)
-
-[ITEMDEF 0848]
-//wooden gate
-DUPEITEM=0839
-DESCRIPTION=@
-
 [ITEMDEF 0849]
 //iron fence
 DUPEITEM=0821
@@ -245,72 +76,6 @@ DUPEITEM=0821
 [ITEMDEF 084b]
 //iron fence
 DUPEITEM=0821
-
-[ITEMDEF 084c]
-DEFNAME=i_gate_iron_2
-RESOURCES=25 i_ingot_iron
-TYPE=T_DOOR
-DUPELIST=084d,084e,084f,0850,0851,0852,0853,0854,0855,0856,0857,0858,0859,085a,085b
-
-[ITEMDEF 084d]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 084e]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 084f]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0850]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0851]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0852]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0853]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0854]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0855]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0856]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0857]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0858]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 0859]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 085a]
-//iron gate
-DUPEITEM=084c
-
-[ITEMDEF 085b]
-//iron gate
-DUPEITEM=084c
 
 [ITEMDEF 085c]
 DEFNAME=i_fence_wood_3
@@ -355,90 +120,6 @@ DUPEITEM=085c
 [ITEMDEF 0865]
 //wooden fence
 DUPEITEM=085c
-
-[ITEMDEF 0866]
-DEFNAME=i_gate_wood_3
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
-CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Gate 2
-DESCRIPTION=@ (n / sw)
-DUPELIST=0867,0868,0869,086a,086b,086c,086d,086e,086f,0870,0871,0872,0873,0874,0875
-
-[ITEMDEF 0867]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 0868]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (n / se)
-
-[ITEMDEF 0869]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 086a]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (n / nw)
-
-[ITEMDEF 086b]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 086c]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (n / ne)
-
-[ITEMDEF 086d]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 086e]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (w / se)
-
-[ITEMDEF 086f]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 0870]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (w / ne)
-
-[ITEMDEF 0871]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 0872]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (w / sw)
-
-[ITEMDEF 0873]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
-
-[ITEMDEF 0874]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@ (w / nw)
-
-[ITEMDEF 0875]
-//wooden gate
-DUPEITEM=0866
-DESCRIPTION=@
 
 [ITEMDEF 0877]
 //wooden fence

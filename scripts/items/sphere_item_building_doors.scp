@@ -7,664 +7,1065 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Wednesday, August 28, 2013
 //
 VERSION=0.56b
 
 
+[COMMENT sphere_item_building_doors]
+
+All doors have a direction towards which they open.  For example, North
+doors block you from passing north and south when they are closed.  North
+doors look like \ and they open towards the north to look like /...
+
+Depending on the hinge, A North door can open on the right or on the left.
+but since "right" and "left" depend on which way you are facing, this
+script assumes the door always opens away from you.  In my earlier example
+of a North door, you would be standing to the south of it when deciding
+whether the hinge is on the right or the left.
+
+A North door with a right hinge has a description of "North Right"
+
+
+[ITEMDEF 0e8]
+DEFNAME=i_door_secret_stone_1
+TYPE=T_DOOR
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (blue stone dungeon)
+DESCRIPTION=@ (closed)
+DUPELIST=0ea,0ec,0ee,0f0,0f2,0f4,0f6
+
+[ITEMDEF 0e9]
+DEFNAME=i_door_secret_stone_1_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (blue stone dungeon)
+DESCRIPTION=@ (opened)
+DUPELIST=0eb,0ed,0ef,0f1,0f3,0f5,0f7
+
+[ITEMDEF 0ea]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0eb]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0ec]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0ed]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0ee]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0ef]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0f0]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0f1]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0f2]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0f3]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0f4]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0f5]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0f6]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e8
+
+[ITEMDEF 0f7]
+//Secret Door (blue stone dungeon)
+DUPEITEM=0e9
+
+[ITEMDEF 0314]
+DEFNAME=i_door_secret_stone_2
+TYPE=T_DOOR
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (brick dungeon)
+DESCRIPTION=@ (closed)
+DUPELIST=0316,0318,031a,031c,031e,0320,0322
+
+[ITEMDEF 0315]
+DEFNAME=i_door_secret_stone_2_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (brick dungeon)
+DESCRIPTION=@ (opened)
+DUPELIST=0317,0319,031b,031d,031f,0321,0323
+
+[ITEMDEF 0316]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 0317]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 0318]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 0319]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 031a]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 031b]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 031c]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 031d]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 031e]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 031f]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 0320]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 0321]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 0322]
+//Secret Door (brick dungeon)
+DUPEITEM=0314
+
+[ITEMDEF 0323]
+//Secret Door (brick dungeon)
+DUPEITEM=0315
+
+[ITEMDEF 0324]
+DEFNAME=i_door_secret_stone_3
+TYPE=T_DOOR
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (brown stone dungeon)
+DESCRIPTION=@ (closed)
+DUPELIST=0326,0328,032a,032c,032e,0330,0332
+
+[ITEMDEF 0325]
+DEFNAME=i_door_secret_stone_3_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (brown stone dungeon)
+DESCRIPTION=@ (opened)
+DUPELIST=0327,0329,032b,032d,032f,0331,0333
+
+[ITEMDEF 0326]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 0327]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 0328]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 0329]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 032a]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 032b]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 032c]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 032d]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 032e]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 032f]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 0330]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 0331]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 0332]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0324
+
+[ITEMDEF 0333]
+//Secret Door (brown stone dungeon)
+DUPEITEM=0325
+
+[ITEMDEF 0334]
+DEFNAME=i_door_secret_wood_1
+TYPE=T_DOOR
+RESOURCES=100 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (dark wood)
+DESCRIPTION=@ (closed)
+DUPELIST=0336,0338,033a,033c,033e,0340,0342
+
+[ITEMDEF 0335]
+DEFNAME=i_door_secret_wood_1_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (dark wood)
+DESCRIPTION=@ (opened)
+DUPELIST=0337,0339,033b,033d,033f,0341,0343
+
+[ITEMDEF 0336]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 0337]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 0338]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 0339]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 033a]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 033b]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 033c]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 033d]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 033e]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 033f]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 0340]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 0341]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 0342]
+//Secret Door (dark wood)
+DUPEITEM=0334
+
+[ITEMDEF 0343]
+//Secret Door (dark wood)
+DUPEITEM=0335
+
+[ITEMDEF 0344]
+DEFNAME=i_door_secret_wood_2
+TYPE=T_DOOR
+RESOURCES=100 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (light wood)
+DESCRIPTION=@ (closed)
+DUPELIST=0346,0348,034a,034c,034e,0350,0352
+
+[ITEMDEF 0345]
+DEFNAME=i_door_secret_wood_2_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (light wood)
+DESCRIPTION=@ (opened)
+DUPELIST=0347,0349,034b,034d,034f,0351,0353
+
+[ITEMDEF 0346]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 0347]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 0348]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 0349]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 034a]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 034b]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 034c]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 034d]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 034e]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 034f]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 0350]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 0351]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 0352]
+//Secret Door (light wood)
+DUPEITEM=0344
+
+[ITEMDEF 0353]
+//Secret Door (light wood)
+DUPEITEM=0345
+
+[ITEMDEF 0354]
+DEFNAME=i_door_secret_stone_4
+TYPE=T_DOOR
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (gray stone dungeon)
+DESCRIPTION=@ (closed)
+DUPELIST=0356,0358,035a,035c,035e,0360,0362
+
+[ITEMDEF 0355]
+DEFNAME=i_door_secret_stone_4_o
+TYPE=T_DOOR_OPEN
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Doors
+SUBSECTION=Secret Door (gray stone dungeon)
+DESCRIPTION=@ (opened)
+DUPELIST=0357,0359,035b,035d,035f,0361,0363
+
+[ITEMDEF 0356]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 0357]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 0358]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 0359]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 035a]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 035b]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 035c]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 035d]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 035e]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 035f]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 0360]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 0361]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
+[ITEMDEF 0362]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0354
+
+[ITEMDEF 0363]
+//Secret Door (gray stone dungeon)
+DUPEITEM=0355
+
 [ITEMDEF 0675]
 DEFNAME=i_door_metal
+TYPE=t_door
 RESOURCES=40 i_ingot_iron
-TYPE=T_DOOR
 CATEGORY=Buildings - Doors
-SUBSECTION=Metal Door 1
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Metal Door
+DESCRIPTION=@ (closed)
 DUPELIST=0677,0679,067b,067d,067f,0681,0683
 
 [ITEMDEF 0676]
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_metal_o
+TYPE=t_door_open
+RESOURCES=40 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Metal Door
+DESCRIPTION=@ (opened)
 DUPELIST=0678,067a,067c,067e,0680,0682,0684
 
 [ITEMDEF 0677]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 0678]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 0679]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 067a]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 067b]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 067c]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 067d]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 067e]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 067f]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 0680]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 0681]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 0682]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 0683]
+//Metal Door (closed)
 DUPEITEM=0675
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 0684]
+//Metal Door (opened)
 DUPEITEM=0676
-DESCRIPTION=@
 
 [ITEMDEF 0685]
 DEFNAME=i_door_metal_bar
+TYPE=t_door
 RESOURCES=30 i_ingot_iron
-TYPE=T_DOOR
 CATEGORY=Buildings - Doors
-SUBSECTION=Barred Metal Door
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Barred Metal Door (tall)
+DESCRIPTION=@ (closed)
 DUPELIST=0687,0689,068b,068d,068f,0691,0693
 
 [ITEMDEF 0686]
-//barred metal door
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_metal_bar_o
+TYPE=t_door_open
+RESOURCES=30 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Barred Metal Door (tall)
+DESCRIPTION=@ (opened)
 DUPELIST=0688,068a,068c,068e,0690,0692,0694
 
 [ITEMDEF 0687]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 0688]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 0689]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 068a]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 068b]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 068c]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 068d]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 068e]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 068f]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 0690]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 0691]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 0692]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 0693]
-//barred metal door
+//Barred Metal Door (tall) (closed)
 DUPEITEM=0685
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 0694]
-//barred metal door
+//Barred Metal Door (tall) (opened)
 DUPEITEM=0686
-DESCRIPTION=@
 
 [ITEMDEF 0695]
 DEFNAME=i_door_rattan
-RESOURCES=15 i_plant_grasses, 15 I_STRAW
-TYPE=T_DOOR
+TYPE=t_door
+RESOURCES=15 i_plant_grasses,15 i_straw
 CATEGORY=Buildings - Doors
 SUBSECTION=Rattan Door
-DESCRIPTION=@ (n / sw)
+DESCRIPTION=@ (closed)
 DUPELIST=0697,0699,069b,069d,069f,06a1,06a3
 
 [ITEMDEF 0696]
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_rattan_o
+TYPE=t_door_open
+CATEGORY=Buildings - Doors
+SUBSECTION=Rattan Door
+DESCRIPTION=@ (opened)
 DUPELIST=0698,069a,069c,069e,06a0,06a2,06a4
 
 [ITEMDEF 0697]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 0698]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 0699]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 069a]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 069b]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 069c]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 069d]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 069e]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 069f]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06a0]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 06a1]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06a2]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 06a3]
+//Rattan Door (closed)
 DUPEITEM=0695
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06a4]
+//Rattan Door (opened)
 DUPEITEM=0696
-DESCRIPTION=@
 
 [ITEMDEF 06a5]
 DEFNAME=i_door_wood
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
+TYPE=t_door
+RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Door 1
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Wooden Door (dark wood)
+DESCRIPTION=@ (closed)
 DUPELIST=06a7,06a9,06ab,06ad,06af,06b1,06b3
 
 [ITEMDEF 06a6]
-//wooden door
-TYPE=T_DOOR_OPEN
+DEFNAME=i_door_wood_o
+TYPE=t_door_open
+RESOURCES=25 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door (dark wood)
+DESCRIPTION=@ (opened)
 DUPELIST=06a8,06aa,06ac,06ae,06b0,06b2,06b4
 
 [ITEMDEF 06a7]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 06a8]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06a9]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 06aa]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06ab]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 06ac]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06ad]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 06ae]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06af]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06b0]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06b1]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06b2]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06b3]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a5
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06b4]
-//wooden door
+//Wooden Door (dark wood)
 DUPEITEM=06a6
-DESCRIPTION=@
 
 [ITEMDEF 06b5]
 DEFNAME=i_door_wood_4
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
+TYPE=t_door
+RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Door 2
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Wooden Door (dark wood tall)
+DESCRIPTION=@ (closed)
 DUPELIST=06b7,06b9,06bb,06bd,06bf,06c1,06c3
 
 [ITEMDEF 06b6]
-//wooden door
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_wood_4_o
+TYPE=t_door_open
+RESOURCES=25 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door (dark wood tall)
+DESCRIPTION=@ (opened)
 DUPELIST=06b8,06ba,06bc,06be,06c0,06c2,06c4
 
 [ITEMDEF 06b7]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 06b8]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06b9]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 06ba]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06bb]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 06bc]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06bd]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 06be]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06bf]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06c0]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06c1]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06c2]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06c3]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b5
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06c4]
-//wooden door
+//Wooden Door (dark wood tall)
 DUPEITEM=06b6
-DESCRIPTION=@
 
 [ITEMDEF 06c5]
 DEFNAME=i_door_metal_2
+TYPE=t_door
 RESOURCES=45 i_ingot_iron
-TYPE=T_DOOR
 CATEGORY=Buildings - Doors
-SUBSECTION=Metal Door 2
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Metal Door (tall)
+DESCRIPTION=@ (closed)
 DUPELIST=06c7,06c9,06cb,06cd,06cf,06d1,06d3
 
 [ITEMDEF 06c6]
-//metal door
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_metal_2_o
+TYPE=t_door_open
+RESOURCES=45 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Metal Door (tall)
+DESCRIPTION=@ (opened)
 DUPELIST=06c8,06ca,06cc,06ce,06d0,06d2,06d4
 
 [ITEMDEF 06c7]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 06c8]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06c9]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 06ca]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06cb]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 06cc]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06cd]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 06ce]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06cf]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06d0]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06d1]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06d2]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06d3]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c5
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06d4]
-//metal door
+//Metal Door (tall)
 DUPEITEM=06c6
-DESCRIPTION=@
 
 [ITEMDEF 06d5]
 DEFNAME=i_door_wood_2
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
+TYPE=t_door
+RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Door 3
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Wooden Door (light wood)
+DESCRIPTION=@ (closed)
 DUPELIST=06d7,06d9,06db,06dd,06df,06e1,06e3
 
 [ITEMDEF 06d6]
-//wooden door
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_wood_2_o
+TYPE=t_door_open
+RESOURCES=25 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Door (light wood)
+DESCRIPTION=@ (opened)
 DUPELIST=06d8,06da,06dc,06de,06e0,06e2,06e4
 
 [ITEMDEF 06d7]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 06d8]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06d9]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 06da]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06db]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 06dc]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06dd]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 06de]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06df]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06e0]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06e1]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06e2]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06e3]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d5
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06e4]
-//wooden door
+//Wooden Door (light wood)
 DUPEITEM=06d6
-DESCRIPTION=@
 
 [ITEMDEF 06e5]
 DEFNAME=i_door_wood_3
-RESOURCES=25 I_BOARD
-TYPE=T_DOOR
+TYPE=t_door
+RESOURCES=40 i_board,2 i_ingot_iron
 CATEGORY=Buildings - Doors
-SUBSECTION=Wooden Door 4
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Heavy Wooden Door (dark wood)
+DESCRIPTION=@ (closed)
 DUPELIST=06e7,06e9,06eb,06ed,06ef,06f1,06f3
 
 [ITEMDEF 06e6]
-//wooden door
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+DEFNAME=i_door_wood_3_o
+TYPE=t_door_open
+RESOURCES=40 i_board,2 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Heavy Wooden Door (dark wood)
+DESCRIPTION=@ (opened)
 DUPELIST=06e8,06ea,06ec,06ee,06f0,06f2,06f4
 
 [ITEMDEF 06e7]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 06e8]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06e9]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 06ea]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06eb]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 06ec]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06ed]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 06ee]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06ef]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 06f0]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06f1]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 06f2]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06f3]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e5
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 06f4]
-//wooden door
+//Heavy Wooden Door (dark wood)
 DUPEITEM=06e6
-DESCRIPTION=@
 
 [ITEMDEF 06f5]
-DEFNAME=i_DOOR_PORTCULIS
+DEFNAME=i_door_portcullis
+TYPE=t_portculis
 RESOURCES=50 i_ingot_iron
-TYPE=T_PORTCULIS
 CATEGORY=Buildings - Doors
 SUBSECTION=Portcullis
 DESCRIPTION=@
@@ -674,92 +1075,359 @@ DUPELIST=06f6
 //portcullis
 DUPEITEM=06f5
 
+[ITEMDEF 0824]
+//FIXME: The open and closed are mixed together
+DEFNAME=i_gate_iron
+TYPE=t_door
+RESOURCES=25 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Iron Gate (tall)
+DESCRIPTION=@ (closed)
+DUPELIST=0825,0826,0827,0828,0829,082a,082b,082c,082d,082e,082f,0830,0831,0832,0833
+
+[ITEMDEF 0825]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0826]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0827]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0828]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0829]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082a]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082b]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082c]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082d]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082e]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 082f]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0830]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0831]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0832]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0833]
+//Iron Gate (tall)
+DUPEITEM=0824
+
+[ITEMDEF 0839]
+//FIXME: The open and closed are mixed together
+DEFNAME=i_gate_wood
+TYPE=t_door
+RESOURCES=25 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Gate
+DESCRIPTION=@ (closed)
+DUPELIST=083a,083b,083c,083d,083e,083f,0840,0841,0842,0843,0844,0845,0846,0847,0848
+
+[ITEMDEF 083a]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 083b]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 083c]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 083d]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 083e]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 083f]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0840]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0841]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0842]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0843]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0844]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0845]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0846]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0847]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 0848]
+//Wooden Gate
+DUPEITEM=0839
+
+[ITEMDEF 084c]
+//FIXME: The open and closed are mixed together
+DEFNAME=i_gate_iron_2
+TYPE=t_door
+RESOURCES=25 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Iron Gate
+DESCRIPTION=@ (closed)
+DUPELIST=084d,084e,084f,0850,0851,0852,0853,0854,0855,0856,0857,0858,0859,085a,085b
+
+[ITEMDEF 084d]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 084e]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 084f]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0850]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0851]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0852]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0853]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0854]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0855]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0856]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0857]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0858]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0859]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 085a]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 085b]
+//Iron Gate
+DUPEITEM=084c
+
+[ITEMDEF 0866]
+//FIXME: The open and closed are mixed together
+DEFNAME=i_gate_wood_3
+TYPE=t_door
+RESOURCES=25 i_board
+CATEGORY=Buildings - Doors
+SUBSECTION=Wooden Gate (dark wood)
+DESCRIPTION=@ (closed)
+DUPELIST=0867,0868,0869,086a,086b,086c,086d,086e,086f,0870,0871,0872,0873,0874,0875
+
+[ITEMDEF 0867]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0868]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0869]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086a]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086b]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086c]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086d]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086e]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 086f]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0870]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0871]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0872]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0873]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0874]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
+[ITEMDEF 0875]
+//Wooden Gate (dark wood)
+DUPEITEM=0866
+
 [ITEMDEF 01fed]
 DEFNAME=i_door_metal_bar_2
+TYPE=t_door
 RESOURCES=10 i_ingot_iron
-WEIGHT=10
-TYPE=T_DOOR
 CATEGORY=Buildings - Doors
-SUBSECTION=Barred Metal Door 2
-DESCRIPTION=@ (n / sw)
+SUBSECTION=Barred Metal Door
+DESCRIPTION=@ (closed)
 DUPELIST=01fef,01ff1,01ff3,01ff5,01ff7,01ff9,01ffb
 
 [ITEMDEF 01fee]
-//barred metal door
 DEFNAME=i_door_metal_bar_2_o
-TYPE=T_DOOR_OPEN
-DESCRIPTION=@
+TYPE=t_door_open
+RESOURCES=10 i_ingot_iron
+CATEGORY=Buildings - Doors
+SUBSECTION=Barred Metal Door
+DESCRIPTION=@ (opened)
 DUPELIST=01ff0,01ff2,01ff4,01ff6,01ff8,01ffa,01ffc
 
 [ITEMDEF 01fef]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 01ff0]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ff1]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (n / nw)
 
 [ITEMDEF 01ff2]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ff3]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (n / ne)
 
 [ITEMDEF 01ff4]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ff5]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (w / se)
 
 [ITEMDEF 01ff6]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ff7]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (w / ne)
 
 [ITEMDEF 01ff8]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ff9]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (w / sw)
 
 [ITEMDEF 01ffa]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 [ITEMDEF 01ffb]
-//barred metal door
+//Barred Metal Door (closed)
 DUPEITEM=01fed
-DESCRIPTION=@ (w / nw)
 
 [ITEMDEF 01ffc]
-//barred metal door
+//Barred Metal Door (opened)
 DUPEITEM=01fee
-DESCRIPTION=@
 
 
 [ITEMDEF 0241f]
@@ -767,7 +1435,7 @@ TYPE=t_door_open
 RESOURCES=40 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Dark Wooden Door
-DESCRIPTION=Dark Wooden Door
+DESCRIPTION=@ (opened)
 DUPELIST=02421,02423
 
 [ITEMDEF 02420]
@@ -776,25 +1444,165 @@ TYPE=t_door
 RESOURCES=40 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Dark Wooden Door
-DESCRIPTION=@ (w / nw)
+DESCRIPTION=@ (closed)
 DUPELIST=02422,02424
 
 [ITEMDEF 02421]
-//dark wooden door
+//Dark Wooden Door
 DUPEITEM=0241f
-DESCRIPTION=@
 
 [ITEMDEF 02422]
+//Dark Wooden Door
 DUPEITEM=02420
-DESCRIPTION=@ (n / se)
 
 [ITEMDEF 02423]
+//Dark Wooden Door
 DUPEITEM=0241f
-DESCRIPTION=@
 
 [ITEMDEF 02424]
+//Dark Wooden Door
 DUPEITEM=02420
-DESCRIPTION=@ (n / ne)
 
 
-[eof]
+[ITEMDEF 026f4]
+DEFNAME=i_door_sliding
+TYPE=t_door
+RESOURCES=20 i_log,20 i_paper
+CATEGORY=Buildings - Doors
+SUBSECTION=Sliding
+DESCRIPTION=@ (closed)
+DUPELIST=02990,0299e
+
+[ITEMDEF 026f6]
+DEFNAME=i_door_sliding_o
+TYPE=t_door_open
+RESOURCES=20 i_log,20 i_paper
+CATEGORY=Buildings - Doors
+SUBSECTION=Sliding
+DESCRIPTION=@ (opened)
+DUPELIST=02991,0299f
+
+[ITEMDEF 02990]
+//sliding door (closed)
+DUPEITEM=026f4
+
+[ITEMDEF 02991]
+//sliding door (opened)
+DUPEITEM=026f6
+
+[ITEMDEF 0299e]
+//sliding door (closed)
+DUPEITEM=026f4
+
+[ITEMDEF 0299f]
+//sliding door (opened)
+DUPEITEM=026f6
+
+[ITEMDEF 02a05]
+DEFNAME=i_door_sliding_2
+TYPE=t_door
+RESOURCES=20 i_log,20 i_paper
+CATEGORY=Buildings - Doors
+SUBSECTION=Sliding
+DESCRIPTION=Sliding 2 (closed)
+DUPELIST=02a07,02a09,02a0b,02a0d,02a0f,02a11,02a13,02a15,02a17,02a19,02a1b
+
+[ITEMDEF 02a06]
+DEFNAME=i_door_sliding_2_o
+TYPE=t_door_open
+RESOURCES=20 i_log,20 i_paper
+CATEGORY=Buildings - Doors
+SUBSECTION=Sliding
+DESCRIPTION=Sliding 2 (opened)
+DUPELIST=02a08,02a0a,02a0c,02a0e,02a10,02a12,02a14,02a16,02a18,02a1a,02a1c
+
+[ITEMDEF 02a07]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a08]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a09]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a0a]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a0b]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a0c]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a0d]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a0e]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a0f]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a10]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a11]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a12]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a13]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a14]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a15]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a16]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a17]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a18]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a19]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a1a]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+[ITEMDEF 02a1b]
+//sliding door 2 (closed)
+DUPEITEM=02a05
+
+[ITEMDEF 02a1c]
+//sliding door 2 (opened)
+DUPEITEM=02a06
+
+
+[EOF]

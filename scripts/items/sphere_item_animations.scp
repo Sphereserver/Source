@@ -43,7 +43,7 @@ TYPE=t_fire
 CATEGORY=Animations
 SUBSECTION=Fireballs
 DESCRIPTION=Red Fireball
-DUPELIST=0f54,0f55,0f56,0f57,0f58,0f59,0f5a
+DUPELIST=0f54,0f55,0f56,0f57,0f58,0f59,0f5a,0f5b
 ON=@Create
    MOREZ=1
 
@@ -72,6 +72,10 @@ DUPEITEM=0f53
 DUPEITEM=0f53
 
 [ITEMDEF 0f5a]
+//Fireball (animation frame)
+DUPEITEM=0f53
+
+[ITEMDEF 0f5b]
 //Fireball (animation frame)
 DUPEITEM=0f53
 
@@ -105,7 +109,7 @@ TYPE=t_spell
 CATEGORY=Animations
 SUBSECTION=Sparkles
 DESCRIPTION=Sparkle 1
-DUPELIST=01154,01155,01156,01157
+DUPELIST=01154,01155,01156,01157,01158
 
 [ITEMDEF 01154]
 //Sparkle 1 (animation frame)
@@ -124,15 +128,15 @@ DUPEITEM=01153
 DUPEITEM=01153
 
 [ITEMDEF 01158]
+//Sparkle 1 (animation frame)
+DUPEITEM=01153
+
+[ITEMDEF 01159]
 DEFNAME=i_fx_magical_sparkles_2
 CATEGORY=Animations
 SUBSECTION=Sparkles
 DESCRIPTION=Sparkle 2
-DUPELIST=01159,0115a,0115b,0115c,0115d,0115e
-
-[ITEMDEF 01159]
-//Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPELIST=0115a,0115b,0115c,0115d,0115e
 
 [ITEMDEF 0115a]
 //Sparkle 2 (animation frame)
@@ -1290,7 +1294,7 @@ DUPEITEM=03735
 DEFNAME=i_fx_bless_effect
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Blue Sparkle
 DESCRIPTION=Blue Sparkle
 DUPELIST=0373b,0373c,0373d,0373e,0373f,03740,03741,03742,03743,03744,03745,03746,03747,03748,03749
 
@@ -1358,7 +1362,7 @@ DUPEITEM=0373a
 DEFNAME=i_fx_curse
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Red Sparkles
 DESCRIPTION=Red Sparkle
 DUPELIST=0374b,0374c,0374d,0374e,0374f,03750,03751,03752,03753,03754,03755,03756,03757,03758,03759
 
@@ -1426,7 +1430,7 @@ DUPEITEM=0374a
 DEFNAME=i_fx_sparkle
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Blue/Gold Sparkle 1
 DESCRIPTION=Blue/Gold Sparkle 1
 DUPELIST=0375b,0375c,0375d,0375e,0375f,03760,03761,03762,03763,03764,03765,03766,03767,03768,03769
 
@@ -1494,7 +1498,7 @@ DUPEITEM=0375a
 DEFNAME=i_fx_heal_effect
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Blue/Gold Sparkle 2
 DESCRIPTION=Blue/Gold Sparkle 2
 DUPELIST=0376b,0376c,0376d,0376e,0376f,03770,03771,03772,03773,03774,03775,03776,03777,03778
 
@@ -1558,7 +1562,7 @@ DUPEITEM=0376a
 DEFNAME=i_fx_sparkle_2
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Blue/Purple Sparkle
 DESCRIPTION=Blue/Purple Sparkle
 DUPELIST=0377a,0377b,0377c,0377d,0377e,0377f,03780,03781,03782,03783,03784,03785,03786,03787,03788
 
@@ -1712,7 +1716,7 @@ DUPEITEM=03789
 
 [ITEMDEF 037a0]
 DEFNAME=i_fx_blade_field
-TYPE=t_trap_Active
+TYPE=t_trap_active
 CATEGORY=Animations
 SUBSECTION=Field of Blades
 DESCRIPTION=@
@@ -2673,7 +2677,7 @@ DUPEITEM=03996
 //DEFNAME=i_fx_poison_field_alt
 //TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Poison Field
+SUBSECTION=Poison Fields
 DESCRIPTION=Poison Field West/East (alternate)
 DUPELIST=03e03,03e04,03e05,03e06,03e07,03e08,03e09,03e0a,03e0b
 
@@ -2809,7 +2813,7 @@ DUPEITEM=03e31
 DEFNAME=i_fx_sparkle_3
 TYPE=t_spell
 CATEGORY=Animations
-SUBSECTION=Sparkles
+SUBSECTION=Red Sparkles
 DESCRIPTION=Red Sparkle 2
 DUPELIST=042d0,042d1,042d2,042d3,042d4,042d5,042d6,042d7,042d8,042d9,042da,042db,042dc,042dd,
 
@@ -2928,6 +2932,149 @@ DUPEITEM=04aa4
 [ITEMDEF 04aa9]
 //Hearts (animation frame)
 DUPEITEM=04aa4
+
+[ITEMDEF 04b8f]
+DEFNAME=i_moongate_broken
+NAME=broken moongate
+TYPE=t_telepad
+CATEGORY=Animations
+SUBSECTION=Moongates
+DESCRIPTION=Moongate (broken)
+DUPELIST=04b90,04b91,04b92,04b93,04b94,04b95,04b96,04b97,04b98,04b99,04b9a,04b9b,04b9c
+
+[ITEMDEF 04b90]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b91]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b92]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b93]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b94]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b95]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b96]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b97]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b98]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b99]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b9a]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b9b]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04b9c]
+//Broken Moongate (animation frame)
+DUPEITEM=04b8f
+
+[ITEMDEF 04bcb]
+DEFNAME=i_moongate_new
+NAME=moongate
+TYPE=t_telepad
+CATEGORY=Animations
+SUBSECTION=Moongates
+DESCRIPTION=Moongate (new)
+DUPELIST=04bcc,04bcd,04bce,04bcf,04bd0,04bd1,04bd2,04bd3,04bd4,04bd5,04bd6,04bd7,04bd8
+
+[ITEMDEF 04bcc]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bcd]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bce]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bcf]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd0]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd1]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd2]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd3]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd4]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd5]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd6]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd7]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 04bd8]
+//New Moongate (animation frame)
+DUPEITEM=04bcb
+
+[ITEMDEF 05683]
+DEFNAME=fx_sparkle_hovering
+TYPE=t_hoverover
+CATEGORY=Animations
+SUBSECTION=Sparkles
+DESCRIPTION=Sparkles (hovering)
+DUPELIST=05684,05685,05686
+
+[ITEMDEF 05684]
+//Sparkles (hovering)
+DUPEITEM=05683
+
+[ITEMDEF 05685]
+//Sparkles (hovering)
+DUPEITEM=05683
+
+[ITEMDEF 05686]
+//Sparkles (hovering)
+DUPEITEM=05683
+
 
 
 [EOF]

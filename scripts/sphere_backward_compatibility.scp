@@ -1,13 +1,13 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Wednesday, August 28, 2013
 //
 VERSION=0.56b
 
@@ -38,6 +38,7 @@ snd_pixie         snd_monster_pixie
 snd_centaur       snd_monster_centaur
 snd_kirin         snd_animal_kirin
 snd_hiryu         snd_animal_hiryu
+i_door_portculis  i_door_portcullis
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

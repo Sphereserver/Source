@@ -1003,6 +1003,8 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_TRACK_PACK_LLAMA	= 0x2127,
 	ITEMID_TRACK_END		= 0x213e,
 
+	ITEMID_DOOR_SLIDING_2	= 0x2a05,
+
 	ITEMID_VENDOR_BOX		= 0x2af8, // Vendor container
 
 	// ML hair
