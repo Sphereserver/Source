@@ -2388,6 +2388,12 @@ effect_bounce:
 		// attacking will get credit for killing us.
 		// Killed by a guard looks here !
 		m_Act_Targ = pSrc->GetUID();
+		if (IsStatFlag( STATF_Ridden )) // Dead Horse?
+		{
+			CChar *pCharRider = Horse_GetMountChar();
+			if ( pCharRider )
+				pCharRider->Horse_UnMount();
+		}
 		return( -1 );	// INT_MAX ?
 	}
 

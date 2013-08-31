@@ -2032,6 +2032,7 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 		pHorse->StatFlag_Clear( STATF_DEAD );
 		pHorse->Stat_SetVal( STAT_STR, pHorse->Stat_GetAdjusted( STAT_STR ) );
 		pHorse->Death();
+		pHorse->Delete();
 	}
 
 	return( true );
@@ -2107,7 +2108,6 @@ bool CChar::OnTickEquip( CItem * pItem )
 				{
 					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", GetName(), (DWORD)GetUID(), (DWORD)pHorse->GetUID() ));
 					Horse_UnMount();
-					pHorse->Delete();
 					return( false );
 				}
 

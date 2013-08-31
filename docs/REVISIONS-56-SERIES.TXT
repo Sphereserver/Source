@@ -61,3 +61,6 @@
 -Changed some Axis categories, subsections and descriptions
 -Moved ITEMDEFs from one file to another
 -Major changes to doors script file in preparation for making new doors work
+
+31-08-2013, Ben
+-Fixed #2193: Mounts will die instantly when killed while mounted.

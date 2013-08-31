@@ -168,6 +168,25 @@ class CDataBase;
 
 ///////////////////////////////////////////////
 
+//	Triggers list
+enum E_TRIGGERS
+{
+	#define ADD(a,b) TRIGGER_##a,
+	#include "../tables/triggers.tbl"
+	#undef ADD
+	TRIGGER_QTY,
+};
+
+extern bool IsTrigUsed(E_TRIGGERS id);
+extern bool IsTrigUsed(const char *name);
+extern void TriglistInit();
+extern void TriglistClear();
+extern void TriglistAdd(E_TRIGGERS id);
+extern void TriglistAdd(const char *name);
+extern void Triglist(long &total, long &used);
+extern void TriglistPrint();
+
+
 // Text mashers.
 
 extern DIR_TYPE GetDirStr( LPCTSTR pszDir );

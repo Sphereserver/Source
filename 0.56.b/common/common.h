@@ -23,7 +23,6 @@
 #include <deque>
 #include <vector>
 #include <stack>
-//using namespace std;
 
 #ifdef _WIN32
 	#include "os_windows.h"
@@ -194,26 +193,6 @@ private:
 	CEventLog(const CEventLog& copy);
 	CEventLog& operator=(const CEventLog& other);
 } * g_pLog;
-
-//
-//	Triggers list
-//
-enum E_TRIGGERS
-{
-	#define ADD(a,b) TRIGGER_##a,
-	#include "../tables/triggers.tbl"
-	#undef ADD
-	TRIGGER_QTY,
-};
-
-extern bool IsTrigUsed(E_TRIGGERS id);
-extern bool IsTrigUsed(const char *name);
-extern void TriglistInit();
-extern void TriglistClear();
-extern void TriglistAdd(E_TRIGGERS id);
-extern void TriglistAdd(const char *name);
-extern void Triglist(long &total, long &used);
-extern void TriglistPrint();
 
 // -----------------------------
 //	CValStr
