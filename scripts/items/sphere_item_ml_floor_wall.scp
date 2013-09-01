@@ -12,139 +12,121 @@
 // By Makar + Elric
 //
 
-[itemdef 11500]
-Name=Simple Floor Tile
-CATEGORY=New Items
-SUBSECTION=ML
-DESCRIPTION=Simple Floor
-
-[itemdef 11501]
-Name=Simple Floor Tile
-CATEGORY=New Items
-SUBSECTION=ML
-DESCRIPTION=Simple Floor
-
-[itemdef 11502]
-Name=Simple Floor Tile
-CATEGORY=New Items
-SUBSECTION=ML
-DESCRIPTION=Simple Floor
-
-[itemdef 11503]
+[itemdef 02cef]
 Name=Simple Short Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Short Wall
 
-[itemdef 11504]
+[itemdef 02cf0]
 Name=Simple Short Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Short Wall
 
-[itemdef 11505]
+[itemdef 02cf1]
 Name=Simple Half Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Half Wall
 
-[itemdef 11506]
+[itemdef 02cf2]
 Name=Simple Half Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Half Wall
 
-[itemdef 11507]
+[itemdef 02cf3]
 Name=Simple Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Wall
 
-[itemdef 11508]
+[itemdef 02cf4]
 Name=Simple Window Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Window Wall
 
-[itemdef 11509]
+[itemdef 02cf5]
 Name=Simple Window Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Window Wall
 
-[itemdef 11510]
+[itemdef 02cf6]
 Name=Simple Window Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Window Wall
 
-[itemdef 11511]
+[itemdef 02cf7]
 Name=Simple Window Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Window Wall
 
-[itemdef 11512]
+[itemdef 02cf8]
 Name=Simple Window Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Simple Window Wall
 
-[itemdef 11540]
+[itemdef 02d14]
 Name=Wooden Arch
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Arch
 
-[itemdef 11541]
+[itemdef 02d15]
 Name=Wooden Arch
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Arch
 
-[itemdef 11542]
+[itemdef 02d16]
 Name=Wooden Arch
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Arch
 
-[itemdef 11543]
+[itemdef 02d17]
 Name=Wooden Arch
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Arch
 
-[itemdef 11544]
+[itemdef 02d18]
 Name=Short Wooden Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Short Wooden Arch
 
-[itemdef 11545]
+[itemdef 02d19]
 Name=Wooden Half Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Half Wall
 
-[itemdef 11546]
+[itemdef 02d1a]
 Name=Wooden Corner Wall
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Half Wall
 
-[itemdef 11547]
+[itemdef 02d1b]
 Name=Short Wooden Post
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Short Wooden Post
 
-[itemdef 11548]
+[itemdef 02d1c]
 Name=Wooden Half Post
 CATEGORY=New Items
 SUBSECTION=ML
 DESCRIPTION=Wooden Half Post
 
-[itemdef 11549]
+[itemdef 02d1d]
 Name=Wooden Post
 CATEGORY=New Items
 SUBSECTION=ML

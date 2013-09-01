@@ -7,16 +7,247 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, July 12, 2007
+// FILE LAST UPDATED: Thursday, August 30, 2013
 //
 VERSION=0.56b
 
 
+[ITEMDEF 040b]
+DEFNAME=i_floor_cave
+NAME=cave floor
+TYPE=t_rock
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Floor
+DUPELIST=040c,040d,040e,040f,0410,0411,0412,0413,0414,0415,0416,0417,0418,0419,041a,041b,041c,041d,041e,053b,053c,053d,053e,053f,02f62,02f63,02f64,02f65,02f66,02f67,02f68,02f69,02f6a,02f6b,02f6c,02f6d,02f6e,02f6f,02f70,02f71,02f72,02f73,02f74,02f75,02f76,02f77,02f78,02f79,02f7a,02f7b,02f7c,02f7d,02f7e,02f7f,02f80,02f81,02f82,02f83,02f84,02f85,02f86,02f87,02f88,02f89,02f8a,02f8b,02f8c,02f8d,02f8e,02f8f,02f90,02f91,02f92,02f93,02f94,02f95,02f96,02f97,02f98,02f99,02f9a,02f9b,02f9c,02f9d,02f9e,02f9f,02fa0,02fa1,02fa2,02fa3,02fa4,02fa5,02fa6,02fa7,02fa8,02fa9,02faa,02fab,02fac,02fad,02fae,02faf,02fb0,02fb1,02fb2,02fb3,02fb4,02fb5
+
+[ITEMDEF 040c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 040d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 040e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 040f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0410]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0411]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0412]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0413]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0414]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0415]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0416]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0417]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0418]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0419]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 041a]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 041b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 041c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 041d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 041e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 053b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 053c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 053d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 053e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 053f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 0540]
+DEFNAME=i_floor_cave_edge
+TYPE=t_rock
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Edge
+DUPELIST=0541,0542,0543,0544,0545,0546,0547,0548,0549,054a,054b,054c,054d,054e,054f,0551,0552,0553,056a
+
+[ITEMDEF 0541]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0542]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0543]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0544]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0545]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0546]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0547]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0548]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 0549]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054a]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054b]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054c]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054d]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054e]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 054f]
+//cave floor
+DUPEITEM=0540
+
+[ITEMDEF 056a]
+//cave floor
+DUPEITEM=0540
+
+
+[ITEMDEF 08e0]
+//stalagmites
+TYPE=T_ROCK
+CATEGORY=Buildings - Floors
+SUBSECTION=Cave Floor
+DESCRIPTION=Stalagmites
+DUPELIST=08e1,08e2,08e3,08e4,08e5,08e6,08e7,08e8,08e9,08ea
+
+[ITEMDEF 08e1]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e2]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e3]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e4]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e5]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e6]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e7]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08e8]
+//flowstone
+DUPEITEM=08e0
+DESCRIPTION=Flowstone
+
+[ITEMDEF 08e9]
+//stalagmites
+DUPEITEM=08e0
+
+[ITEMDEF 08ea]
+//stalagmites
+DUPEITEM=08e0
+
+
 [ITEMDEF 0911]
-//dirt patch
 CATEGORY=Ground Tiles
-SUBSECTION=Dirt Patch
-DESCRIPTION=@
+SUBSECTION=Dirt
+DESCRIPTION=Dirt Patch
 DUPELIST=0912,0913,0914
 
 [ITEMDEF 0912]
@@ -31,11 +262,11 @@ DUPEITEM=0911
 //dirt patch
 DUPEITEM=0911
 
+
 [ITEMDEF 011c0]
 DEFNAME=i_FLOOR_CRUMBLING
 TYPE=T_TRAP
 RESOURCES=2 i_rock_plain
-WEIGHT=10
 CATEGORY=Ground Tiles
 SUBSECTION=Crumbling Floor
 DESCRIPTION=@
@@ -61,11 +292,19 @@ DUPEITEM=011c0
 //crumbling floor
 DUPEITEM=011c0
 
+
 [ITEMDEF 012ee]
-//lava
-DEFNAME=i_lava
+//DEFNAME=i_lava
 TYPE=t_lava
+DEFNAME=i_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
 DUPELIST=012ef,012f1,012f2,012f4,012f5,012f6,012f7,012f8,012fa,012fb,012fc,012fd,012fe,01300,01301,01302,01303,01304,01306,01307,01308,01309,0130a,0130c,0130d,0130e,0130f,01310,01312,01313,01314,01315,01316,01318,01319,0131a,0131b,0131c
+//Potentially reassign these as well:
+//,03547,03546,03548,03549,0354a,0354b,0354c,0354d,0354e,0354f,03550,03551,03552,03553,03554,03555,03556,03557,03558,03559,0355a,0355b,0355c,0355d,0355e,0355f,03560,03561
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 012ef]
 //lava
@@ -227,7 +466,12 @@ DUPEITEM=012ee
 //lava
 DEFNAME=i_lava_edge
 TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava Edge
+DESCRIPTION=Lava
 DUPELIST=0131f,01320,01321,01322,01323,01324,01325,01326,01327,01328,01329,0132a,0132b,0132c,0132d,0132e,0132f,01330,01331,01332,01333,01334,01335,01336,01337,01338,01339,0133a,0133b,0133c,0133d,0133e,0133f,01340,01341,01342,01343,01344,01345,01346,01347,01348,01349,0134a,0134b,0134c,0134d
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 0131f]
 //lava
@@ -417,37 +661,6 @@ DUPEITEM=0131e
 //lava
 DUPEITEM=0131e
 
-[ITEMDEF 01383]
-DEFNAME=i_TILE_STONE_SAND
-RESOURCES=2 i_stone_sand
-WEIGHT=4
-CATEGORY=Ground Tiles
-SUBSECTION=Sandstone
-DESCRIPTION=@
-
-[ITEMDEF 01384]
-DEFNAME=i_TILE_STONE_SAND_2
-RESOURCES=2 i_stone_sand
-WEIGHT=4
-CATEGORY=Ground Tiles
-SUBSECTION=Sandstone
-DESCRIPTION=@
-
-[ITEMDEF 01385]
-DEFNAME=i_TILE_STONE_SAND_3
-RESOURCES=2 i_stone_sand
-WEIGHT=4
-CATEGORY=Ground Tiles
-SUBSECTION=Sandstone
-DESCRIPTION=@
-
-[ITEMDEF 01386]
-DEFNAME=i_TILE_STONE_SAND_4
-RESOURCES=2 i_stone_sand
-WEIGHT=4
-CATEGORY=Ground Tiles
-SUBSECTION=Sandstone
-DESCRIPTION=@
 
 [ITEMDEF 0177d]
 //grass
@@ -504,6 +717,131 @@ DUPEITEM=0177d
 [ITEMDEF 01789]
 //grass
 DUPEITEM=0177d
+
+
+[ITEMDEF 01796]
+//water
+TYPE=T_WATER
+
+[ITEMDEF 01797]
+//FIXME: It needs a value and weight since it is a resource
+DEFNAME=i_water
+TYPE=t_water
+VALUE=2
+WEIGHT=0.1
+CATEGORY=Ground Tiles
+SUBSECTION=Water
+DESCRIPTION=@
+DUPELIST=01798,01799,0179a,0179b,0179c,0179d,0179e,0179f,017a0,017a1,017a2,017a3,017a4,017a5,017a6,017a7,017a8,017a9,017aa,017ab,017ac,017ad,017ae,017af,017b0,017b1,017b2
+
+[ITEMDEF 01798]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 01799]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179a]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179b]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179c]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179d]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179e]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 0179f]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a0]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a1]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a2]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a3]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a4]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a5]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a6]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a7]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a8]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017a9]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017aa]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017ab]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017ac]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017ad]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017ae]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017af]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017b0]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017b1]
+//water
+DUPEITEM=01797
+
+[ITEMDEF 017b2]
+//water
+DUPEITEM=01797
+
 
 [ITEMDEF 017bd]
 DEFNAME=i_snow
@@ -581,14 +919,17 @@ DUPEITEM=017bd
 //snow
 DUPEITEM=017bd
 
+
 [ITEMDEF 01a19]
 DEFNAME=i_lava_falls
-VALUE=1
 TYPE=t_fire
+VALUE=1
 CATEGORY=Ground Tiles
-SUBSECTION=Lava
-DESCRIPTION=@
+SUBSECTION=Lava Falls
+DESCRIPTION=Lava Flowing Over
 DUPELIST=012f0,01a1a,01a1b,01a1c,01a1d,01a47,01a48,01a49,01a4a,01a4b
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 01a1a]
 //lava
@@ -607,10 +948,14 @@ DUPEITEM=01a19
 DUPEITEM=01a19
 
 [ITEMDEF 01a1e]
-//lava
 DEFNAME=i_lava_wall
 TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava Falls
+DESCRIPTION=Lava Falling Down
 DUPELIST=01a1f,01a20,01a21,01a22,01a23,01a24,01a25,01a26,01a27,01a28,01a29,01a2a,01a2b,01a2c,01a2d,01a2e,01a2f,01a30,01a31,01a32,01a33,01a34,01a35,01a36,01a4c,01a4d,01a4e,01a4f,01a50,01a51,01a52,01a53,01a54,01a55,01a56,01a57,01a58,01a59,01a5a,01a5b,01a5c,01a5d,01a5e,01a5f,01a60,01a61,01a62,01a63,01a64
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 01a1f]
 //lava
@@ -709,10 +1054,14 @@ DUPEITEM=01a1e
 DUPEITEM=01a1e
 
 [ITEMDEF 01a37]
-//lava
 DEFNAME=i_lava_base
 TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava Falls
+DESCRIPTION=Lava Hitting Ground
 DUPELIST=01a38,01a39,01a3a,01a3b,01a3c,01a3d,01a3e,01a3f,01a40,01a41,01a42,01a43,01a44,01a45,01a46,01a65,01a66,01a67,01a68,01a69,01a6a,01a6b,01a6c,01a6d,01a6e,01a6f,01a70,01a71,01a72,01a73,01a74
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 01a38]
 //lava
@@ -958,36 +1307,68 @@ DUPEITEM=01a37
 //lava
 DUPEITEM=01a37
 
-[ITEMDEF 01b01]
-DEFNAME=i_floor_cracks
+[ITEMDEF 01a75]
+DEFNAME=i_lava_animation
+TYPE=t_fire
 CATEGORY=Ground Tiles
-SUBSECTION=Floor Cracks
+SUBSECTION=Lava
+DESCRIPTION=Lava Animation
+DUPELIST=01a76,01a77,01a78,01a79,01a7a,01a7b
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 01a76]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a77]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a78]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a79]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a7a]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a7b]
+//lava animation
+DUPEITEM=01a75
+
+[ITEMDEF 01a7c]
+DEFNAME=i_lava_fire
+TYPE=t_fire
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava Animation 2
+DUPELIST=01a7d,01a7e
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 01a7d]
+//lava animation
+DUPEITEM=01a7c
+
+[ITEMDEF 01a7e]
+//lava animation
+DUPEITEM=01a7c
+
+
+[ITEMDEF 01b27]
+DEFNAME=i_dirt_tile
+NAME=dirt
+VALUE=2
+WEIGHT=1
+CATEGORY=Ground Tiles
+SUBSECTION=Dirt
 DESCRIPTION=@
-DUPELIST=01b02,01b03,01b04,01b05,01b06,01b08
-
-[ITEMDEF 01b02]
-//floor cracks
-DUPEITEM=01b01
-
-[ITEMDEF 01b03]
-//floor cracks
-DUPEITEM=01b01
-
-[ITEMDEF 01b04]
-//floor cracks
-DUPEITEM=01b01
-
-[ITEMDEF 01b05]
-//floor cracks
-DUPEITEM=01b01
-
-[ITEMDEF 01b06]
-//floor cracks
-DUPEITEM=01b01
-
-[ITEMDEF 01b08]
-//floor cracks
-DUPEITEM=01b01
+DUPELIST=01b28,01b29,01b2a,01b2b,01b2c,01b2d,01b2e,01b2f,01b30,01b31,01b32,01b33,01b34,01b35,01b36,01b37,01b38,01b39,01b3a,01b3b,01b3c,01b3d,01b3e,032c9,032ca
 
 [ITEMDEF 01b28]
 //dirt
@@ -1081,11 +1462,13 @@ DUPEITEM=01b27
 //dirt
 DUPEITEM=01b27
 
+
 [ITEMDEF 01b71]
 DEFNAME=i_hole
 CATEGORY=Ground Tiles
 SUBSECTION=Crumbling Floor
 DESCRIPTION=Hole
+
 
 [ITEMDEF 01b9f]
 DEFNAME=i_refuse
@@ -1211,117 +1594,109 @@ DUPEITEM=01b9f
 //refuse
 DUPEITEM=01b9f
 
-[ITEMDEF 01796]
-//water
-TYPE=T_WATER
 
-[ITEMDEF 01798]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cc7]
+DEFNAME=i_blood_tile
+TYPE=t_blood
+CATEGORY=Ground Tiles
+SUBSECTION=Pool of Blood
+DESCRIPTION=Blood
+DUPELIST=01cc8,01cc9,01cca,01ccb,01ccc,01ccd,01cce,01ccf,01cd0,01cd1,01cd2,01cd3,01cd4,01cd5,01cd6,01cd7,01cd8,01cd9,01cda,01cdb,01cdc
 
-[ITEMDEF 01799]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cc8]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179a]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cc9]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179b]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cca]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179c]
-//water
-DUPEITEM=01797
+[ITEMDEF 01ccb]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179d]
-//water
-DUPEITEM=01797
+[ITEMDEF 01ccc]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179e]
-//water
-DUPEITEM=01797
+[ITEMDEF 01ccd]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 0179f]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cce]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a0]
-//water
-DUPEITEM=01797
+[ITEMDEF 01ccf]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a1]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd0]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a2]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd1]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a3]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd2]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a4]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd3]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a5]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd4]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a6]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd5]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a7]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd6]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a8]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd7]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017a9]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd8]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017aa]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cd9]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017ab]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cda]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017ac]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cdb]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017ad]
-//water
-DUPEITEM=01797
+[ITEMDEF 01cdc]
+//blood
+DUPEITEM=01cc7
 
-[ITEMDEF 017ae]
-//water
-DUPEITEM=01797
 
-[ITEMDEF 017af]
-//water
-DUPEITEM=01797
-
-[ITEMDEF 017b0]
-//water
-DUPEITEM=01797
-
-[ITEMDEF 017b1]
-//water
-DUPEITEM=01797
-
-[ITEMDEF 017b2]
-//water
-DUPEITEM=01797
+[ITEMDEF 01dfd]
+//FIXME: It needs value and weight since it is a resource
+DEFNAME=i_dirt
+VALUE=1
+WEIGHT=.1
+CATEGORY=Ground Tiles
+SUBSECTION=Dirt
+DESCRIPTION=@
+DUPELIST=01dfe,01dff,01e00
 
 [ITEMDEF 01dfe]
 //dirt
@@ -1337,44 +1712,37 @@ DUPEITEM=01dfd
 
 [ITEMDEF 01e01]
 DEFNAME=i_mud
-RESOURCES=1 i_DIRT, i_WATER
-WEIGHT=1
+RESOURCES=1 i_dirt,1 i_water
 CATEGORY=Ground Tiles
 SUBSECTION=Mud and Footprints
 DESCRIPTION=Mud
+DUPELIST=01e02
 
 [ITEMDEF 01e02]
 //mud
-CATEGORY=Ground Tiles
-SUBSECTION=Mud and Footprints
-DESCRIPTION=Mud
+DUPEITEM=01e01
 
 [ITEMDEF 01e03]
-//footprints
+DEFNAME=i_footprints
+RESOURCES=1 i_dirt,1 i_water
 CATEGORY=Ground Tiles
 SUBSECTION=Mud and Footprints
 DESCRIPTION=Footprints
+DUPELIST=01e04,01e05,01e06
 
 [ITEMDEF 01e04]
 //footprints
-CATEGORY=Ground Tiles
-SUBSECTION=Mud and Footprints
-DESCRIPTION=Footprints
+DUPEITEM=01e03
 
 [ITEMDEF 01e05]
 //footprints
-CATEGORY=Ground Tiles
-SUBSECTION=Mud and Footprints
-DESCRIPTION=Footprints
+DUPEITEM=01e03
 
 [ITEMDEF 01e06]
 //footprints
-CATEGORY=Ground Tiles
-SUBSECTION=Mud and Footprints
-DESCRIPTION=Footprints
+DUPEITEM=01e03
 
 [ITEMDEF 01e07]
-//stain
 CATEGORY=Ground Tiles
 SUBSECTION=Stain
 DESCRIPTION=@
@@ -1408,8 +1776,9 @@ DUPEITEM=01e07
 //stain
 DUPEITEM=01e07
 
+
 [ITEMDEF 01fa3]
-//wave
+TYPE=t_water
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Wave
 DESCRIPTION=@
@@ -1571,8 +1940,1736 @@ DUPEITEM=01fa3
 //wave
 DUPEITEM=01fa3
 
+
+[ITEMDEF 0213f]
+NAME=stars
+CATEGORY=Ground Tiles
+SUBSECTION=Stars
+DESCRIPTION=Stars
+DUPELIST=02140,02141,02142,02143,02144
+
+[ITEMDEF 02140]
+//stars
+DUPEITEM=0213f
+
+[ITEMDEF 02141]
+//stars
+DUPEITEM=0213f
+
+[ITEMDEF 02142]
+//stars
+DUPEITEM=0213f
+
+[ITEMDEF 02143]
+//stars
+DUPEITEM=0213f
+
+[ITEMDEF 02144]
+//stars
+DUPEITEM=0213f
+
+
+[ITEMDEF 02ae4]
+DEFNAME=fx_lava_animation2
+TYPE=t_fire
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava Animation 2
+DUPELIST=02ae5,02ae6,02ae7,02ae8,02ae9,02aea,02aeb
+
+[ITEMDEF 02ae5]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02ae6]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02ae7]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02ae8]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02ae9]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02aea]
+//lava animation
+DUPEITEM=02ae4
+
+[ITEMDEF 02aeb]
+//lava animation
+DUPEITEM=02ae4
+
+
+[ITEMDEF 02b3e]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+
+[ITEMDEF 02b3f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b3f
+
+[ITEMDEF 02b40]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+
+[ITEMDEF 02b41]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b41
+
+[ITEMDEF 02b42]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+
+[ITEMDEF 02b43]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b43
+
+[ITEMDEF 02b44]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+DUPELIST=02b45
+
+[ITEMDEF 02b45]
+//lava
+DUPEITEM=02b44
+
+[ITEMDEF 02b46]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b46
+
+[ITEMDEF 02b47]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+DUPELIST=02b48,02b49
+
+[ITEMDEF 02b48]
+//lava
+DUPEITEM=02b47
+
+[ITEMDEF 02b49]
+//lava
+DUPEITEM=02b47
+
+[ITEMDEF 02b4a]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b4a
+
+[ITEMDEF 02b4b]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+
+[ITEMDEF 02b4c]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b4c
+
+[ITEMDEF 02b4d]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=Lava
+
+[ITEMDEF 02b4e]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b4e
+
+[ITEMDEF 02b4f]
+TYPE=t_lava
+CATEGORY=Ground Tiles
+SUBSECTION=Lava
+DESCRIPTION=@
+DUPELIST=02b50
+
+[ITEMDEF 02b50]
+//lava
+DUPEITEM=02b4f
+
+[ITEMDEF 02b51]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b51
+
+[ITEMDEF 02b52]
+DEFNAME=i_lava_bubble
+TYPE=t_lava
+CATEGORY=Ground Tiles (animated)
+SUBSECTION=Lava
+DESCRIPTION=Lava Bubble
+DUPELIST=02b53,02b54,02b56,02b58,02b5c,02b5e,02b60,02b61,02b62,02b63,02b64,02b65
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02b53]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b54]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b55]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b55
+
+[ITEMDEF 02b56]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b57]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b57
+
+[ITEMDEF 02b58]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b59]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b59
+
+[ITEMDEF 02b5a]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b5a
+
+[ITEMDEF 02b5b]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b5b
+
+[ITEMDEF 02b5c]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b5d]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b5d
+
+[ITEMDEF 02b5e]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b5f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b5f
+
+[ITEMDEF 02b60]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b61]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b62]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b63]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b64]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b65]
+//lava bubbles
+DUPEITEM=02b52
+
+[ITEMDEF 02b66]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02b66
+
+
+[ITEMDEF 02e02]
+DEFNAME=i_acid
+TYPE=t_acid
+CATEGORY=Ground Tiles
+SUBSECTION=Acid
+DESCRIPTION=Acid
+DUPELIST=02e03,02e04,02e05,02e06,02e07,02e08,02e09,02e0a,02e0b,02e0c,02e0d,02e0e,02e0f,02e10,02e11,02e12,02e13,02e14,02e15,02e16,02e17,02e18,02e19,02e1a,02e1b,02e1c,02e1d,02e1e,02e1f,02e20,02e21,02e22,02e23,02e24,02e25,02e26,02e27,02e28,02e29,02e2a,02e2b,02e2c,02e2d,02e2e,02e2f,02e30,02e31,02e32,02e33,02e34,02e35,02e36,02e37,02e38,02e39,02e3a,02e3b
+
+[ITEMDEF 02e03]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e04]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e05]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e06]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e07]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e08]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e09]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0a]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0b]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0c]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0d]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0e]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e0f]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e10]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e11]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e12]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e13]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e14]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e15]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e16]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e17]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e18]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e19]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1a]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1b]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1c]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1d]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1e]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e1f]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e20]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e21]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e22]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e23]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e24]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e25]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e26]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e27]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e28]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e29]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2a]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2b]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2c]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2d]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2e]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e2f]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e30]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e31]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e32]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e33]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e34]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e35]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e36]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e37]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e38]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e39]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e3a]
+//acid
+DUPEITEM=02e02
+
+[ITEMDEF 02e3b]
+//acid
+DUPEITEM=02e02
+
+
+[ITEMDEF 02e40]
+NAME=stars
+CATEGORY=Ground Tiles
+SUBSECTION=Stars
+DESCRIPTION=Stars (darker tiles)
+DUPELIST=02e41,02e42,02e43,02e44,02e45
+
+[ITEMDEF 02e41]
+//stars
+DUPEITEM=02e40
+
+[ITEMDEF 02e42]
+//stars
+DUPEITEM=02e40
+
+[ITEMDEF 02e43]
+//stars
+DUPEITEM=02e40
+
+[ITEMDEF 02e44]
+//stars
+DUPEITEM=02e40
+
+[ITEMDEF 02e45]
+//stars
+DUPEITEM=02e40
+
+[ITEMDEF 02e46]
+CATEGORY=Ground Tiles
+SUBSECTION=Stars
+DESCRIPTION=Stars (with blue smear?)
+DUPELIST=02e47
+
+[ITEMDEF 02e47]
+//Stars (with blue smear?)
+DUPEITEM=02e46
+
+
+[ITEMDEF 02e69]
+DEFNAME=i_ground_tree
+NAME=tree floor
+TYPE=t_floor
+RESOURCES=100 i_log
+CATEGORY=Ground Tiles
+SUBSECTION=Tree Floor
+DESCRIPTION=Tree Floor
+DUPELIST=02e6a,02e6b,02e6c,02e6d,02e6e,02e6f,02e70,02e71,02e72,02e73,02e74,02e75,02e76,02e77,02e78,02e79,02e7a,02e7b,02e7c,02e7d,02e7e,02e7f,02e80,02e81,02e82,02e83,02e84,02e85,02e86,02e87,02e88,02e89,02e8a,02e8b,02e8c,02e8d,02e8e,02e8f,02e90,02e91,02e92,02e93,02e94,02e95,02e96,02e97,02e98,02e99,02e9a,02e9b,02e9c,02e9d,02e9e,02e9f,02ea0,02ea1,02ea2,02ea3,02ea4,02ea5,02ea6,02ea7,02ea8,02ea9,02eaa,02eab,02eac,02ead,02eae,02eaf,02eb0,02eb1,02eb2,02eb3,02eb4,02eb5,02eb6,02eb7,02eb8,02eb9,02eba,02ebb,02ebc,02ebd,02ebe,02ebf,02ec0,02ec1,02ec2,02ec3,02ec4,02ec5,02ec6,02ec7,02ec8,02ec9,02eca,02ecb,02ecc,02ecd,02ece,02ecf,02ed0,02ed1,02ed2,02ed3,02ed4,02ed5,02ed6,02ed7,02ed8,02ed9,02eda,02edb,02ee1,02ee2,02ee3,02ee4,02ee5,02ee6,02ee7,02ee8,02ee9,02eea,02eeb,02eec,02eed,02eee,02eef,02ef0,02ef1,02ef2,02ef3,02ef4,02ef5,02ef6,02ef7,02ef8,02ef9,02efa,02efb,02efc,02efd,02efe,02eff,02f00,02f01,02f02,02f03,02f04,02f05,02f06,02f07,02f08,02f09,02f0a,02f0b,02f0c,02f0d,02f0e
+
+[ITEMDEF 02e6a]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e6b]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e6c]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e6d]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e6e]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e6f]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e70]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e71]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e72]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e73]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e74]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e75]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e76]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e77]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e78]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e79]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7a]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7b]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7c]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7d]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7e]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e7f]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e80]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e81]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e82]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e83]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e84]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e85]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e86]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e87]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e88]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e89]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8a]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8b]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8c]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8d]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8e]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e8f]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e90]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e91]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e92]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e93]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e94]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e95]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e96]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e97]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e98]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e99]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9a]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9b]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9c]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9d]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9e]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02e9f]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea0]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ea9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eaa]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eab]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eac]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ead]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eae]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eaf]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb0]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eb9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eba]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ebb]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ebc]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ebd]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ebe]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ebf]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec0]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ec9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eca]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ecb]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ecc]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ecd]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ece]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ecf]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed0]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ed9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eda]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02edb]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02edc]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02edc
+
+[ITEMDEF 02edd]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02edd
+
+[ITEMDEF 02ede]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02ede
+
+[ITEMDEF 02edf]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02edf
+
+[ITEMDEF 02ee0]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 02ee0
+
+[ITEMDEF 02ee1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ee9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eea]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eeb]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eec]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eed]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eee]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eef]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef0]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef1]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef2]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef3]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef4]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef5]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef6]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef7]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef8]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02ef9]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02efa]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02efb]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02efc]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02efd]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02efe]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02eff]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f00]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f01]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f02]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f03]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f04]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f05]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f06]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f07]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f08]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f09]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0a]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0b]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0c]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0d]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0e]
+//tree floor
+DUPEITEM=02e69
+
+[ITEMDEF 02f0f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Tree Terrain Tile 02f0f
+
+[ITEMDEF 02f10]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Tree Terrain Tile 02f10
+
+[ITEMDEF 02f11]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Tree Terrain Tile 02f11
+
+[ITEMDEF 02f12]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Tree Terrain Tile 02f12
+
+
+[ITEMDEF 02f62]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f63]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f64]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f65]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f66]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f67]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f68]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f69]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6a]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f6f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f70]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f71]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f72]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f73]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f74]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f75]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f76]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f77]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f78]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f79]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7a]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f7f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f80]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f81]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f82]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f83]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f84]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f85]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f86]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f87]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f88]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f89]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8a]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f8f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f90]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f91]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f92]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f93]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f94]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f95]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f96]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f97]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f98]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f99]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9a]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9b]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9c]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9d]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9e]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02f9f]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa0]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa1]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa2]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa3]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa4]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa5]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa6]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa7]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa8]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fa9]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02faa]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fab]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fac]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fad]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fae]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02faf]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb0]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb1]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb2]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb3]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb4]
+//cave floor
+DUPEITEM=040b
+
+[ITEMDEF 02fb5]
+//cave floor
+DUPEITEM=040b
+
+
+[ITEMDEF 030e7]
+DEFNAME=i_sinkhole
+CATEGORY=Ground Tiles
+SUBSECTION=Sinkhole
+DESCRIPTION=Sinkhole
+DUPELIST=030e8,030e9,030ea,030eb,030ec,030ed,030ee,030ef,030f0,030f1,030f2,030f3,030f4,030f5,030f6,030f7,030f8,030f9,030fa,030fb,030fc,030fd,030fe,030ff,03100,03101,03102,03103,03104,03105,03106,03107,03108,03109,0310a
+
+[ITEMDEF 030e8]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030e9]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ea]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030eb]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ec]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ed]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ee]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ef]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f0]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f1]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f2]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f3]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f4]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f5]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f6]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f7]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f8]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030f9]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030fa]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030fb]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030fc]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030fd]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030fe]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 030ff]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03100]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03101]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03102]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03103]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03104]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03105]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03106]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03107]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03108]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 03109]
+//sinkhole
+DUPEITEM=030e7
+
+[ITEMDEF 0310a]
+//sinkhole
+DUPEITEM=030e7
+
+
 [ITEMDEF 031f4]
-//dirt
+//FIXME: merge with the other dirt
 CATEGORY=Ground Tiles
 SUBSECTION=Dirt
 DESCRIPTION=@
@@ -1607,8 +3704,6 @@ DUPEITEM=031f4
 DUPEITEM=031f4
 
 [ITEMDEF 03209]
-//swamp
-
 CATEGORY=Ground Tiles
 SUBSECTION=Swamp
 DESCRIPTION=@
@@ -1619,8 +3714,6 @@ DUPELIST=0320a,0324b,0324c,0324d,0324e,0324f,03250,03251,03252,03253,03254,03255
 DUPEITEM=03209
 
 [ITEMDEF 0320d]
-//swamp
-
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Swamp
 DESCRIPTION=@
@@ -2086,13 +4179,14 @@ DUPEITEM=03209
 DUPEITEM=03209
 
 [ITEMDEF 03286]
-//lava
 DEFNAME=i_lava_edge2
 TYPE=t_lava
 CATEGORY=Ground Tiles
-SUBSECTION=Lava
+SUBSECTION=Lava Edges
 DESCRIPTION=@
 DUPELIST=03287,03288,03289,0328a,0328b,0328c,0328d,0328e,0328f,03290,03291,03292,03293,03294,03295,03296,03297,03298,03299,0329a,0329b,0329c,0329d,0329e,0329f,032a0,032a1,032a2,032a3,032a4,032a5,032a6,032a7,032a8,032a9,032aa,032ab,032ac,032ad,032ae,032af,032b0,032b1
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 03287]
 //lava
@@ -2266,102 +4360,93 @@ DUPEITEM=03286
 //lava
 DUPEITEM=03286
 
-[ITEMDEF 032d5]
+
+[ITEMDEF 032c9]
 //dirt
+DUPEITEM=01b27
+
+[ITEMDEF 032ca]
+//dirt
+DUPEITEM=01b27
+
+
+[ITEMDEF 0337a]
+
 
 [ITEMDEF 03421]
-//rock
-TYPE=T_ROCK
-
+TYPE=t_rock
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Boulder in water
-DESCRIPTION=@
-DUPELIST=03422,03423,03424,03425,03426,03427,03428,03429
+DESCRIPTION=Boulder in water 1
+DUPELIST=03422,03423,03424,03426,03427,03428,03429
 
 [ITEMDEF 03422]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03423]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03424]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03425]
-//
-DUPEITEM=03421
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Missing Name 03425
 
 [ITEMDEF 03426]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03427]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03428]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
 [ITEMDEF 03429]
-//rock
+//boulder in water 1
 DUPEITEM=03421
 
+
 [ITEMDEF 0342c]
-//rock
-TYPE=T_ROCK
+TYPE=t_rock
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Boulder in water
-DESCRIPTION=@
-DUPELIST=0342d,0342e,0342f,03430,03431,03432,03433,03434,03435
+DESCRIPTION=Boulder in water 2
+DUPELIST=0342d,0342e,0342f,03430
 
 [ITEMDEF 0342d]
-//rock
+//boulder in water 2
 DUPEITEM=0342c
 
 [ITEMDEF 0342e]
-//rock
+//boulder in water 2
 DUPEITEM=0342c
 
 [ITEMDEF 0342f]
-//rock
+//boulder in water 2
 DUPEITEM=0342c
 
 [ITEMDEF 03430]
-//rock
+//boulder in water 2
 DUPEITEM=0342c
 
-[ITEMDEF 03431]
-//rock
-DUPEITEM=0342c
-
-[ITEMDEF 03432]
-//rock
-DUPEITEM=0342c
-
-[ITEMDEF 03433]
-//rock
-DUPEITEM=0342c
-
-[ITEMDEF 03434]
-//rock
-DUPEITEM=0342c
-
-[ITEMDEF 03435]
-//rock
-DUPEITEM=0342c
 
 [ITEMDEF 0343b]
-//lava
-DEFNAME=i_lava_bubble
+DEFNAME=i_lava_bubble_2
 TYPE=t_lava
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Lava
-DESCRIPTION=@
+DESCRIPTION=Lava Bubble
 DUPELIST=0343c,0343d,0343e,0343f,03440,03441,03442,03443,03444,03445,03447,03448,03449,0344a,0344b,0344c,0344e,0344f,03450,03451,03452,03453,03454,03455,03456,03457,03459,0345a,0345b,0345c,0345d,0345e,0345f,03460,03462,03463,03464,03465,03466,03468,03469,0346a,0346b,0346c
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 0343c]
 //lava
@@ -2540,8 +4625,7 @@ DUPEITEM=0343b
 DUPEITEM=0343b
 
 [ITEMDEF 0346e]
-//water
-TYPE=T_WATER
+TYPE=t_water
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Water
 DESCRIPTION=@
@@ -2640,56 +4724,52 @@ DUPEITEM=0346e
 DUPEITEM=0346e
 
 [ITEMDEF 03486]
-//rock
-TYPE=T_ROCK
+TYPE=t_rock
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Small rock in water
-DESCRIPTION=@
+DESCRIPTION=@ 1
 DUPELIST=03487,03488,03489,0348a
 
 [ITEMDEF 03487]
-//rock
+//small rock in water 1
 DUPEITEM=03486
 
 [ITEMDEF 03488]
-//rock
+//small rock in water 1
 DUPEITEM=03486
 
 [ITEMDEF 03489]
-//rock
+//small rock in water 1
 DUPEITEM=03486
 
 [ITEMDEF 0348a]
-//rock
+//small rock in water 1
 DUPEITEM=03486
 
 [ITEMDEF 0348b]
-//rocks
-TYPE=T_ROCK
+TYPE=t_rock
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Small rock in water
-DESCRIPTION=@
+DESCRIPTION=@ 2
 DUPELIST=0348c,0348d,0348e,0348f
 
 [ITEMDEF 0348c]
-//rocks
+//small rock in water 2
 DUPEITEM=0348b
 
 [ITEMDEF 0348d]
-//rocks
+//small rock in water 2
 DUPEITEM=0348b
 
 [ITEMDEF 0348e]
-//rocks
+//small rock in water 2
 DUPEITEM=0348b
 
 [ITEMDEF 0348f]
-//rocks
+//small rock in water 2
 DUPEITEM=0348b
 
 [ITEMDEF 03490]
-//whirlpool
-
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Whirlpool
 DESCRIPTION=@
@@ -2704,8 +4784,7 @@ DUPEITEM=03490
 DUPEITEM=03490
 
 [ITEMDEF 03494]
-//water
-TYPE=T_WATER
+TYPE=t_water
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Water
 DESCRIPTION=@
@@ -2804,52 +4883,49 @@ DUPEITEM=03494
 DUPEITEM=03494
 
 [ITEMDEF 034ac]
-//rock
-TYPE=T_ROCK
+TYPE=t_rock
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Small rock in water
-DESCRIPTION=@
+DESCRIPTION=@ 1
 DUPELIST=034ad,034ae,034af
 
 [ITEMDEF 034ad]
-//rock
+//small rock in water 1
 DUPEITEM=034ac
 
 [ITEMDEF 034ae]
-//rock
+//small rock in water 1
 DUPEITEM=034ac
 
 [ITEMDEF 034af]
-//rock
+//small rock in water 1
 DUPEITEM=034ac
 
 [ITEMDEF 034b0]
-//rocks
 TYPE=T_ROCK
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Small rock in water
-DESCRIPTION=@
+DESCRIPTION=@ 2
 DUPELIST=034b1,034b2,034b3,034b4
 
 [ITEMDEF 034b1]
-//rocks
+//small rock in water 2
 DUPEITEM=034b0
 
 [ITEMDEF 034b2]
-//rocks
+//small rock in water 2
 DUPEITEM=034b0
 
 [ITEMDEF 034b3]
-//rocks
+//small rock in water 2
 DUPEITEM=034b0
 
 [ITEMDEF 034b4]
-//rocks
+//small rock in water 2
 DUPEITEM=034b0
 
 [ITEMDEF 034b5]
-//whirlpool
-
+TYPE=t_water
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Whirlpool
 DESCRIPTION=@
@@ -2864,8 +4940,7 @@ DUPEITEM=034b5
 DUPEITEM=034b5
 
 [ITEMDEF 034b8]
-//water
-TYPE=T_WATER
+TYPE=t_water
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Water
 DESCRIPTION=@
@@ -2951,41 +5026,34 @@ DUPEITEM=034b8
 //ripples
 DUPEITEM=034b8
 
-[ITEMDEF 034d7]
-//dirt
 
 [ITEMDEF 034ed]
-// waterfall
 DEFNAME=i_waterfall_med
 TYPE=t_water
 HEIGHT=5
-DUPELIST=034ee,034ef,034f0,034f1,034f2,0350b,0350c,0350d,0350e,0350f,03510
-
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Waterfall
-DESCRIPTION=@
+DESCRIPTION=@ (med)
+DUPELIST=034ee,034ef,034f0,034f1,034f2,0350b,0350c,0350d,0350e,0350f,03510
 
 [ITEMDEF 034f9]
-// waterfall
 DEFNAME=i_waterfall_high
 TYPE=t_water
 HEIGHT=10
-DUPELIST=034f3,034f4,034f5,034f6,034f7,034f8,034fa,034fb,034fc,034fd,034fe,03511,03512,03513,03514,03515,03516,03517,03518,03519,0351a,0351b,0351c
-
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Waterfall
-DESCRIPTION=@
+DESCRIPTION=@ (high)
+DUPELIST=034f3,034f4,034f5,034f6,034f7,034f8,034fa,034fb,034fc,034fd,034fe,03511,03512,03513,03514,03515,03516,03517,03518,03519,0351a,0351b,0351c
 
 [ITEMDEF 034ff]
-// waterfall
 DEFNAME=i_waterfall_low
 TYPE=t_water
 HEIGHT=3
-DUPELIST=03500,03501,03502,03503,03504,03505,03506,03507,03508,03509,0350a,0351d,0351e,0351f,03520,03521,03522,03523,03524,03525,03526,03527,03528
-
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Waterfall
-DESCRIPTION=@
+DESCRIPTION=@ (low)
+DUPELIST=03500,03501,03502,03503,03504,03505,03506,03507,03508,03509,0350a,0351d,0351e,0351f,03520,03521,03522,03523,03524,03525,03526,03527,03528
+
 
 [ITEMDEF 034ee]
 //waterfall
@@ -3215,8 +5283,8 @@ DUPEITEM=034ff
 //waterfall
 DUPEITEM=034ff
 
+
 [ITEMDEF 0352d]
-//splash
 TYPE=T_WATER
 CATEGORY=Ground Tiles (animated)
 SUBSECTION=Water
@@ -3235,17 +5303,15 @@ DUPEITEM=0352d
 //splash
 DUPEITEM=0352d
 
+
 [ITEMDEF 03546]
-//lava
 
 [ITEMDEF 03547]
-//lava
-
+TYPE=t_lava
 CATEGORY=Ground Tiles
 SUBSECTION=Lava
 DESCRIPTION=@
 DUPELIST=03548,03549,0354a,0354b,0354c,0354d,0354e,0354f,03550,03551,03552,03553,03554,03555,03556,03557,03558,03559,0355a,0355b,0355c,0355d,0355e,0355f,03560,03561
-TYPE=t_lava
 
 [ITEMDEF 03548]
 //lava
@@ -3351,42 +5417,419 @@ DUPEITEM=03547
 //lava
 DUPEITEM=03547
 
-[ITEMDEF 035f6]
-//sand
 
-[ITEMDEF 035f7]
-//sand
+[ITEMDEF 039d4]
+DEFNAME=i_floor_tree
+NAME=tree floor
+CATEGORY=Ground Tiles
+SUBSECTION=tree Floor
+DESCRIPTION=Floor
+DUPELIST=039d5,039d6,039d7,039d8,039d9,039da,039db,039dc,039dd,039de,039df,039e0,039e1,039e2,039e3,039e4,039e5,03a1f,03a20,03a21,03a22,03a23,03a24,03a25,03a26,03a27,03a28,03a29,03a2a,03a2b,03a2c,03a2d,03a2e,03a2f,03a30,03a31,03a32,03a45,03a46,03a47,03a48,03a49,03a4a,03a4b,03a4c,03a4d,03a4e,03a4f,03a50,03a51,03a52,03a53,03a54
 
-[ITEMDEF 035f8]
-//sand
+[ITEMDEF 039d5]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035f9]
-//sand
+[ITEMDEF 039d6]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035fa]
-//sand
+[ITEMDEF 039d7]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035fb]
-//sand
+[ITEMDEF 039d8]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035fc]
-//sand
+[ITEMDEF 039d9]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035fd]
-//sand
+[ITEMDEF 039da]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035fe]
-//sand
+[ITEMDEF 039db]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 035ff]
-//sand
+[ITEMDEF 039dc]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 03600]
-//sand
+[ITEMDEF 039dd]
+//tree floor
+DUPEITEM=039d4
 
-[ITEMDEF 03601]
-//sand
+[ITEMDEF 039de]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039df]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e0]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e1]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e2]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e3]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e4]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 039e5]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a1f]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a20]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a21]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a22]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a23]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a24]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a25]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a26]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a27]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a28]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a29]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2a]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2b]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2c]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2d]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2e]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a2f]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a30]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a31]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a32]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a45]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a46]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a47]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a48]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a49]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4a]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4b]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4c]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4d]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4e]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a4f]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a50]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a51]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a52]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a53]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03a54]
+//tree floor
+DUPEITEM=039d4
+
+[ITEMDEF 03af0]
+//FIXME: what is this used for? Tree Canopy perhaps?
+//DEFNAME=i_floor_green
+NAME=floor
+CATEGORY=Ground Tiles
+SUBSECTION=Green Floor (foliage?)
+DESCRIPTION=Floor
+DUPELIST=03af1,03af2,03af3,03af4,03af5,03af6,03af7,03af8
+
+[ITEMDEF 03af1]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af2]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af3]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af4]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af5]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af6]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af7]
+//green floor
+DUPEITEM=03af0
+
+[ITEMDEF 03af8]
+//green floor
+DUPEITEM=03af0
 
 
+[ITEMDEF 03b16]
+DEFNAME=i_floor_darkness
+NAME=floor
+CATEGORY=Ground Tiles
+SUBSECTION=Black Floor
+DESCRIPTION=Floor
+DUPELIST=03b17,03b18,03b19,03b1a,03b1b,03b1c,03b1d,03b1e,03b1f,03b20,03b21,03b22,03b23,03b24,03b25,03b26
 
-[eof]
+[ITEMDEF 03b17]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b18]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b19]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1a]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1b]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1c]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1d]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1e]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b1f]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b20]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b21]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b22]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b23]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b24]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b25]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b26]
+//black floor
+DUPEITEM=03b16
+
+[ITEMDEF 03b27]
+DEFNAME=i_floor_black_partial
+NAME=floor
+CATEGORY=Ground Tiles
+SUBSECTION=Black Floor
+DESCRIPTION=Floor
+DUPELIST=03b28,03b29,03b2a,03b2b,03b2c,03b2d,03b2e,03b2f,03b30,03b31,03b32,03b33,03b34,03b35,03b36,03b37
+
+[ITEMDEF 03b28]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b29]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2a]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2b]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2c]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2d]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2e]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b2f]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b30]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b31]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b32]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b33]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b34]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b35]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b36]
+//partial black floor
+DUPEITEM=03b27
+
+[ITEMDEF 03b37]
+//partial black floor
+DUPEITEM=03b27
+
+
+[ITEMDEF 03d84]
+CATEGORY=Ground Tiles
+SUBSECTION=Black
+DESCRIPTION=Black Tile 03d84 (empty)
+
+
+//FIXME: 55f0-5678 water tiles
+[EOF]

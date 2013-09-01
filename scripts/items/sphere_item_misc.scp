@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Thursday, August 30, 2013
 //
 VERSION=0.56b
 
@@ -795,46 +795,10 @@ DUPEITEM=01b3f
 //treasure
 DUPEITEM=01b3f
 
-[ITEMDEF 01c12]
-DEFNAME=i_bell_of_courage
-RESOURCES=2 i_ingot_gold, 1 i_wire_gold, 1 i_gem_DIAMOND
-WEIGHT=5
-CATEGORY=Miscellaneous
-SUBSECTION=Virtue Items
-DESCRIPTION=Bell of Courage
+[ITEMDEF 01b6b]
+//treasure
+DUPEITEM=01b3f
 
-[ITEMDEF 01c13]
-DEFNAME=i_book_of_truth
-TYPE=T_BOOK
-RESOURCES=1 i_book_sm
-WEIGHT=5
-VALUE=500
-CATEGORY=Miscellaneous
-SUBSECTION=Virtue Items
-DESCRIPTION=Book of Truth
-
-ON=@Create
-	MORE1=b_sphere
-
-[ITEMDEF 01c14]
-// cannot be unlit.
-DEFNAME=i_candle_of_love
-TYPE=t_light_lit
-TDATA4=i_candle_of_love
-RESOURCES=i_CANDLE, I_INGOT_AGAPITE
-WEIGHT=5
-CATEGORY=Miscellaneous
-SUBSECTION=Virtue Items
-DESCRIPTION=Candle of Love
-DUPELIST=01c15,01c16
-
-[ITEMDEF 01c15]
-//Candle of Love
-DUPEITEM=01c14
-
-[ITEMDEF 01c16]
-//Candle of Love
-DUPEITEM=01c14
 
 [ITEMDEF 0379e]
 DEFNAME=i_fx_glow_arrow
@@ -943,7 +907,7 @@ ID=i_plant_grasses
 NAME=Herbs
 
 [ITEMDEF i_KNITTING_NEEDLES]
-ID=i_axel
+ID=i_axle
 VALUE=5
 WEIGHT=1
 NAME=Knitting Needles

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Thursday, August 30, 2013
 //
 VERSION=0.56b
 
@@ -914,16 +914,6 @@ CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Reagents - Pagan
 DESCRIPTION=Wyrms Heart
 
-[ITEMDEF 01cc7]
-DEFNAME=i_blood_tile
-TYPE=T_BLOOD
-//WEIGHT=.1
-VALUE=3
-CATEGORY=Decoration - Dungeons and The Dead
-SUBSECTION=Blood
-DESCRIPTION=@
-DUPELIST=01cc8,01cc9,01cca,01ccb,01ccc,01ccd,01cce,01ccf,01cd0,01cd1,01cd2,01cd3,01cd4,01cd5,01cd6,01cd7,01cd8,01cd9,01cda,01cdb,01cdc
-
 [ITEMDEF 01cdd]
 DEFNAME=i_flesh_arm_right
 TYPE=t_MEAT_RAW
@@ -1072,22 +1062,12 @@ CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Body Parts
 DESCRIPTION=Brain
 
-[ITEMDEF 01cf1]
-DEFNAME=i_blood_2
-VALUE=1
-TYPE=T_BLOOD
-weight=.1
-CATEGORY=Decoration - Dungeons and The Dead
-SUBSECTION=Blood
-DESCRIPTION=@
-DUPELIST=01cf2,01cf3,01cf4,01cf5,01cf6,01cf7,01cf8,01cf9,01cfa,01cfb,01cfc,01cfd,01cfe,01cff,01d00,01d01,01d02,01d03,01d04,01d05,01d06,01d07,01d08,01d09,01d0a,01d0b,01d0c,01d0d,01d0e,01d0f,01d10,01d11,01d12
-
 [ITEMDEF 01d9f]
 DEFNAME=i_flesh_torso
 VALUE=1
 TYPE=t_MEAT_RAW
 TDATA1=i_ribs_cooked
-RESOURCES=i_flesh_heart, 2 i_ribs_raw, i_flesh_liver, i_flesh_entrails, i_blood_2
+RESOURCES=i_flesh_heart, 2 i_ribs_raw, i_flesh_liver, i_flesh_entrails
 WEIGHT=20
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Body Parts
@@ -1098,7 +1078,7 @@ DUPELIST=01dad
 // smaller head.
 DEFNAME=i_flesh_head_2
 VALUE=1
-RESOURCES=i_bone_skull, i_bone_jaw, i_flesh_brain, i_blood_2
+RESOURCES=i_bone_skull, i_bone_jaw, i_flesh_brain
 WEIGHT=20
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Body Parts
@@ -1148,15 +1128,6 @@ CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Body Parts
 DESCRIPTION=Right leg
 DUPELIST=01db2
-
-[ITEMDEF 01dfd]
-DEFNAME=i_dirt
-VALUE=1
-WEIGHT=.1
-CATEGORY=Ground Tiles
-SUBSECTION=Dirt
-DESCRIPTION=@
-DUPELIST=01dfe,01dff,01e00
 
 [ITEMDEF 01e15]
 //raw fish, cut open facing NW
@@ -1382,15 +1353,6 @@ SUBSECTION=Tailor
 DESCRIPTION=Folded Cloth
 DUPELIST=0175e,0175f,01760,01761,01762,01763,01764,01765
 
-[ITEMDEF 01797]
-DEFNAME=i_water
-VALUE=2
-TYPE=t_water
-CATEGORY=Ground Tiles
-SUBSECTION=Water
-DESCRIPTION=@
-DUPELIST=01798,01799,0179a,0179b,0179c,0179d,0179e,0179f,017a0,017a1,017a2,017a3,017a4,017a5,017a6,017a7,017a8,017a9,017aa,017ab,017ac,017ad,017ae,017af,017b0,017b1,017b2
-
 [ITEMDEF 01ae0]
 DEFNAME=i_bone_skull
 TYPE=T_BONE
@@ -1469,15 +1431,6 @@ CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Leaves
 DUPELIST=01b20,01b21,01b22,01b23,01b24,01b25,01b26
-
-[ITEMDEF 01b27]
-DEFNAME=i_dirt_tile
-VALUE=2
-WEIGHT=1
-CATEGORY=Ground Tiles
-SUBSECTION=Dirt
-DESCRIPTION=@
-DUPELIST=01b28,01b29,01b2a,01b2b,01b2c,01b2d,01b2e,01b2f,01b30,01b31,01b32,01b33,01b34,01b35,01b36,01b37,01b38,01b39,01b3a,01b3b,01b3c,01b3d,01b3e
 
 [ITEMDEF 01b9b]
 DEFNAME=i_sticks

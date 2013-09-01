@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 15, 2013
+// FILE LAST UPDATED: Thursday, August 30, 2013
 //
 VERSION=0.56b
 
@@ -2845,89 +2845,15 @@ DUPEITEM=01c60
 //sarcophagus
 DUPEITEM=01c60
 
-[ITEMDEF 01cc8]
-//blood
-DUPEITEM=01cc7
 
-[ITEMDEF 01cc9]
-//blood
-DUPEITEM=01cc7
+[ITEMDEF 01cf1]
+DEFNAME=i_blood_2
+TYPE=T_BLOOD
+CATEGORY=Decoration - Dungeons and The Dead
+SUBSECTION=Blood Pentagram
+DESCRIPTION=@
+DUPELIST=01cf2,01cf3,01cf4,01cf5,01cf6,01cf7,01cf8,01cf9,01cfa,01cfb,01cfc,01cfd,01cfe,01cff,01d00,01d01,01d02,01d03,01d04,01d05,01d06,01d07,01d08,01d09,01d0a,01d0b,01d0c,01d0d,01d0e,01d0f,01d10,01d11,01d12
 
-[ITEMDEF 01cca]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01ccb]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01ccc]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01ccd]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cce]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01ccf]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd0]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd1]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd2]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd3]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd4]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd5]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd6]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd7]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd8]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cd9]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cda]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cdb]
-//blood
-DUPEITEM=01cc7
-
-[ITEMDEF 01cdc]
-//blood
-DUPEITEM=01cc7
 
 [ITEMDEF 01cf2]
 //blood

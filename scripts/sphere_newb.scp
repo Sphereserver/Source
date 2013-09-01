@@ -242,7 +242,7 @@ ITEMNEWBIE=random_potion
 
 [NEWBIE TINKERING]
 // Tinkering is best skill
-ITEMNEWBIE={ i_clock_frame 1 i_clock_parts 1 i_axel_and_gears 1 i_gears 1 i_hinge 1 i_sextant_parts 1 i_sticks 1 i_springs 1 i_tinker_tools 1 }
+ITEMNEWBIE={ i_clock_frame 1 i_clock_parts 1 i_axle_and_gears 1 i_gears 1 i_hinge 1 i_sextant_parts 1 i_sticks 1 i_springs 1 i_tinker_tools 1 }
 ITEMNEWBIE=i_tinker_tools
 ITEMNEWBIE=i_apron_half
 COLOR=colors_brown

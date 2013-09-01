@@ -1,0 +1,330 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, September 1, 2013
+//
+VERSION=0.56b
+
+
+[ITEMDEF 02d50]
+DEFNAME=i_spellbook_spellweaving
+NAME=spellweaving book
+TYPE=t_spellbook_arcanist
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Spellweaving Book
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0600
+   //MORE1=0ffff
+
+[ITEMDEF 02d51]
+DEFNAME=i_scroll_arcane_circle
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 0.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Arcane Circle
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_arcane_circle
+   //MOREY={50 80}
+
+[ITEMDEF 02d52]
+DEFNAME=i_scroll_gift_of_renewal
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 0.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Gift of Renewal
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_gift_of_renewal
+   //MOREY={50 80}
+
+[ITEMDEF 02d53]
+DEFNAME=i_scroll_immolating_weapon
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 10.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Immolating Weapon
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_immolating_weapon
+   //MOREY={50 80}
+
+[ITEMDEF 02d54]
+DEFNAME=i_scroll_attunement
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 0.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Attunement
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_attunement
+   //MOREY={50 80}
+
+[ITEMDEF 02d55]
+DEFNAME=i_scroll_thunderstorm
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 10.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Thunderstorm
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_thunderstorm
+   //MOREY={50 80}
+
+[ITEMDEF 02d56]
+DEFNAME=i_scroll_nature_fury
+NAME=nature's fury
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 0.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Nature's Fury
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_nature_fury
+   //MOREY={50 80}
+
+[ITEMDEF 02d57]
+DEFNAME=i_scroll_summon_fey
+NAME=summon fey
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 38.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Summon Fey
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_summon_fey
+   //MOREY={50 80}
+
+[ITEMDEF 02d58]
+DEFNAME=i_scroll_summon_fiend
+NAME=summon fiend
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 38.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Summon Fiend
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_summon_fiend
+   //MOREY={50 80}
+
+[ITEMDEF 02d59]
+DEFNAME=i_scroll_reaper_form
+NAME=reaper form
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 24.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Reaper Form
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_reaper_form
+   //MOREY={50 80}
+
+[ITEMDEF 02d5a]
+DEFNAME=i_scroll_wildfire
+NAME=wildfire
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 66.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Wildfire
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_wildfire
+   //MOREY={50 80}
+
+[ITEMDEF 02d5b]
+DEFNAME=i_scroll_essence_of_wind
+NAME=essence of wind
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 52.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Essence of Wind
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_essence_of_wind
+   //MOREY={50 80}
+
+[ITEMDEF 02d5c]
+DEFNAME=i_scroll_dryad_allure
+NAME=dryad allure
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 52.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Dryad Allure
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_dryad_allure
+   //MOREY={50 80}
+
+[ITEMDEF 02d5d]
+DEFNAME=i_scroll_ethereal_voyage
+NAME=ethereal voyage
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 24.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Ethereal Voyage
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_ethereal_voyage
+   //MOREY={50 80}
+
+[ITEMDEF 02d5e]
+DEFNAME=i_scroll_word_of_death
+NAME=word of death
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 80.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Word of Death
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_word_of_death
+   //MOREY={50 80}
+
+[ITEMDEF 02d5f]
+DEFNAME=i_scroll_gift_of_life
+NAME=gift of life
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 38.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Gift of Life
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_gift_of_life
+   //MOREY={50 80}
+
+[ITEMDEF 02d60]
+DEFNAME=i_scroll_arcane_empowerment
+NAME=arcane empowerment
+TYPE=t_scroll
+WEIGHT=0.1
+RESOURCES=1 i_scroll_blank
+//SKILLMAKE=Inscription 50.0,Spellweaving 24.0
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Scrolls - Spellweaving
+DESCRIPTION=Arcane Empowerment
+ON=@Create
+   ATTR=attr_magic
+   MOREX=s_arcane_empowerment
+   //MOREY={50 80}
+
+
+[ITEMDEF 0314c]
+DEFNAME=i_arcane_circle_2
+CATEGORY=Magic
+SUBSECTION=Spellweaving
+DESCRIPTION=Arcane Circle
+DUPELIST=0314d,0314e,0314f,03150,03151,03152,03153,03154
+
+[ITEMDEF 0314d]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 0314e]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 0314f]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 03150]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 03151]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 03152]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 03153]
+//arcane circle 2
+DUPEITEM=0314c
+
+[ITEMDEF 03154]
+//arcane circle 2
+DUPEITEM=0314c
+
+
+[ITEMDEF 03155]
+DEFNAME=i_arcane_focus
+NAME=arcane focus
+TYPE=t_normal
+WEIGHT=0.1
+CATEGORY=Magic
+SUBSECTION=Spellweaving
+DESCRIPTION=Arcane Focus
+ON=@Create
+   ATTR=attr_magic|attr_newbie|attr_move_never
+   TAG.CLILOC.NAME=1032629
+ON=@ClientToolTip
+   SRC.ADDCLILOC <TAG0.CLILOC.NAME>
+   SRC.ADDCLILOC 1060485,<dMORE1>
+   SRC.ADDCLILOC 1072517,<dTIMER>
+   RETURN 1
+ON=@Timer
+   CONT.SYSMESSAGELOC color_text,1072515,#<TAG0.CLILOC.NAME>
+   REMOVE
+   RETURN 1
+
+
+[EOF]

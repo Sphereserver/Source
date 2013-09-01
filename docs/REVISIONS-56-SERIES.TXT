@@ -64,3 +64,37 @@
 
 31-08-2013, Ben
 -Fixed #2193: Mounts will die instantly when killed while mounted.
+
+01-09-2013, RanXerox
+-Moved numerous ITEMDEFs
+-Added numerous ITEMDEFs
+-Changed some DEFNAMEs
+-Fixed some spelling errors
+-Affected files:
+  items/sphere_item_aos_se.scp
+  items/sphere_item_building_doors.scp
+  items/sphere_item_building_doors_sa.scp
+  items/sphere_item_building_floors.scp
+  items/sphere_item_building_floors_sa.scp
+  items/sphere_item_building_floors_se.scp
+  items/sphere_item_building_roofs.scp
+  items/sphere_item_deco_dungeons_traps_dead.scp
+  items/sphere_item_deco_misc.scp
+  items/sphere_item_deco_virtues.scp
+  items/sphere_item_ground_tiles.scp
+  items/sphere_item_magic_ninjitsu_bushido.scp
+  items/sphere_item_magic_spellweaving.scp
+  items/sphere_item_misc.scp
+  items/sphere_item_ml_floor_wall.scp
+  items/sphere_item_profession.scp
+  items/sphere_item_provisions_weapons.scp
+  items/sphere_item_resources.scp
+  items/sphere_item_unsorted.scp
+  npcs/spherechar.scp
+  npcs/spherechar_mondains_legacy.scp
+  npcs/spherechar_sa.scp
+  sphere_backward_compatibility.scp
+  sphere_menu.scp
+  sphere_newb.scp
+  sphere_skillmenu.scp
+  sphere_template_vend.scp

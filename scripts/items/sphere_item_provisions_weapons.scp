@@ -226,7 +226,7 @@ DUPEITEM=0e89
 [ITEMDEF 0e8b]
 //cannon
 DEFNAME=i_cannon_full
-RESOURCES=100 i_ingot_iron, 20 I_BOARD, 1 I_AXEL
+RESOURCES=100 i_ingot_iron,20 i_board,1 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Cannon (01/03)(S)

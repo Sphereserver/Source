@@ -39,6 +39,20 @@ snd_centaur       snd_monster_centaur
 snd_kirin         snd_animal_kirin
 snd_hiryu         snd_animal_hiryu
 i_door_portculis  i_door_portcullis
+i_axel_and_gears  i_axle_and_gears
+i_axel            i_axle
+i_sa_door_ws1     i_door_ws1
+i_sa_door_ws2     i_door_ws2
+i_sa_door_ws3     i_door_ws3
+i_sa_door_gd      i_door_gargoyle
+i_sa_door_barred  i_door_barred_2
+i_sa_door_qdh     i_door_queen_huge
+i_sa_door_qd      i_door_queen
+i_sa_door_m1      i_door_m1
+i_sa_door_m2      i_door_m2
+i_sa_door_m3      i_door_m3
+i_sa_door_m4      i_door_m4
+i_sa_door_rd      i_door_ruined
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

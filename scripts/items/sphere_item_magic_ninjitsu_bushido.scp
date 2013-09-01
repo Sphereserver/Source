@@ -1,0 +1,161 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Saturday, September 1, 2013
+//
+VERSION=0.56b
+
+
+[ITEMDEF 0238c]
+DEFNAME=i_spellbook_bushido
+TYPE=t_spellbook_bushido
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Bushido Spellbook
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0400
+   MORE1=03f
+
+[ITEMDEF 0238d]
+DEFNAME=i_rune_honorable_execution
+NAME=honorable execution
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Honorable Execution
+
+[ITEMDEF 0238e]
+DEFNAME=i_rune_confidence
+NAME=confidence
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Confidence
+
+[ITEMDEF 0238f]
+DEFNAME=i_rune_evasion
+NAME=evasion
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Evasion
+
+[ITEMDEF 02390]
+DEFNAME=i_rune_counter_attack
+NAME=counter attack
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Counter Attack
+
+[ITEMDEF 02391]
+DEFNAME=i_rune_lightning_strike
+NAME=lightening strike
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Lightening Strike
+
+[ITEMDEF 02392]
+DEFNAME=i_rune_momentum_strike
+NAME=momentum strike
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Bushido
+DESCRIPTION=Momentum Strike
+
+
+[ITEMDEF 023a0]
+DEFNAME=i_spellbook_ninjitsu
+TYPE=t_spellbook_ninjitsu
+LAYER=layer_hand1
+VALUE=488
+WEIGHT=1.0
+RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
+SKILLMAKE=Inscription 45.0,i_pen_and_ink
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Books
+DESCRIPTION=Ninjitsu Spellbook
+ON=@Create
+   ATTR=attr_magic|attr_newbie
+   MOREZ=0500
+   MORE1=0ff
+
+[ITEMDEF 023a1]
+DEFNAME=i_rune_focus_attack
+NAME=focus attack
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Focus Attack
+
+[ITEMDEF 023a2]
+DEFNAME=i_rune_death_strike
+NAME=death strike
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Death Strike
+
+[ITEMDEF 023a3]
+DEFNAME=i_rune_animal_form
+NAME=animal form
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Animal Form
+
+[ITEMDEF 023a4]
+DEFNAME=i_rune_ki_attack
+NAME=ki attack
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Ki Attack
+
+[ITEMDEF 023a5]
+DEFNAME=i_rune_suprise_attack
+NAME=suprise attack
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Suprise Attack
+
+[ITEMDEF 023a6]
+DEFNAME=i_rune_backstab
+NAME=backstab
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Backstab
+
+[ITEMDEF 023a7]
+DEFNAME=i_rune_shadowjump
+NAME=shadow jump
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Shadow Jump
+
+[ITEMDEF 023a8]
+DEFNAME=i_rune_mirror_image
+NAME=mirror image
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Ninjitsu
+DESCRIPTION=Mirror Image
+
+
+[EOF]

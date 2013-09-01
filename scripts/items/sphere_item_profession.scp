@@ -1089,7 +1089,7 @@ SKILLMAKE=TINKERING 30.5,t_tinker_tools
 DUPEITEM=0104f
 
 [ITEMDEF 01051]
-DEFNAME=i_axel_and_gears
+DEFNAME=i_axle_and_gears
 RESOURCES=2 i_log
 WEIGHT=1
 CATEGORY=Items by Professions
@@ -1161,7 +1161,7 @@ SKILLMAKE=TINKERING 31.0,t_tinker_tools
 DUPEITEM=01059
 
 [ITEMDEF 0105b]
-DEFNAME=i_axel
+DEFNAME=i_axle
 RESOURCES=1 i_ingot_iron
 WEIGHT=1
 CATEGORY=Items by Professions

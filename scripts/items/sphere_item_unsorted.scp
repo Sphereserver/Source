@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Thursday, August 30, 2013
 //
 VERSION=0.56b
 
@@ -23,89 +23,6 @@ DEFNAME=i_NODRAW
 CATEGORY=Miscellaneous
 SUBSECTION=Bad Tiles
 DESCRIPTION=No Draw Tile
-
-[ITEMDEF 040b]
-//unused
-CATEGORY=Ground Tiles
-SUBSECTION=Unlabelled tile
-DESCRIPTION=@
-DUPELIST=040c,040d,040e,040f,0410,0411,0412,0413,0414,0415,0416,0417,0418,0419,041a,041b,041c,041d,041e
-
-[ITEMDEF 040c]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 040d]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 040e]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 040f]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0410]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0411]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0412]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0413]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0414]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0415]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0416]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0417]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0418]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 0419]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 041a]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 041b]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 041c]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 041d]
-//unused
-DUPEITEM=040b
-
-[ITEMDEF 041e]
-//unused
-DUPEITEM=040b
 
 [ITEMDEF 09b2]
 DEFNAME=i_bankbox
@@ -383,25 +300,6 @@ DUPEITEM=0206a
 [ITEMDEF 020da]
 DUPEITEM=02131
 
-[ITEMDEF 0213f]
-// stars
-NAME=stars
-DUPELIST=02140,02141,02142,02143,02144
-
-[ITEMDEF 02140]
-DUPEITEM=0213f
-
-[ITEMDEF 02141]
-DUPEITEM=0213f
-
-[ITEMDEF 02142]
-DUPEITEM=0213f
-
-[ITEMDEF 02143]
-DUPEITEM=0213f
-
-[ITEMDEF 02144]
-DUPEITEM=0213f
 
 [ITEMDEF 02198]
 //nodraw

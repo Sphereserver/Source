@@ -1923,8 +1923,8 @@ ON=i_clock_frame Clock Frame
 ADD i_clock_frame
 ON=i_clock Clock
 ADD i_clock
-ON=i_axel Axle
-ADD i_axel
+ON=i_axle Axle
+ADD i_axle
 ON=i_gears Gears
 ADD i_gears
 ON=i_hinge Hinge
@@ -1933,8 +1933,8 @@ ON=i_sextant Sextant
 ADD i_sextant
 ON=i_sextant_parts Sextant Parts
 ADD i_sextant_parts
-ON=i_axel_and_gears Axle with Gears
-ADD i_axel_and_gears
+ON=i_axle_and_gears Axle with Gears
+ADD i_axle_and_gears
 ON=i_springs Springs
 ADD i_springs
 

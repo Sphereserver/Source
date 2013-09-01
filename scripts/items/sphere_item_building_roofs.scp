@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Thursday, August 20, 2013
 //
 VERSION=0.56b
 
@@ -125,10 +125,6 @@ DUPEITEM=0554
 [ITEMDEF 0569]
 //stone roof
 DUPEITEM=0554
-
-[ITEMDEF 056a]
-//cave floor
-DUPEITEM=0540
 
 [ITEMDEF 056b]
 //stone roof

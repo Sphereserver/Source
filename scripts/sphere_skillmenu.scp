@@ -3020,8 +3020,8 @@ MAKEITEM=i_bracelet_silver
 [SKILLMENU sm_wood_stuff]
 Wooden Items
 
-ON=i_axel <name> (<resmake>)
-MAKEITEM=i_axel
+ON=i_axle <name> (<resmake>)
+MAKEITEM=i_axle
 
 ON=i_clock_frame <name> (<resmake>)
 MAKEITEM=i_clock_frame
