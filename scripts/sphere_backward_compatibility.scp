@@ -53,6 +53,8 @@ i_sa_door_m2      i_door_m2
 i_sa_door_m3      i_door_m3
 i_sa_door_m4      i_door_m4
 i_sa_door_rd      i_door_ruined
+i_reag_volcanic_ash  i_reag_grave_dust
+i_reag_serpent_scale i_reag_nox_crystal
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

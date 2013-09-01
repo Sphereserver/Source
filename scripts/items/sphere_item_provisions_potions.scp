@@ -734,7 +734,7 @@ ID=i_bottle_RED
 NAME=Lava Bomb
 TYPE=T_POTION
 TDATA1=0
-RESOURCES=i_reag_volcanic_ash 6, i_bottle_EMPTY
+RESOURCES=i_reag_grave_dust 6, i_bottle_EMPTY
 SKILLMAKE=ALCHEMY 95.1
 
 ON=@Create

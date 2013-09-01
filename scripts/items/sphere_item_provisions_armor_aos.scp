@@ -10,15 +10,6 @@
 // By Blizzard
 VERSION=0.56b
 
-[ITEMDEF i_reag_dragon_scale]
-DEFNAME=i_reag_dragon_scale
-ID=i_reag_serpent_scale
-NAME=Dragon Scale%s
-TYPE=t_reagent
-
-ON=@CREATE
-	COLOR=043
-
 [ITEMDEF 025e4]
 DEFNAME=i_armor_female_shorts_spiked
 NAME=Spiked Shorts
@@ -83,7 +74,7 @@ TYPE=t_armor
 ARMOR=
 REQSTR=
 SKILLMAKE=BLACKSMITHING 85.0
-RESOURCES=36 i_reag_dragon_scale
+RESOURCES=36 i_dragonscale
 DUPELIST=02642
 
 ON=@CREATE
@@ -103,7 +94,7 @@ TYPE=t_armor
 ARMOR=
 REQSTR=
 SKILLMAKE=BLACKSMITHING 68.9
-RESOURCES=16 i_reag_dragon_scale
+RESOURCES=16 i_dragonscale
 DUPELIST=02644
 
 ON=@CREATE
@@ -123,7 +114,7 @@ TYPE=t_armor
 ARMOR=
 REQSTR=
 SKILLMAKE=BLACKSMITHING 72.6
-RESOURCES=20 i_reag_dragon_scale
+RESOURCES=20 i_dragonscale
 DUPELIST=02646
 
 ON=@CREATE
@@ -143,7 +134,7 @@ TYPE=t_armor
 ARMOR=
 REQSTR=
 SKILLMAKE=BLACKSMITHING 78.8
-RESOURCES=28 i_reag_dragon_scale
+RESOURCES=28 i_dragonscale
 DUPELIST=02648
 
 ON=@CREATE
@@ -163,7 +154,7 @@ TYPE=t_armor
 ARMOR=
 REQSTR=
 SKILLMAKE=BLACKSMITHING 76.3
-RESOURCES=24 i_reag_dragon_scale
+RESOURCES=24 i_dragonscale
 DUPELIST=02658
 
 ON=@CREATE

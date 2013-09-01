@@ -870,26 +870,26 @@ SUBSECTION=Reagents - Normal
 DESCRIPTION=Spiders Silk
 
 [ITEMDEF 0f8e]
-//Serpent's Scales
-DEFNAME=i_reag_serpent_scale
+//Formerly known as Serpent's Scales
+DEFNAME=i_reag_nox_crystal
 TYPE=T_REAGENT
 VALUE=3
 PILE=1
 WEIGHT=.1
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Reagents - Pagan
-DESCRIPTION=Serpent's Scales
+DESCRIPTION=Nox Crystal
 
 [ITEMDEF 0f8f]
-//Volcanic Ash
-DEFNAME=i_reag_volcanic_ash
+//Formerly known as Volcanic Ash
+DEFNAME=i_reag_grave_dust
 TYPE=T_REAGENT
 VALUE=3
 PILE=1
 WEIGHT=.1
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Reagents - Pagan
-DESCRIPTION=Volcanic Ash
+DESCRIPTION=Grave Dust
 
 [ITEMDEF 0f90]
 //Dead Wood
@@ -1517,6 +1517,40 @@ VALUE=1
 
 ON=@Create
 	COLOR=colors_yellow
+
+
+[ITEMDEF 026b1]
+DEFNAME=i_dragonscale
+NAME=dragon scale%s
+TYPE=t_normal
+VALUE=17
+WEIGHT=0.7
+CATEGORY=Resources
+SUBSECTION=Animal
+DESCRIPTION=Dragon Scales
+
+[ITEMDEF 026b2]
+//Dragon Scales
+DUPEITEM=026b1
+
+[ITEMDEF 026b3]
+//Dragon Scales
+DUPEITEM=026b1
+
+[ITEMDEF 026b4]
+//Dragon Scales
+DUPEITEM=026b1
+
+[ITEMDEF 026b5]
+//Dragon Scales
+DUPEITEM=026b1
+
+[ITEMDEF 026b6]
+//Dragon Scales
+DUPEITEM=026b1
+
+
+
 
 [ITEMDEF I_CLAY]
 ID=I_ROCK_2

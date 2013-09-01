@@ -793,29 +793,6 @@ DUPELIST=0232d
 [itemdef 0232d]
 DUPEITEM=0232c
 
-[itemdef 026b1]
-TYPE=t_normal
-RESOURCES=100 i_log
-CATEGORY=Decoration - Miscellaneous
-SUBSECTION=Scales
-DESCRIPTION=@
-DUPELIST=026b2,026b3,026b4,026b5,026b6
-
-[itemdef 026b2]
-DUPEITEM=026b1
-
-[itemdef 026b3]
-DUPEITEM=026b1
-
-[itemdef 026b4]
-DUPEITEM=026b1
-
-[itemdef 026b5]
-DUPEITEM=026b1
-
-[itemdef 026b6]
-DUPEITEM=026b1
-
 [itemdef 0241c]
 TYPE=t_normal
 RESOURCES=100 i_log
