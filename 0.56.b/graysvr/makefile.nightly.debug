@@ -8,6 +8,7 @@ OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 #OPT	= -O2 $(OPTDEFAULT)
 #WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof
 WARN	= -w
+VERBOSE = -v
 #DEBUG	= -ggdb2
 DEBUG	= -s
 
@@ -153,7 +154,7 @@ SRC	:= 	CAccount.cpp \
 		../network/send.cpp \
 		../network/receive.cpp
 
-O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
+O_FLAGS	= $(VERBOSE) $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 
 
