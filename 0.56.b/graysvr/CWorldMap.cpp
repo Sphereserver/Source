@@ -136,7 +136,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 		if ( IsTrigUsed(TRIGGER_RESOURCEFOUND) )
 			tRet = pOreDef->OnTrigger("@ResourceFound", pCharSrc, &Args);
 
-		if (tRet = TRIGRET_RET_TRUE)
+		if (tRet == TRIGRET_RET_TRUE)
 		{
 			if ( pResBit->IsDisconnected() )
 				return NULL;
