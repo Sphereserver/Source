@@ -3690,32 +3690,27 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	}
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+
 	TemporaryString sCharTrigName;
 	sprintf(sCharTrigName, "@char%s", pszTrigName+1);
+
+	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 
 	EXC_TRY("Trigger");
 
 	// 1) Triggers installed on characters, sensitive to actions on all chars
-	if ( IsTrigUsed(sCharTrigName) )
+	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
 	{
 		CChar * pChar = pSrc->GetChar();
 		if ( pChar != NULL && this != pChar )
 		{
 			EXC_SET("chardef");
-			// Is there an [EVENT] block call here?
-
-			int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-			//DEBUG_ERR(("sCharTrigName %s  sCharTrigName len %d  iCharAction %d\n",sCharTrigName,strlen(sCharTrigName),iCharAction));
-
-			if ( iCharAction > XTRIG_UNKNOWN && iCharAction < CTRIG_Click )
-			{
-				CGrayUID uidOldAct = pChar->m_Act_Targ;
-				pChar->m_Act_Targ = GetUID();
-				iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>(iCharAction), pSrc, pArgs );
-				pChar->m_Act_Targ = uidOldAct;
-				if ( iRet == TRIGRET_RET_TRUE )
-					return iRet;	// Block further action.
-			}
+			CGrayUID uidOldAct = pChar->m_Act_Targ;
+			pChar->m_Act_Targ = GetUID();
+			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs );
+			pChar->m_Act_Targ = uidOldAct;
+			if ( iRet == TRIGRET_RET_TRUE )
+				return iRet;	// Block further action.
 		}
 	}
 

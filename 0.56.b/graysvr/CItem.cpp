@@ -2777,7 +2777,6 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
 
-	ASSERT( iAction < ITRIG_QTY );
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	// Is there trigger code in the script file ?
@@ -2790,22 +2789,23 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	ASSERT(pItemDef);
 	CChar * pChar = pSrc->GetChar();
 
+	TemporaryString sCharTrigName;
+	sprintf(sCharTrigName, "@item%s", pszTrigName+1);
+
+	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+
 	// 1) Triggers installed on character, sensitive to actions on all items
-	if ( IsTrigUsed(CChar::sm_szTrigName[(CTRIG_itemAfterClick - 1) + iAction]) )
+	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
-			// Is there an [EVENT] block call here?
-			if ( iAction > XTRIG_UNKNOWN )
-			{
-				CGrayUID uidOldAct = pChar->m_Act_Targ;
-				pChar->m_Act_Targ = GetUID();
-				iRet = pChar->OnTrigger(static_cast<CTRIG_TYPE>((CTRIG_itemAfterClick - 1) + iAction ),  pSrc, pArgs );
-				pChar->m_Act_Targ = uidOldAct;
-				if ( iRet == TRIGRET_RET_TRUE )
-					return iRet;	// Block further action.
-			}
+			CGrayUID uidOldAct = pChar->m_Act_Targ;
+			pChar->m_Act_Targ = GetUID();
+			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			pChar->m_Act_Targ = uidOldAct;
+			if ( iRet == TRIGRET_RET_TRUE )
+				return iRet;	// Block further action.
 		}
 	}
 

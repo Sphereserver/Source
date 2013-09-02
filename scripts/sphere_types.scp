@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: 02-Sept-2013
 //****************************************************************************
 // This script associates terrain tiles with item types. You MUST have a script 
 // like this in your server as of SphereServer 55R3rc2. Failure to do so will 
@@ -17,7 +17,6 @@
 // sure TYPEDEFs don't remain associated with TERRAIN ids after you remove them 
 // from a script in a resync.
 //****************************************************************************
-// t_jungle & t_forest added by Mordaunt 11/3/12
 
 VERSION=0.56b
 
@@ -26,6 +25,8 @@ TERRAIN = 0a8	0ab
 TERRAIN = 0136	0137
 TERRAIN = 064
 TERRAIN = 03ff0 03ff3
+TERRAIN = 04e
+TERRAIN = 052
 
 [TYPEDEF t_rock]
 TERRAIN = 0e1
