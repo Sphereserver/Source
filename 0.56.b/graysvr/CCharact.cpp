@@ -2540,7 +2540,7 @@ bool CChar::Death()
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )
 			{
-				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) != TRIGRET_RET_TRUE )
+				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
 					continue;
 			}
 
