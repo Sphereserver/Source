@@ -106,3 +106,7 @@
 
 03-09-2013, Ben
 -Fixed #2201: @itemXXX triggers not all working.
+
+04-09-2013, RanXerox
+-Fixed a bug in @kill trigger where, if enabled, a killer would not get credit
+ (karma, fame, experience) for the kill.
