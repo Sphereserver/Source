@@ -2792,7 +2792,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	TemporaryString sCharTrigName;
 	sprintf(sCharTrigName, "@item%s", pszTrigName+1);
 
-	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
 
 	// 1) Triggers installed on character, sensitive to actions on all items
 	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))

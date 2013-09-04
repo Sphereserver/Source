@@ -103,3 +103,6 @@
 -Added: 04e and 052 tiles to t_water in sphere_types.scp
 -Fixed #2200: Custom trigger not working with new automated trigger detection 
 -Fixed #2199: Resource gembits being set to 0 everytime.
+
+03-09-2013, Ben
+-Fixed #2201: @itemXXX triggers not all working.

@@ -519,9 +519,7 @@ void CChar::Noto_Fame( int iFameChange )
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
 		else if ( retType != TRIGRET_RET_DEFAULT )
-		{
 			iFameChange = Args.m_iN1;
-		}
 	}
 
 	if ( ! iFameChange )
@@ -562,9 +560,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
 		else if ( retType != TRIGRET_RET_DEFAULT )
-		{
 			iKarmaChange = Args.m_iN1;
-		}
 	}
 
 	if ( ! iKarmaChange )
@@ -656,11 +652,14 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 			if ( IsTrigUsed(TRIGGER_MURDERMARK) )
 			{
 				OnTrigger(CTRIG_MurderMark, this, &args);
-				if ( args.m_iN1 < 0 ) args.m_iN1 = 0;
+				if ( args.m_iN1 < 0 )
+					args.m_iN1 = 0;
 			}
 
 			m_pPlayer->m_wMurders = args.m_iN1;
-			if ( args.m_iN2 ) Noto_Criminal();
+			if ( args.m_iN2 ) 
+				Noto_Criminal();
+
 			Noto_Murder();
 		}
 	}
