@@ -930,6 +930,7 @@ public:
 	int		m_iColorNotoGood;
 	int		m_iColorNotoGuildSame;
 	int		m_iColorNotoGuildWar;
+	int		m_iColorNotoInvul;
 	int		m_iColorNotoNeutral;
 
 	// notoriety inheritance

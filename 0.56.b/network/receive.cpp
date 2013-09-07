@@ -2168,9 +2168,12 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 
 	// sanity check
 	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(static_cast<int>(context));
-	if (itGumpFound == client->m_mapOpenedGumps.end() || (*itGumpFound).second <= 0)
+	if ((itGumpFound == client->m_mapOpenedGumps.end()) || ((*itGumpFound).second <= 0))
 		return true;
-	(*itGumpFound).second--;
+	//(*itGumpFound).second--;
+	if ((itGumpFound != client->m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0 ))
+		client->m_mapOpenedGumps.erase(itGumpFound);
+
 
 	// package up the gump response info.
 	CDialogResponseArgs resp;

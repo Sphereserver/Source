@@ -213,6 +213,7 @@ CResource::CResource()
 	m_iColorNotoGood = 0x0063;			// blue
 	m_iColorNotoGuildSame = 0x0044;		// green
 	m_iColorNotoGuildWar = 0x002b;		// orange (enemy guild)
+	m_iColorNotoInvul = 0x0035;			// yellow
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 
 	m_iPetsInheritNotoriety = 0;
@@ -385,6 +386,7 @@ enum RC_TYPE
 	RC_COLORNOTOGOOD,		// m_iColorNotoGood
 	RC_COLORNOTOGUILDSAME,	// m_iColorNotoGuildSame
 	RC_COLORNOTOGUILDWAR,	// m_iColorNotoGuildWar
+	RC_COLORNOTOINVUL,		// m_iColorNotoInvul
 	RC_COLORNOTONEUTRAL,	// m_iColorNotoNeutral
 	RC_COMBATFLAGS,			// m_iCombatFlags
 	RC_COMMANDLOG,
@@ -603,6 +605,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTOGOOD",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGood),		0 }},
 	{ "COLORNOTOGUILDSAME",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildSame),	0 }},
 	{ "COLORNOTOGUILDWAR",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildWar),	0 }},
+	{ "COLORNOTOINVUL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoInvul),		0 }},
 	{ "COLORNOTONEUTRAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},

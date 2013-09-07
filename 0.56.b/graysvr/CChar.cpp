@@ -2011,6 +2011,8 @@ do_default:
 				CGrayUID uid = Exp_GetVal( pszKey );
 				SKIP_ARGSEP( pszKey );
 				bool fAllowIncog = ( Exp_GetVal( pszKey ) >= 1 );
+				SKIP_ARGSEP( pszKey );
+				bool fAllowInvul = ( Exp_GetVal( pszKey ) >= 1 );
 				CChar * pChar;
 
 				if ( ! uid.IsValidUID() )
@@ -2021,7 +2023,7 @@ do_default:
 					if ( ! pChar )
 						pChar = pCharSrc;
 				}
-				sVal.FormatVal( Noto_GetFlag( pChar, fAllowIncog ) );
+				sVal.FormatVal( Noto_GetFlag( pChar, fAllowIncog, fAllowInvul ) );
 			}
 			break;
 		case CHC_NPC:

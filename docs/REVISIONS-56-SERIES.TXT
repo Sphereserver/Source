@@ -110,3 +110,7 @@
 04-09-2013, RanXerox
 -Fixed a bug in @kill trigger where, if enabled, a killer would not get credit
  (karma, fame, experience) for the kill.
+
+07-09-2013, Ben
+-Added #1805: ColorNotoInvul with default value of 0x35 and NotoInvul 0x40 flag for PetsInheritNotoriety.
+-Fixed #2186: Dialoglist not being updated when closing dialogs.

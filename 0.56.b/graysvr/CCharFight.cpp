@@ -224,7 +224,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 				{
 					// return master's notoriety
 					++sm_iReentrant;
-					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, false, false);
+					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, fAllowIncog, fAllowInvul);
 					--sm_iReentrant;
 
 					// check if notoriety is inheritable based on bitmask setting:
@@ -234,6 +234,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 					//		NOTO_CRIMINAL	= 0x08
 					//		NOTO_GUILD_WAR	= 0x10
 					//		NOTO_EVIL		= 0x20
+					//		NOTO_INVUL		= 0x40
 					int iNotoFlag = 1 << (notoMaster - 1);
 					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlag) == iNotoFlag )
 						return notoMaster;
@@ -344,19 +345,18 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	if ( sVal )
 		return  sVal->GetValNum();
 
-	switch ( Noto_GetFlag( pCharViewer, fIncog ))
+	switch ( Noto_GetFlag( pCharViewer, fIncog, true ))
 	{
 		case NOTO_GOOD:			return g_Cfg.m_iColorNotoGood;		// Blue
 		case NOTO_GUILD_SAME:	return g_Cfg.m_iColorNotoGuildSame; // Green (same guild)
 		case NOTO_NEUTRAL:		return g_Cfg.m_iColorNotoNeutral;	// Grey 1 (someone that can be attacked)
 		case NOTO_CRIMINAL:		return g_Cfg.m_iColorNotoCriminal;	// Grey 2 (criminal)
 		case NOTO_GUILD_WAR:	return g_Cfg.m_iColorNotoGuildWar;	// Orange (enemy guild)
+		case NOTO_INVUL:		return g_Cfg.m_iColorNotoInvul;		// Yellow
 		case NOTO_EVIL:			return g_Cfg.m_iColorNotoEvil;		// Red
 		default:				return g_Cfg.m_iColorNotoDefault;	// Grey
 	}
 }
-
-
 
 LPCTSTR CChar::Noto_GetFameTitle() const
 {
