@@ -218,21 +218,47 @@ ON=17
 	TRYP 4 INPDLG=SPEECH 20
 
 ON=18
-	IF (<ACTION>==-1)
-		SRC.MESSAGE @50 Doing nothing.
-	elif ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_SPELLWEAVING))
-		SRC.MESSAGE @50 Using the skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
-	elif <ACTION>==064
-		SRC.MESSAGE @50 Npc following someone.
-	elif <ACTION>==065
-		SRC.MESSAGE @50 Npc standing.
-	elif <ACTION>==066
-		SRC.MESSAGE @50 Npc going somewhere.
-	elif <ACTION>==067
-		SRC.MESSAGE @50 Npc wandering.
-	ELSE
-		SRC.MESSAGE @50 Action not in this menu.
-	endif
+   IF (<ACTION>==-1)
+      SRC.MESSAGE @50 Doing nothing.
+   ELIF ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_SPELLWEAVING)) //1~54
+      SRC.MESSAGE @50 Using the skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
+   ELIF (<ACTION>==064) //100
+      SRC.MESSAGE @50 Npc following someone.
+   ELIF (<ACTION>==065) //101
+      SRC.MESSAGE @50 Npc standing.
+   ELIF (<ACTION>==066) //102
+      SRC.MESSAGE @50 Npc going somewhere (x,y). Pet command
+   ELIF (<ACTION>==067) //103
+      SRC.MESSAGE @50 Npc wandering.
+   ELIF (<ACTION>==068) //104
+      SRC.MESSAGE @50 Npc looking around intently.
+   ELIF (<ACTION>==069) //105
+      SRC.MESSAGE @50 Npc running away from target.
+   ELIF (<ACTION>==06a) //106
+      SRC.MESSAGE @50 Npc talking to target.
+   ELIF (<ACTION>==06b) //107
+      SRC.MESSAGE @50 Npc following target.
+   ELIF (<ACTION>==06c) //108
+      SRC.MESSAGE @50 Npc guarding a target object.
+   ELIF (<ACTION>==06d) //109
+      SRC.MESSAGE @50 Npc going home.
+   ELIF (<ACTION>==06e) //110
+      SRC.MESSAGE @50 Npc using breath weapon on target.
+   ELIF (<ACTION>==06f) //111
+      SRC.MESSAGE @50 Npc being ridden or shrunk as figurine.
+   ELIF (<ACTION>==070) //112
+      SRC.MESSAGE @50 Npc looting a target corpse.
+   ELIF (<ACTION>==071) //113
+      SRC.MESSAGE @50 Npc throwing a stone at target.
+   ELIF (<ACTION>==072) //114
+      SRC.MESSAGE @50 Npc using as a training dummy, or teaching sth. etc.
+   ELIF (<ACTION>==073) //115
+      SRC.MESSAGE @50 Npc snoozing a little bit, but not sleeping.
+   ELIF (<ACTION>==074) //116
+      SRC.MESSAGE @50 Npc searching for food.
+   ELSE
+      SRC.MESSAGE @50 Action not in this menu.
+   ENDIF
 
 [DIALOG d_CHARPROP2]
 70, 70
