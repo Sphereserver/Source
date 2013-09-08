@@ -284,8 +284,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	DIR_TYPE dirTmp;
 	for ( int i = -3; i < 3; ++i )
 	{
-		if (i == 0) // We don't need to check forwards
-			continue;
+		//if (i == 0) // We don't need to check forwards <--- apparently we do!
+		//	continue;
 
 		dirTmp = GetDirTurn(static_cast<DIR_TYPE>(m_itShip.m_DirFace), i);
 		ptTmp = rect.GetRectCorner(dirTmp);
@@ -293,7 +293,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 		// If the ship already overlaps a point then we must
 		// already be allowed there.
-		if( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) )
+		if((! ptTmp.IsValidPoint()) || ( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ))
 		{
 			CItem *pTiller = Multi_GetSign();
 			ASSERT(pTiller);
@@ -425,7 +425,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 		// Check that we aren't sailing off the edge of the world
 		ptFore.Move(dir);
 		ptFore.m_z = GetTopZ();
-		if ( ! ptFore.IsValidPoint() || ( ptFore.m_x < UO_SIZE_X_REAL && ptFore.m_x >= UO_SIZE_X_REAL && ( ptFore.m_map <= 1 )))
+		if ( ! ptFore.IsValidPoint() || (ptFore.m_x >= UO_SIZE_X_REAL && ( ptFore.m_map <= 1 )))
 		{
 			// Circle the globe
 			// Fall off edge of world ?

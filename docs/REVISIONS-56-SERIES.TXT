@@ -118,3 +118,7 @@
 08-09-2013, RanXerox
 -Fixed #2203: Added missing Action values to sphere_dialog.scp
 -Fixed #2204: Cooking and Crafting skills now behave like proper crafting skills
+
+08-09-2013, Ben
+-Fixed #2191: Turning at the map edge with boats will not trow a console error.
+-Fixed #2192: Should not be able to turn on another boat.
