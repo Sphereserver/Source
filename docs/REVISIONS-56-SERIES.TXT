@@ -117,4 +117,4 @@
 
 08-09-2013, RanXerox
 -Fixed #2203: Added missing Action values to sphere_dialog.scp
--Fixed #2203: Added missing Action values to sphere_dialog.scp
+-Fixed #2204: Cooking and Crafting skills now behave like proper crafting skills
