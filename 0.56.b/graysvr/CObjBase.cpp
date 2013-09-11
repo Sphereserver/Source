@@ -392,6 +392,13 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
 		// Move to the right or left?
 		CPointBase pTest = pt;	// Save this so we can go back to it if we hit a blocking object.
 		pt.Move( dir );
+		if (!pt.IsValidPoint())
+		{
+			// Hit the edge of the world, so go back to the previous valid position
+			pt = pTest;
+			break;	// stopped
+		}
+
 		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
 		// Put the item at the correct Z point
 		WORD wBlockRet = wCan;

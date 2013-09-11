@@ -122,3 +122,6 @@
 08-09-2013, Ben
 -Fixed #2191: Turning at the map edge with boats will not trow a console error.
 -Fixed #2192: Should not be able to turn on another boat.
+
+10-09-2013, Ben
+-Fixed #2141: WorldGem Bits should now recognise map edge properly.
