@@ -125,3 +125,7 @@
 
 10-09-2013, Ben
 -Fixed #2141: WorldGem Bits should now recognise map edge properly.
+
+11-09-2013, RanXerox
+-Default DISPID for creation of T_SEED items now configured in Sphere_Defs.scp
+-New SphereCrypt.ini key

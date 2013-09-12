@@ -34,8 +34,8 @@
   automatically set to 1 by Sphere. LBR, AoS and SE is not setted automatically and
   is leaved to you.
 - Added to CHARDEF properties RESLEVEL, RESDISPDNID, RESDISPDNHUE. The first state
-  from what UO version the anim comes. The second what anim id is showed to older
-  client version. The third an hue showed to older client (if 0 or null the default
+  from what UO version the anim comes. The second what anim id is shown to older
+  client version. The third an hue shown to older client (if 0 or null the default
   anim hue is used.
 - Modified scriptpack to reflect these changes for T2A monsters.
 
@@ -1649,7 +1649,7 @@
 
 08-03-2006, Furio
 - Fixed #502: Divide by Zero Exceptions in CChar::Tick() stat section.
-- Fixed #503: Tithing Points showed incorrectly in Paladin book.
+- Fixed #503: Tithing Points shown incorrectly in Paladin book.
 - Updated: sphere_item_aos_se.scp, sphere_item_magic_necromancer_aos.scp
 
 10-03-2006, Furio

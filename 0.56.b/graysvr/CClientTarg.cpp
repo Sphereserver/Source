@@ -2081,7 +2081,8 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			if ( ! m_pChar->CanUse( pItemTarg, true ))
 				return( false );
 			{
-			pItemTarg->SetDispID(ITEMID_COPPER_C1);	// copper coin
+			RESOURCE_ID defaultseed = g_Cfg.ResourceGetIDType( RES_ITEMDEF, "DEFAULTSEED" );
+			pItemTarg->SetDispID(static_cast<ITEMID_TYPE>(defaultseed.GetResIndex()));
 			pItemTarg->SetType(IT_SEED);
 			TCHAR *pszTemp = Str_GetTemp();
 			sprintf(pszTemp, "%s seed", pItemTarg->GetName());

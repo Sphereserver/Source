@@ -7,14 +7,18 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, December 12, 2009
+// FILE LAST UPDATED: Tuesday, September 10, 2013
+//
 VERSION=0.56b
 
+
 [DEFNAME HARDCODED]
-defaultitem	i_gold	// if we cannot create the item. make it this.
-defaultchar	c_man	// if we cannot create the char. make it this.
-guards		{ c_h_guard 1 c_h_guard_f 1 }
-deffood		{ i_ham 1 i_cake 1 i_bread_loaf 1 }
+defaultitem   i_gold  // If we cannot create the item, make it this.
+defaultchar   c_man   // If we cannot create the char, make it this.
+defaultseed   i_gold  // When we make a seed, make it look like this.
+defaultmsg    i_gold  // When we make a bulletin board post, use this item.
+guards        { c_h_guard 1 c_h_guard_f 1 }
+deffood       { i_ham 1 i_cake 1 i_bread_loaf 1 }
 
 [DEFNAME mount_items]
 // This contain the list of the mount/mountid the format is:
@@ -65,15 +69,15 @@ mount_0xd5	03ec5	// Polar Bear (veteran's award)
 mount_0x1b0 03ec6 // Armored Boura
 
 [DEFNAME hues]	// these are hues from hues.mul.
-color_none		0
-color_metal		0
+color_none          0
+color_metal         0
 color_red1          32
 color_red2          33
 color_cyan          88
 color_gray_dk       802
-color_energy_vortex	118
+color_energy_vortex 118
 color_gray_lt       904
-color_dye_high		1000	// highest dyeable color = 1001
+color_dye_high      1000   // highest dyeable color = 1001
 color_ice           1152
 color_snow          1153
 color_rock          1154
@@ -119,23 +123,22 @@ color_magic_invulnerability	1887
 
 // brain types
 [DEFNAME brains]
-brain_none		0
-brain_animal		1
-brain_human		2
-brain_healer		3
-brain_guard		4
-brain_banker		5
-brain_vendor		6
-brain_beggar		7
-brain_animal_trainer	8
-brain_thief		9
-brain_monster		10
-brain_berserk		11
-brain_undead		12
-brain_dragon		13
-brain_vendor_offduty	14
-brain_towncrier		2
-brain_beserk		brain_berserk
+brain_none             0
+brain_animal           1
+brain_human            2
+brain_healer           3
+brain_guard            4
+brain_banker           5
+brain_vendor           6
+brain_beggar           7
+brain_animal_trainer   8
+brain_thief            9
+brain_monster          10
+brain_berserk          11
+brain_undead           12
+brain_dragon           13
+brain_vendor_offduty   14
+brain_towncrier        2
 
 [DEFNAME items_templates]
 random_coin_purse      { backpack_poor 1 backpack_meager 1 backpack_average 1 backpack_rich 1 }
@@ -752,7 +755,7 @@ snd_collection_reward            1447
 snd_spellweave_arcane_circle          1472
 snd_spellweave_arcane_empowerment     1473
 snd_spellweave_arcane_empowerment_end 1474
-snd_spellweave_attune_weapon          1475
+snd_spellweave_attunement             1475
 snd_spellweave_dryad_allure           1476
 snd_spellweave_dryad_allure_fail      1477
 snd_spellweave_essence_of_wind        1478
@@ -1828,7 +1831,8 @@ height_0c1 21 //DEFNAME=c_ridgeback_ethereal
 height_0c2 15 //DEFNAME=c_swamp_dragon_ethereal
 height_0c3 12 //DEFNAME=c_giant_beetle_ethereal
 height_0c4 18 //DEFNAME=c_kaze_kemono
-height_0c8 16 //DEFNAME=c_horse_tan
+height_0c5 45 //DEFNAME=c_dragon_stygian_red
+height_0c6 45 //DEFNAME=c_dragon_stygian_blue
 height_0c7 23 //DEFNAME=c_rai_ju
 height_0c8 16 //DEFNAME=c_horse_tan
 height_0c9 3  //DEFNAME=c_cat
@@ -1895,7 +1899,7 @@ height_010a 14 //DEFNAME=c_dryad
 height_010b 15 //DEFNAME=c_troglodyte
 height_010c 18 //DEFNAME=c_satyr_unknown
 height_010d 18 //DEFNAME=c_satyr_unknown
-height_010e 18 //DEFNAME=c_satyr_unknown
+height_010e 18 //DEFNAME=c_grubber
 height_010f 18 //DEFNAME=c_satyr
 
 height_0110 28 //DEFNAME=c_interred_grizzle?
