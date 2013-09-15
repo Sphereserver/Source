@@ -30,7 +30,6 @@
 #else
 	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
 #endif
-#endif
 
 class CClient;
 struct CSocketAddress;

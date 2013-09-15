@@ -30,6 +30,8 @@
 	#define WARNWALK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_WALK ) { g_pLog->EventWarn _x_; }
 #endif
 
+#include "../common/graycom.h"
+
 class CServTime
 {
 #undef GetCurrentTime
@@ -37,16 +39,16 @@ class CServTime
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
-	long m_lPrivateTime;
+	INT64 m_lPrivateTime;
 public:
-	long GetTimeRaw() const
+	INT64 GetTimeRaw() const
 	{
 		if ( m_lPrivateTime < 0 )
 			return 0;
 
 		return m_lPrivateTime;
 	}
-	int GetTimeDiff( const CServTime & time ) const
+	INT64 GetTimeDiff( const CServTime & time ) const
 	{
 		return( m_lPrivateTime - time.m_lPrivateTime );
 	}
@@ -54,7 +56,7 @@ public:
 	{
 		m_lPrivateTime = 0;
 	}
-	void InitTime( long lTimeBase )
+	void InitTime( INT64 lTimeBase )
 	{
 		if ( lTimeBase < 0 )
 			lTimeBase = 0;
@@ -65,7 +67,7 @@ public:
 	{
 		return( m_lPrivateTime > 0 ? true : false );
 	}
-	CServTime operator+( int iTimeDiff ) const
+	CServTime operator+( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime + iTimeDiff;
@@ -74,7 +76,7 @@ public:
 
 		return( time );
 	}
-	CServTime operator-( int iTimeDiff ) const
+	CServTime operator-( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime - iTimeDiff;
@@ -83,7 +85,7 @@ public:
 
 		return( time );
 	}
-	int operator-( CServTime time ) const
+	INT64 operator-( CServTime time ) const
 	{
 		return(m_lPrivateTime-time.m_lPrivateTime);
 	}
@@ -130,7 +132,7 @@ enum RESDISPLAY_VERSION
 	RDS_QTY
 };
 
-#include "../common/graycom.h"
+//#include "../common/graycom.h"
 #include "../common/graymul.h"
 #include "../common/grayproto.h"
 #include "../common/CGrayInst.h"
