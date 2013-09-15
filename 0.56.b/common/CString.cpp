@@ -568,7 +568,7 @@ static int Str_CmpHeadI( LPCTSTR pszFind, LPCTSTR pszTable )
 		TCHAR ch2 = tolower(pszTable[i]);
 		if ( ch2 == 0 )
 		{
-			if ( !isalnum(ch1))
+			if (( !isalnum(ch1))&&(ch1 != (TCHAR)"_"))
 				return 0;
 			return( ch1 - ch2 );
 		}

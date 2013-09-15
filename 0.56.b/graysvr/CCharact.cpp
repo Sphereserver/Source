@@ -3520,7 +3520,7 @@ bool CChar::MoveToChar( CPointMap pt )
 	// This does not check for gravity.
 	//
 
-	if ( ! pt.IsCharValid() || !pt.IsValidXY() )
+	if ( ! pt.IsValidPoint() )
 		return false;
 
 	if ( m_pPlayer && ! IsClient())	// moving a logged out client !

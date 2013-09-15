@@ -188,7 +188,7 @@ LPCTSTR const CSkillDef::sm_szTrigName[SKTRIG_QTY+1] =
 	"@TargetCancel",
 	"@UseQuick",
 	"@Wait",
-	NULL
+	NULL,
 };
 
 enum SKC_TYPE
@@ -540,7 +540,7 @@ LPCTSTR const CSpellDef::sm_szTrigName[SPTRIG_QTY+1] =
 	"@START",
 	"@SUCCESS",
 	"@TARGETCANCEL",
-	NULL
+	NULL,
 };
 
 enum SPC_TYPE
@@ -1062,11 +1062,12 @@ LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
 	NULL
 };
 
-LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY] =	// static
+LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
-	"@ResourceTest",
 	"@ResourceFound",
+	"@ResourceTest",
+	NULL,
 };
 
 

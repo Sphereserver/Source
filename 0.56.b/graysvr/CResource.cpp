@@ -209,10 +209,10 @@ CResource::CResource()
 
 	m_iColorNotoCriminal = 0x03b2;		// grey (criminal)
 	m_iColorNotoDefault = 0x03b2;		// grey (if not any other)
-	m_iColorNotoEvil = 0x0026;			// red
-	m_iColorNotoGood = 0x0063;			// blue
-	m_iColorNotoGuildSame = 0x0044;		// green
-	m_iColorNotoGuildWar = 0x002b;		// orange (enemy guild)
+	m_iColorNotoEvil = 0x0022;			// red
+	m_iColorNotoGood = 0x0059;			// blue
+	m_iColorNotoGuildSame = 0x003f;		// green
+	m_iColorNotoGuildWar = 0x0090;		// orange (enemy guild)
 	m_iColorNotoInvul = 0x0035;			// yellow
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 

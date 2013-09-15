@@ -567,7 +567,7 @@ public:
 	int m_iModified;
 
 	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szTrigName[RTRIG_QTY];
+	static LPCTSTR const sm_szTrigName[RTRIG_QTY+1];
 	static LPCTSTR const sm_szVerbKeys[];
 
 	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE

@@ -2083,11 +2083,8 @@ void CObjBase::OnTickStatusUpdate()
 	ADDTOCALLSTACK("CObjBase::OnTickStatusUpdate");
 	// process m_fStatusUpdate flags
 
-	if ((m_fStatusUpdate & SU_UPDATE_TOOLTIP) != 0)
-	{
+	if (m_fStatusUpdate & SU_UPDATE_TOOLTIP)
 		ResendTooltip();
-		m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
-	}
 }
 
 void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)

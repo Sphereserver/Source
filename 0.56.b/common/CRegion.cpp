@@ -992,7 +992,7 @@ bool CRegionBase::SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsol
 	return( fRet );
 }
 
-LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY] =	// static
+LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
 	"@CLIPERIODIC",
@@ -1000,6 +1000,7 @@ LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY] =	// static
 	"@EXIT",
 	"@REGPERIODIC",
 	"@STEP",
+	NULL,
 };
 
 TRIGRET_TYPE CRegionBase::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAction )

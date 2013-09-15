@@ -129,3 +129,11 @@
 11-09-2013, RanXerox
 -Default DISPID for creation of T_SEED items now configured in Sphere_Defs.scp
 -New SphereCrypt.ini key
+
+15-09-2913, Ben
+-Fixed: @ResourceFound trigger not working.
+-Fixed: Error caused by chars spawning when a GM is standing close to point 0,0
+-Fixed #2207: ARGN1 in @SELL and @ITEMSELL is now the sold amount and not the total amount.
+-Added:	ARGN2 in @SELL and @ITEMSELL is the price of the items sold after vendermarkup (ARGN2 / ARGN1 = price per unit)
+-Fixed #2205: Changed Noto colors to match OSI default.
+-Fixed #2194: Functions starting with any hardcoded functions like LIST and followed with _ should now work as intended.

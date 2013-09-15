@@ -1323,26 +1323,28 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 		if ( pItem->GetTopLevelObj() != m_pChar )
 			continue;
 
-		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
-		{
-			CScriptTriggerArgs Args( pItem->GetAmount(), 0, pVendor );
-			if ( pItem->OnTrigger( ITRIG_Sell, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
-				continue;
-		}
-
 		// Find the valid sell item from vendors stuff.
 		CItemVendable * pItemSell = CChar::NPC_FindVendableItem( pItem, pContBuy, pContStock );
 		if ( pItemSell == NULL )
 			continue;
 
-		// Now how much did i say i wanted to sell ?
 		int amount = items[i].m_amount;
+
+		// Now how much did i say i wanted to sell ?
 		if ( pItem->GetAmount() < amount )	// Selling more than i have ?
 		{
 			amount = pItem->GetAmount();
 		}
 
 		INT64 iPrice = (INT64)pItemSell->GetVendorPrice(iConvertFactor) * amount;
+
+
+		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
+		{
+			CScriptTriggerArgs Args( amount, iPrice, pVendor );
+			if ( pItem->OnTrigger( ITRIG_Sell, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
+				continue;
+		}
 
 		// Can vendor afford this ?
 		if ( iPrice > pBank->m_itEqBankBox.m_Check_Amount )

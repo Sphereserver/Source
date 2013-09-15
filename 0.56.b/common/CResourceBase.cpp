@@ -843,6 +843,7 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 			iQty = SPTRIG_QTY;
 			break;
 		case RES_AREA:
+		case RES_ROOM:
 		case RES_REGIONTYPE:
 			ppTable = CRegionWorld::sm_szTrigName;
 			iQty = RTRIG_QTY;
@@ -874,11 +875,9 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 			{
 				m_pScript->ParseKeyLate();
 				iTrigger = FindTableSorted( m_pScript->GetArgRaw(), ppTable, iQty );
-
+	
 				if ( iTrigger < 0 )	// unknown triggers ?
-				{
 					iTrigger = XTRIG_UNKNOWN;
-				}
 				else 
 				{
 					TriglistAdd(m_pScript->GetArgRaw());
@@ -890,10 +889,8 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 				}
 			}
 			else
-			{
-				// suffice to know that it has triggers of some sort.
 				iTrigger = XTRIG_UNKNOWN;
-			}
+
 			SetTrigger(iTrigger); 
 		}
 	}

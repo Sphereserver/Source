@@ -268,8 +268,8 @@ private:
 enum RRTRIG_TYPE
 {
 	// XTRIG_UNKNOWN	= some named trigger not on this list.
-	RRTRIG_RESOURCETEST=1,
-	RRTRIG_RESOURCEFOUND,
+	RRTRIG_RESOURCEFOUND=1,
+	RRTRIG_RESOURCETEST,
 	RRTRIG_QTY
 };
 
@@ -280,7 +280,7 @@ class CRegionResourceDef : public CResourceLink
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szTrigName[RRTRIG_QTY];
+	static LPCTSTR const sm_szTrigName[RRTRIG_QTY+1];
 
 	// What item do we get when we try to mine this.
 	ITEMID_TYPE m_ReapItem;	// ITEMID_ORE_1 most likely

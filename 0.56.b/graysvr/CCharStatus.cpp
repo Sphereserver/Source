@@ -998,7 +998,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 {
 	ADDTOCALLSTACK("CChar::CanSee");
 	// Can I see this object ( char or item ) ?
-	if ( !pObj || /*pObj->*/IsDisconnected() )
+	if ( !pObj || IsDisconnected() || !pObj->GetTopLevelObj()->GetTopPoint().IsValidPoint())
 		return false;
 
 
@@ -1241,12 +1241,9 @@ blocked:
 //#define DEBUGCANSEELOS 1
 //#ifdef _DEBUG
 #ifdef DEBUGCANSEELOS
-	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
-//	#define WARNLOS(_x_)		g_pLog->EventWarn _x_;
-//#else
-//	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
+	#define WARNLOS(_x_)		g_pLog->EventWarn _x_;
 #else
-	#define WARNLOS(_x_)
+	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
 #endif
 
 bool inline CChar::CanSeeLOS_New_Failed( CPointMap * pptBlock, CPointMap &ptNow ) const
