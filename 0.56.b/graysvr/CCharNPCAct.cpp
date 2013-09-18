@@ -2583,7 +2583,11 @@ void CChar::NPC_Act_Runto(int iDist)
 			// Go directly there...
 			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
 			{
-				iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+				if (!GetTopPoint().IsValidPoint())
+					iDist --;
+				else
+					iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+
 				if (iDist)
 					NPC_Act_Runto(iDist);
 				else
@@ -2622,7 +2626,11 @@ void CChar::NPC_Act_Goto(int iDist)
 			// Go directly there...
 			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
 			{
-				iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+				if (!GetTopPoint().IsValidPoint())
+					iDist --;
+				else
+					iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+
 				if (iDist)
 					NPC_Act_Runto(iDist);
 				else
