@@ -24,6 +24,7 @@ enum NV_TYPE
 	NV_PETSTABLE,
 	NV_RESTOCK,
 	NV_RUN,
+	NV_RUNTO,
 	NV_SELL,
 	NV_SHRINK,
 	NV_TRAIN,
@@ -43,6 +44,7 @@ LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY+1] =
 	"PETSTABLE",
 	"RESTOCK",
 	"RUN",
+	"RUNTO",
 	"SELL",
 	"SHRINK",
 	"TRAIN",
@@ -96,8 +98,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		Skill_Start( NPCACT_FLEE );
 		break;
 	case NV_GOTO:
-		//NPC_WalkToPoint(true);
-		m_Act_p.Read(s.GetArgRaw());
+		m_Act_p = g_Cfg.GetRegionPoint( s.GetArgStr());
 		Skill_Start( NPCACT_GOTO );
 		break;
 	case NV_HIRE:
@@ -112,6 +113,10 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirStr( s.GetArgRaw()));
 		NPC_WalkToPoint( true );
+		break;
+	case NV_RUNTO:
+		m_Act_p = g_Cfg.GetRegionPoint( s.GetArgStr());
+		Skill_Start( NPCACT_RUNTO );
 		break;
 	case NV_SELL:
 	{
@@ -858,6 +863,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 		if (local.m_x > 0 && local.m_y > 0)
 		{
+
 			bUsePathfinding = true;
 
 			if ( pMe.GetDist(local) != 1 )
@@ -2557,7 +2563,46 @@ void CChar::NPC_Act_Flee()
 	}
 }
 
-void CChar::NPC_Act_Goto()
+void CChar::NPC_Act_Runto(int iDist)
+{
+	ADDTOCALLSTACK("CChar::NPC_Act_Runto");
+	// NPCACT_RUNTO:
+	// Still trying to get to this point.
+
+	switch ( NPC_WalkToPoint(true))
+	{
+		case 0:
+			// We reached our destination
+			NPC_Act_Idle();	// look for something new to do.
+			break;
+		case 1:
+			// Took a step....keep trying to get there.
+			break;
+		case 2:
+			// Give it up...
+			// Go directly there...
+			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
+			{
+				iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+				if (iDist)
+					NPC_Act_Runto(iDist);
+				else
+					NPC_Act_Idle();
+			}
+			else
+			{
+				if ( m_Act_p.IsValidPoint() &&
+					IsHuman() &&
+					!IsStatFlag( STATF_Freeze|STATF_Stone ))
+					Spell_Teleport( m_Act_p, true, false);
+				else
+					NPC_Act_Idle();
+			}
+			break;
+	}
+}
+
+void CChar::NPC_Act_Goto(int iDist)
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Goto");
 	// NPCACT_GOTO:
@@ -2575,12 +2620,23 @@ void CChar::NPC_Act_Goto()
 		case 2:
 			// Give it up...
 			// Go directly there...
-			if ( m_Act_p.IsValidPoint() &&
-				IsHuman() &&
-				!IsStatFlag( STATF_Freeze|STATF_Stone ))
-				Spell_Teleport( m_Act_p, true, false);
+			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
+			{
+				iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
+				if (iDist)
+					NPC_Act_Runto(iDist);
+				else
+					NPC_Act_Idle();
+			}
 			else
-				NPC_Act_Idle();	// look for something new to do.
+			{
+				if ( m_Act_p.IsValidPoint() &&
+					IsHuman() &&
+					!IsStatFlag( STATF_Freeze|STATF_Stone ))
+					Spell_Teleport( m_Act_p, true, false);
+				else
+					NPC_Act_Idle();	// look for something new to do.
+			}
 			break;
 	}
 }
@@ -3307,6 +3363,10 @@ void CChar::NPC_OnTickAction()
 						Skill_Start(SKILL_NONE);
 				}
 				break;
+			case NPCACT_RUNTO:
+				EXC_SET("Run To");
+				NPC_Act_Runto();
+				break;
 
 			default:
 				if ( !IsSkillBase(iSkillActive) )	// unassigned skill ? that's weird
@@ -3397,7 +3457,7 @@ void CChar::NPC_Pathfinding()
 
 	CPointMap Next;
 	// Don't read the first step, it's the same as the current position, so i = 1
-	for ( size_t i = 1; (i != path.LastPathSize()) && (i < 24 /* Don't overflow*/ ); ++i )
+	for ( size_t i = 1; (i != path.LastPathSize()) && (i < MAX_NPC_PATH_STORAGE_SIZE /* Don't overflow*/ ); ++i )
 	{
 		Next = path.ReadStep(i);
 		m_pNPC->m_nextX[i - 1] = Next.m_x;
@@ -3516,7 +3576,7 @@ void CChar::NPC_Food()
 						{
 							m_Act_p = pt;
 							Skill_Start(NPCACT_GOTO);
-							NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
+							//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
 						}
 						break;
 					}

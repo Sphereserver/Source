@@ -1190,6 +1190,7 @@ IMSG_DEF_FONT	3
 //skillact_napping	    	"Napping"
 //skillact_searchingfood	"Searching for Food"
 //skillact_thinking		"Thinking"
+//skillact_runningto		"Running To"
 //itemstatus_perfect		"absolutely flawless"
 //itemstatus_full		"in full repair"
 //itemstatus_scratched		"a bit worn"

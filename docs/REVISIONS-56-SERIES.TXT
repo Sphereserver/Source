@@ -137,3 +137,9 @@
 -Added:	ARGN2 in @SELL and @ITEMSELL is the price of the items sold after vendermarkup (ARGN2 / ARGN1 = price per unit)
 -Fixed #2205: Changed Noto colors to match OSI default.
 -Fixed #2194: Functions starting with any hardcoded functions like LIST and followed with _ should now work as intended.
+
+17-09-2913, Ben
+-Added: Runto npc command. Accepts a point or region name as argument.
+-Changed: Goto npc command to accept region name as argument.
+-Added: NPC_AI_PERSISTENTPATH 0x0400 to the NPCAI setting in sphere.ini. (NPC will retry multiple times to find it's path)
+-Updated: Sphere.ini and sphere_msg.scp with new settings

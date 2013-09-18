@@ -898,6 +898,7 @@ public:
 #define NPC_AI_VEND_TIME		0x00080
 #define NPC_AI_LOOTING			0x00100
 #define	NPC_AI_MOVEOBSTACLES	0x00200
+#define NPC_AI_PERSISTENTPATH	0x00400		// 
 	int		m_iNpcAi;
 
 	//	Experience system

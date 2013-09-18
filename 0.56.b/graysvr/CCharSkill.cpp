@@ -913,6 +913,7 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 		case NPCACT_TRAINING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
 		case NPCACT_Napping: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
 		case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
+		case NPCACT_RUNTO: return ( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO) );
 		default: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 	}
 }

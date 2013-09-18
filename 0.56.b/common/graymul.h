@@ -1699,6 +1699,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	NPCACT_TRAINING,		// 114 = using a training dummy etc.
 	NPCACT_Napping,			// 115 = just snoozong a little bit, but not sleeping.
 	NPCACT_FOOD,			// 116 = Searching for food
+	NPCACT_RUNTO,			// 117 = Run to a location x,y.
 	NPCACT_QTY
 };
 

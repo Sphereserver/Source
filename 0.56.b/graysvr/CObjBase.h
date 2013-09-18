@@ -3498,7 +3498,8 @@ private:
 	inline void NPC_Act_Looting_CantGetItem( CItem * pItem );
 	void NPC_Act_Looting();
 	void NPC_Act_Flee();
-	void NPC_Act_Goto();
+	void NPC_Act_Goto(int iDist = 30);
+	void NPC_Act_Runto(int iDist = 30);
 	bool NPC_Act_Food();
 
 	void NPC_ActStart_SpeakTo( CChar * pSrc );
