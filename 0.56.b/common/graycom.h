@@ -150,7 +150,8 @@
 #define FEATURE_KR_CLIENTTYPE	0x02	// 0x00400 in 0xA9 (enables 0xE1 packet)
 
 #define FEATURE_SA_UPDATE		0x01	// 0x10000 feature (unlock gargoyle character, housing items)
-#define FEATURE_SA_MOVEMENT		0x02	// 0x04000 on charlist (new movement packets)
+	//changed from 0x02 to 0x08 to disable current flag but still able to turn on for testing
+#define FEATURE_SA_MOVEMENT		0x04	// 0x04000 on charlist (new movement packets)
 
 #define FEATURE_EXTRA_GOTHIC	0x01	// 0x40000 feature (unlock gothic house designer items)
 #define FEATURE_EXTRA_RUSTIC	0x02	// 0x80000 feature (unlock rustic house designer items)
