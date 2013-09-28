@@ -2079,6 +2079,9 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 	if ( !pItem->IsAttr(ATTR_MOVE_ALWAYS) && pItem->IsAttr(ATTR_MOVE_NEVER) )
 		return false;
 
+	if ( pItem->IsType(IT_CORPSE))
+		return false;
+
 	if ( pItem->IsTopLevel() )
 	{
 		if ( pItem->IsTopLevelMultiLocked() )
