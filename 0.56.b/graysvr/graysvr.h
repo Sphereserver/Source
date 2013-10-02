@@ -39,16 +39,16 @@ class CServTime
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
-	INT64 m_lPrivateTime;
+	int m_lPrivateTime;
 public:
-	INT64 GetTimeRaw() const
+	int GetTimeRaw() const
 	{
 		if ( m_lPrivateTime < 0 )
 			return 0;
 
 		return m_lPrivateTime;
 	}
-	INT64 GetTimeDiff( const CServTime & time ) const
+	int GetTimeDiff( const CServTime & time ) const
 	{
 		return( m_lPrivateTime - time.m_lPrivateTime );
 	}
@@ -56,7 +56,7 @@ public:
 	{
 		m_lPrivateTime = 0;
 	}
-	void InitTime( INT64 lTimeBase )
+	void InitTime( int lTimeBase )
 	{
 		if ( lTimeBase < 0 )
 			lTimeBase = 0;
@@ -67,7 +67,7 @@ public:
 	{
 		return( m_lPrivateTime > 0 ? true : false );
 	}
-	CServTime operator+( INT64 iTimeDiff ) const
+	CServTime operator+( int iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime + iTimeDiff;
@@ -76,7 +76,7 @@ public:
 
 		return( time );
 	}
-	CServTime operator-( INT64 iTimeDiff ) const
+	CServTime operator-( int iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime - iTimeDiff;
@@ -85,7 +85,7 @@ public:
 
 		return( time );
 	}
-	INT64 operator-( CServTime time ) const
+	int operator-( CServTime time ) const
 	{
 		return(m_lPrivateTime-time.m_lPrivateTime);
 	}
