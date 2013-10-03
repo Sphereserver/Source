@@ -149,3 +149,6 @@
 
 01-10-2013, Ben
 -Fixed #2211: Corpse having wrong MORE values.
+
+02-10-2013, Ben
+-Fixed #2214: IsTimerF.function and TIMERF STOP,function not working properly

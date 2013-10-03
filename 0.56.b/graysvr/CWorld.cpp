@@ -337,7 +337,7 @@ int CTimedFunctionHandler::IsTimer( CGrayUID uid, LPCTSTR funcname )
 		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
 		{
 			TimedFunction* tf = *it;
-			if (( tf->uid == uid) && (strcmpi( tf->funcname, funcname)))
+			if (( tf->uid == uid) && (!strcmpi( tf->funcname, funcname)))
 				return tf->elapsed;
 
 			++it;
@@ -355,7 +355,7 @@ void CTimedFunctionHandler::Stop( CGrayUID uid, LPCTSTR funcname )
 		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ) 
 		{
 			TimedFunction* tf = *it;
-			if (( tf->uid == uid) && (strcmpi( tf->funcname, funcname)))
+			if (( tf->uid == uid) && (!strcmpi( tf->funcname, funcname)))
 			{
 				m_tFrecycled.push_back( tf );
 				//vector::erase crashes if the iterator is pointing at the only thing left in the list. So, we check if size is 1 and do pop_back instead if that's the case. -SL
