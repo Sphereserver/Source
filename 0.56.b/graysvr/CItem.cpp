@@ -1108,6 +1108,9 @@ bool CItem::Stack( CItem * pItem )
 	if ( !IsStackable(pItem) )
 		return false;
 
+	if (!m_TagDefs.Compare( &( pItem->m_TagDefs ) ))
+		return false ;
+
 	// Lost newbie status.
 	if ( IsAttr( ATTR_NEWBIE ) != pItem->IsAttr( ATTR_NEWBIE )) return false;
 	else if ( IsAttr( ATTR_MOVE_NEVER ) != pItem->IsAttr( ATTR_MOVE_NEVER )) return false;
@@ -1315,6 +1318,9 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	CItem * pItem = NULL;
 	CWorldSearch AreaItems(ptNewPlace);
 	short iMyZ = ptNewPlace.m_z;
+	bool iInvalidZ[16];
+	for (int i=0;i < 16;i++)
+		iInvalidZ[i] = false;
 	for (;;)
 	{
 		pItem = AreaItems.GetItem();
@@ -1334,13 +1340,57 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			}
 		}
 
-		if ( pItem->GetTopPoint().m_z > iMyZ )
-			iMyZ = pItem->GetTopPoint().m_z + 1;
+		if( IsSetEF( EF_ItemStacking ) )
+		{
+			if ( pItem->GetTopZ() < ptNewPlace.m_z)
+				break;
+
+			iInvalidZ[pItem->GetTopZ() - ptNewPlace.m_z] = true;
+
+			if ( pItem->GetTopZ() >= iMyZ )
+				iMyZ = pItem->GetTopZ() + 1;
+		}
+		else
+		{
+			if ( pItem->GetTopPoint().m_z > iMyZ )
+				iMyZ = pItem->GetTopPoint().m_z + 1;
+		}
 	}
 
-	// one floor. needs some configuration on that
-	if ( (iMyZ - ptNewPlace.m_z) < 12 )
-		ptNewPlace.m_z = iMyZ;
+
+	if( IsSetEF( EF_ItemStacking ) )
+	{
+		for (int i=0;i < 16;i++)
+		{
+			if (!iInvalidZ[i])
+			{
+				iMyZ = ptNewPlace.m_z + i;
+				break;
+			}
+		}
+
+		if ( pCharMover )
+		{
+			if (( (iMyZ - pCharMover->GetTopZ()) <= 16 ) || (pCharMover->IsPriv(PRIV_GM)))
+				ptNewPlace.m_z = iMyZ;
+			else
+			{
+				pCharMover->ItemBounce(this);
+				return false;
+			}
+		}
+		else
+		{
+			if ( (iMyZ - ptNewPlace.m_z) <= 16 )
+				ptNewPlace.m_z = iMyZ;
+		}
+	}
+	else
+	{
+		// one floor. needs some configuration on that
+		if ( (iMyZ - ptNewPlace.m_z) < 12 )
+			ptNewPlace.m_z = iMyZ;
+	}
 
 	// Set the decay timer for this if not in a house or such.
 	int iDecayTime = GetDecayTime();

@@ -152,3 +152,7 @@
 
 02-10-2013, Ben
 -Fixed #2214: IsTimerF.function and TIMERF STOP,function not working properly
+
+06-10-2013, Ben
+-Fixed #2080: Items with different tags will no longer stack
+-Added #2210/1764: Support for item stacking with EF_ItemStacking 0x04(probably not 100% OSI style but should do the trick (maybe even better))

@@ -3570,6 +3570,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 
 		if ( IsSetEF(EF_DiagonalWalkCheck) ) catresname(zExperimentalFlags, "DiagonalWalkCheck");
 		if ( IsSetEF(EF_FixKillTrigger) ) catresname(zExperimentalFlags, "FixKillTrigger");
+		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
 		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
 		if ( IsSetEF(EF_NewPositionChecks) ) catresname(zExperimentalFlags, "NewPositionChecks");

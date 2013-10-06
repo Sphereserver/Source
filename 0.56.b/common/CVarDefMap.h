@@ -129,6 +129,7 @@ private:
 
 public:
 	void Copy( const CVarDefMap * pArray );
+	bool Compare( const CVarDefMap * pArray );
 	void Empty();
 	size_t GetCount() const;
 

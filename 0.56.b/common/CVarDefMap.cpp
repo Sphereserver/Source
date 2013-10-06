@@ -395,6 +395,31 @@ void CVarDefMap::Copy( const CVarDefMap * pArray )
 	}
 }
 
+bool CVarDefMap::Compare( const CVarDefMap * pArray )
+{
+	ADDTOCALLSTACK("CVarDefMap::Compare");
+	if ( this == pArray )
+		return true;
+
+	if ( pArray->GetCount() != GetCount() )
+		return false;
+
+	if (pArray->GetCount())
+	{
+		for ( DefSet::const_iterator i = pArray->m_Container.begin(); i != pArray->m_Container.end(); ++i )
+		{
+			const CVarDefCont * pVar = (*i);
+			LPCTSTR sKey = pVar->GetKey();
+			if (!GetKey(sKey))
+				return false;
+
+			if (strcmpi(GetKeyStr(sKey),pVar->GetValStr()))
+				return false;
+		}
+	}
+	return true;
+}
+
 size_t CVarDefMap::GetCount() const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetCount");
