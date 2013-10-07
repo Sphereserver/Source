@@ -853,6 +853,7 @@ public:
 		return(( m_Attr & wAttr ) ? true : false );
 	}
 
+	height_t GetHeight() const;
 	int  GetDecayTime() const;
 	void SetDecayTime( int iTime = 0 );
 	SOUND_TYPE GetDropSound( const CObjBase * pObjOn ) const;

@@ -1345,10 +1345,18 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			if ( pItem->GetTopZ() < ptNewPlace.m_z)
 				break;
 
-			iInvalidZ[pItem->GetTopZ() - ptNewPlace.m_z] = true;
+			height_t tempheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
+
+			if (pItem->IsType(IT_TABLE))
+				iInvalidZ[(pItem->GetTopZ()+tempheight) - ptNewPlace.m_z] = true;
+			else
+			{
+				for(int z = pItem->GetTopZ() - ptNewPlace.m_z; z < (pItem->GetTopZ() - ptNewPlace.m_z) + tempheight; z++)
+					iInvalidZ[z] = true;
+			}
 
 			if ( pItem->GetTopZ() >= iMyZ )
-				iMyZ = pItem->GetTopZ() + 1;
+				iMyZ = pItem->GetTopZ() + tempheight;
 		}
 		else
 		{
@@ -1360,12 +1368,28 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 
 	if( IsSetEF( EF_ItemStacking ) )
 	{
+		//Can we find an empty space in the stack?
+		bool bValid = false;
 		for (int i=0;i < 16;i++)
 		{
 			if (!iInvalidZ[i])
 			{
-				iMyZ = ptNewPlace.m_z + i;
-				break;
+				bValid = true;
+
+				//Can the item fit here?
+				if (GetHeight() > 1)
+				{
+					for(int z = i+1; z < i + GetHeight(); z++)
+					{
+						if (iInvalidZ[z])
+							bValid = false;
+					}
+				}
+				if (bValid)
+				{
+					iMyZ = ptNewPlace.m_z + i;
+					break;
+				}
 			}
 		}
 
@@ -1809,6 +1833,36 @@ bool CItem::SetName( LPCTSTR pszName )
 			pszName = "";
 	}
 	return SetNamePool( pszName );
+}
+
+height_t CItem::GetHeight() const
+{
+	ADDTOCALLSTACK("CItem::GetHeight");
+
+	height_t tmpHeight;
+
+	char * heightDef = Str_GetTemp();
+
+	sprintf(heightDef, "itemheight_0%x", static_cast<unsigned int>(GetDispID()));
+	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
+	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
+		return tmpHeight;
+
+	sprintf(heightDef, "itemheight_%u", static_cast<unsigned int>(GetDispID()));
+	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
+	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
+		return tmpHeight;
+
+	const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(GetDispID()));
+	const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
+	tmpHeight = ( pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight() );
+	if ( tmpHeight )
+		return tmpHeight;
+
+	//DEBUG_ERR(("PLAYER_HEIGHT %d\n",PLAYER_HEIGHT));
+	return 0; //if everything fails
 }
 
 bool CItem::SetBase( CItemBase * pItemDef )
@@ -2320,11 +2374,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgpoison : 0 );
 			break;
 		case IC_HEIGHT:
-			{
-				const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(GetDispID()));
-				const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
-				sVal.FormatVal( pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight() );
-			}
+			sVal.FormatVal( GetHeight() );
 			break;
 		case IC_HITS:
 			sVal.FormatVal(LOWORD(m_itNormal.m_more1));
