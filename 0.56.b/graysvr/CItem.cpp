@@ -1393,20 +1393,15 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			}
 		}
 
-		if ( pCharMover )
+		if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
+			ptNewPlace.m_z = iMyZ;
+		else
 		{
-			if (( (iMyZ - pCharMover->GetTopZ()) <= 16 ) || (pCharMover->IsPriv(PRIV_GM)))
-				ptNewPlace.m_z = iMyZ;
-			else
+			if ( pCharMover )
 			{
 				pCharMover->ItemBounce(this);
 				return false;
 			}
-		}
-		else
-		{
-			if ( (iMyZ - ptNewPlace.m_z) <= 16 )
-				ptNewPlace.m_z = iMyZ;
 		}
 	}
 	else

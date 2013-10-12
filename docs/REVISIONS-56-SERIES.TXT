@@ -155,4 +155,8 @@
 
 06-10-2013, Ben
 -Fixed #2080: Items with different tags will no longer stack
--Added #2210/1764: Support for item stacking with EF_ItemStacking 0x04(probably not 100% OSI style but should do the trick (maybe even better))
+-Added #2210: Support for item stacking with EF_ItemStacking 0x04(probably not 100% OSI style but should do the trick (maybe even better))
+
+12-10-2013, Ben
+-Fixed #2219: P.COMPONENTS.x always returning 0 on maps bigger then 0
+-Remove GM check in Item stacking

@@ -455,7 +455,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					if (pMultiItem->m_visible == 0)
 						continue;
 
-					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + pMultiItem->m_dz);
+					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + pMultiItem->m_dz, this->m_map);
 					if (GetDist(ptTest) > 0)
 						continue;
 
@@ -494,7 +494,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					if (pMultiItem->m_visible == 0)
 						continue;
 
-					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + pMultiItem->m_dz);
+					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + pMultiItem->m_dz, this->m_map);
 					if (GetDist(ptTest) > 0)
 						continue;
 
