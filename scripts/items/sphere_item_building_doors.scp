@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, August 29, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [COMMENT sphere_item_building_doors]
@@ -32,6 +32,8 @@ either West or East.
 
 A North (or South, since they look the same) sliding door that slides to the
 East has a description of "North East".
+
+//FIXME: The descriptions do not yet match this form
 
 
 [ITEMDEF 0e8]
@@ -107,6 +109,50 @@ DUPEITEM=0e8
 [ITEMDEF 0f7]
 //Secret Door (blue stone dungeon)
 DUPEITEM=0e9
+
+
+[ITEMDEF 022c]
+TYPE=t_custom_door
+TDATA1=0435//ID when opened
+TDATA2=022c//ID when closed
+//CAN=can_i_block|can_i_blocklos
+RESOURCES=10 i_canvas,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 1 (closed)
+
+[ITEMDEF 022d]
+DEFNAME=i_door_tent2
+//FIXME: Cant find the closed ITEMDEF
+//TYPE=t_custom_door
+//TDATA1=022d//ID when opened
+//TDATA2=????//ID when closed
+RESOURCES=10 i_canvas,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 2 (opened)
+
+[ITEMDEF 022e]
+DEFNAME=i_door_tent3
+//FIXME: Cant find the closed ITEMDEF
+//TYPE=t_custom_door
+//TDATA1=022e//ID when opened
+//TDATA2=????//ID when closed
+RESOURCES=10 i_canvas,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 3 (opened)
+
+[ITEMDEF 022f]
+TYPE=t_custom_door
+TDATA1=0432//ID when opened
+TDATA2=022f//ID when closed
+//CAN=can_i_block|can_i_blocklos
+RESOURCES=10 i_canvas,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 4 (closed)
+
 
 [ITEMDEF 0314]
 DEFNAME=i_door_secret_stone_2
@@ -477,6 +523,41 @@ DUPEITEM=0354
 [ITEMDEF 0363]
 //Secret Door (gray stone dungeon)
 DUPEITEM=0355
+
+
+[ITEMDEF 0432]
+DEFNAME=i_door_tent4
+TYPE=t_custom_door
+TDATA1=0432//ID when opened
+TDATA2=022f//ID when closed
+RESOURCES=10 i_cloth,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 4 (opened)
+
+[ITEMDEF 0433]
+DEFNAME=i_curtainrod
+WEIGHT=1.0
+RESOURCES=1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Curtain Rod
+DUPELIST=0434
+
+[ITEMDEF 0434]
+//curtain rod
+DUPEITEM=0433
+
+[ITEMDEF 0435]
+DEFNAME=i_door_tent1
+TYPE=t_custom_door
+TDATA1=0435//ID when closed
+TDATA2=022c//ID when open
+RESOURCES=10 i_canvas,1 i_log
+CATEGORY=Buildings - Doors
+SUBSECTION=Palisade Door
+DESCRIPTION=Door 1 (opened)
+
 
 [ITEMDEF 0675]
 DEFNAME=i_door_metal
@@ -1089,7 +1170,7 @@ TYPE=t_door
 RESOURCES=25 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Iron Gate (tall)
-DESCRIPTION=@ (closed)
+DESCRIPTION=@
 DUPELIST=0825,0826,0827,0828,0829,082a,082b,082c,082d,082e,082f,0830,0831,0832,0833
 
 [ITEMDEF 0825]
@@ -1159,7 +1240,7 @@ TYPE=t_door
 RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Gate
-DESCRIPTION=@ (closed)
+DESCRIPTION=@
 DUPELIST=083a,083b,083c,083d,083e,083f,0840,0841,0842,0843,0844,0845,0846,0847,0848
 
 [ITEMDEF 083a]
@@ -1229,7 +1310,7 @@ TYPE=t_door
 RESOURCES=25 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Iron Gate
-DESCRIPTION=@ (closed)
+DESCRIPTION=@
 DUPELIST=084d,084e,084f,0850,0851,0852,0853,0854,0855,0856,0857,0858,0859,085a,085b
 
 [ITEMDEF 084d]
@@ -1299,7 +1380,7 @@ TYPE=t_door
 RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Gate (dark wood)
-DESCRIPTION=@ (closed)
+DESCRIPTION=@
 DUPELIST=0867,0868,0869,086a,086b,086c,086d,086e,086f,0870,0871,0872,0873,0874,0875
 
 [ITEMDEF 0867]
@@ -1471,6 +1552,7 @@ DUPEITEM=0241f
 DUPEITEM=02420
 
 [ITEMDEF 026f4]
+//Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_wide
 TYPE=t_door
 RESOURCES=20 i_log,40 i_paper
@@ -1484,6 +1566,7 @@ DUPELIST=02990,0299e
 DUPEITEM=026f4
 
 [ITEMDEF 02990]
+//Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_2_wide
 TYPE=t_door
 RESOURCES=20 i_log,40 i_paper
@@ -1497,6 +1580,7 @@ DUPELIST=02991
 DUPEITEM=02990
 
 [ITEMDEF 0299e]
+//Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_3_wide
 TYPE=t_door
 RESOURCES=20 i_log,40 i_paper

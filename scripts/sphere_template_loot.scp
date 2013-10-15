@@ -1,1756 +1,4115 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
-VERSION=0.56b
-
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-// A template is a collection of items.
-// Numbers are decimal not hex.
+VERSION=0.56c
 
-[TEMPLATE backpack_poor]
+
+/////////////////////////
+// Gold Pile Templates //
+/////////////////////////
+
+[TEMPLATE random_gold_pile]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Poor Backpack
-CONTAINER=i_backpack
-ITEM={ random_food 1 0 3 },{ 1 3 }
-ITEM={ random_bottle 1 0 8 }
-ITEM={ random_light 1 0 8 }
-ITEM={ random_male_tops 1 0 4 }
-COLOR=colors_all
-ITEM={ random_male_pants 1 0 4 }
-COLOR=colors_all
-ITEM=POOR_GOLD_PILE
+DESCRIPTION=Random Gold Pile
+ITEM={ poor_gold_pile 16 meager_gold_pile 8 average_gold_pile 4 rich_gold_pile 2 loaded_gold_pile 1 }
 
-[TEMPLATE backpack_meager]
+[TEMPLATE poor_gold_pile]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Meager Backpack
-CONTAINER=i_backpack
-ITEM={ random_food 1 0 2 },{ 1 4 }
-ITEM={ random_bottle 1 0 6 }
-ITEM={ random_light 1 0 6 }
-ITEM={ random_hats 1 0 9 }
-ITEM=MEAGER_GOLD_PILE
+DESCRIPTION=Poor Gold Pile
+ITEM=i_gold,{10 20}
 
-[TEMPLATE backpack_average]
+[TEMPLATE meager_gold_pile]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Average Backpack
-CONTAINER=i_backpack
-ITEM={ random_food 1 0 1 },{ 2 6 }
-ITEM={ random_bottle 1 0 4 },{ 1 3 }
-ITEM={ i_torch 1 0 4 },{ 1 3 }
-ITEM={ i_cape 1 0 9 }
-COLOR=colors_all
-ITEM=AVERAGE_GOLD_PILE
+DESCRIPTION=Meager Gold Pile
+ITEM=i_gold,{20 40}
 
-[TEMPLATE backpack_rich]
+[TEMPLATE average_gold_pile]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Rich Backpack
-CONTAINER=i_backpack
-ITEM={ random_food 2 0 1 },{ 3 8 }
-ITEM={ random_bottle 1 0 2 },{ 1 5 }
-ITEM={ i_torch 1 0 2 },{ 1 5 }
-ITEM={ i_CAPE 1 random_over_armor 1 0 9 }
-COLOR=colors_all
-ITEM={ random_jewelry 1 0 2 }
-ITEM=RICH_GOLD_PILE
+DESCRIPTION=Average Gold Pile
+ITEM=i_gold,{40 80}
 
-[TEMPLATE backpack_loaded]
+[TEMPLATE rich_gold_pile]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Backpack
-CONTAINER=i_backpack
-ITEM={ random_food 3 0 1 },{ 4 10 }
-ITEM={ random_bottle 1 0 1 }
-ITEM={ i_torch 1 0 1 },{ 1 7 }
-ITEM={ random_jewelry 1 0 1 }
-ITEM=FILTHY_RICH_GOLD_PILE
+DESCRIPTION=Rich Gold Pile
+ITEM=i_gold,{80 160}
 
-[TEMPLATE pouch_poor]
+[TEMPLATE loaded_gold_pile]
+CATEGORY=Item Templates
+SUBSECTION=Loot Templates
+DESCRIPTION=Loaded Gold Pile
+ITEM=i_gold,{160 320}
+
+/////////////////////
+// Pouch Templates //
+/////////////////////
+
+[TEMPLATE random_coin_purse]
+CATEGORY=Item Templates
+SUBSECTION=Loot Templates
+DESCRIPTION=Random Pouch
+ITEM={ poor_pouch 16 meager_pouch 8 average_pouch 4 rich_pouch 2 loaded_pouch 1 }
+
+[TEMPLATE poor_pouch]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Pouch
 CONTAINER=i_bag
 ITEM=poor_gold_pile
+ITEM={ random_jewel 1 0 1 }
+ITEM={ random_jewelry 1 0 5 }
 
-[TEMPLATE pouch_meager]
+[TEMPLATE meager_pouch]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Pouch
 CONTAINER=i_bag
 ITEM=meager_gold_pile
+ITEM={ random_jewel 1 0 1 },{1 2}
+ITEM={ random_jewelry 1 0 4 }
 
-[TEMPLATE pouch_average]
+[TEMPLATE average_pouch]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Pouch
 CONTAINER=i_bag
 ITEM=average_gold_pile
+ITEM={ random_jewel 1 0 1 },{2 3}
+ITEM={ random_jewelry 1 0 3 }
 
-[TEMPLATE pouch_rich]
+[TEMPLATE rich_pouch]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Pouch
 CONTAINER=i_bag
 ITEM=rich_gold_pile
-ITEM={ random_jewel 1 0 1 }
+ITEM={ random_jewel 1 0 1 },{3 4}
+ITEM={ random_jewelry 1 0 2 }
 
-[TEMPLATE pouch_loaded]
+[TEMPLATE loaded_pouch]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Pouch
+DESCRIPTION=Loaded Pouch
 CONTAINER=i_bag
-ITEM=filthy_rich_gold_pile
-ITEM={ random_jewel 1 0 1 }
-ITEM={ random_jewel 1 0 1 }
+ITEM=loaded_gold_pile
+ITEM={ random_jewel 1 0 1 },{4 5}
+ITEM={ random_jewelry 1 0 1 }
 
-[TEMPLATE RANDOM_goodie_poor]
-CATEGORY=Item Templates
-SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Poor Goodie
-CONTAINER=random_crate
-ITEM={ goodie_poor_1 1 goodie_poor_2 1 goodie_poor_3 1 goodie_poor_4 1 }
+//////////////////////
+// Goodie Templates //
+//////////////////////
 
-[TEMPLATE goodie_poor_1]
+[TEMPLATE random_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Poor Goodie 1
-ITEM={ poor_gold_pile 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_bread 1 0 1 }
-ITEM={ random_pitcher 1 0 1 }
-ITEM={ random_light 1 0 1 }
+DESCRIPTION=Random Goodie
+ITEM={ poor_goodie 16 meager_goodie 8 average_goodie 4 rich_goodie 2 loaded_goodie 1 }
 
-[TEMPLATE goodie_poor_2]
+[TEMPLATE poor_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Poor Goodie 2
-ITEM={ poor_gold_pile 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_other_food 1 0 1 }
-ITEM={ i_BOTTLE_WINE 1 0 1 }
-ITEM={ i_torch 1 0 1 }
-
-[TEMPLATE goodie_poor_3]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Poor Goodie 3
-ITEM={ poor_gold_pile 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_bread 1 0 1 }
-ITEM={ random_other_food 1 0 1 }
-ITEM={ i_bottle_ale 1 0 1 }
-ITEM={ random_light 1 0 1 }
-
-[TEMPLATE goodie_poor_4]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Poor Goodie 4
-ITEM={ poor_gold_pile 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ i_jug_cider 1 0 1 }
-ITEM={ random_bread 1 0 1 }
-ITEM={ i_bottle_liquor 1 0 1 }
-ITEM={ random_other_food 1 0 1 }
-ITEM={ i_torch 1 0 1 }
-
-[TEMPLATE RANDOM_goodie_meager]
-CATEGORY=Item Templates
-SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Meager Goodie
-CONTAINER=random_crate
-ITEM={ goodie_meager_1 1 goodie_meager_2 1 goodie_meager_3 goodie_meager_4 1 }
-ITEM={ goodie_poor_1 1 goodie_poor_2 1 goodie_poor_3 1 goodie_poor_4 1 0 4}
-
-[TEMPLATE goodie_meager_1]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Meager Goodie 1
-ITEM={ meager_gold_pile 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_boots 1 0 4 }
-ITEM={ random_gorget 1 0 4 }
-ITEM={ random_staff 1 0 4 }
-ITEM={ random_necklace 1 0 4 }
-ITEM={ i_cape 1 0 9 }
-COLOR=colors_all
-
-[TEMPLATE goodie_meager_2]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Meager Goodie 2
-ITEM={ meager_gold_pile 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_shield 1 0 4 }
-ITEM={ random_missile 1 0 4 }
-ITEM={ i_arrow 1 i_xbolt 1 0 3 },{ 5 20 }
-ITEM={ Random_Potion 1 0 4 }
-ITEM={ i_tunic 1 0 9 }
-COLOR=colors_all
-
-[TEMPLATE goodie_meager_3]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Meager Goodie 3
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_arm_armor 1 0 4 }
-ITEM={ random_leg_armor 1 0 4 }
-ITEM={ random_mace 1 0 4 }
-ITEM={ random_sword 1 0 4 }
-ITEM={ i_doublet 1 0 9 }
-COLOR=colors_all
-
-[TEMPLATE goodie_meager_4]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Meager Goodie 4
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_head_armor 1 0 4 }
-ITEM={ random_chest_armor 1 0 4 }
-ITEM={ random_axe 1 0 4 }
-ITEM={ random_pole_arm 1 0 4 }
-ITEM={ random_jewel 1 0 4 }
-ITEM={ random_reagent 1 0 4 },{ 5 20 }
-
-[TEMPLATE RANDOM_goodie_average]
-CATEGORY=Item Templates
-SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Average Goodie
+DESCRIPTION=Poor Goodie
 CONTAINER=random_container
-ITEM={ goodie_average_1 1 goodie_average_2 1 goodie_average_3 1 goodie_average_4 1 }
-ITEM={ goodie_poor_1 1 goodie_poor_2 1 goodie_poor_3 1 goodie_poor_4 1 0 4 }
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_jewelry 1 0 5 }
+ITEM={ random_instrument 1 0 5 }
+ITEM={ random_imbuing_item 1 0 50 }
 
-[TEMPLATE goodie_average_1]
+[TEMPLATE meager_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Average Goodie 1
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_boots 1 0 2 }
-ITEM={ random_gorget 1 0 2 }
-ITEM={ random_staff 1 0 2 }
-ITEM={ random_necklace 1 0 2 }
+DESCRIPTION=Meager Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_jewelry 1 0 4 }
+ITEM={ random_instrument 1 0 4 }
+ITEM={ random_imbuing_item 1 0 40 }
 
-[TEMPLATE goodie_average_2]
+[TEMPLATE average_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Average Goodie 2
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 0 1 }
-ITEM=random_shield,R3
-ITEM=random_missile,R3
-ITEM={ i_arrow 1 i_xbolt 1 0 4 },{ 5 20 }
-ITEM=random_potion,R3
+DESCRIPTION=Average Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_jewelry 1 0 3 }
+ITEM={ random_instrument 1 0 3 }
+ITEM={ random_imbuing_item 1 0 30 }
 
-[TEMPLATE goodie_average_3]
+[TEMPLATE rich_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Average Goodie 3
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_arm_armor 1 0 2 }
-ITEM={ random_leg_armor 1 0 2 }
-ITEM={ random_mace 1 0 2 }
-ITEM={ random_sword 1 0 2 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_reagent 1 0 2 },{ 5 20 }
+DESCRIPTION=Rich Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_jewelry 1 0 2 }
+ITEM={ random_instrument 1 0 2 }
+ITEM={ random_imbuing_item 1 0 20 }
 
-[TEMPLATE goodie_average_4]
+[TEMPLATE loaded_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Average Goodie 4
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_head_armor 1 0 2 }
-ITEM={ random_chest_armor 1 0 2 }
-ITEM={ random_axe 1 0 2 }
-ITEM={ random_pole_arm 1 0 2 }
-ITEM={ random_shield 1 0 2 }
-ITEM={ random_jewel 1 0 2 }
+DESCRIPTION=Loaded Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_drink 1 0 1 }
+ITEM={ random_jewelry 1 0 1 }
+ITEM={ random_instrument 1 0 1 }
+ITEM={ random_imbuing_item 1 0 10 },{1 2}
 
-[TEMPLATE RANDOM_goodie_rich]
-CATEGORY=Item Templates
-SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Rich Goodie
-CONTAINER=random_chest
-ITEM={ goodie_rich_1 1 goodie_rich_2 1 goodie_rich_3 1 goodie_rich_4 1 }
-ITEM={ goodie_poor_1 1 goodie_poor_2 1 goodie_poor_3 1 goodie_poor_4 1 0 4 }
+////////////////////////////
+// Magic Goodie Templates //
+////////////////////////////
 
-[TEMPLATE goodie_rich_1]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Rich Goodie 1
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_boots 1 0 1 }
-ITEM={ random_gorget 1 0 1 }
-ITEM={ random_staff 1 0 1 }
-ITEM={ random_necklace 1 0 1 }
-ITEM={ random_scroll 1 0 1 }
-
-[TEMPLATE goodie_rich_2]
+[TEMPLATE random_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Rich Goodie 2
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_shield 1 0 1 }
-ITEM={ random_missile 1 0 1 }
-ITEM={ i_arrow 1 i_xbolt 1 0 2 },{ 10 30 }
-ITEM={ Random_Potion 1 0 1 }
+DESCRIPTION=Random Magic Goodie
+ITEM={ poor_magic_goodie 16 meager_magic_goodie 8 average_magic_goodie 4 rich_magic_goodie 2 loaded_magic_goodie 1 }
 
-[TEMPLATE goodie_rich_3]
+[TEMPLATE poor_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Rich Goodie 3
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_arm_armor 1 0 1 }
-ITEM={ random_leg_armor 1 0 1 }
-ITEM={ random_mace 1 0 1 }
-ITEM={ random_sword 1 0 1 }
+DESCRIPTION=Poor Magic Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_scroll 1 0 5 }
+ITEM={ random_potion 1 0 5 }
+ITEM={ random_wand_magery 1 0 5 }
+ITEM={ random_reagent 1 0 5 },{3 5}
 
-[TEMPLATE goodie_rich_4]
+[TEMPLATE meager_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Rich Goodie 4
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_head_armor 1 0 1 }
-ITEM={ random_chest_armor 1 0 1 }
-ITEM={ random_axe 1 0 1 }
-ITEM={ random_pole_arm 1 0 1 }
-ITEM={ random_jewel 1 0 1 },{ 1 2 }
+DESCRIPTION=Meager Magic Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_scroll 1 0 4 },{1 2}
+ITEM={ random_potion 1 0 4 },{1 2}
+ITEM={ random_wand_magery 1 0 4 }
+ITEM={ random_reagent 1 0 4 },{4 7}
 
-[TEMPLATE RANDOM_goodie_loaded]
-CATEGORY=Item Templates
-SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Filthy Rich Goodie
-CONTAINER=random_chest
-ITEM={ goodie_loaded_1 1 goodie_loaded_2 1 goodie_loaded_3 1 goodie_loaded_4 1 }
-ITEM={ goodie_poor_1 1 goodie_poor_2 1 goodie_poor_3 1 goodie_poor_4 1 0 4 }
-
-[TEMPLATE goodie_loaded_1]
+[TEMPLATE average_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Goodie 1
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_boots 2 0 1 }
-ITEM={ random_gorget 2 0 1 }
-ITEM={ random_staff 2 0 1 }
-ITEM={ random_necklace 2 0 1 }
+DESCRIPTION=Average Magic Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_scroll 1 0 3 },{2 3}
+ITEM={ random_potion 1 0 3 },{1 2}
+ITEM={ random_wand_magery 1 0 3 }
+ITEM={ random_reagent 1 0 3 },{5 9}
 
-[TEMPLATE goodie_loaded_2]
+[TEMPLATE rich_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Goodie 2
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_shield 2 0 1 }
-ITEM={ random_missile 2 0 1 }
-ITEM={ i_arrow 2 i_xbolt 2 0 2 },{ 25 70 }
-ITEM={ Random_Potion 2 0 1 },{ 1 2 }
+DESCRIPTION=Rich Magic Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_scroll 1 0 2 },{3 4}
+ITEM={ random_potion 1 0 2 },{2 3}
+ITEM={ random_wand_magery 1 0 2 }
+ITEM={ random_reagent 1 0 2 },{6 11}
 
-[TEMPLATE goodie_loaded_3]
+[TEMPLATE loaded_magic_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Goodie 3
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_arm_armor 2 0 1 }
-ITEM={ random_leg_armor 2 0 1 }
-ITEM={ random_mace 2 0 1 }
-ITEM={ random_sword 2 0 1 }
-ITEM={ random_scroll 1 0 1 }
+DESCRIPTION=Loaded Magic Goodie
+CONTAINER=random_container
+ITEM=random_clothing_all
+COLOR=colors_all
+ITEM={ random_scroll 1 0 1 },{4 5}
+ITEM={ random_potion 1 0 1 },{2 3}
+ITEM={ random_wand_magery 1 0 1 }
+ITEM={ random_reagent 1 0 1 },{7 13}
 
-[TEMPLATE goodie_loaded_4]
+////////////////////////
+// Backpack Templates //
+////////////////////////
+
+[TEMPLATE poor_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Goodie 4
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_head_armor 2 0 1 }
-ITEM={ random_chest_armor 2 0 1 }
-ITEM={ random_axe 2 0 1 }
-ITEM={ random_pole_arm 2 0 1 }
-ITEM={ random_jewel 2 0 1 },{ 1 4 }
-
-[TEMPLATE UNDEAD_BACKPACK]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Undead Backpack
+DESCRIPTION=Poor Backpack
 CONTAINER=i_backpack
-ITEM={ rich_gold_pile 1 pouch_rich 1}
-ITEM={ random_potion 1 0 3 }
+ITEM=poor_gold_pile
+ITEM=poor_pouch
+ITEM={ poor_goodie 1 poor_magic_goodie 1 }
+ITEM={ random_food 1 0 5 }
+ITEM={ random_drink 1 0 5 }
 
-//***MAGIC_GOODIES
-[TEMPLATE RANDOM_POOR_MAGIC_LOOT]
+[TEMPLATE meager_backpack]
 CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Poor Magic Loot
-ITEM={ RANDOM_WEAPON_RUIN 5 RANDOM_SHIELD_DEFENSE 1 RANDOM_PLATEMAIL_DEFENSE 1 RANDOM_CHAINMAIL_DEFENSE 1 RANDOM_RINGMAIL_DEFENSE 1 }
+SUBSECTION=Loot Templates
+DESCRIPTION=Meager Backpack
+CONTAINER=i_backpack
+ITEM=meager_gold_pile
+ITEM=meager_pouch
+ITEM={ meager_goodie 1 meager_magic_goodie 1 }
+ITEM={ random_food 1 0 4 }
+ITEM={ random_drink 1 0 4 }
 
-[TEMPLATE RANDOM_MEAGER_MAGIC_LOOT]
+[TEMPLATE average_backpack]
 CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Meager Magic Loot
-ITEM={ RANDOM_WEAPON_MIGHT 5 RANDOM_SHIELD_GUARDING 1 RANDOM_PLATEMAIL_GUARDING 1 RANDOM_CHAINMAIL_GUARDING 1 RANDOM_RINGMAIL_GUARDING 1 }
+SUBSECTION=Loot Templates
+DESCRIPTION=Average Backpack
+CONTAINER=i_backpack
+ITEM=average_gold_pile
+ITEM=average_pouch
+ITEM={ average_goodie 1 average_magic_goodie 1 }
+ITEM={ random_food 1 0 3 }
+ITEM={ random_drink 1 0 3 }
 
-[TEMPLATE RANDOM_AVERAGE_MAGIC_LOOT]
+[TEMPLATE rich_backpack]
 CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Average Magic Loot
-ITEM={ RANDOM_WEAPON_FORCE 5 RANDOM_SHIELD_HARDENING 1 RANDOM_PLATEMAIL_HARDENING 1 RANDOM_CHAINMAIL_HARDENING 1 RANDOM_RINGMAIL_HARDENING 1 }
+SUBSECTION=Loot Templates
+DESCRIPTION=Rich Backpack
+CONTAINER=i_backpack
+ITEM=rich_gold_pile
+ITEM=rich_pouch
+ITEM={ rich_goodie 1 rich_magic_goodie 1 }
+ITEM={ random_food 1 0 2 }
+ITEM={ random_drink 1 0 2 }
 
-[TEMPLATE RANDOM_RICH_MAGIC_LOOT]
+[TEMPLATE loaded_backpack]
 CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Rich Magic Loot
-ITEM={ RANDOM_WEAPON_POWER 5 RANDOM_SHIELD_FORTIFICATION 1 RANDOM_PLATEMAIL_FORTIFICATION 1 RANDOM_CHAINMAIL_FORTIFICATION 1 RANDOM_RINGMAIL_FORTIFICATION 1 }
+SUBSECTION=Loot Templates
+DESCRIPTION=Loaded Backpack
+CONTAINER=i_backpack
+ITEM=loaded_gold_pile
+ITEM=loaded_pouch
+ITEM={ loaded_goodie 1 loaded_magic_goodie 1 }
+ITEM={ random_food 1 0 1 }
+ITEM={ random_drink 1 0 1 }
 
-[TEMPLATE RANDOM_FILTHY_RICH_MAGIC_LOOT]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Filthy Rich Magic Loot
-ITEM={ RANDOM_WEAPON_vanq 5 RANDOM_SHIELD_INVULNERABILITY 1 RANDOM_PLATEMAIL_INVULNERABILITY 1 RANDOM_CHAINMAIL_INVULNERABILITY 1 RANDOM_RINGMAIL_INVULNERABILITY 1 }
+////////////////
+// Magic Loot //
+////////////////
 
-[TEMPLATE RANDOM_POOR_MAGIC_GOODIE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Poor Magic Goodie
-CONTAINER=random_crate
-ITEM={ POOR_GOLD_PILE 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_bread 1 0 3 }
-ITEM={ RANDOM_PITCHER 1 0 3 }
-ITEM={ random_light 1 0 3 }
-ITEM={ random_reagent 1 0 3 },{ 1 3 }
-ITEM={ random_poor_magic_loot 1 0 9 }
-
-[TEMPLATE RANDOM_MEAGER_MAGIC_GOODIE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Meager Magic Goodie
-CONTAINER=random_crate
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_boots 1 random_gorget 1  0 2 }
-ITEM={ random_staff 1 random_necklace 1 0 2 }
-ITEM={ random_reagent 1 0 2 },{ 1 5 }
-ITEM={ random_meager_magic_loot 1 random_poor_magic_loot 2 0 27 }
-
-[TEMPLATE RANDOM_AVERAGE_MAGIC_GOODIE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Average Magic Goodie
-CONTAINER=random_crate
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_boots 1 0 1 }
-ITEM={ random_gorget 1 0 1 }
-ITEM={ random_staff 1 0 1 }
-ITEM={ random_necklace 1 0 1 }
-ITEM=i_gold,{70 100}
-ITEM={ random_reagent 1 0 1 },{ 2 10 }
-ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 random_poor_magic_loot 4 0  63 }
-
-[TEMPLATE RANDOM_RICH_MAGIC_GOODIE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Rich Magic Goodie
-CONTAINER=random_crate
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_boots 2 0 1 }
-ITEM={ random_gorget 2 0 1 }
-ITEM={ random_staff 2 0 1 }
-ITEM={ random_necklace 2 0 1 }
-ITEM={ random_scroll 1 0 1 }
-ITEM={ random_reagent 1 0 1 },{ 5 15 }
-ITEM={ random_rich_magic_loot 1 random_average_magic_loot 2 random_meager_magic_loot 4 0 63 }
-
-[TEMPLATE RANDOM_FILTHY_RICH_MAGIC_GOODIE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Filthy Rich Magic Goodie
-CONTAINER=random_crate
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_boots 3 0 1 }
-ITEM={ random_gorget 3 0 1 }
-ITEM={ random_staff 3 0 1 }
-ITEM={ random_necklace 3 0 1 }
-ITEM={ random_scroll 1 0 1 }
-ITEM={ random_scroll 1 0 1 }
-ITEM={ random_reagent 1 0 1 },{ 10 25 }
-ITEM={ random_reagent 1 0 1 },{ 10 25 }
-ITEM={ random_filthy_rich_magic_loot 1 random_rich_magic_loot 2 random_average_magic_loot 4 0 63 }
-
-[TEMPLATE RANDOM_MAGIC_LOOT]
+[TEMPLATE random_magic_loot]
 CATEGORY=Item Templates
 SUBSECTION=Random Magic Loot Templates
 DESCRIPTION=Random Magic Loot
-ITEM={ RANDOM_POOR_MAGIC_LOOT 16 RANDOM_MEAGER_MAGIC_LOOT 8 RANDOM_AVERAGE_MAGIC_LOOT 4 RANDOM_RICH_MAGIC_LOOT 2 RANDOM_FILTHY_RICH_MAGIC_LOOT 1 }
+ITEM={ random_poor_magic_loot 16 random_meager_magic_loot 8 random_average_magic_loot 4 random_rich_magic_loot 2 random_loaded_magic_loot 1 }
 
-[TEMPLATE RANDOM_MAGIC_GOODIE]
+[TEMPLATE random_poor_magic_loot]
 CATEGORY=Item Templates
 SUBSECTION=Random Magic Loot Templates
-DESCRIPTION=Random Magic Goodie
-ITEM={ RANDOM_POOR_MAGIC_GOODIE 16 RANDOM_MEAGER_MAGIC_GOODIE 8 RANDOM_AVERAGE_MAGIC_GOODIE 4 RANDOM_RICH_MAGIC_GOODIE 2 RANDOM_FILTHY_RICH_MAGIC_GOODIE 1 }
+DESCRIPTION=Random Poor Magic Loot
+ITEM={ random_potions_all 1 random_scroll 1 random_magic_custom_lesser 1 }
 
-// Monster Backpacks
-[TEMPLATE POOR_MONSTER_BACKPACK]
+[TEMPLATE random_meager_magic_loot]
 CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Poor Monster Backpack
-CONTAINER=i_backpack
-ITEM={ random_meat 1 0 2 }
-ITEM={ i_torch 1 0 8 }
-ITEM={ random_poor_magic_loot 1 0 300 }
-ITEM=POOR_GOLD_PILE
+SUBSECTION=Random Magic Loot Templates
+DESCRIPTION=Random Meager Magic Loot
+ITEM={ random_potions_all 1 random_scroll 1 random_magic_custom_lesser 1 }
 
-[TEMPLATE MEAGER_MONSTER_BACKPACK]
+[TEMPLATE random_average_magic_loot]
 CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Meager Monster Backpack
-CONTAINER=i_backpack
-ITEM={ random_meat 1 0 2 },{ 1 2 }
-ITEM={ i_torch 1 0 6 }
-ITEM={ random_meager_magic_loot 1 0 150 }
-ITEM=MEAGER_GOLD_PILE
+SUBSECTION=Random Magic Loot Templates
+DESCRIPTION=Random Average Magic Loot
+ITEM={ random_potions_all 1 random_scroll 1 random_magic_custom_lesser 1 }
 
-[TEMPLATE AVERAGE_MONSTER_BACKPACK]
+[TEMPLATE random_rich_magic_loot]
 CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Average Monster Backpack
-CONTAINER=i_backpack
-ITEM={ random_meat 1 0 2 },{ 1 3 }
-ITEM={ i_torch 1 0 4 },{ 1 2 }
-ITEM={ random_average_magic_loot 1 0 75 }
-ITEM=AVERAGE_GOLD_PILE
+SUBSECTION=Random Magic Loot Templates
+DESCRIPTION=Random Rich Magic Loot
+ITEM={ random_potions_all 1 random_scroll 1 random_magic_custom_greater 1 }
 
-[TEMPLATE RICH_MONSTER_BACKPACK]
+[TEMPLATE random_loaded_magic_loot]
 CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Rich Monster Backpack
-CONTAINER=i_backpack
-ITEM={ random_meat 1 0 2 },{ 2 5 }
-ITEM={ i_torch 1 0 2 },{ 1 3 }
-ITEM={ random_rich_magic_loot 1 0 40 }
-ITEM=RICH_GOLD_PILE
+SUBSECTION=Random Magic Loot Templates
+DESCRIPTION=Random Loaded Magic Loot
+ITEM={ random_potions_all 1 random_scroll 1 random_magic_custom_greater 1 }
 
-[TEMPLATE FILTHY_RICH_MONSTER_BACKPACK]
-CATEGORY=Item Templates
-SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Monster Backpack
-CONTAINER=i_backpack
-ITEM={ random_meat 1 0 2 },{ 2 6 }
-ITEM={ i_torch 1 0 1 },{ 1 3 }
-ITEM={ random_filthy_rich_magic_loot 1 0 20 }
-ITEM=FILTHY_RICH_GOLD_PILE
+/////////////////////
+// Monster Goodies //
+/////////////////////
 
-[TEMPLATE RANDOM_POOR_MONSTER_GOODIE]
+[TEMPLATE random_poor_monster_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Random Loot Templates
 DESCRIPTION=Random Poor Monster Goodie
 CONTAINER=random_crate
-ITEM={ POOR_MONSTER_GOODIE_1 1 POOR_MONSTER_GOODIE_2 1 POOR_MONSTER_GOODIE_3 1 POOR_MONSTER_GOODIE_4 1 }
+ITEM={ poor_monster_goodie_1 1 poor_monster_goodie_2 1 poor_monster_goodie_3 1 poor_monster_goodie_4 1 }
 
-[TEMPLATE POOR_MONSTER_GOODIE_1]
+[TEMPLATE poor_monster_goodie_1]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Monster Goodie 1
-ITEM={ POOR_GOLD_PILE 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_jewelry 1 0 4 }
+ITEM={ poor_gold_pile 1 poor_backpack 1 poor_pouch 1 }
+ITEM={ random_jewelry 1 0 5 }
 
-[TEMPLATE POOR_MONSTER_GOODIE_2]
+[TEMPLATE poor_monster_goodie_2]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Monster Goodie 2
-ITEM={ POOR_GOLD_PILE 1 backpack_poor 1 pouch_poor 1 }
+ITEM={ poor_gold_pile 1 poor_backpack 1 poor_pouch 1 }
+ITEM={ random_instrument 1 0 5 }
 
-[TEMPLATE POOR_MONSTER_GOODIE_3]
+[TEMPLATE poor_monster_goodie_3]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Monster Goodie 3
-ITEM={ POOR_GOLD_PILE 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_light 1 0 1 }
+ITEM={ poor_gold_pile 1 poor_backpack 1 poor_pouch 1 }
+ITEM={ random_light 1 0 5 }
 
-[TEMPLATE POOR_MONSTER_GOODIE_4]
+[TEMPLATE poor_monster_goodie_4]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Monster Goodie 4
-ITEM={ POOR_GOLD_PILE 1 backpack_poor 1 pouch_poor 1 }
-ITEM={ random_meat 1 0 1 }
+ITEM={ poor_gold_pile 1 poor_backpack 1 poor_pouch 1 }
+ITEM={ random_food 1 0 5 }
+ITEM={ random_drink 1 0 5 }
 
-[TEMPLATE RANDOM_MEAGER_MONSTER_GOODIE]
+
+[TEMPLATE random_meager_monster_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Random Loot Templates
 DESCRIPTION=Random Meager Monster Goodie
 CONTAINER=random_crate
-ITEM={ MEAGER_MONSTER_GOODIE_1 1 MEAGER_MONSTER_GOODIE_2 1 MEAGER_MONSTER_GOODIE_3 MEAGER_MONSTER_GOODIE_4 1 }
-ITEM={ POOR_MONSTER_GOODIE_1 1 POOR_MONSTER_GOODIE_2 1 POOR_MONSTER_GOODIE_3 1 POOR_MONSTER_GOODIE_4 1 0 4}
+ITEM={ meager_monster_goodie_1 1 meager_monster_goodie_2 1 meager_monster_goodie_3 meager_monster_goodie_4 1 }
+ITEM={ poor_monster_goodie_1 1 poor_monster_goodie_2 1 poor_monster_goodie_3 1 poor_monster_goodie_4 1 0 4}
 
-[TEMPLATE MEAGER_MONSTER_GOODIE_1]
+[TEMPLATE meager_monster_goodie_1]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Monster Goodie 1
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_boots 1 0 4 }
-ITEM={ random_gorget 1 0 4 }
-ITEM={ random_staff 1 0 4 }
+ITEM={ meager_gold_pile 1 meager_backpack 1 meager_pouch 1 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_weapon_staff_normal 1 0 4 }
 ITEM={ random_necklace 1 0 4 }
 
-[TEMPLATE MEAGER_MONSTER_GOODIE_2]
+[TEMPLATE meager_monster_goodie_2]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Monster Goodie 2
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_shield 1 0 4 }
-ITEM={ random_missile 1 0 4 }
+ITEM={ meager_gold_pile 1 meager_backpack 1 meager_pouch 1 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_weapon_archer_normal 1 0 4 }
 ITEM={ i_arrow 1 i_xbolt 1 0 3 },{ 3 10 }
-ITEM={ Random_Potion 1 0 4 }
+ITEM={ random_potion 1 0 4 }
 
-[TEMPLATE MEAGER_MONSTER_GOODIE_3]
+[TEMPLATE meager_monster_goodie_3]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Monster Goodie 3
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_arm_armor 1 0 4 }
-ITEM={ random_leg_armor 1 0 4 }
-ITEM={ random_mace 1 0 4 }
-ITEM={ random_sword 1 0 4 }
+ITEM={ meager_gold_pile 1 meager_backpack 1 meager_pouch 1 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_weapon_mace_normal 1 0 4 }
+ITEM={ random_weapon_sword_normal 1 0 4 }
 
-[TEMPLATE MEAGER_MONSTER_GOODIE_4]
+[TEMPLATE meager_monster_goodie_4]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Monster Goodie 4
-ITEM={ MEAGER_GOLD_PILE 1 backpack_meager 1 pouch_meager 1 }
-ITEM={ random_head_armor 1 0 4 }
-ITEM={ random_chest_armor 1 0 4 }
-ITEM={ random_axe 1 0 4 }
-ITEM={ random_pole_arm 1 0 4 }
+ITEM={ meager_gold_pile 1 meager_backpack 1 meager_pouch 1 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_armor_all 1 0 4 }
+ITEM={ random_weapon_axe_normal 1 0 4 }
+ITEM={ random_weapon_sword_normal 1 0 4 }
 ITEM={ random_jewel 1 0 4 }
 ITEM={ random_reagent 1 0 4 },{ 1 5 }
 
-[TEMPLATE RANDOM_AVERAGE_MONSTER_GOODIE]
+
+[TEMPLATE random_average_monster_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Random Loot Templates
 DESCRIPTION=Random Average Monster Goodie
 CONTAINER=random_container
-ITEM={ AVERAGE_MONSTER_GOODIE_1 1 AVERAGE_MONSTER_GOODIE_2 1 AVERAGE_MONSTER_GOODIE_3 1 AVERAGE_MONSTER_GOODIE_4 1 }
-ITEM={ POOR_MONSTER_GOODIE_1 1 POOR_MONSTER_GOODIE_2 1 POOR_MONSTER_GOODIE_3 1 POOR_MONSTER_GOODIE_4 1 0 4 }
+ITEM={ average_monster_goodie_1 1 average_monster_goodie_2 1 average_monster_goodie_3 1 average_monster_goodie_4 1 }
+ITEM={ poor_monster_goodie_1 1 poor_monster_goodie_2 1 poor_monster_goodie_3 1 poor_monster_goodie_4 1 0 4 }
 
-[TEMPLATE AVERAGE_MONSTER_GOODIE_1]
+[TEMPLATE average_monster_goodie_1]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Monster Goodie 1
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_boots 1 0 2 }
-ITEM={ random_gorget 1 0 2 }
-ITEM={ random_staff 1 0 2 }
+ITEM={ average_gold_pile 1 average_backpack 1 average_pouch 1 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_weapon_staff_normal 1 0 2 }
 ITEM={ random_necklace 1 0 2 }
-ITEM={ random_targetables 1 0 5 }
 ITEM={ random_poor_magic_loot 1 0 200 }
 
-[TEMPLATE AVERAGE_MONSTER_GOODIE_2]
+[TEMPLATE average_monster_goodie_2]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Monster Goodie 2
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_shield 1 0 2 }
-ITEM={ random_missile 1 0 2 }
+ITEM={ average_gold_pile 1 average_backpack 1 average_pouch 1 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_weapon_archer_normal 1 0 2 }
 ITEM={ i_arrow 1 i_xbolt 1 0 4 },{ 5 20 }
-ITEM={ Random_Potion 1 0 2 }
+ITEM={ random_potion 1 0 2 }
 ITEM={ random_activators 1 0 4 }
 ITEM={ random_poor_magic_loot 1 0 200 }
 
-[TEMPLATE AVERAGE_MONSTER_GOODIE_3]
+[TEMPLATE average_monster_goodie_3]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Monster Goodie 3
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_arm_armor 1 0 2 }
-ITEM={ random_leg_armor 1 0 2 }
-ITEM={ random_mace 1 0 2 }
-ITEM={ random_sword 1 0 2 }
+ITEM={ average_gold_pile 1 average_backpack 1 average_pouch 1 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_weapon_mace_normal 1 0 2 }
+ITEM={ random_weapon_sword_normal 1 0 2 }
 ITEM={ random_scroll 1 0 2 }
 ITEM={ random_reagent 1 0 2 },{ 5 20 }
 ITEM={ random_poor_magic_loot 1 0 200 }
 
-[TEMPLATE AVERAGE_MONSTER_GOODIE_4]
+[TEMPLATE average_monster_goodie_4]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Monster Goodie 4
-ITEM={ AVERAGE_GOLD_PILE 1 backpack_average 1 pouch_average 1 }
-ITEM={ random_head_armor 1 0 2 }
-ITEM={ random_chest_armor 1 0 2 }
-ITEM={ random_axe 1 0 2 }
-ITEM={ random_pole_arm 1 0 2 }
-ITEM={ random_shield 1 0 2 }
+ITEM={ average_gold_pile 1 average_backpack 1 average_pouch 1 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_weapon_axe_normal 1 0 2 }
+ITEM={ random_weapon_sword_normal 1 0 2 }
 ITEM={ random_jewel 1 0 2 }
-ITEM={ random_potions 1 0 4 }
+ITEM={ random_potion 1 0 4 }
 ITEM={ random_poor_magic_loot 1 0 200 }
 
-[TEMPLATE RANDOM_RICH_MONSTER_GOODIE]
+
+[TEMPLATE random_rich_monster_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Random Loot Templates
 DESCRIPTION=Random Rich Monster Goodie
 CONTAINER=random_chest
-ITEM={ RICH_MONSTER_GOODIE_1 1 RICH_MONSTER_GOODIE_2 1 RICH_MONSTER_GOODIE_3 1 RICH_MONSTER_GOODIE_4 1 }
-ITEM={ POOR_MONSTER_GOODIE_1 1 POOR_MONSTER_GOODIE_2 1 POOR_MONSTER_GOODIE_3 1 POOR_MONSTER_GOODIE_4 1 0 4 }
+ITEM={ rich_monster_goodie_1 1 rich_monster_goodie_2 1 rich_monster_goodie_3 1 rich_monster_goodie_4 1 }
+ITEM={ poor_monster_goodie_1 1 poor_monster_goodie_2 1 poor_monster_goodie_3 1 poor_monster_goodie_4 1 0 4 }
 
-[TEMPLATE RICH_MONSTER_GOODIE_1]
+[TEMPLATE rich_monster_goodie_1]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Monster Goodie 1
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_boots 1 0 1 }
-ITEM={ random_gorget 1 0 1 }
-ITEM={ random_staff 1 0 1 }
+ITEM={ rich_gold_pile 1 rich_backpack 1 rich_pouch 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_weapon_staff_normal 1 0 1 }
 ITEM={ random_necklace 1 0 1 }
 ITEM={ random_scroll 1 0 1 }
 ITEM={ random_activators 1 0 3 }
 ITEM={ random_poor_magic_loot 2 random_meager_magic_loot 1 0 450 }
 
-[TEMPLATE RICH_MONSTER_GOODIE_2]
+[TEMPLATE rich_monster_goodie_2]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Monster Goodie 2
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_shield 1 0 1 }
-ITEM={ random_missile 1 0 1 }
+ITEM={ rich_gold_pile 1 rich_backpack 1 rich_pouch 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_weapon_archer_normal 1 0 1 }
 ITEM={ i_arrow 1 i_xbolt 1 0 2 },{ 10 30 }
 ITEM={ random_potion 1 0 1 }
-ITEM={ random_targetables 1 0 3 }
 ITEM={ random_poor_magic_loot 2 random_meager_magic_loot 1 0 450 }
 
-[TEMPLATE RICH_MONSTER_GOODIE_3]
+[TEMPLATE rich_monster_goodie_3]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Monster Goodie 3
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_arm_armor 1 0 1 }
-ITEM={ random_leg_armor 1 0 1 }
-ITEM={ random_mace 1 0 1 }
-ITEM={ random_sword 1 0 1 }
-ITEM={ random_potions 1 0 3 }
+ITEM={ rich_gold_pile 1 rich_backpack 1 rich_pouch 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_weapon_mace_normal 1 0 1 }
+ITEM={ random_weapon_sword_normal 1 0 1 }
+ITEM={ random_potion 1 0 3 }
 ITEM={ random_poor_magic_loot 2 random_meager_magic_loot 1 0 450 }
 
-[TEMPLATE RICH_MONSTER_GOODIE_4]
+[TEMPLATE rich_monster_goodie_4]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Monster Goodie 4
-ITEM={ RICH_GOLD_PILE 1 backpack_rich 1 pouch_rich 1 }
-ITEM={ random_head_armor 1 0 1 }
-ITEM={ random_chest_armor 1 0 1 }
-ITEM={ random_axe 1 0 1 }
-ITEM={ random_pole_arm 1 0 1 }
+ITEM={ rich_gold_pile 1 rich_backpack 1 rich_pouch 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_armor_all 1 0 1 }
+ITEM={ random_weapon_axe_normal 1 0 1 }
+ITEM={ random_weapon_sword_normal 1 0 1 }
 ITEM={ random_jewel 1 0 1 },{ 1 2 }
 ITEM={ random_masks 1 0 4 }
 ITEM={ random_poor_magic_loot 2 random_meager_magic_loot 1 0 450 }
 
-[TEMPLATE RANDOM_FILTHY_RICH_MONSTER_GOODIE]
+
+[TEMPLATE random_loaded_monster_goodie]
 CATEGORY=Item Templates
 SUBSECTION=Random Loot Templates
-DESCRIPTION=Random Filthy Rich Monster Goodie
+DESCRIPTION=Random Loaded Monster Goodie
 CONTAINER=random_chest
-ITEM={ FILTHY_RICH_MONSTER_GOODIE_1 1 FILTHY_RICH_MONSTER_GOODIE_2 1 FILTHY_RICH_MONSTER_GOODIE_3 1 FILTHY_RICH_MONSTER_GOODIE_4 1 }
-ITEM={ POOR_MONSTER_GOODIE_1 1 POOR_MONSTER_GOODIE_2 1 POOR_MONSTER_GOODIE_3 1 POOR_MONSTER_GOODIE_4 1 0 4 }
+ITEM={ loaded_monster_goodie_1 1 loaded_monster_goodie_2 1 loaded_monster_goodie_3 1 loaded_monster_goodie_4 1 }
+ITEM={ poor_monster_goodie_1 1 poor_monster_goodie_2 1 poor_monster_goodie_3 1 poor_monster_goodie_4 1 0 4 }
 
-[TEMPLATE FILTHY_RICH_MONSTER_GOODIE_1]
+[TEMPLATE loaded_monster_goodie_1]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Monster Goodie 1
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_boots 2 0 1 }
-ITEM={ random_gorget 2 0 1 }
-ITEM={ random_staff 2 0 1 }
+DESCRIPTION=Loaded Monster Goodie 1
+ITEM={ loaded_gold_pile 1 loaded_backpack 1 loaded_pouch 1 }
+ITEM={ random_armor_all 2 0 1 }
+ITEM={ random_weapon_staff_normal 2 0 1 }
 ITEM={ random_necklace 2 0 1 }
 ITEM={ random_jewel 2 0 1 },{ 1 2 }
 ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 0 300 }
 
-[TEMPLATE FILTHY_RICH_MONSTER_GOODIE_2]
+[TEMPLATE loaded_MONSTER_GOODIE_2]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Monster Goodie 2
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_shield 2 0 1 }
-ITEM={ random_missile 2 0 1 }
+DESCRIPTION=Loaded Monster Goodie 2
+ITEM={ loaded_gold_pile 1 loaded_backpack 1 loaded_pouch 1 }
+ITEM={ random_armor_all 1 0 2 }
+ITEM={ random_weapon_archer_normal 2 0 1 }
 ITEM={ i_arrow 2 i_xbolt 2 0 2 },{ 25 70 }
-ITEM={ Random_Potion 2 0 1 },{ 1 2 }
+ITEM={ random_potion 2 0 1 },{ 1 2 }
 ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 0 300 }
 
-[TEMPLATE FILTHY_RICH_MONSTER_GOODIE_3]
+[TEMPLATE loaded_MONSTER_GOODIE_3]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Monster Goodie 3
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_arm_armor 2 0 1 }
-ITEM={ random_leg_armor 2 0 1 }
-ITEM={ random_mace 2 0 1 }
-ITEM={ random_sword 2 0 1 }
+DESCRIPTION=Loaded Monster Goodie 3
+ITEM={ loaded_gold_pile 1 loaded_backpack 1 loaded_pouch 1 }
+ITEM={ random_armor_all 2 0 1 }
+ITEM={ random_armor_all 2 0 1 }
+ITEM={ random_weapon_mace_normal 2 0 1 }
+ITEM={ random_weapon_sword_normal 2 0 1 }
 ITEM={ random_scroll 1 0 1 }
 ITEM={ random_jewel 2 0 1 },{ 1 2 }
 ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 0 300 }
 ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 0 300 }
 
-[TEMPLATE FILTHY_RICH_MONSTER_GOODIE_4]
+[TEMPLATE loaded_MONSTER_GOODIE_4]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Monster Goodie 4
-ITEM={ FILTHY_RICH_GOLD_PILE 1 backpack_loaded 1 pouch_loaded 1 }
-ITEM={ random_head_armor 2 0 1 }
-//MAGIC=25 30 105
-ITEM={ random_chest_armor 2 0 1 }
-//MAGIC=25 30 105
-ITEM={ random_axe 2 0 1 }
-//MAGIC=25 30 105
-ITEM={ random_pole_arm 2 0 1 }
-//MAGIC=25 30 105
+DESCRIPTION=Loaded Monster Goodie 4
+ITEM={ loaded_gold_pile 1 loaded_backpack 1 loaded_pouch 1 }
+ITEM={ random_armor_all 2 0 1 }
+//MAgic=25 30 105
+ITEM={ random_armor_all 2 0 1 }
+//MAgic=25 30 105
+ITEM={ random_weapon_axe_normal 2 0 1 }
+//MAgic=25 30 105
+ITEM={ random_weapon_sword_normal 2 0 1 }
+//MAgic=25 30 105
 ITEM={ random_jewel 2 0 1 },{ 1 4 }
 ITEM={ random_average_magic_loot 1 random_meager_magic_loot 2 0 300 }
 
-// Undead backpacks
-[TEMPLATE POOR_UNDEAD_BACKPACK]
+////////////////////////////////
+// Monster Backpack Templates //
+////////////////////////////////
+
+// Monster loot templates are broken into the following categories:
+// -Undead
+// -Elemental
+// -Drake, Dragon, and Wyrm
+// -Gargoyle, Devil, and Demon
+// -Lizardman and Ratman
+// -Wild animal
+// -Ogre, Ettin, and Giant
+// -Evil NPC
+// -Orc, Goblin, and Troll
+// -Ophidian
+// -Terathan
+// -Misc
+
+[TEMPLATE loot_ai_hard]
+CATEGORY=Item Templates
+SUBSECTION=AI Templates
+DESCRIPTION=Monster AI Hard
+ITEMNEWBIE=i_potion_heal,{6 9}
+ITEMNEWBIE=i_potion_cure,{6 9}
+ITEM=i_bandage,{25 40}
+ITEMNEWBIE=random_weapon_archer_normal
+ITEMNEWBIE=random_weapon_all_normal
+ITEMNEWBIE=random_armor_shield_european
+ITEM=i_arrow,{25 35}
+ITEM=i_xbolt,{25 35}
+
+[TEMPLATE loot_ai_healer]
+CATEGORY=Item Templates
+SUBSECTION=AI Templates
+DESCRIPTION=Monster AI Healer
+ITEMNEWBIE=i_potion_heal,{6 9}
+ITEMNEWBIE=i_potion_cure,{6 9}
+ITEM=i_bandage,{25 35}
+
+[TEMPLATE loot_ai_archer]
+CATEGORY=Item Templates
+SUBSECTION=AI Templates
+DESCRIPTION=Monster AI Archer
+ITEMNEWBIE=random_weapon_archer_normal
+ITEMNEWBIE=random_weapon_all_normal
+ITEM=i_arrow,{25 35}
+ITEM=i_xbolt,{25 35}
+
+//////////////////////
+// Undead backpacks //
+//////////////////////
+
+[TEMPLATE poor_undead_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Poor Undead Backpack
 CONTAINER=i_backpack
-ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
-ITEM={ random_poor_magic_loot 1 0 300 }
-ITEM={ poor_gold_pile 5 0 2 }
-ITEM={ random_jewel 1 0 10 }
+ITEM=poor_gold_pile
+ITEM=random_jewel,1,R10
+ITEM=random_body_parts_1,1,R10
+ITEM=random_body_parts_2,1,R10
+ITEM=random_poor_magic_loot,1,R100
 
-[TEMPLATE MEAGER_UNDEAD_BACKPACK]
+[TEMPLATE meager_undead_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Meager Undead Backpack
 CONTAINER=i_backpack
-ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 3 }
-ITEM={ random_meager_magic_loot 1 0 150 }
-ITEM={ meager_gold_pile 4 0 1 }
-ITEM={ random_jewel 1 0 4 }
+ITEM=meager_gold_pile
+ITEM=random_jewel,1,R8
+ITEM=random_body_parts_1,1,R8
+ITEM=random_body_parts_2,1,R8
+ITEM=random_meager_magic_loot,1,R80
 
-[TEMPLATE AVERAGE_UNDEAD_BACKPACK]
+[TEMPLATE average_undead_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Average Undead Backpack
 CONTAINER=i_backpack
-ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 1 }
-ITEM={ random_average_magic_loot 1 0 75 }
 ITEM=average_gold_pile
-ITEM={ random_jewel 1 0 2 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_reagent 1 0 2 },{ 2 5 }
+ITEM=random_jewel,{1 2},R6
+ITEM=random_body_parts_1,1,R6
+ITEM=random_body_parts_2,1,R6
+ITEM=random_meager_magic_loot,1,R60
 
-[TEMPLATE RICH_UNDEAD_BACKPACK]
+[TEMPLATE rich_undead_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
 DESCRIPTION=Rich Undead Backpack
 CONTAINER=i_backpack
-ITEM={ random_body_parts_1 1 random_body_parts_2 1 }
-ITEM={ random_rich_magic_loot 1 0 40 }
 ITEM=rich_gold_pile
-ITEM={ random_jewel 1 0 1 },{ 1 3 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_reagent 1 0 2 },{ 5 20 }
-ITEM={ random_reagent 1 0 2 },{ 3 10 }
+ITEM=random_jewel,{1 3},R4
+ITEM=random_scroll,1,R4
+ITEM=random_scroll,1,R4
+ITEM=random_reagent,{3 10},R4
+ITEM=random_reagent,{3 10},R4
+ITEM=random_body_parts_1,1,R4
+ITEM=random_body_parts_2,1,R4
+ITEM=random_rich_magic_loot,1,40
 
-[TEMPLATE FILTHY_RICH_UNDEAD_BACKPACK]
+[TEMPLATE loaded_undead_backpack]
 CATEGORY=Item Templates
 SUBSECTION=Loot Templates
-DESCRIPTION=Filthy Rich Undead Backpack
+DESCRIPTION=Loaded Undead Backpack
 CONTAINER=i_backpack
-ITEM={ random_body_parts_1 1 random_body_parts_2 1 }
-ITEM={ random_filthy_rich_magic_loot 1 0 20 }
-ITEM=filthy_rich_gold_pile
-ITEM={ random_jewel 3 0 1 },{ 1 5 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_scroll 1 0 2 }
-ITEM={ random_reagent 1 0 2 },{ 5 20 }
-ITEM={ random_reagent 1 0 2 },{ 5 20 }
-ITEM={ random_reagent 1 0 2 },{ 5 20 }
+ITEM=loaded_gold_pile
+ITEM=random_jewel,{2 5},R2
+ITEM=random_jewel,{2 5},R2
+ITEM=random_scroll,{1 3},R2
+ITEM=random_scroll,{1 3},R2
+ITEM=random_reagent,{5 20},R2
+ITEM=random_reagent,{5 20},R2
+ITEM=random_wand_magery,1,R2
+ITEM=random_body_parts_1,1,R2
+ITEM=random_body_parts_2,1,R2
+ITEM=random_loaded_magic_loot,1,R20
+
+[TEMPLATE loot_ghoul]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ghoul
+ITEM=i_gold,{50 150}
+ITEM=random_jewel
+ITEM=random_jewel,R5
+ITEM=random_armor_bone
+
+[TEMPLATE loot_bogle]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Bogle
+ITEM=i_gold,{10 50}
+ITEM=random_jewel,R3
+ITEM=random_armor_all,1,R12
+
+[TEMPLATE loot_lich]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lich
+ITEM=i_gold,{125 200}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_weapon_staff_normal
+ITEM={ random_magic_loot 1 0 50 }
+ITEM=monster_regbag_necromancy
+CONTAINER=i_bag
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R80
+
+[TEMPLATE loot_lich_ancient]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lich (ancient)
+ITEM=i_gold,{1000 1100}
+ITEM=random_jewel,{3 4}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{6 9}
+//ITEM=i_map_treasure,1,R20
+ITEM={ random_weapon_staff_normal 99 i_staff_lich 1 }
+ITEM={ random_magic_loot 1 0 20 }
+ITEM=monster_regbag_necromancy
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{2 3}
+ITEM=random_reagent,{5 8}
+ITEM=random_wand_magery
+ITEM={ random_item_misc_rare 1 0 200 }
+
+[TEMPLATE loot_lich_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lich Lord
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{2 3}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+//ITEM=i_map_treasure,1,R40
+ITEM={ random_weapon_staff_normal 199 i_staff_lich 1 }
+ITEM={ random_magic_loot 1 0 30 }
+ITEM=monster_regbag_necromancy
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{200 300}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1
+ITEM={ random_item_misc_rare 1 0 300 }
+
+[TEMPLATE loot_lich_primeval]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lich (primeval)
+ITEM=i_gold,{1000 1100}
+ITEM=random_jewel,{3 4}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{6 9}
+ITEM={ random_weapon_staff_normal 99 i_staff_lich 1 }
+ITEM=random_magic_loot,1,R20
+ITEM=monster_regbag_necromancy
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+//ITEM=i_map_treasure,1,R20
+ITEM=i_lich_dust,{2 3},R5
+ITEM=random_artifact,1,R10
+CONTAINER=i_bag
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{2 3}
+ITEM=random_reagent,{5 8}
+ITEM=random_wand_magery
+ITEM=random_item_misc_rare,1,R20
+
+
+[TEMPLATE loot_dark_guardian]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dark Guardian
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_weapon_staff_normal
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM=monster_regbag_necromancy
+ITEM=i_reag_daemon_bone,{15 20}
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=i_reag_daemon_bone,{10 15},R2
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R30
+
+[TEMPLATE loot_shade]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Shade
+ITEM=i_gold,{100 150}
+ITEM=random_scroll,{2 3}
+ITEM=random_armor_bone,1,R3
+
+[TEMPLATE loot_skeleton]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skeleton
+ITEM=i_gold,{25 50}
+ITEM=random_armor_bone,1,R3
+
+[TEMPLATE loot_skeleton_axe]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skeleton (axe)
+ITEM=i_gold,{25 50}
+ITEM=random_armor_bone,1,R3
+ITEM={ random_weapon_axe_normal 499 i_axe_skeleton 1 }
+
+[TEMPLATE loot_skeleton_sword]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skeleton (sword)
+ITEM=i_gold,{25 50}
+ITEM=random_armor_bone,1,R3
+ITEM=random_shield
+ITEM={ random_weapon_sword_normal 499 i_scimitar_skeleton 1 }
+
+[TEMPLATE loot_skeletal_knight]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skeletal Knight
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 2}
+ITEM={ random_armor_bone 10 random_armor_all 1 0 10 }
+ITEM=random_armor_shield_european
+ITEM={ i_scimitar 299 i_scimitar_skeleton 1 }
+
+[TEMPLATE loot_skeletal_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skeletal Mage
+ITEM=i_gold,{125 150}
+ITEM=random_scroll,{1 2}
+ITEM=random_reagent,{4 6}
+ITEM=random_reagent_necro,{4 6}
+ITEM=random_wand_magery,R10
+ITEM=random_weapon_staff_normal,R5
+ITEM=random_potion,R5
+
+[TEMPLATE loot_spectre]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spectre
+ITEM=i_gold,{50 100}
+ITEM={ random_first_circle 1 random_second_circle 1 random_third_circle 1 random_fourth_circle 1 }
+ITEM=random_reagent,{4 6}
+ITEM=random_reagent,{4 6},R2
+ITEM={ random_armor_bone 1 0 25 }
+
+[TEMPLATE loot_wraith]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wraith
+ITEM={ random_first_circle 1 random_second_circle 1 random_third_circle 1 }
+ITEM={ random_first_circle 1 random_second_circle 1 random_third_circle 1 }
+ITEM={ random_fifth_circle 1 random_sixth_circle 1 random_seventh_circle 1 random_eighth_circle 1 0 70 }
+ITEM=random_reagent,{4 6}
+ITEM=random_reagent,{4 6}
+ITEM=random_jewel
+ITEM=i_gold,{120 180}
+
+[TEMPLATE loot_zombie]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Zombie
+ITEM=i_gold,{50 100}
+ITEM={ random_armor_bone 1 random_item_bone 1 0 5 }
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+
+[TEMPLATE loot_mummy]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Mummy
+ITEM=random_jewel
+ITEM=random_potion
+ITEM=random_potion
+ITEM=random_scroll
+ITEM=random_scroll
+ITEM=i_gold,{120 180}
+ITEM=i_bandage,{12 24}
+
+[TEMPLATE loot_rotting_corpse]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Rotting Corpse
+ITEM=i_gold,{500 625}
+ITEM=random_jewel,{1 4}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+//ITEM=i_map_treasure,R40
+CONTAINER=i_bag
+ITEM=i_gold,{500 625}
+ITEM=random_potion,R2
+ITEM=random_wand_magery,R5
+
+[TEMPLATE loot_patchwork_skeleton]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Patchwork Skeleton
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{1 2},R3
+
+[TEMPLATE loot_wailing_banshee]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wailing Banshee
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{1 2},R3
+
+[TEMPLATE loot_dream_wraith]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dream Wraith
+ITEM=i_gold,{125 200}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=monster_regbag_necromancy
+ITEM={ random_magic_loot 1 0 50 }
+CONTAINER=i_bag
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R80
+
+
+////////////////////
+// Elemental Loot //
+////////////////////
 
 [TEMPLATE loot_elem_air]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Air Elemental
-CONTAINER=i_backpack
+DESCRIPTION=Elemental (air)
+ITEM=i_gold,{100 125}
 ITEM=random_potion
-ITEM=random_potion
+ITEM=random_scroll,{1 2}
+CONTAINER=i_backpack
+ITEM=i_gold,{75 100}
 ITEM=random_scroll,{1 3}
-ITEM=random_scroll,{1 3}
-ITEM=i_scroll_blank, { 1 2 }
-ITEM=i_gold, {400 500}
-ITEM=ttm_lvl2,R99 //Tattered Treasure Map Level 2
-
-[TEMPLATE loot_ANCIENT_WYRM]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ancient Wyrm
-CONTAINER=i_backpack
-ITEM=random_potion,{ 2 3 }
-ITEM=random_potion,{ 2 3 }
-ITEM=random_scroll,{2 3}
-ITEM=random_scroll,{2 3}
-ITEM=random_magic_wands
-ITEM=random_magic_wands
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=i_gold,{1100 1300}
-
-[TEMPLATE loot_BALRON]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Balron
-CONTAINER=i_backpack
-ITEM=random_potion,{ 2 3 }
-ITEM=random_potion,{ 2 3 }
-ITEM=ttm_lvl5,R99
-ITEM=random_scroll,{ 2 3 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_magic_wands
-ITEM=random_magic_wands
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=random_magic_sword
-ITEM=i_gold,{800 1200}
-
-[TEMPLATE loot_elem_blood]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Blood Elemental
-CONTAINER=i_backpack
-ITEM=random_scroll,{ 2 3 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_magic_wands
-ITEM=random_magic_wands
-ITEM=random_jewel,{ 2 4 }
-ITEM=i_reag_blood_vial
-ITEM=i_reag_blood_vial
-ITEM=i_gold,{500 1000}
-
-[TEMPLATE loot_BONE_KNIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Bone Knight
-CONTAINER=i_backpack
-ITEM=random_platemail_armor
-ITEM=i_shield_wood
-ITEM=i_scimitar
-ITEM=i_gold,R2,{ 1 150 }
-
-[TEMPLATE loot_BONE_MAGI]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Bone Mage
-CONTAINER=i_backpack
-ITEM=random_jewel
-ITEM=i_reag_bone
-ITEM=random_scroll
-ITEM=random_scroll
-ITEM=random_average_magic_loot
-ITEM=i_gold,{ 50 200 }
-
-[TEMPLATE loot_CORPSER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Corpser
-CONTAINER=i_backpack
-ITEM={ i_log 1 i_board 1 },{ 5 10 }
-ITEM=i_reag_executioners_cap,{ 2 5 }
-ITEM=i_gold,{ 0 50 }
-
-[TEMPLATE loot_DAEMON]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Daemon
-CONTAINER=i_backpack
-ITEM=random_potion,{ 2 3 }
-ITEM=random_potion,{ 2 3 }
-ITEM=ttm_lvl4,R99
-ITEM=random_scroll,{ 2 3 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_reagent,{ 4 6 }
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=random_magic_wands
-ITEM=random_magic_wands
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=i_gold,{150 600}
-
-[TEMPLATE loot_DEEP_SEA_SERPENT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Deep Sea Serpent
-ITEM=random_fishing_junk
-ITEM=random_fishing_junk
-
-[TEMPLATE loot_DRAGON]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Dragon
-CONTAINER=i_backpack
-ITEM=random_potion,{ 2 3 }
-ITEM=random_magic_bow
-ITEM=random_scroll,{2 3}
-ITEM=random_scroll,{2 3}
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=i_gold,{1200 1400}
-
-[TEMPLATE loot_DRAKE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Drake
-CONTAINER=i_backpack
-ITEM=i_reag_garlic
-ITEM={ random_magic_bow 1 random_magic_sword 1 }
-ITEM=random_scroll,{2 3}
-ITEM=random_scroll,{2 3}
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=i_gold,{400 500}
+//ITEM=i_map_treasure,R40
 
 [TEMPLATE loot_elem_earth]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Earth Elemental
+DESCRIPTION=Elemental (earth)
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3}
+ITEM=i_ore_iron,{1 3}
 CONTAINER=i_backpack
-ITEM=i_ore_iron,{ 3 8 }
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=i_reag_fertile_dirt,{ 3 8 }
-ITEM=i_gold,{ 0 150 }
-
-[TEMPLATE loot_ELDER_GAZER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Elder Gazer
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_scroll,{1 3}
-ITEM=random_scroll,{1 3}
-ITEM=i_scroll_blank,{ 1 2 }
-ITEM=i_gold,{400 500}
-
-[TEMPLATE loot_ETTIN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ettin
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel,R2
-ITEM=tm_boulders,R8
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=i_gold,{50 150}
+ITEM=i_gold,{75 100}
+ITEM=i_reag_fertile_dirt,{1 4}
+//ITEM=i_map_treasure,R40
 
 [TEMPLATE loot_elem_fire]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Fire Elemental
+DESCRIPTION=Elemental (fire)
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3}
 CONTAINER=i_backpack
-ITEM=i_reag_sulfur_ash,{ 5 10 }
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=i_gold,{150 300}
-
-[TEMPLATE loot_GARGOYLE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Gargoyle
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=random_scroll,{1 3}
-ITEM=random_scroll,{1 3}
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_GAZER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Gazer
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SCROLL,{1 3}
-ITEM=RANDOM_SCROLL,{1 3}
-ITEM=i_reag_nightshade,{5 9}
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_GHOUL]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ghoul
-CONTAINER=i_backpack
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_BONE_ARMOR
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_HARPEY]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Harpy
-CONTAINER=i_backpack
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_HEADLESS]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Headless
-CONTAINER=i_backpack
-ITEM=i_gold,{0 50}
-
-[TEMPLATE loot_LICH]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lich
-CONTAINER=i_backpack
-ITEM=TTM_LVL3,R99
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_MAGIC_WANDS
-ITEM=RANDOM_MAGIC_WANDS
-ITEM=I_SCROLL_BLANK
-ITEM=i_staff_gnarled
-ITEM=i_gold,{400 500}
-
-[TEMPLATE loot_LICH_LORD]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lich Lord
-CONTAINER=i_backpack
-ITEM=TTM_LVL4,R99
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_MAGIC_WANDS,R99
-ITEM=RANDOM_MAGIC_WANDS,R99
-ITEM=I_SCROLL_BLANK
-ITEM=i_staff_gnarled
-ITEM=i_reag_BLACKMOOR,{5 10}
-ITEM=i_gold,{700 800}
-
-[TEMPLATE loot_LIZARDMAN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lizardman
-CONTAINER=i_backpack
-ITEM=i_gold,{0 50}
-
-[TEMPLATE loot_MAGE_EVIL]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Evil Mage
-CONTAINER=i_backpack
-ITEM=TTM_LVL1,R99
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_JEWEL
-ITEM=I_SCROLL_BLANK
-ITEM=i_gold,{0 250}
-
-[TEMPLATE loot_MONGBAT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Mongbat
-
-[TEMPLATE loot_OGRE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ogre
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel
-ITEM=tm_boulders,R8
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_OGRE_LORD]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ogre Lord
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel
-ITEM=tm_boulders,R8
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=i_gold,{200 250}
-
-[TEMPLATE loot_ORC]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Orc
-ITEM=i_boots_thigh
-ITEM=i_gold,{0 50}
-
-[TEMPLATE loot_ORC_CAPTAIN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Orc Captain
-CONTAINER=i_backpack
-ITEM=i_boots_thigh
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=i_axe_two_hand
-ITEM=RANDOM_JEWEL
-ITEM=i_ringmail_tunic
-ITEM=i_helm_orc
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_ORCISH_LORD]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Orc Lord
-CONTAINER=i_backpack
-ITEM=i_boots_thigh
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=i_axe_two_hand
-ITEM=RANDOM_JEWEL
-ITEM=i_ringmail_tunic
-ITEM=i_helm_orc
-ITEM=i_gold,{150 300}
-
-[TEMPLATE loot_ORCISH_MAGE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Orc Mage
-CONTAINER=i_backpack
-ITEM=i_boots_thigh
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_JEWEL
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_elem_poison]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Poison Elemental
-CONTAINER=i_backpack
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 4
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=i_gold,{150 300}
-
-[TEMPLATE loot_RATMAN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ratman
-CONTAINER=i_backpack
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=i_gold,{0 50}
-
-[TEMPLATE loot_REAPER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Reaper
-CONTAINER=i_backpack
-ITEM=i_LOG,{ 10 15 }
-ITEM=i_reag_dead_wood,{ 4 6 }
-ITEM=i_gold,{0 150}
-
-[TEMPLATE loot_SEA_SERPENT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Sea Serpent
-ITEM=RANDOM_FISHING_JUNK
-ITEM=RANDOM_FISHING_JUNK
-
-[TEMPLATE loot_SHADE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Shade
-CONTAINER=i_backpack
-ITEM=RANDOM_SCROLL,{ 2 3 }
-ITEM=RANDOM_BONE_ARMOR
-ITEM=i_gold,{100 150}
-
-[TEMPLATE loot_SKELETON]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Skeleton
-CONTAINER=i_backpack
-ITEM=RANDOM_BONE_ARMOR
-ITEM=i_gold,{0 50}
-
-[TEMPLATE loot_SKELETAL_KNIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Skeletal Knight
-CONTAINER=i_backpack
-ITEM=RANDOM_BONE_ARMOR
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_PLATEMAIL_ARMOR
-ITEM=i_shield_wood
-ITEM=i_scimitar
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_SKELETAL_MAGE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Skeletal Mage
-CONTAINER=i_backpack
-ITEM=RANDOM_FOURTH_CIRCLE
-ITEM=RANDOM_FOURTH_CIRCLE
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-
-[TEMPLATE loot_SLIME]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Slime
-
-[TEMPLATE loot_SPECTRE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Spectre
-CONTAINER=i_backpack
-ITEM=RANDOM_FOURTH_CIRCLE
-ITEM=RANDOM_FOURTH_CIRCLE
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_BONE_ARMOR
-ITEM=i_gold,{ 50 150 }
-
-[TEMPLATE loot_TROLL]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Troll
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=i_gold,{50 200}
-ITEM=TTM_LVL1,R99 //Tattered Treasure Map Level 1
+ITEM=i_gold,{75 100}
+ITEM=i_reag_sulfur_ash,{5 10}
+ITEM=random_wand_magery,R5
+//ITEM=i_map_treasure,R40
 
 [TEMPLATE loot_elem_water]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Water Elemental
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=i_gold,{200 250}
-
-[TEMPLATE loot_WISP]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Wisp
-
-[TEMPLATE loot_WRAITH]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Wraith
-CONTAINER=i_backpack
-ITEM=RANDOM_THIRD_CIRCLE
-ITEM=RANDOM_THIRD_CIRCLE
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_JEWEL
-ITEM=i_gold,{ 50 150 }
-
-
-[TEMPLATE loot_ZOMBIE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Zombie
-CONTAINER=i_backpack
-ITEM=RANDOM_BONE_ARMOR
-
-[TEMPLATE loot_BULLFROG]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Bullfrog
-
-[TEMPLATE loot_CYCLOPS]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Cyclops
-CONTAINER=i_backpack
+DESCRIPTION=Elemental (water)
+ITEM=i_gold,{100 125}
 ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=ttm_lvl2,R99 //tattered treasure map level 2
-ITEM=tm_boulders,R8
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=tm_rocks,R2
-ITEM=i_gold,{200 250}
-
-[TEMPLATE loot_DARK_STEED]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Dark Steed
+ITEM=i_reag_black_pearl,{2 4}
 CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SECOND_CIRCLE
-ITEM=RANDOM_SECOND_CIRCLE
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=i_gold,{200 250}
+ITEM=i_gold,{75 100}
+ITEM=random_reagent,{1 2}
+//ITEM=i_map_treasure,R80
 
-[TEMPLATE loot_EFREET]
+[TEMPLATE loot_elem_acid]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Efreet
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{250 500}
+DESCRIPTION=Elemental (acid)
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{2 4}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+ITEM={ random_magic_custom_lesser 1 random_item_misc_rare 1 0 200 }
+//ITEM=i_map_treasure,R30
 
-[TEMPLATE loot_FROST_TROLL]
+[TEMPLATE loot_elem_blood]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Frost Troll
-CONTAINER=i_backpack
-ITEM=random_potion
-ITEM=random_potion
-ITEM=random_jewel
-ITEM=random_jewel
-ITEM=random_weapon
-ITEM=ttm_lvl2,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_FROST_SPIDER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Frost Spider
-ITEM=i_reag_spider_silk,{ 5 10 }
-
-[TEMPLATE loot_GIANT_FROG]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Giant Frog
-
-[TEMPLATE loot_GIANT_ICE_SERPENT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Giant Ice Serpent
-
-[TEMPLATE loot_HELLCAT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Hellcat
+DESCRIPTION=Elemental (blood)
+ITEM=i_gold,{700 900}
+ITEM=random_jewel,{2 4}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=i_reag_blood_vial,{4 6}
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+ITEM={ random_magic_custom_lesser 1 random_item_misc_rare 1 0 250 }
+//ITEM=i_map_treasure,R25
 
 [TEMPLATE loot_elem_ice]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ice Elemental
-CONTAINER=i_backpack
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_JEWEL
-ITEM=i_gold,{50 150}
+DESCRIPTION=Elemental (ice)
+ITEM=i_gold,{275 325}
+ITEM=random_jewel,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=i_reag_black_pearl,{1 3}
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+ITEM={ random_magic_jewelry_lesser 1 0 299 }
 
-[TEMPLATE loot_ICE_FIEND]
+[TEMPLATE loot_elem_poison]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ice Fiend
-CONTAINER=i_backpack
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 4
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=i_gold,{300 500}
-
-[TEMPLATE loot_ICE_SNAKE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ice Snake
-
-[TEMPLATE loot_IMP]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Imp
-
-[TEMPLATE loot_KRAKEN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Kraken
-ITEM=i_gold,{150 200}
-
-[TEMPLATE loot_LAVA_LIZARD]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lava Lizard
-
-[TEMPLATE loot_MUMMY]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Mummy
-CONTAINER=i_backpack
-ITEM=RANDOM_JEWEL
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_NIGHTMARE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Nightmare
-
-[TEMPLATE loot_OPHIDIAN_MAGE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Mage
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_OPHIDIAN_AVENGER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Avenger
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{200 300}
-
-
-[TEMPLATE loot_OPHIDIAN_ENFORCER]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Enforcer
-
-[TEMPLATE loot_OPHIDIAN_KNIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Knight
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_REAGENT,{ 4 6 }
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{200 300}
-
-[TEMPLATE loot_OPHIDIAN_ARCHMAGE]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian ArchMage
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=TTM_LVL1,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{200 400}
-
-[TEMPLATE loot_OPHIDIAN_SHAMAN]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Shaman
-
-[TEMPLATE loot_OPHIDIAN_WARRIOR]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Ophidian Warrior
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=TTM_LVL1,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{50 150}
-
-[TEMPLATE loot_PHOENIX]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Phoenix
-
-[TEMPLATE loot_PREDATOR_HELLCAT]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Predator Hellcat
-
-[TEMPLATE loot_SILVER_STEED]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Silver Steed
+DESCRIPTION=Elemental (poison)
+ITEM=i_gold,{750 950}
+ITEM=random_jewel,{2 4}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=i_reag_nightshade,{2 4}
+ITEM=random_potion
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+//ITEM=i_map_treasure,R30
 
 [TEMPLATE loot_elem_snow]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Snow Elemental
-CONTAINER=i_backpack
-ITEM=i_ore_iron,{5 10}
+DESCRIPTION=Elemental (snow)
+ITEM=i_gold,{250 350}
+ITEM=random_jewel,{1 3}
 ITEM=i_reag_black_pearl,{5 10}
-ITEM=i_gold,{200 250}
-ITEM=TTM_LVL2,R99 //Tattered Treasure Map Level 2
+ITEM=i_ore_iron,{2 4}
+ITEM=random_armor_all
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,R70
 
-[TEMPLATE loot_STONE_GARGOYLE]
+[TEMPLATE loot_efreet]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Stone Gargoyle
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{150 250}
-
-[TEMPLATE loot_STONE_HARPY]
-CATEGORY=Item Templates
-SUBSECTION=Monster Loot Templates
-DESCRIPTION=Stone Harpy
-CONTAINER=i_backpack
-ITEM=TTM_LVL1,R99 //Tattered Treasure Map Level 1
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
+DESCRIPTION=Efreet
 ITEM=i_gold,{400 500}
+ITEM=random_jewel,{1 3}
+//ITEM=i_map_treasure,R99
+ITEM=random_armor_all
 
-[TEMPLATE loot_SWAMP_TENTACLE]
+[TEMPLATE loot_elem_ore_bronze]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Swamp Tentacle
-CONTAINER=i_backpack
-ITEM=i_reag_garlic,{5 10}
-ITEM=i_gold,{50 150}
+DESCRIPTION=Ore Elemental (bronze)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+//ITEM=i_ore_bronze,{15 25}
+//ITEM=i_map_treasure,R80
 
-[TEMPLATE loot_TERATHAN_AVENGER]
+[TEMPLATE loot_elem_ore_copper]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Terathan Avenger
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{200 250}
+DESCRIPTION=Ore Elemental (copper)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+ITEM=i_ore_copper,{5 15}
+//ITEM=i_map_treasure,R80
 
-[TEMPLATE loot_TERATHAN_DRONE]
+[TEMPLATE loot_elem_ore_agapite]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Terathan Drone
-CONTAINER=i_backpack
-ITEM=i_reag_spider_silk,{5 10}
-ITEM=i_gold,{0 50}
+DESCRIPTION=Ore Elemental (agapite)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+ITEM=i_ore_agapite,{5 15}
+//ITEM=i_map_treasure,R80
 
-[TEMPLATE loot_TERATHAN_MATRIARCH]
+[TEMPLATE loot_elem_ore_gold]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Terathan Matriarch
-CONTAINER=i_backpack
-ITEM=i_reag_spider_silk,{5 10}
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_JEWEL
-ITEM=RANDOM_SCROLL
-ITEM=RANDOM_SCROLL
-ITEM=TTM_LVL3,R99 //Tattered Treasure Map Level 3
-ITEM=i_gold,{150 300}
+DESCRIPTION=Ore Elemental (gold)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+ITEM=i_ore_gold,{5 15}
+//ITEM=i_map_treasure,R40
 
-[TEMPLATE loot_TERATHAN_WARRIOR]
+[TEMPLATE loot_elem_ore_copper_dull]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Terathan Warrior
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=TTM_LVL1,R99 //Tattered Treasure Map Level 2
-ITEM=i_gold,{50 150}
+DESCRIPTION=Ore Elemental (dull copper)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+//ITEM=i_ore_copper_dull,{5 15}
+//ITEM=i_map_treasure,R80
 
-[TEMPLATE loot_TITAN]
+[TEMPLATE loot_elem_ore_shadow]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Titan
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 3
-ITEM=i_gold,{300 600}
+DESCRIPTION=Ore Elemental (shadow)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 3}
+ITEM=i_ore_shadow,{5 15}
+//ITEM=i_map_treasure,R40
 
-[TEMPLATE loot_ICE_DRAGON]
+[TEMPLATE loot_elem_ore_valorite]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ore Elemental (valorite)
+ITEM=i_gold,{450 650}
+ITEM=random_jewel,{3 5}
+ITEM=i_ore_valorite,{5 15}
+//ITEM=i_map_treasure,R20
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 200 }
+
+[TEMPLATE loot_elem_ore_verite]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ore Elemental (verite)
+ITEM=i_gold,{450 650}
+ITEM=random_jewel,{3 5}
+ITEM=i_ore_valorite,{5 15}
+//ITEM=i_map_treasure,R20
+ITEM=random_weapon_all,1,R2
+ITEM=random_armor_all,1,R2
+
+[TEMPLATE loot_elem_kaze_kemono]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Kaze Kemono
+ITEM=i_gold,{550 650}
+ITEM=random_jewel,{3 4}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 200 }
+
+[TEMPLATE loot_elem_crystal]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Elemental (crystal)
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{3 5}
+
+[TEMPLATE loot_elem_swamp]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Elemental (swamp)
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion,R2
+ITEM=random_scroll,{1 2}
+CONTAINER=i_backpack
+ITEM=i_gold,{75 100}
+ITEM=random_scroll,{1 3},R3
+//ITEM=i_map_treasure,R40
+
+[TEMPLATE loot_elem_sand_vortex]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Sand Vortex
+ITEM=i_gold,{100 150}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion,R5
+ITEM=random_item_bone,R30
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_raiju]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Rai-Ju
+ITEM=i_gold,{550 650}
+ITEM=random_jewel,{1 3}
+ITEM=random_magic_loot,1,R5
+
+[TEMPLATE loot_elemental_lava]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Elemental (lava)
+ITEM=i_lava_serpent_crust,{1 3},R5
+ITEM=i_gold,{500 600}
+ITEM=random_reagent,{6 9}
+ITEM=random_jewel,{3 4},R2
+ITEM=random_scroll,{2 3},R2
+ITEM=random_wand_magery,1,R2
+//ITEM=i_map_treasure,1,R20
+ITEM=random_magic_loot,1,R20
+CONTAINER=i_bag
+ITEM=i_gold,{300 400}
+ITEM=random_jewel,{2 3}
+ITEM=random_reagent,{3 4}
+ITEM=random_weapon_all_normal,1,R2
+ITEM=random_armor_all,1,R2
+ITEM=random_magic_loot,1,R20
+ITEM=random_item_misc_rare,1,R200
+
+//////////////////////////////////
+// Drake, Dragon, and Wyrm loot //
+//////////////////////////////////
+
+[TEMPLATE loot_wyrm_ancient]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wyrm (ancient)
+ITEM=i_gold,{800 900}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_wand_magery
+//ITEM=i_map_treasure,R25
+ITEM={ random_poor_magic_loot 3 random_meager_magic_loot 2 random_average_magic_loot 1 random_rich_magic_loot 1 random_loaded_magic_loot 1 0 8 }
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{800 900}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_wyrm_shadow]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wyrm (shadow)
+ITEM=i_gold,{775 900}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_wand_magery
+//ITEM=i_map_treasure,R25
+ITEM={ random_poor_magic_loot 3 random_meager_magic_loot 2 random_average_magic_loot 1 random_rich_magic_loot 1 random_loaded_magic_loot 1 0 8 }
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{775 900}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_wyrm_white]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wyrm (white)
+ITEM=i_gold,{600 700}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+//ITEM=i_map_treasure,1,R20
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{600 700}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_potion,1,R2
+ITEM=random_wand_magery,1,R3
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+
+[TEMPLATE loot_dragon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dragon
+ITEM=i_gold,{500 600}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_jewel,{1 3}
+ITEM=random_wand_magery
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+CONTAINER=i_bag
+ITEM=i_gold,{1200 1300}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_jewel,{1 2},R2
+ITEM=random_wand_magery,R2
+ITEM=random_potion,1,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 150 }
+
+[TEMPLATE loot_dragon_serpentine]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dragon (serpentine)
+ITEM=i_gold,{500 600}
+ITEM=random_scroll,{1 3}
+ITEM=random_jewel,{1 3}
+ITEM=random_wand_magery
+ITEM=random_potion
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+ITEM={ random_item_dragonscale 1 0 50 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+CONTAINER=i_bag
+ITEM=i_gold,{400 500}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_jewel,{1 2},R2
+ITEM=random_wand_magery,1,R2
+ITEM=random_potion,1,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 200 }
+
+[TEMPLATE loot_dragon_skeletal]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dragon (skeletal)
+ITEM=i_gold,{1100 1200}
+ITEM=random_scroll,{1 3}
+ITEM=random_jewel,{1 3}
+ITEM=random_wand_magery
+ITEM=random_potion
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM=monster_regbag_necromancy
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+CONTAINER=i_bag
+ITEM=i_gold,{500 600}
+ITEM=random_scroll,{1 3},R2
+ITEM=random_jewel,{1 2},R2
+ITEM=random_wand_magery,1,R2
+ITEM=random_potion,1,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 150 }
+
+[TEMPLATE loot_drake]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Drake
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery
+ITEM=random_weapon_all,1,R2
+ITEM=random_armor_all,1,R2
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_scroll,{1 2},R3
+ITEM=random_wand_magery,1,R4
+ITEM={ random_magic_jewelry 1 random_item_misc_rare 1 0 300 }
+
+[TEMPLATE loot_ice_dragon]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
 DESCRIPTION=Ice Dragon
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 3
-ITEM=i_gold,{600 1400}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_potion
+ITEM=random_scroll
+ITEM=random_scroll,{2 3}
+ITEM=random_jewel
+ITEM=random_jewel,{2 3}
+ITEM=random_wand_magery,R5
+ITEM=i_gold,{1200 1300}
+//ITEM=i_map_treasure,R99
+ITEM=random_weapon_all_normal,1,R2
+CONTAINER=i_bag
+ITEM=i_gold,{200 300}
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 270 }
 
-[TEMPLATE loot_WYVERN]
+[TEMPLATE loot_wyvern]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
 DESCRIPTION=Wyvern
-CONTAINER=i_backpack
-ITEM=Random_Potion
-ITEM=Random_Potion
-ITEM=TTM_LVL4,R99 //Tattered Treasure Map Level 3
-ITEM=i_gold,{1000 1400}
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_weapon_all,1,R2
+ITEM={ random_item_carcass 1 0 100 }
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=random_scroll,1,R2
+ITEM=random_armor_all,1,R2
+ITEM={ random_magic_jewelry 1 random_item_misc_rare 1 0 360 }
 
-[TEMPLATE loot_LIZARDMAN_MACE]
+[TEMPLATE loot_hydra]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lizardman (Mace)
-CONTAINER=i_backpack
-ITEM=i_mace
-ITEM=i_gold,{0 50}
+DESCRIPTION=Hydra
+ITEM=i_gold,{500 600}
+ITEM=random_scroll,{1 3}
+ITEM=random_jewel,{1 3}
+ITEM=random_wand_magery
+ITEM=random_potion
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+ITEM=random_item_dragonscale,{2 3},R10
+ITEM=random_item_carcass,1,R99
+CONTAINER=i_bag
+ITEM=i_gold,{400 500}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_jewel,{1 2},R2
+ITEM=random_wand_magery,1,R2
+ITEM=random_potion,1,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 200 }
 
-[TEMPLATE loot_LIZARDMAN_SPEAR]
+[TEMPLATE loot_dragon_stygian]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=Lizardman (Spear)
-CONTAINER=i_backpack
-ITEM=i_spear
-ITEM=i_gold,{0 50}
+DESCRIPTION=Stygian Dragon
+ITEM=i_gold,{1500 2000}
+ITEM=random_potion,{2 3}
+ITEM=random_scroll,{2 3}
+ITEM=random_wand_magery
+ITEM=random_loaded_magic_loot
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_item_dragonscale,{3 5},R5
+ITEM=random_item_carcass,1,R20
+//ITEM=i_map_treasure,1,R20
+CONTAINER=i_bag
+ITEM=i_gold,{1000 2000}
+ITEM=random_potion,1,R2
+ITEM=random_scroll,1,R2
+ITEM=random_loaded_magic_loot,1,R2
+ITEM=random_armor_all,1,R2
+ITEM=random_weapon_all,1,R2
+ITEM=random_magic_custom_greater,1,R6
+ITEM=random_magic_jewelry,1,R10
+ITEM=random_item_misc_rare,1,R25
 
-[TEMPLATE loot_LIZARDMAN_CLUB]
+[TEMPLATE loot_dragon_stygian_lord]
 CATEGORY=Item Templates
 SUBSECTION=Monster Loot Templates
-DESCRIPTION=
-CONTAINER=i_backpack
+DESCRIPTION=Stygian Dragon Lord
+ITEM=i_gold,{3000 4000}
+ITEM=random_potion,{2 3}
+ITEM=random_potion,{2 3},R2
+ITEM=random_scroll,{2 3}
+ITEM=random_scroll,{2 3},R2
+ITEM=random_wand_magery
+ITEM=random_wand_magery,1,R2
+ITEM=random_loaded_magic_loot
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_item_dragonscale,{5 8},R5
+ITEM=random_item_carcass,1,R25
+//ITEM=i_map_treasure,R10
+CONTAINER=i_bag
+ITEM=i_gold,{2000 3000}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM=random_loaded_magic_loot
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_magic_custom_greater,1,R4
+ITEM=random_magic_jewelry,1,R8
+ITEM=random_item_misc_rare,1,R16
+
+/////////////////////////////////////
+// Gargoyle, Devil, and Demon loot //
+/////////////////////////////////////
+
+[TEMPLATE loot_demon_balron]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Balron
+ITEM=i_gold,{600 750}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM={ random_weapon_sword_normal 99 i_sword_demon 1 }
+ITEM=loaded_monster_goodie_4
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{600 750}
+ITEM=random_potion
+ITEM=random_wand_magery,R5
+ITEM=random_scroll,{1 2}
+ITEM=random_reagent,{3 5}
+ITEM={ random_armor_all 1 0 21 }
+ITEM=random_weapon_all_normal
+
+[TEMPLATE loot_demon_minor]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon
+ITEM=i_gold,{200 300}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{2 4}
+CONTAINER=i_bag
+ITEM=i_gold,{50 100}
+ITEM=random_wand_magery,R5
+ITEM=random_reagent,{4 6},R2
+ITEM=random_jewel,{1 2},R2
+
+[TEMPLATE loot_demon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon
+ITEM=i_gold,{200 300}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+//ITEM=i_map_treasure,R99
+ITEM=random_weapon_all_normal
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{150 200}
+ITEM=random_wand_magery,R4
+ITEM=random_reagent,{4 6}
+ITEM=random_jewel,{1 2}
+ITEM={ random_magic_custom_lesser 1 random_magic_jewelry 1 0 260 }
+
+[TEMPLATE loot_gargoyle]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery,R20
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_jewel,R2
+ITEM=random_potion,R2
+ITEM=random_scroll,{1 2},R2
+
+[TEMPLATE loot_gargoyle_stone]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (stone)
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 4}
+ITEM=random_potion
+ITEM=random_scroll,R2
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_ore_common,{8 16}
+ITEM=random_jewel,{1 2},R3
+ITEM=random_tool_digging
+
+[TEMPLATE loot_gargoyle_fire]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (fire)
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 4}
+ITEM=random_potion
+ITEM=random_scroll,R2
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 2},R3
+
+[TEMPLATE loot_gargoyle_enslaved]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (enslaved)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 2}
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,R2
+ITEM=random_tool_digging
+
+[TEMPLATE loot_gargoyle_enforcer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (enforcer)
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 4}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM=random_weapon_axe_normal
+CONTAINER=i_bag
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 2},R3
+ITEM=random_wand_magery,1,R15
+
+[TEMPLATE loot_gargoyle_destroyer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (destroyer)
+ITEM=i_gold,{500 625}
+ITEM=random_jewel,{2 4}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM=random_weapon_axe_normal
+CONTAINER=i_bag
+ITEM=i_gold,{250 325}
+ITEM=random_jewel,{2 3},R3
+ITEM=random_wand_magery,1,R7
+
+[TEMPLATE loot_gargoyle_undead]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gargoyle (undead)
+ITEM=i_gold,{350 400}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 3}
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_wand_magery,1,R7
+
+[TEMPLATE loot_succubus]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (succubus)
+ITEM=i_gold,{600 650}
+ITEM=random_jewel,{1 2}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{2 4}
+ITEM=random_potion
+ITEM={ random_weapon_all 1 random_armor_all 1 }
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{400 550}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_reagent_necro,{4 6},R2
+ITEM=random_wand_magery,R5
+
+[TEMPLATE loot_devil_poison]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Poison Devil
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery,R20
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_jewel,R2
+ITEM=random_potion,R2
+ITEM=random_scroll,{1 2},R2
+
+[TEMPLATE loot_ice_fiend]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ice Fiend
+//ITEM=i_map_treasure,R99
+ITEM=random_scroll
+ITEM=random_scroll
+ITEM=random_scroll
+ITEM=random_scroll
+ITEM=i_gold,{300 500}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM={ random_magic_jewelry_lesser 1 random_magic_jewelry 1 random_item_misc_rare 1 0 290 }
+
+[TEMPLATE loot_forest_demon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (forest)
+ITEM=random_potion
+ITEM=random_jewel
+ITEM=random_scroll,{1 3}
+ITEM=i_gold,{90 150}
+ITEM=random_wand_magery,R20
+
+[TEMPLATE loot_demon_elder]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (elder)
+ITEM=i_gold,{800 1200}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+//ITEM=i_map_treasure,R99
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM=loaded_monster_goodie_4
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 240 }
+CONTAINER=i_bag
+ITEM=random_wand_magery,R5
+
+[TEMPLATE loot_devourer_of_souls]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Devourer of Souls
+ITEM=i_gold,{600 700}
+ITEM=random_reagent_necro,{20 30}
+ITEM=random_potion,1,R2
+ITEM=random_scroll,{2 3},R2
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{400 500}
+ITEM=random_reagent_necro,{10 20}
+ITEM=random_wand_magery,R2
+ITEM=random_reagent,{4 6},R2
+
+[TEMPLATE loot_ravager]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ravager
+ITEM=i_gold,{275 325}
+ITEM=random_weapon_all
+ITEM=random_body_parts_1,R2
+ITEM=random_body_parts_2,R5
+ITEM=random_item_bone,R15
+ITEM=random_item_carcass,1,R30
+
+[TEMPLATE loot_horde_minion]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Horde Minion (small)
+ITEM=i_gold,{25 50}
+ITEM=random_body_parts_1,R25
+ITEM=random_body_parts_2,R50
+ITEM=random_item_bone,R50
+
+[TEMPLATE loot_horde_demon_medium]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Horde Demon (medium)
+ITEM=i_gold,{125 150}
+ITEM=random_jewel,{1 2}
+ITEM=random_body_parts_1,R50
+ITEM=random_body_parts_2,R50
+ITEM=random_item_bone,R80
+
+[TEMPLATE loot_horde_demon_large]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Horde Demon (large)
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{2 3}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{6 9}
+ITEM=random_body_parts_1,R25
+ITEM=random_body_parts_2,R25
+ITEM=random_item_bone,R50
+//ITEM=i_map_treasure,1,R100
+
+[TEMPLATE loot_doppleganger]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Doppleganger
+ITEM=i_gold,{125 150}
+
+[TEMPLATE loot_demon_arcane]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (arcane)
+ITEM=i_gold,{250 300}
+ITEM=random_reagent_necro,{2 4}
+ITEM=random_potion,1,R5
+ITEM=random_scroll,{2 3},R5
+ITEM=random_armor_all
+
+[TEMPLATE loot_demon_moloch]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (moloch)
+ITEM=i_gold,{300 350}
+ITEM=random_body_parts_2,R25
+ITEM=random_armor_all
+
+[TEMPLATE loot_demon_chaos]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (chaos)
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion,1,R5
+
+[TEMPLATE loot_abyssal_infernal]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Demon (abyssal infernal)
+ITEM=i_abyssal_cloth,{1 3},R5
+ITEM=i_horn_abyssal,1,R10
+ITEM=i_gold,{800 1200}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+//ITEM=i_map_treasure,1,R99
+CONTAINER=i_bag
+ITEM=i_gold,{200 400}
+ITEM=random_potion
+ITEM=random_reagent_necro,{4 6}
+ITEM=random_reagent,{4 6}
+ITEM=random_wand_magery,1,R5
+
+///////////////////////////////
+// Lizardman and Ratman loot //
+///////////////////////////////
+
+[TEMPLATE loot_lizardman]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lizardman
+ITEM=i_gold,{50 75}
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_lizardman_mace]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lizardman (mace)
+ITEM=i_gold,{50 75}
+//ITEM=i_map_treasure,R99
+ITEM={ i_mace 199 i_mace_lizardman 1 }
+
+[TEMPLATE loot_lizardman_spear]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lizardman (spear)
+ITEM=i_gold,{50 75}
+//ITEM=i_map_treasure,R99
+ITEM={ i_spear 199 i_spear_lizardman 1 }
+
+[TEMPLATE loot_lizardman_club]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lizardman (club)
 ITEM=i_club
-ITEM=i_gold,{0 50}
+ITEM=i_gold,{50 75}
+
+[TEMPLATE loot_ratman]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ratman
+ITEM=i_gold,{50 100}
+ITEM=random_reagent,{4 6}
+ITEM={ i_cheese_wedge 1 i_cheese_cut 1 i_cheese_wheel 1 0 3 }
+
+[TEMPLATE loot_ratman_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ratman (mage)
+ITEM=i_gold,{275 325}
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 3}
+ITEM={ i_cheese_wedge 1 i_cheese_cut 1 i_cheese_wheel 1 0 3 }
+ITEM={ random_statue 1 0 20 }
+
+[TEMPLATE loot_ratman_archer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ratman (archer)
+ITEM=i_gold,{300 350}
+ITEM=random_weapon_archer_normal
+ITEM=random_weapon_all_normal
+ITEM=i_arrow,{25 35}
+ITEM=i_xbolt,{25 35}
+ITEM={ i_cheese_wedge 1 i_cheese_cut 1 i_cheese_wheel 1 0 3 }
+
+//////////////////////
+// Wild animal loot //
+//////////////////////
+
+[TEMPLATE loot_lava_lizard]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lava Lizard
+ITEM=i_gold,{50 100}
+ITEM=i_reag_sulfur_ash,{5 15}
+
+[TEMPLATE loot_ice_snake]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ice Snake
+ITEM=i_gold,{70 100}
+
+[TEMPLATE loot_snake_giant]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Snake
+ITEM=i_gold,{125 175}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 0 5 }
+
+[TEMPLATE loot_serpent_ice]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Ice Serpent
+ITEM=i_gold,{50 100}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 }
+ITEM={ random_weapon_all_normal 1 random_armor_all 1 }
+
+[TEMPLATE loot_serpent_lava]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Lava Serpent
+ITEM=i_gold,{200 250}
+ITEM=i_reag_sulfur_ash,{3 5}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 }
+ITEM={ random_weapon_all_normal 1 random_armor_all 1 }
+
+[TEMPLATE loot_serpent_silver]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Silver Serpent
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{2 3}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 }
+
+[TEMPLATE loot_rat_giant]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Rat
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_toad_giant]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Toad
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_hellhound]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Hellhound
+ITEM=i_gold,{175 225}
+ITEM=i_reag_sulfur_ash,{2 4}
+
+[TEMPLATE loot_hellhound_ancient]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Hellhound (ancient)
+ITEM=i_gold,{475 525}
+ITEM=i_reag_sulfur_ash,{4 8}
+
+[TEMPLATE loot_hellcat]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Hellcat
+ITEM=i_gold,{125 175}
+ITEM=random_jewel
+
+[TEMPLATE loot_predator_hellcat]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Predator Hellcat
+ITEM=i_gold,{50 70}
+
+[TEMPLATE loot_gorilla]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gorilla
+ITEM=random_jewel,1,R3
+ITEM=i_club,1,R9
+
+[TEMPLATE loot_spider]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spider (giant)
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,1,R5
+ITEM=i_reag_spider_silk,{3 6}
+
+[TEMPLATE loot_spider_frost]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spider (frost)
+ITEM=i_gold,{75 125}
+ITEM=i_reag_spider_silk,{5 9}
+
+[TEMPLATE loot_spider_dread]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spider (dread)
+ITEM=i_gold,{450 650}
+ITEM=i_reag_spider_silk,{5 9}
+ITEM={ random_magic_loot 1 0 25 }
+
+[TEMPLATE loot_spider_wolf]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spider (wolf)
+ITEM=i_gold,{450 650}
+ITEM=i_reag_spider_silk,{5 9}
+ITEM=i_bottle_ichor,{1 3},R10
+ITEM=i_spider_carapace,1,R50
+ITEM={ random_magic_loot 1 0 25 }
+
+[TEMPLATE loot_spider_trapdoor]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Spider (trapdoor)
+ITEM=i_gold,{250 350}
+ITEM=i_reag_spider_silk,{5 9}
+ITEM=i_bottle_ichor,{1 3},R15
+ITEM=i_spider_carapace,1,R75
+ITEM={ random_magic_loot 1 0 100 }
+
+[TEMPLATE loot_mimic]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Mimic
+ITEM=i_gold,{1000 1200}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_magic_loot,1,R12
+CONTAINER=i_bag
+ITEM=i_gold,{400 600}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R80
+
+[TEMPLATE loot_scorpion]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Scorpion
+ITEM=i_gold,{50 100}
+ITEM=random_potion
+
+[TEMPLATE loot_bullfrog]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Bullfrog
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_steed_silver]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Steed (silver)
+ITEM=i_gold,{400 500}
+ITEM=random_reagent,{2 4}
+ITEM=random_scroll,{1 2}
+ITEM=random_potion
+ITEM={ random_weapon_all 50 random_armor_all 100 random_magic_custom_lesser 1 }
+
+[TEMPLATE loot_steed_dark]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Steed (dark)
+ITEM=i_gold,{400 500}
+ITEM=random_reagent,{2 4}
+ITEM=random_scroll,{1 2}
+ITEM=random_potion
+ITEM={ random_weapon_all 50 random_armor_all 100 random_magic_custom_lesser 1 }
+
+[TEMPLATE loot_unicorn]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Unicorn
+ITEM=i_gold,{300 350}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{2 4}
+ITEM=random_potion
+
+[TEMPLATE loot_nightmare]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Nightmare
+ITEM=i_gold,{400 500}
+ITEM=i_reag_sulfur_ash,{2 4}
+ITEM=random_scroll,{1 2}
+ITEM=random_potion
+ITEM={ random_weapon_all 50 random_armor_all 50 random_magic_custom_lesser 1 }
+
+[TEMPLATE loot_warhorse_dread]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dread Warhorse
+ITEM=i_gold,{400 500}
+ITEM=i_reag_sulfur_ash,{2 4}
+ITEM=random_scroll,{1 2}
+ITEM=random_potion
+ITEM={ random_weapon_all 50 random_armor_all 50 random_magic_custom_lesser 1 }
+
+[TEMPLATE loot_steed_fire]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Fire Steed
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{15 20}
+ITEM=i_reag_sulfur_ash,{6 9}
+
+[TEMPLATE loot_hiryu]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Hiryu
+ITEM=i_gold,{1500 1900}
+ITEM=random_jewel,{3 5}
+ITEM={ random_weapon_all 50 random_armor_all 50 random_magic_custom_lesser 1 }
+
+[TEMPLATE loot_serpent_coil]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Giant Serpent (Coil)
+ITEM=i_gold,{200 250}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 }
+ITEM={ random_weapon_all_normal 1 random_armor_all 1 }
+
+
+/////////////////////////////////
+// Ogre, Ettin, and Giant loot //
+/////////////////////////////////
+
+[TEMPLATE loot_ettin]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ettin
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 3},R2
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM={ i_hammer 75 0 25 }
+
+[TEMPLATE loot_ettin_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ettin Lord
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 3}
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM={ i_hammer 75 0 25 i_hammer_ettin 1 }
+ITEM=random_item_carcass,1,R100
+CONTAINER=i_bag
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_potion,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 290 }
+
+[TEMPLATE loot_ogre]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ogre
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_gold,{125 175}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_potion
+ITEM={ i_club 75 0 25 }
+
+[TEMPLATE loot_ogre_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ogre Lord
+ITEM=i_gold,{300 325}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion,R2
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ i_club 75 0 25 i_club_ogre 1 }
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R60
+CONTAINER=i_bag
+ITEM=i_gold,{300 325}
+ITEM=random_jewel,{1 3},R3
+ITEM=random_potion,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 300 }
+
+[TEMPLATE loot_ogre_lord_arctic]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ogre Lord (arctic)
+ITEM=i_gold,{500 550}
+ITEM=random_jewel,{1 3}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ i_club 75 0 25 i_club_ogre 1 }
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R30
+CONTAINER=i_bag
+ITEM=i_gold,{250 400}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_potion,R2
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 300 }
+
+
+[TEMPLATE loot_cyclops]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Cyclops
+ITEM=i_gold,{300 350}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_weapon_mace_normal
+ITEM=random_armor_all
+//ITEM=i_map_treasure,R99
+ITEM={ random_item_carcass 1 0 100 }
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_potion,R3
+ITEM={ random_magic_jewelry_lesser 1 random_item_misc_rare 1 0 380 }
+
+[TEMPLATE loot_titan]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Titan
+ITEM=i_gold,{400 500}
+ITEM=random_potion,1,R2
+ITEM=random_reagent,{4 7}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{200 300}
+ITEM=random_potion,1,R3
+ITEM=random_reagent,{2 5},R2
+ITEM={ random_magic_loot 1 0 30 }
+ITEM={ random_magic_jewelry_lesser 1 random_magic_custom_lesser 1 random_item_misc_rare 1 0 350 }
+
+///////////////////
+// Evil NPC loot //
+///////////////////
+
+[TEMPLATE loot_paladin]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Paladin
+ITEM=i_gold,{300 400}
+ITEM=random_jewel,{1 4}
+ITEMNEWBIE=i_platemail_gloves
+ITEMNEWBIE=i_platemail_helm
+ITEMNEWBIE=i_platemail_arms
+ITEMNEWBIE=i_platemail_gorget
+ITEMNEWBIE=i_platemail_chest
+ITEMNEWBIE=i_platemail_leggings
+ITEMNEWBIE=i_sword_viking
+ITEM=random_weapon_sword_normal
+ITEM=random_armor_all
+ITEM=random_armor_shield_european
+
+[TEMPLATE loot_savage_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Savage Warrior
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_armor_bone
+ITEM=random_armor_bone
+ITEMNEWBIE=i_spear
+ITEM={ random_armor_shield_european 1 0 10 }
+ITEM={ random_weapon_all_normal 20 i_spear_tribal 1 }
+ITEM={ random_masks 1 i_bola 1 i_bodypaint 1 0 30 }
+
+[TEMPLATE loot_savage_rider]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Savage Rider
+ITEM=i_gold,{125 175}
+ITEM=random_jewel,{2 3}
+ITEM=random_armor_bone
+ITEM=random_armor_bone
+ITEMNEWBIE=i_spear
+ITEM={ random_armor_shield_european 1 0 10 }
+//ITEM={ random_weapon_fencing_normal 1 i_spear_tribal 20 }
+//ITEM={ random_masks 1 i_bola 1 i_bodypaint 1 0 20 }
+
+[TEMPLATE loot_dreadlord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dreadlord
+ITEM=i_platemail_gloves
+ITEM=i_platemail_helm
+ITEM=i_platemail_arms
+ITEM=i_platemail_gorget
+ITEM=i_platemail_chest
+ITEM=i_platemail_leggings
+ITEM=i_sword_viking
+ITEM=i_cape
+COLOR=020
+ITEM=i_sash
+COLOR=020
+ITEM=i_gold,{250 450}
+ITEM=random_jewel,{1 4}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=i_potion_heal,{2 4}
+
+[TEMPLATE loot_mage_evil]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Evil Mage
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_footwear_human
+COLOR=colors_all
+ITEM=random_armor_european
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_scroll,{1 2},R2
+ITEM=random_reagent,{4 6},R2
+ITEM=random_wand_magery,R4
+
+[TEMPLATE loot_pixie]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Pixie
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,1,R5
+
+[TEMPLATE loot_yomotsu_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Yomotsu Warrior
+ITEM=i_gold,{400 450}
+ITEM=random_jewel,{1 4}
+ITEM=random_weapon_axe_normal
+ITEM=random_footwear_all
+ITEM=random_pants_all
+ITEM=random_armor_all
+ITEM={ i_fruit_gourd1 1 i_fruit_gourd2 1},{1 3},R2
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_yomotsu_priest]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Yomotsu Priest
+ITEM=i_gold,{400 600}
+ITEM=random_jewel,{1 4}
+ITEM={ random_weapon_staff_normal 199 i_staff_magic3 1 }
+ITEM=random_footwear_all
+ITEM=random_pants_all
+ITEM=random_armor_all
+ITEM={ i_fruit_gourd1 1 i_fruit_gourd2 1},{1 3},R2
+CONTAINER=i_bag
+ITEM=i_gold,{300 400}
+ITEM=random_wand_magery,1,R5
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_yomotsu_elder]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Yomotsu Elder
+ITEM=i_gold,{800 950}
+ITEM=random_jewel,{1 4}
+ITEM=random_weapon_axe_normal
+ITEM=random_footwear_all
+ITEM=random_pants_all
+ITEM=random_armor_all
+ITEM=random_armor_shield_european
+ITEM={ i_fruit_gourd1 1 i_fruit_gourd2 1},{1 3},R2
+CONTAINER=i_bag
+ITEM=i_gold,{700 850}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,R50
+
+[TEMPLATE loot_fan_dancer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Fan Dancer
+ITEM=i_gold,{500 750}
+ITEM=random_jewel,{1 2}
+ITEM=i_tessen
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 2},R3
+ITEM=random_weapon_all
+ITEM=random_item_origami,R20
+
+[TEMPLATE loot_lady_of_snow]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Lady of the Snow
+ITEM=i_gold,{500 650}
+ITEM=random_jewel,{1 2}
+ITEM=random_reagent,{2 4}
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{300 350}
+ITEM=random_jewel,{1 2},R3
+ITEM=random_reagent,{2 4},R5
+
+[TEMPLATE loot_juka_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Juka Warrior
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 2}
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2},R3
+
+[TEMPLATE loot_juka_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Juka Mage
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery,R20
+ITEM=monster_reg_bag
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,1,R99
+ITEM=i_gem_arcane,1,R55
+
+[TEMPLATE loot_juka_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Juka Lord
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{2 3}
+ITEM=random_armor_all
+ITEM=random_weapon_all_normal
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 2},R2
+ITEM=i_gem_arcane,1,R35
+
+[TEMPLATE loot_betrayer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=BlackThorn Betrayer
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{2 3}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=i_power_crystal,{1 2},R25
+CONTAINER=i_bag
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{1 2},R2
+ITEM=i_gem_arcane,1,R35
+//ITEM=i_map_treasure,1,R50
+
+[TEMPLATE loot_juggernaut]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=BlackThorn Juggernaut
+ITEM=i_gold,{175 200}
+ITEM=random_jewel,{2 3}
+ITEM=random_armor_all
+ITEM=i_power_crystal,{1 2},R25
+CONTAINER=i_bag
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 2},R2
+//ITEM=i_clockworks,1,R40
+
+[TEMPLATE loot_blackthorn]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Blackthorn the Merciless
+ITEM=i_gold,{800 900}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_wand_magery
+//ITEM=i_map_treasure,R25
+ITEM=random_armor_all
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{800 900}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM=random_magic_custom_greater,1,R20
+ITEM=random_magic_jewelry,1,R30
+ITEM=random_item_misc_rare,1,R140
+ITEM=i_gem_arcane,{1 2},R5
+ITEM=i_power_crystal,{1 2},R5
+//ITEM=i_clockworks,1,R50
+
+[TEMPLATE loot_dawn]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dawn
+ITEM=i_gold,{800 900}
+ITEM=random_potion
+ITEM=random_scroll,{2 3}
+ITEM=random_wand_magery
+//ITEM=i_map_treasure,R25
+ITEM=random_armor_all
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{800 900}
+ITEM=random_potion,R2
+ITEM=random_scroll,R2
+ITEM=random_magic_custom_greater,1,R20
+ITEM=random_magic_jewelry,1,R30
+ITEM=random_item_misc_rare,1,R140
+ITEM=i_gem_arcane,{1 2},R5
+//ITEM=i_clockworks,1,R50
+ITEM=i_dawns_music_box,1,R999
+
+///////////////
+// Meer loot //
+///////////////
+
+[TEMPLATE loot_meer_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Meer Mage
+ITEM=i_gold,{300 350}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery,R20
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,1,R99
+
+[TEMPLATE loot_meer_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Meer Warrior
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_armor_all
+
+[TEMPLATE loot_meer_eternal]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Meer Eternal
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{2 3}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=random_wand_magery,R20
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{1 2},R2
+ITEM=i_gem_arcane,1,R35
+ITEM=random_weapon_all,1,R2
+//ITEM=i_map_treasure,1,R50
+
+[TEMPLATE loot_meer_captain]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Meer Captain
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_armor_all
+ITEM=random_weapon_sword_normal
+
+/////////////////////////////////
+// Orc, Goblin, and Troll loot //
+/////////////////////////////////
+
+[TEMPLATE loot_orc]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc
+ITEM=i_gold,{50 100}
+ITEM=i_boots_thigh
+ITEM=random_armor_all
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_orc_captain]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Captain
+ITEM=i_gold,{100 150}
+ITEM=random_jewel,{1 3},R2
+ITEM=i_boots_thigh
+ITEM=random_potion,R2
+ITEM=random_weapon_axe_normal
+ITEM=random_armor_ringmail_european
+ITEM=random_armor_shield_european
+ITEM=i_helm_orc
+
+[TEMPLATE loot_orcish_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Lord
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 2}
+ITEM=i_boots_thigh
+ITEM=i_ringmail_tunic
+ITEM=i_helm_orc,R2
+ITEM={ i_axe_two_hand 99 i_battleaxe_orclord 1 }
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_potion,R2
+
+[TEMPLATE loot_orcish_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Mage
+ITEM=i_gold,{75 100}
+ITEM=random_scroll,{1 2}
+ITEM=random_reagent,{4 6}
+ITEM=random_potion
+//ITEM=i_map_treasure,R99
+ITEM=random_gloves,R3
+ITEM={ random_weapon_staff_normal 199 i_staff_orcmage 1 }
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_potion,R2
+
+[TEMPLATE loot_orc_scout]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Scout
+ITEM=i_gold,{125 175}
+ITEM=i_arrow,{30 40}
+ITEM=i_xbolt,{20 30}
+ITEM=random_fruit,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_archer_normal
+ITEM=random_weapon_fencing_normal
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_orc_bomber]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Bomber
+ITEM=i_gold,{100 125}
+ITEM=i_potion_explosionless,{1 2}
+ITEM=i_reag_sulfur_ash,{6 9}
+ITEM=i_reag_black_pearl,{6 9}
+ITEM=i_reag_mandrake_root,{6 9}
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=i_mortar_pestle
+
+[TEMPLATE loot_orc_chopper]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Chopper
+ITEM=i_gold,{275 325}
+ITEM=i_log,{1 10}
+ITEM=i_board,{20 30}
+ITEM=i_axe_two_hand,1,R2
+ITEM=i_ringmail_tunic,1,R2
+ITEM=i_helm_orc,1,R2
+ITEM=i_boots_thigh,1,R2
+
+[TEMPLATE loot_orc_brute]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Orc Brute
+ITEM=i_gold,{500 550}
+ITEM=random_jewel,{1 2}
+ITEM=random_ore_common,{15 20}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{250 400}
+ITEM=random_ingot_common,{5 10}
+//ITEM={ i_orc_helm_evil 1 i_mask_orcish_kin 1 i_bola 1 0 99 }
+
+[TEMPLATE loot_troll]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Troll
+ITEM=i_gold,{125 175}
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_troll_axe]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Troll (axe)
+ITEM=i_gold,{125 175}
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R99
+ITEM={ random_weapon_axe_normal 199 i_axe_troll 1 }
+
+[TEMPLATE loot_troll_mace]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Troll (mace)
+ITEM=i_gold,{125 175}
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM={ random_item_carcass 1 0 100 }
+//ITEM=i_map_treasure,R99
+ITEM={ random_weapon_mace_normal 199 i_maul_troll 1 }
+
+[TEMPLATE loot_frost_troll]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Frost Troll
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=i_rock_plain
+ITEM=random_potion
+ITEM=random_jewel
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,R99
+ITEM=i_gold,{100 160}
+ITEM=random_armor_shield_european
+ITEM={ random_armor_all 1 random_weapon_all 1 }
+ITEM={ random_magic_jewelry_lesser 1 random_item_misc_rare 1 0 390 }
+
+[TEMPLATE loot_goblin_gray]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gray Goblin
+ITEM=i_goblin_blood,{1 2},R5
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 4}
+ITEM=random_potion
+ITEM=random_shield
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_goblin_gray_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gray Goblin Mage
+ITEM=i_goblin_blood,{1 2},R10
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_shield
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 3}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_goblin_green]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Green Goblin
+ITEM=i_goblin_blood,{1 3},R5
+ITEM=i_gold,{150 175}
+ITEM=random_jewel,{1 4}
+ITEM=random_shield,1,R3
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_jewel,{1 2},R3
+//ITEM=i_map_treasure,1,R99
+
+
+///////////////////
+// Ophidian Loot //
+///////////////////
+
+[TEMPLATE loot_ophidian_mage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Mage
+ITEM=i_gold,{125 175}
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 3}
+ITEM=random_scroll
+//ITEM=i_map_treasure,R99
+ITEM=random_weapon_staff_normal
+
+[TEMPLATE loot_ophidian_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Warrior
+ITEM=i_gold,{175 225}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion,R2
+ITEM=i_halberd
+
+[TEMPLATE loot_ophidian_matriarch]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Matriarch
+ITEM=i_gold,{350 400}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 3}
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll,{1 2},R2
+
+[TEMPLATE loot_ophidian_avenger]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Avenger
+ITEM=i_gold,{350 400}
+ITEM=random_potion
+//ITEM=i_map_treasure,R99
+ITEM={ random_weapon_all 99 i_bardiche_ophidian 1 }
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{200 250}
+ITEM=random_potion
+ITEM={ random_magic_jewelry_lesser 1 random_item_misc_rare 1 0 290 }
+
+[TEMPLATE loot_ophidian_enforcer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Enforcer
+ITEM=random_potion
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll
+ITEM=random_scroll
+//ITEM=i_map_treasure,R99
+ITEM=i_gold,{350 400}
+
+[TEMPLATE loot_ophidian_knight]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Knight
+ITEM=random_potion
+ITEM=random_potion
+ITEM=random_reagent,{4 6}
+ITEM=random_reagent,{4 6}
+ITEM=random_scroll
+ITEM=random_scroll
+//ITEM=i_map_treasure,R99
+ITEM=i_gold,{350 400}
+
+[TEMPLATE loot_ophidian_archmage]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian ArchMage
+ITEM=random_potion
+ITEM=random_potion
+ITEM=random_jewel
+ITEM=random_jewel
+//ITEM=i_map_treasure,R99
+ITEM=i_gold,{200 400}
+
+[TEMPLATE loot_ophidian_shaman]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Shaman
+ITEM=random_potion
+ITEM=random_potion
+ITEM=random_jewel
+ITEM=random_jewel
+//ITEM=i_map_treasure,R99
+ITEM=i_gold,{100 130}
+
+[TEMPLATE loot_ophidian_justicar]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ophidian Justicar
+CONTAINER=i_backpack
+ITEM=i_gold,{275 325}
+ITEM=random_reagent,{5 15}
+ITEM=random_reagent_necro,{5 15}
+ITEM=random_potion,1,R2
+ITEM=random_scroll,{1 2},R2
+
+///////////////////
+// Terathan Loot //
+///////////////////
+
+[TEMPLATE loot_terathan_avenger]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Terathan Avenger
+ITEM=i_gold,{300 350}
+ITEM=random_jewel,{1 3}
+ITEM=random_potion
+ITEM=random_scroll,{1 2},R2
+//ITEM=i_map_treasure,R99
+ITEM={ random_weapon_all_normal 100 i_spear_terathan 1 }
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_potion,R2
+ITEM=random_wand_magery,R4
+
+[TEMPLATE loot_terathan_drone]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Terathan Drone
+ITEM=i_gold,{50 100}
+ITEM=i_reag_spider_silk,{1 3}
+
+[TEMPLATE loot_terathan_matriarch]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Terathan Matriarch
+ITEM=i_gold,{300 350}
+ITEM=i_reag_spider_silk,{4 6}
+ITEM=random_potion
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 2}
+//ITEM=i_map_treasure,R99
+ITEM=monster_regbag_necromancy
+ITEM={ random_weapon_staff_normal 299 i_staff_terathan 1 }
+CONTAINER=i_bag
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{1 2}
+ITEM=random_potion
+ITEM=random_scroll
+
+[TEMPLATE loot_terathan_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Terathan Warrior
+ITEM=i_gold,{125 175}
+ITEM=random_potion
+ITEM={ i_halberd 399 i_spear_terathan 1 }
+//ITEM=i_map_treasure,1,R99
+
+///////////////////////
+// Misc monster loot //
+///////////////////////
+
+[TEMPLATE loot_slime]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Slime
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,1,R3
+
+[TEMPLATE loot_slime_corrosive]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Slime (corrosive)
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,1,R3
+
+[TEMPLATE loot_frostooze]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Frost Ooze
+ITEM=random_jewel,{1 3}
+
+[TEMPLATE loot_headless]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Headless
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,1,R5
+
+[TEMPLATE loot_mongbat]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Mongbat
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,1,R5
+
+[TEMPLATE loot_imp]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Imp
+ITEM=i_gold,{50 100}
+ITEM=random_scroll,{1 2},R2
+ITEM=random_jewel,{1 2},R5
+
+[TEMPLATE loot_corpser]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Corpser
+ITEM=i_gold,{50 100}
+ITEM={ i_log 1 i_board 1 },{5 10}
+ITEM=i_reag_executioners_cap,{2 5}
+
+[TEMPLATE loot_sea_serpent]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Sea Serpent
+ITEM=i_gold,{50 100}
+ITEM=random_fishing_junk
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_deep_sea_serpent]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Deep Sea Serpent
+ITEM=i_gold,{50 100}
+ITEM=random_fishing_junk
+ITEM=random_fishing_junk
+ITEM=i_reag_black_pearl,{3 5}
+ITEM=i_reag_sulfur_ash,{3 5}
+//ITEM=i_map_treasure,R99
+
+[TEMPLATE loot_gazer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gazer
+ITEM=i_gold,{75 100}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=i_reag_nightshade,{5 9}
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_potion,R2
+ITEM=random_scroll,{1 3},R3
+ITEM=random_wand_magery,R40
+
+[TEMPLATE loot_gazer_elder]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Elder Gazer
+ITEM=i_gold,{200 300}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=i_reag_nightshade,{5 9}
+//ITEM=i_map_treasure,R49
+CONTAINER=i_bag
+ITEM=i_gold,{200 300}
+ITEM=random_potion
+ITEM=random_scroll,{1 3},R2
+ITEM=random_wand_magery,R30
+
+[TEMPLATE loot_gazer_larva]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gazer Larva
+ITEM=i_gold,{25 50}
+ITEM=i_reag_nightshade,{2 3}
+
+[TEMPLATE loot_homunculus]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Homunculus
+ITEM=i_gold,{100 125}
+ITEM=random_potion
+ITEM=random_scroll,{1 3}
+ITEM=i_reag_nightshade,{5 9}
+ITEM=random_scroll,{1 2},R2
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_potion,R2
+ITEM=random_reagent,{5 9},R2
+ITEM=random_scroll,{1 3},R3
+ITEM=random_wand_magery,R40
+
+
+[TEMPLATE loot_harpy]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Harpy
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,1,R5
+CONTAINER=i_bag
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_harpy_stone]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Harpy (stone)
+ITEM=i_gold,{175 200}
+ITEM=random_jewel,{1 3}
+CONTAINER=i_bag
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 2},R2
+
+[TEMPLATE loot_reaper]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Reaper
+ITEM=i_gold,{125 175}
+ITEM=i_log,{8 12}
+ITEM=random_reagent,{4 6}
+//ITEM=i_map_treasure,1,R99
+
+[TEMPLATE loot_wisp]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wisp
+ITEM=i_gold,{300 350}
+ITEM={ random_weapon_all 1 0 50 }
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM={ random_fifth_circle 21 random_sixth_circle 11 random_seventh_circle 5 random_eighth_circle 1 0 70}
+
+[TEMPLATE loot_wisp_dark]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wisp (dark)
+ITEM=i_gold,{300 350}
+ITEM={ random_weapon_all 1 0 35 }
+CONTAINER=i_bag
+ITEM=i_gold,{100 150}
+ITEM=random_scroll
+
+[TEMPLATE loot_kraken]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Kraken
+ITEM=i_gold,{275 325}
+//ITEM=i_map_treasure,1,R80
+ITEM=random_weapon_all
+ITEM={ random_nautical_fish 4 random_tool_nautical 2 random_nautical_live 1 }
+
+[TEMPLATE loot_phoenix]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Phoenix
+ITEM=i_gold,{800 900}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_potion,{1 3}
+ITEM=random_wand_magery,1,R5
+ITEM=random_weapon_all,1,R5
+ITEM=random_armor_all,1,R5
+ITEM=random_magic_loot,1,R5
+ITEM=random_artifact,1,R50
+
+[TEMPLATE loot_swamp_tentacle]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Swamp Tentacle
+ITEM=i_gold,{125 175}
+ITEM=random_reagent,{3 5}
+
+[TEMPLATE loot_harrower]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Harrower
+ITEM=i_gold,{500 700}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=monster_regbag_necromancy
+ITEM={ random_magic_jewelry_lesser 1 random_magic_custom_lesser 1 random_magic_custom_greater 1 random_item_misc_rare 1 0 200 }
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{400 600}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=random_wand_magery,1,R5
+ITEM=random_armor_all
+
+[TEMPLATE loot_harrower_tentacles]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Harrower (tentacles)
+ITEM=i_gold,{500 700}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=monster_regbag_necromancy
+ITEM={ random_magic_jewelry_lesser 1 random_magic_custom_lesser 1 random_magic_custom_greater 1 random_item_misc_rare 1 0 200 }
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{400 600}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=random_wand_magery,1,R5
+ITEM=random_armor_all
+
+[TEMPLATE loot_centaur]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Centaur
+ITEM=i_gold,{175 200}
+ITEM=random_jewel,{1 3}
+ITEM=random_weapon_archer_normal
+ITEM=i_arrow,{50 60}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{100 125}
+ITEM=i_arrow,{20 30}
+
+[TEMPLATE loot_kappa]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Kappa
+ITEM=i_gold,{100 125}
+ITEM=random_jewel,{1 3}
+CONTAINER=i_bag
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2},R2
+
+[TEMPLATE loot_oni]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Oni
+ITEM=i_gold,{1000 1100}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=random_weapon_all
+ITEM=i_gold,{600 750}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_reagent,{3 5},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R80
+
+[TEMPLATE loot_deathwatch_beetle]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Deathwatch Beetle
+ITEM=i_gold,{25 50}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_potion,R2
+ITEM=random_armor_all,R2
+
+[TEMPLATE loot_rune_beetle]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Rune Beetle
+ITEM=i_gold,{1000 1200}
+ITEM=random_reagent,{5 15}
+ITEM=random_jewel,{1 2},R2
+ITEM=random_scroll,{1 3},R2
+ITEM=random_body_parts_1,1,R2
+ITEM=random_body_parts_2,1,R2
+ITEM=random_item_bone,1,R2
+ITEM=random_armor_all,1,R2
+
+[TEMPLATE loot_bake_kitsune]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Bake Kitsune
+ITEM=i_gold,{700 1000}
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent_necro,{2 5}
+ITEM=random_scroll,{1 3},R2
+ITEM=random_reagent,{4 6},R2
+ITEM=random_magic_loot,1,R50
+
+[TEMPLATE loot_yamandon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Yamandon
+ITEM=i_gold,{1000 1250}
+ITEM=random_jewel,{2 4}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM=i_eggs_fresh,{1 4},R3
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1250}
+ITEM=random_jewel,{1 3},R2
+//ITEM=i_map_treasure,1,R20
+
+[TEMPLATE loot_tsuki_wolf]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Tsuki Wolf
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{2 4}
+ITEM=random_item_bone,R5
+ITEM=random_armor_all
+ITEM=random_body_parts_1,1,R5
+ITEM=random_body_parts_2,1,R5
+
+[TEMPLATE loot_revenant_lion]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Revenant Lion
+ITEM=i_gold,{300 400}
+ITEM=random_jewel,{2 4}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent_necro,{6 8}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 random_item_bone 1 0 15 }
+CONTAINER=i_bag
+ITEM=i_gold,{250 300}
+ITEM=random_scroll,{1 2},R3
+ITEM=random_reagent,{4 6},R2
+
+[TEMPLATE loot_changling]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Changling
+ITEM=i_gold,{50 100}
+ITEM=random_jewel,{2 4},R2
+ITEM=random_scroll,{1 3},R3
+ITEM=random_armor_all
+
+[TEMPLATE loot_dryad]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Dryad
+ITEM=i_gold,{150 200}
+ITEM=random_jewel,{2 4},R2
+ITEM=random_scroll,{1 3},R3
+ITEM=random_armor_all
+
+[TEMPLATE loot_troglodyte]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Troglodyte
+ITEM=i_gold,{400 450}
+ITEM=random_jewel,{1 4}
+ITEM=random_armor_all
+
+[TEMPLATE loot_satyr]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Satyr
+ITEM=i_gold,{150 200}
+ITEM=random_jewel,{2 4},R2
+ITEM=random_scroll,{1 3},R3
+ITEM=random_armor_all
+
+[TEMPLATE loot_reptalon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Reptalon (chimera)
+ITEM=i_gold,{1500 1900}
+ITEM=random_jewel,{3 5},R2
+ITEM=random_armor_all
+ITEM=random_weapon_all
+//ITEM=i_map_treasure,1,R20
+
+[TEMPLATE loot_cu_sidhe]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Cu Sidhe
+ITEM=i_gold,{1500 1900}
+ITEM=random_jewel,{3 5},R2
+ITEM=random_armor_all
+ITEM=random_weapon_all
+//ITEM=i_map_treasure,1,R20
+
+[TEMPLATE loot_treefellow]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Treefellow
+ITEM=i_gold,{125 175}
+ITEM=random_jewel,{3 5}
+ITEM=random_log,{25 35}
+
+[TEMPLATE loot_skittering_hopper]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Skittering Hopper
+ITEM=i_gold,{50 100}
+
+[TEMPLATE loot_golem_flesh]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Golem (flesh)
+ITEM=i_gold,{125 175}
+
+[TEMPLATE loot_gore_fiend]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gore Fiend
+ITEM=i_gold,{125 175}
+
+[TEMPLATE loot_gibberling]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Gibberling
+ITEM=i_gold,{50 100}
+
+[TEMPLATE loot_wanderer_void]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Wanderer of the Void
+ITEM=random_jewel,{5 10}
+//ITEM=i_map_treasure,1,R20
+//ITEM=i_map_treasure,1,R20
+
+[TEMPLATE loot_vampire_bat]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Vampire Bat
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_phantom_armor]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Phantom Armor
+ITEM=i_gold,{150 250}
+ITEM=random_jewel,{3 5},R2
+ITEM=random_armor_european
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,1,R60
+
+[TEMPLATE loot_phantom_weapon]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Phantom Weapon
+ITEM=i_gold,{150 250}
+ITEM=random_jewel,{3 5},R2
+ITEM=random_armor_european
+ITEM=random_weapon_all_normal
+//ITEM=i_map_treasure,1,R60
+
+[TEMPLATE loot_golem]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Golem
+ITEM=random_ingot_common,{11 25}
+ITEM=i_gem_arcane,{1 2},R25
+ITEM=i_power_crystal,{1 2},R25
+//ITEM=i_clockworks,1,R50
+
+[TEMPLATE loot_exodus_overseer]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Exodus Overseer
+ITEM=i_gold,{450 650}
+ITEM=random_jewel,{3 5},R2
+ITEM=i_gem_arcane,{1 2},R10
+ITEM=i_power_crystal,{1 2},R10
+//ITEM=i_clockworks,1,R20
+
+[TEMPLATE loot_exodus_minion]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Exodus Minion
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{3 5},R2
+ITEM=i_gem_arcane,{1 2},R30
+ITEM=i_power_crystal,{1 2},R30
+//ITEM=i_clockworks,1,R50
+
+[TEMPLATE loot_exodus_minionlord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Exodus Minion Lord
+ITEM=i_gold,{500 600}
+ITEM=random_jewel,{3 5},R2
+ITEM=i_gem_arcane,{1 2},R20
+ITEM=i_power_crystal,{1 2},R20
+//ITEM=i_clockworks,1,R40
+
+[TEMPLATE loot_plague_beast]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Plague Beast
+ITEM=i_gold,{250 300}
+ITEM=random_jewel,{1 3}
+ITEM=random_armor_all
+CONTAINER=i_chest_metal
+ITEM=i_gold,{200 300}
+ITEM=random_jewel,{1 2},R2
+//ITEM=random_item_magic,R50
+
+[TEMPLATE loot_plague_spawn]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Plague Spawn
+ITEM=i_gold,{25 50}
+
+[TEMPLATE loot_bogling]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Bogling
+ITEM=i_gold,{50 100}
+ITEM=random_log,{3 5}
+//FIXME: random_seed
+
+[TEMPLATE loot_bog_thing]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Bog Thing
+ITEM=i_gold,{275 325}
+ITEM=random_log,{9 11}
+ITEM=random_reagent,{2 4}
+ITEM=random_reagent,{2 4}
+ITEM=random_reagent_necro,{2 4}
+//FIXME: random_seed
+
+[TEMPLATE loot_fire_ant]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Fire Ant
+ITEM=i_gold,{200 300}
+ITEM=i_fire_ant_goo,1,R5
+//ITEM=i_map_treasure,1,R80
+
+[TEMPLATE loot_solen_worker]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Solen Worker
+ITEM=i_gold,{125 175}
+ITEM=i_crop_fungus_zoogi,{1 6}
+
+[TEMPLATE loot_solen_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Solen Warrior
+ITEM=i_gold,{250 350}
+ITEM=random_jewel,{1 4}
+ITEM=i_crop_fungus_zoogi,{1 6}
+
+[TEMPLATE loot_solen_queen]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Solen Queen
+ITEM=i_gold,{400 500}
+ITEM=random_jewel,{1 4}
+ITEM=i_crop_fungus_zoogi,{5 25}
+
+[TEMPLATE loot_ant_lion]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ant Lion
+ITEM=i_gold,{250 300}
+ITEM=random_ore_common,{1 10}
+ITEM=i_reag_fertile_dirt,{1 5}
+ITEM=random_item_bone,R10
+
+[TEMPLATE loot_sphynx]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Sphynx
+ITEM=i_gold,{1000 1200}
+ITEM=random_jewel,{4 6}
+ITEM=random_scroll,{1 2},R3
+ITEM=random_reagent,{2 5},R3
+ITEM=random_wand_magery,1
+ITEM=random_weapon_all
+//ITEM=i_map_treasure,1,R30
+
+[TEMPLATE loot_quagmire]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Quagmire
+ITEM=i_gold,{125 175}
+
+[TEMPLATE loot_ethereal_warrior]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Ethereal Warrior
+ITEM=i_gold,{500 550}
+ITEM=random_jewel,{1 2}
+ITEM=random_armor_european
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{250 400}
+ITEM=random_magic_loot,1,R50
+
+[TEMPLATE loot_maddening_horror]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Maddening Horror
+ITEM=i_gold,{425 500}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+ITEM=random_weapon_staff_normal
+ITEM=random_magic_loot,1,R50
+ITEM=monster_regbag_necromancy
+CONTAINER=i_bag
+ITEM=i_gold,{200 325}
+ITEM=random_weapon_all_normal,1,R2
+ITEM=random_armor_all,1,R2
+ITEM=random_jewel,{1 3},R2
+ITEM=random_reagent,{4 6},R3
+ITEM=random_wand_magery,1,R5
+//ITEM=i_map_treasure,1,R80
+
+[TEMPLATE loot_werewolf]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Werewolf
+ITEM=i_gold,{75 100}
+ITEM=random_jewel,{1 2}
+ITEM=random_body_parts_1,R2
+CONTAINER=i_bag
+ITEM=i_gold,{50 75}
+ITEM=random_jewel,R2
+ITEM=random_body_parts_2,R5
+
+///////////////////
+// Minotaur loot //
+///////////////////
+
+[TEMPLATE loot_minotaur]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Minotaur
+ITEM=i_gold,{425 450}
+ITEM=random_magic_loot,1,R50
+//ITEM=i_map_treasure,R50
+
+[TEMPLATE loot_minotaur_scout]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Minotaur (scout)
+ITEM=i_gold,{425 450}
+ITEM=random_magic_loot,1,R50
+//ITEM=i_map_treasure,R50
+
+[TEMPLATE loot_minotaur_tormented]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Minotaur (tormented)
+ITEM=i_gold,{425 450}
+ITEM=random_magic_loot,1,R25
+//ITEM=i_map_treasure,R25
+
+[TEMPLATE loot_minotaur_captain]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Minotaur (captain)
+ITEM=i_gold,{600 650}
+ITEM=random_magic_loot,1,R10
+//ITEM=i_map_treasure,R10
+
+[TEMPLATE loot_minotaur_lord]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Minotaur (lord)
+ITEM=i_gold,{800 950}
+ITEM=random_magic_loot,1,R5
+//ITEM=i_map_treasure,R5
+
+
+/////////////////////////////
+// Champion Loot Templates //
+/////////////////////////////
+
+[TEMPLATE loot_champ_rikktor]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Rikktor
+ITEM=i_gold,{3000 3500}
+ITEM=random_jewel,{3 5}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_weapon_all
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_champ_mephitis]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Mephitis
+ITEM=i_gold,{1500 1750}
+ITEM=random_jewel,{3 5}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1250}
+ITEM=random_jewel,{1 3}
+ITEM=random_weapon_all
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_champ_navrey]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Navrey Night-Eyes
+ITEM=i_gold,{1500 1750}
+ITEM=random_jewel,{3 5}
+ITEM={ random_item_carcass 1 0 20 }
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=i_spider_carapace,{1 3}
+ITEM=random_artifact,1,R10
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{4 6}
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1250}
+ITEM=random_jewel,{1 3}
+ITEM=random_scroll,{1 3},R2
+ITEM=random_reagent,{4 6},R2
+ITEM=random_weapon_all
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+ITEM=random_artifact,1,R10
+
+[TEMPLATE loot_champ_semidar]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Semidar
+ITEM=i_gold,{2000 4000}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=random_wand_magery,1,R5
+CONTAINER=i_bag
+ITEM=i_gold,{1500 2000}
+ITEM=random_jewel,{1 3}
+//ITEM=i_map_treasure,1,R20
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_champ_lord_oaks]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Lord Oaks
+ITEM=i_gold,{2000 4000}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=random_wand_magery,1,R5
+CONTAINER=i_bag
+ITEM=i_gold,{1500 2000}
+ITEM=random_jewel,{1 3}
+//ITEM=i_map_treasure,1,R20
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_champ_silvani]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Silvani
+ITEM=i_gold,{1000 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_scroll,{1 3}
+ITEM=random_reagent,{5 9}
+ITEM=random_wand_magery,1,R5
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1500}
+ITEM=random_jewel,{1 3}
+ITEM=random_weapon_all
+//ITEM=i_map_treasure,1,R20
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_impaler]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Impaler
+ITEM=i_gold,{1000 1000}
+ITEM=random_jewel,{3 5}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{600 1000}
+ITEM=random_jewel,{3 5}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_bone_demon]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Bone Demon
+ITEM=i_gold,{2000 2500}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_item_carcass,1,R30
+CONTAINER=i_bag
+ITEM=i_gold,{2000 2500}
+ITEM=random_jewel,{3 5}
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_shadow_knight]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Shadow Knight
+ITEM=i_gold,{1000 1200}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+CONTAINER=i_bag
+ITEM=i_gold,{600 800}
+ITEM=random_jewel,{3 5}
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_abyssmal_horror]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Abyssmal Horror
+ITEM=i_gold,{1000 1200}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+CONTAINER=i_bag
+ITEM=i_gold,{600 800}
+ITEM=random_jewel,{3 5}
+ITEM=random_item_carcass,1,R30
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_darknight_creeper]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Darknight Creeper
+ITEM=i_gold,{1000 1200}
+ITEM=random_jewel,{3 5}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=monster_regbag_necromancy
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+CONTAINER=i_bag
+ITEM=i_gold,{600 800}
+ITEM=random_jewel,{3 5}
+ITEM=random_item_carcass,1,R30
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
+[TEMPLATE loot_flesh_renderer]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Flesh Renderer
+ITEM=i_gold,{1600 2000}
+ITEM=random_jewel,{3 5}
+ITEM=random_weapon_all
+ITEM=random_body_parts_1,R2
+ITEM=random_body_parts_2,R5
+ITEM=random_item_bone,R15
+ITEM=random_item_carcass,1,R30
+
+[TEMPLATE loot_dark_father]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Dark Father
+ITEM=i_gold,{1200 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=monster_regbag_necromancy
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_body_parts_1,1,R5
+ITEM=random_item_carcass,1,R30
+ITEM=random_item_dragonscale,{1 2},R20
+CONTAINER=i_bag
+ITEM=i_gold,{2000 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_reagent,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_armor_all,R5
+ITEM=random_weapon_all,R5
+ITEM=random_body_parts_2,1,R5
+ITEM=random_magic_custom_greater,R20
+ITEM=random_magic_jewelry,1,R30
+ITEM=random_item_misc_rare,1,R40
+
+[TEMPLATE loot_paroxysmus]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Paroxysmus
+ITEM=i_gold,{1800 2500}
+ITEM=random_jewel,{3 5}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM={i_paroxysmus_dinner 25 i_paroxysmus_stein 25 i_paroxysmus_sweat 25 i_paroxysmus_victims 25 i_pet_paroxysmus 10 i_scepter_paroxysmus 1 i_lard_paroxysmus 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+
+[TEMPLATE loot_dread_horn]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Dread Horn
+ITEM=i_gold,{1800 2300}
+ITEM=random_jewel,{3 5}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM={i_mangled_dread_horn 40 i_horn_dread 30 i_dread_horn_heart 20 i_pristine_dread_horn 10 i_flute_dread 5 i_dread_revenge 1 i_mane_dread_horn 1}
+ITEM={i_tainted_shroom1 15 i_tainted_shroom2 15 i_tainted_shroom3 15 i_tainted_shroom4 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM=random_artifact,1,R25
+
+[TEMPLATE loot_lady_melisande]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Lady Melisande
+ITEM=random_jewel,{3 5}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=monster_regbag_necromancy
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=i_gold,{1500 2000}
+ITEM={i_bottle_wine_melisande 100 i_crystal_squirrel 10 i_hatchet_melisande 1 i_bark_diseased 1}//i_tree_corrupt rare_hair_dyes
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+
+[TEMPLATE loot_shimmering_effusion]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Shimmering Effusion
+ITEM=random_jewel,{3 5}
+ITEM=random_jewel,{3 5}
+ITEM=random_weapon_mace_normal
+ITEM=random_armor_all
+ITEM={i_captured_essence 100 i_shimmering_crystal 10 i_ring_crystalline 1}//other shimmering crystals?
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+ITEM={i_blight 1 i_corruption 1 i_scourge 1 i_taint 1 i_putrefaction 1 i_muculent 1}
+
+[TEMPLATE loot_medusa]
+CATEGORY=Item Templates
+SUBSECTION=Monster Loot Templates
+DESCRIPTION=Medusa
+ITEM=i_gold,{4000 5000}
+ITEM=random_potion,{2 3}
+ITEM=random_scroll,{2 3}
+ITEM=random_reagent,{4 6}
+ITEM=loaded_monster_goodie_4
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+//ITEM=i_map_treasure,R99
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1750}
+ITEM=random_weapon_all
+ITEM=random_armor_all
+ITEM=random_potion
+ITEM=random_wand_magery,R5
+ITEM=random_scroll,{1 2}
+ITEM=random_reagent,{3 5}
+
+[TEMPLATE loot_slasher_of_veils]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Slasher of Veils
+ITEM=i_gold,{3200 4500}
+ITEM=random_jewel,{3 5}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=random_reagent,{5 10}
+ITEM=monster_regbag_necromancy
+ITEM=random_armor_all
+ITEM=random_weapon_all
+ITEM=random_artifact,1,R5
+ITEM=random_body_parts_1,1,R5
+ITEM=random_item_carcass,1,R10
+ITEM=i_claw_slasher_of_veils,R5
+ITEM=random_loaded_magic_loot,1,R5
+CONTAINER=i_bag
+ITEM=i_gold,{2000 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_reagent,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_scroll,{5 10}
+ITEM=random_armor_all,R5
+ITEM=random_weapon_all,R5
+ITEM=random_body_parts_2,1,R5
+ITEM=random_magic_loot,1,R5
+ITEM=random_magic_custom_greater,R20
+ITEM=random_magic_jewelry,1,R30
+ITEM=random_item_misc_rare,1,R40
+ITEM=random_artifact,1,R5
+
+[TEMPLATE loot_champ_scalis]
+CATEGORY=Item Templates
+SUBSECTION=Champion Loot Templates
+DESCRIPTION=Scalis
+ITEM=i_gold,{3000 3500}
+ITEM=random_jewel,{3 5}
+ITEM={ random_item_dragonscale 1 0 20 },{1 2}
+ITEM={ random_item_carcass 1 0 100 }
+ITEM=random_armor_all
+CONTAINER=i_bag
+ITEM=i_gold,{1000 1500}
+ITEM=random_jewel,{3 5}
+ITEM=random_weapon_all
+ITEM={ random_body_parts_1 1 random_body_parts_2 1 0 5 }
+ITEM={ random_magic_custom_greater 1 random_magic_jewelry 1 random_item_misc_rare 1 0 100 }
+
 
 [EOF]

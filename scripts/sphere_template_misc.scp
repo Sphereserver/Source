@@ -1,0 +1,216 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
+
+
+/////////////
+// Natural //
+/////////////
+
+[TEMPLATE tm_rocks]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Rock
+ITEM={ i_rock_plain 1 i_rock_plain_x 1 }
+
+[TEMPLATE tm_boulders]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Boulder
+ITEM={ i_boulder 1 i_boulder_x 1 }
+
+[TEMPLATE random_item_dragonscale]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Dragonscale
+ITEM={ i_dragonscale 5 i_dragonscale_black 1 i_dragonscale_white 1 i_dragonscale_green 1 i_dragonscale_blue 1 i_dragonscale_yellow 1 i_dragonscale_red 1 }
+
+[TEMPLATE random_item_carcass]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Animal Carcass
+ITEM={ i_fish_raw_whole 1 i_fish_raw_headless 1 i_fish_raw_head 1 i_fish_raw_head_pile 1 i_bird_dead 1 i_bird_dead_2 1 i_chicken_dead 1 i_goat_skinned 1 i_chicken_plucked 1 i_pigs_feet 1 i_pigs_head 1 i_deer_skinned 1 i_rabbit_skinned 1 i_corpse_deer 1 }
+
+[TEMPLATE random_item_bone]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Bone
+ITEM={ i_bone 1 i_bone_jaw 1 i_bone_pelvis 1 i_bone_ribcage 1 i_bone_shards 1 i_bone_spine 1 }
+
+[TEMPLATE random_crystal_broken]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Broken Crystal
+ITEM={ 0223b 1 0223c 1 0223d 1 0223e 1 0223f 1 02240 1 02241 1 02242 1 02243 1 02244 1 02245 1 02246 1 02247 1 02248 1 02249 1 }
+
+[TEMPLATE random_ore]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Ore (all)
+ITEM={ i_ore_iron 512 i_ore_copper 256 i_ore_gold 256 i_ore_rose 128 i_ore_agapite 64 i_ore_silver 32 i_ore_shadow 16 i_ore_verite 8 i_ore_bloodrock 4 i_ore_blackrock 2 i_ore_valorite 1 }
+
+[TEMPLATE random_ore_common]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Ore (common)
+ITEM={ i_ore_iron 128 i_ore_copper 64 i_ore_gold 32 i_ore_rose 16 i_ore_agapite 8 i_ore_silver 4 i_ore_shadow 2 i_ore_verite 1 }
+
+[TEMPLATE random_ore_rare]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Ore (rare)
+ITEM={ i_ore_verite 8 i_ore_bloodrock 4 i_ore_blackrock 2 i_ore_valorite 1 }
+
+[TEMPLATE random_log]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Log
+ITEM={ i_log 1 }
+
+[TEMPLATE random_nautical_fish]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Raw Fish
+ITEM={ i_fish_small 1 i_fish_cut_raw 1 i_fish_big_1 1 i_fish_big_2 1 i_fish_big_3 1 i_fish_big_4 1 i_fish_raw_whole 1 i_fish_raw_headless 1 i_fish_raw_head 1 i_fish_raw_head_pile 1 }
+
+[TEMPLATE random_nautical_live]
+CATEGORY=Random Item Templates
+SUBSECTION=Natural
+DESCRIPTION=Live Fish
+ITEM={ i_coral 1 i_coral_2 1 i_coral_3 1 i_crab_speckled 1 i_fish_unknown 1 i_fish_minoc_blue 1 i_fish_unknown_2 1 i_fish_unknown_3 1 i_fish_unknown_4 1 i_fish_fandancer 1 i_fish_golden_broadtail 1 i_fish_unknown_5 1 i_fish_unknown_6 1 i_fish_nujelm_honey 1 i_fish_unknown_7 1 i_fish_vesper_reef_tiger 1 i_fish_spotted_bucaneer 1 i_fish_striped_sosarian_swill 1 i_fish_unknown_8 1 i_fish_bones 1 i_frog 1 i_jellyfish 1 i_seahorse 1 i_shrimp_brine 1 i_shell_2 1 i_shell_3 1 i_shrimp 1 i_sea_sponge 1 }
+
+
+/////////////
+// Crafted //
+/////////////
+
+[TEMPLATE random_item_origami]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Origami
+ITEM={ i_origami1 1 i_origami2 1 i_origami3 1 i_origami4 1 i_origami5 1 i_origami6 1 }
+
+[TEMPLATE random_item_plant_potted]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Potted Plant
+ITEM={ i_plant_cactus_potted 1 i_plant_cactus_potted_2 1 i_plant_cactus_potted_3 1 i_plant_cactus_potted_4 1 i_plant_cactus_potted_5 1 i_plant_cactus_potted_6 1 i_tree_small_potted 1 i_tree_large_potted 1 i_plant_potted_small 1 i_flower_potted_small 1 i_tree_small_potted_2 1 i_cactus_festive 1 i_tree_snowy 1 i_tree_decorative 1 i_bonsai_1 1 i_bonsai_2 1 i_bonsai_3 1 i_bonsai_4 1 i_bonsai_5 1 i_bonsai_6 1 i_bonsai_7 1 i_bonsai_8 1 }
+
+[TEMPLATE random_statue]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Statue
+ITEM={ 01224 1 01225 1 01226 1 01227 1 01228 1 012ca 1 01f18 1 02419 1 0241a 1 0241b 1 02846 1 02848 1 02849 1 02d0e 1 02d10 1 02d12 1 03b0f 1 }
+
+[TEMPLATE random_item_dyetub_rare]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Rare Dyetub
+ITEM={ i_gold 1 }
+
+
+[TEMPLATE random_ingot]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Ingot (all)
+ITEM={ i_ingot_iron 512 i_ingot_copper 256 i_ingot_gold 256 i_ingot_rose 128 i_ingot_agapite 64 i_ingot_silver 32 i_ingot_shadow 16 i_ingot_verite 8 i_ingot_bloodrock 4 i_ingot_blackrock 2 i_ingot_valorite 1 }
+
+[TEMPLATE random_ingot_common]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Ingot (common)
+ITEM={ i_ingot_iron 128 i_ingot_copper 64 i_ingot_gold 32 i_ingot_rose 16 i_ingot_agapite 8 i_ingot_silver 4 i_ingot_shadow 2 i_ingot_verite 1 }
+
+[TEMPLATE random_ingot_rare]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Ingot (rare)
+ITEM={ i_ingot_verite 8 i_ingot_bloodrock 4 i_ingot_blackrock 2 i_ingot_valorite 1 }
+
+[TEMPLATE random_tool_digging]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Tool (digging)
+ITEM={ i_shovel 8 i_pickaxe 4 0 1 }
+
+[TEMPLATE random_tool_carpentry]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Tool (carpentry)
+ITEM={ i_chisels 1 i_saw_dovetail 1 i_hammer 1 i_plane_moulding 1 i_plane_jointing 1 i_plane_smoothing 1 i_saw 1 i_knife_draw 1 i_froe 1 i_inshave 1 i_scorp 1 i_moulding_board 1 }
+
+[TEMPLATE random_tool_nautical]
+CATEGORY=Random Item Templates
+SUBSECTION=Miscellaneous
+DESCRIPTION=Tool (nautical)
+ITEM={ i_fishing_net 1 i_fishing_net_2 1 i_fishing_net_3 1 i_fishing_net_4 1 i_fishing_weight 1 i_fishing_pole 1 i_anchor 1 i_rope 1 i_model_ship 1 i_spyglass 1 }
+
+
+/////////////
+// Special //
+/////////////
+
+[TEMPLATE random_ethereal_mount]
+CATEGORY=Random Item Templates
+SUBSECTION=Special
+DESCRIPTION=Random Ethereal Mount
+//ITEM={ i_steed_ethereal 1 i_llama_ethereal 1 i_ostard_ethereal 1 i_kirin_ethereal 1 i_unicorn_ethereal 1 i_ridgeback_ethereal 1 i_swamp_dragon_ethereal 1 i_giant_beetle_ethereal 1 }
+
+[TEMPLATE random_item_misc_rare]
+CATEGORY=Random Item Templates
+SUBSECTION=Special
+DESCRIPTION=Rare Items
+ITEM={ i_rock_bloodstone 1 random_item_plant_potted 1 i_horn_evil 1 i_horn_good 1 }
+
+
+///////////////
+// Equipable //
+///////////////
+
+[TEMPLATE random_clothing_jewelry]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=Jewelry
+ITEM={ i_necklace_metal_beads 1 i_bracelet_gold 1 i_earrings_gold 1 i_necklace_gold 1 i_necklace_gold_beads 1 i_ring_gold 1 i_talisman 1 i_bracelet_silver 1 i_earrings_silver 1 i_necklace_silver 1 i_ring_silver 1 i_necklace_silver_beads 1 i_talisman1 1 i_talisman2 1 i_talisman3 1 i_talisman4 1 i_elven_glasses 1 }
+
+[TEMPLATE random_clothing_hats]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=Hats
+ITEM={ i_bandana 1 i_skull_cap 1 i_mask_bear 1 i_mask_deer 1 i_mask_blue 1 i_mask_tribal_red 1 i_hat_floppy 1 i_hat_wide_brim 1 i_cap 1 i_hat_straw_tall 1 i_hat_straw 1 i_hat_wizards 1 i_bonnet 1 i_hat_feather 1 i_hat_tricorne 1 i_hat_jester 1 i_hood_ninja 1 i_hat_kasa 1 }
+
+[TEMPLATE random_clothing_upperbody]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=Upper Body
+ITEM={ i_cape 1 i_shirt_plain 1 i_apron_half 1 i_apron_full 1 i_sash 1 i_shirt_fancy 1 i_dress_full 1 i_dress_plain 1 i_robe 1 i_doublet 1 i_jester_suit 1 i_tunic 1 i_surcoat 1 i_cape_fur 1 i_sarong_fur 1 i_dress_gilded 1 i_shirt_formal 1 i_shirt_checkered 1 i_robe2 1 i_dress_long 1 i_deathshroud_craft 1 i_kimono_male 1 i_kimono_female2 1 i_jacket_ninja 1 i_kamishimo 1 i_hakama_shita 1 i_obi 1 i_jinbaori 1 i_elven_male_robe1 1 i_elven_male_robe2 1 i_elven_shirt 1 i_elven_shirt_female 1 }
+
+[TEMPLATE random_clothing_lowerbody]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=Lower Body
+ITEM={ i_skirt_long 1 i_pants_short 1 i_skirt_short 1 i_kilt 1 i_pants_long 1 i_armor_female_shorts 1 i_skirt_knee 1 i_hakama 1 i_hakama_tattsuke 1 i_elven_pants 1 }
+
+[TEMPLATE random_clothing_footwear]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=Footwear
+ITEM={ i_boots_calf 1 i_sandals 1 i_shoes_plain 1 i_boots_thigh 1 i_boots_fur 1 i_shoes_tabi 1 i_elven_boots 1 }
+
+[TEMPLATE random_clothing_all]
+CATEGORY=Random Item Templates
+SUBSECTION=Clothing
+DESCRIPTION=All Clothing
+ITEM={ random_clothing_jewelry 1 random_clothing_hats 1 random_clothing_upperbody 1 random_clothing_lowerbody 1 random_clothing_footwear 1 }
+
+
+[EOF]

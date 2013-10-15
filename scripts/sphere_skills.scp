@@ -1,18 +1,19 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
-VERSION=0.56b
 
-// Generic advance rates for stats
 [ADVANCE]
+// Generic advance rates for stats
 STR=10000,4000,600
 INT=10000,4000,600
 DEX=10000,4000,600
@@ -1162,10 +1163,10 @@ BONUS_INT=5
 BONUS_STATS=10
 ADV_RATE=10.0,200.0,800.0
 
+
 [SKILLCLASS 0]
 // undeclared class.
 // max skills for players of this skill class. 
-// might want this to be all 50.0 to make people declare a class?
 DEFNAME=Class_undeclared
 NAME=undeclared
 // EVENTS=e_ClassUndeclared
@@ -1232,5 +1233,6 @@ Spellweaving=100.0
 Mysticism=100.0
 Imbuing=100.0
 Throwing=100.0
+
 
 [EOF]

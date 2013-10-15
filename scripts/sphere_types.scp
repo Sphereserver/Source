@@ -1,24 +1,28 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft Â©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 02-Sept-2013
-//****************************************************************************
-// This script associates terrain tiles with item types. You MUST have a script 
-// like this in your server as of SphereServer 55R3rc2. Failure to do so will 
-// result in, for instance, not being able to mine.
-// Be warned that if you redefine one of the TYPEDEFs placed here, you will
-// clear all TERRAINs associated with it. This was done specifically to make 
-// sure TYPEDEFs don't remain associated with TERRAIN ids after you remove them 
-// from a script in a resync.
-//****************************************************************************
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
-VERSION=0.56b
+
+[COMMENT sphere_terrain_types]
+
+This file contains the definition of each "Terrain" TYPEDEF (water, rock,
+dirt, grass, lava, snow, swamp, jungle, forest, acid,...)
+
+NOTE: The TERRAIN numbers below (if there are two of them, its a range of
+numbers) are not item tiles.
+
+For more information on how these special TYPEDEFs are used in the harvesting
+of resources, check the COMMENT section of the sphere_region.scp file.
+
 
 [TYPEDEF t_water]
 TERRAIN = 0a8	0ab
@@ -134,8 +138,5 @@ TERRAIN = 0715 071c
 TERRAIN = 02e02 02e5f
 TERRAIN = 03f45 03f50
 
-[TYPEDEF 2010]
-
-[TYPEDEF 2011]
 
 [EOF]

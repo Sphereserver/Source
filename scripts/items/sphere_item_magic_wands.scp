@@ -7,1226 +7,16 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, April 4, 2005
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
+VERSION=0.56c
 
-VERSION=0.56b
 
-[ITEMDEF i_wand_react_armor]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_reactive_armor
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Reactive Armor
+[COMMENT sphere_item_magic_wands]
 
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_reactive_armor
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044381
+This file contains wands that are not related to Magery, AOS Necromancy, or
+other magic skills.
 
-[ITEMDEF i_wand_clumsy]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_clumsy
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Clumsiness
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_clumsy
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044382
-
-[ITEMDEF i_wand_create_food]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_create_food
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Create Food
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_create_food
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044383
-
-[ITEMDEF i_wand_feeblemind]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_Feeblemind
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Feeblemindness
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_Feeblemind
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044384
-
-[ITEMDEF i_wand_heal]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_heal
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Healing
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_heal
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044385
-
-[ITEMDEF i_wand_magic_arrow]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_magic_arrow
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Magic Arrow
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_magic_arrow
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044386
-
-[ITEMDEF i_wand_night_sight]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_night_sight
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Night Sight
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_night_sight
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044387
-
-[ITEMDEF i_wand_weaken]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_weaken
-SKILLMAKE=INSCRIPTION 10.0, i_pen_and_ink, MAGERY 10.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Weaken
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_weaken
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044388
-
-[ITEMDEF i_wand_agility]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_agility
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Agility
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_Agility
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044389
-
-[ITEMDEF i_wand_cunning]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_cunning
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Cunning
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_Cunning
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044390
-
-[ITEMDEF i_wand_cure]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_cure
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Cure
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_cure
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044391
-
-[ITEMDEF i_wand_harm]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_harm
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Harm
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_harm
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044392
-
-[ITEMDEF i_wand_magic_trap]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_magic_trap
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Magic Trap
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_magic_trap
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044393
-
-[ITEMDEF i_wand_magic_untrap]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_magic_untrap
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Magic Untrap
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_magic_untrap
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044394
-
-[ITEMDEF i_wand_protection]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_protection
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Protection
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_protection
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044395
-
-[ITEMDEF i_wand_strength]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_strength
-SKILLMAKE=INSCRIPTION 20.0, i_pen_and_ink, MAGERY 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Strength
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_strength
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044396
-
-[ITEMDEF i_wand_bless]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_bless
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Blessing
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_bless
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044397
-
-[ITEMDEF i_wand_fireball]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_fireball
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Fireballs
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_fireball
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044398
-
-[ITEMDEF i_wand_magic_lock]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_magic_lock
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Magic Lock
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_magic_lock
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044399
-
-[ITEMDEF i_wand_poison]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_poison
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Poison
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_poison
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044400
-
-[ITEMDEF i_wand_telekinesis]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_telekinesis
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of telekinesis
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_telekinesis
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044401
-
-[ITEMDEF i_wand_teleport]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_teleport
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Teleport
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_teleport
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044402
-
-[ITEMDEF i_wand_unlock]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_unlock
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Unlock
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_unlock
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044403
-
-[ITEMDEF i_wand_wall_of_stone]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_wall_of_stone
-SKILLMAKE=INSCRIPTION 30.0, i_pen_and_ink, MAGERY 30.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Wall of Stone
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_wall_of_stone
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044404
-
-[ITEMDEF i_wand_archcure]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_archcure
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Arch Cure
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_archcure
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044405
-
-[ITEMDEF i_wand_archprotection]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_archprotection
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Arch Protection
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_archprotection
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044406
-
-[ITEMDEF i_wand_curse]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_curse
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Curse
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_curse
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044407
-
-[ITEMDEF i_wand_fire_field]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_fire_field
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Fire Field
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_fire_field
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044408
-
-[ITEMDEF i_wand_greater_heal]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_greater_heal
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Greater Heal
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_greater_heal
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044409
-
-[ITEMDEF i_wand_lightning]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_lightning
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Lightning
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_lightning
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044410
-
-[ITEMDEF i_wand_mana_drain]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_mana_drain
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mana Drain
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mana_drain
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044411
-
-[ITEMDEF i_wand_recall]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_recall
-SKILLMAKE=INSCRIPTION 40.0, i_pen_and_ink, MAGERY 40.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Recall
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_recall
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044412
-
-[ITEMDEF i_wand_blade_spirits]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_blade_spirits
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Blade Spirits
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_blade_spirits
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044413
-
-[ITEMDEF i_wand_dispel_field]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_dispel_field
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Dispel Field
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_dispel_field
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044414
-
-[ITEMDEF i_wand_incognito]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_incognito
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Incognito
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_incognito
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044415
-
-[ITEMDEF i_wand_magic_reflection]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_magic_reflection
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Magic Reflect
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_magic_reflection
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044416
-
-[ITEMDEF i_wand_mind_blast]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_mind_blast
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mind Blast
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mind_blast
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044417
-
-[ITEMDEF i_wand_paralyze]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_paralyze
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Paralyzation
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_paralyze
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044418
-
-[ITEMDEF i_wand_poison_field]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_poison_field
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Poison Field
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_poison_field
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044419
-
-[ITEMDEF i_wand_summon_creature]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_summon_creature
-SKILLMAKE=INSCRIPTION 50.0, i_pen_and_ink, MAGERY 50.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Creature
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_creature
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044420
-
-[ITEMDEF i_wand_dispel]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_dispel
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Dispel
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_dispel
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044421
-
-[ITEMDEF i_wand_energy_bolt]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_energy_bolt
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Energy Bolt
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_energy_bolt
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044422
-
-[ITEMDEF i_wand_explosion]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_explosion
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Explosion
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_explosion
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044423
-
-[ITEMDEF i_wand_invisibility]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_invisibility
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Invisibility
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_invisibility
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044424
-
-[ITEMDEF i_wand_mark]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_mark
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mark
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mark
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044425
-
-[ITEMDEF i_wand_mass_curse]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_mass_curse
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mass Cure
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mass_curse
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044426
-
-[ITEMDEF i_wand_paralyze_field]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_paralyze_field
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Paralyze Field
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_paralyzation_field
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044427
-
-[ITEMDEF i_wand_reveal]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_reveal
-SKILLMAKE=INSCRIPTION 60.0, i_pen_and_ink, MAGERY 60.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Reveal
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_reveal
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044428
-
-[ITEMDEF i_wand_chain_lightning]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_chain_lightning
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Chain Lightning
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_chain_lightning
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044429
-
-[ITEMDEF i_wand_energy_field]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_energy_field
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Energy Field
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_energy_field
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044430
-
-[ITEMDEF i_wand_flamestrike]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_flamestrike
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Flame Strike
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_flamestrike
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044431
-
-[ITEMDEF i_wand_gate_travel]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_gate_travel
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Gate Travel
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_gate_travel
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044432
-
-[ITEMDEF i_wand_mana_vampire]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_mana_vampire
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mana Vampire
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mana_vampire
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044433
-
-[ITEMDEF i_wand_mass_dispel]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_mass_dispel
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Mass Dispel
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_mass_dispel
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044434
-
-[ITEMDEF i_wand_meteor_swarm]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_meteor_swarm
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Meteor Storm
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_meteor_swarm
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044435
-
-[ITEMDEF i_wand_polymorph]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_polymorph
-SKILLMAKE=INSCRIPTION 70.0, i_pen_and_ink, MAGERY 70.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Polymorph
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_polymorph
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044436
-
-[ITEMDEF i_wand_earthquake]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_earthquake
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Earthquake
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_earthquake
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044437
-
-[ITEMDEF i_wand_energy_vortex]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_energy_vortex
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Energy Vortex
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_energy_vortex
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044438
-
-[ITEMDEF i_wand_resurrection]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_resurrection
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Resurrection
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_resurrection
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044439
-
-[ITEMDEF i_wand_summon_elem_air]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_summon_elem_air
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Air Elemental
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_elem_air
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044440
-
-[ITEMDEF i_wand_summon_daemon]
-ID=i_wand_1
-TYPE=t_wand
-RESOURCES=i_wand_1,10 i_scroll_summon_daemon
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Daemon
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_daemon
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044441
-
-[ITEMDEF i_wand_summon_elem_earth]
-ID=i_wand_2
-TYPE=t_wand
-RESOURCES=i_wand_2,10 i_scroll_summon_elem_earth
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Earth Elemental
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_elem_earth
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044442
-
-[ITEMDEF i_wand_summon_elem_fire]
-ID=i_wand_3
-TYPE=t_wand
-RESOURCES=i_wand_3,10 i_scroll_summon_elem_fire
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Fire Elemental
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_elem_fire
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044443
-
-[ITEMDEF i_wand_summon_elem_water]
-ID=i_wand_4
-TYPE=t_wand
-RESOURCES=i_wand_4,10 i_scroll_summon_elem_water
-SKILLMAKE=INSCRIPTION 80.0, i_pen_and_ink, MAGERY 80.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Wands
-DESCRIPTION=Wand of Summon Water Elemental
-
-ON=@Create
-   HITPOINTS={11 21}
-   ATTR=attr_magic
-   MOREX=s_summon_elem_water
-   MOREY=50.0
-   MORE2={5 15}
-   
-ON=@ClientToolTip
-   SRC.ADDCLILOC 1044444
 
 [ITEMDEF i_wand_SUMMON_UNDEAD]
 ID=i_wand_4
@@ -1235,7 +25,6 @@ RESOURCES=i_wand_4,10 i_scroll_x_green2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Summon Undead
-
 ON=@Create
 	MOREX=s_summon_undead
 	MOREY=50.0
@@ -1249,7 +38,6 @@ RESOURCES=i_wand_4,10 i_scroll_x_teal2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Animate Dead
-
 ON=@Create
 	MOREX=s_animate_dead
 	MOREY=50.0
@@ -1263,7 +51,6 @@ RESOURCES=i_wand_4,10 i_scroll_x_brown2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Bone Armor
-
 ON=@Create
 	ATTR=attr_magic
 	MOREX=s_bone_armor
@@ -1277,7 +64,6 @@ RESOURCES=i_wand_4,10 i_scroll_x_red
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Light
-
 ON=@Create
 	ATTR=attr_magic
 	MOREX=s_light
@@ -1291,7 +77,6 @@ RESOURCES=i_wand_4,10 i_scroll_x_blue
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Fire Bolt
-
 ON=@Create
 	ATTR=attr_magic
 	MOREX=s_Fire_Bolt
@@ -1301,11 +86,10 @@ ON=@Create
 [ITEMDEF i_wand_HALLUCINATION]
 ID=i_wand_4
 TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_MIND_BLAST
+RESOURCES=i_wand_4,10 i_scroll_mind_blast
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Hallucination
-
 ON=@Create
 	ATTR=attr_magic
 	MOREX=s_Hallucination
@@ -1315,22 +99,24 @@ ON=@Create
 [ITEMDEF i_wand_FIREWORKS]
 ID=i_wand_3
 NAME=fireworks wand 20 charges
-
+RESOURCES=i_wand_3
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Wands
+DESCRIPTION=Wand of Fireworks
 ON=@Create
 	ATTR=attr_magic
-	more2=10	// init number of charges
-
-ON=@DCLICK
-	IF <moreY> == 0
-		moreY=50.0		// mark the wand as "primed"
-		more2=10	// init number of charges
-	endif
-	IF <more2> <= 0
+	MORE2=20
+ON=@DClick
+	IF (<MOREY>==0)
+		MOREY=50.0	// mark the wand as "primed"
+		MORE2=20	   // init number of charges
+	ENDIF
+	IF (<MORE2> <= 0)
 		SRC.MESSAGE This is out of charges
 		RETURN 1
-	endif
-	more2 = <more2> - 1
-	NAME=fireworks wand <more2> charges
+	ENDIF
+	MORE2 -= 1
+	NAME=fireworks wand <EVAL <MORE2>> charges
 	SRC.NEWITEM=i_fx_curse
 	SRC.ACT.NAME=fireworks display
 	SRC.ACT.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
@@ -1349,3 +135,56 @@ ON=@DCLICK
 	SRC.ACT.TIMER=4
 	SRC.ACT.SOUND=011c
 	RETURN 1
+
+[ITEMDEF i_wand_identify]
+ID=i_wand_1
+NAME=wand of identify
+TYPE=t_wand
+VALUE=100
+WEIGHT=4.1
+RESOURCES=1 i_log,2 i_ingot_silver,1 i_ingot_gold,1 i_gem_diamond
+SKILLMAKE=Carpentry 37.1,Magery 27.1,Itemid 15.9,t_carpentry
+CATEGORY=Provisions - Alchemy & Magic
+SUBSECTION=Wands
+DESCRIPTION=Wand of Identify
+ON=@Create
+   HITPOINTS={36 48}
+   ATTR=attr_magic
+   MORE2={5 15}
+ON=@DClick
+   IF (<MORE2>==0)
+      SRC.SYSMESSAGE It seems to be out of charges.
+   ELSE
+      MORE2 -= 1
+      RESENDTOOLTIP
+      TARGET What do you want to identify?
+   ENDIF
+   RETURN 1
+ON=@Targon_Item
+   SRC.TARG.ATTR |= attr_identified
+   SRC.SYSMESSAGE This item weighs <FVAL <SRC.TARG.WEIGHT>> stone.
+   IF <SRC.TARG.DYE>
+      SRC.SYSMESSAGE This item can be dyed.
+   ENDIF
+   IF <SRC.TARG.SKILLMAKE>
+      SRC.SYSMESSAGE To make this item you need <SRC.TARG.SKILLMAKE>.
+   ELSE
+      SRC.SYSMESSAGE This item can not be crafted.
+   ENDIF
+   IF <SRC.TARG.VALUE>
+      SRC.SYSMESSAGE You estimate <SRC.TARG.VALUE> gold for this item.
+   ELSE
+      SRC.SYSMESSAGE This item has no value.
+   ENDIF
+   IF <SRC.TARG.RESOURCES>
+      SRC.SYSMESSAGE It is made of:
+      LOCAL.X=1
+      WHILE <SRC.TARG.RESOURCES.<LOCAL.X>.VALUE>
+         SRC.SYSMESSAGE <SRC.TARG.RESOURCES.<LOCAL.X>.VALUE> <SERV.ITEMDEF.<SRC.TARG.RESOURCES.<LOCAL.X>.KEY>.NAME>
+         LOCAL.X=<EVAL <LOCAL.X>+1>
+      ENDWHILE
+   ENDIF
+   RETURN 1
+
+
+[EOF]

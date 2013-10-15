@@ -7,9 +7,82 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[ITEMDEF 091b]
+DEFNAME=i_bee_swarm
+TYPE=t_trap_active
+CATEGORY=Animations
+SUBSECTION=Bees
+DESCRIPTION=Bees
+DUPELIST=091c,091d,091e,091f,0920,0921,0922
+
+[ITEMDEF 091c]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 091d]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 091e]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 091f]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 0920]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 0921]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 0922]
+//bees
+DUPEITEM=091b
+
+[ITEMDEF 0923]
+DEFNAME=i_fx_bee_swarm2
+TYPE=t_trap_active
+CATEGORY=Animations
+SUBSECTION=Bees
+DESCRIPTION=Bees 2
+DUPELIST=0924,0925,0926,0927,0928,0929,092a
+
+[ITEMDEF 0924]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 0925]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 0926]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 0927]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 0928]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 0929]
+//bee swarm 2
+DUPEITEM=0923
+
+[ITEMDEF 092a]
+//bee swarm 2
+DUPEITEM=0923
 
 
 [ITEMDEF 0dda]
@@ -140,23 +213,23 @@ DUPELIST=0115a,0115b,0115c,0115d,0115e
 
 [ITEMDEF 0115a]
 //Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPEITEM=01159
 
 [ITEMDEF 0115b]
 //Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPEITEM=01159
 
 [ITEMDEF 0115c]
 //Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPEITEM=01159
 
 [ITEMDEF 0115d]
 //Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPEITEM=01159
 
 [ITEMDEF 0115e]
 //Sparkle 2 (animation frame)
-DUPEITEM=01158
+DUPEITEM=01159
 
 [ITEMDEF 019ab]
 DEFNAME=i_fire
@@ -2438,7 +2511,7 @@ DEFNAME=i_fx_field_paralyze
 TYPE=t_spell
 CATEGORY=Animations
 SUBSECTION=Paralysis Fields
-DESCRIPTION=@
+DESCRIPTION=Field
 DUPELIST=03968,03969,0396a,0396b,0396c,0396d,0396e,0396f,03970,03971,03972,03973,03974,03975,03976,03977,03978,03979,0397a,0397b,0397c,0397d,0397e,0397f,03980,03981,03982,03983,03984,03985,03986,03987,03988,03989,0398a
 
 [ITEMDEF 03968]
@@ -3056,7 +3129,7 @@ DUPEITEM=04bcb
 DUPEITEM=04bcb
 
 [ITEMDEF 05683]
-DEFNAME=fx_sparkle_hovering
+DEFNAME=i_fx_sparkle_hovering
 TYPE=t_hoverover
 CATEGORY=Animations
 SUBSECTION=Sparkles
@@ -3074,7 +3147,6 @@ DUPEITEM=05683
 [ITEMDEF 05686]
 //Sparkles (hovering)
 DUPEITEM=05683
-
 
 
 [EOF]

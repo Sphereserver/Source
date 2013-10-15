@@ -1,14 +1,15 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 21-Jan-2008
-VERSION=0.56b
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
 [COMMENT DIALOG_HELP_SECTION]
 dorigin x,y                                     // sets a dynamic origin point

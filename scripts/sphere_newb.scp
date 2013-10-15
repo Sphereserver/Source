@@ -1,15 +1,15 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 15, 2003
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 // Get the starting items for each skill.
@@ -18,7 +18,7 @@ VERSION=0.56b
 // Male Generic Starting Clothes
 ITEMNEWBIE=i_shirt_plain
 COLOR=colors_all
-ITEMNEWBIE=random_pants
+ITEMNEWBIE=i_pants_long
 COLOR=colors_neutral
 ITEMNEWBIE=random_shoes
 COLOR=colors_neutral
@@ -31,19 +31,19 @@ ITEMNEWBIE=i_gold,100
 // Female Generic Starting Clothes
 ITEMNEWBIE=i_shirt_plain
 COLOR=colors_all
-ITEMNEWBIE=random_skirt
+ITEMNEWBIE=i_skirt_long
 COLOR=colors_neutral
 ITEMNEWBIE=random_shoes
 COLOR=colors_neutral
 ITEMNEWBIE=i_dagger
 ITEMNEWBIE=i_candle
-ITEMNEWBIE=i_BOOK_SM
+ITEMNEWBIE=i_book_sm
 ITEMNEWBIE=i_gold,100
 
 [NEWBIE ALCHEMY]
 // Alchemy is best skill
 ITEMNEWBIE=i_mortar_pestle
-ITEMNEWBIE=i_BOTTLE_EMPTY,4
+ITEMNEWBIE=i_bottle_empty,4
 ITEMNEWBIE=i_reag_black_pearl,4
 ITEMNEWBIE=i_reag_garlic,4
 ITEMNEWBIE=i_reag_ginseng,4
@@ -69,7 +69,7 @@ ITEMNEWBIE=i_staff_gnarled
 
 [NEWBIE ARMSLORE]
 // Armslore is best skill
-ITEMNEWBIE=random_start_weapon
+ITEMNEWBIE=i_sword_long
 
 [NEWBIE PARRYING]
 // Parrying is best skill
@@ -102,7 +102,7 @@ ITEMNEWBIE=i_bedroll
 
 [NEWBIE CARPENTRY]
 // Carpentry is best skill
-ITEMNEWBIE={ i_saw_dovetail 1 i_hammer 1 i_plane_moulding 1 i_nails 1 i_plane_jointing 1 i_plane_smoothing 1 i_saw 1 i_scorp 1 i_inshave 1 }
+ITEMNEWBIE=random_tool_carpentry
 ITEMNEWBIE=i_log,10
 ITEMNEWBIE=i_board,10
 ITEMNEWBIE=i_apron_half
@@ -182,9 +182,9 @@ ITEMNEWBIE=i_reag_nightshade,3
 ITEMNEWBIE=i_reag_sulfur_ash,3
 ITEMNEWBIE=i_reag_spider_silk,3
 ITEMNEWBIE=i_reag_mandrake_root,3
-ITEMNEWBIE={ i_scroll_night_sight 1 i_scroll_clumsy 1 i_scroll_create_food 1 }
-ITEMNEWBIE={ i_scroll_feeblemind 1 i_scroll_heal 1 i_scroll_magic_arrow 1 }
-ITEMNEWBIE={ i_scroll_night_sight 1 i_scroll_weaken 1 }
+ITEMNEWBIE=random_first_circle
+ITEMNEWBIE=random_second_circle
+ITEMNEWBIE=random_third_circle
 
 [NEWBIE MAGICRESISTANCE]
 // Resisting Spells is best skill
@@ -221,13 +221,13 @@ ITEMNEWBIE=i_lockpick,4
 [NEWBIE TAILORING]
 // Tailoring is best skill
 ITEMNEWBIE=i_sewing_kit
-ITEMNEWBIE=i_CLOTH
+ITEMNEWBIE=i_cloth
 COLOR=colors_neutral
-ITEMNEWBIE=i_CLOTH
+ITEMNEWBIE=i_cloth
 COLOR=colors_neutral
-ITEMNEWBIE=i_CLOTH
+ITEMNEWBIE=i_cloth
 COLOR=colors_neutral
-ITEMNEWBIE=i_CLOTH
+ITEMNEWBIE=i_cloth
 COLOR=colors_neutral
 
 [NEWBIE TAMING]

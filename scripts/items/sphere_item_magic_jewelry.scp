@@ -1,0 +1,105 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+/////////////////
+// Ring of Str //
+/////////////////
+
+[ITEMDEF i_ring_str_lesser]
+ID=i_ring_gold
+NAME=lesser ring of strength
+RESOURCES=1 i_ingot_bloodrock,12 i_gem_star_sapphire,1 i_wire_gold,1 i_scroll_strength
+SKILLMAKE=Tinkering 100.0,t_tinker_tools,Magery 100.0
+CATEGORY=Magic
+SUBSECTION=Jewelry
+DESCRIPTION=Lesser Ring of Strength
+TEVENTS=t_equipitem
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   COLOR=037
+   TAG.STR=<R4,7>
+
+//////////////////
+///Ring of Int////
+//////////////////
+
+[ITEMDEF i_ring_int_lesser]
+ID=i_ring_gold
+NAME=lesser ring of intelligence
+RESOURCES=1 i_ingot_bloodrock,12 i_gem_emerald,1 i_wire_gold,1 i_scroll_cunning
+SKILLMAKE=Tinkering 100.0,t_tinker_tools,Magery 100.0
+CATEGORY=Magic
+SUBSECTION=Jewelry
+DESCRIPTION=Lesser Ring of Intelligence
+TEVENTS=t_equipitem
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   COLOR=055f
+   TAG.INT=<R4,7>
+
+//////////////////
+///Ring of Dex////
+//////////////////
+
+[ITEMDEF i_ring_dex_lesser]
+ID=i_ring_gold
+NAME=lesser ring of dexterity
+RESOURCES=1 i_ingot_bloodrock,12 i_gem_amber,1 i_wire_gold,1 i_scroll_agility
+SKILLMAKE=Tinkering 100.0,t_tinker_tools,Magery 100.0
+CATEGORY=Magic
+SUBSECTION=Jewelry
+DESCRIPTION=Lesser Ring of Dex
+TEVENTS=t_equipitem
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   COLOR=065
+   TAG.DEX=<R4,7>
+
+//////////////////
+///Ring of Bless//
+//////////////////
+
+[ITEMDEF i_ring_bless_lesser]
+ID=i_ring_gold
+NAME=lesser ring of bless
+RESOURCES=3 i_ingot_bloodrock,12 i_gem_tourmaline,12 i_gem_ruby,6 i_gem_amber,1 i_wire_gold,1 i_scroll_bless
+SKILLMAKE=Tinkering 100.0,t_tinker_tools,Magery 100.0,INSCRIPTION 15.0
+CATEGORY=Magic
+SUBSECTION=Jewelry
+DESCRIPTION=Lesser Ring of Bless
+TEVENTS=t_equipitem
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   COLOR=0151
+   TAG.STR=<R4,7>
+   TAG.DEX=<R4,7>
+   TAG.INT=<R4,7>
+
+[ITEMDEF i_ring_bless_great]
+ID=i_ring_gold
+NAME=greater ring of bless
+RESOURCES=1 i_ingot_gold,3 i_ingot_mytheril,12 i_gem_tourmaline,12 i_gem_diamond,12 i_gem_ruby,1 i_wire_gold,1 i_scroll_bless
+SKILLMAKE=Tinkering 100.0,t_tinker_tools,Magery 100.0,Inscription 25.0
+CATEGORY=Magic
+SUBSECTION=Jewelry
+DESCRIPTION=Greater Ring of Bless
+TEVENTS=t_equipitem
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   COLOR=0151
+   TAG.STR=<R6,9>
+   TAG.DEX=<R6,9>
+   TAG.INT=<R6,9>
+
+[EOF]

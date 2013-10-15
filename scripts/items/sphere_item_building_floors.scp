@@ -7,108 +7,108 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, August 30, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [ITEMDEF 0491]
 DEFNAME=i_floor_blue
 RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Blue Floor
-DESCRIPTION=@
+SUBSECTION=Tile Floor (blue)
+DESCRIPTION=Tile
 DUPELIST=0492,0493,0494,049b,04ea,04eb,04ec,04ed,04ee,04ef,04f0,04f1,04f2
 
 [ITEMDEF 0492]
-//floor tile
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 0493]
-//floor tile
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 0494]
-//floor tile
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 0495]
 DEFNAME=i_floor_marble
-RESOURCES=25 i_stone_marble
+RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
-SUBSECTION=Marble Floor 1
-DESCRIPTION=@
+SUBSECTION=Pavers (marble)
+DESCRIPTION=Paver
 DUPELIST=0496,0497,0498
 
 [ITEMDEF 0496]
-//marble floor
+//Pavers (marble)
 DUPEITEM=0495
 
 [ITEMDEF 0497]
-//marble floor
+//Pavers (marble)
 DUPEITEM=0495
 
 [ITEMDEF 0498]
-//marble floor
+//Pavers (marble)
 DUPEITEM=0495
 
 [ITEMDEF 049b]
-//blue floor
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 049c]
-DEFNAME=i_FLOOR_SLATE_GREY
-RESOURCES=25 i_stone_slate
+DEFNAME=i_floor_slate_grey
+RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Gray Slate Floor
-DESCRIPTION=@
+SUBSECTION=Tile Floor (gray slate)
+DESCRIPTION=Tile
 
 [ITEMDEF 049d]
 DEFNAME=i_paver_sandstone
-RESOURCES=25 i_stone_sand
+RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
-SUBSECTION=Sandstone Pavers
-DESCRIPTION=@
+SUBSECTION=Pavers (sandstone)
+DESCRIPTION=Paver
 DUPELIST=049e,049f,04a0
 
 [ITEMDEF 049e]
-//sandstone paver
+//Pavers (sandstone)
 DUPEITEM=049d
 
 [ITEMDEF 049f]
-//sandstone paver
+//Pavers (sandstone)
 DUPEITEM=049d
 
 [ITEMDEF 04a0]
-//sandstone paver
+//Pavers (sandstone)
 DUPEITEM=049d
 
 [ITEMDEF 04a1]
-DEFNAME=i_WOOD_PLANK
-RESOURCES=25 I_BOARD
+DEFNAME=i_wood_plank
+RESOURCES=25 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wooden Planks (light)
-DESCRIPTION=@
+DESCRIPTION=Planks
 DUPELIST=04a2,04a3,04a4,04c6,04c7,04c8,04c9,04ca,04cb,04cc,04cd,04ce,04cf,04d0,04d1,04d2,04d3,04d4,04d5,04d6,04d7,04d8,04d9,04da,04db,04dc,04dd,04de,04df,04e0,04e1
 
 [ITEMDEF 04a2]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04a3]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04a4]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04a5]
 DEFNAME=i_floor_wood
-RESOURCES=25 I_BOARD
+RESOURCES=25 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wooden Boards
-DESCRIPTION=@
+DESCRIPTION=Boards
 DUPELIST=04a6,04a7,04a8,04a9,04aa,04ab,04ac,04ad,04ae,04af,04b0,04b1,04b2,04b3,04b4,04b5,04b6,04b7,04b8,04b9,04ba,04bb,04bc,04bd,04be,04bf,04c0
 
 [ITEMDEF 04a6]
@@ -221,388 +221,382 @@ DUPEITEM=04a5
 
 [ITEMDEF 04c1]
 DEFNAME=i_floor_wood_primitive
-RESOURCES=25 I_LOG
+RESOURCES=25 i_log
 CATEGORY=Buildings - Floors
-SUBSECTION=Primitive Wooden Logs (green)
-DESCRIPTION=@
+SUBSECTION=Primitive Logs (green)
+DESCRIPTION=Primitive Log
 DUPELIST=04c2,04c3,04c4,04c5,0504,0505,0506,0507,0508,0509,050a
 
 [ITEMDEF 04c2]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 04c3]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 04c4]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 04c5]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 04c6]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04c7]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04c8]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04c9]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04ca]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04cb]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04cc]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04cd]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04ce]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04cf]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d0]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d1]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d2]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d3]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d4]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d5]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d6]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d7]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d8]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04d9]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04da]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04db]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04dc]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04dd]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04de]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04df]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04e0]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04e1]
-//wooden planks
+//wooden planks (light)
 DUPEITEM=04a1
 
 [ITEMDEF 04e2]
 DEFNAME=i_floor_flagstone_red
-//DEFNAME2=i_RED_FLAGSTONE_FLOOR
-RESOURCES=25 I_flagstone_RED
+RESOURCES=25 i_brick
 CATEGORY=Buildings - Floors
-SUBSECTION=Flagstones (Dark Red)
-DESCRIPTION=@
+SUBSECTION=Flagstones (dark red)
+DESCRIPTION=Flagstone
 DUPELIST=04e3,04e4,04e5,04e6,04e7,04e8,04e9,0537,0538,0539,053a
 
 [ITEMDEF 04e3]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e4]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e5]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e6]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e7]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e8]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04e9]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 04ea]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04eb]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04ec]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04ed]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04ee]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04ef]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04f0]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04f1]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04f2]
-//blue tiles
+//Tile Floor (blue)
 DUPEITEM=0491
 
 [ITEMDEF 04f3]
-DEFNAME=i_FLOOR_STONE_RED
-RESOURCES=25 I_STONE_RED
+DEFNAME=i_floor_stone_red
+RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Red Floor
-DESCRIPTION=@
+SUBSECTION=Tile Floor (red)
+DESCRIPTION=Tile
 DUPELIST=04f4,04f5,04f6,04f7,04f8,04f9,04fa,04fb
 
 [ITEMDEF 04f4]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04f5]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04f6]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04f7]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04f8]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04f9]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04fa]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04fb]
-//red tiles
+//Tile Floor (red)
 DUPEITEM=04f3
 
 [ITEMDEF 04fc]
-DEFNAME=i_FLOOR_FLAGSTONE_GRAY
-//DEFNAME2=i_GRAY_FLAGSTONE_FLOOR
-RESOURCES=25 I_flagstone_GRAY
+DEFNAME=i_floor_flagstone_gray
+RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Flagstones (gray)
-DESCRIPTION=@
+DESCRIPTION=Flagstone
 DUPELIST=04fd,04fe,04ff
 
 [ITEMDEF 04fd]
-//flagstones
+//Flagstones (gray)
 DUPEITEM=04fc
 
 [ITEMDEF 04fe]
-//flagstones
+//Flagstones (gray)
 DUPEITEM=04fc
 
 [ITEMDEF 04ff]
-//flagstones
+//Flagstones (gray)
 DUPEITEM=04fc
 
 [ITEMDEF 0500]
-DEFNAME=i_FLOOR_SANDSTONE
-RESOURCES=25 i_stone_sand
+DEFNAME=i_floor_sandstone
+RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Flagstones (sandstone)
 DESCRIPTION=@
 DUPELIST=0501,0502,0503
 
 [ITEMDEF 0501]
-//flagstones
+//Flagstones (sandstone)
 DUPEITEM=0500
 
 [ITEMDEF 0502]
-//flagstones
+//Flagstones (sandstone)
 DUPEITEM=0500
 
 [ITEMDEF 0503]
-//flagstones
+//Flagstones (sandstone)
 DUPEITEM=0500
 
 [ITEMDEF 0504]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 0505]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 0506]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 0507]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 0508]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 0509]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 050a]
-//wooden logs
+//Primitive Logs (green)
 DUPEITEM=04c1
 
 [ITEMDEF 050b]
-DEFNAME=i_FLOOR_WOOD_LOG
-RESOURCES=25 I_LOG
+DEFNAME=i_floor_wood_log
+RESOURCES=25 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Primitive Logs (gray)
-DESCRIPTION=@
+DESCRIPTION=Primitive Log
 DUPELIST=050c
 
 [ITEMDEF 050c]
-//wooden logs
+//Primitive Logs (gray)
 DUPEITEM=050b
 
 [ITEMDEF 050d]
 DEFNAME=i_floor_marble_2
-RESOURCES=25 i_stone_marble
+RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
-SUBSECTION=Marble Floor 2
-DESCRIPTION=@
+SUBSECTION=Tile Floor (yellow marble)
+DESCRIPTION=Tile
 DUPELIST=050e
 
 [ITEMDEF 050e]
-//white marble
+//Tile Floor (yellow marble)
 DUPEITEM=050d
 
 [ITEMDEF 050f]
 DEFNAME=i_floor_marble_3
-RESOURCES=25 i_stone_marble
+RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
-SUBSECTION=Marble Floor 3
-DESCRIPTION=@
+SUBSECTION=Tile Floor (green)
+DESCRIPTION=Tile
 DUPELIST=0510
 
 [ITEMDEF 0510]
-//marble floor
+//Tile Floor (green)
 DUPEITEM=050f
 
 [ITEMDEF 0511]
 DEFNAME=i_floor_marble_4
-RESOURCES=25 i_stone_marble
+RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
-SUBSECTION=Marble Floor 4
-DESCRIPTION=@
-DUPELIST=0512
+SUBSECTION=Tile Floor (white marble)
+DESCRIPTION=Tile
+DUPELIST=0512,0513,0514
 
 [ITEMDEF 0512]
-//marble floor
+//Tile Floor (white marble)
 DUPEITEM=0511
 
 [ITEMDEF 0513]
-DEFNAME=i_floor_marble_5
-RESOURCES=25 i_stone_marble
-CATEGORY=Buildings - Floors
-SUBSECTION=Marble Floor 5
-DESCRIPTION=@
-DUPELIST=0514
+//Tile Floor (white marble)
+DUPELIST=0511
 
 [ITEMDEF 0514]
-//marble floor
-DUPEITEM=0513
+//Tile Floor (white marble)
+DUPEITEM=0511
 
 [ITEMDEF 0515]
-DEFNAME=i_FLOOR_COBBLESTONE
-RESOURCES=25 I_STONE_COBBLE
+DEFNAME=i_floor_cobblestone
+RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Cobblestones
-DESCRIPTION=@
+DESCRIPTION=Cobblestone
 DUPELIST=0516,0517,0518
 
 [ITEMDEF 0516]
@@ -618,147 +612,147 @@ DUPEITEM=0515
 DUPEITEM=0515
 
 [ITEMDEF 0519]
-DEFNAME=i_PAVER_STONE
+DEFNAME=i_paver_stone
 RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Stone Pavers
-DESCRIPTION=@
+SUBSECTION=Pavers (stone)
+DESCRIPTION=Paver
 DUPELIST=051a,051b,051c,051d,051e,051f,0520,0521,0522,0523,0524
 
 [ITEMDEF 051a]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 051b]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 051c]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 051d]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 051e]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 051f]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0520]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0521]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0522]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0523]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0524]
-//stone pavers
+//Pavers (stone)
 DUPEITEM=0519
 
 [ITEMDEF 0525]
-DEFNAME=i_FLOOR_SANDSTONE_2
-RESOURCES=25 i_stone_sand
+DEFNAME=i_floor_sandstone_2
+RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
-SUBSECTION=Sandstone Floor (light)
-DESCRIPTION=@
+SUBSECTION=Cobblestone Floor (light sandstone)
+DESCRIPTION=Cobblestone
 DUPELIST=0526,0527,0528,0529,052a,052b,052c,081d
 
 [ITEMDEF 0526]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 0527]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 0528]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 0529]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 052a]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 052b]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 052c]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 [ITEMDEF 052f]
-DEFNAME=i_FLOOR_SANDSTONE_3
-RESOURCES=25 i_stone_sand
+DEFNAME=i_floor_sandstone_3
+RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
-SUBSECTION=Sandstone Floor (dark)
-DESCRIPTION=@
+SUBSECTION=Cobblestone Floor (dark sandstone)
+DESCRIPTION=Cobblestone
 DUPELIST=0530,0531,0532,0533,0534,0535,0536
 
 [ITEMDEF 0530]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0531]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0532]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0533]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0534]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0535]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0536]
-//sandstone floor
+//Cobblestone Floor (dark sandstone)
 DUPEITEM=052f
 
 [ITEMDEF 0537]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 0538]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 0539]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 053a]
-//bricks
+//Flagstones (dark red)
 DUPEITEM=04e2
 
 [ITEMDEF 081d]
-//sandstone floor
+//Cobblestone Floor (light sandstone)
 DUPEITEM=0525
 
 
@@ -767,20 +761,20 @@ DEFNAME=i_tile_stone_sand
 TYPE=t_floor
 RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Sandstone Cobblestones
-DESCRIPTION=Sandstone
+SUBSECTION=Cobblestones (sandstone)
+DESCRIPTION=Cobblestone
 DUPELIST=01384,01385,01386
 
 [ITEMDEF 01384]
-//sandstone
+//Cobblestones (sandstone)
 DUPEITEM=01383
 
 [ITEMDEF 01385]
-//sandstone
+//Cobblestones (sandstone)
 DUPEITEM=01383
 
 [ITEMDEF 01386]
-//sandstone
+//Cobblestones (sandstone)
 DUPEITEM=01383
 
 
@@ -1061,7 +1055,7 @@ DUPEITEM=0245e
 DUPEITEM=0245e
 
 [ITEMDEF 02464]
-DEFNAME=i_sand_raked
+DEFNAME=i_sand_with_rock_raked
 NAME=sand garden
 TYPE=t_floor
 RESOURCES=100 i_log
@@ -1098,6 +1092,21 @@ DUPEITEM=0245e
 //sand garden
 DUPEITEM=0245e
 
+[ITEMDEF 02720]
+//Not a tile you normally place inside the game since it is offset
+TYPE=t_floor
+RESOURCES=100 i_log
+CATEGORY=Buildings - Floors
+SUBSECTION=Floor Patterns
+DESCRIPTION=Floor Pattern 1
+
+[ITEMDEF 02721]
+//Not a tile you normally place inside the game since it is offset
+TYPE=t_floor
+RESOURCES=100 i_log
+CATEGORY=Buildings - Floors
+SUBSECTION=Floor Patterns
+DESCRIPTION=Floor Pattern 2
 
 [ITEMDEF 02722]
 TYPE=t_floor
@@ -1600,12 +1609,33 @@ DUPEITEM=02978
 DUPEITEM=02978
 
 
+[ITEMDEF 02bb5]
+DEFNAME=i_floor_tile_ornate
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Floors
+SUBSECTION=Elven Floor Tile (ornate)
+DESCRIPTION=Floor
+DUPELIST=02bb6,02bb7,02bb8
+
+[ITEMDEF 02bb6]
+//Elven Floor Tile (ornate)
+DUPEITEM=02bb5
+
+[ITEMDEF 02bb7]
+//Elven Floor Tile (ornate)
+DUPEITEM=02bb5
+
+[ITEMDEF 02bb8]
+//Elven Floor Tile (ornate)
+DUPEITEM=02bb5
+
+
 [ITEMDEF 02bcf]
 DEFNAME=i_floor_tile_simple
 RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
-SUBSECTION=Elven Floor Tile
-DESCRIPTION=Elven Floor Tile (simple)
+SUBSECTION=Elven Floor Tile (simple)
+DESCRIPTION=Floor
 DUPELIST=02cec,02ced,02cee,02dcb,02dcc,02dcd,02dce
 
 [ITEMDEF 02cec]
@@ -1624,20 +1654,20 @@ DUPEITEM=02bcf
 DEFNAME=i_floor_bark
 RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
-SUBSECTION=Elven Floor Bark
-DESCRIPTION=Elven Floor Bark
+SUBSECTION=Bark Floor
+DESCRIPTION=Floor
 DUPELIST=02d39,02d3a,02d3b
 
 [ITEMDEF 02d39]
-//Elven Bark Floor
+//Bark Floor
 DUPEITEM=02d38
 
 [ITEMDEF 02d3a]
-//Elven Bark Floor
+//Bark Floor
 DUPEITEM=02d38
 
 [ITEMDEF 02d3b]
-//Elven Bark Floor
+//Bark Floor
 DUPEITEM=02d38
 
 [ITEMDEF 02dcb]
@@ -1670,20 +1700,20 @@ DEFNAME=i_floor_black
 TYPE=t_floor
 RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Black Floor
-DESCRIPTION=Black Floor
+SUBSECTION=Tile Floor (black)
+DESCRIPTION=Tile
 DUPELIST=03005,03006,03007
 
 [ITEMDEF 03005]
-//floor tile (black)
+//tile floor (black)
 DUPEITEM=03004
 
 [ITEMDEF 03006]
-//floor tile (black)
+//tile floor (black)
 DUPEITEM=03004
 
 [ITEMDEF 03007]
-//floor tile (black)
+//tile floor (black)
 DUPEITEM=03004
 
 
@@ -1694,52 +1724,52 @@ NAME=floor
 FLIP=1
 RESOURCES=255 i_crystal_shards
 CATEGORY=Buildings - Floors
-SUBSECTION=Crystal Floor
-DESCRIPTION=Floor
+SUBSECTION=Pavers (crystal)
+DESCRIPTION=Paver
 DUPELIST=035b3,035b4,035b5,035b6,035b7,035b8,035b9,035ba,035bb,035bc,035bd
 
 [ITEMDEF 035b3]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b4]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b5]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b6]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b7]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b8]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035b9]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035ba]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035bb]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035bc]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 [ITEMDEF 035bd]
-//crystal floor
+//Pavers (crystal)
 DUPEITEM=035b2
 
 
@@ -1750,162 +1780,161 @@ TYPE=t_floor
 FLIP=1
 RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
-SUBSECTION=Shadow Floor
-DESCRIPTION=Floor
+SUBSECTION=Pavers (shadow)
+DESCRIPTION=Paver
 DUPELIST=0361b,0361c,0361d,0361e,0361f,03620,03621,03622
 
 [ITEMDEF 0361b]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 0361c]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 0361d]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 0361e]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 0361f]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 03620]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 03621]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 [ITEMDEF 03622]
-//Shadow Floor
+//Pavers (shadow)
 DUPEITEM=0361a
 
 
 [ITEMDEF 0407e]
-//Set 3
 DEFNAME=i_sa_floor_green_paver
 TYPE=t_floor
 CATEGORY=Buildings - Floors
-SUBSECTION=Green Pavers Floor Tiles
+SUBSECTION=Patterned Floor (green)
 DESCRIPTION=Floor
 DUPELIST=0407f,04080,04081,04082,04083,04084,04085,04086,04087,04088,04089,0408a,0408b,0408c,0408d,0408e,0408f,04090,04091,04092,04093,04094,04095,04096,04097,04098,04099,0409a
 
 [ITEMDEF 0407f]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04080]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04081]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04082]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04083]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04084]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04085]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04086]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04087]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04088]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04089]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408a]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408b]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408c]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408d]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408e]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0408f]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04090]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04091]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04092]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04093]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04094]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04095]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04096]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04097]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04098]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 04099]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 [ITEMDEF 0409a]
-//green pavers
+//Patterned Floor (green)
 DUPEITEM=0407e
 
 
@@ -1914,104 +1943,104 @@ DEFNAME=i_sa_floor_rune
 NAME=floor
 TYPE=t_floor
 CATEGORY=Buildings - Floors
-SUBSECTION=Rune Floor Tile
-DESCRIPTION=Rune Floor Tile
+SUBSECTION=Carved Pavers (Gargish Runes)
+DESCRIPTION=Carved Paver
 DUPELIST=040a4,040a5,040a6,040a7,040a8,040a9,040aa,040ab,040ac,040ad,040ae,040af,040b0,040b1,040b2,040b3,040b4,040b5,040b6,040b7,040b8,040b9,040ba,040bb
 
 [ITEMDEF 040a4]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040a5]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040a6]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040a7]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040a8]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040a9]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040aa]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040ab]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040ac]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040ad]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040ae]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040af]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b0]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b1]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b2]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b3]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b4]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b5]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b6]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b7]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b8]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040b9]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040ba]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 [ITEMDEF 040bb]
-//rune floor tile
+//Carved Pavers (Gargish runes)
 DUPEITEM=040a3
 
 
@@ -2020,104 +2049,104 @@ DEFNAME=i_sa_floor_m1
 NAME=floor
 TYPE=t_floor
 CATEGORY=Buildings - Floors
-SUBSECTION=Medusa Floor Tiles
-DESCRIPTION=Floor Tile 1
+SUBSECTION=Mosaic (small Medusa)
+DESCRIPTION=Floor
 DUPELIST=040c2,040c3,040c4,040c5,040c6,040c7,040c8,040c9,040ca,040cb,040cc,040cd,040ce,040cf,040d0,040d1,040d2,040d3,040d4,040d5,040d6,040d7,040d8,040d9
 
 [ITEMDEF 040c2]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c3]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c4]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c5]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c6]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c7]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c8]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040c9]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040ca]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040cb]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040cc]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040cd]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040ce]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040cf]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d0]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d1]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d2]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d3]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d4]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d5]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d6]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d7]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d8]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 [ITEMDEF 040d9]
-//Medusa Floor Tile 1
+//Mosaic (small Medusa)
 DUPEITEM=040c1
 
 
@@ -2125,40 +2154,40 @@ DUPEITEM=040c1
 DEFNAME=i_sa_floor_gold
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=Gold Floor
+SUBSECTION=Patterned Floor (gold)
 DESCRIPTION=Floor
 DUPELIST=04187,04188,04189,0418a,0418b,0418c,0418d,0418e
 
 [ITEMDEF 04187]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 04188]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 04189]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 0418a]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 0418b]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 0418c]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 0418d]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 [ITEMDEF 0418e]
-//gold floor tile
+//Patterned Floor (gold)
 DUPEITEM=04186
 
 
@@ -2167,69 +2196,69 @@ DEFNAME=i_sa_floor_green_marble
 NAME=marble floor
 RESOURCES=100 i_rock_marble
 CATEGORY=Buildings - Floors
-SUBSECTION=Green Marble Floor Tile
-DESCRIPTION=Floor Tile
+SUBSECTION=Patterned Floor (green marble)
+DESCRIPTION=Floor
 DUPELIST=041b0,041b1,041b2,041b5,041b6,041b7,041b8,041b9,041ba,041bb,041bc,041ca,041cb,041cc,041d7
 
 [ITEMDEF 041b0]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b1]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b2]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b5]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b6]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b7]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b8]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041b9]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041ba]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041bb]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041bc]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041ca]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041cb]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 [ITEMDEF 041cc]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 
 [ITEMDEF 041d7]
-//Green Marble Floor Tile
+//Patterned Floor (green marble)
 DUPEITEM=041af
 
 
@@ -2237,120 +2266,120 @@ DUPEITEM=041af
 DEFNAME=i_sa_floor_ws1
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Set 1
-DESCRIPTION=Floor Tile
+SUBSECTION=Patterned Floor (SA Set 1)
+DESCRIPTION=Floor
 DUPELIST=041dd,041de,041df,041e0,041e1,041e2,041e3,041e4,041e8,041e9,041ea,041eb,041ec,041ed,041ee,041ef,041f0,041f1,041f2,041f3,041f4,041f5,041f6,041f7,041f8,041f9,041fa,041fb
 
 [ITEMDEF 041dd]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041de]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041df]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e0]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e1]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e2]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e3]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e4]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e8]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041e9]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041ea]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041eb]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041ec]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041ed]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041ee]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041ef]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f0]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f1]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f2]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f3]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f4]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f5]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f6]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f7]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f8]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041f9]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041fa]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 [ITEMDEF 041fb]
-//SA Set 1 Floor Tile
+//Patterned Floor (SA Set 1)
 DUPEITEM=041dc
 
 
@@ -2358,65 +2387,84 @@ DUPEITEM=041dc
 DEFNAME=i_sa_floor_misc1
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Misc 1
+SUBSECTION=Patterned Floor (SA Misc 1)
 DESCRIPTION=Floor
 DUPELIST=04329,0432a,0432b,0432c,0432d,0432e,0432f,04330,04331,04332,04333,04334,04335,04336,04337,04338,04339,0433a,0433b
 
 [ITEMDEF 04329]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432a]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432b]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432c]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432d]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432e]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0432f]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04330]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04331]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04332]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04333]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04334]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04335]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04336]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04337]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04338]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 04339]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0433a]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 [ITEMDEF 0433b]
+//Patterned Floor (SA Misc 1)
 DUPEITEM=04328
 
 
@@ -2458,252 +2506,362 @@ DUPEITEM=046cc
 DUPEITEM=046cc
 
 
+[ITEMDEF 047dc]
+DEFNAME=i_paver_natural
+NAME=natural paver
+RESOURCES=100 i_rock_sandstone
+CATEGORY=Buildings - Floors
+SUBSECTION=Natural Pavers
+DESCRIPTION=Paver
+DUPELIST=047dd,047de,047df,047e0,047e5,048dc,048dd,048de,048df
+
+[ITEMDEF 047dd]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 047de]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 047df]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 047e0]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 047e5]
+//Natural Paver
+DUPEITEM=047dc
+
+
 [ITEMDEF 047ea]
 DEFNAME=i_sa_floor_m2
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Medusa Floor 2
+SUBSECTION=Mosaic (large Medusa)
 DESCRIPTION=Floor
 DUPELIST=047eb,047ec,047ed,047ee,047ef,047f0,047f1,047f2,047f3,047f4,047f5,047f6,047f7,047f8,047f9,047fa,047fb,047fc,047fd,047fe,047ff,04800,04801,04802,04803,04804,04805,04806,04807,04808,04809,0480a,0480b,0480c,0480d,0480e,0480f,04810,04811,04812,04813,04814,04815,04816,04817,04818,04819,0481a,0481b,0481c,0481d,0481e,0481f,04820,04821,04822,04823,04824,04825,04826,04827,04828,04829,0482a,0482b,0482c,0482d,0482e,0482f,04830,04831,04832,04833,04834,04835,04836,04837,04838,04839,0483a
 
 [ITEMDEF 047eb]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047ec]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047ed]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047ee]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047ef]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f0]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f1]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f2]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f3]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f4]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f5]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f6]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f7]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f8]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047f9]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047fa]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047fb]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047fc]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047fd]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047fe]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 047ff]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04800]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04801]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04802]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04803]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04804]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04805]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04806]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04807]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04808]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04809]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480a]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480b]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480c]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480d]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480e]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0480f]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04810]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04811]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04812]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04813]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04814]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04815]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04816]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04817]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04818]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04819]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481a]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481b]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481c]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481d]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481e]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0481f]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04820]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04821]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04822]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04823]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04824]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04825]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04826]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04827]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04828]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04829]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482a]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482b]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482c]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482d]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482e]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0482f]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04830]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04831]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04832]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04833]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04834]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04835]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04836]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04837]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04838]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 04839]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 [ITEMDEF 0483a]
+//Mosaic (large Medusa)
 DUPEITEM=047ea
 
 
@@ -3033,576 +3191,593 @@ DUPEITEM=04883
 DUPEITEM=04883
 
 
+[ITEMDEF 048dc]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 048dd]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 048de]
+//Natural Paver
+DUPEITEM=047dc
+
+[ITEMDEF 048df]
+//Natural Paver
+DUPEITEM=047dc
+
+
 [ITEMDEF 04900]
 DEFNAME=i_sa_floor_sd
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=Serpent Design
-DESCRIPTION=Serpent Design (east)
+SUBSECTION=Mosaic (serpent)
+DESCRIPTION=Mosaic
 DUPELIST=04901,04902,0490a,0490b,0490c,0490d,04912,04914,04915,04916,04917,04918,0491c,0491d,0491e,0491f,04920,04921,04926,04927,04928,04931,04932,04933,04934,04935,04936,04937,04938,04939,0493a,0493d,0493e,0493f,04940,04941,04942,04943,04944,04945,04946,04947,04948,04949,0494a,0494b,0494c,0494f,04950,04951,04952,04953,04954,04955,04956,04957,04958,04959,0495a,0495b,0495c,0495d,04961,04962,04963,04964,04965,04967,04968,04969,0496a,0496b,0496c,0496d,0496e,0496f,04970,04972,04973,04974,04975,04976,04977,04978,04979,0497a,0497b,0497c,0497f,04980,04981,04986,04987,04989,0498a,0498b,0498c,0498d,0498e,04990,04991,04992,04993,04994,04995,04996,04997,04998,04999,0499a,0499b,0499c,0499e,0499f,049a4,049a5,049a6,049a9,049aa,049ab,049ac,049ad,049ae,049af,049b0,049b1,049b6,049b7,049b8,049bc,049bd,049c4,049c5,049c6,049c7
 
 [ITEMDEF 04901]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04902]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0490a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0490b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0490c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0490d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04912]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04913]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04914]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04915]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04916]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04917]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04918]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0491c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0491d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0491e]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0491f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04920]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04921]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04926]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04927]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04928]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04931]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04932]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04933]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04934]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04935]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04936]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04937]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04938]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04939]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0493a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0493d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0493e]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0493f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04940]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04941]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04942]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04943]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04944]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04945]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04946]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04947]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04948]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04949]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0494a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0494b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0494c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0494f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04950]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04951]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04952]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04953]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04954]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04955]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04956]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04957]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04958]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04959]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0495a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0495b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0495c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0495d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04961]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04962]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04963]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04964]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04965]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04967]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04968]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04969]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496e]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0496f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04970]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04972]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04973]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04974]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04975]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04976]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04977]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04978]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04979]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0497a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0497b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0497c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0497f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04980]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04981]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04986]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04987]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04989]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0498a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0498b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0498c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0498d]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0498e]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 04990]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04991]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04992]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04993]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04994]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04995]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04996]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04997]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04998]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 04999]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0499a]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0499b]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0499c]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 0499e]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 0499f]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 049a4]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049a5]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049a6]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 049a9]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049aa]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049ab]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049ac]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049ad]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049ae]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049af]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049b0]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049b1]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 049b6]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049b7]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049b8]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 049bc]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049bd]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
 [ITEMDEF 049c4]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049c5]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049c6]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 [ITEMDEF 049c7]
-//Serpent Design (east)
+//Mosaic (serpent)
 DUPEITEM=04900
 
 
@@ -3610,202 +3785,259 @@ DUPEITEM=04900
 DEFNAME=i_sa_floor_misc3
 NAME=floor
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Misc 3
-DESCRIPTION=Floor Tile
+SUBSECTION=Tile Floor (SA Misc 3)
+DESCRIPTION=Floor
 DUPELIST=04d2c,04d2d,04d2e,04de6,04de7,04de8,04de9,04dea,04deb,04dec,04ded,04dee,04def,04df0,04df1,04df2
 
 [ITEMDEF 04d2c]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04d2d]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04d2e]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04de6]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04de7]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04de8]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04de9]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04dea]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04deb]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04dec]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04ded]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04dee]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04def]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04df0]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04df1]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 [ITEMDEF 04df2]
+//Tile Floor (SA Misc 3)
 DUPEITEM=04d2b
 
 
 [ITEMDEF 04f68]
 DEFNAME=i_sa_floor_misc4
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Misc 4
+SUBSECTION=Tile Floor (SA Misc 4)
 DESCRIPTION=Floor
 DUPELIST=04f69,04f6a,04f6b,04f6c,04f6d,04f6e,04f6f,04f70,04f71,04f72,04f73,04f74,04f75,04f76,04f77,04f78,04f79
 
 [ITEMDEF 04f69]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6a]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6b]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6c]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6d]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6e]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f6f]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f70]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f71]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f72]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f73]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f74]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f75]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f76]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f77]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f78]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 [ITEMDEF 04f79]
+//Tile Floor (SA Misc 4)
 DUPEITEM=04f68
 
 
 [ITEMDEF 050de]
 DEFNAME=i_sa_floor_misc5
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Misc 5
-DESCRIPTION=Floor Tile
+SUBSECTION=Patterned Floor (SA Misc 5)
+DESCRIPTION=Floor
 DUPELIST=050df,050e0,050e1,050e2,050e3,050e4,050e5,050e6,050e7,050e8,050e9,050ea,050eb,050ec,050ed,050ee
 
 [ITEMDEF 050df]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e0]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e1]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e2]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e3]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e4]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e5]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e6]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e7]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e8]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050e9]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050ea]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050eb]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050ec]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050ed]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050ee]
+//Patterned Floor (SA Misc 5)
 DUPEITEM=050de
 
 [ITEMDEF 050ef]
 DEFNAME=i_sa_floor_misc6
 CATEGORY=Buildings - Floors
-SUBSECTION=SA Misc 6
-DESCRIPTION=Floor Tile
+SUBSECTION=Patterned Floor (SA Misc 6)
+DESCRIPTION=Floor
 DUPELIST=050f0,050f1,050f2,050f3,050f4,050f5,050f6,050f7
 
 [ITEMDEF 050f0]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f1]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f2]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f3]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f4]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f5]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f6]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 [ITEMDEF 050f7]
+//Patterned Floor (SA Misc 6)
 DUPEITEM=050ef
 
 

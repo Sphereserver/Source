@@ -7,102 +7,102 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, August 28, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [ITEMDEF 0134f]
 DEFNAME=i_boulder
 TYPE=t_arock
-WEIGHT=100
+WEIGHT=255.0
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Boulders
-DESCRIPTION=Boulder
+DESCRIPTION=Boulder (multi-part)
 DUPELIST=01350,01351,01352,01353,01354,01355,01356,01357,01358,01359,0135a,0135b,0135c,0135d,0135e,0135f,01360,01361,01362
 
 [ITEMDEF 01350]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01351]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01352]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01353]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01354]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01355]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01356]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01357]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01358]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01359]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135a]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135b]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135c]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135d]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135e]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 0135f]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01360]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01361]
-//boulder
+//boulder (multi-part)
 DUPEITEM=0134f
 
 [ITEMDEF 01362]
-//boulder
-DEFNAME=i_boulder_x
+//boulder (multi-part)
 DUPEITEM=0134f
+DEFNAME=i_boulder_x
 
 [ITEMDEF 01363]
 DEFNAME=i_rock_plain
-VALUE=1
-WEIGHT=50
 TYPE=t_arock
+VALUE=1
+WEIGHT=5.0
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
 DESCRIPTION=Rock
@@ -122,13 +122,13 @@ DUPEITEM=01363
 
 [ITEMDEF 01367]
 //rocks
-DEFNAME=i_rock_2
 DUPEITEM=01363
+DEFNAME=i_rock_2
 
 [ITEMDEF 01368]
 //rock
-DEFNAME=i_rock_3
 DUPEITEM=01363
+DEFNAME=i_rock_3
 
 [ITEMDEF 01369]
 //rock
@@ -144,21 +144,20 @@ DUPEITEM=01363
 
 [ITEMDEF 0136c]
 //rock
-DEFNAME=i_rock_7
 DUPEITEM=01363
+DEFNAME=i_rock_7
 
 [ITEMDEF 0136d]
 //rocks
-DEFNAME=i_rock_plain_x
 DUPEITEM=01363
+DEFNAME=i_rock_plain_x
 
 [ITEMDEF 01771]
-//rock
-TYPE=T_AROCK
-WEIGHT=350
+TYPE=t_arock
+WEIGHT=255.0
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
-DESCRIPTION=@
+DESCRIPTION=Rock
 DUPELIST=01772,01773,01774,01775,01776,01777,01778,01779,0177a,0177b,0177c
 
 [ITEMDEF 01772]
@@ -208,8 +207,6 @@ DUPEITEM=01771
 [ITEMDEF 02206]
 DEFNAME=i_crystal_1
 NAME=crystal
-TYPE=t_wall
-CAN=can_i_block
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Crystals
 DESCRIPTION=Crystal 1 (large)
@@ -247,16 +244,9 @@ DUPEITEM=02206
 //crystal 1
 DUPEITEM=02206
 
-[ITEMDEF 0220f]
-CATEGORY=Miscellaneous
-SUBSECTION=Bad Tiles
-DESCRIPTION=Unused Tile 0220f
-
 [ITEMDEF 02210]
 DEFNAME=i_crystal_2
 NAME=crystal
-TYPE=t_wall
-CAN=can_i_block
 DUPELIST=02211,02212,02213,02214,02215,02216,02217,02218
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Crystals
@@ -294,16 +284,9 @@ DUPEITEM=02210
 //crystal 2
 DUPEITEM=02210
 
-[ITEMDEF 02219]
-CATEGORY=Miscellaneous
-SUBSECTION=Bad Tiles
-DESCRIPTION=Unused Tile 02219
-
 [ITEMDEF 0221a]
 DEFNAME=i_crystal_3
 NAME=crystal
-TYPE=t_wall
-CAN=can_i_block
 DUPELIST=0221b,0221c,0221d,0221e,0221f,02220,02221,02222
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Crystals
@@ -341,16 +324,9 @@ DUPEITEM=0221a
 //crystal 3
 DUPEITEM=0221a
 
-[ITEMDEF 02223]
-CATEGORY=Miscellaneous
-SUBSECTION=Bad Tiles
-DESCRIPTION=Unused Tile 02223
-
 [ITEMDEF 02224]
 DEFNAME=i_crystal_4
 NAME=crystal
-TYPE=t_wall
-CAN=can_i_block
 DUPELIST=02225,02226,02227,02228,02229,0222a,0222b,0222c
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Crystals
@@ -387,11 +363,6 @@ DUPEITEM=02224
 [ITEMDEF 0222c]
 //crystal 4
 DUPEITEM=02224
-
-[ITEMDEF 0222d]
-CATEGORY=Miscellaneous
-SUBSECTION=Bad Tiles
-DESCRIPTION=Unused Tile 0222d
 
 [ITEMDEF 02fdc]
 DEFNAME=i_crystal5
@@ -439,7 +410,7 @@ DEFNAME=i_rock_obsidian
 NAME=obsidian rock
 TYPE=t_arock
 VALUE=100
-WEIGHT=
+WEIGHT=255.0
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
 DESCRIPTION=Obsidian Rock
@@ -452,15 +423,6 @@ VALUE=100
 CATEGORY=Boulders, Rocks, and Crystals
 SUBSECTION=Rocks
 DESCRIPTION=Obsidian Shard
-
-[ITEMDEF 03650]
-DEFNAME=i_shadow_pillar
-NAME=shadow pillar
-TYPE=t_arock
-VALUE=100
-CATEGORY=Boulders, Rocks, and Crystals
-SUBSECTION=Rocks
-DESCRIPTION=Shadow Pillar
 
 [ITEMDEF 04b48]
 DEFNAME=i_geode_shard
@@ -486,40 +448,6 @@ DESCRIPTION=Geode 1
 DUPELIST=04b4d
 ON=@Create
    f_creategeode
-
-[FUNCTION f_creategeode]
-   NAME=Quartz Geode
-   COLOR=<R2501,2644>
-   IF (<R100>==1)
-      DORAND 10
-         BEGIN
-          NAME=Calcite Geode
-          NAME=Agate Geode
-          NAME=Smithsonite Geode
-          NAME=Amethyst Geode
-          NAME=Chalcedony Geode
-          NAME=Sphalerite Geode
-          NAME=Millerite Geode
-          NAME=Barite Geode
-          NAME=Dolomite Geode
-          NAME=Limonite Geode
-         END
-         COLOR=<R2651,2662>
-      ENDDO
-   ENDIF
-
-[TYPEDEF t_geode]
-ON=@Damage
-   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
-      RETURN 1
-   ENDIF
-   FOR 4
-      SERV.NEWITEM=i_geode_shard
-      NEW.COLOR=<COLOR>
-      NEW.CONT=<SRC>
-   ENDFOR
-   REMOVE
 
 [ITEMDEF 04b4a]
 DEFNAME=i_geode_2
@@ -547,16 +475,6 @@ SUBSECTION=Geode
 DESCRIPTION=Cracked Lavarock
 DUPELIST=04b4f
 
-[TYPEDEF t_cracked_lavarock]
-ON=@Damage
-   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
-      RETURN 1
-   ENDIF
-   SERV.NEWITEM={ i_geode 1 i_geode_2 1 }
-   NEW.CONT=<SRC>
-   REMOVE
-
 [ITEMDEF 04b4c]
 //Geode Shard
 DUPEITEM=04b48
@@ -574,4 +492,4 @@ DUPEITEM=04b4a
 DUPEITEM=04b4b
 
 
-[eof]
+[EOF]

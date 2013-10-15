@@ -13,7 +13,7 @@
 // Current Keyword List:job,what*do*do,ranger,hunt,track,
 // animal,alligator,bird,bear,deer,gorilla,llama,eagle,mountain*cat,
 // rabbit,wolf,dolphin,seal,cow,chicken,pig,sheep,
-// cat,dog,horse,monster,elemental,corpser,daemon,dragon,ettin,gargoyle,gazer,ghost,giant,harpy,headless,liche,lizard-men,lizard*men,mong*bat,
+// cat,dog,horse,monster,elemental,corpser,daemon,dragon,ettin,gargoyle,gazer,ghost,giant,harpy,headless,lich,lizard-men,lizard*men,mong*bat,
 // ogre,orc,reaper,rat*men,rat-men,serpent,skeleton,
 // slime,troll,wisp,zombie,spirituality,hide,pelt,meat,fowl,fish
 //
@@ -373,7 +373,7 @@ ON=*ghost*
 ON=*giant*
 ON=*harpy*
 ON=*headless*
-ON=*liche
+ON=*lich
 ON=*lizard-men
 ON=*lizard*men
 ON=*mong bat

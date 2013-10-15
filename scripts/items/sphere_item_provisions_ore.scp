@@ -11,27 +11,41 @@
 //
 VERSION=0.56b
 
+
+[COMMENT sphere_item_provisions_ore]
+
+In order to actually mine ore, a REGIONRESOURCE needs to exist for it, and a
+REGIONTYPE needs a REGION= entry to that REGIONRESOURCE... also that same
+REGIONTYPE must be associated to the t_rock Terrain TYPEDEF.
+
+For more information on how ore is mined, check the COMMENT section of the
+sphere_region.scp file.
+
+
 [DEFNAME COLOR_ORE]
-color_o_iron		0    //option: 0763
-color_o_bronze        06d6
-color_o_gold		045e //option: 084d
-color_o_copper		0641 //option: 060c
-color_o_oldcopper	0590
-color_o_dullcopper  060a
+color_o_iron          0 //option: 0763
+color_o_bronze     06d6
+color_o_gold       045e //option: 084d
+color_o_copper     0641 //option: 060c
+color_o_oldcopper  0590
+color_o_dullcopper 060a
 color_o_silver     0231 //option: 0
 color_o_shadow     0770
 color_o_bloodrock  04c2
 color_o_blackrock  0455
-color_o_mytheril   052d //or 0528
+color_o_mytheril   052d //option: 0528
 color_o_rose       0665
 color_o_verite     07d1
 color_o_agapite    0400
 color_o_rusty      0750
 color_o_valorite   0515
-//************** Ores ***************
+
+
+//////////
+// Ores //
+//////////
 
 [ITEMDEF 019b7]
-// DEFNAME2=METAL_ORE_1
 DEFNAME=i_ore_iron
 NAME=Iron Ore
 TYPE=t_ore
@@ -44,26 +58,48 @@ CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Ore (Small Pile)
 
+[ITEMDEF 019b8]
+//iron ore medium pile
+DUPEITEM=019B7
+CATEGORY=Items by Professions
+SUBSECTION=Blacksmiths
+DESCRIPTION=Ore (Medium Pile)
+
+[ITEMDEF 019b9]
+//iron ore large pile
+DUPEITEM=019B7
+CATEGORY=Items by Professions
+SUBSECTION=Blacksmiths
+DESCRIPTION=Ore (Large Pile)
+
+[ITEMDEF 019ba]
+//iron ore pile leftovers
+DUPEITEM=019B7
+CATEGORY=Items by Professions
+SUBSECTION=Blacksmiths
+DESCRIPTION=Ore
+
+
 [ITEMDEF i_ore_copper]
+// copper makes terrible armor.
 ID=i_ore_iron
 NAME=Copper Ore
 SKILLMAKE=MINING 75.0
 TDATA1=i_ingot_copper
 VALUE=5
-
 ON=@Create
-	COLOR=color_o_copper
+   COLOR=color_o_copper
 
 [ITEMDEF i_ore_gold]
+// Gold makes terrible armor.
 ID=i_ore_iron
 NAME=Gold Ore
 SKILLMAKE=MINING 85.0
 TDATA1=i_ingot_gold
 VALUE=10
 WEIGHT=3
-
 ON=@Create
-	COLOR=color_o_gold
+   COLOR=color_o_gold
 
 [ITEMDEF i_ore_silver]
 ID=i_ore_iron
@@ -71,9 +107,8 @@ NAME=Silver Ore
 SKILLMAKE=MINING 95.0
 TDATA1=i_ingot_silver
 VALUE=7
-
 ON=@Create
-	COLOR=color_o_silver
+   COLOR=color_o_silver
 
 [ITEMDEF i_ore_shadow]
 ID=i_ore_iron
@@ -81,9 +116,8 @@ NAME=Shadow Ore
 SKILLMAKE=MINING 70.0
 TDATA1=i_ingot_shadow
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_shadow
+   COLOR=color_o_shadow
 
 [ITEMDEF i_ore_agapite]
 ID=i_ore_iron
@@ -91,9 +125,8 @@ NAME=Agapite Ore
 SKILLMAKE=MINING 90.0
 TDATA1=i_ingot_agapite
 VALUE=10
-
 ON=@Create
-	COLOR=color_o_agapite
+   COLOR=color_o_agapite
 
 [ITEMDEF i_ore_verite]
 ID=i_ore_iron
@@ -101,9 +134,8 @@ NAME=Verite Ore
 SKILLMAKE=MINING 95.0
 TDATA1=i_ingot_verite
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_verite
+   COLOR=color_o_verite
 
 [ITEMDEF i_ore_rose]
 ID=i_ore_iron
@@ -111,9 +143,8 @@ NAME=Rose Ore
 SKILLMAKE=MINING 87.0
 TDATA1=i_ingot_rose
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_rose
+   COLOR=color_o_rose
 
 [ITEMDEF i_ore_mytheril]
 ID=i_ore_iron
@@ -121,9 +152,8 @@ NAME=Mytheril Ore
 SKILLMAKE=MINING 99.5
 TDATA1=i_ingot_mytheril
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_mytheril
+   COLOR=color_o_mytheril
 
 [ITEMDEF i_ore_blackrock]
 ID=i_ore_iron
@@ -131,9 +161,8 @@ NAME=Blackrock Ore
 SKILLMAKE=MINING 100.0
 TDATA1=i_ingot_blackrock
 VALUE=18
-
 ON=@Create
-	COLOR=color_o_blackrock
+   COLOR=color_o_blackrock
 
 [ITEMDEF i_ore_bloodrock]
 ID=i_ore_iron
@@ -141,9 +170,8 @@ NAME=Bloodrock Ore
 SKILLMAKE=MINING 93.0
 TDATA1=i_ingot_bloodrock
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_bloodrock
+   COLOR=color_o_bloodrock
 
 [ITEMDEF i_ore_valorite]
 ID=i_ore_iron
@@ -151,9 +179,8 @@ NAME=Valorite Ore
 SKILLMAKE=MINING 99.0
 TDATA1=i_ingot_valorite
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_valorite
+   COLOR=color_o_valorite
 
 [ITEMDEF i_ore_bronze]
 ID=i_ore_iron
@@ -161,9 +188,8 @@ NAME=Bronze Ore
 SKILLMAKE=MINING 80.0
 TDATA1=i_ingot_bronze
 VALUE=7
-
 ON=@Create
-	COLOR=color_o_bronze
+   COLOR=color_o_bronze
 
 [ITEMDEF i_ore_rusty]
 ID=i_ore_iron
@@ -171,36 +197,37 @@ NAME=Rusty Ore
 SKILLMAKE=MINING 50.0
 TDATA1=i_ingot_rusty
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_rusty
+   COLOR=color_o_rusty
 
 [ITEMDEF i_ore_old_copper]
+// this is really just a variety of copper. copper makes terrible armor
 ID=i_ore_iron
 NAME=Old Copper Ore
 SKILLMAKE=MINING 60.0
 TDATA1=i_ingot_old_copper
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_oldcopper
+   COLOR=color_o_oldcopper
 
 [ITEMDEF i_ore_dull_copper]
+// this is really just a variety of copper. copper makes terrible armor
 ID=i_ore_iron
 NAME=Dull Copper Ore
 SKILLMAKE=MINING 65.0
 TDATA1=i_ingot_dull_copper
 VALUE=15
-
 ON=@Create
-	COLOR=color_o_dullcopper
-	//************** Ingots ***************
+   COLOR=color_o_dullcopper
+
+
+////////////
+// Ingots //
+////////////
 
 [ITEMDEF 01bef]
-//DEFNAME2=INGOTS
-//DEFNAME2=IRON_INGOT
 DEFNAME=i_ingot_iron
-TYPE=T_INGOT
+TYPE=t_ingot
 RESOURCES=i_ore_iron
 SKILLMAKE=20.0 MINING
 TDATA1=20.0
@@ -210,6 +237,27 @@ DUPELIST=01bf0,01bf1,01bf2,01bf3,01bf4
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Iron Ingot
+
+[ITEMDEF 01bf0]
+//Pile of 3 iron ingots facing SE
+DUPEITEM=01bef
+
+[ITEMDEF 01bf1]
+//Pile of 5 iron ingots facing SE
+DUPEITEM=01bef
+
+[ITEMDEF 01bf2]
+//Iron ingot facing SW
+DUPEITEM=01bef
+
+[ITEMDEF 01bf3]
+//Pile of 3 iron ingots facing SW
+DUPEITEM=01bef
+
+[ITEMDEF 01bf4]
+//Pile of 5 iron ingots facing SW
+DUPEITEM=01bef
+
 
 [ITEMDEF 01be3]
 DEFNAME=i_ingot_copper
@@ -224,6 +272,27 @@ CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Copper Ingot
 
+[ITEMDEF 01be4]
+//Pile of 3 copper ingots facing SE
+DUPEITEM=01be3
+
+[ITEMDEF 01be5]
+//Pile of 5 copper ingots facing SE
+DUPEITEM=01be3
+
+[ITEMDEF 01be6]
+//copper ingot facing SE
+DUPEITEM=01be3
+
+[ITEMDEF 01be7]
+//Pile of 3 copper ingots facing SW
+DUPEITEM=01be3
+
+[ITEMDEF 01be8]
+//Pile of 5 copper ingots facing SW
+DUPEITEM=01be3
+
+
 [ITEMDEF 01be9]
 DEFNAME=i_ingot_gold
 TYPE=T_INGOT
@@ -236,6 +305,27 @@ DUPELIST=01bea,01beb,01bec,01bed,01bee
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Gold Ingot
+
+[ITEMDEF 01bea]
+//Pile of 3 gold ingots facing SE
+DUPEITEM=01be9
+
+[ITEMDEF 01beb]
+//Pile of 5 gold ingots facing SE
+DUPEITEM=01be9
+
+[ITEMDEF 01bec]
+//gold ingot facing SW
+DUPEITEM=01be9
+
+[ITEMDEF 01bed]
+//Pile of 3 gold ingots facing SW
+DUPEITEM=01be9
+
+[ITEMDEF 01bee]
+//Pile of 5 gold ingots facing SW
+DUPEITEM=01be9
+
 
 [ITEMDEF 01bf5]
 DEFNAME=i_ingot_silver
@@ -250,6 +340,27 @@ CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Silver Ingot
 
+[ITEMDEF 01bf6]
+//Pile of 3 silver ingots facing SE
+DUPEITEM=01bf5
+
+[ITEMDEF 01bf7]
+//Pile of 5 silver ingots facing SE
+DUPEITEM=01bf5
+
+[ITEMDEF 01bf8]
+//silver ingot facing SW
+DUPEITEM=01bf5
+
+[ITEMDEF 01bf9]
+//Pile of 3 silver ingots facing SW
+DUPEITEM=01bf5
+
+[ITEMDEF 01bfa]
+//Pile of 5 silver ingots facing SW
+DUPEITEM=01bf5
+
+
 [ITEMDEF i_ingot_shadow]
 NAME=Shadow Ingot
 ID=i_ingot_iron
@@ -260,9 +371,8 @@ RESOURCES=i_ore_shadow
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Shadow Ingot
-
 ON=@Create
-	COLOR=color_o_shadow
+   COLOR=color_o_shadow
 
 [ITEMDEF i_ingot_agapite]
 ID=i_ingot_iron
@@ -274,9 +384,8 @@ RESOURCES=i_ore_agapite
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Agapite Ingot
-
 ON=@Create
-	COLOR=color_o_agapite
+   COLOR=color_o_agapite
 
 [ITEMDEF i_ingot_verite]
 NAME=Verite Ingot
@@ -288,9 +397,8 @@ TDATA2=120.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Verite Ingot
-
 ON=@Create
-	COLOR=color_o_verite
+   COLOR=color_o_verite
 
 [ITEMDEF i_ingot_rose]
 ID=i_ingot_iron
@@ -302,9 +410,8 @@ TDATA2=100.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Rose Ingot
-
 ON=@Create
-	COLOR=color_o_rose
+   COLOR=color_o_rose
 
 [ITEMDEF i_ingot_mytheril]
 ID=i_ingot_iron
@@ -316,9 +423,8 @@ TDATA2=120.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Mytheril Ingot
-
 ON=@Create
-	COLOR=color_o_mytheril
+   COLOR=color_o_mytheril
 
 [ITEMDEF i_ingot_blackrock]
 ID=i_ingot_iron
@@ -330,9 +436,8 @@ TDATA2=120.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Black Rock Ingot
-
 ON=@Create
-	COLOR=color_o_blackrock
+   COLOR=color_o_blackrock
 
 [ITEMDEF i_ingot_bloodrock]
 ID=i_ingot_iron
@@ -344,9 +449,8 @@ TDATA2=120.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Blood Rock Ingot
-
 ON=@Create
-	COLOR=color_o_bloodrock
+   COLOR=color_o_bloodrock
 
 [ITEMDEF i_ingot_valorite]
 NAME=Valorite Ingot
@@ -358,9 +462,8 @@ TDATA2=120.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Valorite Ingot
-
 ON=@Create
-	COLOR=color_o_valorite
+   COLOR=color_o_valorite
 
 [ITEMDEF i_ingot_bronze]
 NAME=Bronze Ingot
@@ -372,9 +475,8 @@ TDATA2=100.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Bronze Ingot
-
 ON=@Create
-	COLOR=color_o_bronze
+   COLOR=color_o_bronze
 
 [ITEMDEF i_ingot_rusty]
 NAME=Rusty Ingot
@@ -386,9 +488,8 @@ TDATA2=80.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Rusty Ingot
-
 ON=@Create
-	COLOR=color_o_rusty
+   COLOR=color_o_rusty
 
 [ITEMDEF i_ingot_old_copper]
 NAME=Old Copper Ingot
@@ -400,9 +501,8 @@ TDATA2=80.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Old Copper Ingot
-
 ON=@Create
-	COLOR=color_o_oldcopper
+   COLOR=color_o_oldcopper
 
 [ITEMDEF i_ingot_dull_copper]
 ID=i_ingot_iron
@@ -414,196 +514,8 @@ TDATA2=80.0
 CATEGORY=Items by Professions
 SUBSECTION=Blacksmiths
 DESCRIPTION=Dull Copper Ingot
-
 ON=@Create
-	COLOR=color_o_dullcopper
-	//***** default distributions of ores/resources ******
+   COLOR=color_o_dullcopper
 
-[REGIONRESOURCE mr_iron]	// default mining result.
-// t_rock
-skill=1.0,30.0
-amount=9,30
-REAP=i_ore_iron
-REGEN=60*60*10
 
-[COMMENT REGIONRESOURCE mr_rusty]
-// t_rock - Iron gets rusty. It's not smeltable !
-skill=1.0,30.0
-amount=8,21
-REAP=i_ore_rusty
-REGEN=60*60*10
-
-[COMMENT REGIONRESOURCE mr_bronze]
-// Bronze is really copper and tin !
-// t_rock
-skill=1.0,30.0
-amount=4,12
-REAP=i_ore_bronze
-REGEN=60*60*10
-
-[COMMENT REGIONRESOURCE mr_old_copper]
-// this is really just a variety of copper. copper makes terrible armor
-// t_rock
-skill=1.0,30.0
-amount=7,18
-REAP=i_ore_old_copper
-REGEN=60*60*10
-
-[COMMENT REGIONRESOURCE mr_dull_copper]
-// this is really just a variety of copper. copper makes terrible armor
-// t_rock
-skill=1.0,30.0
-amount=5,25
-REAP=i_ore_dull_copper
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_shadow]
-// t_rock
-skill=30.0,60.0
-amount=5,16
-REAP=i_ore_shadow
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_copper]
-// copper makes terrible armor
-// t_rock
-skill=30.0,60.0
-amount=5,20
-REAP=i_ore_copper
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_gold]
-// t_rock - Gold makes terrible armor.
-skill=30.0,60.0
-amount=3,10
-REAP=i_ore_gold
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_rose]
-// t_rock
-skill=30.0,60.0
-amount=3,9
-REAP=i_ore_rose
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_agapite]
-// t_rock
-skill=30.0,60.0
-amount=3,8
-REAP=i_ore_agapite
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_bloodrock]
-// t_rock
-skill=30.0,60.0
-amount=3,6
-REAP=i_ore_bloodrock
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_silver]
-// t_rock
-skill=30.0,60.0
-amount=1,2
-REAP=i_ore_silver
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_verite]
-// t_rock
-skill=30.0,60.0
-amount=2,6
-REAP=i_ore_verite
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Valorite]
-// t_rock
-skill=60.0,110.0
-amount=2,4
-REAP=i_ore_Valorite
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_mytheril]
-// t_rock
-skill=60.0,110.0
-amount=2,3
-REAP=i_ore_mytheril
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_blackrock]
-// t_rock
-skill=60.0,110.0
-amount=1,3
-REAP=i_ore_blackrock
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_diamond]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_diamond
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_ruby]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_ruby
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_citrine]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_citrine
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Emerald]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_Emerald
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Star_Sapphire]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_Star_Sapphire
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Sapphire]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_Sapphire
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Amethyst]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_Amethyst
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_Tourmaline]
-// t_rock
-skill=60.0,110.0
-amount=1,4
-REAP=i_gem_Tourmaline
-REGEN=60*60*10
-
-[COMMENT OTHER ORES]
-// other things that could be mined for .
-//	ChanceofVein, MinFindSkill,	Item, Color, Name, OrePerVein Min, Max
-//Dragon,0593,100.0,1.0,1-2,06037
-//Titan,0736,100.0,1.0,1-2,06035
-//Crystaline,0065,100.0,1.0,1-2,06039
-//Kryptonite,0170,100.0,1.0,1-2,06505
-//Vulcan,6324,100.0,1.0,1-2,06506
-//Sand Rock,0709,100.0,1.0,1-2,06507
-//Blood Crest,064e,100.0,1.0,1-2,06508
-//Steel,0540,100.0,1.0,1-2,06509
-//Elvin,0596,100.0,1.0,1-2,06510
-//Gorgan,0456,100.0,1.0,1-2,06512
-//Acid,0078,100.0,1.0,1-2,06514
-//Aqua,123982,100.0,1.0,1-2,06513
-//Eldar,04d8,100.0,1.0,1-2,06511
+[EOF]

@@ -1,575 +1,183 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, July 17, 2007
-VERSION=0.56b
-
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-// A template is a collection of items.
-// Numbers are decimal not hex.
-
-[TEMPLATE tm_rocks]
-ITEM={i_rock_plain i_rock_plain_x}
-
-[TEMPLATE tm_boulders]
-ITEM={i_boulder i_boulder_x}
-
-[TEMPLATE POOR_GOLD_PILE]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Poor Gold Pile
-ITEM=i_gold,{6 25}
-
-[TEMPLATE MEAGER_GOLD_PILE]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Meager Gold Pile
-ITEM=i_gold,{20 50}
-
-[TEMPLATE AVERAGE_GOLD_PILE]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Average Gold Pile
-ITEM=i_gold,{45 75}
-
-[TEMPLATE RICH_GOLD_PILE]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Rich Gold Pile
-ITEM=i_gold,{60 120}
-
-[TEMPLATE FILTHY_RICH_GOLD_PILE]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Filthy Rich Gold Pile
-ITEM=i_gold,{100 180}
-
-[TEMPLATE tm_BAG_OF_MAGIC]
-CATEGORY=Item Templates
-SUBSECTION=Miscellaneous
-DESCRIPTION=Bag of Magic
-CONTAINER=i_bag
-ITEM=i_reag_black_pearl,50
-ITEM=i_reag_blood_moss,50
-ITEM=i_reag_garlic,50
-ITEM=i_reag_ginseng,50
-ITEM=i_reag_mandrake_root,50
-ITEM=i_reag_nightshade,50
-ITEM=i_reag_sulfur_ash,50
-ITEM=i_reag_spider_silk,50
-ITEM=i_spellbook
-MORE1=0ffffffff
-MORE2=0ffffffff
-
-//********************************
-
-[TEMPLATE RANDOM_WAND_ONE]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=First Circle
-ITEM={ i_wand_clumsy 1 i_wand_create_food 1 i_wand_Feeblemind 1 i_wand_Heal 1 i_wand_magic_arrow 1 i_wand_night_sight 1 i_wand_react_armor 1 i_wand_weaken 1 }
-
-[TEMPLATE RANDOM_WAND_TWO]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Second Circle
-ITEM={ i_wand_Agility 1 i_wand_CUNNING 1 i_wand_CURE 1 i_wand_HARM 1 i_wand_MAGIC_TRAP 1 i_wand_MAGIC_UNTRAP 1 i_wand_Protection 1 i_wand_Strength 1 }
-
-[TEMPLATE RANDOM_WAND_THREE]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Third Circle
-ITEM={ i_wand_Bless 1 i_wand_Fireball 1 i_wand_Magic_Lock 1 i_wand_Poison 1 i_wand_telekinesis 1 i_wand_TELEPORT 1 i_wand_Unlock 1 i_wand_Wall_of_Stone 1 }
-
-[TEMPLATE RANDOM_WAND_FOUR]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Fourth Circle
-ITEM={ i_wand_archcure 1 i_wand_archprotection 1 i_wand_CURSE 1 i_wand_FIRE_FIELD 1 i_wand_GREATER_HEAL 1 i_wand_LIGHTNING 1 i_wand_MANA_DRAIN 1 i_wand_RECALL 1 }
-
-[TEMPLATE RANDOM_WAND_FIVE]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Fifth Circle
-ITEM={ i_wand_BLADE_SPIRITS 1 i_wand_DISPEL_FIELD 1 i_wand_INCOGNITO 1 i_wand_MAGIC_REFLECTION 1 i_wand_MIND_BLAST 1 i_wand_PARALYZE 1 i_wand_POISON_FIELD 1 i_wand_SUMMON_CREATURE 1 }
-
-[TEMPLATE RANDOM_WAND_Six]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Sixth Circle
-ITEM={ i_wand_DISPEL 1 i_wand_ENERGY_BOLT 1 i_wand_EXPLOSION 1 i_wand_INVISIBILITY 1 i_wand_MARK 1 i_wand_MASS_CURSE 1 i_wand_PARALYZE_FIELD 1 i_wand_REVEAL 1 }
-
-[TEMPLATE RANDOM_WAND_Seven]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Seventh Circle
-ITEM={ i_wand_CHAIN_LIGHTNING 1 i_wand_ENERGY_FIELD 1 i_wand_FLAMESTRIKE 1 i_wand_GATE_TRAVEL 1 i_wand_MANA_VAMPIRE 1 i_wand_MASS_DISPEL 1 i_wand_METEOR_SWARM 1 i_wand_POLYMORPH 1 }
-
-[TEMPLATE RANDOM_WAND_Eight]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=Eighth Circle
-ITEM={ i_wand_EARTHQUAKE 1 i_wand_ENERGY_VORTEX 1 i_wand_RESURRECTION 1 i_wand_summon_elem_air 1 i_wand_SUMMON_DAEMON 1 i_wand_summon_elem_earth 1 i_wand_summon_elem_fire 1 i_wand_summon_elem_water 1 }
-
-[TEMPLATE RANDOM_WAND_NEW]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=New
-ITEM={ i_wand_summon_undead 1 i_wand_ANIMATE_DEAD 1 i_wand_BONE_ARMOR 1 i_wand_LIGHT 1 i_wand_FIRE_BOLT 1 i_wand_HALLUCINATION 1 }
-
-[TEMPLATE RANDOM_MAGIC_WANDS]
-CATEGORY=Item Templates
-SUBSECTION=Random Wands
-DESCRIPTION=All
-ITEM={ random_wand_one 1 random_wand_two 1 random_wand_three 1 random_wand_four 1 random_wand_five 1 random_wand_six 1 random_wand_seven 1 random_wand_eight 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Platemail
-ITEM={ i_platemail_arms 1 i_platemail_leggings 1 i_platemail_helm 1 i_platemail_gorget 1 i_platemail_gloves 1 i_platemail_chest 1 i_armor_female_plate 1 }
-
-[TEMPLATE RANDOM_BONE_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Bone
-ITEM={ i_bone_arms 1 i_bone_chest 1 i_bone_gloves 1 i_bone_helmet 1 i_bone_leggings 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Chainmail
-ITEM={ i_chainmail_coif 1 i_chainmail_tunic 1 i_chainmail_leggings 1 }
-
-[TEMPLATE RANDOM_LEATHER_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Leather
-ITEM={ i_armor_female_bustier 1 i_armor_female_skirt 1 i_armor_female_leather 1 i_leather_sleeves 1 i_leather_gloves 1 i_leather_gorget 1 i_leather_leggings 1 i_leather_tunic 1 013cf 1 013d1 1 013d3 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Ringmail
-ITEM={ i_ringmail_leggings_decoration 1 i_ringmail_tunic_decoration 1 i_ringmail_sleeves_decoration 1 i_ringmail_gloves 1 i_ringmail_tunic 1 i_ringmail_sleeves 1 i_ringmail_leggings 1 }
-
-[TEMPLATE RANDOM_STUDDED_ARMOR]
-CATEGORY=Item Templates
-SUBSECTION=Random Armour
-DESCRIPTION=Studded
-ITEM={ i_studded_sleeves 1 i_studded_gloves 1 i_studded_gorget 1 i_studded_sleeves_decoration 1 i_studded_leggings_decoration 1 i_studded_tunic_decoration 1 i_studded_leggings 1 i_studded_tunic 1 i_armor_female_shorts 1 }
-
-[TEMPLATE RANDOM_SWORDTYPE_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Swords
-DESCRIPTION=Ruin
-CONTAINER=i_bag
-ITEM={ i_SCIMITAR_RUIN 1 i_HALBERD_RUIN 1 i_BARDICHE_RUIN 1 i_CUTLASS_RUIN 1 i_sword_viking_RUIN 1 i_KATANA_RUIN 1 i_BROADSWORD_RUIN 1 i_sword_long_RUIN 1 }
-
-[TEMPLATE RANDOM_SWORDTYPE_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Swords
-DESCRIPTION=Might
-CONTAINER=i_bag
-ITEM={ i_SCIMITAR_MIGHT 1 i_HALBERD_MIGHT 1 i_BARDICHE_MIGHT 1 i_CUTLASS_MIGHT 1 i_sword_viking_MIGHT 1 i_KATANA_MIGHT 1 i_BROADSWORD_MIGHT 1 i_sword_long_MIGHT 1 }
-
-[TEMPLATE RANDOM_SWORDTYPE_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Swords
-DESCRIPTION=Force
-CONTAINER=i_bag
-ITEM={ i_SCIMITAR_FORCE 1 i_HALBERD_FORCE 1 i_BARDICHE_FORCE 1 i_CUTLASS_FORCE 1 i_sword_viking_FORCE 1 i_KATANA_FORCE 1 i_BROADSWORD_FORCE 1 i_sword_long_FORCE 1 }
-
-[TEMPLATE RANDOM_SWORDTYPE_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Swords
-DESCRIPTION=Power
-CONTAINER=i_bag
-ITEM={ i_SCIMITAR_POWER 1 i_HALBERD_POWER 1 i_BARDICHE_POWER 1 i_CUTLASS_POWER 1 i_sword_viking_POWER 1 i_KATANA_POWER 1 i_BROADSWORD_POWER 1 i_sword_long_POWER 1 }
-
-[TEMPLATE RANDOM_SWORDTYPE_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Swords
-DESCRIPTION=Vanquishing
-CONTAINER=i_bag
-ITEM={ i_SCIMITAR_vanq 1 i_HALBERD_vanq 1 i_BARDICHE_vanq 1 i_CUTLASS_vanq 1 i_sword_viking_vanq 1 i_KATANA_vanq 1 i_BROADSWORD_vanq 1 i_sword_long_vanq 1 }
-
-[TEMPLATE RANDOM_BOWTYPE_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Bows
-DESCRIPTION=Ruin
-CONTAINER=i_bag
-ITEM={ i_BOW_RUIN 1 i_CROSSBOW_RUIN 1 i_crossbow_heavy_RUIN 1 }
-
-[TEMPLATE RANDOM_BOWTYPE_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Bows
-DESCRIPTION=Might
-CONTAINER=i_bag
-ITEM={ i_BOW_MIGHT 1 i_CROSSBOW_MIGHT 1 i_crossbow_heavy_MIGHT 1 }
-
-[TEMPLATE RANDOM_BOWTYPE_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Bows
-DESCRIPTION=Force
-CONTAINER=i_bag
-ITEM={ i_BOW_FORCE 1 i_CROSSBOW_FORCE 1 i_crossbow_heavy_FORCE 1 }
-
-[TEMPLATE RANDOM_BOWTYPE_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Bows
-DESCRIPTION=Power
-CONTAINER=i_bag
-ITEM={ i_BOW_POWER 1 i_CROSSBOW_POWER 1 i_crossbow_heavy_POWER 1 }
-
-[TEMPLATE RANDOM_BOWTYPE_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Bows
-DESCRIPTION=Vanquishing
-CONTAINER=i_bag
-ITEM={ i_BOW_vanq 1 i_CROSSBOW_vanq 1 i_crossbow_heavy_vanq 1 }
-
-[TEMPLATE RANDOM_FENCINGTYPE_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Fencing Weapons
-DESCRIPTION=Ruin
-CONTAINER=i_bag
-ITEM={ i_PITCHFORK_RUIN 1 i_KRYSS_RUIN 1 i_SPEAR_RUIN 1 i_SPEAR_SHORT_RUIN 1 i_WAR_FORK_RUIN 1 }
-
-[TEMPLATE RANDOM_FENCINGTYPE_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Fencing Weapons
-DESCRIPTION=Might
-CONTAINER=i_bag
-ITEM={ i_PITCHFORK_MIGHT 1 i_KRYSS_MIGHT 1 i_SPEAR_MIGHT 1 i_SPEAR_SHORT_MIGHT 1 i_WAR_FORK_MIGHT 1 }
-
-[TEMPLATE RANDOM_FENCINGTYPE_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Fencing Weapons
-DESCRIPTION=Force
-CONTAINER=i_bag
-ITEM={ i_PITCHFORK_FORCE 1 i_KRYSS_FORCE 1 i_SPEAR_FORCE 1 i_spear_short_FORCE 1 i_WAR_FORK_FORCE 1 }
-
-[TEMPLATE RANDOM_FENCINGTYPE_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Fencing Weapons
-DESCRIPTION=Power
-CONTAINER=i_bag
-ITEM={ i_PITCHFORK_POWER 1 i_KRYSS_POWER 1 i_SPEAR_POWER 1 i_spear_short_POWER 1 i_WAR_FORK_POWER 1 }
-
-[TEMPLATE RANDOM_FENCINGTYPE_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Fencing Weapons
-DESCRIPTION=Vanquishing
-CONTAINER=i_bag
-ITEM={ i_PITCHFORK_vanq 1 i_KRYSS_vanq 1 i_SPEAR_vanq 1 i_spear_short_vanq 1 i_WAR_FORK_vanq 1 }
-
-[TEMPLATE RANDOM_MACETYPE_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Maces
-DESCRIPTION=Ruin
-CONTAINER=i_bag
-ITEM={ i_CLUB_RUIN 1 i_MACE_RUIN 1 i_MAUL_RUIN 1 i_mace_war_RUIN 1 i_HAMMER_PICK_RUIN 1 i_hammer_war_RUIN 1 }
-
-[TEMPLATE RANDOM_MACETYPE_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Maces
-DESCRIPTION=Might
-CONTAINER=i_bag
-ITEM={ i_CLUB_MIGHT 1 i_MACE_MIGHT 1 i_MAUL_MIGHT 1 i_mace_war_MIGHT 1 i_HAMMER_PICK_MIGHT 1 i_hammer_war_MIGHT 1 }
-
-[TEMPLATE RANDOM_MACETYPE_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Maces
-DESCRIPTION=Force
-CONTAINER=i_bag
-ITEM={ i_CLUB_FORCE 1 i_MACE_FORCE 1 i_MAUL_FORCE 1 i_mace_war_FORCE 1 i_HAMMER_PICK_FORCE 1 i_hammer_war_FORCE 1 }
-
-[TEMPLATE RANDOM_MACETYPE_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Maces
-DESCRIPTION=Power
-CONTAINER=i_bag
-ITEM={ i_CLUB_POWER 1 i_MACE_POWER 1 i_MAUL_POWER 1 i_mace_war_POWER 1 i_HAMMER_PICK_POWER 1 i_hammer_war_POWER 1 }
-
-[TEMPLATE RANDOM_MACETYPE_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Maces
-DESCRIPTION=Vanquishing
-CONTAINER=i_bag
-ITEM={ i_CLUB_vanq 1 i_MACE_vanq 1 i_MAUL_vanq 1 i_mace_war_vanq 1 i_HAMMER_PICK_vanq 1 i_hammer_war_vanq 1 }
-
-[TEMPLATE RANDOM_AXETYPE_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Axes
-DESCRIPTION=Ruin
-CONTAINER=i_bag
-ITEM={ i_AXE_RUIN 1 i_axe_exec_RUIN 1 i_axe_battle_RUIN 1 i_axe_double_RUIN 1 i_axe_two_hand_RUIN 1 i_axe_war_RUIN 1 }
-
-[TEMPLATE RANDOM_AXETYPE_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Axes
-DESCRIPTION=Might
-CONTAINER=i_bag
-ITEM={ i_AXE_MIGHT 1 i_axe_exec_MIGHT 1 i_axe_battle_MIGHT 1 i_axe_double_MIGHT 1 i_axe_two_hand_MIGHT 1 i_axe_war_MIGHT 1 }
-
-[TEMPLATE RANDOM_AXETYPE_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Axes
-DESCRIPTION=Force
-CONTAINER=i_bag
-ITEM={ i_AXE_FORCE 1 i_axe_exec_FORCE 1 i_axe_battle_FORCE 1 i_axe_double_FORCE 1 i_axe_two_hand_FORCE 1 i_axe_war_FORCE 1 }
-
-[TEMPLATE RANDOM_AXETYPE_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Axes
-DESCRIPTION=Power
-CONTAINER=i_bag
-ITEM={ i_AXE_POWER 1 i_axe_exec_POWER 1 i_axe_battle_POWER 1 i_axe_double_POWER 1 i_axe_two_hand_POWER 1 i_axe_war_POWER 1 }
-
-[TEMPLATE RANDOM_AXETYPE_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Axes
-DESCRIPTION=Vanquishing
-CONTAINER=i_bag
-ITEM={ i_AXE_vanq 1 i_axe_exec_vanq 1 i_axe_battle_vanq 1 i_axe_double_vanq 1 i_axe_two_hand_vanq 1 i_axe_war_vanq 1 }
-
-[TEMPLATE RANDOM_WEAPON_RUIN]
-CATEGORY=Item Templates
-SUBSECTION=Random Weapons
-DESCRIPTION=Ruin
-ITEM={ RANDOM_SWORDTYPE_RUIN 1 RANDOM_BOWTYPE_RUIN 1 RANDOM_FENCINGTYPE_RUIN 1 RANDOM_MACETYPE_RUIN 1 RANDOM_AXETYPE_RUIN 1 }
-
-[TEMPLATE RANDOM_WEAPON_MIGHT]
-CATEGORY=Item Templates
-SUBSECTION=Random Weapons
-DESCRIPTION=Might
-ITEM={ RANDOM_SWORDTYPE_MIGHT 1 RANDOM_BOWTYPE_MIGHT 1 RANDOM_FENCINGTYPE_MIGHT 1 RANDOM_MACETYPE_MIGHT 1 RANDOM_AXETYPE_MIGHT 1 }
-
-[TEMPLATE RANDOM_WEAPON_FORCE]
-CATEGORY=Item Templates
-SUBSECTION=Random Weapons
-DESCRIPTION=Force
-ITEM={ RANDOM_SWORDTYPE_FORCE 1 RANDOM_BOWTYPE_FORCE 1 RANDOM_FENCINGTYPE_FORCE 1 RANDOM_MACETYPE_FORCE 1 RANDOM_AXETYPE_FORCE 1 }
-
-[TEMPLATE RANDOM_WEAPON_POWER]
-CATEGORY=Item Templates
-SUBSECTION=Random Weapons
-DESCRIPTION=Power
-ITEM={ RANDOM_SWORDTYPE_POWER 1 RANDOM_BOWTYPE_POWER 1 RANDOM_FENCINGTYPE_POWER 1 RANDOM_MACETYPE_POWER 1 RANDOM_AXETYPE_POWER 1 }
-
-[TEMPLATE RANDOM_WEAPON_vanq]
-CATEGORY=Item Templates
-SUBSECTION=Random Weapons
-DESCRIPTION=Vanquishing
-ITEM={ RANDOM_SWORDTYPE_vanq 1 RANDOM_BOWTYPE_vanq 1 RANDOM_FENCINGTYPE_vanq 1 RANDOM_MACETYPE_vanq 1 RANDOM_AXETYPE_vanq 1 }
-
-[TEMPLATE RANDOM_SHIELD_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Shields
-DESCRIPTION=Defense
-CONTAINER=i_bag
-ITEM={ i_buckler_shield_defense 1 i_WOODEN_SHIELD_DEFENSE 1 i_BRONZE_SHIELD_DEFENSE 1 i_METAL_SHIELD_DEFENSE 1 i_METAL_KITE_SHIELD_DEFENSE 1 i_WOODEN_KITE_SHIELD_DEFENSE 1 i_HEATER_SHIELD_DEFENSE 1 }
-
-[TEMPLATE RANDOM_SHIELD_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Shields
-DESCRIPTION=Guarding
-CONTAINER=i_bag
-ITEM={ i_BUCKLER_SHIELD_GUARDING 1 i_WOODEN_SHIELD_GUARDING 1 i_BRONZE_SHIELD_GUARDING 1 i_METAL_SHIELD_GUARDING 1 i_METAL_KITE_SHIELD_GUARDING 1 i_WOODEN_KITE_SHIELD_GUARDING 1 i_HEATER_SHIELD_GUARDING 1 }
-
-[TEMPLATE RANDOM_SHIELD_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Shields
-DESCRIPTION=Hardening
-CONTAINER=i_bag
-ITEM={ i_BUCKLER_SHIELD_HARDENING 1 i_WOODEN_SHIELD_HARDENING 1 i_BRONZE_SHIELD_HARDENING 1 i_METAL_SHIELD_HARDENING 1 i_METAL_KITE_SHIELD_HARDENING 1 i_WOODEN_KITE_SHIELD_HARDENING 1 i_HEATER_SHIELD_HARDENING 1 }
-
-[TEMPLATE RANDOM_SHIELD_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Shields
-DESCRIPTION=Fortification
-CONTAINER=i_bag
-ITEM={ i_BUCKLER_SHIELD_FORTIFICATION 1 i_WOODEN_SHIELD_FORTIFICATION 1 i_BRONZE_SHIELD_FORTIFICATION 1 i_METAL_SHIELD_FORTIFICATION 1 i_METAL_KITE_SHIELD_FORTIFICATION 1 i_WOODEN_KITE_SHIELD_FORTIFICATION 1 i_HEATER_SHIELD_FORTIFICATION 1 }
-
-[TEMPLATE RANDOM_SHIELD_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Shields
-DESCRIPTION=Invulnerability
-CONTAINER=i_bag
-ITEM={ i_BUCKLER_SHIELD_INVULNERABILITY 1 i_WOODEN_SHIELD_INVULNERABILITY 1 i_BRONZE_SHIELD_INVULNERABILITY 1 i_METAL_SHIELD_INVULNERABILITY 1 i_METAL_KITE_SHIELD_INVULNERABILITY 1 i_WOODEN_KITE_SHIELD_INVULNERABILITY 1 i_HEATER_SHIELD_INVULNERABILITY 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Platemail
-DESCRIPTION=Defense
-CONTAINER=i_bag
-ITEM={ i_PLATEMAIL_DEFENSE 1 i_PLATEMAIL_leggings_DEFENSE 1 i_PLATEMAIL_ARMS_DEFENSE 1 i_platemail_HELM_DEFENSE 1 i_PLATEMAIL_GORGET_DEFENSE 1 i_PLATEMAIL_GAUNTLETS_DEFENSE 1 i_PLATEMAIL_DEFENSE_FEMALE 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Platemail
-DESCRIPTION=Guarding
-CONTAINER=i_bag
-ITEM={ i_PLATEMAIL_GUARDING 1 i_PLATEMAIL_leggings_GUARDING 1 i_PLATEMAIL_ARMS_GUARDING 1 i_platemail_HELM_GUARDING 1 i_PLATEMAIL_GORGET_GUARDING 1 i_PLATEMAIL_GAUNTLETS_GUARDING 1 i_PLATEMAIL_GUARDING_FEMALE 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Platemail
-DESCRIPTION=Hardening
-CONTAINER=i_bag
-ITEM={ i_PLATEMAIL_HARDENING 1 i_PLATEMAIL_leggings_HARDENING 1 i_PLATEMAIL_ARMS_HARDENING 1 i_platemail_HELM_HARDENING 1 i_PLATEMAIL_GORGET_HARDENING 1 i_PLATEMAIL_GAUNTLETS_HARDENING 1 i_PLATEMAIL_HARDENING_FEMALE 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Platemail
-DESCRIPTION=Fortification
-CONTAINER=i_bag
-ITEM={ i_PLATEMAIL_FORTIFICATION 1 i_PLATEMAIL_leggings_FORTIFICATION 1 i_PLATEMAIL_ARMS_FORTIFICATION 1 i_platemail_HELM_FORTIFICATION 1 i_PLATEMAIL_GORGET_FORTIFICATION 1 i_PLATEMAIL_GAUNTLETS_FORTIFICATION 1 i_PLATEMAIL_FORTIFICATION_FEMALE 1 }
-
-[TEMPLATE RANDOM_PLATEMAIL_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Platemail
-DESCRIPTION=Invulnerability
-CONTAINER=i_bag
-ITEM={ i_PLATEMAIL_INVULNERABILITY 1 i_PLATEMAIL_leggings_INVULNERABILITY 1 i_PLATEMAIL_ARMS_INVULNERABILITY 1 i_platemail_HELM_INVULNERABILITY 1 i_PLATEMAIL_GORGET_INVULNERABILITY 1 i_PLATEMAIL_GAUNTLETS_INVULNERABILITY 1 i_PLATEMAIL_INVULNERABILITY_FEMALE 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Chainmail
-DESCRIPTION=Defense
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_COIF_DEFENSE 1 i_CHAINMAIL_LEGGINGS_DEFENSE 1 i_CHAINMAIL_TUNIC_DEFENSE 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Chainmail
-DESCRIPTION=Guarding
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_COIF_GUARDING 1 i_CHAINMAIL_LEGGINGS_GUARDING 1 i_CHAINMAIL_TUNIC_GUARDING 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Chainmail
-DESCRIPTION=Hardening
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_COIF_HARDENING 1 i_CHAINMAIL_LEGGINGS_HARDENING 1 i_CHAINMAIL_TUNIC_HARDENING 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Chainmail
-DESCRIPTION=Fortification
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_COIF_FORTIFICATION 1 i_CHAINMAIL_LEGGINGS_FORTIFICATION 1 i_CHAINMAIL_TUNIC_FORTIFICATION 1 }
-
-[TEMPLATE RANDOM_CHAINMAIL_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Chainmail
-DESCRIPTION=Invulnerability
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_COIF_INVULNERABILITY 1 i_CHAINMAIL_LEGGINGS_INVULNERABILITY 1 i_CHAINMAIL_TUNIC_INVULNERABILITY 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Ringmail
-DESCRIPTION=Defense
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_LEGGINGS_DEFENSE 1 i_CHAINMAIL_TUNIC_DEFENSE 1 i_RINGMAIL_LEGGINGS_DEFENSE 1 i_RINGMAIL_SLEEVES_DEFENSE 1 i_RINGMAIL_GLOVES_DEFENSE 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Ringmail
-DESCRIPTION=Guarding
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_LEGGINGS_GUARDING 1 i_CHAINMAIL_TUNIC_GUARDING 1 i_RINGMAIL_LEGGINGS_GUARDING 1 i_RINGMAIL_SLEEVES_GUARDING 1 i_RINGMAIL_GLOVES_GUARDING 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Ringmail
-DESCRIPTION=Hardening
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_LEGGINGS_HARDENING 1 i_CHAINMAIL_TUNIC_HARDENING 1 i_RINGMAIL_LEGGINGS_HARDENING 1 i_RINGMAIL_SLEEVES_HARDENING 1 i_RINGMAIL_GLOVES_HARDENING 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Ringmail
-DESCRIPTION=Fortification
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_LEGGINGS_FORTIFICATION 1 i_CHAINMAIL_TUNIC_FORTIFICATION 1 i_RINGMAIL_LEGGINGS_FORTIFICATION 1 i_RINGMAIL_SLEEVES_FORTIFICATION 1 i_RINGMAIL_GLOVES_FORTIFICATION 1 }
-
-[TEMPLATE RANDOM_RINGMAIL_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Ringmail
-DESCRIPTION=Invulnerability
-CONTAINER=i_bag
-ITEM={ i_CHAINMAIL_LEGGINGS_INVULNERABILITY 1 i_CHAINMAIL_TUNIC_INVULNERABILITY 1 i_RINGMAIL_LEGGINGS_INVULNERABILITY 1 i_RINGMAIL_SLEEVES_INVULNERABILITY 1 i_RINGMAIL_GLOVES_INVULNERABILITY 1 }
-
-[TEMPLATE RANDOM_LEATHER_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Leather
-DESCRIPTION=Defense
-
-[TEMPLATE RANDOM_LEATHER_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Leather
-DESCRIPTION=Guarding
-
-[TEMPLATE RANDOM_LEATHER_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Leather
-DESCRIPTION=Hardening
-
-[TEMPLATE RANDOM_LEATHER_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Leather
-DESCRIPTION=Fortification
-
-[TEMPLATE RANDOM_LEATHER_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Leather
-DESCRIPTION=Invulnerability
-
-[TEMPLATE RANDOM_STUDDED_DEFENSE]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Studded
-DESCRIPTION=Defense
-
-[TEMPLATE RANDOM_STUDDED_GUARDING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Studded
-DESCRIPTION=Guarding
-
-[TEMPLATE RANDOM_STUDDED_HARDENING]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Studded
-DESCRIPTION=Hardening
-
-[TEMPLATE RANDOM_STUDDED_FORTIFICATION]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Studded
-DESCRIPTION=Fortification
-
-[TEMPLATE RANDOM_STUDDED_INVULNERABILITY]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Studded
-DESCRIPTION=Invulnerability
-
-[TEMPLATE RANDOM_MAGIC_SWORD]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Weapons
-DESCRIPTION=Swords
-ITEM={ random_swordtype_ruin 1 random_swordtype_might 1 random_swordtype_force 1 random_swordtype_power 1 random_swordtype_vanq 1 }
-
-[TEMPLATE RANDOM_MAGIC_BOW]
-CATEGORY=Item Templates
-SUBSECTION=Random Magic Weapons
-DESCRIPTION=Bows
-ITEM={ random_bowtype_ruin 1 random_bowtype_might 1 random_bowtype_force 1 random_bowtype_power 1 random_bowtype_vanq 1 }
+VERSION=0.56c
+
+
+[COMMENT sphere_template]
+
+A template is typically a collection of multiple items that are spawned in
+a container, but a template can also be used to create a single item from
+a collection.  Alternatively a DEFNAME can be used to create a single item
+from a collection, but a DEFNAME does not show up in Axis, a DEFNAME cannot
+have extra script actions done to it, etc...  Because of those limitations,
+the DEFNAMEs below will eventually be converted to templates.
+
+
+[DEFNAME items_hair]
+random_female_hair      { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_pageboy 1 i_hair_buns 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
+random_female_elf_hair  { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_flower 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_braid 1 i_hair_elven_long4 1 }
+random_male_hair        { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_mohawk 1 i_hair_pageboy 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
+random_male_elf_hair    { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_mullet 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_spike 1 }
+random_facial_hair      { i_beard_long 1 i_beard_short 1 i_beard_goatee 1 i_beard_mustache 1 i_beard_short_med 1 i_beard_long_med 1 i_beard_vandyke 1 }
+
+random_gargoyle_male_horns        { i_horn_gargoyle_male_1 1 i_horn_gargoyle_male_2 1 i_horn_gargoyle_male_3 1 i_horn_gargoyle_male_4 1 i_horn_gargoyle_male_5 1 i_horn_gargoyle_male_6 1 i_horn_gargoyle_male_7 1 i_horn_gargoyle_male_8 1 }
+random_gargoyle_male_facialhorns  { i_horn_gargoyle_facial_1 1 i_horn_gargoyle_facial_2 1 i_horn_gargoyle_facial_3 1 i_horn_gargoyle_facial_4 1 }
+random_gargoyle_female_horns      { i_horn_gargoyle_female_1 1 i_horn_gargoyle_female_2 1 i_horn_gargoyle_female_3 1 i_horn_gargoyle_female_4 1 i_horn_gargoyle_female_5 1 i_horn_gargoyle_female_6 1 i_horn_gargoyle_female_7 1 i_horn_gargoyle_female_8 1 }
+
+[DEFNAME items_clothing]
+//layer_shoes
+random_footwear_all    { i_boots_calf 1 i_sandals 1 i_shoes_plain 1 i_boots_thigh 1 i_boots_fur 1 i_shoes_tabi 1 i_boots_tabi 1 i_elven_boots 1 }
+random_footwear_human  { i_boots_calf 1 i_sandals 1 i_shoes_plain 1 i_boots_thigh 1 i_boots_fur 1 i_shoes_tabi 1 i_boots_tabi 1 }
+random_footwear_elven    i_elven_boots
+random_footwear_gargoyle i_gargish_leather_talons
+random_boots_all       { i_boots_calf 1 i_boots_thigh 1 i_boots_fur 1 i_boots_tabi 1 i_elven_boots 1 }
+random_boots_human     { i_boots_calf 1 i_boots_thigh 1 i_boots_fur 1 i_boots_tabi 1 }
+random_boots_elven       i_elven_boots
+random_shoes           { i_sandals 1 i_shoes_plain 1 i_shoes_tabi 1 }
+
+//layer_pants
+random_pants_all       { i_pants_short 1 i_pants_long 1 i_hakama_tattsuke 1 i_elven_pants 1 i_elven_pants 1 i_gargish_cloth_leggings_female 1 i_gargish_cloth_leggings 1 }
+random_pants_human     { i_pants_short 1 i_pants_long 1 i_hakama_tattsuke 1 }
+random_pants_elven       i_elven_pants
+random_pants_gargoyle  { i_gargish_cloth_leggings_female 1 i_gargish_leather_leggings_female 1 i_gargish_cloth_kilt_female 1 i_gargish_leather_kilt_female 1 i_gargish_cloth_leggings 1 i_gargish_leather_leggings 1 i_gargish_cloth_kilt 1 i_gargish_leather_kilt 1 i_gargish_leather_belt 1 }
+
+//layer_shirt
+random_shirts_all      { i_shirt_plain 1 i_shirt_fancy 1 i_shirt_checkered 1 i_elven_shirt 1 i_elven_shirt_female 1 }
+random_shirts_human    { i_shirt_plain 1 i_shirt_fancy 1 i_shirt_checkered 1 }
+random_shirts_elven    { i_elven_shirt 1 i_elven_shirt_female 1 }
+random_shirts_gargoyle { i_gargish_cloth_chest_female 1 i_gargish_cloth_chest 1 i_gargish_leather_wings 1 i_gargish_cloth_wings 1 i_gargish_sash_female 1 i_gargish_sash 1 }
+
+//layer_helm
+random_headgear_all    { i_mask_orc 1 i_bandana 1 i_skull_cap 1 i_mask_bear 1 i_mask_deer 1 i_mask_blue 1 i_mask_tribal_red 1 i_hat_floppy 1 i_hat_wide_brim 1 i_cap 1 i_hat_straw_tall 1 i_hat_straw 1 i_hat_wizards 1 i_bonnet 1 i_hat_feather 1 i_hat_tricorne 1 i_hat_jester 1 i_hat_kasa 1 i_hood_ninja 1 i_helm_garland 1 i_helm_circlet1 1 i_helm_circlet2 1 i_helm_circlet3 1 }
+random_headgear_human  { i_mask_orc 1 i_bandana 1 i_skull_cap 1 i_mask_bear 1 i_mask_deer 1 i_mask_blue 1 i_mask_tribal_red 1 i_hat_floppy 1 i_hat_wide_brim 1 i_cap 1 i_hat_straw_tall 1 i_hat_straw 1 i_hat_wizards 1 i_bonnet 1 i_hat_feather 1 i_hat_tricorne 1 i_hat_jester 1 i_hat_kasa 1 i_hood_ninja 1 }
+random_headgear_elven  { i_helm_garland 1 i_helm_circlet1 1 i_helm_circlet2 1 i_helm_circlet3 1 }
+random_hats            { i_hat_floppy 1 i_hat_wide_brim 1 i_cap 1 i_hat_straw_tall 1 i_hat_straw 1 i_hat_wizards 1 i_bonnet 1 i_hat_feather 1 i_hat_tricorne 1 i_hat_jester 1 i_bandana 1 i_skull_cap 1 i_hat_kasa 1 i_helm_garland 1 }
+random_masks           { i_mask_orc 1 i_mask_bear 1 i_mask_deer 1 i_mask_blue 1 i_mask_tribal_red 1 i_hood_ninja 1 }
+
+//layer_skirt
+random_skirts_all      { i_skirt_long 1 i_skirt_short 1 i_kilt 1 i_sarong_fur 1 i_hakama 1 i_gargish_cloth_kilt_female 1 i_gargish_cloth_kilt 1 }
+random_skirts_human    { i_skirt_long 1 i_skirt_short 1 i_kilt 1 i_sarong_fur 1 i_hakama 1 }
+random_skirts_gargoyle { i_gargish_cloth_kilt_female 1 i_gargish_leather_kilt_female 1 i_gargish_cloth_kilt 1 i_gargish_leather_kilt 1 }
+
+//layer_half_apron
+random_aprons_all      { i_apron_half 1 i_belt_ninja_leather 1 i_obi 1 i_woodland_belt 1 }
+random_aprons_human    { i_apron_half 1 i_belt_ninja_leather 1 i_obi 1 }
+random_aprons_elven      i_woodland_belt
+random_aprons_gargoyle   i_gargish_apron
+
+//layer_arms
+random_arms_gargoyle   { i_gargish_cloth_arms_female 1 i_gargish_leather_arms_female 1 i_gargish_cloth_arms 1 i_gargish_leather_arms 1 }
+
+//layer_chest
+random_chests_human    i_jacket_ninja
+random_chests_gargoyle { i_gargish_cloth_chest_female 1 i_gargish_leather_chest_female 1 i_gargish_cloth_chest 1 i_gargish_leather_chest 1 }
+
+//layer_tunic 
+random_tunics_all      { i_apron_full 1 i_sash 1 i_doublet 1 i_jester_suit 1 i_tunic 1 i_surcoat 1 i_shirt_formal 1 i_jinbaori 1 }
+random_tunics_manly    { i_sash 1 i_doublet 1 i_tunic 1 i_surcoat 1 i_shirt_formal 1 i_jinbaori 1 }
+
+//layer_robe  
+random_robes_all       { i_dress_full 1 i_dress_plain 1 i_robe 1 i_dress_gilded 1 i_robe2 1 i_dress_fancy2 1 i_dress_fancy3 1 i_dress_long 1 i_kimono_male 1 i_kimono_female2 1 i_kamishimo 1 i_hakama_shita 1 i_elven_male_robe1 1 i_elven_male_robe2 1 }
+random_robes_human     { i_dress_full 1 i_dress_plain 1 i_robe 1 i_dress_gilded 1 i_robe2 1 i_dress_fancy2 1 i_dress_fancy3 1 i_dress_long 1 i_kimono_male 1 i_kimono_female2 1 i_kamishimo 1 i_hakama_shita 1 }
+random_robes_elven     { i_elven_male_robe1 1 i_elven_male_robe2 1 }
+random_robes_gargoyle  { i_gargish_robe 1 i_gargish_robe_fancy 1 }
+random_robes_manly     { i_robe 1 i_robe2 1 i_kimono_male 1 i_kamishimo 1 i_hakama_shita 1 i_elven_male_robe1 1 i_elven_male_robe2 1 }
+random_dresses         { i_dress_full 1 i_dress_plain 1 i_dress_gilded 1 i_dress_fancy2 1 i_dress_fancy3 1 i_dress_long 1 i_kimono_female2 1 }
+
+//layer_cape  
+random_capes_all       { i_cape 1 i_cape_fur 1 }
+
+[DEFNAME items_random_wearables]
+random_jewelry         { random_necklace 1 random_bracelets 1 random_earrings 1 random_rings 1 }
+random_jewelry_gargoyle { i_necklace_gargoyle 1 i_bracelet_gargoyle 1 i_ring_gargoyle 1 i_earrings_gargoyle 1 }
+random_necklace        { i_necklace_metal_beads 1 i_necklace_silver_beads 1 i_necklace_gold_beads 1 i_necklace_gold 1 i_necklace_silver 1 i_necklace_gargoyle 1 }
+random_bracelets       { i_bracelet_gold 1 i_bracelet_silver 1 i_bracelet_gargoyle 1 }
+random_rings           { i_ring_gold 1 i_ring_silver 1 i_ring_gargoyle 1 }
+random_earrings        { i_earrings_gold 1 i_earrings_silver 1 i_earrings_gargoyle 1 }
+
+random_clothing        { random_footwear_all 1 random_pants_all 1 random_shirts_all 1 random_headgear_all 1 random_skirts_all 1 random_aprons_all 1 random_tunics_all 1 random_robes_all 1 random_capes_all 1 }
+random_wearables       { random_clothing 1 random_jewelry 1 }
+
+[DEFNAME items_armor]
+random_leg_armor       { i_studded_leggings 1 i_platemail_leggings 1 i_chainmail_leggings 1 i_leather_leggings 1 i_ringmail_leggings 1 }
+random_arm_armor       { i_studded_sleeves 1 i_platemail_arms 1 i_leather_sleeves 1 i_ringmail_gloves 1 }
+random_gloves          { i_studded_gloves 1 i_platemail_gloves 1 i_leather_gloves 1 }
+random_shield          { i_shield_round_bronze 1 i_shield_buckler 1 i_shield_kite_metal 1 i_shield_heater 1 i_shield_kite_wood 1 i_shield_wood 1 i_shield_round_metal 1 }
+random_head_armor      { i_chainmail_coif 1 i_helm_closed 1 i_helm_open 1 i_helm_nose 1 i_bascinet 1 i_platemail_helm 1 }
+random_helmet          { i_helm_closed 1 i_helm_open 1 i_bascinet 1 i_helm_nose 1 i_platemail_helm 1 }
+random_chest_armor     { i_studded_tunic 1 i_platemail_chest 1 i_chainmail_tunic 1 i_leather_tunic 1 i_ringmail_tunic 1 }
+random_gorget          { i_platemail_gorget 1 i_leather_gorget 1 i_studded_gorget 1 }
+
+[DEFNAME items_other]
+random_light           { i_candle 1 i_torch 1 i_lantern 1 }
+random_fishing_junk    { i_fishing_weight 1 i_fishing_pole 1 i_fish_cut_raw 1 i_fish_raw_head 1 i_fish_small 1 i_fish_big_1 1 i_fish_big_2 1 i_fish_big_3 1 i_fish_big_4 1 }
+
+[DEFNAME items_misc]
+random_instrument         { random_instrument_human 1 random_instrument_gargish 1 }
+random_instrument_human   { i_drum 1 i_tambourine 1 i_tambourine_tas 1 i_harp_large 1 i_lyre 1 i_lute 1 i_flute_bamboo 1 }
+random_instrument_gargish { i_aud_char 1 i_harp_gargoyle 1 i_lute_gargoyle 1 i_musical_instrument 1 i_drum_gargoyle 1 i_flute_gargoyle 1 }
+
+[DEFNAME items_jewels]
+random_jewel           { i_gem_star_sapphire 1 i_gem_emerald 1 i_gem_sapphire 1 i_gem_ruby 1 i_gem_citrine 1 i_gem_amethyst 1 i_gem_tourmaline 1 i_gem_amber 1 i_gem_diamond 1 }
+
+[DEFNAME items_food]
+random_food            { random_bread 1 random_baked 1 random_cheese 1 random_soup 1 random_other_food 1 random_meat 1 random_veggie 1 random_fruit 1 }
+random_drink           { random_pitcher 1 random_glass 1 random_bottle 1 }
+
+random_bread           { i_bread_loaf 1 i_bread_french 1 i_bread_wonder 1 }
+random_baked           { i_cake 1 i_muffin 1 i_muffin_2 1 i_muffin_3 1 i_pan_cookies 1 i_plate_cookies 1 i_donuts 1 i_wafer 1 i_pie_baked 1 i_pizza 1 }
+random_cheese          { i_cheese_wheel 1 i_cheese_cut 1 i_cheese_wedge 1 }
+random_soup            { i_bowl_wood_carrots 1 i_bowl_wood_corn 1 i_bowl_wood_lettuce 1 i_bowl_wood_peas 1 i_bowl_pewter_carrots 1 i_bowl_pewter_corn 1 i_bowl_pewter_lettuce 1 i_bowl_pewter_peas 1 i_bowl_pewter_potatoes 1 i_bowl_tomato_soup 1 }
+random_other_food      { i_plate_food 1 i_eggs_fresh 1 i_eggs_fried 1 i_jar_honey 1 i_basket_fruit 1 i_wassabi_tray 1 i_bento_box 1 i_tray_sushi 1 i_tray_sushi2 1 i_soup_miso 1 i_soup_miso_2 1 i_bowl_fruit 1 }
+random_meat            { i_bacon_slab 1 i_bacon_slice 1 i_fish_cut_cooked 1 i_bird_cooked 1 i_bird_raw 1 i_pig_roast 1 i_sausages 1 i_ham 1 i_ribs_cooked 1 i_spam 1 i_chicken_leg 1 i_lamb_leg 1 i_fish_cooked_small 1 i_ham_slices 1 i_lamb_leg_raw 1 i_ribs_raw 1 }
+random_veggie          { i_fruit_cabbage 1 i_fruit_carrot 1 i_fruit_corn 1 i_fruit_gourd1 1 i_fruit_gourd2 1 i_fruit_lettuce 1 i_fruit_onion 1 i_fruit_pumpkin 1 i_fruit_squash 1 i_fruit_turnip 1 }
+random_fruit           { i_fruit_dates 1 i_fruit_peach 1 i_fruit_pear 1 i_fruit_lemon 1 i_fruit_lime 1 i_fruit_grapes 1 i_fruit_apple 1 i_fruit_banana 1 i_fruit_coconut 1 i_fruit_cantelope 1 i_fruit_honeydewmelon 1 i_fruit_watermelon 1 }
+random_candy           { i_candycane_red 1 i_candycane_green 1 }
+
+random_pitcher         { i_pitcher_milk 1 i_pitcher_water 1 i_pitcher_ale 1 i_pitcher_cider 1 i_pitcher_liquor 1 i_pitcher_wine 1 }
+random_glass           { i_glass_of_milk 1 i_glass_of_water 1 i_tea_green 1 i_mug_ale 1 i_glass_of_cider 1 i_glass_of_liquor 1 i_glass_of_wine 1 }
+random_bottle          { i_bottle_ale 1 i_bottle_ale_2 1 i_bottle_ale_3 1 i_bottle_ale_4 1 i_bottle_wine 1 i_bottle_wine_2 1 i_bottle_wine_3 1 i_bottle_wine_4 1 i_bottle_liquor 1 i_bottle_liquor_2 1 i_bottle_liquor_3 1 i_bottle_liquor_4 1 i_jug_cider 1 i_jug_cider_2 1 i_jug_cider_3 1 i_bottle_shochu 1 i_bottle_sake 1 i_jug_hooch 1 }
+
+[DEFNAME items_containers]
+random_container       { random_basket 3 random_chest 3 random_crate 3 random_giftbox 1 }
+
+random_basket          { i_basket 1 i_basket_bushel 1 i_basket_2 1 i_basin 1 i_basket_square 1 i_basket_square_small 1 i_basket_round_small 1 i_basket_round_tall 1 i_basket_square_deep 1 i_basket_square_tall 1 i_basket_round_flat 1 }
+random_chest           { i_box_brass 1 i_box_wood 1 i_chest_metal 1 i_chest_metal_brass 1 i_chest_wooden_brass 1 i_chest_japanese4 1 i_chest_ornate_elven 1 i_chest_ornate_elven_2 1 i_chest_gargoyle 1 i_chest_pirate 1 i_chest_gothic 1 }
+random_crate           { i_crate_small 1 i_crate_lg 1 i_crate_md 1 i_barrel_open 1 i_keg_small 1 i_tub_empty 1 i_barrel 1 i_bucket 1 }
+random_giftbox         { i_giftbox 1 i_giftbox2 1 i_giftbox3 1 i_giftbox4 1 i_giftbox5 1 i_giftbox6 1 i_giftbox7 1 i_giftbox8 1 i_giftbox9 1 }
+
+[DEFNAME items_random_spawns]
+random_all_items       { random_armor_all 3 random_scroll 3 random_wearables 2 random_activators 1 random_reagent 1 }
+
+[DEFNAME items_random_armor]
+random_head_armor          { random_helms 1 random_coifs 1 }
+random_body_armor          { random_chest_armor 1 random_leg_armor 1 random_arm_armor 1 random_neck_armor 1 random_head_armor 1 random_hand_armor 1 }
+random_chest_armor         { random_chest_armor_male 2 random_chest_armor_female 1 }
+random_leg_armor           { random_leg_armor_male 2 random_leg_armor_female 1 }
+
+random_chest_armor_male    { i_bone_chest 1 i_chainmail_tunic 10 i_leather_tunic 30 i_studded_tunic 20 i_ringmail_tunic 15 i_platemail_chest 5 }
+random_chest_armor_female  { i_armor_female_studded 8 i_armor_female_plate 3 i_armor_female_leather 9 }
+random_leg_armor_male      { i_bone_leggings 1 i_chainmail_leggings 10 i_leather_leggings 30 i_studded_leggings 20 i_ringmail_leggings 15 i_platemail_leggings 5 }
+random_leg_armor_female    { i_armor_female_shorts 5 i_armor_female_skirt 5 i_armor_female_bustier 5 i_armor_female_bustier_studded 5 }
+random_arm_armor           { i_bone_arms 1 i_leather_sleeves 30 i_studded_sleeves 20 i_ringmail_sleeves 15 i_platemail_arms 5 }
+random_neck_armor          { i_leather_gorget 3 i_studded_gorget 2 i_platemail_gorget 1 i_studded_gorget 2 }
+random_helms               { i_platemail_helm 3 i_bone_helmet 1 i_helm_nose 2 } // i_closed, i_open , i_bascinet,
+random_coifs               { i_chainmail_coif 4 i_helm_closed 6 }
+random_hand_armor          { i_bone_gloves 3 i_leather_gloves 50 i_studded_gloves 30 i_ringmail_gloves 10 i_platemail_gloves 7 }
+random_shields             { i_shield_wood 3 i_shield_buckler 2 i_shield_kite_wood 2 i_shield_kite_metal 3 i_shield_heater 1 }
+
+
+random_body_parts_1        { i_flesh_arm_right 1 i_flesh_upper_body 1 i_flesh_leggings 1 i_flesh_torso 1 i_flesh_head_2 1 i_flesh_legs_3 1 i_flesh 1 i_flesh_legs_3 1 i_flesh_arm_left 1 i_flesh_upper_body_2 1 i_flesh_legs_4 1 i_flesh_torso_2 1 i_flesh_head_2 1 i_flesh_2 1 i_flesh_legs_5 1 i_flesh_leg 1 i_flesh_heart 1 i_flesh_liver 1 i_flesh_entrails 1 i_flesh_brain 1 }
+random_body_parts_2        { i_flesh_torso 1 i_flesh_head 1 i_flesh_left_arm 1 i_flesh_right_arm 1 i_flesh_left_leg 1 i_flesh_right_leg 1 }
+
 
 [EOF]

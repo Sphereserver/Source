@@ -9,7 +9,15 @@
 //****************************************************************************
 // FILE LAST UPDATED: Saturday, September 1, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[COMMENT sphere_item_magic_ninjitsu_bushido]
+
+This file contains all things relating to Ninjitsu and Bushido, such as:
+
+* Spellbooks
+* Spell runes
 
 
 [ITEMDEF 0238c]

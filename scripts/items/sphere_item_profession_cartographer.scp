@@ -7,9 +7,83 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 22, 2003
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[ITEMDEF 01047]
+DEFNAME=i_globe
+FLIP=1
+VALUE=44
+WEIGHT=13.1
+RESOURCES=10 i_board,2 i_cloth,1 i_parchment,1 i_wire_iron
+SKILLMAKE=Carpentry 80.0,Cartography 40.0,t_carpentry
+CATEGORY=Items by Professions
+SUBSECTION=Cartographer
+DESCRIPTION=Globe
+DUPELIST=01048
+
+[ITEMDEF 01048]
+//globe
+DUPEITEM=01047
+
+
+[ITEMDEF 014eb]
+DEFNAME=i_map
+NAME=empty map
+TYPE=t_map
+FLIP=1
+VALUE=10
+WEIGHT=0.1
+RESOURCES=1 i_paper
+SKILLMAKE=Carpentry 40.0
+CATEGORY=Items by Professions
+SUBSECTION=Cartographer
+DESCRIPTION=Map (Empty)
+DUPELIST=014ec
+
+[ITEMDEF 014ec]
+//map
+DUPEITEM=014eb
+
+[ITEMDEF 014ed]
+DEFNAME=i_map_rolled
+FLIP=1
+VALUE=15
+WEIGHT=0.2
+RESOURCES=1 i_map,1 i_ribbon
+CATEGORY=Items by Professions
+SUBSECTION=Cartographer
+DESCRIPTION=Map (Rolled)(Empty)
+DUPELIST=014ee
+
+[ITEMDEF 014ee]
+//rolled map
+DUPEITEM=014ed
+
+
+[ITEMDEF 03657]
+DEFNAME=i_globe_of_sosaria
+NAME=globe of Sosaria
+FLIP=1
+CATEGORY=Items by Professions
+SUBSECTION=Cartographer
+DESCRIPTION=Globe of Sosaria
+DUPELIST=03658,03659
+
+[ITEMDEF 03658]
+//globe of Sosaria
+DUPEITEM=03657
+
+[ITEMDEF 03659]
+//globe of Sosaria
+DUPEITEM=03657
+
+
+//////////////////
+// Custom Items //
+//////////////////
 
 [ITEMDEF i_map_blank]
 ID=i_map
@@ -437,3 +511,5 @@ DESCRIPTION=Map of the World
 ON=@Create
 	MORE1=0
 	MORE2=0144f0fff
+
+[EOF]

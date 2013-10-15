@@ -7,394 +7,609 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[COMMENT sphere_item_deco_lightsources]
+
+This file still needs a lot of fixes so that lighting and extinguishing work
+without also causing the item to flip... that having been said, drop flipping
+should still be able to work.  Can this be accomplished without eliminating
+the DUPELIST/DUPEITEM entries which facilitate flipping?
+
+
+[ITEMDEF 088c]
+DEFNAME=i_tiki_torch
+NAME=tiki torch
+TYPE=t_light_lit
+//TDATA3=
+//TDATA4=
+WEIGHT=2.1
+RESOURCES=1 i_candle,1 i_oil_flask,1 i_log_bamboo
+//SKILLMAKE=
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Tiki Torch
 
 
 [ITEMDEF 09fb]
 DEFNAME=i_sconce
 TYPE=t_light_out
 TDATA3=i_sconce_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_sconce_empty,1 i_candle
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
-DESCRIPTION=Wall Sconce (Unlit) (W)
-DUPELIST=09fc
-SKILLMAKE=TINKERING 30.0
-RESOURCES=1 i_ingot_iron, 1 I_CANDLE
-
+DESCRIPTION=Wall Sconce (Unlit)
+DUPELIST=0a00
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 09fc]
-DUPEITEM=09fb
+DEFNAME=i_sconce_empty
+NAME=empty wall sconce
+FLIP=1
+VALUE=5
+WEIGHT=1.0
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Sconce (Empty)
+DUPELIST=0a01
 
 [ITEMDEF 09fd]
 DEFNAME=i_sconce_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
+FLIP=1
 TDATA3=i_sconce
 TDATA4=i_sconce_lit
-RESOURCES=i_sconce
+WEIGHT=1.0
+RESOURCES=1 i_sconce
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
-DESCRIPTION=Wall Sconce (Lit) (W)
-DUPELIST=09fe,09ff
-
+DESCRIPTION=Wall Sconce (Lit)
+DUPELIST=09fe,09ff,0a02,0a03,0a04
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 09fe]
-//wall sconce against NW Wall
+//wall sconce lit
 DUPEITEM=09fd
 
 [ITEMDEF 09ff]
-//wall sconce against NW wall
+//wall sconce lit
 DUPEITEM=09fd
 
 [ITEMDEF 0a00]
 DEFNAME=i_sconce2
-RESOURCES=i_sconce2_empty, 1 I_CANDLE
-TYPE=T_LIGHT_OUT
-TDATA3=i_sconce2_lit
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Sconce (Unlit) (N)
-
-ON=@Create
-MOREZ=1
+DUPEITEM=09fb
 
 [ITEMDEF 0a01]
 DEFNAME=i_sconce2_empty
-RESOURCES=1 i_ingot_iron
-SKILLMAKE=TINKERING 30.0
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Sconce (Empty) (N)
+DUPEITEM=09fc
 
 [ITEMDEF 0a02]
 DEFNAME=i_sconce2_lit
-TYPE=T_LIGHT_LIT
-TDATA3=i_sconce2
-TDATA4=i_sconce2_lit
-RESOURCES=i_sconce2
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Sconce (Lit) (N)
-DUPELIST=0a03,0a04
-
-ON=@Create
-MOREZ=1
+DUPEITEM=09fd
 
 [ITEMDEF 0a03]
-DUPEITEM=0a02
+//sconce2 lit
+DUPEITEM=09fd
 
 [ITEMDEF 0a04]
-DUPEITEM=0a02
+//sconce2 lit
+DUPEITEM=09fd
 
 [ITEMDEF 0a05]
 DEFNAME=i_torch_wall
-RESOURCES=i_torch_wall_empty, I_TORCH
-TYPE=T_LIGHT_OUT
+TYPE=t_light_out
 TDATA3=i_torch_wall_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_torch_wall_empty,1 i_torch
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
-DESCRIPTION=Wall Torch (Unlit) (W)
-
+DESCRIPTION=Wall Torch (Unlit)
+DUPELIST=0a0a
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0a06]
 DEFNAME=i_torch_wall_empty
-SKILLMAKE=TINKERING 40.0
+NAME=empty wall torch
+FLIP=1
+VALUE=5
+WEIGHT=1.0
 RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
-DESCRIPTION=Wall Torch Holder (Empty) (W)
+DESCRIPTION=Wall Torch Holder (Empty)
+DUPELIST=0a0b
 
 [ITEMDEF 0a07]
 DEFNAME=i_torch_wall_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
+FLIP=1
 TDATA3=i_torch_wall
 TDATA4=i_torch_wall_lit
-RESOURCES=i_torch_wall
+WEIGHT=1.0
+RESOURCES=1 i_torch_wall
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
-DESCRIPTION=Wall Torch (Lit) (W)
-DUPELIST=0a08,0a09
-
+DESCRIPTION=Wall Torch (Lit)
+DUPELIST=0a08,0a09,0a0c,0a0d,0a0e
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0a08]
-//wall torch
+//wall torch lit
 DUPEITEM=0a07
 
 [ITEMDEF 0a09]
-//wall torch
+//wall torch lit
 DUPEITEM=0a07
 
 [ITEMDEF 0a0a]
 DEFNAME=i_torch_wall2
-TYPE=T_LIGHT_OUT
-TDATA3=i_torch_wall2_lit
-RESOURCES=i_torch_wall2_empty, I_TORCH
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Torch (Unlit) (N)
-
-ON=@Create
-MOREZ=1
+DUPEITEM=0a05
 
 [ITEMDEF 0a0b]
 DEFNAME=i_torch_wall2_empty
-RESOURCES=1 i_ingot_iron
-SKILLMAKE=TINKERING 40.0
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Torch Stand (Empty) (N)
+DUPEITEM=0a06
 
 [ITEMDEF 0a0c]
 DEFNAME=i_torch_wall2_lit
-TYPE=T_LIGHT_LIT
-TDATA3=i_torch_wall2
-TDATA4=i_torch_wall2_lit
-RESOURCES=i_torch_wall2
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Torches
-DESCRIPTION=Wall Torch (Lit) (N)
-DUPELIST=0a0d,0a0e
-
-ON=@Create
-MOREZ=1
+DUPEITEM=0a07
 
 [ITEMDEF 0a0d]
-//wall torch
-DUPEITEM=0a0c
+//wall torch lit
+DUPEITEM=0a07
 
 [ITEMDEF 0a0e]
-//wall torch
-DUPEITEM=0a0c
+//wall torch lit
+DUPEITEM=0a07
 
 [ITEMDEF 0a0f]
 DEFNAME=i_candle_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA3=i_candle
 TDATA4=0
-RESOURCES=i_CANDLE
-WEIGHT=2
+FLIP=1
+VALUE=10
+WEIGHT=0.1
+RESOURCES=1 i_candle
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Lit)
 DUPELIST=0a10,0a11
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+ON=@Equip
+   SRC.FINDLAYER.2.AMOUNT=1
+   RETURN 0
+ON=@UnEquip
+   IF (<SRC.FINDLAYER.2.AMOUNT> > 01)
+      SRC.FINDLAYER.2.AMOUNT=01
+   ENDIF
+   RETURN 0
 
 [ITEMDEF 0a10]
+//candle lit
 DUPEITEM=0a0f
 
 [ITEMDEF 0a11]
+//candle lit
 DUPEITEM=0a0f
 
 [ITEMDEF 0a12]
 DEFNAME=i_torch_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA3=i_torch
 TDATA4=0
-RESOURCES=i_TORCH
-WEIGHT=1
+FLIP=1
+WEIGHT=1.0
+RESOURCES=1 i_torch
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
 DESCRIPTION=Torch (Lit)
 DUPELIST=0a13,0a14
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+ON=@Equip
+   SRC.FINDLAYER.2.AMOUNT=1
+   RETURN 0
+ON=@UnEquip
+   IF (<SRC.FINDLAYER.2.AMOUNT> > 1)
+      SRC.FINDLAYER.2.AMOUNT=1
+   ENDIF
+   RETURN 0
 
 [ITEMDEF 0a13]
-//torch
+//torch lit
 DUPEITEM=0a12
 
 [ITEMDEF 0a14]
-//torch
+//torch lit
 DUPEITEM=0a12
 
 [ITEMDEF 0a15]
 DEFNAME=i_lantern_lit
-RESOURCES=i_lantern
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA3=i_lantern
 TDATA4=i_lantern
-WEIGHT=2
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_lantern
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Lanterns
 DESCRIPTION=Lantern (Lit)
 DUPELIST=0a16,0a17,0a1a,0a1b,0a1c,0a22,0a23,0a24
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0a16]
-//lantern
+//lantern lit
 DUPEITEM=0a15
 
 [ITEMDEF 0a17]
-//lantern
+//lantern lit
 DUPEITEM=0a15
 
 [ITEMDEF 0a18]
 DEFNAME=i_lantern
-TYPE=T_LIGHT_OUT
+TYPE=t_light_out
 TDATA3=i_lantern_lit
-WEIGHT=2
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Lanterns
 DESCRIPTION=Lantern (Unlit)
-
-SKILLMAKE=CARPENTRY 40.0, t_carpentry
-RESOURCES=5 i_board
 DUPELIST=0a1d,0a25
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+
+
+[ITEMDEF 0a1a]
+DEFNAME=i_lantern2_lit
+DUPEITEM=0a15
+
+[ITEMDEF 0a1b]
+//lantern lit
+DUPEITEM=0a15
+
+[ITEMDEF 0a1c]
+//lantern lit
+DUPEITEM=0a15
+
+[ITEMDEF 0a1d]
+DEFNAME=i_lantern2
+DUPEITEM=0a18
+
 
 [ITEMDEF 0a1f]
 DEFNAME=i_lantern_post
-RESOURCES=5 I_BOARD
+WEIGHT=5.0
+RESOURCES=5 i_board
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Lanterns
 DESCRIPTION=Lantern Post (WE)
 DUPELIST=0a20
 
 [ITEMDEF 0a20]
+//lantern post
 DUPEITEM=0a1f
 
+[ITEMDEF 0a21]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 0a21
+
 [ITEMDEF 0a22]
+DEFNAME=i_lantern3_lit
 DUPEITEM=0a15
 
 [ITEMDEF 0a23]
-//lantern
+//lantern lit
 DUPEITEM=0a15
 
 [ITEMDEF 0a24]
-//lantern
+//lantern lit
 DUPEITEM=0a15
 
 [ITEMDEF 0a25]
-//lantern (unlit)
+DEFNAME=i_lantern3
 DUPEITEM=0a18
 
 [ITEMDEF 0a26]
 DEFNAME=i_candle2
-TYPE=T_LIGHT_OUT
+NAME=tall candle
+TYPE=t_light_out
 TDATA3=i_candle2_lit
-RESOURCES=1 i_ingot_copper, 1 I_CANDLE
+VALUE=7
+WEIGHT=1.1
+RESOURCES=1 i_ingot_copper,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
-DESCRIPTION=Long Candle (Unlit)
-
+DESCRIPTION=Tall Candle (Unlit)
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0a27]
 DEFNAME=i_candelabra
-TYPE=T_LIGHT_OUT
+TYPE=t_light_out
 TDATA3=i_candelabra_lit
-RESOURCES=3 i_ingot_copper, 3 I_CANDLE
-SKILLMAKE=TINKERING 50.0
+VALUE=21
+WEIGHT=3.3
+RESOURCES=3 i_ingot_copper,3 i_candle
+SKILLMAKE=Tinkering 50.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candlabra (Unlit)
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0a28]
 DEFNAME=i_candle
-TYPE=T_LIGHT_OUT
-LAYER=layer_hand2	// problem in TILEDATA.MUL
+TYPE=t_light_out
+LAYER=layer_hand2
 TDATA3=i_candle_lit
-RESOURCES=1 i_BEESWAX, 1 I_CLOTH
-VALUE={4 8}
+VALUE=2
+WEIGHT=0.1
+RESOURCES=1 i_beeswax,1 i_string
+SKILLMAKE=Tinkering 11.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Unlit)
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+ON=@Equip
+   SRC.FINDLAYER.2.AMOUNT=1
+   RETURN 0
+ON=@UnEquip
+   IF (<SRC.FINDLAYER.2.AMOUNT> > 1)
+      SRC.FINDLAYER.2.AMOUNT=1
+   ENDIF
+   RETURN 0
 
 [ITEMDEF 0a29]
 DEFNAME=i_candelabra2
-TYPE=T_LIGHT_OUT
+NAME=tall candelabra
+TYPE=t_light_out
 TDATA3=i_candelabra2_lit
-RESOURCES=5 i_ingot_iron, 1 I_BEEHIVE, 1 I_CLOTH
+VALUE=81
+WEIGHT=15.3
+RESOURCES=15 i_ingot_copper,3 i_candle
+SKILLMAKE=Tinkering 61.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
-DESCRIPTION=Candlabra (Unlit) (Stand)
-
+DESCRIPTION=Tall Candlabra (Unlit)
 ON=@Create
-MOREZ=1
+   MOREZ=1
+
+
+[ITEMDEF 0b1a]
+DEFNAME=i_candle2_lit
+TYPE=t_light_lit
+TDATA3=i_candle2
+TDATA4=0
+WEIGHT=1.1
+RESOURCES=1 i_candle2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candle
+DUPELIST=0b1b,0b1c
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b1b]
+//candle
+DUPEITEM=0b1a
+
+[ITEMDEF 0b1c]
+//candle
+DUPEITEM=0b1a
+
+[ITEMDEF 0b1d]
+DEFNAME=i_candelabra_lit
+TYPE=t_light_lit
+TDATA3=i_candelabra
+TDATA4=i_candelabra
+WEIGHT=3.3
+RESOURCES=1 i_candelabra
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candelabra
+DUPELIST=0b1e,0b1f
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b1e]
+//candelabra
+DUPEITEM=0b1d
+
+[ITEMDEF 0b1f]
+//candelabra
+DUPEITEM=0b1d
+
+[ITEMDEF 0b20]
+DEFNAME=i_lamppost1_lit
+TYPE=t_light_lit
+TDATA3=i_lamppost1
+TDATA4=i_lamppost1_lit
+WEIGHT=22.1
+RESOURCES=1 i_lamppost1
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b21]
+DEFNAME=i_lamppost1
+TYPE=t_light_out
+TDATA3=i_lamppost1_lit
+WEIGHT=22.1
+RESOURCES=1 i_candle,20 i_ingot_iron,2 i_glass_raw
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b22]
+DEFNAME=i_lamppost2_lit
+TYPE=t_light_lit
+TDATA3=i_lamppost2
+TDATA4=i_lamppost2_lit
+WEIGHT=22.1
+RESOURCES=1 i_lamppost2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b23]
+DEFNAME=i_lamppost2
+TYPE=t_light_out
+TDATA3=i_lamppost2_lit
+WEIGHT=22.1
+RESOURCES=1 i_candle,20 i_ingot_iron,2 i_glass_raw
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b24]
+DEFNAME=i_lamppost3_lit
+TYPE=t_light_lit
+TDATA3=i_lamppost3
+TDATA4=i_lamppost3_lit
+WEIGHT=29.1
+RESOURCES=1 i_lamppost3
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post (Fancy Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b25]
+DEFNAME=i_lamppost3
+TYPE=t_light_out
+TDATA3=i_lamppost3_lit
+WEIGHT=29.1
+RESOURCES=1 i_candle,25 i_ingot_iron,4 i_glass_raw
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Lamp Post (Fancy Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b26]
+DEFNAME=i_candelabra2_lit
+TYPE=t_light_lit
+TDATA3=i_candelabra2
+TDATA4=i_candelabra2
+WEIGHT=15.3
+RESOURCES=1 i_candelabra2
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Candelabra Lit
+DUPELIST=0b27,0b28
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0b27]
+//candelabra lit
+DUPEITEM=0b26
+
+[ITEMDEF 0b28]
+//candelabra
+DUPEITEM=0b26
+
 
 [ITEMDEF 0e31]
 DEFNAME=i_brazier_2
-RESOURCES=15 i_ingot_iron
-TYPE=T_FIRE
-WEIGHT=15
+TYPE=t_light_lit
+VALUE=417
+WEIGHT=34.0
+RESOURCES=10 i_ingot_iron,3 i_ingot_copper,1 i_brazier
+SKILLMAKE=Tinkering 43.1,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Brazier
-DESCRIPTION=BRAZIER
+DESCRIPTION=Brazier
 DUPELIST=0e32,0e33
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0e32]
+//braizer
 DUPEITEM=0e31
-
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Brazier
-DESCRIPTION=BRAZIER
 
 [ITEMDEF 0e33]
+//braizer
 DUPEITEM=0e31
-CATEGORY=Decoration - Lightsources
-SUBSECTION=Brazier
-DESCRIPTION=BRAZIER
+
 
 [ITEMDEF 0f64]
-//torch
-//player torch
 DEFNAME=i_torch
-TYPE=T_LIGHT_OUT
+TYPE=t_light_out
 TDATA3=i_torch_lit
-RESOURCES=1 i_LOG
-WEIGHT=1
+FLIP=1
+VALUE=2
+WEIGHT=1.0
+RESOURCES=1 i_log
+SKILLMAKE=Carpentry 15.0,t_carpentry
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Torches
 DESCRIPTION=Torch (Unlit)
 DUPELIST=0f6b
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+ON=@Equip
+   SRC.FINDLAYER.2.AMOUNT=1
+   RETURN 0
+ON=@UnEquip
+   IF (<SRC.FINDLAYER.2.AMOUNT> > 1)
+      SRC.FINDLAYER.2.AMOUNT=1
+   ENDIF
+   RETURN 0
+
 
 [ITEMDEF 0f6b]
 //torch
 DUPEITEM=0f64
 
+
 [ITEMDEF 0142c]
 DEFNAME=i_candle_short_lit
-TYPE=T_LIGHT_LIT
+NAME=candle
+TYPE=t_light_lit
 TDATA3=i_candle_short
 TDATA4=0
-RESOURCES=i_candle_short
-WEIGHT=1
+WEIGHT=1.0
+RESOURCES=1 i_candle_short
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Lit)
 DUPELIST=0142d,0142e
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 0142d]
 //Candle
@@ -406,31 +621,30 @@ DUPEITEM=0142c
 
 [ITEMDEF 0142f]
 DEFNAME=i_candle_short
-WEIGHT=1
-TYPE=T_LIGHT_OUT
+NAME=candle
+TYPE=t_light_out
 TDATA3=i_candle_short_lit
-RESOURCES=1 i_DIPPING_STICK
+WEIGHT=1.0
+RESOURCES=1 i_string,1 i_beeswax
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Unlit)
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01430]
 DEFNAME=i_candle_lg_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA3=i_candle_lg
 TDATA4=0
-RESOURCES=i_CANDLE_LG
-WEIGHT=1
+WEIGHT=1.0
+RESOURCES=1 i_candle_lg
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Lit)
 DUPELIST=01431,01432
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01431]
 //candle
@@ -442,31 +656,31 @@ DUPEITEM=01430
 
 [ITEMDEF 01433]
 DEFNAME=i_candle_lg
-WEIGHT=1
-TYPE=T_LIGHT_OUT
+NAME=candle
+TYPE=t_light_out
 TDATA3=i_candle_lg_lit
-RESOURCES=1 i_DIPPING_STICK
+WEIGHT=1.0
+RESOURCES=1 i_string,1 i_beeswax
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Unlit)
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01434]
 DEFNAME=i_candle_thin_lit
-TYPE=T_LIGHT_LIT
+NAME=candle
+TYPE=t_light_lit
 TDATA3=i_candle_thin
 TDATA4=0
-RESOURCES=i_CANDLE_THIN
-WEIGHT=1
+WEIGHT=1.0
+RESOURCES=1 i_candle_thin
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Lit)
 DUPELIST=01435,01436
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01435]
 //Candle
@@ -478,90 +692,948 @@ DUPEITEM=01434
 
 [ITEMDEF 01437]
 DEFNAME=i_candle_thin
-TYPE=T_LIGHT_OUT
+TYPE=t_light_out
 TDATA3=i_candle_thin_lit
-RESOURCES=1 i_DIPPING_STICK
-WEIGHT=1
+WEIGHT=1.0
+RESOURCES=1 i_dipping_stick
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Candle (Burnt Out)
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
+
 
 [ITEMDEF 01853]
 DEFNAME=i_skull_candle
 TYPE=t_light_out
 TDATA3=i_skull_candle_lit
-RESOURCES=1 i_bone_skull, 1 i_CANDLE
-WEIGHT=4
+FLIP=1
+VALUE=25
+WEIGHT=3.1
+RESOURCES=1 i_bone_skull,1 i_candle
+SKILLMAKE=Tinkering 53.0,t_tinker_tools,Necromancy 41.1
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Skull Candle (Unlit)
 DUPELIST=01857
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01854]
 DEFNAME=i_skull_candle_lit
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA3=i_skull_candle
 TDATA4=i_bone_skull
-RESOURCES=i_skull_candle
-WEIGHT=4
+WEIGHT=3.1
+RESOURCES=1 i_skull_candle
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Candles
 DESCRIPTION=Skull Candle (Lit)
 DUPELIST=01855,01856,01858,01859,0185a
-
 ON=@Create
-MOREZ=1
+   MOREZ=1
 
 [ITEMDEF 01855]
+//skull candle
 DUPEITEM=01854
 
 [ITEMDEF 01856]
+//skull candle
 DUPEITEM=01854
 
 [ITEMDEF 01857]
+//skull candle
 DUPEITEM=01853
 
 [ITEMDEF 01858]
+//skull candle
 DUPEITEM=01854
 
 [ITEMDEF 01859]
+//skull candle
 DUPEITEM=01854
 
 [ITEMDEF 0185a]
+//skull candle
 DUPEITEM=01854
 
+
+[ITEMDEF 0194d]
+DEFNAME=i_brazier_dragon
+NAME=dragon brazier
+TYPE=t_light_lit
+FLIP=1
+VALUE=452
+WEIGHT=42.5
+RESOURCES=17 i_ingot_iron,3 i_ingot_copper,1 i_ingot_gold,1 i_brazier
+SKILLMAKE=Tinkering 43.1,t_tinker_tools
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Brazier
+DESCRIPTION=Dragon Brazier
+DUPELIST=0194e
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 0194e]
+//dragon brazier
+DUPEITEM=0194d
+
+
 [ITEMDEF 019aa]
-DEFNAME=i_BRAZIER_TALL
-TYPE=T_FIRE
-RESOURCES=8 i_ingot_iron
-WEIGHT=16
+DEFNAME=i_brazier_tall
+NAME=tall brazier
+TYPE=t_light_lit
+VALUE=463
+WEIGHT=45.0
+RESOURCES=20 i_ingot_iron,4 i_ingot_copper,1 i_brazier
+SKILLMAKE=Tinkering 48.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Brazier
 DESCRIPTION=Brazier
+ON=@Create
+   MOREZ=1
+
 
 [ITEMDEF 019bb]
 DEFNAME=i_brazier_small
-TYPE=T_FIRE
-RESOURCES=3 i_ingot_iron
-WEIGHT=6
+NAME=short brazier
+TYPE=t_fire
+VALUE=391
+WEIGHT=28.0
+RESOURCES=5 i_ingot_iron,2 i_ingot_copper,1 i_brazier
+SKILLMAKE=Tinkering 35.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Brazier
-DESCRIPTION=Brazier
+DESCRIPTION=Brazier (short)
+ON=@Create
+   MOREZ=1
+
 
 [ITEMDEF 01f2b]
 DEFNAME=i_brazier
-TYPE=T_FIRE
-RESOURCES=10 I_EMBER, 12 i_ingot_iron
-WEIGHT=15
+TYPE=t_fire
+VALUE=358
+WEIGHT=21.0
+RESOURCES=10 i_kindling,10 i_reag_brimstone,5 i_ingot_iron,5 i_ingot_copper
+SKILLMAKE=Tinkering 32.0,t_tinker_tools
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Brazier
 DESCRIPTION=Brazier
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 02332]
+DEFNAME=fx_decorative_lights
+NAME=decorative lights
+TYPE=t_normal
+FLIP=1
+WEIGHT=0.1
+RESOURCES=1 i_glass_raw
+CATEGORY=Yard Decoration
+SUBSECTION=Blinking Lights
+DESCRIPTION=Decorative Lights
+DUPELIST=02333,02334,02335,02336,02337,02338,02339
+
+[ITEMDEF 02333]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02334]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02335]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02336]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02337]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02338]
+//Decorative Lights
+DUPEITEM=02332
+
+[ITEMDEF 02339]
+//Decorative Lights
+DUPEITEM=02332
+
+
+[ITEMDEF 024bb]
+DEFNAME=i_lantern_paper1_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper1
+TDATA4=0
+VALUE=39
+WEIGHT=2.0
+RESOURCES=10 i_paper,1 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 1 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024bc]
+DEFNAME=i_lantern_paper1
+TYPE=t_light_out
+TDATA3=i_lantern_paper1_lit
+VALUE=39
+WEIGHT=2.0
+RESOURCES=10 i_paper,1 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 1 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024bd]
+DEFNAME=i_lantern_paper2_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper2
+TDATA4=0
+VALUE=39
+WEIGHT=2.0
+RESOURCES=10 i_paper,1 i_log_bamboo,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 2 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024be]
+DEFNAME=i_lantern_paper2
+TYPE=t_light_out
+TDATA3=i_lantern_paper2_lit
+VALUE=39
+WEIGHT=2.0
+RESOURCES=10 i_paper,1 i_log_bamboo,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 2 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024bf]
+DEFNAME=i_lantern_paper3_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper3
+TDATA4=0
+VALUE=59
+WEIGHT=2.0
+RESOURCES=20 i_paper,1 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 3 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c0]
+DEFNAME=i_lantern_paper3
+TYPE=t_light_out
+TDATA3=i_lantern_paper3_lit
+VALUE=59
+WEIGHT=2.0
+RESOURCES=20 i_paper,1 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 3 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c1]
+DEFNAME=i_lantern_paper4_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper4
+TDATA4=0
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 4 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c2]
+DEFNAME=i_lantern_paper4
+TYPE=t_light_out
+TDATA3=i_lantern_paper4_lit
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 4 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c3]
+DEFNAME=i_lantern_paper4b_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper4b
+TDATA4=0
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 4b (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c4]
+DEFNAME=i_lantern_paper4b
+TYPE=t_light_out
+TDATA3=i_lantern_paper4b_lit
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 4b (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c5]
+DEFNAME=i_lantern_paper5_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper5
+TDATA4=0
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 5 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c6]
+DEFNAME=i_lantern_paper5
+TYPE=t_light_out
+TDATA3=i_lantern_paper5_lit
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 5 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c7]
+DEFNAME=i_lantern_paper5b_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper5b
+TDATA4=0
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 5b (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c8]
+DEFNAME=i_lantern_paper5b
+TYPE=t_light_out
+TDATA3=i_lantern_paper5b_lit
+VALUE=89
+WEIGHT=8.0
+RESOURCES=20 i_paper,5 i_wire_iron,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lamp Posts
+DESCRIPTION=Paper Lantern 5b (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024c9]
+DEFNAME=i_lantern_paper6_lit
+TYPE=t_light_lit
+TDATA3=i_lantern_paper6
+TDATA4=0
+VALUE=59
+WEIGHT=4.0
+RESOURCES=20 i_paper,1 i_log_bamboo,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 6 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 024ca]
+DEFNAME=i_lantern_paper6
+TYPE=t_light_out
+TDATA3=i_lantern_paper6_lit
+VALUE=59
+WEIGHT=4.0
+RESOURCES=20 i_paper,1 i_log_bamboo,1 i_oil_flask
+SKILLMAKE=Carpentry 49.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lantern
+DESCRIPTION=Paper Lantern 6 (unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 02cfd]
+DEFNAME=i_glowing_beetle_red
+NAME=glowing beetle
+TYPE=t_light_out
+TDATA3=i_glowing_beetle_red_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Red Glowing Beetle (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02cfe]
+DEFNAME=i_glowing_beetle_red_lit
+NAME=glowing beetle
+TYPE=t_light_lit
+TDATA3=i_glowing_beetle_red
+TDATA4=0
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Red Glowing Beetle (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02cff]
+//FIXME: Doesnt actually work!
+DEFNAME=i_glowing_beetle_red2
+NAME=glowing beetle
+TYPE=t_light_out
+TDATA3=i_glowing_beetle_red2_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Red Glowing Beetle 2 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02d00]
+DEFNAME=i_glowing_beetle_red2_lit
+NAME=glowing beetle
+TYPE=t_light_lit
+TDATA3=i_glowing_beetle_red2
+TDATA4=0
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Red Glowing Beetle 2 (lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02d01]
+DEFNAME=i_glowing_beetle_green
+NAME=glowing beetle
+TYPE=t_light_out
+TDATA3=i_glowing_beetle_green_lit
+WEIGHT=2.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Green Glowing Beetle (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02d02]
+DEFNAME=i_glowing_beetle_green_lit
+NAME=glowing beetle
+TYPE=t_light_lit
+TDATA3=i_glowing_beetle_green
+TDATA4=0
+WEIGHT=2.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Green Glowing Beetle (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02d03]
+DEFNAME=i_glowing_beetle_green2
+NAME=glowing beetle
+TYPE=t_light_out
+TDATA3=i_glowing_beetle_green2_lit
+WEIGHT=2.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Green Glowing Beetle 2 (unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 02d04]
+DEFNAME=i_glowing_beetle_green2_lit
+NAME=glowing beetle
+TYPE=t_light_lit
+TDATA3=i_glowing_beetle_green2
+TDATA4=0
+WEIGHT=2.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Natural
+DESCRIPTION=Green Glowing Beetle 2 (unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 03d94]
+DEFNAME=i_torch_wall_lit_duplicate
+NAME=wall torch
+TYPE=t_light_lit
+FLIP=1
+TDATA3=i_torch_wall_duplicate
+TDATA4=i_torch_wall_lit_duplicate
+WEIGHT=1.0
+RESOURCES=1 i_torch_wall_duplicate
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch Duplicate (Lit)
+DUPELIST=03d98
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 03d95]
+//animation frame of Wall Torch Duplicate (Lit)
+
+[ITEMDEF 03d96]
+//animation frame of Wall Torch Duplicate (Lit)
+
+[ITEMDEF 03d97]
+DEFNAME=i_torch_wall_duplicate
+NAME=wall torch
+TYPE=t_light_out
+TDATA3=i_torch_wall_lit_duplicate
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_torch_wall_empty,1 i_torch
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Torches
+DESCRIPTION=Wall Torch Duplicate (Unlit)
+DUPELIST=03d9b
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 03d98]
+//Wall Torch Duplicate (Lit)
+DUPEITEM=03d94
+
+[ITEMDEF 03d99]
+//animation frame of Wall Torch Duplicate (Lit)
+
+[ITEMDEF 03d9a]
+//animation frame of Wall Torch Duplicate (Lit)
+
+[ITEMDEF 03d9b]
+//Wall Torch Duplicate (Unlit)
+DUPEITEM=03d97
+
+
+[ITEMDEF 04039]
+DEFNAME=i_chandelier
+TYPE=t_light_out
+TDATA3=i_chandelier_lit
+WEIGHT=3.3
+RESOURCES=1 i_candelabra
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Chandelier (unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 040be]
+DEFNAME=i_chandelier_lit
+TYPE=t_light_lit
+TDATA3=i_chandelier
+TDATA4=i_chandelier_lit
+WEIGHT=3.3
+RESOURCES=1 i_candelabra
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Candles
+DESCRIPTION=Chandelier (lit)
+DUPELIST=040bf,040c0
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 040bf]
+//chandelier (animation frame)
+DUPEITEM=040be
+
+[ITEMDEF 040c0]
+//chandelier (animation frame)
+DUPEITEM=040be
+
+
+[ITEMDEF 040fe]
+DEFNAME=i_lantern_red_lit
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_lantern_red_lit
+TDATA4=i_lantern_red_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Red Lantern (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 040ff]
+DEFNAME=i_lantern_blue_lit
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_lantern_blue_lit
+TDATA4=i_lantern_blue_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Blue Lantern (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04100]
+DEFNAME=i_lantern_green_lit
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_lantern_green_lit
+TDATA4=i_lantern_green_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Green Lantern (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04101]
+DEFNAME=i_lantern_purple_lit
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_lantern_purple_lit
+TDATA4=i_lantern_purple_lit
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Purple Lantern (Lit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 04691]
+DEFNAME=i_jackolantern_lit
+NAME=Jack-o-lantern
+RESOURCES=1 i_jackolantern
+TYPE=t_light_lit
+TDATA3=i_jackolantern
+TDATA4=i_jackolantern
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern (Lit)
+DUPELIST=04692,04693
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04692]
+//jack-o-lantern lit
+DUPEITEM=04691
+
+[ITEMDEF 04693]
+//jack-o-lantern lit
+DUPEITEM=04691
+
+[ITEMDEF 04694]
+DEFNAME=i_jackolantern
+NAME=Jack-o-lantern
+TYPE=t_light_out
+TDATA3=i_jackolantern_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04695]
+DEFNAME=i_jackolantern2_lit
+NAME=Jack-o-lantern
+RESOURCES=1 i_jackolantern
+TYPE=t_light_lit
+TDATA3=i_jackolantern2
+TDATA4=i_jackolantern2
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern 2 (Lit)
+DUPELIST=04696,04697
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04696]
+//jack-o-lantern 2 lit
+DUPEITEM=04695
+
+[ITEMDEF 04697]
+//jack-o-lantern 2 lit
+DUPEITEM=04695
+
+[ITEMDEF 04698]
+DEFNAME=i_jackolantern2
+NAME=Jack-o-lantern
+TYPE=t_light_out
+TDATA3=i_jackolantern2_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern 2 (Unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 049c1]
+DEFNAME=i_dragon_lamp_lit
+NAME=dragon lamp
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_dragon_lamp
+TDATA4=i_dragon_lamp
+FLIP=1
+VALUE=40
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 049c2]
+DEFNAME=i_dragon_lamp
+NAME=dragon lamp
+TYPE=t_light_out
+TDATA3=i_dragon_lamp_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp (Unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 04a98]
+DEFNAME=i_lamp_santa
+NAME=Saint Nicholas Statue
+TYPE=t_light_out
+TDATA3=i_lamp_santa_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Holiday
+DESCRIPTION=Santa Lantern (Unlit)
+ON=@Create
+   MOREZ=1
+ON=@DropOn_Ground
+   ID=i_lamp_santa2
+
+[ITEMDEF 04a99]
+DEFNAME=i_lamp_santa2
+NAME=Saint Nicholas Statue
+TYPE=t_light_out
+TDATA3=i_lamp_santa2_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Holiday
+DESCRIPTION=Santa Lantern (Unlit)
+ON=@Create
+   MOREZ=1
+ON=@DropOn_Ground
+   ID=i_lamp_santa
+
+[ITEMDEF 04a9a]
+DEFNAME=i_lamp_santa_lit
+NAME=Saint Nicholas Statue
+TYPE=t_light_lit
+TDATA3=i_lamp_santa
+TDATA4=i_lamp_santa
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_lantern
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Holiday
+DESCRIPTION=Santa Lantern (Lit)
+ON=@Create
+   MOREZ=1
+ON=@DropOn_Ground
+   ID=i_lamp_santa2_lit
+
+[ITEMDEF 04a9b]
+DEFNAME=i_lamp_santa2_lit
+NAME=Saint Nicholas Statue
+TYPE=t_light_lit
+TDATA3=i_lamp_santa2
+TDATA4=i_lamp_santa2
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_lantern
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Holiday
+DESCRIPTION=Santa Lantern (Lit)
+ON=@Create
+   MOREZ=1
+ON=@DropOn_Ground
+   ID=i_lamp_santa_lit
+
+
+[ITEMDEF 04c40]
+DEFNAME=i_dragon_lamp_2s
+NAME=dragon lamp
+TYPE=t_light_out
+TDATA3=i_dragon_lamp_2s_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp 2s (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c41]
+DEFNAME=i_dragon_lamp_2s_lit
+NAME=dragon lamp
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_dragon_lamp_2s
+TDATA4=i_dragon_lamp_2s
+FLIP=1
+VALUE=40
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp 2s (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c42]
+DEFNAME=i_dragon_lamp_2e
+NAME=dragon lamp
+TYPE=t_light_out
+TDATA3=i_dragon_lamp_2e_lit
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp 2e (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c43]
+DEFNAME=i_dragon_lamp_2e_lit
+NAME=dragon lamp
+RESOURCES=1 i_lantern
+TYPE=t_light_lit
+TDATA3=i_dragon_lamp_2e
+TDATA4=i_dragon_lamp_2e
+FLIP=1
+VALUE=40
+WEIGHT=1.0
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Lamp 2e (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c44]
+//Stork Lamp
+[ITEMDEF 04c45]
+[ITEMDEF 04c46]
+[ITEMDEF 04c47]
+
+[ITEMDEF 04c48]
+//Koi Lamp
+[ITEMDEF 04c49]
+[ITEMDEF 04c4a]
+[ITEMDEF 04c4b]
+
+[ITEMDEF 04c4c]
+//Dragon Egg Lamp
+[ITEMDEF 04c4d]
+[ITEMDEF 04c4e]
+[ITEMDEF 04c4f]
+
+[ITEMDEF 04c50]
+//Stained Glass Lamp
+[ITEMDEF 04c51]
+
+[ITEMDEF 04c52]
+//Lamp Stand (classic)
+[ITEMDEF 04c53]
+[ITEMDEF 04c54]
+[ITEMDEF 04c55]
+
+[ITEMDEF 04c56]
+//Lamp Stand (bell)
+[ITEMDEF 04c57]
+[ITEMDEF 04c58]
+[ITEMDEF 04c59]
 
 
 [EOF]

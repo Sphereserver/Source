@@ -1,85 +1,288 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, August 13, 2005
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
-VERSION=0.56b
 
+[COMMENT sphere_resource]
+
+A REGIONRESOURCE (usually named mr_something) describes how a map resource
+can be harvested by using the following properties:
+
+ AMOUNT=     The amount of resources that can be reaped.
+ REAP=       The itemdef that will be reaped.
+ REAPAMOUNT= The amount that can be gathered in one use of skill.
+ SKILL=      The skill required to gather that resource.
+ REGEN=      The time that must pass before that location can be mined again.
+
+A REGIONTYPE (usually named r_something) is an EVENT that affects players
+and/or creatures in a map region.
+
+A map region (also known as AREADEF or ROOMDEF, and usually named a_something)
+can be assigned one or more REGIONTYPEs through its EVENT= property.
+
+In order for harvesting skills like mining, lumberjacking, and fishing to
+work in a map region, the REGIONTYPE must be linked to a Terrain TYPEDEF,
+and that REGIONTYPE needs one or more RESOURCE= properties linked to a map
+resource.
+
+A terrain TYPEDEF (usually named t_something) is linked to terrain through
+it's TERRAIN= property.
+
+
+* REGIONRESOURCE and REGIONTYPE are defined in the sphere_region.scp file.
+* Terrain TYPEDEFs are defined in the sphere_terrain_types.scp file.
+* Regions (AREADEF and ROOMDEF) are defined in sphere_map*.scp files.
+
+
+////////////////////////////////
+// The "nothing" map resource //
+////////////////////////////////
 
 [REGIONRESOURCE mr_nothing]
-// there is nothing here
 REAP=i_unused
-REGEN=60*60*10	// maybe something here later.
+REGEN=60*60*10 // Nothing can be found at this location for this many seconds.
+
+/////////////////////////////////////
+// Resources for herbivores to eat //
+/////////////////////////////////////
+
+[REGIONRESOURCE mr_grass]
+AMOUNT=9,30        // This many...
+REAP=i_hay_sheaf   // ...of this item...
+REAPAMOUNT=1       // ...can be harvested this many at a time...
+//SKILL=0.0        // ...and it takes no skill to do it.
+REGEN=60*60*10
+
+[REGIONTYPE r_default_grass t_grass]
+// All grass can be eaten by default.
+RESOURCES=1.0 mr_grass
+
+
+/////////////////////////////////
+// Resources for fishing skill //
+/////////////////////////////////
 
 [REGIONRESOURCE mr_fish1]
-// fishing default
-// t_water
-skill=1.0,100.0
-amount=9,30
-REAP=i_fish_big_1
+AMOUNT=9,30        // This many...
+REAP=i_fish_big_1  // ...of this item...
+SKILL=1.0,100.0    // ...can be harvested if the player has this much skill.
 REGEN=60*60*10
 
 [REGIONRESOURCE mr_fish2]
-// fishing default
-// t_water
-skill=1.0,100.0
+AMOUNT=9,30
 REAP=i_fish_big_2
-amount=9,30
+SKILL=1.0,100.0
 REGEN=60*60*10
 
 [REGIONRESOURCE mr_fish3]
-// fishing default
-// t_water
-skill=1.0,100.0
-amount=9,30
+AMOUNT=9,30
 REAP=i_fish_big_3
+SKILL=1.0,100.0
 REGEN=60*60*10
 
 [REGIONRESOURCE mr_fish4]
-// fishing default
-// t_water
-skill=1.0,100.0
-amount=9,30
+AMOUNT=9,30
 REAP=i_fish_big_4
+SKILL=1.0,100.0
 REGEN=60*60*10
+
+[REGIONTYPE r_default_water t_water]
+RESOURCES=50.0 mr_nothing  // Most of the time fishing produces nothing.
+RESOURCES=10.0 mr_fish1
+RESOURCES=10.0 mr_fish2
+RESOURCES=10.0 mr_fish3
+RESOURCES=10.0 mr_fish4
+
+[REGIONTYPE r_water t_water]
+RESOURCES=50.0 mr_nothing
+RESOURCES=10.0 mr_fish1
+RESOURCES=10.0 mr_fish2
+RESOURCES=10.0 mr_fish3
+RESOURCES=10.0 mr_fish4
+ON=@RegPeriodic
+   // Water/Ocean boat sounds
+   SRC.SFX={025,1,026,1,027,1,010,1,011,1,012,1,013,1}
+
+
+///////////////////////////////////////
+// Resources for lumberjacking skill //
+///////////////////////////////////////
 
 [REGIONRESOURCE mr_tree]
-// lumberjacking default
-// t_tree
-skill=1.0,80.0
-amount=9,30
-REAP=i_log
-REGEN=60*60*10
-
-[REGIONRESOURCE mr_grass]
-// grazing animals
-// t_grass
 AMOUNT=9,30
+REAP=i_log
+SKILL=1.0,80.0
 REGEN=60*60*10
-REAP=i_hay_sheaf
 
-[REGIONTYPE r_default]
-// Unclaimed regions.
-ON=@ENTER
-	SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+[REGIONTYPE r_default_tree t_tree]
+// All trees produce wood by default.
+RESOURCES=1.0 mr_tree
 
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+////////////////////////////////
+// Resources for mining skill //
+////////////////////////////////
+
+[REGIONRESOURCE mr_iron]
+AMOUNT=9,30
+REAP=i_ore_iron
+SKILL=1.0,30.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_rusty]
+AMOUNT=8,21
+REAP=i_ore_rusty
+SKILL=1.0,30.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_bronze]
+AMOUNT=4,12
+REAP=i_ore_bronze
+SKILL=1.0,30.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_old_copper]
+AMOUNT=7,18
+REAP=i_ore_old_copper
+SKILL=1.0,30.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_dull_copper]
+AMOUNT=5,25
+REAP=i_ore_dull_copper
+SKILL=1.0,30.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_shadow]
+AMOUNT=5,16
+REAP=i_ore_shadow
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_copper]
+AMOUNT=5,20
+REAP=i_ore_copper
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_gold]
+AMOUNT=3,10
+REAP=i_ore_gold
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_rose]
+AMOUNT=3,9
+REAP=i_ore_rose
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_agapite]
+AMOUNT=3,8
+REAP=i_ore_agapite
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_bloodrock]
+AMOUNT=3,6
+REAP=i_ore_bloodrock
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_silver]
+AMOUNT=1,2
+REAP=i_ore_silver
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_verite]
+AMOUNT=2,6
+REAP=i_ore_verite
+SKILL=30.0,60.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Valorite]
+AMOUNT=2,4
+REAP=i_ore_Valorite
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_mytheril]
+AMOUNT=2,3
+REAP=i_ore_mytheril
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_blackrock]
+AMOUNT=1,3
+REAP=i_ore_blackrock
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_diamond]
+AMOUNT=1,4
+REAP=i_gem_diamond
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_ruby]
+AMOUNT=1,4
+REAP=i_gem_ruby
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_citrine]
+AMOUNT=1,4
+REAP=i_gem_citrine
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Emerald]
+AMOUNT=1,4
+REAP=i_gem_Emerald
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Star_Sapphire]
+AMOUNT=1,4
+REAP=i_gem_Star_Sapphire
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Sapphire]
+AMOUNT=1,4
+REAP=i_gem_Sapphire
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Amethyst]
+AMOUNT=1,4
+REAP=i_gem_Amethyst
+SKILL=60.0,110.0
+REGEN=60*60*10
+
+[REGIONRESOURCE mr_Tourmaline]
+AMOUNT=1,4
+REAP=i_gem_Tourmaline
+SKILL=60.0,110.0
+REGEN=60*60*10
 
 [REGIONTYPE r_default_rock t_rock]
-// Random rocks
+// By default, iron is most common, sometimes nothing can be mined, but there
+// is a small chance of a rare diamond.  Shadow ore is cannot be mined.
+RESOURCES=500.0 mr_iron    // This large number makes this very common.
 RESOURCES=100.0 mr_nothing
-RESOURCES=500.0 mr_iron
-//RESOURCES=6.0 mr_rusty
-//RESOURCES=6.0 mr_old_copper
-//RESOURCES=6.0 mr_dull_copper
-//RESOURCES=4.5 mr_bronze
+RESOURCES=6.0 mr_rusty
+RESOURCES=6.0 mr_old_copper
+RESOURCES=6.0 mr_dull_copper
+RESOURCES=4.5 mr_bronze
 RESOURCES=5.0 mr_copper
 RESOURCES=2.0 mr_gold
 RESOURCES=1.0 mr_rose
@@ -87,138 +290,257 @@ RESOURCES=2.0 mr_agapite
 RESOURCES=1.0 mr_bloodrock
 RESOURCES=1.0 mr_silver
 RESOURCES=0.5 mr_verite
-RESOURCES=0.2 mr_Valorite
+RESOURCES=0.2 mr_valorite
 RESOURCES=0.1 mr_mytheril
 RESOURCES=0.1 mr_blackrock
-RESOURCES=0.1 mr_diamond
-
-[REGIONTYPE r_default_water t_water]
-// Not really ocean area.
-RESOURCES=50.0 mr_nothing
-RESOURCES=10.0 mr_fish1
-RESOURCES=10.0 mr_fish2
-RESOURCES=10.0 mr_fish3
-RESOURCES=10.0 mr_fish4
-
-[REGIONTYPE r_default_tree t_tree]
-// All tress produce wood by default.
-RESOURCES=1.0 mr_tree
-
-[REGIONTYPE r_default_grass t_grass]
-// All grass can be eaten by default.
-RESOURCES=1.0 mr_grass
-
-[REGIONTYPE r_water t_water]
-// Water/Ocean boat sounds
-RESOURCES=50.0 mr_nothing
-RESOURCES=10.0 mr_fish1
-RESOURCES=10.0 mr_fish2
-RESOURCES=10.0 mr_fish3
-RESOURCES=10.0 mr_fish4
-
-ON=@REGPERIODIC
-	src.SFX={025,1,026,1,027,1,010,1,011,1,012,1,013,1}
-
-[REGIONTYPE r_brit t_rock]
-// Brit
-RESOURCES=60.0 mr_nothing
-RESOURCES=30.0 mr_iron
-
-ON=@ENTER
-	SRC.MESSAGE Welcome to Britain <SRC.NAME>!
-	SRC.MESSAGE Lord British Guards are here to protect you!
-	SRC.MUSIC=midi_britain1,midi_britain2
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_britain1,midi_britain2
-
-[REGIONTYPE r_brit_castle]
-// Lord brit castle.
-ON=@ENTER
-	SRC.MUSIC=midi_LBCastle
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_LBCastle
-
-[REGIONTYPE r_guard_tower]
-// Guard tower.
-ON=@ENTER
-	SRC.MUSIC=midi_ForestA
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_ForestA
-
-[REGIONTYPE r_black_castle]
-// Lord Blackthorne's Castle
-ON=@ENTER
-	SRC.MUSIC=midi_BtCastle
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_BtCastle
-
-[REGIONTYPE r_bucs_den]
-// Bucs den
-
-ON=@ENTER
-	IF <SRC.KILLS> > 5
-		SRC.MESSAGE Welcome to Bucs Den <SRC.NAME> You are a murderer and you feel at home here
-		SRC.MUSIC=midi_BucsDen
-		RETURN 0
-	ELSE
-		SRC.MUSIC=midi_BucsDen
-	ENDIF
-
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_BucsDen
-
-[REGIONTYPE r_spooky t_rock]
-// Spooky outdoor area.
-RESOURCES=1000.0 mr_nothing
-RESOURCES=30.0 mr_iron
-RESOURCES=5.0 mr_shadow
-
-ON=@ENTER
-	SRC.MUSIC=midi_Approach
-ON=@CLIPERIODIC
-	SRC.MUSIC=midi_Approach
+RESOURCES=0.1 mr_diamond    // The small number means this is very rare.
 
 [REGIONTYPE r_dungeon t_rock]
-// Dungeon sounds same day or night.
-// Shadow ore is only found here.
+// Usually Iron, but sometimes Shadow ore can be mined in dungeons.
 RESOURCES=100.0 mr_nothing
 RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
+ON=@RegPeriodic
+   // Play these sounds whether its day or night.
+   SRC.SFX={021f,1,0243,1,0244,1,0245,1}
 
-ON=@REGPERIODIC
-	src.SFX={021f,1,0243,1,0244,1,0245,1}
-
-[REGIONTYPE r_plains]
-// Plains night and day.
-ON=@REGPERIODIC
-	src.SFX={0a,1,0b,1}
-
-[REGIONTYPE r_forests]
-// Forest Day and night.
-
-ON=@REGPERIODIC
-	IF <src.sector.ISNIGHTTIME>
-		src.SFX={00,2,01,2,02,2,07d,1}
-	ELSE
-		src.SFX={08,10,09,10,0219,1,07d,1}
-	ENDIF
-
-[REGIONTYPE r_jungle]
-// Jungle Day and night.
-
-ON=@REGPERIODIC
-	IF <src.sector.ISNIGHTTIME>
-		src.SFX={0c,2,0d,2,0b3,1}
-	ELSE
-		src.SFX={03,2,04,2,05,2,0b3,1}
-	ENDIF
+[REGIONTYPE r_spooky t_rock]
+// Iron and Shadow ore are very rarely mined in a spooky region.
+RESOURCES=1000.0 mr_nothing  // Usually there is nothing here.
+RESOURCES=30.0 mr_iron
+RESOURCES=5.0 mr_shadow
+ON=@Enter
+   SRC.MUSIC=midi_Approach
+ON=@CliPeriodic
+   SRC.MUSIC=midi_Approach
 
 [REGIONTYPE r_swamp t_rock]
-// Swamp Day and night.
-// Never anything to mine here.
+// There is nothing to mine in a swamp.
+RESOURCES=1.0 mr_nothing
+ON=@RegPeriodic
+   SRC.SFX={0e,10,0f,10,022,1,023,1,024,1,0267,1}
 
-ON=@REGPERIODIC
-	src.SFX={0e,10,0f,10,022,1,023,1,024,1,0267,1}
+[REGIONTYPE r_brit t_rock]
+// Sometimes Iron can be mined in the town of Britannia.
+RESOURCES=60.0 mr_nothing
+RESOURCES=30.0 mr_iron
+ON=@Enter
+   SRC.MESSAGE Welcome to Britain <SRC.NAME>!
+   SRC.MESSAGE Lord British Guards are here to protect you!
+   SRC.MUSIC=midi_britain1,midi_britain2
+ON=@CliPeriodic
+   SRC.MUSIC=midi_britain1,midi_britain2
+
+
+/////////////////////
+// Generic Regions //
+/////////////////////
+
+[REGIONTYPE r_default]
+ON=@Enter
+   SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+ON=@CliPeriodic
+   SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+
+[REGIONTYPE r_plains]
+ON=@RegPeriodic
+   SRC.SFX={0a,1,0b,1}
+
+[REGIONTYPE r_ruins]
+ON=@RegPeriodic
+   SRC.SFX={0a,1,0b,1}
+
+[REGIONTYPE r_graveyards]
+ON=@RegPeriodic
+   SRC.SFX={0a,1,0b,1}
+
+[REGIONTYPE r_forests]
+ON=@RegPeriodic
+   IF (<SRC.sector.ISNIGHTTIME>)
+      // Play these sounds at night.
+      SRC.SFX={00,2,01,2,02,2,07d,1}
+   ELSE
+      // Play these sounds during the day.
+      SRC.SFX={08,10,09,10,0219,1,07d,1}
+   ENDIF
+
+[REGIONTYPE r_jungle]
+ON=@RegPeriodic
+   IF <SRC.sector.ISNIGHTTIME>
+      SRC.SFX={0c,2,0d,2,0b3,1}
+   ELSE
+      SRC.SFX={03,2,04,2,05,2,0b3,1}
+   ENDIF
+
+
+//////////////////////////
+// Specific Map Regions //
+//////////////////////////
+
+[REGIONTYPE r_brit_castle]
+// The Castle of Lord British.
+ON=@Enter
+   SRC.MUSIC=midi_LBCastle
+ON=@CliPeriodic
+   SRC.MUSIC=midi_LBCastle
+
+[REGIONTYPE r_guard_tower]
+// A guard tower in the forest.
+ON=@Enter
+   SRC.MUSIC=midi_ForestA
+ON=@CliPeriodic
+   SRC.MUSIC=midi_ForestA
+
+[REGIONTYPE r_black_castle]
+// The Castle of Lord Blackthorne.
+ON=@Enter
+   SRC.MUSIC=midi_BtCastle
+ON=@CliPeriodic
+   SRC.MUSIC=midi_BtCastle
+
+[REGIONTYPE r_bucs_den]
+// The town of Buccaneer's Den.
+ON=@Enter
+   IF (<SRC.NPC>)
+      IF (<SRC.KILLS> > 5)
+         SRC.MESSAGE Welcome to Buccaneer's Den <SRC.NAME>. You are a murderer and you feel at home here.
+      ENDIF
+      SRC.MUSIC=midi_BucsDen
+   ENDIF
+   RETURN 0
+ON=@CliPeriodic
+   SRC.MUSIC=midi_BucsDen
+
+[REGIONTYPE r_dungeon_abyss]
+// The Abyss dungeon.
+ON=@Enter
+   SRC.MESSAGE @021 As you enter <REGION.NAME> you feel as tho you are being watched...
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_bedlam]
+ON=@enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_blighted_grove]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_citadel]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_doom]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_fire]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_exodus]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_fandancerdojo]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_karnaugh]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_khaldun]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_labyrinth]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_painted_caves]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_paroxysmus]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_prism_of_light]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_solen_hive]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_sorcerer]
+ON=@enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_terathan_keep]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_twisted_weald]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_underworld]
+ON=@Enter
+   SRC.MUSIC=midi_void
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_dungeon_destard]
+
+[REGIONTYPE r_goblin_camp]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
+[REGIONTYPE r_orc_camp]
+ON=@Enter
+   SRC.MUSIC=midi_approach
+ON=@RegPeriodic
+   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+
 
 [EOF]
 

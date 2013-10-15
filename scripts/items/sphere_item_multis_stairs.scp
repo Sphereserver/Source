@@ -1,14 +1,16 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.com
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.com
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, December 6 2009
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
+VERSION=0.56c
+
 
 [MULTIDEF 01db0]
 DEFNAME=i_multi_stairs_wood_sn
@@ -489,5 +491,6 @@ MULTIREGION=-3,0,0,0
 CATEGORY=Multis
 SUBSECTION=Stairs
 DESCRIPTION=Shadow Stairs (e->w)
+
 
 [EOF]

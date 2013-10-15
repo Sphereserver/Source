@@ -7,169 +7,225 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: August 27, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[ITEMDEF 021b]
+DEFNAME=i_fruit_peach_sugared
+NAME=sugared peach
+TYPE=t_food
+VALUE=5
+WEIGHT=0.1
+RESOURCES=1 i_fruit_peach,1 i_sugar
+CATEGORY=Quest
+SUBSECTION=Unknown
+DESCRIPTION=Sugared Peach
+ON=@Create
+   MOREM=1
+
 
 [ITEMDEF 0970]
+//This animation is typically used with a cauldron or kettle.
 DEFNAME=i_bowl_stew
-TYPE=T_FOOD
-RESOURCES=1 I_WATER, 1 i_POT,1 I_FLOUR_SACK,
-VALUE={2 4}
-WEIGHT=1
+TYPE=t_food
+VALUE=30
+WEIGHT=1.0
+RESOURCES=1 i_water,1 i_flour_bowl,1 i_ribs_raw,1 i_fruit_carrot
+SKILLMAKE=Cooking 35.0
 CATEGORY=Items by Professions
 SUBSECTION=Cook
-DESCRIPTION=Stew
+DESCRIPTION=Bubbling Stew
 DUPELIST=0971,0972,0973
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 0971]
-//stew
+//non-animated frame of bubbling stew
 DUPEITEM=0970
 
 [ITEMDEF 0972]
-//stew
+//non-animated frame of bubbling stew
 DUPEITEM=0970
 
 [ITEMDEF 0973]
-//stew
+//non-animated frame of bubbling stew
 DUPEITEM=0970
 
 [ITEMDEF 0974]
 DEFNAME=i_cauldron
-RESOURCES=20 i_ingot_iron
-WEIGHT=30
+FLIP=1
+VALUE=168
+WEIGHT=39.0
+RESOURCES=8 i_ingot_iron,1 i_kettle
+SKILLMAKE=Tinkering 65.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Cook
-DESCRIPTION=Cauldron
+DESCRIPTION=Cauldron (empty)
 DUPELIST=0975
 
 [ITEMDEF 0975]
-//cauldron
+//Cauldron (empty)
 DUPEITEM=0974
 
 [ITEMDEF 0976]
 DEFNAME=i_bacon_slab
-TYPE=T_FOOD_RAW
+TYPE=t_meat_raw
 TDATA1=i_bacon_slice
-RESOURCES=1 I_HAM, 1 I_BOARD
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+//FIXME: A slab of raw bacon should make more than one slice.
+FLIP=1
+VALUE=25
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Slab of Bacon
 DUPELIST=0977
+ON=@Create
+   MOREM=5
 
 [ITEMDEF 0977]
 //slab of bacon
 DUPEITEM=0976
 
 [ITEMDEF 0978]
-// DEFNAME2=BACON
 DEFNAME=i_bacon_slice
-TYPE=T_FOOD
-RESOURCES=1 I_HAM
-VALUE={2 4}
+TYPE=t_food
+FLIP=1
+VALUE=5
 WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+RESOURCES=1 i_bacon_slab
+SKILLMAKE=Cooking 15.0,i_fry_pan
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Slice of Bacon
 DUPELIST=0979
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 0979]
 //slice of bacon
 DUPEITEM=0978
 
 [ITEMDEF 097a]
-// raw_fish
 DEFNAME=i_fish_cut_raw
-TYPE=T_FOOD_RAW
+TYPE=t_meat_raw
 TDATA1=i_fish_cut_cooked
 VALUE=3
 WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fish Steak (Raw)
+SKILLMAKE=Cooking 10.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Fish Steak (raw)
 
 [ITEMDEF 097b]
-// Cooked_fish
 DEFNAME=i_fish_cut_cooked
-RESOURCES=1 I_FISH_SMALL
-TYPE=T_FOOD
-VALUE=3
+TYPE=t_food
+VALUE=4
 WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fish Steak (Cooked)
+RESOURCES=1 i_fish_small
+SKILLMAKE=Cooking 15.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Fish Steak (cooked)
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 097c]
 DEFNAME=i_cheese_wedge
-RESOURCES=5 i_pitcher_milk, 1 i_reag_fertile_DIRT
-TYPE=T_FOOD
-VALUE={3 5}
+TYPE=t_food
+VALUE=2
 WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Wedge of Cheese
+RESOURCES=1 i_pitcher_milk,1 i_reag_fertile_dirt
+SKILLMAKE=Cooking 55.0
+CATEGORY=Provisions - Food
+SUBSECTION=Dairy
+DESCRIPTION=Cheese (wedge)
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 097d]
 DEFNAME=i_cheese_cut
-RESOURCES=4 i_pitcher_milk, 1 i_reag_fertile_DIRT
-TYPE=T_FOOD
-VALUE={6 10}
-WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Cut Cheese
+TYPE=t_food
+VALUE=18
+WEIGHT=0.9
+RESOURCES=6 i_pitcher_milk,1 i_reag_fertile_dirt
+SKILLMAKE=Cooking 55.0
+CATEGORY=Provisions - Food
+SUBSECTION=Dairy
+DESCRIPTION=Cheese (wheel with wedge removed)
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 097e]
-// DEFNAME2=CHEESE
 DEFNAME=i_cheese_wheel
-RESOURCES=5 i_pitcher_milk, 1 i_reag_fertile_DIRT
-TYPE=T_FOOD
-VALUE={22 28}
-WEIGHT=0.2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Wheel of Cheese
+TYPE=t_food
+VALUE=20
+WEIGHT=1.0
+RESOURCES=7 i_pitcher_milk,1 i_reag_fertile_dirt
+SKILLMAKE=Cooking 55.0
+CATEGORY=Provisions - Food
+SUBSECTION=Dairy
+DESCRIPTION=Cheese (wheel)
+ON=@Create
+   MOREM=5
 
 [ITEMDEF 097f]
 DEFNAME=i_fry_pan
-RESOURCES=1 i_ore_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+FLIP=1
+VALUE=20
+WEIGHT=4.0
+RESOURCES=4 i_ingot_iron
+SKILLMAKE=Tinkering 39.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Frypan
+DUPELIST=09e2
+
 
 [ITEMDEF 098c]
 DEFNAME=i_bread_french
-TYPE=T_FOOD
-VALUE={4 8}
-WEIGHT=0.5
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+NAME=french bread
+TYPE=t_food
+VALUE=8
+WEIGHT=0.1
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 15.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=French Bread
-SKILLMAKE=COOKING 15.0
-RESOURCES=1 i_FLOUR_SACK
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 098d]
-//jugs of cider
-DUPEITEM=09c8
+DEFNAME=i_jug_cider_3
+TYPE=t_booze
+WEIGHT=0.3
+RESOURCES=2 i_jug_cider
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Jug of Cider (3)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 098e]
-//jugs of cider
-DUPEITEM=09c8
-
-[ITEMDEF 0990]
-DEFNAME=i_basket
-TYPE=T_CONTAINER
-TDATA2=041
-RESOURCES=3 I_STRAW
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Basket
+DEFNAME=i_jug_cider_2
+TYPE=t_booze
+WEIGHT=0.2
+RESOURCES=3 i_jug_cider
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Jug of Cider (2)
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 0991]
 DEFNAME=i_tray
-RESOURCES=3 i_ingot_iron
+FLIP=1
+VALUE=7
+WEIGHT=0.5
+RESOURCES=3 i_board
+SKILLMAKE=Tinkering 18.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Cook
 DESCRIPTION=Tray
@@ -181,31 +237,27 @@ DUPEITEM=0991
 
 [ITEMDEF 0993]
 DEFNAME=i_basket_fruit
-RESOURCES=3 I_STRAW
-TYPE=T_FOOD
-VALUE={4 7}
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+TYPE=t_food
+VALUE=32
+WEIGHT=3.0
+RESOURCES=1 i_basket,2 i_fruit_apple,1 i_fruit_banana,1 i_fruit_grapes,1 i_fruit_pear
+SKILLMAKE=Cooking 0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Fruit Basket
+ON=@Create
+   MOREM=5
 
-[ITEMDEF 0994]
-// DEFNAME2=pear
-DEFNAME=i_fruit_pear
-TYPE=T_FRUIT
-VALUE=1
-WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Pear
-DUPELIST=0172d
 
 [ITEMDEF 0995]
 DEFNAME=i_mug_ceramic
-RESOURCES=3 i_ingot_iron
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+FLIP=1
+VALUE=15
+WEIGHT=0.1
+RESOURCES=1 i_clay
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Ceramic Mug
 DUPELIST=0996,0997,09ca
 
@@ -219,75 +271,138 @@ DUPEITEM=0995
 
 [ITEMDEF 0998]
 DEFNAME=i_mug
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Mug
+NAME=copper mug
+FLIP=1
+VALUE=6
+WEIGHT=0.1
+RESOURCES=1 i_ingot_copper
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Copper Mug
 DUPELIST=0999
 
 [ITEMDEF 0999]
-//mug
+//copper mug
 DUPEITEM=0998
 
 [ITEMDEF 099a]
 DEFNAME=i_goblet
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+FLIP=1
+VALUE=10
+WEIGHT=0.1
+RESOURCES=2 i_ingot_iron
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Goblet
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-RESOURCES=3 i_ingot_iron
+DUPELIST=09cb
 
 [ITEMDEF 099b]
 DEFNAME=i_bottle_liquor
-RESOURCES=1 i_reag_fertile_DIRT, 1 I_WATER, 1 i_wheat_sheaf, 1 I_BOTTLE_empty
-TYPE=T_BOOZE
-VALUE={6 10}
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_booze
+VALUE=15
+WEIGHT=0.1
+RESOURCES=1 i_reag_fertile_dirt,1 i_pitcher_water,1 i_wheat_sheaf,1 i_bottle_empty
+SKILLMAKE=Cooking 75.5//Need proximity to a still
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Bottle of Liquor
-DUPELIST=099c,099d,099e
 
 [ITEMDEF 099c]
-DUPEITEM=099b
+DEFNAME=i_bottle_liquor_2
+TYPE=t_booze
+VALUE=30
+WEIGHT=0.2
+RESOURCES=2 i_bottle_liquor
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Liquor (2)
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 099d]
-//bottles of liquor
-DUPEITEM=099b
+DEFNAME=i_bottle_liquor_3
+TYPE=t_booze
+VALUE=45
+WEIGHT=0.3
+RESOURCES=3 i_bottle_liquor
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Liquor (3)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 099e]
-//bottles of liquor
-DUPEITEM=099b
+DEFNAME=i_bottle_liquor_4
+TYPE=t_booze
+VALUE=60
+WEIGHT=0.4
+RESOURCES=4 i_bottle_liquor
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Liquor (4)
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 099f]
 DEFNAME=i_bottle_ale
-RESOURCES=1 i_reag_fertile_DIRT, 1 I_WATER, 1 i_wheat_sheaf, 1 I_BOTTLE
-TYPE=T_BOOZE
-VALUE={6 10}
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_booze
+VALUE=22
+WEIGHT=1.0
+RESOURCES=1 i_reag_fertile_dirt,1 i_pitcher_water,1 i_wheat_sheaf,1 i_bottle
+SKILLMAKE=Cooking 55.5//Need proximity to a still
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Bottle of Ale
-DUPELIST=09a0,09a1,09a2
 
 [ITEMDEF 09a0]
-DUPEITEM=099f
+DEFNAME=i_bottle_ale_2
+TYPE=t_booze
+VALUE=44
+WEIGHT=0.2
+RESOURCES=2 i_bottle_ale
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Ale (2)
 
 [ITEMDEF 09a1]
-//bottles of ale
-DUPEITEM=099f
+DEFNAME=i_bottle_ale_3
+TYPE=t_booze
+VALUE=66
+WEIGHT=0.3
+RESOURCES=3 i_bottle_ale
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Ale (3)
 
 [ITEMDEF 09a2]
-//bottles of ale
-DUPEITEM=099f
+DEFNAME=i_bottle_ale_4
+TYPE=t_booze
+VALUE=88
+WEIGHT=0.4
+RESOURCES=4 i_bottle_ale
+SKILLMAKE=Cooking 0.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Ale (4)
 
 [ITEMDEF 09a3]
 DEFNAME=i_fork
+FLIP=1
+VALUE=6
+WEIGHT=0.1
 RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+SKILLMAKE=Tinkering 12.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Fork
-DUPELIST=09a4
+DUPELIST=09a4,09f4,09f5
 
 [ITEMDEF 09a4]
 //fork
@@ -295,79 +410,170 @@ DUPEITEM=09a3
 
 [ITEMDEF 09a5]
 DEFNAME=i_knife
+FLIP=1
+VALUE=6
+WEIGHT=0.1
 RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Knife
-DUPELIST=09a6
+SKILLMAKE=Tinkering 12.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Butter Knife
+DUPELIST=09a6,09f6,09f7
+TEVENTS=t_kitchenknife
 
 [ITEMDEF 09a6]
+//butter knife
 DUPEITEM=09a5
+
+[ITEMDEF 09a7]
+DEFNAME=i_pitcher_glass
+TYPE=t_pitcher_empty
+TDATA1=i_pitcher_glass
+FLIP=1
+VALUE=10
+WEIGHT=1.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 42.0,t_glassblowing_tool
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Empty Glass Pitcher
+DUPELIST=0ff6,0ff7
+
 
 [ITEMDEF 09ad]
 DEFNAME=i_pitcher_milk
-//? TYPE=T_CONTAINER
-TYPE=T_DRINK
+TYPE=t_drink
 TDATA1=i_pitcher_glass
 FLIP=1
-RESOURCES=i_pitcher_glass
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+VALUE=10
+WEIGHT=0.3
+RESOURCES=1 i_pitcher_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Drinks
 DESCRIPTION=Milk (Pitcher)
 DUPELIST=09f0
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 09ae]
 DEFNAME=i_plate_dirty
+WEIGHT=0.1
 RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Plate
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Plate (dirty)
 
 [ITEMDEF 09af]
 DEFNAME=i_plate_food
-RESOURCES=1 i_ingot_iron, 1 T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+TYPE=t_food
+TDATA1=i_plate
+FLIP=1
+WEIGHT=1.0
+RESOURCES=1 i_plate,1 t_food
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Plate of Food
 DUPELIST=09d8,09d9,09db
+ON=@Create
+   MOREM=2
+
 
 [ITEMDEF 09b3]
 DEFNAME=i_goblet_2
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Goblet
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-RESOURCES=3 i_ingot_iron
+NAME=copper goblet
+FLIP=1
+VALUE=22
+WEIGHT=0.1
+RESOURCES=3 i_ingot_copper
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Copper Goblet
+DUPELIST=09bf
 
-[ITEMDEF 09b6]
-DEFNAME=i_eggs_fried
-RESOURCES=1 i_EGGS_FRESH
-TYPE=T_FOOD
-VALUE={5 9}
+[ITEMDEF 09b4]
+DEFNAME=i_eggshells
+TYPE=t_normal
+VALUE=1
 WEIGHT=0.1
 CATEGORY=Items by Professions
 SUBSECTION=Cook
-DESCRIPTION=Fried Eggs
+DESCRIPTION=Eggshells
+
+[ITEMDEF 09b5]
+DEFNAME=i_eggs_fresh
+TYPE=t_food_raw
+TDATA1=i_eggs_fried
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Eggs
+DESCRIPTION=Eggs (raw)
+
+[ITEMDEF 09b6]
+DEFNAME=i_eggs_fried
+TYPE=t_food
+VALUE=2
+WEIGHT=0.1
+RESOURCES=1 i_eggs_fresh
+SKILLMAKE=Cooking 15.0,i_fry_pan
+CATEGORY=Provisions - Food
+SUBSECTION=Eggs
+DESCRIPTION=Eggs (fried)
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 09b7]
-//DEFNAME2=COOKED_BIRD
 DEFNAME=i_bird_cooked
-RESOURCES=1 I_BIRD_RAW
-TYPE=T_FOOD
-WEIGHT=0.5
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+TYPE=t_food
+FLIP=1
+VALUE=3
+WEIGHT=1.0
+RESOURCES=1 i_bird_raw
+SKILLMAKE=Cooking 10.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Cooked Bird
 DUPELIST=09b8
+ON=@Create
+   MOREM=5
 
 [ITEMDEF 09b8]
 //cooked bird
 DUPEITEM=09b7
 
+[ITEMDEF 09b9]
+DEFNAME=i_bird_raw
+TYPE=t_food_raw
+TDATA1=i_bird_cooked
+FLIP=1
+VALUE=1
+WEIGHT=1.0
+SKILLMAKE=Cooking 20.0
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Raw Bird
+DUPELIST=09ba
+
 [ITEMDEF 09ba]
 //raw bird
 DUPEITEM=09b9
+
+[ITEMDEF 09bb]
+DEFNAME=i_pig_roast
+TYPE=t_food
+//TDATA1=i_platter
+FLIP=1
+VALUE=143
+WEIGHT=11.0
+RESOURCES=10 i_ham,10 i_bacon_slab,1 i_fruit_apple,1 i_dried_herbs
+SKILLMAKE=Cooking 90.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Roast Pig
+DUPELIST=09bc
+ON=@Create
+   MOREM=8
 
 [ITEMDEF 09bc]
 //roast pig
@@ -375,11 +581,15 @@ DUPEITEM=09bb
 
 [ITEMDEF 09bd]
 DEFNAME=i_silverware
-RESOURCES=1 i_ingot_silver
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+FLIP=1
+VALUE=20
+WEIGHT=0.3
+RESOURCES=1 i_spoon,1 i_knife,1 i_fork
+SKILLMAKE=Tinkering 15.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Silverware
-DUPELIST=09be
+DUPELIST=09be,09d4,09d5
 
 [ITEMDEF 09be]
 //silverware
@@ -387,22 +597,22 @@ DUPEITEM=09bd
 
 [ITEMDEF 09bf]
 DEFNAME=i_goblet_3
-RESOURCES=1 I_SAND
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Goblet
-DUPELIST=09cb
+DUPEITEM=09b3
 
 [ITEMDEF 09c0]
 DEFNAME=i_sausages
-RESOURCES=1 I_reag_GARLIC, 1 I_HAM
-TYPE=T_FOOD
-VALUE={12 16}
-WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+TYPE=t_food
+FLIP=1
+VALUE=12
+WEIGHT=0.3
+RESOURCES=1 i_fruit_garlic,1 i_ham
+SKILLMAKE=Cooking 45.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Sausages
 DUPELIST=09c1
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 09c1]
 //sausages
@@ -410,89 +620,165 @@ DUPEITEM=09c0
 
 [ITEMDEF 09c2]
 DEFNAME=i_spoon
+FLIP=1
+VALUE=6
+WEIGHT=0.1
 RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+SKILLMAKE=Tinkering 12.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Spoon
-DUPELIST=09c3
+DUPELIST=09c3,09f8,09f9
 
 [ITEMDEF 09c3]
 //spoon
 DUPEITEM=09c2
 
 [ITEMDEF 09c4]
-DEFNAME=i_bottles_wine
-RESOURCES=1 I_BOTTLE, 1 i_fruit_grapes, 1 i_reag_fertile_dirt
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Bottles of Wine
-DUPELIST=09c5,09c6
+DEFNAME=i_bottle_wine_4
+TYPE=t_booze
+VALUE=96
+WEIGHT=0.4
+RESOURCES=4 i_bottle_wine
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Wine (4)
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 09c5]
-//bottles of wine
-DUPEITEM=09c4
+DEFNAME=i_bottle_wine_3
+TYPE=t_booze
+VALUE=72
+WEIGHT=0.3
+RESOURCES=3 i_bottle_wine
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Wine (3)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 09c6]
-//bottles of wine
-DUPEITEM=09c4
+DEFNAME=i_bottle_wine_2
+TYPE=t_booze
+VALUE=48
+WEIGHT=0.2
+RESOURCES=2 i_bottle_wine
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Wine (2)
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 09c7]
 DEFNAME=i_bottle_wine
-RESOURCES=1 I_BOTTLE, 1 i_fruit_grapes, 1 i_reag_fertile_dirt
-TYPE=T_BOOZE
-VALUE={6 10}
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_booze
+VALUE=24
+WEIGHT=0.1
+RESOURCES=1 i_bottle,1 i_fruit_grapes,1 i_reag_fertile_dirt
+SKILLMAKE=Cooking 75.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Bottle of Wine
 
 [ITEMDEF 09c8]
 DEFNAME=i_jug_cider
-RESOURCES=1 I_BOTTLE, 1 i_fruit_apple, 1 i_WATER, 1 i_reag_fertile_dirt
-TYPE=T_BOOZE
-VALUE={12 18}
-WEIGHT=11
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_booze
+VALUE=23
+WEIGHT=0.1
+RESOURCES=1 i_bottle,1 i_fruit_apple,1 i_pitcher_water,1 i_reag_fertile_dirt
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Jug of Cider
-DUPELIST=098d,098e
+
+[ITEMDEF 09c9]
+DEFNAME=i_ham
+TYPE=t_food
+FLIP=1
+VALUE=4
+WEIGHT=0.5
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Ham
+DUPELIST=09d3
+ON=@Create
+   MOREM=5
 
 [ITEMDEF 09ca]
+//ceramic mug
 DUPEITEM=0995
 
 [ITEMDEF 09cb]
 //goblet
-DUPEITEM=09bf
+DUPEITEM=099a
+
+[ITEMDEF 09cc]
+DEFNAME=i_fish_big_1
+TYPE=t_fish
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (Whole)
+
+[ITEMDEF 09cd]
+DEFNAME=i_fish_big_2
+TYPE=t_fish
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish
+
+[ITEMDEF 09ce]
+DEFNAME=i_fish_big_3
+TYPE=t_fish
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish
+
+[ITEMDEF 09cf]
+DEFNAME=i_fish_big_4
+TYPE=t_fish
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish
 
 [ITEMDEF 09d3]
 //ham
 DUPEITEM=09c9
 
 [ITEMDEF 09d4]
-DEFNAME=i_silverware_2
-RESOURCES=3 i_ingot_silver
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Silverware
-DUPELIST=09d5
+//silverware
+DUPEITEM=09bd
 
 [ITEMDEF 09d5]
 //silverware
-DUPEITEM=09d4
+DUPEITEM=09bd
 
 [ITEMDEF 09d6]
 DEFNAME=i_pitcher
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Pitcher
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-RESOURCES=3 i_ingot_iron
+NAME=ceramic pitcher
+WEIGHT=1.0
+VALUE=10
+RESOURCES=6 i_clay
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Ceramic Pitcher
 
 [ITEMDEF 09d7]
 DEFNAME=i_plate
-RESOURCES=1 I_CLAY
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+VALUE=12
+WEIGHT=0.1
+RESOURCES=1 i_clay
+SKILLMAKE=Tinkering 21.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Plate
 
 [ITEMDEF 09d8]
@@ -505,149 +791,200 @@ DUPEITEM=09af
 
 [ITEMDEF 09da]
 DEFNAME=i_plate_dirty_2
-RESOURCES=1 I_PLATE, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Plate
+WEIGHT=0.3
+RESOURCES=1 i_plate,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Plate 2 (dirty)
 
 [ITEMDEF 09db]
+//plate of food
 DUPEITEM=09af
 
 [ITEMDEF 09dc]
 DEFNAME=i_pot_dirty
-RESOURCES=1 I_POT, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Pot
+WEIGHT=3.0
+RESOURCES=1 i_pot,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot (dirty)
 
 [ITEMDEF 09dd]
-DEFNAME=i_pot_dirty_2
-RESOURCES=1 I_POT_2, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Pot
+DEFNAME=i_pot_small_dirty
+WEIGHT=1.0
+RESOURCES=1 i_pot_small,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot 2 (dirty)
 
 [ITEMDEF 09de]
 DEFNAME=i_frypan_dirty
-RESOURCES=1 I_FRYPAN, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Frypan
+WEIGHT=3.0
+RESOURCES=1 i_fry_pan,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Frypan (dirty)
 
 [ITEMDEF 09df]
 DEFNAME=i_pot_dirty_3
-RESOURCES=1 I_POT_3, 1 I_DIRT
+WEIGHT=3.0
+RESOURCES=1 i_pot_3,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot 3 (dirty)
 
 [ITEMDEF 09e0]
 DEFNAME=i_pot
+NAME=shallow sauce pot
+WEIGHT=3.0
+VALUE=16
 RESOURCES=3 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Pot
+SKILLMAKE=Tinkering 41.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Shallow Sauce Pot
 
 [ITEMDEF 09e1]
-DEFNAME=i_pot_2
+DEFNAME=i_pot_small
+NAME=small saucepan
+WEIGHT=1.0
+VALUE=15
 RESOURCES=3 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Pot
+SKILLMAKE=Tinkering 36.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Small Saucepan
 
 [ITEMDEF 09e2]
-DEFNAME=i_frypan
-RESOURCES=3 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Frypan
+//fry pan
+DUPEITEM=097f
 
 [ITEMDEF 09e3]
-//pot
 DEFNAME=i_pot_3
-RESOURCES=3 i_ingot_iron
+NAME=tajine dish
+WEIGHT=3.0
+VALUE=24
+RESOURCES=5 i_ingot_iron
+SKILLMAKE=Tinkering 41.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Tajine Dish
 
 [ITEMDEF 09e4]
-//pot
-DEFNAME=i_pot_4
-RESOURCES=3 i_ingot_iron
+DEFNAME=i_pot_medium
+NAME=saucepan
+VALUE=20
+WEIGHT=2.0
+RESOURCES=4 i_ingot_iron
+SKILLMAKE=Tinkering 38.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Saucepan
 
 [ITEMDEF 09e5]
-//pot
 DEFNAME=i_pot_5
+VALUE=16
+WEIGHT=3.0
 RESOURCES=3 i_ingot_iron
+SKILLMAKE=Tinkering 36.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot 5
 
 [ITEMDEF 09e6]
-DEFNAME=i_pot_dirty_4
-RESOURCES=1 I_POT_4, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Pot
+DEFNAME=i_pot_medium_dirty
+WEIGHT=2.0
+RESOURCES=1 i_pot_medium,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Medium Pot (dirty)
 
 [ITEMDEF 09e7]
 DEFNAME=i_pot_dirty_5
-RESOURCES=1 I_POT_5, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Pot
+WEIGHT=3.0
+RESOURCES=1 i_pot_5,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot 5 (dirty)
 
 [ITEMDEF 09e8]
 DEFNAME=i_pot_dirty_6
-RESOURCES=1 I_PAN, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Pot
+WEIGHT=4.0
+RESOURCES=1 i_pan,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pot 6 (dirty)
 
 [ITEMDEF 09e9]
 DEFNAME=i_cake
-TYPE=T_FOOD
-VALUE={8 12}
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=33
+WEIGHT=0.2
+RESOURCES=3 i_flour_bowl,1 i_eggs_fresh,1 i_sugar
+SKILLMAKE=Cooking 30.0
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Cake
-SKILLMAKE=COOKING 30.0
-RESOURCES=3 i_FLOUR_SACK
+ON=@Create
+   MOREM=5
 
 [ITEMDEF 09ea]
 DEFNAME=i_muffin
-RESOURCES=1 i_bowl_dough, 1 I_TRAY
-TYPE=T_FOOD
-VALUE={2 4}
-WEIGHT=0.1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=7
+WEIGHT=0.2
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 20.0,1 i_tray
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Muffin
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 09eb]
-DEFNAME=i_muffins
-WEIGHT=0.5
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Muffins
-SKILLMAKE=COOKING 10.0
-RESOURCES=1 i_FLOUR_SACK
+DEFNAME=i_muffin_3
+TYPE=t_food
+VALUE=21
+WEIGHT=0.6
+RESOURCES=3 i_muffin
+SKILLMAKE=Cooking 20.0,1 i_tray
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Muffin (3)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 09ec]
-// DEFNAME2=HONEY_OBJ
 DEFNAME=i_jar_honey
-TYPE=T_FOOD
-VALUE={2 4}
+TYPE=t_food
+VALUE=9
 WEIGHT=0.5
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+RESOURCES=1 i_jar_empty,1 i_honey
+SKILLMAKE=Cooking 20.0
+CATEGORY=Provisions - Food
+SUBSECTION=Sugars
 DESCRIPTION=Jar of Honey
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 09ed]
 DEFNAME=i_kettle
-RESOURCES=5 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+VALUE=130
+WEIGHT=31.0
+RESOURCES=31 i_ingot_iron
+SKILLMAKE=Tinkering 56.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Kettle
 
 [ITEMDEF 09ee]
 DEFNAME=i_mug_ale
-TYPE=T_BOOZE
-TDATA1=I_MUG
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_booze
+TDATA1=i_mug
+VALUE=4
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Mug of Ale
 DUPELIST=09ef
 
@@ -656,1179 +993,1050 @@ DUPELIST=09ef
 DUPEITEM=09ee
 
 [ITEMDEF 09f0]
+//pitcher of milk
 DUPEITEM=09ad
 
 [ITEMDEF 09f1]
-// DEFNAME2=RAW_RIBS
 DEFNAME=i_ribs_raw
 TYPE=t_meat_raw
 TDATA1=i_ribs_cooked
 VALUE=3
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+WEIGHT=0.5
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Ribs (Raw)
+ON=@DClick
+   IF (<MORE2>)
+      NAME=Cut of raw <SERV.CHARDEF.<MORE2>.NAME> ribs
+   ENDIF
+ON=@TargOn_Item
+   IF (<SRC.TARG.TYPE>!=t_fire) && (<SRC.TARG.TYPE>!=t_campfire)
+      SRC.MESSAGELOC 500690//"You can't cook on that."
+      RETURN 1
+   ENDIF
 
 [ITEMDEF 09f2]
-// DEFNAME2=COOKED_RIBS
 DEFNAME=i_ribs_cooked
+TYPE=t_food
+VALUE=4
+WEIGHT=0.3
 RESOURCES=1 i_ribs_raw
-TYPE=T_FOOD
-VALUE={12 24}
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+SKILLMAKE=Cooking 0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Ribs (Cooked)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 09f3]
 DEFNAME=i_pan
+VALUE=14
+WEIGHT=4.0
 RESOURCES=3 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Pan
 
 [ITEMDEF 09f4]
-DEFNAME=i_fork_2
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fork
+//fork
+DUPEITEM=09a3
 
 [ITEMDEF 09f5]
-DEFNAME=i_fork_3
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fork
+//fork
+DUPEITEM=09a3
 
 [ITEMDEF 09f6]
-DEFNAME=i_knife_3
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Knife
+//butter knife
+DUPEITEM=09a5
 
 [ITEMDEF 09f7]
-DEFNAME=i_knife_4
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Knife
+//butter knife
+DUPEITEM=09a5
 
 [ITEMDEF 09f8]
-DEFNAME=i_spoon_2
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Spoon
+//spoon
+DUPEITEM=09c2
 
 [ITEMDEF 09f9]
-DEFNAME=i_spoon_3
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Spoon
+//spoon
+DUPEITEM=09c2
 
 [ITEMDEF 09fa]
-DEFNAME=i_muffins_2
-RESOURCES=1 i_bowl_dough, 1 I_TRAY
-WEIGHT=0.5
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Muffins
+DEFNAME=i_muffin_2
+TYPE=t_food
+VALUE=14
+WEIGHT=0.4
+RESOURCES=2 i_muffin
+SKILLMAKE=Cooking 20.0,1 i_tray
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Muffin (2)
+ON=@Create
+   MOREM=2
+
 
 [ITEMDEF 0a19]
 DEFNAME=i_plate_dirty_3
-RESOURCES=1 I_PLATE, 1 I_DIRT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dirty Plate
+WEIGHT=1.0
+RESOURCES=1 i_plate,1 i_dirt
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Plate 3 (dirty)
 
-[ITEMDEF 0a1a]
-DUPEITEM=0a15
-
-[ITEMDEF 0a1b]
-//hanging lantern
-DUPEITEM=0a15
-
-[ITEMDEF 0a1c]
-//hanging lantern
-DUPEITEM=0a15
-
-[ITEMDEF 0a1d]
-//hanging lantern (unlit)
-DUPEITEM=0a18
 
 [ITEMDEF 0a1e]
 DEFNAME=i_flour_bowl
-RESOURCES=1 i_bowl_wood, 1 i_flour_sack
-TYPE=T_FOOD
-WEIGHT=4
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=12
+WEIGHT=1.0
+RESOURCES=1 i_bowl_wood,1 i_flour_sack
+SKILLMAKE=Cooking 15.0,1 i_flour_sifter
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Bowl of Flour
 
-[ITEMDEF 0e12]
-DEFNAME=i_CHESSMEN_BLACK_sw
-RESOURCES=16 I_EBONY
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=BLACK CHESSMEN SW
-DUPELIST=0fa8
 
-[ITEMDEF 0e13]
-DEFNAME=i_CHESSMAN_BLACK_se
-RESOURCES=16 I_EBONY
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=BLACK CHESSMAN SE
-
-[ITEMDEF 0e14]
-DEFNAME=i_CHESSMAN_WHITE_se
-RESOURCES=16 I_IVORY
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=WHITE CHESSMAN SE
-
-[ITEMDEF 0e15]
-DEFNAME=i_cards
-RESOURCES=9 I_PAPER
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=CARDS
-DUPELIST=0e16,0e17,0e18,0e19
-
-[ITEMDEF 0e16]
-//I_CARDS
-DUPEITEM=0e15
-
-[ITEMDEF 0e17]
-//I_CARDS
-DUPEITEM=0e15
-
-[ITEMDEF 0e18]
-//I_CARDS
-DUPEITEM=0e15
-
-[ITEMDEF 0e19]
-//I_CARDS
-DUPEITEM=0e15
-
-[ITEMDEF 0e1a]
-DEFNAME=i_CHECKERS_PILE_RED
-RESOURCES=5 I_IVORY
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=PILE RED CHECKERS
-DUPELIST=0fa4,0fa5
-
-[ITEMDEF 0e1b]
-DEFNAME=i_CHECKERS_PILE_BLACK
-RESOURCES=5 I_EBONY
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=PILE BLACK CHECKERS
-
-[ITEMDEF 0e1c]
-//DEFNAME2=BACKGAMMON
-DEFNAME=i_backgammon_game
-RESOURCES=3 i_board
-WEIGHT=5
-TYPE=T_GAME_BOARD
-TDATA2=092e
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-SKILLMAKE=TINKERING 30.0,t_tinker_tools
-DUPELIST=0fad
-
-ON=@Create
-	MORE1 = 2
-
-[ITEMDEF 0fa2]
-//playing cards
-DEFNAME=i_CARDS_PLAYING
-RESOURCES=13 i_PARCHMENT
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=Playing Cards
-DUPELIST=0fa3
-
-[ITEMDEF 0fa3]
-//playing cards
-DUPEITEM=0fa2
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=Playing Cards
-
-[ITEMDEF 0fa4]
-//pile of red checkers
-DUPEITEM=0e1a
-
-[ITEMDEF 0fa5]
-//pile of white checkers
-DUPEITEM=0e1a
-
-[ITEMDEF 0fa6]
-//checkers/chess game board
-DEFNAME=i_game_board
-RESOURCES=3 i_log
-TYPE=T_GAME_BOARD
-TDATA2=091a
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=Game Board
-SKILLMAKE=TINKERING 30.0,t_tinker_tools
-
-[ITEMDEF 0fa7]
-//Dice and Cup
-DEFNAME=i_dice_cup
+[ITEMDEF 0dd6]
+DEFNAME=i_fish_small
+TYPE=t_fish
+VALUE=2
 WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=Dice and Cup
-RESOURCES=3 i_log
-SKILLMAKE=TINKERING 30.0,t_tinker_tools
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Small Fish
+DUPELIST=0dd7,0dd8,0dd9
 
-ON=@DCLICK
-	SRC.EMOTE rolls a <EVAL(RAND(6)+1)>,<EVAL(RAND(6)+1)>
-	RETURN 1
+[ITEMDEF 0dd7]
+//small fish
+DUPEITEM=0dd6
 
-[ITEMDEF 0fa8]
-//white chess pieces NE
-DUPEITEM=0e12
+[ITEMDEF 0dd8]
+//small fish
+DUPEITEM=0dd6
 
-[ITEMDEF 0fad]
-//backgammon game
-DUPEITEM=0e1c
+[ITEMDEF 0dd9]
+//small fish
+DUPEITEM=0dd6
+
+
+[ITEMDEF 0ec1]
+DEFNAME=i_knife_broken
+WEIGHT=0.1
+RESOURCES=1 i_ingot_iron
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Knife (broken)
+
 
 [ITEMDEF 0ff6]
-//Pitcher (Glass)
+//empty glass pitcher
 DUPEITEM=09a7
 
 [ITEMDEF 0ff7]
-//glass pitcher
+//empty glass pitcher
 DUPEITEM=09a7
 
 [ITEMDEF 0ff8]
-//Pitcher of Water
 DEFNAME=i_pitcher_water
-RESOURCES=10 I_WATER, 1 i_pitcher_glass
-TYPE=T_DRINK
+TYPE=t_drink
 TDATA1=i_pitcher_glass
 FLIP=1
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
+VALUE=12
+WEIGHT=0.3
+RESOURCES=1 i_pitcher_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Drinks
 DESCRIPTION=Pitcher of Water
 DUPELIST=0ff9,01f9d,01f9e
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 0ff9]
 //pitcher of water
 DUPEITEM=0ff8
 
-[ITEMDEF 0ffa]
-//bucket of water
-DEFNAME=i_bucket_of_water
-RESOURCES=10 I_WATER, 1 I_BUCKET
-WEIGHT=4
-TYPE=T_DRINK
-TDATA1=I_BUCKET
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
-DESCRIPTION=Bucket of Water
 
 [ITEMDEF 0ffb]
-//skull mug
 DEFNAME=i_skull_mug
-RESOURCES=3 i_ingot_iron
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-WEIGHT=6
-CATEGORY=Items by Professions
-SUBSECTION=Barkeep
+FLIP=1
+VALUE=9
+WEIGHT=2.0
+RESOURCES=1 i_ingot_iron,1 i_bone_skull
+SKILLMAKE=Tinkering 42.0,t_tinker_tools,Necromancy 15.2
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Skull Mug
 DUPELIST=0ffc,0ffd,0ffe
 
 [ITEMDEF 0ffc]
+//skull mug
 DUPEITEM=0ffb
 
 [ITEMDEF 0ffd]
 //skull mug
-DUPEITEM=0FFB
+DUPEITEM=0ffb
 
 [ITEMDEF 0ffe]
 //skull mug
-DUPEITEM=0FFB
+DUPEITEM=0ffb
 
 [ITEMDEF 0fff]
-//pewter mug
-DUPEITEM=01000
+DEFNAME=i_mug_pewter
+FLIP=1
+VALUE=12
+WEIGHT=2.0
+RESOURCES=2 i_ingot_iron
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Pewter Mug
+DUPELIST=01000,01001,01002
 
 [ITEMDEF 01000]
-DEFNAME=i_mug_pewter
-RESOURCES=3 i_ingot_iron
-WEIGHT=1
-DUPELIST=0fff,01001,01002
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Pewter Mug
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
+//pewter mug
+DUPEITEM=0fff
 
 [ITEMDEF 01001]
 //pewter mug
-DUPEITEM=01000
+DUPEITEM=0fff
 
 [ITEMDEF 01002]
-DUPEITEM=01000
+//pewter mug
+DUPEITEM=0fff
 
-[ITEMDEF 01003]
-DEFNAME=i_spittoon
-RESOURCES=3 i_ingot_iron
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Spitton
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-
-[ITEMDEF 01004]
-DEFNAME=i_barrel_tap
-RESOURCES=1 i_ingot_iron
-SKILLMAKE=TINKERING 52.0,t_tinker_tools
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Barrel Tap
 
 [ITEMDEF 01039]
 DEFNAME=i_flour_sack
-RESOURCES=4 i_wheat_sheaf, 1 i_CLOTH
-WEIGHT=5
+TYPE=t_normal
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+RESOURCES=4 i_wheat_sheaf,1 i_cloth
 CATEGORY=Items by Professions
-SUBSECTION=Baker
+SUBSECTION=Miller
 DESCRIPTION=Sack of Flour
-DUPELIST=0103a,01045,01046
+DUPELIST=01045
 
 [ITEMDEF 0103a]
 DEFNAME=i_flour_sack_open
-DUPEITEM=01039
+TYPE=t_normal
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+RESOURCES=4 i_wheat_sheaf,1 i_cloth
 CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Open Sack of Flour
+SUBSECTION=Miller
+DESCRIPTION=Sack of Flour (open)
+DUPELIST=01046
 
 [ITEMDEF 0103b]
-// Has a bite ?
 DEFNAME=i_bread_loaf
-TYPE=T_FOOD
-SKILLMAKE=1 COOKING
-RESOURCES=1 i_FLOUR_SACK
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=15
+WEIGHT=0.3
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 10.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Bread Loaf
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 0103c]
 DEFNAME=i_bread_wonder
-NAME=Wonder Bread
-SKILLMAKE=COOKING 1
-RESOURCES=1 i_FLOUR_SACK
-TYPE=T_FOOD
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Bread Loaf
+TYPE=t_food
+VALUE=15
+WEIGHT=0.3
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 10.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Bread Loaf (piece missing)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 0103d]
 DEFNAME=i_dough
-//DEFNAME2=i_DOUGH_2
-RESOURCES=1 i_WATER, 1 i_EGG, 2 i_FLOUR_BOWL
-TYPE=T_FOOD_RAW
+TYPE=t_food_raw
 TDATA1=i_bread_loaf
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+VALUE=10
+WEIGHT=0.3
+RESOURCES=1 i_pitcher_water,1 i_eggs_fresh,1 i_flour_bowl
+SKILLMAKE=Cooking 10.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Dough
 
 [ITEMDEF 0103e]
 DEFNAME=i_flour_sifter
+VALUE=9
+WEIGHT=1.0
 RESOURCES=1 i_ingot_iron
-WEIGHT=1
+SKILLMAKE=Tinkering 40.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Baker
 DESCRIPTION=Flour Sifter
 
 [ITEMDEF 0103f]
 DEFNAME=i_cookie_mix
-TYPE=T_FOOD_RAW
+TYPE=t_food_raw
 TDATA1=i_pan_cookies
-RESOURCES=1 i_bowl_dough, 1 i_POT
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+VALUE=12
+WEIGHT=2.1
+RESOURCES=1 i_dough,1 i_sugar,1 i_bowl_wood
+SKILLMAKE=Cooking 20.0,i_spoon_wood_large
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Cookie Mix
 
 [ITEMDEF 01040]
 DEFNAME=i_pizza
-RESOURCES=3 i_FLOUR_SACK
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Pizza
-SKILLMAKE=COOKING 20.0
+TYPE=t_food
+VALUE=35
+WEIGHT=0.3
+RESOURCES=1 i_pizza_uncooked
+SKILLMAKE=Cooking 10.1
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pizza (uncooked)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 01041]
-DEFNAME=i_pie_baked
-RESOURCES=3 i_FLOUR_SACK
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Baked Pie
-SKILLMAKE=COOKING 20.0
+DEFNAME=i_quiche_baked
+NAME=baked quiche
+TYPE=t_food
+VALUE=15
+WEIGHT=0.2
+RESOURCES=1 i_quiche_unbaked
+SKILLMAKE=Cooking 10.1
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Quiche (baked)
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01042]
-DEFNAME=i_pie_unbaked
-TYPE=T_FOOD_RAW
-TDATA1=i_pie_baked
-RESOURCES=1 i_bowl_dough, 1 T_FRUIT, 1 i_POT, i_lard
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Unbaked Pie
+DEFNAME=i_quiche_unbaked
+NAME=uncooked quiche
+TYPE=t_food_raw
+TDATA1=i_quiche_baked
+VALUE=10
+WEIGHT=0.4
+RESOURCES=1 i_dough,1 t_meat_raw
+SKILLMAKE=Cooking 20.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Quiche (uncooked)
 
 [ITEMDEF 01043]
 DEFNAME=i_rolling_pin
-RESOURCES=1 i_BOARD, 1 i_ingot_iron
-WEIGHT=2
+VALUE=8
+WEIGHT=2.0
+RESOURCES=1 i_board,1 i_axel
 CATEGORY=Items by Professions
 SUBSECTION=Baker
 DESCRIPTION=Rolling Pin
+ON=@DClick
+   SRC.SKILLMENU sm_cooking
+   RETURN 1
 
 [ITEMDEF 01044]
 DEFNAME=i_spam
-RESOURCES=1 i_HAM, 1 i_POT
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=7
+WEIGHT=0.1
+RESOURCES=1 i_ham
+SKILLMAKE=Cooking 15.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Spam
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 01045]
 //sack of flour
 DUPEITEM=01039
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Sack of Flour
 
 [ITEMDEF 01046]
 //open sack of flour
-DUPEITEM=01039
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Open Sack of Flour
+DUPEITEM=0103a
+
 
 [ITEMDEF 01083]
 DEFNAME=i_pizza_uncooked
-RESOURCES=1 i_bowl_dough, 1 i_cheese_wheel, 1 i_POT, i_lard, i_tomato_sauce
-TYPE=T_FOOD_RAW
+TYPE=t_food_raw
 TDATA1=i_pizza
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Uncooked Pizza
+VALUE=32
+WEIGHT=0.3
+RESOURCES=1 i_dough,1 i_cheese_wedge
+SKILLMAKE=Cooking 25.0,i_rolling_pin
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pizza (uncooked)
+ON=@Create
+   MOREM=3
 
-[ITEMDEF 010e1]
-DEFNAME=i_barrel_hoops
-RESOURCES=4 i_ingot_iron
-SKILLMAKE=TINKERING 42.0,t_tinker_tools
-WEIGHT=4
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Barrel Hoops
-DUPELIST=010e2
-
-[ITEMDEF 010e2]
-//barrel hoops
-DUPEITEM=010e1
 
 [ITEMDEF 010e3]
 DEFNAME=i_bowl_dough
-RESOURCES=1 i_CLAY
-WEIGHT=.4
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+VALUE=13
+WEIGHT=0.4
+RESOURCES=1 i_bowl_wood,1 i_flour_bowl,1 i_pitcher_water,1 i_eggs_fresh
+SKILLMAKE=Cooking 25.0
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Dough Bowl
 
+
 [ITEMDEF 010e8]
-DEFNAME=i_SPOON_WOOD_SMALL
-RESOURCES=1 i_BOARD
-WEIGHT=.1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+DEFNAME=i_spoon_wood_small
+WEIGHT=0.1
+RESOURCES=1 i_board
+SKILLMAKE=Carpentry 0.0,t_carpentry
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Spoon (Wooden) (Small)
 
 [ITEMDEF 010e9]
-DEFNAME=i_SPOON_WOOD_LARGE
-RESOURCES=1 i_BOARD
-WEIGHT=.2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+DEFNAME=i_spoon_wood_large
+WEIGHT=0.2
+RESOURCES=1 i_board
+SKILLMAKE=Carpentry 0.0,t_carpentry
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
 DESCRIPTION=Spoon (Wooden) (Large)
+
+
+[ITEMDEF 014ff]
+DEFNAME=i_seive
+VALUE=8
+WEIGHT=1.0
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 40.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Baker
+DESCRIPTION=Seive
+
 
 [ITEMDEF 015f8]
 DEFNAME=i_bowl_wood
-RESOURCES=1 i_BOARD
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+WEIGHT=1.0
+VALUE=15
+RESOURCES=1 i_board
+SKILLMAKE=Carpentry 33.0,t_carpentry
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Wooden Bowl
 
 [ITEMDEF 015f9]
-//DEFNAME=i_BOWL_CARROTS
 DEFNAME=i_bowl_wood_carrots
-RESOURCES=1 i_bowl_wood, 3 i_fruit_carrot
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+NAME=wooden bowl of carrot soup
+TYPE=t_food
+TDATA1=i_bowl_wood
+VALUE=24
+WEIGHT=1.3
+RESOURCES=1 i_bowl_wood,3 i_fruit_carrot
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Bowl of Carrots
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 015fa]
-//DEFNAME=i_BOWL_CORN
 DEFNAME=i_bowl_wood_corn
-RESOURCES=1 i_bowl_wood, 1 i_fruit_corn
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+NAME=wooden bowl of corn soup
+TYPE=t_food
+TDATA1=i_bowl_wood
+VALUE=24
+WEIGHT=1.3
+RESOURCES=1 i_bowl_wood,3 i_fruit_corn
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Bowl of Corn
 
 [ITEMDEF 015fb]
-//DEFNAME=i_BOWL_LETTUCE
 DEFNAME=i_bowl_wood_lettuce
-RESOURCES=1 i_bowl_wood, 1 i_fruit_lettuce
-WEIGHT=1
-type=t_food
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Bowl of Lettuce
+NAME=wooden bowl of cabbage soup
+TYPE=t_food
+TDATA1=i_bowl_wood
+VALUE=24
+WEIGHT=1.3
+RESOURCES=1 i_bowl_wood,3 i_fruit_cabbage
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Bowl of Cabbage
 
 [ITEMDEF 015fc]
 DEFNAME=i_bowl_wood_peas
-VALUE=8
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+NAME=wooden bowl of pea soup
+TYPE=t_food
+TDATA1=i_bowl_wood
+VALUE=24
+WEIGHT=1.3
+RESOURCES=1 i_bowl_wood,3 i_fruit_peas
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Bowl of Peas
 
 [ITEMDEF 015fd]
 DEFNAME=i_bowl_pewter
+VALUE=15
+WEIGHT=1.0
 RESOURCES=1 i_ingot_iron
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+SKILLMAKE=Tinkering 33.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
 DESCRIPTION=Pewter Bowl
+
+[ITEMDEF 015fe]
+DEFNAME=i_bowl_pewter_carrots
+NAME=pewter bowl of carrot soup
+TDATA1=i_bowl_pewter
+TYPE=t_food
+WEIGHT=1.3
+RESOURCES=1 i_bowl_pewter,3 i_fruit_carrot
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Pewter Bowl of Carrots
+
+[ITEMDEF 015ff]
+DEFNAME=i_bowl_pewter_corn
+NAME=pewter bowl of corn soup
+TYPE=t_food
+TDATA1=i_bowl_pewter
+VALUE=25
+WEIGHT=1.3
+RESOURCES=1 i_bowl_pewter,3 i_fruit_corn
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Pewter Bowl of Corn
+
+[ITEMDEF 01600]
+DEFNAME=i_bowl_pewter_lettuce
+NAME=pewter bowl of cabbage soup
+TYPE=t_food
+TDATA1=i_bowl_pewter
+VALUE=25
+WEIGHT=1.3
+RESOURCES=1 i_bowl_pewter,3 i_fruit_cabbage
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Pewter Bowl of Cabbage
+
+[ITEMDEF 01601]
+DEFNAME=i_bowl_pewter_peas
+NAME=pewter bowl of pea soup
+TYPE=t_food
+TDATA1=i_bowl_pewter
+VALUE=25
+WEIGHT=1.3
+RESOURCES=1 i_bowl_pewter,3 i_fruit_peas
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Pewter Bowl of Peas
 
 [ITEMDEF 01602]
 DEFNAME=i_bowl_pewter_potatoes
-VALUE=8
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+NAME=pewter bowl of potato soup
+TYPE=t_food
+TDATA1=i_bowl_pewter
+VALUE=25
+WEIGHT=1.3
+RESOURCES=1 i_bowl_pewter,3 i_fruit_potato
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Bowl of Potatoes
 
 [ITEMDEF 01603]
 DEFNAME=i_bowl_pewter_lg
+VALUE=20
+WEIGHT=2.0
 RESOURCES=2 i_ingot_iron
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Pewter Bowl (Lg.)
+SKILLMAKE=Tinkering 43.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Pewter Bowl (large)
 
 [ITEMDEF 01604]
+//looks empty
 DEFNAME=i_bowl_stew_lg
-//DEFNAME=i_bowl_wood_lg_STEW
-RESOURCES=1 i_bowl_wood_lg, 1 i_WATER, 1 i_FLOUR_SACK, 1 i_ribs_raw
-//guessvalue
-VALUE=6
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Bowl of Stew
+NAME=large bowl of stew
+TYPE=t_food
+TDATA1=i_bowl_wood_lg
+VALUE=46
+WEIGHT=5.0
+RESOURCES=1 i_bowl_wood_lg,1 i_pitcher_water,1 i_flour_bowl,1 i_ribs_raw
+SKILLMAKE=Cooking 40.0
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Bowl of Stew (looks empty)
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 01605]
 DEFNAME=i_bowl_wood_lg
-RESOURCES=2 i_BOARD
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Wooden Bowl (Lg.)
+VALUE=20
+WEIGHT=2.0
+RESOURCES=2 i_board
+SKILLMAKE=Tinkering 43.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Wooden Bowl (large)
 
 [ITEMDEF 01606]
-// DEFNAME2=BOWL_TOMATO_SOUP
 DEFNAME=i_bowl_tomato_soup
-VALUE=8
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+NAME=large bowl of tomato soup
+TYPE=t_food
+TDATA1=i_bowl_wood_lg
+VALUE=46
+WEIGHT=3.6
+RESOURCES=1 i_bowl_wood_lg,6 i_fruit_tomato,1 i_pitcher_water
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
 DESCRIPTION=Tomato Soup
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 01607]
+DEFNAME=i_chicken_leg_raw
+TYPE=t_meat_raw
+TDATA1=i_chicken_leg
+VALUE=2
+WEIGHT=0.1
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Chicken Leg
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01608]
-//DEFNAME2=cooked_chick_leg
 DEFNAME=i_chicken_leg
-RESOURCES=I_CHICKEN_LEG_RAW
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
+TYPE=t_food
+VALUE=6
+WEIGHT=0.1
+RESOURCES=1 i_chicken_leg_raw
+SKILLMAKE=Cooking 15.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
 DESCRIPTION=Chicken Leg (Cooked)
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 01609]
-// DEFNAME2=MUTTON_LEG
 DEFNAME=i_lamb_leg_raw
-//RESOURCES=BASE ITEMS THAT ARE RESOURCES DO NOT ALWAYS HAVE RESOURCES
-TYPE=T_FOOD_RAW
+TYPE=t_meat_raw
 TDATA1=i_lamb_leg
-WEIGHT=2
+WEIGHT=0.2
 VALUE=2
 CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Lamb of Leg (Raw)
+SUBSECTION=Butcher
+DESCRIPTION=Leg of Lamb
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 0160a]
-// DEFNAME2=COOKED_MUTTON
 DEFNAME=i_lamb_leg
-TYPE=T_FOOD
-RESOURCES=i_lamb_leg_raw
-SKILLMAKE=cooking 10.0
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Lamb of Leg (Cooked)
+TYPE=t_food
+VALUE=6
+WEIGHT=0.2
+RESOURCES=1 i_lamb_leg_raw
+SKILLMAKE=Cooking 10.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Leg of Lamb (Cooked)
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 0160b]
 DEFNAME=i_pan_cookies
-RESOURCES=1 i_FLOUR_SACK
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+TDATA1=i_tray
+VALUE=30
+WEIGHT=0.2
+RESOURCES=1 i_cookie_mix,1 i_tray
+SKILLMAKE=Cooking 30.0
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Pan of Cookies
-SKILLMAKE=COOKING 10.0
+ON=@Create
+   MOREM=3
 
 [ITEMDEF 0160c]
-// DEFNAME2=Cookie_plate
 DEFNAME=i_plate_cookies
-RESOURCES=1 i_COOKIE_MIX, 1 i_PLATE, 1 i_WATER
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+TDATA1=i_plate_dirty
+VALUE=30
+WEIGHT=0.2
+RESOURCES=1 i_cookie_mix,1 i_plate
+SKILLMAKE=Cooking 30.0
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Plate of Cookies
+ON=@Create
+   MOREM=3
 
-[ITEMDEF 0171d]
-DEFNAME=i_banana_unpeeled
-RESOURCES=1 I_FRUIT_BANANA
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Banana (1/2 Peeled)
-DUPELIST=0171e
 
-[ITEMDEF 0171e]
-//banana half unpeeled
-DUPEITEM=0171d
+[ITEMDEF 0194f]
+DEFNAME=i_basket_herbs
+NAME=basket of herbs
+WEIGHT=1.0
+RESOURCES=1 i_basket,5 i_dried_herbs
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Basket of Herbs
 
-[ITEMDEF 01721]
-DEFNAME=i_banana_bunch
-RESOURCES=4 I_BANANA_UNPEELED
-WEIGHT=4
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Bananas (Many)
-DUPELIST=01722
 
-[ITEMDEF 01722]
-//bananas
-DUPEITEM=01721
+[ITEMDEF 01956]
+DEFNAME=i_bottle_shochu
+NAME=bottle of shochu
+TYPE=t_booze
+WEIGHT=1.0
+RESOURCES=1 i_bottle_shochu_empty,1 i_fruit_grapes,1 i_reag_fertile_dirt
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Shochu
 
-[ITEMDEF 01723]
-DEFNAME=i_coconut_unpeeled
-RESOURCES=1 i_fruit_coconut
-WEIGHT=2
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Coconut
+[ITEMDEF 01957]
+DEFNAME=i_bottle_shochu_empty
+NAME=empty wine bottle
+WEIGHT=0.1
+RESOURCES=1 i_clay
+SKILLMAKE=Tinkering 42.0,t_tinker_tools
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Bottle of Shochu (empty)
 
-[ITEMDEF 01724]
-//coconut NW partially open
-TYPE=T_FOOD
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Coconut
-
-[ITEMDEF 01725]
-DEFNAME=i_coconut_halved
-RESOURCES=1 i_fruit_coconut
-WEIGHT=2
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Coconut (Halved)
-
-[ITEMDEF 01727]
-DEFNAME=i_fruit_dates
-WEIGHT=.1
-TYPE=T_FRUIT
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Dates
-
-[ITEMDEF 01729]
-DEFNAME=i_lemon_halved
-RESOURCES=1 I_LEMON
-WEIGHT=.1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Lemons (1/2 Peeled)
-
-[ITEMDEF 0172b]
-DEFNAME=i_lime_halved
-RESOURCES=1 i_fruit_lime
-WEIGHT=.1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Limes (1/2 Peeled)
-
-[ITEMDEF 0172c]
-//peach
-DUPEITEM=09d2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Peach
-
-[ITEMDEF 0187e]
-DEFNAME=i_FLOUR_SPILLED
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Spilled Flour
-
-[ITEMDEF 0187f]
-DEFNAME=i_FLOUR_SPILLED_2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Spilled Flour
-
-[ITEMDEF 01880]
-DEFNAME=i_FLOUR_SPILLED_3
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Spilled Flour
-
-[ITEMDEF 01881]
-DEFNAME=i_FLOUR_SPILLED_4
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Spilled Flour
-
-[ITEMDEF 01882]
-DEFNAME=i_BASKET_WINNOWING
-RESOURCES=10 i_STRAW
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Winnowing Basket
-
-[ITEMDEF 01883]
-DEFNAME=i_millstone
-RESOURCES=10 i_rock_plain
-WEIGHT=10
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Millstone
-DUPELIST=01884,01885,01886,01887,01888,01889,0188a
-
-[ITEMDEF 01884]
-//millstone
-DUPEITEM=01883
-
-[ITEMDEF 01885]
-//millstone
-DUPEITEM=01883
-
-[ITEMDEF 01886]
-//millstone
-DUPEITEM=01883
-
-[ITEMDEF 01887]
-//millstones
-DUPEITEM=01883
-
-[ITEMDEF 01888]
-//millstones
-DUPEITEM=01883
-
-[ITEMDEF 01889]
-//millstones
-DUPEITEM=01883
-
-[ITEMDEF 0188a]
-//millstones
-DUPEITEM=01883
-
-[ITEMDEF 01920]
-DEFNAME=i_flour_mill
-RESOURCES=1 i_MILLSTONE, 4 i_LOG, 2 i_NAILS, 20 i_BOARD, 20 i_GRAIN_LOOSE, 1 i_FLOUR_MILL_CRANK
-WEIGHT=40
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill
-DUPELIST=01921,01922,01923,01925,01926,01927,0192c,0192d,0192e,0192f,01931,01932,01933
-
-[ITEMDEF 01921]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01922]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01923]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01924]
-DEFNAME=i_flour_mill_crank
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-
-[ITEMDEF 01925]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01926]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01927]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01928]
-DEFNAME=i_flour_mill_crank_2
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-
-[ITEMDEF 01929]
-DEFNAME=i_flour_mill_crank_3
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-
-[ITEMDEF 0192a]
-DEFNAME=i_flour_mill_crank_4
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-
-[ITEMDEF 0192b]
-DEFNAME=i_flour_mill_crank_5
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-
-[ITEMDEF 0192c]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 0192d]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 0192e]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 0192f]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01930]
-DEFNAME=i_flour_mill_crank_6
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Baker
-DESCRIPTION=Flour Mill (Crank)
-DUPELIST=01934,01935,01936,01937
-
-[ITEMDEF 01931]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01932]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01933]
-//flour mill
-DUPEITEM=01920
-
-[ITEMDEF 01934]
-//crank
-DUPEITEM=01930
-
-[ITEMDEF 01935]
-//crank
-DUPEITEM=01930
-
-[ITEMDEF 01936]
-//crank
-DUPEITEM=01930
-
-[ITEMDEF 01937]
-//crank
-DUPEITEM=01930
-
-[ITEMDEF 01940]
-DEFNAME=i_KEG_WOOD
-TYPE=t_container
-TDATA2=03e
-RESOURCES=1 i_BARREL_TAP, 1 i_BARREL
-WEIGHT=12
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Keg
-
-[ITEMDEF 01941]
-DEFNAME=i_MUGS_GLASS_BARTOP
-WEIGHT=13
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Mugs (Glass)
-
-[ITEMDEF 01942]
-DEFNAME=i_GOBLETS_PEWTER_BARTOP
-WEIGHT=13
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Goblets
-
-[ITEMDEF 01943]
-DEFNAME=i_TANKARDS_PEWTER_BARTOP
-RESOURCES=9 i_MUG_PEWTER, 1 i_BAR_PIECE
-WEIGHT=13
-//tankards on bartop
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Tankards
 
 [ITEMDEF 01ad3]
 DEFNAME=i_donuts
-RESOURCES=1 i_bowl_dough
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Baker
+TYPE=t_food
+VALUE=21
+WEIGHT=0.3
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 25.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
 DESCRIPTION=Donuts
+ON=@Create
+   MOREM=3
 
-[ITEMDEF 01ad6]
-//keg
-DEFNAME=i_KEG_WOOD_2
+
+[ITEMDEF 01e15]
+DEFNAME=i_fish_raw_whole
+TYPE=t_food_raw
+TDATA1=i_fish_cooked_headless
 FLIP=1
-RESOURCES=1 i_BARREL_TAP, 1 i_BARREL
-WEIGHT=12
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Keg 2
-DUPELIST=01ad7
+VALUE=1
+WEIGHT=4.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (Raw & Cut)
+DUPELIST=01e16
 
+[ITEMDEF 01e16]
+//fish (raw & cut)
+DUPEITEM=01e15
 
-[ITEMDEF 01ad7]
-DUPEITEM=01ad6
+[ITEMDEF 01e17]
+DEFNAME=i_fish_raw_headless
+TYPE=t_food_raw
+TDATA1=i_fish_cooked_headless
+FLIP=1
+VALUE=1
+WEIGHT=2.8
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (Raw, Cut, & No Head)
+DUPELIST=01e18
 
-[ITEMDEF 015fe]
-DEFNAME=i_bowl_pewter_carrots
-RESOURCES=1 i_bowl_PEWTER, 3 i_fruit_carrot
-WEIGHT=1
+[ITEMDEF 01e18]
+//fish (raw, cut, & no head)
+DUPEITEM=01e17
 
-[ITEMDEF 015ff]
-DEFNAME=i_bowl_pewter_corn
-RESOURCES=1 i_bowl_pewter, 1 i_fruit_corn
-WEIGHT=1
+[ITEMDEF 01e19]
+DEFNAME=i_fish_raw_head
+TYPE=t_food_raw
+//TDATA1=i_fish_cooked
+FLIP=1
+VALUE=1
+WEIGHT=0.2
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish Head (raw)
+DUPELIST=01e1a
 
-[ITEMDEF 01600]
-DEFNAME=i_bowl_pewter_lettuce
-RESOURCES=1 i_bowl_pewter, 1 i_fruit_lettuce
-WEIGHT=1
+[ITEMDEF 01e1a]
+//fish head (raw)
+DUPEITEM=01e19
 
-[ITEMDEF 01601]
-DEFNAME=i_bowl_pewter_peas
-RESOURCES=1 i_bowl_pewter
-WEIGHT=1
+[ITEMDEF 01e1b]
+DEFNAME=i_fish_raw_head_pile
+TYPE=t_food_raw
+//TDATA1=i_fish_cooked
+WEIGHT=0.6
+RESOURCES=3 i_fish_raw_head
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish Heads (raw)
 
 [ITEMDEF 01e1c]
-DEFNAME=i_fish_cooked
-RESOURCES=1 I_fish_RAW
-//Fish (cooked) facing NW
-WEIGHT=1
-TYPE=T_FOOD
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fish (Cooked)
-DUPELIST=01e1d,01e1e,01e1f
+DEFNAME=i_fish_cooked_headless
+TYPE=t_food
+FLIP=1
+WEIGHT=2.8
+RESOURCES=1 i_fish_raw_headless
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (headless cooked)
+DUPELIST=01e1d
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 01e1d]
-//cooked fish facing NE
+//fish (headless cooked)
 DUPEITEM=01e1c
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Fish (Cooked)
 
 [ITEMDEF 01e1e]
 DEFNAME=i_fish_cooked_small
-//small cooked fish
-DUPEITEM=01e1c
+TYPE=t_food
+VALUE=1
+WEIGHT=0.2
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (small cooked)
+ON=@Create
+   MOREM=1
 
 [ITEMDEF 01e1f]
 DEFNAME=i_ham_slices
-//sliced ham
-DUPEITEM=01e1c
+TYPE=t_food
+VALUE=6
+WEIGHT=0.6
+RESOURCES=1 i_ham
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Ham (sliced)
+ON=@Create
+   MOREM=3
+
+
+[ITEMDEF 01e83]
+DEFNAME=i_bird_dead
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=0.5
 CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Ham (Sliced)
+SUBSECTION=Butcher
+DESCRIPTION=Bird
+DUPELIST=01e84
+ON=@Create
+   MOREM=1
 
-[ITEMDEF 01e2e]
-//dartboard facing SW
-DEFNAME=i_dartboard
-WEIGHT=1
+[ITEMDEF 01e84]
+//dead bird
+DUPEITEM=01e83
+
+[ITEMDEF 01e85]
+DEFNAME=i_bird_dead_2
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=0.5
 CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Dartboard
-RESOURCES=5 i_log
-SKILLMAKE=CARPENTRY 15.7, t_carpentry
-DUPELIST=01e2f
+SUBSECTION=Butcher
+DESCRIPTION=Bird
+DUPELIST=01e86
+ON=@Create
+   MOREM=1
 
-[ITEMDEF 01e2f]
-//dartboard facing SE
-DUPEITEM=01e2e
+[ITEMDEF 01e86]
+//dead bird 2
+DUPEITEM=01e85
 
-[ITEMDEF 01e30]
-DEFNAME=i_dartboard_axe
-RESOURCES=1 i_DARTBOARD, i_axe
-WEIGHT=2
-//TYPE=T_GAME_BOARD
+[ITEMDEF 01e87]
+DEFNAME=i_chicken_dead
+TYPE=t_meat_raw
+VALUE=3
+WEIGHT=0.5
 CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Dartboard (Axe)
-DUPELIST=01e31
+SUBSECTION=Butcher
+DESCRIPTION=Chicken
+ON=@Create
+   MOREM=1
 
-[ITEMDEF 01e31]
-//dartboard w/axe facing SW
-DUPEITEM=01e30
-
-[ITEMDEF 01e32]
-DEFNAME=i_dartboard_knives
-RESOURCES=1 i_DARTBOARD, 3 i_DAGGER
-WEIGHT=5
-//dartboard w/knives facing SE
-//TYPE=T_GAME_BOARD
+[ITEMDEF 01e88]
+DEFNAME=i_goat_skinned
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=50.0
 CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Dartboard (Knives)
-DUPELIST=01e33
+SUBSECTION=Butcher
+DESCRIPTION=Skinned Goat
+DUPELIST=01e89
 
-[ITEMDEF 01e33]
-//dartboard w/knives facing SW
-DUPEITEM=01e32
+[ITEMDEF 01e89]
+//skinned goat
+DUPEITEM=01e88
+
+[ITEMDEF 01e8a]
+DEFNAME=i_lard
+TYPE=t_food
+VALUE=1
+WEIGHT=0.2
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Lard
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 01e8b]
+DEFNAME=i_chicken_plucked
+TYPE=t_meat_raw
+VALUE=3
+WEIGHT=0.5
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Plucked Chicken
+
+[ITEMDEF 01e8c]
+DEFNAME=i_pigs_feet
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=0.1
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Pigs Feet
+DUPELIST=01e8d
+
+[ITEMDEF 01e8d]
+//pigs feet
+DUPEITEM=01e8c
+
+[ITEMDEF 01e8e]
+DEFNAME=i_pigs_head
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=1.0
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Pigs Head
+DUPELIST=01e8f
+
+[ITEMDEF 01e8f]
+//pigs head
+DUPEITEM=01e8e
+
+[ITEMDEF 01e90]
+DEFNAME=i_deer_skinned
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=130.0
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Skinned Deer
+DUPELIST=01e91
+
+[ITEMDEF 01e91]
+//skinned deer
+DUPEITEM=01e90
+
+[ITEMDEF 01e92]
+DEFNAME=i_rabbit_skinned
+TYPE=t_meat_raw
+FLIP=1
+VALUE=3
+WEIGHT=0.7
+CATEGORY=Items by Professions
+SUBSECTION=Butcher
+DESCRIPTION=Skinned Rabbit
+DUPELIST=01e93
+
+[ITEMDEF 01e93]
+//skinned rabit
+DUPEITEM=01e92
 
 [ITEMDEF 01e94]
-DEFNAME=i_CHICKEN_SPITTED
-RESOURCES=1 i_CHICKEN_PLUCKED, i_SPIT
+DEFNAME=i_chicken_spitted
+TYPE=t_meat_raw
+FLIP=1
+WEIGHT=2.5
+RESOURCES=1 i_chicken_plucked,2 i_spit
 CATEGORY=Items by Professions
 SUBSECTION=Cook
 DESCRIPTION=Chicken on a Spit
+DUPELIST=01e97
 
 [ITEMDEF 01e95]
-DEFNAME=i_RABBIT_SPITTED
-RESOURCES=1 i_RABBIT_SKINNED, i_SPIT
+DEFNAME=i_rabbit_spitted
+TYPE=t_meat_raw
+FLIP=1
+WEIGHT=2.7
+RESOURCES=1 i_rabbit_skinned,2 i_spit
 CATEGORY=Items by Professions
 SUBSECTION=Cook
 DESCRIPTION=Rabbit on a Spit
+DUPELIST=01e98
 
 [ITEMDEF 01e96]
 DEFNAME=i_spit
-RESOURCES=2 i_ingot_iron
-WEIGHT=3
+FLIP=1
+WEIGHT=0.3
+RESOURCES=2 i_log
 CATEGORY=Items by Professions
 SUBSECTION=Cook
 DESCRIPTION=Spit
+DUPELIST=01e99
 
 [ITEMDEF 01e97]
-DEFNAME=i_CHICKEN_SPITTED_2
-RESOURCES=1 i_CHICKEN_PLUCKED, I_SPIT
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Chicken on a Spit
+DEFNAME=i_chicken_spitted_2
+DUPEITEM=01e94
 
 [ITEMDEF 01e98]
-DEFNAME=i_RABBIT_SPITTED_2
-RESOURCES=1 i_RABBIT_SKINNED, I_SPIT
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Rabbit on a Spit
+DEFNAME=i_rabbit_spitted_2
+DUPEITEM=01e95
 
 [ITEMDEF 01e99]
 DEFNAME=i_spit_2
-RESOURCES=2 i_ingot_iron
-WEIGHT=3
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Spit
+DUPEITEM=01e96
+
 
 [ITEMDEF 01eb0]
-DEFNAME=i_ribs_BURNED
+DEFNAME=i_ribs_burned
+TYPE=t_normal
+VALUE=0
+WEIGHT=0.1
 RESOURCES=1 i_ribs_raw
-WEIGHT=1
 CATEGORY=Items by Professions
 SUBSECTION=Cook
 DESCRIPTION=Burned Food
 
+
 [ITEMDEF 01f7d]
 DEFNAME=i_glass_of_cider
-WEIGHT=1
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_glass
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+FLIP=1
+VALUE=12
+WEIGHT=0.2
+RESOURCES=1 i_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Glass of Cider
 DUPELIST=01f7e,01f7f,01f80
 
@@ -1846,32 +2054,39 @@ DUPEITEM=01f7d
 
 [ITEMDEF 01f81]
 DEFNAME=i_glass
-RESOURCES=4 I_SAND
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
-DESCRIPTION=Glass
+NAME=empty glass mug
+FLIP=1
+VALUE=6
+WEIGHT=0.1
+RESOURCES=1 i_glass_raw
+SKILLMAKE=Alchemy 2.7,t_glassblowing_tool
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Glass Mug (empty)
 DUPELIST=01f82,01f83,01f84
 
 [ITEMDEF 01f82]
-//glass
+//glass mug (empty)
 DUPEITEM=01f81
 
 [ITEMDEF 01f83]
-//glass
+//glass mug (empty)
 DUPEITEM=01f81
 
 [ITEMDEF 01f84]
-//glass
+//glass mug (empty)
 DUPEITEM=01f81
 
 [ITEMDEF 01f85]
 DEFNAME=i_glass_of_liquor
-WEIGHT=1
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_glass
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+FLIP=1
+VALUE=12
+WEIGHT=0.2
+RESOURCES=1 i_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Glass of Liquor
 DUPELIST=01f86,01f87,01f88
 
@@ -1889,12 +2104,14 @@ DUPEITEM=01f85
 
 [ITEMDEF 01f89]
 DEFNAME=i_glass_of_milk
-RESOURCES=I_GLASS
-WEIGHT=1
-TYPE=T_DRINK
-TDATA1=I_GLASS
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_drink
+TDATA1=i_glass
+FLIP=1
+VALUE=12
+WEIGHT=0.2
+RESOURCES=1 i_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Drinks
 DESCRIPTION=Glass of Milk
 DUPELIST=01f8a,01f8b,01f8c
 
@@ -1912,11 +2129,14 @@ DUPEITEM=01f89
 
 [ITEMDEF 01f8d]
 DEFNAME=i_glass_of_wine
-WEIGHT=1
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_glass
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+FLIP=1
+VALUE=12
+WEIGHT=0.2
+RESOURCES=1 i_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Glass of Wine
 DUPELIST=01f8e,01f8f,01f90
 
@@ -1934,12 +2154,13 @@ DUPEITEM=01f8d
 
 [ITEMDEF 01f91]
 DEFNAME=i_glass_of_water
-RESOURCES=1 I_WATER, I_GLASS
-WEIGHT=1
-TYPE=T_DRINK
-TDATA1=I_GLASS
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+TYPE=t_drink
+TDATA1=i_glass
+FLIP=1
+WEIGHT=2.0
+RESOURCES=1 i_glass
+CATEGORY=Provisions - Food
+SUBSECTION=Drinks
 DESCRIPTION=Glass of Water
 DUPELIST=01f92,01f93,01f94
 
@@ -1956,53 +2177,54 @@ DUPEITEM=01f91
 DUPEITEM=01f91
 
 [ITEMDEF 01f95]
-//DEFNAME=ALE_PITCHER
 DEFNAME=i_pitcher_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_pitcher_glass
 FLIP=1
-RESOURCES=i_hay_sheaf, I_PITCHER_GLASS
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+WEIGHT=0.5
+RESOURCES=1 i_pitcher_glass,4 i_bottle_ale
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Pitcher of Ale
 DUPELIST=01f96
-//DEFNAME2=ALE_PITCHER_2
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 01f96]
 //pitcher of ale
 DUPEITEM=01f95
 
 [ITEMDEF 01f97]
-//DEFNAME2=CIDER_PITCHER_2
 DEFNAME=i_pitcher_cider
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_pitcher_glass
 FLIP=1
-RESOURCES=i_fruit_apple, I_PITCHER_GLASS
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+WEIGHT=0.5
+RESOURCES=1 i_pitcher_glass,2 i_jug_cider
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Pitcher of Cider
 DUPELIST=01f98
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 01f98]
 //pitcher of cider
 DUPEITEM=01f97
 
 [ITEMDEF 01f99]
-//Pitcher of Liquor
 DEFNAME=i_pitcher_liquor
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_pitcher_glass
-RESOURCES=i_fruit_corn, I_PITCHER_GLASS
-WEIGHT=5
 FLIP=1
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+WEIGHT=0.5
+RESOURCES=1 i_pitcher_glass,2 i_bottle_liquor
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Pitcher of Liquor
 DUPELIST=01f9a
-//DEFNAME2=LIQUOR_PITCHER_2
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 01f9a]
 //pitcher of liquor
@@ -2010,16 +2232,17 @@ DUPEITEM=01f99
 
 [ITEMDEF 01f9b]
 DEFNAME=i_pitcher_wine
-TYPE=T_BOOZE
+TYPE=t_booze
 TDATA1=i_pitcher_glass
-RESOURCES=i_fruit_grapes, I_PITCHER_GLASS
 FLIP=1
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+WEIGHT=0.5
+RESOURCES=1 i_pitcher_glass,2 i_bottle_wine
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
 DESCRIPTION=Pitcher of Wine
 DUPELIST=01f9c
-//DEFNAME2=WINE_PITCHER_2
+ON=@Create
+   MOREM=4
 
 [ITEMDEF 01f9c]
 //pitcher of wine
@@ -2033,6 +2256,1317 @@ DUPEITEM=0ff8
 //pitcher of water
 DUPEITEM=0ff8
 
-[ITEMDEF 01e16]
-//raw fish, cut open facing NE
-DUPEITEM=01e15
+
+[ITEMDEF 02068]
+DEFNAME=i_cauldron_2
+NAME=cauldron
+FLIP=1
+VALUE=169
+WEIGHT=39.0
+RESOURCES=8 i_ingot_iron,1 i_kettle
+SKILLMAKE=Tinkering 65.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Cauldron 2 (duplicate)
+DUPELIST=0207a
+
+
+[ITEMDEF 0207a]
+//Cauldron2 (empty)
+DUPEITEM=02068
+
+
+[ITEMDEF 024de]
+DEFNAME=i_bowl_placemat
+TYPE=t_normal
+FLIP=1
+WEIGHT=2.0
+RESOURCES=1 i_log_bamboo,1 i_clay
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Bowl on Placemat
+DUPELIST=024df,024e0
+
+[ITEMDEF 024df]
+//Bowl on Placemat
+DUPEITEM=024de
+
+[ITEMDEF 024e0]
+//Bowl on Placemat
+DUPEITEM=024de
+
+[ITEMDEF 024e1]
+DEFNAME=i_cups_japanese
+TYPE=t_normal
+WEIGHT=4.0
+RESOURCES=4 i_clay
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Cups (4)
+
+[ITEMDEF 024e2]
+DEFNAME=i_bottle_sake
+TYPE=t_booze
+WEIGHT=1.0
+RESOURCES=1 i_bottle_shochu_empty
+SKILLMAKE=Cooking 81.0
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Sake
+
+
+[ITEMDEF 024e6]
+DEFNAME=i_teapot
+TYPE=t_normal
+FLIP=1
+WEIGHT=1.0
+RESOURCES=1 i_ingot_iron
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Table Settings
+DESCRIPTION=Teapot
+DUPELIST=024e7
+
+[ITEMDEF 024e7]
+//teapot
+DUPEITEM=024e6
+
+[ITEMDEF 024e8]
+DEFNAME=i_wassabi_tray
+TYPE=t_food
+TDATA1=i_board
+FLIP=1
+WEIGHT=2.0
+RESOURCES=10 i_wassabi_raw,1 i_board
+CATEGORY=Provisions - Food
+SUBSECTION=Table Settings
+DESCRIPTION=Wassabi on Tray
+DUPELIST=024e9
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 024e9]
+//wassabi on tray
+DUPEITEM=024e8
+
+
+[ITEMDEF 024eb]
+DEFNAME=i_wassabi_raw
+TYPE=t_food
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Wassabi
+DESCRIPTION=Wassabi (raw)
+ON=@Create
+   MOREM=1
+
+
+[ITEMDEF 02834]
+DEFNAME=i_bento_box_empty
+TYPE=t_normal
+FLIP=1
+WEIGHT=0.5
+RESOURCES=5 i_paper
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Bento Box (empty)
+DUPELIST=02835
+
+[ITEMDEF 02835]
+//bento box (empty)
+DUPEITEM=02834
+
+[ITEMDEF 02836]
+DEFNAME=i_bento_box
+TYPE=t_food
+TDATA1=i_bento_box_empty
+FLIP=1
+WEIGHT=5.0
+RESOURCES=1 i_board,1 i_paper,1 i_tray_sushi,1 i_wassabi_raw
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Bento Box (full)
+DUPELIST=02837
+ON=@Create
+   MOREM=5
+
+[ITEMDEF 02837]
+//bento box (full)
+DUPEITEM=02836
+
+
+[ITEMDEF 0283e]
+DEFNAME=i_tray_sushi
+TYPE=t_food
+FLIP=1
+WEIGHT=5.0
+RESOURCES=2 i_paper,2 i_fish_small,1 i_wassabi_raw//rice
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Tray of Sushi 1
+DUPELIST=0283f
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 0283f]
+//tray of sushi
+DUPEITEM=0283e
+
+[ITEMDEF 02840]
+DEFNAME=i_tray_sushi2
+TYPE=t_food
+FLIP=1
+WEIGHT=5.0
+RESOURCES=1 i_paper,6 i_fish_small,1 i_wassabi_raw//rice
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Tray of Sushi 2
+DUPELIST=02841
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 02841]
+//tray of sushi
+DUPEITEM=02840
+
+
+[ITEMDEF 0284b]
+DEFNAME=i_basket_greentea
+TYPE=t_normal
+WEIGHT=23.0
+RESOURCES=1 i_basket,20 i_tea_green
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Tea
+DESCRIPTION=Basket of Green Tea
+
+[ITEMDEF 0284c]
+DEFNAME=i_tea_green
+TYPE=t_drink
+VALUE=5
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Drinks
+DESCRIPTION=Green Tea
+
+[ITEMDEF 0284d]
+DEFNAME=i_soup_miso
+//NAME=miso soup
+TYPE=t_food
+TDATA1=i_bowl_wood
+FLIP=1
+WEIGHT=1.0
+RESOURCES=1 i_bowl_wood,3 i_fish_small
+SKILLMAKE=Cooking 49.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Miso Soup
+DUPELIST=0284e
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 0284e]
+//miso soup
+DUPEITEM=0284d
+
+[ITEMDEF 0284f]
+DEFNAME=i_soup_miso_2
+TYPE=t_food
+TDATA1=i_bowl_wood
+FLIP=1
+WEIGHT=2.0
+RESOURCES=2 i_bowl_wood,6 i_fish_small
+SKILLMAKE=Cooking 49.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Miso Soups
+DUPELIST=02850
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 02850]
+//miso soups
+DUPEITEM=0284f
+
+
+[ITEMDEF 02bdd]
+DEFNAME=i_candycane_red
+NAME=red candycane
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Candy Cane (red)
+DUPELIST=02bde
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02bde]
+//Candy Cane (red)
+DUPEITEM=02bdd
+
+[ITEMDEF 02bdf]
+DEFNAME=i_candycane_green
+NAME=green candycane
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Candy Cane (green)
+DUPELIST=02be0
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02be0]
+//Candy Cane (green)
+DUPEITEM=02bdf
+
+[ITEMDEF 02be1]
+DEFNAME=i_gingerbreadman
+NAME=gingerbread cookie
+TYPE=t_food
+WEIGHT=1.2
+VALUE=4
+RESOURCES=1 i_sugar,1 i_flour_bowl,1 i_ginger
+SKILLMAKE=Cooking 59.2
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Gingerbread Cookie
+DUPELIST=02be2
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02be2]
+//Gingerbread Cookie
+DUPEITEM=02be1
+
+[ITEMDEF 02be3]
+DEFNAME=i_ginger
+NAME=ginger
+TYPE=t_food
+PILE=1
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Herbs
+DESCRIPTION=Ginger
+DUPELIST=02be4
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02be4]
+//Ginger
+DUPEITEM=02be3
+
+[ITEMDEF 02be5]
+DEFNAME=i_gingerbreadhouse
+NAME=gingerbread house
+TYPE=t_food
+FLIP=1
+VALUE=15
+WEIGHT=3.2
+RESOURCES=2 i_ginger,10 i_sugar,2 i_flour_bowl
+SKILLMAKE=Cooking 59.2
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Gingerbread House
+DUPELIST=02be6,02be7
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 02be6]
+//Gingerbread house
+DUPEITEM=02be5
+
+[ITEMDEF 02be7]
+//Gingerbread house
+DUPEITEM=02be5
+
+
+[ITEMDEF 02d4f]
+DEFNAME=i_bowl_fruit
+TYPE=t_food
+TDATA1=i_bowl_wood
+VALUE=26
+WEIGHT=3.0
+RESOURCES=1 i_bowl_wood,2 i_fruit_apple,1 i_fruit_banana,1 i_fruit_grapes,1 i_fruit_pear
+SKILLMAKE=Cooking 50.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Fruit Bowl
+ON=@Create
+   MOREM=5
+
+
+[ITEMDEF 02db9]
+DEFNAME=i_wormmeat_raw
+NAME=raw worm meat
+TYPE=t_meat_raw
+TDATA1=i_fish_cut_cooked
+VALUE=3
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Meat
+DESCRIPTION=Worm Meat (Raw)
+
+[ITEMDEF 02dba]
+DEFNAME=i_bowl_stew_rotworm
+NAME=bowl of rotworm stew
+TYPE=t_food
+VALUE=46
+WEIGHT=5.0
+RESOURCES=1 i_bowl_wood_lg,1 i_pitcher_water,1 i_flour_bowl,1 i_wormmeat_raw
+SKILLMAKE=Cooking 40.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Bowl of Rotworm Stew
+ON=@Create
+   MOREM=3
+
+
+[ITEMDEF 02ddb]
+DEFNAME=i_oven_elven
+NAME=elven oven
+TYPE=t_fire
+FLIP=1
+VALUE=800
+WEIGHT=80.0
+RESOURCES=80 i_clay
+SKILLMAKE=Carpentry 73.6,t_masonry_tool
+CATEGORY=Items by Professions
+SUBSECTION=Cook
+DESCRIPTION=Elven Oven
+DUPELIST=02ddc
+
+[ITEMDEF 02ddc]
+//elven oven
+DUPEITEM=02ddb
+
+
+[ITEMDEF 02fd6]
+DEFNAME=i_wafer
+NAME=cracker%s
+TYPE=t_food
+VALUE=1
+WEIGHT=0.1
+RESOURCES=1 i_dough,1 i_sugar
+SKILLMAKE=Cooking 10.0,1 i_tray
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Parrot Wafer
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02fd7]
+DEFNAME=i_grapes_of_wrath
+NAME=grapes of wrath
+TYPE=t_food
+VALUE=100
+WEIGHT=0.1
+CATEGORY=Quest
+SUBSECTION=Unknown
+DESCRIPTION=Grapes of Wrath
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 02fd8]
+DEFNAME=i_apple_enchanted
+NAME=enchanted apple
+TYPE=t_food
+VALUE=100
+WEIGHT=0.1
+CATEGORY=Quest
+SUBSECTION=Unknown
+DESCRIPTION=Enchanted Apple
+ON=@Create
+   MOREM=1
+
+
+[ITEMDEF 03afc]
+DEFNAME=i_crab_speckled
+NAME=speckled crab
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Speckled Crab
+
+[ITEMDEF 03afd]
+//FIXME: needs proper name
+DEFNAME=i_fish_unknown
+NAME=angel fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Angel Fish
+
+[ITEMDEF 03afe]
+DEFNAME=i_fish_minoc_blue
+//NAME=Minoc blue fish
+NAME=fusilee fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+//DESCRIPTION=Minoc Blue Fish
+DESCRIPTION=Fusilee Fish
+
+[ITEMDEF 03aff]
+DEFNAME=i_fish_unknown_2
+NAME=coralfish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Coralfish
+
+[ITEMDEF 03b00]
+DEFNAME=i_fish_unknown_3
+NAME=coral trout
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Coral Trout
+
+[ITEMDEF 03b01]
+//FIXME: needs proper name
+DEFNAME=i_fish_unknown_4
+//NAME=unknown fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Unknown Fish (4)
+
+[ITEMDEF 03b02]
+DEFNAME=i_fish_fandancer
+NAME=fandancer fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Fandancer Fish
+
+[ITEMDEF 03b03]
+DEFNAME=i_fish_golden_broadtail
+NAME=golden broadtail fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Golden Broadtail Fish
+
+[ITEMDEF 03b04]
+DEFNAME=i_fish_unknown_5
+NAME=angelfish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Angelfish
+
+[ITEMDEF 03b05]
+DEFNAME=i_fish_unknown_6
+NAME=lionfish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Lionfish
+
+[ITEMDEF 03b06]
+DEFNAME=i_fish_nujelm_honey
+NAME=Nujel'm honey fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Nujel'm Honey Fish
+
+[ITEMDEF 03b07]
+DEFNAME=i_fish_unknown_7
+NAME=sohal tang
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Sohal Tang
+
+[ITEMDEF 03b08]
+DEFNAME=i_fish_vesper_reef_tiger
+NAME=Vesper reef tiger
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Vesper Reef Tiger
+
+[ITEMDEF 03b09]
+DEFNAME=i_fish_spotted_bucaneer
+NAME=spotted bucaneer
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Spotted Bucaneer
+
+[ITEMDEF 03b0a]
+DEFNAME=i_fish_striped_sosarian_swill
+NAME=striped Sosarian swill
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Striped Sosarian Swill
+
+[ITEMDEF 03b0b]
+DEFNAME=i_fish_unknown_8
+NAME=butterfly fish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=butterfly fish
+
+[ITEMDEF 03b0c]
+DEFNAME=i_fish_bones
+NAME=fish bones
+TYPE=t_aquarium_item
+VALUE=1
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Fish Bones
+
+[ITEMDEF 03b0d]
+DEFNAME=i_frog
+NAME=frog
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Frog
+
+[ITEMDEF 03b0e]
+DEFNAME=i_jellyfish
+NAME=jellyfish
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Jellyfish
+
+[ITEMDEF 03b10]
+DEFNAME=i_seahorse
+NAME=seahorse
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Seahorse
+
+[ITEMDEF 03b11]
+DEFNAME=i_shrimp_brine
+NAME=brine shrimp
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Brine Shrimp
+
+
+[ITEMDEF 03b14]
+DEFNAME=i_shrimp
+NAME=shrimp
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Shrimp
+
+[ITEMDEF 03b15]
+DEFNAME=i_sea_sponge
+NAME=sea sponge
+TYPE=t_fish
+VALUE=10
+WEIGHT=1.0
+CATEGORY=Provisions - Food
+SUBSECTION=Aquarium
+DESCRIPTION=Sea Sponge
+
+
+[ITEMDEF 03bb8]
+DEFNAME=i_cauldron_eggnog
+NAME=cauldron of eggnog
+TYPE=t_normal//t_drink
+VALUE=168
+WEIGHT=39.0
+RESOURCES=1 i_cauldron,24 i_eggs_fresh,24 i_pitcher_milk,2 i_bottle_liquor
+SKILLMAKE=Cooking 65.0
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Cauldron of Eggnog
+DUPELIST=03bb9,03bba
+
+[ITEMDEF 03bb9]
+DUPEITEM=03bb8
+DESCRIPTION=Cauldron of Eggnog (half)
+
+[ITEMDEF 03bba]
+DUPEITEM=03bb8
+DESCRIPTION=Cauldron of Eggnog (full)
+
+
+[ITEMDEF 03daf]
+DEFNAME=i_cauldron_full
+NAME=Cauldron
+FLIP=1
+VALUE=168
+WEIGHT=39.0
+RESOURCES=8 i_ingot_iron,1 i_kettle
+SKILLMAKE=Tinkering 65.0,t_tinker_tools
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Cauldron (full with white background)
+DUPELIST=03db0
+
+[ITEMDEF 03db0]
+//Cauldron (full with white background)
+DUPEITEM=03daf
+
+
+[ITEMDEF 03db8]
+DEFNAME=i_still
+NAME=still
+TYPE=t_normal
+FLIP=1
+WEIGHT=15.0
+RESOURCES=15 i_ingot_copper
+CATEGORY=Decoration - Kitchen and Dining
+SUBSECTION=Cookware
+DESCRIPTION=Still
+DUPELIST=03db9,03dba,03dbb
+
+[ITEMDEF 03db9]
+//still
+DUPEITEM=03db8
+
+[ITEMDEF 03dba]
+//still
+DUPEITEM=03db8
+
+[ITEMDEF 03dbb]
+//still
+DUPEITEM=03db8
+
+
+[ITEMDEF 041bd]
+DEFNAME=i_egg_small
+NAME=small egg
+TYPE=t_food_raw
+TDATA1=i_eggs_fried
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Eggs
+DESCRIPTION=Egg (small)
+ON=@Create
+   MOREM=2
+
+[ITEMDEF 041be]
+DEFNAME=i_egg_medium
+NAME=medium egg
+TYPE=t_food_raw
+TDATA1=i_eggs_fried
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Eggs
+DESCRIPTION=Egg (medium)
+ON=@Create
+   MOREM=4
+
+[ITEMDEF 041bf]
+DEFNAME=i_egg_large
+NAME=large egg
+TYPE=t_food_raw
+TDATA1=i_eggs_fried
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Eggs
+DESCRIPTION=Egg (large)
+ON=@Create
+   MOREM=6
+
+
+[ITEMDEF 04302]
+DEFNAME=i_fish_salmon
+NAME=salmon
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (salmon)
+DUPELIST=04303
+
+[ITEMDEF 04303]
+//Fish (salmon)
+DUPEITEM=04302
+
+[ITEMDEF 04304]
+DEFNAME=i_fish_marlin
+NAME=marlin
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (marlin)
+DUPELIST=04305
+
+[ITEMDEF 04305]
+//Fish (marlin)
+DUPEITEM=04304
+
+[ITEMDEF 04306]
+DEFNAME=i_fish_grouper
+NAME=grouper
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (grouper)
+DUPELIST=04307
+
+[ITEMDEF 04307]
+//Fish (grouper)
+DUPEITEM=04306
+
+
+[ITEMDEF 044c3]
+DEFNAME=i_fish_barracuda
+NAME=barracuda
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (barracuda)
+DUPELIST=044c4
+
+[ITEMDEF 044c4]
+//Fish (barracuda)
+DUPEITEM=044c3
+
+[ITEMDEF 044c5]
+DEFNAME=i_fish_mahimahi
+NAME=mahimahi
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (mahimahi)
+DUPELIST=044c6
+
+[ITEMDEF 044c6]
+//Fish (mahimahi)
+DUPEITEM=044c5
+
+
+[ITEMDEF 044d1]
+DEFNAME=i_fish_crab
+NAME=crab
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (crab)
+DUPELIST=044d2
+
+[ITEMDEF 044d2]
+//Fish (crab)
+DUPEITEM=044d1
+
+[ITEMDEF 044d3]
+DEFNAME=i_fish_lobster
+NAME=lobster
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (lobster)
+DUPELIST=044d4
+
+[ITEMDEF 044d4]
+//Fish (lobster)
+DUPEITEM=044d3
+
+
+[ITEMDEF 044e5]
+DEFNAME=i_fish_dragon
+NAME=dragon fish
+TYPE=t_fish
+FLIP=1
+VALUE=2
+WEIGHT=5.0
+CATEGORY=Provisions - Food
+SUBSECTION=Fish
+DESCRIPTION=Fish (dragon)
+DUPELIST=044e6
+
+[ITEMDEF 044e6]
+//Fish (dragon)
+DUPEITEM=044e5
+
+
+[ITEMDEF 0468c]
+DEFNAME=i_jellybeans
+NAME=jellybeans
+TYPE=t_food
+WEIGHT=0.9
+VALUE=3
+RESOURCES=1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Jellybeans
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 0468d]
+DEFNAME=i_lollypop_red
+NAME=red lollypop%s
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar,1 i_paper
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Lollypop (red)
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 0468e]
+DEFNAME=i_lollypop_yellow
+NAME=yellow lollypop%s
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar,1 i_paper
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Lollypop (yellow)
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 0468f]
+DEFNAME=i_lollypop_green
+NAME=green lollypop%s
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar,1 i_paper
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Lollypop (green)
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 04690]
+DEFNAME=i_candy_nougat
+NAME=nougat swirl%s
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Nougat Swirl
+ON=@Create
+   MOREM=1
+
+
+[ITEMDEF 0469d]
+DEFNAME=i_candy_taffy
+NAME=taffy
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Taffy
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 0469e]
+DEFNAME=i_candy_wrapped
+NAME=wrapped candy%s//should be candies
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar,1 i_paper
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Wrapped Candy
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 0469f]
+DEFNAME=i_cake_2
+NAME=valentine cake
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=3 i_flour_bowl,1 i_eggs_fresh,1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Valentine Cake
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 046a0]
+DEFNAME=i_cornucopia
+NAME=cornucopia
+TYPE=t_food
+VALUE=26
+WEIGHT=3.0
+RESOURCES=1 i_bowl_wood,1 i_fruit_gourd1,1 i_fruit_gourd2,1 i_fruit_pumpkin,2 i_fruit_onion,1 i_fruit_squash,1 i_fruit_carrot,1 i_fruit_corn,1 i_fruit_turnip,1 i_fruit_garlic,1 i_fruit_potato,1 i_fruit_tomato
+SKILLMAKE=Cooking 125.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Cornucopia
+DUPELIST=046a1
+ON=@Create
+   MOREM=100
+
+[ITEMDEF 046a1]
+//Cornucopia
+DUPEITEM=046a0
+
+
+[ITEMDEF 0495e]
+DEFNAME=i_jug_hooch
+NAME=hooch jug
+TYPE=t_booze
+VALUE=23
+WEIGHT=0.1
+RESOURCES=1 i_bottle,1 i_fruit_apple,1 i_pitcher_water,1 i_reag_fertile_dirt
+CATEGORY=Provisions - Food
+SUBSECTION=Alcohol
+DESCRIPTION=Jug of Hooch
+DUPELIST=0495f
+
+[ITEMDEF 0495f]
+//Jug of Hooch
+DUPEITEM=0495e
+
+
+[ITEMDEF 04988]
+DEFNAME=i_turkey_roast
+TYPE=t_food
+//TDATA1=i_platter
+FLIP=1
+VALUE=143
+WEIGHT=11.0
+RESOURCES=10 i_bird_raw,1 i_dried_herbs
+SKILLMAKE=Cooking 90.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Roast Turkey
+DUPELIST=0498f
+ON=@Create
+   MOREM=8
+
+[ITEMDEF 0498f]
+//Roast Turkey
+DUPEITEM=04988
+
+
+[ITEMDEF 04ba3]
+DEFNAME=i_cake_tiered
+NAME=anniversary cake
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=3 i_flour_bowl,1 i_eggs_fresh,1 i_sugar
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Anniversary Cake
+ON=@Create
+   MOREM=6
+   COLOR=colors_all
+
+[ITEMDEF 04ba4]
+DEFNAME=i_cake_tiered_slice
+NAME=slice of anniversary cake
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Anniversary Cake Slice
+ON=@Create
+   MOREM=1
+
+
+[ITEMDEF 04bd9]
+DEFNAME=i_horn_of_plenty
+NAME=horn of plenty
+TYPE=t_food
+VALUE=26
+WEIGHT=3.0
+RESOURCES=1 i_bowl_wood,1 i_fruit_gourd1,1 i_fruit_gourd2,1 i_fruit_pumpkin,2 i_fruit_onion,1 i_fruit_squash,1 i_fruit_carrot,1 i_fruit_corn,1 i_fruit_turnip,1 i_fruit_garlic,1 i_fruit_potato,1 i_fruit_tomato
+SKILLMAKE=Cooking 125.0
+CATEGORY=Provisions - Food
+SUBSECTION=Assembled
+DESCRIPTION=Horn of Plenty
+DUPELIST=04bda
+ON=@Create
+   MOREM=10
+
+[ITEMDEF 04bda]
+//Horn of Plenty
+DUPEITEM=04bd9
+
+
+[ITEMDEF 04c02]
+DEFNAME=i_pie_cut
+NAME=baked pie
+TYPE=t_food
+VALUE=12
+WEIGHT=0.3
+RESOURCES=1 i_pie_baked
+//SKILLMAKE=Cooking 10.1
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pie (wedge missing)
+ON=@Create
+   MOREM=3
+
+[ITEMDEF 04c03]
+DEFNAME=i_pie_wedge
+NAME=slice of pie
+TYPE=t_food
+FLIP=1
+VALUE=5
+WEIGHT=0.3
+RESOURCES=1 i_pie_baked
+//SKILLMAKE=Cooking 10.0
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pie (wedge)
+DUPELIST=04c04
+ON=@Create
+   MOREM=1
+
+[ITEMDEF 04c04]
+//Baked Pie (wedge)
+DUPEITEM=04c03
+
+[ITEMDEF 04c05]
+//FIXME: looks like a cream pie?
+
+
+[ITEMDEF 04c0c]
+DEFNAME=i_pie_unbaked
+TYPE=t_food_raw
+TDATA1=i_pie_baked
+VALUE=10
+WEIGHT=0.4
+RESOURCES=1 i_dough,1 t_fruit,1 i_sugar
+SKILLMAKE=Cooking 20.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pie (uncooked)
+
+[ITEMDEF 04c0d]
+DEFNAME=i_pie_baked
+NAME=baked pie
+TYPE=t_food
+VALUE=15
+WEIGHT=0.4
+RESOURCES=1 i_pie_unbaked
+SKILLMAKE=Cooking 10.1
+CATEGORY=Provisions - Food
+SUBSECTION=Baked
+DESCRIPTION=Pie (baked)
+ON=@Create
+   MOREM=4
+
+
+//////////////////
+// Custom Items //
+//////////////////
+
+[ITEMDEF i_sugar]
+ID=i_reag_grave_dust
+NAME=sugar
+TYPE=t_food
+PILE=1
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Sugars
+DESCRIPTION=Sugar
+ON=@Create
+   COLOR=0481
+   MOREM=1
+
+[ITEMDEF i_honey]
+ID=09b6//i_eggs_fried
+NAME=honey
+TYPE=t_food
+PILE=1
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Sugars
+DESCRIPTION=Sugar
+ON=@Create
+   COLOR=07af
+   MOREM=1
+
+[ITEMDEF i_tomato_sauce]
+ID=i_bottle_red    //RED BOTTLE
+NAME=tomato sauce
+WEIGHT=0.1
+CATEGORY=Items by Professions
+SUBSECTION=Cook
+DESCRIPTION=Tomato Sauce
+
+[ITEMDEF i_ale_amber]
+NAME=Amber Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Amber Ale
+ON=@Create
+	COLOR=COLOR_RED2
+
+[ITEMDEF i_ale_honey]
+NAME=Honey Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Honey Ale
+ON=@Create
+	COLOR=COLOR_O_GOLD
+
+[ITEMDEF i_ale_brown]
+NAME=Brown Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Brown Ale
+ON=@Create
+	COLOR=COLORS_BROWN
+
+[ITEMDEF i_ale_spiced]
+NAME=Spiced Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Spiced Ale
+ON=@Create
+	COLOR=02c
+
+[ITEMDEF i_ale_smoked]
+NAME=Smoked Porter
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Smoked Porter
+ON=@Create
+	COLOR=COLOR_GRAY_DK
+
+[ITEMDEF i_ale_stout]
+NAME=Stout
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={8 12}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Stout Ale
+ON=@Create
+	COLOR=COLOR_O_BLACKROCK
+
+[ITEMDEF i_ale_oktoberfest]
+NAME=Oktoberfest Ale
+ID=i_bottle_ale
+TYPE=T_BOOZE
+VALUE={10 15}
+WEIGHT=1
+CATEGORY=Ales
+SUBSECTION=Ales
+DESCRIPTION=Oktoberfest Ale
+ON=@Create
+	COLOR=COLORS_ORANGE
+
+
+[EOF]

@@ -1,5 +1,5 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -12,8 +12,6 @@
 VERSION=0.56b
 
 [DEFNAME TREASURE_MAPS]
-TMOS       0FFFFFED4 //Treasure Map Offset
-TMS        08c //Treasure Map Size   200x200 pixels - pins are in pixels
 TMTILES    { i_plant_fern 1 i_plant_rushes 1 i_plant_fern 1 i_plant_fern_5 1 i_plant_bulrushes 1 i_plant_grasses 1 i_plant_fern_3 1 i_plant_fern_4 1 }
 
 [DEFNAME TREASURE_MAPS_SPEECH]
@@ -633,7 +631,7 @@ ON=@Create
 	TIMER=0
 	MOREP=0,1,3
 	ATTR=attr_move_never|attr_invis
-	MORE1={ c_m_orc_mage 1 c_orc_lord 1 c_gargoyle 1 c_gazer 1 c_m_hellhound 1 c_elem_earth 1 }
+	MORE1={ c_orc_mage 1 c_orc_lord 1 c_gargoyle 1 c_gazer 1 c_hellhound 1 c_elemental_earth 1 }
 
 ON=@TIMER
 	IF <ATTR>&attr_identified
@@ -659,7 +657,7 @@ ON=@Create
 	TIMER=0
 	MOREP=0,1,3
 	ATTR=attr_move_never|attr_invis
-	MORE1={ c_liche 1 c_m_ogre_lord 1 c_elem_air 1 c_elem_water 1 c_elem_fire 1 }
+	MORE1={ c_lich 1 c_ogre_lord 1 c_elemental_air 1 c_elemental_water 1 c_elemental_fire 1 }
 
 ON=@TIMER
 	IF <ATTR>&attr_identified
@@ -685,7 +683,7 @@ ON=@Create
 	TIMER=0
 	MOREP=0,1,3
 	ATTR=attr_move_never|attr_invis
-	MORE1={ c_liche 1 c_m_liche_lord 1 c_DAEMON 1 c_DAEMON_W_SWORD 1 c_m_gazer_elder 1 c_m_ogre_lord 1 c_m_orc_mage 1 }
+	MORE1={ c_lich 1 c_lich_lord 1 c_DEMON 1 c_gazer_elder 1 c_ogre_lord 1 c_orc_mage 1 }
 
 ON=@TIMER
 	IF <ATTR>&attr_identified
@@ -711,7 +709,7 @@ ON=@Create
 	TIMER=0
 	MOREP=0,1,3
 	ATTR=attr_move_never|attr_invis
-	MORE1={ C_M_BALRON 1 c_m_liche_lord 1 c_DAEMON 1 c_DAEMON_W_SWORD 1 c_m_elem_poison 1 c_m_elem_poison 1 c_m_elem_blood 1 c_m_ogre_lord 1}
+	MORE1={ c_BALRON 1 c_lich_lord 1 c_DEMON 1 c_elemental_poison 1 c_elemental_poison 1 c_elemental_blood 1 c_ogre_lord 1}
 
 ON=@TIMER
 	IF <ATTR>&attr_identified
@@ -731,41 +729,41 @@ ON=@TIMER
 [TEMPLATE TM_LOOT_1]
 CONTAINER=i_chest_treasure //Metal Chest
 MORE2=1
-ITEM=RANDOM_POOR_MAGIC_GOODIE
-ITEM=RANDOM_POOR_MAGIC_LOOT
-ITEM=RANDOM_POOR_MAGIC_LOOT
+ITEM=POOR_MAGIC_GOODIE
+ITEM=POOR_MAGIC_LOOT
+ITEM=POOR_MAGIC_LOOT
 ITEM=i_gold,{1000 1500}
 
 [TEMPLATE TM_LOOT_2]
 CONTAINER=i_chest_treasure //Metal Chest
 MORE2=2
-ITEM=RANDOM_MEAGER_MAGIC_GOODIE
-ITEM={ RANDOM_MEAGER_MAGIC_LOOT 1 RANDOM_POOR_MAGIC_LOOT 1 }
-ITEM=RANDOM_MEAGER_MAGIC_LOOT
+ITEM=MEAGER_MAGIC_GOODIE
+ITEM={ MEAGER_MAGIC_LOOT 1 POOR_MAGIC_LOOT 1 }
+ITEM=MEAGER_MAGIC_LOOT
 ITEM=i_gold,{1500 2000}
 
 [TEMPLATE TM_LOOT_3]
 CONTAINER=i_chest_treasure //Metal Chest
 MORE2=03
-ITEM=RANDOM_AVERAGE_MAGIC_GOODIE
-ITEM={ RANDOM_AVERAGE_MAGIC_LOOT 1 RANDOM_MEAGER_MAGIC_LOOT 1 }
-ITEM=RANDOM_AVERAGE_MAGIC_LOOT
+ITEM=AVERAGE_MAGIC_GOODIE
+ITEM={ AVERAGE_MAGIC_LOOT 1 MEAGER_MAGIC_LOOT 1 }
+ITEM=AVERAGE_MAGIC_LOOT
 ITEM=i_gold,{2000 2500}
 
 [TEMPLATE TM_LOOT_4]
 CONTAINER=i_chest_treasure //Metal Chest
 MORE2=04
-ITEM=RANDOM_RICH_MAGIC_GOODIE
-ITEM={ RANDOM_RICH_MAGIC_LOOT 1 RANDOM_AVERAGE_MAGIC_LOOT 1 }
-ITEM=RANDOM_RICH_MAGIC_LOOT
+ITEM=RICH_MAGIC_GOODIE
+ITEM={ RICH_MAGIC_LOOT 1 AVERAGE_MAGIC_LOOT 1 }
+ITEM=RICH_MAGIC_LOOT
 ITEM=i_gold,{2500 3000}
 
 [TEMPLATE TM_LOOT_5]
 CONTAINER=i_chest_treasure //Metal Chest
 MORE2=05
-ITEM=RANDOM_FILTHY_RICH_MAGIC_GOODIE
-ITEM={ RANDOM_FILTHY_RICH_MAGIC_LOOT 1 RANDOM_RICH_MAGIC_LOOT 1 }
-ITEM=RANDOM_FILTHY_RICH_MAGIC_LOOT
+ITEM=LOADED_MAGIC_GOODIE
+ITEM={ LOADED_MAGIC_LOOT 1 RICH_MAGIC_LOOT 1 }
+ITEM=LOADED_MAGIC_LOOT
 ITEM=i_gold,{3500 4000}
 
 [TEMPLATE ttm_LVL1_1]

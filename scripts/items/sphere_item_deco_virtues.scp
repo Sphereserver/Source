@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, August 30, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [ITEMDEF 02]
@@ -35,7 +35,7 @@ DESCRIPTION=Ankh (n) 2/2
 
 [ITEMDEF 0149f]
 DEFNAME=i_shrine_honesty_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Honesty
@@ -65,7 +65,7 @@ DESCRIPTION=Honesty (04/04) (W)
 
 [ITEMDEF 014a3]
 DEFNAME=i_shrine_honesty_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Honesty
@@ -95,7 +95,7 @@ DESCRIPTION=Honesty (04/04) (N)
 
 [ITEMDEF 014a7]
 DEFNAME=i_shrine_compassion_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Compassion
@@ -125,7 +125,7 @@ DESCRIPTION=Compassion (04/04) (W)
 
 [ITEMDEF 014ab]
 DEFNAME=i_shrine_compassion_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Compassion
@@ -155,7 +155,7 @@ DESCRIPTION=Compassion (04/04) (N)
 
 [ITEMDEF 014af]
 DEFNAME=i_shrine_justice_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Justice
@@ -185,7 +185,7 @@ DESCRIPTION=Justice (04/04) (W)
 
 [ITEMDEF 014b3]
 DEFNAME=i_shrine_justice_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Justice
@@ -215,7 +215,7 @@ DESCRIPTION=Justice (04/04) (N)
 
 [ITEMDEF 014b7]
 DEFNAME=i_shrine_valor_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Valor
@@ -245,7 +245,7 @@ DESCRIPTION=Valor (04/04) (W)
 
 [ITEMDEF 014bb]
 DEFNAME=i_shrine_valor_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Valor
@@ -275,7 +275,7 @@ DESCRIPTION=Valor (04/04) (N)
 
 [ITEMDEF 014bf]
 DEFNAME=i_shrine_spirituality_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Spirituality
@@ -305,7 +305,7 @@ DESCRIPTION=Spirituality (04/04) (W)
 
 [ITEMDEF 014c3]
 DEFNAME=i_shrine_spirituality_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Spirituality
@@ -335,7 +335,7 @@ DESCRIPTION=Spirituality (04/04) (N)
 
 [ITEMDEF 014c7]
 DEFNAME=i_shrine_honor_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Honor
@@ -365,7 +365,7 @@ DESCRIPTION=Honor (04/04) (W)
 
 [ITEMDEF 014cb]
 DEFNAME=i_shrine_honor_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Honor
@@ -395,7 +395,7 @@ DESCRIPTION=Honor (04/04) (N)
 
 [ITEMDEF 014cf]
 DEFNAME=i_shrine_humility_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Humility
@@ -425,7 +425,7 @@ DESCRIPTION=Humility (04/04) (W)
 
 [ITEMDEF 014d3]
 DEFNAME=i_shrine_humility_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Humility
@@ -455,7 +455,7 @@ DESCRIPTION=Humility (04/04) (N)
 
 [ITEMDEF 014e3]
 DEFNAME=i_shrine_chaos_1
-RESOURCES=20 i_MARBLE, 2 i_ingot_bloodrock, 2 i_rock_plain
+RESOURCES=20 i_rock_marble,2 i_ingot_bloodrock,2 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Chaos
@@ -485,7 +485,7 @@ DESCRIPTION=Chaos (04/04) (W)
 
 [ITEMDEF 0150a]
 DEFNAME=i_shrine_sacrifice_1
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Sacrifice
@@ -515,7 +515,7 @@ DESCRIPTION=Sacrifice (04/04) (W)
 
 [ITEMDEF 0150e]
 DEFNAME=i_shrine_sacrifice_2
-RESOURCES=20 i_MARBLE, 4 i_ingot_gold, 6 i_rock_plain
+RESOURCES=20 i_rock_marble,4 i_ingot_gold,6 i_rock_plain
 WEIGHT=32
 CATEGORY=Decoration - Virtues
 SUBSECTION=Sacrifice
@@ -544,9 +544,74 @@ SUBSECTION=Sacrifice
 DESCRIPTION=Sacrifice (04/04) (N)
 
 
+[ITEMDEF 01869]
+DEFNAME=i_virtstone_1
+DEFNAME2=I_VIRTUESTONE_BLACK
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Black)
+
+[ITEMDEF 0186a]
+DEFNAME=i_virtstone_2
+DEFNAME2=I_VIRTUESTONE_BLUE
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Blue)
+
+[ITEMDEF 0186b]
+DEFNAME=i_virtstone_3
+DEFNAME2=I_VIRTUESTONE_GREEN
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Green)
+
+[ITEMDEF 0186c]
+DEFNAME=i_virtstone_4
+DEFNAME2=I_VIRTUESTONE_ORANGE
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Orange)
+
+[ITEMDEF 0186d]
+DEFNAME=i_virtstone_5
+DEFNAME2=I_VIRTUESTONE_PURPLE
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Purple)
+
+[ITEMDEF 0186e]
+DEFNAME=i_virtstone_6
+DEFNAME2=I_VIRTUESTONE_RED
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Red)
+
+[ITEMDEF 0186f]
+DEFNAME=i_virtstone_7
+DEFNAME2=I_VIRTUESTONE_AQUA
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Aqua)
+
+[ITEMDEF 01870]
+DEFNAME=i_virtstone_8
+DEFNAME2=I_VIRTUESTONE_YELLOW
+WEIGHT=1
+CATEGORY=Miscellaneous
+SUBSECTION=Virtue Stones
+DESCRIPTION=Virtue Stone (Yellow)
+
+
 [ITEMDEF 01c12]
 DEFNAME=i_bell_of_courage
-RESOURCES=2 i_ingot_gold, 1 i_wire_gold, 1 i_gem_DIAMOND
+RESOURCES=2 i_ingot_gold,1 i_wire_gold,1 i_gem_diamond
 WEIGHT=5
 CATEGORY=Decoration - Virtues
 SUBSECTION=Virtue Items
@@ -589,7 +654,7 @@ DUPEITEM=01c14
 DEFNAME=i_ankh_sacrifice
 TYPE=t_light_lit
 TDATA4=i_ankh_sacrifice
-RESOURCES=10 i_rock_plain, 3 i_BLOOD
+RESOURCES=10 i_rock_plain
 WEIGHT=30
 CATEGORY=Decoration - Virtues
 SUBSECTION=Ankhs

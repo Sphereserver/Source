@@ -9,9 +9,33 @@
 //****************************************************************************
 // FILE LAST UPDATED: Wednesday, September 11, 2013
 //
-//
-VERSION=0.56b
+VERSION=0.56c
 
+
+[COMMENT sphere_map0]
+
+This file (and other map files like it) define map areas (also known as
+AREADEF and ROOMDEF, and typically named a_something) using one or more
+RECT= properties that describe a rectangle.  The RECT= property uses 5 values
+to describe the rectangle:  The first two numbers are the coordinate of the
+upper left corner of the region, and the second two are the coordinates of
+the lower right, the last number is the map.
+
+If an area of the map is NOT covered by a rectangle, that area is unusable
+(nothing can move there) which is why each map file typically first defines
+a rectangle covering "the entire map".
+
+The order of the map regions in this file can be important when rectangles
+overlap each others perimiter (as opposed to being fully enclosed.)
+Because of this situation you may need to shuffle specific regions up or
+down in the file to properly define partially overlapping regions.
+
+WARNING: NEVER edit a map file on a running server!
+
+
+////////////////////
+// The Entire Map //
+////////////////////
 
 [AREADEF a_world]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -20,7 +44,9 @@ GROUP=ALLMAP
 P=1323,1624,55,0
 RECT=0,0,7168,4096,0
 
-// === AREAS
+/////////////////
+// Territories //
+/////////////////
 
 [AREADEF a_cave_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass

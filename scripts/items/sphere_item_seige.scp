@@ -1,0 +1,1949 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+[ITEMDEF 0e6b]
+DEFNAME=i_cannon_twopart
+FLIP=1
+WEIGHT=120.1
+RESOURCES=100 i_ingot_iron,20 i_board,1 i_axel
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon (2 part)
+DUPELIST=0e6c,0e6d,0e6e,0e6f,0e70,0e71,0e72
+
+[ITEMDEF 0e6c]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e6d]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e6e]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e6f]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e70]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e71]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+[ITEMDEF 0e72]
+//cannon (2 part)
+DUPEITEM=0e6b
+
+
+[ITEMDEF 0e73]
+DEFNAME=i_cannon_ball
+WEIGHT=5.0
+RESOURCES=5 i_ingot_iron
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball
+
+[ITEMDEF 0e74]
+DEFNAME=i_cannon_balls
+WEIGHT=20.0
+RESOURCES=4 i_cannon_ball
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Balls
+
+
+[ITEMDEF 0e8b]
+DEFNAME=i_cannon_full
+FLIP=1
+WEIGHT=120.1
+RESOURCES=100 i_ingot_iron,20 i_board,1 i_axel
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Large Cannon (multi-part)
+DUPELIST=0e8c,0e8d,0e8e,0e8f,0e90,0e91,0e92,0e93,0e94,0e95,0e96
+
+[ITEMDEF 0e8c]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e8d]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e8e]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e8f]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e90]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e91]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e92]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e93]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e94]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e95]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+[ITEMDEF 0e96]
+//Large Cannon (multi-part)
+DUPEITEM=0e8b
+
+
+[ITEMDEF 01663]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 01 (arm)
+WEIGHT=41.2
+DUPELIST=01664,01665,01666
+ON=@DClick
+   DISPID=01664
+   UPDATE
+   TIMERD=0.2
+   RETURN 1
+ON=@Timer
+   IF (<DISPIDDEC> < 01666)
+      DISPID=<DISPIDDEC>+1
+      TIMERD=0.2
+   ELSE
+      DISPID=01663
+      SFX 43
+   ENDIF
+   UPDATE
+   RETURN 1
+
+[ITEMDEF 01664]
+//catapult 01 (arm)
+DUPEITEM=01663
+
+[ITEMDEF 01665]
+//catapult 01 (arm)
+DUPEITEM=01663
+
+[ITEMDEF 01666]
+//catapult 01 (arm)
+DUPEITEM=01663
+
+
+[ITEMDEF 0168d]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 02 (arm)
+WEIGHT=41.2
+DUPELIST=0168e,0168f,01690
+ON=@DClick
+   DISPID=0168e
+   UPDATE
+   TIMERD=1.5
+   RETURN 1
+ON=@Timer
+   DISPID=0168d
+   UPDATE
+   SFX 43
+   RETURN 1
+
+[ITEMDEF 0168e]
+//catapult 02 swinging (self animated)
+DUPEITEM=0168d
+
+[ITEMDEF 0168f]
+//catapult 02 (arm)
+DUPEITEM=0168d
+
+[ITEMDEF 01690]
+//catapult 02 (arm)
+DUPEITEM=0168d
+
+
+[ITEMDEF 016b1]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 03 (arm)
+WEIGHT=41.2
+DUPELIST=016b2,016b3
+ON=@DClick
+   DISPID=016b2
+   UPDATE
+   TIMERD=0.2
+   RETURN 1
+ON=@Timer
+   IF (<DISPIDDEC> < 016b3)
+      DISPID=<DISPIDDEC>+1
+      TIMERD=0.2
+   ELSE
+      DISPID=016b1
+      SFX 43
+   ENDIF
+   UPDATE
+   RETURN 1
+
+[ITEMDEF 016b2]
+//catapult 03 (arm)
+DUPEITEM=016b1
+
+[ITEMDEF 016b3]
+//catapult 03 (arm)
+DUPEITEM=016b1
+
+
+[ITEMDEF 016d6]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 04 (arm)
+WEIGHT=41.2
+DUPELIST=016d7,016d8
+ON=@DClick
+   DISPID=016d7
+   UPDATE
+   TIMERD=0.2
+   RETURN 1
+ON=@Timer
+   IF (<DISPIDDEC> < 016d8)
+      DISPID=<DISPIDDEC>+1
+      TIMERD=0.2
+   ELSE
+      DISPID=016d6
+      SFX 43
+   ENDIF
+   UPDATE
+   RETURN 1
+
+[ITEMDEF 016d7]
+//catapult 04 (arm)
+DUPEITEM=016d6
+
+[ITEMDEF 016d8]
+//catapult 04 (arm)
+DUPEITEM=016d6
+
+
+[ITEMDEF 01648]
+DEFNAME=i_catapult_1
+RESOURCES=28 i_board,5 i_log,2 i_nails,1 i_ingot_iron,2 i_rope
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 01
+DUPELIST=01649,0164a,0164b,0164c,0164d,0164e,0164f,01650,01651,01652,01653,01654,01655,01656,01657,01658,01659,0165a,0165b,0165c,0165d,0165e,0165f,01660,01661,01662
+
+[ITEMDEF 01649]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164a]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164b]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164c]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164d]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164e]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0164f]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01650]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01651]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01652]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01653]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01654]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01655]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01656]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01657]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01658]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01659]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165a]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165b]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165c]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165d]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165e]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 0165f]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01660]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01661]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01662]
+//catapult
+DUPEITEM=01648
+
+[ITEMDEF 01672]
+DEFNAME=i_catapult_2
+RESOURCES=28 i_board,5 i_log,2 i_nails,1 i_ingot_iron,2 i_rope
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 02
+DUPELIST=01673,01674,01675,01676,01677,01678,01679,0167a,0167b,0167c,0167d,0167e,0167f,01680,01681,01682,01683,01684,01685,01686,01687,01688,01689,0168a,0168b,0168c
+
+[ITEMDEF 01673]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01674]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01675]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01676]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01677]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01678]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01679]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167a]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167b]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167c]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167d]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167e]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0167f]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01680]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01681]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01682]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01683]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01684]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01685]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01686]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01687]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01688]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01689]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168a]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168b]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 0168c]
+//catapult
+DUPEITEM=01672
+
+[ITEMDEF 01694]
+DEFNAME=i_catapult_3
+RESOURCES=28 i_board,5 i_log,2 i_nails,1 i_ingot_iron,2 i_rope
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 03
+DUPELIST=01695,01696,01697,01698,01699,0169a,0169b,0169c,0169d,0169e,0169f,016a0,016a1,016a2,016a3,016a4,016a5,016a6,016a7,016a8,016a9,016aa,016ab,016ac,016ad,016ae,016af,016b0,016b4
+
+[ITEMDEF 01695]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01696]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01697]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01698]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 01699]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169a]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169b]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169c]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169d]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169e]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 0169f]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a0]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a1]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a2]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a3]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a4]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a5]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a6]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a7]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a8]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016a9]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016aa]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ab]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ac]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ad]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016ae]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016af]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b0]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b4]
+//catapult
+DUPEITEM=01694
+
+[ITEMDEF 016b9]
+DEFNAME=i_catapult_4
+RESOURCES=28 i_board,5 i_log,2 i_nails,1 i_ingot_iron,2 i_rope
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Catapult 04
+DUPELIST=016ba,016bb,016bc,016bd,016be,016bf,016c0,016c1,016c2,016c3,016c4,016c5,016c6,016c7,016c8,016c9,016ca,016cb,016cc,016cd,016ce,016cf,016d0,016d1,016d2,016d3,016d4,016d5,016d9
+
+[ITEMDEF 016ba]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bb]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bc]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bd]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016be]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016bf]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c0]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c1]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c2]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c3]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c4]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c5]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c6]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c7]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c8]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016c9]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016ca]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cb]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cc]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cd]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016ce]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016cf]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d0]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d1]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d2]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d3]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d4]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d5]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016d9]
+//catapult
+DUPEITEM=016b9
+
+[ITEMDEF 016f8]
+DEFNAME=i_ballista_1
+RESOURCES=18 i_board,5 i_log,2 i_nails,1 i_ingot_iron,8 i_rope
+WEIGHT=40
+CATEGORY=Miscellaneous
+SUBSECTION=Ballista
+DESCRIPTION=Ballista 2
+DUPELIST=016f9,016fa,016fb,016fc,016fd,016fe,016ff,01700,01701,01702,01703,01704,01705,01706,01707,01708
+
+[ITEMDEF 016f9]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fa]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fb]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fc]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fd]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016fe]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 016ff]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01700]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01701]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01702]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01703]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01704]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01705]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01706]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01707]
+//ballista
+DUPEITEM=016f8
+
+[ITEMDEF 01708]
+//ballista
+DUPEITEM=016f8
+
+
+[ITEMDEF 0189f]
+CATEGORY=Miscellaneous
+SUBSECTION=Ballista
+DESCRIPTION=Animated Piece
+
+[ITEMDEF 018a0]
+//animated ballista piece
+
+[ITEMDEF 018a1]
+//animated ballista piece
+
+[ITEMDEF 018a2]
+//animated ballista piece
+
+[ITEMDEF 018a3]
+//animated ballista piece
+
+[ITEMDEF 018a4]
+//animated ballista piece
+
+[ITEMDEF 018a5]
+//animated ballista piece
+
+[ITEMDEF 018a6]
+//animated ballista piece
+
+[ITEMDEF 018a7]
+//animated ballista piece
+
+[ITEMDEF 018a8]
+//animated ballista piece
+
+[ITEMDEF 018a9]
+//animated ballista piece
+
+[ITEMDEF 018aa]
+//animated ballista piece
+
+[ITEMDEF 018ab]
+//animated ballista piece
+
+[ITEMDEF 018ac]
+//animated ballista piece
+
+[ITEMDEF 018ad]
+//animated ballista piece
+
+[ITEMDEF 018ae]
+//animated ballista piece
+
+[ITEMDEF 018af]
+//animated ballista piece
+
+[ITEMDEF 018b0]
+//animated ballista piece
+
+[ITEMDEF 018b1]
+//animated ballista piece
+
+[ITEMDEF 018b2]
+//animated ballista piece
+
+[ITEMDEF 018b3]
+//animated ballista piece
+
+[ITEMDEF 018b4]
+//animated ballista piece
+
+[ITEMDEF 018b5]
+//animated ballista piece
+
+
+[ITEMDEF 018ce]
+//animated ballista piece
+
+[ITEMDEF 018cf]
+//animated ballista piece
+
+[ITEMDEF 018d0]
+//animated ballista piece
+
+[ITEMDEF 018d1]
+//animated ballista piece
+
+[ITEMDEF 018d2]
+//animated ballista piece
+
+[ITEMDEF 018d3]
+//animated ballista piece
+
+
+[ITEMDEF 018f0]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f1]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f2]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f3]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f4]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f5]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f6]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f7]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f8]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018f9]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018fa]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018fb]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018fc]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018fd]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018fe]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 018ff]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01900]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01901]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01902]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01903]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01904]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01905]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01906]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01907]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01908]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 01909]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 0190a]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 0190b]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 0190c]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+[ITEMDEF 0190d]
+CATEGORY=Miscellaneous
+SUBSECTION=Catapults
+DESCRIPTION=Animated Catapult Parts
+
+
+[ITEMDEF 03f3f]
+CATEGORY=Miscellaneous
+SUBSECTION=Ballista
+DESCRIPTION=@
+DUPELIST=03f40,03f41,03f42,03f43,03f44,03f45,03f46,03f47,03f48,03f49,03f4a,03f4b,03f4c,03f4d,03f4e,03f4f,03f50,03f51,03f52,03f53,03f54,03f55,03f56,03f57,03f58,03f59,03f5a,03f5b,03f5c,03f5d,03f5e,03f5f,03f60,03f61,03f62,03f63,03f64,03f65,03f66,03f67,03f68,03f69,03f6a,03f6b,03f6c,03f6d,03f6e,03f6f,03f70,03f71,03f72,03f73,03f74,03f75,03f76,03f77,03f78,03f79,03f7a,03f7b,03f7c,03f7d,03f7e,03f7f,03f80,03f81,03f82,03f83,03f84,03f85,03f86,03f87,03f88,03f89,03f8a,03f8b,03f8c,03f8d,03f8e,03f90,03f91,03f92,03f93,03f94,03f95,03f96,03f97,03f98,03f99,03f9a,03f9b,03f9c,03f9d,03f9e,03f9f,03fa0,03fa1,03fa2,03fa3,03fa4,03fa5,03fa6,03fa7,03fa8,03fa9,03faa,03fab,03fac,03fad,03fae,03faf,03fb0,03fb1,03fb2,03fb3,03fb4,03fb5,03fb6,03fb7,03fb8,03fb9,03fba,03fbb,03fbc,03fbd,03fbe,03fbf,03fc0,03fc1,03fc2,03fc3,03fc4,03fc5,03fc6,03fc7,03fc8,03fc9,03fca,03fcb,03fcc,03fcd,03fce,03fcf,03fd0,03fd1,03fd2,03fd3,03fd4,03fd5,03fd6,03fd7,03fd8,03fd9,03fda,03fdb,03fdc,03fdd,03fde,03fdf,03fe0,03fe1,03fe2,03fe3,03fe4
+
+[ITEMDEF 03f40]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f41]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f42]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f43]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f44]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f45]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f46]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f47]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f48]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f49]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f4f]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f50]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f51]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f52]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f53]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f54]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f55]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f56]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f57]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f58]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f59]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f5f]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f60]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f61]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f62]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f63]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f64]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f65]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f66]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f67]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f68]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f69]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f6f]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f70]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f71]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f72]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f73]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f74]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f75]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f76]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f77]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f78]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f79]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f7f]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f80]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f81]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f82]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f83]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f84]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f85]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f86]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f87]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f88]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f89]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f8e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f90]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f91]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f92]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f93]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f94]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f95]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f96]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f97]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f98]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f99]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9a]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9b]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9c]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9d]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9e]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03f9f]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa1]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa4]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa5]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa6]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa7]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa8]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fa9]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03faa]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fab]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fac]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fad]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fae]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03faf]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb1]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb4]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb5]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb6]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb7]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb8]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fb9]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fba]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbb]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbc]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbd]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbe]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fbf]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc1]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc4]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc5]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc6]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc7]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc8]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fc9]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fca]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcb]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcc]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcd]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fce]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fcf]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd1]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd4]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd5]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd6]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd7]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd8]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fd9]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fda]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdb]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdc]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdd]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fde]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fdf]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe0]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe1]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe2]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe3]
+//ballista
+DUPEITEM=03f3f
+
+[ITEMDEF 03fe4]
+//ballista
+DUPEITEM=03f3f
+
+
+[ITEMDEF 0418f]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 041a2]
+DEFNAME=i_cannon_chainshot
+WEIGHT=15.0
+RESOURCES=2 i_cannonball_normal,5 i_ingot_iron
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Chain Shot
+
+[ITEMDEF 041e5]
+DEFNAME=i_cannon_grapeshot
+NAME=cannon grapeshot
+WEIGHT=11.0
+RESOURCES=20 i_ingot_iron
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Grape Shot
+
+[ITEMDEF 04216]
+DEFNAME=i_shipcannon_small
+NAME=4 pound ship cannon
+FLIP=1
+WEIGHT=140.2
+RESOURCES=100 i_ingot_iron,40 i_board,2 i_axel
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Ship Cannon (4 pound)
+DUPELIST=04217,04218,04219
+
+[ITEMDEF 04217]
+//Ship Cannon (4 pound)
+DUPEITEM=04216
+
+[ITEMDEF 04218]
+//Ship Cannon (4 pound)
+DUPEITEM=04216
+
+[ITEMDEF 04219]
+//Ship Cannon (4 pound)
+DUPEITEM=04216
+
+[ITEMDEF 0421a]
+DEFNAME=i_shipcannon_med
+NAME=8 pound ship cannon
+FLIP=1
+WEIGHT=160.2
+RESOURCES=120 i_ingot_iron,40 i_board,2 i_axel
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Ship Cannon (8 pound)
+DUPELIST=0421b,0421c,0421d
+
+[ITEMDEF 0421b]
+//Ship Cannon (8 pound)
+DUPEITEM=0421a
+
+[ITEMDEF 0421c]
+//Ship Cannon (8 pound)
+DUPEITEM=0421a
+
+[ITEMDEF 0421d]
+//Ship Cannon (8 pound)
+DUPEITEM=0421a
+
+[ITEMDEF 04220]
+//            N     S     W     E
+//Primed:   044f3 04220 04223 044f8
+//Unprimed: 04221 044f4 044f7 0424a
+//Barrel:   044f5 04222 0418f 044f6
+DEFNAME=i_shipcannon_large
+NAME=48 pound ship cannon
+FLIP=1
+WEIGHT=160.2
+RESOURCES=120 i_ingot_iron,40 i_board,2 i_axel
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Ship Cannon (48 pound)
+DUPELIST=04221,0418f,0424a,04222,04223,044f3,044f4,044f5,044f6,044f7,044f8
+
+[ITEMDEF 04221]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 04222]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 04223]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 04224]
+DEFNAME=i_cannonball_normal
+NAME=regular cannonball
+WEIGHT=5.0
+RESOURCES=5 i_ingot_iron
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball (regular shot)
+
+[ITEMDEF 04225]
+DEFNAME=i_pile_cannonball_normal
+NAME=regular cannonball pile
+WEIGHT=20.0
+RESOURCES=4 i_cannonball_normal
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball Pile (regular shot)
+
+[ITEMDEF 0422b]
+DEFNAME=i_cannonball_ice
+NAME=ice cannonball
+WEIGHT=5.0
+RESOURCES=50 i_water
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball (ice shot)
+
+[ITEMDEF 04231]
+DEFNAME=i_pile_cannonball_ice
+NAME=ice cannonball pile
+WEIGHT=5.0
+RESOURCES=50 i_water
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball Pile (ice shot)
+
+[ITEMDEF 0423a]
+DEFNAME=i_cannon_powder
+NAME=cannon powder
+WEIGHT=5.0
+RESOURCES=5 i_saltpeter//also sulfur and charcoal
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Powder
+
+[ITEMDEF 04246]
+DEFNAME=i_cannon_ramrod
+NAME=cannon ramrod
+FLIP=1
+WEIGHT=2.0
+RESOURCES=2 i_log
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ramrod
+DUPELIST=04247
+
+[ITEMDEF 04247]
+//Cannon Ramrod
+DUPEITEM=04246
+
+[ITEMDEF 04248]
+DEFNAME=i_cannon_swab
+NAME=cannon swab
+FLIP=1
+WEIGHT=2.0
+RESOURCES=2 i_log
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Swab
+DUPELIST=04247
+
+[ITEMDEF 04249]
+//Cannon Swab
+DUPEITEM=04248
+
+[ITEMDEF 0424a]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044c1]
+DEFNAME=i_cannonball_fire
+NAME=fire cannonball
+WEIGHT=5.0
+RESOURCES=5 i_ingot_iron
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball (fire shot)
+
+[ITEMDEF 044c2]
+DEFNAME=i_pile_cannonball_fire
+NAME=fire cannonball pile
+WEIGHT=20.0
+RESOURCES=4 i_cannonball_fire
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Ball Pile (fire shot)
+
+[ITEMDEF 044f3]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044f4]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044f5]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044f6]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044f7]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 044f8]
+//Ship Cannon (48 pound)
+DUPEITEM=04220
+
+[ITEMDEF 04570]
+DEFNAME=i_cannon_match
+NAME=cannon match
+FLIP=1
+WEIGHT=2.0
+RESOURCES=2 i_log
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Match
+DUPELIST=04571
+
+[ITEMDEF 04571]
+//Cannon Match
+DUPEITEM=04570
+
+[ITEMDEF 04628]
+DEFNAME=i_cannon_fuse
+NAME=cannon fuse
+TYPE=t_normal
+WEIGHT=1.0
+RESOURCES=1 i_string,1 i_cannon_powder
+CATEGORY=Miscellaneous
+SUBSECTION=Cannons
+DESCRIPTION=Cannon Fuse
+
+
+[EOF]

@@ -1,369 +1,167 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
-// www.sphereserver.net
-// All SPHERE script files and formats are copyright Menasoft & Partners.
-// This file may be freely edited for personal use, but may not be distributed
-// in whole or in part, in any format without express written permission from
-// Menasoft & Partners.  All donations and contributions
-// become the property of Menasoft & Partners.
+//SPHERE by : Menasoft ©1997-2007
+//www.sphereserver.net
+//All SPHERE script files and formats are copyright Menasoft & Partners.
+//This file may be freely edited for personal use, but may not be distributed
+//in whole or in part, in any format without express written permission from
+//Menasoft & Partners.  All donations and contributions
+//become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+//FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[COMMENT sphere_item_building_other]
+
+This file contains things like:
+
+* pier stanchions and ropes
+* railings
+* rope, winches, and pullies
+* bannisters
+* ladders
+* wall and floor cracks
 
 
 [ITEMDEF 03a5]
-DEFNAME=i_PIER_1
+DEFNAME=i_pier_1
 RESOURCES=50 i_log
 CATEGORY=Buildings - Docks
 SUBSECTION=Pier
-DESCRIPTION=@
+DESCRIPTION=Pier
 DUPELIST=03aa,03ab,03ac,03ad,03ae,03af,03b0
 
 [ITEMDEF 03a6]
-DEFNAME=i_PIER_2
-RESOURCES=50 I_CLOTH
+DEFNAME=i_pier_2
+RESOURCES=50 i_cloth
 CATEGORY=Buildings - Docks
-SUBSECTION=Rope
-DESCRIPTION=@
+SUBSECTION=Pier
+DESCRIPTION=Pier Rope
 DUPELIST=03a7,03a8,03a9
 
 [ITEMDEF 03a7]
-//rope
+//Pier Rope
 DUPEITEM=03a6
 
 [ITEMDEF 03a8]
-//rope
+//Pier Rope
 DUPEITEM=03a6
 
 [ITEMDEF 03a9]
-//rope
+//Pier Rope
 DUPEITEM=03a6
 
 [ITEMDEF 03aa]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03ab]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03ac]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03ad]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03ae]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03af]
-//pier
+//Pier
 DUPEITEM=03a5
 
 [ITEMDEF 03b0]
-//pier
+//Pier
 DUPEITEM=03a5
 
-[ITEMDEF 07e1]
-DEFNAME=i_bridge
-RESOURCES=15 I_ROPE, 5 I_BOARD
+
+[ITEMDEF 07d6]
+DEFNAME=i_post_stone
+RESOURCES=15 i_rock_plain
 CATEGORY=Buildings - Other
-SUBSECTION=Suspension Bridge
-DESCRIPTION=@
-DUPELIST=07e2,07e3,07e4,07e5,07e6,07e7,07e8,07e9,07ea,07eb,07ec,07ed,07ee,07ef,07f0,07f1,07f2,07f3,07f4,07f5,07f6,07f7,07f8,07f9,07fa,07fb,07fc,07fd,07fe,07ff,0800,0801,0802,0803,0804,0805,0806,0807,0808,0809,080a,080b,080c,080d,080e,080f,0810,0811,0812,0813,0814,0815,0816,0817,0818
+SUBSECTION=Stone Railing 3
+DESCRIPTION=Railing
+DUPELIST=07d7,07d8
 
-[ITEMDEF 07e2]
-//suspension bridge
-DUPEITEM=07e1
+[ITEMDEF 07d7]
+//Stone Railing 3
+DUPEITEM=07d6
 
-[ITEMDEF 07e3]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e4]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e5]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e6]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e7]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e8]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07e9]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ea]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07eb]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ec]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ed]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ee]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ef]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f0]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f1]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f2]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f3]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f4]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f5]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f6]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f7]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f8]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07f9]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07fa]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07fb]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07fc]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07fd]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07fe]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 07ff]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0800]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0801]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0802]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0803]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0804]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0805]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0806]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0807]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0808]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0809]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080a]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080b]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080c]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080d]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080e]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 080f]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0810]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0811]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0812]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0813]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0814]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0815]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0816]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0817]
-//suspension bridge
-DUPEITEM=07e1
-
-[ITEMDEF 0818]
-//suspension bridge
-DUPEITEM=07e1
+[ITEMDEF 07d8]
+//Stone Railing 3
+DUPEITEM=07d6
 
 
 [ITEMDEF 087e]
 DEFNAME=i_railing_wood
-RESOURCES=15 I_BOARD
+RESOURCES=15 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Wooden Rail
-DESCRIPTION=@
+SUBSECTION=Wooden Railing
+DESCRIPTION=Railing
 DUPELIST=087f,0880,0881,0882,0883,0884,0885,0886,0887,0888,0889
 
 [ITEMDEF 087f]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0880]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0881]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0882]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0883]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0884]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0885]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0886]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0887]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0888]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0889]
-//wooden rail
+//wooden railing
 DUPEITEM=087e
 
 [ITEMDEF 0899]
 DEFNAME=i_ladder_wood
-RESOURCES=15 I_BOARD
+FLIP=1
+RESOURCES=15 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Wooden Ladder 1
-DESCRIPTION=@
-DUPELIST=089b
+SUBSECTION=Wooden Ladders
+DESCRIPTION=Ladder
+DUPELIST=089a,089b,089c,089d,089e
 
 [ITEMDEF 089a]
 //wooden ladder
-DUPELIST=089c
-RESOURCES=15 I_BOARD
-CATEGORY=Buildings - Other
-SUBSECTION=Wooden Ladder 2
-DESCRIPTION=@
+DUPEITEM=0899
 
 [ITEMDEF 089b]
 //wooden ladder
@@ -371,55 +169,51 @@ DUPEITEM=0899
 
 [ITEMDEF 089c]
 //wooden ladder
-DUPEITEM=089a
+DUPEITEM=0899
 
 [ITEMDEF 089d]
 //wooden ladder
-DUPELIST=089e
-// HEIGHT=14 // not 12 like it says.
-RESOURCES=15 I_BOARD
-CATEGORY=Buildings - Other
-SUBSECTION=Wooden Ladder 3
-DESCRIPTION=@
+DUPEITEM=0899
 
 [ITEMDEF 089e]
 //wooden ladder
-DUPEITEM=089d
+DUPEITEM=0899
+
 
 [ITEMDEF 089f]
 DEFNAME=i_ladder_wood_2
-RESOURCES=15 I_BOARD
+RESOURCES=15 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Wooden Ladder 2
-DESCRIPTION=@
+SUBSECTION=Wooden Ladders
+DESCRIPTION=Ladder 2
 DUPELIST=08a0,08a1,08a2,08a3,08a4
 
 [ITEMDEF 08a0]
-//wooden ladder
+//wooden ladder 2
 DUPEITEM=089f
 
 [ITEMDEF 08a1]
-//wooden ladder
+//wooden ladder 2
 DUPEITEM=089f
 
 [ITEMDEF 08a2]
-//wooden ladder
+//wooden ladder 2
 DUPEITEM=089f
 
 [ITEMDEF 08a3]
-//wooden ladder
+//wooden ladder 2
 DUPEITEM=089f
 
 [ITEMDEF 08a4]
-//wooden ladder
+//wooden ladder 2
 DUPEITEM=089f
 
 [ITEMDEF 08a5]
 DEFNAME=i_ladder_rope
-RESOURCES=10 I_ROPE
+RESOURCES=10 i_rope
 CATEGORY=Buildings - Other
-SUBSECTION=Rope Ladder
-DESCRIPTION=@
+SUBSECTION=Rope Ladders
+DESCRIPTION=Ladder
 DUPELIST=08a6
 
 [ITEMDEF 08a6]
@@ -428,10 +222,10 @@ DUPEITEM=08a5
 
 [ITEMDEF 08ae]
 DEFNAME=i_banister_wood
-RESOURCES=15 I_BOARD
+RESOURCES=15 i_board
 CATEGORY=Buildings - Other
 SUBSECTION=Wooden Bannister
-DESCRIPTION=@
+DESCRIPTION=Bannister
 DUPELIST=08af,08b0,08b1,08b2,08b3,08b4,08b5,08b6,08b7,08b8,08b9,08ba,08bb,08bc,08bd,08be,08bf,08c0,08c1,08c2,08c3,08c4,08c5,08c6,08c7,08c8,08c9,08ca
 
 [ITEMDEF 08af]
@@ -548,10 +342,10 @@ DUPEITEM=08ae
 
 [ITEMDEF 08cb]
 DEFNAME=i_edging_wood
-RESOURCES=5 I_BOARD
+RESOURCES=5 i_board
 CATEGORY=Buildings - Other
 SUBSECTION=Edging
-DESCRIPTION=@
+DESCRIPTION=Edging
 DUPELIST=08cc,08cd,08ce
 
 [ITEMDEF 08cc]
@@ -570,121 +364,183 @@ DUPEITEM=08cb
 DEFNAME=i_rail_stone
 RESOURCES=20 i_rock_plain
 CATEGORY=Buildings - Other
-SUBSECTION=Stone Rail 1
-DESCRIPTION=@
+SUBSECTION=Stone Railing 1
+DESCRIPTION=Railing
 DUPELIST=08ec,08ed,08ee
 
 [ITEMDEF 08ec]
-//stone rail
+//stone railing 1
 DUPEITEM=08eb
 
 [ITEMDEF 08ed]
-//stone rail
+//stone railing 1
 DUPEITEM=08eb
 
 [ITEMDEF 08ee]
-//stone rail
+//stone railing 1
 DUPEITEM=08eb
 
 [ITEMDEF 08ef]
 DEFNAME=i_rail_stone_2
-RESOURCES=20 i_rock_plain, 10 I_BOARD
+RESOURCES=20 i_rock_plain,10 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Stone Rail 2
-DESCRIPTION=@
+SUBSECTION=Stone Railing 2
+DESCRIPTION=Railing
 DUPELIST=08f0,08f1,08f2
 
 [ITEMDEF 08f0]
-//stone rail
+//stone railing 2
 DUPEITEM=08ef
 
 [ITEMDEF 08f1]
-//stone rail
+//stone railing 2
 DUPEITEM=08ef
 
 [ITEMDEF 08f2]
-//stone rail
+//stone railing 2
 DUPEITEM=08ef
 
 [ITEMDEF 08f3]
 DEFNAME=i_rail_stone_3
-RESOURCES=20 i_stone_sand, 10 I_BOARD
+RESOURCES=20 i_rock_sandstone,10 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Sandstone Rail
-DESCRIPTION=@
+SUBSECTION=Sandstone Railing
+DESCRIPTION=Railing
 DUPELIST=08f4,08f5,08f6
 
 [ITEMDEF 08f4]
-//sandstone rail
+//sandstone railing
 DUPEITEM=08f3
 
 [ITEMDEF 08f5]
-//sandstone rail
+//sandstone railing
 DUPEITEM=08f3
 
 [ITEMDEF 08f6]
-//sandstone rail
+//sandstone railing
 DUPEITEM=08f3
 
 [ITEMDEF 08f7]
 DEFNAME=i_rail_stone_4
-RESOURCES=20 i_rock_plain, 10 I_BOARD
+RESOURCES=20 i_rock_plain,10 i_board
 CATEGORY=Buildings - Other
-SUBSECTION=Stone Rail 3
-DESCRIPTION=@
+SUBSECTION=Stone Railing 3
+DESCRIPTION=Railing
 DUPELIST=08f8,08f9,08fa,08fb,08fc
 
 [ITEMDEF 08f8]
-//stone rail
+//stone railing
 DUPEITEM=08f7
 
 [ITEMDEF 08f9]
-//stone rail
+//stone railing
 DUPEITEM=08f7
 
 [ITEMDEF 08fa]
-//stone rail
+//stone railing
 DUPEITEM=08f7
 
 [ITEMDEF 08fb]
-//stone rail
+//stone railing
 DUPEITEM=08f7
 
 [ITEMDEF 08fc]
-//stone rail
+//stone railing
 DUPEITEM=08f7
+
+
+[ITEMDEF 01b01]
+DEFNAME=i_floor_cracks
+CATEGORY=Buildings - Other
+SUBSECTION=Floor Cracks
+DESCRIPTION=Floor Cracks
+DUPELIST=01b02,01b03,01b04,01b05,01b06,01b08
+
+[ITEMDEF 01b02]
+//floor cracks
+DUPEITEM=01b01
+
+[ITEMDEF 01b03]
+//floor cracks
+DUPEITEM=01b01
+
+[ITEMDEF 01b04]
+//floor cracks
+DUPEITEM=01b01
+
+[ITEMDEF 01b05]
+//floor cracks
+DUPEITEM=01b01
+
+[ITEMDEF 01b06]
+//floor cracks
+DUPEITEM=01b01
+
+[ITEMDEF 01b08]
+//floor cracks
+DUPEITEM=01b01
+
+
+[ITEMDEF 01b6c]
+DEFNAME=i_wall_cracks
+TYPE=t_wall
+CATEGORY=Buildings - Other
+SUBSECTION=Wall Cracks
+DESCRIPTION=Wall Cracks
+DUPELIST=01b6d,01b6e,01b6f
+
+[ITEMDEF 01b6d]
+//wall cracks
+DUPEITEM=01b6c
+
+[ITEMDEF 01b6e]
+//wall cracks
+DUPEITEM=01b6c
+
+[ITEMDEF 01b6f]
+//wall cracks
+DUPEITEM=01b6c
+
 
 [ITEMDEF 01e9a]
 DEFNAME=i_hook_and_pulley
-//RESOURCES3=1 i_PULLEY, i_ROPE, i_HOOK
+FLIP=1
+WEIGHT=5.1
+RESOURCES=1 i_log,1 i_axel,2 i_rope,1 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Hook
 DUPELIST=01e9b
 
 [ITEMDEF 01e9b]
+//hook and pully
 DUPEITEM=01e9a
 
 [ITEMDEF 01e9c]
 DEFNAME=i_pullies
-//RESOURCES3=2 i_PULLEY, i_ROPE
+FLIP=1
+WEIGHT=5.1
+RESOURCES=1 i_log,1 i_axel,2 i_rope,1 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Pulley
 DUPELIST=01e9d,01e9e,01e9f
 
 [ITEMDEF 01e9d]
+//hook and pully
 DUPEITEM=01e9c
 
 [ITEMDEF 01e9e]
+//hook and pully
 DUPEITEM=01e9c
 
 [ITEMDEF 01e9f]
+//hook and pully
 DUPEITEM=01e9c
 
 [ITEMDEF 01ea0]
 DEFNAME=i_rope_bundle
-RESOURCES=1 i_ROPE
+RESOURCES=1 i_rope
 WEIGHT=1
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
@@ -692,139 +548,49 @@ DESCRIPTION=Rope
 DUPELIST=01ea1,01ea2
 
 [ITEMDEF 01ea1]
+//rope
 DUPEITEM=01ea0
 
 [ITEMDEF 01ea2]
+//rope
 DUPEITEM=01ea0
-
-[ITEMDEF 01ea3]
-DEFNAME=i_net
-RESOURCES=5 i_ROPE
-WEIGHT=5
-CATEGORY=Buildings - Other
-SUBSECTION=Hooks, Pulleys and Winches
-DESCRIPTION=Net
-DUPELIST=01ea4,01ea5,01ea6
-
-[ITEMDEF 01ea4]
-DUPEITEM=01ea3
-
-[ITEMDEF 01ea5]
-DUPEITEM=01ea3
-
-[ITEMDEF 01ea6]
-DUPEITEM=01ea3
 
 [ITEMDEF 01ea8]
 DEFNAME=i_winch
-RESOURCES=5 i_ROPE, 2 I_GEARS, 20 i_ingot_iron
-WEIGHT=17
+WEIGHT=30.3
+RESOURCES=5 i_rope,1 i_axel,2 i_gears,20 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Winch
 DUPELIST=01ea9,01eaa,01eab,01eac,01ead,01eae,01eaf
 
 [ITEMDEF 01ea9]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01eaa]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01eab]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01eac]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01ead]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01eae]
+//winch
 DUPEITEM=01ea8
 
 [ITEMDEF 01eaf]
+//winch
 DUPEITEM=01ea8
-
-[ITEMDEF 01eca]
-DEFNAME=i_PYLON_STONE
-RESOURCES=1 i_rock_plain
-CATEGORY=Buildings - Other
-SUBSECTION=Stone Pylon
-DESCRIPTION=Dark @
-
-[ITEMDEF 01ecb]
-DEFNAME=i_PYLON_STONE_LIGHT
-RESOURCES=1 i_rock_plain
-CATEGORY=Buildings - Other
-SUBSECTION=Stone Pylon
-DESCRIPTION=Light @
-
-[ITEMDEF 01ecc]
-DEFNAME=i_PYLON_STONE_SAND
-RESOURCES=1 i_stone_sand
-CATEGORY=Buildings - Other
-SUBSECTION=Stone Pylon
-DESCRIPTION=Sandstone Pylon
-
-[ITEMDEF 0233c]
-// serpant pillar
-DUPELIST=0233d,0233e,0233f,02340,02341,02342,02343,02344,02345,02346,02347,02348,02349,0234a
-
-[ITEMDEF 0233d]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 0233e]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 0233f]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02340]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02341]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02342]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02343]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02344]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02345]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02346]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02347]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02348]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 02349]
-// serpant pillar
-DUPEITEM=0233c
-
-[ITEMDEF 0234a]
-// serpant pillar
-DUPEITEM=0233c
 
 [ITEMDEF 02710]
 //tightrope
@@ -834,4 +600,42 @@ DUPELIST=02711
 //tightrope
 DUPEITEM=02710
 
-[eof]
+
+[ITEMDEF 02fde]
+DEFNAME=i_ladder_wood_tall
+FLIP=1
+RESOURCES=20 i_board,1 i_nails
+CATEGORY=Buildings - Other
+SUBSECTION=Wooden Ladders
+DESCRIPTION=Ladder (tall)
+DUPELIST=02fdf
+
+[ITEMDEF 02fdf]
+//wooden ladder tall
+DUPEITEM=02fde
+
+
+[ITEMDEF 03db2]
+DEFNAME=i_ladder_wood_3
+NAME=wooden ladder
+FLIP=1
+RESOURCES=15 i_board,1 i_nails
+CATEGORY=Buildings - Other
+SUBSECTION=Wooden Ladders
+DESCRIPTION=Ladder 3
+DUPELIST=03db3,03db4,03db5
+
+[ITEMDEF 03db3]
+//wooden ladder 3
+DUPEITEM=03db2
+
+[ITEMDEF 03db4]
+//wooden ladder 3
+DUPEITEM=03db2
+
+[ITEMDEF 03db5]
+//wooden ladder 3
+DUPEITEM=03db2
+
+
+[EOF]

@@ -7,9 +7,20 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, September 1, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
+
+[COMMENT sphere_item_magic_spellweaving]
+
+This file contains all things relating to Ninjitsu and Bushido, such as:
+
+* Spellbooks
+* Scrolls
+* Spell runes
+* Arcane circles
+* Arcane focus
 
 
 [ITEMDEF 02d50]
@@ -265,12 +276,55 @@ ON=@Create
    //MOREY={50 80}
 
 
+[ITEMDEF 0307b]
+DEFNAME=i_arcane_circle
+NAME=arcane circle
+CATEGORY=Magic
+SUBSECTION=Spellweaving
+DESCRIPTION=Arcane Circle 1
+DUPELIST=0307c,0307d,0307e,0307f,03080,03081,03082,03083
+TEVENTS=t_arcane_circle
+
+[ITEMDEF 0307c]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 0307d]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 0307e]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 0307f]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 03080]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 03081]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 03082]
+//arcane circle
+DUPEITEM=0307b
+
+[ITEMDEF 03083]
+//arcane circle
+DUPEITEM=0307b
+
+
 [ITEMDEF 0314c]
 DEFNAME=i_arcane_circle_2
 CATEGORY=Magic
 SUBSECTION=Spellweaving
-DESCRIPTION=Arcane Circle
+DESCRIPTION=Arcane Circle 2
 DUPELIST=0314d,0314e,0314f,03150,03151,03152,03153,03154
+TEVENTS=t_arcane_circle
 
 [ITEMDEF 0314d]
 //arcane circle 2
@@ -322,7 +376,7 @@ ON=@ClientToolTip
    SRC.ADDCLILOC 1072517,<dTIMER>
    RETURN 1
 ON=@Timer
-   CONT.SYSMESSAGELOC color_text,1072515,#<TAG0.CLILOC.NAME>
+   CONT.SYSMESSAGELOC 1072515,#<TAG0.CLILOC.NAME>
    REMOVE
    RETURN 1
 

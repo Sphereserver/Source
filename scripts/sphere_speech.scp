@@ -1,25 +1,23 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 15-Nov-2003
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
-VERSION=0.56b
-
-
-// In the process of moving this stuff to scripts.
 
 [SPEECH spk_player]
 // All players speech filtered through here.
-ON=home home home	//	Ghosts can go home.
-	if (<flags>&STATF_DEAD)
-		go <home>
-	endif
+ON=home home home   //   Ghosts can go home.
+   IF (<FLAGS>&statf_dead)
+      go <home>
+   endif
 
 ON=I must consider my sins
 
@@ -30,7 +28,7 @@ ON=I resign from my town
 ON=Guard help *
 ON=Guards*
 ON=Help Guards*
-	// trying to call guards for help.
+   // trying to call guards for help.
 
 [SPEECH spk_pet]
 // Pets that cannot talk
@@ -38,7 +36,7 @@ ON=ATTACK
 ON=COME
 ON=DEFEND ME
 ON=DISMISS
-ON=DROP	// "GIVE" ?
+ON=DROP   // "GIVE" ?
 ON=DROP ALL
 ON=FETCH
 ON=FOLLOW
@@ -63,7 +61,7 @@ ON=CASH
 ON=COME
 ON=DEFEND ME
 ON=DISMISS
-ON=DROP	// "GIVE" ?
+ON=DROP   // "GIVE" ?
 ON=DROP ALL
 ON=EQUIP
 ON=EQUIP ALL
@@ -77,7 +75,7 @@ ON=GUARD
 ON=GUARD ME
 ON=INVENTORY
 ON=KILL
-ON=PRICE	// may have args ?
+ON=PRICE   // may have args ?
 ON=RECIEVED
 ON=RELEASE
 ON=SAMPLES

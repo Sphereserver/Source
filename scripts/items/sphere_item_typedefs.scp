@@ -1,0 +1,1352 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Thursday, September 12, 2013
+//
+VERSION=0.56c
+
+
+[TYPEDEF t_landmine]
+ON=@Step
+   IF !(<MORE1>)
+      EFFECT=3,i_fx_explode            // explosion animation
+      SOUND=snd_SPELL_EXPLOSION        // explosion sound
+      SRC.DAMAGE={5 20} <DEF.dam_fire> // cause damage
+      MORE1=1                          // disarm landmine
+      TIMER=30                         // trigger @Timer after 30 seconds
+   ELSE
+      SAY Click
+   ENDIF
+   RETURN 0   // allow the step
+ON=@Timer
+   MORE1=0    // activate landmine
+   RETURN 1   // prevent decay
+ON=@DClick
+   // Can be disarmed by a player with decent tinkering
+   IF (<SRC.SKILLCHECK TINKERING 300>)
+      MORE1=1   // disarm landmine
+      TIMER=60  // trigger @Timer after 60 seconds
+      MESSAGE Mine is disarmed...
+   ELSE
+      MESSAGE You fail to disarm the Mine!
+      IF (RAND(2))
+         TRIGGER @STEP
+      ELSE
+         MESSAGE The mine does not go off. Close one!
+      ENDIF
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_vend_machine]
+ON=@DCLick
+   IF (<SRC.RESTEST 10 i_gold>)
+      SERV.NEWITEM={ i_ham 1 i_fruit_apple 1 i_bread_loaf 1 i_bacon_slice 1 i_ribs_cooked 1 i_sausages 1 }
+      NEW.BOUNCE   // put it in your pack.
+      SRC.CONSUME=10 i_gold
+      SRC.MESSAGE That will be 10 Gold Thank Thee.
+      SOUND 0F7
+      RETURN 1
+   ELSE
+      MESSAGE You lack 10 Gold to pay.
+   ENDIF
+
+
+[TYPEDEF t_windgate]
+ON=@Step
+   IF (<SRC.MAGERY> > 70.0)
+      SRC.MESSAGE Welcome to Wind!
+      SRC.GO Wind
+   ELSE
+      SRC.MESSAGE You are not a worthy mage to enter Wind!
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_trapchest]
+ON=@DClick
+   IF (<SRC.TINKERING> >= 300)
+      SRC.MESSAGE You disarm the trap and open the chest.
+      TYPE=t_container
+      RETURN 0
+   ELSE
+      SRC.MESSAGE You fail to disarm the trap.
+      IF (RAND(2))
+         SRC.MESSAGE The trap does not go off.
+         TYPE=t_container
+         RETURN 0
+      ELSE
+         EFFECT=3,i_fx_explode
+         SOUND=snd_spell_explosion
+         SRC.DAMAGE={20 35} <DEF.dam_fire>
+         TYPE=t_container
+         RETURN 0
+      ENDIF
+   ENDIF
+
+
+[TYPEDEF t_goodresgate]
+ON=@Step
+   IF (<SRC.KARMA> < 0)
+      SRC.MESSAGE You are not fit to be here evil one!
+      RETURN 1
+   ENDIF
+   IF !(<SRC.FLAGS> & <DEF.statf_dead>)   // Are they dead ?
+      SRC.MESSAGE You feel you are on holy ground.
+      RETURN 0
+   ENDIF
+   SRC.MESSAGE Return to life friend of goodness.
+   SRC.RESURRECT
+   RETURN 1
+ON=@DClick
+   // DClicking is the same as Stepping
+   TRIGGER=@STEP
+
+
+[TYPEDEF t_sex_change]
+ON=@DCLICK
+   IF (<SRC.FLAGS> & <DEF.statf_polymorph>)
+      SRC.SPELLEFFECT=s_dispel 1000 // Dispell the polymorph effect
+   ENDIF
+   IF (<SRC.BODY> == c_man)
+      SRC.BODY=c_woman
+   ELIF (<SRC.BODY> == c_woman)
+      SRC.BODY=c_man
+   ELSE
+      RETURN 1
+   ENDIF
+   SERV.NEWITEM=i_fire_column              // create a fire column
+   NEW.ATTR=attr_can_decay|attr_move_never // allow it to decay and prevent move
+   NEW.TIMER=2                             // it lasts 2 seconds
+   NEW.P=<SRC.P>                           // put it on the player
+   SRC.SOUND=snd_spell_explosion           // play a sound
+   REMOVE   // gets rid of the object
+   RETURN 1
+
+
+[TYPEDEF t_guild_door]
+//Guild Members Only Door
+//Set the door to the Triger Type #, then Link the DOOR to the GUILDSTONE
+//DO NOT LINK THE GUILDSTONE TO THE DOOR - YOUR GUILDSTONE WILL DISAPPEAR IN THE NEXT SAVE.
+ON=@DClick
+   IF (<SRC.MEMORYFINDTYPE.0400.LINK> == <LINK>)
+      MOREP=<P>
+      SRC.MESSAGE You pass through the door magically.
+      SRC.GO <MOREP>
+   ELSE
+      SRC.MESSAGE The door seems magically locked.
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_gate_res_evil]
+// gate or tile for a murderer to step on.
+// useful at chaos shrine or in bucs den.
+ON=@Step
+   IF (<SRC.KILLS> > 10)
+      // They have have killed more than 10 players
+      SRC.MESSAGE Welcome back to life, o Murderous One.
+      SRC.RESURRECT
+   ELIF !(<SRC.FLAGS> & <DEF.statf_dead>)
+      // Since they are not dead, just give them full HP
+      SRC.MESSAGE You feel energized!
+      SRC.HITS=<SRC.MAXHITS>
+   ELSE
+      // Since they are not a dead murder, do nothing
+      SRC.MESSAGE You are not truely evil yet.
+   ENDIF
+
+
+[TYPEDEF t_body_change]
+ON=@DClick
+   SRC.BODY=c_titan
+   SRC.COLOR=0
+   SRC.SOUND=snd_spell_explosion
+   SRC.SYSMESSAGE=You are now a titan!
+
+
+[TYPEDEF t_guild_red]
+ON=@DClick
+   SRC.COLOR=020    // change their skincolor to red
+   SRC.OSKIN=020    // make it permanent
+   SRC.P=1962,850,5 // send them to the arena coordinates
+   SRC.SYSMESSAGE Welcome to the red faction!
+
+[TYPEDEF t_guild_red_res]
+// Red Faction res gate
+ON=@Step
+   IF (<SRC.OSKIN> == 020)
+      SRC.MESSAGE Return to life red one!
+      SRC.RESURRECT
+   ELSE
+      SRC.MESSAGE You Are Not A Red Faction Member!
+   ENDIF
+   RETURN 1
+
+[TYPEDEF t_guild_green]
+ON=@DClick
+   SRC.COLOR=02f5
+   SRC.OSKIN=02f5
+   SRC.P=2023,827,6
+   SRC.SYSMESSAGE Welcome to the green faction!
+
+[TYPEDEF t_guild_green_res]
+// Green Faction res gate
+ON=@Step
+   IF (<SRC.OSKIN> == 02f5)
+      SRC.MESSAGE Return to life green one!
+      SRC.RESURRECT
+   ELSE
+      SRC.MESSAGE You Are Not A green Faction Member!
+   ENDIF
+   RETURN 1
+
+[TYPEDEF t_guild_blue]
+ON=@DClick
+   SRC.COLOR=03
+   SRC.OSKIN=03
+   SRC.P=2000,782,6
+   SRC.SYSMESSAGE Welcome to the blue faction!
+
+[TYPEDEF t_guild_blue_res]
+// Blue Faction res gate
+ON=@Step
+   IF (<SRC.OSKIN> == 03)
+      SRC.MESSAGE Return to life blue one!
+      SRC.RESURRECT
+   ELSE
+      SRC.MESSAGE You Are Not A Blue Faction Member!
+   ENDIF
+   RETURN 1
+
+[TYPEDEF t_guild_yellow]
+ON=@DClick
+   SRC.COLOR=035
+   SRC.OSKIN=035
+   SRC.P=2118,773,6
+   SRC.SYSMESSAGE Welcome to the yellow faction!
+
+[TYPEDEF t_guild_yellow_res]
+// Yellow Faction res gate
+ON=@Step
+   IF (<SRC.OSKIN> == 035)
+      SRC.MESSAGE Return to life yellow one!
+      SRC.RESURRECT
+   ELSE
+      SRC.MESSAGE You Are Not A Yellow Faction Member!
+   ENDIF
+   RETURN 1
+
+[TYPEDEF t_guild_purple]
+ON=@DClick
+   SRC.COLOR=0143
+   SRC.OSKIN=0143
+   SRC.P=2090,847,6
+   SRC.SYSMESSAGE Welcome to the purple faction!
+
+[TYPEDEF t_guild_purple_res]
+// Purple Faction res gate
+ON=@Step
+   IF (<SRC.OSKIN> == 0143)
+      SRC.MESSAGE Return to life purple one!
+      SRC.RESURRECT
+   ELSE
+      SRC.MESSAGE You Are Not A Purple Faction Member!
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_race_evil]
+// this trigger is for my Doppleganger Race...
+// it will recognize the Doppleganger by its OBODY
+// their shape is take on randomly...
+ON=@DClick
+   IF (<SRC.OBODY>!=033)
+      RETURN 1 // Not the right body, give "Cant use that message"
+   ENDIF
+   DORAND 4
+      SRC.COLOR=0
+      begin
+         SRC.MESSAGE You take on the form of an Orc!
+         SRC.BODY=011
+      end
+      begin
+         SRC.MESSAGE You take on the form of a Ogre!
+         SRC.BODY=01
+      end
+      begin
+         SRC.MESSAGE You take on the form of a Zombie!
+         SRC.BODY=03
+      end
+      begin
+         SRC.MESSAGE You take on the form of a Human!
+         SRC.BODY=c_man
+      end
+   ENDDO
+
+
+[TYPEDEF t_gate_gm_all]
+// GM in all skills
+// and 100 of each stat
+ON=@Step
+   SRC.ALLSKILLS=1000
+   SRC.STR=100
+   SRC.DEX=100
+   SRC.INT=100
+   SRC.MANA=100
+   SRC.HITPOINTS=100
+   SRC.STAM=100
+   RETURN 1
+
+
+[TYPEDEF t_shrine_guilt]
+// GUILT SHRINE.
+// Erases a KILL from your stats for 1000 GOLD
+// This is a guilt shrine for erasing kills from your
+// stats, and when you dont have kills automatically
+// you loose the murderer flag, hope you enjoy it.
+ON=@DClick
+   IF (<SRC.KILLS> > 0)
+      IF (<SRC.RESTEST 1000 i_gold>)
+         SRC.KILLS -= 1
+         SRC.CONSUME=1000 i_gold
+         SRC.MESSAGE You have been forgiven of one of your evil deeds!
+      ELSE
+         SRC.MESSAGE You need to contribute 1000 gold, for forgiveness of one your kills!
+      ENDIF
+   ELSE
+      SRC.MESSAGE You have not killed anyone!!!
+   ENDIF
+
+
+[TYPEDEF t_blood]
+// This trigger works on the blood pools left by carving corpses. When
+// the player dclicks the blood, it checks to see if the players skin color
+// matches that of a vampire, in this example I used 038a as the vampire
+// skin color. It then makes a backpack check for a empty bottle, if there
+// is a bottle, it creates a blood bottle in the players pack. When the
+// vampire dclicks it, it heals him.
+ON=@DClick
+   IF (<SRC.OSKIN> == 038a)
+      // player has the right skin color
+      IF (<SRC.RESTEST 1 i_bottle_empty>)
+         // player has a empty bottle in their pack
+         SRC.MESSAGE You put some blood into a bottle.
+         SRC.SOUND=0240
+         SRC.CONSUME=i_bottle_empty  // consumes 1 empty bottle
+         SERV.NEWITEM=i_bottle_blood // creates a bottle of blood
+         NEW.BOUNCE
+         REMOVE //remove the blood pool
+      ELSE
+         SRC.MESSAGE You need an empty bottle to pick this up.
+      ENDIF
+      RETURN 1
+   ENDIF
+
+
+[ITEMDEF i_bottle_blood]
+NAME=bottle of blood
+ID=i_bottle_black
+WEIGHT=1
+CATEGORY=Custom Items
+SUBSECTION=Race Items
+DESCRIPTION=Bottle of Blood
+ON=@Create
+   COLOR=020
+ON=@DClick
+   IF ! (<SRC.OSKIN> == 038a)
+      SRC.MESSAGE Only vampires may drink this blood.
+      RETURN 1
+   ELIF (<SRC.HITS> >= <SRC.MAXHITS>)
+      SRC.MESSAGE You are already fully healed.
+      RETURN 1
+   ELSE
+      SRC.SOUND=30
+      SRC.SOUND=31
+      SRC.HITS += <R10,20> // Add between 10 and 20 points to HITS
+      REMOVE
+      SERV.NEWITEM=i_bottle_empty
+      NEW.BOUNCE
+      SRC.MESSAGE Blood refresh you.
+      RETURN 1
+   ENDIF
+
+
+[TYPEDEF t_invade_1]
+// the "switch" item to start the invasion
+// this item needs to be linked to another item that is located where the
+// creatures are supposed to spawn
+
+// 1. Go to where ya want the spawn to appear and drop a ground tile to match
+//    the area grass to grass etc (remember where ya put it!)
+// 2. Set the attr of that item to 08090 (invis,static,never move)
+// 3. Place a switch or lever or somethin on a wall or floor in a remote
+//    location and link the switch to the ground tile.
+// 4. Place a sign over the switch so that ya know what it controls... If you
+//    do one set for every town, you can have multiple forces of monsters
+//    attack at almost the exact same time.
+ON=@DClick
+   SERV.NEWITEM=i_spawn_invade
+   NEW.P=<LINK.P>
+   RETURN 1
+
+[ITEMDEF i_spawn_invade]
+// the "spawner" of the invasion creatures
+ID=i_hole
+TYPE=t_spawn_char
+ON=@Create
+   TIMER=0      // start the timer
+   MOREP=1,2,3  // spawn a creature within 3 squares, every 1 to 2 seconds
+   MORE2=0      // tells the spawner that it has spawned no creatures yet
+   ATTR=attr_move_never|attr_invis
+   MORE={ c_skeletonarcher 1 c_mummy 1 c_lich_lord }
+ON=@Timer
+   IF !(<AMOUNT>)
+      REMOVE
+      RETURN 1
+   ENDIF
+   IF (<MORE2>)
+      MOREP=1,2,3
+      AMOUNT=0
+      RETURN 0
+   ENDIF
+
+[TYPEDEF T_INVADE_2]
+// another method for invasion spawns! (by MightY)
+//
+// 1. Create a normal spawner
+// 2. Create a switch with this TYPE and link it to the spawner
+ON=@DClick
+   IF (<LINK.AMOUNT> > 0)
+      LINK.AMOUNT=0
+      RETURN 0
+   ELSE
+      LINK.AMOUNT=5 // whatever value you like
+      LINK.TIMER=1
+      RETURN 0
+   ENDIF
+
+[TYPEDEF t_invade_trig]
+// Invasion lever trigger (By Daegon - aka Mercury)
+//
+// 1. Create a creature spawner
+// 2. Create a switch item and LINK it to the spawner
+// 3. The MORE property on the switch item is how many NPCs to spawn.
+//    Keep it reasonable for best effects. the MORE2 property on the switch
+//    is how far from the spawn bit the NPCs should wander. This is to keep
+//    them in an invasion area, so if they aren't killed they won't wander
+//    off to the four corners of the world.
+ON=@DClick
+   IF (<SRC.ISGM>)
+      IF (<LINK.AMOUNT> > 0)
+         SRC.MESSAGE You toggle the spawn to <NAME> off!
+         LINK.AMOUNT=0
+         LINK.MOREZ=0
+         RETURN 1
+      ELSE
+         // First, do some error handling
+         IF (<MORE1> < 1)
+            SRC.MESSAGE MORE invalidly set.
+            RETURN 1
+         ELIF (<MORE2> < 0)
+            SRC.MESSAGE MORE2 invalidly set.
+            RETURN 1
+         ELIF !(<LINK.TYPE> == T_SPAWN_CHAR)
+            SRC.MESSAGE Linked TYPE invalidly set.
+            RETURN 1
+         ELIF !(<LINK.MOREY> > 0)
+            SRC.MESSAGE Linked MOREY invalidly set.
+            RETURN 1
+         ELSE
+            LINK.AMOUNT=<MORE1>
+            LINK.MOREZ=<MORE2>
+            SRC.MESSAGE You toggle the spawn to <NAME> on!
+            SRC.MESSAGE Do not forget to turn it OFF!
+            LINK.TIMER=1
+            RETURN 1
+         ENDIF
+      ENDIF
+   ENDIF
+
+
+[TYPEDEF t_trapped]
+ON=@Equip
+   SRC.SOUND=snd_spell_explosion
+   SRC.DAMAGE={100 500} <DEF.dam_fire>
+   SRC.MESSAGE=The item was trapped!
+
+
+[ITEMDEF i_key_witch_castle]
+ID=i_key_iron
+NAME=Witch Castle Key
+
+[ITEMDEF i_door_witch_castle]
+ID=i_door_metal
+NAME=Witch Castle Door
+TYPE=t_door_locked
+CATEGORY=Quest Items
+SUBSECTION=Wizard of Oz
+DESCRIPTION=Metal Door
+ON=@DCLICK
+   IF !(<SRC.RESTEST 1 i_key_witch_castle>)
+      SRC.MESSAGE Your entry is blocked
+      RETURN 1
+   ELSE
+      TYPE=t_door
+      TIMER=30
+   ENDIF
+   RETURN 0
+ON=@Timer
+   TYPE=t_door_locked
+   RETURN 1
+
+
+[TYPEDEF t_goshrine]
+// An item with this TYPE can be used to travel to various shines.
+ON=@DClick
+   SRC.MENU m_goshrine
+
+[MENU m_goshrine]
+Where would you like to go?
+0 Shrine of Compassion
+go 1856 876 0
+0 Shrine of Honesty
+go 4216 563 36
+0 Shrine of Honor
+go 1729 3527 3
+0 Shrine of Humility
+go 4274 3699 0
+0 Shrine of Justice
+go 1301 632 16
+0 Shrine of Sacrifice
+go 3354 287 4
+0 Shrine of Spirituality
+go 1600 2490 10
+0 Shrine of Valor
+go 2495 3931 0
+
+
+[TYPEDEF t_jedi_morph]
+// Jedi Morph
+ON=@STEP
+   SRC.TITLE=Jedi Knight
+   SRC.STR=40
+   SRC.DEX=60
+   SRC.INT=50
+   SRC.SYSMESSAGE=You are now a Jedi apprentice!
+   SRC.GO=5605 1437 0
+
+
+[TYPEDEF t_sew_barb]
+ON=@DClick
+   IF ! (<SRC.RESTEST 1 i_knife_skinning>)
+      SRC.MESSAGE You need a skinning knife to use with this kit.
+      RETURN 1
+   ENDIF
+   IF ((<SRC.TAG.RACE> == RACE_Barb) || (<SRC.ISGM>))
+      SRC.MENU=m_armor_barbarian
+      RETURN 1
+   ELSE
+      SRC.MESSAGE Only barbarians can use this tool.
+      RETURN 1
+   ENDIF
+
+[MENU m_armor_barbarian]
+Select the armor you would like to make.
+ON=0 Bone Armor
+   SRC.MENU=m_armor_bone
+ON=0 Serpent Armor //not included
+   SRC.MENU=###    //write your own
+ON=0 Ettin Armor
+   SRC.MENU=###
+ON=0 Ogre Armor
+   SRC.MENU=###
+ON=0 Troll Armor
+   SRC.MENU=###
+ON=0 Dragon Armor
+   SRC.MENU=###
+ON=0 Wyrm Armor
+   SRC.MENU=###
+
+[MENU m_armor_bone]
+Bone Armor
+ON=i_bone_chest Bone Tunic (40 Bones)
+   IF (<SRC.TAILORING> < 30.0)
+      SRC.MESSAGE You are not skilled enough to make that.
+      RETURN 1
+   ENDIF
+   IF !(<SRC.RESTEST 40 i_reag_bone>)
+      SRC.MESSAGE You do not have enough bones to make this.
+      RETURN 1
+   ENDIF
+   IF (<SRC.TAILORING> > 99.9)
+      IF (RAND(3) <= 1)
+         SRC.SOUND=0248
+         SRC.MESSAGE You cut and tie the bones together.
+         SRC.MESSAGE You have made a bone tunic.
+         SRC.CONSUME=40 i_reag_bone
+         SERV.NEWITEM=I_BONE_CHEST
+         NEW.NAME=bone tunic crafted by <SRC.NAME>
+         NEW.BOUNCE
+         SRC.TAILORING += <eval { 0.1 5 0.2 5 0.3 4 0.4 3 0.0 2 0.0 3 }>
+         SRC.MESSAGE With your exceptional skill, you engrave your name onto this item.
+      ELSE
+         SRC.SOUND=0248
+         SRC.MESSAGE You failed to make anything.
+         SRC.CONSUME=5 i_reag_bone
+      ENDIF
+   ELIF (<SRC.TAILORING><100.0)
+      IF (RAND(3) == 1) || (RAND(3) == 0)
+         SRC.SOUND=0248
+         SRC.MESSAGE You cut tie the bones together.
+         SRC.MESSAGE You have made a bone tunic.
+         SRC.CONSUME=20 i_reag_bone
+         SERV.NEWITEM=i_bone_chest
+         NEW.BOUNCE
+         SRC.TAILORING += <eval { 0.1 5 0.2 5 0.3 4 0.4 3 0.0 2 0.0 3 }>
+      ELSE
+         SRC.SOUND=0248
+         SRC.MESSAGE You failed to make anything.
+         SRC.CONSUME=5 i_reag_bone
+      ENDIF
+   ENDIF
+
+
+[TYPEDEF t_magic_stone]
+// When you use an item of this type it raises your INT to 60.
+ON=@DCLICK
+   LOCAL.TEMP=60
+   if (<SRC.INT> < <LOCAL.TEMP>)
+      SRC.MESSAGE You feel a surge of magical energy go through your body.
+      SRC.MESSAGE You feel a lot more intelligent then you were 2 seconds ago.
+      SRC.INT=<LOCAL.TEMP>
+      SRC.MANA=<LOCAL.TEMP>
+   ELSE
+      SRC.MESSAGE You are already too powerful for the effects of this stone to work!
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_chest_locked]
+// This is how you make a chest with a lock. Add any item, then give it this
+// trigger. Double click on the item to get a chest with 2 keys.
+//
+// How do you give or set a trigger to an item?
+//   .set type t_chest_trap
+// How to make a trapped chest?
+//   .add i_chest_trap
+//   .set type t_chest_trap
+// A player needs tinkering and gears to open this chest. You can set the
+// following commands:
+//   .set more min     // the min damage the trap will do.
+//   .set more2 max    // the max damage the trap will do.
+//   .set morex amount // the minimum tinkering to disarm the chest.
+//
+ON=@DClick
+   SERV.NEWITEM={ i_key_copper 1 i_key_gold 1 i_key_iron 1 i_key_rusty 1 }
+   LOCAL.KEY=<NEW.UID>
+   NEW.MORE1=<NEW>
+   NEW.BOUNCE
+   NEW.DUPE
+   SERV.NEWITEM={ i_chest_metal 1 i_chest_metal_brass 1 i_chest_wooden_brass 1 }
+   NEW.MORE1=<LOCAL.KEY>
+   NEW.BOUNCE
+
+
+[TYPEDEF t_chest_trap]
+// Replace the TYPE of any container with this custom TYPE
+// 1. Check tinkering
+// 2. Check tools (no, 50% blow up)
+// 3. Check for gear
+// 4. Blow up if failed
+// 5. Consume gear
+ON=@DClick
+   IF (<SRC.RESTEST 1 i_gears>)
+      SRC.CONSUME 1 i_gears
+   ELSE
+      SRC.MESSAGE You fail to disarm the trap.
+      SRC.DAMAGE=<eval <MORE1> - <MORE2>> <DEF.dam_fire>
+      SERV.NEWITEM=i_fire_column
+      NEW.ATTR attr_can_decay|attr_move_never
+      NEW.P=<SRC.P>
+      NEW.TIMER 2
+      SRC.SOUND=snd_spell_explosion
+      RETURN 0
+   ENDIF
+   IF (<SRC.TINKERING> >= <MOREX>)
+      SRC.MESSAGE You attempt to disarm the trap.
+      IF (<SRC.RESTEST 1 i_tinker_tools>)
+         IF (RAND(2))
+            SRC.MESSAGE You disarm the trap successfully.
+            TIMER=<MOREY>
+            MOREZ=1
+            TYPE=t_container
+            RETURN 0
+         ELSE
+            SRC.MESSAGE You fail to disarm the trap.
+            SRC.DAMAGE=<eval <MORE1> - <MORE2>>
+            SERV.NEWITEM=i_FIRE_COLUMN
+            NEW.ATTR attr_can_decay|attr_move_never
+            NEW.TIMER 2
+            NEW.P=<SRC.P>
+            SRC.UPDATE
+            SRC.SOUND=snd_SPELL_EXPLOSION
+            RETURN 0
+         ENDIF
+      ELSE
+         IF (RAND(10) == 5)
+            SRC.MESSAGE You disarm the trap successfully.
+            TIMER=<MOREY>
+            MOREZ=1
+            TYPE=T_CONTAINER
+            RETURN 0
+         ELSE
+            SRC.MESSAGE You fail to disarm the trap.
+            SRC.DAMAGE=<eval <MORE1> - <MORE2>>
+            SERV.NEWITEM i_fire_column
+            NEW.ATTR attr_can_decay|attr_move_never
+            NEW.TIMER 2
+            NEW.P=<SRC.P>
+            SRC.UPDATE
+            SRC.SOUND snd_spell_explosion
+            RETURN 0
+         ENDIF
+      ENDIF
+   ENDIF
+ON=@Timer
+   MOREZ=0
+   RETURN 1
+
+
+[TYPEDEF t_custom_door]
+// TDATA1 is the ID when opened
+// TDATA2 is the ID when closed
+// FIXME: Implement keys, secure locks, pickable locks, and traps.
+ON=@DClick
+   IF (<ID>==<TDATA1>)
+      ID=<TDATA2>
+   ELSE
+      ID=<TDATA1>
+   ENDIF
+   UPDATE
+   RETURN 1
+
+
+[TYPEDEF t_horseshoes]
+// Gives slightly more dexterity to a hoofed animal.
+ON=@DClick
+   TARGET What animal needs this item?
+   RETURN 1
+ON=@Targon_Char
+   IF (<SRC.TARG.DEX> > 100)
+      SRC.SYSMESSAGE That animal does not need this item.
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.OBODY>==(c_horse_pack|c_llama_pack|c_horse_gray|c_horse_brown_dk|c_horse_brown_lt|c_llama))
+      SRC.SYSMESSAGE Now the animal is faster.
+      SRC.TARG.MODDEX += <MORE1>
+      SRC.EFFECT=3,0374a,6,15,1
+      REMOVE
+   ELSE
+      SRC.SYSMESSAGE That animal can not wear this item.
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_dye_tub_limited]
+ON=@DClick
+   IF (<COLOR> > 03e9)
+      COLOR=0
+   ENDIF
+ON=@Targon_Item
+   IF (<SRC.TARG.BASEID>==i_dye_tub)
+      SRC.SYSMESSAGE You cannot dye a dying tub.
+      RETURN 1
+   ELSEIF (<SRC.TARG.DYE>==1)
+      SRC.SOUND=574
+      RETURN 0
+   ELSE
+      SRC.SYSMESSAGE The dye just drips off this item.
+      SRC.SOUND=574
+      RETURN 1
+   ENDIF
+On=@Targon_Char
+   SRC.SYSMESSAGE A dying vat cannot be used to dye hair. Try hair dye.
+   RETURN 1
+
+
+[TYPEDEF t_gem_arcane]
+// An Arcane Gem can be used on certain clothing (robe, cape, thigh boots, or
+// leather gloves) to make that clothing "arcane".  When Arcane clothing is
+// worn, the player is able to cast spells even if they do not have the
+// necessary reagents or magic skill... assuming that one of the equipped
+// arcane items has a charge.  An Arcane Gem can also be used to recharge
+// items that are already arcane.
+ON=@DClick
+   IF (<SRC.TARG.TOPOBJ.UID>!=<SRC.UID>)
+      SRC.SYSMESSAGE @021 The arcane gem must be in your posession to use.
+   ELSE
+      TARGET Select the item you wish to enchant.
+   ENDIF
+   RETURN 1
+ON=@TargOn_Item
+   IF (<SRC.TARG.TOPOBJ.UID>!=<SRC.UID>)
+      SRC.SYSMESSAGE @021 The clothing you wish to enchant must be in your backpack.
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.QUALITY> < 176)
+      SRC.SYSMESSAGE @021 The clothing you wish to enchant must be exceptional.
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.ISTEVENT.t_arcane_clothing>) || (<SRC.TARG.ISEVENT.t_arcane_clothing>)
+      SRC.EMOTE recharge <SRC.TARG.NAME>
+      SRC.TARG.TAG0.ArcaneCharges += <EVAL <SRC.TAILORING>/50>
+      IF (<SRC.TARG.TAG0.ArcaneCharges> > 24)
+         SRC.TARG.TAG0.ArcaneCharges=24
+      ENDIF
+      SRC.SYSMESSAGE @030 The <SRC.TARG.NAME> now has <dSRC.TARG.TAG0.ArcaneCharges> charges
+      CONSUME
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.ATTR>&(attr_magic|attr_newbie))
+      SRC.SYSMESSAGE @021 That clothing is already enchanted.
+      RETURN 1
+   ENDIF
+
+   IF (<SRC.TARG.DEFNAME>==i_robe)
+      SRC.TARG.ID=i_robe_arcane
+      LOCAL.ConversionSuccess=1
+   ELSEIF (<SRC.TARG.DEFNAME>==i_cape)
+      SRC.TARG.ID=i_cape_arcane
+      LOCAL.ConversionSuccess=1
+   ELSEIF (<SRC.TARG.DEFNAME>==i_boots_thigh)
+      SRC.TARG.ID=i_boots_thigh_arcane
+      LOCAL.ConversionSuccess=1
+   ELSEIF (<SRC.TARG.ID>==i_leather_gloves)
+      SRC.TARG.ID=i_leather_gloves_arcane
+      LOCAL.ConversionSuccess=1
+   ELSE
+      SRC.SYSMESSAGE @021 You cannot enchant that item with this gem.
+   ENDIF
+
+   IF (<LOCAL.ConversionSuccess>)
+      SRC.TARG.QUALITY={177 200}
+      SRC.TARG.ATTR=attr_magic|attr_identified
+      SRC.TARG.TAG.ArcaneCharges=24
+      //SRC.TARG.EVENTS +t_arcane_clothing
+      SRC.TARG.UPDATE
+      SRC.TARG.RESENDTOOLTIP
+      SRC.EMOTE enchant the <SRC.TARG.NAME>
+      SRC.SOUND snd_SPELL_PROTECTION
+   ENDIF
+   CONSUME
+   RETURN 1
+
+[ITEMDEF i_gem_arcane]
+ID=i_worldgem_lg
+NAME=arcane gem
+TYPE=t_gem_arcane
+VALUE=5000
+CATEGORY=Provisions - Jewels and Jewelry
+SUBSECTION=Special Jewels
+DESCRIPTION=Arcane Gem
+
+[TYPEDEF t_arcane_clothing]
+// This TYPEDEF is added to equipable items that grant the wearer the
+// e_arcane_player_effect EVENT.
+ON=@CLIENTTOOLTIP
+	SRC.ADDCLILOC 1061837,<dTAG0.ArcaneCharges>,24
+   RETURN 0
+ON=@Equip
+   IF (<TAG0.ArcaneCharges> > 0)
+      SRC.EVENTS +e_arcane_player_effect
+      SRC.TAG0.ArcaneItemsWorn += 1
+      SRC.SOUND=0fd
+      SRC.EFFECT=3,i_fx_bless_effect,6,16,0
+   ENDIF
+ON=@UnEquip
+   SRC.TAG0.ArcaneItemsWorn -= 1 
+   IF (<SRC.TAG0.ArcaneItemsWorn>==0)
+      SRC.EVENTS -e_arcane_player_effect
+      SRC.SOUND=0fd
+      SRC.TAG.ArcaneItemsWorn=
+   ENDIF
+
+[EVENTS e_arcane_player_effect]
+// This event is added to the player when they equip an item that has a
+// TEVENT of t_arcane_clothing
+ON=@SpellSelect
+   IF (<ARGN3> != 1)
+      IF !(<SRC.CANCAST <ARGN1>>)
+         REF1=<FINDLAYER(layer_shoes).UID>
+         REF2=<FINDLAYER(layer_gloves).UID>
+         REF3=<FINDLAYER(layer_cape).UID>
+         SERV.LOG name=<REF3.NAME> charges=<REF3.TAG0.ArcaneCharges> event=<REF3.ISTEVENT.t_arcane_clothing>
+         REF4=<FINDLAYER(layer_robe).UID>
+         IF (<REF1.ISTEVENT.t_arcane_clothing>) && (<REF1.TAG0.ArcaneCharges>)
+            SYSMESSAGE You cannot cast this spell ... but the Arcane Boots uses a charge to help you!
+            REF1.TAG0.ArcaneCharges -= 1
+            RETURN 6//allow the casting anyway
+         ELSEIF (<REF2.ISTEVENT.t_arcane_clothing>) && (<REF2.TAG0.ArcaneCharges>)
+            SYSMESSAGE You cannot cast this spell ... but the Arcane Gloves uses a charge to help you!
+            REF2.TAG0.ArcaneCharges -= 1
+            RETURN 6//allow the casting anyway
+         ELSEIF (<REF3.ISTEVENT.t_arcane_clothing>) && (<REF3.TAG0.ArcaneCharges>)
+            SYSMESSAGE You cannot cast this spell ... but the Arcane Cape uses a charge to help you!
+            REF3.TAG0.ArcaneCharges -= 1
+            RETURN 6//allow the casting anyway
+         ELSEIF (<REF4.ISTEVENT.t_arcane_clothing>) && (<REF4.TAG0.ArcaneCharges>)
+            SYSMESSAGE You cannot cast this spell ... but the Arcane Robe uses a charge to help you!
+            REF4.TAG0.ArcaneCharges -= 1
+            RETURN 6//allow the casting anyway
+         ENDIF
+      ENDIF
+   ENDIF
+
+
+[TYPEDEF t_plantclipping_tool]
+// This TYPEDEF works best when applied as the TYPE on a custom item
+// (typically based off i_clippers).  It lets the user manufacture plant
+// clippings and dry reeds for use in fabricating baskets etc.
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1060728,<dMORE2L>,<dMORE2H>//"charges: ~/~"
+   IF (<MORE1>)
+      SRC.ADDCLILOC 1112283//"Set to cut reeds"
+   ELSE
+      SRC.ADDCLILOC 1112282//"Set to clip plants"
+   ENDIF
+ON=@ContextMenuRequest
+   SRC.AddContextEntry 101,5089//"Type"
+ON=@ContextMenuSelect
+   IF (<TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   IF (<MORE1>)
+      SRC.SYSMESSAGELOC 1112285//"You are now set to make plant clippings."
+      MORE1=0
+   ELSE
+      SRC.SYSMESSAGELOC 1112286//"You are now set to cut reeds."
+      MORE1=1
+   ENDIF
+   RESENDTOOLTIP
+   RETURN 1
+ON=@DClick
+   IF (<TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   SRC.SYSMESSAGELOC 1112118//"What plant do you wish to use these clippers on?"
+   TARGET
+   RETURN 1
+ON=@TargOn_Item
+   IF (<SRC.TARG.TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   IF !(<SRC.TARG.ISTEVENT.t_decorative_plant>)
+      SRC.SYSMESSAGELOC 1112119//"You may only use these clippers on decorative plants."
+   ELSE
+      IF (<MORE1>)
+         SERV.NEWITEM i_dry_reed
+         NEW.COLOR=<SRC.TARG.COLOR>
+         NEW.BOUNCE
+      ELSE
+         SERV.NEWITEM i_plant_clippings,1,<SRC>
+         SRC.SYSMESSAGELOC 1112120//"You cut the plant into small pieces and place them in your backpack."
+      ENDIF
+      SRC.TARG.REMOVE
+      MORE2L -= 1
+      IF (<MORE2L> < 1)
+         SRC.SYSMESSAGELOC 1112126//"Your clippers break as you use up the last charge."
+         REMOVE
+      ENDIF
+      RESENDTOOLTIP
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_cracked_lavarock]
+// This TYPEDEF is applied to lavarock items, allowing them to be cracked open
+// and possibly recover a "Geode" from them.
+ON=@Damage
+   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   SERV.NEWITEM={ i_geode 1 i_geode_2 1 }
+   NEW.CONT=<SRC>
+   REMOVE
+
+[TYPEDEF t_geode]
+// This TYPEDEF is applied to "Geode" ITEMDEFs.  It allows a Geode to be cracked
+// open into colorful "Geode Shards".
+ON=@Damage
+   IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
+      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      RETURN 1
+   ENDIF
+   FOR 4
+      SERV.NEWITEM=i_geode_shard
+      NEW.COLOR=<COLOR>
+      NEW.CONT=<SRC>
+   ENDFOR
+   REMOVE
+
+[FUNCTION f_creategeode]
+// This function is called from the @Create trigger of a t_geode ITEMDEF to give
+// one percent of them a more interesting name and color.
+NAME=Quartz Geode
+COLOR=<R2501,2644>
+IF (<R100>==1)
+   DORAND 10
+      BEGIN
+       NAME=Calcite Geode
+       NAME=Agate Geode
+       NAME=Smithsonite Geode
+       NAME=Amethyst Geode
+       NAME=Chalcedony Geode
+       NAME=Sphalerite Geode
+       NAME=Millerite Geode
+       NAME=Barite Geode
+       NAME=Dolomite Geode
+       NAME=Limonite Geode
+      END
+      COLOR=<R2651,2662>
+   ENDDO
+ENDIF
+
+
+[TYPEDEF t_aquarium_item]
+[TYPEDEF t_aquarium]
+// If an item is of TYPE=t_container it can also have a TEVENTS=t_aquarium added
+// to it, in which case, it allows only t_fish and t_aquarium_item objects to be
+// put into it.  Every time it is opened, those objects change position...
+// hours of entertainment - no really!
+ON=@DClick
+   //Randomize all object locations when opened
+   FORCONT <UID> 0
+      CONTP=<R1,348>,<R1,198>
+   ENDFOR
+ON=@DropOn_Self
+   //Only allow aquarium items and fish
+   IF (<ARGO.TYPE>!=t_aquarium_item) && (<ARGO.TYPE>!=t_fish)
+      RETURN 1
+   ENDIF
+
+
+[COMMENT typedef_ninja_shuriken]
+This typedef script is to be used on both the ninja belt, and the shuriken. It
+covers both items since they are dependant on each other and most of the code
+is shared...
+
+This script could be improved further:
+- Allow shurikens to be dropped on the belt to load them...
+- The belt should probably be a container so that it (and the player) gain
+  weight when shurikens are loaded.  When this conversion is made, the load
+  limit check could be eliminated...
+
+
+[DEFNAME ninja_shuriken_properties]
+ShurikenMinRange    1
+ShurikenMaxRange    10
+ShurikenMinDamage   10
+ShurikenMaxDamage   20
+ShurikenDamageType  dam_physical
+ShurikenSkillUsed   Throwing
+ShurikenSkillGain   1 // 1 means skillgain is possible, 0 means never gain...
+ShurikenLoadLimit   50
+ShurikenDelayTime   50 // 50 is about 5 seconds...
+// cliloc 3006226 Shuriken
+// cliloc 1045158//"You must have the item in your backpack to target it."
+
+
+[TYPEDEF t_ninja_shuriken]
+ON=@DClick
+   IF (<TOPOBJ.UID>!=<SRC>)
+      SRC.SYSMESSAGELOC 1115941//"You must be carrying this item to use it."
+      RETURN 1
+   ENDIF
+   IF !(<SRC.FINDID.i_belt_ninja_leather>)
+      //Cannot throw a shuriken without a ninja belt present...
+      RETURN 1
+   ENDIF
+   IF (<SRC.FINDID.i_belt_ninja_leather.TAG0.LastUsedTime>)
+      IF (<EVAL <SERV.TIME>-<SRC.FINDID.i_belt_ninja_leather.TAG0.LastUsedTime>> < <DEF.ShurikenDelayTime>)
+         SRC.SYSMESSAGELOC 1063298//"You cannot throw another shuriken yet."
+         RETURN 1
+      ENDIF
+   ENDIF
+   IF (<SRC.FINDLAYER.1>) && (<SRC.FINDLAYER.2>)
+      SRC.SYSMESSAGELOC 1063299//"You must have a free hand to throw shuriken."
+      RETURN 1
+   ENDIF
+   IF !(<SRC.FINDID.i_belt_ninja_leather.TAG0.ShurikenCount>)
+      SRC.SYSMESSAGELOC 1063297//"You have no shuriken in your ninja belt!"
+   ENDIF
+   IF (<DEFNAME>==i_belt_ninja_leather)
+      IF (<TAG0.ShurikenCount>)
+         TARGET 1113280//"Which target do you wish to throw this at?"
+      ENDIF
+      RETURN 0 //So that DClick will equip the belt
+   ENDIF
+   TARGET 1113280//"Which target do you wish to throw this at?"
+   RETURN 1 //To prevent "can't think of a way to use that" message when the shuriken is DClicked
+
+ON=@TargOn_Char
+   IF !(<SRC.TARG.CANSEELOS>)
+      SRC.SYSMESSAGELOC 500237//"Target cannot be seen."
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.DISTANCE> < <DEF.ShurikenMinRange>)
+      SRC.SYSMESSAGELOC 1063303//"Your target is too close!"
+      RETURN 1
+   ENDIF
+   IF (<SRC.TARG.DISTANCE> > <DEF.ShurikenMaxRange>)
+      SRC.SYSMESSAGELOC 1063304//"Your target is too far!"
+      RETURN 1
+   ENDIF
+   SRC.ANIM=11
+   SRC.TARG.EFFECT=0,i_shuriken,4,4,0
+   SRC.FINDID.i_belt_ninja_leather.TAG.LastUsedTime=<SERV.TIME>
+   IF (<DEF.ShurikenSkillgain>)
+      SRC.SKILLGAIN <DEF.ShurikenSkillUsed>,<SRC.<DEF.ShurikenSkill>>
+   ENDIF
+   IF (<R1250> < <SRC.<DEF.ShurikenSkillUsed>>)
+      SRC.TARG.DAMAGE=<R<DEF.ShurikenMinDamage>,<DEF.ShurikenMaxDamage>> <DEF.ShurikenDamageType> <SRC>
+      SRC.SOUND=snd_combat_shuriken_hit
+      SRC.TARG.SOUND=snd_combat_shuriken_hit
+   ELSE
+      SRC.SOUND=snd_combat_shuriken_miss
+      SRC.TARG.SOUND=snd_combat_shuriken_miss
+   ENDIF
+   IF (<SRC.FINDID.i_belt_ninja_leather.TAG0.ShurikenCount>)
+      SRC.FINDID.i_belt_ninja_leather.TAG0.ShurikenCount --
+      RESENDTOOLTIP
+   ELSE
+      SRC.FINDID.i_shuriken.REMOVE
+   ENDIF
+   RETURN 1
+
+ON=@DropOn_Self
+   SERV.LOG Does this trigger work? name=<NAME> src=<SRC.NAME>
+   IF (<ARGO.DEFNAME>!=i_shuriken)
+      SRC.SYSMESSAGELOC 1063301//"You can only place shuriken in a ninja belt."
+      RETURN 1
+   ENDIF
+   IF (<TAG0.ShurikenCount> >= <DEF.ShurikenLoadLimit>)
+      SRC.SYSMESSAGELOC 1063302//"You cannot add any more shuriken."
+      RETURN 1
+   ENDIF
+
+ON=@ClientToolTip
+   IF (<DEFNAME>==i_belt_ninja_leather)
+      SRC.ADDCLILOC 1060584,<dTAG0.ShurikenCount>
+   ENDIF
+   RETURN 0
+
+ON=@ContextMenuRequest
+   IF (<DEFNAME>==i_belt_ninja_leather)
+      SRC.ADDCONTEXTENTRY 300,6222//"Load Ninja Belt"
+      SRC.ADDCONTEXTENTRY 400,6223//"UnLoad Ninja Belt"
+      SRC.ADDCONTEXTENTRY 500,391//"Help"
+   ENDIF
+
+ON=@ContextMenuSelect
+   IF (<ARGN>==300)
+      LOCAL.ItemsAdded=0
+      LOCAL.OldObj=<OBJ>
+      OBJ=<UID>
+      FORCONT <SRC.FINDLAYER.layer_pack.UID> 0//Only search the top level of the backpack
+         IF (<DEFNAME>==i_shuriken)
+            IF (<OBJ.TAG0.ShurikenCount> < <DEF.ShurikenLoadLimit>)
+               OBJ.TAG0.ShurikenCount ++
+               LOCAL.ItemsAdded ++
+               REMOVE
+            ENDIF
+         ENDIF
+      ENDFOR
+      OBJ=<OBJ>
+      IF (<LOCAL.ItemsAdded>)
+         SRC.SYSMESSAGE Loaded <dLOCAL.ItemsAdded> shuriken into the belt.
+         RESENDTOOLTIP
+      ENDIF
+      IF !(<TAG0.ShurikenCount> >= <DEF.ShurikenLoadLimit>) && !(<LOCAL.ItemsAdded>)
+         SRC.SYSMESSAGE No shuriken were found in your backpack.
+      ENDIF
+      IF (<TAG0.ShurikenCount> >= <DEF.ShurikenLoadLimit>)
+         SRC.SYSMESSAGELOC 1063302//"You cannot add any more shuriken."
+      ENDIF
+   ENDIF
+   IF (<ARGN>==400)
+      SERV.NEWITEM i_shuriken,1,<SRC>
+      TAG0.ShurikenCount --
+      RESENDTOOLTIP
+   ENDIF
+   IF (<ARGN>==500)
+      SRC.SYSMESSAGELOC 1115941//"You must be carrying this item to use it."
+      SRC.SYSMESSAGELOC 1070785//"Double click this item each time you wish to throw a shuriken."
+      SRC.SYSMESSAGELOC 1063299//"You must have a free hand to throw shuriken."
+   ENDIF
+
+
+
+[TYPEDEF t_kitchenknife]
+ON=@DClick
+   TARGET
+   RETURN 1
+ON=@TargOn_Item
+   IF (!STRCMPI(i_cake_tiered,<ARGO.DEFNAME>))
+      IF (<ARGO.TOPOBJ>!=<SRC>)
+         SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+         RETURN 1
+      ENDIF
+      FOR 6
+         SERV.NEWITEM i_cake_tiered_slice,1,<SRC>
+         NEW.COLOR=<ARGO.COLOR>
+      ENDFOR
+      ARGO.REMOVE
+   ENDIF
+   //FIXME: wheel of cheese and pie should be carved like this
+   RETURN 1
+
+
+[TYPEDEF t_mounted_pixie]
+ON=@DClick
+   IF (<DEFNAME>==i_mounted_pixie_1)//dark green girlie voice
+      DORAND 4
+         SRC.SOUND 0555//"ouch, OUCH, Owieeeee"
+         SRC.SOUND 0556//"Pleaseeeeee"
+         SRC.SOUND 0557//"Help meeee"
+         SRC.SOUND 0558//"Let me downn"
+      ENDDO
+   ELIF (<DEFNAME>==i_mounted_pixie_2)//orange male voice
+      DORAND 4
+         SRC.SOUND 0559//"Oh man, come on! I am beggin you!"
+         SRC.SOUND 055a//"Lemme out!"
+         SRC.SOUND 055b//"Ph-phleasseeee!"
+         SRC.SOUND 055c//"Help me!"
+      ENDDO
+   ELIF (<DEFNAME>==i_mounted_pixie_3)//blue
+      DORAND 3
+         SRC.SOUND 055d//"Let me down!"
+         SRC.SOUND 055e//"Phhleeaseeeeee!"
+         SRC.SOUND 055f//"Halp meee!"
+      ENDDO
+   ELIF (<DEFNAME>==i_mounted_pixie_4)//light green
+      DORAND 3
+         SRC.SOUND 0560//"Help meeeeee!"
+         SRC.SOUND 0561//"Let me down!"
+         SRC.SOUND 0562//"Phhleeaseeeeee!"
+      ENDDO
+   ELIF (<DEFNAME>==i_mounted_pixie_5)//pink
+      DORAND 3
+         SRC.SOUND 0563//"Let me down"
+         SRC.SOUND 0564//"Pleaseeee"
+         SRC.SOUND 0565//"ouch, OUCH, OOWIEE"
+      ENDDO
+   ENDIF
+   RETURN 1
+
+
+[TYPEDEF t_portrait_creepy]
+ON=@DClick
+   FLIP
+   SRC.SOUND 056a//howl
+   RETURN 1
+
+
+[TYPEDEF t_mailbox]
+//FIXME: Implement keys, secure locks, pickable locks, and traps.
+ON=@DropOn_Self
+   ID=<TAG.FullID>
+   UPDATE
+ON=@PickUp_Self
+   TIMERF 0,f_ResetMailboxFlag
+
+[FUNCTION f_ResetMailboxFlag]
+LOCAL.HasAnItem=0
+FORCONT <UID> 0
+   LOCAL.HasAnItem += 1
+ENDFOR
+IF (<LOCAL.HasAnItem>)
+   ID=<TAG.FullID>
+ELSE
+   ID=<TAG.EmptyID>
+ENDIF
+UPDATE
+
+[TYPEDEF t_chicken_coop]
+// Used to raise fighting chickens!
+// FIXME: Not complete, do not use...
+ON=@DClick
+   IF !(<TAG0.StableOwner>)
+      TAG.StableOwner=<SRC>
+   ENDIF
+   RETURN 1
+ON=@ClientToolTip
+   IF (<TAG0.StableOwner>)
+      REF99=<EVAL <TAG.StableOwner>&~030000000>
+      SRC.ADDCLILOC 1072304,<REF99.NAME>//"Owned by ~"
+   ENDIF
+   SRC.ADDCLILOC 1071250,<dTAG0.StablesUsed>,<dTAG0.StablesMax>//"~/~ stable stalls used."
+ON=@ContextMenuRequest
+   IF (<TAG0.StableOwner>==<SRC>)
+      SRC.AddContextEntry 101,3006126//"Stable Pet"//1112556//"Stable a chicken"
+      SRC.AddContextEntry 102,3006181//"Summon your pet"//1112557//"Claim a chicken"
+   ENDIF
+ON=@ContextMenuSelect
+   IF (<TAG0.StableOwner>!=<SRC>)
+      SRC.SYSMESSAGELOC 1113204//"The chickens stabled in this coop belong to someone else!"
+      RETURN 1
+   ENDIF
+   IF (<ARGN>==101)
+      IF (<dTAG0.StablesUsed> >= <dTAG0.StablesMax>)
+         SRC.SYSMESSAGELOC 1114325//"There is no more room in your chicken coop!"
+         RETURN 1
+      ENDIF
+      //1112559//"Which chicken do you wish to stable?"
+      //1112558//"You may only stable chickens in the chicken coop"
+   ENDIF
+   IF (<ARGN>==102)
+      //1080048//"Select a pet to retrieve from the stable:"
+   ENDIF
+
+
+[TYPEDEF t_mailbox]
+//FIXME: Implement keys, secure locks, pickable locks, and traps.
+ON=@DropOn_Self
+   ID=<TAG.FullID>
+   UPDATE
+ON=@PickUp_Self
+   TIMERF 0,f_ResetMailboxFlag
+
+[FUNCTION f_ResetMailboxFlag]
+LOCAL.HasAnItem=0
+FORCONT <UID> 0
+   LOCAL.HasAnItem += 1
+ENDFOR
+IF (<LOCAL.HasAnItem>)
+   ID=<TAG.FullID>
+ELSE
+   ID=<TAG.EmptyID>
+ENDIF
+UPDATE
+
+
+[TYPEDEF t_masonry_tool]
+[TYPEDEF t_glassblowing_tool]
+[TYPEDEF t_arcane_circle]
+[TYPEDEF t_weapon_throwing]//Throwing skill comes back to thrower
+[TYPEDEF t_weapon_thrown]//Throwing skill stays at target
+[TYPEDEF t_fletching]
+[TYPEDEF t_soulforge]
+[TYPEDEF t_equipitem]
+
+[EOF]

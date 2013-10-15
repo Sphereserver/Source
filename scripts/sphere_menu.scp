@@ -1,14 +1,15 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 27-Jul-2006
-VERSION=0.56b
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
 
 
 // MENU_PAGEGM -------------------------------------
@@ -176,18 +177,49 @@ RETURNMAINMENU
 //SEE THE FUNCTION UNDER sphere_triggers.scp
 //on=0 Transfer the Guild to an existing member.
 //TRANSFERGUILD
-
-
 //ON=0 Issue Chaos Shields
 //NEWITEM=i_shield_chaos
 //SRC.ACT.LINK=<SERIAL>
 //ON=0 Issue Order Shields
 //NEWITEM=I_SHIELD_ORDER
 //SRC.ACT.LINK=<SERIAL>
-// Non-member view.
 
-// Non-member view.
+[FUNCTION TRANSFERGUILD]
+src.targetf f_transferguild <uid>
+src.sysmessage Who do you wish to transfer the guild to?
+
+[FUNCTION f_transferguild]
+If (<ARGO.ISITEM>)
+ sysmessage You cannot transfer a guild to that.
+ Return
+Endif
+If (<ARGO.NPC>)
+ sysmessage You cannot transfer a guild to that.
+ Return
+Endif
+If (<argo>==<uid>)
+ sysmessage You are the master of <uid.<args>.name> already.
+ Return
+Endif
+If !(<memoryfindtype.memory_guild.link.uid>==<args>)
+ sysmessage You are not a member of the guild.
+ Return
+Endif
+local.obj=<OBJ>
+OBJ=<ARGO.UID>
+If !(<obj.memoryfindtype.memory_guild.link.uid>==<args>)
+ sysmessage That player is not a member of the guild.
+ OBJ=<local.obj>
+ Return
+Endif
+TRY uid.<args>.masteruid=<obj.uid>
+sysmessage You have transfered the guild to <obj.name>.
+obj.sysmessage You are now the master of <uid.<args>.name>.
+OBJ=<local.obj>
+
+
 [MENU MENU_GUILD_NON]
+// Non-member view.
 <Name> (<MasterTitle> <Master>)
 ON=0 View the guild's charter.
 VIEWCHARTER
@@ -673,24 +705,24 @@ ADDITEM i_gem_tourmaline
 [MENU M_ADDN_NEW]
 New Creatures
 ON=0 Skeleton Archer
-ADDNPC C_M_SKELETONARCHER
+ADDNPC c_SKELETONARCHER
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_OPHID]
 T2A Creatures (Ophidian & Terathan)
 ON=0 Ophidian Arch Mage
-ADDNPC C_M_OPHIDIAN_ARCHMAGE
+ADDNPC c_OPHIDIAN_ARCHMAGE
 ON=0 Ophidian Mage
 ADDNPC c_OPHIDIAN_MAGE
 ON=0 Ophidian Knight
-ADDNPC C_M_OPHIDIAN_KNIGHT
+ADDNPC c_OPHIDIAN_KNIGHT
 ON=0 Ophidian Matriarch
 ADDNPC c_OPHIDIAN_QUEEN
 ON=0 Ophidian Warrior
 ADDNPC c_OPHIDIAN_WARRIOR
 ON=0 Terathan Avenger
-ADDNPC C_M_TERATHAN_AVENGER
+ADDNPC c_TERATHAN_AVENGER
 ON=0 Terathan Drone
 ADDNPC c_TERATHAN_DRONE
 ON=0 Terathan Matriarch
@@ -814,11 +846,11 @@ ADDNPC c_harpy
 ON=0 Mongbat (subterranean)
 ADDNPC c_mongbat
 ON=0 Mongbat (arboreal)
-ADDNPC C_M_MONGBAT_ARBOREAL
+ADDNPC c_MONGBAT_ARBOREAL
 ON=0 Ogre
 ADDNPC c_OGRE
 ON=0 Ogre Lord
-ADDNPC c_m_ogre_lord
+ADDNPC c_ogre_lord
 ON=0 Ettin, Lizmen, Orc, Ratmen, Troll
 MENU M_ADDN_ETTIN
 ON=0 Reaper
@@ -842,10 +874,10 @@ ON=0 Spectre
 ADDNPC c_SPECTRE
 ON=0 Headless
 ADDNPC c_Headless
-ON=0 Liche
-ADDNPC c_liche
-ON=0 Liche Lord
-ADDNPC c_m_liche_lord
+ON=0 Lich
+ADDNPC c_lich
+ON=0 Lich Lord
+ADDNPC c_lich_lord
 ON=0 Skeleton
 ADDNPC c_skeleton
 ON=0 Skeleton (with axe)
@@ -853,9 +885,9 @@ ADDNPC c_skeleton_w_axe
 ON=0 Skeleton (with sword)
 ADDNPC c_skeleton_w_sword
 ON=0 Skeletal Knight
-ADDNPC c_m_skeleton_knight
+ADDNPC c_skeleton_knight
 ON=0 Skeletal Mage
-ADDNPC c_m_skeleton_mage
+ADDNPC c_skeleton_mage
 ON=0 Zombie
 ADDNPC c_ZOMBIE
 ON=0 PREVIOUS MENU
@@ -884,7 +916,7 @@ ADDNPC c_DRAGON_SMALL_BLACK
 ON=0 Daemon
 ADDNPC c_DAEMON
 ON=0 Balron (Elder Daemon)
-ADDNPC c_m_balron
+ADDNPC c_balron
 ON=0 Daemon (with sword)
 ADDNPC c_DAEMON_W_SWORD
 ON=0 Gargoyle
@@ -892,7 +924,7 @@ ADDNPC c_GARGOYLE
 ON=0 Gazer
 ADDNPC c_gazer
 ON=0 Elder Gazer
-ADDNPC c_m_gazer_elder
+ADDNPC c_gazer_elder
 ON=0 Sea Serpent
 ADDNPC c_SEA_SERPENT
 ON=0 PREVIOUS MENU
@@ -905,25 +937,25 @@ ADDNPC c_bullfrog
 ON=0 Cyclops
 ADDNPC c_CYCLOPS
 ON=0 Frost Troll
-ADDNPC c_m_frost_troll
+ADDNPC c_frost_troll
 ON=0 Giant Ice Serpent
-ADDNPC C_M_ICE_SERPENT
+ADDNPC c_ICE_SERPENT
 ON=0 Imp
-ADDNPC c_m_imp
+ADDNPC c_imp
 ON=0 Kraken
-ADDNPC C_M_KRAKEN
+ADDNPC c_KRAKEN
 ON=0 Lava Lizard
-ADDNPC c_m_lava_lizard
+ADDNPC c_lava_lizard
 ON=0 Mummy
-ADDNPC C_M_MUMMY
+ADDNPC c_MUMMY
 ON=0 Nightmare
-ADDNPC C_M_NIGHTMARE
+ADDNPC c_NIGHTMARE
 ON=0 Phoenix
-ADDNPC C_M_PHOENIX
+ADDNPC c_PHOENIX
 ON=0 Stone Gargoyle
-ADDNPC c_m_gargoyle_stone
+ADDNPC c_gargoyle_stone
 ON=0 Stone Harpy
-ADDNPC c_m_stoneharpy
+ADDNPC c_stoneharpy
 ON=0 Giant Toad
 ADDNPC c_TOAD_GIANT
 ON=0 Titan
@@ -954,9 +986,9 @@ ADDNPC c_ORC
 ON=0 Orc (with club)
 ADDNPC c_orc_w_club
 ON=0 Orcish Mage
-ADDNPC c_m_orc_mage
+ADDNPC c_orc_mage
 ON=0 Orc Captian
-ADDNPC c_m_orc_captain
+ADDNPC c_orc_captain
 ON=0 Orc Lord
 ADDNPC c_orc_lord
 ON=0 Ratman
@@ -1450,11 +1482,11 @@ ADDNPC c_CHICKEN
 [MENU M_ADDN_T2A_ICE]
 T2A Ice Creatures & Ostards
 ON=0 Ice Elemental
-ADDNPC c_m_elem_ice
+ADDNPC c_elem_ice
 ON=0 Snow Elemental
-ADDNPC c_m_elem_ice
+ADDNPC c_elem_ice
 ON=0 Ice Fiend
-ADDNPC C_M_ICEFIEND
+ADDNPC c_ICEFIEND
 ON=0 Ice Snake
 ADDNPC c_ice_snake
 ON=0 Oclock (Desert Ostard)
@@ -1469,9 +1501,9 @@ MENU M_ADDN_T2A
 [MENU M_ADDN_WYRM]
 T2A Creatures (Wyrm & Wyvern)
 ON=0 White Wyrm
-ADDNPC c_m_dragon_ice
+ADDNPC c_dragon_ice
 ON=0 Wyvern
-ADDNPC c_m_wyvern
+ADDNPC c_wyvern
 ON=0 PREVIOUS MENU
 MENU M_ADDN_T2A
 
@@ -2875,10 +2907,10 @@ ON=i_candle_short Candle
 ADD i_candle_short
 ON=i_candle_lg Candle
 ADD i_candle_lg
-ON=i_candleabra2 Candelabra
-ADD i_candleabra2
-ON=i_candleabra Candelabra
-ADD i_candleabra
+ON=i_candelabra2 Candelabra
+ADD i_candelabra2
+ON=i_candelabra Candelabra
+ADD i_candelabra
 ON=i_skull_candle Skull Candle
 ADD i_skull_candle
 ON=i_torch_wall Wall Torch

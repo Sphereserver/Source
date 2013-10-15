@@ -1,3 +1,4 @@
+//****************************************************************************
 // SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -6,106 +7,989 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, January 24, 2005
-// Updated By: Blizzard
-VERSION=0.56b
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+[ITEMDEF 0283]
+DEFNAME=i_gargish_stone_arms_female
+NAME=Gargish female stone arms
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=120
+WEIGHT=10.0
+RESOURCES=8 i_rock_granite
+SKILLMAKE=Carpentry 56.3,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Arms (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=04057
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0284]
+DEFNAME=i_gargish_stone_arms
+NAME=Gargish stone arms
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=120
+WEIGHT=10.0
+RESOURCES=8 i_rock_granite
+SKILLMAKE=Carpentry 56.3,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Arms
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=04058
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0285]
+DEFNAME=i_gargish_stone_chest_female
+NAME=Gargish female stone chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=175
+WEIGHT=15.0
+RESOURCES=12 i_rock_granite
+SKILLMAKE=Carpentry 65.0,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Chest (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=04059
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0286]
+DEFNAME=i_gargish_stone_chest
+NAME=Gargish stone chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=175
+WEIGHT=15.0
+RESOURCES=12 i_rock_granite
+SKILLMAKE=Carpentry 65.0,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Chest
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0405a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0287]
+DEFNAME=i_gargish_stone_kilt_female
+NAME=Gargish female stone kilt
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=135
+WEIGHT=10.0
+RESOURCES=6 i_rock_granite
+SKILLMAKE=Carpentry 48.9,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Kilt (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0405b
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0288]
+DEFNAME=i_gargish_stone_kilt
+NAME=Gargish stone kilt
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=135
+WEIGHT=10.0
+RESOURCES=6 i_rock_granite
+SKILLMAKE=Carpentry 48.9,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Kilt
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0405c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 0289]
+DEFNAME=i_gargish_stone_leggings_female
+NAME=Gargish female stone leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=135
+WEIGHT=15.0
+RESOURCES=10 i_rock_granite
+SKILLMAKE=Carpentry 58.8,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Leggings (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0405d
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+[ITEMDEF 028a]
+DEFNAME=i_gargish_stone_leggings
+NAME=Gargish stone leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=135
+WEIGHT=15.0
+RESOURCES=10 i_rock_granite
+SKILLMAKE=Carpentry 58.8,t_masonry_tool,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Stone Gargoyle Armor
+DESCRIPTION=Gargish Stone Leggings
+TAG.GargoyleOnly=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0405e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=6
+   TAG.RESPOISON=8
+
+
+[ITEMDEF 0301]
+DEFNAME=i_gargish_leather_arms_female
+NAME=Gargish female leather arms
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=70
+WEIGHT=4.0
+RESOURCES=8 i_hides_cut
+SKILLMAKE=Tailoring 53.9,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Arms (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=04047
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0302]
+DEFNAME=i_gargish_leather_arms
+NAME=Gargish leather arms
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=70
+WEIGHT=4.0
+RESOURCES=8 i_hides_cut
+SKILLMAKE=Tailoring 53.9,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Arms
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=04048
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0303]
+DEFNAME=i_gargish_leather_chest_female
+NAME=Gargish female leather chest
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=115
+WEIGHT=4.0
+RESOURCES=8 i_hides_cut
+SKILLMAKE=Tailoring 70.5,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Chest (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=04049
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0304]
+DEFNAME=i_gargish_leather_chest
+NAME=Gargish leather chest
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=115
+WEIGHT=4.0
+RESOURCES=8 i_hides_cut
+SKILLMAKE=Tailoring 70.5,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Chest
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0404a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0305]
+DEFNAME=i_gargish_leather_leggings_female
+NAME=Gargish female leather leggings
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=86
+WEIGHT=5.0
+RESOURCES=10 i_hides_cut
+SKILLMAKE=Tailoring 66.3,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Leggings (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=0404d
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0306]
+DEFNAME=i_gargish_leather_leggings
+NAME=Gargish leather leggings
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=86
+WEIGHT=5.0
+RESOURCES=10 i_hides_cut
+SKILLMAKE=Tailoring 66.3,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Leggings
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=0404e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0307]
+DEFNAME=i_gargish_plate_arms_female
+NAME=Gargish female platemail arms
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=120
+WEIGHT=5.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 66.3,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Arms (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=0404f
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 0308]
+DEFNAME=i_gargish_plate_arms
+NAME=Gargish platemail arms
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=120
+WEIGHT=5.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 66.3,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Arms
+TAG.GargoyleOnly=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=04050
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 0309]
+DEFNAME=i_gargish_plate_chest_female
+NAME=Gargish female platemail chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=175
+WEIGHT=10.0
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=Blacksmithing 75.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Chest (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
+DUPELIST=04051
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030a]
+DEFNAME=i_gargish_plate_chest
+NAME=Gargish platemail chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=175
+WEIGHT=10.0
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=Blacksmithing 75.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Chest
+TAG.GargoyleOnly=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
+DUPELIST=04052
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030b]
+DEFNAME=i_gargish_plate_kilt_female
+NAME=Gargish female platemail kilt
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=135
+WEIGHT=5.0
+RESOURCES=12 i_ingot_iron
+SKILLMAKE=Blacksmithing 58.9,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Kilt (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=04053
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030c]
+DEFNAME=i_gargish_plate_kilt
+NAME=Gargish platemail kilt
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=135
+WEIGHT=5.0
+RESOURCES=12 i_ingot_iron
+SKILLMAKE=Blacksmithing 58.9,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Kilt
+TAG.GargoyleOnly=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=04054
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030d]
+DEFNAME=i_gargish_plate_leggings_female
+NAME=Gargish female platemail leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=135
+WEIGHT=7.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 68.8,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Leggings (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=90
+TEVENTS=t_equipitem
+DUPELIST=04055
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030e]
+DEFNAME=i_gargish_plate_leggings
+NAME=Gargish platemail leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=135
+WEIGHT=7.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 68.8,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Leggings
+TAG.GargoyleOnly=1
+TAG.REQSTR=90
+TEVENTS=t_equipitem
+DUPELIST=04056
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=5
+   TAG.RESENERGY=5
+   TAG.RESFIRE=6
+   TAG.RESPhysical=8
+   TAG.RESPOISON=6
+
+[ITEMDEF 030f]
+CATEGORY=Miscellaneous
+SUBSECTION=Bad Tiles
+DESCRIPTION=Unused Tile 030f
+
+[ITEMDEF 0310]
+DEFNAME=i_gargish_leather_kilt_female
+NAME=Gargish female leather kilt
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=86
+WEIGHT=5.0
+RESOURCES=6 i_hides_cut
+SKILLMAKE=Tailoring 58.0,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Kilt (female)
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0404b
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0311]
+DEFNAME=i_gargish_leather_kilt
+NAME=Gargish leather kilt
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=86
+WEIGHT=5.0
+RESOURCES=6 i_hides_cut
+SKILLMAKE=Tailoring 58.0,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Kilt
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0404c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=7
+   TAG.RESENERGY=6
+   TAG.RESFIRE=6
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+
+[ITEMDEF 0403]
+DEFNAME=i_gargish_cloth_arms_female
+NAME=Gargish female cloth arms
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_arms
+//ARMOR=5
+VALUE=64
+WEIGHT=14.1
+RESOURCES=14 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 45.4,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Female Cloth Arms
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=0405f
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0404]
+DEFNAME=i_gargish_cloth_arms
+NAME=Gargish cloth arms
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_arms
+//ARMOR=5
+VALUE=64
+WEIGHT=14.1
+RESOURCES=14 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 45.4,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Cloth Arms
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=04060
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0405]
+DEFNAME=i_gargish_cloth_chest_female
+NAME=Gargish female cloth chest
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_chest
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 27.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Female Cloth Chest
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=04061
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0406]
+DEFNAME=i_gargish_cloth_chest
+NAME=Gargish cloth chest
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_chest
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 27.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Cloth Chest
+TAG.GargoyleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=04062
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0407]
+DEFNAME=i_gargish_cloth_kilt_female
+NAME=Gargish female cloth kilt
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_skirt
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 22.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Female Cloth Kilt
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=04063
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0408]
+DEFNAME=i_gargish_cloth_kilt
+NAME=Gargish cloth kilt
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_skirt
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 22.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Cloth Kilt
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=04064
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 0409]
+DEFNAME=i_gargish_cloth_leggings_female
+NAME=Gargish female cloth leggings
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_pants
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 29.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Female Cloth Leggings
+TAG.FemaleOnly=1
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=04065
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
+[ITEMDEF 040a]
+DEFNAME=i_gargish_cloth_leggings
+NAME=Gargish cloth leggings
+TYPE=t_armor
+DYE=1
+FLIP=1
+//LAYER=layer_pants
+//ARMOR=5
+VALUE=33
+WEIGHT=8.1
+RESOURCES=8 i_cloth,1 i_thread
+SKILLMAKE=Tailoring 29.2,t_sewing_kit
+CATEGORY=Provisions - Clothes
+SUBSECTION=Gargoyle Cloth Armor
+DESCRIPTION=Gargish Cloth Leggings
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=04066
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=6
+   TAG.RESENERGY=6
+   TAG.RESFIRE=7
+   TAG.RESPhysical=5
+   TAG.RESPOISON=6
+
 
 [ITEMDEF 013bb]
 DEFNAME=i_chainmail_coif
-TYPE=T_ARMOR
-RESOURCES=10 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 14.5
-WEIGHT=7
+NAME=chainmail coif
+TYPE=t_armor
 FLIP=1
-ARMOR=23
-REQSTR=20
+//ARMOR=25
+VALUE=40
+WEIGHT=7.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 14.5,Armslore 20.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Chainmail Armor
 DESCRIPTION=Chainmail Coif
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
 DUPELIST=013c0
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=4
+   TAG.RESPOISON=1
 
 [ITEMDEF 013bc]
 DEFNAME=i_chainmail_leggings_decoration
+NAME=decorative chainmail leggings
 TYPE=t_armor
-RESOURCES=1 i_CHAINMAIL_LEGGINGS, 1 i_PEG
-WEIGHT=11
+FLIP=1
+//ARMOR=25
+VALUE=73
+WEIGHT=7.1
+RESOURCES=1 i_chainmail_leggings,1 i_peg
+SKILLMAKE=Blacksmithing 36.7
 CATEGORY=Provisions - Armor
 SUBSECTION=Chainmail Armor
-DESCRIPTION=Chainmail Leggings Hanging
-DUPELIST=013c1,013c3
-
+DESCRIPTION=Chainmail Leggings (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=013c1
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=4
+   TAG.RESPOISON=1
 
 [ITEMDEF 013bd]
 DEFNAME=i_chainmail_tunic_decoration
+NAME=decorative chainmail tunic
 TYPE=t_armor
-RESOURCES=1 i_CHAINMAIL_TUNIC, 1 i_PEG
-WEIGHT=15
+FLIP=1
+//ARMOR=25
+VALUE=81
+WEIGHT=7.1
+RESOURCES=1 i_chainmail_tunic,1 i_peg
+SKILLMAKE=Blacksmithing 39.1
 CATEGORY=Provisions - Armor
 SUBSECTION=Chainmail Armor
-DESCRIPTION=Chainmail Tunic Hanging
+DESCRIPTION=Chainmail Tunic (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
 DUPELIST=013c2
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=4
+   TAG.RESPOISON=1
 
 [ITEMDEF 013be]
 DEFNAME=i_chainmail_leggings
-TYPE=T_ARMOR
-RESOURCES=18 i_ingot_iron
-WEIGHT=10
+TYPE=t_armor
 FLIP=1
-ARMOR=23
-REQSTR=20
+//ARMOR=25
+VALUE=72
+WEIGHT=7.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 36.7,Armslore 20.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Chainmail Armor
 DESCRIPTION=Chainmail Leggings
-SKILLMAKE=BLACKSMITHING 36.7
-
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=013c3
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=4
+   TAG.RESPOISON=1
 
 [ITEMDEF 013bf]
 DEFNAME=i_chainmail_tunic
-TYPE=T_ARMOR
-RESOURCES=20 i_ingot_iron
-WEIGHT=15
+TYPE=t_armor
 FLIP=1
-ARMOR=23
-REQSTR=20
+//ARMOR=25
+VALUE=80
+WEIGHT=7.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 39.1,Armslore 20.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Chainmail Armor
-DESCRIPTION=Chainmail Tunic Hanging
+DESCRIPTION=Chainmail Tunic
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
 DUPELIST=013c4
-SKILLMAKE=BLACKSMITHING 39.1
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=4
+   TAG.RESPOISON=1
 
 [ITEMDEF 013c0]
-//Chainmail Coif
+//chainmail coif
 DUPEITEM=013bb
 
 [ITEMDEF 013c1]
-//Chainmail Leggings
+//chainmail leggings
 DUPEITEM=013bc
 
 [ITEMDEF 013c2]
-//Chainmail Tunic
+//chainmail tunic
 DUPEITEM=013bd
 
 [ITEMDEF 013c3]
 //chainmail leggings
-DUPEITEM=013bc
+DUPEITEM=013be
 
 [ITEMDEF 013c4]
 //chainmail tunic
@@ -114,125 +998,197 @@ DUPEITEM=013bf
 [ITEMDEF 013c5]
 DEFNAME=i_leather_sleeves
 TYPE=t_armor_leather
-RESOURCES=4 i_hides_cut
-SKILLMAKE=TAILORING 53.9, t_sewing_kit
-WEIGHT=6
 FLIP=1
-ARMOR=13
-REQSTR=10
-DUPELIST=013c8,013cd,013cf
-
+//ARMOR=13
+VALUE=70
+WEIGHT=2.0
+RESOURCES=4 i_hides_cut
+SKILLMAKE=Tailoring 59.0,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Sleeves
-
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=013cd
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013c6]
 DEFNAME=i_leather_gloves
+NAME=leather gloves
 TYPE=t_armor_leather
-RESOURCES=3 i_hides_cut
-SKILLMAKE=TAILORING 51.8, t_sewing_kit
-WEIGHT=1
 FLIP=1
-ARMOR=13
-REQSTR=10
-DUPELIST=013ce
-
+//ARMOR=13
+VALUE=24
+WEIGHT=1.0
+RESOURCES=3 i_hides_cut
+SKILLMAKE=Tailoring 51.8,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Gloves
-
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=013ce
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013c7]
 DEFNAME=i_leather_gorget
 TYPE=t_armor_leather
-RESOURCES=4 i_hides_cut
-SKILLMAKE=TAILORING 53.9, t_sewing_kit
-WEIGHT=2
 FLIP=1
-ARMOR=13
-REQSTR=10
-
+//ARMOR=13
+VALUE=32
+WEIGHT=1.0
+RESOURCES=4 i_hides_cut
+SKILLMAKE=Tailoring 53.9,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Gorget
-
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013c8]
-//hanging leather sleeves
-DUPEITEM=013c5
+DEFNAME=i_leather_sleeves_decoration
+NAME=decorative leather sleeves
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=70
+WEIGHT=2.0
+RESOURCES=1 i_leather_sleeves,1 i_peg
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Sleeves (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=013cf
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013c9]
 DEFNAME=i_leather_leggings_decoration
+NAME=decorative leather leggings
 TYPE=t_armor_leather
-RESOURCES=1 i_LEATHER_LEGGINGS, 1 i_log
-SKILLMAKE=TAILORING 0.0, t_sewing_kit
-WEIGHT=7
-DUPELIST=013d0
-
+FLIP=1
+//ARMOR=13
+VALUE=94
+WEIGHT=4.0
+RESOURCES=1 i_leather_leggings,1 i_peg
+SKILLMAKE=Tailoring 66.3,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
-DESCRIPTION=Leather Leggings Hanging
-
+DESCRIPTION=Leather Leggings (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=013d0
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013ca]
 DEFNAME=i_leather_tunic_decoration
+NAME=decorative leather tunic
 TYPE=t_armor_leather
-RESOURCES=1 i_LEATHER_TUNIC, 1 i_log
-SKILLMAKE=TAILORING 0.0, t_sewing_kit
-WEIGHT=8
-DUPELIST=013d1
-
+FLIP=1
+//ARMOR=13
+VALUE=125
+WEIGHT=6.0
+RESOURCES=1 i_leather_tunic,1 i_peg
+SKILLMAKE=Tailoring 70.5,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
-DESCRIPTION=Leather Tunic Hanging
-
+DESCRIPTION=Leather Tunic (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=013d1
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013cb]
 DEFNAME=i_leather_leggings
 TYPE=t_armor_leather
-RESOURCES=10 i_hides_cut
-SKILLMAKE=TAILORING 66.3, t_sewing_kit
-WEIGHT=6
 FLIP=1
-ARMOR=13
-REQSTR=10
-DUPELIST=013d2
-
+//ARMOR=13
+VALUE=86
+WEIGHT=4.0
+RESOURCES=10 i_hides_cut
+SKILLMAKE=Tailoring 66.3,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Leggings
-
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=013d2
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013cc]
 DEFNAME=i_leather_tunic
 TYPE=t_armor_leather
-RESOURCES=12 i_hides_cut
-SKILLMAKE=TAILORING 70.5, t_sewing_kit
-WEIGHT=7
 FLIP=1
-ARMOR=13
-REQSTR=15
-DUPELIST=013d3
-
+//ARMOR=13
+VALUE=115
+WEIGHT=6.0
+RESOURCES=12 i_hides_cut
+SKILLMAKE=Tailoring 70.5,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Tunic
-
+TAG.NotGargoyle=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=013d3
 ON=@Create
-HITPOINTS={25 30}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013cd]
 //leather sleeves
@@ -243,8 +1199,8 @@ DUPEITEM=013c5
 DUPEITEM=013c6
 
 [ITEMDEF 013cf]
-//leather sleeves
-DUPEITEM=013c5
+//leather sleeves decoration
+DUPEITEM=013c8
 
 [ITEMDEF 013d0]
 //leather leggings
@@ -264,134 +1220,195 @@ DUPEITEM=013cc
 
 [ITEMDEF 013d4]
 DEFNAME=i_studded_sleeves
-TYPE=T_ARMOR
-RESOURCES=10 i_hides_cut
-WEIGHT=8
+TYPE=t_armor_leather
 FLIP=1
-ARMOR=16
-REQSTR=25
-DUPELIST=013dc
-SKILLMAKE=TAILORING 87.1, t_sewing_kit
-
+//ARMOR=16
+VALUE=118
+WEIGHT=13.0
+RESOURCES=10 i_hides_cut,3 i_ingot_iron
+SKILLMAKE=Tailoring 86.3,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
 DESCRIPTION=Studded Sleeves
-
+TAG.NotGargoyle=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=013dc
 ON=@Create
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013d5]
 DEFNAME=i_studded_gloves
-TYPE=t_armor
-SKILLMAKE=TAILORING 82.9, t_sewing_kit
-RESOURCES=8 i_hides_cut
-WEIGHT=2
+TYPE=t_armor_leather
 FLIP=1
-ARMOR=16
-REQSTR=25
-DUPELIST=013dd
-
+//ARMOR=16
+VALUE=79
+WEIGHT=9.0
+RESOURCES=8 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 81.8,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
 DESCRIPTION=Studded Gloves
-
+TAG.NotGargoyle=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=013dd
 ON=@Create
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013d6]
 DEFNAME=i_studded_gorget
-TYPE=T_ARMOR
-RESOURCES=6 i_hides_cut
-WEIGHT=3
-FLIP=1
-ARMOR=16
-REQSTR=25
-SKILLMAKE=TAILORING 78.8, t_sewing_kit
-
+TYPE=t_armor_leather
+//ARMOR=16
+VALUE=61
+WEIGHT=7.0
+RESOURCES=6 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 77.2,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
 DESCRIPTION=Studded Gorget
-
+TAG.REQSTR=25
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 ON=@Create
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013d7]
 DEFNAME=i_studded_sleeves_decoration
-TYPE=t_armor
-RESOURCES=1 i_studded_SLEEVES, 1 i_PEG
-SKILLMAKE=TAILORING 0.0
-WEIGHT=9
-DUPELIST=013de
-ARMOR=16
-REQSTR=25
-
+NAME=decorative studded sleeves
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=16
+VALUE=129
+WEIGHT=4.1
+RESOURCES=1 i_studded_sleeves,1 i_peg
+SKILLMAKE=Tailoring 87.1,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
-DESCRIPTION=Studded Sleeves Hanging
+DESCRIPTION=Studded Sleeves (decorative)
+TAG.REQSTR=25
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=013de
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013d8]
 DEFNAME=i_studded_leggings_decoration
-TYPE=t_armor
-RESOURCES=1 i_studded_LEGGINGS, 1 i_PEG
-SKILLMAKE=TAILORING 0.0
-WEIGHT=8
-DUPELIST=013df
-ARMOR=16
-REQSTR=30
-
+NAME=decorative studded leggings
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=16
+VALUE=155
+WEIGHT=5.1
+RESOURCES=1 i_studded_leggings,1 i_peg
+SKILLMAKE=Tailoring 91.2,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
-DESCRIPTION=Studded Leggings Hanging
+DESCRIPTION=Studded Leggings (decorative)
+TAG.REQSTR=30
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=013df
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013d9]
 DEFNAME=i_studded_tunic_decoration
-TYPE=t_armor
-RESOURCES=1 i_studded_TUNIC, 1 i_PEG
-SKILLMAKE=TAILORING 0.0
-WEIGHT=11
-DUPELIST=013e0
-ARMOR=16
-REQSTR=25
-
+NAME=decorative studded tunic
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=16
+WEIGHT=8.0
+RESOURCES=1 i_studded_tunic,1 i_peg
+SKILLMAKE=Tailoring 94.0,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
-DESCRIPTION=Studded Tunic Hanging
+DESCRIPTION=Studded Tunic (decorative)
+TAG.REQSTR=35
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=013e0
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013da]
 DEFNAME=i_studded_leggings
-TYPE=T_ARMOR
-RESOURCES=12 i_hides_cut
-WEIGHT=7
+TYPE=t_armor_leather
 FLIP=1
-ARMOR=16
-REQSTR=30
-DUPELIST=013e1
-SKILLMAKE=TAILORING 91.2, t_sewing_kit
-
+//ARMOR=16
+VALUE=144
+WEIGHT=16.0
+RESOURCES=12 i_hides_cut,4 i_ingot_iron
+SKILLMAKE=Tailoring 90.9,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
 DESCRIPTION=Studded Leggings
-
+TAG.REQSTR=30
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=013e1
 ON=@Create
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013db]
 DEFNAME=i_studded_tunic
-TYPE=T_ARMOR
-RESOURCES=14 i_hides_cut
-WEIGHT=9
+TYPE=t_armor_leather
 FLIP=1
-ARMOR=16
-REQSTR=35
-DUPELIST=013e2
-SKILLMAKE=TAILORING 94.0, t_sewing_kit
-
+//ARMOR=16
+VALUE=171
+WEIGHT=19.0
+RESOURCES=14 i_hides_cut,5 i_ingot_iron
+SKILLMAKE=Tailoring 95.4,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Studded Armor
 DESCRIPTION=Studded Tunic
-
+TAG.REQSTR=35
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=013e2
 ON=@Create
-HITPOINTS={36 44}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 013dc]
 //studded sleeves
@@ -421,22 +1438,31 @@ DUPEITEM=013da
 //studded tunic
 DUPEITEM=013db
 
+
 [ITEMDEF 013e5]
 DEFNAME=i_ringmail_leggings_decoration
-TYPE=T_ARMOR
-RESOURCES=1 i_RINGMAIL_LEGGINGS, 1 i_PEG
-WEIGHT=13
+NAME=decorative ringmail leggings
+TYPE=t_armor
 FLIP=1
-ARMOR=16
-REQSTR=20
+//ARMOR=22
+VALUE=65
+WEIGHT=15.1
+RESOURCES=1 i_ringmail_leggings,1 i_peg
+SKILLMAKE=Blacksmithing 19.4
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
-DESCRIPTION=Ringmail Leggings Decoration
+DESCRIPTION=Ringmail Leggings (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013e6
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013e6]
 //ringmail leggings
@@ -444,17 +1470,28 @@ DUPEITEM=013e5
 
 [ITEMDEF 013e7]
 DEFNAME=i_ringmail_tunic_decoration
+NAME=decorative ringmail tunic
 TYPE=t_armor
-RESOURCES=1 i_RINGMAIL_TUNIC, 1 i_PEG
-WEIGHT=16
+FLIP=1
+//ARMOR=22
+VALUE=73
+WEIGHT=15.1
+RESOURCES=1 i_ringmail_tunic,1 i_peg
+SKILLMAKE=Blacksmithing 21.9
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
-DESCRIPTION=Ringmail Chest Decoration
+DESCRIPTION=Ringmail Tunic (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013e8
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013e8]
 //ringmail armor
@@ -462,17 +1499,28 @@ DUPEITEM=013e7
 
 [ITEMDEF 013e9]
 DEFNAME=i_ringmail_sleeves_decoration
+NAME=decorative ringmail sleeves
 TYPE=t_armor
-RESOURCES=I_RINGMAIL_SLEEVES, 1 i_PEG
-WEIGHT=16
+FLIP=1
+//ARMOR=22
+VALUE=57
+WEIGHT=15.1
+RESOURCES=1 i_ringmail_sleeves,1 i_peg
+SKILLMAKE=Blacksmithing 16.9
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
-DESCRIPTION=Ringmail Sleeves Decoration
+DESCRIPTION=Ringmail Sleeves (decorative)
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013ea
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013ea]
 //ringmail sleeves
@@ -480,39 +1528,51 @@ DUPEITEM=013e9
 
 [ITEMDEF 013eb]
 DEFNAME=i_ringmail_gloves
-TYPE=T_ARMOR
-RESOURCES=10 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 12.0
-WEIGHT=2
+TYPE=t_armor
 FLIP=1
-ARMOR=16
-REQSTR=20
+//ARMOR=22
+VALUE=40
+WEIGHT=2.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 12.0,Armslore 15.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
 DESCRIPTION=Ringmail Gloves
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013f2
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013ec]
 DEFNAME=i_ringmail_tunic
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
-WEIGHT=15
+//ARMOR=22
+VALUE=72
+WEIGHT=15.0
 RESOURCES=18 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 21.9
-ARMOR=16
-REQSTR=20
+SKILLMAKE=Blacksmithing 21.9,Armslore 15.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
 DESCRIPTION=Ringmail Tunic
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013ed
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013ed]
 //ringmail tunic
@@ -520,21 +1580,27 @@ DUPEITEM=013ec
 
 [ITEMDEF 013ee]
 DEFNAME=i_ringmail_sleeves
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=22
+VALUE=56
+WEIGHT=15.0
 RESOURCES=14 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 16.9
-WEIGHT=13
-ARMOR=16
-REQSTR=20
+SKILLMAKE=Blacksmithing 16.9,Armslore 15.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
 DESCRIPTION=Ringmail Sleeves
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013ef
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013ef]
 //ringmail sleeves
@@ -542,21 +1608,27 @@ DUPEITEM=013ee
 
 [ITEMDEF 013f0]
 DEFNAME=i_ringmail_leggings
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=22
+VALUE=64
+WEIGHT=15.0
 RESOURCES=16 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 19.4
-WEIGHT=15
-ARMOR=16
-REQSTR=20
+SKILLMAKE=Blacksmithing 19.4,Armslore 15.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Ringmail Armor
 DESCRIPTION=Ringmail Leggings
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=013f1
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=1
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=5
 
 [ITEMDEF 013f1]
 //ringmail leggings
@@ -566,47 +1638,58 @@ DUPEITEM=013f0
 //ringmail gloves
 DUPEITEM=013eb
 
+
 [ITEMDEF 01408]
-//DEFNAME2=closed_helm
 DEFNAME=i_helm_closed
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=60
+WEIGHT=5.0
 RESOURCES=15 i_ingot_iron
-WEIGHT=7
-ARMOR=30
-REQSTR=40
+SKILLMAKE=Blacksmithing 37.9,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Helmets
-DESCRIPTION=Closed Helm
+DESCRIPTION=Close Helmet
+TAG.NotGargoyle=1
+TAG.REQSTR=55
+TEVENTS=t_equipitem
 DUPELIST=01409
-SKILLMAKE=BLACKSMITHING 37.9
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
 
 [ITEMDEF 01409]
 //close helmet
 DUPEITEM=01408
 
 [ITEMDEF 0140a]
-// DEFNAME2=OPEN_HELM
 DEFNAME=i_helm_open
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=60
+WEIGHT=5.0
 RESOURCES=15 i_ingot_iron
-WEIGHT=7
-ARMOR=30
-REQSTR=40
+SKILLMAKE=Blacksmithing 37.9,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Helmets
 DESCRIPTION=Helmet
+TAG.NotGargoyle=1
+TAG.REQSTR=45
+TEVENTS=t_equipitem
 DUPELIST=0140b
-SKILLMAKE=BLACKSMITHING 37.9
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 0140b]
 //helmet
@@ -614,21 +1697,28 @@ DUPEITEM=0140a
 
 [ITEMDEF 0140c]
 DEFNAME=i_bascinet
-TYPE=T_ARMOR
+NAME=bascinet
+TYPE=t_armor
 FLIP=1
+//ARMOR=25
+VALUE=60
+WEIGHT=5.0
 RESOURCES=15 i_ingot_iron
-WEIGHT=7
-ARMOR=20
-REQSTR=10
+SKILLMAKE=Blacksmithing 8.3,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Helmets
 DESCRIPTION=Bascinet
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
 DUPELIST=0140d
-SKILLMAKE=BLACKSMITHING 8.3
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=7
+   TAG.RESPOISON=2
 
 [ITEMDEF 0140d]
 //bascinet
@@ -636,132 +1726,176 @@ DUPEITEM=0140c
 
 [ITEMDEF 0140e]
 DEFNAME=i_helm_nose
-TYPE=t_ARMOR
+NAME=norse helm
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=60
+WEIGHT=5.0
 RESOURCES=15 i_ingot_iron
-WEIGHT=7
-ARMOR=30
-REQSTR=40
+SKILLMAKE=Blacksmithing 37.9,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Helmets
-DESCRIPTION=Nose Helm
+DESCRIPTION=Norse Helm
+TAG.NotGargoyle=1
+TAG.REQSTR=55
+TEVENTS=t_equipitem
 DUPELIST=0140f
-SKILLMAKE=BLACKSMITHING 37.9
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=1
+   TAG.RESPhysical=4
+   TAG.RESPOISON=4
 
 [ITEMDEF 0140f]
-//nose helm
+//norse helm
 DUPEITEM=0140e
 
 [ITEMDEF 01410]
 DEFNAME=i_platemail_arms
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
-SKILLMAKE=BLACKSMITHING 66.3
+//ARMOR=30
+VALUE=72
+WEIGHT=5.0
 RESOURCES=18 i_ingot_iron
-WEIGHT=18
-ARMOR=40
-REQSTR=40
+SKILLMAKE=Blacksmithing 66.3,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
 DESCRIPTION=Platemail Arms
+TAG.NotGargoyle=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
 DUPELIST=01417
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01411]
 DEFNAME=i_platemail_leggings
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+//LAYER=layer_legs
+VALUE=80
+WEIGHT=7.0
 RESOURCES=20 i_ingot_iron
-WEIGHT=20
-ARMOR=40
-REQSTR=40
+SKILLMAKE=Blacksmithing 68.8,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
 DESCRIPTION=Platemail Legs
+TAG.NotGargoyle=1
+TAG.REQSTR=90
+TEVENTS=t_equipitem
 DUPELIST=0141a
-SKILLMAKE=BLACKSMITHING 68.8
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01412]
 DEFNAME=i_platemail_helm
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=60
+WEIGHT=5.0
 RESOURCES=15 i_ingot_iron
-WEIGHT=10
-ARMOR=40
-REQSTR=60
+SKILLMAKE=Blacksmithing 62.6,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
-DESCRIPTION=Platemail Helm
+DESCRIPTION=Plate Helm
+TAG.NotGargoyle=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
 DUPELIST=01419
-SKILLMAKE=BLACKSMITHING 62.6
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01413]
 DEFNAME=i_platemail_gorget
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=40
+WEIGHT=2.0
 RESOURCES=10 i_ingot_iron
-WEIGHT=6
-ARMOR=40
-REQSTR=30
+SKILLMAKE=Blacksmithing 56.4,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
 DESCRIPTION=Platemail Gorget
-SKILLMAKE=BLACKSMITHING 56.4
-
+TAG.NotGargoyle=1
+TAG.REQSTR=45
+TEVENTS=t_equipitem
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01414]
 DEFNAME=i_platemail_gloves
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=48
+WEIGHT=2.0
 RESOURCES=12 i_ingot_iron
-WEIGHT=5
-ARMOR=40
-REQSTR=30
+SKILLMAKE=Blacksmithing 58.9,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
-DESCRIPTION=Platemail Gauntlets
+DESCRIPTION=Platemail Gloves
+TAG.NotGargoyle=1
+TAG.REQSTR=70
+TEVENTS=t_equipitem
 DUPELIST=01418
-SKILLMAKE=BLACKSMITHING 58.9
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01415]
 DEFNAME=i_platemail_chest
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=100
+WEIGHT=10.0
 RESOURCES=25 i_ingot_iron
-WEIGHT=23
-ARMOR=40
-REQSTR=60
+SKILLMAKE=Blacksmithing 75.0,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Platemail Armor
-DESCRIPTION=Platemail Breastplate
+DESCRIPTION=Platemail Tunic
+TAG.NotGargoyle=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
 DUPELIST=01416
-SKILLMAKE=BLACKSMITHING 75.0
-
 ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01416]
 //platemail
@@ -783,115 +1917,126 @@ DUPEITEM=01412
 //platemail legs
 DUPEITEM=01411
 
-[ITEMDEF 0141b]
-DEFNAME=i_mask_orc
-TYPE=t_armor_leather
-FLIP=1
-RESOURCES=5 i_reag_bone
-VALUE=5
-WEIGHT=4
-ARMOR=15
-DUPELIST=0141c
-
-CATEGORY=Provisions - Armor
-SUBSECTION=Masks
-DESCRIPTION=Orc Mask
-
-ON=@Create
-HITPOINTS={21 23}
-
-[ITEMDEF 0141c]
-//orc mask
-DUPEITEM=0141b
 
 [ITEMDEF 0144e]
 DEFNAME=i_bone_arms
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-RESOURCES=4 i_reag_bone, 8 i_hides_cut
-SKILLMAKE=TAILORING 92.0, t_sewing_kit
-WEIGHT=2
-ARMOR=30
-REQSTR=40
-DUPELIST=01453
-
+//ARMOR=24
+VALUE=65
+WEIGHT=15.0
+RESOURCES=14 i_bone,1 i_hides_cut
+SKILLMAKE=Tailoring 96.8,t_sewing_kit,Anatomy 47.3,Necromancy 24.4
 CATEGORY=Provisions - Armor
 SUBSECTION=Bone Armor
 DESCRIPTION=Bone Arms
-
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01453
 ON=@Create
-HITPOINTS={21 23}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=2
 
 [ITEMDEF 0144f]
 DEFNAME=i_bone_chest
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-RESOURCES=4 i_reag_bone, 8 i_hides_cut
-SKILLMAKE=TAILORING 92.0, t_sewing_kit
-WEIGHT=11
-ARMOR=30
-REQSTR=40
-DUPELIST=01454
-
+//ARMOR=24
+VALUE=49
+WEIGHT=11.0
+RESOURCES=10 i_bone,1 i_hides_cut
+SKILLMAKE=Tailoring 96.8,t_sewing_kit,Anatomy 47.3,Necromancy 49.2
 CATEGORY=Provisions - Armor
 SUBSECTION=Bone Armor
-DESCRIPTION=Bone Chest
-
+DESCRIPTION=Bone Tunic
+TAG.REQSTR=60
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01454
 ON=@Create
-HITPOINTS={21 23}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=2
 
 [ITEMDEF 01450]
 DEFNAME=i_bone_gloves
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-RESOURCES=2 i_reag_bone, 6 i_hides_cut
-SKILLMAKE=TAILORING 89.0, t_sewing_kit
-WEIGHT=3
-ARMOR=30
-REQSTR=40
-DUPELIST=01455
-
+//ARMOR=24
+VALUE=33
+WEIGHT=7.0
+RESOURCES=6 i_bone,1 i_hides_cut
+SKILLMAKE=Tailoring 96.8,t_sewing_kit,Anatomy 47.3,Necromancy 18.6
 CATEGORY=Provisions - Armor
 SUBSECTION=Bone Armor
 DESCRIPTION=Bone Gloves
-
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01455
 ON=@Create
-HITPOINTS={21 23}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=2
 
 [ITEMDEF 01451]
 DEFNAME=i_bone_helmet
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-RESOURCES=2 i_reag_bone, 4 i_hides_cut
-SKILLMAKE=TAILORING 85.0, t_sewing_kit
-WEIGHT=4
-ARMOR=30
-REQSTR=40
-DUPELIST=01456
-
+//ARMOR=24
+VALUE=29
+WEIGHT=8.0
+RESOURCES=4 i_bone,1 i_bone_skull,1 i_hides_cut
+SKILLMAKE=Tailoring 96.8,t_sewing_kit,Anatomy 47.3,Necromancy 35.2
 CATEGORY=Provisions - Armor
 SUBSECTION=Bone Armor
 DESCRIPTION=Bone Helmet
-
+TAG.REQSTR=20
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01456
 ON=@Create
-HITPOINTS={21 23}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=2
 
 [ITEMDEF 01452]
 DEFNAME=i_bone_leggings
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-RESOURCES=6 i_reag_bone, 10 i_hides_cut
-SKILLMAKE=TAILORING 95.0, t_sewing_kit
-WEIGHT=6
-ARMOR=30
-DUPELIST=01457
-
+//ARMOR=24
+VALUE=80
+WEIGHT=19.0
+RESOURCES=18 i_bone,1 i_hides_cut
+SKILLMAKE=Tailoring 96.8,t_sewing_kit,Anatomy 47.3,Necromancy 44.7
 CATEGORY=Provisions - Armor
 SUBSECTION=Bone Armor
 DESCRIPTION=Bone Legs
-
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01457
 ON=@Create
-HITPOINTS={21 23}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=2
 
 [ITEMDEF 01453]
 //bone arms
@@ -913,240 +2058,31 @@ DUPEITEM=01451
 //bone legs
 DUPEITEM=01452
 
-[ITEMDEF 01b72]
-DEFNAME=i_shield_round_bronze
-TYPE=t_shield
-FLIP=1
-RESOURCES=10 i_ingot_iron
-WEIGHT=12
-ARMOR=10
-REQSTR=20
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Round Bronze Shield
-SKILLMAKE=BLACKSMITHING 0.0
-
-ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
-
-[ITEMDEF 01b73]
-DEFNAME=i_shield_buckler
-TYPE=t_shield
-FLIP=1
-RESOURCES=6 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 0.0
-WEIGHT=6
-ARMOR=7
-REQSTR=15
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Buckler
-
-ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
-
-[ITEMDEF 01b74]
-DEFNAME=i_shield_kite_metal
-TYPE=t_shield
-FLIP=1
-RESOURCES=16 i_ingot_iron
-WEIGHT=14
-DYE=1
-ARMOR=18
-REQSTR=20
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Kite Shield (Metal)
-DUPELIST=01b75
-SKILLMAKE=BLACKSMITHING 4.6
-
-ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
-
-[ITEMDEF 01b75]
-//kite shield (metal)
-DUPEITEM=01b74
-
-[ITEMDEF 01b76]
-DEFNAME=i_shield_heater
-TYPE=t_shield
-FLIP=1
-RESOURCES=18 i_ingot_iron
-WEIGHT=14
-ARMOR=23
-REQSTR=30
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Heater Shield
-DUPELIST=01b77
-SKILLMAKE=BLACKSMITHING 24.3
-
-ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
-
-[ITEMDEF 01b77]
-//heater shield
-DUPEITEM=01b76
-
-[ITEMDEF 01b78]
-DEFNAME=i_shield_kite_wood
-TYPE=t_shield
-FLIP=1
-RESOURCES=8 i_ingot_iron,4 i_log
-WEIGHT=9
-ARMOR=16
-REQSTR=30
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Kite Shield (Wooden)
-DUPELIST=01b79
-SKILLMAKE=BLACKSMITHING 12.6
-
-ON=@Create
-HITPOINTS={50 60}
-
-[ITEMDEF 01b79]
-//kite shield (wooden)
-DUPEITEM=01b78
-
-[ITEMDEF 01b7a]
-DEFNAME=i_shield_wood
-TYPE=t_shield
-FLIP=1
-WEIGHT=9
-ARMOR=8
-REQSTR=5
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Wooden Shield
-SKILLMAKE=CARPENTRY 52.6, t_carpentry
-RESOURCES=9 i_board
-
-ON=@Create
-HITPOINTS={21 26}
-
-[ITEMDEF 01b7b]
-DEFNAME=i_shield_round_metal
-TYPE=t_shield
-FLIP=1
-RESOURCES=14 i_ingot_iron
-WEIGHT=11
-ARMOR=9
-REQSTR=10
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Metal Shield
-SKILLMAKE=BLACKSMITHING 0.0
-
-ON=@Create
-COLOR=color_o_iron
-HITPOINTS={50 60}
-
-[ITEMDEF 01bc3]
-DEFNAME=i_shield_chaos
-TYPE=t_shield
-FLIP=1
-RESOURCES=25 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 85.0
-WEIGHT=1
-ARMOR=32
-REQSTR=0
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Chaos Shield
-
-ON=@Create
-COLOR=color_o_iron
-ATTR=attr_magic|attr_move_always
-HITPOINTS={100 115}
-
-ON=@EQUIP
-	if (<src.isgm>)
-		return 0
-	elseif (!<src.memoryfindtype.memory_guild>)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield
-		remove
-		return 1
-	elseif (<src.memoryfindtype.memory_guild.link.align>==1)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield, and are damaged for attempting to do so!
-		src.hits = <src.hits>/2
-		remove
-		return 1
-	elseif (<src.memoryfindtype.memory_guild.link.align>!=2)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield
-		remove
-		return 1
-	endif
-	return 0
-
-[ITEMDEF 01bc4]
-DEFNAME=i_shield_order
-TYPE=t_shield
-FLIP=1
-RESOURCES=25 i_ingot_iron
-SKILLMAKE=BLACKSMITHING 85.0
-WEIGHT=1
-ARMOR=30
-REQSTR=0
-CATEGORY=Provisions - Armor
-SUBSECTION=Shields
-DESCRIPTION=Order Shield
-DUPELIST=01bc5
-
-ON=@Create
-COLOR=color_o_iron
-ATTR=attr_magic|attr_move_always
-HITPOINTS={100 115}
-
-ON=@EQUIP
-	if (<src.isgm>)
-		return 0
-	elseif (!<src.memoryfindtype.memory_guild>)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield
-		remove
-		return 1
-	elseif (<src.memoryfindtype.memory_guild.link.align>==2)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield, and are damaged for attempting to do so!
-		src.hits = <src.hits>/2
-		remove
-		return 1
-	elseif (<src.memoryfindtype.memory_guild.link.align>!=1)
-		src.sound=snd_SPELL_LIGHTNING
-		src.message=Your are unable to wear this shield
-		remove
-		return 1
-	endif
-	return 0
-
-[ITEMDEF 01bc5]
-//Order shield
-DUPEITEM=01bc4
 
 [ITEMDEF 01c00]
 DEFNAME=i_armor_female_shorts
-RESOURCES=8 i_hides_cut
-WEIGHT=2
-//DEFNAME=i_FEM_ARMOR_SHORTS
-TYPE=T_CLOTHING
-ARMOR=13
-REQSTR=15
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=74
+WEIGHT=8.1
+RESOURCES=8 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 68.1,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Leather Shorts
+TAG.REQSTR=20
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c01
-SKILLMAKE=TAILORING 68.1
-
 ON=@Create
-HITPOINTS={31 37}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c01]
 //leather shorts
@@ -1154,21 +2090,28 @@ DUPEITEM=01c00
 
 [ITEMDEF 01c02]
 DEFNAME=i_armor_female_studded
-TYPE=T_ARMOR
+TYPE=t_armor_leather
 FLIP=1
-RESOURCES=22 i_ingot_iron
-WEIGHT=5
-//DEFNAME=i_FEM_ARMOR_A
-ARMOR=15
-REQSTR=35
+//ARMOR=16
+VALUE=171
+WEIGHT=19.0
+RESOURCES=14 i_hides_cut,5 i_ingot_iron
+SKILLMAKE=Tailoring 95.4,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Studded Armor
+TAG.REQSTR=35
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c03
-SKILLMAKE=BLACKSMITHING 52.6
-
 ON=@Create
-HITPOINTS={101 115}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c03]
 //studded armor
@@ -1176,21 +2119,28 @@ DUPEITEM=01c02
 
 [ITEMDEF 01c04]
 DEFNAME=i_armor_female_plate
-TYPE=T_ARMOR
+TYPE=t_armor
 FLIP=1
+//ARMOR=30
+VALUE=100
+WEIGHT=4.0
 RESOURCES=20 i_ingot_iron
-WEIGHT=6
-//DEFNAME=i_FEM_ARMOR_B
-ARMOR=30
-REQSTR=45
+SKILLMAKE=Blacksmithing 44.1,Armslore 25.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
-DESCRIPTION=Female Plate Armor
+DESCRIPTION=Female Plate
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
 DUPELIST=01c05
-SKILLMAKE=BLACKSMITHING 45.3
-
 ON=@Create
-HITPOINTS={51 65}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c05]
 //female bikini style plate armor
@@ -1200,19 +2150,26 @@ DUPEITEM=01c04
 DEFNAME=i_armor_female_leather
 TYPE=t_armor_leather
 FLIP=1
-RESOURCES=10 i_hides_cut
-WEIGHT=4
-//DEFNAME=i_FEM_ARMOR_C
-ARMOR=13
-REQSTR=15
+//ARMOR=13
+VALUE=100
+WEIGHT=11.0
+RESOURCES=10 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 86.3,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Leather Armor
+TAG.REQSTR=25
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c07
-SKILLMAKE=TAILORING 86.3
-
 ON=@Create
-HITPOINTS={31 37}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c07]
 //leather armor
@@ -1222,19 +2179,26 @@ DUPEITEM=01c06
 DEFNAME=i_armor_female_skirt
 TYPE=t_armor_leather
 FLIP=1
+//ARMOR=13
+VALUE=49
+WEIGHT=6.0
 RESOURCES=6 i_hides_cut
-WEIGHT=3
-//DEFNAME=i_FEM_ARMOR_SKIRT
-ARMOR=13
-REQSTR=10
+SKILLMAKE=Tailoring 63.6,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Leather Skirt
+TAG.REQSTR=25
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c09
-SKILLMAKE=TAILORING 63.6, t_sewing_kit
-
 ON=@Create
-HITPOINTS={31 37}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c09]
 //leather skirt
@@ -1244,19 +2208,26 @@ DUPEITEM=01c08
 DEFNAME=i_armor_female_bustier
 TYPE=t_armor_leather
 FLIP=1
-RESOURCES=6 i_hides_cut
-WEIGHT=2
-//DEFNAME=i_FEM_ARMOR_TOP_A
-ARMOR=13
-REQSTR=15
+//ARMOR=13
+VALUE=56
+WEIGHT=7.0
+RESOURCES=6 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 63.6,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Leather Bustier
+TAG.REQSTR=20
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c0b
-SKILLMAKE=TAILORING 63.6, t_sewing_kit
-
 ON=@Create
-HITPOINTS={31 37}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c0b]
 //leather bustier
@@ -1264,66 +2235,2778 @@ DUPEITEM=01c0a
 
 [ITEMDEF 01c0c]
 DEFNAME=i_armor_female_bustier_studded
-TYPE=T_ARMOR
+TYPE=t_armor_leather
 FLIP=1
-RESOURCES=8 i_hides_cut
-WEIGHT=2
-//DEFNAME2=i_FEM_ARMOR_TOP_B
-ARMOR=16
-REQSTR=25
+//ARMOR=16
+VALUE=114
+WEIGHT=13.0
+RESOURCES=11 i_hides_cut,2 i_ingot_iron
+SKILLMAKE=Tailoring 81.8,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Female Armor
 DESCRIPTION=Studded Bustier
+TAG.REQSTR=35
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
 DUPELIST=01c0d
-SKILLMAKE=TAILORING 81.8, t_sewing_kit
-
 ON=@Create
-HITPOINTS={101 115}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01c0d]
 //studded bustier
 DUPEITEM=01c0c
 
+
 [ITEMDEF 01db9]
-//leather cap
 DEFNAME=i_leather_cap
 TYPE=t_armor_leather
 FLIP=1
-SKILLMAKE=TAILORING 6.2, t_sewing_kit
-RESOURCES=2 i_hides_cut
-ARMOR=13
-DUPELIST=01dba
-
+//ARMOR=13
+VALUE=13
+WEIGHT=2.1
+RESOURCES=2 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 6.8,t_sewing_kit,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Leather Armor
 DESCRIPTION=Leather Cap
-
-ON=@CREATE
-HITPOINTS={25 30}
+TAG.REQSTR=20
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=01dba
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
 
 [ITEMDEF 01dba]
 //leather cap
 DUPEITEM=01db9
 
+
 [ITEMDEF 01f0b]
 DEFNAME=i_helm_orc
-TYPE=t_armor_leather
+TYPE=t_armor
 FLIP=1
-ARMOR=20
-REQSTR=1
-VALUE=1,10
-WEIGHT=5
+//LAYER=layer_helm
+//ARMOR=20
+VALUE=30
+WEIGHT=5.1
+RESOURCES=2 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 68.8,t_sewing_kit,Anatomy 89.1,Armslore 10.0
 CATEGORY=Provisions - Armor
 SUBSECTION=Helmets
 DESCRIPTION=Orc Helm
+TAG.NotGargoyle=1
+TAG.REQSTR=30
+TEVENTS=t_equipitem
 DUPELIST=01f0c
-
 ON=@Create
-HITPOINTS={31 70}
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
 
 [ITEMDEF 01f0c]
 //Orc Helm
 DUPEITEM=01f0b
 
 
-[eof]
+[ITEMDEF 0236c]
+DEFNAME=i_helm_kabuto
+TYPE=t_armor
+FLIP=1
+//ARMOR=25
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 63.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Kabuto
+TAG.REQSTR=80
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=0236d
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 0236d]
+//Kabuto
+DUPEITEM=0236c
+
+
+[ITEMDEF 025e4]
+DEFNAME=i_armor_female_shorts_spiked
+//NAME=spiked shorts
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=15
+VALUE=71
+WEIGHT=9.0
+RESOURCES=8 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 78.1,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Female Armor
+DESCRIPTION=Spiked Shorts
+TAG.REQSTR=20
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=025e5
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 025e5]
+//spiked shorts
+DUPEITEM=025e4
+
+[ITEMDEF 025e6]
+DEFNAME=i_armor_female_harness_amazon
+//NAME=Amazon harness
+TYPE=t_armor
+FLIP=1
+//ARMOR=18
+VALUE=137
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 72.6
+CATEGORY=Provisions - Armor
+SUBSECTION=Amazon
+DESCRIPTION=Amazon Harness
+TAG.REQSTR=25
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=025e7
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 025e7]
+//amazon harness
+DUPEITEM=025e6
+
+[ITEMDEF 025e8]
+DEFNAME=i_armor_female_harness_elite
+//NAME=Amazon elite harness
+TYPE=t_armor
+FLIP=1
+//ARMOR=20
+VALUE=165
+WEIGHT=22.0
+RESOURCES=22 i_ingot_iron
+SKILLMAKE=Blacksmithing 88.4
+CATEGORY=Provisions - Armor
+SUBSECTION=Amazon
+DESCRIPTION=Elite Harness
+TAG.REQSTR=25
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=025e9
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 025e9]
+//elite harness
+DUPEITEM=025e8
+
+
+[ITEMDEF 02641]
+DEFNAME=i_dragon_chest
+NAME=dragon breastplate
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=1145
+WEIGHT=26.2
+RESOURCES=36 i_dragonscale,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 85.0,Armslore 55.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Dragon Scale
+DESCRIPTION=Breastplate
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02642
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02642]
+//dragon breastplate
+DUPEITEM=02641
+
+[ITEMDEF 02643]
+DEFNAME=i_dragon_gloves
+NAME=dragon gloves
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=497
+WEIGHT=12.2
+RESOURCES=16 i_dragonscale,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 68.9,Armslore 55.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Dragon Scale
+DESCRIPTION=Gloves
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02644
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02644]
+//dragon gloves
+DUPEITEM=02643
+
+[ITEMDEF 02645]
+DEFNAME=i_dragon_helm
+NAME=dragon helm
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=626
+WEIGHT=15.0
+RESOURCES=20 i_dragonscale,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 72.6,Armslore 55.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Dragon Scale
+DESCRIPTION=Helm
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02646
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02646]
+//dragon helm
+DUPEITEM=02645
+
+[ITEMDEF 02647]
+DEFNAME=i_dragon_leggings
+NAME=dragon leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=890
+WEIGHT=20.6
+RESOURCES=28 i_dragonscale,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 78.8,Armslore 55.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Dragon Scale
+DESCRIPTION=Leggings
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02648
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02648]
+//dragon leggings
+DUPEITEM=02647
+
+
+[ITEMDEF 0264b]
+DEFNAME=i_platemail_gorget2
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=63
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Gorget 2
+SKILLMAKE=Blacksmithing 57.3
+TAG.REQSTR=45
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=0264c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 0264c]
+//platemail gorget2
+DUPEITEM=0264b
+
+
+[ITEMDEF 02653]
+//not visible on paperdoll
+DEFNAME=i_platemail_waraji
+TYPE=t_armor
+FLIP=1
+//LAYER=layer_gloves
+//ARMOR=30
+VALUE=76
+WEIGHT=12.0
+RESOURCES=12 i_ingot_iron
+SKILLMAKE=Blacksmithing 59.7,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Waraji (3d client only)
+TAG.DoNotEquip=1
+TAG.NotGargoyle=1
+TAG.REQSTR=70
+TEVENTS=t_equipitem
+DUPELIST=02654
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02654]
+//waraji
+DUPEITEM=02653
+
+
+[ITEMDEF 02657]
+DEFNAME=i_dragon_sleeves
+NAME=dragon sleeves
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=760
+WEIGHT=17.8
+RESOURCES=24 i_dragonscale,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 76.3,Armslore 55.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Dragon Scale
+DESCRIPTION=Sleeves
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02658
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02658]
+//dragon sleeves
+DUPEITEM=02657
+
+
+[ITEMDEF 02659]
+//appears like dragon sleeves on paperdoll
+DEFNAME=i_amazon_heavy
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=175
+WEIGHT=25.0
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=Blacksmithing 75.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Amazon
+DESCRIPTION=Heavy (unwearable)
+TAG.DoNotEquip=1
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=0265a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 0265a]
+//amazon heavy
+DUPEITEM=02659
+
+[ITEMDEF 0265b]
+//appears like dragon chest on paperdoll
+DEFNAME=i_amazon_medium
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+LAYER=layer_shirt//weird
+VALUE=140
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 75.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Amazon
+DESCRIPTION=Medium (unwearable)
+TAG.DoNotEquip=1
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=0265c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 0265c]
+//amazon medium
+DUPEITEM=0265b
+
+[ITEMDEF 0265d]
+//appears like dragon gloves on paperdoll
+DEFNAME=i_amazon_light
+TYPE=t_armor
+FLIP=1
+//ARMOR=20
+LAYER=layer_shirt//weird
+VALUE=140
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 75.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Amazon
+DESCRIPTION=Light (unwearable)
+TAG.DoNotEquip=1
+TAG.FemaleOnly=1
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=0265e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 0265e]
+//amazon light
+DUPEITEM=0265d
+
+
+[ITEMDEF 02677]
+//appears like serpentstone staff on paperdoll
+DEFNAME=i_gloves_kote1
+TYPE=t_armor_leather
+FLIP=1
+//LAYER=layer_gloves
+//ARMOR=13
+VALUE=23
+WEIGHT=3.0
+RESOURCES=3 i_hides_cut
+SKILLMAKE=Tailoring 56.8,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Kote Gloves (unwearable)
+TAG.DoNotEquip=1
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=02678
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=2
+   TAG.RESPOISON=2
+
+[ITEMDEF 02678]
+//kote gloves
+DUPEITEM=02677
+
+[ITEMDEF 02679]
+//appears like nothing on paperdoll
+DEFNAME=i_gloves_kote2
+TYPE=t_armor_leather
+FLIP=1
+//LAYER=layer_gloves
+//ARMOR=13
+VALUE=23
+WEIGHT=3.0
+RESOURCES=3 i_hides_cut
+SKILLMAKE=Tailoring 56.8,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Kote Gloves 2 (unwearable)
+TAG.DoNotEquip=1
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0267a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=2
+   TAG.RESPOISON=2
+
+[ITEMDEF 0267a]
+//kote gloves
+DUPEITEM=02679
+
+
+[ITEMDEF 02689]
+DEFNAME=i_helm_winged
+NAME=winged helmet
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+WEIGHT=10.0
+VALUE=65
+RESOURCES=10 i_board,60 i_feather,4 i_bark
+SKILLMAKE=Carpentry 58.4,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Winged Helm
+TAG.REQSTR=25
+TAG.NotGargoyle=1
+//TAG.ElfOnly=1
+DUPELIST=0268a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 0268a]
+//winged helm
+DUPEITEM=02689
+
+[ITEMDEF 0268b]
+//appears like nothing on paperdoll
+DEFNAME=i_hachimaki
+NAME=hachimaki
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 63.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Hachimaki (unwearable)
+TAG.DoNotEquip=1
+TAG.NotGargoyle=1
+TAG.REQSTR=40
+TEVENTS=t_equipitem
+DUPELIST=0268c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 0268c]
+//hachimaki
+DUPEITEM=0268b
+
+[ITEMDEF 0268d]
+DEFNAME=i_helm_kabuto_decorative
+//NAME=decorative kabuto
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 63.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Kabuto (decorative)
+TAG.REQSTR=80
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=0268e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 0268e]
+//kabuto
+DUPEITEM=0268d
+
+[ITEMDEF 0268f]
+//appears like disc mace on paperdoll
+DEFNAME=i_kabuto_mempo
+NAME=decorative kabuto mempo
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 63.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Kabuto Mempo (unwearable)
+TAG.DoNotEquip=1
+TAG.NotGargoyle=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=02690
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02690]
+//kabuto mempo
+DUPEITEM=0268f
+
+[ITEMDEF 02691]
+DEFNAME=i_leather_cap2
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=12
+WEIGHT=2.1
+RESOURCES=2 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 6.8,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Cap 2
+TAG.REQSTR=20
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=02692
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02692]
+//leather cap 2
+DUPEITEM=02691
+
+
+[ITEMDEF 02774]
+DEFNAME=i_chainmail_hatsuburi
+NAME=chainmail hatsuburi
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=104
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 30.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Chainmail Armor
+DESCRIPTION=Hatsuburi
+TAG.REQSTR=50
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027bf
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=2
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02775]
+DEFNAME=i_platemail_hatsuburi
+NAME=platemail hatsuburi
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=116
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 45.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Hatsuburi
+TAG.REQSTR=65
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c0
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02776]
+DEFNAME=i_leather_jingasa
+NAME=leather jingasa
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=102
+WEIGHT=14.1
+RESOURCES=14 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 45.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Jingasa
+TAG.REQSTR=25
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c1
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=3
+   TAG.RESPhysical=4
+   TAG.RESPOISON=2
+
+[ITEMDEF 02777]
+DEFNAME=i_plate_jingasa_heavy
+NAME=plate jingasa
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=116
+WEIGHT=20.0
+RESOURCES=20 i_ingot_iron
+SKILLMAKE=Blacksmithing 45.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Heavy Plate Jingasa
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c2
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=7
+   TAG.RESPOISON=2
+
+[ITEMDEF 02778]
+DEFNAME=i_platemail_kabuto_decorative
+NAME=plate kabuto
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=190
+WEIGHT=25.0
+RESOURCES=25 i_ingot_iron
+SKILLMAKE=Blacksmithing 90.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Plate Kabuto
+TAG.REQSTR=80
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c3
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02779]
+DEFNAME=i_platemail_mempo
+NAME=platemail mempo
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=130
+WEIGHT=18.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 80.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Mempo
+TAG.REQSTR=50
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c4
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277a]
+DEFNAME=i_leather_mempo
+NAME=leather mempo
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=72
+WEIGHT=8.1
+RESOURCES=8 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 80.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Mempo
+TAG.REQSTR=30
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c5
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277b]
+DEFNAME=i_leather_do
+NAME=leather do
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=105
+WEIGHT=12.1
+RESOURCES=12 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 75.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Do
+TAG.REQSTR=40
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c6
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277c]
+DEFNAME=i_studded_do
+NAME=studded do
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=137
+WEIGHT=16.1
+RESOURCES=14 i_hides_cut,1 i_thread,2 i_ingot_iron
+SKILLMAKE=Tailoring 95.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Do
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c7
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277d]
+DEFNAME=i_platemail_do
+NAME=platemail do
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=209
+WEIGHT=28.0
+RESOURCES=28 i_ingot_iron
+SKILLMAKE=Blacksmithing 87.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Do
+TAG.REQSTR=85
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c8
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277e]
+DEFNAME=i_leather_hiro_sode
+NAME=leather hiro sode
+TYPE=t_armor
+FLIP=1
+//ARMOR=13
+VALUE=62
+WEIGHT=8.1
+RESOURCES=8 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 55.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Hiro Sode
+TAG.REQSTR=25
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027c9
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 0277f]
+DEFNAME=i_studded_hiro_sode
+NAME=studded hiro sode
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=70
+WEIGHT=8.1
+RESOURCES=6 i_hides_cut,2 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 85.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Hiro Sode
+TAG.REQSTR=30
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027ca
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02780]
+DEFNAME=i_platemail_hiro_sode
+NAME=plate hiro sode
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=72
+WEIGHT=8.0
+RESOURCES=8 i_ingot_iron
+SKILLMAKE=Blacksmithing 80.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Hiro Sode
+TAG.REQSTR=75
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027cb
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02781]
+DEFNAME=i_plate_jingasa_light
+NAME=light platemail jingasa
+TYPE=t_armor
+FLIP=1
+//ARMOR=28
+VALUE=104
+WEIGHT=18.0
+RESOURCES=18 i_ingot_iron
+SKILLMAKE=Blacksmithing 45.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Light Platemail Jingasa
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027cc
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=7
+   TAG.RESPOISON=2
+
+
+[ITEMDEF 02784]
+DEFNAME=i_plate_jingasa_small
+NAME=small platemail jingasa
+TYPE=t_armor
+FLIP=1
+//ARMOR=13
+VALUE=93
+WEIGHT=16.0
+RESOURCES=16 i_ingot_iron
+SKILLMAKE=Blacksmithing 45.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Helmets
+DESCRIPTION=Small Platemail Jingasa
+TAG.REQSTR=55
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027cf
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=2
+   TAG.RESPhysical=7
+   TAG.RESPOISON=2
+
+[ITEMDEF 02785]
+DEFNAME=i_helm_kabuto_battle
+NAME=platemail battle kabuto
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=114
+WEIGHT=15.0
+RESOURCES=15 i_ingot_iron
+SKILLMAKE=Blacksmithing 90.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Battle Kabuto
+TAG.REQSTR=70
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027d0
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=3
+   TAG.RESFIRE=2
+   TAG.RESPhysical=6
+   TAG.RESPOISON=2
+
+[ITEMDEF 02786]
+DEFNAME=i_leather_suneate
+NAME=leather suneate
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=117
+WEIGHT=14.1
+RESOURCES=14 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 68.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Suneate
+TAG.REQSTR=20
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027d1
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02787]
+DEFNAME=i_studded_suneate
+NAME=studded suneate
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=129
+WEIGHT=14.1
+RESOURCES=11 i_hides_cut,3 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 92.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Suneate
+TAG.REQSTR=30
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027d2
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02788]
+DEFNAME=i_platemail_suneate
+NAME=plate suneate
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=92
+WEIGHT=14.0
+RESOURCES=14 i_ingot_iron
+SKILLMAKE=Blacksmithing 65.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Plate Suneate
+TAG.REQSTR=80
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027d3
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02789]
+DEFNAME=i_platemail_kabuto
+NAME=standard platemail kabuto
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=99
+WEIGHT=15.0
+RESOURCES=15 i_ingot_iron
+SKILLMAKE=Blacksmithing 65.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Standard Platemail Kabuto
+TAG.REQSTR=70
+TAG.NotGargoyle=1
+TEVENTS=t_equipitem
+DUPELIST=027d4
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=3
+   TAG.RESFIRE=2
+   TAG.RESPhysical=6
+   TAG.RESPOISON=3
+
+[ITEMDEF 0278a]
+DEFNAME=i_leather_haidate
+NAME=leather haidate
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=100
+WEIGHT=12.1
+RESOURCES=12 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 68.9,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Haidate
+TAG.NotGargoyle=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=027d5
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 0278b]
+DEFNAME=i_studded_haidate
+NAME=studded haidate
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=115
+WEIGHT=12.1
+RESOURCES=10 i_hides_cut,2 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 92.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Haidate
+TAG.NotGargoyle=1
+TAG.REQSTR=30
+TEVENTS=t_equipitem
+DUPELIST=027d6
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 0278d]
+DEFNAME=i_platemail_haidate
+NAME=plate haidate
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=79
+WEIGHT=12.0
+RESOURCES=12 i_ingot_iron
+SKILLMAKE=Blacksmithing 65.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Platemail Armor
+DESCRIPTION=Platemail Haidate
+TAG.NotGargoyle=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=027d8
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 0278e]
+DEFNAME=i_hood_ninja_leather
+NAME=leather ninja hood
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=136
+WEIGHT=14.0
+RESOURCES=14 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 90.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Ninja Hood
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=027d9
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 02790]
+DEFNAME=i_belt_ninja_leather
+NAME=leather ninja belt
+TYPE=t_armor_leather
+FLIP=1
+//LAYER=layer_half_apron
+//ARMOR=13
+VALUE=40
+WEIGHT=5.1
+RESOURCES=5 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 50.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Clothes
+SUBSECTION=Miscellaneous
+DESCRIPTION=Leather Ninja Belt
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+TEVENTS=t_ninja_shuriken
+DUPELIST=027db
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESPOISON=1
+
+[ITEMDEF 02791]
+DEFNAME=i_pants_ninja_leather
+NAME=leather ninja pants
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=120
+WEIGHT=13.0
+RESOURCES=13 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 80.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Ninja Pants
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=027dc
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02792]
+DEFNAME=i_mitts_ninja_leather
+NAME=leather ninja mitts
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=69
+WEIGHT=8.0
+RESOURCES=8 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 65.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Ninja Mitts
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=027dd
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+[ITEMDEF 02793]
+DEFNAME=i_jacket_ninja_leather
+NAME=leather ninja jacket
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+VALUE=124
+WEIGHT=13.0
+RESOURCES=13 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 85.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Armor
+DESCRIPTION=Leather Ninja Jacket
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=027de
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=3
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 0279d]
+DEFNAME=i_mempo_studded
+NAME=studded mempo
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=72
+WEIGHT=10.1
+RESOURCES=8 i_hides_cut,2 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 80.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Studded Armor
+DESCRIPTION=Studded Mempo
+TAG.NotGargoyle=1
+TAG.REQSTR=30
+TEVENTS=t_equipitem
+DUPELIST=027e8
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=3
+   TAG.RESENERGY=4
+   TAG.RESFIRE=4
+   TAG.RESPhysical=2
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 027bf]
+//chainmail hatsuburi
+DUPEITEM=02774
+
+[ITEMDEF 027c0]
+//platemail hatsuburi
+DUPEITEM=02775
+
+[ITEMDEF 027c1]
+//leather jinsaga
+DUPEITEM=02776
+
+[ITEMDEF 027c2]
+//plate jinsaga
+DUPEITEM=02777
+
+[ITEMDEF 027c3]
+//plate kabuto
+DUPEITEM=02778
+
+[ITEMDEF 027c4]
+//plate mempo
+DUPEITEM=02779
+
+[ITEMDEF 027c5]
+//leather mempo
+DUPEITEM=0277a
+
+[ITEMDEF 027c6]
+//leather do
+DUPEITEM=0277b
+
+[ITEMDEF 027c7]
+//studded do
+DUPEITEM=0277c
+
+[ITEMDEF 027c8]
+//platemail do
+DUPEITEM=0277d
+
+[ITEMDEF 027c9]
+//leather hiro sode
+DUPEITEM=0277e
+
+[ITEMDEF 027ca]
+//studded hiro sode
+DUPEITEM=0277f
+
+[ITEMDEF 027cb]
+//plate hiro sode
+DUPEITEM=02780
+
+[ITEMDEF 027cc]
+//plate jinsaga
+DUPEITEM=02781
+
+
+[ITEMDEF 027cf]
+//plate jinsaga
+DUPEITEM=02784
+
+[ITEMDEF 027d0]
+//battle plate kabuto
+DUPEITEM=02785
+
+[ITEMDEF 027d1]
+//leather suneate
+DUPEITEM=02786
+
+[ITEMDEF 027d2]
+//studded suneate
+DUPEITEM=02787
+
+[ITEMDEF 027d3]
+//plate suneate
+DUPEITEM=02788
+
+[ITEMDEF 027d4]
+//standard plate kabuto
+DUPEITEM=02789
+
+[ITEMDEF 027d5]
+//leather haidate
+DUPEITEM=0278a
+
+[ITEMDEF 027d6]
+//studded haidate
+DUPEITEM=0278b
+
+
+[ITEMDEF 027d8]
+//plate haidate
+DUPEITEM=0278d
+
+[ITEMDEF 027d9]
+//leather ninja hood
+DUPEITEM=0278e
+
+
+[ITEMDEF 027db]
+//leather ninja belt
+DUPEITEM=02790
+
+[ITEMDEF 027dc]
+//leather ninja pants
+DUPEITEM=02791
+
+[ITEMDEF 027dd]
+//leather ninja mitts
+DUPEITEM=02792
+
+[ITEMDEF 027de]
+//leather ninja jacket
+DUPEITEM=02793
+
+
+[ITEMDEF 02b06]
+DEFNAME=i_legs_honor
+NAME=Legs of Honor
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=20.0
+RESOURCES=15 i_ingot_iron,3 i_ingot_gold,2 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Legs of Honor
+TAG.NotGargoyle=1
+TAG.REQSTR=70
+TEVENTS=t_equipitem
+DUPELIST=02b07
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=10
+   TAG.RESENERGY=8
+   TAG.RESFIRE=7
+   TAG.RESPhysical=8
+   TAG.RESPOISON=7
+
+[ITEMDEF 02b07]
+//legs of honor
+DUPEITEM=02b06
+
+[ITEMDEF 02b08]
+DEFNAME=i_breastplate_justice
+NAME=Breastplate of Justice
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=25.0
+RESOURCES=18 i_ingot_iron,4 i_ingot_gold,3 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Breastplate of Justice
+TAG.NotGargoyle=1
+TAG.REQSTR=65
+TEVENTS=t_equipitem
+DUPELIST=02b09
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=8
+   TAG.RESENERGY=8
+   TAG.RESFIRE=7
+   TAG.RESPhysical=10
+   TAG.RESPOISON=7
+
+[ITEMDEF 02b09]
+//breastplate of justice
+DUPEITEM=02b08
+
+[ITEMDEF 02b0a]
+DEFNAME=i_arms_compassion
+NAME=Arms of Compassion
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=18.0
+RESOURCES=12 i_ingot_iron,3 i_ingot_gold,3 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Arms of Compassion
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=02b09
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=6
+   TAG.RESENERGY=7
+   TAG.RESFIRE=11
+   TAG.RESPhysical=8
+   TAG.RESPOISON=8
+
+[ITEMDEF 02b0b]
+//arms of compassion
+DUPEITEM=02b0a
+
+[ITEMDEF 02b0c]
+DEFNAME=i_gauntlets_valor
+NAME=Gauntlets of Valor
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=12.0
+RESOURCES=8 i_ingot_iron,3 i_ingot_gold,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Gauntlets of Valor
+TAG.NotGargoyle=1
+TAG.REQSTR=60
+TEVENTS=t_equipitem
+DUPELIST=02b0d
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=6
+   TAG.RESENERGY=7
+   TAG.RESFIRE=11
+   TAG.RESPhysical=8
+   TAG.RESPOISON=8
+
+[ITEMDEF 02b0d]
+//gauntlets of valor
+DUPEITEM=02b0c
+
+[ITEMDEF 02b0e]
+DEFNAME=i_gorget_truth
+NAME=Gorget of Honesty
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=10.0
+RESOURCES=7 i_ingot_iron,2 i_ingot_gold,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Gorget of Truth
+TAG.NotGargoyle=1
+TAG.REQSTR=45
+TEVENTS=t_equipitem
+DUPELIST=02b0f
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=9
+   TAG.RESENERGY=7
+   TAG.RESFIRE=7
+   TAG.RESPhysical=7
+   TAG.RESPOISON=5
+
+[ITEMDEF 02b0f]
+//gorget of truth
+DUPEITEM=02b0e
+
+[ITEMDEF 02b10]
+DEFNAME=i_helm_spirituality
+NAME=Helm Spirituality
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=15.0
+RESOURCES=10 i_ingot_iron,3 i_ingot_gold,2 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Helm of Spirituality
+TAG.NotGargoyle=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=02b11
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESCOLD=7
+   TAG.RESENERGY=8
+   TAG.RESFIRE=8
+   TAG.RESPhysical=8
+   TAG.RESPOISON=9
+
+[ITEMDEF 02b11]
+//helm of spirituality
+DUPEITEM=02b10
+
+[ITEMDEF 02b12]
+DEFNAME=i_solaretes_sacrifice
+NAME=Sollerets of Sacrifice
+TYPE=t_armor
+FLIP=1
+//ARMOR=40
+VALUE=1000
+WEIGHT=10.0
+RESOURCES=7 i_ingot_iron,2 i_ingot_gold,1 i_ingot_silver
+SKILLMAKE=Blacksmithing 100.0,Armslore 100.0
+CATEGORY=Quest
+SUBSECTION=8th Age
+DESCRIPTION=Sollerets of Sacrifice
+TAG.NotGargoyle=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=02b13
+ON=@Create
+   ATTR=attr_magic
+   COLOR=1827//tarnish
+   HITPOINTS=255
+   TAG.RareItem=1
+   TAG.VirtueArmor=1
+   TAG.RESPhysical=8
+
+[ITEMDEF 02b13]
+//solaretes of sacrifice
+DUPEITEM=02b12
+
+
+[ITEMDEF 02b67]
+DEFNAME=i_woodland_chest
+NAME=woodland chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=175
+WEIGHT=8.0
+RESOURCES=20 i_board,6 i_bark
+SKILLMAKE=Carpentry 90.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Chest
+TAG.ElfOnly=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
+DUPELIST=0315e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 02b69]
+DEFNAME=i_woodland_gorget
+NAME=woodland gorget
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=63
+WEIGHT=10.0
+RESOURCES=15 i_board,4 i_bark
+SKILLMAKE=Carpentry 85.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Gorget
+TAG.ElfOnly=1
+TAG.REQSTR=45
+TEVENTS=t_equipitem
+DUPELIST=03160
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b6a]
+DEFNAME=i_woodland_gauntlets
+NAME=woodland gauntlets
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=76
+WEIGHT=12.0
+RESOURCES=15 i_board,4 i_bark
+SKILLMAKE=Carpentry 85.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Gauntlets
+TAG.ElfOnly=1
+TAG.REQSTR=70
+TEVENTS=t_equipitem
+DUPELIST=03161
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b6b]
+DEFNAME=i_woodland_leggings
+NAME=woodland leggings
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+//LAYER=layer_legs
+VALUE=122
+WEIGHT=18.0
+RESOURCES=15 i_board,4 i_bark
+SKILLMAKE=Carpentry 85.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Leggings
+TAG.ElfOnly=1
+TAG.REQSTR=90
+TEVENTS=t_equipitem
+DUPELIST=03162
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b6c]
+DEFNAME=i_woodland_arms
+NAME=woodland arms
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=100
+WEIGHT=15.0
+RESOURCES=15 i_board,4 i_bark
+SKILLMAKE=Carpentry 85.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Arms
+TAG.ElfOnly=1
+TAG.REQSTR=80
+TEVENTS=t_equipitem
+DUPELIST=03163
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b6d]
+DEFNAME=i_woodland_chest_female
+NAME=female woodland chest
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=140
+WEIGHT=20.0
+RESOURCES=20 i_board,6 i_bark
+SKILLMAKE=Carpentry 90.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Woodland Chest (female)
+TAG.ElfOnly=1
+TAG.FemaleOnly=1
+TAG.REQSTR=95
+TEVENTS=t_equipitem
+DUPELIST=03164
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=5
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b6e]
+DEFNAME=i_helm_circlet1
+NAME=circlet
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 63.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Circlet
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=03165
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=5
+   TAG.RESPhysical=1
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b6f]
+DEFNAME=i_helm_circlet2
+NAME=royal circlet
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=70
+WEIGHT=10.0
+RESOURCES=10 i_ingot_iron
+SKILLMAKE=Blacksmithing 77.3,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Royal Circlet
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=03166
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=5
+   TAG.RESPhysical=1
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b70]
+DEFNAME=i_helm_circlet3
+NAME=gemmed circlet
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=1050
+WEIGHT=10.0
+RESOURCES=8 i_ingot_iron,20 i_gem_diamond
+SKILLMAKE=Blacksmithing 93.2,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Gemmed Circlet
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=03167
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=5
+   TAG.RESPhysical=1
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b71]
+DEFNAME=i_helm_raven
+NAME=raven helm
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_board,25 i_feather,4 i_bark
+SKILLMAKE=Carpentry 65.0,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Raven Helm
+TAG.ElfOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=03168
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b72]
+DEFNAME=i_helm_vulture
+NAME=vulture helm
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_board,25 i_feather,4 i_bark
+SKILLMAKE=Carpentry 63.9,Armslore 25.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Vulture Helm
+TAG.ElfOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=03169
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b73]
+DEFNAME=i_helm_winged_2
+NAME=winged helm
+TYPE=t_armor
+FLIP=1
+//ARMOR=30
+VALUE=65
+WEIGHT=10.0
+RESOURCES=10 i_board,60 i_feather,4 i_bark
+SKILLMAKE=Carpentry 58.4
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Winged Helm
+TAG.ElfOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0316a
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=5
+   TAG.RESFIRE=1
+   TAG.RESPhysical=5
+   TAG.RESPOISON=2
+
+[ITEMDEF 02b74]
+DEFNAME=i_hide_chest
+NAME=hide tunic
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=113
+WEIGHT=13.1
+RESOURCES=13 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 85.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Tunic
+TAG.ElfOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0316b
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b75]
+DEFNAME=i_hide_gloves
+NAME=hide gloves
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=24
+WEIGHT=3.1
+RESOURCES=3 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 75.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Gloves
+TAG.ElfOnly=1
+TAG.REQSTR=15
+TEVENTS=t_equipitem
+DUPELIST=0316c
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b76]
+DEFNAME=i_hide_gorget
+NAME=hide gorget
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=31
+WEIGHT=4.0
+RESOURCES=4 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Gorget
+TAG.ElfOnly=1
+TAG.REQSTR=15
+TEVENTS=t_equipitem
+DUPELIST=0316d
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b77]
+DEFNAME=i_hide_arms
+NAME=hide pauldrons
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=70
+WEIGHT=9.1
+RESOURCES=8 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 75.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Pauldrons
+TAG.ElfOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=0316e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b78]
+DEFNAME=i_hide_leggings
+NAME=hide pants
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=86
+WEIGHT=11.1
+RESOURCES=10 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Pants
+TAG.ElfOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=0316f
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+[ITEMDEF 02b79]
+DEFNAME=i_hide_chest_female
+NAME=female hide tunic
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=96
+WEIGHT=13.1
+RESOURCES=10 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 85.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Hide Tunic (female)
+TAG.ElfOnly=1
+TAG.FemaleOnly=1
+TAG.REQSTR=25
+TEVENTS=t_equipitem
+DUPELIST=03170
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=4
+   TAG.RESENERGY=2
+   TAG.RESFIRE=3
+   TAG.RESPhysical=3
+   TAG.RESPOISON=3
+
+
+[ITEMDEF 02fc5]
+//light chest
+DUPEITEM=0317b
+
+[ITEMDEF 02fc6]
+//light gloves
+DUPEITEM=0317c
+
+[ITEMDEF 02fc7]
+//light gorget
+DUPEITEM=0317d
+
+[ITEMDEF 02fc8]
+//light paldrons
+DUPEITEM=0317e
+
+[ITEMDEF 02fc9]
+//light pants
+DUPEITEM=0317f
+
+[ITEMDEF 02fca]
+//light tonlet
+DUPEITEM=03180
+
+[ITEMDEF 02fcb]
+//light female chest
+DUPEITEM=03181
+
+
+[ITEMDEF 0315e]
+//woodland breastplate
+DUPEITEM=02b67
+
+
+[ITEMDEF 03160]
+//elven plate gorget
+DUPEITEM=02b69
+
+[ITEMDEF 03161]
+//elven plate gloves
+DUPEITEM=02b6a
+
+[ITEMDEF 03162]
+//elven plate legs
+DUPEITEM=02b6b
+
+[ITEMDEF 03163]
+//elven arm plate
+DUPEITEM=02b6c
+
+[ITEMDEF 03164]
+//female elven plate
+DUPEITEM=02b6d
+
+[ITEMDEF 03165]
+//elven circlet
+DUPEITEM=02b6e
+
+[ITEMDEF 03166]
+//elven circlet
+DUPEITEM=02b6f
+
+[ITEMDEF 03167]
+//elven circlet
+DUPEITEM=02b70
+
+[ITEMDEF 03168]
+//raven helm
+DUPEITEM=02b71
+
+[ITEMDEF 03169]
+//vulture helm
+DUPEITEM=02b72
+
+[ITEMDEF 0316a]
+//winged helm
+DUPEITEM=02b73
+
+[ITEMDEF 0316b]
+//hide chest
+DUPEITEM=02b74
+
+[ITEMDEF 0316c]
+//hide gloves
+DUPEITEM=02b75
+
+[ITEMDEF 0316d]
+//hide gorget
+DUPEITEM=02b76
+
+[ITEMDEF 0316e]
+//hide paldrons
+DUPEITEM=02b77
+
+[ITEMDEF 0316f]
+//hide pants
+DUPEITEM=02b78
+
+[ITEMDEF 03170]
+//female hide chest
+DUPEITEM=02b79
+
+
+[ITEMDEF 0317b]
+DEFNAME=i_leaf_chest
+NAME=leaf tunic
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=113
+WEIGHT=13.1
+RESOURCES=12 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 77.2,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Tunic
+TAG.ElfOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=02fc5
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 0317c]
+DEFNAME=i_leaf_gloves
+NAME=leaf gloves
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=27
+WEIGHT=3.1
+RESOURCES=3 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 56.8,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Gloves
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=02fc6
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 0317d]
+DEFNAME=i_leaf_gorget
+NAME=leaf gorget
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=35
+WEIGHT=4.1
+RESOURCES=4 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Gorget
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=02fc7
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 0317e]
+DEFNAME=i_leaf_arms
+NAME=leaf arms
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=73
+WEIGHT=9.1
+RESOURCES=8 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Arms
+TAG.ElfOnly=1
+TAG.REQSTR=15
+TEVENTS=t_equipitem
+DUPELIST=02fc8
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 0317f]
+DEFNAME=i_leaf_leggings
+NAME=leaf leggings
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=89
+WEIGHT=11.1
+RESOURCES=10 i_hides_cut,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 59.0,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Leggings
+TAG.ElfOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=02fc9
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 03180]
+DEFNAME=i_leaf_tonlet
+NAME=leaf tonlet
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=117
+WEIGHT=13.1
+RESOURCES=12 i_hide,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 77.2,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Leaf Tonlet
+TAG.ElfOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=02fca
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+[ITEMDEF 03181]
+DEFNAME=i_leaf_chest_female
+NAME=female leaf tunic
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//ARMOR=13
+VALUE=117
+WEIGHT=13.1
+RESOURCES=12 i_hide,1 i_ingot_iron,1 i_thread
+SKILLMAKE=Tailoring 77.2,t_sewing_kit
+CATEGORY=Provisions - Armor
+SUBSECTION=Elven
+DESCRIPTION=Female Leaf Tunic
+TAG.ElfOnly=1
+TAG.FemaleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=02fcb
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESCOLD=2
+   TAG.RESENERGY=4
+   TAG.RESFIRE=3
+   TAG.RESPhysical=2
+   TAG.RESPOISON=4
+
+
+[ITEMDEF 04047]
+//Gargish female leather arms
+DUPEITEM=0301
+
+[ITEMDEF 04048]
+//Gargish leather arms
+DUPEITEM=0302
+
+[ITEMDEF 04049]
+//Gargish female leather chest
+DUPEITEM=0303
+
+[ITEMDEF 0404a]
+//Gargish leather chest
+DUPEITEM=0304
+
+[ITEMDEF 0404b]
+//Gargish female leather kilt
+DUPEITEM=0310
+
+[ITEMDEF 0404c]
+//Gargish leather kilt
+DUPEITEM=0311
+
+[ITEMDEF 0404d]
+//Gargish female leather leggings
+DUPEITEM=0305
+
+[ITEMDEF 0404e]
+//Gargish leather leggings
+DUPEITEM=0306
+
+[ITEMDEF 0404f]
+//Gargish female plate arms
+DUPEITEM=0307
+
+[ITEMDEF 04050]
+//Gargish plate arms
+DUPEITEM=0308
+
+[ITEMDEF 04051]
+//Gargish female plate chest
+DUPEITEM=0309
+
+[ITEMDEF 04052]
+//Gargish plate chest
+DUPEITEM=030a
+
+[ITEMDEF 04053]
+//Gargish female plate kilt
+DUPEITEM=030b
+
+[ITEMDEF 04054]
+//Gargish plate kilt
+DUPEITEM=030c
+
+[ITEMDEF 04055]
+//Gargish female plate leggings
+DUPEITEM=030d
+
+[ITEMDEF 04056]
+//Gargish plate leggings
+DUPEITEM=030e
+
+[ITEMDEF 04057]
+//Gargish female stone arms
+DUPEITEM=0283
+
+[ITEMDEF 04058]
+//Gargish stone arms
+DUPEITEM=0284
+
+[ITEMDEF 04059]
+//Gargish female stone chest
+DUPEITEM=0285
+
+[ITEMDEF 0405a]
+//Gargish stone chest
+DUPEITEM=0286
+
+[ITEMDEF 0405b]
+//Gargish female stone kilt
+DUPEITEM=0287
+
+[ITEMDEF 0405c]
+//Gargish stone kilt
+DUPEITEM=0288
+
+[ITEMDEF 0405d]
+//Gargish female stone leggings
+DUPEITEM=0289
+
+[ITEMDEF 0405e]
+//Gargish stone leggings
+DUPEITEM=028a
+
+[ITEMDEF 0405f]
+//Gargish female cloth arms
+DUPEITEM=0403
+
+[ITEMDEF 04060]
+//Gargish cloth arms
+DUPEITEM=0404
+
+[ITEMDEF 04061]
+//Gargish female cloth chest
+DUPEITEM=0405
+
+[ITEMDEF 04062]
+//Gargish cloth chest
+DUPEITEM=0406
+
+[ITEMDEF 04063]
+//Gargish female cloth kilt
+DUPEITEM=0407
+
+[ITEMDEF 04064]
+//Gargish cloth kilt
+DUPEITEM=0408
+
+[ITEMDEF 04065]
+//Gargish female cloth leggings
+DUPEITEM=0409
+
+[ITEMDEF 04066]
+//Gargish cloth leggings
+DUPEITEM=040a
+
+
+[ITEMDEF 041d8]
+DEFNAME=i_gargish_leather_talons
+NAME=Gargish leather talons
+TYPE=t_armor_leather
+DYE=1
+FLIP=1
+//LAYER=layer_shoes
+//ARMOR=7
+VALUE=57
+WEIGHT=8.1
+RESOURCES=8 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 56.8,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Clothes
+SUBSECTION=Footwear
+DESCRIPTION=Gargish Leather Talons
+TAG.GargoyleOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=041d9
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESPhysical=1
+
+[ITEMDEF 041d9]
+//leather talons
+DUPEITEM=041d8
+
+
+[ITEMDEF 042de]
+DEFNAME=i_gargish_plate_talons
+NAME=Gargish plate talons
+TYPE=t_armor
+FLIP=1
+//ARMOR=15
+//LAYER=layer_shoes
+VALUE=57
+WEIGHT=8.0
+RESOURCES=8 i_ingot_iron
+SKILLMAKE=Blacksmithing 56.8,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Plate Gargoyle Armor
+DESCRIPTION=Gargish Plate Talons
+TAG.GargoyleOnly=1
+TAG.REQSTR=20
+TEVENTS=t_equipitem
+DUPELIST=042df
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESPhysical=1
+
+[ITEMDEF 042df]
+//plate talons
+DUPEITEM=042de
+
+
+[ITEMDEF 0450d]
+DEFNAME=i_gargish_leather_belt
+NAME=Gargish belt
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=13
+//LAYER=layer_half_apron
+VALUE=40
+WEIGHT=5.1
+RESOURCES=5 i_hides_cut,1 i_thread
+SKILLMAKE=Tailoring 50.0,t_sewing_kit,Armslore 38.0
+CATEGORY=Provisions - Clothes
+SUBSECTION=Miscellaneous
+DESCRIPTION=Leather Gargish Belt
+TAG.GargoyleOnly=1
+TAG.REQSTR=10
+TEVENTS=t_equipitem
+DUPELIST=0450e
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESPhysical=1
+
+[ITEMDEF 0450e]
+//gargish belt
+DUPEITEM=0450d
+
+
+[ITEMDEF 0457e]
+DEFNAME=i_gargish_leather_wings
+NAME=Gargish leather wing armor
+TYPE=t_armor_leather
+FLIP=1
+//ARMOR=20
+VALUE=70
+WEIGHT=9.1
+RESOURCES=9 i_hides_cut,1 i_ingot_iron
+SKILLMAKE=Tailoring 79.0,t_sewing_kit,Armslore 10.0
+CATEGORY=Provisions - Armor
+SUBSECTION=Leather Gargoyle Armor
+DESCRIPTION=Gargish Leather Wing Armor
+TAG.REQSTR=10
+TAG.GargoyleOnly=1
+TEVENTS=t_equipitem
+DUPELIST=0457f
+ON=@Create
+   HITPOINTS={36 48}
+   TAG.RESPhysical=1
+
+[ITEMDEF 0457f]
+//gargoyle leather wing armor
+DUPEITEM=0457e
+
+
+[EOF]

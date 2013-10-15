@@ -7,19 +7,20 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, December 9, 2005
+// FILE LAST UPDATED: Friday, September 20, 2013
 
-VERSION=0.56b
+VERSION=0.56c
+
 
 [ITEMDEF 03a73]
-DEFNAME=i_Sleigh
+DEFNAME=i_sleigh
 NAME=Sleigh
-TYPE=T_NORMAL
+TYPE=t_normal
 RESLEVEL=5
 RESDISPDNID=i_crate_lg
-RESDINSPCOLOR=33
-CATEGORY=Addons
-SUBSECTION=Christimas Items
+RESDISPDNHUE=33
+CATEGORY=Holiday
+SUBSECTION=Christmas
 DESCRIPTION=Sleigh
 DUPELIST=03a74,03a75,03a76,03a77,03a78,03a79,03a7a,03a7b,03a7c,03a7d,03a7e,03a7f,03a80,03a81,03a82,03a83,03a84,03a85,03a86,03a87,03a88,03a89,03a8a,03a8b,03a8c,03a8d,03a8e,03a8f,03a90,03a91,03a92
 
@@ -122,8 +123,8 @@ NAME=Reindeer
 TYPE=T_NORMAL
 RESLEVEL=5
 RESDISPDNID=16382
-CATEGORY=Addons
-SUBSECTION=Christimas Items
+CATEGORY=Holiday
+SUBSECTION=Christmas
 DESCRIPTION=Reindeer
 DUPELIST=03a56,03a57,03a58,03a59,03a5a,03a5b,03a5c,03a5d,03a5e,03a5f,03a60,03a61,03a62,03a63,03a64,03a65,03a66,03a67,03a68,03a69,03a6a,03a6b,03a6c,03a6d,03a6e,03a6f,03a70,03a71,03a72
 
@@ -213,5 +214,6 @@ DUPEITEM=03a55
 
 [ITEMDEF 03a72]
 DUPEITEM=03a55
+
 
 [EOF]

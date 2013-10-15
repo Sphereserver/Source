@@ -1,37 +1,39 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 15, 2003
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
-//  General Skill menus for creation of items.
-// Hard coded ref names: (called directly form server)
-// sm_alchemy = dclick on alch tools
-// sm_summon
-// sm_polymorph = polymorph menus
-// sm_cartography = dclick on blank map
-// sm_bowcraft =  knife on wood
-// sm_bolts = dclick on arrows or shafts
-// sm_blacksmith = dclick on tool
-// sm_carpentry = dclick on carp tool
-// sm_tailor_leather = dclick on sewing kit
-// sm_tailor_cloth
-// sm_tinker = dclick on tinker tools.
-// sm_inscription = dclick on blank scroll
-// sm_cook = ??? NOT USED YET
+[COMMENT sphere_skillmenu]
+
+The sphereserver has a number of hardcoded skillmenu's, this file contains
+the softcoded component.  The prupose of each is as follows:
+
+  sm_alchemy        = Triggered by DClicking alchemy tools
+  sm_summon         = Triggered by the Magery "summoning" spell
+  sm_polymorph      = Triggered by the Magery Polymorph spell
+  sm_cartography    = Triggered by DClicking a blank map
+  sm_bowcraft       = Triggered by DClicking a knife and using it on wood
+  sm_bolts          = Triggered by DClicking arrows or shafts
+  sm_blacksmith     = Triggered by DClicking a blacksmithing hammer
+  sm_carpentry      = Triggered by DClicking a carpentry tool
+  sm_tailor_leather = Triggered by DClicking a sewing kit and using it on leather
+  sm_tailor_cloth   = Triggered by DClicking a sewing kit and using it on cloth
+  sm_tinker         = Triggered by DClicking tinker tools
+  sm_inscription    = Triggered by DClicking a blank scroll
+  sm_cook           = NOT USED YET...
+
 
 [SKILLMENU sm_inscription]
-// dclick on blank scroll
 Spell Circles
-// Still internal at the moment.
 ON=i_spell_circle_1
 SKILLMENU=sm_inscrip_1
 ON=i_spell_circle_2
@@ -3154,9 +3156,3 @@ ON=i_cake <name> (<resmake>)
 MAKEITEM=i_cake
 
 [EOF]
-
-
-
-
-
-

@@ -589,7 +589,7 @@ bool CScriptObj::r_LoadVal( CScript & s )
 	if ( index == SSC_LIST )
 	{
 		if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
-			DEBUG_ERR(("Unable to proceed command '%s %s'\n", pszKey, s.GetArgRaw()));
+			DEBUG_ERR(("Unable to process command '%s %s'\n", pszKey, s.GetArgRaw()));
 
 		return true;
 	}

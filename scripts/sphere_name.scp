@@ -1,15 +1,16 @@
 //****************************************************************************
-//SPHERE by : Menasoft ©1997-2007
-//www.sphereserver.net
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 15, 2003
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
 
 [NAMES NAMES_RATMAN]
 205
@@ -219,7 +220,7 @@ Wedachek
 Wikchichoki
 Wochickeki
 
-[NAMES NAMES_DAEMON]
+[NAMES NAMES_DEMON]
 80
 Aamon
 Agalierept
@@ -1407,6 +1408,123 @@ Zalifar
 Zathrix
 Zunrek
 
+[NAMES NAMES_THE_DRAGON]
+107
+Aegnor
+Aelfric
+Ainvar
+Alcor
+Arazion
+Ardarion
+Arkanis
+Athrax
+Barghest
+Baros
+Begarin
+Beynlore
+Burat
+Cairne
+Carthon
+Chamdar
+Ciric
+Cruzado
+Cyphrak
+Daelon
+Daktar
+Darkkill
+Darvain
+D'Harun
+Dracus
+Dradar
+Draelin
+Draenor
+Durodund
+Eklor
+Elrak
+Fangorn
+Farynthane
+Feenark
+Galtor
+Gemma
+Gragus
+Irian
+Israfel
+Jaden
+Jefahn
+Kalimus
+Kallomane
+Kanax
+Kelnos
+Kharn
+Khir
+Kragon
+K'shar
+Kylnath
+Larac
+Lathis
+Lenroc
+Lonthorynthoryl
+Lorreck
+Lyticant
+Mattrick
+Mazrim
+Modrei
+Morturus
+Muktar
+Murdon
+Murron
+Myndon
+Mythran
+Mytor
+Nabius
+Nalynkal
+Nazgul
+Paorin
+Quillan
+Rendar
+Sang Qui
+Scythyn
+Shilor
+Smaug
+Sobran
+Soltak
+Sorz
+Taban
+Telzar
+Teron
+Trethovian
+Tyrnar
+Ulath
+Vandor
+Vermithrax
+Vitar
+Vlade
+Volan
+Wydstrin
+Xaelin
+Xandor
+Xarthos
+Xaxtox
+X'calak
+Xenix
+Xiltanth
+Xylor
+Xystil
+Yazad
+Yllthane
+Ylthallynon
+Ythoryn
+Zalifar
+Zathrix
+Zunrek
+
+[NAMES names_evil_mage_lord]
+4
+Kwan Li, Lord of the Mists
+Bazerion, the Wizard-Lord
+Ylthallynon, the Insane
+Xarot the Black Archmage
+
 [NAMES NAMES_EVIL_MAGE]
 151
 Aegnor
@@ -1431,11 +1549,11 @@ Chamdar
 Ciric
 Cruzado
 Cyphrak
+D'Harun
 Daelon
 Daktar
 Danaghir
 Darvain
-D'Harun
 Doraghir
 Dracus
 Dradar
@@ -3770,6 +3888,259 @@ Zenon
 Zion
 Ziven
 Zorn
+
+[NAMES NAMES_ELFKIND]
+250
+Abadluan
+Abagraid
+Abaralaar
+Abeldogt
+Abenbeud
+Abeneih
+Abesanoac
+Acacils
+Acebagaan
+Acetecicr
+Acetgors
+Acirars
+Adanaih
+Adcaag
+Addorl
+Adigdias
+Adinobh
+Agacagasr
+Agasitn
+Agelahail
+Agelbalr
+Ahagataat
+Aharaac
+Aharetd
+Ahdalr
+Ahedobirr
+Ahelhaor
+Aherisn
+Alahier
+Alalagh
+Alerruar
+Alitann
+Alobins
+Analeah
+Anarand
+Anhaor
+Anididenb
+Anilanl
+Anilteat
+Anonahedb
+Anrath
+Antind
+Arabaig
+Aratnatg
+Arceog
+Arellanh
+Aresidabl
+Arganl
+Arhael
+Aritahaah
+Aritibaor
+Aroluen
+Aroreuh
+Arunibeor
+Asehliir
+Ashaid
+Aslisn
+Asrihd
+Asurruan
+Atadnaut
+Ataterelh
+Atcetb
+Ateruct
+Atlohc
+Badibl
+Begetnual
+Beranl
+Bibaad
+Bitabl
+Bohedguad
+Budeac
+Budhiol
+Bulohriet
+Carirredn
+Cehorioc
+Cilinaon
+Conaddids
+Cosalehc
+Cububaat
+Dagosseur
+Dalogedr
+Datrisl
+Dehald
+Dehrian
+Dohablaid
+Dolelsaoh
+Dorruec
+Dudlehn
+Ebodhuor
+Ebruoc
+Ecaletehh
+Ecanall
+Edgeas
+Egaluul
+Ehteas
+Elagalutb
+Elasanegr
+Eletual
+Enduen
+Enhihl
+Ennaar
+Enohill
+Eraralell
+Eribeod
+Erordeor
+Erried
+Esaloraul
+Esanaloac
+Gacinrieh
+Galabaon
+Galdunl
+Gecoglugg
+Gehuslatr
+Getudadb
+Getunl
+Ginusnaat
+Habogeng
+Hahaet
+Halalicr
+Halehial
+Hegicn
+Hehadtetl
+Helcaen
+Herabhasn
+Hidolnian
+Hidreur
+Hodabiib
+Horaob
+Hucnaod
+Huhtigt
+Hunidr
+Hutecranl
+Ibigait
+Ibiroet
+Ibriel
+Idahasorn
+Iduhahaug
+Igtalb
+Ilanegaln
+Inahaar
+Inibaan
+Inildelh
+Inusier
+Ireroliin
+Irgear
+Iseranisl
+Isterr
+Ittiog
+Labulolg
+Lacanb
+Ladaas
+Ladnors
+Lanebagt
+Lariat
+Larnaat
+Latucurd
+Lehaloer
+Lenluan
+Leshill
+Lirnaeg
+Litleat
+Lolunerd
+Lulatn
+Nagdauc
+Naguctatd
+Naheed
+Nalihatd
+Nantail
+Narubronn
+Naserhelh
+Natgouh
+Neglotn
+Nenanall
+Netabroar
+Nigteul
+Nihadb
+Nilatier
+Nodaud
+Nohabd
+Nolahaes
+Nonanarr
+Nosedt
+Noseghiad
+Nuccaer
+Nudatheth
+Nurabh
+Ocegeer
+Olareob
+Olelredn
+Olgern
+Onalarion
+Oragacurc
+Oresubitr
+Orirurl
+Orotibt
+Otadenoas
+Otesuboah
+Ralacoet
+Ralasuil
+Raloleab
+Raribhiog
+Rarsinl
+Rasadear
+Raslanb
+Rasudn
+Ratabiln
+Rateteah
+Ratuor
+Regand
+Rehenboal
+Rehleub
+Rerbien
+Rerebegr
+Retluul
+Ribodsabs
+Riderl
+Rigontidl
+Riloredr
+Rinoscear
+Rinsiod
+Rociriag
+Rorahbecn
+Roshent
+Rubadabd
+Saratitt
+Senahicn
+Sicratb
+Sihaag
+Sirsegh
+Sisotgaul
+Tadacerl
+Tadibitr
+Tanirabl
+Tarorlern
+Telorilh
+Tenitgenr
+Tibecnean
+Tiliddoan
+Tilrotn
+Tinuddaar
+Toladecl
+Tothail
+Ucoroceag
+Udanibuls
+Udenhitl
+Udigiur
+Ugabitobt
+Uneragial
+Unnais
+Urhert
 
 [NAMES NAMES_HUMANFEMALE]
 2191
@@ -6484,11 +6855,37 @@ Woodpigeon
 Wren
 
 [NAMES NAMES_TROPICAL_BIRDS]
-4
+15
+Ani
+Aracari
+Canary
+Cuckoo
+Finch
+Hummingbird
 I'iwi
+Jacamar
+Macaw
 Macaw
 Mynah
+Parakeet
 Parrot
+Quetzal
+Toucan
+
+[NAMES NAMES_EAGLES]
+12
+Bald Eagle
+Barred Hawk
+Black Eagle
+Black Hawk
+Crested Eagle
+Golden Eagle
+Harpy Eagle
+Nighthawk
+Savanna Hawk
+Solitary Eagle
+White-tailed Eagle
+White-tailed Hawk
 
 [NAMES NAMES_GOBLIN]
 500
@@ -7039,7 +7436,7 @@ Vile
 Viper
 Wrench
 
-[NAMES NAMES_GARGOYLE]
+[NAMES NAMES_GARGOYLEMALE]
 233
 Alegra
 Andrel
@@ -7274,6 +7671,11 @@ Zarnkis
 Zedmeni
 Zogstix
 Zughumi
+
+[NAMES NAMES_GARGOYLEFEMALE]
+2
+Aleonna
+Astri
 
 [NAMES NAMES_TROLL]
 243
@@ -7628,6 +8030,7 @@ Ysull
 Ysyssa
 
 [NAMES NAMES_pixie]
+22
 Ciline
 Cynthe
 Klian
@@ -7720,7 +8123,7 @@ Damon D'Marcus
 Dantrag Darklord
 Dardin Del'Sundin
 Darwar Ben Canaan
-Deamon D'Kiakaha
+Demon D'Kiakaha
 DelKalvir Arryre
 Denzil De'valdras
 Deventaraen Tindir

@@ -7,11 +7,17 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 17, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-// contributions by Exer from The Darkside Shards (www.tdsuo.com)
-//
-VERSION=0.56b
+VERSION=0.56c
+
+
+[COMMENT sphere_item_magic_necromancy]
+
+This file contains all things relating to Mysticism, such as:
+
+* Scrolls
+* Spellbooks
 
 
 [ITEMDEF 02253]
@@ -122,7 +128,7 @@ ON=@Create
    MOREX=s_horrific_beast
 
 [ITEMDEF 02266]
-DEFNAME=i_scroll_liche_form
+DEFNAME=i_scroll_lich_form
 NAME=Lich Form Scroll
 TYPE=t_scroll
 VALUE=114
@@ -134,7 +140,7 @@ SUBSECTION=Scrolls - Necromancy
 DESCRIPTION=Lich Form Scroll
 ON=@Create
    ATTR=attr_magic
-   MOREX=s_liche_form
+   MOREX=s_lich_form
 
 [ITEMDEF 02267]
 DEFNAME=i_scroll_mind_rot
@@ -402,33 +408,6 @@ DESCRIPTION=Necro 10
 ON=@Create
    ATTR=attr_magic
    //MOREX=s_fixme
-
-
-[ITEMDEF 0227a]
-DEFNAME=i_scroll_calling
-TYPE=t_normal //t_scroll
-WEIGHT=0.1
-RESOURCES=1 i_scroll_blank
-//SKILLMAKE=Inscription 30.0,Necromancy 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Scrolls - Misc
-DESCRIPTION=Scroll of Calling
-ON=@Create
-   ATTR=attr_magic
-   //MOREX=s_calling
-
-[ITEMDEF 0227b]
-DEFNAME=i_scroll_abraxus
-TYPE=t_normal //t_scroll
-WEIGHT=0.1
-RESOURCES=1 i_scroll_blank
-//SKILLMAKE=Inscription 30.0,Necromancy 20.0
-CATEGORY=Provisions - Alchemy & Magic
-SUBSECTION=Scrolls - Misc
-DESCRIPTION=Scroll of Abraxus
-ON=@Create
-   ATTR=attr_magic
-   //MOREX=s_abraxus
 
 
 [EOF]

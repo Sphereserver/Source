@@ -7,54 +7,114 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, August 28, 2013
+// FILE LAST UPDATED: Sunday, October 6, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [DEFNAME backward_compability_defs]
-loot_ORGE_LORD        loot_OGRE_LORD
-i_axe_war_VANQUISIHNG i_axe_war_VANQ
-i_reag_worm_heart     i_reag_wyrm_heart
-i_candleabra          i_candelabra
-i_candleabra_lit      i_candelabra_lit
-i_candleabra2         i_candelabra2
-i_candleabra2_lit     i_candelabra2_lit
-i_spellbook_paladin          i_spellbook_chivalry
-i_spellbook_arcanist         i_spellbook_spellweaving
-i_scroll_blood_oat           i_scroll_blood_oath
-i_scroll_lich_transformation i_scroll_liche_form
-i_scroll_pain_strike         i_scroll_pain_spike
-i_scroll_strangulation       i_scroll_strangle
-snd_rune_beetle   snd_monster_rune_beetle
-snd_yomotsu       snd_monster_yomotsu
-snd_kappa         snd_monster_kappa
-snd_crane         snd_animal_crane
-snd_gaman         snd_monster_gaman
-snd_tsuki_wolf    snd_monster_tsuki_wolf
-snd_rav_lion      snd_monster_rav_lion
-snd_oni           snd_monster_oni
-snd_pixie         snd_monster_pixie
-snd_centaur       snd_monster_centaur
-snd_kirin         snd_animal_kirin
-snd_hiryu         snd_animal_hiryu
-i_door_portculis  i_door_portcullis
-i_axel_and_gears  i_axle_and_gears
-i_axel            i_axle
-i_sa_door_ws1     i_door_ws1
-i_sa_door_ws2     i_door_ws2
-i_sa_door_ws3     i_door_ws3
-i_sa_door_gd      i_door_gargoyle
-i_sa_door_barred  i_door_barred_2
-i_sa_door_qdh     i_door_queen_huge
-i_sa_door_qd      i_door_queen
-i_sa_door_m1      i_door_m1
-i_sa_door_m2      i_door_m2
-i_sa_door_m3      i_door_m3
-i_sa_door_m4      i_door_m4
-i_sa_door_rd      i_door_ruined
-i_reag_volcanic_ash  i_reag_grave_dust
-i_reag_serpent_scale i_reag_nox_crystal
+//i_gate_wood_2           i_fence_wood_3
+//i_bow_ruin_o          i_bow_ruin
+//i_kryss_ruin_o        i_kryss_ruin
+//brain_beserk          brain_berserk
+//loot_ORGE_LORD        loot_OGRE_LORD
+//i_axe_war_VANQUISIHNG i_axe_war_VANQ
+//i_reag_worm_heart     i_reag_wyrm_heart
+//i_candleabra          i_candelabra
+//i_candleabra_lit      i_candelabra_lit
+//i_candleabra2         i_candelabra2
+//i_candleabra2_lit     i_candelabra2_lit
+//i_spellbook_paladin          i_spellbook_chivalry
+//i_spellbook_arcanist         i_spellbook_spellweaving
+//i_scroll_blood_oat           i_scroll_blood_oath
+//i_scroll_lich_transformation i_scroll_lich_form
+//i_scroll_pain_strike         i_scroll_pain_spike
+//i_scroll_strangulation       i_scroll_strangle
+//snd_rune_beetle      snd_monster_rune_beetle
+//snd_yomotsu          snd_monster_yomotsu
+//snd_kappa            snd_monster_kappa
+//snd_crane            snd_animal_crane
+//snd_gaman            snd_monster_gaman
+//snd_tsuki_wolf       snd_monster_tsuki_wolf
+//snd_rav_lion         snd_monster_rav_lion
+//snd_oni              snd_monster_oni
+//snd_pixie            snd_monster_pixie
+//snd_centaur          snd_monster_centaur
+//snd_kirin            snd_animal_kirin
+//snd_hiryu            snd_animal_hiryu
+//i_door_portculis        i_door_portcullis
+//i_axel_and_gears        i_axle_and_gears
+//i_axel                  i_axle
+//i_sa_door_ws1           i_door_ws1
+//i_sa_door_ws2           i_door_ws2
+//i_sa_door_ws3           i_door_ws3
+//i_sa_door_gd            i_door_gargoyle
+//i_sa_door_barred        i_door_barred_2
+//i_sa_door_qdh           i_door_queen_huge
+//i_sa_door_qd            i_door_queen
+//i_sa_door_m1            i_door_m1
+//i_sa_door_m2            i_door_m2
+//i_sa_door_m3            i_door_m3
+//i_sa_door_m4            i_door_m4
+//i_sa_door_rd            i_door_ruined
+//i_reag_volcanic_ash     i_reag_grave_dust
+//i_reag_serpent_scale    i_reag_nox_crystal
+//i_marble                i_rock_marble
+//i_wall_wood             i_wall_darkwood
+//i_wall_stone_2          i_wall_stone_window
+//i_wall_brick            i_wall_smallbrick
+//i_wall_brick_2          i_wall_smallbrick_window
+//i_wall_stone_4          i_wall_largebrick
+//i_wall_stone_5          i_wall_largebrick_window
+//i_wall_stone_med_4      i_wall_largebrick
+//i_wall_stone_sm_4       i_wall_largebrick
+//i_wall_stone_7          i_wall_hugebrick
+//i_wall_log_2            i_wall_log_window
+//i_wall_wood_2           i_wall_lightwood
+//i_wall_wood_3           i_wall_lightwood_window
+//i_wall_stone_8          i_wall_hugestone
+//i_wall_marble_2         i_wall_marble_window
+//i_wall_marble_4         i_wall_marble_window
+//i_wall_marble_6         i_wall_marble_window
+//i_wall_marble_window_2  i_wall_marble_window
+//i_wall_marble_window_3  i_wall_marble_window
+//i_wall_plaster_2        i_wall_plaster_window
+//i_wall_plaster_4        i_wall_plaster
+//i_wall_sandstone_2      i_wall_sandstone_window
+//i_wall_sandstone_4      i_wall_sandstone_window
+//i_wall_hide_2           i_wall_hide_window
+//i_wall_hide_4           i_wall_hide_window
+//i_wall_stone_9          i_wall_hugebrownstone
+//i_wall_plaster_9        i_wall_plaster_sandstone
+//i_wall_plaster_10       i_wall_plaster_sandstone_window
+//i_wall_wood_7           i_wall_pallisade
+//i_wall_tent_10          i_wall_tent_darkblue
+//i_wall_tent             i_wall_tent_darkgreen
+//i_wall_sandstone_1      i_wall_sandstone_fancy
+//i_wall_sandstone_6      i_wall_cave
+//i_wall_sandstone_7      i_wall_stone_ruined
+//i_wall_marble_1         i_wall_whitemarble
+//i_wall_marble_8         i_wall_whitemarble_window
+//i_wall_marble_10        i_wall_whitemarble_window
+//i_wall_marble_12        i_wall_whitemarble_window
+//i_wall_stone_11         i_wall_hugebrick
+//i_wall_tent_2           i_wall_tent_darkgray
+//i_wall_tent_3           i_wall_tent_darkgray
+//i_wall_tent_4           i_wall_tent_patches
+//i_wall_tent_5           i_wall_tent_lightgray
+//i_wall_plaster_14       i_wall_plaster
+//i_stone_ruin            i_wall_sandstone_ruined
+//i_wall_stone_12         i_wall_stone_sandstone
+//i_wall_stone_13         i_wall_stone_sandstone
+//i_wall_stone_14         i_wall_stone_sandstone
+//i_pylon_stone           i_wall_hugebrownstone
+//i_pylon_stone_light     i_wall_hugebrick
+//i_pylon_stone_sand      i_wall_sandstone
+//i_window_skull          i_wall_largebrick_window
+//i_latticed_wall_1       i_wall_lattice_1
+//i_latticed_wall_brown   i_wall_lattice_2
+//i_wall_latticed_plaster i_wall_cloth_framed
+
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)
@@ -66,7 +126,8 @@ ENDIF
 [FUNCTION tweak]
 INFO
 
-[FUNCTION brain] //by Darkandus
+[FUNCTION brain]
+//by Darkandus
 IF !(<ARGN>)
    RETURN <NPC>
 ELSE
@@ -82,7 +143,8 @@ INVUL <ARGS>
 [FUNCTION invisible]
 INVIS <ARGS>
 
-[FUNCTION static] //by Thomas20198701
+[FUNCTION static]
+//by Thomas20198701
 IF !(<ARGN>)
    IF (<ISEMPTY <DEF.<ARGS>>>)
       SYSMESSAGE Not a valid command or format.
@@ -161,9 +223,7 @@ ON=@Timer
    TIMER 2
    RETURN 1
 
-[ITEMDEF i_gate_wood_2]
-DUPEITEM=i_fence_wood_3
-
+[FUNCTION npccast]
 //
 // This function can be used to force a character to cast a specific
 // spell. Works on both players and NPCs. Two arguments can be given:
@@ -173,7 +233,6 @@ DUPEITEM=i_fence_wood_3
 // target -->  target (optional, default: previous action's target)
 //             - can be a uid or map location
 //
-[FUNCTION npccast]
 // Determine spell and skill used to cast
 LOCAL.SPELL = <EVAL <ARGV[0]> &~ 0ff000000>
 LOCAL.SKILL = <EVAL (<STREAT <SERV.SPELL.<LOCAL.SPELL>.SKILLREQ>>) &~ 0ff000000>

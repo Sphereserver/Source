@@ -1,0 +1,1238 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+[ITEMDEF i_alchemists_bauble]
+ID=i_bracelet_gold
+NAME=Alchemist's Bauble
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.ExtraSkill1=Magery,10.0
+TAG.EnhancePotions=30
+TAG.LowerReagentCost=20
+TAG.RESPOISON=10
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Alchemist's Bauble
+ON=@Create
+   COLOR=0823d
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_arctic_death_dealer]
+ID=i_mace_war
+NAME=Arctic Death Dealer
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitHarm=33
+TAG.HitLowerAttack=40
+TAG.SwingSpeedIncrease=20
+TAG.DamageIncrease=40
+TAG.RESCOLD=10
+TAG.PhysicalDamagePercent=50
+TAG.ColdDamagePercent=50
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Arctic Death Dealer
+ON=@Create
+   COLOR=0480
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_blaze_death]
+ID=i_halberd
+NAME=Blaze of Death
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitFireball=50
+TAG.HitFireArea=50
+TAG.SwingSpeedIncrease=25
+TAG.DamageIncrease=35
+TAG.RESFIRE=10
+TAG.LowerRequirements=100
+TAG.PhysicalDamagePercent=50
+TAG.FireDamagePercent=50
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Blaze of Death
+ON=@Create
+   COLOR=51
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_bow_juka_king]
+ID=i_bow
+NAME=Bow of the Juka King
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.SlayerGroup=REPTILE
+TAG.HitMagicArrow=25
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=40
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Bow of the Juka King
+ON=@Create
+   COLOR=51
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_burglar_bandana]
+ID=i_bandana
+NAME=Burglar's Bandana
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.ExtraSkill1=Snooping,10.0
+TAG.ExtraSkill2=Stealing,10.0
+TAG.ExtraSkill3=Stealth,10.0
+TAG.DEX=5
+TAG.RESPHYSICAL=10
+TAG.RESFIRE=5
+TAG.RESCOLD=7
+TAG.RESPOISON=10
+TAG.RESENERGY=10
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Burglar's Bandana
+ON=@Create
+   COLOR=51
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_candelabra_souls]
+ID=i_candelabra2_lit
+TYPE=t_normal
+NAME=Candelabra of Souls
+VALUE=1000
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Candelabra of Souls
+ON=@Create
+   COLOR=colors_all
+   ATTR=attr_magic|attr_identified
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_captain_quacklebush_cutlass]
+ID=i_cutlass
+NAME=Captain Quacklebush's Cutlass
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.DEX=5
+TAG.HitChanceIncrease=10
+TAG.SwingSpeedIncrease=20
+TAG.DamageIncrease=50
+TAG.UseBestWeaponSkill=1
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Captain Quacklebush's Cutlass
+ON=@Create
+   COLOR=39
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={100 128}
+
+[ITEMDEF i_cavorting_club]
+ID=i_club
+NAME=Cavorting Club
+VALUE=1000
+RESOURCES=i_enchanted_essence
+SPEED=44
+TAG.SelfRepair=3
+TAG.SwingSpeedIncrease=25
+TAG.DamageIncrease=35
+TAG.RESFire=8
+TAG.RESCold=8
+TAG.RESPoison=8
+TAG.RESEnergy=8
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Cavorting Club
+ON=@Create
+   COLOR=0305
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_cold_blood]
+ID=i_cleaver_meat
+NAME=Cold Blood
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HITS=6
+TAG.STAMINA=6
+TAG.MANA=6
+TAG.SwingSpeedIncrease=40
+TAG.ColdDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Cold Blood
+ON=@Create
+   COLOR=08120
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_dread_pirate_hat]
+ID=i_hat_tricorne
+NAME=Dread Pirate Hat
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.DEX=8
+TAG.NightSight=1
+TAG.HitChanceIncrease=10
+TAG.RESFire=5
+TAG.RESCold=14
+TAG.RESPoison=10
+TAG.RESEnergy=5
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Dread Pirate Hat
+ON=@Create
+   COLOR=colors_brown
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   DORAND 5
+      TAG.ExtraSkill1=Archery,10.0
+      TAG.ExtraSkill1=MaceFighting,10.0
+      TAG.ExtraSkill1=Fencing,10.0
+      TAG.ExtraSkill1=Wrestling,10.0
+      TAG.ExtraSkill1=Swordsmanship,10.0
+   ENDDO
+
+[ITEMDEF i_enchanted_titan_leg_bone]
+ID=i_spear_short
+NAME=Enchanted Titan Leg Bone
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.HitLightning=40
+TAG.HitLowerDefense=40
+TAG.HitChanceIncrease=10
+TAG.DamageIncrease=20
+TAG.RESPHYSICAL=10
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Enchanted Titan Leg Bone
+ON=@Create
+   COLOR=59
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_ghost_ship_anchor]
+ID=i_anchor
+NAME=Ghost Ship Anchor
+VALUE=1000
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Ghost Ship Anchor
+ON=@Create
+   COLOR=color_rock
+   ATTR=attr_magic|attr_identified
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_gloves_pugilist]
+ID=i_leather_gloves
+NAME=Gloves of the Pugilist
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.ExtraSkill1=Wrestling,10.0
+TAG.DEX=8
+TAG.DamageIncrease=15
+TAG.RESPHYSICAL=18
+TAG.RESFire=4
+TAG.RESCold=3
+TAG.RESPoison=3
+TAG.RESEnergy=3
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Gloves of the Pugilist
+ON=@Create
+   COLOR=color_o_rusty
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_gold_bricks]
+ID=01beb
+NAME=gold bricks
+TYPE=t_normal
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Gold Bricks
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_gwennos_harp]
+ID=i_harp_large
+NAME=Gwenno's Harp
+TAG.SlayerGroup=REPOND,REPTILE
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Gwenno's Harp
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+   IF (<ATTR>&attr_identified)
+      SRC.ADDCLILOC 1060472
+      SRC.ADDCLILOC 1060473
+   ENDIF
+
+//FIXME: NAME=Helm of Swiftness
+//VALUE=1000
+//RESOURCES=i_enchanted_essence
+//Weight: 5 Stones
+//Elves Only
+//Intelligence Bonus 5
+//Faster Casting 1
+//Faster Cast Recovery 2
+//Physical Resist 6%
+//Fire Resist 5%
+//Cold Resist 6%
+//Poison Resist 6%
+//Energy Resist 8%
+//Mage Armor
+//Strength Requirement 25
+//Durability: 255 / 255 
+
+[ITEMDEF i_heart_lion]
+ID=i_platemail_chest
+NAME=Heart of the Lion
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Luck=95
+TAG.DefenseChanceIncrease=15
+TAG.RESPhysical=15
+TAG.RESFire=10
+TAG.RESCold=10
+TAG.RESPoison=10
+TAG.RESEnergy=10
+TAG.LowerRequirements=100
+TAG.MageArmor=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Heart of the Lion
+ON=@Create
+   COLOR=0fc
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_iolos_lute]
+ID=i_lute
+NAME=Iolo's Lute
+TAG.SlayerGroup=DEMON,UNDEAD
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Iolo's Lute
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+   IF (<ATTR>&attr_identified)
+      SRC.ADDCLILOC 1060479
+      SRC.ADDCLILOC 1060460
+   ENDIF
+
+[ITEMDEF i_luna_lance]
+ID=i_lance
+NAME=Luna Lance
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.ExtraSkill1=Chivalry,10.0
+TAG.STR=5
+TAG.SwingSpeedIncrease=20
+TAG.DamageIncrease=35
+TAG.UseBestWeaponSkill=1
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Luna Lance
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_night_kiss]
+ID=i_dagger
+NAME=Night's Kiss
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.SlayerGroup=REPOND
+TAG.HitLifeLeech=40
+TAG.SwingSpeedIncrease=30
+TAG.DamageIncrease=35
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Night's Kiss
+ON=@Create
+   COLOR=color_o_shadow
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_nox_ranger_heavy_crossbow]
+ID=i_crossbow_heavy
+NAME=Nox Ranger's Heavy Crossbow
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.HitStaminaLeech=40
+TAG.SwingSpeedIncrease=30
+TAG.DamageIncrease=20
+TAG.RESPOISON=10
+TAG.PhysicalDamagePercent=50
+TAG.PoisonDamagePercent=50
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Nox Ranger's Heavy Crossbow
+ON=@Create
+   COLOR=0369
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_orcish_visage]
+ID=i_mask_orc
+NAME=Orcish Visage
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.SelfRepair=3
+TAG.Str=10
+TAG.Stamina=5
+TAG.RESPhysical=8
+TAG.RESFire=5
+TAG.RESCold=3
+TAG.RESPoison=3
+TAG.RESEnergy=5
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Orcish Visage
+ON=@Create
+   COLOR=02a6
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_pads_of_cu_sidhe]
+ID=i_boots_fur
+NAME=Pads of the Cu Sidhe
+TYPE=t_armor_leather
+//LAYER=layer_shoes
+//ARMOR=8
+VALUE=1000
+WEIGHT=5.0
+RESOURCES=4 i_hides_cut,4 i_fur_light
+TAG.RareItem=1
+TAG.RESCOLD=1
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Pads of the Cu Sidhe
+TEVENTS=t_equipitem
+TAG.REQSTR=10
+ON=@Create
+   COLOR=047e
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_phillip_wooden_steed]
+ID=03ffe
+NAME=Phillip's Wooden Steed
+TYPE=t_normal
+VALUE=1000
+WEIGHT=15.0
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Phillip's Wooden Steed
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_pixie_swatter]
+ID=i_scepter
+NAME=Pixie Swatter
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SlayerGroup=FEY
+TAG.HitPoisonArea=75
+TAG.SwingSpeedIncrease=30
+TAG.RESFIRE=12
+TAG.RESENERGY=12
+TAG.UseBestWeaponSkill=1
+TAG.FireDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Pixie Swatter
+ON=@Create
+   COLOR=33
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_polar_bear_mask]
+ID=i_mask_bear
+NAME=Polar Bear Mask
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SelfRepair=3
+TAG.HitPointRegen=2
+TAG.NightSight=1
+TAG.RESPhysical=15
+TAG.RESFire=3
+TAG.RESCold=21
+TAG.RESPoison=4
+TAG.RESEnergy=4
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Polar Bear Mask
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_seahorse_statuette]
+ID=i_seahorse
+NAME=Seahorse Statuette
+TYPE=t_normal
+VALUE=1000
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Seahorse Statuette
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_art_shield_invul]
+ID=i_shield_order
+NAME=Shield of Invulnerability
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.ReflectPhysicalDamage=10
+TAG.DefenseChanceIncrease=15
+TAG.RESPHYSICAL=8
+TAG.LowerRequirements=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Shield of Invulnerability
+ON=@Create
+   COLOR=0bc
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_ship_model_hmscape]
+ID=i_model_ship
+NAME=Ship Model of the H.M.S. Cape
+TYPE=t_normal
+VALUE=1000
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Ship Model of the H.M.S. Cape
+ON=@Create
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_staff_of_power]
+ID=i_staff_black
+NAME=Staff of Power
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.MageWeaponSkill=15.0 Magery
+TAG.SpellDamageIncrease=5
+TAG.FasterCastRecovery=2
+TAG.LowerManaCost=5
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Staff of Power
+ON=@Create
+   COLOR=colors_all
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_admirals_hearty_rum]
+ID=i_bottle_liquor
+NAME=The Admiral's Hearty Rum
+VALUE=1000
+TYPE=t_normal
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=The Admiral's Hearty Rum
+ON=@Create
+   COLOR=33
+   ATTR=attr_magic|attr_identified
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_violet_courage]
+ID=i_armor_female_plate
+NAME=Violet Courage
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Luck=95
+TAG.DefenseChanceIncrease=15
+TAG.RESPHYSICAL=14
+TAG.RESFIRE=12
+TAG.RESCOLD=12
+TAG.RESPOISON=8
+TAG.RESENERGY=9
+TAG.LowerRequirements=100
+TAG.MageArmor=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Staff of Power
+ON=@Create
+   COLOR=<R010,01a>
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+ON=@EquipTest
+   IF <f_isfemale>
+      SRC.SYSMESSAGE @032 You cannot wear female armor.
+      RETURN 1
+   ENDIF
+
+[ITEMDEF i_wrath_dryad]
+ID=i_staff_gnarled
+NAME=Wrath of the Dryad
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.HitLightning=33
+TAG.HitManaLeech=50
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=40
+TAG.PoisonDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Wrath of the Dryad
+ON=@Create
+   COLOR=0ad
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_corredor_sword]
+ID=i_sword_paladin
+NAME=The Great Sword
+VALUE=1000
+TAG.DamageIncrease=30
+TAG.HitChanceIncrease=60
+TAG.LUCK=70
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=The Great Sword
+ON=@Create
+   COLOR=35
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_fire_horn]
+//1049616 "You are too busy to do that at the moment."
+//1049618 "The horn emits a pathetic squeek."
+//1049718 "The fire horn crumbles in your hands."
+//1049620 "Select an area to incinerate."
+//1049621 "You catch your breath."
+ID=0fc7
+NAME=Fire Horn
+VALUE=1000
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Fire Horn
+ON=@Create
+   COLOR=0f8
+   ATTR=attr_magic|attr_identified
+ON=@DClick
+   IF (<CONT>)
+      IF (<TOPOBJ.UID>==<SRC>)
+         IF !(<SRC.FINDID.i_fire_horn_TIMER>)
+            IF (<SRC.RESTEST 4 i_reag_sulfur_ash>)
+               IF (<SRC.MUSICIANSHIP> >= 52.6)
+                  SRC.CONSUME 4 i_reag_sulfur_ash
+                  FORCHARS <EVAL (<SRC.Musicianship> / 100) + (<SRC.Provocation> / 100)>
+                     IF (<UID>!=<SRC>)
+                        IF (<CANSEELOS>)
+                           LOCAL.DIV=<QVAL (<ISPLAYER>) ? 110:80>
+                           DAMAGE <EVAL ((<SRC.Musicianship> / <LOCAL.DIV>) + (<SRC.Provocation> / <LOCAL.DIV>) + (<SRC.Peacemaking> / <LOCAL.DIV>) + (<SRC.Enticement> / <LOCAL.DIV>)) - 5> <DEF.dam_fire> <SRC>
+                        ENDIF
+                     ENDIF
+                  END
+                  SERV.NEWITEM=i_fire_horn_TIMER
+                  NEW.CONT=<SRC>
+                  NEW.TIMER=7
+               ENDIF
+            ELSE
+               SRC.SYSMESSAGELOC 1049617//"You do not have enough sulfurous ash."
+            ENDIF
+         ELSE
+            SRC.SYSMESSAGELOC 1049615//"You must take a moment to catch your breath."
+         ENDIF
+      ENDIF
+   ENDIF
+   RETURN 1
+
+[ITEMDEF i_fire_horn_timer]
+ID=0fc7
+NAME=Fire horn timer
+TYPE=t_eq_script
+WEIGHT=0
+ON=@Create
+   COLOR=0f8
+ON=@Timer
+   CONT.SYSMESSAGELOC 1049621//"You catch your breath."
+   REMOVE
+   RETURN 1
+
+[ITEMDEF i_sprinter_legs]
+ID=i_hide_leggings
+NAME=Sprinter Legs
+VALUE=1000
+TAG.ReflectPhysicalDamage=10
+TAG.Luck=65
+TAG.DEX=15
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Sprinter Legs
+ON=@Create
+   COLOR=colors_all
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_spiked_chest]
+ID=i_platemail_chest
+NAME=Spiked Chest
+VALUE=1000
+TAG.Luck=55
+TAG.ReflectPhysicalDamage=20
+TAG.STR=10
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Spiked Chest
+ON=@Create
+   COLOR=colors_brown
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_aegis_grace]
+ID=i_dragon_helm
+NAME=Ægis of Grace
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.ReflectPhysicalDamage=10
+TAG.LUCK=25
+TAG.ExtraSkill1=MagicResistance,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Aegis Of Grace
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_boomstick]
+ID=i_staff_wild
+NAME=Boomstick
+VALUE=5000
+TWOHANDS=Y
+RESOURCES=i_relic_fragment
+TAG.SwingSpeedIncrease=15
+TAG.DamageIncrease=25
+TAG.ManaRegen=3
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Boomstick
+ON=@Create
+   COLOR=39
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_bonesmasher]
+ID=i_mace_diamond
+NAME=Bonesmasher
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.HitStaminaLeech=40
+TAG.ExtraSkill1=MaceFighting,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Bonesmasher
+ON=@Create
+   HITPOINTS={90 120}
+   COLOR=0290
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_raeds_glory]
+ID=i_sword_warcleaver
+NAME=Raed's Glory
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitLifeLeech=40
+TAG.SwingSpeedIncrease=20
+TAG.DamageIncrease=15
+TAG.Mana=10
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Raed's Glory
+ON=@Create
+   COLOR=024f
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_wildfire_bow]
+ID=i_elven_composite_longbow
+NAME=Wildfire Bow
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.FireDamagePercent=100
+TAG.ExtraSkill1=Archery,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Wildfire Bow
+ON=@Create
+   COLOR=054f
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_windsong]
+ID=i_magical_shortbow
+NAME=Windsong
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.DamageIncrease=35
+TAG.SwingSpeedIncrease=25
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Windsong
+ON=@Create
+   COLOR=0558
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_talon_bite]
+ID=i_ornate_axe
+NAME=Talon Bite
+VALUE=6000
+//RESOURCES=i_enchanted_essence
+RESOURCES=i_relic_fragment
+TAG.DamageIncrease=35
+TAG.SwingSpeedIncrease=20
+TAG.ExtraSkill1=Tactics,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Talon Bite
+ON=@Create
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_soul_seeker]
+ID=i_radiant_scimitar
+NAME=Soul Seeker
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitLifeLeech=40
+TAG.HitManaLeech=40
+TAG.HitStaminaLeech=40
+TAG.SwingSpeedIncrease=60
+TAG.SlayerGroup=REPOND
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Soul Seeker
+ON=@Create
+   COLOR=03e1
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_blade_dance]
+ID=i_rune_blade
+NAME=Blade Dance
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitManaLeech=20
+TAG.ReflectPhysicalDamage=30
+TAG.Mana=8
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Blade Dance
+ON=@Create
+   COLOR=color_o_bloodrock
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_dreads_revenge]
+ID=i_kryss
+NAME=Dread's Revenge
+VALUE=1000
+TAG.ExtraSkill1=Fencing,20.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Dread's Revenge
+ON=@Create
+   COLOR=04f8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_flesh_ripper]
+ID=i_sword_assassin_spike
+NAME=Flesh Ripper
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitChanceIncrease=15
+TAG.SwingSpeedIncrease=20
+TAG.STR=5
+TAG.ExtraSkill1=Anatomy,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Flesh Ripper
+ON=@Create
+   COLOR=color_o_copper
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_robe_equinox]
+ID=i_robe
+NAME=Robe of the Equinox
+VALUE=1000
+TAG.Luck=95
+TAG.ElfOnly=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Robe of the Equinox
+ON=@Create
+   COLOR=026c
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1075086
+
+[ITEMDEF i_robe_eclipse]
+ID=i_robe
+NAME=Robe of the Eclipse
+VALUE=1000
+TAG.LUCK=95
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Robe of the Eclipse
+ON=@Create
+   COLOR=0486
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_righteous_anger]
+ID=i_elven_machete
+NAME=Righteous Anger
+VALUE=1000
+RESOURCES=i_enchanted_essence
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=40
+TAG.SwingSpeedIncrease=35
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Righteous Anger
+ON=@Create
+   COLOR=color_o_copper
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_bloodwood_spirit]
+ID=i_talisman3
+NAME=Bloodwood Spirit
+VALUE=1000
+TAG.LUCK=50
+TAG.ExtraSkill1=SpiritSpeak,10.0
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Bloodwood Spirit
+ON=@Create
+   COLOR=33
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_brightsight_lenses]
+ID=i_elven_glasses
+NAME=Brightsight Lenses
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.NightSight=1
+TAG.ManaRegen=3
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Brightsight Lenses
+ON=@Create
+   COLOR=04e8
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_crimson_cinture]
+ID=i_talisman4
+NAME=Crimson Cinture
+VALUE=1000
+TAG.DEX=10
+TAG.HitPointRegen=2
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Crimson Cinture
+ON=@Create
+   COLOR=33
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_fey_leggings]
+ID=i_chainmail_leggings
+NAME=Fey Leggings
+VALUE=5000
+RESOURCES=i_relic_fragment
+//RESOURCES=i_enchanted_essence
+TAG.ReflectPhysicalDamage=6
+TAG.HITS=6
+TAG.ElfOnly=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Fey Leggings
+ON=@Create
+   COLOR=01e8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+ON=@ClientToolTip
+   SRC.ADDCLILOC 1075086
+
+[ITEMDEF i_totem_of_void]
+ID=i_talisman4
+NAME=Totem of the Void
+VALUE=1000
+TAG.HitPointRegen=2
+TAG.LowerManaCost=10
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Minor Artifacts
+DESCRIPTION=Totem of the Void
+ON=@Create
+   COLOR=0490
+   ATTR=attr_magic|attr_identified
+   DORAND 5
+      TAG.RESCOLD=2
+      TAG.RESENERGY=2
+      TAG.RESFIRE=2
+      TAG.RESPHYSICAL=2
+      TAG.RESPOISON=2
+   ENDDO
+
+[ITEMDEF i_horn_evil]
+ID=0fc7
+NAME=horn of evil
+TYPE=t_eq_script
+CATEGORY=Items by Professions
+SUBSECTION=Bards
+DESCRIPTION=Evil Horn
+ON=@Create
+   COLOR=021
+   MORE1={5 15}  //number of charges
+ON=@DClick
+   IF <SRC.RESTEST 1 i_horn_evil>
+      IF <MORE1>==0
+         SRC.MESSAGE This horn is out of charges
+         RETURN 1
+      ELSE
+         TARGETW Target the creature you want to corrupt
+         RETURN 1
+      ENDIF
+   ELSE
+      SRC.MESSAGE You need to carry the horn to use it
+      RETURN 1
+   ENDIF
+ON=@TARGON_GROUND
+   SRC.MESSAGE That is not a creature!
+   RETURN 1
+ON=@TARGON_ITEM
+   SRC.MESSAGE That is not a creature!
+   RETURN 1
+ON=@TARGON_CHAR
+   If !(<SRC.TARG.CANSEELOS>)
+      SRC.sysmessage The creature cannot hear you clearly
+      RETURN 1
+   ElSEIF (<SRC.TARG.SERIAL>==<SRC.SERIAL>)
+      SRC.SYSMESSAGE You cannot corrupt yourself!
+      RETURN 1
+   ELSEIF (<src.int> < <src.targ.int>)
+      SRC.MESSAGE This creature is beyond your skill to corrupt
+      SRC.ACTION=-1
+      RETURN 1
+   ELSEIF !(<SRC.TARG.IsMyPet>)
+      SRC.MESSAGE That is not your pet!
+      RETURN 1
+   ELSEIF (<SRC.TARG.FLAGS> & statf_conjured)
+      SRC.MESSAGE That creature cannot be corrupted
+      RETURN 1
+   ELSEIF (<SRC.TARG.KARMA> < -799)
+      SRC.MESSAGE That creature is already evil
+      RETURN 1
+   ELSE
+      SRC.SOUND 0ff
+      SRC.EMOTE corrupt a <SRC.TARG.NAME>
+      //SRC.MESSAGELOC 500167//"You are now a criminal."
+      //SRC.FLAGS |= statf_criminal //Don't do this, its permanent!
+      SRC.SPELLEFFECT s_reveal,100.0,0
+      SRC.ANIM 11
+      SRC.TARG.SPELLEFFECT s_bless,100.0
+      SRC.TARG.KARMA -= <SRC.PROVOCATION>
+      MORE1 -= 1  //remove a charge
+      NAME=Horn of Evil (<dMORE1> charges)
+      RETURN 1
+   ENDIF
+
+[ITEMDEF i_horn_good]
+ID=0fc4
+NAME=horn of good
+TYPE=t_eq_script
+CATEGORY=Items by Professions
+SUBSECTION=Bards
+DESCRIPTION=Good Horn
+ON=@Create
+   COLOR=02
+   MORE1={5 15}  //number of charges
+ON=@DClick
+   IF <SRC.RESTEST 1 i_horn_good>
+      IF <MORE1>==0
+         SRC.MESSAGELOC colors_text,501250//"This magic item is out of charges."
+         RETURN 1
+      ELSE
+         TARGET Target the creature you want to convert
+         RETURN 1
+      ENDIF
+   ELSE
+      SRC.MESSAGE You need to carry the horn to use it
+      RETURN 1
+   ENDIF
+ON=@TARGON_GROUND
+   SRC.MESSAGE That is not a creature!
+   RETURN 1
+ON=@TARGON_ITEM
+   SRC.MESSAGE That is not a creature!
+   RETURN 1
+ON=@TARGON_CHAR
+   If !( <SRC.TARG.CANSEELOS> )
+      SRC.SYSMESSAGE The creature cannot hear you clearly
+      RETURN 1
+   ElSEIF (<SRC.TARG.SERIAL>==<SRC.SERIAL>)
+      SRC.SYSMESSAGE You cannot convert yourself!
+      RETURN 1
+   ELSEIF (<src.int> < <src.targ.int>)
+      SRC.MESSAGE This creature is beyond your skill to convert
+      SRC.ACTION=-1
+      RETURN 1
+   ELSEIF !(<SRC.TARG.IsMyPet>)
+      SRC.MESSAGE That is not your pet!
+      RETURN 1
+   ELSEIF (<SRC.TARG.FLAGS> & statf_conjured)
+      SRC.MESSAGE That creature cannot be converted
+      RETURN 1
+   ELSEIF (<SRC.TARG.KARMA> > 799)
+      SRC.MESSAGE That creature is already good
+      RETURN 1
+   ELSE
+      SRC.SOUND 0ff
+      SRC.EMOTE convert a <SRC.TARG.NAME>
+      SRC.SPELLEFFECT s_reveal,100.0,0
+      SRC.ANIM 11
+      SRC.TARG.SPELLEFFECT s_bless,100.0
+      SRC.TARG.KARMA += <SRC.PEACEMAKING>
+      MORE1 -= 1  //remove a charge
+      NAME=Horn of Good (<dMORE1> charges)
+      RETURN 1
+   ENDIF
+
+[EOF]

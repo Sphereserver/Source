@@ -1,0 +1,1094 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+////////////////////////
+// Gauntlet Artifacts //
+////////////////////////
+
+[ITEMDEF i_arcane_shield]
+ID=i_shield_kite_wood
+NAME=Arcane Shield
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.NightSight=1
+TAG.DefenseChanceIncrease=15
+TAG.FasterCasting=1
+TAG.RESENERGY=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Arcane Shield
+ON=@Create
+   COLOR=0256
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_armor_fortune]
+ID=i_leather_tunic
+NAME=Armor of Fortune
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Luck=200
+TAG.DefenseChanceIncrease=15
+TAG.LowerReagentCost=40
+TAG.RESPHYSICAL=2
+TAG.RESFIRE=4
+TAG.RESCOLD=3
+TAG.RESPOISON=3
+TAG.RESENERGY=4
+TAG.MageArmor=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Armor of Fortune
+ON=@Create
+   COLOR=093
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_axe_heavens]
+ID=i_axe_double
+NAME=Axe of the Heavens
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitLightning=50
+TAG.HitChanceIncrease=15
+TAG.DefenseChanceIncrease=15
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Axe of the Heavens
+ON=@Create
+   COLOR=03c8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_blade_insanity]
+ID=i_katana
+NAME=Blade of Insanity
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitStaminaLeech=100
+TAG.StaminaRegen=2
+TAG.SwingSpeedIncrease=30
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Blade of Insanity
+ON=@Create
+   COLOR=03c8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_bone_crusher]
+ID=i_mace_war
+NAME=Bone Crusher
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitLowerDefense=50
+TAG.STR=10
+TAG.DamageIncrease=75
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Bone Crusher
+ON=@Create
+   COLOR=021e
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_bracelet_health]
+ID=i_bracelet_gold
+NAME=Bracelet of Health
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitPointRegen=10
+TAG.HITS=5
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Bracelet of Health
+ON=@Create
+   COLOR=33
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_breath_dead]
+ID=i_bone_harvester
+NAME=Breath of the Dead
+TYPE=t_weapon_sword
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitHarm=25
+TAG.HitLifeLeech=100
+TAG.SpellDamageIncrease=5
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Breath of the Dead
+ON=@Create
+   COLOR=03e1
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_divine_countenance]
+ID=i_mask_blue
+NAME=Divine Countenance
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.INT=8
+TAG.ManaRegen=2
+TAG.ReflectPhysicalDamage=15
+TAG.LowerManaCost=8
+TAG.RESPHYSICAL=8
+TAG.RESFIRE=6
+TAG.RESCOLD=9
+TAG.RESPOISON=4
+TAG.RESENERGY=25
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Divine Countenance
+ON=@Create
+   COLOR=color_rock
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_frostbringer]
+ID=i_bow
+NAME=Frostbringer
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitDispel=50
+TAG.StaminaRegen=10
+TAG.DamageIncrease=50
+TAG.ColdDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Frostbringer
+ON=@Create
+   COLOR=012a
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_gauntlets_nobility]
+ID=i_leather_gloves
+NAME=Gauntlets of Nobility
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.STR=8
+TAG.LUCK=100
+TAG.DamageIncrease=20
+TAG.RESPHYSICAL=18
+TAG.RESFIRE=3
+TAG.RESCOLD=1
+TAG.RESPOISON=20
+TAG.RESENERGY=3
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Gauntlets of Nobility
+ON=@Create
+   COLOR=0139
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_hat_magi]
+ID=i_hat_wizards
+NAME=Hat of the Magi
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.INT=8
+TAG.ManaRegen=4
+TAG.SpellDamageIncrease=10
+TAG.RESFIRE=5
+TAG.RESCOLD=9
+TAG.RESPOISON=20
+TAG.RESENERGY=20
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Hat of the Magi
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_helm_insight]
+ID=i_platemail_helm
+NAME=Helm of Insight
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.INT=8
+TAG.MANA=15
+TAG.ManaRegen=2
+TAG.LowerManaCost=8
+TAG.RESPHYSICAL=5
+TAG.RESFIRE=3
+TAG.RESCOLD=2
+TAG.RESPOISON=3
+TAG.RESENERGY=17
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Helm of Insight
+ON=@Create
+   COLOR=color_o_mytheril
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_holy_knights_breastplate]
+ID=i_platemail_chest
+NAME=Holy Knight's Breastplate
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HITS=10
+TAG.ReflectPhysicalDamage=15
+TAG.RESPHYSICAL=35
+TAG.RESFIRE=3
+TAG.RESCOLD=2
+TAG.RESPOISON=3
+TAG.RESENERGY=2
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Holy Knight's Breastplate
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_hunters_headdress]
+ID=i_mask_deer
+NAME=Hunter's Headdress
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.ExtraSkill1=Archery,20.0
+TAG.DEX=8
+TAG.NightSight=1
+TAG.HitChanceIncrease=15
+TAG.RESPHYSICAL=2
+TAG.RESFIRE=6
+TAG.RESCOLD=23
+TAG.RESPOISON=1
+TAG.RESENERGY=7
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Hunter's Headdress
+ON=@Create
+   COLOR=030a
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_jackals_collar]
+ID=i_platemail_gorget
+NAME=Jackal's Collar
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.DEX=15
+TAG.HitPointRegen=2
+TAG.RESPHYSICAL=5
+TAG.RESFIRE=23
+TAG.RESCOLD=17
+TAG.RESPOISON=3
+TAG.RESENERGY=2
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Jackal's Collar
+ON=@Create
+   COLOR=color_o_rusty
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_legacy_dread_lord]
+ID=i_bardiche
+NAME=Legacy of the Dread Lord
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.FasterCastRecovery=3
+TAG.SwingSpeedIncrease=30
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Legacy of the Dread Lord
+ON=@Create
+   COLOR=39
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_leggings_bane]
+ID=i_ringmail_leggings
+NAME=Leggings of Bane
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Stamina=8
+TAG.HitChanceIncrease=20
+TAG.RESPHYSICAL=4
+TAG.RESFIRE=4
+TAG.RESCOLD=4
+TAG.RESPOISON=36
+TAG.RESENERGY=2
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Leggings of Bane
+ON=@Create
+   COLOR=0ad
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_midnight_bracers]
+ID=i_bone_arms
+NAME=Midnight Bracers
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.ExtraSkill1=Necromancy,20.0
+TAG.SpellDamageIncrease=10
+TAG.RESPHYSICAL=23
+TAG.RESFIRE=3
+TAG.RESCOLD=4
+TAG.RESPOISON=2
+TAG.RESENERGY=4
+TAG.MageArmor=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Midnight Bracers
+ON=@Create
+   COLOR=0386
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+//ID=bracelet
+//FIXME: NAME=Ornament of the Magician
+//VALUE=500
+//RESOURCES=i_relic_fragment
+//Weight: 1 Stone
+//Artifact Rarity 11
+//Faster Casting 2
+//Faster Cast Recovery 3
+//Lower Mana Cost 10%
+//Lower Reagent Cost 20%
+//Energy Resist 15% 
+
+[ITEMDEF i_ornate_crown_harrower]
+ID=i_bone_helmet
+NAME=Ornate Crown of the Harrower
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitPointRegen=2
+TAG.StaminaRegen=3
+TAG.DamageIncrease=25
+TAG.RESPHYSICAL=3
+TAG.RESFIRE=3
+TAG.RESCOLD=4
+TAG.RESPOISON=17
+TAG.RESENERGY=4
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Ornate Crown of the Harrower
+ON=@Create
+   COLOR=0ad
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+//FIXME: NAME=Ring of the Elements
+//VALUE=5000
+//RESOURCES=i_relic_fragment
+//Weight: 1 Stone
+//Artifact Rarity 11
+//Luck 100
+//Fire Resist 16%
+//Cold Resist 16%
+//Poison Resist 16%
+//Energy Resist 16% 
+
+[ITEMDEF i_ring_good_fortune]
+ID=i_ring_gold
+NAME=Ring of Good Fortune
+VALUE=5500
+TAG.Luck=100
+TAG.RESFIRE=16
+TAG.RESCOLD=16
+TAG.RESPOISON=16
+TAG.RESENERGY=16
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Ring of Good Fortune
+ON=@Create
+   COLOR=091
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_ring_vile]
+ID=i_ring_gold
+NAME=Ring of the Vile
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.DamageIncrease=15
+TAG.DEX=8
+TAG.StaminaRegen=6
+TAG.HitChanceIncrease=15
+TAG.RESPOISON=20
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Ring of the Vile
+ON=@Create
+   COLOR=0ad
+   ATTR=attr_magic|attr_identified
+
+[ITEMDEF i_serpents_fang]
+ID=i_kryss
+NAME=Serpent's Fang
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitPoisonArea=100
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=50
+TAG.RESPOISON=15
+TAG.PhysicalDamagePercent=25
+TAG.PoisonDamagePercent=75
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Serpent's Fang
+ON=@Create
+   COLOR=029b
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_shadow_dancer_leggings]
+ID=i_leather_leggings
+NAME=Shadow Dancer Leggings
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.ExtraSkill1=Stealing,20.0
+TAG.ExtraSkill2=Stealth,20.0
+TAG.RESPHYSICAL=17
+TAG.RESFIRE=4
+TAG.RESCOLD=3
+TAG.RESPOISON=18
+TAG.RESENERGY=18
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Shadow Dancer Leggings
+ON=@Create
+   COLOR=03e5
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_spirit_totem]
+ID=i_mask_bear
+NAME=Spirit of the Totem
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.STR=20
+TAG.ReflectPhysicalDamage=15
+TAG.HitChanceIncrease=15
+TAG.RESPHYSICAL=20
+TAG.RESFIRE=3
+TAG.RESCOLD=8
+TAG.RESPOISON=4
+TAG.RESENERGY=4
+TAG.NotElf=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Spirit of the Totem
+ON=@Create
+   COLOR=03e5
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_staff_magi]
+ID=i_staff_black
+NAME=Staff of the Magi
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SpellChanneling=1
+TAG.FasterCasting=1
+TAG.DamageIncrease=50
+TAG.EnergyDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Staff of the Magi
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   DORAND 3
+      BEGIN
+      TAG.MageWeaponSkill=<FVAL <R150,300>> Magery
+      TAG.OVERRIDE_SKILL=26
+      END
+      BEGIN
+      TAG.MageWeaponSkill=<FVAL <R150,300>> Necromancy
+      TAG.OVERRIDE_SKILL=50
+      END
+      BEGIN
+      TAG.MageWeaponSkill=<FVAL <R150,300>> Spellweaving
+      TAG.OVERRIDE_SKILL=55
+      END
+   ENDDO
+
+[ITEMDEF i_the_berserkers_maul]
+ID=i_maul
+NAME=The Berserker's Maul
+VALUE=5500
+TAG.SwingSpeedIncrease=75
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=The Berserker's Maul
+ON=@Create
+   COLOR=34
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_the_dragon_slayer]
+ID=i_lance
+NAME=The Dragon Slayer
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Luck=110
+TAG.SlayerGroup=DRAGON
+TAG.DamageIncrease=50
+TAG.RESFIRE=20
+TAG.UseBestWeaponSkill=1
+TAG.EnergyDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=The Dragon Slayer
+ON=@Create
+   COLOR=color_o_valorite
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_the_dryad_bow]
+ID=i_bow
+NAME=The Dryad Bow
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SelfRepair=5
+TAG.SwingSpeedIncrease=50
+TAG.DamageIncrease=35
+TAG.RESPOISON=15
+TAG.PhysicalDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=The Dryad Bow
+ON=@Create
+   COLOR=04f8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   DORAND 8
+      TAG.OVERRIDE_SKILL=32
+      TAG.OVERRIDE_SKILL=41
+      TAG.OVERRIDE_SKILL=42
+      TAG.OVERRIDE_SKILL=43
+      TAG.OVERRIDE_SKILL=44
+      TAG.OVERRIDE_SKILL=52
+      TAG.OVERRIDE_SKILL=53
+      TAG.OVERRIDE_SKILL=54
+   ENDDO
+
+[ITEMDEF i_the_taskmaster]
+ID=i_war_fork
+NAME=The Taskmaster
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitPoisonArea=100
+TAG.DEX=5
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=50
+TAG.PoisonDamagePercent=100
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=The Taskmaster
+ON=@Create
+   COLOR=0ad
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_tunic_fire]
+ID=i_chainmail_tunic
+NAME=Tunic of Fire
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SelfRepair=5
+TAG.NightSight=1
+TAG.ReflectPhysicalDamage=15
+TAG.RESPHYSICAL=24
+TAG.RESFIRE=34
+TAG.RESCOLD=4
+TAG.RESPOISON=1
+TAG.RESENERGY=2
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Tunic of Fire
+ON=@Create
+   COLOR=04ea
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_voice_fallen_king]
+ID=i_leather_gorget
+NAME=Voice of the Fallen King
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.Luck=50
+TAG.STR=8
+TAG.HitPointRegen=5
+TAG.StaminaRegen=3
+TAG.RESPHYSICAL=2
+TAG.RESFIRE=4
+TAG.RESCOLD=18
+TAG.RESPOISON=3
+TAG.RESENERGY=18
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Voice of the Fallen King
+ON=@Create
+   COLOR=03b3
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+[ITEMDEF i_aegis]
+ID=i_shield_heater
+//NAME=Ægis
+NAME=Aegis
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SelfRepair=5
+TAG.ReflectPhysicalDamage=15
+TAG.DefenseChanceIncrease=15
+TAG.LowerManaCost=8
+TAG.RESPHYSICAL=15
+TAG.RESFIRE=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Gauntlet Artifacts
+DESCRIPTION=Aegis
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+////////////////////
+// Doom Artifacts //
+////////////////////
+
+[ITEMDEF i_doom_skull_candle]
+ID=i_skull_candle
+NAME=skull candle
+VALUE=500
+TAG.StealingTimer=1
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=skull candle
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_stretched_hide]
+ID=i_hide_stretched
+NAME=hide
+VALUE=1000
+TAG.StealingTimer=4
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Stretched Hide
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_lamppost]
+ID=i_lamppost1
+NAME=lamp post
+VALUE=4500
+TAG.StealingTimer=9
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Doom Lamppost
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_tower_lantern]
+ID=024bf
+NAME=tower lantern
+VALUE=2000
+TAG.StealingTimer=16
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Doom Tower Lantern
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_fancy_wind_chimes]
+ID=02833
+NAME=fancy wind chimes
+VALUE=3000
+TAG.StealingTimer=36
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Doom fancy wind chimes
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_giftbox]
+ID=i_giftbox
+NAME=gift box
+VALUE=4500
+TAG.StealingTimer=81
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Doom gift box
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_goat_skinned]
+ID=i_goat_skinned
+NAME=skinned goat
+VALUE=2500
+TYPE=t_normal
+TAG.StealingTimer=25
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=skinned goat
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_cards_tarot]
+ID=i_cards_tarot
+NAME=doom tarot
+VALUE=2500
+TAG.StealingTimer=25
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=tarot cards
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_guillotine]
+ID=i_guillotine_n
+NAME=guillotine
+VALUE=3500
+TAG.StealingTimer=49
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=guilotine
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_brazier]
+ID=i_brazier
+NAME=brazier
+VALUE=2000
+TAG.StealingTimer=4
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=brazier
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_gruesomestandard]
+ID=i_gruesomestandard
+NAME=gruesome standard
+VALUE=2500
+TAG.StealingTimer=25
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=gruesomestandard
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_painting_ruined]
+ID=i_portrait_big
+VALUE=6000
+TAG.StealingTimer=144
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=ruined painting
+ON=@Create
+   COLOR={047e 0499}
+   ATTR=attr_identified
+   TAG.Stealable=1
+ON=@ClientTooltip
+   SRC.ADDCLILOC 1061078,<INSTANCES>
+
+[ITEMDEF i_doom_blade_righteous]
+ID=i_sword_long
+NAME=Blade of the Righteous
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SlayerGroup=DEMON
+TAG.HitLifeLeech=50
+TAG.HITS=10
+TAG.DamageIncrease=50
+TAG.UseBestWeaponSkill=1
+TAG.PhysicalDamagePercent=100
+TAG.StealingTimer=672
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Blade of the Righteous
+ON=@Create
+   COLOR=0481
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   TAG.Stealable=1
+
+[ITEMDEF i_doom_titan_hammer]
+ID=i_hammer_war
+NAME=Titan's Hammer
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.HitEnergyArea=100
+TAG.STR=15
+TAG.HitChanceIncrease=15
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=100
+TAG.StealingTimer=672
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Titan's Hammer
+ON=@Create
+   COLOR=0364
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   TAG.Stealable=1
+
+[ITEMDEF i_doom_zyronic_claw]
+ID=i_axe_exec
+NAME=Zyronic Claw
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SlayerGroup=ELEMENTAL
+TAG.HitManaLeech=50
+TAG.HitChanceIncrease=30
+TAG.DamageIncrease=50
+TAG.PhysicalDamagePercent=20
+TAG.FireDamagePercent=20
+TAG.ColdDamagePercent=20
+TAG.PoisonDamagePercent=20
+TAG.EnergyDamagePercent=20
+TAG.StealingTimer=672
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Zyronic Claw
+ON=@Create
+   COLOR=color_o_bloodrock
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   TAG.Stealable=1
+
+[ITEMDEF i_doom_inquisitor_resolution]
+ID=i_platemail_gloves
+NAME=Inquisitor's Resolution
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.FasterCastRecovery=3
+TAG.LowerManaCost=8
+TAG.RESPHYSICAL=5
+TAG.RESFIRE=3
+TAG.RESCOLD=22
+TAG.RESPOISON=3
+TAG.RESENERGY=17
+TAG.MageArmor=1
+TAG.StealingTimer=672
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Inquisitor's Revolution
+ON=@Create
+   COLOR=0122
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   TAG.Stealable=1
+
+[ITEMDEF i_doom_berserker_maul]
+ID=i_maul
+NAME=Berserker's Maul
+VALUE=5000
+RESOURCES=i_relic_fragment
+TAG.SwingSpeedIncrease=75
+TAG.DamageIncrease=50
+TAG.StealingTimer=672
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Doom Artifacts
+DESCRIPTION=Berserker's Maul
+ON=@Create
+   COLOR=04b8
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+   TAG.Stealable=1
+
+/////////////////////
+// Other Artifacts //
+/////////////////////
+
+[ITEMDEF i_raptor_claw]
+ID=i_boomerang
+NAME=Raptor Claw
+VALUE=1000
+TAG.HitStaminaLeech=40
+TAG.SlayerGroup=UNDEAD
+TAG.HitChanceIncrease=12
+TAG.SwingSpeedIncrease=30
+TAG.DamageIncrease=35
+TAG.PhysicalDamagePercent=100
+TAG.REQSTR=25
+TAG.GargoyleOnly=1
+TAG.RareItem=1
+TEVENTS=t_equipitem
+CATEGORY=Artifacts
+SUBSECTION=Stygian Artifacts
+DESCRIPTION=Raptor Claw
+ON=@Create
+   COLOR=099
+   ATTR=attr_magic|attr_identified
+   HITPOINTS={90 120}
+
+//////////////////////
+// Virtue Artifacts //
+//////////////////////
+
+// Katrina's Crook
+// Weight: 3 Stones
+// Artifact Rarity 11
+// Hit Stamina Leech 40%
+// Hit Mana Leech 55%
+// Hit Life Leech 55%
+// Damage Increase 60%
+// Physical Resist 15%
+// Physical Damage 100%
+// Weapon Damage 13 - 15
+// Weapon Speed 2.75s
+// Strength Requirement 20
+// Two-Handed Weapon
+// Skill Required: Mace Fighting
+// Durability: 120 / 120 
+//VALUE=5000
+//RESOURCES=i_relic_fragment
+
+[EOF]

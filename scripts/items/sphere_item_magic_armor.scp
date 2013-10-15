@@ -619,7 +619,7 @@ ON=@Create
 [ITEMDEF i_PLATEMAIL_leggings_DEFENSE]
 ID=i_platemail_leggings
 NAME=Platemail Legs of Defense
-RESOURCES=i_platemail_leggings, i_enchant_armor
+RESOURCES=i_platemail_leggings,1 i_enchant_armor
 
 CATEGORY=Provisions - Armor - Magic
 SUBSECTION=Platemail
@@ -694,7 +694,7 @@ ON=@Create
 [ITEMDEF i_PLATEMAIL_ARMS_DEFENSE]
 ID=i_platemail_arms
 NAME=Platemail Arms of Defense
-RESOURCES=i_platemail_arms, i_enchant_armor
+RESOURCES=i_platemail_arms,1 i_enchant_armor
 
 CATEGORY=Provisions - Armor - Magic
 SUBSECTION=Platemail

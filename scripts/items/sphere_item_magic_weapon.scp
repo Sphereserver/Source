@@ -7,9 +7,10 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, July 17, 2007
+// FILE LAST UPDATED: Tuesday, September 3, 2013
 //
 VERSION=0.56b
+
 
 [ITEMDEF i_enchant_weapon]
 // WEAPON ENHANCER - good for 20 % enchantment
@@ -49,30 +50,6 @@ ON=@DCLICK
 	ATTR=attr_invis
 	SRC.UPDATE
 	RETURN 1
-
-[ITEMDEF i_BOW_RUIN_O]
-//Same as [ITEMDEF i_BOW_RUIN] Do not remove! Here for backward compatility!
-ID=i_bow
-NAME=Bow of Ruin
-RESOURCES=i_bow,i_enchant_weapon
-
-ON=@Create
-	ATTR=attr_magic
-	MOREY=20.0
-	HITPOINTS={31 60}
-	COLOR=color_magic_weap
-
-[ITEMDEF i_KRYSS_RUIN_O]
-//Same as [ITEMDEF i_KRYSS_RUIN] Do not remove! Here for backward compatility!
-ID=i_kryss
-NAME=Kryss of Ruin
-RESOURCES=i_kryss,i_enchant_weapon
-
-ON=@Create
-	MOREY=20.0
-	ATTR=attr_magic
-	HITPOINTS={31 90}
-	COLOR=color_magic_weap
 
 [ITEMDEF i_SCIMITAR_FORCE]
 ID=i_scimitar
@@ -702,7 +679,7 @@ ON=@Create
 [ITEMDEF i_PITCHFORK_RUIN]
 ID=i_PITCHFORK
 NAME=Pitchfork of Ruin
-RESOURCES=i_PITCHFORK,i_enchant_weapon
+RESOURCES=i_pitchfork,i_enchant_weapon
 DESCRIPTION=Pitchfork of Ruin
 SUBSECTION=Magic Pitchforks
 CATEGORY=Provisions - Weapons - Magic
@@ -716,7 +693,7 @@ ON=@Create
 [ITEMDEF i_PITCHFORK_MIGHT]
 ID=i_PITCHFORK
 NAME=Pitchfork of Might
-RESOURCES=i_PITCHFORK,2 i_enchant_weapon
+RESOURCES=i_pitchfork,2 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic Pitchforks
 DESCRIPTION=Pitchfork of Might
@@ -730,7 +707,7 @@ ON=@Create
 [ITEMDEF i_PITCHFORK_FORCE]
 ID=i_PITCHFORK
 NAME=Pitchfork of Force
-RESOURCES=i_PITCHFORK,3 i_enchant_weapon
+RESOURCES=i_pitchfork,3 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic Pitchforks
 DESCRIPTION=Pitchfork of Force
@@ -744,7 +721,7 @@ ON=@Create
 [ITEMDEF i_PITCHFORK_POWER]
 ID=i_PITCHFORK
 NAME=Pitchfork of Power
-RESOURCES=i_PITCHFORK,4 i_enchant_weapon
+RESOURCES=i_pitchfork,4 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic Pitchforks
 DESCRIPTION=Pitchfork of Power
@@ -758,7 +735,7 @@ ON=@Create
 [ITEMDEF i_PITCHFORK_vanq]
 ID=i_PITCHFORK
 NAME=Pitchfork of Vanquishing
-RESOURCES=i_PITCHFORK,5 i_enchant_weapon
+RESOURCES=i_pitchfork,5 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic Pitchforks
 DESCRIPTION=Pitchfork of Vanquishing
@@ -1224,7 +1201,7 @@ ON=@Create
 [ITEMDEF i_WAR_FORK_RUIN]
 ID=I_WAR_FORK
 NAME=War Fork of Ruin
-RESOURCES=i_WAR_FORK,i_enchant_weapon
+RESOURCES=i_war_fork,i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic War Forks
 DESCRIPTION=War Fork of Ruin
@@ -1238,7 +1215,7 @@ ON=@Create
 [ITEMDEF i_WAR_FORK_MIGHT]
 ID=I_WAR_FORK
 NAME=War Fork of Might
-RESOURCES=i_WAR_FORK,2 i_enchant_weapon
+RESOURCES=i_war_fork,2 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic War Forks
 DESCRIPTION=War Fork of Might
@@ -1252,7 +1229,7 @@ ON=@Create
 [ITEMDEF i_WAR_FORK_FORCE]
 ID=I_WAR_FORK
 NAME=War Fork of Force
-RESOURCES=i_WAR_FORK,3 i_enchant_weapon
+RESOURCES=i_war_fork,3 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic War Forks
 DESCRIPTION=War Fork of Force
@@ -1266,7 +1243,7 @@ ON=@Create
 [ITEMDEF i_WAR_FORK_POWER]
 ID=I_WAR_FORK
 NAME=War Fork of Power
-RESOURCES=i_WAR_FORK,4 i_enchant_weapon
+RESOURCES=i_war_fork,4 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic War Forks
 DESCRIPTION=War Fork of Power
@@ -1280,7 +1257,7 @@ ON=@Create
 [ITEMDEF i_WAR_FORK_vanq]
 ID=I_WAR_FORK
 NAME=War Fork of Vanquishing
-RESOURCES=i_WAR_FORK,5 i_enchant_weapon
+RESOURCES=i_war_fork,5 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
 SUBSECTION=Magic War Forks
 DESCRIPTION=War Fork of Vanquishing
@@ -1786,7 +1763,7 @@ ID=i_axe_exec
 NAME=Executioner's Axe of Ruin
 RESOURCES=i_axe_exec,i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
-SUBSECTION=Magic Executioner's Axes
+SUBSECTION=Magic Executioner Axes
 DESCRIPTION=Executioner's Axe of Ruin
 
 ON=@Create
@@ -1800,7 +1777,7 @@ ID=i_axe_exec
 NAME=Executioner's Axe of Might
 RESOURCES=i_axe_exec,2 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
-SUBSECTION=Magic Executioner's Axes
+SUBSECTION=Magic Executioner Axes
 DESCRIPTION=Executioner's Axe of Might
 
 ON=@Create
@@ -1814,7 +1791,7 @@ ID=i_axe_exec
 NAME=Executioner's Axe of Force
 RESOURCES=i_axe_exec,3 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
-SUBSECTION=Magic Executioner's Axes
+SUBSECTION=Magic Executioner Axes
 DESCRIPTION=Executioner's Axe of Force
 
 ON=@Create
@@ -1828,7 +1805,7 @@ ID=i_axe_exec
 NAME=Executioner's Axe of Power
 RESOURCES=i_axe_exec,4 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
-SUBSECTION=Magic Executioner's Axes
+SUBSECTION=Magic Executioner Axes
 DESCRIPTION=Executioner's Axe of Power
 
 ON=@Create
@@ -1842,7 +1819,7 @@ ID=i_axe_exec
 NAME=Executioner's Axe of Vanquishing
 RESOURCES=i_axe_exec,5 i_enchant_weapon
 CATEGORY=Provisions - Weapons - Magic
-SUBSECTION=Magic Executioner's Axes
+SUBSECTION=Magic Executioner Axes
 DESCRIPTION=Executioner's Axe of Vanquishing
 
 ON=@Create
@@ -2200,3 +2177,5 @@ ON=@Create
 	ATTR=attr_magic
 	MOREY=100.0
 	HITPOINTS={130 131}
+
+[EOF]

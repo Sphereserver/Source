@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, November 23, 2003
+// FILE LAST UPDATED: Wednesday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [ITEMDEF 03ee]
@@ -17,538 +17,512 @@ DEFNAME=i_stairs_stone
 RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Stairs
 SUBSECTION=Stone Stairs 1
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=03ef,03f0,03f1,03f2,03f3,03f4,03f5,03f6,03f7,03f8,03f9,03fa,03fb,03fc,03fd,03fe,03ff,0400,0401,0402
 
 [ITEMDEF 03ef]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f0]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f1]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f2]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f3]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f4]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f5]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f6]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f7]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f8]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03f9]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03fa]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03fb]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03fc]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03fd]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03fe]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 03ff]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 0400]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 0401]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
 [ITEMDEF 0402]
-//stone stairs
+//stone stairs 1
 DUPEITEM=03ee
 
+
 [ITEMDEF 0709]
-DEFNAME=i_STAIRS_MARBLE
-RESOURCES=50 i_stone_marble
+DEFNAME=i_stairs_marble
+RESOURCES=50 i_rock_marble
 CATEGORY=Buildings - Stairs
 SUBSECTION=Marble Stairs
-DESCRIPTION=@
+DESCRIPTION=Marble Stairs
+DUPELIST=070a,070b,070c,070d,070e,070f,0710,0711,0712,0713,0714,0715,0716,0717,0718,0719,071a,071b,071c,071d
 
 [ITEMDEF 070a]
-DEFNAME=i_STAIRS_MARBLE_2
-RESOURCES=50 i_stone_marble
-CATEGORY=Buildings - Stairs
-SUBSECTION=Marble Stairs
-DESCRIPTION=@
-DUPELIST=070b,070c,070d
+//marble stairs
+DUPEITEM=0709
 
 [ITEMDEF 070b]
 //marble stairs
-DUPEITEM=070a
+DUPEITEM=0709
 
 [ITEMDEF 070c]
 //marble stairs
-DUPEITEM=070a
+DUPEITEM=0709
 
 [ITEMDEF 070d]
 //marble stairs
-DUPEITEM=070a
+DUPEITEM=0709
 
 [ITEMDEF 070e]
 //marble stairs
+DUPEITEM=0709
 
 [ITEMDEF 070f]
 //marble stairs
-DUPEITEM=070e
+DUPEITEM=0709
 
 [ITEMDEF 0710]
 //marble stairs
-DUPEITEM=070e
+DUPEITEM=0709
 
 [ITEMDEF 0711]
 //marble stairs
-DUPEITEM=070e
+DUPEITEM=0709
 
 [ITEMDEF 0712]
 //marble stairs
+DUPEITEM=0709
 
 [ITEMDEF 0713]
 //marble stairs
-DUPEITEM=0712
+DUPEITEM=0709
 
 [ITEMDEF 0714]
 //marble stairs
-DUPEITEM=0712
+DUPEITEM=0709
 
 [ITEMDEF 0715]
 //marble stairs
-DUPEITEM=0712
+DUPEITEM=0709
 
 [ITEMDEF 0716]
 //marble stairs
+DUPEITEM=0709
 
 [ITEMDEF 0717]
 //marble stairs
-DUPEITEM=0716
+DUPEITEM=0709
 
 [ITEMDEF 0718]
 //marble stairs
-DUPEITEM=0716
+DUPEITEM=0709
 
 [ITEMDEF 0719]
 //marble stairs
-DUPEITEM=0716
+DUPEITEM=0709
 
 [ITEMDEF 071a]
 //marble stairs
+DUPEITEM=0709
 
 [ITEMDEF 071b]
 //marble stairs
-DUPEITEM=071a
+DUPEITEM=0709
 
 [ITEMDEF 071c]
 //marble stairs
-DUPEITEM=071a
+DUPEITEM=0709
 
 [ITEMDEF 071d]
 //marble stairs
-DUPEITEM=071a
+DUPEITEM=0709
 
 [ITEMDEF 071e]
 DEFNAME=i_stairs_stone_2
 RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Stairs
 SUBSECTION=Stone Stairs 2
-DESCRIPTION=@
-DUPELIST=071f,0782,0736,0737,0749,074a,074b,074c,074d,074e,074f,07da,07df,07e0,0782,0783,0834,0876
+DESCRIPTION=Stair
+DUPELIST=071f,0736,0737,0749,074a,074b,074c,074d,074e,074f,0782,0783,07a0,07a1,07a2,07da,07df,07e0,0834,0876
 
 [ITEMDEF 071f]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0782]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0736]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0737]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0749]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074a]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074b]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074c]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074d]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074e]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 074f]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0783]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0834]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 07da]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 07df]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 07e0]
-//stone stairs
-DUPEITEM=071e
-
-[ITEMDEF 0876]
-//stone stairs
+//stone stairs 2
 DUPEITEM=071e
 
 [ITEMDEF 0720]
-DEFNAME=i_STAIRS_WOOD
-RESOURCES=50 I_BOARD
+DEFNAME=i_stairs_wood
+RESOURCES=50 i_board
 CATEGORY=Buildings - Stairs
 SUBSECTION=Wooden Stairs (light)
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=0721,0722,0723,0724,0725,0726,0727,0728,0729,072a,072b,072c,072d,072e,072f,0730,0731,0732,0733,0734,0735
 
 [ITEMDEF 0721]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0722]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0723]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0724]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0725]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0726]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0727]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0728]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0729]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072a]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072b]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072c]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072d]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072e]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 072f]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0730]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0731]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0732]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0733]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0734]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
 [ITEMDEF 0735]
-//wooden stairs
+//wooden stairs (light)
 DUPEITEM=0720
 
+[ITEMDEF 0736]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 0737]
+//stone stairs 2
+DUPEITEM=071e
+
 [ITEMDEF 0738]
-DEFNAME=i_STAIRS_WOOD_2
-RESOURCES=50 I_BOARD
+DEFNAME=i_stairs_wood_2
+RESOURCES=50 i_board
 CATEGORY=Buildings - Stairs
 SUBSECTION=Wooden Stairs (dark)
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=0739,073a,073b,073c,073d,073e,073f,0740,0741,0742,0743,0744,0745,0746,0747,0748,07b3,07b4,07b5,07b6
 
 [ITEMDEF 0739]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073a]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073b]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073c]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073d]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073e]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 073f]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0740]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0741]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0742]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0743]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0744]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0745]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0746]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0747]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 0748]
-//wooden stairs
+//wooden stairs (dark)
 DUPEITEM=0738
+
+[ITEMDEF 0749]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074a]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074b]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074c]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074d]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074e]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 074f]
+//stone stairs 2
+DUPEITEM=071e
 
 [ITEMDEF 0750]
 DEFNAME=i_stairs_stone_5
 RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Stairs
-SUBSECTION=Stone Stairs 3
-DESCRIPTION=@
+SUBSECTION=Stone Stairs (white)
+DESCRIPTION=Stair
 DUPELIST=0751,0752,0753,0754,0755,0756,0757,0758,0759,075a,075b,075c,075d,075e,075f,0760,0761,0762,0763,0764,0765,0766,0767,0768
 
 [ITEMDEF 0751]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0752]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0753]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0754]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0755]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0756]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0757]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0758]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0759]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075a]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075b]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075c]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075d]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075e]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 075f]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0760]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0761]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0762]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0763]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0764]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0765]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0766]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0767]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0768]
-//stone stairs
+//stone stairs (white)
 DUPEITEM=0750
 
 [ITEMDEF 0769]
-DEFNAME=i_STAIRS_SANDSTONE
-RESOURCES=50 i_stone_sand
+DEFNAME=i_stairs_sandstone
+RESOURCES=50 i_rock_sandstone
 CATEGORY=Buildings - Stairs
 SUBSECTION=Sandstone Stairs
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=076a,076b,076c,076d,076e,076f,0770,0771,0772,0773,0774,0775,0776,0777,0778,0779,077a,077b,077c,077d,077e,077f,0780,0781
 
 [ITEMDEF 076a]
-//sandstone
+//sandstone stairs
 DUPEITEM=0769
 
 [ITEMDEF 076b]
-//sandstone
+//sandstone stairs
 DUPEITEM=0769
 
 [ITEMDEF 076c]
-//sandstone
+//sandstone stairs
 DUPEITEM=0769
 
 [ITEMDEF 076d]
@@ -632,119 +606,127 @@ DUPEITEM=0769
 DUPEITEM=0769
 
 [ITEMDEF 0781]
-//sandstone
+//sandstone stairs
 DUPEITEM=0769
+
+[ITEMDEF 0782]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 0783]
+//stone stairs 2
+DUPEITEM=071e
 
 [ITEMDEF 0784]
 DEFNAME=i_stairs_stone_3
 RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Stairs
-SUBSECTION=Stone Stairs 4
-DESCRIPTION=@
+SUBSECTION=Stone Stairs 3
+DESCRIPTION=Stair
 DUPELIST=0785,0786,0787,0788,0789,078a,078b,078c,078d,078e,078f,0790,0791,0792,0793,0794,0795,0796,0797,0798,0799,079a,079b,079c
 
 [ITEMDEF 0785]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0786]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0787]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0788]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0789]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078a]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078b]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078c]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078d]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078e]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 078f]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0790]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0791]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0792]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0793]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0794]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0795]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0796]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0797]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0798]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 0799]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 079a]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 079b]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 079c]
-//stone stairs
+//stone stairs 3
 DUPEITEM=0784
 
 [ITEMDEF 079d]
-DEFNAME=i_CAVE_STEP
+DEFNAME=i_cave_step
 RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Stairs
 SUBSECTION=Cave Steps
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=079e,079f,07b0,07b1,07b2,07b7,07b8,07b9
 
 [ITEMDEF 079e]
@@ -756,71 +738,71 @@ DUPEITEM=079d
 DUPEITEM=079d
 
 [ITEMDEF 07a0]
-//stone stairs
-
+//stone stairs 2
+DUPEITEM=071e
 
 [ITEMDEF 07a1]
-//stone stairs
-
+//stone stairs 2
+DUPEITEM=071e
 
 [ITEMDEF 07a2]
-//stone stairs
-
+//stone stairs 2
+DUPEITEM=071e
 
 [ITEMDEF 07a3]
 DEFNAME=i_stairs_stone_4
 RESOURCES=50 i_rock_plain
 CATEGORY=Buildings - Stairs
-SUBSECTION=Stone Stairs 5
-DESCRIPTION=@
+SUBSECTION=Stone Stairs 4
+DESCRIPTION=Stair
 DUPELIST=07a4,07a5,07a6,07a7,07a8,07a9,07aa,07ab,07ac,07ad,07ae,07af
 
 [ITEMDEF 07a4]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07a5]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07a6]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07a7]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07a8]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07a9]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07aa]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07ab]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07ac]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07ad]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07ae]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07af]
-//stone stairs
+//stone stairs 4
 DUPEITEM=07a3
 
 [ITEMDEF 07b0]
@@ -836,19 +818,19 @@ DUPEITEM=079d
 DUPEITEM=079d
 
 [ITEMDEF 07b3]
-//wood
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 07b4]
-//wood
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 07b5]
-//wood
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 07b6]
-//wood
+//wooden stairs (dark)
 DUPEITEM=0738
 
 [ITEMDEF 07b7]
@@ -864,11 +846,11 @@ DUPEITEM=079d
 DUPEITEM=079d
 
 [ITEMDEF 07ba]
-DEFNAME=i_CARPET_ROSTRUM
-RESOURCES=50 I_BOARD, 10 I_WOOL
+DEFNAME=i_carpet_rostrum
+RESOURCES=50 i_board,10 i_wool
 CATEGORY=Buildings - Stairs
 SUBSECTION=Carpeted Rostrum
-DESCRIPTION=@
+DESCRIPTION=Stair
 DUPELIST=07bb,07bc,07c7,07c8
 
 [ITEMDEF 07bb]
@@ -880,11 +862,11 @@ DUPEITEM=07ba
 DUPEITEM=07ba
 
 [ITEMDEF 07bd]
-DEFNAME=i_PLATFORM
-RESOURCES=20 I_BOARD
+DEFNAME=i_platform
+RESOURCES=20 i_board
 CATEGORY=Buildings - Stairs
 SUBSECTION=Platform
-DESCRIPTION=@
+DESCRIPTION=Platform
 DUPELIST=07be,07bf,07c0,07c1,07c2,07c3,07c4,07c5,07c6
 
 [ITEMDEF 07be]
@@ -932,67 +914,69 @@ DUPEITEM=07ba
 DUPEITEM=07ba
 
 [ITEMDEF 07c9]
-DEFNAME=i_WOOD_PLANK_2
-RESOURCES=25 I_BOARD
-CATEGORY=Buildings - Floors
+DEFNAME=i_wood_plank_2
+RESOURCES=25 i_board
+CATEGORY=Buildings - Stairs
 SUBSECTION=Wooden Planks (dark)
-DESCRIPTION=@
+DESCRIPTION=Platform
 DUPELIST=07ca,07cb,07cc,07cd,07ce,07cf,07d0
 
 [ITEMDEF 07ca]
-//wooden bridge
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07cb]
-//wooden bridge
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07cc]
-//wooden plank
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07cd]
-//wooden plank
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07ce]
-//wooden plank
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07cf]
-//wooden plank
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
 [ITEMDEF 07d0]
-//wooden plank
+//Wooden Planks (dark)
 DUPEITEM=07c9
 
-[ITEMDEF 07d6]
-DEFNAME=i_POST_STONE
-RESOURCES=15 i_rock_plain
-CATEGORY=Buildings - Other
-SUBSECTION=Stone Rail 3
-DESCRIPTION=@
-DUPELIST=07d7,07d8
 
-[ITEMDEF 07d7]
-//railing
-DUPEITEM=07d6
+[ITEMDEF 07da]
+//stone stairs 2
+DUPEITEM=071e
 
-[ITEMDEF 07d8]
-//railing
-DUPEITEM=07d6
+[ITEMDEF 07df]
+//stone stairs 2
+DUPEITEM=071e
 
-[ITEMDEF 07d9]
-//stone column
-DUPEITEM=057
+[ITEMDEF 07e0]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 0834]
+//stone stairs 2
+DUPEITEM=071e
+
+[ITEMDEF 0876]
+//stone stairs 2
+DUPEITEM=071e
+
 
 [ITEMDEF 087a]
 DEFNAME=i_ramp_wood
-RESOURCES=25 I_BOARD
+RESOURCES=25 i_board
 CATEGORY=Buildings - Stairs
-SUBSECTION=Wooden Ramp
-DESCRIPTION=@
+SUBSECTION=Ramp (wood)
+DESCRIPTION=Ramp
 DUPELIST=087b,087c,087d
 
 [ITEMDEF 087b]
@@ -1011,21 +995,610 @@ DUPEITEM=087a
 DEFNAME=i_stone_steps
 RESOURCES=40 i_rock_plain
 CATEGORY=Buildings - Stairs
-SUBSECTION=Stone Step
-DESCRIPTION=@
+SUBSECTION=Platform (stone)
+DESCRIPTION=Platform
 DUPELIST=0916,0917,0918
 
 [ITEMDEF 0916]
-//stone step
+//stone platform
 DUPEITEM=0915
 
 [ITEMDEF 0917]
-//stone step
+//stone platform
 DUPEITEM=0915
 
 [ITEMDEF 0918]
-//stone step
+//stone platform
 DUPEITEM=0915
 
 
-[eof]
+[ITEMDEF 011bc]
+DEFNAME=i_dungeon_ramp
+RESOURCES=10 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Ramp (stone)
+DESCRIPTION=Ramp
+DUPELIST=011bd,011be,011bf
+
+[ITEMDEF 011bd]
+//stone ramp
+DUPEITEM=011bc
+
+[ITEMDEF 011be]
+//stone ramp
+DUPEITEM=011bc
+
+[ITEMDEF 011bf]
+//stone ramp
+DUPEITEM=011bc
+
+
+[ITEMDEF 035d2]
+DEFNAME=i_stairs_crystal
+NAME=stairs
+RESOURCES=100 i_crystal_shards
+CATEGORY=Buildings - Stairs
+SUBSECTION=Crystal Stairs
+DESCRIPTION=Stair
+DUPELIST=035d3,035d4,035d5,035d6
+
+[ITEMDEF 035d3]
+//Crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d4]
+//Crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d5]
+//Crystal stairs
+DUPEITEM=035d2
+
+[ITEMDEF 035d6]
+//Crystal stairs
+DUPEITEM=035d2
+
+
+[ITEMDEF 03609]
+DEFNAME=i_stairs_shadow
+NAME=stairs
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Shadow Stairs
+DESCRIPTION=Stair
+DUPELIST=0360a,0360b,0360c,0360d
+
+[ITEMDEF 0360a]
+//Shadow Stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360b]
+//Shadow Stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360c]
+//Shadow Stairs
+DUPEITEM=03609
+
+[ITEMDEF 0360d]
+//Shadow Stairs
+DUPEITEM=03609
+
+
+[ITEMDEF 04130]
+DEFNAME=i_stairs_stone_aged
+NAME=stairs
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Aged Stone Stairs
+DESCRIPTION=Stair
+DUPELIST=04131,04132,04133,04134,04135,04136,04137,04138,04139,0413a,0413b,0413c,0413d,0413e,0413f
+
+[ITEMDEF 04131]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04132]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04133]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04134]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04135]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04136]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04137]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04138]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 04139]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413a]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413b]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413c]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413d]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413e]
+//aged stone stairs
+DUPEITEM=04130
+
+[ITEMDEF 0413f]
+//aged stone stairs
+DUPEITEM=04130
+
+
+[ITEMDEF 04232]
+DEFNAME=i_stairs_stone_aged_light
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Aged Stone Stairs (light)
+DESCRIPTION=Stair
+DUPELIST=04233,04234,04235,04236,04237,04238,04239,042e2,042e3,042e4,042e5,042e6,042e7,042f6,042f7,042f8,042f9,04300,04301
+
+[ITEMDEF 04233]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04234]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04235]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04236]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04237]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04238]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04239]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+
+[ITEMDEF 042e0]
+DEFNAME=i_stairs_stone_carpeted
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Aged Stone Stairs (carpeted)
+DESCRIPTION=Stair
+DUPELIST=042e1,042e8,042e9,042ea,042eb,042ec,042ed,042ee,042ef,042f0,042f1,042f2,042f3,042f4,042f5,042fa,042fb,042fc,042fd,042fe,042ff
+
+[ITEMDEF 042e1]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042e2]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e3]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e4]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e5]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e6]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e7]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042e8]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042e9]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ea]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042eb]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ec]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ed]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ee]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ef]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f0]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f1]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f2]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f3]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f4]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f5]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042f6]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042f7]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042f8]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042f9]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 042fa]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042fb]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042fc]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042fd]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042fe]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 042ff]
+//aged stone stairs (carpeted)
+DUPEITEM=042e0
+
+[ITEMDEF 04300]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+[ITEMDEF 04301]
+//aged stone stairs (light)
+DUPEITEM=04232
+
+
+[ITEMDEF 0435a]
+DEFNAME=i_stairs_stone_garg
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Gargoyle Stone Stairs
+DESCRIPTION=Stair
+DUPELIST=0435b,0435c,0435d,0435e,0435f,04360,04361,04362,04363,04364,04365,04366,04367,04368,04369,0436a,0436b,0436c,0436d
+
+[ITEMDEF 0435b]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0435c]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0435d]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0435e]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0435f]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04360]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04361]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04362]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04363]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04364]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04365]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04366]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04367]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04368]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 04369]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0436a]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0436b]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0436c]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+[ITEMDEF 0436d]
+//Gargoyle Stone Stairs
+DUPEITEM=0435a
+
+
+[ITEMDEF 043b0]
+DEFNAME=i_stairs_stone_garg_tall
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Gargoyle Stone Stairs (tall)
+DESCRIPTION=Stair
+DUPELIST=043b1,043b2,043b3,043b4,043b5,043b6,043b7
+
+[ITEMDEF 043b1]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b2]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b3]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b4]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b5]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b6]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+[ITEMDEF 043b7]
+//Gargoyle Stone Stairs (tall)
+DUPEITEM=043b0
+
+
+[ITEMDEF 046b0]
+DEFNAME=i_stairs_sandstone_magincia
+RESOURCES=100 i_rock_plain
+CATEGORY=Buildings - Stairs
+SUBSECTION=Magincia Sandstone Stairs
+DESCRIPTION=Stair
+DUPELIST=046b1,04704,04705,04706
+
+[ITEMDEF 046b1]
+//Magincia Sandstone Stairs
+DUPEITEM=046b0
+
+
+[ITEMDEF 04704]
+//Magincia Sandstone Stairs
+DUPEITEM=046b0
+
+[ITEMDEF 04705]
+//Magincia Sandstone Stairs
+DUPEITEM=046b0
+
+[ITEMDEF 04706]
+//Magincia Sandstone Stairs (broken?)
+DUPEITEM=046b0
+
+
+[ITEMDEF 04b01]
+DEFNAME=i_stairs_gothic
+NAME=gothic stair
+RESOURCES=100 i_rock_marble
+CATEGORY=Buildings - Stairs
+SUBSECTION=Gothic Stairs
+DESCRIPTION=Stair
+DUPELIST=04b02,04b03,04b04,04b05,04b32,04b33,04b34,04b3e,04b3f,04b40,04b41
+
+[ITEMDEF 04b02]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b03]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b04]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b05]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b32]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b33]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b34]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b3e]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b3f]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b40]
+//Gothic Stair
+DUPEITEM=04b01
+
+[ITEMDEF 04b41]
+//Gothic Stair
+DUPEITEM=04b01
+
+
+[ITEMDEF 04d2a]
+//Tan Stairs
+[ITEMDEF 04de2]
+//Tan Stairs
+[ITEMDEF 04de3]
+//Tan Stairs
+[ITEMDEF 04de4]
+//Tan Stairs
+[ITEMDEF 04de5]
+//Tan Stairs
+[ITEMDEF 04f62]
+//Tan Stairs (blue trim)
+[ITEMDEF 04f63]
+//Tan Stairs (blue trim)
+[ITEMDEF 04f64]
+//Tan Stairs (blue trim)
+[ITEMDEF 04f65]
+//Tan Stairs (blue trim)
+
+
+[ITEMDEF 077fb]
+//Batten Stairs (open)
+[ITEMDEF 077fc]
+//Batten Stairs (open)
+[ITEMDEF 077fd]
+//Batten Stairs (open)
+[ITEMDEF 077fe]
+//Batten Stairs (open)
+[ITEMDEF 077ff]
+//Batten Stairs (open)
+[ITEMDEF 07800]
+//Batten Stairs (open)
+[ITEMDEF 07801]
+//Batten Stairs (open)
+[ITEMDEF 07802]
+//Batten Stairs (open)
+
+[ITEMDEF 07807]
+//Batten Stairs (solid)
+[ITEMDEF 07808]
+//Batten Stairs (solid)
+[ITEMDEF 07809]
+//Batten Stairs (solid)
+[ITEMDEF 0780a]
+//Batten Stairs (solid)
+[ITEMDEF 0780b]
+//Batten Stairs (solid)
+[ITEMDEF 0780c]
+//Batten Stairs (solid)
+[ITEMDEF 0780d]
+//Batten Stairs (solid)
+[ITEMDEF 0780e]
+//Batten Stairs (solid)
+[ITEMDEF 0780f]
+//Batten Stairs (solid)
+[ITEMDEF 07812]
+//Batten Stairs (solid)
+[ITEMDEF 07813]
+//Batten Stairs (solid)
+[ITEMDEF 07814]
+//Batten Stairs (solid)
+[ITEMDEF 07815]
+//Batten Stairs (solid)
+
+
+
+[EOF]

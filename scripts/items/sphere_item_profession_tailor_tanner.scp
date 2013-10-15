@@ -7,91 +7,95 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, December 13, 2009
+// FILE LAST UPDATED: Friday, September 13, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
+
 
 [ITEMDEF 0df6]
 DEFNAME=i_knitting_item
-RESOURCES=1 I_KNITTING_NEEDLES, 1 i_yarn_ball
+FLIP=1
+VALUE=10
+WEIGHT=1.1
+RESOURCES=1 i_knitting_needles,1 i_yarn_ball
+SKILLMAKE=Tinkering 25.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Knitting Items
 DUPELIST=0df7
 
 [ITEMDEF 0df7]
-//KNITTING
+//Knitting
 DUPEITEM=0df6
 
-[ITEMDEF 0dfa]
-// FEATHERS 2
-DUPEITEM=01bd1
-
-[ITEMDEF 0dfb]
-//FEATHERS 2
-DUPEITEM=01bd1
-
-[ITEMDEF 0e1d]
-// DEFNAME2=BALL_OF_YARN_1
-DEFNAME=i_yarn_ball
-RESOURCES=1 I_WOOL
-TYPE=T_YARN
-WEIGHT=1
+[ITEMDEF 0df8]
+DEFNAME=i_wool
+TYPE=t_wool
+FLIP=1
+VALUE=3
+WEIGHT=3.0
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
-DESCRIPTION=BALL OF YARN
+DESCRIPTION=Wool (pile)
+DUPELIST=0101f
+
+
+[ITEMDEF 0e1d]
+DEFNAME=i_yarn_ball
+TYPE=t_yarn
+WEIGHT=0.2
+RESOURCES=1 i_wool
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Ball of Yarn
 DUPELIST=0e1e,0e1f
 
 [ITEMDEF 0e1e]
-// DEFNAME2=BALL_OF_YARN_2
+//ball of yarn
 DUPEITEM=0e1d
 
 [ITEMDEF 0e1f]
-// DEFNAME2=BALL_OF_YARN_3
+//ball of yarn
 DUPEITEM=0e1d
 
+
 [ITEMDEF 0ec6]
-//dress form
 DEFNAME=i_dress_form
-RESOURCES=25 i_log,10 i_cloth
-WEIGHT=5
+FLIP=1
+VALUE=58
+WEIGHT=17.5
+RESOURCES=5 i_log,10 i_cloth,2 i_wool,5 i_thread
+SKILLMAKE=Carpentry 63.1,Tailoring 65.0,t_carpentry,t_sewing_kit
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Dress Form
-SKILLMAKE=CARPENTRY 63.1, TAILORING 65.0, t_carpentry, t_sewing_kit
+DUPELIST=0ec7
 
 [ITEMDEF 0ec7]
-//dress form
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Dress Form
-RESOURCES=10 i_cloth
-SKILLMAKE=CARPENTRY 63.1, TAILORING 65.0, t_carpentry, t_sewing_kit
+DEFNAME=i_dress_form_2
+DUPEITEM=0ec6
+
 
 [ITEMDEF 0f95]
-//Bolt of Cloth
-// DEFNAME2=BOLT_OF_CLOTH
 DEFNAME=i_cloth_bolt
-TYPE=T_CLOTH_BOLT
+TYPE=t_cloth_bolt
 DYE=1
-WEIGHT=5
-VALUE=155
+FLIP=1
+VALUE=150
+WEIGHT=50.0
+RESOURCES=50 i_cloth
+SKILLMAKE=Tailoring 0.0
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Bolt of Cloth
-SKILLMAKE=TAILORING 0.1
-RESOURCES=50 i_CLOTH
 DUPELIST=0f96,0f97,0f98,0f99,0f9a,0f9b,0f9c
 
 [ITEMDEF 0f96]
 //bolt of cloth
-//DEFNAME2=BOLT_OF_CLOTH_3
 DUPEITEM=0f95
 
 [ITEMDEF 0f97]
 //bolt of cloth
-//DEEFNAME2=BOLT_OF_CLOTH_4
 DUPEITEM=0f95
 
 [ITEMDEF 0f98]
@@ -108,35 +112,34 @@ DUPEITEM=0f95
 
 [ITEMDEF 0f9b]
 //bolt of cloth
-//DEFNAME2=BOLT_OF_CLOTH
 DUPEITEM=0f95
 
 [ITEMDEF 0f9c]
 //bolt of cloth
-//DEFNAME2=BOLT_OF_CLOTH_2
 DUPEITEM=0f95
 
 [ITEMDEF 0f9d]
-//Sewing Kit
 DEFNAME=i_sewing_kit
-TYPE=T_SEWING_KIT
-RESOURCES=2 i_ingot_iron
-WEIGHT=2
+TYPE=t_sewing_kit
+VALUE=30
+WEIGHT=3.1
+RESOURCES=1 i_sewing_needle,1 i_bowl_wood,1 i_yarn_ball,1 i_thread
+SKILLMAKE=Tinkering 18.8,t_tinker_tools,Tailoring 18.8
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Sewing Kit
-SKILLMAKE=TINKERING 18.8,t_tinker_tools
 
 [ITEMDEF 0f9e]
-//Scissors
 DEFNAME=i_scissors
-RESOURCES=4 i_ingot_iron
-TYPE=T_SCISSORS
-WEIGHT=1
+TYPE=t_scissors
+FLIP=1
+VALUE=6
+WEIGHT=0.1
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 14.5,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Scissors
-SKILLMAKE=TINKERING 14.5,t_tinker_tools
 DUPELIST=0f9f
 
 [ITEMDEF 0f9f]
@@ -144,12 +147,13 @@ DUPELIST=0f9f
 DUPEITEM=0f9e
 
 [ITEMDEF 0fa0]
-//Spool of Thread
 DEFNAME=i_thread
-RESOURCES=1 i_flax_bundle
-TYPE=T_THREAD
+TYPE=t_thread
 DYE=1
-WEIGHT=1
+FLIP=1
+VALUE=2
+WEIGHT=0.1
+RESOURCES=1 i_flax_bundle
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Spool of Thread
@@ -159,42 +163,44 @@ DUPELIST=0fa1
 //spool of thread
 DUPEITEM=0fa0
 
+
 [ITEMDEF 0fa9]
-//Dyes
-// DEFNAME2=DYE_BOWL
 DEFNAME=i_dyes
-TYPE=T_DYE
-WEIGHT=3
+TYPE=t_dye
+VALUE=35
+WEIGHT=1.3
+RESOURCES=1 i_log,1 i_reag_blood_moss,1 i_reag_grave_dust,1 i_reag_nox_crystal,1 i_reag_black_pearl
+SKILLMAKE=Alchemy 10.0
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Dyes
 
-SKILLMAKE=ALCHEMY 10.0
-RESOURCES=i_log,i_reag_blood_moss
 
 [ITEMDEF 0fab]
-//Dying Tub
 DEFNAME=i_dye_tub
-TYPE=T_DYE_VAT
-WEIGHT=10
+TYPE=t_dye_vat
+VALUE=65
+WEIGHT=16.3
+RESOURCES=1 i_tub_empty,10 i_pitcher_water,10 i_dyes
+SKILLMAKE=Carpentry 50.0,t_carpentry
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Dying Tub
+//TEVENTS=t_dye_tub_limited
 
-RESOURCES=5 i_log
-SKILLMAKE=CARPENTRY 50.0, t_carpentry
 
 [ITEMDEF 01015]
 DEFNAME=i_spinning_wheel
-TYPE=T_SPINWHEEL
-RESOURCES=20 i_BOARD, 1 i_ingot_iron
-SKILLMAKE=CARPENTRY 73.6, TAILORING 65.0, T_CARPENTRY
-WEIGHT=15
-DUPELIST=01016,01017
-
+TYPE=t_spinwheel
+FLIP=1
+VALUE=70
+WEIGHT=21.3
+RESOURCES=20 i_board,1 i_wire_iron,1 i_hinge,1 i_axel,1 i_gears
+SKILLMAKE=Carpentry 73.6,Tinkering 65.0,t_carpentry
 CATEGORY=Items by Professions
-SUBSECTION=Tailor
+SUBSECTION=Weaver
 DESCRIPTION=Spinning Wheel
+DUPELIST=01016,01017,01019,0101a,0101b,0101c,0101d,0101e,010a4,010a5,010a6
 
 [ITEMDEF 01016]
 //spinning wheel
@@ -206,41 +212,61 @@ DUPEITEM=01015
 
 [ITEMDEF 01019]
 //spinning wheel
-TYPE=T_SPINWHEEL
-DUPELIST=0101a,0101b
+DUPEITEM=01015
 
 [ITEMDEF 0101a]
 //spinning wheel
-DUPEITEM=01019
+DUPEITEM=01015
 
 [ITEMDEF 0101b]
 //spinning wheel
-DUPEITEM=01019
+DUPEITEM=01015
 
 [ITEMDEF 0101c]
 //spinning wheel
-TYPE=T_SPINWHEEL
-DUPELIST=0101d,0101e
+DUPEITEM=01015
 
 [ITEMDEF 0101d]
 //spinning wheel
-DUPEITEM=0101c
+DUPEITEM=01015
 
 [ITEMDEF 0101e]
 //spinning wheel
-DUPEITEM=0101c
+DUPEITEM=01015
 
 [ITEMDEF 0101f]
+//Wool
 DUPEITEM=0df8
 
-[ITEMDEF 0105f]
-// loom - S piece - W
-DEFNAME=i_loom_upright
-RESOURCES=15 i_BOARD, 1 i_ingot_iron, 1 i_NAILS
-TYPE=T_LOOM
-WEIGHT=20
+
+[ITEMDEF 01049]
+DEFNAME=i_bench_loom
+TYPE=t_chair
+FLIP=1
+VALUE=22
+WEIGHT=18.1
+RESOURCES=18 i_board,1 i_nails
+SKILLMAKE=Carpentry 10.0,t_carpentry
 CATEGORY=Items by Professions
-SUBSECTION=Tailor
+SUBSECTION=Weaver
+DESCRIPTION=Bench (cannot sit or walk over)
+DUPELIST=0104a
+
+[ITEMDEF 0104a]
+//bench loom
+DUPEITEM=01049
+
+
+[ITEMDEF 0105f]
+DEFNAME=i_loom_upright
+TYPE=t_loom
+FLIP=1
+VALUE=225
+WEIGHT=53.0
+RESOURCES=38 i_board,2 i_wire_iron,10 i_nails,2 i_string,4 i_hinge
+SKILLMAKE=Carpentry 75.1,Tinkering 83.7,t_tinker_tools,t_carpentry
+CATEGORY=Items by Professions
+SUBSECTION=Weaver
 DESCRIPTION=Upright Loom
 DUPELIST=01060,01061,01062,01063,01064,01065,01066
 
@@ -274,24 +300,30 @@ DUPEITEM=0105f
 
 [ITEMDEF 01067]
 DEFNAME=i_hides_cut
-RESOURCES=1 i_HIDE
-TYPE=T_LEATHER
-DYE=1
-WEIGHT=1
-DUPELIST=01068,01081,01082
+TYPE=t_leather
+FLIP=1
+VALUE=5
+WEIGHT=1.0
+RESOURCES=1 i_hide
 CATEGORY=Items by Professions
 SUBSECTION=Tanner
 DESCRIPTION=Cut-up Leather
+DUPELIST=01068,01081,01082
+ON=@DClick
+   IF (<MORE2>)
+      NAME=cut up <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
 
 [ITEMDEF 01068]
 //cut up leather
 DUPEITEM=01067
 
 [ITEMDEF 01069]
-DEFNAME=i_HIDE_STRETCHED
-TYPE=T_LEATHER
-RESOURCES=1 i_HIDE, 2 i_BOARD
-WEIGHT=6
+DEFNAME=i_hide_stretched
+TYPE=t_hide
+FLIP=1
+WEIGHT=5.1
+RESOURCES=1 i_hide,4 i_board,1 i_nails
 CATEGORY=Items by Professions
 SUBSECTION=Tanner
 DESCRIPTION=Stretched Hide
@@ -321,23 +353,30 @@ DUPEITEM=01069
 //stretched hide
 DUPEITEM=01069
 
+
 [ITEMDEF 01078]
-// DEFNAME2=PILE_HIDES
 DEFNAME=i_hide
-TYPE=t_hide // T_HIDE made into t_leather later ?
-WEIGHT=5
+TYPE=t_hide
+TDATA1=i_hides_cut
 VALUE=5
+WEIGHT=2.0
 CATEGORY=Items by Professions
 SUBSECTION=Tanner
 DESCRIPTION=Hides (Pile)
 DUPELIST=01079
+ON=@DClick
+   IF (<MORE2>)
+      NAME=<SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
 
 [ITEMDEF 01079]
 //pile of hides
 DUPEITEM=01078
 
 [ITEMDEF 0107a]
-// dark brown small stretched hide in frame facing SW
+DEFNAME=i_hide_frame
+WEIGHT=5.1
+RESOURCES=1 i_hide,4 i_board,1 i_nails
 CATEGORY=Items by Professions
 SUBSECTION=Tanner
 DESCRIPTION=Hide (Stretched)
@@ -376,64 +415,78 @@ DUPEITEM=01067
 //cut up leather strips facing SE
 DUPEITEM=01067
 
-[ITEMDEF 011f4]
-//DEFNAME2=LLAMA_HIDES_4
-//DEFNAME2=i_FUR_DARK_LARGE_SE
-DEFNAME=i_fur_dark
-TYPE=T_FUR
-VALUE=5
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Tanner
-DESCRIPTION=Hide (Regular)
-DUPELIST=011f5,011f7,011f8,011f9,011fa,011fb
-
-[ITEMDEF 011f5]
-//fur
-DUPEITEM=011f4
-
-[ITEMDEF 011f6]
-//DEFNAME2=i_FUR_LIGHT_LARGE_SE
-DEFNAME=i_fur_light
-TYPE=T_FUR
-VALUE=5
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Tanner
-DESCRIPTION=Hide (Llama)
-
-[ITEMDEF 011f7]
-//fur light brown facing SE
-DUPEITEM=011f4
-
-[ITEMDEF 011f8]
-//fur dark brown facing SW
-DUPEITEM=011f4
-
-[ITEMDEF 011f9]
-//fur dark brown facing SW
-DUPEITEM=011f4
-
-[ITEMDEF 011fa]
-//fur light brown facing SW
-DUPEITEM=011f4
-
-[ITEMDEF 011fb]
-//fur light brown facing SW
-DUPEITEM=011f4
 
 [ITEMDEF 010a4]
 //spinning wheel
-TYPE=T_SPINWHEEL
-DUPELIST=010a5,010a6
+DUPEITEM=01015
 
 [ITEMDEF 010a5]
 //spinning wheel
-DUPEITEM=010a4
+DUPEITEM=01015
 
 [ITEMDEF 010a6]
 //spinning wheel
-DUPEITEM=010a4
+DUPEITEM=01015
+
+
+[ITEMDEF 011f4]
+DEFNAME=i_fur_dark
+TYPE=t_fur
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Fur (dark)
+DUPELIST=011f5,011f8,011f9
+
+[ITEMDEF 011f5]
+//fur (dark)
+DUPEITEM=011f4
+
+[ITEMDEF 011f6]
+DEFNAME=i_fur_light
+TYPE=t_fur
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Fur (light)
+DUPELIST=011f7,011fa,011fb
+
+[ITEMDEF 011f7]
+//fur (light)
+DUPEITEM=011f6
+
+[ITEMDEF 011f8]
+//fur (dark)
+DUPEITEM=011f4
+
+[ITEMDEF 011f9]
+//fur (dark)
+DUPEITEM=011f4
+
+[ITEMDEF 011fa]
+//fur (light)
+DUPEITEM=011f6
+
+[ITEMDEF 011fb]
+//fur (light)
+DUPEITEM=011f6
+
+
+[ITEMDEF 0175d]
+DEFNAME=i_cloth
+TYPE=t_cloth
+DYE=1
+FLIP=1
+VALUE=3
+WEIGHT=1.0
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Folded Cloth
+DUPELIST=0175e,0175f,01760,01761,01762,01763,01764,01765,01767
 
 [ITEMDEF 0175e]
 //folded cloth
@@ -449,84 +502,297 @@ DUPEITEM=0175d
 
 [ITEMDEF 01761]
 //folded cloth
-//DEFNAME2=FOLDED_CLOTH_1
 DUPEITEM=0175d
 
 [ITEMDEF 01762]
 //folded cloth
-//DEFNAME2=FOLDED_CLOTH_2
 DUPEITEM=0175d
 
 [ITEMDEF 01763]
 //folded cloth
-//DEFNAME2=FOLDED_CLOTH_3
 DUPEITEM=0175d
 
 [ITEMDEF 01764]
 //folded cloth
-//DEFNAME2=FOLDED_CLOTH_4
 DUPEITEM=0175d
 
 [ITEMDEF 01765]
-//Folded Cloth
+//folded cloth
 DUPEITEM=0175d
 
 [ITEMDEF 01766]
 DEFNAME=i_cloth_cut_1
-RESOURCES=1 i_CLOTH
-WEIGHT=1
-TYPE=T_CLOTH
+TYPE=t_cloth
+DYE=1
+FLIP=1
+VALUE=3
+WEIGHT=1.0
+RESOURCES=1 i_cloth
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Cut Cloth
 DUPELIST=01768
 
 [ITEMDEF 01767]
-DEFNAME=i_cloth_cut_2
-RESOURCES=1 i_CLOTH
-WEIGHT=1
-TYPE=T_CLOTH
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Cloth
+//folded cloth
+DUPEITEM=0175d
 
 [ITEMDEF 01768]
 //cut cloth
 DUPEITEM=01766
 
+
+[ITEMDEF 01875]
+DEFNAME=i_fur
+TYPE=t_fur
+DYE=1
+VALUE=5
+WEIGHT=1.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Fur
+
+
 [ITEMDEF 01f73]
-//small fur
-TYPE=t_FUR
+DEFNAME=i_fur_dark_2
+TYPE=t_fur
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Fur (dark - 2 piece)
 DUPELIST=01f74,01f75,01f76
 
 [ITEMDEF 01f74]
-//small fur
+//dark fur
 DUPEITEM=01f73
 
 [ITEMDEF 01f75]
-//small fur
+//dark fur
 DUPEITEM=01f73
 
 [ITEMDEF 01f76]
-//small fur
+//dark fur
 DUPEITEM=01f73
 
 [ITEMDEF 01f77]
-//small tan fur
-TYPE=t_FUR
+DEFNAME=i_fur_light_2
+TYPE=t_fur
+FLIP=1
+VALUE=5
+WEIGHT=5.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Fur (light - 2 piece)
 DUPELIST=01f78,01f79,01f7a
 
 [ITEMDEF 01f78]
-//small tan fur
+//light fur
 DUPEITEM=01f77
 
 [ITEMDEF 01f79]
-//small tan fur
+//light fur
 DUPEITEM=01f77
 
 [ITEMDEF 01f7a]
-//small tan fur
+//light fur
 DUPEITEM=01f77
 
 
-[eof]
+[ITEMDEF 02dd9]
+DEFNAME=i_spinning_wheel_elven
+NAME=elven spinning wheel
+TYPE=t_spinwheel
+FLIP=1
+VALUE=73
+WEIGHT=21.3
+RESOURCES=10 i_board,1 i_wire_iron,1 i_hinge,1 i_axel,1 i_gears
+SKILLMAKE=Carpentry 73.6,Tailoring 65.0,t_carpentry
+CATEGORY=Items by Professions
+SUBSECTION=Weaver
+DESCRIPTION=Elven Spinning Wheel
+DUPELIST=02dda,02e3c,02e3d,02e3e,02e3f
+
+[ITEMDEF 02dda]
+//elven spinning wheel
+DUPEITEM=02dd9
+
+[ITEMDEF 02e3c]
+//elven spinning wheel
+DUPEITEM=02dd9
+
+[ITEMDEF 02e3d]
+//elven spinning wheel
+DUPEITEM=02dd9
+
+[ITEMDEF 02e3e]
+//elven spinning wheel
+DUPEITEM=02dd9
+
+[ITEMDEF 02e3f]
+//elven spinning wheel
+DUPEITEM=02dd9
+
+
+//////////////////
+// Custom Items //
+//////////////////
+
+[ITEMDEF i_knitting_needles]
+ID=i_axel
+NAME=knitting needles
+TYPE=t_normal
+VALUE=5
+WEIGHT=0.1
+RESOURCES=1 i_board
+SKILLMAKE=Carpentry 20.7,t_carpentry
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Knitting Needles
+
+[ITEMDEF i_ribbon]
+ID=i_fx_ebolt
+NAME=ribbon
+TYPE=t_normal
+VALUE=3
+WEIGHT=0.1
+RESOURCES=1 i_cloth
+SKILLMAKE=Tailoring 15.0,t_sewing_kit
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Ribbon
+ON=@Create
+   COLOR=colors_all
+
+[ITEMDEF i_sewing_needle]
+ID=i_scorp
+NAME=sewing needle
+TYPE=t_normal
+VALUE=5
+WEIGHT=0.1
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 11.9,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Sewing Needle
+ON=@Create
+   COLOR=color_metal
+
+[ITEMDEF i_velvet]
+ID=i_flesh_entrails
+NAME=velvet
+TYPE=t_normal
+VALUE=15
+WEIGHT=0.1
+CATEGORY=Items by Professions
+SUBSECTION=Tailor
+DESCRIPTION=Velvet
+
+
+[ITEMDEF i_hide_spined]
+ID=i_hide
+NAME=spined hide%s
+TYPE=t_hide
+TDATA1=i_hides_cut_spined
+VALUE=5
+WEIGHT=2.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Hides (spined)
+ON=@Create
+   COLOR=color_o_spined
+ON=@DClick
+   IF (<MORE2>)
+      NAME=spined <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+[ITEMDEF i_hide_horned]
+ID=i_hide
+NAME=horned hide%s
+TYPE=t_hide
+TDATA1=i_hides_cut_horned
+VALUE=5
+WEIGHT=2.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Hides (horned)
+ON=@Create
+   COLOR=color_o_horned
+ON=@DClick
+   IF (<MORE2>)
+      NAME=horned <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+[ITEMDEF i_hide_barbed]
+ID=i_hide
+NAME=barbed hide%s
+TYPE=t_hide
+TDATA1=i_hides_cut_barbed
+VALUE=5
+WEIGHT=2.0
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Hides (barbed)
+ON=@Create
+   COLOR=color_o_barbed
+ON=@DClick
+   IF (<MORE2>)
+      NAME=barbed <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+
+[ITEMDEF i_hides_cut_spined]
+ID=i_hides_cut
+NAME=cut up spined leather
+TYPE=t_leather
+VALUE=5
+WEIGHT=1.0
+RESOURCES=1 i_hide_spined
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Cut-up Leather (spined)
+ON=@Create
+   COLOR=color_o_spined
+ON=@DClick
+   IF (<MORE2>)
+      NAME=cut up spined <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+[ITEMDEF i_hides_cut_horned]
+ID=i_hides_cut
+NAME=cut up horned leather
+TYPE=t_leather
+VALUE=5
+WEIGHT=1.0
+RESOURCES=1 i_hide_horned
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Cut-up Leather (horned)
+ON=@Create
+   COLOR=color_o_horned
+ON=@DClick
+   IF (<MORE2>)
+      NAME=cut up horned <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+[ITEMDEF i_hides_cut_barbed]
+ID=i_hides_cut
+NAME=cut up barbed leather
+TYPE=t_leather
+VALUE=5
+WEIGHT=1.0
+RESOURCES=1 i_hide_barbed
+CATEGORY=Items by Professions
+SUBSECTION=Tanner
+DESCRIPTION=Cut-up Leather (barbed)
+ON=@Create
+   COLOR=color_o_barbed
+ON=@DClick
+   IF (<MORE2>)
+      NAME=cut up barbed <SERV.CHARDEF.<MORE2>.NAME> hides
+   ENDIF
+
+
+
+[EOF]

@@ -1,0 +1,133 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Sunday, October 6, 2013
+//
+VERSION=0.56c
+
+
+///////////////////////////
+// Swordsmanship Weapons //
+///////////////////////////
+
+[TEMPLATE random_weapon_sword_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Swords Normal
+ITEM={ i_bone_machete 1 i_bardiche 1 i_sword_broad 1 i_sword_long 1 i_scimitar 1 i_sword_long_b 1 i_sword_viking 1 i_katana 1 i_halberd 1 i_cutlass 1 i_bone_harvester 1 i_crescent_blade 1 i_sword_paladin 1 i_no_dachi 1 i_wakizashi 1 i_bokuto 1 i_daisho 1 i_kama 1 i_rune_blade 1 i_radiant_scimitar 1 i_elven_machete 1 }
+
+[TEMPLATE random_weapon_sword_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Swords Gargish
+ITEM={ i_dual_shortaxes 1 i_stone_warsword 1 i_gargish_talwar 1 i_sword_dread 1 i_sword_glass 1 i_gargish_cleaver 1 i_gargish_bardiche 1 i_gargish_knife_butcher 1 i_gargish_katana 1 i_gargish_scythe 1 i_gargish_bone_harvester 1 i_gargish_daisho 1 }
+
+[TEMPLATE random_weapon_axe_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Axes Normal
+ITEM={ i_hatchet 1 i_axe_exec 1 i_axe_battle 1 i_axe 1 i_axe_double 1 i_axe_war 1 i_axe_battle_large 1 i_axe_two_hand 1 i_ornate_axe 1 }
+
+[TEMPLATE random_weapon_axe_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Axes Gargish
+ITEM={ i_gargish_axe_battle 1 i_gargish_axe 1 }
+
+//////////////////////////////////
+// Archery and Throwing Weapons //
+//////////////////////////////////
+
+[TEMPLATE random_weapon_archer_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Archer
+ITEM={ i_bow 1 i_bow_composite 1 i_yumi 1 i_elven_composite_longbow 1 i_magical_shortbow 1 i_crossbow 1 i_crossbow_heavy 1 i_crossbow_repeating 1 }
+
+[TEMPLATE random_weapon_throwing_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Throwing Gargish
+ITEM={ i_boomerang 1 i_cyclone 1 i_soul_glaive 1 }
+
+/////////////////////
+// Fencing Weapons //
+/////////////////////
+
+[TEMPLATE random_weapon_fencing_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Fencing Normal
+ITEM={ i_pitchfork 1 i_cleaver_meat 1 i_knife_skinning 1 i_dagger 1 i_spear 1 i_knife_butcher 1 i_kryss 1 i_spear_short 1 i_war_fork 1 i_scythe 1 i_pike 1 i_lance 1 i_tessen 1 i_lajatang 1 i_tekagi 1 i_sai 1 i_elven_spellblade 1 i_sword_assassin_spike 1 i_sword_leafblade 1 i_sword_warcleaver 1 }
+
+[TEMPLATE random_weapon_fencing_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Fencing Gargish
+ITEM={ i_bloodblade 1 i_gargish_dagger 1 i_spear_dualpoint 1 i_shortblade 1 i_gargish_kryss 1 i_gargish_war_fork 1 i_gargish_pike 1 i_gargish_lance 1 i_gargish_tekagi 1 }
+
+//////////////////////////
+// Macefighting Weapons //
+//////////////////////////
+
+[TEMPLATE random_weapon_mace_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Mace Normal
+ITEM={ i_staff_black 1 i_crook_thin 1 i_pickaxe 1 i_staff_quarter 1 i_mace 1 i_hammer_sledge 1 i_club 1 i_hammer_smith 1 i_shepherds_crook 1 i_staff_gnarled 1 i_mace_war 1 i_hammer_war 1 i_maul 1 i_hammer_pick 1 i_scepter 1 i_staff_bladed 1 i_staff_bladed_double 1 i_tetsubo 1 i_nunchaku 1 i_mace_diamond 1 i_staff_wild 1 }
+
+[TEMPLATE random_weapon_mace_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Mace Gargish
+ITEM={ i_mace_disc 1 i_gargish_hammer_war 1 i_gargish_maul 1 i_gargish_tessen 1 }
+
+[TEMPLATE random_weapon_staff_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Staves Normal
+ITEM={ i_staff_gnarled 1 i_staff_quarter 1 i_staff_black 1 i_staff_wild 1 i_staff_bladed 1 i_staff_bladed_double 1 }
+
+[TEMPLATE random_weapon_staff_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Staves Gargish
+ITEM={ i_staff_glass 1 i_staff_serpentstone 1 i_gargish_staff_gnarled 1 }
+
+///////////////////////
+// Random Weapon All //
+///////////////////////
+
+[TEMPLATE random_weapon_all_normal]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Weapons Normal
+ITEM={ random_weapon_sword_normal 1 random_weapon_axe_normal 1 random_weapon_archer_normal 1 random_weapon_fencing_normal 1 random_weapon_mace_normal 1 random_weapon_staff_normal 1 }
+
+[TEMPLATE random_weapon_all_gargish]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=Weapons Gargish
+ITEM={ random_weapon_sword_gargish 1 random_weapon_axe_gargish 1 random_weapon_throwing_gargish 1 random_weapon_fencing_gargish 1 random_weapon_mace_gargish 1 random_weapon_staff_gargish 1 }
+
+/////////////////////////
+// Weighted Weapon All //
+/////////////////////////
+
+[TEMPLATE random_weapon_all]
+CATEGORY=Item Templates
+SUBSECTION=Weapon Templates
+DESCRIPTION=All Weapon
+ITEM={ random_weapon_all_normal 1 random_weapon_all_gargish 1 }
+
+///////////
+// Other //
+///////////
+
+[EOF]

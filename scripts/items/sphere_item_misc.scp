@@ -7,924 +7,200 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, August 30, 2013
+// FILE LAST UPDATED: Friday, September 20, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
-[ITEMDEF 017cf]
-DEFNAME=i_teleporter
-RESOURCES=60 I_BOARD, 1 I_NAILS
-WEIGHT=60
-TYPE=T_TELEPAD
+[ITEMDEF 031b0]
 CATEGORY=Miscellaneous
-SUBSECTION=Teleporter
-DESCRIPTION=@
-DUPELIST=017d0,017d1,017d2,017d3,017d4,017d5,017d6,017d7,017d8,017d9,017da,017db,017dc,017dd,017de,017df,017e0,017e1,017e2,017e3,017e4,017e5,017e6,017e7,017e8,017e9,017ea,017eb,017ec,017ed,017ee,017ef,017f0,017f1,017f2,017fc,017fd,017fe,017ff,01800,01801,01802,01803,01804,01805,01806,01807,01808,01809,0180a,0180b,0180c,0180d
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b0
 
-[ITEMDEF 017d0]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d1]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d2]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d3]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d4]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d5]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d6]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d7]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d8]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017d9]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017da]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017db]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017dc]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017dd]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017de]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017df]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e0]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e1]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e2]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e3]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e4]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e5]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e6]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e7]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e8]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017e9]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ea]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017eb]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ec]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ed]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ee]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ef]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017f0]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017f1]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017f2]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017fc]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017fd]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017fe]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 017ff]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01800]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01801]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01802]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01803]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01804]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01805]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01806]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01807]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01808]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01809]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 0180a]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 0180b]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 0180c]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 0180d]
-//teleporter
-DUPEITEM=017cf
-
-[ITEMDEF 01869]
-DEFNAME=i_virtstone_1
-DEFNAME2=I_VIRTUESTONE_BLACK
-WEIGHT=1
+[ITEMDEF 031b1]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Black)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b1
 
-[ITEMDEF 0186a]
-DEFNAME=i_virtstone_2
-DEFNAME2=I_VIRTUESTONE_BLUE
-WEIGHT=1
+[ITEMDEF 031b2]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Blue)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b2
 
-[ITEMDEF 0186b]
-DEFNAME=i_virtstone_3
-DEFNAME2=I_VIRTUESTONE_GREEN
-WEIGHT=1
+[ITEMDEF 031b3]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Green)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b3
 
-[ITEMDEF 0186c]
-DEFNAME=i_virtstone_4
-DEFNAME2=I_VIRTUESTONE_ORANGE
-WEIGHT=1
+[ITEMDEF 031b4]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Orange)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b4
 
-[ITEMDEF 0186d]
-DEFNAME=i_virtstone_5
-DEFNAME2=I_VIRTUESTONE_PURPLE
-WEIGHT=1
+[ITEMDEF 031b5]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Purple)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b5
 
-[ITEMDEF 0186e]
-DEFNAME=i_virtstone_6
-DEFNAME2=I_VIRTUESTONE_RED
-WEIGHT=1
+[ITEMDEF 031b6]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Red)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b6
 
-[ITEMDEF 0186f]
-DEFNAME=i_virtstone_7
-DEFNAME2=I_VIRTUESTONE_AQUA
-WEIGHT=1
+[ITEMDEF 031b7]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Aqua)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b7
 
-[ITEMDEF 01870]
-DEFNAME=i_virtstone_8
-DEFNAME2=I_VIRTUESTONE_YELLOW
-WEIGHT=1
+[ITEMDEF 031b8]
 CATEGORY=Miscellaneous
-SUBSECTION=Virtue Stones
-DESCRIPTION=Virtue Stone (Yellow)
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b8
 
-[ITEMDEF 018a3]
-//Animated Piece, Don't use
-
-[ITEMDEF 018a4]
-//Animated Piece Don't use
-
-[ITEMDEF 018a5]
-//Animated Piece, Don't use
-
-[ITEMDEF 018a6]
-//Animated Piece, Don't use
-
-[ITEMDEF 018a7]
-//Animated Piece, Don't use
-
-[ITEMDEF 018a8]
-//Animated Piece, Don't use
-
-[ITEMDEF 018a9]
-//Animated Piece, Don't use
-
-[ITEMDEF 018aa]
-//Animated Piece, Don't use
-
-[ITEMDEF 018ad]
-//Animated Piece, Don't use
-
-[ITEMDEF 018b2]
-//Animated Piece, Don't use
-
-[ITEMDEF 018f4]
-//Animated pieces don't use
-
-[ITEMDEF 018f5]
-//Animated pieces don't use
-
-[ITEMDEF 018f6]
-//Animated pieces don't use
-
-[ITEMDEF 018f7]
-//Animated pieces don't use
-
-[ITEMDEF 018f8]
-//Animated pieces don't use
-
-[ITEMDEF 018f9]
-//Animated pieces don't use
-
-[ITEMDEF 018fa]
-//Animated pieces don't use
-
-[ITEMDEF 018fb]
-//Animated pieces don't use
-
-[ITEMDEF 01905]
-//Animated pieces don't use
-
-[ITEMDEF 0190a]
-//Animated pieces don't use
-
-[ITEMDEF 01964]
-//regions
-
-[ITEMDEF 01965]
-//regions
-
-[ITEMDEF 01966]
-//regions
-
-[ITEMDEF 01967]
-//regions
-
-[ITEMDEF 01968]
-//regions
-
-[ITEMDEF 01969]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196a]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196b]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196c]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196d]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196e]
-//regions - adding this yields invis area? Not sure about these
-
-[ITEMDEF 0196f]
-DEFNAME=i_mapadd1
-//map icon 1  Couldn't add this?
-
-[ITEMDEF 01970]
-DEFNAME=i_mapadd2
-//map icon 2  Couldn't add this?
-
-[ITEMDEF 01971]
-DEFNAME=i_mapadd3
-//map icon 3  Couldn't add this?
-
-[ITEMDEF 01972]
-DEFNAME=i_mapadd4
-//map icon 4  Couldn't add this?
-
-[ITEMDEF 01973]
-//quest egg Couldn't add this?
-DEFNAME=i_quest
-
-[ITEMDEF 01977]
-//Couldn't add this?
-
-[ITEMDEF 01978]
-//Couldn't add this?
-
-[ITEMDEF 01979]
-//Couldn't add this?
-
-[ITEMDEF 01aa4]
-DEFNAME=i_lighthouse
-RESOURCES=66 i_stone_sand, 24 i_GLASS
-WEIGHT=156
+[ITEMDEF 031b9]
 CATEGORY=Miscellaneous
-SUBSECTION=Lighthouse
-DESCRIPTION=Lighthouse
-DUPELIST=01aa5,01aa6,01aa7,01aa8,01aa9,01aaa,01aab,01aac,01aad,01aae,01aaf,01ab0,01ab1,01ab2,01ab3,01ab4,01ab5,01ab6,01ab7,01ab8,01ab9,01aba,01abb,01abc,01abd,01abe,01abf,01ac0,01ac1,01ac2,01ac3,01ac4,01ac5,01ac6,01ac7,01ac8,01ac9,01aca,01acb,01acc,01acd,01ace,01acf,01ad0,01ad1,01ad2
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031b9
 
-[ITEMDEF 01aa5]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aa6]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aa7]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aa8]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aa9]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aaa]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aab]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aac]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aad]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aae]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aaf]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab0]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab1]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab2]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab3]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab4]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab5]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab6]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab7]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab8]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ab9]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aba]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01abb]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01abc]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01abd]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01abe]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01abf]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac0]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac1]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac2]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac3]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac4]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac5]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac6]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac7]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac8]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ac9]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01aca]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01acb]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01acc]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01acd]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ace]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01acf]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ad0]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ad1]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ad2]
-//lighthouse
-DUPEITEM=01aa4
-
-[ITEMDEF 01ad4]
-DEFNAME=i_nest_with_eggs
-RESOURCES=8 i_STRAW, 3 i_EGG
-WEIGHT=3
+[ITEMDEF 031ba]
 CATEGORY=Miscellaneous
-SUBSECTION=Birds Nest
-DESCRIPTION=@
-DUPELIST=01ad5
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031ba
 
-[ITEMDEF 01ad5]
-DEFNAME=i_nest
-DUPEITEM=01ad4
-
-[ITEMDEF 01b3f]
-DEFNAME=i_treasure
-RESOURCES=15000 i_GOLD, 50 T_GEM
-WEIGHT=200
+[ITEMDEF 031bb]
 CATEGORY=Miscellaneous
-SUBSECTION=Treasure
-DESCRIPTION=@
-DUPELIST=01b40,01b41,01b42,01b43,01b44,01b45,01b46,01b47,01b48,01b4a,01b4b,01b4c,01b4d,01b4e,01b4f,01b50,01b51,01b53,01b54,01b55,01b56,01b57,01b58,01b59,01b5a,01b5b,01b5c,01b5d,01b5f,01b60,01b61,01b62,01b63,01b64,01b65,01b66,01b67,01b68,01b69,01b6a,01b6b
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031bb
 
-[ITEMDEF 01b40]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b41]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b42]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b43]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b44]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b45]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b46]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b47]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b48]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4a]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4b]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4c]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4d]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4e]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b4f]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b50]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b51]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b53]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b54]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b55]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b56]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b57]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b58]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b59]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b5a]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b5b]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b5c]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b5d]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b5f]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b60]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b61]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b62]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b63]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b64]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b65]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b66]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b67]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b68]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b69]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b6a]
-//treasure
-DUPEITEM=01b3f
-
-[ITEMDEF 01b6b]
-//treasure
-DUPEITEM=01b3f
-
-
-[ITEMDEF 0379e]
-DEFNAME=i_fx_glow_arrow
-TYPE=t_spell
+[ITEMDEF 031bc]
 CATEGORY=Miscellaneous
-SUBSECTION=Weirdness
-DESCRIPTION=Glowing Arrow
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031bc
 
-[ITEMDEF 0379f]
-DEFNAME=i_fx_ebolt
-TYPE=t_spell
+[ITEMDEF 031bd]
 CATEGORY=Miscellaneous
-SUBSECTION=Weirdness
-DESCRIPTION=Small Bolt
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031bd
 
-[ITEMDEF 03ee8]
-DEFNAME=i_fx_yellow_dot
+[ITEMDEF 031be]
 CATEGORY=Miscellaneous
-SUBSECTION=Weirdness
-DESCRIPTION=Strange Yellow Dot
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031be
 
-[ITEMDEF I_WINDOW]
-ID=I_TARGET
-RESOURCES=2 I_SAND, 2 I_BOARD
+[ITEMDEF 031bf]
+CATEGORY=Miscellaneous
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031bf
 
-ON=@Create
-	COLOR=colors_white
+[ITEMDEF 031c0]
+CATEGORY=Miscellaneous
+SUBSECTION=Invisible Tiles
+DESCRIPTION=Invisible Tile 031c0
 
-[ITEMDEF I_flagstone_RED]
-ID=i_rock_plain
 
-ON=@Create
-	COLOR=colors_red
+//FIXME: 3b38 - 3b43 (not sure... looks empty)
+[ITEMDEF 03b38]
+[ITEMDEF 03b39]
+[ITEMDEF 03b3a]
+[ITEMDEF 03b3b]
+[ITEMDEF 03b3c]
+[ITEMDEF 03b3d]
+[ITEMDEF 03b3e]
+[ITEMDEF 03b3f]
+[ITEMDEF 03b40]
+[ITEMDEF 03b41]
+[ITEMDEF 03b42]
+[ITEMDEF 03b43]
 
-[ITEMDEF I_flagstone_GRAY]
-ID=i_rock_plain
+//FIXME: 3b60 - 3bb2 (not sure... looks empty)
+[ITEMDEF 03b60]
+[ITEMDEF 03b61]
+[ITEMDEF 03b62]
+[ITEMDEF 03b63]
+[ITEMDEF 03b64]
+[ITEMDEF 03b65]
+[ITEMDEF 03b66]
+[ITEMDEF 03b67]
+[ITEMDEF 03b68]
+[ITEMDEF 03b69]
+[ITEMDEF 03b6a]
+[ITEMDEF 03b6b]
+[ITEMDEF 03b6c]
+[ITEMDEF 03b6d]
+[ITEMDEF 03b6e]
+[ITEMDEF 03b6f]
+[ITEMDEF 03b70]
+[ITEMDEF 03b71]
+[ITEMDEF 03b72]
+[ITEMDEF 03b73]
+[ITEMDEF 03b74]
+[ITEMDEF 03b75]
+[ITEMDEF 03b76]
+[ITEMDEF 03b77]
+[ITEMDEF 03b78]
+[ITEMDEF 03b79]
+[ITEMDEF 03b7a]
+[ITEMDEF 03b7b]
+[ITEMDEF 03b7c]
+[ITEMDEF 03b7d]
+[ITEMDEF 03b7e]
+[ITEMDEF 03b7f]
+[ITEMDEF 03b80]
+[ITEMDEF 03b81]
+[ITEMDEF 03b82]
+[ITEMDEF 03b83]
+[ITEMDEF 03b84]
+[ITEMDEF 03b85]
+[ITEMDEF 03b86]
+[ITEMDEF 03b87]
+[ITEMDEF 03b88]
+[ITEMDEF 03b89]
+[ITEMDEF 03b8a]
+[ITEMDEF 03b8b]
+[ITEMDEF 03b8c]
+[ITEMDEF 03b8d]
+[ITEMDEF 03b8e]
+[ITEMDEF 03b8f]
+[ITEMDEF 03b90]
+[ITEMDEF 03b91]
+[ITEMDEF 03b92]
+[ITEMDEF 03b93]
+[ITEMDEF 03b94]
+[ITEMDEF 03b95]
+[ITEMDEF 03b96]
+[ITEMDEF 03b97]
+[ITEMDEF 03b98]
+[ITEMDEF 03b99]
+[ITEMDEF 03b9a]
+[ITEMDEF 03b9b]
+[ITEMDEF 03b9c]
+[ITEMDEF 03b9d]
+[ITEMDEF 03b9e]
+[ITEMDEF 03b9f]
+[ITEMDEF 03ba0]
+[ITEMDEF 03ba1]
+[ITEMDEF 03ba2]
+[ITEMDEF 03ba3]
+[ITEMDEF 03ba4]
+[ITEMDEF 03ba5]
+[ITEMDEF 03ba6]
+[ITEMDEF 03ba7]
+[ITEMDEF 03ba8]
+[ITEMDEF 03ba9]
+[ITEMDEF 03baa]
+[ITEMDEF 03bab]
+[ITEMDEF 03bac]
+[ITEMDEF 03bad]
+[ITEMDEF 03bae]
+[ITEMDEF 03baf]
+[ITEMDEF 03bb0]
+[ITEMDEF 03bb1]
+[ITEMDEF 03bb2]
 
-ON=@Create
-	COLOR=colors_gray
 
-[ITEMDEF i_stone_slate]
-ID=i_rock_plain
-
-ON=@Create
-	COLOR=colors_gray
-
-[ITEMDEF I_STONE_RED]
-ID=i_rock_plain
-
-ON=@Create
-	COLOR=colors_red
-
-[ITEMDEF I_STONE_COBBLE]
-ID=i_rock_plain
-
-ON=@Create
-	COLOR=colors_brown
-
-[ITEMDEF i_PALM]
-ID=i_TREE_COCONUTPALM
-
-[ITEMDEF I_FROSTINGBOWL]
-ID=i_bowl_dough
-
-ON=@Create
-	COLOR=colors_yellow
-
-[ITEMDEF i_CAKEPAN]
-ID=I_BASKET
-
-ON=@Create
-	COLOR=colors_gray
-
-[ITEMDEF i_JAR]
-ID=i_JAR_HONEY
-NAME=Empty Honey Jar
-
-[ITEMDEF i_LINEN]
-ID=i_CLOTH
-VALUE=2
-NAME=Linen
-RESOURCES=6 i_flax_bundle
-WEIGHT=1
-
-ON=@Create
-	COLOR=colors_yellow
-
-[ITEMDEF i_PAPER]
-ID=i_bedroll_open
-NAME=Paper
-VALUE=2
-RESOURCES=1 I_BOARD, 1 T_WATER
-SKILLMAKE=CARPENTRY 15.7, t_carpentry
-WEIGHT=.1
-
-[ITEMDEF i_PARCHMENT]
-ID=i_bedroll_open
-VALUE=2
-NAME=Parchment
-RESOURCES=1 i_PAPER, 1 i_CLOTH
-SKILLMAKE=CARPENTRY 20.7, t_carpentry
-WEIGHT=1
-
-[ITEMDEF i_CROP_HERB]
-ID=i_plant_grasses
-NAME=Herbs
-
-[ITEMDEF i_KNITTING_NEEDLES]
-ID=i_axle
-VALUE=5
-WEIGHT=1
-NAME=Knitting Needles
-RESOURCES=1 i_board
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Knitting Needles
-
-[ITEMDEF I_SCREW]
-ID=i_hinge
-VALUE=1
-WEIGHT=.2
-NAME=Screw
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Tinker
-DESCRIPTION=Screw
+//////////////////
+// Custom Items //
+//////////////////
 
 [ITEMDEF I_EBONY]
 ID=i_reag_blackmoor
@@ -934,181 +210,15 @@ CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewels
 DESCRIPTION=Ebony
 
-[ITEMDEF I_IVORY]
+[ITEMDEF i_ivory]
 ID=i_bone_spine
 NAME=Ivory
 WEIGHT=1
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewels
 DESCRIPTION=Ivory
-
 ON=@Create
 	COLOR=colors_white
-
-[ITEMDEF i_HAIR_DYEs]
-ID=i_TESTTUBE_RACK_FULL
-TYPE=T_HAIR_DYE
-NAME=Hair Dyes
-WEIGHT=4
-CATEGORY=Items by Professions
-SUBSECTION=Barber
-DESCRIPTION=Hair Dyes
-
-ON=@Create
-	COLOR=colors_hair
-
-[ITEMDEF I_RIBBON]
-ID=i_yarn_ball
-NAME=Ribbon
-WEIGHT=1
-
-ON=@Create
-	COLOR=colors_all
-
-[ITEMDEF I_HINGES_BRASS]
-ID=i_hinge
-NAME=Brass Hinges
-WEIGHT=.5
-RESOURCES=3 i_ingot_iron, 1 i_cloth
-CATEGORY=Items by Professions
-SUBSECTION=Tinker
-DESCRIPTION=Brass Hinges
-
-ON=@Create
-	COLOR=color_o_gold
-
-[ITEMDEF I_SEWING_NEEDLE]
-ID=I_SCORP
-VALUE=1
-NAME=Sewing needle
-WEIGHT=.1
-RESOURCES=1 i_ingot_iron
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Sewing Needle
-
-ON=@Create
-	COLOR=color_metal
-
-[ITEMDEF I_DIE]
-ID=I_GEM_SAPPHIRE
-NAME=Die
-WEIGHT=.2
-RESOURCES3=1 i_bone, 1 i_ink
-
-ON=@Create
-	COLOR=colors_white
-
-[ITEMDEF I_INK_POT]
-ID=I_SPITTOON
-NAME=Inkpot
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Artists
-DESCRIPTION=Inkpot
-
-ON=@Create
-	COLOR=color_gray_dk
-
-[ITEMDEF I_BRUSH]
-ID=I_REAG_DAEMON_BONE
-NAME=Paint Brush
-WEIGHT=1
-RESOURCES=1 i_hair_cut, 1 i_board
-CATEGORY=Items by Professions
-SUBSECTION=Artists
-DESCRIPTION=Paint Brush
-
-ON=@Create
-	COLOR=colors_brown
-
-[ITEMDEF I_BLOODSTONE]
-ID=i_rock_7
-NAME=Bloodstone
-WEIGHT=2
-RESOURCES=1 i_rock_7, 2 i_blood
-CATEGORY=Items by Professions
-SUBSECTION=Necromancer
-DESCRIPTION=Bloodstone
-
-ON=@Create
-	COLOR=colors_blood
-
-[ITEMDEF I_MARBLE]
-ID=i_rock_3   //ROCK
-TYPE=t_AROCK
-NAME=Marble
-WEIGHT=5
-CATEGORY=Items by Professions
-SUBSECTION=Jeweler
-DESCRIPTION=Marble
-
-ON=@Create
-	COLOR=color_snow
-
-[ITEMDEF I_TOMATO_SAUCE]
-ID=i_bottle_red    //RED BOTTLE
-NAME=Tomato Sauce
-WEIGHT=2
-CATEGORY=Items by Professions
-SUBSECTION=Cook
-DESCRIPTION=Tomato Sauce
-
-[ITEMDEF i_TREE_SAPLING_PLANTED]
-ID=i_PLANT_WEED
-NAME=Planted Tree Sapling
-WEIGHT=4
-CATEGORY=Vegetation
-SUBSECTION=Planted Plants
-DESCRIPTION=Planted Tree Sapling
-
-[ITEMDEF I_BAMBOO]
-ID=i_staff_quarter
-RESOURCES=2 i_PLANT_CATTAILS
-CATEGORY=Vegetation
-SUBSECTION=Sticks and Wood
-DESCRIPTION=Bamboo
-
-ON=@Create
-	COLOR=09a
-
-[ITEMDEF I_CAT_GUT]
-ID=i_FLESH_ENTRAILS
-NAME=Cat Gut
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Bowyer
-DESCRIPTION=Cat Gut
-
-[ITEMDEF I_PEG]
-ID=i_BANNER_HANGER_NE
-NAME=Peg
-CATEGORY=Provisions - Armor
-SUBSECTION=Decorative Armor
-DESCRIPTION=Peg
-
-[ITEMDEF I_ORC_SKULL]
-ID=i_bone_skull
-NAME=Orc Skull
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Orc Skull
-
-[ITEMDEF I_WAX_SEAL]
-ID=I_GEM_TOURMALINE
-NAME=Wax Seal
-RESOURCES=1 I_BEESWAX
-CATEGORY=Items by Professions
-SUBSECTION=Beekeepers/Candlers
-DESCRIPTION=Wax Seal
-
-[ITEMDEF I_VELVET]
-ID=i_FLESH_ENTRAILS
-NAME=Velvet
-WEIGHT=1
-CATEGORY=Items by Professions
-SUBSECTION=Tailor
-DESCRIPTION=Velvet
 
 [ITEMDEF I_BOOKOFHELL]
 NAME=Book of Hell
@@ -1116,16 +226,13 @@ ID=i_BOOK_OPEN
 CATEGORY=Trigger Items
 SUBSECTION=Magic Items
 DESCRIPTION=Book of Hell
-
 ON=@Create
 	MORE=b_hitchhiker // some book number
-
 ON=@DCLICK
 	SRC.EFFECT=3,i_FIRE_COLUMN,6,15,1	// flamestrike
 	SRC.SOUND=snd_SPELL_FLAMESTRIKE
 	SRC.DAMAGE={5 20}	// damage the person who did this
 	TIMER=4
-
 ON=@TIMER
 	SPEAK Run away !
 	RETURN 1
@@ -1138,13 +245,11 @@ TYPE=T_SPELL
 CATEGORY=TFL Additions
 SUBSECTION=Animations
 DESCRIPTION=Fire Storm Piece
-
 ON=@Create
 	ATTR=attr_magic|attr_move_never
 	MORE=0
 	MOREP=42,55,99
 	TIMER=1
-
 ON=@DCLICK
 	MORE = <MORE> + 1
 	IF (<MORE> > 15)
@@ -1183,18 +288,15 @@ NAME=Supremely Accurate Bardiche
 ID=i_bardiche
 TYPE=T_WEAPON_SWORD
 RESOURCES=i_bardiche,i_enchant_weapon,i_scroll_bless	// ,5 i_enchant_weapon
-
 ON=@Create
 	HITPOINTS={31 100}
 	COLOR=color_magic_weap
 	ATTR=attr_magic
 	//MOREY=100.0
-
 ON=@EQUIP
 	SRC.SWORDSMANSHIP=(<SRC.SWORDSMANSHIP> + 25.0)
 	SRC.TACTICS=(<SRC.TACTICS> + 25.0)
 	SRC.DEX=(<SRC.DEX> + 1)
-
 ON=@UNEQUIP
 	SRC.SWORDSMANSHIP=(<SRC.SWORDSMANSHIP> - 25.0)
 	SRC.TACTICS=(<SRC.TACTICS> - 25.0)
@@ -1203,7 +305,7 @@ ON=@UNEQUIP
 [ITEMDEF i_wizards_hat_plus_int]
 Name=Mage Hat
 ID=i_hat_wizards
-RESOURCES=i_hat_wizards, i_scroll_CUNNING
+RESOURCES=i_hat_wizards, i_scroll_cunning
 SKILLMAKE=60.0 TAILORING, 60.0 MAGERY, t_sewing_kit
 
 [ITEMDEF i_crystal_of_com_t1]
@@ -1216,7 +318,6 @@ WEIGHT=1
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (red)
-
 ON=@Create
 	MORE=500
 
@@ -1230,7 +331,6 @@ WEIGHT=1
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (green)
-
 ON=@Create
 	MORE=1000
 
@@ -1244,55 +344,8 @@ WEIGHT=1
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (green)
-
 ON=@Create
 	MORE=2000
-
-[ITEMDEF i_beard_NONE]
-ID=I_EQ_MARKER
-NAME=No Beard
-TYPE=T_BEARD
-LAYER=layer_beard
-VALUE=10
-
-ON=@Create
-	ATTR=attr_newbie
-	TIMER=550000
-
-ON=@TIMER
-	if !<cont>	// on ground?
-		return 0
-	endif
-	if <cont.npc>	// players only
-		return 1
-	endif
-	serv.newitem=i_beard_mustache
-	new.color=<cont.findlayer(layer_beard).color>
-	cont.equip <new.uid>
-	return 1
-
-[ITEMDEF i_hair_NONE]
-ID=I_EQ_MARKER
-NAME=No Hair
-TYPE=T_HAIR
-LAYER=layer_hair
-VALUE=10
-
-ON=@Create
-	ATTR=attr_newbie
-	TIMER=550000
-
-ON=@TIMER
-	if !<cont>	// on ground?
-		return 0
-	endif
-	if <cont.npc>	// players only
-		return 1
-	endif
-	serv.newitem=i_hair_krisna
-	new.color=<cont.findlayer(layer_hair).color>
-	cont.equip <new.uid>
-	return 1
 
 [ITEMDEF i_gm_robe]
 NAME=GM Robe
@@ -1301,7 +354,6 @@ ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=GM Robe
-
 ON=@Create
 	COLOR=021
 
@@ -1312,7 +364,6 @@ ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=Seer Robe
-
 ON=@Create
 	COLOR=01D3
 
@@ -1323,7 +374,6 @@ ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=Counselor Robe
-
 ON=@Create
 	COLOR=003
 
@@ -1334,10 +384,9 @@ NAME=Checkerboard
 TYPE=T_GAME_BOARD
 SKILLMAKE=tinkering 40.0, carpentry 40.0
 RESOURCES=3 i_board, 3 i_log
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+CATEGORY=Games
+SUBSECTION=Checkers
 DESCRIPTION=Checkerboard
-
 ON=@Create
 	MORE=1	// make this checkers.
 
@@ -1347,8 +396,8 @@ NAME=Chessboard
 TYPE=T_GAME_BOARD
 SKILLMAKE=tinkering 60.0, carpentry 60.0
 RESOURCES=3 i_board, 4 i_log
-CATEGORY=Items by Professions
-SUBSECTION=BarKeep
+CATEGORY=Games
+SUBSECTION=Chess
 DESCRIPTION=Chessboard
 
 [ITEMDEF i_guild_stone]
@@ -1384,7 +433,6 @@ WEIGHT=6
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Bow
-
 ON=@Create
 	HITPOINTS={41 80}
 
@@ -1403,7 +451,6 @@ WEIGHT=7
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Crossbow
-
 ON=@Create
 	HITPOINTS={41 100}
 
@@ -1421,7 +468,6 @@ WEIGHT=7
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Heavy Crossbow
-
 ON=@Create
 	HITPOINTS={41 120}
 
@@ -1440,7 +486,6 @@ WEIGHT=6
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Bow
-
 ON=@Create
 	HITPOINTS={51 120}
 
@@ -1459,7 +504,6 @@ WEIGHT=7
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Crossbow
-
 ON=@Create
 	HITPOINTS={51 140}
 
@@ -1478,7 +522,6 @@ RESOURCES=13 i_log
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Heavy Crossbow
-
 ON=@Create
 	HITPOINTS={41 100}
 
@@ -1496,16 +539,13 @@ SKILLMAKE=99.5 BOWCRAFT, 50.0 MAGERY
 CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Elven Bow
-
 ON=@Create
 	HITPOINTS={100 200}
 	COLOR=237
-
 ON=@EQUIP
 	SRC.TACTICS= (<SRC.TACTICS>+15.0)
 	SRC.ARCHERY= (<SRC.ARCHERY>+10.0)
 	RETURN 0
-
 ON=@UNEQUIP
 	SRC.TACTICS= (<SRC.TACTICS>-(15.0))
 	SRC.ARCHERY= (<SRC.ARCHERY>-(10.0))
@@ -1567,34 +607,13 @@ CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Compassion
 
-[ITEMDEF i_bell_courage]
-NAME=Bell of Courage
-ID=i_bell_of_courage
-CATEGORY=Provisions - Miscellaneous
-SUBSECTION=Quest Items
-DESCRIPTION=Bell of Courage
-
-[ITEMDEF i_book_of_truth_2]
-NAME=Book of Truth
-ID=i_book_of_truth
-CATEGORY=Provisions - Miscellaneous
-SUBSECTION=Quest Items
-DESCRIPTION=Book of Truth
-
-[ITEMDEF i_candle_of_love_2]
-NAME=Candle of Love
-ID=i_candle_of_love
-CATEGORY=Provisions - Miscellaneous
-SUBSECTION=Quest Items
-DESCRIPTION=Candle of Love
-//grave triggers
 
 [ITEMDEF I_GRAVE_DIG]
+//grave for grave digging.
 ID=0edf
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Graves & Gravestones
 DESCRIPTION=Grave Digging Grave
-//grave for grave digging.
 
 ON=@DCLICK
 	IF <DISTANCE>>1
@@ -1631,14 +650,12 @@ ON=@DCLICK
 //Average Grave Digging Random Monster Spawn
 ID=I_HOLE
 TYPE=T_SPAWN_CHAR
-
 ON=@Create
 	ATTR=attr_move_never|attr_invis
 	MORE1={ c_skeleton 1 c_ZOMBIE 1 c_spectre 1 }
 	MORE2=0
 	MOREP=0,1,3
 	TIMER=0
-
 ON=@TIMER
 	IF <AMOUNT>==0
 		REMOVE
@@ -1658,12 +675,10 @@ VALUE=5000
 CATEGORY=Custom Items
 SUBSECTION=Dragons Egg
 DESCRIPTION=Dragons Egg
-
 ON=@Create
 	COLOR={ 0000 1 0033 1 0038 1 005d 1 0091 1 0175 1 0371 1 0455 1 07fff 1 }
 	ATTR=attr_identified
 	MORE=0
-
 ON=@TIMER
 	IF (<MORE>==1)
 		MORE2=2
@@ -1672,7 +687,6 @@ ON=@TIMER
 		REMOVE
 	endif
 	RETURN 1
-
 ON=@DCLICK    //on timer not executing in packs or containers, so do this for now if in someones pack
 	IF (<MORE>==1)
 		IF (<TIMER>>5800)
@@ -1691,7 +705,6 @@ ON=@DCLICK    //on timer not executing in packs or containers, so do this for no
 		endif
 	endif
 	RETURN 1
-
 ON=@PICKUP_GROUND
 	MORE=1
 	IF (<TIMER><1)
@@ -1699,7 +712,6 @@ ON=@PICKUP_GROUND
 	endif
 	LINK=<SRC.UID>
 	RETURN 0
-
 ON=@PICKUP_PACK
 	IF (<MORE>==1)
 		TRIGGER=@DCLICK
@@ -1719,14 +731,12 @@ TYPE=T_SPAWN_CHAR
 DESCRIPTION=One Shot Drake Spawn
 SUBSECTION=Dragons Egg
 CATEGORY=Custom Items
-
 ON=@Create
 	ATTR=attr_move_never|attr_invis
-	MORE1={ C_M_DRAGON_GREENDRAKE 1 C_M_DRAGON_COPPERDRAKE 1 C_M_DRAGON_BLUEDRAKE 1 C_M_DRAGON_GOLDDRAKE 1 C_M_DRAGON_BLACKDRAKE 1 C_M_DRAGON_SILVERDRAKE 1 C_M_DRAGON_CRYSTALDRAKE 1 }
+	MORE1={ c_dragon_greendrake 1 c_dragon_copperdrake 1 c_dragon_bluedrake 1 c_dragon_golddrake 1 c_dragon_blackdrake 1 c_dragon_silverdrake 1 c_dragon_crystaldrake 1 }
 	MORE2=0
 	MOREP=0,1,3
 	TIMER=2
-
 ON=@TIMER
 	IF <AMOUNT>==0
 		REMOVE
@@ -1747,6 +757,66 @@ VALUE=10
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Charge of the Light Brigade
-
 ON=@Create
 	MORE1=b_tennyson
+
+[ITEMDEF i_peg]
+ID=i_banner_hanger_ne
+NAME=peg
+VALUE=1
+WEIGHT=0.1
+CATEGORY=Decoration - Furniture
+SUBSECTION=Hangers
+DESCRIPTION=Peg
+
+[ITEMDEF i_bodypaint]
+ID=i_palette
+TYPE=t_normal
+NAME=savage body paint
+VALUE=1000
+RESOURCES=1 i_reag_spider_silk, 1 i_dye_tub, 3 i_brush, 1 i_log, 3 i_dyes, 1 i_ink_well
+SKILLMAKE=TINKERING 10.0, t_tinker_tools, ALCHEMY 10.0
+CATEGORY=Magic
+SUBSECTION=Tools
+DESCRIPTION=Bodypaint
+ON=@Create
+   COLOR=0447
+ON=@Click
+   MESSAGE=<NAME>
+   SRC.SYSMESSAGE Double click to paint your skin to a random color.
+   RETURN 1
+ON=@DClick
+   IF (<SRC.RESTEST 1 i_bodypaint>) && (<SRC.COLOR>==<SRC.OSKIN>)
+      //pull up color picker here... or make random with colors_all
+      //SRC.OSKIN=<COLOR> uncomment this to make change permenant
+      SRC.COLOR=colors_all
+      SERV.NEWITEM=i_paint_timer
+      NEW.EQUIP
+      REMOVE
+      RETURN 1
+   ELSEIF (<SRC.COLOR>!=<SRC.OSKIN>)
+      SRC.SYSMESSAGE You are already covered with paint.
+      RETURN 1
+   ELSE
+      SRC.SYSMESSAGE You must have this in your backpack to use.
+      RETURN 1
+   ENDIF
+
+[ITEMDEF i_paint_timer]
+ID=i_palette
+NAME=Bodypaint timer
+TYPE=t_eq_script
+LAYER=layer_special
+WEIGHT=0
+ON=@Create
+   ATTR=attr_decay
+ON=@Equip
+   TIMER={5000 9999}
+   SRC.COLOR=colors_all
+ON=@Timer
+   CONT.MESSAGE "The paint has worn off."
+   CONT.COLOR=<CONT.OSKIN>
+   REMOVE
+   RETURN 1
+
+[EOF]

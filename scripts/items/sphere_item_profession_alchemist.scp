@@ -1,0 +1,938 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Friday, September 20, 2013
+//
+VERSION=0.56c
+
+
+[ITEMDEF 0e24]
+DEFNAME=i_vial_empty
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Vial
+
+[ITEMDEF 0e25]
+DEFNAME=i_bottle
+NAME=narrow bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Bottle
+DUPELIST=0efd
+
+[ITEMDEF 0e26]
+DEFNAME=i_bottle_2
+NAME=square bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Square Bottle
+DUPELIST=0efe
+
+[ITEMDEF 0e27]
+DEFNAME=i_bottle_10
+NAME=cylindrical bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Cylindrical Bottle
+DUPELIST=0eff
+
+[ITEMDEF 0e28]
+DEFNAME=i_bottle_3
+NAME=double neck bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Double Neck Bottle
+DUPELIST=0f00
+
+[ITEMDEF 0e29]
+DEFNAME=i_bottle_4
+NAME=round blue bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Round Blue Bottle
+DUPELIST=0f01
+
+[ITEMDEF 0e2a]
+DEFNAME=i_bottle_5
+NAME=small purple bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Small Purple Bottle
+DUPELIST=0f02
+
+[ITEMDEF 0e2b]
+DEFNAME=i_bottle_6
+NAME=tall thin bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Tall Thin Bottle
+DUPELIST=0f03
+
+[ITEMDEF 0e2c]
+DEFNAME=i_bottle_7
+NAME=reddish bottle
+FLIP=1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Reddish Bottle
+DUPELIST=0f04
+
+
+[ITEMDEF 0e44]
+DEFNAME=i_jar_empty_2
+FLIP=1
+WEIGHT=2.0
+RESOURCES=2 i_jar_empty
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Jar (2)
+DUPELIST=0e45
+
+[ITEMDEF 0e45]
+//empty jars
+DUPEITEM=0e44
+
+[ITEMDEF 0e46]
+DEFNAME=i_jar_empty_3
+WEIGHT=3.0
+RESOURCES=3 i_jar_empty
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Jar (3)
+
+[ITEMDEF 0e47]
+DEFNAME=i_jar_empty_4
+WEIGHT=4.0
+RESOURCES=4 i_jar_empty
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Jar (4)
+
+[ITEMDEF 0e48]
+DEFNAME=i_jar_full_2
+FLIP=1
+WEIGHT=6.0
+RESOURCES=2 i_jar_full
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Full Jar (2)
+DUPELIST=0e49
+
+[ITEMDEF 0e49]
+//full jars
+DUPEITEM=0e48
+
+[ITEMDEF 0e4a]
+DEFNAME=i_jar_full_3
+WEIGHT=9.0
+RESOURCES=3 i_jar_full
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Full Jar (3)
+
+[ITEMDEF 0e4b]
+DEFNAME=i_jar_full_4
+WEIGHT=12.0
+RESOURCES=4 i_jar_full
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Full Jar (4)
+
+[ITEMDEF 0e4c]
+DEFNAME=i_jar_half_full_2
+FLIP=1
+WEIGHT=4.0
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Half Full Jar (2)
+DUPELIST=0e4d
+
+[ITEMDEF 0e4d]
+//jars
+DUPEITEM=0e4c
+
+[ITEMDEF 0e4e]
+DEFNAME=i_jar_half_full_3
+WEIGHT=6.0
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Half Full Jar (3)
+
+[ITEMDEF 0e4f]
+DEFNAME=i_jar_half_full_4
+WEIGHT=8.0
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Half Full Jar (4)
+
+
+[ITEMDEF 0e9b]
+DEFNAME=i_mortar_pestle
+TYPE=t_mortar
+VALUE=14
+WEIGHT=0.1
+RESOURCES=3 i_ingot_iron
+SKILLMAKE=Tinkering 23.3,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Mortar and Pestle
+
+
+[ITEMDEF 0efb]
+DEFNAME=i_bottle_8
+NAME=aqua bottle
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Aqua Bottle
+
+[ITEMDEF 0efc]
+DEFNAME=i_bottle_9
+NAME=small red bottle
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Small Red Bottle
+
+[ITEMDEF 0efd]
+//bottle
+DUPEITEM=0e25
+
+[ITEMDEF 0efe]
+//bottle
+DUPEITEM=0e26
+
+[ITEMDEF 0eff]
+//bottle
+DUPEITEM=0e27
+
+[ITEMDEF 0f00]
+//bottle
+DUPEITEM=0e28
+
+[ITEMDEF 0f01]
+//bottle
+DUPEITEM=0e29
+
+[ITEMDEF 0f02]
+//bottle
+DUPEITEM=0e2a
+
+[ITEMDEF 0f03]
+//bottle
+DUPEITEM=0e2b
+
+[ITEMDEF 0f04]
+//bottle
+DUPEITEM=0e2c
+
+
+[ITEMDEF 0f0e]
+DEFNAME=i_bottle_empty
+TYPE=t_potion_empty
+VALUE=10
+WEIGHT=0.1
+RESOURCES=1 i_glass_raw
+SKILLMAKE=Alchemy 25.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Potion Bottle
+
+
+[ITEMDEF 01005]
+DEFNAME=i_jar_empty
+VALUE=17
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 75.7,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Empty Jar
+
+[ITEMDEF 01006]
+DEFNAME=i_jar_full
+WEIGHT=3.0
+RESOURCES=1 i_jar_empty
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Full Jar
+
+[ITEMDEF 01007]
+DEFNAME=i_jar_half_full
+WEIGHT=2.0
+RESOURCES=1 i_jar_empty
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Half Full Jar
+
+
+[ITEMDEF 01810]
+DEFNAME=i_hourglass
+TYPE=t_clock
+VALUE=12
+WEIGHT=3.0
+RESOURCES=1 i_board,1 i_glass_raw,1 i_sand
+SKILLMAKE=Tinkering 45.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Hourglass
+DUPELIST=01811,01812,01813,01814,01815,01816,01817,01818,01819,0181a,0181b,0181c
+
+[ITEMDEF 01811]
+DEFNAME=i_hourglass_animated
+DUPEITEM=01810
+
+[ITEMDEF 01812]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01813]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01814]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01815]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01816]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01817]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01818]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 01819]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 0181a]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 0181b]
+//hourglass
+DUPEITEM=01810
+
+[ITEMDEF 0181c]
+//hourglass
+DUPEITEM=01810
+
+
+[ITEMDEF 01829]
+DEFNAME=i_flaskstand
+VALUE=8
+WEIGHT=1.0
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=Tinkering 41.1,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask Stand
+
+[ITEMDEF 0182a]
+DEFNAME=i_flask1_blue
+TYPE=t_drink
+TDATA1=i_flask1_empty
+VALUE=27
+WEIGHT=7.0
+RESOURCES=7 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask (Blue Liquid)
+
+[ITEMDEF 0182b]
+DEFNAME=i_flask1_orange
+TYPE=t_drink
+TDATA1=i_flask1_empty
+VALUE=27
+WEIGHT=7.0
+RESOURCES=7 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask (Orange Liquid)
+
+[ITEMDEF 0182c]
+DEFNAME=i_flask1_red
+TYPE=t_drink
+TDATA1=i_flask1_empty
+VALUE=27
+WEIGHT=7.0
+RESOURCES=7 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask (Red Liquid)
+
+[ITEMDEF 0182d]
+DEFNAME=i_flask1_empty
+RESOURCES=7 i_glass_raw
+VALUE=27
+WEIGHT=7.0
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask (Empty)
+
+[ITEMDEF 0182e]
+DEFNAME=i_beaker1_orange
+NAME=beaker
+TYPE=t_drink
+TDATA1=01005
+VALUE=21
+WEIGHT=4.0
+RESOURCES=4 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Beaker (Orange Liquid)
+
+[ITEMDEF 0182f]
+DEFNAME=i_beaker1_red
+NAME=beaker
+TYPE=t_drink
+TDATA1=01005
+VALUE=21
+WEIGHT=4.0
+RESOURCES=4 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Beaker (Red liquid)
+
+[ITEMDEF 01830]
+DEFNAME=i_beaker1_blue
+NAME=beaker
+TYPE=t_drink
+TDATA1=01005
+VALUE=21
+WEIGHT=4.0
+RESOURCES=4 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Beaker (Blue Liquid)
+
+[ITEMDEF 01831]
+DEFNAME=i_beaker1_green
+NAME=beaker
+TYPE=t_drink
+TDATA1=01005
+VALUE=21
+WEIGHT=4.0
+RESOURCES=4 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Beaker (Green Liquid)
+
+[ITEMDEF 01832]
+DEFNAME=i_beaker2_empty
+NAME=retort
+FLIP=1
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Retort (Empty)
+DUPELIST=01835
+
+[ITEMDEF 01833]
+DEFNAME=i_beaker2_red
+NAME=retort
+TYPE=t_drink
+TDATA1=i_beaker2_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Retort (Red Liquid)
+
+[ITEMDEF 01834]
+DEFNAME=i_beaker2_teal
+NAME=retort
+TYPE=t_drink
+TDATA1=i_beaker2_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Retort (Teal Liquid)
+
+[ITEMDEF 01835]
+//beaker2 empty
+DUPEITEM=01832
+
+[ITEMDEF 01836]
+DEFNAME=i_beaker2_blue
+NAME=retort
+TYPE=t_drink
+TDATA1=i_beaker2_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Retort (Blue Liquid)
+
+[ITEMDEF 01837]
+DEFNAME=i_beaker2_green
+NAME=retort
+TYPE=t_drink
+TDATA1=i_beaker2_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Retort (Green Liquid)
+
+[ITEMDEF 01838]
+DEFNAME=i_flask2_red
+NAME=condenser flask
+TYPE=t_drink
+TDATA1=i_flask2_empty
+VALUE=29
+WEIGHT=8.0
+RESOURCES=8 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Condenser Flask (Red Liquid)
+
+[ITEMDEF 01839]
+DEFNAME=i_flask2_purple
+NAME=condenser flask
+TYPE=t_drink
+TDATA1=i_flask2_empty
+VALUE=29
+WEIGHT=8.0
+RESOURCES=8 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Condenser Flask (Purple Liquid)
+
+[ITEMDEF 0183a]
+DEFNAME=i_flask2_empty
+NAME=condenser flask
+TYPE=t_drink
+VALUE=29
+WEIGHT=8.0
+RESOURCES=8 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Condenser Flask (Empty)
+
+[ITEMDEF 0183b]
+DEFNAME=i_flask_long_orange
+NAME=tall flask
+TYPE=t_drink
+TDATA1=i_flask_long_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Tall Flask (Orange Liquid)
+
+[ITEMDEF 0183c]
+DEFNAME=i_flask_long_purple
+NAME=tall flask
+TYPE=t_drink
+TDATA1=i_flask_long_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Tall Flask (Purple Liquid)
+
+[ITEMDEF 0183d]
+DEFNAME=i_flask_long_empty
+NAME=tall flask
+TYPE=t_drink
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Tall Flask (Empty)
+
+[ITEMDEF 0183e]
+DEFNAME=i_flask2_red_anim
+NAME=bubbling condenser flask
+TYPE=t_drink
+TDATA1=i_flask2_empty
+VALUE=29
+WEIGHT=8.0
+RESOURCES=8 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Condenser Flask (Bubbling Red Liquid)
+DUPELIST=0183f,01840
+
+[ITEMDEF 0183f]
+//Condenser Flask (animation frame)
+DUPEITEM=0183e
+
+[ITEMDEF 01840]
+//Condenser Flask (animation frame)
+DUPEITEM=0183e
+
+[ITEMDEF 01841]
+DEFNAME=i_flask_long_purple_anim
+NAME=bubbling tall flask
+TYPE=t_drink
+TDATA1=i_flask_long_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Tall Flask (Bubbling Purple Liquid)
+DUPELIST=01842,01843
+
+[ITEMDEF 01842]
+//Tall Flask (animation frame)
+DUPEITEM=01841
+
+[ITEMDEF 01843]
+//Tall Flask (animation frame)
+DUPEITEM=01841
+
+[ITEMDEF 01844]
+DEFNAME=i_flask1_blue_anim
+TYPE=t_drink
+TDATA1=i_flask1_empty
+VALUE=25
+WEIGHT=6.0
+RESOURCES=6 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Flask (Bubbling Blue Liquid)
+DUPELIST=01845,01846
+
+[ITEMDEF 01845]
+//Flask (animation frame)
+DUPEITEM=01844
+
+[ITEMDEF 01846]
+//Flask (animation frame)
+DUPEITEM=01844
+
+[ITEMDEF 01847]
+DEFNAME=i_flask_small_empty
+NAME=round bottom flask
+TYPE=t_drink
+VALUE=17
+WEIGHT=3.0
+RESOURCES=3 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Small Flask (Empty)
+
+[ITEMDEF 01848]
+DEFNAME=i_flask_small_green
+NAME=round bottom flask
+TYPE=t_drink
+TDATA1=i_flask_small_empty
+VALUE=17
+WEIGHT=3.0
+RESOURCES=3 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Small Flask (Green Liquid)
+
+[ITEMDEF 01849]
+DEFNAME=i_heating_stand
+TYPE=t_light_out
+TDATA3=i_heating_stand_lit
+FLIP=1
+VALUE=18
+WEIGHT=2.1
+RESOURCES=1 i_candle,1 i_ingot_iron,1 i_ingot_copper
+SKILLMAKE=Tinkering 41.1,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Heating stand
+DUPELIST=0184d
+ON=@Create
+   MOREZ=0
+
+[ITEMDEF 0184a]
+DEFNAME=i_heating_stand_lit
+TYPE=t_light_lit
+TDATA3=i_heating_stand
+TDATA4=i_heating_stand_lit
+FLIP=1
+WEIGHT=2.1
+RESOURCES=1 i_heating_stand,1 i_candle
+SKILLMAKE=Tinkering 41.1,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Heating stand
+DUPELIST=0184b,0184c,0184e,0184f,01850
+ON=@Create
+   MOREZ=0
+
+[ITEMDEF 0184b]
+//heating stand
+DUPEITEM=0184a
+
+[ITEMDEF 0184c]
+//heating stand
+DUPEITEM=0184a
+
+[ITEMDEF 0184d]
+//heating stand
+DUPEITEM=01849
+
+[ITEMDEF 0184e]
+//heating stand
+DUPEITEM=0184a
+
+[ITEMDEF 0184f]
+//heating stand
+DUPEITEM=0184a
+
+[ITEMDEF 01850]
+//heating stand
+DUPEITEM=0184a
+
+[ITEMDEF 01851]
+DEFNAME=i_scales
+FLIP=1
+VALUE=25
+WEIGHT=3.1
+RESOURCES=3 i_ingot_iron,1 i_hinge
+SKILLMAKE=Tinkering 53.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Scales
+DUPELIST=01852
+
+[ITEMDEF 01852]
+//scales
+DUPEITEM=01851
+
+
+[ITEMDEF 0185b]
+DEFNAME=i_testtube_rack
+NAME=rack of empty vials
+FLIP=1
+VALUE=56
+WEIGHT=4.1
+RESOURCES=2 i_board,1 i_nails,3 i_vial_empty
+SKILLMAKE=tinkering 80.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Rack of Empty Vials
+DUPELIST=0185c
+
+[ITEMDEF 0185c]
+//rack of empty vials facing SE
+DUPEITEM=0185b
+
+[ITEMDEF 0185d]
+DEFNAME=i_testtube_rack_full
+NAME=rack of vials
+FLIP=1
+VALUE=56
+WEIGHT=4.1
+RESOURCES=2 i_board,1 i_nails,3 i_vial_empty
+SKILLMAKE=tinkering 80.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Rack of Full Vials
+DUPELIST=0185e
+
+[ITEMDEF 0185e]
+//rack of full vials facing se
+DUPEITEM=0185d
+
+
+[ITEMDEF 01865]
+DEFNAME=i_dishing_stump
+//TYPE=t_mortar
+FLIP=1
+RESOURCES=1 i_tree_stump
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Dishing Stump
+DUPELIST=01866
+
+[ITEMDEF 01866]
+//dishing stump
+DUPEITEM=01865
+
+
+[ITEMDEF 02dd3]
+DEFNAME=i_elven_alchemy_table
+NAME=elven alchemy table
+TYPE=t_table
+FLIP=1
+VALUE=118
+WEIGHT=66.0
+RESOURCES=30 i_board,1 i_book_lg,1 i_bone_skull,1 i_testtube_rack
+SKILLMAKE=Carpentry 85.0,t_carpentry
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Elven Alchemy Table
+DUPELIST=02dd4,03077,03078,03079,0307a
+
+[ITEMDEF 02dd4]
+//elven alchemy table
+DUPEITEM=02dd3
+
+[ITEMDEF 03077]
+//elven alchemy table
+DUPEITEM=02dd3
+
+[ITEMDEF 03078]
+//elven alchemy table
+DUPEITEM=02dd3
+
+[ITEMDEF 03079]
+//elven alchemy table
+DUPEITEM=02dd3
+
+[ITEMDEF 0307a]
+//elven alchemy table
+DUPEITEM=02dd3
+
+
+[ITEMDEF 042b4]
+DEFNAME=i_bottle_11_full
+NAME=pyramid bottle
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Bottle 11 (full)
+
+
+[ITEMDEF 04686]
+DEFNAME=i_bottle_11_empty
+NAME=pyramid bottle
+VALUE=13
+WEIGHT=1.0
+RESOURCES=5 i_glass_raw
+SKILLMAKE=Alchemy 50.0,t_glassblowing_tool
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Bottle 11 (empty)
+
+
+//////////////////
+// Custom Items //
+//////////////////
+
+[ITEMDEF i_scouring_toxin]
+ID=i_bottle_4
+NAME=scouring toxin
+VALUE=121
+WEIGHT=1.0
+RESOURCES=1 i_bottle_empty,1 i_toxic_venom_sac
+SKILLMAKE=Alchemy 50.0
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Scouring Toxin
+
+[ITEMDEF i_poison_darkglow]
+ID=i_bottle_6
+NAME=darkglow poison
+VALUE=176
+WEIGHT=1.0
+RESOURCES=1 i_bottle_empty,5 i_fungi_luminescent
+SKILLMAKE=Alchemy 65.0
+CATEGORY=Items by Professions
+SUBSECTION=Alchemist
+DESCRIPTION=Darkglow Poison
+
+//FIXME: bleach, used during the making of paper
+
+[EOF]

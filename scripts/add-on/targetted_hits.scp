@@ -28,6 +28,7 @@ endif
 id=i_arrow
 type=t_eq_script
 name="aiming memory"
+weight=0
 
 on=@equip
   timer=10
