@@ -160,3 +160,7 @@
 12-10-2013, Ben
 -Fixed #2219: P.COMPONENTS.x always returning 0 on maps bigger then 0
 -Remove GM check in Item stacking
+
+15-10-2013, RanXerox
+- Removed 0x from flag explanations in sphere.ini since spherescript does not use 0x to indicate hex
+- More changes to script pack than can be counted!
