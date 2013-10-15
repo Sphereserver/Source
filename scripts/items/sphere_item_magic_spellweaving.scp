@@ -1,4 +1,4 @@
-//****************************************************************************
+﻿//****************************************************************************
 // SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -14,7 +14,7 @@ VERSION=0.56c
 
 [COMMENT sphere_item_magic_spellweaving]
 
-This file contains all things relating to Ninjitsu and Bushido, such as:
+This file contains all things relating to Spellweaving, such as:
 
 * Spellbooks
 * Scrolls

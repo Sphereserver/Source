@@ -8,10 +8,11 @@
 // become the property of Menasoft & Partners.
 //****************************************************************************
 // FILE LAST UPDATED: Thursday, June 29, 2000
+//
 VERSION=0.56b
 
 
-[CHARDEF C_H_VENDOR]
+[CHARDEF c_h_vendor]
 ID=C_MAN
 NAME=#NAMES_HUMANMALE the Vendor
 HIREDAYWAGE=50
@@ -59,7 +60,7 @@ ON=@Create
 	ITEMNEWBIE=random_shoes
 	COLOR=colors_neutral
 
-[CHARDEF C_H_VENDOR_F]
+[CHARDEF c_h_vendor_f]
 ID=C_WOMAN
 NAME=#NAMES_HUMANFEMALE the Vendor
 HIREDAYWAGE=50
