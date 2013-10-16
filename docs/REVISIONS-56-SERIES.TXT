@@ -151,3 +151,4 @@
 - Fixed #2215: modified WEIGHT on i_dragonscale
 - Removed: bad reference to i_bear_skull
 - Added: some useful NPC functions
+- Renamed: sphere_items_seige.scp (...it's spelled Siege)
