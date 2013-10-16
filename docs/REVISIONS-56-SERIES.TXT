@@ -145,6 +145,7 @@
  - Lots of modifications to DUPELIST and DUPEITEM, etc.
 
 16-10-2013, RanXerox (Script Pack)
+- Converted Unix files to DOS format
 - Replaced: references to the missing MESSAGELOC function
 - Added: i_canal ITEMDEF (now all items can be used in custom foundation multi's)
 - Fixed #2212: renamed Horde Demons
@@ -152,3 +153,4 @@
 - Removed: bad reference to i_bear_skull
 - Added: some useful NPC functions
 - Renamed: sphere_items_seige.scp (...it's spelled Siege)
+- Finished scripting more lightsources

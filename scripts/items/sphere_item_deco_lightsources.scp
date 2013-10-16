@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, October 16, 2013
 //
 VERSION=0.56c
 
@@ -1542,7 +1542,6 @@ DEFNAME=i_dragon_lamp_2s
 NAME=dragon lamp
 TYPE=t_light_out
 TDATA3=i_dragon_lamp_2s_lit
-FLIP=1
 VALUE=10
 WEIGHT=1.0
 RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
@@ -1556,13 +1555,13 @@ ON=@Create
 [ITEMDEF 04c41]
 DEFNAME=i_dragon_lamp_2s_lit
 NAME=dragon lamp
-RESOURCES=1 i_lantern
 TYPE=t_light_lit
 TDATA3=i_dragon_lamp_2s
 TDATA4=i_dragon_lamp_2s
-FLIP=1
 VALUE=40
 WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Lanterns
 DESCRIPTION=Dragon Lamp 2s (Lit)
@@ -1574,7 +1573,6 @@ DEFNAME=i_dragon_lamp_2e
 NAME=dragon lamp
 TYPE=t_light_out
 TDATA3=i_dragon_lamp_2e_lit
-FLIP=1
 VALUE=10
 WEIGHT=1.0
 RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
@@ -1588,13 +1586,13 @@ ON=@Create
 [ITEMDEF 04c43]
 DEFNAME=i_dragon_lamp_2e_lit
 NAME=dragon lamp
-RESOURCES=1 i_lantern
 TYPE=t_light_lit
 TDATA3=i_dragon_lamp_2e
 TDATA4=i_dragon_lamp_2e
-FLIP=1
 VALUE=40
 WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
 CATEGORY=Decoration - Lightsources
 SUBSECTION=Lanterns
 DESCRIPTION=Dragon Lamp 2e (Lit)
@@ -1602,26 +1600,221 @@ ON=@Create
    MOREZ=1
 
 [ITEMDEF 04c44]
-//Stork Lamp
+DEFNAME=i_stork_lamp_s
+NAME=stork lamp
+TYPE=t_light_out
+TDATA3=i_stork_lamp_s_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stork Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c45]
+DEFNAME=i_stork_lamp_s_lit
+NAME=stork lamp
+TYPE=t_light_lit
+TDATA3=i_stork_lamp_s
+TDATA4=i_stork_lamp_s
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stork Lamp South (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c46]
+DEFNAME=i_stork_lamp_e
+NAME=stork lamp
+TYPE=t_light_out
+TDATA3=i_stork_lamp_e_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stork Lamp East (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c47]
+DEFNAME=i_stork_lamp_e_lit
+NAME=stork lamp
+TYPE=t_light_lit
+TDATA3=i_stork_lamp_e
+TDATA4=i_stork_lamp_e
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stork Lamp East (Lit)
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 04c48]
-//Koi Lamp
+DEFNAME=i_koi_lamp_s
+NAME=koi lamp
+TYPE=t_light_out
+TDATA3=i_koi_lamp_s_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Koi Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c49]
+DEFNAME=i_koi_lamp_s_lit
+NAME=koi lamp
+TYPE=t_light_lit
+TDATA3=i_koi_lamp_s
+TDATA4=i_koi_lamp_s
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Koi Lamp South (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c4a]
+DEFNAME=i_koi_lamp_e
+NAME=koi lamp
+TYPE=t_light_out
+TDATA3=i_koi_lamp_e_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Koi Lamp East (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c4b]
+DEFNAME=i_koi_lamp_e_lit
+NAME=koi lamp
+TYPE=t_light_lit
+TDATA3=i_koi_lamp_e
+TDATA4=i_koi_lamp_e
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Koi Lamp East (Lit)
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 04c4c]
-//Dragon Egg Lamp
+DEFNAME=i_dragon_egg_lamp_s
+NAME=dragon egg lamp
+TYPE=t_light_out
+TDATA3=i_dragon_egg_lamp_s_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Egg Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c4d]
+DEFNAME=i_dragon_egg_lamp_s_lit
+NAME=dragon egg lamp
+TYPE=t_light_lit
+TDATA3=i_dragon_egg_lamp_s
+TDATA4=i_dragon_egg_lamp_s
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Egg Lamp South (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c4e]
+DEFNAME=i_dragon_egg_lamp_e
+NAME=dragon egg lamp
+TYPE=t_light_out
+TDATA3=i_dragon_egg_lamp_e_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Egg Lamp East (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c4f]
+DEFNAME=i_dragon_egg_lamp_e_lit
+NAME=dragon egg lamp
+TYPE=t_light_lit
+TDATA3=i_dragon_egg_lamp_e
+TDATA4=i_dragon_egg_lamp_e
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Dragon Egg Lamp East (Lit)
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 04c50]
-//Stained Glass Lamp
+DEFNAME=i_stained_glass_lamp
+NAME=stained glass lamp
+TYPE=t_light_out
+TDATA3=i_stained_glass_lamp_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stained Glass Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c51]
+DEFNAME=i_stained_glass_lamp_lit
+NAME=stained glass lamp
+TYPE=t_light_lit
+TDATA3=i_stained_glass_lamp
+TDATA4=i_stained_glass_lamp
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Stained Glass Lamp South (Lit)
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 04c52]
 //Lamp Stand (classic)

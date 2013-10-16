@@ -2899,7 +2899,7 @@ reflectit:
 			{
 				pSourceItem->Delete();
 			}
-			NPC_Shrink();	// this delete's the char !!!
+			NPC_Shrink();	// this delete's the char !!!  FIXME: The UID of the statuette should be stored in a LOCAL at this point
 			break;
 
 		case SPELL_Mana:
