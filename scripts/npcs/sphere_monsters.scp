@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Monday, October 15, 2013
 //
 VERSION=0.56c
 
@@ -14844,7 +14844,7 @@ ON=@GetHit
          SRC.NEWNPC c_demon_arcane
          SRC.NEWNPC c_demon_moloch
          SRC.NEWNPC c_demon_chaos
-         SRC.NEWNPC c_multicolored_horde_minion
+         SRC.NEWNPC c_demon_horde_colored
       ENDDO
       NEW.FLAGS |= (statf_war|statf_conjured)
       NEW.P=<SRC.P>
@@ -19161,7 +19161,7 @@ ON=@GetHit
    ENDIF
 
 [CHARDEF 0308]
-DEFNAME=c_horde_minion
+DEFNAME=c_demon_horde_minion
 NAME=horde minion
 ICON=i_pet_demon_horde
 SOUND=snd_monster_headls1
@@ -20068,7 +20068,7 @@ ON=@Create
 
 //[CHARDEF 031b]
 ////Equipment animation - dont use
-//DEFNAME=c_horde_demon_medium
+//DEFNAME=c_demon_horde_medium
 //NAME=horde demon
 //SOUND=snd_monster_ogre1
 //ICON=i_pet_demon_horde
@@ -20114,7 +20114,7 @@ ON=@Create
 
 [CHARDEF 031c]
 //FIXME: No Stratics entry
-DEFNAME=c_horde_demon_large
+DEFNAME=c_demon_horde_large
 NAME=horde demon lord
 ICON=i_pet_demon_horde
 SOUND=snd_monster_ogre1
@@ -20958,7 +20958,7 @@ DESCRIPTION=GM Body
 [CHARDEF 03e7]
 //FIXME: No Stratics data
 //FIXME: Bad animation in 3d client
-DEFNAME=c_multicolored_horde_minion
+DEFNAME=c_demon_horde_colored
 NAME=multi colored horde demon
 ICON=i_pet_demon_horde
 SOUND=snd_monster_daemon1

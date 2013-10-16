@@ -6,7 +6,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Monday, October 15, 2013
 //
 VERSION=0.56c
 
@@ -2257,10 +2257,10 @@ DESCRIPTION=Golem (iron)
 DEFNAME=i_pet_demon_horde
 NAME=horde demon
 TYPE=t_figurine
-TDATA3=c_horde_minion
+TDATA3=c_demon_horde_minion
 CATEGORY=Miscellaneous
 SUBSECTION=Character Icons
-DESCRIPTION=Demon (horde)
+DESCRIPTION=Demon (horde minion)
 
 [ITEMDEF 02612]
 DEFNAME=i_pet_juggernaut

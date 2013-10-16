@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Monday, October 15, 2013
 //
 VERSION=0.56c
 
@@ -860,7 +860,7 @@ DEFNAME=i_dragonscale
 NAME=dragon scale%s
 TYPE=t_normal
 VALUE=17
-WEIGHT=0.7
+WEIGHT=0.1
 CATEGORY=Resources
 SUBSECTION=Animal
 DESCRIPTION=Dragon Scales

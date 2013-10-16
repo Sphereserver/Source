@@ -1163,7 +1163,7 @@ ON=@TARGON_CHAR
    ELSE
       SRC.SOUND 0ff
       SRC.EMOTE corrupt a <SRC.TARG.NAME>
-      //SRC.MESSAGELOC 500167//"You are now a criminal."
+      //SRC.SYSMESSAGELOC 500167//"You are now a criminal."
       //SRC.FLAGS |= statf_criminal //Don't do this, its permanent!
       SRC.SPELLEFFECT s_reveal,100.0,0
       SRC.ANIM 11
@@ -1187,7 +1187,7 @@ ON=@Create
 ON=@DClick
    IF <SRC.RESTEST 1 i_horn_good>
       IF <MORE1>==0
-         SRC.MESSAGELOC colors_text,501250//"This magic item is out of charges."
+         SRC.SYSMESSAGELOC 501250//"This magic item is out of charges."
          RETURN 1
       ELSE
          TARGET Target the creature you want to convert

@@ -1011,7 +1011,7 @@ ON=@DClick
    ENDIF
 ON=@TargOn_Item
    IF (<SRC.TARG.TYPE>!=t_fire) && (<SRC.TARG.TYPE>!=t_campfire)
-      SRC.MESSAGELOC 500690//"You can't cook on that."
+      SRC.SYSMESSAGELOC 500690//"You can't cook on that."
       RETURN 1
    ENDIF
 

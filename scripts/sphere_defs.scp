@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Monday, October 15, 2013
 //
 VERSION=0.56c
 
@@ -1802,7 +1802,7 @@ height_0304 18 //DEFNAME=c_meer_eternal
 height_0305 16 //DEFNAME=c_meer_captain
 height_0306 16 //DEFNAME=c_dawn
 height_0307 10 //DEFNAME=c_plague_beast
-height_0308 10 //DEFNAME=c_horde_minion
+height_0308 10 //DEFNAME=c_demon_horde_minion
 height_0309 16 //DEFNAME=c_doppelganger
 height_030a 23 //DEFNAME=c_gazer_larva
 height_030b 16 //DEFNAME=c_bogling
@@ -1820,14 +1820,14 @@ height_0317 12 //DEFNAME=c_giant_beetle
 height_0318 30 //DEFNAME=c_chaos_daemon
 height_0319 16 //DEFNAME=c_skeletal_mount
 height_031a 15 //DEFNAME=c_swamp_dragon
-height_031b 20 //DEFNAME=c_Horde_Daemon_Medium
-height_031c 40 //DEFNAME=c_Horde_Daemon_Large
+height_031b 20 //DEFNAME=c_demon_horde_medium
+height_031c 40 //DEFNAME=c_demon_horde_large
 height_031d 45 //DEFNAME=c_reptile_lord
 height_031e 45 //DEFNAME=c_ancient_wyrm
 height_031f 15 //DEFNAME=c_armored_swamp_dragon
 height_03ca 18 //DEFNAME=c_phantom
 height_03db 16 //DEFNAME=c_man_gm
-height_03e7 40 //DEFNAME=c_multicolored_horde_minion
+height_03e7 40 //DEFNAME=c_demon_horde_colored
 
 [DEFNAME ref_types]
 tref_serv          000001

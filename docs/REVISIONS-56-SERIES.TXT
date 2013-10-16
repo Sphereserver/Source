@@ -20,8 +20,9 @@
 -Modified #2181:(script pack) Incorrect DUPELIST on i_keg_wood
 -Added #2148: tag.NoRestock on vendors and regions. Setting either one to 1 will stop routine restocking of vendors
 -Fixed: Error in ISTEVENT.
--Added #2177: - <ISTIMERF.functionname> to check if a timerf exists. Returns the time left in sec if it exists or 0 if not.
-			  - TIMERF STOP,functionname to stop a specific timerf.
+-Added #2177:
+ - <ISTIMERF.functionname> to check if a timerf exists. Returns the time left in sec if it exists or 0 if not.
+ - TIMERF STOP,functionname to stop a specific timerf.
 -Removed #2180:(script pack) i_orb and i_minion_leather from spherechar_lbr.scp
 -Added #2183: EF_FixKillTrigger 0x02 to possibly fix Exp system and @Kill trigger
 -Fixed #2159: Items with ATTR attr_newbie should not be stuck on NPCs with ALLOWNEWBTRANSFER on.
@@ -37,6 +38,8 @@
 -Removed: @NPCHearNeed trigger in sphere_events_human.scp since this trigger doesn't exist!
 
 27-08-2013, RanXerox
+-Replaced hardcoded magic resistance string
+ (Script Pack)
 -Correction to i_keg_wood_2 (it is not a container)
 -Corrected spelling mistakes ("entrance" not "entrace") in sphere_map2.scp
 -Added Armored Boura to mount defs in sphere_defs.scp
@@ -53,9 +56,8 @@
 -Magery Spell flags made consistent
 -Magery spell resources modified to match the spellbook in modern clients
 -Numerous additions to creature height table in sphere.defs
--Replaced hardcoded magic resistance string
 
-28-08-2013, RanXerox
+28-08-2013, RanXerox (Script Pack)
 -Added more ITEMDEFs
 -Fixed DUPELIST entries
 -Changed some Axis categories, subsections and descriptions
@@ -65,39 +67,11 @@
 31-08-2013, Ben
 -Fixed #2193: Mounts will die instantly when killed while mounted.
 
-01-09-2013, RanXerox
+01-09-2013, RanXerox (Script Pack)
 -Moved numerous ITEMDEFs
 -Added numerous ITEMDEFs
 -Changed some DEFNAMEs
 -Fixed some spelling errors
--Affected files:
-  items/sphere_item_aos_se.scp
-  items/sphere_item_building_doors.scp
-  items/sphere_item_building_doors_sa.scp
-  items/sphere_item_building_floors.scp
-  items/sphere_item_building_floors_sa.scp
-  items/sphere_item_building_floors_se.scp
-  items/sphere_item_building_roofs.scp
-  items/sphere_item_deco_dungeons_traps_dead.scp
-  items/sphere_item_deco_misc.scp
-  items/sphere_item_deco_virtues.scp
-  items/sphere_item_ground_tiles.scp
-  items/sphere_item_magic_ninjitsu_bushido.scp
-  items/sphere_item_magic_spellweaving.scp
-  items/sphere_item_misc.scp
-  items/sphere_item_ml_floor_wall.scp
-  items/sphere_item_profession.scp
-  items/sphere_item_provisions_weapons.scp
-  items/sphere_item_resources.scp
-  items/sphere_item_unsorted.scp
-  npcs/spherechar.scp
-  npcs/spherechar_mondains_legacy.scp
-  npcs/spherechar_sa.scp
-  sphere_backward_compatibility.scp
-  sphere_menu.scp
-  sphere_newb.scp
-  sphere_skillmenu.scp
-  sphere_template_vend.scp
 
 02-09-2013, Ben
 -Added: 04e and 052 tiles to t_water in sphere_types.scp
@@ -112,7 +86,8 @@
  (karma, fame, experience) for the kill.
 
 07-09-2013, Ben
--Added #1805: ColorNotoInvul with default value of 0x35 and NotoInvul 0x40 flag for PetsInheritNotoriety.
+-Added #1805: ColorNotoInvul with default value of 0x35 and NotoInvul 0x40 flag
+ for PetsInheritNotoriety.
 -Fixed #2186: Dialoglist not being updated when closing dialogs.
 
 08-09-2013, RanXerox
@@ -141,7 +116,8 @@
 17-09-2013, Ben
 -Added: Runto npc command. Accepts a point or region name as argument.
 -Changed: Goto npc command to accept region name as argument.
--Added: NPC_AI_PERSISTENTPATH 0x0400 to the NPCAI setting in sphere.ini. (NPC will retry multiple times to find it's path)
+-Added: NPC_AI_PERSISTENTPATH 0x0400 to the NPCAI setting in sphere.ini.
+        NPC will retry multiple times to find it's path.
 -Updated: Sphere.ini and sphere_msg.scp with new settings
 
 22-09-2013, Ben
@@ -164,3 +140,14 @@
 15-10-2013, RanXerox
 - Removed 0x from flag explanations in sphere.ini since spherescript does not use 0x to indicate hex
 - More changes to script pack than can be counted!
+ - Dozens of files deleted, split, added, renamed, etc.
+ - Many hundreds of ITEMDEFs and CHARDEFs shuffled from one place to another.
+ - Lots of modifications to DUPELIST and DUPEITEM, etc.
+
+16-10-2013, RanXerox (Script Pack)
+- Replaced: references to the missing MESSAGELOC function
+- Added: i_canal ITEMDEF (now all items can be used in custom foundation multi's)
+- Fixed #2212: renamed Horde Demons
+- Fixed #2215: modified WEIGHT on i_dragonscale
+- Removed: bad reference to i_bear_skull
+- Added: some useful NPC functions

@@ -107,7 +107,7 @@ ON=@Create
    ATTR=attr_magic|attr_identified
    MORE1=50
 ON=@DClick
-   MESSAGELOC 1070929//"Select the artifact or enhanced magic item to dye."
+   SYSMESSAGELOC 1070929//"Select the artifact or enhanced magic item to dye."
    TARGET
    RETURN 1
 ON=@TargOn_Item

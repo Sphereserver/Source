@@ -12,6 +12,42 @@
 VERSION=0.56c
 
 
+///////////////////////////
+// Some Useful Functions //
+///////////////////////////
+
+[FUNCTION f_ishuman]
+IF ( (<OBODY>==c_man) || (<OBODY>==c_woman) )
+   RETURN 1
+ELSE
+   RETURN 0
+ENDIF
+
+[FUNCTION f_iself]
+IF ( (<OBODY>==c_elf_male) || (<OBODY>==c_elf_female) )
+   RETURN 1
+ELSE
+   RETURN 0
+ENDIF
+
+[FUNCTION f_isgarg]
+IF ( (<OBODY>==c_gargoyle_male) || (<OBODY>==c_gargoyle_female) )
+   RETURN 1
+ELSE
+   RETURN 0
+ENDIF
+
+[FUNCTION f_isfemale]
+IF ( (<OBODY>==c_woman) || (<OBODY>==c_elf_female) || (<OBODY>==c_gargoyle_female) )
+   RETURN 1
+ELSE
+   RETURN 0
+ENDIF
+
+////////////
+// Events //
+////////////
+
 [EVENTS e_Undead]
 ON=@EnvironChange
 	Return 0
