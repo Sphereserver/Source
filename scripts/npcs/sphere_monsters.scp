@@ -4436,7 +4436,7 @@ ON=@NPCRestock
    ITEM=loot_slime_corrosive
 ON=@PersonalSpace
    IF (<SRC.ISPLAYER>)
-      SRC.SYSMESSAGELOC 1070820//"The creature spills a pool of acidic slime."
+      SRC.SYSMESSAGELOC color_text,1070820//"The creature spills a pool of acidic slime."
       SERV.NEWITEM=i_pool_acid
       NEW.P=<SRC.P>
       NEW.ATTR=attr_decay|attr_move_never
@@ -5658,7 +5658,7 @@ ON=@DClick
    IF ( (<SRC.f_isfemale>) && (<SRC.IsMyPet>) ) || (<SRC.ISGM>)
       RETURN 0
    ELSE
-      SRC.SYSMESSAGELOC 1042318//"The Unicorn refuses to let you ride it."
+      SRC.SYSMESSAGELOC color_text,1042318//"The Unicorn refuses to let you ride it."
       RETURN 1
    ENDIF
 
@@ -6257,7 +6257,7 @@ ON=@DClick
    IF !(<f_isfemale>) && (<SRC.IsMyPet>)
       RETURN 0
    ELSE
-      SRC.SYSMESSAGELOC 1042319//"The Ki-Rin refuses your attempts to mount it."
+      SRC.SYSMESSAGELOC color_text,1042319//"The Ki-Rin refuses your attempts to mount it."
       RETURN 1
    ENDIF
 
@@ -7057,7 +7057,7 @@ ON=@GetHit
             IF (<REF11.HITS> > <REF11.MAXHITS>)
                REF11.HITS=<REF11.MAXHITS>
             ENDIF
-            SRC.SYSMESSAGELOC 1070848//"You feel your life force being stolen away!"
+            SRC.SYSMESSAGELOC color_text,1070848//"You feel your life force being stolen away!"
          ENDIF
       END
       REF11=
@@ -11026,7 +11026,7 @@ ON=@Hit
    //Angry Fire Attack
    IF (RAND(5)==1) && (<MANA> > 20)
       MANA -= 20
-      SRC.SYSMESSAGELOC 1070823//"The creature hits you with its Angry Fire."
+      SRC.SYSMESSAGELOC color_text,1070823//"The creature hits you with its Angry Fire."
       SRC.SPELLEFFECT s_explosion,<MAGERY>,0,<UID>
       SRC.EFFECT 3,i_fx_explode,1,16,0
       SRC.SOUND snd_spell_explosion
@@ -11983,7 +11983,7 @@ ON=@GetHit
 //ON=@DeathCorpse
 //   FORCHARS 30
 //      IF (<ISPLAYER>) && (<REGION.DEFNAME>==a_dreadhorn_isle)
-//         SYSMESSAGELOC 1072681//"The master of this realm has been slain! You may only stay here so long."
+//         SYSMESSAGELOC color_text,1072681//"The master of this realm has been slain! You may only stay here so long."
 //         TIMERF 300 f_dreadhorn_defeated_timer
 //      ENDIF
 //   END
@@ -12055,7 +12055,7 @@ ON=@GetHit
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
             ACTION=-1//FIXME: Temporary solution, should slow down swing speed and casting time instead
-            SYSMESSAGELOC 1072068//"Your enemies putrid prescence envelops you..."
+            SYSMESSAGELOC color_text,1072068//"Your enemies putrid prescence envelops you..."
          ENDIF
       END
    ENDIF
@@ -12923,10 +12923,10 @@ ON=@DClick
    ENDIF
    SERV.LOG boots=<SRC.FINDLAYER(layer_shoes).DEFNAME>
    IF (<SRC.FINDLAYER.layer_shoes.DEFNAME>==i_pads_of_cu_sidhe)
-      SRC.SYSMESSAGELOC 1071981//"Your boots allow you to mount the Cu Sidhe."
+      SRC.SYSMESSAGELOC color_text,1071981//"Your boots allow you to mount the Cu Sidhe."
       RETURN 0
    ENDIF
-   SRC.SYSMESSAGELOC 1072203//"Only Elves may use this."
+   SRC.SYSMESSAGELOC color_text,1072203//"Only Elves may use this."
    RETURN 1
 
 
@@ -16755,9 +16755,9 @@ ON=@Hit
       NEW.TIMER=20
       NEW.LINK=<UID>
       NEW.MORE1=5
-//      SRC.SYSMESSAGELOC 1112472//"You suffered a vicious bite!"
-      SRC.SYSMESSAGELOC 1113211//"The kepetch gives you a particularly vicious bite!"
-//      SRC.SYSMESSAGELOC 1113210//"You have contracted rabies from the kepetch!"
+//      SRC.SYSMESSAGELOC color_text,1112472//"You suffered a vicious bite!"
+      SRC.SYSMESSAGELOC color_text,1113211//"The kepetch gives you a particularly vicious bite!"
+//      SRC.SYSMESSAGELOC color_text,1113210//"You have contracted rabies from the kepetch!"
 //FIXME: rabies
    ENDIF
 
@@ -16815,7 +16815,7 @@ ON=@Hit
       NEW.TIMER=20
       NEW.LINK=<UID>
       NEW.MORE1=5
-      SRC.SYSMESSAGELOC 1112472//"You suffered a vicious bite!"
+      SRC.SYSMESSAGELOC color_text,1112472//"You suffered a vicious bite!"
    ENDIF
 
 [CHARDEF 02d8]
@@ -16894,7 +16894,7 @@ ON=@Hit
          LOCAL.ManaUsed=<EVAL 30 - ((<PARRYING> / 200) + (<BUSHIDO> / 200))>
          IF (<MANA> >= <LOCAL.ManaUsed>)
             MANA -= <LOCAL.ManaUsed>
-            SRC.SYSMESSAGELOC 1060087//"You have been mortally wounded!"
+            SRC.SYSMESSAGELOC color_text,1060087//"You have been mortally wounded!"
             SRC.SOUND snd_spell_paralyze
             SRC.NEWITEM=i_blockheal_timer
             SRC.EQUIP <NEW>
@@ -16906,9 +16906,9 @@ ON=@Hit
          MANA -= 10
          SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
          IF (<DISTANCE> > 1)
-            SRC.SYSMESSAGELOC 1112369//"You have been poisoned by Medusa's lethal arrow!"
+            SRC.SYSMESSAGELOC color_text,1112369//"You have been poisoned by Medusa's lethal arrow!"
          ELSE
-            SRC.SYSMESSAGELOC 1112368//"You have been poisoned by Medusa's snake-like hair!"
+            SRC.SYSMESSAGELOC color_text,1112368//"You have been poisoned by Medusa's snake-like hair!"
          ENDIF
       ENDIF
    ENDIF
@@ -17395,7 +17395,7 @@ ON=@DeathCorpse
    FORCHARS 15
       IF (<ISPLAYER>)//FIXME: and has accepted the quest
          SERV.NEWITEM i_eye_of_navrey,1,<UID>
-         SYSMESSAGELOC 1095155//"As Navrey Night-Eyes dies, you find and claim one of her eyes as proof of her demise."
+         SYSMESSAGELOC color_text,1095155//"As Navrey Night-Eyes dies, you find and claim one of her eyes as proof of her demise."
       ENDIF
    END
 
@@ -17502,7 +17502,7 @@ ON=@NPCSeeNewPlayer
       RETURN 0
    ENDIF
    IF (<MANA> >= 25) && (<TAG0.CURFOLLOWER> < 2)
-      SRC.SYSMESSAGELOC 1112367//"You've been ambushed!"
+      SRC.SYSMESSAGELOC color_text,1112367//"You've been ambushed!"
       MANA -= 25
       TAG0.CURFOLLOWER += 2
       TRYSRV SERV.NEWNPC c_spider_trapdoor
@@ -17575,19 +17575,19 @@ ON=@Death
       IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
          DAMAGE <R10,20> <DEF.dam_fire> <REF11>
          EFFECT 3,i_fx_explode,1,16,0
-         SYSMESSAGELOC 1112366//"The flammable goo covering you bursts into flame!"
+         SYSMESSAGELOC color_text,1112366//"The flammable goo covering you bursts into flame!"
       ENDIF
    END
 ON=@Hit
    //Flammable Goo
    IF (RAND(5)==0)
       IF (<MANA> >= 5)
-         SRC.SYSMESSAGELOC 1112366//"The flammable goo covering you bursts into flame!"
+         SRC.SYSMESSAGELOC color_text,1112366//"The flammable goo covering you bursts into flame!"
          MANA -= 5
          SRC.DAMAGE <R10,20> <DEF.dam_fire> <UID>
          SRC.EFFECT 3,i_fx_explode,1,16,0
       ELSE
-         SRC.SYSMESSAGELOC 1112365//"Flammable goo sprays into the air!"
+         SRC.SYSMESSAGELOC color_text,1112365//"Flammable goo sprays into the air!"
       ENDIF
    ENDIF
 
@@ -17650,7 +17650,7 @@ ON=@NPCSeeNewPlayer
       RETURN 0
    ENDIF
    IF (<MANA> >= 25) && (<TAG0.CURFOLLOWER> < 2)
-      SRC.SYSMESSAGELOC 1113132//"The leather wolf howls for help"
+      SRC.SYSMESSAGELOC color_text,1113132//"The leather wolf howls for help"
       MANA -= 25
       TAG0.CURFOLLOWER += 2
       TRYSRV SERV.NEWNPC c_wolf_leather
@@ -17808,7 +17808,7 @@ ON=@Hit
    //Angry Fire Attack
    IF (RAND(5)==1) && (<MANA> > 20)
       MANA -= 20
-      SRC.SYSMESSAGELOC 1070823//"The creature hits you with its Angry Fire."
+      SRC.SYSMESSAGELOC color_text,1070823//"The creature hits you with its Angry Fire."
       SRC.SPELLEFFECT s_explosion,<MAGERY>,0,<UID>
       SRC.EFFECT 3,i_fx_explode,1,16,0
       SRC.SOUND snd_spell_explosion
@@ -20882,7 +20882,7 @@ ON=@GetHit
       FORCHARS 2
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
             DAMAGE {10 20} <DEF.dam_fire> <REF11>
-            SYSMESSAGELOC 1008112//"The intense heat is damaging you!"
+            SYSMESSAGELOC color_text,1008112//"The intense heat is damaging you!"
          ENDIF
       END
    ENDIF

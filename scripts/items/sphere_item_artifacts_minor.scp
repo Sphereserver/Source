@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -720,10 +720,10 @@ ON=@DClick
                   NEW.TIMER=7
                ENDIF
             ELSE
-               SRC.SYSMESSAGELOC 1049617//"You do not have enough sulfurous ash."
+               SRC.SYSMESSAGELOC color_text,1049617//"You do not have enough sulfurous ash."
             ENDIF
          ELSE
-            SRC.SYSMESSAGELOC 1049615//"You must take a moment to catch your breath."
+            SRC.SYSMESSAGELOC color_text,1049615//"You must take a moment to catch your breath."
          ENDIF
       ENDIF
    ENDIF
@@ -737,7 +737,7 @@ WEIGHT=0
 ON=@Create
    COLOR=0f8
 ON=@Timer
-   CONT.SYSMESSAGELOC 1049621//"You catch your breath."
+   CONT.SYSMESSAGELOC color_text,1049621//"You catch your breath."
    REMOVE
    RETURN 1
 
@@ -1163,7 +1163,7 @@ ON=@TARGON_CHAR
    ELSE
       SRC.SOUND 0ff
       SRC.EMOTE corrupt a <SRC.TARG.NAME>
-      //SRC.SYSMESSAGELOC 500167//"You are now a criminal."
+      //SRC.SYSMESSAGELOC color_text,500167//"You are now a criminal."
       //SRC.FLAGS |= statf_criminal //Don't do this, its permanent!
       SRC.SPELLEFFECT s_reveal,100.0,0
       SRC.ANIM 11
@@ -1187,7 +1187,7 @@ ON=@Create
 ON=@DClick
    IF <SRC.RESTEST 1 i_horn_good>
       IF <MORE1>==0
-         SRC.SYSMESSAGELOC 501250//"This magic item is out of charges."
+         SRC.SYSMESSAGELOC color_text,501250//"This magic item is out of charges."
          RETURN 1
       ELSE
          TARGET Target the creature you want to convert

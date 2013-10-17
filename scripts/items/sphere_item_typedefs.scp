@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 15, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -925,33 +925,33 @@ ON=@ContextMenuRequest
    SRC.AddContextEntry 101,5089//"Type"
 ON=@ContextMenuSelect
    IF (<TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
       RETURN 1
    ENDIF
    IF (<MORE1>)
-      SRC.SYSMESSAGELOC 1112285//"You are now set to make plant clippings."
+      SRC.SYSMESSAGELOC color_text,1112285//"You are now set to make plant clippings."
       MORE1=0
    ELSE
-      SRC.SYSMESSAGELOC 1112286//"You are now set to cut reeds."
+      SRC.SYSMESSAGELOC color_text,1112286//"You are now set to cut reeds."
       MORE1=1
    ENDIF
    RESENDTOOLTIP
    RETURN 1
 ON=@DClick
    IF (<TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
       RETURN 1
    ENDIF
-   SRC.SYSMESSAGELOC 1112118//"What plant do you wish to use these clippers on?"
+   SRC.SYSMESSAGELOC color_text,1112118//"What plant do you wish to use these clippers on?"
    TARGET
    RETURN 1
 ON=@TargOn_Item
    IF (<SRC.TARG.TOPOBJ.UID>!=<SRC>)// && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
       RETURN 1
    ENDIF
    IF !(<SRC.TARG.ISTEVENT.t_decorative_plant>)
-      SRC.SYSMESSAGELOC 1112119//"You may only use these clippers on decorative plants."
+      SRC.SYSMESSAGELOC color_text,1112119//"You may only use these clippers on decorative plants."
    ELSE
       IF (<MORE1>)
          SERV.NEWITEM i_dry_reed
@@ -959,12 +959,12 @@ ON=@TargOn_Item
          NEW.BOUNCE
       ELSE
          SERV.NEWITEM i_plant_clippings,1,<SRC>
-         SRC.SYSMESSAGELOC 1112120//"You cut the plant into small pieces and place them in your backpack."
+         SRC.SYSMESSAGELOC color_text,1112120//"You cut the plant into small pieces and place them in your backpack."
       ENDIF
       SRC.TARG.REMOVE
       MORE2L -= 1
       IF (<MORE2L> < 1)
-         SRC.SYSMESSAGELOC 1112126//"Your clippers break as you use up the last charge."
+         SRC.SYSMESSAGELOC color_text,1112126//"Your clippers break as you use up the last charge."
          REMOVE
       ENDIF
       RESENDTOOLTIP
@@ -977,7 +977,7 @@ ON=@TargOn_Item
 // and possibly recover a "Geode" from them.
 ON=@Damage
    IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
       RETURN 1
    ENDIF
    SERV.NEWITEM={ i_geode 1 i_geode_2 1 }
@@ -989,7 +989,7 @@ ON=@Damage
 // open into colorful "Geode Shards".
 ON=@Damage
    IF (<TOPOBJ.UID>!=<SRC>) && !(<SRC.ISGM>)
-      SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+      SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
       RETURN 1
    ENDIF
    FOR 4
@@ -1070,7 +1070,7 @@ ShurikenDelayTime   50 // 50 is about 5 seconds...
 [TYPEDEF t_ninja_shuriken]
 ON=@DClick
    IF (<TOPOBJ.UID>!=<SRC>)
-      SRC.SYSMESSAGELOC 1115941//"You must be carrying this item to use it."
+      SRC.SYSMESSAGELOC color_text,1115941//"You must be carrying this item to use it."
       RETURN 1
    ENDIF
    IF !(<SRC.FINDID.i_belt_ninja_leather>)
@@ -1079,16 +1079,16 @@ ON=@DClick
    ENDIF
    IF (<SRC.FINDID.i_belt_ninja_leather.TAG0.LastUsedTime>)
       IF (<EVAL <SERV.TIME>-<SRC.FINDID.i_belt_ninja_leather.TAG0.LastUsedTime>> < <DEF.ShurikenDelayTime>)
-         SRC.SYSMESSAGELOC 1063298//"You cannot throw another shuriken yet."
+         SRC.SYSMESSAGELOC color_text,1063298//"You cannot throw another shuriken yet."
          RETURN 1
       ENDIF
    ENDIF
    IF (<SRC.FINDLAYER.1>) && (<SRC.FINDLAYER.2>)
-      SRC.SYSMESSAGELOC 1063299//"You must have a free hand to throw shuriken."
+      SRC.SYSMESSAGELOC color_text,1063299//"You must have a free hand to throw shuriken."
       RETURN 1
    ENDIF
    IF !(<SRC.FINDID.i_belt_ninja_leather.TAG0.ShurikenCount>)
-      SRC.SYSMESSAGELOC 1063297//"You have no shuriken in your ninja belt!"
+      SRC.SYSMESSAGELOC color_text,1063297//"You have no shuriken in your ninja belt!"
    ENDIF
    IF (<DEFNAME>==i_belt_ninja_leather)
       IF (<TAG0.ShurikenCount>)
@@ -1101,15 +1101,15 @@ ON=@DClick
 
 ON=@TargOn_Char
    IF !(<SRC.TARG.CANSEELOS>)
-      SRC.SYSMESSAGELOC 500237//"Target cannot be seen."
+      SRC.SYSMESSAGELOC color_text,500237//"Target cannot be seen."
       RETURN 1
    ENDIF
    IF (<SRC.TARG.DISTANCE> < <DEF.ShurikenMinRange>)
-      SRC.SYSMESSAGELOC 1063303//"Your target is too close!"
+      SRC.SYSMESSAGELOC color_text,1063303//"Your target is too close!"
       RETURN 1
    ENDIF
    IF (<SRC.TARG.DISTANCE> > <DEF.ShurikenMaxRange>)
-      SRC.SYSMESSAGELOC 1063304//"Your target is too far!"
+      SRC.SYSMESSAGELOC color_text,1063304//"Your target is too far!"
       RETURN 1
    ENDIF
    SRC.ANIM=11
@@ -1137,11 +1137,11 @@ ON=@TargOn_Char
 ON=@DropOn_Self
    SERV.LOG Does this trigger work? name=<NAME> src=<SRC.NAME>
    IF (<ARGO.DEFNAME>!=i_shuriken)
-      SRC.SYSMESSAGELOC 1063301//"You can only place shuriken in a ninja belt."
+      SRC.SYSMESSAGELOC color_text,1063301//"You can only place shuriken in a ninja belt."
       RETURN 1
    ENDIF
    IF (<TAG0.ShurikenCount> >= <DEF.ShurikenLoadLimit>)
-      SRC.SYSMESSAGELOC 1063302//"You cannot add any more shuriken."
+      SRC.SYSMESSAGELOC color_text,1063302//"You cannot add any more shuriken."
       RETURN 1
    ENDIF
 
@@ -1181,7 +1181,7 @@ ON=@ContextMenuSelect
          SRC.SYSMESSAGE No shuriken were found in your backpack.
       ENDIF
       IF (<TAG0.ShurikenCount> >= <DEF.ShurikenLoadLimit>)
-         SRC.SYSMESSAGELOC 1063302//"You cannot add any more shuriken."
+         SRC.SYSMESSAGELOC color_text,1063302//"You cannot add any more shuriken."
       ENDIF
    ENDIF
    IF (<ARGN>==400)
@@ -1190,9 +1190,9 @@ ON=@ContextMenuSelect
       RESENDTOOLTIP
    ENDIF
    IF (<ARGN>==500)
-      SRC.SYSMESSAGELOC 1115941//"You must be carrying this item to use it."
-      SRC.SYSMESSAGELOC 1070785//"Double click this item each time you wish to throw a shuriken."
-      SRC.SYSMESSAGELOC 1063299//"You must have a free hand to throw shuriken."
+      SRC.SYSMESSAGELOC color_text,1115941//"You must be carrying this item to use it."
+      SRC.SYSMESSAGELOC color_text,1070785//"Double click this item each time you wish to throw a shuriken."
+      SRC.SYSMESSAGELOC color_text,1063299//"You must have a free hand to throw shuriken."
    ENDIF
 
 
@@ -1204,7 +1204,7 @@ ON=@DClick
 ON=@TargOn_Item
    IF (!STRCMPI(i_cake_tiered,<ARGO.DEFNAME>))
       IF (<ARGO.TOPOBJ>!=<SRC>)
-         SRC.SYSMESSAGELOC 1042001//"That must be in your backpack for you to use it."
+         SRC.SYSMESSAGELOC color_text,1042001//"That must be in your backpack for you to use it."
          RETURN 1
       ENDIF
       FOR 6
@@ -1303,12 +1303,12 @@ ON=@ContextMenuRequest
    ENDIF
 ON=@ContextMenuSelect
    IF (<TAG0.StableOwner>!=<SRC>)
-      SRC.SYSMESSAGELOC 1113204//"The chickens stabled in this coop belong to someone else!"
+      SRC.SYSMESSAGELOC color_text,1113204//"The chickens stabled in this coop belong to someone else!"
       RETURN 1
    ENDIF
    IF (<ARGN>==101)
       IF (<dTAG0.StablesUsed> >= <dTAG0.StablesMax>)
-         SRC.SYSMESSAGELOC 1114325//"There is no more room in your chicken coop!"
+         SRC.SYSMESSAGELOC color_text,1114325//"There is no more room in your chicken coop!"
          RETURN 1
       ENDIF
       //1112559//"Which chicken do you wish to stable?"

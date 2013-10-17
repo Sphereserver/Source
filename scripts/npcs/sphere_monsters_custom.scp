@@ -2012,7 +2012,7 @@ ON=@NpcRestock
    ITEM=loot_lich
 ON=@Hit
    IF (RAND(20)==0)
-      SRC.SYSMESSAGELOC 1070848//"You feel your life force being stolen away"
+      SRC.SYSMESSAGELOC color_text,1070848//"You feel your life force being stolen away"
       SOUND=SND_SPELL_MANA_DRAIN
       SRC.DAMAGE {25 35} <DEF.dam_drain>
       HITPOINTS += 25

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -588,7 +588,7 @@ CATEGORY=Traps
 SUBSECTION=Saws
 DESCRIPTION=Saw Trap 01
 ON=@Step
-   SRC.SYSMESSAGELOC 500853//"You stepped onto a blade trap."
+   SRC.SYSMESSAGELOC color_text,500853//"You stepped onto a blade trap."
 
 [ITEMDEF 01104]
 DEFNAME=i_trap_saw_active
@@ -621,7 +621,7 @@ SUBSECTION=Spikes
 DESCRIPTION=Spike Trap 01
 DUPELIST=01109,0110a,0110b,0110c,0110d,0110e,0110f
 ON=@Step
-   SRC.SYSMESSAGELOC 500852//"You stepped onto a spike trap!"
+   SRC.SYSMESSAGELOC color_text,500852//"You stepped onto a spike trap!"
 
 [ITEMDEF 01109]
 //spike trap 01
@@ -691,7 +691,7 @@ SUBSECTION=Saws
 DESCRIPTION=Saw Trap 02
 DUPELIST=01117,01118,01119,0111a
 ON=@Step
-   SRC.SYSMESSAGELOC 500853//"You stepped onto a blade trap."
+   SRC.SYSMESSAGELOC color_text,500853//"You stepped onto a blade trap."
 
 [ITEMDEF 01117]
 //saw trap 02
@@ -719,7 +719,7 @@ SUBSECTION=Spikes
 DESCRIPTION=Spike Trap 02
 DUPELIST=0111c,0111d,0111e,0111f,01120,01121
 ON=@Step
-   SRC.SYSMESSAGELOC 500852//"You stepped onto a spike trap!"
+   SRC.SYSMESSAGELOC color_text,500852//"You stepped onto a spike trap!"
 
 [ITEMDEF 0111c]
 //spike trap 02
@@ -4048,7 +4048,7 @@ SUBSECTION=Spikes
 DESCRIPTION=Large Spike Trap
 DUPELIST=01d9a,01d9b,01d9c,01d9d,01d9e
 ON=@Step
-   SRC.SYSMESSAGELOC 500852//"You stepped onto a spike trap!"
+   SRC.SYSMESSAGELOC color_text,500852//"You stepped onto a spike trap!"
 
 [ITEMDEF 01d9a]
 //spike trap

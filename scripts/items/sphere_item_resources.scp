@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -1369,16 +1369,16 @@ ON=@DClick
    RETURN 1
 ON=@TargOn_Item
    IF !(<ARGO.ISTEVENT.t_equipitem>)
-      SRC.SYSMESSAGELOC 1112594//"You cannot place gorgon lenses on this."
+      SRC.SYSMESSAGELOC color_text,1112594//"You cannot place gorgon lenses on this."
       RETURN 1
    ENDIF
    IF (<ARGO.CONT>!=<SRC.FINDLAYER.layer_pack.UID>)
-      SRC.SYSMESSAGELOC 1061005//"The item must be in your backpack to enhance it."
+      SRC.SYSMESSAGELOC color_text,1061005//"The item must be in your backpack to enhance it."
       RETURN 1
    ENDIF
    //FIXME: 1112597//"Replace active gorgon lenses"
    //FIXME: 1112598//"The remaining charges of the active lenses will be lost, do you wish to proceed?"
-   SRC.SYSMESSAGELOC 1112595//"You enhance the item with gorgon lenses!"
+   SRC.SYSMESSAGELOC color_text,1112595//"You enhance the item with gorgon lenses!"
    ARGO.TAG.GorgonLens=<EVAL <ARGO.TAG0.GorgonLens> + 1>
    ARGO.RESENDTOOLTIP
    CONSUME
@@ -1783,16 +1783,16 @@ ON=@DClick
                OBJ=<SRC.PARTY.MEMBER.<LOCAL._FOR>.UID>
                IF (<OBJ>!=<SRC>)
                   OBJ.GO 2151,1261,-60,2
-                  OBJ.SYSMESSAGELOC 1072678//"You have awakened the master of this realm. You need to hurry to defeat it in time!"
+                  OBJ.SYSMESSAGELOC color_text,1072678//"You have awakened the master of this realm. You need to hurry to defeat it in time!"
                ENDIF
             ENDIF
          ENDFOR
       ENDIF
       SRC.GO 2151,1261,-60,2
-      SRC.SYSMESSAGELOC 1072678//"You have awakened the master of this realm. You need to hurry to defeat it in time!"
+      SRC.SYSMESSAGELOC color_text,1072678//"You have awakened the master of this realm. You need to hurry to defeat it in time!"
       CONSUME
    ELSE
-      SRC.SYSMESSAGELOC 500251//"That location is too far away."
+      SRC.SYSMESSAGELOC color_text,500251//"That location is too far away."
    ENDIF
    RETURN 1
 

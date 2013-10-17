@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -69,6 +69,7 @@ mount_0xd5	03ec5	// Polar Bear (veteran's award)
 mount_0x1b0 03ec6 // Armored Boura
 
 [DEFNAME hues]
+color_text             -1
 color_none              0
 color_metal             0
 color_red1             32

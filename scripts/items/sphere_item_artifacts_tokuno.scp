@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -107,7 +107,7 @@ ON=@Create
    ATTR=attr_magic|attr_identified
    MORE1=50
 ON=@DClick
-   SYSMESSAGELOC 1070929//"Select the artifact or enhanced magic item to dye."
+   SYSMESSAGELOC color_text,1070929//"Select the artifact or enhanced magic item to dye."
    TARGET
    RETURN 1
 ON=@TargOn_Item
@@ -118,7 +118,7 @@ ON=@TargOn_Item
             SOUND=snd_z_end_liquid
             MORE1 -= 1
          ELSE
-            SRC.SYSMESSAGELOC 1070931//"You can only dye artifacts and enhanced magic items with this tub."
+            SRC.SYSMESSAGELOC color_text,1070931//"You can only dye artifacts and enhanced magic items with this tub."
          ENDIF
       ELSE
          SRC.SYSMESSAGE The item should be in your backpack

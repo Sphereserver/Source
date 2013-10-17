@@ -159,6 +159,7 @@
 - Switched: 0f3e and 0f3f (i_arrow) because older clients have a rock as ITEMDEF 0f3e
 - Removed: the name and title coloration from vendors, citizens, and guildmasters
 - Fixed: a bad reference to random_skirts
+- Fixed: broken SYSMESSAGELOC (they were all missing color)
 - Improved: corrosive slime now drops acid pool when threatened
 - Added: missing stair multi's
 - Added: HIREDAYWAGE back to sailors and mercenaries

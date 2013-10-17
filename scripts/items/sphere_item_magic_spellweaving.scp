@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 15, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -376,7 +376,7 @@ ON=@ClientToolTip
    SRC.ADDCLILOC 1072517,<dTIMER>
    RETURN 1
 ON=@Timer
-   CONT.SYSMESSAGELOC 1072515,#<TAG0.CLILOC.NAME>
+   CONT.SYSMESSAGELOC color_text,1072515,#<TAG0.CLILOC.NAME>
    REMOVE
    RETURN 1
 

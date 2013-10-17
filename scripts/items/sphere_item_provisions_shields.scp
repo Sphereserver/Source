@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 15, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -182,7 +182,7 @@ ON=@Create
 //      RETURN 0
 //   ENDIF
 //   SRC.SOUND=snd_spell_lightning
-//   SRC.SYSMESSAGELOC 1062092//"Your body reacts violently from the pain."
+//   SRC.SYSMESSAGELOC color_text,1062092//"Your body reacts violently from the pain."
 //   SRC.DAMAGE=<src.hits>/2 <DEF.dam_physical>
 //   RETURN 1
 //ON=@Damage
@@ -190,7 +190,7 @@ ON=@Create
 //      RETURN 0
 //   ELSE
 //   CONT.SOUND=snd_spell_lightning
-//   CONT.SYSMESSAGELOC 1062092//"Your body reacts violently from the pain."
+//   CONT.SYSMESSAGELOC color_text,1062092//"Your body reacts violently from the pain."
 //   CONT.DAMAGE=<CONT.HITS>/2 <DEF.dam_physical>
 
 [ITEMDEF 01bc4]
@@ -218,7 +218,7 @@ ON=@Create
 //      RETURN 0
 //   ENDIF
 //   SRC.SOUND=snd_SPELL_LIGHTNING
-//   SRC.SYSMESSAGELOC 1062092//"Your body reacts violently from the pain."
+//   SRC.SYSMESSAGELOC color_text,1062092//"Your body reacts violently from the pain."
 //   SRC.DAMAGE=<src.hits>/2 <DEF.dam_physical>
 //   RETURN 1
 //ON=@DAMAGE
@@ -226,7 +226,7 @@ ON=@Create
 //      RETURN 0
 //   ELSE
 //   CONT.SOUND=snd_spell_lightning
-//   CONT.SYSMESSAGELOC 1062092//"Your body reacts violently from the pain."
+//   CONT.SYSMESSAGELOC color_text,1062092//"Your body reacts violently from the pain."
 //   CONT.DAMAGE=<CONT.HITS>/2 <DEF.dam_physical>
 
 [ITEMDEF 01bc5]

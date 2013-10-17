@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -131,26 +131,27 @@ ON=@Hit
 [EVENTS e_poisoned_spit]
 //Poisoned Spit Defense
 ON=@GetHit
-   SERV.LOG SRC=<SRC.NAME> DEF=<NAME>
-   REF1=<SRC>
-   IF (<MANA> > 15) && (<DISTANCE> > 2) && !(<SRC.FLAGS> & statf_poisoned) && (<SRC> != <UID>)
+   REF1=<SRC> // cause of damage
+   REF2=<UID> // victim of damage (the spitter)
+   IF (<MANA> > 15) && (<DISTANCE> > 2) && !(<SRC.FLAGS> & statf_poisoned) && (<REF1> != <REF2>)
       MANA -= 15
-      TRYSRC <UID> REF1.EFFECT 0,i_fx_fireball,10,16,0,044,4
-      TRYSRC <UID> REF1.SPELLEFFECT s_poison,<POISONING>,0//FIXME:resist
-      REF1.DAMAGE <R15,25> <DEF.dam_poison> <UID>
+      TRYSRC <REF2> EFFECT 0,i_fx_fireball,10,16,0,044,4
+      REF1.SPELLEFFECT s_poison,<REF2.POISONING>,<REF2>
+      REF1.DAMAGE <R15,25> <DEF.dam_poison> <REF2>
       REF1.SOUND snd_spell_poison
-      REF1.SYSMESSAGELOC 1070821,<NAME>//"~ spits a poisonous substance at you!"
+      REF1.SYSMESSAGELOC color_text,1070821,<NAME>//"~ spits a poisonous substance at you!"
    ENDIF
 
 [EVENTS e_solen_spit]
 //Acidic Spit Defense
 ON=@GetHit
    REF1=<SRC>
-   IF (<MANA> > 15) && (<DISTANCE> > 2) && (<SRC> != <UID>)
+   REF2=<UID>
+   IF (<MANA> > 15) && (<DISTANCE> > 2) && (<REF1> != <REF2>)
       MANA -= 15
-      TRYSRC <UID> REF1.EFFECT 0,i_fx_fireball,10,16,0,044,4
+      TRYSRC <REF2> EFFECT 0,i_fx_fireball,10,16,0,044,4
       REF1.DAMAGE <R15,25> <DEF.dam_acidic> <UID>
-      REF1.SYSMESSAGELOC 1071966//"The solen's damaged acid sac squirts acid!"
+      REF1.SYSMESSAGELOC color_text,1071966//"The solen's damaged acid sac squirts acid!"
       REF1.SOUND snd_spell_poison
       SERV.NEWITEM i_pool_acid
       NEW.P=<REF1.P>
@@ -172,7 +173,7 @@ ON=@Create
 ON=@Step
    IF (<SRC.ISPLAYER>)
       SRC.DAMAGE <R10,15> <DEF.dam_acidic> <LINK>
-      SRC.SYSMESSAGELOC 1077483//"The acid burns you!"
+      SRC.SYSMESSAGELOC color_text,1077483//"The acid burns you!"
       //FIXME: Damage a random equipped item...
    ENDIF
 
@@ -208,7 +209,7 @@ ON=@Timer
       ENDIF
       DOSWITCH <MORE1>
          BEGIN // MORE1=0
-            CONT.SYSMESSAGELOC 1060167//"The bleeding wounds have healed, you are no longer bleeding!"
+            CONT.SYSMESSAGELOC color_text,1060167//"The bleeding wounds have healed, you are no longer bleeding!"
             REMOVE
          END
          BEGIN // MORE1=1
@@ -302,7 +303,7 @@ ON=@Timer
    IF (<MORE1> > 0)
       MORE1 -= 1
       CONT.DAMAGE 5 <DEF.dam_poison> <LINK>
-      CONT.SYSMESSAGELOC 1112473//"Your vicious wound is festering!"
+      CONT.SYSMESSAGELOC color_text,1112473//"Your vicious wound is festering!"
       TIMER=20
       RETURN 1
    ENDIF
@@ -331,7 +332,7 @@ ON=@Timer
       MORE1 -= 1
       TIMER=1
    ELSE
-      CONT.SYSMESSAGELOC 1060208//"You are no longer mortally wounded."
+      CONT.SYSMESSAGELOC color_text,1060208//"You are no longer mortally wounded."
       REMOVE
    ENDIF
    RETURN 1
@@ -349,7 +350,7 @@ ON=@Equip
    ELSE
       MORE1=3
    ENDIF
-   CONT.SYSMESSAGELOC 1072221//"You have been hit by a paralyzing blow."
+   CONT.SYSMESSAGELOC color_text,1072221//"You have been hit by a paralyzing blow."
    TIMER=1
 ON=@Timer
    IF (<MORE1>) && !(<CONT.FLAGS> & statf_dead)
