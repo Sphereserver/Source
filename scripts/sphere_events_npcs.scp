@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 16, 2013
 //
 VERSION=0.56c
 
@@ -16,33 +16,42 @@ VERSION=0.56c
 // Some Useful Functions //
 ///////////////////////////
 
-[FUNCTION f_ishuman]
+[FUNCTION f_isHuman]
 IF ( (<OBODY>==c_man) || (<OBODY>==c_woman) )
    RETURN 1
 ELSE
    RETURN 0
 ENDIF
 
-[FUNCTION f_iself]
+[FUNCTION f_isElf]
 IF ( (<OBODY>==c_elf_male) || (<OBODY>==c_elf_female) )
    RETURN 1
 ELSE
    RETURN 0
 ENDIF
 
-[FUNCTION f_isgarg]
+[FUNCTION f_isGarg]
 IF ( (<OBODY>==c_gargoyle_male) || (<OBODY>==c_gargoyle_female) )
    RETURN 1
 ELSE
    RETURN 0
 ENDIF
 
-[FUNCTION f_isfemale]
+[FUNCTION f_isFemale]
 IF ( (<OBODY>==c_woman) || (<OBODY>==c_elf_female) || (<OBODY>==c_gargoyle_female) )
    RETURN 1
 ELSE
    RETURN 0
 ENDIF
+
+[FUNCTION f_isCursed]
+LOCAL.CurseResult=0
+FORCHARLAYER 32
+   IF (<BASEID>==i_rune_curse)
+      LOCAL.CurseResult=1
+   ENDIF
+ENDFOR
+RETURN <LOCAL.CurseResult>
 
 ////////////
 // Events //
@@ -122,28 +131,29 @@ ON=@Hit
 [EVENTS e_poisoned_spit]
 //Poisoned Spit Defense
 ON=@GetHit
-   REF12=<SRC>
+   SERV.LOG SRC=<SRC.NAME> DEF=<NAME>
+   REF1=<SRC>
    IF (<MANA> > 15) && (<DISTANCE> > 2) && !(<SRC.FLAGS> & statf_poisoned) && (<SRC> != <UID>)
       MANA -= 15
-      TRYSRC <UID> REF12.EFFECT 0,i_fx_fireball,10,16,0,044,4
-      TRYSRC <UID> REF12.SPELLEFFECT s_poison,<POISONING>,0//FIXME:resist
-      REF12.DAMAGE <R15,25> <DEF.dam_poison> <UID>
-      REF12.SOUND snd_spell_poison
-      REF12.SYSMESSAGELOC 1070821,<NAME>//"~ spits a poisonous substance at you!"
+      TRYSRC <UID> REF1.EFFECT 0,i_fx_fireball,10,16,0,044,4
+      TRYSRC <UID> REF1.SPELLEFFECT s_poison,<POISONING>,0//FIXME:resist
+      REF1.DAMAGE <R15,25> <DEF.dam_poison> <UID>
+      REF1.SOUND snd_spell_poison
+      REF1.SYSMESSAGELOC 1070821,<NAME>//"~ spits a poisonous substance at you!"
    ENDIF
 
 [EVENTS e_solen_spit]
 //Acidic Spit Defense
 ON=@GetHit
-   REF12=<SRC>
+   REF1=<SRC>
    IF (<MANA> > 15) && (<DISTANCE> > 2) && (<SRC> != <UID>)
       MANA -= 15
-      TRYSRC <UID> REF12.EFFECT 0,i_fx_fireball,10,16,0,044,4
-      REF12.DAMAGE <R15,25> <DEF.dam_acidic> <UID>
-      REF12.SYSMESSAGELOC 1071966//"The solen's damaged acid sac squirts acid!"
-      REF12.SOUND snd_spell_poison
+      TRYSRC <UID> REF1.EFFECT 0,i_fx_fireball,10,16,0,044,4
+      REF1.DAMAGE <R15,25> <DEF.dam_acidic> <UID>
+      REF1.SYSMESSAGELOC 1071966//"The solen's damaged acid sac squirts acid!"
+      REF1.SOUND snd_spell_poison
       SERV.NEWITEM i_pool_acid
-      NEW.P=<REF12.P>
+      NEW.P=<REF1.P>
       NEW.ATTR=attr_decay|attr_move_never
       NEW.TIMER={5 10}
       NEW.LINK=<UID>
@@ -162,6 +172,8 @@ ON=@Create
 ON=@Step
    IF (<SRC.ISPLAYER>)
       SRC.DAMAGE <R10,15> <DEF.dam_acidic> <LINK>
+      SRC.SYSMESSAGELOC 1077483//"The acid burns you!"
+      //FIXME: Damage a random equipped item...
    ENDIF
 
 [EVENTS e_bleed_attack]
@@ -294,6 +306,62 @@ ON=@Timer
       TIMER=20
       RETURN 1
    ENDIF
+
+[ITEMDEF i_blockheal_timer]
+//
+// Ideally Healing Spells and Bandages should look for this timer and prevent
+// the healing attempt.
+//
+ID=i_bandage
+NAME=block heal timer
+TYPE=t_eq_script
+LAYER=30
+WEIGHT=0
+ON=@Equip
+   ATTR=attr_decay|attr_can_decay
+   IF (<CONT.NPC>)
+      MORE1=12
+   ELSE
+      MORE1=6
+   ENDIF
+   TIMER=1
+ON=@Timer
+   IF (<MORE1>) && !(<CONT.FLAGS> & statf_dead)
+      CONT.ACTION = -1 //stop all actions
+      MORE1 -= 1
+      TIMER=1
+   ELSE
+      CONT.SYSMESSAGELOC 1060208//"You are no longer mortally wounded."
+      REMOVE
+   ENDIF
+   RETURN 1
+
+[ITEMDEF i_parablow_timer]
+ID=01d8c
+NAME=paralyzing blow timer
+TYPE=t_eq_script
+LAYER=30
+WEIGHT=0
+ON=@Equip
+   ATTR=attr_decay|attr_can_decay
+   IF (<CONT.NPC>)
+      MORE1=6
+   ELSE
+      MORE1=3
+   ENDIF
+   CONT.SYSMESSAGELOC 1072221//"You have been hit by a paralyzing blow."
+   TIMER=1
+ON=@Timer
+   IF (<MORE1>) && !(<CONT.FLAGS> & statf_dead)
+      CONT.ACTION = -1 //stop all actions
+      CONT.FLAGS |= statf_freeze
+      MORE1 -= 1
+      TIMER=1
+   ELSE
+      CONT.FLAGS &= ~statf_freeze
+      REMOVE
+   ENDIF
+   RETURN 1
 
 [EVENTS e_angry_fire]
 

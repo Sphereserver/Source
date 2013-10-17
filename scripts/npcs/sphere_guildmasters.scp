@@ -20,12 +20,13 @@ FIXME: NPC guildmaster "to do" list
 - make gargoyle versions of most NPCs
 
 [EVENTS e_npc_guildmaster]
-ON=@EnvironChange
-   TAG.NAME.HUE=1193
+//ON=@EnvironChange
+//   TAG.NAME.HUE=1193
 ON=@ClientToolTip
    SRC.ADDCLILOC 1070722,<TITLE>
 ON=@Click
-   MESSAGE @1193,,2 1049644,<TITLE>
+   MESSAGE @0,,2 1049644,<TITLE>
+//   MESSAGE @1193,,2 1049644,<TITLE>
 ON=@Hunger
    RETURN 1
 

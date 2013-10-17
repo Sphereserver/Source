@@ -30,12 +30,13 @@ c_ninjashopkeep
 c_ninjashopkeep_f
 
 [EVENTS e_npc_vendor]
-ON=@EnvironChange
-   TAG.NAME.HUE=1191
+//ON=@EnvironChange
+//   TAG.NAME.HUE=1191
 ON=@ClientToolTip
    SRC.ADDCLILOC 1070722,<TITLE>
 ON=@Click
-   MESSAGE @1191,,2 1049644,<TITLE>
+   MESSAGE @0,,2 1049644,<TITLE>
+//   MESSAGE @1191,,2 1049644,<TITLE>
 ON=@Hunger
    RETURN 1
 

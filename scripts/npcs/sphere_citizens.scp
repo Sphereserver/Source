@@ -31,12 +31,13 @@ c_samurai_f
 c_wandering_recluse (has a skill in excess of 100)
 
 [EVENTS e_npc_citizen]
-ON=@EnvironChange
-   TAG.NAME.HUE=1192
+//ON=@EnvironChange
+//   TAG.NAME.HUE=1192
 ON=@ClientToolTip
    SRC.ADDCLILOC 1070722,<TITLE>
 ON=@Click
-   MESSAGE @1192,,2 1049644,<TITLE>
+   MESSAGE @0,,2 1049644,<TITLE>
+//   MESSAGE @1192,,2 1049644,<TITLE>
 ON=@Hunger
    RETURN 1
 
@@ -1788,6 +1789,7 @@ ID=c_man
 NAME=mercenary
 DESIRES=i_gold
 AVERSIONS=t_trap
+HIREDAYWAGE=70
 TSPEECH=spk_human_prime
 TSPEECH=jobWarrior
 TSPEECH=jobFighter
@@ -1856,6 +1858,7 @@ ID=c_woman
 NAME=mercenary
 DESIRES=i_gold
 AVERSIONS=t_trap
+HIREDAYWAGE=70
 TSPEECH=spk_human_prime
 TSPEECH=jobWarrior
 TSPEECH=jobFighter
@@ -3029,6 +3032,7 @@ ID=c_man
 NAME=sailor
 DESIRES=i_gold
 AVERSIONS=t_trap
+HIREDAYWAGE=50
 TSPEECH=spk_human_prime
 TSPEECH=jobSailor
 TSPEECH=spk_rehello
@@ -3087,6 +3091,7 @@ ID=c_woman
 NAME=sailor
 DESIRES=i_gold
 AVERSIONS=t_trap
+HIREDAYWAGE=50
 TSPEECH=spk_human_prime
 TSPEECH=jobSailor
 TSPEECH=spk_needs

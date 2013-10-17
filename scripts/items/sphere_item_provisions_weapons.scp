@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, October 16, 2013
 //
 VERSION=0.56c
 
@@ -663,10 +663,14 @@ DUPEITEM=0ec4
 
 
 [ITEMDEF 0f3e]
+//arrow (its a rock in older clients)
+DUPEITEM=0f3f
+
+[ITEMDEF 0f3f]
 DEFNAME=i_arrow
 NAME=arrow%s
 TYPE=t_weapon_arrow
-FLIP=1
+FLIP=0
 WEIGHT=0.1
 REPLICATE=1
 RESOURCES=1 i_arrow_shaft,1 i_feather
@@ -674,11 +678,7 @@ SKILLMAKE=Bowcraft 0.0
 CATEGORY=Provisions - Ammunition
 SUBSECTION=Archery
 DESCRIPTION=Arrow
-DUPELIST=0f3f
-
-[ITEMDEF 0f3f]
-//arrow
-DUPEITEM=0f3e
+DUPELIST=0f3e
 
 [ITEMDEF 0f40]
 DEFNAME=i_arrows

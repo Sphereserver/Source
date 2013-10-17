@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, September 15, 2013
+// FILE LAST UPDATED: Tuesday, September 16, 2013
 //
 VERSION=0.56c
 
@@ -102,7 +102,7 @@ ON=@Create
 ON=@NPCRestock
 	ITEM=i_shirt_plain
 	COLOR=colors_all
-	ITEM=random_skirt
+	ITEM=random_skirt_human
 	COLOR=colors_all
 	ITEM=random_shoes
 	COLOR=colors_neutral

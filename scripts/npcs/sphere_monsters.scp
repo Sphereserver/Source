@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -4434,8 +4434,15 @@ ON=@Create
    RESPOISON={15 20}
 ON=@NPCRestock
    ITEM=loot_slime_corrosive
-ON=@Step
-   SAY Ouch!
+ON=@PersonalSpace
+   IF (<SRC.ISPLAYER>)
+      SRC.SYSMESSAGELOC 1070820//"The creature spills a pool of acidic slime."
+      SERV.NEWITEM=i_pool_acid
+      NEW.P=<SRC.P>
+      NEW.ATTR=attr_decay|attr_move_never
+      NEW.TIMER={5 10}
+      NEW.LINK=<UID>
+   ENDIF
 
 [CHARDEF 061]
 //FIXME: Fireball attack based on their hitpoints

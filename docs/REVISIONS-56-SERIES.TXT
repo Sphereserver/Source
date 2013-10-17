@@ -154,3 +154,14 @@
 - Added: some useful NPC functions
 - Renamed: sphere_items_seige.scp (...it's spelled Siege)
 - Finished scripting more lightsources
+
+17-10-2013, RanXerox (Script Pack)
+- Switched: 0f3e and 0f3f (i_arrow) because older clients have a rock as ITEMDEF 0f3e
+- Removed: the name and title coloration from vendors, citizens, and guildmasters
+- Fixed: a bad reference to random_skirts
+- Improved: corrosive slime now drops acid pool when threatened
+- Added: missing stair multi's
+- Added: HIREDAYWAGE back to sailors and mercenaries
+- Added: deed's for all the house foundations
+- Added: some missing NPC functions (is cursed)
+- Added: some missing combat timers (paralyzing blow and block healing)

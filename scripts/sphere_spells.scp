@@ -2129,7 +2129,7 @@ MANAUSE=30
 SKILLREQ=NINJITSU 85.0
 INTERRUPT=0.0,0.0
 ON=@Success
-   IF (<SRC.ISFEMALE>)
+   IF (<SRC.f_isfemale>)
       SRC.SOUND snd_ninjitsu_deathstrike_f
    ELSE
       SRC.SOUND snd_ninjitsu_deathstrike_m
@@ -2186,7 +2186,7 @@ MANAUSE=20
 SKILLREQ=NINJITSU 60.0
 INTERRUPT=0.0,0.0
 ON=@Success
-   IF (<SRC.ISFEMALE>)
+   IF (<SRC.f_isfemale>)
       SRC.SOUND snd_ninjitsu_suprise_attack_f
    ELSE
       SRC.SOUND snd_ninjitsu_suprise_attack_m
