@@ -176,3 +176,6 @@
 - Fixed: implementation of monsters that "summon" other monsters is now consistent
 - Fixed: console errors in some NPC events
 
+12-10-2013, Ben
+-Fixed #2222: Shrink not working anymore.
+-Added: UID of shrunken pet is now accessible in ACT of the player.

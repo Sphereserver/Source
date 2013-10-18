@@ -139,10 +139,16 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		break;
 	}
 	case NV_SHRINK:
-		// we must own it.
-		if ( ! NPC_IsOwnedBy( pCharSrc ))
-			return( false );
-		return( NPC_Shrink() != NULL );
+		{
+			// we must own it.
+			if ( ! NPC_IsOwnedBy( pCharSrc ))
+				return( false );
+			CItem * pItem = NPC_Shrink(); // this delete's the char !!!
+			if ( pItem )
+				pCharSrc->m_Act_Targ = pItem->GetUID();
+		
+			return( pItem != NULL );
+		}
 	case NV_TRAIN:
 		return( NPC_OnTrainHear( pCharSrc, s.GetArgStr()));
 	case NV_WALK:

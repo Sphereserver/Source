@@ -2892,14 +2892,18 @@ reflectit:
 			break;
 
 		case SPELL_Shrink:
-			// Getting a pet to drink this is funny.
-			if ( m_pPlayer )
-				break;
-			if ( fPotion && pSourceItem )
 			{
-				pSourceItem->Delete();
+				// Getting a pet to drink this is funny.
+				if ( m_pPlayer )
+					break;
+				if ( fPotion && pSourceItem )
+				{
+					pSourceItem->Delete();
+				}
+				CItem * pItem = NPC_Shrink(); // this delete's the char !!!
+				if ( pItem )
+					pCharSrc->m_Act_Targ = pItem->GetUID();
 			}
-			NPC_Shrink();	// this delete's the char !!!  FIXME: The UID of the statuette should be stored in a LOCAL at this point
 			break;
 
 		case SPELL_Mana:
