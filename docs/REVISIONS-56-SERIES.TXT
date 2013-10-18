@@ -175,6 +175,7 @@
 - Fixed: some entries in sphere_typedefs.scp
 - Fixed: implementation of monsters that "summon" other monsters is now consistent
 - Fixed: console errors in some NPC events
+- Fixed: Paroxysmus loot (he dropped himself as an icon instead of his pet dragon)
 
 12-10-2013, Ben
 -Fixed #2222: Shrink not working anymore.
