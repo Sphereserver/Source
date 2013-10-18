@@ -166,3 +166,13 @@
 - Added: deed's for all the house foundations
 - Added: some missing NPC functions (is cursed)
 - Added: some missing combat timers (paralyzing blow and block healing)
+
+18-10-2013, RanXerox (Script Pack)
+- Fixed: armored steed figurine
+- Fixed: syntax (SERV.NEWITEM instead of SRC.NEWITEM and NEW. instead of SRC.ACT.)
+- Fixed: fukiya (dart shooter)
+- Fixed: various mounts that had errors with the mounted animation
+- Fixed: some entries in sphere_typedefs.scp
+- Fixed: implementation of monsters that "summon" other monsters is now consistent
+- Fixed: console errors in some NPC events
+

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Thursday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -202,7 +202,7 @@ DESCRIPTION=Invisible Tile 031c0
 // Custom Items //
 //////////////////
 
-[ITEMDEF I_EBONY]
+[ITEMDEF i_ebony]
 ID=i_reag_blackmoor
 NAME=Ebony
 WEIGHT=1
@@ -218,126 +218,125 @@ CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewels
 DESCRIPTION=Ivory
 ON=@Create
-	COLOR=colors_white
+   COLOR=colors_white
 
-[ITEMDEF I_BOOKOFHELL]
+[ITEMDEF i_bookofhell]
+ID=i_book_open
 NAME=Book of Hell
-ID=i_BOOK_OPEN
 CATEGORY=Trigger Items
 SUBSECTION=Magic Items
 DESCRIPTION=Book of Hell
 ON=@Create
-	MORE=b_hitchhiker // some book number
-ON=@DCLICK
-	SRC.EFFECT=3,i_FIRE_COLUMN,6,15,1	// flamestrike
-	SRC.SOUND=snd_SPELL_FLAMESTRIKE
-	SRC.DAMAGE={5 20}	// damage the person who did this
-	TIMER=4
-ON=@TIMER
-	SPEAK Run away !
-	RETURN 1
+   MORE=b_hitchhiker // some book number
+ON=@DClick
+   SRC.EFFECT=3,i_fire_column,6,15,1   // flamestrike
+   SRC.SOUND=snd_spell_flamestrike
+   SRC.DAMAGE={5 20}
+   TIMER=4
+ON=@Timer
+   SPEAK Run away !
+   RETURN 1
 
-[ITEMDEF I_FIRE_STORM]
-// Fire Storm
-NAME=a Fire Storm
+[ITEMDEF i_fire_storm]
 ID=i_fx_explode
-TYPE=T_SPELL
+NAME=a Fire Storm
+TYPE=t_spell
 CATEGORY=TFL Additions
 SUBSECTION=Animations
 DESCRIPTION=Fire Storm Piece
 ON=@Create
-	ATTR=attr_magic|attr_move_never
-	MORE=0
-	MOREP=42,55,99
-	TIMER=1
-ON=@DCLICK
-	MORE = <MORE> + 1
-	IF (<MORE> > 15)
-		REMOVE
-		RETURN 1
-	endif
-	MOREP=<LINK.P>
-	TAG.NEG=RAND(2)
-	TAG.TX=RAND(6)
-	IF (<TAG0.NEG> == 1)
-		MOREX= <MOREX> - <TAG0.TX>
-	ELSE
-		MOREX= <MOREX> + <TAG0.TX>
-	endif
-	TAG.NEG=RAND(2)
-	TAG.TY=RAND(6)
-	IF (<TAG0.NEG> == 1)
-		MOREY= <MOREY> - <TAG0.TY>
-	ELSE
-		MOREY= <MOREY> + <TAG0.TY>
-	endif
-	TAG.NEG =
-	TAG.TX =
-	TAG.TY =
-	ATTR=attr_move_never|attr_invis|attr_magic  //set invs
-	P=<MOREP>
-	ATTR=attr_magic|attr_move_never  //unhide object, shos it at new location
-	MOREP=42,55,99
-	TIMER=1
-	RETURN 1
+   ATTR=attr_magic|attr_move_never
+   MORE=0
+   MOREP=42,55,99
+   TIMER=1
+ON=@DClick
+   MORE += 1
+   IF (<MORE> > 15)
+      REMOVE
+      RETURN 1
+   ENDIF
+   MOREP=<LINK.P>
+   TAG.NEG=RAND(2)
+   TAG.TX=RAND(6)
+   IF (<TAG0.NEG> == 1)
+      MOREX=<MOREX> - <TAG0.TX>
+   ELSE
+      MOREX=<MOREX> + <TAG0.TX>
+   ENDIF
+   TAG.NEG=RAND(2)
+   TAG.TY=RAND(6)
+   IF (<TAG0.NEG> == 1)
+      MOREY=<MOREY> - <TAG0.TY>
+   ELSE
+      MOREY=<MOREY> + <TAG0.TY>
+   ENDIF
+   TAG.NEG=
+   TAG.TX=
+   TAG.TY=
+   ATTR=attr_move_never|attr_invis|attr_magic
+   P=<MOREP>
+   ATTR=attr_magic|attr_move_never
+   MOREP=42,55,99
+   TIMER=1
+   RETURN 1
 
-[ITEMDEF I_BARDICHE_SA]
+[ITEMDEF i_bardiche_sa]
 //Bardiche (this may not work!)
 //Using Sword type below
-NAME=Supremely Accurate Bardiche
 ID=i_bardiche
-TYPE=T_WEAPON_SWORD
-RESOURCES=i_bardiche,i_enchant_weapon,i_scroll_bless	// ,5 i_enchant_weapon
+NAME=Supremely Accurate Bardiche
+TYPE=t_weapon_sword
+RESOURCES=1 i_bardiche,1 i_enchant_weapon,1 i_scroll_bless,5 i_enchant_weapon
 ON=@Create
-	HITPOINTS={31 100}
-	COLOR=color_magic_weap
-	ATTR=attr_magic
-	//MOREY=100.0
+   HITPOINTS={31 100}
+   COLOR=color_magic_weap
+   ATTR=attr_magic
+   //MOREY=100.0
 ON=@EQUIP
-	SRC.SWORDSMANSHIP=(<SRC.SWORDSMANSHIP> + 25.0)
-	SRC.TACTICS=(<SRC.TACTICS> + 25.0)
-	SRC.DEX=(<SRC.DEX> + 1)
+   SRC.SWORDSMANSHIP += 25.0
+   SRC.TACTICS += 25.0
+   SRC.DEX += 1
 ON=@UNEQUIP
-	SRC.SWORDSMANSHIP=(<SRC.SWORDSMANSHIP> - 25.0)
-	SRC.TACTICS=(<SRC.TACTICS> - 25.0)
-	SRC.DEX=(<SRC.DEX> - 1)
+   SRC.SWORDSMANSHIP -= 25.0
+   SRC.TACTICS -= 25.0
+   SRC.DEX -= 1
 
 [ITEMDEF i_wizards_hat_plus_int]
-Name=Mage Hat
 ID=i_hat_wizards
-RESOURCES=i_hat_wizards, i_scroll_cunning
+NAME=Mage Hat
+RESOURCES=1 i_hat_wizards,1 i_scroll_cunning
 SKILLMAKE=60.0 TAILORING, 60.0 MAGERY, t_sewing_kit
 
 [ITEMDEF i_crystal_of_com_t1]
 //Comm. Crystal (500) RED
-NAME=Communications Crystal
 ID=I_CRYSTAL_RED
-TYPE=T_COMM_CRYSTAL
+NAME=Communications Crystal
+TYPE=t_comm_crystal
 VALUE=81
 WEIGHT=1
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (red)
 ON=@Create
-	MORE=500
+   MORE=500
 
-[ITEMDEF i_CRYSTAL_OF_COM_T2]
+[ITEMDEF i_crystal_of_com_t2]
 // Comm. Crystal (1000) GREEN
 ID=I_CRYSTAL_GREEN
 NAME=Communications Crystal
-TYPE=T_COMM_CRYSTAL
+TYPE=t_comm_crystal
 VALUE=158
 WEIGHT=1
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (green)
 ON=@Create
-	MORE=1000
+   MORE=1000
 
-[ITEMDEF i_CRYSTAL_OF_COM_T3]
+[ITEMDEF i_crystal_of_com_t3]
 // Comm. Crystal (2000) GREEN
 ID=I_CRYSTAL_GREEN
-TYPE=T_COMM_CRYSTAL
+TYPE=t_comm_crystal
 NAME=Communications Crystal
 VALUE=310
 WEIGHT=1
@@ -345,55 +344,54 @@ CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Communication Crystals
 DESCRIPTION=Communication Crystal (green)
 ON=@Create
-	MORE=2000
+   MORE=2000
 
 [ITEMDEF i_gm_robe]
-NAME=GM Robe
 ID=i_robe_gm
+NAME=GM Robe
 ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=GM Robe
 ON=@Create
-	COLOR=021
+   COLOR=021
 
 [ITEMDEF i_seer_robe]
-NAME=Seer Robe
 ID=i_robe_gm
+NAME=Seer Robe
 ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=Seer Robe
 ON=@Create
-	COLOR=01D3
+   COLOR=01D3
 
 [ITEMDEF i_counselor_robe]
-NAME=Counselor Robe
 ID=i_robe_gm
+NAME=Counselor Robe
 ARMOR=500
 CATEGORY=Provisions - GM Items
 SUBSECTION=GM Robes
 DESCRIPTION=Counselor Robe
 ON=@Create
-	COLOR=003
+   COLOR=003
 
-[ITEMDEF i_CHECKERBOARD]
-//DEFNAME=CHECKERBOARD
+[ITEMDEF i_checkerboard]
 ID=i_game_board
 NAME=Checkerboard
-TYPE=T_GAME_BOARD
+TYPE=t_game_board
 SKILLMAKE=tinkering 40.0, carpentry 40.0
 RESOURCES=3 i_board, 3 i_log
 CATEGORY=Games
 SUBSECTION=Checkers
 DESCRIPTION=Checkerboard
 ON=@Create
-	MORE=1	// make this checkers.
+   MORE=1   // make this checkers.
 
-[ITEMDEF i_CHESSBOARD]
+[ITEMDEF i_chessboard]
 ID=i_game_board
 NAME=Chessboard
-TYPE=T_GAME_BOARD
+TYPE=t_game_board
 SKILLMAKE=tinkering 60.0, carpentry 60.0
 RESOURCES=3 i_board, 4 i_log
 CATEGORY=Games
@@ -401,25 +399,22 @@ SUBSECTION=Chess
 DESCRIPTION=Chessboard
 
 [ITEMDEF i_guild_stone]
-// Guild Stone
 ID=i_guildstone
 NAME=Guildstone
-TYPE=T_STONE_GUILD
+TYPE=t_stone_guild
 CATEGORY=Provisions - Deeds
 SUBSECTION=Guild and Town Stones
 DESCRIPTION=Guild Stone
 
 [ITEMDEF i_town_stone]
-// Town Stone
 ID=i_guildstone
 NAME=Townstone
-TYPE=T_STONE_TOWN
+TYPE=t_stone_town
 CATEGORY=Provisions - Deeds
 SUBSECTION=Guild and Town Stones
 DESCRIPTION=Town Stone
 
-[ITEMDEF I_BOW_SUP]
-//Superior Bow
+[ITEMDEF i_bow_sup]
 ID=i_bow
 NAME=Superior Bow
 SKILLMAKE=45.0 BOWCRAFT
@@ -434,10 +429,9 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Bow
 ON=@Create
-	HITPOINTS={41 80}
+   HITPOINTS={41 80}
 
-[ITEMDEF I_XBOW_SUP]
-//Superior Crossbow
+[ITEMDEF i_xbow_sup]
 NAME=Superior Crossbow
 ID=i_crossbow
 RESOURCES=8 i_log
@@ -452,10 +446,9 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Crossbow
 ON=@Create
-	HITPOINTS={41 100}
+   HITPOINTS={41 100}
 
-[ITEMDEF I_HXBOW_SUP]
-//Superior Heavy Crossbow
+[ITEMDEF i_hxbow_sup]
 ID=i_crossbow_heavy
 NAME=Superior Heavy Crossbow
 SKILLMAKE=65.0 BOWCRAFT
@@ -469,10 +462,9 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Superior Heavy Crossbow
 ON=@Create
-	HITPOINTS={41 120}
+   HITPOINTS={41 120}
 
-[ITEMDEF I_BOW_EXCEP]
-//Exceptional Bow
+[ITEMDEF i_bow_excep]
 ID=i_bow
 NAME=Exceptional Bow
 RESOURCES=9 i_log
@@ -487,10 +479,9 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Bow
 ON=@Create
-	HITPOINTS={51 120}
+   HITPOINTS={51 120}
 
-[ITEMDEF I_XBOW_EXCEP]
-//Exceptional Crossbow
+[ITEMDEF i_xbow_excep]
 ID=i_crossbow
 NAME=Exceptional Crossbow
 RESOURCES=10 i_log
@@ -505,10 +496,9 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Crossbow
 ON=@Create
-	HITPOINTS={51 140}
+   HITPOINTS={51 140}
 
-[ITEMDEF I_HXBOW_EXCEP]
-//Exceptional Heavy Crossbow
+[ITEMDEF i_hxbow_excep]
 ID=i_crossbow_heavy
 NAME=Exceptional Heavy Crossbow
 DAM=8,38
@@ -523,11 +513,11 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Exceptional Heavy Crossbow
 ON=@Create
-	HITPOINTS={41 100}
+   HITPOINTS={41 100}
 
-[ITEMDEF i_Bow_Elven]
-NAME=Elven Bow
+[ITEMDEF i_bow_elven]
 ID=i_bow
+NAME=Elven Bow
 DAM=11,28
 //SPEED=20
 SKILL=Archery
@@ -540,135 +530,133 @@ CATEGORY=Provisions - Weapons
 SUBSECTION=Bows - Exceptional
 DESCRIPTION=Elven Bow
 ON=@Create
-	HITPOINTS={100 200}
-	COLOR=237
+   HITPOINTS={100 200}
+   COLOR=237
 ON=@EQUIP
-	SRC.TACTICS= (<SRC.TACTICS>+15.0)
-	SRC.ARCHERY= (<SRC.ARCHERY>+10.0)
-	RETURN 0
+   SRC.TACTICS += 15.0
+   SRC.ARCHERY += 10.0
+   RETURN 0
 ON=@UNEQUIP
-	SRC.TACTICS= (<SRC.TACTICS>-(15.0))
-	SRC.ARCHERY= (<SRC.ARCHERY>-(10.0))
-	RETURN 0
+   SRC.TACTICS -= 15.0
+   SRC.ARCHERY -= 10.0
+   RETURN 0
 
 [ITEMDEF i_stone_humility]
-NAME=Stone of Humility
 ID=i_virtuestone_black
+NAME=Stone of Humility
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Humility
 
 [ITEMDEF i_stone_honesty]
-NAME=Stone of Honesty
 ID=i_virtstone_2
+NAME=Stone of Honesty
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Honesty
 
 [ITEMDEF i_stone_justice]
-NAME=Stone of Justice
 ID=i_virtstone_3
+NAME=Stone of Justice
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Justice
 
 [ITEMDEF i_stone_sacrifice]
-NAME=Stone of Sacrifice
 ID=i_virtstone_4
+NAME=Stone of Sacrifice
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Sacrifice
 
 [ITEMDEF i_stone_honor]
-NAME=Stone of Honor
 ID=i_virtstone_5
+NAME=Stone of Honor
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Honor
 
 [ITEMDEF i_stone_valor]
-NAME=Stone of Valor
 ID=i_virtstone_6
+NAME=Stone of Valor
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Valor
 
 [ITEMDEF i_stone_spirituality]
-NAME=Stone of Spirituality
 ID=i_virtstone_7
+NAME=Stone of Spirituality
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Spirituality
 
 [ITEMDEF i_stone_compassion]
-NAME=Stone of Compassion
 ID=i_virtstone_8
+NAME=Stone of Compassion
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Stone of Compassion
 
 
-[ITEMDEF I_GRAVE_DIG]
+[ITEMDEF i_grave_dig]
 //grave for grave digging.
 ID=0edf
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Graves & Gravestones
 DESCRIPTION=Grave Digging Grave
 
-ON=@DCLICK
-	IF <DISTANCE>>1
-		RETURN 1
-	endif
-	IF (<SRC.FINDLAYER(1).ID>==i_pickaxe)
-		SRC.ANIM=0B
-		SOUND=0126
-		IF RAND(3)
-			SRC.NEWITEM I_GRAVE_SPAWN_A
-			SRC.KARMA=<SRC.KARMA> - 50
-			SRC.SYSMESSAGE Thou hath lost a little Karma.
-			SRC.MESSAGE Thou hath disturbed the dead!
-		elif RAND(2)
-			SRC.NEWITEM backpack_meager
-			SRC.KARMA=<SRC.KARMA> - 50
-			SRC.SYSMESSAGE Thou hath lost a little Karma.
-			SRC.MESSAGE Thou hath found some treasure!
-		elif RAND(5)
-			SRC.NEWITEM I_GRAVE_SPAWN_A
-			SRC.KARMA=<SRC.KARMA> - 50
-			SRC.SYSMESSAGE Thou hath lost a little Karma.
-			SRC.MESSAGE Thou hath disturbed the dead greatly!
-		elif RAND(4)
-			SRC.DAMAGE={5 10}
-			SRC.KARMA=<SRC.KARMA> - 50
-			SRC.SYSMESSAGE Thou hath lost a little Karma.
-			SRC.MESSAGE Thou hath been almost drug into the grave //by the dead!
-		endif
-	endif
-	RETURN 1
+ON=@DClick
+   IF (<DISTANCE> > 1)
+      RETURN 1
+   ENDIF
+   IF (<SRC.FINDLAYER(1).ID>==i_pickaxe)
+      SRC.ANIM=0b
+      SOUND=0126
+      IF RAND(3)
+         SERV.NEWITEM i_grave_spawn_a
+         SRC.KARMA -= 50
+         SRC.SYSMESSAGE Thou hath lost a little Karma.
+         SRC.MESSAGE Thou hath disturbed the dead!
+      ELIF RAND(2)
+         SERV.NEWITEM backpack_meager
+         SRC.KARMA -= 50
+         SRC.SYSMESSAGE Thou hath lost a little Karma.
+         SRC.MESSAGE Thou hath found some treasure!
+      ELIF RAND(5)
+         SERV.NEWITEM i_grave_spawn_a
+         SRC.KARMA -= 50
+         SRC.SYSMESSAGE Thou hath lost a little Karma.
+         SRC.MESSAGE Thou hath disturbed the dead greatly!
+      ELIF RAND(4)
+         SRC.DAMAGE={5 10}
+         SRC.KARMA -= 50
+         SRC.SYSMESSAGE Thou hath lost a little Karma.
+         SRC.MESSAGE Thou hath been almost drug into the grave by the dead!
+      ENDIF
+   ENDIF
+   RETURN 1
 
-[ITEMDEF I_GRAVE_SPAWN_A]
-//Average Grave Digging Random Monster Spawn
-ID=I_HOLE
-TYPE=T_SPAWN_CHAR
+[ITEMDEF i_grave_spawn_a]
+ID=i_hole
+TYPE=t_spawn_char
 ON=@Create
-	ATTR=attr_move_never|attr_invis
-	MORE1={ c_skeleton 1 c_ZOMBIE 1 c_spectre 1 }
-	MORE2=0
-	MOREP=0,1,3
-	TIMER=0
+   ATTR=attr_move_never|attr_invis
+   MORE1={ c_skeleton 1 c_zombie 1 c_spectre 1 }
+   MORE2=0
+   MOREP=0,1,3
+   TIMER=0
 ON=@TIMER
-	IF <AMOUNT>==0
-		REMOVE
-		RETURN 1
-	endif
-	IF <MORE2>==1
-		MOREP=1,1,3
-		AMOUNT=0
-		RETURN 1
-	endif
+   IF (<AMOUNT>==0)
+      REMOVE
+      RETURN 1
+   ENDIF
+   IF (<MORE2>==1)
+      MOREP=1,1,3
+      AMOUNT=0
+      RETURN 1
+   ENDIF
 
 [ITEMDEF i_egg_dragon]
-//Dragon Egg
 ID=i_fruit_coconut
 NAME=Dragons Egg
 VALUE=5000
@@ -676,89 +664,89 @@ CATEGORY=Custom Items
 SUBSECTION=Dragons Egg
 DESCRIPTION=Dragons Egg
 ON=@Create
-	COLOR={ 0000 1 0033 1 0038 1 005d 1 0091 1 0175 1 0371 1 0455 1 07fff 1 }
-	ATTR=attr_identified
-	MORE=0
-ON=@TIMER
-	IF (<MORE>==1)
-		MORE2=2
-		LINK.NEWITEM i_dragon_spawn
-		LINK.ACT.P=<LINK.P>
-		REMOVE
-	endif
-	RETURN 1
-ON=@DCLICK    //on timer not executing in packs or containers, so do this for now if in someones pack
-	IF (<MORE>==1)
-		IF (<TIMER>>5800)
-			SRC.MESSAGE The egg seems soft and somewhat velvety to thine touch.
-		elif (<TIMER>>3600)
-			SRC.MESSAGE The egg seems to be getting hard and the velvet has fallen off.
-		elif (<TIMER>>1800)
-			SRC.MESSAGE The egg is very hard, it may hatch soon if you don't sell it quickly.
-		elif (<TIMER>>20)
-			SRC.MESSAGE You swear you can feel movement inside the egg...
-		ELSE
-			SRC.MESSAGE OH NO! as you pick up the egg it cracks and begings hatching!!!
-			LINK.NEWITEM i_dragon_spawn
-			LINK.ACT.P=<LINK.P>
-			REMOVE
-		endif
-	endif
-	RETURN 1
-ON=@PICKUP_GROUND
-	MORE=1
-	IF (<TIMER><1)
-		TIMER=7200
-	endif
-	LINK=<SRC.UID>
-	RETURN 0
-ON=@PICKUP_PACK
-	IF (<MORE>==1)
-		TRIGGER=@DCLICK
-		RETURN 0
-	endif
-	MORE=1
-	IF (<TIMER><1)
-		TIMER=7200
-	endif
-	LINK=<SRC.UID>
-	RETURN 0
+   COLOR={ 0000 1 0033 1 0038 1 005d 1 0091 1 0175 1 0371 1 0455 1 07fff 1 }
+   ATTR=attr_identified
+   MORE=0
+ON=@Timer
+   IF (<MORE>==1)
+      MORE2=2
+      SERV.NEWITEM=i_dragon_spawn
+      LINK.ACT.P=<LINK.P>
+      REMOVE
+   ENDIF
+   RETURN 1
+ON=@DClick
+   //timer not executing in packs or containers, so do this for now if in someones pack
+   IF (<MORE>==1)
+      IF (<TIMER>>5800)
+         SRC.MESSAGE The egg seems soft and somewhat velvety to thine touch.
+      ELIF (<TIMER>>3600)
+         SRC.MESSAGE The egg seems to be getting hard and the velvet has fallen off.
+      ELIF (<TIMER>>1800)
+         SRC.MESSAGE The egg is very hard, it may hatch soon if you don't sell it quickly.
+      ELIF (<TIMER>>20)
+         SRC.MESSAGE You swear you can feel movement inside the egg...
+      ELSE
+         SRC.MESSAGE OH NO! as you pick up the egg it cracks and begings hatching!!!
+         SERV.NEWITEM=i_dragon_spawn
+         LINK.ACT.P=<LINK.P>
+         REMOVE
+      ENDIF
+   ENDIF
+   RETURN 1
+ON=@Pickup_Ground
+   MORE=1
+   IF (<TIMER><1)
+      TIMER=7200
+   ENDIF
+   LINK=<SRC.UID>
+   RETURN 0
+ON=@Pickup_Pack
+   IF (<MORE>==1)
+      TRIGGER=@DClick
+      RETURN 0
+   ENDIF
+   MORE=1
+   IF (<TIMER><1)
+      TIMER=7200
+   ENDIF
+   LINK=<SRC.UID>
+   RETURN 0
 
 [ITEMDEF i_dragon_spawn]
-//drake egg spawn
-ID=I_HOLE
-TYPE=T_SPAWN_CHAR
+ID=i_hole
+TYPE=t_spawn_char
 DESCRIPTION=One Shot Drake Spawn
 SUBSECTION=Dragons Egg
 CATEGORY=Custom Items
 ON=@Create
-	ATTR=attr_move_never|attr_invis
-	MORE1={ c_dragon_greendrake 1 c_dragon_copperdrake 1 c_dragon_bluedrake 1 c_dragon_golddrake 1 c_dragon_blackdrake 1 c_dragon_silverdrake 1 c_dragon_crystaldrake 1 }
-	MORE2=0
-	MOREP=0,1,3
-	TIMER=2
+   ATTR=attr_move_never|attr_invis
+   MORE1={ c_dragon_greendrake 1 c_dragon_copperdrake 1 c_dragon_bluedrake 1 c_dragon_golddrake 1 c_dragon_blackdrake 1 c_dragon_silverdrake 1 c_dragon_crystaldrake 1 }
+   MORE2=0
+   MOREP=0,1,3
+   TIMER=2
 ON=@TIMER
-	IF <AMOUNT>==0
-		REMOVE
-		RETURN 1
-	endif
-	IF <MORE2>==1
-		MOREP=30,30,3
-		AMOUNT=0
-		RETURN 0
-	endif
-	RETURN 0
+   IF <AMOUNT>==0
+      REMOVE
+      RETURN 1
+   ENDIF
+   IF <MORE2>==1
+      MOREP=30,30,3
+      AMOUNT=0
+      RETURN 0
+   ENDIF
+   RETURN 0
 
-[ITEMDEF i_Book_Tennysons]
+[ITEMDEF i_book_tennysons]
 //Tennyson's Charge of the Light Brigade
+ID=i_book_lg_pub
 NAME=Charge of the Light Brigade
-ID=i_BOOK_LG_PUB
 VALUE=10
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Quest Items
 DESCRIPTION=Charge of the Light Brigade
 ON=@Create
-	MORE1=b_tennyson
+   MORE1=b_tennyson
 
 [ITEMDEF i_peg]
 ID=i_banner_hanger_ne

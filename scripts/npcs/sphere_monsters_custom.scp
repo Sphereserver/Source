@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -641,7 +641,7 @@ ON=@Create
    RESPOISON={10 20}
 ON=@GetHit
    REMOVEFROMVIEW
-   IF (RAND(2)==1)
+   IF !(<R2>)
       SRC.UPDATE
    ENDIF
 ON=@NPCRestock
@@ -1025,18 +1025,17 @@ ON=@Create
 ON=@NPCRestock
    ITEM=loot_slime
 ON=@GetHit
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_slime_crystal
-      NEW.FLAGS |= (statf_war|statf_conjured)
+   //Spawn Creatures Defense (crystaline slime)
+   IF !(<R20>) && !(<FINDID.i_removetimer_mem>)
+      SERV.NEWNPC c_slime_crystal
       NEW.P=<SRC.P>
-      LOCAL.Zombie=<NEW.UID>
-      SRC.NEWITEM=i_summon_mem
-      NEW.LINK=<UID>
-      NEW.CONT=<LOCAL.Zombie>
-      SRC.UPDATE
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
+      NEW.f_NPCRemovalTimer 1200
    ENDIF
 ON=@Hit
-   IF (RAND(20)==0)
+   IF !(<R20>)
       SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
    ENDIF
 
@@ -1569,7 +1568,7 @@ ON=@GetHit
       NEW.P=<P>
       NEW.HOME=<NEW.P>
       NEW.HOMEDIST=7
-      NEW.REMOVETIMER 1200
+      NEW.f_NPCRemovalTimer 1200
    ENDIF
 
 ////////////////////
@@ -1959,7 +1958,7 @@ ON=@Create
    RESPOISON={20 30}
 ON=@Hit
    //Poison damage
-   IF ((<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FLAGS>&statf_poisoned))
+   IF ((<MANA> >= 10) && !(<R5>) && !(<SRC.FLAGS>&statf_poisoned))
       MANA -= 10
       SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
    ENDIF
@@ -2011,7 +2010,7 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
    ITEM=loot_lich
 ON=@Hit
-   IF (RAND(20)==0)
+   IF !(<R20>)
       SRC.SYSMESSAGELOC color_text,1070848//"You feel your life force being stolen away"
       SOUND=SND_SPELL_MANA_DRAIN
       SRC.DAMAGE {25 35} <DEF.dam_drain>
@@ -2452,7 +2451,7 @@ ON=@Hit
    IF (<MANA> >= 30) && !(<SRC.FINDID.i_blockheal_timer>)
       MANA -= 30
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_blockheal_timer
+      SERV.NEWITEM=i_blockheal_timer
       SRC.EQUIP <NEW>
    ENDIF
 

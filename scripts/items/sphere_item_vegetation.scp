@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Thursday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -3566,10 +3566,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Alchemist
 DESCRIPTION=Mandrake Root (Plant Form)
 DUPELIST=018de
-
-ON=@DCLICK
-	SRC.NEWITEM=i_reag_mandrake_root
-	SRC.ACT.BOUNCE
+ON=@DClick
+	SERV.NEWITEM=i_reag_mandrake_root
+	NEW.BOUNCE
 	REMOVE
 	RETURN 1
 

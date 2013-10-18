@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, September 21, 2013
+// FILE LAST UPDATED: Thursday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -139,52 +139,52 @@ ON=@Create
 ON=@DClick
    SRC.SYSMESSAGE What potion would you like to fill the keg with?
    TARGET
-   return 1
+   RETURN 1
 ON=@TargOn_Item
-   if (<src.action> != -1 )
+   IF (<SRC.ACTION> != -1 )
       SRC.SYSMESSAGE You can't use this yet!
-      return 1
-   elif <src.targ.baseid>==i_bottle_empty
-      if 0 >= <morex>
+      RETURN 1
+   ELIF (<src.targ.baseid>==i_bottle_empty)
+      IF (0 >= <MOREX>)
          SRC.SYSMESSAGE You can't use this on a empty keg!
-         return 1
-      endif
-      if ( <src.targ.topobj.uid> != <src.uid> )
+         RETURN 1
+      ENDIF
+      IF (<SRC.TARG.TOPOBJ.UID> != <SRC.UID>)
          SRC.SYSMESSAGE The empty bottle should be in your backpack!
-         return 1
-      endif
+         RETURN 1
+      ENDIF
       SRC.SYSMESSAGE You fill an empty bottle.
       SOUND=snd_Z_END_LIQUID
-      SRC.NEWITEM=<MORE1>
-      SRC.ACT.MORE2=<MORE2> //restore skillvalue 
-      SRC.ACT.ATTR=0
-      SRC.ACT.TIMER=-1
-      SRC.ACT.BOUNCE
-      MOREX = <MOREX> - 1
-      IF (<MOREX> == 0)
-         NAME=   //set original name
-         MORE1=0   //clear potion id   
+      SERV.NEWITEM=<MORE1>
+      NEW.MORE2=<MORE2> //restore skillvalue
+      NEW.ATTR=0
+      NEW.TIMER=-1
+      NEW.BOUNCE
+      MOREX -= 1
+      IF (<MOREX>==0)
+         NAME=     //set original name
+         MORE1=0   //clear potion id
          MORE2=0   //clear makeskillvalue
       ELSE
-         NAME=a <SRC.ACT.NAME> Keg(<MOREX>)
-      endif
-      src.targ.CONSUME 1
+         NAME=a <NEW.NAME> Keg(<EVAL <MOREX>>)
+      ENDIF
+      SRC.TARG.CONSUME 1
       RETURN 1
-   elif <SRC.TARG.TYPE> != T_POTION
+   ELIF (<SRC.TARG.TYPE> != t_potion)
       SRC.SYSMESSAGE Thats not a potion!
       RETURN 1
-   elif <MORE1> && (<SRC.TARG.BASEID>!=<MORE1>)
-      SRC.SYSMESSAGE You can't mix potion types!
+   ELIF (<MORE1>) && (<SRC.TARG.BASEID>!=<MORE1>)
+      SRC.SYSMESSAGE You cannot mix potion types!
       RETURN 1
-   elif (<MOREX> > 99) //max 100 potion
-      SRC.SYSMESSAGE There's no space for further potions!
+   ELIF (<MOREX> > 99) //max 100 potion
+      SRC.SYSMESSAGE The keg is full!
       RETURN 1
-   elif (<MOREX>==0)
+   ELIF (<MOREX>==0)
       MORE1=<SRC.TARG.BASEID> // store potion baseid i_potion_xxx
-   elif (<MORE1>!=<SRC.TARG.BASEID>)
+   ELIF (<MORE1>!=<SRC.TARG.BASEID>)
       SRC.SYSMESSAGE You can't fill up the keg with this potions!
       RETURN 1
-   endif
+   ENDIF
    MORE2=(<MORE2>*<MOREX>)
    MOREX=(<MOREX> + 1)
    MORE2=(<MORE2> + <SRC.TARG.MORE2>) //store average makeskillvalue
@@ -193,16 +193,16 @@ ON=@TargOn_Item
    SRC.SOUND=snd_Z_END_LIQUID
    SRC.SYSMESSAGE You fill up the keg with a <SRC.TARG.NAME> Potion!
    SRC.TARG.REMOVE
-   SRC.NEWITEM=i_bottle_empty
-   SRC.ACT.ATTR=0
-   SRC.ACT.TIMER=-1
-   SRC.ACT.BOUNCE
-   return 1
+   SERV.NEWITEM=i_bottle_empty
+   NEW.ATTR=0
+   NEW.TIMER=-1
+   NEW.BOUNCE
+   RETURN 1
 
 [ITEMDEF i_potion_Agility]
 ID=i_bottle_blue
 NAME=Agility
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blood_moss,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -211,8 +211,8 @@ ON=@Create
    MORE2={ 15.1 60.0 }
 
 [ITEMDEF i_potion_AgilityGreat]
-ID=i_bottle_BLUE
-TYPE=T_POTION
+ID=i_bottle_blue
+TYPE=t_potion
 NAME=Greater Agility
 TDATA1=i_bottle_empty
 RESOURCES=3 i_reag_blood_moss,1 i_bottle_empty
@@ -222,8 +222,8 @@ ON=@Create
    MORE2={ 70.1 80.0 }
 
 [ITEMDEF i_potion_CureLess]
-ID=i_bottle_ORANGE
-TYPE=T_POTION
+ID=i_bottle_orange
+TYPE=t_potion
 NAME=Lesser Cure
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_garlic,1 i_bottle_empty
@@ -234,8 +234,8 @@ ON=@Create
 
 [ITEMDEF i_potion_Cure]
 NAME=Cure
-ID=i_bottle_ORANGE
-TYPE=T_POTION
+ID=i_bottle_orange
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=3 i_reag_garlic,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 25.1
@@ -245,8 +245,8 @@ ON=@Create
 
 [ITEMDEF i_potion_CureGreat]
 NAME=Greater Cure
-ID=i_bottle_ORANGE
-TYPE=T_POTION
+ID=i_bottle_orange
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=6 i_reag_garlic,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 65.1
@@ -256,8 +256,8 @@ ON=@Create
 
 [ITEMDEF i_potion_ExplosionLess]
 NAME=Lesser Explosion
-ID=i_bottle_PURPLE
-TYPE=T_POTION
+ID=i_bottle_purple
+TYPE=t_potion
 TDATA1=0
 RESOURCES=3 i_reag_sulfur_ash,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 5.1
@@ -267,8 +267,8 @@ ON=@Create
 
 [ITEMDEF i_potion_Explosion]
 NAME=Explosion
-ID=i_bottle_PURPLE
-TYPE=T_POTION
+ID=i_bottle_purple
+TYPE=t_potion
 TDATA1=0
 RESOURCES=5 i_reag_sulfur_ash,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 35.1
@@ -278,8 +278,8 @@ ON=@Create
 
 [ITEMDEF i_potion_ExplosionGreat]
 NAME=Greater Explosion
-ID=i_bottle_PURPLE
-TYPE=T_POTION
+ID=i_bottle_purple
+TYPE=t_potion
 TDATA1=0
 RESOURCES=10 i_reag_sulfur_ash,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 65.1
@@ -289,10 +289,10 @@ ON=@Create
 
 [ITEMDEF i_potion_HealLess]
 NAME=Lesser Heal
-ID=i_bottle_YELLOW
+ID=i_bottle_yellow
 RESOURCES=1 i_reag_ginseng,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 0.1
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 ON=@Create
    MORE1=s_heal
@@ -300,10 +300,10 @@ ON=@Create
 
 [ITEMDEF i_potion_Heal]
 NAME=Heal
-ID=i_bottle_YELLOW
+ID=i_bottle_yellow
 RESOURCES=3 i_reag_ginseng,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 ON=@Create
    MORE1=s_greater_heal
@@ -311,8 +311,8 @@ ON=@Create
 
 [ITEMDEF i_potion_HealGreat]
 NAME=Greater Heal
-ID=i_bottle_YELLOW
-TYPE=T_POTION
+ID=i_bottle_yellow
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=7 i_reag_ginseng,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 55.1
@@ -322,8 +322,8 @@ ON=@Create
 
 [ITEMDEF i_potion_Nightsight]
 NAME=Nightsight
-ID=i_bottle_BLACK
-TYPE=T_POTION
+ID=i_bottle_black
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_spider_silk,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 0.1
@@ -333,8 +333,8 @@ ON=@Create
 
 [ITEMDEF i_potion_PoisonLess]
 NAME=Lesser Poison
-ID=i_bottle_GREEN
-TYPE=T_POTION
+ID=i_bottle_green
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_nightshade,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 0
@@ -344,8 +344,8 @@ ON=@Create
 
 [ITEMDEF i_potion_Poison]
 NAME=Poison
-ID=i_bottle_GREEN
-TYPE=T_POTION
+ID=i_bottle_green
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=2 i_reag_nightshade,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -355,8 +355,8 @@ ON=@Create
 
 [ITEMDEF i_potion_PoisonGreat]
 NAME=Greater Poison
-ID=i_bottle_GREEN
-TYPE=T_POTION
+ID=i_bottle_green
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=4 i_reag_nightshade,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 55.1
@@ -366,8 +366,8 @@ ON=@Create
 
 [ITEMDEF i_potion_PoisonDeadly]
 NAME=Deadly Poison
-ID=i_bottle_GREEN
-TYPE=T_POTION
+ID=i_bottle_green
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=8 i_reag_nightshade,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 90.1
@@ -377,8 +377,8 @@ ON=@Create
 
 [ITEMDEF i_potion_Refresh]
 NAME=Refresh
-ID=i_bottle_RED
-TYPE=T_POTION
+ID=i_bottle_red
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_black_pearl,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 0
@@ -387,9 +387,9 @@ ON=@Create
    MORE2=50.0
 
 [ITEMDEF i_potion_RefreshTotal]
-ID=i_bottle_RED
+ID=i_bottle_red
 NAME=Total Refresh
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=5 i_reag_black_pearl,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 25.1
@@ -398,9 +398,9 @@ ON=@Create
    MORE2=100.0
 
 [ITEMDEF i_potion_Strength]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Strength
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=2 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 25.1
@@ -410,8 +410,8 @@ ON=@Create
 
 [ITEMDEF i_potion_StrengthGreat]
 NAME=Greater Strength
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=5 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 45.1
@@ -421,9 +421,9 @@ ON=@Create
    // These are custom potions
 
 [ITEMDEF i_potion_Shrink]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Shrink
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=2 i_reag_batwing,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 100.0
@@ -456,9 +456,9 @@ ON=@TargOn_Item
   return 1
 
 [ITEMDEF i_potion_Invisibility]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Invisibility
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=4 i_reag_wyrm_heart,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 65.1
@@ -468,9 +468,9 @@ ON=@Create
    COLOR=COLOR_SPECTRAL
 
 [ITEMDEF i_potion_Mana]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Mana Refresh
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=3 i_reag_eye_of_newt,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 65.1
@@ -480,9 +480,9 @@ ON=@Create
    COLOR=color_gray_lt
 
 [ITEMDEF i_potion_ManaTotal]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Total Mana Refresh
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=6 i_reag_eye_of_newt,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -495,9 +495,9 @@ ON=@Create
 [ITEMDEF i_potion_Beastform]
 // This potion polymorphs you into an animal for a while.
 // The animal it turns you into is determined when you make the potion (you can use taste id to determine which animal it does).
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Beastform
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blood_moss,1 i_reag_ginseng,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -507,9 +507,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Chameleon]
 // This potion makes your skin match the colors of whatever is behind you.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Chameleon skin
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_garlic,1 i_reag_spider_silk,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -519,9 +519,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Clever]
 // This potion gives a temporary boost to intelligence.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Cleverness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_fertile_dirt,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -531,9 +531,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Clever_Great]
 // This potion gives a temporary boost to intelligence.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Great Cleverness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=2 i_reag_fertile_dirt,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -543,9 +543,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Clumsiness]
 // This potion lowers your dexterity temporarily.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Clumsiness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blood_moss,1 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -555,9 +555,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Confusion]
 // This potion lowers your intelligence temporarily.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Confusion
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_nightshade,1 i_reag_fertile_dirt,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1
@@ -566,9 +566,9 @@ ON=@Create
    MORE2=50.0
 
 [ITEMDEF i_potion_Forget_Less]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Lesser Forgetfulness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -577,9 +577,9 @@ ON=@Create
    MORE2=40.0
 
 [ITEMDEF i_potion_Forget]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Forgetfulness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blackmoor,1 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 30.1
@@ -590,9 +590,9 @@ ON=@Create
 [ITEMDEF i_potion_Forget_Great]
 // This potion permanently lowers one skill.
 // You can tell which skill the potion lowers by tasting it.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Geeater Forgetfulness
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blackmoor,2 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 70.1
@@ -602,9 +602,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Gender]
 // This potion permanently changes your gender.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Gender swap
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blood_moss,1 i_reag_ginseng,1 i_reag_mandrake_root,1 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -614,9 +614,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Trance]
 // This potion temporarily increases your meditation skill.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Trance
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_black_pearl,2 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -626,9 +626,9 @@ ON=@Create
 
 [ITEMDEF i_potion_Trance_Great]
 // This potion temporarily increases your meditation skill.
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Greater Trance
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_black_pearl,1 i_reag_mandrake_root,2 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -639,9 +639,9 @@ ON=@Create
 [ITEMDEF i_potion_Restore]
 // This potion increases both your hit points and your stamina.
 RESOURCES=1 i_reag_black_pearl,1 i_reag_mandrake_root,1 i_bottle_empty
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Restoration
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
 ON=@Create
@@ -651,9 +651,9 @@ ON=@Create
 [ITEMDEF i_potion_Restore_Great]
 // This potion increases both your hit points and your stamina.
 RESOURCES=1 i_reag_black_pearl,2 i_reag_mandrake_root,1 i_bottle_empty
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Restoration
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
 ON=@Create
@@ -665,8 +665,8 @@ ON=@Create
 // It comes in multiple strengths:
 // Greater: RESOURCES=2 i_reag_ginseng,2 i_reag_mandrake_root,1 i_bottle_EMPTY
 NAME=Sustenance
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_ginseng,1 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -678,8 +678,8 @@ ON=@Create
 // This potion polymorphs you into a monster for a while.
 // The monster it turns you into is determined when you make the potion (you can use taste id to determine which animal it does).
 NAME=Monster form
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_blood_moss,1 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -690,8 +690,8 @@ ON=@Create
 [ITEMDEF i_potion_Particle]
 // This potion turns you into an immobile, but untargetable particle system for a while.
 NAME=Particle form
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_black_pearl,1 i_reag_blood_moss,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -702,8 +702,8 @@ ON=@Create
 [ITEMDEF i_potion_Shield]
 // This potion erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
 NAME=Shield
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_garlic,1 i_reag_sulfur_ash,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -714,8 +714,8 @@ ON=@Create
 [ITEMDEF i_potion_Steelskin]
 // This potion turns your skin into steel, giving a boost to your AR.
 NAME=Steelskin
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_garlic,1 i_reag_ginseng,2 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -726,8 +726,8 @@ ON=@Create
 [ITEMDEF i_potion_Stoneskin]
 // This potion turns your skin into stone, giving a boost to your AR.
 NAME=Stoneskin
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_garlic,1 i_reag_ginseng,1 i_reag_mandrake_root,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -738,8 +738,8 @@ ON=@Create
 [ITEMDEF i_potion_Weakness]
 // This potion temporarily lowers your strength.
 NAME=Weakness
-ID=i_bottle_WHITE
-TYPE=T_POTION
+ID=i_bottle_white
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_mandrake_root,1 i_reag_blackmoor,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -748,9 +748,9 @@ ON=@Create
    MORE2=100.0
 
 [COMMENT ITEMDEF i_potion_FloatLess]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Lesser Float
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=1 i_reag_pumice,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 15.1
@@ -760,9 +760,9 @@ ON=@Create
    COLOR=COLOR_CYAN
 
 [COMMENT ITEMDEF i_potion_Float]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Float
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=3 i_reag_pumice,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 35.1
@@ -772,9 +772,9 @@ ON=@Create
    COLOR=COLOR_CYAN
 
 [COMMENT ITEMDEF i_potion_FloatGreat]
-ID=i_bottle_WHITE
+ID=i_bottle_white
 NAME=Greater Float
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=i_bottle_empty
 RESOURCES=6 i_reag_pumice,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 65.1
@@ -784,9 +784,9 @@ ON=@Create
    COLOR=COLOR_CYAN
 
 [COMMENT ITEMDEF i_potion_Lava]
-ID=i_bottle_RED
+ID=i_bottle_red
 NAME=Lava Bomb
-TYPE=T_POTION
+TYPE=t_potion
 TDATA1=0
 RESOURCES=6 i_reag_grave_dust,1 i_bottle_empty
 SKILLMAKE=ALCHEMY 95.1

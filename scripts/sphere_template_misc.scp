@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -74,7 +74,7 @@ ITEM={ i_ore_verite 8 i_ore_bloodrock 4 i_ore_blackrock 2 i_ore_valorite 1 }
 CATEGORY=Random Item Templates
 SUBSECTION=Natural
 DESCRIPTION=Log
-ITEM={ i_log 1 }
+ITEM={ i_log 1 i_log 1 }
 
 [TEMPLATE random_nautical_fish]
 CATEGORY=Random Item Templates

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 17, 2013
+// FILE LAST UPDATED: Thursday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -715,7 +715,7 @@ ON=@DClick
                         ENDIF
                      ENDIF
                   END
-                  SERV.NEWITEM=i_fire_horn_TIMER
+                  SERV.NEWITEM=i_fire_horn_timer
                   NEW.CONT=<SRC>
                   NEW.TIMER=7
                ENDIF

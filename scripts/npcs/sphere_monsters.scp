@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 17, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -1961,7 +1961,7 @@ ON=@NPCRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Ice Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -2348,15 +2348,13 @@ ON=@NPCRestock
    ITEM=loot_slime
 ON=@GetHit
    //Spawn Creatures Attack (slime)
-   IF (<FLAGS> & statf_conjured)
-      RETURN 0
-   ENDIF
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_slime
-      NEW.FLAGS |= (statf_war|statf_conjured)
+   IF !(<R20>) && !(<FINDID.i_removetimer_mem>)
+      SERV.NEWNPC c_slime
       NEW.P=<SRC.P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-      SRC.UPDATE
    ENDIF
 
 [CHARDEF 034]
@@ -4157,7 +4155,7 @@ ON=@NPCRestock
    ITEM=loot_serpent_lava
 ON=@GetHit
    //Fire Aura Attack
-   IF ( (<MANA> >= 20) && (RAND(5)==0) )
+   IF ( (<MANA> >= 20) && !(<R5>) )
       MANA -= 20
       REF11=<UID>
       FORCHARS 3
@@ -6134,7 +6132,7 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Fire Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -7047,7 +7045,7 @@ ON=@NPCRestock
    ITEM=loot_succubus
 ON=@GetHit
    //Life Drain Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -7283,7 +7281,7 @@ ON=@NpcRestock
    ITEM=loot_mummy
 ON=@Hit
    //Mummy Curse Attack
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.f_IsCursed>) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.f_IsCursed>) )
       SRC.EMOTE affected by the mummy curse
       SRC.SPELLEFFECT s_curse,100.0,1,<UID>
       SRC.EFFECT 3,i_fx_curse,1,16,0,044
@@ -7610,7 +7608,7 @@ ON=@NPCRestock
    ITEM=loot_elem_ice
 ON=@GetHit
    //Ice Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 2
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -7709,7 +7707,7 @@ ON=@NPCRestock
    ITEM=loot_elem_snow
 ON=@GetHit
    //Ice Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 2
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -8166,11 +8164,12 @@ ON=@NpcRestock
    ITEM=loot_ai_healer
 ON=@GetHit
    //Spawn Creatures Attack (dread spiders)
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SERV.NEWNPC c_spider_dread
-      NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.P=<SRC.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -8224,7 +8223,7 @@ ON=@NPCRestock
    ITEM=loot_ai_healer
 ON=@GetHit
    //Life Drain Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -8299,28 +8298,15 @@ ON=@NpcRestock
    ITEM=loot_champ_lord_oaks
    ITEM=loot_ai_hard
 ON=@GetHit
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.UPDATE
+   IF !(<R20>)
+      FOR 4
+         SERV.NEWNPC c_pixie
+         NEW.P=<SRC.P>
+         NEW.HOME=<SRC.P>
+         NEW.HOMEDIST=7
+         NEW.ATTACK <SRC>
+         NEW.f_NPCRemovalTimer 1200
+      ENDFOR
    ENDIF
 
 [CHARDEF 0b0]
@@ -8371,28 +8357,15 @@ ON=@NpcRestock
    ITEM=loot_champ_silvani
    ITEM=loot_ai_healer
 ON=@GetHit
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.UPDATE
+   IF !(<R20>)
+      FOR 4
+         SERV.NEWNPC c_pixie
+         NEW.P=<SRC.P>
+         NEW.HOME=<SRC.P>
+         NEW.HOMEDIST=7
+         NEW.ATTACK <SRC>
+         NEW.f_NPCRemovalTimer 1200
+      ENDFOR
    ENDIF
 
 [CHARDEF 0b1]
@@ -8857,8 +8830,11 @@ ON=@Hit
       ARGN2=<DEF.dam_physical>
    ENDIF
 ON=@Death
-   SRC.NEWNPC c_savage_ridgeback
+   SERV.NEWNPC c_savage_ridgeback
    NEW.P=<SRC.P>
+   NEW.HOME=<SRC.P>
+   NEW.HOMEDIST=7
+   NEW.ATTACK <SRC>
 
 [CHARDEF 0ba]
 //FIXME: Tribal dance attack
@@ -10177,7 +10153,7 @@ ON=@Create
    RESENERGY=0
    RESFIRE=0
    RESPOISON=0
-   IF (RAND(1000)==1)
+   IF !(<R999>)
       NAME=mad cow
       KARMA=-1500
       TAMING=0
@@ -10648,7 +10624,7 @@ ON=@Create
    RESENERGY=0
    RESFIRE=0
    RESPOISON=0
-   IF (RAND(1000)==1)
+   IF !(<R999>)
       NAME=mad cow
       KARMA=-1500
       TAMING=0
@@ -10957,7 +10933,7 @@ ON=@NpcRestock
    ITEM=loot_kappa
 ON=@GetHit
    //Life Drain Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -11024,7 +11000,7 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@Hit
    //Angry Fire Attack
-   IF (RAND(5)==1) && (<MANA> > 20)
+   IF !(<R5>) && (<MANA> > 20)
       MANA -= 20
       SRC.SYSMESSAGELOC color_text,1070823//"The creature hits you with its Angry Fire."
       SRC.SPELLEFFECT s_explosion,<MAGERY>,0,<UID>
@@ -11207,7 +11183,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -11263,19 +11239,19 @@ ON=@Hit
    IF (<MANA> >= 15) && !(<SRC.FINDID.i_parablow_timer>)
       MANA -= 15
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM = i_parablow_timer
+      SERV.NEWITEM=i_parablow_timer
       SRC.EQUIP <NEW>
    ENDIF
 ON=@GetHit
    //Thrown Weapon Attack (daggers)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_dagger,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
    //Lightning Strike when hurt badly
-   IF (<HITS> < <EVAL <MAXHITS>/3>) && (RAND(5)==0)
+   IF (<HITS> < <EVAL <MAXHITS>/3>) && !(<R5>)
       SRC.EFFECT 1,1
       SRC.SOUND snd_spell_lightning
       SRC.DAMAGE <R15,25> <DEF.dam_lightning> <UID>
@@ -11383,9 +11359,9 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Thrown Weapon Attack (tessen)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_tessen,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
@@ -11484,7 +11460,7 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Poison Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -11602,8 +11578,8 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
-      NEW.LINK = <UID>
+      SERV.NEWITEM i_bleed_timer
+      NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
 
@@ -11656,15 +11632,15 @@ ON=@NpcRestock
    ITEM=loot_lady_of_snow
 ON=@GetHit
    //Thrown Weapon Attack (snowball)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_pet_elem_snow,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_cold> <UID>
       ENDIF
    ENDIF
 ON=@Hit
    //Icy Wind Attack
-   IF (RAND(5)==0)
+   IF !(<R5>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -11821,14 +11797,14 @@ ON=@Hit
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_parablow_timer>)
       MANA -= 15
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_parablow_timer
+      SERV.NEWITEM=i_parablow_timer
       SRC.EQUIP <NEW>
    ENDIF
 ON=@GetHit
    //Thrown Weapon Attack (axe)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_axe,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
@@ -11894,13 +11870,13 @@ ON=@NpcRestock
 ON=@Hit
    LOCAL.Counter=RAND(20)
    //Critical hit
-   IF ( (<MANA> >= 10) && (RAND(5)==0) )
+   IF ( (<MANA> >= 10) && !(<R5>) )
       EMOTE critical hit <SRC.NAME>
       SRC.DAMAGE <R25,35> <DEF.dam_physical>
       MANA -= 10
    ENDIF
    //Cursed blow
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.f_IsCursed>) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.f_IsCursed>) )
       SRC.SPELLEFFECT s_curse,100.0,1,<UID>
       SRC.EFFECT 3,i_fx_curse,1,16,0,044
       SRC.SOUND snd_spell_curse
@@ -11908,7 +11884,7 @@ ON=@Hit
    ENDIF
 ON=@GetHit
    //Teleport ranged attackers closer
-   IF ( (<DISTANCE> > 2) && (RAND(5)==0) )
+   IF ( (<DISTANCE> > 2) && !(<R5>) )
       SRC.GO <P>
    ENDIF
 
@@ -11967,12 +11943,12 @@ ON=@NpcRestock
 ON=@Hit
    LOCAL.Counter=RAND(20)
    //Critical Hit Attack vs pets
-   IF (<SRC.FLAGS>&statf_pet) || (RAND(10)==1)
+   IF (<SRC.FLAGS>&statf_pet) || !(<R10>)
       SRC.DAMAGE <R50,100> <DEF.dam_physical> <UID>
       EMOTE critical hit <SRC.NAME>
    ENDIF
    //Stat Reduction Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SRC.SPELLEFFECT s_curse,<MAGERY>,1,<UID>
    ENDIF
 ON=@GetHit
@@ -12050,7 +12026,7 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Putrid Nausea Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -12224,25 +12200,26 @@ ON=@Create
 ON=@NpcRestock
    ITEM=loot_shimmering_effusion
 ON=@GetHit
+   SERV.NEWITEM=random_crystal_broken
+   NEW.ATTR=attr_decay|attr_move_never
+   NEW.TIMER=<R10,20>
+   NEW.P=<P>
    //Spawn Creatures Attack
-   IF (RAND(10)==0)
+   IF !(<R10>)
       DORAND 4
-         SRC.NEWNPC c_fetid_essence
-         SRC.NEWNPC c_corporeal_blume
-         SRC.NEWNPC c_wisp_crystal
-         SRC.NEWNPC c_mantra_effervescent
+         SERV.NEWNPC c_fetid_essence
+         SERV.NEWNPC c_corporeal_blume
+         SERV.NEWNPC c_wisp_crystal
+         SERV.NEWNPC c_mantra_effervescent
       ENDDO
-      NEW.FLAGS |= (statf_war|statf_conjured)
       NEW.P=<SRC.P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-      SRC.NEWITEM=random_crystal_broken
-      NEW.ATTR=attr_decay|attr_move_never
-      NEW.TIMER=<R600,900>
-      NEW.P=<SRC.P>
-      SRC.UPDATE
    ENDIF
    //Energy Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -12673,7 +12650,7 @@ ON=@NpcRestock
    ITEM=loot_ai_healer
 ON=@GetHit
    //Stat Reduction Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SRC.SPELLEFFECT s_curse,<MAGERY>,1,<UID>
    ENDIF
 
@@ -12842,7 +12819,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -12850,7 +12827,7 @@ ON=@Hit
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_parablow_timer>)
       MANA -= 15
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_parablow_timer
+      SERV.NEWITEM=i_parablow_timer
       SRC.EQUIP <NEW>
    ENDIF
 //FIXME: half stats when tamed
@@ -12913,7 +12890,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -13209,7 +13186,7 @@ ON=@Create
 //FIXME: On death, drop the barding into the corpse and give it appropriate resistances.
 DEFNAME=c_armor_steed
 NAME=armored steed
-ICON=i_pet_horse
+ICON=i_pet_steed_armored
 SOUND=snd_animals_horse1
 CAN=MT_WALK|MT_RUN|MT_NONHUM
 DAM=25,35
@@ -13626,7 +13603,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -13785,7 +13762,7 @@ ON=@Hit
       SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
    ENDIF
    //Poison Spell Attack
-   IF ( (<MANA> >= 18) && (RAND(5)==0) && !(<SRC.FLAGS>&statf_poisoned) )
+   IF ( (<MANA> >= 18) && !(<R5>) && !(<SRC.FLAGS>&statf_poisoned) )
       MANA -= 18
       SRC.SPELLEFFECT s_poison,<MAGERY>,1,<UID>
       SRC.EFFECT 3,i_fx_sparkle,1,16,0,044
@@ -13839,7 +13816,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -13966,7 +13943,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -13974,7 +13951,7 @@ ON=@Hit
    IF (<MANA> >= 30) && !(<SRC.FINDID.i_blockheal_timer>)
       MANA -= 30
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_blockheal_timer
+      SERV.NEWITEM=i_blockheal_timer
       SRC.EQUIP <NEW>
    ENDIF
 
@@ -14090,27 +14067,26 @@ ON=@NpcRestock
    ITEM=loot_ai_hard
 ON=@GetHit
    //Spawn Creatures Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       DORAND 12
-         SRC.NEWNPC c_lich
-         SRC.NEWNPC c_spectre
-         SRC.NEWNPC c_lich_ancient
-         SRC.NEWNPC c_lich_lord
-         SRC.NEWNPC c_skeleton_knight
-         SRC.NEWNPC c_skeleton_mage
-         SRC.NEWNPC c_mummy
-         SRC.NEWNPC c_rotting_corpse
-         SRC.NEWNPC c_revenant_lion
-         SRC.NEWNPC c_wailing_banshee
-         SRC.NEWNPC c_grim_reaper
-         SRC.NEWNPC c_patchwork_skeleton
+         SERV.NEWNPC c_lich
+         SERV.NEWNPC c_spectre
+         SERV.NEWNPC c_lich_ancient
+         SERV.NEWNPC c_lich_lord
+         SERV.NEWNPC c_skeleton_knight
+         SERV.NEWNPC c_skeleton_mage
+         SERV.NEWNPC c_mummy
+         SERV.NEWNPC c_rotting_corpse
+         SERV.NEWNPC c_revenant_lion
+         SERV.NEWNPC c_wailing_banshee
+         SERV.NEWNPC c_grim_reaper
+         SERV.NEWNPC c_patchwork_skeleton
       ENDDO
-      NEW.FLAGS |= (statf_war|statf_conjured)
       NEW.P=<SRC.P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=10
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-//      NEW.ATTACK 
    ENDIF
 
 [CHARDEF 0135]
@@ -14218,7 +14194,7 @@ ON=@Hit
    IF (<MANA> >= 30) && !(<SRC.FINDID.i_blockheal_timer>)
       MANA -= 30
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_blockheal_timer
+      SERV.NEWITEM=i_blockheal_timer
       SRC.EQUIP <NEW>
    ENDIF
 
@@ -14364,7 +14340,7 @@ ON=@Hit
    IF (<MANA> >= 30) && !(<SRC.FINDID.i_blockheal_timer>)
       MANA -= 30
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_blockheal_timer
+      SERV.NEWITEM=i_blockheal_timer
       SRC.EQUIP <NEW>
    ENDIF
    //Whirlwind Attack
@@ -14467,7 +14443,7 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -14529,9 +14505,9 @@ ON=@Hit
    ENDIF
 ON=@GetHit
    //Thrown Weapon Attack (arms)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,random_body_parts_1,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
@@ -14592,7 +14568,7 @@ ON=@Hit
       SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
    ENDIF
    //Paralyze Attack
-   IF !(<SRC.FLAGS>&statf_freeze)&&(RAND(100)==1)
+   IF !(<SRC.FLAGS>&statf_freeze) && !(<R99>)
       SRC.SPELLEFFECT s_paralyze,100.0,1,<UID>
       SRC.EFFECT 3,i_fx_field_paralyze,1,16,0,02
       SRC.SOUND snd_spell_paralyze
@@ -14830,35 +14806,34 @@ ON=@Hit
    END
 ON=@GetHit
    //Thrown Weapon Attack (unholy bones)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_bone_unholy,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
    //Spawn Creatures Attack
-   IF (RAND(20)==1)
+   IF !(<R20>)
       SFX {1005 1010}
       SAY From my blood let a hellspawn arise!
       DORAND 12
-         SRC.NEWNPC c_demon
-         SRC.NEWNPC c_demon_balron
-         SRC.NEWNPC c_demon_ice
-         SRC.NEWNPC c_succubus
-         SRC.NEWNPC c_devourer_souls
-         SRC.NEWNPC c_demon_bone
-         SRC.NEWNPC c_ravager
-         SRC.NEWNPC c_demon_arcane
-         SRC.NEWNPC c_demon_moloch
-         SRC.NEWNPC c_demon_chaos
-         SRC.NEWNPC c_demon_horde_colored
+         SERV.NEWNPC c_demon
+         SERV.NEWNPC c_demon_balron
+         SERV.NEWNPC c_demon_ice
+         SERV.NEWNPC c_succubus
+         SERV.NEWNPC c_devourer_souls
+         SERV.NEWNPC c_demon_bone
+         SERV.NEWNPC c_ravager
+         SERV.NEWNPC c_demon_arcane
+         SERV.NEWNPC c_demon_moloch
+         SERV.NEWNPC c_demon_chaos
+         SERV.NEWNPC c_demon_horde_colored
       ENDDO
-      NEW.FLAGS |= (statf_war|statf_conjured)
       NEW.P=<SRC.P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=10
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-//      NEW.ATTACK
    ENDIF
 
 [CHARDEF 013f]
@@ -15644,6 +15619,8 @@ RESDISPDNID=c_ghost_woman
 ON=@Create
    NPC=brain_human
 
+[CHARDEF 027d]
+//Spectral Armor
 
 [CHARDEF 029a]
 DEFNAME=c_gargoyle_male
@@ -16749,9 +16726,9 @@ ON=@Death
       NEW.MORE2=c_kepetch
    ENDIF
 ON=@Hit
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FINDID.i_mem_vicious_bite>) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.FINDID.i_mem_vicious_bite>) )
       MANA -= 10
-      SRC.NEWITEM=i_mem_vicious_bite,1,<SRC>
+      SERV.NEWITEM=i_mem_vicious_bite,1,<SRC>
       NEW.TIMER=20
       NEW.LINK=<UID>
       NEW.MORE1=5
@@ -16809,9 +16786,9 @@ ON=@Death
       SERV.FINDID.i_fur.REMOVE
    ENDIF
 ON=@Hit
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FINDID.i_mem_vicious_bite>) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.FINDID.i_mem_vicious_bite>) )
       MANA -= 10
-      SRC.NEWITEM=i_mem_vicious_bite,1,<SRC>
+      SERV.NEWITEM=i_mem_vicious_bite,1,<SRC>
       NEW.TIMER=20
       NEW.LINK=<UID>
       NEW.MORE1=5
@@ -16896,7 +16873,7 @@ ON=@Hit
             MANA -= <LOCAL.ManaUsed>
             SRC.SYSMESSAGELOC color_text,1060087//"You have been mortally wounded!"
             SRC.SOUND snd_spell_paralyze
-            SRC.NEWITEM=i_blockheal_timer
+            SERV.NEWITEM=i_blockheal_timer
             SRC.EQUIP <NEW>
          ENDIF
       ENDIF
@@ -16930,7 +16907,7 @@ ON=@GetHit
          SRC.SPELLEFFECT s_paralyze,<MAGERY>,1,<UID>
          SRC.EFFECT 3,i_fx_field_paralyze,1,16,0,02
          SRC.SOUND snd_spell_paralyze
-         SRC.NEWNPC <SRC.BODY>
+         SERV.NEWNPC <SRC.BODY>
          REF1=<NEW>
          REF1.NAME=<SRC.NAME> statue
          REF1.KARMA=-5000
@@ -16950,7 +16927,7 @@ ON=@GetHit
          REF1.SPELLEFFECT s_paralyze,<MAGERY>,1,<SRC>
          REF1.ATTACK <SRC>
          REF1.P=<SRC.P>
-         SRC.NEWITEM=i_summon_mem,1,<REF1>
+         SERV.NEWITEM=i_summon_mem,1,<REF1>
          NEW.LINK=<UID>
          NEW.TIMER=6000//100 minutes should be plenty
 
@@ -16958,107 +16935,107 @@ ON=@GetHit
             REF1.FINDLAYER(layer_hair).REMOVE
             REF1.FINDLAYER(layer_beard).REMOVE
             IF (<SRC.FINDLAYER(layer_hand1)> )
-               NEWITEM=<SRC.FINDLAYER(layer_hand1).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_hand1).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_hand2)> )
-               NEWITEM=<SRC.FINDLAYER(layer_hand2).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_hand2).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_shoes)> )
-               NEWITEM=<SRC.FINDLAYER(layer_shoes).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_shoes).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_pants)> )
-               NEWITEM=<SRC.FINDLAYER(layer_pants).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_pants).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_shirt)> )
-               NEWITEM=<SRC.FINDLAYER(layer_shirt).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_shirt).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_helm)> )
-               NEWITEM=<SRC.FINDLAYER(layer_helm).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_helm).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_gloves)> )
-               NEWITEM=<SRC.FINDLAYER(layer_gloves).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_gloves).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_ring)> )
-               NEWITEM=<SRC.FINDLAYER(layer_ring).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_ring).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_talisman)> )
-               NEWITEM=<SRC.FINDLAYER(layer_talisman).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_talisman).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_collar)> )
-               NEWITEM=<SRC.FINDLAYER(layer_collar).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_collar).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_hair)> )
-               NEWITEM=<SRC.FINDLAYER(layer_hair).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_hair).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_half_apron)> )
-               NEWITEM=<SRC.FINDLAYER(layer_half_apron).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_half_apron).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_chest)> )
-               NEWITEM=<SRC.FINDLAYER(layer_chest).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_chest).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_wrist)> )
-               NEWITEM=<SRC.FINDLAYER(layer_wrist).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_wrist).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_beard)> )
-               NEWITEM=<SRC.FINDLAYER(layer_beard).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_beard).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_tunic)> )
-               NEWITEM=<SRC.FINDLAYER(layer_tunic).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_tunic).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_arms)> )
-               NEWITEM=<SRC.FINDLAYER(layer_arms).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_arms).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_cape)> )
-               NEWITEM=<SRC.FINDLAYER(layer_cape).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_cape).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_robe)> )
-               NEWITEM=<SRC.FINDLAYER(layer_robe).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_robe).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_skirt)> )
-               NEWITEM=<SRC.FINDLAYER(layer_skirt).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_skirt).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
             IF (<SRC.FINDLAYER(layer_legs)> )
-               NEWITEM=<SRC.FINDLAYER(layer_legs).ID>,1,<REF1>
+               SERV.NEWITEM=<SRC.FINDLAYER(layer_legs).ID>,1,<REF1>
                NEW.COLOR=<LOCAL.StoneColor>
                NEW.ATTR=attr_newbie
             ENDIF
@@ -17175,10 +17152,11 @@ ON=@NPCSeeNewPlayer
    IF (<MANA> >= 25) && (<TAG0.CURFOLLOWER> < 2)
       MANA -= 25
       TAG0.CURFOLLOWER += 1
-      SRC.NEWNPC c_raptor
+      SERV.NEWNPC c_raptor
       NEW.TAMING=0
-      NEW.FLAGS |= (statf_war|statf_conjured)
       NEW.P=<P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
       NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
@@ -17505,14 +17483,16 @@ ON=@NPCSeeNewPlayer
       SRC.SYSMESSAGELOC color_text,1112367//"You've been ambushed!"
       MANA -= 25
       TAG0.CURFOLLOWER += 2
-      TRYSRV SERV.NEWNPC c_spider_trapdoor
-      NEW.FLAGS |= (statf_war|statf_conjured)
+      SERV.NEWNPC c_spider_trapdoor
       NEW.P=<P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
       NEW.ACTION stealth
       NEW.f_NPCRemovalTimer 1200
-      TRYSRV SERV.NEWNPC c_spider_trapdoor
-      NEW.FLAGS |= (statf_war|statf_conjured)
+      SERV.NEWNPC c_spider_trapdoor
       NEW.P=<P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
       NEW.ACTION stealth
       NEW.f_NPCRemovalTimer 1200
    ENDIF
@@ -17580,7 +17560,7 @@ ON=@Death
    END
 ON=@Hit
    //Flammable Goo
-   IF (RAND(5)==0)
+   IF !(<R5>)
       IF (<MANA> >= 5)
          SRC.SYSMESSAGELOC color_text,1112366//"The flammable goo covering you bursts into flame!"
          MANA -= 5
@@ -17653,17 +17633,18 @@ ON=@NPCSeeNewPlayer
       SRC.SYSMESSAGELOC color_text,1113132//"The leather wolf howls for help"
       MANA -= 25
       TAG0.CURFOLLOWER += 2
-      TRYSRV SERV.NEWNPC c_wolf_leather
-      NEW.FLAGS |= (statf_war|statf_conjured)
+      SERV.NEWNPC c_wolf_leather
       NEW.P=<P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
       NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-      TRYSRV SERV.NEWNPC c_wolf_leather
-      NEW.FLAGS |= (statf_war|statf_conjured)
+      SERV.NEWNPC c_wolf_leather
       NEW.P=<P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
       NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
-      NEW.UPDATE
    ENDIF
 ON=@Death
    IF (<FINDID.i_summon_mem>)
@@ -17799,14 +17780,14 @@ ON=@NPCSeeNewPlayer
    ENDIF
 ON=@Hit
    //Paralyze Attack
-   IF (RAND(5)==1) && !(<SRC.FLAGS>&statf_freeze) && (<MANA> > 20)
+   IF !(<R5>) && !(<SRC.FLAGS>&statf_freeze) && (<MANA> > 20)
       MANA -= 20
       SRC.SPELLEFFECT s_paralyze,<MAGERY>,1,<UID>
       SRC.EFFECT 3,i_fx_field_paralyze,1,16,0,02
       SRC.SOUND snd_spell_paralyze
    ENDIF
    //Angry Fire Attack
-   IF (RAND(5)==1) && (<MANA> > 20)
+   IF !(<R5>) && (<MANA> > 20)
       MANA -= 20
       SRC.SYSMESSAGELOC color_text,1070823//"The creature hits you with its Angry Fire."
       SRC.SPELLEFFECT s_explosion,<MAGERY>,0,<UID>
@@ -17814,14 +17795,14 @@ ON=@Hit
       SRC.SOUND snd_spell_explosion
    ENDIF
    //Mana Drain Attack
-   IF (RAND(5)==1) && !(<SRC.FLAGS>&statf_freeze) && (<MANA> > 20)
+   IF !(<R5>) && !(<SRC.FLAGS>&statf_freeze) && (<MANA> > 20)
       MANA -= 20
       SRC.SPELLEFFECT s_mana_drain,<MAGERY>,1,<UID>
       SRC.EFFECT 3,i_fx_field_paralyze,1,16,0,02
       SRC.SOUND snd_spell_paralyze
    ENDIF
    //Dismount Attack
-   IF (RAND(5)==1) && (<MANA> >= 20) && (<SRC.FLAGS> & statf_onhorse)
+   IF !(<R5>) && (<MANA> >= 20) && (<SRC.FLAGS> & statf_onhorse)
       MANA -= 20
       SRC.DISMOUNT
       SRC.EMOTE knocked off mount!
@@ -18310,9 +18291,9 @@ ON=@NpcRestock
    ITEM=loot_ai_healer
 ON=@GetHit
    //Thrown Weapon Attack (axe)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_axe,2,1
-      IF (RAND(3)==0)
+      IF !(<R3>)
          SRC.DAMAGE <R25,35> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
@@ -18365,7 +18346,7 @@ ON=@GetHit
    //Energy Bolt Defense vs Range Attacker
    IF (<DISTANCE> > 2)
       SRC.TARG.EFFECT 0,i_fx_ebolt,2,1
-      IF (RAND(4)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R20,30> <DEF.dam_energy> <UID>
       ENDIF
    ENDIF
@@ -18417,7 +18398,7 @@ ON=@GetHit
    //Energy Bolt Defense vs Range Attacker
    IF (<DISTANCE> > 2)
       SRC.TARG.EFFECT 0,i_fx_ebolt,2,1
-      IF (RAND(3)==0)
+      IF !(<R3>)
          SRC.DAMAGE <R30,40> <DEF.dam_energy> <UID>
       ENDIF
    ENDIF
@@ -18528,7 +18509,7 @@ ON=@GetHit
    //Energy Bolt Defense vs Range Attacker
    IF (<DISTANCE> > 2)
       SRC.TARG.EFFECT 0,i_fx_ebolt,2,1
-      IF (RAND(2)==0)
+      IF !(<R2>)
          SRC.DAMAGE <R40,50> <DEF.dam_energy> <UID>
       ENDIF
    ENDIF
@@ -18738,12 +18719,12 @@ ON=@Hit
 //   IF (<MANA> >= 25) && !(<SRC.FINDID.i_parablow_timer>)
 //      MANA -= 25
 //      SRC.SOUND snd_spell_paralyze
-//      SRC.NEWITEM=i_parablow_timer
+//      SERV.NEWITEM=i_parablow_timer
 //      SRC.EQUIP <NEW>
 //   ENDIF
 ON=@GetHit
    //Poison Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -18808,7 +18789,7 @@ ON=@Hit
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_parablow_timer>)
       MANA -= 25
       SRC.SOUND snd_spell_paralyze
-      SRC.NEWITEM=i_parablow_timer
+      SERV.NEWITEM=i_parablow_timer
       SRC.EQUIP <NEW>
    ENDIF
 
@@ -18910,9 +18891,9 @@ ON=@NpcRestock
    ITEM=loot_meer_warrior
 ON=@GetHit
    //Thrown Weapon Attack (daggers)
-   IF (<DISTANCE> > 2) && (RAND(5)==0)
+   IF (<DISTANCE> > 2) && !(<R5>)
       SRC.TARG.EFFECT 0,i_dagger,2,1
-      IF (RAND(5)==0)
+      IF !(<R5>)
          SRC.DAMAGE <R15,25> <DEF.dam_physical> <UID>
       ENDIF
    ENDIF
@@ -18968,7 +18949,7 @@ ON=@NpcRestock
    ITEM=loot_meer_eternal
 ON=@GetHit
    //Life Drain Aura Attack
-   IF (RAND(3)==0)
+   IF !(<R3>)
       REF11=<UID>
       FORCHARS 3
          IF (<ISPLAYER>) || (<FLAGS>&statf_pet)
@@ -19140,7 +19121,7 @@ ON=@Death
 ON=@NpcRestock
    ITEM=loot_plague_beast
 ON=@Hit
-   IF (RAND(20)==1)
+   IF !(<R20>)
       SERV.NEWITEM random_body_parts_1
       NEW.P=<P>
       NEW.MOVE {-2 2} {-2 2}
@@ -19159,11 +19140,12 @@ ON=@ItemStep
    ENDIF
 ON=@GetHit
    //Spawn Creatures Attack (plague spawn)
-   IF ( (<DISTANCE>==1) && (RAND(5)==0) )
+   IF ( (<DISTANCE>==1) && !(<R5>) )
       SERV.NEWNPC c_plague_spawn
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
-      NEW.HOMEDIST=20
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=10
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -19390,15 +19372,16 @@ ON=@NpcRestock
    ITEM=loot_bog_thing
 ON=@GetHit
    //Spawn Creatures Attack (bogling)
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SERV.NEWNPC c_bogling
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
    //Eats boglings when badly hurt
-   IF (RAND(10)==1) && (<HITS> < 100)
+   IF !(<R10>) && (<HITS> < 100)
       REF11=<UID>
       FORCHARS 2
          IF (<ID>==c_bogling)
@@ -19537,14 +19520,15 @@ ON=@NpcRestock
    ITEM=loot_solen_queen
 ON=@GetHit
    //Spawn Creatures Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       DORAND 2
          SERV.NEWNPC c_solen_worker
          SERV.NEWNPC c_solen_warrior
       ENDDO
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -19709,14 +19693,16 @@ ON=@NpcRestock
    ITEM=loot_ant_lion
 ON=@GetHit
    //Dig a tunnel and heal when hit with ranged attack
-   IF (<DISTANCE>>2) && (RAND(2)==1)
+   IF (<DISTANCE>>2) && !(<R2>)
       SRC.SYSMESSAGE The ant lion dug a tunnel!
       HITS += <R20,30>
       IF (<HITS> > <MAXHITS>)
          HITS = <MAXHITS>
       ENDIF
       REMOVEFROMVIEW
-      SERV.NEWITEM=i_hole
+      SERV.NEWITEM=i_blood_pool_large
+      NEW.COLOR=1
+      NEW.NAME=ant lion hole
       NEW.P=<P>
       NEW.ATTR=attr_move_never|attr_decay
       NEW.TIMER=5
@@ -20363,14 +20349,15 @@ ON=@NpcRestock
    ITEM=loot_solen_queen
 ON=@GetHit
    //Spawn Creatures Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       DORAND 2
          SERV.NEWNPC c_solen_worker_black
          SERV.NEWNPC c_solen_warrior_black
       ENDDO
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -20511,15 +20498,16 @@ ON=@NpcRestock
    ITEM=loot_solen_queen
 ON=@GetHit
    //Spawn Creatures Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       DORAND 2
          SERV.NEWNPC c_solen_queen
          SERV.NEWNPC c_solen_worker
          SERV.NEWNPC c_solen_warrior
       ENDDO
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -20577,15 +20565,16 @@ ON=@NpcRestock
    ITEM=loot_solen_queen
 ON=@GetHit
    //Spawn Creatures Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       DORAND 2
          SERV.NEWNPC c_solen_queen_black
          SERV.NEWNPC c_solen_worker_black
          SERV.NEWNPC c_solen_warrior_black
       ENDDO
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
+      NEW.HOME=<SRC.P>
       NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
       NEW.f_NPCRemovalTimer 1200
    ENDIF
 
@@ -20876,7 +20865,7 @@ ON=@NPCRestock
    ITEM=loot_phoenix
 ON=@GetHit
    //Fire Aura Attack
-   IF (RAND(3)==0) && (<MANA> >= 20)
+   IF !(<R3>) && (<MANA> >= 20)
       MANA -= 20
       REF11=<UID>
       FORCHARS 2
@@ -20900,7 +20889,7 @@ ON=@Death
 
 
 [CHARDEF 03ca]
-//No Stratics entry since its just an equipment (deathrobe) animation
+//FIXME: This may be a better summoned revenant
 DEFNAME=c_phantom
 NAME=phantom
 ICON=i_pet_lich
@@ -21200,7 +21189,7 @@ ON=@Create
 ON=@NPCRestock
    ITEM=loot_werewolf
 ON=@GetHit
-   IF ((RAND(9)==1)
+   IF !(<R10>)
       IF (<BODY>==c_werewolf)
          BODY=c_man
       ELSE
@@ -21596,7 +21585,7 @@ ON=@NPCRestock
    ITEM=loot_ai_hard
 ON=@Hit
    //Poison damage
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FLAGS>&statf_poisoned) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.FLAGS>&statf_poisoned) )
       MANA -= 10
       SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
    ENDIF
@@ -21610,12 +21599,12 @@ ON=@Hit
    //Bleed Attack
    IF (<MANA> >= 25) && !(<SRC.FINDID.i_bleed_timer>)
       MANA -= 25
-      SRC.NEWITEM i_bleed_timer
+      SERV.NEWITEM i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
    //Paralyze Attack
-   IF !(<SRC.FLAGS>&statf_freeze)&&(RAND(20)==1)
+   IF !(<SRC.FLAGS>&statf_freeze)&&!(<R20>)
       SRC.SPELLEFFECT s_paralyze,<POISONING>,1,<UID>
       SRC.EFFECT 3,i_fx_field_paralyze,1,16,0,02
       SRC.SOUND snd_spell_paralyze
@@ -21627,13 +21616,13 @@ ON=@Hit
       ARGN2 = <DEF.dam_physical>
    ENDIF
    //Angry Fire Attack
-   IF (RAND(12)==0)
+   IF !(<R10>)
       SRC.SPELLEFFECT s_explosion,<MAGERY>,1,<UID>
       SRC.EFFECT 3,i_fx_explosion,1,16,0,044
       SRC.SOUND snd_spell_explosion
    ENDIF
    //Stat Reduction Attack
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SRC.SPELLEFFECT s_curse,<MAGERY>,1,<UID>
    ENDIF
 ON=@GetHit
@@ -21691,11 +21680,11 @@ ON=@NpcRestock
    //FIXME: Needs Plague Beast Mutation Core loot.
 ON=@Hit
    //Poison damage
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FLAGS>&statf_poisoned) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.FLAGS>&statf_poisoned) )
       MANA -= 10
       SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
    ENDIF
-   IF RAND(20)==1
+   IF !(<R20>)
       SERV.NEWITEM random_body_parts_1
       NEW.P=<P>
       NEW.MOVE {-2 2} {-2 2}
@@ -21714,12 +21703,13 @@ ON=@ItemStep
    ENDIF
 ON=@GetHit
    //Spawn Creatures Attack (plague spawn)
-   IF (RAND(10)==1)
+   IF !(<R10>)
       SERV.NEWNPC c_plague_spawn
       NEW.P=<P>
-      NEW.HOME=<NEW.P>
-      NEW.HOMEDIST=20
-      NEW.REMOVETIMER 1200
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=10
+      NEW.ATTACK <SRC>
+      NEW.f_NPCRemovalTimer 1200
    ENDIF
 
 [CHARDEF c_plague_spawn]
@@ -21768,7 +21758,7 @@ ON=@NPCRestock
    ITEM=loot_plague_spawn
 ON=@Hit
    //Poison damage
-   IF ( (<MANA> >= 10) && (RAND(5)==0) && !(<SRC.FLAGS>&statf_poisoned) )
+   IF ( (<MANA> >= 10) && !(<R5>) && !(<SRC.FLAGS>&statf_poisoned) )
       MANA -= 10
       SRC.SPELLEFFECT s_poison,<POISONING>,1,<UID>
    ENDIF
@@ -21868,30 +21858,6 @@ ON=@Create
 ON=@NpcRestock
    ITEM=loot_champ_lord_oaks
    ITEM=loot_ai_hard
-ON=@GetHit
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.UPDATE
-   ENDIF
 
 [CHARDEF c_forest_queen]
 ID=c_champ_silvani
@@ -21940,30 +21906,6 @@ ON=@Create
 ON=@NpcRestock
    ITEM=loot_champ_silvani
    ITEM=loot_ai_healer
-ON=@GetHit
-   IF (RAND(19)==1)
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.NEWNPC c_pixie
-      NEW.FLAGS |= (statf_war|statf_conjured)
-      NEW.P=<SRC.P>
-      NEW.ATTACK <SRC>
-      NEW.f_NPCRemovalTimer 1200
-      SRC.UPDATE
-   ENDIF
 
 [CHARDEF c_golem_blackrock]
 ID=c_stone_form

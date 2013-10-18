@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 17, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -131,13 +131,13 @@ ON=@Hit
 [EVENTS e_poisoned_spit]
 //Poisoned Spit Defense
 ON=@GetHit
-   REF1=<SRC> // cause of damage
-   REF2=<UID> // victim of damage (the spitter)
+   REF1=<SRC> // Source of damage
+   REF2=<UID> // Victim of damage (the spitter)
    IF (<MANA> > 15) && (<DISTANCE> > 2) && !(<SRC.FLAGS> & statf_poisoned) && (<REF1> != <REF2>)
       MANA -= 15
       TRYSRC <REF2> EFFECT 0,i_fx_fireball,10,16,0,044,4
       REF1.SPELLEFFECT s_poison,<REF2.POISONING>,<REF2>
-      REF1.DAMAGE <R15,25> <DEF.dam_poison> <REF2>
+      REF1.DAMAGE <R15,25> <DEF.dam_poison> <QVAL <REF2>?<REF2>:0>
       REF1.SOUND snd_spell_poison
       REF1.SYSMESSAGELOC color_text,1070821,<NAME>//"~ spits a poisonous substance at you!"
    ENDIF
@@ -150,7 +150,7 @@ ON=@GetHit
    IF (<MANA> > 15) && (<DISTANCE> > 2) && (<REF1> != <REF2>)
       MANA -= 15
       TRYSRC <REF2> EFFECT 0,i_fx_fireball,10,16,0,044,4
-      REF1.DAMAGE <R15,25> <DEF.dam_acidic> <UID>
+      REF1.DAMAGE <R15,25> <DEF.dam_acidic> <QVAL <UID>?<UID>:0>
       REF1.SYSMESSAGELOC color_text,1071966//"The solen's damaged acid sac squirts acid!"
       REF1.SOUND snd_spell_poison
       SERV.NEWITEM i_pool_acid
@@ -172,7 +172,7 @@ ON=@Create
    TIMER={4 8}
 ON=@Step
    IF (<SRC.ISPLAYER>)
-      SRC.DAMAGE <R10,15> <DEF.dam_acidic> <LINK>
+      SRC.DAMAGE <R10,15> <DEF.dam_acidic> <QVAL <LINK>?<LINK>:0>
       SRC.SYSMESSAGELOC color_text,1077483//"The acid burns you!"
       //FIXME: Damage a random equipped item...
    ENDIF
@@ -182,7 +182,7 @@ ON=@Hit
    //Bleed attack
    IF (<MANA> >= 25)&&(RAND(10)==1)
       MANA -= 25
-      SRC.NEWITEM=i_bleed_timer
+      SERV.NEWITEM=i_bleed_timer
       NEW.LINK=<UID>
       SRC.EQUIP <NEW>
    ENDIF
@@ -192,7 +192,7 @@ ON=@Hit
 ID=0122a
 NAME=bleed timer
 TYPE=t_eq_script
-LAYER=30
+LAYER=layer_special
 WEIGHT=0
 ON=@Create
    ATTR=attr_decay|attr_can_decay
@@ -214,27 +214,27 @@ ON=@Timer
          END
          BEGIN // MORE1=1
             CONT.EMOTE bleed slowly
-            CONT.DAMAGE {1 2} <DEF.dam_god> <LINK>
+            CONT.DAMAGE {1 2} <DEF.dam_god> <QVAL <LINK>?<LINK>:0>
             TIMER=2
          END
          BEGIN // MORE1=2
             CONT.EMOTE bleed slowly
-            CONT.DAMAGE {2 4} <DEF.dam_god> <LINK>
+            CONT.DAMAGE {2 4} <DEF.dam_god> <QVAL <LINK>?<LINK>:0>
             TIMER=2
          END
          BEGIN // MORE1=3
             CONT.EMOTE bleed moderately
-            CONT.DAMAGE {3 6} <DEF.dam_god> <LINK>
+            CONT.DAMAGE {3 6} <DEF.dam_god> <QVAL <LINK>?<LINK>:0>
             TIMER=2
          END
          BEGIN // MORE1=4
             CONT.EMOTE bleed heavily
-            CONT.DAMAGE {4 9} <DEF.dam_god> <LINK>
+            CONT.DAMAGE {4 9} <DEF.dam_god> <QVAL <LINK>?<LINK>:0>
             TIMER=2
          END
          BEGIN // MORE1=5
             CONT.EMOTE bleed profusely
-            CONT.DAMAGE {5 12} <DEF.dam_god> <LINK>
+            CONT.DAMAGE {5 12} <DEF.dam_god> <QVAL <LINK>?<LINK>:0>
             TIMER=2
          END
       ENDDO
@@ -291,7 +291,7 @@ ON=@ContextMenuSelect
    ENDIF
 
 [ITEMDEF i_mem_vicious_bite]
-ID=i_pet_kepetch
+ID=0e23
 NAME=Vicious bite memory
 TYPE=t_eq_script
 LAYER=layer_special
@@ -302,7 +302,7 @@ ON=@Create
 ON=@Timer
    IF (<MORE1> > 0)
       MORE1 -= 1
-      CONT.DAMAGE 5 <DEF.dam_poison> <LINK>
+      CONT.DAMAGE 5 <DEF.dam_poison> <QVAL <LINK>?<LINK>:0>
       CONT.SYSMESSAGELOC color_text,1112473//"Your vicious wound is festering!"
       TIMER=20
       RETURN 1
@@ -316,7 +316,7 @@ ON=@Timer
 ID=i_bandage
 NAME=block heal timer
 TYPE=t_eq_script
-LAYER=30
+LAYER=layer_special
 WEIGHT=0
 ON=@Equip
    ATTR=attr_decay|attr_can_decay
@@ -341,7 +341,7 @@ ON=@Timer
 ID=01d8c
 NAME=paralyzing blow timer
 TYPE=t_eq_script
-LAYER=30
+LAYER=layer_special
 WEIGHT=0
 ON=@Equip
    ATTR=attr_decay|attr_can_decay

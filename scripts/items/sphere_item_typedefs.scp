@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 17, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -110,19 +110,27 @@ ON=@DClick
 
 
 [TYPEDEF t_sex_change]
-ON=@DCLICK
+ON=@DClick
    IF (<SRC.FLAGS> & <DEF.statf_polymorph>)
       SRC.SPELLEFFECT=s_dispel 1000 // Dispell the polymorph effect
    ENDIF
    IF (<SRC.BODY> == c_man)
       SRC.BODY=c_woman
-   ELIF (<SRC.BODY> == c_woman)
+   ELSEIF (<SRC.BODY> == c_woman)
       SRC.BODY=c_man
+   ELSEIF (<SRC.BODY> == c_elf_male)
+      SRC.BODY=c_elf_female
+   ELSEIF (<SRC.BODY> == c_elf_female)
+      SRC.BODY=c_elf_male
+   ELSEIF (<SRC.BODY> == c_gargoyle_male)
+      SRC.BODY=c_gargoyle_female
+   ELSEIF (<SRC.BODY> == c_gargoyle_female)
+      SRC.BODY=c_gargoyle_male
    ELSE
       RETURN 1
    ENDIF
    SERV.NEWITEM=i_fire_column              // create a fire column
-   NEW.ATTR=attr_can_decay|attr_move_never // allow it to decay and prevent move
+   NEW.ATTR=attr_decay|attr_move_never // allow it to decay and prevent move
    NEW.TIMER=2                             // it lasts 2 seconds
    NEW.P=<SRC.P>                           // put it on the player
    SRC.SOUND=snd_spell_explosion           // play a sound
@@ -1282,6 +1290,7 @@ ELSE
 ENDIF
 UPDATE
 
+
 [TYPEDEF t_chicken_coop]
 // Used to raise fighting chickens!
 // FIXME: Not complete, do not use...
@@ -1317,27 +1326,6 @@ ON=@ContextMenuSelect
    IF (<ARGN>==102)
       //1080048//"Select a pet to retrieve from the stable:"
    ENDIF
-
-
-[TYPEDEF t_mailbox]
-//FIXME: Implement keys, secure locks, pickable locks, and traps.
-ON=@DropOn_Self
-   ID=<TAG.FullID>
-   UPDATE
-ON=@PickUp_Self
-   TIMERF 0,f_ResetMailboxFlag
-
-[FUNCTION f_ResetMailboxFlag]
-LOCAL.HasAnItem=0
-FORCONT <UID> 0
-   LOCAL.HasAnItem += 1
-ENDFOR
-IF (<LOCAL.HasAnItem>)
-   ID=<TAG.FullID>
-ELSE
-   ID=<TAG.EmptyID>
-ENDIF
-UPDATE
 
 
 [TYPEDEF t_masonry_tool]

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Thursday, October 17, 2013
 //
 VERSION=0.56c
 
@@ -18,10 +18,10 @@ This file contains wands that are not related to Magery, AOS Necromancy, or
 other magic skills.
 
 
-[ITEMDEF i_wand_SUMMON_UNDEAD]
+[ITEMDEF i_wand_summon_undead]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_x_green2
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_x_green2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Summon Undead
@@ -31,10 +31,10 @@ ON=@Create
 	MORE2=10
 	ATTR=attr_magic
 
-[ITEMDEF i_wand_ANIMATE_DEAD]
+[ITEMDEF i_wand_animate_dead]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_x_teal2
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_x_teal2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Animate Dead
@@ -44,10 +44,10 @@ ON=@Create
 	MORE2=10
 	ATTR=attr_magic
 
-[ITEMDEF i_wand_BONE_ARMOR]
+[ITEMDEF i_wand_bone_armor]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_x_brown2
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_x_brown2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Bone Armor
@@ -57,10 +57,10 @@ ON=@Create
 	MOREY=50.0
 	MORE2=10
 
-[ITEMDEF i_wand_LIGHT]
+[ITEMDEF i_wand_light]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_x_red
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_x_red
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Light
@@ -70,10 +70,10 @@ ON=@Create
 	MOREY=50.0
 	MORE2=10
 
-[ITEMDEF i_wand_FIRE_BOLT]
+[ITEMDEF i_wand_fire_bolt]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_x_blue
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_x_blue
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Fire Bolt
@@ -83,10 +83,10 @@ ON=@Create
 	MOREY=50.0
 	MORE2=10
 
-[ITEMDEF i_wand_HALLUCINATION]
+[ITEMDEF i_wand_hallucination]
 ID=i_wand_4
-TYPE=T_WAND
-RESOURCES=i_wand_4,10 i_scroll_mind_blast
+TYPE=t_wand
+RESOURCES=1 i_wand_4,10 i_scroll_mind_blast
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Hallucination
@@ -96,10 +96,10 @@ ON=@Create
 	MOREY=50.0
 	MORE2=10
 
-[ITEMDEF i_wand_FIREWORKS]
+[ITEMDEF i_wand_fireworks]
 ID=i_wand_3
 NAME=fireworks wand 20 charges
-RESOURCES=i_wand_3
+RESOURCES=1 i_wand_3
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Wands
 DESCRIPTION=Wand of Fireworks
@@ -117,23 +117,23 @@ ON=@DClick
 	ENDIF
 	MORE2 -= 1
 	NAME=fireworks wand <EVAL <MORE2>> charges
-	SRC.NEWITEM=i_fx_curse
-	SRC.ACT.NAME=fireworks display
-	SRC.ACT.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
-	SRC.ACT.TIMER=5
-	SRC.ACT.SOUND=011c
-	SRC.NEWITEM=i_fx_curse
-	SRC.ACT.NAME=fireworks display
-	SRC.ACT.COLOR=2
-	SRC.ACT.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
-	SRC.ACT.TIMER=6
-	SRC.ACT.SOUND=011e
-	SRC.NEWITEM=i_fx_curse
-	SRC.ACT.NAME=fireworks display
-	SRC.ACT.COLOR=481
-	SRC.ACT.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
-	SRC.ACT.TIMER=4
-	SRC.ACT.SOUND=011c
+	SERV.NEWITEM=i_fx_curse
+	NEW.NAME=fireworks display
+	NEW.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
+	NEW.TIMER=5
+	NEW.SOUND=011c
+	SERV.NEWITEM=i_fx_curse
+	NEW.NAME=fireworks display
+	NEW.COLOR=2
+	NEW.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
+	NEW.TIMER=6
+	NEW.SOUND=011e
+	SERV.NEWITEM=i_fx_curse
+	NEW.NAME=fireworks display
+	NEW.COLOR=481
+	NEW.MOVE=-2+RAND(5),-2+RAND(5),20+RAND(12)
+	NEW.TIMER=4
+	NEW.SOUND=011c
 	RETURN 1
 
 [ITEMDEF i_wand_identify]
@@ -160,7 +160,7 @@ ON=@DClick
       TARGET What do you want to identify?
    ENDIF
    RETURN 1
-ON=@Targon_Item
+ON=@TargOn_Item
    SRC.TARG.ATTR |= attr_identified
    SRC.SYSMESSAGE This item weighs <FVAL <SRC.TARG.WEIGHT>> stone.
    IF <SRC.TARG.DYE>

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 17, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -31,13 +31,20 @@ mount_0xe4	03ea1	// horse 3
 mount_0xcc	03ea2	// horse 4
 // T2A
 mount_0xd2	03ea3	// desert ostard
-mount_0xda	03ea4	// frenz ostard
+mount_0xda	03ea4	// frenzied ostard
 mount_0xdb	03ea5	// forest ostard
-mount_0xdc	03ea6	// Llama
+mount_0xdc	03ea6	// llama
 // LBR
+mount_0xa9  03e95 // fire beetle
+mount_0xc3	03e97	// ethereal beetle
+mount_0xc2	03e98	// ethereal swamp dragon
+mount_0xc1	03e9a	// ethereal ridgeback
+mount_0xc0	03e9b	// ethereal unicorn
+mount_0xbf	03e9c	// ethereal kirin
 mount_0xbe	03e9e	// fire steed
-mount_0x72	03ea7	// dark steed
+mount_0x74	03ea7	// nightmare
 mount_0x75	03ea8	// silver steed
+mount_0xb2	03ea9	// unknown mare
 mount_0x73	03eaa	// ethereal horse
 mount_0xaa	03eab	// ethereal llama
 mount_0xab	03eac	// ethereal ostard
@@ -46,27 +53,27 @@ mount_0x78	03eaf	// minax warhorse
 mount_0x79	03eb0	// shadowlord warhorse
 mount_0x77	03eb1	// magecounsil warhorse
 mount_0x76	03eb2	// britannian warhorse
-mount_0x90	03eb3	// sea horse
+mount_0x90	03eb3	// seahorse
 mount_0x7a	03eb4	// unicorn
-mount_0xc0	03eb5	// ethereal unicorn (looks like horse)
-mount_0xc1	03eb6	// ethereal ridgeback (looks like horse)
-mount_0x74	03eb7	// nightmare
+mount_0xb1	03eb5	// dread warhorse
+mount_0x72	03eb6	// dark steed
+mount_0xb3	03eb7	// unknown mare 2
 mount_0xbb	03eb8	// ridgeback
 mount_0xbc	03eba	// savage ridgeback
 mount_0x319	03ebb	// skeletal mount
 mount_0x317	03ebc	// beetle
-mount_0x31a	03ebd	// swamp dragon 1
-mount_0x31f	03ebe	// swamp dragon 2
+mount_0x31a	03ebd	// swamp dragon
+mount_0x31f	03ebe	// armored swamp dragon
 // AOS
 // SE
 mount_0xf3	03e94	// hiryu
 // ML
-mount_0x11c	03e92 // Armored Steed (Mondains Steed)
-mount_0x115	03e91 // Cu Sidhe
-mount_0x114	03e90 // Reptalon
-mount_0xd5	03ec5	// Polar Bear (veteran's award)
+mount_0x11c	03e92 // armored steed (Mondains Steed, Charger of the Fallen)
+mount_0x115	03e91 // cu sidhe
+mount_0x114	03e90 // reptalon
+mount_0xd5	03ec5	// polar bear (veteran's award)
 // SA
-mount_0x1b0 03ec6 // Armored Boura
+mount_0x1b0 03ec6 // armored boura
 
 [DEFNAME hues]
 color_text             -1

@@ -1,3 +1,4 @@
+//****************************************************************************
 // SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -6,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -3012,14 +3013,13 @@ SUBSECTION=Character Icons
 DESCRIPTION=Parrot
 
 [ITEMDEF 02d9c]
-//FIXME: This looks more like a horse
-DEFNAME=i_pet_darknight_creeper2
-NAME=Darknight Creeper
+DEFNAME=i_pet_steed_armored
+NAME=Armored Steed
 TYPE=t_figurine
-TDATA3=c_darknight_creeper
+TDATA3=c_armor_steed
 CATEGORY=Miscellaneous
 SUBSECTION=Character Icons
-DESCRIPTION=Darknight Creeper
+DESCRIPTION=Armored Steed
 
 
 [ITEMDEF 03d64]

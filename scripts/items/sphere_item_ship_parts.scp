@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -129,84 +129,84 @@ DESCRIPTION=Dragon Prow
 [ITEMDEF 03e4a]
 DEFNAME=i_ship_tillerman
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e4b]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e4c]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e4d]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e4e]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e4f]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e50]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e51]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e52]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e53]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e54]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
 
 [ITEMDEF 03e55]
 TYPE=t_ship_tiller
-CAN=CAN_I_DCIGNORELOS
+CAN=can_i_dcignorelos
 CATEGORY=Ship Parts
 SUBSECTION=Tillerman
 DESCRIPTION=Tillerman
@@ -564,25 +564,28 @@ SUBSECTION=Deck
 DESCRIPTION=Deck
 
 [ITEMDEF 03e90]
-//FIXME: ship (really used as reptalon equipped)?
+//ship (really used as reptalon equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e91]
-//FIXME: ship (really used as cu-sidhe equipped)?
+//ship (really used as cu-sidhe equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e92]
-//FIXME: ship (really used as armor steed equipped)?
+//ship (really used as armored steed equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Hatch
 DESCRIPTION=Hatch (West open)
+WEIGHT=0
 
 [ITEMDEF 03e93]
 DEFNAME=i_ship_hatch_w
@@ -593,17 +596,20 @@ SUBSECTION=Hatch
 DESCRIPTION=Hatch (West)
 
 [ITEMDEF 03e94]
-//FIXME: ship (really used as hiryu equipped)?
+//ship (really used as hiryu equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e95]
+//ship (really used as fire beetle equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Prow
 DESCRIPTION=Prow (hatch closed)
+WEIGHT=0
 
 [ITEMDEF 03e96]
 TYPE=t_ship_other
@@ -612,35 +618,45 @@ SUBSECTION=Prow
 DESCRIPTION=Prow (hatch open)
 
 [ITEMDEF 03e97]
+//ship (really used as ethereal beetle equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Prow
 DESCRIPTION=Prow (hatch open)
+WEIGHT=0
 
 [ITEMDEF 03e98]
+//ship (really used as ethereal swamp dragon equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Deck
 DESCRIPTION=Deck
+WEIGHT=0
 
 
 [ITEMDEF 03e9a]
+//ship (really used as ethereal ridgeback equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Prow
 DESCRIPTION=Prow (hatch closed)
+WEIGHT=0
 
 [ITEMDEF 03e9b]
+//ship (really used as ethereal unicorn equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e9c]
+//ship (really used as ethereal kirin equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e9d]
 TYPE=t_ship_other
@@ -649,10 +665,12 @@ SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
 
 [ITEMDEF 03e9e]
+//ship (really used as fire steed equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
+WEIGHT=0
 
 [ITEMDEF 03e9f]
 //ship (really used as horse equipped)
@@ -671,7 +689,7 @@ TDATA3=c_horse_gray
 WEIGHT=0
 
 [ITEMDEF 03ea1]
-//ship deck (really used as horse equipped)
+//ship (really used as horse equipped)
 DEFNAME=i_mt_horse_brown_lt
 TYPE=t_eq_horse
 LAYER=layer_horse
@@ -707,7 +725,7 @@ WEIGHT=0
 DEFNAME=i_mt_ostard_forest
 TYPE=t_eq_horse
 LAYER=layer_horse
-TDATA3=c_OSTARD_Forest
+TDATA3=c_ostard_forest
 WEIGHT=0
 
 [ITEMDEF 03ea6]
@@ -715,15 +733,15 @@ WEIGHT=0
 DEFNAME=i_mt_llama
 TYPE=t_eq_horse
 LAYER=layer_horse
-TDATA3=c_LLAMA
+TDATA3=c_llama
 WEIGHT=0
 
 [ITEMDEF 03ea7]
-//ship (really used as dark steed equipped)
-DEFNAME=i_mt_vortex
+//ship (really used as nightmare equipped)
+DEFNAME=i_mt_nightmare
 TYPE=t_eq_horse
 LAYER=layer_horse
-TDATA3=c_vortex
+TDATA3=c_nightmare
 WEIGHT=0
 
 [ITEMDEF 03ea8]
@@ -735,6 +753,7 @@ DESCRIPTION=Ship Side
 WEIGHT=0
 
 [ITEMDEF 03ea9]
+//ship (really used as unknown mare equipped)
 TYPE=t_ship_side
 TDATA1=03ed3
 CATEGORY=Ship Parts
@@ -766,7 +785,7 @@ DESCRIPTION=Deck
 WEIGHT=0
 
 [ITEMDEF 03ead]
-//FIXME: ship (really used as kirin equipped)?
+//ship (really used as kirin equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Deck
@@ -832,7 +851,7 @@ DESCRIPTION=Prow (hatch closed)
 WEIGHT=0
 
 [ITEMDEF 03eb5]
-//ship (really used as ethereal unicorn equipped)
+//ship (really used as dread warhorse equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
@@ -840,7 +859,7 @@ DESCRIPTION=Ship Side
 WEIGHT=0
 
 [ITEMDEF 03eb6]
-//ship (really used as ethereal ridgeback equipped)
+//ship (really used as dark steed equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
@@ -848,21 +867,20 @@ DESCRIPTION=Ship Side
 WEIGHT=0
 
 [ITEMDEF 03eb7]
+//ship (really used as unknown mare2 equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Hatch
 DESCRIPTION=Hatch (South open)
+WEIGHT=0
 
 [ITEMDEF 03eb8]
 //stern (really used as ridgeback equipped)
-//TYPE=t_ship_other
+DEFNAME=i_mt_ridgeback
+TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Ship Side
 DESCRIPTION=Ship Side
-DEFNAME=i_mt_ridgeback
-TYPE=t_eq_horse
-LAYER=layer_horse
-TDATA3=c_ridgeback
 WEIGHT=0
 
 [ITEMDEF 03eb9]
@@ -874,15 +892,12 @@ SUBSECTION=Hatch
 DESCRIPTION=Hatch (South closed)
 
 [ITEMDEF 03eba]
-//stern (really used as ridgeback equipped)
-//TYPE=t_ship_other
+//stern (really used as savage ridgeback equipped)
+DEFNAME=i_mt_savage_ridgeback
+TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Prow
 DESCRIPTION=Prow (hatch open)
-DEFNAME=i_mt_savage_ridgeback
-TYPE=t_eq_horse
-LAYER=layer_horse
-TDATA3=c_savage_ridgeback
 WEIGHT=0
 
 [ITEMDEF 03ebb]
@@ -954,16 +969,20 @@ SUBSECTION=Tiller
 DESCRIPTION=Tiller
 
 [ITEMDEF 03ec5]
+//rudder (really used as polar bear equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Tiller
 DESCRIPTION=Tiller
+WEIGHT=0
 
 [ITEMDEF 03ec6]
+//rudder (really used as armored boura equipped)
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Tiller
 DESCRIPTION=Tiller
+WEIGHT=0
 
 
 [ITEMDEF 03ec8]

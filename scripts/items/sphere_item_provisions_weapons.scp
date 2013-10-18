@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 16, 2013
+// FILE LAST UPDATED: Friday, October 18, 2013
 //
 VERSION=0.56c
 
@@ -2198,7 +2198,7 @@ DEFNAME=i_fukiya
 NAME=fukiya
 TYPE=t_weapon_bow
 TDATA3=i_fukiya_dart
-TDATA2=i_fukiya_dartx
+TDATA4=i_fukiya_dartx
 DAM=14,15 //unknown
 FLIP=1
 SKILL=Archery
