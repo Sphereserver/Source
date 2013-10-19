@@ -209,6 +209,18 @@ void CClient::addObjectRemoveCantSee( CGrayUID uid, LPCTSTR pszName )
 	addObjectRemove( uid );
 }
 
+void CClient::closeContainer( const CObjBase * pObj )
+{
+	ADDTOCALLSTACK("CClient::closeContainer");
+	new PacketCloseContainer(this, pObj);
+}
+
+void CClient::closeUIWindow( const CChar* character, DWORD command )
+{
+	ADDTOCALLSTACK("CClient::closeUIWindow");
+	new PacketCloseUIWindow(this, character, command);
+}
+
 void CClient::addObjectRemove( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CClient::addObjectRemove");

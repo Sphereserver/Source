@@ -2020,6 +2020,10 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 			if (( pItem->GetEquipLayer() > LAYER_HORSE ) && ( pItem->GetEquipLayer() != LAYER_BANKBOX ) && ( pItem->GetEquipLayer() != LAYER_DRAGGING ))
 				continue;
 		}
+
+		if (this->GetEquipLayer() == LAYER_BANKBOX)
+			pClient->closeContainer(this);
+
 		pClient->addObjectRemove( this );
 	}
 }

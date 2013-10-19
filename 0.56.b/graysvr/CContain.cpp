@@ -1548,6 +1548,7 @@ void CItemContainer::Game_Create()
 
 enum ICV_TYPE
 {
+	ICV_CLOSE,
 	ICV_DELETE,
 	ICV_EMPTY,
 	ICV_FIXWEIGHT,
@@ -1557,6 +1558,7 @@ enum ICV_TYPE
 
 LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY+1] =
 {
+	"CLOSE",
 	"DELETE",
 	"EMPTY",
 	"FIXWEIGHT",
@@ -1609,6 +1611,19 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole * pSrc )
 					pClient->addItem( this );	// may crash client if we dont do this.
 					pClient->addContainerSetup( this );
 					OnOpenEvent( pChar, GetTopLevelObj());
+				}
+			}
+			return( true );
+		case ICV_CLOSE:
+			if ( pSrc->GetChar())
+			{
+				CChar * pChar = pSrc->GetChar();
+				if ( pChar->IsClient())
+				{
+					CClient * pClient = pChar->GetClient();
+					ASSERT(pClient);
+					
+					pClient->closeContainer( this );
 				}
 			}
 			return( true );

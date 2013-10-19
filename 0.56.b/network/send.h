@@ -1362,6 +1362,32 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x16 : PacketCloseUIWindow		Close Container (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketCloseUIWindow : public PacketExtended
+{
+public:
+	PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x16.0x0C : PacketCloseContainer		Close Container (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketCloseContainer : public PacketExtended
+{
+public:
+	PacketCloseContainer(const CClient* target, const CObjBase* object);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x18 : PacketEnableMapDiffs		enable use of map diff files (NORMAL)
  *
  *

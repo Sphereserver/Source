@@ -2704,6 +2704,87 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			UpdateAnimate( ANIM_BOW, false );
 			break;
 
+		case CHV_CLOSEPAPERDOLL:
+		{
+			CClient * pClient = NULL;
+			CChar * pChar = NULL;
+			if ( s.HasArgs() )
+			{
+				// Close paperdoll of someuid to this player
+				pClient = GetClient();
+				CGrayUID uid = s.GetArgVal();
+				pChar = uid.CharFind();
+			}
+			else
+			{
+				// Close paperdoll of this character to SRC
+				if ( pCharSrc )
+					pClient = pCharSrc->GetClient();
+
+				pChar = this;
+			}
+
+			if (( !pClient ) || ( !pChar ))
+				return false;
+
+			pClient->closeUIWindow( pChar, 0x01 );
+			break;
+		}
+
+		case CHV_CLOSEPROFILE:
+		{
+			CClient * pClient = NULL;
+			CChar * pChar = NULL;
+			if ( s.HasArgs() )
+			{
+				// Close profile of someuid to this player
+				pClient = GetClient();
+				CGrayUID uid = s.GetArgVal();
+				pChar = uid.CharFind();
+			}
+			else
+			{
+				// Close profile of this character to SRC
+				if ( pCharSrc )
+					pClient = pCharSrc->GetClient();
+
+				pChar = this;
+			}
+
+			if (( !pClient ) || ( !pChar ))
+				return false;
+
+			pClient->closeUIWindow( pChar, 0x08 );
+			break;
+		}
+
+		case CHV_CLOSESTATUS:
+		{
+			CClient * pClient = NULL;
+			CChar * pChar = NULL;
+			if ( s.HasArgs() )
+			{
+				// Close status of someuid to this player
+				pClient = GetClient();
+				CGrayUID uid = s.GetArgVal();
+				pChar = uid.CharFind();
+			}
+			else
+			{
+				// Close status of this character to SRC
+				if ( pCharSrc )
+					pClient = pCharSrc->GetClient();
+
+				pChar = this;
+			}
+
+			if (( !pClient ) || ( !pChar ))
+				return false;
+
+			pClient->closeUIWindow( pChar, 0x02 );
+			break;
+		}
+
 		case CHV_CONTROL: // Possess
 			if ( pCharSrc == NULL || ! pCharSrc->IsClient())
 				return( false );

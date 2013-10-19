@@ -349,7 +349,7 @@ enum EXTDATA_TYPE
 	EXTDATA_Popup_Request	= 0x13, // client message
 	EXTDATA_Popup_Display	= 0x14,	// server message
 	EXTDATA_Popup_Select	= 0x15,	// client message
-	//
+	EXTDATA_CloseUI_Window	= 0x16,	// client message
 	EXTDATA_Codex_Wisdom	= 0x17,	// server message
 	EXTDATA_Map_Diff		= 0x18,	// enable mapdiff files
 	EXTDATA_Stats_Enable	= 0x19,	// extended stats

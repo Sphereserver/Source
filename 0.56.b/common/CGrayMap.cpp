@@ -280,13 +280,20 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 					return ( true );
 				}
 			}
-			else if ( z > m_z + PLAYER_HEIGHT/2 ) 
-			{
+			else if ( z > m_z + PLAYER_HEIGHT/2  ) 
+			{ 
 				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z >= m_Bottom.m_z + PLAYER_HEIGHT/2) ) // we can walk under it
 				{
 					SetTop( wItemBlockFlags, z, dwID );
 					return true;
 				}
+				else if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+					return true;
+			}
+			else if ( z = m_z ) 
+			{ 
+				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+					return true;
 			}
 			//DEBUG_ERR(("wItemBlockFlags 0x%lx\n",wItemBlockFlags));
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;

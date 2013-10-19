@@ -178,6 +178,13 @@
 - Fixed: Paroxysmus loot (he dropped himself as an icon instead of his pet dragon)
 - Fixed #1536: Pack animals with wrong maxweight
 
-12-10-2013, Ben
+18-10-2013, Ben
 -Fixed #2222: Shrink not working anymore.
 -Added: UID of shrunken pet is now accessible in ACT of the player.
+
+19-10-2013, Ben
+-Fixed #2218: Client crash caused by removefromview when bank is open.
+-Added: CLOSE function to container items
+-Added: CLOSEPROFILE, CLOSESTATUS, and CLOSEPAPERDOLL functions to characters. 
+		Can take a UID as argument of the char's window you whish to close.
+-Fixed #2221,#1933,#1618: EF_Walkcheck blocking some stairs.

@@ -3642,6 +3642,40 @@ void PacketDisplayPopup::finalise(void)
 	seek(endPosition);
 }
 
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x16 : PacketCloseUIWindow		Close User Interface Windows (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketCloseUIWindow::PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command) : PacketExtended(EXTDATA_CloseUI_Window, 13, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketCloseUIWindow::PacketCloseUIWindow");
+
+	writeInt32(command);
+	writeInt32(character->GetUID());
+
+	push(target);
+}
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x16.0x0C : PacketCloseContainer		Close Container (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase* object) : PacketExtended(EXTDATA_CloseUI_Window, 13, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketCloseContainer::PacketCloseContainer");
+
+	writeInt32(0x0C);
+	writeInt32(object->GetUID());
+
+	push(target);
+}
+
 
 /***************************************************************************
  *
