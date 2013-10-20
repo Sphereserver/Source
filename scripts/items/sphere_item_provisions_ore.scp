@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 22, 2003
+// FILE LAST UPDATED: Saturday, October 19, 2013
 //
-VERSION=0.56b
+VERSION=0.56c
 
 
 [COMMENT sphere_item_provisions_ore]
@@ -29,7 +29,7 @@ color_o_gold       045e //option: 084d
 color_o_copper     0641 //option: 060c
 color_o_oldcopper  0590
 color_o_dullcopper 060a
-color_o_silver     0231 //option: 0
+color_o_silver     0482 //option: 0231
 color_o_shadow     0770
 color_o_bloodrock  04c2
 color_o_blackrock  0455
@@ -49,7 +49,7 @@ color_o_valorite   0515
 DEFNAME=i_ore_iron
 NAME=Iron Ore
 TYPE=t_ore
-SKILLMAKE=MINING 20.0
+SKILLMAKE=mining 20.0
 TDATA1=i_ingot_iron
 WEIGHT=2
 VALUE=4
@@ -84,7 +84,7 @@ DESCRIPTION=Ore
 // copper makes terrible armor.
 ID=i_ore_iron
 NAME=Copper Ore
-SKILLMAKE=MINING 75.0
+SKILLMAKE=mining 75.0
 TDATA1=i_ingot_copper
 VALUE=5
 ON=@Create
@@ -94,7 +94,7 @@ ON=@Create
 // Gold makes terrible armor.
 ID=i_ore_iron
 NAME=Gold Ore
-SKILLMAKE=MINING 85.0
+SKILLMAKE=mining 85.0
 TDATA1=i_ingot_gold
 VALUE=10
 WEIGHT=3
@@ -104,7 +104,7 @@ ON=@Create
 [ITEMDEF i_ore_silver]
 ID=i_ore_iron
 NAME=Silver Ore
-SKILLMAKE=MINING 95.0
+SKILLMAKE=mining 95.0
 TDATA1=i_ingot_silver
 VALUE=7
 ON=@Create
@@ -113,7 +113,7 @@ ON=@Create
 [ITEMDEF i_ore_shadow]
 ID=i_ore_iron
 NAME=Shadow Ore
-SKILLMAKE=MINING 70.0
+SKILLMAKE=mining 70.0
 TDATA1=i_ingot_shadow
 VALUE=15
 ON=@Create
@@ -122,7 +122,7 @@ ON=@Create
 [ITEMDEF i_ore_agapite]
 ID=i_ore_iron
 NAME=Agapite Ore
-SKILLMAKE=MINING 90.0
+SKILLMAKE=mining 90.0
 TDATA1=i_ingot_agapite
 VALUE=10
 ON=@Create
@@ -131,7 +131,7 @@ ON=@Create
 [ITEMDEF i_ore_verite]
 ID=i_ore_iron
 NAME=Verite Ore
-SKILLMAKE=MINING 95.0
+SKILLMAKE=mining 95.0
 TDATA1=i_ingot_verite
 VALUE=15
 ON=@Create
@@ -140,7 +140,7 @@ ON=@Create
 [ITEMDEF i_ore_rose]
 ID=i_ore_iron
 NAME=Rose Ore
-SKILLMAKE=MINING 87.0
+SKILLMAKE=mining 87.0
 TDATA1=i_ingot_rose
 VALUE=15
 ON=@Create
@@ -149,7 +149,7 @@ ON=@Create
 [ITEMDEF i_ore_mytheril]
 ID=i_ore_iron
 NAME=Mytheril Ore
-SKILLMAKE=MINING 99.5
+SKILLMAKE=mining 99.5
 TDATA1=i_ingot_mytheril
 VALUE=15
 ON=@Create
@@ -158,7 +158,7 @@ ON=@Create
 [ITEMDEF i_ore_blackrock]
 ID=i_ore_iron
 NAME=Blackrock Ore
-SKILLMAKE=MINING 100.0
+SKILLMAKE=mining 100.0
 TDATA1=i_ingot_blackrock
 VALUE=18
 ON=@Create
@@ -167,7 +167,7 @@ ON=@Create
 [ITEMDEF i_ore_bloodrock]
 ID=i_ore_iron
 NAME=Bloodrock Ore
-SKILLMAKE=MINING 93.0
+SKILLMAKE=mining 93.0
 TDATA1=i_ingot_bloodrock
 VALUE=15
 ON=@Create
@@ -176,7 +176,7 @@ ON=@Create
 [ITEMDEF i_ore_valorite]
 ID=i_ore_iron
 NAME=Valorite Ore
-SKILLMAKE=MINING 99.0
+SKILLMAKE=mining 99.0
 TDATA1=i_ingot_valorite
 VALUE=15
 ON=@Create
@@ -185,7 +185,7 @@ ON=@Create
 [ITEMDEF i_ore_bronze]
 ID=i_ore_iron
 NAME=Bronze Ore
-SKILLMAKE=MINING 80.0
+SKILLMAKE=mining 80.0
 TDATA1=i_ingot_bronze
 VALUE=7
 ON=@Create
@@ -194,7 +194,7 @@ ON=@Create
 [ITEMDEF i_ore_rusty]
 ID=i_ore_iron
 NAME=Rusty Ore
-SKILLMAKE=MINING 50.0
+SKILLMAKE=mining 50.0
 TDATA1=i_ingot_rusty
 VALUE=15
 ON=@Create
@@ -204,7 +204,7 @@ ON=@Create
 // this is really just a variety of copper. copper makes terrible armor
 ID=i_ore_iron
 NAME=Old Copper Ore
-SKILLMAKE=MINING 60.0
+SKILLMAKE=mining 60.0
 TDATA1=i_ingot_old_copper
 VALUE=15
 ON=@Create
@@ -214,7 +214,7 @@ ON=@Create
 // this is really just a variety of copper. copper makes terrible armor
 ID=i_ore_iron
 NAME=Dull Copper Ore
-SKILLMAKE=MINING 65.0
+SKILLMAKE=mining 65.0
 TDATA1=i_ingot_dull_copper
 VALUE=15
 ON=@Create
@@ -229,7 +229,7 @@ ON=@Create
 DEFNAME=i_ingot_iron
 TYPE=t_ingot
 RESOURCES=i_ore_iron
-SKILLMAKE=20.0 MINING
+SKILLMAKE=20.0 mining
 TDATA1=20.0
 TDATA2=50.0
 WEIGHT=2
@@ -261,9 +261,9 @@ DUPEITEM=01bef
 
 [ITEMDEF 01be3]
 DEFNAME=i_ingot_copper
-TYPE=T_INGOT
+TYPE=t_ingot
 RESOURCES=i_ore_copper
-SKILLMAKE=MINING 75.0
+SKILLMAKE=mining 75.0
 TDATA1=70.0
 TDATA2=100.0
 WEIGHT=2
@@ -295,8 +295,8 @@ DUPEITEM=01be3
 
 [ITEMDEF 01be9]
 DEFNAME=i_ingot_gold
-TYPE=T_INGOT
-SKILLMAKE=MINING 85.0
+TYPE=t_ingot
+SKILLMAKE=mining 85.0
 TDATA1=80.0
 TDATA2=100.0
 RESOURCES=i_ore_gold
@@ -329,8 +329,8 @@ DUPEITEM=01be9
 
 [ITEMDEF 01bf5]
 DEFNAME=i_ingot_silver
-TYPE=T_INGOT
-SKILLMAKE=MINING 95.0
+TYPE=t_ingot
+SKILLMAKE=mining 95.0
 TDATA1=90.0
 TDATA2=100.0
 RESOURCES=i_ore_silver
@@ -364,7 +364,7 @@ DUPEITEM=01bf5
 [ITEMDEF i_ingot_shadow]
 NAME=Shadow Ingot
 ID=i_ingot_iron
-SKILLMAKE=MINING 70.0
+SKILLMAKE=mining 70.0
 TDATA1=60.0
 TDATA2=100.0
 RESOURCES=i_ore_shadow
@@ -377,7 +377,7 @@ ON=@Create
 [ITEMDEF i_ingot_agapite]
 ID=i_ingot_iron
 NAME=Agapite
-SKILLMAKE=MINING 90.0
+SKILLMAKE=mining 90.0
 TDATA1=80.0
 TDATA2=100.0
 RESOURCES=i_ore_agapite
@@ -391,7 +391,7 @@ ON=@Create
 NAME=Verite Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_verite
-SKILLMAKE=MINING 95.0
+SKILLMAKE=mining 95.0
 TDATA1=90.0
 TDATA2=120.0
 CATEGORY=Items by Professions
@@ -404,7 +404,7 @@ ON=@Create
 ID=i_ingot_iron
 NAME=Rose Ingot
 RESOURCES=i_ore_rose
-SKILLMAKE=MINING 87.0
+SKILLMAKE=mining 87.0
 TDATA1=80.0
 TDATA2=100.0
 CATEGORY=Items by Professions
@@ -417,7 +417,7 @@ ON=@Create
 ID=i_ingot_iron
 NAME=Mytheril Ingot
 RESOURCES=i_ore_mytheril
-SKILLMAKE=MINING 99.5
+SKILLMAKE=mining 99.5
 TDATA1=90.0
 TDATA2=120.0
 CATEGORY=Items by Professions
@@ -430,7 +430,7 @@ ON=@Create
 ID=i_ingot_iron
 NAME=Black Rock Ingot
 RESOURCES=i_ore_blackrock
-SKILLMAKE=MINING 100.0
+SKILLMAKE=mining 100.0
 TDATA1=90.0
 TDATA2=120.0
 CATEGORY=Items by Professions
@@ -443,7 +443,7 @@ ON=@Create
 ID=i_ingot_iron
 NAME=Blood Rock Ingot
 RESOURCES=i_ore_bloodrock
-SKILLMAKE=MINING 93.0
+SKILLMAKE=mining 93.0
 TDATA1=90.0
 TDATA2=120.0
 CATEGORY=Items by Professions
@@ -456,7 +456,7 @@ ON=@Create
 NAME=Valorite Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_valorite
-SKILLMAKE=MINING 99.0
+SKILLMAKE=mining 99.0
 TDATA1=90.0
 TDATA2=120.0
 CATEGORY=Items by Professions
@@ -469,7 +469,7 @@ ON=@Create
 NAME=Bronze Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_bronze
-SKILLMAKE=MINING 80.0
+SKILLMAKE=mining 80.0
 TDATA1=70.0
 TDATA2=100.0
 CATEGORY=Items by Professions
@@ -482,7 +482,7 @@ ON=@Create
 NAME=Rusty Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_rusty
-SKILLMAKE=MINING 50.0
+SKILLMAKE=mining 50.0
 TDATA1=40.0
 TDATA2=80.0
 CATEGORY=Items by Professions
@@ -495,7 +495,7 @@ ON=@Create
 NAME=Old Copper Ingot
 ID=i_ingot_iron
 RESOURCES=i_ore_old_copper
-SKILLMAKE=MINING 60.0
+SKILLMAKE=mining 60.0
 TDATA1=50.0
 TDATA2=80.0
 CATEGORY=Items by Professions
@@ -508,7 +508,7 @@ ON=@Create
 ID=i_ingot_iron
 NAME=Dull Copper Ingot
 RESOURCES=i_ore_dull_copper
-SKILLMAKE=MINING 65.0
+SKILLMAKE=mining 65.0
 TDATA1=40.0
 TDATA2=80.0
 CATEGORY=Items by Professions

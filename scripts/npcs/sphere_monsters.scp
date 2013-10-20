@@ -21332,6 +21332,12 @@ ON=@NpcRestock
 [CHARDEF 04e5]
 NAME=King Blackthorn
 
+[CHARDEF 04e6]
+NAME=Tiger
+
+[CHARDEF 04e7]
+NAME=Tiger 2
+
 ///////////////////////////////////////////////
 // These are here for backward compatibility //
 ///////////////////////////////////////////////

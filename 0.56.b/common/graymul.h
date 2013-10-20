@@ -774,6 +774,8 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 
 	ITEMID_Keg2			= 0x1940,
 
+	ITEMID_MONGBATTARGET_S = 0x1950,
+
 	ITEMID_BELLOWS_1	= 0x197a,
 	ITEMID_BELLOWS_2	= 0x197b,
 	ITEMID_BELLOWS_3	= 0x197c,

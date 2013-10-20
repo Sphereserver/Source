@@ -537,7 +537,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	// We are not standing right next to the target...
 
-	// We have to be using the archery skill on this
+	// We have to be using a ranged skill (aka archery or throwing) on this
 	SKILL_TYPE skill = Fight_GetWeaponSkill();
 	if ( !g_Cfg.IsSkillRanged(skill) )
 	{
@@ -583,8 +583,8 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	}
 
 	// We need to be correctly aligned with the target before we can use it
-	// For the south facing butte, we need to have the save x value and a y value of butte.y + 6
-	// For the east facing butte, we need to have the same y value and an x value of butte.x + 6
+	// For the south facing butte, we need to have the same x value and a y value greater than 2
+	// For the east facing butte, we need to have the same y value and an x value greater than 2
 	if ( ! pButte->IsTopLevel())
 	{
 badalign:
@@ -595,14 +595,15 @@ badalign:
 	int targDistX = GetTopPoint().m_x - pButte->GetTopPoint().m_x;
 	int targDistY = GetTopPoint().m_y - pButte->GetTopPoint().m_y;
 
-	if (pButte->GetDispID() == ITEMID_ARCHERYBUTTE_S)
+	if ((pButte->GetID() == ITEMID_ARCHERYBUTTE_S) ||
+		(pButte->GetID() == ITEMID_MONGBATTARGET_S))
 	{
-		if ( ! ( targDistX == 0 && targDistY > 3 && targDistY < 7 ))
+		if ( ! ( targDistX == 0 && targDistY > 2 ))
 			goto badalign;
 	}
 	else
 	{
-		if ( ! ( targDistY == 0 && targDistX > 3 && targDistX < 7 ))
+		if ( ! ( targDistY == 0 && targDistX > 2 ))
 			goto badalign;
 	}
 
@@ -724,6 +725,10 @@ static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 	{
 		pButte->m_itArcheryButte.m_AmmoType = AmmoID;
 		pButte->m_itArcheryButte.m_AmmoCount++;
+		// if (pButte->GetID() == ITEMID_MONGBATTARGET_S)
+		// {
+		//     animate the target getting hit
+		// }
 	}
 	return( true );
 }

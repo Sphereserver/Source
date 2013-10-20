@@ -188,3 +188,8 @@
 -Added: CLOSEPROFILE, CLOSESTATUS, and CLOSEPAPERDOLL functions to characters. 
 		Can take a UID as argument of the char's window you whish to close.
 -Fixed #2221,#1933,#1618: EF_Walkcheck blocking some stairs.
+
+20-10-2013, RanXerox
+- Changed: animation frames removed from DUPELIST on i_mongbat_dartboard
+- Changed: value for color_o_silver
+- Added: new CHARDEF placeholder for tiger animations- Changed: the value of color_o_silver

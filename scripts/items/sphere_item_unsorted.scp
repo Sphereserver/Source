@@ -1335,8 +1335,8 @@ DESCRIPTION=Keg
 [ITEMDEF 01950]
 //FIXME: Should be a game
 DEFNAME=i_dartboard_mongbat
-NAME=mongbat dartboard
-//FLIP=1
+NAME=mongbat target
+FLIP=1
 TYPE=t_archery_butte
 VALUE=75
 WEIGHT=15.0
@@ -1344,28 +1344,24 @@ RESOURCES=95 i_log,1 i_cloth,1 i_nails,10 i_fur_dark
 //SKILLMAKE=Carpentry 15.7,t_carpentry
 CATEGORY=Games
 SUBSECTION=Darts
-DESCRIPTION=Mongbat Dartboard
-DUPELIST=01951,01952,01953,01954,01955
+DESCRIPTION=Mongbat Target
+DUPELIST=01953
 
 [ITEMDEF 01951]
-//mongbat dartboard
-DUPEITEM=01950
+//mongbat dartboard (animation frame)
 
 [ITEMDEF 01952]
-//mongbat dartboard
-DUPEITEM=01950
+//mongbat dartboard (animation frame)
 
 [ITEMDEF 01953]
 //mongbat dartboard
 DUPEITEM=01950
 
 [ITEMDEF 01954]
-//mongbat dartboard
-DUPEITEM=01950
+//mongbat dartboard (animation frame)
 
 [ITEMDEF 01955]
-//mongbat dartboard
-DUPEITEM=01950
+//mongbat dartboard (animation frame)
 
 
 [ITEMDEF 01ad4]
