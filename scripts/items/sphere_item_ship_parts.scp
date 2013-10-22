@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Monday, October 21, 2013
 //
 VERSION=0.56c
 
@@ -714,10 +714,10 @@ WEIGHT=0
 
 [ITEMDEF 03ea4]
 //ship (really used as frenzied ostard equipped)
-DEFNAME=i_mt_ostard_zostrich
+DEFNAME=i_mt_ostard_frenzied
 TYPE=t_eq_horse
 LAYER=layer_horse
-TDATA3=c_ostard_zostrich
+TDATA3=c_ostard_frenzied
 WEIGHT=0
 
 [ITEMDEF 03ea5]

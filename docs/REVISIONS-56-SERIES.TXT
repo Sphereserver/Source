@@ -194,3 +194,6 @@
 - Changed: value for color_o_silver
 - Added: new CHARDEF placeholder for tiger animations- Changed: the value of color_o_silver
 - Added: 7.0.33 encryption key
+
+21-10-2013, RanXerox (Script Pack)
+- Separated FOODTYPE and MAXFOOD in the monster files

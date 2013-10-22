@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Monday, October 21, 2013
 //
 VERSION=0.56c
 
@@ -1045,7 +1045,7 @@ DESCRIPTION=Ophidian Queen
 
 [ITEMDEF 02135]
 DEFNAME=i_pet_ostard_desert_2
-NAME=ostard
+NAME=desert ostard
 TYPE=t_figurine
 TDATA3=c_ostard_desert
 VALUE={450 500}
@@ -1054,18 +1054,18 @@ SUBSECTION=Character Icons
 DESCRIPTION=Ostard (desert 2)
 
 [ITEMDEF 02136]
-DEFNAME=i_pet_ostard_zostrich
-NAME=ostard
+DEFNAME=i_pet_ostard_frenzied_2
+NAME=frenzied ostard
 TYPE=t_figurine
 TDATA3=c_ostard_frenzied
 VALUE={450 500}
 CATEGORY=Miscellaneous
 SUBSECTION=Character Icons
-DESCRIPTION=Ostard (zostrich)
+DESCRIPTION=Ostard (frenzied)
 
 [ITEMDEF 02137]
 DEFNAME=i_pet_ostard_forest_2
-NAME=ostard
+NAME=forest ostard
 TYPE=t_figurine
 TDATA3=c_ostard_forest
 VALUE={450 500}
