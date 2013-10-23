@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -1817,16 +1817,128 @@ ON=@Create
    MOREZ=1
 
 [ITEMDEF 04c52]
-//Lamp Stand (classic)
+DEFNAME=i_classic_standing_lamp_s
+NAME=classic standing lamp
+TYPE=t_light_out
+TDATA3=i_classic_standing_lamp_s_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Classic Standing Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c53]
+DEFNAME=i_classic_standing_lamp_s_lit
+NAME=classic standing lamp
+TYPE=t_light_lit
+TDATA3=i_classic_standing_lamp_s
+TDATA4=i_classic_standing_lamp_s
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Classic Standing Lamp South (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c54]
+DEFNAME=i_classic_standing_lamp_e
+NAME=classic standing lamp
+TYPE=t_light_out
+TDATA3=i_classic_standing_lamp_e_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Classic Standing Lamp East (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 04c55]
+DEFNAME=i_classic_standing_lamp_e_lit
+NAME=classic standing lamp
+TYPE=t_light_lit
+TDATA3=i_classic_standing_lamp_e
+TDATA4=i_classic_standing_lamp_e
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Classic Standing Lamp East (Lit)
+ON=@Create
+   MOREZ=1
 
 [ITEMDEF 04c56]
-//Lamp Stand (bell)
-[ITEMDEF 04c57]
-[ITEMDEF 04c58]
-[ITEMDEF 04c59]
+DEFNAME=i_standing_bell_lamp_s
+NAME=standing bell lamp
+TYPE=t_light_out
+TDATA3=i_standing_bell_lamp_s_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Standing Bell Lamp South (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c53]
+DEFNAME=i_standing_bell_lamp_s_lit
+NAME=standing bell lamp
+TYPE=t_light_lit
+TDATA3=i_standing_bell_lamp_s
+TDATA4=i_standing_bell_lamp_s
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Standing Bell Lamp South (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c54]
+DEFNAME=i_standing_bell_lamp_e
+NAME=standing bell lamp
+TYPE=t_light_out
+TDATA3=i_standing_bell_lamp_e_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Standing Bell Lamp East (Unlit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 04c55]
+DEFNAME=i_standing_bell_lamp_e_lit
+NAME=standing bell lamp
+TYPE=t_light_lit
+TDATA3=i_standing_bell_lamp_e
+TDATA4=i_standing_bell_lamp_e
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_board,1 i_ingot_iron,1 i_oil_flask,1 i_glass_raw
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Standing Bell Lamp East (Lit)
+ON=@Create
+   MOREZ=1
 
 
 [EOF]
