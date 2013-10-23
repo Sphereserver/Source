@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -141,7 +141,7 @@ random_other_food      { i_plate_food 1 i_eggs_fresh 1 i_eggs_fried 1 i_jar_hone
 random_meat            { i_bacon_slab 1 i_bacon_slice 1 i_fish_cut_cooked 1 i_bird_cooked 1 i_bird_raw 1 i_pig_roast 1 i_sausages 1 i_ham 1 i_ribs_cooked 1 i_spam 1 i_chicken_leg 1 i_lamb_leg 1 i_fish_cooked_small 1 i_ham_slices 1 i_lamb_leg_raw 1 i_ribs_raw 1 }
 random_veggie          { i_fruit_cabbage 1 i_fruit_carrot 1 i_fruit_corn 1 i_fruit_gourd1 1 i_fruit_gourd2 1 i_fruit_lettuce 1 i_fruit_onion 1 i_fruit_pumpkin 1 i_fruit_squash 1 i_fruit_turnip 1 }
 random_fruit           { i_fruit_dates 1 i_fruit_peach 1 i_fruit_pear 1 i_fruit_lemon 1 i_fruit_lime 1 i_fruit_grapes 1 i_fruit_apple 1 i_fruit_banana 1 i_fruit_coconut 1 i_fruit_cantelope 1 i_fruit_honeydewmelon 1 i_fruit_watermelon 1 }
-random_candy           { i_candycane_red 1 i_candycane_green 1 }
+random_candy           { i_candycane_red 1 i_candycane_green 1 i_gingerbreadman 1 i_jellybeans 1 i_lollypop_red 1 i_lollypop_yellow 1 i_lollypop_green 1 i_candy_nougat 1 i_candy_taffy 1 i_candy_wrapped 1 i_carmel_apple 1 i_licorice 1 }
 
 random_pitcher         { i_pitcher_milk 1 i_pitcher_water 1 i_pitcher_ale 1 i_pitcher_cider 1 i_pitcher_liquor 1 i_pitcher_wine 1 }
 random_glass           { i_glass_of_milk 1 i_glass_of_water 1 i_tea_green 1 i_mug_ale 1 i_glass_of_cider 1 i_glass_of_liquor 1 i_glass_of_wine 1 }

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 21, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -12462,7 +12462,7 @@ ON=@GetHit
    IF !(<R10>)
       DORAND 4
          SERV.NEWNPC c_fetid_essence
-         SERV.NEWNPC c_corporeal_blume
+         SERV.NEWNPC c_corporeal_brume
          SERV.NEWNPC c_wisp_crystal
          SERV.NEWNPC c_mantra_effervescent
       ENDDO
@@ -21678,17 +21678,195 @@ ON=@NpcRestock
 
 
 [CHARDEF 04dc]
+DEFNAME=c_charybdis
 NAME=Charybdis
+//ICON=i_pet_
+//SOUND=snd_
+CAN=MT_SWIM
+DAM=24,33
+ARMOR=70
+DESIRES=t_coin,t_gold,t_wand,t_potion,t_scroll,t_reagent,e_notoriety
+//AVERSIONS=
+FOODTYPE=t_fish
+MAXFOOD=75
+//RESOURCES=
+BLOODCOLOR=colors_blood
+MOVERATE=100
+TAG.Barding.Diff=160.0
+CATEGORY=Monsters
+SUBSECTION=Champions
+DESCRIPTION=Charybdis
+RESLEVEL=7
+RESDISPDNID=c_sea_monster
+RESDISPDNHUE=33
+ON=@Create
+   NPC=brain_monster
+   FAME={7500 8000}
+   KARMA={-7500 -8000}
+   STR={525 600}
+   MAXHITS={3000 3500}
+   DEX={110 135}
+   MAXSTAM={110 135}
+   INT={110 155}
+   MAXMANA={110 155}
+   ANATOMY={90.0 100.0}
+   EVALUATINGINTEL={140.0 145.0}
+   MAGERY={135.0 145.0}
+   MAGICRESISTANCE={100.0 115.0}
+   TACTICS={120.0 125.0}
+   WRESTLING={90.0 100.0}
+   MODAR={0 10}
+   RESCOLD={45 55}
+   RESENERGY={60 70}
+   RESFIRE={70 80}
+   RESPOISON={80 90}
+ON=@NpcRestock
+   ITEM=loot_charybdis
+ON=@GetHit
+   //Spawn Creatures Attack (Charybdis Tentacle)
+   IF !(<R20>) && !(<FINDID.i_removetimer_mem>)
+      SERV.NEWNPC c_charybdis_tentacle
+      NEW.P=<SRC.P>
+      NEW.HOME=<SRC.P>
+      NEW.HOMEDIST=7
+      NEW.ATTACK <SRC>
+      NEW.f_NPCRemovalTimer 1200
+   ENDIF
 
 [CHARDEF 04dd]
+DEFNAME=c_charybdis_tentacle
 NAME=Charybdis Tentacle
+//ICON=i_pet_
+//SOUND=snd_
+CAN=MT_SWIM
+DAM=10,15
+ARMOR=35
+//DESIRES=
+//AVERSIONS=
+//FOODTYPE=t_fish
+//MAXFOOD=75
+//RESOURCES=
+BLOODCOLOR=colors_blood
+MOVERATE=100
+TAG.Barding.Diff=160.0
+CATEGORY=Monsters
+SUBSECTION=Champions
+DESCRIPTION=Charybdis Tentacle
+RESLEVEL=7
+RESDISPDNID=c_sea_monster
+RESDISPDNHUE=33
+ON=@Create
+   NPC=brain_monster
+   FAME={7500 8000}
+   KARMA={-7500 -8000}
+   STR={125 155}
+   MAXHITS={105 115}
+   DEX={65 85}
+   MAXSTAM={65 85}
+   INT={100 125}
+   MAXMANA={100 125}
+   ANATOMY={90.0 100.0}
+   EVALUATINGINTEL={60.0 75.0}
+   MAGERY={60.0 75.0}
+   MAGICRESISTANCE={100.0 115.0}
+   WRESTLING={90.0 100.0}
+   MODAR={0 10}
+   RESCOLD={10 25}
+   RESENERGY={5 10}
+   RESFIRE={10 25}
+   RESPOISON={60 70}
 
 [CHARDEF 04de]
-NAME=Halloween Demon
+DEFNAME=c_pumpkin_demon
+NAME=killer pumpkin
+ICON=i_jackolantern
+SOUND=snd_monster_gargyl1
+CAN=MT_NONMOVER|MT_NONHUM
+DAM=14,27
+ARMOR=30
+DESIRES=t_coin,t_gold,t_gem,t_wand,t_potion,t_scroll,t_reagent
+AVERSIONS=t_trap,r_civilization,e_carnivores3
+FOODTYPE=45 t_meat_raw
+RESOURCES=1 i_ribs_raw
+BLOODCOLOR=colors_orange
+//MOVERATE=100
+TAG.Barding.Diff=72.5
+TAG.SlayerGroup=DEMON
+CATEGORY=Monsters
+SUBSECTION=Halloween
+DESCRIPTION=Killer Pumpkin (demon)
+ON=@Create
+   NPC=brain_monster
+   FAME={1500 1999}
+   KARMA={-1500 -1999}
+   STR={145 175}
+   MAXHITS={85 105}
+   DEX={75 95}
+   MAXSTAM={75 95}
+   INT={80 105}
+   MAXMANA={80 105}
+   EVALUATINGINTEL={70.0 85.0}
+   MAGERY={70.0 85.0}
+   MAGICRESISTANCE={70.0 85.0}
+   MEDITATION={65.0 75.0}
+   PARRYING={50.0 70.0}
+   TACTICS={50.0 70.0}
+   WRESTLING={40.0 80.0}
+   MODAR={0 5}
+   RESCOLD={5 10}
+   RESENERGY=0
+   RESFIRE={25 35}
+   RESPOISON={15 25}
+ON=@NPCRestock
+   ITEM={ i_mask_demon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
+   ITEM=random_candy
+   ITEM=i_candle
 
 [CHARDEF 04df]
-NAME=Halloween Fright
-
+DEFNAME=c_pumpkin_fright
+NAME=killer pumpkin
+ICON=i_jackolantern2
+SOUND=snd_monster_gargyl1
+CAN=MT_NONMOVER|MT_NONHUM
+DAM=14,27
+ARMOR=30
+DESIRES=t_coin,t_gold,t_gem,t_wand,t_potion,t_scroll,t_reagent
+AVERSIONS=t_trap,r_civilization,e_carnivores3
+FOODTYPE=45 t_meat_raw
+RESOURCES=1 i_ribs_raw
+BLOODCOLOR=colors_orange
+//MOVERATE=100
+TAG.Barding.Diff=72.5
+TAG.SlayerGroup=DEMON
+CATEGORY=Monsters
+SUBSECTION=Halloween
+DESCRIPTION=Killer Pumpkin (fright)
+ON=@Create
+   NPC=brain_monster
+   FAME={1500 1999}
+   KARMA={-1500 -1999}
+   STR={145 175}
+   MAXHITS={85 105}
+   DEX={75 95}
+   MAXSTAM={75 95}
+   INT={80 105}
+   MAXMANA={80 105}
+   EVALUATINGINTEL={70.0 85.0}
+   MAGERY={70.0 85.0}
+   MAGICRESISTANCE={70.0 85.0}
+   MEDITATION={65.0 75.0}
+   PARRYING={50.0 70.0}
+   TACTICS={50.0 70.0}
+   WRESTLING={40.0 80.0}
+   MODAR={0 5}
+   RESCOLD={5 10}
+   RESENERGY=0
+   RESFIRE={25 35}
+   RESPOISON={15 25}
+ON=@NPCRestock
+   ITEM={ i_mask_demon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
+   ITEM=random_candy
+   ITEM=i_candle
 
 [CHARDEF 04e0]
 //FIXME: No Stratics entry
@@ -21752,10 +21930,36 @@ ON=@NpcRestock
 NAME=King Blackthorn
 
 [CHARDEF 04e6]
-NAME=Tiger
+//bad animations
+NAME=tiger
 
 [CHARDEF 04e7]
-NAME=Tiger 2
+DEFNAME=c_tiger
+NAME=tiger
+CAN=MT_WALK|MT_RUN
+DAM=2,12
+ARMOR=8
+TAG.TamingSlots=1
+CATEGORY=Animals
+SUBSECTION=Wild
+DESCRIPTION=Tiger
+ON=@Create
+   NPC=brain_animal
+   FAME={500 999}
+   KARMA={-800 -999}
+   STR={55 80}
+   DEX={65 85}
+   INT={25 50}
+   MAGICRESISTANCE={15.0 30.0}
+   PARRYING={55.0 65.0}
+   TACTICS={45.0 60.0}
+   TAMING=55.0
+   WRESTLING={45.0 60.0}
+   RESCOLD={10 20}
+   RESENERGY=0
+   RESFIRE=0
+   RESPOISON=0
+
 
 ///////////////////////////////////////////////
 // These are here for backward compatibility //

@@ -197,3 +197,7 @@
 
 21-10-2013, RanXerox (Script Pack)
 - Separated FOODTYPE and MAXFOOD in the monster files
+
+23-10-2013, RanXerox (Script Pack)
+- Added more candy and chocolate related ITEMDEFs
+- Added Charybdis (and tentacle), Tiger, and Killer Pumpkin CHARDEFs

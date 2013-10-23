@@ -319,7 +319,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 		}
 		break;
 	case LAYER_HORSE:
-		// Only humans can ride horses !?
+		// Only humans/elves can ride horses !?
 		if ( ! pItem->IsType(IT_EQ_HORSE) || ! IsMountCapable())
 		{
 			fCantEquip = true;
@@ -2277,7 +2277,7 @@ bool CChar::IsMountCapable() const
 	if ( IsStatFlag(STATF_DEAD) )
 		return false;
 
-	if ( IsHuman() )	// humans can ride horses.
+	if ( IsHuman() )	// FIXME: humans can ride horses... gargoyles can't.
 		return true;
 
 	if ( GetAbilityFlags() & CAN_C_MOUNT )

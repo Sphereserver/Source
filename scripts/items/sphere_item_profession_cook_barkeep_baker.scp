@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -304,7 +304,7 @@ TYPE=t_booze
 VALUE=15
 WEIGHT=0.1
 RESOURCES=1 i_reag_fertile_dirt,1 i_pitcher_water,1 i_wheat_sheaf,1 i_bottle_empty
-SKILLMAKE=Cooking 75.5//Need proximity to a still
+SKILLMAKE=Cooking 75.5
 CATEGORY=Provisions - Food
 SUBSECTION=Alcohol
 DESCRIPTION=Bottle of Liquor
@@ -354,7 +354,7 @@ TYPE=t_booze
 VALUE=22
 WEIGHT=1.0
 RESOURCES=1 i_reag_fertile_dirt,1 i_pitcher_water,1 i_wheat_sheaf,1 i_bottle
-SKILLMAKE=Cooking 55.5//Need proximity to a still
+SKILLMAKE=Cooking 55.5
 CATEGORY=Provisions - Food
 SUBSECTION=Alcohol
 DESCRIPTION=Bottle of Ale
@@ -2587,6 +2587,20 @@ DUPEITEM=02be5
 //Gingerbread house
 DUPEITEM=02be5
 
+[ITEMDEF 02be8]
+DEFNAME=i_chocolate_dark
+NAME=dark chocolate
+TYPE=t_food
+WEIGHT=0.1
+VALUE=3
+RESOURCES=1 i_sugar,1 i_cocoa_butter,1 i_cocoa_liquor
+SKILLMAKE=Cooking 51.6
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Chocolate (dark)
+ON=@Create
+   MOREM=1
+
 
 [ITEMDEF 02d4f]
 DEFNAME=i_bowl_fruit
@@ -3176,7 +3190,7 @@ ON=@Create
 
 [ITEMDEF 0468d]
 DEFNAME=i_lollypop_red
-NAME=red lollypop%s
+NAME=cherry lollypop%s
 TYPE=t_food
 WEIGHT=0.1
 VALUE=3
@@ -3190,7 +3204,7 @@ ON=@Create
 
 [ITEMDEF 0468e]
 DEFNAME=i_lollypop_yellow
-NAME=yellow lollypop%s
+NAME=orange lollypop%s
 TYPE=t_food
 WEIGHT=0.1
 VALUE=3
@@ -3204,11 +3218,11 @@ ON=@Create
 
 [ITEMDEF 0468f]
 DEFNAME=i_lollypop_green
-NAME=green lollypop%s
+NAME=lime lollypop%s
 TYPE=t_food
 WEIGHT=0.1
 VALUE=3
-RESOURCES=1 i_sugar,1 i_paper
+RESOURCES=1 i_sugar,1 i_paper,1 i_fruit_lime
 SKILLMAKE=Cooking 51.6
 CATEGORY=Provisions - Food
 SUBSECTION=Candy
@@ -3477,7 +3491,7 @@ ON=@Create
    MOREM=1
 
 [ITEMDEF i_tomato_sauce]
-ID=i_bottle_red    //RED BOTTLE
+ID=i_bottle_red
 NAME=tomato sauce
 WEIGHT=0.1
 CATEGORY=Items by Professions
@@ -3487,43 +3501,43 @@ DESCRIPTION=Tomato Sauce
 [ITEMDEF i_ale_amber]
 NAME=Amber Ale
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Amber Ale
 ON=@Create
-	COLOR=COLOR_RED2
+	COLOR=color_red2
 
 [ITEMDEF i_ale_honey]
 NAME=Honey Ale
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Honey Ale
 ON=@Create
-	COLOR=COLOR_O_GOLD
+	COLOR=color_o_gold
 
 [ITEMDEF i_ale_brown]
 NAME=Brown Ale
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Brown Ale
 ON=@Create
-	COLOR=COLORS_BROWN
+	COLOR=colors_brown
 
 [ITEMDEF i_ale_spiced]
 NAME=Spiced Ale
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
@@ -3535,38 +3549,109 @@ ON=@Create
 [ITEMDEF i_ale_smoked]
 NAME=Smoked Porter
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Smoked Porter
 ON=@Create
-	COLOR=COLOR_GRAY_DK
+	COLOR=color_gray_dk
 
 [ITEMDEF i_ale_stout]
 NAME=Stout
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={8 12}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Stout Ale
 ON=@Create
-	COLOR=COLOR_O_BLACKROCK
+	COLOR=color_o_blackrock
 
 [ITEMDEF i_ale_oktoberfest]
 NAME=Oktoberfest Ale
 ID=i_bottle_ale
-TYPE=T_BOOZE
+TYPE=t_booze
 VALUE={10 15}
 WEIGHT=1
 CATEGORY=Ales
 SUBSECTION=Ales
 DESCRIPTION=Oktoberfest Ale
 ON=@Create
-	COLOR=COLORS_ORANGE
+	COLOR=colors_orange
+
+[ITEMDEF i_carmel_apple]
+ID=i_fruit_apple
+NAME=carmel apple
+TYPE=t_food
+VALUE=5
+WEIGHT=0.1
+RESOURCES=1 i_fruit_apple,1 i_sugar
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Carmel Apple
+ON=@Create
+   MOREM=1
+   COLOR=032
+
+[ITEMDEF i_licorice]
+ID=i_reag_pig_iron
+NAME=licorice
+TYPE=t_food
+VALUE=5
+WEIGHT=0.1
+RESOURCES=1 i_dried_herbs,1 i_sugar
+CATEGORY=Provisions - Food
+SUBSECTION=Candy
+DESCRIPTION=Licorice
+ON=@Create
+   MOREM=1
+   COLOR=colors_black
+
+[ITEMDEF i_cocoa_pulp]
+ID=i_reag_blood_spawn
+NAME=cocoa pulp
+TYPE=t_food
+VALUE=7
+WEIGHT=0.1
+CATEGORY=Provisions - Food
+SUBSECTION=Cocoa
+DESCRIPTION=Cocoa Pulp
+ON=@Create
+   MOREM=1
+   COLOR=colors_brown
+
+[ITEMDEF i_cocoa_butter]
+ID=i_spam
+NAME=cocoa butter
+TYPE=t_food
+VALUE=7
+WEIGHT=0.1
+RESOURCES=1 i_cocoa_pulp
+SKILLMAKE=Cooking 100.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Cocoa
+DESCRIPTION=Cocoa Butter
+ON=@Create
+   MOREM=1
+   COLOR=colors_brown
+
+[ITEMDEF i_cocoa_liquor]
+ID=i_cookie_mix
+NAME=cocoa liquor 
+TYPE=t_food
+VALUE=7
+WEIGHT=0.1
+RESOURCES=1 i_cocoa_pulp,1 i_bowl_pewter
+SKILLMAKE=Cooking 100.0,i_pot
+CATEGORY=Provisions - Food
+SUBSECTION=Cocoa
+DESCRIPTION=Cocoa Liquor
+ON=@Create
+   MOREM=1
+   COLOR=colors_brown
 
 
 [EOF]

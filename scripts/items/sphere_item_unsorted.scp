@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -3716,12 +3716,6 @@ DUPELIST=02bdc
 //Christmas Stocking (red)
 DUPEITEM=02bdb
 
-[ITEMDEF 02be8]
-//Black cube
-//NAME=black cube
-CATEGORY=Quest
-SUBSECTION=Unknown
-DESCRIPTION=Black cube
 
 [ITEMDEF 02db0]
 //soulforge (looks like a regular forge)

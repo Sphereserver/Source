@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 15, 2013
+// FILE LAST UPDATED: Wednesday, October 23, 2013
 //
 VERSION=0.56c
 
@@ -765,7 +765,8 @@ ITEM=i_candy_nougat
 ITEM=i_candy_taffy
 ITEM=i_candy_wrapped
 ITEM=i_cake_2
-
+ITEM=i_carmel_apple
+ITEM=i_licorice
 
 [TEMPLATE tm_bag_of_doom]
 NAME=Bag of Doom
