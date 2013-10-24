@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -53,50 +53,94 @@ FORCHARLAYER 32
 ENDFOR
 RETURN <LOCAL.CurseResult>
 
+
+[FUNCTION MODMAXHITS]
+LOCAL.Result=<EVAL <ARGS>>
+IF (<ISEMPTY <ARGS>>)
+   RETURN <EVAL <TAG0.MODMAXHITS>>
+ELSE
+   TAG.MODMAXHITS=<EVAL <TAG0.MODMAXHITS>+<LOCAL.Result>>
+   IF !(<TAG0.MODMAXHITS>)
+      TAG.MODMAXHITS=
+      MAXHITS=
+   ELSE
+      MAXHITS=<EVAL <MAXHITS>+<LOCAL.Result>>
+   ENDIF
+ENDIF
+
+[FUNCTION MODMAXSTAM]
+LOCAL.Result=<EVAL <ARGS>>
+IF (<ISEMPTY <ARGS>>)
+   RETURN <EVAL <TAG0.MODMAXSTAM>>
+ELSE
+   TAG.MODMAXSTAM=<EVAL <TAG0.MODMAXSTAM>+<LOCAL.Result>>
+   IF !(<TAG0.MODMAXSTAM>)
+      TAG.MODMAXSTAM=
+      MAXSTAM=
+   ELSE
+      MAXSTAM=<EVAL <MAXSTAM>+<LOCAL.Result>>
+   ENDIF
+ENDIF
+
+[FUNCTION MODMAXMANA]
+LOCAL.Result=<EVAL <ARGS>>
+IF (<ISEMPTY <ARGS>>)
+   RETURN <EVAL <TAG0.MODMAXMANA>>
+ELSE
+   TAG.MODMAXMANA=<EVAL <TAG0.MODMAXMANA>+<LOCAL.Result>>
+   IF !(<TAG0.MODMAXMANA>)
+      TAG.MODMAXMANA=
+      MAXMANA=
+   ELSE
+      MAXMANA=<EVAL <MAXMANA>+<LOCAL.Result>>
+   ENDIF
+ENDIF
+
+
 ////////////
 // Events //
 ////////////
 
 [EVENTS e_Undead]
 ON=@EnvironChange
-	Return 0
-	// Enter "//" before Return 0, if you want to make script working
-	// i like the dark
-	if (<sector.isdark>) || (<flags>& (statf_nightsight|statf_indoors))
-		if (!<tag0.lightstr>)
-			return 0
-		endif
-		anim 011
-		bark 4
-		str=<tag.lightstr>	// restore me.
-		hits=<str>
-		tag.lightstr=
-		karma=<tag0.lightkarma>
-		tag.lightkarma=//just dispose of this.
-		fame=<tag0.lightfame>
-		tag.lightfame=
-		flags ^= statf_conjured	// no loot if killed.
-		return 0
-	endif
-	// i can't live in light areas. weaken me ? or destroy me ?
-	anim 014
-	bark 4
-	if (<tag0.lightstr>)
-		return 0
-	endif
-	if ( <flags>&statf_conjured	) 
-		remove
-		return 1
-	endif
-	flags |= statf_conjured	// no loot if killed.
-	tag.lightstr=<str>
-	str=1
-	hits=1	// very weak.
-	tag.lightkarma=<karma>	// killing it means nothing now.
-	karma=-2
-	tag.lightfame=<fame>
-	fame=10
-	return 0
+   Return 0
+   // Enter "//" before Return 0, if you want to make script working
+   // i like the dark
+   if (<sector.isdark>) || (<flags>& (statf_nightsight|statf_indoors))
+      if (!<tag0.lightstr>)
+         return 0
+      endif
+      anim 011
+      bark 4
+      str=<tag.lightstr>   // restore me.
+      hits=<str>
+      tag.lightstr=
+      karma=<tag0.lightkarma>
+      tag.lightkarma=//just dispose of this.
+      fame=<tag0.lightfame>
+      tag.lightfame=
+      flags ^= statf_conjured   // no loot if killed.
+      return 0
+   endif
+   // i can't live in light areas. weaken me ? or destroy me ?
+   anim 014
+   bark 4
+   if (<tag0.lightstr>)
+      return 0
+   endif
+   if ( <flags>&statf_conjured   ) 
+      remove
+      return 1
+   endif
+   flags |= statf_conjured   // no loot if killed.
+   tag.lightstr=<str>
+   str=1
+   hits=1   // very weak.
+   tag.lightkarma=<karma>   // killing it means nothing now.
+   karma=-2
+   tag.lightfame=<fame>
+   fame=10
+   return 0
 
 [EVENTS e_Carnivores]
 // weak carnivores.

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 23, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -21818,7 +21818,7 @@ ON=@Create
    RESFIRE={25 35}
    RESPOISON={15 25}
 ON=@NPCRestock
-   ITEM={ i_mask_demon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
+   ITEM={ i_mask_daemon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
    ITEM=random_candy
    ITEM=i_candle
 
@@ -21864,7 +21864,7 @@ ON=@Create
    RESFIRE={25 35}
    RESPOISON={15 25}
 ON=@NPCRestock
-   ITEM={ i_mask_demon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
+   ITEM={ i_mask_daemon 1 i_mask_plague 1 i_mask_clown 1 i_mask_eviljester 1 i_mask_porcelain 1 }
    ITEM=random_candy
    ITEM=i_candle
 

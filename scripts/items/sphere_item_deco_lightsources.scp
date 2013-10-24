@@ -1941,4 +1941,113 @@ ON=@Create
    MOREZ=1
 
 
+[ITEMDEF 09931]
+DEFNAME=i_jackolantern_witch_lit
+NAME=jack-o-lantern witch
+TYPE=t_light_lit
+TDATA3=i_jackolantern_witch
+TDATA4=i_jackolantern_witch
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Witch (Lit)
+ON=@Create
+   MOREZ=1
+
+[ITEMDEF 09932]
+//Jack-o-Lantern Witch (lit animation frame)
+[ITEMDEF 09933]
+//Jack-o-Lantern Witch (lit animation frame)
+
+[ITEMDEF 09934]
+DEFNAME=i_jackolantern_witch
+NAME=jack-o-lantern witch
+TYPE=t_light_out
+TDATA3=i_jackolantern_witch_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Witch (Unlit)
+ON=@Create
+   MOREZ=1
+
+
+[ITEMDEF 09935]
+//Tall Pumpkin (ultima online unlit)
+[ITEMDEF 09936]
+//Tall Pumpkin (ultima online lit)
+[ITEMDEF 09937]
+//Tall Pumpkin (ultima online lit animation frame)
+[ITEMDEF 09938]
+//Tall Pumpkin (ultima online lit animation frame)
+
+[ITEMDEF 09939]
+//Tall Pumpkin (ankh unlit)
+[ITEMDEF 0993a]
+//Tall Pumpkin (ankh lit)
+[ITEMDEF 0993b]
+//Tall Pumpkin (ankh lit animation frame)
+[ITEMDEF 0993c]
+//Tall Pumpkin (ankh lit animation frame)
+
+[ITEMDEF 0993d]
+//Tall Pumpkin (spider unlit)
+[ITEMDEF 0993e]
+//Tall Pumpkin (spider lit)
+[ITEMDEF 0993f]
+//Tall Pumpkin (spider lit animation frame)
+[ITEMDEF 09940]
+//Tall Pumpkin (spider lit animation frame)
+
+[ITEMDEF 09941]
+//Tall Pumpkin (bat unlit)
+[ITEMDEF 09942]
+//Tall Pumpkin (bat lit)
+[ITEMDEF 09943]
+//Tall Pumpkin (bat lit animation frame)
+[ITEMDEF 09944]
+//Tall Pumpkin (bat lit animation frame)
+
+[ITEMDEF 09945]
+//Tall Pumpkin (skull unlit)
+[ITEMDEF 09946]
+//Tall Pumpkin (skull lit)
+[ITEMDEF 09947]
+//Tall Pumpkin (skull lit animation frame)
+[ITEMDEF 09948]
+//Tall Pumpkin (skull lit animation frame)
+
+[ITEMDEF 09949]
+//Tall Pumpkin (demon unlit)
+[ITEMDEF 0994a]
+//Tall Pumpkin (demon lit)
+[ITEMDEF 0994b]
+//Tall Pumpkin (demon lit animation frame)
+[ITEMDEF 0994c]
+//Tall Pumpkin (demon lit animation frame)
+
+[ITEMDEF 0994d]
+//Tall Pumpkin (spirit unlit)
+[ITEMDEF 0994e]
+//Tall Pumpkin (spirit lit)
+[ITEMDEF 0994f]
+//Tall Pumpkin (spirit lit animation frame)
+[ITEMDEF 09950]
+//Tall Pumpkin (spirit lit animation frame)
+
+[ITEMDEF 09951]
+//Tall Pumpkin (scalele unlit)
+[ITEMDEF 09952]
+//Tall Pumpkin (scalele lit)
+[ITEMDEF 09953]
+//Tall Pumpkin (scalele lit animation frame)
+[ITEMDEF 09954]
+//Tall Pumpkin (scalele lit animation frame)
+
 [EOF]

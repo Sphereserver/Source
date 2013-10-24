@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 17, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -177,7 +177,7 @@ DUPEITEM=0c45
 [ITEMDEF 0c4f]
 //cotton plant - mature
 DEFNAME=i_crop_cotton
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_cotton1
 TDATA2=0
 TDATA3=i_COTTON
@@ -193,7 +193,7 @@ DUPEITEM=0c4f
 [ITEMDEF 0c51]
 //cotton plant (immature)
 DEFNAME=i_crop_cotton1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_cotton1
 TDATA2=i_crop_cotton2
 CATEGORY=Vegetation
@@ -207,7 +207,7 @@ DUPEITEM=0c51
 [ITEMDEF 0c53]
 //cotton plant (mid age)
 DEFNAME=i_crop_cotton2
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_cotton1
 TDATA2=i_crop_cotton
 DUPELIST=0c54
@@ -219,7 +219,7 @@ DUPEITEM=0c53
 [ITEMDEF 0c55]
 //wheat
 DEFNAME=i_crop_wheat3
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_WHEAT1
 TDATA2=i_crop_WHEAT4
 DUPELIST=0c56
@@ -235,7 +235,7 @@ DUPEITEM=0c55
 [ITEMDEF 0c57]
 //wheat
 DEFNAME=i_crop_wheat4
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_WHEAT1
 TDATA2=i_crop_WHEAT
 VALUE=2
@@ -255,7 +255,7 @@ DUPEITEM=0c57
 [ITEMDEF 0c5a]
 //wheat
 DEFNAME=i_crop_wheat
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_WHEAT1
 TDATA2=0
 TDATA3=i_wheat_sheaf
@@ -291,22 +291,20 @@ DUPEITEM=0c5c
 [ITEMDEF 0c5e]
 //vines (ground)
 DEFNAME=i_crop_vines1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_vines1
 TDATA2=i_crop_vines2
 VALUE=1
 CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
-
 ON=@Create
-// lots of vines grown fruit.
-FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c5f]
 //vines
 DEFNAME=i_crop_vines
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_vines1
 TDATA2=-1	// pops out a fruit.
 TDATA3=0 // can be many fruits
@@ -314,31 +312,25 @@ VALUE=1
 CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
-
 ON=@Create
-// lots of vines grown fruit.
-FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c60]
 //vines
 DEFNAME=i_crop_vines2
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_vines1
 TDATA2=i_crop_vines
 VALUE=1
 CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
-
 ON=@Create
-// lots of vines grown fruit.
-FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c61]
-//Turnip
-// DEFNAME2=TURNIP_1
 DEFNAME=i_crop_turnip1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_turnip1
 TDATA2=i_crop_turnip
 VALUE=2
@@ -349,7 +341,7 @@ DESCRIPTION=Turnip
 [ITEMDEF 0c62]
 //turnip
 DEFNAME=i_crop_turnip
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_turnip1
 TDATA2=0
 TDATA3=i_fruit_turnip
@@ -402,7 +394,7 @@ DUPEITEM=0c66
 [ITEMDEF 0c68]
 //sprouts - no idea what they sprout into ?
 DEFNAME=i_crop_sprouts1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_sprouts1
 TDATA2=i_crop_sprouts2
 VALUE=2
@@ -413,7 +405,7 @@ DESCRIPTION=Sprouts
 [ITEMDEF 0c69]
 //sprouts
 DEFNAME=i_crop_sprouts2
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_sprouts1
 TDATA2=0 // not sure what this turns into.
 TDATA3=0 // not sure what this turns into.
@@ -461,7 +453,7 @@ VALUE=2
 WEIGHT=1.0
 CATEGORY=Vegetation
 SUBSECTION=Fruits and Vegetables
-DESCRIPTION=Pumpkin 3 (smaller)
+DESCRIPTION=Pumpkin (smaller)
 ON=@Create
    MOREM=2
 
@@ -488,7 +480,7 @@ DUPEITEM=0c6d
 [ITEMDEF 0c6f]
 //onions
 DEFNAME=i_crop_onion
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_onion
 TDATA2=0
 TDATA3=i_fruit_onion
@@ -556,7 +548,7 @@ DUPEITEM=0c74
 [ITEMDEF 0c76]
 //carrots
 DEFNAME=i_crop_carrot
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_carrot
 TDATA2=0
 TDATA3=i_fruit_carrot
@@ -625,7 +617,7 @@ DUPEITEM=0c7b
 [ITEMDEF 0c7d]
 //corn stalk
 DEFNAME=i_crop_corn
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_corn1
 TDATA2=0
 TDATA3=i_fruit_corn
@@ -640,7 +632,7 @@ FRUIT=i_FRUIT_CORN
 [ITEMDEF 0c7e]
 //corn stalk
 DEFNAME=i_crop_corn1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_corn1
 TDATA2=i_crop_corn
 VALUE=2
@@ -828,7 +820,7 @@ DESCRIPTION=Bulrushes
 DEFNAME=i_tree_coconutpalm
 VALUE=2
 // TYPE=t_tree
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Coconut Palm
@@ -840,7 +832,7 @@ FRUIT=i_fruit_coconut
 //date palm
 DEFNAME=i_tree_datepalm
 // TYPE=t_tree
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Date Palm
@@ -1029,7 +1021,7 @@ FRUIT=i_fruit_banana
 //grasses
 DEFNAME=i_plant_grasses
 VALUE=1
-TYPE=T_GRASS
+TYPE=t_grass
 CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Grasses
@@ -2742,7 +2734,7 @@ DESCRIPTION=Apple Tree
 //leaves
 DEFNAME=i_tree_leaves_apple_1_1
 VALUE=1
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2751,7 +2743,7 @@ DESCRIPTION=Apple Tree Foliage
 //apple tree foliage
 DEFNAME=i_tree_leaves_apple_1_2
 VALUE=1
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2763,7 +2755,7 @@ FRUIT=i_fruit_apple
 //fall leaves
 DEFNAME=i_tree_leaves_apple_1_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2783,7 +2775,7 @@ DESCRIPTION=Apple Tree Foliage
 //leaves
 DEFNAME=i_tree_leaves_apple_2_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2795,7 +2787,7 @@ FRUIT=i_FRUIT_APPLE
 //apple tree foliage
 DEFNAME=i_tree_leaves_apple_2_2
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2807,7 +2799,7 @@ FRUIT=i_FRUIT_APPLE
 //fall leaves
 DEFNAME=i_tree_leaves_apple_2_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Apple Tree Foliage
@@ -2819,7 +2811,7 @@ FRUIT=i_FRUIT_APPLE
 //peach tree
 DEFNAME=i_tree_trunk_peach_1_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree
@@ -2831,7 +2823,7 @@ FRUIT=i_FRUIT_PEACH
 //leaves
 DEFNAME=i_tree_leaves_peach_1_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2843,7 +2835,7 @@ FRUIT=i_FRUIT_PEACH
 //peach tree foliage
 DEFNAME=i_tree_leaves_peach_1_2
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2855,7 +2847,7 @@ FRUIT=i_FRUIT_PEACH
 //fall leaves
 DEFNAME=i_tree_leaves_peach_1_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2875,7 +2867,7 @@ DESCRIPTION=Peach Tree Leaves
 //leaves
 DEFNAME=i_tree_leaves_peach_2_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2887,7 +2879,7 @@ FRUIT=i_FRUIT_PEACH
 //peach tree foliage
 DEFNAME=i_tree_leaves_peach_2_2
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2899,7 +2891,7 @@ FRUIT=i_FRUIT_PEACH
 //fall leaves
 DEFNAME=i_tree_leaves_peach_2_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Peach Tree Leaves
@@ -2919,7 +2911,7 @@ DESCRIPTION=Pear Tree
 //leaves
 DEFNAME=i_tree_leaves_pear_1_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -2931,7 +2923,7 @@ FRUIT=i_FRUIT_PEACH
 //pear tree foliage
 DEFNAME=i_tree_leaves_pear_1_2
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -2943,7 +2935,7 @@ FRUIT=i_FRUIT_PEACH
 //fall leaves
 DEFNAME=i_tree_leaves_pear_1_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -2963,7 +2955,7 @@ DESCRIPTION=Pear Tree Foliage
 //leaves
 DEFNAME=i_tree_leaves_pear_2_1
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -2975,7 +2967,7 @@ FRUIT=i_FRUIT_PEACH
 //pear tree foliage
 DEFNAME=i_tree_leaves_pear_2_2
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -2987,7 +2979,7 @@ FRUIT=i_FRUIT_PEACH
 //fall leaves
 DEFNAME=i_tree_leaves_pear_2_3
 VALUE=2
-TYPE=T_FOLIAGE
+TYPE=t_foliage
 CATEGORY=Vegetation
 SUBSECTION=Trees
 DESCRIPTION=Pear Tree Foliage
@@ -3189,7 +3181,7 @@ DUPEITEM=0df9
 DEFNAME=i_cotton
 VALUE=3
 //RESOURCES=16 i_crop_COTTON
-TYPE=t_COTTON
+TYPE=t_cotton
 CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=BAILS OF COTTON
@@ -3579,7 +3571,7 @@ DUPEITEM=018dd
 [ITEMDEF 018df]
 //mandrake plant (the plant sprout or flower, not root or reagent)
 DEFNAME=i_crop_mandrake
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_mandrake
 TDATA2=0
 TDATA3=i_fruit_mandrake
@@ -3597,7 +3589,7 @@ DUPEITEM=018df
 [ITEMDEF 018e1]
 //garlic plant (looks like grass)
 DEFNAME=i_crop_garlic
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_garlic
 TDATA2=0
 TDATA3=i_fruit_garlic
@@ -3637,7 +3629,7 @@ DUPEITEM=018e3
 [ITEMDEF 018e5]
 //nightshade flowers
 DEFNAME=i_crop_nightshade
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_nightshade
 TDATA2=0
 TDATA2=i_fruit_nightshade
@@ -3675,7 +3667,7 @@ DUPEITEM=018e7
 [ITEMDEF 018e9]
 //ginseng flower
 DEFNAME=i_crop_ginseng
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_ginseng
 TDATA2=0
 TDATA3=i_fruit_ginseng
@@ -3758,7 +3750,7 @@ DUPEITEM=01a95
 
 [ITEMDEF 01a99]
 DEFNAME=i_crop_flax1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_flax1
 TDATA2=i_crop_flax
 VALUE=1
@@ -3773,7 +3765,7 @@ DUPEITEM=01a99
 
 [ITEMDEF 01a9b]
 DEFNAME=i_crop_flax
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_flax1
 TDATA2=0
 TDATA3=i_flax_bundle
@@ -3799,7 +3791,7 @@ DUPEITEM=01a9c
 
 [ITEMDEF 01a9e]
 DEFNAME=i_crop_hops
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_hops1
 TDATA2=0
 TDATA3=i_fruit_hops
@@ -3811,7 +3803,7 @@ DUPELIST=01aa0
 
 [ITEMDEF 01a9f]
 DEFNAME=i_crop_hops1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_hops1
 TDATA2=i_crop_hops
 WEIGHT=4
@@ -4027,7 +4019,7 @@ DUPEITEM=01b1f
 
 [ITEMDEF 01ebe]
 DEFNAME=i_crop_wheat1
-TYPE=T_CROPS
+TYPE=t_crops
 TDATA1=i_crop_wheat1
 TDATA2=i_crop_wheat2
 CATEGORY=Vegetation
@@ -5416,6 +5408,32 @@ CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vanilla Plant (mature)
 
+
+[ITEMDEF 0992f]
+DEFNAME=i_fruit_pumpkin_tall
+NAME=pumpkin
+TYPE=t_fruit
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=1.0
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Pumpkin (tall)
+ON=@Create
+   MOREM=4
+
+[ITEMDEF 09930]
+DEFNAME=i_fruit_pumpkin_rotten
+NAME=rotten pumpkin
+TYPE=t_food
+TDATA1=i_crop_vines1
+VALUE=2
+WEIGHT=0.1
+CATEGORY=Vegetation
+SUBSECTION=Fruits and Vegetables
+DESCRIPTION=Pumpkin (rotten)
+ON=@Create
+   MOREM=1
 
 //////////////////
 // Custom Items //

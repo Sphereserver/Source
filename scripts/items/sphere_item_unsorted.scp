@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 23, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -19,7 +19,7 @@ SUBSECTION=Bad Tiles
 DESCRIPTION=Unused Tile
 
 [ITEMDEF 01]
-DEFNAME=i_NODRAW
+DEFNAME=i_nodraw
 CATEGORY=Miscellaneous
 SUBSECTION=Bad Tiles
 DESCRIPTION=No Draw Tile
@@ -34,7 +34,7 @@ TYPE=t_normal
 VALUE=12
 WEIGHT=2.0
 RESOURCES=2 i_switch_normal,2 i_potion_strengthgreat,1 i_scroll_protection
-SKILLMAKE=Carpentry 80.0,t_carpentry
+SKILLMAKE=carpentry 80.0,t_carpentry
 CATEGORY=Quest
 SUBSECTION=Palace of Paroxysmus
 DESCRIPTION=Rope (acid proof)
@@ -194,7 +194,7 @@ TDATA2=041
 VALUE=18
 WEIGHT=1.0
 RESOURCES=2 i_softened_reed,3 i_arrow_shaft
-SKILLMAKE=Tinkering 15.0
+SKILLMAKE=tinkering 15.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Basket
@@ -204,7 +204,7 @@ DESCRIPTION=Basket
 DEFNAME=i_bankbox
 NAME=Bank Box
 LAYER=layer_bankbox
-TYPE=T_EQ_BANK_BOX
+TYPE=t_eq_bank_box
 TDATA2=04a
 
 
@@ -213,7 +213,7 @@ DEFNAME=i_vase_large_1
 NAME=large amphora vase
 WEIGHT=15.0
 RESOURCES=3 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Large Vase 1
@@ -223,7 +223,7 @@ DEFNAME=i_vase_small_1
 NAME=oinochoe vase
 WEIGHT=3.0
 RESOURCES=1 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Small Vase 1
@@ -233,7 +233,7 @@ DEFNAME=i_vase_large_2
 NAME=large pyxis
 WEIGHT=15.0
 RESOURCES=15 i_clay
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Large Vase 2
@@ -243,7 +243,7 @@ DEFNAME=i_vase_small_2
 NAME=small pyxis
 WEIGHT=3.0
 RESOURCES=3 i_clay
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Small Vase 2
@@ -256,7 +256,7 @@ FLIP=1
 VALUE=69
 WEIGHT=1.0
 RESOURCES=16 i_ebony
-SKILLMAKE=Carpentry 45.0,t_carpentry
+SKILLMAKE=carpentry 45.0,t_carpentry
 CATEGORY=Games
 SUBSECTION=Pieces
 DESCRIPTION=Black Chessmen
@@ -273,7 +273,7 @@ FLIP=1
 VALUE=69
 WEIGHT=1.0
 RESOURCES=16 i_ivory
-SKILLMAKE=Carpentry 45.0,t_carpentry
+SKILLMAKE=carpentry 45.0,t_carpentry
 CATEGORY=Games
 SUBSECTION=Pieces
 DESCRIPTION=White Chessmen
@@ -284,7 +284,7 @@ DEFNAME=i_cards
 FLIP=1
 WEIGHT=1.0
 RESOURCES=52 i_paper
-SKILLMAKE=Carpentry 5.0,t_carpentry
+SKILLMAKE=carpentry 5.0,t_carpentry
 CATEGORY=Games
 SUBSECTION=Cards
 DESCRIPTION=Cards
@@ -313,7 +313,7 @@ FLIP=1
 VALUE=52
 WEIGHT=1.0
 RESOURCES=12 i_ivory
-SKILLMAKE=Carpentry 35.0,t_carpentry
+SKILLMAKE=carpentry 35.0,t_carpentry
 CATEGORY=Games
 SUBSECTION=Pieces
 DESCRIPTION=Red Checkers
@@ -326,7 +326,7 @@ FLIP=1
 VALUE=52
 WEIGHT=1.0
 RESOURCES=12 i_ebony
-SKILLMAKE=Carpentry 35.0,t_carpentry
+SKILLMAKE=carpentry 35.0,t_carpentry
 CATEGORY=Games
 SUBSECTION=Pieces
 DESCRIPTION=White Checkers
@@ -339,7 +339,7 @@ TDATA2=092e
 VALUE=40
 WEIGHT=3.0
 RESOURCES=3 i_board,1 i_dice_cup
-SKILLMAKE=Tinkering 30.0,t_tinker_tools
+SKILLMAKE=tinkering 30.0,t_tinker_tools
 CATEGORY=Games
 SUBSECTION=Board
 DESCRIPTION=Backgammon Game
@@ -484,7 +484,7 @@ TYPE=t_normal
 VALUE=24
 WEIGHT=3.0
 RESOURCES=3 i_board
-SKILLMAKE=Tinkering 30.0,t_tinker_tools
+SKILLMAKE=tinkering 30.0,t_tinker_tools
 CATEGORY=Games
 SUBSECTION=Pieces
 DESCRIPTION=Game Board (checkers/chess)
@@ -494,7 +494,7 @@ DEFNAME=i_dice_cup
 VALUE=31
 WEIGHT=1.0
 RESOURCES=3 i_ivory,1 i_mug_ceramic
-SKILLMAKE=Tinkering 30.0,t_tinker_tools
+SKILLMAKE=tinkering 30.0,t_tinker_tools
 CATEGORY=Games
 SUBSECTION=Dice
 DESCRIPTION=Dice and Cup
@@ -688,7 +688,7 @@ DUPEITEM=0108c
 
 
 [ITEMDEF 010ac]
-DEFNAME=i_POLE_HANGING_w_1
+DEFNAME=i_pole_hanging_w_1
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -696,7 +696,7 @@ SUBSECTION=Hanging Pole
 DESCRIPTION=Hanging Pole (W) (01/03)
 
 [ITEMDEF 010ad]
-DEFNAME=i_POLE_HANGING_w_2
+DEFNAME=i_pole_hanging_w_2
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -704,7 +704,7 @@ SUBSECTION=Hanging Pole
 DESCRIPTION=Hanging Pole (W) (02/03)
 
 [ITEMDEF 010ae]
-DEFNAME=i_POLE_HANGING_w_3
+DEFNAME=i_pole_hanging_w_3
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -712,7 +712,7 @@ SUBSECTION=Hanging Pole
 DESCRIPTION=Hanging Pole (W) (03/03)
 
 [ITEMDEF 010af]
-DEFNAME=i_POLE_HANGING_n_1
+DEFNAME=i_pole_hanging_n_1
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -720,7 +720,7 @@ SUBSECTION=Hanging Pole
 DESCRIPTION=Hanging Pole (N) (01/03)
 
 [ITEMDEF 010b0]
-DEFNAME=i_POLE_HANGING_n_2
+DEFNAME=i_pole_hanging_n_2
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -728,7 +728,7 @@ SUBSECTION=Hanging Pole
 DESCRIPTION=Hanging Pole (N) (02/03)
 
 [ITEMDEF 010b1]
-DEFNAME=i_POLE_HANGING_n_3
+DEFNAME=i_pole_hanging_n_3
 RESOURCES=1 i_ingot_iron,1 i_log
 WEIGHT=1
 CATEGORY=Decoration - Furniture
@@ -787,7 +787,7 @@ DUPEITEM=01122
 
 
 [ITEMDEF 011c6]
-DEFNAME=i_POT_SMALL_FLOWER
+DEFNAME=i_pot_small_flower
 RESOURCES=1 i_clay
 WEIGHT=2
 CATEGORY=Decoration - Potted Plants & Vases
@@ -795,7 +795,7 @@ SUBSECTION=Vases & Pots
 DESCRIPTION=Small Empty Pot
 
 [ITEMDEF 011c7]
-DEFNAME=i_POT_FLOWER_LARGE
+DEFNAME=i_pot_flower_large
 RESOURCES=3 i_clay
 WEIGHT=6
 CATEGORY=Decoration - Potted Plants & Vases
@@ -803,7 +803,7 @@ SUBSECTION=Vases & Pots
 DESCRIPTION=Large Empty Pot
 
 [ITEMDEF 011c8]
-DEFNAME=i_TREE_SMALL_POTTED
+DEFNAME=i_tree_small_potted
 RESOURCES=1 i_pot_small_flower,1 i_tree_sapling_planted,1 i_dirt
 WEIGHT=4
 CATEGORY=Decoration - Potted Plants & Vases
@@ -811,7 +811,7 @@ SUBSECTION=Potted Trees
 DESCRIPTION=Small Planted Tree
 
 [ITEMDEF 011c9]
-DEFNAME=i_TREE_LARGE_POTTED
+DEFNAME=i_tree_large_potted
 RESOURCES=1 i_pot_flower_large,1 i_plant_spider,2 i_dirt
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -819,7 +819,7 @@ SUBSECTION=Potted Trees
 DESCRIPTION=Large Planted Tree
 
 [ITEMDEF 011ca]
-DEFNAME=i_PLANT_POTTED_SMALL
+DEFNAME=i_plant_potted_small
 RESOURCES=1 i_pot_small_flower,1 i_flower_foxglove,1 i_dirt
 WEIGHT=4
 CATEGORY=Decoration - Potted Plants & Vases
@@ -827,7 +827,7 @@ SUBSECTION=Potted Plants
 DESCRIPTION=Plant 1
 
 [ITEMDEF 011cb]
-DEFNAME=i_FLOWER_POTTED_SMALL
+DEFNAME=i_flower_potted_small
 RESOURCES=1 i_pot_small_flower,1 i_flower_orfluer,1 i_dirt
 WEIGHT=3
 CATEGORY=Decoration - Potted Plants & Vases
@@ -835,7 +835,7 @@ SUBSECTION=Potted Plants
 DESCRIPTION=Plant 2
 
 [ITEMDEF 011cc]
-DEFNAME=i_TREE_SMALL_POTTED_2
+DEFNAME=i_tree_small_potted_2
 RESOURCES=1 i_pot_small_flower,1 i_tree_sapling_planted,1 i_dirt
 WEIGHT=4
 CATEGORY=Decoration - Potted Plants & Vases
@@ -895,7 +895,7 @@ DUPEITEM=012ee
 
 [ITEMDEF 014e0]
 DEFNAME=i_bucket
-TYPE=T_CONTAINER
+TYPE=t_container
 TDATA2=03e
 RESOURCES=2 i_board,1 i_ingot_iron,1 i_nails
 WEIGHT=2
@@ -904,7 +904,7 @@ SUBSECTION=Vat
 DESCRIPTION=Bucket
 
 [ITEMDEF 014f3]
-DEFNAME=i_MODEL_SHIP
+DEFNAME=i_model_ship
 FLIP=1
 WEIGHT=1
 CATEGORY=Decoration - Miscellaneous
@@ -913,7 +913,7 @@ DESCRIPTION=Ship Model (N)
 DUPELIST=014f4
 
 RESOURCES=10 i_board
-SKILLMAKE=CARPENTRY 95.0,t_carpentry
+SKILLMAKE=carpentry 95.0,t_carpentry
 
 [ITEMDEF 014f4]
 //ship model
@@ -921,7 +921,7 @@ DUPEITEM=014f3
 
 [ITEMDEF 014f5]
 DEFNAME=i_spyglass
-TYPE=T_SPY_GLASS
+TYPE=t_spy_glass
 FLIP=1
 RESOURCES=2 i_ingot_iron,1 i_glass_raw
 WEIGHT=3
@@ -1000,7 +1000,7 @@ morez=024
 [ITEMDEF 01647]
 DEFNAME=i_light_source
 //RESOURCES=BASE ITEMS THAT ARE RESOURCES DO NOT ALWAYS HAVE RESOURCES
-TYPE=T_LIGHT_LIT
+TYPE=t_light_lit
 TDATA4=i_light_source
 WEIGHT=0
 LAYER=15
@@ -1326,7 +1326,7 @@ FLIP=1
 VALUE=45
 WEIGHT=11.0
 RESOURCES=1 i_barrel_tap,1 i_keg_small
-SKILLMAKE=Tinkering 70.0,t_tinker_tools
+SKILLMAKE=tinkering 70.0,t_tinker_tools
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Keg
@@ -1582,7 +1582,7 @@ DUPEITEM=01bbf
 
 
 [ITEMDEF 01e0f]
-DEFNAME=i_PLANT_CACTUS_POTTED
+DEFNAME=i_plant_cactus_potted
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1590,7 +1590,7 @@ SUBSECTION=Potted Cactuses
 DESCRIPTION=Cactus 1
 
 [ITEMDEF 01e10]
-DEFNAME=i_PLANT_CACTUS_POTTED_2
+DEFNAME=i_plant_cactus_potted_2
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1598,7 +1598,7 @@ SUBSECTION=Potted Cactuses
 DESCRIPTION=Cactus 2
 
 [ITEMDEF 01e11]
-DEFNAME=i_PLANT_CACTUS_POTTED_3
+DEFNAME=i_plant_cactus_potted_3
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1606,7 +1606,7 @@ SUBSECTION=Potted Cactuses
 DESCRIPTION=Cactus 3
 
 [ITEMDEF 01e12]
-DEFNAME=i_PLANT_CACTUS_POTTED_4
+DEFNAME=i_plant_cactus_potted_4
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1614,7 +1614,7 @@ SUBSECTION=Potted Cactuses
 DESCRIPTION=Cactus 4
 
 [ITEMDEF 01e13]
-DEFNAME=i_PLANT_CACTUS_POTTED_5
+DEFNAME=i_plant_cactus_potted_5
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1622,7 +1622,7 @@ SUBSECTION=Potted Cactuses
 DESCRIPTION=Cactus 5
 
 [ITEMDEF 01e14]
-DEFNAME=i_PLANT_CACTUS_POTTED_6
+DEFNAME=i_plant_cactus_potted_6
 RESOURCES=1 i_pot,1 i_plant_cactus
 WEIGHT=8
 CATEGORY=Decoration - Potted Plants & Vases
@@ -1637,7 +1637,7 @@ FLIP=1
 VALUE=12
 WEIGHT=2.1
 RESOURCES=1 i_board,1 i_cloth,1 i_nails
-SKILLMAKE=Carpentry 15.7,t_carpentry
+SKILLMAKE=carpentry 15.7,t_carpentry
 CATEGORY=Games
 SUBSECTION=Darts
 DESCRIPTION=Dartboard
@@ -1653,7 +1653,7 @@ DEFNAME=i_dartboard_axe
 FLIP=1
 WEIGHT=13.1
 RESOURCES=1 i_dartboard,1 i_axe
-SKILLMAKE=Carpentry 15.7,t_carpentry
+SKILLMAKE=carpentry 15.7,t_carpentry
 CATEGORY=Games
 SUBSECTION=Darts
 DESCRIPTION=Dartboard (Axe)
@@ -1669,7 +1669,7 @@ DEFNAME=i_dartboard_knives
 FLIP=1
 WEIGHT=14.1
 RESOURCES=1 i_dartboard,3 i_dagger
-SKILLMAKE=Carpentry 15.7,t_carpentry
+SKILLMAKE=carpentry 15.7,t_carpentry
 CATEGORY=Games
 SUBSECTION=Darts
 DESCRIPTION=Dartboard (Knives)
@@ -1684,7 +1684,7 @@ DUPEITEM=01e32
 //Worldgem bit plain and small (see fancy bit at 1f13)
 DEFNAME=i_worldgem_bit
 VALUE=1
-TYPE=T_SPAWN_CHAR
+TYPE=t_spawn_char
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
 DESCRIPTION=Worldgem Bit
@@ -1692,7 +1692,7 @@ DESCRIPTION=Worldgem Bit
 [ITEMDEF 01f13]
 //fancy medium sized worldgem bit (see plain at 01ea7)
 DEFNAME=i_worldgem_lg
-TYPE=T_SPAWN_CHAR
+TYPE=t_spawn_char
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
 DESCRIPTION=Large Worldgem Bit
@@ -1805,7 +1805,7 @@ DEFNAME=i_eq_marker
 [ITEMDEF 02042]
 // Lord British Armor
 DEFNAME=i_person_lord_british
-TYPE=T_ARMOR
+TYPE=t_armor
 
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
@@ -1835,7 +1835,7 @@ ENDIF
 [ITEMDEF 02043]
 // Blackthorne Robe
 DEFNAME=i_person_black_thorne
-TYPE=T_ARMOR
+TYPE=t_armor
 
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
@@ -1865,7 +1865,7 @@ ENDIF
 [ITEMDEF 0204E]
 DEFNAME=i_deathshroud
 NAME=Death Shroud
-TYPE=T_CLOTHING
+TYPE=t_clothing
 
 CATEGORY=Provisions - GM Items
 SUBSECTION=Special Items
@@ -1892,7 +1892,7 @@ ENDIF
 [ITEMDEF 0204F]
 // GM Robe
 DEFNAME=i_robe_gm
-TYPE=T_CLOTHING
+TYPE=t_clothing
 //ATT=50
 ARMOR=500
 DYE=1
@@ -1924,7 +1924,7 @@ ENDIF
 [ITEMDEF 02050]
 // Dupre
 DEFNAME=i_dupre
-TYPE=T_ARMOR
+TYPE=t_armor
 //ATT=50
 ARMOR=30
 
@@ -2055,7 +2055,7 @@ TYPE=t_container
 TDATA2=041
 WEIGHT=1.0
 RESOURCES=2 i_softened_reed,3 i_arrow_shaft
-SKILLMAKE=Tinkering 15.0
+SKILLMAKE=tinkering 15.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Basket (duplicate of 0990)
@@ -2112,7 +2112,7 @@ LAYER=layer_hand1
 VALUE=488
 WEIGHT=1.0
 RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
-SKILLMAKE=Inscription 50.0,i_pen_and_ink
+SKILLMAKE=inscription 50.0,i_pen_and_ink
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Books
 DESCRIPTION=Weapon Book
@@ -2154,7 +2154,7 @@ FLIP=1
 VALUE=488
 WEIGHT=1.0
 RESOURCES=80 i_parchment,1 i_hides_cut,1 i_cloth
-SKILLMAKE=Inscription 50.0,i_pen_and_ink
+SKILLMAKE=inscription 50.0,i_pen_and_ink
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Books
 DESCRIPTION=Bardic Spellbook
@@ -2200,7 +2200,7 @@ TYPE=t_normal //fixme: or t_runebook
 VALUE=488
 WEIGHT=1.0
 RESOURCES=20 i_parchment,1 i_hides_cut,1 i_cloth
-SKILLMAKE=Inscription 45.0,i_pen_and_ink
+SKILLMAKE=inscription 45.0,i_pen_and_ink
 //LAYER=layer_hand2
 CATEGORY=Provisions - Alchemy & Magic
 SUBSECTION=Books
@@ -2233,7 +2233,7 @@ TDATA3=100,100
 FLIP=1
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box
@@ -2408,7 +2408,7 @@ TDATA2=03f
 FLIP=1
 WEIGHT=2.0
 RESOURCES=2 i_softened_reed,3 i_arrow_shaft
-SKILLMAKE=Tinkering 15.0
+SKILLMAKE=tinkering 15.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (square)
@@ -2424,7 +2424,7 @@ TYPE=t_container
 TDATA2=041
 WEIGHT=2.0
 RESOURCES=2 i_softened_reed,3 i_arrow_shaft
-SKILLMAKE=Tinkering 15.0
+SKILLMAKE=tinkering 15.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (round)
@@ -2435,7 +2435,7 @@ TYPE=t_container
 TDATA2=041
 WEIGHT=2.0
 RESOURCES=3 i_softened_reed,4 i_arrow_shaft
-SKILLMAKE=Tinkering 35.0
+SKILLMAKE=tinkering 35.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (tall round)
@@ -2447,7 +2447,7 @@ TDATA2=0108
 FLIP=1
 WEIGHT=4.0
 RESOURCES=1 i_softened_reed,2 i_arrow_shaft
-SKILLMAKE=Tinkering 45.0
+SKILLMAKE=tinkering 45.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (square deep)
@@ -2464,7 +2464,7 @@ TDATA2=0108
 FLIP=1
 WEIGHT=4.0
 RESOURCES=3 i_softened_reed,4 i_arrow_shaft
-SKILLMAKE=Tinkering 45.0
+SKILLMAKE=tinkering 45.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (square tall)
@@ -2480,7 +2480,7 @@ TYPE=t_container
 TDATA2=0108
 WEIGHT=2.0
 RESOURCES=1 i_softened_reed,2 i_arrow_shaft
-SKILLMAKE=Tinkering 25.0
+SKILLMAKE=tinkering 25.0
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Japanese Basket (round flat)
@@ -2927,7 +2927,7 @@ TYPE=t_normal
 VALUE=30
 WEIGHT=4.1
 RESOURCES=3 i_hides_cut,1 i_string,4 i_ingot_iron
-SKILLMAKE=Tinkering 75.0,t_tinker_tools
+SKILLMAKE=tinkering 75.0,t_tinker_tools
 CATEGORY=Provisions - Weapons
 SUBSECTION=Throwing
 DESCRIPTION=Bola
@@ -2958,7 +2958,7 @@ FLIP=1
 VALUE=25
 WEIGHT=1.1
 RESOURCES=1 i_scissors,1 i_paper
-SKILLMAKE=Carpentry 50.9,t_carpentry
+SKILLMAKE=carpentry 50.9,t_carpentry
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Kit
@@ -2996,7 +2996,7 @@ TYPE=t_normal
 VALUE=13
 WEIGHT=3.1
 RESOURCES=1 i_log,1 i_paper,1 i_ingot_iron
-SKILLMAKE=Tinkering 58.1,t_tinker_tools
+SKILLMAKE=tinkering 58.1,t_tinker_tools
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Japanese
 DESCRIPTION=Windchime
@@ -3015,7 +3015,7 @@ TYPE=t_normal
 VALUE=15
 WEIGHT=3.1
 RESOURCES=1 i_log,1 i_paper,1 i_ingot_iron
-SKILLMAKE=Tinkering 69.3,t_tinker_tools
+SKILLMAKE=tinkering 69.3,t_tinker_tools
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Japanese
 DESCRIPTION=Windchime (fancy)
@@ -3031,7 +3031,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Butterfly
@@ -3043,7 +3043,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Crane
@@ -3055,7 +3055,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Frog
@@ -3067,7 +3067,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Star
@@ -3079,7 +3079,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Bird
@@ -3091,7 +3091,7 @@ TYPE=t_normal
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 33.3,1 i_origami_kit
+SKILLMAKE=carpentry 33.3,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Fish
@@ -3625,7 +3625,7 @@ DUPEITEM=02adc
 //shopkeeper contain
 DEFNAME=i_vendorbox
 NAME=Vendor Box
-TYPE=T_EQ_VENDOR_BOX
+TYPE=t_eq_vendor_box
 TDATA2=04a
 
 [ITEMDEF 02af9]
@@ -3675,7 +3675,7 @@ TDATA2=0103
 VALUE=12
 WEIGHT=1.2
 RESOURCES=1 i_wool,1 i_thread,1 i_cloth
-SKILLMAKE=Tailoring 39.2,t_sewing_kit
+SKILLMAKE=tailoring 39.2,t_sewing_kit
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Christmas Stocking (broken)
@@ -3688,7 +3688,7 @@ TDATA2=0103
 WEIGHT=1.2
 VALUE=12
 RESOURCES=1 i_wool,1 i_thread,1 i_cloth
-SKILLMAKE=Tailoring 39.2,t_sewing_kit
+SKILLMAKE=tailoring 39.2,t_sewing_kit
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Christmas Stocking (green)
@@ -3706,7 +3706,7 @@ TDATA2=0103
 WEIGHT=1.2
 VALUE=12
 RESOURCES=1 i_wool,1 i_thread,1 i_cloth
-SKILLMAKE=Tailoring 39.2,t_sewing_kit
+SKILLMAKE=tailoring 39.2,t_sewing_kit
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Christmas Stocking (red)
@@ -3780,7 +3780,7 @@ FLIP=1
 VALUE=79
 WEIGHT=24.6
 RESOURCES=12 i_board,4 i_nails,2 i_hinge
-SKILLMAKE=Carpentry 94.2,t_carpentry
+SKILLMAKE=carpentry 94.2,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Ornate Elven Chest
@@ -3799,7 +3799,7 @@ FLIP=1
 VALUE=79
 WEIGHT=24.6
 RESOURCES=12 i_board,4 i_nails,2 i_hinge
-SKILLMAKE=Carpentry 94.2,t_carpentry
+SKILLMAKE=carpentry 94.2,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Ornate Elven Chest (2)
@@ -3911,7 +3911,7 @@ NAME=runed prism
 TYPE=t_normal
 VALUE=23
 RESOURCES=1 i_prism_hollow,1 i_reag_black_pearl,1 i_reag_spider_silk,1 i_scroll_blank
-SKILLMAKE=Inscription 45.0
+SKILLMAKE=inscription 45.0
 CATEGORY=Quest
 SUBSECTION=Unknown
 DESCRIPTION=Prism (runed)
@@ -3923,7 +3923,7 @@ TYPE=t_normal
 VALUE=27
 WEIGHT=0.1
 RESOURCES=1 i_switch_normal,1 i_reag_black_pearl,1 i_reag_spider_silk,1 i_scroll_blank
-SKILLMAKE=Inscription 45.0
+SKILLMAKE=inscription 45.0
 CATEGORY=Quest
 SUBSECTION=Unknown
 DESCRIPTION=Enchanted Switch
@@ -3935,7 +3935,7 @@ TYPE=t_normal
 VALUE=8
 WEIGHT=0.1
 RESOURCES=8 i_sand
-SKILLMAKE=Alchemy 100.0,t_glassblowing_tool
+SKILLMAKE=alchemy 100.0,t_glassblowing_tool
 CATEGORY=Quest
 SUBSECTION=Unknown
 DESCRIPTION=Prism (hollow)
@@ -3947,7 +3947,7 @@ TYPE=t_normal
 VALUE=73
 WEIGHT=0.1
 RESOURCES=2 i_ingot_iron,1 i_gem_ruby,1 i_gem_star_sapphire
-SKILLMAKE=Tinkering 70.0,t_tinker_tools
+SKILLMAKE=tinkering 70.0,t_tinker_tools
 CATEGORY=Quest
 SUBSECTION=Unknown
 DESCRIPTION=Jeweled Filigree
@@ -3976,7 +3976,7 @@ NAME=runed switch
 TYPE=t_normal
 VALUE=127
 RESOURCES=2 i_board,1 i_switch_enchanted,1 i_filigree_jeweled,1 i_prism_runed
-SKILLMAKE=Carpentry 70.0,t_carpentry
+SKILLMAKE=carpentry 70.0,t_carpentry
 CATEGORY=Quest
 SUBSECTION=Unknown
 DESCRIPTION=Switch (runed)
@@ -3999,7 +3999,7 @@ FLIP=1
 VALUE=10
 WEIGHT=4.0
 RESOURCES=2 i_board
-SKILLMAKE=Carpentry 15.2,t_carpentry
+SKILLMAKE=carpentry 15.2,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Decorative
 DESCRIPTION=Parrot Perch
@@ -4821,7 +4821,7 @@ TYPE=t_normal
 VALUE=10
 WEIGHT=0.1
 RESOURCES=2 i_dry_reed,1 i_scouring_toxin
-SKILLMAKE=Alchemy 75.0
+SKILLMAKE=alchemy 75.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Softened Reed
@@ -4840,7 +4840,7 @@ DEFNAME=i_crystal_granule
 TYPE=t_normal
 VALUE=100
 WEIGHT=0.1
-SKILLMAKE=Alchemy 75.0,t_glassblowing_tool
+SKILLMAKE=alchemy 75.0,t_glassblowing_tool
 RESOURCES=1 i_shimmering_crystal
 CATEGORY=Resources
 SUBSECTION=Fabricated
@@ -4857,7 +4857,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=0.1
 RESOURCES=4 i_crystals_broken
-SKILLMAKE=Alchemy 75.0,t_mortar
+SKILLMAKE=alchemy 75.0,t_mortar
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Crystal Dust
@@ -4886,7 +4886,7 @@ NAME=tall Gargish vase
 FLIP=1
 WEIGHT=15.0
 RESOURCES=5 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Tall Gargish Vase
@@ -4920,7 +4920,7 @@ FLIP=1
 VALUE=93
 WEIGHT=22.0
 RESOURCES=20 i_ingot_iron,2 i_board,1 i_nails
-SKILLMAKE=Tinkering 75.0,t_tinker_tools
+SKILLMAKE=tinkering 75.0,t_tinker_tools
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Pirate Chest
@@ -4936,7 +4936,7 @@ FLIP=1
 VALUE=93
 WEIGHT=22.0
 RESOURCES=20 i_ingot_iron,2 i_board,1 i_nails
-SKILLMAKE=Tinkering 75.0,t_tinker_tools
+SKILLMAKE=tinkering 75.0,t_tinker_tools
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Pirate Chest (opened)
@@ -4974,7 +4974,7 @@ FLIP=1
 VALUE=16
 WEIGHT=0.1
 RESOURCES=2 i_ingot_iron,1 i_ingot_copper
-SKILLMAKE=Tinkering 43.0,t_tinker_tools
+SKILLMAKE=tinkering 43.0,t_tinker_tools
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Keys
 DESCRIPTION=Skeleton Key
@@ -5220,7 +5220,7 @@ NAME=pewter bowl
 VALUE=12
 WEIGHT=2.0
 RESOURCES=2 i_ingot_iron
-SKILLMAKE=Tinkering 42.0,t_tinker_tools
+SKILLMAKE=tinkering 42.0,t_tinker_tools
 CATEGORY=Decoration - Kitchen and Dining
 SUBSECTION=Table Settings
 DESCRIPTION=Large Gargish Pewter Bowl
@@ -5244,7 +5244,7 @@ DEFNAME=i_planter_ancient
 NAME=ancient stone planter
 WEIGHT=15.0
 RESOURCES=3 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Ancient Stone Planter
@@ -5254,7 +5254,7 @@ DEFNAME=i_planter_grecian
 NAME=grecian planter
 WEIGHT=20.0
 RESOURCES=4 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Grecian Planter
@@ -5264,7 +5264,7 @@ DEFNAME=i_planter_modern
 NAME=modern stone planter
 WEIGHT=15.0
 RESOURCES=3 i_rock_plain
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Decoration - Potted Plants & Vases
 SUBSECTION=Vases & Pots
 DESCRIPTION=Modern Stone Planter
@@ -5278,7 +5278,7 @@ TDATA2=03e
 VALUE=149
 WEIGHT=87.0
 RESOURCES=1 i_barrel_staves,1 i_barrel_hoops,1 i_barrel_lid
-SKILLMAKE=Tinkering 55.0,t_tinker_tools//requires proximity to coopers bench
+SKILLMAKE=tinkering 55.0,t_tinker_tools//requires proximity to coopers bench
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Oak Barrel
@@ -5333,7 +5333,7 @@ TDATA2=011b
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 2
@@ -5346,7 +5346,7 @@ TDATA2=011c
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 3
@@ -5359,7 +5359,7 @@ TDATA2=011d
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 4
@@ -5373,7 +5373,7 @@ TDATA2=011e
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 5
@@ -5391,7 +5391,7 @@ TDATA2=011f
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 6
@@ -5432,7 +5432,7 @@ DUPEITEM=046d9
 [ITEMDEF 046ec]
 DEFNAME=i_nutcracker_small
 NAME=small nutcracker
-TYPE=t_normal//FIXME: When dclicked, it should animate once
+TYPE=t_normal//fixme: when dclicked, it should animate once
 FLIP=1
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Holiday Gifts
@@ -5458,7 +5458,7 @@ DUPEITEM=046ec
 [ITEMDEF 046f2]
 DEFNAME=i_nutcracker_large
 NAME=large nutcracker
-TYPE=t_normal//FIXME: When dclicked, it should animate once
+TYPE=t_normal//fixme: when dclicked, it should animate once
 FLIP=1
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Holiday Gifts
@@ -5604,7 +5604,7 @@ FLIP=1
 VALUE=93
 WEIGHT=22.0
 RESOURCES=22 i_board,2 i_ingot_iron,1 i_nails
-SKILLMAKE=Tinkering 75.0,t_tinker_tools
+SKILLMAKE=tinkering 75.0,t_tinker_tools
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gothic Chest
@@ -5624,7 +5624,7 @@ TDATA2=0121
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 7
@@ -5643,7 +5643,7 @@ TDATA2=0120
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 8 (valentine)
@@ -5662,7 +5662,7 @@ TDATA2=0120
 //TDATA3=100,100//FIXME
 WEIGHT=9.4
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
-SKILLMAKE=Carpentry 21.0,t_carpentry
+SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
 SUBSECTION=Containers
 DESCRIPTION=Gift Box 8 (animated valentine)
@@ -5726,7 +5726,7 @@ FLIP=1
 VALUE=200
 WEIGHT=0.1
 RESOURCES=1 i_ingot_iron,1 i_heart_icy
-SKILLMAKE=Tinkering 100.0,t_tinker_tools
+SKILLMAKE=tinkering 100.0,t_tinker_tools
 CATEGORY=Quest
 SUBSECTION=Heart of Ice
 DESCRIPTION=Shackled Heart
@@ -5744,7 +5744,7 @@ FLIP=1
 VALUE=130
 WEIGHT=171.0
 RESOURCES=1 i_torture_rack,1 i_skeleton
-SKILLMAKE=Carpentry 98.5,t_carpentry
+SKILLMAKE=carpentry 98.5,t_carpentry
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Torture
 DESCRIPTION=Tortured Skeleton (multi-part)
@@ -5769,7 +5769,7 @@ FLIP=1
 VALUE=130
 WEIGHT=21.0
 RESOURCES=10 i_board,10 i_nails,10 i_wire_iron
-SKILLMAKE=Carpentry 98.5,t_carpentry
+SKILLMAKE=carpentry 98.5,t_carpentry
 CATEGORY=Decoration - Dungeons and The Dead
 SUBSECTION=Torture
 DESCRIPTION=Torture Rack (multi-part)
@@ -5796,7 +5796,7 @@ FLIP=1
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 66.6,1 i_origami_kit
+SKILLMAKE=carpentry 66.6,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Dragon
@@ -5814,7 +5814,7 @@ FLIP=1
 VALUE=5
 WEIGHT=0.1
 RESOURCES=1 i_paper
-SKILLMAKE=Carpentry 66.6,1 i_origami_kit
+SKILLMAKE=carpentry 66.6,1 i_origami_kit
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Origami
 DESCRIPTION=Origami Bunny
@@ -5847,7 +5847,7 @@ NAME=flowerbed
 FLIP=1
 WEIGHT=15.0
 RESOURCES=3 i_rock_plain,100 i_reag_fertile_dirt
-SKILLMAKE=Carpentry 5.0,t_masonry_tool
+SKILLMAKE=carpentry 5.0,t_masonry_tool
 CATEGORY=Yard Decoration
 SUBSECTION=Flowerbed
 DESCRIPTION=Flowerbed (multi-part)
@@ -5961,7 +5961,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=0.1
 RESOURCES=1000 i_gold
-SKILLMAKE=Alchemy 90.0
+SKILLMAKE=alchemy 90.0
 CATEGORY=Resources
 SUBSECTION=Mineral
 DESCRIPTION=Gold Dust
@@ -6011,7 +6011,7 @@ FLIP=1
 VALUE=140
 WEIGHT=94.2
 RESOURCES=1 i_bookcase,20 i_book_sm
-SKILLMAKE=Carpentry 36.5,t_carpentry
+SKILLMAKE=carpentry 36.5,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Bookcases
 DESCRIPTION=Bookcase (Alchemist)
@@ -6479,7 +6479,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=1.0
 RESOURCES=1 i_plant_parasitic,30 i_reag_nightshade,1 i_vial_empty
-SKILLMAKE=Alchemy 90.0,Magery 75.0
+SKILLMAKE=alchemy 90.0,magery 75.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Vial of Vitriol
@@ -6605,7 +6605,7 @@ TYPE=t_fletching
 VALUE=100
 WEIGHT=1.0
 RESOURCES=1 i_fairy_dust,20 i_feather
-SKILLMAKE=Bowcraft 90.0
+SKILLMAKE=bowcraft 90.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Elven Fletching
@@ -6643,7 +6643,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=1.0
 RESOURCES=5 i_sword_glass,1 i_diamond_blue
-SKILLMAKE=Blacksmithing 110.0
+SKILLMAKE=blacksmithing 110.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Crushed Glass
@@ -6656,7 +6656,7 @@ TYPE=t_normal
 VALUE=250
 WEIGHT=1.0
 RESOURCES=5 i_power_crystal,1 i_crystal_shards
-SKILLMAKE=Tinkering 90.0,Magery 80.0,t_tinker_tools
+SKILLMAKE=tinkering 90.0,magery 80.0,t_tinker_tools
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Arcanic Runestone
@@ -6669,7 +6669,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=1.0
 RESOURCES=20 i_ingot_iron,1 i_pearl_white
-SKILLMAKE=Blacksmithing 110.0
+SKILLMAKE=blacksmithing 110.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Powdered Iron
@@ -6682,7 +6682,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=1.0
 RESOURCES=1 i_dark_sapphire,50 i_reag_black_pearl
-SKILLMAKE=Tinkering 90.0,Magery 80.0
+SKILLMAKE=tinkering 90.0,magery 80.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Void Orb
@@ -6784,7 +6784,7 @@ TYPE=t_normal
 VALUE=100
 WEIGHT=0.1
 RESOURCES=1 i_poison_darkglow,30 i_reag_spider_silk
-SKILLMAKE=Alchemy 90.0,Magery 75.0
+SKILLMAKE=alchemy 90.0,magery 75.0
 CATEGORY=Resources
 SUBSECTION=Fabricated
 DESCRIPTION=Bottle of Ichor
@@ -6892,47 +6892,6 @@ DUPEITEM=09706
 //Pumpkin Carving Kit
 [ITEMDEF 0992e]
 //Pumpkin Carving Kit
-[ITEMDEF 0992f]
-//Pumpkin (tall)
-[ITEMDEF 09930]
-//Pumpkin (tall rotten)
-[ITEMDEF 09931]
-//Pumpkin (tall witch)
-[ITEMDEF 09932]
-[ITEMDEF 09933]
-[ITEMDEF 09934]
-[ITEMDEF 09935]
-[ITEMDEF 09936]
-[ITEMDEF 09937]
-[ITEMDEF 09938]
-[ITEMDEF 09939]
-[ITEMDEF 0993a]
-[ITEMDEF 0993b]
-[ITEMDEF 0993c]
-[ITEMDEF 0993d]
-[ITEMDEF 0993e]
-[ITEMDEF 0993f]
-[ITEMDEF 09940]
-[ITEMDEF 09941]
-[ITEMDEF 09942]
-[ITEMDEF 09943]
-[ITEMDEF 09944]
-[ITEMDEF 09945]
-[ITEMDEF 09946]
-[ITEMDEF 09947]
-[ITEMDEF 09948]
-[ITEMDEF 09949]
-[ITEMDEF 0994a]
-[ITEMDEF 0994b]
-[ITEMDEF 0994c]
-[ITEMDEF 0994d]
-[ITEMDEF 0994e]
-[ITEMDEF 0994f]
-[ITEMDEF 09950]
-[ITEMDEF 09951]
-[ITEMDEF 09952]
-[ITEMDEF 09953]
-[ITEMDEF 09954]
 
 [ITEMDEF 09955]
 //head on a spear

@@ -2,7 +2,7 @@
 
 12-07-2013, Coruja (Script pack)
 - Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
-		
+      
 19-07-2013, Ben
 -Added: Triggers @Enter, @Exit, and @Step to ROOMDEFs
 (Script pack)
@@ -109,7 +109,7 @@
 -Fixed: @ResourceFound trigger not working.
 -Fixed: Error caused by chars spawning when a GM is standing close to point 0,0
 -Fixed #2207: ARGN1 in @SELL and @ITEMSELL is now the sold amount and not the total amount.
--Added:	ARGN2 in @SELL and @ITEMSELL is the price of the items sold after vendermarkup (ARGN2 / ARGN1 = price per unit)
+-Added:   ARGN2 in @SELL and @ITEMSELL is the price of the items sold after vendermarkup (ARGN2 / ARGN1 = price per unit)
 -Fixed #2205: Changed Noto colors to match OSI default.
 -Fixed #2194: Functions starting with any hardcoded functions like LIST and followed with _ should now work as intended.
 
@@ -186,7 +186,7 @@
 -Fixed #2218: Client crash caused by removefromview when bank is open.
 -Added: CLOSE function to container items
 -Added: CLOSEPROFILE, CLOSESTATUS, and CLOSEPAPERDOLL functions to characters. 
-		Can take a UID as argument of the char's window you whish to close.
+        Can take a UID as argument of the char's window you whish to close.
 -Fixed #2221,#1933,#1618: EF_Walkcheck blocking some stairs.
 
 20-10-2013, RanXerox
@@ -202,3 +202,13 @@
 - Added: more candy and chocolate related ITEMDEFs
 - Fixed: standing lamps
 - Added: Charybdis (and tentacle), Tiger, and Killer Pumpkin CHARDEFs
+
+23-10-2013, RanXerox (Script Pack)
+- Fixed: bad defname reference in loot (should be i_mask_daemon)
+- Fixed: tall jack-o-lanterns
+- Added: spawn groups for Hythloth
+- Moved: t_equipitem moved to its own file (since it will eventually be quite large)
+- Modified: t_equipitem now implements TAG.RESPhysical
+  WARNING: Because most of the equipable items already had these TAGs, anyone
+           using those items on a live shard should make sure all those items
+           in-game are unequipped before installing this change!

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -16,7 +16,7 @@ VERSION=0.56c
 // Animal Spawns //
 ///////////////////
 
-[SPAWN SPAWN_Animals]
+[SPAWN spawn_Animals]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=All Animals
@@ -73,7 +73,7 @@ ID=c_wolf_silver
 ID=c_wolf_timber
 ID=c_wolf_white
 
-[SPAWN SPAWN_Birds]
+[SPAWN spawn_Birds]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Birds
@@ -83,7 +83,7 @@ ID=c_eagle
 //ID=c_parrot
 ID=c_turkey
 
-[SPAWN SPAWN_WaterCreatures]
+[SPAWN spawn_WaterCreatures]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Water Creatures
@@ -94,7 +94,7 @@ ID=c_kraken
 ID=c_sea_serpent
 ID=c_sea_serpent_deep
 
-[SPAWN SPAWN_ForestAnimals]
+[SPAWN spawn_ForestAnimals]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Forest Animals
@@ -116,7 +116,7 @@ ID=c_wolf_dire
 ID=c_wolf_silver
 ID=c_wolf_timber
 
-[SPAWN SPAWN_FarmAnimals]
+[SPAWN spawn_FarmAnimals]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Farm Animals
@@ -135,7 +135,7 @@ ID=c_pig
 ID=c_sheep_woolly
 ID=c_turkey
 
-[SPAWN SPAWN_JungleCreatures]
+[SPAWN spawn_JungleCreatures]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Jungle Creatures
@@ -155,7 +155,7 @@ ID=c_wolf_dark
 ID=c_wolf_grey
 ID=c_wolf_silver
 
-[SPAWN SPAWN_SwampCreatures]
+[SPAWN spawn_SwampCreatures]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Swamp Creatures
@@ -173,7 +173,7 @@ ID=c_snake
 ID=c_swamp_tentacles
 ID=c_toad_giant
 
-[SPAWN SPAWN_CityAnimals]
+[SPAWN spawn_CityAnimals]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=City Animals
@@ -183,25 +183,25 @@ ID=c_dog
 ID=c_rat
 ID=c_rat_sewer
 
-[SPAWN SPAWN_MountainAnimals]
+[SPAWN spawn_MountainAnimals]
 CATEGORY=Spawn Groups
-SUBSECTION=Animals 
+SUBSECTION=Animals
 DESCRIPTION=Mountain Animals
 ID=c_rat                    14
 ID=c_eagle                  13
 ID=c_goat_mountain          13
 ID=c_horse_brown_lt
 
-[SPAWN SPAWN_CaveAnimals]
+[SPAWN spawn_CaveAnimals]
 CATEGORY=Spawn Groups
-SUBSECTION=Animals 
+SUBSECTION=Animals
 DESCRIPTION=Cave Animals
 ID=c_rat                    19
 ID=c_bear_grizzly           16
 
-[SPAWN SPAWN_IceAnimals]
+[SPAWN spawn_IceAnimals]
 CATEGORY=Spawn Groups
-SUBSECTION=Animals 
+SUBSECTION=Animals
 DESCRIPTION=Ice Animals
 ID=c_rat                    17
 ID=c_walrus                 15
@@ -210,9 +210,9 @@ ID=c_wolf_white             13
 ID=c_bear_polar
 ID=c_ice_snake              14
 
-[SPAWN SPAWN_PlainsAnimals]
+[SPAWN spawn_PlainsAnimals]
 CATEGORY=Spawn Groups
-SUBSECTION=Animals 
+SUBSECTION=Animals
 DESCRIPTION=Plains Animals
 ID=c_rat                    14
 ID=c_rabbit                 14
@@ -226,8 +226,8 @@ ID=c_horse_brown_lt
 ID=c_horse_gray
 ID=c_horse_tan
 ID=c_wolf_silver            10
-ID=C_bird_crow
-ID=C_bird_raven
+ID=c_bird_crow
+ID=c_bird_raven
 ID=c_bird
 ID=c_boura
 ID=c_boura_armoured
@@ -237,7 +237,7 @@ ID=c_boura_armoured
 /////////////////
 
 
-[SPAWN SPAWN_Villagers]
+[SPAWN spawn_Villagers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Villagers
@@ -266,98 +266,98 @@ ID=c_bard
 ID=c_sculptor_f
 ID=c_sculptor
 
-[SPAWN SPAWN_Alchemists]
+[SPAWN spawn_Alchemists]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Alchemists
 ID=c_alchemist_f
 ID=c_alchemist
 
-[SPAWN SPAWN_Animal_Trainers]
+[SPAWN spawn_Animal_Trainers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Animal Trainers
 ID=c_animaltrainer_f
 ID=c_animaltrainer
 
-[SPAWN SPAWN_Architects]
+[SPAWN spawn_Architects]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Architects
 ID=c_architect_f
 ID=c_architect
 
-[SPAWN SPAWN_Armourers]
+[SPAWN spawn_Armourers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Armourers
 ID=c_armorer_f
 ID=c_armorer
 
-[SPAWN SPAWN_Bakers]
+[SPAWN spawn_Bakers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Bakers
 ID=c_baker_f
 ID=c_baker
 
-[SPAWN SPAWN_Bankers]
+[SPAWN spawn_Bankers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Bankers
 ID=c_banker_f
 ID=c_banker
 
-[SPAWN SPAWN_Beekeepers]
+[SPAWN spawn_Beekeepers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Beekeepers
 ID=c_beekeeper_f
 ID=c_beekeeper
 
-[SPAWN SPAWN_Blacksmiths]
+[SPAWN spawn_Blacksmiths]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Blacksmiths
 ID=c_blacksmith_f
 ID=c_blacksmith
 
-[SPAWN SPAWN_Bowyers]
+[SPAWN spawn_Bowyers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Bowyers
 ID=c_bowyer_f
 ID=c_bowyer
 
-[SPAWN SPAWN_Butchers]
+[SPAWN spawn_Butchers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Butchers
 ID=c_butcher_f
 ID=c_butcher
 
-[SPAWN SPAWN_Carpenters]
+[SPAWN spawn_Carpenters]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Carpenters
 ID=c_carpenter_f
 ID=c_carpenter
 
-[SPAWN SPAWN_Cartographers]
+[SPAWN spawn_Cartographers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Cartographers
 ID=c_mapmaker_f
 ID=c_mapmaker
 
-[SPAWN SPAWN_Cobbler]
+[SPAWN spawn_Cobbler]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Cobblers
 ID=c_cobbler_f
 ID=c_cobbler
 
-[SPAWN SPAWN_Cooks]
+[SPAWN spawn_Cooks]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Cooks
@@ -366,7 +366,7 @@ ID=c_baker
 ID=c_cook_f
 ID=c_cook
 
-[SPAWN SPAWN_Dockhands]
+[SPAWN spawn_Dockhands]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Dockhands
@@ -375,63 +375,63 @@ ID=c_sailor
 ID=c_fisher
 ID=c_fisher_f
 
-[SPAWN SPAWN_Farmers]
+[SPAWN spawn_Farmers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Farmers
 ID=c_farmer_f
 ID=c_farmer
 
-[SPAWN SPAWN_Fishermen]
+[SPAWN spawn_Fishermen]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Fishermen
 ID=c_fisher
 ID=c_fisher_f
 
-[SPAWN SPAWN_Guards]
+[SPAWN spawn_Guards]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Guards
 ID=c_guard
 ID=c_guard_f
 
-[SPAWN SPAWN_Healers]
+[SPAWN spawn_Healers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Healers
 ID=c_healer_f
 ID=c_healer
 
-[SPAWN SPAWN_Herbalists]
+[SPAWN spawn_Herbalists]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Herbalists
 ID=c_herbalist_f
 ID=c_herbalist
 
-[SPAWN SPAWN_Innkeepers]
+[SPAWN spawn_Innkeepers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Innkeepers
 ID=c_innkeeper_f
 ID=c_innkeeper
 
-[SPAWN SPAWN_Jewelers]
+[SPAWN spawn_Jewelers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Jewelers
 ID=c_jeweler_f
 ID=c_jeweler
 
-[SPAWN SPAWN_Mages]
+[SPAWN spawn_Mages]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Mages
 ID=c_mageshop_f
 ID=c_mageshop
 
-[SPAWN SPAWN_Mercenaries]
+[SPAWN spawn_Mercenaries]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Mercenaries
@@ -446,14 +446,14 @@ ID=c_ranger
 ID=c_weaponstrainer_f
 ID=c_weaponstrainer
 
-[SPAWN SPAWN_Millers]
+[SPAWN spawn_Millers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Millers
 ID=c_miller_f
 ID=c_miller
 
-[SPAWN SPAWN_Miners]
+[SPAWN spawn_Miners]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Miners
@@ -462,7 +462,7 @@ ID=c_miner
 ID=c_guild_miner_f
 ID=c_guild_miner
 
-[SPAWN SPAWN_Peasants]
+[SPAWN spawn_Peasants]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Peasants
@@ -473,7 +473,7 @@ ID=c_thief
 ID=c_begger_f
 ID=c_begger
 
-[SPAWN SPAWN_Performers]
+[SPAWN spawn_Performers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Performers
@@ -484,14 +484,14 @@ ID=c_artist_f
 ID=c_bard_f
 ID=c_bard
 
-[SPAWN SPAWN_Provisioners]
+[SPAWN spawn_Provisioners]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Provisioners
 ID=c_provis_f
 ID=c_provis
 
-[SPAWN SPAWN_Rangers]
+[SPAWN spawn_Rangers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Rangers
@@ -500,7 +500,7 @@ ID=c_ranger
 ID=c_guild_ranger_f
 ID=c_guild_ranger
 
-[SPAWN SPAWN_Religious]
+[SPAWN spawn_Religious]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Religious
@@ -511,7 +511,7 @@ ID=c_priestess_f
 ID=c_cashual
 ID=c_cashual_f
 
-[SPAWN SPAWN_Rogues]
+[SPAWN spawn_Rogues]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Rogues
@@ -522,14 +522,14 @@ ID=c_brigand
 ID=c_thief_f
 ID=c_thief
 
-[SPAWN SPAWN_Shipwrights]
+[SPAWN spawn_Shipwrights]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Shipwrights
 ID=c_shipwright_f
 ID=c_shipwright
 
-[SPAWN SPAWN_Tailors]
+[SPAWN spawn_Tailors]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Tailors
@@ -538,7 +538,7 @@ ID=c_tailor
 ID=c_weaver_f
 ID=c_weaver
 
-[SPAWN SPAWN_Tanners]
+[SPAWN spawn_Tanners]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Tanners
@@ -547,7 +547,7 @@ ID=c_tanner
 ID=c_furtrader_f
 ID=c_furtrader
 
-[SPAWN SPAWN_TavernFolk]
+[SPAWN spawn_TavernFolk]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Tavernfolk
@@ -562,42 +562,42 @@ ID=c_peasant
 ID=c_mercenary_f
 ID=c_mercenary
 
-[SPAWN SPAWN_TavernKeepers]
+[SPAWN spawn_TavernKeepers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Tavernkeepers
 ID=c_tavernkeeper_f
 ID=c_tavernkeeper
 
-[SPAWN SPAWN_TavernWaitStaff]
+[SPAWN spawn_TavernWaitStaff]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Waitstaff
 ID=c_waiter
 ID=c_waitress
 
-[SPAWN SPAWN_Tinkers]
+[SPAWN spawn_Tinkers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Tinkers
 ID=c_tinker_f
 ID=c_tinker
 
-[SPAWN SPAWN_Vegetable_Sellers]
+[SPAWN spawn_Vegetable_Sellers]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Vegetable Sellers
 ID=c_vegiseller_f
 ID=c_vegiseller
 
-[SPAWN SPAWN_Veterinarians]
+[SPAWN spawn_Veterinarians]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Veterinarians
 ID=c_vet_f
 ID=c_vet
 
-[SPAWN SPAWN_Weaponsmiths]
+[SPAWN spawn_Weaponsmiths]
 CATEGORY=Spawn Groups
 SUBSECTION=Shopkeepers
 DESCRIPTION=Weaponsmiths
@@ -606,7 +606,7 @@ ID=c_weaponsmith_blunt_f
 ID=c_weaponsmith_blade
 ID=c_weaponsmith_blunt
 
-[SPAWN SPAWN_MaginciaTownMembers]
+[SPAWN spawn_MaginciaTownMembers]
 CATEGORY=Spawn Groups
 SUBSECTION=Humans
 DESCRIPTION=Magincia Town Members
@@ -621,14 +621,14 @@ ID=c_magincia_servant
 ///////////////////////////
 
 
-[SPAWN SPAWN_Bandits]
+[SPAWN spawn_Bandits]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Bandits
 ID=c_bandit_m
 ID=c_bandit_f
 
-[SPAWN SPAWN_Barbarians]
+[SPAWN spawn_Barbarians]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Barbarians
@@ -637,28 +637,28 @@ ID=c_barbarian_warrior     3
 ID=c_barbarian_shaman      2
 ID=c_barbarian_chieftain   1
 
-[SPAWN SPAWN_Brigands]
+[SPAWN spawn_Brigands]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Brigands
 ID=c_brigand_f
 ID=c_brigand
 
-[SPAWN SPAWN_EvilMages]
+[SPAWN spawn_EvilMages]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Evil Mages
 ID=c_evilmage              2
 ID=c_evilmage_lord         1
 
-[SPAWN SPAWN_Pirates]
+[SPAWN spawn_Pirates]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Pirates
 ID=c_pirate_f
 ID=c_pirate_m
 
-[SPAWN SPAWN_Demons]
+[SPAWN spawn_Demons]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Demons
@@ -687,7 +687,7 @@ ID=c_devourer_souls        2
 ID=c_demon_balron          1
 //ID=c_demon_exodus        1
 
-[SPAWN SPAWN_Dragons]
+[SPAWN spawn_Dragons]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Dragons
@@ -719,7 +719,7 @@ ID=c_wyrm_white            1
 ID=c_wyrm_ancient          1
 ID=c_reptile_lord          1
 
-[SPAWN SPAWN_DreadLords]
+[SPAWN spawn_DreadLords]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Dreadlords
@@ -730,7 +730,7 @@ ID=c_dreadlord_captain     3
 ID=c_warhorse_dread        1
 ID=c_dreadlord_general     1
 
-[SPAWN SPAWN_EvilJapanese]
+[SPAWN spawn_EvilJapanese]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Evil Japanese
@@ -739,7 +739,7 @@ ID=c_ninja_f
 ID=c_ronin
 ID=c_ronin_f
 
-[SPAWN SPAWN_Elems]
+[SPAWN spawn_Elems]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Elementals
@@ -760,7 +760,7 @@ ID=c_elemental_poison        2
 ID=c_elemental_lava          2
 ID=c_elemental_blood         1
 
-[SPAWN SPAWN_Fey]
+[SPAWN spawn_Fey]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Fey Monsters
@@ -793,7 +793,7 @@ ID=c_centaur                 2
 ID=c_dragon_fairy            1
 ID=c_ethereal_warrior        1
 
-[SPAWN SPAWN_FrostElves]
+[SPAWN spawn_FrostElves]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Frost Elf
@@ -805,7 +805,7 @@ ID=c_frostelf_merc         3
 ID=c_frostelf_ranger       2
 ID=c_frostelf_chief        1
 
-[SPAWN SPAWN_Gargoyles]
+[SPAWN spawn_Gargoyles]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Gargoyles
@@ -817,7 +817,7 @@ ID=c_gargoyle_fire         2
 ID=c_gargoyle_stone        2
 ID=c_gargoyle_destroyer    1
 
-[SPAWN SPAWN_Gazers]
+[SPAWN spawn_Gazers]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Gazers
@@ -825,7 +825,7 @@ ID=c_gazer_larva           3
 ID=c_gazer                 2
 ID=c_gazer_elder           1
 
-[SPAWN SPAWN_Giants]
+[SPAWN spawn_Giants]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Giants
@@ -843,7 +843,7 @@ ID=c_cyclops_king          4
 ID=c_titan                 2
 ID=c_ogre_lord             1
 
-[SPAWN SPAWN_Goblins]
+[SPAWN spawn_Goblins]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Goblins
@@ -854,7 +854,7 @@ ID=c_goblin_lord           4
 ID=c_goblin_chief          2
 //ID=c_goblin_green          1
 
-[SPAWN SPAWN_Insects]
+[SPAWN spawn_Insects]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Insects
@@ -871,7 +871,7 @@ ID=c_rune_beetle           2
 ID=c_ant_lion              2
 ID=c_beetle_iron           1
 
-[SPAWN SPAWN_Juka]
+[SPAWN spawn_Juka]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Juka
@@ -879,7 +879,7 @@ ID=c_juka_mage             3
 ID=c_juka_warrior          2
 ID=c_juka_lord             1
 
-[SPAWN SPAWN_Lizardmen]
+[SPAWN spawn_Lizardmen]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Lizard Men
@@ -887,7 +887,7 @@ ID=c_lizardman             1
 ID=c_lizardman_mace        1
 ID=c_lizardman_spear       1
 
-[SPAWN SPAWN_Meer]
+[SPAWN spawn_Meer]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Meer
@@ -896,7 +896,7 @@ ID=c_meer_captain          3
 ID=c_meer_mage             2
 ID=c_meer_eternal          1
 
-[SPAWN SPAWN_Ophidians]
+[SPAWN spawn_Ophidians]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Ophidians
@@ -906,7 +906,7 @@ ID=c_ophidian_warrior      3
 ID=c_ophidian_avenger      2
 ID=c_ophidian_queen        1
 
-[SPAWN SPAWN_Orcs]
+[SPAWN spawn_Orcs]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Orcs
@@ -920,7 +920,7 @@ ID=c_orc_captain           2
 ID=c_orc_bomber            2
 ID=c_orc_brute             1
 
-[SPAWN SPAWN_RatMen]
+[SPAWN spawn_RatMen]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=RatMen
@@ -932,7 +932,7 @@ ID=c_ratman_w_sword        2
 ID=c_ratman_archer         1
 ID=c_ratman_mage           1
 
-[SPAWN SPAWN_Savages]
+[SPAWN spawn_Savages]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Savages
@@ -942,7 +942,7 @@ ID=c_savage_warrior_female 5
 ID=c_savage_shaman         5
 ID=c_savage_rider          5
 
-[SPAWN SPAWN_Scorpion]
+[SPAWN spawn_Scorpion]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Scorpions
@@ -952,14 +952,14 @@ ID=c_scorpion_prince       3
 ID=c_scorpion_king         2
 ID=c_scorpion_queen        1
 
-[SPAWN SPAWN_Slimes]
+[SPAWN spawn_Slimes]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Slimes
 ID=c_slime                 2
 ID=c_slime_corrosive       1
 
-[SPAWN SPAWN_Solen]
+[SPAWN spawn_Solen]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Solen
@@ -967,7 +967,7 @@ ID=c_solen_worker          7
 ID=c_solen_warrior         5
 ID=c_solen_queen           3
 
-[SPAWN SPAWN_Spiders]
+[SPAWN spawn_Spiders]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Spiders
@@ -977,7 +977,7 @@ ID=c_spider_trapdoor       4
 ID=c_spider_dread          3
 ID=c_spider_wolf           2
 
-[SPAWN SPAWN_Sprites]
+[SPAWN spawn_Sprites]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Sprites
@@ -990,7 +990,7 @@ ID=c_sprite_witch          4
 ID=c_sprite_necro          2
 ID=c_sprite_paladin        1
 
-[SPAWN SPAWN_Terathans]
+[SPAWN spawn_Terathans]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Terathans
@@ -1000,7 +1000,7 @@ ID=c_terathan_matriarch    3
 ID=c_terathan_assassin     2
 ID=c_terathan_avenger      1
 
-[SPAWN SPAWN_Ore_Elementals]
+[SPAWN spawn_Ore_Elementals]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Ore Elementals
@@ -1013,7 +1013,7 @@ ID=c_elemental_ore_shadow      3
 ID=c_elemental_ore_valorite    2
 ID=c_elemental_ore_verite      1
 
-[SPAWN SPAWN_Undead_Weak]
+[SPAWN spawn_Undead_Weak]
 CATEGORY=Spawn Groups
 SUBSECTION=Undead
 DESCRIPTION=Weak Undead
@@ -1029,7 +1029,7 @@ ID=c_bogle                 3
 ID=c_skeleton_mage         3
 ID=c_gore_fiend            1
 
-[SPAWN SPAWN_Undead_Strong]
+[SPAWN spawn_Undead_Strong]
 CATEGORY=Spawn Groups
 SUBSECTION=Undead
 DESCRIPTION=Strong Undead
@@ -1054,7 +1054,7 @@ ID=c_lich_ancient          2
 ID=c_lich_primeval         1
 ID=c_skeletal_dragon       1
 
-[SPAWN SPAWN_Undead_All]
+[SPAWN spawn_Undead_All]
 CATEGORY=Spawn Groups
 SUBSECTION=Undead
 DESCRIPTION=All Undead
@@ -1089,21 +1089,21 @@ ID=c_lich_ancient          2
 ID=c_lich_primeval         1
 ID=c_skeletal_dragon       1
 
-[SPAWN SPAWN_Void]
+[SPAWN spawn_Void]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Void Monsters
 ID=c_wanderer_void         1
 //ID=c_vortex                1
 
-[SPAWN SPAWN_Worms]
+[SPAWN spawn_Worms]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Worms
 ID=c_rotworm               2
 ID=c_bloodworm             1
 
-[SPAWN SPAWN_Witches]
+[SPAWN spawn_Witches]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Witches
@@ -1112,7 +1112,7 @@ ID=c_witch                 2
 ID=c_warlock               1
 ID=c_witch_high            1
 
-[SPAWN SPAWN_Woodelves]
+[SPAWN spawn_Woodelves]
 CATEGORY=Spawn Groups
 SUBSECTION=Evil NPC
 DESCRIPTION=Wood Elves
@@ -1123,7 +1123,7 @@ ID=c_woodelf_fighter       1
 ID=c_woodelf_elite_ranger  1
 ID=c_woodelf_elite_warrior 1
 
-[SPAWN SPAWN_Yomotsu]
+[SPAWN spawn_Yomotsu]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Yomotsu
@@ -1131,7 +1131,7 @@ ID=c_yomotsu_warrior       4
 ID=c_yomotsu_priest        4
 ID=c_yomotsu_elder         1
 
-[SPAWN SPAWN_Minotaurs]
+[SPAWN spawn_Minotaurs]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Minotaurs
@@ -1141,7 +1141,7 @@ ID=c_minotaur_scout        2
 ID=c_minotaur_captain      1
 //ID=c_minotaur_lord         1
 
-[SPAWN SPAWN_Snakes]
+[SPAWN spawn_Snakes]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Snakes
@@ -1159,7 +1159,7 @@ ID=c_serpent_lava          1
 // Monster Spawns (Habitat) //
 //////////////////////////////
 
-[SPAWN SPAWN_PlainsMonsters]
+[SPAWN spawn_PlainsMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Plains Monsters
@@ -1178,7 +1178,7 @@ ID=c_vollem                  3
 ID=c_tsuki_wolf              2
 ID=c_ant_lion                1
 
-[SPAWN SPAWN_IceMonsters]
+[SPAWN spawn_IceMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Ice Monsters
@@ -1201,7 +1201,7 @@ ID=c_elemental_snow          2
 ID=c_ogre_lord_arctic        1
 ID=c_dragon_ice              1
 
-[SPAWN SPAWN_DesertMonsters]
+[SPAWN spawn_DesertMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Desert Monsters
@@ -1232,7 +1232,7 @@ ID=c_oni                     2
 ID=c_yamandon                1
 //ID=c_sphynx                1
 
-[SPAWN SPAWN_SwampMonsters]
+[SPAWN spawn_SwampMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Swamp Monsters
@@ -1258,7 +1258,7 @@ ID=c_elemental_poison        3
 ID=c_plague_beast_lord       2
 ID=c_bog_thing               1
 
-[SPAWN SPAWN_ForestMonsters]
+[SPAWN spawn_ForestMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Forest Monsters
@@ -1291,7 +1291,7 @@ ID=c_centaur                 3
 ID=c_ethereal_warrior        2
 ID=c_ogre_lord               1
 
-[SPAWN SPAWN_JungleMonsters]
+[SPAWN spawn_JungleMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Jungle Monsters
@@ -1338,7 +1338,7 @@ ID=c_ant_lion                2
 ID=c_rotting_corpse          1
 ID=c_meer_eternal            1
 
-[SPAWN SPAWN_MountainMonsters]
+[SPAWN spawn_MountainMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Mountain Monsters
@@ -1365,7 +1365,7 @@ ID=c_yomotsu_priest          3
 ID=c_yomotsu_elder           2
 ID=c_hydra                   1
 
-[SPAWN SPAWN_VolcanicMonsters]
+[SPAWN spawn_VolcanicMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Volcanic Monsters
@@ -1388,7 +1388,7 @@ ID=c_drake_red               4
 ID=c_hellhound_ancient       2
 ID=c_elemental_lava          1
 
-[SPAWN SPAWN_CaveMonsters]
+[SPAWN spawn_CaveMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Cave Monsters
@@ -1439,7 +1439,7 @@ ID=c_ophidian_queen          2
 ID=c_terathan_avenger        1
 ID=c_beetle_iron             1
 
-[SPAWN SPAWN_RuinMonsters]
+[SPAWN spawn_RuinMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Ruin Monsters
@@ -1458,7 +1458,7 @@ ID=c_gargoyle_stone          3
 ID=c_juka_lord               2
 ID=c_fan_dancer              2
 
-[SPAWN SPAWN_OceanMonsters]
+[SPAWN spawn_OceanMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Ocean Monsters
@@ -1473,7 +1473,7 @@ ID=c_kraken                  1
 // Monster Spawns (Generic) //
 //////////////////////////////
 
-[SPAWN SPAWN_AllMonsters]
+[SPAWN spawn_AllMonsters]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=All Monsters
@@ -1728,7 +1728,7 @@ ID=c_ogre_lord_arctic
 //ID=c_dragon_stygian_blue
 //ID=c_reptile_lord
 
-[SPAWN SPAWN_MonstMisc_NoMagic]
+[SPAWN spawn_MonstMisc_NoMagic]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Misc Monsters - No Magic
@@ -1890,7 +1890,7 @@ ID=c_ogre_lord_arctic
 //ID=c_dragon_stygian_red
 //ID=c_dragon_stygian_blue
 
-[SPAWN SPAWN_MonstMisc_Magic]
+[SPAWN spawn_MonstMisc_Magic]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Misc Monsters - Magic
@@ -1990,7 +1990,7 @@ ID=c_wyrm_ancient
 ID=c_demon_balron
 ID=c_reptile_lord
 
-[SPAWN SPAWN_MonstersMiscAll]
+[SPAWN spawn_MonstersMiscAll]
 CATEGORY=Spawn Groups
 SUBSECTION=Monsters
 DESCRIPTION=Misc Monsters - All
@@ -2150,7 +2150,7 @@ ID=c_ogre_lord
 // Dungeon Level spawns //
 //////////////////////////
 
-[SPAWN SPAWN_Deceit2]
+[SPAWN spawn_Deceit2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Deceit 2
@@ -2167,10 +2167,10 @@ ID=c_scorpion_giant      4
 ID=c_skeleton            2
 ID=c_skeleton_w_axe      2
 ID=c_skeleton_w_sword    2
-ID=c_ZOMBIE              8
+ID=c_zombie              8
 ID=c_spectre             4
 
-[SPAWN SPAWN_Deceit3]
+[SPAWN spawn_Deceit3]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Deceit 3
@@ -2181,10 +2181,10 @@ ID=c_ratman_w_mace       3
 ID=c_ratman              3
 ID=c_ratman_w_sword      3
 ID=c_snake_giant         2
-ID=c_ZOMBIE              5
+ID=c_zombie              5
 ID=c_spectre             3
 
-[SPAWN SPAWN_Deceit4]
+[SPAWN spawn_Deceit4]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Deceit 4
@@ -2201,26 +2201,26 @@ ID=c_elemental_fire      2
 ID=c_spectre             4
 ID=c_lich                2
 
-[SPAWN SPAWN_Despise1]
+[SPAWN spawn_Despise1]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Despise 1
-ID=c_ZOMBIE
+ID=c_zombie
 ID=c_headless
 ID=c_mongbat
 ID=c_slime
 ID=c_goblin_gray
 ID=c_rat_giant
 
-[SPAWN SPAWN_Despise2]
+[SPAWN spawn_Despise2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Despise 2
-ID=c_ZOMBIE
+ID=c_zombie
 ID=c_skeleton
 ID=c_skeleton_w_axe
 ID=c_spectre             2
-ID=c_ORC
+ID=c_orc
 ID=c_orc_w_club
 ID=c_ratman_w_mace
 ID=c_ratman
@@ -2230,16 +2230,16 @@ ID=c_lizardman_mace
 ID=c_spider_giant
 ID=c_scorpion_giant
 ID=c_goblin_gray
-ID=c_goblin_CHIEF
+ID=c_goblin_chief
 
-[SPAWN SPAWN_Despise3]
+[SPAWN spawn_Despise3]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Despise 3
-ID=c_ORC
+ID=c_orc
 ID=c_orc_lord            2
 ID=c_goblin_gray_mage    2
-ID=C_OGRE
+ID=c_ogre
 ID=c_troll
 ID=c_ettin_w_hammer
 ID=c_scorpion_giant
@@ -2249,7 +2249,7 @@ ID=c_spectre
 ID=c_skeleton_w_sword
 ID=c_skeleton_w_axe
 
-[SPAWN SPAWN_Destard1]
+[SPAWN spawn_Destard1]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Destard 1
@@ -2267,38 +2267,38 @@ ID=c_elemental_earth
 ID=c_ettin_w_hammer
 ID=c_ogre
 
-[SPAWN SPAWN_Destard2]
+[SPAWN spawn_Destard2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Destard 2
-ID=c_DRAGON
-ID=c_DRAGON_RED
+ID=c_dragon
+ID=c_dragon_red
 ID=c_drake
-ID=c_drake_RED
+ID=c_drake_red
 ID=c_dragon_wyvern
 ID=c_ettin_w_hammer
 ID=c_troll
-ID=C_OGRE
+ID=c_ogre
 
-[SPAWN SPAWN_Destard3]
+[SPAWN spawn_Destard3]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Destard 3
-ID=c_DRAGON              4
-ID=c_DRAGON_RED          4
+ID=c_dragon              4
+ID=c_dragon_red          4
 ID=c_drake               2
-ID=c_drake_RED           2
+ID=c_drake_red           2
 ID=c_dragon_wyvern       2
 ID=c_dragon_wyrm
 
-[SPAWN SPAWN_Shame1]
+[SPAWN spawn_Shame1]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Shame 1
 ID=c_headless
 ID=c_slime
 ID=c_mongbat
-ID=c_ORC
+ID=c_orc
 ID=c_orc_w_club
 ID=c_ratman
 ID=c_lizardman
@@ -2306,31 +2306,31 @@ ID=c_lizardman_mace
 ID=c_ratman_w_sword
 ID=c_goblin_gray
 
-[SPAWN SPAWN_Shame2]
+[SPAWN spawn_Shame2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Shame 2
 ID=c_lizardman_mace
 ID=c_lizardman_spear
 ID=c_orc_lord
-ID=C_OGRE
+ID=c_ogre
 ID=c_goblin_chief
 ID=c_goblin_gray_mage
 ID=c_slime
 ID=c_spider_giant
 
-[SPAWN SPAWN_Shame3]
+[SPAWN spawn_Shame3]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Shame 3
 ID=c_dragon_wyvern
-ID=c_drake_RED
+ID=c_drake_red
 ID=c_drake
 ID=c_elemental_air
 ID=c_elemental_earth
-ID=c_ETTIN
+ID=c_ettin
 ID=c_ettin_w_hammer
-ID=C_OGRE
+ID=c_ogre
 ID=c_troll
 ID=c_troll_w_mace
 ID=c_troll_w_axe
@@ -2341,12 +2341,11 @@ ID=c_gazer
 ID=c_orc_lord
 ID=c_orc_mage
 
-[SPAWN SPAWN_Shame4]
+[SPAWN spawn_Shame4]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Shame 4
 ID=c_elemental_water
-ID=c_ettin_w_hammer 3
 ID=c_ettin_w_hammer
 ID=c_troll
 ID=c_troll_w_mace
@@ -2355,7 +2354,93 @@ ID=c_elemental_air
 ID=c_snake_giant
 ID=c_gazer
 
-[SPAWN SPAWN_FanDancerDojo_level1]
+[SPAWN spawn_Hythloth_trammel1]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 1 (Trammel)
+ID=c_gargoyle_fire           1
+ID=c_gargoyle                1
+ID=c_hellhound               1
+ID=c_imp                     1
+
+[SPAWN spawn_Hythloth_felucca1]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 1 (Felucca)
+ID=c_gargoyle_fire           1
+ID=c_gargoyle                1
+ID=c_hellhound               1
+
+[SPAWN spawn_Hythloth_trammel2]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 2 (Trammel)
+ID=c_demon                   1
+ID=c_gargoyle                2
+ID=c_gazer                   2
+ID=c_gazer_larva             2
+ID=c_hellhound               2
+ID=c_imp                     2
+
+[SPAWN spawn_Hythloth_felucca2]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 2 (Felucca)
+ID=c_demon                   1
+ID=c_gargoyle                2
+ID=c_gazer_elder             1
+ID=c_hellhound               2
+ID=c_gargoyle_stone          2
+
+[SPAWN spawn_Hythloth_trammel3]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 3 (Trammel)
+ID=c_demon_balron            1
+ID=c_gargoyle_stone          2
+ID=c_gazer                   2
+ID=c_gazer_larva             2
+ID=c_hellhound               2
+ID=c_imp                     3
+ID=c_demon                   2
+ID=c_gargoyle                3
+ID=c_gazer_elder             2
+
+[SPAWN spawn_Hythloth_felucca3]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 3 (Felucca)
+ID=c_demon_balron            1
+ID=c_gargoyle_stone          2
+ID=c_gazer                   2
+ID=c_demon                   2
+ID=c_gazer_elder             2
+
+[SPAWN spawn_Hythloth_trammel4]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 4 (Trammel)
+ID=c_demon_balron            1
+ID=c_demon                   2
+ID=c_gargoyle_fire           2
+ID=c_gargoyle                3
+ID=c_gazer                   2
+ID=c_hellhound               2
+ID=c_imp                     3
+ID=c_gargoyle_stone          2
+
+[SPAWN spawn_Hythloth_felucca4]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Hythloth 4 (Felucca)
+ID=c_demon_balron            1
+ID=c_demon                   2
+ID=c_gargoyle_fire           2
+ID=c_gargoyle                3
+ID=c_gazer                   2
+ID=c_gargoyle_stone          2
+
+[SPAWN spawn_FanDancerDojo_level1]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Fan Dancer Dojo Level 1
@@ -2368,7 +2453,7 @@ ID=c_hellhound               2
 ID=c_demon                   2
 ID=c_fan_dancer              1
 
-[SPAWN SPAWN_FanDancerDojo_level2]
+[SPAWN spawn_FanDancerDojo_level2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Fan Dancer Dojo Level 2
@@ -2382,7 +2467,7 @@ ID=c_succubus                1
 ID=c_fan_dancer              1
 ID=c_tsuki_wolf              1
 
-[SPAWN SPAWN_FanDancerDojo_level3]
+[SPAWN spawn_FanDancerDojo_level3]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Fan Dancer Dojo Level 3
@@ -2397,7 +2482,7 @@ ID=c_lich_primeval           2
 ID=c_devourer_souls          1
 ID=c_demon_balron            1
 
-[SPAWN SPAWN_Labyrinth]
+[SPAWN spawn_Labyrinth]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Labyrinth Monsters
@@ -2424,7 +2509,7 @@ ID=c_reptalon
 //Reptalon
 //Tempest
 
-[SPAWN SPAWN_Paroxysmus]
+[SPAWN spawn_Paroxysmus]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Palace of Paroxysmus
@@ -2445,7 +2530,7 @@ ID=c_plague_beast_lord       4
 ID=c_elemental_poison        3
 ID=c_demon_balron
 
-[SPAWN SPAWN_PrismOfLight]
+[SPAWN spawn_PrismOfLight]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Prism of Light
@@ -2460,7 +2545,7 @@ ID=c_dragon_crystaldrake     2
 ID=c_hydra_crystal           1
 ID=c_crystal_lattice_seeker  1
 
-[SPAWN SPAWN_Solen_Hive]
+[SPAWN spawn_Solen_Hive]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Solen Hive
@@ -2468,7 +2553,7 @@ ID=c_solen_worker            7
 ID=c_solen_warrior           5
 ID=c_solen_queen             3
 
-[SPAWN SPAWN_TwistedWeald]
+[SPAWN spawn_TwistedWeald]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons
 DESCRIPTION=Twisted Weald Monsters

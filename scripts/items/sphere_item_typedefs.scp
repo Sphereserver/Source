@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
 
@@ -1335,6 +1335,5 @@ ON=@ContextMenuSelect
 [TYPEDEF t_weapon_thrown]//Throwing skill stays at target
 [TYPEDEF t_fletching]
 [TYPEDEF t_soulforge]
-[TYPEDEF t_equipitem]
 
 [EOF]
