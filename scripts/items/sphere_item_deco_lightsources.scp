@@ -1977,77 +1977,292 @@ DESCRIPTION=Jack-o-Lantern Witch (Unlit)
 ON=@Create
    MOREZ=1
 
-
 [ITEMDEF 09935]
-//Tall Pumpkin (ultima online unlit)
+DEFNAME=i_jackolantern_uo
+NAME=jack-o-lantern UO
+TYPE=t_light_out
+TDATA3=i_jackolantern_uo_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern UO (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09936]
-//Tall Pumpkin (ultima online lit)
+DEFNAME=i_jackolantern_uo_lit
+NAME=jack-o-lantern UO
+TYPE=t_light_lit
+TDATA3=i_jackolantern_uo
+TDATA4=i_jackolantern_uo
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern UO (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09937]
-//Tall Pumpkin (ultima online lit animation frame)
+//Jack-o-Lantern UO (lit animation frame)
 [ITEMDEF 09938]
-//Tall Pumpkin (ultima online lit animation frame)
+//Jack-o-Lantern UO (lit animation frame)
 
 [ITEMDEF 09939]
-//Tall Pumpkin (ankh unlit)
+DEFNAME=i_jackolantern_ankh
+NAME=jack-o-lantern ankh
+TYPE=t_light_out
+TDATA3=i_jackolantern_ankh_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Ankh (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0993a]
-//Tall Pumpkin (ankh lit)
+DEFNAME=i_jackolantern_ankh_lit
+NAME=jack-o-lantern ankh
+TYPE=t_light_lit
+TDATA3=i_jackolantern_ankh
+TDATA4=i_jackolantern_ankh
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Ankh (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0993b]
-//Tall Pumpkin (ankh lit animation frame)
+//Jack-o-Lantern Ankh (lit animation frame)
 [ITEMDEF 0993c]
-//Tall Pumpkin (ankh lit animation frame)
+//Jack-o-Lantern Ankh (lit animation frame)
 
 [ITEMDEF 0993d]
-//Tall Pumpkin (spider unlit)
+DEFNAME=i_jackolantern_spider
+NAME=jack-o-lantern spider
+TYPE=t_light_out
+TDATA3=i_jackolantern_spider_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Spider (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0993e]
-//Tall Pumpkin (spider lit)
+DEFNAME=i_jackolantern_spider_lit
+NAME=jack-o-lantern spider
+TYPE=t_light_lit
+TDATA3=i_jackolantern_spider
+TDATA4=i_jackolantern_spider
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Spider (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0993f]
-//Tall Pumpkin (spider lit animation frame)
+//Jack-o-Lantern Spider (lit animation frame)
 [ITEMDEF 09940]
-//Tall Pumpkin (spider lit animation frame)
+//Jack-o-Lantern Spider (lit animation frame)
 
 [ITEMDEF 09941]
-//Tall Pumpkin (bat unlit)
+DEFNAME=i_jackolantern_bat
+NAME=jack-o-lantern bat
+TYPE=t_light_out
+TDATA3=i_jackolantern_bat_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Bat (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09942]
-//Tall Pumpkin (bat lit)
+DEFNAME=i_jackolantern_bat_lit
+NAME=jack-o-lantern bat
+TYPE=t_light_lit
+TDATA3=i_jackolantern_bat
+TDATA4=i_jackolantern_bat
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Bat (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09943]
-//Tall Pumpkin (bat lit animation frame)
+//Jack-o-Lantern Bat (lit animation frame)
 [ITEMDEF 09944]
-//Tall Pumpkin (bat lit animation frame)
+//Jack-o-Lantern Bat (lit animation frame)
 
 [ITEMDEF 09945]
-//Tall Pumpkin (skull unlit)
+DEFNAME=i_jackolantern_skull
+NAME=jack-o-lantern skull
+TYPE=t_light_out
+TDATA3=i_jackolantern_skull_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Skull (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09946]
-//Tall Pumpkin (skull lit)
+DEFNAME=i_jackolantern_skull_lit
+NAME=jack-o-lantern skull
+TYPE=t_light_lit
+TDATA3=i_jackolantern_skull
+TDATA4=i_jackolantern_skull
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Skull (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09947]
-//Tall Pumpkin (skull lit animation frame)
+//Jack-o-Lantern Skull (lit animation frame)
 [ITEMDEF 09948]
-//Tall Pumpkin (skull lit animation frame)
+//Jack-o-Lantern Skull (lit animation frame)
 
 [ITEMDEF 09949]
-//Tall Pumpkin (demon unlit)
+DEFNAME=i_jackolantern_demon
+NAME=jack-o-lantern demon
+TYPE=t_light_out
+TDATA3=i_jackolantern_demon_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Demon (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0994a]
-//Tall Pumpkin (demon lit)
+DEFNAME=i_jackolantern_demon_lit
+NAME=jack-o-lantern demon
+TYPE=t_light_lit
+TDATA3=i_jackolantern_demon
+TDATA4=i_jackolantern_demon
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Demon (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0994b]
-//Tall Pumpkin (demon lit animation frame)
+//Jack-o-Lantern Demon (lit animation frame)
 [ITEMDEF 0994c]
-//Tall Pumpkin (demon lit animation frame)
+//Jack-o-Lantern Demon (lit animation frame)
 
 [ITEMDEF 0994d]
-//Tall Pumpkin (spirit unlit)
+DEFNAME=i_jackolantern_spirit
+NAME=jack-o-lantern spirit
+TYPE=t_light_out
+TDATA3=i_jackolantern_spirit_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Spirit (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0994e]
-//Tall Pumpkin (spirit lit)
+DEFNAME=i_jackolantern_spirit_lit
+NAME=jack-o-lantern spirit
+TYPE=t_light_lit
+TDATA3=i_jackolantern_spirit
+TDATA4=i_jackolantern_spirit
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Spirit (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 0994f]
-//Tall Pumpkin (spirit lit animation frame)
+//Jack-o-Lantern Spirit (lit animation frame)
 [ITEMDEF 09950]
-//Tall Pumpkin (spirit lit animation frame)
+//Jack-o-Lantern Spirit (lit animation frame)
 
 [ITEMDEF 09951]
-//Tall Pumpkin (scalele unlit)
+DEFNAME=i_jackolantern_scalele
+NAME=jack-o-lantern scalele
+TYPE=t_light_out
+TDATA3=i_jackolantern_scalele_lit
+VALUE=10
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Tinkering 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Scalele (Unlit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09952]
-//Tall Pumpkin (scalele lit)
+DEFNAME=i_jackolantern_scalele_lit
+NAME=jack-o-lantern scalele
+TYPE=t_light_lit
+TDATA3=i_jackolantern_scalele
+TDATA4=i_jackolantern_scalele
+VALUE=40
+WEIGHT=1.0
+RESOURCES=1 i_fruit_pumpkin_tall,1 i_candle
+SKILLMAKE=Carpentry 40.0,t_carpentry
+CATEGORY=Decoration - Lightsources
+SUBSECTION=Lanterns
+DESCRIPTION=Jack-o-Lantern Scalele (Lit)
+ON=@Create
+   MOREZ=1
+
 [ITEMDEF 09953]
-//Tall Pumpkin (scalele lit animation frame)
+//Jack-o-Lantern Scalele (lit animation frame)
 [ITEMDEF 09954]
-//Tall Pumpkin (scalele lit animation frame)
+//Jack-o-Lantern Scalele (lit animation frame)
 
 [EOF]
