@@ -203,7 +203,7 @@
 - Fixed: standing lamps
 - Added: Charybdis (and tentacle), Tiger, and Killer Pumpkin CHARDEFs
 
-23-10-2013, RanXerox (Script Pack)
+24-10-2013, RanXerox (Script Pack)
 - Fixed: bad defname reference in loot (should be i_mask_daemon)
 - Fixed: tall jack-o-lanterns
 - Added: spawn groups for Hythloth
@@ -243,3 +243,6 @@
   WARNING: Because many of the equipable items already had these TAGs, anyone
            using those items on a live shard should make sure all those items
            in-game are unequipped before installing this change!
+
+25-10-2013, RanXerox (Script Pack)
+- Minor updates to maps 2-5

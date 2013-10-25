@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2009
+// SPHERE by : Menasoft 1997-2009
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,81 +7,101 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: 14-Aug-2009
-VERSION=0.56b
+// FILE LAST UPDATED: Friday, October 25, 2013
+//
+VERSION=0.56c
 
-// Uncharted Landmass: 280,2820 - 1230,4096
-[AREADEF a_sa]	// Stygian Abyss (SA, map5,statics5,staidx5), map #5
+
+[COMMENT sphere_map5]
+
+Ter Mur and Stygian Abyss (SA, map5,statics5,staidx5), map #5
+
+MAP5=1280,4096,-1,5,5 //  1280 sectors of size 64x64
+
+
+[AREADEF a_sa]
 NAME=Tel Mur
 GROUP=ALLMAP
 P=751,3402,-65,5
 RECT=0,0,1280,4096,5
-EVENTS=r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_tomb_of_kings]
 NAME=Tomb of Kings
 GROUP=Tel Mur
 P=35,100,0,5
 RECT=3,18,181,242,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_underworld]
 NAME=Underworld
 GROUP=Tel Mur
 P=1147,1090,-42,5
 RECT=1002,940,1250,1218,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair]
 NAME=Medusa's Lair
 GROUP=Tel Mur
 P=818,924,-14,5
 RECT=766,896,850,960,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair_2]
 NAME=Medusa's Lair
 GROUP=Tel Mur
 P=818,1093,-14,5
 RECT=766,1060,850,1126,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair_3]
 NAME=Medusa's Lair
 GROUP=Tel Mur
 P=818,1262,-14,5
 RECT=766,1230,850,1296,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair]
 NAME=Stygian Dragon's Lair
 P=330,159,20,5
 RECT=267,191,482,230,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair_2]
 NAME=Stygian Dragon's Lair
 P=68,368,20,5
 RECT=1,215,137,441,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair_3]
 NAME=Stygian Dragon's Lair
 P=68,563,20,5
 RECT=1,496,137,638,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair_4]
 NAME=Stygian Dragon's Lair
 P=68,775,20,5
 RECT=1,701,137,846,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_navrey_lair]
 NAME=Navrey's Lair
 P=1054,862,-32,5
 RECT=1013,823,1107,911,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_shrine_of_truth]
 NAME=Shrine of Truth
 P=1180,875,0,5
 RECT=1152,834,1210,897,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_abyss]
 NAME=The Great Stygian Abyss
 P=521,923,29,5
 RECT=297,547,724,971,5
 RECT=556,44,1102,715,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [EOF]

@@ -6507,6 +6507,8 @@ RECT=2379,828,2412,885,0
 RECT=2349,885,2408,899,0
 RECT=2349,899,2370,917,0
 RECT=2396,883,2428,903,0
+RECT=2444,854,2480,890,0
+RECT=2481,853,2559,904,0
 
 [ROOMDEF a_house_33]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass

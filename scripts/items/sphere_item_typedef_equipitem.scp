@@ -29,7 +29,7 @@ example:
 
 When an item with t_equipitem is equipped by a player or NPC, the TAGs on
 the item are usually added to the person wearing it.  That way multiple items
-with the same TAG can be equipped at the same time.
+with the same TAG can be equipped at the same time, stacking the effect.
 
 By themselves, the TAGs are just information.  The actual effect of those
 TAGs may be implemented inside this TYPEDEF or they may be implemented inside
@@ -46,7 +46,7 @@ layers that equipment can end up on, so +5% times 20 could easily give
 
 Known Issues:
 
- Sometime tooltips are not refreshed when TAGs are changing ( as charges are
+ Sometime tooltips are not refreshed when TAGs are changing (as charges are
  used up, or when the vital stats of a person wearing an item change etc...)
  Using TooltipMode=0 and AutoTooltipResend=07f inside the Sphere.ini helps.
 
@@ -166,7 +166,7 @@ TAG.LowerManaCost
  - Effect:  NOT IMPLEMENTED YET
 
 TAG.LowerReagentCost
- - Purpose: Reduces the number of reagents used in the casting of a spell.
+ - Purpose: Reduces the number of reagents used during the casting of a spell.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
@@ -248,6 +248,14 @@ TAG.ExtraSkill5
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
+TAG.MaxLevel
+TAG.MinLevel
+ - Purpose: Prevent the item from being equipped when the player does not
+            meet the level requirement.
+ - Values:  Positive Integer.
+ - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
+            does not rely on other TYPEDEFs or EVENTs.
+
 The following tags are weapons only (NONE OF THEM ARE IMPLEMENTED YET):
 
 TAG.Balanced              - Values: MUST be one or zero
@@ -297,9 +305,7 @@ TAG.SlayerGroup -
 
 The following tags are armor only:
 
-TAG.MageArmor             - one or zero only
-
-
+TAG.MageArmor             - Values:  One or zero.
 
 
 
@@ -334,12 +340,12 @@ ON=@ClientToolTip
    IF !(<ISEMPTY <TAG.CraftedBy>>)
       SRC.ADDCLILOC 1050043,<TAG.CraftedBy>
    ENDIF
-//   IF (<TAG0.MaxLevel>)
-//      SRC.ADDCLILOC 1050039,Maximum Level,<dTAG.MaxLevel>
-//   ENDIF
-//   IF (<TAG0.MinLevel>)
-//      SRC.ADDCLILOC 1053099,Minimum Level,<dTAG.MinLevel>
-//   ENDIF
+   IF (<TAG0.MaxLevel>)
+      SRC.ADDCLILOC 1050039,Maximum Level,<dTAG.MaxLevel>
+   ENDIF
+   IF (<TAG0.MinLevel>)
+      SRC.ADDCLILOC 1053099,Minimum Level,<dTAG.MinLevel>
+   ENDIF
    IF (<ISWEAPON>) || (<DEFNAME>==i_fishing_pole)
       IF (<TAG0.UseBestWeaponSkill>)
          SRC.ADDCLILOC 1060400
@@ -758,18 +764,18 @@ ON=@EquipTest
          RETURN 1
       ENDIF
    ENDIF
-//   IF (<SRC.ISPLAYER>) && (<TAG0.MaxLevel>)
-//      IF (<SRC.TAG0.Level> > <TAG0.MaxLevel>)
-//         SRC.SYSMESSAGE @color_text You are too high level to use this item.
-//         RETURN 1
-//      ENDIF
-//   ENDIF
-//   IF (<SRC.ISPLAYER>) && (<TAG0.MinLevel>)
-//      IF (<SRC.TAG0.Level> < <TAG0.MinLevel>)
-//         SRC.SYSMESSAGE @color_text You are too low level to use this item.
-//         RETURN 1
-//      ENDIF
-//   ENDIF
+   IF (<SRC.ISPLAYER>) && (<TAG0.MaxLevel>)
+      IF (<SRC.LEVEL> > <TAG0.MaxLevel>)
+         SRC.SYSMESSAGE @color_text You are too high level to use this item.
+         RETURN 1
+      ENDIF
+   ENDIF
+   IF (<SRC.ISPLAYER>) && (<TAG0.MinLevel>)
+      IF (<SRC.LEVEL> < <TAG0.MinLevel>)
+         SRC.SYSMESSAGE @color_text You are too low level to use this item.
+         RETURN 1
+      ENDIF
+   ENDIF
 
 ON=@Equip
    IF (<TAG0.Balanced>)
