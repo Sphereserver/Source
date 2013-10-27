@@ -38,6 +38,7 @@ LPCTSTR const CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
 	"PLEVEL",			// Define the list of commands that a PLEVEL can access. (or not access)
 	"REGIONRESOURCE",	// Define Ore types.
 	"REGIONTYPE",			// Triggers etc. that can be assinged to a "AREA
+	"RESOURCELIST",
 	"RESOURCES",		// (SL) list of all the resource files we should index !
 	"ROOM",			// Non-complex region. (no extra tags)
 	"RUNES",			// (SI) Define list of the magic runes.

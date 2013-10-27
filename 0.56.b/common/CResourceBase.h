@@ -42,6 +42,7 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with !
 	RES_PLEVEL,			// Define the list of commands that a PLEVEL can access. (or not access)
 	RES_REGIONRESOURCE,	// Define an Ore type.
 	RES_REGIONTYPE,		// Triggers etc. that can be assinged to a RES_AREA
+	RES_RESOURCELIST,	// List of Sections to create lists from in DEFLIST
 	RES_RESOURCES,		// (SL) list of all the resource files we should index !
 	RES_ROOM,			// Non-complex region. (no extra tags)
 	RES_RUNES,			// (SI) Define list of the magic runes.

@@ -81,6 +81,7 @@ public:
 	CVarDefMap		m_VarDefs;		// Defined variables in sorted order.
 	CVarDefMap		m_VarGlobals;	// Global variables
 	CListDefMap		m_ListGlobals; // Global lists
+	CListDefMap		m_ListInternals; // Internal lists
 	CGString		m_sTmp;
 
 								//	defined default messages

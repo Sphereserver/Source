@@ -563,6 +563,16 @@ bool CListDefCont::r_LoadVal( CScript& s )
 	return AddElementNum(Exp_GetVal(pszArg));
 }
 
+bool CListDefCont::r_LoadVal( LPCTSTR pszArg )
+{
+	ADDTOCALLSTACK("CListDefCont::r_LoadVal");
+
+	if (!IsSimpleNumberString(pszArg) )
+		return AddElementStr(pszArg);
+
+	return AddElementNum(Exp_GetVal(pszArg));
+}
+
 /***************************************************************************
 *
 *

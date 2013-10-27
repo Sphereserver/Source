@@ -2299,6 +2299,17 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	CResourceDef * pNewDef = NULL;
 	CResourceDef * pPrvDef = NULL;
 
+	if ( m_ResourceList.ContainsKey( const_cast<TCHAR *>(pszSection) ))
+	{
+
+		CListDefCont* pListBase = g_Exp.m_ListInternals.GetKey(pszSection);
+			if ( !pListBase )
+				pListBase = g_Exp.m_ListInternals.AddList(pszSection);
+
+			if ( pListBase )
+				pListBase->r_LoadVal(pScript->GetArgStr());
+	}
+
 	switch ( restype )
 	{
 	case RES_SPHERE:
@@ -2369,6 +2380,15 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			else
 			{
 				g_Exp.m_VarDefs.SetStr(pszKey, false, pScript->GetArgStr());
+			}
+		}
+		return( true );
+	case RES_RESOURCELIST:
+		{
+			while ( pScript->ReadKey())
+			{
+				LPCTSTR pName = pScript->GetKeyBuffer();	
+				m_ResourceList.AddSortString( pName );
 			}
 		}
 		return( true );

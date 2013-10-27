@@ -28,6 +28,10 @@ private:
 public:
 	CVarDefMap		m_TagDefs;			// TAGs
 
+	CGString m_sCategory;
+	CGString m_sSubsection;
+	CGString m_sDescription;
+
 	// When events happen to the char. check here for reaction.
 	CResourceRefArray	m_TEvents;			// Action or motivation type indexes. (NPC only)
 

@@ -572,44 +572,47 @@ bool CScriptObj::r_LoadVal( CScript & s )
 		DEBUG_ERR(("Undefined keyword '%s'\n", s.GetKey()));
 		return false;
 	}
-	
-	if ( index == SSC_VAR )
-	{
-		bool fQuoted = false;
-		g_Exp.m_VarGlobals.SetStr( pszKey+4, fQuoted, s.GetArgStr( &fQuoted ), false );
-		return( true );
-	}
-	if ( index == SSC_VAR0 )
-	{
-		bool fQuoted = false;
-		g_Exp.m_VarGlobals.SetStr( pszKey+5, fQuoted, s.GetArgStr( &fQuoted ), true );
-		return( true );
-	}
 
-	if ( index == SSC_LIST )
+	switch ( index )
 	{
-		if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
-			DEBUG_ERR(("Unable to process command '%s %s'\n", pszKey, s.GetArgRaw()));
-
-		return true;
-	}
-
-	if ( index == SSC_DEFMSG )
-	{
-		long	l;
-		pszKey += 7;
-		for ( l = 0; l < DEFMSG_QTY; ++l )
-		{
-			if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[l]) )
+		case SSC_VAR:
 			{
 				bool fQuoted = false;
-				TCHAR * args = s.GetArgStr(&fQuoted);
-				strcpy(g_Exp.sm_szMessages[l], args);
-				return(true);
+				g_Exp.m_VarGlobals.SetStr( pszKey+4, fQuoted, s.GetArgStr( &fQuoted ), false );
+				return( true );
 			}
-		}
-		g_Log.Event(LOGM_INIT|LOGL_ERROR, "Setting not used message override named '%s'\n", pszKey);
-		return(false);
+		case  SSC_VAR0:
+			{
+				bool fQuoted = false;
+				g_Exp.m_VarGlobals.SetStr( pszKey+5, fQuoted, s.GetArgStr( &fQuoted ), true );
+				return( true );
+			}
+
+		case  SSC_LIST:
+			{
+				if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
+					DEBUG_ERR(("Unable to process command '%s %s'\n", pszKey, s.GetArgRaw()));
+
+				return true;
+			}
+
+		case SSC_DEFMSG:
+			{
+				long	l;
+				pszKey += 7;
+				for ( l = 0; l < DEFMSG_QTY; ++l )
+				{
+					if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[l]) )
+					{
+						bool fQuoted = false;
+						TCHAR * args = s.GetArgStr(&fQuoted);
+						strcpy(g_Exp.sm_szMessages[l], args);
+						return(true);
+					}
+				}
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "Setting not used message override named '%s'\n", pszKey);
+				return(false);
+			}
 	}
 	return true;
 	EXC_CATCH;
@@ -637,7 +640,7 @@ static void StringFunction( int iFunc, LPCTSTR pszKey, CGString &sVal )
 		++pszKey;
 
 	TCHAR * ppCmd[4];
-	size_t iCount = Str_ParseCmds( const_cast<TCHAR *>(pszKey), ppCmd, COUNTOF(ppCmd), ",)" );
+	size_t iCount = Str_ParseCmds( const_cast<TCHAR *>(pszKey), ppCmd, COUNTOF(ppCmd), ")" );
 	if ( iCount <= 0 )
 	{
 		DEBUG_ERR(( "Bad string function usage. missing )\n" ));
@@ -876,9 +879,14 @@ badcmd:
 					sVal	= "0";
 			}
 			return true;
+		case SSC_DEFLIST:
+			{
+				g_Exp.m_ListInternals.r_Write(pSrc, pszKey, sVal);	
+			}
+			return true;
 		case SSC_LIST:
 			{
-				g_Exp.m_ListGlobals.r_Write(pSrc, pszKey, sVal);					
+				g_Exp.m_ListGlobals.r_Write(pSrc, pszKey, sVal);
 			}
 			return true;
 		case SSC_DEF0:

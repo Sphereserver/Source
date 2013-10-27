@@ -1001,6 +1001,8 @@ public:
 public:
 	CResourceScript m_scpTables;
 
+	CStringSortArray m_ResourceList;	// Sections lists
+
 	CStringSortArray m_Obscene;	// Bad Names/Words etc.
 	CGObArray< CGString* > m_Fame;	// fame titles (fame.famous)
 	CGObArray< CGString* > m_Karma;	// karma titles (karma.wicked)

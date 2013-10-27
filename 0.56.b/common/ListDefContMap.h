@@ -138,6 +138,7 @@ public:
 	void DumpElements( CTextConsole * pSrc, LPCTSTR pszPrefix = NULL ) const;
 	void r_WriteSave( CScript& s );
 	bool r_LoadVal( CScript& s );
+	bool r_LoadVal( LPCTSTR pszArg );
 };
 
 class CListDefMap
