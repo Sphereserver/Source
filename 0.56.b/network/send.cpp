@@ -1999,7 +1999,6 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
 	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);
-	g_Log.EventError("New Mobile %d \r", isNewMobilePacket);
 
 	if (character->IsStatFlag(STATF_Sleeping) == false)
 	{
