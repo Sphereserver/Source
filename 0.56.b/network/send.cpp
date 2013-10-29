@@ -1998,6 +1998,9 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(character->GetModeFlag(character->CanSeeTrue(target->GetChar()), target));
 	writeByte(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 
+	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);
+	g_Log.EventError("New Mobile %d \r", isNewMobilePacket);
+
 	if (character->IsStatFlag(STATF_Sleeping) == false)
 	{
 		bool isLayerSent[LAYER_HORSE + 1];
@@ -2025,7 +2028,13 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 
 			writeInt32(item->GetUID());
 
-			if (hue != 0)
+			if (isNewMobilePacket)
+			{
+				writeInt16(itemid);
+				writeByte(layer);
+				writeInt16(hue);
+			}
+			else if (hue != 0)
 			{
 				writeInt16(itemid | 0x8000);
 				writeByte(layer);

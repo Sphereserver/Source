@@ -257,3 +257,4 @@
 
 28-10-2013, Ben
 -Fixed #2164: NPCs attacking from different floors
+-Fixed: Issue with Client 7.0.33.1+ packet change
