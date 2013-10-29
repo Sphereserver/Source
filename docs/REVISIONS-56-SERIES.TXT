@@ -254,3 +254,6 @@
 -Added: new Section to Sphere.ini [RESOURCELIST] with a list of resource blocks to be loaded into DEFLISTs
 		Ex: Adding ITEMDEF in the RESOURCELIST will create a DEFLIST.ITEMDEF with all itemdefs loaded by the server.
 -Added: Category, Subsection, and Description to ITEMDEF and CHARDEF (now the server can read them if directly in the DEF section and not under @create)
+
+28-10-2013, Ben
+-Fixed #2164: NPCs attacking from different floors
