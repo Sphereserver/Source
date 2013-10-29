@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Tuesday, October 29, 2013
 //
 VERSION=0.56c
 
@@ -15938,6 +15938,8 @@ ON=@Create
 
 [CHARDEF 027d]
 //Spectral Armor
+NAME=Spectral Armor
+CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
 
 [CHARDEF 029a]
 DEFNAME=c_gargoyle_male
@@ -21697,7 +21699,7 @@ CATEGORY=Monsters
 SUBSECTION=Champions
 DESCRIPTION=Charybdis
 RESLEVEL=7
-RESDISPDNID=c_sea_monster
+RESDISPDNID=c_sea_serpent_deep
 RESDISPDNHUE=33
 ON=@Create
    NPC=brain_monster
@@ -21753,7 +21755,7 @@ CATEGORY=Monsters
 SUBSECTION=Champions
 DESCRIPTION=Charybdis Tentacle
 RESLEVEL=7
-RESDISPDNID=c_sea_monster
+RESDISPDNID=c_corpser
 RESDISPDNHUE=33
 ON=@Create
    NPC=brain_monster
@@ -21928,10 +21930,12 @@ ON=@NpcRestock
 
 [CHARDEF 04e5]
 NAME=King Blackthorn
+CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
 
 [CHARDEF 04e6]
 //bad animations
 NAME=tiger
+CAN=MT_WALK|MT_RUN
 
 [CHARDEF 04e7]
 DEFNAME=c_tiger

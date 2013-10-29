@@ -248,13 +248,18 @@
 - Minor updates to maps 2-5
 
 27-10-2013, Ben
--Fixed #2227: Region.ISEVENT not working.
--Fixed #2229: STRREVERSE doesnt invert the entire string. (This was also the case for STRTOLOWER and STRTOUPPER)
--Added: DEFLIST which acts like LIST but readable only (Filled by server at loading time with lists of resources)
--Added: new Section to Sphere.ini [RESOURCELIST] with a list of resource blocks to be loaded into DEFLISTs
-		Ex: Adding ITEMDEF in the RESOURCELIST will create a DEFLIST.ITEMDEF with all itemdefs loaded by the server.
--Added: Category, Subsection, and Description to ITEMDEF and CHARDEF (now the server can read them if directly in the DEF section and not under @create)
+- Fixed #2227: Region.ISEVENT not working.
+- Fixed #2229: STRREVERSE doesnt invert the entire string. (This was also the case for STRTOLOWER and STRTOUPPER)
+- Added: DEFLIST which acts like LIST but readable only (Filled by server at loading time with lists of resources)
+- Added: new Section to Sphere.ini [RESOURCELIST] with a list of resource blocks to be loaded into DEFLISTs
+         Ex: Adding ITEMDEF in the RESOURCELIST will create a DEFLIST.ITEMDEF with all itemdefs loaded by the server.
+- Added: Category, Subsection, and Description to ITEMDEF and CHARDEF (now the server can read them if directly in the DEF section and not under @create)
 
 28-10-2013, Ben
--Fixed #2164: NPCs attacking from different floors
--Fixed: Issue with Client 7.0.33.1+ packet change
+- Fixed #2164: NPCs attacking from different floors
+- Fixed: Issue with Client 7.0.33.1+ packet change
+
+29-10-2013, RanXerox (Script Pack)
+- Fixed: CHARDEFs in sphere_monsters.scp that were missing NAME or CAN
+- Fixed: Bad reference to c_sea_monster in sphere_monsters.scp
+- Fixed: Bad reference to e_equipitem in sphere_item_provisions_clothing.scp

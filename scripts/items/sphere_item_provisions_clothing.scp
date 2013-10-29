@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, October 29, 2013
 //
 VERSION=0.56c
 
@@ -2989,7 +2989,7 @@ SUBSECTION=Clothing
 DESCRIPTION=Magic Wizard Hat
 TAG.NotGargoyle=1
 TAG.REQSTR=25
-TEVENTS=e_equipitem
+TEVENTS=t_equipitem
 ON=@Create
    COLOR=colors_all
    HITPOINTS={36 48}
@@ -2997,10 +2997,10 @@ ON=@Create
    TAG.INT=<R8,10>
    TAG.DEX=<R3,5>
    TAG.STR=<R3,5>
-   TAG.ResCold=9
-   TAG.ResEnergy=5
-   TAG.ResFire=5
-   TAG.ResPoison=5
-   TAG.ResPhysical=1
+   TAG.RESCOLD=9
+   TAG.RESENERGY=5
+   TAG.RESFIRE=5
+   TAG.RESPOISON=5
+   TAG.RESPhysical=1
 
 [EOF]
