@@ -268,3 +268,6 @@
 - Added: Cliloc support for start location in clients 7.00.13+
 - Updated: Sphere_map_points0.scp with new STARTS information ([STARTS 2] includes a cliloc line as the 4th argument)
 - Tweaked: Stacked items should no longer flip.
+
+30-10-2013, RanXerox (Script Pack)
+- Fixed: Improved TAG management related to TAG.OVERRIDE.REGEN* in sphere_item_typedef_equipitem.scp

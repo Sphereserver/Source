@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Wednesday October 30, 2013
 //
 VERSION=0.56c
 
@@ -902,7 +902,7 @@ ON=@Equip
       SRC.TAG.OVERRIDE.REGEN_1=<EVAL <SRC.TAG0.OVERRIDE.REGEN_1> + <TAG0.ManaRegen>>
    ENDIF
    IF (<TAG0.FasterCastRecovery>)//alters the "value" of mana regenerated
-//      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> + <TAG0.FasterCastRecovery>>
+      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> + <TAG0.FasterCastRecovery>>
       SRC.TAG.OVERRIDE.REGENVAL_1=<EVAL <SRC.TAG0.OVERRIDE.REGENVAL_1> + <TAG0.FasterCastRecovery>>
    ENDIF
    IF (<TAG0.FasterCasting>)
@@ -1147,6 +1147,8 @@ ON=@UnEquip
       SRC.TAG.OVERRIDE.REGEN_0=<EVAL <SRC.TAG0.OVERRIDE.REGEN_0> - <TAG0.HitpointRegen>>
       IF (<SRC.TAG0.HitpointRegen>==0)
          SRC.TAG.HitpointRegen=
+      ENDIF
+      IF (<SRC.TAG0.OVERRIDE.REGEN_0>==0)
          SRC.TAG.OVERRIDE.REGEN_0=
       ENDIF
    ENDIF
@@ -1160,6 +1162,8 @@ ON=@UnEquip
       SRC.TAG.OVERRIDE.REGEN_2=<EVAL <SRC.TAG0.OVERRIDE.REGEN_2> - <TAG0.StaminaRegen>>
       IF (<SRC.TAG0.StaminaRegen>==0)
          SRC.TAG.StaminaRegen=
+      ENDIF
+      IF (<SRC.TAG0.OVERRIDE.REGEN_2>==0)
          SRC.TAG.OVERRIDE.REGEN_2=
       ENDIF
    ENDIF
@@ -1173,14 +1177,18 @@ ON=@UnEquip
       SRC.TAG.OVERRIDE.REGEN_1=<EVAL <SRC.TAG0.OVERRIDE.REGEN_1> - <TAG0.ManaRegen>>
       IF (<SRC.TAG0.ManaRegen>==0)
          SRC.TAG.ManaRegen=
+      ENDIF
+      IF (<SRC.TAG0.OVERRIDE.REGEN_1>==0)
          SRC.TAG.OVERRIDE.REGEN_1=
       ENDIF
    ENDIF
    IF (<TAG0.FasterCastRecovery>)
-//      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> - <TAG0.FasterCastRecovery>>
+      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> - <TAG0.FasterCastRecovery>>
       SRC.TAG.OVERRIDE.REGENVAL_1=<EVAL <SRC.TAG0.OVERRIDE.REGENVAL_1> - <TAG0.FasterCastRecovery>>
       IF (<SRC.TAG0.FasterCastRecovery>==0)
          SRC.TAG.FasterCastRecovery=
+      ENDIF
+      IF (<SRC.TAG.OVERRIDE.REGENVAL_1>==0)
          SRC.TAG.OVERRIDE.REGENVAL_1=
       ENDIF
    ENDIF
