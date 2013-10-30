@@ -2896,22 +2896,29 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		return( true );
 
 	case RES_STARTS:
-		m_StartDefs.RemoveAll();
-		while ( pScript->ReadKey())
 		{
-			CStartLoc * pStart = new CStartLoc( pScript->GetKey());
-			if ( pScript->ReadKey())
+			int iStartVersion = pScript->GetArgVal();
+			m_StartDefs.RemoveAll();
+			while ( pScript->ReadKey())
 			{
-				pStart->m_sName = pScript->GetKey();
+				CStartLoc * pStart = new CStartLoc( pScript->GetKey());
 				if ( pScript->ReadKey())
 				{
-					pStart->m_pt.Read( pScript->GetKeyBuffer());
-				}
-			}
-			m_StartDefs.Add( pStart );
-		}
-		return( true );
+					pStart->m_sName = pScript->GetKey();
+					if ( pScript->ReadKey())
+						pStart->m_pt.Read( pScript->GetKeyBuffer());
 
+					if (iStartVersion == 2)
+					{
+						if ( pScript->ReadKey())
+							pStart->iClilocDescription = ATOI(pScript->GetKey());
+					}
+				}
+				m_StartDefs.Add( pStart );
+			}
+
+			return( true );
+		}
 	case RES_MOONGATES:
 		m_MoonGates.RemoveAll();
 		while ( pScript->ReadKey())

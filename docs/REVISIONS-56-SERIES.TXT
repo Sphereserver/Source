@@ -263,3 +263,8 @@
 - Fixed: CHARDEFs in sphere_monsters.scp that were missing NAME or CAN
 - Fixed: Bad reference to c_sea_monster in sphere_monsters.scp
 - Fixed: Bad reference to e_equipitem in sphere_item_provisions_clothing.scp
+
+29-10-2013, Ben
+- Added: Cliloc support for start location in clients 7.00.13+
+- Updated: Sphere_map_points0.scp with new STARTS information ([STARTS 2] includes a cliloc line as the 4th argument)
+- Tweaked: Stacked items should no longer flip.

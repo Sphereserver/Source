@@ -721,11 +721,13 @@ public:
 	CGString m_sArea;	// Area/City Name = Britain or Occlo
 	CGString m_sName;	// Place name = Castle Britannia or Docks
 	CPointMap m_pt;
+	int iClilocDescription; //Only for clients 7.00.13 +
 
 public:
 	explicit CStartLoc( LPCTSTR pszArea )
 	{
 		m_sArea = pszArea;
+		iClilocDescription = 1149559;
 	}
 
 private:

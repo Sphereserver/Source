@@ -2918,7 +2918,8 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 			writeInt32(start->m_pt.m_y);
 			writeInt32(start->m_pt.m_z);
 			writeInt32(start->m_pt.m_map);
-			writeInt32(1149559); // todo: add support for 'description' cliloc
+			writeInt32(start->iClilocDescription);
+			//writeInt32(1149559); // todo: add support for 'description' cliloc
 			writeInt32(0);
 		}
 	}

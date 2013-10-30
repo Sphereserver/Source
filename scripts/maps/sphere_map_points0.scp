@@ -11,34 +11,43 @@
 
 VERSION=0.56b
 
-[STARTS]	// new client
+[STARTS 2]	// new client (<ARGN> == 2 if new cliloc line is added)
 Yew
 The Sturdy Bow
 567,978,0,0
+1075072
 Minoc
 The Barnacle Tavern
 2477,407,15,0
+1075073
 Britain
 Sweet Dreams Inn
 1496,1629,10,0
+1075074
 Moonglow
 The Scholars Inn
 4404,1169,0,0
+1075075
 Trinsic
 The Traveller's Inn
 1844,2745,0,0
-Magincia
+1075076
+New Magincia
 The Great Horns Tavern
 3738,2223,20,0
+1075077
 Jhelom
 The Morning Star Inn
 1378,3817,0,0
+1075078
 Skara Brae
 The Falconers Inn
 594,2227,0,0
+1075079
 Vesper
 The Ironwood Inn
 2771,977,0,0
+1075080
 
 [MoonGates]
 1336,1997,5,0=mg_britain

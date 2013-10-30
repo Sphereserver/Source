@@ -1628,16 +1628,21 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 	if ( pItem == NULL )
 		return( false );
 
-	CItemBase * pItemDef = pItem->Item_GetDef();
-	if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) &&
-		pItem->IsMovableType() &&
-		! pItemDef->IsStackableType())
+	bool bDroped = pItem->MoveToCheck( pt, this );
+
+	if ((bDroped) && (pItem->GetTopZ() == pt.m_z))
 	{
-		// Does this item have a flipped version.
-		pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
+		CItemBase * pItemDef = pItem->Item_GetDef();
+		if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) &&
+			pItem->IsMovableType() &&
+			! pItemDef->IsStackableType())
+		{
+			// Does this item have a flipped version.
+			pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
+		}
 	}
 
-	return( pItem->MoveToCheck( pt, this ));
+	return( bDroped );
 }
 
 bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg )
