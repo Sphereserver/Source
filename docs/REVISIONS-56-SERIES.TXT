@@ -271,3 +271,4 @@
 
 30-10-2013, RanXerox (Script Pack)
 - Fixed: Improved TAG management related to TAG.OVERRIDE.REGEN* in sphere_item_typedef_equipitem.scp
+- Fixed: Removed reference to jobNecromancer event from sphere_citizens.scp
