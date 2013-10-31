@@ -1277,6 +1277,9 @@ BFONT_DCYAN   <basefont color="#008888">
 BFONT      <BASEFONT
 BFONTE      </BASEFONT>
 
+HTML_REDTEXT   <basefont color="red" />
+HTML_WHITETEXT <basefont color="white" />
+
 [DEFNAME profession_ids]
 // ARGN2 in f_oncreate_char
 prof_unknown         0

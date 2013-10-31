@@ -50,6 +50,11 @@ Known Issues:
  used up, or when the vital stats of a person wearing an item change etc...)
  Using TooltipMode=0 and AutoTooltipResend=07f inside the Sphere.ini helps.
 
+ Since this event overrides the default tooltip, the NAME of the item is
+ forced, and as a result, "client localization" (clilocs which dynamically
+ translate based on the language of the client) gets lost.  The first couple
+ lines of the @ClientToolTip trigger have a sample of how you might correct
+ that, but the sample only works on original items.
 
 The TAGs being handled inside this TYPEDEF currently include:
 
@@ -311,6 +316,11 @@ TAG.MageArmor             - Values:  One or zero.
 
 [TYPEDEF t_equipitem]
 ON=@ClientToolTip
+   //IF ((<DISPID>!=<BASEID>) || (<DISPIDDEC>>16381))
+   //   ADDCLILOC 1042971,<NAME>
+   //ELSE
+   //   ADDCLILOC <EVAL 1020000+<DISPIDDEC>>
+   //ENDIF
    SRC.ADDCLILOC 1042971,<NAME>
    IF !(<ATTR> & attr_identified)
       SRC.ADDCLILOC 1041522,<DEF.HTML_REDTEXT>,#1038000,<DEF.HTML_WHITETEXT>
@@ -704,6 +714,9 @@ ON=@ClientToolTip
    IF (<HITPOINTS>)
       SRC.ADDCLILOC 1060639,<MORE1L>,<MORE1H>
    ENDIF
+   // When you RETURN 1 in this trigger, the built-in tooltip is prevented.
+   // If you remove the RETURN 1, these customizations and the built-in
+   // tooltip are merged and the order ends up... confusing.
    RETURN 1
 
 ON=@EquipTest

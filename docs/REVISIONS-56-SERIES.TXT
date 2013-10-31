@@ -272,3 +272,8 @@
 30-10-2013, RanXerox (Script Pack)
 - Fixed: Improved TAG management related to TAG.OVERRIDE.REGEN* in sphere_item_typedef_equipitem.scp
 - Fixed: Removed reference to jobNecromancer event from sphere_citizens.scp
+
+31-10-2013, RanXerox (Script Pack)
+- Noted: Comments in the sphere_item_typedef_equipitem.scp file were improved
+- Added: HTML_REDTEXT and HTML_WHITETEXT to sphere_defs.scp
+- Added: TAG.GargoyleOnly to i_gargish* weapons in sphere_item_provisions_weapons.scp
