@@ -683,28 +683,24 @@ void CSector::SetDefaultWeatherChance()
 WEATHER_TYPE CSector::GetWeatherCalc() const
 {
 	ADDTOCALLSTACK("CSector::GetWeatherCalc");
-	// (1 in x) chance of some kind of weather change at any given time
+
+	// There is no weather in dungeons (or when the Sphere.ini setting prevents weather)
 	if ( IsInDungeon() || g_Cfg.m_fNoWeather )
 		return( WEATHER_DRY );
 
-	int iRainRoll = Calc_GetRandVal( 100 );
-	if ( ( GetRainChance() * 2) < iRainRoll )
-		return( WEATHER_DRY );
-
-	// Is it just cloudy?
-	if ( iRainRoll > GetRainChance())
-		return WEATHER_CLOUDY;
-
 	// Rain chance also controls the chance of snow. If it isn't possible to rain then it cannot snow either
-	if ( !GetRainChance() )
-		return WEATHER_DRY;
-
-	// Is it snowing?
-	if ( GetColdChance() && Calc_GetRandVal(100) <= GetColdChance()) // Can it actually snow here?
-		return WEATHER_SNOW;
-
-	// It is raining
-	return WEATHER_RAIN;
+	int iPercentRoll = Calc_GetRandVal( 100 );
+	if ( iPercentRoll < GetRainChance() )
+	{
+		// It is precipitating... but is it rain or snow?
+		if ( GetColdChance() && Calc_GetRandVal(100) <= GetColdChance()) // Should it actually snow here?
+			return WEATHER_SNOW;
+		return WEATHER_RAIN;
+	}
+	// It is not precipitating, but is it cloudy or dry?
+	if ( ( iPercentRoll / 2) < GetRainChance() )
+		return WEATHER_CLOUDY;
+	return( WEATHER_DRY );
 }
 
 void CSector::SetWeather( WEATHER_TYPE w )

@@ -277,3 +277,7 @@
 - Noted: Comments in the sphere_item_typedef_equipitem.scp file were improved
 - Added: HTML_REDTEXT and HTML_WHITETEXT to sphere_defs.scp
 - Added: TAG.GargoyleOnly to i_gargish* weapons in sphere_item_provisions_weapons.scp
+
+1-11-2013, RanXerox
+- Modified: The weather algorithm so that if you set a sector's rainchance to 100, it will always rain
+  Note: rainchance actually means "precipitation chance". If the coldchance is high enough, the precipitation will be snow.
