@@ -710,10 +710,10 @@ class CItemBaseDupe : public CResourceDef
 {
 	// RES_ITEMDEF
 private:
-	CResourceRef m_MasterItem;	// What is the "master" item ?
 	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec/CUOItemTypeRec2
 	height_t	m_Height;
 public:
+	CResourceRef m_MasterItem;	// What is the "master" item ?
 	WORD	m_Can;
 	static const char *m_sClassName;
 	CItemBaseDupe( ITEMID_TYPE id, CItemBase * pMasterItem ) :

@@ -281,3 +281,6 @@
 1-11-2013, RanXerox
 - Modified: The weather algorithm so that if you set a sector's rainchance to 100, it will always rain
   Note: rainchance actually means "precipitation chance". If the coldchance is high enough, the precipitation will be snow.
+
+9-11-2013, Ben
+- Fixed #2238: Muldiv returning different values on linux.

@@ -1217,7 +1217,8 @@ badcmd:
 				int	iMul	= Exp_GetVal( pszKey );
 				SKIP_ARGSEP(pszKey);
 				int	iDiv	= Exp_GetVal( pszKey );
-				int iRes	= MulDiv(iNum,iMul,iDiv);
+				//int iRes	= MulDiv(iNum,iMul,iDiv);
+				int iRes	= IMULDIV(iNum,iMul,iDiv);
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 					g_Log.EventDebug("SCRIPT: muldiv(%d,%d,%d) -> %d\n", iNum, iMul, iDiv, iRes);

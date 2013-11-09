@@ -303,7 +303,8 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	if ( iTotal <= 0 )
 		return 100;
 
-    int iPercent = MulDiv( iCount, 100, iTotal );
+    //int iPercent = MulDiv( iCount, 100, iTotal );
+	int iPercent = IMULDIV( iCount, 100, iTotal );
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%d%%", iPercent);
 	size_t len = strlen(pszTemp);
@@ -867,7 +868,7 @@ longcommand:
 							!strncmp(z, "armor", 5) || !strncmp(z, "skillmake", 9) || !strncmp(z, "on=@", 4) ||
 							!strncmp(z, "dupeitem", 8) || !strncmp(z, "dupelist", 8) || !strncmp(z, "can", 3) ||
 							!strncmp(z, "tevents", 7) || !strncmp(z, "subsection", 10) || !strncmp(z, "description", 11) ||
-							!strncmp(z, "category", 8) || !strncmp(z, "p=", 5) || !strncmp(z, "resources", 9) ||
+							!strncmp(z, "category", 8) || !strncmp(z, "p=", 2) || !strncmp(z, "resources", 9) ||
 							!strncmp(z, "group", 5) || !strncmp(z, "rect=", 5) )
 						{
 							fputs(y, f1);
