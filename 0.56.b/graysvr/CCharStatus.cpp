@@ -1484,6 +1484,10 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					if (pStatic->m_x+pBlock->m_x != ptNow.m_x || pStatic->m_y+pBlock->m_y != ptNow.m_y)
 						continue;
 
+					//Fix for Stacked items blocking view
+					if ((pStatic->m_x == ptDst.m_x) && (pStatic->m_y == ptDst.m_y) && (pStatic->m_z >= GetTopZ()) && (pStatic->m_z <= ptSrc.m_z))
+						continue;
+
 					pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
 					wTFlags = 0;
 					Height = 0;
@@ -1571,6 +1575,10 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 					if (pItem->GetUnkPoint().m_x != ptNow.m_x || pItem->GetUnkPoint().m_y != ptNow.m_y)
 						continue;
 					if ( !CanSeeItem(pItem) )
+						continue;
+
+					//Fix for Stacked items blocking view
+					if ((pItem->GetUnkPoint().m_x == ptDst.m_x) && (pItem->GetUnkPoint().m_y == ptDst.m_y) && (pItem->GetUnkPoint().m_z >= GetTopZ()) && (pItem->GetUnkPoint().m_z <= ptSrc.m_z))
 						continue;
 
 					pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );

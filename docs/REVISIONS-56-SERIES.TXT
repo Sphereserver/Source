@@ -290,3 +290,7 @@
 			   ARGS OUT as new char name
 			   ARGO is the char getting his name changed.
  
+10-11-2013, Ben
+-Added #2210: Picking up an item in a stack will cause above items to fall unless they have attr_static or attr_move_never
+-Fixed #1764: LOS issue with stacked items
+-Fixed: crashed caused by items stacking too high.

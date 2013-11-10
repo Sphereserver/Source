@@ -1549,6 +1549,49 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 	}
 
+	//Do stack dropping if items are stacked
+	if (( trigger == ITRIG_PICKUP_GROUND ) && IsSetEF( EF_ItemStacking ))
+	{
+		CPointMap ptNewPlace = pItem->GetTopPoint();
+		signed char	TopCheck = GetTopZ() + 16;
+		height_t Itemheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
+		CItem * pStack = NULL;
+		CWorldSearch CheckItems(ptNewPlace);
+		for (;;)
+		{
+			pStack = CheckItems.GetItem();
+			if ( pStack == NULL )
+				break;
+
+			if ( (pStack->GetTopZ() + pStack->GetHeight()) >= TopCheck )
+				continue;
+
+			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC))
+				TopCheck = pStack->GetTopZ() + pStack->GetHeight();
+
+			if (( pStack->GetTopZ() == pItem->GetTopZ()) && (pStack->IsType(IT_TABLE)) && (pStack != pItem))
+				TopCheck = pStack->GetTopZ() + pStack->GetHeight();
+		}
+
+		CWorldSearch AreaItems(ptNewPlace);
+		for (;;)
+		{
+			pStack = AreaItems.GetItem();
+			if ( pStack == NULL )
+				break;
+
+			if (( pStack->GetTopZ() <= pItem->GetTopZ()) || ( pStack->GetTopZ() >= TopCheck ))
+				continue;
+
+			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC))
+				continue;
+
+			ptNewPlace = pStack->GetTopPoint();
+			ptNewPlace.m_z -= Itemheight;
+			pStack->MoveTo(ptNewPlace);
+		}
+	}
+
 	if ( fDrop )
 	{
 		ItemDrop(pItem, GetTopPoint());

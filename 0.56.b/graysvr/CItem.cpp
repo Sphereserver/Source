@@ -1318,8 +1318,8 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	CItem * pItem = NULL;
 	CWorldSearch AreaItems(ptNewPlace);
 	short iMyZ = ptNewPlace.m_z;
-	bool iInvalidZ[16];
-	for (int i=0;i < 16;i++)
+	bool iInvalidZ[20];
+	for (int i=0;i < 20;i++)
 		iInvalidZ[i] = false;
 	for (;;)
 	{
@@ -1385,6 +1385,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 							bValid = false;
 					}
 				}
+
 				if (bValid)
 				{
 					iMyZ = ptNewPlace.m_z + i;
