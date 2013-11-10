@@ -294,3 +294,4 @@
 -Added #2210: Picking up an item in a stack will cause above items to fall unless they have attr_static or attr_move_never
 -Fixed #1764: LOS issue with stacked items
 -Fixed: crashed caused by items stacking too high.
+-Possible fix for Pathfinding on maps other then 0. (Needs testing)

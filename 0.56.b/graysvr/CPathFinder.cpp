@@ -151,7 +151,7 @@ int CPathFinder::FindPath() //A* algorithm
 			while ( PathRef.m_Point->GetParent() ) //Rebuild path + save
 			{
 				PathRef.m_Point = const_cast<CPathFinderPoint*>(PathRef.m_Point->GetParent());
-				m_LastPath.push_front( CPointMap(PathRef.m_Point->m_x+m_RealX,PathRef.m_Point->m_y+m_RealY) );
+				m_LastPath.push_front( CPointMap(PathRef.m_Point->m_x+m_RealX,PathRef.m_Point->m_y+m_RealY,0,PathRef.m_Point->m_map) );
 			}
 			Clear();
 			return PATH_FOUND;
