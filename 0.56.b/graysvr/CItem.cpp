@@ -2373,6 +2373,14 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_DMGPOISON:
 			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgpoison : 0 );
 			break;
+		case IC_DUPEITEM:
+			{
+				if ( GetID() != GetDispID() )
+					sVal.FormatHex( GetID() );
+				else
+					sVal.FormatVal(0);
+			}
+			break;
 		case IC_HEIGHT:
 			sVal.FormatVal( GetHeight() );
 			break;

@@ -284,3 +284,9 @@
 
 9-11-2013, Ben
 - Fixed #2238: Muldiv returning different values on linux.
+- Added #2226: Dupeitem is now readable. Return 0 if not a dupeitem.
+- Added #2232: Made @Rename trigger when a player changes his name
+			   ARGS IN as the proposes char name
+			   ARGS OUT as new char name
+			   ARGO is the char getting his name changed.
+ 

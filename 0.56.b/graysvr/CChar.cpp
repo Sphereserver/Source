@@ -2299,6 +2299,22 @@ do_default:
 				m_ptHome.Read( s.GetArgStr());
 			break;
 		case CHC_NAME:
+			{
+				LPCTSTR	pszName = s.GetArgStr();
+				if ( IsTrigUsed(TRIGGER_RENAME) )
+				{
+					CScriptTriggerArgs args;
+					args.m_s1 = pszName;
+					args.m_pO1 = this;
+					if ( this->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+						return( false );
+
+					pszName = args.m_s1;
+				}
+
+				SetName( pszName );
+			}
+			break;
 		case CHC_FAME:
 		case CHC_KARMA:
 			goto do_default;
