@@ -864,6 +864,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		CPointMap local;
 		local.m_x = m_pNPC->m_nextX[0];
 		local.m_y = m_pNPC->m_nextY[0];
+		local.m_map = pMe.m_map;
 			// no steps available yet, or pathfinding not usable in this situation
 			// so, use default movements
 

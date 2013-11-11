@@ -49,6 +49,7 @@ CPathFinderPoint::CPathFinderPoint() : m_Parent(0), m_Walkable(false), FValue(0)
 	m_x = 0;
 	m_y = 0;
 	m_z = 0;
+	m_map = 0;
 }
 
 CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : m_Parent(0), m_Walkable(false), FValue(0), GValue(0), HValue(0)
@@ -57,6 +58,7 @@ CPathFinderPoint::CPathFinderPoint(const CPointMap& pt) : m_Parent(0), m_Walkabl
 	m_x = pt.m_x;
 	m_y = pt.m_y;
 	m_z = pt.m_z;
+	m_map = pt.m_map;
 }
 
 
@@ -250,13 +252,9 @@ void CPathFinder::FillMap()
 				m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
 			}
 
-			m_Points[x][y].Set(x,y);
-
-			//DEBUG_ERR(( "[%i:%i:%i]",m_Points[x][y].GetPoint()->m_x,m_Points[x][y].GetPoint()->m_y,m_Points[x][y].m_Walkable ));
+			m_Points[x][y].Set(x,y,pt.m_z,pt.m_map);
 		}
 	}
-
-	//DEBUG_ERR(( "TARGET: [%i:%i]\n", m_Target.m_x, m_Target.m_y ));
 
 	EXC_CATCH;
 

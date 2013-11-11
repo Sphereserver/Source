@@ -295,3 +295,7 @@
 -Fixed #1764: LOS issue with stacked items
 -Fixed: crashed caused by items stacking too high.
 -Possible fix for Pathfinding on maps other then 0. (Needs testing)
+
+11-11-2013, Ben
+-Fixed: Error with @Rename trigger causing names to have random characters
+-Fixed #2010: Pathfinding now works on maps other then 0 (Been tested this time)
