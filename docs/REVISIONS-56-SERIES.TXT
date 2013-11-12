@@ -299,3 +299,7 @@
 11-11-2013, Ben
 -Fixed: Error with @Rename trigger causing names to have random characters
 -Fixed #2010: Pathfinding now works on maps other then 0 (Been tested this time)
+
+12-11-2013, Ben
+-Fixed #2240: Time running at double speed caused by new Muldiv calculation
+-Tweak: Split EF_ItemStacking into 2 setting. EF_ItemStackDrop 0x08 will take care of the item dropping part.(for debuging purposes)

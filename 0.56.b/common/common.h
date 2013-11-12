@@ -55,9 +55,8 @@ typedef THREAD_ENTRY_RET ( _cdecl * PTHREAD_ENTRY_PROC )(void *);
 
 #define SCRIPT_MAX_LINE_LEN 4096	// default size.
 
-//#define IMULDIV(a,b,c) (((a)*(b))/(c))
+#define IMULDIVDOWN(a,b,c) (((a)*(b))/(c))
 #define IMULDIV(a,b,c) (int)((((LONGLONG)(a)*(LONGLONG)(b))+(c / 2))/(c))
-
 
 #ifndef MAKEDWORD
 	#define MAKEDWORD(low, high) ((DWORD)(((WORD)(low)) | (((DWORD)((WORD)(high))) << 16)))

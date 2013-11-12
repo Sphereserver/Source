@@ -1550,7 +1550,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	}
 
 	//Do stack dropping if items are stacked
-	if (( trigger == ITRIG_PICKUP_GROUND ) && IsSetEF( EF_ItemStacking ))
+	if (( trigger == ITRIG_PICKUP_GROUND ) && IsSetEF( EF_ItemStackDrop ))
 	{
 		CPointMap ptNewPlace = pItem->GetTopPoint();
 		signed char	TopCheck = GetTopZ() + 16;

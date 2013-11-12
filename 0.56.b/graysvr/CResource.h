@@ -52,7 +52,7 @@ enum EF_TYPE
 	EF_DiagonalWalkCheck			= 0x0000001,
 	EF_FixKillTrigger				= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
-	EF_Unused08						= 0x0000008,
+	EF_ItemStackDrop				= 0x0000008,
 	EF_Unused010					= 0x0000010,
 	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
