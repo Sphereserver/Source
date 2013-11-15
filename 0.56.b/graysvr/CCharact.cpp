@@ -1553,7 +1553,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	if (( trigger == ITRIG_PICKUP_GROUND ) && IsSetEF( EF_ItemStackDrop ))
 	{
 		CPointMap ptNewPlace = pItem->GetTopPoint();
-		signed char	TopCheck = GetTopZ() + 16;
+		signed char	TopCheck = GetTopZ() + 17;
 		height_t Itemheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
 		CItem * pStack = NULL;
 		CWorldSearch CheckItems(ptNewPlace);
