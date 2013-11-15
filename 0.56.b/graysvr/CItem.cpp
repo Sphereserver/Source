@@ -1321,6 +1321,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	bool iInvalidZ[20];
 	for (int i=0;i < 20;i++)
 		iInvalidZ[i] = false;
+
 	for (;;)
 	{
 		pItem = AreaItems.GetItem();
@@ -1346,12 +1347,14 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 				break;
 
 			height_t tempheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
+			signed char itemTop = (pItem->GetTopZ() - ptNewPlace.m_z) + tempheight;
+			signed char itemBottom = pItem->GetTopZ() - ptNewPlace.m_z;
 
-			if (pItem->IsType(IT_TABLE))
-				iInvalidZ[(pItem->GetTopZ()+tempheight) - ptNewPlace.m_z] = true;
+			if (pItem->IsType(IT_TABLE) && itemTop < 20)
+				iInvalidZ[itemTop] = true;
 			else
 			{
-				for(int z = pItem->GetTopZ() - ptNewPlace.m_z; z < (pItem->GetTopZ() - ptNewPlace.m_z) + tempheight; z++)
+				for(int z = itemBottom; (z < itemTop) && (z < 20); z++)
 					iInvalidZ[z] = true;
 			}
 
@@ -1379,7 +1382,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 				//Can the item fit here?
 				if (GetHeight() > 1)
 				{
-					for(int z = i+1; z < i + GetHeight(); z++)
+					for(int z = i+1; (z < i + GetHeight()) && (z < 20); z++)
 					{
 						if (iInvalidZ[z])
 							bValid = false;
