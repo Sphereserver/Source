@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -16,7 +16,7 @@ VERSION=0.56c
 DEFNAME=i_cannon_twopart
 FLIP=1
 WEIGHT=120.1
-RESOURCES=100 i_ingot_iron,20 i_board,1 i_axel
+RESOURCES=100 i_ingot_iron,20 i_board,1 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Cannon (2 part)
@@ -72,7 +72,7 @@ DESCRIPTION=Cannon Balls
 DEFNAME=i_cannon_full
 FLIP=1
 WEIGHT=120.1
-RESOURCES=100 i_ingot_iron,20 i_board,1 i_axel
+RESOURCES=100 i_ingot_iron,20 i_board,1 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Large Cannon (multi-part)
@@ -1731,7 +1731,7 @@ DEFNAME=i_shipcannon_small
 NAME=4 pound ship cannon
 FLIP=1
 WEIGHT=140.2
-RESOURCES=100 i_ingot_iron,40 i_board,2 i_axel
+RESOURCES=100 i_ingot_iron,40 i_board,2 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Ship Cannon (4 pound)
@@ -1754,7 +1754,7 @@ DEFNAME=i_shipcannon_med
 NAME=8 pound ship cannon
 FLIP=1
 WEIGHT=160.2
-RESOURCES=120 i_ingot_iron,40 i_board,2 i_axel
+RESOURCES=120 i_ingot_iron,40 i_board,2 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Ship Cannon (8 pound)
@@ -1781,7 +1781,7 @@ DEFNAME=i_shipcannon_large
 NAME=48 pound ship cannon
 FLIP=1
 WEIGHT=160.2
-RESOURCES=120 i_ingot_iron,40 i_board,2 i_axel
+RESOURCES=120 i_ingot_iron,40 i_board,2 i_axle
 CATEGORY=Miscellaneous
 SUBSECTION=Cannons
 DESCRIPTION=Ship Cannon (48 pound)

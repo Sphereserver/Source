@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -1021,11 +1021,11 @@ DUPELIST=01050
 DUPEITEM=0104f
 
 [ITEMDEF 01051]
-DEFNAME=i_axel_and_gears
+DEFNAME=i_axle_and_gears
 FLIP=1
 VALUE=18
 WEIGHT=0.3
-RESOURCES=1 i_axel,2 i_gears
+RESOURCES=1 i_axle,2 i_gears
 SKILLMAKE=Tinkering 30.4,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Tinker
@@ -1090,7 +1090,7 @@ DEFNAME=i_sextant_parts
 FLIP=1
 VALUE=30
 WEIGHT=1.2
-RESOURCES=1 i_ingot_iron,1 i_axel_and_gears,1 i_hinge
+RESOURCES=1 i_ingot_iron,1 i_axle_and_gears,1 i_hinge
 SKILLMAKE=Tinkering 31.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Tinker
@@ -1102,7 +1102,7 @@ DUPELIST=0105a
 DUPEITEM=01059
 
 [ITEMDEF 0105b]
-DEFNAME=i_axel
+DEFNAME=i_axle
 FLIP=1
 VALUE=5
 WEIGHT=0.1

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 13, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -195,7 +195,7 @@ TYPE=t_spinwheel
 FLIP=1
 VALUE=70
 WEIGHT=21.3
-RESOURCES=20 i_board,1 i_wire_iron,1 i_hinge,1 i_axel,1 i_gears
+RESOURCES=20 i_board,1 i_wire_iron,1 i_hinge,1 i_axle,1 i_gears
 SKILLMAKE=Carpentry 73.6,Tinkering 65.0,t_carpentry
 CATEGORY=Items by Professions
 SUBSECTION=Weaver
@@ -607,7 +607,7 @@ TYPE=t_spinwheel
 FLIP=1
 VALUE=73
 WEIGHT=21.3
-RESOURCES=10 i_board,1 i_wire_iron,1 i_hinge,1 i_axel,1 i_gears
+RESOURCES=10 i_board,1 i_wire_iron,1 i_hinge,1 i_axle,1 i_gears
 SKILLMAKE=Carpentry 73.6,Tailoring 65.0,t_carpentry
 CATEGORY=Items by Professions
 SUBSECTION=Weaver
@@ -640,7 +640,7 @@ DUPEITEM=02dd9
 //////////////////
 
 [ITEMDEF i_knitting_needles]
-ID=i_axel
+ID=i_axle
 NAME=knitting needles
 TYPE=t_normal
 VALUE=5

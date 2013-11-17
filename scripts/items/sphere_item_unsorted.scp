@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -771,7 +771,7 @@ DUPEITEM=010ee
 [ITEMDEF 01122]
 DEFNAME=i_trigger_step
 VALUE=1
-RESOURCES=10 i_ingot_iron,10 i_log,1 i_springs,1 i_axel_and_gears,1 i_wire_iron
+RESOURCES=10 i_ingot_iron,10 i_log,1 i_springs,1 i_axle_and_gears,1 i_wire_iron
 CATEGORY=Traps
 SUBSECTION=Step Trigger
 DESCRIPTION=Trigger Step

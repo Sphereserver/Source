@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 16, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -583,7 +583,7 @@ DUPEITEM=010fe
 [ITEMDEF 01103]
 DEFNAME=i_trap_saw
 TYPE=t_trap
-RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axel_and_gears
+RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axle_and_gears
 CATEGORY=Traps
 SUBSECTION=Saws
 DESCRIPTION=Saw Trap 01
@@ -593,7 +593,7 @@ ON=@Step
 [ITEMDEF 01104]
 DEFNAME=i_trap_saw_active
 TYPE=t_trap_active
-RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axel_and_gears
+RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axle_and_gears
 CATEGORY=Traps
 SUBSECTION=Saws
 DESCRIPTION=Saw Trap 01 (animated)
@@ -1436,7 +1436,7 @@ DUPEITEM=011a6
 DEFNAME=i_trap_saw_floor
 TYPE=t_trap
 VALUE=1
-RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axel
+RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axle
 CATEGORY=Traps
 SUBSECTION=Saws
 DESCRIPTION=Floor Saw 01
@@ -1462,7 +1462,7 @@ DUPEITEM=011ac
 DEFNAME=i_trap_saw_floor_2
 TYPE=t_trap
 VALUE=1
-RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axel
+RESOURCES=10 i_ingot_iron,1 i_springs,1 i_hinge,1 i_axle
 CATEGORY=Traps
 SUBSECTION=Saws
 DESCRIPTION=Floor Saw 02

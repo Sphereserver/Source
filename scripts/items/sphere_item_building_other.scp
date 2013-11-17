@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -506,7 +506,7 @@ DUPEITEM=01b6c
 DEFNAME=i_hook_and_pulley
 FLIP=1
 WEIGHT=5.1
-RESOURCES=1 i_log,1 i_axel,2 i_rope,1 i_ingot_iron
+RESOURCES=1 i_log,1 i_axle,2 i_rope,1 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Hook
@@ -520,7 +520,7 @@ DUPEITEM=01e9a
 DEFNAME=i_pullies
 FLIP=1
 WEIGHT=5.1
-RESOURCES=1 i_log,1 i_axel,2 i_rope,1 i_ingot_iron
+RESOURCES=1 i_log,1 i_axle,2 i_rope,1 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Pulley
@@ -558,7 +558,7 @@ DUPEITEM=01ea0
 [ITEMDEF 01ea8]
 DEFNAME=i_winch
 WEIGHT=30.3
-RESOURCES=5 i_rope,1 i_axel,2 i_gears,20 i_ingot_iron
+RESOURCES=5 i_rope,1 i_axle,2 i_gears,20 i_ingot_iron
 CATEGORY=Buildings - Other
 SUBSECTION=Hooks, Pulleys and Winches
 DESCRIPTION=Winch

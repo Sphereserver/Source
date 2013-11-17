@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Tuesday, November 5, 2013
 //
 VERSION=0.56c
 
@@ -1333,7 +1333,7 @@ DESCRIPTION=Quiche (uncooked)
 DEFNAME=i_rolling_pin
 VALUE=8
 WEIGHT=2.0
-RESOURCES=1 i_board,1 i_axel
+RESOURCES=1 i_board,1 i_axle
 CATEGORY=Items by Professions
 SUBSECTION=Baker
 DESCRIPTION=Rolling Pin

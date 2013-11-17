@@ -1,7 +1,7 @@
 ﻿---- 0.56c Nightly --------------------------------------------------------------------
 
 12-07-2013, Coruja (Script pack)
-- Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
+-Updated #2171: sphere_defs.scp (added missing midis SE/ML/HS)
       
 19-07-2013, Ben
 -Added: Triggers @Enter, @Exit, and @Step to ROOMDEFs
@@ -138,45 +138,45 @@
 -Remove GM check in Item stacking
 
 15-10-2013, RanXerox
-- Removed 0x from flag explanations in sphere.ini since spherescript does not use 0x to indicate hex
-- More changes to script pack than can be counted!
+-Removed 0x from flag explanations in sphere.ini since spherescript does not use 0x to indicate hex
+-More changes to script pack than can be counted!
  - Dozens of files deleted, split, added, renamed, etc.
  - Many hundreds of ITEMDEFs and CHARDEFs shuffled from one place to another.
  - Lots of modifications to DUPELIST and DUPEITEM, etc.
 
 16-10-2013, RanXerox (Script Pack)
-- Converted Unix files to DOS format
-- Replaced: references to the missing MESSAGELOC function
-- Added: i_canal ITEMDEF (now all items can be used in custom foundation multi's)
-- Fixed #2212: renamed Horde Demons
-- Fixed #2215: modified WEIGHT on i_dragonscale
-- Removed: bad reference to i_bear_skull
-- Added: some useful NPC functions
-- Renamed: sphere_items_seige.scp (...it's spelled Siege)
-- Finished scripting more lightsources
+-Converted Unix files to DOS format
+-Replaced: references to the missing MESSAGELOC function
+-Added: i_canal ITEMDEF (now all items can be used in custom foundation multi's)
+-Fixed #2212: renamed Horde Demons
+-Fixed #2215: modified WEIGHT on i_dragonscale
+-Removed: bad reference to i_bear_skull
+-Added: some useful NPC functions
+-Renamed: sphere_items_seige.scp (...it's spelled Siege)
+-Finished scripting more lightsources
 
 17-10-2013, RanXerox (Script Pack)
-- Switched: 0f3e and 0f3f (i_arrow) because older clients have a rock as ITEMDEF 0f3e
-- Removed: the name and title coloration from vendors, citizens, and guildmasters
-- Fixed: a bad reference to random_skirts
-- Fixed: broken SYSMESSAGELOC (they were all missing color)
-- Improved: corrosive slime now drops acid pool when threatened
-- Added: missing stair multi's
-- Added: HIREDAYWAGE back to sailors and mercenaries
-- Added: deed's for all the house foundations
-- Added: some missing NPC functions (is cursed)
-- Added: some missing combat timers (paralyzing blow and block healing)
+-Switched: 0f3e and 0f3f (i_arrow) because older clients have a rock as ITEMDEF 0f3e
+-Removed: the name and title coloration from vendors, citizens, and guildmasters
+-Fixed: a bad reference to random_skirts
+-Fixed: broken SYSMESSAGELOC (they were all missing color)
+-Improved: corrosive slime now drops acid pool when threatened
+-Added: missing stair multi's
+-Added: HIREDAYWAGE back to sailors and mercenaries
+-Added: deed's for all the house foundations
+-Added: some missing NPC functions (is cursed)
+-Added: some missing combat timers (paralyzing blow and block healing)
 
 18-10-2013, RanXerox (Script Pack)
-- Fixed: armored steed figurine
-- Fixed: syntax (SERV.NEWITEM instead of SRC.NEWITEM and NEW. instead of SRC.ACT.)
-- Fixed: fukiya (dart shooter)
-- Fixed: various mounts that had errors with the mounted animation
-- Fixed: some entries in sphere_typedefs.scp
-- Fixed: implementation of monsters that "summon" other monsters is now consistent
-- Fixed: console errors in some NPC events
-- Fixed: Paroxysmus loot (he dropped himself as an icon instead of his pet dragon)
-- Fixed #1536: Pack animals with wrong maxweight
+-Fixed: armored steed figurine
+-Fixed: syntax (SERV.NEWITEM instead of SRC.NEWITEM and NEW. instead of SRC.ACT.)
+-Fixed: fukiya (dart shooter)
+-Fixed: various mounts that had errors with the mounted animation
+-Fixed: some entries in sphere_typedefs.scp
+-Fixed: implementation of monsters that "summon" other monsters is now consistent
+-Fixed: console errors in some NPC events
+-Fixed: Paroxysmus loot (he dropped himself as an icon instead of his pet dragon)
+-Fixed #1536: Pack animals with wrong maxweight
 
 18-10-2013, Ben
 -Fixed #2222: Shrink not working anymore.
@@ -190,25 +190,25 @@
 -Fixed #2221,#1933,#1618: EF_Walkcheck blocking some stairs.
 
 20-10-2013, RanXerox
-- Changed: animation frames removed from DUPELIST on i_mongbat_dartboard
-- Changed: value for color_o_silver
-- Added: new CHARDEF placeholder for tiger animations- Changed: the value of color_o_silver
-- Added: 7.0.33 encryption key
+-Changed: animation frames removed from DUPELIST on i_mongbat_dartboard
+-Changed: value for color_o_silver
+-Added: new CHARDEF placeholder for tiger animations- Changed: the value of color_o_silver
+-Added: 7.0.33 encryption key
 
 21-10-2013, RanXerox (Script Pack)
-- Separated FOODTYPE and MAXFOOD in the monster files
+-Separated FOODTYPE and MAXFOOD in the monster files
 
 23-10-2013, RanXerox (Script Pack)
-- Added: more candy and chocolate related ITEMDEFs
-- Fixed: standing lamps
-- Added: Charybdis (and tentacle), Tiger, and Killer Pumpkin CHARDEFs
+-Added: more candy and chocolate related ITEMDEFs
+-Fixed: standing lamps
+-Added: Charybdis (and tentacle), Tiger, and Killer Pumpkin CHARDEFs
 
 24-10-2013, RanXerox (Script Pack)
-- Fixed: bad defname reference in loot (should be i_mask_daemon)
-- Fixed: tall jack-o-lanterns
-- Added: spawn groups for Hythloth
-- Moved: t_equipitem moved to its own file (since it will eventually be quite large)
-- Modified: t_equipitem now implements:
+-Fixed: bad defname reference in loot (should be i_mask_daemon)
+-Fixed: tall jack-o-lanterns
+-Added: spawn groups for Hythloth
+-Moved: t_equipitem moved to its own file (since it will eventually be quite large)
+-Modified: t_equipitem now implements:
             TAG.ElfOnly
             TAG.GargoyleOnly
             TAG.RareItem
@@ -245,47 +245,47 @@
            in-game are unequipped before installing this change!
 
 25-10-2013, RanXerox (Script Pack)
-- Minor updates to maps 2-5
+-Minor updates to maps 2-5
 
 27-10-2013, Ben
-- Fixed #2227: Region.ISEVENT not working.
-- Fixed #2229: STRREVERSE doesnt invert the entire string. (This was also the case for STRTOLOWER and STRTOUPPER)
-- Added: DEFLIST which acts like LIST but readable only (Filled by server at loading time with lists of resources)
-- Added: new Section to Sphere.ini [RESOURCELIST] with a list of resource blocks to be loaded into DEFLISTs
+-Fixed #2227: Region.ISEVENT not working.
+-Fixed #2229: STRREVERSE doesnt invert the entire string. (This was also the case for STRTOLOWER and STRTOUPPER)
+-Added: DEFLIST which acts like LIST but readable only (Filled by server at loading time with lists of resources)
+-Added: new Section to Sphere.ini [RESOURCELIST] with a list of resource blocks to be loaded into DEFLISTs
          Ex: Adding ITEMDEF in the RESOURCELIST will create a DEFLIST.ITEMDEF with all itemdefs loaded by the server.
-- Added: Category, Subsection, and Description to ITEMDEF and CHARDEF (now the server can read them if directly in the DEF section and not under @create)
+-Added: Category, Subsection, and Description to ITEMDEF and CHARDEF (now the server can read them if directly in the DEF section and not under @create)
 
 28-10-2013, Ben
-- Fixed #2164: NPCs attacking from different floors
-- Fixed: Issue with Client 7.0.33.1+ packet change
+-Fixed #2164: NPCs attacking from different floors
+-Fixed: Issue with Client 7.0.33.1+ packet change
 
 29-10-2013, RanXerox (Script Pack)
-- Fixed: CHARDEFs in sphere_monsters.scp that were missing NAME or CAN
-- Fixed: Bad reference to c_sea_monster in sphere_monsters.scp
-- Fixed: Bad reference to e_equipitem in sphere_item_provisions_clothing.scp
+-Fixed: CHARDEFs in sphere_monsters.scp that were missing NAME or CAN
+-Fixed: Bad reference to c_sea_monster in sphere_monsters.scp
+-Fixed: Bad reference to e_equipitem in sphere_item_provisions_clothing.scp
 
 29-10-2013, Ben
-- Added: Cliloc support for start location in clients 7.00.13+
-- Updated: Sphere_map_points0.scp with new STARTS information ([STARTS 2] includes a cliloc line as the 4th argument)
-- Tweaked: Stacked items should no longer flip.
+-Added: Cliloc support for start location in clients 7.00.13+
+-Updated: Sphere_map_points0.scp with new STARTS information ([STARTS 2] includes a cliloc line as the 4th argument)
+-Tweaked: Stacked items should no longer flip.
 
 30-10-2013, RanXerox (Script Pack)
-- Fixed: Improved TAG management related to TAG.OVERRIDE.REGEN* in sphere_item_typedef_equipitem.scp
-- Fixed: Removed reference to jobNecromancer event from sphere_citizens.scp
+-Fixed: Improved TAG management related to TAG.OVERRIDE.REGEN* in sphere_item_typedef_equipitem.scp
+-Fixed: Removed reference to jobNecromancer event from sphere_citizens.scp
 
 31-10-2013, RanXerox (Script Pack)
-- Noted: Comments in the sphere_item_typedef_equipitem.scp file were improved
-- Added: HTML_REDTEXT and HTML_WHITETEXT to sphere_defs.scp
-- Added: TAG.GargoyleOnly to i_gargish* weapons in sphere_item_provisions_weapons.scp
+-Noted: Comments in the sphere_item_typedef_equipitem.scp file were improved
+-Added: HTML_REDTEXT and HTML_WHITETEXT to sphere_defs.scp
+-Added: TAG.GargoyleOnly to i_gargish* weapons in sphere_item_provisions_weapons.scp
 
 1-11-2013, RanXerox
-- Modified: The weather algorithm so that if you set a sector's rainchance to 100, it will always rain
+-Modified: The weather algorithm so that if you set a sector's rainchance to 100, it will always rain
   Note: rainchance actually means "precipitation chance". If the coldchance is high enough, the precipitation will be snow.
 
 9-11-2013, Ben
-- Fixed #2238: Muldiv returning different values on linux.
-- Added #2226: Dupeitem is now readable. Return 0 if not a dupeitem.
-- Added #2232: Made @Rename trigger when a player changes his name
+-Fixed #2238: Muldiv returning different values on linux.
+-Added #2226: Dupeitem is now readable. Return 0 if not a dupeitem.
+-Added #2232: Made @Rename trigger when a player changes his name
 			   ARGS IN as the proposes char name
 			   ARGS OUT as new char name
 			   ARGO is the char getting his name changed.
@@ -303,3 +303,8 @@
 12-11-2013, Ben
 -Fixed #2240: Time running at double speed caused by new Muldiv calculation
 -Tweak: Split EF_ItemStacking into 2 setting. EF_ItemStackDrop 0x08 will take care of the item dropping part.(for debuging purposes)
+
+17-11-2013, RanXerox (script pack)
+-Fixed: all typo's of the word Axel
+-Fixed: arcane clothing items
+-Fixed: Gargish maul and war hammer TAGs

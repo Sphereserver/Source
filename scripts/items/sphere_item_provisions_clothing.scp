@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 29, 2013
+// FILE LAST UPDATED: Sunday, November 17, 2013
 //
 VERSION=0.56c
 
@@ -2015,15 +2015,16 @@ DUPEITEM=026a3
 DEFNAME=i_cape_arcane
 NAME=Arcane Cloak
 TYPE=t_clothing
-REQSTR=16
 WEIGHT=5
 DYE=1
-ARMOR=5
+//ARMOR=5
 RESOURCES=14 i_cloth,1 i_thread,1 i_gem_arcane
 SKILLMAKE=TAILORING 45.4,t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Cloak
+TAG.NotGargoyle=1
+TAG.REQSTR=16
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
@@ -2034,15 +2035,16 @@ ON=@Create
 DEFNAME=i_robe_arcane
 NAME=Arcane Robe
 TYPE=t_clothing
-REQSTR=32
 WEIGHT=3
 DYE=1
-ARMOR=7
+//ARMOR=7
 RESOURCES=16 i_cloth,1 i_thread,1 i_gem_arcane
 SKILLMAKE=TAILORING 59.0,t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Robe
+TAG.NotGargoyle=1
+TAG.REQSTR=32
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
@@ -2053,15 +2055,16 @@ ON=@Create
 DEFNAME=i_boots_thigh_arcane
 NAME=Arcane Thigh Boots
 TYPE=t_clothing
-REQSTR=8
 WEIGHT=5
 DYE=1
-ARMOR=6
+//ARMOR=6
 RESOURCES=10 i_hides_cut,1 i_thread,1 i_gem_arcane
 SKILLMAKE=TAILORING 25.0,t_sewing_kit
 CATEGORY=Provisions - Clothes
 SUBSECTION=Magic
 DESCRIPTION=Arcane Thigh Boots
+TAG.NotGargoyle=1
+TAG.REQSTR=8
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
@@ -2072,16 +2075,16 @@ ON=@Create
 DEFNAME=i_leather_gloves_arcane
 NAME=Arcane Leather Gloves
 TYPE=t_armor_leather
-REQSTR=8
-WEIGHT=1
+WEIGHT=1.0
 DYE=1
-ARMOR=13
-REQSTR=10
+//ARMOR=13
 RESOURCES=3 i_hides_cut,1 i_gem_arcane
 SKILLMAKE=TAILORING 56.8,t_sewing_kit
 CATEGORY=Provisions - Armor
 SUBSECTION=Magic
 DESCRIPTION=Arcane Leather Gloves
+TAG.NotGargoyle=1
+TAG.REQSTR=10
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
