@@ -308,3 +308,6 @@
 -Fixed: all typo's of the word Axel
 -Fixed: arcane clothing items
 -Fixed: Gargish maul and war hammer TAGs
+
+17-11-2013, Ben
+-Added: Destroy function which is like Remove, but will not be stoped by a return 1 in @Destroy

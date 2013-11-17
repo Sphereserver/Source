@@ -90,9 +90,9 @@ bool CItem::NotifyDelete()
 	return true;
 }
 
-void CItem::Delete()
+void CItem::Delete(bool bforce)
 {
-	if ( NotifyDelete() == false )
+	if (( NotifyDelete() == false ) && !bforce)
 		return;
 
 	CObjBase::Delete();
@@ -2826,6 +2826,9 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 		case CIV_DECAY:
 			SetDecayTime( s.GetArgVal());
 			break;
+		case CIV_DESTROY:	//remove this object now.
+			Delete(true);
+			return( true );
 		case CIV_DROP:
 			{
 				CObjBaseTemplate * pObjTop = GetTopLevelObj();

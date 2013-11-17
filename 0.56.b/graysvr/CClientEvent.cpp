@@ -12,10 +12,11 @@
 /////////////////////////////////
 // Events from the Client.
 
-LPCTSTR const CClient::sm_szCmd_Redirect[12] =
+LPCTSTR const CClient::sm_szCmd_Redirect[13] =
 {
 	"BANK",
 	"CONTROL",
+	"DESTROY",
 	"DUPE",
 	"FORGIVE",
 	"JAIL",

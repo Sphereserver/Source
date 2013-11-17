@@ -391,11 +391,11 @@ bool CChar::NotifyDelete()
 	return true;
 }
 
-void CChar::Delete()
+void CChar::Delete(bool bforce)
 {
 	ADDTOCALLSTACK("CChar::Delete");
 
-	if ( NotifyDelete() == false )
+	if (( NotifyDelete() == false ) && !bforce)
 		return;
 
 	// Character has been deleted
@@ -3126,6 +3126,19 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					GetClient()->addObjectRemove(this);
 			}
 			Delete();
+			break;
+		case CHV_DESTROY:	// remove this char from the world and bypass trigger's return value.
+			if ( m_pPlayer )
+			{
+				if ( s.GetArgRaw()[0] != '1' || pSrc->GetPrivLevel() < PLEVEL_Admin )
+				{
+					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
+					return( false );
+				}
+				if ( IsClient() )
+					GetClient()->addObjectRemove(this);
+			}
+			Delete(true);
 			break;
 		case CHV_RESURRECT:
 			{

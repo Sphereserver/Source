@@ -1483,7 +1483,6 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			if ( ! pClientSrc )
 				return( false );
 			return pClientSrc->addGumpDialogProps( GetUID());
-
 		case OV_REMOVE:	//remove this object now.
 			EXC_SET("REMOVE");
 			Delete();
@@ -2128,7 +2127,7 @@ void CObjBase::DeletePrepare()
 	RemoveSelf();	// Must remove early or else virtuals will fail.
 }
 
-void CObjBase::Delete()
+void CObjBase::Delete(bool bforce)
 {
 	ADDTOCALLSTACK("CObjBase::Delete");
 

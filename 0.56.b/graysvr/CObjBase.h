@@ -87,7 +87,7 @@ public:
 	virtual bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg ) = 0;
 
 	virtual int IsWeird() const;
-	virtual void Delete();
+	virtual void Delete(bool bforce = false);
 
 	// Accessors
 
@@ -1195,7 +1195,7 @@ public:
 
 	int GetAbilityFlags() const;
 
-	virtual void Delete();
+	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
 };
 
@@ -2653,7 +2653,7 @@ private:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
-	virtual void Delete();
+	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
