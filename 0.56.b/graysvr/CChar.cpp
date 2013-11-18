@@ -1432,6 +1432,9 @@ do_default:
 
 	switch ( iKeyNum )
 	{
+		case CHC_DEFCHANCEINC:
+				sVal = m_BaseDefs.GetKeyStr(pszKey, true);
+			break;
 		case CHC_ATTACKER:
 			{
 				if ( strlen( pszKey ) == 8 )
@@ -2149,6 +2152,12 @@ do_default:
 
 	switch (iKeyNum)
 	{
+		case CHC_DEFCHANCEINC:
+			{
+				bool fQuoted = false;
+				m_BaseDefs.SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted ), false );
+			}
+			break;
 		case CHC_MAXHITS:
 			Stat_SetMax(STAT_STR, s.HasArgs() ? s.GetArgVal() : 0 );
 			break;
