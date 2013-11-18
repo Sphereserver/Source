@@ -61,6 +61,7 @@ protected:
 public:
 	static const char *m_sClassName;
 	CVarDefMap m_TagDefs;		// attach extra tags here.
+	CVarDefMap m_BaseDefs;		// New Variable storage system
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
