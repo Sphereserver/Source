@@ -311,3 +311,7 @@
 
 17-11-2013, Ben
 -Added: Destroy function which is like Remove, but will not be stoped by a return 1 in @Destroy
+
+23-11-2013, Khaos
+-Added: New Character and Item variables for use with EA iprops and other support. These function as TAGs and are made for static naming.
+ A manual is in the works. Some of these might change as we bind them into the hard code with further support.
