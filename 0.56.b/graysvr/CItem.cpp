@@ -1341,7 +1341,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			}
 		}
 
-		if( IsSetEF( EF_ItemStacking ) )
+		if (( IsSetEF( EF_ItemStacking ) && ( pCharMover )) && ( pCharMover->IsClient() && !pCharMover->GetClient()->m_pHouseDesign ))
 		{
 			if ( pItem->GetTopZ() < ptNewPlace.m_z)
 				break;
@@ -1369,7 +1369,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	}
 
 
-	if( IsSetEF( EF_ItemStacking ) )
+	if (( IsSetEF( EF_ItemStacking ) && ( pCharMover )) && ( pCharMover->IsClient() && !pCharMover->GetClient()->m_pHouseDesign ))
 	{
 		//Can we find an empty space in the stack?
 		bool bValid = false;
@@ -1397,26 +1397,18 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			}
 		}
 
-		if ( pCharMover )
-		{
-			if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
-				ptNewPlace.m_z = iMyZ;
-			else
-			{
-				pCharMover->ItemBounce(this);
-				return false;
-			}
-		}
+		if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
+			ptNewPlace.m_z = iMyZ;
 		else
 		{
-			if ( (iMyZ - ptNewPlace.m_z) <= 16 )
-				ptNewPlace.m_z = iMyZ;
+			pCharMover->ItemBounce(this);
+			return false;
 		}
 	}
 	else
 	{
 		// one floor. needs some configuration on that
-		if ( (iMyZ - ptNewPlace.m_z) < 12 )
+		if ( (iMyZ - ptNewPlace.m_z) <= 16 )
 			ptNewPlace.m_z = iMyZ;
 	}
 
