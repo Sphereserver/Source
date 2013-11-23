@@ -1440,12 +1440,39 @@ public:
 	char		m_zLogin[64];
 	CServTime	m_tNextPickup;
 	CVarDefMap	m_TagDefs;
+	CVarDefMap	m_BaseDefs;		// New Variable storage system
 	typedef std::map<DWORD, std::pair<std::pair<DWORD,DWORD>, CPointMap> > OpenedContainerMap_t;
 	OpenedContainerMap_t m_openedContainers;	// list of UIDs of all opened containers by the client
 
 	CGObArray<CClientTooltip *> m_TooltipData; // Storage for tooltip data while in trigger
 
 	CItemMultiCustom * m_pHouseDesign; // The building this client is designing
+
+public:
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+	}
+
+	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+	}
+
+	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	{
+		m_BaseDefs.SetNum(pszKey, iVal, fZero);
+	}
+
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
+
+	void DeleteDef(LPCTSTR pszKey)
+	{
+		m_BaseDefs.DeleteKey(pszKey);
+	}
 
 #ifndef _MTNETWORK
 	friend class NetworkIn;

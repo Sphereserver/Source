@@ -572,8 +572,35 @@ public:
 
 	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
 	CVarDefMap				m_TagDefs;		// attach extra tags here.
+	CVarDefMap				m_BaseDefs;		// New Variable storage system
 
 	TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
+
+public:
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+	}
+
+	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+	}
+
+	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	{
+		m_BaseDefs.SetNum(pszKey, iVal, fZero);
+	}
+
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
+
+	void DeleteDef(LPCTSTR pszKey)
+	{
+		m_BaseDefs.DeleteKey(pszKey);
+	}
 
 private:
 	bool SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsole * pSrc ); // distribute to the CSectors

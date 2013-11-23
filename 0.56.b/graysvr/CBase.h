@@ -27,6 +27,7 @@ private:
 	
 public:
 	CVarDefMap		m_TagDefs;			// TAGs
+	CVarDefMap		m_BaseDefs;			// New Variable storage system
 
 	CGString m_sCategory;
 	CGString m_sSubsection;
@@ -42,6 +43,32 @@ public:
 	BYTE	m_attackRange;	// variable range of attack damage.
 
 	WORD	m_Can;			// Base attribute flags. CAN_C_GHOST
+
+public:
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+	}
+
+	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+	}
+
+	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	{
+		m_BaseDefs.SetNum(pszKey, iVal, fZero);
+	}
+
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
+
+	void DeleteDef(LPCTSTR pszKey)
+	{
+		m_BaseDefs.DeleteKey(pszKey);
+	}
 
 // Map Movement flags.
 #define CAN_C_GHOST			0x0001	// Moves thru doors etc.

@@ -72,6 +72,32 @@ public:
 
 	virtual void DeletePrepare();
 
+public:
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+	}
+
+	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	{
+		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+	}
+
+	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	{
+		m_BaseDefs.SetNum(pszKey, iVal, fZero);
+	}
+
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
+
+	void DeleteDef(LPCTSTR pszKey)
+	{
+		m_BaseDefs.DeleteKey(pszKey);
+	}
+
 protected:
 	virtual void DupeCopy( const CObjBase * pObj )
 	{

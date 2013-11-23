@@ -2155,7 +2155,7 @@ do_default:
 		case CHC_DEFCHANCEINC:
 			{
 				bool fQuoted = false;
-				m_BaseDefs.SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted ), false );
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
 			break;
 		case CHC_MAXHITS:

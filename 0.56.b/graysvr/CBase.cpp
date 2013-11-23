@@ -36,13 +36,9 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	switch ( index )
 	{
 		case OBC_CATEGORY:
-			sVal = m_sCategory;
-			break;
 		case OBC_SUBSECTION:
-			sVal = m_sSubsection;
-			break;
 		case OBC_DESCRIPTION:
-			sVal = m_sDescription;
+			sVal = GetDefStr(sm_szLoadKeys[index]);
 			break;
 		case OBC_ARMOR:
 		case OBC_DAM:
@@ -184,22 +180,15 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		case OBC_CATEGORY:
-			m_sCategory	= s.GetArgStr();
-			return( true );
 		case OBC_SUBSECTION:
-			{
-				m_sSubsection	= s.GetArgStr();
-				if ( !strcmpi(m_sDescription, "@") )
-					m_sDescription = m_sSubsection;
-			}
-			return( true );
 		case OBC_DESCRIPTION:
 			{
-				m_sDescription	= s.GetArgStr();
-				if ( !strcmpi(m_sDescription, "@") )
-					m_sDescription = m_sSubsection;
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+				if ( !strcmpi(GetDefStr(sm_szLoadKeys[OBC_DESCRIPTION]), "@") )
+					SetDefStr(sm_szLoadKeys[OBC_DESCRIPTION], GetDefStr(sm_szLoadKeys[OBC_SUBSECTION]));
 			}
-			return( true );
+			break;
 		case OBC_ARMOR:
 		case OBC_DAM:
 			{
