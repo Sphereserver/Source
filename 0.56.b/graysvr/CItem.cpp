@@ -2332,18 +2332,18 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_DAMCHAOS:
 		case IC_DAMCOLD:
 		case IC_DAMDIRECT:
-		case IC_DAMEATER:
-		case IC_DAMEATERCOLD:
-		case IC_DAMEATERENERGY:
-		case IC_DAMEATERFIRE:
-		case IC_DAMEATERKINETIC:
-		case IC_DAMEATERPOISON:
+		case IC_EATERDAM:
+		case IC_EATERCOLD:
+		case IC_EATERENERGY:
+		case IC_EATERFIRE:
+		case IC_EATERKINETIC:
+		case IC_EATERPOISON:
 		case IC_DAMENERGY:
 		case IC_DAMFIRE:
 		case IC_DAMMODIFER:
 		case IC_DAMPHYSICAL:
 		case IC_DAMPOISON:
-		case IC_DMGPHYSICAL
+		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
 		case IC_ENHANCE:
 		case IC_ENHANCED:
@@ -2666,18 +2666,18 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DAMCHAOS:
 		case IC_DAMCOLD:
 		case IC_DAMDIRECT:
-		case IC_DAMEATER:
-		case IC_DAMEATERCOLD:
-		case IC_DAMEATERENERGY:
-		case IC_DAMEATERFIRE:
-		case IC_DAMEATERKINETIC:
-		case IC_DAMEATERPOISON:
+		case IC_EATERDAM:
+		case IC_EATERCOLD:
+		case IC_EATERENERGY:
+		case IC_EATERFIRE:
+		case IC_EATERKINETIC:
+		case IC_EATERPOISON:
 		case IC_DAMENERGY:
 		case IC_DAMFIRE:
 		case IC_DAMMODIFER:
 		case IC_DAMPHYSICAL:
 		case IC_DAMPOISON:
-		case IC_DMGPHYSICAL
+		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
 		case IC_ENHANCE:
 		case IC_ENHANCED:
