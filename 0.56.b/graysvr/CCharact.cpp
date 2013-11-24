@@ -440,7 +440,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 	}
 }
 
-void CChar::DropAll( CItemContainer * pCorpse, WORD wAttr )
+void CChar::DropAll( CItemContainer * pCorpse, DWORD dwAttr )
 {
 	ADDTOCALLSTACK("CChar::DropAll");
 	// shrunk or died. (or sleeping)
@@ -452,7 +452,7 @@ void CChar::DropAll( CItemContainer * pCorpse, WORD wAttr )
 	{
 		if ( pCorpse == NULL )
 		{
-			pPack->ContentsDump( GetTopPoint(), wAttr );
+			pPack->ContentsDump( GetTopPoint(), dwAttr );
 		}
 		else
 		{

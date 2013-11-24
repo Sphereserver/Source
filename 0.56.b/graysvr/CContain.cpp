@@ -279,7 +279,7 @@ int CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
 	return( INT_MAX - ContentConsume( rid, INT_MAX, true, dwArg ));
 }
 
-void CContainer::ContentAttrMod( WORD wAttr, bool fSet )
+void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
 {
 	ADDTOCALLSTACK("CContainer::ContentAttrMod");
 	// Mark the attr
@@ -287,16 +287,16 @@ void CContainer::ContentAttrMod( WORD wAttr, bool fSet )
 	{
 		if ( fSet )
 		{
-			pItem->SetAttr( wAttr );
+			pItem->SetAttr( dwAttr );
 		}
 		else
 		{
-			pItem->ClrAttr( wAttr );
+			pItem->ClrAttr( dwAttr );
 		}
 		CItemContainer * pCont = dynamic_cast <CItemContainer*> (pItem);
 		if ( pCont != NULL )	// this is a sub-container.
 		{
-			pCont->ContentAttrMod( wAttr, fSet );
+			pCont->ContentAttrMod( dwAttr, fSet );
 		}
 	}
 }
@@ -323,16 +323,16 @@ void CContainer::ContentNotifyDelete()
 	}
 }
 
-void CContainer::ContentsDump( const CPointMap & pt, WORD wAttrLeave )
+void CContainer::ContentsDump( const CPointMap & pt, DWORD dwAttrLeave )
 {
 	ADDTOCALLSTACK("CContainer::ContentsDump");
 	// Just dump the contents onto the ground.
-	wAttrLeave |= ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2;
+	dwAttrLeave |= ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2;
 	CItem * pItemNext;
 	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItemNext)
 	{
 		pItemNext = pItem->GetNext();
-		if ( pItem->IsAttr(wAttrLeave))
+		if ( pItem->IsAttr(dwAttrLeave))
 			continue;	// hair and newbie stuff.
 		// ??? scatter a little ?
 		pItem->MoveToCheck( pt );

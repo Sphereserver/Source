@@ -1633,7 +1633,7 @@ bool CClient::OnTarg_Use_Deed( CItem * pDeed, const CPointMap & pt )
 	return true;
 }
 
-CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, WORD wAttr, HUE_TYPE wHue )
+CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Use_Multi");
 	// Might be a IT_MULTI or it might not. place it anyhow.
@@ -1646,7 +1646,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 	const CItemBaseMulti * pMultiDef = dynamic_cast <const CItemBaseMulti *> ( pItemDef );
 
 	// Check water/mountains/etc.
-	if ( pMultiDef != NULL && ! (wAttr&ATTR_MAGIC))
+	if ( pMultiDef != NULL && ! (dwAttr&ATTR_MAGIC))
 	{
 		// Check for items in the way and bumpy terrain.
 
@@ -1737,7 +1737,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 		return( NULL );
 	}
 
-	pItemNew->SetAttr( wAttr & ( ATTR_MAGIC | ATTR_INVIS ));
+	pItemNew->SetAttr( dwAttr & ( ATTR_MAGIC | ATTR_INVIS ));
 	pItemNew->SetHue( wHue );
 	pItemNew->MoveTo( pt );
 

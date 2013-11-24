@@ -366,7 +366,10 @@ public:
 #define ATTR_STOLEN			0x2000	// The item is hot. m_uidLink = previous owner.
 #define ATTR_CAN_DECAY		0x4000	// This item can decay. but it would seem that it would not (ATTR_MOVE_NEVER etc)
 #define ATTR_STATIC			0x8000	// WorldForge merge marker. (used for statics saves)
-	WORD	m_Attr;
+#define ATTR_EXCEPTIONAL	0x10000	// Is Exceptional
+#define ATTR_ENCHANTED		0x20000	// Is Enchanted
+#define ATTR_IMBUED			0x40000	// Is Imbued
+	DWORD	m_Attr;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
@@ -867,17 +870,17 @@ public:
 
 	int IsWeird() const;
 
-	void SetAttr( WORD wAttr )
+	void SetAttr( DWORD dwAttr )
 	{
-		m_Attr |= wAttr;
+		m_Attr |= dwAttr;
 	}
-	void ClrAttr( WORD wAttr )
+	void ClrAttr( DWORD dwAttr )
 	{
-		m_Attr &= ~wAttr;
+		m_Attr &= ~dwAttr;
 	}
-	bool IsAttr( WORD wAttr ) const	// ATTR_DECAY
+	bool IsAttr( DWORD dwAttr ) const	// ATTR_DECAY
 	{
-		return(( m_Attr & wAttr ) ? true : false );
+		return(( m_Attr & dwAttr ) ? true : false );
 	}
 
 	height_t GetHeight() const;
@@ -1313,9 +1316,9 @@ public:
 	// bool IsItemInside( CItem * pItem ) const;
 
 	CItem * ContentFindRandom() const;
-	void ContentsDump( const CPointMap & pt, WORD wAttr = 0 );
+	void ContentsDump( const CPointMap & pt, DWORD dwAttr = 0 );
 	void ContentsTransfer( CItemContainer * pCont, bool fNoNewbie );
-	void ContentAttrMod( WORD wAttr, bool fSet );
+	void ContentAttrMod( DWORD dwAttr, bool fSet );
 	void ContentNotifyDelete();
 
 	// For resource usage and gold.
@@ -3442,7 +3445,7 @@ public:
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
 	bool OnFreezeCheck();
-	void DropAll( CItemContainer * pCorpse = NULL, WORD wAttr = 0 );
+	void DropAll( CItemContainer * pCorpse = NULL, DWORD dwAttr = 0 );
 	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
 	void Wake();
 	void SleepStart( bool fFrontFall );

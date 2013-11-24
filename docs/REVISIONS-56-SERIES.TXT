@@ -324,3 +324,7 @@
 	can_i_exceptional
 	can_i_makersmark
 	This also allows for enchant=<bool>, etc. for each on items.
+ -Added: New attr_flags added.
+	attr_imbued
+	attr_exceptional
+	attr_enchanted
