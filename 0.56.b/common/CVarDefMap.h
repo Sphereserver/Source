@@ -162,7 +162,7 @@ public:
 	void DeleteKey( LPCTSTR key );
 
 	bool r_LoadVal( CScript & s );
-	void r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyExclude = NULL );
+	void r_WritePrefix( CScript & s, LPCTSTR pszPrefix = NULL, LPCTSTR pszKeyExclude = NULL );
 };
 
 #endif

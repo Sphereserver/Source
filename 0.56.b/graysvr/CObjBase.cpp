@@ -1216,6 +1216,9 @@ void CObjBase::r_Write( CScript & s )
 	if ( m_ModAr )
 		s.WriteKeyVal("MODAR", m_ModAr);
 
+	// Write New variables
+	m_BaseDefs.r_WritePrefix(s);
+
 	m_TagDefs.r_WritePrefix(s, "TAG");
 	m_OEvents.r_Write(s, "EVENTS");
 }

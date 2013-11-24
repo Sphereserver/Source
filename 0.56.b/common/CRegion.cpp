@@ -777,6 +777,9 @@ void CRegionBase::r_WriteBody( CScript & s, LPCTSTR pszPrefix )
 		s.WriteKey(z, sVal);
 	}
 
+	// Write New variables
+	m_BaseDefs.r_WritePrefix(s);
+
 	// Write out any extra TAGS here.
 	sprintf(z, "%sTAG", pszPrefix);
 	m_TagDefs.r_WritePrefix(s, z);

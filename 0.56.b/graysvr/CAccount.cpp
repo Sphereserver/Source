@@ -1421,6 +1421,9 @@ void CAccount::r_Write(CScript &s)
 		s.WriteKey( "LANG", m_lang.GetStr());
 	}
 
+	// Write New variables
+	m_BaseDefs.r_WritePrefix(s);
+
 	m_TagDefs.r_WritePrefix(s, "TAG");
 }
 
