@@ -1006,7 +1006,7 @@ private:
 	bool OnTarg_Use_Deed( CItem * pDeed, const CPointMap &pt );
 	bool OnTarg_Use_Item( CObjBase * pObj, CPointMap & pt, ITEMID_TYPE id );
 	bool OnTarg_Party_Add( CChar * pChar );
-	CItem* OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, WORD wAttr, HUE_TYPE wHue );
+	CItem* OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue );
 
 	int OnSkill_AnimalLore( CGrayUID uid, int iTestLevel, bool fTest );
 	int OnSkill_Anatomy( CGrayUID uid, int iTestLevel, bool fTest );

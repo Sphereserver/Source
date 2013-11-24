@@ -714,6 +714,10 @@ attr_forsale      01000   // for sale on a vendor.
 attr_stolen       02000   // the item is hot. m_uidlink = previous owner.
 attr_can_decay    04000   // this item can decay. but it would seem that it would not (attr_move_never etc)
 attr_static       08000   // worldforge merge marker. (not used)
+attr_exceptional	010000		// is exceptional
+attr_enchanted		020000		// is enchanted
+attr_imbued		040000		// is imbued
+
 
 [DEFNAME can_flags]
 // monster "can" type flags.
@@ -1155,24 +1159,30 @@ dam_energy              02000   // energy-based damage
 dam_noreveal            04000   // damage that does not reveal the attacker.
 dam_nounparalyze        08000   // victim won't be unparalyzed
 
-[DEFNAME can_i_flags]
-CAN_I_DOOR             000001   // Is a door UFLAG4_DOOR
-CAN_I_WATER            000002   // Need to swim in it. UFLAG1_WATER
-CAN_I_PLATFORM         000004   // we can walk on top of it. (even tho the item itself might block) UFLAG2_PLATFORM
-CAN_I_BLOCK            000008   // need to walk thru walls or fly over. UFLAG1_BLOCK
-CAN_I_CLIMB            000010   // step up on it, UFLAG2_CLIMBABLE
-CAN_I_FIRE             000020   // Is a fire. Ussually blocks as well. UFLAG1_DAMAGE
-CAN_I_ROOF             000040   // We are under a roof. can't rain on us. UFLAG4_ROOF
-CAN_I_HOVER            000080   // We are hovering. UFLAG4_HOVEROVER
-CAN_I_PILE             000100   // Can item be piled UFLAG2_STACKABLE (*.mul)
-CAN_I_DYE              000200   // Can item be dyed UFLAG3_CLOTH? (sort of)
-CAN_I_FLIP             000400   // will flip by default.
-CAN_I_LIGHT            000800   // UFLAG3_LIGHT
-CAN_I_REPAIR           001000   // Is it repairable (difficulty based on value)
-CAN_I_REPLICATE        002000   // Things like arrows are pretty much all the same.
-CAN_I_DCIGNORELOS      004000   // when dclicked, ignore LOS checks
-CAN_I_DCIGNOREDIST     008000   // when dclicked, ignore distance checks
-CAN_I_BLOCKLOS         010000   // blocks LOS, but not walking thru
+[defname can_i_flags]
+can_i_door             000001   // is a door uflag4_door
+can_i_water            000002   // need to swim in it. uflag1_water
+can_i_platform         000004   // we can walk on top of it. (even tho the item itself might block) uflag2_platform
+can_i_block            000008   // need to walk thru walls or fly over. uflag1_block
+can_i_climb            000010   // step up on it, uflag2_climbable
+can_i_fire             000020   // is a fire. ussually blocks as well. uflag1_damage
+can_i_roof             000040   // we are under a roof. can't rain on us. uflag4_roof
+can_i_hover            000080   // we are hovering. uflag4_hoverover
+can_i_pile             000100   // can item be piled uflag2_stackable (*.mul)
+can_i_dye              000200   // can item be dyed uflag3_cloth? (sort of)
+can_i_flip             000400   // will flip by default.
+can_i_light            000800   // uflag3_light
+can_i_repair           001000   // is it repairable (difficulty based on value)
+can_i_replicate        002000   // things like arrows are pretty much all the same.
+can_i_dcignorelos      004000   // when dclicked, ignore los checks
+can_i_dcignoredist     008000   // when dclicked, ignore distance checks
+can_i_blocklos         010000   // blocks los, but not walking thru
+can_i_exceptional	020000		// can items be exceptional
+can_i_makersmark	040000		// can items hold makers mark
+can_i_retaincolor	080000		// can items retain material colors
+can_i_enchant		0100000	// can items be enchanted (runic)
+can_i_imbue			0200000	// can items be imbued (imbuing)
+
 
 [DEFNAME tile_flags]
 tilef_background        000000001   // No idea. None whatsoever. Maybe it's the blackness.
