@@ -1432,7 +1432,7 @@ do_default:
 
 	switch ( iKeyNum )
 	{
-		/*case CHC_ABILITYPRIMARY:
+		case CHC_ABILITYPRIMARY:
 		case CHC_ABILITYSECONDARY:
 		case CHC_BALANCED:
 		case CHC_BATTLELUST:
@@ -1519,8 +1519,8 @@ do_default:
 		case CHC_SPLINTERINGWEAPON:
 		case CHC_VELOCITY:
 		case CHC_WEIGHTREDUCTION:
-				sVal = m_BaseDefs.GetKeyStr(pszKey, true);
-			break;*/
+				sVal = GetDefStr(pszKey, true);
+			break;
 		case CHC_ATTACKER:
 			{
 				if ( strlen( pszKey ) == 8 )
@@ -2238,7 +2238,7 @@ do_default:
 
 	switch (iKeyNum)
 	{
-		/*case CHC_ABILITYPRIMARY:
+		case CHC_ABILITYPRIMARY:
 		case CHC_ABILITYSECONDARY:
 		case CHC_BALANCED:
 		case CHC_BATTLELUST:
@@ -2329,7 +2329,7 @@ do_default:
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
-			break;*/
+			break;
 		case CHC_MAXHITS:
 			Stat_SetMax(STAT_STR, s.HasArgs() ? s.GetArgVal() : 0 );
 			break;

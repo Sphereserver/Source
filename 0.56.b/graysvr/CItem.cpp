@@ -2298,7 +2298,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 
 	switch ( index )
 	{
-		/*case IC_ABILITYPRIMARY:
+		case IC_ABILITYPRIMARY:
 		case IC_ABILITYSECONDARY:
 		case IC_BALANCED:
 		case IC_BATTLELUST:
@@ -2412,7 +2412,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_ONLYHUMAN:
 		case IC_ONLYMALE:
 		case IC_OWNEDBY:
-		case IC_QUALITY:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:
@@ -2455,8 +2454,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_USESMAX:
 		case IC_VELOCITY:
 		case IC_WEIGHTREDUCTION:
-				sVal = m_BaseDefs.GetKeyStr(pszKey, true);
-			break;*/
+				sVal = GetDefStr(pszKey, true);
+			break;
 		case IC_ADDSPELL:
 			pszKey	+= 8;
 			SKIP_SEPARATORS( pszKey );
@@ -2632,7 +2631,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-		/*case IC_ABILITYPRIMARY:
+		case IC_ABILITYPRIMARY:
 		case IC_ABILITYSECONDARY:
 		case IC_BALANCED:
 		case IC_BATTLELUST:
@@ -2746,7 +2745,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_ONLYHUMAN:
 		case IC_ONLYMALE:
 		case IC_OWNEDBY:
-		case IC_QUALITY:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:
@@ -2791,9 +2789,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_WEIGHTREDUCTION:
 			{
 				bool fQuoted = false;
-				m_BaseDefs.SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted ), false );
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
-			break;*/
+			break;
 		case IC_ADDCIRCLE:
 			{
 				TCHAR	*ppVal[2];
