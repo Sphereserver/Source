@@ -942,17 +942,22 @@ enum IBC_TYPE
 	IBC_DUPEITEM,
 	IBC_DUPELIST,
 	IBC_DYE,
+	IBC_ENCHANT,
+	IBC_EXCEPTIONAL,
 	IBC_FLIP,
 	IBC_ID,
+	IBC_IMBUE,
 	IBC_ISARMOR,
 	IBC_ISWEAPON,
 	IBC_LAYER,
+	IBC_MAKERSMARK,
 	IBC_PILE,
 	IBC_REPAIR,
 	IBC_REPLICATE,
 	IBC_REQSTR,
 	IBC_RESDISPDNID,
 	IBC_RESMAKE,
+	IBC_RETAINCOLOR,
 	IBC_SKILL,
 	IBC_SKILLMAKE,
 	IBC_SPEED,
@@ -975,17 +980,22 @@ LPCTSTR const CItemBase::sm_szLoadKeys[IBC_QTY+1] =
 	"DUPEITEM",
 	"DUPELIST",
 	"DYE",
+	"ENCHANT",
+	"EXCEPTIONAL",
 	"FLIP",
 	"ID",
+	"IMBUE",
 	"ISARMOR",
 	"ISWEAPON",
 	"LAYER",
+	"MAKERSMARK",
 	"PILE",
 	"REPAIR",
 	"REPLICATE",
 	"REQSTR",
 	"RESDISPDNID",
 	"RESMAKE",
+	"RETAINCOLOR",
 	"SKILL",
 	"SKILLMAKE",
 	"SPEED",
@@ -1032,17 +1042,32 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_DYE:
 			sVal.FormatHex(( m_Can & CAN_I_DYE ) ? true : false );
 			break;
+		case IBC_ENCHANT
+			sVal.FormatHex(( m_Can & CAN_I_ENCHANT ) ? true : false );
+			break;
+		case IBC_EXCEPTIONAL
+			sVal.FormatHex(( m_Can & CAN_I_EXCEPTIONAL ) ? true : false );
+			break;
 		case IBC_FLIP:
 			sVal.FormatHex(( m_Can & CAN_I_FLIP ) ? true : false );
 			break;
 		case IBC_ID:
 			sVal.FormatHex( GetDispID() );
 			break;
+		case IBC_IMBUE
+			sVal.FormatHex(( m_Can & CAN_I_IMBUE ) ? true : false );
+			break;
 		case IBC_ISARMOR:
 			sVal.FormatVal( IsTypeArmor( m_type ) );
 			break;
 		case IBC_ISWEAPON:
 			sVal.FormatVal( IsTypeWeapon( m_type ) );
+			break;
+		case IBC_MAKERSMARK
+			sVal.FormatHex(( m_Can & CAN_I_MAKERSMARK ) ? true : false );
+			break;
+		case IBC_RETAINCOLOR
+			sVal.FormatHex(( m_Can & CAN_I_RETAINCOLOR ) ? true : false );
 			break;
 		case IBC_SKILL:		// Skill to use.
 			{
@@ -1271,6 +1296,21 @@ bool CItemBase::r_LoadVal( CScript &s )
 			m_layer = static_cast<LAYER_TYPE>(s.GetArgVal());
 			break;
 		case IBC_PILE:
+			break;
+		case IBC_ENCHANT:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_ENCHANT : 0;
+			break;
+		case IBC_EXCEPTIONAL:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_EXCEPTIONAL : 0;
+			break;
+		case IBC_IMBUE:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_IMBUE : 0;
+			break;
+		case IBC_RETAINCOLOR:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_RETAINCOLOR : 0;
+			break;
+		case IBC_MAKERSMARK:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_MAKERSMARK : 0;
 			break;
 		case IBC_REPAIR:
 			m_Can |= ( s.GetArgVal()) ? CAN_I_REPAIR : 0;

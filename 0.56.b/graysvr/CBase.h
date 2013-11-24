@@ -90,15 +90,20 @@ public:
 #define CAN_I_MOVEMASK		(CAN_I_DOOR|CAN_I_WATER|CAN_I_PLATFORM|CAN_I_BLOCK|CAN_I_CLIMB|CAN_I_FIRE|CAN_I_ROOF|CAN_I_HOVER)
 
 	// CItemBase specific defs.
-#define CAN_I_PILE			0x0100	// Can item be piled UFLAG2_STACKABLE (*.mul)
-#define CAN_I_DYE			0x0200	// Can item be dyed UFLAG3_CLOTH? (sort of)
-#define CAN_I_FLIP			0x0400	// will flip by default.
-#define CAN_I_LIGHT			0x0800	// UFLAG3_LIGHT
-#define CAN_I_REPAIR		0x1000	// Is it repairable (difficulty based on value)
-#define CAN_I_REPLICATE		0x2000	// Things like arrows are pretty much all the same.
-#define CAN_I_DCIGNORELOS	0x4000	// when dclicked, ignore LOS checks
-#define CAN_I_DCIGNOREDIST	0x8000	// when dclicked, ignore distance checks
-#define CAN_I_BLOCKLOS		0x10000	// blocks LOS without blocking walkchecks
+#define CAN_I_PILE			0x0100		// Can item be piled UFLAG2_STACKABLE (*.mul)
+#define CAN_I_DYE			0x0200		// Can item be dyed UFLAG3_CLOTH? (sort of)
+#define CAN_I_FLIP			0x0400		// will flip by default.
+#define CAN_I_LIGHT			0x0800		// UFLAG3_LIGHT
+#define CAN_I_REPAIR		0x1000		// Is it repairable (difficulty based on value)
+#define CAN_I_REPLICATE		0x2000		// Things like arrows are pretty much all the same.
+#define CAN_I_DCIGNORELOS	0x4000		// when dclicked, ignore LOS checks
+#define CAN_I_DCIGNOREDIST	0x8000		// when dclicked, ignore distance checks
+#define CAN_I_BLOCKLOS		0x10000		// blocks LOS without blocking walkchecks
+#define CAN_I_EXCEPTIONAL	0x20000		// can items be exceptional
+#define CAN_I_MAKERSMARK	0x40000		// can items hold makers mark
+#define CAN_I_RETAINCOLOR	0x80000		// can items retain material colors
+#define CAN_I_ENCHANT		0x100000	// can items be enchanted (runic)
+#define CAN_I_IMBUE			0x200000	// can items be imbued (imbuing)
 
 	// CCharBase specific defs.
 #define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)

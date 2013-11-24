@@ -315,3 +315,12 @@
 23-11-2013, Khaos
 -Added: New Character and Item variables for use with EA iprops and other support. These function as TAGs and are made for static naming.
  A manual is in the works. Some of these might change as we bind them into the hard code with further support.
+
+24-11-2013, Khaos
+-Added: New Item can flags added:
+	can_i_enchant
+	can_i_retaincolor
+	can_i_imbue
+	can_i_exceptional
+	can_i_makersmark
+	This also allows for enchant=<bool>, etc. for each on items.
