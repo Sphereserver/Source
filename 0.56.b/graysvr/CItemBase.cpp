@@ -634,7 +634,7 @@ bool CItemBase::GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * pData ) // static
 	return( true );
 }
 
-inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec2 & tiledata, WORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id ) // static
+inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec2 & tiledata, DWORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemSpecificFlags");
 	if ( type == IT_DOOR )
@@ -662,7 +662,7 @@ inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec2 & tiledata, W
 	}
 }
 
-inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata, WORD & wBlockThis ) // static
+inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata, DWORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeightFlags");
 	// Chairs are marked as blocking for some reason ?
@@ -717,7 +717,7 @@ inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata,
 	return( tiledata.m_height );
 }
 
-height_t CItemBase::GetItemHeight( ITEMID_TYPE id, WORD & wBlockThis ) // static
+height_t CItemBase::GetItemHeight( ITEMID_TYPE id, DWORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeight");
 	// Get just the height and the blocking flags for the item by id.
@@ -937,77 +937,17 @@ void CItemBase::ResetMakeValue()
 
 enum IBC_TYPE
 {
-	IBC_DEFNAME,
-	IBC_DISPID,
-	IBC_DUPEITEM,
-	IBC_DUPELIST,
-	IBC_DYE,
-	IBC_ENCHANT,
-	IBC_EXCEPTIONAL,
-	IBC_FLIP,
-	IBC_ID,
-	IBC_IMBUE,
-	IBC_ISARMOR,
-	IBC_ISWEAPON,
-	IBC_LAYER,
-	IBC_MAKERSMARK,
-	IBC_PILE,
-	IBC_REPAIR,
-	IBC_REPLICATE,
-	IBC_REQSTR,
-	IBC_RESDISPDNID,
-	IBC_RESMAKE,
-	IBC_RETAINCOLOR,
-	IBC_SKILL,
-	IBC_SKILLMAKE,
-	IBC_SPEED,
-	IBC_TDATA1,
-	IBC_TDATA2,
-	IBC_TDATA3,
-	IBC_TDATA4,
-	IBC_TFLAGS,
-	IBC_TWOHANDS,
-	IBC_TYPE,
-	IBC_VALUE,
-	IBC_WEIGHT,
+	#define ADD(a,b) IBC_##a,
+	#include "../tables/CItemBase_props.tbl"
+	#undef ADD
 	IBC_QTY
 };
 
 LPCTSTR const CItemBase::sm_szLoadKeys[IBC_QTY+1] =
 {
-	"DEFNAME",
-	"DISPID",
-	"DUPEITEM",
-	"DUPELIST",
-	"DYE",
-	"ENCHANT",
-	"EXCEPTIONAL",
-	"FLIP",
-	"ID",
-	"IMBUE",
-	"ISARMOR",
-	"ISWEAPON",
-	"LAYER",
-	"MAKERSMARK",
-	"PILE",
-	"REPAIR",
-	"REPLICATE",
-	"REQSTR",
-	"RESDISPDNID",
-	"RESMAKE",
-	"RETAINCOLOR",
-	"SKILL",
-	"SKILLMAKE",
-	"SPEED",
-	"TDATA1",
-	"TDATA2",
-	"TDATA3",
-	"TDATA4",
-	"TFLAGS",
-	"TWOHANDS",
-	"TYPE",
-	"VALUE",
-	"WEIGHT",
+	#define ADD(a,b) b,
+	#include "../tables/CItemBase_props.tbl"
+	#undef ADD
 	NULL
 };
 
@@ -1042,10 +982,10 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_DYE:
 			sVal.FormatHex(( m_Can & CAN_I_DYE ) ? true : false );
 			break;
-		case IBC_ENCHANT
+		case IBC_ENCHANT:
 			sVal.FormatHex(( m_Can & CAN_I_ENCHANT ) ? true : false );
 			break;
-		case IBC_EXCEPTIONAL
+		case IBC_EXCEPTIONAL:
 			sVal.FormatHex(( m_Can & CAN_I_EXCEPTIONAL ) ? true : false );
 			break;
 		case IBC_FLIP:
@@ -1054,7 +994,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_ID:
 			sVal.FormatHex( GetDispID() );
 			break;
-		case IBC_IMBUE
+		case IBC_IMBUE:
 			sVal.FormatHex(( m_Can & CAN_I_IMBUE ) ? true : false );
 			break;
 		case IBC_ISARMOR:
@@ -1063,10 +1003,10 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_ISWEAPON:
 			sVal.FormatVal( IsTypeWeapon( m_type ) );
 			break;
-		case IBC_MAKERSMARK
+		case IBC_MAKERSMARK:
 			sVal.FormatHex(( m_Can & CAN_I_MAKERSMARK ) ? true : false );
 			break;
-		case IBC_RETAINCOLOR
+		case IBC_RETAINCOLOR:
 			sVal.FormatHex(( m_Can & CAN_I_RETAINCOLOR ) ? true : false );
 			break;
 		case IBC_SKILL:		// Skill to use.

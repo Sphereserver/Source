@@ -38,7 +38,7 @@ public:
 	BYTE    m_attackBase;	// base attack for weapons/chars or AC for armor. not magic plus
 	BYTE	m_attackRange;	// variable range of attack damage.
 
-	WORD	m_Can;			// Base attribute flags. CAN_C_GHOST
+	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
 public:
 	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
@@ -621,8 +621,8 @@ private:
 protected:
 	static void ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew );
 public:
-	static height_t GetItemHeightFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis );
-	static void GetItemSpecificFlags( const CUOItemTypeRec2 & tile, WORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
+	static height_t GetItemHeightFlags( const CUOItemTypeRec2 & tile, DWORD & wBlockThis );
+	static void GetItemSpecificFlags( const CUOItemTypeRec2 & tile, DWORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
 	static bool IsTypeArmor( IT_TYPE type );
 	static bool IsTypeWeapon( IT_TYPE type );
 	static bool IsTypeSpellbook( IT_TYPE type );
@@ -642,7 +642,7 @@ public:
 
 	static TCHAR * GetNamePluralize( LPCTSTR pszNameBase, bool fPluralize );
 	static bool GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * ptile );
-	static height_t GetItemHeight( ITEMID_TYPE id, WORD & MoveFlags );
+	static height_t GetItemHeight( ITEMID_TYPE id, DWORD & MoveFlags );
 
 	static CREID_TYPE FindCharTrack( ITEMID_TYPE trackID );
 
@@ -742,7 +742,7 @@ private:
 	height_t	m_Height;
 public:
 	CResourceRef m_MasterItem;	// What is the "master" item ?
-	WORD	m_Can;
+	DWORD	m_Can;
 	static const char *m_sClassName;
 	CItemBaseDupe( ITEMID_TYPE id, CItemBase * pMasterItem ) :
 		CResourceDef( RESOURCE_ID( RES_ITEMDEF, id )),

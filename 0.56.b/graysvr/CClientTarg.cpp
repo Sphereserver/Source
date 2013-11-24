@@ -1677,7 +1677,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 					if ( ! IsPriv( PRIV_GM )) return( NULL );
 				}
 
-				WORD wBlockFlags = ( fShip ) ? CAN_C_SWIM : CAN_C_WALK;
+				DWORD wBlockFlags = ( fShip ) ? CAN_C_SWIM : CAN_C_WALK;
 				ptn.m_z = g_World.GetHeightPoint( ptn, wBlockFlags, true );
 				if ( abs( ptn.m_z - pt.m_z ) > 4 )
 				{

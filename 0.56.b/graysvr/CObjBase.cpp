@@ -401,7 +401,7 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
 
 		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
 		// Put the item at the correct Z point
-		WORD wBlockRet = wCan;
+		DWORD wBlockRet = wCan;
 		if (( IsSetEF( EF_WalkCheck ) ) && ( ! IsSetEF( EF_NewPositionChecks ) ))
 			pt.m_z = g_World.GetHeightPoint_New( pt, wBlockRet, true );
 		else if ( ! IsSetEF( EF_NewPositionChecks ) )
@@ -1895,7 +1895,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			}
 			else if ( IsTopLevel())
 			{
-				WORD wBlockFlags = 0;
+				DWORD wBlockFlags = 0;
 				if (IsSetEF( EF_NewPositionChecks ))
 				{
 					CChar *pChar = dynamic_cast <CChar *>(this);

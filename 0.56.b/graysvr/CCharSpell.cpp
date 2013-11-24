@@ -216,7 +216,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 			if (wCan != 0xFFFF)
 			{
-				WORD wBlockFlags = 0;
+				DWORD wBlockFlags = 0;
 				if ( IsSetEF( EF_WalkCheck ) )
 					g_World.GetHeightPoint_New(pntTarg, wBlockFlags, true);
 				else
@@ -1330,7 +1330,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 					ptg.m_y += iy;
 				}
 
-				WORD wBlockFlags = 0;
+				DWORD wBlockFlags = 0;
 				g_World.GetHeightPoint(ptg, wBlockFlags, true);
 				if ( wBlockFlags & ( CAN_I_BLOCK | CAN_I_DOOR ) )
 				{

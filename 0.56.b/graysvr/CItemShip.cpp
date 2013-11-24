@@ -227,7 +227,7 @@ bool CItemShip::Ship_CanMoveTo( const CPointMap & pt ) const
 	if ( IsAttr(ATTR_MAGIC ))
 		return( true );
 
-	WORD wBlockFlags = CAN_I_WATER;
+	DWORD wBlockFlags = CAN_I_WATER;
 
 	g_World.GetHeightPoint( pt, wBlockFlags, true );
 	if ( wBlockFlags & CAN_I_WATER )
@@ -918,7 +918,7 @@ dodirmovechange:
 			CPointMap pt = GetTopPoint();
 			pt.m_z = zold;
 			SetTopZ( -UO_SIZE_Z );	// bottom of the world where i won't get in the way.
-			WORD wBlockFlags = CAN_I_WATER;
+			DWORD wBlockFlags = CAN_I_WATER;
 			signed char z = g_World.GetHeightPoint( pt, wBlockFlags );
 			SetTopZ( zold );	// restore z for now.
 			pt.InitPoint();

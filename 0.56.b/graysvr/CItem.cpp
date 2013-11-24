@@ -2345,11 +2345,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_DAMPOISON:
 		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
-		case IC_ENHANCE:
-		case IC_ENHANCED:
+		case IC_ENCHANTED:
 		case IC_ENHANCEPOTIONS:
 		case IC_EPHEMERAL:
-		case IC_EXCEPTIONAL:
 		case IC_FASTERCASTRECOVERY:
 		case IC_FASTERCASTING:
 		case IC_HITAREACOLD:
@@ -2371,7 +2369,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_HITMANADRAIN:
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
-		case IC_IMBUE:
 		case IC_IMBUED:
 		case IC_INCREASEDAM:
 		case IC_INCREASEDEFCHANCE:
@@ -2393,7 +2390,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_LUCK:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
-		case IC_MAKERSMARK:
 		case IC_MAKERSNAME:
 		case IC_MANABURST:
 		case IC_MANABURSTFREQUENCY:
@@ -2434,7 +2430,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_RESONANCEPOISON:
 		case IC_RESPHYSICAL:
 		case IC_RESPOISON:
-		case IC_RETAINCOLOR:
 		case IC_SEARINGWEAPON:
 		case IC_SECURE:
 		case IC_SELFREPAIR:
@@ -2678,11 +2673,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DAMPOISON:
 		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
-		case IC_ENHANCE:
-		case IC_ENHANCED:
+		case IC_ENCHANTED:
 		case IC_ENHANCEPOTIONS:
 		case IC_EPHEMERAL:
-		case IC_EXCEPTIONAL:
 		case IC_FASTERCASTRECOVERY:
 		case IC_FASTERCASTING:
 		case IC_HITAREACOLD:
@@ -2704,7 +2697,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITMANADRAIN:
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
-		case IC_IMBUE:
 		case IC_IMBUED:
 		case IC_INCREASEDAM:
 		case IC_INCREASEDEFCHANCE:
@@ -2726,7 +2718,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_LUCK:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
-		case IC_MAKERSMARK:
 		case IC_MAKERSNAME:
 		case IC_MANABURST:
 		case IC_MANABURSTFREQUENCY:
@@ -2767,7 +2758,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_RESONANCEPOISON:
 		case IC_RESPHYSICAL:
 		case IC_RESPOISON:
-		case IC_RETAINCOLOR:
 		case IC_SEARINGWEAPON:
 		case IC_SECURE:
 		case IC_SELFREPAIR:

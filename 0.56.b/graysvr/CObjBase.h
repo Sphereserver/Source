@@ -3069,7 +3069,7 @@ public:
 		
 		return( dir );
 	}
-	WORD GetMoveBlockFlags() const
+	DWORD GetMoveBlockFlags() const
 	{
 		// What things block us ?
 		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE))	// nothing blocks us.

@@ -568,7 +568,7 @@ bool CChar::IsSwimming() const
 		return false;
 
 	// Is there a solid surface under us ?
-	WORD wBlockFlags = GetMoveBlockFlags();
+	DWORD wBlockFlags = GetMoveBlockFlags();
 	char iSurfaceZ;
 	if ( IsSetEF( EF_WalkCheck ) )
 		iSurfaceZ = g_World.GetHeightPoint_New(ptTop, wBlockFlags, true);
@@ -1166,7 +1166,7 @@ blocked:
 	{
 		DIR_TYPE dir = ptSrc.GetDir( ptDst );
 
-		WORD wBlockFlags;
+		DWORD wBlockFlags;
 		if ( dir % 2 )		// test only diagonal dirs
 		{
 			CPointMap ptTest;
@@ -2399,7 +2399,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		}
 	}
 
-	WORD wBlockFlags = wCan;
+	DWORD wBlockFlags = wCan;
 	if ( IsStatFlag(STATF_Hovering) )
 		wBlockFlags |= CAN_C_HOVER;
 

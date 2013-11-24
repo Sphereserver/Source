@@ -1253,7 +1253,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					CPointMap po = pObj->GetTopLevelObj()->GetTopPoint();
 					CPointMap pnt = po;
 					pnt.MoveN( DIR_W, 3 );
-					WORD wBlockFlags = m_pChar->GetMoveBlockFlags();
+					DWORD wBlockFlags = m_pChar->GetMoveBlockFlags();
 					if ( IsSetEF( EF_WalkCheck ) )
 						pnt.m_z = g_World.GetHeightPoint_New( pnt, wBlockFlags );	// ??? Get Area
 					else

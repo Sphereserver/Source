@@ -690,7 +690,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	// Height of statics at/above given coordinates
 	// do gravity here for the z.
 
-	WORD wBlockThis = 0;
+	DWORD wBlockThis = 0;
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
 	if ( !pMapBlock )
 	{
@@ -828,7 +828,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	}
 }
 
-signed char CWorld::GetHeightPoint( const CPointBase & pt, WORD & wBlockFlags, bool fHouseCheck ) // Height of player who walked to X/Y/OLDZ
+signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck ) // Height of player who walked to X/Y/OLDZ
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint");
 	// Given our coords at pt including pt.m_z
@@ -890,7 +890,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	CItemBase * pItemDef = NULL;
 	CItemBaseDupe * pDupeDef = NULL;
 	CItem * pItem = NULL;
-	WORD wBlockThis = 0;
+	DWORD wBlockThis = 0;
 	signed char z = 0;
 	height_t zHeight = 0;
 	int x2 = 0, y2 = 0;
@@ -1178,7 +1178,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 		block.m_Bottom = block.m_Lowest;
 }
 
-signed char CWorld::GetHeightPoint_New( const CPointBase & pt, WORD & wBlockFlags, bool fHouseCheck )
+signed char CWorld::GetHeightPoint_New( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck )
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint_New");
 	WORD wCan = wBlockFlags;

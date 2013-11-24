@@ -1855,7 +1855,7 @@ do_default:
 					sVal.FormatHex( ULONG_MAX );
 				else
 				{
-					WORD		wBlockFlags	= 0;
+					DWORD		wBlockFlags	= 0;
 					if ( IsSetEF( EF_WalkCheck ) )
 						g_World.GetHeightPoint_New( ptDst, wBlockFlags, true );
 					else

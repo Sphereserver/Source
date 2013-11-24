@@ -75,7 +75,7 @@ bool CMapCache::Init(int maxX, int maxY, int map, signed char mapDefaultHeight)
 							continue;
 
 						const CUOStaticItemRec *pStatic = pMapBlock->m_Statics.GetStatic(k);
-						WORD wBlockThis = 0;
+						DWORD wBlockThis = 0;
 						CItemBase::GetItemHeight(pStatic->GetDispID(), wBlockThis);
 
 						if (( pStatic->m_z < point.m_baseZ ) && ( wBlockThis & (CAN_I_CLIMB|CAN_I_PLATFORM|CAN_I_ROOF) ))

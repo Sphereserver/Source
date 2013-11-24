@@ -3644,7 +3644,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 				continue;
 			}
 
-			WORD wBlockFlags = wCan;
+			DWORD wBlockFlags = wCan;
 			// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
 			pt.m_z = startZ;
 			// Set new Z so we don't end up floating or underground
