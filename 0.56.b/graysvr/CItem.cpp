@@ -2777,7 +2777,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
-			break;
+			return true;
 		case IC_ADDCIRCLE:
 			{
 				TCHAR	*ppVal[2];

@@ -958,7 +958,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		case IBC_DEFNAME:
-			sVal	= GetResourceName();
+			sVal = GetResourceName();
 			break;
 		case IBC_DISPID:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, GetDispID()));
