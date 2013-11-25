@@ -717,6 +717,7 @@ attr_static       08000   // worldforge merge marker. (not used)
 attr_exceptional	010000		// is exceptional
 attr_enchanted		020000		// is enchanted
 attr_imbued		040000		// is imbued
+attr_questitem		080000	// is quest item
 
 
 [DEFNAME can_flags]

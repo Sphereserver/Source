@@ -328,6 +328,7 @@
 	attr_imbued
 	attr_exceptional
 	attr_enchanted
+	attr_questitem
 -Added: sphere_defs.scp; new can_i_* and attr_* flags are now added to the files.
 
 24-11-2013, Ben (script pack)

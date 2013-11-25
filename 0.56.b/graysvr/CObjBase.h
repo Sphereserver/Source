@@ -369,6 +369,7 @@ public:
 #define ATTR_EXCEPTIONAL	0x10000	// Is Exceptional
 #define ATTR_ENCHANTED		0x20000	// Is Enchanted
 #define ATTR_IMBUED			0x40000	// Is Imbued
+#define ATTR_QUESTITEM		0x80000	// Is Quest Item
 	DWORD	m_Attr;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
