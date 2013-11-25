@@ -336,3 +336,6 @@
 
 24-11-2013, Ben (script pack)
 -Tweaked: sphere_dialog.scp to allow ATTR in .info dialog to use 8 chars instead of 4
+
+25-11-2013, Khaos
+-Added: can_i_recycle has been added to the core. As above; can be set with the CAN flags or as recycle=1/0

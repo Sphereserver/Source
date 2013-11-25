@@ -104,6 +104,7 @@ public:
 #define CAN_I_RETAINCOLOR	0x80000		// can items retain material colors
 #define CAN_I_ENCHANT		0x100000	// can items be enchanted (runic)
 #define CAN_I_IMBUE			0x200000	// can items be imbued (imbuing)
+#define CAN_I_RECYCLE		0x400000	// Can items be recycled.
 
 	// CCharBase specific defs.
 #define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)

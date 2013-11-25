@@ -1006,6 +1006,9 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_MAKERSMARK:
 			sVal.FormatHex(( m_Can & CAN_I_MAKERSMARK ) ? true : false );
 			break;
+		case IBC_RECYCLE:
+			sVal.FormatHex(( m_Can & CAN_I_RECYCLE ) ? true : false );
+			break;
 		case IBC_RETAINCOLOR:
 			sVal.FormatHex(( m_Can & CAN_I_RETAINCOLOR ) ? true : false );
 			break;
@@ -1251,6 +1254,9 @@ bool CItemBase::r_LoadVal( CScript &s )
 			break;
 		case IBC_MAKERSMARK:
 			m_Can |= ( s.GetArgVal()) ? CAN_I_MAKERSMARK : 0;
+			break;
+		case IBC_RECYCLE:
+			m_Can |= ( s.GetArgVal()) ? CAN_I_RECYCLE : 0;
 			break;
 		case IBC_REPAIR:
 			m_Can |= ( s.GetArgVal()) ? CAN_I_REPAIR : 0;

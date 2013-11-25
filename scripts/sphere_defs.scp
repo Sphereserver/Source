@@ -1187,6 +1187,7 @@ can_i_makersmark	040000		// can items hold makers mark
 can_i_retaincolor	080000		// can items retain material colors
 can_i_enchant		0100000	// can items be enchanted (runic)
 can_i_imbue			0200000	// can items be imbued (imbuing)
+can_i_recycle			0400000	// Can be recycled
 
 
 [DEFNAME tile_flags]
