@@ -718,6 +718,7 @@ attr_exceptional	010000		// is exceptional
 attr_enchanted		020000		// is enchanted
 attr_imbued		040000		// is imbued
 attr_questitem		080000	// is quest item
+attr_insured		0100000	// Is insured
 
 
 [DEFNAME can_flags]
