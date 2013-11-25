@@ -371,6 +371,8 @@ public:
 #define ATTR_IMBUED			0x40000		// Is Imbued
 #define ATTR_QUESTITEM		0x80000		// Is Quest Item
 #define ATTR_INSURED		0x100000	// Is Insured
+#define ATTR_NODROP			0x200000	// No-drop
+#define ATTR_NOTRADE		0x400000	// No-trade
 	DWORD	m_Attr;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
