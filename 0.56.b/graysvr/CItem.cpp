@@ -2365,6 +2365,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_HITLIGHTNING:
 		case IC_HITLOWERATK:
 		case IC_HITLOWERDEF:
+		case IC_HITMAGICARROW:
 		case IC_HITMANADRAIN:
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
@@ -2689,6 +2690,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITLIGHTNING:
 		case IC_HITLOWERATK:
 		case IC_HITLOWERDEF:
+		case IC_HITMAGICARROW:
 		case IC_HITMANADRAIN:
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
