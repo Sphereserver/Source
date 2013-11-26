@@ -2431,12 +2431,10 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_SEARINGWEAPON:
 		case IC_SECURE:
 		case IC_SELFREPAIR:
-		case IC_SLAYER1:
-		case IC_SLAYER2:
-		case IC_SLAYERSUPER1:
-		case IC_SLAYERSUPER2:
-		case IC_SLAYERMISC1:
-		case IC_SLAYERMISC2:
+		case IC_SLAYER:
+		case IC_SLAYERLESSER:
+		case IC_SLAYERMISC:
+		case IC_SLAYERSUPER:
 		case IC_SOULCHARGE:
 		case IC_SPELLCHANNELING:
 		case IC_SPELLFOCUSING:
@@ -2757,12 +2755,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_SEARINGWEAPON:
 		case IC_SECURE:
 		case IC_SELFREPAIR:
-		case IC_SLAYER1:
-		case IC_SLAYER2:
-		case IC_SLAYERSUPER1:
-		case IC_SLAYERSUPER2:
-		case IC_SLAYERMISC1:
-		case IC_SLAYERMISC2:
+		case IC_SLAYER:
+		case IC_SLAYERLESSER:
+		case IC_SLAYERMISC:
+		case IC_SLAYERSUPER:
 		case IC_SOULCHARGE:
 		case IC_SPELLCHANNELING:
 		case IC_SPELLFOCUSING:
