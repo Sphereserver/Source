@@ -721,7 +721,8 @@ attr_questitem		080000	// is quest item
 attr_insured		0100000	// Is insured
 attr_nodrop			0200000	// no-drop
 attr_notrade		0400000	// no-trade
-
+attr_lockeddown		0800000	// locked down
+attr_secure		01000000	// secured
 
 
 [DEFNAME can_flags]
