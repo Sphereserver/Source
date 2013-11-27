@@ -277,8 +277,8 @@ REGEN=60*60*10
 [REGIONTYPE r_default_rock t_rock]
 // By default, iron is most common, sometimes nothing can be mined, but there
 // is a small chance of a rare diamond.  Shadow ore is cannot be mined.
-RESOURCES=500.0 mr_iron    // This large number makes this very common.
-RESOURCES=100.0 mr_nothing
+RESOURCES=50.0 mr_iron    // This large number makes this very common.
+RESOURCES=10.0 mr_nothing
 RESOURCES=6.0 mr_rusty
 RESOURCES=6.0 mr_old_copper
 RESOURCES=6.0 mr_dull_copper
@@ -306,7 +306,7 @@ ON=@RegPeriodic
 
 [REGIONTYPE r_spooky t_rock]
 // Iron and Shadow ore are very rarely mined in a spooky region.
-RESOURCES=1000.0 mr_nothing  // Usually there is nothing here.
+RESOURCES=100.0 mr_nothing  // Usually there is nothing here.
 RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
 ON=@Enter
