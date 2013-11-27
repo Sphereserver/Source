@@ -1449,7 +1449,7 @@ do_default:
 		case CHC_DAMDIRECT:
 		case CHC_DAMENERGY:
 		case CHC_DAMFIRE:
-		case CHC_DAMMODIFER:
+		case CHC_DAMMODIFIER:
 		case CHC_DAMPHYSICAL:
 		case CHC_DAMPOISON:
 		case CHC_DMGCOLD:
@@ -2254,7 +2254,7 @@ do_default:
 		case CHC_DAMDIRECT:
 		case CHC_DAMENERGY:
 		case CHC_DAMFIRE:
-		case CHC_DAMMODIFER:
+		case CHC_DAMMODIFIER:
 		case CHC_DAMPHYSICAL:
 		case CHC_DAMPOISON:
 		case CHC_DMGCOLD:

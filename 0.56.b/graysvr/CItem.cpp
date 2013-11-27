@@ -2340,7 +2340,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_EATERPOISON:
 		case IC_DAMENERGY:
 		case IC_DAMFIRE:
-		case IC_DAMMODIFER:
+		case IC_DAMMODIFIER:
 		case IC_DAMPHYSICAL:
 		case IC_DAMPOISON:
 		case IC_DMGPHYSICAL:
@@ -2665,7 +2665,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_EATERPOISON:
 		case IC_DAMENERGY:
 		case IC_DAMFIRE:
-		case IC_DAMMODIFER:
+		case IC_DAMMODIFIER:
 		case IC_DAMPHYSICAL:
 		case IC_DAMPOISON:
 		case IC_DMGPHYSICAL:

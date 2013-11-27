@@ -534,7 +534,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 				break;
 		}
 		if ( pDest != NULL &&
-			! pItem->IsAttr( ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2 ))
+			! pItem->IsAttr( ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROP|ATTR_NOTRADE ))
 		{	// Move item to dest. (corpse ussually)
 			pDest->ContentAdd( pItem );
 			if ( pDest->IsType(IT_CORPSE))
@@ -3303,7 +3303,7 @@ bool CChar::CheckLocation( bool fStanding )
 								}
 								else
 								{
-									if ( pItem->IsAttr(ATTR_NEWBIE) ) ;
+									if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_NOTRADE|ATTR_NODROP|ATTR_INSURED) ) ;
 									else if (( pItem->GetDispID() == ITEMID_BANDAGES_BLOODY1 ) || ( pItem->GetDispID() == ITEMID_BANDAGES_BLOODY2 )) ;
 									else if ( pItem->GetDispID() == ITEMID_EMPTY_BOTTLE ) ;
 									else if ( !CanCarry(pItem) ) ;

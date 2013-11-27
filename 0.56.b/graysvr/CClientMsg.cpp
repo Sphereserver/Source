@@ -2596,6 +2596,10 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
 					if ( pItem->IsAttr( ATTR_MAGIC ) )
 						this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
+					if ( pItem->IsAttr( ATTR_LOCKEDDOWN ) )
+						this->m_TooltipData.Add( new CClientTooltip( 501643 ) ); // Locked Down
+					if ( pItem->IsAttr( ATTR_SECURE ) )
+						this->m_TooltipData.Add( new CClientTooltip( 501644 ) ); // Secure(d) "Locked Down and Secured"
 
 					if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) ) // Negative amount?
 					{
