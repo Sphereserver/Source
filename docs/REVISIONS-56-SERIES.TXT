@@ -341,11 +341,17 @@
 -Added: can_i_recycle has been added to the core. As above; can be set with the CAN flags or as recycle=1/0.
 -Added: attr_lockeddown and attr_secured. I removed these from the variables.
 
-26-11-2013
+26-11-2013, Khaos
 -Fixed: Variable typo for Dammodifier.
 -Removed: removed NEWBIE behavior from attr_blessed2 and attr_cursed2.
--Added: attr_blessed, attr_nodrop, attr_notrade, and attr_insured were added to this behavior and should
+-Modified: attr_blessed, attr_nodrop, attr_notrade, and attr_insured were added to this drop behavior and should
  by default not got to a corpse on death now if it is a player item.
 -Added: Cliloc handling for ATTR_SECURE -> "locked down and secure" and ATTR_LOCKEDDOWN -> "locked down"
 -Modified: AI Behavior now checks for not only attr_newbie items when looting, but now testes for the following:
  attr_insured, attr_blessed, attr_notrade, and attr_nodrop. These won't be looted by NPCs.
+-Added: VARIABLES: SOULCHARGECOLD, SOULCHARGEENERGY, SOULCHARGEFIRE, SOULCHARGEKINETIC, SOULCHARGEPOISON, and
+ INCREASEGOLD to both item and character variables.
+
+26-11-2013, Khaos (Script Pack)
+-Added: Mordaunts_House_System.zip was added to the ADDON folder containing an up-to-date version of Mordaunt's
+ housing system using the new attr_flags that were added.
