@@ -48,19 +48,19 @@ scripts/sphere_region.scp
 //          	Maps
 // -----------------------------------
 scripts/maps/sphere_map0.scp
-// scripts/maps/sphere_map0_ml.scp
+scripts/maps/sphere_map0_ml.scp
 scripts/maps/sphere_map1.scp
-// scripts/maps/sphere_map2.scp
-// scripts/maps/sphere_map3.scp
-// scripts/maps/sphere_map4.scp
-// scripts/maps/sphere_map5.scp
+scripts/maps/sphere_map2.scp
+scripts/maps/sphere_map3.scp
+scripts/maps/sphere_map4.scp
+scripts/maps/sphere_map5.scp
 scripts/maps/sphere_map_points0.scp
-// scripts/maps/sphere_map_points0_ml.scp
+scripts/maps/sphere_map_points0_ml.scp
 scripts/maps/sphere_map_points1.scp
-// scripts/maps/sphere_map_points2.scp
-// scripts/maps/sphere_map_points3.scp
-// scripts/maps/sphere_map_points4.scp
-// scripts/maps/sphere_map_points5.scp
+scripts/maps/sphere_map_points2.scp
+scripts/maps/sphere_map_points3.scp
+scripts/maps/sphere_map_points4.scp
+scripts/maps/sphere_map_points5.scp
 // -----------------------------------
 scripts/sphere_menu.scp
 scripts/sphere_name.scp
@@ -78,9 +78,9 @@ scripts/speech/
 // -----------------------------------
 //          Stone system
 // -----------------------------------
-// scripts/stones/
-// scripts/stones/guilds/
-// scripts/stones/towns/
+scripts/stones/
+scripts/stones/guilds/
+scripts/stones/towns/
 // -----------------------------------
 // scripts/custom/
 
@@ -202,21 +202,21 @@ Zan
 
 [PLEVEL 1]	// extra player commands.
 AFK
+DETAIL
 WHERE
 HUNGRY
-CAST
-TELE
 SUICIDE
 SELF
 LAST
-HELP
 PASSWORD
 EMAIL
-HelpPage
+HELPPAGE
 
 [PLEVEL 2]	// extra counselor commands.
+//HELP
+CAST
+TELE
 ANIM
-DETAIL
 SLEEP
 UNDERWEAR
 BARK
@@ -251,7 +251,7 @@ ACCOUNT
 SETPRIV
 DIALOG
 BLOCKIP
-TOME
+//TOME
 EXTRACT
 UNEXTRACT
 EXPORT

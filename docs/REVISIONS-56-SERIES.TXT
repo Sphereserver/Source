@@ -355,3 +355,15 @@
 26-11-2013, Khaos (Script Pack)
 -Added: Mordaunts_House_System.zip was added to the ADDON folder containing an up-to-date version of Mordaunt's
  housing system using the new attr_flags that were added.
+
+27-11-2013, Khaos (Script Pack)
+Changed: Spheretables.scp;
+	- Commented out HELP and TOME. No function was found when tested.
+	- Uncommented the maps, map points, and guild stones. Left scripts/custom commented since not everyone has this folder.
+	- Moved some plevel1 functions to plevel2. They shouldn't have been in plevel1.
+Changed: sphere.ini;
+	- Uncommented the maps and changed instructions for non-ml compliance.
+	- Resdisp is now 7 for auto SA compliance. (I didn't touch expansion code though within the ini otherwise).
+	- Uncommented ZEROPOINT for use with ML map0 and map1. Comment it out if you aren't using the newer maps.
+Changed: sphere_region.scp;
+	- All regiontypes resources now add up to 100.0.

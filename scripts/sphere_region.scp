@@ -96,14 +96,14 @@ SKILL=1.0,100.0
 REGEN=60*60*10
 
 [REGIONTYPE r_default_water t_water]
-RESOURCES=50.0 mr_nothing  // Most of the time fishing produces nothing.
+RESOURCES=60.0 mr_nothing  // Most of the time fishing produces nothing.
 RESOURCES=10.0 mr_fish1
 RESOURCES=10.0 mr_fish2
 RESOURCES=10.0 mr_fish3
 RESOURCES=10.0 mr_fish4
 
 [REGIONTYPE r_water t_water]
-RESOURCES=50.0 mr_nothing
+RESOURCES=60.0 mr_nothing
 RESOURCES=10.0 mr_fish1
 RESOURCES=10.0 mr_fish2
 RESOURCES=10.0 mr_fish3
@@ -125,7 +125,8 @@ REGEN=60*60*10
 
 [REGIONTYPE r_default_tree t_tree]
 // All trees produce wood by default.
-RESOURCES=1.0 mr_tree
+RESOURCES=60.0 mr_nothing
+RESOURCES=40.0 mr_tree
 
 ////////////////////////////////
 // Resources for mining skill //
@@ -279,13 +280,13 @@ REGEN=60*60*10
 // is a small chance of a rare diamond.  Shadow ore is cannot be mined.
 RESOURCES=50.0 mr_iron    // This large number makes this very common.
 RESOURCES=10.0 mr_nothing
-RESOURCES=6.0 mr_rusty
+RESOURCES=8.0 mr_rusty
 RESOURCES=6.0 mr_old_copper
 RESOURCES=6.0 mr_dull_copper
-RESOURCES=4.5 mr_bronze
+RESOURCES=5.0 mr_bronze
 RESOURCES=5.0 mr_copper
 RESOURCES=2.0 mr_gold
-RESOURCES=1.0 mr_rose
+RESOURCES=2.0 mr_rose
 RESOURCES=2.0 mr_agapite
 RESOURCES=1.0 mr_bloodrock
 RESOURCES=1.0 mr_silver
@@ -306,7 +307,7 @@ ON=@RegPeriodic
 
 [REGIONTYPE r_spooky t_rock]
 // Iron and Shadow ore are very rarely mined in a spooky region.
-RESOURCES=100.0 mr_nothing  // Usually there is nothing here.
+RESOURCES=65.0 mr_nothing  // Usually there is nothing here.
 RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
 ON=@Enter
@@ -316,14 +317,14 @@ ON=@CliPeriodic
 
 [REGIONTYPE r_swamp t_rock]
 // There is nothing to mine in a swamp.
-RESOURCES=1.0 mr_nothing
+RESOURCES=100.0 mr_nothing
 ON=@RegPeriodic
    SRC.SFX={0e,10,0f,10,022,1,023,1,024,1,0267,1}
 
 [REGIONTYPE r_brit t_rock]
 // Sometimes Iron can be mined in the town of Britannia.
 RESOURCES=60.0 mr_nothing
-RESOURCES=30.0 mr_iron
+RESOURCES=40.0 mr_iron
 ON=@Enter
    SRC.MESSAGE Welcome to Britain <SRC.NAME>!
    SRC.MESSAGE Lord British Guards are here to protect you!
