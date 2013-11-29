@@ -367,3 +367,6 @@ Changed: sphere.ini;
 	- Uncommented ZEROPOINT for use with ML map0 and map1. Comment it out if you aren't using the newer maps.
 Changed: sphere_region.scp;
 	- All regiontypes resources now add up to 100.0.
+
+28-11-2013, XuN (Script Pack)
+Added: def.STONECONFIG_MISC_RECRUIT_MAXDISTANCE to do a control check of max distance allowed for the player being recruited.

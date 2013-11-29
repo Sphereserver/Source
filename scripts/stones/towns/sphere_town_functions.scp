@@ -25,7 +25,10 @@ elif (<argo.isItem>)
 elif (!<argo.isPlayer>)
   sysmessage @038a You may only recruit players into the town.
   return 1
-elif (<argo.flags>&<def0.statf_dead>)
+elif (<ref1.Distance <argo>>><def.STONECONFIG_MISC_RECRUIT_MAXDISTANCE>)
+  sysmessage @038a <argo.name> is too far away to be recruited.
+  return 1
+elif (<argo.flags>&<def.statf_dead>)
   sysmessage @038A Only the living may be recruited.
   return 1
 endif

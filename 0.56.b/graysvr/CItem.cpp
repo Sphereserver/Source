@@ -2382,7 +2382,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_ITEMSETCOLOR:
 		case IC_ITEMSETNAME:
 		case IC_LIFESPAN:
-		case IC_LOCKEDDOWN:
 		case IC_LOWERAMMOCOST:
 		case IC_LOWERMANACOST:
 		case IC_LOWERREAGENTCOST:
@@ -2431,7 +2430,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_RESPHYSICAL:
 		case IC_RESPOISON:
 		case IC_SEARINGWEAPON:
-		case IC_SECURE:
 		case IC_SELFREPAIR:
 		case IC_SLAYER:
 		case IC_SLAYERLESSER:
@@ -2713,7 +2711,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_ITEMSETCOLOR:
 		case IC_ITEMSETNAME:
 		case IC_LIFESPAN:
-		case IC_LOCKEDDOWN:
 		case IC_LOWERAMMOCOST:
 		case IC_LOWERMANACOST:
 		case IC_LOWERREAGENTCOST:
@@ -2762,7 +2759,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_RESPHYSICAL:
 		case IC_RESPOISON:
 		case IC_SEARINGWEAPON:
-		case IC_SECURE:
 		case IC_SELFREPAIR:
 		case IC_SLAYER:
 		case IC_SLAYERLESSER:
