@@ -374,3 +374,6 @@ Added: def.STONECONFIG_MISC_RECRUIT_MAXDISTANCE to do a control check of max dis
 30-11-2013, Khaos (Script Pack)
 Added: sphere_genericstone_config.scp; missing check. Sorry. XuN sent it to me after the last update.
 Modified: sphere_region.scp; it was missing the REAPAMOUNT lines from every resource. This is corrected now.
+
+30-11-2013, Khaos
+Added: can_i_reforge/REFORGE=1/0 and attr_reforged to sphere. EA Seems to check these for reforging runic items.

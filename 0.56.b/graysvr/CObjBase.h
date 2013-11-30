@@ -375,6 +375,7 @@ public:
 #define ATTR_NOTRADE		0x400000	// No-trade
 #define ATTR_LOCKEDDOWN		0x800000	// Is Locked Down
 #define ATTR_SECURE			0x1000000	// Is Secure
+#define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 	DWORD	m_Attr;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
