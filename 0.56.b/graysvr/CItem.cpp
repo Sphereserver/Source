@@ -2401,12 +2401,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_NPCPROTECTION:
 		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
-		case IC_ONLYELF:
-		case IC_ONLYFEMALE:
-		case IC_ONLYGARGOYLE:
-		case IC_ONLYHUMAN:
-		case IC_ONLYMALE:
 		case IC_OWNEDBY:
+		case IC_PERMITTEDUSE:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:
@@ -2730,12 +2726,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_NPCPROTECTION:
 		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
-		case IC_ONLYELF:
-		case IC_ONLYFEMALE:
-		case IC_ONLYGARGOYLE:
-		case IC_ONLYHUMAN:
-		case IC_ONLYMALE:
 		case IC_OWNEDBY:
+		case IC_PERMITTEDUSE:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:

@@ -1896,4 +1896,16 @@ noto_guild_war       5
 noto_evil            6
 noto_invul           7
 
+// PermittedUse flags
+// Uses new internal variable PERMITTEDUSE. Script for this is in the addon's folder in the script pack.
+// Used on items for checks or npcs (mounts, golems, etc)
+[defname permitteduse_flags]
+permitted_all	0
+permitted_male		01
+permitted_female		02
+permitted_human		04
+permitted_elf		08
+permitted_gargoyle		010
+permitted_none		020
+
 [EOF]
