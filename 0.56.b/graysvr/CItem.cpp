@@ -2394,6 +2394,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_MANABURSTFREQUENCY:
 		case IC_MANABURSTKARMA:
 		case IC_MANAPHASE:
+		case IC_NAMELOC:
 		case IC_NODROP:
 		case IC_NOTRADE:
 		case IC_NPCKILLER:
@@ -2719,6 +2720,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_MANABURSTFREQUENCY:
 		case IC_MANABURSTKARMA:
 		case IC_MANAPHASE:
+		case IC_NAMELOC:
 		case IC_NODROP:
 		case IC_NOTRADE:
 		case IC_NPCKILLER:
