@@ -956,14 +956,14 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	switch (rtRace)
 	{
 		case RACETYPE_ELF:
-			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, ( bFemale ) ? "c_elf_female" : "c_elf_male" )));
+			SetID(( bFemale ) ? CREID_ELFWOMAN : CREID_ELFMAN );
 			break;
 		case RACETYPE_GARGOYLE:
-			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, ( bFemale ) ? "c_gargoyle_female" : "c_gargoyle_male" )));
+			SetID(( bFemale ) ? CREID_GARGWOMAN : CREID_GARGMAN );
 			break;
 		case RACETYPE_HUMAN:
 		default:
-			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, ( bFemale ) ? "c_woman" : "c_man" )));
+			SetID(( bFemale ) ? CREID_WOMAN : CREID_MAN );
 			break;
 	}
 
