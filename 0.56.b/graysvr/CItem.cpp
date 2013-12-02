@@ -2321,6 +2321,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSSTAM:
 		case IC_BONUSSTR:
 		case IC_BRITTLE:
+		case IC_CANUSE:
 		case IC_CASTINGFOCUS:
 		case IC_CHARGESCUR:
 		case IC_CHARGESMAX:
@@ -2403,7 +2404,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
 		case IC_OWNEDBY:
-		case IC_PERMITTEDUSE:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:
@@ -2647,6 +2647,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSSTAM:
 		case IC_BONUSSTR:
 		case IC_BRITTLE:
+		case IC_CANUSE:
 		case IC_CASTINGFOCUS:
 		case IC_CHARGESCUR:
 		case IC_CHARGESMAX:
@@ -2729,7 +2730,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
 		case IC_OWNEDBY:
-		case IC_PERMITTEDUSE:
 		case IC_RAGEFOCUS:
 		case IC_RARITY:
 		case IC_REACTIVEPARALYZE:

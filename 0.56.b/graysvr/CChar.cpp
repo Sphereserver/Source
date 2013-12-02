@@ -201,8 +201,8 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	m_pArea = NULL;
 	m_pParty = NULL;
-	m_pClient = NULL;	// is the char a logged in player ?
-	m_pPlayer = NULL;	// May even be an off-line player !
+	m_pClient = NULL;	// is the char a logged in player?
+	m_pPlayer = NULL;	// May even be an off-line player!
 	m_pNPC	  = NULL;
 	m_pRoom = NULL;
 	m_StatFlag = 0;
@@ -1443,6 +1443,7 @@ do_default:
 		case CHC_BONUSMANA:
 		case CHC_BONUSSTAM:
 		case CHC_BONUSSTR:
+		case CHC_CANUSE:
 		case CHC_CASTINGFOCUS:
 		case CHC_DAMCHAOS:
 		case CHC_DAMCOLD:
@@ -1466,6 +1467,7 @@ do_default:
 		case CHC_ENHANCEPOTIONS:
 		case CHC_FASTERCASTRECOVERY:
 		case CHC_FASTERCASTING:
+		case CHC_FOLLOWERSLOTS:
 		case CHC_HITAREACOLD:
 		case CHC_HITAREAENERGY:
 		case CHC_HITAREAFIRE:
@@ -1498,7 +1500,6 @@ do_default:
 		case CHC_MANABURST:
 		case CHC_MANABURSTFREQUENCY:
 		case CHC_MANABURSTKARMA:
-		case CHC_PERMITTEDUSE:
 		case CHC_RAGEFOCUS:
 		case CHC_REACTIVEPARALYZE:
 		case CHC_REFLECTPHYSICALDAM:
@@ -1525,7 +1526,7 @@ do_default:
 		case CHC_SPLINTERINGWEAPON:
 		case CHC_VELOCITY:
 		case CHC_WEIGHTREDUCTION:
-				sVal = GetDefStr(pszKey, true);
+			sVal = GetDefStr(pszKey, true);
 			break;
 		case CHC_ATTACKER:
 			{
@@ -2255,6 +2256,7 @@ do_default:
 		case CHC_BONUSMANA:
 		case CHC_BONUSSTAM:
 		case CHC_BONUSSTR:
+		case CHC_CANUSE:
 		case CHC_CASTINGFOCUS:
 		case CHC_DAMCHAOS:
 		case CHC_DAMCOLD:
@@ -2278,6 +2280,7 @@ do_default:
 		case CHC_ENHANCEPOTIONS:
 		case CHC_FASTERCASTRECOVERY:
 		case CHC_FASTERCASTING:
+		case CHC_FOLLOWERSLOTS:
 		case CHC_HITAREACOLD:
 		case CHC_HITAREAENERGY:
 		case CHC_HITAREAFIRE:
@@ -2310,7 +2313,6 @@ do_default:
 		case CHC_MANABURST:
 		case CHC_MANABURSTFREQUENCY:
 		case CHC_MANABURSTKARMA:
-		case CHC_PERMITTEDUSE:
 		case CHC_RAGEFOCUS:
 		case CHC_REACTIVEPARALYZE:
 		case CHC_REFLECTPHYSICALDAM:

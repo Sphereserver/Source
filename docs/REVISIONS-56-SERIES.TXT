@@ -384,3 +384,14 @@
 
 -Added: Permitted Player Use Event to the addon's folder in the scripts to directory; full soft code use of the new variable is
  used in that script. sphere_defs.scp now contains the soft code flag system for use with this script.
+
+1-12-2013, Khaos
+-Fixed: Fixed Newbie Templates checking for the base races defname instead of the internal ID checks.
+
+2-12-2013, Khaos
+-CHANGED: PERMITTEDUSE to CANUSE variable on chars and items.
+
+-CHANGED: Switched out Permitted use code in the scripts to CANUSE flagged code. Cleaner look and better wording.
+
+-ADDED: Followerslots added to Chars (Getting switched to NPCs with internal logic as soon as I find time. (This was a logical request
+ from some community members to add this in).
