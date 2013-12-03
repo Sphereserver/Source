@@ -384,6 +384,9 @@
 
 -Added: Permitted Player Use Event to the addon's folder in the scripts to directory; full soft code use of the new variable is
  used in that script. sphere_defs.scp now contains the soft code flag system for use with this script.
+ 
+1-12-2013, XuN
+Added NameLoc variable for items so you can set a ClilocID for using it as name and show up by script by showing NameLoc instead of Name. 
 
 2-12-2013, Khaos
 -CHANGED: PERMITTEDUSE to CANUSE variable on chars and items. (This was done on the empty variables for help with the base packs
@@ -392,3 +395,6 @@
 -CHANGED: Switched out Permitted use code in the scripts to CANUSE flagged code. Cleaner look and better wording.
 
 -ADDED: Followerslots to Chars
+
+3-12-2013, XuN
+-Removed duplicated entry 'height_0c8 16 //DEFNAME=c_horse_tan' from sphere_defs.scp
