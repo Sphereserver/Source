@@ -1289,15 +1289,17 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	ASSERT(pResBit);
 
 	// Find the ore type located here based on color.
-	const CRegionResourceDef * pOreDef = dynamic_cast<const CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
+	//RESOURCE_ID rid	= pResGroup->GetMemberID( id );	//read down
+	//pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( rid ));	//Default behaviour, modified it because i couldn't call triggers from this pOreDef
+	CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
 	if ( pOreDef == NULL )
 	{
 		return( NULL );
 	}
 
 	// Skill effects how much of the ore i can get all at once.
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pOreDef->m_ReapItem));
-	if ( id == ITEMID_NOTHING )
+	//ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pOreDef->m_ReapItem)); //Commenting out, i'm creating later this with args from @ResourceGather
+	if ( pOreDef->m_ReapItem == ITEMID_NOTHING )		//Changed 'id' topOreDef->m_ReapItem because i moved id after triggers (cannot duplicate variables :?)
 	{
 		// I intended for there to be nothing here.
 		return( NULL );
@@ -1314,6 +1316,22 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 		if ( iAmount > maxAmount )	iAmount	= maxAmount;
 		if ( iAmount < 1 ) 		iAmount	= 1;
 	}
+
+	//(Region)ResourceGather behaviour
+	CScriptTriggerArgs	Args(0, 0, pResBit);
+	Args.m_VarsLocal.SetNum("ResourceID",pOreDef->m_ReapItem);
+	Args.m_iN1 = iAmount;
+	TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
+	if ( IsTrigUsed(TRIGGER_REGIONRESOURCEGATHER) )
+		tRet = this->OnTrigger(CTRIG_RegionResourceGather, this, &Args);
+	if ( IsTrigUsed(TRIGGER_RESOURCEGATHER) )
+		tRet = pOreDef->OnTrigger("@ResourceGather", this, &Args);
+	
+	if ( tRet == TRIGRET_RET_TRUE )		return( NULL );
+
+	iAmount = Args.m_iN1;
+	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
 	iAmount = pResBit->ConsumeAmount( iAmount );	// amount i used up.
 	if ( iAmount <= 0 )

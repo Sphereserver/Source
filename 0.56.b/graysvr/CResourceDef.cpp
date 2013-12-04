@@ -1066,6 +1066,7 @@ LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
 	"@ResourceFound",
+	"@ResourceGather",
 	"@ResourceTest",
 	NULL,
 };

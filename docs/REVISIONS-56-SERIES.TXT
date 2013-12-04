@@ -403,3 +403,10 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 -Added: NAMELOC functionality. It can be set for items and chars, in the *DEF sections or in scripts (not directly in game)
 		If used, it will display this cliloc instead of the default name (where clilocs are shown)
 		When used on chars, cliloc 1116690 is used instead of the original 1050045 to preserve prefix and suffix
+		
+04-12-2013, XuN
+-Added @ResourceGather for RegionResources and @RegionResourceGather for Players:
+	This trigger is being fired just before gathering skill has finished (after all animations and timings)
+	Local.ResourceID is the ID of the item being gathered (Writable)
+	Argn1 is the amount of local.ResourceID being gathered (Writable too)
+	Return 1 cancels Gathering
