@@ -2498,8 +2498,17 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
-			m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-			t->FormatArgs(" \t%s\t ", pObj->GetName());
+			unsigned long ClilocName = pObj->GetDefNum("NAMELOC");
+			if (!ClilocName)
+				ClilocName = pObj->Base_GetDef()->GetDefNum("NAMELOC");
+
+			if (ClilocName)
+				m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
+			else
+			{
+				m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+				t->FormatArgs(" \t%s\t ", pObj->GetName());
+			}
 		}
 		else // we have FEATURE_AOS_UPDATE_B enabled
 		{
@@ -2514,10 +2523,19 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 			if ( iRet != TRIGRET_RET_TRUE )
 			{
+				unsigned long ClilocName = pObj->GetDefNum("NAMELOC");
+				if (!ClilocName)
+					ClilocName = pObj->Base_GetDef()->GetDefNum("NAMELOC");
+
 				if ( pItem )
 				{
-					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-					t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					if (ClilocName)
+						m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
+					else
+					{
+						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+						t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					}
 				}
 				else if ( pChar )
 				{
@@ -2552,8 +2570,16 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						strcpy( lpSuffix, " " );
 
 					// The name
-					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-					t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					if (ClilocName)
+					{
+						m_TooltipData.InsertAt(0, t = new CClientTooltip(1116690));
+						t->FormatArgs("%s\t#%d\t%s", lpPrefix, ClilocName, lpSuffix);
+					}
+					else
+					{
+						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
+						t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					}
 
 					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
 					// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>",

@@ -606,6 +606,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	bool	fZero	= false;
 	switch (index)
 	{
+		case OC_NAMELOC: //if not found on dynamic item, look at basedef
+			sVal = GetDefNum(sm_szLoadKeys[index]) ? GetDefStr(sm_szLoadKeys[index]) : Base_GetDef()->GetDefStr(sm_szLoadKeys[index]);
+			break;
 		case OC_CANSEE:
 		case OC_CANSEELOS:
 		case OC_CANSEELOSFLAG:
@@ -1125,6 +1128,11 @@ bool CObjBase::r_LoadVal( CScript & s )
 
 	switch ( index )
 	{
+		case OC_NAMELOC:
+			{
+				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+			}
+			return true;
 		case OC_COLOR:
 			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) ||
 				! strcmpi( s.GetArgStr(), "match_hair" ))

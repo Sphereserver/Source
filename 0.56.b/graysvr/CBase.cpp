@@ -36,8 +36,9 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	switch ( index )
 	{
 		case OBC_CATEGORY:
-		case OBC_SUBSECTION:
 		case OBC_DESCRIPTION:
+		case OBC_NAMELOC:
+		case OBC_SUBSECTION:
 			sVal = GetDefStr(sm_szLoadKeys[index]);
 			break;
 		case OBC_ARMOR:
@@ -188,7 +189,12 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 				if ( !strcmpi(GetDefStr(sm_szLoadKeys[OBC_DESCRIPTION]), "@") )
 					SetDefStr(sm_szLoadKeys[OBC_DESCRIPTION], GetDefStr(sm_szLoadKeys[OBC_SUBSECTION]));
 			}
-			break;
+			return true;
+		case OBC_NAMELOC:
+			{
+				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+			}
+			return true;
 		case OBC_ARMOR:
 		case OBC_DAM:
 			{
