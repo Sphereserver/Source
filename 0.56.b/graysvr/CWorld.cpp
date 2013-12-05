@@ -909,6 +909,7 @@ void CWorldThread::GarbageCollection_New()
 				continue;
 
 			ReportGarbageCollection(pObj, 0x3202);
+			pObj->Delete();
 		}
 
 		m_ObjNew.DeleteAll();
