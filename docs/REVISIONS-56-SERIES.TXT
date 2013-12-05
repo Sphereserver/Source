@@ -410,3 +410,6 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 	Local.ResourceID is the ID of the item being gathered (Writable)
 	Argn1 is the amount of local.ResourceID being gathered (Writable too)
 	Return 1 cancels Gathering
+05-12-2013, Khaos (Script Pack)
+-Fixed the &= in the new CANUSE flags in Addons from processing an undefined symbol error.
+-Added Expansion_Player_Event.rar to ADDON section for the suggested usage of EXPANSION Variable on Items and Characters.
