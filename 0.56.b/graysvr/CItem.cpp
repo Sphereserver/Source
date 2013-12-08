@@ -3923,6 +3923,7 @@ bool CItem::Armor_IsRepairable() const
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_FENCE:
 		case IT_WEAPON_AXE:
+		case IT_WEAPON_THROWING:
 			break;
 
 		case IT_WEAPON_BOW:
@@ -4022,6 +4023,8 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 		case IT_WEAPON_BOW:
 		case IT_WEAPON_XBOW:
 			return( SKILL_ARCHERY );
+		case IT_WEAPON_THROWING:
+			return ( SKILL_THROWING );
 		default:
 			return( SKILL_WRESTLING );
 	}
@@ -4777,7 +4780,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	case IT_WEAPON_BOLT:
 		if ( iDmg == 1 )
 		{
-			// Miss - They will ussually survive.
+			// Miss - They will usually survive.
 			if ( Calc_GetRandVal(5))
 				return( 0 );
 		}

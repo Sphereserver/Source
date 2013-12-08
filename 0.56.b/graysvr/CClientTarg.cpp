@@ -1039,6 +1039,7 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		case IT_WEAPON_FENCE:
 		case IT_WEAPON_BOW:
 		case IT_WEAPON_XBOW:
+		case IT_WEAPON_THROWING:
 			fWeapon = true;
 			iHitsCur = pItem->m_itWeapon.m_Hits_Cur;
 			iHitsMax = pItem->m_itWeapon.m_Hits_Max;

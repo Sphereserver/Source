@@ -430,6 +430,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_MYSTIC,	// 191 = SA Mysticism spellbook (should have MOREX=677 by default)
 	IT_HOVEROVER,		// 192 = Hover-over item (CAN_C_HOVER can hover over blocking items)
 	IT_SPELLBOOK_BARD,	// 193 = Bard spellbook (should have MOREZ=700 by default)
+	IT_WEAPON_THROWING,	// 194 = Throwing Weapon
 
 	IT_QTY,
 	IT_TRIGGER = 1000	// custom triggers starts from here
@@ -487,6 +488,7 @@ public:
 
 		// IT_WEAPON_BOW
 		// IT_WEAPON_XBOW
+		// IT_WEAPON_THROWING
 		struct	// ALL equippable items ex. Weapons and armor
 		{
 			int		m_junk1;	// TDATA1= Sound it makes ?

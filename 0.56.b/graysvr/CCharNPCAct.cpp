@@ -3312,6 +3312,7 @@ void CChar::NPC_OnTickAction()
 			case SKILL_MACEFIGHTING:
 			case SKILL_SWORDSMANSHIP:
 			case SKILL_WRESTLING:
+			case SKILL_THROWING:
 				// If we are fighting . Periodically review our targets.
 				EXC_SET("fight");
 				NPC_Act_Fight();

@@ -269,6 +269,7 @@ bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 		case IT_WEAPON_MACE_PICK:
 		case IT_WEAPON_AXE:
 		case IT_WEAPON_XBOW:
+		case IT_WEAPON_THROWING:
 			return( true );
 
 		default:
@@ -1043,6 +1044,9 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 					case IT_WEAPON_BOW:
 					case IT_WEAPON_XBOW:
 						skill = SKILL_ARCHERY;
+						break;
+					case IT_WEAPON_THROWING:
+						skill = SKILL_THROWING;
 						break;
 					default:
 						skill = SKILL_NONE;

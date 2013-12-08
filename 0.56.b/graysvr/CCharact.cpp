@@ -727,6 +727,9 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 						ANIM_ATTACK_2H_JAB :
 						ANIM_ATTACK_1H_JAB;
 					break;
+				case IT_WEAPON_THROWING:
+					action = ANIM_ATTACK_1H_WIDE;
+					break;
 				case IT_WEAPON_BOW:
 					action = ANIM_ATTACK_BOW;
 					break;
@@ -736,7 +739,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 				default:
 					break;
 			}
-			if (( Calc_GetRandVal( 2 ) ) && ( pWeapon->GetType() != IT_WEAPON_BOW ) && ( pWeapon->GetType() != IT_WEAPON_XBOW ) )
+			if (( Calc_GetRandVal( 2 ) ) && ( pWeapon->GetType() != IT_WEAPON_BOW ) && ( pWeapon->GetType() != IT_WEAPON_XBOW ) && ( pWeapon->GetType() != IT_WEAPON_THROWING ) )
 			{
 				// add some style to the attacks.
 				if ( layer == LAYER_HAND2 )
@@ -1304,6 +1307,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 					// 0x232 = axe01 swing. (miss?)
 					id = 0x232;
 					break;
+				case IT_WEAPON_THROWING:
 				case IT_WEAPON_SWORD:
 				case IT_WEAPON_AXE:
 					if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
@@ -3157,6 +3161,7 @@ bool CChar::CheckLocation( bool fStanding )
 			case SKILL_WRESTLING:
 				m_atFight.m_fMoved	= 1;
 				break;
+			case SKILL_THROWING:
 			case SKILL_ARCHERY:
 				m_atFight.m_fMoved	= 1;
 				if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )

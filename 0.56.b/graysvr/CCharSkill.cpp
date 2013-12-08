@@ -3386,6 +3386,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Fighting");
 	// SKILL_ARCHERY
+	// SKILL_THROWING
 	// m_Act_Targ = attack target.
 
 	if ( stage == SKTRIG_START )
@@ -4000,6 +4001,7 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Musicianship(stage);
 		case SKILL_POISONING:	// 30
 			return Skill_Poisoning(stage);
+		case SKILL_THROWING:
 		case SKILL_ARCHERY:
 			return Skill_Fighting(stage);
 		case SKILL_SPIRITSPEAK:

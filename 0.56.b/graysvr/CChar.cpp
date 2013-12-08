@@ -655,10 +655,11 @@ void CChar::CreateNewCharCheck()
 				int mult = (Stat_GetMax(STAT_STR) + (Stat_GetMax(STAT_DEX) / 2) + Stat_GetMax(STAT_INT)) / 3;
 				m_exp = maximum(
 						Skill_GetBase(SKILL_ARCHERY),
+						maximum(Skill_GetBase(SKILL_THROWING),
 						maximum(Skill_GetBase(SKILL_SWORDSMANSHIP),
 						maximum(Skill_GetBase(SKILL_MACEFIGHTING),
 						maximum(Skill_GetBase(SKILL_FENCING),
-						Skill_GetBase(SKILL_WRESTLING))))
+						Skill_GetBase(SKILL_WRESTLING)))))
 					) +
 					(Skill_GetBase(SKILL_TACTICS)     / 4) +
 					(Skill_GetBase(SKILL_PARRYING)    / 4) +

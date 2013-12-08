@@ -413,3 +413,9 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 05-12-2013, Khaos (Script Pack)
 -Fixed the &= in the new CANUSE flags in Addons from processing an undefined symbol error.
 -Added Expansion_Player_Event.rar to ADDON section for the suggested usage of EXPANSION Variable on Items and Characters.
+
+08-12-2013, Khaos
+-Fixed: Throwing is now working internally as any other ranged fight skill. It now processes gains, skilluse, etc.
+ Anims were fixed for this as well. (still haven't set flying anims yet, be patient)
+-Added: T_WEAPON_THROWING: Treated as a bow type with RANGE Parsing, TData3/4 values.
+-Added: T_WEAPON_THROWING to sphere_defs.scp. Also added T_SOUL_FORGE and T_FURNITURE to sphere_def.scp for base pack.

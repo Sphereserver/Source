@@ -1113,7 +1113,7 @@ public:
 
 	bool IsSkillRanged( SKILL_TYPE index ) const
 	{
-		if ( index == SKILL_ARCHERY )
+		if ( index == SKILL_ARCHERY || index == SKILL_THROWING )
 			return true;
 
 		return IsSkillFlag( index, SKF_RANGED );

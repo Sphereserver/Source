@@ -1955,6 +1955,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	case IT_WEAPON_XBOW:
 	case IT_WEAPON_MACE_STAFF:
 	case IT_JEWELRY:
+	case IT_WEAPON_THROWING:
 		if ( !fLink )
 			return ItemEquip( pItem );
 		else

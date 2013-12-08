@@ -2850,6 +2850,7 @@ bool CChar::Fight_IsActive() const
 		case SKILL_MACEFIGHTING:
 		case SKILL_SWORDSMANSHIP:
 		case SKILL_WRESTLING:
+		case SKILL_THROWING:
 			return( true );
 
 		default:
@@ -3277,6 +3278,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
+			case IT_WEAPON_THROWING:
 				iTyp |= DAMAGE_HIT_SLASH;
 				break;
 			case IT_WEAPON_FENCE:

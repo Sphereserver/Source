@@ -1076,6 +1076,9 @@ t_multi_custom          190   // Customisable multi
 t_spellbook_mystic      191   // SA Mysticism spellbook (should have MOREZ=677 by default)
 t_hoverover             192   // Hover-over item (CAN_I_HOVER can hover over blocking items)
 t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by default)
+t_weapon_throwing		194	// Throwing Weapon
+t_furniture			195
+t_soul_forge			196
 
 [DEFNAME layers]
 layer_hand1       1

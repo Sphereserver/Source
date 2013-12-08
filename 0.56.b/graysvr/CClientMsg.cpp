@@ -2671,6 +2671,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_WAND:
 						case IT_WEAPON_AXE:
 						case IT_WEAPON_XBOW:
+						case IT_WEAPON_THROWING:
 							if ( pItem->GetType() == IT_WAND )
 							{
 								this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
